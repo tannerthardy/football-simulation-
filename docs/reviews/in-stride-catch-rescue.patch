@@ -1,0 +1,129 @@
+diff --git a/src/sim/behaviors/receiver.ts b/src/sim/behaviors/receiver.ts
+index fafc071..89f1fbb 100644
+--- a/src/sim/behaviors/receiver.ts
++++ b/src/sim/behaviors/receiver.ts
+@@ -383,6 +383,9 @@ function passed(pos: Vec2, wp: Vec2, next: Vec2): boolean {
+   return (pos.x - wp.x) * sx + (pos.y - wp.y) * sy > 0 && Math.hypot(pos.x - wp.x, pos.y - wp.y) < 2;
+ }
+
++/** Rescued from 83e514a. Coverage/scoring controls are required for promotion. */
++const IN_STRIDE_CATCH = process.env.IN_STRIDE_CATCH === '1';
++
+ /**
+  * Track the ball in flight: run to the earliest point on its path that can be
+  * reached in time (ball tracking adds delay and error).
+@@ -410,6 +413,19 @@ export class TrackBall implements Behavior {
+   update(a: Agent, sim: PlaySim): MoveCommand {
+     if (sim.ball.kind !== 'air') return this.fallback.update(a, sim);
+     if (sim.t < this.reactAt) return this.fallback.update(a, sim);
++    if (IN_STRIDE_CATCH) {
++      const spot = strideCatchSpot(a, sim) ?? catchSpot(a, sim);
++      if (!spot) return this.fallback.update(a, sim);
++      const tx = spot.p.x + this.err.x, ty = spot.p.y + this.err.y;
++      const left = Math.max(.15, spot.t - sim.t);
++      let vx = a.vel.x + (tx - a.pos.x - a.vel.x * left) / left;
++      let vy = a.vel.y + (ty - a.pos.y - a.vel.y * left) / left;
++      const v = Math.hypot(vx, vy);
++      if (v > a.profile.vmax) { vx *= a.profile.vmax / v; vy *= a.profile.vmax / v; }
++      const near = Math.hypot(tx - a.pos.x, ty - a.pos.y) < 3;
++      return { vel: { x: vx, y: vy }, facing: near
++        ? angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y }) : undefined };
++    }
+     const spot = catchSpot(a, sim);
+     if (!spot) return this.fallback.update(a, sim);
+     const target = { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
+@@ -423,6 +439,23 @@ export class TrackBall implements Behavior {
+   }
+ }
+
++/** The reachable catchable point nearest the current running line. This
++ * requests movement only; ordinary physical catch resolution is unchanged. */
++function strideCatchSpot(a: Agent, sim: PlaySim): { p: Vec2; t: number } | null {
++  let best: { p: Vec2; t: number; dev: number } | null = null;
++  for (const s of sim.ballPath) {
++    const left = s.t - sim.t;
++    if (left < 0 || s.z > a.profile.maxCatchHeight * .92) continue;
++    if (s.z < .25) break;
++    const p = { x: s.x, y: s.y };
++    const dev = Math.hypot(p.x - a.pos.x - a.vel.x * left, p.y - a.pos.y - a.vel.y * left);
++    if (best && dev >= best.dev) continue;
++    const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, p, a.profile.reach * .8);
++    if (tt <= left) best = { p, t: s.t, dev };
++  }
++  return best;
++}
++
+ /** Earliest reachable point on the ball's remaining flight path for agent `a`. */
+ export function catchSpot(a: Agent, sim: PlaySim): { p: Vec2; t: number; z: number } | null {
+   const path = sim.ballPath;
+diff --git a/test/in-stride-catch.test.ts b/test/in-stride-catch.test.ts
+new file mode 100644
+index 0000000..b0bb5c6
+--- /dev/null
++++ b/test/in-stride-catch.test.ts
+@@ -0,0 +1,65 @@
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import { CENTER_Y } from '../src/core/field.js';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { PASS_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import { PlaySim } from '../src/sim/playsim.js';
++
++function stage(side = 1) {
++  const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(31), 'O', 'O'), '11'),
++    defense: pickDefense(generateTeam(new Rng(32), 'D', 'D'), 'nickel'),
++    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: '' },
++    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3 });
++  const receiver = sim.slot('X')!;
++  receiver.body.pos = { x: 50, y: CENTER_Y };
++  receiver.body.vel = { x: 6, y: side };
++  sim.t = 2;
++  sim.ball = { kind: 'air', flight: { pos: { x: 49, y: CENTER_Y, z: 2 }, vel: { x: 20, y: side, z: -1 }, drag: 0 },
++    thrower: sim.qb, target: receiver, releaseT: 1, releaseX: 35, intended: { x: 52.4, y: CENTER_Y + side * .4, z: 1.5 },
++    arrivalT: 2.9, deflected: false, throwaway: false };
++  sim.ballPath = [{ t: 2.6, x: 50.4, y: CENTER_Y + side * .05, z: 1.5 },
++    { t: 2.9, x: 52.4, y: CENTER_Y + side * .4, z: 1.5 }];
++  vi.spyOn(sim.rng, 'normal').mockReturnValue(0);
++  return { sim, receiver };
++}
++async function tracking(enabled: boolean, side = 1) {
++  vi.stubEnv('IN_STRIDE_CATCH', enabled ? '1' : '0'); vi.resetModules();
++  const { TrackBall } = await import('../src/sim/behaviors/receiver.js');
++  const f = stage(side);
++  const fallback = { kind: 'idle' as const, update: () => ({ vel: { x: 0, y: 0 } }) };
++  const behavior = new TrackBall(f.receiver, f.sim, fallback);
++  f.sim.t = 2.5;
++  return { ...f, behavior };
++}
++afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs(); vi.resetModules(); });
++
++describe('default-off preservation of the in-stride catch experiment', () => {
++  it.each([-1, 1])('retains a reachable running line instead of waiting for its earlier point, side=%s', async side => {
++    const old = await tracking(false, side), next = await tracking(true, side);
++    const body = structuredClone(next.receiver.body), ball = next.sim.ball;
++    if (ball.kind !== 'air') throw Error('Expected flight');
++    const flight = structuredClone(ball.flight);
++    const original = old.behavior.update(old.receiver, old.sim), command = next.behavior.update(next.receiver, next.sim);
++    expect(command.vel.x).toBeCloseTo(6, 10);
++    expect(command.vel.y).toBeCloseTo(side, 10);
++    expect(command.vel.x).toBeGreaterThan(original.vel.x);
++    expect(next.receiver.body).toEqual(body); expect(next.sim.ball).toBe(ball);
++    expect(ball.flight).toEqual(flight);
++    expect(next.sim.stats.completed).toBeFalsy();
++  });
++
++  it('still requests a return for a short ball', async () => {
++    const f = await tracking(true);
++    f.sim.ballPath = [{ t: 2.9, x: 49.5, y: CENTER_Y, z: 1.5 }];
++    expect(f.behavior.update(f.receiver, f.sim).vel.x).toBeLessThan(0);
++  });
++
++  it('does not select an in-stride point above the existing catch envelope', async () => {
++    const old = await tracking(false), next = await tracking(true);
++    for (const f of [old, next]) f.sim.ballPath[1].z = f.receiver.profile.maxCatchHeight + 1;
++    expect(next.behavior.update(next.receiver, next.sim).vel.x).toBeLessThan(6);
++  });
++});

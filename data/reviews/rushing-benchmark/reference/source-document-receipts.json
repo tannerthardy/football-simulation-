@@ -1,0 +1,58 @@
+[
+  {
+    "name": "pbp-dictionary.html",
+    "url": "https://nflreadr.nflverse.com/articles/dictionary_pbp.html",
+    "bytes": 47668,
+    "sha256": "6fa8d6c22a8a1b635322d8af9d7cb69fcb2d4c3b5acee0dbf2d94bf40d5e29cc",
+    "downloadedUtc": "2026-10-11T17:44:50.254246+00:00",
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "last-modified": "Thu, 17 Sep 2026 12:48:32 GMT",
+      "etag": "\"6aabe1a0-ba34\"",
+      "date": "Sun, 11 Oct 2026 17:44:50 GMT"
+    }
+  },
+  {
+    "name": "ftn-dictionary.html",
+    "url": "https://nflreadr.nflverse.com/articles/dictionary_ftn_charting.html",
+    "bytes": 12446,
+    "sha256": "bf44be8377e470b51b7851c67b04fabdeb9f8d5b3acd903d563515254ffbcd6e",
+    "downloadedUtc": "2026-10-11T17:44:50.497875+00:00",
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "last-modified": "Thu, 17 Sep 2026 12:48:32 GMT",
+      "etag": "\"6aabe1a0-309e\"",
+      "date": "Sun, 11 Oct 2026 17:44:50 GMT"
+    }
+  },
+  {
+    "name": "roster-dictionary.html",
+    "url": "https://nflreadr.nflverse.com/articles/dictionary_rosters.html",
+    "bytes": 11274,
+    "sha256": "007e75b449c53149b28d039d71f10286b68938b133bf194e456f428047dad3b5",
+    "downloadedUtc": "2026-10-11T17:44:54.755926+00:00",
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "last-modified": "Thu, 17 Sep 2026 12:48:32 GMT",
+      "etag": "\"6aabe1a0-2c0a\"",
+      "date": "Sun, 11 Oct 2026 17:44:54 GMT"
+    }
+  },
+  {
+    "name": "pbp-builder.html",
+    "url": "https://nflfastr.com/reference/build_nflfastR_pbp.html",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "name": "fta-license.html",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "bytes": 35530,
+    "sha256": "b462fb0a649a8ec875bba7590abad7dc1e72c0456ddec070cf3a28183689dceb",
+    "downloadedUtc": "2026-10-11T17:45:02.474018+00:00",
+    "headers": {
+      "content-type": "text/html",
+      "last-modified": "Thu, 01 Oct 2026 17:09:56 GMT",
+      "date": "Sun, 11 Oct 2026 17:45:02 GMT"
+    }
+  }
+]

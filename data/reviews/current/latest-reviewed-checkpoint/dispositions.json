@@ -1,0 +1,163 @@
+{
+  "schema": "latest-reviewed-dispositions-v1",
+  "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985",
+  "integrationPr": 168,
+  "handoff": "https://github.com/tannerthardy/football-simulation-/pull/168#issuecomment-6281006908",
+  "incorporated": [
+    {
+      "pr": 149,
+      "originalHead": "968e9cea6199de6cd5e1197536ac05ed2c3ad2e6",
+      "branch": "codex/stalk-strike-access",
+      "baseBranch": "codex/stalk-moving-surface",
+      "scope": "Retained named stalk duty and reachable inside strike on #148; inside/perimeter adverse costs retained. The original #148 parent branch remains available.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281012740,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 148,
+      "originalHead": "6fd13e4782a08497383912272b693e6a59747d80",
+      "branch": "codex/stalk-moving-surface",
+      "baseBranch": "develop",
+      "scope": "Acquired-position moving perimeter stalk surface only. #149's genuine dependency remains preserved; no branch deletion or stack retarget.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281014281,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 131,
+      "originalHead": "fc48a8f147b515850b231431c64e09bb889195b9",
+      "branch": "codex/catch-opportunity-physics",
+      "baseBranch": "develop",
+      "scope": "Same-interval catch-opportunity geometry and the live endpoint-capturing caller only; existing eligibility/retry/probability/credit contracts retained. Historical impossible interception is evidence, not a current-source INT-rate claim.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281015738,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 141,
+      "originalHead": "055f78ded6821336ce90c708b892e881ea9b7f08",
+      "branch": "codex/vertical-roof-budget",
+      "baseBranch": "develop",
+      "scope": "Reviewed portable deep acquired vertical/plant extraction only, preserving #135/#132/#128. P192 comeback space/censor retained. Current legitimate Y throw changes the old native scramble prerequisite; positive bookkeeping now explicitly uses base coaching, with two unmodified current ordinary-pass controls.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281017426,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 150,
+      "originalHead": "e914fc60c6a8aae6bedaf8c1231dc82ec0496fc9",
+      "branch": "codex/climb-objective-access",
+      "baseBranch": "develop",
+      "scope": "Installed climb around acquired first-level traffic only. Reviewed native contract requires no engagement with intervening DE and actual assigned Will load/arm-work limits; ordinary glancing body contact is allowed. Original failed assertion and diagnostic remain. #164 is excluded after its combined access failure.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281018941,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 152,
+      "originalHead": "346421f9e47938cdb4e53f491c69d656a052783c",
+      "branch": "codex/run-current-build-review",
+      "baseBranch": "develop",
+      "scope": "Free first-level recovery toward the acquired carrier side only, retaining assigned work and legitimate defensive wins.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281020523,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 155,
+      "originalHead": "2866f88232dd9e794469a46b084d51f735cbb7b9",
+      "branch": "codex/receiver-eligibility-only",
+      "baseBranch": "develop",
+      "scope": "Unowned shallow-threat eligibility only. #137's joint allocation/assignment policy is not adopted.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281022137,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 156,
+      "originalHead": "aacfce18865f345b59b96a192d2ed9064403853e",
+      "branch": "codex/shotgun-rb-alignment",
+      "baseBranch": "develop",
+      "scope": "Installed width/depth for seven generic offset gun RB formations only. Delayed own-side exchange and unproved loaded blitz pickup remain. FS cushion fixture now measures installed separation before staging.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281023647,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 157,
+      "originalHead": "495a2f279984b10f7cd8c20dae9b1c18b03d502b",
+      "branch": "codex/toss-box-assignments",
+      "baseBranch": "develop",
+      "scope": "Installed F count, including centered half-per-side, only. Existing QB policy/thresholds retained.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281025249,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 159,
+      "originalHead": "57b05b0995d05d9c4f44a8611496c6b966e3e72f",
+      "branch": "codex/linebacker-run-flow",
+      "baseBranch": "develop",
+      "scope": "Free linebacker faces its already selected acquired lateral run fit, using unchanged physical turning limits.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281026608,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 160,
+      "originalHead": "3828370a8b6905a7de2af761b72e0be5c41500cd",
+      "branch": "codex/dl-acquired-run-flow",
+      "baseBranch": "develop",
+      "scope": "Only separately reviewed own-run-recognition repair1b5668c89cc0f5c98bc2314a0b57afb8cd14a65a and the narrow acquired lateral run-support/contact cue. Original hidden-holder-derived reading activation is excluded. Legacy declaration shortcuts remain outside scope; #164 moving-reference implementation excluded.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281028121,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 161,
+      "originalHead": "b6e993392669fd0ebcea7e9329ca957eebd80569",
+      "branch": "codex/nfl-agent-evidence-plan",
+      "baseBranch": "develop",
+      "scope": "Existing NFL evidence/source navigation and additive current access note only; no collection, simulation, engine or settings change. Historical evidence remains source-qualified.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281029741,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    },
+    {
+      "pr": 167,
+      "originalHead": "fb8cf7ecbd151c6d3817c6835531a7197c753ba7",
+      "branch": "codex/receiver-route-effort",
+      "baseBranch": "develop",
+      "scope": "Remove private throw-target route-effort throttling while retaining installed route duties. PA13's collision/two falls remain adverse; this is not a general coverage/traffic improvement claim.",
+      "disposition": "incorporated-by-extraction; PR closed, branch retained",
+      "commentId": 6281031189,
+      "acceptedDevelop": "2c98bed94adad8087c65f381d4090444ad283985"
+    }
+  ],
+  "sourceBranchesDeleted": [],
+  "partialResearchKeptOpen": [
+    153
+  ],
+  "combinedContractHoldsKeptOpen": [
+    164,
+    165
+  ],
+  "partialAndHeldHandoffs": [
+    {
+      "pr": 153,
+      "head": "6184040fb0e2190b8799a2bd925df9e8af6494da",
+      "commentId": 6281040787
+    },
+    {
+      "pr": 164,
+      "head": "5035aad0f37affc43b6803c9e9f924896c5b43e7",
+      "commentId": 6281041431
+    },
+    {
+      "pr": 165,
+      "head": "d922b7c27ec00536637aade935e6d9b2d07a9244",
+      "commentId": 6281042047
+    }
+  ]
+}

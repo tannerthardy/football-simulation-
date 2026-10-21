@@ -1,0 +1,54 @@
+{
+  "status": "UNPROMOTED coarse-ray QB cue policy; fixed cutoff source preserved",
+  "source": "f641f128241746ab1b0b6a90f13affb05a0c8505e35792195ce19497ea5bccdd",
+  "cachedC": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+  "files": {
+    "candidate.json.gz": {
+      "sha256": "2bddf04c719b52b2e5968a5e4effaf731ab9078728988886ed0a3fce62ce8610",
+      "bytes": 6239051
+    },
+    "candidate-film.json.gz": {
+      "sha256": "1178229447da70614d9febb3d4f004b122dcd8c721e0b2cedd0d98710f65cb90",
+      "bytes": 6777989
+    },
+    "candidate-collector.log": {
+      "sha256": "f1fe05c7c84c24fb1c676f91347acb58fed4b95bb622df519a63a473972871cf",
+      "bytes": 22432
+    },
+    "four-final.json.gz": {
+      "sha256": "7254de68c4c8116cf5794f7ffc2b474ff147b68bd69b57e7798f2e64e704003d",
+      "bytes": 3629143
+    },
+    "four-final-collector.log": {
+      "sha256": "b9da98e00a6d1967af487ea0dab261ecceab18c70375460188bfc7f7b71beabc",
+      "bytes": 326
+    },
+    "comparison.json": {
+      "sha256": "aaf3471af9dce95c93c2c1c348d9bdec5038f366b56eb2f12f8fb81eb3cf6b80",
+      "bytes": 409550
+    },
+    "comparison.log": {
+      "sha256": "b24dafd18f43e465bf10d47fc7f9cff1f9f23157484e653319f5b47497b413c1",
+      "bytes": 3829
+    },
+    "final-review.md": {
+      "sha256": "2d4c996ed7fc575ccdc5046ee524ec961c66a1effb8936cb61fd28837f91910a",
+      "bytes": 5231
+    },
+    "collect-four.ts": {
+      "sha256": "dcd152d9f5fd8a5c54bb5d03fb7671a52e5155da640bd976f72192ed9401495c",
+      "bytes": 6067
+    },
+    "four-instrument.ts": {
+      "sha256": "836baea94a50913bcf73e971c3806e4200297a18e80b7d23b07ff8cbf03e7a28",
+      "bytes": 22864
+    },
+    "compare-final.py": {
+      "sha256": "6177b78aba2e97ef008fd05e1cecb3fefca0d8738dd565b2fc833b0ab66d4c50",
+      "bytes": 11867
+    }
+  },
+  "retainedOrdinaryPairs": 160,
+  "retainedAdverse2YardPairs": 7,
+  "retainedBeneficial2YardPairs": 4
+}

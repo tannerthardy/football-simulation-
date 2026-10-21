@@ -1,0 +1,11 @@
+{
+  "input": "out/grip-budget-final/film-room-unpacked.html",
+  "output": "viewer/film-room.html",
+  "source": "23fd4c510883618b454f75354cfafcd7540c0b6c08de0c4906358cb1e9769296",
+  "entries": 1118,
+  "telemetryRoundtrips": 875,
+  "originalBytes": 205477371,
+  "compactBytes": 43510636,
+  "outerFieldsUnchanged": true,
+  "metadataUnchanged": true
+}

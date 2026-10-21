@@ -1,0 +1,13 @@
+Profile candidate: run-game-2026-10-13, commit 6ca139d47180508ab851604a3e5100fdc51a7028, source 668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac
+Running node node_modules/vitest/vitest.mjs run --project core test/pull-fit-plan.test.ts
+
+ RUN  v3.2.4 /workspace/football-mesh-policy-integration
+
+ ✓ |core| test/pull-fit-plan.test.ts (12 tests) 329ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  04:39:40
+   Duration  1.21s (transform 530ms, setup 0ms, collect 696ms, tests 329ms, environment 0ms, prepare 53ms)
+
+Validation receipt: out/mesh-policy-integration/pull-fit-contract.json; exit 0

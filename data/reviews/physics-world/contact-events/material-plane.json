@@ -1,0 +1,509 @@
+{
+  "sourceSha256Start": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+  "sourceSha256End": "ca530a6af81f9a2e390068b9bc45806ca6f94410abf62724ddadcaceeff21e0b",
+  "scriptSha256Start": "8f283974e640bcc011516c5f018893734292ad6d039134bc9e8c64e7563f6203",
+  "scriptSha256End": "8f283974e640bcc011516c5f018893734292ad6d039134bc9e8c64e7563f6203",
+  "node": "v22.23.3",
+  "options": {
+    "timeTolerance": 1e-08,
+    "gapTolerance": 1e-09,
+    "maxNodes": 20000,
+    "maxDepth": 48
+  },
+  "seed": 73431,
+  "summary": {
+    "cases": 200,
+    "variants": 4,
+    "completed": 800,
+    "sampledPoints": 160800,
+    "sampledSignCrossings": 280,
+    "unsupported": 0,
+    "maxGapReconstructionError": 1.5210055437364645e-14,
+    "maxCovarianceGapError": 2.0483614804334138e-14,
+    "maxNodes": 114,
+    "statuses": {
+      "roots": 280,
+      "clear": 520
+    }
+  },
+  "analytic": [
+    {
+      "id": "hidden-cross-return",
+      "input": {
+        "before": {
+          "mass": 2,
+          "inertia": 1,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0.5
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 2,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "after": {
+          "mass": 2,
+          "inertia": 1,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0.5
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 2,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": -0.8823529411764706,
+              "z": 0.47058823529411764
+            },
+            {
+              "x": 0,
+              "y": -0.47058823529411764,
+              "z": -0.8823529411764706
+            }
+          ]
+        },
+        "h": 4,
+        "local": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "plane": {
+          "normal": {
+            "x": 0,
+            "y": 0,
+            "z": 1
+          },
+          "height": 0
+        }
+      },
+      "expectedRoots": [
+        0.2679491924311228,
+        3.732050807568877
+      ],
+      "report": {
+        "status": "roots",
+        "reason": null,
+        "roots": [
+          {
+            "lo": 0.267949191853404,
+            "hi": 0.26794919371604925,
+            "kind": "entering"
+          },
+          {
+            "lo": 3.7320508062839504,
+            "hi": 3.7320508081465964,
+            "kind": "leaving"
+          }
+        ],
+        "nodes": 246,
+        "maxBracketWidth": 1.8626460374093767e-09,
+        "timeResolutionMet": true,
+        "unresolved": [],
+        "penetrationBeyondTolerance": {
+          "possible": true,
+          "certain": true
+        }
+      }
+    },
+    {
+      "id": "double-grazing",
+      "input": {
+        "before": {
+          "mass": 2,
+          "inertia": 1,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 2,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "after": {
+          "mass": 2,
+          "inertia": 1,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 2,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": -0.6000000000000001,
+              "z": 0.8
+            },
+            {
+              "x": 0,
+              "y": -0.8,
+              "z": -0.6000000000000001
+            }
+          ]
+        },
+        "h": 2,
+        "local": {
+          "x": 0,
+          "y": -1,
+          "z": 0
+        },
+        "plane": {
+          "normal": {
+            "x": 0,
+            "y": 0,
+            "z": 1
+          },
+          "height": 0
+        }
+      },
+      "expectedRoots": [
+        1
+      ],
+      "report": {
+        "status": "ambiguous",
+        "reason": "Merged candidate root enclosure exceeds requested time resolution",
+        "roots": [
+          {
+            "lo": 0.9999999366700648,
+            "hi": 1.0000000633299353,
+            "kind": "ambiguous"
+          }
+        ],
+        "nodes": 122,
+        "maxBracketWidth": 1.2665987048077199e-07,
+        "timeResolutionMet": false,
+        "unresolved": [],
+        "penetrationBeyondTolerance": {
+          "possible": false,
+          "certain": false
+        }
+      }
+    },
+    {
+      "id": "triple-crossing",
+      "input": {
+        "before": {
+          "mass": 2,
+          "inertia": 1,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": -1
+          },
+          "angularMomentum": {
+            "x": 2,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "after": {
+          "mass": 2,
+          "inertia": 1,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": -1
+          },
+          "angularMomentum": {
+            "x": 2,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": -0.6000000000000001,
+              "z": 0.8
+            },
+            {
+              "x": 0,
+              "y": -0.8,
+              "z": -0.6000000000000001
+            }
+          ]
+        },
+        "h": 2,
+        "local": {
+          "x": 0,
+          "y": -1,
+          "z": -1
+        },
+        "plane": {
+          "normal": {
+            "x": 0,
+            "y": 0,
+            "z": 1
+          },
+          "height": 0
+        }
+      },
+      "expectedRoots": [
+        1
+      ],
+      "report": {
+        "status": "ambiguous",
+        "reason": "Merged candidate root enclosure exceeds requested time resolution",
+        "roots": [
+          {
+            "lo": 0.9999770056456326,
+            "hi": 1.0000235587358477,
+            "kind": "entering"
+          }
+        ],
+        "nodes": 184,
+        "maxBracketWidth": 4.6553090215062376e-05,
+        "timeResolutionMet": false,
+        "unresolved": [],
+        "penetrationBeyondTolerance": {
+          "possible": true,
+          "certain": true
+        }
+      }
+    },
+    {
+      "id": "three-crossings",
+      "input": {
+        "before": {
+          "mass": 2,
+          "inertia": 1,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0.796875
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": -1
+          },
+          "angularMomentum": {
+            "x": 2,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "after": {
+          "mass": 2,
+          "inertia": 1,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": -0.203125
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": -1
+          },
+          "angularMomentum": {
+            "x": 2,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            },
+            {
+              "x": 0,
+              "y": -1,
+              "z": 0
+            }
+          ]
+        },
+        "h": 1,
+        "local": {
+          "x": 0,
+          "y": 0.15625,
+          "z": -0.703125
+        },
+        "plane": {
+          "normal": {
+            "x": 0,
+            "y": 0,
+            "z": 1
+          },
+          "height": 0
+        }
+      },
+      "expectedRoots": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "report": {
+        "status": "roots",
+        "reason": null,
+        "roots": [
+          {
+            "lo": 0.24999999813735482,
+            "hi": 0.2500000018626452,
+            "kind": "entering"
+          },
+          {
+            "lo": 0.4999999981373548,
+            "hi": 0.5000000018626453,
+            "kind": "leaving"
+          },
+          {
+            "lo": 0.7499999981373547,
+            "hi": 0.7500000018626453,
+            "kind": "entering"
+          }
+        ],
+        "nodes": 494,
+        "maxBracketWidth": 3.725290520506519e-09,
+        "timeResolutionMet": true,
+        "unresolved": [],
+        "penetrationBeyondTolerance": {
+          "possible": true,
+          "certain": true
+        }
+      }
+    }
+  ],
+  "violations": [],
+  "scope": "Outward candidate-geometry enclosures only. Independent Rodrigues samples test reconstruction and sampled sign crossings; sampling is not a proof of all roots. Analytic fixtures test hidden/repeated roots. No physical event acceptance, prefix solve, support force history, gait or World integration.",
+  "maxReportedBracketWidth": 2.48940920655194e-09,
+  "timeResolutionFailures": 0,
+  "publication": {
+    "unabridgedReportSha256": "b88f398dd738e5f9c3da0d348377b288ea3ccd8016f6ef1a41677f5a90203d3f",
+    "omitted": "Successful seeded input/state/trial rows; seed, complete generator/options, analytic inputs and all failures retained. The pinned diagnostic reconstructs all 800 trials."
+  }
+}

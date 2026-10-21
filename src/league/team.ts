@@ -32,6 +32,10 @@ export interface Team {
     disguise: number;
     /** Share of zone calls played with pattern-match rules; the rest are spot drops. */
     matchRate: number;
+    /** Coverage tree: which families and variants the coordinator builds around. */
+    coverageSystem: CoverageSystem;
+    /** Preferred trips check when a call offers several (e.g. Poach vs. Stubbie). */
+    checkPick: number;
   };
 }
 
@@ -72,6 +76,14 @@ const JERSEY_RANGES: Record<Position, Array<[number, number]>> = {
   P: [[1, 19]],
 };
 
+/**
+ * Defensive coverage trees: single-high (Seattle Cover 3/Cover 1), quarters
+ * (Saban match quarters, Rip/Liz, Cover 7 checks), two-high rotation
+ * (Fangio/Staley: two-high shells, Cover 6 and quarters, rotating to 3 and
+ * inverted 2), Tampa (Cover 2 family), pressure-man (Cover 1/0 with pressure).
+ */
+export type CoverageSystem = 'single-high' | 'quarters' | 'two-high' | 'tampa' | 'pressure-man';
+
 export function generateTeam(rng: Rng, name: string, abbr: string, opts: { strength?: number; offScheme?: OffScheme; defScheme?: DefScheme } = {}): Team {
   const strength = opts.strength ?? 0.5;
   const roster: Player[] = [];
@@ -103,6 +115,8 @@ export function generateTeam(rng: Rng, name: string, abbr: string, opts: { stren
       shadow: rng.chance(0.35),
       disguise: rng.range(0.1, 0.45),
       matchRate: rng.range(0.3, 0.9),
+      coverageSystem: rng.pick<CoverageSystem>(['single-high', 'quarters', 'two-high', 'tampa', 'pressure-man']),
+      checkPick: rng.int(0, 1),
     },
   };
 }

@@ -1,0 +1,2963 @@
+{
+  "sourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+  "profile": {
+    "massKg": 100,
+    "radius": 0.28,
+    "reach": 1,
+    "heightYd": 2.05,
+    "vmax": 9,
+    "tau": 1.3,
+    "brake": 6,
+    "lateral": 6,
+    "turnRate": 8,
+    "backpedal": 0.6,
+    "shuffle": 0.55,
+    "maxCatchHeight": 3,
+    "reactReach": 2.6,
+    "reactionTime": 0.25,
+    "power": 100,
+    "balance": 0.5,
+    "bend": 0.5,
+    "stepSpeed": 3.4,
+    "getUp": 0.9
+  },
+  "note": "54 stationary-start recovery trials; 0.4s each, 20Hz fixed controls. COMs not clamped. No outcome fitting. Mode is explicit. Foot offset/load/command maxima sampled at tick ends, not continuous peaks. External passive load can exceed active command capacity. Synthetic drift directly resets support deviation and is not a physical impact experiment.",
+  "syntheticDrift": [
+    {
+      "repetition": 1,
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "offset": {
+        "x": 0.1985911656224064,
+        "y": 0
+      },
+      "xi": {
+        "x": 0.12035640867075613,
+        "y": 0
+      }
+    },
+    {
+      "repetition": 5,
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "offset": {
+        "x": 0.9937892332507674,
+        "y": 0
+      },
+      "xi": {
+        "x": 0.1201014085504059,
+        "y": 0
+      }
+    },
+    {
+      "repetition": 10,
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "offset": {
+        "x": 1.9897160838764043,
+        "y": 0
+      },
+      "xi": {
+        "x": 0.11978265840015644,
+        "y": 0
+      }
+    },
+    {
+      "repetition": 20,
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "offset": {
+        "x": 3.988181294213237,
+        "y": 0
+      },
+      "xi": {
+        "x": 0.1191451581002835,
+        "y": 0
+      }
+    }
+  ],
+  "rows": [
+    {
+      "supportModel": "legacy",
+      "capacity": null,
+      "count": 0,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03816428985855382,
+            "y": 0.0063607149764256365
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": null,
+      "count": 0,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03816428985855392,
+            "y": 0.006360714976425639
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": null,
+      "count": 0,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03816428985855399,
+            "y": 0.006360714976425651
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 0,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03816428985855382,
+            "y": 0.0063607149764256365
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 0,
+      "count": 1,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03816428985855392,
+            "y": 0.006360714976425639
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 0,
+      "count": 1,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03816428985855399,
+            "y": 0.006360714976425651
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 0,
+      "count": 4,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03816428985855382,
+            "y": 0.0063607149764256365
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 0,
+      "count": 4,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03816428985855392,
+            "y": 0.006360714976425639
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 0,
+      "count": 4,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03816428985855399,
+            "y": 0.006360714976425651
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 1,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.043817719117703206,
+            "y": 0.0073029531862838695
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 1,
+      "count": 1,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770354,
+            "y": 0.00730295318628394
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 1,
+      "count": 1,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770322,
+            "y": 0.007302953186283881
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 1,
+      "count": 4,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.043817719117703206,
+            "y": 0.0073029531862838695
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 1,
+      "count": 4,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770354,
+            "y": 0.00730295318628394
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 1,
+      "count": 4,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770322,
+            "y": 0.007302953186283881
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 50,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.043817719117703206,
+            "y": 0.0073029531862838695
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 50,
+      "count": 1,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770354,
+            "y": 0.00730295318628394
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 50,
+      "count": 1,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770322,
+            "y": 0.007302953186283881
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 50,
+      "count": 4,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.043817719117703206,
+            "y": 0.0073029531862838695
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 50,
+      "count": 4,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770354,
+            "y": 0.00730295318628394
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 50,
+      "count": 4,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770322,
+            "y": 0.007302953186283881
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 900,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.043817719117703206,
+            "y": 0.0073029531862838695
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 900,
+      "count": 1,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770354,
+            "y": 0.00730295318628394
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 900,
+      "count": 1,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770322,
+            "y": 0.007302953186283881
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 900,
+      "count": 4,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.043817719117703206,
+            "y": 0.0073029531862838695
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 900,
+      "count": 4,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770354,
+            "y": 0.00730295318628394
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "legacy",
+      "capacity": 900,
+      "count": 4,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": null
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.04381771911770322,
+            "y": 0.007302953186283881
+          },
+          "state": "up",
+          "offset": null
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": null,
+      "count": 0,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0.13046253997556714,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 9.034167483709176e-06,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.042815023574093204,
+            "y": 0.007135837262348867
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.12868745671960757,
+            "y": 0.021447909453267938
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": null,
+      "count": 0,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0.13044463090432157,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03881490254815451,
+            "y": 0.006469150424692426
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.12866979132054948,
+            "y": 0.021444965220091577
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": null,
+      "count": 0,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0.13044388229920392,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.038310450336204574,
+            "y": 0.006385075056034062
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.1286690529010101,
+            "y": 0.021444842150168227
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 0,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0.13046253997556714,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 9.034167483709176e-06,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.042815023574093204,
+            "y": 0.007135837262348867
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.12868745671960757,
+            "y": 0.021447909453267938
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 0,
+      "count": 1,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0.13044463090432157,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03881490254815451,
+            "y": 0.006469150424692426
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.12866979132054948,
+            "y": 0.021444965220091577
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 0,
+      "count": 1,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0.13044388229920392,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.038310450336204574,
+            "y": 0.006385075056034062
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.1286690529010101,
+            "y": 0.021444842150168227
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 0,
+      "count": 4,
+      "substeps": 12,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0.13046253997556714,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 9.034167483709176e-06,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.042815023574093204,
+            "y": 0.007135837262348867
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.12868745671960757,
+            "y": 0.021447909453267938
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 0,
+      "count": 4,
+      "substeps": 48,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0.13044463090432157,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.03881490254815451,
+            "y": 0.006469150424692426
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.12866979132054948,
+            "y": 0.021444965220091577
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 0,
+      "count": 4,
+      "substeps": 192,
+      "maxWorkError": 0,
+      "maxMomentumError": 0,
+      "gripImpulse": 0,
+      "motorWork": 0,
+      "passiveWork": 0,
+      "maxPositiveMotorFraction": 0,
+      "maxSampledOffset": 0.13044388229920392,
+      "maxSampledExternalForce": 0,
+      "maxSampledCommandFraction": 0,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0,
+            "y": 0
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 1,
+            "y": 0
+          },
+          "vel": {
+            "x": 0,
+            "y": 0
+          },
+          "xi": {
+            "x": 0.038310450336204574,
+            "y": 0.006385075056034062
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.1286690529010101,
+            "y": 0.021444842150168227
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 1,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 4.743384504624082e-20,
+      "maxMomentumError": 6.939740885162004e-18,
+      "gripImpulse": 0.39999999999999997,
+      "motorWork": 0.13104011025460457,
+      "passiveWork": -0.1306796958134991,
+      "maxPositiveMotorFraction": 0.0007180533570506775,
+      "maxSampledOffset": 0.13267949832682094,
+      "maxSampledExternalForce": 1.0000000000000002,
+      "maxSampledCommandFraction": 0.0025615072865372308,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.00019580029042796007,
+            "y": 3.508382262024176e-06
+          },
+          "vel": {
+            "x": 0.000499905918038641,
+            "y": 9.699126168503098e-06
+          },
+          "xi": {
+            "x": -8.591213803696891e-05,
+            "y": -1.790793088437325e-06
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.9998041997095717,
+            "y": -3.508382262024176e-06
+          },
+          "vel": {
+            "x": -0.000499905918038641,
+            "y": -9.699126168503098e-06
+          },
+          "xi": {
+            "x": 0.11887090255157194,
+            "y": 0.019318905720236437
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.1308473272697261,
+            "y": 0.02197330704800881
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 1,
+      "count": 1,
+      "substeps": 48,
+      "maxWorkError": 2.439454888092385e-19,
+      "maxMomentumError": 6.939740885162004e-18,
+      "gripImpulse": 0.40000000000000036,
+      "motorWork": 0.13103586228034508,
+      "passiveWork": -0.13066451020754244,
+      "maxPositiveMotorFraction": 0.0007172999968493156,
+      "maxSampledOffset": 0.13265942872498165,
+      "maxSampledExternalForce": 1.0000000000000002,
+      "maxSampledCommandFraction": 0.0025281893404991537,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.00018955122750567894,
+            "y": 3.411525746174757e-06
+          },
+          "vel": {
+            "x": 0.0004999059328438188,
+            "y": 9.698363117928349e-06
+          },
+          "xi": {
+            "x": -8.264509382967125e-05,
+            "y": -1.7141447403223008e-06
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.999810448772495,
+            "y": -3.411525746174757e-06
+          },
+          "vel": {
+            "x": -0.0004999059328438188,
+            "y": -9.698363117928349e-06
+          },
+          "xi": {
+            "x": 0.11884370632832784,
+            "y": 0.019316574543275206
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.13082770126037138,
+            "y": 0.021968992069858712
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 1,
+      "count": 1,
+      "substeps": 192,
+      "maxWorkError": 8.267041565201971e-19,
+      "maxMomentumError": 6.939740885162004e-18,
+      "gripImpulse": 0.39999999999999913,
+      "motorWork": 0.13103856633322214,
+      "passiveWork": -0.13066447984949126,
+      "maxPositiveMotorFraction": 0.0007171371406880455,
+      "maxSampledOffset": 0.1326581654287939,
+      "maxSampledExternalForce": 1,
+      "maxSampledCommandFraction": 0.002521985184132641,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.00018798896099845954,
+            "y": 3.3872215021657104e-06
+          },
+          "vel": {
+            "x": 0.0004999059319584882,
+            "y": 9.698408771364303e-06
+          },
+          "xi": {
+            "x": -8.18434532485322e-05,
+            "y": -1.695499060893336e-06
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.9998120110390001,
+            "y": -3.3872215021657104e-06
+          },
+          "vel": {
+            "x": -0.0004999059319584882,
+            "y": -9.698408771364303e-06
+          },
+          "xi": {
+            "x": 0.11883698975354234,
+            "y": 0.019316005299978723
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.1308264984218817,
+            "y": 0.021968526705326275
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 1,
+      "count": 4,
+      "substeps": 12,
+      "maxWorkError": 4.743384504624082e-20,
+      "maxMomentumError": 6.939740885162004e-18,
+      "gripImpulse": 0.4000000000000002,
+      "motorWork": 0.13104011025460457,
+      "passiveWork": -0.1306796958134991,
+      "maxPositiveMotorFraction": 0.0007180533570506775,
+      "maxSampledOffset": 0.13267949832682094,
+      "maxSampledExternalForce": 1.0000000000000002,
+      "maxSampledCommandFraction": 0.0025615072865372308,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.00019580029042796007,
+            "y": 3.508382262024176e-06
+          },
+          "vel": {
+            "x": 0.000499905918038641,
+            "y": 9.699126168503098e-06
+          },
+          "xi": {
+            "x": -8.591213803696891e-05,
+            "y": -1.790793088437325e-06
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.9998041997095717,
+            "y": -3.508382262024176e-06
+          },
+          "vel": {
+            "x": -0.000499905918038641,
+            "y": -9.699126168503098e-06
+          },
+          "xi": {
+            "x": 0.11887090255157194,
+            "y": 0.019318905720236437
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.1308473272697261,
+            "y": 0.02197330704800881
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 1,
+      "count": 4,
+      "substeps": 48,
+      "maxWorkError": 2.439454888092385e-19,
+      "maxMomentumError": 6.939740885162004e-18,
+      "gripImpulse": 0.40000000000000036,
+      "motorWork": 0.13103586228034508,
+      "passiveWork": -0.13066451020754244,
+      "maxPositiveMotorFraction": 0.0007172999968493156,
+      "maxSampledOffset": 0.13265942872498165,
+      "maxSampledExternalForce": 1.0000000000000002,
+      "maxSampledCommandFraction": 0.0025281893404991537,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.00018955122750567894,
+            "y": 3.411525746174757e-06
+          },
+          "vel": {
+            "x": 0.0004999059328438188,
+            "y": 9.698363117928349e-06
+          },
+          "xi": {
+            "x": -8.264509382967125e-05,
+            "y": -1.7141447403223008e-06
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.999810448772495,
+            "y": -3.411525746174757e-06
+          },
+          "vel": {
+            "x": -0.0004999059328438188,
+            "y": -9.698363117928349e-06
+          },
+          "xi": {
+            "x": 0.11884370632832784,
+            "y": 0.019316574543275206
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.13082770126037138,
+            "y": 0.021968992069858712
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 1,
+      "count": 4,
+      "substeps": 192,
+      "maxWorkError": 8.267041565201971e-19,
+      "maxMomentumError": 6.939740885162004e-18,
+      "gripImpulse": 0.399999999999999,
+      "motorWork": 0.13103856633322214,
+      "passiveWork": -0.13066447984949126,
+      "maxPositiveMotorFraction": 0.0007171371406880455,
+      "maxSampledOffset": 0.1326581654287939,
+      "maxSampledExternalForce": 1,
+      "maxSampledCommandFraction": 0.002521985184132641,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.00018798896099845954,
+            "y": 3.3872215021657104e-06
+          },
+          "vel": {
+            "x": 0.0004999059319584882,
+            "y": 9.698408771364303e-06
+          },
+          "xi": {
+            "x": -8.18434532485322e-05,
+            "y": -1.695499060893336e-06
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.9998120110390001,
+            "y": -3.3872215021657104e-06
+          },
+          "vel": {
+            "x": -0.0004999059319584882,
+            "y": -9.698408771364303e-06
+          },
+          "xi": {
+            "x": 0.11883698975354234,
+            "y": 0.019316005299978723
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.1308264984218817,
+            "y": 0.021968526705326275
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 50,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 5.551115123125783e-17,
+      "maxMomentumError": 4.443059973708341e-16,
+      "gripImpulse": 20,
+      "motorWork": 11.943122698219993,
+      "passiveWork": -11.04208834826064,
+      "maxPositiveMotorFraction": 0.03947704391862315,
+      "maxSampledOffset": 0.2411568848439058,
+      "maxSampledExternalForce": 50.00000000000001,
+      "maxSampledCommandFraction": 0.13073502893942288,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.009788696853700913,
+            "y": 0.0002325158234016356
+          },
+          "vel": {
+            "x": 0.024989165468420876,
+            "y": 0.0007359267070871517
+          },
+          "xi": {
+            "x": -0.004294081067413703,
+            "y": -0.0001512533229155411
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.9902113031462993,
+            "y": -0.0002325158234016356
+          },
+          "vel": {
+            "x": -0.024989165468420876,
+            "y": -0.0007359267070871517
+          },
+          "xi": {
+            "x": 0.12199156783011104,
+            "y": 0.007476184183132453
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.23833834254794625,
+            "y": 0.03676244794779964
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 50,
+      "count": 1,
+      "substeps": 48,
+      "maxWorkError": 3.7470027081099033e-16,
+      "maxMomentumError": 4.440892098500626e-16,
+      "gripImpulse": 20.000000000000004,
+      "motorWork": 11.935014925146792,
+      "passiveWork": -11.006636679795054,
+      "maxPositiveMotorFraction": 0.03979779591590966,
+      "maxSampledOffset": 0.24097682863578804,
+      "maxSampledExternalForce": 50,
+      "maxSampledCommandFraction": 0.12762980672135232,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.009476273935726224,
+            "y": 0.00022634008194394287
+          },
+          "vel": {
+            "x": 0.024989165082388055,
+            "y": 0.0007359403125787366
+          },
+          "xi": {
+            "x": -0.00413079223273639,
+            "y": -0.00014483268592589574
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.9905237260642737,
+            "y": -0.00022634008194394287
+          },
+          "vel": {
+            "x": -0.024989165082388055,
+            "y": -0.0007359403125787366
+          },
+          "xi": {
+            "x": 0.12061988419509809,
+            "y": 0.007395183419696105
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.23816049088163216,
+            "y": 0.03673435071403796
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 50,
+      "count": 1,
+      "substeps": 192,
+      "maxWorkError": 1.429412144204889e-15,
+      "maxMomentumError": 4.440892098500626e-16,
+      "gripImpulse": 20.00000000000001,
+      "motorWork": 11.933224511210359,
+      "passiveWork": -10.99801028251756,
+      "maxPositiveMotorFraction": 0.03987811818891422,
+      "maxSampledOffset": 0.2409365184633161,
+      "maxSampledExternalForce": 50.00000000000001,
+      "maxSampledCommandFraction": 0.12731665363585,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.009398168339898155,
+            "y": 0.00022478331189429248
+          },
+          "vel": {
+            "x": 0.02498916482858084,
+            "y": 0.0007359490688354067
+          },
+          "xi": {
+            "x": -0.004090725763440743,
+            "y": -0.00014326474045046607
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.9906018316601027,
+            "y": -0.00022478331189429248
+          },
+          "vel": {
+            "x": -0.02498916482858084,
+            "y": -0.0007359490688354067
+          },
+          "xi": {
+            "x": 0.12028117924746186,
+            "y": 0.00737524937909386
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.23812070803751256,
+            "y": 0.03672784138684933
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 50,
+      "count": 4,
+      "substeps": 12,
+      "maxWorkError": 5.551115123125783e-17,
+      "maxMomentumError": 4.443059973708341e-16,
+      "gripImpulse": 20,
+      "motorWork": 11.943122698219993,
+      "passiveWork": -11.04208834826064,
+      "maxPositiveMotorFraction": 0.03947704391862315,
+      "maxSampledOffset": 0.2411568848439058,
+      "maxSampledExternalForce": 50.00000000000001,
+      "maxSampledCommandFraction": 0.13073502893942288,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.009788696853700913,
+            "y": 0.0002325158234016356
+          },
+          "vel": {
+            "x": 0.024989165468420876,
+            "y": 0.0007359267070871517
+          },
+          "xi": {
+            "x": -0.004294081067413703,
+            "y": -0.0001512533229155411
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.9902113031462993,
+            "y": -0.0002325158234016356
+          },
+          "vel": {
+            "x": -0.024989165468420876,
+            "y": -0.0007359267070871517
+          },
+          "xi": {
+            "x": 0.12199156783011104,
+            "y": 0.007476184183132453
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.23833834254794625,
+            "y": 0.03676244794779964
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 50,
+      "count": 4,
+      "substeps": 48,
+      "maxWorkError": 3.7470027081099033e-16,
+      "maxMomentumError": 4.440892098500626e-16,
+      "gripImpulse": 20.000000000000004,
+      "motorWork": 11.935014925146792,
+      "passiveWork": -11.006636679795054,
+      "maxPositiveMotorFraction": 0.03979779591590966,
+      "maxSampledOffset": 0.24097682863578804,
+      "maxSampledExternalForce": 50,
+      "maxSampledCommandFraction": 0.12762980672135232,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.009476273935726224,
+            "y": 0.00022634008194394287
+          },
+          "vel": {
+            "x": 0.024989165082388055,
+            "y": 0.0007359403125787366
+          },
+          "xi": {
+            "x": -0.00413079223273639,
+            "y": -0.00014483268592589574
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.9905237260642737,
+            "y": -0.00022634008194394287
+          },
+          "vel": {
+            "x": -0.024989165082388055,
+            "y": -0.0007359403125787366
+          },
+          "xi": {
+            "x": 0.12061988419509809,
+            "y": 0.007395183419696105
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.23816049088163216,
+            "y": 0.03673435071403796
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 50,
+      "count": 4,
+      "substeps": 192,
+      "maxWorkError": 1.429412144204889e-15,
+      "maxMomentumError": 4.440892098500626e-16,
+      "gripImpulse": 20.000000000000004,
+      "motorWork": 11.933224511210359,
+      "passiveWork": -10.99801028251756,
+      "maxPositiveMotorFraction": 0.03987811818891422,
+      "maxSampledOffset": 0.2409365184633161,
+      "maxSampledExternalForce": 50.00000000000001,
+      "maxSampledCommandFraction": 0.12731665363585,
+      "falls": [],
+      "final": [
+        {
+          "pos": {
+            "x": 0.009398168339898155,
+            "y": 0.00022478331189429248
+          },
+          "vel": {
+            "x": 0.02498916482858084,
+            "y": 0.0007359490688354067
+          },
+          "xi": {
+            "x": -0.004090725763440743,
+            "y": -0.00014326474045046607
+          },
+          "state": "up",
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 0.9906018316601027,
+            "y": -0.00022478331189429248
+          },
+          "vel": {
+            "x": -0.02498916482858084,
+            "y": -0.0007359490688354067
+          },
+          "xi": {
+            "x": 0.12028117924746186,
+            "y": 0.00737524937909386
+          },
+          "state": "up",
+          "offset": {
+            "x": 0.23812070803751256,
+            "y": 0.03672784138684933
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 900,
+      "count": 1,
+      "substeps": 12,
+      "maxWorkError": 7.460698725481052e-14,
+      "maxMomentumError": 5.687116766346677e-14,
+      "gripImpulse": 136.260515725961,
+      "motorWork": 124.14678644943504,
+      "passiveWork": -10.9691062957236,
+      "maxPositiveMotorFraction": 0.24348748164584522,
+      "maxSampledOffset": 0.4117486194306577,
+      "maxSampledExternalForce": 667.9987606894614,
+      "maxSampledCommandFraction": 1.0000000000000002,
+      "falls": [
+        1
+      ],
+      "final": [
+        {
+          "pos": {
+            "x": 0.10146300721446534,
+            "y": 0.011662931622592484
+          },
+          "vel": {
+            "x": 0.0001320407296795639,
+            "y": -0.07824965115320635
+          },
+          "xi": {
+            "x": -0.05066656746778822,
+            "y": 0.007646331444240606
+          },
+          "state": "up",
+          "offset": {
+            "x": -0.2258346323635861,
+            "y": -0.035534692040490354
+          }
+        },
+        {
+          "pos": {
+            "x": 0.6435414957994021,
+            "y": -0.05120761441553774
+          },
+          "vel": {
+            "x": -0.9574492789439049,
+            "y": -0.07936942882048001
+          },
+          "xi": {
+            "x": 1.190573456839381,
+            "y": 0.18931477209156872
+          },
+          "state": "falling",
+          "offset": {
+            "x": 0.406748685027165,
+            "y": 0.06397212542760113
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 900,
+      "count": 1,
+      "substeps": 48,
+      "maxWorkError": 6.217248937900877e-14,
+      "maxMomentumError": 1.0560462626698354e-13,
+      "gripImpulse": 135.75135831788555,
+      "motorWork": 122.32316996806422,
+      "passiveWork": -9.435844739212904,
+      "maxPositiveMotorFraction": 0.24331844255409749,
+      "maxSampledOffset": 0.4095875098309162,
+      "maxSampledExternalForce": 660.9579704915067,
+      "maxSampledCommandFraction": 1.0000000000000002,
+      "falls": [
+        1
+      ],
+      "final": [
+        {
+          "pos": {
+            "x": 0.09876728044225982,
+            "y": 0.011323488348987304
+          },
+          "vel": {
+            "x": 0.000138184925691552,
+            "y": -0.07765207041706175
+          },
+          "xi": {
+            "x": -0.05088669997969955,
+            "y": 0.0068981999710847905
+          },
+          "state": "up",
+          "offset": {
+            "x": -0.2208074524603197,
+            "y": -0.034614873249741496
+          }
+        },
+        {
+          "pos": {
+            "x": 0.6465204229204666,
+            "y": -0.05065851863128663
+          },
+          "vel": {
+            "x": -0.9523969260796906,
+            "y": -0.0789145548020257
+          },
+          "xi": {
+            "x": 1.1895862414664577,
+            "y": 0.1890348607042086
+          },
+          "state": "falling",
+          "offset": {
+            "x": 0.4046753546428747,
+            "y": 0.06324385783737782
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 900,
+      "count": 1,
+      "substeps": 192,
+      "maxWorkError": 2.2115642650533118e-13,
+      "maxMomentumError": 6.54480832910917e-13,
+      "gripImpulse": 135.62753161439832,
+      "motorWork": 121.82760580159936,
+      "passiveWork": -9.081550511503435,
+      "maxPositiveMotorFraction": 0.24325085760363355,
+      "maxSampledOffset": 0.408631500450557,
+      "maxSampledExternalForce": 899.9999999999999,
+      "maxSampledCommandFraction": 1.0000000000000002,
+      "falls": [
+        1
+      ],
+      "final": [
+        {
+          "pos": {
+            "x": 0.09794842033873308,
+            "y": 0.011277158684110944
+          },
+          "vel": {
+            "x": 0.0001301277807152483,
+            "y": -0.0766049799510887
+          },
+          "xi": {
+            "x": -0.050851055853590385,
+            "y": 0.006902239025145398
+          },
+          "state": "up",
+          "offset": {
+            "x": -0.21969194595593672,
+            "y": -0.03454394060666807
+          }
+        },
+        {
+          "pos": {
+            "x": 0.6473971527222174,
+            "y": -0.0506805527576425
+          },
+          "vel": {
+            "x": -0.9493624666988023,
+            "y": -0.0778224423305649
+          },
+          "xi": {
+            "x": 1.1887516271622198,
+            "y": 0.18943764415538283
+          },
+          "state": "falling",
+          "offset": {
+            "x": 0.40371773433646724,
+            "y": 0.06317985551347216
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 900,
+      "count": 4,
+      "substeps": 12,
+      "maxWorkError": 7.460698725481052e-14,
+      "maxMomentumError": 5.687116766346677e-14,
+      "gripImpulse": 136.26051572596097,
+      "motorWork": 124.14678644943504,
+      "passiveWork": -10.9691062957236,
+      "maxPositiveMotorFraction": 0.24348748164584522,
+      "maxSampledOffset": 0.4117486194306577,
+      "maxSampledExternalForce": 667.9987606894614,
+      "maxSampledCommandFraction": 1.0000000000000002,
+      "falls": [
+        1
+      ],
+      "final": [
+        {
+          "pos": {
+            "x": 0.10146300721446534,
+            "y": 0.011662931622592484
+          },
+          "vel": {
+            "x": 0.0001320407296795639,
+            "y": -0.07824965115320635
+          },
+          "xi": {
+            "x": -0.05066656746778822,
+            "y": 0.007646331444240606
+          },
+          "state": "up",
+          "offset": {
+            "x": -0.2258346323635861,
+            "y": -0.035534692040490354
+          }
+        },
+        {
+          "pos": {
+            "x": 0.6435414957994021,
+            "y": -0.05120761441553774
+          },
+          "vel": {
+            "x": -0.9574492789439049,
+            "y": -0.07936942882048001
+          },
+          "xi": {
+            "x": 1.190573456839381,
+            "y": 0.18931477209156872
+          },
+          "state": "falling",
+          "offset": {
+            "x": 0.406748685027165,
+            "y": 0.06397212542760113
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 900,
+      "count": 4,
+      "substeps": 48,
+      "maxWorkError": 6.217248937900877e-14,
+      "maxMomentumError": 1.0560462626698354e-13,
+      "gripImpulse": 135.75135831788552,
+      "motorWork": 122.32316996806422,
+      "passiveWork": -9.435844739212904,
+      "maxPositiveMotorFraction": 0.24331844255409749,
+      "maxSampledOffset": 0.4095875098309162,
+      "maxSampledExternalForce": 660.9579704915067,
+      "maxSampledCommandFraction": 1.0000000000000002,
+      "falls": [
+        1
+      ],
+      "final": [
+        {
+          "pos": {
+            "x": 0.09876728044225982,
+            "y": 0.011323488348987304
+          },
+          "vel": {
+            "x": 0.000138184925691552,
+            "y": -0.07765207041706175
+          },
+          "xi": {
+            "x": -0.05088669997969955,
+            "y": 0.0068981999710847905
+          },
+          "state": "up",
+          "offset": {
+            "x": -0.2208074524603197,
+            "y": -0.034614873249741496
+          }
+        },
+        {
+          "pos": {
+            "x": 0.6465204229204666,
+            "y": -0.05065851863128663
+          },
+          "vel": {
+            "x": -0.9523969260796906,
+            "y": -0.0789145548020257
+          },
+          "xi": {
+            "x": 1.1895862414664577,
+            "y": 0.1890348607042086
+          },
+          "state": "falling",
+          "offset": {
+            "x": 0.4046753546428747,
+            "y": 0.06324385783737782
+          }
+        }
+      ]
+    },
+    {
+      "supportModel": "virtual-foot",
+      "capacity": 900,
+      "count": 4,
+      "substeps": 192,
+      "maxWorkError": 2.2115642650533118e-13,
+      "maxMomentumError": 6.54480832910917e-13,
+      "gripImpulse": 135.62753161439835,
+      "motorWork": 121.82760580159936,
+      "passiveWork": -9.081550511503435,
+      "maxPositiveMotorFraction": 0.24325085760363355,
+      "maxSampledOffset": 0.408631500450557,
+      "maxSampledExternalForce": 899.9999999999999,
+      "maxSampledCommandFraction": 1.0000000000000002,
+      "falls": [
+        1
+      ],
+      "final": [
+        {
+          "pos": {
+            "x": 0.09794842033873308,
+            "y": 0.011277158684110944
+          },
+          "vel": {
+            "x": 0.0001301277807152483,
+            "y": -0.0766049799510887
+          },
+          "xi": {
+            "x": -0.050851055853590385,
+            "y": 0.006902239025145398
+          },
+          "state": "up",
+          "offset": {
+            "x": -0.21969194595593672,
+            "y": -0.03454394060666807
+          }
+        },
+        {
+          "pos": {
+            "x": 0.6473971527222174,
+            "y": -0.0506805527576425
+          },
+          "vel": {
+            "x": -0.9493624666988023,
+            "y": -0.0778224423305649
+          },
+          "xi": {
+            "x": 1.1887516271622198,
+            "y": 0.18943764415538283
+          },
+          "state": "falling",
+          "offset": {
+            "x": 0.40371773433646724,
+            "y": 0.06317985551347216
+          }
+        }
+      ]
+    }
+  ]
+}

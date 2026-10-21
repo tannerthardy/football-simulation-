@@ -9,7 +9,7 @@
  *
  * Lateral positions are yards from the ball, + = playside. `L` marks a
  * defender off the line (linebacker depth). See
- * docs/reviews/2026-10-21-run-blocking-doctrine-audit.md.
+ * docs/reviews/run-blocking-assignment-audit.md.
  */
 import { HASH_LEFT_Y } from '../../src/core/field.js';
 import { Rng } from '../../src/core/rng.js';

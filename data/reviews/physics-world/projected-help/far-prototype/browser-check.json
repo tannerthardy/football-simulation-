@@ -1,0 +1,95 @@
+{
+  "schema": "projected-help-browser-smoke-v1",
+  "clips": [
+    {
+      "id": "BEFORE-HELP-R1-gun_doubles_11-four_verts-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-HELP-R1-gun_doubles_11-dagger-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 27,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-HELP-R1-gun_bunch_11-mesh-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 31,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-HELP-R1-gun_trips_11-smash-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 26,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-HELP-R1-gun_doubles_11-four_verts-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-HELP-R1-gun_doubles_11-dagger-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 27,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-HELP-R1-gun_bunch_11-mesh-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 31,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-HELP-R1-gun_trips_11-smash-cover4-S3",
+      "fullTelemetry": true,
+      "naturalFinishOrLiveCensor": true,
+      "delayedPoseInspected": true,
+      "rawEventCount": 26,
+      "copiedReferenceUsesSelectedEngineSource": true
+    }
+  ],
+  "pageErrors": [],
+  "offlineFontsBlocked": true,
+  "completionFilterUsesRecordedStats": true,
+  "pairedFixtureSearch": true,
+  "recordedSourceFilter": true,
+  "conceptAndCoverageGrouping": true,
+  "mobileNoHorizontalOverflow": true,
+  "copiedReferenceUsesSelectedEngineSource": true,
+  "videoExportUsesSelectedEngineSource": [
+    {
+      "id": "BEFORE-HELP-R1-gun_doubles_11-four_verts-cover4-S3",
+      "selectedSourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57",
+      "downloadFilename": "BEFORE-HELP-R1-gun_doubles_11-four_verts-cover4-S3_248a44cfeab5_0.00-1.00s.webm",
+      "nonemptyBytes": 334329,
+      "paintedStampUsesSelectedSource": true,
+      "sampleStamp": "Film 248a44cfeab5 \u00b7 seed 3 \u00b7 0.00s \u00b7 1st & 10 \u00b7 OWN 30 \u00b7 controlled fixture"
+    },
+    {
+      "id": "FINAL-HELP-R1-gun_doubles_11-four_verts-cover4-S3",
+      "selectedSourceSha256": "3242197ad8c1f8b56e97fbe5dd7220950eda0956db6758a01157b4c16ed6ac82",
+      "downloadFilename": "FINAL-HELP-R1-gun_doubles_11-four_verts-cover4-S3_3242197ad8c1_0.00-1.00s.webm",
+      "nonemptyBytes": 309063,
+      "paintedStampUsesSelectedSource": true,
+      "sampleStamp": "Film 3242197ad8c1 \u00b7 seed 3 \u00b7 0.00s \u00b7 1st & 10 \u00b7 OWN 30 \u00b7 controlled fixture"
+    }
+  ]
+}

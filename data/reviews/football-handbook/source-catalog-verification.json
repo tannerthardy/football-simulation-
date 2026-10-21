@@ -1,0 +1,86 @@
+{
+  "verifiedAt": "2026-10-11",
+  "oldSourceRecordsRetained": 14,
+  "oldDocumentationRecordsRetained": 17,
+  "newCoachingReferences": 13,
+  "documentationCount": 30,
+  "catalogSha256": "695a1da09b5c5e220f15297b6b0bb5d42df3eea06d6586b3f71b9480138993f0",
+  "checks": [
+    {
+      "id": "coaching-kuchar-covered-zone",
+      "rawHtmlRehash": "matches receipt",
+      "chapterURL": "matches receipt",
+      "extractedTextSha256": "f8c270a2b4ace38d4088e9ae5e985ba692d931356916b8315350afe46ce2b83e"
+    },
+    {
+      "id": "coaching-grabowski-inside-zone",
+      "rawHtmlRehash": "matches receipt",
+      "chapterURL": "matches receipt",
+      "extractedTextSha256": "f8d83153c1005eace6eff7223b3dbd823e0e4fe70efc042c8b869b2f7d912af1"
+    },
+    {
+      "id": "coaching-penree-zone-pod",
+      "rawHtmlRehash": "matches receipt",
+      "chapterURL": "matches receipt",
+      "extractedTextSha256": "be1d117115a6a1709f5e278bcfa9bbe39cd43b1187920684abdf5300987758c6"
+    },
+    {
+      "id": "coaching-janak-duo",
+      "rawHtmlRehash": "matches receipt",
+      "chapterURL": "matches receipt",
+      "extractedTextSha256": "02a6380e6cb8ae29f5511442a47bd3f5719de25aa49c730d1073d6c05144368c"
+    },
+    {
+      "id": "coaching-parker-counter",
+      "rawHtmlRehash": "matches receipt",
+      "chapterURL": "matches receipt",
+      "extractedTextSha256": "58f7aa419fda224b6a55fd4a7cf5aa0a5a8787e4136ece5bf030bc703e7860a1"
+    },
+    {
+      "id": "coaching-defense-press-eyes",
+      "rawHtmlRehash": "matches chapter hash",
+      "extractedTextSha256": "492b348f17fc89da3a121be6b536fea56c2f4349531dec6a3b112cf88c81dd20"
+    },
+    {
+      "id": "coaching-defense-hips-man",
+      "rawHtmlRehash": "matches chapter hash",
+      "extractedTextSha256": "62b265e42a3e5b204d832b9f66d2388b3f4631109898c43481c0b6f87a839a0b"
+    },
+    {
+      "id": "coaching-defense-deep-ball",
+      "rawHtmlRehash": "matches chapter hash",
+      "extractedTextSha256": "edf55836e77cea77cd37fcdf15b3a40bb4914a3a339c80188ab3a1d40d2b9085"
+    },
+    {
+      "id": "coaching-defense-ripliz",
+      "rawHtmlRehash": "matches chapter hash",
+      "extractedTextSha256": "ee6c63e9582bd64ec1df59f78c92414be7f4e9ddca3947c783a90ad32af83ce8"
+    },
+    {
+      "id": "coaching-defense-quarters",
+      "rawHtmlRehash": "matches chapter hash",
+      "extractedTextSha256": "5dcddd8c2e7b9237c5a28b523ce56cdda9884c48fcdde83d6e16502bbbe6dfd7"
+    },
+    {
+      "id": "nfl-rules",
+      "rawHtmlRehash": "matches original catalog, defense response and both chapter hashes; single record retained"
+    },
+    {
+      "id": "coaching-offense-alignment-landmarks-tempo",
+      "htmlHash": "receipt matches chapter; original response not independently rehashed",
+      "extractedTextSha256": "5851782a35bc97d2a95fb824223bd8f275d70d4a31e6898ced3b4a52adc28f89"
+    },
+    {
+      "id": "coaching-offense-ole-miss-inside-run-footwork",
+      "htmlHash": "receipt matches chapter; original response not independently rehashed",
+      "extractedTextSha256": "b725f495ce643ff3c5d4a9417942ae674c13f195dc8f05de0addfee73f448fe4"
+    },
+    {
+      "id": "coaching-offense-wr-press-release",
+      "htmlHash": "receipt matches chapter; original response not independently rehashed",
+      "extractedTextSha256": "95e21193a168318ac92be6415f102867d6e30977d638352a1142836f6f8ff364"
+    }
+  ],
+  "publishedCatalogSha256": "992104de17941b942fbbd7984d07fa637b32f8b6352b0509b338981fcc85d680",
+  "rootAddition": "Added shared-model chapter reference and explicitly limited Rule6/10 inspection metadata after agent checks."
+}

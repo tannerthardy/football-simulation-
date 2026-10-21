@@ -1,0 +1,37 @@
+{
+  "schema": "scramble-recording-passing-compatibility-v1",
+  "baselineSource": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+  "recordingSource": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "rows96ExceptScrambleRusherAndDerivedExecutionHashExact": true,
+  "unchangedNonScrambleExecutionHashes": 79,
+  "observerPlainParity96": true,
+  "scrambleCarrierAdded": 17,
+  "ids": [
+    "DA-R1-four_verts-cover0-L",
+    "DA-R1-pa_post_dig-cover0-L",
+    "DA-R1-pa_post_dig-cover2-R",
+    "DA-R1-pa_post_dig-cover2-L",
+    "DA-R1-pa_post_dig-cover6-R",
+    "DA-R1-pa_post_dig-cover6-L",
+    "DA-R2-four_verts-cover2-R",
+    "DA-R2-four_verts-cover2-L",
+    "DA-R2-four_verts-cover3-R",
+    "DA-R2-four_verts-cover3-L",
+    "DA-R2-four_verts-cover4-R",
+    "DA-R2-four_verts-cover4-L",
+    "DA-R2-four_verts-cover6-R",
+    "DA-R2-four_verts-cover6-L",
+    "DA-R2-pa_post_dig-cover2-R",
+    "DA-R2-pa_post_dig-cover2-L",
+    "DA-R2-pa_post_dig-cover6-L"
+  ],
+  "inputs": {
+    "data/reviews/alley-support-and-tail-audit/passing/final.json.gz": "d8ea67bdb809617f02a90e90e4d1948871482062e32ce7689db3f711aff7bf49",
+    "out/rushing-benchmark/validation/recording-passes.json.gz": "5f757bf51f5eb6d3925c01736f348ce25f7e25ac96b0a6642e869e89e47aa69e"
+  },
+  "toolSha256": "356c2e3fbf06b1cabbe9844a93813e88a38181294e2db53a8396501803e7f6ce",
+  "limits": [
+    "Derived endpoint signatures include the changed stats field; complete normalized native final states are separately checked by the eight-game collector.",
+    "All stored passing rows, samples, decisions, events and outcomes match except the newly recorded carrier."
+  ]
+}

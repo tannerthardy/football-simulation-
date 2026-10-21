@@ -1,0 +1,2754 @@
+{
+  "schema": "continued-recovery-v1",
+  "productionChange": false,
+  "source": "f14d849a51e031087a1971e5cc83db6146c4c5cebc17d4df2b6feb549e5106cb",
+  "inputDigest": "791648396cb8fba55b554217bf5f41894f0038dce6d8cc885676c40b968a85de",
+  "collectors": [
+    {
+      "file": "grip-refinement.ts",
+      "sha256": "0d71a3f4195044e93795a6d42717568f23a6f21ff418c25c163db3be1d25812a"
+    },
+    {
+      "file": "recovery-phase.ts",
+      "sha256": "8183eaf3831371c8a8037f71ab469539318b9b1b1ae876b97aa4f0b44bee1f45"
+    },
+    {
+      "file": "phase-refinement.ts",
+      "sha256": "8f20aab3eece002be535cfc4e69b14d7078126bae5f7f99a0632f12c73d3ca04"
+    },
+    {
+      "file": "continued-recovery.ts",
+      "sha256": "c9dca0fa9a392b81370f6e899b0cf91c028e710f4a1bb5dbe0fdb4b50356f4fc"
+    },
+    {
+      "file": "continued-recovery-world.ts",
+      "sha256": "fc5d1bfe6a577da418148cb14dfcc34c89f50f68391e16c54b955275e2b2bc3a"
+    }
+  ],
+  "matrix": [
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 12,
+      "maxPositionDifference": 0.06253686680298642,
+      "finalPositionDifference": 0.06253686680298642,
+      "first": {
+        "support": {
+          "t": 2.1333333333333346,
+          "body": 1,
+          "difference": 0.0020243152223566874
+        },
+        "pos": {
+          "t": 3.133333333333331,
+          "body": 1,
+          "difference": 0.010042889730421223
+        }
+      }
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 24,
+      "maxPositionDifference": 0.024355325015434914,
+      "finalPositionDifference": 0.024355325015434914,
+      "first": {
+        "support": {
+          "t": 2.3749999999999973,
+          "body": 1,
+          "difference": 0.00206412543960377
+        },
+        "pos": {
+          "t": 3.645833333333325,
+          "body": 1,
+          "difference": 0.010009056362370927
+        }
+      }
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 48,
+      "maxPositionDifference": 0.01519786473697593,
+      "finalPositionDifference": 0.01519786473697593,
+      "first": {
+        "support": {
+          "t": 2.372916666666664,
+          "body": 1,
+          "difference": 0.002019068386890699
+        },
+        "pos": {
+          "t": 4.152083333333326,
+          "body": 1,
+          "difference": 0.010002591520461124
+        }
+      }
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 15,
+      "maxPositionDifference": 0.028881896768083948,
+      "finalPositionDifference": 0.028881896768083948,
+      "first": {
+        "support": {
+          "t": 2.366666666666666,
+          "body": 1,
+          "difference": 0.003912828462455775
+        },
+        "pos": {
+          "t": 3.8499999999999948,
+          "body": 1,
+          "difference": 0.010042113590195356
+        }
+      }
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 35,
+      "maxPositionDifference": 0.023268520640456813,
+      "finalPositionDifference": 0.023268520640456813,
+      "first": {
+        "support": {
+          "t": 2.3499999999999956,
+          "body": 1,
+          "difference": 0.0034854489880844497
+        },
+        "pos": {
+          "t": 3.599999999999991,
+          "body": 1,
+          "difference": 0.010150595160041576
+        }
+      }
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 12,
+      "maxPositionDifference": 0.06253686680298642,
+      "finalPositionDifference": 0.06253686680298642,
+      "first": {
+        "support": {
+          "t": 2.1333333333333346,
+          "body": 1,
+          "difference": 0.0020243152223566874
+        },
+        "pos": {
+          "t": 3.133333333333331,
+          "body": 1,
+          "difference": 0.010042889730421223
+        }
+      }
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 24,
+      "maxPositionDifference": 0.024355325015434914,
+      "finalPositionDifference": 0.024355325015434914,
+      "first": {
+        "support": {
+          "t": 2.3749999999999973,
+          "body": 1,
+          "difference": 0.00206412543960377
+        },
+        "pos": {
+          "t": 3.645833333333325,
+          "body": 1,
+          "difference": 0.010009056362370927
+        }
+      }
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 48,
+      "maxPositionDifference": 0.01519786473697593,
+      "finalPositionDifference": 0.01519786473697593,
+      "first": {
+        "support": {
+          "t": 2.372916666666664,
+          "body": 1,
+          "difference": 0.002019068386890699
+        },
+        "pos": {
+          "t": 4.152083333333326,
+          "body": 1,
+          "difference": 0.010002591520461124
+        }
+      }
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 15,
+      "maxPositionDifference": 0.028881896768083948,
+      "finalPositionDifference": 0.028881896768083948,
+      "first": {
+        "support": {
+          "t": 2.366666666666666,
+          "body": 1,
+          "difference": 0.003912828462455775
+        },
+        "pos": {
+          "t": 3.8499999999999948,
+          "body": 1,
+          "difference": 0.010042113590195356
+        }
+      }
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 35,
+      "maxPositionDifference": 0.023268520640456813,
+      "finalPositionDifference": 0.023268520640456813,
+      "first": {
+        "support": {
+          "t": 2.3499999999999956,
+          "body": 1,
+          "difference": 0.0034854489880844497
+        },
+        "pos": {
+          "t": 3.599999999999991,
+          "body": 1,
+          "difference": 0.010150595160041576
+        }
+      }
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 12,
+      "maxPositionDifference": 3.452910054047319,
+      "finalPositionDifference": 3.452910054047319,
+      "first": {
+        "spin": {
+          "t": 2.654166666666667,
+          "body": 0,
+          "difference": 0.1325091150498201
+        },
+        "support": {
+          "t": 2.725000000000001,
+          "body": 1,
+          "difference": 0.002052143666275269
+        },
+        "facing": {
+          "t": 2.9583333333333326,
+          "body": 0,
+          "difference": 0.01012284607898739
+        },
+        "state": {
+          "t": 3.108333333333332,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        },
+        "pos": {
+          "t": 3.4249999999999985,
+          "body": 0,
+          "difference": 0.010007496265220605
+        }
+      }
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 24,
+      "maxPositionDifference": 0.6171349060501108,
+      "finalPositionDifference": 0.6171349060501108,
+      "first": {
+        "support": {
+          "t": 2.7770833333333313,
+          "body": 1,
+          "difference": 0.0022640314373723546
+        },
+        "state": {
+          "t": 3.108333333333331,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        },
+        "pos": {
+          "t": 3.852083333333329,
+          "body": 0,
+          "difference": 0.01000684590654242
+        },
+        "facing": {
+          "t": 3.906249999999995,
+          "body": 0,
+          "difference": 0.010052155183196243
+        },
+        "spin": {
+          "t": 4.583333333333325,
+          "body": 1,
+          "difference": 0.10724465747691803
+        }
+      }
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 48,
+      "maxPositionDifference": 0.039814117649197296,
+      "finalPositionDifference": 0.039814117649197296,
+      "first": {
+        "support": {
+          "t": 2.791666666666664,
+          "body": 1,
+          "difference": 0.00207951446597381
+        },
+        "state": {
+          "t": 3.108333333333331,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        },
+        "pos": {
+          "t": 4.096874999999993,
+          "body": 0,
+          "difference": 0.010015570900857078
+        },
+        "facing": {
+          "t": 4.591666666666658,
+          "body": 0,
+          "difference": 0.010036857548826328
+        },
+        "spin": {
+          "t": 4.5927083333333245,
+          "body": 1,
+          "difference": 0.10156958093245544
+        }
+      }
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 15,
+      "maxPositionDifference": 3.102021150608987,
+      "finalPositionDifference": 3.102021150608987,
+      "first": {
+        "support": {
+          "t": 2.733333333333334,
+          "body": 1,
+          "difference": 0.0024178430852909256
+        },
+        "facing": {
+          "t": 3.1999999999999993,
+          "body": 0,
+          "difference": 0.010261049224539798
+        },
+        "pos": {
+          "t": 3.799999999999997,
+          "body": 0,
+          "difference": 0.010201407714171249
+        },
+        "spin": {
+          "t": 4.449999999999989,
+          "body": 1,
+          "difference": 0.10976802452496737
+        }
+      }
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 35,
+      "maxPositionDifference": 0.07101651971832695,
+      "finalPositionDifference": 0.07101651971832695,
+      "first": {
+        "support": {
+          "t": 2.849999999999996,
+          "body": 0,
+          "difference": 0.005265790016298066
+        },
+        "facing": {
+          "t": 3.399999999999994,
+          "body": 0,
+          "difference": 0.010364961880081291
+        },
+        "pos": {
+          "t": 3.8499999999999925,
+          "body": 0,
+          "difference": 0.011622531751902795
+        },
+        "spin": {
+          "t": 4.600000000000006,
+          "body": 0,
+          "difference": 0.10620791786987627
+        }
+      }
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 12,
+      "maxPositionDifference": 3.452910054040548,
+      "finalPositionDifference": 3.452910054040548,
+      "first": {
+        "spin": {
+          "t": 2.654166666666667,
+          "body": 0,
+          "difference": 0.1325091150498201
+        },
+        "support": {
+          "t": 2.725000000000001,
+          "body": 1,
+          "difference": 0.002052143666275269
+        },
+        "facing": {
+          "t": 2.9583333333333326,
+          "body": 0,
+          "difference": 0.01012284607898739
+        },
+        "state": {
+          "t": 3.108333333333332,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        },
+        "pos": {
+          "t": 3.4249999999999985,
+          "body": 0,
+          "difference": 0.010007496265220605
+        }
+      }
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 24,
+      "maxPositionDifference": 0.6171349060501108,
+      "finalPositionDifference": 0.6171349060501108,
+      "first": {
+        "support": {
+          "t": 2.7770833333333313,
+          "body": 1,
+          "difference": 0.0022640314373723546
+        },
+        "state": {
+          "t": 3.108333333333331,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        },
+        "pos": {
+          "t": 3.852083333333329,
+          "body": 0,
+          "difference": 0.01000684590654242
+        },
+        "facing": {
+          "t": 3.906249999999995,
+          "body": 0,
+          "difference": 0.010052155183196243
+        },
+        "spin": {
+          "t": 4.583333333333325,
+          "body": 1,
+          "difference": 0.10724465747691803
+        }
+      }
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 48,
+      "maxPositionDifference": 0.039814117649197296,
+      "finalPositionDifference": 0.039814117649197296,
+      "first": {
+        "support": {
+          "t": 2.791666666666664,
+          "body": 1,
+          "difference": 0.00207951446597381
+        },
+        "state": {
+          "t": 3.108333333333331,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        },
+        "pos": {
+          "t": 4.096874999999993,
+          "body": 0,
+          "difference": 0.010015570900857078
+        },
+        "facing": {
+          "t": 4.591666666666658,
+          "body": 0,
+          "difference": 0.010036857548826328
+        },
+        "spin": {
+          "t": 4.5927083333333245,
+          "body": 1,
+          "difference": 0.10156958093245544
+        }
+      }
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 15,
+      "maxPositionDifference": 3.102021150608987,
+      "finalPositionDifference": 3.102021150608987,
+      "first": {
+        "support": {
+          "t": 2.733333333333334,
+          "body": 1,
+          "difference": 0.0024178430852909256
+        },
+        "facing": {
+          "t": 3.1999999999999993,
+          "body": 0,
+          "difference": 0.010261049224539798
+        },
+        "pos": {
+          "t": 3.799999999999997,
+          "body": 0,
+          "difference": 0.010201407714171249
+        },
+        "spin": {
+          "t": 4.449999999999989,
+          "body": 1,
+          "difference": 0.10976802452496737
+        }
+      }
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 35,
+      "maxPositionDifference": 0.07101651971832695,
+      "finalPositionDifference": 0.07101651971832695,
+      "first": {
+        "support": {
+          "t": 2.849999999999996,
+          "body": 0,
+          "difference": 0.005265790016298066
+        },
+        "facing": {
+          "t": 3.399999999999994,
+          "body": 0,
+          "difference": 0.010364961880081291
+        },
+        "pos": {
+          "t": 3.8499999999999925,
+          "body": 0,
+          "difference": 0.011622531751902795
+        },
+        "spin": {
+          "t": 4.600000000000006,
+          "body": 0,
+          "difference": 0.10620791786987627
+        }
+      }
+    }
+  ],
+  "mirrors": [
+    {
+      "mode": "center",
+      "n": 12,
+      "position": 0,
+      "support": 0,
+      "spin": 0
+    },
+    {
+      "mode": "center",
+      "n": 24,
+      "position": 0,
+      "support": 0,
+      "spin": 0
+    },
+    {
+      "mode": "center",
+      "n": 48,
+      "position": 0,
+      "support": 0,
+      "spin": 0
+    },
+    {
+      "mode": "center",
+      "n": 96,
+      "position": 0,
+      "support": 0,
+      "spin": 0
+    },
+    {
+      "mode": "center",
+      "n": 15,
+      "position": 0,
+      "support": 0,
+      "spin": 0
+    },
+    {
+      "mode": "center",
+      "n": 35,
+      "position": 0,
+      "support": 0,
+      "spin": 0
+    },
+    {
+      "mode": "patch",
+      "n": 12,
+      "position": 2.0555578896157134e-11,
+      "support": 1.876642814663237e-10,
+      "spin": 1.7917489714136536e-09
+    },
+    {
+      "mode": "patch",
+      "n": 24,
+      "position": 0,
+      "support": 1.1123893155135927e-16,
+      "spin": 8.881784197001252e-16
+    },
+    {
+      "mode": "patch",
+      "n": 48,
+      "position": 0,
+      "support": 0,
+      "spin": 0
+    },
+    {
+      "mode": "patch",
+      "n": 96,
+      "position": 0,
+      "support": 0,
+      "spin": 0
+    },
+    {
+      "mode": "patch",
+      "n": 15,
+      "position": 0,
+      "support": 7.816041058999314e-16,
+      "spin": 9.85878045867139e-14
+    },
+    {
+      "mode": "patch",
+      "n": 35,
+      "position": 0,
+      "support": 0,
+      "spin": 0
+    }
+  ],
+  "physical": [
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 12,
+      "requestedMismatch": 9.91537962846678e-10,
+      "achievedMismatch": 9.91537962846678e-10,
+      "commandForceExcess": 0,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 5.329070518200751e-15,
+      "couplingResidual": 9.91537962846678e-10,
+      "maxTrials": 7
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 12,
+      "requestedMismatch": 9.91537962846678e-10,
+      "achievedMismatch": 9.91537962846678e-10,
+      "commandForceExcess": 0,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 5.329070518200751e-15,
+      "couplingResidual": 9.91537962846678e-10,
+      "maxTrials": 7
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 24,
+      "requestedMismatch": 9.921254928713097e-10,
+      "achievedMismatch": 9.921254928713097e-10,
+      "commandForceExcess": 0,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 3.552713678800501e-15,
+      "couplingResidual": 9.921254928713097e-10,
+      "maxTrials": 6
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 24,
+      "requestedMismatch": 9.921254928713097e-10,
+      "achievedMismatch": 9.921254928713097e-10,
+      "commandForceExcess": 0,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 3.552713678800501e-15,
+      "couplingResidual": 9.921254928713097e-10,
+      "maxTrials": 6
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 48,
+      "requestedMismatch": 9.978777804064975e-10,
+      "achievedMismatch": 9.978777804064975e-10,
+      "commandForceExcess": 0,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 1.3322676295501878e-15,
+      "couplingResidual": 9.978777804064975e-10,
+      "maxTrials": 9
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 48,
+      "requestedMismatch": 9.978777804064975e-10,
+      "achievedMismatch": 9.978777804064975e-10,
+      "commandForceExcess": 0,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 1.3322676295501878e-15,
+      "couplingResidual": 9.978777804064975e-10,
+      "maxTrials": 9
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 96,
+      "requestedMismatch": 9.98626070725095e-10,
+      "achievedMismatch": 9.98626070725095e-10,
+      "commandForceExcess": 0,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 8.881784197001252e-16,
+      "couplingResidual": 9.98626070725095e-10,
+      "maxTrials": 7
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 96,
+      "requestedMismatch": 9.98626070725095e-10,
+      "achievedMismatch": 9.98626070725095e-10,
+      "commandForceExcess": 0,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 8.881784197001252e-16,
+      "couplingResidual": 9.98626070725095e-10,
+      "maxTrials": 7
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 15,
+      "requestedMismatch": 9.956613311601359e-10,
+      "achievedMismatch": 9.956613311601359e-10,
+      "commandForceExcess": 0,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 4.440892098500626e-15,
+      "couplingResidual": 9.956613311601359e-10,
+      "maxTrials": 7
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 15,
+      "requestedMismatch": 9.956613311601359e-10,
+      "achievedMismatch": 9.956613311601359e-10,
+      "commandForceExcess": 0,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 4.440892098500626e-15,
+      "couplingResidual": 9.956613311601359e-10,
+      "maxTrials": 7
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 35,
+      "requestedMismatch": 9.988263549587373e-10,
+      "achievedMismatch": 9.988263549587373e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 2.220446049250313e-15,
+      "couplingResidual": 9.988263549587373e-10,
+      "maxTrials": 10
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 35,
+      "requestedMismatch": 9.988263549587373e-10,
+      "achievedMismatch": 9.988263549587373e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 2.220446049250313e-15,
+      "couplingResidual": 9.988263549587373e-10,
+      "maxTrials": 10
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 12,
+      "requestedMismatch": 9.94826531349468e-10,
+      "achievedMismatch": 9.94826531349468e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 2.6645352591003757e-15,
+      "motorEnergyResidual": 5.329070518200751e-15,
+      "couplingResidual": 9.94826531349468e-10,
+      "maxTrials": 11
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 12,
+      "requestedMismatch": 9.948267082610583e-10,
+      "achievedMismatch": 9.948267082610583e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 8.881784197001252e-16,
+      "motorEnergyResidual": 3.552713678800501e-15,
+      "couplingResidual": 9.948267082610585e-10,
+      "maxTrials": 11
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 24,
+      "requestedMismatch": 9.915946545923441e-10,
+      "achievedMismatch": 9.915946026089977e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 1.7763568394002505e-15,
+      "couplingResidual": 9.915946545923441e-10,
+      "maxTrials": 7
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 24,
+      "requestedMismatch": 9.915946545923441e-10,
+      "achievedMismatch": 9.915946026089977e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 1.7763568394002505e-15,
+      "couplingResidual": 9.915946545923441e-10,
+      "maxTrials": 7
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 48,
+      "requestedMismatch": 9.98085532213903e-10,
+      "achievedMismatch": 9.98085532213903e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 4.440892098500626e-16,
+      "couplingResidual": 9.98085532213903e-10,
+      "maxTrials": 6
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 48,
+      "requestedMismatch": 9.98085532213903e-10,
+      "achievedMismatch": 9.98085532213903e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 4.440892098500626e-16,
+      "couplingResidual": 9.98085532213903e-10,
+      "maxTrials": 6
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 96,
+      "requestedMismatch": 9.982486070158448e-10,
+      "achievedMismatch": 9.9824849635458e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 2.220446049250313e-16,
+      "couplingResidual": 9.982486070158448e-10,
+      "maxTrials": 5
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 96,
+      "requestedMismatch": 9.982486070158448e-10,
+      "achievedMismatch": 9.9824849635458e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 2.220446049250313e-16,
+      "couplingResidual": 9.982486070158448e-10,
+      "maxTrials": 5
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 15,
+      "requestedMismatch": 9.793820774573946e-10,
+      "achievedMismatch": 9.793820529059628e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 3.552713678800501e-15,
+      "couplingResidual": 9.793820774573946e-10,
+      "maxTrials": 10
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 15,
+      "requestedMismatch": 9.793820774573946e-10,
+      "achievedMismatch": 9.793820529059628e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 3.552713678800501e-15,
+      "couplingResidual": 9.793820774573946e-10,
+      "maxTrials": 10
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 35,
+      "requestedMismatch": 9.966404991410066e-10,
+      "achievedMismatch": 9.966403902257718e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 8.881784197001252e-16,
+      "couplingResidual": 9.966404991410064e-10,
+      "maxTrials": 7
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 35,
+      "requestedMismatch": 9.966404991410066e-10,
+      "achievedMismatch": 9.966403902257718e-10,
+      "commandForceExcess": 1.1368683772161603e-13,
+      "commandWorkExcess": 0,
+      "motorEnergyResidual": 8.881784197001252e-16,
+      "couplingResidual": 9.966404991410064e-10,
+      "maxTrials": 7
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "out/continued-recovery/final/manifest-continued-recovery.json.gz",
+      "sha256": "6f5843ebde25abf8c87214d2804fcafa8ed0fdcc3fb4f695dc6785442257231e"
+    },
+    {
+      "path": "out/continued-recovery/final/one-body.json",
+      "sha256": "19b99405eeb2ca384cdc5749b36fe46eb95b0b7879f12f903aeb8a5a3092df9c"
+    },
+    {
+      "path": "out/continued-recovery/final/native-controls.json",
+      "sha256": "7972e9e35a0c7fc16faf045ca9087180b2d4130528edeb2c0ad5ee90a97ae030"
+    },
+    {
+      "path": "out/continued-recovery/final/candidate-lower-law.json",
+      "sha256": "5e7da42156a46235cfaf2d0edf26f7779b6554f1b1ddc4f95c5a08406ca37417"
+    },
+    {
+      "path": "out/continued-recovery/final/center-controls.log",
+      "sha256": "ff131f80fb93d31cd4efeb7c8321882e3df1da688b331aa96b4d9795a90aba2f"
+    },
+    {
+      "path": "out/continued-recovery/final/patch-controls.log",
+      "sha256": "c56012b699daaf89be897fe5b750ec9e11a54d2fcece67cead5e5e9f7c6cc70e"
+    },
+    {
+      "path": "out/continued-recovery/final/research-tests.log",
+      "sha256": "dec66260a18ccbf6d6e772fbd911a8a8b04622c6decc2fac861ed6b57601dc8c"
+    },
+    {
+      "path": "scripts/diag/continued-recovery-test.setup.ts",
+      "sha256": "d2a729021cbc1a11fee212a910c0f8c7ebffc627a5bfa79fa0fa7b50efe54b96"
+    },
+    {
+      "path": "scripts/diag/continued-recovery-vitest.config.ts",
+      "sha256": "7cbb2e3798c5b91bf6d02db58d6183c26e98230ecc968ff44e375ca3565c859b"
+    },
+    {
+      "path": "scripts/diag/tackle/continued-recovery-panel.ts",
+      "sha256": "6f07be16e412b22ef1a70920a07f29b2003cd3b2844054a19f6db44e6c581f9d"
+    },
+    {
+      "path": "scripts/diag/tackle/continued-recovery-one-body.ts",
+      "sha256": "9d07eec2769183c2d92e22a133ec7af77c084118246bbcbcf4ad9659647e80b6"
+    },
+    {
+      "path": "scripts/diag/tackle/continued-recovery-report.py",
+      "sha256": "e3068c63ba8254f1b5b117e549289ba5968bf88ae01a57d01dbdcc474323d770"
+    },
+    {
+      "path": "scripts/diag/tackle/continued-recovery-plot.py",
+      "sha256": "c06560fc6adcfbc5f4ec59d2938a79bdf168a50986a235f5ecf0e69567348610"
+    },
+    {
+      "path": "out/continued-recovery/core-tests.log",
+      "sha256": "b4f540da761da83d35c06f22232d51b9f2fcaef1a6d14e5bffee800b312aaf64"
+    },
+    {
+      "path": "out/continued-recovery/python-tests.log",
+      "sha256": "a54fcd615e250a9af67cae7c55f4ead564a222e9d7ef9f50e253553fd06f4854"
+    },
+    {
+      "path": "out/continued-recovery/lower-law.json",
+      "sha256": "df6181ea7d8a43b941c5def139c1199a59e26e14bb3a5137a8d472cefce67891"
+    },
+    {
+      "path": "out/continued-recovery/final/typecheck.log",
+      "sha256": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63"
+    },
+    {
+      "path": "out/continued-recovery/final/build.log",
+      "sha256": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d"
+    },
+    {
+      "path": "out/continued-recovery/final/one-body-response.png",
+      "sha256": "5056266233e8c73e3f7898935f1e31482557f5f9756419c37a09f4d65e97a930"
+    },
+    {
+      "path": "out/continued-recovery/final/one-body-response.svg",
+      "sha256": "85939b2d03b9cbd34e4f9bc440cf19d49bc30ec2d6946222a673b7d53e369e3a"
+    },
+    {
+      "path": "out/continued-recovery/research-tests.log",
+      "sha256": "e629de66f15b1cd59d8b18b803876b66ba5ca20580c924dafa335440bdc445ee"
+    },
+    {
+      "path": "out/continued-recovery/rejected-duration-scaled-error.log",
+      "sha256": "a7531a5c694ee8380d9769b0c1e0acacbc3a7e4fe5757f10ad45b2e6086168d0"
+    }
+  ],
+  "limits": [
+    "Diagnostic only; bounded ankle target changes unheld behavior in the outer half of the base.",
+    "The ankle target is a reduced-model assumption, not an anatomical or measured COP model.",
+    "96 steps is a comparison, not ground truth.",
+    "Local motor work/heat closure does not certify a full vertical-body energy model.",
+    "No grip capacity, ratings, inertia, default resolution or native controller changed.",
+    "Rear native holds do not finish; angled native endings and trajectories still disagree.",
+    "Two legacy hashes and six existing patch football controls still fail. No promotion."
+  ],
+  "oneBody": {
+    "sustained": [
+      {
+        "load": 0,
+        "finalDeviation": 0.007097646758815836,
+        "work": 0
+      },
+      {
+        "load": 1e-07,
+        "finalDeviation": 0.007097646846911649,
+        "work": 6.544981997220934e-09
+      },
+      {
+        "load": 1e-05,
+        "finalDeviation": 0.007097655568397978,
+        "work": 6.544979684645893e-07
+      },
+      {
+        "load": 0.001,
+        "finalDeviation": 0.007098527717031556,
+        "work": 6.544748427142708e-05
+      },
+      {
+        "load": 20,
+        "finalDeviation": 0.02470078984761756,
+        "work": 0.378537910863629
+      },
+      {
+        "load": 100,
+        "finalDeviation": 0.07663981588032237,
+        "work": -10.779372095947823
+      },
+      {
+        "load": 300,
+        "finalDeviation": 0.0913118527042579,
+        "work": -25.80586079033826
+      },
+      {
+        "load": 600,
+        "finalDeviation": 0.11331990794016118,
+        "work": -32.014829403281325
+      },
+      {
+        "load": 1000,
+        "finalDeviation": 0.14266398158803228,
+        "work": -9.805465037707531
+      },
+      {
+        "load": 1500,
+        "finalDeviation": 4.774501597885864,
+        "work": -1483.6363636363606
+      }
+    ],
+    "changingPartitionPositionError": 2.1284710105540228e-13,
+    "changingPartitionWorkError": 2.3091811129916096e-08,
+    "mirrorPositionError": 0.0
+  },
+  "ordinary": {
+    "cases": 24,
+    "sameEndings": 24,
+    "candidateEndings": {
+      "tackled": 20,
+      "censored": 2,
+      "escaped": 2
+    },
+    "adverseAdvance": [
+      {
+        "mode": "center",
+        "side": 1,
+        "angle": 90,
+        "speed": 6,
+        "ending": "tackled",
+        "delta": 0.007496391022478122
+      },
+      {
+        "mode": "center",
+        "side": -1,
+        "angle": 90,
+        "speed": 6,
+        "ending": "tackled",
+        "delta": 0.007496391022478122
+      },
+      {
+        "mode": "patch",
+        "side": 1,
+        "angle": 45,
+        "speed": 3,
+        "ending": "tackled",
+        "delta": 0.001721835343708733
+      },
+      {
+        "mode": "patch",
+        "side": 1,
+        "angle": 45,
+        "speed": 6,
+        "ending": "censored",
+        "delta": 0.5815105234757851
+      },
+      {
+        "mode": "patch",
+        "side": -1,
+        "angle": 45,
+        "speed": 3,
+        "ending": "tackled",
+        "delta": 0.001721835343708733
+      },
+      {
+        "mode": "patch",
+        "side": -1,
+        "angle": 45,
+        "speed": 6,
+        "ending": "censored",
+        "delta": 0.5815105234758278
+      }
+    ]
+  },
+  "nativeWitnesses": [
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 12,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 22.976788745243667,
+      "carrierState": "up"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 24,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 23.02653792829591,
+      "carrierState": "up"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 48,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 23.04091825180518,
+      "carrierState": "up"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 96,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 23.059325582010032,
+      "carrierState": "up"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 12,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 22.976788745243667,
+      "carrierState": "up"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 24,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 23.02653792829591,
+      "carrierState": "up"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 48,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 23.04091825180518,
+      "carrierState": "up"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 96,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 23.059325582010032,
+      "carrierState": "up"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 12,
+      "ending": "escaped",
+      "finish": "escaped",
+      "advanceAfterGrip": 20.369607076342078,
+      "carrierState": "up"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 24,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 21.855464528634045,
+      "carrierState": "up"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 48,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 22.25131517069258,
+      "carrierState": "up"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 96,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 22.682560732180505,
+      "carrierState": "up"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 12,
+      "ending": "escaped",
+      "finish": "escaped",
+      "advanceAfterGrip": 20.369607076342035,
+      "carrierState": "up"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 24,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 21.85546452874432,
+      "carrierState": "up"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 48,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 22.251315170694724,
+      "carrierState": "up"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 96,
+      "ending": "censored",
+      "finish": "censored",
+      "advanceAfterGrip": 22.682560732180505,
+      "carrierState": "up"
+    }
+  ],
+  "controls": {
+    "center": {
+      "failures": [
+        "test/run-hand-control.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy run commands, bodies, loads and RNG",
+        "test/run-hand-control.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy pass commands, bodies, loads and RNG"
+      ],
+      "result": "2 failed | 48 passed (50)"
+    },
+    "patch": {
+      "failures": [
+        "test/helper-fit.test.ts > joined helpers replace unusable feet through bounded physical movement > turns a wrong-side acquisition into actual useful contact, side -1",
+        "test/helper-fit.test.ts > joined helpers replace unusable feet through bounded physical movement > turns a wrong-side acquisition into actual useful contact, side 1",
+        "test/run-hand-control.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy run commands, bodies, loads and RNG",
+        "test/run-hand-control.test.ts > solo hand-fight execution with the preserved legacy policy is unchanged > matches frozen 923dbe0 legacy pass commands, bodies, loads and RNG",
+        "test/zone-helper-check.test.ts > optional inside-zone help respects other concepts and real double teams > keeps an already joined genuine double on the ordinary earned-transfer path",
+        "test/zone-helper-check.test.ts > a predeclared native Split Zone Under rep earns a supported check and climb > lets RG use the supported RT block without first inventing a second pair of hands",
+        "test/zone-helper-check.test.ts > the historic native Split Zone Tite witness retains unfinished first-level work > stays when the backer is not arriving, then collects the end after keeper leverage is lost",
+        "test/zone-helper-check.test.ts > optional checks preserve the later genuine double's decision phase > keeps the native Split Zone Bear joined reads and earned transfer identical to sustained help"
+      ],
+      "result": "8 failed | 42 passed (50)"
+    }
+  },
+  "candidateLaws": {
+    "cases": 48,
+    "maxAngularError": 7.105427357601002e-13,
+    "maxMomentumError": 4.3220627292571254e-14,
+    "maxWorkResidual": 1.2989609388114332e-14,
+    "lawPasses": 48,
+    "lowerTransitions": 16
+  },
+  "worldLaws": {
+    "maxWorkResidual": 2.9250379895984224e-11,
+    "maxArmExcess": -80.70426274194187,
+    "maxSupportExcess": 0
+  },
+  "firstAngledInterval": {
+    "start": 2.65,
+    "h": 0.004166666666666667,
+    "markers": {
+      "spin": {
+        "t": 2.654166666666667,
+        "body": 0,
+        "difference": 0.1325091150498201
+      },
+      "support": {
+        "t": 2.725000000000001,
+        "body": 1,
+        "difference": 0.002052143666275269
+      },
+      "facing": {
+        "t": 2.9583333333333326,
+        "body": 0,
+        "difference": 0.01012284607898739
+      },
+      "state": {
+        "t": 3.108333333333332,
+        "body": 0,
+        "coarse": "up",
+        "fine": "falling"
+      },
+      "pos": {
+        "t": 3.4249999999999985,
+        "body": 0,
+        "difference": 0.010007496265220605
+      }
+    },
+    "coarse": {
+      "start": [
+        {
+          "pos": {
+            "x": 55.107421485631505,
+            "y": 27.821426254605832
+          },
+          "vel": {
+            "x": 0.9384014975733385,
+            "y": -2.9045766160063295
+          },
+          "spin": 3.019929686635717,
+          "facing": -2.0360320549455704,
+          "energy": 0.9959384311633338,
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": {
+              "nonfinite": "-Infinity"
+            },
+            "posture": 0.5880331709033889,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 7.40490156055339,
+              "y": 0.9788592993124217
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            },
+            "strike": {
+              "x": 2.0426206771350564,
+              "y": -0.778887335395379
+            }
+          },
+          "inertia": 1.9914519412479996
+        },
+        {
+          "pos": {
+            "x": 55.2000000000003,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 8,
+            "y": 0
+          },
+          "spin": 0,
+          "facing": 0,
+          "energy": 0.9911306007016009,
+          "support": {
+            "xi": {
+              "x": 0,
+              "y": 0
+            },
+            "state": "up",
+            "since": {
+              "nonfinite": "-Infinity"
+            },
+            "posture": 0.19836257243721864,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 0,
+              "y": 0
+            },
+            "felt": {
+              "x": 0,
+              "y": 0
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 0,
+              "y": 0
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            },
+            "foot": {
+              "anchor": {
+                "x": 55.2000000000003,
+                "y": 26.666666666666668
+              },
+              "offset": {
+                "x": 0,
+                "y": 0
+              },
+              "target": {
+                "x": 55.2000000000003,
+                "y": 26.666666666666668
+              },
+              "desired": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": 0,
+                "y": 0
+              },
+              "force": {
+                "x": 0,
+                "y": 0
+              },
+              "capacity": 0,
+              "mobility": 0,
+              "state": "supported"
+            }
+          },
+          "inertia": 2.51063376795
+        }
+      ],
+      "end": [
+        {
+          "pos": {
+            "x": 55.11154235130544,
+            "y": 27.809340177994574
+          },
+          "vel": {
+            "x": 1.0396140259137638,
+            "y": -2.896740157396839
+          },
+          "spin": 6.102808278437881,
+          "facing": -2.017026350851667,
+          "energy": 0.9959384311633338,
+          "support": {
+            "xi": {
+              "x": 0.0013109372145273554,
+              "y": 0.0001606306211679953
+            },
+            "state": "up",
+            "since": {
+              "nonfinite": "-Infinity"
+            },
+            "posture": 0.5984498375700555,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 1271.6216381839051,
+              "y": 118.713464986568
+            },
+            "felt": {
+              "x": 125.7950361198621,
+              "y": 11.743716973255513
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.0009998818660129063,
+            "out": 0,
+            "feltTip": {
+              "x": 0.10608655887890696,
+              "y": 0.009903813064240452
+            },
+            "causes": {
+              "contact": 0.0013300532190355543,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 9.075357736313187,
+              "y": 1.0680787480854095
+            },
+            "tipAccel": {
+              "x": 0.10608655887890696,
+              "y": 0.009903813064240452
+            },
+            "strike": {
+              "x": 2.0188757477074977,
+              "y": -0.7698329744863714
+            }
+          },
+          "inertia": 1.9914519412479996
+        },
+        {
+          "pos": {
+            "x": 55.23323440866992,
+            "y": 26.666657431459235
+          },
+          "vel": {
+            "x": 7.952516161416453,
+            "y": -0.00443289956686044
+          },
+          "spin": 0,
+          "facing": 0,
+          "energy": 0.9911306007016009,
+          "support": {
+            "xi": {
+              "x": 0.0070328491946968,
+              "y": 0.0006565584223801223
+            },
+            "state": "up",
+            "since": {
+              "nonfinite": "-Infinity"
+            },
+            "posture": 0.2087792391038853,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": -1271.6216381839051,
+              "y": -118.713464986568
+            },
+            "felt": {
+              "x": -125.7950361198621,
+              "y": -11.743716973255513
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 7.328699913317382,
+              "y": -0.06266986731186133
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.005572591856801226,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0.007110037433046917,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -1.1273600908379309,
+              "y": -0.10524578903995341
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            },
+            "foot": {
+              "anchor": {
+                "x": 55.23053624963913,
+                "y": 26.666405542219533
+              },
+              "offset": {
+                "x": -0.002698159030795186,
+                "y": -0.0002518892397017963
+              },
+              "target": {
+                "x": 55.2000000000003,
+                "y": 26.666666666666668
+              },
+              "desired": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": -0.6475581673908447,
+                "y": -0.060453417528431114
+              },
+              "force": {
+                "x": -216.97061235044637,
+                "y": -20.255500865151088
+              },
+              "capacity": 1192.4871682581304,
+              "mobility": 0.002984543207837393,
+              "state": "supported"
+            }
+          },
+          "inertia": 2.51063376795
+        }
+      ],
+      "grip": [
+        {
+          "point": {
+            "x": 55.2000000000003,
+            "y": 26.666666666666668
+          },
+          "linearMotorRelativeVelocity": {
+            "x": 7.061598502426661,
+            "y": 2.9045766160063295
+          },
+          "material": {
+            "x": 0,
+            "y": 0
+          },
+          "jacobian": {
+            "xx": 0.17062513395125756,
+            "xy": 0,
+            "yy": 0.17062513395125756
+          },
+          "legs": 0.17062513395125756,
+          "hold": 1.158464711270983,
+          "reach": 1.474375,
+          "pull": 2.1061224489795918,
+          "capacity": 2267.004730607681,
+          "slipping": false,
+          "broken": false
+        }
+      ],
+      "groundYaw": [
+        0,
+        0
+      ],
+      "reel": {
+        "x": 0,
+        "y": 0,
+        "angularA": 0,
+        "angularB": 0,
+        "work": 0,
+        "armWork": 0
+      },
+      "passive": {
+        "x": -5.298423492432938,
+        "y": -0.4946394374440333,
+        "angularA": 6.139404556276319,
+        "angularB": 0,
+        "work": -10.32028748654641
+      },
+      "torso": {
+        "normal": 0,
+        "tangent": 0,
+        "angularA": 0,
+        "angularB": 0
+      },
+      "supportUpdates": [
+        {
+          "i": 0,
+          "h": 0.004166666666666667,
+          "before": {
+            "pos": {
+              "x": 55.11154235130544,
+              "y": 27.809340177994574
+            },
+            "vel": {
+              "x": 1.0396140259137638,
+              "y": -2.896740157396839
+            },
+            "spin": 6.102808278437881,
+            "facing": -2.017026350851667,
+            "energy": 0.9959384311633338,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": {
+                "nonfinite": "-Infinity"
+              },
+              "posture": 0.5984498375700555,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 1271.6216381839051,
+                "y": 118.713464986568
+              },
+              "felt": {
+                "x": 125.7950361198621,
+                "y": 11.743716973255513
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0.10608655887890696,
+                "y": 0.009903813064240452
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": 7.40490156055339,
+                "y": 0.9788592993124217
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              },
+              "strike": {
+                "x": 2.0188757477074977,
+                "y": -0.7698329744863714
+              }
+            },
+            "inertia": 1.9914519412479996
+          },
+          "after": {
+            "pos": {
+              "x": 55.11154235130544,
+              "y": 27.809340177994574
+            },
+            "vel": {
+              "x": 1.0396140259137638,
+              "y": -2.896740157396839
+            },
+            "spin": 6.102808278437881,
+            "facing": -2.017026350851667,
+            "energy": 0.9959384311633338,
+            "support": {
+              "xi": {
+                "x": 0.0013109372145273554,
+                "y": 0.0001606306211679953
+              },
+              "state": "up",
+              "since": {
+                "nonfinite": "-Infinity"
+              },
+              "posture": 0.5984498375700555,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": 1271.6216381839051,
+                "y": 118.713464986568
+              },
+              "felt": {
+                "x": 125.7950361198621,
+                "y": 11.743716973255513
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 0,
+                "y": 0
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0.0009998818660129063,
+              "out": 0,
+              "feltTip": {
+                "x": 0.10608655887890696,
+                "y": 0.009903813064240452
+              },
+              "causes": {
+                "contact": 0.0013300532190355543,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": 9.075357736313187,
+                "y": 1.0680787480854095
+              },
+              "tipAccel": {
+                "x": 0.10608655887890696,
+                "y": 0.009903813064240452
+              },
+              "strike": {
+                "x": 2.0188757477074977,
+                "y": -0.7698329744863714
+              }
+            },
+            "inertia": 1.9914519412479996
+          },
+          "recovery": 0,
+          "phase": {
+            "input": {
+              "e": 0.0006650266095177772,
+              "rb": 0.14119754988887068,
+              "w": 3.376198149946811,
+              "speed": 0,
+              "outsideFor": 0,
+              "latency": 0.12,
+              "h": 0.004166666666666667,
+              "loadVelocity": 0
+            },
+            "result": {
+              "next": 0.0006557368478389486,
+              "weight": 0.004137496335728672
+            },
+            "predicted": {
+              "x": 0.0013109588333772198,
+              "y": 0.00016063327015014656
+            },
+            "normal": {
+              "x": 0.9925765481132192,
+              "y": 0.1216215282573199
+            },
+            "deficit": {
+              "x": 0,
+              "y": 0
+            },
+            "achieved": null,
+            "requested": null,
+            "delta": {
+              "x": 0.001320179632957186,
+              "y": 0.00016176310516267196
+            },
+            "continued": {
+              "state": {
+                "xi": {
+                  "x": 0.0013109372145273554,
+                  "y": 0.0001606306211679953
+                },
+                "response": 0
+              },
+              "requested": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": 0,
+                "y": 0
+              },
+              "work": 0,
+              "commandWork": 0,
+              "dissipation": 0,
+              "peakCommandForce": 0,
+              "peakAnkleTarget": 0.0026414833536401914,
+              "evaluations": 0,
+              "error": 0
+            }
+          },
+          "alpha": 1,
+          "cut": 1,
+          "tip": {
+            "x": 1.0723949684497045,
+            "y": 0.100114467005015
+          },
+          "trip": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "i": 1,
+          "h": 0.004166666666666667,
+          "before": {
+            "pos": {
+              "x": 55.23323440866992,
+              "y": 26.666657431459235
+            },
+            "vel": {
+              "x": 7.952516161416453,
+              "y": -0.00443289956686044
+            },
+            "spin": 0,
+            "facing": 0,
+            "energy": 0.9911306007016009,
+            "support": {
+              "xi": {
+                "x": 0,
+                "y": 0
+              },
+              "state": "up",
+              "since": {
+                "nonfinite": "-Infinity"
+              },
+              "posture": 0.2087792391038853,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": -1271.6216381839051,
+                "y": -118.713464986568
+              },
+              "felt": {
+                "x": -125.7950361198621,
+                "y": -11.743716973255513
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 7.328699913317382,
+                "y": -0.06266986731186133
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": 0,
+                "y": 0
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              },
+              "foot": {
+                "anchor": {
+                  "x": 55.23053624963913,
+                  "y": 26.666405542219533
+                },
+                "offset": {
+                  "x": -0.002698159030795186,
+                  "y": -0.0002518892397017963
+                },
+                "target": {
+                  "x": 55.2000000000003,
+                  "y": 26.666666666666668
+                },
+                "desired": {
+                  "x": 0,
+                  "y": 0
+                },
+                "achieved": {
+                  "x": -0.6475581673908447,
+                  "y": -0.060453417528431114
+                },
+                "force": {
+                  "x": -216.97061235044637,
+                  "y": -20.255500865151088
+                },
+                "capacity": 1192.4871682581304,
+                "mobility": 0.002984543207837393,
+                "state": "supported"
+              }
+            },
+            "inertia": 2.51063376795
+          },
+          "after": {
+            "pos": {
+              "x": 55.23323440866992,
+              "y": 26.666657431459235
+            },
+            "vel": {
+              "x": 7.952516161416453,
+              "y": -0.00443289956686044
+            },
+            "spin": 0,
+            "facing": 0,
+            "energy": 0.9911306007016009,
+            "support": {
+              "xi": {
+                "x": 0.0070328491946968,
+                "y": 0.0006565584223801223
+              },
+              "state": "up",
+              "since": {
+                "nonfinite": "-Infinity"
+              },
+              "posture": 0.2087792391038853,
+              "lean": {
+                "x": 0,
+                "y": 0
+              },
+              "load": {
+                "x": -1271.6216381839051,
+                "y": -118.713464986568
+              },
+              "felt": {
+                "x": -125.7950361198621,
+                "y": -11.743716973255513
+              },
+              "feetLock": 0,
+              "feetVel": {
+                "x": 7.328699913317382,
+                "y": -0.06266986731186133
+              },
+              "fall": {
+                "x": 0,
+                "y": 0
+              },
+              "peak": 0.005572591856801226,
+              "out": 0,
+              "feltTip": {
+                "x": 0,
+                "y": 0
+              },
+              "causes": {
+                "contact": 0,
+                "legs": 0.007110037433046917,
+                "overspeed": 0
+              },
+              "accel": {
+                "x": -1.1273600908379309,
+                "y": -0.10524578903995341
+              },
+              "tipAccel": {
+                "x": 0,
+                "y": 0
+              },
+              "foot": {
+                "anchor": {
+                  "x": 55.23053624963913,
+                  "y": 26.666405542219533
+                },
+                "offset": {
+                  "x": -0.002698159030795186,
+                  "y": -0.0002518892397017963
+                },
+                "target": {
+                  "x": 55.2000000000003,
+                  "y": 26.666666666666668
+                },
+                "desired": {
+                  "x": 0,
+                  "y": 0
+                },
+                "achieved": {
+                  "x": -0.6475581673908447,
+                  "y": -0.060453417528431114
+                },
+                "force": {
+                  "x": -216.97061235044637,
+                  "y": -20.255500865151088
+                },
+                "capacity": 1192.4871682581304,
+                "mobility": 0.002984543207837393,
+                "state": "supported"
+              }
+            },
+            "inertia": 2.51063376795
+          },
+          "recovery": 3.5583618546517175,
+          "phase": {
+            "input": {
+              "e": 0.0022000731138755916,
+              "rb": 0.14158575618429287,
+              "w": 3.1603346614451366,
+              "speed": 3.5583618546517175,
+              "outsideFor": 0,
+              "latency": 0.12,
+              "h": 0.004166666666666667,
+              "loadVelocity": -0.6503738892709764
+            },
+            "result": {
+              "next": 0.004863419582740434,
+              "weight": 0.004139353225858696
+            },
+            "predicted": {
+              "x": 0.007032912085579648,
+              "y": 0.0006565642936191725
+            },
+            "normal": {
+              "x": 0.9956706105109975,
+              "y": 0.09295179054035393
+            },
+            "deficit": {
+              "x": -0.6475581673908447,
+              "y": -0.060453417528431114
+            },
+            "achieved": {
+              "x": -0.6475581673908447,
+              "y": -0.060453417528431114
+            },
+            "requested": {
+              "x": 0,
+              "y": 0
+            },
+            "delta": {
+              "x": 0.004381096280922683,
+              "y": 0.00040900147050885647
+            },
+            "continued": {
+              "state": {
+                "xi": {
+                  "x": 0.0070328491946968,
+                  "y": 0.0006565584223801223
+                },
+                "response": 0
+              },
+              "requested": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": -0.002698159030795186,
+                "y": -0.0002518892397017963
+              },
+              "work": -0.5905233598432205,
+              "commandWork": 0,
+              "dissipation": 0.5905233598432205,
+              "peakCommandForce": 0,
+              "peakAnkleTarget": 0.014126859064540241,
+              "evaluations": 0,
+              "error": 0
+            }
+          },
+          "alpha": 1,
+          "cut": 1,
+          "tip": {
+            "x": 0,
+            "y": 0
+          },
+          "trip": {
+            "x": 0.013845730431728334,
+            "y": 0.00129258152383117
+          }
+        }
+      ]
+    },
+    "fine": {
+      "end": [
+        {
+          "pos": {
+            "x": 55.11159169581988,
+            "y": 27.809343735296576
+          },
+          "vel": {
+            "x": 1.0417932561548093,
+            "y": -2.8968312647817336
+          },
+          "spin": 6.235317393487701,
+          "facing": -2.0140958355558536,
+          "energy": 0.9959384311633338,
+          "support": {
+            "xi": {
+              "x": 0.0016698687408699259,
+              "y": 0.00019874795257049743
+            },
+            "state": "up",
+            "since": {
+              "nonfinite": "-Infinity"
+            },
+            "posture": 0.5984498375700559,
+            "lean": {
+              "x": 0,
+              "y": 0
+            },
+            "load": {
+              "x": 32.76169437162251,
+              "y": 3.418163918381055
+            },
+            "felt": {
+              "x": 128.34376627968803,
+              "y": 11.297219675683047
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 0,
+              "y": 0
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.0012731149614656919,
+            "out": 0,
+            "feltTip": {
+              "x": 0.10164039887987973,
+              "y": 0.008930416088579755
+            },
+            "causes": {
+              "contact": 0.0016832357940862715,
+              "legs": 0,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": 9.100442504917394,
+              "y": 1.0636842925370642
+            },
+            "tipAccel": {
+              "x": 0.0948389588347008,
+              "y": 0.008341895756646121
+            },
+            "strike": {
+              "x": 2.0188757477074972,
+              "y": -0.7698329744863711
+            }
+          },
+          "inertia": 1.9914519412479996
+        },
+        {
+          "pos": {
+            "x": 55.23318965757262,
+            "y": 26.666654207636906
+          },
+          "vel": {
+            "x": 7.950695680876018,
+            "y": -0.004335882656807195
+          },
+          "spin": 2.575768422453896e-06,
+          "facing": 5.7273736144328075e-09,
+          "energy": 0.9911306007016009,
+          "support": {
+            "xi": {
+              "x": 0.007437361726997936,
+              "y": 0.0006544455724430674
+            },
+            "state": "up",
+            "since": {
+              "nonfinite": "-Infinity"
+            },
+            "posture": 0.20877923910388538,
+            "lean": {
+              "x": 10.591732257545186,
+              "y": 0.9178935191459481
+            },
+            "load": {
+              "x": -32.76169437162251,
+              "y": -3.418163918381055
+            },
+            "felt": {
+              "x": -128.34376627968803,
+              "y": -11.297219675683047
+            },
+            "feetLock": 0,
+            "feetVel": {
+              "x": 7.933502712408596,
+              "y": -0.006129259787152947
+            },
+            "fall": {
+              "x": 0,
+              "y": 0
+            },
+            "peak": 0.0058902729324534445,
+            "out": 0,
+            "feltTip": {
+              "x": 0,
+              "y": 0
+            },
+            "causes": {
+              "contact": 0,
+              "legs": 0.007468896503231363,
+              "overspeed": 0
+            },
+            "accel": {
+              "x": -1.1462154846774324,
+              "y": -0.1009022935467249
+            },
+            "tipAccel": {
+              "x": 0,
+              "y": 0
+            },
+            "foot": {
+              "anchor": {
+                "x": 55.230334527210786,
+                "y": 26.666402996927417
+              },
+              "offset": {
+                "x": -0.002855130361836996,
+                "y": -0.00025121070949103225
+              },
+              "target": {
+                "x": 55.226202494548076,
+                "y": 26.66640618925022
+              },
+              "desired": {
+                "x": 0,
+                "y": 0
+              },
+              "achieved": {
+                "x": -0.01724470923639507,
+                "y": -0.0017992123190767948
+              },
+              "force": {
+                "x": -5.778006225914426,
+                "y": -0.6028434483213625
+              },
+              "capacity": 1192.4397758962784,
+              "mobility": 0.002984543207837393,
+              "state": "supported"
+            }
+          },
+          "inertia": 2.51063376795
+        }
+      ],
+      "grip": [
+        {
+          "point": {
+            "x": 55.23269477474355,
+            "y": 26.66661063943663
+          },
+          "linearMotorRelativeVelocity": {
+            "x": 6.905861066845286,
+            "y": 2.892178064587415
+          },
+          "material": {
+            "x": -0.0004948828619627177,
+            "y": -4.356820031382889e-05
+          },
+          "jacobian": {
+            "xx": 0.17636469469492908,
+            "xy": -2.032531761084068e-09,
+            "yy": 0.1763647176031286
+          },
+          "legs": 0.17636472941510695,
+          "hold": 1.1491322309022785,
+          "reach": 1.474375,
+          "pull": 2.1061224489795918,
+          "capacity": 2267.004730607681,
+          "slipping": false,
+          "broken": false
+        }
+      ]
+    }
+  },
+  "date": "2026-10-12 UTC",
+  "startingCommit": "41103cb78c79d127223afb20cc38a0e89243eda4",
+  "branch": "claude/engine-priorities",
+  "decision": "Remain diagnostic; no production promotion",
+  "inputSha256": "b32c03d408923b405aab64bdacb1726b8d71a6d13d28981f5cbf7a9edc2ed819",
+  "runs": [
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 12,
+      "variant": "continued-recovery",
+      "file": "center-1-continued-recovery-12.json.gz",
+      "sha256": "9170876bdd2298dfb65570719436cdde35a87a440a92f12836d51894175e4f4d",
+      "bytes": 819997,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 24,
+      "variant": "continued-recovery",
+      "file": "center-1-continued-recovery-24.json.gz",
+      "sha256": "bc6dbcd600613dc5d265cce883daaacd6d4b32d8726a8ff85f59b9ff0a69b97b",
+      "bytes": 1590298,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 48,
+      "variant": "continued-recovery",
+      "file": "center-1-continued-recovery-48.json.gz",
+      "sha256": "37c6a717ec13cc277e822b276cb5ef8605f53bb44145dd78a3aa1e537f7c2c13",
+      "bytes": 3118963,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 96,
+      "variant": "continued-recovery",
+      "file": "center-1-continued-recovery-96.json.gz",
+      "sha256": "04846d2ca7767ed1474f692c3106fb78fe4199559ffb15193e74858be89b6add",
+      "bytes": 6129815,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 15,
+      "variant": "continued-recovery",
+      "file": "center-1-continued-recovery-15.json.gz",
+      "sha256": "8251f203bfced4f9dcb9a4786e4be22e45fb389832d73720722fe800d7ed6373",
+      "bytes": 1009160,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 35,
+      "variant": "continued-recovery",
+      "file": "center-1-continued-recovery-35.json.gz",
+      "sha256": "3b83301204282d2a57cbf05a7b42225c30b9ac06fd4a09ce32c6a05da1a39129",
+      "bytes": 2282479,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 12,
+      "variant": "continued-recovery",
+      "file": "center--1-continued-recovery-12.json.gz",
+      "sha256": "9170876bdd2298dfb65570719436cdde35a87a440a92f12836d51894175e4f4d",
+      "bytes": 819997,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 24,
+      "variant": "continued-recovery",
+      "file": "center--1-continued-recovery-24.json.gz",
+      "sha256": "bc6dbcd600613dc5d265cce883daaacd6d4b32d8726a8ff85f59b9ff0a69b97b",
+      "bytes": 1590298,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 48,
+      "variant": "continued-recovery",
+      "file": "center--1-continued-recovery-48.json.gz",
+      "sha256": "37c6a717ec13cc277e822b276cb5ef8605f53bb44145dd78a3aa1e537f7c2c13",
+      "bytes": 3118963,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 96,
+      "variant": "continued-recovery",
+      "file": "center--1-continued-recovery-96.json.gz",
+      "sha256": "04846d2ca7767ed1474f692c3106fb78fe4199559ffb15193e74858be89b6add",
+      "bytes": 6129815,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 15,
+      "variant": "continued-recovery",
+      "file": "center--1-continued-recovery-15.json.gz",
+      "sha256": "8251f203bfced4f9dcb9a4786e4be22e45fb389832d73720722fe800d7ed6373",
+      "bytes": 1009160,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 35,
+      "variant": "continued-recovery",
+      "file": "center--1-continued-recovery-35.json.gz",
+      "sha256": "3b83301204282d2a57cbf05a7b42225c30b9ac06fd4a09ce32c6a05da1a39129",
+      "bytes": 2282479,
+      "initial": "834eab49ed8af02300fdb8e3710241361c9589dc5856f616e1d5d99c0021caae",
+      "decisions": "0f8cb5ca1970ae659577bc3bd4056d5d055b81adc5cd99f1dc28c5235e3793cf"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 12,
+      "variant": "continued-recovery",
+      "file": "patch-1-continued-recovery-12.json.gz",
+      "sha256": "7cb1425bf810a8852b58e673e7cdb9af6a408bacea9a4dc9f322efc3c80e8b4f",
+      "bytes": 1870207,
+      "initial": "e451c1e944755dfe8677964972bd7f2a234b2d7476c6cd97edcbbf739826acf8",
+      "decisions": "8ac78eca217d6c50135516745bfade5d97d694129e689c3fbbac9e8896b55e89"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 24,
+      "variant": "continued-recovery",
+      "file": "patch-1-continued-recovery-24.json.gz",
+      "sha256": "a68361ea20cf6ad322116851b06b1b7cc33e6c19d75c8a5dea9669b483a485cb",
+      "bytes": 3637435,
+      "initial": "e451c1e944755dfe8677964972bd7f2a234b2d7476c6cd97edcbbf739826acf8",
+      "decisions": "8ac78eca217d6c50135516745bfade5d97d694129e689c3fbbac9e8896b55e89"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 48,
+      "variant": "continued-recovery",
+      "file": "patch-1-continued-recovery-48.json.gz",
+      "sha256": "bec37474ba7b38d5a5f109ebc55ef3e41a87db11d89d188046009d49f847e659",
+      "bytes": 7117021,
+      "initial": "e451c1e944755dfe8677964972bd7f2a234b2d7476c6cd97edcbbf739826acf8",
+      "decisions": "8ac78eca217d6c50135516745bfade5d97d694129e689c3fbbac9e8896b55e89"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 96,
+      "variant": "continued-recovery",
+      "file": "patch-1-continued-recovery-96.json.gz",
+      "sha256": "c895410e17cf60f8e6d575f5e5072f085c294be4ca9e1ed125f175c0d70e93ca",
+      "bytes": 14078586,
+      "initial": "e451c1e944755dfe8677964972bd7f2a234b2d7476c6cd97edcbbf739826acf8",
+      "decisions": "8ac78eca217d6c50135516745bfade5d97d694129e689c3fbbac9e8896b55e89"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 15,
+      "variant": "continued-recovery",
+      "file": "patch-1-continued-recovery-15.json.gz",
+      "sha256": "4295bfe3e6edc4d2098712d98278d88931c881c36af04170f468697708a9d6a0",
+      "bytes": 2311917,
+      "initial": "e451c1e944755dfe8677964972bd7f2a234b2d7476c6cd97edcbbf739826acf8",
+      "decisions": "8ac78eca217d6c50135516745bfade5d97d694129e689c3fbbac9e8896b55e89"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 35,
+      "variant": "continued-recovery",
+      "file": "patch-1-continued-recovery-35.json.gz",
+      "sha256": "579a58aa0fe7e4345bd012b53208e144df53e8a06911e40df6255ccd6c53fa70",
+      "bytes": 5226668,
+      "initial": "e451c1e944755dfe8677964972bd7f2a234b2d7476c6cd97edcbbf739826acf8",
+      "decisions": "8ac78eca217d6c50135516745bfade5d97d694129e689c3fbbac9e8896b55e89"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 12,
+      "variant": "continued-recovery",
+      "file": "patch--1-continued-recovery-12.json.gz",
+      "sha256": "efb7db2d0a65d6d0465b3e34f520e835bf860cf13ad1f40669365f64bae612d4",
+      "bytes": 1869940,
+      "initial": "5e9169b985f856540225cf799e0dbb2f5f206320656c9dcf3c42e14255d31a43",
+      "decisions": "eabaebf14a2c930bef91348e2fa6ef302a7668bd0fc9c6dce1b248fd5692bd90"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 24,
+      "variant": "continued-recovery",
+      "file": "patch--1-continued-recovery-24.json.gz",
+      "sha256": "a945100c4f5f9fe8bb3599323c147d695aa3b8870b0176d2fdde0826f6dab650",
+      "bytes": 3638172,
+      "initial": "5e9169b985f856540225cf799e0dbb2f5f206320656c9dcf3c42e14255d31a43",
+      "decisions": "eabaebf14a2c930bef91348e2fa6ef302a7668bd0fc9c6dce1b248fd5692bd90"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 48,
+      "variant": "continued-recovery",
+      "file": "patch--1-continued-recovery-48.json.gz",
+      "sha256": "e398aa3f6274fe8a9e89226030cb5b05f2e57eb9e528b9b4a98d6f4c6e50b75f",
+      "bytes": 7122103,
+      "initial": "5e9169b985f856540225cf799e0dbb2f5f206320656c9dcf3c42e14255d31a43",
+      "decisions": "eabaebf14a2c930bef91348e2fa6ef302a7668bd0fc9c6dce1b248fd5692bd90"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 96,
+      "variant": "continued-recovery",
+      "file": "patch--1-continued-recovery-96.json.gz",
+      "sha256": "4f35b6c6f98b87eff44185003e23fcc678597d4148ccfecf7868345311f14c8c",
+      "bytes": 14096083,
+      "initial": "5e9169b985f856540225cf799e0dbb2f5f206320656c9dcf3c42e14255d31a43",
+      "decisions": "eabaebf14a2c930bef91348e2fa6ef302a7668bd0fc9c6dce1b248fd5692bd90"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 15,
+      "variant": "continued-recovery",
+      "file": "patch--1-continued-recovery-15.json.gz",
+      "sha256": "c8991a519278f8fdc258cabd6335fed9e4d3fae147e7902e70e8bbecd4e1a475",
+      "bytes": 2312486,
+      "initial": "5e9169b985f856540225cf799e0dbb2f5f206320656c9dcf3c42e14255d31a43",
+      "decisions": "eabaebf14a2c930bef91348e2fa6ef302a7668bd0fc9c6dce1b248fd5692bd90"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 35,
+      "variant": "continued-recovery",
+      "file": "patch--1-continued-recovery-35.json.gz",
+      "sha256": "94ecd014cf82507cc92382cba8e90edd51bb967b049955f963cbd63ff939ee37",
+      "bytes": 5230834,
+      "initial": "5e9169b985f856540225cf799e0dbb2f5f206320656c9dcf3c42e14255d31a43",
+      "decisions": "eabaebf14a2c930bef91348e2fa6ef302a7668bd0fc9c6dce1b248fd5692bd90"
+    }
+  ],
+  "checks": {
+    "newResearchAssertions": {
+      "passed": 21,
+      "files": [
+        "test/research/continued-recovery.test.ts",
+        "test/research/continued-recovery-world.test.ts"
+      ]
+    },
+    "core": {
+      "passed": 1312,
+      "files": 100,
+      "log": "out/continued-recovery/core-tests.log"
+    },
+    "research": {
+      "passed": 225,
+      "files": 20,
+      "log": "out/continued-recovery/final/research-tests.log"
+    },
+    "python": {
+      "passed": 141,
+      "log": "out/continued-recovery/python-tests.log"
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "candidateLowerGripLaw": {
+      "cases": 48,
+      "maxAngularError": 7.105427357601002e-13,
+      "maxMomentumError": 4.3220627292571254e-14,
+      "maxWorkResidual": 1.2989609388114332e-14,
+      "lawPasses": 48,
+      "lowerTransitions": 16
+    },
+    "productionLowerGripLaw": {
+      "cases": 48,
+      "maxAngularError": 7.105427357601002e-13,
+      "maxMomentumError": 4.3220627292571254e-14,
+      "maxWorkResidual": 1.2989609388114332e-14,
+      "lawPasses": 48,
+      "lowerTransitions": 16
+    },
+    "integration": {
+      "thisStage": "not rerun; diagnostic only, production source unchanged",
+      "priorInitialFullSuite": {
+        "passed": 1520,
+        "failed": 1,
+        "errors": 1,
+        "reason": "game-record 60-second timeout and worker onTaskUpdate timeout with concurrent collection/reporting"
+      },
+      "priorQuietFullSuite": {
+        "passed": 1521,
+        "failed": 1,
+        "errors": 0,
+        "files": 122,
+        "failure": "test/integration/game-record.test.ts: replay-reproducibility 60000ms timeout",
+        "observedMilliseconds": 81203,
+        "allOtherAssertions": "passed; no omitted or skipped tests"
+      },
+      "priorIsolatedRetry": {
+        "passed": 2,
+        "originalTimeoutMs": 60000,
+        "milliseconds": [
+          51904,
+          46499
+        ]
+      },
+      "conclusion": "No complete-suite passing claim; original 60-second game-record timeouts remain."
+    }
+  },
+  "numericalCorrection": {
+    "initialChangingLoadWorkPartitionError": 3.3690115301965307e-06,
+    "rejected": "Duration-scaled local error bound cannot cross the discontinuous response-clock derivative; explicit event/evaluation failures retained.",
+    "final": "Per-component relative/absolute scaling at 1e-12; original changing-load assertion passes, full 225 research assertions pass."
+  }
+}

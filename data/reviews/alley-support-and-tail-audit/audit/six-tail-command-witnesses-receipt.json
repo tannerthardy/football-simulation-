@@ -1,0 +1,240 @@
+{
+  "schema": "retained-passing-tail-command-witness-receipt-v1",
+  "savedOnly": true,
+  "simulationsRun": 0,
+  "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+  "rawPacket": {
+    "filename": "six-tail-commands-baseline-v2.json.gz",
+    "sha256": "68013aab627c373108864787fafef6f312fe0cd60267ffcd56fd4420a127f9c5",
+    "bytes": 36118975,
+    "decodedUtf8Sha256": "36a2d568efea64772e8e21a8d837ab400f794a9bae375a524bf3df6a0712a004",
+    "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+    "toolSha256": "1f07443691c88cf552b96b0344e653e0c393b52326b2d812c2202671afe259eb"
+  },
+  "subset": {
+    "filename": "six-tail-command-witnesses.json.gz",
+    "sha256": "e5624cfa3155cf9810672a9ae7bb1e605e368ef9e058e19695b48ebe3f51f837",
+    "bytes": 538919,
+    "decodedUtf8Sha256": "13d58179d3cf1804bddd9ceb59dc43c3e6c8b14c553a8d3a0e247c56ee909a0f",
+    "decodedUtf8Bytes": 3738923
+  },
+  "originalSixTailPacket": {
+    "filename": "final.json.gz",
+    "sha256": "1e4729d68cf34ac3d741d2cca82ee999253e2c834189f717982f8d9060252cb1",
+    "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b"
+  },
+  "analysis": {
+    "filename": "six-tail-commands-baseline-analysis.json",
+    "sha256": "81f17d7d244a6e1ec5c6cbb9d22ee9559280b294b2a65f7746997ada74820d64",
+    "analyzerSha256": "e7da77cdf6d8cf343a3d39f0593006bca5ca3d9e1deab0a60d4e131ea303b84e"
+  },
+  "bodyDecoder": {
+    "filename": "native-body-codec.mjs",
+    "sha256": "4b397d4bb65ca5626c0214bb2db8e850f9879a419c8b6f6a2214f5b70e8dcf55"
+  },
+  "selectionToolSha256": "7f2642012ee026af484e689a40a2964d55096e3a5d9a28d00eb93083d34e2c58",
+  "selection": [
+    {
+      "id": "DA-R2-curl_flat-cover2-R",
+      "slot": "SS",
+      "times": [
+        2.75,
+        3.5,
+        4.2,
+        4.25
+      ],
+      "reason": "First static late-air fallback, catch, then two spacing-refined zero commands."
+    },
+    {
+      "id": "DA-R2-pa_post_dig-cover3-L",
+      "slot": "LB_M",
+      "times": [
+        3.35
+      ],
+      "reason": "Early observed catch-window candidate for blocking TE."
+    },
+    {
+      "id": "DA-R2-pa_post_dig-cover3-L",
+      "slot": "CB_W",
+      "times": [
+        3.4,
+        4.2,
+        4.6
+      ],
+      "reason": "Early TE window, later no-window arrival branch, and successful catch-time contact control."
+    },
+    {
+      "id": "DA-R2-pa_post_dig-cover3-R",
+      "slot": "CB_W",
+      "times": [
+        3.4,
+        4.2,
+        4.45
+      ],
+      "reason": "No-window arrival branch and moving catch-time adverse control."
+    }
+  ],
+  "structuralChecks": {
+    "rows": 6,
+    "diagnosisWindows": 11,
+    "selectedActors": 11,
+    "commands": 242,
+    "pictures": 4017,
+    "worldSteps": 11,
+    "bodyRoundTrips": 858,
+    "exactCopiedRecords": 4479,
+    "resolvedCommandPictureReferences": 534,
+    "resolvedWorldCommandReferences": 242,
+    "completeRecordCopiesEqualParent": true,
+    "allCommandPictureRangesResolved": true,
+    "allWorldCommandReferencesResolved": true,
+    "allBodyDecodeEncodeEqual": true,
+    "allSixStoredPlainAndParentReceiptsEqual": true,
+    "exactCompressionRoundTrip": true
+  },
+  "rows": [
+    {
+      "id": "DA-R2-curl_flat-cover2-R",
+      "case": {
+        "concept": "curl_flat",
+        "formation": "gun_doubles_11",
+        "coverage": "cover2",
+        "flip": false
+      },
+      "outcome": "touchdown",
+      "offenseYards": 70,
+      "endX": 110.03186927340674,
+      "endY": 29.077453498122704,
+      "duration": 10.9,
+      "executionSha256": "6c30fa17a4d90416ddb62dbdaff892d2e8832956cc905f9e6fe77151e7ba9099",
+      "plainExecutionSha256": "6c30fa17a4d90416ddb62dbdaff892d2e8832956cc905f9e6fe77151e7ba9099",
+      "resultSha256": "c8e924321fa61174dfc0e78265018a627444cfff2069346a6a9155da57ee04d6",
+      "plainResultSha256": "c8e924321fa61174dfc0e78265018a627444cfff2069346a6a9155da57ee04d6",
+      "nextRngU32": 2064305795,
+      "plainNextRngU32": 2064305795,
+      "observerVerified": true,
+      "parentExecutionExact": true,
+      "parentResultExact": true
+    },
+    {
+      "id": "DA-R2-curl_flat-cover3-R",
+      "case": {
+        "concept": "curl_flat",
+        "formation": "gun_doubles_11",
+        "coverage": "cover3",
+        "flip": false
+      },
+      "outcome": "tackle",
+      "offenseYards": 13.95,
+      "endX": 53.94778409112952,
+      "endY": 37.586887640810474,
+      "duration": 5.55,
+      "executionSha256": "dd7c81e89acaeb14ecb71e2b15cb577ab4e083195f10f666fe4716e17e97a970",
+      "plainExecutionSha256": "dd7c81e89acaeb14ecb71e2b15cb577ab4e083195f10f666fe4716e17e97a970",
+      "resultSha256": "d7f303cb1116309f8252c7a2d589501b2158448e6bf91d125555206270067119",
+      "plainResultSha256": "d7f303cb1116309f8252c7a2d589501b2158448e6bf91d125555206270067119",
+      "nextRngU32": 3446420564,
+      "plainNextRngU32": 3446420564,
+      "observerVerified": true,
+      "parentExecutionExact": true,
+      "parentResultExact": true
+    },
+    {
+      "id": "DA-R2-pa_post_dig-cover3-R",
+      "case": {
+        "concept": "pa_post_dig",
+        "formation": "ace_12",
+        "coverage": "cover3",
+        "flip": false
+      },
+      "outcome": "touchdown",
+      "offenseYards": 70,
+      "endX": 110.33729264873196,
+      "endY": 21.547512093954825,
+      "duration": 11.05,
+      "executionSha256": "af9184aad8be3cf1317b012501e352a5884d8c4312e9bd70388a566385318172",
+      "plainExecutionSha256": "af9184aad8be3cf1317b012501e352a5884d8c4312e9bd70388a566385318172",
+      "resultSha256": "1bb5be193ba645299cfc01300099844ec089723ebc1917e8703d42f12d47d099",
+      "plainResultSha256": "1bb5be193ba645299cfc01300099844ec089723ebc1917e8703d42f12d47d099",
+      "nextRngU32": 2779059260,
+      "plainNextRngU32": 2779059260,
+      "observerVerified": true,
+      "parentExecutionExact": true,
+      "parentResultExact": true
+    },
+    {
+      "id": "DA-R2-curl_flat-cover2-L",
+      "case": {
+        "concept": "curl_flat",
+        "formation": "gun_doubles_11",
+        "coverage": "cover2",
+        "flip": true
+      },
+      "outcome": "oob",
+      "offenseYards": 9.97,
+      "endX": 49.97079092535071,
+      "endY": 53.333333333333336,
+      "duration": 5.75,
+      "executionSha256": "fd73dd4e3a76e4124b3eadd36148d2ffefaf9bbb910cb1ced92ed94d46f12fc5",
+      "plainExecutionSha256": "fd73dd4e3a76e4124b3eadd36148d2ffefaf9bbb910cb1ced92ed94d46f12fc5",
+      "resultSha256": "5827094462fd488a9f5db0e83bf456dc4bc11486008bd0af445dce5f8981b39a",
+      "plainResultSha256": "5827094462fd488a9f5db0e83bf456dc4bc11486008bd0af445dce5f8981b39a",
+      "nextRngU32": 3991347095,
+      "plainNextRngU32": 3991347095,
+      "observerVerified": true,
+      "parentExecutionExact": true,
+      "parentResultExact": true
+    },
+    {
+      "id": "DA-R2-curl_flat-cover3-L",
+      "case": {
+        "concept": "curl_flat",
+        "formation": "gun_doubles_11",
+        "coverage": "cover3",
+        "flip": true
+      },
+      "outcome": "tackle",
+      "offenseYards": 0,
+      "endX": 29.560336977134952,
+      "endY": 47.28266991837559,
+      "duration": 6.25,
+      "executionSha256": "d8c22a840e251db5dc281d1dd11d3e5704379f4a01b19cf344926fa7caf59508",
+      "plainExecutionSha256": "d8c22a840e251db5dc281d1dd11d3e5704379f4a01b19cf344926fa7caf59508",
+      "resultSha256": "93c81c3277621e9d3e98373a2d33eb8c8f8079103297d12532087ace8f7fb0b0",
+      "plainResultSha256": "93c81c3277621e9d3e98373a2d33eb8c8f8079103297d12532087ace8f7fb0b0",
+      "nextRngU32": 1591066624,
+      "plainNextRngU32": 1591066624,
+      "observerVerified": true,
+      "parentExecutionExact": true,
+      "parentResultExact": true
+    },
+    {
+      "id": "DA-R2-pa_post_dig-cover3-L",
+      "case": {
+        "concept": "pa_post_dig",
+        "formation": "ace_12",
+        "coverage": "cover3",
+        "flip": true
+      },
+      "outcome": "tackle",
+      "offenseYards": 41.96,
+      "endX": 81.96111218513806,
+      "endY": 29.930071538592188,
+      "duration": 7.85,
+      "executionSha256": "ff5207cb09bd4a3a8fd2ab975d47a719b283178ee1be5caef27daa5fdd05c2e8",
+      "plainExecutionSha256": "ff5207cb09bd4a3a8fd2ab975d47a719b283178ee1be5caef27daa5fdd05c2e8",
+      "resultSha256": "4964a9db197a8353fcb261a3aeeb29a1563fe8ae369c87ac47e8903d00523826",
+      "plainResultSha256": "4964a9db197a8353fcb261a3aeeb29a1563fe8ae369c87ac47e8903d00523826",
+      "nextRngU32": 1591066624,
+      "plainNextRngU32": 1591066624,
+      "observerVerified": true,
+      "parentExecutionExact": true,
+      "parentResultExact": true
+    }
+  ],
+  "reproduction": {
+    "fullRawNotPublished": true,
+    "fullRaw": "node --import tsx native-tail-commands.ts PINNED_601_SOURCE_ARCHIVE 601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b NEW_RAW_JSON_GZ ORIGINAL_NATIVE_COVERAGE_FINAL_JSON_GZ",
+    "subset": "node select-native-command-witnesses.mjs FULL_RAW_JSON_GZ SIX_TAIL_ANALYSIS_JSON NEW_SUBSET_JSON_GZ NEW_RECEIPT_JSON"
+  }
+}

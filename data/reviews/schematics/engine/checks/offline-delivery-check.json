@@ -1,0 +1,12 @@
+{
+  "schema": "schematic-offline-delivery-check-v1",
+  "clips": 7,
+  "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+  "zipInlineContentLoaded": true,
+  "fileProtocol": "cloud browser blocked navigation by administrator policy; inline ZIP HTML checked instead",
+  "networkBlocked": true,
+  "nativeRatingsExplicitlyUnrecorded": true,
+  "pairedActualRatingsRetained": true,
+  "actualRoleAndCaveatLabels": true,
+  "javascriptErrors": []
+}

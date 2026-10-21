@@ -1,0 +1,607 @@
+{
+  "sourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+  "sourceScope": "Final default-off isolation and experimental shared/hand equivalence gates only. Experimental full games, scenario pack and telemetry were measured on separately pinned5ccd source; not rerun on or relabeled as final source.",
+  "mode": "legacy production default; virtual-foot is explicitly opt-in and not ready for production",
+  "publishedProductionSourceSha256": "d040bd04f864b12ba5f49250b7ca53b3609dd25bd41dfa3326d0b0181917fd4a",
+  "experimentalSourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+  "adoptionRecommendation": "Do not enable as production default. Keep as a pinned experimental model: useful force/work coupling progress but fails shared-transfer trajectory convergence and support-coordinate localization.",
+  "isolationGate": {
+    "sourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+    "productionMode": "legacy",
+    "calibrationGames": 8,
+    "calibrationSeed": 7,
+    "independentLeagues": 2,
+    "countedScrimmagePlays": 1013,
+    "allPublishedPrintedCalibrationMetricsExactlyMatch": true,
+    "trackingGames": 4,
+    "trackingSeed": 5,
+    "publishedTrackingReportTextExactlyMatch": true,
+    "scope": "Displayed aggregate calibration metrics and counted plays; byte-for-byte tracking report equality. Full-game trajectories are not recorded by these guards.",
+    "publishedCalibration": "data/reviews/physics-world/constraint-support/calibration-after-8.txt",
+    "publishedTracking": "data/reviews/physics-world/constraint-support/tracking-after.txt",
+    "defaultBehaviorRestoredBy": "Preserving original legacy operation order in capacity allocation, yaw allocation, reel denominator and no-member force paths; no physics/profile retuning."
+  },
+  "experimentalEquivalenceGate": {
+    "sourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+    "explicitPreload": "scripts/diag/enable-virtual-foot.ts",
+    "comparisonSourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+    "shared120RowsExactlyEqual": true,
+    "sharedAllSummariesExactlyEqual": true,
+    "sharedSupportTelemetryExactlyEqual": true,
+    "hand54RedirectStatesExactlyEqual": true,
+    "hand12FrontalApproachStatesExactlyEqual": true,
+    "handAllSummariesExactlyEqual": true
+  },
+  "sharedCapabilities": {
+    "reps": 120,
+    "legacy": [
+      {
+        "substeps": 6,
+        "reps": 40,
+        "maxMirrorPositionErrorYd": 4.773959005888173e-15,
+        "meanSubjectPositionErrorVs48Yd": 0.07984615781124021,
+        "maxSubjectPositionErrorVs48Yd": 0.1814148553486492,
+        "fallSetDisagreementsVs48": 0,
+        "maxMomentumResidualKgYdPerS": 6.821233392904092e-13,
+        "maxWorkResidualKgYd2PerS2": 2.262190434976219e-12,
+        "maxArmImpulseFraction": 1.0000000000000002,
+        "maxArmWorkFraction": 0.594199534486747,
+        "maxOverlapYd": 0.0014255092367130295,
+        "allFinite": true
+      },
+      {
+        "substeps": 12,
+        "reps": 40,
+        "maxMirrorPositionErrorYd": 1.1546319456101628e-14,
+        "meanSubjectPositionErrorVs48Yd": 0.0297014101811173,
+        "maxSubjectPositionErrorVs48Yd": 0.06903261498797421,
+        "fallSetDisagreementsVs48": 0,
+        "maxMomentumResidualKgYdPerS": 5.684360209067985e-13,
+        "maxWorkResidualKgYd2PerS2": 2.149169731069378e-12,
+        "maxArmImpulseFraction": 1.0000000000000002,
+        "maxArmWorkFraction": 0.6113448115291875,
+        "maxOverlapYd": 0.00866280087728033,
+        "allFinite": true
+      },
+      {
+        "substeps": 48,
+        "reps": 40,
+        "maxMirrorPositionErrorYd": 8.526512829121202e-14,
+        "meanSubjectPositionErrorVs48Yd": 0,
+        "maxSubjectPositionErrorVs48Yd": 0,
+        "fallSetDisagreementsVs48": 0,
+        "maxMomentumResidualKgYdPerS": 2.5011104693010858e-12,
+        "maxWorkResidualKgYd2PerS2": 6.340761249390425e-12,
+        "maxArmImpulseFraction": 1.000000000000001,
+        "maxArmWorkFraction": 0.5803205938413333,
+        "maxOverlapYd": 0.00246414371398751,
+        "allFinite": true
+      }
+    ],
+    "experimental": [
+      {
+        "substeps": 6,
+        "reps": 40,
+        "maxMirrorPositionErrorYd": 2.5554403038086093e-10,
+        "meanSubjectPositionErrorVs48Yd": 0.22437015226002038,
+        "maxSubjectPositionErrorVs48Yd": 1.8943496789761394,
+        "fallSetDisagreementsVs48": 0,
+        "maxMomentumResidualKgYdPerS": 6.252877003240193e-13,
+        "maxWorkResidualKgYd2PerS2": 1.318944953254686e-12,
+        "maxArmImpulseFraction": 1.0000000000000002,
+        "maxArmWorkFraction": 0.594199534486747,
+        "maxOverlapYd": 0.0014255092367130295,
+        "allFinite": true
+      },
+      {
+        "substeps": 12,
+        "reps": 40,
+        "maxMirrorPositionErrorYd": 1.345183520129467e-09,
+        "meanSubjectPositionErrorVs48Yd": 0.1293479147125535,
+        "maxSubjectPositionErrorVs48Yd": 1.3230099260297574,
+        "fallSetDisagreementsVs48": 0,
+        "maxMomentumResidualKgYdPerS": 6.821221195660107e-13,
+        "maxWorkResidualKgYd2PerS2": 1.1888268147686176e-12,
+        "maxArmImpulseFraction": 1.0000000000000002,
+        "maxArmWorkFraction": 0.6610617431461037,
+        "maxOverlapYd": 0.00866280087728033,
+        "allFinite": true
+      },
+      {
+        "substeps": 48,
+        "reps": 40,
+        "maxMirrorPositionErrorYd": 1.020014495090038e-07,
+        "meanSubjectPositionErrorVs48Yd": 0,
+        "maxSubjectPositionErrorVs48Yd": 0,
+        "fallSetDisagreementsVs48": 0,
+        "maxMomentumResidualKgYdPerS": 1.0800381056532536e-12,
+        "maxWorkResidualKgYd2PerS2": 2.4726887204451486e-12,
+        "maxArmImpulseFraction": 1.000000000000001,
+        "maxArmWorkFraction": 0.663278468351701,
+        "maxOverlapYd": 0.00246414371398751,
+        "allFinite": true
+      }
+    ],
+    "worstNative12Tasks": [
+      {
+        "task": "jam",
+        "variant": "strong",
+        "native12SubjectPositionErrorVs48Yd": 1.323009924649454
+      },
+      {
+        "task": "jam",
+        "variant": "heavy",
+        "native12SubjectPositionErrorVs48Yd": 0.7192029582287125
+      },
+      {
+        "task": "jam",
+        "variant": "wideBase",
+        "native12SubjectPositionErrorVs48Yd": 0.08883313712126632
+      },
+      {
+        "task": "anchor",
+        "variant": "strong",
+        "native12SubjectPositionErrorVs48Yd": 0.06759428154455387
+      },
+      {
+        "task": "shed",
+        "variant": "strong",
+        "native12SubjectPositionErrorVs48Yd": 0.0599292482510315
+      }
+    ],
+    "productionBaselineSourceSha256": "d040bd04f864b12ba5f49250b7ca53b3609dd25bd41dfa3326d0b0181917fd4a",
+    "experimentalFinalSourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+    "experimentalOriginalSourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272"
+  },
+  "scenarioPack": {
+    "reps": 63,
+    "approachReps": 24,
+    "legacyApproachTackles": 14,
+    "experimentalApproachTackles": 16,
+    "ordinaryFrontalBothSpeedsPreserved": true,
+    "changedTackleOutcome": [
+      {
+        "side": 1,
+        "bearing": 30,
+        "speed": 4,
+        "legacy": false,
+        "experimental": true
+      },
+      {
+        "side": -1,
+        "bearing": 30,
+        "speed": 4,
+        "legacy": false,
+        "experimental": true
+      }
+    ],
+    "sidewaysFallsLegacy": 0,
+    "sidewaysFallsExperimental": 0,
+    "productionBaselineSourceSha256": "d040bd04f864b12ba5f49250b7ca53b3609dd25bd41dfa3326d0b0181917fd4a",
+    "experimentalSourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+    "experimentalRerunOnFinalSource": false
+  },
+  "calibration8": {
+    "experimentalSourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+    "productionBaselineSourceSha256": "d040bd04f864b12ba5f49250b7ca53b3609dd25bd41dfa3326d0b0181917fd4a",
+    "finalProductionGuardSourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+    "games": 8,
+    "seed": 7,
+    "leagues": 2,
+    "legacyScrimmagePlays": 1013,
+    "experimentalScrimmagePlays": 998,
+    "experimentalRerunOnFinalSource": false,
+    "metrics": {
+      "Points / team-game": {
+        "legacy": 31.06,
+        "experimental": 32.44,
+        "suffix": ""
+      },
+      "Scrimmage plays / team-game": {
+        "legacy": 63.31,
+        "experimental": 62.38,
+        "suffix": ""
+      },
+      "Total yards / team-game": {
+        "legacy": 447.08,
+        "experimental": 434.88,
+        "suffix": ""
+      },
+      "Completion %": {
+        "legacy": 62.27,
+        "experimental": 64.13,
+        "suffix": "%"
+      },
+      "Yards / attempt": {
+        "legacy": 9.58,
+        "experimental": 9.69,
+        "suffix": ""
+      },
+      "Sack rate (per dropback)": {
+        "legacy": 3.11,
+        "experimental": 5.75,
+        "suffix": "%"
+      },
+      "INT rate": {
+        "legacy": 6.44,
+        "experimental": 7.14,
+        "suffix": "%"
+      },
+      "Pass TD rate": {
+        "legacy": 7.67,
+        "experimental": 7.76,
+        "suffix": "%"
+      },
+      "20+ yd completions / att": {
+        "legacy": 12.73,
+        "experimental": 13.2,
+        "suffix": "%"
+      },
+      "aDOT": {
+        "legacy": 9.16,
+        "experimental": 9.58,
+        "suffix": ""
+      },
+      "YAC / reception": {
+        "legacy": 8.4,
+        "experimental": 7.42,
+        "suffix": ""
+      },
+      "Time to throw": {
+        "legacy": 2.59,
+        "experimental": 2.6,
+        "suffix": "s"
+      },
+      "QB sensed pressure (internal)": {
+        "legacy": 18.24,
+        "experimental": 18.36,
+        "suffix": "%"
+      },
+      "Scramble rate": {
+        "legacy": 7.57,
+        "experimental": 5.07,
+        "suffix": "%"
+      },
+      "Rush yards / carry": {
+        "legacy": 3.81,
+        "experimental": 3.75,
+        "suffix": ""
+      },
+      "Run stuff rate (<=0)": {
+        "legacy": 28.57,
+        "experimental": 25.37,
+        "suffix": "%"
+      },
+      "10+ yd runs": {
+        "legacy": 7.69,
+        "experimental": 8.58,
+        "suffix": "%"
+      },
+      "Yards before contact (runs)": {
+        "legacy": 0.6,
+        "experimental": 0.46,
+        "suffix": ""
+      },
+      "Pass rate (dropbacks / plays)": {
+        "legacy": 73.05,
+        "experimental": 73.15,
+        "suffix": "%"
+      },
+      "3rd-down conversion": {
+        "legacy": 31.05,
+        "experimental": 27.27,
+        "suffix": "%"
+      },
+      "FG %": {
+        "legacy": 100.0,
+        "experimental": 84.0,
+        "suffix": "%"
+      },
+      "XP %": {
+        "legacy": 100.0,
+        "experimental": 94.34,
+        "suffix": "%"
+      },
+      "Fumbles lost / team-game": {
+        "legacy": 0.5,
+        "experimental": 0.63,
+        "suffix": ""
+      },
+      "Punts / team-game": {
+        "legacy": 6.56,
+        "experimental": 5.75,
+        "suffix": ""
+      },
+      "Penalties / team-game (pre-snap+holding)": {
+        "legacy": 11.06,
+        "experimental": 10.25,
+        "suffix": ""
+      },
+      "NGS separation at catch/incompletion": {
+        "legacy": 3.36,
+        "experimental": 3.24,
+        "suffix": ""
+      },
+      "NGS tight-window throws (<1 yd)": {
+        "legacy": 7.8,
+        "experimental": 9.23,
+        "suffix": "%"
+      },
+      "QB coverage family read right": {
+        "legacy": 58.38,
+        "experimental": 55.34,
+        "suffix": "%"
+      },
+      "Checks at the line / play": {
+        "legacy": 1.58,
+        "experimental": 1.3,
+        "suffix": "%"
+      },
+      "Missed + broken tackles / play": {
+        "legacy": 0.25,
+        "experimental": 0.28,
+        "suffix": ""
+      }
+    }
+  },
+  "tracking4": {
+    "experimentalSourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+    "productionBaselineSourceSha256": "d040bd04f864b12ba5f49250b7ca53b3609dd25bd41dfa3326d0b0181917fd4a",
+    "finalProductionGuardSourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+    "games": 4,
+    "seed": 5,
+    "experimentalRerunOnFinalSource": false,
+    "selected": {
+      "pressureWithin2YdPct": {
+        "legacy": 24.3,
+        "experimental": 31.7,
+        "nfl": 32.49
+      },
+      "pocketDepthAt2_5sP50Yd": {
+        "legacy": 4.17,
+        "experimental": 4.06,
+        "nfl": 4.55
+      },
+      "dlRunPeakAccelerationP50YdS2": {
+        "legacy": 4.94,
+        "experimental": 4.69,
+        "nfl": 3.28
+      },
+      "runYbcMeanYd": {
+        "legacy": 0.94,
+        "experimental": 0.95,
+        "nfl": 1.16
+      }
+    }
+  },
+  "telemetry": {
+    "experimentalSourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+    "sampling": "Once after each outer world tick, not a substep peak; signed tick work is not gross-positive substep work.",
+    "cohorts": {
+      "shared": {
+        "note": "Sampled once after each world tick, not a substep peak. Signed motor-work totals cannot establish gross-positive per-substep work bounds.",
+        "worldTicks": 4800,
+        "bodyTicks": 10560,
+        "feetBodyTicks": 10560,
+        "nonfiniteSamples": 0,
+        "maxSupportOffsetYd": 3.9270757879562534,
+        "maxAnchorDistanceFromComYd": 3.9270757879562534,
+        "maxRequestedCorrectionSpeedYdS": 3.399861595650703,
+        "maxAchievedCorrectionSpeedYdS": 3.399861595650703,
+        "maxActiveCommandFraction": 1.0000000000000002,
+        "maxExternalLoadFraction": 0,
+        "maxXiYd": 1.2929058869528196,
+        "maxMotorPositiveTickWorkFraction": 0,
+        "positiveMotorTickWork": 0,
+        "negativeMotorTickWork": 0,
+        "supportOffsetsAboveBodyRadius": 1208,
+        "longestPlacingSeconds": 1.3500000000000005
+      },
+      "scenarios": {
+        "note": "Sampled once after each world tick, not a substep peak. Signed motor-work totals cannot establish gross-positive per-substep work bounds.",
+        "worldTicks": 2640,
+        "bodyTicks": 58080,
+        "feetBodyTicks": 58080,
+        "nonfiniteSamples": 0,
+        "maxSupportOffsetYd": 2.209659261351666,
+        "maxAnchorDistanceFromComYd": 2.2096592613516646,
+        "maxRequestedCorrectionSpeedYdS": 3.9232780315911975,
+        "maxAchievedCorrectionSpeedYdS": 4.879311289975084,
+        "maxActiveCommandFraction": 1.0000000000000002,
+        "maxExternalLoadFraction": 1.9901578329259975,
+        "maxXiYd": 1.399777093455709,
+        "maxMotorPositiveTickWorkFraction": 0.17537756430747029,
+        "positiveMotorTickWork": 250.9824571815649,
+        "negativeMotorTickWork": -1318.3338645653603,
+        "supportOffsetsAboveBodyRadius": 764,
+        "longestPlacingSeconds": 1.6000000000000008
+      },
+      "tracking4": {
+        "note": "Sampled once after each world tick, not a substep peak. Signed motor-work totals cannot establish gross-positive per-substep work bounds.",
+        "worldTicks": 57955,
+        "bodyTicks": 1275010,
+        "feetBodyTicks": 1275010,
+        "nonfiniteSamples": 0,
+        "maxSupportOffsetYd": 6.3663707616577865,
+        "maxAnchorDistanceFromComYd": 6.366370761657789,
+        "maxRequestedCorrectionSpeedYdS": 4.440888258622363,
+        "maxAchievedCorrectionSpeedYdS": 8.748322587069197,
+        "maxActiveCommandFraction": 1.0000000000000004,
+        "maxExternalLoadFraction": 3.09705972058081,
+        "maxXiYd": 1.697985891155474,
+        "maxMotorPositiveTickWorkFraction": 0.24957930408378246,
+        "positiveMotorTickWork": 29681.837187825655,
+        "negativeMotorTickWork": -85535.44141896776,
+        "supportOffsetsAboveBodyRadius": 121461,
+        "longestPlacingSeconds": 8.199999999999982
+      },
+      "calibration8": {
+        "note": "Sampled once after each world tick, not a substep peak. Signed motor-work totals cannot establish gross-positive per-substep work bounds.",
+        "worldTicks": 111466,
+        "bodyTicks": 2452252,
+        "feetBodyTicks": 2452252,
+        "nonfiniteSamples": 0,
+        "maxSupportOffsetYd": 7.267160785924376,
+        "maxAnchorDistanceFromComYd": 7.267160785924374,
+        "maxRequestedCorrectionSpeedYdS": 4.509574973291045,
+        "maxAchievedCorrectionSpeedYdS": 7.785547598960294,
+        "maxActiveCommandFraction": 1.0000000000000004,
+        "maxExternalLoadFraction": 2.9253368502809667,
+        "maxXiYd": 1.6468740915523148,
+        "maxMotorPositiveTickWorkFraction": 0.24973741049588014,
+        "positiveMotorTickWork": 55052.67807656419,
+        "negativeMotorTickWork": -176441.8668797828,
+        "supportOffsetsAboveBodyRadius": 243717,
+        "longestPlacingSeconds": 9.750000000000004
+      }
+    }
+  },
+  "rejectedDefaultOffIsolation": {
+    "sourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+    "productionMode": "legacy",
+    "acceptedForProduction": false,
+    "reason": "Mathematically equivalent arithmetic regrouping changed finite-precision closed-loop game histories. This intermediate default-off implementation was rejected; final legacy operation order is restored and its guards match published output.",
+    "calibrationGames": 8,
+    "seed": 7,
+    "independentLeagues": 2,
+    "countedScrimmagePlays": 993,
+    "selectedMetricsVsPublished": {
+      "Points / team-game": {
+        "published": 31.06,
+        "currentLegacy": 27.44
+      },
+      "Sack rate (per dropback)": {
+        "published": 3.11,
+        "currentLegacy": 4.09
+      },
+      "Missed + broken tackles / play": {
+        "published": 0.25,
+        "currentLegacy": 0.22
+      },
+      "Yards / attempt": {
+        "published": 9.58,
+        "currentLegacy": 9.71
+      },
+      "Rush yards / carry": {
+        "published": 3.81,
+        "currentLegacy": 3.34
+      }
+    },
+    "trackingGames": 4,
+    "trackingSeed": 5,
+    "selectedTrackingVsPublished": {
+      "pressureWithin2YdPct": {
+        "published": 24.3,
+        "rejectedIntermediateLegacy": 27.3
+      },
+      "pocketDepthAt2_5sP50Yd": {
+        "published": 4.17,
+        "rejectedIntermediateLegacy": 4.12
+      },
+      "runYbcMeanYd": {
+        "published": 0.94,
+        "rejectedIntermediateLegacy": 0.85
+      }
+    },
+    "scope": "Isolation failure witness only. These discarded intermediate statistics are not the accepted production comparison."
+  },
+  "interpretation": [
+    "Planar momentum and signed work ledgers remain numerically consistent; active support command fractions remain <=1 up to roundoff. These checks do not validate unrepresented vertical/limb energy or the viscous motor law.",
+    "Shared native12-vs48 mean/max trajectory disagreement worsens from .02970/.06903 yd to .12935/1.32301 yd; the strongest deterioration is jam/strong and jam/heavy. These probes have no leg grasps, isolating a support correction/stance-allocation failure.",
+    "Cumulative support offset reaches3.927 yd in two-second shared probes without leg holds,6.366 yd in tracking games and7.267 yd in eight-game guards. Because graspPoint uses offset as a contact endpoint, the coordinate needs support transfer/localization before it can represent a reachable foot contact.",
+    "Ordinary frontal tackling is preserved; mirrored30-degree4-yd/s misses become tackles. Football missed+broken tackle rate nevertheless worsens from.25 to.28/play against the published production baseline. Isolated success is not established tackle realism.",
+    "Pressure and sacks move nearer NFL references, but closer league statistics do not establish physical or population validity. Profiles and controllers are not retuned; roster and play histories diverge after physical outcomes differ.",
+    "Final shared/hand experimental trajectories exactly match the earlier experiment. This is evidence for unchanged tested active branches, not proof of unmeasured full-game trajectory equivalence; the experimental4/8 measurements retain their original source pin.",
+    "Elapsed time includes observational telemetry and concurrent diagnostics; it is not a controlled performance comparison."
+  ],
+  "runtime": "Node v22.23.3; node --import tsx rather than tsx CLI; fixed scripts/profile fixtures; no RNG draws or controller calls added by telemetry.",
+  "commands": {
+    "finalLegacyTracking": {
+      "sourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+      "command": "node --import tsx scripts/kinematics-compare.ts 4 5"
+    },
+    "finalLegacyCalibration": {
+      "sourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+      "command": "node --import tsx scripts/calibrate.ts 8 7 2"
+    },
+    "finalExperimentalShared": {
+      "sourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+      "command": "SUPPORT_TELEMETRY_OUTPUT=../shared-final-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./scripts/diag/support-telemetry.ts scripts/diag/shared-capabilities.ts ../shared-final-experimental.json"
+    },
+    "finalExperimentalHand": {
+      "sourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+      "command": "node --import tsx --import ./scripts/diag/enable-virtual-foot.ts scripts/diag/hand-convergence.ts ../hand-final-experimental.json"
+    },
+    "originalExperimentalScenarioPack": {
+      "sourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+      "command": "SUPPORT_TELEMETRY_OUTPUT=../scenario-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./support-telemetry.ts scripts/scenario-pack.ts ../scenarios-experimental.json"
+    },
+    "originalExperimentalTracking": {
+      "sourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+      "command": "SUPPORT_TELEMETRY_OUTPUT=../tracking-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./support-telemetry.ts scripts/kinematics-compare.ts 4 5"
+    },
+    "originalExperimentalCalibration": {
+      "sourceSha256": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+      "command": "SUPPORT_TELEMETRY_OUTPUT=../calibration-support.json node --import tsx --import ./scripts/diag/enable-virtual-foot.ts --import ./support-telemetry.ts scripts/calibrate.ts 8 7 2"
+    },
+    "note": "Commands ran from immutable ignored snapshots with copied src/scripts, symlinked node_modules/data and redirected outputs. Original5ccd telemetry used a local observational hook; tracked support-telemetry.ts gives exactly equal shared telemetry. Source hashes cover src only; manifest separately pins script/preload/hook/input/output bytes."
+  },
+  "physicsReady": false,
+  "rawOutputIdentifiers": {
+    "finalLegacyCalibration": {
+      "workspacePath": "out/virtual-foot-final-validation/calibration-final-legacy.txt",
+      "bytes": 2311,
+      "sha256": "b46cc8e4f294f9906fc7ba1a13d634c53a80ad7a89b6003a614156c54db99df8"
+    },
+    "finalLegacyTracking": {
+      "workspacePath": "out/virtual-foot-final-validation/tracking-final-legacy.txt",
+      "bytes": 3913,
+      "sha256": "4a6d2184da1cd1c8979ed26bfa587307acd184c1a58440c7adba91e3466f2b93"
+    },
+    "finalExperimentalShared": {
+      "workspacePath": "out/virtual-foot-final-validation/shared-final-experimental.json",
+      "bytes": 136866,
+      "sha256": "41b9cbcced9c4b2092049f9a9715c3dbb671e6b666be71544808401770cae43d"
+    },
+    "finalExperimentalHand": {
+      "workspacePath": "out/virtual-foot-final-validation/hand-final-experimental.json",
+      "bytes": 29073,
+      "sha256": "9607cc601c29b566dcbc37f28102aacd91964da6f53fdf4900ba327d7a941ef8"
+    },
+    "originalExperimentalCalibration": {
+      "workspacePath": "out/virtual-foot-validation/calibration-experimental.txt",
+      "bytes": 2310,
+      "sha256": "c27e7b97d4087ae043c6684d49b95bca8cc08edeffec70eff5bf26837a2ad179"
+    },
+    "originalExperimentalTracking": {
+      "workspacePath": "out/virtual-foot-validation/tracking-experimental.txt",
+      "bytes": 3913,
+      "sha256": "967eace0cf3be871b3d1a3b37f3491fee8a95960fa059cd0538ffeaf17b7bb84"
+    },
+    "originalExperimentalScenarioPack": {
+      "workspacePath": "out/virtual-foot-validation/scenarios-experimental.json",
+      "bytes": 19906,
+      "sha256": "b75a75ae1e3cf27327897b4ce4d3a5d0d9d04bb77b9e51efb26ce6e7e6edd6a7"
+    },
+    "rejectedIntermediateLegacyCalibration": {
+      "workspacePath": "out/virtual-foot-validation/calibration-current-legacy.txt",
+      "bytes": 2311,
+      "sha256": "5dea5003ea40a056cabd19a8d639adbf684ae16444bbfd4f1658a5ff649ef457"
+    },
+    "rejectedIntermediateLegacyTracking": {
+      "workspacePath": "out/virtual-foot-validation/tracking-current-legacy.txt",
+      "bytes": 3913,
+      "sha256": "6d9e544e72466e622aa4d6ac641f01227f0418538a3400ae948ca7d5beaa00ef"
+    }
+  },
+  "sourceDefinition": "SHA256 of lexically sorted complete POSIX relative path strings under src/, then NUL, file bytes, NUL. Full string order matches scripts/source-version.ts; Python Path component-order sorting is not canonical.",
+  "sourceMetadataCorrection": {
+    "canonicalHashes": {
+      "final": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+      "intermediate": "5ccd20cb43c0e7a55cb4b5eb2f3bb110e24542990bf8f06e51d67e80ebcad272",
+      "publishedProduction": "d040bd04f864b12ba5f49250b7ca53b3609dd25bd41dfa3326d0b0181917fd4a"
+    },
+    "rawSimulationOutputsChanged": false,
+    "note": "Earlier agent-written metadata used noncanonical Python Path component order. Source bytes and physical results are unchanged; corrected IDs match the canonical sourceVersion embedded in JSON runs."
+  }
+}

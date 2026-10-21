@@ -1,0 +1,106 @@
+{
+  "branch": "claude/engine-priorities",
+  "baselineCommit": "2c2c250c48c6ce32c95fa6778bfd0d1c18e41d63",
+  "baselineSourceSha256": "92eb1ea66cfffd94732d7eb2dc8132212a135fdf8a2cf17a595f7d1674632e63",
+  "finalSourceSha256": "e3471f2c0be6e1c4b32c9713d53d216bc835691d868e93e1628ea279fb21498d",
+  "commands": [
+    "node --import tsx scripts/diag/moving-contact.ts out/moving-contact-after.json",
+    "node --import tsx scripts/diag/pursuit-film.ts out/pursuit-film.json viewer/film-room.html",
+    "node --import tsx scripts/diag/hand-convergence.ts out/pursuit-hand-convergence.json",
+    "node --import tsx scripts/diag/open-field-lab.ts 40 side",
+    "node --import tsx scripts/diag/open-field-lab.ts 40 front",
+    "node --import tsx scripts/diag/open-field-lab.ts 40 two",
+    "node --import tsx scripts/diag/open-field-lab.ts 40 trail",
+    "npm test",
+    "npm run test:data",
+    "npm run typecheck",
+    "npm run build",
+    "node --import tsx scripts/kinematics-compare.ts 4 5",
+    "node --import tsx scripts/calibrate.ts 16 7 2",
+    "node --import tsx scripts/export-replay.ts 7 --games 6 --out viewer/film-room.html --doc",
+    "python3 scripts/film-outcomes.py viewer/film-room.html --out out/pursuit-film-outcomes.json",
+    "python3 scripts/check-replay-viewer.py viewer/film-room.html"
+  ],
+  "notes": [
+    "Physics NOT READY. This repairs close approach commands, not contact forces or numerical convergence.",
+    "96 paired mechanical trials per source; physical profiles exactly identical in every before/after pair.",
+    "No physical capacity, collision, grip or solver constants changed. No NFL fitting or additional raw data downloaded.",
+    "Native-12 crossing peak closing 10.43 -> 3.23 yd/s and body falls 14 -> 0; frontal contact closing/falls unchanged.",
+    "Long continued-contact drift worsens in crossing; native-12 frontal full-path mirror drift 0.691 yd before/after. First-contact timestamps use 20 Hz reporting.",
+    "Existing hand-fighting native12-versus192 remains 0.206 yd mean / 0.822 worst, two fall disagreements.",
+    "16-game misses and passing explosives decrease; rushing yards/carry regress. Fixed-film passing explosives worsen slightly.",
+    "267 engine tests, 20 data tests, typecheck/build, 20 browser checks pass. Diagnostic trajectory convergence is not a passing test.",
+    "874 new clips; two pitches; ZIP member matches HTML exactly. Old G/P IDs belong to baseline source/film.",
+    "Full owner/moving-contact traces stay ignored; reviewed event samples, contact windows, final states and aggregates are committed.",
+    "Uploaded generated WR/DB text retained byte-for-byte; referenced figures absent; full interference/holding rules remain unimplemented.",
+    "PR #1 unchanged; publication on claude/engine-priorities uses normal fast-forward push, never force.",
+    "Owner trace now explicitly rejects source other than 2c2c250; guard verified before publication. The trace command runs only from the documented baseline archive.",
+    "Retained log whitespace normalized without value changes; uploaded reference retains original Markdown hard line breaks."
+  ],
+  "scripts": {
+    "scripts/diag/moving-contact.ts": "811b407b6e895c24e81048700177e937356d3207bf5ea700686dbaf10a57064c",
+    "scripts/diag/pursuit-film.ts": "367dc79b896934365b7a7aa086585543ff8669192c154c1a944dee9195726cae",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/diag/open-field-lab.ts": "2665ebf007d84079aa0537fa131c007f74fe9fc882145c059f798dad0cc274d1",
+    "scripts/kinematics-compare.ts": "907a928cfff8375c88ccf596f3bf159509b72aeae032ac04cfe70630152999e2",
+    "scripts/calibrate.ts": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+    "scripts/export-replay.ts": "9f85970b4c86e4a46af63c6205fb743cab5ec7700e5e1d354ff08b18446829bf",
+    "scripts/replay-data.ts": "2f41af5aad0124730fb04714b0602f26e21a97985daefa258288e3cfda0fd741",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/film-outcomes.py": "883e24923149066b81917578dc18b47bbc2f7f8e7ecc20b2fd7be8007dc862f2",
+    "scripts/check-replay-viewer.py": "8c07c3f24278e043abc70c036dd003e49ba3e9720491567798939d93af3097fa"
+  },
+  "references": {
+    "data/reviews/physics-world/held-foot-and-movement-tasks/manifest.json": "99bfad2bc9421157fcc64e268f8628f2392dc218ce838a91e392908d6ba4e877",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/calibration-16.txt": "805231528547b6cd743955dff705065b185c52c0ca4a8ee5905de25bea8ecaee",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/kinematics.txt": "7b66aea2f7ab06239595c6f935fb417d378afc826a26c1172a181136cf25ca65",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/film-outcomes.json": "e13fa6c5e28611662ede4f580d2c3e8c8b74b2be77131c5402a39187c5b5f5e3",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/hand-convergence.json": "8944ab4fc5f36e78be08022831449d10d52fe67364fd33b86bbcc2c9f6f06713",
+    "data/reviews/physics-world/held-foot-and-movement-tasks/movement-tasks.json": "27000cacf3f5d333d3341e522c18e812f6a9123626a320ba142fe61be772f3d7",
+    "data/reviews/nflverse/reference.json": "ef13f27b292dab73d0d4aedf6128b9b3364d326446b03c5dd49567f65889caff"
+  },
+  "rawResults": {
+    "out/moving-contact-before.json": "5ad8028a1383f5fc4e44a90564f0b0da2f9632dd2eb7070c2293a379aedf9368",
+    "out/moving-contact-after.json": "3ce8ebb5ff9b3cc5f343a4b76674bb17d79708e3728c21d7dc7f6abefaebfc1c",
+    "out/pursuit-owner-baseline.json": "a9df3a75a528faf5c154e26717f737e94d91bdb8dee1c0d3c2aa007c3a13864e"
+  },
+  "baselineProbeRuntimeScriptSha256": "6c68ccea61d66fd4773b8420678855aad6ce21e5686473000211253db63aed2a",
+  "baselineFilmSha256": "c660001500d2e7847be65a787efb28faa38b81e05a10b862f16fc2019b3f4d56",
+  "artifacts": {
+    "data/reviews/physics-world/controlled-approach/README.md": "a465e53c6e0d53895d8503ebe5916cf9dd8d9e613a90099810c827810bf1ba87",
+    "data/reviews/physics-world/controlled-approach/browser-tests.json": "83de7cae6135d814c240f49baa30c05beb039985465c81dc0793f379125bb06b",
+    "data/reviews/physics-world/controlled-approach/build.txt": "13333e10fb6707c07f416a6d7a0befe85eed52cb75cb60060bcaa5790759e529",
+    "data/reviews/physics-world/controlled-approach/calibration-16.txt": "6fc683f5c366bc85b027f6c9e79ba177aaf3bf6eddd77e68d00b05966e0227dd",
+    "data/reviews/physics-world/controlled-approach/data-tests.txt": "ecd8b5a186bcfc517ec8c141511f392a8ebf64bbf470d9c145bac8bdc6a6a7c8",
+    "data/reviews/physics-world/controlled-approach/film-export.txt": "b677a83d7d3edb2f7d1ff246d7984aca71bc336d7cea4443cdaa01cafb6c16da",
+    "data/reviews/physics-world/controlled-approach/film-outcomes.json": "bdd10bdbc6921f76b48abbd2707cbb17b84fb6f2bd2a94219a915c9afbeb8652",
+    "data/reviews/physics-world/controlled-approach/focused-tests.txt": "3c5998f726c79c6e54680fda0d5bdec1bbcb58a3fe21f21e2ce6784a784971bf",
+    "data/reviews/physics-world/controlled-approach/hand-convergence.json": "d3cb93654d1b676a62a9ac071bf437e7d9733e7e8f18acd241c79a66ba72b1ee",
+    "data/reviews/physics-world/controlled-approach/kinematics.txt": "5c64557eafea0fb33d806b9c117670d690529323661610240873c9b5d21a913c",
+    "data/reviews/physics-world/controlled-approach/moving-contact-after.json": "0259ca2b854f7c5bfaba3430b12fcb4cce0284104dc4ff5f831b38826115b65f",
+    "data/reviews/physics-world/controlled-approach/moving-contact-before.json": "4ce15f5f177e20afbbd6506c4e426bfe912a965de1c13d4c1079be11e366e4f8",
+    "data/reviews/physics-world/controlled-approach/moving-contact-convergence.json": "25bdd3e38a4e8c0ec8aa3ef7182a8023f58f959843cdc656e41f053f7a940693",
+    "data/reviews/physics-world/controlled-approach/open-field-after-front.txt": "ca9468405275fc26a032ff98e4a522f2c7b3d48f58cd5ee86314bb4f8fab39ec",
+    "data/reviews/physics-world/controlled-approach/open-field-after-side.txt": "7a4519a804253b4c7f9586db776ebac86e3f1f4f05658f2dda132379b25ccc3b",
+    "data/reviews/physics-world/controlled-approach/open-field-after-trail.txt": "00eb5fcbb31df942081a97a078a65d03c7153259769c3b3bd01d6a86767ecbcb",
+    "data/reviews/physics-world/controlled-approach/open-field-after-two.txt": "e2fbf2e13794130048134bc8eb9c04b6bc6ad51a03163dc790b040469eaf30b7",
+    "data/reviews/physics-world/controlled-approach/open-field-before-front.txt": "73df65488773d8b7d16f3cf64ec4d4f588a60630e631affd917afebd8671e215",
+    "data/reviews/physics-world/controlled-approach/open-field-before-side.txt": "5df8ac3026d897a4e90196099c3dc57a053584c12b3468d930e3f5bc8086de5d",
+    "data/reviews/physics-world/controlled-approach/open-field-before-trail.txt": "00eb5fcbb31df942081a97a078a65d03c7153259769c3b3bd01d6a86767ecbcb",
+    "data/reviews/physics-world/controlled-approach/open-field-before-two.txt": "e2df82763f4a452901835ed0cb668a14e6f61f92748ed4deebc34318709deac6",
+    "data/reviews/physics-world/controlled-approach/original-film-run-concepts.json": "c9748ce9ea6084b7c3d8f0b8eee1d3420195a392e18d0e1a25321b33e977af55",
+    "data/reviews/physics-world/controlled-approach/owner-observations.json": "b9ad50dcd9452dfd1055c4a317e5461fa16a87c56fcaefc0c02736d4f560875c",
+    "data/reviews/physics-world/controlled-approach/tests.txt": "1af988088cf3e705f796bfa8177cb5dc3955104fc5578052dcba749b5c0d9bfe",
+    "data/reviews/physics-world/controlled-approach/typecheck.txt": "9228c8e246ad46d9b3e79d0cfd8cc80516e2b0b7aaa6d36c1e3857b373eb7c4d"
+  },
+  "film": {
+    "viewer/film-room.html": "816623c3f410446d961cd4480a8f0bf03112def9fe8189e13e92f4df4a962ac2",
+    "viewer/film-room.zip": "9d89443dadf40013aca96d1de28eb7a08080697871649d4b06a2b30238901517"
+  },
+  "handoff": {
+    "docs/reviews/controlled-tackle-approach.md": "54f57082239b21003b4d0724624abb7b18f4ec51ad0994d2114352d833e26778"
+  },
+  "uploadedReference": {
+    "docs/references/WR_DB_Mechanics_Textbook.md": "f829bf0d44cd586e535ca8c9a839768af9fd6c50866d33f662ac7ce595efcd0d"
+  }
+}

@@ -1,7 +1,8 @@
 /**
  * Ball-carrier vision.
  *
- * Every ~0.1 s the carrier samples candidate headings. For each heading he
+ * On his finite, attention-dependent decision beat the carrier samples
+ * candidate headings. For each heading he
  * projects his own sprint along it and asks, at each look-ahead step, whether
  * any defender he *perceives* (delayed, filtered by vision range) could get
  * there first (time-to-reach, with extra time for defenders tied up in
@@ -13,10 +14,19 @@
  */
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../../core/field.js';
 import { angleDiff, angleOf, clamp, type Vec2 } from '../../core/vec.js';
+import { DT } from '../../core/units.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
-import { timeToReach } from '../../physics/reach.js';
+import { sprintTime, timeToReach } from '../../physics/reach.js';
+import { squeezeForGap } from '../../physics/bodyshape.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
+import type { Gap, RunScheme } from '../../playbook/types.js';
+import { liveGapY } from '../live-gaps.js';
+import { RunBlocker } from './blocking.js';
+import { contactCost } from '../contact-choice.js';
+import type { Perceived } from '../perception.js';
+import { READ_SCHEMES, RUN_READ, runRead } from '../run-read.js';
+import { observeRunRead, runReadObservers } from '../run-read-observer.js';
 
 export interface CarrierOptions {
   /** Designed aiming point (run concept) and how long to honor it. */
@@ -24,6 +34,141 @@ export interface CarrierOptions {
   aimUntil?: number;
   /** QB scramble: may slide. */
   qb?: boolean;
+  /** Known lead/pull responsibilities on a designed run. */
+  follow?: Agent[];
+  run?: { scheme:RunScheme; side:number; readKey?:Agent; kick?:Agent };
+  /** The designed aim as a gap on the line (with the play's offset from that
+   * gap's landmark), so it moves with the bodies that form it. */
+  aimGap?: { gap: Gap; side: number; offset: number };
+}
+
+/** The designed aiming point as this runner sees the line now (LIVE_AIM=0: snap point). */
+export function liveAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | undefined {
+  if (!opts.aim || !opts.aimGap || process.env.LIVE_AIM === '0') return opts.aim;
+  const g = opts.aimGap;
+  return { x: opts.aim.x, y: liveGapY(sim, a, g.gap, g.side) + g.offset };
+}
+
+/** Coarse threat inference from the consumed image, not the opponent's true
+ * recovery phase. A visible rise is treated as halfway through public get-up
+ * capability. The positive tick floor keeps old off-feet pictures uncertain;
+ * a fresh upright picture ends the allowance. This is not NFL calibration. */
+export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>, getUp: number | undefined, dt: number): number {
+  if (seen.pose !== 'down' && seen.pose !== 'rising') return 0;
+  const recovery = Number.isFinite(getUp) ? clamp(getUp!, 0.2, 2) : 0.9;
+  const tick = Number.isFinite(dt) && dt > 0 ? Math.min(dt, recovery) : Math.min(DT, recovery);
+  const age = Number.isFinite(seen.age) ? Math.max(0, seen.age!) : seen.age === Infinity ? recovery : 0;
+  return clamp((seen.pose === 'down' ? recovery : recovery / 2) - age, tick, recovery);
+}
+
+/** Read entries and routes from acquired bodies on both teams. A nominal
+ * block is neither an empty lane nor guaranteed future protection. */
+interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D' }
+
+export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
+  if (!opts.run || !opts.aim) return null;
+  const dir = sim.attackDir(a.team), run = opts.run;
+  const depth = (p: Vec2) => (p.x - sim.los) * dir;
+  let preferred = liveAim(a, sim, opts)!.y;
+  if (run.scheme === 'duo' && run.readKey) {
+    const key = sim.see(a, run.readKey);
+    if (key.pos.x < sim.los + 2.5 && Math.abs(key.vel.y) > .7) preferred = sim.ballY - Math.sign(key.vel.y) * .8;
+  }
+  const kick = run.kick;
+  if (kick) {
+    const s = sim.see(a, kick);
+    if (s.pos.x > sim.los - 1.5) preferred = s.pos.y + (kick.tags.has('block-log') ? run.side * .85 : -run.side * .85);
+  }
+  // Everything below is the runner's own picture: perceived positions, motion
+  // and pose, and public body size and reach. Neither the engagement record
+  // nor a nearby teammate promises protection. Keep off-feet defenders in
+  // the threat picture with their acquired recovery allowance.
+  const pictures: Array<{ agent: Agent; seen: Perceived; team: 'O' | 'D' }> = [];
+  for (const o of [...sim.offense, ...sim.defense]) {
+    if (o === a || o === sim.qb) continue;
+    const seen = sim.see(a, o);
+    pictures.push({ agent: o, seen, team: o.team === a.team ? 'O' : 'D' });
+  }
+  const bodies: LineBody[] = [];
+  for (const { agent: o, seen: s, team } of pictures) {
+    if (s.pose === 'down') continue;
+    if (depth(s.pos) < -1.6 || depth(s.pos) > 1.6 || Math.abs(s.pos.y - a.pos.y) > 12) continue;
+    bodies.push({ pos: s.pos, radius: o.profile.radius, team });
+  }
+  if (bodies.filter((b) => b.team === 'O').length < 3) return null;
+  bodies.sort((p, q) => p.pos.y - q.pos.y);
+  const candidates: Vec2[] = [];
+  const squeeze = a.profile.radius * 1.4;
+  for (let i = 1; i < bodies.length; i++) {
+    const l = bodies[i - 1], r = bodies[i];
+    if (r.pos.y - r.radius - (l.pos.y + l.radius) < squeeze) continue;
+    const y = (l.pos.y + l.radius + r.pos.y - r.radius) / 2;
+    candidates.push({ x: dir > 0 ? Math.max(sim.los + .5, Math.max(l.pos.x, r.pos.x) + .6) : Math.min(sim.los - .5, Math.min(l.pos.x, r.pos.x) - .6), y });
+  }
+  for (const [end, s] of [[bodies[0], -1], [bodies.at(-1)!, 1]] as const) {
+    const y = end.pos.y + s * (end.radius + a.profile.radius + .4);
+    candidates.push({ x: dir > 0 ? Math.max(sim.los + .5, end.pos.x + .5) : Math.min(sim.los - .5, end.pos.x - .5), y });
+  }
+  // Openings are read from a lateral projection, so a body a yard behind the
+  // line can hide a real seam in front of him. Sample the line every yard as
+  // well; the path, body and timing checks below judge them in two dimensions.
+  for (let k = -8; k <= 8; k++) candidates.push({ x: sim.los + .5 * dir, y: clamp(sim.ballY + k, .5, FIELD_WIDTH - .5) });
+  const me = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
+  // Acquired motion already contains a block's observed slowdown. Nearby
+  // bodies do not promise retention or a future pursuit delay. In particular,
+  // a defender occupying the entry remains a threat, on either side of a block.
+  const threatTime = (d: Agent, s: Perceived, p: Vec2): number =>
+    timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + d.profile.reach * .75)
+      + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
+  let best: Vec2 | null = null, cost = Infinity;
+  const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
+  // Bodies on a segment block the run along it.
+  const blockedBy = (from: Vec2, to: Vec2): number => {
+    const sx = to.x - from.x, sy = to.y - from.y, l2 = sx * sx + sy * sy || 1;
+    let r = 0;
+    for (const b of bodies) {
+      const u = clamp(((b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy) / l2, 0, 1);
+      // Include the endpoint: a route ending in a defender is still occupied.
+      // At the start, only charge a body when the route approaches it; an
+      // already touching runner must remain free to move away from that body.
+      if (u <= 0 && (b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy <= 0) continue;
+      const miss = Math.hypot(from.x + u * sx - b.pos.x, from.y + u * sy - b.pos.y) - b.radius - a.profile.radius * .7;
+      if (miss < 0) r += 1.5 + 4 * Math.min(1, -miss);
+    }
+    return r;
+  };
+  const cruise = Math.max(4, a.profile.vmax * .8);
+  for (const p of candidates) {
+    // Two ways to the entry: straight, or flatten behind the line first and
+    // then turn up (the cutback's dog-leg). Each has its own arrival time.
+    const routes: Array<{ obstruct: number; arrive: number; via: Vec2 }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p }];
+    if (depth(a.pos) < -1.6) {
+      const w = { x: sim.los - 1.2 * dir, y: p.y };
+      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: timeToReach(me, w, 0) + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w });
+    }
+    let risk = Infinity, via = p;
+    const beyond = { x: p.x + 2 * dir, y: p.y };
+    for (const route of routes) {
+      const arrive = route.arrive, arrive2 = arrive + 2 / cruise;
+      // Who is there first, at the entry and two yards beyond it: the
+      // earliest defender decides, as in the open-field read.
+      let m1 = Infinity, m2 = Infinity;
+      for (const { agent: d, seen: s, team } of pictures) {
+        if (team !== 'D' || Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
+        m1 = Math.min(m1, threatTime(d, s, p) - arrive);
+        m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
+      }
+      const r = route.obstruct + (m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0)
+        + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0);
+      if (r < risk) { risk = r; via = route.via; }
+    }
+    const score = Math.abs(p.y - preferred) * .45 + Math.abs(p.y - a.pos.y) * .12 + risk;
+    if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score });
+    // Run the chosen route: its first leg is where he heads now.
+    if (score < cost) { cost = score; best = via; }
+  }
+  if (runReadObservers.has(sim)) observeRunRead(sim, a, 'aim', { preferred, selected: best, candidates: measurements, surface: bodies.map((b) => b.pos) });
+  return best;
 }
 
 const SAMPLES = [0.25, 0.5, 0.75, 1.0, 1.3, 1.6, 2.0];
@@ -32,7 +177,13 @@ export class BallCarrier implements Behavior {
   readonly kind = 'carrier';
   private heading: number | null = null;
   private nextEval = 0;
+  private wasDesigned: boolean | null = null;
   private visionNoise: number;
+  private plannedExit = false;
+  private boundaryRecovery = false;
+  private readDone = false;
+  private pressEntry: Vec2 | null = null;
+  private pressReadAt = 0;
 
   constructor(
     private readonly opts: CarrierOptions = {},
@@ -44,21 +195,75 @@ export class BallCarrier implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     const dir = sim.attackDir(a.team);
     const cutSkill = 0.85 + 0.35 * a.r('elusiveness');
+    const designed = !!this.opts.aim && this.opts.aimUntil !== undefined
+      && sim.t < this.opts.aimUntil && (a.pos.x - sim.los) * dir < -0.8;
+    if (runReadObservers.has(sim)) observeRunRead(sim, a, 'carrier-start', { designed, aim: this.opts.aim, aimUntil: this.opts.aimUntil });
+    // Zone runs: press the track and read the key relationship; commit on
+    // what it shows, at decision depth, or when pressing is unsafe.
+    const zoneRead = RUN_READ && this.opts.run && READ_SCHEMES.has(this.opts.run.scheme) && this.opts.aim
+      && !this.readDone && (a.pos.x - sim.los) * dir < .3;
+    if (zoneRead) {
+      const cmd = this.pressAndRead(a, sim, dir, cutSkill);
+      if (cmd) return cmd;
+    }
+    if (designed !== this.wasDesigned) {
+      // The installed press phase ending is a different responsibility, not
+      // a reason to carry its previous beat into open-lane selection. A fresh
+      // carrier instance likewise starts with its first available observation.
+      this.wasDesigned = designed;
+      this.nextEval = sim.t;
+    }
 
     // Designed phase: press the aiming point.
-    if (this.opts.aim && this.opts.aimUntil !== undefined && sim.t < this.opts.aimUntil && (a.pos.x - sim.los) * dir < -0.8) {
-      const aim = this.opts.aim;
+    if (designed) {
+      let aim = liveAim(a, sim, this.opts)!;
+      // Press the installed track, reading its occupied approach on the same
+      // finite beat as other carrier decisions. Speed and movement stay ordinary.
+      if (this.opts.run && (a.pos.x - sim.los) * dir > -4.5) {
+        if (sim.t >= this.pressReadAt) {
+          this.pressReadAt = sim.t + a.mind.decisionInterval;
+          this.pressEntry = runReadAim(a, sim, this.opts);
+        }
+        if (this.pressEntry) aim = this.pressEntry;
+      }
       const h = angleOf({ x: aim.x - a.pos.x, y: aim.y - a.pos.y });
       this.heading = h;
       // Only abandon the design early if the aiming point is clearly closed.
       if (sim.t >= this.nextEval) {
-        this.nextEval = sim.t + 0.1;
+        this.nextEval = sim.t + a.mind.decisionInterval;
         const best = this.evaluate(a, sim, dir, true);
-        if (best && best.blocked && sim.rng.chance(0.25 + 0.5 * a.r('vision'))) this.opts.aimUntil = sim.t;
+        if (best && best.aimBlocked && best.score > best.aimScore + 0.5 + 0.5 * a.r('patience')) this.opts.aimUntil = sim.t;
+      }
+      const lead = this.opts.follow?.filter((b) => !b.isDown(sim.t) && !b.engagement)
+        .sort((p, q) => Math.hypot(p.pos.x - aim.x, p.pos.y - aim.y) - Math.hypot(q.pos.x - aim.x, q.pos.y - aim.y))[0];
+      if (lead) {
+        const seen = sim.see(a, lead);
+        const dx = seen.pos.x - a.pos.x;
+        const dy = seen.pos.y - a.pos.y;
+        const ahead = dx * Math.cos(h) + dy * Math.sin(h);
+        const across = -dx * Math.sin(h) + dy * Math.cos(h);
+        const entering = seen.pos.x < sim.los && ahead > 0 && ahead < 2.5 && Math.abs(across) < 2.2;
+        // Patience ends when an unblocked defender can close before the next
+        // two reads. Waiting for a late puller must not become a mandatory stop.
+        const closing = entering && sim.opponents(a).some((d) => {
+          if (d.isDown(sim.t) || d.engagement) return false;
+          const threat = sim.see(a, d);
+          return timeToReach({ ...threat, profile: d.profile, speedScale: d.speedScale }, a.pos,
+            a.profile.radius + d.profile.radius + d.profile.reach * 0.75) < 2 * a.mind.decisionInterval;
+        });
+        if (entering && !closing && sim.t < this.opts.aimUntil!) {
+          // Pace the lead block instead of outrunning a guard who is still
+          // turning up through the hole. This only lasts through the read phase.
+          a.tags.add('paced-lead');
+          // Keep pressing the designed side. Following the guard's current
+          // lateral position while he is flat-pulling sends the back into
+          // the vacated backside gap.
+          return this.command(a, sim, h, a.profile.vmax * (0.28 + 0.12 * (1 - a.r('patience'))), cutSkill);
+        }
       }
       // Press the hole under control (patient backs more so), then burst.
       const press = a.profile.vmax * (0.62 + 0.18 * (1 - a.r('patience')));
-      return { vel: { x: Math.cos(h) * press, y: Math.sin(h) * press }, cutSkill };
+      return this.command(a, sim, h, press, cutSkill);
     }
 
     // QB slide: past the sticks (or any gain) with a hit coming.
@@ -72,16 +277,74 @@ export class BallCarrier implements Behavior {
     }
 
     if (sim.t >= this.nextEval || this.heading === null) {
-      this.nextEval = sim.t + 0.1;
-      const best = this.evaluate(a, sim, dir, false);
-      if (best) this.heading = best.heading;
+      // Reconsider the lane on the same finite beat as other football reads.
+      // This holds a chosen action through one processing interval; movement,
+      // real contact and boundary recovery still execute on every native tick.
+      this.nextEval = sim.t + a.mind.decisionInterval;
+      const entry = a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? runReadAim(a,sim,this.opts) : null;
+      const best = entry ? null : this.evaluate(a, sim, dir, false);
+      if(entry) { this.heading=angleOf({x:entry.x-a.pos.x,y:entry.y-a.pos.y}); a.tags.add('run-crease-read'); }
+      else if (best) { this.heading = best.heading; this.plannedExit = best.exits; }
       else if (this.heading === null) this.heading = dir > 0 ? 0 : Math.PI;
     }
     const h = this.heading!;
-    return { vel: { x: Math.cos(h) * a.profile.vmax, y: Math.sin(h) * a.profile.vmax }, cutSkill };
+    return this.command(a, sim, h, a.profile.vmax, cutSkill);
   }
 
-  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): { heading: number; score: number; blocked: boolean } | null {
+  /** Press the live track until the read commits, then attack the entry. */
+  private pressAndRead(a: Agent, sim: PlaySim, dir: number, cutSkill: number): MoveCommand | null {
+    const run = this.opts.run!, track = liveAim(a, sim, this.opts)!;
+    const st = runRead(a, sim, run.scheme, run.side, track);
+    if (!st.key && !st.answer) return null; // nothing to read: the ordinary design
+    if (!st.answer) {
+      const h = angleOf({ x: track.x - a.pos.x, y: track.y - a.pos.y });
+      this.heading = h;
+      return this.command(a, sim, h, a.profile.vmax * (0.62 + 0.18 * (1 - a.r('patience'))), cutSkill);
+    }
+    // Committed: the read's entry becomes his aiming point; the ordinary lane
+    // planner gets him there around the bodies. The entry moves with the
+    // block it is read from until he reaches the line.
+    this.opts.aim = st.entry!;
+    this.opts.aimGap = undefined;
+    this.opts.aimUntil = sim.t;
+    if (runReadObservers.has(sim)) observeRunRead(sim, a, 'press-handoff', { answer: st.answer, entry: st.entry, track });
+    if ((a.pos.x - sim.los) * dir > -.3) { this.readDone = true; a.eyes = null; }
+    return null;
+  }
+
+  private command(a: Agent, sim: PlaySim, h: number, speed: number, cutSkill: number): MoveCommand {
+    const bodies = sim.agents.filter((o) => o !== a && !o.isDown(sim.t)).map((o) => ({ pos: sim.see(a, o).pos, radius: o.profile.radius }));
+    const squeeze = sim.bond ? 0 : squeezeForGap(a.pos, h, a.profile.radius, bodies) * (0.65 + 0.35 * a.r('elusiveness'));
+    if (squeeze > 0.3 && !a.tags.has('squeezed')) {
+      a.tags.add('squeezed');
+      sim.event('squeeze', a, null, 'turn shoulders through a narrow opening');
+    }
+    const vel = { x: Math.cos(h) * speed, y: Math.sin(h) * speed };
+    if (this.plannedExit) this.boundaryRecovery = false;
+    else {
+      const inward = a.pos.y < FIELD_WIDTH / 2 ? 1 : -1;
+      const distance = Math.min(a.pos.y, FIELD_WIDTH - a.pos.y);
+      const outward = Math.max(0, -a.vel.y * inward);
+      const stopping = outward * outward / (2 * a.profile.lateral * cutSkill * 0.7) + outward * sim.dt;
+      // Lane hysteresis must not drift across the boundary while intending
+      // to stay in bounds. Recover before lateral momentum consumes the room;
+      // the integrator still decides whether he can physically save it.
+      if (a.vel.y * inward >= 0) this.boundaryRecovery = false;
+      if (distance < stopping + 0.35 && vel.y * inward < 1) this.boundaryRecovery = true;
+      if (this.boundaryRecovery) {
+        // Finish cancelling outward momentum before choosing a new lane. A
+        // shrinking stopping estimate must not alternate braking and another
+        // sprint toward the boundary. Asking for more downfield acceleration
+        // at the same time also spends traction needed for this redirect.
+        vel.x = a.vel.x;
+        vel.y = inward * Math.max(1, outward);
+      }
+    }
+    if (runReadObservers.has(sim)) observeRunRead(sim, a, 'command', { heading: h, speed, vel, cutSkill, squeeze });
+    return { vel, cutSkill, squeeze };
+  }
+
+  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean } | null {
     const vision = a.r('vision');
     const range = 7 + 22 * vision;
     const p = a.pos;
@@ -93,15 +356,19 @@ export class BallCarrier implements Behavior {
 
     // Perceived defenders (vision-filtered).
     const threats: Array<{ pos: Vec2; vel: Vec2; d: Agent; extra: number }> = [];
+    const blockers = sim.teammates(a).filter((b) => b !== a && !b.isDown(sim.t) && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12).map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }));
     for (const d of sim.opponents(a)) {
       const dd = Math.hypot(d.pos.x - p.x, d.pos.y - p.y);
       if (dd > range) continue;
       // Backside defenders behind the runner are easy to miss for poor-vision backs.
       const behind = (d.pos.x - p.x) * dir < -1.5;
-      if (behind && sim.rng.next() > 0.35 + 0.6 * vision) continue;
+      if (behind && a.mind.focus < 0.35 + 0.5 * (1 - vision)) continue;
       const seen = sim.see(a, d, 0.7);
-      let extra = 0;
-      if (d.isDown(sim.t)) extra += d.downUntil - sim.t + 0.2;
+      // Explicit scenario parking keeps its scheduled absence. Physical falls
+      // leave downUntil=-1; infer their allowance only from the delayed pose,
+      // never hidden support state/since or an exact recovery deadline.
+      let extra = d.downUntil > sim.t ? d.downUntil - sim.t + 0.2
+        : observedRecoveryAllowance(seen, d.profile.getUp, sim.dt);
       if (d.engagement) extra += d.engagement.win > 0.6 ? 0.25 : 0.7;
       threats.push({ pos: seen.pos, vel: seen.vel, d, extra });
     }
@@ -110,10 +377,15 @@ export class BallCarrier implements Behavior {
     const spread = designed ? 0.9 : 1.55;
     for (let k = -8; k <= 8; k++) cands.push(base + (k / 8) * spread);
     cands.push(cur);
+    const aimHeading = this.opts.aim ? angleOfPoint(p, this.opts.aim) : base;
+    if (designed) cands.push(aimHeading);
 
-    let best: { heading: number; score: number; blocked: boolean } | null = null;
+    let best: { heading: number; score: number; blocked: boolean; exits: boolean } | null = null;
     let curScore = -Infinity;
     let curBlocked = false;
+    let curExits = false;
+    let aimBlocked = false;
+    let aimScore = -Infinity;
     const vmax = a.profile.vmax;
     const tau = a.profile.tau;
     for (const h of cands) {
@@ -124,10 +396,34 @@ export class BallCarrier implements Behavior {
       let safeGain = 0;
       let clean = true;
       let lastQ = p;
+      let exits = false;
+      let impactCost = 0;
+      let contactGain: number | null = null;
       for (const t of SAMPLES) {
         const d = vmax * t - (vmax - s0) * tau * (1 - Math.exp(-t / tau));
-        const q = { x: p.x + hx * d, y: p.y + hy * d };
-        if (q.y < 0.4 || q.y > FIELD_WIDTH - 0.4) {
+        let q = { x: p.x + hx * d, y: p.y + hy * d };
+        let arrival = t;
+        const crosses = q.y < 0 || q.y > FIELD_WIDTH;
+        if (crosses) {
+          // An exit is a terminal option. Clip the forecast at the boundary
+          // and still check whether a defender/blocker can stop him first.
+          const edge = q.y < 0 ? 0 : FIELD_WIDTH;
+          const distance = (edge - p.y) / hy;
+          q = { x: p.x + hx * distance, y: edge };
+          arrival = sprintTime(distance, s0, vmax, tau);
+        }
+        // A lane through our own blocker is not open. Allow the minimum
+        // shoulder-turned footprint, then request posture on approach.
+        const segment = { x: q.x - lastQ.x, y: q.y - lastQ.y };
+        const segment2 = segment.x * segment.x + segment.y * segment.y;
+        const obstructed = blockers.some((b) => {
+          const horizon = Math.min(arrival, 0.6);
+          const bx = b.pos.x + b.vel.x * horizon;
+          const by = b.pos.y + b.vel.y * horizon;
+          const u = clamp(((bx - lastQ.x) * segment.x + (by - lastQ.y) * segment.y) / Math.max(1e-6, segment2), 0, 1);
+          return Math.hypot(bx - lastQ.x - u * segment.x, by - lastQ.y - u * segment.y) < b.radius + a.profile.radius * 0.70;
+        });
+        if (obstructed) {
           clean = false;
           break;
         }
@@ -135,19 +431,42 @@ export class BallCarrier implements Behavior {
         for (const th of threats) {
           // Respect the tackler's arms: his reach plus a lunge.
           const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
-          const m = tt - t;
-          if (m < minMargin) minMargin = m;
+          const m = tt - arrival;
+          if (m < minMargin) {
+            minMargin = m;
+            if (m < 0) {
+              const runnerSpeed = vmax - (vmax - s0) * Math.exp(-arrival / tau);
+              impactCost = contactCost(a.profile.massKg, th.d.profile.massKg,
+                Math.hypot(hx * runnerSpeed - th.vel.x, hy * runnerSpeed - th.vel.y), a.r('toughness'), a.r('ballSecurity'));
+            }
+          }
         }
         if (minMargin < 0) {
           clean = false;
+          contactGain = (q.x - p.x) * dir;
           break;
         }
         lastQ = q;
         safeGain = (q.x - p.x) * dir;
+        if (crosses) { exits = true; break; }
         if ((q.x - goalX) * dir >= 0) break;
       }
       let score = safeGain;
-      if (clean) score += 3 + 0.4 * safeGain;
+      if (clean && !exits) score += 3 + 0.4 * safeGain;
+      // Near the boundary, weigh a costly hit against the few extra yards it
+      // buys. An unobstructed field lane still wins over giving up free yards.
+      if (!designed && Math.min(p.y, FIELD_WIDTH - p.y) < 5 && !clean) score -= impactCost;
+      if (!designed && a.team === 'O') {
+        const needed = (sim.firstDownX - p.x) * dir;
+        const payoff = sim.snapContext.down >= 3 ? 5 : 2;
+        if (needed > 0 && safeGain >= needed) score += payoff;
+        // At the sticks, a runner may fight through an imminent hit rather
+        // than leave short. This is decision utility, not awarded yardage.
+        else if (needed > 0 && contactGain !== null) score += payoff * clamp(1 - Math.abs(needed - contactGain), 0, 1);
+      }
+      const toGoal = (goalX - p.x) * dir;
+      if (safeGain >= toGoal) score += 10;
+      else if (contactGain !== null) score += 10 * clamp(1 - Math.abs(toGoal - contactGain), 0, 1);
       // Cutting costs speed; prefer smooth paths.
       score -= turn * 1.2;
       // Lateral movement without gain is worth little; going backwards is bad.
@@ -158,18 +477,25 @@ export class BallCarrier implements Behavior {
         const toSide = hy > 0 ? FIELD_WIDTH - p.y : p.y;
         if (Math.abs(hy) > 0.5 && toSide < 12) score += 2.5;
       }
-      score += sim.rng.normal(0, 0.15 + 1.4 * this.visionNoise);
+      score += Math.sin(h - base) * a.mind.placementError * (0.15 + 1.4 * this.visionNoise);
       const blocked = !clean && safeGain < 1.5;
+      if (h === aimHeading) { aimBlocked = blocked; aimScore = score; }
       if (h === cur) {
         curScore = score;
         curBlocked = blocked;
+        curExits = exits;
       }
-      if (!best || score > best.score) best = { heading: h, score, blocked };
+      if (!best || score > best.score) best = { heading: h, score, blocked, exits };
     }
     // Hysteresis: keep the current lane unless the new one is clearly better.
-    if (best && best.heading !== cur && best.score - curScore < 0.4) best = { heading: cur, score: curScore, blocked: curBlocked };
-    return best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked } : null;
+    if (best && best.heading !== cur && best.score - curScore < 0.4) best = { heading: cur, score: curScore, blocked: curBlocked, exits: curExits };
+    if (best?.exits) a.tags.add('chose-sideline');
+    return best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits } : null;
   }
+}
+
+function angleOfPoint(from: Vec2, to: Vec2): number {
+  return Math.atan2(to.y - from.y, to.x - from.x);
 }
 
 function clampHeading(h: number, dir: number): number {

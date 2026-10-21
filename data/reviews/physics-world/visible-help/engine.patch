@@ -1,0 +1,160 @@
+diff --git a/src/sim/agent.ts b/src/sim/agent.ts
+index 9c0d4a1..e539b4c 100644
+--- a/src/sim/agent.ts
++++ b/src/sim/agent.ts
+@@ -14,6 +14,7 @@ import type { Recognition } from './recognition.js';
+ import { SnapMind } from './mind.js';
+ import { Rng } from '../core/rng.js';
+ import type { RunFitJob } from './run-fits.js';
++import type { VisiblePose } from './perception.js';
+ 
+ export type TeamSide = 'O' | 'D';
+ 
+@@ -134,6 +135,14 @@ export class Agent {
+   get facing(): number {
+     return this.body.facing;
+   }
++  /** Visible off-feet/recovery cue for the snapshot, not a recovery forecast.
++   * Scenario parking does not imply a physical pose. Falls and ground time
++   * share the off-feet cue; another player learns it through perception.
++   */
++  get pose(): VisiblePose | null {
++    const state = this.body.support?.state;
++    return state === undefined ? null : state === 'up' ? 'up' : state === 'rising' ? 'rising' : 'down';
++  }
+   get name(): string {
+     return `${this.player.firstName[0]}.${this.player.lastName}`;
+   }
+diff --git a/src/sim/coverage/judgment.ts b/src/sim/coverage/judgment.ts
+index cba6c98..d6d70f9 100644
+--- a/src/sim/coverage/judgment.ts
++++ b/src/sim/coverage/judgment.ts
+@@ -41,8 +41,10 @@ export class CoverageJudgment {
+     });
+     const climbing = (r: ReceiverRead) => r.depth > 5 && r.vel.x > 3 && r.release === 'vertical';
+     const capped = (r: ReceiverRead) => hasVisibleCap(a, sim, r);
+-    // Never desert an uncapped vertical of your own to chase another route.
+-    if (own && climbing(own) && !capped(own)) return primary;
++    // A confirmed upfield stem is already the primary's responsibility.
++    // Waiting for five yards can abandon him during the release itself.
++    // A visible roof or an observed break can still permit help elsewhere.
++    if (own && own.release === 'vertical' && own.vel.x > 3 && !capped(own)) return primary;
+     const danger = routes.filter(r => r.r !== own?.r && climbing(r) && !capped(r))
+       .sort((p, q) => (q.depth - 0.25 * Math.abs(q.pos.y - a.pos.y)) - (p.depth - 0.25 * Math.abs(p.pos.y - a.pos.y)))[0];
+     if (danger && danger.pos.x > a.pos.x - 5) {
+@@ -68,13 +70,17 @@ export class CoverageJudgment {
+   }
+ }
+ 
+-/** A teammate ahead and near the route, still gaining depth, looks like a
+- * cap. No access to his assignment or to current (unseen) receiver motion. */
++/** A teammate ahead and near the route can look like a cap while upright.
++ * No access to his assignment, hidden capacity or current unseen body state. */
+ export function hasVisibleCap(a: Agent, sim: PlaySim, rd: ReceiverRead): boolean {
+   const error = 0.45 * (1 - a.r('discipline')) + 0.35 * a.mind.judgment(`cap:${rd.r.slot}`);
+   return sim.defense.some(d => {
+     if (d === a) return false;
+     const seen = sim.see(a, d);
++    // A falling/grounded or recovering teammate cannot supply this roof.
++    // This is the sampled picture: a newly fallen teammate can still look up,
++    // and a recovered one can still look down. Unknown cues retain geometry.
++    if (seen.pose != null && seen.pose !== 'up') return false;
+     const depth = seen.pos.x - rd.pos.x;
+     const lateral = Math.abs(seen.pos.y + seen.vel.y * 0.2 - rd.pos.y - rd.vel.y * 0.2);
+     return depth > 0.4 - error && depth < 6 && lateral < 2.3 + error && seen.vel.x > -1;
+diff --git a/src/sim/perception.ts b/src/sim/perception.ts
+index 12357e1..2b0789e 100644
+--- a/src/sim/perception.ts
++++ b/src/sim/perception.ts
+@@ -8,12 +8,18 @@
+ import type { Vec2 } from '../core/vec.js';
+ 
+ const HISTORY = 24;
++const STRIDE = 7;
++
++/** Coarse visible body pose, separate from pad-level technique or capability. */
++export type VisiblePose = 'up' | 'down' | 'rising';
+ 
+ export interface Perceived {
+   pos: Vec2;
+   vel: Vec2;
+   stance: 'high' | 'low' | null;
+   facing: number;
++  /** Sampled with the same latency as position; absent/null means unknown. */
++  pose?: VisiblePose | null;
+   /** Age of the sampled visual state before constant-velocity prediction. */
+   age?: number;
+ }
+@@ -29,22 +35,23 @@ export class PerceptionBuffer {
+     private readonly dt: number,
+   ) {
+     this.n = agents;
+-    this.data = new Float64Array(HISTORY * agents * 6);
++    this.data = new Float64Array(HISTORY * agents * STRIDE);
+   }
+ 
+-  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number }>): void {
++  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number; pose?: VisiblePose | null }>): void {
+     this.head = (this.head + 1) % HISTORY;
+     this.count = Math.min(HISTORY, this.count + 1);
+-    const base = this.head * this.n * 6;
++    const base = this.head * this.n * STRIDE;
+     for (let i = 0; i < this.n; i++) {
+       const s = states[i];
+-      const o = base + i * 6;
++      const o = base + i * STRIDE;
+       this.data[o] = s.pos.x;
+       this.data[o + 1] = s.pos.y;
+       this.data[o + 2] = s.vel.x;
+       this.data[o + 3] = s.vel.y;
+       this.data[o + 4] = s.stance === 'high' ? 1 : s.stance === 'low' ? -1 : 0;
+       this.data[o + 5] = s.facing ?? 0;
++      this.data[o + 6] = s.pose === 'up' ? 1 : s.pose === 'down' ? -1 : s.pose === 'rising' ? 2 : 0;
+     }
+   }
+ 
+@@ -53,13 +60,16 @@ export class PerceptionBuffer {
+     if (!this.count) throw new Error('Perception requires an initial snapshot');
+     const back = Math.min(this.count - 1, Math.max(0, Math.round(delay / this.dt)));
+     const idx = (this.head - back + HISTORY) % HISTORY;
+-    const o = idx * this.n * 6 + i * 6;
++    const o = idx * this.n * STRIDE + i * STRIDE;
+     const x = this.data[o];
+     const y = this.data[o + 1];
+     const vx = this.data[o + 2];
+     const vy = this.data[o + 3];
+     const lag = back * this.dt;
+     const stance = this.data[o + 4];
+-    return { pos: { x: x + vx * lag, y: y + vy * lag }, vel: { x: vx, y: vy }, stance: stance > 0 ? 'high' : stance < 0 ? 'low' : null, facing: this.data[o + 5], age: lag };
++    const pose = this.data[o + 6];
++    return { pos: { x: x + vx * lag, y: y + vy * lag }, vel: { x: vx, y: vy },
++      stance: stance > 0 ? 'high' : stance < 0 ? 'low' : null, facing: this.data[o + 5], age: lag,
++      pose: pose === 1 ? 'up' : pose === -1 ? 'down' : pose === 2 ? 'rising' : null };
+   }
+ }
+diff --git a/src/sim/telemetry.ts b/src/sim/telemetry.ts
+index 1317dba..c77f3cc 100644
+--- a/src/sim/telemetry.ts
++++ b/src/sim/telemetry.ts
+@@ -38,7 +38,7 @@ export class ReplayTrace {
+     if (this.data?.level !== 'full') return;
+     if (this.observationT !== t) { this.observations.clear(); this.observationT = t; }
+     this.observations.set(`${a.idx}:${b.idx}:${source}`, { a: a.idx, b: b.idx, t: q(t), source,
+-      position: vec(p.pos), velocity: vec(p.vel), age: p.age === undefined ? null : q(p.age) });
++      position: vec(p.pos), velocity: vec(p.vel), age: p.age === undefined ? null : q(p.age), pose: p.pose ?? null });
+   }
+ 
+   /** Controllers submit an actual choice; a missing cause stays null. */
+diff --git a/src/sim/types.ts b/src/sim/types.ts
+index 3f19213..1d2fe7d 100644
+--- a/src/sim/types.ts
++++ b/src/sim/types.ts
+@@ -38,7 +38,7 @@ export interface ReplayTelemetryFrame {
+     hands?: { extension: number; push: number; hold: number; steer: number; height?: number; normalForce?: number; tangentForce?: number } }>;
+   tackle?: { carrier: number; tacklers: Array<{ a: number; grip: number | null; legs: number; force?: number; slipping?: boolean; origin?: string }>; stall: number; progressX: number };
+   /** Actual calls to PlaySim.see and QB perception, not omniscient extra reads. */
+-  perception?: Array<{ a: number; b: number; t: number; position: [number, number]; velocity: [number, number]; age: number | null; source: 'see' | 'qb' }>;
++  perception?: Array<{ a: number; b: number; t: number; position: [number, number]; velocity: [number, number]; age: number | null; source: 'see' | 'qb'; pose?: 'up' | 'down' | 'rising' | null }>;
+   qb?: { eyes: number | null; belief: Record<string, number>; best: string; phase?: string; read?: number | null; pressure?: number;
+     pending?: { target: number; point: [number, number, number]; flightTime: number; completion: number; interceptionRisk: number; value: number } | null };
+   contacts?: Array<{ a: number; b: number; closing: number; impulse: number }>;

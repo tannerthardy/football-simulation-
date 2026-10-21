@@ -1,0 +1,354 @@
+{
+  "schema": "held-recovery-football-v1",
+  "node": "v22.23.3",
+  "executable": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+  "command": [
+    "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+    "--import",
+    "tsx",
+    "scripts/diag/held-recovery-football.ts",
+    "out/live-recovery/gauge-football.json",
+    "9"
+  ],
+  "seed": 9,
+  "benchmarkOnly": false,
+  "allocationGcBeforeBenchmark": true,
+  "sourceBefore": "43ff53ab75d3deb3d6570ea067fd82265b4c8fc1c21fe0fed547c1031ab49edf",
+  "sourceAfter": "43ff53ab75d3deb3d6570ea067fd82265b4c8fc1c21fe0fed547c1031ab49edf",
+  "scriptSha256": "96dc922e52ab3db4cc180ab9c0155e525af9cfb143fd28de246c982cc2dd8010",
+  "rosterSha256": "098565226da110ea7c34c7a10202284dc2c03d29559ceea56475086570081413",
+  "excludedWarmGameSeed": 921247822,
+  "games": [
+    {
+      "seed": 1085687574,
+      "wallMs": 11125.115115,
+      "cpuMs": 12467.599,
+      "score": {
+        "home": 50,
+        "away": 30
+      },
+      "box": {
+        "home": {
+          "firstDowns": 15,
+          "plays": 60,
+          "totalYds": 514.2399999999998,
+          "passYds": 485.2799999999999,
+          "rushYds": 28.96,
+          "turnovers": 2,
+          "penalties": 12,
+          "penaltyYds": 102.73681613680131,
+          "thirdAtt": 14,
+          "thirdConv": 2,
+          "fourthAtt": 0,
+          "fourthConv": 0,
+          "redZoneTrips": 3,
+          "redZoneTDs": 1,
+          "timeOfPossession": 1792.204770705618,
+          "sacksAllowed": 4,
+          "explosivePlays": 9
+        },
+        "away": {
+          "firstDowns": 18,
+          "plays": 70,
+          "totalYds": 434.99,
+          "passYds": 388.71,
+          "rushYds": 46.28,
+          "turnovers": 4,
+          "penalties": 11,
+          "penaltyYds": 95.6266683460356,
+          "thirdAtt": 16,
+          "thirdConv": 6,
+          "fourthAtt": 1,
+          "fourthConv": 0,
+          "redZoneTrips": 3,
+          "redZoneTDs": 2,
+          "timeOfPossession": 1807.7952292943808,
+          "sacksAllowed": 3,
+          "explosivePlays": 6
+        }
+      },
+      "officialScrimmagePlays": 130,
+      "physicalTimeoutsIncludingNullified": 0,
+      "missedTackles": 18,
+      "brokenTackles": 15,
+      "rushes": 27,
+      "rushYards": 57.970000000000006,
+      "rushYardsPerAttempt": 2.147037037037037,
+      "rushStuffs": 12,
+      "rushExplosives10": 2,
+      "runContactSamples": 27,
+      "meanRunYardsAfterFirstContact": 1.717335112559033,
+      "dropbacks": 103,
+      "passAttempts": 84,
+      "completions": 56,
+      "completionYards": 927.2599999999998,
+      "sacks": 7,
+      "interceptions": 5,
+      "completionExplosives20": 11,
+      "meanReceiverYardsAfterCatch": 8.0579302568304
+    },
+    {
+      "seed": 2979654235,
+      "wallMs": 10647.972029999997,
+      "cpuMs": 11265.168,
+      "score": {
+        "home": 65,
+        "away": 0
+      },
+      "box": {
+        "home": {
+          "firstDowns": 17,
+          "plays": 53,
+          "totalYds": 729.3900000000002,
+          "passYds": 714.0000000000002,
+          "rushYds": 15.390000000000002,
+          "turnovers": 2,
+          "penalties": 10,
+          "penaltyYds": 88.61354381919476,
+          "thirdAtt": 11,
+          "thirdConv": 4,
+          "fourthAtt": 0,
+          "fourthConv": 0,
+          "redZoneTrips": 2,
+          "redZoneTDs": 0,
+          "timeOfPossession": 1601.1769377359365,
+          "sacksAllowed": 1,
+          "explosivePlays": 11
+        },
+        "away": {
+          "firstDowns": 15,
+          "plays": 74,
+          "totalYds": 284.21,
+          "passYds": 268.29,
+          "rushYds": 15.92,
+          "turnovers": 8,
+          "penalties": 11,
+          "penaltyYds": 101.43340689407697,
+          "thirdAtt": 17,
+          "thirdConv": 5,
+          "fourthAtt": 1,
+          "fourthConv": 0,
+          "redZoneTrips": 1,
+          "redZoneTDs": 0,
+          "timeOfPossession": 1998.8230622640647,
+          "sacksAllowed": 2,
+          "explosivePlays": 4
+        }
+      },
+      "officialScrimmagePlays": 127,
+      "physicalTimeoutsIncludingNullified": 0,
+      "missedTackles": 11,
+      "brokenTackles": 14,
+      "rushes": 25,
+      "rushYards": 42.69999999999999,
+      "rushYardsPerAttempt": 1.7079999999999995,
+      "rushStuffs": 10,
+      "rushExplosives10": 0,
+      "runContactSamples": 25,
+      "meanRunYardsAfterFirstContact": 1.3797557367243738,
+      "dropbacks": 102,
+      "passAttempts": 91,
+      "completions": 59,
+      "completionYards": 1006.1600000000008,
+      "sacks": 3,
+      "interceptions": 8,
+      "completionExplosives20": 14,
+      "meanReceiverYardsAfterCatch": 9.476636281213853
+    }
+  ],
+  "physics": {
+    "ticks": 29339,
+    "lowerJointTicks": 3323,
+    "maxHeldRecoveryExcursionYd": 1.1874814093169344,
+    "lowerHoldReleases": 2,
+    "maxMomentumResidualKgYdS": 1.0414055856603672e-11,
+    "maxWorkResidualKgYd2S2": 6.871658797535929e-11,
+    "maxMotorWorkExcessKgYd2S2": 0,
+    "maxPassiveGripPositiveWorkKgYd2S2": 2.439178144021871e-15,
+    "sampledLowerJointTickFraction": 0.11326221070929479,
+    "nativeWorldTickMedianMs": 0.4783129999996163,
+    "nativeWorldTickP95Ms": 0.9440860000031535
+  },
+  "benchmark": [
+    {
+      "fixture": "free",
+      "bodies": 22,
+      "warmBlocksExcluded": 3,
+      "measuredBlocks": 7,
+      "repsPerBlock": 400,
+      "ticksPerRep": 1,
+      "dt": 0.05,
+      "medianBlockCpuMs": 95.266,
+      "medianBlockWallMs": 49.24426200000016,
+      "medianWorldTickMs": 0.08300399999279762,
+      "medianBlockWorldTickP95Ms": 0.19435900000098627,
+      "blocks": [
+        {
+          "cpuMs": 108.954,
+          "wallMs": 55.302128000002995,
+          "worldTickMedianMs": 0.08714199999667471,
+          "worldTickP95Ms": 0.2438899999979185
+        },
+        {
+          "cpuMs": 89.56,
+          "wallMs": 47.50084700000298,
+          "worldTickMedianMs": 0.08353899999929126,
+          "worldTickP95Ms": 0.1861270000008517
+        },
+        {
+          "cpuMs": 91.94,
+          "wallMs": 48.50689100000454,
+          "worldTickMedianMs": 0.08035100000415696,
+          "worldTickP95Ms": 0.18635099999664817
+        },
+        {
+          "cpuMs": 92.992,
+          "wallMs": 45.486236999997345,
+          "worldTickMedianMs": 0.08150100000057137,
+          "worldTickP95Ms": 0.18262700000195764
+        },
+        {
+          "cpuMs": 228.791,
+          "wallMs": 92.5768590000007,
+          "worldTickMedianMs": 0.1640179999958491,
+          "worldTickP95Ms": 0.433908999999403
+        },
+        {
+          "cpuMs": 113.384,
+          "wallMs": 51.838614000000234,
+          "worldTickMedianMs": 0.08300399999279762,
+          "worldTickP95Ms": 0.22961899999791058
+        },
+        {
+          "cpuMs": 95.266,
+          "wallMs": 49.24426200000016,
+          "worldTickMedianMs": 0.08215000000200234,
+          "worldTickP95Ms": 0.19435900000098627
+        }
+      ]
+    },
+    {
+      "fixture": "trench",
+      "bodies": 22,
+      "warmBlocksExcluded": 3,
+      "measuredBlocks": 7,
+      "repsPerBlock": 400,
+      "ticksPerRep": 1,
+      "dt": 0.05,
+      "medianBlockCpuMs": 287.592,
+      "medianBlockWallMs": 229.90088699999615,
+      "medianWorldTickMs": 0.49320199999783654,
+      "medianBlockWorldTickP95Ms": 1.2299519999942277,
+      "blocks": [
+        {
+          "cpuMs": 287.592,
+          "wallMs": 232.72497300000396,
+          "worldTickMedianMs": 0.5008589999997639,
+          "worldTickP95Ms": 1.1921020000008866
+        },
+        {
+          "cpuMs": 387.04,
+          "wallMs": 267.21019699999306,
+          "worldTickMedianMs": 0.49985000000015134,
+          "worldTickP95Ms": 1.401040999997349
+        },
+        {
+          "cpuMs": 284.259,
+          "wallMs": 226.17663899999752,
+          "worldTickMedianMs": 0.4917070000010426,
+          "worldTickP95Ms": 1.1667789999992237
+        },
+        {
+          "cpuMs": 289.689,
+          "wallMs": 229.90088699999615,
+          "worldTickMedianMs": 0.48817099999723723,
+          "worldTickP95Ms": 1.2293830000053276
+        },
+        {
+          "cpuMs": 280.012,
+          "wallMs": 224.36641399999644,
+          "worldTickMedianMs": 0.484613000000536,
+          "worldTickP95Ms": 1.230002999996941
+        },
+        {
+          "cpuMs": 355.539,
+          "wallMs": 251.53811900000437,
+          "worldTickMedianMs": 0.49958799999876646,
+          "worldTickP95Ms": 1.3586040000009234
+        },
+        {
+          "cpuMs": 286.291,
+          "wallMs": 229.2291480000058,
+          "worldTickMedianMs": 0.49320199999783654,
+          "worldTickP95Ms": 1.2299519999942277
+        }
+      ]
+    },
+    {
+      "fixture": "multi-grip",
+      "bodies": 22,
+      "warmBlocksExcluded": 3,
+      "measuredBlocks": 7,
+      "repsPerBlock": 400,
+      "ticksPerRep": 1,
+      "dt": 0.05,
+      "medianBlockCpuMs": 447.597,
+      "medianBlockWallMs": 381.351069999997,
+      "medianWorldTickMs": 0.8526740000015707,
+      "medianBlockWorldTickP95Ms": 1.5418959999951767,
+      "blocks": [
+        {
+          "cpuMs": 447.597,
+          "wallMs": 378.23530200000096,
+          "worldTickMedianMs": 0.851423000000068,
+          "worldTickP95Ms": 1.5194760000013048
+        },
+        {
+          "cpuMs": 437.694,
+          "wallMs": 377.3680449999956,
+          "worldTickMedianMs": 0.8380060000054073,
+          "worldTickP95Ms": 1.5342520000049262
+        },
+        {
+          "cpuMs": 632.401,
+          "wallMs": 459.18504699999903,
+          "worldTickMedianMs": 0.8713170000046375,
+          "worldTickP95Ms": 2.4796430000060354
+        },
+        {
+          "cpuMs": 444.643,
+          "wallMs": 381.351069999997,
+          "worldTickMedianMs": 0.8521729999993113,
+          "worldTickP95Ms": 1.5418900000004214
+        },
+        {
+          "cpuMs": 439.544,
+          "wallMs": 378.5360770000043,
+          "worldTickMedianMs": 0.8526740000015707,
+          "worldTickP95Ms": 1.5418959999951767
+        },
+        {
+          "cpuMs": 550.301,
+          "wallMs": 413.36782400000084,
+          "worldTickMedianMs": 0.8675430000002962,
+          "worldTickP95Ms": 1.6918519999962882
+        },
+        {
+          "cpuMs": 451.905,
+          "wallMs": 386.8175289999999,
+          "worldTickMedianMs": 0.8648070000053849,
+          "worldTickP95Ms": 1.579993999999715
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Two games and one fixed roster pair are regression guards, not league estimates or NFL calibration.",
+    "Game World timing excludes observer accounting; game wall/CPU includes it. Benchmark observer is disabled.",
+    "Lower-grip occurrence samples pre/post ticks and can miss a hold acquired and released within one tick.",
+    "Run after-contact yards are final gain minus engine first-carrier-contact gain; pass YAC is a separate statistic.",
+    "Native tick timings include changing contact islands; matched benchmark uses one tick per fresh World, with identical initial bodies/commands/constraints across revisions.",
+    "Benchmark excludes fixture construction; with --expose-gc it collects before timed blocks. GC can still interrupt a step.",
+    "Sequential separate-process comparisons remain sensitive to CPU load; repeat with reversed order before claiming speedup."
+  ]
+}

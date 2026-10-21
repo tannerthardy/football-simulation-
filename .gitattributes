@@ -1,0 +1,5 @@
+*.pdf binary
+*.zip binary
+# Preserve byte-pinned generated evidence, including test-runner whitespace.
+data/reviews/rushing-benchmark/**/*.log -whitespace
+data/reviews/rushing-benchmark/reference/findings.md whitespace=-blank-at-eof

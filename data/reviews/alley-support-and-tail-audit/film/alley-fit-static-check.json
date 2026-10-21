@@ -1,0 +1,80 @@
+{
+  "status": "passed",
+  "htmlSha256": "ac2e4e2c6f35d21416cb7ffd05f5657c4e1f416f4b2efc1573289abe7370d60d",
+  "clips": [
+    {
+      "id": "B-G4-P127",
+      "telemetryLossless": true,
+      "nativeGameLogExact": true,
+      "actualCallPlanExact": true,
+      "motionAndSnapTimesExact": true,
+      "carrierFramesExact": true,
+      "nativeSnapSeedExact": true
+    },
+    {
+      "id": "A-G4-P127",
+      "telemetryLossless": true,
+      "nativeGameLogExact": true,
+      "actualCallPlanExact": true,
+      "motionAndSnapTimesExact": true,
+      "carrierFramesExact": true,
+      "nativeSnapSeedExact": true
+    },
+    {
+      "id": "B-G3-P099",
+      "telemetryLossless": true,
+      "nativeGameLogExact": true,
+      "actualCallPlanExact": true,
+      "motionAndSnapTimesExact": true,
+      "carrierFramesExact": true,
+      "nativeSnapSeedExact": true
+    },
+    {
+      "id": "A-G3-P099",
+      "telemetryLossless": true,
+      "nativeGameLogExact": true,
+      "actualCallPlanExact": true,
+      "motionAndSnapTimesExact": true,
+      "carrierFramesExact": true,
+      "nativeSnapSeedExact": true
+    },
+    {
+      "id": "B-G4-P012",
+      "telemetryLossless": true,
+      "nativeGameLogExact": true,
+      "actualCallPlanExact": true,
+      "motionAndSnapTimesExact": true,
+      "carrierFramesExact": true,
+      "nativeSnapSeedExact": true
+    },
+    {
+      "id": "A-G4-P012",
+      "telemetryLossless": true,
+      "nativeGameLogExact": true,
+      "actualCallPlanExact": true,
+      "motionAndSnapTimesExact": true,
+      "carrierFramesExact": true,
+      "nativeSnapSeedExact": true
+    },
+    {
+      "id": "B-G2-P188",
+      "telemetryLossless": true,
+      "nativeGameLogExact": true,
+      "actualCallPlanExact": true,
+      "motionAndSnapTimesExact": true,
+      "carrierFramesExact": true,
+      "nativeSnapSeedExact": true
+    },
+    {
+      "id": "A-G2-P188",
+      "telemetryLossless": true,
+      "nativeGameLogExact": true,
+      "actualCallPlanExact": true,
+      "motionAndSnapTimesExact": true,
+      "carrierFramesExact": true,
+      "nativeSnapSeedExact": true
+    }
+  ],
+  "savedInputBytePinsCurrent": true,
+  "templateAndExporterBytePinsCurrent": true
+}

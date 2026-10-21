@@ -1,0 +1,517 @@
+{
+  "status": "experimental-unpromoted",
+  "baseCommit": "dc4bea61b64a669538bb3456a797f2fa280981ab",
+  "sourceSha256": "4c56c12876883fbe0e84bdc3172d284fbc099c3a035a73852255cb4a44255302",
+  "node": "v22.23.3",
+  "productionDefault": "center",
+  "experimentOption": "handContact: 'patch'",
+  "cohort": {
+    "rosterSeeds": [
+      [
+        31,
+        32
+      ],
+      [
+        41,
+        42
+      ]
+    ],
+    "fronts": [
+      "over",
+      "under"
+    ],
+    "flips": [
+      false,
+      true
+    ],
+    "runs": [
+      "oz_strong",
+      "wz_strong",
+      "iz_strong",
+      "power",
+      "counter"
+    ],
+    "seed": 3,
+    "timeLimit": 2.01,
+    "inputCount": 80
+  },
+  "pairedDisplacement": [
+    {
+      "run": "oz_strong",
+      "modes": [
+        {
+          "handContact": "center",
+          "inputs": 8,
+          "handoffRange": [
+            1.45,
+            1.5
+          ],
+          "olTrajectoryYd": {
+            "0.25": 0.044558720632654314,
+            "0.5": 0.14923151400068946,
+            "1": 0.3625058128826506,
+            "1.5": 0.5481766732998352,
+            "2": 0.7791840049057956
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 0.7791840049057956
+            },
+            "DL": {
+              "n": 32,
+              "medianYd": 1.0510234633493898
+            },
+            "RB": {
+              "n": 8,
+              "medianYd": 1.7356579365103713
+            }
+          }
+        },
+        {
+          "handContact": "patch",
+          "inputs": 8,
+          "handoffRange": [
+            1.45,
+            1.5
+          ],
+          "olTrajectoryYd": {
+            "0.25": 0.044558720632654314,
+            "0.5": 0.14923151400068946,
+            "1": 0.31880780547414744,
+            "1.5": 0.531120383547858,
+            "2": 0.8299636910274852
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 0.8299636910274852
+            },
+            "DL": {
+              "n": 32,
+              "medianYd": 0.7672525549451699
+            },
+            "RB": {
+              "n": 8,
+              "medianYd": 1.7356579365103713
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "wz_strong",
+      "modes": [
+        {
+          "handContact": "center",
+          "inputs": 8,
+          "handoffRange": [
+            1.45,
+            1.5
+          ],
+          "olTrajectoryYd": {
+            "0.25": 0.04506299483186815,
+            "0.5": 0.15499848035799424,
+            "1": 0.38250225912470803,
+            "1.5": 0.5797079014698472,
+            "2": 0.736398676484443
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 0.736398676484443
+            },
+            "DL": {
+              "n": 32,
+              "medianYd": 1.1944414946366813
+            },
+            "RB": {
+              "n": 8,
+              "medianYd": 1.7657765283787832
+            }
+          }
+        },
+        {
+          "handContact": "patch",
+          "inputs": 8,
+          "handoffRange": [
+            1.45,
+            1.5
+          ],
+          "olTrajectoryYd": {
+            "0.25": 0.04506299483186815,
+            "0.5": 0.15499848035799424,
+            "1": 0.4040256019886872,
+            "1.5": 0.6697461526120687,
+            "2": 1.0565783344744126
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 1.0565783344744126
+            },
+            "DL": {
+              "n": 32,
+              "medianYd": 0.8050057990062509
+            },
+            "RB": {
+              "n": 8,
+              "medianYd": 1.7657765283787832
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "iz_strong",
+      "modes": [
+        {
+          "handContact": "center",
+          "inputs": 8,
+          "handoffRange": [
+            1.45,
+            1.5
+          ],
+          "olTrajectoryYd": {
+            "0.25": 0.04089126202523019,
+            "0.5": 0.13769580617870325,
+            "1": 0.2951504878273692,
+            "1.5": 0.5060374132177774,
+            "2": 0.9138361925417975
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 0.9138361925417975
+            },
+            "DL": {
+              "n": 32,
+              "medianYd": 0.9055736769090856
+            },
+            "RB": {
+              "n": 8,
+              "medianYd": 1.2387132781664292
+            }
+          }
+        },
+        {
+          "handContact": "patch",
+          "inputs": 8,
+          "handoffRange": [
+            1.45,
+            1.5
+          ],
+          "olTrajectoryYd": {
+            "0.25": 0.04089126202523019,
+            "0.5": 0.13769580617870325,
+            "1": 0.20196052547479404,
+            "1.5": 0.4126231115250505,
+            "2": 0.8644918187266022
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": 0.8644918187266022
+            },
+            "DL": {
+              "n": 32,
+              "medianYd": 0.7436743323653427
+            },
+            "RB": {
+              "n": 8,
+              "medianYd": 1.2381103379872762
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "power",
+      "modes": [
+        {
+          "handContact": "center",
+          "inputs": 8,
+          "handoffRange": [
+            1.45,
+            1.5
+          ],
+          "olTrajectoryYd": {
+            "0.25": -0.043244605566089334,
+            "0.5": -0.0967657396732875,
+            "1": -0.17776519181972006,
+            "1.5": -0.32893708508746755,
+            "2": -0.46406231352163196
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": -0.46406231352163196
+            },
+            "DL": {
+              "n": 32,
+              "medianYd": 0.14315593576969654
+            },
+            "RB": {
+              "n": 8,
+              "medianYd": 1.5653264456371012
+            }
+          }
+        },
+        {
+          "handContact": "patch",
+          "inputs": 8,
+          "handoffRange": [
+            1.45,
+            1.5
+          ],
+          "olTrajectoryYd": {
+            "0.25": -0.043244605566089334,
+            "0.5": -0.0967657396732875,
+            "1": -0.21221807243463253,
+            "1.5": -0.372043123217356,
+            "2": -0.43200190943757555
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": -0.43200190943757555
+            },
+            "DL": {
+              "n": 32,
+              "medianYd": 0.25769842420242384
+            },
+            "RB": {
+              "n": 8,
+              "medianYd": 1.570604775797154
+            }
+          }
+        }
+      ]
+    },
+    {
+      "run": "counter",
+      "modes": [
+        {
+          "handContact": "center",
+          "inputs": 8,
+          "handoffRange": [
+            1.45,
+            1.5
+          ],
+          "olTrajectoryYd": {
+            "0.25": -0.043244605566089334,
+            "0.5": -0.1324574301773911,
+            "1": -0.19051069617359495,
+            "1.5": -0.49832612795893105,
+            "2": -1.0679367538556068
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": -1.0679367538556068
+            },
+            "DL": {
+              "n": 32,
+              "medianYd": -0.7342121494832785
+            },
+            "RB": {
+              "n": 8,
+              "medianYd": 1.2265305059376796
+            }
+          }
+        },
+        {
+          "handContact": "patch",
+          "inputs": 8,
+          "handoffRange": [
+            1.45,
+            1.5
+          ],
+          "olTrajectoryYd": {
+            "0.25": -0.043244605566089334,
+            "0.5": -0.1324574301773911,
+            "1": -0.12846174104431896,
+            "1.5": -0.5177798370137019,
+            "2": -1.1557502686931915
+          },
+          "atTwoSeconds": {
+            "OL": {
+              "n": 40,
+              "medianYd": -1.1557502686931915
+            },
+            "DL": {
+              "n": 32,
+              "medianYd": -0.3701042715762295
+            },
+            "RB": {
+              "n": 8,
+              "medianYd": 1.2231433377470378
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "isolatedLaw": {
+    "candidate": "PASS",
+    "production": "KNOWN FAILURE",
+    "casesPerMode": 144,
+    "tolerance": 1e-08,
+    "candidateSummary": {
+      "normal": {
+        "cases": 72,
+        "lawConserved": true,
+        "absAngularChangeRange": [
+          0,
+          6.139089236967266e-11
+        ],
+        "maxMomentumError": 6.821210263296962e-12,
+        "maxEnergyResidual": 3.035349749325178e-13,
+        "handWorkRange": [
+          0.17999999999996377,
+          0.18000000000004993
+        ],
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxNormalOracleError": 7.105427357601002e-14
+      },
+      "tangent": {
+        "cases": 72,
+        "lawConserved": true,
+        "absAngularChangeRange": [
+          0,
+          4.092726157978177e-12
+        ],
+        "maxMomentumError": 2.2914314707516465e-13,
+        "maxEnergyResidual": 1.8912649224489542e-13,
+        "handWorkRange": [
+          -5.86475998415777,
+          -5.8646492881828785
+        ],
+        "maxArmImpulseExcess": 0,
+        "maxArmWorkExcess": 0,
+        "maxNormalOracleError": 0
+      }
+    }
+  },
+  "validation": {
+    "typecheck": "passed",
+    "build": "passed",
+    "testAll": {
+      "files": 106,
+      "passed": 1236,
+      "failed": 0,
+      "skipped": 0
+    },
+    "testData": {
+      "passed": 141,
+      "failed": 0
+    },
+    "forcedPatchExistingWitnesses": {
+      "passed": 42,
+      "failed": 8,
+      "filesFailed": 4,
+      "scope": "Test-only World.step wrapper selects patch for centered worlds; original fixture assertions are unmodified.",
+      "reproduce": "node node_modules/vitest/vitest.mjs run --config scripts/diag/common-patch-vitest.config.ts --maxWorkers=1"
+    }
+  },
+  "mechanismGuard": {
+    "baseline": {
+      "passed": 12,
+      "failed": [],
+      "cohort": "8 games, seeds 101-108, production center hands; refreshed with merged measurement code."
+    },
+    "candidate": {
+      "passed": 11,
+      "failed": [
+        "run.yards_before_contact"
+      ],
+      "cohort": "8 games, seeds 101-108 with --common-patch; refreshed with merged measurement code."
+    }
+  },
+  "promotionBlockers": [
+    "Mirrored redirect differs by roughly 0.009 yd in closest approach.",
+    "Four existing optional-zone-helper assertions fail.",
+    "One useful-helper-contact assertion fails.",
+    "Two historical exact-source hand-fight equivalence checks differ.",
+    "Candidate native-game YBC guard is off."
+  ],
+  "notImplemented": [
+    "Zone first-step or loaded-controller rewrite; both early candidates were rejected.",
+    "QB/RB mesh and moving outside landmark.",
+    "Free interior moving-gap geometry.",
+    "A general angular-law certification for grounded/torso/grasp interactions."
+  ],
+  "artifactsLocalOnly": true,
+  "artifacts": [
+    {
+      "path": "out/zone-development/final-zone-flow.json",
+      "sha256": "c9a0a7bb0a6eca513c36acfa57287f99bfdb7979e2689e225eaaa215b3d5c4c5"
+    },
+    {
+      "path": "out/zone-development/final-zone-flow.json.traces.json.gz",
+      "sha256": "4d19847fb5a5b250e3dea593856a6ca8870d56684a5c91e0113071c6dc3b150c"
+    },
+    {
+      "path": "out/zone-development/angular-final.json",
+      "sha256": "283fb12d440fbe02a62d9e2d5cae92324302fbe539659ccf2f1fc5a2e9a85d25"
+    },
+    {
+      "path": "out/zone-development/angular-center.json",
+      "sha256": "290e69279a2d55cb2a54bd3987df974449e5d1ca7b3cc881f6de50f71035b79d"
+    },
+    {
+      "path": "out/zone-development/test-all-merged.log",
+      "sha256": "e268e6adb4eb18e7ff4cfbb6879cd69e5e8ea82074c79929a8546542222897c5"
+    },
+    {
+      "path": "out/zone-development/test-data-merged.log",
+      "sha256": "2c232cd5451984626182655e2d09f693cd633c67ebaa6f2afc80bdab148c13df"
+    },
+    {
+      "path": "out/zone-development/patch-witnesses-published.log",
+      "sha256": "f5d554308ffd2103b7c8689c7ce9bef1ce33d20c0a0e5e7c077a937c36beebcd"
+    },
+    {
+      "path": "out/zone-development/center-merged-mechanics.json",
+      "sha256": "9d65a73bef419f5c4dd506a998cf0b60a37b638f3ba5a3d9f4c517ad8e6d1703"
+    },
+    {
+      "path": "out/zone-development/patch-merged-mechanics.json",
+      "sha256": "d104f74a9131d611009dfe07ad1ef8d0c4e09f5714fa3119bfa036cd3c64d7a7"
+    },
+    {
+      "path": "out/zone-development/center-merged-report.md",
+      "sha256": "524cf3e67842b4b3601841a492c6024f515c53ff829d22554ffc1cf037a24bef"
+    },
+    {
+      "path": "out/zone-development/patch-merged-report.md",
+      "sha256": "fb41b548a98026f13454e2f6e838eda40e2433e325ae13e8bb69048eb347aac4"
+    },
+    {
+      "path": "out/zone-development/center-merged-outcomes.json",
+      "sha256": "ba32c3bbcb23014e1319b0fc3db110dfd8040ea2bda412f1f38f975e9f542784"
+    },
+    {
+      "path": "out/zone-development/patch-merged-outcomes.json",
+      "sha256": "7470795b3532c3aee4eac4840dbd84683ea082befc29cc22547dd882620e2965"
+    },
+    {
+      "path": "scripts/diag/common-patch-test.setup.ts",
+      "sha256": "c280a89c1f27e592107d8b58c1ee5bb10e8651f4d01960f173ef6f7b6ae64f27"
+    },
+    {
+      "path": "scripts/diag/common-patch-vitest.config.ts",
+      "sha256": "924e733efed93dda5be06fa5fe7a27ef8c2d5d28544b2367f85723dfdd1d4fad"
+    },
+    {
+      "path": "scripts/mechanics/metrics.py",
+      "sha256": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0"
+    },
+    {
+      "path": "scripts/mechanics/sim-export.ts",
+      "sha256": "fd889f71e67c624298eb7b06c73bc0f85e4b7dc423328745e5ac0ebf01f5d39b"
+    }
+  ],
+  "integratedUpstreamCommit": "12ccf98623febd137267b29e6fa39b263082f329"
+}

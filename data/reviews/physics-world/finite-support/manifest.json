@@ -1,0 +1,78 @@
+{
+  "sourceSha256": "4f30952b05e5f6962ab49c66aa4eb7df6d366728e0f5eb0b96e98b13e65e3bfc",
+  "nodeVersion": "v22.23.3",
+  "baselineCommit": "8a6683c39aa44c46fc4fcd6970e327fee6577b87",
+  "branch": "claude/engine-priorities",
+  "productionSupport": "legacy",
+  "kernelSelectedByWorld": false,
+  "solverOptions": {
+    "maxIterations": 256,
+    "tolerance": 1e-09,
+    "coupledUpdates": true
+  },
+  "checks": {
+    "typescript": {
+      "passed": 322,
+      "files": 33,
+      "exitCode": 0
+    },
+    "python": {
+      "passed": 22,
+      "exitCode": 0
+    },
+    "typecheck": {
+      "exitCode": 0
+    },
+    "build": {
+      "exitCode": 0
+    }
+  },
+  "scriptHashes": {
+    "src/physics/finite-support.ts": "ac61093986c3aae4a23c8bcebc5931d41a1064f4a09e211b18182167c319e4f8",
+    "test/finite-support.test.ts": "b8ddaf4cb6c6b91e4816a6780ab1b083ba8d7980085580946241441e5fe28561",
+    "scripts/diag/finite-support.ts": "80d4fbbf074598b1e94b4ba4b52fe6bd14046192bf958a5acb27f8207345346e",
+    "scripts/diag/finite-support-stress.ts": "6de0896606510fcab1f0fa5f2c761a213ab2f3ca495a6b71806a305101fe558b",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/diag/shared-capabilities.ts": "3e5477aadfa597a0d476314a1851b0b4f783baa9456ddc662d342f891f91c505",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+  },
+  "measurements": [
+    {
+      "script": "scripts/diag/finite-support.ts",
+      "args": "out/finite-support/lifecycle.json",
+      "exitCode": 0
+    },
+    {
+      "script": "scripts/diag/finite-support.ts",
+      "args": "out/finite-support/lifecycle-ablation.json --no-block",
+      "exitCode": 0
+    },
+    {
+      "script": "scripts/diag/finite-support-stress.ts",
+      "args": "out/finite-support/stress.json",
+      "exitCode": 0
+    },
+    {
+      "script": "scripts/diag/finite-support-stress.ts",
+      "args": "out/finite-support/stress-ablation.json --no-block",
+      "exitCode": 0
+    },
+    {
+      "script": "scripts/diag/hand-convergence.ts",
+      "args": "out/finite-support/production-hand.json",
+      "exitCode": 0
+    },
+    {
+      "script": "scripts/diag/shared-capabilities.ts",
+      "args": "out/finite-support/production-shared.json",
+      "exitCode": 0
+    }
+  ],
+  "missing": [
+    "Production running gait and fall integration",
+    "Vertical ground/contact model",
+    "Robust all-active-set convergence",
+    "NFL-specific cleat/friction and grip force measurements",
+    "Moore perturbation event/belt timing"
+  ]
+}

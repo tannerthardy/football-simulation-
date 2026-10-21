@@ -1,0 +1,337 @@
+{
+  "protocol": "independent-physics-118-120-121-review-v1",
+  "acceptedBase": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "queuePin": "bf493d881f423540962c6b1ad3b889fe2662e8c8",
+  "acceptedSource": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+  "reviewerBranch": "codex/independent-physics-118-120-121-review",
+  "authorship": "Independent reviewer; no candidate runtime, test, author branch, or canonical queue edits.",
+  "candidates": {
+    "118": {
+      "verdict": "ACCEPT for integration preparation; exact combined verification pending",
+      "head": "3b426fb1b82639d99bb6384276cc315a3e266c42",
+      "source": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+      "minimalSource": "19f0ce52abb734528929375f9fd3aee219e619d267c5656151dab57badc6f830",
+      "portablePatch": "data/reviews/current/pr118-120-121-independent-review/pr118.patch",
+      "patchSha256": "e403efdcf80d0f8391f4f587b3e16af57d36f15a8d0563ecba5ca991bdd93754",
+      "paths": [
+        "src/physics/world.ts",
+        "scripts/diag/physics/directional-brace.ts",
+        "test/directional-brace.test.ts",
+        "test/fixtures/directional-brace-control.json"
+      ],
+      "baseBlobs": {
+        "src/physics/world.ts": "3c54a3d7fcd2d64a3e124a4776dc58dad7729dfb"
+      },
+      "resultBlobs": {
+        "src/physics/world.ts": "43a4d4d14657c1662d6d3b3ee2aea2b92fb4ddce",
+        "scripts/diag/physics/directional-brace.ts": "1dd27d78edc415966154b371646f10996a6cf6f6",
+        "test/directional-brace.test.ts": "97f784029c9c658c4c09e5dda23b7c95a56c6d7d",
+        "test/fixtures/directional-brace-control.json": "f604f16bcb9f0b20afea23bab892ff0734125305"
+      },
+      "patchApply": [
+        {
+          "pr": 118,
+          "checkExitCode": 0,
+          "checkStderr": ""
+        }
+      ],
+      "minimalTree": "4dbd29d17c8f5ce6c998a39bf1c12b43fbc33106",
+      "dependencies": [],
+      "approvalRequired": false
+    },
+    "120": {
+      "verdict": "ACCEPT for integration preparation; exact combined verification pending",
+      "head": "35f87c90c5e39bf2fa9c9c513aae7ae5e82c8e41",
+      "source": "c9478f188928a8c724c3584d298bdee9008f192969eee6e06132c7727a114cf4",
+      "minimalSource": "c9478f188928a8c724c3584d298bdee9008f192969eee6e06132c7727a114cf4",
+      "portablePatch": "data/reviews/current/pr118-120-121-independent-review/pr120.patch",
+      "patchSha256": "e08fd4d8e2b5dcbed683d092098f86161ba85b1c6bdda164a7ce382bad8bd9b3",
+      "paths": [
+        "src/physics/kinematics.ts",
+        "src/physics/world.ts",
+        "test/action-effort.test.ts",
+        "test/dive-yaw.test.ts",
+        "test/fall-cause-history.test.ts"
+      ],
+      "baseBlobs": {
+        "src/physics/kinematics.ts": "b1a7f7472496eeb9ec041324621b801c1f9c5cef",
+        "src/physics/world.ts": "3c54a3d7fcd2d64a3e124a4776dc58dad7729dfb"
+      },
+      "resultBlobs": {
+        "src/physics/kinematics.ts": "bd65a9e185fce1b1432497a95a44afb22f7965ce",
+        "src/physics/world.ts": "fc085466f650ccffdbf50d9d99bdf806bfb431e7",
+        "test/action-effort.test.ts": "af52bd72dd12999ba4d41c018344e52850a4ebf5",
+        "test/dive-yaw.test.ts": "e50ecb0d29cf101f2a62106991383d5357a58533",
+        "test/fall-cause-history.test.ts": "8e4f659010c3a0e3ec7343cff575bd3fbfe79c72"
+      },
+      "patchApply": [
+        {
+          "pr": 120,
+          "checkExitCode": 0,
+          "checkStderr": ""
+        }
+      ],
+      "minimalTree": "2f0a9834a54d349809b9ad556b10d5f2532a4c0d",
+      "dependencies": [],
+      "approvalRequired": false
+    },
+    "121": {
+      "verdict": "ACCEPT for integration preparation; exact combined verification pending",
+      "head": "1dc41611d82a7cb5e81db259e0e6f185ac2abcb5",
+      "source": "a0bdc872ca8d4812251603c233ce553abeea249955c365a55a360efa2445c354",
+      "minimalSource": "a0bdc872ca8d4812251603c233ce553abeea249955c365a55a360efa2445c354",
+      "portablePatch": "data/reviews/current/pr118-120-121-independent-review/pr121.patch",
+      "patchSha256": "de00ab5bc0c396b71e168fda36b6dfdd755abb1011e40d5c97850096585a50b3",
+      "paths": [
+        "src/game/game.ts",
+        "test/two-point-energy.test.ts"
+      ],
+      "baseBlobs": {
+        "src/game/game.ts": "a14499adfd83a8adffcb14ec4fab1642da005591"
+      },
+      "resultBlobs": {
+        "src/game/game.ts": "3a6b915f9604e4c99af52b034fbd8fa040723dd5",
+        "test/two-point-energy.test.ts": "213e1640500a3df51f39ffd77c741589f05be242"
+      },
+      "patchApply": [
+        {
+          "pr": 121,
+          "checkExitCode": 0,
+          "checkStderr": ""
+        }
+      ],
+      "minimalTree": "4f3220a15d729d9bf5b4f636796698d8a6940507",
+      "dependencies": [],
+      "approvalRequired": false
+    }
+  },
+  "compositions": {
+    "118-120": {
+      "tree": "51bf872f05697f0b742976bbcba51bd27fbd4145",
+      "source": "0f8d1f02eaa7fc69e3e8273651a9a1bda64d2a7139fc0c04850eccd981b464e5",
+      "paths": [
+        "scripts/diag/physics/directional-brace.ts",
+        "src/physics/kinematics.ts",
+        "src/physics/world.ts",
+        "test/action-effort.test.ts",
+        "test/directional-brace.test.ts",
+        "test/dive-yaw.test.ts",
+        "test/fall-cause-history.test.ts",
+        "test/fixtures/directional-brace-control.json"
+      ],
+      "blobs": {
+        "scripts/diag/physics/directional-brace.ts": "1dd27d78edc415966154b371646f10996a6cf6f6",
+        "src/physics/kinematics.ts": "bd65a9e185fce1b1432497a95a44afb22f7965ce",
+        "src/physics/world.ts": "d036ca623cdb66840aebc1bb518242ecbae9c117",
+        "test/action-effort.test.ts": "af52bd72dd12999ba4d41c018344e52850a4ebf5",
+        "test/directional-brace.test.ts": "97f784029c9c658c4c09e5dda23b7c95a56c6d7d",
+        "test/dive-yaw.test.ts": "e50ecb0d29cf101f2a62106991383d5357a58533",
+        "test/fall-cause-history.test.ts": "8e4f659010c3a0e3ec7343cff575bd3fbfe79c72",
+        "test/fixtures/directional-brace-control.json": "f604f16bcb9f0b20afea23bab892ff0734125305"
+      },
+      "applyChecks": [
+        {
+          "pr": 118,
+          "checkExitCode": 0,
+          "checkStderr": ""
+        },
+        {
+          "pr": 120,
+          "checkExitCode": 0,
+          "checkStderr": ""
+        }
+      ],
+      "patch": "data/reviews/current/pr118-120-121-independent-review/combined-118-120.patch",
+      "patchSha256": "5b324bb00d7787fae90400eea4e2bf628e62ab2d638d55b3c076bead516814f8",
+      "execution": "Patch applicability/source identity only; no combined engine verification."
+    },
+    "120-118": {
+      "tree": "51bf872f05697f0b742976bbcba51bd27fbd4145",
+      "source": "0f8d1f02eaa7fc69e3e8273651a9a1bda64d2a7139fc0c04850eccd981b464e5",
+      "paths": [
+        "scripts/diag/physics/directional-brace.ts",
+        "src/physics/kinematics.ts",
+        "src/physics/world.ts",
+        "test/action-effort.test.ts",
+        "test/directional-brace.test.ts",
+        "test/dive-yaw.test.ts",
+        "test/fall-cause-history.test.ts",
+        "test/fixtures/directional-brace-control.json"
+      ],
+      "blobs": {
+        "scripts/diag/physics/directional-brace.ts": "1dd27d78edc415966154b371646f10996a6cf6f6",
+        "src/physics/kinematics.ts": "bd65a9e185fce1b1432497a95a44afb22f7965ce",
+        "src/physics/world.ts": "d036ca623cdb66840aebc1bb518242ecbae9c117",
+        "test/action-effort.test.ts": "af52bd72dd12999ba4d41c018344e52850a4ebf5",
+        "test/directional-brace.test.ts": "97f784029c9c658c4c09e5dda23b7c95a56c6d7d",
+        "test/dive-yaw.test.ts": "e50ecb0d29cf101f2a62106991383d5357a58533",
+        "test/fall-cause-history.test.ts": "8e4f659010c3a0e3ec7343cff575bd3fbfe79c72",
+        "test/fixtures/directional-brace-control.json": "f604f16bcb9f0b20afea23bab892ff0734125305"
+      },
+      "applyChecks": [
+        {
+          "pr": 120,
+          "checkExitCode": 0,
+          "checkStderr": ""
+        },
+        {
+          "pr": 118,
+          "checkExitCode": 0,
+          "checkStderr": ""
+        }
+      ],
+      "patch": "data/reviews/current/pr118-120-121-independent-review/combined-118-120.patch",
+      "patchSha256": "5b324bb00d7787fae90400eea4e2bf628e62ab2d638d55b3c076bead516814f8",
+      "execution": "Patch applicability/source identity only; no combined engine verification."
+    },
+    "118-120-121": {
+      "tree": "198b62b08d9513ee85f90bf59b7f0f961b7701fa",
+      "source": "25d088d5dbfeb5d1552b736107e62910c0610a522ad0771de5b252113a6fc882",
+      "paths": [
+        "scripts/diag/physics/directional-brace.ts",
+        "src/game/game.ts",
+        "src/physics/kinematics.ts",
+        "src/physics/world.ts",
+        "test/action-effort.test.ts",
+        "test/directional-brace.test.ts",
+        "test/dive-yaw.test.ts",
+        "test/fall-cause-history.test.ts",
+        "test/fixtures/directional-brace-control.json",
+        "test/two-point-energy.test.ts"
+      ],
+      "blobs": {
+        "scripts/diag/physics/directional-brace.ts": "1dd27d78edc415966154b371646f10996a6cf6f6",
+        "src/game/game.ts": "3a6b915f9604e4c99af52b034fbd8fa040723dd5",
+        "src/physics/kinematics.ts": "bd65a9e185fce1b1432497a95a44afb22f7965ce",
+        "src/physics/world.ts": "d036ca623cdb66840aebc1bb518242ecbae9c117",
+        "test/action-effort.test.ts": "af52bd72dd12999ba4d41c018344e52850a4ebf5",
+        "test/directional-brace.test.ts": "97f784029c9c658c4c09e5dda23b7c95a56c6d7d",
+        "test/dive-yaw.test.ts": "e50ecb0d29cf101f2a62106991383d5357a58533",
+        "test/fall-cause-history.test.ts": "8e4f659010c3a0e3ec7343cff575bd3fbfe79c72",
+        "test/fixtures/directional-brace-control.json": "f604f16bcb9f0b20afea23bab892ff0734125305",
+        "test/two-point-energy.test.ts": "213e1640500a3df51f39ffd77c741589f05be242"
+      },
+      "applyChecks": [
+        {
+          "pr": 118,
+          "checkExitCode": 0,
+          "checkStderr": ""
+        },
+        {
+          "pr": 120,
+          "checkExitCode": 0,
+          "checkStderr": ""
+        },
+        {
+          "pr": 121,
+          "checkExitCode": 0,
+          "checkStderr": ""
+        }
+      ],
+      "patch": "data/reviews/current/pr118-120-121-independent-review/combined-118-120-121.patch",
+      "patchSha256": "84ccab384d46599c167e431e8076a91285d60f464e574bb0688c3a7e3618bafb",
+      "execution": "Patch applicability/source identity only; no combined engine verification."
+    },
+    "121": {
+      "tree": "4f3220a15d729d9bf5b4f636796698d8a6940507",
+      "source": "a0bdc872ca8d4812251603c233ce553abeea249955c365a55a360efa2445c354",
+      "paths": [
+        "src/game/game.ts",
+        "test/two-point-energy.test.ts"
+      ],
+      "blobs": {
+        "src/game/game.ts": "3a6b915f9604e4c99af52b034fbd8fa040723dd5",
+        "test/two-point-energy.test.ts": "213e1640500a3df51f39ffd77c741589f05be242"
+      },
+      "applyChecks": [
+        {
+          "pr": 121,
+          "checkExitCode": 0,
+          "checkStderr": ""
+        }
+      ],
+      "patch": "data/reviews/current/pr118-120-121-independent-review/pr121.patch",
+      "patchSha256": "de00ab5bc0c396b71e168fda36b6dfdd755abb1011e40d5c97850096585a50b3",
+      "execution": "Patch applicability/source identity only; no combined engine verification."
+    }
+  },
+  "newExecution": {
+    "engineTests": 0,
+    "fullSuites": 0,
+    "nativeSnaps": 0,
+    "games": 0,
+    "algebraResult": "data/reviews/current/pr118-120-121-independent-review/algebra-result.json",
+    "algebra": {
+      "protocol": "directional-cancellation-algebra-v1",
+      "head": "3b426fb1b82639d99bb6384276cc315a3e266c42",
+      "node": "v22.23.3",
+      "sourceBlockSha256": "2072693f06e30896d4f859aca965df117f3b334331ce8bc880cd419360017a12",
+      "scriptSha256": "0f41bf46be4bfe9c497b8a54fd0bd820aca52b1af6497de7776d341493a09226",
+      "cases": 510,
+      "exactCollinear": 246,
+      "maxError": 5.551115123125783e-17,
+      "elapsedSeconds": 0.015574516000000004,
+      "engineSteps": 0,
+      "result": "PASS",
+      "limits": "Fixed-state algebra only; unequal World trajectories remain outside this check."
+    },
+    "initialNonEngineDiagnostic": {
+      "protocol": "directional-cancellation-algebra-v1",
+      "head": "3b426fb1b82639d99bb6384276cc315a3e266c42",
+      "node": "v24.19.0",
+      "sourceBlockSha256": "2072693f06e30896d4f859aca965df117f3b334331ce8bc880cd419360017a12",
+      "scriptSha256": "0f41bf46be4bfe9c497b8a54fd0bd820aca52b1af6497de7776d341493a09226",
+      "cases": 510,
+      "exactCollinear": 246,
+      "maxError": 5.551115123125783e-17,
+      "elapsedSeconds": 0.017891763000000005,
+      "engineSteps": 0,
+      "result": "PASS",
+      "limits": "Fixed-state algebra only; unequal World trajectories remain outside this check."
+    },
+    "reviewerSimulationSeconds": 0
+  },
+  "candidate118Evidence": {
+    "artifactBlob": "a534ede567313977630bcc731172025d4c391a20",
+    "artifactSha256": "0d1628410a11ef43feae117772713eb9d5e799b9a202414bfe16a6cd31142d37",
+    "focusedUnique": 37,
+    "focusedExecutions": 44,
+    "newContracts": 7,
+    "authorCommandSeconds": 51.346659147,
+    "reusedRatherThanRerun": true
+  },
+  "candidate120Evidence": {
+    "artifactBlob": "9d4efa689cfdc5bd0f3c16a00205c98313b4c0cc",
+    "artifactSha256": "1977b4e97e97619d27848ed9c898e18dc9e5e68a128caf9a994f5a4d26ec5f1f",
+    "focusedUnique": 94,
+    "focusedExecutions": 133,
+    "newContracts": 14,
+    "authorCommandSeconds": 42.398236282,
+    "reusedRatherThanRerun": true
+  },
+  "candidate121Evidence": {
+    "artifactBlob": "d0fb1203fc1657594ab4617bf5c3fb3d2127bcf5",
+    "artifactSha256": "a0898febc349d4b2c278f65a2efc0ffbed8013efa966eafb994b45ee136754a5",
+    "focusedUnique": 3,
+    "expectedRedFailures": 2,
+    "authorCommandSeconds": 5.02405204,
+    "reusedRatherThanRerun": true
+  },
+  "classifications": {
+    "118": "Existing directional support accounting repair; preserves inherited aligned lean sign/magnitude, aggregate ankle and attained lean budgets.",
+    "120": "Existing torque-free yaw transport, completed mechanical effort accounting and diagnostic-memory repair; ordinary gait proxy preserved.",
+    "121": "Existing completed-snap participant energy persistence repair."
+  },
+  "authority": "No new law/capacity/default approval required for these minimal repairs. Exact combined verification and adoption remain Integration-owned; any different support/metabolic law or experimental activation needs separate user approval.",
+  "mutableHeadsCheck": "GitHub get_pr_info independently confirmed all three exact heads, base d682b1f, open and draft on 2026-10-17.",
+  "settings": {
+    "flags": "Existing44; RUN_CONTACT_COMPONENTS=1, CF_FLOW unset, RUN_READ=0, no new flags/defaults. Author receipts retain exact maps and World defaults.",
+    "changedConfigFiles": []
+  },
+  "publicationChecks": {
+    "nonPatchDiffCheckExitCode": 0,
+    "portablePatchContextWhitespace": "Default diff-check reports single-space blank context lines inside three stored unified diffs; patch bytes are preserved and all cached patch-apply checks pass.",
+    "sourceTestConfigEdits": [],
+    "jsonTracking": "Explicitly added because repository ignores generated JSON by default."
+  }
+}

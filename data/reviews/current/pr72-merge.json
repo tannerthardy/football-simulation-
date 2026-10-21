@@ -1,0 +1,39 @@
+{
+  "schema": "pr72-merged-acceptance-v1",
+  "base": "7d1451b2c31786e075550183a6a93bbda23da29b",
+  "expectedPublication": "167547807a23052e04af2199104fc16b9850a501",
+  "testedCommit": "64177487272b7e0b2d51460e23ccdb6447508e39",
+  "sourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+  "validationSha256": "ccd339bb899afb10f98e64e44c2da9b15903fbb73e0009664d5aad76930ba37c",
+  "expectedPreview": "51ab21da1f5eda0c6f8fc465210d0bfaaf717b56",
+  "entirePreviewTreeMatchesReviewedPublication": true,
+  "sourceTestsSettingsMatchPassingReceipt": true,
+  "allArtifactHashesMatch": true,
+  "existingAdverseAndFailedReceiptsPreserved": true,
+  "testsRerun": 0,
+  "simulationsRun": 0,
+  "authorization": "User explicitly authorized exact PR72 merge with unchanged protected inputs/no substantive conflict; no other candidate merge authorized.",
+  "actualMergedDevelop": "4679a3c260188143bcc66f6f20534327c78d7eaa",
+  "actualMergedTree": "597f3b1494dc1702c86ac8d0aa2141c8e5dfe22e",
+  "entireMergedTreeEqualsReviewedPublication": true,
+  "mergeAuthorizedAndPerformed": true,
+  "includedFixes": [
+    "PassProtector free edge-cutoff uses ordinary movement through unchanged forecast point with existing0.75*vmax budget",
+    "coverage-job filter preserves original coverage-specific assertions; four existing cutoff checks and saved fixture"
+  ],
+  "excluded": [
+    "#69",
+    "run-entry information and navigation",
+    "experimental physics",
+    "original #67 stacked ancestry"
+  ],
+  "affectedOwners": {
+    "Run Game": "Use accepted free-cutoff action in forecast/loaded-policy follow-up; preserve native RT/RG/LT tradeoffs and old-source evidence.",
+    "#69 / Do-It-All independent reviewer": "Preserve accepted PassProtector hunk when extracting other blocking.ts functions; assess collection independently.",
+    "Awareness / Do-It-All entry": "Recheck minimal carrier/PlaySim extraction portability on new accepted pin; no navigation promotion.",
+    "Physics": "Keep contact-law candidate and readiness/dependencies separate; baseline center-hand defects remain unresolved."
+  },
+  "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "defaultUnchanged": true,
+  "branchesPreserved": true
+}

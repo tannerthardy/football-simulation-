@@ -1,0 +1,40 @@
+{
+  "schema": "helper-coverage-game-guard-v1",
+  "sourceBefore": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+  "sourceAfter": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+  "parentSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "toolSha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+  "node": "v22.23.3",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "scripts/calibrate.ts",
+    "8",
+    "7",
+    "2"
+  ],
+  "exitCode": 0,
+  "games": 8,
+  "leagues": 2,
+  "seed": 7,
+  "scrimmagePlays": 1029,
+  "log": {
+    "path": "data/reviews/helper-fit-and-coverage/games/final8.log.gz",
+    "bytes": 904,
+    "sha256": "b60f979af87e42562530db953c5f7b9b7d920118db30a47ee5a9829c763410e5"
+  },
+  "decodedLogSha256": "d77be3ce2f2a348c6b59260d1f2f3644af36b75aa36458fcd8591662e40ff807",
+  "reusedParentLog": {
+    "path": "data/reviews/run-fit-and-recovery/games/final8.log.gz",
+    "bytes": 905,
+    "sha256": "5c27d85e27365b68f6bf7da90d90bbb82222c61efa9128ca0a05513149d08b8a"
+  },
+  "parentScrimmagePlays": 1023,
+  "limits": [
+    "Same initial league generation, tool and seed; later calls, RNG draws and snap populations diverge.",
+    "Eight games are a guard, not paired snaps or NFL calibration.",
+    "Concurrent work during this guard; wall time is not a performance benchmark.",
+    "Points, YPC, YAC and missed/broken tackles worsen; keep those regressions visible."
+  ]
+}

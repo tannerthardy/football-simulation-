@@ -1,0 +1,32 @@
+{
+  "engineSource": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+  "typescript": {
+    "files": 95,
+    "tests": 1105,
+    "exitCode": 0,
+    "pool": "threads",
+    "workers": 1
+  },
+  "python": {
+    "tests": 66,
+    "exitCode": 0
+  },
+  "focusedFeature": {
+    "candidatePass": 30,
+    "baselinePass": 25,
+    "baselineFail": 5
+  },
+  "typecheckExitCode": 0,
+  "buildExitCode": 0,
+  "fixedRunFullRowsExact": 162,
+  "fixedPassFullRowsExact": 96,
+  "manifestJSONAndGzipIntegrity": "passed all published files",
+  "selectedFinalReceiptsVerified": 4,
+  "filmZIPIntegrity": "passed HTML + OPEN_ME instructions",
+  "filmZipSha256": "1ab86eb8498c1cb85073ef57e96bc9c73c9b98d32fd6378ca9ee64b5ea5d2abf",
+  "notes": [
+    "An initial artifact harness assumed a one-file ZIP; the export intentionally includes opening instructions. Corrected explicit two-file check passes.",
+    "Final exporter uses inferred object binding and changes only embedded exporter hash versus browser-tested HTML; see final equivalence receipt.",
+    "Full TS suite ran after engine and feature tests froze; final exporter subsequently passes final whole-repository typecheck/build and browser/static checks."
+  ]
+}

@@ -1,0 +1,567 @@
+{
+  "schema": "pr87-run-policy-decision-v1",
+  "decision": "ACCEPT exact seven-file post-dependency policy on accepted9adb7b3; Integration owns final combined verification.",
+  "reviewedHead": "9760de031cae3bda7c926735f8edeb97fa4574e5",
+  "acceptedBase": "9adb7b3f730c5637e5a6547f9bc151a17ce301b2",
+  "composedTree": "3c62931c71c3ae31c5b56e06f0446c84a8fc8f54",
+  "sourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "sourceOnlyArchiveQualification": "Review launcher source is accepted host; exact source archives are imported and statically hashed. No candidate branch edit.",
+  "protectedFiles": {
+    "src/sim/behaviors/common.ts": "8e647b8b63ba5d09c7fb487e40f682aef54d3913ab39368700e2b82cdbba4062",
+    "src/sim/behaviors/defense.ts": "e0c21983ff3cd8b80ca03ffcf526ea687f36b64d529c2fded3bcdb84b13f3418",
+    "src/sim/catch-approach.ts": "9a194eb08d5f8cb4f40a8815c77b88613aa627fb4ef51aff2d900e0e74296108",
+    "src/sim/movement-objective.ts": "09020c175a9aa4f8dbe2bd83ee9f12277af637f994fa646a36a2d8f72cb210a2",
+    "src/sim/spacing.ts": "a86f941945d44247f11de5e6a2a45f8a2e6038572b93cb9fd1bdc18ae6cd2873",
+    "test/fixtures/traffic-step.json.gz": "653d3740fb5eb001ac14c11a5391b5d27a319aff3e12592451ab832e141a4149",
+    "test/traffic-step.test.ts": "2dafeead922b5149e4cb45b82b918edeec7e9e0c6295d5fdd6ab3e2152dee605"
+  },
+  "nativeInteraction": {
+    "case": "A042",
+    "firstPhysicalRequestDifference": {
+      "t": 1.65,
+      "actors": [
+        15
+      ],
+      "enteringBodiesExact": true
+    },
+    "primaryFullBodiesCommandsExact": {
+      "6": true,
+      "20": true,
+      "21": true
+    },
+    "rootRngExactEveryTick": true,
+    "noTeammateContactsBothArms": true,
+    "blockContactTimesExact": [
+      [
+        0.5,
+        4,
+        14
+      ],
+      [
+        0.55,
+        5,
+        13
+      ],
+      [
+        0.65,
+        7,
+        12
+      ],
+      [
+        0.85,
+        1,
+        11
+      ],
+      [
+        2,
+        10,
+        19
+      ],
+      [
+        2.1,
+        5,
+        15
+      ],
+      [
+        2.95,
+        1,
+        11
+      ],
+      [
+        3.45,
+        1,
+        11
+      ],
+      [
+        3.45,
+        10,
+        19
+      ],
+      [
+        3.65,
+        4,
+        14
+      ]
+    ],
+    "carrierEventsExact": [
+      {
+        "t": 3.25,
+        "type": "carrier_contact",
+        "a": 6,
+        "b": 21,
+        "pos": {
+          "x": 40.28,
+          "y": 20.08
+        },
+        "note": "grasp"
+      },
+      {
+        "t": 3.25,
+        "type": "tackle_wrap",
+        "a": 21,
+        "b": 6,
+        "pos": {
+          "x": 40.55,
+          "y": 20.9
+        },
+        "note": "initial"
+      },
+      {
+        "t": 3.7,
+        "type": "tackle_wrap",
+        "a": 20,
+        "b": 6,
+        "pos": {
+          "x": 43.82,
+          "y": 19.03
+        },
+        "note": "assist"
+      }
+    ],
+    "maxPositionShiftsByActor": {
+      "0": 0.0,
+      "1": 0.0,
+      "2": 5.376548860529548e-05,
+      "3": 0.02658282385654338,
+      "4": 0.020180631138211006,
+      "5": 0.2101326331633619,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0,
+      "9": 0.0,
+      "10": 0.06457662543321782,
+      "11": 0.0,
+      "12": 0.0,
+      "13": 5.377143111051236e-05,
+      "14": 0.015587313177738586,
+      "15": 0.025974638260028403,
+      "16": 0.24812783723201243,
+      "17": 0.0,
+      "18": 0.0,
+      "19": 0.13889514965931712,
+      "20": 0.0,
+      "21": 0.0
+    },
+    "actualMovingAlleyGoals": [
+      {
+        "t": 0.5,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.33936667543402
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.3920947855307422
+        }
+      },
+      {
+        "t": 0.55,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.33936667543402
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.45914988166359194
+        }
+      },
+      {
+        "t": 0.6,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.33936667543402
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.5224275908694134
+        }
+      },
+      {
+        "t": 0.65,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.33936667543402
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.5819393543023993
+        }
+      },
+      {
+        "t": 0.7,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.18632606007769
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.6376985082985219
+        }
+      },
+      {
+        "t": 0.75,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.18632606007769
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.6897194755200121
+        }
+      },
+      {
+        "t": 0.8,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.18632606007769
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.7380169677226657
+        }
+      },
+      {
+        "t": 0.85,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.18632606007769
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.7826051755679676
+        }
+      },
+      {
+        "t": 0.9,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.00212027771755
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.8234969069402339
+        }
+      },
+      {
+        "t": 0.95,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.00212027771755
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.8607026596875704
+        }
+      },
+      {
+        "t": 1,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.00212027771755
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.8942295667853762
+        }
+      },
+      {
+        "t": 1.05,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 25.00212027771755
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.9240801736035611
+        }
+      },
+      {
+        "t": 1.1,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.798476050574315
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.9502509578370615
+        }
+      },
+      {
+        "t": 1.15,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.798476050574315
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.9727304822243515
+        }
+      },
+      {
+        "t": 1.2,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.798476050574315
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.9914970080180964
+        }
+      },
+      {
+        "t": 1.25,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.798476050574315
+        },
+        "velocity": {
+          "x": 0,
+          "y": -1.0065152977143927
+        }
+      },
+      {
+        "t": 1.3,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.58724400870095
+        },
+        "velocity": {
+          "x": 0,
+          "y": -1.017732173995517
+        }
+      },
+      {
+        "t": 1.35,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.58724400870095
+        },
+        "velocity": {
+          "x": 0,
+          "y": -1.0250700840454334
+        }
+      },
+      {
+        "t": 1.4,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.58724400870095
+        },
+        "velocity": {
+          "x": 0,
+          "y": -1.028417312778889
+        }
+      },
+      {
+        "t": 1.45,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.58724400870095
+        },
+        "velocity": {
+          "x": 0,
+          "y": -1.0096344948103488
+        }
+      },
+      {
+        "t": 1.5,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.408042138655624
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.9073325831639504
+        }
+      },
+      {
+        "t": 1.55,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.408042138655624
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.7992460640396821
+        }
+      },
+      {
+        "t": 1.6,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.408042138655624
+        },
+        "velocity": {
+          "x": 0,
+          "y": -0.9568377733278342
+        }
+      },
+      {
+        "t": 1.65,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.408042138655624
+        },
+        "velocity": {
+          "x": 0,
+          "y": -1.1168628030225447
+        }
+      },
+      {
+        "t": 1.7,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.137423810839262
+        },
+        "velocity": {
+          "x": 0,
+          "y": -1.2700228849080624
+        }
+      },
+      {
+        "t": 1.75,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.137423810839262
+        },
+        "velocity": {
+          "x": 0,
+          "y": -1.4166119797303
+        }
+      },
+      {
+        "t": 1.8,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.137423810839262
+        },
+        "velocity": {
+          "x": 0,
+          "y": -1.5569114701408067
+        }
+      },
+      {
+        "t": 1.85,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 24.137423810839262
+        },
+        "velocity": {
+          "x": 0,
+          "y": -1.7979387201086876
+        }
+      },
+      {
+        "t": 1.9,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 23.664681382814596
+        },
+        "velocity": {
+          "x": 0,
+          "y": -2.0285520756184763
+        }
+      },
+      {
+        "t": 1.95,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 23.664681382814596
+        },
+        "velocity": {
+          "x": 0,
+          "y": -2.2491528641512044
+        }
+      },
+      {
+        "t": 2,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 23.664681382814596
+        },
+        "velocity": {
+          "x": 0,
+          "y": -2.4601512525030227
+        }
+      },
+      {
+        "t": 2.05,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 23.664681382814596
+        },
+        "velocity": {
+          "x": 0,
+          "y": -2.5417898091400004
+        }
+      },
+      {
+        "t": 2.1,
+        "kind": "moving",
+        "point": {
+          "x": 42.8,
+          "y": 23.067649067850358
+        },
+        "velocity": {
+          "x": 0,
+          "y": -2.619888433606024
+        }
+      }
+    ],
+    "censor": {
+      "reference": true,
+      "candidate": true,
+      "at": 3.8
+    },
+    "maxWorkResidual": 5.343281372915953e-12,
+    "rawSha256": {
+      "reference-A042.json.gz": "3dfababe5cb05f282c7c9ee973fc12cdeaac9aa9a55bec56fe10873d6efdef5c",
+      "candidate-A042.json.gz": "52a401c3e039aed20c33f76a86ceb58eded5684722a263ca75ea6edbb5daabab"
+    }
+  },
+  "newNativeExecutions": 2,
+  "newLauncherSeconds": 2.508058031,
+  "newNativeLauncherSeconds": 2.1045872040000004,
+  "newNativeCollectorSeconds": 1.422947237,
+  "reuse": "39 focused/typecheck receipts and A044/A008 saved native evidence; no replay of that panel or shared suite.",
+  "limits": [
+    "A042 new pair is explicitly live/censored3.80, no finish/gain claim.",
+    "Synthetic alley encounter remains obstructed; selected relief is not a certified clear route.",
+    "Off-ball positions/forces change; primary identity is not all22 identity.",
+    "Original A044 drop/catch changes through root draw scheduling, not a higher receiver probability.",
+    "Original A008 evidence stops3.40; preserved wrap does not claim a new terminal tackle.",
+    "No whole-engine runtime, global coverage, universal avoidance, physical-law or YAC certification."
+  ]
+}

@@ -1,0 +1,234 @@
+{
+ "schema": "run-force-approach-review-v1",
+ "date": "2026-10-11",
+ "status": "Selected native mechanism repaired; three ordinary controls preserved; root owns combined checks.",
+ "source": {
+  "baseline": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+  "attempt1": "b86035fadc210d90bc17a9bb778166949c6f028fa87ca757b86f3d68ce183c1f",
+  "attempt2": "ec2744ce56ed870ca65152b13ceb78ec96488e88dd5e2ccb4a13ec364a92e79c",
+  "worldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "isolatedChanges": [
+   "src/sim/run-fits.ts",
+   "src/sim/behaviors/common.ts"
+  ]
+ },
+ "diagnosis": "The force/edge fit branch sends a landmark track request before LOS+2 and bypasses the existing achievable pursuit gather. A positively observed carrier can approach that surface before crossing the old gate. This is controller misuse of available movement, not evidence that bodies need more agility or grip strength.",
+ "repair": "Reuse the unchanged chase gathering/arrival law on the already consumed positive-possession picture. Preserve installed shoulder, inside runner/deep mesh/separating runner/unknown possession and constrained-support fallbacks. Actual acceleration and contact remain in the ordinary World.",
+ "method": "Original baseline native Game prefix and PlaySim constructor are reproduced from original rosters and seed. Only selected ZoneCoverage.update is borrowed from the isolated candidate after initial capture. Original earlier log, initial full state and prior seeds are equal; candidate plain and wrapped observer agree on full states, whole ticks, result and next RNG. This is not a complete candidate-game claim.",
+ "firstVisibleMechanism": {
+  "id": "G6-P181",
+  "actor": "FS",
+  "installedJob": {
+   "kind": "force",
+   "gap": "D",
+   "side": -1,
+   "edge": "spill"
+  },
+  "firstFork": 3,
+  "radialGatherContinuesFrom": 3.15,
+  "baselinePursuitBegins": 3.6,
+  "baselineMiss": 3.65,
+  "candidateFirstNaturalWrap": 3.6,
+  "candidateRunnerLegsFall": 3.9,
+  "candidateAssist": 3.9,
+  "candidateTackleEvent": 4.25,
+  "noPrescribedOutcome": true
+ },
+ "attempt1": {
+  "status": "withheld; first turning request improved but radial gather absent and native miss remained",
+  "packet": "out/run-coaching/force-native/G6-P181-candidate.json.gz",
+  "sha256": "639cf50d152d86ed23dfacb852e2f12b7cf772c389cb2d83364da12bc387863d",
+  "outcome": "84.6yd touchdown; FS miss3.65"
+ },
+ "attempt2": [
+  {
+   "id": "G6-P181",
+   "role": "mechanism witness",
+   "baseline": {
+    "path": "out/run-coaching/force2-native/G6-P181-baseline.json.gz",
+    "sha256": "09dc418d7fcdfa9a0db5ee9d85f90e00c9655e29f63f289c749f4afa30d338f6",
+    "initial": "383c3f3797c2235240bd8d5e48cace727124dfb6165eb6c0bc59fafb4a254175",
+    "ticks": "1b46868133eb55174214e3f365b8ebcc758b160d790aa63d9292d6e0a93a35ac",
+    "rawOutcome": {
+     "outcome": "touchdown",
+     "offenseYards": 84.6,
+     "duration": 13.4
+    }
+   },
+   "candidate": {
+    "path": "out/run-coaching/force2-native/G6-P181-candidate.json.gz",
+    "sha256": "2019e2c95da8f90fe3131c3051a3cccaf93b8b068ddcb9401ea7f566db4fbb31",
+    "ticks": "8fe16bdf1e637eaa9de9e813b6906b28a2a79242d79a0a2dc88d25373145dceb",
+    "rawOutcome": {
+     "outcome": "tackle",
+     "offenseYards": 4.25,
+     "duration": 4.3
+    }
+   },
+   "observerPlainEqual": true,
+   "originalLightBaselineEqual": true,
+   "nativePrefixAndConstructorEqual": true,
+   "allComparedExecutionFieldsEqual": false,
+   "firstChangedRequest": {
+    "t": 3,
+    "slot": "FS",
+    "before": {
+     "vel": {
+      "x": -7.0784759005305755,
+      "y": -0.9717741729748441
+     },
+     "facing": 3.141592653589793
+    },
+    "after": {
+     "vel": {
+      "x": -7.1526541389717035,
+      "y": -4.577051570743908
+     },
+     "cutSkill": 0.9928571428571429,
+     "posture": 0.5020408163265306
+    }
+   },
+   "physicsAccounting": {
+    "maxAbsWorkResidual": 2.191313797084149e-11,
+    "maxArmImpulseExcess": 2.1316282072803006e-14,
+    "positiveArmAndSupportMotorWorkExcess": 0
+   }
+  },
+  {
+   "id": "G2-P111",
+   "role": "predeclared ordinary control",
+   "baseline": {
+    "path": "out/run-coaching/force2-native/G2-P111-baseline.json.gz",
+    "sha256": "fab22d2adce0b6c4393ce3110323a3cc88eaa139b1bd8d99f1b5f804b3453b34",
+    "rawOutcome": {
+     "outcome": "tackle",
+     "offenseYards": 5.48,
+     "duration": 3.6
+    }
+   },
+   "candidate": {
+    "path": "out/run-coaching/force2-native/G2-P111-candidate.json.gz",
+    "sha256": "8499e0f8f4aa5c3f67ffa09984fee107a0c7d0187c384814033d340a0a1bb095"
+   },
+   "observerPlainEqual": true,
+   "originalLightBaselineEqual": true,
+   "nativePrefixAndConstructorEqual": true,
+   "allComparedExecutionFieldsEqual": true,
+   "firstChangedRequest": null,
+   "physicsAccounting": {
+    "maxAbsWorkResidual": 7.1667116685603105e-12,
+    "maxArmImpulseExcess": 1.4210854715202004e-14,
+    "positiveArmAndSupportMotorWorkExcess": 0
+   }
+  },
+  {
+   "id": "G6-P144",
+   "role": "predeclared ordinary control",
+   "baseline": {
+    "path": "out/run-coaching/force2-native/G6-P144-baseline.json.gz",
+    "sha256": "c0af5657c7868785c360642a4d6a8fc4f378e3bfbe5a7b5b341e14b1e1265b30",
+    "rawOutcome": {
+     "outcome": "tackle",
+     "offenseYards": 2.51,
+     "duration": 3.55
+    }
+   },
+   "candidate": {
+    "path": "out/run-coaching/force2-native/G6-P144-candidate.json.gz",
+    "sha256": "97ecf13c3479aa361ae59ded81301baa558ef64fa62720b5d1650a5273b0f945"
+   },
+   "observerPlainEqual": true,
+   "originalLightBaselineEqual": true,
+   "nativePrefixAndConstructorEqual": true,
+   "allComparedExecutionFieldsEqual": true,
+   "firstChangedRequest": null,
+   "physicsAccounting": {
+    "maxAbsWorkResidual": 4.0181191707233666e-12,
+    "maxArmImpulseExcess": 7.105427357601002e-15,
+    "positiveArmAndSupportMotorWorkExcess": 0
+   }
+  },
+  {
+   "id": "G4-P074",
+   "role": "predeclared ordinary control",
+   "baseline": {
+    "path": "out/run-coaching/force2-native/G4-P074-baseline.json.gz",
+    "sha256": "748b60f6263d28e174d872f94cfd9a14ed8f8da8566bc26faa68c366e3ce8144",
+    "rawOutcome": {
+     "outcome": "tackle",
+     "offenseYards": -0.74,
+     "duration": 3.1
+    }
+   },
+   "candidate": {
+    "path": "out/run-coaching/force2-native/G4-P074-candidate.json.gz",
+    "sha256": "9b27a3014163315b6dc1aa91726f01914b1bf4c6ff0263408fbac6bf8f6b49f5"
+   },
+   "observerPlainEqual": true,
+   "originalLightBaselineEqual": true,
+   "nativePrefixAndConstructorEqual": true,
+   "allComparedExecutionFieldsEqual": true,
+   "firstChangedRequest": null,
+   "physicsAccounting": {
+    "maxAbsWorkResidual": 3.1015190415928373e-12,
+    "maxArmImpulseExcess": 2.1316282072803006e-14,
+    "positiveArmAndSupportMotorWorkExcess": 0
+   }
+  }
+ ],
+ "chaseRefactor": {
+  "receipt": "out/run-coaching/chase-equality.json",
+  "sha256": "9f3ae1b2ad38059020d08e3630754930d14c834f86c36a987079f9712c561207",
+  "cases": 36,
+  "calls": 108,
+  "exactEqual": [
+   "requests",
+   "consumed-picture calls",
+   "RNG states",
+   "achieved ordinary-World bodies",
+   "World reports"
+  ],
+  "includes": "Head-on, crossing, distant, trailing, near hip, stationary/lateral runner, force/box/spill; mirrored; loaded, leaning, strike, down/falling/rising and bond. Controlled pictures; not football frequency."
+ },
+ "focusedTests": {
+  "file": "test/edge-fit-approach.test.ts",
+  "cases": 15,
+  "verified": "Mirrors and executed bounded braking/work; known/unknown possession; stale picture hidden-target mutation; inside runner box/spill; deep mesh/separating carrier; constrained support and held-tackle exclusions."
+ },
+ "deferredResponsibilityProblems": [
+  {
+   "mechanism": "Man-to-backfield alignment collapses nominal offball linebackers to nearly the same landmark; shown-man positions can survive into actual zone installation.",
+   "nativeWitnesses": [
+    "G2-P136",
+    "G3-P048"
+   ],
+   "nextDesign": "Install legal coverage alignment and front-specific run support together; preserve separate homes/keys for two backfield markers and actual zone defenders while respecting disguise. No allocation/alignment code changed."
+  },
+  {
+   "mechanism": "Force candidates depend on shown lateral position with >2yd cutoff. A weak curl-flat backer just inside cutoff is excluded, assigning deep-middle FS primary weak force.",
+   "nativeWitness": "G6-P181",
+   "nextDesign": "Separate nominal installed support from shown position; choose actual flat/curl-flat force by call and check availability, preserve post roof, then judge achievable motion using delayed picture. No allocator code changed."
+  }
+ ],
+ "recurrenceAudit": {
+  "source": "Original eight native games, all recorded run-call snaps; no gain-selected sampling. Assignment-only reconstruction from rounded first-frame positions and installed actual calls; not observed decision prevalence.",
+  "localReceipt": "out/run-coaching/defensive-prevalence.json",
+  "sha256": "b895af26e8766ec60b177d758353ce3af406b301ab287920067f510349d5de0f",
+  "recordedRuns": 381,
+  "nominalOffballLbPairsUnder1yd": 29,
+  "deepMiddleAssignedForce": 61,
+  "cleanRuns": 302,
+  "cleanNominalBunched": 23,
+  "cleanDeepMiddleForce": 45,
+  "nonexplosiveBunched": 22,
+  "nonexplosiveDeepForce": 55,
+  "caution": "Not every deep force or close pair is a bust; exact selected native constructor jobs were checked separately. Rounded position threshold can change boundary cases."
+ },
+ "limits": [
+  "Three predeclared ordinary controls plus one mechanism witness do not establish league-wide benefit.",
+  "No general claim that safeties never brake; G2-P136 already issues braking requests.",
+  "G2-P111 Will owns B+ with Mike A- and gets a real wrap; G6-P144 LB fills and wraps. These are negative controls, not proven assignment bugs.",
+  "Box/spill focused negatives retain an inside runner; they do not validate the complete kick/log exchange.",
+  "No NFL yardage target, no new physical capability, no allocation/alignment repair, no perfect gaze/occlusion model."
+ ]
+}

@@ -1,0 +1,58 @@
+{
+  "query": {
+    "schema": "bdb-run-outcome-context-query-v1",
+    "source": "BDB 2025, 2022 weeks 1\u20139 play/player metadata; input SHA-256 and sizes match data/reviews/run-game-coordination/nfl-reference.json.",
+    "inputs": {
+      "plays.csv": {
+        "bytes": 6892353,
+        "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+      },
+      "player_play.csv": {
+        "bytes": 52533762,
+        "sha256": "4dfeba939d0b56e9fca6044c1df709879a22ed239389e155afba571915bd5852"
+      },
+      "players.csv": {
+        "bytes": 104749,
+        "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+      }
+    },
+    "declarationScope": "Frozen before executing this NEW collector, after an initial descriptive audit of these metadata and existing summaries. This is not an outcome-blind preregistration.",
+    "selection": "playNullifiedByPenalty=N, isDropback=FALSE, no kneel/spike, observed rushLocationType and finite yardsGained. Provider-defined designed runs; all runner positions retained, including QB runs and tricks.",
+    "sneaks": "qbSneak=true OR pff_runConceptPrimary=SNEAK is a separate QB_SNEAK class. Raw primary labels remain unchanged; ordinaryRuns excludes this class. Any flag/label disagreement is reported.",
+    "yards": "Main outcomes use finite yardsGained, matching the existing run-tracking/tendency references. prePenaltyYardsGained is a separate operator with its own known denominator; differences and missingness are reported. Neither is silently substituted for the other.",
+    "penalties": "Keep non-nullified rows with recorded penaltyYards. Missing, zero and nonzero values are distinguished; field presence is not a complete penalty-event label. No assertion that non-nullified means penalty-free.",
+    "outcomes": "Positive>0, zero=0, negative<0, stuff<=0, explosive>=10 and >=20 yards. Every rate reports numerator and known denominator. Gain-threshold success requires >=40% of yardsToGo on first down, >=60% on second and >=100% on third/fourth; this convention is not EPA success. Conversion requires gain>=positive yardsToGo.",
+    "contexts": {
+      "down": [
+        1,
+        2,
+        3,
+        4,
+        "unknown"
+      ],
+      "distance": [
+        "1to3",
+        "4to7",
+        "8to10",
+        "11to19",
+        "20plus",
+        "unknown"
+      ],
+      "field": [
+        "redZone0to20",
+        "plus21to50",
+        "own51to100",
+        "unknown"
+      ]
+    },
+    "fieldGeometry": "Yards to the opponent end zone derived from possessionTeam, yardlineSide and yardlineNumber; the 50 is midfield. Invalid/unknown side or distance stays unknown.",
+    "labels": "Preserve exact pff_runConceptPrimary and raw pff_runConceptSecondary. MAN is not verified Duo; OUTSIDE ZONE does not isolate wide zone/toss. Secondary SPLIT/READ OPTION/LEAD/PITCH are provider modifiers, not verified simulator concept classes. Token margins overlap; raw single/compound values are also separate.",
+    "support": "Retain every cell including thin cells. Expose cell counts in 1\u20134,5\u201319,20\u201399,100+ bins; all rates retain their actual denominator. Team and team/primary margins describe the observed nine-week snapshot, not confidence intervals or independent league-strength effects.",
+    "rusher": "Exact game/play join to hadRushAttempt in player_play.csv and nflId to players.csv. No rusher, multiple rushers or missing roster position stays explicit, and does not exclude an otherwise eligible metadata play.",
+    "box": "If n_defenders_in_box or defendersInBox exists, retain that numeric count and its denominator as a presentation label, never a defensive front or rush count. No value is invented when absent.",
+    "inference": "Descriptive metadata outcomes only. No tracking/contact/footwork measurements, no causation, no confidence intervals, no direct engine accuracy claim. Concept/situation/team/personnel selection differs from controlled lab calls and the old personnel-filtered tendency cohort."
+  },
+  "querySha256": "2d71ba444ce7a18739ae2ae3f5de0c07f231523144fd67311857387c58dc701b",
+  "collectorSha256": "c7350b591efc10f33988abb794998a9ac1889063841f984c5c5d097f16f4eab6",
+  "declaredAt": "2026-10-11T11:39:45.050966+00:00"
+}

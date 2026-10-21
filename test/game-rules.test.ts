@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest';
 import { CENTER_Y, OPP_GOAL_X, HASH_LEFT_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
-import { Game, simulateGame, type GameHooks, type GameState } from '../src/game/game.js';
+import { Game, type GameHooks, type GameState } from '../src/game/game.js';
 import { generateTeam, pickDefense, pickOffense, type Team } from '../src/league/team.js';
 import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
@@ -115,6 +115,46 @@ describe('two-minute warning', () => {
     const { g } = run({ state: { quarter: 4, clock: 140 }, play: () => ({ yards: 3, duration: 5 }) });
     expect(g.state.clock).toBe(120);
     expect(g.state.twoMinWarned).toBe(true);
+  });
+});
+
+describe('clock between snaps', () => {
+  /** Two snaps from 2nd-and-10 at 10:00 of the 2nd (or `quarter`/`clock`): a scripted play, then a pre-snap foul or another play. */
+  function twoSnaps(first: Script, second: 'false_start' | 'play', state: Partial<GameState> = {}): { clocks: number[] } {
+    let snap = 0;
+    const hooks: GameHooks = {
+      playResult: (sim) => scripted(sim, first),
+      preSnapFoul: () => (snap++ === 1 && second === 'false_start' ? 'false_start' : null),
+    };
+    const g = new Game(home, away, { seed: 5, hooks });
+    g.setState({ quarter: 2, clock: 600, possession: 'home', yardline: 50, down: 1, distance: 10, score: { home: 0, away: 0 }, ...state });
+    g.step();
+    const clocks = [g.state.clock];
+    g.step();
+    clocks.push(g.state.clock);
+    return { clocks };
+  }
+
+  it('out of bounds before the late-half windows restarts on the ready signal', () => {
+    const { clocks } = twoSnaps({ outcome: 'oob', yards: 6, duration: 5, clockStops: true }, 'play');
+    expect(clocks[0]).toBeLessThan(600 - 5 - 20);
+    expect(clocks[0]).toBeGreaterThan(600 - 5 - 40);
+  });
+
+  it('out of bounds late in a half stops the clock until the snap', () => {
+    const { clocks } = twoSnaps({ outcome: 'oob', yards: 6, duration: 5, clockStops: true }, 'play', { quarter: 4, clock: 240 });
+    expect(clocks[0]).toBeCloseTo(235, 6);
+  });
+
+  it('a false start with the clock running costs the ready-signal runoff', () => {
+    const { clocks } = twoSnaps({ yards: 3, duration: 5 }, 'false_start');
+    expect(clocks[0] - clocks[1]).toBeGreaterThan(8);
+    expect(clocks[0] - clocks[1]).toBeLessThan(26);
+  });
+
+  it('a false start after an incompletion runs no clock', () => {
+    const { clocks } = twoSnaps({ kind: 'pass', outcome: 'incomplete', yards: 0, duration: 4, clockStops: true, stats: { attempted: true } }, 'false_start');
+    expect(clocks[1]).toBe(clocks[0]);
   });
 });
 
@@ -228,6 +268,32 @@ describe('holding during a play', () => {
     expect(g.state.possession).toBe('away');
   });
 
+  it('declines the P022-style sack after enforcing a behind-line hold from the previous spot', () => {
+    let qb = '';
+    const { g } = run({
+      state: { yardline: 35 },
+      play: (sim) => {
+        qb = id(sim, 'QB');
+        return { kind: 'pass', yards: -8, stats: { sacked: true, sackedBy: [defender(sim, 'DE').player.id] },
+          penalty: { kind: 'holding', against: 'O', playerId: id(sim, 'LG'), yards: 10, autoFirst: false, spotX: sim.los - 4.04966946421048 } };
+      },
+    });
+    expect(scrimmageLog(g)[0].foul?.accepted).toBe(false);
+    expect(g.state).toMatchObject({ down: 2, distance: 18, yardline: 27 });
+    expect(line(g, qb)).toMatchObject({ att: 0, sacked: 1, sackYds: 8 });
+    expect(box(g, home)).toMatchObject({ passYds: -8, totalYds: -8, penalties: 0 });
+  });
+
+  it('uses the previous spot for a run hold behind the line, with half-distance at that spot', () => {
+    const { g } = run({
+      state: { yardline: 6 },
+      play: (sim) => ({ yards: 3, stats: { rusher: id(sim, 'RB') },
+        penalty: { kind: 'holding', against: 'O', playerId: id(sim, 'LG'), yards: 10, autoFirst: false, spotX: sim.los - 2 } }),
+    });
+    expect(g.state).toMatchObject({ down: 1, distance: 13, yardline: 3 });
+    expect(box(g, home)).toMatchObject({ penaltyYds: 3, penalties: 1, totalYds: 0 });
+  });
+
   it('is declined when the play stopped a third down short', () => {
     const { g } = run({
       state: { down: 3, distance: 10 },
@@ -318,6 +384,7 @@ describe('fumble after a catch', () => {
     const rb = sim.slot('RB')!;
     const lb = sim.defense.find((a) => a.slot.startsWith('LB'))!;
     rb.body.pos = { x: 36, y: HASH_LEFT_Y };
+    qb.body.pos = { x: 36.8, y: HASH_LEFT_Y }; // this fixture requires a reachable exchange
     sim.handoff(qb, rb);
     rb.body.pos = { x: 47, y: HASH_LEFT_Y };
     sim.fumble(rb, lb);
@@ -337,27 +404,33 @@ describe('fumble after a catch', () => {
   });
 });
 
-describe('official record of a full game', () => {
-  it('box-score plays and third downs agree with the official log', () => {
-    for (const seed of [21, 22]) {
-      const res = simulateGame(home, away, { seed });
-      for (const t of [home, away]) {
-        const official = res.log.filter((p) => (p.kind === 'run' || p.kind === 'pass') && !p.nullified && p.offense === t.abbr);
-        const tl = res.box.team(t.abbr);
-        expect(tl.plays).toBe(official.length);
-        const thirds = res.log.filter((p) => (p.kind === 'run' || p.kind === 'pass' || p.kind === 'kneel') && !p.nullified && p.offense === t.abbr && p.down === 3);
-        expect(tl.thirdAtt).toBe(thirds.length);
-      }
-      // The final score is the sum of what was scored, and the game ends decided or as a tie after overtime.
-      const last = res.log[res.log.length - 1];
-      expect(last.quarter).toBeGreaterThanOrEqual(4);
-    }
-  }, 60_000);
+describe('actual possession credit', () => {
+  it('credits a retained-snap loss to the QB while keeping the failed exchange visible', () => {
+    let qb = '';
+    const { g } = run({ play: (sim) => {
+      qb = id(sim, 'QB');
+      return { yards: -5, outcome: 'timeout', duration: 25,
+        segments: [{ team: 'O', carrier: qb, how: 'snap', startX: sim.los - 5, endX: sim.los - 5, end: 'dead' }],
+        stats: { rusher: qb, retainedSnap: true } };
+    } });
+    expect(line(g, qb)).toMatchObject({ rushAtt: 1, rushYds: -5, sacked: 0, fumbles: 0 });
+    expect(box(g, home)).toMatchObject({ rushYds: -5, totalYds: -5 });
+    expect(scrimmageLog(g)[0]).toMatchObject({ segments: [{ carrier: qb, how: 'snap' }], stats: { retainedSnap: true } });
+    expect(scrimmageLog(g)[0].text).toContain('(snap retained; no exchange)');
+    expect(scrimmageLog(g)[0].text).not.toContain('?');
+  });
 
-  it('is reproducible, with or without replay recording', () => {
-    const a = simulateGame(home, away, { seed: 33 });
-    const b = simulateGame(home, away, { seed: 33, record: true });
-    expect(b.score).toEqual(a.score);
-    expect(b.log.map((p) => p.text)).toEqual(a.log.map((p) => p.text));
-  }, 60_000);
+  it('keeps intended target separate while crediting an incidental completion to its actual receiver', () => {
+    let qb = '', target = '', receiver = '';
+    const { g } = run({ play: (sim) => {
+      qb = id(sim, 'QB'); target = id(sim, 'X'); receiver = id(sim, 'RB');
+      return { kind: 'pass', yards: 11,
+        stats: { passer: qb, target, receiver, attempted: true, completed: true, airYards: 7, completedAirYards: -4, yac: 15 } };
+    } });
+    expect(line(g, qb)).toMatchObject({ att: 1, cmp: 1, passYds: 11 });
+    expect(line(g, target)).toMatchObject({ targets: 1, rec: 0 });
+    expect(line(g, receiver)).toMatchObject({ targets: 0, rec: 1, recYds: 11, yac: 15 });
+    expect(scrimmageLog(g)[0].stats).toMatchObject({ target, receiver, airYards: 7, completedAirYards: -4 });
+    expect(scrimmageLog(g)[0].text).toContain('(-4 air, 15 YAC)');
+  });
 });

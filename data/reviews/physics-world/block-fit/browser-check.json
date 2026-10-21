@@ -1,0 +1,107 @@
+{
+  "schema": "block-fit-browser-smoke-v1",
+  "clips": [
+    {
+      "id": "BASE-OLB-R1-iz_strong-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 29,
+      "liveInspectionCensor": true
+    },
+    {
+      "id": "BASE-OLB-R1-wz_strong-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 35,
+      "liveInspectionCensor": true
+    },
+    {
+      "id": "BASE-OLB-R1-power-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 27,
+      "liveInspectionCensor": true
+    },
+    {
+      "id": "BASE-OLB-R1-trap-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 31,
+      "liveInspectionCensor": true
+    },
+    {
+      "id": "BASE-OLB-R1-counter-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 32,
+      "liveInspectionCensor": true
+    },
+    {
+      "id": "BASE-OLB-R1-oz_strong-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 32,
+      "liveInspectionCensor": true
+    },
+    {
+      "id": "CAND-OLB-R1-iz_strong-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 32,
+      "liveInspectionCensor": true
+    },
+    {
+      "id": "CAND-OLB-R1-wz_strong-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 31,
+      "liveInspectionCensor": true
+    },
+    {
+      "id": "CAND-OLB-R1-power-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 26,
+      "liveInspectionCensor": true
+    },
+    {
+      "id": "CAND-OLB-R1-trap-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 25,
+      "liveInspectionCensor": true
+    },
+    {
+      "id": "CAND-OLB-R1-counter-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 32,
+      "liveInspectionCensor": true
+    },
+    {
+      "id": "CAND-OLB-R1-oz_strong-R-S3",
+      "fullTelemetry": true,
+      "physicalPostureRequestAndAchievedState": true,
+      "playerInspectionAndLayers": true,
+      "rawEventCount": 21,
+      "liveInspectionCensor": true
+    }
+  ],
+  "pageErrors": [],
+  "offlineFontsBlocked": true,
+  "stuffFilterRejectsInspectionWindows": true,
+  "pairedFixtureSearch": true,
+  "recordedSourceFilter": true,
+  "mobileNoHorizontalOverflow": true
+}

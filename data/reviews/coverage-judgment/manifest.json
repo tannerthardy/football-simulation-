@@ -1,0 +1,129 @@
+{
+  "baselineCommit": "8ffbc24",
+  "baselineSourceSha256": "38db288849cc1b39085a360201af4dc9cb43137c793819d49e6bf9d3927717f2",
+  "revisedSourceSha256": "192b8d9644146584c6d9315cb1795b3a74e41451d8074703593513b4addf8f97",
+  "panels": {
+    "coverage": {
+      "reps": 3,
+      "rosterSeeds": [
+        7,
+        19,
+        31
+      ],
+      "forms": [
+        "gun_doubles_11",
+        "gun_trips_11"
+      ],
+      "concepts": [
+        "slant_flat",
+        "quick_outs",
+        "curl_flat",
+        "mesh",
+        "four_verts",
+        "dagger"
+      ],
+      "covers": [
+        "cover3_buzz",
+        "cover3_cloud",
+        "cover9",
+        "cover3_match",
+        "cover4_palms",
+        "cover1"
+      ],
+      "front": "over",
+      "personnel": "nickel",
+      "los": 40,
+      "ballY": 23.583333333333332,
+      "down": 1,
+      "distance": 10
+    },
+    "matrix": {
+      "reps": 2,
+      "coverageCalls": 26,
+      "rosters": [
+        7,
+        19,
+        31
+      ],
+      "los": 35,
+      "front": "over"
+    },
+    "games": {
+      "games": 32,
+      "seed": 7,
+      "leagues": 4
+    },
+    "pocket": {
+      "games": 16,
+      "seed": 7,
+      "leagues": 2
+    },
+    "budget": {
+      "drivesPerVariant": 20000,
+      "start": "own 25"
+    },
+    "film": {
+      "games": 6,
+      "seeds": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "clips": 812,
+      "concepts": 27
+    }
+  },
+  "scriptsSha256": {
+    "scripts/coverage-lab.ts": "e30019097d8a937d2130e4bfa395e5fe2894240d82d61af9014271b13548d95b",
+    "scripts/pocket-anatomy.ts": "512e22e1d4f950785f0e03b148c774c3ba66d5d2ee84e6fa0be5b1887840709a",
+    "scripts/coverage-matrix.ts": "e04e2ed6e652eda814a2f14f912aa05adf052959c26d133eb5c5ddfaf7beca03",
+    "scripts/calibrate.ts": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+    "scripts/error-budget.ts": "a6734bf08a593d6203ea98aaa2fef0176312beada53490017d37ed7607cb76a9",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/diag/coverage-trace.ts": "87bdd495909c08bbf1576477acde11ec739a97f36a69f14a224090ff60cedbb7"
+  },
+  "filesSha256": {
+    "before-coverage.json": "d26131554b9b535029bda62465729f5e6bbd822ca8af5e087b1bad94cfc59642",
+    "after-coverage.json": "07a97d82a07c82cbd7fe5e037bb84d1b283a8931cc639906855e8584bc47b165",
+    "before-pocket.json": "c9b59a17880736e5b2f2e5f5c295a84413c90a163224217fa1c6446d53794a63",
+    "after-pocket.json": "5ba91a3ae15ebac996a6a2103e89cdc6ea56516cb4b29520874b4eea281d5db0",
+    "before-matrix.log": "df6043635b4c7739ba756a0842d5ebab3ddc778c2568f726976cdb4a5ab11a43",
+    "after-matrix.log": "6c70b62c611b5e018a7725c1551abdb9cf0869822f38681328eb0e3300588677",
+    "before-calibrate.log": "85fcf7ea942941ba113683e240cf6ed64e4391c7ca6d67c0c3044feb54cde147",
+    "after-calibrate.log": "108aed92ee0d2ed6c018d77b8e3624fb26c4c92e352ea7f4a933bb97f23d2386",
+    "before-outcomes.json": "4ae9fff0d8d00d3d182a832413a0b6bbc54af357cb819564c7c5df37f6923460",
+    "after-outcomes.json": "1735736a0df6ba357782a2bc5c1550a7bdd73ec223723da11a93a4eaedcfc5b1",
+    "before-budget.log": "b7e37ea0547f6f502c3138fafe52888777317257ecef97a73b1fd6628a896e06",
+    "after-budget.log": "22ea76e51a4b3c46e26967d1b81768be014c5c0fec7e7fe05cd58e821514834d",
+    "before-drives.log": "3708368735d1b7fd7bd096b9c273c5e263f5e70ddea569d9d221c955aacd9a9d",
+    "after-drives.log": "862ad9fda3657653d96ced47142988bb5a8e59c2df921f548dc981b5b3d1b32b",
+    "before-trace.json": "9e0cc4e103418e37a984af20cd3a33a207cbd0ec85a87150489487ccfbd50877",
+    "after-trace.json": "f0cecff945998c8abf4cd992e5ba03a67985880f32cf91fe75c8c9b4f5af5c50",
+    "tests.log": "8fc552312a8c8f99f158bbdeebc69147b014234f93e3eaafa3822abbbc6e43cb",
+    "browser-check.json": "d5bc53f8759cf0368f9777e8ab6ec52ea2b49e49096dfe22c0b5643a607a633f",
+    "film-export.log": "0d0e85b92bf28e5fa25e7664c6c66eb30a44bc2385aee51e1fbd591151cfbb66"
+  },
+  "validation": {
+    "tests": 187,
+    "typecheck": "passed",
+    "build": "passed",
+    "browserChecks": 18,
+    "browserCheckerSha256": "5952fa8098902eb0a8ff4e9ed5531ae1a1d4570305b26053f9c22e896ee3f0e9"
+  },
+  "limitations": [
+    "Synthetic play IDs refer to their own panel, not the film IDs.",
+    "Same setup seeds do not imply identical later RNG consumption.",
+    "NFL pocket attachment uses PFF labels; simulation uses declared/observed matchup proxies.",
+    "Pocket time slices include only surviving dropbacks.",
+    "NFL pocket reference has two tracking weeks; simulation LOS differs from tracked football-center LOS.",
+    "The drive model uses conditional outcome tables and shares interactions; headline averages are insufficient."
+  ],
+  "filmArtifactsSha256": {
+    "viewer/film-room.html": "794e1b1ac4f5ff9b1290473a285ab1b3c633b9d562ca53abf2c80f2ce7749125",
+    "viewer/film-room.zip": "9cb697d2f70adec962443974b91d8326782f5400f7dce4f1963e0c291d360e50"
+  },
+  "logCopies": "Trailing whitespace and final blank lines normalized; measurements and test outcomes unchanged."
+}

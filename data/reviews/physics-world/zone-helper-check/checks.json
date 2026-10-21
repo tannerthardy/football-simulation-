@@ -1,0 +1,59 @@
+{
+  "sourceSha256": "d6dfa190412da52725780c71db02f73305b3e3f5541b4c8e9d755a3296ee568f",
+  "sourceFrozen": true,
+  "baselineCommit": "f641f31101c31b6bdf0a265c1d901879c33dfd2f",
+  "fullTypeScript": {
+    "passed": 791,
+    "files": 71,
+    "exitCode": 0,
+    "log": "full-tests.log"
+  },
+  "typecheck": {
+    "exitCode": 0,
+    "log": "typecheck.log"
+  },
+  "build": {
+    "exitCode": 0,
+    "log": "build.log"
+  },
+  "python": {
+    "passed": 22,
+    "exitCode": 0,
+    "log": "python.log"
+  },
+  "focused": {
+    "passed": 18,
+    "exitCode": 0,
+    "log": "tests-after.log"
+  },
+  "baselineFeatureControl": {
+    "featureFailures": 5,
+    "controlPasses": 13,
+    "exitCode": 1,
+    "log": "tests-before.log"
+  },
+  "rejectedCadenceControl": {
+    "cadenceFailures": 2,
+    "controlPasses": 16,
+    "exitCode": 1,
+    "log": "tests-pre-cadence.log"
+  },
+  "panel": {
+    "matchedRecordedInitialProjections": 162,
+    "naturalEndsPerPhase": 162,
+    "observedPlainControls": 324,
+    "ordinaryInputs": 160,
+    "supplementalInputs": 2
+  },
+  "film": {
+    "predeclaredInputs": 5,
+    "clips": 10,
+    "additionalSimulation": false
+  },
+  "omissions": [
+    "The unchanged collector omits newly installed helpPolicy and private checkNextRead/checkSince; controlled-tests.ts and exact source patch retain those controls.",
+    "It omits the full pre-update World joint list; foreign helper grip exclusion is controlled-test evidence.",
+    "TE keepers have genuine joint force but no OL-only body impulse row."
+  ],
+  "limits": "Controller-only increment. No new NFL observations, force fitting, full-game rate or speed claim. Existing World, capacities and resolution unchanged."
+}

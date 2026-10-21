@@ -1,0 +1,42 @@
+{
+  "baselineSource": "43ff53ab75d3deb3d6570ea067fd82265b4c8fc1c21fe0fed547c1031ab49edf",
+  "candidateSource": "6100c9b5c338a993e04ffcdb5dbe7171bbbfc3e09a19ceb4f720c5407be8b4ca",
+  "pairedScriptRostersSeeds": true,
+  "baseline": {
+    "games": 4,
+    "rosterPairs": 2,
+    "rushes": 118,
+    "rushYards": 289.18,
+    "rushYardsPerAttempt": 2.450677966101695,
+    "stuffRate": 0.3728813559322034,
+    "rushExplosive10Rate": 0.059322033898305086,
+    "meanPointsPerTeamGame": 30.375,
+    "passAttempts": 341,
+    "interceptionRate": 0.06158357771260997,
+    "physicalTimeoutsIncludingNullified": 0,
+    "maxMomentumResidual": 1.0414055856603672e-11,
+    "maxWorkResidual": 6.871658797535929e-11,
+    "maxMotorWorkExcess": 0
+  },
+  "candidate": {
+    "games": 4,
+    "rosterPairs": 2,
+    "rushes": 114,
+    "rushYards": 414.54,
+    "rushYardsPerAttempt": 3.6363157894736844,
+    "stuffRate": 0.2982456140350877,
+    "rushExplosive10Rate": 0.043859649122807015,
+    "meanPointsPerTeamGame": 27.75,
+    "passAttempts": 329,
+    "interceptionRate": 0.06382978723404255,
+    "physicalTimeoutsIncludingNullified": 0,
+    "maxMomentumResidual": 9.408369485529665e-12,
+    "maxWorkResidual": 5.7919891105484567e-11,
+    "maxMotorWorkExcess": 0
+  },
+  "limitations": [
+    "Four fixed games per source across two generated roster pairs; regression guard, not an NFL league estimate.",
+    "Full-game histories diverge after the physical change; aggregate gain or scoring differences cannot isolate held recovery.",
+    "Do not use embedded game-warmed benchmarks to isolate solver overhead."
+  ]
+}

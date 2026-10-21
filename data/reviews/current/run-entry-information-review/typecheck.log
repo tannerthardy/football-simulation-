@@ -1,0 +1,14 @@
+Profile candidate: run-game-2026-10-13, commit 0d0282ac896cd08b4b44378825ca1759cf55f0e2, source f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956
+Running npm run typecheck
+
+> gridiron-engine@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+test/run-entry-opponent-information.test.ts(22,3): error TS2593: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha` and then add 'jest' or 'mocha' to the types field in your tsconfig.
+test/run-entry-opponent-information.test.ts(32,3): error TS2593: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha` and then add 'jest' or 'mocha' to the types field in your tsconfig.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+Validation receipt: out/entry-risk-review/typecheck.json; exit 1

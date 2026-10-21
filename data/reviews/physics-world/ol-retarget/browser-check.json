@@ -1,0 +1,241 @@
+{
+  "schema": "ol-retarget-browser-smoke-v1",
+  "clips": [
+    {
+      "id": "BEFORE-OR-R1-iz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 33,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OR-R1-iz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OR-R1-oz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 28,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OR-R1-oz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 52,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OR-R1-wz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 35,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OR-R1-wz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 51,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OR-R1-power-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 38,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OR-R1-power-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 42,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OR-R1-counter-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 41,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OR-R1-counter-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OR-R1-trap-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "BEFORE-OR-R1-trap-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 40,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-iz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 34,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-iz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-oz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 28,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-oz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 52,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-wz_strong-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 36,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-wz_strong-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 51,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-power-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 38,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-power-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 42,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-counter-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 41,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-counter-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-trap-over-R-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 32,
+      "copiedReferenceUsesSelectedEngineSource": true
+    },
+    {
+      "id": "FINAL-OR-R1-trap-over-L-S3",
+      "fullTelemetry": true,
+      "naturalFinish": true,
+      "recordedOwnershipAndDeliveredLoadsInspected": true,
+      "rawEventCount": 40,
+      "copiedReferenceUsesSelectedEngineSource": true
+    }
+  ],
+  "pageErrors": [],
+  "offlineFontsBlocked": true,
+  "stuffFilterUsesRecordedResults": true,
+  "pairedFixtureSearch": true,
+  "recordedSourceFilter": true,
+  "conceptAndCoverageGrouping": true,
+  "mobileNoHorizontalOverflow": true,
+  "copiedReferenceUsesSelectedEngineSource": true,
+  "videoExportUsesSelectedEngineSource": [
+    {
+      "id": "BEFORE-OR-R1-iz_strong-over-R-S3",
+      "selectedSourceSha256": "704158f29be7a7e31b669fddfbf1cecb2fe2332d37a18eaa2db16a3f69e59c12",
+      "downloadFilename": "BEFORE-OR-R1-iz_strong-over-R-S3_704158f29be7_0.00-1.00s.webm",
+      "nonemptyBytes": 304553,
+      "paintedStampUsesSelectedSource": true,
+      "sampleStamp": "Film 704158f29be7 \u00b7 seed 3 \u00b7 0.00s \u00b7 1st & 10 \u00b7 OWN 30 \u00b7 controlled fixture"
+    },
+    {
+      "id": "FINAL-OR-R1-iz_strong-over-R-S3",
+      "selectedSourceSha256": "fedfb636eb7a02f298cff1fdf2e2fb213ef37645cc7e1f31b1ef05b52d338205",
+      "downloadFilename": "FINAL-OR-R1-iz_strong-over-R-S3_fedfb636eb7a_0.00-1.00s.webm",
+      "nonemptyBytes": 301297,
+      "paintedStampUsesSelectedSource": true,
+      "sampleStamp": "Film fedfb636eb7a \u00b7 seed 3 \u00b7 0.00s \u00b7 1st & 10 \u00b7 OWN 30 \u00b7 controlled fixture"
+    }
+  ],
+  "nativeOwnershipBeforeAfterInspected": [
+    {
+      "id": "BEFORE-OR-R1-iz_strong-over-R-S3",
+      "sourceSha256": "704158f29be7a7e31b669fddfbf1cecb2fe2332d37a18eaa2db16a3f69e59c12",
+      "staleMismatchShown": true,
+      "cancelledTransitionShown": false,
+      "actualEngagementKeptSeparate": true,
+      "inspectedText": "After tick 2.95\u20133.00s: RT combo \u2192 LB_S\nCombo #1: Y + RT \u2192 DE_S \u00b7 live \u00b7 STALE target mismatch\nNo actual block engagement\nAchieved velocity -0.41, -0.03 yd/s \u00b7 ground impulse 35.57, 8.78\nArm impulse 0.00 / 60.48 \u00b7 arm work 0.00 / 181.45\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 0\nRead at 2.90s: target-change observed by RT: DE_S \u2192 LB_S \u00b7 combo DE_S \u2192 DE_S"
+    },
+    {
+      "id": "FINAL-OR-R1-iz_strong-over-R-S3",
+      "sourceSha256": "fedfb636eb7a02f298cff1fdf2e2fb213ef37645cc7e1f31b1ef05b52d338205",
+      "staleMismatchShown": false,
+      "cancelledTransitionShown": true,
+      "actualEngagementKeptSeparate": true,
+      "inspectedText": "After tick 2.95\u20133.00s: RT drive \u2192 LB_S\nNo shared combination pointer\nNo actual block engagement\nAchieved velocity -0.41, -0.03 yd/s \u00b7 ground impulse 35.57, 8.78\nArm impulse 0.00 / 60.48 \u00b7 arm work 0.00 / 181.45\nSupport motor work 0.00 / 0.00\nPhysical contacts 0 \u00b7 surviving hand joints 0\nRead at 2.85s: cancelled-combination observed by Y: DE_S \u2192 DE_S \u00b7 combo DE_S \u2192 none\nRecorded cue: original target unavailable; finding work\nRead at 2.90s: target-change observed by RT: DE_S \u2192 LB_S \u00b7 combo none \u2192 none"
+    }
+  ]
+}

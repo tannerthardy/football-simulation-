@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "approvedBase": "c98c2fa0e8de760c980ad3852e0ec85abcfadc8f",
+  "sourceContribution": "7a04ad6c65d9268bb332147411baacc27ebe20e0",
+  "sourceTestedCommit": "176866ed47cacd56331b33b676c0509a350e95d7",
+  "testedCombinedCommit": "41bfb2c152e7ebdcda4cf1cd11eacefc2c186f6c",
+  "comparisonCommit": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+  "componentFiles": {
+    "src/sim/contact-motion.ts": {
+      "candidateSha256": "42bd07b5eff20307b6fc24715f7e519b04bf81835f5ddd84fdb68d1b81a8b934",
+      "reviewedSourceSha256": "42bd07b5eff20307b6fc24715f7e519b04bf81835f5ddd84fdb68d1b81a8b934",
+      "exact": true
+    },
+    "src/sim/engagement.ts": {
+      "candidateSha256": "fed6da0d5e6e5a8194a0d5377e6e23c6f88ed3e077a8b67503cf3d045e0335d9",
+      "reviewedSourceSha256": "fed6da0d5e6e5a8194a0d5377e6e23c6f88ed3e077a8b67503cf3d045e0335d9",
+      "exact": true
+    },
+    "test/contact-motion.test.ts": {
+      "candidateSha256": "708bc596469bffdc85407360b12c013c11df720c48bb26c79468180fe576726d",
+      "reviewedSourceSha256": "708bc596469bffdc85407360b12c013c11df720c48bb26c79468180fe576726d",
+      "exact": true
+    }
+  },
+  "excludedDependenciesUnchanged": {
+    "src/sim/run-fits.ts": {
+      "sha256": "14f3faa606f382b5756f700a9bd0d9e24372d5e75791fb494b1329ec3933cfa4",
+      "exactToApprovedBase": true
+    },
+    "test/pull-fit-plan.test.ts": {
+      "sha256": "b1c1781c8094f50373a859e2268ea0ed8f5c8c14680a34e1a356ae98f5952e0b",
+      "exactToApprovedBase": true
+    },
+    "src/physics/world.ts": {
+      "sha256": "ed1708d764c355da60bd31c115f557baf3d81af18c89f3479c471bf981732ca2",
+      "exactToApprovedBase": true
+    },
+    "package-lock.json": {
+      "sha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+      "exactToApprovedBase": true
+    }
+  },
+  "sourceSha256": "d6429131a16b1f79b2af05a458c647f105d4fabbad1af7c72816b5b4ed91640f",
+  "validationSha256": "b9809014ce561f63c914619fe09c3d325288269133dbb59f52830c17e0ec7f9a",
+  "combinedReceiptSha256": "fd5fb89b20a987e3b0490440a3ba41495473ed6e80819a086346396269cc2b54",
+  "actualFlags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "flagCount": 44,
+  "focusedEvidence": {
+    "actualAssertions": 42,
+    "actualFiles": [
+      "test/contact-motion.test.ts",
+      "test/zone-reach.test.ts",
+      "test/baseline-runner.test.ts",
+      "test/roster-review.test.ts"
+    ],
+    "receipt": {
+      "baseline": "run-game-2026-10-13",
+      "branch": "codex/contact-components-extracted",
+      "commit": "c98c2fa0e8de760c980ad3852e0ec85abcfadc8f",
+      "mode": "candidate",
+      "node": "v22.23.3",
+      "failFast": false,
+      "platform": "linux",
+      "arch": "x64",
+      "sourceSha256": "d6429131a16b1f79b2af05a458c647f105d4fabbad1af7c72816b5b4ed91640f",
+      "validationSha256": "b9809014ce561f63c914619fe09c3d325288269133dbb59f52830c17e0ec7f9a",
+      "flags": {
+        "ANCHOR_SPLIT": "1",
+        "CF_FLOW": null,
+        "CLIMB_INTERCEPT": "1",
+        "CLIMB_PLAN": "1",
+        "DL_FIGHT": "0",
+        "DL_FLOW": "1",
+        "DL_HANDS": "0",
+        "FLOW_READ": "1",
+        "FLOW_RELEASE": "1",
+        "GAIT_STEP": "0",
+        "HAND_FIGHT": "0",
+        "HAND_MOTOR": "0",
+        "HOLD_SUBSTEPS": "0",
+        "IN_STRIDE_CATCH": "0",
+        "KEEPER_TORSO": "1",
+        "LB_PLAN": "1",
+        "LEG_BRACE": "0",
+        "LEVER_FACING": "1",
+        "LIVE_AIM": "1",
+        "LIVE_GAPS": "1",
+        "PASS_SINK": "0",
+        "PULL_CUE": "0",
+        "PULL_PLAN": "0",
+        "PULL_READ": "1",
+        "PULL_STEP": "0",
+        "REACH_CONTACT": "0",
+        "READ_EYES": "1",
+        "READ_RISK_TRACE": "0",
+        "RUN_ANCHOR": "1",
+        "RUN_CONTACT_COMPONENTS": "1",
+        "RUN_CONTACT_TRACK": "0",
+        "RUN_HANDS": "0",
+        "RUN_READ": "0",
+        "RUN_READ_TURN": "0",
+        "SCRAPE": "1",
+        "SHED_PHYSICAL": "1",
+        "STALK_CLAIM": "1",
+        "STRETCH_MESH": "1",
+        "STRETCH_REACH": "1",
+        "TACKLE_ROLL": "0",
+        "TACKLE_TOUCH": "0",
+        "THREAT_READ": "1",
+        "WRAP_BIND": "0",
+        "ZONE_FLOW": "1"
+      },
+      "worldDefaults": {
+        "handContact": "center",
+        "handIntegration": "centered",
+        "supportModel": "legacy",
+        "constraintWork": "per-solve",
+        "impactTiming": "speculative",
+        "supportIntegration": "mean",
+        "boundedAttachment": true,
+        "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+      },
+      "trackedChanges": [
+        "config/baseline.json",
+        "docs/WORKBOARD.md",
+        "scripts/roster-review.ts",
+        "src/sim/engagement.ts",
+        "test/roster-review.test.ts"
+      ],
+      "startedAt": "2026-10-14T00:28:06.305Z",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "test/contact-motion.test.ts",
+            "test/run-contact-surface.test.ts",
+            "test/zone-reach.test.ts",
+            "test/baseline-runner.test.ts",
+            "test/roster-review.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.5616500600000003
+        }
+      ],
+      "skippedCommands": [],
+      "finishedAt": "2026-10-14T00:28:08.870Z",
+      "inputsUnchanged": true,
+      "exitCode": 0
+    },
+    "note": "The command included an unmatched run-contact-surface.test.ts filter; coverage is the four actual files and 42 assertions, not an additional suite."
+  },
+  "combinedCounts": {
+    "typescript": 1683,
+    "files": 140,
+    "python": 145
+  },
+  "combinedWallSeconds": 177.646,
+  "reusedEvidence": {
+    "receiptUrl": "https://github.com/tannerthardy/football-simulation-/blob/7a04ad6c65d9268bb332147411baacc27ebe20e0/docs/reviews/run-contact-components-receipt.json",
+    "receiptSha256": "3658bac525448da5b877e953295a18f4ee638952371ae7a1755d684afdd5285c",
+    "scope": "Reviewed component mechanism, unchanged physical/fixture dependencies and existing controls; prior global source receipts are not exact combined verification."
+  },
+  "scope": "No #4/#9 ancestry, handover, solver, roster, collection or additional experiment. One current flag plus original 43; no merge or baseline designation.",
+  "additionalSimulationCampaigns": 0,
+  "knownLimits": [
+    "Historical WZ gain tradeoff retained.",
+    "Known conservation, recovery and football defects remain.",
+    "43-flag frozen screen evidence stays historical and can be rejected by current 44-flag registry; no auto-regeneration."
+  ]
+}

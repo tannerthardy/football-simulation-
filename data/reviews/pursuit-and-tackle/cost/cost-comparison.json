@@ -1,0 +1,55 @@
+{
+  "schema": "tackle-approach-cost-comparison-v1",
+  "toolSha256": "664ac493760cb63983c5105ec87a9ba0df32840ba7c10060cdf507b5deb625e5",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "scripts/diag/physics-cost.ts",
+    "OUTPUT.json",
+    "2",
+    "9"
+  ],
+  "baseline": {
+    "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+    "node": "v22.23.3",
+    "games": 2,
+    "seed": 9,
+    "plays": 394,
+    "playsPerGame": [
+      203,
+      191
+    ],
+    "wallSeconds": 29.703501453,
+    "cpuSeconds": 38.431624,
+    "wallSecondsPerGame": 14.8517507265,
+    "cpuSecondsPerGame": 19.215812,
+    "wallMillisecondsPerPlay": 75.3895975964467,
+    "cpuMillisecondsPerPlay": 97.54219289340102
+  },
+  "final": {
+    "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+    "node": "v22.23.3",
+    "games": 2,
+    "seed": 9,
+    "plays": 390,
+    "playsPerGame": [
+      183,
+      207
+    ],
+    "wallSeconds": 32.61446439,
+    "cpuSeconds": 40.984355,
+    "wallSecondsPerGame": 16.307232195,
+    "cpuSecondsPerGame": 20.4921775,
+    "wallMillisecondsPerPlay": 83.62683176923078,
+    "cpuMillisecondsPerPlay": 105.08808974358973
+  },
+  "cpuPerPlayChangePercent": 7.736033634629513,
+  "cpuPerGameChangePercent": 6.642266795699303,
+  "wallPerPlayChangePercent": 10.926221170296202,
+  "limits": [
+    "Sequential two-game runs after major collectors finished; same arguments and runtime, no repeats.",
+    "Changed trajectories alter play counts and subsequent roster RNG stream. This is a coarse cost guard, not identical-work benchmarking.",
+    "CPU per play rose; there is no demonstrated speed gain. Optimize the bounded previews if cost matters before broadening forecast scope."
+  ]
+}

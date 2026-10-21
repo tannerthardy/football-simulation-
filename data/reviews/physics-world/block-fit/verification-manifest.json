@@ -1,0 +1,143 @@
+{
+  "schema": "block-fit-publication-manifest-v1",
+  "createdAt": "2026-10-10T23:23:03.765824+00:00",
+  "parentCommit": "ab1d4a9ff39d27719d6faca3a02cae3931747be4",
+  "branch": "claude/engine-priorities",
+  "sources": {
+    "before": "ac876d5633b8172b7622ba65ec0579de56054df9a80c571a69e1da14b146e29c",
+    "after": "ad945eb091cb8a699dbff4f020ed183266e492a18f5afb585716d3acaf958aeb"
+  },
+  "engineChanges": [
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/run-block-fit.ts"
+  ],
+  "beforeReconstruction": "Restore retained blocking-before.ts and omit the new run-block-fit.ts helper in the publication snapshot.",
+  "WorldUnchanged": true,
+  "node": "v22.23.3",
+  "checks": [
+    {
+      "command": "node node_modules/vitest/vitest.mjs run --maxWorkers=1",
+      "exitCode": 0,
+      "passed": 635,
+      "files": 62,
+      "log": "tests.log"
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
+      "exitCode": 0,
+      "log": "typecheck.log",
+      "scope": "Final script/exporter/diagnostic bytes included"
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+      "exitCode": 0,
+      "log": "build.log",
+      "scope": "Final script/exporter/diagnostic bytes included"
+    },
+    {
+      "command": "python3 -m unittest discover -s test -p 'test_*.py'",
+      "exitCode": 0,
+      "passed": 22,
+      "log": "python.log"
+    },
+    {
+      "command": "node --import tsx scripts/diag/ol-base-review.ts out/block-fit/simple",
+      "exitCode": 0,
+      "scope": "Fixed24 actual eleven-on-eleven inspection windows, six fixed recorded/unrecorded controls"
+    },
+    {
+      "command": "node --expose-gc --import tsx scripts/diag/run-block-fit-cost.ts OUTPUT (each source sequentially)",
+      "exitCode": 0,
+      "scope": "Before, rejected forecast and selected simple reports; identical tool/input/profile/runtime, idle runs; no fullgame overhead claim"
+    },
+    {
+      "command": "node --import tsx scripts/diag/run-contact-review.ts out/block-fit/current-runs.json",
+      "exitCode": 0,
+      "scope": "144 production run guards"
+    },
+    {
+      "command": "node --import tsx scripts/diag/tackle-timing-review.ts out/block-fit/current-tackles.json.gz",
+      "exitCode": 0,
+      "scope": "64 controlled encounter guards"
+    },
+    {
+      "command": "node --expose-gc --import tsx scripts/diag/held-recovery-football.ts out/block-fit/current-games9.json 9 --games-only",
+      "exitCode": 0,
+      "scope": "Two measured divergent games; excluded warm game; no performance comparison"
+    },
+    {
+      "command": "python3 data/reviews/physics-world/block-fit/transfer-validation.py",
+      "exitCode": 0
+    },
+    {
+      "command": "node --import tsx scripts/diag/coverage-cap-review.ts data/reviews/physics-world/block-fit/coverage-cap-witness.json",
+      "exitCode": 0,
+      "scope": "Staged judgment/two-body capability controls; observer-neutral repeated byte-identical outputs"
+    },
+    {
+      "command": "python3 data/reviews/physics-world/block-fit/film-check.py BASELINE-FILM CANDIDATE-FILM viewer/block-fit.html out/block-fit/film-check",
+      "exitCode": 0,
+      "scope": "12 offline Chromium clips plus exact telemetry/events/profile checks; final captions/ZIP"
+    },
+    {
+      "command": "python3 data/reviews/physics-world/block-fit/verify-evidence.py --engine",
+      "exitCode": 0,
+      "scope": "41 archived asset hashes, exact before reconstruction/current source, all24 matched contexts, cost endpoint repeats,144 run guards and12 films"
+    }
+  ],
+  "measurementScopes": {
+    "panel": "All24 profiles/inputs/initialcontexts/firstacqs/firstloads/endpoints; six predetermined fulltraces/film and exact controls perphase. Live3s censors; no creditedresults.",
+    "force": "Real delivered50ms reports; acquisition/force/sustain/win distinct. Count lost-angle reduction partlydirect gate.",
+    "cost": "Sequential idle48trials per source, six excludedwarmups; endtoend guard, notisolatedhelper/fullgame/NFLsample. Rejectedimplementation notarchived.",
+    "transfer": "144matched controlledruninputs,64unchangedtacklepayloads,2gamesmatched onlyinitialrosters/seeds; alladversecases retained.",
+    "coverage": "Staged judgment with supplied primarydirective and ground/upright two-body controls; notfieldincidence or shippedfix."
+  },
+  "engineFiles": {
+    "src/sim/behaviors/blocking.ts": "c68fd909b6b0cf2f9cadf301121380cfbdc99aaf3af79cf8866a968a4ab692c8",
+    "src/sim/run-block-fit.ts": "92371b782fea69046f9adde56dede789212f1cef3b448d668ec8edb6df87a41c",
+    "src/physics/world.ts": "6b8abedfa540b68e4b8997c14bd461dfd16e90f9b541722cf06056d26aa75b0e"
+  },
+  "files": {
+    "data/reviews/physics-world/block-fit/README.md": "aef356f6fa368ccbbc074e5c89506aaf17abf5e8d6637e949e97fb77723e0f7d",
+    "data/reviews/physics-world/block-fit/after-film.json.gz": "d7751b1bfe69867535be0afca8ea0629d827d473420d801b952c722d1c06a296",
+    "data/reviews/physics-world/block-fit/after-traces.json.gz": "7a0526fb3d2b5b5973882607b030db8c7808d06c483248392377a79975604d94",
+    "data/reviews/physics-world/block-fit/blocking-before.ts": "9c7d009c98f928287e0d0c3f173bab7bc7dcba8515a54d8e95d069bb6a7aeb73",
+    "data/reviews/physics-world/block-fit/browser-check.json": "5395c077a77eda1607dc76a23abbf1b54d34346fa1c0a1fe0847ae61f9c02e6b",
+    "data/reviews/physics-world/block-fit/build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/reviews/physics-world/block-fit/compare.py": "b34c6805e107561b0e000e54ce3aedef43bf7c4bec2b32eb9f4fa8d862b9f84c",
+    "data/reviews/physics-world/block-fit/comparison.json.gz": "c78a8087ea7bfca9514de6ba0a6eb3f3f529f08c066ccba6325d9a34b0e902b5",
+    "data/reviews/physics-world/block-fit/cost-after.json": "cc71cdfd9c0de369b8e36e1db661812d1e590984f50336f260104e11f91abf01",
+    "data/reviews/physics-world/block-fit/cost-before.json": "81f0cca2f1e4fd1c29ed15fdb27f4413bd096752f7038a8e4f9b89c4f83be43f",
+    "data/reviews/physics-world/block-fit/cost-rejected-forecast.json": "cef7961d6b707f72f9c71fb6585d7f7d910f3fda63c5880752c3f19a0534e24d",
+    "data/reviews/physics-world/block-fit/coverage-cap-witness.json": "7d0f34270909992e21687b13c56aff24adb5566f65b1f00a1590da17a431f26f",
+    "data/reviews/physics-world/block-fit/current-games9.json": "df918289ecfc81d6b76c861c7040c05dd786d12ab19c41f681da46ffec0eeefb",
+    "data/reviews/physics-world/block-fit/current-runs.json.gz": "2d61956840da104854dc9e7cbc1152d7f1eb3307d4e4db9a1774c6bce17addbc",
+    "data/reviews/physics-world/block-fit/current-tackles.json.gz": "7372e41735160182758fa8ecdf603fb8e19de9779e4c4338fcca2e432b9dee54",
+    "data/reviews/physics-world/block-fit/film-check.py": "d7fcc9727a614ccb67c32f15b00651372281afa01aa6092f80857304aac2872e",
+    "data/reviews/physics-world/block-fit/film-integrity.json": "4b737ab4b844b1e912314365534cd47fac8efb0a7ce881e0ddc52308380fae88",
+    "data/reviews/physics-world/block-fit/python.log": "87fa76b49204f0fe40d9197c9ba6a76a9d330a9706360475d2e08db8be678a28",
+    "data/reviews/physics-world/block-fit/tests.log": "220f11ce30691280352036f9593ad17c96e4d1147a950eb1fd9477d4abc4e6fd",
+    "data/reviews/physics-world/block-fit/transfer-validation.json.gz": "8329379607fdf7f4d1164229db970abb41aed073e2cd72c39eb4f0c622ff01c8",
+    "data/reviews/physics-world/block-fit/transfer-validation.py": "bb3ba0ae353664e4228e9e2c22a40afa477a4c88d2480c6da08f08c1fbeab779",
+    "data/reviews/physics-world/block-fit/typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/reviews/physics-world/block-fit/verify-evidence.py": "5d96531d2fde09862d0fce0dff3238691ca9f96a1950c2c0f6fc96e29b0dce0a",
+    "data/reviews/physics-world/ol-base/after-film.json.gz": "1af7517100c3a533cb1d0afd572ad4f0cb441f2a05392141964e5c921bedf195",
+    "data/reviews/physics-world/ol-base/after-traces.json.gz": "487e19c25bb5006868c90743c15d1bc6abd63b7f9d6c82f1e2d83fe09d2b6973",
+    "data/reviews/physics-world/ol-base/current-games9.json": "42fb424654cdf14e95e5f84edb2bd8149a4f639f1450438df6f8f8f437978590",
+    "data/reviews/physics-world/ol-base/current-runs.json.gz": "3278430fe38389cd0866b03fc8b92f4bbb0c433386d34c54e802e77380d87b51",
+    "data/reviews/physics-world/ol-base/current-tackles.json.gz": "1e84898b19ddca252519b4b557f294e6646ccbac5c473a93e622663a5e196e26",
+    "docs/reviews/run-block-fit-and-current-priorities.md": "ae831a69c61f2ff0dac076bd7730352a40305963bb9c050e3b4513fb0491f4ac",
+    "scripts/diag/coverage-cap-review.ts": "3497e7a38648319c7a0f5e531fc3e9878d2f623c42b716bc72b856b35b057829",
+    "scripts/diag/held-recovery-football.ts": "32f79f3b9f32981cf6548ea5edacc0b377116618c6df8b7e6d2c9bbd492a0b91",
+    "scripts/diag/ol-base-review.ts": "683005a74c0462ebdaed263d1de00acf7eec48a6845f7509c1789c261972041c",
+    "scripts/diag/run-block-fit-cost.ts": "4908082cf0a824dd45547fb6e71a127813d9f4375b1ee5fa79ab8157567cd087",
+    "scripts/diag/run-contact-review.ts": "f82dcec7ab457346bab57ea82fc8cebf47da967f3c738a92f1380f4249451971",
+    "scripts/diag/tackle-timing-review.ts": "34ec2d65255b06d9182311ebd1d31de86e74993638ff2636a1df9232d5fcce91",
+    "scripts/export-block-fit.ts": "26a0525b8b0e61ec753bf469a088cd7d03bd2453aebd242f9801d8b402fa6a66",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "test/run-block-fit.test.ts": "8917a17543a5a8d29573634514cb7c0d187f7b7641aa5090c7c5d7e9466af58e",
+    "viewer/block-fit-film-room.zip": "892f5688ea75cb996af0cd627cbb0f7c166288e61afa6e5b51491deb30f83a52",
+    "viewer/block-fit.html": "7b7f81a940983e30899963cb639f0160c45e5e715f38cb9525005bc5112c9244",
+    "viewer/block-fit.html.validation.json": "eb5b83e8b85cd764f15292f52ce99498da0b69d07226647c1d280810396f6960"
+  }
+}

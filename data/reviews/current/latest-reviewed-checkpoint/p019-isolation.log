@@ -1,0 +1,14 @@
+Profile candidate: run-game-2026-10-13, commit 2a1c034021768620c6a1a26ee7018972512220fd, source 4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571
+Running node node_modules/vitest/vitest.mjs run --project core test/pass-cutoff-approach.test.ts -t P019 retains
+
+ RUN  v3.2.4 /workspace/football-latest-reviewed-checkpoint
+
+ ✓ |core| test/pass-cutoff-approach.test.ts (4 tests | 3 skipped) 480ms
+   ✓ edge cutoff approach execution > P019 retains useful contact on both edges through the actual throw  478ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 3 skipped (4)
+   Start at  00:56:20
+   Duration  1.77s (transform 798ms, setup 0ms, collect 1.07s, tests 480ms, environment 0ms, prepare 61ms)
+
+Validation receipt: out/latest-reviewed-checkpoint/p019-isolation.json; exit 0

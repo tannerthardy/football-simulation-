@@ -1,0 +1,2203 @@
+{
+  "schema": "reconstructed-recovery-phase-v1",
+  "productionChange": false,
+  "provenance": "f8ba412 committed runner/evidence recovered; missing uncommitted experiment reconstructed",
+  "source": "f14d849a51e031087a1971e5cc83db6146c4c5cebc17d4df2b6feb549e5106cb",
+  "matrix": [
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "full",
+      "n": 12,
+      "maxPositionDifference": 2.0657373560430585,
+      "finalPositionDifference": 2.0657373560430585,
+      "first": {
+        "support": {
+          "t": 2.1000000000000023,
+          "body": 0,
+          "difference": 0.009292126059879321
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "full",
+      "n": 24,
+      "maxPositionDifference": 2.0099263652361117,
+      "finalPositionDifference": 2.0099263652361117,
+      "first": {
+        "support": {
+          "t": 2.099999999999997,
+          "body": 0,
+          "difference": 0.003996808911666622
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "full",
+      "n": 48,
+      "maxPositionDifference": 1.0541762045562422,
+      "finalPositionDifference": 1.0541762045562422,
+      "first": {
+        "support": {
+          "t": 2.3583333333333316,
+          "body": 1,
+          "difference": 0.002007840225869306
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "phase",
+      "n": 12,
+      "maxPositionDifference": 2.0657373560430585,
+      "finalPositionDifference": 2.0657373560430585,
+      "first": {
+        "support": {
+          "t": 2.1000000000000023,
+          "body": 0,
+          "difference": 0.009292126059879321
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "phase",
+      "n": 24,
+      "maxPositionDifference": 1.7409956172865009,
+      "finalPositionDifference": 1.7409956172865009,
+      "first": {
+        "support": {
+          "t": 2.099999999999997,
+          "body": 0,
+          "difference": 0.003996808911666622
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "phase",
+      "n": 48,
+      "maxPositionDifference": 1.0541762045562422,
+      "finalPositionDifference": 1.0541762045562422,
+      "first": {
+        "support": {
+          "t": 2.3583333333333316,
+          "body": 1,
+          "difference": 0.002007840225869306
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "phase",
+      "n": 15,
+      "maxPositionDifference": 1.9444295586291247,
+      "finalPositionDifference": 1.9444295586291247,
+      "first": {
+        "support": {
+          "t": 2.100000000000001,
+          "body": 0,
+          "difference": 0.007178955173890389
+        },
+        "state": {
+          "t": 5.1833333333333185,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "phase",
+      "n": 35,
+      "maxPositionDifference": 0.9033951979404549,
+      "finalPositionDifference": 0.9033951979404549,
+      "first": {
+        "support": {
+          "t": 2.0999999999999965,
+          "body": 0,
+          "difference": 0.0023244193419372366
+        },
+        "state": {
+          "t": 5.200000000000001,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "phase-timing",
+      "n": 12,
+      "maxPositionDifference": 2.2182162306836943,
+      "finalPositionDifference": 2.2182162306836943,
+      "first": {
+        "support": {
+          "t": 2.1333333333333346,
+          "body": 1,
+          "difference": 0.0020437021278573164
+        },
+        "state": {
+          "t": 5.108333333333322,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "phase-timing",
+      "n": 24,
+      "maxPositionDifference": 1.6808904418890052,
+      "finalPositionDifference": 1.6808904418890052,
+      "first": {
+        "support": {
+          "t": 2.33958333333333,
+          "body": 1,
+          "difference": 0.002007843681567145
+        },
+        "state": {
+          "t": 5.106249999999989,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "phase-timing",
+      "n": 48,
+      "maxPositionDifference": 0.8310809519362294,
+      "finalPositionDifference": 0.8310809519362294,
+      "first": {
+        "support": {
+          "t": 2.349999999999996,
+          "body": 1,
+          "difference": 0.0020290762401201645
+        },
+        "state": {
+          "t": 5.106249999999989,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "phase-timing",
+      "n": 15,
+      "maxPositionDifference": 0.7840319640715592,
+      "finalPositionDifference": 0.7840319640715592,
+      "first": {
+        "support": {
+          "t": 2.1333333333333337,
+          "body": 1,
+          "difference": 0.0024229667349592587
+        },
+        "state": {
+          "t": 5.116666666666654,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "variant": "phase-timing",
+      "n": 35,
+      "maxPositionDifference": 0.3243751889565374,
+      "finalPositionDifference": 0.3243751889565374,
+      "first": {
+        "support": {
+          "t": 2.3999999999999955,
+          "body": 1,
+          "difference": 0.002994279455236337
+        },
+        "state": {
+          "t": 5.150000000000001,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "full",
+      "n": 12,
+      "maxPositionDifference": 2.0657373560430585,
+      "finalPositionDifference": 2.0657373560430585,
+      "first": {
+        "support": {
+          "t": 2.1000000000000023,
+          "body": 0,
+          "difference": 0.009292126059879321
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "full",
+      "n": 24,
+      "maxPositionDifference": 2.0099263652361117,
+      "finalPositionDifference": 2.0099263652361117,
+      "first": {
+        "support": {
+          "t": 2.099999999999997,
+          "body": 0,
+          "difference": 0.003996808911666622
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "full",
+      "n": 48,
+      "maxPositionDifference": 1.0541762045562422,
+      "finalPositionDifference": 1.0541762045562422,
+      "first": {
+        "support": {
+          "t": 2.3583333333333316,
+          "body": 1,
+          "difference": 0.002007840225869306
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "phase",
+      "n": 12,
+      "maxPositionDifference": 2.0657373560430585,
+      "finalPositionDifference": 2.0657373560430585,
+      "first": {
+        "support": {
+          "t": 2.1000000000000023,
+          "body": 0,
+          "difference": 0.009292126059879321
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "phase",
+      "n": 24,
+      "maxPositionDifference": 1.7409956172865009,
+      "finalPositionDifference": 1.7409956172865009,
+      "first": {
+        "support": {
+          "t": 2.099999999999997,
+          "body": 0,
+          "difference": 0.003996808911666622
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "phase",
+      "n": 48,
+      "maxPositionDifference": 1.0541762045562422,
+      "finalPositionDifference": 1.0541762045562422,
+      "first": {
+        "support": {
+          "t": 2.3583333333333316,
+          "body": 1,
+          "difference": 0.002007840225869306
+        },
+        "state": {
+          "t": 5.170833333333321,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "phase",
+      "n": 15,
+      "maxPositionDifference": 1.9444295586291247,
+      "finalPositionDifference": 1.9444295586291247,
+      "first": {
+        "support": {
+          "t": 2.100000000000001,
+          "body": 0,
+          "difference": 0.007178955173890389
+        },
+        "state": {
+          "t": 5.1833333333333185,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "phase",
+      "n": 35,
+      "maxPositionDifference": 0.9033951979404549,
+      "finalPositionDifference": 0.9033951979404549,
+      "first": {
+        "support": {
+          "t": 2.0999999999999965,
+          "body": 0,
+          "difference": 0.0023244193419372366
+        },
+        "state": {
+          "t": 5.200000000000001,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "phase-timing",
+      "n": 12,
+      "maxPositionDifference": 2.2182162306836943,
+      "finalPositionDifference": 2.2182162306836943,
+      "first": {
+        "support": {
+          "t": 2.1333333333333346,
+          "body": 1,
+          "difference": 0.0020437021278573164
+        },
+        "state": {
+          "t": 5.108333333333322,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "phase-timing",
+      "n": 24,
+      "maxPositionDifference": 1.6808904418890052,
+      "finalPositionDifference": 1.6808904418890052,
+      "first": {
+        "support": {
+          "t": 2.33958333333333,
+          "body": 1,
+          "difference": 0.002007843681567145
+        },
+        "state": {
+          "t": 5.106249999999989,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "phase-timing",
+      "n": 48,
+      "maxPositionDifference": 0.8310809519362294,
+      "finalPositionDifference": 0.8310809519362294,
+      "first": {
+        "support": {
+          "t": 2.349999999999996,
+          "body": 1,
+          "difference": 0.0020290762401201645
+        },
+        "state": {
+          "t": 5.106249999999989,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "phase-timing",
+      "n": 15,
+      "maxPositionDifference": 0.7840319640715592,
+      "finalPositionDifference": 0.7840319640715592,
+      "first": {
+        "support": {
+          "t": 2.1333333333333337,
+          "body": 1,
+          "difference": 0.0024229667349592587
+        },
+        "state": {
+          "t": 5.116666666666654,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "variant": "phase-timing",
+      "n": 35,
+      "maxPositionDifference": 0.3243751889565374,
+      "finalPositionDifference": 0.3243751889565374,
+      "first": {
+        "support": {
+          "t": 2.3999999999999955,
+          "body": 1,
+          "difference": 0.002994279455236337
+        },
+        "state": {
+          "t": 5.150000000000001,
+          "body": 1,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "full",
+      "n": 12,
+      "maxPositionDifference": 4.089681209939719,
+      "finalPositionDifference": 4.089681209939719,
+      "first": {
+        "support": {
+          "t": 2.725000000000001,
+          "body": 1,
+          "difference": 0.0020516465061788947
+        },
+        "state": {
+          "t": 3.100000000000001,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "full",
+      "n": 24,
+      "maxPositionDifference": 2.8376902430793995,
+      "finalPositionDifference": 2.8376902430793995,
+      "first": {
+        "support": {
+          "t": 2.7770833333333313,
+          "body": 1,
+          "difference": 0.002258436907912773
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "full",
+      "n": 48,
+      "maxPositionDifference": 0.0885898067126978,
+      "finalPositionDifference": 0.08270222266840802,
+      "first": {
+        "support": {
+          "t": 2.814583333333332,
+          "body": 1,
+          "difference": 0.002055078611157004
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "phase",
+      "n": 12,
+      "maxPositionDifference": 3.8346437341526567,
+      "finalPositionDifference": 3.8346437341526567,
+      "first": {
+        "support": {
+          "t": 2.725000000000001,
+          "body": 1,
+          "difference": 0.0020516465061788947
+        },
+        "state": {
+          "t": 3.100000000000001,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "phase",
+      "n": 24,
+      "maxPositionDifference": 2.8376902430793995,
+      "finalPositionDifference": 2.8376902430793995,
+      "first": {
+        "support": {
+          "t": 2.7770833333333313,
+          "body": 1,
+          "difference": 0.002258436907912773
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "phase",
+      "n": 48,
+      "maxPositionDifference": 0.09843634928569427,
+      "finalPositionDifference": 0.09194848630550506,
+      "first": {
+        "support": {
+          "t": 2.814583333333332,
+          "body": 1,
+          "difference": 0.002055078611157004
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "phase",
+      "n": 15,
+      "maxPositionDifference": 3.315665556225512,
+      "finalPositionDifference": 3.315665556225512,
+      "first": {
+        "support": {
+          "t": 2.733333333333334,
+          "body": 1,
+          "difference": 0.002417454258047421
+        },
+        "state": {
+          "t": 3.0999999999999996,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "phase",
+      "n": 35,
+      "maxPositionDifference": 0.9489586632081511,
+      "finalPositionDifference": 0.9489586632081511,
+      "first": {
+        "support": {
+          "t": 2.849999999999996,
+          "body": 0,
+          "difference": 0.002906655461920434
+        },
+        "state": {
+          "t": 3.099999999999995,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "phase-timing",
+      "n": 12,
+      "maxPositionDifference": 3.8346437341526567,
+      "finalPositionDifference": 3.8346437341526567,
+      "first": {
+        "support": {
+          "t": 2.725000000000001,
+          "body": 1,
+          "difference": 0.0020516465061788947
+        },
+        "state": {
+          "t": 3.100000000000001,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "phase-timing",
+      "n": 24,
+      "maxPositionDifference": 2.8376902430793995,
+      "finalPositionDifference": 2.8376902430793995,
+      "first": {
+        "support": {
+          "t": 2.7770833333333313,
+          "body": 1,
+          "difference": 0.002258436907912773
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "phase-timing",
+      "n": 48,
+      "maxPositionDifference": 0.09843634928569427,
+      "finalPositionDifference": 0.09194848630550506,
+      "first": {
+        "support": {
+          "t": 2.814583333333332,
+          "body": 1,
+          "difference": 0.002055078611157004
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "phase-timing",
+      "n": 15,
+      "maxPositionDifference": 3.315665556225512,
+      "finalPositionDifference": 3.315665556225512,
+      "first": {
+        "support": {
+          "t": 2.733333333333334,
+          "body": 1,
+          "difference": 0.002417454258047421
+        },
+        "state": {
+          "t": 3.0999999999999996,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "variant": "phase-timing",
+      "n": 35,
+      "maxPositionDifference": 0.9489586632081511,
+      "finalPositionDifference": 0.9489586632081511,
+      "first": {
+        "support": {
+          "t": 2.849999999999996,
+          "body": 0,
+          "difference": 0.002906655461920434
+        },
+        "state": {
+          "t": 3.099999999999995,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "full",
+      "n": 12,
+      "maxPositionDifference": 4.089681209939719,
+      "finalPositionDifference": 4.089681209939719,
+      "first": {
+        "support": {
+          "t": 2.725000000000001,
+          "body": 1,
+          "difference": 0.0020516465061788947
+        },
+        "state": {
+          "t": 3.100000000000001,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "full",
+      "n": 24,
+      "maxPositionDifference": 2.8376902430793285,
+      "finalPositionDifference": 2.8376902430793285,
+      "first": {
+        "support": {
+          "t": 2.7770833333333313,
+          "body": 1,
+          "difference": 0.002258436907912773
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "full",
+      "n": 48,
+      "maxPositionDifference": 0.0885898067126978,
+      "finalPositionDifference": 0.08270222266840802,
+      "first": {
+        "support": {
+          "t": 2.814583333333332,
+          "body": 1,
+          "difference": 0.002055078611157004
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "phase",
+      "n": 12,
+      "maxPositionDifference": 3.8346437341526567,
+      "finalPositionDifference": 3.8346437341526567,
+      "first": {
+        "support": {
+          "t": 2.725000000000001,
+          "body": 1,
+          "difference": 0.0020516465061788947
+        },
+        "state": {
+          "t": 3.100000000000001,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "phase",
+      "n": 24,
+      "maxPositionDifference": 2.8376902430793285,
+      "finalPositionDifference": 2.8376902430793285,
+      "first": {
+        "support": {
+          "t": 2.7770833333333313,
+          "body": 1,
+          "difference": 0.002258436907912773
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "phase",
+      "n": 48,
+      "maxPositionDifference": 0.09843634928569427,
+      "finalPositionDifference": 0.09194848630550506,
+      "first": {
+        "support": {
+          "t": 2.814583333333332,
+          "body": 1,
+          "difference": 0.002055078611157004
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "phase",
+      "n": 15,
+      "maxPositionDifference": 3.315665556225512,
+      "finalPositionDifference": 3.315665556225512,
+      "first": {
+        "support": {
+          "t": 2.733333333333334,
+          "body": 1,
+          "difference": 0.002417454258047421
+        },
+        "state": {
+          "t": 3.0999999999999996,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "phase",
+      "n": 35,
+      "maxPositionDifference": 0.9489586632081511,
+      "finalPositionDifference": 0.9489586632081511,
+      "first": {
+        "support": {
+          "t": 2.849999999999996,
+          "body": 0,
+          "difference": 0.002906655461920434
+        },
+        "state": {
+          "t": 3.099999999999995,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "phase-timing",
+      "n": 12,
+      "maxPositionDifference": 3.8346437341526567,
+      "finalPositionDifference": 3.8346437341526567,
+      "first": {
+        "support": {
+          "t": 2.725000000000001,
+          "body": 1,
+          "difference": 0.0020516465061788947
+        },
+        "state": {
+          "t": 3.100000000000001,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "phase-timing",
+      "n": 24,
+      "maxPositionDifference": 2.8376902430793285,
+      "finalPositionDifference": 2.8376902430793285,
+      "first": {
+        "support": {
+          "t": 2.7770833333333313,
+          "body": 1,
+          "difference": 0.002258436907912773
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "phase-timing",
+      "n": 48,
+      "maxPositionDifference": 0.09843634928569427,
+      "finalPositionDifference": 0.09194848630550506,
+      "first": {
+        "support": {
+          "t": 2.814583333333332,
+          "body": 1,
+          "difference": 0.002055078611157004
+        },
+        "state": {
+          "t": 3.0999999999999956,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "phase-timing",
+      "n": 15,
+      "maxPositionDifference": 3.315665556225512,
+      "finalPositionDifference": 3.315665556225512,
+      "first": {
+        "support": {
+          "t": 2.733333333333334,
+          "body": 1,
+          "difference": 0.002417454258047421
+        },
+        "state": {
+          "t": 3.0999999999999996,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "variant": "phase-timing",
+      "n": 35,
+      "maxPositionDifference": 0.9489586632081511,
+      "finalPositionDifference": 0.9489586632081511,
+      "first": {
+        "support": {
+          "t": 2.849999999999996,
+          "body": 0,
+          "difference": 0.002906655461920434
+        },
+        "state": {
+          "t": 3.099999999999995,
+          "body": 0,
+          "coarse": "up",
+          "fine": "falling"
+        }
+      },
+      "comparison": "matched 20 Hz endpoints; first markers at common achieved boundaries"
+    }
+  ],
+  "sourceTrial": [
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 12,
+      "status": "failed",
+      "t": 4.195833333333323,
+      "body": 1,
+      "input": {
+        "e": 0.16641187587579054,
+        "rb": 0.16464875464160209,
+        "w": 3.2482711613985096,
+        "speed": 2.7777598606329996,
+        "outsideFor": 1.1097824441272408,
+        "latency": 0.12,
+        "h": 0.004166666666666667,
+        "loadVelocity": -2.125009547505681
+      },
+      "insideBoundaryRate": 1.590185746043186,
+      "outsideBoundaryRate": -0.6527503131273185,
+      "file": "center-1-phase-source-12-failure.json.gz"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 24,
+      "status": "completed",
+      "final": [
+        {
+          "pos": {
+            "x": 66.200230809005,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.3957671541893557,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 0.09899116447525724,
+              "y": 0
+            },
+            "out": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 66.8306431826989,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.3982738225409115,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "up",
+            "xi": {
+              "x": 1.0296474662672197,
+              "y": 0
+            },
+            "out": 2.5394093496905286
+          }
+        }
+      ],
+      "file": "center-1-phase-source-24.json.gz"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 48,
+      "status": "completed",
+      "final": [
+        {
+          "pos": {
+            "x": 65.13781448896204,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 1.3771814776342517,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 0.098963250618055,
+              "y": 0
+            },
+            "out": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 65.76447597263859,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 1.381551241366223,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "falling",
+            "xi": {
+              "x": 1.2555956981415703,
+              "y": 0
+            },
+            "out": 2.3092864753891815
+          }
+        }
+      ],
+      "file": "center-1-phase-source-48.json.gz"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 96,
+      "status": "completed",
+      "final": [
+        {
+          "pos": {
+            "x": 64.49668973650788,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 0.38823218060463205,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 0.09894867975059496,
+              "y": 0
+            },
+            "out": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 65.12177494233076,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 0.38618812919609924,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 1.2558581479195823,
+              "y": 0
+            },
+            "out": 2.1153387087415503
+          }
+        }
+      ],
+      "file": "center-1-phase-source-96.json.gz"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 15,
+      "status": "completed",
+      "final": [
+        {
+          "pos": {
+            "x": 66.27141569131352,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.560016851139545,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 0.09902249667426599,
+              "y": 0
+            },
+            "out": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 66.90221194229423,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.576807979939029,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "up",
+            "xi": {
+              "x": 0.9262634919327651,
+              "y": 0
+            },
+            "out": 2.542244303011814
+          }
+        }
+      ],
+      "file": "center-1-phase-source-15.json.gz"
+    },
+    {
+      "mode": "center",
+      "side": 1,
+      "n": 35,
+      "status": "completed",
+      "final": [
+        {
+          "pos": {
+            "x": 66.12745093982791,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.163801797628904,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 0.09897380983371307,
+              "y": 0
+            },
+            "out": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 66.75731428179286,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.1627992660607678,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "up",
+            "xi": {
+              "x": 1.115443313809134,
+              "y": 0
+            },
+            "out": 2.538603928077154
+          }
+        }
+      ],
+      "file": "center-1-phase-source-35.json.gz"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 12,
+      "status": "failed",
+      "t": 4.195833333333323,
+      "body": 1,
+      "input": {
+        "e": 0.16641187587579054,
+        "rb": 0.16464875464160209,
+        "w": 3.2482711613985096,
+        "speed": 2.7777598606329996,
+        "outsideFor": 1.1097824441272408,
+        "latency": 0.12,
+        "h": 0.004166666666666667,
+        "loadVelocity": -2.125009547505681
+      },
+      "insideBoundaryRate": 1.590185746043186,
+      "outsideBoundaryRate": -0.6527503131273185,
+      "file": "center--1-phase-source-12-failure.json.gz"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 24,
+      "status": "completed",
+      "final": [
+        {
+          "pos": {
+            "x": 66.200230809005,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.3957671541893557,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 0.09899116447525724,
+              "y": 0
+            },
+            "out": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 66.8306431826989,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.3982738225409115,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "up",
+            "xi": {
+              "x": 1.0296474662672197,
+              "y": 0
+            },
+            "out": 2.5394093496905286
+          }
+        }
+      ],
+      "file": "center--1-phase-source-24.json.gz"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 48,
+      "status": "completed",
+      "final": [
+        {
+          "pos": {
+            "x": 65.13781448896204,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 1.3771814776342517,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 0.098963250618055,
+              "y": 0
+            },
+            "out": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 65.76447597263859,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 1.381551241366223,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "falling",
+            "xi": {
+              "x": 1.2555956981415703,
+              "y": 0
+            },
+            "out": 2.3092864753891815
+          }
+        }
+      ],
+      "file": "center--1-phase-source-48.json.gz"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 96,
+      "status": "completed",
+      "final": [
+        {
+          "pos": {
+            "x": 64.49668973650788,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 0.38823218060463205,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 0.09894867975059496,
+              "y": 0
+            },
+            "out": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 65.12177494233076,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 0.38618812919609924,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 1.2558581479195823,
+              "y": 0
+            },
+            "out": 2.1153387087415503
+          }
+        }
+      ],
+      "file": "center--1-phase-source-96.json.gz"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 15,
+      "status": "completed",
+      "final": [
+        {
+          "pos": {
+            "x": 66.27141569131352,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.560016851139545,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 0.09902249667426599,
+              "y": 0
+            },
+            "out": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 66.90221194229423,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.576807979939029,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "up",
+            "xi": {
+              "x": 0.9262634919327651,
+              "y": 0
+            },
+            "out": 2.542244303011814
+          }
+        }
+      ],
+      "file": "center--1-phase-source-15.json.gz"
+    },
+    {
+      "mode": "center",
+      "side": -1,
+      "n": 35,
+      "status": "completed",
+      "final": [
+        {
+          "pos": {
+            "x": 66.12745093982791,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.163801797628904,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "down",
+            "xi": {
+              "x": 0.09897380983371307,
+              "y": 0
+            },
+            "out": 0
+          }
+        },
+        {
+          "pos": {
+            "x": 66.75731428179286,
+            "y": 26.666666666666668
+          },
+          "vel": {
+            "x": 3.1627992660607678,
+            "y": 0
+          },
+          "facing": 0,
+          "spin": 0,
+          "support": {
+            "state": "up",
+            "xi": {
+              "x": 1.115443313809134,
+              "y": 0
+            },
+            "out": 2.538603928077154
+          }
+        }
+      ],
+      "file": "center--1-phase-source-35.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 12,
+      "status": "failed",
+      "t": 2.9250000000000003,
+      "body": 1,
+      "input": {
+        "e": 0.16892906542530028,
+        "rb": 0.16546579324337818,
+        "w": 3.2515225386125017,
+        "speed": 2.127377660193808,
+        "outsideFor": 0.14002106310069004,
+        "latency": 0.12,
+        "h": 0.004166666666666667,
+        "loadVelocity": -0.7721946195229921
+      },
+      "insideBoundaryRate": 0.23417886342275174,
+      "outsideBoundaryRate": -1.355183040670816,
+      "file": "patch-1-phase-source-12-failure.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 24,
+      "status": "failed",
+      "t": 2.918749999999998,
+      "body": 1,
+      "input": {
+        "e": 0.1679229504794973,
+        "rb": 0.16546581468318539,
+        "w": 3.2515226240596293,
+        "speed": 2.1002023528909195,
+        "outsideFor": 0.1354387524973877,
+        "latency": 0.12,
+        "h": 0.0020833333333333333,
+        "loadVelocity": -0.6982268421921124
+      },
+      "insideBoundaryRate": 0.16021100224127716,
+      "outsideBoundaryRate": -1.401975510698807,
+      "file": "patch-1-phase-source-24-failure.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 48,
+      "status": "failed",
+      "t": 2.9114583333333317,
+      "body": 1,
+      "input": {
+        "e": 0.16670374628614223,
+        "rb": 0.16546549918816783,
+        "w": 3.251521366672929,
+        "speed": 2.0732604814761326,
+        "outsideFor": 0.12733943923342494,
+        "latency": 0.12,
+        "h": 0.0010416666666666667,
+        "loadVelocity": -0.5945537840176313
+      },
+      "insideBoundaryRate": 0.05653917796010144,
+      "outsideBoundaryRate": -1.4787066974585015,
+      "file": "patch-1-phase-source-48-failure.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 96,
+      "status": "failed",
+      "t": 3.0010416666666653,
+      "body": 1,
+      "input": {
+        "e": 0.16621460336988148,
+        "rb": 0.165408693213887,
+        "w": 3.2512949936019173,
+        "speed": 2.9390579903562624,
+        "outsideFor": 0.0919158831926258,
+        "latency": 0.12,
+        "h": 0.0005208333333333333,
+        "loadVelocity": -0.6959003643221873
+      },
+      "insideBoundaryRate": 0.1581079081776411,
+      "outsideBoundaryRate": -1.5553172268273106,
+      "file": "patch-1-phase-source-96-failure.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 15,
+      "status": "failed",
+      "t": 2.923333333333333,
+      "body": 1,
+      "input": {
+        "e": 0.16906257321725363,
+        "rb": 0.16546587790185602,
+        "w": 3.251522876014071,
+        "speed": 2.118949504529844,
+        "outsideFor": 0.13576214548588497,
+        "latency": 0.12,
+        "h": 0.0033333333333333335,
+        "loadVelocity": -0.7320320637802001
+      },
+      "insideBoundaryRate": 0.1940159765825641,
+      "outsideBoundaryRate": -1.3869174407496438,
+      "file": "patch-1-phase-source-15-failure.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": 1,
+      "n": 35,
+      "status": "failed",
+      "t": 2.912857142857141,
+      "body": 1,
+      "input": {
+        "e": 0.16578139411334814,
+        "rb": 0.1654655028189848,
+        "w": 3.2515213811433266,
+        "speed": 2.078235203259664,
+        "outsideFor": 0.1279011924946829,
+        "latency": 0.12,
+        "h": 0.0014285714285714286,
+        "loadVelocity": -0.5852490097169595
+      },
+      "insideBoundaryRate": 0.04723438945939895,
+      "outsideBoundaryRate": -1.4929861935427047,
+      "file": "patch-1-phase-source-35-failure.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 12,
+      "status": "failed",
+      "t": 2.9250000000000003,
+      "body": 1,
+      "input": {
+        "e": 0.16892906542530028,
+        "rb": 0.16546579324337818,
+        "w": 3.2515225386125017,
+        "speed": 2.127377660193808,
+        "outsideFor": 0.14002106310069004,
+        "latency": 0.12,
+        "h": 0.004166666666666667,
+        "loadVelocity": -0.7721946195229921
+      },
+      "insideBoundaryRate": 0.23417886342275174,
+      "outsideBoundaryRate": -1.355183040670816,
+      "file": "patch--1-phase-source-12-failure.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 24,
+      "status": "failed",
+      "t": 2.918749999999998,
+      "body": 1,
+      "input": {
+        "e": 0.1679229504794973,
+        "rb": 0.16546581468318539,
+        "w": 3.2515226240596293,
+        "speed": 2.1002023528909195,
+        "outsideFor": 0.1354387524973877,
+        "latency": 0.12,
+        "h": 0.0020833333333333333,
+        "loadVelocity": -0.6982268421921124
+      },
+      "insideBoundaryRate": 0.16021100224127716,
+      "outsideBoundaryRate": -1.401975510698807,
+      "file": "patch--1-phase-source-24-failure.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 48,
+      "status": "failed",
+      "t": 2.9114583333333317,
+      "body": 1,
+      "input": {
+        "e": 0.16670374628614223,
+        "rb": 0.16546549918816783,
+        "w": 3.251521366672929,
+        "speed": 2.0732604814761326,
+        "outsideFor": 0.12733943923342494,
+        "latency": 0.12,
+        "h": 0.0010416666666666667,
+        "loadVelocity": -0.5945537840176313
+      },
+      "insideBoundaryRate": 0.05653917796010144,
+      "outsideBoundaryRate": -1.4787066974585015,
+      "file": "patch--1-phase-source-48-failure.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 96,
+      "status": "failed",
+      "t": 3.0010416666666653,
+      "body": 1,
+      "input": {
+        "e": 0.16621460336988148,
+        "rb": 0.165408693213887,
+        "w": 3.2512949936019173,
+        "speed": 2.9390579903562624,
+        "outsideFor": 0.0919158831926258,
+        "latency": 0.12,
+        "h": 0.0005208333333333333,
+        "loadVelocity": -0.6959003643221873
+      },
+      "insideBoundaryRate": 0.1581079081776411,
+      "outsideBoundaryRate": -1.5553172268273106,
+      "file": "patch--1-phase-source-96-failure.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 15,
+      "status": "failed",
+      "t": 2.923333333333333,
+      "body": 1,
+      "input": {
+        "e": 0.16906257321725363,
+        "rb": 0.16546587790185602,
+        "w": 3.251522876014071,
+        "speed": 2.118949504529844,
+        "outsideFor": 0.13576214548588497,
+        "latency": 0.12,
+        "h": 0.0033333333333333335,
+        "loadVelocity": -0.7320320637802001
+      },
+      "insideBoundaryRate": 0.1940159765825641,
+      "outsideBoundaryRate": -1.3869174407496438,
+      "file": "patch--1-phase-source-15-failure.json.gz"
+    },
+    {
+      "mode": "patch",
+      "side": -1,
+      "n": 35,
+      "status": "failed",
+      "t": 2.912857142857141,
+      "body": 1,
+      "input": {
+        "e": 0.16578139411334814,
+        "rb": 0.1654655028189848,
+        "w": 3.2515213811433266,
+        "speed": 2.078235203259664,
+        "outsideFor": 0.1279011924946829,
+        "latency": 0.12,
+        "h": 0.0014285714285714286,
+        "loadVelocity": -0.5852490097169595
+      },
+      "insideBoundaryRate": 0.04723438945939895,
+      "outsideBoundaryRate": -1.4929861935427047,
+      "file": "patch--1-phase-source-35-failure.json.gz"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "out/phase-recovery/manifest.json.gz",
+      "sha256": "4c86b56366f0d98e40401be0397aca4c7b85e0a75db3cfb8080ef6bcdaa69661",
+      "collectors": [
+        {
+          "file": "grip-refinement.ts",
+          "sha256": "82867c5989c706169b8955294bf7e62a6851083a3d5f4e3c44451a30d35bec6c"
+        },
+        {
+          "file": "recovery-phase.ts",
+          "sha256": "8183eaf3831371c8a8037f71ab469539318b9b1b1ae876b97aa4f0b44bee1f45"
+        },
+        {
+          "file": "phase-refinement.ts",
+          "sha256": "a1a3e83ff682b67155f0365a9f9e8c6e508d4a447a4aa2f1d14276f5d44882bb"
+        }
+      ],
+      "runs": 48
+    },
+    {
+      "path": "out/phase-recovery/final/manifest-phase-phase-timing.json.gz",
+      "sha256": "f6c4bdec25a3ff8530dee72f804b08d076c45bf6b5e60a6c60ba5d029c28a93b",
+      "collectors": [
+        {
+          "file": "grip-refinement.ts",
+          "sha256": "d9b83ca1db4846c88be08b629e4fc26b87f0b2001e3b75e7265bf01d154a65c2"
+        },
+        {
+          "file": "recovery-phase.ts",
+          "sha256": "8183eaf3831371c8a8037f71ab469539318b9b1b1ae876b97aa4f0b44bee1f45"
+        },
+        {
+          "file": "phase-refinement.ts",
+          "sha256": "9a5771aa8de081a0b7723ce808e1a45e29ccd0af960fe0c3980abded46d9c9d6"
+        }
+      ],
+      "runs": 48
+    },
+    {
+      "path": "out/phase-recovery/manifest-phase-source.json.gz",
+      "sha256": "153db16f5e8c818c181fbab30f9924d445ac8884d40bb4f1a52034d4a4f0637d",
+      "collectors": [
+        {
+          "file": "grip-refinement.ts",
+          "sha256": "8f4296e7f8c8f29e815c72828a4c1428f0249d3bca1e4eff7a4872f51ff76ff6"
+        },
+        {
+          "file": "recovery-phase.ts",
+          "sha256": "8183eaf3831371c8a8037f71ab469539318b9b1b1ae876b97aa4f0b44bee1f45"
+        },
+        {
+          "file": "phase-refinement.ts",
+          "sha256": "d3798ad07b78546faeaa1fac9d0507558a0e1134485de8af1734251fe84f3e39"
+        }
+      ],
+      "runs": 24
+    }
+  ],
+  "limits": [
+    "96 steps is not ground truth.",
+    "Source trial is rejected; do not impute incomplete runs as successful outcomes.",
+    "The phase kernel freezes radial direction and input loads over each interval.",
+    "Only dive transitions are deferred to achieved boundaries; other fall timing remains unchanged.",
+    "Law/work closure and local crossing accuracy do not establish tackle convergence."
+  ],
+  "firstRearCrossing": {
+    "provenance": "reconstructed frozen-input phase-timing interval",
+    "time": 2.125000000000001,
+    "body": 1,
+    "input": {
+      "e": 0.1579596134499575,
+      "rb": 0.15725727482836993,
+      "w": 3.2192935497061113,
+      "speed": 3.402825459004463,
+      "outsideFor": 0,
+      "latency": 0.12,
+      "h": 0.004166666666666667,
+      "loadVelocity": -0.780079879795501
+    },
+    "initial": 0.15555012200850582,
+    "continuousDisplacement": 0.004818982882903353,
+    "continuousForce": 1.936635771692306,
+    "crossingAfter": 0.0011912103262667266,
+    "expectedOutsideClock": 0.00297545634039994,
+    "phaseClock": 0.004166666666666667,
+    "phaseEnd": 0.1634035617251555
+  },
+  "date": "2026-10-12 (America/Phoenix)",
+  "startingCommit": "f8ba412304d684e83dc5a8296e21e507f1362487",
+  "branch": "claude/engine-priorities",
+  "inputSha256": "b32c03d408923b405aab64bdacb1726b8d71a6d13d28981f5cbf7a9edc2ed819",
+  "controls": {
+    "nativeObserverParity": {
+      "cases": 4,
+      "steps": 96,
+      "endpointAndRng": "exact"
+    },
+    "mirrors": [
+      1,
+      -1
+    ],
+    "substeps": [
+      12,
+      24,
+      48,
+      96,
+      15,
+      35
+    ],
+    "scalarUnequalFractions": [
+      [
+        0.07,
+        0.19,
+        0.04,
+        0.31,
+        0.39
+      ],
+      [
+        0.11,
+        0.36,
+        0.03,
+        0.5
+      ]
+    ],
+    "mirrorMaxPositionParityTolerance": 1e-09,
+    "oldZeroForceNegative": {
+      "unheld": 0.10301794896144724,
+      "liveZeroForce": 0.11279254239501868,
+      "force": 0,
+      "work": 0
+    },
+    "oldLoadedWeakNegative": {
+      "free": 0.10301794896144724,
+      "force": 9.999999999999996e-10,
+      "held": 0.12041666666670318,
+      "difference": 0.017398717705255945
+    },
+    "frozenIntervals": "20 Hz decision tape; matched bodies, profile, acquisition and capacity; grip slip and support remain physical"
+  },
+  "checks": {
+    "newResearchAssertions": {
+      "passed": 31,
+      "files": [
+        "test/research/recovery-phase.test.ts",
+        "test/research/recovery-phase-world.test.ts"
+      ]
+    },
+    "originalObserverAssertions": {
+      "passed": 5,
+      "file": "test/research/grip-refinement-observer.test.ts"
+    },
+    "lowerGripLaw": {
+      "passed": 48,
+      "report": "out/phase-recovery/lower-law.json",
+      "summary": {
+        "cases": 48,
+        "maxAngularError": 7.105427357601002e-13,
+        "maxMomentumError": 4.3220627292571254e-14,
+        "maxWorkResidual": 1.2989609388114332e-14,
+        "lawPasses": 48,
+        "lowerTransitions": 16
+      }
+    },
+    "python": {
+      "passed": 141
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "initialFullSuite": {
+      "passed": 1520,
+      "failed": 1,
+      "errors": 1,
+      "reason": "game-record 60-second timeout and worker onTaskUpdate timeout with concurrent collection/reporting"
+    },
+    "gameRecordIsolatedRetry": {
+      "passed": 2,
+      "originalTimeoutMs": 60000,
+      "milliseconds": [
+        51904,
+        46499
+      ]
+    },
+    "quietFullSuite": {
+      "passed": 1521,
+      "failed": 1,
+      "errors": 0,
+      "files": 122,
+      "failure": "test/integration/game-record.test.ts: replay-reproducibility 60000ms timeout",
+      "observedMilliseconds": 81203,
+      "allOtherAssertions": "passed; no omitted or skipped tests"
+    },
+    "promotion": {
+      "passed": 42,
+      "failed": 8,
+      "failures": [
+        "wrong-side useful helper contact: side -1",
+        "wrong-side useful helper contact: side 1",
+        "joined genuine-double earned transfer",
+        "Split Zone Under supported check/climb",
+        "Split Zone Tite unfinished first-level work",
+        "Split Zone Bear joined reads/transfer",
+        "preserved legacy run hash",
+        "preserved legacy pass hash"
+      ]
+    },
+    "continuousSourceTrial": {
+      "completed": 10,
+      "failed": 14,
+      "adoption": "rejected"
+    },
+    "completeSuiteConclusion": "Not passing. Both game-record assertions passed together in the isolated retry; different assertions exceeded the original deadline in two complete runs. Concurrent collection is not a sufficient explanation. Production source is unchanged.",
+    "productionSourceUnchanged": "f14d849a51e031087a1971e5cc83db6146c4c5cebc17d4df2b6feb549e5106cb"
+  },
+  "inputs": {
+    "seed": 3001,
+    "teamSeeds": [
+      61,
+      62
+    ],
+    "strength": 0.55,
+    "cases": [
+      {
+        "angle": 180,
+        "speed": 6,
+        "mode": "center"
+      },
+      {
+        "angle": 45,
+        "speed": 8,
+        "mode": "patch"
+      }
+    ],
+    "fixedDecisionSourceSteps": 96,
+    "mirrors": [
+      1,
+      -1
+    ]
+  },
+  "logArtifacts": [
+    {
+      "path": "out/phase-recovery/test-all.log",
+      "sha256": "c2b473e87893044607eddea4c4a818aadaec1e7d9dbc4bd90861010f631a8ba1"
+    },
+    {
+      "path": "out/phase-recovery/test-all-quiet.log",
+      "sha256": "c491da6e0d9d14068da934ba12a6a99ce2ba5d7307d51675df39b7107a08f733"
+    },
+    {
+      "path": "out/phase-recovery/game-record-retry.log",
+      "sha256": "f6477fb5996904b09a0cbf16baac77b030d461d31f2290835e4185ddea98610a"
+    },
+    {
+      "path": "out/phase-recovery/promotion.log",
+      "sha256": "faf70b2d54f9283480c276543679477bd66bba619161d8c606e5c8e8bbf8d08d"
+    },
+    {
+      "path": "out/phase-recovery/test-data.log",
+      "sha256": "4e430144073fbcea9ea71add0c0d24fc86c46928c1068db0bdb9a2397f2d6780"
+    },
+    {
+      "path": "out/phase-recovery/negative-control-final.log",
+      "sha256": "3367191a92d37e2d88d6edea0dd464a7ba3f5d8b5422d223329da32b01b0a84d"
+    }
+  ]
+}

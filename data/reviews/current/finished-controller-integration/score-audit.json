@@ -1,0 +1,928 @@
+{
+  "schema": "matched-game-score-audit-v1",
+  "inputSha256": "fd67d00a40fbcf90ca78297946e415a7dd62185034dc4ed9894ff045da3e8c80",
+  "games": [
+    {
+      "game": "candidate/zone-reference",
+      "components": {
+        "H1": {
+          "offensiveTD": 4,
+          "fieldGoals": 0,
+          "extraPoints": 3,
+          "defensiveTD": 0,
+          "kickTD": 0,
+          "twoPoint": 0,
+          "safety": 0
+        },
+        "A1": {
+          "offensiveTD": 5,
+          "fieldGoals": 2,
+          "extraPoints": 5,
+          "defensiveTD": 0,
+          "kickTD": 0,
+          "twoPoint": 0,
+          "safety": 0
+        }
+      },
+      "qualifiedRawOffensiveTD": {
+        "H1": 4,
+        "A1": 5
+      },
+      "expectedPoints": {
+        "H1": 27,
+        "A1": 41
+      },
+      "actualPoints": {
+        "H1": 27,
+        "A1": 41
+      },
+      "canceledRawTouchdowns": [],
+      "scoringLog": [
+        {
+          "index": 1,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 13,
+          "kind": "scrimmageTD",
+          "team": "H1",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 27,
+          "kind": "scrimmageTD",
+          "team": "H1",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 41,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 84,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 87,
+          "kind": "scrimmageTD",
+          "team": "H1",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 106,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 143,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 176,
+          "kind": "scrimmageTD",
+          "team": "H1",
+          "points": 6,
+          "officialTreatment": "physical"
+        }
+      ],
+      "scoreIncrements": [
+        {
+          "atIndex": 2,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 14,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 23,
+          "kind": "kickoff",
+          "delta": {
+            "home": 0,
+            "away": 3
+          }
+        },
+        {
+          "atIndex": 28,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 42,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 61,
+          "kind": "kickoff",
+          "delta": {
+            "home": 0,
+            "away": 3
+          }
+        },
+        {
+          "atIndex": 85,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 88,
+          "kind": "two",
+          "delta": {
+            "home": 6,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 107,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 144,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 177,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        }
+      ],
+      "timeOfPossession": 3600.0,
+      "expectedTime": 3600,
+      "timeLimit": "Regular-season complete regulation should account for3600 game seconds. OT uses a600-second native period.",
+      "ambiguous": []
+    },
+    {
+      "game": "baseline/zone-reference",
+      "components": {
+        "H1": {
+          "offensiveTD": 6,
+          "fieldGoals": 2,
+          "extraPoints": 4,
+          "defensiveTD": 0,
+          "kickTD": 0,
+          "twoPoint": 0,
+          "safety": 0
+        },
+        "A1": {
+          "offensiveTD": 7,
+          "fieldGoals": 3,
+          "extraPoints": 6,
+          "defensiveTD": 0,
+          "kickTD": 0,
+          "twoPoint": 0,
+          "safety": 0
+        }
+      },
+      "qualifiedRawOffensiveTD": {
+        "H1": 6,
+        "A1": 7
+      },
+      "expectedPoints": {
+        "H1": 46,
+        "A1": 57
+      },
+      "actualPoints": {
+        "H1": 46,
+        "A1": 57
+      },
+      "canceledRawTouchdowns": [
+        {
+          "index": 110,
+          "call": "Pistol Twin TE \u2014 Wide Zone Weak",
+          "officialCredit": null,
+          "official": null
+        }
+      ],
+      "scoringLog": [
+        {
+          "index": 1,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 7,
+          "kind": "scrimmageTD",
+          "team": "H1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 12,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 28,
+          "kind": "scrimmageTD",
+          "team": "H1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 41,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 52,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 61,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 125,
+          "kind": "scrimmageTD",
+          "team": "H1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 129,
+          "kind": "scrimmageTD",
+          "team": "H1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 149,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 171,
+          "kind": "scrimmageTD",
+          "team": "H1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 175,
+          "kind": "scrimmageTD",
+          "team": "A1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 178,
+          "kind": "scrimmageTD",
+          "team": "H1",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        }
+      ],
+      "scoreIncrements": [
+        {
+          "atIndex": 2,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 8,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 13,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 29,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 42,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 53,
+          "kind": "two",
+          "delta": {
+            "home": 0,
+            "away": 6
+          }
+        },
+        {
+          "atIndex": 62,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 69,
+          "kind": "kickoff",
+          "delta": {
+            "home": 3,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 93,
+          "kind": "kickoff",
+          "delta": {
+            "home": 3,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 114,
+          "kind": "kickoff",
+          "delta": {
+            "home": 0,
+            "away": 3
+          }
+        },
+        {
+          "atIndex": 126,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 130,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 141,
+          "kind": "kickoff",
+          "delta": {
+            "home": 0,
+            "away": 3
+          }
+        },
+        {
+          "atIndex": 150,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 162,
+          "kind": "kickoff",
+          "delta": {
+            "home": 0,
+            "away": 3
+          }
+        },
+        {
+          "atIndex": 172,
+          "kind": "two",
+          "delta": {
+            "home": 6,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 176,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 179,
+          "kind": "xp",
+          "delta": {
+            "home": 6,
+            "away": 0
+          }
+        }
+      ],
+      "timeOfPossession": 3600.0,
+      "expectedTime": 3600,
+      "timeLimit": "Regular-season complete regulation should account for3600 game seconds. OT uses a600-second native period.",
+      "ambiguous": []
+    },
+    {
+      "game": "baseline/spread-air",
+      "components": {
+        "H2": {
+          "offensiveTD": 4,
+          "fieldGoals": 2,
+          "extraPoints": 3,
+          "defensiveTD": 0,
+          "kickTD": 0,
+          "twoPoint": 2,
+          "safety": 2
+        },
+        "A2": {
+          "offensiveTD": 3,
+          "fieldGoals": 2,
+          "extraPoints": 4,
+          "defensiveTD": 1,
+          "kickTD": 0,
+          "twoPoint": 0,
+          "safety": 0
+        }
+      },
+      "qualifiedRawOffensiveTD": {
+        "H2": 4,
+        "A2": 3
+      },
+      "expectedPoints": {
+        "H2": 37,
+        "A2": 34
+      },
+      "actualPoints": {
+        "H2": 37,
+        "A2": 34
+      },
+      "canceledRawTouchdowns": [],
+      "scoringLog": [
+        {
+          "index": 9,
+          "kind": "scrimmageTD",
+          "team": "H2",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 26,
+          "kind": "scrimmageTD",
+          "team": "A2",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 55,
+          "kind": "scrimmageTD",
+          "team": "A2",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 66,
+          "kind": "scrimmageTD",
+          "team": "A2",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 77,
+          "kind": "scrimmageTD",
+          "team": "H2",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 92,
+          "kind": "scrimmageTD",
+          "team": "H2",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 160,
+          "kind": "scrimmageTD",
+          "team": "H2",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        },
+        {
+          "index": 173,
+          "kind": "scrimmageTD",
+          "team": "A2",
+          "points": 6,
+          "officialTreatment": "historical physical"
+        }
+      ],
+      "scoreIncrements": [
+        {
+          "atIndex": 10,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 27,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 35,
+          "kind": "kickoff",
+          "delta": {
+            "home": 3,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 47,
+          "kind": "run",
+          "delta": {
+            "home": 2,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 56,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 67,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 78,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 93,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 100,
+          "kind": "kickoff",
+          "delta": {
+            "home": 0,
+            "away": 3
+          }
+        },
+        {
+          "atIndex": 122,
+          "kind": "kickoff",
+          "delta": {
+            "home": 0,
+            "away": 3
+          }
+        },
+        {
+          "atIndex": 161,
+          "kind": "two",
+          "delta": {
+            "home": 6,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 162,
+          "kind": "kickoff",
+          "delta": {
+            "home": 2,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 174,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 182,
+          "kind": "kickoff",
+          "delta": {
+            "home": 3,
+            "away": 0
+          }
+        }
+      ],
+      "timeOfPossession": 3600.000000000001,
+      "expectedTime": 3600,
+      "timeLimit": "Regular-season complete regulation should account for3600 game seconds. OT uses a600-second native period.",
+      "ambiguous": []
+    },
+    {
+      "game": "candidate/spread-air",
+      "components": {
+        "H2": {
+          "offensiveTD": 6,
+          "fieldGoals": 1,
+          "extraPoints": 6,
+          "defensiveTD": 0,
+          "kickTD": 0,
+          "twoPoint": 0,
+          "safety": 0
+        },
+        "A2": {
+          "offensiveTD": 4,
+          "fieldGoals": 2,
+          "extraPoints": 3,
+          "defensiveTD": 0,
+          "kickTD": 0,
+          "twoPoint": 0,
+          "safety": 2
+        }
+      },
+      "qualifiedRawOffensiveTD": {
+        "H2": 6,
+        "A2": 4
+      },
+      "expectedPoints": {
+        "H2": 45,
+        "A2": 35
+      },
+      "actualPoints": {
+        "H2": 45,
+        "A2": 35
+      },
+      "canceledRawTouchdowns": [],
+      "scoringLog": [
+        {
+          "index": 38,
+          "kind": "scrimmageTD",
+          "team": "H2",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 44,
+          "kind": "scrimmageTD",
+          "team": "H2",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 74,
+          "kind": "scrimmageTD",
+          "team": "H2",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 104,
+          "kind": "scrimmageTD",
+          "team": "H2",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 118,
+          "kind": "scrimmageTD",
+          "team": "A2",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 130,
+          "kind": "scrimmageTD",
+          "team": "H2",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 134,
+          "kind": "scrimmageTD",
+          "team": "A2",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 152,
+          "kind": "scrimmageTD",
+          "team": "A2",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 157,
+          "kind": "scrimmageTD",
+          "team": "H2",
+          "points": 6,
+          "officialTreatment": "physical"
+        },
+        {
+          "index": 162,
+          "kind": "scrimmageTD",
+          "team": "A2",
+          "points": 6,
+          "officialTreatment": "physical"
+        }
+      ],
+      "scoreIncrements": [
+        {
+          "atIndex": 31,
+          "kind": "kickoff",
+          "delta": {
+            "home": 3,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 39,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 45,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 54,
+          "kind": "kickoff",
+          "delta": {
+            "home": 0,
+            "away": 2
+          }
+        },
+        {
+          "atIndex": 73,
+          "kind": "kickoff",
+          "delta": {
+            "home": 0,
+            "away": 3
+          }
+        },
+        {
+          "atIndex": 75,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 84,
+          "kind": "kickoff",
+          "delta": {
+            "home": 0,
+            "away": 3
+          }
+        },
+        {
+          "atIndex": 105,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 119,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 131,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 135,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        },
+        {
+          "atIndex": 153,
+          "kind": "two",
+          "delta": {
+            "home": 0,
+            "away": 6
+          }
+        },
+        {
+          "atIndex": 158,
+          "kind": "xp",
+          "delta": {
+            "home": 7,
+            "away": 0
+          }
+        },
+        {
+          "atIndex": 163,
+          "kind": "xp",
+          "delta": {
+            "home": 0,
+            "away": 7
+          }
+        }
+      ],
+      "timeOfPossession": 3599.999999999999,
+      "expectedTime": 3600,
+      "timeLimit": "Regular-season complete regulation should account for3600 game seconds. OT uses a600-second native period.",
+      "ambiguous": []
+    }
+  ],
+  "hardFailures": [],
+  "reviewItems": [],
+  "passed": true
+}

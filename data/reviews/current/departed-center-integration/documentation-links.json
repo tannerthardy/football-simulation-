@@ -1,0 +1,14 @@
+{
+  "schema": "documentation-local-path-check-v1",
+  "files": [
+    "README.md",
+    "docs/STATUS.md",
+    "docs/ISSUES.md",
+    "docs/INTEGRATION.md",
+    "docs/WORKBOARD.md",
+    "data/README.md"
+  ],
+  "localPathsChecked": 203,
+  "brokenPaths": [],
+  "scope": "Local Markdown destination paths; no simulation, remote URL or anchor validation."
+}

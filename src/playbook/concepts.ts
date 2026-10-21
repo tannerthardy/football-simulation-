@@ -104,6 +104,9 @@ export const RUN_CONCEPTS: RunConcept[] = [
   { id: 'iz_weak', name: 'Inside Zone Weak', scheme: 'insideZone', direction: 'weak', aim: 'B', meshTime: 1.2, pullers: [], beats: ['even', 'light-box'] },
   { id: 'oz_strong', name: 'Outside Zone', scheme: 'outsideZone', direction: 'strong', aim: 'C', meshTime: 1.15, pullers: [], beats: ['penetrating', 'light-box'] },
   { id: 'oz_weak', name: 'Outside Zone Weak', scheme: 'outsideZone', direction: 'weak', aim: 'C', meshTime: 1.15, pullers: [], beats: ['penetrating'] },
+  { id: 'wz_strong', name: 'Wide Zone', scheme: 'wideZone', direction: 'strong', aim: 'D', meshTime: 1.2, pullers: [], beats: ['light-box'] },
+  { id: 'wz_weak', name: 'Wide Zone Weak', scheme: 'wideZone', direction: 'weak', aim: 'D', meshTime: 1.2, pullers: [], beats: ['light-box'] },
+  { id: 'split_zone', name: 'Split Zone', scheme: 'splitZone', direction: 'strong', aim: 'B', meshTime: 1.2, pullers: [], beats: ['penetrating'] },
   { id: 'power', name: 'Power', scheme: 'power', direction: 'strong', aim: 'C', meshTime: 1.3, pullers: ['BSG'], beats: ['odd', 'heavy-box'] },
   { id: 'counter', name: 'Counter', scheme: 'counter', direction: 'weak', aim: 'B', meshTime: 1.45, pullers: ['BSG', 'BST'], beats: ['flow', 'odd'] },
   { id: 'duo', name: 'Duo', scheme: 'duo', direction: 'strong', aim: 'A', meshTime: 1.2, pullers: [], beats: ['heavy-box', 'two-high'] },
@@ -114,3 +117,10 @@ export const RUN_CONCEPTS: RunConcept[] = [
 
 export const PASS_BY_ID: Record<string, PassConcept> = Object.fromEntries(PASS_CONCEPTS.map((c) => [c.id, c]));
 export const RUN_BY_ID: Record<string, RunConcept> = Object.fromEntries(RUN_CONCEPTS.map((c) => [c.id, c]));
+
+/** Explicit Counter installations; GH requires an off-ball H.
+ * Kept outside automatic calling until its formation/response coverage is reviewed. */
+export const COUNTER_VARIANTS: Record<'gt' | 'gh', RunConcept> = {
+  gt: RUN_BY_ID.counter,
+  gh: { ...RUN_BY_ID.counter, id: 'counter_gh', name: 'Counter GH', pullers: ['BSG', 'H'] },
+};

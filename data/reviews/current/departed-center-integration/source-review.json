@@ -1,0 +1,76 @@
+{
+  "schema": "departed-center-source-review-v1",
+  "sourceCommit": "73b94412d1bb9cf6b0e4beb6e59c7aec466e5eee",
+  "evidenceCommit": "badddf495fa9ff7cfa6579709dec853dc449974e",
+  "acceptedParent": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "artifactsChecked": 28,
+  "toolsChecked": 6,
+  "productionChangeExactlyThreeLineInsertion": true,
+  "originalGapBytesMatchAcceptedAndRecorded": true,
+  "allFourSourceHashesMatch": true,
+  "nativeOriginalP033ReplayMatches": true,
+  "pairedInitializationMatches": true,
+  "identicalPriorOuterSteps": 44,
+  "firstDivergence": {
+    "t": 2.2,
+    "sameBodies": true,
+    "sameJoints": true,
+    "actors": [
+      6
+    ]
+  },
+  "unchangedCoupledControls": [
+    {
+      "id": "ace12-iz_weak-over-s3",
+      "stateHashes": 60,
+      "informationHashes": 60
+    },
+    {
+      "id": "wing12-split_zone-over-s3",
+      "stateHashes": 60,
+      "informationHashes": 60
+    }
+  ],
+  "scopeOfControls": "Author run-lanes source, not exact accepted integration tree.",
+  "pairedOutcome": {
+    "previous32EntriesExactlyMatch": true,
+    "initialStateExactlyMatches": true,
+    "beforeYards": -1.17,
+    "afterYards": -1.13,
+    "firstContactBefore": 2.2,
+    "firstContactAfter": 2.2,
+    "outcomeBefore": "tackle",
+    "outcomeAfter": "tackle",
+    "adjudication": "Correct gap identity and no spurious reversal; same legitimate DT win. Tiny yardage difference is not the improvement measure.",
+    "teammateImpacts": {
+      "before": {
+        "count": 1,
+        "impulseKgYdPerS": 349.9495358111948,
+        "contacts": [
+          {
+            "t": 1.05,
+            "i": 7,
+            "j": 10,
+            "impulse": 349.9495358111948,
+            "closing": 6.751976234224154
+          }
+        ]
+      },
+      "after": {
+        "count": 1,
+        "impulseKgYdPerS": 349.9495358111948,
+        "contacts": [
+          {
+            "t": 1.05,
+            "i": 7,
+            "j": 10,
+            "impulse": 349.9495358111948,
+            "closing": 6.751976234224154
+          }
+        ]
+      }
+    }
+  },
+  "newSimulations": 0,
+  "elapsedSeconds": 14.040372991003096
+}

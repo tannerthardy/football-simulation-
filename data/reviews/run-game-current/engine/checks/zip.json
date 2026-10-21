@@ -1,0 +1,10 @@
+{
+  "entries": [
+    "run-game-current.html",
+    "README.txt"
+  ],
+  "embeddedHtmlIdentical": true,
+  "zipSha256": "2548f69f53e420e0407510d942048909ef87b3aa3982cfb29b1a718ec791ff44",
+  "htmlSha256": "43f5ff0639331d111a9daadc7f8d5cd27dc82ad529260a1d83a4bc75b99a21f0",
+  "limitations": "ZIP-byte delivery verified; browser smoke uses HTTP. Managed Chromium blocks direct file navigation."
+}

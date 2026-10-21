@@ -1,0 +1,684 @@
+{
+  "schema": "tackle-finish-v1",
+  "date": "2026-10-12 UTC",
+  "sources": {
+    "baselineCommit": "505842e756d4b266eafb231a51286359b58c75d7",
+    "baseline": "621ad9364ec2e16bbb18d9ea6ed18397fddccfbac71c303dbe327e7d3b78a359",
+    "repair": "f14d849a51e031087a1971e5cc83db6146c4c5cebc17d4df2b6feb549e5106cb"
+  },
+  "scope": "Controller requests a secured plant along the hold, preserves perpendicular following. Remove elapsed-hold whistles for advancing runners. No physics capability or solver change; angular patch remains off by default.",
+  "unchangedWorld": {
+    "path": "src/physics/world.ts",
+    "bytes": 106805,
+    "sha256": "1ec8340ae6b0c5d1e3db4b0e4dea7642d5a9541c0ee44c003df76eb30dade1a7"
+  },
+  "operator": {
+    "rows": [
+      {
+        "path": "scripts/diag/tackle/panel.ts",
+        "sourceSha256": "016bbd88c8568c05947ea08ea0202d298fc8e5f5e760f7769106d03759418a31",
+        "executableSha256": "7b95c17dcc4ac478c1c27feaaa522382e1bc97c60ff2f5ce20848c5f89bb9819"
+      },
+      {
+        "path": "out/angled-wrap/baseline-source/scripts/diag/tackle/panel.ts",
+        "sourceSha256": "a1416c28e825ff82e0b69a3b8c1160c41b66409766a680efb9f3decff4060eff",
+        "executableSha256": "7b95c17dcc4ac478c1c27feaaa522382e1bc97c60ff2f5ce20848c5f89bb9819"
+      }
+    ],
+    "executableIdentical": true,
+    "note": "Only the explanatory first-grasp comment changed after collection; measured operators were byte-identical."
+  },
+  "inputs": {
+    "operator": "scripts/diag/tackle/panel.ts",
+    "teamSeeds": [
+      61,
+      62
+    ],
+    "teamStrength": 0.55,
+    "seeds": [
+      3000,
+      3001,
+      3002
+    ],
+    "cells": 24,
+    "mirrors": [
+      1,
+      -1
+    ],
+    "repsPerArm": 144,
+    "armSourceAndPhysicsPinned": true
+  },
+  "matchedPanels": {
+    "baseline-center": {
+      "arms": [
+        {
+          "substeps": "adaptive",
+          "counts": {
+            "physical fall": 106,
+            "escaped": 20,
+            "other whistle": 14,
+            "censored": 4
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-baseline-center.json",
+            "bytes": 82030,
+            "sha256": "3adca61691324aafccfcc586e73736fe58eee5586ff1fcb16756a482e7fd9b21"
+          }
+        },
+        {
+          "substeps": 12,
+          "counts": {
+            "physical fall": 106,
+            "escaped": 20,
+            "other whistle": 14,
+            "censored": 4
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-baseline-center-12.json",
+            "bytes": 82022,
+            "sha256": "0880be50272e619c59e1274b6cdc84ed1a0445803d2994f2458e7f0627870642"
+          }
+        },
+        {
+          "substeps": 48,
+          "counts": {
+            "physical fall": 106,
+            "escaped": 20,
+            "other whistle": 12,
+            "censored": 6
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-baseline-center-48.json",
+            "bytes": 82016,
+            "sha256": "a2d11c4837d3ff61c013772164ea4752680e842b4d0c5bc98f457994dfadcef3"
+          }
+        }
+      ],
+      "refinementFinishDisagreements": [
+        {
+          "input": [
+            135,
+            6,
+            false,
+            1,
+            3001
+          ],
+          "coarse": "physical fall",
+          "fine": "censored",
+          "advanceCoarse": 6.397005782521319,
+          "advanceFine": 15.612667506463424
+        },
+        {
+          "input": [
+            135,
+            6,
+            false,
+            -1,
+            3001
+          ],
+          "coarse": "physical fall",
+          "fine": "censored",
+          "advanceCoarse": 6.397005782521319,
+          "advanceFine": 15.612667506463424
+        },
+        {
+          "input": [
+            180,
+            6,
+            false,
+            1,
+            3001
+          ],
+          "coarse": "other whistle",
+          "fine": "physical fall",
+          "advanceCoarse": 18.836333846378977,
+          "advanceFine": 16.806329390996908
+        },
+        {
+          "input": [
+            180,
+            6,
+            false,
+            -1,
+            3001
+          ],
+          "coarse": "other whistle",
+          "fine": "physical fall",
+          "advanceCoarse": 18.836333846378977,
+          "advanceFine": 16.806329390996908
+        }
+      ]
+    },
+    "finish-center": {
+      "arms": [
+        {
+          "substeps": "adaptive",
+          "counts": {
+            "physical fall": 122,
+            "escaped": 20,
+            "censored": 2
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-finish-center.json",
+            "bytes": 82091,
+            "sha256": "708333e2aecb50b58dc84ce3c1db0df70973252bb5d54b86795e9075697dc4ea"
+          }
+        },
+        {
+          "substeps": 12,
+          "counts": {
+            "physical fall": 122,
+            "escaped": 20,
+            "censored": 2
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-finish-center-12.json",
+            "bytes": 82083,
+            "sha256": "98ef90a43efba32ab93b5838e61a59ec48a0a2f514fa5af714067a4d3e6b73d9"
+          }
+        },
+        {
+          "substeps": 48,
+          "counts": {
+            "physical fall": 124,
+            "escaped": 20
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-finish-center-48.json",
+            "bytes": 82150,
+            "sha256": "87971f8f49a1daf38650799e8772134a9796fc5024e4a08bd96ca26a19a4ad18"
+          }
+        }
+      ],
+      "refinementFinishDisagreements": [
+        {
+          "input": [
+            180,
+            6,
+            false,
+            1,
+            3001
+          ],
+          "coarse": "censored",
+          "fine": "physical fall",
+          "advanceCoarse": 22.556729004913606,
+          "advanceFine": 16.806329390996908
+        },
+        {
+          "input": [
+            180,
+            6,
+            false,
+            -1,
+            3001
+          ],
+          "coarse": "censored",
+          "fine": "physical fall",
+          "advanceCoarse": 22.556729004913606,
+          "advanceFine": 16.806329390996908
+        }
+      ]
+    },
+    "baseline-patch": {
+      "arms": [
+        {
+          "substeps": "adaptive",
+          "counts": {
+            "physical fall": 62,
+            "other whistle": 34,
+            "escaped": 42,
+            "censored": 6
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-baseline-patch.json",
+            "bytes": 82021,
+            "sha256": "9fec3adc747da35451d0aab49c8d228b2f135c5a101751b17d5c350b4110414b"
+          }
+        },
+        {
+          "substeps": 12,
+          "counts": {
+            "physical fall": 62,
+            "other whistle": 34,
+            "escaped": 42,
+            "censored": 6
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-baseline-patch-12.json",
+            "bytes": 82013,
+            "sha256": "ea46152258dd6fff5f9c27bdd6ad851f9ed3775d18b64985dde42e7d8e605aa2"
+          }
+        },
+        {
+          "substeps": 48,
+          "counts": {
+            "physical fall": 58,
+            "other whistle": 36,
+            "escaped": 42,
+            "censored": 8
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-baseline-patch-48.json",
+            "bytes": 81874,
+            "sha256": "337e9c09dcc0636bc4544368d41a292d13768dcf694b4d3b14ec8465ce96af89"
+          }
+        }
+      ],
+      "refinementFinishDisagreements": [
+        {
+          "input": [
+            45,
+            6,
+            false,
+            1,
+            3001
+          ],
+          "coarse": "physical fall",
+          "fine": "other whistle",
+          "advanceCoarse": 8.825884209930656,
+          "advanceFine": 20.92765514315299
+        },
+        {
+          "input": [
+            45,
+            6,
+            false,
+            -1,
+            3001
+          ],
+          "coarse": "physical fall",
+          "fine": "other whistle",
+          "advanceCoarse": 8.825884209930656,
+          "advanceFine": 20.927655143153004
+        },
+        {
+          "input": [
+            135,
+            6,
+            false,
+            1,
+            3001
+          ],
+          "coarse": "physical fall",
+          "fine": "censored",
+          "advanceCoarse": 6.9926932053166695,
+          "advanceFine": 15.630218097016439
+        },
+        {
+          "input": [
+            135,
+            6,
+            false,
+            -1,
+            3001
+          ],
+          "coarse": "physical fall",
+          "fine": "censored",
+          "advanceCoarse": 6.9926932053166695,
+          "advanceFine": 15.630218097016439
+        }
+      ]
+    },
+    "finish-patch": {
+      "arms": [
+        {
+          "substeps": "adaptive",
+          "counts": {
+            "physical fall": 92,
+            "censored": 16,
+            "escaped": 36
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-finish-patch.json",
+            "bytes": 84848,
+            "sha256": "47d357389ec4e35bc67fc57f459d54c29a6c4df1c2f19754ef882d7cdf85a48b"
+          }
+        },
+        {
+          "substeps": 12,
+          "counts": {
+            "physical fall": 92,
+            "censored": 16,
+            "escaped": 36
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-finish-patch-12.json",
+            "bytes": 84840,
+            "sha256": "2edd578981b2991f704a6a4ff3711b6f50eab10f4341ef5429448995ca6d419c"
+          }
+        },
+        {
+          "substeps": 48,
+          "counts": {
+            "physical fall": 92,
+            "censored": 18,
+            "escaped": 34
+          },
+          "artifact": {
+            "path": "out/angled-wrap/panel-finish-patch-48.json",
+            "bytes": 86105,
+            "sha256": "300c29f2cf9a5c5a9689c80fcf08deb39d7d3fcb8ab966bd03cf6b1580fc482c"
+          }
+        }
+      ],
+      "refinementFinishDisagreements": [
+        {
+          "input": [
+            45,
+            8,
+            false,
+            1,
+            3001
+          ],
+          "coarse": "escaped",
+          "fine": "censored",
+          "advanceCoarse": 21.49652848153923,
+          "advanceFine": 21.822575860912607
+        },
+        {
+          "input": [
+            45,
+            8,
+            false,
+            -1,
+            3001
+          ],
+          "coarse": "escaped",
+          "fine": "censored",
+          "advanceCoarse": 21.49652848153923,
+          "advanceFine": 21.822575860912508
+        }
+      ]
+    }
+  },
+  "matchedControls": {
+    "center": {
+      "unchangedStraightHeadOnRows": 18,
+      "witnesses": [
+        {
+          "input": [
+            45,
+            8,
+            false,
+            1,
+            3000
+          ],
+          "before": {
+            "finish": "physical fall",
+            "advanceAfterObservedGrip": 5.432406515226596,
+            "peakGripForce": 1172.4559852572156,
+            "attempts": 1
+          },
+          "after": {
+            "finish": "physical fall",
+            "advanceAfterObservedGrip": 5.220025854971929,
+            "peakGripForce": 1154.1944879947591,
+            "attempts": 1
+          }
+        },
+        {
+          "input": [
+            135,
+            3,
+            false,
+            1,
+            3000
+          ],
+          "before": {
+            "finish": "other whistle",
+            "advanceAfterObservedGrip": 12.126827912713054,
+            "peakGripForce": 136.46077460046308,
+            "attempts": 1
+          },
+          "after": {
+            "finish": "physical fall",
+            "advanceAfterObservedGrip": 3.2587710722629097,
+            "peakGripForce": 899.2765495165577,
+            "attempts": 1
+          }
+        },
+        {
+          "input": [
+            180,
+            3,
+            false,
+            1,
+            3000
+          ],
+          "before": {
+            "finish": "other whistle",
+            "advanceAfterObservedGrip": 12.220076836374872,
+            "peakGripForce": 102.12503994377165,
+            "attempts": 1
+          },
+          "after": {
+            "finish": "physical fall",
+            "advanceAfterObservedGrip": 2.9986684140946025,
+            "peakGripForce": 1128.419783135496,
+            "attempts": 1
+          }
+        }
+      ]
+    },
+    "patch": {
+      "unchangedStraightHeadOnRows": 18,
+      "witnesses": [
+        {
+          "input": [
+            45,
+            8,
+            false,
+            1,
+            3000
+          ],
+          "before": {
+            "finish": "escaped",
+            "advanceAfterObservedGrip": 8.657499494575006,
+            "peakGripForce": 1001.1461077681885,
+            "attempts": 2
+          },
+          "after": {
+            "finish": "escaped",
+            "advanceAfterObservedGrip": 12.181855336610369,
+            "peakGripForce": 1000.7264518928552,
+            "attempts": 2
+          }
+        },
+        {
+          "input": [
+            135,
+            3,
+            false,
+            1,
+            3000
+          ],
+          "before": {
+            "finish": "other whistle",
+            "advanceAfterObservedGrip": 12.123195031877259,
+            "peakGripForce": 122.07995338213935,
+            "attempts": 1
+          },
+          "after": {
+            "finish": "physical fall",
+            "advanceAfterObservedGrip": 3.170710119970984,
+            "peakGripForce": 1255.1095193832741,
+            "attempts": 1
+          }
+        },
+        {
+          "input": [
+            180,
+            3,
+            false,
+            1,
+            3000
+          ],
+          "before": {
+            "finish": "other whistle",
+            "advanceAfterObservedGrip": 12.21959822670226,
+            "peakGripForce": 87.49241486849928,
+            "attempts": 1
+          },
+          "after": {
+            "finish": "physical fall",
+            "advanceAfterObservedGrip": 3.1254402534966346,
+            "peakGripForce": 1227.3881191221544,
+            "attempts": 1
+          }
+        }
+      ]
+    }
+  },
+  "permanentTests": {
+    "file": {
+      "path": "test/tackle-support-choice.test.ts",
+      "bytes": 9555,
+      "sha256": "74f0dc55200098a70729f71b14090dbe0392b454b0912790a82fc1af2f61bf2d"
+    },
+    "baselineFailed": 5,
+    "baselinePassed": 15,
+    "finalPassed": 20,
+    "baselineLog": {
+      "path": "out/angled-wrap/baseline-contract.log",
+      "bytes": 6490,
+      "sha256": "89ed51cd289c733e96ffed3963c49efff69424fd46ed7d38226a322587114d79"
+    },
+    "finalLog": {
+      "path": "out/angled-wrap/finish-contract.log",
+      "bytes": 550,
+      "sha256": "e42921c79a59aa4a763e75ae3b8781264f296e1e17e9c0c15862b4aa9fd2123e"
+    },
+    "contracts": "Actual load/carrier slowing versus old co-moving control, arm and recovery work, no RNG use, both physics modes, mirrors,12/48 refinement; weak extended/grounded/dive/front/falling-carrier controls; actual progress versus elapsed whistle."
+  },
+  "physicsLaw": {
+    "report": {
+      "path": "out/angled-wrap/grasp-law.json",
+      "bytes": 580537,
+      "sha256": "df6181ea7d8a43b941c5def139c1199a59e26e14bb3a5137a8d472cefce67891"
+    },
+    "cases": 48,
+    "passes": 48,
+    "maxAngularError": 7.105427357601002e-13,
+    "meaning": "Existing repaired law unchanged. Not a proof of native trajectory convergence or realistic wrap geometry."
+  },
+  "rejectedTrials": {
+    "surfacePoint": {
+      "witness": [
+        45,
+        8,
+        false,
+        1,
+        3000
+      ],
+      "initialHolderArmBefore": 1.1537054384588539,
+      "initialHolderArmTrial": 0.8537401505448028,
+      "result": "Escape persists; increased holder spin and later escape. Reverted, not calibrated/validated as a general surface-grip law."
+    },
+    "brakeAllVelocity": {
+      "repairSource": "ba4308674d",
+      "result": "Fails ordinary patch side approach: previously physical fall becomes slipped hold and unfinished play. Replaced with braking along hold.",
+      "retainedSideWitness": {
+        "path": "out/angled-wrap/finish-v1/scenario-finish.json",
+        "bytes": 2413,
+        "sha256": "674792853de7e9c4661f475ca7c3e9048e3cc05fe9a3c4c1209d54d6b8201c27"
+      }
+    },
+    "finalSideApproach": {
+      "path": "out/angled-wrap/scenario-finish.json",
+      "bytes": 2071,
+      "sha256": "e51800314f6c254443e77f642552bcd4b02675bdbbd7acbd0142e4b466a20f72"
+    }
+  },
+  "smokeGames": {
+    "cohort": {
+      "seed": 101,
+      "games": 2,
+      "strength": 0.55,
+      "rosterSha256": "94f47259f970f8ab30e688661ef2cb3e30ac257403b10b05ba25dba84601e707",
+      "handContact": "center"
+    },
+    "before": {
+      "path": "out/angled-wrap/game-baseline-pinned-outcomes.json",
+      "bytes": 1343105,
+      "sha256": "38b22536ede45482120b7d5ba5dbd3f000b8a3855252596ed728534e9f42cb68"
+    },
+    "after": {
+      "path": "out/angled-wrap/game-finish-outcomes.json",
+      "bytes": 1278304,
+      "sha256": "9564252b38c9377edd62abf6b6ff78fa5293839e6d6a9b65370c43b549295112"
+    },
+    "beforeTracking": {
+      "path": "out/angled-wrap/game-baseline-pinned.jsonl.gz",
+      "bytes": 835825,
+      "sha256": "74bbf9516c7c771c486f8a268746a882fa006605d02d95b7350f7b3a7731b9b1"
+    },
+    "afterTracking": {
+      "path": "out/angled-wrap/game-finish.jsonl.gz",
+      "bytes": 785790,
+      "sha256": "7d58cc8c7e0ad15acf0a6e6ccf6d51a298944d2a45757a394da89c23048aa548"
+    },
+    "guardsBefore": "12/12",
+    "guardsAfter": "12/12",
+    "limits": "Two games/one generated roster pair. Adaptive later calls and RNG diverge; not paired snaps, blind holdouts, or general NFL-level tackle-rate evidence."
+  },
+  "checks": {
+    "typescript": {
+      "passed": 1486,
+      "files": 119,
+      "seconds": 156.67,
+      "log": {
+        "path": "out/angled-wrap/test-all.log",
+        "bytes": 10228,
+        "sha256": "7e346a8006fa17c39461ae04ef811c0cb99d092bff4f9322205e02836e1eb0da"
+      }
+    },
+    "python": {
+      "passed": 141,
+      "log": {
+        "path": "out/angled-wrap/test-data.log",
+        "bytes": 331,
+        "sha256": "0a4aab21fc03ef386fcb8a2d65c8f261327e34286ddf5e68b7c4f69c92540a70"
+      }
+    },
+    "typecheck": {
+      "passed": true,
+      "log": {
+        "path": "out/angled-wrap/typecheck.log",
+        "bytes": 68,
+        "sha256": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63"
+      }
+    },
+    "build": {
+      "passed": true,
+      "log": {
+        "path": "out/angled-wrap/build.log",
+        "bytes": 55,
+        "sha256": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d"
+      }
+    },
+    "experimentalPromotion": {
+      "passed": 42,
+      "failed": 8,
+      "total": 50,
+      "log": {
+        "path": "out/angled-wrap/promotion.log",
+        "bytes": 27186,
+        "sha256": "1bfaa90c5f6cf939293947bca391a7dfd59aa3b6bf1f589a9495cbfc7abd0557"
+      },
+      "meaning": "Same six football failures and two historical hash differences. No changed assertions/hash pins."
+    }
+  },
+  "reference": {
+    "path": "docs/references/tackling_mechanics_and_physics.md",
+    "bytes": 29785,
+    "sha256": "53b3ab156127f30b0374652af1ae6298e063042d3b00815af7f38501a3c58bb6"
+  },
+  "limitations": [
+    "Panel first observed grasp is after the native tick; old first-contact marker includes misses. Neither advance is NFL YAC.",
+    "Native angled grasp/support refinement remains unresolved; packet retains every 12/48 finish disagreement.",
+    "Production center angular defect remains. This repairs a control request, not that law.",
+    "Existing measured grip quality and nearby body motion are used; no new vision/IQ or assistance mechanism."
+  ],
+  "next": "Trace first divergence in native loaded angled holds before richer/distributed wrap contacts, strength changes or angular patch promotion.",
+  "implementationCommit": "f58a7f94022ce5d052f46e0a97f43df170e93a8e"
+}

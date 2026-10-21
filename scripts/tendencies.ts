@@ -177,14 +177,14 @@ out.runConceptOutcomes = byConcept;
   let stuff = 0;
   let ypc = 0;
   for (const [k, m] of Object.entries(NFL_MIX)) {
-    const key = k === 'outsideZone' ? ['outsideZone', 'toss'] : [k];
+    const key = k === 'outsideZone' ? ['outsideZone', 'wideZone', 'toss'] : k === 'insideZone' ? ['insideZone','splitZone'] : [k];
     const s = runs.filter((r) => key.includes(r.concept!));
     if (!s.length) continue;
     w += m;
     stuff += m * (s.filter((r) => r.yds <= 0).length / s.length);
     ypc += m * mean(s.map((r) => r.yds));
   }
-  out.nflMixAdjusted = { stuff: pct(stuff, w), ypc: Math.round((ypc / w) * 100) / 100, raw: { stuff: pct(runs.filter((r) => r.yds <= 0).length, runs.length), ypc: Math.round(mean(runs.map((r) => r.yds)) * 100) / 100 } };
+  out.nflMixAdjusted = { use:'Approximate concept-mix sensitivity, not validation: MAN-to-Duo is unverified; outsideZone pools wideZone/toss and insideZone pools splitZone.', stuff: pct(stuff, w), ypc: Math.round((ypc / w) * 100) / 100, raw: { stuff: pct(runs.filter((r) => r.yds <= 0).length, runs.length), ypc: Math.round(mean(runs.map((r) => r.yds)) * 100) / 100 } };
 }
 
 // Team-to-team spread of outcomes (offense), sampling noise included.

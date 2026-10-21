@@ -1,0 +1,150 @@
+{
+  "ordinaryManifest": "../run-read-information/input-manifest.json",
+  "freshInputs": [
+    {
+      "id": "oz_strong s11 61/62 over",
+      "run": "oz_strong",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s11 61/62 over flip",
+      "run": "oz_strong",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_strong s11 61/62 under",
+      "run": "oz_strong",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_strong s11 61/62 under flip",
+      "run": "oz_strong",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s11 61/62 over",
+      "run": "wz_strong",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s11 61/62 over flip",
+      "run": "wz_strong",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_strong s11 61/62 under",
+      "run": "wz_strong",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_strong s11 61/62 under flip",
+      "run": "wz_strong",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s11 61/62 over",
+      "run": "oz_weak",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s11 61/62 over flip",
+      "run": "oz_weak",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "oz_weak s11 61/62 under",
+      "run": "oz_weak",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "oz_weak s11 61/62 under flip",
+      "run": "oz_weak",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "under",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s11 61/62 over",
+      "run": "wz_weak",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "over",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s11 61/62 over flip",
+      "run": "wz_weak",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "over",
+      "flip": true
+    },
+    {
+      "id": "wz_weak s11 61/62 under",
+      "run": "wz_weak",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "under",
+      "flip": false
+    },
+    {
+      "id": "wz_weak s11 61/62 under flip",
+      "run": "wz_weak",
+      "seed": 11,
+      "o": 61,
+      "d": 62,
+      "front": "under",
+      "flip": true
+    }
+  ],
+  "freshPredeclaredSHA256": "75e29cd400b73556eb4683430aaf682b6b7e5dd0c0de572781f46303dd3208ac"
+}

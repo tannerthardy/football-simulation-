@@ -1,0 +1,644 @@
+{
+ "source": "Big Data Bowl 2023: 2021 regular season weeks 1,2,3,4,5,6,7,8 (dropbacks, tracking to just after the throw)",
+ "provenance": {
+  "archive": "nfl-big-data-bowl-2023.zip",
+  "archiveSha256": "129ad4fc656919ffb13fcc6f7670d15040add6c60a655e5dd9aa269e1aea72b3",
+  "commands": [
+   "npm run nfl:fetch -- bdb2023-2021",
+   "python3 -I scripts/mechanics/nfl_bdb2023.py"
+  ],
+  "note": "Aggregates only. Pass metrics before and at the throw; no catch or after-catch data."
+ },
+ "plays": {
+  "run": 0,
+  "pass": 8533,
+  "air": 0
+ },
+ "metrics": {
+  "block.pass.defender_depth_1s": {
+   "n": 41656,
+   "mean": 0.647,
+   "p10": -0.4,
+   "p25": 0.1,
+   "p50": 0.7,
+   "p75": 1.2,
+   "p90": 1.7
+  },
+  "block.pass.defender_depth_1s@man": {
+   "n": 12091,
+   "mean": 0.695,
+   "p10": -0.3,
+   "p25": 0.2,
+   "p50": 0.7,
+   "p75": 1.2,
+   "p90": 1.7
+  },
+  "block.pass.defender_depth_1s@zone": {
+   "n": 27178,
+   "mean": 0.629,
+   "p10": -0.4,
+   "p25": 0.1,
+   "p50": 0.6,
+   "p75": 1.2,
+   "p90": 1.7
+  },
+  "block.pass.defender_depth_2s": {
+   "n": 41478,
+   "mean": 3.299,
+   "p10": 0.9,
+   "p25": 2.1,
+   "p50": 3.2,
+   "p75": 4.5,
+   "p90": 5.8
+  },
+  "block.pass.defender_depth_2s@man": {
+   "n": 12027,
+   "mean": 3.484,
+   "p10": 1.2,
+   "p25": 2.3,
+   "p50": 3.4,
+   "p75": 4.7,
+   "p90": 5.9
+  },
+  "block.pass.defender_depth_2s@zone": {
+   "n": 27073,
+   "mean": 3.229,
+   "p10": 0.8,
+   "p25": 2.0,
+   "p50": 3.1,
+   "p75": 4.5,
+   "p90": 5.7
+  },
+  "block.pass.still_engaged_2s": {
+   "n": 41478,
+   "mean": 0.831,
+   "p10": 0.0,
+   "p25": 1.0,
+   "p50": 1.0,
+   "p75": 1.0,
+   "p90": 1.0
+  },
+  "block.pass.still_engaged_2s@man": {
+   "n": 12027,
+   "mean": 0.829,
+   "p10": 0.0,
+   "p25": 1.0,
+   "p50": 1.0,
+   "p75": 1.0,
+   "p90": 1.0
+  },
+  "block.pass.still_engaged_2s@zone": {
+   "n": 27073,
+   "mean": 0.831,
+   "p10": 0.0,
+   "p25": 1.0,
+   "p50": 1.0,
+   "p75": 1.0,
+   "p90": 1.0
+  },
+  "move.max_accel.DB": {
+   "n": 43119,
+   "mean": 4.077,
+   "p10": 2.552,
+   "p25": 3.161,
+   "p50": 3.953,
+   "p75": 4.882,
+   "p90": 5.707
+  },
+  "move.max_accel.DL": {
+   "n": 26346,
+   "mean": 4.046,
+   "p10": 2.739,
+   "p25": 3.328,
+   "p50": 3.992,
+   "p75": 4.755,
+   "p90": 5.33
+  },
+  "move.max_accel.LB": {
+   "n": 24310,
+   "mean": 4.508,
+   "p10": 3.024,
+   "p25": 3.673,
+   "p50": 4.482,
+   "p75": 5.329,
+   "p90": 5.956
+  },
+  "move.max_accel.OL": {
+   "n": 42716,
+   "mean": 3.047,
+   "p10": 2.026,
+   "p25": 2.484,
+   "p50": 2.943,
+   "p75": 3.536,
+   "p90": 4.179
+  },
+  "move.max_accel.QB": {
+   "n": 8521,
+   "mean": 3.945,
+   "p10": 2.552,
+   "p25": 3.125,
+   "p50": 3.786,
+   "p75": 4.512,
+   "p90": 5.59
+  },
+  "move.max_accel.RB": {
+   "n": 9081,
+   "mean": 4.852,
+   "p10": 3.16,
+   "p25": 3.925,
+   "p50": 4.874,
+   "p75": 5.759,
+   "p90": 6.523
+  },
+  "move.max_accel.TE": {
+   "n": 10465,
+   "mean": 5.073,
+   "p10": 3.504,
+   "p25": 4.365,
+   "p50": 5.13,
+   "p75": 5.831,
+   "p90": 6.374
+  },
+  "move.max_accel.WR": {
+   "n": 23004,
+   "mean": 5.73,
+   "p10": 4.416,
+   "p25": 5.113,
+   "p50": 5.762,
+   "p75": 6.37,
+   "p90": 6.901
+  },
+  "move.max_decel.DB": {
+   "n": 43119,
+   "mean": 2.032,
+   "p10": -0.0,
+   "p25": 0.625,
+   "p50": 1.665,
+   "p75": 3.113,
+   "p90": 4.664
+  },
+  "move.max_decel.DL": {
+   "n": 26346,
+   "mean": 2.674,
+   "p10": 1.132,
+   "p25": 1.789,
+   "p50": 2.568,
+   "p75": 3.462,
+   "p90": 4.41
+  },
+  "move.max_decel.LB": {
+   "n": 24310,
+   "mean": 2.752,
+   "p10": 0.602,
+   "p25": 1.451,
+   "p50": 2.652,
+   "p75": 3.915,
+   "p90": 5.035
+  },
+  "move.max_decel.OL": {
+   "n": 42716,
+   "mean": 2.24,
+   "p10": 0.957,
+   "p25": 1.516,
+   "p50": 2.183,
+   "p75": 2.876,
+   "p90": 3.64
+  },
+  "move.max_decel.QB": {
+   "n": 8521,
+   "mean": 3.098,
+   "p10": 1.394,
+   "p25": 2.169,
+   "p50": 3.081,
+   "p75": 3.945,
+   "p90": 4.901
+  },
+  "move.max_decel.RB": {
+   "n": 9081,
+   "mean": 2.217,
+   "p10": 0.214,
+   "p25": 1.037,
+   "p50": 2.065,
+   "p75": 3.186,
+   "p90": 4.419
+  },
+  "move.max_decel.TE": {
+   "n": 10465,
+   "mean": 2.302,
+   "p10": 0.058,
+   "p25": 0.838,
+   "p50": 2.012,
+   "p75": 3.537,
+   "p90": 5.0
+  },
+  "move.max_decel.WR": {
+   "n": 23004,
+   "mean": 2.401,
+   "p10": -0.129,
+   "p25": 0.625,
+   "p50": 1.875,
+   "p75": 3.928,
+   "p90": 5.78
+  },
+  "move.max_speed.DB": {
+   "n": 43119,
+   "mean": 5.262,
+   "p10": 3.202,
+   "p25": 4.07,
+   "p50": 5.154,
+   "p75": 6.374,
+   "p90": 7.458
+  },
+  "move.max_speed.DL": {
+   "n": 26346,
+   "mean": 4.027,
+   "p10": 2.658,
+   "p25": 3.162,
+   "p50": 3.905,
+   "p75": 4.757,
+   "p90": 5.59
+  },
+  "move.max_speed.LB": {
+   "n": 24310,
+   "mean": 4.804,
+   "p10": 3.162,
+   "p25": 3.905,
+   "p50": 4.743,
+   "p75": 5.618,
+   "p90": 6.543
+  },
+  "move.max_speed.OL": {
+   "n": 42716,
+   "mean": 3.022,
+   "p10": 2.016,
+   "p25": 2.462,
+   "p50": 3.01,
+   "p75": 3.536,
+   "p90": 4.07
+  },
+  "move.max_speed.QB": {
+   "n": 8521,
+   "mean": 3.607,
+   "p10": 1.82,
+   "p25": 2.5,
+   "p50": 3.01,
+   "p75": 4.528,
+   "p90": 6.295
+  },
+  "move.max_speed.RB": {
+   "n": 9081,
+   "mean": 5.389,
+   "p10": 3.202,
+   "p25": 4.272,
+   "p50": 5.534,
+   "p75": 6.576,
+   "p90": 7.319
+  },
+  "move.max_speed.TE": {
+   "n": 10465,
+   "mean": 5.937,
+   "p10": 3.824,
+   "p25": 4.924,
+   "p50": 6.175,
+   "p75": 7.071,
+   "p90": 7.778
+  },
+  "move.max_speed.WR": {
+   "n": 23004,
+   "mean": 7.004,
+   "p10": 5.056,
+   "p25": 6.149,
+   "p50": 7.15,
+   "p75": 8.0,
+   "p90": 8.678
+  },
+  "pass.box_rusher_depth_2s": {
+   "n": 20638,
+   "mean": 2.343,
+   "p10": 0.1,
+   "p25": 1.6,
+   "p50": 2.7,
+   "p75": 3.7,
+   "p90": 4.5
+  },
+  "pass.box_rusher_depth_2s@man": {
+   "n": 6327,
+   "mean": 2.652,
+   "p10": 0.4,
+   "p25": 1.8,
+   "p50": 2.9,
+   "p75": 3.9,
+   "p90": 4.7
+  },
+  "pass.box_rusher_depth_2s@zone": {
+   "n": 13132,
+   "mean": 2.198,
+   "p10": -0.1,
+   "p25": 1.4,
+   "p50": 2.7,
+   "p75": 3.6,
+   "p90": 4.5
+  },
+  "pass.box_rusher_speed_0_5s": {
+   "n": 20731,
+   "mean": 1.736,
+   "p10": 0.901,
+   "p25": 1.346,
+   "p50": 1.768,
+   "p75": 2.136,
+   "p90": 2.5
+  },
+  "pass.box_rusher_speed_0_5s@man": {
+   "n": 6364,
+   "mean": 1.805,
+   "p10": 1.0,
+   "p25": 1.414,
+   "p50": 1.82,
+   "p75": 2.25,
+   "p90": 2.55
+  },
+  "pass.box_rusher_speed_0_5s@zone": {
+   "n": 13182,
+   "mean": 1.71,
+   "p10": 0.901,
+   "p25": 1.275,
+   "p50": 1.768,
+   "p75": 2.121,
+   "p90": 2.475
+  },
+  "pass.nearest_defender_to_qb_at_throw": {
+   "n": 7583,
+   "mean": 2.983,
+   "p10": 1.556,
+   "p25": 2.138,
+   "p50": 2.864,
+   "p75": 3.64,
+   "p90": 4.42
+  },
+  "pass.nearest_defender_to_qb_at_throw@man": {
+   "n": 2183,
+   "mean": 2.895,
+   "p10": 1.562,
+   "p25": 2.119,
+   "p50": 2.786,
+   "p75": 3.547,
+   "p90": 4.276
+  },
+  "pass.nearest_defender_to_qb_at_throw@zone": {
+   "n": 4982,
+   "mean": 3.017,
+   "p10": 1.556,
+   "p25": 2.14,
+   "p50": 2.912,
+   "p75": 3.705,
+   "p90": 4.478
+  },
+  "pass.ol_depth_given_2s": {
+   "n": 8494,
+   "mean": 2.879,
+   "p10": 1.2,
+   "p25": 2.38,
+   "p50": 3.16,
+   "p75": 3.62,
+   "p90": 3.96
+  },
+  "pass.ol_depth_given_2s@man": {
+   "n": 2462,
+   "mean": 3.059,
+   "p10": 1.52,
+   "p25": 2.7,
+   "p50": 3.28,
+   "p75": 3.74,
+   "p90": 4.1
+  },
+  "pass.ol_depth_given_2s@zone": {
+   "n": 5546,
+   "mean": 2.81,
+   "p10": 1.12,
+   "p25": 2.25,
+   "p50": 3.1,
+   "p75": 3.56,
+   "p90": 3.9
+  },
+  "pass.pressure_2yd_before_throw": {
+   "n": 8533,
+   "mean": 0.319,
+   "p10": 0.0,
+   "p25": 0.0,
+   "p50": 0.0,
+   "p75": 1.0,
+   "p90": 1.0
+  },
+  "pass.pressure_2yd_before_throw@man": {
+   "n": 2476,
+   "mean": 0.322,
+   "p10": 0.0,
+   "p25": 0.0,
+   "p50": 0.0,
+   "p75": 1.0,
+   "p90": 1.0
+  },
+  "pass.pressure_2yd_before_throw@zone": {
+   "n": 5569,
+   "mean": 0.315,
+   "p10": 0.0,
+   "p25": 0.0,
+   "p50": 0.0,
+   "p75": 1.0,
+   "p90": 1.0
+  },
+  "pass.qb_depth_at_throw": {
+   "n": 7583,
+   "mean": 7.506,
+   "p10": 5.6,
+   "p25": 6.5,
+   "p50": 7.4,
+   "p75": 8.4,
+   "p90": 9.5
+  },
+  "pass.qb_depth_at_throw@man": {
+   "n": 2183,
+   "mean": 7.726,
+   "p10": 5.8,
+   "p25": 6.7,
+   "p50": 7.6,
+   "p75": 8.6,
+   "p90": 9.8
+  },
+  "pass.qb_depth_at_throw@zone": {
+   "n": 4982,
+   "mean": 7.41,
+   "p10": 5.5,
+   "p25": 6.4,
+   "p50": 7.3,
+   "p75": 8.3,
+   "p90": 9.4
+  },
+  "pass.rushers": {
+   "n": 8533,
+   "mean": 4.067,
+   "p10": 3,
+   "p25": 4,
+   "p50": 4,
+   "p75": 4,
+   "p90": 5
+  },
+  "pass.rushers@man": {
+   "n": 2476,
+   "mean": 4.468,
+   "p10": 3,
+   "p25": 4,
+   "p50": 4,
+   "p75": 5,
+   "p90": 6
+  },
+  "pass.rushers@zone": {
+   "n": 5569,
+   "mean": 3.908,
+   "p10": 3,
+   "p25": 4,
+   "p50": 4,
+   "p75": 4,
+   "p90": 5
+  },
+  "pass.time_to_pressure": {
+   "n": 2720,
+   "mean": 2.792,
+   "p10": 2.1,
+   "p25": 2.4,
+   "p50": 2.7,
+   "p75": 3.1,
+   "p90": 3.6
+  },
+  "pass.time_to_pressure@man": {
+   "n": 797,
+   "mean": 2.744,
+   "p10": 2.1,
+   "p25": 2.4,
+   "p50": 2.6,
+   "p75": 3.0,
+   "p90": 3.6
+  },
+  "pass.time_to_pressure@zone": {
+   "n": 1757,
+   "mean": 2.815,
+   "p10": 2.2,
+   "p25": 2.4,
+   "p50": 2.7,
+   "p75": 3.1,
+   "p90": 3.7
+  },
+  "pass.time_to_throw": {
+   "n": 7583,
+   "mean": 2.963,
+   "p10": 1.9,
+   "p25": 2.3,
+   "p50": 2.7,
+   "p75": 3.3,
+   "p90": 4.2
+  },
+  "pass.time_to_throw@man": {
+   "n": 2183,
+   "mean": 2.866,
+   "p10": 1.9,
+   "p25": 2.2,
+   "p50": 2.6,
+   "p75": 3.2,
+   "p90": 4.0
+  },
+  "pass.time_to_throw@zone": {
+   "n": 4982,
+   "mean": 2.986,
+   "p10": 1.9,
+   "p25": 2.3,
+   "p50": 2.8,
+   "p75": 3.4,
+   "p90": 4.2
+  },
+  "route.separation_1.5s": {
+   "n": 14207,
+   "mean": 3.612,
+   "p10": 1.237,
+   "p25": 2.012,
+   "p50": 3.423,
+   "p75": 4.94,
+   "p90": 6.213
+  },
+  "route.separation_1.5s@man": {
+   "n": 3144,
+   "mean": 3.025,
+   "p10": 0.943,
+   "p25": 1.342,
+   "p50": 2.594,
+   "p75": 4.51,
+   "p90": 5.814
+  },
+  "route.separation_1.5s@zone": {
+   "n": 10383,
+   "mean": 3.818,
+   "p10": 1.487,
+   "p25": 2.332,
+   "p50": 3.64,
+   "p75": 5.109,
+   "p90": 6.357
+  },
+  "route.separation_2.5s": {
+   "n": 19235,
+   "mean": 2.671,
+   "p10": 0.894,
+   "p25": 1.304,
+   "p50": 2.36,
+   "p75": 3.669,
+   "p90": 4.909
+  },
+  "route.separation_2.5s@man": {
+   "n": 5348,
+   "mean": 1.766,
+   "p10": 0.721,
+   "p25": 0.922,
+   "p50": 1.345,
+   "p75": 2.283,
+   "p90": 3.454
+  },
+  "route.separation_2.5s@zone": {
+   "n": 12722,
+   "mean": 3.074,
+   "p10": 1.118,
+   "p25": 1.772,
+   "p50": 2.864,
+   "p75": 4.082,
+   "p90": 5.289
+  }
+ },
+ "definitions": {
+  "run.*": "Designed handoffs to an RB (no QB runs, no scrambles). Times are seconds after the snap.",
+  "run.carrier_cross_los_s": "First frame the carrier is past the line, before first contact.",
+  "run.yards_before_contact": "Carrier's x at the first-contact event (negative = behind the line).",
+  "run.yards_after_contact": "Play yards minus yards before contact.",
+  "run.engaged_dl_driven_back_Ns": "Per box defender within 1.5 yd of an OL at N s: yards he has moved toward his own goal since the snap. Live plays only.",
+  "run.max_engaged_dl_driven_back_3s": "Per play, the furthest any engaged box defender has been driven back at 3 s.",
+  "run.ol_forward_1s": "Mean forward movement of the OL at 1 s.",
+  "pass.*": "Dropbacks. Throw = pass_forward event.",
+  "pass.pressure_2yd_before_throw": "Share of dropbacks with a defender within 2 yd of the QB between 0.5 s and the throw (or 4 s).",
+  "pass.ol_depth_given_2s": "Mean OL retreat toward the QB at 2 s (includes the normal pass set).",
+  "pass.box_rusher_speed_0_5s": "Speed of each box defender at 0.5 s (get-off).",
+  "pass.box_rusher_depth_2s": "How far each box defender is into the backfield at 2 s.",
+  "pass.separation_at_arrival": "Target receiver to nearest defender when the ball arrives.",
+  "run.defenders_within_2yd_at_end": "Defenders within 2 yd of the carrier at the whistle (gang tackling).",
+  "run.box_count": "Defenders within 7 yd of the line and 6.5 yd of the ball at the snap (matches PFF's box count within one on 96% of 2021 dropbacks).",
+  "run.*@boxN": "The run metric within a box-count cell (box6-, box7, box8+).",
+  "contact.run|catch.*": "From the carrier's first contact (run: RB; catch: receiver after the catch): entry speed, speed 0.5 s later, yards after contact (also by entry speed: slow < 3, mid < 5.5, fast yd/s), contact to whistle.",
+  "block.pass.*": "Labeled OL/defender pairs on dropbacks (PFF labels pass blocks only). NFL: PFF blocked-player assignment; sim: block-contact events. still_engaged_2s: pair within 1.5 yd at 2 s; defender_depth: how far the blocked defender is into the backfield.",
+  "air.*": "Ball in the air, targeted receiver: air time, depth where the ball arrives, nearest defender at the throw and at arrival, and how much that gap closed.",
+  "contact.*.broke_contact": "Share of contacts after which the carrier is still running >= 4 yd/s half a second later and gains >= 5 more yards (tracking proxy for a broken tackle).",
+  "catch.defenders_within_5yd_at_catch": "Defenders within 5 yd of the receiver at the catch.",
+  "*@man|zone": "The metric within man or zone coverage (PFF / NGS / sim coverage labels).",
+  "pass.time_to_pressure": "On pressured dropbacks, first time a defender is within 2 yd of the QB.",
+  "pass.rushers": "Defenders who get at least 1 yd into the backfield by the throw or 2.5 s.",
+  "route.separation_Ns": "Before the throw, each WR/TE/RB at least 3 yd downfield: distance to the nearest defender.",
+  "route.target_depth_at_throw": "Targeted receiver's depth past the line when the ball is thrown.",
+  "catch.*": "Completed passes: catch depth, receiver speed at the catch, yards after the catch.",
+  "run.*@family": "The same run metric within one concept family (inside_zone, outside_zone, gap_pull, man_duo, draw).",
+  "move.*": "Per player per play, from positions: top speed (yd/s), peak acceleration and deceleration (yd/s^2), players who reach at least 1 yd/s."
+ }
+}

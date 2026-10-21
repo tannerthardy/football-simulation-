@@ -1,0 +1,15 @@
+{
+  "schema": "selected-man-alley-policy-controls-v1",
+  "baselineSource": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+  "candidateSource": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+  "scope": "Baseline native Game history and constructor, only selected ManCoverage.update replaced; not whole-candidate games",
+  "originalCases": [
+    {"id":"G4-P127","selection":"Outcome-selected no-contact tail, established first carrying cue at1.30; primary mechanism witness"},
+    {"id":"G3-P099","selection":"Predeclared other Base43/Cover0/ace12 ordinary run, retained after realizing it is goal-line; baseline2.07 TD"},
+    {"id":"G4-P012","selection":"Predeclared zone counterpart: same Gun Wing/Under/Outside Zone, Cover3; baseline3.59 tackle"}
+  ],
+  "addedBeforeCandidateResult": {
+    "id":"G2-P188",
+    "selection":"Midfield Toss/ace12/Base43/Cover0, second-and3 at own33.625, baseline3.62 tackle; selected from immutable index before any candidate result. Actual initial FS back-man/alley role verified from its baseline, not assumed from coverage name. Original goal-line control is retained."
+  }
+}

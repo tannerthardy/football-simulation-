@@ -1,0 +1,37 @@
+{
+  "schema": "passing-component-reconstruction-proof-v1",
+  "toolSha256": "9194d0fb756a42c2bb36a798e8f24b573340dade009e5df2ca00f6dbd989695a",
+  "receiptSha256": "2155d08d3ba50b1e5464ffc5cbab503f5be187079bd5f4a2c6d851f17fd06c51",
+  "reconstruction": {
+    "output": "out/helper-fit/defense/component-restored.json.gz",
+    "decodedBytes": 149174784,
+    "decodedSha256": "3ed52942428c2d04d828be042a35e2f6707f3b70c64f9fb1cd3e277b2f7e25d5",
+    "decodedOriginalBytesExact": true,
+    "gzipBytes": 11240861,
+    "gzipSha256": "42a9b29a64dbc44fcb0cffa8c8592b8a9b8d96a5d5bac0cc40edc8fbec55de73",
+    "originalGzipBytesExact": true,
+    "node": "v24.19.0",
+    "zlib": "1.3.2.1-motley-3246f1b"
+  },
+  "originalGzipBytesEqual": true,
+  "portableNegativeGuards": [
+    {
+      "field": "gzipSha256",
+      "exitCode": 1,
+      "outputCreated": false,
+      "error": "Error: Input gzip SHA-256 does not match the receipt"
+    },
+    {
+      "field": "sourceBefore",
+      "exitCode": 1,
+      "outputCreated": false,
+      "error": "Error: Input sourceBefore does not match the receipt"
+    },
+    {
+      "field": "toolSha256",
+      "exitCode": 1,
+      "outputCreated": false,
+      "error": "Error: Input toolSha256 does not match the receipt"
+    }
+  ]
+}

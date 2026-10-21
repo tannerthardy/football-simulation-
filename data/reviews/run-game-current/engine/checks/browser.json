@@ -1,0 +1,173 @@
+{
+  "schema": "current-run-viewer-smoke-v1",
+  "htmlSha256": "43f5ff0639331d111a9daadc7f8d5cd27dc82ad529260a1d83a4bc75b99a21f0",
+  "method": "Local loopback HTTP in installed Chromium; all external HTTP/HTTPS requests blocked; all20clips checked after seek, source references and completed OL inspection; source/front filters, four layers and short WebM download exercised.",
+  "clips": [
+    {
+      "id": "BEFORE-CT-R1-iz_strong-over-R-S3",
+      "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "BEFORE-CT-R1-iz_strong-over-L-S3",
+      "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "BEFORE-CT-R1-power-under-R-S3",
+      "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "BEFORE-CT-R1-power-under-L-S3",
+      "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "BEFORE-CT-R1-counter-odd-R-S11",
+      "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "BEFORE-CT-R1-counter-odd-L-S11",
+      "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "BEFORE-CT-R1-duo-odd-R-S11",
+      "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "BEFORE-CT-R1-duo-odd-L-S11",
+      "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "BEFORE-CT-R1-split_zone-tite-R-S3",
+      "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "BEFORE-CT-R1-split_zone-tite-L-S3",
+      "source": "11b97574138bdd4a99b373e4089261519bd4484f2e5ae5c87f90276a07215f85",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "FINAL-CT-R1-iz_strong-over-R-S3",
+      "source": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "FINAL-CT-R1-iz_strong-over-L-S3",
+      "source": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "FINAL-CT-R1-power-under-R-S3",
+      "source": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "FINAL-CT-R1-power-under-L-S3",
+      "source": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "FINAL-CT-R1-counter-odd-R-S11",
+      "source": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "FINAL-CT-R1-counter-odd-L-S11",
+      "source": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "FINAL-CT-R1-duo-odd-R-S11",
+      "source": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "FINAL-CT-R1-duo-odd-L-S11",
+      "source": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "FINAL-CT-R1-split_zone-tite-R-S3",
+      "source": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    },
+    {
+      "id": "FINAL-CT-R1-split_zone-tite-L-S3",
+      "source": "09dd62c7d7cc5002312e93821ea0bf6f7dea3bb764ff75f509c59ff720e72d62",
+      "full": "full",
+      "roster": 22,
+      "outcome": "tackle",
+      "sourceReferenceAndCompletedTickVisible": true
+    }
+  ],
+  "pageErrors": [],
+  "downloadBytes": 115042,
+  "limitations": [
+    "Smoke check is not a football realism judgment or cross-browser codec guarantee.",
+    "Direct file navigation is blocked by managed Chromium policy; file:// not verified."
+  ]
+}

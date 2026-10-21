@@ -1,0 +1,231 @@
+{
+  "base": "914f4d56a3b7ef2845ff0208f55d626c0ff5f880",
+  "sourceSha256": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+  "exactUnsharedBlobs": [
+    {
+      "path": "src/game/game.ts",
+      "pr": 133,
+      "publication": "60430be909997546f78c681891be8a350bbd447b",
+      "sha256": "1a878affa1c79865198601917b150faf55e80bf4f419d1f3475a2c3591a4a0eb"
+    },
+    {
+      "path": "src/playbook/concepts.ts",
+      "pr": 146,
+      "publication": "08cf6734d7ddefa39ab3aff3f2961b12c16d0038",
+      "sha256": "0a49e54f35420cb8b4bca564a7e641283ad83bda4bf2830a4618cd23811714e9"
+    },
+    {
+      "path": "src/playbook/types.ts",
+      "pr": 146,
+      "publication": "08cf6734d7ddefa39ab3aff3f2961b12c16d0038",
+      "sha256": "f78c08b7319e6127d7e1b1987cb820aaca01c1f03fa6ed53b0696d0ef48f0b66"
+    },
+    {
+      "path": "src/sim/assign.ts",
+      "pr": 135,
+      "publication": "148e926896023aa5156ea350e7e85e68ec9f215a",
+      "sha256": "f62088eefd7577dcc4d2de290b96f3b2ba14fd6d6f7c7d6130415b2b7c909e8b"
+    },
+    {
+      "path": "src/sim/behaviors/defense.ts",
+      "pr": 132,
+      "publication": "1106866a1704c299e892a6e2ce6b5c7e11bd0ca0",
+      "sha256": "1f0a627aa3d5007896949342635152118feb8da3391040fa376b75a41100d9c6"
+    },
+    {
+      "path": "src/sim/behaviors/receiver.ts",
+      "pr": 135,
+      "publication": "148e926896023aa5156ea350e7e85e68ec9f215a",
+      "sha256": "74a7b455a36b6cb12d1916085c1f0dfb2a4de097362c2e23df00e778b26e306a"
+    },
+    {
+      "path": "src/sim/blocker-work-picture.ts",
+      "pr": 147,
+      "publication": "0319d2a9377b51ddde49ee1efd91c4edc5f28257",
+      "sha256": "710b0a7ed1975295803cffd2e070ac36282c378d9e0f68644d990da1b67533e5"
+    },
+    {
+      "path": "src/sim/engagement.ts",
+      "pr": 138,
+      "publication": "d398edf50af0101acd6d49de991e76d588d3450e",
+      "sha256": "755292ded61c96b12935d2777838b869eb122894690c49b73e24b535c39c8ce1"
+    },
+    {
+      "path": "src/sim/playsim.ts",
+      "pr": 133,
+      "publication": "60430be909997546f78c681891be8a350bbd447b",
+      "sha256": "053dd6ecd4fd43c475d88f9a64dfa65635c9523f9d6030b3ecb40bdf4e21a6b2"
+    },
+    {
+      "path": "src/sim/qbmind.ts",
+      "pr": 135,
+      "publication": "148e926896023aa5156ea350e7e85e68ec9f215a",
+      "sha256": "b709c4da20c7962464dd5c4802e0a238bc95589313c26d8d5ca87a3ca279173e"
+    },
+    {
+      "path": "src/sim/receiver-forecast.ts",
+      "pr": 135,
+      "publication": "148e926896023aa5156ea350e7e85e68ec9f215a",
+      "sha256": "2bdfa07aefb4c42ca062981e1b8b8c2912f1c60bf6e5ca68affa9997fdaa1eed"
+    },
+    {
+      "path": "src/sim/route-motion.ts",
+      "pr": 135,
+      "publication": "148e926896023aa5156ea350e7e85e68ec9f215a",
+      "sha256": "574709303faa06caab9520bda7de4206f01e9b2274b570774b3ee76cc917b386"
+    },
+    {
+      "path": "src/sim/run-fits.ts",
+      "pr": 134,
+      "publication": "f012a8698d12e39daf755a0051f872d010abe3bf",
+      "sha256": "c28b2f4dc1b4f3af5aa05ea705f26b16cc42030ecf1dc16ed2c4fe5de69309e2"
+    },
+    {
+      "path": "src/sim/types.ts",
+      "pr": 133,
+      "publication": "60430be909997546f78c681891be8a350bbd447b",
+      "sha256": "75908634cb14d8ac9a71fcd00f6e86a435f65b7d30643b16325eee06a7cdcbc3"
+    },
+    {
+      "path": "test/acquired-mesh-contradiction.test.ts",
+      "pr": 134,
+      "publication": "f012a8698d12e39daf755a0051f872d010abe3bf",
+      "sha256": "f929f051b4e460e8779d9bd98bb23a0349434968fdb3a1cbb9ba9c979cee5115"
+    },
+    {
+      "path": "test/acquired-qb-continuation.test.ts",
+      "pr": 132,
+      "publication": "1106866a1704c299e892a6e2ce6b5c7e11bd0ca0",
+      "sha256": "73669d0a478cf73ff94fce0bfd27068d58e66d48d254fc2780a48b7998fb9509"
+    },
+    {
+      "path": "test/blocker-work-picture.test.ts",
+      "pr": 147,
+      "publication": "0319d2a9377b51ddde49ee1efd91c4edc5f28257",
+      "sha256": "4c424f4b57febcff004a1d45414b3983e46516a9db0e4129ab9a139a5cd53ddc"
+    },
+    {
+      "path": "test/counter-gh.test.ts",
+      "pr": 146,
+      "publication": "08cf6734d7ddefa39ab3aff3f2961b12c16d0038",
+      "sha256": "2f034d9a6ce4412cfeee5884eefe64655090cd32261c161ba5d67d497ce1c240"
+    },
+    {
+      "path": "test/failed-exchange-continuation.test.ts",
+      "pr": 136,
+      "publication": "97ba574a16034309db5dd5be8259feda6b378a57",
+      "sha256": "954151f00f3ff521eb3ad4086d8085b9a8c188d11760f2e63a43801cea17e6bb"
+    },
+    {
+      "path": "test/fixtures/acquired-mesh-scenes.json.gz",
+      "pr": 134,
+      "publication": "f012a8698d12e39daf755a0051f872d010abe3bf",
+      "sha256": "e0580c5b507d7266f67c9cf4ae825f12d26ac1bf1206ccc8de0dbf0b4329e9f7"
+    },
+    {
+      "path": "test/fixtures/acquired-qb-scenes.json.gz",
+      "pr": 132,
+      "publication": "1106866a1704c299e892a6e2ce6b5c7e11bd0ca0",
+      "sha256": "8c719e82f10aba0bd69fbe3ceb6536c41b7f6fddc9d50448bb51e07fbc943681"
+    },
+    {
+      "path": "test/fixtures/counter-second-level-inputs.json.gz",
+      "pr": 146,
+      "publication": "08cf6734d7ddefa39ab3aff3f2961b12c16d0038",
+      "sha256": "8e2ea8b34250d3cdda91552571f8cd35499a5109dff943c791aa16ec96edba73"
+    },
+    {
+      "path": "test/fixtures/puller-access-inputs.json.gz",
+      "pr": 143,
+      "publication": "572c07d53247da02d858768f654a900abe147ce8",
+      "sha256": "9b8273f316aa21c307070b9117aad0985261083f70eabbc6c56f4675062a4614"
+    },
+    {
+      "path": "test/fixtures/saved-game-result-accounting.json",
+      "pr": 133,
+      "publication": "60430be909997546f78c681891be8a350bbd447b",
+      "sha256": "3ace7b9fd3cb7848f43ba9b7e264f3b6bdd333737ceb6b2db7caa3b080213efe"
+    },
+    {
+      "path": "test/game-safety-credit.test.ts",
+      "pr": 133,
+      "publication": "60430be909997546f78c681891be8a350bbd447b",
+      "sha256": "3d73e56c8a251bd0ab599825873ede5c234c8f5e85ed836a81880f7ea121f744"
+    },
+    {
+      "path": "test/game-scramble-pressure-credit.test.ts",
+      "pr": 133,
+      "publication": "60430be909997546f78c681891be8a350bbd447b",
+      "sha256": "98f04f1aa520f12269f12a50e39461c3eb347861b5842e06345312dcdee87c53"
+    },
+    {
+      "path": "test/game-takeaway-credit.test.ts",
+      "pr": 133,
+      "publication": "60430be909997546f78c681891be8a350bbd447b",
+      "sha256": "27ce1fc7b5cc08d489be1308e68b8540ba8ba33934bc21662f75afa18d3c8eee"
+    },
+    {
+      "path": "test/helpers/saved-game-result-accounting.ts",
+      "pr": 133,
+      "publication": "60430be909997546f78c681891be8a350bbd447b",
+      "sha256": "b403d6621cacc0a7b894f328deec9a056fbd9a5bb802a0d531b7ff2de8f11182"
+    },
+    {
+      "path": "test/puller-kick-transition.test.ts",
+      "pr": 143,
+      "publication": "572c07d53247da02d858768f654a900abe147ce8",
+      "sha256": "d7f4eb1ef0f913844617a1ef93f31e48a86c428a62a9e33e26c94fd7b9ff818c"
+    },
+    {
+      "path": "test/puller-route-progress.test.ts",
+      "pr": 140,
+      "publication": "e9f56e391fefdb4f8854e85b4966fd9e2b082083",
+      "sha256": "9dc46e6e4dde305f1a3f49a1cd4c810f678d9310b2c4e92c9ac510fc8d4a76dc"
+    },
+    {
+      "path": "test/puller-target-read.test.ts",
+      "pr": 140,
+      "publication": "e9f56e391fefdb4f8854e85b4966fd9e2b082083",
+      "sha256": "c1b6066698adb49b640f2690d3202becdec5b2192ca6c657ef3b21b662c6193a"
+    },
+    {
+      "path": "test/qb-receiver-consumer.test.ts",
+      "pr": 135,
+      "publication": "148e926896023aa5156ea350e7e85e68ec9f215a",
+      "sha256": "0cb3d4628476688836d46a35e1b835dfdbd05c2c864ff4b5a3557fb4b9e13744"
+    },
+    {
+      "path": "test/qb-receiver-forecast.test.ts",
+      "pr": 135,
+      "publication": "148e926896023aa5156ea350e7e85e68ec9f215a",
+      "sha256": "f326d5807558d802d86023ac8822ea30d2e4ecaf871f24156350c0465ba4167b"
+    },
+    {
+      "path": "test/support-work-off.test.ts",
+      "pr": 138,
+      "publication": "d398edf50af0101acd6d49de991e76d588d3450e",
+      "sha256": "7c548368f4e9afcfe0bd579e4214e45e45926a0c7d93834989cd637d476e9d66"
+    },
+    {
+      "path": "test/zone-combo-surface.test.ts",
+      "pr": 126,
+      "publication": "7f75b087e6f9221495fed1a810e63254666d4265",
+      "sha256": "4ce75546d64fbc0de2961eb2800e09b16ccbfd7b7f3e06a494a14a93633ce4e3"
+    },
+    {
+      "path": "test/zone-reach.test.ts",
+      "pr": 126,
+      "publication": "7f75b087e6f9221495fed1a810e63254666d4265",
+      "sha256": "ea2b4e0ac7f8c81771b004238fbc372b965a5ac5066b0cdb000710b138976b57"
+    }
+  ],
+  "sharedProjection": {
+    "blocking.ts": "Remove only143 kick allowance; reverse exact147/126 patches using isolated index -> byte-identical reviewed146 (including140). No other hunk present.",
+    "qb.ts": "Reverse exact136 patch -> byte-identical reviewed135.",
+    "pullerFixture": "Exact143/146 richer fixture preserves every140 row; no140 input changed."
+  },
+  "physicalLawsCapacitiesDefaultsSpacingCarrierUnchanged": true,
+  "manualGHOutsideAutomaticCalling": true,
+  "authorOrDataOnlyAncestryImported": false,
+  "extraEngineRuns": 0
+}

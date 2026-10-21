@@ -1,0 +1,161 @@
+diff --git a/src/sim/coverage/rules.ts b/src/sim/coverage/rules.ts
+index 99e7f24..7a56c50 100644
+--- a/src/sim/coverage/rules.ts
++++ b/src/sim/coverage/rules.ts
+@@ -13,14 +13,18 @@
+  */
+ import type { ZoneId, ZoneStyle, MatchRule } from '../../playbook/types.js';
+ import type { Agent } from '../agent.js';
++import type { Vec2 } from '../../core/vec.js';
++import { zoneLandmark } from '../../playbook/alignment.js';
+ import type { ManOptions } from '../behaviors/defense.js';
+ import { knowsPass } from '../behaviors/defense.js';
+ import type { PlaySim } from '../playsim.js';
+ import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
++import { hasVisibleCap } from './judgment.js';
+ 
+ export type Directive =
+   | { t: 'zone'; zone: ZoneId; style: ZoneStyle }
+   | { t: 'man'; r: Agent; opts: ManOptions }
++  | { t: 'read'; r: Agent; initialPosition: Vec2 }
+   | { t: 'trap'; r: Agent }
+   | { t: 'wall'; r: Agent }
+   | { t: 'rob'; r: Agent };
+@@ -48,7 +52,10 @@ export interface RuleCtx {
+ // ------------------------------------------------------------ helpers
+ 
+ const zoneOf = (c: RuleCtx, zone: ZoneId = c.zone): Directive => ({ t: 'zone', zone, style: c.style });
+-const man = (rd: ReceiverRead, opts: ManOptions = {}): Directive => ({ t: 'man', r: rd.r, opts });
++const man = (rd: ReceiverRead, opts: ManOptions = {}): Directive =>
++  ({ t: 'man', r: rd.r, opts: { ...opts, initialPosition: { ...rd.pos } } });
++const readRelease = (rd: ReceiverRead): Directive =>
++  ({ t: 'read', r: rd.r, initialPosition: { ...rd.pos } });
+ 
+ function ref(c: RuleCtx, n: 1 | 2 | 3, side: 'S' | 'W' = c.side): ReceiverRead | null {
+   return c.reader.readRef(c.sim, `${side}${n}`);
+@@ -91,31 +98,42 @@ function c3Corner(c: RuleCtx): Directive {
+ }
+ 
+ /** Rip/Liz curl-flat (seam) player: match #2 vertical to `carry` yards; anything else declares the curl-flat zone. */
+-function seamCurlFlat(c: RuleCtx, carry: number): Directive {
++function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
+   const two = ref(c, 2);
+   if (!two || c.state.mode === 'zoned') return zoneOf(c);
++  // Reading #2 is already an installed duty. Do not spend the release
++  // cushion driving at a shallow lane before the route earns its match.
++  if (two.release === 'none' || (two.release === 'vertical' && two.depth < 3)) return readRelease(two);
+   if (vertical(two, 3)) {
+     if (two.depth > carry) {
++      // Installed depth permits delivery; it does not establish replacement.
++      // Keep the acquired vertical when the existing observed roof estimate
++      // cannot sustain help. No hidden flight or teammate assignment enters.
++      if (deliver && !hasVisibleCap(c.a, c.sim, two)) return man(two, { lev: 'inside' });
+       c.state.mode = 'zoned';
+       return zoneOf(c);
+     }
+     return man(two, { lev: 'inside' });
+   }
+-  if (two.release !== 'none' && two.release !== 'vertical') c.state.mode = 'zoned';
++  if (two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
+   return zoneOf(c);
+ }
+ 
+ /**
+  * Cut: a hook defender jumps a shallow crosser coming into his area ("under"
+  * call from the curl-flat player) and carries him until he has run through it,
+- * then gives him to the next hook and looks for the dig behind (robot).
++ * then looks for the dig behind (robot). A rat's installed low-hole area
++ * stays fixed while he moves; this alone does not signal a man exchange.
+  */
+-function cut(c: RuleCtx): Directive | null {
++function cut(c: RuleCtx, area?: Vec2): Directive | null {
+   const st = c.state;
++  const center = area ?? c.a.pos;
++  // The shared man producer supplies the acquired entry picture for every match.
++  const carry = (rd: ReceiverRead) => man(rd, { lev: 'head' });
+   if (st.cut) {
+     const rd = c.reader.read(c.sim, st.cut);
+     // Through my area (8+ yards past me toward the far side) or turned upfield: let him go.
+-    if (rd && rd.release === 'under' && Math.abs(rd.pos.y - c.a.pos.y) < 8 && rd.depth < 8) return man(rd, { lev: 'head' });
++    if (rd && rd.release === 'under' && Math.abs(rd.pos.y - center.y) < 8 && rd.depth < 8) return carry(rd);
+     st.cut = undefined;
+     return null;
+   }
+@@ -124,7 +142,11 @@ function cut(c: RuleCtx): Directive | null {
+   for (const r of c.sim.offense) {
+     const rd = c.reader.read(c.sim, r);
+     if (!rd || rd.release !== 'under' || rd.depth > 7) continue;
+-    const toward = Math.sign(c.a.pos.y - rd.pos.y) * rd.vel.y > 1.5;
++    // "Under" also includes an early diagonal in-break. The low-hole rat
++    // keeps playing the window until the acquired path is actually across
++    // him; a shallow declaration alone does not make a climbing stem a cross.
++    if (area && (Math.abs(rd.pos.y - center.y) >= 8 || Math.abs(rd.vel.y) <= Math.abs(rd.vel.x))) continue;
++    const toward = Math.sign(center.y - rd.pos.y) * rd.vel.y > 1.5;
+     const d = Math.hypot(rd.pos.x - c.a.pos.x, rd.pos.y - c.a.pos.y);
+     if (toward && d < 9 && d < bd) {
+       best = rd;
+@@ -133,7 +155,7 @@ function cut(c: RuleCtx): Directive | null {
+   }
+   if (!best) return null;
+   st.cut = best.r;
+-  return man(best, { lev: 'head' });
++  return carry(best);
+ }
+ 
+ /** Match hook: carry #3 (or the back to his side) vertical to 15; cut a shallow crosser into him; otherwise play the hook and robot. */
+@@ -181,7 +203,8 @@ function qSafety(c: RuleCtx): Directive {
+     c.state.mode = 'two';
+     return man(two, { overTop: true, lev: 'inside' });
+   }
+-  if (two.release !== 'none' && two.release !== 'vertical' && (two.release !== 'block' || knowsPass(c.sim, c.a))) {
++  if (two.release === 'block') return knowsPass(c.sim, c.a) ? helpOne(c, one) : zoneOf(c);
++  if (two.release !== 'none' && two.release !== 'vertical') {
+     c.state.mode = 'one';
+     return helpOne(c, one);
+   }
+@@ -189,15 +212,17 @@ function qSafety(c: RuleCtx): Directive {
+ }
+ 
+ /** Apex (nickel/Sam/curl-flat) next to a #2 read: wall #2's vertical to 10 yards for the safety, otherwise play curl-flat. */
+-function wallTwo(c: RuleCtx, handoff: number): Directive {
++function wallTwo(c: RuleCtx, handoff: number, readStem = false): Directive {
+   const two = ref(c, 2);
+   if (!two || c.state.mode === 'zoned') return zoneOf(c);
++  // Other wall callers have their own cut/deep-help contracts.
++  if (readStem && (two.release === 'none' || (two.release === 'vertical' && two.depth < 2))) return readRelease(two);
+   if (vertical(two, 2)) {
+     if (two.depth < handoff) return { t: 'wall', r: two.r };
+     c.state.mode = 'zoned';
+     return zoneOf(c);
+   }
+-  if (two.release !== 'none' && two.release !== 'vertical') c.state.mode = 'zoned';
++  if (two.release !== 'none' && two.release !== 'vertical' && two.release !== 'block') c.state.mode = 'zoned';
+   return zoneOf(c);
+ }
+ 
+@@ -301,14 +326,14 @@ function invertSafety(c: RuleCtx): Directive {
+ export function runRule(rule: MatchRule, c: RuleCtx): Directive {
+   switch (rule) {
+     case 'c3_corner': return c3Corner(c);
+-    case 'c3_curl_flat': return seamCurlFlat(c, 12);
++    case 'c3_curl_flat': return seamCurlFlat(c, 12, true);
+     case 'c3_seam': return seamCurlFlat(c, 99);
+     case 'c3_hook': return c3Hook(c);
+     case 'mike_3': return mike3(c);
+     case 'q_corner_mod': return qCorner(c, false);
+     case 'q_corner_meg': return qCorner(c, true);
+     case 'q_safety': return qSafety(c);
+-    case 'q_apex': return wallTwo(c, 10);
++    case 'q_apex': return wallTwo(c, 10, true);
+     case 'palms_corner': return palmsCorner(c);
+     case 'palms_safety': return palmsSafety(c);
+     case 'cloud_corner': return cloudCorner(c, false);
+@@ -321,7 +346,7 @@ export function runRule(rule: MatchRule, c: RuleCtx): Directive {
+     case 'poach_safety': return poachSafety(c);
+     case 'stubbie_safety': return stubbieSafety(c);
+     case 'invert_safety': return invertSafety(c);
+-    case 'rat':
++    case 'rat': return cut(c, zoneLandmark(c.zone, c.sim.offAlign)) ?? zoneOf(c);
+     case 'robber': return zoneOf(c);
+   }
+ }

@@ -1,0 +1,208 @@
+{
+  "schema": "accepted-pass-cutoff-paired-review-v1",
+  "acceptedDevelop": "8c891f4cf887b54297efbbc4c7993ba5e2f318b5",
+  "candidate": "b405a0e15efc5163bf9c435d50b35013e3e9883a",
+  "sourceSha256": "1822455c3fdf15aecfd362fd01d54c80a2e1f7e12c97b0a2d9b611141adba4a7",
+  "fixtureSha256": "fa359ffe306bd4f9920d0bcb48dcbfe84451bae45ce380e554789469b0d908a1",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "acceptedMethodSha256": "8ffe1576311932213253df4184f0a742960d36a457ad929596a56016e051b93e",
+  "candidateMethodSha256": "8dc31b57e51624d11b33b9b2cb06391548458ba6e70827de0ab37844c91af052",
+  "question": "Does retaining only original C/DT_N initial execution remove the new sustained C/LG contact, without changing requests, positions, law or subsequent native draws?",
+  "rollbackQualification": "Exact accepted method compiled with unchanged current helpers; production candidate method unmodified. No retained execution draws.",
+  "summaries": [
+    {
+      "index": 18,
+      "play": 19,
+      "arm": "candidate-retain-center",
+      "endTime": 3.5,
+      "phase": "live",
+      "throwAt": 3.15,
+      "censoring": "Live at 3.50; no ending inferred",
+      "contacts": [
+        {
+          "t": 0.45,
+          "type": "block_contact",
+          "a": 1,
+          "b": 11,
+          "pos": {
+            "x": 32.68563118958471,
+            "y": 29.446816832641865
+          },
+          "note": "pass",
+          "phi": -0.04089927131673052
+        },
+        {
+          "t": 0.5,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 32.295988280912454,
+            "y": 27.798937698066194
+          },
+          "note": "pass",
+          "phi": 0.2511619046566972
+        },
+        {
+          "t": 0.55,
+          "type": "block_contact",
+          "a": 2,
+          "b": 12,
+          "pos": {
+            "x": 32.6896539558596,
+            "y": 23.66777274940987
+          },
+          "note": "pass",
+          "phi": 0.07983606269242267
+        },
+        {
+          "t": 0.8,
+          "type": "block_contact",
+          "a": 5,
+          "b": 13,
+          "pos": {
+            "x": 32.01064318942728,
+            "y": 25.33403090931787
+          },
+          "note": "pass",
+          "phi": 0.08656791995243276
+        }
+      ],
+      "events": [
+        {
+          "t": 2.4,
+          "type": "shed",
+          "a": 13,
+          "b": 5,
+          "pos": {
+            "x": 29.11,
+            "y": 23.68
+          },
+          "note": "pass: turned the corner"
+        },
+        {
+          "t": 3.15,
+          "type": "throw",
+          "a": 0,
+          "b": 8,
+          "pos": {
+            "x": 25.07,
+            "y": 26.68
+          }
+        }
+      ],
+      "teammateImpactCount": 12,
+      "teammateImpulseKgYdPerS": 180.51348241057457,
+      "edgeAt24": {
+        "DE_W": {
+          "distanceToQB": 5.90087014801973,
+          "position": {
+            "x": 26.835192098593765,
+            "y": 32.30729546430638
+          }
+        },
+        "DE_S": {
+          "distanceToQB": 6.169595399763899,
+          "position": {
+            "x": 28.967136049858375,
+            "y": 21.857771032958052
+          }
+        }
+      },
+      "edgesAtCensor": [
+        {
+          "slot": "LT",
+          "contact": true,
+          "support": "up"
+        },
+        {
+          "slot": "RT",
+          "contact": true,
+          "support": "up"
+        }
+      ],
+      "elapsedSeconds": 0.32923921399999995,
+      "retained": [
+        {
+          "pair": [
+            4,
+            14
+          ],
+          "t": 0.45,
+          "referenceTime": 0.45,
+          "tape": {
+            "rangeU": 0.00971762533299625,
+            "normalZ": [
+              0.4839469679708962,
+              -0.3221899761884601,
+              1.1147176219805484
+            ],
+            "planU": 0.5756003842689097
+          },
+          "qualification": "Only original C/DT_N initial variates, with native draws still consumed; later execution remains coupled."
+        }
+      ]
+    }
+  ],
+  "comparison": [],
+  "retainedInitialReference": "out/pass-cutoff-review/paired/trace.json.gz",
+  "completedGames": 0,
+  "nativeSegments": 1,
+  "elapsedSeconds": 0.3523335650000001
+}

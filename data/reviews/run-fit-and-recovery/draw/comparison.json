@@ -1,0 +1,124 @@
+{
+  "schema": "draw-presentation-component-comparison-v1",
+  "baselineSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "componentSource": "fe93ba60a2fd18f7721386db9c2862edcdeb0a4c0d6cac835ba30bcbb60e11be",
+  "collectorSha256": "ec85b151296ee727cf5cd43ec36c5800e5f4717bc34f72142879ad3cd1893eef",
+  "onlyChangedModule": "src/sim/behaviors/blocking.ts",
+  "worldUnchanged": true,
+  "baselineFeatureTests": {
+    "fails": 10,
+    "controlsPass": 18,
+    "total": 28
+  },
+  "componentFocusedTests": {
+    "pass": 86,
+    "files": 4
+  },
+  "rows": [
+    {
+      "id": "DRAW-Over-R-S3",
+      "initialMatched": true,
+      "physicalInitialSha256": "86d8d06227f86c78a92d7eaae39870647f1fa6f4c7334155ffe5cdbe00717bd5",
+      "observerVerified": true,
+      "baselineGain": 4.15,
+      "componentGain": 6.78,
+      "delta": 2.63,
+      "baselineOutcome": "tackle",
+      "componentOutcome": "tackle",
+      "firstRequestFork": {
+        "t": 0.05,
+        "slot": "RT",
+        "baseline": {
+          "stance": "low",
+          "request": {
+            "vel": {
+              "x": 0.7641981150718377,
+              "y": -1.2013732087810995
+            },
+            "facing": 0,
+            "posture": 0.7
+          }
+        },
+        "component": {
+          "stance": "high",
+          "request": {
+            "vel": {
+              "x": -2.015655281329616,
+              "y": 0
+            },
+            "facing": 0
+          }
+        }
+      },
+      "baselineEarlyRunContact": [
+        {
+          "t": 0.6,
+          "type": "block_contact",
+          "a": 4,
+          "b": 14,
+          "pos": {
+            "x": 39.76165419629553,
+            "y": 27.786168182674082
+          },
+          "note": "run"
+        }
+      ],
+      "componentEarlyRunContact": []
+    },
+    {
+      "id": "DRAW-Over-L-S3",
+      "initialMatched": true,
+      "physicalInitialSha256": "a6c3bcde550479a2a2cb64f2bf7bceacc3a1afee933a4c20324e571fbbd646b1",
+      "observerVerified": true,
+      "baselineGain": 5.94,
+      "componentGain": -0.23,
+      "delta": -6.17,
+      "baselineOutcome": "tackle",
+      "componentOutcome": "tackle",
+      "firstRequestFork": {
+        "t": 0.05,
+        "slot": "C",
+        "baseline": {
+          "stance": "low",
+          "request": {
+            "vel": {
+              "x": 6.089829288540869,
+              "y": 0.6309331446892456
+            },
+            "facing": 0.11264217270355667
+          }
+        },
+        "component": {
+          "stance": "high",
+          "request": {
+            "vel": {
+              "x": -1.9939568564987245,
+              "y": 0
+            },
+            "facing": 0
+          }
+        }
+      },
+      "baselineEarlyRunContact": [
+        {
+          "t": 0.65,
+          "type": "block_contact",
+          "a": 4,
+          "b": 13,
+          "pos": {
+            "x": 39.82908506305059,
+            "y": 28.244362071204012
+          },
+          "note": "run"
+        }
+      ],
+      "componentEarlyRunContact": []
+    }
+  ],
+  "limits": [
+    "Two selected installation witnesses, not league or NFL rates.",
+    "One gain improves and one substantially worsens; truthful presentation is not a guaranteed run success.",
+    "Component source is isolated from possession/run-fit changes; combined native results require their own source pin.",
+    "Covered Draw owners retain their old goTo formula, not identical later trajectory after teammates change."
+  ]
+}

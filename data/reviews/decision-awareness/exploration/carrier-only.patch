@@ -1,0 +1,69 @@
+--- a/src/sim/behaviors/carrier.ts
++++ b/src/sim/behaviors/carrier.ts
+@@ -1,7 +1,8 @@
+ /**
+  * Ball-carrier vision.
+  *
+- * Every ~0.1 s the carrier samples candidate headings. For each heading he
++ * On his finite, attention-dependent decision beat the carrier samples
++ * candidate headings. For each heading he
+  * projects his own sprint along it and asks, at each look-ahead step, whether
+  * any defender he *perceives* (delayed, filtered by vision range) could get
+  * there first (time-to-reach, with extra time for defenders tied up in
+@@ -99,6 +100,7 @@
+   readonly kind = 'carrier';
+   private heading: number | null = null;
+   private nextEval = 0;
++  private wasDesigned: boolean | null = null;
+   private visionNoise: number;
+   private plannedExit = false;
+   private boundaryRecovery = false;
+@@ -113,15 +115,24 @@
+   update(a: Agent, sim: PlaySim): MoveCommand {
+     const dir = sim.attackDir(a.team);
+     const cutSkill = 0.85 + 0.35 * a.r('elusiveness');
++    const designed = !!this.opts.aim && this.opts.aimUntil !== undefined
++      && sim.t < this.opts.aimUntil && (a.pos.x - sim.los) * dir < -0.8;
++    if (designed !== this.wasDesigned) {
++      // The installed press phase ending is a different responsibility, not
++      // a reason to carry its previous beat into open-lane selection. A fresh
++      // carrier instance likewise starts with its first available observation.
++      this.wasDesigned = designed;
++      this.nextEval = sim.t;
++    }
+ 
+     // Designed phase: press the aiming point.
+-    if (this.opts.aim && this.opts.aimUntil !== undefined && sim.t < this.opts.aimUntil && (a.pos.x - sim.los) * dir < -0.8) {
+-      const aim = this.opts.aim;
++    if (designed) {
++      const aim = this.opts.aim!;
+       const h = angleOf({ x: aim.x - a.pos.x, y: aim.y - a.pos.y });
+       this.heading = h;
+       // Only abandon the design early if the aiming point is clearly closed.
+       if (sim.t >= this.nextEval) {
+-        this.nextEval = sim.t + 0.1;
++        this.nextEval = sim.t + a.mind.decisionInterval;
+         const best = this.evaluate(a, sim, dir, true);
+         if (best && best.aimBlocked && best.score > best.aimScore + 0.5 + 0.5 * a.r('patience')) this.opts.aimUntil = sim.t;
+       }
+@@ -142,7 +153,7 @@
+           return timeToReach({ ...threat, profile: d.profile, speedScale: d.speedScale }, a.pos,
+             a.profile.radius + d.profile.radius + d.profile.reach * 0.75) < 2 * a.mind.decisionInterval;
+         });
+-        if (entering && !closing && sim.t < this.opts.aimUntil) {
++        if (entering && !closing && sim.t < this.opts.aimUntil!) {
+           // Pace the lead block instead of outrunning a guard who is still
+           // turning up through the hole. This only lasts through the read phase.
+           a.tags.add('paced-lead');
+@@ -168,7 +179,10 @@
+     }
+ 
+     if (sim.t >= this.nextEval || this.heading === null) {
+-      this.nextEval = sim.t + 0.1;
++      // Reconsider the lane on the same finite beat as other football reads.
++      // This holds a chosen action through one processing interval; movement,
++      // real contact and boundary recovery still execute on every native tick.
++      this.nextEval = sim.t + a.mind.decisionInterval;
+       const entry = a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? runReadAim(a,sim,this.opts) : null;
+       const best = entry ? null : this.evaluate(a, sim, dir, false);
+       if(entry) { this.heading=angleOf({x:entry.x-a.pos.x,y:entry.y-a.pos.y}); a.tags.add('run-crease-read'); }

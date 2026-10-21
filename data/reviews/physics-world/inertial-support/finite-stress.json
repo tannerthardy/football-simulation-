@@ -1,0 +1,81 @@
+{
+  "sourceSha256": "3b328c7bddc6354e7559d5d491e8a7d579bb2865adf257e2aa58385dade872df",
+  "node": "v22.23.3",
+  "seed": 4713,
+  "cases": 240,
+  "solverOptions": {
+    "maxIterations": 256,
+    "tolerance": 1e-09,
+    "coupledUpdates": true
+  },
+  "scope": "Planar massless-relative-coordinate candidate solve; failed candidates are not valid continuation states.",
+  "thresholds": {
+    "passiveWork": 1e-07,
+    "reach": 1e-07,
+    "closureAndBudget": 1e-08
+  },
+  "panels": {
+    "original24": {
+      "candidates": 24,
+      "converged": 24,
+      "nonconverged": 0,
+      "coupledUpdates": 574,
+      "maxima": {
+        "iterations": 41,
+        "converged_iterations": 41,
+        "coupledUpdates": 82,
+        "converged_coupledUpdates": 82,
+        "impulseChange": 8.767504899281929e-10,
+        "converged_impulseChange": 8.767504899281929e-10,
+        "passiveWork": 3.494214418253053e-10,
+        "converged_passiveWork": 3.494214418253053e-10,
+        "reachViolation": 0,
+        "converged_reachViolation": 0,
+        "workResidual": 2.3803181647963356e-13,
+        "converged_workResidual": 2.3803181647963356e-13,
+        "momentumResidual": 1.9895196601282805e-13,
+        "converged_momentumResidual": 1.9895196601282805e-13,
+        "speedExcess": 0,
+        "converged_speedExcess": 0,
+        "forceExcess": 0,
+        "converged_forceExcess": 0,
+        "motorWorkExcess": 0,
+        "converged_motorWorkExcess": 0,
+        "tractionExcess": 0,
+        "converged_tractionExcess": 0
+      }
+    },
+    "seeded240": {
+      "candidates": 240,
+      "converged": 240,
+      "nonconverged": 0,
+      "coupledUpdates": 27996,
+      "maxima": {
+        "iterations": 175,
+        "converged_iterations": 175,
+        "coupledUpdates": 1400,
+        "converged_coupledUpdates": 1400,
+        "impulseChange": 9.999475554404375e-10,
+        "converged_impulseChange": 9.999475554404375e-10,
+        "passiveWork": 6.678826103279079e-10,
+        "converged_passiveWork": 6.678826103279079e-10,
+        "reachViolation": 0,
+        "converged_reachViolation": 0,
+        "workResidual": 8.952838470577262e-13,
+        "converged_workResidual": 8.952838470577262e-13,
+        "momentumResidual": 5.155720809191205e-13,
+        "converged_momentumResidual": 5.155720809191205e-13,
+        "speedExcess": 1.7763568394002505e-15,
+        "converged_speedExcess": 1.7763568394002505e-15,
+        "forceExcess": 1.8758328224066645e-12,
+        "converged_forceExcess": 1.8758328224066645e-12,
+        "motorWorkExcess": 0,
+        "converged_motorWorkExcess": 0,
+        "tractionExcess": 2.220446049250313e-16,
+        "converged_tractionExcess": 2.220446049250313e-16
+      }
+    }
+  },
+  "contractViolations": [],
+  "nonconvergentCandidates": []
+}

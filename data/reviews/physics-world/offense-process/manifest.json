@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "sourceSha256": "0f1124fde702bfd754944b10bc2d35f2ebf4914c1a2fa864e701afb6683b47ad",
+  "gitCommitAtRun": "844145cfa1e3506789ee204b0bef2915cb03689f",
+  "command": "node --import tsx scripts/diag/run-concept-process.ts out/run-concept-process-final.json --verify",
+  "sourceState": "Final frozen source snapshot, including uncommitted physics repair; not a before/after physics experiment.",
+  "cohort": {
+    "rosterSeeds": [
+      7,
+      8
+    ],
+    "formation": "ace_11",
+    "coverage": "cover3",
+    "playSeeds": [
+      3,
+      11
+    ],
+    "runs": [
+      "iz_strong",
+      "oz_strong",
+      "wz_strong",
+      "duo",
+      "power",
+      "counter",
+      "trap"
+    ],
+    "fronts": [
+      "over",
+      "under",
+      "tite"
+    ],
+    "flips": [
+      false,
+      true
+    ],
+    "horizon": 4,
+    "fixedGeneratedTeams": true,
+    "defensivePersonnelByFront": {
+      "over": "base43",
+      "under": "base43",
+      "tite": "base34"
+    }
+  },
+  "observerVerified": true,
+  "totals": {
+    "snaps": 84,
+    "plannedCombinations": 94,
+    "reachedConcurrentPhysicalLoad": 61,
+    "combinationsClimbed": 25,
+    "combinationsDissolvedForPenetration": 2,
+    "climbedWithoutObservedConcurrentLoad": 0,
+    "plannedPullers": 48,
+    "pullersWithContactEvent": 35,
+    "handoffs": 84,
+    "reachedLOS": 51
+  },
+  "supportStateSummary": {
+    "carrierTickEndRecords": 3519,
+    "carrierTickEndStates": {
+      "up": 3047,
+      "falling": 472
+    },
+    "carrierRepEverStates": {
+      "up": 84,
+      "falling": 66
+    },
+    "pullerContactTickEndStates": {
+      "up": 35
+    },
+    "definition": "20 Hz post-handoff carrier samples and sampled first puller block_contact boundaries; rep state counts overlap. Not completed tackle or NFL fall rates."
+  },
+  "files": {
+    "scripts/diag/run-concept-process.ts": {
+      "sha256": "ead3d5e513c20851fb56a3ad5f05075fb9f7d3bc2b1e8ad9848e5ca46145e918",
+      "bytes": 13063
+    },
+    "docs/reviews/offense-literature-applications.md": {
+      "sha256": "ac8b6472d8cce647596c7a47360c06da6eb158876c5744c4904633337f0dcfd3",
+      "bytes": 12416
+    },
+    "docs/references/Offensive_Playcalling_Textbook.md": {
+      "sha256": "f06753393eced8c45ba640011f8eaf1dc8aaa5c0d2f4448d2e1a9c1a50e32311",
+      "bytes": 137016
+    },
+    "docs/references/Offensive_Playcalling_Glossary_453_Terms.md": {
+      "sha256": "25a9a9a0bc51ad6a4889d12ef282201f007e5bd05fccb7f981db82c373c05609",
+      "bytes": 37688
+    },
+    "docs/references/Running_Back_Mechanics_Textbook.md": {
+      "sha256": "52b679d0ecbd1646406dcb61cfe31db3a7a4a5728c3e9137a96f4651784d140a",
+      "bytes": 81632
+    },
+    "docs/references/offensive_line_protection_textbook.pdf": {
+      "sha256": "85b670e0ac0342987bef31bb54b9e853cb6d21487b8867c827e423f55bdc90ff",
+      "bytes": 437326
+    },
+    "data/reviews/physics-world/offense-process/run-process.json": {
+      "sha256": "a5f0f7505d2d95fd860196b6a1930dae389e5bc36b0bedba57043e0754f74f0d",
+      "bytes": 1929862
+    },
+    "data/reviews/physics-world/offense-process/README.md": {
+      "sha256": "d645b544f3f7fe95e04cdefc6cf5370fd033faca16350a20424e726e84d37f86",
+      "bytes": 3456
+    }
+  }
+}

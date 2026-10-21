@@ -18,11 +18,12 @@ import { CENTER_Y } from '../core/field.js';
 import { overallAt, ROLE_BY_ID, roleSuitability } from '../players/roles.js';
 import { r01, type Player } from '../players/types.js';
 import type { ManPreference } from '../playbook/alignment.js';
+import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/call-integrity.js';
 import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONTS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
-import { OFF_PERSONNEL } from '../playbook/types.js';
+import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import type { Team } from '../league/team.js';
 
 export interface Situation {
@@ -196,17 +197,20 @@ export class OffensiveCoordinator {
     const gapFit = avg(ol.map((p) => roleSuitability(p, ROLE_BY_ID.OL_POWER)));
     const weights: Array<[RunConcept, number]> = RUN_CONCEPTS.map((c) => {
       let w = 1;
-      const zone = c.scheme === 'insideZone' || c.scheme === 'outsideZone';
-      const gap = c.scheme === 'power' || c.scheme === 'counter' || c.scheme === 'trap';
+      const zone = c.scheme === 'insideZone' || c.scheme === 'outsideZone' || c.scheme === 'wideZone' || c.scheme === 'splitZone';
+      const gap = c.scheme === 'power' || c.scheme === 'counter' || c.scheme === 'trap' || c.scheme === 'duo';
       if (zone) w *= scheme === 'wide-zone' ? 2.4 : 1.2;
-      if (c.scheme === 'outsideZone') w *= scheme === 'wide-zone' ? 1.6 : 0.8;
+      if (c.scheme === 'outsideZone' || c.scheme === 'wideZone') w *= scheme === 'wide-zone' ? 1.6 : 0.8;
+      if (c.scheme === 'splitZone' && !Object.entries(f.slots).some(([slot,p]) =>
+        (slot === 'F' || ((slot === 'H' || slot === 'Y') && (f.personnel === '12' || f.personnel === '22')))
+        && p && p.depth > .9 && (p.split === 'core' || p.split === 'wing' || (typeof p.split === 'number' && p.split < 6)))) w = 0;
       if (gap) w *= scheme === 'power' ? 2.0 : 0.9;
       w *= Math.exp(((zone ? zoneFit : gap ? gapFit : (zoneFit + gapFit) / 2) - 55) / 25);
       if (c.scheme === 'power' && hasFB) w *= 1.5;
       if (c.scheme === 'draw') w *= gun ? 1.2 : 0.5;
       if (c.scheme === 'toss') w *= gun ? 0.1 : 0.8;
       if (c.scheme === 'qbDraw') w *= gun && mobile ? 0.6 : 0;
-      if (s.distance <= 2 && (c.scheme === 'outsideZone' || c.scheme === 'toss' || c.scheme === 'draw')) w *= 0.4;
+      if (s.distance <= 2 && (c.scheme === 'outsideZone' || c.scheme === 'wideZone' || c.scheme === 'toss' || c.scheme === 'draw')) w *= 0.4;
       w *= this.learned(`run:${c.scheme}`);
       return [c, w];
     });
@@ -260,7 +264,7 @@ export class DefensiveCoordinator {
 
   /** Feed back the offense's success against a coverage (higher = worse for us). */
   observe(call: DefensivePlayCall, offenseSuccess: number): void {
-    const k = call.coverage.id;
+    const k = call.coverage.family ?? call.coverage.id;
     const l = this.learn.get(k) ?? { n: 0, sum: 0 };
     l.n++;
     l.sum += offenseSuccess;
@@ -293,32 +297,68 @@ export class DefensiveCoordinator {
       fronts.map((f) => [f, scheme === '4-3' && (f.id === 'over' || f.id === 'under') ? 2 : scheme === 'nickel-heavy' && f.id === 'wide9' ? 2 : 1] as [typeof f, number]),
     );
 
-    // Coverage mix.
+    // Coverage: family from NFL situational shares (2022 dropbacks, PFF
+    // charting; scripts/data/bdb2025_defense_calls.py), shaped by the
+    // coordinator's tree and the man matchup; then the variant his system
+    // plays within that family.
     const manScale = coach.manRate / 0.4;
     const cbs = this.team.roster.filter((p) => p.position === 'CB').sort((a, b) => b.ratings.manCoverage - a.ratings.manCoverage).slice(0, 2);
     const wrs = Object.values(offSlots).filter((p): p is Player => !!p && p.position === 'WR');
     const cbMan = avg(cbs.map((p) => p.ratings.manCoverage));
     const wrRoute = avg(wrs.map((p) => (p.ratings.routeRunning + p.ratings.releaseVsPress) / 2));
     const matchupEdge = Math.exp((cbMan - wrRoute) / 25);
-    const covW: Array<[string, number]> = [
-      ['cover3', 28],
-      ['cover1', 18 * manScale * matchupEdge],
-      ['cover2', 10],
-      ['cover4', 16],
-      ['cover6', 7],
-      ['tampa2', 5],
-      ['cover2man', 6 * manScale * matchupEdge],
-      ['cover0', 3 * manScale],
+    const system = coach.coverageSystem;
+    const toGoal = 100 - s.yardline;
+    const famW: Array<[string, number]> = [
+      ['cover3', 31.8], ['cover1', 21 * manScale * matchupEdge], ['cover2', 12], ['tampa2', 2.5],
+      ['cover4', 13.1], ['cover6', 9.6], ['cover2man', 1.8 * manScale * matchupEdge], ['cover0', 3.6 * manScale],
     ];
-    for (const cw of covW) {
-      if (passingDown && ['cover4', 'cover2', 'cover2man', 'tampa2', 'cover6'].includes(cw[0])) cw[1] *= 1.6;
-      if (passingDown && cw[0] === 'cover0') cw[1] *= 0.4;
-      if (s.distance <= 2 && (cw[0] === 'cover1' || cw[0] === 'cover0' || cw[0] === 'cover3')) cw[1] *= 1.6;
-      if (100 - s.yardline <= 20 && (cw[0] === 'cover1' || cw[0] === 'cover0')) cw[1] *= 1.6;
-      if (s.hurry && s.scoreDiff < 0 && ['cover2', 'cover4', 'cover6', 'tampa2'].includes(cw[0])) cw[1] *= 2;
-      cw[1] *= this.learned(cw[0]);
+    const SYSTEM: Record<string, Record<string, number>> = {
+      'single-high': { cover3: 1.5, cover1: 1.2, cover4: 0.5, cover6: 0.5, cover2: 0.6, tampa2: 0.5 },
+      quarters: { cover4: 1.7, cover6: 1.3, cover3: 0.9, cover1: 0.9, cover2: 0.6, tampa2: 0.3 },
+      'two-high': { cover6: 1.8, cover4: 1.3, cover2: 1.4, cover3: 0.85, cover1: 0.6, cover0: 0.5 },
+      tampa: { cover2: 1.6, tampa2: 4, cover3: 1.0, cover1: 0.7, cover4: 0.7, cover6: 0.8 },
+      'pressure-man': { cover1: 1.5, cover0: 2.2, cover2man: 1.5, cover3: 0.9, cover4: 0.6, cover6: 0.6, cover2: 0.6 },
+    };
+    for (const fw of famW) {
+      const f = fw[0];
+      fw[1] *= SYSTEM[system]?.[f] ?? 1;
+      if (s.down >= 3 && s.distance >= 3 && s.distance <= 6) fw[1] *= f === 'cover1' ? 2 : f === 'cover0' ? 1.5 : f === 'cover2man' ? 1.4 : 0.6;
+      else if (s.down >= 3 && s.distance >= 7 && s.distance <= 10) fw[1] *= f === 'cover1' ? 1.5 : 1;
+      else if (passingDown && s.distance >= 11) fw[1] *= f === 'cover4' ? 1.4 : f === 'cover2' || f === 'tampa2' ? 1.25 : f === 'cover1' ? 0.55 : f === 'cover0' ? 0.3 : 1;
+      if (s.distance <= 2) fw[1] *= f === 'cover1' ? 1.8 : f === 'cover0' ? 3 : 1;
+      if (toGoal <= 5) fw[1] *= f === 'cover0' ? 4 : f === 'cover1' ? 1.8 : f === 'cover2' || f === 'cover4' || f === 'tampa2' ? 0.7 : 1;
+      else if (toGoal <= 20) fw[1] *= f === 'cover1' ? 1.4 : f === 'cover0' ? 1.5 : 1;
+      if (s.hurry && s.scoreDiff < 0 && ['cover2', 'cover4', 'cover6', 'tampa2'].includes(f)) fw[1] *= 2;
+      fw[1] *= this.learned(f);
     }
-    const coverage = COVERAGE_BY_ID[pickWeighted(rng, covW)];
+    // Variants within the family by tree; spot vs. match by the coach's habit.
+    const m = coach.matchRate;
+    const VARIANTS: Record<string, Array<[string, number]>> = {
+      cover3: [['cover3', 1.1 - m], ['cover3_match', m * 0.75], ['cover3_seam', 0.18], ['cover9', system === 'two-high' ? 0.6 : 0.03],
+        ['cover3_buzz', system === 'single-high' || system === 'two-high' ? 0.3 : 0.12], ['cover3_cloud', system === 'two-high' ? 0.25 : 0.05]],
+      cover1: [['cover1', 0.45], ['cover1_off', 0.25], ['cover1_robber', system === 'single-high' ? 0.3 : 0.15], ['cover1_double', 0.04 * (1 + (coach.shadow ? 1 : 0))]],
+      cover2: [['cover2', 1 - m], ['cover2_match', m], ['cover2_invert', system === 'two-high' ? 0.15 : 0.04]],
+      tampa2: [['tampa2', 1]],
+      cover4: [['cover4', 0.45], ['cover4_meg', system === 'quarters' ? 0.3 : 0.15], ['cover4_palms', system === 'quarters' || system === 'two-high' ? 0.4 : 0.2]],
+      cover6: [['cover6', 0.45], ['cover6_rev', 0.45], ['split_quarters_2man', system === 'quarters' ? 0.25 : 0.08]],
+      cover2man: [['cover2man', 1]],
+      cover0: [['cover0', 1]],
+    };
+    // Eligibility belongs to the actual variant's named zone players. Cover
+    // 9/inverted 2 retain a roof without FS, but his weak flat remains missing;
+    // reject that installation rather than invent a replacement silently.
+    const availableVariants = Object.fromEntries(Object.entries(VARIANTS).map(([family, variants]) =>
+      [family, variants.filter(([id]) => coverageHasNamedZonePlayers(personnel, COVERAGE_BY_ID[id]))]));
+    const family = pickWeighted(rng, famW.filter(([id]) => availableVariants[id]?.length));
+    const coverage = COVERAGE_BY_ID[pickWeighted(rng, availableVariants[family])];
+    // Zeus: a two-high tree doubles the opponent's best receiver with Cover 8 /
+    // Stuff / Quads, chosen by where he lines up (resolved at the snap).
+    let zeus: SkillSlot | undefined;
+    if (system === 'two-high' && coach.shadow && (family === 'cover6' || family === 'cover4') && rng.chance(0.5)) {
+      const wr1 = [...Object.entries(offSlots)].filter(([, p]) => p && p.position === 'WR').sort((a, b) => overallAt(b[1]!) - overallAt(a[1]!))[0];
+      if (wr1) zeus = wr1[0] as SkillSlot;
+    }
 
     // Pressure.
     const qb = offSlots.QB ?? bestAt(offense, 'QB');
@@ -328,10 +368,15 @@ export class DefensiveCoordinator {
     if (s.hurry && s.scoreDiff < 0) blitz -= 0.12;
     let pressure = null;
     if (rng.chance(blitz)) {
-      const options = PRESSURES.filter((p) => p.coverages.includes(coverage.id) && Object.keys(p.blitzers).every((slot) => personnelHas(personnel, slot as DefSlot)));
+      const options = PRESSURES.filter((p) => pressureIsInstallable(personnel, front, coverage, p));
       if (options.length) pressure = rng.pick(options);
     }
-    if (coverage.id === 'cover0' && !pressure) pressure = PRESSURES.find((p) => p.id === 'zero_6')!;
+    if (coverage.id === 'cover0' && !pressure) {
+      // Dime has no Will slot. Keep an installed zero-help pressure instead
+      // of silently dropping an absent participant from a named six-man call.
+      const options = PRESSURES.filter((p) => pressureIsInstallable(personnel, front, coverage, p));
+      pressure = options.find((p) => p.id === 'zero_6') ?? options.find((p) => p.id === 'mike_a') ?? null;
+    }
 
     // Shadow: best corner on their best receiver in man coverage.
     const prefs: ManPreference = {};
@@ -344,31 +389,42 @@ export class DefensiveCoordinator {
     let shown: Coverage | undefined;
     const safeties = this.team.roster.filter((p) => p.position === 'S').sort((a, b) => overallAt(b) - overallAt(a)).slice(0, 2);
     const dbIQ = safeties.length ? avg(safeties.map((p) => r01(p.ratings.playRecognition))) : 0.5;
-    if (rng.chance(coach.disguise * (0.6 + 0.8 * dbIQ))) {
-      const pool = coverage.shell === 'one-high' || coverage.id === 'cover0' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];
-      shown = COVERAGE_BY_ID[rng.pick(pool.filter((id) => id !== coverage.id))];
+    // Two-high trees show two high on everything; the rest disguise by habit.
+    const look = coverage.look ?? coverage.shell;
+    const disguiseRate = system === 'two-high' && look !== 'two-high' ? 0.85 : coach.disguise * (0.6 + 0.8 * dbIQ);
+    if (rng.chance(disguiseRate)) {
+      const pool = look === 'one-high' || look === 'zero' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];
+      const available = pool.filter((id) => id !== coverage.id && coverageHasNamedZonePlayers(personnel, COVERAGE_BY_ID[id]));
+      if (available.length) shown = COVERAGE_BY_ID[rng.pick(available)];
     }
     // Zone technique: pattern-match or spot drop. Quarters is match by nature.
     let zoneStyle: ZoneStyle | undefined;
     if (!coverage.man) {
-      const quarters = coverage.id === 'cover4' || coverage.id === 'cover6';
-      zoneStyle = rng.chance(Math.min(1, coach.matchRate + (quarters ? 0.3 : 0))) ? 'match' : 'spot';
+      // Pattern-match calls are match by definition; the classic calls are
+      // played match or spot-drop by the coach's habit.
+      const ruled = Object.values(coverage.roles).some((r) => r?.kind === 'zone' && r.rule) || coverage.underneath.some((u) => typeof u !== 'string' && u.rule);
+      zoneStyle = ruled || rng.chance(coach.matchRate) ? 'match' : 'spot';
     }
     const styleTag = zoneStyle === 'spot' ? ' (spot)' : zoneStyle === 'match' ? ' (match)' : '';
+    const motionRng=rng.fork(`movement:${front.id}:${coverage.id}`);
+    const alternatives=fronts.filter((f)=>f.id!==front.id);
+    const frontStem=alternatives.length && motionRng.chance(coach.disguise*.35) ? {
+      from:motionRng.pick(alternatives),secondsBeforeSnap:motionRng.range(.4,1.6),
+    } : undefined;
+    // Only an installed pressure participant can creep.
+    const pressureSlots=pressure ? (Object.keys(pressure.blitzers) as DefSlot[]).filter((slot)=>personnelHas(personnel,slot)) : [];
+    const creep=pressureSlots.length && motionRng.chance(coach.disguise*.5) ? {
+      slot:motionRng.pick(pressureSlots),secondsBeforeSnap:motionRng.range(.3,1.2),
+    } : undefined;
     return {
-      call: { personnel, front, coverage, pressure, shown, zoneStyle, label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
+      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick, zeus,
+        runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
+        label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
       prefs,
     };
   }
 }
 
 function personnelHas(p: DefPersonnelId, slot: DefSlot): boolean {
-  const table: Record<DefPersonnelId, DefSlot[]> = {
-    base43: ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'LB_S', 'LB_M', 'LB_W', 'CB_S', 'CB_W', 'FS', 'SS'],
-    base34: ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT', 'LB_M', 'LB_W', 'CB_S', 'CB_W', 'FS', 'SS'],
-    nickel: ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'LB_M', 'LB_W', 'CB_S', 'CB_W', 'NB', 'FS', 'SS'],
-    dime: ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'LB_M', 'CB_S', 'CB_W', 'NB', 'DB', 'FS', 'SS'],
-    goalline: ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT', 'LB_S', 'LB_M', 'LB_W', 'CB_S', 'CB_W', 'SS'],
-  };
-  return table[p].includes(slot);
+  return !!DEF_PERSONNEL[p][slot];
 }

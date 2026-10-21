@@ -23,9 +23,12 @@ import type { DropType, PassConcept, ReceiverRef } from '../../playbook/types.js
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { BallCarrier } from './carrier.js';
+import { handoffReach } from '../ball-transfer.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
+import type { ReplayTelemetryFrame } from '../types.js';
+import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -80,11 +83,21 @@ export class QBPass implements Behavior {
   /** Look-off: eyes on a decoy to move the safety before the first read. */
   private lookOff: { until: number; decoy: Agent } | null = null;
   private lookOffChecked = false;
+  private readonly receiverForecasts = new Map<Agent, ReceiverForecast>();
+
+  /** Existing private state only; never evaluates a fresh throw window. */
+  recordedState(): Omit<NonNullable<ReplayTelemetryFrame['qb']>, 'eyes' | 'belief' | 'best'> {
+    const p = this.pending;
+    return { phase: this.phase, read: this.reads[this.readIdx]?.idx ?? null, pressure: this.underPressure,
+      pending: p ? { target: p.target.idx, point: [p.point.x, p.point.y, p.point.z], flightTime: p.T,
+        completion: p.P, interceptionRisk: p.intRisk, value: p.value } : null };
+  }
 
   constructor(
     a: Agent,
     private readonly sim: PlaySim,
     private readonly concept: PassConcept,
+    receiverPriors: ReadonlyMap<Agent, InstalledReceiverRoute>,
   ) {
     const gun = sim.offCall.formation.qb !== 'under';
     this.snapAt = gun ? 0.3 : 0.1;
@@ -94,6 +107,7 @@ export class QBPass implements Behavior {
     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);
     if (concept.family === 'playaction') this.fakeUntil = 0.7;
     this.mind = sim.qbMind;
+    for (const [r, prior] of receiverPriors) this.receiverForecasts.set(r, new ReceiverForecast(a, prior, sim.dt));
   }
 
   /** Called after all behaviors are assigned (receivers exist). */
@@ -102,7 +116,7 @@ export class QBPass implements Behavior {
     const seen = new Set<Agent>();
     for (const ref of refs) {
       const r = this.receiverFor(sim, ref);
-      if (r && !seen.has(r)) {
+      if (r?.behavior.passOption && !seen.has(r)) {
         this.reads.push(r);
         seen.add(r);
       }
@@ -167,9 +181,17 @@ export class QBPass implements Behavior {
     const t = sim.t;
     if (sim.carrier !== a) return stand();
     const facingDown = 0;
+    // Wrapped up by a tackler he cannot start a throw (with only a hand on him he
+    // still can); a throw already on its way comes out, wobbling.
+    if (heldBy(a, sim) >= 0.6 && this.phase !== 'windup') return stand();
 
     // Eyes: what he looks at is what he sees; everything else is memory and belief.
-    this.mind.observe(this.gazePoint(sim));
+    const gaze = this.gazePoint(sim);
+    this.mind.observe(gaze);
+    for (const [r, forecast] of this.receiverForecasts) {
+      const picture = this.mind.receiverLook(r, gaze);
+      if (picture) forecast.acquire(picture);
+    }
     if (this.mind.justIdentified && this.readIdx === 0) this.reads = this.orderReads(sim, this.reads);
 
     if (this.phase === 'snap') {
@@ -201,6 +223,7 @@ export class QBPass implements Behavior {
       // Play-action: sell the fake first.
       if (t < this.fakeUntil) {
         const rb = sim.slot('RB');
+        if (rb) sim.presentHandoffFake(a, rb);
         const fakePt = rb ? { x: sim.los - 4.2, y: (a.pos.y + rb.pos.y) / 2 } : target;
         return goTo(a, fakePt, { speed: 0.6, facing: Math.PI / 2 * Math.sign(fakePt.y - a.pos.y || 1) });
       }
@@ -221,7 +244,7 @@ export class QBPass implements Behavior {
     // ---- set: reading the field ----
     // Quick game is rhythm: one look per read. Dropback reads take longer.
     const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
-    const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm;
+    const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus));
     const timeSet = t - this.setAt;
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
     const clockUrgency = clamp((timeSet + this.snapAt + this.drop.time - this.clock) / 0.8, 0, 1);
@@ -298,12 +321,16 @@ export class QBPass implements Behavior {
   }
 
   private gazePoint(sim: PlaySim): Vec2 {
-    if (this.lookOff && sim.t < this.lookOff.until) return this.lookOff.decoy.pos;
+    const heldPoint = (r: Agent): Vec2 => {
+      const forecast = this.receiverForecasts.get(r);
+      return forecast?.predict(sim.t, 0) ?? forecast?.prior.start ?? { x: sim.los + 10, y: sim.ballY };
+    };
+    if (this.lookOff && sim.t < this.lookOff.until) return heldPoint(this.lookOff.decoy);
     if (this.phase === 'windup' && this.pending) return this.pending.point;
     const read = this.reads[this.readIdx];
     // During the drop: the key (middle-of-field safety); quick game eyes the first read.
     if ((this.phase === 'snap' || this.phase === 'drop') && this.concept.family !== 'quick') return { x: sim.los + 12, y: sim.ballY };
-    return read ? read.pos : { x: sim.los + 10, y: sim.ballY };
+    return read ? heldPoint(read) : { x: sim.los + 10, y: sim.ballY };
   }
 
   private ready(r: Agent, sim: PlaySim): boolean {
@@ -324,12 +351,19 @@ export class QBPass implements Behavior {
     const pp = a.r('pocketPresence');
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
-      if (d.engagement && d.engagement.win < 0.75) continue;
+      // Pocket feel: a rusher still in a block arrives later the more square
+      // the block is. Good pocket presence reads a rep being lost before the
+      // rusher is free; poor pocket presence only notices when he's loose.
+      let held = 0;
+      if (d.engagement) {
+        const feltWin = Math.min(1, d.engagement.win) * (0.35 + 0.65 * pp);
+        held = 0.35 + 1.4 * (1 - feltWin);
+      }
       // Blind-side rushers are sensed late by QBs with poor pocket presence.
       const ang = Math.abs(Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing);
       const blind = ang > 1.8 && ang < 4.5;
       const seen = sim.see(a, d, blind ? 2.2 - 1.4 * pp : 1);
-      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + (d.engagement ? 0.35 : 0);
+      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + held;
       if (tt < best) {
         best = tt;
         who = d;
@@ -341,17 +375,19 @@ export class QBPass implements Behavior {
 
   private evaluate(a: Agent, sim: PlaySim, r: Agent, urgency: number): ThrowEval | null {
     if (r.isDown(sim.t) || r.engagement) return null;
-    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     const wind = this.windup(a);
     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
-    const predict = (dt: number): Vec2 => (rr ? rr.predict(r, dt) : { x: r.pos.x + r.vel.x * dt, y: r.pos.y + r.vel.y * dt });
+    const forecast = this.receiverForecasts.get(r);
+    const current = forecast?.predict(sim.t, 0);
+    if (!forecast || !current) return null;
+    const predict = (dt: number): Vec2 => forecast.predict(sim.t, dt)!;
     // Natural throw: the flight time real QBs use at this distance (2023
     // tracking: ~0.6 s under 10 yd, 0.8 s at 15, 1.2 s at 25, 1.8 s at 35,
     // 2.5 s at 45), never faster than his arm allows. Stronger arms get there
     // a little sooner.
     const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
     const natural = (d: number) => (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
-    let range = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
+    let range = Math.hypot(current.x - a.pos.x, current.y - a.pos.y);
     let T = Math.max(0.3, natural(range));
     let Tmin = T;
     let pt = predict(wind + T);
@@ -394,10 +430,11 @@ export class QBPass implements Behavior {
       // Not where the defender is: where the QB thinks he is.
       const seen = this.mind.estimate(d);
       const mover = { pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
-      const facingQB = Math.cos(d.body.facing - Math.atan2(a.pos.y - d.pos.y, a.pos.x - d.pos.x)) > 0.2;
+      const facingQB = Math.cos(seen.facing - Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x)) > 0.2;
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
       const tt = timeToReach(mover, point, d.profile.reach + 0.3) + react;
-      const m = tt - total + sim.rng.normal(0, noise);
+      const estimateError = a.mind.judgment(`reach:${d.slot}`) * noise;
+      const m = tt - total + estimateError;
       const contest = 1 - logistic((m - 0.05) / 0.13);
       // A defender who gets there well before the ball is sitting on the route.
       const first = 1 - logistic((m + 0.3) / 0.13);
@@ -411,7 +448,7 @@ export class QBPass implements Behavior {
         const b = arcPoint(from, v0, tau);
         if (b.z > leap + 0.1) continue;
         const tb = timeToReach(mover, b, d.profile.reach) + react;
-        const mb = tb - (wind + tau) + sim.rng.normal(0, noise);
+        const mb = tb - (wind + tau) + estimateError;
         touch = Math.max(touch, logistic(-(mb - 0.05) / 0.1));
       }
       pClear *= 1 - touch * 0.75;
@@ -449,7 +486,7 @@ export class QBPass implements Behavior {
     sigma *= 1 + 0.7 * urgency * (1.1 - a.r('composure'));
     if (a.speed > 2.2) sigma *= 1.15 + 0.45 * (1 - a.r('throwOnRun'));
     sigma *= 1 + 0.25 * (1 - a.body.energy);
-    void sim;
+    sigma *= 1 + 2.5 * heldBy(a, sim);
     return sigma;
   }
 
@@ -466,10 +503,9 @@ export class QBPass implements Behavior {
     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
     // Re-aim at release with the latest prediction.
     const r = ev.target;
-    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     let point = ev.point;
-    if (rr) {
-      const p = rr.predict(r, ev.T);
+    const p = this.receiverForecasts.get(r)?.predict(sim.t, ev.T);
+    if (p) {
       point = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
     }
     const dist = Math.hypot(point.x - from.x, point.y - from.y);
@@ -501,10 +537,12 @@ export class QBPass implements Behavior {
   private shouldScramble(a: Agent, sim: PlaySim, panic: boolean): boolean {
     const mobility = 0.5 * clamp((5.0 - a.player.measurables.forty) / 0.6, 0, 1) + 0.5 * a.r('elusiveness');
     if (!panic && mobility < 0.18) return false;
-    // Is there a lane? Check points a few yards upfield.
+    // Is there a lane? Check points a few yards upfield; under pressure also
+    // escapes outside the pocket to either side.
     let open = 0;
-    for (const dy of [-4, -2, 0, 2, 4]) {
-      const q = { x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + dy, 1, FIELD_WIDTH - 1) };
+    const lanes = [-4, -2, 0, 2, 4].map((dy) => ({ x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + dy, 1, FIELD_WIDTH - 1) }));
+    if (panic) for (const side of [-1, 1]) lanes.push({ x: a.pos.x + 1, y: clamp(a.pos.y + side * 5.5, 1, FIELD_WIDTH - 1) });
+    for (const q of lanes) {
       const myT = Math.hypot(q.x - a.pos.x, q.y - a.pos.y) / (a.profile.vmax * 0.8);
       let margin = Infinity;
       for (const d of sim.defense) {
@@ -520,6 +558,7 @@ export class QBPass implements Behavior {
   private scramble(a: Agent, sim: PlaySim): MoveCommand {
     sim.scrambled = true;
     sim.stats.scramble = true;
+    sim.stats.rusher = a.player.id;
     sim.event('scramble', a);
     a.behavior = new BallCarrier({ qb: true }, a);
     return a.behavior.update(a, sim);
@@ -537,25 +576,35 @@ export class QBPass implements Behavior {
   }
 
   private pocketMove(a: Agent, sim: PlaySim, read: Agent | undefined): MoveCommand {
-    // Hold the set point, sliding away from nearby rushers; step up vs. edge pressure.
+    // Hold the set point, sliding away from nearby rushers. When an edge rusher
+    // gets to his depth outside him — the tackle riding him past — he climbs
+    // into the pocket before the rusher can turn the corner. He reacts to what
+    // he sees and feels: a rusher behind his shoulder registers late, and
+    // pocket presence decides how early he senses the edge closing.
+    const pp = a.r('pocketPresence');
     let fx = 0;
     let fy = 0;
     let edge = false;
     for (const d of sim.defense) {
-      const dx = a.pos.x - d.pos.x;
-      const dy = a.pos.y - d.pos.y;
+      if (d.isDown(sim.t)) continue;
+      const ang = Math.abs(Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing);
+      const blind = ang > 1.8 && ang < 4.5;
+      const seen = sim.see(a, d, blind ? 2.2 - 1.4 * pp : 1).pos;
+      const dx = a.pos.x - seen.x;
+      const dy = a.pos.y - seen.y;
       const dd = Math.hypot(dx, dy);
-      if (dd > 3.5 || dd < 1e-3) continue;
+      if (dd < 1e-3) continue;
+      if (Math.abs(dy) > 1.6 && seen.x <= a.pos.x + 1.5 && dd < 2.5 + 3 * pp) edge = true;
+      if (dd > 3.5) continue;
       const w = (3.5 - dd) / 3.5;
       fx += (dx / dd) * w;
       fy += (dy / dd) * w;
-      if (Math.abs(dy) > 1.6 && d.pos.x <= a.pos.x + 0.5) edge = true;
     }
-    const home = { x: this.drop.x + (edge ? 1.8 : 0), y: this.dropY };
-    const tx = home.x + fx * 2 * a.r('pocketPresence');
-    const ty = home.y + fy * 2 * a.r('pocketPresence');
+    const home = { x: this.drop.x + (edge ? 1.8 + 1.2 * pp : 0), y: this.dropY };
+    const tx = home.x + fx * 2 * pp;
+    const ty = home.y + fy * 2 * pp;
     const facing = read ? angleTo(a.pos, read.pos) : 0;
-    return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: 0.45, facing });
+    return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: edge ? 0.6 : 0.45, facing });
   }
 }
 
@@ -563,6 +612,7 @@ export class QBPass implements Behavior {
 export class QBHandoff implements Behavior {
   readonly kind = 'qb-handoff';
   private handed = false;
+  private exchangeClosing = false;
   constructor(
     private readonly mesh: Vec2,
     private readonly meshTime: number,
@@ -573,8 +623,12 @@ export class QBHandoff implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (this.handed || sim.carrier !== a) {
-      // Carry out the fake away from the play.
-      const away = a.pos.y + Math.sign(a.pos.y - this.mesh.y || 1) * 4;
+      if (this.handed) sim.pretendCarry(a);
+      // Carry out the fake away from the installed play, even after the
+      // exchange has taken the QB slightly across his own mesh spot.
+      const run = sim.offCall.run;
+      const playSide = run ? (run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign) : 0;
+      const away = a.pos.y + (playSide ? -playSide : Math.sign(a.pos.y - this.mesh.y || 1)) * 4;
       return goTo(a, { x: sim.los - 6, y: away }, { speed: 0.4 });
     }
     if (this.keeper && sim.t >= this.meshTime) {
@@ -585,17 +639,50 @@ export class QBHandoff implements Behavior {
     const rb = this.rb;
     if (rb && sim.t >= this.meshTime - 0.15) {
       const d = Math.hypot(rb.pos.x - a.pos.x, rb.pos.y - a.pos.y);
-      if (d <= this.pitchRange || sim.t > this.meshTime + 0.9) {
-        this.handed = true;
-        sim.handoff(a, rb);
+      if (this.pitchRange > handoffReach(a, rb) && d <= this.pitchRange) {
+        this.handed = sim.pitchBall(a, rb);
         return stand();
+      }
+      if (d <= handoffReach(a, rb)) {
+        this.handed = sim.handoff(a, rb);
+        return stand();
+      }
+      if (this.pitchRange <= handoffReach(a, rb)) {
+        const seen = sim.see(a, rb), dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
+        const radial = dx * (seen.vel.x - a.vel.x) + dy * (seen.vel.y - a.vel.y);
+        if (radial < 0) this.exchangeClosing = true;
+        const speed = Math.hypot(seen.vel.x, seen.vel.y), reach = handoffReach(a, rb);
+        // A delayed picture of the back has passed the mesh and our closest
+        // approach, outside reach and separating. Continuing this give would
+        // require a new recovery route, not the installed run-through track.
+        // Secure the ball and carry; do not chase him or extend transfer reach.
+        const pastMesh = (seen.pos.x - this.mesh.x) * seen.vel.x + (seen.pos.y - this.mesh.y) * seen.vel.y;
+        if (this.exchangeClosing && Math.hypot(dx, dy) > reach && radial > 0
+          && dx * seen.vel.x + dy * seen.vel.y > 0 && pastMesh > reach * speed) {
+          a.behavior = new BallCarrier({ qb: true }, a);
+          sim.stats.rusher = a.player.id;
+          sim.event('read', a, rb, 'exchange passed outside reach; secure and carry');
+          return a.behavior.update(a, sim);
+        }
       }
     }
     if (sim.t < 0.05) return stand();
-    // Quick reverse pivot / step to the mesh.
+    // Quick reverse pivot / step to the mesh. Once the back is already on it
+    // and riding past, ride with him: put the ball where he is going.
+    if (rb && sim.t >= this.meshTime - 0.3 && Math.hypot(rb.pos.x - this.mesh.x, rb.pos.y - this.mesh.y) < 1.2) {
+      const seen = sim.see(a, rb), lead = { x: seen.pos.x + seen.vel.x * .2, y: seen.pos.y + seen.vel.y * .2 };
+      return goTo(a, lead, { speed: 1, facing: angleTo(a.pos, lead), through: 0 });
+    }
     const facing = angleTo(a.pos, this.mesh);
     return goTo(a, this.mesh, { speed: 1, facing, through: 0 });
   }
 }
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * clamp(t, 0, 1);
+
+/** The firmest grip a tackler has on `a` (0 when nobody is holding him). */
+function heldBy(a: Agent, sim: PlaySim): number {
+  const bond = sim.bond;
+  if (!bond || bond.carrier !== a) return 0;
+  return Math.max(0, ...bond.tacklers.map((d) => bond.grip?.get(d) ?? 1));
+}

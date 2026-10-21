@@ -1,0 +1,238 @@
+{
+  "schema": "helper-coverage-summary-v1",
+  "parentCommit": "bf8a487794bf76505262a260572f2882f5190049",
+  "baselineSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "finalSource": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+  "unchangedWorld": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "changes": [
+    "Retain actual working helper hand load; request bounded foot replacement for unloaded unusable run fits.",
+    "Match curl-flat defender widens to observed shallow outward #2 in a bounded two-receiver conflict."
+  ],
+  "helpers": {
+    "originalFourGainsBefore": [
+      6.78,
+      -0.23,
+      3.11,
+      2.38
+    ],
+    "originalFourGainsAfter": [
+      6.77,
+      2.79,
+      1.38,
+      2.1
+    ],
+    "drawLeft": {
+      "beforeOwnerShedHelperImpulseStillZero": true,
+      "gainImprovementIsNotWonBlockProof": true
+    },
+    "selectedPower": {
+      "leftGainBefore": 0.68,
+      "leftGainAfter": 3.07,
+      "rightGainBefore": 2.08,
+      "rightGainAfter": 2.08,
+      "firstUsefulHandImpulseSecondsBefore": 1.2,
+      "firstUsefulHandImpulseSecondsAfter": 1.15,
+      "signedImpulseBefore1_50s": {
+        "before": [
+          58.247,
+          68.922
+        ],
+        "after": [
+          75.744,
+          84.072
+        ],
+        "units": "kg yd/s"
+      },
+      "selection": "Selected after broad panel; ordinary mirror declared before collection. Separate from original film."
+    }
+  },
+  "coverage": {
+    "nativePairs": 6,
+    "fixedTailGainBefore": 70,
+    "fixedTailGainAfter": 13.95,
+    "physicalDownSeconds": 5.5,
+    "exactControlExecutions": 4,
+    "unresolved70YardTails": [
+      "Cover 2 Curl Flat right",
+      "Cover 3 PA Post-Dig right"
+    ],
+    "adverseMirror": "Cover 3 left remains zero offensive gain but INT return rises 8.05 to 13.79 yd."
+  },
+  "runs": {
+    "n": 160,
+    "unchangedWholeExecution": 105,
+    "unchangedGain": 121,
+    "higherGain": 22,
+    "lowerGain": 17,
+    "newStuff": [
+      "CT-R1-power-over-L-S11"
+    ],
+    "resolvedStuff": [
+      "CT-R1-oz_strong-over-R-S3"
+    ],
+    "baseline": {
+      "meanGain": 2.5341875,
+      "stuff": 28,
+      "10plus": 4,
+      "meanYBC": 0.6311871038216119,
+      "wholePlayClimbs": 114,
+      "sampledLoadedHelperPairs": 100,
+      "OLTotals": {
+        "armImpulseSum": 1074500.8386257554,
+        "armWorkSum": 45091.84184984501,
+        "groundImpulseMagnitudeSum": 2807202.887586342,
+        "supportMotorWorkSum": 0,
+        "deliveredStrikeCount": 717,
+        "falls": 6,
+        "downs": 5
+      },
+      "censors": 0,
+      "maxMomentumResidual": 7.219240077780636e-12,
+      "maxWorkResidual": 3.1443292414223833e-11,
+      "maxMotorWorkExcess": 0
+    },
+    "candidate": {
+      "meanGain": 2.616875,
+      "stuff": 28,
+      "10plus": 5,
+      "meanYBC": 0.6721293682019632,
+      "wholePlayClimbs": 115,
+      "sampledLoadedHelperPairs": 102,
+      "OLTotals": {
+        "armImpulseSum": 1085349.4717484773,
+        "armWorkSum": 45275.00352473298,
+        "groundImpulseMagnitudeSum": 2845798.82502141,
+        "supportMotorWorkSum": -106.21864371148615,
+        "deliveredStrikeCount": 718,
+        "falls": 7,
+        "downs": 5
+      },
+      "censors": 0,
+      "maxMomentumResidual": 7.219240077780636e-12,
+      "maxWorkResidual": 3.1443292414223833e-11,
+      "maxMotorWorkExcess": 0
+    }
+  },
+  "passing": {
+    "counts": {
+      "wholeExecutionUnchanged": 72,
+      "allRawFieldsUnchanged": 72,
+      "sameGain": 92,
+      "higherGain": 0,
+      "lowerGain": 4,
+      "sameStats": 92,
+      "sameQBReport": 96
+    },
+    "baseline": {
+      "snaps": 96,
+      "attempts": 78,
+      "completions": 55,
+      "sacks": 1,
+      "interceptions": 7,
+      "meanOffenseYards": 8.755104166666667,
+      "gain20plus": 12,
+      "physicalTimeouts": 0,
+      "QBpressureFlag": 4,
+      "drops": 6,
+      "scrambles": 17,
+      "missed": 6,
+      "broken": 17,
+      "separationAttemptNonThrowaway": {
+        "n": 61,
+        "mean": 3.265573770491803,
+        "median": 3.2,
+        "sum": 199.2
+      },
+      "YACcleanCompletions": {
+        "n": 55,
+        "mean": 9.384582805094187,
+        "median": 6.157687705250758,
+        "sum": 516.1520542801803
+      },
+      "airYardsAttemptsNonThrowaway": {
+        "n": 78,
+        "mean": 8.167281368014597,
+        "median": 4.355797457937506,
+        "sum": 637.0479467051387
+      },
+      "timeToThrow": {
+        "n": 78,
+        "mean": 2.5782051282051284,
+        "median": 2.45,
+        "sum": 201.1
+      }
+    },
+    "candidate": {
+      "snaps": 96,
+      "attempts": 78,
+      "completions": 55,
+      "sacks": 1,
+      "interceptions": 7,
+      "meanOffenseYards": 8.1665625,
+      "gain20plus": 11,
+      "physicalTimeouts": 0,
+      "QBpressureFlag": 4,
+      "drops": 6,
+      "scrambles": 17,
+      "missed": 6,
+      "broken": 17,
+      "separationAttemptNonThrowaway": {
+        "n": 61,
+        "mean": 3.2098360655737705,
+        "median": 3.1,
+        "sum": 195.8
+      },
+      "YACcleanCompletions": {
+        "n": 55,
+        "mean": 8.31013970988404,
+        "median": 5.803352410121349,
+        "sum": 457.0576840436222
+      },
+      "airYardsAttemptsNonThrowaway": {
+        "n": 78,
+        "mean": 8.190330389854491,
+        "median": 4.355797457937506,
+        "sum": 638.8457704086504
+      },
+      "timeToThrow": {
+        "n": 78,
+        "mean": 2.571794871794872,
+        "median": 2.45,
+        "sum": 200.6
+      }
+    }
+  },
+  "games": {
+    "n": 8,
+    "initialLeagues": 2,
+    "scrimmagePlaysBefore": 1023,
+    "scrimmagePlaysAfter": 1029,
+    "pointsPerTeamBefore": 46.5,
+    "pointsPerTeamAfter": 51.13,
+    "YPCBefore": 5.94,
+    "YPCAfter": 7.83,
+    "YACBefore": 10.55,
+    "YACAfter": 10.91,
+    "missedBrokenPerPlayBefore": 0.31,
+    "missedBrokenPerPlayAfter": 0.34,
+    "stuffPercentBefore": 23.45,
+    "stuffPercentAfter": 23.45,
+    "interpretation": "Worse aggregate guard; later call/RNG/snap populations diverge."
+  },
+  "cost": {
+    "CPUmsPerPlayBefore": 96.72748691099477,
+    "CPUmsPerPlayAfter": 104.67229057591622,
+    "CPUpercentHigher": 8.21359462407203
+  },
+  "validation": {
+    "TypeScriptTests": 1099,
+    "PythonTests": 66,
+    "typecheck": "pass",
+    "build": "pass",
+    "browserChecks": 38,
+    "clips": 20,
+    "originalFilmPairs": 10,
+    "videoExportDecoded": true
+  },
+  "readiness": "Demonstrated local controller progress. No overall NFL calibration improvement or universal physics OK."
+}

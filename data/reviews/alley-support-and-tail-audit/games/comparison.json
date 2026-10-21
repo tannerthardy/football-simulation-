@@ -1,0 +1,3044 @@
+{
+  "schema": "saved-eight-game-guard-v1",
+  "toolSha256": "74e3c1999e0716cb00d4bcf92731f08196b9191ff89f7d284bbb25f84760fc3f",
+  "baseline": {
+    "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+    "inputSha256": "d78296abd50cbae25eeea3f341115fa1aded0c767409c7b2f4e83b9df2a5a53a",
+    "games": 8,
+    "plays": 1029,
+    "pointsPerTeam": 51.125,
+    "runs": {
+      "n": 307,
+      "yards": 2402.48,
+      "mean": 7.825667752442997,
+      "median": 1.88,
+      "p95": 55.8,
+      "stuffs": 72,
+      "tenPlus": 49,
+      "twentyPlus": 30,
+      "missingYBC": 7
+    },
+    "top10RunYardsShare": 0.3308206519929406,
+    "YAC": {
+      "n": 401,
+      "mean": 10.911145438416494,
+      "median": 4.429552374980261
+    },
+    "missedBrokenPerPlay": 0.3362487852283771,
+    "attempts": 632,
+    "interceptions": 44,
+    "groups": {
+      "concept": {
+        "counter": {
+          "n": 26,
+          "yards": 52.400000000000006,
+          "mean": 2.0153846153846153,
+          "median": -0.275,
+          "p95": 5.48,
+          "stuffs": 14,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "draw": {
+          "n": 15,
+          "yards": 18.240000000000002,
+          "mean": 1.216,
+          "median": -1.48,
+          "p95": 20.66,
+          "stuffs": 11,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "duo": {
+          "n": 39,
+          "yards": 202.0,
+          "mean": 5.17948717948718,
+          "median": 1.88,
+          "p95": 12.86,
+          "stuffs": 3,
+          "tenPlus": 3,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "insideZone": {
+          "n": 50,
+          "yards": 455.8,
+          "mean": 9.116,
+          "median": 2.0949999999999998,
+          "p95": 65,
+          "stuffs": 5,
+          "tenPlus": 9,
+          "twentyPlus": 4,
+          "missingYBC": 2
+        },
+        "outsideZone": {
+          "n": 44,
+          "yards": 746.29,
+          "mean": 16.961136363636363,
+          "median": 6.83,
+          "p95": 73.54,
+          "stuffs": 1,
+          "tenPlus": 17,
+          "twentyPlus": 10,
+          "missingYBC": 2
+        },
+        "power": {
+          "n": 42,
+          "yards": 285.78000000000003,
+          "mean": 6.804285714285714,
+          "median": 0.935,
+          "p95": 46.8,
+          "stuffs": 14,
+          "tenPlus": 4,
+          "twentyPlus": 4,
+          "missingYBC": 0
+        },
+        "splitZone": {
+          "n": 9,
+          "yards": 20.07,
+          "mean": 2.23,
+          "median": 1.53,
+          "p95": 6.96,
+          "stuffs": 2,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "toss": {
+          "n": 12,
+          "yards": 114.22,
+          "mean": 9.518333333333334,
+          "median": 3.4000000000000004,
+          "p95": 64.2,
+          "stuffs": 3,
+          "tenPlus": 2,
+          "twentyPlus": 2,
+          "missingYBC": 1
+        },
+        "trap": {
+          "n": 34,
+          "yards": 171.9,
+          "mean": 5.055882352941176,
+          "median": 1.0350000000000001,
+          "p95": 39.4,
+          "stuffs": 14,
+          "tenPlus": 4,
+          "twentyPlus": 3,
+          "missingYBC": 0
+        },
+        "wideZone": {
+          "n": 36,
+          "yards": 335.78000000000003,
+          "mean": 9.327222222222222,
+          "median": 4.875,
+          "p95": 64.3,
+          "stuffs": 5,
+          "tenPlus": 8,
+          "twentyPlus": 4,
+          "missingYBC": 2
+        }
+      },
+      "coverage": {
+        "cover0": {
+          "n": 14,
+          "yards": 112.39,
+          "mean": 8.027857142857142,
+          "median": 1.4549999999999998,
+          "p95": 86,
+          "stuffs": 4,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 1
+        },
+        "cover1": {
+          "n": 38,
+          "yards": 377.24,
+          "mean": 9.927368421052632,
+          "median": 2.16,
+          "p95": 69.98,
+          "stuffs": 7,
+          "tenPlus": 7,
+          "twentyPlus": 4,
+          "missingYBC": 2
+        },
+        "cover1_double": {
+          "n": 3,
+          "yards": 7.960000000000001,
+          "mean": 2.6533333333333333,
+          "median": 1.72,
+          "p95": 5.48,
+          "stuffs": 0,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover1_off": {
+          "n": 17,
+          "yards": 94.58,
+          "mean": 5.563529411764706,
+          "median": 1.34,
+          "p95": 39.4,
+          "stuffs": 3,
+          "tenPlus": 3,
+          "twentyPlus": 2,
+          "missingYBC": 1
+        },
+        "cover1_robber": {
+          "n": 20,
+          "yards": 161.35999999999999,
+          "mean": 8.068,
+          "median": 1.01,
+          "p95": 44.56,
+          "stuffs": 9,
+          "tenPlus": 4,
+          "twentyPlus": 3,
+          "missingYBC": 1
+        },
+        "cover2": {
+          "n": 11,
+          "yards": 63.86,
+          "mean": 5.805454545454546,
+          "median": 5.53,
+          "p95": 11.21,
+          "stuffs": 1,
+          "tenPlus": 3,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover2_invert": {
+          "n": 2,
+          "yards": 39.81,
+          "mean": 19.905,
+          "median": 19.905,
+          "p95": 41,
+          "stuffs": 1,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover2_match": {
+          "n": 19,
+          "yards": 69.74,
+          "mean": 3.670526315789474,
+          "median": 1.53,
+          "p95": 38.46,
+          "stuffs": 5,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover2man": {
+          "n": 11,
+          "yards": 241.12,
+          "mean": 21.92,
+          "median": 4.56,
+          "p95": 93.2,
+          "stuffs": 2,
+          "tenPlus": 4,
+          "twentyPlus": 3,
+          "missingYBC": 0
+        },
+        "cover3": {
+          "n": 27,
+          "yards": 187.47,
+          "mean": 6.943333333333333,
+          "median": 3.55,
+          "p95": 30.76,
+          "stuffs": 8,
+          "tenPlus": 6,
+          "twentyPlus": 2,
+          "missingYBC": 0
+        },
+        "cover3_buzz": {
+          "n": 17,
+          "yards": 164.35,
+          "mean": 9.66764705882353,
+          "median": 3.4,
+          "p95": 97,
+          "stuffs": 5,
+          "tenPlus": 3,
+          "twentyPlus": 2,
+          "missingYBC": 1
+        },
+        "cover3_cloud": {
+          "n": 7,
+          "yards": 85.92,
+          "mean": 12.274285714285714,
+          "median": 1.09,
+          "p95": 78,
+          "stuffs": 1,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover3_mable": {
+          "n": 17,
+          "yards": 113.37,
+          "mean": 6.668823529411765,
+          "median": 1.7,
+          "p95": 73.54,
+          "stuffs": 5,
+          "tenPlus": 3,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover3_match": {
+          "n": 18,
+          "yards": 283.69,
+          "mean": 15.760555555555555,
+          "median": 1.495,
+          "p95": 87.2,
+          "stuffs": 5,
+          "tenPlus": 7,
+          "twentyPlus": 5,
+          "missingYBC": 1
+        },
+        "cover3_seam": {
+          "n": 7,
+          "yards": 10.35,
+          "mean": 1.4785714285714286,
+          "median": 1.05,
+          "p95": 5.79,
+          "stuffs": 2,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover4": {
+          "n": 1,
+          "yards": -0.25,
+          "mean": -0.25,
+          "median": -0.25,
+          "p95": -0.25,
+          "stuffs": 1,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover4_meg": {
+          "n": 2,
+          "yards": 2.81,
+          "mean": 1.405,
+          "median": 1.405,
+          "p95": 1.88,
+          "stuffs": 0,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover4_palms": {
+          "n": 5,
+          "yards": 62.81999999999999,
+          "mean": 12.564,
+          "median": 4.06,
+          "p95": 46.8,
+          "stuffs": 0,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover4_poach": {
+          "n": 5,
+          "yards": 13.97,
+          "mean": 2.794,
+          "median": 4.08,
+          "p95": 5.87,
+          "stuffs": 1,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover4_stubbie": {
+          "n": 10,
+          "yards": 28.240000000000002,
+          "mean": 2.824,
+          "median": 2.575,
+          "p95": 6.82,
+          "stuffs": 1,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover6": {
+          "n": 15,
+          "yards": 32.91,
+          "mean": 2.194,
+          "median": 1.78,
+          "p95": 7.88,
+          "stuffs": 4,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover6_rev": {
+          "n": 21,
+          "yards": 47.48,
+          "mean": 2.260952380952381,
+          "median": 1.71,
+          "p95": 5.48,
+          "stuffs": 3,
+          "tenPlus": 1,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover9": {
+          "n": 8,
+          "yards": 23.3,
+          "mean": 2.9125,
+          "median": 2.975,
+          "p95": 7.75,
+          "stuffs": 2,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "split_quarters_2man": {
+          "n": 3,
+          "yards": 54.199999999999996,
+          "mean": 18.066666666666666,
+          "median": 7.38,
+          "p95": 45.4,
+          "stuffs": 0,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "tampa2": {
+          "n": 9,
+          "yards": 123.78999999999999,
+          "mean": 13.754444444444443,
+          "median": 6.35,
+          "p95": 55.8,
+          "stuffs": 2,
+          "tenPlus": 2,
+          "twentyPlus": 2,
+          "missingYBC": 0
+        }
+      },
+      "front": {
+        "odd": {
+          "n": 28,
+          "yards": 123.58,
+          "mean": 4.413571428571428,
+          "median": 0.69,
+          "p95": 5.45,
+          "stuffs": 10,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 1
+        },
+        "over": {
+          "n": 93,
+          "yards": 957.77,
+          "mean": 10.298602150537635,
+          "median": 2.53,
+          "p95": 64.2,
+          "stuffs": 19,
+          "tenPlus": 19,
+          "twentyPlus": 14,
+          "missingYBC": 1
+        },
+        "tite": {
+          "n": 34,
+          "yards": 169.46,
+          "mean": 4.984117647058824,
+          "median": 1.3599999999999999,
+          "p95": 38.46,
+          "stuffs": 12,
+          "tenPlus": 4,
+          "twentyPlus": 3,
+          "missingYBC": 1
+        },
+        "under": {
+          "n": 72,
+          "yards": 641.24,
+          "mean": 8.90611111111111,
+          "median": 2.685,
+          "p95": 64.3,
+          "stuffs": 9,
+          "tenPlus": 15,
+          "twentyPlus": 6,
+          "missingYBC": 2
+        },
+        "wide9": {
+          "n": 80,
+          "yards": 510.43,
+          "mean": 6.380375,
+          "median": 1.86,
+          "p95": 24,
+          "stuffs": 22,
+          "tenPlus": 10,
+          "twentyPlus": 6,
+          "missingYBC": 2
+        }
+      }
+    },
+    "topRuns": [
+      {
+        "id": "G6-P173",
+        "yards": 97,
+        "plan": {
+          "personnel": "21",
+          "formation": "i_pro_21",
+          "qb": "under",
+          "concept": "insideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base34",
+          "front": "odd",
+          "coverage": "cover3_buzz",
+          "called": "cover3_buzz",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 5
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover3"
+          },
+          "rusher": "BAR-RB3"
+        }
+      },
+      {
+        "id": "G8-P176",
+        "yards": 93.2,
+        "plan": {
+          "personnel": "11",
+          "formation": "ace_trips_11",
+          "qb": "under",
+          "concept": "duo",
+          "playAction": false,
+          "audible": true,
+          "defPersonnel": "nickel",
+          "front": "over",
+          "coverage": "cover2man",
+          "called": "cover2man",
+          "family": "cover2man",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 2,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover2man",
+            "actual": "cover2man",
+            "audible": "flip run"
+          },
+          "rusher": "HOR-RB1",
+          "yardsBeforeContact": 1.998378080644276
+        }
+      },
+      {
+        "id": "G1-P077",
+        "yards": 87.2,
+        "plan": {
+          "personnel": "21",
+          "formation": "i_twins_21",
+          "qb": "under",
+          "concept": "power",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "under",
+          "coverage": "cover3_match",
+          "called": "cover3_match",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 5,
+          "shown": "cover4"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover6",
+            "actual": "cover3",
+            "shown": "cover4"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 0.3822378811794991
+        }
+      },
+      {
+        "id": "G4-P127",
+        "yards": 86,
+        "plan": {
+          "personnel": "12",
+          "formation": "gun_wing_12",
+          "qb": "gun",
+          "concept": "outsideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "under",
+          "coverage": "cover0",
+          "called": "cover0",
+          "family": "cover0",
+          "shell": "zero",
+          "pressure": true,
+          "rushers": 6
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover0",
+            "actual": "cover0"
+          },
+          "rusher": "PIL-RB1"
+        }
+      },
+      {
+        "id": "G2-P022",
+        "yards": 79.87,
+        "plan": {
+          "personnel": "11",
+          "formation": "ace_trips_11",
+          "qb": "under",
+          "concept": "insideZone",
+          "playAction": false,
+          "audible": true,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "coverage": "cover1",
+          "called": "cover1",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "audible": "flip run"
+          },
+          "rusher": "PIL-RB1"
+        }
+      },
+      {
+        "id": "G1-P026",
+        "yards": 78,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_trey_11",
+          "qb": "gun",
+          "concept": "outsideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "coverage": "cover3_cloud",
+          "called": "cover3_cloud",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": true,
+          "rushers": 5
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover2",
+            "actual": "cover3"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 1.3734410513638196
+        }
+      },
+      {
+        "id": "G2-P176",
+        "yards": 73.54,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_trips_11",
+          "qb": "gun",
+          "concept": "outsideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "under",
+          "coverage": "cover3_mable",
+          "called": "cover3_match",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 11.585429750970256
+        }
+      },
+      {
+        "id": "G1-P121",
+        "yards": 69.98,
+        "plan": {
+          "personnel": "21",
+          "formation": "i_pro_21",
+          "qb": "under",
+          "concept": "wideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "over",
+          "coverage": "cover1",
+          "called": "cover1",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "PIL-RB1"
+        }
+      },
+      {
+        "id": "G2-P059",
+        "yards": 65,
+        "plan": {
+          "personnel": "10",
+          "formation": "gun_trips_10",
+          "qb": "gun",
+          "concept": "trap",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "over",
+          "coverage": "cover1",
+          "called": "cover1",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover2man"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover0",
+            "actual": "cover1",
+            "shown": "cover2man"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 0.9531946513472747
+        }
+      },
+      {
+        "id": "G7-P010",
+        "yards": 65,
+        "plan": {
+          "personnel": "11",
+          "formation": "ace_trips_11",
+          "qb": "under",
+          "concept": "insideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "over",
+          "coverage": "cover1",
+          "called": "cover1",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "BAR-RB3",
+          "yardsBeforeContact": 0.21064050318111782
+        }
+      },
+      {
+        "id": "G5-P120",
+        "yards": 64.3,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_trips_11",
+          "qb": "gun",
+          "concept": "wideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "under",
+          "coverage": "cover1_robber",
+          "called": "cover1_robber",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "RAN-RB1"
+        }
+      },
+      {
+        "id": "G3-P048",
+        "yards": 64.2,
+        "plan": {
+          "personnel": "22",
+          "formation": "i_jumbo_22",
+          "qb": "under",
+          "concept": "toss",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "over",
+          "coverage": "cover3_match",
+          "called": "cover3_match",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover2man"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover2man",
+            "actual": "cover3",
+            "shown": "cover2man"
+          },
+          "rusher": "WOL-RB1",
+          "yardsBeforeContact": 4.613421797681397
+        }
+      }
+    ],
+    "topYAC": [
+      {
+        "id": "G4-P068",
+        "yards": 88.61,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_bunch_11",
+          "qb": "gun",
+          "concept": "four_verts",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "coverage": "cover4_stubbie",
+          "called": "cover4",
+          "family": "cover4",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover2",
+            "actual": "cover4",
+            "post": "cover2"
+          },
+          "passer": "PIL-QB1",
+          "timeToThrow": 3.75,
+          "target": "PIL-RB1",
+          "airYards": 4.582331764600717,
+          "separation": 6.4,
+          "receiver": "PIL-RB1",
+          "yac": 84.2051074421073
+        }
+      },
+      {
+        "id": "G5-P116",
+        "yards": 83.23,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_empty_11",
+          "qb": "gun",
+          "concept": "quick_outs",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "dime",
+          "front": "wide9",
+          "coverage": "cover3_match",
+          "called": "cover3_match",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "WOL-QB1",
+          "timeToThrow": 2.1,
+          "target": "WOL-WR1",
+          "airYards": 4.721290928314161,
+          "separation": 2,
+          "receiver": "WOL-WR1",
+          "yac": 79.12943926243125
+        }
+      },
+      {
+        "id": "G8-P153",
+        "yards": 75.7,
+        "plan": {
+          "personnel": "10",
+          "formation": "gun_spread_10",
+          "qb": "gun",
+          "concept": "dagger",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "coverage": "cover4_meg",
+          "called": "cover4_meg",
+          "family": "cover4",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover1"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover4",
+            "shown": "cover1",
+            "post": "cover1"
+          },
+          "passer": "MAR-QB1",
+          "timeToThrow": 2.35,
+          "target": "MAR-WR1",
+          "airYards": 6.925995358014006,
+          "receiver": "MAR-RB1",
+          "yac": 78.1250989344841
+        }
+      },
+      {
+        "id": "G5-P148",
+        "yards": 77.3,
+        "plan": {
+          "personnel": "11",
+          "formation": "ace_trips_11",
+          "qb": "under",
+          "concept": "smash",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "dime",
+          "front": "over",
+          "coverage": "cover3_mable",
+          "called": "cover3_match",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 2,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "WOL-QB1",
+          "timeToThrow": 3,
+          "target": "WOL-WR1",
+          "airYards": 5.102668424935409,
+          "separation": 8.9,
+          "receiver": "WOL-WR1",
+          "yac": 73.18021455416977
+        }
+      },
+      {
+        "id": "G3-P030",
+        "yards": 86.4,
+        "plan": {
+          "personnel": "12",
+          "formation": "pistol_12",
+          "qb": "pistol",
+          "concept": "comebacks",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "over",
+          "coverage": "cover9",
+          "called": "cover9",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover6",
+            "actual": "cover3",
+            "post": "cover2"
+          },
+          "passer": "WOL-QB1",
+          "timeToThrow": 3.3,
+          "target": "WOL-WR1",
+          "airYards": 14.079160916601005,
+          "separation": 6.2,
+          "receiver": "WOL-WR1",
+          "yac": 72.02838221038209
+        }
+      },
+      {
+        "id": "G6-P179",
+        "yards": 76,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_doubles_11",
+          "qb": "gun",
+          "concept": "drive",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base34",
+          "front": "tite",
+          "coverage": "cover3_seam",
+          "called": "cover3_seam",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 5
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 3,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover1"
+          },
+          "passer": "BAR-QB1",
+          "timeToThrow": 2.35,
+          "target": "BAR-WR1",
+          "airYards": 4.554002088644019,
+          "separation": 2.3,
+          "receiver": "BAR-WR1",
+          "yac": 71.32168406962722
+        }
+      },
+      {
+        "id": "G7-P100",
+        "yards": 85.1,
+        "plan": {
+          "personnel": "11",
+          "formation": "ace_trips_11",
+          "qb": "under",
+          "concept": "comebacks",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "under",
+          "coverage": "cover1_robber",
+          "called": "cover1_robber",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "post": "cover1"
+          },
+          "passer": "BAR-QB1",
+          "timeToThrow": 3.75,
+          "target": "BAR-WR3",
+          "airYards": 13.60161971484645,
+          "separation": 4.8,
+          "receiver": "BAR-WR3",
+          "yac": 71.26948506284133
+        }
+      },
+      {
+        "id": "G6-P176",
+        "yards": 91,
+        "plan": {
+          "personnel": "11",
+          "formation": "pistol_11",
+          "qb": "pistol",
+          "concept": "mesh",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "over",
+          "coverage": "cover6_rev",
+          "called": "cover6_rev",
+          "family": "cover6",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover1"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover6",
+            "shown": "cover1",
+            "post": "cover1"
+          },
+          "passer": "COM-QB1",
+          "timeToThrow": 2.35,
+          "target": "COM-WR3",
+          "airYards": 24.23188849302369,
+          "separation": 9.4,
+          "receiver": "COM-WR3",
+          "yac": 70.29066323293225
+        }
+      },
+      {
+        "id": "G5-P014",
+        "yards": 85.4,
+        "plan": {
+          "personnel": "12",
+          "formation": "pistol_12",
+          "qb": "pistol",
+          "concept": "levels",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base34",
+          "front": "odd",
+          "coverage": "cover1_off",
+          "called": "cover1_off",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 5,
+          "shown": "cover2"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover1",
+            "shown": "cover2",
+            "post": "cover2"
+          },
+          "passer": "WOL-QB1",
+          "timeToThrow": 2.65,
+          "target": "WOL-WR2",
+          "airYards": 13.872244125442805,
+          "passDefendedBy": "RAN-CB4",
+          "receiver": "WOL-WR2",
+          "yac": 68.0065910080408
+        }
+      },
+      {
+        "id": "G1-P016",
+        "yards": 74.1,
+        "plan": {
+          "personnel": "22",
+          "formation": "i_jumbo_22",
+          "qb": "under",
+          "concept": "slant_flat",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "over",
+          "coverage": "cover3_cloud",
+          "called": "cover3_cloud",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": true,
+          "rushers": 5,
+          "shown": "cover1"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": true,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover3",
+            "shown": "cover1",
+            "post": "cover1"
+          },
+          "passer": "COM-QB1",
+          "timeToThrow": 1.8,
+          "target": "COM-WR1",
+          "airYards": 6.537933627787417,
+          "receiver": "COM-WR1",
+          "yac": 66.46075845014462
+        }
+      },
+      {
+        "id": "G3-P170",
+        "yards": 63.8,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_doubles_11",
+          "qb": "gun",
+          "concept": "stick",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "over",
+          "stemFrom": "wide9",
+          "coverage": "cover4",
+          "called": "cover4",
+          "family": "cover4",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover3"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 2,
+          "missedTackles": 4,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover4",
+            "shown": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "PIL-EDGE1",
+          "passer": "WOL-QB1",
+          "timeToThrow": 2.55,
+          "target": "WOL-RB1",
+          "airYards": 0.43859430172004465,
+          "separation": 2.8,
+          "receiver": "WOL-RB1",
+          "yac": 64.35873767731172
+        }
+      },
+      {
+        "id": "G1-P044",
+        "yards": 77,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_empty_11",
+          "qb": "gun",
+          "concept": "levels",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "coverage": "tampa2",
+          "called": "tampa2",
+          "family": "tampa2",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover1"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "tampa2",
+            "shown": "cover1",
+            "post": "cover1"
+          },
+          "passer": "PIL-QB1",
+          "timeToThrow": 2.7,
+          "target": "PIL-WR3",
+          "airYards": 14.074880399391368,
+          "separation": 2.3,
+          "receiver": "PIL-WR3",
+          "yac": 63.22708475940938
+        }
+      }
+    ],
+    "scores": [
+      {
+        "home": 42,
+        "away": 70
+      },
+      {
+        "home": 49,
+        "away": 69
+      },
+      {
+        "home": 44,
+        "away": 49
+      },
+      {
+        "home": 27,
+        "away": 38
+      },
+      {
+        "home": 71,
+        "away": 44
+      },
+      {
+        "home": 64,
+        "away": 72
+      },
+      {
+        "home": 70,
+        "away": 33
+      },
+      {
+        "home": 41,
+        "away": 35
+      }
+    ]
+  },
+  "candidate": {
+    "source": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+    "inputSha256": "a32d928e4c60f367961a4d572baf5b605ba533924758a1946a0808f8d2a35e35",
+    "games": 8,
+    "plays": 1015,
+    "pointsPerTeam": 37.9375,
+    "runs": {
+      "n": 309,
+      "yards": 1901.77,
+      "mean": 6.154595469255663,
+      "median": 2.3,
+      "p95": 21.66,
+      "stuffs": 65,
+      "tenPlus": 41,
+      "twentyPlus": 18,
+      "missingYBC": 3
+    },
+    "top10RunYardsShare": 0.3762705269301756,
+    "YAC": {
+      "n": 359,
+      "mean": 10.228275663381732,
+      "median": 3.6005404601189923
+    },
+    "missedBrokenPerPlay": 0.3054187192118227,
+    "attempts": 610,
+    "interceptions": 48,
+    "groups": {
+      "concept": {
+        "counter": {
+          "n": 29,
+          "yards": 25.75,
+          "mean": 0.8879310344827586,
+          "median": -0.02,
+          "p95": 2.53,
+          "stuffs": 15,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "draw": {
+          "n": 11,
+          "yards": 11.340000000000002,
+          "mean": 1.030909090909091,
+          "median": -1.43,
+          "p95": 11.05,
+          "stuffs": 8,
+          "tenPlus": 1,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "duo": {
+          "n": 32,
+          "yards": 85.94,
+          "mean": 2.685625,
+          "median": 2.16,
+          "p95": 7.06,
+          "stuffs": 3,
+          "tenPlus": 1,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "insideZone": {
+          "n": 50,
+          "yards": 391.0,
+          "mean": 7.82,
+          "median": 3.115,
+          "p95": 45.4,
+          "stuffs": 6,
+          "tenPlus": 10,
+          "twentyPlus": 4,
+          "missingYBC": 0
+        },
+        "outsideZone": {
+          "n": 51,
+          "yards": 622.61,
+          "mean": 12.208039215686274,
+          "median": 5.6,
+          "p95": 63.2,
+          "stuffs": 4,
+          "tenPlus": 16,
+          "twentyPlus": 6,
+          "missingYBC": 2
+        },
+        "power": {
+          "n": 43,
+          "yards": 212.19,
+          "mean": 4.934651162790698,
+          "median": 1.06,
+          "p95": 8.2,
+          "stuffs": 13,
+          "tenPlus": 2,
+          "twentyPlus": 2,
+          "missingYBC": 0
+        },
+        "splitZone": {
+          "n": 7,
+          "yards": 18.53,
+          "mean": 2.6471428571428572,
+          "median": 2.29,
+          "p95": 6.96,
+          "stuffs": 1,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "toss": {
+          "n": 9,
+          "yards": 83.43,
+          "mean": 9.27,
+          "median": 2.78,
+          "p95": 64.2,
+          "stuffs": 3,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "trap": {
+          "n": 35,
+          "yards": 72.3,
+          "mean": 2.065714285714286,
+          "median": 1.18,
+          "p95": 5.93,
+          "stuffs": 10,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "wideZone": {
+          "n": 42,
+          "yards": 378.68,
+          "mean": 9.016190476190475,
+          "median": 4.609999999999999,
+          "p95": 23.75,
+          "stuffs": 2,
+          "tenPlus": 8,
+          "twentyPlus": 3,
+          "missingYBC": 1
+        }
+      },
+      "coverage": {
+        "cover0": {
+          "n": 16,
+          "yards": 58.980000000000004,
+          "mean": 3.6862500000000002,
+          "median": 3.455,
+          "p95": 20.19,
+          "stuffs": 5,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover1": {
+          "n": 37,
+          "yards": 279.43,
+          "mean": 7.552162162162162,
+          "median": 2.83,
+          "p95": 65,
+          "stuffs": 7,
+          "tenPlus": 8,
+          "twentyPlus": 3,
+          "missingYBC": 1
+        },
+        "cover1_double": {
+          "n": 6,
+          "yards": 72.98,
+          "mean": 12.163333333333334,
+          "median": 2.34,
+          "p95": 63,
+          "stuffs": 0,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover1_off": {
+          "n": 19,
+          "yards": 87.83,
+          "mean": 4.622631578947368,
+          "median": 3.56,
+          "p95": 16.43,
+          "stuffs": 3,
+          "tenPlus": 3,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover1_robber": {
+          "n": 20,
+          "yards": 149.53,
+          "mean": 7.4765,
+          "median": 2.215,
+          "p95": 23.75,
+          "stuffs": 6,
+          "tenPlus": 3,
+          "twentyPlus": 2,
+          "missingYBC": 1
+        },
+        "cover2": {
+          "n": 11,
+          "yards": 85.39999999999999,
+          "mean": 7.763636363636363,
+          "median": 8.64,
+          "p95": 17.83,
+          "stuffs": 1,
+          "tenPlus": 4,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover2_invert": {
+          "n": 2,
+          "yards": -0.8300000000000001,
+          "mean": -0.41500000000000004,
+          "median": -0.41500000000000004,
+          "p95": -0.27,
+          "stuffs": 2,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover2_match": {
+          "n": 16,
+          "yards": 99.58,
+          "mean": 6.22375,
+          "median": 2.755,
+          "p95": 55.4,
+          "stuffs": 2,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover2man": {
+          "n": 13,
+          "yards": 104.42,
+          "mean": 8.032307692307693,
+          "median": 2.41,
+          "p95": 63.2,
+          "stuffs": 4,
+          "tenPlus": 2,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover3": {
+          "n": 24,
+          "yards": 94.56,
+          "mean": 3.94,
+          "median": 3.44,
+          "p95": 12.86,
+          "stuffs": 3,
+          "tenPlus": 2,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover3_buzz": {
+          "n": 17,
+          "yards": 124.24,
+          "mean": 7.3082352941176465,
+          "median": 1.7,
+          "p95": 84.6,
+          "stuffs": 4,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover3_cloud": {
+          "n": 6,
+          "yards": 88.78999999999999,
+          "mean": 14.798333333333334,
+          "median": 2.69,
+          "p95": 78,
+          "stuffs": 1,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover3_mable": {
+          "n": 6,
+          "yards": 24.27,
+          "mean": 4.045,
+          "median": 1.95,
+          "p95": 10.76,
+          "stuffs": 2,
+          "tenPlus": 2,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover3_match": {
+          "n": 25,
+          "yards": 248.83,
+          "mean": 9.9532,
+          "median": 2.1,
+          "p95": 64.2,
+          "stuffs": 3,
+          "tenPlus": 5,
+          "twentyPlus": 4,
+          "missingYBC": 1
+        },
+        "cover3_seam": {
+          "n": 12,
+          "yards": 26.8,
+          "mean": 2.2333333333333334,
+          "median": 1.83,
+          "p95": 8.2,
+          "stuffs": 2,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover4": {
+          "n": 5,
+          "yards": 7.800000000000001,
+          "mean": 1.56,
+          "median": 2.12,
+          "p95": 3.91,
+          "stuffs": 1,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover4_meg": {
+          "n": 4,
+          "yards": 0.31000000000000005,
+          "mean": 0.07750000000000001,
+          "median": -0.675,
+          "p95": 2.58,
+          "stuffs": 3,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover4_palms": {
+          "n": 7,
+          "yards": 63.839999999999996,
+          "mean": 9.12,
+          "median": 3.81,
+          "p95": 46.8,
+          "stuffs": 1,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "cover4_poach": {
+          "n": 3,
+          "yards": 18.54,
+          "mean": 6.180000000000001,
+          "median": 2.5,
+          "p95": 14.05,
+          "stuffs": 0,
+          "tenPlus": 1,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover4_stubbie": {
+          "n": 8,
+          "yards": 29.169999999999998,
+          "mean": 3.6462499999999998,
+          "median": 2.465,
+          "p95": 14.44,
+          "stuffs": 2,
+          "tenPlus": 1,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover6": {
+          "n": 16,
+          "yards": 22.59,
+          "mean": 1.411875,
+          "median": 0.52,
+          "p95": 6.96,
+          "stuffs": 6,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover6_rev": {
+          "n": 15,
+          "yards": 42.82,
+          "mean": 2.8546666666666667,
+          "median": 2.75,
+          "p95": 8.42,
+          "stuffs": 3,
+          "tenPlus": 0,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "cover9": {
+          "n": 11,
+          "yards": 41.26,
+          "mean": 3.750909090909091,
+          "median": 1.92,
+          "p95": 14.1,
+          "stuffs": 3,
+          "tenPlus": 2,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "split_quarters_2man": {
+          "n": 2,
+          "yards": 46.82,
+          "mean": 23.41,
+          "median": 23.41,
+          "p95": 45.4,
+          "stuffs": 0,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        },
+        "tampa2": {
+          "n": 8,
+          "yards": 83.81,
+          "mean": 10.47625,
+          "median": 5.109999999999999,
+          "p95": 55.8,
+          "stuffs": 1,
+          "tenPlus": 1,
+          "twentyPlus": 1,
+          "missingYBC": 0
+        }
+      },
+      "front": {
+        "odd": {
+          "n": 27,
+          "yards": 60.83,
+          "mean": 2.252962962962963,
+          "median": 1.3,
+          "p95": 10.28,
+          "stuffs": 7,
+          "tenPlus": 2,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "over": {
+          "n": 112,
+          "yards": 911.03,
+          "mean": 8.134196428571428,
+          "median": 2.45,
+          "p95": 63.2,
+          "stuffs": 21,
+          "tenPlus": 17,
+          "twentyPlus": 10,
+          "missingYBC": 2
+        },
+        "tite": {
+          "n": 30,
+          "yards": 90.71,
+          "mean": 3.0236666666666667,
+          "median": 1.595,
+          "p95": 12.86,
+          "stuffs": 10,
+          "tenPlus": 2,
+          "twentyPlus": 0,
+          "missingYBC": 0
+        },
+        "under": {
+          "n": 61,
+          "yards": 313.62,
+          "mean": 5.141311475409836,
+          "median": 2.62,
+          "p95": 15.38,
+          "stuffs": 11,
+          "tenPlus": 8,
+          "twentyPlus": 2,
+          "missingYBC": 0
+        },
+        "wide9": {
+          "n": 79,
+          "yards": 525.58,
+          "mean": 6.652911392405064,
+          "median": 2.76,
+          "p95": 24,
+          "stuffs": 16,
+          "tenPlus": 12,
+          "twentyPlus": 6,
+          "missingYBC": 1
+        }
+      }
+    },
+    "topRuns": [
+      {
+        "id": "G1-P077",
+        "yards": 87.2,
+        "plan": {
+          "personnel": "21",
+          "formation": "i_twins_21",
+          "qb": "under",
+          "concept": "power",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "under",
+          "coverage": "cover3_match",
+          "called": "cover3_match",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 5,
+          "shown": "cover4"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover6",
+            "actual": "cover3",
+            "shown": "cover4"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 0.3822378811794991
+        }
+      },
+      {
+        "id": "G2-P136",
+        "yards": 84.6,
+        "plan": {
+          "personnel": "21",
+          "formation": "offset_i_21",
+          "qb": "under",
+          "concept": "outsideZone",
+          "playAction": false,
+          "audible": true,
+          "defPersonnel": "base43",
+          "front": "over",
+          "coverage": "cover1_robber",
+          "called": "cover1_robber",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 2,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1",
+            "audible": "flip run"
+          },
+          "rusher": "PIL-RB1"
+        }
+      },
+      {
+        "id": "G6-P181",
+        "yards": 84.6,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_trey_11",
+          "qb": "gun",
+          "concept": "wideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "over",
+          "coverage": "cover3_buzz",
+          "called": "cover3_buzz",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover3"
+          },
+          "rusher": "BAR-RB3",
+          "yardsBeforeContact": 4.913549015071435
+        }
+      },
+      {
+        "id": "G1-P026",
+        "yards": 78,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_trey_11",
+          "qb": "gun",
+          "concept": "outsideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "coverage": "cover3_cloud",
+          "called": "cover3_cloud",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": true,
+          "rushers": 5
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover2",
+            "actual": "cover3"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 1.3734410513638196
+        }
+      },
+      {
+        "id": "G1-P121",
+        "yards": 69.98,
+        "plan": {
+          "personnel": "21",
+          "formation": "i_pro_21",
+          "qb": "under",
+          "concept": "wideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "over",
+          "coverage": "cover1",
+          "called": "cover1",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "PIL-RB1"
+        }
+      },
+      {
+        "id": "G7-P010",
+        "yards": 65,
+        "plan": {
+          "personnel": "11",
+          "formation": "ace_trips_11",
+          "qb": "under",
+          "concept": "insideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "over",
+          "coverage": "cover1",
+          "called": "cover1",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover1"
+          },
+          "rusher": "BAR-RB3",
+          "yardsBeforeContact": 0.21064050318111782
+        }
+      },
+      {
+        "id": "G3-P048",
+        "yards": 64.2,
+        "plan": {
+          "personnel": "22",
+          "formation": "i_jumbo_22",
+          "qb": "under",
+          "concept": "toss",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "over",
+          "coverage": "cover3_match",
+          "called": "cover3_match",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover2man"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover2man",
+            "actual": "cover3",
+            "shown": "cover2man"
+          },
+          "rusher": "WOL-RB1",
+          "yardsBeforeContact": 4.613421797681397
+        }
+      },
+      {
+        "id": "G1-P113",
+        "yards": 63.2,
+        "plan": {
+          "personnel": "10",
+          "formation": "gun_spread_10",
+          "qb": "gun",
+          "concept": "outsideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "dime",
+          "front": "over",
+          "coverage": "cover2man",
+          "called": "cover2man",
+          "family": "cover2man",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover2man",
+            "actual": "cover2man"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 3.2439334539006524
+        }
+      },
+      {
+        "id": "G2-P152",
+        "yards": 63,
+        "plan": {
+          "personnel": "11",
+          "formation": "ace_trips_11",
+          "qb": "under",
+          "concept": "outsideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "over",
+          "coverage": "cover1_double",
+          "called": "cover1_double",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover1"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 3.040478068403665
+        }
+      },
+      {
+        "id": "G3-P103",
+        "yards": 55.8,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_trips_11",
+          "qb": "gun",
+          "concept": "outsideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "coverage": "tampa2",
+          "called": "tampa2",
+          "family": "tampa2",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover3"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "tampa2",
+            "shown": "cover3"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 1.1276094143350903
+        }
+      },
+      {
+        "id": "G1-P174",
+        "yards": 55.4,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_doubles_11",
+          "qb": "gun",
+          "concept": "insideZone",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "stemFrom": "under",
+          "coverage": "cover2_match",
+          "called": "cover2_match",
+          "family": "cover2",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover3"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover2",
+            "shown": "cover3"
+          },
+          "rusher": "PIL-RB1",
+          "yardsBeforeContact": 2.3492088223829697
+        }
+      },
+      {
+        "id": "G3-P063",
+        "yards": 46.8,
+        "plan": {
+          "personnel": "11",
+          "formation": "ace_11",
+          "qb": "under",
+          "concept": "power",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "over",
+          "coverage": "cover4_palms",
+          "called": "cover4_palms",
+          "family": "cover4",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": false,
+          "attempted": false,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover4"
+          },
+          "rusher": "WOL-RB1",
+          "yardsBeforeContact": 3.003847830189059
+        }
+      }
+    ],
+    "topYAC": [
+      {
+        "id": "G5-P184",
+        "yards": 91.2,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_trips_11",
+          "qb": "gun",
+          "concept": "slant_flat",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "coverage": "cover3_buzz",
+          "called": "cover3_buzz",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover1"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover3",
+            "shown": "cover1",
+            "post": "cover1"
+          },
+          "passer": "RAN-QB1",
+          "timeToThrow": 1.85,
+          "target": "RAN-WR2",
+          "airYards": 3.476582543916866,
+          "separation": 5.2,
+          "receiver": "RAN-WR2",
+          "yac": 89.4475390911745
+        }
+      },
+      {
+        "id": "G6-P091",
+        "yards": 93,
+        "plan": {
+          "personnel": "12",
+          "formation": "ace_12",
+          "qb": "under",
+          "concept": "comebacks",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "coverage": "cover3_match",
+          "called": "cover3_match",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover1"
+          },
+          "hurriedBy": "COM-EDGE2",
+          "passer": "BAR-QB1",
+          "timeToThrow": 2.8,
+          "target": "BAR-RB3",
+          "airYards": 4.299425468983426,
+          "separation": 6.5,
+          "receiver": "BAR-RB3",
+          "yac": 88.77115552292024
+        }
+      },
+      {
+        "id": "G4-P046",
+        "yards": 95,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_trey_11",
+          "qb": "gun",
+          "concept": "pa_shot",
+          "playAction": true,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "under",
+          "coverage": "cover6_rev",
+          "called": "cover4_palms",
+          "family": "cover6",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover2",
+            "actual": "cover6",
+            "post": "cover2"
+          },
+          "passer": "COM-QB1",
+          "timeToThrow": 2.3,
+          "target": "COM-WR5",
+          "airYards": 22.895448623314202,
+          "separation": 3.9,
+          "receiver": "COM-WR5",
+          "yac": 73.92880710903695
+        }
+      },
+      {
+        "id": "G8-P149",
+        "yards": 75.9,
+        "plan": {
+          "personnel": "11",
+          "formation": "ace_11",
+          "qb": "under",
+          "concept": "slant_flat",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "over",
+          "coverage": "cover3",
+          "called": "cover3",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": true,
+          "rushers": 5
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "HOR-QB1",
+          "timeToThrow": 2.15,
+          "target": "HOR-TE3",
+          "airYards": 4.115769010983755,
+          "separation": 6.8,
+          "receiver": "HOR-TE3",
+          "yac": 72.58249854065735
+        }
+      },
+      {
+        "id": "G3-P030",
+        "yards": 86.4,
+        "plan": {
+          "personnel": "12",
+          "formation": "pistol_12",
+          "qb": "pistol",
+          "concept": "comebacks",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "over",
+          "coverage": "cover9",
+          "called": "cover9",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover6",
+            "actual": "cover3",
+            "post": "cover2"
+          },
+          "passer": "WOL-QB1",
+          "timeToThrow": 3.3,
+          "target": "WOL-WR1",
+          "airYards": 14.079160916601005,
+          "separation": 6.2,
+          "receiver": "WOL-WR1",
+          "yac": 72.02838221038209
+        }
+      },
+      {
+        "id": "G5-P014",
+        "yards": 85.4,
+        "plan": {
+          "personnel": "12",
+          "formation": "pistol_12",
+          "qb": "pistol",
+          "concept": "levels",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base34",
+          "front": "odd",
+          "coverage": "cover1_off",
+          "called": "cover1_off",
+          "family": "cover1",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 5,
+          "shown": "cover2"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 0,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover1",
+            "shown": "cover2",
+            "post": "cover2"
+          },
+          "passer": "WOL-QB1",
+          "timeToThrow": 2.65,
+          "target": "WOL-WR2",
+          "airYards": 13.872244125442805,
+          "passDefendedBy": "RAN-CB4",
+          "receiver": "WOL-WR2",
+          "yac": 68.0065910080408
+        }
+      },
+      {
+        "id": "G1-P016",
+        "yards": 74.1,
+        "plan": {
+          "personnel": "22",
+          "formation": "i_jumbo_22",
+          "qb": "under",
+          "concept": "slant_flat",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "over",
+          "coverage": "cover3_cloud",
+          "called": "cover3_cloud",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": true,
+          "rushers": 5,
+          "shown": "cover1"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 2,
+          "missedTackles": 0,
+          "dropped": true,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "cover3",
+            "shown": "cover1",
+            "post": "cover1"
+          },
+          "passer": "COM-QB1",
+          "timeToThrow": 1.8,
+          "target": "COM-WR1",
+          "airYards": 6.537933627787417,
+          "receiver": "COM-WR1",
+          "yac": 66.46075845014462
+        }
+      },
+      {
+        "id": "G2-P099",
+        "yards": 80.38,
+        "plan": {
+          "personnel": "12",
+          "formation": "ace_12",
+          "qb": "under",
+          "concept": "comebacks",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "base43",
+          "front": "over",
+          "coverage": "cover3_match",
+          "called": "cover3_match",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "COM-EDGE2",
+          "passer": "PIL-QB1",
+          "timeToThrow": 3.55,
+          "target": "PIL-WR3",
+          "airYards": 13.988274941250193,
+          "separation": 4.6,
+          "receiver": "PIL-WR3",
+          "yac": 65.6743136106204
+        }
+      },
+      {
+        "id": "G3-P170",
+        "yards": 63.8,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_doubles_11",
+          "qb": "gun",
+          "concept": "stick",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "over",
+          "stemFrom": "wide9",
+          "coverage": "cover4",
+          "called": "cover4",
+          "family": "cover4",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover3"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": true,
+          "brokenTackles": 2,
+          "missedTackles": 4,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover4",
+            "shown": "cover3",
+            "post": "cover3"
+          },
+          "hurriedBy": "PIL-EDGE1",
+          "passer": "WOL-QB1",
+          "timeToThrow": 2.55,
+          "target": "WOL-RB1",
+          "airYards": 0.43859430172017255,
+          "separation": 2.8,
+          "receiver": "WOL-RB1",
+          "yac": 64.35873767731165
+        }
+      },
+      {
+        "id": "G6-P073",
+        "yards": 70.03,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_bunch_11",
+          "qb": "gun",
+          "concept": "flood",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "under",
+          "coverage": "cover3",
+          "called": "cover3",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover3",
+            "actual": "cover3",
+            "post": "cover3"
+          },
+          "passer": "BAR-QB1",
+          "timeToThrow": 3.05,
+          "target": "BAR-WR1",
+          "airYards": 7.565089739478104,
+          "separation": 8.2,
+          "receiver": "BAR-WR1",
+          "yac": 64.28390983737302
+        }
+      },
+      {
+        "id": "G1-P044",
+        "yards": 77,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_empty_11",
+          "qb": "gun",
+          "concept": "levels",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "wide9",
+          "coverage": "tampa2",
+          "called": "tampa2",
+          "family": "tampa2",
+          "shell": "two-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover1"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 0,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover1",
+            "actual": "tampa2",
+            "shown": "cover1",
+            "post": "cover1"
+          },
+          "passer": "PIL-QB1",
+          "timeToThrow": 2.7,
+          "target": "PIL-WR3",
+          "airYards": 14.074880399391368,
+          "separation": 2.3,
+          "receiver": "PIL-WR3",
+          "yac": 63.22708475940938
+        }
+      },
+      {
+        "id": "G6-P065",
+        "yards": 78,
+        "plan": {
+          "personnel": "11",
+          "formation": "gun_bunch_11",
+          "qb": "gun",
+          "concept": "comebacks",
+          "playAction": false,
+          "audible": false,
+          "defPersonnel": "nickel",
+          "front": "over",
+          "coverage": "cover3_mable",
+          "called": "cover3_match",
+          "family": "cover3",
+          "shell": "one-high",
+          "pressure": false,
+          "rushers": 4,
+          "shown": "cover4"
+        },
+        "stats": {
+          "tacklers": [],
+          "completed": true,
+          "attempted": true,
+          "sacked": false,
+          "scramble": false,
+          "throwaway": false,
+          "pressured": false,
+          "brokenTackles": 1,
+          "missedTackles": 1,
+          "dropped": false,
+          "qbRead": {
+            "pre": "cover4",
+            "actual": "cover3",
+            "shown": "cover4",
+            "post": "cover2"
+          },
+          "passer": "BAR-QB1",
+          "timeToThrow": 3.35,
+          "target": "BAR-WR2",
+          "airYards": 14.19135676496741,
+          "separation": 3.5,
+          "receiver": "BAR-WR2",
+          "yac": 63.0525547116796
+        }
+      }
+    ],
+    "scores": [
+      {
+        "home": 49,
+        "away": 56
+      },
+      {
+        "home": 31,
+        "away": 43
+      },
+      {
+        "home": 44,
+        "away": 49
+      },
+      {
+        "home": 23,
+        "away": 0
+      },
+      {
+        "home": 79,
+        "away": 13
+      },
+      {
+        "home": 24,
+        "away": 77
+      },
+      {
+        "home": 24,
+        "away": 27
+      },
+      {
+        "home": 26,
+        "away": 42
+      }
+    ]
+  },
+  "matchedInitialGeneratedLeagues": true,
+  "matchedEightGameSeedsAndRosters": true,
+  "limits": [
+    "Games share starting rosters, game seeds and league selection, but changed plays alter future calls, fatigue, RNG consumption and snap populations. They are outcome guards, not paired causal experiments.",
+    "Only official non-nullified called run/pass scrimmage rows enter play denominator; called-run YPC excludes pass-call scrambles. YAC requires a field-bearing completed nonintercepted pass.",
+    "Concept/front/coverage rates reflect generated players and playcalling; no NFL population calibration. MissingYBC is an absent contact field, not an automatically proved no-contact play.",
+    "Game scores and long tails are not physical-force calibration targets."
+  ]
+}

@@ -1,0 +1,509 @@
+{
+  "schema": "bounded-attachment-film-integrity-v1",
+  "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+  "preloadPath": "scripts/diag/enable-bounded-attachment.ts",
+  "preloadSha256": "2d80e990ba999138881ba63ecd51651ab8ee3c4888f5d55c86536f9bf3712cbe",
+  "checks": [
+    "Declared Linear/Bounded experiment modes are explicit false/true per source/game/clip",
+    "Both modes use one frozen final cached engine source",
+    "Full compressed telemetry and positional recordings decode for every clip and match retained full recording counts",
+    "Run telemetry round-trips exactly against raw input; tackle clocks are shifted consistently by 2s",
+    "Isolated flags, zero-based clocks and censored windows remain honest",
+    "Status captions wrap long paths/checksums",
+    "ZIP contains the exact standalone HTML",
+    "Captions and mode/default metadata explicitly describe the recorded source before later production promotion"
+  ],
+  "exporters": {
+    "scripts/export-tackle-timing.ts": "d27ba293bba4f7527f057fcadb16702a0f094b249a99cec675b762ca41ab7bcc",
+    "scripts/export-run-contact-review.ts": "8fef27f21bd4ee9c3a809221bb214545a273bebfcb7b6051ed30d8037c10e994"
+  },
+  "template": {
+    "path": "viewer/replay.template.html",
+    "sha256": "47481b07b447a2c4a8530c64c2bf98ab919464d8568dfcf5ef5f5671e7915239"
+  },
+  "inputs": {
+    "out/bounded-attachment-review/cached-linear-tackles-film.json": "997ff9998308ecff55092eddd4da62efc4c89437588ebb01cc6207db711ef9f1",
+    "out/bounded-attachment-review/cached-bounded-tackles-film.json": "cd404ed875dd486601b4bc5aad7688e5ba30f9dd0653abc0167aec0d3a43c313",
+    "out/bounded-attachment-review/cached-linear-runs-film.json": "6a7748e4b446232e445041129f70b63b84ddfde171b08e8655f2890ecb315479",
+    "out/bounded-attachment-review/cached-bounded-runs-film.json": "32108c9d2405df293283362be501aadea9ac3c268f463f4d289bbde7124a5a4c",
+    "out/bounded-attachment-review/cached-linear-runs-compact.json": "e97f580d952a3edb87ea9c5e2e959dbbddefdc1f9b134dfc788f4214924f89eb",
+    "out/bounded-attachment-review/cached-bounded-runs-compact.json": "4d13365f4705c034635fc7ed78a789bd859b21cbb612f9bacab75224ed4c94f6"
+  },
+  "historicalIntegrityPath": "out/bounded-attachment-review/film-integrity-before-cache.json",
+  "films": [
+    {
+      "family": "tackles",
+      "clips": 18,
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "inputFilms": [
+        "out/bounded-attachment-review/cached-linear-tackles-film.json",
+        "out/bounded-attachment-review/cached-bounded-tackles-film.json"
+      ],
+      "html": "viewer/bounded-attachment-tackles.html",
+      "htmlSha256": "8b7a484a6db6452d6dea271d7f4b5920bbda78124987ffe8a294151aa61f820a",
+      "zip": "viewer/bounded-attachment-tackles.zip",
+      "zipSha256": "ff50f1471e15136db1d49cd87d710f2eb174cfedfe7f6edb5ed3e406160450e2",
+      "compressedTelemetryValidated": true,
+      "cases": [
+        {
+          "id": "BASE-TT-R1-frontalForm-S83-L",
+          "fixtureId": "TT-R1-frontalForm-S83-L",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 18,
+          "telemetryFrames": 18,
+          "decisions": 1,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-TT-R1-imminentCrossing-S83-L",
+          "fixtureId": "TT-R1-imminentCrossing-S83-L",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 30,
+          "telemetryFrames": 30,
+          "decisions": 3,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-TT-R1-glancingEscapeReach-S83-L",
+          "fixtureId": "TT-R1-glancingEscapeReach-S83-L",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 120,
+          "telemetryFrames": 120,
+          "decisions": 1,
+          "windowCensored": true
+        },
+        {
+          "id": "BASE-TT-R1-fasterCarrierEscape-S83-L",
+          "fixtureId": "TT-R1-fasterCarrierEscape-S83-L",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 120,
+          "telemetryFrames": 120,
+          "decisions": 0,
+          "windowCensored": true
+        },
+        {
+          "id": "BASE-TT-R1-fatiguedCrossing-S83-L",
+          "fixtureId": "TT-R1-fatiguedCrossing-S83-L",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 29,
+          "telemetryFrames": 29,
+          "decisions": 3,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-TT-R1-recoveringCrossing-S83-L",
+          "fixtureId": "TT-R1-recoveringCrossing-S83-L",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 29,
+          "telemetryFrames": 29,
+          "decisions": 3,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-TT-R1-trafficCrossing-S83-L",
+          "fixtureId": "TT-R1-trafficCrossing-S83-L",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 36,
+          "telemetryFrames": 36,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-TT-W-crossing-S19-L",
+          "fixtureId": "TT-W-crossing-S19-L",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 34,
+          "telemetryFrames": 34,
+          "decisions": 2,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-TT-W-crossing-S19-R",
+          "fixtureId": "TT-W-crossing-S19-R",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 34,
+          "telemetryFrames": 34,
+          "decisions": 2,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-TT-R1-frontalForm-S83-L",
+          "fixtureId": "TT-R1-frontalForm-S83-L",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 18,
+          "telemetryFrames": 18,
+          "decisions": 1,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-TT-R1-imminentCrossing-S83-L",
+          "fixtureId": "TT-R1-imminentCrossing-S83-L",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 30,
+          "telemetryFrames": 30,
+          "decisions": 3,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-TT-R1-glancingEscapeReach-S83-L",
+          "fixtureId": "TT-R1-glancingEscapeReach-S83-L",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 120,
+          "telemetryFrames": 120,
+          "decisions": 1,
+          "windowCensored": true
+        },
+        {
+          "id": "CAND-TT-R1-fasterCarrierEscape-S83-L",
+          "fixtureId": "TT-R1-fasterCarrierEscape-S83-L",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 120,
+          "telemetryFrames": 120,
+          "decisions": 0,
+          "windowCensored": true
+        },
+        {
+          "id": "CAND-TT-R1-fatiguedCrossing-S83-L",
+          "fixtureId": "TT-R1-fatiguedCrossing-S83-L",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 29,
+          "telemetryFrames": 29,
+          "decisions": 3,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-TT-R1-recoveringCrossing-S83-L",
+          "fixtureId": "TT-R1-recoveringCrossing-S83-L",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 29,
+          "telemetryFrames": 29,
+          "decisions": 3,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-TT-R1-trafficCrossing-S83-L",
+          "fixtureId": "TT-R1-trafficCrossing-S83-L",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 37,
+          "telemetryFrames": 37,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-TT-W-crossing-S19-L",
+          "fixtureId": "TT-W-crossing-S19-L",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 34,
+          "telemetryFrames": 34,
+          "decisions": 2,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-TT-W-crossing-S19-R",
+          "fixtureId": "TT-W-crossing-S19-R",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 34,
+          "telemetryFrames": 34,
+          "decisions": 2,
+          "windowCensored": false
+        }
+      ]
+    },
+    {
+      "family": "runs",
+      "clips": 26,
+      "sourceSha256": "6baaf595de49f1118ac2044933a9c3a749678412cebfdaec91f91a44dd1096df",
+      "inputFilms": [
+        "out/bounded-attachment-review/cached-linear-runs-film.json",
+        "out/bounded-attachment-review/cached-bounded-runs-film.json"
+      ],
+      "html": "viewer/bounded-attachment-runs.html",
+      "htmlSha256": "0a397a380369a56bf4a70cb1cbe1cca2a7b58804a0203cabeb985111308ecb3a",
+      "zip": "viewer/bounded-attachment-runs.zip",
+      "zipSha256": "9717f9964b0c1f7cd480857f59a8aa1049bc252b2fbecfec52ce385cebbec0ac",
+      "compressedTelemetryValidated": true,
+      "cases": [
+        {
+          "id": "BASE-RC-R1-iz_strong-over-R-S3",
+          "fixtureId": "RC-R1-iz_strong-over-R-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 35,
+          "telemetryFrames": 35,
+          "decisions": 1,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R1-iz_strong-over-L-S3",
+          "fixtureId": "RC-R1-iz_strong-over-L-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 37,
+          "telemetryFrames": 37,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R1-oz_strong-over-R-S3",
+          "fixtureId": "RC-R1-oz_strong-over-R-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 38,
+          "telemetryFrames": 38,
+          "decisions": 1,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R1-oz_strong-over-L-S3",
+          "fixtureId": "RC-R1-oz_strong-over-L-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 34,
+          "telemetryFrames": 34,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R1-wz_strong-over-R-S3",
+          "fixtureId": "RC-R1-wz_strong-over-R-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 33,
+          "telemetryFrames": 33,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R1-wz_strong-over-L-S3",
+          "fixtureId": "RC-R1-wz_strong-over-L-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 35,
+          "telemetryFrames": 35,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R1-power-over-R-S3",
+          "fixtureId": "RC-R1-power-over-R-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 49,
+          "telemetryFrames": 49,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R1-power-over-L-S3",
+          "fixtureId": "RC-R1-power-over-L-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 42,
+          "telemetryFrames": 42,
+          "decisions": 4,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R1-counter-over-R-S3",
+          "fixtureId": "RC-R1-counter-over-R-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 37,
+          "telemetryFrames": 37,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R1-counter-over-L-S3",
+          "fixtureId": "RC-R1-counter-over-L-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 38,
+          "telemetryFrames": 38,
+          "decisions": 2,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R1-trap-over-R-S3",
+          "fixtureId": "RC-R1-trap-over-R-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 37,
+          "telemetryFrames": 37,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R1-trap-over-L-S3",
+          "fixtureId": "RC-R1-trap-over-L-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 35,
+          "telemetryFrames": 35,
+          "decisions": 3,
+          "windowCensored": false
+        },
+        {
+          "id": "BASE-RC-R3-counter-under-L-S3",
+          "fixtureId": "RC-R3-counter-under-L-S3",
+          "physicsMode": false,
+          "sourceLabel": "Linear",
+          "positionalFrames": 76,
+          "telemetryFrames": 76,
+          "decisions": 1,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-iz_strong-over-R-S3",
+          "fixtureId": "RC-R1-iz_strong-over-R-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 35,
+          "telemetryFrames": 35,
+          "decisions": 1,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-iz_strong-over-L-S3",
+          "fixtureId": "RC-R1-iz_strong-over-L-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 37,
+          "telemetryFrames": 37,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-oz_strong-over-R-S3",
+          "fixtureId": "RC-R1-oz_strong-over-R-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 39,
+          "telemetryFrames": 39,
+          "decisions": 1,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-oz_strong-over-L-S3",
+          "fixtureId": "RC-R1-oz_strong-over-L-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 34,
+          "telemetryFrames": 34,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-wz_strong-over-R-S3",
+          "fixtureId": "RC-R1-wz_strong-over-R-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 33,
+          "telemetryFrames": 33,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-wz_strong-over-L-S3",
+          "fixtureId": "RC-R1-wz_strong-over-L-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 35,
+          "telemetryFrames": 35,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-power-over-R-S3",
+          "fixtureId": "RC-R1-power-over-R-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 50,
+          "telemetryFrames": 50,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-power-over-L-S3",
+          "fixtureId": "RC-R1-power-over-L-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 42,
+          "telemetryFrames": 42,
+          "decisions": 4,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-counter-over-R-S3",
+          "fixtureId": "RC-R1-counter-over-R-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 37,
+          "telemetryFrames": 37,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-counter-over-L-S3",
+          "fixtureId": "RC-R1-counter-over-L-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 38,
+          "telemetryFrames": 38,
+          "decisions": 2,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-trap-over-R-S3",
+          "fixtureId": "RC-R1-trap-over-R-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 37,
+          "telemetryFrames": 37,
+          "decisions": 0,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R1-trap-over-L-S3",
+          "fixtureId": "RC-R1-trap-over-L-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 35,
+          "telemetryFrames": 35,
+          "decisions": 3,
+          "windowCensored": false
+        },
+        {
+          "id": "CAND-RC-R3-counter-under-L-S3",
+          "fixtureId": "RC-R3-counter-under-L-S3",
+          "physicsMode": true,
+          "sourceLabel": "Bounded experiment",
+          "positionalFrames": 76,
+          "telemetryFrames": 76,
+          "decisions": 1,
+          "windowCensored": false
+        }
+      ]
+    }
+  ],
+  "previousCaptionIntegrityPath": "out/bounded-attachment-review/film-integrity-before-promotion-captions.json",
+  "recordingStatus": "Pre-promotion controlled comparison; latest production promotion is documented separately"
+}

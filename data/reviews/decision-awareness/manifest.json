@@ -1,0 +1,526 @@
+{
+  "schema": "decision-awareness-evidence-v1",
+  "parentCommit": "632fb02ad8ae12915a11bf14c27fac08200135a0",
+  "branch": "claude/engine-priorities",
+  "wholeSrcSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+  "sharedWorldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "sourceHashMethod": "SHA256 of globally lexically sorted repository-relative src file paths, each path + NUL + file bytes + NUL. Includes diagnostic lab.",
+  "files": [
+    {
+      "path": "data/reviews/decision-awareness/README.md",
+      "bytes": 11509,
+      "sha256": "1c074c6eaf629e955a168d30af3a7a4bad41f2d53462025c2f10aca8ab1f475c"
+    },
+    {
+      "path": "data/reviews/decision-awareness/audits/carrier-baseline.json.gz",
+      "bytes": 16692,
+      "sha256": "3b2c4070fee4df5d92e891936839083b3a1a9f7b8d0a6256c30650a6003ac503",
+      "decodedSha256": "3ea69528b09879c7bfdc36d2099008191470617ab094ff256692ea93b52d007d",
+      "decodedBytes": 158025
+    },
+    {
+      "path": "data/reviews/decision-awareness/audits/carrier-initial-candidate.json.gz",
+      "bytes": 14162,
+      "sha256": "75f96f6508aa916f978680e8ca16fe4dd95d753bd6473c48d2aeddec7499b2f6",
+      "decodedSha256": "a0ca89f0b9ff37e5fae3ef9a42e6823c3bf462978150b46627690be9970ce1d1",
+      "decodedBytes": 132924
+    },
+    {
+      "path": "data/reviews/decision-awareness/audits/carrier-initial-comparison.json",
+      "bytes": 2586,
+      "sha256": "63e642bbbea9bf370e5bf906549764dc3c7e012489ed98c83ead159b51ec5672"
+    },
+    {
+      "path": "data/reviews/decision-awareness/audits/defense-after-penetration-fix.json.gz",
+      "bytes": 320003,
+      "sha256": "10e2f46e7d03dba6169895b6b2af568f08a77ae8c1ac8bfa36c0cf7116447db1",
+      "decodedSha256": "32369c3b4b1b1992f803140a263215df6f02b303d311797ab42d37abc13e5a9d",
+      "decodedBytes": 2277238
+    },
+    {
+      "path": "data/reviews/decision-awareness/audits/defense-baseline.json.gz",
+      "bytes": 337788,
+      "sha256": "e361651dacc91ba8560a65c4d4b13030702c2a7011fa0f7e57d80c6ecff8e122",
+      "decodedSha256": "90677dac291dd366f2397a202c60da7ffb87cd7e84d8dc0773e8208cab3f5f0c",
+      "decodedBytes": 2137725
+    },
+    {
+      "path": "data/reviews/decision-awareness/audits/defense-comparison.json",
+      "bytes": 247800,
+      "sha256": "4521c3f9d15d6bd65d1cb9fbd11e210ee83af2c895f490b1cdd03f83fee036d9"
+    },
+    {
+      "path": "data/reviews/decision-awareness/audits/defense-initial-candidate.json.gz",
+      "bytes": 322738,
+      "sha256": "451ff666258e5a8d4701bc90d3c1fd08771d7f165d8d1255938bfe514377256d",
+      "decodedSha256": "a9569a1684b817fb925c4bd6b913243e45eb41f978927d34f950a8a4f9be4e40",
+      "decodedBytes": 2301108
+    },
+    {
+      "path": "data/reviews/decision-awareness/audits/man-key-baseline.json",
+      "bytes": 111340,
+      "sha256": "50485bb2b0462a494b341e08d082d6d5ad8efe89b99d6ec7bfba9b13b4659fd6"
+    },
+    {
+      "path": "data/reviews/decision-awareness/audits/man-key-final.json",
+      "bytes": 79084,
+      "sha256": "43cc6c8412d54c9a2d28c4714c8f4998b60f008479318b8fc3ce1efc18a19894"
+    },
+    {
+      "path": "data/reviews/decision-awareness/audits/shared-baseline.json.gz",
+      "bytes": 2202,
+      "sha256": "a6451bcbfc89c7036e4f3612a41a5913b6d7c8b48b6d866e2a2008af19e4103c",
+      "decodedSha256": "816a9b20efb112a9cc53824ef82b4287cee725ce98bee6981028e1e74928fb84",
+      "decodedBytes": 19840
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/browser-tool.py",
+      "bytes": 4537,
+      "sha256": "d78745a4558fc80ddf5d00e3ed27fd9d98fe755ae977a5501bbcd7a61f14bc71"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/browser.json",
+      "bytes": 5933,
+      "sha256": "12b33739f7d5f925724fdd454bb31c8976d4d3c22ee5fc02bd77051fb690e45c"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/browser.log",
+      "bytes": 53,
+      "sha256": "13c99d604e67a74d134a578f7882e8f18d34dcd4f79aafc5e32486dd1599b12b"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/build.log",
+      "bytes": 55,
+      "sha256": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/defense-baseline-feature-failures.log",
+      "bytes": 19363,
+      "sha256": "b7f5a896e566e70dd16e55c2dca867d917d1e12d8dc7c84c8d9a486d9db665ab"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/defense-feature-tests.log",
+      "bytes": 352,
+      "sha256": "dc9931a7bc73eec9f9ab5cd93ce4d61a74ed0400c1b59aafc679bffeb510e493"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/fixture-focused.log",
+      "bytes": 337,
+      "sha256": "0b7778c0b1c078c6189a0fc221a3a98c8bc88e7dc0ce08919d4c0fa943dc11e8"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/initial-suite-failures.log",
+      "bytes": 218460,
+      "sha256": "a34edf4b684d5484759e46d91bf9b287b678137412c5d569cc288d6caff67b21"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/python-tests.log",
+      "bytes": 255,
+      "sha256": "d1868aa8a2c954910efef8781fe5908d227f7991b5d2c9f33bf036ac94712c15"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/qb-baseline-feature-failures.log",
+      "bytes": 11469,
+      "sha256": "1dd4d3e0f7cd17578df289222c311d593df1524511188139241089116ba931a2"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/typecheck.log",
+      "bytes": 68,
+      "sha256": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/viewer-export.log",
+      "bytes": 117,
+      "sha256": "286632b4807ff8d8349644ae3fe7eff41b396347ad0cd8342267ae7941ebe820"
+    },
+    {
+      "path": "data/reviews/decision-awareness/checks/vitest.log",
+      "bytes": 6168,
+      "sha256": "a5ddcb5a96af55ebac4eafe8ab7b3ec9b44387afb0a06e5a903874df7cd0d734"
+    },
+    {
+      "path": "data/reviews/decision-awareness/comparisons/passing.json",
+      "bytes": 220277,
+      "sha256": "20f8c0f5ed295f54cc501aec04eb23e015c1d24bd9033884b5c512de7e97ed18"
+    },
+    {
+      "path": "data/reviews/decision-awareness/comparisons/qb-only-passing.json",
+      "bytes": 218923,
+      "sha256": "b58f8fc0ff9626060c735ba85806534b050b42d39353bb18d55260354424ba30"
+    },
+    {
+      "path": "data/reviews/decision-awareness/comparisons/runs.json.gz",
+      "bytes": 96474,
+      "sha256": "e46643e0de250b6e62b9653153b39fa48ca39fc4a58191d16277382d5a5a035d",
+      "decodedSha256": "c2553e1b1121dd8a5a387dee068ec5946a2e2a9833f42f8d9b6779a5ec77dbed",
+      "decodedBytes": 2130134
+    },
+    {
+      "path": "data/reviews/decision-awareness/exploration/carrier-only.patch",
+      "bytes": 3521,
+      "sha256": "52b9daddbf35d7610b37358a71ed4323987056f3314c02198570425107f0c928"
+    },
+    {
+      "path": "data/reviews/decision-awareness/exploration/defense-only.patch",
+      "bytes": 8219,
+      "sha256": "3d921539c2dc8d1b10466f9ce846f238c836103df6fc157e11e2c3459b72d5ec"
+    },
+    {
+      "path": "data/reviews/decision-awareness/exploration/initial-installation.json",
+      "bytes": 152764,
+      "sha256": "123235e015ee848d223dd1c225df9bcb3ee641f5e11c9fdb3cc8cde94a552871"
+    },
+    {
+      "path": "data/reviews/decision-awareness/exploration/initial-run-comparison.json.gz",
+      "bytes": 95914,
+      "sha256": "097c2d5daea7876334ceda86087f7f1eb807e7f3e90c8671de379eb511f67458",
+      "decodedSha256": "7826c353a455a840e7d72b903f7a8554c0d425832f18eee21703e3bbf7f8a984",
+      "decodedBytes": 2113533
+    },
+    {
+      "path": "data/reviews/decision-awareness/exploration/initial-run-summary.json.gz",
+      "bytes": 29874,
+      "sha256": "5f661e8580f91084e34a3f5b7b564fd57fe524a20dcb52e32198a0d252845ded",
+      "decodedSha256": "17729c7e983a73850853171e7fc7221d1a23e1aa92dd032520e7e32b912299f2",
+      "decodedBytes": 535998
+    },
+    {
+      "path": "data/reviews/decision-awareness/exploration/initial-runs.json.gz",
+      "bytes": 6361559,
+      "sha256": "3ea03cc5b8e84e0c5d7e6ded19bd00a3bf5f363c0a5f836cc59aa0097cfe244b",
+      "decodedSha256": "ead5cf72c934b059ff31a8902debac82f321f77588ffc7acfa64e8f2b9d9a482",
+      "decodedBytes": 70289627
+    },
+    {
+      "path": "data/reviews/decision-awareness/exploration/qb-only-passing.json.gz",
+      "bytes": 919404,
+      "sha256": "cda031e450677628f6db0b58d0c6a9c04d134c7dd4de505e6a5244f30fc71469",
+      "decodedSha256": "174d9bb7b1c975889e60591fe4247e0d52b18e710d74555ca8ce7c4f9ae9f16e",
+      "decodedBytes": 6843992
+    },
+    {
+      "path": "data/reviews/decision-awareness/exploration/qb-only.patch",
+      "bytes": 4111,
+      "sha256": "9a07fc6d2582c463983631bbd7ea1ca1d4d9e8453f3763b4298553857344e0ba"
+    },
+    {
+      "path": "data/reviews/decision-awareness/games/carrier-only.log",
+      "bytes": 2185,
+      "sha256": "37df219e31c5e63b3f715051b804f57710c77eb20283d2a5a47043fd97e36678"
+    },
+    {
+      "path": "data/reviews/decision-awareness/games/defense-only.log",
+      "bytes": 2183,
+      "sha256": "481de0ba643f0800dfab0e69e51a5617674c3c89651a8f92a4c32777aed933cb"
+    },
+    {
+      "path": "data/reviews/decision-awareness/games/final.log",
+      "bytes": 2184,
+      "sha256": "d3e14ed0bba6edec9495283217e0b08bb25612ba18ffcecb14f7b05f354ee119"
+    },
+    {
+      "path": "data/reviews/decision-awareness/games/initial-combined.log",
+      "bytes": 2181,
+      "sha256": "15d638954c55373616c05b4dcd718ac2b563cc182018b83896c6c07b9d8cf7e5"
+    },
+    {
+      "path": "data/reviews/decision-awareness/games/qb-only.log",
+      "bytes": 2184,
+      "sha256": "b40b6a745a3c2690bf934dbf81eef4e6f6f02ed4a419513f3893605ade8aa7ce"
+    },
+    {
+      "path": "data/reviews/decision-awareness/games/receipts.json",
+      "bytes": 2738,
+      "sha256": "42d245f6a3fad16ff562f156a2c69373bd948366082ab4693c23d5fe8950a60a"
+    },
+    {
+      "path": "data/reviews/decision-awareness/passing/baseline-film.json.gz",
+      "bytes": 2263702,
+      "sha256": "b8e6d4a548fdcb33310603e915737a1fb2b5e175f3be1d25526305e07eb88a37",
+      "decodedSha256": "8f9892a0b1b3a9300a6c2eaa9ee23c7f295e616afcfb9dec900ef452b64fce79",
+      "decodedBytes": 29205423
+    },
+    {
+      "path": "data/reviews/decision-awareness/passing/baseline.json.gz",
+      "bytes": 919518,
+      "sha256": "25d31dabe934e5a1d64c4a6397bc74f5bd45118710812df4f8359f10d093fdc9",
+      "decodedSha256": "e90e58aa01542195ee0f260fb3b7169e66d1b607d0cd9edb8c48a7f040f56416",
+      "decodedBytes": 6843479
+    },
+    {
+      "path": "data/reviews/decision-awareness/passing/final-film.json.gz",
+      "bytes": 2303980,
+      "sha256": "eb1879dfc15d014b2cd1db3976ee3e7d48f753a2215754d18f79e02dec8981a1",
+      "decodedSha256": "522abb03591d4db8e1f4c78b352688b60b0ac48cc5eab43cb27c2a2e8ca8f092",
+      "decodedBytes": 29547605
+    },
+    {
+      "path": "data/reviews/decision-awareness/passing/final.json.gz",
+      "bytes": 919044,
+      "sha256": "9e1c4968e1025fd8c02e592fd26b31aab72453fd2a45aea358b6fc33bb5e82d1",
+      "decodedSha256": "94e777889f2a9da3b059ce76f29ec8d9194d367a08efaf34196c7db4dd821f6a",
+      "decodedBytes": 6835614
+    },
+    {
+      "path": "data/reviews/decision-awareness/passing/installation-final-film.json.gz",
+      "bytes": 1345328,
+      "sha256": "9c009963252590e957dd7c9ffacea2d8e741027da7cc0c25726372f62c59442c",
+      "decodedSha256": "3a9717b830c028f637e2c99e19a48e68e7084254b264856efd0e2bddb2a1599e",
+      "decodedBytes": 15948480
+    },
+    {
+      "path": "data/reviews/decision-awareness/passing/installation-final.json",
+      "bytes": 152764,
+      "sha256": "3b0fcf6e0f046dee6cbd56c4e27877e00f7540ce7b45aa23f68383d31a898a85"
+    },
+    {
+      "path": "data/reviews/decision-awareness/runs/final-film.json.gz",
+      "bytes": 6806420,
+      "sha256": "5589aa803a17b13bc648008550383b2b33eebc63441922a02e9ad7407bd3d0ac",
+      "decodedSha256": "163c2c67f05c932b7813054b63cfce44552b63214a2a623bf127fa425822afd3",
+      "decodedBytes": 157133514
+    },
+    {
+      "path": "data/reviews/decision-awareness/runs/final.json.gz",
+      "bytes": 6549086,
+      "sha256": "7f0da5cb45c7a66e3d1121b307ed13debfe7926a00dc92fa7952fa7aec63a52c",
+      "decodedSha256": "4b1bc1ea6a20fc918e66cce0afd15d5a79cfb2831d035254725e1ae5dd43a40b",
+      "decodedBytes": 74526560
+    },
+    {
+      "path": "data/reviews/decision-awareness/runs/summary.json.gz",
+      "bytes": 29910,
+      "sha256": "368be17c0ce90d8456ea7e62439c30677abe00ab6f8ef6aec108ae11e08041b8",
+      "decodedSha256": "93ec04a18f38c1348b874fab286812cbb9f79e435a40f24c44e008a803f988e2",
+      "decodedBytes": 536276
+    },
+    {
+      "path": "data/reviews/decision-awareness/tools/defense-probe.ts.txt",
+      "bytes": 5311,
+      "sha256": "8343a4bab84c5764d3b19e3adf89782eb9ad4173eb70209fad1c80317d7e0bd7"
+    },
+    {
+      "path": "data/reviews/decision-awareness/tools/independent-native-review.ts.txt",
+      "bytes": 4461,
+      "sha256": "1280ec7d0a7306222cd8fbbfd264e0afd29eaadf40f90a6e77bf3d514730b10a"
+    },
+    {
+      "path": "data/reviews/decision-awareness/tools/man-key-probe.ts.txt",
+      "bytes": 1952,
+      "sha256": "ba883bd6a97fd2092189a6824aac2770f91b6c92f644ad3bdbee80b642533ca4"
+    },
+    {
+      "path": "data/reviews/decision-awareness/tools/shared-probe.ts.txt",
+      "bytes": 7525,
+      "sha256": "89433b559edc3cc2bdafbcf3edb8fef08b2b56c8fa9ba6207fe893dc54e7e252"
+    },
+    {
+      "path": "data/reviews/decision-awareness/viewer-metadata.json",
+      "bytes": 617,
+      "sha256": "b7f498eec16b7c6933cd1a4fe46918d3f7b3f671012c034456fb15670e6c66e3"
+    },
+    {
+      "path": "data/reviews/decision-awareness/witnesses/independent-native-review.json.gz",
+      "bytes": 3272202,
+      "sha256": "d33b2feeae5a182499fb9fa21b3c60ba97045c3555dd691ddd6d6ce8a7270919",
+      "decodedSha256": "1f1d4e6d40f6b903daafd3ba94fae44d8ab858637f79d74e62ae7914850e32ae",
+      "decodedBytes": 29035617
+    }
+  ],
+  "externalIdentities": [
+    {
+      "path": "src/physics/world.ts",
+      "bytes": 88175,
+      "sha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f"
+    },
+    {
+      "path": "src/sim/behaviors/carrier.ts",
+      "bytes": 19683,
+      "sha256": "62b024decbecd81d8b4c990ed094283d3eb4356b3f97c859678af1767c101bf4"
+    },
+    {
+      "path": "src/sim/engagement.ts",
+      "bytes": 36067,
+      "sha256": "128c31787369257fafd62fa33d203099a4a7513ca74a2bea18d19a98d2db2f40"
+    },
+    {
+      "path": "src/sim/qbmind.ts",
+      "bytes": 23939,
+      "sha256": "cdbd973f6a3b801685b6818e3dc9305d36f3ac7b7d0493e937ddf81ffefa90ef"
+    },
+    {
+      "path": "src/sim/recognition.ts",
+      "bytes": 13959,
+      "sha256": "67f7d96153ade8d06c9620bbc357a3efa5c28a3a384e16184c6e2c3606421311"
+    },
+    {
+      "path": "src/lab/scenarios.ts",
+      "bytes": 19548,
+      "sha256": "5c0431176ec737d3dcd10b38784746ca4746bbb0ca7e5d22e67aec81b8b2c955"
+    },
+    {
+      "path": "test/carrier-decision-cadence.test.ts",
+      "bytes": 6082,
+      "sha256": "0224f847fae3910678b274a31e1b919d17cf0f63a7d9631494f26131e44680d8"
+    },
+    {
+      "path": "test/defensive-awareness-contact.test.ts",
+      "bytes": 10244,
+      "sha256": "46c2f9681fc353ec7d1cb33322a56e007e6bb2c903e3c7afec83de984468c970"
+    },
+    {
+      "path": "test/qb-memory-awareness.test.ts",
+      "bytes": 9323,
+      "sha256": "d9c587e60de912432c202326a5dc2e17c958a44af0a26d4a1be476fdb470ee34"
+    },
+    {
+      "path": "test/carrier-recovery-cue.test.ts",
+      "bytes": 8095,
+      "sha256": "fd1a39ffcc0fa47174a0e5cd7aaccf79694921f735ec363b2297ab165b8295fa"
+    },
+    {
+      "path": "test/combo-attention.test.ts",
+      "bytes": 22027,
+      "sha256": "03a35f441b83e3e0a740c6fe5d34e375e8b40c3d1dfedc2622ded948493fd977"
+    },
+    {
+      "path": "test/zone-helper-check.test.ts",
+      "bytes": 26974,
+      "sha256": "aaf638452edf50a76a80cf62ba615c2cf2a7fe356f86d93c1fd636da19c9ed9e"
+    },
+    {
+      "path": "scripts/diag/decision-awareness.ts",
+      "bytes": 7765,
+      "sha256": "73c1763a8be3c0615d590b03440e46cc070249ade1e220a75780d364c227bf5e"
+    },
+    {
+      "path": "scripts/diag/decision-awareness-review.py",
+      "bytes": 4165,
+      "sha256": "138fec20c1269ff962b47c35276b38f3a058cfe480321ae5aa4c4b615eb288fc"
+    },
+    {
+      "path": "scripts/diag/offensive-awareness-probe.ts",
+      "bytes": 5483,
+      "sha256": "72817992e8cc1bea63df533e8ab40c5f9ddc53ff16d13dfbd01f224ddfdc4671"
+    },
+    {
+      "path": "scripts/diag/combo-transfer-review.ts",
+      "bytes": 28420,
+      "sha256": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6"
+    },
+    {
+      "path": "scripts/diag/run-outcome-review.py",
+      "bytes": 25090,
+      "sha256": "e2d621e787fb6c91e191cf8b4e031f30dbb5b717477f46cd6e564ba787634ada"
+    },
+    {
+      "path": "scripts/diag/pass-installation.ts",
+      "bytes": 9616,
+      "sha256": "f6527cc608a7836b07467c6c2cba3a83fe3712c6909c7247adfc00c945241ad5"
+    },
+    {
+      "path": "scripts/calibrate.ts",
+      "bytes": 9382,
+      "sha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749"
+    },
+    {
+      "path": "scripts/source-version.ts",
+      "bytes": 607,
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    {
+      "path": "scripts/export-combo-transfer.ts",
+      "bytes": 26255,
+      "sha256": "39a1194343db67754112a128b5ecf5fd9f5da692496e8bc7bb5fe3273f3cc373"
+    },
+    {
+      "path": "CLAUDE.md",
+      "bytes": 10040,
+      "sha256": "795fda0fc5b7381acd0e7c5907675e77197deb0cae8d63f5a93a6f8e83a4bc64"
+    },
+    {
+      "path": "data/README.md",
+      "bytes": 67194,
+      "sha256": "6c2f1a02ce755c1aa9c88a6f10bb7f7e53f9ed6768f4a6d755ec47525df9aa3e"
+    },
+    {
+      "path": "docs/reviews/decision-awareness-and-commitment.md",
+      "bytes": 11070,
+      "sha256": "56a22dfd8c9db5fa8401bb5db9282f0eecacc23d10878065e7aa9755988462f4"
+    },
+    {
+      "path": "docs/reviews/decision-awareness-independent-review.md",
+      "bytes": 17235,
+      "sha256": "9bd1163599870d069ad550c0de52363c9deb6932b38232057116d358450e2ef4"
+    },
+    {
+      "path": "docs/reviews/defensive-decision-current-audit.md",
+      "bytes": 12486,
+      "sha256": "cd21b443ebee77ca9fb9a5ee37cafec1222a284f088a72fe2680ce48abb7bac0"
+    },
+    {
+      "path": "docs/reviews/offensive-decision-current-audit.md",
+      "bytes": 16100,
+      "sha256": "a9a8a4f405be42a0ec1162cce7ba140579fd52eb3da5080dfb5b7c129c98052a"
+    },
+    {
+      "path": "docs/reviews/shared-decision-current-audit.md",
+      "bytes": 11140,
+      "sha256": "e1b0f63894e3604f8a1ed236f2f18c5184b92e0b885b14975ffe8f8313b3761e"
+    },
+    {
+      "path": "data/reviews/run-game-current/engine/final.json.gz",
+      "bytes": 6412043,
+      "sha256": "e66eb758bea0024d4b78597a79f653c0ddf10e641427f14c629a744b83440ec0",
+      "decodedSha256": "fc2b934be2a7871b6e1d4e9462adf2665a29163a9912007bd9fcc5c715d9a84a",
+      "decodedBytes": 71649765
+    },
+    {
+      "path": "data/reviews/run-game-current/engine/final-film.json.gz",
+      "bytes": 6925298,
+      "sha256": "cd6de71d2aa91e318ed427e9d39ff3253f823549d1fd41723602c220247557dc",
+      "decodedSha256": "b3e73885b2b6edbafcb456bc0504e789385295cddaa752bece0a607937b48b3d",
+      "decodedBytes": 159869499
+    },
+    {
+      "path": "data/reviews/run-game-current/engine/games-final.log",
+      "bytes": 2182,
+      "sha256": "0d226fbda942458f6ca70776432e50211180856dc4741c631a56a83d117fd5a8"
+    },
+    {
+      "path": "data/reviews/run-game-current/engine/games-final-receipt.json",
+      "bytes": 955,
+      "sha256": "f884fdb3b5298c4b64824af880aa45c0d04b920b3190f74c0db6494b59d90859"
+    },
+    {
+      "path": "viewer/decision-awareness.zip",
+      "bytes": 7182165,
+      "sha256": "ed256301d84ba6dc1942f9bf6a21b04f657af210d7f76680a95284e0e251df96"
+    }
+  ],
+  "validation": {
+    "typescriptTests": 934,
+    "typescriptFiles": 84,
+    "pythonTests": 66,
+    "typecheck": "passed",
+    "build": "passed",
+    "runObservedPlain": 162,
+    "passObservedPlainPerPhase": 96,
+    "passingPhases": 3,
+    "installationFilmControls": 6,
+    "independentOutcomeSelectedWitnessExecutions": 8,
+    "browserClips": 20,
+    "browserPageErrors": [],
+    "webmExportBytes": 117757,
+    "replayHtmlSha256": "0258da8bfa9fb54bb49d673842d3559ce906669c5cafda84df29d3615f3b28d2",
+    "sourceFrozen": true
+  },
+  "limitations": [
+    "Information/commitment repairs are locally tested; aggregate football calibration remains unresolved.",
+    "Two-game guard materially regresses scoring/rushing/YAC; component runs and all adverse pairs retained.",
+    "Balanced diagnostic calls are not NFL frequencies; two-game populations diverge and do not provide paired-snap causal attribution.",
+    "Private possession identity, other consumers of hidden rush/route state, mixed fresh/stale QB evidence, and complete role keys remain debt.",
+    "Facing and delayed sector detection are not measured eyes or conscious acquisition.",
+    "Browser verified local HTTP Chromium and WebM; file:// and other browser codecs not verified."
+  ]
+}

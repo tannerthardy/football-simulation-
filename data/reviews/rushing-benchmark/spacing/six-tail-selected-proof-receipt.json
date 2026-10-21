@@ -1,0 +1,132 @@
+{
+  "schema": "six-tail-quarter-gather-selected-proof-receipt-v1",
+  "savedOnly": true,
+  "newSimulations": 0,
+  "sources": {
+    "baseline": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+    "candidate": "8d27d085b6e469115435aeae79835c571f0e124f330c8ff856a55532a5e77006"
+  },
+  "subset": {
+    "filename": "six-tail-selected-proof.json.gz",
+    "sha256": "2f2eedff4c4240d212c17bc6d16da61dfa50d6a92794367cd91f5a15fe9b20f0",
+    "bytes": 1036450,
+    "decodedUtf8Sha256": "25320251e6ac80e3028814afb3c0c5642bbfd12a7d797462b23882d1449bad16",
+    "decodedUtf8Bytes": 6551180
+  },
+  "rawPackets": [
+    {
+      "label": "baseline",
+      "source": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+      "filename": "six-tail-baseline-3cb.json.gz",
+      "sha256": "29fdfc9fc1f84ef2075d3548ea595c96975864d09ea4ea78a6fbb412675a9d45",
+      "bytes": 36119034,
+      "fullRawPublished": false
+    },
+    {
+      "label": "candidate",
+      "source": "8d27d085b6e469115435aeae79835c571f0e124f330c8ff856a55532a5e77006",
+      "filename": "six-tail-candidate-8d2.json.gz",
+      "sha256": "b548ca03f8e86e917712db5f035fbb9514d8ecfe60e137485c37b72e67385d18",
+      "bytes": 36216353,
+      "fullRawPublished": false
+    }
+  ],
+  "provenance": {
+    "collectorSha256": "1f07443691c88cf552b96b0344e653e0c393b52326b2d812c2202671afe259eb",
+    "bodyCodecSha256": "4b397d4bb65ca5626c0214bb2db8e850f9879a419c8b6f6a2214f5b70e8dcf55",
+    "reducerSha256": "3f9c239883f98e4f89296e6320b170b18b6a72fd34492b044f7e8933b84df6ba",
+    "comparison": {
+      "filename": "six-tail-comparison.json",
+      "sha256": "55df1a330d80d4dfd0e160ac7f01558a0840a8528d0f805e3fdbc152308ab261"
+    },
+    "originalReference": {
+      "path": "/workspace/football-simulation-/data/reviews/helper-fit-and-coverage/coverage/final.json.gz",
+      "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+      "sha256": "1e4729d68cf34ac3d741d2cca82ee999253e2c834189f717982f8d9060252cb1"
+    }
+  },
+  "selection": [
+    {
+      "id": "DA-R2-curl_flat-cover2-R",
+      "times": [
+        4.15,
+        4.2,
+        4.25
+      ],
+      "firstChangedAppliedAt": 4.2,
+      "reason": "First applied command fork ± one native tick; C2R also retains the declared native half/quarter gather control ticks."
+    },
+    {
+      "id": "DA-R2-curl_flat-cover3-R",
+      "times": [
+        4.75,
+        4.8,
+        4.85
+      ],
+      "firstChangedAppliedAt": 4.8,
+      "reason": "First applied command fork ± one native tick; C2R also retains the declared native half/quarter gather control ticks."
+    },
+    {
+      "id": "DA-R2-pa_post_dig-cover3-R",
+      "times": [
+        1.2,
+        1.25,
+        1.3
+      ],
+      "firstChangedAppliedAt": 1.25,
+      "reason": "First applied command fork ± one native tick; C2R also retains the declared native half/quarter gather control ticks."
+    },
+    {
+      "id": "DA-R2-curl_flat-cover2-L",
+      "times": [],
+      "firstChangedAppliedAt": null,
+      "reason": "Unchanged execution guard; retain initial/outcome/endpoint/RNG receipts."
+    },
+    {
+      "id": "DA-R2-curl_flat-cover3-L",
+      "times": [],
+      "firstChangedAppliedAt": null,
+      "reason": "Unchanged execution guard; retain initial/outcome/endpoint/RNG receipts."
+    },
+    {
+      "id": "DA-R2-pa_post_dig-cover3-L",
+      "times": [
+        1.3,
+        1.35,
+        1.4
+      ],
+      "firstChangedAppliedAt": 1.35,
+      "reason": "First applied command fork ± one native tick; C2R also retains the declared native half/quarter gather control ticks."
+    }
+  ],
+  "checks": {
+    "identities": 6,
+    "phaseWindows": 24,
+    "commands": 528,
+    "pictures": 9530,
+    "steps": 24,
+    "bodyRoundTrips": 1716,
+    "exactCopies": 10292,
+    "resolvedPictureReferences": 1714,
+    "resolvedCommandReferences": 528
+  },
+  "parity": {
+    "allSixCommonInitialPinsExact": true,
+    "all12StoredObservedPlainExecutionsExact": true,
+    "all12CleanResultsRehashed": true,
+    "allNativeReferenceIndicesResolved": true,
+    "allBodyRoundTripsExact": true
+  },
+  "omittedFields": [
+    "result.frames",
+    "result.telemetry",
+    "steps.agents[].job",
+    "steps.achievedAgents[].job"
+  ],
+  "jobOmission": "Original collector actorState.job was not cloned and can reflect later native mutations. Physical common-prefix proof excludes only this aliased job metadata; do not treat omitted job as null or unknown responsibility.",
+  "reproduction": {
+    "baseline": "node --import tsx native-tail-commands.ts PINNED_3CB_ARCHIVE 3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f NEW_BASELINE_GZ ORIGINAL_601_COVERAGE_FINAL_GZ",
+    "candidate": "node --import tsx native-tail-commands.ts PINNED_8D2_ARCHIVE 8d27d085b6e469115435aeae79835c571f0e124f330c8ff856a55532a5e77006 NEW_CANDIDATE_GZ ORIGINAL_601_COVERAGE_FINAL_GZ",
+    "reducer": "node reduce-six-tail-proof.mjs BASELINE_GZ CANDIDATE_GZ COMPARISON_JSON NEW_PROOF_GZ NEW_RECEIPT_JSON"
+  }
+}

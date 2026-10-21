@@ -1,0 +1,48 @@
+{
+  "sourceSha256Start": "85380f9939728fcab866857478016f7707865fe06bf79634e08e003f90895148",
+  "sourceSha256End": "85380f9939728fcab866857478016f7707865fe06bf79634e08e003f90895148",
+  "scriptSha256Start": "85cf27beeb4bf53b66e739e6bf3a650478477a9467d7d411d4655a8fbdfb9e8b",
+  "scriptSha256End": "85cf27beeb4bf53b66e739e6bf3a650478477a9467d7d411d4655a8fbdfb9e8b",
+  "nodeVersion": "v22.23.3",
+  "options": {
+    "maxIterations": 256,
+    "tolerance": 1e-9
+  },
+  "summaries": [
+    {
+      "seed": 143991,
+      "cases": 1000,
+      "accepted": 1000,
+      "rejected": 0,
+      "mirrorAccepted": 1000,
+      "mirrorRejected": 0,
+      "mirrorStatusMismatch": 0,
+      "maxIterations": 80,
+      "maxAccelerations": 36,
+      "maxResidual": 9.999751547456491e-10,
+      "maxWorkResidual": 2.842170943040401e-14,
+      "maxMomentumResidual": 2.6737711109153337e-15,
+      "maxAngularResidual": 3.342213888644167e-16,
+      "maxMirrorObservableError": 0
+    },
+    {
+      "seed": 417,
+      "cases": 1000,
+      "accepted": 1000,
+      "rejected": 0,
+      "mirrorAccepted": 1000,
+      "mirrorRejected": 0,
+      "mirrorStatusMismatch": 0,
+      "maxIterations": 228,
+      "maxAccelerations": 99,
+      "maxResidual": 9.994558348327872e-10,
+      "maxWorkResidual": 4.263256414560601e-14,
+      "maxMomentumResidual": 5.329070518200751e-15,
+      "maxAngularResidual": 8.005932084973443e-16,
+      "maxMirrorObservableError": 0
+    }
+  ],
+  "failures": [],
+  "violations": [],
+  "scope": "Frozen-pose isotropic rigid foot impact only. No continuous ground support, leg control, first-touchdown timing, or World integration."
+}

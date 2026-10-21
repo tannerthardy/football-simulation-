@@ -1,0 +1,70 @@
+{
+  "schema": "bdb-concept-situation-benchmark-packet-v1",
+  "querySha256": "56e48bd830ceb1c9edabea5ba6fbce0183b8a99de89c135360186711dc04459b",
+  "collectorSha256": "ceaf62dbf2eb2e132ecc1bffdf1f918e443edfcf22d07bc37cfd7877d406e8ae",
+  "dependencySha256": "c7350b591efc10f33988abb794998a9ac1889063841f984c5c5d097f16f4eab6",
+  "dataScope": {
+    "metadataPlays": 16124,
+    "seasons": [
+      "2022"
+    ],
+    "selectedGames": 136,
+    "selectedTeams": 32,
+    "sourceGames": 136,
+    "trackingUsed": false,
+    "weeks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  "files": [
+    {
+      "file": "report.json.gz",
+      "bytes": 620210,
+      "sha256": "8379352d3494afc6bf24bc7d6300f3118aefc052a442e5c843c3e40cb854c41c"
+    },
+    {
+      "file": "README.md",
+      "bytes": 15236,
+      "sha256": "ba824aba55df49c9362e56545e15405c581fca5b4699212c7b31d5e7aac59946"
+    },
+    {
+      "file": "query-plan.json",
+      "bytes": 5147,
+      "sha256": "59d00612941f07b9ed6dcd76983569665526a145c607be3141083b93036a0769"
+    },
+    {
+      "file": "tests.log",
+      "bytes": 2480,
+      "sha256": "f775f9b282de5634608c30192ca7d49bb8cd9526834876d156786f90068f97a0"
+    },
+    {
+      "file": "collection.log",
+      "bytes": 221,
+      "sha256": "7a1c4ff517551aa360e0509959d2a16fb0d07e5bf7035bcd1f065e19f6eb7fd9"
+    },
+    {
+      "file": "verification.json",
+      "bytes": 1619,
+      "sha256": "d541c61870bbc955c76580a42926be14efd005d09b3eb146f289b12d29e68454"
+    },
+    {
+      "file": "verification.log",
+      "bytes": 1435,
+      "sha256": "94b50b7bfc721835cc5feeec0b5960ab8fc4c8199cba8a576d3ab14a8d094832"
+    },
+    {
+      "file": "verify-report.py",
+      "bytes": 3857,
+      "sha256": "31a80f22fb0db901c93b021a6a4c5ed77b7178845f4aeb16df7d7b1a27e6c50c"
+    }
+  ],
+  "publicationNote": "Aggregate outputs only; no raw licensed play/player/tracking rows or credentials. Initial collection and query were descriptive, not outcome-blind preregistration."
+}

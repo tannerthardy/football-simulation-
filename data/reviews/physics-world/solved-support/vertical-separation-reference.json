@@ -1,0 +1,382 @@
+{
+  "sourceSha256Start": "45441b0fc60f6005908501fdbf8dc129e088aec97b959935d9cf3b1c301cbabe",
+  "sourceSha256End": "45441b0fc60f6005908501fdbf8dc129e088aec97b959935d9cf3b1c301cbabe",
+  "scriptSha256Start": "d9bd47190229e2b4a1c3dbe6a10cd5fb5b3f0f232bf24a51444fa5799f1f6388",
+  "scriptSha256End": "d9bd47190229e2b4a1c3dbe6a10cd5fb5b3f0f232bf24a51444fa5799f1f6388",
+  "node": "v22.23.3",
+  "fixture": {
+    "torsoMass": 96,
+    "footMass": [
+      2,
+      2
+    ],
+    "gravity": 10,
+    "torso": {
+      "position": 0.75,
+      "velocity": 1.5
+    },
+    "feet": [
+      {
+        "id": 0,
+        "position": 0,
+        "velocity": 0
+      },
+      {
+        "id": 1,
+        "position": 0,
+        "velocity": 0
+      }
+    ],
+    "legs": [
+      {
+        "restLength": 1,
+        "stiffness": 2000,
+        "forceCap": 2000,
+        "damping": 0,
+        "dampingCap": 0
+      },
+      {
+        "restLength": 1,
+        "stiffness": 2000,
+        "forceCap": 2000,
+        "damping": 0,
+        "dampingCap": 0
+      }
+    ],
+    "actuator": {
+      "forceCap": 800,
+      "powerCap": 1000000000
+    }
+  },
+  "motorForces": [
+    400,
+    400
+  ],
+  "duration": 0.1,
+  "exact": {
+    "releaseTime": 0.04630162568565466,
+    "releaseHeight": 0.81,
+    "releaseVelocity": 1.0723805294763602,
+    "torsoHeight": 0.8517110618292558,
+    "footHeight": 0.020537276499120516,
+    "torsoVelocity": 0.4728294568025746,
+    "footVelocity": 0.9646321655845151,
+    "normalImpulsePerFoot": 2.6250782576926177
+  },
+  "runs": [
+    {
+      "maxInterval": 0.1,
+      "accepted": true,
+      "reason": null,
+      "segmentCount": 2,
+      "firstRelease": 0.046649396784402566,
+      "time": 0.1,
+      "supportedEndpoints": 2,
+      "maxAdhesion": 1.1652900866465643e-11,
+      "minNormal": 0,
+      "maxNormalMismatch": 6.8833827526759706e-15,
+      "groundWork": 0,
+      "impactLoss": 0,
+      "motorWork": -67.47495401873694,
+      "independentWorkResidual": -4.263256414560601e-14,
+      "independentMomentumResidual": -2.5757174171303632e-14,
+      "normalImpulsePerFoot": [
+        2.7989638070638834,
+        2.7989638070638834
+      ],
+      "derivedNormalImpulsePerFoot": [
+        2.79896380706389,
+        2.79896380706389
+      ],
+      "releaseError": 0.00034777109874790935,
+      "candidateFootHeight": 0.01732228305943434,
+      "footHeightError": -0.0032149934396861757,
+      "torsoHeightError": -0.000045086246400316554,
+      "footVelocityError": -0.3152568252745842,
+      "normalImpulseError": 0.17388554937126566
+    },
+    {
+      "maxInterval": 0.05,
+      "accepted": true,
+      "reason": null,
+      "segmentCount": 3,
+      "firstRelease": 0.046649396784402566,
+      "time": 0.1,
+      "supportedEndpoints": 2,
+      "maxAdhesion": 1.1652900866465643e-11,
+      "minNormal": 0,
+      "maxNormalMismatch": 7.071565555349935e-13,
+      "groundWork": 0,
+      "impactLoss": 0,
+      "motorWork": -67.27288463600327,
+      "independentWorkResidual": 4.617106696969131e-11,
+      "independentMomentumResidual": 9.166267744831202e-11,
+      "normalImpulsePerFoot": [
+        2.7989638070638834,
+        2.7989638070638834
+      ],
+      "derivedNormalImpulsePerFoot": [
+        2.7989638070631697,
+        2.7989638070631697
+      ],
+      "releaseError": 0.00034777109874790935,
+      "candidateFootHeight": 0.017564766318716323,
+      "footHeightError": -0.0029725101804041927,
+      "torsoHeightError": -0.00005518971553541974,
+      "footVelocityError": -0.26834151820612673,
+      "normalImpulseError": 0.17388554937126566
+    },
+    {
+      "maxInterval": 0.02,
+      "accepted": true,
+      "reason": null,
+      "segmentCount": 7,
+      "firstRelease": 0.046347949400874736,
+      "time": 0.1,
+      "supportedEndpoints": 6,
+      "maxAdhesion": 1.1368683772161603e-13,
+      "minNormal": 0,
+      "maxNormalMismatch": 1.2212453270876722e-14,
+      "groundWork": 0,
+      "impactLoss": 0,
+      "motorWork": -65.3508854037827,
+      "independentWorkResidual": -2.055884351648274e-10,
+      "independentMomentumResidual": -1.454321107985379e-10,
+      "normalImpulsePerFoot": [
+        2.6482401152794486,
+        2.6482401152794486
+      ],
+      "derivedNormalImpulsePerFoot": [
+        2.6482401152794637,
+        2.6482401152794637
+      ],
+      "releaseError": 0.0000463237152200785,
+      "candidateFootHeight": 0.02002022269972566,
+      "footHeightError": -0.0005170537993948558,
+      "torsoHeightError": -0.0000022323748017916145,
+      "footVelocityError": -0.03367316941192988,
+      "normalImpulseError": 0.02316185758683087
+    },
+    {
+      "maxInterval": 0.01,
+      "accepted": true,
+      "reason": null,
+      "segmentCount": 12,
+      "firstRelease": 0.04631638069109238,
+      "time": 0.1,
+      "supportedEndpoints": 10,
+      "maxAdhesion": 1.1368683772161603e-13,
+      "minNormal": 0,
+      "maxNormalMismatch": 1.3924417174848713e-11,
+      "groundWork": 0,
+      "impactLoss": 0,
+      "motorWork": -65.08765308202774,
+      "independentWorkResidual": 4.3874592847714666e-10,
+      "independentMomentumResidual": 5.406128877893934e-10,
+      "normalImpulsePerFoot": [
+        2.632455760408303,
+        2.632455760408303
+      ],
+      "derivedNormalImpulsePerFoot": [
+        2.632455760397158,
+        2.632455760397158
+      ],
+      "releaseError": 0.0000147550054377249,
+      "candidateFootHeight": 0.020351658765954496,
+      "footHeightError": -0.00018561773316601998,
+      "torsoHeightError": 1.6328923335695578e-7,
+      "footVelocityError": -0.011815152467312684,
+      "normalImpulseError": 0.007377502715685491
+    },
+    {
+      "maxInterval": 0.002,
+      "accepted": true,
+      "reason": null,
+      "segmentCount": 51,
+      "firstRelease": 0.0463022646546635,
+      "time": 0.1,
+      "supportedEndpoints": 48,
+      "maxAdhesion": 1.1368683772161603e-13,
+      "minNormal": 0,
+      "maxNormalMismatch": 4.65333327426265e-12,
+      "groundWork": 0,
+      "impactLoss": 0,
+      "motorWork": -64.94654134734496,
+      "independentWorkResidual": -3.028191031262395e-10,
+      "independentMomentumResidual": 3.064979381406374e-10,
+      "normalImpulsePerFoot": [
+        2.625397742102955,
+        2.625397742102955
+      ],
+      "derivedNormalImpulsePerFoot": [
+        2.6253977420964083,
+        2.6253977420964083
+      ],
+      "releaseError": 6.389690088426381e-7,
+      "candidateFootHeight": 0.02052794610364858,
+      "footHeightError": -0.000009330395471934816,
+      "torsoHeightError": 6.095857396637427e-8,
+      "footVelocityError": -0.0005893634767704103,
+      "normalImpulseError": 0.0003194844103373562
+    },
+    {
+      "maxInterval": 0.001,
+      "accepted": true,
+      "reason": null,
+      "segmentCount": 101,
+      "firstRelease": 0.0463017855022778,
+      "time": 0.1,
+      "supportedEndpoints": 94,
+      "maxAdhesion": 1.1368683772161603e-13,
+      "minNormal": 0,
+      "maxNormalMismatch": 2.3637203305781895e-12,
+      "groundWork": 0,
+      "impactLoss": 0,
+      "motorWork": -64.94091229355476,
+      "independentWorkResidual": 1.0768133051897166e-9,
+      "independentMomentumResidual": 1.3778569396549756e-9,
+      "normalImpulsePerFoot": [
+        2.625158166020108,
+        2.625158166020108
+      ],
+      "derivedNormalImpulsePerFoot": [
+        2.625158166010662,
+        2.6251581660103818
+      ],
+      "releaseError": 1.598166231436826e-7,
+      "candidateFootHeight": 0.020534936954100746,
+      "footHeightError": -0.0000023395450197694068,
+      "torsoHeightError": 1.549178629822734e-8,
+      "footVelocityError": -0.0001477092421637849,
+      "normalImpulseError": 0.00007990832749049659
+    },
+    {
+      "maxInterval": 0.0005,
+      "accepted": true,
+      "reason": null,
+      "segmentCount": 201,
+      "firstRelease": 0.04630166571144365,
+      "time": 0.1,
+      "supportedEndpoints": 186,
+      "maxAdhesion": 1.1368683772161603e-13,
+      "minNormal": 0,
+      "maxNormalMismatch": 1.0246734016838843e-12,
+      "groundWork": 0,
+      "impactLoss": 0,
+      "motorWork": -64.9395010379763,
+      "independentWorkResidual": 1.1780798558902461e-9,
+      "independentMomentumResidual": 1.4539960346837688e-9,
+      "normalImpulsePerFoot": [
+        2.625098270599053,
+        2.625098270599053
+      ],
+      "derivedNormalImpulsePerFoot": [
+        2.6250982705864425,
+        2.6250982705866193
+      ],
+      "releaseError": 4.0025788995701195e-8,
+      "candidateFootHeight": 0.02053668945814588,
+      "footHeightError": -5.870409746366878e-7,
+      "torsoHeightError": 3.926360014894215e-9,
+      "footVelocityError": -0.000037061073392519184,
+      "normalImpulseError": 0.000020012906435162847
+    },
+    {
+      "maxInterval": 0.0001,
+      "accepted": true,
+      "reason": null,
+      "segmentCount": 1001,
+      "firstRelease": 0.046301627293289134,
+      "time": 0.1,
+      "supportedEndpoints": 928,
+      "maxAdhesion": 1.1368683772161603e-13,
+      "minNormal": 0,
+      "maxNormalMismatch": 3.0100427358958903e-12,
+      "groundWork": 0,
+      "impactLoss": 0,
+      "motorWork": -64.93904723533291,
+      "independentWorkResidual": 1.1697807167365681e-9,
+      "independentMomentumResidual": 1.466672117089729e-9,
+      "normalImpulsePerFoot": [
+        2.625079061512154,
+        2.625079061512154
+      ],
+      "derivedNormalImpulsePerFoot": [
+        2.6250790614943056,
+        2.6250790614943056
+      ],
+      "releaseError": 1.60763447693002e-9,
+      "candidateFootHeight": 0.02053725294232225,
+      "footHeightError": -2.3556798265517154e-8,
+      "torsoHeightError": 1.5723256030497623e-10,
+      "footVelocityError": -0.0000014870620442808402,
+      "normalImpulseError": 8.038195362658485e-7
+    }
+  ],
+  "hiddenInterior": [
+    {
+      "dt": 0.3,
+      "accepted": true,
+      "reason": null,
+      "segmentCount": 5,
+      "firstRelease": 0.046649396784397,
+      "time": 0.3,
+      "supportedEndpoints": 4,
+      "maxAdhesion": 1.1368683772161603e-13,
+      "minNormal": 0,
+      "maxNormalMismatch": 4.907185768843192e-14,
+      "groundWork": 0,
+      "impactLoss": -3.6176139867446384,
+      "motorWork": 1.4325094078849965,
+      "independentWorkResidual": 7.901768128704134e-11,
+      "independentMomentumResidual": -5.489653176482534e-11,
+      "normalImpulsePerFoot": [
+        6.75837491216853,
+        6.758374912168526
+      ],
+      "derivedNormalImpulsePerFoot": [
+        6.758374912168581,
+        6.7583749121685806
+      ],
+      "constrainedEndpointHeight": 0.7090692544405764,
+      "constrainedEndpointNormal": 201.86149111884708,
+      "constrainedInteriorPeakTime": 0.13716520006346958,
+      "constrainedInteriorPeakHeight": 0.8601666203960727,
+      "constrainedInteriorMinimumNormal": -100.33324079214543,
+      "releaseError": 0.00034777109874234435
+    },
+    {
+      "dt": 0.4,
+      "accepted": true,
+      "reason": null,
+      "segmentCount": 10,
+      "firstRelease": 0.046649396784402566,
+      "time": 0.4,
+      "supportedEndpoints": 14,
+      "maxAdhesion": 1.1652900866465643e-11,
+      "minNormal": 0,
+      "maxNormalMismatch": 9.459100169806334e-14,
+      "groundWork": 0,
+      "impactLoss": -1.9510831281177836,
+      "motorWork": 143.08593111205755,
+      "independentWorkResidual": -1.7955770204025612e-10,
+      "independentMomentumResidual": 9.991651950258529e-11,
+      "normalImpulsePerFoot": [
+        35.56608351784437,
+        35.56608351784437
+      ],
+      "derivedNormalImpulsePerFoot": [
+        35.566083517844255,
+        35.566083517844255
+      ],
+      "constrainedEndpointHeight": 0.5223400444935739,
+      "constrainedEndpointNormal": 575.3199110128523,
+      "constrainedInteriorPeakTime": 0.13716520006346958,
+      "constrainedInteriorPeakHeight": 0.8601666203960727,
+      "constrainedInteriorMinimumNormal": -100.33324079214543,
+      "releaseError": 0.00034777109874790935
+    }
+  ],
+  "contractViolations": [],
+  "scope": "Independent symmetric 1D reference only; no NFL calibration, general convergence or football readiness claim."
+}

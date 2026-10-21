@@ -1,0 +1,167 @@
+{
+  "schema": "coverage-contract-review-v1",
+  "acceptedBase": "3723204bd0743713bca3e87f10ca01bfebf00a15",
+  "acceptedSource": "cda44ed806395aa3dcbeab8f4516da3e302633e3e28408fbf97119ff82ced318",
+  "publishedQueue": "db0d512666823c49f7d5afed84138b32ffcf449f",
+  "decisions": {
+    "97": "ACCEPT narrow acquired-entry/provisional-block scope",
+    "100": "ACCEPT release-read/observed-cap delivery scope",
+    "97-100": "ACCEPT minimal eight-file composition for Integration verification",
+    "95": "ACCEPT acquired installed-rat duty with preserved Drive contact/fall cost; no tackle improvement claim",
+    "104": "HOLD independent approval: current reviewer authored original #104; technical role correctness supported, external Run review still required"
+  },
+  "patches": {
+    "97": {
+      "origin": "1a52e6b51be6c33cbb50f07c25c2471c5a1e54f6",
+      "base": "3723204bd0743713bca3e87f10ca01bfebf00a15",
+      "path": "data/reviews/current/coverage-contract-review/97.patch",
+      "sha256": "afe60f9746c1252ec04c0953ba5525b606ef9d30408f6230eceed36dc5c62d58",
+      "bytes": 8360,
+      "resultTreeFingerprint": "47cf7a89b80b1bb128f062ee412380eae35afdd9",
+      "files": {
+        "src/sim/behaviors/defense.ts": "efeeea45ad39ffc0504373198479ed28c4a4f229",
+        "src/sim/coverage/rules.ts": "20688494b4f654323e752b6158e0eaad88a3728b",
+        "test/match-block-release.test.ts": "3b3efe32d8332bdfa6e565d418bbc35e42f415f3"
+      },
+      "cachedApplyCheck": "PASS",
+      "qualification": "Portable patch only; result tree is a fingerprint, not a newly tested or published runtime commit."
+    },
+    "100": {
+      "origin": "9f30428df552301ec25b51bade76ce4965d9fcda",
+      "base": "3723204bd0743713bca3e87f10ca01bfebf00a15",
+      "path": "data/reviews/current/coverage-contract-review/100.patch",
+      "sha256": "423e3a9c7158b5577418b2090db5214f5ec8c6e9c837a1951f62a10cc99cbba1",
+      "bytes": 33509,
+      "resultTreeFingerprint": "ab2e2afedb4e830356644654d4ace7afecbc2a4f",
+      "files": {
+        "src/sim/behaviors/defense.ts": "5db25b81168130fbb6e6e34cb4049b9ec48fcfa6",
+        "src/sim/coverage/defender.ts": "2269cfdde655cd8a3330ab73b84b62817767f6c1",
+        "src/sim/coverage/rules.ts": "a65260ca535d2db4212206c55059daa67f3278bf",
+        "src/sim/coverage/techniques.ts": "e9f3f83ee5bae2cf63242b6aabd7eceb443f4b9f",
+        "test/coverage-run-support.test.ts": "4473de16e79836c948338b5dda5a68e9e5eb82d3",
+        "test/release-cushion.test.ts": "5ba5335311c8b8fa2cdb734fb9c91926d76ed729",
+        "test/seam-delivery.test.ts": "7576540ace3864a11d50b05e3106f4ebe9042d3c"
+      },
+      "cachedApplyCheck": "PASS",
+      "qualification": "Portable patch only; result tree is a fingerprint, not a newly tested or published runtime commit."
+    },
+    "97-100": {
+      "origin": "0b346b6373e77d6001973830c6efe9b753245dd1",
+      "base": "3723204bd0743713bca3e87f10ca01bfebf00a15",
+      "path": "data/reviews/current/coverage-contract-review/97-100.patch",
+      "sha256": "f19b6f3e086bcdfa6ba7c94daa0d47e8ca7abdb5dbe2586cb7d5763fba12eb49",
+      "bytes": 39562,
+      "resultTreeFingerprint": "81deae6aa8d9af47e39988f8e2f9f9226aecc696",
+      "files": {
+        "src/sim/behaviors/defense.ts": "5db25b81168130fbb6e6e34cb4049b9ec48fcfa6",
+        "src/sim/coverage/defender.ts": "2269cfdde655cd8a3330ab73b84b62817767f6c1",
+        "src/sim/coverage/rules.ts": "1c6114559ec86c81093b64024fec1470e23c08f2",
+        "src/sim/coverage/techniques.ts": "e9f3f83ee5bae2cf63242b6aabd7eceb443f4b9f",
+        "test/coverage-run-support.test.ts": "4473de16e79836c948338b5dda5a68e9e5eb82d3",
+        "test/release-cushion.test.ts": "5ba5335311c8b8fa2cdb734fb9c91926d76ed729",
+        "test/seam-delivery.test.ts": "7576540ace3864a11d50b05e3106f4ebe9042d3c",
+        "test/match-block-release.test.ts": "3b3efe32d8332bdfa6e565d418bbc35e42f415f3"
+      },
+      "cachedApplyCheck": "PASS",
+      "qualification": "Portable patch only; result tree is a fingerprint, not a newly tested or published runtime commit."
+    },
+    "95": {
+      "origin": "45c3308b82312dc9cfca86f4663507c17dc73aa2",
+      "base": "3723204bd0743713bca3e87f10ca01bfebf00a15",
+      "path": "data/reviews/current/coverage-contract-review/95.patch",
+      "sha256": "6a08897bf27a2533547a7ab238676c6a59b721b4971918723a777e199956c8c8",
+      "bytes": 12745,
+      "resultTreeFingerprint": "725ff06d2e148539d926360481101b906fb5f10a",
+      "files": {
+        "src/sim/behaviors/defense.ts": "efeeea45ad39ffc0504373198479ed28c4a4f229",
+        "src/sim/coverage/rules.ts": "a20bbdfa9202c3de713ed87889359cb791890025",
+        "test/rat-coverage.test.ts": "d2bfb3b30e7654fd0d02e82d7dc1093596988f2d"
+      },
+      "cachedApplyCheck": "PASS",
+      "qualification": "Portable patch only; result tree is a fingerprint, not a newly tested or published runtime commit."
+    },
+    "104": {
+      "origin": "c07a9fdc7e7cf44ff9ae0c09dd248da7c7244a95",
+      "base": "3723204bd0743713bca3e87f10ca01bfebf00a15",
+      "path": "data/reviews/current/coverage-contract-review/104.patch",
+      "sha256": "015eca89a23c01e90034dcbffd2a0a9c49d9ac9f06d2b8009aaa77858141645c",
+      "bytes": 7648,
+      "resultTreeFingerprint": "ee1ca6375ce4d54ba11c17d73e2baf68ac82f5d1",
+      "files": {
+        "src/sim/behaviors/blocking.ts": "b312fcfc4d823db7558332b8af613804add4cd20",
+        "test/inline-zone-keeper.test.ts": "7c63a288da4492ed59a72381b74d7ae91e0c065f"
+      },
+      "cachedApplyCheck": "PASS",
+      "qualification": "Portable patch only; result tree is a fingerprint, not a newly tested or published runtime commit."
+    }
+  },
+  "reusedEvidence": {
+    "97": {
+      "commit": "1a52e6b51be6c33cbb50f07c25c2471c5a1e54f6",
+      "path": "data/reviews/current/pass-defense-panel.json",
+      "sha256": "1369ccce59411958c712a65cba967342ff143c6cad610a11406d365063654af9",
+      "bytes": 331773,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/1a52e6b51be6c33cbb50f07c25c2471c5a1e54f6/data/reviews/current/pass-defense-panel.json"
+    },
+    "100": {
+      "commit": "9f30428df552301ec25b51bade76ce4965d9fcda",
+      "path": "data/reviews/current/release-delivery.json",
+      "sha256": "643dda2ebd71834f9cf17abcf5f7767a693b6aeac1d8567d2479cf13db851476",
+      "bytes": 408228,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/9f30428df552301ec25b51bade76ce4965d9fcda/data/reviews/current/release-delivery.json"
+    },
+    "95": {
+      "commit": "45c3308b82312dc9cfca86f4663507c17dc73aa2",
+      "path": "data/reviews/current/rat-crosser-duty.json",
+      "sha256": "8aa81350720a2658b477da4c84b235623f1689480a2f9f9f254e3cfb321a5744",
+      "bytes": 9224,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/45c3308b82312dc9cfca86f4663507c17dc73aa2/data/reviews/current/rat-crosser-duty.json"
+    },
+    "95-summary": {
+      "commit": "45c3308b82312dc9cfca86f4663507c17dc73aa2",
+      "path": "data/reviews/current/rat-crosser-duty/summary.json",
+      "sha256": "4ae8a5da5669fa330da22c0ff3e8ffcd7103f8d936961bea3717abd3e6236077",
+      "bytes": 51248,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/45c3308b82312dc9cfca86f4663507c17dc73aa2/data/reviews/current/rat-crosser-duty/summary.json"
+    },
+    "104": {
+      "commit": "bcd0dc8eb5bcd26731934694b32fd068c03bfb56",
+      "path": "data/reviews/current/inline-zone-keeper-summary.json",
+      "sha256": "0ab1ffcacf754dfa648539333ebe382524c276ef04b114119e2852c0aca6d456",
+      "bytes": 196915,
+      "url": "https://github.com/tannerthardy/football-simulation-/blob/bcd0dc8eb5bcd26731934694b32fd068c03bfb56/data/reviews/current/inline-zone-keeper-summary.json"
+    }
+  },
+  "compositionContract": [
+    "Acquired initialPosition interface/constructor/producer once; never directive identity.",
+    "seamCurlFlat early read precedes terminal checks; block is nonterminal.",
+    "qSafety blocking help remains conditional on knowsPass without locking one.",
+    "wallTwo block remains nonterminal; acquired shallow and earned depth exits remain terminal.",
+    "Cover3 delivery requires existing fallible observed cap; no private assignment or guaranteed handoff.",
+    "Existing #105 controllers/stance/gaps remain; no #95/#102/#104 policy imported into composition."
+  ],
+  "adverseEvidence": [
+    "#97 Drive shallow YAC 3.15\u21926.92 and 1.57\u219210.03: deeper duty costs shallow help.",
+    "#97 Cover3 43.93\u219246.90: identical recorded approach/grasp geometry, changed leg-placement/capacity execution.",
+    "#100 opposing Cover3 4.21 YAC Y catch\u219225.31 YAC H catch; target selection and exposed seam retained.",
+    "Interception returns, no-pass outcomes, changed targets and censored windows remain separate.",
+    "#95 Drive rat\u2013H impact2.45, closing5.67yd/s, impulse252.83kg\u00b7yd/s; rat falls2.65 through catch3.15; SS later finishes.",
+    "#104 press keeper still loses, Mike contact not secure, free Will wins; native evidence includes unaccepted #102."
+  ],
+  "newValidation": {
+    "type": "Source/blob/patch application audit only",
+    "newTestExecutions": 0,
+    "newNativeExecutions": 0,
+    "newGames": 0,
+    "integrationSuiteRepeated": false,
+    "artifactAuditWallSeconds": 0.31491115101380274
+  },
+  "limits": [
+    "Historical native sources are not relabeled as accepted3723204 behavior.",
+    "Coverage production files unchanged bb\u2192372, while shared spacing/blocking/setup have changed.",
+    "Direct ManCoverage and CoverageJudgment emergency-man producers retain legacy entry fallback.",
+    "Unknown control means absent acquired declaration; partial/expired velocity transport is not a new contract.",
+    "#95 raw archive unavailable: no release asset exists; compact evidence and deterministic bounded operators are fetchable.",
+    "No merge, independent #104 signoff, physics promotion or whole-engine football certification."
+  ]
+}

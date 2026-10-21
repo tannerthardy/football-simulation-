@@ -1,0 +1,71 @@
+{
+  "baselineSource": "43ff53ab75d3deb3d6570ea067fd82265b4c8fc1c21fe0fed547c1031ab49edf",
+  "candidateSource": "6100c9b5c338a993e04ffcdb5dbe7171bbbfc3e09a19ceb4f720c5407be8b4ca",
+  "benchmarkOnly": true,
+  "explicitGcBeforeAllocationTiming": true,
+  "repeatsPerSource": 2,
+  "fixtures": [
+    {
+      "fixture": "free",
+      "baselineMedianBlockCpuMs": [
+        66.43,
+        119.378
+      ],
+      "candidateMedianBlockCpuMs": [
+        68.528,
+        40.067
+      ],
+      "baselineMedianBlockWorldTickP95Ms": [
+        0.24827400000003763,
+        0.2878410000000713
+      ],
+      "candidateMedianBlockWorldTickP95Ms": [
+        0.12718299999983174,
+        0.08945900000003348
+      ]
+    },
+    {
+      "fixture": "trench",
+      "baselineMedianBlockCpuMs": [
+        637.498,
+        481.676
+      ],
+      "candidateMedianBlockCpuMs": [
+        235.882,
+        170.453
+      ],
+      "baselineMedianBlockWorldTickP95Ms": [
+        2.432158999999956,
+        2.0286460000006628
+      ],
+      "candidateMedianBlockWorldTickP95Ms": [
+        0.9438679999998385,
+        0.5342359999999644
+      ]
+    },
+    {
+      "fixture": "multi-grip",
+      "baselineMedianBlockCpuMs": [
+        307.277,
+        301.641
+      ],
+      "candidateMedianBlockCpuMs": [
+        325.669,
+        290.024
+      ],
+      "baselineMedianBlockWorldTickP95Ms": [
+        1.2121050000005198,
+        1.1477509999986069
+      ],
+      "candidateMedianBlockWorldTickP95Ms": [
+        1.200767000000269,
+        1.0642989999996644
+      ]
+    }
+  ],
+  "conclusion": "Ordinary fixture timings vary substantially between separate runs; no precise overhead or speedup claim is justified. Multi-grip CPU medians overlap across repeats. Retain all runs and remeasure for any stricter production budget.",
+  "limitations": [
+    "Identical 22-body fixtures and scripts; construction excluded, three warm blocks excluded, seven blocks of 400 ticks; explicit GC before each measured block.",
+    "Separate-process JIT/GC and host variability remain; timing repetitions do not establish football fidelity."
+  ]
+}

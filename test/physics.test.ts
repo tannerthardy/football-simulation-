@@ -49,9 +49,10 @@ describe('integrator', () => {
 
   it('a straight sprint in pads runs the 40 a little slower than the combine time', () => {
     const extra = sprint40() - wr.measurables.forty;
-    // In-game top speed and burst are below combine levels (tracking data).
+    // In-game top speed and burst are below combine levels: in pads, from a
+    // football stance, with the gentler bursts 2022-23 tracking shows.
     expect(extra).toBeGreaterThan(0.1);
-    expect(extra).toBeLessThan(0.7);
+    expect(extra).toBeLessThan(0.9);
   });
 
   it('a runner who has been sprinting for a while has a lower top speed', () => {

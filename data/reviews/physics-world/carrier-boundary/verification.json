@@ -1,0 +1,121 @@
+{
+  "schema": "carrier-boundary-film-integrity-v1",
+  "scope": "Retained parent/carrier-only/combined source; exact recorded frame/telemetry integrity plus focused offline browser checks, not NFL realism proof or full viewer/video suite.",
+  "clips": [
+    {
+      "mode": "parent",
+      "id": "RB-BOUND-PARENT",
+      "sourceSha256": "34f408b5ecee53740d9c61218e46b5ae0842e74f3d0f9cd0e3256dd8685abb02",
+      "carrierSha256": "6f8dd527388775f165512ebc571136ce0c8d0782f22c0f325d1a6bbc3c0a0ef0",
+      "frames": 76,
+      "telemetryExact": true,
+      "timesPositionsBallPossessionExact": true,
+      "eventCount": 42,
+      "maximumPostureDisplayRounding": 0.05000000000000002,
+      "observerVerified": true
+    },
+    {
+      "mode": "carrier-only",
+      "id": "RB-BOUND-REPAIR",
+      "sourceSha256": "d2c2a24b486194d455568ba814207aa4a659ef09cbdf680dd859da29ac4e59f0",
+      "carrierSha256": "4ba684552d96b4eb4dd0e8d0954b395d6b4eb4754c0665507e59c5b5e5861d66",
+      "frames": 91,
+      "telemetryExact": true,
+      "timesPositionsBallPossessionExact": true,
+      "eventCount": 46,
+      "maximumPostureDisplayRounding": 0.050000000000000044,
+      "observerVerified": true
+    },
+    {
+      "mode": "current",
+      "id": "RB-BOUND-CURRENT",
+      "sourceSha256": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+      "carrierSha256": "4ba684552d96b4eb4dd0e8d0954b395d6b4eb4754c0665507e59c5b5e5861d66",
+      "frames": 91,
+      "telemetryExact": true,
+      "timesPositionsBallPossessionExact": true,
+      "eventCount": 60,
+      "maximumPostureDisplayRounding": 0.050000000000000044,
+      "observerVerified": true
+    }
+  ],
+  "browser": {
+    "scope": "focused three-mode boundary film smoke; not complete generic viewer/video suite",
+    "checks": [
+      "All three saved modes load; exact IDs, separate source labels and controlled context",
+      "All modes retain full telemetry, RB weight/speed inspection, movement/contact layers, events and scrubbing",
+      "Only the recorded parent is OOB; exact current-ID search selects current recording",
+      "Offline load, mobile layout and no JavaScript errors"
+    ],
+    "pageErrors": []
+  },
+  "zipHtmlByteIdentical": true,
+  "artifacts": {
+    "data/reviews/physics-world/carrier-boundary/browser-current.json": {
+      "bytes": 491,
+      "sha256": "b3831f726d94133b01a92eca5fa598ee68666a26a6d9df4b14257ea813c58ac0"
+    },
+    "data/reviews/physics-world/carrier-boundary/browser-smoke.py": {
+      "bytes": 3505,
+      "sha256": "21dae16ef101b23ee4549ab27eb401722eaed2616808de6541cb0a5a507d0886"
+    },
+    "data/reviews/physics-world/carrier-boundary/carrier-only.json.gz": {
+      "bytes": 418348,
+      "sha256": "f1bcea3e49d6d68ccfbea5f7392cde14748b7bb1842ce0d7be7794b5a33b882b"
+    },
+    "data/reviews/physics-world/carrier-boundary/carrier.patch": {
+      "bytes": 1948,
+      "sha256": "7e1d8703114391a3d98189e61a2f365b9dc606c128e4b83a93bc2af914d395d5"
+    },
+    "data/reviews/physics-world/carrier-boundary/comparison.json": {
+      "bytes": 11619,
+      "sha256": "af5b15b6885b5048acd5313048d7a28254af45bfba4a4352b7f346c6cebd2158"
+    },
+    "data/reviews/physics-world/carrier-boundary/current.json.gz": {
+      "bytes": 433253,
+      "sha256": "0797fe66e22f5d47bde2c1e8e66f52a829ed1ede283c36d23f692fb87114b591"
+    },
+    "data/reviews/physics-world/carrier-boundary/focused-tests.log": {
+      "bytes": 380,
+      "sha256": "0fa1f8d96034245fe39fb0561b3d004fe5809d712546ebd474d0b8ccd39077f9"
+    },
+    "data/reviews/physics-world/carrier-boundary/parent.json.gz": {
+      "bytes": 347842,
+      "sha256": "37d040f45d508c8eed8dfcab53353e254f7388ad5c071eeca198eadf4b48f82d"
+    },
+    "data/reviews/physics-world/carrier-boundary/remaining-outside-zone-exit.json": {
+      "bytes": 22651,
+      "sha256": "302c04674bc767fbc15311e70f52cedd6c9d24ad265d8da0f32c821e4aed92ce"
+    }
+  },
+  "tools": {
+    "viewer/carrier-boundary.html": {
+      "bytes": 1405658,
+      "sha256": "2b9399ed2015aacd3e06ed4bc935520fc67839e0988d13376a0bd3d71b9e5048"
+    },
+    "viewer/carrier-boundary.zip": {
+      "bytes": 937577,
+      "sha256": "c5255cca9821da948e9f1ee6f31d8cda66bb452df603cdf7619a758384f41ac0"
+    },
+    "scripts/diag/carrier-boundary-review.ts": {
+      "bytes": 5998,
+      "sha256": "8e0677f1c47ce8584bb690aa60c094c655dfd83cd0f881a16813eba375affc3c"
+    },
+    "scripts/export-carrier-boundary-review.ts": {
+      "bytes": 8753,
+      "sha256": "85df0240fa1182b7269d9598b0c6a940826dc3b88401f9656714f57db1e55c4b"
+    },
+    "viewer/replay.template.html": {
+      "bytes": 78726,
+      "sha256": "47481b07b447a2c4a8530c64c2bf98ab919464d8568dfcf5ef5f5671e7915239"
+    },
+    "src/sim/behaviors/carrier.ts": {
+      "bytes": 17688,
+      "sha256": "4ba684552d96b4eb4dd0e8d0954b395d6b4eb4754c0665507e59c5b5e5861d66"
+    },
+    "test/carrier-boundary.test.ts": {
+      "bytes": 4611,
+      "sha256": "232db63622b0b9970d490ed7c012fb673d85e5c3e9956e24bde639239f585ac6"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "bounded-attachment-cost-comparison-v1",
+  "source": "38de2ab7f8ce0e575483d3156128b3abde52d13e2dd5c9d7586e1227b5e884c9",
+  "order": [
+    "linear",
+    "bounded",
+    "linear"
+  ],
+  "rows": [
+    {
+      "fixture": "free",
+      "linearACpuMs": 46.818,
+      "boundedCpuMs": 49.51,
+      "linearBCpuMs": 45.658,
+      "ratioToLinearCpuRange": [
+        1.0574992524242812,
+        1.0843663761005737
+      ]
+    },
+    {
+      "fixture": "trench",
+      "linearACpuMs": 170.509,
+      "boundedCpuMs": 172.437,
+      "linearBCpuMs": 173.21,
+      "ratioToLinearCpuRange": [
+        0.9955372091680619,
+        1.0113073210211778
+      ]
+    },
+    {
+      "fixture": "multi-grip",
+      "linearACpuMs": 313.661,
+      "boundedCpuMs": 526.332,
+      "linearBCpuMs": 309.462,
+      "ratioToLinearCpuRange": [
+        1.6780281896697389,
+        1.700796866820482
+      ]
+    }
+  ],
+  "limits": [
+    "Sequential processes; seven warmed blocks each, allocations and forced GC before timed blocks. No other workloads active.",
+    "Matched fresh one-tick fixtures near zero attachment coordinate; no sustained-extension/full-game cost inference.",
+    "Ratios bounded by two baseline CPU medians describe observed spread, not confidence intervals or portable speedups."
+  ]
+}

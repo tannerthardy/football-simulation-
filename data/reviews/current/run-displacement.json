@@ -1,0 +1,620 @@
+{
+ "schema": "run-displacement-proximity-pilot-v1",
+ "sourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d",
+ "pilot": "BDB2025 tracking week1 (NFL2022 week1) versus eight pinned native games. Descriptive pilot, not a population estimate or calibration.",
+ "operator": "10Hz centers rounded to0.1yd. Signed displacement from snap; positive toward the defensive end zone. Line players use roster position and snap depth[-0.5,2]yd; five OL use depth[-2,0.7]yd. Persistence requires proximity to any OL for80% of frames from0.5s through the slice and at the slice. Thresholds:1/1.5yd. OLTE includes attached TE.",
+ "censoring": "Slices strictly precede the ending event: native duration or NFL tackle/out/TD/fumble/slide. Missing tracking rows are excluded. CommonLive3s retains the same players through0.5\u20133s.",
+ "counts": {
+  "engine:plays": 300,
+  "engine:qualifiedPlays": 300,
+  "engine:qualifiedLinePlayers": 1259,
+  "engine:OLnear@1s": 806,
+  "engine:OLnear@2s": 803,
+  "engine:censoredDL@3s": 159,
+  "engine:OLnear@3s": 683,
+  "nfl:plays": 655,
+  "nfl:excludedNot5OL": 64,
+  "nfl:qualifiedPlays": 591,
+  "nfl:qualifiedLinePlayers": 2580,
+  "nfl:OLnear@1s": 1252,
+  "nfl:OLnear@2s": 1444,
+  "nfl:OLnear@3s": 1211,
+  "nfl:OLseparationBelow0p35yd@3s": 38,
+  "nfl:OLseparationBelow0p35yd@2s": 35,
+  "nfl:censoredDL@3s": 176,
+  "nfl:excludedNoHandoff": 45,
+  "nfl:excludedMissingOrMultipleSnap": 3,
+  "nfl:OLseparationBelow0p35yd@1s": 6,
+  "nfl:censoredDL@1s": 9,
+  "nfl:censoredDL@2s": 15,
+  "nfl:excludedPass": 1
+ },
+ "inputPins": [
+  {
+   "path": "out/rushing-benchmark/validation/recording-games/game-1.json.gz",
+   "sha256": "2061fc5bbe417314d474f1700461045966fb01ba72bcb916eeec31775317fe93"
+  },
+  {
+   "path": "out/rushing-benchmark/validation/recording-games/game-2.json.gz",
+   "sha256": "54a20da1c812b3b0a7d5a3284e6503989f139dd8cd7657bf71a2d5bf624617fa"
+  },
+  {
+   "path": "out/rushing-benchmark/validation/recording-games/game-3.json.gz",
+   "sha256": "a82eee2fffaa3195b00f592b146ab883ae7d879b6d9c75756d062531de51b191"
+  },
+  {
+   "path": "out/rushing-benchmark/validation/recording-games/game-4.json.gz",
+   "sha256": "cac18f28a69e624bb7e8e91379dc9122e5941266e3beee504ba38dffb8537e15"
+  },
+  {
+   "path": "out/rushing-benchmark/validation/recording-games/game-5.json.gz",
+   "sha256": "ebbf1618628e721322dd823eca464b1e5f22949122abdf6dcd6a0b327971e230"
+  },
+  {
+   "path": "out/rushing-benchmark/validation/recording-games/game-6.json.gz",
+   "sha256": "443190f3534857b9cab3d1b3ab013b10c19942efcfb904d3bc4423a29a796607"
+  },
+  {
+   "path": "out/rushing-benchmark/validation/recording-games/game-7.json.gz",
+   "sha256": "ce307fe4ee4fc91eb2b49b8140d5145af47f5bee24edb043876d5061d74d6532"
+  },
+  {
+   "path": "out/rushing-benchmark/validation/recording-games/game-8.json.gz",
+   "sha256": "0a1555fee8436a1f7f73db4e7e71e6f06ecc92af25079c9678a985bb2b9be234"
+  },
+  {
+   "path": "/workspace/review-aids/bdb2025/big-data-bowl-data/tracking_week_1.csv",
+   "bytes": 971403802,
+   "sha256": "dc47c829ef917cb6533c6baedd01964823939a4e9cba807090d2784aa1fd149c"
+  }
+ ],
+ "metadataPins": [
+  {
+   "path": "/workspace/review-aids/bdb2025/big-data-bowl-data/players.csv",
+   "sha256": "dc2b5f923e84a16d789d999e88aea670b5495436ab88c24aef7b97b07d723626"
+  },
+  {
+   "path": "/workspace/review-aids/bdb2025/big-data-bowl-data/plays.csv",
+   "sha256": "a103cbc3a1ddf7678cb6d77ea5f9919c4292b5d55c7876f7cad6cce3d62dca04"
+  }
+ ],
+ "scriptSha256": "7a1e4f78811a3968231159238542da287a05b2b75af4024073e8615484f62338",
+ "limits": [
+  "Motion near OL can include pursuit, shedding, gap exchanges and voluntary retreat. Proximity to two OL does not establish a double team.",
+  "Rosters, fronts, skill, effort, context and concepts differ. Entry-speed and role sensitivities do not remove these differences.",
+  "One NFL week; line-player observations are clustered within plays. Do not infer league frequencies or fit force parameters.",
+  "Displacement starts at the snap, not initial contact. Rounding reduces precision differences and adds noise.",
+  "NFL ending labels can miss downing; native endings include falls. The fixed3s cohort controls changing eligibility, not every censoring bias."
+ ],
+ "metrics": {
+  "engine|OL@1.5:one|1s": {
+   "n": 296,
+   "mean": -0.469,
+   "median": -0.4,
+   "p90": -0.1,
+   "p95": 0.025
+  },
+  "engine|OL@1.5:one:noSevereOverlap|1s": {
+   "n": 296,
+   "mean": -0.469,
+   "median": -0.4,
+   "p90": -0.1,
+   "p95": 0.025
+  },
+  "engine|OL@1.5:one|2s": {
+   "n": 420,
+   "mean": -0.511,
+   "median": -0.6,
+   "p90": 0.9,
+   "p95": 1.2
+  },
+  "engine|OL@1.5:one:noSevereOverlap|2s": {
+   "n": 420,
+   "mean": -0.511,
+   "median": -0.6,
+   "p90": 0.9,
+   "p95": 1.2
+  },
+  "engine|OLTE@1.5:twoPlus|1s": {
+   "n": 598,
+   "mean": -0.348,
+   "median": -0.2,
+   "p90": 0.0,
+   "p95": 0.1
+  },
+  "engine|OLTE@1.5:twoPlus|2s": {
+   "n": 480,
+   "mean": 0.351,
+   "median": 0.4,
+   "p90": 1.9,
+   "p95": 2.405
+  },
+  "engine|OL@1:twoPlus|1s": {
+   "n": 261,
+   "mean": -0.205,
+   "median": -0.2,
+   "p90": 0.0,
+   "p95": 0.1
+  },
+  "engine|OL@1.5:twoPlus|1s": {
+   "n": 510,
+   "mean": -0.374,
+   "median": -0.2,
+   "p90": 0.0,
+   "p95": 0.0
+  },
+  "engine|OL@1.5:twoPlus:noSevereOverlap|1s": {
+   "n": 510,
+   "mean": -0.374,
+   "median": -0.2,
+   "p90": 0.0,
+   "p95": 0.0
+  },
+  "engine|OL@1:twoPlus|2s": {
+   "n": 231,
+   "mean": 0.94,
+   "median": 1.0,
+   "p90": 2.2,
+   "p95": 2.55
+  },
+  "engine|OL@1.5:twoPlus|2s": {
+   "n": 383,
+   "mean": 0.479,
+   "median": 0.6,
+   "p90": 1.9,
+   "p95": 2.5
+  },
+  "engine|OL@1.5:twoPlus:noSevereOverlap|2s": {
+   "n": 383,
+   "mean": 0.479,
+   "median": 0.6,
+   "p90": 1.9,
+   "p95": 2.5
+  },
+  "engine|fixedOLnear3s:one|1s": {
+   "n": 414,
+   "mean": -0.5,
+   "median": -0.4,
+   "p90": -0.1,
+   "p95": 0.0
+  },
+  "engine|fixedOLnear3s:one|2s": {
+   "n": 414,
+   "mean": -0.299,
+   "median": -0.5,
+   "p90": 1.2,
+   "p95": 1.6
+  },
+  "engine|fixedOLnear3s:one|3s": {
+   "n": 414,
+   "mean": 0.058,
+   "median": -0.5,
+   "p90": 2.37,
+   "p95": 3.2
+  },
+  "engine|OL@1.5:one|3s": {
+   "n": 414,
+   "mean": 0.058,
+   "median": -0.5,
+   "p90": 2.37,
+   "p95": 3.2
+  },
+  "engine|OL@1.5:one:noSevereOverlap|3s": {
+   "n": 414,
+   "mean": 0.058,
+   "median": -0.5,
+   "p90": 2.37,
+   "p95": 3.2
+  },
+  "engine|fixedOLnear3s:twoPlus|1s": {
+   "n": 269,
+   "mean": -0.306,
+   "median": -0.2,
+   "p90": 0.0,
+   "p95": 0.1
+  },
+  "engine|fixedOLnear3s:twoPlus|2s": {
+   "n": 269,
+   "mean": 0.417,
+   "median": 0.4,
+   "p90": 1.92,
+   "p95": 2.5
+  },
+  "engine|fixedOLnear3s:twoPlus|3s": {
+   "n": 269,
+   "mean": 1.206,
+   "median": 1.0,
+   "p90": 4.1,
+   "p95": 4.8
+  },
+  "engine|OL@1.5:twoPlus|3s": {
+   "n": 269,
+   "mean": 1.206,
+   "median": 1.0,
+   "p90": 4.1,
+   "p95": 4.8
+  },
+  "engine|OL@1.5:twoPlus:noSevereOverlap|3s": {
+   "n": 269,
+   "mean": 1.206,
+   "median": 1.0,
+   "p90": 4.1,
+   "p95": 4.8
+  },
+  "engine|OLTE@1.5:twoPlus|3s": {
+   "n": 352,
+   "mean": 0.904,
+   "median": 0.4,
+   "p90": 4.0,
+   "p95": 4.7
+  },
+  "engine|OL@1:twoPlus|3s": {
+   "n": 159,
+   "mean": 1.819,
+   "median": 1.9,
+   "p90": 4.7,
+   "p95": 5.12
+  },
+  "engine|matched:outsideZone:twoPlus|1s": {
+   "n": 48,
+   "mean": -0.235,
+   "median": -0.15,
+   "p90": 0.0,
+   "p95": 0.065
+  },
+  "engine|matched:outsideZone:twoPlus|2s": {
+   "n": 31,
+   "mean": 0.455,
+   "median": 0.3,
+   "p90": 1.9,
+   "p95": 2.35
+  },
+  "engine|matched:outsideZone:twoPlus|3s": {
+   "n": 25,
+   "mean": 0.92,
+   "median": 0.7,
+   "p90": 3.78,
+   "p95": 4.62
+  },
+  "engine|matched:insideZone:twoPlus|1s": {
+   "n": 56,
+   "mean": -0.271,
+   "median": -0.3,
+   "p90": 0.0,
+   "p95": 0.0
+  },
+  "engine|matched:insideZone:twoPlus|2s": {
+   "n": 47,
+   "mean": 0.715,
+   "median": 0.5,
+   "p90": 1.8,
+   "p95": 2.37
+  },
+  "engine|matched:insideZone:twoPlus|3s": {
+   "n": 30,
+   "mean": 1.897,
+   "median": 1.95,
+   "p90": 4.1,
+   "p95": 4.43
+  },
+  "nfl|fixedOLnear3s:twoPlus|1s": {
+   "n": 493,
+   "mean": -0.525,
+   "median": -0.5,
+   "p90": -0.0,
+   "p95": 0.14
+  },
+  "nfl|fixedOLnear3s:twoPlus|2s": {
+   "n": 493,
+   "mean": -0.43,
+   "median": -0.4,
+   "p90": 0.8,
+   "p95": 1.1
+  },
+  "nfl|fixedOLnear3s:twoPlus|3s": {
+   "n": 493,
+   "mean": 0.288,
+   "median": 0.4,
+   "p90": 2.1,
+   "p95": 2.6
+  },
+  "nfl|OL@1.5:one|1s": {
+   "n": 437,
+   "mean": -0.763,
+   "median": -0.7,
+   "p90": -0.2,
+   "p95": 0.0
+  },
+  "nfl|OL@1.5:one:noSevereOverlap|1s": {
+   "n": 437,
+   "mean": -0.763,
+   "median": -0.7,
+   "p90": -0.2,
+   "p95": 0.0
+  },
+  "nfl|OL@1.5:twoPlus|2s": {
+   "n": 701,
+   "mean": -0.451,
+   "median": -0.3,
+   "p90": 0.8,
+   "p95": 1.3
+  },
+  "nfl|OL@1.5:twoPlus:noSevereOverlap|2s": {
+   "n": 680,
+   "mean": -0.447,
+   "median": -0.3,
+   "p90": 0.8,
+   "p95": 1.3
+  },
+  "nfl|matched:insideZone:twoPlus|2s": {
+   "n": 97,
+   "mean": -0.176,
+   "median": -0.1,
+   "p90": 0.94,
+   "p95": 1.3
+  },
+  "nfl|OLTE@1.5:twoPlus|2s": {
+   "n": 800,
+   "mean": -0.513,
+   "median": -0.4,
+   "p90": 0.8,
+   "p95": 1.2
+  },
+  "nfl|OL@1.5:twoPlus|3s": {
+   "n": 493,
+   "mean": 0.288,
+   "median": 0.4,
+   "p90": 2.1,
+   "p95": 2.6
+  },
+  "nfl|OL@1.5:twoPlus:noSevereOverlap|3s": {
+   "n": 470,
+   "mean": 0.303,
+   "median": 0.4,
+   "p90": 2.1,
+   "p95": 2.6
+  },
+  "nfl|matched:insideZone:twoPlus|3s": {
+   "n": 60,
+   "mean": 0.19,
+   "median": 0.35,
+   "p90": 2.0,
+   "p95": 2.22
+  },
+  "nfl|OLTE@1.5:twoPlus|3s": {
+   "n": 606,
+   "mean": 0.236,
+   "median": 0.4,
+   "p90": 2.1,
+   "p95": 2.6
+  },
+  "nfl|OL@1.5:twoPlus|1s": {
+   "n": 815,
+   "mean": -0.593,
+   "median": -0.5,
+   "p90": -0.0,
+   "p95": 0.1
+  },
+  "nfl|OL@1.5:twoPlus:noSevereOverlap|1s": {
+   "n": 809,
+   "mean": -0.592,
+   "median": -0.5,
+   "p90": 0.0,
+   "p95": 0.1
+  },
+  "nfl|matched:insideZone:twoPlus|1s": {
+   "n": 104,
+   "mean": -0.449,
+   "median": -0.4,
+   "p90": 0.0,
+   "p95": 0.285
+  },
+  "nfl|OLTE@1.5:twoPlus|1s": {
+   "n": 901,
+   "mean": -0.606,
+   "median": -0.6,
+   "p90": 0.0,
+   "p95": 0.1
+  },
+  "nfl|OL@1.5:one|2s": {
+   "n": 743,
+   "mean": -1.269,
+   "median": -1.1,
+   "p90": 0.5,
+   "p95": 0.89
+  },
+  "nfl|OL@1.5:one:noSevereOverlap|2s": {
+   "n": 729,
+   "mean": -1.267,
+   "median": -1.1,
+   "p90": 0.5,
+   "p95": 0.86
+  },
+  "nfl|OL@1:twoPlus|3s": {
+   "n": 156,
+   "mean": 0.456,
+   "median": 0.55,
+   "p90": 2.3,
+   "p95": 2.625
+  },
+  "nfl|fixedOLnear3s:one|1s": {
+   "n": 718,
+   "mean": -0.735,
+   "median": -0.7,
+   "p90": -0.1,
+   "p95": 0.1
+  },
+  "nfl|fixedOLnear3s:one|2s": {
+   "n": 718,
+   "mean": -1.04,
+   "median": -0.9,
+   "p90": 0.6,
+   "p95": 1.0
+  },
+  "nfl|fixedOLnear3s:one|3s": {
+   "n": 718,
+   "mean": -0.467,
+   "median": -0.2,
+   "p90": 2.0,
+   "p95": 2.515
+  },
+  "nfl|matched:outsideZone:twoPlus|1s": {
+   "n": 131,
+   "mean": -0.553,
+   "median": -0.6,
+   "p90": 0.0,
+   "p95": 0.1
+  },
+  "nfl|matched:outsideZone:twoPlus|2s": {
+   "n": 108,
+   "mean": -0.3,
+   "median": -0.3,
+   "p90": 1.1,
+   "p95": 1.465
+  },
+  "nfl|OL@1.5:one|3s": {
+   "n": 718,
+   "mean": -0.467,
+   "median": -0.2,
+   "p90": 2.0,
+   "p95": 2.515
+  },
+  "nfl|OL@1.5:one:noSevereOverlap|3s": {
+   "n": 703,
+   "mean": -0.476,
+   "median": -0.2,
+   "p90": 2.0,
+   "p95": 2.5
+  },
+  "nfl|OL@1:twoPlus|1s": {
+   "n": 130,
+   "mean": -0.515,
+   "median": -0.5,
+   "p90": 0.1,
+   "p95": 0.2
+  },
+  "nfl|OL@1:twoPlus|2s": {
+   "n": 202,
+   "mean": -0.347,
+   "median": -0.2,
+   "p90": 0.89,
+   "p95": 1.1
+  },
+  "nfl|matched:outsideZone:twoPlus|3s": {
+   "n": 88,
+   "mean": 0.47,
+   "median": 0.4,
+   "p90": 2.49,
+   "p95": 3.23
+  }
+ },
+ "matchedContext": "Interior DL/LB on line; depth0.25\u20131.75yd; position-derived speed at0.5s<2yd/s; down1/2 and5\u201312yd to go; native insideZone/outsideZone versus PFF labels. Rosters, fronts and technique are not matched.",
+ "witnesses": [
+  {
+   "id": "G1-P059",
+   "slot": "DT_W",
+   "rows": [
+    {
+     "t": 1,
+     "dxFromSnapYd": -0.4617,
+     "vxYdPerS": 0.2463,
+     "posture": 0.8478,
+     "captureDeviationYd": 0.0719,
+     "groundFxN": -1054,
+     "otherFxN": 1123,
+     "tractionLimitN": 1360,
+     "support": "up"
+    },
+    {
+     "t": 2,
+     "dxFromSnapYd": 1.0987,
+     "vxYdPerS": 2.8928,
+     "posture": 0.8448,
+     "captureDeviationYd": 0.0106,
+     "groundFxN": -1231,
+     "otherFxN": 1287,
+     "tractionLimitN": 1360,
+     "support": "up"
+    },
+    {
+     "t": 3,
+     "dxFromSnapYd": 2.8169,
+     "vxYdPerS": 0.5117,
+     "posture": 0.8432,
+     "captureDeviationYd": 1.366,
+     "groundFxN": -861,
+     "otherFxN": 781,
+     "tractionLimitN": 1360,
+     "support": "down"
+    }
+   ]
+  },
+  {
+   "id": "G4-P023",
+   "slot": "DE_W",
+   "rows": [
+    {
+     "t": 1,
+     "dxFromSnapYd": 0.0316,
+     "vxYdPerS": 1.3839,
+     "posture": 0.8426,
+     "captureDeviationYd": 0.2272,
+     "groundFxN": -1299,
+     "otherFxN": 1415,
+     "tractionLimitN": 1385,
+     "support": "up"
+    },
+    {
+     "t": 2,
+     "dxFromSnapYd": 1.9769,
+     "vxYdPerS": 2.5012,
+     "posture": 0.8388,
+     "captureDeviationYd": 0.0107,
+     "groundFxN": -1331,
+     "otherFxN": 1432,
+     "tractionLimitN": 1385,
+     "support": "up"
+    },
+    {
+     "t": 3,
+     "dxFromSnapYd": 4.7247,
+     "vxYdPerS": 2.8158,
+     "posture": 0.8348,
+     "captureDeviationYd": 0.0004,
+     "groundFxN": -1334,
+     "otherFxN": 1344,
+     "tractionLimitN": 1385,
+     "support": "up"
+    }
+   ]
+  }
+ ],
+ "witnessPins": [
+  {
+   "path": "out/run-coaching/combo-native/G1-P059.json.gz",
+   "sha256": "22dec4db700f34ad41b7a37980fe2587dbe490d3bef182127a72735db5170fd2",
+   "observerVerified": true,
+   "ordinaryLightVerified": true,
+   "initialSha256": "7c7b2d073d343bc86b7f6657397b898c2c33617dcda64e605e6f650bd69bfe89",
+   "finalSha256": "63c3080d0bd4b0e3e577700c563ceb6b122c68a097998c1e5057aca5b473f6c9"
+  },
+  {
+   "path": "out/run-coaching/combo-native/G4-P023.json.gz",
+   "sha256": "1bddba09245c8f748de30a39e2112a0362b6c84477ab024f8913db18b6fbfabf",
+   "observerVerified": true,
+   "ordinaryLightVerified": true,
+   "initialSha256": "9c47a6458cee0fec81bf763dbb17f2752cde9ec91cc4e3d1c0d378acc40e098f",
+   "finalSha256": "5b78dcdc8dfdf16556bd839174a66d2d0f99d2ceaf133d16985b6f19ee2fee8a"
+  }
+ ],
+ "finding": "G4-P023 DL recovers balance and applies opposing force near the traction cap. This pilot has a larger late displacement tail in the engine. The run controller lacks an anti-double choice; keeper ownership is separately defective. No travel cap or stronger anchor is justified.",
+ "measurementScript": "scripts/data/run_displacement.py",
+ "command": "python scripts/data/run_displacement.py --bdb-dir /workspace/review-aids/bdb2025/big-data-bowl-data --native-dir out/rushing-benchmark/validation/recording-games --out out/run-coaching/displacement-cli-verify",
+ "cliVerification": {
+  "runtimeSeconds": 13.45,
+  "countsAndMetricsEqual": true,
+  "allDetailsByteEqual": true,
+  "countsAndMetricsCanonicalSha256": "818c69e23cb7ed3aaf232312f7526e6b5b66930747591e4666ee11d1656a30d9",
+  "detailSha256": "769e7dff1011fa4a525e8791f3509cb545be16df0764813c72bbd77f11d361e7"
+ }
+}

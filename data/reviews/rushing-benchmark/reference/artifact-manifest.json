@@ -1,0 +1,50 @@
+{
+  "schema": "rushing-benchmark-artifact-manifest-v1",
+  "files": [
+    {
+      "path": "scripts/data/rushing_benchmark.py",
+      "bytes": 38733,
+      "sha256": "0b5d645953c303fcb5804643a2829de83418c135952c25c122f69bb28a4df238"
+    },
+    {
+      "path": "test/test_rushing_benchmark.py",
+      "bytes": 15287,
+      "sha256": "2d87498db6b2f41fc96202424175b09f041e33eb9e82b982164b1e3d48475307"
+    },
+    {
+      "path": "out/rushing-benchmark/query-receipt.json",
+      "bytes": 6573,
+      "sha256": "c55824cd2698188ac419998d5cbdb3792993793b554341a9cf4b4605c829942b"
+    },
+    {
+      "path": "out/rushing-benchmark/nfl-benchmark.json.gz",
+      "bytes": 2321159,
+      "sha256": "4f624c55eee5495b15bc2d53ffade7f7b591b02c582bc9912a280d6a7e7745c3"
+    },
+    {
+      "path": "out/rushing-benchmark/verification.json",
+      "bytes": 9891,
+      "sha256": "8f13bce44e96c5319e0fb177356bd85bd6863352e368500c31ed74d752283dc7"
+    },
+    {
+      "path": "out/rushing-benchmark/tests.log",
+      "bytes": 121,
+      "sha256": "d22c310f3795fdc4e299e13807ef5d1be40afc3bef70758d16b5e109e19588f3"
+    },
+    {
+      "path": "out/rushing-benchmark/collection.log",
+      "bytes": 427,
+      "sha256": "27728b91b2e7789c9e54508a64b2380aa6fff2630a7e45313aeec307aa1a14a3"
+    },
+    {
+      "path": "out/rushing-benchmark/findings.md",
+      "bytes": 11088,
+      "sha256": "adcc08b66bdf82363b6de555d8673d58ec8d17991b5ca3f382a5002a488b30a1"
+    }
+  ],
+  "plainReportBytes": 32797890,
+  "regularSeasonGames": 1087,
+  "sourceCount": 12,
+  "pythonStandardLibraryOnly": true,
+  "collectorOutcomeRevision": "First completed collection retained in out as nfl-benchmark-first.json. Final collector adds tail-yard contribution/excess/capped means, rare/zero-event cautions, per-metric CI exposure gates and population-specific common-support summaries. Main selection/outcome counts unchanged."
+}

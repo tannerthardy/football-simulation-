@@ -1,0 +1,1641 @@
+{
+  "schema": 1,
+  "acceptedRevision": "2c98bed94adad8087c65f381d4090444ad283985",
+  "queue": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
+  "candidateRevision": "aadac6d8b78bd452ff3bb92b337e027bec4a0d25",
+  "candidateSource": "8ea7dadd45db400da68e31a92b215572d0243c48495e97d666b7dcb5ce08c8c2",
+  "disposition": {
+    "mechanics": "ACCEPT after independent source, mechanics and native review",
+    "adoption": "HOLD: clean native Toss paired p95 1.267310 exceeds predeclared 1.25; no budget waiver",
+    "scope": "Shared facing-motor response, not capacities, contact laws, recovery laws or experimental activation"
+  },
+  "focused": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/loaded-movement",
+    "commit": "2637558c5024b84dc23f7de10cffc3058b2dab41",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "failFast": false,
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "8ea7dadd45db400da68e31a92b215572d0243c48495e97d666b7dcb5ce08c8c2",
+    "validationSha256": "5fb8b720e507cc4bb8d244063a3f153bb72f36f472f295bcc28bcb244c60b7e7",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "trackedChanges": [
+      "src/physics/yaw-response.ts",
+      "test/yaw-response.test.ts"
+    ],
+    "startedAt": "2026-10-20T20:26:50.604Z",
+    "commands": [
+      {
+        "command": [
+          "npx",
+          "vitest",
+          "run",
+          "--project",
+          "core",
+          "test/movement-yaw-continuity.test.ts",
+          "test/yaw-response.test.ts",
+          "test/yaw-motor.test.ts",
+          "test/rise-yaw-budget.test.ts",
+          "test/dive-yaw.test.ts",
+          "test/movement-preview.test.ts",
+          "test/gait-facing-contract.test.ts",
+          "test/run-contact-flow.test.ts",
+          "test/run-contact-technique.test.ts"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 4.740750899000001
+      }
+    ],
+    "skippedCommands": [],
+    "finishedAt": "2026-10-20T20:26:55.349Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "typecheck": {
+    "baseline": "run-game-2026-10-13",
+    "branch": "codex/loaded-movement",
+    "commit": "aadac6d8b78bd452ff3bb92b337e027bec4a0d25",
+    "mode": "candidate",
+    "node": "v22.23.3",
+    "failFast": false,
+    "platform": "linux",
+    "arch": "x64",
+    "sourceSha256": "8ea7dadd45db400da68e31a92b215572d0243c48495e97d666b7dcb5ce08c8c2",
+    "validationSha256": "5fb8b720e507cc4bb8d244063a3f153bb72f36f472f295bcc28bcb244c60b7e7",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "trackedChanges": [],
+    "startedAt": "2026-10-20T20:28:52.464Z",
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 18.962159355
+      }
+    ],
+    "skippedCommands": [],
+    "finishedAt": "2026-10-20T20:29:11.430Z",
+    "inputsUnchanged": true,
+    "exitCode": 0
+  },
+  "native": {
+    "question": "Does the known Toss delay demonstrate an invalid physical response under the isolated ordinary-yaw correction on current accepted code?",
+    "accepted_commit": "2c98bed94adad8087c65f381d4090444ad283985",
+    "candidate_commit": "2637558c5024b84dc23f7de10cffc3058b2dab41",
+    "baseline_source_blob_parity": "All src files independently verified with git hash-object against accepted git ls-tree; zero mismatches.",
+    "source_note": "Baseline uses imported immutable accepted archive, not launcher cwd. Actual full-source hash is in each native tape. Outer baseline launch receipt fingerprints root candidate and must not be relabeled as imported source.",
+    "operator_sha256": "de1f3418be9ba6a815e2e394bdfe537a652c1b205a0510bb2554deaced9cc95c",
+    "capture_sha256": "a17b05715c18cdfa447694e0af8e490c3f63ce489cd95213e69e08ba8e739819",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "world_defaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    },
+    "rows": [
+      {
+        "arm": "current-baseline",
+        "case": "TOSS",
+        "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "input_sha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+        "initial_state_sha256": "14cecf47a5df754b71f533ec625acd0743d643510493c2f4d5ce368b06dcc7ec",
+        "tape_sha256": "64c8b4c306a5406cfd67ce244f5ab23a7639cfcf0d711c5f9c6b2c9a370689b5",
+        "elapsed_recording_seconds": 1.1093232720000001,
+        "phase": "dead",
+        "gain": -0.93,
+        "result_duration": 3.2,
+        "events": [
+          {
+            "t": 2.5,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 12,
+            "pos": {
+              "x": 38.17,
+              "y": 20.44
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 2.5,
+            "type": "tackle_wrap",
+            "a": 12,
+            "b": 6,
+            "pos": {
+              "x": 38.92,
+              "y": 20.53
+            },
+            "note": "initial"
+          },
+          {
+            "t": 3.15,
+            "type": "tackle",
+            "a": 12,
+            "b": 6,
+            "pos": {
+              "x": 39.31,
+              "y": 19.05
+            }
+          }
+        ]
+      },
+      {
+        "arm": "current-baseline",
+        "case": "PASS13",
+        "source": "4273994fa50f0f11a54bff53b374ad87d80766be471ca727ce43f76fdef83571",
+        "input_sha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+        "initial_state_sha256": "aa17fedeca18803e60e1c27a7ff502ab2223f198752a3230fb074bc0a9a5b678",
+        "tape_sha256": "934ae4ea62c299e830b1d9112ac6b3913a4dedf7efd3b03b5d9b36fdf2351b88",
+        "elapsed_recording_seconds": 2.032876115,
+        "phase": "live",
+        "gain": null,
+        "result_duration": 6,
+        "events": [
+          {
+            "t": 2.8,
+            "type": "throw",
+            "a": 0,
+            "b": 7,
+            "pos": {
+              "x": 32.23,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.8,
+            "type": "catch",
+            "a": 7,
+            "pos": {
+              "x": 52.41,
+              "y": 23.44
+            }
+          }
+        ]
+      },
+      {
+        "arm": "current-candidate",
+        "case": "TOSS",
+        "source": "56535d8a6ebe3c754da173b0d105e5ae660cc9344dc559e1e9e374f63733c90b",
+        "input_sha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+        "initial_state_sha256": "14cecf47a5df754b71f533ec625acd0743d643510493c2f4d5ce368b06dcc7ec",
+        "tape_sha256": "41934976b0bd75d013e990c5df7d32a036731c02354b6e707063dfed0514241d",
+        "elapsed_recording_seconds": 1.6283747459999998,
+        "phase": "dead",
+        "gain": 0.94,
+        "result_duration": 4.7,
+        "events": [
+          {
+            "t": 3.95,
+            "type": "carrier_contact",
+            "a": 6,
+            "b": 16,
+            "pos": {
+              "x": 40.07,
+              "y": 14.6
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 3.95,
+            "type": "tackle_wrap",
+            "a": 16,
+            "b": 6,
+            "pos": {
+              "x": 41.02,
+              "y": 14.77
+            },
+            "note": "initial"
+          },
+          {
+            "t": 4,
+            "type": "tackle_wrap",
+            "a": 15,
+            "b": 6,
+            "pos": {
+              "x": 41.07,
+              "y": 13.31
+            },
+            "note": "assist"
+          },
+          {
+            "t": 4.65,
+            "type": "tackle",
+            "a": 16,
+            "b": 6,
+            "pos": {
+              "x": 41.44,
+              "y": 11.7
+            }
+          }
+        ]
+      },
+      {
+        "arm": "current-candidate",
+        "case": "PASS13",
+        "source": "56535d8a6ebe3c754da173b0d105e5ae660cc9344dc559e1e9e374f63733c90b",
+        "input_sha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336",
+        "initial_state_sha256": "aa17fedeca18803e60e1c27a7ff502ab2223f198752a3230fb074bc0a9a5b678",
+        "tape_sha256": "191061ff4357888e76ee0d8c81978794bcad0d7a74880c13f2529f0853e3694e",
+        "elapsed_recording_seconds": 1.7298149359999997,
+        "phase": "dead",
+        "gain": 16.53,
+        "result_duration": 5.3,
+        "events": [
+          {
+            "t": 2.85,
+            "type": "throw",
+            "a": 0,
+            "b": 7,
+            "pos": {
+              "x": 32.17,
+              "y": 26.67
+            }
+          },
+          {
+            "t": 3.85,
+            "type": "catch",
+            "a": 7,
+            "pos": {
+              "x": 51.67,
+              "y": 24.08
+            }
+          },
+          {
+            "t": 4.45,
+            "type": "carrier_contact",
+            "a": 7,
+            "b": 17,
+            "pos": {
+              "x": 53.51,
+              "y": 25.01
+            },
+            "note": "grasp"
+          },
+          {
+            "t": 4.45,
+            "type": "tackle_wrap",
+            "a": 17,
+            "b": 7,
+            "pos": {
+              "x": 52.13,
+              "y": 24.61
+            },
+            "note": "initial"
+          },
+          {
+            "t": 4.8,
+            "type": "tackle_wrap",
+            "a": 15,
+            "b": 7,
+            "pos": {
+              "x": 55.95,
+              "y": 26.79
+            },
+            "note": "assist"
+          },
+          {
+            "t": 5.25,
+            "type": "tackle",
+            "a": 17,
+            "b": 7,
+            "pos": {
+              "x": 55.89,
+              "y": 26.48
+            }
+          }
+        ]
+      }
+    ],
+    "first_toss_divergences": {
+      "facing": {
+        "completed": 0.1,
+        "slot": "X",
+        "delta": 0.022482139157812553,
+        "same_intent": true
+      },
+      "velocity": {
+        "completed": 0.5,
+        "slot": "SS",
+        "delta": 0.014700793980279691,
+        "same_intent": false
+      },
+      "position": {
+        "completed": 0.9,
+        "slot": "LG",
+        "delta": 0.012213918047378574,
+        "same_intent": false
+      }
+    },
+    "paired_clear_all": {
+      "bins": {
+        "ALL": {
+          "baseline": {
+            "heading_turn_deg": {
+              "n": 567,
+              "mean": 2.9686203398064106,
+              "p50": 1.971359057401541,
+              "p90": 7.052840879739683
+            },
+            "heading_reversal_deg": {
+              "n": 567,
+              "mean": 0.22149784255014165,
+              "p50": 0.0,
+              "p90": 0.7373442754460954
+            },
+            "speed_pulse_ydps": {
+              "n": 567,
+              "mean": 0.12062444940836702,
+              "p50": 0.09990583773428785,
+              "p90": 0.24639804894412853
+            },
+            "speed_ydps": {
+              "n": 567,
+              "mean": 5.071163775833982,
+              "p50": 4.901020301937159,
+              "p90": 7.9006328860414925
+            },
+            "yaw_turn_deg": {
+              "n": 567,
+              "mean": 10.084476463240394,
+              "p50": 2.3420200431082376,
+              "p90": 36.29958765225485
+            },
+            "yaw_reversal_deg": {
+              "n": 567,
+              "mean": 1.1892649245823692,
+              "p50": 0.0,
+              "p90": 4.277048319680486
+            }
+          },
+          "candidate": {
+            "heading_turn_deg": {
+              "n": 567,
+              "mean": 3.179263916440627,
+              "p50": 2.349912191047444,
+              "p90": 7.301976934694817
+            },
+            "heading_reversal_deg": {
+              "n": 567,
+              "mean": 0.21981090975237833,
+              "p50": 0.0,
+              "p90": 0.7149523813151762
+            },
+            "speed_pulse_ydps": {
+              "n": 567,
+              "mean": 0.12154584288588866,
+              "p50": 0.0990431305768622,
+              "p90": 0.2534553578836314
+            },
+            "speed_ydps": {
+              "n": 567,
+              "mean": 4.999437359865001,
+              "p50": 4.750789408087984,
+              "p90": 7.901392227645773
+            },
+            "yaw_turn_deg": {
+              "n": 567,
+              "mean": 6.351624445950045,
+              "p50": 1.4252748823722294,
+              "p90": 19.322269615271402
+            },
+            "yaw_reversal_deg": {
+              "n": 567,
+              "mean": 0.1854280295078456,
+              "p50": 0.0,
+              "p90": 0.04706769415093752
+            }
+          }
+        },
+        "QB": {
+          "baseline": {
+            "heading_turn_deg": {
+              "n": 33,
+              "mean": 1.168831968724505,
+              "p50": 0.4102253016836161,
+              "p90": 2.98738285203432
+            },
+            "heading_reversal_deg": {
+              "n": 33,
+              "mean": 0.3739365640812321,
+              "p50": 0.0,
+              "p90": 1.8201402996799434
+            },
+            "speed_pulse_ydps": {
+              "n": 33,
+              "mean": 0.11791455181348441,
+              "p50": 0.0932157125295916,
+              "p90": 0.29075180692044084
+            },
+            "speed_ydps": {
+              "n": 33,
+              "mean": 2.8789564419924356,
+              "p50": 2.817800560721086,
+              "p90": 3.4835202996253583
+            },
+            "yaw_turn_deg": {
+              "n": 33,
+              "mean": 3.4557251571391876,
+              "p50": 1.3051774694759342,
+              "p90": 4.219126339825067
+            },
+            "yaw_reversal_deg": {
+              "n": 33,
+              "mean": 0.25381057191941075,
+              "p50": 0.0,
+              "p90": 0.32714764402556473
+            }
+          },
+          "candidate": {
+            "heading_turn_deg": {
+              "n": 33,
+              "mean": 1.1877604415827583,
+              "p50": 0.4587234210740445,
+              "p90": 2.8484696062411494
+            },
+            "heading_reversal_deg": {
+              "n": 33,
+              "mean": 0.1356922800198653,
+              "p50": 0.0,
+              "p90": 0.2664889951361316
+            },
+            "speed_pulse_ydps": {
+              "n": 33,
+              "mean": 0.090144147362299,
+              "p50": 0.06456095620991986,
+              "p90": 0.1937393021484302
+            },
+            "speed_ydps": {
+              "n": 33,
+              "mean": 2.8500771721756952,
+              "p50": 2.817800560721086,
+              "p90": 3.429254444390368
+            },
+            "yaw_turn_deg": {
+              "n": 33,
+              "mean": 2.778897747172626,
+              "p50": 1.4422278728187963,
+              "p90": 5.770207712114278
+            },
+            "yaw_reversal_deg": {
+              "n": 33,
+              "mean": 0.0,
+              "p50": 0.0,
+              "p90": 0.0
+            }
+          }
+        },
+        "RB": {
+          "baseline": {
+            "heading_turn_deg": {
+              "n": 14,
+              "mean": 3.354547912488112,
+              "p50": 1.815129679281387,
+              "p90": 9.254129206285013
+            },
+            "heading_reversal_deg": {
+              "n": 14,
+              "mean": 0.5091787986706958,
+              "p50": 0.12760668280404663,
+              "p90": 1.2941682502694125
+            },
+            "speed_pulse_ydps": {
+              "n": 14,
+              "mean": 0.09602033180704428,
+              "p50": 0.08111911394002869,
+              "p90": 0.20099227407896403
+            },
+            "speed_ydps": {
+              "n": 14,
+              "mean": 3.9151395183749313,
+              "p50": 3.749079588617754,
+              "p90": 5.664391490445738
+            },
+            "yaw_turn_deg": {
+              "n": 14,
+              "mean": 4.932101106653691,
+              "p50": 2.8891365266015105,
+              "p90": 12.523798359850925
+            },
+            "yaw_reversal_deg": {
+              "n": 14,
+              "mean": 1.9822469206543754,
+              "p50": 1.5066534974265628,
+              "p90": 3.1354152734511325
+            }
+          },
+          "candidate": {
+            "heading_turn_deg": {
+              "n": 14,
+              "mean": 3.9532270263087113,
+              "p50": 2.0581195421106226,
+              "p90": 9.254129206285013
+            },
+            "heading_reversal_deg": {
+              "n": 14,
+              "mean": 0.45556046113431753,
+              "p50": 0.0,
+              "p90": 1.7384375403955508
+            },
+            "speed_pulse_ydps": {
+              "n": 14,
+              "mean": 0.12183642661004986,
+              "p50": 0.10783689460767976,
+              "p90": 0.22899165464337626
+            },
+            "speed_ydps": {
+              "n": 14,
+              "mean": 3.8337048238347475,
+              "p50": 3.750341876911304,
+              "p90": 5.325410782277741
+            },
+            "yaw_turn_deg": {
+              "n": 14,
+              "mean": 5.629316212916682,
+              "p50": 2.091069725607208,
+              "p90": 16.002383617396845
+            },
+            "yaw_reversal_deg": {
+              "n": 14,
+              "mean": 1.3517666338796661,
+              "p50": 0.0,
+              "p90": 5.772965408366353
+            }
+          }
+        },
+        "WR": {
+          "baseline": {
+            "heading_turn_deg": {
+              "n": 181,
+              "mean": 2.349576731308506,
+              "p50": 0.919866762920525,
+              "p90": 5.868582430515585
+            },
+            "heading_reversal_deg": {
+              "n": 181,
+              "mean": 0.31680120399974104,
+              "p50": 0.0,
+              "p90": 0.7832234466235838
+            },
+            "speed_pulse_ydps": {
+              "n": 181,
+              "mean": 0.10291723429800077,
+              "p50": 0.09787781109183058,
+              "p90": 0.20165143721306578
+            },
+            "speed_ydps": {
+              "n": 181,
+              "mean": 6.319809600434444,
+              "p50": 6.262587324740371,
+              "p90": 8.602325267042692
+            },
+            "yaw_turn_deg": {
+              "n": 181,
+              "mean": 4.2812621556508175,
+              "p50": 0.3229469284316337,
+              "p90": 7.953309773023835
+            },
+            "yaw_reversal_deg": {
+              "n": 181,
+              "mean": 0.4156677554246049,
+              "p50": 0.0,
+              "p90": 0.44057191311963273
+            }
+          },
+          "candidate": {
+            "heading_turn_deg": {
+              "n": 181,
+              "mean": 2.3601344456122004,
+              "p50": 0.8777548627938919,
+              "p90": 5.963774440587824
+            },
+            "heading_reversal_deg": {
+              "n": 181,
+              "mean": 0.30253152619802876,
+              "p50": 0.0,
+              "p90": 0.7524341462386951
+            },
+            "speed_pulse_ydps": {
+              "n": 181,
+              "mean": 0.1035636419892962,
+              "p50": 0.0966042187967755,
+              "p90": 0.20168854334740516
+            },
+            "speed_ydps": {
+              "n": 181,
+              "mean": 6.373944292613095,
+              "p50": 6.484597134749296,
+              "p90": 8.70229854693572
+            },
+            "yaw_turn_deg": {
+              "n": 181,
+              "mean": 2.8799072078362618,
+              "p50": 0.11480295722723084,
+              "p90": 6.900059272992258
+            },
+            "yaw_reversal_deg": {
+              "n": 181,
+              "mean": 7.113095187714879e-10,
+              "p50": 0.0,
+              "p90": 0.0
+            }
+          }
+        },
+        "LB": {
+          "baseline": {
+            "heading_turn_deg": {
+              "n": 99,
+              "mean": 4.30543522360557,
+              "p50": 3.37649407187346,
+              "p90": 10.160404973416822
+            },
+            "heading_reversal_deg": {
+              "n": 99,
+              "mean": 0.15214611337130782,
+              "p50": 0.0,
+              "p90": 0.3671587237270147
+            },
+            "speed_pulse_ydps": {
+              "n": 99,
+              "mean": 0.1422047212575229,
+              "p50": 0.12032855348109006,
+              "p90": 0.28090817420530384
+            },
+            "speed_ydps": {
+              "n": 99,
+              "mean": 4.20583226038253,
+              "p50": 4.186884283091687,
+              "p90": 6.023321487910543
+            },
+            "yaw_turn_deg": {
+              "n": 99,
+              "mean": 17.36729499771821,
+              "p50": 13.686307059149275,
+              "p90": 46.802862135055555
+            },
+            "yaw_reversal_deg": {
+              "n": 99,
+              "mean": 2.1004332073603416,
+              "p50": 0.0,
+              "p90": 9.857874582904474
+            }
+          },
+          "candidate": {
+            "heading_turn_deg": {
+              "n": 99,
+              "mean": 4.597631935428979,
+              "p50": 3.438530788328433,
+              "p90": 10.779356763705913
+            },
+            "heading_reversal_deg": {
+              "n": 99,
+              "mean": 0.22936501813008034,
+              "p50": 0.0,
+              "p90": 0.5610679955271412
+            },
+            "speed_pulse_ydps": {
+              "n": 99,
+              "mean": 0.15578604921421027,
+              "p50": 0.14314219307037934,
+              "p90": 0.29943848884998703
+            },
+            "speed_ydps": {
+              "n": 99,
+              "mean": 4.073035008623629,
+              "p50": 3.847076812334235,
+              "p90": 6.009936713366954
+            },
+            "yaw_turn_deg": {
+              "n": 99,
+              "mean": 11.441321456241274,
+              "p50": 3.3086751885384236,
+              "p90": 42.64607749159228
+            },
+            "yaw_reversal_deg": {
+              "n": 99,
+              "mean": 0.37060518246763036,
+              "p50": 0.0,
+              "p90": 1.3129817000767643
+            }
+          }
+        },
+        "DB": {
+          "baseline": {
+            "heading_turn_deg": {
+              "n": 200,
+              "mean": 3.2326970430292534,
+              "p50": 2.6832514134032524,
+              "p90": 6.932842534851765
+            },
+            "heading_reversal_deg": {
+              "n": 200,
+              "mean": 0.13600273117375816,
+              "p50": 0.0,
+              "p90": 0.40702948235935527
+            },
+            "speed_pulse_ydps": {
+              "n": 200,
+              "mean": 0.122663287473357,
+              "p50": 0.09955634380312794,
+              "p90": 0.25869246028760157
+            },
+            "speed_ydps": {
+              "n": 200,
+              "mean": 4.957944117509651,
+              "p50": 4.934471938013267,
+              "p90": 7.030858835636742
+            },
+            "yaw_turn_deg": {
+              "n": 200,
+              "mean": 12.55256847151454,
+              "p50": 4.991235699151488,
+              "p90": 37.25350740481337
+            },
+            "yaw_reversal_deg": {
+              "n": 200,
+              "mean": 1.620016390536194,
+              "p50": 0.0,
+              "p90": 5.827731985665292
+            }
+          },
+          "candidate": {
+            "heading_turn_deg": {
+              "n": 200,
+              "mean": 3.4380387432119726,
+              "p50": 2.909318449480395,
+              "p90": 7.066066755411203
+            },
+            "heading_reversal_deg": {
+              "n": 200,
+              "mean": 0.13789177908032824,
+              "p50": 0.0,
+              "p90": 0.1937526616634285
+            },
+            "speed_pulse_ydps": {
+              "n": 200,
+              "mean": 0.12094384457050528,
+              "p50": 0.09567619863715326,
+              "p90": 0.25386505770856777
+            },
+            "speed_ydps": {
+              "n": 200,
+              "mean": 4.875900626287559,
+              "p50": 4.699435265158105,
+              "p90": 7.203401730441674
+            },
+            "yaw_turn_deg": {
+              "n": 200,
+              "mean": 6.7360583916541374,
+              "p50": 1.189690617566672,
+              "p90": 20.064434353721214
+            },
+            "yaw_reversal_deg": {
+              "n": 200,
+              "mean": 0.2150176663460897,
+              "p50": 0.0,
+              "p90": 0.35031884953403203
+            }
+          }
+        },
+        "OL": {
+          "baseline": {
+            "heading_turn_deg": {
+              "n": 9,
+              "mean": 4.677536027345401,
+              "p50": 3.0664855011256757,
+              "p90": 11.598151656318805
+            },
+            "heading_reversal_deg": {
+              "n": 9,
+              "mean": 0.3890365573816897,
+              "p50": 0.17521590490532105,
+              "p90": 1.0441740453177317
+            },
+            "speed_pulse_ydps": {
+              "n": 9,
+              "mean": 0.0952683167222659,
+              "p50": 0.0885036292131316,
+              "p90": 0.17078256198644043
+            },
+            "speed_ydps": {
+              "n": 9,
+              "mean": 2.7013561162380015,
+              "p50": 2.701851217221257,
+              "p90": 3.004744806476564
+            },
+            "yaw_turn_deg": {
+              "n": 9,
+              "mean": 5.021588233030398,
+              "p50": 1.7141625836706653,
+              "p90": 14.107301860948132
+            },
+            "yaw_reversal_deg": {
+              "n": 9,
+              "mean": 0.1760837042965067,
+              "p50": 0.0,
+              "p90": 0.31695066773371233
+            }
+          },
+          "candidate": {
+            "heading_turn_deg": {
+              "n": 9,
+              "mean": 5.708660280762454,
+              "p50": 5.527540151656275,
+              "p90": 9.429081110170996
+            },
+            "heading_reversal_deg": {
+              "n": 9,
+              "mean": 0.0,
+              "p50": 0.0,
+              "p90": 0.0
+            },
+            "speed_pulse_ydps": {
+              "n": 9,
+              "mean": 0.1098244993499227,
+              "p50": 0.1211691105072017,
+              "p90": 0.17780053144009464
+            },
+            "speed_ydps": {
+              "n": 9,
+              "mean": 2.6649780441143687,
+              "p50": 2.5317977802344367,
+              "p90": 3.124096334282878
+            },
+            "yaw_turn_deg": {
+              "n": 9,
+              "mean": 6.606351805603847,
+              "p50": 7.215830088698402,
+              "p90": 12.95455421425391
+            },
+            "yaw_reversal_deg": {
+              "n": 9,
+              "mean": 0.001189212487257497,
+              "p50": 0.0,
+              "p90": 0.0021405824770634966
+            }
+          }
+        },
+        "TE": {
+          "baseline": {
+            "heading_turn_deg": {
+              "n": 16,
+              "mean": 1.2174389883043015,
+              "p50": 0.35345355286828906,
+              "p90": 3.9763402817110283
+            },
+            "heading_reversal_deg": {
+              "n": 16,
+              "mean": 0.03533350499850019,
+              "p50": 0.0,
+              "p90": 0.07917421885396228
+            },
+            "speed_pulse_ydps": {
+              "n": 16,
+              "mean": 0.2060681807314856,
+              "p50": 0.19787702046302158,
+              "p90": 0.3957677715846937
+            },
+            "speed_ydps": {
+              "n": 16,
+              "mean": 4.7165235413066116,
+              "p50": 4.648494443374824,
+              "p90": 5.402368759239618
+            },
+            "yaw_turn_deg": {
+              "n": 16,
+              "mean": 24.06651001770731,
+              "p50": 21.96562777613126,
+              "p90": 49.70212215698392
+            },
+            "yaw_reversal_deg": {
+              "n": 16,
+              "mean": 0.09092154000407879,
+              "p50": 0.0,
+              "p90": 0.1767265175669571
+            }
+          },
+          "candidate": {
+            "heading_turn_deg": {
+              "n": 16,
+              "mean": 2.1112921850712327,
+              "p50": 1.442357744168927,
+              "p90": 5.136665320814739
+            },
+            "heading_reversal_deg": {
+              "n": 16,
+              "mean": 0.3169422029004531,
+              "p50": 0.0,
+              "p90": 1.3920488318770996
+            },
+            "speed_pulse_ydps": {
+              "n": 16,
+              "mean": 0.1854713870701103,
+              "p50": 0.10695546861768745,
+              "p90": 0.4282105116339101
+            },
+            "speed_ydps": {
+              "n": 16,
+              "mean": 3.8925467524220125,
+              "p50": 3.497655131063336,
+              "p90": 5.452280504441575
+            },
+            "yaw_turn_deg": {
+              "n": 16,
+              "mean": 18.95341621222575,
+              "p50": 12.278602656786898,
+              "p90": 47.357721463050986
+            },
+            "yaw_reversal_deg": {
+              "n": 16,
+              "mean": 0.2967806308922649,
+              "p50": 0.0,
+              "p90": 0.11145832979654371
+            }
+          }
+        },
+        "DL": {
+          "baseline": {
+            "heading_turn_deg": {
+              "n": 15,
+              "mean": 2.536324983924886,
+              "p50": 1.7441333310113305,
+              "p90": 5.278054244482944
+            },
+            "heading_reversal_deg": {
+              "n": 15,
+              "mean": 0.16334483006563158,
+              "p50": 0.0,
+              "p90": 0.3607241709910296
+            },
+            "speed_pulse_ydps": {
+              "n": 15,
+              "mean": 0.11767652733946848,
+              "p50": 0.10896316589439436,
+              "p90": 0.2110652909161123
+            },
+            "speed_ydps": {
+              "n": 15,
+              "mean": 4.926933892625731,
+              "p50": 4.925444142409921,
+              "p90": 5.939735599475196
+            },
+            "yaw_turn_deg": {
+              "n": 15,
+              "mean": 6.651133689877294,
+              "p50": 2.388079835241768,
+              "p90": 18.49364715197888
+            },
+            "yaw_reversal_deg": {
+              "n": 15,
+              "mean": 1.864298608613449,
+              "p50": 0.0,
+              "p90": 8.482038923647837
+            }
+          },
+          "candidate": {
+            "heading_turn_deg": {
+              "n": 15,
+              "mean": 3.5323403525072647,
+              "p50": 2.3882555557648875,
+              "p90": 8.234175106297537
+            },
+            "heading_reversal_deg": {
+              "n": 15,
+              "mean": 0.24415466892456444,
+              "p50": 0.0,
+              "p90": 0.686694911840551
+            },
+            "speed_pulse_ydps": {
+              "n": 15,
+              "mean": 0.1282304271440496,
+              "p50": 0.14203587828061437,
+              "p90": 0.23893119704804153
+            },
+            "speed_ydps": {
+              "n": 15,
+              "mean": 4.573100687864575,
+              "p50": 4.509988913511899,
+              "p90": 5.860294983840597
+            },
+            "yaw_turn_deg": {
+              "n": 15,
+              "mean": 4.465298363534757,
+              "p50": 1.6191528747655333,
+              "p90": 7.187695824621015
+            },
+            "yaw_reversal_deg": {
+              "n": 15,
+              "mean": 0.11735469251408007,
+              "p50": 0.0,
+              "p90": 0.5586496787850923
+            }
+          }
+        }
+      },
+      "samples_by_play": {
+        "TOSS": 123,
+        "PASS13": 444
+      }
+    },
+    "cost": {
+      "native_prefixes": 4,
+      "native_recording_seconds": 6.500389069,
+      "complete_results": 3,
+      "censored_live_results": 1,
+      "games": 0,
+      "suite_runs": 0,
+      "new_nfl_queries": 0
+    },
+    "verdict": "ACCEPT physical interpretation of isolated bounded yaw/actual-goal request and peak reserve; no native correctness blocker demonstrated by these different legal paths. Exact combined verification and practical runtime remain integration decisions.",
+    "limits": [
+      "Two deliberately selected native inputs; no general football-performance or population smoothness claim.",
+      "Body-facing ringing improves; travel-heading wobble and speed pulsing do not.",
+      "First-contact timing changes materially. No same-state feasible approach being denied was demonstrated.",
+      "Legacy center angular-law and experimental solver holds remain separate."
+    ]
+  },
+  "nativeFastParity": {
+    "question": "Can final yaw no-event optimization reuse the complete unoptimized native evidence?",
+    "old_commit": "2637558c5024b84dc23f7de10cffc3058b2dab41",
+    "new_commit": "aadac6d8b78bd452ff3bb92b337e027bec4a0d25",
+    "old_source": "56535d8a6ebe3c754da173b0d105e5ae660cc9344dc559e1e9e374f63733c90b",
+    "new_source": "8ea7dadd45db400da68e31a92b215572d0243c48495e97d666b7dcb5ce08c8c2",
+    "input_sha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571",
+    "input_equal": true,
+    "normalized_fields_excluded": [
+      "source",
+      "elapsedSeconds"
+    ],
+    "normalized_old_sha256": "9060314b3b24994423d74ab81f389572524373e047e7a373ce530bffd411468f",
+    "normalized_new_sha256": "9060314b3b24994423d74ab81f389572524373e047e7a373ce530bffd411468f",
+    "normalized_exact_equal": true,
+    "different_fields": [],
+    "tick_count": 94,
+    "field_parity": {
+      "initial": true,
+      "ticks": true,
+      "cues": true,
+      "calls": true,
+      "aims": true,
+      "contact": true,
+      "events": true,
+      "result": true
+    },
+    "new_recording_seconds": 1.1015905090000002,
+    "cost_qualification": "One previously saved Toss input, ordinary passive capture; recording cost is not an uninstrumented runtime benchmark. Runtime owner benchmarks separately.",
+    "old_tape_sha256": "41934976b0bd75d013e990c5df7d32a036731c02354b6e707063dfed0514241d",
+    "new_tape_sha256": "c3acc25ececa90bb4677c382f074a812decb7868cac244405db6c5fda4888894"
+  },
+  "fastPathReference": {
+    "count": 24,
+    "exact": true,
+    "asset": {
+      "path": "out/loaded-movement/yaw-fastpath-reference-evidence.json",
+      "bytes": 19695,
+      "sha256": "96ec2cbb717d6ad79fad479fb76520edca2051d026ec57fba0845b43567ac9dd"
+    }
+  },
+  "mechanicalCost": {
+    "unoptimized": {
+      "summary": [
+        {
+          "scene": "free",
+          "stepsPerBatch": 1800,
+          "rounds": 24,
+          "baseline": {
+            "median": 5.577456666667583,
+            "p95": 6.599362777778879,
+            "max": 8.096053333333153
+          },
+          "candidate": {
+            "median": 8.646156666666482,
+            "p95": 14.099291111111192,
+            "max": 20.806159444444145
+          },
+          "pairedRatio": {
+            "median": 1.5970298216960448,
+            "p95": 2.3687294242489747,
+            "max": 3.4163066117796803
+          }
+        },
+        {
+          "scene": "loaded",
+          "stepsPerBatch": 1800,
+          "rounds": 24,
+          "baseline": {
+            "median": 150.87184222222226,
+            "p95": 177.79842222222214,
+            "max": 187.44317722222252
+          },
+          "candidate": {
+            "median": 226.06126499999996,
+            "p95": 280.0082066666669,
+            "max": 304.04341666666676
+          },
+          "pairedRatio": {
+            "median": 1.5190937110835498,
+            "p95": 1.7911640341156116,
+            "max": 1.8369666413388885
+          }
+        }
+      ],
+      "asset": {
+        "path": "out/loaded-movement/yaw-runtime-evidence.json",
+        "bytes": 49956,
+        "sha256": "62669119c44486a1fdcad43420a5593a2ee06d100a1496bd26e4ed6491e88e7c"
+      }
+    },
+    "fast": {
+      "summary": [
+        {
+          "scene": "free",
+          "stepsPerBatch": 1800,
+          "rounds": 24,
+          "baseline": {
+            "median": 6.213206666666843,
+            "p95": 9.383683888887996,
+            "max": 9.769356666666782
+          },
+          "candidate": {
+            "median": 7.271492777777995,
+            "p95": 13.802126111111445,
+            "max": 14.291163888888654
+          },
+          "pairedRatio": {
+            "median": 1.2135269559799797,
+            "p95": 2.101029134264736,
+            "max": 2.3001269160350235
+          }
+        },
+        {
+          "scene": "loaded",
+          "stepsPerBatch": 1800,
+          "rounds": 24,
+          "baseline": {
+            "median": 161.25975555555468,
+            "p95": 245.91354388888956,
+            "max": 277.00373888888964
+          },
+          "candidate": {
+            "median": 187.26918444444487,
+            "p95": 324.7242288888891,
+            "max": 433.1388455555558
+          },
+          "pairedRatio": {
+            "median": 1.1393092138743421,
+            "p95": 1.478474116487034,
+            "max": 1.563657036879543
+          }
+        }
+      ],
+      "asset": {
+        "path": "out/loaded-movement/yaw-runtime-fastpath-evidence.json",
+        "bytes": 49966,
+        "sha256": "c7fa0a55d36536a2a7788e68ffa663b278b6f506e185a793d0b5070672f5c240"
+      }
+    }
+  },
+  "nativeCost": {
+    "first": {
+      "summary": [
+        {
+          "id": "TOSS",
+          "baseline": {
+            "median": 2.832974733333337,
+            "p95": 3.4728420666666655,
+            "max": 4.757250633333357
+          },
+          "candidate": {
+            "median": 2.914096516666662,
+            "p95": 4.167582933333324,
+            "max": 4.2897199
+          },
+          "pairedRatio": {
+            "median": 1.0034472774801282,
+            "p95": 1.2560029981295038,
+            "max": 1.3536542760205241
+          },
+          "initInclusiveBaseline": {
+            "median": 2.86131471666666,
+            "p95": 3.5064903333333253,
+            "max": 4.790502283333353
+          },
+          "initInclusiveCandidate": {
+            "median": 2.943660366666639,
+            "p95": 4.206345116666671,
+            "max": 4.317974833333332
+          },
+          "initInclusivePairedRatio": {
+            "median": 1.0087744979095639,
+            "p95": 1.2536175566900798,
+            "max": 1.355794048982224
+          },
+          "candidateP95VersusBaselineP95": 1.2000496576953443,
+          "allLive": true
+        },
+        {
+          "id": "PASS13",
+          "baseline": {
+            "median": 2.6397639666666692,
+            "p95": 3.853721183333346,
+            "max": 4.6584758833333275
+          },
+          "candidate": {
+            "median": 2.625164816666681,
+            "p95": 3.1333372999999938,
+            "max": 3.182144366666671
+          },
+          "pairedRatio": {
+            "median": 0.9775708547291599,
+            "p95": 1.2472714471465178,
+            "max": 1.2597791607246551
+          },
+          "initInclusiveBaseline": {
+            "median": 2.672548783333332,
+            "p95": 3.8950409500000207,
+            "max": 4.695399049999984
+          },
+          "initInclusiveCandidate": {
+            "median": 2.681960516666671,
+            "p95": 3.165344249999998,
+            "max": 3.213899399999991
+          },
+          "initInclusivePairedRatio": {
+            "median": 0.9737851787330795,
+            "p95": 1.2445540207766927,
+            "max": 1.2551136021264746
+          },
+          "candidateP95VersusBaselineP95": 0.8130679805148117,
+          "allLive": true
+        }
+      ],
+      "combinedPairedRatio": {
+        "median": 0.9825064983324324,
+        "p95": 1.2560029981295038,
+        "max": 1.3536542760205241
+      },
+      "budget": {
+        "medianRatio": 1.1,
+        "p95Ratio": 1.25
+      },
+      "inputs": [
+        {
+          "id": "TOSS",
+          "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571"
+        },
+        {
+          "id": "PASS13",
+          "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336"
+        }
+      ],
+      "ticksPerPrefix": 60,
+      "rounds": 20,
+      "asset": {
+        "path": "out/loaded-movement/yaw-native-cost-evidence.json",
+        "bytes": 35332,
+        "sha256": "dbaede2ba802f520f54336d5dd445f671d1f15500491abb5d5e9ffd73c41d765"
+      }
+    },
+    "cleanRepeat": {
+      "summary": [
+        {
+          "id": "TOSS",
+          "baseline": {
+            "median": 2.820102616666615,
+            "p95": 3.162054850000004,
+            "max": 3.2137934666666905
+          },
+          "candidate": {
+            "median": 2.718850050000007,
+            "p95": 3.6009220500000083,
+            "max": 3.747228116666671
+          },
+          "pairedRatio": {
+            "median": 0.9658731293388733,
+            "p95": 1.2673100833932835,
+            "max": 1.4333687960328543
+          },
+          "initInclusiveBaseline": {
+            "median": 2.8507487666666598,
+            "p95": 3.188371166666669,
+            "max": 3.2434333333333294
+          },
+          "initInclusiveCandidate": {
+            "median": 2.7601667166666783,
+            "p95": 3.624991066666674,
+            "max": 3.770795249999992
+          },
+          "initInclusivePairedRatio": {
+            "median": 0.96974941131558,
+            "p95": 1.2540955416159314,
+            "max": 1.4254259508720328
+          },
+          "candidateP95VersusBaselineP95": 1.138791773330562,
+          "allLive": true
+        },
+        {
+          "id": "PASS13",
+          "baseline": {
+            "median": 2.4583990499999953,
+            "p95": 2.8951825333333243,
+            "max": 2.961328333333313
+          },
+          "candidate": {
+            "median": 2.4675227000000026,
+            "p95": 2.9406073666666694,
+            "max": 2.97973098333332
+          },
+          "pairedRatio": {
+            "median": 0.9799981646991617,
+            "p95": 1.1307638037678458,
+            "max": 1.2868594832990299
+          },
+          "initInclusiveBaseline": {
+            "median": 2.489432883333332,
+            "p95": 2.9488933333333383,
+            "max": 2.987587533333317
+          },
+          "initInclusiveCandidate": {
+            "median": 2.4975178333333132,
+            "p95": 3.002743649999987,
+            "max": 3.0138518333333195
+          },
+          "initInclusivePairedRatio": {
+            "median": 0.9816929612407148,
+            "p95": 1.1244324231465417,
+            "max": 1.2667613788392005
+          },
+          "candidateP95VersusBaselineP95": 1.0156897994549055,
+          "allLive": true
+        }
+      ],
+      "combinedPairedRatio": {
+        "median": 0.9747099177822777,
+        "p95": 1.2673100833932835,
+        "max": 1.4333687960328543
+      },
+      "budget": {
+        "medianRatio": 1.1,
+        "p95Ratio": 1.25
+      },
+      "inputs": [
+        {
+          "id": "TOSS",
+          "inputSha256": "d3814c8789c33f53f11b55bafe03216d3f4d1edb9932dece18144b5f40a1c571"
+        },
+        {
+          "id": "PASS13",
+          "inputSha256": "7778b1e4ff586b043b8fe5085f0df77dc2ed60dd0718a0215f2199f7e2e7e336"
+        }
+      ],
+      "ticksPerPrefix": 60,
+      "rounds": 20,
+      "asset": {
+        "path": "out/loaded-movement/yaw-native-cost-repeat-evidence.json",
+        "bytes": 35505,
+        "sha256": "972f9340a13792b125688c229401c69580172f2ffb1af05c20e09d8179a46ab4"
+      }
+    }
+  },
+  "assets": [
+    {
+      "path": "out/loaded-movement/shared-translation-audit.ts",
+      "bytes": 2872,
+      "sha256": "6f8714f1487992afc8cf8baa637dcfdef7a4ac48b24790ab1380e927875ae64f"
+    },
+    {
+      "path": "out/loaded-movement/shared-translation-receipt.json",
+      "bytes": 2218,
+      "sha256": "2394f19dae9a5efa1c398b3972af06729d567f4dc88adbfe285c220c896b1e76"
+    },
+    {
+      "path": "out/loaded-movement/shared-translation-evidence.json",
+      "bytes": 2490099,
+      "sha256": "287b12e244e0460b7d3d18fdbc09b3450657c4fb454f56b695d46c140e8dba4f"
+    },
+    {
+      "path": "out/loaded-movement/yaw-loaded-spin-budget.ts",
+      "bytes": 3837,
+      "sha256": "f2ffbf9899e13838c14b41f9aaa55b5b2cc8fa233e2e529cb52e7782001d5f0b"
+    },
+    {
+      "path": "out/loaded-movement/yaw-loaded-spin-budget-evidence.json",
+      "bytes": 78718,
+      "sha256": "a945de10bb7d59c946f5d93c625c468bd58cebf1d2062d03a00fb1c1864cf363"
+    },
+    {
+      "path": "out/loaded-movement/yaw-runtime.ts",
+      "bytes": 3017,
+      "sha256": "32c210f3d72142806e1e412d4a3baacd40b945acfb3bf7fdd97f373097fdfbf5"
+    },
+    {
+      "path": "out/loaded-movement/yaw-runtime-fastpath.ts",
+      "bytes": 3026,
+      "sha256": "eb692d98cd953b8fdc0a423b1f056947ca7be2f8e4d26ee9ba570bbc790320d4"
+    },
+    {
+      "path": "out/loaded-movement/yaw-native-cost.ts",
+      "bytes": 3664,
+      "sha256": "5328986664a0927738cf3d59a28f692aa23143444ea60e19889589e1bf40d70d"
+    },
+    {
+      "path": "out/loaded-movement/yaw-native-cost-repeat.ts",
+      "bytes": 3861,
+      "sha256": "557d6366ec9827e6b375393d418d4075cd01e51aeb07d1bb252cc23472c05365"
+    },
+    {
+      "path": "out/loaded-movement/yaw-native-cost-repeat-receipt.json",
+      "bytes": 2217,
+      "sha256": "e9089b5b288070901a33d5b5aff673fd1ec9903800d2433ad060a8927facd318"
+    },
+    {
+      "path": "out/loaded-movement/yaw-native/capture-current.mjs",
+      "bytes": 4788,
+      "sha256": "a17b05715c18cdfa447694e0af8e490c3f63ce489cd95213e69e08ba8e739819"
+    },
+    {
+      "path": "out/loaded-movement/yaw-native/toss-input.json.gz",
+      "bytes": 5886,
+      "sha256": "7bbe126d863fea8adc4de16201bde577eb1ab33a50aab37ea727625fce2187a5"
+    },
+    {
+      "path": "out/loaded-movement/yaw-native/pass-input.json.gz",
+      "bytes": 5929,
+      "sha256": "27dc1c1df2ec4c11c3d4a961e92cbfdc4184ac71a8c27de89fce181e1f03ffb2"
+    },
+    {
+      "path": "out/loaded-movement/yaw-native/current-native-review.md",
+      "bytes": 7324,
+      "sha256": "7d9e2ef0856e220b662ec861f703a4859a1b03843153757ddb1c557bb25ca4eb"
+    },
+    {
+      "path": "out/loaded-movement/yaw-native/compare-fast-parity.py",
+      "bytes": 2014,
+      "sha256": "fbadf3761374de39ae8e700e3da25528d8ae4fc2eda229e4111772fded29e4fb"
+    }
+  ]
+}

@@ -1,0 +1,767 @@
+{
+  "schema": "independent-run-117-122-review-v1",
+  "reviewer": "Independent Integration reviewer; not either Run author",
+  "acceptedDevelop": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+  "canonicalQueue": "bf493d881f423540962c6b1ad3b889fe2662e8c8",
+  "remoteDevelopCheck": {
+    "method": "GitHub connector GET git/ref/heads/develop",
+    "sha": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+    "cliFetch": "credentials unavailable in child; root independently fetched exact pin"
+  },
+  "heads": {
+    "117": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+    "122": "cf827df7b59f133d25eea91052aa3c243899f8f8"
+  },
+  "runtimeTestsCommits": {
+    "117": "15fcbcdc1e7b03a635a3a5ff14f96fdab0c42ffc",
+    "122": "13dfe18a8214879f24034e3c4732a844a2664cb4"
+  },
+  "mergeBases": {
+    "117": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+    "122": "d682b1f474cb6ba260a7b8b1119a62919c5a2159"
+  },
+  "decisions": {
+    "117": "ACCEPT minimal standalone correction for Integration",
+    "122": "ACCEPT minimal standalone correction for Integration",
+    "117+122": "ACCEPT minimal composition for root exact combined verification; not an all-suite pass"
+  },
+  "patches": {
+    "117": {
+      "path": "docs/reviews/independent-run-117-122/117.patch",
+      "sha256": "81563a5e2e4d2543bf76ea71abafa259196ebdc9031d5446b03180a20bab4d98",
+      "tree": "7beaafd97c7e084a04d17d4f1256cb0b7836ec09",
+      "sourceSha256": "905ac9d64c0a3a57be168f0a592f325693adb49b8c272d2c2abeb5e56a595340",
+      "files": [
+        "src/sim/engagement.ts",
+        "test/stretch-anchor-footwork.test.ts",
+        "test/stretch-normal-follow.test.ts"
+      ],
+      "applyCheck": "pass"
+    },
+    "122": {
+      "path": "docs/reviews/independent-run-117-122/122.patch",
+      "sha256": "c21e4ea89d58a0090f7c8f940ba9755c8109f0f5f3441be151c497046a6b6c60",
+      "tree": "1cf1606b97c9cc695e933c4918770e8d3a4a32c6",
+      "sourceSha256": "96cff1c708a8c063c4394ea123b4c018443de1113963907d2f67544250c174b5",
+      "files": [
+        "src/sim/spacing.ts",
+        "test/fixtures/run-pace-gather.json.gz",
+        "test/fixtures/spacing-forecast-paced-reference.json",
+        "test/run-pace-gather.test.ts",
+        "test/spacing-forecast-reuse.test.ts"
+      ],
+      "applyCheck": "pass"
+    },
+    "117-122": {
+      "path": "docs/reviews/independent-run-117-122/117-122.patch",
+      "sha256": "5b1b1d47c71fb7e512c8e0602568732cf55d0803bf0f4d1b04af305713158ce0",
+      "tree": "c2e3f6f038413f52f919b290947ad0d4c788544b",
+      "sourceSha256": "048be756a6ecda65d10c8f77f6de15ac214d82191746e16657cd5a3d715aeab1",
+      "files": [
+        "src/sim/engagement.ts",
+        "src/sim/spacing.ts",
+        "test/fixtures/run-pace-gather.json.gz",
+        "test/fixtures/spacing-forecast-paced-reference.json",
+        "test/run-pace-gather.test.ts",
+        "test/spacing-forecast-reuse.test.ts",
+        "test/stretch-anchor-footwork.test.ts",
+        "test/stretch-normal-follow.test.ts"
+      ],
+      "applyCheck": "pass"
+    },
+    "122-117-order": {
+      "tree": "c2e3f6f038413f52f919b290947ad0d4c788544b",
+      "sourceSha256": "048be756a6ecda65d10c8f77f6de15ac214d82191746e16657cd5a3d715aeab1",
+      "files": [
+        "src/sim/engagement.ts",
+        "src/sim/spacing.ts",
+        "test/fixtures/run-pace-gather.json.gz",
+        "test/fixtures/spacing-forecast-paced-reference.json",
+        "test/run-pace-gather.test.ts",
+        "test/spacing-forecast-reuse.test.ts",
+        "test/stretch-anchor-footwork.test.ts",
+        "test/stretch-normal-follow.test.ts"
+      ],
+      "applyCheck": "pass"
+    }
+  },
+  "sourceHashes": {
+    "117": "905ac9d64c0a3a57be168f0a592f325693adb49b8c272d2c2abeb5e56a595340",
+    "122": "96cff1c708a8c063c4394ea123b4c018443de1113963907d2f67544250c174b5",
+    "accepted": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+    "117+122": "048be756a6ecda65d10c8f77f6de15ac214d82191746e16657cd5a3d715aeab1"
+  },
+  "source117MeasuredReconstruction": {
+    "matches": 1,
+    "commentReplacementMasks": [
+      [
+        false,
+        true,
+        false
+      ]
+    ],
+    "recordedSource": "353a28ce8ee34f911e9013f854dff8a4cf024e9a07cf4e52bec660945ffff8e9",
+    "emittedComparisons": [
+      {
+        "target": "ES2022",
+        "module": "ESNext",
+        "removeComments": true,
+        "runtimeSame": true,
+        "testSame": true,
+        "runtimeSha256": "f4b13a6b290ac538d097ca008387359393430228d37935adc6ad2c9ba458360a",
+        "testSha256": "42959bbdeddfaea57e1f69c4538f3aba174090b8052d159a2ba77df24c39fac7"
+      },
+      {
+        "target": "ES2022",
+        "module": "NodeNext",
+        "removeComments": true,
+        "runtimeSame": true,
+        "testSame": true,
+        "runtimeSha256": "f0a390c3a813a0e694f095f1ca0ee79bfa6c37f3c480c1fd07a9578fa2879639",
+        "testSha256": "b7cf09378986f0e5e026e4c117e2d6316b73a5cff3c5a0c87a2d6d2bf0248ccb"
+      },
+      {
+        "target": "Latest",
+        "module": "ESNext",
+        "removeComments": true,
+        "runtimeSame": true,
+        "testSame": true,
+        "runtimeSha256": "f4b13a6b290ac538d097ca008387359393430228d37935adc6ad2c9ba458360a",
+        "testSha256": "42959bbdeddfaea57e1f69c4538f3aba174090b8052d159a2ba77df24c39fac7"
+      },
+      {
+        "target": "Latest",
+        "module": "NodeNext",
+        "removeComments": true,
+        "runtimeSame": true,
+        "testSame": true,
+        "runtimeSha256": "f0a390c3a813a0e694f095f1ca0ee79bfa6c37f3c480c1fd07a9578fa2879639",
+        "testSha256": "b7cf09378986f0e5e026e4c117e2d6316b73a5cff3c5a0c87a2d6d2bf0248ccb"
+      }
+    ],
+    "reconstruction": "Published engagement.ts with only the three ANCHOR_SPLIT backfield-comment lines restored to accepted text produces exactly353a28ce\u2026; no executable edits."
+  },
+  "selectedBlobs": {
+    "src/sim/engagement.ts": {
+      "gitBlob": "8ad94db042665f460cfb0703264a0b2e7280aa4d",
+      "sha256": "e3251d932b5cfd9b328dabf77f22ab8331962dd8185d68522a41a79aaf9c1430"
+    },
+    "test/stretch-normal-follow.test.ts": {
+      "gitBlob": "c846087c5c21f6c17e4b4877246a057b8fc1d858",
+      "sha256": "fa422bc3bd90fcad4bb7f94eab8092ee0e163c886203a0f48162950f0349f44d"
+    },
+    "test/stretch-anchor-footwork.test.ts": {
+      "gitBlob": "0c974efb807b4f0f1a6134a92164ada9882d9981",
+      "sha256": "da1ef16c7f8e6a704ce708423bf07bfe11bb83c6b7fbb56cddd791b3aaa8d884"
+    },
+    "src/sim/spacing.ts": {
+      "gitBlob": "61015e29ceb7725d9a95bad751c9d575ccb8d6ae",
+      "sha256": "3ad8b3a61c8dcf9f2f54282101d7074c68b7214e1442787e1b71828397e09c02"
+    },
+    "test/run-pace-gather.test.ts": {
+      "gitBlob": "acab52dcb498b712d472da1c8d3ea1fa73f8c150",
+      "sha256": "fee0c5673c4495b58d8599584a84e1f8d6c1e9b690a234c996232c21ac140138"
+    },
+    "test/fixtures/run-pace-gather.json.gz": {
+      "gitBlob": "950879273b29c1829ea720547c925c522d40d046",
+      "sha256": "f1109c080ea4c2364222660dfd265e6317e56d2b7327ee2f1555fb7e7b8417a2"
+    },
+    "test/spacing-forecast-reuse.test.ts": {
+      "gitBlob": "d8ca52ae900763258631cfe44b13090fe1d631a5",
+      "sha256": "60a24df7aab53a6badb4396dbb8a068a7793c8d0fd1bcd6b49965cfa6ace495f"
+    },
+    "test/fixtures/spacing-forecast-paced-reference.json": {
+      "gitBlob": "07ca801ec51483dc933c577c938f112108b4c645",
+      "sha256": "f357340dd8209969aba6fffe94f612095d269599020cba6f2733a6a551c7813d"
+    }
+  },
+  "settings": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "node": "v22.23.3",
+  "platform": "linux",
+  "arch": "x64",
+  "evidence": {
+    "summary117": {
+      "head": "fae0a3585419704f385de02e6bfbf8b69ac4cfb1",
+      "path": "data/reviews/current/zone-contact-execution/summary.json",
+      "sha256": "db998b3a621fc460b010759a13fcbe1096bcc49471bad9435d37386fd5d51654"
+    },
+    "summary122": {
+      "head": "cf827df7b59f133d25eea91052aa3c243899f8f8",
+      "path": "data/reviews/current/run-pace-gather/summary.json",
+      "sha256": "21069e61beaade9725c0d2ca423922425b02749a93b6ca3cbe8ee19a349f9b62"
+    },
+    "receipts117": [
+      {
+        "path": "data/reviews/current/zone-contact-execution/frame-run-1792195963080-340251.json",
+        "sha256": "a49f3416f41019e2b27f0606cbe68d850df4814eb0b3de03f9949be9c1f6871c",
+        "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "exitCode": 0,
+        "seconds": 0.31629516700000004,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/frame-frame-edge-receipt.json",
+        "sha256": "42d7cb6f5e986980b89f30c5f2d2ccd51a380efc4a5d3ac4781e2a2b01472241",
+        "sourceSha256": "6439c1d5d8e10be221565142d29fd2ecc119c212c2885ad8fcffc1d810719edd",
+        "exitCode": 0,
+        "seconds": 1.606164367,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/frame-red-receipt.json",
+        "sha256": "42e531c61434c2de1e1b15d1dea40d1d096f6666bba2acc99719f5943d7e3bfb",
+        "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "exitCode": 1,
+        "seconds": 1.7369045210000003,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/anchor-only-native-receipt.json",
+        "sha256": "b582cd166f972104bcdd18756da2780b7e0203b315fc0138f60f3419e5998d9a",
+        "sourceSha256": "78544ec9782d519b20c5d97d4f6e7075916e7748147c5770b30486f78e098aa5",
+        "exitCode": 0,
+        "seconds": 1.741510167,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/anchor-red-receipt.json",
+        "sha256": "acc0f0a58a8ef31e1b01ac8e4371a0f8f735c45e58e5ce249fceb303776c3870",
+        "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "exitCode": 1,
+        "seconds": 1.82369855,
+        "inputsUnchanged": false,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/anchor-transfer-receipt.json",
+        "sha256": "5e40aed2e8439c1810d3c2de5ffec3fe4148782e93e3b5dfad5fcdcb6b9d054e",
+        "sourceSha256": "78544ec9782d519b20c5d97d4f6e7075916e7748147c5770b30486f78e098aa5",
+        "exitCode": 0,
+        "seconds": 0.676207862,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/baseline-receipt.json",
+        "sha256": "997da9cbe7c761833732109786ffe329b97fbf9511c697b96afd618da3c18d59",
+        "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "exitCode": 0,
+        "seconds": 1.3404013190000001,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/combined-focused-receipt.json",
+        "sha256": "b21128e6acd0a66cc849f1595a02ce7515fbd8219a1417ada0d1507a5203e21a",
+        "sourceSha256": "353a28ce8ee34f911e9013f854dff8a4cf024e9a07cf4e52bec660945ffff8e9",
+        "exitCode": 0,
+        "seconds": 2.467824417,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/combined-native-receipt.json",
+        "sha256": "26db516598ca7bceae29cf10bc1ccf7be80e4a126ca3b53725c99a620452cfd2",
+        "sourceSha256": "353a28ce8ee34f911e9013f854dff8a4cf024e9a07cf4e52bec660945ffff8e9",
+        "exitCode": 0,
+        "seconds": 1.637078572,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/combined-transfer-receipt.json",
+        "sha256": "c1d799a1290fe07e73fca697b8b914737ca37217fca3a975019b4c65d750a7ad",
+        "sourceSha256": "353a28ce8ee34f911e9013f854dff8a4cf024e9a07cf4e52bec660945ffff8e9",
+        "exitCode": 0,
+        "seconds": 0.656734279,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/final-typecheck-receipt.json",
+        "sha256": "5aea8402aa37a646aa31160d8fcad6a3d2e3fac9451039dce90151461a02d56d",
+        "sourceSha256": "905ac9d64c0a3a57be168f0a592f325693adb49b8c272d2c2abeb5e56a595340",
+        "exitCode": 1,
+        "seconds": 10.052655376,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/normal-focused-receipt.json",
+        "sha256": "b05a596fc5ff03bbd5293a6e27e7958bfb8ff9af4c7476df33f7fa3cc7a55eba",
+        "sourceSha256": "6439c1d5d8e10be221565142d29fd2ecc119c212c2885ad8fcffc1d810719edd",
+        "exitCode": 0,
+        "seconds": 2.407069034,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/normal-native-receipt.json",
+        "sha256": "dba187ee5582c6bb749feb5c03272edd05fcfe890e88589b2236fac7afd0cd59",
+        "sourceSha256": "6439c1d5d8e10be221565142d29fd2ecc119c212c2885ad8fcffc1d810719edd",
+        "exitCode": 0,
+        "seconds": 1.784317032,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/penetration-anchor-receipt.json",
+        "sha256": "ce164e0a18690014269b84b4c3bc63324832c68c0b6049cda54b55b9b2d39806",
+        "sourceSha256": "78544ec9782d519b20c5d97d4f6e7075916e7748147c5770b30486f78e098aa5",
+        "exitCode": 0,
+        "seconds": 0.506155461,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/penetration-baseline-receipt.json",
+        "sha256": "8edb314f10cbd9b6b440ae8b032d34a07fd34660c259efa8e67ab67e7e744e7d",
+        "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "exitCode": 0,
+        "seconds": 0.457094826,
+        "inputsUnchanged": true,
+        "invalidForProtection": true
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/penetration-baseline-valid-receipt.json",
+        "sha256": "61477dfa7015a6618a6887f255de6bcf2abec83a3f7ebae33e082d65a1a4223d",
+        "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "exitCode": 0,
+        "seconds": 0.478304606,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/traffic-receipt.json",
+        "sha256": "dbc59d6e297f863bc925c6435561c4d5c3f10055e5bba7daf18a0c374d1f19dc",
+        "sourceSha256": "353a28ce8ee34f911e9013f854dff8a4cf024e9a07cf4e52bec660945ffff8e9",
+        "exitCode": 0,
+        "seconds": 0.840723701,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/transfer-baseline-receipt.json",
+        "sha256": "cde855a939751f881b9eb91b486e7af9934d913762e71020dc2877d9966d77fc",
+        "sourceSha256": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "exitCode": 0,
+        "seconds": 0.7526418539999999,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      },
+      {
+        "path": "data/reviews/current/zone-contact-execution/typecheck-pass-receipt.json",
+        "sha256": "870a0e91565ad8192ea8a739683725d095805de9a5943637f9cc3027bd4e7132",
+        "sourceSha256": "905ac9d64c0a3a57be168f0a592f325693adb49b8c272d2c2abeb5e56a595340",
+        "exitCode": 0,
+        "seconds": 9.914576111,
+        "inputsUnchanged": true,
+        "invalidForProtection": false
+      }
+    ],
+    "receipts122": [
+      {
+        "path": "out/baseline/run-1792200095921-352164.json",
+        "sha256": "78d5fe8d03a4805e64a0c73f27038decbb7a85fc4be93be53d3da656b42233c7",
+        "source": "96cff1c708a8c063c4394ea123b4c018443de1113963907d2f67544250c174b5",
+        "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--config",
+              "out/run-pace-gather/golden-review.config.mjs"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 1.100276682
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "path": "out/run-pace-gather/contact-composed-receipt.json",
+        "sha256": "0cabb54e2860cb3b573d31bf9150e0d2967182b3c6ecba70c654c0740f131934",
+        "source": "048be756a6ecda65d10c8f77f6de15ac214d82191746e16657cd5a3d715aeab1",
+        "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "scripts/diag/box-defense-review/protection.ts",
+              "out/run-pace-gather/contact-composed.json.gz"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 1.594610126
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "path": "out/run-pace-gather/focused-receipt.json",
+        "sha256": "d477e904a939b4f298b930c138fb3c5dbcaa9e2eea8d0d9a48c648f585b0d4cd",
+        "source": "96cff1c708a8c063c4394ea123b4c018443de1113963907d2f67544250c174b5",
+        "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+        "exitCode": 1,
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/run-pace-gather.test.ts",
+              "test/spacing-yield.test.ts",
+              "test/spacing-residual-motion.test.ts",
+              "test/traffic-turning.test.ts",
+              "test/traffic-step.test.ts",
+              "test/joint-spacing.test.ts",
+              "test/spacing-forecast-reuse.test.ts"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 2.225788638
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "path": "out/run-pace-gather/focused-valid-receipt.json",
+        "sha256": "448eaaa7637d7a05597bbed391d22ad4db28693624ea55fa008da99910756941",
+        "source": "96cff1c708a8c063c4394ea123b4c018443de1113963907d2f67544250c174b5",
+        "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/run-pace-gather.test.ts",
+              "test/spacing-yield.test.ts",
+              "test/spacing-residual-motion.test.ts",
+              "test/traffic-turning.test.ts",
+              "test/traffic-step.test.ts",
+              "test/joint-spacing.test.ts",
+              "test/spacing-forecast-reuse.test.ts"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 2.122144405
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "path": "out/run-pace-gather/fresh-baseline-receipt.json",
+        "sha256": "72407a8eb7524f7a165f1c4c1bd3a5d58a9438a32e4b37a27f3a555002e07810",
+        "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "scripts/diag/box-defense-review/runner-motion.ts",
+              "out/run-pace-gather/fresh-baseline.json.gz",
+              "--direction=weak",
+              "--look=under3",
+              "--until=20"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 0.808681633
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "path": "out/run-pace-gather/fresh-candidate-receipt.json",
+        "sha256": "b97d0ea50ceb26802d68655d2c2582e73b0c17174f39fca0d4f8aefc197b60b9",
+        "source": "96cff1c708a8c063c4394ea123b4c018443de1113963907d2f67544250c174b5",
+        "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "scripts/diag/box-defense-review/runner-motion.ts",
+              "out/run-pace-gather/fresh-candidate.json.gz",
+              "--direction=weak",
+              "--look=under3",
+              "--until=20"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 0.811792264
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "path": "out/run-pace-gather/frozen-analysis-receipt.json",
+        "sha256": "786403cb8998d44229850dc9a8db4cdedd0b48a96bc6b9dcd3ab6f484d0d1b3f",
+        "source": "ce13b11f07163f5074d4f4888a2ed29a3ba06e15e37aa3e5315de48ffe6c8afc",
+        "commit": "9dda147f3763fafb316e0697bfa5b3ce631f75e4",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "out/run-pace-gather/analyze.ts"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 0.207877821
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "path": "out/run-pace-gather/native-only-receipt.json",
+        "sha256": "10fdd6fceb7b2bb6d044969ba4a644871f088d26376c772bb5d0fab54a2614ae",
+        "source": "96cff1c708a8c063c4394ea123b4c018443de1113963907d2f67544250c174b5",
+        "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "node",
+              "--import",
+              "tsx",
+              "scripts/diag/box-defense-review/protection.ts",
+              "out/run-pace-gather/native-only.json.gz"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 1.861589716
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "path": "out/run-pace-gather/red-receipt.json",
+        "sha256": "8cd96106f0aca0929e3c16bb7c2bb0779c60cbd497840cb502c8572fea876d28",
+        "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+        "exitCode": 1,
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/run-pace-gather.test.ts",
+              "--maxWorkers=1"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 1.1206739710000002
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "path": "out/run-pace-gather/rejected-fixture-2-receipt.json",
+        "sha256": "1a7bb5bb04b7397fbb01aa2e6dd315296f889f21caf8efafb006c8c260d984dc",
+        "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+        "exitCode": 1,
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/run-pace-gather.test.ts",
+              "--maxWorkers=1"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 1.054402917
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "path": "out/run-pace-gather/rejected-fixture-receipt.json",
+        "sha256": "fe4df3ece72f9cf53eda0d869e11bbdb6c630cef20da3c8c200f40f1e5e57ba2",
+        "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
+        "commit": "d682b1f474cb6ba260a7b8b1119a62919c5a2159",
+        "exitCode": 1,
+        "commands": [
+          {
+            "command": [
+              "npx",
+              "vitest",
+              "run",
+              "--project",
+              "core",
+              "test/run-pace-gather.test.ts",
+              "--maxWorkers=1"
+            ],
+            "exitCode": 1,
+            "elapsedSeconds": 1.0899437399999998
+          }
+        ],
+        "inputsUnchanged": true
+      },
+      {
+        "path": "out/run-pace-gather/typecheck-receipt.json",
+        "sha256": "82db65cfbc6df92222c468f8423e7e4ca8899b86bbcd18cecad32276bd16ff4b",
+        "source": "96cff1c708a8c063c4394ea123b4c018443de1113963907d2f67544250c174b5",
+        "commit": "13dfe18a8214879f24034e3c4732a844a2664cb4",
+        "exitCode": 0,
+        "commands": [
+          {
+            "command": [
+              "npm",
+              "run",
+              "typecheck"
+            ],
+            "exitCode": 0,
+            "elapsedSeconds": 9.504627999999999
+          }
+        ],
+        "inputsUnchanged": true
+      }
+    ],
+    "qualification122": "Published summary embeds command/source/exit/cost and raw receipt SHA256, but original raw receipts and native outputs are ignored/unavailable in this executor. These hashes are recorded, not independently recomputed.",
+    "qualificationNative": "No native output was recollected. Author compact outcomes, traffic data and plot data are source-qualified; recorded full continuations remain cited evidence.",
+    "expectedRedQualification117": "anchor-red-receipt.json has inputsUnchanged=false; retained as historical failure/cost only, not a stable-input expected-red witness. Final65 and passing typecheck receipts have stable inputs."
+  },
+  "goldenContract": {
+    "oldReferenceUnchangedSha256": "00d23da84c536bc5bfff2bf0a4a30d66c3150275fb470260309828299a7fbc70",
+    "changedTimes": [
+      2.2,
+      2.25,
+      2.3
+    ],
+    "allGoalsPreserved": true,
+    "unchangedTimes": [
+      2.05,
+      2.1,
+      2.15,
+      2.35
+    ],
+    "extraGatherForecastsMaximum": 3,
+    "gatherForecastsMaximumAfterConflict": 5,
+    "savedTotalForecasts": 7,
+    "cache": "Map by exact Intent object inside each actor/decision; unchanged next-call invalidation"
+  },
+  "cost": {
+    "reused117CommandSeconds": 41.196357222,
+    "reused122CommandSeconds": 23.502409912999997,
+    "reused122PlotSeconds": 1.823,
+    "newTests": 0,
+    "newNativeExecutions": 0,
+    "newGames": 0,
+    "newBroadSuites": 0,
+    "auditScriptSeconds": 3.5635551949962974,
+    "emittedComparisonWallSeconds": 0.817253346,
+    "initialAuditFailureWallSeconds": 1.041661734,
+    "costScope": "Measured source/index/hash and emitted-code audit only; routine reads and publication overhead excluded; zero behavioral executions"
+  },
+  "excluded": [
+    "#113 diagnostic ancestry",
+    "#116 acquired runoff floor",
+    "#119 moving-blocker runner reader",
+    "loaded RG priority",
+    "capacity changes",
+    "World/Physics changes",
+    "baseline/default changes"
+  ],
+  "remainingRisks": [
+    "Extra shoulder work concedes depth against bull and cross-face under unchanged physical budget.",
+    "Weak-zone 117 5.34->2.93 traffic response remains an accepted explained cost.",
+    "122 changes tackle-sensitive standalone strong ending and permits faster defensive response in weak 5.34->5.21.",
+    "117+122 weak 2.93->3.08 and LOS2.95->2.80 preserve DE protection but leave Mike access and LG departure unresolved.",
+    "OZ existing outward-fit and shared contact/hand-retention limitations remain.",
+    "Three bounded pace trials do not establish optimal or monotonic clearance; observed peers have delayed constant-velocity forecasts.",
+    "Exact combined suite remains root Integration responsibility."
+  ],
+  "fixtureProvenance122": {
+    "sourceSha256": "353a28ce8ee34f911e9013f854dff8a4cf024e9a07cf4e52bec660945ffff8e9",
+    "time": 1.75,
+    "matches117PublishedTrafficBody": true,
+    "matches117PublishedTrafficRaw": true,
+    "matches117PublishedTrafficHalf": true,
+    "peerCount": 10,
+    "scope": "One frozen native free-RB spacing decision, not a football continuation. Peer images include the production called-motion substitution where present. Staged curved-obstruction controls use the existing spacing-yield geometry separately."
+  },
+  "unchangedInputs": {
+    "scripts/diag/run-contact-technique.ts": "f753dcdfa82d4a1d036ae81811208d25621320a2b7bc981a03985d9ca0d7e08b",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "config/baseline.json": "d3bde3c9febaf222b5872f05e3b750ee44434d1a81c3f6c4ec53eb6f341b06d4",
+    "package-lock.json": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+  }
+}

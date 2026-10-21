@@ -1,0 +1,50 @@
+diff --git a/src/sim/coverage/judgment.ts b/src/sim/coverage/judgment.ts
+index d6d70f9..8a36338 100644
+--- a/src/sim/coverage/judgment.ts
++++ b/src/sim/coverage/judgment.ts
+@@ -7,6 +7,7 @@
+ import { isDeepZone } from '../../playbook/alignment.js';
+ import type { Agent } from '../agent.js';
+ import type { PlaySim } from '../playsim.js';
++import type { Perceived } from '../perception.js';
+ import type { ReceiverRead, ReleaseReader } from './reads.js';
+ import type { Directive } from './rules.js';
+ 
+@@ -70,19 +71,28 @@ export class CoverageJudgment {
+   }
+ }
+ 
+-/** A teammate ahead and near the route can look like a cap while upright.
+- * No access to his assignment, hidden capacity or current unseen body state. */
++/** Does the consumed moving picture sustain help through the next read?
++ * Positions are already dead-reckoned to now. Sample age adds a conservative
++ * persistence reserve; it is not another position correction. More distant
++ * help remains unestablished by this short moving picture. */
++export function hasProjectedCap(rd: Pick<ReceiverRead, 'pos' | 'vel'>, seen: Perceived,
++  decisionInterval: number, error: number): boolean {
++  if ((seen.pose != null && seen.pose !== 'up') || seen.vel.x <= -1) return false;
++  const depth = seen.pos.x - rd.pos.x, closing = rd.vel.x - seen.vel.x;
++  const lateral = seen.pos.y - rd.pos.y, lateralRate = seen.vel.y - rd.vel.y;
++  const horizon = decisionInterval + Math.max(0, seen.age ?? 0);
++  const margin = 0.4 - error, width = 2.3 + error;
++  if (depth <= margin || depth - closing * horizon <= margin
++    || Math.abs(lateral + lateralRate * horizon) >= width) return false;
++  return depth < 6;
++}
++
++/** No assignment, hidden capacity or current unseen body state enters help. */
+ export function hasVisibleCap(a: Agent, sim: PlaySim, rd: ReceiverRead): boolean {
+   const error = 0.45 * (1 - a.r('discipline')) + 0.35 * a.mind.judgment(`cap:${rd.r.slot}`);
+   return sim.defense.some(d => {
+     if (d === a) return false;
+     const seen = sim.see(a, d);
+-    // A falling/grounded or recovering teammate cannot supply this roof.
+-    // This is the sampled picture: a newly fallen teammate can still look up,
+-    // and a recovered one can still look down. Unknown cues retain geometry.
+-    if (seen.pose != null && seen.pose !== 'up') return false;
+-    const depth = seen.pos.x - rd.pos.x;
+-    const lateral = Math.abs(seen.pos.y + seen.vel.y * 0.2 - rd.pos.y - rd.vel.y * 0.2);
+-    return depth > 0.4 - error && depth < 6 && lateral < 2.3 + error && seen.vel.x > -1;
++    return hasProjectedCap(rd, seen, a.mind.decisionInterval, error);
+   });
+ }

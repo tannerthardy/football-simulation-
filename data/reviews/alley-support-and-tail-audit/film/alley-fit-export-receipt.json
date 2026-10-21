@@ -1,0 +1,148 @@
+{
+  "output": "/workspace/football-simulation-/out/coverage-continuation/alley-fit.html",
+  "clips": 8,
+  "pairs": 4,
+  "bytes": 2272391,
+  "htmlSha256": "ac2e4e2c6f35d21416cb7ffd05f5657c4e1f416f4b2efc1573289abe7370d60d",
+  "baselineSource": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+  "candidateSource": "3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f",
+  "scope": "Baseline601 native Game history and PlaySim constructor; only ManCoverage.update is borrowed from candidate3cb during the selected snap. This is a component counterfactual, not an end-to-end candidate game.",
+  "exporterSha256": "4d8c3408b6cc63e233c2f4e02bcee559187d27d032b5df583389e059134e5e3a",
+  "templateSha256": "9ee7232840e1ef442e17c35e3bd43013d13551ff071c838c65701de5fb268ae0",
+  "savedInputs": [
+    {
+      "path": "/workspace/football-simulation-/out/coverage-continuation/counterfactual-selection.json",
+      "sha256": "6ab3689ce97862d46b2bd4a258e24b3da211a307efe92d7e7d52e5b3ae950a00"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/coverage-continuation/games/index.json.gz",
+      "sha256": "d78296abd50cbae25eeea3f341115fa1aded0c767409c7b2f4e83b9df2a5a53a"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/coverage-continuation/counterfactual/G4-P127-baseline.json.gz",
+      "sha256": "8ccfbce5654247f3091238c0b6360848337694e3d2eff6e6e25bbe8cdd0941bb"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/coverage-continuation/counterfactual/G4-P127-candidate.json.gz",
+      "sha256": "acb059ee44bf4a4068c5cd8a102e610bb0994775e59faf09f997d3a19f8456d6"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/coverage-continuation/counterfactual/G3-P099-baseline.json.gz",
+      "sha256": "1c831e291470b9e1437178042a1a5db7c73b330dc88d33a963d4fb48d93ea363"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/coverage-continuation/counterfactual/G3-P099-candidate.json.gz",
+      "sha256": "5bda65d7284fac7fac73078bfb226e4cde3b2d14367a5cfb3651776c00381e30"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/coverage-continuation/counterfactual/G4-P012-baseline.json.gz",
+      "sha256": "8a872eb4a2f6486477bf13c6f4ac80001d447896bd4bed8d3a579bcb07fc34f4"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/coverage-continuation/counterfactual/G4-P012-candidate.json.gz",
+      "sha256": "61b2ad7c91b423d447cff32bfcc71e35622950bb260d47a9407190f5c8827f3f"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/coverage-continuation/counterfactual/G2-P188-baseline.json.gz",
+      "sha256": "7ba82f3982928558bd3f2a5b9d20afd2915e59fed1080ed4a3d8a81d102c7180"
+    },
+    {
+      "path": "/workspace/football-simulation-/out/coverage-continuation/counterfactual/G2-P188-candidate.json.gz",
+      "sha256": "e97ab6e41b05369ea096eb71438eff5ddc93650eaaa34545562ca84aa1d25f79"
+    }
+  ],
+  "pairReceipts": [
+    {
+      "id": "G4-P127",
+      "initialSha256": "20d3b8acab38812a16826dc45710fe5487f719ffd7e416bc0f68b494d9a7f432",
+      "fullInitialSha256": "3bd1a9992908284f3a84216f86fcd5b90ed641874319185c741195d27ce8ad48",
+      "priorLogSha256": "248b55e173fc903db2e0819f869ed40b0c815b9b0416f68da9551beabd4e4f9b",
+      "throughTargetSeedsSha256": "a975649b1f9c1a863cc0c87800fc5d09f516dd1bfcc9c63770fec6623dd5df6c",
+      "snapSeed": 225467937,
+      "firstWholeTickFork": 1.3,
+      "baselineTicksSha256": "2466ef916c48c9fa391533b2daf12364e5b38f51eaa969820f64458685879688",
+      "candidateTicksSha256": "0cd06778e95995766accbc533c0f59658ad510e3a124e30ed3108a6604791d0d",
+      "baselineNextRng": 2829267011,
+      "candidateNextRng": 1270084059,
+      "observerPlainVerified": true,
+      "baseline": {
+        "outcome": "touchdown",
+        "gain": 86
+      },
+      "selectedPolicy": {
+        "outcome": "tackle",
+        "gain": 31.34
+      }
+    },
+    {
+      "id": "G3-P099",
+      "initialSha256": "79fd78f3ab0791b0785ec90aaa9b7455535a0a55a446b6174a2ec065cda7de64",
+      "fullInitialSha256": "c98351943703d26b92049d204b7cb75e2bf8828e0288453bf58b9ae144365a2d",
+      "priorLogSha256": "03dbc1b0d4a2f3efc4df90fd94c79502810a14e814ceb3dc7c949d27078847c1",
+      "throughTargetSeedsSha256": "362780401fc70998b5448d46d801dce7982cec1cfea96d7b14500ac3b539916d",
+      "snapSeed": 3491889217,
+      "firstWholeTickFork": 1.7,
+      "baselineTicksSha256": "50707f6389451cca76953c3eaf219155a8ee53b7244883de7a5dcf49cddf153c",
+      "candidateTicksSha256": "ef5804cc59672a3dc7ed46207316d99acdbb371f60902904b559facf1174cfa7",
+      "baselineNextRng": 4162912569,
+      "candidateNextRng": 4162912569,
+      "observerPlainVerified": true,
+      "baseline": {
+        "outcome": "touchdown",
+        "gain": 2.07
+      },
+      "selectedPolicy": {
+        "outcome": "touchdown",
+        "gain": 2.07
+      }
+    },
+    {
+      "id": "G4-P012",
+      "initialSha256": "64e93bb8680c948cf4ad6b8953f5e6c3f079de96339c3ed99a98f13dfc4fa4b9",
+      "fullInitialSha256": "a8f833243029a0f1bc4dbb77c300f356c8f1f0c8e13e469f260f8b65be2f03a2",
+      "priorLogSha256": "a31421a71e36ca5df5864bcda50a7454cf4e291fc5d13cd039f2fa31675158e8",
+      "throughTargetSeedsSha256": "7de089a1971826dc018552d8d8d44215ee39c0b67195b93bfd2b7a873af996f9",
+      "snapSeed": 1240612330,
+      "firstWholeTickFork": null,
+      "baselineTicksSha256": "86a30b0ab339dbbc9f56c31612db09fbed4b85fa6568708d8efc2c8d39a3e4a0",
+      "candidateTicksSha256": "86a30b0ab339dbbc9f56c31612db09fbed4b85fa6568708d8efc2c8d39a3e4a0",
+      "baselineNextRng": 3895186884,
+      "candidateNextRng": 3895186884,
+      "observerPlainVerified": true,
+      "baseline": {
+        "outcome": "tackle",
+        "gain": 3.59
+      },
+      "selectedPolicy": {
+        "outcome": "tackle",
+        "gain": 3.59
+      }
+    },
+    {
+      "id": "G2-P188",
+      "initialSha256": "fcc22e4c561df3367abc44c0495eacc65c80d54acabfd07dc2f35c54f95a2b32",
+      "fullInitialSha256": "bd7ab8bce69b0b763acd4fb55fd5d5b7be78f4175585f8fc6305d71b56865e6d",
+      "priorLogSha256": "a8e4f45aef07b257fb82af2c89e99b49d5eb1b38d26d00d4447bc2395c1a5176",
+      "throughTargetSeedsSha256": "9075fae291f16e626490fdb285152584e4d2d7df1912c081f7737b4a8532bd76",
+      "snapSeed": 1258400293,
+      "firstWholeTickFork": 1.05,
+      "baselineTicksSha256": "dd5e57073704277b8e336cf6f230a5815cef8fd8c775b8629aaecc84b1cc398e",
+      "candidateTicksSha256": "318387e3a4c06dc39e5672f5d8c1d91139a530fe8cad6b7af42c6ac1d90720b8",
+      "baselineNextRng": 3122083330,
+      "candidateNextRng": 1276536112,
+      "observerPlainVerified": true,
+      "baseline": {
+        "outcome": "tackle",
+        "gain": 3.62
+      },
+      "selectedPolicy": {
+        "outcome": "tackle",
+        "gain": 1.93
+      }
+    }
+  ],
+  "simulation": false,
+  "outcomeSelection": false,
+  "componentCounterfactuals": true,
+  "fullCandidateGames": false
+}

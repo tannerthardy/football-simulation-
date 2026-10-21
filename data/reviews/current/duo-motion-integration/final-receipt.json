@@ -1,0 +1,235 @@
+{
+  "schema": "duo-only-final-verification-v1",
+  "integrationPR": 85,
+  "acceptedBase": "7eb2554f5dbb497cff169f386704a5b0f4cf43fe",
+  "testedCommit": "572711032afeec75aaa83bb6edf8f288f2223db3",
+  "sourceSha256": "dcebbee42fbe4cd64f603740d9b20bdf521ae424ad94e084eb46b30478b297e3",
+  "validationSha256": "5b58b54b18873b3b8d40c52c47162c329fda57c6ed10c1299e3283576f2338dd",
+  "flagsSha256": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+  "worldDefaultsSha256": "0e8f949748beefe2c05786b160437ed3ca2d604bd5c202c1834dab2696a62544",
+  "hashEncoding": "Source/validation path-NUL-content-NUL SHA256; flags/World compact sorted-key JSON SHA256.",
+  "node": "v22.23.3",
+  "flags": {
+    "ANCHOR_SPLIT": "1",
+    "CF_FLOW": null,
+    "CLIMB_INTERCEPT": "1",
+    "CLIMB_PLAN": "1",
+    "DL_FIGHT": "0",
+    "DL_FLOW": "1",
+    "DL_HANDS": "0",
+    "FLOW_READ": "1",
+    "FLOW_RELEASE": "1",
+    "GAIT_STEP": "0",
+    "HAND_FIGHT": "0",
+    "HAND_MOTOR": "0",
+    "HOLD_SUBSTEPS": "0",
+    "IN_STRIDE_CATCH": "0",
+    "KEEPER_TORSO": "1",
+    "LB_PLAN": "1",
+    "LEG_BRACE": "0",
+    "LEVER_FACING": "1",
+    "LIVE_AIM": "1",
+    "LIVE_GAPS": "1",
+    "PASS_SINK": "0",
+    "PULL_CUE": "0",
+    "PULL_PLAN": "0",
+    "PULL_READ": "1",
+    "PULL_STEP": "0",
+    "REACH_CONTACT": "0",
+    "READ_EYES": "1",
+    "READ_RISK_TRACE": "0",
+    "RUN_ANCHOR": "1",
+    "RUN_CONTACT_COMPONENTS": "1",
+    "RUN_CONTACT_TRACK": "0",
+    "RUN_HANDS": "0",
+    "RUN_READ": "0",
+    "RUN_READ_TURN": "0",
+    "SCRAPE": "1",
+    "SHED_PHYSICAL": "1",
+    "STALK_CLAIM": "1",
+    "STRETCH_MESH": "1",
+    "STRETCH_REACH": "1",
+    "TACKLE_ROLL": "0",
+    "TACKLE_TOUCH": "0",
+    "THREAT_READ": "1",
+    "WRAP_BIND": "0",
+    "ZONE_FLOW": "1"
+  },
+  "worldDefaults": {
+    "handContact": "center",
+    "handIntegration": "centered",
+    "supportModel": "legacy",
+    "constraintWork": "per-solve",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "boundedAttachment": true,
+    "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+  },
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1760,
+    "typescriptFiles": 148,
+    "pythonPassed": 145,
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "trackedChanges": [],
+    "skippedCommands": [],
+    "exitCode": 0
+  },
+  "included": [
+    {
+      "pr": 84,
+      "head": "4af71ac8a8f320456e87a027579200469a0c1ee0",
+      "code": "aebb0abb3a9e96ec6561274b9fdd4e8e76ce7173",
+      "evidence": "70ed238a2246cd89d3c4108d647245baf5ff70bb",
+      "files": [
+        "src/sim/behaviors/blocking.ts",
+        "test/combo-transfer.test.ts"
+      ],
+      "independentApproval": "https://github.com/tannerthardy/football-simulation-/pull/84#issuecomment-6204563280",
+      "independentReviewCommit": "7b550026e4e63543f9ff91b7912d69b908831c11",
+      "contract": "Duo own-proposal admission retains obstructed cross-surface work while acquired backer remains on partner half. Valid near-half/crossing/Under detours, keeper security, own-only proposals and physical joint/control ownership remain unchanged.",
+      "evidenceFor": "A030 simultaneous actual RT/DT and RG/LB loads before runner arrival, faster LOS speed/no offensive impacts. WZ and preselected Under complete histories/results exact.",
+      "risks": [
+        "A018 still misses RG/LB collection and linebacker wins later.",
+        "A030 changes C release and execution draws; final gain is not an isolated benefit estimate.",
+        "Some doubles stay longer; broader front/formation transfer unproved; rotated loaded-contact law limitations remain."
+      ]
+    }
+  ],
+  "held": [
+    {
+      "pr": 81,
+      "head": "6e19ad2d4aac73e71ae57c1893a9b389074eeaa5",
+      "independentSourceAccepted": true,
+      "integrationState": "HOLD: preserved no-preview cost contract failed in first combined run. No assertion edit/waiver.",
+      "owner": "Run consulting Do-It-All",
+      "questionUrl": "https://github.com/tannerthardy/football-simulation-/pull/81#issuecomment-6204704906",
+      "diagnostic": "All3 original lane commands/actual contact-free motion/budgets pass; previews15/0/14. Global cost is not certified. Original failed receipt remains failed.",
+      "excludedBy": "Normal revert bb07bee; source/test/fixture absent from final protected diff; original code/patch/evidence/history retained."
+    },
+    {
+      "pr": 76,
+      "head": "4cf253efead2cac450abe0bc74aa5e0db0306126",
+      "state": "parked/frozen; author closure/live-objective disposition outstanding; no dependency"
+    },
+    {
+      "item": "Lateral trial498b36e, observer, low-speed, transport/navigation, experimental Physics",
+      "state": "excluded; independent owner gates"
+    }
+  ],
+  "reusedEvidence": {
+    "authorFocusedChecks": 66,
+    "newFocusedRerunsFor84": 0,
+    "authorArtifactHashesVerified": 22,
+    "independentReview": "Do-It-All exact code/saved-data ACCEPT; source matches author tested/clean publication. No additional native/test/game execution by reviewer."
+  },
+  "cost": {
+    "passingDuoOnlyCommandSeconds": 192.59768642799997,
+    "commands": [
+      {
+        "command": [
+          "npm",
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 9.570574507
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 11.381116367999999
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:all"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 170.90699429999998
+      },
+      {
+        "command": [
+          "npm",
+          "run",
+          "test:data"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.7390012529999949
+      }
+    ],
+    "priorFailedCombinedCommandSeconds": 202.275426376,
+    "oneTargetedDiagnosticCommandSeconds": 1.451017638,
+    "totalCommandSecondsThisIntegration": 396.324130442,
+    "whySecondVerification": "First combined source failed #81 contract; independent ready #84 was isolated by removing #81. Final two-file runtime/test tree materially differs and needs its own exact verification. No unchanged suite repeat.",
+    "newStandaloneNativeReplays": 0,
+    "newEvaluationGames": 0,
+    "newRosterScreens": 0,
+    "diagnosticMechanicalWorldSteps": 48,
+    "suiteGames": "Only existing preserved game/ensemble assertions within the required code suites.",
+    "noRepeatToPublishOrMergeIdenticalTree": true
+  },
+  "preservation": {
+    "protectedChanges": [
+      "src/sim/behaviors/blocking.ts",
+      "test/combo-transfer.test.ts"
+    ],
+    "everyIncludedBlobMatchesReviewed84Head": true,
+    "physicalLawsCapabilitiesDefaultsFlagsDependenciesToolingUnchanged": true,
+    "acceptedCoverageSupportSpacingCarrierCollectionPreserved": true,
+    "priorScientificReceiptsAndBranchesPreserved": true,
+    "historicalComparison": "4ded6b600fd3785e65034aa5623d7a9f8f3c5db1",
+    "githubDefaultUnchanged": true
+  },
+  "artifacts": {
+    "final-combined.json": {
+      "bytes": 2626,
+      "sha256": "1d954ccef15a0427c43932f6855ad8b2a2496ea24443d7b7dbc2bd5369c25ce4"
+    },
+    "final-combined.log": {
+      "bytes": 15427,
+      "sha256": "cffe43c43444b7f0584ba2078dbc3678d6354f3102125d4e2dab3034dce60bff"
+    },
+    "first-failed-combined.json": {
+      "bytes": 2632,
+      "sha256": "17c6a8f7f2b1be1e2f969345df6110ce42ee31c14e9f1d95832489ede5eb798b"
+    },
+    "first-failed-combined.log": {
+      "bytes": 89649,
+      "sha256": "37d4ccd3b9f7f33c29a7483d7ba5f84bcfd2ed685b70446faa8e92818fe874dc"
+    },
+    "review-receipt.json": {
+      "bytes": 6290,
+      "sha256": "faf77221ce38fe776eb2d2c62ec270b717d0ba4d7e4db783dd54892dc14dab32"
+    },
+    "traffic-lanes-diagnostic.json": {
+      "bytes": 1551,
+      "sha256": "676d3276428517712c4eb8d447c472dfe80425cb6cc35b60d5314404cb6f6b22"
+    },
+    "traffic-lanes-diagnostic-launcher.json": {
+      "bytes": 2281,
+      "sha256": "4d8f434f0c7c4d235d04df997c9ae25e9e123120e9094aa578e81b14e82fe97a"
+    },
+    "traffic-lanes-diagnostic.test.ts.txt": {
+      "bytes": 5370,
+      "sha256": "bf11de93181e0ee9390e489f4bbdb1e434a31976adb7ec1d42d8903ddd887a25"
+    },
+    "pr84-independent-review.json": {
+      "bytes": 20472,
+      "sha256": "181167888e47ce8b8c5b959cde3e325bfa4176c5d2510a78c3cf50c93907a6e3"
+    },
+    "pr81-independent-review.json": {
+      "bytes": 10912,
+      "sha256": "ba6527f8521c6e185f55422ed4c43549e1c7f7fba51a1c5e2fce6d96a19b4f4c"
+    }
+  },
+  "decision": "Adopt routine reviewed #84-only correction under standing authority after final head/base/review/merge-tree checks. #81 remains integration-held; no claim that its failed combined receipt passed.",
+  "nextDecision": "Run resumes remaining A018 second-level collection after reconciling accepted pin. Run/Do-It-All adjudicate #81 forecast-cost contract using saved targeted diagnostic; no automatic test waiver/full suite/panel/game."
+}

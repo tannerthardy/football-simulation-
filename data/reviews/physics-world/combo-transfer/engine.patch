@@ -1,0 +1,59 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index cfc0d6a..37b0b2f 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -14,7 +14,8 @@
+  */
+ import { FIELD_WIDTH } from '../../core/field.js';
+ import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
+-import { cornerSpeed, type MoveCommand } from '../../physics/kinematics.js';
++import { cornerSpeed, fatigueFactor, type MoveCommand } from '../../physics/kinematics.js';
++import { availability, supportParams } from '../../physics/support.js';
+ import type { Intent } from '../../physics/world.js';
+ import type { RunConcept } from '../../playbook/types.js';
+ import type { Agent, Behavior } from '../agent.js';
+@@ -957,7 +958,6 @@ export function readCombination(observer: Agent, sim: PlaySim, combo: Combinatio
+     combo.secureSince = -1;
+     return;
+   }
+-  if (e.helpers.some((h) => helperSupport(sim,e,h)<.25)) { combo.secureSince = -1; return; }
+   const secure = e.control > -0.12 + 0.12 * (0.5 - observer.mind.urgency) && e.baseB > 0.60 && Math.abs(e.phi) < 0.55;
+   if (!secure) {
+     combo.secureSince = -1;
+@@ -981,14 +981,33 @@ export function readCombination(observer: Agent, sim: PlaySim, combo: Combinatio
+     const bd = norm(sub(keeper.pos, combo.defender.pos));
+     const phi = Math.atan2(-(bd.x * lat.x + bd.y * lat.y), bd.x * axis.x + bd.y * axis.y) / (Math.PI / 2);
+     const cost = Math.hypot(backer.pos.x - climber.pos.x, backer.pos.y - climber.pos.y) + (climber === e.blocker ? 0.30 : 0);
+-    return { climber, keeper, phi, cost };
+-  }).filter((c) => Math.abs(c.phi) < 0.65 && !c.keeper.isDown(sim.t));
++    const hands = keeper === e.blocker ? e.hands : e.helperHands?.get(keeper);
++    const base = keeper.body.support
++      ? availability(keeper.body.support, supportParams(keeper.profile), fatigueFactor(keeper.body.energy)) : 1;
++    // The player staying must carry this first-level job. The player leaving
++    // need not first make his redundant help useful. A promoted helper still
++    // needs his own established fit, footing and genuine physical hands.
++    const contact = !!hands && hands.a === keeper.body && hands.b === combo.defender.body
++      && sim.world.joints.includes(hands);
++    const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
++    return { climber, keeper, phi, cost, hands, base, contact, useful };
++  }).filter((c) => Math.abs(c.phi) < 0.65 && !c.keeper.isDown(sim.t)
++    && c.base > .60 && c.contact && c.useful);
+   candidates.sort((a, b) => a.cost - b.cost);
+   const choice = candidates[0];
+   if (!choice) return;
+-  const { climber, keeper, phi } = choice;
++  const { climber, keeper, phi, hands } = choice;
+   if (!(climber.behavior instanceof RunBlocker)) return;
+   const solo = combinationSoloKind(combo);
++  if (keeper !== e.blocker) {
++    // Transfer ownership of hands that already exist, not a fresh hand fight.
++    // Ordinary synchronization removes only the departing member's contact.
++    e.hands = hands;
++    e.helperHands?.delete(keeper);
++    // A cloth grab belongs to the departing primary, not his partner. Keep
++    // any recorded penalty; the new keeper does not inherit an illegal hold.
++    e.holding = false;
++  }
+   e.blocker = keeper;
+   e.helpers = e.helpers.filter((b) => b !== climber && b !== keeper);
+   e.phi = phi;

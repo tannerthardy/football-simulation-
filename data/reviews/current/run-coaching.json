@@ -1,0 +1,279 @@
+{
+  "schema": "run-coaching-review-v1",
+  "date": "2026-10-11",
+  "baseline": {
+    "commit": "6997736",
+    "sourceSha256": "8f8cf4b49052fae4dac2d7858b42aa6ddcd9bdd13fa3e541c5c41f03e344b15d"
+  },
+  "selection": "User-selected mechanism witnesses plus declared ordinary and mirrored controls; not an NFL frequency estimate or unbiased engine sample.",
+  "suppliedReview": {
+    "fileName": "Pasted text.txt",
+    "sha256": "0d66f135e9ce730b87267570d0f4187ed7e2acb98a07244e9efa6faf486ff6c4",
+    "scope": "User-supplied ChatGPT qualitative review of twelve selected clips. Coaching hypotheses; positions/events do not establish perception or physical force. No instructions in the document override the task."
+  },
+  "blockCue": {
+    "problem": "Absolute speed >3 yd/s erased low pads or nearby facing bodies that suggested blocking and made a run-reading man linebacker retreat into coverage. This is cue inference, not measured hand contact.",
+    "change": "Remove speed veto; retain observed depth, pad/facing geometry and personal run interpretation.",
+    "candidateSourceSha256": "819e30119e769c669d46acbc9bc0a7a0d50715df352505429c41e9e222361e31",
+    "matchedNative": {
+      "id": "G2-P136",
+      "method": "Original native Game prefix/constructor from frozen baseline; only selected ManCoverage.update borrowed from candidate. Candidate file differs only in coverage-cues.ts. Recorded/plain projections, each tick and next RNG agree. Initial state and earlier log match. This is a selected policy experiment, not paired complete candidate games.",
+      "receipts": {
+        "baseline": {
+          "initialSha256": "16d50e52fd0e2a51f34efc4ad847572f2fa01f207a5c4d046088d95ba749e604",
+          "fullInitialSha256": "94d26e431dc7043ed85edd198068d61484e00ea030e41ba0a6bc2fabb22bdcce",
+          "priorLogSha256": "babe69d8c4d100ae83a042c47bdfb42a00acbd67ffee2881fa3434c066d2993c",
+          "observerVerified": true,
+          "ticksSha256": "c3fe0d79d1231730b028a528bf20d8d1336d14af895598ee04e0b994098e5fc4",
+          "resultSha256": "1989405ceb0adf3999d623771349d1993ea67ef8f75e6be7aa157fd0134a5ff8",
+          "finalSha256": "d5b6e877e3e02efd7080d8c07ecc728553f2bc6336cc44ed872318c5d4af1a0a",
+          "nextRng": 2309294803,
+          "lbCommands": [
+            {
+              "t": 1,
+              "vel": {
+                "x": -5.113192580435416,
+                "y": -0.6700724330129395
+              }
+            },
+            {
+              "t": 1.2,
+              "vel": {
+                "x": 3.8548701099695086,
+                "y": 2.0291674339208905
+              }
+            },
+            {
+              "t": 1.4,
+              "vel": {
+                "x": 5.138985466990765,
+                "y": 1.6562726131594796
+              }
+            },
+            {
+              "t": 1.6,
+              "vel": {
+                "x": 5.89013326649968,
+                "y": 1.473762712142482
+              }
+            },
+            {
+              "t": 1.8,
+              "vel": {
+                "x": -4.264541586617757,
+                "y": -1.9490698313747687
+              }
+            }
+          ],
+          "outcome": {
+            "gain": 84.6,
+            "kind": "touchdown",
+            "duration": 12.3
+          },
+          "fileSha256": "1795b017280f05f45a8f020ba84f7b5f79fc83012dbde4ac15de949567b39836"
+        },
+        "candidate": {
+          "initialSha256": "16d50e52fd0e2a51f34efc4ad847572f2fa01f207a5c4d046088d95ba749e604",
+          "fullInitialSha256": "94d26e431dc7043ed85edd198068d61484e00ea030e41ba0a6bc2fabb22bdcce",
+          "priorLogSha256": "babe69d8c4d100ae83a042c47bdfb42a00acbd67ffee2881fa3434c066d2993c",
+          "observerVerified": true,
+          "ticksSha256": "21aa4c375e0a50f3e7b4b00d029b155d2a45f39cdc675f45cc59fc2b50c13231",
+          "resultSha256": "e83ed19f4c1c12c6ef46c5446903842c4b8cef927336b6be77f91238293ce744",
+          "finalSha256": "1c1efe5bf097978ddfdd15f738d217d7ada7e146aa666ce6187a5672b7c19a72",
+          "nextRng": 785652868,
+          "lbCommands": [
+            {
+              "t": 1,
+              "vel": {
+                "x": -5.113192580435416,
+                "y": -0.6700724330129395
+              }
+            },
+            {
+              "t": 1.2,
+              "vel": {
+                "x": -4.668163242907884,
+                "y": -0.815583214244764
+              }
+            },
+            {
+              "t": 1.4,
+              "vel": {
+                "x": -4.159392416780096,
+                "y": -1.0415157078551134
+              }
+            },
+            {
+              "t": 1.6,
+              "vel": {
+                "x": -3.7592469820141736,
+                "y": -1.2247438271216038
+              }
+            },
+            {
+              "t": 1.8,
+              "vel": {
+                "x": -3.2988512112343495,
+                "y": -1.461603061099635
+              }
+            }
+          ],
+          "outcome": {
+            "gain": 10.51,
+            "kind": "tackle",
+            "duration": 4.15
+          },
+          "fileSha256": "a251bcaee02e30d6723b4d79750a4fc9c454905472312277e1ac39d830aed705"
+        }
+      }
+    },
+    "acceptance": "The 1.2\u20131.6s requests no longer reverse away from a personally observed leading FB; outcome difference is consequential evidence, not the acceptance target.",
+    "controls": "Fast upright/deep/turned-away releases, pass interpretation, stationary delayed release, stale/current picture disagreement, mirrored man fit, unchanged World response."
+  },
+  "nextDiagnosis": [
+    {
+      "mechanism": "Combination remaining-owner security and contact hand-control continuity",
+      "witnesses": [
+        "G1-P059",
+        "G4-P023"
+      ],
+      "status": "Diagnosed; change withheld until independent keeper contact/control and achievable climb exit are represented coherently. Actual load does not establish inside hand ownership."
+    },
+    {
+      "mechanism": "Installed force/help contract survives disguise and preserves deep cap",
+      "witnesses": [
+        "G6-P181"
+      ],
+      "status": "Diagnosed; no allocation change in this increment."
+    },
+    {
+      "mechanism": "Backfield man alignment has nominal overlaps",
+      "witnesses": [
+        "G2-P136",
+        "G3-P048"
+      ],
+      "status": "Diagnosed; installation policy needs distinct reachable landmarks, not extra collision force."
+    },
+    {
+      "mechanism": "Draw pass-influence still reads/fits rushers",
+      "witnesses": [
+        "G8-P004"
+      ],
+      "status": "Diagnosed; separate change required with ordinary presentation/PA controls."
+    }
+  ],
+  "physicalChanges": "None: shared movement, traction, arm/grip/work capacities and World collision/support laws are unchanged.",
+  "coachingSources": [
+    {
+      "id": "team-pursuit",
+      "url": "https://footballtoolbox.net/philosophy-of-team-pursuit",
+      "finalUrl": "https://footballtoolbox.net/philosophy-of-team-pursuit",
+      "status": 200,
+      "bytes": 68123,
+      "sha256": "e13be1e6d4b547bb8f08d8c15366a6e4abbb7bb29bb8ed8a6be2e12d3fa8d22b",
+      "retrievedAt": "2026-10-11T19:50:09.708993+00:00",
+      "inspectedScope": "Available public article prose only; video/diagrams not audited. Particular teaching installation; not NFL empirical rates or modern rule authority."
+    },
+    {
+      "id": "lb-reaction",
+      "url": "https://footballtoolbox.net/inside-linebackers-teaching-reaction-part-1",
+      "finalUrl": "https://footballtoolbox.net/inside-linebackers-teaching-reaction-part-1",
+      "status": 200,
+      "bytes": 66833,
+      "sha256": "858ad01fe381b9d8dec2c7d441d5d5fcf314479ed8930b50619a633f692cc682",
+      "retrievedAt": "2026-10-11T19:50:10.172240+00:00",
+      "inspectedScope": "Available public article prose only; video/diagrams not audited. Particular teaching installation; not NFL empirical rates or modern rule authority."
+    },
+    {
+      "id": "dl-run-pass",
+      "url": "https://footballtoolbox.net/defensive-line-play-run-and-pass-techniques",
+      "finalUrl": "https://footballtoolbox.net/defensive-line-play-run-and-pass-techniques",
+      "status": 200,
+      "bytes": 66212,
+      "sha256": "eff9e57a5e564d6ce7d0ab7e1bee964b867e9d2f965c7b839c1701368970370b",
+      "retrievedAt": "2026-10-11T19:50:44.305889+00:00",
+      "inspectedScope": "Available public article prose only; video/diagrams not audited. Particular teaching installation; not NFL empirical rates or modern rule authority."
+    },
+    {
+      "id": "dl-run-pass-2",
+      "url": "https://footballtoolbox.net/defensive-line-play-run-and-pass-techniques-part-2",
+      "finalUrl": "https://footballtoolbox.net/defensive-line-play-run-and-pass-techniques-part-2",
+      "status": 200,
+      "bytes": 68238,
+      "sha256": "a64e301bda1f426916efc1f4d6cfb8fba4a1f8229bcbb95a1ac05bde4f7cd97c",
+      "retrievedAt": "2026-10-11T19:50:44.655015+00:00",
+      "inspectedScope": "Available public article prose only; video/diagrams not audited. Particular teaching installation; not NFL empirical rates or modern rule authority."
+    }
+  ],
+  "relatedReceipts": [
+    "run-puller-read.json",
+    "run-combo-audit.json",
+    "run-contact-and-movement.json",
+    "run-force-approach.json",
+    "run-displacement.json"
+  ],
+  "physicsSourceParity": {
+    "baseline": "2441218d833f79527c22f45bd2aba1331840658c6c10fb03bf8873411a06b6b3",
+    "candidate": "2441218d833f79527c22f45bd2aba1331840658c6c10fb03bf8873411a06b6b3"
+  },
+  "combinedSourceSha256": "03d230f145f12bdd803dfda782102ab93d2469bdf23385387403c0997e9162ce",
+  "validation": {
+    "typescript": {
+      "fullCommand": "npm run test:all",
+      "passed": 1140,
+      "files": 101,
+      "wallSeconds": 127.54637196200201,
+      "outputSha256": "09bae0bf44369c79c25efdfa53e1dcda7770a1b7f6174d6c87328f9cf40c33d0",
+      "tests": 1140
+    },
+    "core": {
+      "command": "npm test",
+      "passed": 966,
+      "wallSeconds": 32.37284330895636,
+      "exit": 0,
+      "tests": 966
+    },
+    "python": {
+      "command": "npm run test:data",
+      "tests": 121,
+      "passed": 121
+    },
+    "typecheck": "pass",
+    "build": "pass",
+    "browser": "The final 20-clip film loads without JavaScript errors. Filters and player cards are populated; next clip and frame stepping work.",
+    "runnerCorrection": "Yield test worker between CPU-bound synchronous games to deliver queued reports; no engine inputs, assertions or test timeout changed.",
+    "priorFailures": "Intermediate full run caught the widened-waypoint progression regression and worker RPC report timeout. Corrected before rerunning the frozen final source."
+  },
+  "film": {
+    "path": "out/run-coaching/film/index.html",
+    "combined": "out/run-coaching/film/rushing-policy-review.html",
+    "zip": "out/run-coaching/film/rushing-policy-review.zip",
+    "bytes": 11318637,
+    "sha256": "0848c4865d91a172fdcc2202008f5bd332be3b1db2764be8a2012e7513d42b20",
+    "pairs": 10,
+    "clips": 20,
+    "scope": "Original native prefix/constructor and shared World; each candidate replaces only the named selected policy. Includes ordinary and worse-result controls. Local ignored output, not committed generated media."
+  },
+  "typicalInstallationFlags": {
+    "scope": "All recorded run-call reconstruction using rounded first-frame positions; exact selected native jobs verified. Flags are not confirmed bug rates.",
+    "nominalLbpairsCloserThanOneYard": {
+      "all": 29,
+      "denominatorAll": 381,
+      "clean": 23,
+      "denominatorClean": 302
+    },
+    "deepMiddleAssignedPrimaryForce": {
+      "all": 61,
+      "denominatorAll": 381,
+      "clean": 45,
+      "denominatorClean": 302
+    },
+    "interpretation": "Deep run support can be legitimate. The demonstrated error is disguise location excluding an installed flat player without a coherent help contract, not every deep-safety fit."
+  },
+  "commits": {
+    "blockCue": "893d51f",
+    "pullerRead": "55a44f9",
+    "forceApproach": "30cde4d",
+    "testWorkerYield": "f662715"
+  }
+}

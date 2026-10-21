@@ -1,0 +1,82 @@
+{
+  "source": "d73aaed8c8095e2b7050ae1fd07fe257ff44c8b7805811369b955750856b1121",
+  "cachedCSource": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+  "controls": [
+    {
+      "id": "CT-R1-split_zone-tite-R-S3",
+      "eventsExact": true,
+      "frameTimesExact": true,
+      "packedAgentRecordsExact": true,
+      "positionsExact": true,
+      "facingExact": true,
+      "recordedFrameCounts": [
+        29,
+        29
+      ],
+      "differingScalarCounts": {
+        "x": 0,
+        "y": 0,
+        "facing": 0
+      },
+      "firstAgentDifference": null,
+      "firstPositionDifference": null,
+      "maximumRecordedPositionDistance": 0,
+      "maximumRecordedPositionDifference": null,
+      "frameResolution": "rounded engine replay: positions 0.1yd and facing0.1rad; no unrecorded precision inferred"
+    },
+    {
+      "id": "CT-R1-split_zone-tite-L-S3",
+      "eventsExact": true,
+      "frameTimesExact": true,
+      "packedAgentRecordsExact": false,
+      "positionsExact": false,
+      "facingExact": true,
+      "recordedFrameCounts": [
+        32,
+        32
+      ],
+      "differingScalarCounts": {
+        "x": 1,
+        "y": 0,
+        "facing": 0
+      },
+      "firstAgentDifference": {
+        "frame": 30,
+        "t": 3,
+        "agent": 18,
+        "slot": "CB_S",
+        "diff": {
+          "x": {
+            "before": 48.4,
+            "after": 48.5
+          }
+        }
+      },
+      "firstPositionDifference": {
+        "frame": 30,
+        "t": 3,
+        "agent": 18,
+        "slot": "CB_S",
+        "distance": 0.10000000000000142
+      },
+      "maximumRecordedPositionDistance": 0.10000000000000142,
+      "maximumRecordedPositionDifference": {
+        "frame": 30,
+        "t": 3,
+        "agent": 18,
+        "slot": "CB_S",
+        "before": [
+          48.4,
+          36.9,
+          4
+        ],
+        "after": [
+          48.5,
+          36.9,
+          4
+        ]
+      },
+      "frameResolution": "rounded engine replay: positions 0.1yd and facing0.1rad; no unrecorded precision inferred"
+    }
+  ]
+}

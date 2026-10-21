@@ -1,0 +1,68 @@
+{
+  "query": {
+    "schema": "schematic-context-query-v1",
+    "seasons": [
+      2022,
+      2023
+    ],
+    "selection": "REG live pass/run rows; exclude kneels, spikes and two-point attempts. No-play and special-teams records are outside this observed scrimmage cohort.",
+    "choice": "Observed dropbacks include sacks and scrambles; designed runs exclude scrambles. This is realized action, not the staff's hidden planned call or RPO alternative.",
+    "penalties": "Calling/motion cohorts keep live rows with a penalty flag. Depth, screen and gain cohorts require penalty flag=false. Missing penalty flags do not become clean plays.",
+    "targetDepth": "Clean actual throws, nonempty receiver_player_id and finite air_yards. Depth perpendicular to LOS, not total flight distance. Categories: below0,0toUnder10,10toUnder20,20plus.",
+    "screen": "FTN is_screen_pass among clean matched observed dropbacks with a known label, including sacks/scrambles if labelled. Not all designed screens or a negative-air-yard proxy.",
+    "motion": "FTN is_motion among matched live calling plays with a known label; retains live penalty rows. Motion occurred before or at snap; no route, speed or recognition inference.",
+    "distanceBins": [
+      "1to3",
+      "4to7",
+      "8to10",
+      "11to19",
+      "20plus",
+      "unknown"
+    ],
+    "fieldBins": [
+      "redZone0to20",
+      "plus21to50",
+      "own51to100",
+      "unknown"
+    ],
+    "scoreBins": [
+      "trailing9plus",
+      "within8",
+      "leading9plus",
+      "unknown"
+    ],
+    "clockBins": [
+      "earlierRegulation",
+      "last10minRegulation",
+      "overtime",
+      "unknown"
+    ],
+    "downBins": [
+      1,
+      2,
+      3,
+      4,
+      "unknown"
+    ],
+    "jointCells": [
+      "season",
+      "down",
+      "distance",
+      "field",
+      "period",
+      "score"
+    ],
+    "standardization": "Compare trailing9plus and leading9plus within identical season/down/distance/field/period cells. Common weights are the sum of both groups' metric denominators in each retained cell. Retain cells with at least20 calling plays per group for dropback share, or10 metric observations per group for named-target depth, FTN motion and screens. Descriptive common-support comparison, not a causal effect.",
+    "minimumSupport": {
+      "observedDropback": 20,
+      "deepNamedTarget": 10,
+      "motion": 10,
+      "screen": 10
+    },
+    "extremeWitness": "Third down with distance20plus; report observed calling, clean gain and conversion, not the called defensive rush/drop structure.",
+    "inference": "No fitting, significance claim or engine accuracy test. Raw variation across team-seasons is descriptive, not a confidence interval; frame/player rows are not independent play samples."
+  },
+  "querySha256": "7d7b3e701a22d32cc96f5fe43b2e875409b5307dec8c7579e664fcd1513e3b3f",
+  "collectorSha256": "fca850cdac0e1837f68ae449ae94c2826b1f1cd5a802166e88074f0e6a365a9b",
+  "declaredAtUtc": "2026-10-11T10:54:39.678852+00:00"
+}
