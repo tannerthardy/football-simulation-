@@ -433,14 +433,67 @@ changed plays) and made trap worse (losses 0 -> 7 of 70). The short runs
 inside are the MIKE filling and the kicked end: the lane is not open in the
 physics, so the read is roughly right about it.
 
-### Engaged pairs move as one body (physics, in progress)
+### Engaged pairs: the wash is the controllers', not the hands
 
-With `HAND_MOTOR=0` a hand joint's steer row drives the pair's relative
-tangential velocity to zero, whoever controls the hands: a DT who controls
-them and asks to slide across is braked by his own hands. Down blocks hold 85%
-of reps (tracking 53%), lose leverage 12% (32%) and flip 1% (11%); a backside
-DL asking +2.7 yd/s toward the play achieves -0.5. A diagnosis and three-law
-design panel are running.
+A diagnosis on 240 lab gap plays (down reps about 520, backside DL about 230)
+logged each tick's requested and achieved velocities, the hand steer row
+against its limit, torso contacts and leg saturation, then ablated the row.
+The steer row is not a velocity lock: it sits at its limit (about a quarter
+of one leg budget) on 82-89% of substeps and halves the pair's relative slip
+(down reps 1.42 requested, 0.66 achieved; 1.28 with no steer). The pair's
+lateral wash (-0.97/-0.93 yd at +1 s, tracking +0.2/-0.1) is a leg contest
+in which both bodies ask to go backside: the down blocker's installed 45 deg
+drive is -1.11 of his -1.32 yd/s lateral request, and the defender's command
+averages +0.13 (he asks backside on 48% of ticks, following the blocker's
+seen flow through `DL_FLOW`'s held term). With the steer intact, zeroing the
+blocker's lateral request leaves -0.08/-0.06; a defender who asks to fight
+toward the play goes +0.81/+0.34, and on the ticks where he already does the
+World gives +0.19/-0.15, the tracked values. Every steer ablation moves the
+wash by 0.2 yd or less without changing its sign. A backside DL who asks
+toward the play moves the pair (+1.0 yd/s with `BACK_CHASE`); his reported
+"asks +2.7, achieves -0.5" is mostly a 0.1-0.25 s lag. So the defense's
+fight against pressure (handoff D2) is not blocked by physics.
+
+The incoherent physics is narrow: a defender who controls the hands (45% of
+down ticks) brakes his own slip. Removing only that brake doubles down-rep
+flips (6 -> 11%), but the same coupling holds up pass protection (pressure
+in 2.5 s 4 -> 16%) and doubles (driven back +0.34 -> penetration -0.66): a
+replacement must be a hand-intent law (the steer row aims at the steering
+actor's chosen hand motion within the arm budget) judged on down reps, pass
+protection, doubles and the hands bench together. Its three design
+prototypes did not finish (session limit); the diagnosis's probes are
+preserved outside the repository. `DOWN_SEAL` stays off: the blocker's
+seal reads were not what moved the pair.
+
+### Leverage at the pass (`scripts/diag/runblock/leverage-pass.py`)
+
+One operator for tracking and lab exports: when the runner passes a
+defender engaged with a blocker (centers within 1.2 yd for 0.3 s, matched
+one to one), is the blocker between them, and does the runner pass on the
+blocker's side (covered) or the defender's free side? Block leverage is
+already tracked: the blocker holds the defender's play side / backside at
+the start of the engagement 26/54% on gap runs (tracking 36/47%) and 28/52%
+on zone (22/56%). The runner's side is not:
+
+| Runs | covered share of sided passes | runner passes the man's play side / backside | covered when the blocker is backside |
+|---|---|---|---|
+| Gap, under center | 47% (tracking 58%) | 61/35% (49/46%) | 36% (55%) |
+| Zone, under center | 40% (55%) | 63/34% (41/55%) | 24% (60%) |
+| Zone, shotgun | 38% (56%) | 53/45% (39/54%) | 33% (64%) |
+| Duo | 60% (55%) | 60/38% (56/39%) | 48% (46%) |
+
+Tracked backs cut behind a man whose blocker has his backside; ours keep
+going to the play side, around him. On the covered side the blocker's body
+does take the arm away: an engaged defender converts to first contact at
+11-15% there, as in tracking (11-16%). Duo, whose aim follows the read key's
+motion, is the one concept that matches. This gives the next runner work
+(the read has no term for which side of an engaged man his blocker is on)
+and answers the defense session's reach question: its free-arm reach adds
+contacts where our runner over-exposes the free side, and blocked contacts
+come 0.3-0.8 yd deeper. Thresholds (1.0/1.5 yd, 5 Hz, 0.4 yd body) keep the
+gap. The three adversarial checks planned for the operator did not run
+(session limit); its play-side inference matches the designed direction on
+97-100% of gap and zone plays.
 
 ### For the defense session (taken there)
 
