@@ -495,6 +495,21 @@ gap. The three adversarial checks planned for the operator did not run
 (session limit); its play-side inference matches the designed direction on
 97-100% of gap and zone plays.
 
+**Why the runner takes the free side** (`scripts/diag/gap/coverside.ts`, the
+read's own candidates on 240 zone plays): he passes on whichever side his last
+read chose (read covered, passed covered 18 of 19; read free, passed free 36
+of 39), so it is the request, not his body. When the blocker has the man's
+backside, the best covered-side entry is as closed as the free side (risk
+12.4 vs 11.7; first defender there 0.87 s before the runner). The read timed
+the engaged man on a straight line through his own blocker; `COVER_READ`
+(off) routes him around the blocker's body, which takes him out of first
+place on 83 -> 58 of 259 reads, but the covered entry stays closed by the
+next man: an untouched backer (42 -> 107) or the next DT. Our zone backers
+stand 1.8 yd deep a second after the handoff (tracking 2.5) and the untouched
+ones are in on the tackle 45% of the time (32%; `second-level.py`): the
+cutback behind a block is shut by the second level, which the defense
+session owns. `COVER_READ` stays off until backers flow.
+
 ### For the defense session (taken there)
 
 The run-defense session took the linebacker fill (its pull read waits for the

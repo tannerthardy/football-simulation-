@@ -105,6 +105,38 @@ const LOG_READ = process.env.LOG_READ === '1';
  * met running sideways in the backfield; every lane closed in traffic left
  * the far-outside dog-leg the least bad (docs/reviews/run-offense.md). */
 const LANE_DEPTH = process.env.LANE_DEPTH === '1';
+/** COVER_READ=1 (default off): a defender the runner sees body to body with
+ * an upright blocker reaches an entry on that blocker's side only around the
+ * blocker's body. The read timed him on a straight line through his own
+ * blocker, so the covered side of a block (behind a man whose blocker has his
+ * backside) scored as closed as his free side; backs went around the man,
+ * where tracked backs cut behind him (scripts/diag/runblock/leverage-pass.py).
+ * Geometry only: no retention, shed time or engagement record is assumed. */
+const COVER_READ = process.env.COVER_READ === '1';
+
+/** COVER_READ: time for a defender seen at `s` to reach `p` within `reach`
+ * when the seen bodies `blockers` he touches stand on his straight line:
+ * around the far edge of the blocker that lengthens his path most. */
+export function aroundBlockerTime(s: Perceived & { profile: Agent['profile'] }, p: Vec2, reach: number,
+  blockers: Array<{ pos: Vec2; radius: number }>): number {
+  const dx = p.x - s.pos.x, dy = p.y - s.pos.y, l = Math.hypot(dx, dy);
+  if (l < 1e-6) return 0;
+  const ux = dx / l, uy = dy / l, vmax = s.profile.vmax;
+  let worst = 0;
+  for (const o of blockers) {
+    const R = o.radius + s.profile.radius;
+    const along = (o.pos.x - s.pos.x) * ux + (o.pos.y - s.pos.y) * uy;
+    const across = -(o.pos.x - s.pos.x) * uy + (o.pos.y - s.pos.y) * ux;
+    if (along <= 0 || along >= l || Math.abs(across) >= R) continue;
+    let best = Infinity;
+    for (const side of [-1, 1]) {
+      const w = { x: o.pos.x - uy * side * R, y: o.pos.y + ux * side * R };
+      best = Math.min(best, timeToReach(s, w, 0) + Math.max(0, Math.hypot(p.x - w.x, p.y - w.y) - reach) / vmax);
+    }
+    worst = Math.max(worst, best);
+  }
+  return worst;
+}
 
 export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
   if (!opts.run || !opts.aim) return null;
@@ -160,11 +192,20 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   // Acquired motion already contains a block's observed slowdown. Nearby
   // bodies do not promise retention or a future pursuit delay. In particular,
   // a defender occupying the entry remains a threat, on either side of a block.
-  const threatTime = (d: Agent, s: Perceived, p: Vec2): number =>
-    timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + d.profile.reach * .75)
-      + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
+  const threatTime = (d: Agent, s: Perceived, p: Vec2): number => {
+    const reach = d.profile.radius + a.profile.radius + d.profile.reach * .75;
+    let t = timeToReach({ ...s, profile: d.profile }, p, reach);
+    if (COVER_READ) {
+      // Blockers he is seen body to body with (the 'locked' test below).
+      const on = pictures.filter(({ agent: o, seen: b, team }) => team === 'O' && o !== sim.carrier && b.pose !== 'down'
+        && Math.hypot(b.pos.x - s.pos.x, b.pos.y - s.pos.y) < o.profile.radius + d.profile.radius + .15)
+        .map(({ agent: o, seen: b }) => ({ pos: b.pos, radius: o.profile.radius }));
+      if (on.length) t = Math.max(t, aroundBlockerTime({ ...s, profile: d.profile }, p, reach, on));
+    }
+    return t + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
+  };
   let best: Vec2 | null = null, cost = Infinity;
-  const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
+  const measurements: Array<{ entry: Vec2; risk: number; score: number; parts?: { obstruct: number; m1: number; m2: number; first: number | null } }> = [];
   const cruise = Math.max(4, a.profile.vmax * .8);
   // Bodies on a segment block the run along it. `t0`: when the runner starts it.
   const blockedBy = (from: Vec2, to: Vec2, t0 = 0): number => {
@@ -202,7 +243,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
       if (t < route.atW) return depth(a.pos) + (depth(route.via) - depth(a.pos)) * t / Math.max(route.atW, 1e-6);
       return depth(route.via) + (depth(p) - depth(route.via)) * clamp((t - route.atW) / Math.max(route.arrive - route.atW, 1e-6), 0, 1);
     };
-    let risk = Infinity, via = p;
+    let risk = Infinity, via = p, parts: { obstruct: number; m1: number; m2: number; first: number | null } | undefined;
     const beyond = { x: p.x + 2 * dir, y: p.y };
     for (const route of routes) {
       const arrive = route.arrive, arrive2 = arrive + 2 / cruise;
@@ -225,10 +266,10 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
       const r = route.obstruct + (m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0)
         + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0)
         + (LANE_DEPTH && m1 < 0 ? Math.max(0, -depthAt(route, Math.max(0, meet))) : 0);
-      if (r < risk) { risk = r; via = route.via; }
+      if (r < risk) { risk = r; via = route.via; parts = { obstruct: route.obstruct, m1, m2, first: first?.agent.idx ?? null }; }
     }
     const score = Math.abs(p.y - preferred) * .45 + Math.abs(p.y - a.pos.y) * .12 + risk;
-    if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score });
+    if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score, parts });
     // Run the chosen route: its first leg is where he heads now.
     if (score < cost) { cost = score; best = via; }
   }
