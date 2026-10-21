@@ -57,6 +57,28 @@ outcomes.
 | ↳ 2017 Colts defense, 1,405 pp. | Text layer. SHA-256 `dac7fd23e1da1ae55fe040b5ddbe08cc301a0db14af22578a59e1910d00c78fd` | Full install; fronts stated in technique numbers | **Read** (fronts) |
 | ↳ 2020 Ravens defense (Macdonald), 320 pp. | Weak text layer. SHA-256 `9193f86e7552d1faa5da95c8c5a5f9d361761724b769e5fc67cbda74bd98d72b` | Install by coverage family; front pages have text | **Read** (fronts) |
 | ↳ Andy Reid Chiefs pass install, 140 pp. | **Scanned, no text layer.** SHA-256 `b30ce7e0b1da2d29c8dd23ac9b02069ddf831a30517e47407e4a1286d78c86e4` | Pass install | Not yet read |
+| **Second Drive batch** (user-shared folder, same link; files kept outside Git) | Downloaded with the share link | Mostly attributed team material; identities from file names unless noted | |
+| ↳ 2018 Ravens OL individual manual (PowerPoint export "94 - OL Individual Section"), 120 pp. | Text. SHA-256 `ae9b206e287656edccd0c8cec1bb7555f7abe628b62172d272de8540573b33bf` | Stance, splits, zone/gap technique, the double-team release rule, full pass-protection system | **Read** (run and protection sections above) |
+| ↳ 2012 Ravens QB manual, 111 pp. | Text. SHA-256 `ed2a3dd004bb9d1c139c15269581ac38e2389e0cea33cb0aef519599d277414a` | Drops, read families, per-concept keys, coverage recognition | **Read** (section above) |
+| ↳ **Generic file name:** 2022 Dolphins offense ("MIAMI DOLPHINS 2022" on its pages), 433 pp. | Text. SHA-256 `15137d3620e6087f10b8a0f4356f6fde97da4af021476cd3b681e37d7b3550b7` | Full install: formations and motion, zone/gap combinations, RB landmarks, protections, route tree | Indexed; top pick for offense |
+| ↳ 2022 Jaguars pass concepts (17 families), 108 pp. | Text (from a scan). SHA-256 `18b815143f33d2954a490be0ff1b3d3ee8e069593926973cf4fcdeffb7d3a996` | Route depths, break angles and option rules (e.g. Outback: vertical stem to 14 yd); QB reads by coverage | Indexed; top pick for routes |
+| ↳ 2016 Colts defensive call book (team inferred from opponent tags), 579 pp. | Text. SHA-256 `25b0224450b6f3209599bebb6f9cc22eb46a42b911a8228728e251e9807cdb7f` | DL techniques per call; coverage match rules by formation and motion | Indexed; top pick for defense |
+| ↳ 2012 Raiders defense (inferred), 319 pp. | Text (diagrams are images). SHA-256 `aed35d8f505844614be3f315d11a479f97d1e3a6c9a007a673ddb9309dd7b888` | Alignment / key / responsibility tables per position, with depths | Indexed |
+| ↳ 2012 Packers pass install (GB cover logo), 511 pp. | Text. SHA-256 `0405d7391b33d7b56073f74473a21f98f2278d4bdd67e69eacc2f2e00b253d42` | Concepts with depths and coverage conversions; box count and shell rules; red-zone and third-down menus | Indexed |
+| ↳ 2019 Browns offensive reference, 171 pp. | Text. SHA-256 `99a20b65186fe0eec90b8c86c080915a306ffbbd28085b7538caef6c3118a120` | Route tree and concepts; protection vs. labelled fronts | Indexed |
+| ↳ 2015 Texans Cover 1 manual and game-plan calls, 149 pp. | Text. SHA-256 `4c92a89a7adc58de60e33e213a89707158db2ec20f1fff00360575b0cdc439ea` | Man-coverage rules; five-man pressures | Indexed |
+| ↳ 2015 Falcons coverage adjustments, 45 pp. | Text. SHA-256 `cab8c5025703d2573638611a55df82b495d9992fc2afbda41dc71f52f60d4ec0` | Motion and formation checks; zone/match rules | Indexed |
+| ↳ 2013 Jets defense (Rex Ryan), 217 pp. | Text (noisy OCR). SHA-256 `398122f98e7983cf379a9a09e66f33088fcb2c14ebb324077781a3fcb8f49aa8` | Front-setting rules; rush games | Indexed |
+| ↳ **File name omits the side:** the same 2013 Jets **defense**, color scan, 190 pp. | Scanned. SHA-256 `f0ef31fb9f2ec82ef9a8aee28a92508717376c362cb7f8d479945134f6b62c04` | Clean diagrams of fronts, games and coverage calls | Indexed |
+| ↳ 2020 Bills situational install (inferred), 79 pp. | Partial text. SHA-256 `20f565f8e79923cd4886e346d681033ed28df7623c888ae18f6cb1881ca94275` | Low red-zone play mix | Indexed |
+| ↳ 2020 XFL Dallas Renegades offense (unverified), 28 pp. | Text. SHA-256 `48f0e46cb3fcc7e0b3f548fbff53e42eb6ba1e6e5271b6715c8e1adc2d7a4339` | Compact Air Raid concept rules | Indexed |
+| ↳ 2013 Patriots defense (handwritten notes plus printed sheets), 370 pp. | Scanned. SHA-256 `56df7ab32ebad4add453562c17529120ec3a1864d18760a8d22c7d3d81be0061` | Coverage checks by formation | Indexed (light) |
+| ↳ 2015 Dolphins pass concepts, 93 pp. | Scanned. SHA-256 `624a54bb94566e5365c4def06aa0f1241b682d64fc02c4a43cb788ddaa1ca5a2` | Route technique; QB reads by shell | Indexed (light) |
+| ↳ 2016 Patriots offense (inferred), 344 pp. | Scanned. SHA-256 `905c5781a2720e45e611bab139b32168b824ec3234327e11b3c413078572d9a3` | Formation splits; run blocking vs. fronts | Indexed (light) |
+| ↳ 2017 Fangio defense (team inferred Bears), 194 pp. | Scanned. SHA-256 `d4af15db00a5773f8e5beb81f5b560e3350068e7036e4610e7e5c803831bfc95` | Quarters/match rotation rules; DL games | Indexed (light) |
+| ↳ Lions defense (2017 per file name), 214 pp. | Scanned. SHA-256 `96661181149c7098745052a98d00245157d27f97fa55ded5779e3b990a1708dc` | Alignment/key/responsibility with depths | Indexed (light) |
+| ↳ 2018 Eagles training-camp installs, 52 pp. | Scanned. SHA-256 `3960aaeeb8ed6cea2320004912054b4416dc0e24cb202b4b8ae35a815f0444e8` | Gap-scheme blocking vs. labelled fronts | Indexed (light) |
+| ↳ Buccaneers defense, Tampa-2 era (year unknown), 73 pp. | Scanned. SHA-256 `be0bae688ebb103f5f6edabaeaf02ebd21f7b399ef44809173db54d2c5658b3d` | Front technique table; zone landmarks | Indexed (light) |
 | [Other footballplaybooks.net items](https://footballplaybooks.net/document-tag/nfl-playbooks/) | **Locked** behind an email/sign-up gate | Attributed team material | Needs the user |
 | [2014 49ers (Roman) preview](https://pdfcoffee.com/2014-49ers-greg-roman-playbook-pdf-free.html) | HTTP 403 through the proxy | Marked "Confidential Property" | Not used |
 | [FootballXOs offense clinics](https://www.footballxos.com/downloads/offense/?cp=2), [NDSU run-fit analysis](https://www.footballxos.com/how-north-dakota-state-executes-their-run-fits/) | Public pages | Clinic and analysis articles | Good next reads for zone technique and fits |
@@ -72,6 +94,9 @@ outcomes.
 | OL splits and depth off the ball (offensive alignment) | Browns OL manual pp. 9–10 | Spread playbook pp. 41–42 for back depths |
 | Formations, motion and strength (`Formation`/`Split` in `src/playbook/types.ts`, `src/sim/called-motion.ts`) | Spread playbook pp. 11–50 | [Playcalling and schematic packages](../football-handbook/playcalling-and-schematic-packages.md) |
 | Which fronts a play avoids (play-caller `beats`) | Spread playbook pp. 53, 63, 67, 84 | — |
+| Route definitions and QB reads | Jaguars 2022 pass concepts; Ravens QB manual pp. 75–107 | Packers 2012 install, Browns 2019 reference |
+| Defensive calls, fronts and coverage checks | Colts 2016 call book; Colts 2017 and Ravens 2020 installs | Raiders 2012 position tables, Falcons 2015 adjustments, Texans 2015 man rules |
+| Whole-offense install (formation, motion, run, protection) | Dolphins 2022 ("FULL PLAYBOOK copy") | Cowboys run install, Rams 2022 |
 
 ## What the spread playbook gives us
 
