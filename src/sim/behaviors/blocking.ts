@@ -593,7 +593,10 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     if (leadBacker) claimedLB.add(leadBacker);
 
     // Reserve precisely the intentionally unblocked trap/kick defender.
-    // The old trap rule left every playside lineman for one trapper.
+    // The old trap rule left every playside lineman for one trapper. Trap is
+    // run at the 3-technique; against a playside 1-technique the line makes it
+    // a long trap of the next man out (spread playbook p. 62, Browns "log"
+    // p. 37). The offense calls before seeing the front, so this is the check.
     const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= 1.05).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
     const kickReserved = scheme !== 'trap' && pullers.size ? dl.filter((d) => rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null : null;
 
@@ -644,7 +647,11 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       plans.set(b,{kind:rel(b)<0?'cutoff':'down',target:d,drive:up(rel(b)<0 ? ps*.8 : -ps)});
     }
     for (const b of gapPending.filter((b)=>!plans.has(b))) {
-      const partners = gapLine.filter((p) => p !== b && plans.get(p)?.target && !plans.get(p)?.combination && Math.abs(p.pos.y - b.pos.y) < 2.0)
+      // With the trapped man over him the PST releases inside, never
+      // across the trap (spread playbook p. 62).
+      const trapOver = trapReserved && rel(b) > 0 && Math.abs((trapReserved.pos.y - b.pos.y) * ps - 0.45) < 0.85;
+      const partners = gapLine.filter((p) => p !== b && plans.get(p)?.target && !plans.get(p)?.combination && Math.abs(p.pos.y - b.pos.y) < 2.0
+        && !(trapOver && rel(plans.get(p)!.target!) > rel(b)))
         .sort((p, q) => Math.abs(plans.get(p)!.target!.pos.y - b.pos.y) - Math.abs(plans.get(q)!.target!.pos.y - b.pos.y));
       const partner = partners[0];
       const target = partner ? plans.get(partner)!.target : null;

@@ -84,3 +84,32 @@ describe('fullback lead with every backer owned', () => {
     expect(by('F').target).toBe(sim.slot('LB_S'));
   });
 });
+
+describe('trap against a playside 1-technique is the installed long trap', () => {
+  it.each(mirrors)('traps the 3-technique vs Over and the 5-technique past the doubled 1-technique vs Under, flip=$flip y=$ballY', ({ flip, ballY }) => {
+    const over = plan('trap', 'over', flip, ballY);
+    expect(lead(over.plans)).toBeUndefined();
+    const short = [...over.plans.values()].find((p) => p.pullRole === 'trap')!;
+    expect(short.target).toBe(over.sim.slot('DT_S'));
+    const under = plan('trap', 'under', flip, ballY);
+    const long = [...under.plans.values()].find((p) => p.pullRole === 'trap')!;
+    const one = under.sim.slot('DT_S')!;
+    expect(long.target).toBe(under.sim.slot('DE_S'));
+    expect(under.rel(one)).toBeLessThan(under.rel(long.target!));
+    const double = [...under.plans.values()].filter((p) => p.target === one);
+    expect(double.some((p) => p.combination && p.climbTo)).toBe(true);
+  });
+  it.each(['under', 'odd'].flatMap((f) => mirrors.map((m) => ({ f, ...m }))))(
+    'the PST with the trapped man over him releases inside, not across the trap, $f flip=$flip y=$ballY', ({ f, flip, ballY }) => {
+      const { plans, rel } = plan('trap', f, flip, ballY);
+      const trapped = [...plans.values()].find((p) => p.pullRole === 'trap')!.target!;
+      const pst = [...plans.keys()].find((b) => (b.slot === 'LT' || b.slot === 'RT') && rel(b) > 0)!;
+      expect(Math.abs(rel(trapped) - rel(pst))).toBeLessThan(1.3);
+      expect(rel(plans.get(pst)!.target!)).toBeLessThan(rel(trapped));
+    });
+  it.each(mirrors)('control: the PST inside a trapped 3-technique keeps working outside, flip=$flip y=$ballY', ({ flip, ballY }) => {
+    const { plans, rel, sim } = plan('trap', 'over', flip, ballY);
+    const pst = [...plans.keys()].find((b) => (b.slot === 'LT' || b.slot === 'RT') && rel(b) > 0)!;
+    expect(plans.get(pst)!.target).toBe(sim.slot('DE_S'));
+  });
+});
