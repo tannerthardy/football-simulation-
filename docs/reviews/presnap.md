@@ -115,12 +115,72 @@ Our 16-game export (`sim-ps1`, 894 runs), by the front called:
   likewise fixed whatever the offense shows.
 - Six or more on the line: 1% of our snaps (NFL 12%).
 
+## The tracked line as the base (`f5c6c67d`: `OL_ALIGN=1`, `GAP_ACCOUNT=1`)
+
+Lab arms (same bodies, seeds and looks; 400 runs per concept), installed
+line `b8` vs tracked line `o8` vs tracked line with gap accounting `p8`:
+
+| Lab arm | gap: losses / 0-3 / 4-9 / 10-19 / 20+ | gap TVD | zone: losses / 0-3 / 4-9 / 10-19 / 20+ | zone TVD |
+|---|---|---|---|---|
+| NFL, 60+ yd to go | 7.4 / 36.8 / 39.2 / 11.3 / 5.3 | | 7.6 / 44.7 / 36.8 / 8.6 / 2.3 | |
+| `b8` installed line | 3.6 / 33.1 / 46.9 / 6.9 / 9.6 | 13.4 | 8.8 / 44.6 / 37.2 / 4.5 / 5.0 | 4.2 |
+| `o8` tracked line | 5.8 / 33.9 / 43.1 / 6.3 / 10.9 | 11.0 | 10.4 / 52.4 / 30.8 / 4.0 / 2.4 | 11.5 |
+| `p8` tracked + `GAP_ACCOUNT` | 4.8 / 34.1 / 44.2 / 6.1 / 10.7 | 12.4 | 10.2 / 52.8 / 30.5 / 4.1 / 2.4 | 11.7 |
+
+By concept (losses %, median yd), `b8` -> `o8` -> `p8`: counter 6.8 / 4.8 ->
+14.0 / 4.6 -> 8.8 / 4.7; power 4.5 / 4.8 -> 6.0 / 4.2 -> 7.2 / 4.3; trap and
+duo about unchanged; outside zone 10.5 / 3.8 -> 14.8 / 2.5; wide zone 12.5 /
+3.8 -> 13.2 / 2.7; inside zone unchanged. Shotgun zone: inside zone 1.0 /
+3.8 -> 6.0 / 3.0; outside and wide zone about unchanged. The gun inside-zone
+change is unexplained so far. All arms ran with the source unchanged.
+Gap-run TVD is not the criterion: `GAP_ACCOUNT` installs the written
+assignments, and its effect is judged by who is left unblocked.
+
+What moved, and why:
+
+- **Assignment windows** were written in yards on 1.3 yd splits. They are
+  now measured in the line's own spacing (`c58a310c`; the backside backer
+  preference in `f5c6c67d`), so the same blocker takes the same man on
+  either line (`test/line-spacing-plans.test.ts`).
+- **Counter** lost 14% of carries on the tracked line (6.8% installed). The
+  backside end made the first stop on 24 of 56 losses (7 of 27 installed).
+  With the wider line, the backside H's nearest man became the 9 technique
+  outside him, so the 5 technique in the gap the pullers vacated went free.
+  That is the playbook audit's second error, hidden before by the narrow
+  line's geometry. `GAP_ACCOUNT` installs gap schemes by the written rules
+  ([assignment audit](run-blocking-assignment-audit.md) on PR #191): the
+  backside cutoff takes his playside gap first, the lead puller's backer is
+  reserved after direct climbs and before doubles, and an idle fullback
+  takes the unblocked box man. Counter losses fell to 9.2%
+  (`test/gap-account.test.ts`).
+- **Outside zone** got worse (under 3 yd on 38% -> 56% of carries; the
+  play-side 3 technique first holder 18 -> 41 of 400). The cause is not
+  the line. `scripts/diag/align/meshwidth.py` (one code path for NFL and
+  sim) shows the tracked line puts the back on the NFL path relative to his
+  tackle, while the trench moves sideways about half as far as NFL:
+
+  | Under-center outside zone, after the handoff | NFL (1,189) | installed | tracked |
+  |---|---|---|---|
+  | back minus play-side tackle, 0 / +0.3 / +0.6 / +1.0 s | -0.32 / +0.94 / +2.15 / +3.54 | +0.25 / +1.47 / +2.48 / +3.65 | -0.25 / +0.92 / +1.94 / +3.13 |
+  | play-side interior DL lateral, +0.3 / +0.6 / +1.0 s | +2.97 / +3.87 / +5.00 | +1.14 / +1.62 / +2.42 | +1.39 / +1.99 / +2.80 |
+  | play-side guard lateral, +0.3 / +1.0 s | +3.76 / +5.80 | +1.10 / +2.18 | +2.26 / +3.50 |
+  | play-side tackle lateral, +0.3 / +1.0 s | +3.49 / +5.42 | +2.32 / +3.71 | +2.79 / +4.26 |
+  | DL minus back, +0.3 / +0.6 / +1.0 s | +1.23 / +0.94 / +0.59 | -0.62 / -1.18 / -1.57 | 0.00 / -0.34 / -0.76 |
+
+  NFL linemen on both sides flow 3-6 yd and the back stays inside them. On
+  the installed line, a back too wide for his line ran around a trench that
+  barely moved; on the tracked line he runs the NFL path into it. The
+  missing mechanism is the trench's lateral flow on stretch runs (W1), not
+  the alignment. Keeping the old line would tune zone on a base that hides
+  it.
+
 ## Next
 
-- Offense (this session): the line set by a team's split rule and the
-  situation, with defensive techniques placed from the actual line (not the
-  1.3 yd table); then why the tracked line exposed counter's kick-out and
-  zone's 0-3 yd crowding (`OL_ALIGN` notes in `run-offense.md`).
+- Offense (this session): the play-side linemen's lateral flow on stretch
+  runs (reach and bucket requests vs what the bodies achieve), measured with
+  `meshwidth.py`; the defensive linemen's flow is the run-defense
+  session's fit controller (numbers sent). Then the called split and depth
+  levels on the play call (normal / wide / tight; pass-set depths).
 - Defense (run-defense session): technique placement, width and depth per
   front with variation from the player, the call and the situation;
   adjustments to the end's side, wings, trips and motion; the caller's front
