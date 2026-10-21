@@ -63,7 +63,14 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
 
 /** Read entries and routes from acquired bodies on both teams. A nominal
  * block is neither an empty lane nor guaranteed future protection. */
-interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D' }
+interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D'; reach?: number }
+
+/** RUN_REACH=1 (default off; on in this branch's pinned profile): the
+ * runner's path check gives a defender's body part of his arm's reach (0.4),
+ * not only his torso. A route that passes a defender's chest just outside his
+ * torso is not open: he reaches out and takes the runner. Most zone stuffs
+ * end "reached from the block" (docs/reviews/run-game-v3.md, Part 15). */
+const RUN_REACH = process.env.RUN_REACH === '1';
 
 export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
   if (!opts.run || !opts.aim) return null;
@@ -93,7 +100,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   for (const { agent: o, seen: s, team } of pictures) {
     if (s.pose === 'down') continue;
     if (depth(s.pos) < -1.6 || depth(s.pos) > 1.6 || Math.abs(s.pos.y - a.pos.y) > 12) continue;
-    bodies.push({ pos: s.pos, radius: o.profile.radius, team });
+    bodies.push({ pos: s.pos, radius: o.profile.radius, team, reach: team === 'D' && RUN_REACH ? o.profile.reach * .4 : 0 });
   }
   if (bodies.filter((b) => b.team === 'O').length < 3) return null;
   bodies.sort((p, q) => p.pos.y - q.pos.y);
@@ -132,7 +139,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
       // At the start, only charge a body when the route approaches it; an
       // already touching runner must remain free to move away from that body.
       if (u <= 0 && (b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy <= 0) continue;
-      const miss = Math.hypot(from.x + u * sx - b.pos.x, from.y + u * sy - b.pos.y) - b.radius - a.profile.radius * .7;
+      const miss = Math.hypot(from.x + u * sx - b.pos.x, from.y + u * sy - b.pos.y) - b.radius - (b.reach ?? 0) - a.profile.radius * .7;
       if (miss < 0) r += 1.5 + 4 * Math.min(1, -miss);
     }
     return r;

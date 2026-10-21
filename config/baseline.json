@@ -63,6 +63,7 @@
     "RUN_CONTACT_TRACK": "0",
     "RUN_HANDS": "0",
     "RUN_LATERAL": "0",
+    "RUN_REACH": "1",
     "RUN_READ": "0",
     "RUN_READ_TURN": "0",
     "SCRAPE": "1",
