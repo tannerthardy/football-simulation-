@@ -13,8 +13,9 @@ const offense = generateTeam(new Rng(41), 'Cap offense', 'CO', { strength: .55 }
 const defense = generateTeam(new Rng(42), 'Cap defense', 'CD', { strength: .55 });
 const LOS = 40;
 
-async function load(flag: string) {
+async function load(flag: string, mesh = '0') {
   vi.stubEnv('DEEP_CAP', flag);
+  vi.stubEnv('CAP_MESH', mesh);
   vi.resetModules();
   const fits = await import('../src/sim/run-fits.js');
   const common = await import('../src/sim/behaviors/common.js');
@@ -59,6 +60,28 @@ describe('DEEP_CAP run cap', () => {
       // Not downhill: he stays at his installed depth.
       expect(Math.abs(cmd.vel.x)).toBeLessThan(.5);
     }
+  });
+
+  it('CAP_MESH: holds his depth through the mesh too; without it the mesh walks him down', async () => {
+    for (const [mesh, down] of [['0', true], ['1', false]] as const) {
+      const { fits, Sim } = await load('1', mesh);
+      const { sim, fs } = scene(Sim, -2);
+      // Before the exchange: the QB holds the ball and the back is the expected runner.
+      sim.handoffAt = -1; sim.ball = { kind: 'held', carrier: sim.qb } as never;
+      for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
+      const cmd = fits.executeRunFit(fs, sim, fs.runFit!.gap, fs.runFit!.side);
+      if (down) expect(cmd.vel.x).toBeLessThan(-2);
+      else expect(Math.abs(cmd.vel.x)).toBeLessThan(.5);
+    }
+  });
+
+  it('CAP_MESH: an empty back past the line at the mesh is not chased', async () => {
+    const { fits, Sim } = await load('1', '1');
+    const { sim, fs } = scene(Sim, 2);
+    sim.handoffAt = -1; sim.ball = { kind: 'held', carrier: sim.qb } as never;
+    for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
+    const cmd = fits.executeRunFit(fs, sim, fs.runFit!.gap, fs.runFit!.side);
+    expect(Math.abs(cmd.vel.x)).toBeLessThan(.5);
   });
 
   it('pursues with the ordinary chase once the runner he sees is past the line', async () => {

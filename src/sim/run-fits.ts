@@ -169,6 +169,11 @@ const PULL_CUE = process.env.PULL_CUE === '1';
  * level and keeps his installed depth until the ball crosses the line, rather
  * than coming down to the alley landmark at linebacker depth. See capFit. */
 const DEEP_CAP = process.env.DEEP_CAP === '1';
+/** Experimental (CAP_MESH=1, off; acts with DEEP_CAP): the cap also keeps his
+ * depth while the exchange he sees is still behind the line. Without it the
+ * mesh falls through to the alley landmark (5-8 yd) and he walks down before
+ * the handoff, then back up to his depth once he sees it. */
+const CAP_MESH = process.env.CAP_MESH === '1';
 /** Experimental (EDGE_SQUEEZE=1, off): an edge or force defender whose acquired
  * carrying runner is inside him at the line has no outside left to keep; he
  * pursues inside-out instead of holding his edge landmark, square to the line,
@@ -210,9 +215,10 @@ export function isRunCap(a: Agent, sim: PlaySim): boolean {
  * cushion with the ordinary chase and gathering approach. Only the consumed
  * picture of the runner is used.
  */
-function capFit(a: Agent, sim: PlaySim, c: Agent, seen: Perceived, side: number) {
+function capFit(a: Agent, sim: PlaySim, c: Agent, seen: Perceived, side: number, premesh = false) {
   const dir = sim.attackDir(c.team);
-  if ((seen.pos.x - sim.los) * dir > 0) return chase(sim, a, c);
+  // At a mesh `seen` is the expected back, not a carrier: hold, never chase.
+  if (!premesh && (seen.pos.x - sim.los) * dir > 0) return chase(sim, a, c);
   const home = (sim.defAlign.spots[a.slot as DefSlot]!.pos.x - sim.los) * dir;
   const aim = a.mind.aim('cap-fit', { x: sim.los + dir * home, y: seen.pos.y + side * 1.2 + a.mind.placementError }, sim.t);
   return track(a, aim, { x: 0, y: seen.vel.y }, { speed: .9, gain: 2, facing: dir > 0 ? Math.PI : 0 });
@@ -288,7 +294,8 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // Whose picture `seen` is: the keyed player, the expected back at a deep
   // mesh, or the carrier (the QB once the mesh expectation is retired).
   const seenActor = keyed ? keyed.target : premesh ? back! : contradictedMesh.has(a) ? sim.qb : c;
-  if (!premesh && isRunCap(a, sim) && sim.catchAt < 0 && (c !== sim.qb || !sim.scrambled)) return capFit(a, sim, c, seen, job.side);
+  if ((!premesh || CAP_MESH) && isRunCap(a, sim) && sim.catchAt < 0 && (c !== sim.qb || !sim.scrambled))
+    return capFit(a, sim, c, seen, job.side, premesh);
   if (!premesh && seen.pos.x > sim.los + (keyed ? 0 : 2)) return chase(sim, a, c);
   const indicator = blockingIndicator(a, sim);
   let gy = liveGapY(sim, a, job.gap, job.side);
