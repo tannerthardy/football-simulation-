@@ -497,7 +497,7 @@ gap. The three adversarial checks planned for the operator did not run
 
 **Why the runner takes the free side** (`scripts/diag/gap/coverside.ts`, the
 read's own candidates on 240 zone plays): he passes on whichever side his last
-read chose (read covered, passed covered 18 of 19; read free, passed free 36
+read chose (read covered, passed covered 18 of 18; read free, passed free 36
 of 39), so it is the request, not his body. When the blocker has the man's
 backside, the best covered-side entry is as closed as the free side (risk
 12.4 vs 11.7; first defender there 0.87 s before the runner). The read timed
