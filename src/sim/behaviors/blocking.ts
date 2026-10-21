@@ -549,7 +549,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     for (const l of lb) {
       if (claimedLB.has(l)) continue;
       let d = Math.abs(l.pos.y - y);
-      if (preferBackside && (l.pos.y - y) * ps > 0) d += 1.5;
+      if (preferBackside && (l.pos.y - y) * ps > 0) d += 1.5 * k;
       if (d < bd) {
         bd = d;
         best = l;

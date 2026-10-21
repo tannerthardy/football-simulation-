@@ -27,6 +27,10 @@ vi.hoisted(() => { for (const k of ['GAP_FIT', 'GAP_OUT', 'CUTOFF_SEAL']) proces
 // profile) put real tackles at DT_S/DT_W; the changed bodies change this
 // scenario. Pin it off here. test/front-fit.test.ts covers the depth chart.
 vi.hoisted(() => { process.env.FRONT_FIT = '0'; });
+// Recorded before GAP_ACCOUNT (on in the pinned profile) changed which
+// backer the puller and the climbs take, which changes this play. Pin it
+// off here. test/gap-account.test.ts covers the accounting.
+vi.hoisted(() => { process.env.GAP_ACCOUNT = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

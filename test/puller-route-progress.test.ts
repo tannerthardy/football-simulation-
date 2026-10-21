@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// The K02 case is a lead wrapper the installed planner left without a
+// target. GAP_ACCOUNT (on in the pinned profile) installs his backer, so the
+// premise needs the installed accounting; test/gap-account.test.ts covers it.
+vi.hoisted(() => { process.env.GAP_ACCOUNT = '0'; });
 import { readFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { goTo } from '../src/sim/behaviors/common.js';
