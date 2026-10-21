@@ -676,6 +676,15 @@ const BACK_CHASE = process.env.BACK_CHASE === '1', CHASE_TRAIL = 1, CHASE_STEP =
  * the rep ends because the runner has passed him, the same blocker cannot
  * re-latch him at once (the shed window); bodies still collide. */
 const SHED_PURSUE = process.env.SHED_PURSUE === '1';
+/** Experimental (SHED_HANDS=1, off): a defender working off a run block who
+ * has won the hands (his hands inside on the blocker, control < 0) gets off
+ * it. A blocker whose hands are off the man can still be in his way (World
+ * contact) but cannot keep steering him, so the rep ends as a shed with the
+ * usual re-grab window. Without it the physical shed's only exits are
+ * leverage or separation, which the blocker's mirror denies: in the zone lab
+ * no lineman's run rep ends in a shed. A blocker who controls the hands keeps
+ * his man as before. */
+const SHED_HANDS = process.env.SHED_HANDS === '1';
 /** Experimental (RUN_LATERAL=1, off): in a run rep, lateral requests are
  * bounded by the body's own square lateral speed (vmax x shuffle, which the
  * World applies by facing), not by the pass-protection mirror trait that also
@@ -1136,6 +1145,10 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   const shed = runSheds.get(e);
   const shedding = !!shed && t < shed.until;
+  if (SHED_HANDS && shedding && e.control < 0) {
+    if (!tryHold(sim, e)) beat(sim, e, axis, lat, true, 'shed');
+    return;
+  }
   // A blocker's hands and chest work in front of him: he loses the man when
   // the defender is behind his shoulders relative to where his torso actually
   // faces (World limits how fast he can turn). Running alongside a reached
