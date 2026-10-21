@@ -146,7 +146,8 @@ python3 scripts/diag/stretch/tailcontact.py r189co cmFco
 
 Arms `cmF*` ran on `e9d41e27` plus the working patch (manifest patch
 `c1173a52…`, tracked files `config/baseline.json`, `src/physics/world.ts`,
-`src/sim/tackle.ts`), the same source as the commit that adds this document.
+`src/sim/tackle.ts`): commit `f95bb5aa`'s runtime, apart from three flag
+comments reworded before that commit.
 Contracts: `test/contact-model.test.ts` (force-velocity line, anchoring, the
 panel's rear wrap finished with the tether and dragged without it); all 2,860
 core tests pass with the package on and with it off; typecheck passes.
