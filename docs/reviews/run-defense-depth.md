@@ -256,7 +256,20 @@ matches the NFL median, but zone outcomes get worse (`rsco`): 40+ 25 → 43
   more uniform than the NFL's (IQR 0.5 vs 1.8 yd). Per-player variation is a
   candidate for later, with play-action in the game sim as its control.
 
-LOO_PENDING
+### Which pursuit flags carry the result (leave-one-out from `dq`)
+
+| Dropped | Zone TVD | Zone 40+ (paired vs `dqco`) | Zone negatives | Gap 10+ (vs `dqgap`) |
+|---|---|---|---|---|
+| none (`dq`) | 9.7 | 25 | 118 | 534 |
+| `LB_DEPTH` | 17.6 | 49 (p = 0.004) | 168 (p < 0.001) | 607 (p = 0.001) |
+| `EDGE_SQUEEZE` | 11.0 | 26 | 118 | |
+| `BLOCK_FRONT` | 10.1 | 32 (p = 0.32) | 119 | |
+| `SHED_PURSUE` | 8.4 | 25 | 118 | 536 |
+
+- `LB_DEPTH` carries the package.
+- `EDGE_SQUEEZE` and `BLOCK_FRONT` help a little.
+- `SHED_PURSUE` is inert. It only changes when a blocked defender *tries*
+  to get off, and no physical attempt ever succeeded (next section).
 
 ## Evidence against and unresolved risk
 
