@@ -15,7 +15,7 @@ import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinat
 import { BallCarrier } from './behaviors/carrier.js';
 import { goTo, runThrough, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
-import { QBHandoff, QBPass } from './behaviors/qb.js';
+import { MESH_POINT, QBHandoff, QBPass } from './behaviors/qb.js';
 import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.js';
 import type { PlaySim } from './playsim.js';
 import { buildRunFits } from './run-fits.js';
@@ -144,7 +144,8 @@ export function assignBehaviors(sim: PlaySim): void {
     // past: a waiting back hides both, a back at tempo loses the exchange.
     const tempo = MESH_TEMPO && concept.scheme !== 'draw' && concept.scheme !== 'toss'
       && (sim.offCall.formation.qb !== 'under' || UC_MESH);
-    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.qbThrough);
+    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.qbThrough,
+      sim.offCall.formation.qb === 'gun' && concept.scheme !== 'draw' ? mesh.rb : null);
     if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride, tempo);
   }
   for (const a of sim.offense) {
@@ -236,7 +237,9 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     // inside contact distance, where tracked backs that do cross his face
     // pass about 0.7 yd in front of him.
     const side = Math.sign((sim.slot('RB')?.pos.y ?? by) - by);
-    rb = GUN_MESH_SIDE && side ? { x: los - 4.6, y: by + side * 0.7 } : { x: los - 4.4, y: by + ps * 0.9 };
+    const stretch = concept.scheme === 'outsideZone' || concept.scheme === 'wideZone';
+    rb = MESH_POINT && side ? { x: qb.x + (stretch ? .6 : .4), y: by + side * (stretch ? .2 : .7) }
+      : GUN_MESH_SIDE && side ? { x: los - 4.6, y: by + side * 0.7 } : { x: los - 4.4, y: by + ps * 0.9 };
   }
   // Inside handoffs only: a draw keeps its installed QB arrival and stop.
   const underMesh = UC_MESH && qbType === 'under' && concept.scheme !== 'toss' && concept.scheme !== 'draw';

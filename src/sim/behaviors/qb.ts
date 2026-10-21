@@ -632,6 +632,15 @@ export class QBPass implements Behavior {
  * pocket tracking, or a pocket offset only across the field, failed the
  * exchange on stretch and some power meshes: he left the back's reach.) */
 const QB_CARRYOUT = process.env.QB_CARRYOUT === '1';
+
+/** Experimental (MESH_POINT=1, off): the shotgun exchange as tracked. The
+ * offset back's spot is on his own side of the QB, in front of him (2022
+ * tracking at the handoff: inside runs 0.4 yd up and 0.7 over; stretch 0.5
+ * up and 0.2 over, at 4.7 yd/s; see meshFor), and the ball is given there,
+ * when the back reaches his spot (or passes it), not at the first instant he
+ * is within the QB's arm's reach. Ours took it 1.1 yd short of the QB on
+ * stretch, still on the backside, at 2.5 yd/s, and a quarter cut back. */
+export const MESH_POINT = process.env.MESH_POINT === '1';
 /** QB_CARRYOUT: depth behind the line where the under-center carry-out ends. */
 const CARRY_DEPTH = 8;
 /** QB_CARRYOUT: the QB's offset beside the back's track at the exchange
@@ -653,7 +662,17 @@ export class QBHandoff implements Behavior {
     private readonly keeper = false,
     /** Speed kept through the mesh spot (0: arrive and stop on it). */
     private readonly through = 0,
+    /** The back's installed exchange spot (MESH_POINT). */
+    private readonly rbMesh: Vec2 | null = null,
   ) {}
+
+  /** MESH_POINT: has the back reached his exchange spot (his body on it, or
+   * past it along his own motion)? */
+  private atMesh(rb: Agent): boolean {
+    if (!MESH_POINT || !this.rbMesh) return true;
+    const dx = rb.pos.x - this.rbMesh.x, dy = rb.pos.y - this.rbMesh.y;
+    return Math.hypot(dx, dy) < rb.profile.radius || dx * rb.vel.x + dy * rb.vel.y > 0;
+  }
 
   /** Carry out the fake away from the installed play, even after the
    * exchange has taken the QB slightly across his own mesh spot. */
@@ -688,7 +707,7 @@ export class QBHandoff implements Behavior {
         this.handed = sim.pitchBall(a, rb);
         return stand();
       }
-      if (d <= handoffReach(a, rb)) {
+      if (d <= handoffReach(a, rb) && this.atMesh(rb)) {
         this.handed = sim.handoff(a, rb);
         return this.handed && this.drop ? this.carryOut(a, sim) : stand();
       }
