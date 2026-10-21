@@ -33,6 +33,7 @@ and proposed mechanisms are identified separately.
 | [Data and measurement](data-and-measurement.md) | What existing NFL data can test, useful public additions, matching definitions and realistic roster variation. |
 | [Orientation pilot](orientation-pilot.md) | A reproducible first use of previously unused tracking orientation fields, with explicit selection and semantic limitations. |
 | [Playcalling and schematic packages](playcalling-and-schematic-packages.md) | Seven coordinated install/answer packages, twelve newly inspected written sources and further physics/information stress cases. |
+| [Pre-snap alignment](presnap-alignment-handbook.md) | User-supplied (2026-10-21): every player's stance, depth, width and shade before the snap; fronts, coverage alignment, motion and legal sets; an alignment-solver blueprint and test catalog. Its [MEASURE] numbers are this project's tracking estimates, not mandatory constants; the measured catalog is [pre-snap geometry](../reviews/presnap.md). |
 
 Chapter check catalogs are proposed options, not mandatory test suites. Choose
 the smallest relevant evidence under [the testing-cost policy](../TESTING_COSTS.md).
