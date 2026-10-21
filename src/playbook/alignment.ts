@@ -27,6 +27,14 @@ const WING_OFFSET = 4.8;
  * Two-high safeties sit 13 yd deep about 6.5 yd either side of the ball; a
  * single-high safety 14 yd deep. Off: the installed spots. */
 const DEF_ALIGN = process.env.DEF_ALIGN === '1';
+/** Experimental (WR_ALIGN=1, off): receivers align as tracked
+ * (scripts/diag/align/snap.py, 2022 tracking at the snap). A lone #1 keeps
+ * about 13.5 yd from his sideline wherever the ball is (to the boundary 9.7 yd
+ * from the ball, to the field 16.6, from the middle 12.4), about 11 with
+ * others to his side; a #2 stands at 0.58 of the #1's split (0.62 in trips)
+ * and a #3 at 0.40. The installed split put every #1 at 18 yd, 6 yd from the
+ * boundary sideline, and slots at a fixed 8.4-8.6. Off: the installed spots. */
+const WR_ALIGN = process.env.WR_ALIGN === '1';
 
 export interface OffSpot {
   slot: OffSlot;
@@ -56,8 +64,13 @@ export interface OffenseAlignment {
   counts: { S: number; W: number };
 }
 
-function wideOffset(ballY: number, sign: number): number {
+/** Split of the widest receiver on a side from the ball. `detached` counts
+ * that side's detached receivers (used by WR_ALIGN only). */
+function wideOffset(ballY: number, sign: number, detached = 1): number {
   const toSideline = sign > 0 ? FIELD_WIDTH - ballY : ballY;
+  // A lone #1 keeps about 13.5 yd from his sideline; with others to his side
+  // he widens to about 11 to give them room (tracked).
+  if (WR_ALIGN) return Math.max(8, toSideline - (detached >= 2 ? 11 : 13.5));
   return Math.max(9, Math.min(18, toSideline - 6));
 }
 
@@ -75,12 +88,14 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
   // First pass: wide/inline/wing/fixed; second pass: slots (need #1 position).
   const entries = Object.entries(formation.slots) as Array<[SkillSlot, NonNullable<Formation['slots'][SkillSlot]>]>;
   const offsets: Partial<Record<SkillSlot, number>> = {};
+  const detachedOn = (side: Side | 'C') => entries.filter(([, e]) => fside(e.side) === side
+    && (e.split === 'wide' || e.split === 'slot' || e.split === 'slot2')).length;
   for (const [slot, a] of entries) {
     const side = fside(a.side);
     const sign = side === 'C' ? 0 : sideSign(side);
     let off: number | null = null;
     if (typeof a.split === 'number') off = a.split * (sign || 1) * (side === 'C' ? 0 : 1);
-    else if (a.split === 'wide') off = wideOffset(ballY, sign) * sign;
+    else if (a.split === 'wide') off = wideOffset(ballY, sign, detachedOn(side)) * sign;
     else if (a.split === 'inline') off = INLINE_OFFSET * sign;
     else if (a.split === 'wing') off = WING_OFFSET * sign;
     else if (a.split === 'core') off = 0;
@@ -91,10 +106,16 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     const side = fside(a.side);
     const sign = side === 'C' ? 1 : sideSign(side);
     // Slot receivers split the difference between the tackle and the widest receiver.
-    let widest = wideOffset(ballY, sign);
+    let widest = wideOffset(ballY, sign, detachedOn(side));
     for (const [s2, o2] of Object.entries(offsets)) {
       if (o2 !== undefined && Math.sign(o2) === sign && Math.abs(o2) > 6) widest = Math.max(widest, Math.abs(o2));
       void s2;
+    }
+    if (WR_ALIGN) {
+      // Tracked: a #2 stands at 0.58 of the #1's split (0.62 in trips), a #3 at 0.40.
+      const share = a.split === 'slot2' ? 0.40 : detachedOn(side) >= 3 ? 0.62 : 0.58;
+      offsets[slot] = Math.max(a.split === 'slot2' ? 4.6 : 5.5, widest * share) * sign;
+      continue;
     }
     const slotOff = Math.max(5.5, widest * 0.45 + 0.5);
     offsets[slot] = (a.split === 'slot2' ? Math.max(4.6, slotOff * 0.62) : slotOff) * sign;

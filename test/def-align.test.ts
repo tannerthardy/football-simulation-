@@ -7,6 +7,8 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function align(flag: string, coverage: string, ballY = 26.65) {
   vi.stubEnv('DEF_ALIGN', flag);
+  // The installed receiver splits; WR_ALIGN moves the #1s off the sideline.
+  vi.stubEnv('WR_ALIGN', '0');
   vi.resetModules();
   const { alignOffense, alignDefense } = await import('../src/playbook/alignment.js');
   const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
