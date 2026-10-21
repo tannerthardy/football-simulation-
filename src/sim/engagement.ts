@@ -38,6 +38,7 @@ import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
+import { pullers } from './run-fits.js';
 import { runContactObservers } from './run-contact-observer.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
@@ -637,6 +638,13 @@ const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
 const DL_FLOW = process.env.DL_FLOW !== '0';
+/** Experimental (DL_CHASE=1, off): an engaged interior lineman keys the guard
+ * near him. When he sees him pull, his gap has left with him: he works across
+ * his blocker's face toward the pull and follows it down the line, instead of
+ * holding a shoulder that slides with the block. A backside edge closes the
+ * same way when the pull goes away from his side. The puller is the one he
+ * sees (`pullers`), within 3 yd (an edge: 4.5); nothing reads the call. */
+const DL_CHASE = process.env.DL_CHASE === '1';
 /** Experimental (RUN_HANDS=1, off): run blockers drive committed defenders off their body. */
 const RUN_HANDS = process.env.RUN_HANDS === '1';
 /** Experimental (DL_HANDS=1, off): a shedding defender in control of the hands works past with them. */
@@ -871,6 +879,18 @@ function runContactRead(sim: PlaySim, e: Engagement) {
       stack.nextRead = sim.t + d.mind.decisionInterval;
     }
   }
+  let pullFlow: number | undefined;
+  if (DL_CHASE && stack && !declared) {
+    // An interior man keys the guard beside him; an edge keys a pull going
+    // away from his side (his contain is backside, the ball is not).
+    const pull = pullers(sim, d).find(p => Math.abs(p.pos.y - d.pos.y) < (edge ? 4.5 : 3)
+      && (!edge || Math.sign(p.vel.y) !== job!.side));
+    if (pull) {
+      stack.shoulder = Math.sign(pull.vel.y) * (b.profile.radius + d.profile.radius) * .65;
+      pullFlow = pull.vel.y;
+      d.tags.add('fit-follow-pull');
+    }
+  }
   // Preserve the box/spill shoulder until the runner is beyond the surface,
   // just as the free fit does. The touching blocker's position is haptic.
   const y = stack ? blockerY + stack.shoulder : job ? edge
@@ -900,6 +920,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
       flow = backSeen.vel.y;
     }
   }
+  if (flow === undefined && pullFlow !== undefined) flow = pullFlow;
   const aim = d.mind.aim(stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`, desired, sim.t);
   // The selected target mode belongs to the same held decision as its aim.
   // A newly seen declaration cannot drop flow feedforward midway through it.
