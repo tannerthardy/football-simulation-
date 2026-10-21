@@ -4,8 +4,9 @@ Audited 2026-10-21 on `develop` `d91c9014`, default flags. Engine source is
 unchanged. The question: does `planRunBlocking`
 (`src/sim/behaviors/blocking.ts`) give each blocker the man a written rule
 would give him, against the three fronts the engine installs most often? The
-rules come from the FootballXOs spread playbook's power, counter and trap pages
-(see [external playbook sources](../references/nfl-playbook-sources.md)) and the
+rules come from the FootballXOs spread playbook's power, counter and trap pages,
+the user-supplied 2020 Browns OL manual (see
+[external playbook sources](../references/nfl-playbook-sources.md)) and the
 [trenches chapter](../football-handbook/trenches.md).
 
 This is an assignment (installed responsibility) audit. It says nothing about
@@ -65,6 +66,14 @@ combo and climb branches. Pullers then take whoever remains.
 any combo or climb picks. Send combos to the backside linebacker. On counter,
 the lead puller's target is already reasonable (Mike or Will through the hole).
 
+The Browns OL manual (pp. 31–32, 37) gives a more general form. The center
+calls numbered linebacker *spots*: "Deuce" or "Trey" doubles go to a
+called spot, and the pulling guard wraps for a *designated* linebacker
+("OH at 6-7"). So the planner should allocate the double's backer and the
+puller's backer **jointly**, from one called count of box linebackers.
+Neither should be left with nobody while the other takes a backer behind
+the play.
+
 ### 2. Backside cutoff takes the outside man first
 
 **Rule:** a backside hinge or cutoff blocker protects his *playside* gap first,
@@ -77,7 +86,10 @@ distance. In counter vs. Under, Y (−3.9) takes the 9-technique LB_S (−4.6,
 gap) goes free behind both pullers.
 
 **Proposed rule:** for backside cutoff, prefer an unclaimed defender in the
-playside gap. Take the outside defender only when that gap is empty.
+playside gap. Take the outside defender only when that gap is empty. The
+Browns OL manual's "post hinge" (p. 33) states the same order for the
+backside tackle or TE on power: the most dangerous man from his *inside* B
+gap to his outside C gap.
 
 ### 3. Fullback with no target while a box defender is free
 
@@ -98,8 +110,11 @@ the Under, the strong side has a 1-technique, so the trap target becomes the
 5-technique outside the tackle: a long-trap shape. The spread playbook runs
 trap at the 3-technique and lists Under and Bear as fronts it **does not**
 run trap against (p. 63). That is a play-calling fact (`beats` for `trap` in
-`src/playbook/concepts.ts`), not necessarily a blocking defect. Decide whether
-the engine wants a long-trap rule or a caller constraint.
+`src/playbook/concepts.ts`). The Browns OL manual installs "trap or log at
+6-7 hole", a long trap of the strong-side EMOL (p. 37), so the shape is
+legitimate football. The defect is only that one `trap` call silently
+becomes a different play by front. Either name long trap as its own concept
+or have the caller avoid trap against the Under.
 
 ## Plans and outcomes on `develop` (150 reps per cell)
 
@@ -126,6 +141,11 @@ Over and 43% vs. Odd end at or behind the line, with a playside lineman (the
 3-technique, or the 9-technique end) as the leading tackler. The assignments
 match the zone rule (reach plus an uncovered helper's combo), so look at reach
 technique and the back's bend/bounce read, not at the planner.
+One installed answer to exactly this front is the Browns manual's wide-zone
+"Rake" (p. 25): the uncovered playside tackle hand-slams the 3-technique to
+keep C-gap width before climbing. The planner already pairs C and RG on the
+3-technique (their "wide single", p. 24), so Rake would be a technique
+option, not a different assignment.
 
 An unblocked *backside* end on zone or power is often by design (cutback
 constraint, boot or read key). The findings above are about *playside* or
