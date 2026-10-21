@@ -67,9 +67,66 @@ Default-off `DEF_ALIGN`, `WR_ALIGN`, `OL_SPLITS` (and research-only
 `OL_STAGGER`) in `alignment.ts`, at the user's request; see
 [pre-snap-alignment.md](pre-snap-alignment.md).
 
+## Defense after the catch on develop (diagnosis, no engine change)
+
+**Question.** On the develop candidate (`TIP_AWAY`, `DEF_ALIGN`, `WR_ALIGN`,
+`OL_SPLITS`), what decides the yards-after-catch tail (p90 23.7, NFL 12.5)?
+And is the cause a defensive decision, a defensive execution, or something
+the defense is reacting to correctly?
+
+**Where it is decided** (`depth/aftercatch.ts`, 6 games):
+- Catches with 10+ yards after the catch get their first defensive act at
+  +1.55–1.65 s, 6.4–7.7 yd from the catch spot. The wrap then breaks 45–50%
+  of the time.
+- Short catches: first act at +0.4 s, 1.5 yd away; 2% of wraps break.
+
+**The defender in front** (new `depth/frontact.ts`). With exactly one
+defender in front (NFL yards after catch 1.1 / 10.8):
+- When he is near (2.6 yd) and closing (2.6 yd/s), his wrap holds and
+  yards after catch are 1.7 / 9.1, NFL-like.
+- The tail comes from front defenders 4.9–6.7 yd away who are not closing:
+  0.96 yd/s, mostly safeties, while someone else makes the first act. And
+  from wraps that break.
+
+**Why the front defender is not closing.** The same operator on both
+sources (`defense/deepthrow.py`, `defense/cushion.py`):
+
+| At the throw | Sim | NFL |
+| --- | --- | --- |
+| Two deepest backs' depth | 16 yd | 18 yd |
+| Their retreat speed (0.3 s later) | 4.5 yd/s (4.5) | 3.0 yd/s (2.5) |
+| Cushion over the deepest nearby receiver | 4.5 yd | 6.8 yd |
+| That receiver's downfield speed | 6.5 yd/s | 4.5 yd/s |
+
+The sim's receivers are still running vertically when the ball comes out,
+so the deep defenders are right to keep bailing. That is the passing
+selection already handed off (more 10–20 yd targets, fewer short ones), not
+a coverage-technique flaw. Earlier, keying the QB's windup (`ZONE_ARM`)
+moved the break but not the tail. No defensive change is made for it.
+Execution must not be tuned to fix calling.
+
+**Press man is too tight early** (new `defense/presspanel.ts`: native
+Cover 1 press, X on one route, 12 fixed reps). The jam's hands are on only
+0.15–0.25 s and come off at 1.4–1.9 yd depth. After that the corner stays in
+phase about 0.7 yd from the receiver at 1.0 s on go, slant, hitch and out.
+
+| Separation at 0.5 / 1.0 / 1.5 / 2.5 s | Press | Off |
+| --- | --- | --- |
+| Games (same operator, `defense/manpress.py`) | 1.33 / 0.51 / 0.91 / 1.75 | 4.55 / 3.64 / 2.06 / 1.80 |
+| NFL | 2.22 / 1.70 / 1.32 / 1.20 | 3.73 / 3.41 / 2.85 / 1.89 |
+
+The press share matches the NFL (55% vs 51% of man snaps). The NFL receiver
+wins the release and the corner recovers; the sim's corner wins the release
+and loses later. The press `trackReceiver` target sits 0.6–1.3 yd ahead and
+0.7 inside the receiver, and the corner achieves it through the release.
+Next is to separate decision from execution: whether the corner's flip and
+start under a 0.15–0.3 s perception delay should allow that. This is
+coverage technique (Catching's on the workboard) plus turn and start
+physics. Handed off with the panel; no change made.
+
 ## Diagnostics (observation only)
 
-`scripts/diag/depth/`: `drives.ts` (drives, results, points by scoring play),
+`scripts/diag/depth/`: `frontact.ts` (the defenders in front of the receiver after the catch), `drives.ts` (drives, results, points by scoring play),
 `games.ts` (rolled whiffs and broken holds per run and completion), `ints.ts`
 (interceptions by source), `holds.ts` (holds by origin and outcome, full
 telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
