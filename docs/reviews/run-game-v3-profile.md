@@ -284,7 +284,13 @@ so coverage was not what stalled him; help at contact 56 -> 51%; power
 crease 3.3 -> 3.8 yd. Paired lab against the build (`b3` -> `ag`): TVD
 zone 8.9 -> 7.1, gap 9.0 -> 7.1, shotgun 7.1 -> 14.6 (shotgun IZ median
 4.1 -> 3.2, 4-9 yd 39 -> 25%). Right snap geometry, downstream not yet an
-improvement: off.
+improvement: off. Run-defense checked the fit (`depth/agapnose.ts`, power
+lab, 120 plays): the engaged interior fit uses the live gap relative to his
+blocker, not his stance, and with the flag the nose fits the same surface,
+is squeezed as often and ends at the same place; power yards unchanged. So
+the games' power crease change (one 8-game arm) is divergence or another
+defender, and the open cost is shotgun inside zone in the lab (4-9 yd 39 ->
+25%), not yet diagnosed.
 
 ## Flags on
 
