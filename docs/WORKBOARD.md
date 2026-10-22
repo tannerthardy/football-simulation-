@@ -7,10 +7,18 @@ additive `ReceiverRead.deepest` in `reads.ts`, coverage catalog entries and
 checks in `src/playbook/coverages.ts`, the new `src/playbook/structure.ts`,
 `src/lab/coverage-scene.ts`, and the coverage-check selection in the
 defensive coordinator, on `claude/friendly-bardeen-56kqo2` (PR #193) from
-accepted `d91c9014`. Judgment, techniques, man/zone movement and
-`alignment.ts` are not claimed; the defensive pre-snap alignment work (PR
-#190) keeps `alignment.ts`, `presnap-rules.ts` and its `playsim.ts` hunks.
-The only `playsim.ts` change here is the one-line check call. #127's held
+accepted `d91c9014`. It also claims offensive pre-snap motion
+(`src/sim/motion.ts`, MOTION=1, default off). Judgment, techniques,
+man/zone movement and `alignment.ts` are not claimed:
+- Defensive pre-snap alignment and the defense's response to motion belong
+  to PR #194 (`claude/def-alignment`). It replaces `MotionRuntime.respond`
+  and owns Fangio §E1/§E3.
+- SNAP_REACT and the pre-snap timeline belong to `claude/run-game-v3`.
+
+Edits here in shared files are minimal:
+- `alignment.ts`: droppers install through `seatRole`.
+- `playsim.ts`: `installCoverage`, motion build/finish, and three lines in
+  `stageDefense`. #127's held
 `quarterFlat` edit predates and is superseded by the sourced Quarter Flat
 rules here; its author should reconcile. Sources and status:
 [coverage checks](references/coverage-checks/README.md); first evidence:
