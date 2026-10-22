@@ -27,6 +27,20 @@ import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, O
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import type { Team } from '../league/team.js';
 
+/** FRONT_ALIGN (experimental, off): fronts are called as team installs use
+ * them (2017 Colts, 2013 Seahawks, 2020 Ravens via the playbook session):
+ * Under is the base front and Over a secondary call; nickel lines up in the
+ * Over family; its pass-down front is a wide "Rush". One draw either way. */
+const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
+function installWeight(id: string, personnel: DefPersonnelId, passingDown: boolean, scheme: string): number {
+  if (personnel === 'base43') return id === 'under' ? 3 : id === 'over' ? 1 : 0;
+  if (personnel === 'nickel' || personnel === 'dime') {
+    if (id === 'wide9') return passingDown ? 3 : scheme === 'nickel-heavy' ? 1 : .5;
+    return id === 'over' ? passingDown ? 1 : 3 : id === 'under' ? passingDown ? .25 : 1 : 0;
+  }
+  return 1;
+}
+
 export interface Situation {
   down: number;
   distance: number;
@@ -301,7 +315,8 @@ export class DefensiveCoordinator {
     const fronts = FRONTS.filter((f) => f.personnel.includes(personnel));
     const front = pickWeighted(
       rng,
-      fronts.map((f) => [f, scheme === '4-3' && (f.id === 'over' || f.id === 'under') ? 2 : scheme === 'nickel-heavy' && f.id === 'wide9' ? 2 : 1] as [typeof f, number]),
+      fronts.map((f) => [f, FRONT_ALIGN ? installWeight(f.id, personnel, passingDown, scheme)
+        : scheme === '4-3' && (f.id === 'over' || f.id === 'under') ? 2 : scheme === 'nickel-heavy' && f.id === 'wide9' ? 2 : 1] as [typeof f, number]),
     );
 
     // Coverage: family from NFL situational shares (2022 dropbacks, PFF
