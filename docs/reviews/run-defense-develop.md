@@ -851,6 +851,21 @@ vs NFL 2.69 (run-offense `open-field/meet.py`). `LEG_BRACE` is in the
 run-offense session's contact model; it is reported to them and the physics
 owner.
 
+**Confirmed by the second-tackler split** (`depth/secondtackler.py`, NFL and
+sim alike, with runbreak's admission). Help means another defender within
+1.5 yd of the carrier in the 0.5 s after contact:
+
+| | Help at contact | Broke with help | Broke alone |
+| --- | --- | --- | --- |
+| NFL | 77% | 7.6% | 29.8% |
+| Build (`LEG_BRACE` on) | 56% | 10.9% | 27.0% |
+| Build, `LEG_BRACE` off | 51% | 10.9% | 14.4% |
+| Develop + line set | 51% | 8.3% | 23.2% |
+
+With the brace, a lone tackler's break rate matches tracking. Without it,
+lone tackles hold half again too often. The build's excess breaks are the
+missing help (56 vs 77%), the pursuit-arrival row, so `LEG_BRACE` stays.
+
 **The covered center on outside zone** (`depth/nosereach.ts`, lab). The
 center asks for only 0.50 yd/s across at 0.5 s. The nose follows his flow
 once it is seen: he asks for 1.39 at 0.75 s and achieves 0.53. Tracking has
@@ -1411,7 +1426,7 @@ telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
 `runrally`, `crease`, `breakpoint`, `afterrelease`, `alleypath`, `interiorrush`, and lab probes
-`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `lbpull.ts` (backers against a pull), `nosereach.ts` (the covered center's nose), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
+`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `lbpull.ts` (backers against a pull), `nosereach.ts` (the covered center's nose), `secondtackler.py` (help at run contact), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
 `alleyprobe.ts`, `alleytrace.ts` (the nearest deep supporter on long runs), `forcelab.ts` (paired run lab, the same seeds per arm),
 `dlpursuit.ts` (linemen at a run's first contact), `dropprobe.ts` (the
 nearest zone defender when the ball comes near him), `catchact.ts`, `sideprobe.ts` (the side window from inside the
