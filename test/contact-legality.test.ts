@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// BLOCK_FRONT=0: this fixture builds contact on the defender's side or back
+// (beyond 110 deg of his facing), which BLOCK_FRONT turns away; it tests
+// another mechanism under the rule it was recorded with.
+vi.hoisted(() => { process.env.BLOCK_FRONT = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';

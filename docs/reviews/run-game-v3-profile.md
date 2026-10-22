@@ -45,11 +45,62 @@ variance reduction. Use paired lab cases for mechanisms.
 |---|---|---|
 | Protection lasts 0.3 s less than tracked | rushers win soon after contact; interior moves land by a rating roll (about 9% per attempt), so pairs stay glued | run-defense (rusher moves) |
 | Crease twice tracked width, few DL first contacts, few zone losses | down-blocked DL split their legs between attacking upfield and the lateral push; squeezing needs the scrape backer to fill behind | run-defense (squeeze + fill) |
-| Long-run tail | safeties come downhill early and end behind the back; close pursuers start late | run-defense (SAFETY_TEMPO, second-level start) |
+| Long-run tail: too few defenders arrive (2.10 vs 2.69 per run reaching 5 yd; DL 0.02 vs 0.30) | the open-field meeting itself matches tracking (below); DL stay tied to blockers after the back passes, and the line barely flows with outside zone or the gap play | see "Pursuit arrival" below |
 | After-catch: defenders in front come back at the receiver | the intercept itself, not the attack term; team leverage | run-defense |
+| Front seven while the read is unsure | DL stand still laterally for 0.4 s (tracked 0.4 yd/s at 0.1 s); off-ball LBs drift back 0.2 yd (tracked: 0.2 yd downhill by 0.5 s); the read commits at 0.45 s and until then the rusher plays his pass plan | run-defense (proposed key step) |
+| Gap-scheme line flow has the wrong sign | engaged pairs wash backside (-0.6 yd/s) where tracked pairs drift playside (+0.3) | run-defense squeeze first, then `DOWN_SEAL` |
+| Outside-zone line flow half of tracked | pairs reach contact 0.3 s early against a stationary DL and plateau at 1.6 yd/s (tracked 3.0) | run-game (after the key step) |
 | QB drop ends abruptly (`QB_SETTLE` off) | smoothing it exposes the protection gap above | run-game, after protection |
 | Protection back steps up too early | holding him loses protection without a read-then-step-up pickup | run-game |
 | False starts about half tracked | offense's own count timing | run-game |
+
+## Pursuit arrival (matched operators)
+
+Three operators run the same code on NFL tracking (`nfl-plays`) and sim
+common plays (today's profile, 8 games, seed 301): `scripts/diag/open-field/meet.py`,
+`scripts/diag/stretch/release.py` and `scripts/diag/stretch/lineflow.py`.
+
+**The open-field meeting matches tracking.** A defender free of blockers
+gets within 4 yd of a back 5+ yd past the line:
+
+| | NFL | sim |
+|---|---|---|
+| met / passed / other | 48 / 19 / 33% | 49 / 14 / 36% |
+| met, then 5+ more yards | 9% | 9% |
+| same, back at 7+ yd/s | 25% | 23% |
+| meetings per run reaching 5 yd | 2.69 | 2.10 |
+| of which DL | 0.30 | 0.02 |
+
+**Fewer defenders arrive, mostly DL.**
+
+- Tied up (offensive player within 1.2 yd) at the crossing / +0.5 / +1.0 s:
+  NFL 75 / 66 / 56%, sim 84 / 82 / 78%.
+- When the back crosses 5 yd, DL are a median 0.4 yd downfield and 5.2 yd to
+  his side; tracked 2.6 and 3.1.
+- In the lab (450 paired cases), 2,412 of 3,074 DL rep ends after the
+  crossing are re-latched by the same blocker within 0.25 s.
+  `SHED_PURSUE BLOCK_FRONT` stop that, but DL arrivals only go 0.02 -> 0.04:
+  the DL is still too far from the back.
+
+**The line does not flow.** Mean lateral velocity toward the play side
+while in contact range, 0.3-1 / 1-2 / 2-3 s (yd/s):
+
+| family | NFL OL | sim OL | NFL DL | sim DL |
+|---|---|---|---|---|
+| inside zone | 0.62 0.71 0.64 | 0.61 0.79 1.13 | 0.53 0.73 0.72 | 0.44 0.83 1.19 |
+| outside zone | 2.32 2.92 2.62 | 1.09 1.52 1.92 | 1.74 2.83 2.68 | 0.58 1.31 1.76 |
+| duo | -0.17 -0.14 0.27 | -0.10 -0.09 -0.02 | -0.13 -0.06 0.48 | -0.08 -0.04 0.03 |
+| power/counter/trap | 0.28 0.74 1.19 | -0.62 -0.43 -0.08 | 0.24 0.76 1.35 | -0.30 -0.46 -0.08 |
+
+- On outside zone, tracked DL move laterally from 0.1 s (0.39 yd/s). Ours
+  stand still for 0.4 s, because the read commits at a median 0.45 s and
+  until then the rusher runs his pass plan.
+- Our OL then reach a stationary DL about 0.3 s early, and the pair
+  plateaus.
+- The flow candidates already on this branch (`RUN_LATERAL DL_FEEL LB_GLIDE
+  COMBO_LEAVE BACK_CHASE SHED_PURSUE BLOCK_FRONT`) flip the gap row's last
+  window positive (+0.32), but leave the first second and outside zone
+  nearly unchanged.
 
 ## Flags on
 

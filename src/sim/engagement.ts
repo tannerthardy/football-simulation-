@@ -1205,7 +1205,12 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // A support player who has personally declared the carrying runner must
     // work free toward him even when the block keeps him outside close range.
     // First-level stack/shoulder and uncertain possession retain the old gate.
-    const pursue = SHED_PURSUE && read.threat.carrying === true
+    // SHED_PURSUE extends this to first-level fits (interior/edge), whose
+    // runner picture is their own line read; support jobs keep #169's
+    // acquired-backfield rule above. Both use the declaration held between
+    // ordinary reads, not a raw cue that changes between them.
+    const firstLevel = d.runFit?.kind === 'interior' || d.runFit?.kind === 'edge';
+    const pursue = SHED_PURSUE && firstLevel && read.declared && read.threat.carrying === true
       && (read.threat.pos.x - sim.los) * sim.attackDir(b.team) > 0;
     // #169: acquiring hands does not restart already justified support.
     const ready = t >= e.nextMoveAt || (supportRunner && !runSheds.has(e));

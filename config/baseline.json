@@ -8,7 +8,7 @@
   "flags": {
     "ANCHOR_SPLIT": "1",
     "BACK_CHASE": "0",
-    "BLOCK_FRONT": "0",
+    "BLOCK_FRONT": "1",
     "CF_FLOW": null,
     "CLIMB_INTERCEPT": "1",
     "CLIMB_PLAN": "1",
@@ -98,7 +98,7 @@
     "SCRAPE": "1",
     "SHED_AWAY": "0",
     "SHED_PHYSICAL": "1",
-    "SHED_PURSUE": "0",
+    "SHED_PURSUE": "1",
     "SNAP_REACT": "1",
     "STALK_CLAIM": "1",
     "STRETCH_AIM": "1",
