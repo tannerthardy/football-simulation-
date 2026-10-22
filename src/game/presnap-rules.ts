@@ -27,6 +27,15 @@ export interface SnapPlayerFacts {
   inNeutralZone?: boolean;
 }
 
+export interface SnapIncident {
+  playerId: string;
+  enteredNeutralZone: boolean;
+  contactedOpponentOrBall?: boolean;
+  interferedWithSnap?: boolean;
+  beyondOffensiveLinemanWithUnimpededPath?: boolean;
+  immediateNearbyProtectiveReaction?: boolean;
+}
+
 export interface SnapEligibility {
   playerId: string;
   eligible: boolean | null;
@@ -67,14 +76,7 @@ export interface ScrimmageSnapFacts {
   offensiveHuddleCount?: number;
   playClockRunning?: boolean;
   /** Entering the neutral zone alone can be recovered before the snap. */
-  defensiveIncidents?: readonly {
-    playerId: string;
-    enteredNeutralZone: boolean;
-    contactedOpponentOrBall?: boolean;
-    interferedWithSnap?: boolean;
-    beyondOffensiveLinemanWithUnimpededPath?: boolean;
-    immediateNearbyProtectiveReaction?: boolean;
-  }[];
+  defensiveIncidents?: readonly SnapIncident[];
   snap?: {
     snapperId?: string;
     receiverId?: string;
@@ -273,13 +275,17 @@ export function inspectInstalledSnap(sim: PlaySim,
       // that unrepresented helmet/feet geometry is proven legal otherwise.
       // The snapper may be over the ball (his hand is on it); tracked
       // centers stand 0.29 yd behind the ball's spot (OL_ALIGN).
-      inNeutralZone: a.team === 'D' ? snapX - radius < sim.los : a.slot !== 'C' && snapX + radius > sim.los,
-      tFormationQB: a.team === 'O' && a.slot === 'QB' && sim.offCall.formation.qb === 'under' };
+      inNeutralZone: a.team === 'D' ? snapX - radius < sim.los || !!sim.snapActs?.inZone.has(a.player.id)
+        : a.slot !== 'C' && snapX + radius > sim.los,
+      tFormationQB: a.team === 'O' && a.slot === 'QB' && sim.offCall.formation.qb === 'under',
+      // SNAP_REACT: an abrupt start before the snap that the count produced.
+      simulatesSnap: a.team === 'O' && !!sim.snapActs?.falseStarts.has(a.player.id) };
   });
   //The current install explicitly supplies a legal stationary set, rather
   //than simulating huddle/stance history. Preserve a caller's actual recorded
   //history when supplied; late-NZI classification still needs Game's warning.
   const assessment = assessScrimmageSnap({ players, readyForPlay: true, snapOccurred: true,
+    defensiveIncidents: sim.snapActs?.incidents,
     ...context, allSetSeconds: context.allSetSeconds ?? 1, hadFullSet: context.hadFullSet ?? true });
   assessment.unresolved.push('3-18/7-4: declared installed line/set abstraction; helmet/beltline, offensive motion and snap mechanics not recorded');
   return assessment;

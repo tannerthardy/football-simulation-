@@ -15,7 +15,7 @@ import { assessForwardPass, fumbleRecovery, fumbleOutOfBounds, looseBallBoundary
 import { observePrethrowBlocks, assessPrethrowBlocksOnPass,
   capturePassContactStarts, observePassContacts, notePassRelease, notePassTouch, flushPassContacts } from './pass-interference.js';
 import { captureHoldingStart, observeHolding, type HoldingIntervalStart } from './contact-holding.js';
-import { inspectInstalledSnap, type PresnapAssessment, type SnapEligibility } from '../game/presnap-rules.js';
+import { inspectInstalledSnap, type PresnapAssessment, type SnapEligibility, type SnapIncident } from '../game/presnap-rules.js';
 import { observePassLegality, capturePassLegality, finishPassLegality, assessNativePassTouch,
   assessForwardHanding } from './pass-legality.js';
 import { observeContactLegality } from './contact-legality.js';
@@ -41,6 +41,7 @@ import { spaceTeammates } from './spacing.js';
 import { predictCalledMotion } from './called-motion.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
+import { SNAP_REACT, VISIBLE, planSnap, snapResponse, type SnapCount } from './snap-count.js';
 import { ReplayTrace } from './telemetry.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
@@ -91,6 +92,11 @@ export interface PlaySetup {
 }
 
 const MAX_PLAY_TIME = 25;
+
+/** A lineman's visible pre-snap start: his own (no defender) or a flinch at one. */
+interface SnapEvent { t: number; o: Agent; d?: Agent }
+/** Length of the ball: the neutral zone's depth (yd). */
+const BALL_LENGTH = 0.31;
 
 export class PlaySim {
   readonly dt = DT;
@@ -202,6 +208,12 @@ export class PlaySim {
   qbEyes: Agent | null = null;
   /** When the QB started his throwing motion (−1 before). */
   windupAt = -1;
+  /** SNAP_REACT: the count's start plans and the pre-snap acts they produced. */
+  snapCount?: SnapCount;
+  snapActs?: { falseStarts: Set<string>; incidents: SnapIncident[]; inZone: Set<string>; cause?: string };
+  snapDead = false;
+  private snapEvents: SnapEvent[] = [];
+  private readonly snapSetFront = new Map<Agent, number>();
   /** Everyone's x at the snap (cue reading: who set back, who fired out). */
   snapX: number[] = [];
   /** The situation and look the defense saw before the snap. */
@@ -315,7 +327,8 @@ export class PlaySim {
    * arrivals keep their velocity into the snap instead of teleporting home. */
   private stageDefense(prefs?: ManPreference): void {
     const stem = this.defCall.frontStem, creep = this.defCall.creep;
-    if (!stem && !creep) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
+    const early = SNAP_REACT ? this.planSnapCount() : 0;
+    if (!stem && !creep && !early) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
     for (const seconds of [stem?.secondsBeforeSnap,creep?.secondsBeforeSnap]) {
       if (seconds !== undefined && (!Number.isFinite(seconds) || seconds<=0 || seconds>3)) throw new Error('Pre-snap movement must start within 0–3 seconds of snap');
     }
@@ -340,8 +353,8 @@ export class PlaySim {
     }
     // A stem replaces the initial presentation above. Fit that starting
     // stance before its first observable history, never the moving endpoint.
-    fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
-    const ticks = Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0)/this.dt);
+    if (stem || creep) fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
+    const ticks = Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0,early)/this.dt - 1e-9);
     // Prime with the presentation that was actually shown, never the called
     // destination. Observers with longer latency retain the old front.
     this.perception.record(this.agents, this.carrier?.idx ?? null);
@@ -354,15 +367,110 @@ export class PlaySim {
         const speed=active ? Math.min(d.profile.vmax*.45,length*3) : 0;
         intents[d.idx] = {vel:{x:length ? dx/length*speed : 0,y:length ? dy/length*speed : 0},facing:Math.PI};
       }
+      const moving = early ? this.snapCountIntents(intents) : undefined;
       this.world.time = this.t;
       this.world.step(intents, this.dt);
-      for (const d of this.defense) d.body.pos.x=Math.max(this.los+d.profile.radius+.05,d.pos.x);
+      for (const d of this.defense) if (!moving?.has(d)) d.body.pos.x=Math.max(this.los+d.profile.radius+.05,d.pos.x);
       this.perception.record(this.agents, this.carrier?.idx ?? null);
       if (this.record && i%this.recordEvery===0) this.recordFrame(intents);
+      if (early && this.snapCountActs(this.t + this.dt)) break;
+    }
+    if (early && !this.snapDead) for (const a of this.agents) {
+      const p = this.snapCount!.plans.get(a)!;
+      a.snapReadyAt = p.stop !== undefined ? p.restart! : Math.max(0, p.go);
     }
     this.t=0;
     this.perception.record(this.agents, this.carrier?.idx ?? null);
     if (this.record) this.recordFrame();
+  }
+
+  /** SNAP_REACT: plan the count; seconds before the snap its first act needs. */
+  private planSnapCount(): number {
+    const rng = this.rng.fork('snap-count');
+    const spotX = (a: Agent) => (a.team === 'D' ? this.defAlign.spots[a.slot as DefSlot]?.pos.x : undefined) ?? a.pos.x;
+    const count = this.snapCount = planSnap(this.agents, { down: this.down, distance: this.firstDownX - this.los,
+      offBall: (a) => spotX(a) - a.profile.radius - this.los }, rng);
+    this.snapActs = { falseStarts: new Set(), incidents: [], inZone: new Set() };
+    // A down lineman crowds the ball: his helmet and hands set at the line,
+    // ahead of the represented torso (tracked torsos 0.9 yd off the ball).
+    for (const d of this.defense) {
+      const front = spotX(d) - d.profile.radius;
+      if (front - this.los < 0.7) this.snapSetFront.set(d, front);
+    }
+    const events: SnapEvent[] = [];
+    for (const o of this.offense) {
+      const p = count.plans.get(o)!;
+      if (p.go < -VISIBLE) events.push({ t: p.go + VISIBLE, o });
+    }
+    // A lineman sees the defender across from him move and may flinch.
+    for (const d of this.defense) {
+      const p = count.plans.get(d)!;
+      if (p.go >= 0) continue;
+      const dy = this.defAlign.spots[d.slot as DefSlot]?.pos.y ?? d.pos.y;
+      for (const o of this.offense) {
+        if (this.los - o.pos.x > 1.6 || Math.abs(o.pos.y - dy) > 1.6) continue;
+        if (!rng.chance(0.1 + 0.4 * (1 - o.r('discipline')))) continue;
+        const t = p.go + o.mind.snapDelay + snapResponse(o);
+        if (t < 0) events.push({ t, o, d });
+      }
+    }
+    this.snapEvents = events.sort((a, b) => a.t - b.t);
+    return -Math.min(0, ...[...count.plans.values()].map((p) => p.go), ...events.map((e) => e.t));
+  }
+
+  /** Early defenders fire out of their stance, then try to get back. */
+  private snapCountIntents(intents: Intent[]): Set<Agent> {
+    const moving = new Set<Agent>();
+    for (const d of this.defense) {
+      const p = this.snapCount!.plans.get(d)!;
+      if (p.go >= 0 || this.t < p.go - 1e-9) continue;
+      moving.add(d);
+      if (p.stop === undefined || this.t < p.stop - 1e-9) {
+        intents[d.idx] = { vel: { x: -d.profile.vmax * 0.6, y: 0 }, facing: Math.PI };
+      } else {
+        const home = this.defAlign.spots[d.slot as DefSlot]?.pos.x ?? d.pos.x;
+        intents[d.idx] = { vel: { x: clamp((home - d.pos.x) * 3, 0, 1.5), y: 0 }, facing: Math.PI };
+      }
+    }
+    return moving;
+  }
+
+  /** Represented pre-snap acts by time `now`; true once the ball is dead. */
+  private snapCountActs(now: number): boolean {
+    const acts = this.snapActs!;
+    const e = this.snapEvents.find((x) => x.t <= now + 1e-9);
+    if (e) {
+      if (e.d && this.inNeutralZone(e.d))
+        acts.incidents.push({ playerId: e.d.player.id, enteredNeutralZone: true, immediateNearbyProtectiveReaction: true });
+      else acts.falseStarts.add(e.o.player.id);
+      acts.cause = e.d ? 'flinch' : this.snapCount!.hard ? 'hard count' : 'own timing';
+      return this.snapDead = true;
+    }
+    for (const d of this.defense) {
+      const p = this.snapCount!.plans.get(d)!;
+      if (p.go >= 0 || now < p.go) continue;
+      // Contact: bodies, or a crowding lineman's lead across the whole
+      // neutral zone (the ball's length) into the man set across from him.
+      const set = this.snapSetFront.get(d);
+      const across = set !== undefined && set - (d.pos.x - d.profile.radius) > BALL_LENGTH;
+      for (const o of this.offense) if (Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y) < o.profile.radius + d.profile.radius
+        || (across && this.los - o.pos.x < 1.6 && Math.abs(o.pos.y - d.pos.y) < 0.75)) {
+        acts.incidents.push({ playerId: d.player.id, enteredNeutralZone: true, contactedOpponentOrBall: true });
+        acts.cause = this.snapCount!.hard ? 'hard count' : 'own timing';
+        return this.snapDead = true;
+      }
+    }
+    // Only a man who started early can be past the line; standing bodies
+    // settle by hundredths of a yard.
+    if (now >= -1e-9) for (const d of this.defense)
+      if (this.snapCount!.plans.get(d)!.go < 0 && this.inNeutralZone(d)) acts.inZone.add(d.player.id);
+    return false;
+  }
+
+  /** A defender's leading edge is past the line (crowding linemen: any step forward). */
+  private inNeutralZone(d: Agent): boolean {
+    const set = this.snapSetFront.get(d), front = d.pos.x - d.profile.radius;
+    return set !== undefined ? set - front > 0.03 : front < this.los;
   }
 
   // ------------------------------------------------------------ queries

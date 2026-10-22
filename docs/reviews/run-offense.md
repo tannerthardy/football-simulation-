@@ -677,6 +677,14 @@ technique reaches is the start: in the first 0.5 s the free guard requests
 2.29 vs 1.88. That is start-up acceleration in the gait law (N3), and the
 backers' first step before their run read (run-defense session, next).
 
+**Correction:** the start-up reading above is wrong. The tracked snap frame
+lags the snap by about 0.1 s: 63% of NFL offensive linemen and 56% of
+defensive linemen are already moving in its first 0.1 s. Shifted by that
+lag, our linemen's start-up acceleration matches NFL. What differed was the
+defense's start relative to the offense: line defenders started 0.12 s
+after the man in front of them (median), vs +0.03 s in NFL runs. See the
+snap section of `presnap.md` (`SNAP_REACT`).
+
 Climbs on the tracked line are NFL-like under center
 (`scripts/diag/align/climbphase.py --uc|--gun`: touch a down man then
 reach a backer 30% of linemen, NFL 34%; by 2.0 s 17%, NFL 18%; direct to a

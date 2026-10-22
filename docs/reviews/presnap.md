@@ -225,6 +225,137 @@ pressure share 42% -> 46% move within about two standard errors, with
 every run play also changed. No isolated pass-protection effect is
 claimed.
 
+## The snap: reaction, timing and pre-snap fouls (`SNAP_REACT`, off)
+
+User: "defensive linemen probably react damn near as soon as the offensive
+lineman in front of them reacts, and sometimes anticipate snap counts, but
+they're not perfectly instantaneous. This is what will ultimately lead to
+false starts and encroachment/offsides."
+
+Question: when does a line defender start relative to the man in front of
+him, and can early starts produce the pre-snap fouls as represented acts
+instead of a rolled flag (`game.ts` `preSnapFoul` returns null "until those
+acts are modeled")?
+
+**Measurement.** `scripts/diag/align/getoff-rel.py`: first movement 0.15 yd
+from the snap position, each line defender (< 2 yd off the ball, inside the
+tackles + 2 yd) minus the offensive lineman nearest him at the snap. The
+difference is relative, so it cancels the tracked snap frame's offset (the
+tracking snap frame lags the snap by about 0.1 s: 56-63% of linemen of both
+sides are already moving in its first 0.1 s, so absolute start-up from the
+tracked frame was misread earlier, see `run-offense.md`).
+
+| DL minus the OL in front (s) | p10 | p25 | p50 | p75 | p90 | DL first |
+|---|---|---|---|---|---|---|
+| NFL 2022 runs | -0.17 | -0.05 | +0.03 | +0.10 | +0.17 | 40% |
+| sim before (`sim-ps3`, all plays) | -0.01 | +0.05 | +0.12 | +0.17 | +0.22 | 12% |
+| sim `SNAP_REACT` runs (10 games, 301-310) | -0.18 | -0.11 | +0.00 | +0.11 | +0.17 | 49% |
+| NFL 2022 passes | -0.24 | -0.11 | -0.02 | +0.05 | +0.12 | 59% |
+| sim `SNAP_REACT` passes | -0.18 | -0.12 | -0.04 | +0.06 | +0.13 | 61% |
+
+From his start time a defensive lineman takes 0.25 s to move 0.15 yd and an
+offensive lineman about as long (`scripts/diag/align/getoff-probe.ts`), so
+the start time alone sets the difference. The old start was one latency,
+readiness lag + 0.8 x recognition reaction (about 0.27 s), and no defender
+ever anticipated.
+
+**Model** (`src/sim/snap-count.ts`, `PlaySim.planSnapCount`):
+- The offense knows its count and goes on it after its readiness lag
+  (`SnapMind.snapDelay`, unchanged).
+- A defender who does not time the count responds to seen motion (the ball
+  or the man in front) after a simple visual response, 0.10 + 0.3 x
+  recognition reaction (0.13-0.23 s, the range for athletes and an expected
+  single cue), plus his readiness lag.
+- A defender on the line may time the cadence instead, going on his own
+  estimate (whichever comes first). He aims behind the snap by a margin his
+  discipline sets, because going early costs a flag and going late costs a
+  step. Error SD is 0.03 + 0.05 x (1 - anticipation). Share is 0.55 + 0.5 x
+  anticipation, +0.15 on passing downs. The share is the one parameter set
+  from the tracked relative get-off above, never from fouls.
+- A hard count (an extra sound a beat, 0.55 s, before the snap; offense
+  uses it 10% of snaps, 30% on third or fourth and two or less) can draw a
+  timer early (2% + 10% x (1 - discipline)). He stops once he registers that
+  the ball did not move (his response + 0.08 s) and tries to get back.
+- An offensive lineman may lose a hard count and go on the extra sound
+  (0.5% + 3% x (1 - discipline)). A lineman who wants a head start (a tackle
+  on a passing down most of all) times the count with a small error.
+- Early bodies move before the snap in the same world, on the existing
+  pre-snap timeline (the stem/creep loop). A down lineman crowds the ball:
+  his helmet and hands set at the line, ahead of the represented torso
+  (tracked torsos 0.92 yd off the ball). So any step forward puts him in
+  the neutral zone, and his lead across the ball's length (0.31 yd) into
+  the man across is contact.
+- Linemen across from an early defender may flinch (10% + 40% x
+  (1 - discipline)) after their own response.
+
+The rules engine (`presnap-rules.ts`, unchanged rules) classifies the acts:
+- An offensive lineman's visible start (> 0.05 s before the snap), or his
+  flinch at a defender still on his side, is a false start.
+- A flinch at a defender in the neutral zone is a neutral zone infraction.
+- Contact is encroachment.
+- A defender who started early and is still past the line at the snap is
+  offside (live ball).
+
+Dead-ball acts block the snap, and `Game.applyNativePresnap` enforces them
+(no play, down replayed). Standing bodies settle by hundredths of a yard
+before the snap, so only a man who started early can be offside.
+
+**Fouls** (12 games, seeds 401-412, about 1,700 snaps;
+`scripts/diag/align/snap-fouls.ts`), vs NFL 2022 accepted totals per
+scrimmage snap
+([Pro-Football-Reference](https://www.pro-football-reference.com/years/2022/penalties.htm)):
+
+| Foul | Sim | NFL |
+|---|---|---|
+| False start | 0.9% | ~1.7% (578) |
+| Offside | 1.2% | ~0.4% (139) |
+| Neutral zone infraction | 0.7% | ~0.24% (82) |
+| Encroachment | 0.6% | not broken out (rare) |
+
+Defensive fouls are about three times NFL. Nearly all come from hard-count
+bites, whose propensity is an assumption with no independent evidence; the
+foul totals are not used to set it. The offense's false starts are half of
+NFL with no crowd noise, silent counts, motion or tight-end/receiver starts
+represented.
+
+**Run game** (lab, called looks, control `s08` vs `sr8` on the same commit;
+the control reproduces `c8` exactly):
+
+| | Control TVD | `SNAP_REACT` TVD | Notes |
+|---|---|---|---|
+| Zone, under center | 6.7 | 3.7 | outside/wide-zone losses 11.5/12.8% -> 9.8/9.5% |
+| Gap | 9.2 | 7.5 | counter losses 8.8 -> 10.2%, power 7.8 -> 7.2% |
+| Shotgun zone | 10.8 | 11.2 | losses 5.2 -> 6.8% (NFL 7.6%) |
+
+The zero-latency diagnostic (`DEF_GETOFF=0`, `dg8`) moves zone and gap the
+same way (3.4 / 7.6), so the direction follows the defense starting
+earlier. But the operators that would explain it are unchanged at their
+medians: outside-zone guard and tackle lateral flow (`meshwidth.py`),
+defensive-line wash (`dlwash.py`), linemen's first contact (`olcontact.py`)
+and backer fit (`lbfit.py`). The zone shift is about two standard errors in
+the largest bins. It is reported as an unexplained shift, not a run-game
+improvement.
+
+Contract: `test/snap-count.test.ts`: fouls follow the represented acts,
+standing men are never offside, and reactors never start before 0.1 s.
+
+Reproduce:
+
+```sh
+python3 scripts/diag/align/getoff-rel.py out/mechanics/nfl-plays.jsonl.gz --kind run
+EXTRA="SNAP_REACT=1" node --import tsx scripts/mechanics/sim-export.ts --seed 301 --games 10 --out out/snap/sr1.jsonl.gz
+python3 scripts/diag/align/getoff-rel.py out/snap/sr1.jsonl.gz --kind run
+node --import tsx scripts/diag/align/snap-fouls.ts 401 4   # with SNAP_REACT=1 in the environment
+node --import tsx scripts/diag/align/getoff-probe.ts iz,power,oz,duo 77,1,2,3,4
+bash out/runarms-call.sh sr8 "SNAP_REACT=1" zone gap gun   # arm.mjs with --looks call1..call10
+```
+
+Open:
+- Hard-count bite propensity (sets the defensive foul rate).
+- Crowd noise, silent count and offensive motion as false-start sources.
+- The defense's legal pre-snap movement (stems, sugar) as flinch cues.
+- Whether the zone shift traces to a mechanism.
+
 ## Next
 
 - Offense (this session): the play-side linemen's lateral flow on stretch
