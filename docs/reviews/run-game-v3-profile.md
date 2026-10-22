@@ -4,7 +4,7 @@ One page for integration. It lists every flag on in this branch's pinned
 profile (`config/baseline.json`), the current results against tracking, and
 the open problems with their owners. Evidence lives in the linked reviews.
 Generated from the code's doc comments on 2026-10-22 at `0cc4e074`;
-66 of 110 flags are on.
+68 of 110 flags are on.
 
 Reproduce: `npm run baseline:run -- --candidate -- <command>`. Lab arms:
 `scripts/diag/open-field/arm.mjs` (called looks 1-10, seeds
@@ -81,6 +81,16 @@ gets within 4 yd of a back 5+ yd past the line:
   crossing are re-latched by the same blocker within 0.25 s.
   `SHED_PURSUE BLOCK_FRONT` stop that, but DL arrivals only go 0.02 -> 0.04:
   the DL is still too far from the back.
+- **Now on:** `SHED_PURSUE` (works off toward a runner he has declared at an
+  ordinary read; edge fits declare 2 yd past the line, as `pursueIfLive`
+  does) and `BLOCK_FRONT` (a run block starts only within 110 deg of the
+  defender's front). Paired lab against the same cases (`c2` -> `sb3`):
+  under-center zone 40+ 68 -> 54 of 1,200 (26 gone, 12 new, sign test p
+  0.03), 20+ 87 -> 71 (p 0.04); gap 10+ 320 -> 294 of 1,600 (p 0.04), 40+
+  155 -> 145 (p 0.35); shotgun unchanged; losses unchanged; median change
+  -0.06 to -0.09 yd. An earlier version that let edges pursue at once cut
+  zone 40+ to 43; it broke the contain rule and #169's possession rule.
+  Fixture tests that build side or back contact pin `BLOCK_FRONT=0`.
 
 **The line does not flow.** Mean lateral velocity toward the play side
 while in contact range, 0.3-1 / 1-2 / 2-3 s (yd/s):
@@ -107,6 +117,7 @@ while in contact range, 0.3-1 / 1-2 / 2-3 s (yd/s):
 | Flag | Value | Where | What it does (from its doc comment) |
 |---|---|---|---|
 | `ANCHOR_SPLIT` | 1 | `sim/engagement.ts` | Anchor braces along the drive line and keeps lateral work (ANCHOR_SPLIT=0 off). |
+| `BLOCK_FRONT` | 1 | `sim/engagement.ts` | a run block is taken on the defender's front or side (within 110 deg of his facing); hands arriving on his back start no rep, and the bodies still collide. |
 | `CLIMB_INTERCEPT` | 1 | `sim/behaviors/blocking.ts` | Climbs and leads intercept flowing backers (CLIMB_INTERCEPT=0: short lead). |
 | `CLIMB_PLAN` | 1 | `sim/behaviors/blocking.ts` | Climbs planned with previewed own movement (CLIMB_PLAN=0 off). |
 | `COMBO_GAP` | 1 | `sim/behaviors/blocking.ts` | an uncovered zone blocker doubles the man in the gap beside him. |
@@ -159,6 +170,7 @@ while in contact range, 0.3-1 / 1-2 / 2-3 s (yd/s):
 | `RUN_REACH` | 1 | `sim/behaviors/carrier.ts` | the runner's path check gives a defender's body part of his arm's reach (0.4), not only his torso. |
 | `SCRAPE` | 1 | `sim/run-fits.ts` | Free fits scrape with the gap's motion, the earliest zone key (SCRAPE=0) and read the back's threatened crossing rather than his position (THREAT_READ=0). |
 | `SHED_PHYSICAL` | 1 | `sim/engagement.ts` | A run shed is a decision executed by the body (SHED_PHYSICAL=0: rolled outcome). |
+| `SHED_PURSUE` | 1 | `sim/engagement.ts` | once the runner a blocked defender has declared is past the line, he works off toward the ball at any range; the same blocker cannot re-latch him for the shed window when the rep ends because the runner passed. |
 | `SNAP_REACT` | 1 | `sim/snap-count.ts` | starts come from the count: reaction to the ball or the man across, timed anticipation with error, hard counts; pre-snap fouls follow from represented acts (docs/reviews/presnap.md). |
 | `STALK_CLAIM` | 1 | `sim/behaviors/blocking.ts` | Receivers claim distinct stalk targets (STALK_CLAIM=0: each takes his nearest). |
 | `STRETCH_AIM` | 1 | `sim/behaviors/carrier.ts` | on outside and wide zone the back presses the snap landmark; the live gap does not follow the end. |

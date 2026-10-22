@@ -742,7 +742,8 @@ const DL_FLOW = process.env.DL_FLOW !== '0';
  * duties keep their landmark. Requests only: blocker, contact and World
  * decide what is achieved. */
 const BACK_CHASE = process.env.BACK_CHASE === '1', CHASE_TRAIL = 1, CHASE_STEP = .3;
-/** Experimental (SHED_PURSUE=1, off): once the runner a blocked defender sees
+/** SHED_PURSUE: once the runner a blocked defender has declared (held between
+ * ordinary reads; an edge fit declares him 2 yd past, as pursueIfLive does)
  * is past the line, he works off the block toward the ball wherever the ball
  * is, not only when it is within close range: the ball has left his gap and
  * everyone pursues. Only the decision to work off changes; the hand fight,
@@ -1205,12 +1206,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // A support player who has personally declared the carrying runner must
     // work free toward him even when the block keeps him outside close range.
     // First-level stack/shoulder and uncertain possession retain the old gate.
-    // SHED_PURSUE extends this to first-level fits (interior/edge), whose
-    // runner picture is their own line read; support jobs keep #169's
-    // acquired-backfield rule above. Both use the declaration held between
-    // ordinary reads, not a raw cue that changes between them.
+    // SHED_PURSUE: once that runner is past the line, any blocked defender
+    // works off toward him at any range. It uses the declaration held between
+    // ordinary reads, and a support job needs #169's acquired backfield
+    // picture (not two contradictory ones); a first-level fit's runner
+    // picture is his own line read.
     const firstLevel = d.runFit?.kind === 'interior' || d.runFit?.kind === 'edge';
-    const pursue = SHED_PURSUE && firstLevel && read.declared && read.threat.carrying === true
+    const pursue = SHED_PURSUE && read.declared && read.threat.carrying === true
+      && (firstLevel || read.acquiredBackfield)
       && (read.threat.pos.x - sim.los) * sim.attackDir(b.team) > 0;
     // #169: acquiring hands does not restart already justified support.
     const ready = t >= e.nextMoveAt || (supportRunner && !runSheds.has(e));
