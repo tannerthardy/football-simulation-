@@ -186,9 +186,11 @@ action, 4 games, seeds 301-304, `PASS_KICK` + `FRONT_ALIGN`):
 | Engaged edge reps free before the window ends | 26.1% | 23.3% | 15.4% |
 | Edge pressurers still on the blocker | 19% | 10% | 73% |
 
-- The run-defense session's 8 games on `PASS_KICK` alone measured 23.5% on
-  the same operator. At about 200 dropbacks per arm, totals move by
-  several points with the seeds.
+- Correction: the 4-game pressure change is mostly noise. On 8 games, the
+  run-defense session measured 23.5% with `PASS_KICK` alone and the playbook
+  session 24.0% with `PASS_KICK` + `PASS_RIDE` (same operator). The ride's
+  evidence is the mechanism: corner sheds 69 -> 50 per 100 dropbacks on
+  matched seeds.
 - For: the edge share moves to the tracked one.
 - Against: edge pressurers still arrive free rather than ridden (the
   operator's "still on the blocker" is position-based: a ridden rusher who
