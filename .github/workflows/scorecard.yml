@@ -24,7 +24,7 @@ jobs:
           path: head
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: head/.nvmrc
           cache: npm
           cache-dependency-path: head/package-lock.json
       - run: npm ci --no-audit --no-fund
