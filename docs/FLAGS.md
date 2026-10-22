@@ -54,22 +54,22 @@ There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`
 | `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:195` | expires: review 2 |
 | `DEF_ALIGN` | off | experimental | coverage | `src/playbook/alignment.ts:71` | expires: review 2 |
 | `DEF_GETOFF` | 1 (identity scale) | diagnostic | trenches | `src/sim/agent.ts:25` | expires: review 2 |
-| `DL_ANCHOR` | off | experimental | trenches | `src/sim/engagement.ts:80` | expires: review 2 |
-| `DL_CHASE` | off | experimental | trenches | `src/sim/engagement.ts:685` | expires: review 2 |
-| `DL_FLATTEN` | off | experimental | trenches | `src/sim/engagement.ts:90` | expires: review 2 |
-| `DL_FLATTEN_WON` | off | experimental | trenches | `src/sim/engagement.ts:106` | expires: review 2 |
-| `DL_SQUEEZE` | off | experimental | trenches | `src/sim/engagement.ts:100` | expires: review 2 |
+| `DL_ANCHOR` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:80` | review 2: drop the off path |
+| `DL_CHASE` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:685` | review 2: drop the off path |
+| `DL_FLATTEN` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:90` | review 2: drop the off path |
+| `DL_FLATTEN_WON` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:106` | review 2: drop the off path |
+| `DL_SQUEEZE` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:100` | review 2: drop the off path |
 | `FORCE_BOUNCE` | off | experimental | defense | `src/sim/run-fits.ts:174` | expires: review 2 |
 | `FRONT_ALIGN` | off | experimental | defense | `src/game/playcaller.ts:33`, `src/playbook/alignment.ts:104` | expires: review 2 |
 | `LB_LANDMARK` | off | experimental | defense | `src/sim/run-fits.ts:182` | expires: review 2 |
-| `OL_SPLITS` | off | experimental | run | `src/playbook/alignment.ts:24` | expires: review 2 |
-| `OL_STAGGER` | off | experimental | run | `src/playbook/alignment.ts:32` | expires: review 2 |
-| `PAD_LEVERAGE` | off | experimental | physics | `src/physics/world.ts:313` | expires: review 2 |
-| `PASS_FEEL` | off | experimental | trenches | `src/sim/engagement.ts:713` | expires: review 2 |
+| `OL_SPLITS` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:24` | review 2: drop the off path |
+| `OL_STAGGER` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:32` | review 2: drop the off path |
+| `PAD_LEVERAGE` | on | default (promoted 2026-10-22) | physics | `src/physics/world.ts:313` | review 2: drop the off path |
+| `PASS_FEEL` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:713` | review 2: drop the off path |
 | `PULL_EARLY` | off | experimental | defense | `src/sim/run-fits.ts:165` | expires: review 2 |
 | `SAFETY_TEMPO` | off | experimental | defense | `src/sim/run-fits.ts:189` | expires: review 2 |
 | `SHORT_PACKAGE` | off | experimental | defense | `src/game/playcaller.ts:47`, `src/playbook/alignment.ts:106` | expires: review 2 |
-| `SNAP_REACT` | off | experimental | rules | `src/sim/snap-count.ts:30` | expires: review 2 |
+| `SNAP_REACT` | on | default (promoted 2026-10-22) | rules | `src/sim/snap-count.ts:30` | review 2: drop the off path |
 | `TIP_AWAY` | off | experimental | coverage | `src/sim/catching.ts:23` | expires: review 2 |
 | `WR_ALIGN` | off | experimental | run | `src/playbook/alignment.ts:80` | expires: review 2 |
 | `MOTION` | off | experimental | coverage | `src/sim/motion.ts:33` | review 2 |
@@ -82,4 +82,4 @@ There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`
 | `COVER_CALL` | off | experimental | defense | `src/game/playcaller.ts:115` | expires: review 2 |
 | `MOTION_CHECK` | off | experimental | defense | `src/sim/motion.ts:277` | expires: review 2 (turn on with `MOTION`) |
 | `PRESSURE_CALL` | off | experimental | defense | `src/game/playcaller.ts:126` | expires: review 2 (turn on with `DEUCE`) |
-| `AGAP_ALIGN` | off | experimental | defense | `src/playbook/alignment.ts:167` | expires: review 2 |
+| `AGAP_ALIGN` | on | default (promoted 2026-10-22) | defense | `src/playbook/alignment.ts:167` | review 2: drop the off path |

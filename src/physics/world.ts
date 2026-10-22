@@ -302,7 +302,7 @@ const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);
 const HAND_MOTOR = process.env.HAND_MOTOR === '1';
 /** Experimental leg-hold bracing (LEG_BRACE=1); see addLoad. */
 const LEG_BRACE = process.env.LEG_BRACE === '1';
-/** Experimental (PAD_LEVERAGE=1, off): pad level loads and unloads the feet.
+/** Default on (PAD_LEVERAGE=0 turns it off): pad level loads and unloads the feet.
  * A push runs from the pusher's pads to the other man's; when one man's pads
  * are lower, the line of action tilts up into the higher man. Its vertical
  * part lifts the higher man (less weight on his cleats, so less traction)
@@ -310,7 +310,7 @@ const LEG_BRACE = process.env.LEG_BRACE === '1';
  * the actual normal load; nothing else changes. Off, every body keeps the
  * traction of his standing weight whatever the contact geometry: the low
  * man's advantage in football had no physical path. */
-const PAD_LEVERAGE = process.env.PAD_LEVERAGE === '1';
+const PAD_LEVERAGE = process.env.PAD_LEVERAGE !== '0';
 /** Steepest line of action credited, rise over run (about 30 degrees). */
 const LEVERAGE_SLOPE = .6;
 /** Knee height as a fraction of COM height (knee ~0.28, COM ~0.55 of stature). */

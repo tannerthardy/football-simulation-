@@ -14,22 +14,22 @@ import { clamp, type Vec2 } from '../core/vec.js';
 import type { Coverage, CoverageRole, DefSlot, DefensivePlayCall, Formation, Gap, OffSlot, PassConcept, ReceiverRef, Side, SkillSlot, Technique, ZoneId, UnderSeat, FormationKey } from './types.js';
 import { sideSign } from './types.js';
 
-/** Experimental (OL_SPLITS=1, off): the line splits as tracked. 2022
+/** Default on (OL_SPLITS=0 turns it off): the line splits as tracked. 2022
  * tracking at the snap (body centres, scripts/diag/align/snap.py): 1.54 yd
  * center to guard, 1.56 guard to tackle and 1.52 tackle to inline end, a
  * 6.2 yd tackle-to-tackle surface (coaching: two-foot guard and three-foot
  * tackle splits). The sim line stood at 1.3 yd splits (5.2 yd). Defensive
  * techniques, gap landmarks and the run-aiming points installed against the
  * 1.3 yd table are placed from the actual splits (`lineOffset`). */
-const OL_SPLITS = process.env.OL_SPLITS === '1';
-/** Experimental (OL_STAGGER=1, off): the line stands off the ball as tracked.
+const OL_SPLITS = process.env.OL_SPLITS !== '0';
+/** Default on (OL_STAGGER=0 turns it off): the line stands off the ball as tracked.
  * Guards 0.83 yd behind the ball, tackles 0.98 and an inline end 1.19 (body
  * centres; their helmets break the center's waist, the legal limit for a
  * lineman on the line). The center is tracked at 0.29, over the ball; here
  * the line of scrimmage has no ball length and a body is a disc, so he
  * stands at 0.43, just clear of it for the widest body (radius 0.42). The
  * sim line stood flat at 0.55. */
-const OL_STAGGER = process.env.OL_STAGGER === '1';
+const OL_STAGGER = process.env.OL_STAGGER !== '0';
 /** Center-guard, guard-tackle and tackle-to-inline-end splits (yd between
  * body centres) of one snap's line. */
 export interface LineSplits { cg: number; gt: number; tte: number }
@@ -154,7 +154,7 @@ const BOX_ALIGN = process.env.BOX_ALIGN === '1';
 /** SHELL_SHOW (experimental, off; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
 const SHELL_SHOW = process.env.SHELL_SHOW === '1';
-/** Experimental (AGAP_ALIGN=1, off; acts with FRONT_ALIGN): a lineman's 1
+/** Default on (AGAP_ALIGN=0 turns it off; acts with FRONT_ALIGN): a lineman's 1
  * technique stands at his team's habit along the centre-guard split, not on
  * the centre's shoulder. In 2022 tracking the A-gap man of a 4-down
  * over/under stands a median 0.66 of the split off the centre (0.99 yd; the
@@ -164,7 +164,7 @@ const SHELL_SHOW = process.env.SHELL_SHOW === '1';
  * his build barely moves it (-0.017 per 10 lb) and down, personnel and run
  * or pass move the median under 0.06 (scripts/diag/align/deflook.py). The
  * gap is unchanged. Off: the shoulder. */
-const AGAP_ALIGN = process.env.AGAP_ALIGN === '1';
+const AGAP_ALIGN = process.env.AGAP_ALIGN !== '0';
 /** AGAP_ALIGN: the league's 1 technique, as a share of the centre-guard
  * split (mean of the 2022 team medians), for a defense without a habit. */
 const AGAP_LEAGUE = .63;

@@ -72,13 +72,13 @@ const runCache = new WeakMap<Agent, TrenchTraits>();
  * actual rep; knowing a pass set is not the same skill as sustaining a run fit.
  * The default remains the pass technique used by pre-contact protection.
  */
-/** Experimental (DL_ANCHOR=1, off): an engaged run defender who is doubled,
+/** Default on (DL_ANCHOR=0 turns it off): an engaged run defender who is doubled,
  * or is being driven back by a real load, sits into his stance: pads down to
  * get under the drive ("stay low", "drop the pressure leg"; Bucs, Kuchar,
  * Shurmur). It only matters where pad level has a physical path
  * (PAD_LEVERAGE); a blocker already anchors the same way when driven. */
-const DL_ANCHOR = process.env.DL_ANCHOR === '1';
-/** Experimental (DL_FLATTEN=1, off): an attacking lineman whose blocker steps
+const DL_ANCHOR = process.env.DL_ANCHOR !== '0';
+/** Default on (DL_FLATTEN=0 turns it off): an attacking lineman whose blocker steps
  * across his face (a reach or zone step: the man on him, as he sees him, moving across
  * faster than 1 yd/s and more across than at him) flattens on
  * the line at the depth he met him, instead of driving upfield at 1.5 yd/s
@@ -87,7 +87,7 @@ const DL_ANCHOR = process.env.DL_ANCHOR === '1';
  * Upfield penetration against zone opens the cutback and the cut-up behind
  * him: ours finish 1.61 yd upfield on single-blocked outside zone at 2.5 s,
  * tracked linemen 0.62. A vertical drive block keeps the attack. */
-const DL_FLATTEN = process.env.DL_FLATTEN === '1';
+const DL_FLATTEN = process.env.DL_FLATTEN !== '0';
 /** DL_SQUEEZE (off): an engaged first-level man who sees the man on him move
  * away from the ball (a down block, a double driving him off) fights back
  * across toward it ("fight pressure with pressure", "squeeze the down
@@ -97,13 +97,13 @@ const DL_FLATTEN = process.env.DL_FLATTEN === '1';
  * move since the snap -0.3 to -0.5 yd, crease 2.4-2.5 yd); ours drift
  * 0.5-1.1 yd away (crease 4.2-4.8; scripts/diag/depth/crease.py). Off: he
  * follows his blocker's flow. */
-const DL_SQUEEZE = process.env.DL_SQUEEZE === '1';
+const DL_SQUEEZE = process.env.DL_SQUEEZE !== '0';
 /** DL_SQUEEZE: the squeeze side chosen at a read, and until when it is held. */
 const squeezes = new WeakMap<Engagement, { side: number; until: number }>();
 /** DL_FLATTEN_WON (with DL_FLATTEN, off): the flatten applies only while he is
  * being reached; one already beside or past the man on him keeps attacking
  * ("if you beat the reach, penetrate and make the play"). */
-const DL_FLATTEN_WON = process.env.DL_FLATTEN_WON === '1';
+const DL_FLATTEN_WON = process.env.DL_FLATTEN_WON !== '0';
 function drivenBack(d: Agent): boolean {
   const felt = d.body.support?.felt; if (!felt) return false;
   const load = Math.hypot(felt.x, felt.y);
@@ -676,13 +676,13 @@ const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
 const DL_FLOW = process.env.DL_FLOW !== '0';
-/** Experimental (DL_CHASE=1, off): an engaged interior lineman keys the guard
+/** Default on (DL_CHASE=0 turns it off): an engaged interior lineman keys the guard
  * near him. When he sees him pull, his gap has left with him: he works across
  * his blocker's face toward the pull and follows it down the line, instead of
  * holding a shoulder that slides with the block. A backside edge closes the
  * same way when the pull goes away from his side. The puller is the one he
  * sees (`pullers`), within 3 yd (an edge: 4.5); nothing reads the call. */
-const DL_CHASE = process.env.DL_CHASE === '1';
+const DL_CHASE = process.env.DL_CHASE !== '0';
 /** Experimental (RUN_HANDS=1, off): run blockers drive committed defenders off their body. */
 const RUN_HANDS = process.env.RUN_HANDS === '1';
 /** Experimental (DL_HANDS=1, off): a shedding defender in control of the hands works past with them. */
@@ -705,12 +705,12 @@ const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?:
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
 
-/** Experimental (PASS_FEEL=1, off): the pass blocker mirrors the rusher on
+/** Default on (PASS_FEEL=0 turns it off): the pass blocker mirrors the rusher on
  * acquired information: the one he feels through his hands (a 0.06 s
  * tactile latency plus his attention lapses, via sim.see) or, while a landed move has his hands off, the one
  * he sees (his visuomotor delay), not the rusher's current velocity and
  * position. */
-const PASS_FEEL = process.env.PASS_FEEL === '1';
+const PASS_FEEL = process.env.PASS_FEEL !== '0';
 
 /** Test hook: a fixed move sequence for a rep (identical across arms). */
 export const rushScripts = new WeakMap<Engagement, RushMove[]>();

@@ -4,7 +4,12 @@
  * lets the secondary check against the final formation. Off by default:
  * without the flag a call's motion changes nothing.
  */
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+// Staged on the installed flat 1.3 yd line. With the tracked splits and
+// stagger, the jet's snap point (4.5 yd out) is inside the inline end, so he
+// is numbered #2 at the snap; whether a live jet keeps his number is open
+// (Coverage). The across motion on the tracked line: motion-line-clear.test.ts.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; });
 import { assessScrimmageSnap, type SnapPlayerFacts } from '../src/game/presnap-rules.js';
 import { sceneSim } from '../src/lab/coverage-scene.js';
 import { formationStructure } from '../src/playbook/structure.js';

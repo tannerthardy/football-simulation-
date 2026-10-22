@@ -10,7 +10,8 @@ import { describe, expect, it, vi } from 'vitest';
 // 1.5 s; the wing's seam is 3.8 yd deep at 3.0 s). The scenes are staged on
 // the installed front; `released` asserts each route got off as written, so
 // a staging break fails as staging, not as coverage.
-vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; });
+// OL_STAGGER sets the line deeper; this timed scene is staged on the flat line.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.OL_STAGGER = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { filmScene, jobsOf, type SceneFilm } from '../src/lab/coverage-scene.js';
 import { alignOffense } from '../src/playbook/alignment.js';
