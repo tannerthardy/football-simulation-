@@ -184,6 +184,8 @@ export interface ManOptions {
   overTop?: boolean;
   /** Installed deep responsibility, distinct from an underneath top shoulder. */
   protectDepth?: boolean;
+  /** A man assignment from the call, not a zone defender's carry or read. */
+  manRole?: boolean;
   /** Acquired entry picture; used only to initialize cushion. */
   initialPosition?: Vec2;
 }
@@ -380,7 +382,12 @@ export class ManCoverage implements Behavior {
     const command = this.hipsOpen
       ? track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') })
       : track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
-    if (!o.protectDepth) return command;
+    // An off man defender keeps the cushion he chose with the body he has:
+    // the preview charges his turn and the time to reach the receiver's
+    // speed, so he opens and runs before the stem eats the cushion, not
+    // after. Press and trail technique play under the receiver by design.
+    const keepsCushion = o.protectDepth || (o.manRole && !this.press && !o.trail);
+    if (!keepsCushion) return command;
     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
       : vx > 3 && deep > 3 ? cushion * .5 : cushion;
     const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);

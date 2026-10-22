@@ -47,7 +47,7 @@ export function assignBehaviors(sim: PlaySim): void {
         const tgt = spot.manTarget ? sim.slot(spot.manTarget) : undefined;
         d.behavior = tgt
           ? new ManCoverage(d, sim, tgt, !!spot.press, spot.gap, spot.gapSign,
-            { lev: role.lev, trail: role.trail, overTop: role.overTop, protectDepth: role.protectDepth })
+            { lev: role.lev, trail: role.trail, overTop: role.overTop, protectDepth: role.protectDepth, manRole: true })
           : new ZoneCoverage(d, sim, 'robber', spot.gap, spot.gapSign);
         break;
       }
