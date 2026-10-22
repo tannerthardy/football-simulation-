@@ -493,14 +493,34 @@ Carried over from the issue register; each was measured on an older develop.
   runner at 5 yd were released a median 0.45 s earlier. 29% are still touching
   an opponent (median surface gap 0.12 yd); those go from 0.18 to 0.26 of top
   speed in 0.3 s, against 0.35 to 0.44 for the clear ones. For 32%, the
-  nearest opponent stands between them and the runner. *Hypothesis:* the free
-  pursuer's path runs through the blocker's body instead of around it.
+  nearest opponent stands between them and the runner.
+- **Both bodies push into each other** (#205, `out/` probe; 18 games). In
+  those contacts:
+  - 61% of the DL request more than 1 yd/s into the blocker (median 2.95);
+  - 64% of the blockers, though engaged with no one, request more than 1 yd/s
+    into the DL (median 5.1). All are `run-block`.
+- **`PURSUE_AROUND`** (#205, on). A free pursuer whom the runner has passed
+  routes around an offensive body on his path, from his acquired picture of
+  it, instead of requesting velocity into it. Fits and defenders in front of
+  the runner are unchanged.
+
+  | | Off | On |
+  | --- | --- | --- |
+  | DL request into the body (median) | 2.95 yd/s | −0.38 yd/s |
+  | Free trailing DL still touching an opponent | 30% | 23% |
+  | DL speed | 0.31 of top | 0.29 of top |
+
+  The blocker still drives: 72% of the remaining blockers request about 6 yd/s
+  into the DL. Arrivals per run are 1.52 vs 1.50 (16 games).
+
+  Paired snaps, 800: 272 of 310 runs and 419 of 490 passes are identical; run
+  yards +0.25 (SE 0.18). Small on its own; the blocker's half is Run Game's.
 - **Owners:**
   - crease width and the DB fits: Run Game (G2);
-  - blocks that hold after the runner passes: shared engagement, Run Game, with
-    `SHED_PURSUE` done;
+  - blocks that hold after the runner passes, and blockers who keep driving a
+    released man: Run Game, with `SHED_PURSUE` done;
   - contact cost: Main Engine;
-  - pursuit path around a released blocker: Defense, next.
+  - pursuit path around a released blocker: done (`PURSUE_AROUND`).
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
