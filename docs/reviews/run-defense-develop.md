@@ -679,6 +679,38 @@ The safety comes to linebacker depth to make the stops the box does not
 opens the middle every time. The tail is a box problem that shows in the
 secondary.
 
+**`SNAP_REACT` (ported from claude/run-game-v3, off), adopted into the
+defensive set at the user's direction as the realistic get-off.** The
+defense's start is measured late against the offense in front of it (the
+run-offense session's `getoff-rel.py`, frame lag cancelled): DL minus OL
++0.12 s ours, +0.03 tracked on runs. `SNAP_REACT` times it from the count
+(+0.04). It stays in the set even where outcomes do not improve. On the
+run-offense profile it starts the line sooner (0.05 → 0.19 yd/s at 0.2 s;
+tracked 0.47 with the 0.1 s frame shift) but not backers or DBs, whose
+first movement waits on their run read. Tracked backers' first move is
+small, a read step of 0.23 yd by 0.5 s (ours 0.09; `lbfirst.py` pattern in
+`startup.py`'s notes), so the start is not the backers' main gap: theirs
+is coming downhill too hard after the read (1.8 yd off the ball at 2.0 s,
+tracked 2.35). DBs come up too fast (0.98 / 1.66 / 2.70 yd/s at 0.4 / 0.6 /
+1.0 s, tracked 0.61 / 0.85 / 1.65), the alley fit at linebacker depth.
+
+| 8 games on develop | flags | run mean / p90 | losses | 20+ | pressure (NFL 30.5%) | defensive offside |
+| --- | --- | --- | --- | --- | --- | --- |
+| off | 46 | 8.59 / 27.7 | 21.8% | 10.8% | 20.0% | |
+| law + anchor + flatten | 26 | 6.50 / 10.1 | 13.3% | 5.6% | 17.6% | |
+| + `SNAP_REACT` (`4061541`) | 28 | 6.76 / 14.4 | 17.5% | 7.3% | 26.1% | 10 in 1,141 plays (about 3x NFL; assumed hard-count bite) |
+
+Seven staged witnesses pin `SNAP_REACT` off. Core suite 2,858 / 2,858 with
+the four on and off.
+
+Zone and gap arms against tracking (run-offense profile, under centre):
+zone 10+ is 6.4% ours against 10.2% tracked and 40+ 1.8% against 0.9%;
+the deep-cap arms put zone 10+ at 14–17% and 40+ at 2.5–2.8%. On this
+profile `DL_FLATTEN` cuts zone losses 10.2% → 4% (tracked 9.9%), taking
+away backfield wins that real linemen still get; on develop's own games
+the same flag moves losses 21.8% → 13.3%. Gap runs on this profile reach 5
+yd on 42–44% (tracked 34%), the offense's blocking there.
+
 ### The run tail and the secondary (diagnosis; two probes, neither committed)
 
 The run-offense session's `geometry.py` (its branch) puts the 40+ tail in
