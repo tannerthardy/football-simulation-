@@ -111,6 +111,8 @@ export interface PlayPlan {
   rushers?: number;
   /** Coverage shown before the snap, if disguised. */
   shown?: string;
+  /** Structure the secondary checked against (e.g. `trips`, `bunch_strong`), if it made a check. */
+  checkedOn?: string;
 }
 
 export interface GameResult {
@@ -676,6 +678,7 @@ export class Game {
       pressure: !!defCall.pressure,
       rushers: sim.defAlign.rushers.length,
       shown: defCall.shown?.id,
+      checkedOn: sim.defCall.check?.when,
     };
     if (this.opts.record && r.frames) {
       logEntry.replay = {
@@ -751,7 +754,7 @@ export class Game {
         if (clock.timeoutCharged) s.timeouts[offSide]--;
         if (clock.runoff) this.runClock(clock.runoff);
         this.untimedDown = clock.untimedDown;
-        this.observe(offSide, ranCall, defCall, 0);
+        this.observe(offSide, ranCall, defCall, 0, sim.defCall);
         if (selected.preservesPlay && r.score?.kind === 'TD') {
           const scoring = r.score.team === 'O' ? offSide : defSide;
           this.addScore(scoring, 6); this.afterTouchdown(scoring, s.inRedZone);
@@ -795,7 +798,7 @@ export class Game {
     // Success measure for coordinators (standard success rate definition).
     const need = startDown === 1 ? 0.4 * startDist : startDown === 2 ? 0.6 * startDist : startDist;
     const success = r.turnover ? 0 : offTD ? 1 : clamp(r.yards / Math.max(1, need), 0, 1.2) >= 1 ? 1 : clamp(r.yards / Math.max(1, need), 0, 1) * 0.5;
-    this.observe(offSide, ranCall, defCall, success);
+    this.observe(offSide, ranCall, defCall, success, sim.defCall);
 
     // Ball position for the next snap: inside the hashes.
     s.ballY = clamp(r.endY, HASH_LEFT_Y, HASH_RIGHT_Y);
@@ -1018,9 +1021,9 @@ export class Game {
     }
   }
 
-  private observe(offSide: Side, offCall: OffensivePlayCall, defCall: DefensivePlayCall, success: number): void {
+  private observe(offSide: Side, offCall: OffensivePlayCall, defCall: DefensivePlayCall, success: number, installed: DefensivePlayCall): void {
     this.oc[offSide].observe(offCall, success);
-    this.dc[other(offSide)].observe(defCall, success);
+    this.dc[other(offSide)].observe(defCall, success, installed);
   }
 
   /**

@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, generated from `src` on 2026-10-22 (trunk `d91c9014`). Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 66 flags: 22 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 43 are off. The 22 rows marked "expires: review 2" were added by PR #190 (all default off or identity). At the first review, set an expiry for each off flag and bring the experimental count to 10. Flags that are on by default can lose their switch, keeping only the new path.
+There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 45 are off. The 22 rows marked "expires: review 2" were added by PR #190 (all default off or identity). At the first review, set an expiry for each off flag and bring the experimental count to 10. Flags that are on by default can lose their switch, keeping only the new path.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -72,3 +72,5 @@ There are 66 flags: 22 are on by default, 1 is a diagnostic scale at identity (`
 | `SNAP_REACT` | off | experimental | rules | `src/sim/snap-count.ts:30` | expires: review 2 |
 | `TIP_AWAY` | off | experimental | coverage | `src/sim/catching.ts:23` | expires: review 2 |
 | `WR_ALIGN` | off | experimental | run | `src/playbook/alignment.ts:80` | expires: review 2 |
+| `MOTION` | off | experimental | coverage | `src/sim/motion.ts:33` | review 2 |
+| `DEUCE` | off | experimental | coverage | `src/playbook/call-integrity.ts:67` | review 2 |

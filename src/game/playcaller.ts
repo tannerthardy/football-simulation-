@@ -22,9 +22,10 @@ import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/
 import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONTS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
-import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
+import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, MotionCall, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
-import type { Team } from '../league/team.js';
+import type { CoverageSystem, Team } from '../league/team.js';
+import { motionEnabled } from '../sim/motion.js';
 
 /** FRONT_ALIGN (experimental, off): fronts are called as team installs use
  * them (2017 Colts, 2013 Seahawks, 2020 Ravens via the playbook session):
@@ -93,6 +94,7 @@ const familyOf = (c: OffensivePlayCall) => (c.kind === 'run' ? `run:${c.run!.sch
 export class OffensiveCoordinator {
   private readonly learn = new Map<string, Learn>();
   private runN = 0;
+  private motionCalls = 0;
   private runSum = 0;
   private passN = 0;
   private passSum = 0;
@@ -154,12 +156,36 @@ export class OffensiveCoordinator {
     // Strength to the field (wide side) most of the time.
     const fieldLeft = s.ballY < CENTER_Y;
     const flip = rng.chance(0.7) ? fieldLeft : !fieldLeft;
+    const motion = motionEnabled() ? this.chooseMotion(formation, isPass) : undefined;
+    const tag = motion ? ` (${motion.slot} ${motion.kind} motion)` : '';
     if (isPass) {
       const concept = this.choosePass(s, formation, defense);
-      return { formation, flip, kind: 'pass', pass: concept, label: `${formation.name} — ${concept.name}` };
+      return { formation, flip, kind: 'pass', pass: concept, motion, label: `${formation.name} — ${concept.name}${tag}` };
     }
     const run = this.chooseRun(s, formation);
-    return { formation, flip, kind: 'run', run, label: `${formation.name} — ${run.name}` };
+    return { formation, flip, kind: 'run', run, motion, label: `${formation.name} — ${run.name}${tag}` };
+  }
+
+  /**
+   * Pre-snap motion (MOTION=1): modern offenses move someone on roughly half
+   * their snaps, to change the structure the defense must check (across),
+   * to threaten the edge (jet), to get to empty, or to read man/zone (return).
+   * Draws from its own forked stream so the rest of the call is unchanged.
+   */
+  private chooseMotion(f: Formation, isPass: boolean): MotionCall | undefined {
+    const rng = this.rng.fork(`motion:${this.motionCalls++}`);
+    if (!rng.chance(isPass ? 0.5 : 0.4)) return undefined;
+    const off = Object.entries(f.slots).filter(([, a]) => a && a.depth >= 1 && a.split !== 'inline') as Array<[SkillSlot, NonNullable<Formation['slots'][SkillSlot]>]>;
+    const backs = off.filter(([, a]) => a.depth >= 3 && (a.split === 0 || (typeof a.split === 'number' && a.split < 3.5)));
+    const receivers = off.filter(([slot]) => !backs.some(([b]) => b === slot));
+    const options: Array<[MotionCall, number]> = [];
+    for (const [slot, a] of receivers) {
+      options.push([{ slot, kind: 'across' }, 0.45], [{ slot, kind: 'return' }, 0.15]);
+      // A jet needs a run-up: slots and wideouts, not a tight inside receiver.
+      if (f.qb !== 'under' && (a.split === 'slot' || a.split === 'wide')) options.push([{ slot, kind: 'jet' }, 0.25]);
+    }
+    if (isPass) for (const [slot] of backs.filter(([s]) => s === 'RB')) options.push([{ slot, kind: 'empty' }, 0.3]);
+    return options.length ? pickWeighted(rng, options) : undefined;
   }
 
   private choosePersonnel(s: Situation, isPass: boolean): PersonnelId {
@@ -294,13 +320,33 @@ export class DefensiveCoordinator {
     private readonly rng: Rng,
   ) {}
 
-  /** Feed back the offense's success against a coverage (higher = worse for us). */
-  observe(call: DefensivePlayCall, offenseSuccess: number): void {
-    const k = call.coverage.family ?? call.coverage.id;
-    const l = this.learn.get(k) ?? { n: 0, sum: 0 };
-    l.n++;
-    l.sum += offenseSuccess;
-    this.learn.set(k, l);
+  /** Feed back the offense's success against a coverage (higher = worse for us).
+   * `installed` is the call actually played after the secondary's check. */
+  observe(call: DefensivePlayCall, offenseSuccess: number, installed: DefensivePlayCall = call): void {
+    const keys = [call.coverage.family ?? call.coverage.id];
+    if (installed.check) keys.push(`check:${installed.coverage.id}`);
+    for (const k of keys) {
+      const l = this.learn.get(k) ?? { n: 0, sum: 0 };
+      l.n++;
+      l.sum += offenseSuccess;
+      this.learn.set(k, l);
+    }
+  }
+
+  /**
+   * The trips check this snap when the call offers several (HNFL-195):
+   * Trix (backside safety poaches #3, backside on its own) on passing downs;
+   * Book/Stubbie when the backside must stay 3-over-2, i.e. early downs with
+   * run support needed. A Saban-style quarters tree defaults to Stubbie
+   * against all 3x1, a Fangio-style two-high tree leans Trix. A check the
+   * offense has been beating today gives way to the other.
+   */
+  private checkPrefer(passingDown: boolean, system: CoverageSystem): string[] {
+    const trix = 'cover4_poach', book = 'cover4_stubbie';
+    let first = system === 'quarters' ? book : system === 'two-high' ? trix : passingDown ? trix : book;
+    const other = first === trix ? book : trix;
+    if (this.learned(`check:${other}`) > this.learned(`check:${first}`) * 1.2) first = other;
+    return [first, first === trix ? book : trix];
   }
 
   private learned(k: string): number {
@@ -371,14 +417,21 @@ export class DefensiveCoordinator {
     // Variants within the family by tree; spot vs. match by the coach's habit.
     const m = coach.matchRate;
     const VARIANTS: Record<string, Array<[string, number]>> = {
-      cover3: [['cover3', 1.1 - m], ['cover3_match', m * 0.75], ['cover3_seam', 0.18], ['cover9', system === 'two-high' ? 0.6 : 0.03],
-        ['cover3_buzz', system === 'single-high' || system === 'two-high' ? 0.3 : 0.12], ['cover3_cloud', system === 'two-high' ? 0.25 : 0.05]],
-      cover1: [['cover1', 0.45], ['cover1_off', 0.25], ['cover1_robber', system === 'single-high' ? 0.3 : 0.15], ['cover1_double', 0.04 * (1 + (coach.shadow ? 1 : 0))]],
+      // A two-high (Fangio) tree plays its Cover 3 as weak rotation from the
+      // shell: 99 Weak Sky 21% vs 33 Buzz 3% in HNFL-186 scouting; Cover 3
+      // Seam is about a third of the Eagles' 2025 Cover 3.
+      cover3: system === 'two-high'
+        ? [['cover9', 2.0], ['cover3_seam', 0.6], ['cover3_match', 0.2 * m], ['cover3', 0.1], ['cover3_buzz', 0.12], ['cover3_cloud', 0.12]]
+        : [['cover3', 1.1 - m], ['cover3_match', m * 0.75], ['cover3_seam', 0.18], ['cover9', 0.03],
+          ['cover3_buzz', system === 'single-high' ? 0.3 : 0.12], ['cover3_cloud', 0.05]],
+      cover1: [['cover1', system === 'two-high' ? 0.1 : 0.45], ['cover1_off', 0.25], ['cover1_robber', system === 'single-high' ? 0.3 : 0.15],
+        ['cover1_lurk', system === 'two-high' ? 0.8 : 0.05], ['cover1_double', 0.04 * (1 + (coach.shadow ? 1 : 0))]],
       cover2: [['cover2', 1 - m], ['cover2_match', m], ['cover2_invert', system === 'two-high' ? 0.15 : 0.04]],
       tampa2: [['tampa2', 1]],
       cover4: [['cover4', 0.45], ['cover4_meg', system === 'quarters' ? 0.3 : 0.15], ['cover4_palms', system === 'quarters' || system === 'two-high' ? 0.4 : 0.2]],
       cover6: [['cover6', 0.45], ['cover6_rev', 0.45], ['split_quarters_2man', system === 'quarters' ? 0.25 : 0.08]],
-      cover2man: [['cover2man', 1]],
+      cover2man: [['cover2man', 1], ['pounder', system === 'two-high' || system === 'quarters' ? 0.7 : 0.25],
+        ['finger', system === 'two-high' ? 0.3 : 0.1], ['rolex', system === 'two-high' ? 0.3 : 0.1]],
       cover0: [['cover0', 1]],
     };
     // Eligibility belongs to the actual variant's named zone players. Cover
@@ -405,7 +458,11 @@ export class DefensiveCoordinator {
     let pressure = null;
     if (rng.chance(blitz)) {
       const options = PRESSURES.filter((p) => pressureIsInstallable(personnel, front, coverage, p));
-      if (options.length) pressure = rng.pick(options);
+      // A two-high tree brings its pressure mostly as four-man simulated
+      // pressures (Whip, Slug, Sting) rather than extra rushers (HNFL-186:
+      // a four-man rush on ~80% of snaps).
+      const sim = (p: (typeof options)[number]) => p.rushers === 4;
+      if (options.length) pressure = pickWeighted(rng, options.map((p): [typeof p, number] => [p, sim(p) ? (system === 'two-high' ? 2.5 : 0.6) : 1]));
     }
     if (coverage.id === 'cover0' && !pressure) {
       // Dime has no Will slot. Keep an installed zero-help pressure instead
@@ -429,7 +486,10 @@ export class DefensiveCoordinator {
     const look = coverage.look ?? coverage.shell;
     const disguiseRate = system === 'two-high' && look !== 'two-high' ? 0.85 : coach.disguise * (0.6 + 0.8 * dbIQ);
     if (rng.chance(disguiseRate)) {
-      const pool = look === 'one-high' || look === 'zero' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];
+      // A two-high tree shows one home shell, quarters, on everything it
+      // rotates out of (Fangio: "don't let them know"); others vary the look.
+      const pool = system === 'two-high' ? (look === 'two-high' ? [] : ['cover4'])
+        : look === 'one-high' || look === 'zero' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];
       const available = pool.filter((id) => id !== coverage.id && coverageHasNamedZonePlayers(personnel, COVERAGE_BY_ID[id]));
       if (available.length) shown = COVERAGE_BY_ID[rng.pick(available)];
     }
@@ -453,7 +513,8 @@ export class DefensiveCoordinator {
       slot:motionRng.pick(pressureSlots),secondsBeforeSnap:motionRng.range(.3,1.2),
     } : undefined;
     return {
-      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick, zeus,
+      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick,
+        checkPrefer: this.checkPrefer(passingDown, system), zeus,
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
         label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
       prefs,

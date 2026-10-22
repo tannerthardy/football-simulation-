@@ -789,8 +789,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
       roles[slot] = { kind: 'blitz', gap: b.gap, side: b.side };
       blitzers.add(slot);
     }
-    for (const [slot, z] of Object.entries(pressure.droppers ?? {}) as Array<[DefSlot, ZoneId]>) {
-      if (has(slot)) roles[slot] = { kind: 'zone', zone: z };
+    for (const [slot, z] of Object.entries(pressure.droppers ?? {}) as Array<[DefSlot, UnderSeat]>) {
+      if (has(slot)) roles[slot] = seatRole(z);
     }
   }
   const dlSlots: DefSlot[] = ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT'];
