@@ -306,6 +306,11 @@ problem), resolved.
 - **After the promotion** (2026-10-22): gap-scheme assignments haven't been
   checked against the aligned fronts (`FRONT_ALIGN`, `BOX_ALIGN`);
   `test/gap-assignment.test.ts` is pinned to the old fronts. This is G2.
+  Unpinned, 12 of its 48 cases fail (8 from FRONT_ALIGN, 4 from BOX_ALIGN),
+  from two assigner bugs (*confirmed*, Run Game on #210):
+  - once the strong safety walks down, a receiver's stalk target becomes a
+    front-seven edge defender;
+  - trap against Under misclassifies the A-gap 1-technique on one mirror.
 
 <a id="run-10"></a>
 ### RUN-10: Older run-blocking and second-level issues
