@@ -632,6 +632,53 @@ where the safety starts from. The run-offense session found the same with
 its `TACKLE_HOLD` after the catch. Neither the approach nor the tackle
 belongs to the fit's aim, so `run-fits.ts` keeps its chase.
 
+## Interior pass rush: pairs move as one body (`PASS_FEEL`, default off; diagnosis)
+
+**What tracking shows.** `scripts/diag/depth/interiorrush.py` reads NFL
+tracking and sim exports with one code path. It covers dropbacks without
+play action and interior rushers (on the line inside the tackles' span),
+from first contact with a blocker. Develop + line set, 8 games:
+
+| | Sim | NFL |
+| --- | --- | --- |
+| At the throw: still engaged / past the blocker / separated | 96.9 / 2.9 / 0.2% | 70.9 / 14.7 / 14.4% |
+| Rusher vs his blocker since contact, +1.5 s: toward QB p75, across p50 / p75 | 0.32, 0.11 / 0.21 yd | 0.85, 0.49 / 0.92 yd |
+
+**Why** (`depth/rushmoves.ts`, every 0.3 s move window in the lab):
+- Moves land in 4.5% of windows. A landed move takes the blocker's hands
+  off (steer × 0.1) for its window.
+- Even landed moves gain nothing: across displacement over the window is
+  rip 0.03, swim 0.00, club 0.06 yd. The blocker matches the rusher's
+  lateral speed (swim 2.50 vs 2.53 yd/s).
+- His mirror in `stepPassRep` is `dLat + felt + offset × (3 + 3 feet)`, with
+  `dLat` and the lead taken from the rusher's current velocity and position.
+  He has the rusher's private state with no delay.
+
+**`PASS_FEEL` (`engagement.ts` `stepPassRep`).** The blocker mirrors the
+rusher he has acquired: by touch through his hands (about 60 ms) or, while
+a landed move has his hands off, by sight (his visuomotor delay).
+`test/pass-feel.test.ts`.
+- With it, landed moves gain: on a landed rip the rusher slides at 2.2 yd/s
+  against the blocker's 1.1.
+- Paired dropback lab (`depth/passlab.ts`, 1,920 plays, same seeds): pressure
+  33.4 → 33.8%, interior 4.3 → 4.0%, edge 27.7 → 28.2%. It is inert in
+  outcome, as expected, because hands come off in only about 5% of
+  windows. It is kept off as the information rule: the blocker cannot act on
+  what he has not acquired.
+- **Dropped: `RUSH_SETUP`'s jab.** A finesse move set up with one jab step
+  opposite the working side, then the go. The rusher's lateral speed fell to
+  0.2–0.4 yd/s with no net gain: back and forth within the hands. Attempt
+  one.
+
+**What binds.** While the blocker's hands are on (about 95% of the rep),
+the hand joint holds relative tangential slip below its steer limit, so
+the pair moves together. Hands come off only through `resolveMove`'s roll,
+logistic(−2.1 + 3.4 × (skill − counter) + bonus − 0.6 × control). That is a
+rated outcome. A physical replacement would decide the clear from the
+rusher's arm action against the blocker's current hand hold, and the
+window from the blocker's time to re-fit. It is the next design question
+and goes to the run-offense session for review before code.
+
 ## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
 
 **Question.** With the line set on, the run break rate matches tracking (13.2%
@@ -1155,7 +1202,8 @@ holding the deep defender back.
 telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
-`runrally`, `crease`, `breakpoint`, `afterrelease`, `alleypath`, and lab probes
+`runrally`, `crease`, `breakpoint`, `afterrelease`, `alleypath`, `interiorrush`, and lab probes
+`rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
 `alleyprobe.ts`, `alleytrace.ts` (the nearest deep supporter on long runs), `forcelab.ts` (paired run lab, the same seeds per arm),
 `dlpursuit.ts` (linemen at a run's first contact), `dropprobe.ts` (the
 nearest zone defender when the ball comes near him), `catchact.ts`, `sideprobe.ts` (the side window from inside the
@@ -1167,7 +1215,7 @@ yards-to-goal filter their `--ytg60` option reads. `scripts/diag/runblock/`:
 ## Reproduce
 
 ```sh
-npx vitest run test/deep-no-force.test.ts test/safety-tempo.test.ts test/tip-away.test.ts test/catch-caller-interval.test.ts test/blocked-reach.test.ts test/pull-early.test.ts
+npx vitest run test/pass-feel.test.ts test/deep-no-force.test.ts test/safety-tempo.test.ts test/tip-away.test.ts test/catch-caller-interval.test.ts test/blocked-reach.test.ts test/pull-early.test.ts
 node scripts/baseline.mjs --candidate --flag TIP_AWAY=1 -- npx vitest run --project core
 for a in "" "--flag TIP_AWAY=1"; do node scripts/baseline.mjs --candidate $a -- node --import tsx scripts/diag/depth/ints.ts --games 8; done
 ```

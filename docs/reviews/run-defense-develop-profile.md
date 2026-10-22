@@ -37,6 +37,7 @@ median run 3.95 → 3.46 yd, p90 17.9 → 11.7 (NFL 3.0).
 | Flag | Where | What it does | Evidence |
 | --- | --- | --- | --- |
 | `TIP_AWAY` | `sim/catching.ts` | The defender who just broke up a pass stays out of its tumbling flight. | INTs after a touch 54 → 21%; by the same defender 12 → 0 |
+| `PASS_FEEL` | `sim/engagement.ts` `stepPassRep` | The pass blocker mirrors the rusher he has felt (about 60 ms) or, hands cleared, seen, not his current velocity. | Information rule; paired dropback lab inert (pressure 33.4 → 33.8%) |
 | `DEEP_NO_FORCE` | `sim/run-fits.ts` `buildRunFits` | A deep-zone safety is never the fallback force player. | Paired lab: 20+ runs 15.9 → 7.2% on the plays it changes; others identical |
 
 **Realistic tempo, kept off until its partner lands.**
@@ -73,7 +74,7 @@ installed zone track. `DEF_GETOFF=1` is a diagnostic latency scale.
 | Problem | Diagnosis | Owner |
 | --- | --- | --- |
 | Open-field meeting: last-level and after-catch tacklers lose 1-on-1 | Coming early and holding late both lose. In 20+ runs the deep man is passed 2–3 yd wide (about half) or his tackle breaks (about a third); `TACKLE_HOLD` after the catch agrees | Shared: near approach (`gatheringApproach`) and tackle; not the fit's aim |
-| Interior rush: pairs move as one body | A move lands by a rating roll (about 9% per attempt), and only a landed move loosens the hands | run-defense (rusher side, next) |
+| Interior rush: pairs move as one body (engaged at the throw 96.9% vs 70.9%) | Hands come off only through `resolveMove`'s rated roll (4.5% of windows); with `PASS_FEEL` a landed move does gain | run-defense: physical hand clear, design under review |
 | Engaged linemen cannot escape to pursue | Hand steer up to 0.7 arm force; the work-off presses into the blocker | contact/hands owner (handoff on the workboard) |
 | Crease and down-block wash | `DL_SQUEEZE` v2 narrows the crease but exposes the cutback; needs the scrape backer's fill | run-defense (queued) |
 | After-catch leverage | The front man comes back at the receiver; team leverage (the front man holds, the second arrives) | run-defense (queued, after the meeting question) |

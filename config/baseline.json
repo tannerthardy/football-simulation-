@@ -71,6 +71,7 @@
     "LB_LANDMARK": "0",
     "SAFETY_TEMPO": "0",
     "DEEP_NO_FORCE": "0",
+    "PASS_FEEL": "0",
     "DEF_GETOFF": "1"
   },
   "worldDefaults": {

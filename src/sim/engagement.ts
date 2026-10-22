@@ -693,6 +693,13 @@ const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?:
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
 
+/** Experimental (PASS_FEEL=1, off): the pass blocker mirrors the rusher on
+ * acquired information: the one he feels through his hands (a tactile
+ * latency, about 60 ms) or, while a landed move has his hands off, the one
+ * he sees (his visuomotor delay), not the rusher's current velocity and
+ * position. */
+const PASS_FEEL = process.env.PASS_FEEL === '1';
+
 /** Test hook: a fixed move sequence for a rep (identical across arms). */
 export const rushScripts = new WeakMap<Engagement, RushMove[]>();
 
@@ -799,8 +806,13 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     front.y += clamp((intent.laneY - front.y) * 0.5, -0.4, 0.4);
   }
   const lead = 0.15 + 0.15 * tb.read;
-  const offLat = (front.x + d.vel.x * lead - b.pos.x) * lat.x + (front.y + d.vel.y * lead - b.pos.y) * lat.y;
-  const dLat = d.vel.x * lat.x + d.vel.y * lat.y;
+  // PASS_FEEL: what the blocker has of the rusher, by touch or by sight.
+  const handsOff = inMove && e.move !== 'bull' && e.move !== 'longarm';
+  const rt = Math.max(0.1, b.profile.reactionTime);
+  const known = PASS_FEEL ? sim.see(b, d, (handsOff ? 0.12 + 0.12 * (1 - tb.read) : 0.06) / rt) : d;
+  if (PASS_FEEL) { front.x += known.pos.x - d.pos.x; front.y += known.pos.y - d.pos.y; }
+  const offLat = (front.x + known.vel.x * lead - b.pos.x) * lat.x + (front.y + known.vel.y * lead - b.pos.y) * lat.y;
+  const dLat = known.vel.x * lat.x + known.vel.y * lat.y;
   const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
   const vLat = clamp(dLat + felt(e, lat) * (0.6 + 0.6 * tb.feet) + offLat * (3 + 3 * tb.feet), -mirror, mirror);
   const depth = sim.los - b.pos.x;
