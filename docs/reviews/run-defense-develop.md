@@ -511,6 +511,40 @@ unchanged).
   pressure away rather than adding it.
 - Dropped.
 
+## Safety run-support tempo (`SAFETY_TEMPO`, default off) and the edge rush with `PASS_KICK`
+
+**`SAFETY_TEMPO` (`run-fits.ts`, the alley fit).** Until the back declares,
+an alley safety eases down about a yard from his alignment instead of coming
+to 65% of it (5–8 yd). `test/safety-tempo.test.ts`. Develop + line set,
+8 games each (the playbook session's `scripts/diag/long-run.py`, copied
+unchanged):
+
+| Deep support | Line set | + `SAFETY_TEMPO` | NFL |
+| --- | --- | --- | --- |
+| Forward speed at +0.5 / +1.0 s after the handoff | +1.75 / +2.5 yd/s | +0.5 / +2.0 | +0.5 / +1.75 |
+| On runs reaching 20: ahead of the back at 10 yd | −5.3 yd | −4.4 | +3.1 |
+| Runs reaching 10 / 20 / 40 yd | 12.5 / 7.1 / 5.1% | 16.4 / 7.8 / 5.6% | 12.1 / 2.7 / 0.7% |
+
+- The early tempo now matches tracking.
+- On the breakaways the safety still ends up behind the back. That is the
+  angle after the back declares: our pursuers chase where the back is 17–32%
+  of the time, NFL 3–6%. The run-offense session took that.
+- Alone, the flag lets more runs reach 10 yd, so it is recommended only
+  together with that pursuit fix, kept as the realistic tempo.
+
+**The edge rush once the tackle sets.** On the run-offense session's profile
+with its `PASS_KICK` vertical set (`claude/run-game-v3@1abd6af`, 8 games;
+`scripts/diag/pass-pressure.py`):
+- Pressure is 23.5% of dropbacks (NFL 31.3). Edge engaged pressures are 14.0
+  per 100 (16.9). The deep arc no longer over-produces: the tackle's kick
+  was the missing counter.
+- Free edge rushers in the 0.5 s after a release ask for the quarterback
+  (direction cosine 0.93–0.95) and move toward him at 3.5–4.3 yd/s as the
+  body redirects out of the arc. The decision is right, so there is no
+  rusher change.
+- Pocket movement (`depth/pocket.py`) is close to tracking: ours drop 0.6 yd
+  deeper, and step up as tracked quarterbacks do with an edge at their depth.
+
 ## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
 
 **Question.** With the line set on, the run break rate matches tracking (13.2%
