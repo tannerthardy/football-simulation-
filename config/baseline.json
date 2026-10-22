@@ -45,6 +45,7 @@
     "RUN_READ_TURN": "0",
     "SCRAPE": "1",
     "SHED_PHYSICAL": "1",
+    "SHED_PURSUE": "1",
     "SNAP_REACT": "1",
     "STALK_CLAIM": "1",
     "STRETCH_MESH": "1",
