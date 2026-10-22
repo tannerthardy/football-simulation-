@@ -862,6 +862,17 @@ need personnel the sim doesn't have.
   calls a grip a hold only once the defender has leverage past the blocker
   (|phi| ≥ 1, the engagement's own "beaten at the hip") or it takes his feet:
   5.29 → 1.50 accepted per team-game on identical games.
+- **Cause, no DPI or defensive holding:** *confirmed* (G6). DBs never use
+  their hands on a receiver. Over 872 targeted passes in 12 pr-tier games:
+  - a defender was within 1 yd of the target during the flight on 17%;
+  - physical contact happened on 5.6%, all of it body bumps;
+  - no hand or grasp joint and no strike occurred.
+
+  Catch-point proximity is close to the NFL's (within 1 yd at arrival on 18%
+  of 10+ yd targets vs 25%). The pass-interference detector judges grips,
+  shoves and catch-restricting contact, so the gap is DB technique (G3), not
+  recognition. Open: hands at the catch point (play through the hands, rake
+  the arms) and a beaten DB's grab, at a discipline-set cost.
 - **Cause, offside:** *hypothesis* (#190): hard counts draw defenders too
   easily. `SNAP_REACT` models the snap as perception and timing.
 - **Open:** holding (above), then the missing defensive fouls.
