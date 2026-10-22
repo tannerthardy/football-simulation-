@@ -526,11 +526,12 @@ Carried over from the issue register; each was measured on an older develop.
     the runner's speed: they arrive slow (TKL-2), and a hand hold can't make
     up a 2-3 yd/s deficit within the arms' slack. Grip constants are not to be
     tuned toward the crowd band.
-  - **Sacks rise** (10.0 → 13.4% per dropback, paired, moved): pocket-QB grabs
-    break half as often (12 → 6%, about 175 holds). The QB escapes a grab only
-    through grip physics; a real QB twists and spins out of an arm grab. That
-    escape, and the edge protection behind the pressure (PRO-1), are the gaps
-    this exposes.
+  - **Pocket-QB grabs break half as often** (12 → 6%, about 175 holds). The QB
+    escapes a grab only through grip physics; a real QB twists and spins out
+    of an arm grab. The sack rate's response is not settled: 10.0 → 13.4% per
+    dropback on develop, but 8.6 → 4.9% stacked on #215 (6-game quick tier,
+    whole games diverge early). Check with both merged on the PR tier and a
+    second seed; the QB escape and PRO-1 are the gaps if sacks sit high.
   - Staged scene pinned to `GRIP_HOLD=0` (re-record by review 2): the Cover 2
     vertical curl in `test/cover3-cover2-rules.test.ts`, where the end's grab
     now holds the QB until 3.2 s, before the 3.4 s read.
