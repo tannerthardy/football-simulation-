@@ -541,6 +541,13 @@ the same start: 1.95 yd/s asked over the first 0.5 s, 0.80 achieved. The
 common limit is start-up acceleration from a stance, a movement-law
 question for the physics owner (the run-offense branch carries `GAIT_STEP`).
 
+Handoff, physics: against Duo's vertical double team, our linemen are
+driven back +1.49 yd by 2.5 s (single-blocked +0.34); tracked linemen hold
+at +0.06 (−0.32) (`dlwash.py`, `drive-push.ts` on the run-offense branch).
+Both sides push at saturated force and both carry posture 0.85, so pad
+level and base width do not enter the contest. No defender technique
+(sit, anchor, split) can act until the push law gives them a physical role.
+
 ### The run tail and the secondary (diagnosis; two probes, neither committed)
 
 The run-offense session's `geometry.py` (its branch) puts the 40+ tail in
