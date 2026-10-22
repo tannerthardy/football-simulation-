@@ -15,6 +15,13 @@ session's (`depth/edgedepth.py`, `sidepass.py`, `catchbreak.py` on
 claude/run-defense-develop) read NFL tracking and sim exports with one code
 path.
 
+Reading game numbers: follow the playbook session's arm-comparison protocol
+(`docs/reviews/arm-comparison-protocol.md`, `scripts/diag/arm-power.py`, on
+claude/great-mccarthy-85uf8b). Pressure differences need about 22-42 games
+per arm for 5 points; 4-game arms are about +/-8-11 points. Same-seed games
+diverge at the first play a change affects: one mechanism witness each, no
+variance reduction. Use paired lab cases for mechanisms.
+
 ## Where it stands (current profile)
 
 | | Sim | NFL | Source |
