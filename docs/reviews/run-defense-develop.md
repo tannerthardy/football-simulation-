@@ -626,11 +626,15 @@ max(2.5, stopping distance), so he runs flat out until about 5 yd away.
 
 Coming early and holding late both lose. In the 20+ runs the nearest deep
 supporter either never touches the back (about half; passed 2–3 yd to the
-side) or makes contact and the tackle breaks (about a third). So the
-defect is the open-field meeting, the near approach and the tackle, not
-where the safety starts from. The run-offense session found the same with
-its `TACKLE_HOLD` after the catch. Neither the approach nor the tackle
-belongs to the fit's aim, so `run-fits.ts` keeps its chase.
+side) or makes contact and the tackle breaks (about a third). That is the
+tail, not the meeting. The run-offense session's matched operator
+(`open-field/meet.py`, all runs reaching 5 yd) finds the meeting
+tracking-like: met / passed 49 / 14% vs 48 / 19%, broke after meeting 9%
+in both, 23 vs 25% against backs at 7+ yd/s. Fewer defenders arrive: 2.10
+meetings per run vs 2.69, defensive linemen 0.02 vs 0.30. So each miss
+costs more because nobody else is coming. The defect is pursuit arrival
+(linemen re-latched after the back passes, little lateral flow), not the
+safety's aim or the tackle, and `run-fits.ts` keeps its chase.
 
 ## Interior pass rush: pairs move as one body (`PASS_FEEL`, default off; diagnosis)
 
@@ -671,14 +675,50 @@ a landed move has his hands off, by sight (his visuomotor delay).
   0.2–0.4 yd/s with no net gain: back and forth within the hands. Attempt
   one.
 
-**What binds.** While the blocker's hands are on (about 95% of the rep),
-the hand joint holds relative tangential slip below its steer limit, so
-the pair moves together. Hands come off only through `resolveMove`'s roll,
-logistic(−2.1 + 3.4 × (skill − counter) + bonus − 0.6 × control). That is a
-rated outcome. A physical replacement would decide the clear from the
-rusher's arm action against the blocker's current hand hold, and the
-window from the blocker's time to re-fit. It is the next design question
-and goes to the run-offense session for review before code.
+**What binds: the gait, not the hands.** Three more attempts inside the
+rep gained nothing and are dropped:
+- **`HAND_CLEAR`:** the clear is decided by the rusher's swat against
+  friction under the blocker's hand push plus grip, and the window by his
+  re-fit time, not the rated roll. Clears went from 5 to 37% of windows;
+  lab pressure 33.8 → 37.0%, mostly edge (28.2 → 30.8; interior
+  4.0 → 4.8).
+- **No chest push while cleared ("skinny").**
+- **Hips turned to his travel while cleared.** Landed windows still slide
+  only 0.03–0.11 yd across.
+
+Ground forces in the probe show why. In a landed swim the rusher asks for
+4.4 yd/s across, and his feet give 440–550 sideways at 151 kg (3–3.5
+yd/s²). On develop a request below top speed is followed with the sprint
+time constant (`gaitLag` = tau, 1.34 s for this DT). The run-offense
+profile instead runs `GAIT_STEP` = 0.3 s (the time to level off at a wanted
+speed), and the paired dropback lab on develop + line set agrees:
+
+| | Pressure | Interior | Edge | Sacks | Throw p50 | Time to pressure p50 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Off | 33.4% | 4.3 | 27.7 | 4.9% | 2.55 s | 2.50 s |
+| `GAIT_STEP=0.3` | 28.0% | 9.1 | 16.6 | 3.4% | 2.40 s | 2.65 s |
+
+Tracking has about 9 interior and 17 edge pressures per 100 dropbacks, and
+2.71 s to pressure. In 8 games (`diag/pass-pressure.py`), `GAIT_STEP`
+raises interior engaged pressures from 5.9 to 7.5 per 100 (NFL 8.7), with
+edge 12.5 → 12.6. But the pairs stay together: at the throw 97.1% are
+still engaged, and across at +1.5 s is p50 0.12, p75 0.29
+(`interiorrush.py`; NFL 70.9%, 0.49 / 0.92). Three-quarters of those
+interior pressures arrive still engaged, pushing the man back, not past him.
+
+So there are two facts:
+- The pressure level is partly the movement law's start-up from a stance,
+  the same limit `LB_STEP` met below. It belongs to the physics owner and
+  is already on the run-offense profile.
+- An engaged pair does not come apart except when a rule ends the rep (the
+  corner beat or a landed move's window). This is probably the same engine
+  fact as run defenders re-latched after the back passes (run-offense
+  session, `SHED_PURSUE` / `BLOCK_FRONT`).
+
+Nothing in the rush controller changes. `HAND_CLEAR` waits to be measured
+on a `GAIT_STEP` base (not committed). The run-offense session's review
+applies when it returns: decide the clear from the joint's attained load,
+not from `e.control`, which is a rating random walk.
 
 ## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
 

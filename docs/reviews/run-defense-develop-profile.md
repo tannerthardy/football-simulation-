@@ -73,8 +73,8 @@ installed zone track. `DEF_GETOFF=1` is a diagnostic latency scale.
 
 | Problem | Diagnosis | Owner |
 | --- | --- | --- |
-| Open-field meeting: last-level and after-catch tacklers lose 1-on-1 | Coming early and holding late both lose. In 20+ runs the deep man is passed 2–3 yd wide (about half) or his tackle breaks (about a third); `TACKLE_HOLD` after the catch agrees | Shared: near approach (`gatheringApproach`) and tackle; not the fit's aim |
-| Interior rush: pairs move as one body (engaged at the throw 96.9% vs 70.9%) | Hands come off only through `resolveMove`'s rated roll (4.5% of windows); with `PASS_FEEL` a landed move does gain | run-defense: physical hand clear, design under review |
+| Pursuit arrival: fewer defenders reach the runner (2.10 vs 2.69 per run reaching 5 yd; DL 0.02 vs 0.30) | The meeting itself matches tracking (met 49 / 48%, broke 9 / 9%; run-game `open-field/meet.py`); DL stay latched after the back passes and never flowed with the play | DL re-latch and OZ pair flow: run-game (`SHED_PURSUE`, `BLOCK_FRONT`, W1); front-seven feet before the read: run-defense (`DL_KEY` exists, see below) |
+| Interior rush: pairs move as one body (engaged at the throw 97% vs 71%, with or without `GAIT_STEP`) | `GAIT_STEP=0.3` lifts interior pressure 5.9 → 7.5 per 100 (NFL 8.7) by push, not release; a pair comes apart only when a rule ends the rep (likely the same fact as run re-latch) | Physics (`GAIT_STEP` promotion); release mechanism shared with the run-offense re-latch work; `HAND_CLEAR` on hold |
 | Engaged linemen cannot escape to pursue | Hand steer up to 0.7 arm force; the work-off presses into the blocker | contact/hands owner (handoff on the workboard) |
 | Crease and down-block wash | `DL_SQUEEZE` v2 narrows the crease but exposes the cutback; needs the scrape backer's fill | run-defense (queued) |
 | After-catch leverage | The front man comes back at the receiver; team leverage (the front man holds, the second arrives) | run-defense (queued, after the meeting question) |
