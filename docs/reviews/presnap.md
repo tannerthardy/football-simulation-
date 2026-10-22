@@ -383,6 +383,34 @@ Open:
 - The defense's legal pre-snap movement (stems, sugar) as flinch cues.
 - Shotgun outside zone against an on-time defense (losses 5.0 -> 12.5%).
 
+### Hard counts: one law for both lines (2026-10-22)
+
+`scripts/diag/align/snap-fouls.ts`, 8 games (seed 401), current profile.
+Per game, before -> after (NFL about):
+
+| Foul | Before | After | NFL |
+|---|---|---|---|
+| Offside | 1.9 | 1.4 | 0.85 |
+| Neutral zone infraction | 1.5 | 0.5 | 0.4 |
+| Encroachment | 0.25 | 0.1 | 0.1 |
+| False start | 1.5 | 1.0 | 2.2 |
+
+- The excess defensive fouls came from hard counts: 89 of 1,154 snaps
+  drew 22 dead-ball or offside fouls, a quarter of all hard counts.
+  Rhythm offsides (a timer's own estimate) were 0.5 per game.
+- The defensive bite chance (0.02 + 0.1 x (1 - discipline) per timer) was
+  an assumption 3-4 times the offensive line's chance of losing the count
+  (0.005 + 0.03 x (1 - discipline)). Against the offense's own 8% risk, a
+  hard count that drew a flag a quarter of the time would be called on
+  every down. Both lines now use the same susceptibility to the extra sound.
+  That is a shared assumption, not a fit to penalty totals.
+- A full-effort get-back after the stop (instead of 1.5 yd/s) changed
+  nothing: crowding linemen are offside on any 0.03 yd net step past their
+  set, and a jumper cannot undo 0.24 s of fire-out in the 0.24 s left.
+  Not kept.
+- Still open: false starts are about half the tracked rate. That is the
+  offense's own timing (`planSnap`'s lineman timers).
+
 ## Next
 
 - Offense (this session): the play-side linemen's lateral flow on stretch

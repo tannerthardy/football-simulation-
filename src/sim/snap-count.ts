@@ -81,7 +81,7 @@ export function planSnap(agents: readonly Agent[], s: SnapSituation, rng: Rng): 
     if (a.team === 'O') {
       if (!LINE.has(a.slot)) { plans.set(a, { go: a.mind.snapDelay, timed: false }); continue; }
       // On a hard count a lineman can lose the count and go on the extra sound.
-      if (hard && rng.chance(0.005 + 0.03 * (1 - discipline))) { plans.set(a, { go: -BEAT + a.mind.snapDelay, timed: false }); continue; }
+      if (hard && rng.chance(soundLapse(discipline))) { plans.set(a, { go: -BEAT + a.mind.snapDelay, timed: false }); continue; }
       // A lineman who wants a head start (most of all a tackle on a passing
       // down) goes on his own timing of the count, not after hearing it.
       const tackle = a.slot === 'LT' || a.slot === 'RT';
@@ -98,14 +98,24 @@ export function planSnap(agents: readonly Agent[], s: SnapSituation, rng: Rng): 
     const sd = 0.03 + 0.05 * (1 - anticipation);
     const error = rng.normal(margin * sd, sd);
     if (hard) {
-      // He hears the extra sound; nearly everyone waits for the ball.
-      if (!rng.chance(0.02 + 0.1 * (1 - discipline))) { plans.set(a, { go: react, timed: false }); continue; }
+      // He hears the extra sound; nearly everyone waits for the ball. The
+      // same susceptibility to the extra sound as an offensive lineman's.
+      if (!rng.chance(soundLapse(discipline))) { plans.set(a, { go: react, timed: false }); continue; }
       plans.set(a, early(-BEAT + error, a, react));
       continue;
     }
     plans.set(a, error < 0 ? early(error, a, react) : { go: Math.min(error, react), timed: true });
   }
   return { hard, plans };
+}
+
+/** Chance a lineman who times the cadence goes on the hard count's extra
+ * sound (assumption), the same law for both lines. A separate, higher
+ * defensive rate (0.02 + 0.1 x (1 - discipline)) drew a flag on a quarter of
+ * hard counts against the offense's own 8% false-start risk, a trade no
+ * offense would leave unused. */
+function soundLapse(discipline: number): number {
+  return 0.005 + 0.03 * (1 - discipline);
 }
 
 function early(go: number, a: Agent, react: number): StartPlan {
