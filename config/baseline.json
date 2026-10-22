@@ -59,6 +59,7 @@
     "OL_SPLITS": "1",
     "OL_STAGGER": "1",
     "BLOCKED_REACH": "1",
+    "GRIP_HOLD": "1",
     "PULL_EARLY": "1",
     "THREAT_READ": "1",
     "WRAP_BIND": "0",
