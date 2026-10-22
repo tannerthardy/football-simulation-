@@ -10,7 +10,10 @@ import { describe, expect, it, vi } from 'vitest';
 // The scenes read the coverage rules on a held ball. AGAP_ALIGN's wider 1
 // technique sends the rush another way, and the far end sacks the vertical
 // curl's QB at 2.9 s, before the 3.4 s read: the rush, not the rule.
-vi.hoisted(() => { process.env.AGAP_ALIGN = '0'; });
+// GRIP_HOLD keeps the end's 2.4 s grab on the vertical curl's QB a beat
+// longer; he still breaks it, but goes down at 3.2 s, before the 3.4 s read:
+// the rush, not the rule (KNOWN_PROBLEMS TKL-1, re-record by review 2).
+vi.hoisted(() => { process.env.AGAP_ALIGN = '0'; process.env.GRIP_HOLD = '0'; });
 import { filmScene, jobsOf, modeOf, type SceneFilm } from '../src/lab/coverage-scene.js';
 
 /** The defender whose installed landmark is `zone`. */
