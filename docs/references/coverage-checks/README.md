@@ -8,6 +8,10 @@ Two research indexes, compiled 2026-10-22 for the coverage-rules work on
   coverage sheets, 20 originals viewed), the Coverage Operating System
   manuscript and the handbook. Tags: [S] stated, [D] read from the diagram,
   [I] inferred.
+- [fangio-system.md](fangio-system.md): the Vic Fangio two-high system and
+  its NFL descendants: principles, the coverage tree defender by defender,
+  rotations, run fits, pressure family, usage data (NGS/PFF/BDB), and a
+  prioritized gap list against this repo (section E).
 - [web-sources.md](web-sources.md): public coaching sources (Saban's
   coverage manual transcription, Kirby Smart, Pruitt, Cover 7, MatchQuarters
   previews, Fangio write-ups, USA Football, Brophy), with URLs. Tags: [S],
@@ -71,11 +75,35 @@ Film any scene with `node --import tsx scripts/coverage-rule-film.ts
 | Cover 1 Banjo | Vs bunch: point locked, corner/safety trade #1/#3 by release (HNFL-074) | Done; `presnap-coverage-checks` |
 | Cover 3 Clue | Vs bunch: Clue 1/3 corner keying #2 to #1, bunch side spot-drops (HNFL-091/203) | Done; `presnap-coverage-checks` |
 | Coordinator menu | Trix vs Book by down, tree and learned results (HNFL-195) | Done; `defensive-check-menu` |
+| Cover 9 tree | Weak rotation as the two-high tree's Cover 3; Strap (#3 receiver hook, bonus hook), Clue, Grab (HNFL-054/056/203) | Done; `fangio-tree` |
+| Cover 6/8 | Squat half side; Cover 8 Trix vs trips (HNFL-324/325/336) | Done; `fangio-tree` |
+| Zeus | Resolved by where the target stands, then the structure check (trips #1 → Cover 8 Trix) | Done; `fangio-tree` |
+| Sim pressures | Whip, Slug, Sting; dropped linemen with match rules; promised rush counts (HNFL-057/060/242) | Done; `sim-pressures` |
+| Home shell | Two-high tree disguises from one quarters look | Done; `fangio-tree` |
+| Cover 1 Lurk | Down safety by formation, lurker in the hole (HNFL-240) | Done; `fangio-tree` |
+| Hands family | Pounder, Finger, Rolex (HNFL-074/208/261) | Done; `fangio-tree` |
+| Motion | Across, jet, empty, return; final-formation check; provisional bump (MOTION=1) | Done; `offensive-motion` |
 
 In two seeded games (seeds 3 and 7, 262 snaps) checks fired on 41 snaps:
 Mable 9, Poach/Trix 7, Wild 5, Cover 6 Book 4, Banjo 6, Clue 3, Stubbie 4,
 Box 2, Book/Read 1. Trips-family formations were about 40% of snaps and
 bunch about 10%, so these answers are exercised in ordinary games.
+
+## Fangio items still open
+
+From [fangio-system.md](fangio-system.md) section E:
+- **E1, owned by the pre-snap alignment work:** orient strength to the
+  nickel side. Ties go to the field, and the nickel travels only on a
+  change-of-strength motion.
+- **E3, owned by the pre-snap alignment work:** real rotation timing (late
+  pre-snap, at the snap, or post-snap), with the rotating safety fitting
+  from where he actually is.
+- **E4:** Cover 6 Area and half-side Smack/Read/Patty.
+- **E7:** Lord, Ring, Chicago.
+- **E8:** run-fit force table per coverage (Run owner).
+- **E9:** Cut/Cone/Inc bracket tags.
+- **E10:** Tampa variants and Deuce.
+- **E11:** red-zone versions.
 
 ## Known limits
 

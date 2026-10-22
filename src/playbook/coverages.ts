@@ -185,6 +185,57 @@ export const COVERAGES: Coverage[] = [
     },
     underneath: [],
   },
+  // Two-deep man ("Hands" family, HNFL-074/206/208/261): man underneath with
+  // two safeties; Pounder plays the safeties as inside quarters keying #2 to
+  // #1 to double whichever goes vertical, Fist (2-Man) as deep halves.
+  {
+    id: 'pounder', name: 'Pounder (man under, quarters safeties)', family: 'cover2man', shell: 'two-high', man: true, press: false,
+    note: 'Man underneath with inside leverage; both safeties play inside quarters keying #2 to #1 for a double on the vertical.',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'] },
+      CB_W: { kind: 'man', prefer: ['W1'] },
+      NB: { kind: 'man', prefer: ['S2', 'W2'] },
+      DB: { kind: 'man', prefer: ['W2', 'S3'] },
+      SS: z('quarter_s_in', 'q_safety'),
+      FS: z('quarter_w_in', 'q_safety'),
+      LB_S: { kind: 'man', prefer: ['S3', 'B'] },
+      LB_M: { kind: 'man', prefer: ['S3', 'B', 'W2'] },
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+    },
+    underneath: [],
+  },
+  {
+    id: 'finger', name: 'Finger (2-Man strong, Pounder weak)', family: 'cover2man', shell: 'two-high', man: true, press: false,
+    note: 'Trail man under a deep half to the strength; man with an inside-quarter safety keying #2 to #1 away.',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'], trail: true },
+      CB_W: { kind: 'man', prefer: ['W1'] },
+      NB: { kind: 'man', prefer: ['S2', 'W2'], trail: true },
+      DB: { kind: 'man', prefer: ['W2', 'S3'] },
+      SS: z('deep_half_s'),
+      FS: z('quarter_w_in', 'q_safety'),
+      LB_S: { kind: 'man', prefer: ['S3', 'B'] },
+      LB_M: { kind: 'man', prefer: ['S3', 'B', 'W2'] },
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+    },
+    underneath: [],
+  },
+  {
+    id: 'rolex', name: 'Rolex (Pounder strong, 2-Man weak)', family: 'cover2man', shell: 'two-high', man: true, press: false,
+    note: 'Man with an inside-quarter safety to the strength; trail man under a deep half away ("safety rolls to X").',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'] },
+      CB_W: { kind: 'man', prefer: ['W1'], trail: true },
+      NB: { kind: 'man', prefer: ['S2', 'W2'] },
+      DB: { kind: 'man', prefer: ['W2', 'S3'], trail: true },
+      SS: z('quarter_s_in', 'q_safety'),
+      FS: z('deep_half_w'),
+      LB_S: { kind: 'man', prefer: ['S3', 'B'] },
+      LB_M: { kind: 'man', prefer: ['S3', 'B', 'W2'] },
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+    },
+    underneath: [],
+  },
   // ------------------------------------------------------------ cover 3
   {
     id: 'cover3', name: 'Cover 3 (Sky)', family: 'cover3', shell: 'one-high', man: false, press: false,

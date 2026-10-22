@@ -97,3 +97,13 @@ describe('Cover 1 Lurk and the two-high home shell', () => {
     expect(open / 200).toBeGreaterThan(0.8);
   });
 });
+
+describe('Two-deep man: Pounder', () => {
+  it('the inside-quarter safety doubles #2 vertical, and helps #1 when #2 breaks out short', () => {
+    const vert = filmScene({ formation: 'gun_spread_10', coverage: 'pounder', strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'seam' }, until: 2.6 });
+    expect(jobsOf(vert, 'SS')).toContain(`man:${vert.numbering.S2}`);
+    expect(jobsOf(vert, 'NB')).toEqual([`man:${vert.numbering.S2}`]);
+    const out = filmScene({ formation: 'gun_spread_10', coverage: 'pounder', strong: { 1: 'go', 2: 'quick_out' }, weak: { 1: 'go', 2: 'seam' }, until: 2.6 });
+    expect(modeOf(out, 'SS')).toBe('one');
+  });
+});

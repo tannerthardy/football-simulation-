@@ -393,7 +393,8 @@ export class DefensiveCoordinator {
       tampa2: [['tampa2', 1]],
       cover4: [['cover4', 0.45], ['cover4_meg', system === 'quarters' ? 0.3 : 0.15], ['cover4_palms', system === 'quarters' || system === 'two-high' ? 0.4 : 0.2]],
       cover6: [['cover6', 0.45], ['cover6_rev', 0.45], ['split_quarters_2man', system === 'quarters' ? 0.25 : 0.08]],
-      cover2man: [['cover2man', 1]],
+      cover2man: [['cover2man', 1], ['pounder', system === 'two-high' || system === 'quarters' ? 0.7 : 0.25],
+        ['finger', system === 'two-high' ? 0.3 : 0.1], ['rolex', system === 'two-high' ? 0.3 : 0.1]],
       cover0: [['cover0', 1]],
     };
     // Eligibility belongs to the actual variant's named zone players. Cover
