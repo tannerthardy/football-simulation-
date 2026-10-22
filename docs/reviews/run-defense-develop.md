@@ -504,6 +504,43 @@ offense's lever. One defensive piece remains: a backer does nothing until
 his run read at about 0.5 s (`lbtrace.ts`), while the coaching tables have
 the first step go with the key's flow before run or pass is known.
 
+### The run tail and the secondary (diagnosis; two probes, neither committed)
+
+The run-offense session's `geometry.py` (its branch) puts the 40+ tail in
+the open field. When a gap run reaches 10 yd, the deepest defender is 0.3 yd
+ahead of the runner (NFL 4.8), and runs past 20 yd reach 40 92% of the time
+(NFL 25%). New operators in `scripts/diag/runblock/` read NFL and sim alike
+(`capahead.py`, `dbdepth.py`, `downfield.py`, `backlat.py`). Gap arm on the
+run-offense profile (`879c1d9`), 1,200 runs:
+
+| | NFL | ours |
+| --- | --- | --- |
+| Deepest DB depth at the snap / handoff / handoff + 1 s | 13.1 / 14.1 / 14.0 | 13.0 / 11.4 / 8.2 (power) |
+| His lead on the runner at 0 / 5 / 10 yd | 12.5 / 5.4 / 2.1 | 6.8 / 0.2 / −4.3 |
+| DBs downfield of a runner at 10 yd: inside / wide | 1.19 / 1.47 | 0.10 / 0.54 |
+| Runs reaching 5 yd | 37% | 46% |
+
+Our secondary plays as a third level of backers. The alley fit takes a
+safety to 5–8 yd as soon as he reads run, and the box leans on him there.
+
+- **`DEEP_CAP`** (the run-offense branch's flag, alone): the deep defender
+  keeps his depth until the ball crosses. His lead at 0 / 5 / 10 yd becomes
+  11.4 / 5.9 / 0.1, NFL-like to 5 yd, but runs reaching 5 yd go 46 → 59%,
+  10+ 18 → 36%, and 40+ stays about 11%. In Cover 3 it also holds the
+  deep-third corners. Holding the secondary deep exposes the box.
+- **`PURSUIT_MARGIN` (probe):** a pursuer aims at the first point on the
+  runner's path he reaches with his reaction time to spare. Gap 40+ 134 →
+  93 of 1,200, but zone 40+ 21 → 40. Restricted to a runner heading
+  downfield (the coaching meaning of a deeper angle), gap 134 → 122 and
+  zone 21 → 27. So the first form's gain was wider lateral flow, which
+  helps against bounced gap runs and hurts against zone cut-ups: a trade,
+  not a repaired mechanism. Two attempts; stopped.
+
+The tail starts in the box, not the secondary: too many runners reach the
+second level, and the safety who would be the last level is already
+filling there. Next is the box's second level (backer flow, above), then
+holding the deep defender back.
+
 ## Diagnostics (observation only)
 
 `scripts/diag/depth/`: `frontact.ts` (the defenders in front of the receiver after the catch), `drives.ts` (drives, results, points by scoring play),
