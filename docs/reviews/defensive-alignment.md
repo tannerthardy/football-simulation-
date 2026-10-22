@@ -9,9 +9,10 @@ fronts and looks ... and all the checks". Everything here is default-off;
 
 **Candidate settings (user-approved, 2026-10-22).** After the run-defense
 rerun (see Game check), the user approved turning on the combination it
-measured. This branch's `config/baseline.json` sets twelve flags to "1":
-- the eight alignment flags: `FRONT_ALIGN DEF_ALIGN SHORT_PACKAGE
-  FRONT_STRENGTH FRONT_MENU BOX_ALIGN DEF_PACKAGE SHELL_SHOW`;
+measured. This branch's `config/baseline.json` sets thirteen flags to "1"
+(`COVER_CALL` joined after its own game check, section 6):
+- the alignment and calling flags: `FRONT_ALIGN DEF_ALIGN SHORT_PACKAGE
+  FRONT_STRENGTH FRONT_MENU BOX_ALIGN DEF_PACKAGE SHELL_SHOW COVER_CALL`;
 - #190's line set: `PAD_LEVERAGE DL_ANCHOR DL_FLATTEN SNAP_REACT`.
 
 `DL_FLATTEN_WON` and `LB_LANDMARK` stay "0". Source defaults stay off, so
@@ -304,6 +305,29 @@ reaction sees.
   10, Cover 1 is 26% → 17%. Cover 2 and Cover 6 stay a few points under
   tracking. They follow the coordinators' coverage systems, and I stopped
   rather than fit them.
+- **Games.** Eight games, seed 101, same source hash (`5e85f5eb`): the
+  candidate profile (twelve flags) with `COVER_CALL` off and on, run through
+  `baseline.mjs --candidate`. Guard 12/12 in both.
+
+  | | `COVER_CALL` off | on |
+  |---|---|---|
+  | Run yards, mean | 6.64 | 6.60 |
+  | Broke contact | 12.9% | 13.3% |
+  | Yards after catch, mean / p90 | 10.7 / 33.9 | 10.4 / 33.7 |
+  | Catches against man | 125 | 66 |
+  | Flagged (off + check) | 115 | 117 |
+  | Off | 32 | 38 |
+
+  The flags that change are run-concept and box sub-groups (n 30-60 each),
+  moving both ways (gap pulls, outside zone and box-7 YAC improve; inside
+  zone and duo get worse). That is the games diverging once the coverage
+  draw changes, not a mechanism. Man coverage's YAC tail (p90 17.8 → 35.5)
+  rests on 66 catches, while zone's improves (38.9 → 32.9). Both belong to
+  the after-catch tackling item on the workboard. The man/zone mix moves
+  toward tracking with no material change to the top line, so `COVER_CALL`
+  joins the candidate settings. The control arm's receipt reads "inputs
+  changed" because a docs commit landed mid-run; its command exited 0 on the
+  same source.
 
 ## Contracts with the flags on
 

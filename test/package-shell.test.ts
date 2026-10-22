@@ -9,6 +9,8 @@ import { DEF_PERSONNEL, type DefSlot, type DefensivePlayCall } from '../src/play
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function load(flags: Record<string, '0' | '1'>) {
+  // The coverage call also reads the formation; these contracts are the package's and the shell's.
+  vi.stubEnv('COVER_CALL', '0');
   for (const [k, v] of Object.entries(flags)) vi.stubEnv(k, v);
   vi.resetModules();
   const playcaller = await import('../src/game/playcaller.js');

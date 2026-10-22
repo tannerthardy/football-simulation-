@@ -9,6 +9,8 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function load(on: boolean) {
   vi.stubEnv('COVER_CALL', on ? '1' : '0');
+  // The shell shown also reads the formation; this contract is the call's.
+  vi.stubEnv('SHELL_SHOW', '0');
   vi.resetModules();
   const playcaller = await import('../src/game/playcaller.js');
   const team = await import('../src/league/team.js');
