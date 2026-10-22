@@ -386,6 +386,48 @@ QB depth at 1.0 / 1.5 / 2.0 s:
   anything. The rusher must stay free to choose a move, and its cost and
   the blocker's counter should decide it, not a cap.
 
+## 8. QB pocket movement
+
+Question: do NFL QBs climb when the edge rushers get level with them, while
+the sim's do not?
+
+Method: `scripts/diag/qb-pocket.py`, position-only, same `c735a6dd` export.
+- **Plays:** dropbacks without PA that end in a throw at least 1.0 s after
+  line start. NFL 6,032; sim 386.
+- **Set:** the QB's deepest point. Step-up = set depth − depth at the throw.
+- **Edge level:** an edge rusher within 1 yd of the QB's depth or deeper,
+  and within 4 yd of him laterally.
+
+| | NFL | Sim |
+|---|---|---|
+| Set depth; time after line start; throw after the set | 7.6 yd; 1.86 s; 0.20 s | 7.9 yd; 1.69 s; 0.30 s |
+| Step-up p50 / p75 / p90 | 0.0 / 0.2 / 1.0 yd | 0.0 / 0.0 / 0.5 yd |
+| Step-up of 0.5+ / 1.0+ yd | 17% / 11% | 10% / 6% |
+| An edge rusher gets level before the throw | 43% of throws, at 1.96 s | 30%, at 1.89 s |
+| Climbs 0.3+ yd within 0.5 s of that | 20% (4% without an edge level) | 27% (0% without) |
+| **Lateral slide after an edge gets level, p50 / p75 / p90** | **0.2 / 0.5 / 2.6 yd** | **0.0 / 0.1 / 0.2 yd** |
+| Lateral slide, set to throw, no edge level, p50 / p75 / p90 | 0.0 / 0.2 / 0.6 yd | 0.0 / 0.0 / 0.0 yd |
+
+**Reading.**
+- **Climbing is uncommon in the NFL too.** The median NFL QB throws from
+  his deepest point. Only about one throw in six involves a step-up of half
+  a yard or more.
+- **The sim QB already responds to the edge.** An edge rusher getting
+  level is a climb cue in both: 20% vs. 4% in the NFL, 27% vs. 0% in the
+  sim. The hypothesis that the sim QB does not climb is not supported.
+- **The difference is sideways.** Once an edge rusher is level, NFL QBs
+  slide: a quarter move half a yard or more, a tenth 2.6 yd or more. The
+  sim QB stays on his spot (p90 0.2 yd), and never moves laterally without
+  pressure.
+- **The sim QB also sets 0.3 yd deeper and slightly earlier.** That gives
+  edges a shorter path to his depth.
+- **The fix belongs to the QB's pocket controller.** Lateral movement away
+  from the nearest threat must be possible, at the cost of his set and his
+  throwing platform. Don't push edges wider to protect a stationary QB.
+- **Limits:** the NFL common format includes scramble-type dropbacks that
+  end in a throw, which may inflate the NFL slide tail. The sim has 115
+  edge-level plays.
+
 ## Limits
 
 - Sim samples are small: 44–81 runs per concept, 188 pressures. Medians move
