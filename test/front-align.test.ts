@@ -4,6 +4,9 @@
  * one), and his build moves him: lighter wider, never inside an end he is
  * set on. Off: the installed spots. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+
+// These are FRONT_ALIGN's own install weights; FRONT_MENU (PR #194) overrides them.
+vi.hoisted(() => { process.env.FRONT_MENU = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';

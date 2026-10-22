@@ -74,3 +74,9 @@ There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`
 | `WR_ALIGN` | off | experimental | run | `src/playbook/alignment.ts:80` | expires: review 2 |
 | `MOTION` | off | experimental | coverage | `src/sim/motion.ts:33` | review 2 |
 | `DEUCE` | off | experimental | coverage | `src/playbook/call-integrity.ts:67` | review 2 |
+| `FRONT_STRENGTH` | off | experimental | defense | `src/game/playcaller.ts:52`, `src/playbook/alignment.ts:120` | expires: review 2 |
+| `FRONT_MENU` | off | experimental | defense | `src/game/playcaller.ts:70`, `src/playbook/alignment.ts:129` | expires: review 2 |
+| `BOX_ALIGN` | off | experimental | defense | `src/playbook/alignment.ts:153` | expires: review 2 |
+| `DEF_PACKAGE` | off | experimental | defense | `src/game/playcaller.ts:80` | expires: review 2 |
+| `SHELL_SHOW` | off | experimental | defense | `src/game/playcaller.ts:94`, `src/playbook/alignment.ts:156` | expires: review 2 |
+| `COVER_CALL` | off | experimental | defense | `src/game/playcaller.ts:115` | expires: review 2 |

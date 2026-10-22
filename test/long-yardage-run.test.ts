@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+// The fixture's contract is that the situation changes nothing but roles;
+// BOX_ALIGN (PR #194) sets backers' depth and end width by down and distance.
+vi.hoisted(() => { process.env.BOX_ALIGN = '0'; });
 import { auditSnap, createLongYardageTeams, longYardageSetup } from '../scripts/diag/long-yardage-run.js';
 import { PlaySim } from '../src/sim/playsim.js';
 

@@ -254,7 +254,7 @@ export class PlaySim {
     const defSlots = Object.keys(setup.defense) as DefSlot[];
     // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
     const mass = Object.fromEntries(defSlots.map(slot => [slot, derivePhysical(setup.defense[slot]!).massKg]));
-    this.defStyle = { ...setup.defStyle, mass };
+    this.defStyle = { ...setup.defStyle, mass, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los } };
     this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
 
     const idle: Behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };

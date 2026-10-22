@@ -596,7 +596,7 @@ export class Game {
     const defTeam = this.def;
     const offCall = this.oc[offSide].call(sit, defTeam);
     const offPlayers = pickOffense(offTeam, offCall.formation.personnel, { energy: this.energy });
-    const { call: defCall, prefs } = this.dc[defSide].call(sit, offCall.formation.personnel, offTeam, offPlayers);
+    const { call: defCall, prefs } = this.dc[defSide].call(sit, offCall.formation.personnel, offTeam, offPlayers, offCall.formation);
     const defPlayers = pickDefense(defTeam, defCall.personnel, { energy: this.energy });
 
     // Explicit historical scenario seams precede the native snap inspection.
@@ -1101,7 +1101,7 @@ export class Game {
       const sit = this.situation();
       const offCall = this.oc[scorer].call({ ...sit, down: 3, distance: s.distance }, this.def);
       const offPlayers = pickOffense(this.off, offCall.formation.personnel, { energy: this.energy });
-      const { call: defCall, prefs } = this.dc[other(scorer)].call(sit, offCall.formation.personnel, this.off, offPlayers);
+      const { call: defCall, prefs } = this.dc[other(scorer)].call(sit, offCall.formation.personnel, this.off, offPlayers, offCall.formation);
       const defPlayers = pickDefense(this.def, defCall.personnel, { energy: this.energy });
       const los = OWN_GOAL_X + s.yardline;
       const sim = new PlaySim({ offense: offPlayers, defense: defPlayers, offCall, defCall,
