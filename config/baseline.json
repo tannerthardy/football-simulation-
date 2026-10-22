@@ -34,6 +34,7 @@
     "PULL_CUE": "0",
     "PULL_PLAN": "0",
     "PULL_READ": "1",
+    "PURSUE_AROUND": "1",
     "PULL_STEP": "0",
     "REACH_CONTACT": "0",
     "READ_EYES": "1",
@@ -46,6 +47,7 @@
     "RUN_READ_TURN": "0",
     "SCRAPE": "1",
     "SHED_PHYSICAL": "1",
+    "SHED_PURSUE": "1",
     "SNAP_REACT": "1",
     "STALK_CLAIM": "1",
     "STRETCH_MESH": "1",
@@ -85,7 +87,8 @@
     "PRESSURE_CALL": "1",
     "AGAP_ALIGN": "1",
     "PASS_KICK": "1",
-    "ROUTE_CLEAR": "1"
+    "ROUTE_CLEAR": "1",
+    "GROUNDING_FACTS": "1"
   },
   "worldDefaults": {
     "handContact": "center",

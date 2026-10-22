@@ -709,6 +709,15 @@ const LEVER_FACING = process.env.LEVER_FACING !== '0';
 
 /** A run shed is a decision executed by the body (SHED_PHYSICAL=0: rolled outcome). */
 const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
+/** Once the runner a blocked defender has declared (held between ordinary
+ * reads) is past the line, the ball has left his gap and everyone pursues:
+ * he works off the block toward the ball at any range, not only when it is
+ * within 3.5 yd. Only the decision to work off changes; the hand fight, his
+ * feet and the blocker's body still decide whether he gets free. When the
+ * rep ends because the runner has passed him, the same blocker cannot
+ * re-latch him at once (the shed window); bodies still collide.
+ * SHED_PURSUE=0 restores the close-range gate for comparison. */
+const SHED_PURSUE = process.env.SHED_PURSUE !== '0';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
@@ -749,6 +758,10 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
       if (past > 2.5 && t - e.start > 0.4) {
         runContactObservers.get(sim)?.(e, 'end', { reason: 'runner passed defender', past });
         sim.disengage(e);
+        // He is off this block to pursue: the blocker's body can still be in
+        // his way (World contact), but his hands cannot re-latch the man on
+        // the next tick, the same window as a shed.
+        if (SHED_PURSUE) b.shedBy.set(d, t + 0.6);
         continue;
       }
     }
@@ -1111,9 +1124,17 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // A support player who has personally declared the carrying runner must
     // work free toward him even when the block keeps him outside close range.
     // First-level stack/shoulder and uncertain possession retain the old gate.
+    // Once that runner is past the line, any blocked defender works off
+    // toward him at any range (SHED_PURSUE). It uses the declaration held
+    // between ordinary reads, and a support job needs #169's acquired
+    // backfield picture; a first-level fit's runner picture is his own line read.
+    const firstLevel = d.runFit?.kind === 'interior' || d.runFit?.kind === 'edge';
+    const pursue = SHED_PURSUE && read.declared && read.threat.carrying === true
+      && (firstLevel || read.acquiredBackfield)
+      && (read.threat.pos.x - sim.los) * sim.attackDir(b.team) > 0;
     // #169: acquiring hands does not restart already justified support.
     const ready = t >= e.nextMoveAt || (supportRunner && !runSheds.has(e));
-    if (ready && (dc < 3.5 || supportRunner)) {
+    if (ready && (dc < 3.5 || supportRunner || pursue)) {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(read.threat.pos, d.pos);
       const ballSide = Math.sign(toBall.x * lat.x + toBall.y * lat.y);

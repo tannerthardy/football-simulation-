@@ -2,8 +2,8 @@
 
 `reviews/` contains the previous 114 review snapshots. `plans/` holds the old
 physics guide, design, roadmap, realism plan and evaluation plan. Their status and
-priorities describe their own checkpoints. Read [current status](../STATUS.md)
-and [validation](../VALIDATION.md) for today's work.
+priorities describe their own checkpoints. Start with [PLAN](../PLAN.md) and [GAPS](../GAPS.md) for today's work;
+[validation](../VALIDATION.md) remains a diagnostic reference.
 
 These files preserve reasoning, unsuccessful experiments and evidence sources.
 Moving them is not a declaration that every proposal is useful or implemented.
