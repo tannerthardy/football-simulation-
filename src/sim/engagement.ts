@@ -72,6 +72,16 @@ const runCache = new WeakMap<Agent, TrenchTraits>();
  * actual rep; knowing a pass set is not the same skill as sustaining a run fit.
  * The default remains the pass technique used by pre-contact protection.
  */
+/** Experimental (DL_FLATTEN=1, off): an attacking lineman whose blocker steps
+ * across his face (a reach or zone step: the man on him, as he sees him, moving across
+ * faster than 1 yd/s and more across than at him) flattens on
+ * the line at the depth he met him, instead of driving upfield at 1.5 yd/s
+ * past the play ("flatten the guard on the L.O.S. and keep outside
+ * leverage", Bucs; "push & press", Allen; "do not run outside", Michigan).
+ * Upfield penetration against zone opens the cutback and the cut-up behind
+ * him: ours finish 1.61 yd upfield on single-blocked outside zone at 2.5 s,
+ * tracked linemen 0.62. A vertical drive block keeps the attack. */
+const DL_FLATTEN = process.env.DL_FLATTEN === '1';
 export function traits(a: Agent, type: 'pass' | 'run' = 'pass'): TrenchTraits {
   const common = commonTraits(a);
   if (type === 'pass' || a.team !== 'O') return common;
@@ -1347,7 +1357,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // A declared runner can redirect the fit on the existing decision cadence.
   const work = td.lateral * (0.2 + 0.25 * d.r('blockShedding')) * (read.reading ? 1 : 0.3);
   const legacy = { x: -drive.x * 1.5 + lat.x * e.side * work, y: -drive.y * 1.5 + lat.y * e.side * work };
-  const recover = d.runFit?.technique !== 'attack' || read.chasing;
+  // DL_FLATTEN: against a reach or zone step (the blocker's held flow across
+  // his face) an attacking lineman flattens on the line instead of driving on.
+  // He sees the man on him step across rather than come at him.
+  const blockerSeen = DL_FLATTEN ? sim.see(d, b) : null;
+  const zoneStep = !!blockerSeen && Math.abs(blockerSeen.vel.y) > 1
+    && Math.abs(blockerSeen.vel.y) > Math.abs(blockerSeen.vel.x);
+  const recover = d.runFit?.technique !== 'attack' || read.chasing || zoneStep;
   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
     : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
       : -sim.attackDir(b.team) * 1.5;
