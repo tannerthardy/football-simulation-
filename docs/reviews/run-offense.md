@@ -657,6 +657,26 @@ correction, so each side follows the other. `RUN_CONTACT_TRACK` (existing
 trial: the reach's track tempo through contact) moved the guard 2.15 ->
 2.28 yd at 1.5 s and made zone slightly worse; it stays off.
 
+Three blocker-side changes for that flow, each tried on called looks and
+removed (outside zone, play-side guard lateral at 1.5 s, NFL 3.23 yd;
+profile 2.15):
+- `RUN_CONTACT_TRACK` (existing trial: the reach track tempo through
+  contact): 2.28; zone TVD 6.7 -> 8.5.
+- `REACH_TEMPO` (engaged reach short of the shoulder runs at his lateral
+  capacity instead of matching his man): 2.31; outside zone losses 11.5 ->
+  9.0%, shotgun wide zone 5.5 -> 8.0%; backer scrape unchanged.
+- `CLIMB_ANGLE` (climber's meeting point never short of his own run on the
+  stretch angle at the backer's depth; Ravens "LB on the angle, PS #"):
+  2.33; backer scrape at 1.5 s 2.95 -> 3.35 (NFL 3.95); 0-3 yd runs 46.9 ->
+  49.2%.
+None closes it. Line, backers and climbers follow each other (the
+run-defense session's trace: the backers' scrape follows the line's live
+gap speed, and their own backer mirror only overflowed), and the part no
+technique reaches is the start: in the first 0.5 s the free guard requests
+1.95 yd/s sideways and achieves 0.80 (0.37 yd at 0.5 s, NFL 0.55), then
+2.29 vs 1.88. That is start-up acceleration in the gait law (N3), and the
+backers' first step before their run read (run-defense session, next).
+
 Climbs on the tracked line are NFL-like under center
 (`scripts/diag/align/climbphase.py --uc|--gun`: touch a down man then
 reach a backer 30% of linemen, NFL 34%; by 2.0 s 17%, NFL 18%; direct to a
