@@ -189,6 +189,13 @@ const LB_TEMPO = process.env.LB_TEMPO === '1';
  * depth at the meeting goes 1.57 -> 2.08 and at 2.0 s 1.82 -> 2.21 (NFL
  * 2.35), and he has moved further sideways by then (1.92 -> 2.29; NFL 4.10). */
 const LB_LANDMARK = process.env.LB_LANDMARK === '1';
+/** SAFETY_TEMPO (off): an alley safety eases down from his alignment depth
+ * (about a yard) until the back declares, instead of coming to 5-8 yd. Tracked
+ * deep support is 12.9 yd deep at the handoff and comes forward +0.5 / +1.75
+ * yd/s at 0.5 / 1.0 s after it; ours +1.75 / +2.5, and on runs reaching 20
+ * it is 5.3 yd behind the back at 10 yd where the NFL's is 3.1 ahead
+ * (scripts/diag/long-run.py). Off: the installed 65% of alignment depth. */
+const SAFETY_TEMPO = process.env.SAFETY_TEMPO === '1';
 const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
@@ -265,7 +272,9 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // level and turns ordinary creases into breakaways.
     if (!premesh && seen.pos.x>sim.los-2.5) return chase(sim,a,c,3.5);
     const home=sim.defAlign.spots[a.slot as DefSlot]!.pos;
-    const depth=clamp((home.x-sim.los)*.65,5,8);
+    // SAFETY_TEMPO: until the back declares, the alley player eases down
+    // from his alignment and stays the last level over the ball.
+    const depth=SAFETY_TEMPO ? Math.max(5,home.x-sim.los-1) : clamp((home.x-sim.los)*.65,5,8);
     const aim=a.mind.aim('alley-fit',{x:sim.los+depth,y:seen.pos.y+job.side*1.2+a.mind.placementError},sim.t);
     return track(a,aim,{x:0,y:seen.vel.y},{speed:.65,gain:2,facing:Math.PI});
   }
