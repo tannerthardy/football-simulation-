@@ -520,6 +520,12 @@ develop + line set + `SAFETY_TEMPO`, 8 games:
   shows no tail change. It is kept off as realistic technique: the sign
   moves toward tracking, at about half the tracked size.
 - **Test:** `test/dl-squeeze.test.ts`.
+- **Review fix (shared-build review):** the squeeze now decides at a read
+  and holds that for the lineman's decision beat, as his other contact reads
+  do. It had re-read the runner every tick, which breaks
+  `run-contact-flow.test.ts`'s held-beat contract when the flag is on. The
+  paired lab is unchanged: median 2.5, 10+ 17.1%, 20+ 6.8% (paired z
+  −0.2 / 0.0 against off).
 
 **`PASS_RIDE` (edge sheds, rusher side; the run-offense session takes the
 tackle).** With the set, edge pressurers are still on their blocker 5% of
@@ -816,6 +822,70 @@ at 0.5 s: ours 53%, NFL 7%). Once the two are engaged, the defender's flow is
 the pair's leg contest. The divergence is the zone blocker's path before
 contact, on the offense's side (the run-offense session's outside-zone flow
 work). Two attempts; stopped.
+
+## Run contacts broken on the shared build (diagnosis; no defense change)
+
+The first shared build (`claude/run-game-v3@83b2fe2e`) breaks 18–19% of run
+contacts (`depth/runbreak.py`; NFL 12.6, develop + line set 13.2–15.6).
+- **Paired-lab bisection.** `forcelab.ts` now records whether the first
+  run contact broke, as `runbreak.py` defines it. 480 runs per arm, each
+  contact-family flag set back to develop's value:
+  - The build breaks 14.8%, and develop + line set 15.4% on the same cases.
+  - `LEG_BRACE` off: 11.9% (15 vs 1 changed contacts, z −3.5).
+  - `HOLD_POINT` off: 16.9% (z +3.2).
+  - Eight others are within noise: `TETHER`, `WRAP_BIND`, `TACKLE_ROLL`,
+    `LEG_FV`, `GAIT_STEP`, `SHED_PURSUE`, `LEAN_AXIS`, `RUN_ARMS` + `RUN_REACH`.
+- **Seed-301 exports**, 8 games each:
+
+  | | Broke | Fast entries | Broke when fast |
+  | --- | --- | --- | --- |
+  | Develop + line set | 15.6% | 45% | 30% |
+  | Build | 17.9% | 62% | 25% |
+  | Build, `LEG_BRACE` off | 12.6% | 58% | 20% |
+
+The excess is about five points of `LEG_BRACE` (a thigh hold the runner
+braces with his hips), plus the profile's faster entries. The brace is real
+football, so it is not turned off for this. The counter tracked runners
+meet is the second tackler: arrivals are short, at 2.28 meetings per run
+vs NFL 2.69 (run-offense `open-field/meet.py`). `LEG_BRACE` is in the
+run-offense session's contact model; it is reported to them and the physics
+owner.
+
+**Confirmed by the second-tackler split** (`depth/secondtackler.py`, NFL and
+sim alike, with runbreak's admission). Help means another defender within
+1.5 yd of the carrier in the 0.5 s after contact:
+
+| | Help at contact | Broke with help | Broke alone |
+| --- | --- | --- | --- |
+| NFL | 77% | 7.6% | 29.8% |
+| Build (`LEG_BRACE` on) | 56% | 10.9% | 27.0% |
+| Build, `LEG_BRACE` off | 51% | 10.9% | 14.4% |
+| Develop + line set | 51% | 8.3% | 23.2% |
+
+With the brace, a lone tackler's break rate matches tracking. Without it,
+lone tackles hold half again too often. The build's excess breaks are the
+missing help (56 vs 77%), the pursuit-arrival row, so `LEG_BRACE` stays.
+
+**The covered center on outside zone** (`depth/nosereach.ts`, lab). The
+center asks for only 0.50 yd/s across at 0.5 s. The nose follows his flow
+once it is seen: he asks for 1.39 at 0.75 s and achieves 0.53. Tracking has
+the center leading too (run-offense `stretch/ozcenter.py`: 0.6 / 1.9 vs
+0.4 / 1.4 yd at 0.5 / 1.0 s). So the first mover is the reach, not the
+lineman, and nothing is added on the defense.
+
+**The A-gap nose with `AGAP_ALIGN`** (the def-alignment session's team
+1-technique spot, on `claude/run-game-v3@3763dd7e`, off). The engaged
+interior fit's shoulder is the live gap's position relative to the blocker
+(`liveGapY(job.gap) − blocker`), not his stance, and `AGAP_ALIGN` keeps the
+gap. So a nose standing in the A gap fits the same surface. `depth/agapnose.ts`
+(lab power, 120 plays, `AGAP_ALIGN` 0 / 1):
+- He stands 0.59 / 0.99 yd off the centre at the snap.
+- The first blocker is the centre 50%, a guard 50%, in both.
+- He squeezes on 99 / 100% of plays.
+- At the crossing he is 6.7 yd backside of the back in both, and yards
+  are unchanged (p50 3.4).
+
+The game-level power crease change (3.3 → 3.8 yd) is not this fit.
 
 ## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
 
@@ -1370,7 +1440,7 @@ telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
 `runrally`, `crease`, `breakpoint`, `afterrelease`, `alleypath`, `interiorrush`, and lab probes
-`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `lbpull.ts` (backers against a pull), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
+`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `lbpull.ts` (backers against a pull), `nosereach.ts` (the covered center's nose), `secondtackler.py` (help at run contact), `agapnose.ts` (the A-gap nose on power), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
 `alleyprobe.ts`, `alleytrace.ts` (the nearest deep supporter on long runs), `forcelab.ts` (paired run lab, the same seeds per arm),
 `dlpursuit.ts` (linemen at a run's first contact), `dropprobe.ts` (the
 nearest zone defender when the ball comes near him), `catchact.ts`, `sideprobe.ts` (the side window from inside the
