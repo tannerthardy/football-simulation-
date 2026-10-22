@@ -123,7 +123,7 @@ const COVER_CALL = process.env.COVER_CALL !== '0';
  * two-high 40%): x1.48 behind one high, x0.43 behind two. Off: one chance
  * whatever the coverage, and a two-high call without an installable
  * pressure rushes four (3% with five or more, 24% behind one high). */
-const PRESSURE_CALL = process.env.PRESSURE_CALL === '1';
+const PRESSURE_CALL = process.env.PRESSURE_CALL !== '0';
 const PRESSURE_BY_SHELL: Record<string, number> = { 'one-high': 1.48, 'two-high': .43 };
 export const CB_NORM = 79.3;
 export const WR_NORM: Partial<Record<PersonnelId, number>> = { '10': 69.6, '11': 71.3, '12': 72.0, '21': 72.0, '13': 76.6, '22': 76.6 };

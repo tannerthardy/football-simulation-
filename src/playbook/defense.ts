@@ -192,9 +192,9 @@ export const PRESSURES: Pressure[] = [
   {
     // Deuce (HNFL-302/372/373): a five-man zone pressure from the two-high
     // shell, two deep and four under. The Mike adds to the four-man front;
-    // the called two-high coverage becomes Deuce (`coverage`). DEUCE=1 only:
+    // the called two-high coverage becomes Deuce (`coverage`). On by default (DEUCE=0 turns it off):
     // it fills blitz rolls on two-high calls that had no compatible pressure,
-    // which raises the five-man rate; the caller's weighting is undecided.
+    // which raises the five-man rate; PRESSURE_CALL scales it by the shell.
     id: 'deuce', name: 'Deuce (Mike A, 2-deep 4-under)', blitzers: { LB_M: { gap: 'A', side: 'S' } },
     coverages: ['cover4', 'cover6', 'cover2'], coverage: 'deuce', rushers: 5, flag: 'DEUCE',
   },

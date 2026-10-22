@@ -28,7 +28,7 @@
     "LIVE_GAPS": "1",
     "MOTION": "1",
     "MOTION_CHECK": "1",
-    "DEUCE": "0",
+    "DEUCE": "1",
     "PASS_SINK": "0",
     "PULL_CUE": "0",
     "PULL_PLAN": "0",
@@ -81,7 +81,7 @@
     "DEF_PACKAGE": "1",
     "SHELL_SHOW": "1",
     "COVER_CALL": "1",
-    "PRESSURE_CALL": "0",
+    "PRESSURE_CALL": "1",
     "AGAP_ALIGN": "1"
   },
   "worldDefaults": {
