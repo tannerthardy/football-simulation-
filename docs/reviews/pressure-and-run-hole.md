@@ -1,0 +1,148 @@
+# Where pressure comes from, and the inside-run hole
+
+Measured 2026-10-22 for the run-offense session, which asked two questions:
+
+1. Its profile's dropbacks are pressured 45% of the time against the NFL's
+   30.5%. Is the excess from rushers who win after contact, or from rushers
+   nobody blocks?
+2. Its back crosses the line 2.1–2.4 yd from the nearest DL, against 1.6 in
+   the NFL. Do NFL backs run through tighter creases, or do the DL simply
+   sit closer?
+
+Engine source unchanged.
+
+Operators run one code path on NFL tracking and sim exports, using the
+common play format with positions quantized by `metrics.Play`. Every
+definition is from positions; neither uses block labels or contact events.
+- `scripts/diag/pass-pressure.py`: pressure as in `metrics.py` (a defender
+  within 2 yd of the QB from 0.5 s to the throw).
+  - **Who:** classified by alignment at the snap: interior or edge on the
+    line, or off the ball.
+  - **Engaged:** within 1.0 yd of an offensive non-QB player for 0.2 s or
+    longer.
+  - **Escape:** read just after his release, relative to his last blocker:
+    "through", "inside", "outside", or "still engaged" when he reaches the QB
+    while still on the blocker.
+- `scripts/diag/run-hole.py`: the lateral opening between the nearest
+  defenders on each side of the back as he crosses the line (bodies within
+  1.5 yd of his depth). It also measures the same opening between OL/TE, and
+  how the opening at the hole forms over the last second.
+
+Samples:
+- **NFL:** BDB 2025, 2022 weeks 1–9: 7,007 dropbacks without play action;
+  3,261 inside runs.
+- **Run-offense profile:** `claude/run-game-v3` `547af69d`, candidate
+  profile with `PASS_CORNER`, `OL_ALIGN` and `SNAP_REACT` on. Seeds 301–308,
+  937 plays (444 dropbacks without PA, 277 inside runs). Receipt
+  `run-1792650850881-360`, inputs unchanged, exit 0.
+- **`develop` `d91c9014`:** candidate flags, the same seeds, for context.
+
+## 1. Pressure: the excess is all on the edge
+
+Dropbacks without play action, pressures per 100 dropbacks (median time
+after line start):
+
+| Pressurer | NFL | Run-offense profile | develop |
+|---|---:|---:|---:|
+| Interior, engaged first | 8.7 (2.39 s) | 8.6 (2.10 s) | 5.6 |
+| Interior, never engaged | 0.6 | 0.0 | 0.0 |
+| **Edge, engaged first** | **16.9** (2.39 s) | **27.0** (2.06 s) | 22.3 |
+| **Edge, never engaged** | **1.1** | **5.0** | 1.9 |
+| Off the ball (blitz), engaged | 2.8 | 0.7 | 1.4 |
+| Off the ball, never engaged | 1.1 | 1.1 | 0.3 |
+| **All** | **31.3** | **42.3** | 31.6 |
+
+How engaged pressurers got there:
+
+| | NFL interior | Profile interior | NFL edge | Profile edge |
+|---|---:|---:|---:|---:|
+| Still on the blocker at the pressure | 67% | 58% | **73%** | **8%** |
+| Released through (ahead of the blocker, toward the QB) | 14% | 8% | 11% | **76%** |
+| Released inside / outside | 9% / 10% | 5% / 29% | 8% / 8% | 10% / 7% |
+| Contact to release, median | 1.40 s | 1.00 s | 1.10 s | **0.40 s** |
+
+Every engaged line rep (all dropbacks, not only pressures), share that ends
+with the rusher free before the throw:
+
+| | NFL | Profile | develop |
+|---|---:|---:|---:|
+| Interior | 9.7% (after 1.40 s engaged) | 4.6% (1.00 s) | 2.8% |
+| Edge | 15.4% (0.80 s) | **36.2%** (0.50 s) | 27.2% |
+
+**Reading.**
+- **Interior pressure already matches the NFL** (8.6 vs. 8.7 per 100).
+  Fewer sim interior reps get free, so the interior is not the problem.
+- **The edge has two separate excesses:**
+  - **+10 per 100 from edge rushers who beat the tackle after contact.**
+    NFL edge pressures arrive with the tackle still on the rusher (73%),
+    riding him past the QB. Sim edge rushers lose contact after 0.4 s and run
+    free through the tackle's spot (76%). That is contact or technique: the
+    tackle cannot keep a hold, or the rusher sheds too easily. It is not
+    timing, since `PASS_CORNER` already moved contact later.
+  - **+4 per 100 from edge rushers nobody touches.** That is protection
+    assignment: a free edge no back or tight end picks up.
+- **Blitz pressure is lower than the NFL** (1.8 vs. 3.9 per 100). This is
+  context for the defensive caller, not part of the excess.
+- **On `develop`** the total matches the NFL (31.6%), but only because two
+  errors offset: weak interior pressure and too much edge pressure.
+  Matching the total is not evidence the trench is right.
+
+## 2. The inside-run hole: NFL creases are tighter and close on the back
+
+Opening at the crossing, in yards. Medians; NFL counts are runs, all
+formations:
+
+| Concept | NFL defender opening | NFL nearer defender, lateral | NFL blocker frame | Profile defender opening | Profile nearer defender | Profile blocker frame |
+|---|---:|---:|---:|---:|---:|---:|
+| Inside zone (1,327) | 2.50 | 0.70 | 2.40 | 3.90 | 1.10 | 3.90 |
+| Duo (936) | 2.30 | 0.50 | 2.50 | 4.20 | 1.20 | 4.50 |
+| Power (530) | 2.50 | 0.70 | 2.30 | 3.00 | 0.20 | 3.60 |
+| Counter (364) | 2.40 | 0.70 | 2.50 | 4.50 | 1.20 | 3.60 |
+| Trap (104) | 2.90 | 0.70 | 2.90 | 4.60 | 1.50 | 4.20 |
+
+The defender opening at the hole's y over the last second (−1.0 / −0.6 /
+−0.3 / 0 s before crossing):
+
+| | NFL | Profile |
+|---|---|---|
+| Inside zone | 2.8 / 2.7 / 2.6 / **2.3** | 3.5 / 4.3 / 4.3 / **3.9** |
+| Duo | 2.8 / 2.7 / 2.5 / **2.1** | 3.8 / 4.0 / 3.9 / **4.1** |
+| Counter | 3.0 / 2.7 / 2.7 / **2.3** | 4.3 / 4.0 / 4.4 / **4.3** |
+| Trap | 3.6 / 3.9 / 3.3 / **2.7** | 4.5 / 4.8 / 4.8 / **5.0** |
+
+NFL nearest DL at the crossing is 1.46–1.86 yd (reach-contact.py's 1.6);
+the profile's is 1.75–2.75.
+
+**Reading.**
+- **NFL backs run through creases 1–2 yd narrower,** with the nearer
+  defender only 0.5–0.7 yd beside them. So the back runs past defenders'
+  shoulders, not through an empty gap.
+- **The NFL blocker frame is just as tight (2.3–2.9 yd).** The sim's is
+  3.6–4.5 yd, so sim backs go through wider spaces between their own
+  blockers too.
+- **NFL creases shrink 0.5–0.9 yd in the last second** as defenders squeeze
+  the hole. The profile's stay flat or widen. Its defenders do not converge on
+  the back's crossing point as he arrives.
+- **So both causes are present.** The sim's openings are wider, and
+  defenders do not close them. Changing the runner's crease choice alone
+  would not reproduce the NFL picture.
+  - The defender squeeze belongs to the run-defense owner (fits, flow,
+    pursuit).
+  - The blocker frame (splits and where blocks finish) belongs to run
+    blocking.
+- **Power is the exception.** Its median opening (3.0) is close, and the
+  nearer defender sits only 0.2 yd beside the back. But one side is empty
+  within 8 yd on 48% of runs (NFL 24%): the back runs off a single defender.
+  Under center, the NFL opening is about the same (2.0–2.5).
+
+## Limits
+
+- Sim samples are small: 44–81 runs per concept, 188 pressures. Medians move
+  by a few tenths between seeds.
+- "Engaged" (1.0 yd for 0.2 s) and "free" (no blocker within 1.5 yd and past
+  him) are proximity proxies, applied identically on both sources.
+- "Still engaged at the pressure" partly reflects QB depth: a deeper QB
+  gives a rider more room. NFL and sim QB depth were not compared here.
+- No change is proposed or tested. Use
+  [behavior review](../BEHAVIOR_REVIEW.md) and a focused reproducer (a 1v1
+  edge rep, for example) before attributing the edge shed to a mechanism.
