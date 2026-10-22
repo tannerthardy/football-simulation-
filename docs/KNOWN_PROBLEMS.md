@@ -408,10 +408,26 @@ Carried over from the issue register; each was measured on an older develop.
 
 - **Measure** (#190): the nearest zone defender closes 0.12 yd during the
   flight; NFL 0.65.
-- **Cause:** *hypothesis:* a late trigger (reacting to the catch, not the
-  throw), the wrong aim point (the receiver, not the catch point), or a slow
-  closing speed. G3 is diagnosing this now.
-- **Where:** `src/sim/behaviors/defense.ts`, `coverage/`, `coverage-leverage.ts`.
+- **Cause** (G3, `scripts/diag/depth/throwbreak.py`, BDB 2022 vs promoted
+  profile):
+  - *Confirmed:* the trigger is late. Instant recognition at the release
+    brings sim zone closing to tracking level (0.60–0.82 yd on two seeds, NFL 0.61).
+  - Tracked deep defenders are already driving toward the catch point before
+    the release (+1.3 yd/s at −0.4 s, +2.2 at the release). Ours are not
+    (−0.5 to +0.5), and their speed dips while they redirect after it.
+  - Underneath zone is not short: sim ends closer at the catch (2.5–2.8 yd
+    vs 4.2).
+  - The aim point is the catch point already. The motor's acceleration
+    matches tracking peaks.
+- **Fixed in part:** zone defenders facing the QB break on his throwing
+  motion (spot and match alike; #G3 PR). Zone-deep closing +0.17 → +0.41 yd
+  (NFL +0.56).
+- **Open:** the QB gives defenders little to read. His eyes settle on the
+  target a median 0.10 s before the release, and his throwing motion lasts
+  0.10–0.28 s by rating. Tracked defenders start their break about 0.4 s
+  before the ball is out. Tracking cannot measure the arm, so the motion's
+  duration needs another source (QB-1).
+- **Where:** `src/sim/behaviors/defense.ts` (`sawThrow`), `behaviors/qb.ts` (`windup`).
 
 <a id="cov-2"></a>
 ### COV-2: Too much yardage per attempt and after the catch
