@@ -444,6 +444,27 @@ release) and he steps with it, aiming at the blocker's seen spot plus his
 own shade. It adds 0.12 yd at 0.3 s and nothing later, so it stays off;
 the finding went to the run-offense session.
 
+**`LB_TEMPO` (`run-fits.ts` `executeRunFit`, insert fits): backer tempo.**
+The run-offense session asked for it from `lbfit.py` (its branch): our box
+backers come down about twice as fast as tracked ones in the first 1.5 s.
+Two attempts, on the run-offense profile (`879c1d9`, zone arm 1,200 runs
+under centre; gap arm the same within 0.2 yd):
+
+| Zone arm | downhill yd/s at 1.0 / 1.5 / 2.0 s | depth at 1.0 / 2.0 / 2.5 s | first contact past the ball, time |
+| --- | --- | --- | --- |
+| off | 2.40 / 1.95 / 0.75 | 3.63 / 1.81 / 1.68 | +0.18 yd, 2.60 s |
+| 1: hold the depth he can still close at speed | 0.0 / 0.0 / 0.15 | 4.58 / 4.36 / 3.89 | +2.17 yd, 2.80 s |
+| 2: the pace that meets the back at the line | 0.90 / 1.20 / 1.30 | 4.17 / 3.06 / 2.41 | +0.81 yd, 2.60 s |
+| NFL (all runs under centre) | 1.45 / 1.40 / 0.60 | 3.67 / 2.35 / 2.27 | +0.32 yd, 2.80 s |
+
+The flag holds the second form; neither is proposed. The two miss from
+opposite sides, so the work stopped to re-diagnose rather than blend them.
+Off already matches tracked depth at 1.0 s. The miss is between 1.0 and
+2.0 s: tracked backers settle about 2.3 yd off the ball, while ours keep
+coming to the installed 1.5 yd landmark. The first thing to read is where
+and when climbing linemen meet the backers, tracked against ours (an
+interaction with the run-offense session's climb). `test/lb-tempo.test.ts`.
+
 ## Diagnostics (observation only)
 
 `scripts/diag/depth/`: `frontact.ts` (the defenders in front of the receiver after the catch), `drives.ts` (drives, results, points by scoring play),

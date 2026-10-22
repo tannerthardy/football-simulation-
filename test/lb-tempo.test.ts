@@ -1,7 +1,7 @@
 /** LB_TEMPO (run-fits.ts executeRunFit, insert fits): until the runner
- * declares, a box backer keeps the depth he can still close in the time the
- * back he sees needs to reach the line, net of his reaction; a back at the
- * line leaves him the installed surface landmark. Off: the installed landmark. */
+ * declares, a box backer goes to his landmark at the pace that puts him there
+ * when the back he sees reaches the line, net of his reaction; a back at the
+ * line leaves him the installed pace. Off: the installed pace, same landmark. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
@@ -17,8 +17,9 @@ const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 /** Before the handoff, the Mike 5 yd off the ball; the back at `backX` coming
- * downhill at 4 yd/s, straight at his gap. Returns the fit's depth past the line. */
-async function depth(enabled: boolean, backX: number) {
+ * downhill at 4 yd/s, straight at his gap. Returns the fit's landmark depth
+ * past the line and the downhill speed he asks for. */
+async function fit(enabled: boolean, backX: number) {
   vi.stubEnv('LB_TEMPO', enabled ? '1' : '0');
   vi.resetModules();
   const { executeRunFit } = await import('../src/sim/run-fits.js');
@@ -38,17 +39,20 @@ async function depth(enabled: boolean, backX: number) {
   ]);
   const see = sim.see.bind(sim);
   sim.see = (observer, target, delay) => picture.get(target) ?? see(observer, target, delay);
-  return movementObjective(executeRunFit(a, sim, 'A', 1))!.point.x - sim.los;
+  const command = executeRunFit(a, sim, 'A', 1);
+  return { depth: movementObjective(command)!.point.x - sim.los, downhill: -command.vel.x };
 }
 
 describe('a box backer fits at the back\'s tempo', () => {
-  it('off: the installed surface landmark whatever the back does', async () => {
-    expect(await depth(false, 34)).toBeCloseTo(1.5, 9);
+  it('on: the same surface landmark', async () => {
+    expect((await fit(true, 34)).depth).toBeCloseTo((await fit(false, 34)).depth, 9);
   });
-  it('on: with the back deep in the backfield he keeps his depth', async () => {
-    expect(await depth(true, 34)).toBeGreaterThan(3);
+  it('on: with the back deep in the backfield he comes down at the pace that meets him', async () => {
+    const off = await fit(false, 34), on = await fit(true, 34);
+    expect(on.downhill).toBeGreaterThan(.5);
+    expect(on.downhill).toBeLessThan(off.downhill / 2);
   });
-  it('on: with the back arriving he presses to the surface', async () => {
-    expect(await depth(true, 39.5)).toBeCloseTo(1.5, 9);
+  it('on: with the back arriving he comes at the installed pace', async () => {
+    expect((await fit(true, 39.5)).downhill).toBeCloseTo((await fit(false, 39.5)).downhill, 9);
   });
 });
