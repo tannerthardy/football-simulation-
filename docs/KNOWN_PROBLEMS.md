@@ -705,8 +705,8 @@ writeback (GAME-003).
 <a id="repo-1"></a>
 ### REPO-1: Repository and process debt
 
-- GitHub's default branch is still the old engine (`main`, Oct 8). The trunk is
-  `develop` (REPO-001).
+- GitHub's default branch is still `claude/football-sim-engine`, verified
+  2026-10-22; the trunk is `develop`. See the [dated branch map](BRANCHES.md#verified-entry-points--2026-10-22) (REPO-001).
 - About 20 Codex draft PRs (#86–#166) and #114 sit outside the integration
   pass. They're decided at the first review.
 - `docs/` holds about 128 MB of evidence and receipt files.

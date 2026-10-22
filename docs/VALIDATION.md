@@ -1,5 +1,12 @@
 # How we validate football
 
+**Process precedence:** [PLAN](PLAN.md) and [GAPS](GAPS.md) supersede the
+older workflow requirements in this reference. Keep the football-model,
+mechanism-review and marginal-cost reasoning; use PLAN for current assignments,
+merge criteria and testing tiers. Integration-owner/full-suite obligations,
+receipt publication and historical flag profiles below are not current gates.
+Documentation-only navigation changes need documentation/path checks, not games.
+
 We build the mechanism first. NFL game statistics are the final exam, not
 parameters to fit. A different generated roster can produce different numbers.
 Neither a better average nor a good-looking touchdown proves a repair works.
