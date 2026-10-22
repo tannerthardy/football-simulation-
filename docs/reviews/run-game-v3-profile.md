@@ -187,6 +187,16 @@ gap 10+ 262 -> 239 (p 0.09) and gap TVD 8.2 -> 9.9 (10-19 yd runs, already
 under tracking, fall further). Its backer-flow mechanism still needs its own
 games read on `pullers.py`.
 
+Committed build (held squeeze), paired lab against the profile without it
+(`sb3` -> `b2`): zone under center 40+ 54 -> 29 (p 0.002), 20+ 71 -> 45
+(0.007), 10+ 141 -> 101 (0.002), losses 36 -> 34, TVD 9.0 -> 8.9; gap 40+
+145 -> 109 (0.007), 20+ 180 -> 141 (0.009), 10+ 294 -> 248 (0.01), losses
+82 -> 86, TVD 8.9 -> 9.0; shotgun 40+ 36 -> 22 (0.06), 20+ 55 -> 38 (0.05),
+losses 11 -> 19, TVD 10.6 -> 7.1. Games (8, seed 301): meetings per run 2.28
+(NFL 2.69), gap-row DL flow -0.13 +0.12 +0.43. The tails fall everywhere;
+under center the 4-9 yd band grows where tracked runs have more 0-3 and
+10-19 yd runs, so the distribution's shape there is unchanged.
+
 ## Flags on
 
 | Flag | Value | Where | What it does (from its doc comment) |
