@@ -328,6 +328,12 @@ export class PlaySim {
   private stageDefense(prefs?: ManPreference): void {
     const stem = this.defCall.frontStem, creep = this.defCall.creep;
     const early = SNAP_REACT ? this.planSnapCount() : 0;
+    if (SNAP_REACT) for (const a of this.agents) {
+      // The count, not the old fixed latency, sets every start; a man who
+      // stopped himself before the snap responds to the real one.
+      const p = this.snapCount!.plans.get(a)!;
+      a.snapReadyAt = p.stop !== undefined ? p.restart! : Math.max(0, p.go);
+    }
     if (!stem && !creep && !early) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
     for (const seconds of [stem?.secondsBeforeSnap,creep?.secondsBeforeSnap]) {
       if (seconds !== undefined && (!Number.isFinite(seconds) || seconds<=0 || seconds>3)) throw new Error('Pre-snap movement must start within 0–3 seconds of snap');
@@ -374,10 +380,6 @@ export class PlaySim {
       this.perception.record(this.agents, this.carrier?.idx ?? null);
       if (this.record && i%this.recordEvery===0) this.recordFrame(intents);
       if (early && this.snapCountActs(this.t + this.dt)) break;
-    }
-    if (early && !this.snapDead) for (const a of this.agents) {
-      const p = this.snapCount!.plans.get(a)!;
-      a.snapReadyAt = p.stop !== undefined ? p.restart! : Math.max(0, p.go);
     }
     this.t=0;
     this.perception.record(this.agents, this.carrier?.idx ?? null);

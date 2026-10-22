@@ -249,9 +249,9 @@ tracked frame was misread earlier, see `run-offense.md`).
 |---|---|---|---|---|---|---|
 | NFL 2022 runs | -0.17 | -0.05 | +0.03 | +0.10 | +0.17 | 40% |
 | sim before (`sim-ps3`, all plays) | -0.01 | +0.05 | +0.12 | +0.17 | +0.22 | 12% |
-| sim `SNAP_REACT` runs (10 games, 301-310) | -0.18 | -0.11 | +0.00 | +0.11 | +0.17 | 49% |
+| sim `SNAP_REACT` runs (10 games, 301-310) | -0.11 | -0.04 | +0.04 | +0.10 | +0.14 | 38% |
 | NFL 2022 passes | -0.24 | -0.11 | -0.02 | +0.05 | +0.12 | 59% |
-| sim `SNAP_REACT` passes | -0.18 | -0.12 | -0.04 | +0.06 | +0.13 | 61% |
+| sim `SNAP_REACT` passes | -0.13 | -0.07 | -0.01 | +0.06 | +0.11 | 55% |
 
 From his start time a defensive lineman takes 0.25 s to move 0.15 yd and an
 offensive lineman about as long (`scripts/diag/align/getoff-probe.ts`), so
@@ -300,61 +300,62 @@ Dead-ball acts block the snap, and `Game.applyNativePresnap` enforces them
 (no play, down replayed). Standing bodies settle by hundredths of a yard
 before the snap, so only a man who started early can be offside.
 
-**Fouls** (12 games, seeds 401-412, about 1,700 snaps;
+**Fouls** (12 games, seeds 401-406 and 402-407 from two team pairs, about 1,700 snaps;
 `scripts/diag/align/snap-fouls.ts`), vs NFL 2022 accepted totals per
 scrimmage snap
 ([Pro-Football-Reference](https://www.pro-football-reference.com/years/2022/penalties.htm)):
 
 | Foul | Sim | NFL |
 |---|---|---|
-| False start | 0.9% | ~1.7% (578) |
-| Offside | 1.2% | ~0.4% (139) |
-| Neutral zone infraction | 0.7% | ~0.24% (82) |
-| Encroachment | 0.6% | not broken out (rare) |
+| False start | 0.8% | ~1.7% (578) |
+| Offside | 1.3% | ~0.4% (139) |
+| Neutral zone infraction | 0.8% | ~0.24% (82) |
+| Encroachment | 0.4% | not broken out (rare) |
 
-Defensive fouls are about three times NFL. Nearly all come from hard-count
+Defensive fouls are about three to four times NFL. Most come from hard-count
 bites, whose propensity is an assumption with no independent evidence; the
 foul totals are not used to set it. The offense's false starts are half of
 NFL with no crowd noise, silent counts, motion or tight-end/receiver starts
 represented.
 
-**Run game** (lab, called looks, control `s08` vs `sr8` on the same commit;
+**Run game** (lab, called looks, control `s08` vs `sr9` on the same commit;
 the control reproduces `c8` exactly):
 
 | | Control TVD | `SNAP_REACT` TVD | Notes |
 |---|---|---|---|
-| Zone, under center | 6.7 | 3.7 | outside/wide-zone losses 11.5/12.8% -> 9.8/9.5% |
-| Gap | 9.2 | 7.5 | counter losses 8.8 -> 10.2%, power 7.8 -> 7.2% |
-| Shotgun zone | 10.8 | 11.2 | losses 5.2 -> 6.8% (NFL 7.6%) |
+| Zone, under center | 6.7 | 6.1 | losses 8.9 -> 6.9% (NFL 7.6%), 40+ 3.6 -> 5.1% |
+| Gap | 9.2 | 8.2 | power losses 7.8 -> 6.8%, trap 3.2 -> 5.2% |
+| Shotgun zone | 10.8 | 10.7 | losses 5.2 -> 9.0%; outside zone 5.0 -> 12.5% |
 
-The zero-latency diagnostic (`DEF_GETOFF=0`, `dg8`) moves zone and gap the
-same way (3.4 / 7.6), so the direction follows the defense starting
-earlier. But the operators that would explain it are unchanged at their
-medians: outside-zone guard and tackle lateral flow (`meshwidth.py`),
-defensive-line wash (`dlwash.py`), linemen's first contact (`olcontact.py`)
-and backer fit (`lbfit.py`). The zone shift is about two standard errors in
-the largest bins. It is reported as an unexplained shift, not a run-game
-improvement.
+The effect is small and mixed. The shotgun outside-zone losses are the
+one large move, consistent with the defense now starting with the offense
+against the slower shotgun mesh (the earlier shotgun stretch problem).
 
-Contract: `test/snap-count.test.ts`: fouls follow the represented acts,
-standing men are never offside, and reactors never start before 0.1 s.
+An earlier arm (`sr8`, zone TVD 3.7) ran with a bug: the plans set the
+starts only on snaps where someone moved before the snap, so most snaps
+kept the old latency. The contract test now checks that every start comes
+from the plan.
+
+Contract: `test/snap-count.test.ts`: every start comes from the plan,
+fouls follow the represented acts, standing men are never offside, and
+reactors never start before 0.1 s.
 
 Reproduce:
 
 ```sh
 python3 scripts/diag/align/getoff-rel.py out/mechanics/nfl-plays.jsonl.gz --kind run
-EXTRA="SNAP_REACT=1" node --import tsx scripts/mechanics/sim-export.ts --seed 301 --games 10 --out out/snap/sr1.jsonl.gz
-python3 scripts/diag/align/getoff-rel.py out/snap/sr1.jsonl.gz --kind run
-node --import tsx scripts/diag/align/snap-fouls.ts 401 4   # with SNAP_REACT=1 in the environment
+EXTRA="SNAP_REACT=1" node --import tsx scripts/mechanics/sim-export.ts --seed 301 --games 10 --out out/snap/sr3.jsonl.gz
+python3 scripts/diag/align/getoff-rel.py out/snap/sr3.jsonl.gz --kind run
+node --import tsx scripts/diag/align/snap-fouls.ts 401 6   # and 402 6; with SNAP_REACT=1 in the environment
 node --import tsx scripts/diag/align/getoff-probe.ts iz,power,oz,duo 77,1,2,3,4
-bash out/runarms-call.sh sr8 "SNAP_REACT=1" zone gap gun   # arm.mjs with --looks call1..call10
+bash out/runarms-call.sh sr9 "SNAP_REACT=1" zone gap gun   # arm.mjs with --looks call1..call10
 ```
 
 Open:
 - Hard-count bite propensity (sets the defensive foul rate).
 - Crowd noise, silent count and offensive motion as false-start sources.
 - The defense's legal pre-snap movement (stems, sugar) as flinch cues.
-- Whether the zone shift traces to a mechanism.
+- Shotgun outside zone against an on-time defense (losses 5.0 -> 12.5%).
 
 ## Next
 

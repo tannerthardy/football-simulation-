@@ -16,6 +16,11 @@ describe('SNAP_REACT', () => {
       const sim = makeSim({ concept: 'iz', dir: 'strong', formation: 'ace_12', look: 'over3', roster: 'pair11', seed } as never, R);
       const acts = sim.snapActs!, plans = sim.snapCount!.plans;
       const fouls = sim.snapAssessment.fouls.map((f) => `${f.kind}:${f.against}:${f.playerId}`);
+      // Every start comes from the count on every snap, early movers or not.
+      if (!sim.snapDead) for (const a of sim.agents) {
+        const p = plans.get(a)!;
+        expect(a.snapReadyAt).toBe(p.stop !== undefined ? p.restart : Math.max(0, p.go));
+      }
       for (const d of sim.defense) {
         const p = plans.get(d)!;
         if (!p.timed) expect(p.go).toBeGreaterThanOrEqual(0.1);
