@@ -520,6 +520,12 @@ develop + line set + `SAFETY_TEMPO`, 8 games:
   shows no tail change. It is kept off as realistic technique: the sign
   moves toward tracking, at about half the tracked size.
 - **Test:** `test/dl-squeeze.test.ts`.
+- **Review fix (shared-build review):** the squeeze now decides at a read
+  and holds that for the lineman's decision beat, as his other contact reads
+  do. It had re-read the runner every tick, which breaks
+  `run-contact-flow.test.ts`'s held-beat contract when the flag is on. The
+  paired lab is unchanged: median 2.5, 10+ 17.1%, 20+ 6.8% (paired z
+  −0.2 / 0.0 against off).
 
 **`PASS_RIDE` (edge sheds, rusher side; the run-offense session takes the
 tackle).** With the set, edge pressurers are still on their blocker 5% of
