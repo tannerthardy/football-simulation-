@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// The installed alley and cap. SAFETY_TEMPO (default on) holds a deep
+// safety's depth until the back declares, as tracked; these cases check the
+// installed support it replaces.
+vi.hoisted(() => { process.env.SAFETY_TEMPO = '0'; });
 import { Rng } from '../src/core/rng.js';
 import { World } from '../src/physics/world.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';

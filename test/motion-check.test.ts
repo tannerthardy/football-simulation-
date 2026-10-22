@@ -9,7 +9,8 @@ import type { DefSlot } from '../src/playbook/types.js';
 import type { PlaySim } from '../src/sim/playsim.js';
 
 // The front's side without a single attached end is FRONT_STRENGTH's call.
-vi.hoisted(() => { process.env.FRONT_STRENGTH = '1'; });
+// OL_STAGGER sets the line deeper; these timed motions are staged on the flat line.
+vi.hoisted(() => { process.env.FRONT_STRENGTH = '1'; process.env.OL_STAGGER = '0'; });
 
 const was = { motion: process.env.MOTION, check: process.env.MOTION_CHECK };
 afterEach(() => { process.env.MOTION = was.motion; process.env.MOTION_CHECK = was.check; vi.unstubAllEnvs(); });

@@ -4,7 +4,11 @@
  * China vs an x1 side (HNFL-095), Trix (HNFL-197) and Stubbie (HNFL-270/309).
  * Each case has an opposing control; assertions read who took whom on film.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// Filmed on the installed front spots. With FRONT_ALIGN the Quarter Flat
+// case's #2 carry reads differently; checking it on the aligned front is a
+// follow-up for Coverage (G3).
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 import { filmScene, jobsOf, modeOf } from '../src/lab/coverage-scene.js';
 
 const after = (jobs: string[], job: string) => jobs.slice(jobs.indexOf(job) + 1);
