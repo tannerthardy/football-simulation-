@@ -374,6 +374,27 @@ flight:
   (NFL 2.1), into tighter windows (3.4 yd at the throw vs 4.4).
 - Man coverage is closer (−0.03 vs +0.36 yd).
 
+**The break itself** (`depth/breakcurve.py` on both sources,
+`depth/breakprobe.ts` inside the sim). Take the defender nearest the target at
+the throw, in zone coverage:
+- His speed from the release to +0.8 s:
+  - NFL: rises steadily, 3.8 → 5.6 yd/s (separation 2–5 yd at the throw).
+  - Sim: dips, 4.0 → 3.4 at +0.4 s, then 4.1.
+- With the receiver tight (under 2 yd), ours loses ground until +0.6 s
+  (closing −1.6 yd/s at +0.4 s, NFL −0.25).
+
+Inside the sim:
+- He recognizes the throw at +0.25 s (`onBall`).
+- Until then his coverage asks him to face 60–80° off his travel, eyes on the
+  quarterback; 21–39% are backpedaling.
+- After that he asks for 7.6–9.7 yd/s within 15–37° of his travel but has
+  only 3–3.8 by +0.6 s: the hip turn and start come after recognition. NFL
+  defenders are already accelerating at the release.
+- There is a throw-selection part too. On zone throws with 5+ yd of
+  separation, our target is running away from the nearest defender at
+  2.7 yd/s at the release (NFL 0.4): the vertical-route finding already
+  handed to passing.
+
 NFL defenders are driving on the catch point when the ball arrives. Ours start
 the after-catch race nearly flat-footed and come at the receiver from where he
 is, so the receiver who accelerates wins. That is coverage technique on the
@@ -849,8 +870,9 @@ holding the deep defender back.
 (interceptions by source), `holds.ts` (holds by origin and outcome, full
 telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
-`frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, and lab
-probes `catchact.ts`, `sideprobe.ts` (the side window from inside the chase). `scripts/mechanics/nfl_ytg.py` writes the
+`frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, and
+lab probes `catchact.ts`, `sideprobe.ts` (the side window from inside the
+chase), `breakprobe.ts` (the nearest defender through the flight). `scripts/mechanics/nfl_ytg.py` writes the
 yards-to-goal filter their `--ytg60` option reads. `scripts/diag/runblock/`:
 `blockedfirst.py`, `lbfill.py`, `dlflow.py` (NFL and sim, one operator),
 `lbtrace.ts`, `dltrace.ts` (lab backers and backside DL over time).
