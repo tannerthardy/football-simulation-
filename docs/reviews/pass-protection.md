@@ -293,3 +293,13 @@ pressurer's state. Stopped for re-diagnosis: the next question is what the
 QB's depth and the rusher's arc are when tracked edges pressure while still
 engaged. `HAND_FRICTION` on this profile raises edge pressure further (23.3
 -> 29.1 per 100), the wrong way.
+
+Re-diagnosis (`out/qbdepth.py`, same code both sides): at 2.0/2.5 s the
+tracked tackle is 2.7/2.4 yd in front of the QB's depth (QB 7.2/7.6 yd),
+ours 2.6/1.2 (QB 7.9/7.9, 0.7 yd deeper than tracked throughout). Our tackles
+request 3.8 yd/s backward even within a yard of the QB's depth; they are not
+being driven there. A third attempt, capping the kick a body and an arm in
+front of the QB instead of 0.5 yd (`KICK_LAUNCH`), left the tackle's depth
+at 2.5 s unchanged (6.7 yd), so his depth comes from the ride after the
+corner, not the kick; reverted. Open: the ride's depth and the QB's own
+depth (`QB_SETTLE`, stepping up) together.
