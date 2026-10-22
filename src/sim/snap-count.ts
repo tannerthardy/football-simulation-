@@ -1,5 +1,5 @@
 /**
- * SNAP_REACT (experimental, off): the start of a scrimmage down as
+ * SNAP_REACT (on; =0 turns it off): the start of a scrimmage down as
  * perception and timing rather than one fixed defensive latency.
  *
  * The offense knows its count; each man goes on it after his readiness lag

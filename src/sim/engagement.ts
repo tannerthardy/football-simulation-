@@ -88,7 +88,7 @@ const DL_ANCHOR = process.env.DL_ANCHOR !== '0';
  * him: ours finish 1.61 yd upfield on single-blocked outside zone at 2.5 s,
  * tracked linemen 0.62. A vertical drive block keeps the attack. */
 const DL_FLATTEN = process.env.DL_FLATTEN !== '0';
-/** DL_SQUEEZE (off): an engaged first-level man who sees the man on him move
+/** DL_SQUEEZE (on; =0 turns it off): an engaged first-level man who sees the man on him move
  * away from the ball (a down block, a double driving him off) fights back
  * across toward it ("fight pressure with pressure", "squeeze the down
  * block"), instead of keeping his shoulder on a blocker who is washing him
@@ -100,7 +100,7 @@ const DL_FLATTEN = process.env.DL_FLATTEN !== '0';
 const DL_SQUEEZE = process.env.DL_SQUEEZE !== '0';
 /** DL_SQUEEZE: the squeeze side chosen at a read, and until when it is held. */
 const squeezes = new WeakMap<Engagement, { side: number; until: number }>();
-/** DL_FLATTEN_WON (with DL_FLATTEN, off): the flatten applies only while he is
+/** DL_FLATTEN_WON (with DL_FLATTEN, on): the flatten applies only while he is
  * being reached; one already beside or past the man on him keeps attacking
  * ("if you beat the reach, penetrate and make the play"). */
 const DL_FLATTEN_WON = process.env.DL_FLATTEN_WON !== '0';

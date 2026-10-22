@@ -180,7 +180,7 @@ const FORCE_BOUNCE = process.env.FORCE_BOUNCE !== '0';
  * depth at the meeting goes 1.57 -> 2.08 and at 2.0 s 1.82 -> 2.21 (NFL
  * 2.35), and he has moved further sideways by then (1.92 -> 2.29; NFL 4.10). */
 const LB_LANDMARK = process.env.LB_LANDMARK !== '0';
-/** SAFETY_TEMPO (off): an alley safety eases down from his alignment depth
+/** SAFETY_TEMPO (on; =0 turns it off): an alley safety eases down from his alignment depth
  * (about a yard) until the back declares, instead of coming to 5-8 yd. Tracked
  * deep support is 12.9 yd deep at the handoff and comes forward +0.5 / +1.75
  * yd/s at 0.5 / 1.0 s after it; ours +1.75 / +2.5, and on runs reaching 20

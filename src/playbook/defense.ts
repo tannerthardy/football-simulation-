@@ -68,7 +68,7 @@ export const FRONTS: Front[] = [
       LB_W: { tech: '2', side: 'W', depth: LB },
     },
   },
-  // FRONT_MENU (experimental, off; called only under it, game/playcaller.ts):
+  // FRONT_MENU (on, =0 turns it off; called only under it, game/playcaller.ts):
   // the families 2022 tracking shows that the menu above lacks
   // (scripts/diag/align/deflook.py). An even front puts both tackles in the B
   // gaps (8% of nickel early downs, about 20% on third down); the 3-4 teams'

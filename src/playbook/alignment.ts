@@ -102,7 +102,7 @@ const WR_ALIGN = process.env.WR_ALIGN !== '0';
  * head-up on a wing. An explicit edge call (tight, base, wide) overrides.
  * The call's gap is unchanged. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN !== '0';
-/** SHORT_PACKAGE (experimental, off): see game/playcaller.ts. */
+/** SHORT_PACKAGE (on; =0 turns it off): see game/playcaller.ts. */
 const SHORT_PACKAGE = process.env.SHORT_PACKAGE !== '0';
 /** Default on (FRONT_STRENGTH=0 turns it off): the front sets its own strength,
  * apart from the coverage's receiver strength. With one attached end it sets
@@ -151,7 +151,7 @@ const FRONT_MENU = process.env.FRONT_MENU !== '0';
  * installed spot, 3 yd outside and 7.5 deep, left him out of the box against
  * an attached end on every snap (tracked: within 2 yd of the end on 70%). */
 const BOX_ALIGN = process.env.BOX_ALIGN !== '0';
-/** SHELL_SHOW (experimental, off; the call's disguise rates are in
+/** SHELL_SHOW (on; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
 const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
 /** Default on (AGAP_ALIGN=0 turns it off; acts with FRONT_ALIGN): a lineman's 1

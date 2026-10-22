@@ -27,12 +27,12 @@ import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import { alignStyle, type CoverageSystem, type Team } from '../league/team.js';
 import { motionEnabled } from '../sim/motion.js';
 
-/** FRONT_ALIGN (experimental, off): fronts are called as team installs use
+/** FRONT_ALIGN (on; =0 turns it off): fronts are called as team installs use
  * them (2017 Colts, 2013 Seahawks, 2020 Ravens via the playbook session):
  * Under is the base front and Over a secondary call; nickel lines up in the
  * Over family; its pass-down front is a wide "Rush". One draw either way. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN !== '0';
-/** SHORT_PACKAGE (experimental, off): a short-yardage package answers the
+/** SHORT_PACKAGE (on; =0 turns it off): a short-yardage package answers the
  * offense's heavy package anywhere on the field, not only at the goal line:
  * goal-line personnel and the Bear at 2 yd or less to go vs 13, 21 or 22
  * personnel, and vs 12 at a yard or less. Tracked 2022 runs at 1-3 yd to go
@@ -46,11 +46,11 @@ const FRONT_ALIGN = process.env.FRONT_ALIGN !== '0';
  * single-high or zero coverage (the zero call by the ordinary situational
  * weights; tracked heavy fronts at 1-3 yd play no one deep 55% of snaps). */
 const SHORT_PACKAGE = process.env.SHORT_PACKAGE !== '0';
-/** FRONT_STRENGTH (experimental, off): see playbook/alignment.ts. Each snap's
+/** FRONT_STRENGTH (on; =0 turns it off): see playbook/alignment.ts. Each snap's
  * call carries where the front sets without a single attached end, from the
  * team's lean (league/team.ts alignStyle). */
 const FRONT_STRENGTH = process.env.FRONT_STRENGTH !== '0';
-/** FRONT_MENU (experimental, off): the front is called from the families
+/** FRONT_MENU (on; =0 turns it off): the front is called from the families
  * teams line up in, by defensive personnel and situation (2022 tracking,
  * weeks 1-9; scripts/diag/align/deflook.py, families from body positions in
  * line units). Teams whose base personnel shows three interior linemen on 45%
@@ -69,7 +69,7 @@ const FRONT_STRENGTH = process.env.FRONT_STRENGTH !== '0';
  * two on 5% (docs/references/defensive-alignment-sources.md, section 8.2). */
 const FRONT_MENU = process.env.FRONT_MENU !== '0';
 type Moment = 'early' | 'third' | 'short';
-/** DEF_PACKAGE (experimental, off): the defensive package answers the
+/** DEF_PACKAGE (on; =0 turns it off): the defensive package answers the
  * offense's personnel by down and distance as 2022 tracking shows (counting
  * defensive backs at the snap, scripts/diag/align/deflook.py): against 10 or
  * 11 personnel nickel 85% on early downs with dime 8% and base 6%; on third
@@ -78,7 +78,7 @@ type Moment = 'early' | 'third' | 'short';
  * nickel-first team calls base a third as often. Goal-line and short-yardage
  * packages are called first, as before. */
 const DEF_PACKAGE = process.env.DEF_PACKAGE !== '0';
-/** SHELL_SHOW (experimental, off): how often the secondary shows the other
+/** SHELL_SHOW (on; =0 turns it off): how often the secondary shows the other
  * shell depends on the coverage called, as 2022 tracking shows for dropbacks
  * (deep defenders at the snap against PFF's coverage): Cover 3 shows two high
  * 42% of the time, Cover 1 26%, a Cover 0 shows someone deep 36%; Cover 2 shows
@@ -94,7 +94,7 @@ const DEF_PACKAGE = process.env.DEF_PACKAGE !== '0';
 const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
 const SHOW: Record<string, number> = { cover3: .42, cover1: .26, cover0: .36, cover2: .28, tampa2: .28, cover4: .16, cover6: .11, cover2man: .12 };
 const SHOW_CHECK = { under: { oneHigh: .37, twoHigh: 1.6 }, empty: { oneHigh: 1.2, twoHigh: .7 } };
-/** COVER_CALL (experimental, off): the coverage call reads the matchup
+/** COVER_CALL (on; =0 turns it off): the coverage call reads the matchup
  * against the league and checks to the formation seen.
  * - Matchup: the coordinator weighs his two best man corners against the
  *   receivers on the field, each against what that group usually is (the
@@ -113,7 +113,7 @@ const SHOW_CHECK = { under: { oneHigh: .37, twoHigh: 1.6 }, empty: { oneHigh: 1.
  *   ratio to the whole (Cover 1 0.82, Cover 0 0.75, 2-man 0.5, Cover 3
  *   1.12, quarters 1.07, Cover 6 1.1). */
 const COVER_CALL = process.env.COVER_CALL !== '0';
-/** PRESSURE_CALL (experimental, off): how often the coordinator brings
+/** PRESSURE_CALL (on; =0 turns it off): how often the coordinator brings
  * pressure depends on the shell behind it. 2022 tracking, dropbacks (initial
  * pass rushers against PFF's coverage, scripts/diag/align): five or more
  * rushers behind a one-high shell on 38% of snaps, behind two-high on 11%,
