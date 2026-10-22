@@ -646,7 +646,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       let neighbor = line[i - 1];
       const stretch = scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'toss';
       const backside = (n: Agent | undefined) => !!n && rel(plans.get(n)!.target!) < 0;
-      if (COMBO_GAP && !(COMBO_GAP_IZ && stretch && backside(line[i + 1])) && free(neighbor) && free(line[i + 1]) && !beside(neighbor) && beside(line[i + 1]))
+      if (COMBO_GAP && free(neighbor) && free(line[i + 1]) && !(COMBO_GAP_IZ && stretch && backside(line[i + 1]))
+        && !beside(neighbor) && beside(line[i + 1]))
         neighbor = line[i + 1];
       const np = neighbor ? plans.get(neighbor) : undefined;
       if (np?.target && !np.combination && (np.kind === 'drive' || np.kind === 'reach')) {
