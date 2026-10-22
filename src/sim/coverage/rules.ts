@@ -34,6 +34,8 @@ export interface RuleState {
   mode?: string;
   /** The crosser a hook defender has cut, while he carries him. */
   cut?: Agent;
+  /** The receiver an area/banjo pickup settled on. */
+  match?: Agent;
 }
 
 export interface RuleCtx {
@@ -513,6 +515,80 @@ function verticalHook(c: RuleCtx): Directive {
   return mike3(c);
 }
 
+// ------------------------------------------------------------ area pickups (Box, Banjo)
+
+const isOut = (rd: ReceiverRead) => rd.release === 'out' || rd.release === 'flat';
+const isIn = (rd: ReceiverRead) => rd.release === 'under' || rd.release === 'in';
+/** Up the field past the no-cover zone: a stem that has not broken by then is a vertical. */
+const isUp = (rd: ReceiverRead) => rd.release === 'vertical' && rd.depth > NO_COVER;
+/** He has shown his route: broken in, out or short, or cleared the no-cover zone vertically. */
+const declaredRoute = (rd: ReceiverRead) => isUp(rd) || ['out', 'flat', 'under', 'in', 'stop'].includes(rd.release);
+/** The receiver of `pool` that declared `test` first. */
+function first(pool: ReceiverRead[], test: (rd: ReceiverRead) => boolean): ReceiverRead | null {
+  return pool.filter(test).sort((a, b) => a.since - b.since)[0] ?? null;
+}
+
+/** Keep a settled pickup while he is still visible; otherwise pick again. */
+function settle(c: RuleCtx, pick: ReceiverRead | null, lock: boolean, opts: ManOptions): Directive | null {
+  if (c.state.match) {
+    const rd = c.reader.read(c.sim, c.state.match);
+    if (rd) return man(rd, opts);
+  }
+  if (!pick) return null;
+  if (lock) c.state.match = pick.r;
+  return man(pick, opts);
+}
+
+/**
+ * Box (quarters vs bunch, HNFL-053/331/272): zone pickups by area of release
+ * over the three bunched receivers. Low defenders take the first out and the
+ * first in underneath; the corner takes the outermost receiver up the field,
+ * the safety the innermost (one vertical gets both: "1 vertical route =
+ * 2-on-1"). Every pool member is read every tick so the order is honest.
+ */
+function box(c: RuleCtx, job: 'out_low' | 'in_low' | 'out_deep' | 'in_deep'): Directive {
+  const pool = ([1, 2, 3] as const).map(n => ref(c, n)).filter((rd): rd is ReceiverRead => !!rd);
+  if (!pool.length) return zoneOf(c);
+  // Outermost to innermost by the count (#1, #2, #3), which releases do not reshuffle.
+  const ups = pool.filter(isUp);
+  switch (job) {
+    case 'out_low': return settle(c, first(pool, isOut), true, { lev: 'inside', overTop: true }) ?? zoneOf(c);
+    case 'in_low': return settle(c, first(pool, isIn), true, { lev: 'head' }) ?? zoneOf(c);
+    case 'out_deep': {
+      const pick = ups[0] ?? null;
+      return settle(c, pick, !!pick && pick.depth > 10, { lev: 'outside', overTop: true }) ?? zoneOf(c);
+    }
+    case 'in_deep': {
+      const pick = ups.at(-1) ?? null;
+      return settle(c, pick, !!pick && pick.depth > 10, { lev: 'inside', overTop: true }) ?? zoneOf(c);
+    }
+  }
+}
+
+/**
+ * Banjo (man vs bunch/stack, HNFL-074 Mini Fist, MS §15): the point is locked
+ * by another defender; this pair trades #1 and #3 by release. The outside
+ * defender takes the first out (or, with none, the outer man); the inside
+ * defender takes the other one. Both read both receivers each tick and lock
+ * once both have declared, so a late cross does not re-trade them.
+ */
+function banjo(c: RuleCtx, outside: boolean): Directive {
+  const one = ref(c, 1), three = ref(c, 3);
+  if (c.state.match) {
+    const rd = c.reader.read(c.sim, c.state.match);
+    if (rd) return man(rd, { lev: outside ? 'outside' : 'inside' });
+  }
+  if (!one || !three) return one ? man(one, { lev: 'outside' }) : zoneOf(c);
+  const pair = [one, three];
+  const other = (rd: ReceiverRead) => (rd === one ? three : one);
+  const out = first(pair, isOut) ?? (first(pair, isIn) ? other(first(pair, isIn)!) : one);
+  const mine = outside ? out : other(out);
+  const declared = pair.every(declaredRoute);
+  if (declared) c.state.match = mine.r;
+  if (!declared) return readRelease(mine);
+  return man(mine, { lev: outside ? 'outside' : 'inside' });
+}
+
 /** Inverted Cover 2 safety: rotate down to curl-flat; wall #2's vertical to 12 for the bailing corner. */
 function invertSafety(c: RuleCtx): Directive {
   return wallTwo(c, 12);
@@ -535,6 +611,12 @@ export function runRule(rule: MatchRule, c: RuleCtx): Directive {
     case 'sink_corner': return cloudCorner(c, true);
     case 'c2_hook': return verticalCurl(c);
     case 'vertical_hook': return verticalHook(c);
+    case 'box_out_low': return box(c, 'out_low');
+    case 'box_in_low': return box(c, 'in_low');
+    case 'box_out_deep': return box(c, 'out_deep');
+    case 'box_in_deep': return box(c, 'in_deep');
+    case 'banjo_out': return banjo(c, true);
+    case 'banjo_in': return banjo(c, false);
     case 'tampa_mike': return tampaMike(c);
     case 'poach_safety': return poachSafety(c);
     case 'stubbie_safety': return stubbieSafety(c);

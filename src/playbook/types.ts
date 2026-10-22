@@ -221,6 +221,12 @@ export type MatchRule =
   | 'read_hook'
   | 'mush'
   | 'vertical_hook'
+  | 'box_out_low'
+  | 'box_in_low'
+  | 'box_out_deep'
+  | 'box_in_deep'
+  | 'banjo_out'
+  | 'banjo_in'
   | 'rat'
   | 'robber';
 

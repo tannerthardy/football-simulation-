@@ -11,13 +11,18 @@
  * more receivers), `_w` = away. Field/boundary versions of split-field calls
  * are chosen by the coordinator (e.g. Cover 6 vs. Cover 6 reversed).
  */
-import type { Coverage, CoverageRole, DefensivePlayCall, FormationKey, MatchRule, ZoneId } from './types.js';
+import { DEF_PERSONNEL, type Coverage, type CoverageRole, type DefensivePlayCall, type DefSlot, type FormationKey, type MatchRule, type ZoneId } from './types.js';
 import type { FormationStructure } from './structure.js';
 
 const z = (zone: ZoneId, rule?: MatchRule, depth?: number): CoverageRole => ({ kind: 'zone', zone, ...(rule ? { rule } : {}), ...(depth !== undefined ? { depth } : {}) });
 const seat = (zone: ZoneId, rule: MatchRule) => ({ zone, rule });
 
 // Quarters pieces shared by several calls.
+/** Quarters structure checks (HNFL-194 Sub Quads menu): Box vs bunch, Book/Read vs empty. Trips keep the distribution checks. */
+const QUARTERS_CHECKS = [
+  { when: ['bunch_strong'], to: ['cover4_box'] },
+  { when: ['empty_3x2'], to: ['cover4_book_read'] },
+] satisfies Coverage['structureChecks'];
 const QUARTERS_S = {
   CB_S: z('quarter_s_out', 'q_corner_mod'),
   SS: z('quarter_s_in', 'q_safety'),
@@ -60,6 +65,20 @@ export const COVERAGES: Coverage[] = [
       LB_W: { kind: 'man', prefer: ['B', 'W2'] },
     },
     underneath: [],
+    structureChecks: [{ when: ['bunch_strong'], to: ['cover1_banjo'] }],
+  },
+  {
+    id: 'cover1_banjo', name: 'Cover 1 Banjo (vs bunch)', family: 'cover1', shell: 'one-high', man: false, press: false,
+    note: 'Man-free vs bunch: the nickel locks the point, the corner and strong safety banjo #1 and #3 by release (first out / the other); a rat in the hole.',
+    roles: {
+      CB_S: z('flat_s', 'banjo_out'),
+      SS: z('curl_flat_s', 'banjo_in'),
+      NB: { kind: 'man', prefer: ['S2'], press: true },
+      CB_W: { kind: 'man', prefer: ['W1'] },
+      FS: z('deep_mid'),
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+    },
+    underneath: [seat('hole', 'rat')],
   },
   {
     id: 'cover1_off', name: 'Cover 1 Off', family: 'cover1', shell: 'one-high', man: true, press: false,
@@ -75,6 +94,7 @@ export const COVERAGES: Coverage[] = [
       LB_W: { kind: 'man', prefer: ['B', 'W2'] },
     },
     underneath: [seat('hole', 'rat')],
+    structureChecks: [{ when: ['bunch_strong'], to: ['cover1_banjo'] }],
   },
   {
     id: 'cover1_robber', name: 'Cover 1 Robber', family: 'cover1', shell: 'one-high', man: true, press: true,
@@ -91,6 +111,7 @@ export const COVERAGES: Coverage[] = [
       LB_W: { kind: 'man', prefer: ['B', 'W2'] },
     },
     underneath: [seat('hole', 'rat')],
+    structureChecks: [{ when: ['bunch_strong'], to: ['cover1_banjo'] }],
   },
   {
     id: 'cover1_double', name: 'Cover 1 Double', family: 'cover1', shell: 'one-high', man: true, press: false,
@@ -264,6 +285,7 @@ export const COVERAGES: Coverage[] = [
     roles: { ...QUARTERS_S, ...QUARTERS_W },
     underneath: [seat('curl_flat_s', 'q_apex'), seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_s', 'hook_w'],
     checks: { '3x1': ['cover4_poach', 'cover4_stubbie'] },
+    structureChecks: QUARTERS_CHECKS,
   },
   {
     id: 'cover4_meg', name: 'Quarters MEG', family: 'cover4', shell: 'two-high', man: false, press: false,
@@ -276,6 +298,7 @@ export const COVERAGES: Coverage[] = [
     },
     underneath: [seat('curl_flat_s', 'q_apex'), seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_s', 'hook_w'],
     checks: { '3x1': ['cover4_poach'] },
+    structureChecks: QUARTERS_CHECKS,
   },
   {
     id: 'cover4_palms', name: 'Palms (2-Read)', family: 'cover4', shell: 'two-high', man: false, press: false,
@@ -288,6 +311,28 @@ export const COVERAGES: Coverage[] = [
     },
     underneath: [seat('curl_flat_s', 'q_apex'), seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_s', 'hook_w'],
     checks: { '3x1': ['cover4_stubbie'] },
+    structureChecks: QUARTERS_CHECKS,
+  },
+  {
+    id: 'cover4_box', name: 'Quarters Box (vs bunch)', family: 'cover4', shell: 'two-high', man: false, press: false,
+    note: 'Zone pickups on the bunch: corner the outermost vertical, safety the innermost, nickel the first out, hook the first in; quarters on the backside X.',
+    roles: {
+      CB_S: z('quarter_s_out', 'box_out_deep'),
+      SS: z('quarter_s_in', 'box_in_deep'),
+      ...QUARTERS_W,
+    },
+    underneath: [seat('curl_flat_s', 'box_out_low'), seat('hook_s', 'box_in_low'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
+  },
+  {
+    id: 'cover4_book_read', name: 'Quarters Book/Read (vs empty)', family: 'cover4', shell: 'two-high', man: false, press: false,
+    note: 'Empty 3x2: Book to the three (corner MEG, nickel MUSH, read hook, 3/2 safety) and Read (Palms 2-read) to the two.',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside', protectDepth: true },
+      SS: z('quarter_s_in', 'stubbie_safety'),
+      CB_W: z('quarter_w_out', 'palms_corner'),
+      FS: z('quarter_w_in', 'palms_safety'),
+    },
+    underneath: [seat('curl_flat_s', 'mush'), seat('hook_s', 'read_hook'), seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_w'],
   },
   {
     id: 'cover4_poach', name: 'Quarters Poach/Trix (vs trips)', family: 'cover4', shell: 'two-high', man: false, press: false,
@@ -319,6 +364,18 @@ export const COVERAGES: Coverage[] = [
       FS: z('deep_half_w'),
     },
     underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_w', 'hook_s'],
+    structureChecks: [{ when: ['bunch_strong'], to: ['cover4_box'] }, { when: ['trips'], to: ['cover6_book'] }],
+  },
+  {
+    id: 'cover6_book', name: 'Cover 6 Book (vs trips)', family: 'cover6', shell: 'two-high', man: false, press: false,
+    note: 'Quarters side vs trips plays Book (corner MEG, nickel MUSH, read hook, 3/2 safety); cloud and half safety on the backside X.',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside', protectDepth: true },
+      SS: z('quarter_s_in', 'stubbie_safety'),
+      CB_W: z('flat_w', 'cloud_corner'),
+      FS: z('deep_half_w'),
+    },
+    underneath: [seat('curl_flat_s', 'mush'), seat('hook_s', 'read_hook'), seat('hook_mid', 'mike_3'), 'hook_w'],
   },
   {
     id: 'cover6_rev', name: 'Cover 8 (half strong, quarters weak)', family: 'cover6', shell: 'two-high', man: false, press: false,
@@ -376,10 +433,17 @@ export function checkCall(call: DefensivePlayCall, structure: FormationStructure
 function checkTo(call: DefensivePlayCall, options: string[] | undefined, when: string): DefensivePlayCall {
   if (!options?.length) return call;
   const to = COVERAGE_BY_ID[options[Math.min(options.length - 1, call.checkPick ?? 0)]];
-  if (!to || to.id === call.coverage.id) return call;
+  if (!to || to.id === call.coverage.id || !checkInstallable(call, to)) return call;
   return { ...call, coverage: to, check: { from: call.coverage.id, when }, label: `${call.label} → ${to.name}` };
 }
 
+
+/** A check names its players: they must be on the field and not already
+ * spent by the call's pressure, or the call stays as it was. */
+function checkInstallable(call: DefensivePlayCall, to: Coverage): boolean {
+  const spent = new Set([...Object.keys(call.pressure?.blitzers ?? {}), ...Object.keys(call.pressure?.droppers ?? {})]);
+  return (Object.keys(to.roles) as DefSlot[]).every(slot => !!DEF_PERSONNEL[call.personnel][slot] && !spent.has(slot));
+}
 
 /**
  * Zeus (Fangio nickel tag "Zeus + jersey"): a zone call that doubles one
