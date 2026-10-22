@@ -601,7 +601,10 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // run at the 3-technique; against a playside 1-technique the line makes it
     // a long trap of the next man out (spread playbook p. 62, Browns "log"
     // p. 37). The offense calls before seeing the front, so this is the check.
-    const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= 1.05).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
+    // Techniques are read off the guard, not a yard mark: inside the
+    // playside guard is the A-gap 1-technique; on or outside him, trapped.
+    const psg = line.filter((b) => isOL(b) && rel(b) > 0).sort((p, q) => rel(p) - rel(q))[0];
+    const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= (psg ? rel(psg) : 1.05)).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
     const kickReserved = scheme !== 'trap' && pullers.size ? dl.filter((d) => rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null : null;
 
     // Account for immediate inside threats first. Outside-in assignment can
@@ -714,11 +717,17 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // With every backer owned, the lead takes the most dangerous free box
     // defender, nearest the mesh; on counter and trap, the backside one the
     // pullers vacated first.
+    // Nearest the mesh counts depth: a safety walked down outside the end is
+    // farther from it than the edge on the line. The lead's backer is one
+    // inside the surface; a box safety outside it is a perimeter blocker's.
     const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
     const backsideFirst = scheme === 'counter' || scheme === 'trap';
+    const fromMesh = (d: Agent) => Math.hypot(d.pos.x - sim.los, rel(d));
     const free = [...dl, ...lb].filter((d) => !owned.has(d))
-      .sort((p, q) => (backsideFirst ? Number(rel(p) >= 0) - Number(rel(q) >= 0) : 0) || Math.abs(rel(p)) - Math.abs(rel(q)));
-    plans.set(fb, { kind: 'lead', target: lbNear(by + ps * 1.5) ?? free[0] ?? null, drive: up(0) });
+      .sort((p, q) => (backsideFirst ? Number(rel(p) >= 0) - Number(rel(q) >= 0) : 0) || fromMesh(p) - fromMesh(q));
+    const surface = line.map(rel), inside = (d: Agent) => rel(d) >= Math.min(...surface) - .5 && rel(d) <= Math.max(...surface) + .5;
+    const backer = lbNear(by + ps * 1.5);
+    plans.set(fb, { kind: 'lead', target: (backer && inside(backer) ? backer : null) ?? free[0] ?? null, drive: up(0) });
   }
   const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'
     && !(a.slot === 'F' && sim.offAlign.spots.F?.backfield));
@@ -739,7 +748,12 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // backers a lineman or lead already owns. Only a receiver left with
     // nobody unclaimed helps on the nearest man.
     const open = stalkPool.filter(d => !reserved.has(d));
-    const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d) }))).sort((p, q) => p.dist - q.dist);
+    // A box defender nobody owns (a safety walked down into an eight-man
+    // box) is claimed before the secondary, by a receiver on his side of the
+    // ball: the crack. Then the closest pairs.
+    const box = (a: Agent, d: Agent) => lb.includes(d) && (d.pos.y - by) * (a.pos.y - by) > 0 ? 0 : 1;
+    const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d), tier: box(a, d) })))
+      .sort((p, q) => p.tier - q.tier || p.dist - q.dist);
     const taken = new Set<Agent>();
     for (const { a, d } of pairs) if (!stalkTargets.has(a) && !taken.has(d)) { stalkTargets.set(a, d); taken.add(d); }
   }
