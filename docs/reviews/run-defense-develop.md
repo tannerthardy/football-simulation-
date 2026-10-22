@@ -743,8 +743,20 @@ So there are two facts:
   fact as run defenders re-latched after the back passes (run-offense
   session, `SHED_PURSUE` / `BLOCK_FRONT`).
 
-Nothing in the rush controller changes. `HAND_CLEAR` waits to be measured
-on a `GAIT_STEP` base (not committed). The run-offense session's review
+Nothing in the rush controller changes.
+
+**The hand law with `GAIT_STEP`.** Measured on that base (line set +
+`PASS_FEEL` + `GAIT_STEP=0.3`, 1,920 paired dropbacks, scratch worktree):
+- The run-offense session's `HAND_FRICTION` (`world.ts`, `claude/run-game-v3`
+  `f263445`) bounds hand steering by friction on the push. Pressure
+  28.9 → 32.4%.
+- With `HAND_CLEAR` as well, 35.8%.
+- Interior stays at 9.8 / 9.7 / 9.8% while edge goes 17.2 / 21.3 / 24.1%.
+
+The interior pair is a leg contest with the hands on: the rusher asks for
+2.1 yd/s across and the blocker for −0.66, the run-offense session's run-rep
+probe. The hand law moves the edge, not the interior. `HAND_CLEAR` stays
+uncommitted. The run-offense session's review
 applies when it returns: decide the clear from the joint's attained load,
 not from `e.control`, which is a rating random walk.
 
