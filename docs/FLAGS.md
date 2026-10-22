@@ -43,17 +43,17 @@ There are 82 flags: 58 are on by default, 1 is a diagnostic scale at identity (`
 | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:154` | set at first review |
 | `PULL_PLAN` | off | experimental | defense | `src/sim/run-fits.ts:145` | set at first review |
 | `PULL_STEP` | off | experimental | run | `src/sim/behaviors/blocking.ts:37` | set at first review |
-| `REACH_CONTACT` | off | experimental | defense | `src/sim/tackle.ts:66` | set at first review |
+| `REACH_CONTACT` | off | experimental | defense | `src/sim/tackle.ts:71` | set at first review |
 | `READ_RISK_TRACE` | off | experimental | defense | `src/sim/run-read.ts:117` | set at first review |
 | `RUN_CONTACT_TRACK` | off | experimental | trenches | `src/sim/engagement.ts:673` | set at first review |
 | `RUN_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:687` | set at first review |
 | `RUN_READ` | off | experimental | defense | `src/sim/run-read.ts:35` | set at first review |
 | `RUN_READ_TURN` | off | experimental | defense | `src/sim/run-read.ts:39` | set at first review |
-| `TACKLE_ROLL` | off | experimental | defense | `src/sim/tackle.ts:60` | set at first review |
-| `TACKLE_TOUCH` | off | experimental | defense | `src/sim/tackle.ts:69` | set at first review |
-| `WRAP_BIND` | off | experimental | defense | `src/sim/tackle.ts:63` | set at first review |
-| `BLOCKED_REACH` | on | default (promoted 2026-10-22) | defense | `src/sim/tackle.ts:80` | review 2: drop the off path |
-| `GRIP_HOLD` | on | default (2026-10-22) | physics | `src/sim/tackle.ts:89` | review 2: drop the off path |
+| `TACKLE_ROLL` | off | experimental | defense | `src/sim/tackle.ts:65` | set at first review |
+| `TACKLE_TOUCH` | off | experimental | defense | `src/sim/tackle.ts:74` | set at first review |
+| `WRAP_BIND` | off | experimental | defense | `src/sim/tackle.ts:68` | set at first review |
+| `BLOCKED_REACH` | on | default (promoted 2026-10-22) | defense | `src/sim/tackle.ts:85` | review 2: drop the off path |
+| `GRIP_HOLD` | on | default (2026-10-22) | physics | `src/sim/tackle.ts:95` | review 2: drop the off path |
 | `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:195` | expires: review 2. Open: who supplies force in Cover 2 Man and which inside jobs trade; Defense, Run Game and Coverage to agree (#193, #190 comments) |
 | `DEF_ALIGN` | on | default (promoted 2026-10-22) | coverage | `src/playbook/alignment.ts:71` | review 2: drop the off path |
 | `DEF_GETOFF` | 1 (identity scale) | diagnostic | trenches | `src/sim/agent.ts:25` | expires: review 2 |

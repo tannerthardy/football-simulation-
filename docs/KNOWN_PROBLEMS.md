@@ -533,8 +533,8 @@ Carried over from the issue register; each was measured on an older develop.
     escapes a grab only through grip physics; a real QB twists and spins out
     of an arm grab. The sack rate's response is not settled: 10.0 → 13.4% per
     dropback on develop, but 8.6 → 4.9% stacked on #215 (6-game quick tier,
-    whole games diverge early). Check with both merged on the PR tier and a
-    second seed; the QB escape and PRO-1 are the gaps if sacks sit high.
+    whole games diverge early). Logged as a gap under PRO-1: a quarterback
+    can't twist or spin out of an arm grab.
   - Staged scene pinned to `GRIP_HOLD=0` (re-record by review 2): the Cover 2
     vertical curl in `test/cover3-cover2-rules.test.ts`, where the end's grab
     now holds the QB until 3.2 s, before the 3.4 s read.
@@ -648,6 +648,14 @@ Carried over from the issue register; each was measured on an older develop.
   and timing, so they stay on; they show the tackles can't hold an edge.
   In the P019 pass-cutoff scene the tackle also loses edge contact with
   `PASS_FEEL` on (`test/pass-cutoff-approach.test.ts` is pinned).
+- **After `GRIP_HOLD`** (#217, TKL-1): sacks rose from 10.0% to 13.4% of
+  dropbacks (quick tier, paired, moved). A rusher's arm grab on a pocket QB
+  now keeps its grip, and those grabs break half as often (12% → 6% of
+  about 175 holds; the number of grabs is unchanged). A quarterback can't
+  twist or spin out of an arm grab: he escapes only if the grip itself
+  slips past reach. That escape is missing, along with the slide away from
+  the edge (PRO-4). Stacked on #215, the same switch went 8.6% → 4.9%, so
+  re-measure with both merged. Don't weaken the grip to fix sacks.
 
 <a id="pro-2"></a>
 ### PRO-2: Pressure arrives too early and from the wrong places
