@@ -167,7 +167,7 @@ default-off flag), resolved.
 - **By concept** (`dev-12`, 60–99 carries each): inside zone 15.3 yd per
   carry with 4% stuffs, duo 12.5 with 0% stuffs, power 10.5, trap 8.0. The
   inside runs that should be the hardest yards are the most explosive.
-- **Where:** `src/sim/behaviors/run-fits.ts`, `engagement.ts`;
+- **Where:** `src/sim/run-fits.ts`, `src/sim/engagement.ts`;
   `scripts/diag/run-hole.py`.
 - **Open:** which defender's fit fails first: line, second level or alley.
 
@@ -269,8 +269,9 @@ default-off flag), resolved.
   offensive line splits are also too narrow: 1.3 yd vs 1.51 tracked.
 - **Fix:** `AGAP_ALIGN` (#196, off) takes it to 82/79%. Adding `OL_SPLITS` (#190)
   brings it to 57/54%.
-- **Open:** the line-split source. `OL_SPLITS` and `OL_STAGGER` (#190) were
-  superseded by `OL_ALIGN` on `rg3`, which isn't on develop.
+- **Open:** `OL_SPLITS` is develop's line source now: Main Engine chose it
+  over `rg3`'s `OL_ALIGN` in the #190 review, and `AGAP_ALIGN` scales by the
+  line it sets. `OL_ALIGN` stays parked (see [PARKED.md](PARKED.md)).
 
 <a id="run-9"></a>
 ### RUN-9: Front and edge alignment unlike tracking
@@ -312,7 +313,7 @@ Carried over from the issue register; each was measured on an older develop.
   (TKL-2), closing speed, tackle resolution, and a missing second defender.
   #191 found that the long-run tail (RUN-2) is a deep-support problem, not a
   missed-tackle one, so this is a separate fault.
-- **Where:** `src/sim/behaviors/tackle.ts`; scorecard probe `missedBy`, split by
+- **Where:** `src/sim/tackle.ts`; scorecard probe `missedBy`, split by
   DL, LB, CB and S.
 - **Tried:** `BLOCKED_REACH` (#190, off) lets a blocked defender reach for a
   runner passing his free side. Covered/free conversion goes to 13/23% vs NFL
@@ -355,7 +356,8 @@ Carried over from the issue register; each was measured on an older develop.
     rusher walks through the arms (#198).
 - **Tried:** `PASS_CORNER`/`PASS_KICK` on `rg3` fixed the contact timing there
   (1.16 s, 3.3 yd). They aren't on develop. A probe without PASS_KICK's follow
-  term left the rusher unchanged.
+  term made the tackle worse (rusher past him 27% → 33%), which points to the
+  hands rather than the kick.
 - **Open:** the hands are a physics or trenches question, not the rusher's
   path. This is G5.
 
@@ -378,7 +380,7 @@ Carried over from the issue register; each was measured on an older develop.
   (+4). Same-side tackles blocked nobody on 86% of unblocked edges, vs 39%.
 - **Cause:** *likely* PRO-1 and PRO-3. The overall rate can look right while
   the timing and source are wrong.
-- **Where:** `scripts/diag/passpro/`, `pass-pressure.py`, `edge-rep.py`.
+- **Where:** `scripts/diag/passpro/` (#198), `scripts/diag/pass-pressure.py`, `scripts/diag/edge-rep.py` (#191).
 - **Adverse control to keep:** a play-action post-dig snap where a near-matched
   sack persists at 3.15–3.20 s (#189 film).
 

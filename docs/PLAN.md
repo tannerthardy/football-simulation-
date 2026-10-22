@@ -53,13 +53,16 @@ attaches its scorecard and explains each stat that moved.
   and check it against what tracking data can measure.
 - Commit to mechanisms that make clear football sense. A change that is
   plainly more realistic lands on by default, with its moved stats explained
-  in the PR. A flag that stays off and changes nothing anyone tests is not
+  in the PR. "Default" means the value in the code, which games, tests and
+  the scorecard run, not a profile in `config/baseline.json`. A flag that stays off and changes nothing anyone tests is not
   progress.
 - Use a flag only for a real open question: two credible ways to do it, or a
   mechanism that needs another gap fixed first. Register it in
   [FLAGS.md](FLAGS.md) with an expiry two reviews out, and say what evidence
   decides it. Keep at most 10 experimental flags. At expiry, a flag becomes
-  the default and its old path is removed, or the flag is deleted.
+  the default and its old path is removed, or the flag is deleted. A
+  deleted or parked flag gets a row in [PARKED.md](PARKED.md), so the idea
+  isn't lost.
 - No receipts, ledgers or evidence files in Git. Put output in `out/`, and the
   summary in the PR.
 - Anything that changes this plan, a gap's target or the trunk is labeled
