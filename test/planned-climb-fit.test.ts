@@ -29,6 +29,8 @@ import type {Intent} from '../src/physics/world.js';
 import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
 import {RunBlocker} from '../src/sim/behaviors/blocking.js';
 import type {Perceived} from '../src/sim/perception.js';
+// PAD_LEVERAGE and DL_ANCHOR change the contact forces this recorded scene is staged on.
+vi.hoisted(() => { process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; });
 
 const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/planned-climb-fit.json.gz',import.meta.url))).toString()) as {setup:PlaySetup};
 function stage(t:number){

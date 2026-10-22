@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
@@ -11,6 +11,10 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Agent } from '../src/sim/agent.js';
 import { capturePassContactStarts, flushPassContacts, notePassTouch, observePassContacts } from '../src/sim/pass-interference.js';
 import { PlaySim } from '../src/sim/playsim.js';
+
+// Staged contacts on the installed contact law: PAD_LEVERAGE makes the same
+// staging a different encounter (a pads-up receiver is lifted off his feet).
+vi.hoisted(() => { process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; });
 
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
