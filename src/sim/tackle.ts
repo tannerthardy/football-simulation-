@@ -86,8 +86,9 @@ const BLOCKED_REACH = process.env.BLOCKED_REACH !== '0';
 /** Default on (GRIP_HOLD=0 turns it off): a hold keeps the grip it has
  * acquired when the arms extend. Closing still works a grip toward a wrap,
  * but a hand closed on a jersey is not weaker because the elbow straightened;
- * extension costs the reel its leverage, not the hold its tension. The hold
- * still slides out while slipping and breaks past reach (World). Without it,
+ * extension costs the reel its leverage, not the hold its tension. The held
+ * grip never weakens: the hold still slides out while slipping and ends when
+ * it slides past reach (World). Without it,
  * any extension cut the grip at once, so a slip extended the arms, the
  * weaker grip slipped more and the hold broke: crowd holds on break-through
  * runs sat at grip 0.45, slipping 79% of the time (KNOWN_PROBLEMS TKL-1). */
