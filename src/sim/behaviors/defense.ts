@@ -25,6 +25,7 @@ import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
+import { SNAP_REACT } from '../snap-count.js';
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 /** Experimental (DL_KEY=1, off): a down lineman keys the blocker in front
@@ -76,7 +77,9 @@ export class PassRusher implements Behavior {
     private readonly gapSign: number,
   ) {
     const burst = clamp((1.8 - a.player.measurables.tenSplit) / 0.35, 0, 1);
-    this.getOff = a.snapReadyAt = clamp(a.snapReadyAt + sim.rng.normal(0, 0.03), 0.02, 0.4);
+    // SNAP_REACT plans every start from the count itself.
+    const scatter = sim.rng.normal(0, 0.03);
+    this.getOff = a.snapReadyAt = SNAP_REACT ? a.snapReadyAt : clamp(a.snapReadyAt + scatter, 0.02, 0.4);
     const edge = gap === 'C' || gap === 'D';
     const pw = 0.3 + a.r('passRushPower') + (a.profile.massKg - 120) / 60;
     const fi = 0.3 + a.r('passRushFinesse');
@@ -158,7 +161,8 @@ export class Blitzer implements Behavior {
     private readonly gap: Gap,
     private readonly gapSign: number,
   ) {
-    this.delay = a.snapReadyAt = clamp(a.snapReadyAt + sim.rng.normal(0, 0.04), 0.02, 0.4);
+    const scatter = sim.rng.normal(0, 0.04);
+    this.delay = a.snapReadyAt = SNAP_REACT ? a.snapReadyAt : clamp(a.snapReadyAt + scatter, 0.02, 0.4);
     void a;
   }
 

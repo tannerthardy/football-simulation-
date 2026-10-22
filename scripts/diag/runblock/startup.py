@@ -7,7 +7,7 @@ f = sys.argv[1]; args = sys.argv[2:]
 CON = args[args.index('--concept') + 1] if '--concept' in args else None
 SHIFT = float(args[args.index("--shift") + 1]) if "--shift" in args else 0.0
 T = [.2, .4, .6, .8, 1.0]
-S = {g: {t: [] for t in T} for g in ('LB', 'OL')}
+S = {g: {t: [] for t in T} for g in ('LB', 'OL', 'DL', 'DB')}
 n = 0
 for l in gzip.open(f, 'rt'):
     c = json.loads(l); c = c.get('common', c)
@@ -21,8 +21,10 @@ for l in gzip.open(f, 'rt'):
     ys = sorted(xy[0][2 * i + 1] for i in ol); lo, hi = ys[0] - 2, ys[-1] + 2
     lbs = [i for i, p in enumerate(P) if p.get('side') == 'D' and p.get('group') == 'LB' and 2.5 <= xy[0][2 * i] <= 8 and lo <= xy[0][2 * i + 1] <= hi]
     inner = sorted(ol, key=lambda i: xy[0][2 * i + 1])[1:4]
+    dl = [i for i, p in enumerate(P) if p.get('side') == 'D' and p.get('group') == 'DL' and xy[0][2 * i] < 2.5]
+    db = [i for i, p in enumerate(P) if p.get('side') == 'D' and p.get('group') == 'DB']
     n += 1
-    for g, ids in (('LB', lbs), ('OL', inner)):
+    for g, ids in (('LB', lbs), ('OL', inner), ('DL', dl), ('DB', db)):
         for t in T:
             a, b = round((t - SHIFT - .1) / dt), round((t - SHIFT + .1) / dt)
             if a < 0: continue
