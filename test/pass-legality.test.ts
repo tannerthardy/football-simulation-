@@ -172,6 +172,26 @@ describe('native pass-law hooks', () => {
     const legal = nativeSim(); release(legal); ground(legal);
     expect(legal.penalties.some(p => p.kind === 'intentional_grounding')).toBe(false);
   });
+  it('a missed pass toward a receiver who could reach the landing spot is not grounding; one with no such receiver is', () => {
+    const throwAt = (dy: number) => {
+      const sim = nativeSim(), x = sim.slot('X')!; pressured(sim);
+      x.downUntil = -1; x.body.pos = { x: 38.5, y: CENTER_Y + dy };
+      release(sim); sim.t = sim.world.time = 3; ground(sim);
+      return sim;
+    };
+    expect(throwAt(2.5).penalties.some(p => p.kind === 'intentional_grounding')).toBe(false);
+    const far = throwAt(12);
+    expect(far.penalties).toContainEqual(expect.objectContaining({ kind: 'intentional_grounding' }));
+    expect(far.foulRecords.find(f => f.kind === 'intentional_grounding')?.evidence.facts)
+      .toMatchObject({ receiverCouldReachLanding: false, contactAltered: false, flightTime: 1 });
+  });
+  it('a pass thrown from inside a defender\'s grasp toward a receiver is altered by contact, not grounding', () => {
+    const sim = nativeSim(), x = sim.slot('X')!, dt = sim.slot('DT_S')!; pressured(sim);
+    x.downUntil = -1; x.body.pos = { x: 38.5, y: CENTER_Y + 12 };
+    sim.bond = { carrier: sim.qb, tacklers: [dt], grip: new Map([[dt, .8]]) } as unknown as typeof sim.bond;
+    release(sim); sim.bond = null; sim.t = sim.world.time = 3; ground(sim);
+    expect(sim.penalties.some(p => p.kind === 'intentional_grounding')).toBe(false);
+  });
   it('does not call grounding merely because an actual interception interrupted a pass before its receiver', () => {
     const sim = nativeSim(); pressured(sim); release(sim);
     const defender = sim.slot('FS')!; defender.body.pos = { x: 37, y: CENTER_Y };
