@@ -93,8 +93,16 @@ a moving dot, pressing either the same side or the opposite side:
 - Quarterbacks with less variable snap timing face more defensive "havoc",
   consistent with defenses anticipating a predictable cadence (arXiv
   2502.16313, 2025, reported by the research subagent).
-- In 2023 there were about 2.27 false starts and 0.34 neutral-zone
-  infractions per game, both teams combined. A full crowd reduced home
+- Pre-snap fouls in 2023 (accepted only, both teams combined,
+  [Pro Football Reference](https://www.pro-football-reference.com/years/2023/penalties.htm)):
+  - false start 618 (2.27 per game);
+  - defensive offside 147 (0.54);
+  - neutral-zone infraction 93 (0.34);
+  - encroachment 38 (0.14).
+
+  Defensive pre-snap fouls come to about 0.45 times the false-start rate.
+  Declined offside on free plays is missing from these counts, and not every
+  offside is a hard-count bite. A full crowd reduced home
   defenses' line-of-scrimmage penalties but not offenses' (Farnell 2023,
   reported).
 - Restricted full text: a 2020 Mississippi State review for coaching
