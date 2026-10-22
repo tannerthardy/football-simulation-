@@ -319,6 +319,17 @@ const LEAN_AXIS = process.env.LEAN_AXIS === '1';
  * a lean into a load spends what the planned gait drive leaves at his actual
  * speed, instead of stacking a second full push on top of the gait. */
 const LEG_FV = process.env.LEG_FV === '1';
+/** Experimental (PAD_LEVERAGE=1, off): pad level loads and unloads the feet.
+ * A push runs from the pusher's pads to the other man's; when one man's pads
+ * are lower, the line of action tilts up into the higher man. Its vertical
+ * part lifts the higher man (less weight on his cleats, so less traction)
+ * and presses the lower man down (more). Traction stays Coulomb friction on
+ * the actual normal load; nothing else changes. Off, every body keeps the
+ * traction of his standing weight whatever the contact geometry: the low
+ * man's advantage in football had no physical path. */
+const PAD_LEVERAGE = process.env.PAD_LEVERAGE === '1';
+/** Steepest line of action credited, rise over run (about 30 degrees). */
+const LEVERAGE_SLOPE = .6;
 /** Knee height as a fraction of COM height (knee ~0.28, COM ~0.55 of stature). */
 const KNEE = 0.5;
 /** Peak hip-extension torque per kg of body mass, kg·yd²/s² per kg
@@ -494,6 +505,9 @@ export class World {
   private readonly braceY: Float64Array;
   private readonly comHeight: Float64Array;
   private readonly padHeight: Float64Array;
+  /** PAD_LEVERAGE: upward contact impulse this substep, and its felt force (+ lifts). */
+  private readonly liftImp: Float64Array;
+  private readonly liftFelt: Float64Array;
   private readonly v0x: Float64Array;
   private readonly v0y: Float64Array;
   private readonly facing0: Float64Array;
@@ -543,7 +557,7 @@ export class World {
     this.travelVx = f(); this.travelVy = f();
     this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
-    this.comHeight = f(); this.padHeight = f();
+    this.comHeight = f(); this.padHeight = f(); this.liftImp = f(); this.liftFelt = f();
     this.v0x = f(); this.v0y = f(); this.facing0 = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f();
     this.leanX = f(); this.leanY = f();
     this.armScale = f(); this.armCap = f(); this.active = f();
@@ -1120,7 +1134,7 @@ export class World {
     this.syncHeldSupport();
     this.reels.clear();
     for (const i of ids) {
-      this.impX[i] = 0; this.impY[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0; this.thighX[i] = 0; this.thighY[i] = 0;
+      this.impX[i] = 0; this.impY[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0; this.thighX[i] = 0; this.thighY[i] = 0; this.liftImp[i] = 0;
       this.tipX[i] = 0; this.tipY[i] = 0; this.braceX[i] = 0; this.braceY[i] = 0;
       this.travelAdjustX[i] = 0; this.travelAdjustY[i] = 0; this.facing0[i] = bs[i].facing;
       bs[i].support!.feetLock = 0;
@@ -1485,6 +1499,7 @@ export class World {
       sup.feltTip = { x: oldTip.x + (tx - oldTip.x) * kf, y: oldTip.y + (ty - oldTip.y) * kf };
       sup.load = { x: lx, y: ly };
       sup.felt = { x: sup.felt.x + (lx - sup.felt.x) * kf, y: sup.felt.y + (ly - sup.felt.y) * kf };
+      if (PAD_LEVERAGE) this.liftFelt[i] += (this.liftImp[i] / h - this.liftFelt[i]) * kf;
     }
     // Grasps that slipped slide out; past reach they are broken.
     if (contact) for (const j of this.joints) {
@@ -1548,6 +1563,8 @@ export class World {
     const p = b.profile;
     const sp = this.sp[i];
     const m = this.mass[i];
+    // Friction on the actual normal load: standing weight less any contact lift.
+    const traction = PAD_LEVERAGE ? sp.traction * clamp(1 - this.liftFelt[i] / (m * G), 0, 2) : sp.traction;
     this.recovery[i] = 0;
     const spinBefore=b.spin??0;
     this.v0x[i] = b.vel.x; this.v0y[i] = b.vel.y;
@@ -1563,7 +1580,7 @@ export class World {
       } else if (plan.dive) {
         // Finite launch force over the controller tick, independent of the
         // contact subdivision. He leaves his feet at the end of that plant.
-        const launch = Math.min(sp.traction, Math.min(1.5, Math.max(0, p.vmax - Math.hypot(b.vel.x, b.vel.y))) * plan.launch * m / this.tickDt);
+        const launch = Math.min(traction, Math.min(1.5, Math.max(0, p.vmax - Math.hypot(b.vel.x, b.vel.y))) * plan.launch * m / this.tickDt);
         fx += plan.dive.x * launch; fy += plan.dive.y * launch;
         actionX = fx; actionY = fy;
         // Launch supplies translation, not a torque that arrests acquired spin.
@@ -1587,7 +1604,7 @@ export class World {
         if (st) {
           const need = Math.hypot(st.x, st.y);
           const ux = st.x / need, uy = st.y / need;
-          const capT = sp.traction * a;
+          const capT = traction * a;
           const lu = lx * ux + ly * uy;
           const disc = lu * lu - (lx * lx + ly * ly) + capT * capT;
           const f = Math.min(disc > 0 ? Math.max(0, -lu + Math.sqrt(disc)) : 0, m * need / h);
@@ -1680,7 +1697,7 @@ export class World {
         const totalDelta = this.facingDelta(b.facing, Math.atan2(tfy, tfx));
         const along = tfx * tfx + tfy * tfy > 1e-18 ? directionalSpeedFactor(p, LEAN_AXIS && (leanX !== 0 || leanY !== 0)
           ? Math.min(Math.abs(totalDelta), Math.PI - Math.abs(totalDelta)) : totalDelta) : 1;
-        const capacity = Math.min(Math.max(Math.hypot(lx, ly), sp.pushForce * along * a), sp.traction * a);
+        const capacity = Math.min(Math.max(Math.hypot(lx, ly), sp.pushForce * along * a), traction * a);
         // Availability already limits gait during recovery. Reserve actual
         // unused effort after ordinary translation and yaw, for every body.
         const cap = capacity;
@@ -1716,7 +1733,7 @@ export class World {
           : yaw.peakTorque / baseRadiusAt(sp, sup.posture);
         const groundDemand = Math.hypot(force, yawForce);
         const reserve = Math.sqrt(Math.max(0, Math.min((total - force) * (total + force),
-          (sp.traction - groundDemand) * (sp.traction + groundDemand))));
+          (traction - groundDemand) * (traction + groundDemand))));
         this.recovery[i] = this.prepareRecovery(i, h, reserve);
       }
     } else {
@@ -1918,6 +1935,15 @@ export class World {
     this.impX[j] += fx; this.impY[j] += fy;
     this.impX[i] -= fx; this.impY[i] -= fy;
     const bs = this.bodies;
+    if (PAD_LEVERAGE) {
+      // Compression only: a push from pads to pads. A pull has no such wedge.
+      const dx = bs[j].pos.x - bs[i].pos.x, dy = bs[j].pos.y - bs[i].pos.y, d = Math.hypot(dx, dy);
+      const press = d > 1e-6 ? (fx * dx + fy * dy) / d : 0;
+      if (press > 0) {
+        const rise = clamp((this.padHeight[j] - this.padHeight[i]) / Math.max(d, .3), -LEVERAGE_SLOPE, LEVERAGE_SLOPE);
+        this.liftImp[j] += press * rise; this.liftImp[i] -= press * rise;
+      }
+    }
     const z = clamp(height ?? Math.min(this.padHeight[i], this.padHeight[j]),
       0, Math.min(bs[i].profile.heightYd, bs[j].profile.heightYd));
     const ci = this.comHeight[i], cj = this.comHeight[j];
