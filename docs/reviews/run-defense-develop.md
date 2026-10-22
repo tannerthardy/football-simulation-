@@ -652,6 +652,28 @@ acceleration, with the run-offense session).
 
 Core suite 2,857 / 2,857 with all three on and off.
 
+**The last level, re-diagnosed (probes on the run-offense profile, none
+committed).** When a runner reaches 20 yd, tracked defenses still have 1.9
+men downfield of him and the nearest defender is 1.7 yd away; ours have
+0.18 and 4.9 yd, behind him 91% of the time, and P(40+ | 20+) stays
+0.75–0.92 in every arm (NFL 0.25).
+- The start: tracked box backers move 0.54 / 0.97 yd/s at 0.2 / 0.4 s,
+  ours 0.07 / 0.42; from 0.6 s ours accelerate as hard (`startup.py`).
+  Defenders stand still until their full reaction time. `DEF_GETOFF=0.5`
+  (the run-offense session's scale, ported at identity) gives 0.25 / 0.57.
+  Lab tails fall (zone 40+ 42 → 32, gap 137 → 122), but 8 develop games
+  with the three flags get no better (flags 26 → 35, 20+ 5.6 → 7.8%, within
+  game noise either way); it stays a diagnostic.
+- Capping the deep defenders (`DEEP_CAP`, all, safeties only, corners only)
+  with the front fixes and the faster start: gap 10+ 16–18% → 19–38%.
+- A pursuit cushion for a defender still in front of the runner past the
+  line changes nothing: the safety is already level with the runner when
+  the runner reaches 5 yd (`capahead.py`).
+The safety comes to linebacker depth to make the stops the box does not
+(runners reach 5 yd on 46–48% of our gap runs, NFL 37%); holding him deep
+opens the middle every time. The tail is a box problem that shows in the
+secondary.
+
 ### The run tail and the secondary (diagnosis; two probes, neither committed)
 
 The run-offense session's `geometry.py` (its branch) puts the 40+ tail in
