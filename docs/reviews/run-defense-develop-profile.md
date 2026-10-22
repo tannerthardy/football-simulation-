@@ -37,6 +37,7 @@ median run 3.95 → 3.46 yd, p90 17.9 → 11.7 (NFL 3.0).
 | Flag | Where | What it does | Evidence |
 | --- | --- | --- | --- |
 | `TIP_AWAY` | `sim/catching.ts` | The defender who just broke up a pass stays out of its tumbling flight. | INTs after a touch 54 → 21%; by the same defender 12 → 0 |
+| `PULL_EARLY` | `sim/run-fits.ts` `pullers` | A backer keys the guard's first step (behind his stance, across, not upfield) as a pull. With `GAIT_STEP`: backers follow the pull (1.45 yd/s at 1.4 s, NFL 2.0); paired lab counter 20+ 14.2 → 9.2%, IZ unchanged | Proposed with `GAIT_STEP` |
 | `DL_SQUEEZE` | `sim/engagement.ts` `stepRunRep` | An engaged first-level man whose blocker moves away from the ball flattens and fights back across toward it. | Gap-run DL flow −0.18/−0.38/−0.16 → −0.15/−0.07/+0.11 (NFL +0.24/+0.76/+1.35); crease 4.5 → 3.5; paired lab tails unchanged |
 | `PASS_FEEL` | `sim/engagement.ts` `stepPassRep` | The pass blocker mirrors the rusher he has felt (0.06 s plus attention lapses) or, hands cleared, seen, not his current velocity. | Information rule; paired dropback lab inert (pressure 33.4 → 33.8%) |
 | `DEEP_NO_FORCE` | `sim/run-fits.ts` `buildRunFits` | A deep-zone safety is never the fallback force player. | Paired lab: 20+ runs 15.9 → 7.2% on the plays it changes; others identical |
@@ -54,7 +55,7 @@ and `OL_STAGGER` (`playbook/alignment.ts`). `FRONT_ALIGN` and
 the def-alignment session (#194).
 
 **Not proposed (for the run-offense session's arms).** `BLOCKED_REACH`
-(`tackle.ts`), `PULL_EARLY`, `FORCE_BOUNCE` (`run-fits.ts`), `DL_CHASE`,
+(`tackle.ts`), `FORCE_BOUNCE` (`run-fits.ts`), `DL_CHASE`,
 `DL_FLATTEN_WON` (`engagement.ts`) and `DL_KEY` (`defense.ts`).
 
 **Existing defaults, unchanged.** `ZONE_FLOW=1` is an A/B switch for the

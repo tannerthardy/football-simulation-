@@ -932,6 +932,35 @@ lab does not reproduce a mechanism. With about 50 runs a concept these counts
 are noisy (counter 10 of 39 off, 4 of 36 on), but it is not ruled out:
 games call zone against fronts the lab does not. Not proposed: unresolved risk.
 
+**Revisited on a `GAIT_STEP` base (risk resolved; proposed with `GAIT_STEP`).**
+The run-offense session's `stretch/pullers.py` (its branch) shows tracked
+second-level defenders moving toward the pull at 0.5 / 1.5 / 2.0 yd/s at
+0.6 / 1.0 / 1.4 s, ours about 0. On develop the guard himself pulls late
+(0.6 yd off his spot at 0.9 s), so first the movement law (`GAIT_STEP=0.3`,
+as on the run-offense profile).
+
+`depth/lbpull.ts`, lab power and counter, achieved lateral speed toward the
+pull at 1.0 / 1.2 / 1.4 s:
+
+| | 1.0 / 1.2 / 1.4 s |
+| --- | --- |
+| `GAIT_STEP` | −0.20 / −0.20 / 0.52 (they ask away from the pull until 1.0 s) |
+| + `PULL_EARLY` | 0.18 / 0.79 / 1.45 (pull read on for 72% by 1.0 s) |
+| NFL | 1.5 at 1.0 s, 2.0 at 1.4 s |
+
+A probe (`PULL_FLOW`) that also stopped the backer carrying the down blocks'
+backside wash of his gap changed nothing and is dropped.
+
+Paired lab (`forcelab.ts`, same seeds, `GAIT_STEP` base; IZ, OZ, power,
+counter, trap; 1,200 plays):
+- Inside zone is unchanged: 15+ yd 0 → 1 of 240, 10+ / 20+ identical. The
+  earlier game-level tail does not reproduce.
+- Counter 10+ 16.7 → 11.7% and 20+ 14.2 → 9.2% (paired z −2.0).
+- All concepts 10+ 7.5 → 6.0% (z −2.04), median 2.3 → 2.2.
+
+`PULL_EARLY` is proposed together with `GAIT_STEP`. Backers still trail
+tracking by about 0.4 s, which is the read and start, not the pull key.
+
 **`FORCE_BOUNCE` (`run-fits.ts` `executeRunFit`, force fit): D1, the
 outside on power, counter and trap.** The run-offense session's spec
 (`claude/run-game-v3`, `docs/reviews/run-offense.md`, "D1"): at the moment
@@ -1315,7 +1344,7 @@ telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
 `runrally`, `crease`, `breakpoint`, `afterrelease`, `alleypath`, `interiorrush`, and lab probes
-`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
+`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `lbpull.ts` (backers against a pull), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
 `alleyprobe.ts`, `alleytrace.ts` (the nearest deep supporter on long runs), `forcelab.ts` (paired run lab, the same seeds per arm),
 `dlpursuit.ts` (linemen at a run's first contact), `dropprobe.ts` (the
 nearest zone defender when the ball comes near him), `catchact.ts`, `sideprobe.ts` (the side window from inside the
