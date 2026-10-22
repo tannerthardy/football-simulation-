@@ -50,5 +50,5 @@ There are 46 flags: 22 are on by default and 24 are off. At the first review, se
 | `TACKLE_ROLL` | off | experimental | defense | `src/sim/tackle.ts:60` | set at first review |
 | `TACKLE_TOUCH` | off | experimental | defense | `src/sim/tackle.ts:69` | set at first review |
 | `WRAP_BIND` | off | experimental | defense | `src/sim/tackle.ts:63` | set at first review |
-| `MOTION` | off | experimental | coverage | `src/sim/motion.ts:33` | second review after it lands (#193); pair with `MOTION_CHECK` (#196) |
-| `DEUCE` | off | experimental | coverage | `src/playbook/call-integrity.ts:67` | second review after it lands (#193); pair with `PRESSURE_CALL` (#196) |
+| `MOTION` | off | experimental | coverage | `src/sim/motion.ts:33` | review 2 (pair with `MOTION_CHECK`, #196) |
+| `DEUCE` | off | experimental | coverage | `src/playbook/call-integrity.ts:67` | review 2 (pair with `PRESSURE_CALL`, #196) |
