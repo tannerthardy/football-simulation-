@@ -9,8 +9,7 @@ import type { DefSlot } from '../src/playbook/types.js';
 import type { PlaySim } from '../src/sim/playsim.js';
 
 // The front's side without a single attached end is FRONT_STRENGTH's call.
-// OL_STAGGER sets the line deeper; these timed motions are staged on the flat line.
-vi.hoisted(() => { process.env.FRONT_STRENGTH = '1'; process.env.OL_STAGGER = '0'; });
+vi.hoisted(() => { process.env.FRONT_STRENGTH = '1'; });
 
 const was = { motion: process.env.MOTION, check: process.env.MOTION_CHECK };
 afterEach(() => { process.env.MOTION = was.motion; process.env.MOTION_CHECK = was.check; vi.unstubAllEnvs(); });
@@ -26,8 +25,11 @@ describe('zone coverage bumps: jobs move, players slide', () => {
     for (const check of [true, false]) {
       const { set, snap } = scene(check, 'cover3');
       for (const cb of ['CB_S', 'CB_W']) expect(Math.sign(y(snap, cb))).toBe(Math.sign(y(set, cb)));
+      // A bump slides a backer a gap or two (the weak hook, set 2 yd from the
+      // ball, crosses it on a 5-yd slide); running the width is a
+      // sideline-to-sideline reassignment.
       const far = snap.defense.filter(d => !['DE_S', 'DE_W', 'DT_S', 'DT_W'].includes(d.slot)
-        && y(set, d.slot) * y(snap, d.slot) < 0 && Math.abs(y(snap, d.slot) - y(set, d.slot)) > 5);
+        && y(set, d.slot) * y(snap, d.slot) < 0 && Math.abs(y(snap, d.slot) - y(set, d.slot)) > 8);
       if (check) expect(far.map(d => d.slot)).toEqual([]);
     }
   });
