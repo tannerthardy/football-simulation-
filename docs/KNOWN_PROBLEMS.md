@@ -38,6 +38,45 @@ much as on the line. Entries cross-reference each other where that matters.
 | `rg3` | The run-offense research build on `claude/run-game-v3` (archived; #153 is closed). Its numbers don't certify develop. |
 | `NFL` | Mostly Big Data Bowl 2025 tracking (2022, weeks 1–9). The outcome bands are the scorecard's. |
 
+### Current: develop at `57f50fc3`
+
+`npm run scorecard -- --tier pr` at seeds 7 and 8 (24 games, default flags),
+2026-10-22, after the flag promotion (#210), the rule fixes (#211) and
+Defense's pursuit fixes (#205). One 12-game seed can swing points by 10 a game
+when games diverge early, so read single-seed moves with care. Compare against
+a base arm in the same run.
+
+| Metric | Sim | 90% range | NFL band | vs band |
+| --- | --- | --- | --- | --- |
+| Points / team-game | 38.17 | 34.88 to 41.50 | 21–23.5 | HIGH |
+| Scrimmage plays / team-game | 61.58 | 60.27 to 62.85 | 61–65 | OK |
+| Total yards / team-game | 453.52 | 418.72 to 485.55 | 320–345 | HIGH |
+| Pass rate (dropbacks / plays) | 67.9% | 66.5% to 69.6% | 56–62% | HIGH |
+| Completion % | 64.8% | 63.1% to 66.5% | 63–66% | OK |
+| Yards / attempt | 10.70 | 10.09 to 11.41 | 6.8–7.2 | HIGH |
+| Sack rate (per dropback) | 10.8% | 9.6% to 11.9% | 6–7.5% | HIGH |
+| INT rate | 5.0% | 4.3% to 5.7% | 2–2.5% | HIGH |
+| Pass TD rate | 8.9% | 7.9% to 9.9% | 4–4.8% | HIGH |
+| 20+ yd completions / att | 16.6% | 15.4% to 18.0% | 7–9% | HIGH |
+| aDOT | 9.19 | 8.87 to 9.49 | 7.5–8.5 | HIGH |
+| YAC / reception | 8.77 | 8.06 to 9.59 | 4.8–5.6 | HIGH |
+| Time to throw (s) | 2.50 | 2.48 to 2.53 | 2.7–2.9 | LOW |
+| Scramble rate | 7.5% | 6.1% to 8.8% | 3–5% | HIGH |
+| Separation at catch point (yd) | 3.41 | 3.32 to 3.51 | 2.8–3.2 (NGS 2022–24) | HIGH |
+| Rush yards / carry | 6.51 | 5.47 to 7.53 | 4.1–4.5 | HIGH |
+| Run stuff rate (<=0) | 23.4% | 21.0% to 26.1% | 16–20% | HIGH |
+| 10+ yd runs | 15.9% | 13.7% to 18.4% | 10–12% | HIGH |
+| Runs of 20+ that reach 40 | 66.7% | 56.4% to 75.5% | 25–35% (PR #190, BDB 2022) | HIGH |
+| Yards before contact (runs) | 1.07 | 0.78 to 1.38 | 1.5–2.3 | LOW |
+| Missed + broken tackles / play | 0.34 | 0.31 to 0.36 | 0.11–0.16 (source unverified: PFF, definition unknown) | HIGH |
+| Failed tackle opportunities / play (unique defenders) | 0.22 | 0.20 to 0.23 | internal |  |
+| 3rd-down conversion | 30.8% | 27.6% to 34.0% | 37–41% | LOW |
+| FG % | 89.6% | 82.9% to 95.0% | 83–87% | HIGH |
+| XP % | 95.5% | 93.0% to 97.7% | 94–97% | OK |
+| Fumbles lost / team-game | 0.52 | 0.35 to 0.71 | 0.4–0.7 | OK |
+| Punts / team-game | 5.98 | 5.54 to 6.42 | 3.5–4.5 | HIGH |
+| Penalties / team-game | 7.10 | 6.27 to 7.88 | 2.5–4 | HIGH |
+
 ### After the flag promotion
 
 On 2026-10-22, 31 realistic flags were turned on by default in five groups
@@ -118,10 +157,10 @@ problem), resolved.
 | [RUN-8](#run-8) | Center covered on almost every snap | G2 | medium | on |
 | [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | on |
 | [RUN-10](#run-10) | Older run-blocking and second-level issues | G2 | low–medium | open |
-| [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | open |
-| [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | open |
+| [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
+| [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#205) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
-| [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | open |
+| [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work |
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
