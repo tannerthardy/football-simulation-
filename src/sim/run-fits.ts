@@ -181,6 +181,15 @@ const FORCE_BOUNCE = process.env.FORCE_BOUNCE === '1';
  * ball at 2.0 s (scripts/diag/align/lbfit.py on claude/run-game-v3); ours
  * came down twice as fast to 1.8. */
 const LB_TEMPO = process.env.LB_TEMPO === '1';
+/** Experimental (LB_LANDMARK=1, off): where a stack backer fits before the
+ * runner declares. The installed 1.5 yd past the line is an unfitted
+ * constant; tracked backers meet the climbing lineman at a median 2.01 yd
+ * and settle about 2.3 yd off the ball at 2.0 s (climbphase.py, lbfit.py on
+ * the run-offense branch). On: 2.25 yd. On the run-offense profile his
+ * depth at the meeting goes 1.57 -> 2.08 and at 2.0 s 1.82 -> 2.21 (NFL
+ * 2.35), and he has moved further sideways by then (1.92 -> 2.29; NFL 4.10). */
+const LB_LANDMARK = process.env.LB_LANDMARK === '1';
+const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */
@@ -399,7 +408,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     if (threat && !declared) a.tags.add('fit-threat-read');
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
-  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
+  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? STACK_LANDMARK : .5;
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
   let pace = .78+.15*a.mind.urgency;
   if (LB_TEMPO && job.kind === 'insert') {
@@ -437,7 +446,7 @@ function counterfactualFit(a: Agent, sim: PlaySim, c: Agent, job: RunFitJob, see
   let gy = gapY(sim.offAlign, job.gap, job.side);
   const declared = !premesh && seen.pos.x > sim.los - 1.6 && Math.abs(seen.pos.y - gy) < 2.5;
   if (declared) return chase(sim, a, c, 2);
-  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
+  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? STACK_LANDMARK : .5;
   if (CF_FLOW === 'over') {
     const f = lineFlow(linePicture(sim, a)), dir = Math.abs(f) > .5 ? Math.sign(f) : Math.abs(seen.vel.y) > 1 ? Math.sign(seen.vel.y) : 0;
     if (dir) {
