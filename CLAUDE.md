@@ -1,3 +1,23 @@
+# Operating plan (read first)
+
+As of 2026-10-22, [docs/PLAN.md](docs/PLAN.md) and [docs/GAPS.md](docs/GAPS.md)
+set what to work on and how work is merged. They replace the older process
+below: the integration queue, WORKBOARD claims, `baseline:verify` by an
+integration owner, and receipts in Git no longer apply. The model rules below
+(one physics world, ratings don't award outcomes, never ban what works too
+well) still apply.
+
+- Work only on a gap from `docs/GAPS.md`, on a branch named
+  `<lane>/<gap-id>-<short-goal>`. Keep one open PR. At most three agents are
+  active at once.
+- The scorecard (`npm run scorecard`) is a diagnosis, not a verdict. Merge on
+  the mechanism's own evidence, and explain stats that moved. Log a regression
+  as the gap it exposes rather than rejecting the mechanism.
+- Testing stays cheap: unit or scenario tests first, then the quick scorecard
+  tier. Use the full tier only for big fixes.
+- Register flags in [docs/FLAGS.md](docs/FLAGS.md). Don't add receipts,
+  ledgers or evidence files to Git.
+
 # Start here
 
 Build a genuinely great football simulation, eventually supporting a management
