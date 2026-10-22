@@ -135,11 +135,10 @@ and raised pressure 41 -> 47%. Against the vertical set its contact timing
 and depth match the no-alignment arm. That was the recheck the edge-width
 caveat above asked for.
 
-Tried and dropped: a ride, where a rusher at the hip is not freed while the
-blocker's hands are on him and his body is not past, and the tackle runs
-with him. Edge sheds were unchanged and interior sheds rose. The run-defense
-session found the same with a phi >= 1.5 threshold. The rep was lost before
-the hip, not at it.
+A ride before the vertical set did nothing: edge sheds were unchanged and
+interior sheds rose (the run-defense session found the same with a
+phi >= 1.5 threshold). The rep was lost before the hip, not at it. With the
+set fixed, it acts; see `PASS_RIDE` below.
 
 Contract: `test/pass-kick.test.ts`. On the three recorded dropbacks
 (`pass-cutoff-inputs` fixture) the left tackle never steps toward the line
@@ -158,3 +157,45 @@ off.
   rare by the engine's own engagements: 4 such events in 163 dropbacks,
   mostly late nickel hits. The proximity definition counts reps that the
   engine starts and ends within a frame or two.
+
+## The ride (`PASS_RIDE`, on in the profile)
+
+With `PASS_KICK` the tackle meets the rusher where tracked tackles do, but
+edge pressurers still came free after 0.6 s engaged (NFL 1.1). The rep ended
+the moment the rusher reached the tackle's hip (`stepPassRep`, `|phi| >= 1`,
+"turned the corner").
+
+`PASS_RIDE` (`engagement.ts`): a rusher at the hip is not free while the
+blocker's hands are still on him (control not lost, no landed finesse move)
+and his body is not past the blocker's toward the QB (by half their combined
+radius). The blocker opens his hips and runs with him on his inside hip,
+hands pushing him past the launch point. The rusher still flattens through
+that, and wins by his hands or his feet.
+
+In-sim count, 2 games, `PASS_KICK` on: corner sheds 69 -> 50 per 100
+dropbacks (edge), 21.5 -> 15.0 (interior).
+
+Pressure (playbook session's `pass-pressure.py`, dropbacks without play
+action, 4 games, seeds 301-304, `PASS_KICK` + `FRONT_ALIGN`):
+
+| | Without | `PASS_RIDE` | NFL |
+|---|---|---|---|
+| Pressured | 32.8% | 26.2% | 31.3% |
+| Edge engaged, per 100 dropbacks | 25.3 | 18.1 | 16.9 |
+| Interior engaged, per 100 | 4.3 | 5.9 | 8.7 |
+| Engaged edge reps free before the window ends | 26.1% | 23.3% | 15.4% |
+| Edge pressurers still on the blocker | 19% | 10% | 73% |
+
+- The run-defense session's 8 games on `PASS_KICK` alone measured 23.5% on
+  the same operator. At about 200 dropbacks per arm, totals move by
+  several points with the seeds.
+- For: the edge share moves to the tracked one.
+- Against: edge pressurers still arrive free rather than ridden (the
+  operator's "still on the blocker" is position-based: a ridden rusher who
+  reaches the QB beside the tackle counts as engaged only within 1 yd).
+- Interior pressure is low. Interior pressurers take 1.4-1.9 s from contact
+  to free (NFL 1.4): the rusher side.
+
+Contract: `test/pass-ride.test.ts`. On the three recorded dropbacks, reps at
+the hip occur only with the ride, and corner sheds do not increase.
+`redirect-protection` stages a rusher who turns the corner and pins it off.

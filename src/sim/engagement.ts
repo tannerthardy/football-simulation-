@@ -771,6 +771,12 @@ const PASS_SINK = process.env.PASS_SINK === '1';
 const PASS_KICK = process.env.PASS_KICK === '1';
 /** How far deeper than the rusher the kick in the rep aims (yd). */
 const RIDE_LEAD = 0.3;
+/** Experimental (PASS_RIDE=1, off): a rusher at the blocker's hip
+ * (|phi| >= 1) is not free while the blocker's hands are still on him and his
+ * body is not past the blocker's toward the QB. The blocker opens his hips and
+ * runs with him on his inside hip, hands pushing him past the launch point;
+ * the rusher must still flatten through that. */
+const PASS_RIDE = process.env.PASS_RIDE === '1';
 /** Experimental (DL_FIGHT=1, off): a defender driven sideways fights pressure. */
 const DL_FIGHT = process.env.DL_FIGHT === '1';
 
@@ -856,7 +862,8 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // Leverage is where the bodies are, relative to the QB, every tick.
   e.phi = measurePhi(axis, d, b);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
-  if (Math.abs(e.phi) >= 1) {
+  const riding = PASS_RIDE && Math.abs(e.phi) >= 1 && !riddenFree(sim, e, axis);
+  if (Math.abs(e.phi) >= 1 && !riding) {
     if (tryHold(sim, e)) return;
     beat(sim, e, axis, lat, false, 'turned the corner');
     return;
@@ -894,6 +901,21 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     cutSkill: 0.8 + 0.5 * td.bend,
   };
 
+  if (riding) {
+    // The ride: hips open to the run, on his inside hip, hands on him.
+    const inside = { x: d.pos.x + axis.x * sep * 0.9, y: d.pos.y + axis.y * sep * 0.9 };
+    const to = sub(inside, b.pos), gap = Math.hypot(to.x, to.y) || 1;
+    const run = Math.min(b.profile.vmax * (0.8 + 0.2 * tb.feet), Math.hypot(d.vel.x, d.vel.y) + gap * 4);
+    intents[b.idx] = {
+      vel: { x: to.x / gap * run, y: to.y / gap * run },
+      facing: Math.atan2(to.y / gap + (d.pos.y - b.pos.y) / sep, to.x / gap + (d.pos.x - b.pos.x) / sep),
+      push: 1,
+      posture: 0.6,
+      cutSkill: 0.85 + 0.3 * tb.feet,
+    };
+    helperIntents(sim, e, intents, axis);
+    return;
+  }
   // ---- the blocker: stay between him and the QB, give ground to set depth,
   // then anchor. Mirror with the feet; the hands steer what they control.
   const front = { x: d.pos.x + axis.x * (sep + 0.15), y: d.pos.y + axis.y * (sep + 0.15) };
@@ -1589,6 +1611,15 @@ const legacyHoldVisible = new WeakSet<PlaySim>();
 
 /** A beaten blocker may attempt a cloth grab. This changes the bounded hand
  * technique, not the official ruling. Only achieved illegal restraint is a foul. */
+/** PASS_RIDE: free at the hip once his hands have won (the blocker's are
+ * off him) or his body is past the blocker's toward the QB. */
+function riddenFree(sim: PlaySim, e: Engagement, axis: Vec2): boolean {
+  const b = e.blocker, d = e.defender;
+  const handsOff = e.control < -0.3 || (sim.t < e.moveUntil && e.moveOk && e.move !== 'bull' && e.move !== 'longarm');
+  const past = (d.pos.x - b.pos.x) * axis.x + (d.pos.y - b.pos.y) * axis.y;
+  return handsOff || past > 0.5 * (b.profile.radius + d.profile.radius);
+}
+
 function tryHold(sim: PlaySim, e: Engagement): boolean {
   if (e.holding) return false;
   const b = e.blocker;

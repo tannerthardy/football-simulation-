@@ -9,6 +9,9 @@ vi.hoisted(() => { process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; 
 // Recorded under the arc cut-off set; PASS_KICK (on in the pinned profile)
 // sets vertically against edge rushers.
 vi.hoisted(() => { process.env.PASS_KICK = '0'; });
+// Its rusher turns the corner and the rep ends there; PASS_RIDE (on in the
+// pinned profile) rides him instead.
+vi.hoisted(() => { process.env.PASS_RIDE = '0'; });
 
 // This is a six-second reacting trajectory, not a bitwise reflection operator.
 // Preserve exact targets/times while bounding achieved mirror geometry to a

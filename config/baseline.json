@@ -72,6 +72,7 @@
     "PAD_LEVERAGE": "1",
     "PASS_CORNER": "1",
     "PASS_KICK": "1",
+    "PASS_RIDE": "1",
     "PASS_SINK": "0",
     "PLANT_TRAVEL": "0",
     "PULL_CUE": "0",
