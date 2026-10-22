@@ -26,7 +26,7 @@ import { World, type Intent, type StepReport } from '../physics/world.js';
 import { containCoverage } from './coverage-space.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
-import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { applyCheck, resolveZeus } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
@@ -116,6 +116,8 @@ export class PlaySim {
   readonly defCall: DefensivePlayCall;
   readonly offAlign: OffenseAlignment;
   readonly defAlign: DefenseAlignment;
+  /** What the defense's alignment knows of its players (FRONT_ALIGN: their mass). */
+  private readonly defStyle: AlignStyle;
   isPass: boolean;
   /** The quarterback's read of the defense (coverage belief, vision). */
   qbMind!: QBMind;
@@ -249,7 +251,9 @@ export class PlaySim {
     const called = zeus ? resolveZeus(setup.defCall, this.offAlign.refOf[zeus], Math.min(this.offAlign.counts.S, this.offAlign.counts.W)) : setup.defCall;
     this.defCall = zeus ? called : applyCheck(called, formationKey(this.offAlign));
     const defSlots = Object.keys(setup.defense) as DefSlot[];
-    this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs);
+    // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
+    this.defStyle = { mass: Object.fromEntries(defSlots.map(slot => [slot, derivePhysical(setup.defense[slot]!).massKg])) };
+    this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
 
     const idle: Behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };
     const mk = (team: TeamSide, slot: string, player: Player, pos: Vec2, facing: number) => {
@@ -344,7 +348,7 @@ export class PlaySim {
     if (stem && !stem.from.personnel.includes(this.defCall.personnel)) throw new Error('Stem front requires compatible defensive personnel');
     const targets = new Map<Agent,Vec2>();
     if (stem) {
-      const shown = alignDefense({...this.defCall,front:stem.from},this.offAlign,this.defense.map((a)=>a.slot as DefSlot),prefs);
+      const shown = alignDefense({...this.defCall,front:stem.from},this.offAlign,this.defense.map((a)=>a.slot as DefSlot),prefs,this.defStyle);
       for (const d of this.defense) {
         targets.set(d,{...d.pos});
         d.body.pos = {...shown.spots[d.slot as DefSlot]!.pos};

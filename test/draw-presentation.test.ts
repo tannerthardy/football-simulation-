@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
+// FRONT_ALIGN moves the front off its installed spots; this scene is staged on them.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import type { Intent } from '../src/physics/world.js';

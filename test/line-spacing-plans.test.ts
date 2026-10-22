@@ -5,6 +5,8 @@
  * vs Odd left the backside 5 technique unblocked and the fullback idle;
  * counter vs Over sent the tackle across the guard's face. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// FRONT_ALIGN moves the front off its installed spots; this scene is staged on them.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
