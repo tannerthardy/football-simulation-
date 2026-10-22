@@ -345,6 +345,17 @@ export class PassProtector implements Behavior {
   }
 }
 
+/** Experimental (PASS_CORNER=1, off): a tackle cuts an edge rusher off where
+ * the rusher's arc has turned toward the QB (he has committed to the corner),
+ * not at the earliest point of the arc, which is at the line while he can
+ * still counter inside ("make him declare", "make the rusher come to you").
+ * Tracked tackles meet edge rushers 1.25 s after the line starts, 2.8 yd
+ * back, rusher 3.4 yd deep; ours 0.55 s, after stepping forward 0.4 yd
+ * (scripts/diag/pass-contact.py). */
+const PASS_CORNER = process.env.PASS_CORNER === '1';
+/** His heading within this of the QB's direction: the corner is turned. */
+const CORNER_TURN = 0.5;
+
 /**
  * Where a blocker meets a rusher on his path: the earliest point on it
  * (shaded to the rusher's QB side) the blocker can reach first, within the
@@ -361,11 +372,16 @@ function cutOffPoint(b: Agent, r: Agent, qb: Vec2, contact: number): Vec2 | null
   let p = { ...r.pos };
   let rSpeed = Math.max(2, Math.hypot(r.vel.x, r.vel.y));
   let heading = Math.hypot(r.vel.x, r.vel.y) > 0.5 ? Math.atan2(r.vel.y, r.vel.x) : Math.atan2(qb.y - r.pos.y, qb.x - r.pos.x);
-  for (let tau = step; tau <= 1.0 + 1e-9; tau += step) {
+  // PASS_CORNER: only where his arc has turned toward the QB (he has
+  // committed to the corner); before it he can still counter inside.
+  let committed = !PASS_CORNER;
+  const horizon = PASS_CORNER ? 1.6 : 1.0;
+  for (let tau = step; tau <= horizon + 1e-9; tau += step) {
     const want = Math.atan2(qb.y - p.y, qb.x - p.x);
     let turn = want - heading;
     while (turn > Math.PI) turn -= 2 * Math.PI;
     while (turn < -Math.PI) turn += 2 * Math.PI;
+    if (Math.abs(turn) < CORNER_TURN) committed = true;
     heading += clamp(turn, -bend, bend);
     rSpeed = Math.min(r.profile.vmax * 0.95, rSpeed + 2.5 * step);
     p = { x: p.x + Math.cos(heading) * rSpeed * step, y: p.y + Math.sin(heading) * rSpeed * step };
@@ -375,7 +391,7 @@ function cutOffPoint(b: Agent, r: Agent, qb: Vec2, contact: number): Vec2 | null
     const speed = Math.hypot(b.vel.x, b.vel.y);
     // Time to cover d from the current speed under the sprint model (rough).
     const tReach = d / Math.max(0.5, Math.min(vmax, speed + (vmax - speed) * 0.5)) + 0.05;
-    if (tReach <= tau) return inside;
+    if (committed && tReach <= tau) return inside;
   }
   return null;
 }

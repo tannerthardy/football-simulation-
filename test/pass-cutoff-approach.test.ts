@@ -13,6 +13,9 @@ vi.hoisted(() => { for (const k of ['GAIT_STEP', 'PULL_STEP', 'MESH_POINT']) pro
 // Recorded before SNAP_REACT (on in the pinned profile) changed every
 // player's start; the trace stays on the fixed get-off.
 vi.hoisted(() => { process.env.SNAP_REACT = '0'; });
+// Recorded under the earliest-point cutoff; PASS_CORNER (on in the pinned
+// profile) meets edge rushers later, where their arc has turned.
+vi.hoisted(() => { process.env.PASS_CORNER = '0'; });
 import {supportParams} from '../src/physics/support.js';
 import {World} from '../src/physics/world.js';
 import {PassProtector,ProtectionCoordinator} from '../src/sim/behaviors/blocking.js';

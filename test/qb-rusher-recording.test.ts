@@ -8,6 +8,9 @@ vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
 vi.hoisted(() => { process.env.SNAP_REACT = '0'; });
 // PAD_LEVERAGE and DL_ANCHOR change the contact forces this recorded scene is staged on.
 vi.hoisted(() => { process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; });
+// Recorded under the earliest-point cutoff; PASS_CORNER (on in the pinned
+// profile) meets edge rushers later, where their arc has turned.
+vi.hoisted(() => { process.env.PASS_CORNER = '0'; });
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import type { MoveCommand } from '../src/physics/kinematics.js';

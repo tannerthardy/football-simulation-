@@ -68,6 +68,7 @@
     "OL_ALIGN": "1",
     "PACE_LEAD": "1",
     "PAD_LEVERAGE": "1",
+    "PASS_CORNER": "1",
     "PASS_SINK": "0",
     "PLANT_TRAVEL": "0",
     "PULL_CUE": "0",
