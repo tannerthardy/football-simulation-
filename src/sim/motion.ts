@@ -403,7 +403,8 @@ export class MotionRuntime {
       const target = { x: spot.x, y: seen.pos.y + vy * BUMP_REACTION };
       const dx = target.x - locked.pos.x, dy = target.y - locked.pos.y, len = Math.hypot(dx, dy);
       const speed = Math.min(locked.profile.vmax, len * 3 + Math.abs(vy));
-      intents[locked.idx] = { vel: { x: len ? dx / len * speed : 0, y: len ? dy / len * speed : 0 }, facing: Math.PI };
+      // Turned and running while he is behind; square to the offense once on him.
+      intents[locked.idx] = { vel: { x: len ? dx / len * speed : 0, y: len ? dy / len * speed : 0 }, facing: len > 2 ? Math.atan2(dy, dx) : Math.PI };
     }
   }
 

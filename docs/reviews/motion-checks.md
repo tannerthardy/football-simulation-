@@ -99,24 +99,30 @@ the motion man on 57% (tracked 5%).
 
 ## Result (snap frames, candidate profile plus `MOTION=1`)
 
+#193's motion plans changed after the first measurement (d821eae0): jets
+snap about 4.5 yd short of the ball, across motion sets 5.5 yd out, and the
+plan timing integrates the sprint. The numbers below are re-measured on them.
+
 | | provisional bump | `MOTION_CHECK` | tracked |
 |---|---|---|---|
-| across, zone: far crossers | 59% | 20% | 17% |
-| across, zone: nobody within 3 yd of him | 57% | 35% | 5% |
-| across, man: far crossers | 86% | 70% | 53% |
-| empty, zone: far crossers | 39% | 13% | 9% |
-| empty, man: a backer ends over him | 38% | 50% | 40% |
-| jet, man: travel | 0% | 5% | 47% |
+| across, zone: far crossers | 45% | 16% | 17% |
+| across, zone: nobody within 3 yd of him | 4% | 0% | 5% |
+| across, man: far crossers | 73% | 65% | 53% |
+| empty, zone: far crossers | 22% | 9% | 9% |
+| empty, man: far crossers | 36% | 12% | 29% |
+| empty, man: a backer ends over him | 33% | 47% | 40% |
+| jet, man: travel | 0% | 8% | 47% |
 
-What is left is mostly the offense's motion paths, which are the
-coverage-rules session's plans:
-- **Jets.** Sim jets snap 1 yd past the ball (median motion-man lateral at
-  the snap 1.6 yd); tracked jets snap at 5.0 yd, mostly before reaching the
-  ball. A defender trailing to the middle of the formation does not end
-  "over" him, and the linemen are nearest.
-- **Across.** Sim across motion sets the receiver at a median 8.8 yd from
-  the ball after moving 17.8 yd; tracked motion sets at 5.4 after 11.7. The
-  widest receivers set where no underneath defender stands.
+The first measurement, on the old plans, also showed zone across far crossers
+at 59% → 20%.
+
+**Jets.** The remaining gap is the jet beating a reaction. A slot's jet ramps
+up and runs fastest in its last few tenths before the snap. The defender sees
+it 0.3 s late, so the locked defender is only starting to run at the snap
+(about 2 yd/s). He turns and runs to where the jet was a reaction time ago,
+carried on at its seen pace. Tracked jets start wider and run further (6.5 yd
+against the sim slot's 3.4), which gives a trailing defender time. The
+reaction time is left as it is, not shortened to fit this statistic.
 
 ## Game check
 
@@ -173,8 +179,9 @@ check with it.
 - four wide, a strength-flipping motion: the linemen keep their spots on,
   and re-set off.
 
-Core: 2,953/2,953 plain, and under the candidate profile with `MOTION=1
-MOTION_CHECK=1`.
+Core at cdc332d3+: 2,959/2,959 plain; under the candidate profile with
+`MOTION=1 MOTION_CHECK=1` 2,957/2,959. The 2 are #193's `cover6-half-side`
+staged scenes (SNAP_REACT alone fails them), handed to its owner.
 
 ## Not done
 
