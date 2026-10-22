@@ -610,6 +610,24 @@ Daberkow's clinic. Physical pages.
   interception; never break under an out (pp. 11, 13). Pattern rules: in
   "mix", two verticals put the safety on #2 and the corner on #1; #2 to the
   flat turns it to cloud (pp. 36–37).
+- **More numbers and match rules** (2014 Michigan DB manual; Saban Cover 3
+  match per USA Football; AFQ trips article; Olivadotti, paraphrased):
+  - Michigan: off corner 7–8 yd (a true third at 8), outside leverage, moving
+    inside against a wide split and outside against a tight one (pp. 1, 4,
+    24). "Man any vertical stem by #1 past 5 yards." The seam player carries
+    #2 10–12 yd (p. 6); the squat corner's front foot is at 4.5 yd (pp. 8–9);
+    the half safety plays 12–14 yd deep (p. 13).
+  - Saban Rip/Liz: the call sets which safety rotates down. The matching
+    defender stays on top of #2 vertical. An "Under" call, made within the
+    first five yards for a route under 5 yd, turns that side into spot-drop
+    Cover 3. Hook defenders sit 10 yd deep, 2 yd inside the hash, and take the
+    "final 3". Trips check "Skinny" puts the backside corner man on #1 and the
+    free safety on the back or the first crosser.
+  - AFQ vs. trips: the rolled strong safety keys #3 (vertical or inside →
+    take #2; toward him → take #3); the free safety sits 10–12 yd deep between
+    the #1s and takes #3 vertical.
+  - The engine comparison is in the
+    [coverage rules source audit](../reviews/coverage-rules-source-audit.md).
 - **Run support:** play pass until sure; outside-third players fill
   outside-in, middle and half safeties fill the alley inside-out; break down
   3 yd from the pile (pp. 28–30).
