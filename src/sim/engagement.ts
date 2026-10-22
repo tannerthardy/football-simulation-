@@ -1262,7 +1262,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // DL_FLATTEN: against a reach or zone step (the blocker's held flow across
   // his face) an attacking lineman flattens on the line instead of driving on.
   // He sees the man on him step across rather than come at him.
-  const blockerSeen = DL_FLATTEN ? sim.see(d, b) : null;
+  const blockerSeen = DL_FLATTEN && d.runFit?.technique === 'attack' ? sim.see(d, b) : null;
   const zoneStep = !!blockerSeen && Math.abs(blockerSeen.vel.y) > 1
     && Math.abs(blockerSeen.vel.y) > Math.abs(blockerSeen.vel.x);
   const recover = d.runFit?.technique !== 'attack' || zoneStep;
