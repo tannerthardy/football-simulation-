@@ -4,7 +4,7 @@
  *   node --import tsx scripts/diag/performance/engine-cost.mjs --mode scorecard --out out/perf/quick.json
  * --root selects another worktree; --compare checks a saved trace. The seed7,
  * six-game/two-league quick workload comes from existing scorecard definitions.
- * No metric/interface changes; scorecard CPU comes from /usr/bin/time, not ms.
+ * No metric/interface changes; CPU comes from child rusage, not scorecard ms.
  */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -50,11 +50,19 @@ const meta = { root, mode, node: process.version, platform: process.platform, ar
 if (mode === 'scorecard') {
   const timing = output + '.time.json';
   const start = performance.now();
-  const result = spawnSync('/usr/bin/time', ['-f', '{"elapsedSeconds":%e,"userSeconds":%U,"systemSeconds":%S}',
-    '-o', timing, process.execPath, '--import', 'tsx', resolve(root, 'scripts/scorecard/run.ts'),
+  const measure = `import json,resource,subprocess,sys,time
+before=resource.getrusage(resource.RUSAGE_CHILDREN)
+start=time.perf_counter()
+result=subprocess.run(sys.argv[2:])
+after=resource.getrusage(resource.RUSAGE_CHILDREN)
+with open(sys.argv[1],'w') as f:
+ json.dump(dict(elapsedSeconds=time.perf_counter()-start,userSeconds=after.ru_utime-before.ru_utime,systemSeconds=after.ru_stime-before.ru_stime),f)
+sys.exit(result.returncode)`;
+  const result = spawnSync('python3', ['-c', measure, timing, process.execPath, '--import', 'tsx', resolve(root, 'scripts/scorecard/run.ts'),
     '--tier', 'quick', '--seed', '7', '--workers', '1', '--out', output + '.card.json', '--md', output + '.md'],
   { cwd: root, env: process.env, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
-  writeFileSync(output + '.log', result.stdout + result.stderr);
+  if (result.error) throw result.error;
+  writeFileSync(output + '.log', (result.stdout ?? '') + (result.stderr ?? ''));
   const cost = JSON.parse(readFileSync(timing, 'utf8'));
   const report = { ...meta, workload: 'Existing quick scorecard, six complete games, all default probes',
     wallSeconds: (performance.now() - start) / 1000, cost,
