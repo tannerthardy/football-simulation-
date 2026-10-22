@@ -8,21 +8,17 @@
  */
 import { describe, expect, it } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
+// Registers the lab routes for #1 (lab_curl7, lab_stop_go, lab_out_up4).
+import '../src/lab/coverage-scene.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { COVERAGE_BY_ID } from '../src/playbook/coverages.js';
 import { FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
-import { ROUTES } from '../src/playbook/routes.js';
 import type { PassConcept } from '../src/playbook/types.js';
 import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
-
-// Lab routes for #1, not installed. The stop is a one-yard settle at the same
-// depth: the route controller skips a waypoint behind the receiver.
-ROUTES.lab_curl7 = { id: 'lab_curl7', family: 'intermediate', depth: 7, end: 'settle', points: [{ d: 7, l: 0, s: 0.2 }, { d: 6.5, l: -1, s: 0 }] };
-ROUTES.lab_stop_go = { id: 'lab_stop_go', family: 'deep', depth: 20, end: 'continue', points: [{ d: 6.5, l: 0, s: 0.1 }, { d: 6.5, l: 1, s: 0 }, { d: 50, l: 1.5 }] };
 
 const offense = generateTeam(new Rng(21), 'Offense', 'OFF', { strength: 0.6 });
 const defense = generateTeam(new Rng(22), 'Defense', 'DEF', { strength: 0.6 });
@@ -71,11 +67,23 @@ describe('match corner releases #1 only on a declared shallow route', () => {
       });
 
       it(`${coverage} ${side}: zones off #1's flat release`, () => {
-        const { jobs, zoned } = run(coverage, 'flat', side, 2);
-        expect(zoned).toBe(true);
+        // An outside break leaves #1 in the corner's own area: zone off
+        // while he is shallow, without committing (see the out-and-up).
+        const { jobs } = run(coverage, 'flat', side, 2);
         expect(jobs.slice(1)).toContain(jobs[0]);
       });
     }
+
+  for (const coverage of ['cover4', 'cover3_match'])
+    it(`${coverage}: a short out that turns up the sideline gets the corner back on #1; a slant commits the zone-off`, () => {
+      const outUp = run(coverage, 'lab_out_up4', 'W', 3.4);
+      expect(outUp.jobs.slice(1)).toContain(outUp.jobs[0]);
+      expect(outUp.zoned).toBe(false);
+      expect(outUp.jobs.at(-1)).toBe(`man:${outUp.one}`);
+      const slant = run(coverage, 'slant', 'W', 3.0);
+      expect(slant.zoned).toBe(true);
+      expect(slant.jobs.at(-1)).not.toBe(`man:${slant.one}`);
+    });
 
   it('a stop inside the no-cover zone zones him off only until #1 turns upfield', () => {
     const { sim } = (() => {

@@ -36,7 +36,7 @@ describe('Tight 1/4 vs an x1 side', () => {
     expect(modeOf(x1, 'CB_W')).not.toBe('zoned');
     expect(jobsOf(x1, 'CB_W').slice(1).every(j => j.endsWith(`:${x1.numbering.W1}`))).toBe(true);
     const x2 = filmScene({ formation: 'gun_spread_10', coverage: 'cover4', strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'flat', 2: 'seam' }, until: 2.6 });
-    expect(modeOf(x2, 'CB_W')).toBe('zoned');
+    expect(jobsOf(x2, 'CB_W').slice(1)).toContain('zone:quarter_w_out');
   });
 });
 

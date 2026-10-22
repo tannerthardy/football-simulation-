@@ -36,6 +36,8 @@ export interface RuleState {
   cut?: Agent;
   /** The receiver an area/banjo pickup settled on. */
   match?: Agent;
+  /** When a pending call (a corner's "In") was first seen. */
+  pendingAt?: number;
 }
 
 export interface RuleCtx {
@@ -76,6 +78,8 @@ const vertical = (rd: ReceiverRead | null, depth = 4): boolean => !!rd && rd.rel
 const climbing = (rd: ReceiverRead | null): boolean => !!rd && (rd.release === 'vertical' || rd.climbed);
 /** The "no cover zone": a match corner owns any route by #1 whose stem gets past it. */
 const NO_COVER = 5;
+/** How long a shallow break must hold before a corner commits to zoning off it (s). */
+const DECLARE = 0.35;
 
 /**
  * MOD/Rip-Liz corner's "In"/"Under" check on #1: should he zone off and find
@@ -85,17 +89,34 @@ const NO_COVER = 5;
  * Outs, curls and in-breakers past the no-cover zone stay the corner's man.
  */
 function zoneOffOne(c: RuleCtx, one: ReceiverRead, china = true): boolean {
-  if (c.state.mode === 'zoned') return true;
+  const st = c.state;
+  if (st.mode === 'zoned') return true;
+  const inside = one.release === 'under' || (china && one.release === 'in');
+  if (st.mode === 'pending') {
+    // Still breaking inside: the call firms up once it has held for a beat.
+    if (inside) {
+      if (c.sim.t - (st.pendingAt ?? c.sim.t) >= DECLARE) st.mode = 'zoned';
+      return true;
+    }
+    st.mode = undefined;
+    st.pendingAt = undefined;
+  }
   if (one.deepest > NO_COVER) return false;
   // Without a #2 to his side there is no Smash to sink under ("China is not
   // available" vs any x1, HNFL-095): only #1 running shallow across ("In")
   // takes the corner off him; a short stop or out stays his man.
-  const declared = china ? ['under', 'flat', 'in', 'out'] : ['under'];
-  if (declared.includes(one.release)) {
-    c.state.mode = 'zoned';
+  // The call is made once #1 "truly declares" shallow, "not just getting us
+  // to zone off, then running upfield" (HNFL-079). An inside break ("In",
+  // "Under") hands #1 across the formation, so once it has held for a beat
+  // the zone-off is final. A short out or flat stays in the corner's own deep
+  // area: he zones off while #1 is shallow and has him again if #1 turns
+  // upfield past the no-cover zone (out-and-up), like a short stop.
+  if (inside) {
+    st.mode = 'pending';
+    st.pendingAt = c.sim.t;
     return true;
   }
-  return china && one.release === 'stop';
+  return china && (one.release === 'stop' || one.release === 'out' || one.release === 'flat');
 }
 
 /** #1 failed to clear the no-cover zone or came under: the "China"/"Under" picture an apex pushes to. */
