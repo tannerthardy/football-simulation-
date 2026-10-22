@@ -275,6 +275,17 @@ order is the A-gap alignment (def-alignment's `AGAP_ALIGN`, which needs
 their alignment-style commits), then a fresh look at the center's
 technique in games.
 
+**`AGAP_ALIGN` (def-alignment, ported onto this branch, off).** The 1
+technique stands at his team's tracked share of the centre-guard split.
+Core 2969/2969 with it on. On this profile (8 games, seed 301): OZ center
+covered 92 -> 29% (NFL 64%; this line's 1.6-yd splits are wider than
+tracked 1.5); the uncovered center still moves 0.6 yd by 1.0 s (NFL 2.1),
+so coverage was not what stalled him; help at contact 56 -> 51%; power
+crease 3.3 -> 3.8 yd. Paired lab against the build (`b3` -> `ag`): TVD
+zone 8.9 -> 7.1, gap 9.0 -> 7.1, shotgun 7.1 -> 14.6 (shotgun IZ median
+4.1 -> 3.2, 4-9 yd 39 -> 25%). Right snap geometry, downstream not yet an
+improvement: off.
+
 ## Flags on
 
 | Flag | Value | Where | What it does (from its doc comment) |
