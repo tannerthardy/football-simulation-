@@ -571,6 +571,11 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, space =
  * on the center, for one), he helps there instead of on a man outside his
  * neighbor: the uncovered player checks his adjacent near gap. */
 const COMBO_GAP = process.env.COMBO_GAP === '1';
+/** Experimental (COMBO_GAP_IZ=1, off): the backside switch above is an
+ * inside-zone rule. On stretch runs (the reach schemes) the uncovered blocker
+ * keeps his play-side help and leaves a backside 2i to the man covering him:
+ * tracked outside zone doubles a backside 2i on 16% of runs, inside zone 56%. */
+const COMBO_GAP_IZ = process.env.COMBO_GAP_IZ === '1';
 
 export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, RunBlockPlan> {
   if (concept.pullers.includes('H') && concept.scheme !== 'counter')
@@ -638,7 +643,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const beside = (n: Agent) => { const y = plans.get(n)!.target!.pos.y;
         return (y - b.pos.y) * (y - n.pos.y) < 0; };
       let neighbor = line[i - 1];
-      if (COMBO_GAP && free(neighbor) && free(line[i + 1]) && !beside(neighbor) && beside(line[i + 1]))
+      const stretch = scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'toss';
+      if (COMBO_GAP && !(COMBO_GAP_IZ && stretch) && free(neighbor) && free(line[i + 1]) && !beside(neighbor) && beside(line[i + 1]))
         neighbor = line[i + 1];
       const np = neighbor ? plans.get(neighbor) : undefined;
       if (np?.target && !np.combination && (np.kind === 'drive' || np.kind === 'reach')) {
