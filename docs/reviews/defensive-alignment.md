@@ -208,7 +208,54 @@ suite passes with every flag off.
 
 ## Game check
 
-TODO
+Eight games, seed 101, at `3735ec7f`. **A**: #190's flags
+(`FRONT_ALIGN DEF_ALIGN SHORT_PACKAGE`). **B**: A plus all five new flags.
+Collected with `scripts/mechanics/sim-export.ts` (the engine was unchanged
+during collection). Both arms keep the guard at 12/12. Flagged metrics: 44 in
+A, 50 in B.
+
+| Runs | NFL 2022 | A | B |
+|---|---|---|---|
+| Yards, median [IQR] p90 | 3.0 [1, 6.7] | 3.00 [0.53, 6.66] 18.8 | 3.95 [1.17, 7.72] 17.9 |
+| Yards after contact, median | 2.40 | 1.71 | 2.02 |
+| Broke contact | 12.5% | 13.0% | 18.8% |
+| Box 7: yards, median | 3.0 | 2.51 | 4.19 |
+| Box 6 or fewer: yards, p90 | 11.0 | 11.6 | 18.7 |
+| Inside / outside zone / gap / Duo, median | 3.0 each | 3.6 / 1.4 / 2.9 / 5.1 | 4.0 / 2.5 / 3.5 / 6.6 |
+
+**One targeted diagnostic for the adverse run result.** Both checks used
+the same seeds.
+
+- **Matched lab** (`scripts/run-blocking-lab.ts`, 15 reps per cell, seed 7,
+  fixed fronts and Cover 3). With the calls fixed, `FRONT_MENU`'s backer
+  placement lowers lab yards per carry (10.93 to 9.59; Over 10.2 to 6.9).
+  Against these fixed calls on first and 10, `BOX_ALIGN` changes nothing,
+  because nobody walks out. So the placement is not the cause.
+- **Leave-one-out game arms** (median run yards):
+  - all five: 3.95
+  - without `FRONT_MENU`: 3.42
+  - without `SHELL_SHOW`: 3.58
+  - without `DEF_PACKAGE`: 3.79
+
+  No single flag accounts for it.
+
+**Reading.** The rise comes from the defense *calling* more like the NFL:
+lighter packages against heavy personnel, two-high shells as often as
+tracking shows, fewer Under fronts in base. It does not come from the
+alignment of any one front. The likely mechanism is that the sim's run
+defense (fits, pursuit, tackling) was developed against an over-stacked,
+base- and Under-heavy picture that hid its open-field weaknesses. The
+broke-contact rate rising to 18.8% (tracking 12.5%) points the same way.
+This is **inconclusive as a football improvement**: the presentation is
+demonstrably closer to tracking, but the game result moved away on run yards
+and broken contact. It is a tradeoff with a named risk, not a promotion
+case.
+
+**Next question,** for the run-defense and contact owners: with tracked
+boxes and shells, why do first contacts in space fail more often? Check
+pursuit angles and solo tackles against the 12.5% tracked broken-contact
+rate, using the B arm's plays (`out/mechanics/sim-B.jsonl.gz`). Re-tuning
+the alignment back toward the old boxes is not the fix.
 
 ## Not done, and why
 
