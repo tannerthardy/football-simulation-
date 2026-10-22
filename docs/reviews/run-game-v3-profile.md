@@ -204,6 +204,24 @@ zone (6.1/11.0%). Draws and tosses at 20+ (games 4.7 -> 9.1% on 55 plays)
 do not reproduce on paired lab (`drof` -> `dron`, 1,200 cases): draw 20+
 9.0 -> 8.8%, toss 7.8 -> 7.2%; draw losses 3.5 -> 6.0% (NFL draw 11.9%).
 
+## Broken run contacts (run-defense bisection and second-tackler split)
+
+Run contacts broken (runbreak.py): shared build 17.9%, NFL 12.6%. Run-defense
+bisected the profile's contact flags on paired lab: only `LEG_BRACE`
+(=0: 14.8 -> 11.9%) and `HOLD_POINT` (=0: 14.8 -> 16.9%) move it. Their
+second-tackler split (`depth/secondtackler.py`, help = another defender
+within 1.5 yd in the 0.5 s after first contact):
+
+| | help at contact | broke with help | broke alone |
+|---|---|---|---|
+| NFL | 77% | 7.6% | 29.8% |
+| shared build | 56% | 10.9% | 27.0% |
+| build, `LEG_BRACE=0` | 51% | 10.9% | 14.4% |
+
+The brace is right (a lone tackler breaks at the tracked rate with it, far
+too rarely without). The excess breaks come from missing help, the
+pursuit-arrival row. `LEG_BRACE` stays on.
+
 ## Outside-zone flow: the interior (diagnosis)
 
 Per lineman, outside zone (`scripts/diag/stretch/ozpath.py`, same code both
