@@ -80,6 +80,6 @@ There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`
 | `DEF_PACKAGE` | off | experimental | defense | `src/game/playcaller.ts:79` | expires: review 2 |
 | `SHELL_SHOW` | off | experimental | defense | `src/game/playcaller.ts:93`, `src/playbook/alignment.ts:156` | expires: review 2 |
 | `COVER_CALL` | off | experimental | defense | `src/game/playcaller.ts:114` | expires: review 2 |
-| `MOTION_CHECK` | off | experimental | defense | `src/sim/motion.ts:277` | expires: review 2 |
-| `PRESSURE_CALL` | off | experimental | defense | `src/game/playcaller.ts:126` | expires: review 2 |
+| `MOTION_CHECK` | off | experimental | defense | `src/sim/motion.ts:277` | expires: review 2 (turn on with `MOTION`) |
+| `PRESSURE_CALL` | off | experimental | defense | `src/game/playcaller.ts:126` | expires: review 2 (turn on with `DEUCE`) |
 | `AGAP_ALIGN` | off | experimental | defense | `src/playbook/alignment.ts:167` | expires: review 2 |
