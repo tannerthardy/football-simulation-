@@ -12,7 +12,7 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
-import { serialize } from 'node:v8';
+import { stateBytes } from './state-bytes.mjs';
 
 const args = process.argv.slice(2);
 const option = (key, fallback) => args.includes(key) ? args[args.indexOf(key) + 1] : fallback;
@@ -42,6 +42,7 @@ for (const key of inventory) delete process.env[key];
 const meta = { root, mode, node: process.version, platform: process.platform, arch: process.arch,
   commit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
   sourceSha256: source.digest('hex'), operatorSha256: sha(readFileSync(fileURLToPath(import.meta.url))),
+  stateEncoderSha256: sha(readFileSync(new URL('./state-bytes.mjs', import.meta.url))),
   lockSha256: sha(readFileSync(resolve(root, 'package-lock.json'))), workerCount: 1,
   seed: 7, quickGames: 6, leagues: 2,
   flags: Object.fromEntries(rows.map(([key, value]) => [key, { environment: null, effective: value }])) };
@@ -70,16 +71,15 @@ if (mode === 'scorecard') {
   const { simulateGame } = await load('src/game/game.ts');
   const { makeLeague, gameSpecs } = await load('scripts/scorecard/records.ts');
   const specs = gameSpecs(7, 6, 2), expected = option('--compare') ? JSON.parse(readFileSync(option('--compare'))) : null;
-  if (expected) for (const key of ['node', 'platform', 'arch', 'lockSha256', 'operatorSha256', 'workerCount', 'seed', 'flags'])
+  if (expected) for (const key of ['node', 'platform', 'arch', 'lockSha256', 'operatorSha256', 'stateEncoderSha256', 'workerCount', 'seed', 'flags'])
     assert.deepEqual(meta[key], expected[key], `Incompatible baseline ${key}`);
   let worldHash, tickHash, drawHash, worlds, ticks, draws, bodyVisits;
   const rawStep = World.prototype.step, rawTick = PlaySim.prototype.tick, rawDraw = Rng.prototype.nextU32;
   World.prototype.step = function(...args) {
     const result = rawStep.apply(this, args);
     worlds++; bodyVisits += this.bodies.length;
-    // v8 preserves -0, nonfinite doubles, undefined, Maps and aliasing. No
-    // rounded film coordinates or JSON's null substitution in state hashes.
-    worldHash.update(serialize({ time: this.time, bodies: this.bodies, joints: this.joints, report: result }));
+    // Hash logical double/state values, not V8's packed/holey storage choices.
+    worldHash.update(stateBytes({ time: this.time, bodies: this.bodies, joints: this.joints, report: result }));
     return result;
   };
   PlaySim.prototype.tick = function(...args) {
@@ -88,9 +88,9 @@ if (mode === 'scorecard') {
     // rather than traversing its behavior's private WeakMap caches.
     const ball = Object.fromEntries(Object.entries(this.ball).map(([key, value]) =>
       [key, value?.body && Number.isInteger(value.idx) ? { agentIndex: value.idx } : value]));
-    tickHash.update(serialize({ t: this.t, phase: this.phase, ball, carrier: this.carrier?.idx,
+    tickHash.update(stateBytes({ t: this.t, phase: this.phase, ball, carrier: this.carrier?.idx,
       rng: this.rng, minds: this.agents.map(a => a.mind),
-      commands: this.cmds.map(c => ({ command: c, objective: movementObjective(c) })),
+      commands: this.cmds, objectives: this.cmds.map(c => movementObjective(c)),
       intents: this.intents, events: this.events }));
     return result;
   };
@@ -105,13 +105,13 @@ if (mode === 'scorecard') {
       worldHash = createHash('sha256'); tickHash = createHash('sha256'); drawHash = createHash('sha256');
       worlds = ticks = draws = bodyVisits = 0;
       const spec = specs[game], teams = makeLeague(7, spec.league);
-      const inputSha256 = sha(serialize({ spec, home: teams[spec.home], away: teams[spec.away] }));
+      const inputSha256 = sha(stateBytes({ spec, home: teams[spec.home], away: teams[spec.away] }));
       if (expected) assert.equal(inputSha256, expected.records.find(r => r.spec.game === game)?.inputSha256);
       const start = performance.now(), cpu = process.cpuUsage();
       const result = simulateGame(teams[spec.home], teams[spec.away], { seed: spec.seed, record: false });
       const elapsed = performance.now() - start, usage = process.cpuUsage(cpu);
       const fingerprints = { world: worldHash.digest('hex'), ticks: tickHash.digest('hex'), draws: drawHash.digest('hex'),
-        result: sha(serialize(result)), worlds, ticksCount: ticks, drawsCount: draws, bodyVisits };
+        result: sha(stateBytes(result)), worlds, ticksCount: ticks, drawsCount: draws, bodyVisits };
       const record = { spec, inputSha256, fingerprints, plays: result.log.length, wallSeconds: elapsed / 1000,
         cpuSeconds: (usage.user + usage.system) / 1e6 };
       records.push(record);
