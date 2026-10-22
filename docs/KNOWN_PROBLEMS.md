@@ -95,6 +95,9 @@ The per-group runs are in the promotion PR.
 
 ### Baseline: develop at `3f26d694`
 
+Historical measured reference, not the current trunk or a new baseline designation.
+See [GAPS](GAPS.md) for the ranked problems; current checkpoint scope and readiness are recorded in the relevant PRs.
+
 `npm run scorecard -- --tier pr` (12 games, 2 leagues, seed 7), default flags,
 2026-10-22. It takes about 4 minutes on 4 cores. The splits behind it are in
 the scorecard's output (`--md`).
@@ -617,8 +620,12 @@ Carried over from the issue register; each was measured on an older develop.
   On a `rg3` build (`547af69d`), #191 had 42.3 pressures per 100 dropbacks (NFL 31.3). The
   excess came from edges shedding after contact (+10) and unblocked edges
   (+4). Same-side tackles blocked nobody on 86% of unblocked edges, vs 39%.
-- **Cause:** *likely* PRO-1 and PRO-3. The overall rate can look right while
-  the timing and source are wrong.
+- **Measurement qualification:** #203's merged `sampled-geometric-pressure-v2`
+  fixes post-release/post-whistle sample admission and unknown exposure. The numbers above remain the original #191/#198
+  measurements, not corrected v2 results. Native QB credit and geometric pressure
+  remain different measures; see the [published contract](https://github.com/tannerthardy/football-simulation-/pull/203).
+- **Cause:** *likely* PRO-1 and PRO-3, with the measurement limits above. The
+  overall rate can look right while the timing and source are wrong.
 - **Where:** `scripts/diag/passpro/` (#198), `scripts/diag/pass-pressure.py`, `scripts/diag/edge-rep.py` (#191).
 - **Adverse control to keep:** a play-action post-dig snap where a near-matched
   sack persists at 3.15–3.20 s (#189 film).
@@ -960,10 +967,20 @@ zone).
 <a id="perf-1"></a>
 ### PERF-1: Games are slow to simulate
 
-- **Measure:** 31.5 CPU s per game (`dev-24`), 43–70 s (`dev-12`, depending
-  on how many workers share the CPU); some games run
-  60–80 s, and high-scoring games are slower. The main branch ran at 1.2 s per
-  game. `physics/world.ts` takes 43% of a profiled game.
+- **Historical measure:** 31.5 reported CPU s per game (`dev-24`), with
+  43–70 s reported for `dev-12` and 60–80 s on some games. The original
+  timing operators/hardware must be retained; scorecard `ms` is elapsed, not
+  CPU. The legacy engine's reported 1.2 s is not a matched throughput comparison.
+- **Merged bounded repair:** #204 at `53d5c241` removes repeated lean-release
+  closures without changing physical calculations. On one worker, six quick
+  games use 180.117→154.302 measured child CPU seconds and 155.609→130.278
+  elapsed seconds; the compiled ordinary-game control saves 5.7% CPU / 6.1%
+  elapsed. All six records/probes and two full native state/RNG traces match;
+  existing PR-tier CI matches 1,488 play records across 12 games per arm.
+  These are sequential workload-specific results, not universal throughput.
+- **Profile:** #204's complete sampling tally places 58% in World and 10.7%
+  in lean-release function creation/naming. The earlier 43% was partial;
+  sampling shares are not measured CPU. [Exact pins, failures and limits](https://github.com/tannerthardy/football-simulation-/pull/204).
 - **Effect:** a CI comparison (12 games each for the base and the head)
   takes about 13 minutes, and the
   `game-record` integration tests hit their 60-s budget on a loaded machine
@@ -978,10 +995,12 @@ zone).
   arm, and 5-point precision needs 22–42 games per arm (#191).
 - With about 30 metrics at 90% intervals, about 3 false "moved" readings are
   expected per comparison (#192).
-- `baseline-runner.test.ts` refuses Node versions other than 22.23.3, so 3
-  core tests fail on 22.22 machines.
-- `test:data` has 2 failures and 2 errors in `test_orientation_motion_audit`,
-  reproduced on #190's tip (#194).
+- `baseline-runner.test.ts` requires the supported Node 22.23.3. The earlier
+  three failures on Node 22.22 do not reproduce on that runtime (#203 and
+  combined checkpoint: all five baseline-runner checks pass).
+- Earlier `test_orientation_motion_audit` failures/errors were reported on
+  #190's tip (#194). All seven orientation checks pass on the assembled
+  #202/#203/#204 candidate. This does not claim the complete data suite passed.
 - The NFL play-call replay isn't built yet (CALL-1).
 
 ## Repository and process
@@ -989,19 +1008,25 @@ zone).
 <a id="repo-1"></a>
 ### REPO-1: Repository and process debt
 
-- GitHub's default branch is still the old engine (`main`, Oct 8). The trunk is
-  `develop` (REPO-001).
-- About 20 Codex draft PRs (#86–#166) and #114 sit outside the integration
-  pass. They're decided at the first review.
-- `docs/` holds about 128 MB of evidence and receipt files.
-- Flags: develop has 44; the integration pass adds about 35, all off by
-  default. Each must be made the default or deleted by review 2.
-- **Two meanings of "default":** `config/baseline.json` turns flags on for
-  `baseline:run` profiles (13 on `prof194`) while the source defaults stay off.
-  The scorecard and games use the source defaults. Numbers from a profile are
-  not numbers from develop.
-- `docs/STATUS.md`, `INTEGRATION.md`, `ISSUES.md` and `WORKBOARD.md` describe
-  the old process. `PLAN.md` and `GAPS.md` replace it.
+- GitHub's default branch is still `claude/football-sim-engine`, verified
+  2026-10-22; the trunk is `develop`. See the [dated branch map](BRANCHES.md#verified-entry-points--2026-10-22) (REPO-001).
+- The roughly 20 older Codex drafts (#86–#166) and #114 were a prior audit
+  snapshot, not the current ready queue. Their uncertain dispositions remain
+  separate; this checkpoint does not close or merge research to tidy the list.
+- Before this factual refresh, tracked `docs/` totaled 131,719,397 bytes
+  (about 125.6 MiB), including the source-diagram library and research. This
+  is not 128 MB of disposable receipts. Fixtures and unique evidence remain.
+- [FLAGS](FLAGS.md) is the source-checked switch inventory; #210 promoted
+  its documented defaults. Counts and expiry decisions belong there rather
+  than being duplicated in repository status. This navigation cleanup changes
+  no source default.
+- **Two meanings of "default":** historical `baseline:run` profiles can
+  override source defaults; `prof194` used 13 enabled profile flags. #210
+  subsequently changed the code defaults recorded in FLAGS. Scorecard/game
+  results describe their actual source and overrides, not a moving branch name.
+- STATUS, INTEGRATION, ISSUES and WORKBOARD preserve the old process;
+  PLAN/GAPS replace their operating instructions. Navigation-only maintenance
+  preserves evidence in place; no directory move follows.
 
 ## Not modeled yet
 

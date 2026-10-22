@@ -1,5 +1,12 @@
 # Selective testing and roster coverage
 
+**Process precedence:** [PLAN](PLAN.md) and [GAPS](GAPS.md) supersede the
+older workflow requirements in this reference. Keep the football-model,
+mechanism-review and marginal-cost reasoning; use PLAN for current assignments,
+merge criteria and testing tiers. Integration-owner/full-suite obligations,
+receipt publication and historical flag profiles below are not current gates.
+Documentation-only navigation changes need documentation/path checks, not games.
+
 Shared policy requested 2026-10-13. This adds a marginal-cost constraint to the
 [roster audit](reviews/roster-capability-audit.md) and [validation](VALIDATION.md).
 Choose the smallest check that answers the remaining question. **Do not multiply

@@ -1,5 +1,68 @@
 # GitHub branch map and preservation record
 
+## Verified entry points — 2026-10-22
+
+Checked GitHub repository metadata and `git ls-remote --symref origin HEAD`
+plus all remote heads at 19:14 UTC. There were **377 remote branches before
+publishing this documentation branch**. This is a dated snapshot, not a count
+or pin to maintain on every edit. Fetch the trunk again before new work.
+
+| Role | Exact branch / commit observed | Use |
+| --- | --- | --- |
+| Current trunk | `develop` — `50a1858cb6ff49bc7000e3e4b91a0be5134f79ba` | Start assigned work here; [PLAN](PLAN.md) and [GAPS](GAPS.md) are authoritative. |
+| GitHub default | `claude/football-sim-engine` — `3b5bf9b9282aacc236e479bde7b5aaa2d69fb21f` | Legacy default, unchanged by this cleanup. |
+| Retired integration queue | `codex/integration-queue` — `7f9343f5efe65fa0e0c8e793a000bbc8180a8b50` | Historical #189 handoff; its `d91c9014` pin is not today's trunk. |
+| Historical comparison | `codex/run-game-integration` — `4ded6b600fd3785e65034aa5623d7a9f8f3c5db1` | Preserve for historical comparisons. |
+| Saved #189 film/evidence | `data/finished-controller-checkpoint-189` — `d1099d909f6e8050c5d577983af9adaecaaf8581` | [Fetch saved archives and manifest](https://github.com/tannerthardy/football-simulation-/tree/d1099d909f6e8050c5d577983af9adaecaaf8581/data/pr189-finished-controller); separate data history, not an engine merge parent. |
+
+README → PLAN/GAPS is the current navigation path. [AGENTS](../AGENTS.md)
+provides safe handoff rules; [CLAUDE](../CLAUDE.md#model-rules) preserves the
+football model. Existing named research branches and genuine PR stacks are
+preserved; new branch/label conventions are in PLAN.
+
+The entry-point table above is the earlier 19:14 UTC inventory. Fetch
+`develop` before new work; later adoption and readiness are recorded in the
+relevant PRs, not inferred from that dated snapshot. [GAPS](GAPS.md) retains
+the ranked problem list. No remote branch, historical baseline, fixture or
+evidence is removed by this navigation cleanup.
+
+## Proposed organization batch — documentation only
+
+- Reconcile AGENTS/CLAUDE/README with the already approved PLAN/GAPS. Keep
+  football-model rules, diagnostic guidance and the current plan unchanged.
+- Mark INTEGRATION, STATUS, ISSUES, WORKBOARD and BASELINE as historical in
+  place, retaining their complete prior text, anchors and evidence links.
+  Scope older testing references to diagnosis rather than retired process gates.
+- Correct the default-branch name in KNOWN_PROBLEMS and point the archive
+  index to PLAN/GAPS. No source, input, script, fixture or evidence moves.
+
+This batch can be reverted as a documentation commit. Original entry files
+remain available at [the exact pre-cleanup source](https://github.com/tannerthardy/football-simulation-/tree/50a1858cb6ff49bc7000e3e4b91a0be5134f79ba).
+Its review is independent of any future evidence-storage cleanup.
+
+### Later disposition — no archival moves proposed for execution
+
+| Material considered | Dependency/provenance finding | Disposition |
+| --- | --- | --- |
+| Old tracking pages and `docs/reviews/` | Existing document anchors and review/source citations still refer to these paths. Reviews contain unique reasoning, failed trials and source-qualified results. | Keep in place with historical labels. A physical move needs an incoming-link map and retained entry links. |
+| `data/reviews/current/` | Tests directly read `accepted-controller-game-inputs.json`, `roster-screen-baseline.json` and `loaded-grip-refinement.json`; other files retain receipt/source/measurement provenance. The directory name does not establish disposability. | Keep all files; separate test inputs from potential archival output only after per-file review. |
+| `test/fixtures/`, `config/`, compact manifests and `data/archive/generated-artifacts.json` | Tests, launchers and `scripts/restore-evidence.py` consume these paths. The existing archive catalog pins original paths, source commit, sizes and hashes. | Preserve unchanged, including the restoration catalog and script. |
+| Research-only reports, local/ignored film and saved data histories | A local path alone does not prove shared access, unique evidence preservation or matching source/settings. Existing immutable film/source links must remain usable. | Defer uncertain material; do not recollect, upload ignored files wholesale or merge data history to tidy the tree. |
+
+A later archival proposal must name exact paths, code/test and script consumers,
+incoming document links, unique evidence, original source/settings and a
+byte-verifiable shared restoration route. Run only affected checks for any moved
+inputs. No branch deletion, default switch, merge or bulk evidence removal is
+part of this batch.
+
+## Historical preservation record — instructions below are superseded
+
+Everything below is retained verbatim from the pre-cleanup document. Counts,
+PR stacks, permissions and outstanding reference decisions are dated snapshots,
+not current assignments or authority. PLAN/GAPS govern current operations.
+
+---
+
 The 2026-10-15 [PR-only cleanup](INTEGRATION.md#pr-dispositions) preserved all
 106 starting remote branches; a worker added one during the pass. Closing
 43 completed/superseded PRs did not delete or move their branches, retarget
