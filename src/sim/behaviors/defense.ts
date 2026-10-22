@@ -807,15 +807,29 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   // Eyes on the QB see the release; a trailing man defender reads it off
   // the receiver's eyes and hands a beat later.
   const react = a.mind.observationDelay(a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.25)) + (man ? 0.05 : 0);
-  // Spot droppers key the quarterback: his arm and body action give the
-  // throw away before the ball is out, so their reaction starts there.
-  const style = a.behavior instanceof ZoneCoverage ? a.behavior.style : (a.behavior as { style?: ZoneStyle }).style;
-  const keysQB = facingQB && sim.windupAt >= 0 && zoneEyes && style === 'spot';
-  if (keysQB && sim.t - sim.windupAt >= react) {
+  // A zone defender with his eyes on the quarterback keys him, spot or
+  // match: the shoulders turning and the arm coming through give the throw
+  // away before the ball is out, so his reaction starts at the throwing
+  // motion, or when his eyes reached the QB if that was later. Motion he did
+  // not see gives him nothing. He still learns where it goes only from the
+  // visible flight.
+  const keysQB = facingQB && zoneEyes && sim.windupAt >= 0 && sim.t - sim.windupAt >= react
+    && eyesHeldOnQB(a, sim, react, -0.2);
+  if (keysQB) {
     a.tags.add('readArm');
     return true;
   }
   return sim.t - sim.throwAt >= react;
+}
+
+/** His own recorded body kept the quarterback in view (cosine of the angle
+ * off his facing above `cosMin`) through the last `span` seconds. */
+function eyesHeldOnQB(a: Agent, sim: PlaySim, span: number, cosMin: number): boolean {
+  for (let back = 1; back * sim.dt <= span + 1e-9; back++) {
+    const me = sim.perception.recorded(a.idx, back * sim.dt), qb = sim.perception.recorded(sim.qb.idx, back * sim.dt);
+    if (!me || !qb || Math.cos(me.facing - Math.atan2(qb.pos.y - me.pos.y, qb.pos.x - me.pos.x)) <= cosMin) return false;
+  }
+  return true;
 }
 
 export function playBall(a: Agent, sim: PlaySim, man: Agent | null,

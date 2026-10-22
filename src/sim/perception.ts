@@ -80,4 +80,14 @@ export class PerceptionBuffer {
       pose: pose === 1 ? 'up' : pose === -1 ? 'down' : pose === 2 ? 'rising' : null,
       carrying: carrying > 0 ? true : carrying < 0 ? false : null };
   }
+
+  /** Where agent `i` was and which way he faced `delay` seconds ago, as
+   * recorded and without prediction; null beyond the kept history. For a
+   * body's own recent past, such as whether his eyes were on someone. */
+  recorded(i: number, delay: number): { pos: Vec2; facing: number } | null {
+    const back = Math.max(0, Math.round(delay / this.dt));
+    if (back >= this.count) return null;
+    const o = ((this.head - back + HISTORY) % HISTORY) * this.n * STRIDE + i * STRIDE;
+    return { pos: { x: this.data[o], y: this.data[o + 1] }, facing: this.data[o + 5] };
+  }
 }
