@@ -236,6 +236,9 @@ export type MatchRule =
   | 'box_in_low'
   | 'box_out_deep'
   | 'box_in_deep'
+  | 'area_flat'
+  | 'area_hook'
+  | 'topper'
   | 'banjo_out'
   | 'banjo_in'
   | 'clue_corner'
@@ -288,7 +291,7 @@ export type StructureTag =
   | 'quads' | 'empty_3x2' | 'empty'
   | 'bunch_strong' | 'bunch_weak'
   | 'stack_strong' | 'stack_weak'
-  | 'trips_closed' | 'trips_open' | 'trips'
+  | 'trips_closed' | 'trips_open' | 'trips' | 'close_23'
   | 'nub_weak' | 'nub_strong'
   | 'two_back' | 'iso_weak' | 'reduced_strong' | 'reduced_weak';
 

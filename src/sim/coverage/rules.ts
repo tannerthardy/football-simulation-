@@ -662,6 +662,54 @@ function box(c: RuleCtx, job: 'out_low' | 'in_low' | 'out_deep' | 'in_deep'): Di
 }
 
 /**
+ * Area (Cover 6 vs trips exchanges or a close #2/#3, HNFL-052/073/195/019):
+ * "Triangle" pickups over #2 and #3 by area of release. The quarter-flat
+ * nickel takes the outermost underneath (the first out by #2/#3; with none,
+ * "Smash = push to #1" on a short #1). The quarter hook takes the innermost
+ * (the first in), otherwise walls final #3. The Topper safety tops whichever
+ * of #2/#3 goes deep; with both deep he plays vision and squeeze.
+ */
+function area(c: RuleCtx, job: 'flat' | 'hook' | 'topper'): Directive {
+  const pool = ([2, 3] as const).map(n => ref(c, n)).filter((rd): rd is ReceiverRead => !!rd);
+  const one = ref(c, 1), three = ref(c, 3);
+  if (!pool.length) return zoneOf(c);
+  switch (job) {
+    case 'flat': {
+      const d = settle(c, first(pool, isOut), true, { lev: 'inside', overTop: true });
+      if (d) return d;
+      return oneShallow(one) ? man(one!, { lev: 'inside' }) : zoneOf(c);
+    }
+    case 'hook': {
+      // Underneath only: a seam bending in past ten yards is the Topper's.
+      // A stem drifting inside for a step is not a declared in: match it
+      // provisionally and lock once the break has held.
+      const pick = first(pool, rd => isIn(rd) && rd.deepest < 10);
+      const d = settle(c, pick, !!pick && c.sim.t - pick.since >= DECLARE, { lev: 'head' });
+      if (d) return d;
+      if (three && vertical(three, 2) && three.depth < 10) return { t: 'wall', r: three.r };
+      return cut(c) ?? zoneOf(c);
+    }
+    case 'topper': {
+      // Deep: up past the no-cover zone, or still climbing past eight
+      // yards whatever angle the stem takes (a seam bending in).
+      const deep = (rd: ReceiverRead) => isUp(rd) || (rd.depth > 8 && rd.vel.x > 3);
+      const ups = pool.filter(deep);
+      if (c.state.match) {
+        const rd = c.reader.read(c.sim, c.state.match);
+        // Past ten yards he is carried. Short of that, a declared break (a
+        // hitch) or a second vertical turns the top back into vision and squeeze.
+        const second = ups.some(u => u.r !== c.state.match);
+        if (rd && (rd.depth > 10 || (!second && (deep(rd) || rd.release === 'vertical')))) return man(rd, { lev: 'inside', overTop: true });
+        c.state.match = undefined;
+      }
+      // Both deep: vision and squeeze between them from the quarter.
+      if (ups.length !== 1) return zoneOf(c);
+      return settle(c, ups[0], true, { lev: 'inside', overTop: true })!;
+    }
+  }
+}
+
+/**
  * Banjo (man vs bunch/stack, HNFL-074 Mini Fist, MS §15): the point is locked
  * by another defender; this pair trades #1 and #3 by release. The outside
  * defender takes the first out (or, with none, the outer man); the inside
@@ -711,6 +759,9 @@ export function runRule(rule: MatchRule, c: RuleCtx): Directive {
     case 'box_in_low': return box(c, 'in_low');
     case 'box_out_deep': return box(c, 'out_deep');
     case 'box_in_deep': return box(c, 'in_deep');
+    case 'area_flat': return area(c, 'flat');
+    case 'area_hook': return area(c, 'hook');
+    case 'topper': return area(c, 'topper');
     case 'banjo_out': return banjo(c, true);
     case 'banjo_in': return banjo(c, false);
     case 'clue_corner': return clueCorner(c);

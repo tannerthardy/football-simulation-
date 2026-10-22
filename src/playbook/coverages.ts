@@ -484,8 +484,19 @@ export const COVERAGES: Coverage[] = [
       CB_W: z('flat_w', 'sink_corner'),
       FS: z('deep_half_w'),
     },
-    underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_w', 'hook_s'],
-    structureChecks: [{ when: ['bunch_strong'], to: ['cover4_box'] }, { when: ['trips'], to: ['cover6_book'] }],
+    underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_mid', 'mike_3'), seat('hook_w', 'c2_hook'), 'hook_s'],
+    structureChecks: [{ when: ['bunch_strong'], to: ['cover4_box'] }, { when: ['close_23'], to: ['cover6_area'] }, { when: ['trips'], to: ['cover6_book'] }],
+  },
+  {
+    id: 'cover6_area', name: 'Cover 6 Area (vs trips exchanges)', family: 'cover6', shell: 'two-high', man: false, press: false,
+    note: 'Trips with #2/#3 close: soft quarters corner with China, triangle pickups over #2/#3 (nickel outermost underneath, hook innermost, Topper safety on the one that goes deep); Wild on the backside X (HNFL-073/052/195).',
+    roles: {
+      CB_S: z('quarter_s_out', 'q_corner_mod'),
+      SS: z('quarter_s_in', 'topper'),
+      CB_W: z('flat_w', 'sink_corner'),
+      FS: z('deep_half_w'),
+    },
+    underneath: [seat('curl_flat_s', 'area_flat'), seat('hook_s', 'area_hook'), seat('hook_w', 'c2_hook'), 'hook_mid'],
   },
   {
     id: 'cover6_book', name: 'Cover 6 Book (vs trips)', family: 'cover6', shell: 'two-high', man: false, press: false,
@@ -496,7 +507,7 @@ export const COVERAGES: Coverage[] = [
       CB_W: z('flat_w', 'sink_corner'),
       FS: z('deep_half_w'),
     },
-    underneath: [seat('curl_flat_s', 'mush'), seat('hook_s', 'read_hook'), seat('hook_mid', 'mike_3'), 'hook_w'],
+    underneath: [seat('curl_flat_s', 'mush'), seat('hook_s', 'read_hook'), seat('hook_mid', 'mike_3'), seat('hook_w', 'c2_hook')],
   },
   {
     id: 'cover6_rev', name: 'Cover 8 (half strong, quarters weak)', family: 'cover6', shell: 'two-high', man: false, press: false,
@@ -506,7 +517,7 @@ export const COVERAGES: Coverage[] = [
       SS: z('deep_half_s'),
       ...QUARTERS_W,
     },
-    underneath: [seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_s', 'hook_w'],
+    underneath: [seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), seat('hook_s', 'c2_hook'), 'hook_w'],
     structureChecks: [{ when: ['trips'], to: ['cover8_trix'] }],
   },
   {

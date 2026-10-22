@@ -77,6 +77,8 @@ Film any scene with `node --import tsx scripts/coverage-rule-film.ts
 | Coordinator menu | Trix vs Book by down, tree and learned results (HNFL-195) | Done; `defensive-check-menu` |
 | Cover 9 tree | Weak rotation as the two-high tree's Cover 3; Strap (#3 receiver hook, bonus hook), Clue, Grab (HNFL-054/056/203) | Done; `fangio-tree` |
 | Cover 6/8 | Squat half side; Cover 8 Trix vs trips (HNFL-324/325/336) | Done; `fangio-tree` |
+| Cover 6 Area | Vs trips with #2/#3 close (`close_23`): China corner, triangle pickups over #2/#3, Topper safety (HNFL-073/052/195) | Done; `cover6-half-side` |
+| Half-side curl | Cover 6/8 half-side apex plays vertical curl: wall #2 to 12, match #2 up and in (HNFL-097) | Done; `cover6-half-side` |
 | Zeus | Resolved by where the target stands, then the structure check (trips #1 → Cover 8 Trix) | Done; `fangio-tree` |
 | Sim pressures | Whip, Slug, Sting; dropped linemen with match rules; promised rush counts (HNFL-057/060/242) | Done; `sim-pressures` |
 | Home shell | Two-high tree disguises from one quarters look | Done; `fangio-tree` |
@@ -98,7 +100,9 @@ From [fangio-system.md](fangio-system.md) section E:
 - **E3, owned by the pre-snap alignment work:** real rotation timing (late
   pre-snap, at the snap, or post-snap), with the rotating safety fitting
   from where he actually is.
-- **E4:** Cover 6 Area and half-side Smack/Read/Patty.
+- **E4 rest:** half-side Smack, Read and Patty. Smack keys an oversplit #1, but
+  our formations use fixed splits. Read and Patty differ from Squat mainly in
+  alignment and in who owns the back's flat.
 - **E7:** Lord, Ring, Chicago.
 - **E8:** run-fit force table per coverage (Run owner).
 - **E9:** Cut/Cone/Inc bracket tags.
