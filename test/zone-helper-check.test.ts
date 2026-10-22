@@ -18,7 +18,8 @@ import { PlaySim } from '../src/sim/playsim.js';
 // FORCE_BOUNCE moves the Split Zone Bear force, and the recorded double no
 // longer releases within its 2 s window.
 // FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FORCE_BOUNCE = '0'; process.env.FRONT_ALIGN = '0'; });
+// SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FORCE_BOUNCE = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; });
 
 const offense = generateTeam(new Rng(31), 'Panel offense 1', 'O1', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'Panel defense 1', 'D1', { strength: .55 });
