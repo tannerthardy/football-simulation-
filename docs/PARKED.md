@@ -8,7 +8,7 @@ Rules:
 - Before reviving one, read its doc comment at the location given and port it onto a branch from develop. Don't merge the old branch.
 - Update the row when a flag lands on develop (then delete the row and register it in FLAGS.md) or when it is tried again.
 
-Built 2026-10-22 from every flag found in `src` on the repository's branches, plus 4 kept outside any branch; updated after #190, #194 and #196 merged, so it lists the 90 branch flags not on develop `5a52dae3`. "What it does" is the first sentence of the flag's own doc comment. "Where" is the most recently updated branch carrying it.
+Built 2026-10-22 from every flag found in `src` on the repository's branches, plus 4 kept outside any branch; updated after #190, #194 and #196 merged, so it lists the 89 branch flags not on develop `5a52dae3`. "What it does" is the first sentence of the flag's own doc comment. "Where" is the most recently updated branch carrying it.
 
 ## G1 Defenders don't finish plays
 
@@ -29,7 +29,6 @@ Built 2026-10-22 from every flag found in `src` on the repository's branches, pl
 | `PLANT_TRAVEL` | A holder with a grip sits his weight down against the runner's travel, not only along his arms. | `claude/run-game-v3` `src/sim/tackle.ts:78` | Tried on run-game-v3 (off). Holder sits against the runner's travel. |
 | `SHED_AWAY` | Once the carrying runner a blocked defender sees is past the line and on the far side of him from his blocker, there is no blocker's face to work across: he asks for his own pursuit (his behavior's request) instead of th… | `claude/run-game-v3` `src/sim/engagement.ts:813` | Tried on run-game-v3 (off). Shed when the runner is on the far side. |
 | `SHED_HANDS` | A defender working off a run block who has won the hands (his hands inside on the blocker, control < 0) gets off it. | `claude/zen-feynman-7712y8` `src/sim/engagement.ts:687` | Run Game research (off). Defender who wins the hands gets off. |
-| `SHED_PURSUE` | Once the runner a blocked defender has declared (held between ordinary reads; an edge fit declares him 2 yd past, as pursueIfLive does) is past the line, he works off the block toward the ball wherever the ball is, not o… | `claude/run-game-v3` `src/sim/engagement.ts:765` | Port candidate. Blocked defenders get off once the declared runner is past them. Meetings per run 2.10 → 2.28 (NFL 2.69). run-game-v3 profile: on. |
 | `TACKLE_DROP` | (no doc comment; see the code) | `claude/ground-finish` `src/sim/tackle.ts:61` | Older branch; result not recorded in this catalog: read the branch's review notes before reviving. |
 | `TETHER` | A passive hold on the legs is an inelastic tether at the point it holds. | `claude/run-game-v3` `src/physics/world.ts:320` | Port candidate (physics). A leg hold is an inelastic tether at the hold point. run-game-v3 profile: on. |
 
