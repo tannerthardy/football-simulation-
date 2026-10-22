@@ -459,8 +459,17 @@ are still stemming at 4.75 yd/s against 3.25.
 - At the throw these DBs are mostly in plain man or match carries:
   `ManCoverage` keeps a fixed cushion over the receiver and moves at his
   speed, and never reaches the depth guard.
-- The next step is a probe of which branch commands the retreat for each
-  of them before another attempt.
+- Branch probe (3 games, 35 deep DBs within 9 yd of a target under 6 yd at
+  the throw): the target is nearly stopped (0.3–0.8 yd/s, a hitch or curl),
+  while these DBs ask for 6.5–10 yd/s downfield.
+  - Most are carrying someone else deep or getting to a deep landmark: plain
+    man with hips open on a vertical, deep third or half.
+  - That is correct deep play, not a slow break on this ball.
+- So "the nearest deep DB breaks late" mixes correct carries with a few
+  genuine over-bails. There is no single mechanism, and both attempts moved
+  nothing.
+- Stopped here. The measurable after-catch levers left are the passing
+  side's (throws into stems) and the tackle side's finish.
 
 **`DL_SQUEEZE` (the run crease, for the run-offense session).** At the frame
 the back reaches the line, the gap between the nearest linemen on each side
