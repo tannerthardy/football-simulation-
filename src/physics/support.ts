@@ -96,14 +96,14 @@ export interface SupportParams {
   pressForce: number;
 }
 
-/** ARM_PRESS (G5, experimental, ARM_PRESS=1): pushing through the
+/** ARM_PRESS (G5, default on; ARM_PRESS=0 turns it off): pushing through the
  * hands is a press, the chest and triceps a bench press measures, not the
  * grip and pull the arm-force mapping stands for. Its capacity is the
  * player's own bench max (combine reps, Epley), about 1.3 body weights for
  * an NFL tackle, where the arm-force mapping gave 0.86. Holding, steering,
  * grasps and tackles keep the arm-force capacity. Off: a press is capped at
  * the arm force, so a rusher's leg drive folds a blocker's arms. */
-const ARM_PRESS = process.env.ARM_PRESS === '1';
+const ARM_PRESS = process.env.ARM_PRESS !== '0';
 
 /** Cleat-turf traction coefficient for a sustained push (model assumption). */
 export const TURF_MU = 1.1;

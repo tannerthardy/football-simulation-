@@ -15,7 +15,8 @@ import { describe, expect, it, vi } from 'vitest';
 // (ROUTE_CLEAR) and the push starts on time, but he meets the end at 1.35 s
 // and the flat defender passes him off. The route's path, not the rule
 // (KNOWN_PROBLEMS PRO-1).
-vi.hoisted(() => { process.env.AGAP_ALIGN = '0'; process.env.PASS_KICK = '0'; });
+// ARM_PRESS puts a press through the hands at the bench max; this scene is staged on arm-force hands (KNOWN_PROBLEMS RUN-11, re-record by review 2).
+vi.hoisted(() => { process.env.AGAP_ALIGN = '0'; process.env.PASS_KICK = '0'; process.env.ARM_PRESS = '0'; });
 import { filmScene, jobsOf, modeOf, type SceneFilm } from '../src/lab/coverage-scene.js';
 
 /** The defender whose installed landmark is `zone`. */

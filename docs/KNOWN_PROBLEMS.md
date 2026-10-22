@@ -115,6 +115,7 @@ problem), resolved.
 | [RUN-8](#run-8) | Center covered on almost every snap | G2 | medium | on |
 | [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | on |
 | [RUN-10](#run-10) | Older run-blocking and second-level issues | G2 | low–medium | open |
+| [RUN-11](#run-11) | Staged scenes recorded on arm-force hands | G2, G5 | low | pinned until review 2 |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | open |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | open |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -402,7 +403,7 @@ Carried over from the issue register; each was measured on an older develop.
     Edge reps engaged move from 41% to 62% and free from 50% to 30% (NFL 79%
     and 5%). `PASS_CORNER` (cut him off where the arc turns) didn't move
     contact on develop (0.49 s), so it wasn't ported.
-  - **The hands: `ARM_PRESS`, experimental.** A hand joint's push was capped
+  - **The hands: `ARM_PRESS`, on (agreed with G2 for run reps).** A hand joint's push was capped
     at the arm-force mapping, 0.86 body weights for a tackle. That is less
     than the leg drive it resists (traction, 1.1). So the joint asked for
     0.88–0.93 yd and the bodies sat at 0.67, torso to torso, with the push
@@ -413,8 +414,18 @@ Carried over from the issue register; each was measured on an older develop.
       the cap falls to 20–38%.
     - Of free reps, the share that get free *through* the tackle falls from
       71% to 43% (NFL 29%). With PASS_KICK alone it is 73%.
-    - It changes run reps too: stuffs went from 16% to 25%, with 111 staged
-      run-scene tests. So it waits on G2.
+    - The arm budget, and its work and impulse ledgers, count a press in
+      press units. Before that, the first version tripped the arm audit
+      (`armImpulseExcess`) in 106 staged-scene tests and capped a press's work
+      at arm-force work.
+    - Corrected, on top of PASS_KICK and ROUTE_CLEAR (8 games, seed 301):
+      edge reps engaged / free 62% / 29%, and free reps through the tackle
+      73% → 47% (NFL 29%).
+    - Quick tier, off → on: sacks 8.0% → 6.0% (moved). Run stuffs 21.7% →
+      19.1% and yards before contact 1.25 → 1.54 (both noise, both in band).
+      Completion % swings ±9 points between quick-tier arms, against 64–66%
+      on the 8-game exports: noise.
+    - Six staged scenes recorded on arm-force hands are pinned under RUN-11.
   - **Both:** sacks fall from 13.9% (develop) to 5.9% of dropbacks (NFL
     6–7.5%). PASS_KICK alone gives 7.5%, ARM_PRESS alone 8.8% (quick tier,
     6 games). Time to throw rises 0.10 s. Interior reps (PRO-3) and
@@ -514,6 +525,20 @@ Carried over from the issue register; each was measured on an older develop.
   a call problem. Logged 2026-10-22.
 
 ## Pass defense and coverage
+
+<a id="run-11"></a>
+### RUN-11: Staged scenes recorded on arm-force hands
+
+- **What:** `ARM_PRESS` (G5) puts a press through the hands at each player's
+  bench max, not the arm-force mapping. Six staged scenes were recorded on
+  arm-force hands. They are pinned to `ARM_PRESS=0` until review 2:
+  - run: `combo-strike-access`, `planned-climb-fit`, `zone-runoff-work`;
+  - legacy trace: `run-hand-control`;
+  - pass: `pass-cutoff-approach`, `cover3-cover2-rules`.
+- **Open:** whether a double still moves the DL and hands him to the climber
+  when the arms don't fold. That is a G2 question; a pin is not an answer.
+  Re-record each scene, or replace it with a contract that holds under strong
+  arms, by review 2.
 
 <a id="cov-1"></a>
 ### COV-1: Zone defenders barely close while the ball is in the air

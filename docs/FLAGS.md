@@ -2,11 +2,12 @@
 
 Every engine switch read from the environment, generated from `src` on 2026-10-22 (trunk `d91c9014`). Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 80 flags: 55 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 24 are off. On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 80 flags: 56 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off. On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
 | `ANCHOR_SPLIT` | on | default | trenches | `src/sim/engagement.ts:673` | — |
+| `ARM_PRESS` | on | default (G5, 2026-10-22) | physics | `src/physics/support.ts:106` | review 2: drop the off path. Pushing through the hands uses the bench press (combine reps, Epley), counted in press units in the arm budget and its work and impulse ledgers; agreed with G2 for run reps. Staged scenes recorded on arm-force hands are pinned under RUN-11 until review 2 |
 | `CLIMB_INTERCEPT` | on | default | run | `src/sim/behaviors/blocking.ts:813` | — |
 | `CLIMB_PLAN` | on | default | run | `src/sim/behaviors/blocking.ts:810` | — |
 | `DL_FLOW` | on | default | trenches | `src/sim/engagement.ts:683` | — |
@@ -30,7 +31,6 @@ There are 80 flags: 55 are on by default, 1 is a diagnostic scale at identity (`
 | `STRETCH_REACH` | on | default | trenches | `src/sim/engagement.ts:676` | — |
 | `THREAT_READ` | on | default | defense | `src/sim/run-fits.ts:139` | — |
 | `ZONE_FLOW` | on | default | run | `src/sim/behaviors/blocking.ts:816` | — |
-| `ARM_PRESS` | off | experimental (G5, 2026-10-22) | physics | `src/physics/support.ts:106` | review 2. Pushing through the hands uses the bench press (combine reps, Epley) instead of the arm-force cap. Waits on G2: it changes run reps too (staged run scenes and run stats move). Decided by the PRO-1 edge-rep measures (`scripts/diag/edge-rep.py`) with G2's run-rep check |
 | `CF_FLOW` | off | experimental | tools | `src/sim/counterfactual.ts:5` | set at first review |
 | `DL_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:705` | set at first review |
 | `DL_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:694` | set at first review |

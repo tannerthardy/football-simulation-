@@ -754,6 +754,13 @@ export class World {
   /** Requested actions share one scalar arm capacity, so duplicate joints
    * or strike requests cannot multiply a body's force. Allocation uses
    * requested vector magnitudes, independent of body/solver iteration order. */
+  /** Arm-budget units per unit of press force: arm force / press capacity
+   * (exactly 1 without ARM_PRESS). */
+  private pressUnits(i: number): number {
+    const sp = this.sp[i];
+    return sp.pressForce === sp.armForce ? 1 : sp.armForce / sp.pressForce;
+  }
+
   private allocateArms(): void {
     this.active.fill(0);
     for (const jt of this.joints) {
@@ -761,7 +768,7 @@ export class World {
         const actor=this.indexOf(jt.actor??jt.a),holder=this.indexOf(jt.holder??jt.a);
         // A press is counted in press units: a full press uses the whole arm
         // budget, as a full grip does (ARM_PRESS; the ratio is 1 when off).
-        const sp=this.sp[actor],press=sp.pressForce===sp.armForce?Math.max(0,jt.push):Math.max(0,jt.push)*sp.armForce/sp.pressForce;
+        const units=this.pressUnits(actor),press=units===1?Math.max(0,jt.push):Math.max(0,jt.push)*units;
         this.active[actor]+=Math.hypot(Math.max(press,actor===holder?jt.hold:0),Math.max(0,jt.steer));
         if(actor!==holder)this.active[holder]+=Math.max(0,jt.hold);
       }
@@ -792,7 +799,7 @@ export class World {
    * the owner's remaining tick budget without cross-interval credit. */
   private pairImpulse(i: number,j: number,x: number,y: number,actor: number,
     kind: 'hands'|'grasps'|'strikes', active=true, channel?: { net: number },
-    angularA = 0, angularB = 0): number {
+    angularA = 0, angularB = 0, armUnits = 1): number {
     const a=this.bodies[i],b=this.bodies[j];
     let linear=(b.vel.x-a.vel.x)*x+(b.vel.y-a.vel.y)*y;
     let quadratic=.5*(x*x+y*y)*(1/this.mass[i]+1/this.mass[j]);
@@ -802,7 +809,9 @@ export class World {
     }
     const ledger = this.constraintWork === 'per-solve' ? channel : undefined;
     const previous = ledger?.net ?? 0;
-    const budget=(active?Math.max(0,this.report.armWorkLimit[actor]-this.report.armWork[actor]):0)
+    // armUnits converts this channel's work into arm-budget units (a press
+    // counts in press units; 1 for every other channel).
+    const budget=(active?Math.max(0,this.report.armWorkLimit[actor]-this.report.armWork[actor])/armUnits:0)
       + (ledger ? Math.max(0,-previous) : 0);
     const fraction=workFraction(linear,quadratic,budget);
     x*=fraction;y*=fraction;
@@ -814,8 +823,8 @@ export class World {
     this.report.work[kind]+=work;
     if (kind === 'grasps' && !active) this.report.passiveGraspWork += work;
     if (ledger) ledger.net = previous + work;
-    if(active)this.report.armWork[actor]+=ledger
-      ? Math.max(0,ledger.net)-Math.max(0,previous) : Math.max(0,work);
+    if(active)this.report.armWork[actor]+=(ledger
+      ? Math.max(0,ledger.net)-Math.max(0,previous) : Math.max(0,work))*armUnits;
     return fraction;
   }
 
@@ -1346,8 +1355,10 @@ export class World {
           }
         }
         if (jt.kind === 'hands') {
-          if(r.actor===r.steerActor) report.armImpulse[r.actor] += Math.hypot(r.ln,r.lt);
-          else { report.armImpulse[r.actor]+=Math.abs(r.ln);report.armImpulse[r.steerActor]+=Math.abs(r.lt); }
+          // A press is counted in press units, as allocateArms budgets it.
+          const ln = r.mode > 0 ? r.ln * this.pressUnits(r.actor) : r.ln;
+          if(r.actor===r.steerActor) report.armImpulse[r.actor] += Math.hypot(ln,r.lt);
+          else { report.armImpulse[r.actor]+=Math.abs(ln);report.armImpulse[r.steerActor]+=Math.abs(r.lt); }
           if (!r.handMembers) {
             jt.normalForce = (jt.normalForce ?? 0) + r.ln;
             jt.tangentForce = (jt.tangentForce ?? 0) + r.lt;
@@ -2234,7 +2245,7 @@ export class World {
       const ln = r.mode > 0 ? clamp(r.ln + imp, 0, r.pushLim) : clamp(r.ln + imp, -r.holdLim, 0);
       const dn = ln - r.ln;
       const fraction=this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'hands',true,r.normalWork??={net:0},
-        (r.ni ?? 0) * dn, (r.nj ?? 0) * dn);
+        (r.ni ?? 0) * dn, (r.nj ?? 0) * dn, r.mode > 0 ? this.pressUnits(r.actor) : 1);
       r.ln+=dn*fraction;
     }
     if (r.steerLim > 0) this.solveTangent(r, a, b, r.steerLim);

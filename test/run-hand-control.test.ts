@@ -12,7 +12,8 @@ import { contactControl, inBlockReach, promoteContact, syncJoints, updateEngagem
 import { PlaySim } from '../src/sim/playsim.js';
 
 // A preserved legacy trace (commands, control and RNG) on the installed get-off.
-vi.hoisted(() => { process.env.SNAP_REACT = '0'; });
+// ARM_PRESS puts a press through the hands at the bench max; this scene is staged on arm-force hands (KNOWN_PROBLEMS RUN-11, re-record by review 2).
+vi.hoisted(() => { process.env.SNAP_REACT = '0'; process.env.ARM_PRESS = '0'; });
 
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
