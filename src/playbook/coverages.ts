@@ -12,6 +12,7 @@
  * are chosen by the coordinator (e.g. Cover 6 vs. Cover 6 reversed).
  */
 import type { Coverage, CoverageRole, DefensivePlayCall, FormationKey, MatchRule, ZoneId } from './types.js';
+import type { FormationStructure } from './structure.js';
 
 const z = (zone: ZoneId, rule?: MatchRule, depth?: number): CoverageRole => ({ kind: 'zone', zone, ...(rule ? { rule } : {}), ...(depth !== undefined ? { depth } : {}) });
 const seat = (zone: ZoneId, rule: MatchRule) => ({ zone, rule });
@@ -345,11 +346,26 @@ export const familyOf = (c: Coverage): string => c.family ?? c.id;
  * picks among several). The shown look is kept.
  */
 export function applyCheck(call: DefensivePlayCall, key: FormationKey): DefensivePlayCall {
-  const options = call.coverage.checks?.[key];
+  return checkTo(call, call.coverage.checks?.[key], key);
+}
+
+/**
+ * The secondary's pre-snap check against the structure it sees: the first
+ * structure check whose tags are all present, else the plain distribution
+ * check. A check is a whole installed call, so every defender's job comes
+ * from one coherent coverage.
+ */
+export function checkCall(call: DefensivePlayCall, structure: FormationStructure): DefensivePlayCall {
+  for (const c of call.coverage.structureChecks ?? [])
+    if (c.when.every(t => structure.tags.includes(t))) return checkTo(call, c.to, c.when.join('+'));
+  return applyCheck(call, structure.key);
+}
+
+function checkTo(call: DefensivePlayCall, options: string[] | undefined, when: string): DefensivePlayCall {
   if (!options?.length) return call;
   const to = COVERAGE_BY_ID[options[Math.min(options.length - 1, call.checkPick ?? 0)]];
-  if (!to) return call;
-  return { ...call, coverage: to, label: `${call.label} → ${to.name}` };
+  if (!to || to.id === call.coverage.id) return call;
+  return { ...call, coverage: to, check: { from: call.coverage.id, when }, label: `${call.label} → ${to.name}` };
 }
 
 

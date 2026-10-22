@@ -260,6 +260,22 @@ export type CoverageFamily = 'cover0' | 'cover1' | 'cover2' | 'tampa2' | 'cover2
 /** Receiver distribution a coverage can check against. */
 export type FormationKey = '2x2' | '3x1' | '2x1' | '3x2' | '4x1' | 'empty' | 'heavy';
 
+/** Pre-snap structure features a coverage check can key on (src/playbook/structure.ts). */
+export type StructureTag =
+  | 'quads' | 'empty_3x2' | 'empty'
+  | 'bunch_strong' | 'bunch_weak'
+  | 'stack_strong' | 'stack_weak'
+  | 'trips_closed' | 'trips_open' | 'trips'
+  | 'nub_weak' | 'nub_strong'
+  | 'two_back' | 'iso_weak' | 'reduced_strong' | 'reduced_weak';
+
+/** A check: against this structure (every tag present), the call becomes one of `to`. */
+export interface CoverageCheck {
+  when: StructureTag[];
+  /** Coverage ids; the coordinator's preference index picks among several. */
+  to: string[];
+}
+
 /** An underneath seat: a zone, optionally with a match rule or style. */
 export type UnderSeat = ZoneId | { zone: ZoneId; rule?: MatchRule; style?: ZoneStyle };
 
@@ -280,6 +296,8 @@ export interface Coverage {
   family?: CoverageFamily;
   /** Formation checks: the call becomes one of these against that distribution. */
   checks?: Partial<Record<FormationKey, string[]>>;
+  /** Structure checks, most specific first; the first that matches applies before `checks`. */
+  structureChecks?: CoverageCheck[];
   /** One line: what it is and what it takes away. */
   note?: string;
 }
@@ -325,6 +343,8 @@ export interface DefensivePlayCall {
   creep?: { slot: DefSlot; secondsBeforeSnap: number };
   /** Which of the coverage's formation checks this coordinator prefers (index). */
   checkPick?: number;
+  /** The pre-snap check the secondary made, if any: called coverage, and the structure it saw. */
+  check?: { from: string; when: string };
   /** Zeus: the offensive slot this zone call doubles; resolved to Cover 8 / Stuff / Quads by his alignment. */
   zeus?: SkillSlot;
   label: string;
