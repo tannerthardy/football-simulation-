@@ -314,6 +314,31 @@ pursuit angles and solo tackles against the 12.5% tracked broken-contact
 rate, using the B arm's plays (`out/mechanics/sim-B.jsonl.gz`). Re-tuning
 the alignment back toward the old boxes is not the fix.
 
+**Answer (run-defense session, `docs/reviews/run-defense-develop.md` on
+#190).** Their reruns used the same eight flags plus #190's recommended line
+set (`PAD_LEVERAGE DL_ANCHOR DL_FLATTEN SNAP_REACT`), seed 101, 8 games,
+`baseline.mjs --candidate`. Guard was 12/12. The run-defense session's
+operators measured it; tracked values use the same operators.
+
+| Runs | B + line, ecba815 | B + line, f863ea2 | Tracked |
+|---|---|---|---|
+| Broke contact | 12.7% | 12.9% | 12.5% |
+| Yards, median [IQR] p90 | 3.46 [1.02, 6.14] 11.7 | 3.19 [0.66, 6.35] 12.2 | 3.0 [1, 6.7] |
+| DB makes first contact | 39% | 29% | 23% |
+| 6-man box | 40% | 35% | 33% |
+| Two deep (10+ yd) at the snap | 50% | 38% | 26% |
+| Report flags | 37 | 32 | |
+
+Most of the arm-B rise was line play that #190's set addresses; the
+lighter, tracked looks exposed it. Their first split led to the two later
+changes here: the shell checked to the formation (`SHELL_SHOW`) and the
+down safety's spot (`BOX_ALIGN`). Those moved first contacts and shells
+toward tracking without changing broken contacts. Still open:
+- Duo DB first contact is 44% (tracked 27%, n=36), DBs 4.5 yd deep.
+- Two deep in games is above tracking on their 10-yd operator. The
+  snap-frame measure here is 32% vs 31%; the game's play mix differs.
+- The receiver splits and 12 sets listed under section 3.
+
 ## Not done, and why
 
 - **Three-interior nickel looks.** Tracked bear and tite in nickel
