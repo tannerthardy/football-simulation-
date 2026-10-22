@@ -197,6 +197,13 @@ losses 11 -> 19, TVD 10.6 -> 7.1. Games (8, seed 301): meetings per run 2.28
 under center the 4-9 yd band grows where tracked runs have more 0-3 and
 10-19 yd runs, so the distribution's shape there is unchanged.
 
+Watch items after the build, both closed. Shotgun losses (11 -> 19 of 600)
+are spread across ordinary block-origin holds by squeezing linemen (no
+single defender or concept), at 3.2%, still under tracked inside/outside
+zone (6.1/11.0%). Draws and tosses at 20+ (games 4.7 -> 9.1% on 55 plays)
+do not reproduce on paired lab (`drof` -> `dron`, 1,200 cases): draw 20+
+9.0 -> 8.8%, toss 7.8 -> 7.2%; draw losses 3.5 -> 6.0% (NFL draw 11.9%).
+
 ## Outside-zone flow: the interior (diagnosis)
 
 Per lineman, outside zone (`scripts/diag/stretch/ozpath.py`, same code both
