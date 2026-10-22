@@ -13,6 +13,10 @@ vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
 // Recorded before DL_FLATTEN (on in the pinned profile) changed how an
 // attacking lineman plays a zone step; the case keeps the old technique.
 vi.hoisted(() => { process.env.DL_FLATTEN = '0'; });
+// Recorded with FRONT_ALIGN's 1 technique on the centre's shoulder. AGAP_ALIGN
+// (off in the profile) moves him into the gap, the over3 counter's kicker
+// never meets the end, and the comparison has nothing to compare.
+vi.hoisted(() => { process.env.AGAP_ALIGN = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

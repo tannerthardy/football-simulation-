@@ -50,6 +50,21 @@ const OL_ALIGN = process.env.OL_ALIGN === '1';
  * operator (widest front player per side): 1.5+ yd outside the tackle on
  * 51-58% of sides off, 88-92% on, tracked 89%. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
+/** Experimental (AGAP_ALIGN=1, off; acts with FRONT_ALIGN): a lineman's 1
+ * technique stands at his team's habit along the centre-guard split as set,
+ * not on the centre's shoulder. In 2022 tracking the A-gap man of a 4-down
+ * over/under stands a median 0.69 of the split off the centre (about 1.0
+ * yd; the shoulder put him at 0.47 and covered the centre on 96-97% of
+ * those snaps, tracked 48-51%). The spot is mostly the team's: team medians
+ * run 0.30 (NYG, a shade on the centre) to 0.82 (PHI, a 2i on the guard),
+ * sd 0.14, while his build barely moves it (-0.017 per 10 lb) and down,
+ * personnel and run or pass move the median under 0.06
+ * (scripts/diag/align/deflook.py; PR #196). The gap is unchanged. Off: the
+ * shoulder. */
+const AGAP_ALIGN = process.env.AGAP_ALIGN === '1';
+/** AGAP_ALIGN: the league's 1 technique, as a share of the centre-guard
+ * split (mean of the 2022 team medians), for a defense without a habit. */
+const AGAP_LEAGUE = .63;
 /** FRONT_ALIGN: a shade's offset from its blocker's centre (tracked). */
 const SHOULDER = .57;
 /** FRONT_ALIGN: techniques an end man can hold outside the tackle. */
@@ -57,9 +72,11 @@ const EDGE_TECH: Technique[] = ['7', '6', '9', 'w9'];
 /** FRONT_ALIGN: the called edge over an end (with none: a 9 or a wide nine). */
 const EDGE_CALL_TE: Record<'tight' | 'base' | 'wide', Technique> = { tight: '6', base: '9', wide: 'w9' };
 const OL_SLOTS = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
-/** What an alignment may know of its players: the body mass (kg) of the
- * player in each defensive slot (FRONT_ALIGN's end men). */
-export interface AlignStyle { mass?: Partial<Record<DefSlot, number>> }
+/** What an alignment may know of its players and team: the body mass (kg)
+ * of the player in each defensive slot (FRONT_ALIGN's end men), and where
+ * the team's 1 technique stands, as a share of the centre-guard split from
+ * the centre (AGAP_ALIGN; league/team.ts `aGapHabit`). */
+export interface AlignStyle { mass?: Partial<Record<DefSlot, number>>; aGap?: number }
 /** The tracked median line (2022 runs). Teams set their own splits around it
  * (team medians 1.46-1.74 yd, scripts/diag/align/olsplits.py) and tighten in
  * short yardage; the call carries that set (`OffensivePlayCall.line`). */
@@ -595,7 +612,11 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     if (!fa) continue;
     const sign = fa.side === 'S' ? s : -s;
     const hasTE = fa.side === 'S' ? off.hasTE.S : off.hasTE.W;
-    const y = off.ballY + sign * (techniqueOffset(edgeTech.get(slot) ?? fa.tech, hasTE, off.line) + (edgeShift.get(slot) ?? 0));
+    const tech = edgeTech.get(slot) ?? fa.tech;
+    const lateral = FRONT_ALIGN && AGAP_ALIGN && tech === '1' && fa.depth < 2
+      ? (style.aGap ?? AGAP_LEAGUE) * off.line.cg
+      : techniqueOffset(tech, hasTE, off.line) + (edgeShift.get(slot) ?? 0);
+    const y = off.ballY + sign * lateral;
     const fit = call.front.fits?.[slot];
     spots[slot] = { slot, pos: { x: los + fa.depth, y }, role: { kind: 'rush' },
       gap: fit?.gap ?? techniqueGap(fa.tech), gapSign: fit ? (fit.side === 'S' ? s : -s) : sign };

@@ -10,7 +10,7 @@ import { Rng } from '../core/rng.js';
 import { CENTER_Y, HASH_LEFT_Y, HASH_RIGHT_Y, OWN_GOAL_X, describeYardline } from '../core/field.js';
 import { clamp } from '../core/vec.js';
 import { r01, type Player } from '../players/types.js';
-import { pickDefense, pickOffense, specialist, type Team } from '../league/team.js';
+import { aGapHabit, pickDefense, pickOffense, specialist, type Team } from '../league/team.js';
 import { PlaySim } from '../sim/playsim.js';
 import { CoverageScouting } from '../sim/qbmind.js';
 import { ScoutingReport } from '../sim/recognition.js';
@@ -621,6 +621,7 @@ export class Game {
       recordLevel: this.opts.recordLevel,
       energy: this.energy,
       manPrefs: prefs,
+      aGap: aGapHabit(this.def),
       hurry: sit.hurry,
       down: s.down,
       afterTwoMinuteWarning: afterWarningAtSnap,
@@ -1101,7 +1102,7 @@ export class Game {
       const los = OWN_GOAL_X + s.yardline;
       const sim = new PlaySim({ offense: offPlayers, defense: defPlayers, offCall, defCall,
         los, ballY: CENTER_Y, firstDownX: 110, seed: this.snaps.nextU32(),
-        energy: this.energy, manPrefs: prefs, handContact: this.opts.handContact, down: 1, isTry: true,
+        energy: this.energy, manPrefs: prefs, aGap: aGapHabit(this.def), handContact: this.opts.handContact, down: 1, isTry: true,
         afterTwoMinuteWarning: this.warningPeriod() && (s.twoMinWarned || s.clock <= 120) });
       const r = this.opts.hooks?.playResult?.(sim, 'two-point') ?? sim.run();
       for (const a of sim.agents) this.energy.set(a.player.id, a.body.energy);

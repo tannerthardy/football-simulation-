@@ -39,6 +39,7 @@
     "FLOW_RELEASE": "1",
     "FORCE_DEPTH": "0",
     "FRONT_ALIGN": "1",
+    "AGAP_ALIGN": "0",
     "FRONT_FIT": "1",
     "GAIT_STEP": "0.3",
     "GAP_ACCOUNT": "1",
