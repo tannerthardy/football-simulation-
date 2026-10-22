@@ -614,6 +614,16 @@ describe('NFL-2026 live foul enforcement', () => {
     expect(found.options.find(o => o.id === found.recommendedId)).toMatchObject({ id: 'enforce:0', spotX: 55, nextDown: 3 });
   });
 
+  it('a false start at the 3 is half the distance, even with a back standing in the end zone', () => {
+    // The blocked snap's built result sits with a back behind the goal line.
+    const option = enforced(context([call('false_start', { phase: 'pre_snap', spotX: 12.6, yards: 5 })], {
+      los: 12.6, result: result({ duration: 0, endX: 5.6, yards: 0 }),
+    }));
+    expect(option).toMatchObject({ safety: false, nextDown: 1 });
+    expect(option.spotX).toBeCloseTo(11.3);
+    expect(option.nextDistance).toBeCloseTo(11.3);
+  });
+
   it('the achieved full-body grounding assessment overrides a release-center shortcut', () => {
     expect(enforced(context([call('intentional_grounding', { spotX: 9.8, basicSpotX: 10.2, penaltySafety: false })], { los: 15 })))
       .toMatchObject({ safety: false, spotX: 10.2, lossDown: true });

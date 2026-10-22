@@ -290,7 +290,9 @@ function enforcedOption(ctx: LivePenaltyContext, call: PenaltyCall, i: number): 
       }
     }
   }
-  if (!stamp && !defenseFoul && !passing(ctx, call) && inOwnEndZone(possessor, basicSpot(ctx, call))) safety = true;
+  // A pre-snap foul kills the ball before a snap, so no ball is dead in the
+  // end zone: a back standing there cannot turn half the distance into a safety.
+  if (!stamp && phase !== 'pre_snap' && !defenseFoul && !passing(ctx, call) && inOwnEndZone(possessor, basicSpot(ctx, call))) safety = true;
   const amount = call.kind === 'illegal_touching' && lossDown ? 0 : nominal(call);
   const penalty = safety ? { spotX: ownGoal(possessor), yards: 0 } : moved(fromX, call.against, amount);
   return baseOption(ctx, call, i, fromX, penalty.spotX, penalty.yards, possessor, autoFirst, lossDown, safety);
