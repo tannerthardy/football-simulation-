@@ -303,3 +303,19 @@ front of the QB instead of 0.5 yd (`KICK_LAUNCH`), left the tackle's depth
 at 2.5 s unchanged (6.7 yd), so his depth comes from the ride after the
 corner, not the kick; reverted. Open: the ride's depth and the QB's own
 depth (`QB_SETTLE`, stepping up) together.
+
+## Edge rusher's path (def-alignment's measurement, 8 games on this profile)
+
+Def-alignment's `scripts/diag/passpro/pressure.py` (claude/pass-pro) on this
+profile: pressured 42.0% (NFL 30.5); tackle rep holds at 2.0/3.0 s 72/60%
+(NFL 94/79); guard and center NFL-like; edge-on-tackle pressures come
+*inside* (edge:inside about half of all pressures, NFL 23%) at about 1.7 s
+(NFL 2.2). `RIDE_FACING` and `RIDE_FACING PASS_HAND_FIGHT` leave tackle
+survival unchanged (74/61, 72/54). QB depth is not the cause: his final
+depth matches tracking (7.9 vs 7.7-7.9 yd). The edge rusher is: in the first
+second ours gains 2.16 yd upfield (NFL 1.65) and comes 0.08 yd inward
+(0.4), so `PASS_KICK` follows him to the QB's depth (tackle 0.2 yd in front
+at 2.5 s, NFL 1.2) and he then wins inside. Def-alignment takes the edge
+rusher's pre-contact path and aim (rusher side, cleared with run-defense);
+`PASS_KICK`'s follow term is revisited only if the tackle is still too deep
+after that.
