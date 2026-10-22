@@ -13,8 +13,9 @@ It then becomes a management game.
 ## How we work
 
 - **One trunk.** Every branch starts from it.
-- **One ranked gap list:** [GAPS.md](GAPS.md). At most three gaps are worked at
-  once, one per lane.
+- **One ranked gap list:** [GAPS.md](GAPS.md). Usually three gaps are worked at
+  once, one per lane; Tanner can add one when a gap becomes urgent (G5 was
+  added this way on 2026-10-22).
 - **Cycles, not a calendar.** Pick, work, review, as short as the work allows.
   The plan and the gap order change only at a review.
 - **The scorecard is a diagnosis, not a verdict.** It shows where our football
@@ -24,6 +25,10 @@ It then becomes a management game.
   unit or scenario tests, then `npm run scorecard` (quick tier, 6 games), the
   PR tier (12 games, run by CI), and the full tier (48 games) only for big
   fixes.
+- **Compare like with like.** Measure a change against a base arm in the same
+  run, or a saved card whose provenance matches (#209). Games that change on
+  the first few plays lose most of the pairing, so check a second seed before
+  calling a whole-game move.
 
 ## Merging
 
@@ -36,6 +41,12 @@ attaches its scorecard and explains each stat that moved.
 - Block a PR only when the regression traces to a bug in the new mechanism.
 - A PR that has to wait for another gap is parked as "waits on Gx", with its
   branch kept. It is never closed as failed.
+- The coordinator merges, after the owning lane's evidence and any sign-off
+  from a lane whose shared code it changes. A PR that turns on mechanisms other
+  lanes built gets those lanes' confirmation first.
+- A test pinned to an older setting so a staged scene keeps working carries a
+  comment saying why, and the open question goes in
+  [KNOWN_PROBLEMS.md](KNOWN_PROBLEMS.md).
 
 ## Names
 
@@ -48,7 +59,7 @@ attaches its scorecard and explains each stat that moved.
 ## Rules for every agent
 
 - Start from the trunk. Work only on your gap, on the branch named in your brief.
-- Keep one open PR per agent. At most three agents are active at once.
+- Keep one open PR per agent. Usually three gap lanes are active at once (see above).
 - Add physics detail only when a gap's diagnosis traces the failure to physics,
   and check it against what tracking data can measure.
 - Commit to mechanisms that make clear football sense. A change that is
@@ -60,7 +71,9 @@ attaches its scorecard and explains each stat that moved.
   mechanism that needs another gap fixed first. Register it in
   [FLAGS.md](FLAGS.md) with an expiry two reviews out, and say what evidence
   decides it. Keep at most 10 experimental flags. At expiry, a flag becomes
-  the default and its old path is removed, or the flag is deleted. A
+  the default and its old path is removed, or the flag is deleted. Flags
+  promoted on 2026-10-22 keep their `=0` switch until review 2, then the
+  off path goes. A
   deleted or parked flag gets a row in [PARKED.md](PARKED.md), so the idea
   isn't lost.
 - No receipts, ledgers or evidence files in Git. Put output in `out/`, and the
