@@ -138,6 +138,9 @@ const FRONT_MENU = process.env.FRONT_MENU === '1';
  * surface, 2.6 inside a #3, 4.5-4.8 deep. Against empty, nickel backers stay
  * in the box about half the time. Man defenders align on their men already. */
 const BOX_ALIGN = process.env.BOX_ALIGN === '1';
+/** SHELL_SHOW (experimental, off; the call's disguise rates are in
+ * game/playcaller.ts): a disguised man safety shows the deep look. */
+const SHELL_SHOW = process.env.SHELL_SHOW === '1';
 type BackerSpot = [units: number, depth: number];
 const BACKERS: Record<string, Partial<Record<1 | 2 | 3, BackerSpot[]>>> = {
   over: { 1: [[.35, 4.7]], 2: [[-1.4, 4.6], [1.7, 4.6]], 3: [[-1.9, 4.5], [.5, 4.8], [2.7, 4.5]] },
@@ -1113,7 +1116,12 @@ function alignDisguised(call: DefensivePlayCall, off: OffenseAlignment, present:
       const target = off.spots[p.manTarget];
       const corner = slot === 'CB_S' || slot === 'CB_W' || slot === 'NB' || slot === 'DB';
       const depth = target.backfield ? 5 : p.role.overTop ? 10 : corner ? 6 : 4;
-      p.pos = { x: Math.min(l.pos.x, off.los + coverageDepth(off.los, depth)), y: p.pos.y };
+      // SHELL_SHOW: a man safety may show the deep look and come down at the
+      // snap, paying for it with his own feet (tracked: Cover 1 shows two
+      // high 26% of dropbacks, Cover 0 shows someone deep 36%).
+      if (SHELL_SHOW && (slot === 'FS' || slot === 'SS') && l.pos.x - off.los > 8)
+        p.pos = { x: Math.min(l.pos.x, off.los + coverageDepth(off.los, 12)), y: l.pos.y };
+      else p.pos = { x: Math.min(l.pos.x, off.los + coverageDepth(off.los, depth)), y: p.pos.y };
     } else p.pos = { ...l.pos };
     p.press = !!p.press && !!l.press;
   }

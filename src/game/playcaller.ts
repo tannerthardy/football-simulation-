@@ -67,6 +67,36 @@ const FRONT_STRENGTH = process.env.FRONT_STRENGTH === '1';
  * about 10% of those snaps (both backers), three with a backer on about 5%. */
 const FRONT_MENU = process.env.FRONT_MENU === '1';
 type Moment = 'early' | 'third' | 'short';
+/** DEF_PACKAGE (experimental, off): the defensive package answers the
+ * offense's personnel by down and distance as 2022 tracking shows (counting
+ * defensive backs at the snap, scripts/diag/align/deflook.py): against 10 or
+ * 11 personnel nickel 85% on early downs with dime 8% and base 6%; on third
+ * and 3-6 dime 29%, on third and 7 or more 40%; against 12 base 56% and
+ * nickel 43%; against two backs or three ends base 65% and nickel 34%. A
+ * nickel-first team calls base a third as often. Goal-line and short-yardage
+ * packages are called first, as before. */
+const DEF_PACKAGE = process.env.DEF_PACKAGE === '1';
+/** SHELL_SHOW (experimental, off): how often the secondary shows the other
+ * shell depends on the coverage called, as 2022 tracking shows for dropbacks
+ * (deep defenders at the snap against PFF's coverage): Cover 3 shows two high
+ * 42% of the time, Cover 1 26%, a Cover 0 shows someone deep 36%; Cover 2 shows
+ * one high 28%, quarters 16%, Cover 6 11%, 2-man 12%. The coordinator's habit
+ * and his safeties' recognition scale it (the league mean habit is 0.275);
+ * two-high trees disguise their one-high calls half again as often. Off:
+ * every call disguises at the coordinator's one rate. */
+const SHELL_SHOW = process.env.SHELL_SHOW === '1';
+const SHOW: Record<string, number> = { cover3: .42, cover1: .26, cover0: .36, cover2: .28, tampa2: .28, cover4: .16, cover6: .11, cover2man: .12 };
+function defPackage(rng: Rng, off: PersonnelId, s: Situation, scheme: string): DefPersonnelId {
+  const third = s.down >= 3 && s.distance >= 3;
+  const short = s.distance <= 2;
+  const w: [number, number, number] = off === '10' || off === '11'
+    ? short ? [9, 83, 8] : !third ? [6, 85, 8] : s.distance <= 6 ? [1, 70, 29] : [0, 57, 43]
+    : off === '12' ? short ? [58, 42, 0] : third ? [20, 50, 30] : [56, 43, 1]
+    : short ? [75, 25, 0] : third ? [30, 60, 10] : [65, 34, 1];
+  if (scheme === 'nickel-heavy') w[0] /= 3;
+  const base: DefPersonnelId = scheme === '3-4' ? 'base34' : 'base43';
+  return rng.weighted([base, 'nickel', 'dime'] as DefPersonnelId[], w);
+}
 const MENU: Record<'43' | '34', Partial<Record<DefPersonnelId, Record<Moment, Record<string, number>>>>> = {
   '43': {
     base43: { early: { over: 47, under: 21, even: 5 }, third: { over: 47, under: 21, even: 5 }, short: { over: 34, under: 16, even: 4 } },
@@ -359,12 +389,14 @@ export class DefensiveCoordinator {
     const coach = this.team.coach;
     const scheme = this.team.defScheme;
     const passingDown = s.down >= 3 && s.distance >= 7;
+    const own = rng.fork(`call:${this.calls++}`);
     const goalLine = 100 - s.yardline <= 2;
     let personnel: DefPersonnelId;
     let heavy = false;
     if (goalLine && (offPersonnel === '22' || offPersonnel === '13' || offPersonnel === '21')) personnel = 'goalline';
     else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance) && 100 - s.yardline <= 5) personnel = 'goalline';
     else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance)) { personnel = 'heavy'; heavy = true; }
+    else if (DEF_PACKAGE) personnel = defPackage(own.fork('package'), offPersonnel, s, scheme);
     else if (offPersonnel === '10') personnel = rng.chance(passingDown ? 0.7 : 0.35) ? 'dime' : 'nickel';
     else if (offPersonnel === '11') personnel = passingDown && rng.chance(0.4) ? 'dime' : scheme === 'nickel-heavy' || rng.chance(0.85) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
     else if (offPersonnel === '12') personnel = rng.chance(scheme === 'nickel-heavy' ? 0.6 : 0.4) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
@@ -473,9 +505,13 @@ export class DefensiveCoordinator {
     const dbIQ = safeties.length ? avg(safeties.map((p) => r01(p.ratings.playRecognition))) : 0.5;
     // Two-high trees show two high on everything; the rest disguise by habit.
     const look = coverage.look ?? coverage.shell;
-    const disguiseRate = system === 'two-high' && look !== 'two-high' ? 0.85 : coach.disguise * (0.6 + 0.8 * dbIQ);
+    const habit = coach.disguise * (0.6 + 0.8 * dbIQ);
+    const disguiseRate = SHELL_SHOW ? Math.min(.9, (SHOW[family] ?? .2) * habit / .275 * (system === 'two-high' && look !== 'two-high' ? 1.5 : 1))
+      : system === 'two-high' && look !== 'two-high' ? 0.85 : habit;
     if (rng.chance(disguiseRate)) {
-      const pool = look === 'one-high' || look === 'zero' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];
+      // SHELL_SHOW: a disguised zero shows one high as often as two (tracked 21% and 16%).
+      const pool = look === 'zero' && SHELL_SHOW && own.fork('zero-look').chance(.57) ? ['cover1', 'cover3']
+        : look === 'one-high' || look === 'zero' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];
       const available = pool.filter((id) => id !== coverage.id && coverageHasNamedZonePlayers(personnel, COVERAGE_BY_ID[id]));
       if (available.length) shown = COVERAGE_BY_ID[rng.pick(available)];
     }
@@ -498,7 +534,6 @@ export class DefensiveCoordinator {
     const creep=pressureSlots.length && motionRng.chance(coach.disguise*.5) ? {
       slot:motionRng.pick(pressureSlots),secondsBeforeSnap:motionRng.range(.3,1.2),
     } : undefined;
-    const own = rng.fork(`call:${this.calls++}`);
     const strength: DefensivePlayCall['strength'] = !FRONT_STRENGTH ? undefined
       : own.fork('strength').chance(alignStyle(this.team).passingStrength ?? .6) ? 'passing' : 'opposite';
     const mugDraw = own.fork('mug').next();

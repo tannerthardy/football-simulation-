@@ -67,7 +67,12 @@
     "PAD_LEVERAGE": "0",
     "DL_ANCHOR": "0",
     "DL_FLATTEN": "0",
-    "DEF_GETOFF": "1"
+    "DEF_GETOFF": "1",
+    "FRONT_STRENGTH": "0",
+    "FRONT_MENU": "0",
+    "BOX_ALIGN": "0",
+    "DEF_PACKAGE": "0",
+    "SHELL_SHOW": "0"
   },
   "worldDefaults": {
     "handContact": "center",
