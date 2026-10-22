@@ -222,6 +222,16 @@ The brace is right (a lone tackler breaks at the tracked rate with it, far
 too rarely without). The excess breaks come from missing help, the
 pursuit-arrival row. `LEG_BRACE` stays on.
 
+Who is missing (`scripts/diag/open-field/helpwho.py`, same code both
+sides): NFL first contact is at 0.6 yd past the line, by a DL 42% of the
+time, the next-nearest defender 1.6 yd away, and a nearby DL arrives
+within 0.5 s 66% of the time, tied up or not. On the build, contact is at
+1.4 yd, by a DL 26%, the next-nearest 2.2 yd away, and nearby DL arrive 23%.
+The back is through the line before he is hit, so the help is the crease
+(3.5-4.3 yd vs 2.4-2.9) and alignment chain already in progress.
+`ENGAGED_REACH` on the build (games): help 56 -> 55%, DL arrivals 23 -> 23%;
+lab gap 40+ 109 -> 91 but losses 86 -> 100 and gap TVD 9.0 -> 9.9. Stays off.
+
 ## Outside-zone flow: the interior (diagnosis)
 
 Per lineman, outside zone (`scripts/diag/stretch/ozpath.py`, same code both
