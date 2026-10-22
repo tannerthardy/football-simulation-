@@ -67,6 +67,7 @@
     "PAD_LEVERAGE": "0",
     "DL_ANCHOR": "0",
     "DL_FLATTEN": "0",
+    "DL_FLATTEN_WON": "0",
     "LB_LANDMARK": "0",
     "DEF_GETOFF": "1"
   },
