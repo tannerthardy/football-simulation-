@@ -9,7 +9,7 @@ import {afterEach, describe, expect, it, vi} from 'vitest';
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function contactOf(on: boolean) {
-  for (const [k, v] of Object.entries({ OL_ALIGN: '0', GAIT_STEP: '0', PULL_STEP: '0', MESH_POINT: '0', SNAP_REACT: '0', PASS_CORNER: on ? '1' : '0' }))
+  for (const [k, v] of Object.entries({ OL_ALIGN: '0', GAIT_STEP: '0', PULL_STEP: '0', MESH_POINT: '0', SNAP_REACT: '0', PASS_KICK: '0', PASS_CORNER: on ? '1' : '0' }))
     vi.stubEnv(k, v);
   vi.resetModules();
   const {PlaySim} = await import('../src/sim/playsim.js');

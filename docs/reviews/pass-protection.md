@@ -51,3 +51,110 @@ P019 one tackle is not yet engaged at the throw under `PASS_CORNER`.
     its edge rushers start about 1 yd tighter than tracked ones.
   - The cause holds within matched width bins (playbook session). Contact
     timing should be rechecked once `FRONT_ALIGN` is in this profile.
+
+## The vertical set (`PASS_KICK`, on in the profile) and `FRONT_ALIGN`
+
+Question: after `PASS_CORNER`, pressure stayed at 41% (4 games, seeds
+301-304; NFL 30.5%). The playbook session's decomposition
+(`docs/reviews/pressure-and-run-hole.md` on claude/great-mccarthy-85uf8b)
+puts the whole excess on edge rushers who are engaged first. Tracked edge
+pressurers are still on the tackle 73% of the time; ours had come free 76%
+of the time after 0.4 s of contact (NFL 1.1 s). How does the rep end?
+
+**Measure.** `scripts/diag/pass/tackle-kick.py`: the tackle and the edge
+rusher outside him on each dropback, from the snap. Same code for tracking
+and exports. Medians:
+
+| s after snap | Tackle depth, NFL / before / `PASS_KICK` | Rusher past the tackle (yd), NFL / before / `PASS_KICK` | Tackle width, NFL / before / `PASS_KICK` |
+|---|---|---|---|
+| 0.5 | 1.34 / 0.93 / 1.47 | -1.87 / -1.37 / -1.89 | 3.29 / 3.46 / 3.41 |
+| 1.0 | 2.17 / 1.42 / 2.29 | -1.30 / -0.45 / -1.11 | 3.62 / 3.84 / 3.92 |
+| 1.5 | 3.42 / 2.57 / 3.59 | -0.77 / +0.08 / -0.51 | 3.73 / 4.24 / 4.37 |
+| 2.0 | 4.72 / 4.12 / 5.25 | -0.54 / +0.77 / -0.40 | 3.41 / 4.61 / 4.58 |
+
+"Before" is 2 games and `PASS_KICK` 4 games, both seeds from 301. Tracked
+tackles go nearly straight back and keep the rusher about half a yard
+shallower than themselves for the whole rep. Ours were shallow and wide, and
+the rusher was level with them by 1.5 s.
+
+**Cause, before contact.** `cutOffPoint` aims at the rusher's projected arc.
+At the snap his velocity is near zero, so the arc's heading defaulted to the
+QB's direction and counted as a turned corner. The meeting point lay at the
+line: the tackle was asked to step forward and run laterally (traced
+requests: 0 back, 6 yd/s out). He was still moving outward when the rusher
+turned inside (the playbook session measured +1.25 yd/s outward at contact
+on free reps).
+
+**Cause, in the rep.** `stepPassRep`'s kick stops at the set spot (2.8 yd
+short of the QB). The rusher keeps going upfield, reaches the tackle's hip
+(`|phi| >= 1`) and the rep ends ("turned the corner"). At those sheds the
+tackle stood 4.7 yd deep and the rusher 5.4. Tracked tackles are 5.7 yd
+deep at 2.5 s.
+
+**Change.** `PASS_KICK` (default off; on in this branch's profile):
+- Before contact (`blocking.ts`), against an edge rusher, the tackle sets
+  vertically instead of cutting off the arc. He stays deeper than where the
+  rusher will be 0.4 s from now (0.8 yd), on his inside shoulder. He never
+  takes ground back toward the line and never passes the launch point. The
+  beaten-to-the-corner chase is unchanged.
+- In the rep (`engagement.ts`), against an outside rusher, he keeps kicking
+  with him: level with him or 0.3 yd deeper, short of the launch point. He
+  matches the rusher's upfield speed as well as closing the gap. Closing
+  alone (gap / 0.55 s) trailed a moving rusher.
+- Nothing about the rusher changes. He can still win the corner, counter
+  inside or bull.
+
+Edge contact (`scripts/diag/pass-contact.py`, s after the line starts):
+
+| | Contact | Rusher depth at contact | Tackle retreat at contact |
+|---|---|---|---|
+| NFL | 1.25 s | 3.4 yd | 2.8 yd |
+| Before | 1.06 | 0.8 | 0.3 |
+| `FRONT_ALIGN` | 0.56 | 0.3 | -0.3 |
+| `PASS_KICK` | 1.09 | 3.2 | 2.3 |
+| `PASS_KICK` + `FRONT_ALIGN` | 1.10 | 2.7 | 2.0 |
+
+Pass results (4 games each, seeds 301-304; `scripts/mechanics/measure.py`):
+
+| | Pressure | Time to pressure | Time to throw |
+|---|---|---|---|
+| NFL | 30.5% | 2.71 s | 2.75 s |
+| Before | 40.6% | 2.38 | 2.28 |
+| `PASS_KICK` | 34.2% | 2.61 | 2.48 |
+| `FRONT_ALIGN` | 46.9% | 2.32 | 2.27 |
+| `PASS_KICK` + `FRONT_ALIGN` | 36.9% | 2.52 | 2.36 |
+
+Edge rushers whose rep ended at the corner (in-sim probe, 2 games): 103 per
+100 dropbacks before, 72 with `PASS_KICK`. Sheds followed by that rusher's
+own pressure, hit or sack: 40 -> 21.
+
+**`FRONT_ALIGN`** (def-alignment session's port, PR #195, merged here and on
+in the profile) puts edge rushers at tracked widths. Against the arc
+cut-off it made contact earlier and at the line, with the tackle stepping up,
+and raised pressure 41 -> 47%. Against the vertical set its contact timing
+and depth match the no-alignment arm. That was the recheck the edge-width
+caveat above asked for.
+
+Tried and dropped: a ride, where a rusher at the hip is not freed while the
+blocker's hands are on him and his body is not past, and the tackle runs
+with him. Edge sheds were unchanged and interior sheds rose. The run-defense
+session found the same with a phi >= 1.5 threshold. The rep was lost before
+the hip, not at it.
+
+Contract: `test/pass-kick.test.ts`. On the three recorded dropbacks
+(`pass-cutoff-inputs` fixture) the left tackle never steps toward the line
+before contact and is deeper at 1.0 s than with the cut-off.
+`pass-corner`, `pass-cutoff-approach`, `qb-rusher-recording` and
+`redirect-protection` are recorded under the cut-off and pin `PASS_KICK`
+off.
+
+**Still open.**
+- Pressure is 34-37% vs 30.5%.
+- After 1.5 s our rushers run deeper upfield and wider than tracked ones
+  (rusher depth 4.8 vs 3.6 yd at 2.0 s, width 4.4 vs 3.6). The tackle
+  follows them, so he ends up deeper than tracked tackles. This is the rush
+  plan's arc, the run-defense session's side.
+- Unblocked edges (playbook session: never engaged 5.0 per 100 vs 1.1) are
+  rare by the engine's own engagements: 4 such events in 163 dropbacks,
+  mostly late nickel hits. The proximity definition counts reps that the
+  engine starts and ends within a frame or two.

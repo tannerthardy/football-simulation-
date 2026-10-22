@@ -763,6 +763,14 @@ const RUN_HANDS = process.env.RUN_HANDS === '1';
 const DL_HANDS = process.env.DL_HANDS === '1';
 /** Experimental (PASS_SINK=1, off): pass blockers sink their hips under a heavy load. */
 const PASS_SINK = process.env.PASS_SINK === '1';
+/** Experimental (PASS_KICK=1, off; the set is in blocking.ts): in the rep a
+ * tackle keeps kicking with an outside rusher, level with or deeper than him,
+ * short of the launch point. He used to stop at the set spot (2.8 yd short of
+ * the QB) while the rusher ran on: at the corner shed the tackle stood 4.7 yd
+ * deep with the rusher 5.4 (tracked tackles are 5.7 yd deep at 2.5 s). */
+const PASS_KICK = process.env.PASS_KICK === '1';
+/** How far deeper than the rusher the kick in the rep aims (yd). */
+const RIDE_LEAD = 0.3;
 /** Experimental (DL_FIGHT=1, off): a defender driven sideways fights pressure. */
 const DL_FIGHT = process.env.DL_FIGHT === '1';
 
@@ -900,8 +908,16 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
   const vLat = clamp(dLat + felt(e, lat) * (0.6 + 0.6 * tb.feet) + offLat * (3 + 3 * tb.feet), -mirror, mirror);
   const depth = sim.los - b.pos.x;
-  const setDepth = b.passSet?.depth ?? passSetDepth(sim, b);
-  const kick = depth < setDepth ? Math.min(b.profile.vmax * b.profile.backpedal * (0.75 + 0.25 * tb.feet), (setDepth - depth) / 0.55) : 0;
+  let setDepth = b.passSet?.depth ?? passSetDepth(sim, b);
+  // PASS_KICK: against an outside rusher he keeps kicking with him in the rep
+  // (level with or deeper than the rusher, short of the launch point) instead
+  // of stopping at the set spot while the rusher runs on to his hip.
+  if (PASS_KICK && Math.abs(d.pos.y - sim.ballY) > Math.abs(b.pos.y - sim.ballY))
+    setDepth = Math.max(setDepth, Math.min(sim.los - d.pos.x + RIDE_LEAD, sim.los - sim.qb.pos.x - 0.5));
+  // PASS_KICK: match the rusher's upfield speed as well as close the gap
+  // (closing alone trails a moving rusher by his speed x 0.55 s).
+  const follow = PASS_KICK && setDepth > (b.passSet?.depth ?? passSetDepth(sim, b)) ? Math.max(0, -d.vel.x) : 0;
+  const kick = depth < setDepth ? Math.min(b.profile.vmax * b.profile.backpedal * (0.75 + 0.25 * tb.feet), (setDepth - depth) / 0.55 + follow) : 0;
   // PASS_SINK (experimental, off): under a heavy load he sinks his hips
   // rather than leaning his chest over his feet: a lower centre of mass
   // carries the same push with less forward lean (more balance margin), at

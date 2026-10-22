@@ -13,6 +13,9 @@ vi.hoisted(() => { process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; 
 // Recorded under the earliest-point cutoff; PASS_CORNER (on in the pinned
 // profile) meets edge rushers later, where their arc has turned.
 vi.hoisted(() => { process.env.PASS_CORNER = '0'; });
+// Recorded under the arc cut-off set; PASS_KICK (on in the pinned profile)
+// sets vertically against edge rushers.
+vi.hoisted(() => { process.env.PASS_KICK = '0'; });
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import type { MoveCommand } from '../src/physics/kinematics.js';

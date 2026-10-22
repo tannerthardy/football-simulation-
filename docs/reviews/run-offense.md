@@ -758,6 +758,31 @@ Still open:
 - Inside holes are 2.1-2.4 yd wide at the line vs NFL 1.6.
 - DBs make first contact on 38-53% of inside runs (NFL 19-28%).
 
+## Tracked fronts (`FRONT_ALIGN`, on in the profile)
+
+The def-alignment session's `FRONT_ALIGN` (PR #195: techniques placed from
+this branch's tracked line, shaded fronts, wider end men) is merged and on.
+Lab arms at `e9eb6ac1` (called looks 1-10, seeds 77,71001,1,2,3), without ->
+with:
+
+| | Zone, under center | Gap | Shotgun zone |
+|---|---|---|---|
+| Losses | 4.0 -> 2.6% | 5.0 -> 5.2% | 4.0 -> 1.8% |
+| 40+ | 4.9 -> 5.7% | 9.2 -> 9.7% | 6.3 -> 6.0% |
+| TVD vs NFL bands | 7.0 -> 10.0 | 8.2 -> 7.7 | 10.7 -> 13.9 |
+
+- Under center, the mechanisms are unchanged (`reach-contact.py`). Reach
+  rates are 96-100/56-64/25-42%, first contact is at the same place and
+  time, and the nearest DL at the line is 1.6-1.7 yd. The loss change (16 vs
+  10 of 400) is within chance.
+- Shotgun zone: first contact is 0.3 yd further downfield (+0.76 -> +1.10
+  on inside zone).
+- Medians per concept are within 0.5 yd.
+- The nine staged scenes the port pinned off (combo-gap, combo-solo,
+  fb-kick, gap-account, gap-blocks, lead-read, line-spacing-plans, ZONE_TE,
+  ol-align) still describe the installed front. These arms measured those
+  mechanisms against shaded fronts as a whole, not one by one.
+
 ## Draws: sell pass by blocking pass (`DRAW_SET`, on in the profile)
 
 Lab draws (`gun_doubles_11` and `ace_12`, called looks 1-10, seeds

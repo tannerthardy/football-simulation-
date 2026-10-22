@@ -6,6 +6,9 @@ import { redirect } from '../src/lab/scenarios.js';
 // The scenario needs the rusher to turn the corner on the installed physics;
 // under PAD_LEVERAGE (and DL_ANCHOR) that contest is a different play.
 vi.hoisted(() => { process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; });
+// Recorded under the arc cut-off set; PASS_KICK (on in the pinned profile)
+// sets vertically against edge rushers.
+vi.hoisted(() => { process.env.PASS_KICK = '0'; });
 
 // This is a six-second reacting trajectory, not a bitwise reflection operator.
 // Preserve exact targets/times while bounding achieved mirror geometry to a
