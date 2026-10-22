@@ -416,6 +416,39 @@ Carried over from the issue register; each was measured on an older develop.
 
   Behind the line, the sim reaches 1.47 by 1.0 s (NFL 0.87). This physics
   question goes to Main Engine.
+- **The second and third defenders do attempt; their holds don't slow him**
+  (#205, `scripts/diag/g1/crowd.ts` and `crowd.py`; 24 games on develop
+  `fdd767ab`, 1,037 runs with a first contact).
+
+  Run Game split the contact cost by whether a second defender comes within
+  1.5 yd in the 1 s after first contact. About 80% of break-throughs have one
+  in both sources. NFL "crowd" runners are at 0.72 of their pre-contact speed
+  after 1.0 s; ours are at 0.97–1.08.
+
+  In our break-throughs (5+ yd after contact), the arrivals do attempt: 71%
+  wrap, 7% whiff. Of the 21% who don't, most are still blocked. Where 2+
+  defenders held him at once, he was still at 0.99 after 1.0 s.
+
+  Holds while the runner is moving at 6+ yd/s:
+
+  | | Break-throughs | Stopped runs |
+  | --- | --- | --- |
+  | Time held (p50) | 0.4 s | 0.6 s |
+  | Grip | 0.45 | 0.84 |
+  | Slipping | 79% | 27% |
+  | Grip force used / capacity | 0.98 | 0.46 |
+  | Drag from the grips | 0.34 BW | 0.45 BW |
+  | Runner's own ground force | 0.23 BW | 0.18 BW |
+  | Net slowing while held | about 0.1 g | 0.2–0.4 g |
+
+  The accounting closes: measured deceleration matches the runner's ground
+  force minus the grip drag. A side or rear holder already asks to keep up
+  with the runner (1.02 of his speed along his travel) but is dragged at 0.57.
+  Asking him to plant would only add load to a grip that is already saturated.
+  So the limit is the weak hold itself: capacity and slip at grip 0.45. The NFL
+  crowd takes about 2 yd/s off the runner in 1 s; our break-throughs lose about
+  0.45 yd/s. This is physics: Main Engine (Run Game has already sent its
+  sliding-grip question).
 - **Open:** fewer defenders reach the runner. Free defenders who reach him
   past 5 yd, per run: 1.89 with `SHED_PURSUE`, NFL 2.69. See TKL-2.
 
