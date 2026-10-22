@@ -166,6 +166,17 @@ export const COVERAGES: Coverage[] = [
     },
     underneath: [seat('curl_flat_s', 'c3_curl_flat'), seat('curl_flat_w', 'c3_curl_flat'), seat('hook_s', 'c3_hook'), seat('hook_w', 'c3_hook'), seat('hook_mid', 'mike_3')],
     checks: { '3x1': ['cover3_mable'] },
+    structureChecks: [{ when: ['bunch_strong'], to: ['cover3_clue'] }],
+  },
+  {
+    id: 'cover3_clue', name: 'Cover 3 Clue (vs bunch)', family: 'cover3', shell: 'one-high', man: false, press: false,
+    note: 'Bunch side zoned off (HNFL-203/204): the corner plays Clue 1/3 keying #2 to #1, the curl-flat and hook drop to spots; the backside stays match.',
+    roles: {
+      CB_S: z('deep_third_s', 'clue_corner'),
+      CB_W: z('deep_third_w', 'c3_corner'),
+      FS: z('deep_mid'),
+    },
+    underneath: [{ zone: 'curl_flat_s', style: 'spot' }, { zone: 'hook_s', style: 'spot' }, seat('curl_flat_w', 'c3_curl_flat'), seat('hook_w', 'c3_hook'), seat('hook_mid', 'mike_3')],
   },
   {
     id: 'cover3_seam', name: 'Cover 3 Seam', family: 'cover3', shell: 'one-high', man: false, press: false,

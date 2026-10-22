@@ -79,3 +79,20 @@ describe('Cover 1 Banjo vs bunch', () => {
     expect(jobsOf(stay, 'SS').at(-1)).toBe(`man:${S3}`);
   });
 });
+
+describe('Cover 3 Clue vs bunch', () => {
+  const clue = (one: string, two: string) =>
+    filmScene({ formation: 'gun_bunch_11', coverage: 'cover3_match', strong: { 1: one, 2: two, 3: 'slant' }, weak: { 1: 'go' }, until: 2.8 });
+
+  it('the corner keys #2 to #1: locks #1 when #2 breaks, squeezes #2 when only he climbs, plays the third on both', () => {
+    const lock = clue('go', 'flat');
+    expect(lock.played).toBe('cover3_clue');
+    expect(jobsOf(lock, 'CB_S').at(-1)).toBe(`man:${lock.numbering.S1}`);
+    const squeeze = clue('slant', 'go');
+    expect(jobsOf(squeeze, 'CB_S').at(-1)).toBe(`man:${squeeze.numbering.S2}`);
+    const both = clue('go', 'go');
+    expect(jobsOf(both, 'CB_S')).toEqual(['zone:deep_third_s']);
+    // The bunch-side underneath players zone off instead of matching.
+    expect(lock.defenders.NB.rule).toBeNull();
+  });
+});

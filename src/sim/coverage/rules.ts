@@ -536,6 +536,28 @@ function verticalHook(c: RuleCtx): Directive {
   return mike3(c);
 }
 
+/**
+ * Clue 1/3 corner (Cover 3/9 vs bunch, stack or reduced #1; HNFL-091/063/203):
+ * key #2 to #1. If #2 eliminates himself as a vertical threat, lock onto #1;
+ * if only #2 climbs past the no-cover zone, squeeze his seam from above the
+ * outside shoulder; with both vertical, play the third with vision and squeeze.
+ */
+function clueCorner(c: RuleCtx): Directive {
+  const one = ref(c, 1), two = ref(c, 2);
+  if (c.state.mode === 'one' && one) return man(one, { lev: 'outside' });
+  if (c.state.mode === 'two' && two) return man(two, { lev: 'outside', overTop: true });
+  if (!two) return one ? man(one, { lev: 'outside' }) : zoneOf(c);
+  if (['under', 'in', 'out', 'flat', 'stop', 'block'].includes(two.release) && one) {
+    c.state.mode = 'one';
+    return man(one, { lev: 'outside' });
+  }
+  if (isUp(two) && one && one.release !== 'none' && !isUp(one) && one.release !== 'vertical') {
+    c.state.mode = 'two';
+    return man(two, { lev: 'outside', overTop: true });
+  }
+  return zoneOf(c);
+}
+
 // ------------------------------------------------------------ area pickups (Box, Banjo)
 
 const isOut = (rd: ReceiverRead) => rd.release === 'out' || rd.release === 'flat';
@@ -638,6 +660,7 @@ export function runRule(rule: MatchRule, c: RuleCtx): Directive {
     case 'box_in_deep': return box(c, 'in_deep');
     case 'banjo_out': return banjo(c, true);
     case 'banjo_in': return banjo(c, false);
+    case 'clue_corner': return clueCorner(c);
     case 'tampa_mike': return tampaMike(c);
     case 'poach_safety': return poachSafety(c);
     case 'stubbie_safety': return stubbieSafety(c);

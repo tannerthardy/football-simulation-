@@ -227,6 +227,7 @@ export type MatchRule =
   | 'box_in_deep'
   | 'banjo_out'
   | 'banjo_in'
+  | 'clue_corner'
   | 'rat'
   | 'robber';
 
