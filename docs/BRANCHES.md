@@ -20,6 +20,17 @@ provides safe handoff rules; [CLAUDE](../CLAUDE.md#model-rules) preserves the
 football model. Existing named research branches and genuine PR stacks are
 preserved; new branch/label conventions are in PLAN.
 
+## Checkpoint follow-up — 2026-10-22 America/Phoenix
+
+`develop` advanced independently to `53d5c241fcd10ac3192e33478cd4f0ffe752060f`
+through #204 while Integration reviewed #202/#203/#204. Its source matches the
+combined tested engine; no repeated suite or game campaign is needed for that
+unchanged tree. The table above remains the earlier 19:14 UTC inventory.
+#202 navigation and #203 pressure measurement are reviewed and combined-verified
+but await explicit merge authorization after an automatic approval rejection.
+Current scope/ownership facts are in [GAPS](GAPS.md#checkpoint-status--2026-10-22-americaphoenix).
+No remote branch, historical baseline, fixture or evidence is removed.
+
 ## Proposed organization batch — documentation only
 
 - Reconcile AGENTS/CLAUDE/README with the already approved PLAN/GAPS. Keep
