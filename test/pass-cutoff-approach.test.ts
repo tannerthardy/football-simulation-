@@ -11,7 +11,10 @@ import {PlaySim} from '../src/sim/playsim.js';
 // FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
 // SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.
 // PASS_FEEL mirrors on felt information; this recording was made with the blocker reading the rusher's current state.
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.PASS_FEEL = '0'; });
+// PASS_KICK replaces this cutoff approach against edge rushers with a vertical
+// set; this file pins the cutoff. (Under PASS_KICK, P019's tackles meet both
+// ends at 1.25 s and lose them at the hip at 1.9 s: KNOWN_PROBLEMS PRO-1.)
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.PASS_FEEL = '0'; process.env.PASS_KICK = '0'; });
 
 const fixture=JSON.parse(gunzipSync(readFileSync('test/fixtures/pass-cutoff-inputs.json.gz')).toString());
 function saved(index:number):PlaySim {

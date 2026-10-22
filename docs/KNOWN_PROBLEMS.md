@@ -118,7 +118,7 @@ problem), resolved.
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | open |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | open |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
-| [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | open |
+| [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work (G5) |
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
@@ -393,6 +393,45 @@ Carried over from the issue register; each was measured on an older develop.
   and timing, so they stay on; they show the tackles can't hold an edge.
   In the P019 pass-cutoff scene the tackle also loses edge contact with
   `PASS_FEEL` on (`test/pass-cutoff-approach.test.ts` is pinned).
+- **G5** (2026-10-22, `trenches/G5-edge-hands`). Two mechanisms, each
+  measured with `scripts/diag/edge-rep.py` on 8 games (seed 301) against
+  tracking:
+  - **Contact timing: `PASS_KICK`, on.** The tackle sets vertically against
+    an edge rusher (ported from `claude/run-game-v3`). First contact moves from
+    0.55 s to 1.06 s (NFL 1.20), with the tackle 3.0 yd back (NFL 2.75).
+    Edge reps engaged move from 41% to 62% and free from 50% to 30% (NFL 79%
+    and 5%). `PASS_CORNER` (cut him off where the arc turns) didn't move
+    contact on develop (0.49 s), so it wasn't ported.
+  - **The hands: `ARM_PRESS`, experimental.** A hand joint's push was capped
+    at the arm-force mapping, 0.86 body weights for a tackle. That is less
+    than the leg drive it resists (traction, 1.1). So the joint asked for
+    0.88–0.93 yd and the bodies sat at 0.67, torso to torso, with the push
+    at its cap on 85% of edge ticks at 0.2 s. A push is a bench press: each
+    player's one-rep max from his combine reps (Epley), about 1.3 body
+    weights.
+    - Pairs now hold 0.90–0.93 yd apart from 0.6 s. The share of ticks at
+      the cap falls to 20–38%.
+    - Of free reps, the share that get free *through* the tackle falls from
+      71% to 43% (NFL 29%). With PASS_KICK alone it is 73%.
+    - It changes run reps too: stuffs went from 16% to 25%, with 111 staged
+      run-scene tests. So it waits on G2.
+  - **Both:** sacks fall from 13.9% (develop) to 5.9% of dropbacks (NFL
+    6–7.5%). PASS_KICK alone gives 7.5%, ARM_PRESS alone 8.8% (quick tier,
+    6 games). Time to throw rises 0.10 s. Interior reps (PRO-3) and
+    play-action losses are unchanged.
+  - **Still open, the hip:** a rusher still keeps speed into the rep (4.9
+    yd/s at contact, 3.1–3.3 at 1.2 s; NFL 4.1 and 2.5). The rep ends by
+    rule once he is hip to hip (`|phi| >= 1`, "turned the corner"), while
+    a tracked tackle rides him past the launch point.
+    - In P019 under PASS_KICK, both ends are met at 1.25 s and lost at the
+      hip at 1.9 s.
+    - `PASS_RIDE` (parked) is the candidate.
+    - The pinned scenes are `pass-cutoff-approach`, `redirect-protection`
+      and `qb-rusher-recording`.
+  - **Exposed, a back's flat path:** in the Cover 3 push scene the back's
+    flat release runs into the kicking tackle (3.5 to 1.9 yd/s at 0.9 s).
+    The route needs a path around a tackle who sets deep (G3/G7).
+    `cover3-cover2-rules` is pinned.
 
 <a id="pro-2"></a>
 ### PRO-2: Pressure arrives too early and from the wrong places

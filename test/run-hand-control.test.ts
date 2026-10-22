@@ -290,6 +290,8 @@ describe('solo hand-fight execution retains its legacy policy with the selected 
     // legacy policy fields pinned separately; pin the complete physical trace
     // to independently reviewed #180, rather than requiring the old motor.
     // See docs/reviews/solo-hand-motor-contract.md and its exact trace receipt.
+    // G5 (ARM_PRESS): the cloned bodies' profiles now carry the bench-press
+    // capacity (`press`); with it removed the #180 hashes reproduce exactly.
     const policy = { trace: policyTrace, nextRng };
     const policyHash = createHash('sha256').update(JSON.stringify(policy)).digest('hex');
     expect(policyHash).toBe(type === 'run'
@@ -297,8 +299,8 @@ describe('solo hand-fight execution retains its legacy policy with the selected 
       : 'a86cbcee799208e979666c327ebeaa9557ae41fd0e40297df933ec9f74e7a19d');
     const actual = createHash('sha256').update(JSON.stringify({ trace, nextRng })).digest('hex');
     const motor180 = type === 'run'
-      ? 'ff0afb4f0e3991b6b29c28a0206ee3d6ab8976a916e5a300e4b9f23e41827ad1'
-      : 'ec267981978140e716b46855663fcddefc6e7b61f3ef8b2709d54450eb09f94e';
+      ? 'f0788b7a1bf5ae83f09c43bc5a8c774dec710939a01ff733abc3536a8ca58331'
+      : '126f02f862f5049abb442fd2707923dc9d250a771d62aa89459cc91893168713';
     expect(actual).toBe(motor180);
   });
 });

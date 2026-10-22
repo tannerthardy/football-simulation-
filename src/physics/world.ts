@@ -761,7 +761,7 @@ export class World {
         const actor=this.indexOf(jt.actor??jt.a),holder=this.indexOf(jt.holder??jt.a);
         // A press is counted in press units: a full press uses the whole arm
         // budget, as a full grip does (ARM_PRESS; the ratio is 1 when off).
-        const press=Math.max(0,jt.push)*this.sp[actor].armForce/this.sp[actor].pressForce;
+        const sp=this.sp[actor],press=sp.pressForce===sp.armForce?Math.max(0,jt.push):Math.max(0,jt.push)*sp.armForce/sp.pressForce;
         this.active[actor]+=Math.hypot(Math.max(press,actor===holder?jt.hold:0),Math.max(0,jt.steer));
         if(actor!==holder)this.active[holder]+=Math.max(0,jt.hold);
       }
