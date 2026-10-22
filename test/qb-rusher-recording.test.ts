@@ -3,6 +3,9 @@ import { describe, expect, it, vi } from 'vitest';
 // saved geometry, landmarks and plans are that line's. The tracked line
 // (OL_ALIGN, docs/reviews/presnap.md) moves every body; pin it off here.
 vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
+// Recorded before SNAP_REACT (on in the pinned profile) changed every
+// player's start; the trace stays on the fixed get-off.
+vi.hoisted(() => { process.env.SNAP_REACT = '0'; });
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import type { MoveCommand } from '../src/physics/kinematics.js';

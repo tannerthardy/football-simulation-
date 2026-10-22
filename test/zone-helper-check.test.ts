@@ -13,6 +13,9 @@ vi.hoisted(() => { process.env.COMBO_GAP = '0'; });
 // first command; pin them off here. test/gait-step.test.ts and
 // test/pull-step.test.ts cover those laws.
 vi.hoisted(() => { for (const k of ['GAIT_STEP', 'PULL_STEP', 'MESH_POINT']) process.env[k] = '0'; });
+// Recorded before SNAP_REACT (on in the pinned profile) changed every
+// player's start; the trace stays on the fixed get-off.
+vi.hoisted(() => { process.env.SNAP_REACT = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { norm } from '../src/core/vec.js';

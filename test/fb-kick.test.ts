@@ -31,6 +31,9 @@ vi.hoisted(() => { process.env.FRONT_FIT = '0'; });
 // backer the puller and the climbs take, which changes this play. Pin it
 // off here. test/gap-account.test.ts covers the accounting.
 vi.hoisted(() => { process.env.GAP_ACCOUNT = '0'; });
+// Recorded before SNAP_REACT (on in the pinned profile) changed every
+// player's start; the trace stays on the fixed get-off.
+vi.hoisted(() => { process.env.SNAP_REACT = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

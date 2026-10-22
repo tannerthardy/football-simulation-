@@ -18,6 +18,9 @@ vi.hoisted(() => { for (const k of ['GAIT_STEP', 'PULL_STEP', 'MESH_POINT']) pro
 // CUTOFF_SEAL, on in the pinned profile), which change when and where the
 // line meets its men; pin them off here. test/gap-blocks.test.ts covers them.
 vi.hoisted(() => { for (const k of ['GAP_FIT', 'GAP_OUT', 'CUTOFF_SEAL']) process.env[k] = '0'; });
+// Recorded before SNAP_REACT (on in the pinned profile) changed every
+// player's start; the trace stays on the fixed get-off.
+vi.hoisted(() => { process.env.SNAP_REACT = '0'; });
 import {CENTER_Y} from '../src/core/field.js';
 import type {Body} from '../src/physics/kinematics.js';
 import type {Perceived} from '../src/sim/perception.js';
