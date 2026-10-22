@@ -30,6 +30,50 @@ interface PressContact {
   at: number;
 }
 
+/** ROUTE_CLEAR (G5, default on; ROUTE_CLEAR=0 turns it off): a back
+ * releasing from the backfield who sees a body in his lane (a teammate, or a
+ * defender coming at the backfield) bends around it, instead of steering
+ * straight at his waypoint and running into it. A back's flat release ran
+ * into a tackle setting deep (3.5 to 1.9 yd/s at 0.9 s, KNOWN_PROBLEMS
+ * PRO-1). Receivers at the line keep their release and press contact. */
+const ROUTE_CLEAR = process.env.ROUTE_CLEAR !== '0';
+
+/** Bend a route request around the nearest body seen in the lane ahead
+ * (where it will be when the runner gets there), passing it at bodies' width
+ * plus a quarter yard on the side he is already on, unless another body
+ * closes that side (a blocker and his man): then around the other side. */
+function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  const speed = Math.hypot(cmd.vel.x, cmd.vel.y);
+  if (speed < 0.5) return cmd;
+  const u = { x: cmd.vel.x / speed, y: cmd.vel.y / speed };
+  const n = { x: -u.y, y: u.x };
+  // He gets there at about the mean of his present and requested speeds.
+  const pace = Math.max(1, (Math.hypot(a.vel.x, a.vel.y) + speed) / 2);
+  const look = 0.8 * pace + 1;
+  if (a.pos.x >= sim.los) return cmd;
+  const bodies: Array<{ p: Vec2; clear: number; ahead: number; off: number }> = [];
+  for (const o of sim.agents) {
+    if (o === a || o.isDown(sim.t)) continue;
+    const seen = sim.see(a, o);
+    if (o.team !== a.team && seen.vel.x > -1) continue;
+    const reach = Math.max(0, (seen.pos.x - a.pos.x) * u.x + (seen.pos.y - a.pos.y) * u.y) / pace;
+    const p = { x: seen.pos.x + seen.vel.x * reach, y: seen.pos.y + seen.vel.y * reach };
+    const ahead = (p.x - a.pos.x) * u.x + (p.y - a.pos.y) * u.y;
+    if (ahead <= 0 || ahead >= look + 2) continue;
+    bodies.push({ p, ahead, off: (p.x - a.pos.x) * n.x + (p.y - a.pos.y) * n.y,
+      clear: a.profile.radius + o.profile.radius + 0.25 });
+  }
+  let block: (typeof bodies)[number] | null = null;
+  for (const o of bodies) if (o.ahead < look && Math.abs(o.off) < o.clear && (!block || o.ahead < block.ahead)) block = o;
+  if (!block) return cmd;
+  const around = (side: number): Vec2 => ({ x: block!.p.x + n.x * side * block!.clear, y: block!.p.y + n.y * side * block!.clear });
+  const open = (q: Vec2): boolean => bodies.every(o => o === block || Math.hypot(o.p.x - q.x, o.p.y - q.y) >= o.clear);
+  let side = block.off >= 0 ? -1 : 1;
+  if (!open(around(side)) && open(around(-side))) side = -side;
+  const go = norm(sub(around(side), a.pos));
+  return { ...cmd, vel: { x: go.x * speed, y: go.y * speed } };
+}
+
 export class RouteRunner implements Behavior {
   readonly kind = 'route';
   readonly passOption = true;
@@ -41,6 +85,8 @@ export class RouteRunner implements Behavior {
   private converted = false;
   private readAt: number;
   private readonly start: Vec2;
+  /** Released from the backfield (2+ yd behind the line), not the line. */
+  private readonly fromBackfield: boolean;
   /** Time at which the route's final break is expected (for QB timing). */
   readonly breakTime: number;
   /** Fraction of top speed the route is run at: quick game is rhythm, verticals are races. */
@@ -55,6 +101,7 @@ export class RouteRunner implements Behavior {
     private readonly startDelay = 0,
   ) {
     this.start = { ...a.pos };
+    this.fromBackfield = sim.los - a.pos.x > 2;
     this.effort = routeEffort(route.family, a.r('routeRunning'));
     this.path = this.buildPath(a.pos, route.points, route.end === 'continue');
     this.readAt = 0.55 + 0.6 * (1 - a.r('awareness'));
@@ -116,7 +163,7 @@ export class RouteRunner implements Behavior {
       this.settled = this.route.end !== 'continue';
       return this.settle(a, sim);
     }
-    return cmd;
+    return ROUTE_CLEAR && this.fromBackfield ? clearLane(a, sim, cmd) : cmd;
   }
 
   /** The same waypoint controller is used by the explicitly seeded QB forecast. */
