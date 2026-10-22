@@ -1,30 +1,5 @@
 # Current work ownership
 
-## Coverage match rules and pre-snap checks — 2026-10-22
-
-Claude claims the pattern-match rules in `src/sim/coverage/rules.ts`, the
-additive `ReceiverRead.deepest` in `reads.ts`, coverage catalog entries and
-checks in `src/playbook/coverages.ts`, the new `src/playbook/structure.ts`,
-`src/lab/coverage-scene.ts`, and the coverage-check selection in the
-defensive coordinator, on `claude/friendly-bardeen-56kqo2` (PR #193) from
-accepted `d91c9014`. It also claims offensive pre-snap motion
-(`src/sim/motion.ts`, MOTION=1, default off). Judgment, techniques,
-man/zone movement and `alignment.ts` are not claimed:
-- Defensive pre-snap alignment and the defense's response to motion belong
-  to PR #194 (`claude/def-alignment`). It replaces `MotionRuntime.respond`
-  and owns Fangio §E1/§E3.
-- SNAP_REACT and the pre-snap timeline belong to `claude/run-game-v3`.
-
-Edits here in shared files are minimal:
-- `alignment.ts`: droppers install through `seatRole`.
-- `playsim.ts`: `installCoverage`, motion build/finish, and three lines in
-  `stageDefense`. #127's held
-`quarterFlat` edit predates and is superseded by the sourced Quarter Flat
-rules here; its author should reconcile. Sources and status:
-[coverage checks](references/coverage-checks/README.md); first evidence:
-[corner #1 release](reviews/corner-one-release.md). Integration owns
-combined verification.
-
 ## #189 finished-work checkpoint — composition and verification complete
 
 Integration composed independently reviewed scopes in its isolated branch;
