@@ -209,6 +209,65 @@ Edge pressures where the rusher was never engaged: NFL 64, profile 22.
   an assignment to a rusher who dropped) before calling it execution.
 - The samples are small: 22 sim cases.
 
+## 5. The long-run tail: deep support overruns the play
+
+Question: are long sim runs a pursuit-angle problem, a deep-support problem
+or a tackling problem?
+
+Method: `scripts/diag/long-run.py`, position-only.
+- **Sim:** 16 games at `claude/run-game-v3` `e9eb6ac1`, candidate profile.
+  Seeds 301–316, 879 designed runs. Receipts `run-1792654087511-328` and
+  `-513-326`, inputs unchanged, exit 0.
+- **NFL:** 6,223 designed runs.
+- **Deep defenders:** 8+ yd deep and within 12 yd of the ball at the snap.
+- **Intercept heading:** the heading that meets the carrier, given his
+  velocity and the defender's top speed on the play.
+
+| Runs reaching | 10 yd | 20 yd | 40 yd |
+|---|---:|---:|---:|
+| NFL | 12.1% | 2.7% | 0.7% |
+| Sim | 14.8% | **6.6%** | **4.4%** |
+
+Runs reach 10 yd about as often as in the NFL. The excess is beyond 10:
+- **Of runs that reach 20 yd, 67% reach 40 in the sim**, against 26% in the
+  NFL.
+
+Runs that reach 20 yd:
+
+| | NFL (171) | Sim (58) |
+|---|---|---|
+| Deep defenders when he reaches 10 yd: distance; ahead (+) or behind (−) him; lateral | 5.7; **+3.1**; 3.3 | 5.1; **−3.6**; 2.2 |
+| Deep defenders at the handoff: depth, width | 13.7, 4.8 | 12.2, 7.1 |
+| Their forward speed 0.5 / 1.0 s after the handoff, yd/s | −0.25 / +1.00 | **+2.00 / +3.25** |
+| Nearest 3 defenders at 10 yd | 2.4 / 4.0 / 5.3 yd, many beside him | 2.4 / 4.9 / 6.1 yd, mostly behind him |
+| "Chasing" (heading nearer where he is than the intercept), at 5 / 10 yd | 6% / 3% | **32% / 17%** |
+| Defenders within 2 / 1 yd between 10 and 20 yd, mean | 1.54 / 0.74 | 0.67 / 0.16 |
+| Nobody within 2 yd between 10 and 20 yd | 15% | **47%** |
+| First defender within 1 yd after 10 yd | deep DB 46%, DB 24%, none 18% | **none 66%**, DB 28%, deep DB 3% |
+
+On every run (not only long ones), deep defenders come forward at
++1.5 / +2.75 yd/s after the handoff (NFL +0.5 / +1.75), from 7.1 yd wide
+(NFL 5.1).
+
+**Reading.**
+- **It is not a tackling problem.** Sim long runs have fewer chances, not
+  more misses: 0.16 defenders within 1 yd between 10 and 20 yd, against
+  0.74 in the NFL.
+- **It is mainly deep support.** NFL safeties on long runs hold, or even
+  drift back at first, and are still 3 yd in front of the back when he
+  reaches 10 yd. They are the first to touch him 46% of the time.
+- **Sim safeties come downhill fast from wider alignments.** They are
+  already 3.6 yd *behind* the back when he gets to 10 yd. Anyone through
+  the second level has no one left in front.
+- **Pursuit angles add to it.** Sim defenders run at where the carrier is
+  (chasing) five to ten times as often as NFL defenders.
+- **A fix should come from the deep defender's information.** Model what
+  he must see before he commits downhill (run read, cost of being wrong,
+  his fit as the last defender), not a speed cap. The pursuit angle is the
+  pursuit controller's part.
+- **Limits:** 58 sim runs reached 20. The deep-defender set is an alignment
+  proxy and includes off corners inside 12 yd on both sources.
+
 ## Limits
 
 - Sim samples are small: 44–81 runs per concept, 188 pressures. Medians move
