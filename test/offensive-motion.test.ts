@@ -43,6 +43,8 @@ describe('offensive motion', () => {
   it('across: the slot sets on the far side, 2x2 becomes trips and Quarters checks to its trips answer', () => {
     const sim = scene('gun_doubles_11', 'cover4', { slot: 'H', kind: 'across' });
     const h = at(sim, 'H');
+    // Tight inside the lone #1 (tracked across motion: median 5.4 yd from the ball).
+    expect(Math.abs(h.pos.y - sim.ballY)).toBeLessThan(7);
     expect(Math.hypot(h.vel.x, h.vel.y)).toBeLessThan(0.6);
     expect(Math.sign(h.pos.y - sim.ballY)).toBe(sim.offAlign.strongSign);
     expect(formationStructure(sim.offAlign).tags).toContain('trips');
@@ -51,15 +53,20 @@ describe('offensive motion', () => {
     expect(snapFouls(sim)).toEqual([]);
   });
 
-  it('jet: still running parallel to the line at the snap, just past the ball, and legal', () => {
-    const sim = scene('gun_trips_11', 'cover3_match', { slot: 'Y', kind: 'jet' });
-    const y = at(sim, 'Y');
-    expect(Math.abs(y.vel.x)).toBeLessThan(0.3);
-    expect(Math.abs(y.vel.y)).toBeGreaterThan(4);
-    expect(sim.los - y.pos.x).toBeGreaterThan(1.5);
-    // Trips at the call; the jet man has crossed the ball, so the snap is 2x2 and Mable is not needed.
-    expect(sim.offAlign.refOf.Y?.[0]).toBe('W');
-    expect(sim.defCall.coverage.id).toBe('cover3_match');
+  it('jet: still running parallel to the line at the snap, timed short of the ball, and legal', () => {
+    const plain = scene('gun_doubles_11', 'cover3_match');
+    const sim = scene('gun_doubles_11', 'cover3_match', { slot: 'Z', kind: 'jet' });
+    const z = at(sim, 'Z');
+    expect(Math.abs(z.vel.x)).toBeLessThan(0.3);
+    expect(Math.abs(z.vel.y)).toBeGreaterThan(4);
+    expect(sim.los - z.pos.x).toBeGreaterThan(1.5);
+    // Snapped a few yards short of the ball, running toward it (tracked jets:
+    // median 5 yd from the ball at the snap): still counted on his own side.
+    const lateral = (z.pos.y - sim.ballY) * Math.sign(at(plain, 'Z').pos.y - sim.ballY);
+    expect(lateral).toBeGreaterThan(2.5);
+    expect(lateral).toBeLessThan(7);
+    expect(z.vel.y * Math.sign(sim.ballY - z.pos.y)).toBeGreaterThan(0);
+    expect(sim.offAlign.refOf.Z).toBe(plain.offAlign.refOf.Z);
     expect(snapFouls(sim)).toEqual([]);
   });
 
@@ -89,8 +96,8 @@ describe('offensive motion', () => {
     const plain = scene('gun_doubles_11', 'cover1');
     const sim = scene('gun_doubles_11', 'cover1', { slot: 'H', kind: 'across' });
     for (const d of sim.defense) expect(d.pos.x).toBeGreaterThan(sim.los);
-    // Someone went with H: a man defender now stands over him on the far side.
+    // Someone went with H: a defender ends over him on the far side (inside leverage allowed), having moved laterally to get there.
     const h = at(sim, 'H');
-    expect(sim.defense.some(d => Math.abs(d.pos.y - h.pos.y) < 2 && Math.abs(at(plain, d.slot).pos.y - h.pos.y) > 6)).toBe(true);
+    expect(sim.defense.some(d => Math.abs(d.pos.y - h.pos.y) < 2.5 && Math.abs(at(plain, d.slot).pos.y - d.pos.y) > 4)).toBe(true);
   });
 });
