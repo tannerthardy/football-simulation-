@@ -16,9 +16,11 @@ measured. This branch's `config/baseline.json` sets twelve flags to "1":
 
 `DL_FLATTEN_WON` and `LB_LANDMARK` stay "0". Source defaults stay off, so
 plain `npm test` and env-less runs are unchanged. The profile drives baseline
-runs, verification and games. Acceptance into develop is still the
-integration owner's exact combined verification, and the line flags' physics
-promotion is still the primary's. `PAD_LEVERAGE` is a World law. The
+runs, verification and games. The user approved the whole set, including
+the World-law flag `PAD_LEVERAGE` ("we're all the owner here"). The decision
+was relayed to the main engine session (`claude/run-game-v3`), which already
+runs it on. What remains is mechanical: an exact combined verification when
+this lands in develop. The
 run-defense session asked that its four flags stay in this config rather
 than be flipped on #190, and noted that #190's `stepRunRep` line numbers
 will move with its next change.
