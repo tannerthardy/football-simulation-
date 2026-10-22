@@ -63,6 +63,14 @@ function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): 
   void qbStartX;
 }
 
+/** Experimental (QB_SETTLE=1, off): the drop slows into the launch spot at a
+ * settling rate over its last steps, not at near-maximum braking. Tracked QBs
+ * peak at the same drop speed (2.75 yd/s) and stop at 2.8 yd/s^2 (median of
+ * each dropback's largest deceleration before the throw); ours at 5.0. */
+const QB_SETTLE = process.env.QB_SETTLE === '1';
+/** Planned deceleration of the drop's last steps (yd/s^2). */
+const SETTLE = 2.5;
+
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
   private phase: 'snap' | 'drop' | 'set' | 'windup' = 'snap';
@@ -237,6 +245,11 @@ export class QBPass implements Behavior {
         const gun = sim.offCall.formation.qb !== 'under';
         // Drop: backpedal from gun, turn-and-drop from under center.
         const facing = gun ? 0 : Math.PI / 2.4;
+        if (QB_SETTLE) {
+          // Settle into the launch spot over the last steps of the drop.
+          const v = Math.min(a.profile.vmax, Math.sqrt(2 * SETTLE * Math.max(0, d - 0.15)));
+          return { vel: { x: (target.x - a.pos.x) / (d || 1) * v, y: (target.y - a.pos.y) / (d || 1) * v }, facing };
+        }
         return goTo(a, target, { facing, through: 0 });
       }
     }

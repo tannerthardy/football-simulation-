@@ -216,3 +216,28 @@ nearly all in shotgun (29 -> 39%). The early step-up was standing in the
 rushers' paths. Holding him without the read-then-step-up pickup tracked
 backs make (0.4 yd forward by 1.0 s, 1.1 by 1.5 s) loses protection. That
 pickup timing is the change to make, not the hold alone. Reverted.
+
+## The QB's drop settles (`QB_SETTLE`, off) and what it exposes
+
+Tracked QBs peak at the same drop speed as ours (2.75 yd/s) but stop at 2.8
+yd/s^2 (median of each dropback's largest deceleration before the throw).
+Ours stopped at 5.0: the drop asked for the generic arrival at 0.8 of
+maximum braking, then the set phase stopped him. `QB_SETTLE` (`qb.ts`) plans
+the drop's last steps at 2.5 yd/s^2.
+
+4 games, seeds 301-304, profile with `PASS_RIDE` (`r1` vs `q1`):
+
+| | Before | `QB_SETTLE` | NFL |
+|---|---|---|---|
+| QB largest deceleration (all plays) | 3.75 | 2.98 | 3.03 |
+| Time to throw | 2.38 s | 2.53 s | 2.75 s |
+| Pressure (2 yd before the throw) | 31.7% | 41.3% | 30.5% |
+| Time to pressure | 2.43 s | 2.44 s | 2.71 s |
+
+The QB now holds the ball as long as tracked QBs nearly do, and pressure
+rises because protection breaks down about 0.3 s sooner than tracked
+protection (time to pressure 2.44 vs 2.71). The pass profile's NFL-like
+pressure total partly rested on quick throws. Off until protection
+duration is understood (interior rush, the post-contact rep).
+`test/qb-settle.test.ts`: on the three recorded dropbacks the QB's largest
+deceleration before the throw is lower.

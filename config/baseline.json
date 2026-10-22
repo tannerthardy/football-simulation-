@@ -80,6 +80,7 @@
     "PULL_READ": "1",
     "PULL_STEP": "1",
     "QB_CARRYOUT": "1",
+    "QB_SETTLE": "0",
     "RB_AWAY": "1",
     "REACH_CONTACT": "0",
     "READ_EYES": "1",
