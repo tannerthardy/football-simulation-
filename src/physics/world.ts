@@ -428,6 +428,14 @@ interface Plan {
   effortVy: number;
 }
 
+/** Forecast Worlds usually contain one body. Keep ordinary, independently
+ * owned report arrays, without the generic allocation/fill for that case. */
+function reportZeros(count: number): number[] {
+  return count === 1 ? [0] : new Array(count).fill(0);
+}
+
+function reportVector(): Vec2 { return { x: 0, y: 0 }; }
+
 /** The current lean's unsupported share. Keep this outside the substep loop:
  * constructing nested closures here is costly in the development runner.
  * Each call still reads the current support and availability after a release. */
@@ -614,13 +622,13 @@ export class World {
         b.support!.feetLock = 0;
       }
     }
-    const report: StepReport = { substeps: 1, groundImpulse: bs.map(() => ({ x: 0, y: 0 })),
-      groundWork: new Array(n).fill(0), groundYawImpulse: new Array(n).fill(0), groundYawWork: new Array(n).fill(0),
-      armWork: new Array(n).fill(0), armWorkLimit: new Array(n).fill(0), armImpulse: new Array(n).fill(0), armImpulseLimit: new Array(n).fill(0),
+    const report: StepReport = { substeps: 1, groundImpulse: bs.map(reportVector),
+      groundWork: reportZeros(n), groundYawImpulse: reportZeros(n), groundYawWork: reportZeros(n),
+      armWork: reportZeros(n), armWorkLimit: reportZeros(n), armImpulse: reportZeros(n), armImpulseLimit: reportZeros(n),
       work: {before: this.kineticEnergy(),after: 0,hands: 0,grasps: 0,strikes: 0,contacts: 0,residual: 0},
       contacts: [], strikes: [], falls: [], downs: [], rises: [], maxPenetration: 0,
-      maxLeanReleaseResidual: 0, maxLeanReleaseIterations: 0, leanRelease: bs.map(() => ({ x: 0, y: 0 })),
-      supportMotorWork: new Array(n).fill(0), supportMotorWorkLimit: new Array(n).fill(0), passiveGraspWork: 0,
+      maxLeanReleaseResidual: 0, maxLeanReleaseIterations: 0, leanRelease: bs.map(reportVector),
+      supportMotorWork: reportZeros(n), supportMotorWorkLimit: reportZeros(n), passiveGraspWork: 0,
       maxHeldRecoveryExcursion: 0, lowerHoldReleases: 0,
       impactSplits: 0, impactSplitLimitHits: 0, maxSupportIntegrationError: 0, supportIntegrationFailures: 0 };
     this.report = report; this.tickDt = dt;
