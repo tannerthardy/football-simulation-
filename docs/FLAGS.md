@@ -83,4 +83,4 @@ There are 78 flags: 54 are on by default, 1 is a diagnostic scale at identity (`
 | `MOTION_CHECK` | on | default (promoted 2026-10-22) | defense | `src/sim/motion.ts:293` | review 2: drop the off path |
 | `PRESSURE_CALL` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:126` | review 2: drop the off path |
 | `AGAP_ALIGN` | on | default (promoted 2026-10-22) | defense | `src/playbook/alignment.ts:167` | review 2: drop the off path |
-| `GROUNDING_FACTS` | on | default (G6, #TBD) | rules | `src/sim/pass-legality.ts:20` | expires: review 2 (drop the off path) |
+| `GROUNDING_FACTS` | on | default (G6, #214) | rules | `src/sim/pass-legality.ts:20` | expires: review 2 (drop the off path) |
