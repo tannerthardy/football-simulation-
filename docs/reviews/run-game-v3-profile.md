@@ -234,6 +234,19 @@ flows with the reach and the pair moves; ours does not ask to, so the pair
 stands. That is the engaged lineman's controller (run-defense) and the front
 mix (def-alignment), not the blocker's path; sent to both.
 
+Who leads: run-defense's `nosereach.ts` shows the nose already asks to flow
+about 0.25 s after the center moves, and tracking has the center leading
+(0.6 vs 0.4 yd at 0.5 s), so the first mover is the center's reach. The
+covered center (lab) asks 3.8 yd/s free but reaches 0.8 by first contact at
+about 0.4 s; once engaged he asks 0.6. `RUN_CONTACT_TRACK` raises the solo
+center's request to 1.1-1.3 and achieved speed at 1.0 s from 0.78 to 1.21
+in the lab, but in games (8, seed 301) the covered center is unchanged
+(0.5 yd at 1.0 s; NFL 1.9). Letting a stretch combo's man race his track
+too (`COMBO_TRACK`) was inert and is removed. Two attempts: stopped. Next in
+order is the A-gap alignment (def-alignment's `AGAP_ALIGN`, which needs
+their alignment-style commits), then a fresh look at the center's
+technique in games.
+
 ## Flags on
 
 | Flag | Value | Where | What it does (from its doc comment) |
