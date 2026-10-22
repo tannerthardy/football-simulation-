@@ -7,6 +7,7 @@
  * existing installer. Explicit lab calls may deliberately bypass these guards.
  */
 import { isDeepZone, seatRole } from './alignment.js';
+import { COVERAGE_BY_ID } from './coverages.js';
 import { DEF_PERSONNEL, type Coverage, type CoverageRole, type DefPersonnelId, type DefSlot, type Front, type Pressure, type UnderSeat } from './types.js';
 
 const FRONT_RUSHERS: readonly DefSlot[] = ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT'];
@@ -61,9 +62,12 @@ function initialRoles(personnel: DefPersonnelId, front: Front, coverage: Coverag
  * installed. A blitzer can leave deep help only if the package actually names
  * a replacement for that zone; a shared family label is insufficient.
  */
-export function pressureIsInstallable(personnel: DefPersonnelId, front: Front, coverage: Coverage, pressure: Pressure): boolean {
+export function pressureIsInstallable(personnel: DefPersonnelId, front: Front, called: Coverage, pressure: Pressure): boolean {
+  if (pressure.flag && process.env[pressure.flag] !== '1') return false;
+  if (!pressure.coverages.includes(called.family ?? called.id)) return false;
+  // A pressure with its own coverage (Deuce) is judged on what it installs.
+  const coverage = pressure.coverage ? COVERAGE_BY_ID[pressure.coverage] : called;
   if (!front.personnel.includes(personnel) || !coverageHasNamedZonePlayers(personnel, coverage)) return false;
-  if (!pressure.coverages.includes(coverage.family ?? coverage.id)) return false;
   const named = [...Object.keys(pressure.blitzers), ...Object.keys(pressure.droppers ?? {})] as DefSlot[];
   if (named.some((slot) => !DEF_PERSONNEL[personnel][slot])) return false;
   const roles = initialRoles(personnel, front, coverage, pressure);

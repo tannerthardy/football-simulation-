@@ -189,6 +189,15 @@ export const PRESSURES: Pressure[] = [
     id: 'zero_6', name: 'Zero Blitz', blitzers: { LB_M: { gap: 'A', side: 'S' }, LB_W: { gap: 'B', side: 'W' } },
     coverages: ['cover0'],
   },
+  {
+    // Deuce (HNFL-302/372/373): a five-man zone pressure from the two-high
+    // shell, two deep and four under. The Mike adds to the four-man front;
+    // the called two-high coverage becomes Deuce (`coverage`). DEUCE=1 only:
+    // it fills blitz rolls on two-high calls that had no compatible pressure,
+    // which raises the five-man rate; the caller's weighting is undecided.
+    id: 'deuce', name: 'Deuce (Mike A, 2-deep 4-under)', blitzers: { LB_M: { gap: 'A', side: 'S' } },
+    coverages: ['cover4', 'cover6', 'cover2'], coverage: 'deuce', rushers: 5, flag: 'DEUCE',
+  },
 ];
 
 export const FRONT_BY_ID: Record<string, Front> = Object.fromEntries(FRONTS.map((f) => [f.id, f]));

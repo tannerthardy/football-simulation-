@@ -85,6 +85,7 @@ Film any scene with `node --import tsx scripts/coverage-rule-film.ts
 | Cover 1 Lurk | Down safety by formation, lurker in the hole (HNFL-240) | Done; `fangio-tree` |
 | Hands family | Pounder, Finger, Rolex (HNFL-074/208/261) | Done; `fangio-tree` |
 | Hands vs bunch | Mini Fist/Pounder: nickel locks the point, corner and Mike banjo #1/#3, safeties as called; nickel personnel only (HNFL-074) | Done; `hands-bunch` |
+| Deuce | Five-man zone pressure from two-high that installs its own 2-deep/4-under coverage; soft-squat corners trap #2's quick flat, apexes wall #2, halves safeties take #2 deep; DOT backside vs trips (HNFL-302/373); `DEUCE=1`, off by default | Done; `deuce` |
 | Motion | Across, jet, empty, return; final-formation check; provisional bump (MOTION=1) | Done; `offensive-motion` |
 
 In two seeded games (seeds 3 and 7, 262 snaps) checks fired on 41 snaps:
@@ -107,7 +108,7 @@ From [fangio-system.md](fangio-system.md) section E:
 - **E7:** Lord, Ring, Chicago.
 - **E8:** run-fit force table per coverage (Run owner).
 - **E9:** Cut/Cone/Inc bracket tags.
-- **E10:** Tampa variants and Deuce.
+- **E10 rest:** Tampa variants (Tupac, Boca, Miami). Deuce is installed behind `DEUCE=1`.
 - **E11:** red-zone versions.
 
 ## Known limits

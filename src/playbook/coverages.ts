@@ -399,6 +399,33 @@ export const COVERAGES: Coverage[] = [
     },
     underneath: [seat('hook_s', 'c2_hook'), seat('hook_w', 'c2_hook'), 'curl_flat_s', 'curl_flat_w'],
   },
+  // Deuce (HNFL-302/373): the coverage behind the five-man Deuce pressure.
+  // Soft-squat corners key #2 to #1 (trap #2's quick flat, otherwise stay on
+  // top of #1), apexes wall and match #2 (quarter flat with #3 to them,
+  // vertical curl with #3 away), halves safeties prioritize #2 deep.
+  {
+    id: 'deuce', name: 'Deuce (2-deep, 4-under zone pressure)', family: 'cover2', shell: 'two-high', man: false, press: false,
+    note: 'Behind a five-man rush: soft-squat corners trap #2\'s quick flat or stay on top of #1; apexes wall #2; halves safeties take #2 deep, else #1.',
+    roles: {
+      CB_S: z('flat_s', 'palms_corner'),
+      CB_W: z('flat_w', 'palms_corner'),
+      SS: z('deep_half_s', 'palms_safety'),
+      FS: z('deep_half_w', 'palms_safety'),
+    },
+    underneath: [seat('curl_flat_s', 'q_apex'), seat('curl_flat_w', 'q_apex')],
+    structureChecks: [{ when: ['trips'], to: ['deuce_dot'] }],
+  },
+  {
+    id: 'deuce_dot', name: 'Deuce DOT (vs trips)', family: 'cover2', shell: 'two-high', man: false, press: false,
+    note: 'Deuce vs 3x1: the trips side plays Deuce; the backside apex drops off #3 (DOT) with no vertical carry and the backside corner squats on the lone #1 (Smack).',
+    roles: {
+      CB_S: z('flat_s', 'palms_corner'),
+      CB_W: z('flat_w', 'sink_corner'),
+      SS: z('deep_half_s', 'palms_safety'),
+      FS: z('deep_half_w'),
+    },
+    underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_w', 'bonus_hook')],
+  },
   // ------------------------------------------------------------ quarters
   {
     id: 'cover4', name: 'Quarters (MOD)', family: 'cover4', shell: 'two-high', man: false, press: false,
@@ -636,6 +663,10 @@ export function resolveZeus(call: DefensivePlayCall, ref: string | undefined, we
  * MatchQuarters Zeus/HNFL-261).
  */
 export function installCoverage(call: DefensivePlayCall, off: OffenseAlignment): DefensivePlayCall {
+  // A zone pressure that brings its own coverage (Deuce) replaces the called
+  // shell's coverage outright; it has its own structure checks, not Zeus.
+  const own = call.pressure?.coverage ? COVERAGE_BY_ID[call.pressure.coverage] : undefined;
+  if (own) return checkCall({ ...call, coverage: own, zeus: undefined }, formationStructure(off));
   const zeus = call.zeus;
   const resolved = zeus ? resolveZeus(call, off.refOf[zeus], Math.min(off.counts.S, off.counts.W)) : call;
   return checkCall(resolved, formationStructure(off));
