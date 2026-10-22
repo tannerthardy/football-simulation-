@@ -98,6 +98,8 @@ const DL_ANCHOR = process.env.DL_ANCHOR === '1';
  * 0.5-1.1 yd away (crease 4.2-4.8; scripts/diag/depth/crease.py). Off: he
  * follows his blocker's flow. */
 const DL_SQUEEZE = process.env.DL_SQUEEZE === '1';
+/** DL_SQUEEZE: the squeeze side chosen at a read, and until when it is held. */
+const squeezes = new WeakMap<Engagement, { side: number; until: number }>();
 /** DL_FLATTEN_WON (with DL_FLATTEN, off): the flatten applies only while he is
  * being reached; one already beside or past the man on him keeps attacking
  * ("if you beat the reach, penetrate and make the play"). */
@@ -1452,7 +1454,10 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // is going), or where he is when he comes straight downhill. A blocker
   // moving against it is a down block or a wash; one moving with it, a reach.
   let squeeze = 0;
-  if (DL_SQUEEZE && read.stack && !read.declared && Math.abs(read.stack.flow) > .5) {
+  // The squeeze is a decision: made at a read, held for its beat.
+  const lastSqueeze = squeezes.get(e);
+  if (lastSqueeze && sim.t < lastSqueeze.until) squeeze = lastSqueeze.side;
+  else if (DL_SQUEEZE && read.stack && !read.declared && Math.abs(read.stack.flow) > .5) {
     // He reads the back, as the fit does; a pitch or another carrier is the ball.
     const carrier = sim.carrier && sim.carrier.team !== d.team ? sim.carrier : null;
     const back = sim.slot('RB');
@@ -1462,6 +1467,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       : Math.abs(cue.pos.y - d.pos.y) > .5 ? Math.sign(cue.pos.y - d.pos.y) : 0;
     if (play && read.stack.flow * play < 0) { squeeze = play; d.tags.add('squeeze'); }
   }
+  if (DL_SQUEEZE && !(lastSqueeze && sim.t < lastSqueeze.until)) squeezes.set(e, { side: squeeze, until: sim.t + d.mind.decisionInterval });
   // Squeezing a down block is on the line: he flattens at his contact depth
   // and works across, pressing the blocker into the hole, not upfield past him.
   const recover = d.runFit?.technique !== 'attack' || read.chasing || zoneStep || squeeze !== 0;

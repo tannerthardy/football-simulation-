@@ -4,7 +4,7 @@ One page for integration. It lists every flag on in this branch's pinned
 profile (`config/baseline.json`), the current results against tracking, and
 the open problems with their owners. Evidence lives in the linked reviews.
 Generated from the code's doc comments on 2026-10-22 at `0cc4e074`;
-68 of 110 flags are on.
+70 of 116 flags are on.
 
 Reproduce: `npm run baseline:run -- --candidate -- <command>`. Lab arms:
 `scripts/diag/open-field/arm.mjs` (called looks 1-10, seeds
@@ -155,11 +155,14 @@ concept against tracking: counter 8.8% (NFL 11.6), trap 1.2% (3.8), power
 10.0% (9.1), duo 0.5% (7.7). Duo never loses yards; that is the next run
 question.
 
-## First shared build (proposed; flags off pending run-defense review)
+## First shared build (on: `DL_SQUEEZE DEEP_NO_FORCE`, reviewed by run-defense)
 
 This branch now carries run-defense's `DEEP_NO_FORCE` (cd4a602), `DL_SQUEEZE`
 (d9369dcb, merged with this profile's `read.chasing` in `recover`) and
-`PULL_EARLY` (f28754c6) with their tests, all off in `config/baseline.json`.
+`PULL_EARLY` (f28754c6) with their tests, now on (`PULL_EARLY` off). Run-defense reviewed the hunks and pins; their
+review found the squeeze re-read the runner every tick, and the squeeze is
+now decided at a read and held for the lineman's decision beat (5dab06be),
+which removed run-contact-flow's pin.
 Recorded-scenario tests that stage defenders without them pin
 `DL_SQUEEZE=0` (combo-solo, combo-strike-access, gap-blocks, kick-log,
 planned-climb-fit, run-contact-flow) or `DEEP_NO_FORCE=0`
