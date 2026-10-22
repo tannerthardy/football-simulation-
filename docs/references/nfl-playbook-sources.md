@@ -80,6 +80,16 @@ outcomes.
 | ↳ 2018 Eagles training-camp installs, 52 pp. | Scanned. SHA-256 `3960aaeeb8ed6cea2320004912054b4416dc0e24cb202b4b8ae35a815f0444e8` | Gap-scheme blocking vs. labelled fronts | Indexed (light) |
 | ↳ Buccaneers defense, Tampa-2 era (year unknown), 73 pp. | Scanned. SHA-256 `be0bae688ebb103f5f6edabaeaf02ebd21f7b399ef44809173db54d2c5658b3d` | Front technique table; zone landmarks | Indexed (light) |
 | 1999 Buccaneers DL manual (Dungy/Kiffin), 62 pp. — user-supplied | **Scanned**; OCR'd page by page for reading. SHA-256 `bc950ad4c904dd753a4435420153d47115240c3caf2e5c497480a391c87aec80` | DL philosophy, get-off, run rules, alignments, block reactions by position, pass rush, nickel games | **Read** (block reactions; section below) |
+| Dallas Cowboys 4-3 Over Stack LB fits, 6 pp. (user-supplied) | **Scanned**; OCR plus diagrams. SHA-256 `757f9998bbcf41099b5e4c8ebcfeb7d7469c7256e881637b5f15ea5f4d03e68d` | LB alignment, depth, keys and fits per play | **Read** (section below) |
+| Georgia Military College "3-5-3 LB Fundamentals" (2009), PowerPoint | Text. SHA-256 `f20ab13bfe5c52b6a324d6a82bbc751f29eb1afcc8e648479dbbe33ef1199b05` | College 3-5-3 LB stance, depth, OL-block keys | **Read** |
+| Jon Svec, "Linebacker Toolbox 2.0" (2024), 55 pp. | Text; copyrighted book (paraphrased only). SHA-256 `4bc060b59eb420eeb716e9a9cff4ea352df8be3210070cd9076bf356cc5b3b86` | LB movement, reads, block defeat, tackling; no numbers | **Read** |
+| Mike Walker, "Coaching Defensive Linemen", 28 pp. | Text. SHA-256 `1053505832cc850b952233e636d18480895faaff55209db7337c65ca517dfca3` | DL stance, block reactions, pass rush (high-school coach) | **Read** |
+| Notre Dame DB manual, 39 pp. (Holtz era by inference) | Text. SHA-256 `05ed0c801cc7d67da13293aed9af518d4cab4759571770f2d188b841b66434c1` | DB alignment, pedal, man and zone technique with numbers | **Read** (section below) |
+| Patrick Daberkow, "Developing Defensive Backs" (Concordia), 23 pp. | Text (slides). SHA-256 `bc9362d9a8020e20440b53bbf10d02f5bf20e3b8129d44e427d67724adcbba15` | DB stance, transition, ball skills | **Read** |
+| "HonestNFL.zip" (user's Drive) | 403 images | The same set already in `docs/references/honest-nfl/` (names and sampled hashes match the catalog) | Nothing new |
+| "Coaching the Defensive Line" (Drive), 156 pp. | **Scanned**; OCR'd. SHA-256 `5c06b8641d9b0bd0c610bcaad25f0068c133aa29d5a2ba6d4ddb781f44884e29` | DL book | Being read |
+| McKendree College WR manual, 37 pp.; "FUNDOS REC 2015", 13 pp. | Scan (OCR'd) / text | Receiver technique | Being read |
+| Links from the user's resource list: Coach Allen DL and LB manuals; 2014 Michigan LB, rush-end and DB manuals; 2009 Texas A&M WR drill book; 1999 Ravens and 1998 Rams DL manuals (scans); 2016 Oregon LB (diagrams); Olivadotti "Coaching Pattern-Read Coverage" (copyrighted, paraphrase only); USA Football and AFQ articles | Downloaded; most have text | DL, LB, DB and WR technique | Being read |
 | [Other footballplaybooks.net items](https://footballplaybooks.net/document-tag/nfl-playbooks/) | **Locked** behind an email/sign-up gate | Attributed team material | Needs the user |
 | [2014 49ers (Roman) preview](https://pdfcoffee.com/2014-49ers-greg-roman-playbook-pdf-free.html) | HTTP 403 through the proxy | Marked "Confidential Property" | Not used |
 | [FootballXOs offense clinics](https://www.footballxos.com/downloads/offense/?cp=2), [NDSU run-fit analysis](https://www.footballxos.com/how-north-dakota-state-executes-their-run-fits/) | Public pages | Clinic and analysis articles | Good next reads for zone technique and fits |
@@ -459,6 +469,96 @@ type. Physical pages.
     retrace your steps and divert the back.
 - Also present, not yet summarized: rush principles and moves (pp. 29–39),
   tackling (p. 40), and nickel/dime fronts and games (pp. 57–62).
+
+## Linebackers: depth, keys and fits
+
+- **Depth: heels at 5 yd.** Cowboys Over: "SAM - Nose to outside eye of OT;
+  heels at 5 yds", "MIKE - Stack on 1 tech (weak); heels at 5 yds" (tighter
+  against an influence-trap team), Will's inside foot on the end's outside
+  foot, heels at 5 yd (p. 1). Georgia Military College: "LB HEELS ARE AT 5
+  YARDS FROM LOS" in base fronts (slides 3–6). This Cowboys Over keeps the Sam
+  inside; the Colts Over puts him at "90", outside the TE.
+- **Keys and flow** (Cowboys p. 2): "1. TAILBACK OR NEAR RB 2. 2ND BACK
+  3. GAP RESPONSIBILITY", and see pullers through your gap. *Full* flow
+  (cutback threat; inside zone, power, iso): the backside linebacker
+  shuffles for the cutback. *Fast* flow (no cutback; toss, outside zone): "ALL
+  LB'S CROSS-OVER AND RUN; MIRROR RB'S". *Counter*: outside linebackers go over
+  the top, the Mike bores under the down block. Kuchar (USA Football, 2018)
+  reads the playside guard, then the near back: *tight* = attack and shock,
+  *full* = shuffle and press the next window, *fast* = open up and run,
+  *split* = shuffle then rock step on seeing a puller. GMC reads blocks first
+  ("guard to near back"): down/out = shoot B, down/down = shoot C, pull =
+  "attack the down".
+- **Cowboys Over fits** (pp. 3–6): gap labels Sam "CA", Mike "AB", Will "BD"
+  (first letter for plays strong, second for plays weak, read from the
+  diagrams). Inside zone strong: Sam C, Mike strong A, Will beats the tackle
+  to weak B for the cutback. Outside zone strong: all cross over and run.
+  Counter strong: Sam spills the puller, Mike bores under, Will plays the
+  spill. Play-action cue (p. 5): on waggle the fullback's path is "deeper and
+  much faster"; a TE releasing instead of down-blocking turns the Mike's zone
+  drop into man.
+- **Commitment and block defeat** (Svec, Linebacker Toolbox 2.0; paraphrased,
+  no numbers): movement rises from shuffle to scrape to shoot only when
+  leverage on the back is lost; read the center–guard–tackle triangle before
+  the backfield; come off a controlled blocker when the ball carrier
+  declares; pursue as front-hip and back-hip defenders, with a curved
+  "banana" angle on a back moving away.
+
+## Defensive line pass rush and stunts
+
+From the Bucs manual (pp. 29–40, 57–62) and Walker; physical pages.
+
+- **Move by the tackle's set** (Bucs pp. 34–36): read the set (short, deep,
+  "lunger"); quick move against a short setter, inside move against a fast
+  setter; power rush only once or twice a game. Ends start with a speed rush
+  along the tackle's set line; if he oversets, "plant your outside foot hard
+  and club him out"; if he floats, bull rush; if deeper than the ball, spin
+  or club back. Every move finishes with a swim or a rip.
+- **Lanes:** never give up two consecutive rush lanes (Bucs p. 34). Walker
+  rushes ends to the QB's near ear and tackles to his near eye, keeping the QB
+  inside and in front (p. 11). The two disagree on the throw: Walker jumps
+  with arms high, the Bucs say never leave your feet.
+- **Stunts:** the penetrator is "the man going 1st on game" (Bucs p. 41);
+  "Exit" = end first, "Tex" = tackle first. The penetrator works to the
+  blocker's back; "the key to all good games is the second man", who sells a
+  one-on-one rush and runs the game tight (p. 37). The Bucs run games "on a
+  three-step delay" or with a grab; a footballtoolbox clinic summary counts no
+  steps and wraps on contact. Delay and grab games push a zone protection into
+  man; quick games push a man protection into zone (p. 37).
+
+## Defensive backs
+
+Notre Dame DB manual (Holtz era by inference; no names or year printed) and
+Daberkow's clinic. Physical pages.
+
+- **Alignment:** press 2–3 yd, inside leverage (pp. 7–9); off man 7–9 yd
+  from the receiver (p. 10); never closer than 6 yd to the sideline; deep
+  outside third 7–9 yd, middle third 10–12 yd (12–15 in passing situations);
+  cloud corner 3–7 yd (pp. 17, 19); deep-half safety drops 2–3 yd outside the
+  hash (p. 20).
+- **Cushion and turn:** keep 3–5 yd vertically (p. 13); turn and run when it
+  drops under 4 yd, usually 12–16 yd downfield (p. 5); open the hips at 3–4 yd
+  (p. 6).
+- **Eyes:** in man, the receiver's belt buckle, seeing him through the break
+  before looking to the QB, and looking back only when he does (pp. 6–7).
+  Daberkow: look back only when in phase (slide 11). In zone, break when the
+  QB's front shoulder points and the front hand leaves the ball (p. 16).
+- **Breaks:** never break under a receiver without a sure two-hand
+  interception; never break under an out (pp. 11, 13). Pattern rules: in
+  "mix", two verticals put the safety on #2 and the corner on #1; #2 to the
+  flat turns it to cloud (pp. 36–37).
+- **Run support:** play pass until sure; outside-third players fill
+  outside-in, middle and half safeties fill the alley inside-out; break down
+  3 yd from the pile (pp. 28–30).
+
+## Tackling
+
+Pete Carroll's Seahawks tackling clinic, as summarized by FootballScoop
+(2015): track the ball carrier's near hip ("run and gather", near-foot
+position); compression tackles "own the hip" with the leverage shoulder;
+hawk tackles are "eyes through the thighs", wrap and squeeze, drive for five;
+profile tackles aim the shoulder at the near pec. Svec adds the head off the
+near hip and a front-hip and back-hip "vice" in pursuit.
 
 ## Extraction record
 
