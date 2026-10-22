@@ -334,16 +334,90 @@ Carried over from the issue register; each was measured on an older develop.
 - **Measure:** missed + broken tackles per play: 0.32 (`dev-24`), 0.36
   (`dev-12`); NFL 0.11–0.16. Runs that break contact are 12.7–19% on the flag
   profiles (#194), NFL 12.5%.
-- **Cause:** *hypothesis* (G1 has just started). Candidates: pursuit angle
-  (TKL-2), closing speed, tackle resolution, and a missing second defender.
-  #191 found that the long-run tail (RUN-2) is a deep-support problem, not a
-  missed-tackle one, so this is a separate fault.
+- **Cause:** *partly known* (#205). Too few defenders reach the runner
+  (TKL-2), and getting through contact costs the runner nothing (below). The
+  approach controller and the grip are not the cause. #191 found that the
+  long-run tail (RUN-2) is a deep-support problem, not a missed-tackle one.
 - **Where:** `src/sim/tackle.ts`; scorecard probe `missedBy`, split by
   DL, LB, CB and S.
 - **Tried:** `BLOCKED_REACH` (#190, off) lets a blocked defender reach for a
   runner passing his free side. Covered/free conversion goes to 13/23% vs NFL
-  11/24%.
-- **Open:** split misses by cause before changing anything (G1 brief).
+  11/24%. `SHED_PURSUE` (#205, on): blocked defenders work off toward a runner
+  past the line. Missed + broken per play 0.37 → 0.33.
+- **The counter is not yet comparable to the band** (#205, `scripts/diag/g1/finish.ts`;
+  24 games, 3,370 snaps, promoted profile). The band's only source is "PFF":
+  no season, numerator or play population. PFF counts several misses per
+  play, and a juke with no contact counts. Its rules for a second tackler's
+  slipped grip, or a blocked lineman's reach, are not public.
+
+  Raw events per snap:
+
+  | Source | Per snap |
+  | --- | --- |
+  | **Total raw events** | **0.336** |
+  | Grip lost, runner free | 0.109 |
+  | Sack attempts (whiffs 0.043, grips lost 0.025) | 0.068 |
+  | Whiff reaching off a block | 0.054 |
+  | Grip lost while teammates held him (0.030 of them down within 1 s) | 0.039 |
+  | Free whiff | 0.038 |
+  | Dive | 0.027 |
+
+  Per defender, a failed opportunity (he whiffed or lost his grip and was not the
+  tackler) happens 0.200 times per snap, 18% of 1.13 encounters per snap. Plays
+  with at least one: 0.153 per snap.
+
+  Against tracking, the meeting itself matches: met→broke 8% vs NFL 9%
+  (`meet.py`), and runs that break contact 12.7–19% vs 12.5%.
+- **Where failed attempts start** (#205, `scripts/diag/g1/trace.py`; 582 failed
+  lunges, reaches, dives and free whiffs; control: 1,072 successful form
+  tackles, of which 92% were viable at the attempt).
+
+  **54% were still viable at the attempt.** Two-thirds of those could only
+  have caught him with a 1–3 s chase from behind: the runner moves at 0.6 of
+  the tackler's top speed and the tackler at 0.49. That makes the arm grab a
+  real last chance.
+
+  **40% lost the approach about 0.35 s earlier:**
+
+  | How it was lost | Share of failures |
+  | --- | --- |
+  | Requested heading about 50° off the intercept | 24% |
+  | Requested speed too low on a good line | 10% |
+  | Good request the body didn't achieve | 6% |
+
+  In those losses the runner barely turned (7°) but sped up by about 1.35 yd/s
+  in 0.65 s. The remaining 6% were blocked, recovering or down (4%), or had no
+  history (3%).
+
+  **Lunge holds break 58% and form holds 2%.** These are different encounters,
+  so the gap is no evidence of weak grip physics.
+- **Replay bounds** (`out/` only). The 92 "lost: heading off" geometries were
+  replayed through `chase()` with one runner and no traffic:
+
+  | Replay | Reaches body contact |
+  | --- | --- |
+  | Current pursuit, runner at constant speed | 57% |
+  | Runner bursts at 2 yd/s² | 40% |
+  | Best fixed command, chosen with hindsight | 71% (constant), 64% (burst) |
+
+  Three controller variants each stayed within 1 point of the current pursuit:
+  no close gather against a faster crossing runner, a gather that leads the
+  runner's burst, and keeping the interception run instead of a full gather.
+  The successful-tackle controls stayed at 97–98% throughout. **No grip or
+  controller change** (decided 2026-10-22).
+- **Contact costs the runner nothing.** Run Game's `contactcost.py` on
+  `run/G2-backer-flow`, reproduced on #205's exports. These are carriers who
+  gain 5+ yd after first contact; speed is a share of their speed before contact:
+
+  | Contact at 0–5 yd | 0.3 s | 0.6 s | 1.0 s | 1.5 s |
+  | --- | --- | --- | --- | --- |
+  | NFL | 0.94 | 0.88 | 0.77 | 0.67 |
+  | Sim | 1.08 | 1.10 | 1.01 | 1.09 |
+
+  Behind the line, the sim reaches 1.47 by 1.0 s (NFL 0.87). This physics
+  question goes to Main Engine.
+- **Open:** fewer defenders reach the runner. Free defenders who reach him
+  past 5 yd, per run: 1.89 with `SHED_PURSUE`, NFL 2.69. See TKL-2.
 
 <a id="tkl-2"></a>
 ### TKL-2: Pursuit angles and speed unlike tracking
