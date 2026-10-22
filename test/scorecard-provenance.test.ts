@@ -118,6 +118,29 @@ describe('scorecard timing and provenance', () => {
     expect(different).not.toContain('**Guardrail:**');
   });
 
+  it('warns on a two-arm elapsed slowdown when shared host metadata is unavailable', () => {
+    const dir = folder(), c = current();
+    // A host without /sys/fs/cgroup/cpu.max records a null quota, not "unlimited".
+    Object.assign(c.meta.provenance!, { cpuModel: null, cpuQuotaCores: null });
+    c.arms[0].name = 'base';
+    const slower = structuredClone(c.arms[0]);
+    slower.name = 'slower';
+    slower.games[0].ms = 1200;
+    c.arms.push(slower);
+    expect(compatibility(c, c, c.arms[0], slower).timing).toEqual([]);
+    // Two independent captures with unknown hosts still cannot establish a match.
+    const separate = structuredClone(c);
+    expect(compatibility(c, separate, c.arms[0], separate.arms[1]).timing).toEqual([
+      'cpuModel unavailable', 'cpuQuotaCores unavailable',
+    ]);
+    const input = save(dir, 'two-arm-no-quota.json', c);
+    const report = run(['--from', input, '--metrics', 'points', '--splits', 'none']);
+    expect(report).toContain('**Guardrail:** slower has 20% more elapsed time per game than base.');
+    expect(report).toContain('cpuModel: unavailable');
+    expect(report).toContain('cpuQuotaCores: unavailable');
+    expect(report).not.toContain('Elapsed slowdown guardrail unverified');
+  });
+
   it('rejects overwriting an input before either reporting or simulation', () => {
     const dir = folder(), input = save(dir, 'legacy.json', legacy()), bytes = readFileSync(input);
     const result = spawnSync(process.execPath, ['--import', 'tsx', 'scripts/scorecard/run.ts', '--from', input, '--out', input],

@@ -130,6 +130,8 @@ export function compatibility(base: Card, now: Card, b: Arm, n: Arm): { measurem
   if (b.workerProcesses === undefined || n.workerProcesses === undefined) timing.push('arm worker count unavailable');
   else if (b.workerProcesses !== n.workerProcesses) timing.push('arm worker count differs');
   for (const key of ['cpuModel', 'cpuQuotaCores'] as const) {
+    // Arms in one card share the captured host even when its metadata is unavailable.
+    if (base === now) continue;
     const x = base.meta.provenance?.[key], y = now.meta.provenance?.[key];
     if (x == null || y == null) timing.push(`${key} unavailable`);
     else if (x !== y) timing.push(`${key} differs`);
