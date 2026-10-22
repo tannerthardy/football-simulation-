@@ -339,8 +339,12 @@ export interface Pressure {
   droppers?: Partial<Record<DefSlot, UnderSeat>>;
   /** The rush count the call promises (a simulated pressure brings four, a fire zone five). */
   rushers?: number;
-  /** Compatible coverages. */
+  /** Compatible coverages: the called coverage's family (or id) must be one of these. */
   coverages: string[];
+  /** A zone pressure that brings its own coverage (Deuce): installed in place of the called one. */
+  coverage?: string;
+  /** Experimental: installable only with this environment flag set to 1. */
+  flag?: string;
 }
 
 /**
