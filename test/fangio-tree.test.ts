@@ -4,7 +4,11 @@
  * side of Cover 6/8, and Zeus resolved against trips. Assertions read who
  * took whom on film.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// The Pounder rep holds the ball to 2.6 s; with FRONT_ALIGN's edges and
+// SNAP_REACT's get-off the rush ends it at 2.5, before the safety's rule
+// changes. The scene is staged on the installed front.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { filmScene, jobsOf, modeOf, type SceneFilm } from '../src/lab/coverage-scene.js';
 import { alignOffense } from '../src/playbook/alignment.js';

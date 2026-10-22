@@ -27,6 +27,7 @@
     "LIVE_AIM": "1",
     "LIVE_GAPS": "1",
     "MOTION": "0",
+    "MOTION_CHECK": "0",
     "DEUCE": "0",
     "PASS_SINK": "0",
     "PULL_CUE": "0",
@@ -79,7 +80,9 @@
     "BOX_ALIGN": "0",
     "DEF_PACKAGE": "0",
     "SHELL_SHOW": "0",
-    "COVER_CALL": "0"
+    "COVER_CALL": "0",
+    "PRESSURE_CALL": "0",
+    "AGAP_ALIGN": "0"
   },
   "worldDefaults": {
     "handContact": "center",

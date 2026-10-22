@@ -20,8 +20,9 @@
  * structure ("defend the final formation"). Nothing here moves a defender.
  */
 import { CENTER_Y } from '../core/field.js';
+import type { Rng } from '../core/rng.js';
 import type { Vec2 } from '../core/vec.js';
-import { alignDefense, type DefenseAlignment, type ManPreference, type OffenseAlignment, type AlignStyle } from '../playbook/alignment.js';
+import { alignDefense, frontSign, isDeepZone, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { installCoverage } from '../playbook/coverages.js';
 import type { DefensivePlayCall, DefSlot, MotionCall, MotionKind, ReceiverRef, Side, SkillSlot } from '../playbook/types.js';
 import { sideSign } from '../playbook/types.js';
@@ -247,6 +248,71 @@ export interface MotionHost {
   slot(slot: string): Agent | undefined;
 }
 
+/** Experimental (MOTION_CHECK=1, off): the defense answers motion as tracked
+ * defenses do (2022 BDB 2025 weeks 1-9, 3,856 single-motion plays, line set
+ * to snap; scripts/diag/align/nfl_motion.py and motionlook.py).
+ * - Man coverage locks or trades. A lock keeps the line-set man defender on
+ *   the motion man ("Lock/Glue": he travels, or trails a jet); a trade passes
+ *   him to whoever the new formation puts there. Tracked locks, by the PFF
+ *   matchup of the motion man's defender already being on him at the line
+ *   set: across 51%, jet 66%, empty 69%, in-and-back 58%.
+ * - Everyone else bumps: jobs move, players slide. The coverage for the new
+ *   formation is handed to whoever is nearest: the corners between
+ *   themselves (they keep their sides), every other job among the nickel,
+ *   dime, safeties and backers, a deep job only to a safety and a man job on
+ *   a wide receiver never to a backer. On a change of strength the safeties
+ *   spin and the new slot is taken by the down safety or an apex backer
+ *   instead of a nickel running the width of the field. Tracked zone
+ *   defenses put someone across the ball on 19% of across motions; the
+ *   provisional re-sort ran whole groups across (59%).
+ * - The front stays ("Stay" / "Play It", 2002 Bengals; "TE move" shifts the
+ *   front, 1998 Bears): a receiver's motion does not move the front's side,
+ *   so the linemen keep their techniques and the backers stay keyed to them;
+ *   only coverage jobs move. (With FRONT_STRENGTH the front sets to an
+ *   attached end, who cannot motion, or else to the call's lean at the set.)
+ * - A locked defender on a jet trails him at full speed from what he saw a
+ *   reaction time ago (tracked man coverage puts a defender with the jet on
+ *   47% of jets).
+ * Off: the provisional bump below. */
+export const motionCheckEnabled = (): boolean => process.env.MOTION_CHECK === '1';
+const LOCK: Record<MotionKind, number> = { across: .51, jet: .66, empty: .69, return: .58 };
+/** Defenders who exchange coverage jobs on a bump: the corners between themselves, the rest among themselves. */
+const KINDS: DefSlot[][] = [['CB_S', 'CB_W'], ['NB', 'DB', 'FS', 'SS', 'LB_S', 'LB_M', 'LB_W']];
+const CORNER = new Set<DefSlot>(['CB_S', 'CB_W']), SAFETY = new Set<DefSlot>(['FS', 'SS']), BACKER = new Set<DefSlot>(['LB_S', 'LB_M', 'LB_W']);
+
+/** Hand each kind's coverage spots to its nearest players (least summed
+ * squared distance from where they stand: several men slide rather than one
+ * runs the width of the field); `keep` holds his own. Rushers and
+ * blitzers keep theirs. Among the rest, a deep job goes only to a safety
+ * and a man job on a wide receiver never to a backer. */
+function exchange(align: DefenseAlignment, at: (slot: DefSlot) => Vec2 | undefined, keep: DefSlot | null,
+  isWide: (target: string) => boolean): DefenseAlignment {
+  const spots = { ...align.spots };
+  const can = (who: DefSlot, job: DefSlot) => {
+    const r = align.spots[job]!.role, target = align.spots[job]!.manTarget;
+    if (CORNER.has(who)) return true;
+    if (r.kind === 'zone' && isDeepZone(r.zone)) return SAFETY.has(who);
+    if (r.kind === 'man' && target && isWide(target)) return !BACKER.has(who);
+    return true;
+  };
+  for (const kind of KINDS) {
+    const members = kind.filter(s => s !== keep && spots[s] && at(s) && (spots[s]!.role.kind === 'zone' || spots[s]!.role.kind === 'man'));
+    if (members.length < 2) continue;
+    let best = members, cost = Infinity;
+    for (const perm of permutations(members)) {
+      if (!members.every((s, i) => can(s, perm[i]))) continue;
+      const c = members.reduce((sum, s, i) => { const p = at(s)!, q = align.spots[perm[i]]!.pos; return sum + (p.x - q.x) ** 2 + (p.y - q.y) ** 2; }, 0);
+      if (c < cost - 1e-9) { cost = c; best = perm; }
+    }
+    members.forEach((s, i) => { spots[s] = { ...align.spots[best[i]]!, slot: s }; });
+  }
+  return { ...align, spots };
+}
+function permutations<T>(xs: T[]): T[][] {
+  if (xs.length <= 1) return [xs];
+  return xs.flatMap((x, i) => permutations([...xs.slice(0, i), ...xs.slice(i + 1)]).map(p => [x, ...p]));
+}
+
 /** Defender reaction to what the motion shows (s), and how often the secondary re-sorts its alignment. */
 const BUMP_REACTION = 0.3;
 const BUMP_EVERY = 0.2;
@@ -273,7 +339,32 @@ export class MotionRuntime {
     private readonly prefs: ManPreference | undefined,
     /** The defense's alignment style (mass, habits, situation), as at the set. */
     private readonly style: AlignStyle = {},
+    /** MOTION_CHECK: the alignment at the line set (whose man defender had the motion man). */
+    private readonly initial?: DefenseAlignment,
+    /** MOTION_CHECK: the lock-or-trade draw. */
+    private readonly rng?: Rng,
   ) {}
+
+  /** MOTION_CHECK: the defender locked on the motion man (null: traded or zone; undefined: not yet recognized). */
+  private lock: DefSlot | null | undefined;
+  /** MOTION_CHECK: the locked defender's lateral offset from the motion man at the last re-sort. */
+  private leverage = 0;
+
+  /** The call and alignment for the formation `off`: the front held, a lock kept and the bump handed out by kind. */
+  private answer(sim: MotionHost, off: OffenseAlignment): { call: DefensivePlayCall; align: DefenseAlignment } {
+    const slots = sim.defense.map(d => d.slot as DefSlot);
+    const installed = installCoverage(this.called, off);
+    if (!motionCheckEnabled()) return { call: installed, align: alignDefense(installed, off, slots, this.prefs, this.style) };
+    const held = frontSign(this.called, sim.offAlign);
+    const call: DefensivePlayCall = { ...installed, strength: frontSign({ ...installed, strength: 'passing' }, off) === held ? 'passing' : 'opposite' };
+    if (this.lock === undefined) {
+      const had = this.initial ? (Object.values(this.initial.spots).find(sp => sp?.role.kind === 'man' && sp.manTarget === this.plan.slot)?.slot ?? null) : null;
+      this.lock = had && this.called.coverage.man && (this.rng?.chance(LOCK[this.plan.kind]) ?? false) ? had : null;
+    }
+    const prefs = this.lock ? { ...this.prefs, overrides: { ...this.prefs?.overrides, [this.lock]: this.plan.slot } } : this.prefs;
+    const align = alignDefense(call, off, slots, prefs, this.style);
+    return { call, align: exchange(align, slot => sim.slot(slot)?.pos, this.lock, target => sim.slot(target)?.player.position === 'WR') };
+  }
 
   /** Pre-snap tick: the motion man's intent and the secondary's bump. */
   step(sim: MotionHost, intents: Intent[]): void {
@@ -291,7 +382,8 @@ export class MotionRuntime {
       this.nextSort = sim.t + BUMP_EVERY;
       const seen = [...this.seen].reverse().find(s => s.t <= sim.t - BUMP_REACTION) ?? this.seen[0];
       const off = realignOffense(sim.offAlign, slot => (slot === this.plan.slot ? seen.pos : undefined));
-      const align = alignDefense(installCoverage(this.called, off), off, sim.defense.map(d => d.slot as DefSlot), this.prefs, this.style);
+      const { align } = this.answer(sim, off);
+      if (this.lock && align.spots[this.lock]) this.leverage = align.spots[this.lock]!.pos.y - seen.pos.y;
       this.targets.clear();
       for (const d of sim.defense) {
         const spot = align.spots[d.slot as DefSlot];
@@ -305,12 +397,28 @@ export class MotionRuntime {
       const facing = len > 2 ? Math.atan2(dy, dx) : Math.PI;
       intents[d.idx] = { vel: { x: len ? dx / len * speed : 0, y: len ? dy / len * speed : 0 }, facing };
     }
+    // MOTION_CHECK: a defender locked on a jet trails him: he matches the
+    // jet's pace as seen a reaction time ago and closes on where that puts
+    // him, at the man's depth; turned and running while behind, square once on.
+    const locked = this.lock ? sim.slot(this.lock) : undefined;
+    const spot = locked && this.targets.get(locked);
+    if (motionCheckEnabled() && this.plan.live && locked && spot) {
+      const seen = [...this.seen].reverse().find(s => s.t <= sim.t - BUMP_REACTION) ?? this.seen[0];
+      const before = [...this.seen].reverse().find(s => s.t <= seen.t - 0.1);
+      const vy = before && seen.t > before.t ? (seen.pos.y - before.pos.y) / (seen.t - before.t) : 0;
+      // His leverage on the jet as the last re-sort set it (inside, outside).
+      const dx = spot.x - locked.pos.x, dy = seen.pos.y + vy * BUMP_REACTION + this.leverage - locked.pos.y;
+      let vx = 3 * dx, vyCmd = vy + 3 * dy;
+      const speed = Math.hypot(vx, vyCmd), cap = locked.profile.vmax;
+      if (speed > cap) { vx *= cap / speed; vyCmd *= cap / speed; }
+      intents[locked.idx] = { vel: { x: vx, y: vyCmd }, facing: Math.hypot(vx, vyCmd) > 2 ? Math.atan2(vyCmd, vx) : Math.PI };
+    }
   }
 
   /** At the snap: the offense as it actually stands, and the coverage installed against it. */
   finish(sim: MotionHost): { offAlign: OffenseAlignment; defCall: DefensivePlayCall; defAlign: DefenseAlignment } {
     const offAlign = realignOffense(sim.offAlign, slot => sim.slot(slot)?.pos);
-    const defCall = installCoverage(this.called, offAlign);
-    return { offAlign, defCall, defAlign: alignDefense(defCall, offAlign, sim.defense.map(d => d.slot as DefSlot), this.prefs, this.style) };
+    const { call: defCall, align: defAlign } = this.answer(sim, offAlign);
+    return { offAlign, defCall, defAlign };
   }
 }

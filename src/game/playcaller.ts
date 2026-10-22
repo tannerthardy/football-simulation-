@@ -113,6 +113,18 @@ const SHOW_CHECK = { under: { oneHigh: .37, twoHigh: 1.6 }, empty: { oneHigh: 1.
  *   ratio to the whole (Cover 1 0.82, Cover 0 0.75, 2-man 0.5, Cover 3
  *   1.12, quarters 1.07, Cover 6 1.1). */
 const COVER_CALL = process.env.COVER_CALL === '1';
+/** PRESSURE_CALL (experimental, off): how often the coordinator brings
+ * pressure depends on the shell behind it. 2022 tracking, dropbacks (initial
+ * pass rushers against PFF's coverage, scripts/diag/align): five or more
+ * rushers behind a one-high shell on 38% of snaps, behind two-high on 11%,
+ * Cover 0 85% (it is called with its pressure), all 29%. The coordinator's
+ * blitz habit keeps its overall level; his chance is scaled by the shell's
+ * tracked ratio to the whole, normalized over the tracked mix (one-high 56%,
+ * two-high 40%): x1.48 behind one high, x0.43 behind two. Off: one chance
+ * whatever the coverage, and a two-high call without an installable
+ * pressure rushes four (3% with five or more, 24% behind one high). */
+const PRESSURE_CALL = process.env.PRESSURE_CALL === '1';
+const PRESSURE_BY_SHELL: Record<string, number> = { 'one-high': 1.48, 'two-high': .43 };
 export const CB_NORM = 79.3;
 export const WR_NORM: Partial<Record<PersonnelId, number>> = { '10': 69.6, '11': 71.3, '12': 72.0, '21': 72.0, '13': 76.6, '22': 76.6 };
 const EARLY_DOWN: Record<string, number> = { cover1: .82, cover0: .75, cover2man: .5, cover3: 1.12, cover4: 1.07, cover6: 1.1 };
@@ -570,6 +582,7 @@ export class DefensiveCoordinator {
     if (s.down >= 3 && s.distance >= 3 && s.distance <= 8) blitz += 0.1;
     blitz += (0.5 - r01(qb.ratings.pocketPresence)) * 0.2;
     if (s.hurry && s.scoreDiff < 0) blitz -= 0.12;
+    if (PRESSURE_CALL) blitz *= PRESSURE_BY_SHELL[coverage.look ?? coverage.shell] ?? 1;
     let pressure = null;
     if (rng.chance(blitz)) {
       const options = PRESSURES.filter((p) => pressureIsInstallable(personnel, front, coverage, p));
@@ -611,6 +624,7 @@ export class DefensiveCoordinator {
     if (rng.chance(disguiseRate)) {
       // A two-high tree shows one home shell, quarters, on everything it
       // rotates out of (Fangio: "don't let them know"); others vary the look.
+      // SHELL_SHOW: a disguised zero shows one high as often as two (tracked 21% and 16%).
       const pool = system === 'two-high' ? (look === 'two-high' ? [] : ['cover4'])
         : look === 'zero' && SHELL_SHOW && own.fork('zero-look').chance(.57) ? ['cover1', 'cover3']
         : look === 'one-high' || look === 'zero' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];

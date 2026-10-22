@@ -96,8 +96,12 @@ describe('offensive motion', () => {
     const plain = scene('gun_doubles_11', 'cover1');
     const sim = scene('gun_doubles_11', 'cover1', { slot: 'H', kind: 'across' });
     for (const d of sim.defense) expect(d.pos.x).toBeGreaterThan(sim.los);
-    // Someone went with H: a defender ends over him on the far side (inside leverage allowed), having moved laterally to get there.
+    // H crossed the formation and someone answers him there (inside leverage
+    // allowed). Who depends on the check: a lock carries his set defender
+    // across; a trade or bump hands him to whoever stands nearest, who may
+    // already be there (DEF_ALIGN's nickel sets 2 yd from where H now stops).
     const h = at(sim, 'H');
-    expect(sim.defense.some(d => Math.abs(d.pos.y - h.pos.y) < 2.5 && Math.abs(at(plain, d.slot).pos.y - d.pos.y) > 4)).toBe(true);
+    expect(Math.abs(h.pos.y - at(plain, 'H').pos.y)).toBeGreaterThan(6);
+    expect(sim.defense.some(d => Math.abs(d.pos.y - h.pos.y) < 2.5 && d.pos.x - sim.los < 8)).toBe(true);
   });
 });
