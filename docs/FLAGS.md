@@ -2,11 +2,12 @@
 
 Every engine switch read from the environment, generated from `src` on 2026-10-22 (trunk `d91c9014`). Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 77 flags: 53 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off. On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 78 flags: 54 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off. On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
 | `ANCHOR_SPLIT` | on | default | trenches | `src/sim/engagement.ts:668` | — |
+| `ARM_PRESS` | on | default (G5, 2026-10-22) | physics | `src/physics/support.ts:106` | review 2: drop the off path. Decided by the PRO-1 edge-rep measures (`scripts/diag/edge-rep.py`): pair distance in the rep and how free rushers get free |
 | `CLIMB_INTERCEPT` | on | default | run | `src/sim/behaviors/blocking.ts:764` | — |
 | `CLIMB_PLAN` | on | default | run | `src/sim/behaviors/blocking.ts:761` | — |
 | `DL_FLOW` | on | default | trenches | `src/sim/engagement.ts:678` | — |

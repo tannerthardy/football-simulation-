@@ -321,6 +321,11 @@ function armForce(a: Agent): number {
   return supportParams(a.profile).armForce;
 }
 
+/** Press a player can put through his hands (a push, not a grip), kg·yd/s². */
+function pressForce(a: Agent): number {
+  return supportParams(a.profile).pressForce;
+}
+
 // A joining blocker earns his own hands. The state belongs to the acquired
 // physical contact, rather than to whichever blocker currently owns the rep.
 // Primary reps retain their existing control/RNG law; pass helpers retain the
@@ -368,7 +373,7 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
   const reach = (c >= 0 ? tb.arm : td.arm) / 36;
   joint.actor = c >= 0 ? b.body : d.body;
   joint.extension = sep + reach * 0.3 * (0.5 + 0.5 * Math.abs(c));
-  joint.push = (c >= 0 ? armForce(b) : armForce(d)) * (0.35 + 0.65 * Math.abs(c));
+  joint.push = (c >= 0 ? pressForce(b) : pressForce(d)) * (0.35 + 0.65 * Math.abs(c));
   joint.hold = holding ? armForce(b) * 1.2 : c > 0.3 ? armForce(b) * 0.25 * c : 0;
   joint.steer = c >= 0 ? armForce(b) * (0.15 + 0.55 * c) : armForce(d) * (0.15 + 0.4 * -c);
 }
@@ -457,7 +462,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
     if (e.type === 'run') { setRunHelperHands(sim, e, h, j); continue; }
     const support = helperSupport(sim, e, h);
     j.extension = h.profile.radius + d.profile.radius + traits(h, e.type).arm / 36 * 0.2;
-    j.push = armForce(h) * 0.8 * support;
+    j.push = pressForce(h) * 0.8 * support;
     j.steer = armForce(h) * 0.4 * support;
     j.hold = 0;
   }
