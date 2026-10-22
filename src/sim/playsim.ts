@@ -93,6 +93,9 @@ export interface PlaySetup {
 
 const MAX_PLAY_TIME = 25;
 
+/** Outside the field of play's boundary lines (end lines and sidelines). */
+const outsideField = (p: { x: number; y: number }): boolean => !(p.x > 0 && p.x < 120 && p.y > 0 && p.y < FIELD_WIDTH);
+
 /** A lineman's visible pre-snap start: his own (no defender) or a flinch at one. */
 interface SnapEvent { t: number; o: Agent; d?: Agent }
 /** Length of the ball: the neutral zone's depth (yd). */
@@ -823,7 +826,10 @@ export class PlaySim {
       impetusTeam: this.acquisition?.team === carrier.team ? this.acquisition.impetusTeam : carrier.team,
       momentumExceptionExcluded: !this.acquisition?.momentumRetained,
       momentumSpotX: this.acquisition?.team === carrier.team && this.acquisition.momentumRetained
-        ? this.acquisition.spotX : undefined };
+        ? this.acquisition.spotX : undefined,
+      // A carrier leaning over the boundary with his feet in can lose the
+      // ball beyond its plane: it crossed while held, at his spot on the line.
+      ...(outsideField(flight.pos) ? { boundaryExit: { x: clamp(flight.pos.x, 0, 120), y: clamp(flight.pos.y, 0, FIELD_WIDTH) } } : {}) };
     // Statistical spot of the fumble: forward progress if he was wrapped up.
     this.endSegment(this.bond ? this.bond.progressX : carrier.pos.x, 'fumble');
     // Offensive fumbles are the box-score stat; a returner's fumble is only an event.
