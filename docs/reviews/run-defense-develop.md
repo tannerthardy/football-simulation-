@@ -609,6 +609,49 @@ Flags cleared include Duo's engaged DL driven back at 3 s, Duo and overall
 run yards, and yards after contact; new ones are inside-zone run yards
 and box-rusher speed in the first half second.
 
+**The zone tail under the law, traced.** Single plays cannot show it:
+`attempt()` draws its miss chance from the shared `sim.rng`, so any change
+upstream shifts which roll each later tackle gets (a paired play had
+identical bodies through 3.30 s and a different roll). Over distributions,
+on two seed sets (1,800 runs), 20+ went 52 → 88. Carriers are 0.15–0.55
+yd/s faster from 0 to 3 yd past the line; broken wraps are unchanged. The
+carrier is lifted, not loaded, by the defenders he meets there (backers 9%,
+corners 39% of his weight), so the speed comes from his blockers. On zone
+our engaged linemen already ran upfield: the 'attack' technique requested
+1.5 yd/s into the backfield whatever the block. Single-blocked on outside
+zone they finish 1.61 yd upfield at 2.5 s (tracked 0.62), and the law
+added more (1.78), opening the cut-ups behind them.
+
+`DL_FLATTEN` (`engagement.ts`, off): an attacking lineman who sees the man
+on him move across (over 1 yd/s, more across than at him) holds the depth
+where he met him ("flatten the guard on the L.O.S. and keep outside
+leverage", Bucs; "push & press", Allen). A vertical drive keeps the attack.
+`test/dl-flatten.test.ts`.
+
+| Outside zone, 2.5 s (`dlwash.py`) | single-blocked | doubled | zone losses |
+| --- | --- | --- | --- |
+| control | −1.61 | −0.87 | 10.2% |
+| law + anchor + flatten | −0.51 | −0.33 | 4.1% |
+| NFL | −0.62 | −0.59 | 7.6% |
+
+The zone 40+ count then moves with almost any front change (control 21;
+flatten alone 37; all three 42 on one seed set and 7 against 16 on the
+other). Runs past 20 yd reach 40 88% of the time here (NFL 25%): there is
+no last level, because the safety fits the alley at linebacker depth.
+Holding him deep fails while the box leaks: with the three flags plus
+`DEEP_CAP`, gap 10+ goes 18 → 39% (safeties only: 35%), and runners
+reach 5 yd on 63% of gap runs (NFL 37%). Two attempts; stopped. The root
+is the box's second level, where backers start late (start-up
+acceleration, with the run-offense session).
+
+| 8 games on develop | run mean / median / p90 | losses | 20+ | flags, guard |
+| --- | --- | --- | --- | --- |
+| off | 8.59 / 2.98 / 27.7 | 21.8% | 10.8% | 46, 12/12 |
+| law + anchor | 6.34 / 2.61 / 12.0 | 17.0% | 6.3% | 32, 12/12 |
+| + flatten (`280396e`) | 6.50 / 2.70 / 10.1 | 13.3% | 5.6% | 26, 12/12 |
+
+Core suite 2,857 / 2,857 with all three on and off.
+
 ### The run tail and the secondary (diagnosis; two probes, neither committed)
 
 The run-offense session's `geometry.py` (its branch) puts the 40+ tail in
