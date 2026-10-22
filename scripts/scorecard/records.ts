@@ -58,8 +58,10 @@ export interface GameRec {
   fumLost: number;
   punts: number;
   tie: boolean;
-  /** CPU time of simulateGame in this worker. */
+  /** Elapsed milliseconds around simulateGame, excluding roster/probe/record work. Not CPU time. */
   ms: number;
+  /** Actual pre-simulation teams/options/seed identity. Absent on legacy records. */
+  inputSha256?: string;
   plays: PlayRec[];
   /** Sums contributed by probes (see probes.ts), keyed `<probe>.<name>`. */
   probe: Record<string, number>;
