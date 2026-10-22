@@ -72,3 +72,49 @@ attaches its scorecard and explains each stat that moved.
   before the catch, Run Game owns the gap fits before contact, and Defense
   owns pursuit and the tackle. Agree on a change to a shared function with the
   lane that owns it before you push it.
+
+## Long-term direction
+
+Tanner set this direction on 2026-10-22. It is far off: no agent works on it
+until the current gaps are fixed and the engine is fast enough to test many
+games cheaply. It is here so that today's choices don't close it off.
+
+**The big idea: no meta to abuse.** A user wins by being creative with what
+they have: their players, their coaches and the opponent in front of them.
+No play, scheme or archetype wins regardless. When something dominates, the
+rule "never ban what works too well" applies: find its missing counter or
+cost and build that.
+
+- **Players differ the way real players do.** Some are very physical and slow
+  to read, some are smart and unathletic, some are good at everything, some at
+  little. Build each player from separate traits instead of an overall:
+  - body: mass, strength, speed, burst, change of direction;
+  - mind: processing speed, read accuracy, anticipation, discipline;
+  - technique: one rating per skill.
+
+  Draw them from correlated distributions fitted to real players, using
+  combine and per-player tracking measures. Ratings stay capacities,
+  perception and control (the model rules), so "physical but slow to read"
+  shows up as a player who arrives fast after a late or wrong read.
+- **Flexible play-calling.** A concept is a set of rules (routes with landmarks,
+  blocking rules) that can run from any formation that meets its needs, as
+  real offenses work, instead of a fixed list of plays. Testing doesn't cover
+  every combination. It checks that each rule is executed correctly, and it
+  checks outcomes by concept against tracking. A bad combination fails for a
+  football reason, such as nobody there to kick out the end.
+- **Coaches and scheme fit.** A coach knows his players but coaches what he
+  knows. A season plan is a stock list of plays he builds around. A team runs
+  some plays better without simply being better, through three mechanisms:
+  - demands: a scheme needs certain archetypes (Veer and Shoot needs fast
+    receivers who read leverage);
+  - teaching: a coach's history sets how well his team executes each family
+    of concepts, and practice time is limited, so an air raid staff that
+    never taught wide zone can't build a great wide-zone team without
+    stacked talent;
+  - familiarity: defenses that rarely see a scheme play it worse. That is
+    one reason an underdog like Kansas may be right to run triple option
+    against a team like Alabama, along with higher variance and fewer
+    possessions.
+
+These grow out of G7 (play-calling) and G8 (league). The speed work (F2)
+comes first, because testing these needs many games.
