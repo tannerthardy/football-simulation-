@@ -541,12 +541,73 @@ the same start: 1.95 yd/s asked over the first 0.5 s, 0.80 achieved. The
 common limit is start-up acceleration from a stance, a movement-law
 question for the physics owner (the run-offense branch carries `GAIT_STEP`).
 
-Handoff, physics: against Duo's vertical double team, our linemen are
-driven back +1.49 yd by 2.5 s (single-blocked +0.34); tracked linemen hold
-at +0.06 (−0.32) (`dlwash.py`, `drive-push.ts` on the run-offense branch).
-Both sides push at saturated force and both carry posture 0.85, so pad
-level and base width do not enter the contest. No defender technique
-(sit, anchor, split) can act until the push law gives them a physical role.
+### Pad level in the push (`PAD_LEVERAGE`, `DL_ANCHOR`; user-requested physics, off)
+
+Against Duo's vertical double team our linemen were driven back +1.49 yd by
+2.5 s (single-blocked +0.34); tracked linemen hold at +0.06 (−0.32)
+(`dlwash.py`, `drive-push.ts` on the run-offense branch). The cause was in
+the law. Posture already set centre-of-mass height, pad height, base width
+and the tipping moments of a contact, but each body's traction was the
+friction of his standing weight whatever the contact geometry. In a neutral
+two-body push (`out/lev-probe.mts` pattern, now `test/pad-leverage.test.ts`)
+a low man against a high man and a high man against a low man came out
+identical to the hundredth of a yard.
+
+`PAD_LEVERAGE` (`world.ts` `addLoad`, the feet budget): a push runs from
+pads to pads. When one man's pads are lower, its line of action tilts up
+into the higher man (rise over run, credited to 0.6). The vertical part
+lifts the higher man and presses the lower man down, and each man's
+traction is Coulomb friction on that normal load (`TURF_MU`, unchanged).
+Only compression has the wedge; a pull does not. No strength or solver
+detail is added.
+
+| Neutral push, defender's travel at 2 s | off | on |
+| --- | --- | --- |
+| low (posture 0.9) vs high (0.3) | +0.05 | +1.95 |
+| high vs low | +0.05 | −1.84 |
+| equal pads | +0.05 | +0.05 |
+| low vs two high | −3.12 | −2.68 |
+
+`DL_ANCHOR` (`engagement.ts`): an engaged run defender who is doubled, or
+is being driven back by a real load, sits into his stance (posture 1.0
+from 0.85; "stay low", "drop the pressure leg": Bucs, Kuchar, Shurmur). A
+blocker already anchors the same way when driven. It matters only where pad
+level has a physical path.
+
+| Run-offense profile (`879c1d9`) | Duo doubled DL driven back, 2.5 s | single-blocked | Duo median | gap 40+ / 1,200 | zone 40+ / 1,200 |
+| --- | --- | --- | --- | --- | --- |
+| off | +1.31 | +0.21 | 5.72 | 134 | 21 |
+| `PAD_LEVERAGE` | +1.04 | −0.43 | 5.03 | 110 | 42 |
+| + `DL_ANCHOR` | +0.80 | −0.61 | 4.77 | 126 | 39 |
+| NFL (MAN, under centre) | +0.06 | −0.32 | 3.0 | | |
+
+Single blocks now hold as tracked linemen do; doubles still give ground.
+Two blockers' summed drive still beats one defender's strength-capped
+resistance, so the rest is not pad level. Zone runs of 40+ doubled under
+the law (a fresh all-off control reproduced 21 exactly; other changes to
+this profile land at 27–30). Two diagnostics did not locate it: tacklers at
+posture 0.9 change nothing (41), and broken wraps are unchanged (321 vs
+311); runners in the open simply go further (20+ from about 305 open runs:
+28 → 52), with more passes without contact (211 → 236). Unresolved.
+
+Staged witnesses pinned off: `combo-strike-access`, `planned-climb-fit`
+(recorded plays), `redirect-protection` (its rusher must turn the corner
+first), `pass-contact-rules` (a staged "non-dispositive" receiver contact
+becomes dispositive when the receiver's pads are up). Core suite 2,854 /
+2,854 with both flags on and off. Promotion of a physics law stays with the
+primary physics owner.
+
+| 8 games on develop (`83ab603`) | off | `PAD_LEVERAGE` + `DL_ANCHOR` |
+| --- | --- | --- |
+| Run yards mean / median / p90 / p99 | 8.59 / 2.98 / 27.7 / 78.7 | 6.34 / 2.61 / 12.0 / 80.4 |
+| Runs for a loss | 21.8% | 17.0% |
+| Pass yards median | 5.43 | 6.38 |
+| Pressure within 2 yd before the throw | 20.0% | 20.6% |
+| Report flags (`off`), guard | 46, 12/12 | 32, 12/12 |
+
+Flags cleared include Duo's engaged DL driven back at 3 s, Duo and overall
+run yards, and yards after contact; new ones are inside-zone run yards
+and box-rusher speed in the first half second.
 
 ### The run tail and the secondary (diagnosis; two probes, neither committed)
 
