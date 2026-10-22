@@ -613,8 +613,12 @@ need personnel the sim doesn't have.
 - **Cause, holding:** *confirmed* (G6). None of the 167 called holds followed a
   deliberate grab (`tryHold`): all came from the ordinary controlling grip
   (`hold = 0.25 × control × arm force`) on a defender moving off the block,
-  called on a single interval of 0.15 yd/s opposing Δv. Open: what makes a
-  grip prohibited grabbing.
+  called on a single interval of 0.15 yd/s opposing Δv. 39% came in the
+  first 0.25 s of the block and 44% with the defender still squarely in front
+  (|phi| < 0.5); 30% had him at or past the blocker's hip. `HOLD_LEVERAGE`
+  calls a grip a hold only once the defender has leverage past the blocker
+  (|phi| ≥ 1, the engagement's own "beaten at the hip") or it takes his feet:
+  5.29 → 1.50 accepted per team-game on identical games.
 - **Cause, offside:** *hypothesis* (#190): hard counts draw defenders too
   easily. `SNAP_REACT` models the snap as perception and timing.
 - **Open:** holding (above), then the missing defensive fouls.
