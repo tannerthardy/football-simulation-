@@ -504,6 +504,31 @@ type. Physical pages.
   declares; pursue as front-hip and back-hip defenders, with a curved
   "banana" angle on a back moving away.
 
+- **More programs** (Coach Allen LB manual; AFQ "Inside Linebacker Play &
+  Progression", Vanatta, 2006; 2014 Michigan; 2016 Oregon):
+  - *Depth:* Allen "Toes at 4 yards from LOS", backing up a full step on
+    twist calls (p. 4); Michigan's key drill is "5 yards deep" (p. 77). Across
+    programs that is 4–5 yd.
+  - *Reaction by guard action* (AFQ, keying guard → back → third threat):
+    down → "step away and play downhill"; base → "step away and attack hard";
+    pull → step with it and read the back's flow; zone → step with it and work
+    up a level; scoop → short step, then read the back (a false key); pass →
+    false step and drop. In Michigan's key drills (pp. 78–81), power and
+    counter draw the same linebacker path because he follows the pulling
+    guard.
+  - *First step:* Michigan's is "always forward … at a 45°" (p. 7); the
+    Cowboys, AFQ and Svec teach a shuffle or read step. Treat it as a
+    system choice.
+  - *Against pullers and lead blockers:* Allen and AFQ squeeze ("reduce &
+    rip": inside foot and shoulder into the block, rip inside); Michigan meets
+    them on the offense's side of the line and turns the blocker's nose to the
+    sideline (pp. 8, 15); Oregon decides over or under the puller by a
+    pre-snap call ("Overlap", "Backer", p. 34). With the Cowboys' spill on
+    counter, spill vs. squeeze is a defensive call, not a fixed rule.
+  - *Pass:* hold for run until the ball passes the deepest back (Allen p. 4);
+    Michigan reads the QB's depth, shoulder and hand (p. 13). Hook-curl drop
+    depths differ by program: 8–10 yd (AFQ) vs. 12–15 yd (Michigan p. 45).
+
 ## Defensive line pass rush and stunts
 
 From the Bucs manual (pp. 29–40, 57–62) and Walker; physical pages.
