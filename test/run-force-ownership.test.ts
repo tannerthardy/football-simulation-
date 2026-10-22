@@ -1,4 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
+// DEEP_NO_FORCE=0: this test's exchange fixture lets a deep zone take force; the
+// flag removes that fallback by design (test/deep-no-force.test.ts covers it).
+vi.hoisted(() => { process.env.DEEP_NO_FORCE = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';

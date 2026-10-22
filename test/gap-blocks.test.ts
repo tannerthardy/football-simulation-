@@ -11,6 +11,9 @@
  * TRAP_FIT    a trapper on the last leg of his pull fits his man, as the
  *             counter kicker does (RunBlocker.update). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// DL_SQUEEZE=0: this recorded scene's defenders were staged without the squeeze;
+// it tests another mechanism under the rule it was recorded with.
+vi.hoisted(() => { process.env.DL_SQUEEZE = '0'; });
 // FRONT_ALIGN moves the front off its installed spots; this scene is staged on them.
 vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 // These compare the flag on and off on plays recorded on the installed flat

@@ -6,6 +6,9 @@
  * flag the unjoined double never releases and the tackle drifts with no
  * one to block; with it he climbs to the double's linebacker. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// DL_SQUEEZE=0: this recorded scene's defenders were staged without the squeeze;
+// it tests another mechanism under the rule it was recorded with.
+vi.hoisted(() => { process.env.DL_SQUEEZE = '0'; });
 // FRONT_ALIGN moves the front off its installed spots; this scene is staged on them.
 vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 // Recorded on the lab/generated rosters before FRONT_FIT (on in the pinned

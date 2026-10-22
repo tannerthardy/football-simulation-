@@ -1,6 +1,9 @@
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {describe,expect,it,vi} from 'vitest';
+// DL_SQUEEZE=0: this recorded scene's defenders were staged without the squeeze;
+// it tests another mechanism under the rule it was recorded with.
+vi.hoisted(() => { process.env.DL_SQUEEZE = '0'; });
 // BLOCK_FRONT=0: this fixture builds contact on the defender's side or back
 // (beyond 110 deg of his facing), which BLOCK_FRONT turns away; it tests
 // another mechanism under the rule it was recorded with.

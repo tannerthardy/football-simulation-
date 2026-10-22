@@ -155,6 +155,35 @@ concept against tracking: counter 8.8% (NFL 11.6), trap 1.2% (3.8), power
 10.0% (9.1), duo 0.5% (7.7). Duo never loses yards; that is the next run
 question.
 
+## First shared build (proposed; flags off pending run-defense review)
+
+This branch now carries run-defense's `DEEP_NO_FORCE` (cd4a602), `DL_SQUEEZE`
+(d9369dcb, merged with this profile's `read.chasing` in `recover`) and
+`PULL_EARLY` (f28754c6) with their tests, all off in `config/baseline.json`.
+Recorded-scenario tests that stage defenders without them pin
+`DL_SQUEEZE=0` (combo-solo, combo-strike-access, gap-blocks, kick-log,
+planned-climb-fit, run-contact-flow) or `DEEP_NO_FORCE=0`
+(run-force-ownership). Core 2964/2964 with the flags off and with
+`DL_SQUEEZE DEEP_NO_FORCE` on.
+
+Proposed build: this profile + `DL_SQUEEZE=1 DEEP_NO_FORCE=1`. Paired lab
+against this profile (`sb3` -> `bld`, same cases):
+
+| | 40+ | 20+ | 10+ | losses | TVD to NFL bands |
+|---|---|---|---|---|---|
+| zone, under center (1,200) | 54 -> 30 (p 0.004) | 71 -> 50 (p 0.03) | 141 -> 117 (p 0.08) | 36 -> 39 | 9.0 -> 7.4 |
+| gap (1,600) | 145 -> 116 (p 0.035) | 180 -> 144 (p 0.013) | 294 -> 262 (p 0.07) | 82 -> 98 | 8.9 -> 8.2 |
+| shotgun zone (600) | 36 -> 20 (p 0.04) | 55 -> 34 (p 0.02) | 111 -> 86 (p 0.025) | 11 -> 21 | 10.6 -> 9.8 |
+
+Games (8, seed 301): meetings per run reaching 5 yd 2.06 -> 2.31 (NFL 2.69);
+gap-row DL flow -0.27 -0.43 -0.09 -> -0.23 +0.13 +0.47 (NFL +0.24 +0.76
++1.35); DL tied up 1 s after the crossing 69 -> 69% (NFL 56).
+
+`PULL_EARLY` on top of the build is not proposed yet: shotgun and zone inert,
+gap 10+ 262 -> 239 (p 0.09) and gap TVD 8.2 -> 9.9 (10-19 yd runs, already
+under tracking, fall further). Its backer-flow mechanism still needs its own
+games read on `pullers.py`.
+
 ## Flags on
 
 | Flag | Value | Where | What it does (from its doc comment) |

@@ -1,4 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// DL_SQUEEZE=0: this recorded scene's defenders were staged without the squeeze;
+// it tests another mechanism under the rule it was recorded with.
+vi.hoisted(() => { process.env.DL_SQUEEZE = '0'; });
 import { contactCommands, contactFixture } from '../scripts/diag/run-contact-technique.js';
 import { CENTER_Y } from '../src/core/field.js';
 import { supportParams } from '../src/physics/support.js';
