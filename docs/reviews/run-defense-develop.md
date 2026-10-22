@@ -657,8 +657,13 @@ committed).** When a runner reaches 20 yd, tracked defenses still have 1.9
 men downfield of him and the nearest defender is 1.7 yd away; ours have
 0.18 and 4.9 yd, behind him 91% of the time, and P(40+ | 20+) stays
 0.75–0.92 in every arm (NFL 0.25).
-- The start: tracked box backers move 0.54 / 0.97 yd/s at 0.2 / 0.4 s,
-  ours 0.07 / 0.42; from 0.6 s ours accelerate as hard (`startup.py`).
+- The start: the tracked snap frame lags the snap by about 0.1 s (the
+  run-offense session's `getoff-rel.py`), so `startup.py --shift 0.1` for
+  NFL. Shifted, our interior linemen start as tracked ones do (0.65 / 1.26
+  vs 0.65 / 1.19 yd/s at 0.2 / 0.4 s). Box backers are late (0.07 / 0.42 vs
+  0.41 / 0.73), then too fast (2.46 / 3.28 vs 1.93 / 2.56 at 0.8 / 1.0 s):
+  late, then rushing downhill. The run-offense session's `SNAP_REACT`
+  (claude/run-game-v3, off) times the defense's start against the offense.
   Defenders stand still until their full reaction time. `DEF_GETOFF=0.5`
   (the run-offense session's scale, ported at identity) gives 0.25 / 0.57.
   Lab tails fall (zone 40+ 42 → 32, gap 137 → 122), but 8 develop games

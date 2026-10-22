@@ -1,10 +1,11 @@
 """Start-up from the snap, one operator for NFL and sim common plays: speed of
 box linebackers (2.5-8 yd off the ball, inside the tackles + 2 at the snap)
 and of interior offensive linemen at 0.2/0.4/0.6/0.8/1.0 s, runs under centre.
-usage: startup.py FILE [--concept NAME]"""
+usage: startup.py FILE [--concept NAME] [--shift S]  (NFL: --shift 0.1, the tracked snap frame lags the snap)"""
 import gzip, json, sys, math, statistics as st
 f = sys.argv[1]; args = sys.argv[2:]
 CON = args[args.index('--concept') + 1] if '--concept' in args else None
+SHIFT = float(args[args.index("--shift") + 1]) if "--shift" in args else 0.0
 T = [.2, .4, .6, .8, 1.0]
 S = {g: {t: [] for t in T} for g in ('LB', 'OL')}
 n = 0
@@ -23,7 +24,8 @@ for l in gzip.open(f, 'rt'):
     n += 1
     for g, ids in (('LB', lbs), ('OL', inner)):
         for t in T:
-            a, b = round((t - .1) / dt), round((t + .1) / dt)
+            a, b = round((t - SHIFT - .1) / dt), round((t - SHIFT + .1) / dt)
+            if a < 0: continue
             if b >= len(xy): continue
             for i in ids:
                 S[g][t].append(math.hypot(xy[b][2 * i] - xy[a][2 * i], xy[b][2 * i + 1] - xy[a][2 * i + 1]) / (2 * .1 if dt == .1 else (b - a) * dt))
