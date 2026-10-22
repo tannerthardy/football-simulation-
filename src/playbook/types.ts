@@ -118,12 +118,23 @@ export interface RunConcept {
   beats: string[];
 }
 
+/** Pre-snap motion kinds (src/sim/motion.ts). */
+export type MotionKind = 'across' | 'jet' | 'empty' | 'return';
+
+/** One player in motion before the snap. */
+export interface MotionCall {
+  slot: SkillSlot;
+  kind: MotionKind;
+}
+
 export interface OffensivePlayCall {
   formation: Formation;
   flip: boolean;
   kind: 'pass' | 'run';
   pass?: PassConcept;
   run?: RunConcept;
+  /** Pre-snap motion (played only with MOTION=1). */
+  motion?: MotionCall;
   /** Display label. */
   label: string;
 }
@@ -218,6 +229,18 @@ export type MatchRule =
   | 'poach_safety'
   | 'stubbie_safety'
   | 'invert_safety'
+  | 'read_hook'
+  | 'mush'
+  | 'vertical_hook'
+  | 'box_out_low'
+  | 'box_in_low'
+  | 'box_out_deep'
+  | 'box_in_deep'
+  | 'banjo_out'
+  | 'banjo_in'
+  | 'clue_corner'
+  | 'three_rec_hook'
+  | 'bonus_hook'
   | 'rat'
   | 'robber';
 
@@ -260,6 +283,22 @@ export type CoverageFamily = 'cover0' | 'cover1' | 'cover2' | 'tampa2' | 'cover2
 /** Receiver distribution a coverage can check against. */
 export type FormationKey = '2x2' | '3x1' | '2x1' | '3x2' | '4x1' | 'empty' | 'heavy';
 
+/** Pre-snap structure features a coverage check can key on (src/playbook/structure.ts). */
+export type StructureTag =
+  | 'quads' | 'empty_3x2' | 'empty'
+  | 'bunch_strong' | 'bunch_weak'
+  | 'stack_strong' | 'stack_weak'
+  | 'trips_closed' | 'trips_open' | 'trips'
+  | 'nub_weak' | 'nub_strong'
+  | 'two_back' | 'iso_weak' | 'reduced_strong' | 'reduced_weak';
+
+/** A check: against this structure (every tag present), the call becomes one of `to`. */
+export interface CoverageCheck {
+  when: StructureTag[];
+  /** Coverage ids; the coordinator's preference index picks among several. */
+  to: string[];
+}
+
 /** An underneath seat: a zone, optionally with a match rule or style. */
 export type UnderSeat = ZoneId | { zone: ZoneId; rule?: MatchRule; style?: ZoneStyle };
 
@@ -280,6 +319,10 @@ export interface Coverage {
   family?: CoverageFamily;
   /** Formation checks: the call becomes one of these against that distribution. */
   checks?: Partial<Record<FormationKey, string[]>>;
+  /** Structure checks, most specific first; the first that matches applies before `checks`. */
+  structureChecks?: CoverageCheck[];
+  /** Players the call cannot be installed without, beyond its named zone seats (a rotation needs both safeties). */
+  needs?: DefSlot[];
   /** One line: what it is and what it takes away. */
   note?: string;
 }
@@ -289,8 +332,10 @@ export interface Pressure {
   name: string;
   /** Extra rushers: slot → gap. */
   blitzers: Partial<Record<DefSlot, { gap: Gap; side: 'S' | 'W' }>>;
-  /** Defensive linemen who drop into coverage instead of rushing. */
-  droppers?: Partial<Record<DefSlot, ZoneId>>;
+  /** Defensive linemen who drop into coverage instead of rushing: a zone, or a seat with a match rule. */
+  droppers?: Partial<Record<DefSlot, UnderSeat>>;
+  /** The rush count the call promises (a simulated pressure brings four, a fire zone five). */
+  rushers?: number;
   /** Compatible coverages. */
   coverages: string[];
 }
@@ -336,6 +381,10 @@ export interface DefensivePlayCall {
   creep?: { slot: DefSlot; secondsBeforeSnap: number };
   /** Which of the coverage's formation checks this coordinator prefers (index). */
   checkPick?: number;
+  /** The coordinator's ranked preference among installed checks this snap (coverage ids), ahead of `checkPick`. */
+  checkPrefer?: string[];
+  /** The pre-snap check the secondary made, if any: called coverage, and the structure it saw. */
+  check?: { from: string; when: string };
   /** Zeus: the offensive slot this zone call doubles; resolved to Cover 8 / Stuff / Quads by his alignment. */
   zeus?: SkillSlot;
   label: string;

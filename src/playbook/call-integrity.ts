@@ -6,8 +6,8 @@
  * exchanges, marker allocation and formation checks still belong to the
  * existing installer. Explicit lab calls may deliberately bypass these guards.
  */
-import { isDeepZone } from './alignment.js';
-import { DEF_PERSONNEL, type Coverage, type CoverageRole, type DefPersonnelId, type DefSlot, type Front, type Pressure } from './types.js';
+import { isDeepZone, seatRole } from './alignment.js';
+import { DEF_PERSONNEL, type Coverage, type CoverageRole, type DefPersonnelId, type DefSlot, type Front, type Pressure, type UnderSeat } from './types.js';
 
 const FRONT_RUSHERS: readonly DefSlot[] = ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT'];
 
@@ -25,7 +25,8 @@ export function coverageHasDeepSupport(personnel: DefPersonnelId, coverage: Cove
  */
 export function coverageHasNamedZonePlayers(personnel: DefPersonnelId, coverage: Coverage): boolean {
   return (Object.entries(coverage.roles) as Array<[DefSlot, CoverageRole]>).every(([slot, role]) =>
-    role.kind !== 'zone' || !!DEF_PERSONNEL[personnel][slot]);
+    role.kind !== 'zone' || !!DEF_PERSONNEL[personnel][slot])
+    && (coverage.needs ?? []).every(slot => !!DEF_PERSONNEL[personnel][slot]);
 }
 
 /**
@@ -41,8 +42,8 @@ function initialRoles(personnel: DefPersonnelId, front: Front, coverage: Coverag
   for (const [slot, blitz] of Object.entries(pressure.blitzers) as Array<[DefSlot, { gap: 'A' | 'B' | 'C' | 'D'; side: 'S' | 'W' }]>) {
     if (has(slot)) roles.set(slot, { kind: 'blitz', ...blitz });
   }
-  for (const [slot, zone] of Object.entries(pressure.droppers ?? {}) as Array<[DefSlot, Extract<CoverageRole, { kind: 'zone' }>['zone']]>) {
-    if (has(slot)) roles.set(slot, { kind: 'zone', zone });
+  for (const [slot, seat] of Object.entries(pressure.droppers ?? {}) as Array<[DefSlot, UnderSeat]>) {
+    if (has(slot)) roles.set(slot, seatRole(seat));
   }
   for (const slot of FRONT_RUSHERS) if (has(slot) && !roles.has(slot)) roles.set(slot, { kind: 'rush' });
   if (has('LB_S') && front.slots.LB_S && front.slots.LB_S.depth < 2 && !coverage.man && !roles.has('LB_S')) {
@@ -70,11 +71,13 @@ export function pressureIsInstallable(personnel: DefPersonnelId, front: Front, c
   for (const role of Object.values(coverage.roles)) {
     if (role?.kind === 'zone' && isDeepZone(role.zone) && !retainedDeep.has(role.zone)) return false;
   }
-  // This descriptor promises five rushers. Odd/Tite and an on-line Sam in
-  // base Under otherwise turn the same SS + Will / DE-drop call into six.
-  if (pressure.id === 'fire_zone') {
+  // A pressure that promises a rush count must deliver it: Odd/Tite and an
+  // on-line Sam in base Under otherwise turn a five-man fire zone into six,
+  // or a four-man simulated pressure into five.
+  const promised = pressure.rushers ?? (pressure.id === 'fire_zone' ? 5 : undefined);
+  if (promised !== undefined) {
     const rushers = [...roles.values()].filter((role) => role.kind === 'rush' || role.kind === 'blitz').length;
-    if (rushers !== 5) return false;
+    if (rushers !== promised) return false;
   }
   return true;
 }

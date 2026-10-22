@@ -11,12 +11,27 @@
  * more receivers), `_w` = away. Field/boundary versions of split-field calls
  * are chosen by the coordinator (e.g. Cover 6 vs. Cover 6 reversed).
  */
-import type { Coverage, CoverageRole, DefensivePlayCall, FormationKey, MatchRule, ZoneId } from './types.js';
+import { DEF_PERSONNEL, type Coverage, type CoverageRole, type DefensivePlayCall, type DefSlot, type FormationKey, type MatchRule, type ZoneId } from './types.js';
+import type { OffenseAlignment } from './alignment.js';
+import { formationStructure, type FormationStructure } from './structure.js';
 
 const z = (zone: ZoneId, rule?: MatchRule, depth?: number): CoverageRole => ({ kind: 'zone', zone, ...(rule ? { rule } : {}), ...(depth !== undefined ? { depth } : {}) });
 const seat = (zone: ZoneId, rule: MatchRule) => ({ zone, rule });
 
+/** Cover 9 shell: Tight 1/3 corners, the nickel-away safety rotates down to seam/flat, the other spins to the post. */
+const NINE_DEEP = {
+  CB_S: z('deep_third_s', 'c3_corner'),
+  CB_W: z('deep_third_w', 'c3_corner'),
+  SS: z('deep_mid'),
+  FS: z('curl_flat_w', 'c3_seam', 9),
+};
+
 // Quarters pieces shared by several calls.
+/** Quarters structure checks (HNFL-194 Sub Quads menu): Box vs bunch, Book/Read vs empty. Trips keep the distribution checks. */
+const QUARTERS_CHECKS = [
+  { when: ['bunch_strong'], to: ['cover4_box'] },
+  { when: ['empty_3x2'], to: ['cover4_book_read'] },
+] satisfies Coverage['structureChecks'];
 const QUARTERS_S = {
   CB_S: z('quarter_s_out', 'q_corner_mod'),
   SS: z('quarter_s_in', 'q_safety'),
@@ -59,6 +74,51 @@ export const COVERAGES: Coverage[] = [
       LB_W: { kind: 'man', prefer: ['B', 'W2'] },
     },
     underneath: [],
+    structureChecks: [{ when: ['bunch_strong'], to: ['cover1_banjo'] }],
+  },
+  {
+    id: 'cover1_lurk', name: 'Cover 1 Lurk', family: 'cover1', shell: 'one-high', man: true, press: false,
+    note: 'The two-high tree\'s Cover 1 (HNFL-240/209): corners man #1 from outside leverage, the weak safety comes down on weak #2, the other spins to the post, the Will has the back and the Mike lurks in the low hole.',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside' },
+      CB_W: { kind: 'man', prefer: ['W1'], lev: 'outside' },
+      NB: { kind: 'man', prefer: ['S2', 'W2'] },
+      FS: { kind: 'man', prefer: ['W2', 'S3'] },
+      SS: z('deep_mid'),
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+      LB_M: z('hole', 'rat'),
+    },
+    underneath: [],
+    structureChecks: [{ when: ['trips'], to: ['cover1_lurk_trips'] }, { when: ['bunch_strong'], to: ['cover1_banjo'] }],
+    needs: ['FS', 'SS'],
+  },
+  {
+    id: 'cover1_lurk_trips', name: 'Cover 1 Lurk (vs trips)', family: 'cover1', shell: 'one-high', man: true, press: false,
+    note: 'Vs 3x1 the nickel-side safety comes down on #3 and the weak safety spins to the post (HNFL-240).',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside' },
+      CB_W: { kind: 'man', prefer: ['W1'], lev: 'outside' },
+      NB: { kind: 'man', prefer: ['S2'] },
+      SS: { kind: 'man', prefer: ['S3', 'S2'] },
+      FS: z('deep_mid'),
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+      LB_M: z('hole', 'rat'),
+    },
+    underneath: [],
+    needs: ['FS', 'SS'],
+  },
+  {
+    id: 'cover1_banjo', name: 'Cover 1 Banjo (vs bunch)', family: 'cover1', shell: 'one-high', man: false, press: false,
+    note: 'Man-free vs bunch: the nickel locks the point, the corner and strong safety banjo #1 and #3 by release (first out / the other); a rat in the hole.',
+    roles: {
+      CB_S: z('flat_s', 'banjo_out'),
+      SS: z('curl_flat_s', 'banjo_in'),
+      NB: { kind: 'man', prefer: ['S2'], press: true },
+      CB_W: { kind: 'man', prefer: ['W1'] },
+      FS: z('deep_mid'),
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+    },
+    underneath: [seat('hole', 'rat')],
   },
   {
     id: 'cover1_off', name: 'Cover 1 Off', family: 'cover1', shell: 'one-high', man: true, press: false,
@@ -74,6 +134,7 @@ export const COVERAGES: Coverage[] = [
       LB_W: { kind: 'man', prefer: ['B', 'W2'] },
     },
     underneath: [seat('hole', 'rat')],
+    structureChecks: [{ when: ['bunch_strong'], to: ['cover1_banjo'] }],
   },
   {
     id: 'cover1_robber', name: 'Cover 1 Robber', family: 'cover1', shell: 'one-high', man: true, press: true,
@@ -90,6 +151,7 @@ export const COVERAGES: Coverage[] = [
       LB_W: { kind: 'man', prefer: ['B', 'W2'] },
     },
     underneath: [seat('hole', 'rat')],
+    structureChecks: [{ when: ['bunch_strong'], to: ['cover1_banjo'] }],
   },
   {
     id: 'cover1_double', name: 'Cover 1 Double', family: 'cover1', shell: 'one-high', man: true, press: false,
@@ -123,6 +185,57 @@ export const COVERAGES: Coverage[] = [
     },
     underneath: [],
   },
+  // Two-deep man ("Hands" family, HNFL-074/206/208/261): man underneath with
+  // two safeties; Pounder plays the safeties as inside quarters keying #2 to
+  // #1 to double whichever goes vertical, Fist (2-Man) as deep halves.
+  {
+    id: 'pounder', name: 'Pounder (man under, quarters safeties)', family: 'cover2man', shell: 'two-high', man: true, press: false,
+    note: 'Man underneath with inside leverage; both safeties play inside quarters keying #2 to #1 for a double on the vertical.',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'] },
+      CB_W: { kind: 'man', prefer: ['W1'] },
+      NB: { kind: 'man', prefer: ['S2', 'W2'] },
+      DB: { kind: 'man', prefer: ['W2', 'S3'] },
+      SS: z('quarter_s_in', 'q_safety'),
+      FS: z('quarter_w_in', 'q_safety'),
+      LB_S: { kind: 'man', prefer: ['S3', 'B'] },
+      LB_M: { kind: 'man', prefer: ['S3', 'B', 'W2'] },
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+    },
+    underneath: [],
+  },
+  {
+    id: 'finger', name: 'Finger (2-Man strong, Pounder weak)', family: 'cover2man', shell: 'two-high', man: true, press: false,
+    note: 'Trail man under a deep half to the strength; man with an inside-quarter safety keying #2 to #1 away.',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'], trail: true },
+      CB_W: { kind: 'man', prefer: ['W1'] },
+      NB: { kind: 'man', prefer: ['S2', 'W2'], trail: true },
+      DB: { kind: 'man', prefer: ['W2', 'S3'] },
+      SS: z('deep_half_s'),
+      FS: z('quarter_w_in', 'q_safety'),
+      LB_S: { kind: 'man', prefer: ['S3', 'B'] },
+      LB_M: { kind: 'man', prefer: ['S3', 'B', 'W2'] },
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+    },
+    underneath: [],
+  },
+  {
+    id: 'rolex', name: 'Rolex (Pounder strong, 2-Man weak)', family: 'cover2man', shell: 'two-high', man: true, press: false,
+    note: 'Man with an inside-quarter safety to the strength; trail man under a deep half away ("safety rolls to X").',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'] },
+      CB_W: { kind: 'man', prefer: ['W1'], trail: true },
+      NB: { kind: 'man', prefer: ['S2', 'W2'] },
+      DB: { kind: 'man', prefer: ['W2', 'S3'], trail: true },
+      SS: z('quarter_s_in', 'q_safety'),
+      FS: z('deep_half_w'),
+      LB_S: { kind: 'man', prefer: ['S3', 'B'] },
+      LB_M: { kind: 'man', prefer: ['S3', 'B', 'W2'] },
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+    },
+    underneath: [],
+  },
   // ------------------------------------------------------------ cover 3
   {
     id: 'cover3', name: 'Cover 3 (Sky)', family: 'cover3', shell: 'one-high', man: false, press: false,
@@ -144,6 +257,17 @@ export const COVERAGES: Coverage[] = [
     },
     underneath: [seat('curl_flat_s', 'c3_curl_flat'), seat('curl_flat_w', 'c3_curl_flat'), seat('hook_s', 'c3_hook'), seat('hook_w', 'c3_hook'), seat('hook_mid', 'mike_3')],
     checks: { '3x1': ['cover3_mable'] },
+    structureChecks: [{ when: ['bunch_strong'], to: ['cover3_clue'] }],
+  },
+  {
+    id: 'cover3_clue', name: 'Cover 3 Clue (vs bunch)', family: 'cover3', shell: 'one-high', man: false, press: false,
+    note: 'Bunch side zoned off (HNFL-203/204): the corner plays Clue 1/3 keying #2 to #1, the curl-flat and hook drop to spots; the backside stays match.',
+    roles: {
+      CB_S: z('deep_third_s', 'clue_corner'),
+      CB_W: z('deep_third_w', 'c3_corner'),
+      FS: z('deep_mid'),
+    },
+    underneath: [{ zone: 'curl_flat_s', style: 'spot' }, { zone: 'hook_s', style: 'spot' }, seat('curl_flat_w', 'c3_curl_flat'), seat('hook_w', 'c3_hook'), seat('hook_mid', 'mike_3')],
   },
   {
     id: 'cover3_seam', name: 'Cover 3 Seam', family: 'cover3', shell: 'one-high', man: false, press: false,
@@ -190,13 +314,32 @@ export const COVERAGES: Coverage[] = [
   {
     id: 'cover9', name: 'Cover 9 (weak rotation)', family: 'cover3', shell: 'one-high', look: 'two-high', man: false, press: false,
     note: 'Fangio\'s weak-rotation Cover 3 from two high: the weak safety spins down as a seam-flat player, the strong safety takes the middle, the slot side carries #2 vertical.',
-    roles: {
-      CB_S: z('deep_third_s', 'c3_corner'),
-      CB_W: z('deep_third_w', 'c3_corner'),
-      SS: z('deep_mid'),
-      FS: z('curl_flat_w', 'c3_seam', 9),
-    },
+    roles: NINE_DEEP,
     underneath: [seat('curl_flat_s', 'c3_seam'), seat('hook_s', 'c3_hook'), seat('hook_w', 'c3_hook'), seat('hook_mid', 'mike_3')],
+    structureChecks: [
+      { when: ['bunch_strong'], to: ['cover9_clue'] },
+      { when: ['stack_strong'], to: ['cover9_clue'] },
+      { when: ['empty_3x2'], to: ['cover9_grab'] },
+      { when: ['trips'], to: ['cover9_strap'] },
+    ],
+  },
+  {
+    id: 'cover9_strap', name: 'Cover 9 Strap (vs x1)', family: 'cover3', shell: 'one-high', look: 'two-high', man: false, press: false,
+    note: 'Weak rotation vs trips/x1 (HNFL-056/203): nickel seam/flat on #2, a #3 receiver hook carries #3 up or over, the Mike is a bonus hook relating to #3 underneath, the rotating safety plays seam/flat on the back.',
+    roles: NINE_DEEP,
+    underneath: [seat('curl_flat_s', 'c3_seam'), seat('hook_s', 'three_rec_hook'), seat('hook_mid', 'bonus_hook'), seat('hook_w', 'c3_hook')],
+  },
+  {
+    id: 'cover9_clue', name: 'Cover 9 Clue (vs bunch/stack)', family: 'cover3', shell: 'one-high', look: 'two-high', man: false, press: false,
+    note: 'Weak rotation with the bunch/stack side zoned off: the corner plays Clue 1/3 keying #2 to #1, the curl-flat and hook drop to spots (HNFL-056/204).',
+    roles: { ...NINE_DEEP, CB_S: z('deep_third_s', 'clue_corner') },
+    underneath: [{ zone: 'curl_flat_s', style: 'spot' }, { zone: 'hook_s', style: 'spot' }, seat('hook_mid', 'bonus_hook'), seat('hook_w', 'c3_hook')],
+  },
+  {
+    id: 'cover9_grab', name: 'Cover 9 Grab (vs empty)', family: 'cover3', shell: 'one-high', look: 'two-high', man: false, press: false,
+    note: 'Empty 3x2 (HNFL-054/063 "Grab"): rotation becomes Buzz. The weak overhang is seam/flat on weak #2 and the rotating safety becomes the #3 receiver hook on the final #3 up or over.',
+    roles: { ...NINE_DEEP, FS: z('hook_s', 'three_rec_hook', 9) },
+    underneath: [seat('curl_flat_s', 'c3_seam'), seat('curl_flat_w', 'c3_seam'), seat('hook_mid', 'bonus_hook'), 'hook_w'],
   },
   // ------------------------------------------------------------ two-deep zone
   {
@@ -220,6 +363,18 @@ export const COVERAGES: Coverage[] = [
       FS: z('deep_half_w'),
     },
     underneath: [seat('hook_s', 'c2_hook'), seat('hook_w', 'c2_hook'), seat('hook_mid', 'mike_3'), 'curl_flat_s', 'curl_flat_w'],
+    structureChecks: [{ when: ['trips'], to: ['cover2_wild'] }],
+  },
+  {
+    id: 'cover2_wild', name: 'Cover 2 Match Wild (vs trips)', family: 'cover2', shell: 'two-high', man: false, press: false,
+    note: 'Halves vs trips: the middle hook becomes a vertical hook and carries #3 up the middle between the halves; apexes wall #2.',
+    roles: {
+      CB_S: z('flat_s', 'sink_corner'),
+      CB_W: z('flat_w', 'sink_corner'),
+      SS: z('deep_half_s'),
+      FS: z('deep_half_w'),
+    },
+    underneath: [seat('hook_s', 'c2_hook'), seat('hook_w', 'c2_hook'), seat('hook_mid', 'vertical_hook'), 'curl_flat_s', 'curl_flat_w'],
   },
   {
     id: 'cover2_invert', name: 'Inverted Cover 2', family: 'cover2', shell: 'two-high', man: false, press: false,
@@ -251,6 +406,7 @@ export const COVERAGES: Coverage[] = [
     roles: { ...QUARTERS_S, ...QUARTERS_W },
     underneath: [seat('curl_flat_s', 'q_apex'), seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_s', 'hook_w'],
     checks: { '3x1': ['cover4_poach', 'cover4_stubbie'] },
+    structureChecks: QUARTERS_CHECKS,
   },
   {
     id: 'cover4_meg', name: 'Quarters MEG', family: 'cover4', shell: 'two-high', man: false, press: false,
@@ -263,6 +419,7 @@ export const COVERAGES: Coverage[] = [
     },
     underneath: [seat('curl_flat_s', 'q_apex'), seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_s', 'hook_w'],
     checks: { '3x1': ['cover4_poach'] },
+    structureChecks: QUARTERS_CHECKS,
   },
   {
     id: 'cover4_palms', name: 'Palms (2-Read)', family: 'cover4', shell: 'two-high', man: false, press: false,
@@ -275,47 +432,93 @@ export const COVERAGES: Coverage[] = [
     },
     underneath: [seat('curl_flat_s', 'q_apex'), seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_s', 'hook_w'],
     checks: { '3x1': ['cover4_stubbie'] },
+    structureChecks: QUARTERS_CHECKS,
   },
   {
-    id: 'cover4_poach', name: 'Quarters Poach (vs trips)', family: 'cover4', shell: 'two-high', man: false, press: false,
-    note: 'Backside corner solos X; the backside safety poaches trips #3 vertical.',
+    id: 'cover4_box', name: 'Quarters Box (vs bunch)', family: 'cover4', shell: 'two-high', man: false, press: false,
+    note: 'Zone pickups on the bunch: corner the outermost vertical, safety the innermost, nickel the first out, hook the first in; quarters on the backside X.',
+    roles: {
+      CB_S: z('quarter_s_out', 'box_out_deep'),
+      SS: z('quarter_s_in', 'box_in_deep'),
+      ...QUARTERS_W,
+    },
+    underneath: [seat('curl_flat_s', 'box_out_low'), seat('hook_s', 'box_in_low'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
+  },
+  {
+    id: 'cover4_book_read', name: 'Quarters Book/Read (vs empty)', family: 'cover4', shell: 'two-high', man: false, press: false,
+    note: 'Empty 3x2: Book to the three (corner MEG, nickel MUSH, read hook, 3/2 safety) and Read (Palms 2-read) to the two.',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside', protectDepth: true },
+      SS: z('quarter_s_in', 'stubbie_safety'),
+      CB_W: z('quarter_w_out', 'palms_corner'),
+      FS: z('quarter_w_in', 'palms_safety'),
+    },
+    underneath: [seat('curl_flat_s', 'mush'), seat('hook_s', 'read_hook'), seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_w'],
+  },
+  {
+    id: 'cover4_poach', name: 'Quarters Poach/Trix (vs trips)', family: 'cover4', shell: 'two-high', man: false, press: false,
+    note: 'Backside corner solos X; the backside safety keys #3 to X: overtakes #3 vertical or squeezes X; the hook matches #3 underneath with no carry.',
     roles: {
       CB_S: z('quarter_s_out', 'q_corner_mod'),
       SS: z('quarter_s_in', 'q_safety'),
       CB_W: { kind: 'man', prefer: ['W1'], lev: 'inside', protectDepth: true },
       FS: z('quarter_w_in', 'poach_safety'),
     },
-    underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_s', 'c3_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
+    underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_s', 'read_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
   },
   {
     id: 'cover4_stubbie', name: 'Quarters Stubbie (vs trips)', family: 'cover4', shell: 'two-high', man: false, press: false,
-    note: 'Trips corner locks #1; nickel, safety and hook build a triangle on #2/#3; backside plays quarters on X.',
+    note: 'Trips corner MEGs #1; nickel MUSH on #2, hook reads #3 (no carry), safety 3/2 read; backside plays quarters on X.',
     roles: {
       CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside', protectDepth: true },
       SS: z('quarter_s_in', 'stubbie_safety'),
       ...QUARTERS_W,
     },
-    underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_s', 'c3_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
+    underneath: [seat('curl_flat_s', 'mush'), seat('hook_s', 'read_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
   },
   {
     id: 'cover6', name: 'Cover 6 / Stuff (quarters strong, half weak)', family: 'cover6', shell: 'two-high', man: false, press: false,
     note: 'Quarter-quarter-half: quarters rules to the strength, a cloud corner and half safety away.',
     roles: {
       ...QUARTERS_S,
-      CB_W: z('flat_w', 'cloud_corner'),
+      CB_W: z('flat_w', 'sink_corner'),
       FS: z('deep_half_w'),
     },
     underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_w', 'hook_s'],
+    structureChecks: [{ when: ['bunch_strong'], to: ['cover4_box'] }, { when: ['trips'], to: ['cover6_book'] }],
+  },
+  {
+    id: 'cover6_book', name: 'Cover 6 Book (vs trips)', family: 'cover6', shell: 'two-high', man: false, press: false,
+    note: 'Quarters side vs trips plays Book (corner MEG, nickel MUSH, read hook, 3/2 safety); cloud and half safety on the backside X.',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside', protectDepth: true },
+      SS: z('quarter_s_in', 'stubbie_safety'),
+      CB_W: z('flat_w', 'sink_corner'),
+      FS: z('deep_half_w'),
+    },
+    underneath: [seat('curl_flat_s', 'mush'), seat('hook_s', 'read_hook'), seat('hook_mid', 'mike_3'), 'hook_w'],
   },
   {
     id: 'cover6_rev', name: 'Cover 8 (half strong, quarters weak)', family: 'cover6', shell: 'two-high', man: false, press: false,
     note: 'Fangio\'s Cover 8: cloud corner under and half safety over to the strength — a natural double on #1 — quarters away.',
     roles: {
-      CB_S: z('flat_s', 'cloud_corner'),
+      CB_S: z('flat_s', 'sink_corner'),
       SS: z('deep_half_s'),
       ...QUARTERS_W,
     },
     underneath: [seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_s', 'hook_w'],
+    structureChecks: [{ when: ['trips'], to: ['cover8_trix'] }],
+  },
+  {
+    id: 'cover8_trix', name: 'Cover 8 Trix (vs trips)', family: 'cover6', shell: 'two-high', man: false, press: false,
+    note: 'Halves to the trips with a squat corner and a vertical-curl nickel; the backside safety keys #3 to X and overtakes #3, so the Mike has no vertical; tight 1/4 on X (HNFL-195/325/336).',
+    roles: {
+      CB_S: z('flat_s', 'sink_corner'),
+      SS: z('deep_half_s'),
+      FS: z('quarter_w_in', 'poach_safety'),
+      CB_W: z('quarter_w_out', 'q_corner_mod'),
+    },
+    underneath: [seat('curl_s', 'c2_hook'), seat('hook_s', 'read_hook'), seat('curl_flat_w', 'c3_seam'), 'hook_mid'],
   },
   {
     id: 'split_quarters_2man', name: 'Quarters / 2-Man split', family: 'cover6', shell: 'two-high', man: false, press: false,
@@ -345,13 +548,36 @@ export const familyOf = (c: Coverage): string => c.family ?? c.id;
  * picks among several). The shown look is kept.
  */
 export function applyCheck(call: DefensivePlayCall, key: FormationKey): DefensivePlayCall {
-  const options = call.coverage.checks?.[key];
-  if (!options?.length) return call;
-  const to = COVERAGE_BY_ID[options[Math.min(options.length - 1, call.checkPick ?? 0)]];
-  if (!to) return call;
-  return { ...call, coverage: to, label: `${call.label} → ${to.name}` };
+  return checkTo(call, call.coverage.checks?.[key], key);
 }
 
+/**
+ * The secondary's pre-snap check against the structure it sees: the first
+ * structure check whose tags are all present, else the plain distribution
+ * check. A check is a whole installed call, so every defender's job comes
+ * from one coherent coverage.
+ */
+export function checkCall(call: DefensivePlayCall, structure: FormationStructure): DefensivePlayCall {
+  for (const c of call.coverage.structureChecks ?? [])
+    if (c.when.every(t => structure.tags.includes(t))) return checkTo(call, c.to, c.when.join('+'));
+  return applyCheck(call, structure.key);
+}
+
+function checkTo(call: DefensivePlayCall, options: string[] | undefined, when: string): DefensivePlayCall {
+  if (!options?.length) return call;
+  const preferred = call.checkPrefer?.find(id => options.includes(id) && checkInstallable(call, COVERAGE_BY_ID[id]));
+  const to = COVERAGE_BY_ID[preferred ?? options[Math.min(options.length - 1, call.checkPick ?? 0)]];
+  if (!to || to.id === call.coverage.id || !checkInstallable(call, to)) return call;
+  return { ...call, coverage: to, check: { from: call.coverage.id, when }, label: `${call.label} → ${to.name}` };
+}
+
+
+/** A check names its players: they must be on the field and not already
+ * spent by the call's pressure, or the call stays as it was. */
+function checkInstallable(call: DefensivePlayCall, to: Coverage): boolean {
+  const spent = new Set([...Object.keys(call.pressure?.blitzers ?? {}), ...Object.keys(call.pressure?.droppers ?? {})]);
+  return (Object.keys(to.roles) as DefSlot[]).every(slot => !!DEF_PERSONNEL[call.personnel][slot] && !spent.has(slot));
+}
 
 /**
  * Zeus (Fangio nickel tag "Zeus + jersey"): a zone call that doubles one
@@ -361,7 +587,21 @@ export function applyCheck(call: DefensivePlayCall, key: FormationKey): Defensiv
  * safety bracket him) when he is inside.
  */
 export function resolveZeus(call: DefensivePlayCall, ref: string | undefined, weakCount: number): DefensivePlayCall {
-  const to = ref === 'S1' ? 'cover6_rev' : ref === 'W1' && weakCount === 1 ? 'cover6' : ref === 'W1' ? 'cover6' : 'cover4';
+  void weakCount;
+  const to = ref === 'S1' ? 'cover6_rev' : ref === 'W1' ? 'cover6' : 'cover4';
   const cov = COVERAGE_BY_ID[to];
   return { ...call, coverage: cov, label: `${call.label} (Zeus → ${cov.name})` };
+}
+
+/**
+ * The coverage the secondary installs against an offensive alignment: Zeus
+ * resolved by where the tagged receiver stands (Cover 8 on a strong #1,
+ * Stuff on the backside #1, Quads inside), then the structure check of the
+ * resolved call (Cover 8 vs trips is Trix; Stuff vs trips is Book;
+ * MatchQuarters Zeus/HNFL-261).
+ */
+export function installCoverage(call: DefensivePlayCall, off: OffenseAlignment): DefensivePlayCall {
+  const zeus = call.zeus;
+  const resolved = zeus ? resolveZeus(call, off.refOf[zeus], Math.min(off.counts.S, off.counts.W)) : call;
+  return checkCall(resolved, formationStructure(off));
 }

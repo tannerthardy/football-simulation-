@@ -156,9 +156,34 @@ export const PRESSURES: Pressure[] = [
     coverages: ['cover1', 'cover3'],
   },
   {
+    // Ringo/Lucky "Freeze" (HNFL-064): the dropped end is a seam/flat
+    // player (match #2 out and up, carry the seam, deliver inside).
     id: 'fire_zone', name: 'Fire Zone (SS + Will, DE drops)', blitzers: { SS: { gap: 'C', side: 'S' }, LB_W: { gap: 'B', side: 'W' } },
-    droppers: { DE_W: 'curl_flat_w' },
-    coverages: ['cover3'],
+    droppers: { DE_W: { zone: 'curl_flat_w', rule: 'c3_seam' } },
+    coverages: ['cover3'], rushers: 5,
+  },
+  // Simulated pressures: four rushers, one from an unexpected spot, a
+  // lineman dropping into a coverage job (fangio-system.md E5).
+  {
+    // Whip (HNFL-060): the Will comes off the weak edge; the strong end
+    // drops as a bonus hook between #2 and #3, behind weak-rotation Cover 3.
+    id: 'whip', name: 'Whip (Will edge, end drops)', blitzers: { LB_W: { gap: 'C', side: 'W' } },
+    droppers: { DE_S: { zone: 'hook_s', rule: 'bonus_hook' } },
+    coverages: ['cover3'], rushers: 4,
+  },
+  {
+    // Slug (HNFL-057): the nickel off the strong edge; the weak end drops
+    // as the seam/flat player on weak #2; fire-zone three deep behind it.
+    id: 'slug', name: 'Slug (nickel edge, end drops)', blitzers: { NB: { gap: 'D', side: 'S' } },
+    droppers: { DE_W: { zone: 'curl_flat_w', rule: 'c3_seam' } },
+    coverages: ['cover3'], rushers: 4,
+  },
+  {
+    // Sting/Wasp (HNFL-242): the Mike through the A gap; the weak end drops
+    // as the quarter-flat apex behind Quads.
+    id: 'sting', name: 'Sting (Mike A, end drops)', blitzers: { LB_M: { gap: 'A', side: 'W' } },
+    droppers: { DE_W: { zone: 'curl_flat_w', rule: 'q_apex' } },
+    coverages: ['cover4'], rushers: 4,
   },
   {
     id: 'zero_6', name: 'Zero Blitz', blitzers: { LB_M: { gap: 'A', side: 'S' }, LB_W: { gap: 'B', side: 'W' } },

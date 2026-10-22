@@ -1,0 +1,75 @@
+/**
+ * Cover 3 match and Cover 2 match rules against their teaching sheets:
+ * Push on a fast #3 (HNFL-203/065), the Smash rule (HNFL-016, Rip/Liz),
+ * the squat corner's man-under conversion (HNFL-099/255), the vertical
+ * curl's up-and-in match (HNFL-097) and the Wild trips check with a
+ * vertical hook on #3 (HNFL-131/334). Each case has an opposing control.
+ */
+import { describe, expect, it } from 'vitest';
+import { filmScene, jobsOf, modeOf, type SceneFilm } from '../src/lab/coverage-scene.js';
+
+/** The defender whose installed landmark is `zone`. */
+const seat = (f: SceneFilm, zone: string): string =>
+  Object.values(f.defenders).find(d => d.jobs[0]?.startsWith(`zone:${zone}@`))!.slot;
+
+describe('Cover 3 match: Push', () => {
+  const scene = (back: string) => filmScene({ formation: 'gun_spread_10', coverage: 'cover3_match',
+    strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'seam' }, back, until: 2.6 });
+
+  it('a fast back to the flat is chased by the seam/flat player while the hook pushes to #2', () => {
+    const f = scene('back_flat');
+    const flat = seat(f, 'curl_flat_w'), hook = seat(f, 'hook_w');
+    expect(modeOf(f, flat)).toBe('push');
+    expect(jobsOf(f, flat).at(-1)).toBe(`man:${f.numbering.B}`);
+    expect(modeOf(f, hook)).toBe('push');
+    expect(jobsOf(f, hook).at(-1)).toBe(`man:${f.numbering.W2}`);
+  });
+
+  it('with the back in protection the seam/flat player keeps #2 and the hook stays home', () => {
+    const f = scene('block');
+    const flat = seat(f, 'curl_flat_w'), hook = seat(f, 'hook_w');
+    expect(modeOf(f, flat)).not.toBe('push');
+    expect(jobsOf(f, flat).at(-1)).toBe(`man:${f.numbering.W2}`);
+    expect(jobsOf(f, hook)).not.toContain(`man:${f.numbering.W2}`);
+  });
+});
+
+describe('Cover 3 match: Smash rule', () => {
+  it('#1 settling short with #2 vertical sends the overhang to hunt #1; #1 vertical does not', () => {
+    const smash = filmScene({ formation: 'gun_spread_10', coverage: 'cover3_match', strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'lab_hitch4', 2: 'corner' }, until: 2.6 });
+    const flat = seat(smash, 'curl_flat_w');
+    expect(modeOf(smash, flat)).toBe('smash');
+    expect(jobsOf(smash, flat).at(-1)).toBe(`man:${smash.numbering.W1}`);
+    const control = filmScene({ formation: 'gun_spread_10', coverage: 'cover3_match', strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'corner' }, until: 2.6 });
+    expect(jobsOf(control, seat(control, 'curl_flat_w'))).not.toContain(`man:${control.numbering.W1}`);
+  });
+});
+
+describe('Cover 2 match', () => {
+  it('the squat corner converts to man under #1 with no flat threat, and stays in the flat when #2 goes there', () => {
+    const none = filmScene({ formation: 'gun_doubles_11', coverage: 'cover2_match', strong: { 1: 'go', 2: 'go' }, weak: { 1: 'lab_curl7', 2: 'hitch' }, until: 2.6 });
+    expect(modeOf(none, 'CB_W')).toBe('under');
+    expect(jobsOf(none, 'CB_W')).toContain(`man:${none.numbering.W1}`);
+    const flat = filmScene({ formation: 'gun_doubles_11', coverage: 'cover2_match', strong: { 1: 'go', 2: 'go' }, weak: { 1: 'lab_curl7', 2: 'flat' }, until: 2.6 });
+    expect(modeOf(flat, 'CB_W')).toBe('flat');
+    expect(jobsOf(flat, 'CB_W')).not.toContain(`man:${flat.numbering.W1}`);
+  });
+
+  it('the vertical curl matches #2 up and in, and walls a seam', () => {
+    const dig = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'lab_in9' }, weak: { 1: 'go', 2: 'seam' }, until: 3.4 });
+    const curl = seat(dig, 'hook_s');
+    expect(modeOf(dig, curl)).toBe('in');
+    expect(jobsOf(dig, curl).at(-1)).toBe(`man:${dig.numbering.S2}`);
+    const seam = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'seam' }, until: 3.0 });
+    expect(jobsOf(seam, seat(seam, 'hook_s'))).toContain(`wall:${seam.numbering.S2}`);
+  });
+
+  it('checks to Wild vs trips, where the middle hook carries #3 vertical; 2x2 keeps the call', () => {
+    const trips = filmScene({ formation: 'gun_trips_11', coverage: 'cover2_match', strong: { 1: 'go', 2: 'go', 3: 'seam' }, weak: { 1: 'go' }, until: 2.6 });
+    expect(trips.played).toBe('cover2_wild');
+    expect(trips.sim.defCall.check).toEqual({ from: 'cover2_match', when: 'trips' });
+    expect(jobsOf(trips, seat(trips, 'hook_mid'))).toContain(`man:${trips.numbering.S3}`);
+    const doubles = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', until: 0.2 });
+    expect(doubles.played).toBe('cover2_match');
+  });
+});
