@@ -470,6 +470,44 @@ type. Physical pages.
 - Also present, not yet summarized: rush principles and moves (pp. 29–39),
   tackling (p. 40), and nickel/dime fronts and games (pp. 57–62).
 
+## Defensive line: more block-reaction sources
+
+Coach Allen DL manual, Mike Kuchar's two USA Football DL articles, the 2014
+Michigan rush-end manual, and Fritz Shurmur, *Coaching the Defensive Line*
+(Harding Press, 1997; ISBN 0-9624779-8-2), a 156-page scan from the user's
+Drive (book page = scan page − 15). Shurmur numbers techniques differently:
+5 = head-up on the tackle, 6 = outside the tackle, 8 = head-up on the TE.
+
+- **Reach, the main split:** one-gap programs flatten and stay outside.
+  Allen: "PUSH & PRESS: Used on Reach or Zone Blocks … throw hips outside"
+  (p. 4); Kuchar: a fast second step, push with the outside hand and pull
+  with the inside; Michigan: "Do not run outside" while steering the blocker
+  outside (p. 10). Shurmur's two-gap tackle instead keeps going upfield
+  against a flat-step reach and **exchanges gaps with the linebacker**, never
+  getting doubled off the reach (book pp. 33–39). That gap exchange is the
+  only replacement rule any source gives for a reached lineman.
+- **Base:** play body on body and shed only when the ball commits (Kuchar);
+  keep knocking the blocker back until the carrier picks a side, then throw
+  him the other way to shrink the cutback (Shurmur book p. 23).
+- **Scoop and double team:** play the scoop like a reach and "get skinny"
+  (Kuchar) or let it knock you inside (Allen, "ricochet"); against a double
+  team, drop the pressure leg when the second blocker arrives (Kuchar) or
+  turn narrow and split (Shurmur book p. 126).
+- **Down, trap and kick-out:** close to the down blocker's hip, which warns of
+  the kick-out (Michigan pp. 10, 18). Shurmur squeezes ½–1 yd into the
+  backfield, meets a puller about 1 yd deep, and rejects the wrong-arm that
+  Kuchar teaches (book pp. 27, 36, 41–42).
+- **Pass vs. draw:** a tackle who shows pass but gives no ground is blocking a
+  draw (Michigan). **Boot:** linemen not crossing the line ("elephants on
+  parade"), with the tackle's helmet inside but not downfield (Michigan).
+- **Alignment numbers:** Michigan's 5 sits 18 in outside the tackle beside a
+  1-technique and 24 in beside a 3-technique; Shurmur's wide 6 sits at 1.5 yd.
+- **Stunt timing:** Shurmur runs games quick, delays only after crossing the
+  line and against seven-step drops, and picks the first or second man by how
+  the guard and tackle set (book pp. 98–105). Michigan's loopers take 1–2
+  steps (pp. 27–28), the Bucs three. An event trigger with a minimum step count
+  covers all three.
+
 ## Linebackers: depth, keys and fits
 
 - **Depth: heels at 5 yd.** Cowboys Over: "SAM - Nose to outside eye of OT;
