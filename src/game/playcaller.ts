@@ -387,7 +387,8 @@ export class DefensiveCoordinator {
         ? [['cover9', 2.0], ['cover3_seam', 0.6], ['cover3_match', 0.2 * m], ['cover3', 0.1], ['cover3_buzz', 0.12], ['cover3_cloud', 0.12]]
         : [['cover3', 1.1 - m], ['cover3_match', m * 0.75], ['cover3_seam', 0.18], ['cover9', 0.03],
           ['cover3_buzz', system === 'single-high' ? 0.3 : 0.12], ['cover3_cloud', 0.05]],
-      cover1: [['cover1', 0.45], ['cover1_off', 0.25], ['cover1_robber', system === 'single-high' ? 0.3 : 0.15], ['cover1_double', 0.04 * (1 + (coach.shadow ? 1 : 0))]],
+      cover1: [['cover1', system === 'two-high' ? 0.1 : 0.45], ['cover1_off', 0.25], ['cover1_robber', system === 'single-high' ? 0.3 : 0.15],
+        ['cover1_lurk', system === 'two-high' ? 0.8 : 0.05], ['cover1_double', 0.04 * (1 + (coach.shadow ? 1 : 0))]],
       cover2: [['cover2', 1 - m], ['cover2_match', m], ['cover2_invert', system === 'two-high' ? 0.15 : 0.04]],
       tampa2: [['tampa2', 1]],
       cover4: [['cover4', 0.45], ['cover4_meg', system === 'quarters' ? 0.3 : 0.15], ['cover4_palms', system === 'quarters' || system === 'two-high' ? 0.4 : 0.2]],
@@ -419,7 +420,11 @@ export class DefensiveCoordinator {
     let pressure = null;
     if (rng.chance(blitz)) {
       const options = PRESSURES.filter((p) => pressureIsInstallable(personnel, front, coverage, p));
-      if (options.length) pressure = rng.pick(options);
+      // A two-high tree brings its pressure mostly as four-man simulated
+      // pressures (Whip, Slug, Sting) rather than extra rushers (HNFL-186:
+      // a four-man rush on ~80% of snaps).
+      const sim = (p: (typeof options)[number]) => p.rushers === 4;
+      if (options.length) pressure = pickWeighted(rng, options.map((p): [typeof p, number] => [p, sim(p) ? (system === 'two-high' ? 2.5 : 0.6) : 1]));
     }
     if (coverage.id === 'cover0' && !pressure) {
       // Dime has no Will slot. Keep an installed zero-help pressure instead
@@ -443,7 +448,10 @@ export class DefensiveCoordinator {
     const look = coverage.look ?? coverage.shell;
     const disguiseRate = system === 'two-high' && look !== 'two-high' ? 0.85 : coach.disguise * (0.6 + 0.8 * dbIQ);
     if (rng.chance(disguiseRate)) {
-      const pool = look === 'one-high' || look === 'zero' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];
+      // A two-high tree shows one home shell, quarters, on everything it
+      // rotates out of (Fangio: "don't let them know"); others vary the look.
+      const pool = system === 'two-high' ? (look === 'two-high' ? [] : ['cover4'])
+        : look === 'one-high' || look === 'zero' ? ['cover4', 'cover2', 'cover6', 'cover2man'] : ['cover3', 'cover1'];
       const available = pool.filter((id) => id !== coverage.id && coverageHasNamedZonePlayers(personnel, COVERAGE_BY_ID[id]));
       if (available.length) shown = COVERAGE_BY_ID[rng.pick(available)];
     }

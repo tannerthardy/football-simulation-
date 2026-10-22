@@ -321,6 +321,8 @@ export interface Coverage {
   checks?: Partial<Record<FormationKey, string[]>>;
   /** Structure checks, most specific first; the first that matches applies before `checks`. */
   structureChecks?: CoverageCheck[];
+  /** Players the call cannot be installed without, beyond its named zone seats (a rotation needs both safeties). */
+  needs?: DefSlot[];
   /** One line: what it is and what it takes away. */
   note?: string;
 }
@@ -330,8 +332,10 @@ export interface Pressure {
   name: string;
   /** Extra rushers: slot → gap. */
   blitzers: Partial<Record<DefSlot, { gap: Gap; side: 'S' | 'W' }>>;
-  /** Defensive linemen who drop into coverage instead of rushing. */
-  droppers?: Partial<Record<DefSlot, ZoneId>>;
+  /** Defensive linemen who drop into coverage instead of rushing: a zone, or a seat with a match rule. */
+  droppers?: Partial<Record<DefSlot, UnderSeat>>;
+  /** The rush count the call promises (a simulated pressure brings four, a fire zone five). */
+  rushers?: number;
   /** Compatible coverages. */
   coverages: string[];
 }

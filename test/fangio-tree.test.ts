@@ -65,3 +65,35 @@ describe('Zeus resolved against the structure', () => {
     expect(zeus('gun_spread_10', 'H')).toBe('cover4');
   });
 });
+
+describe('Cover 1 Lurk and the two-high home shell', () => {
+  it('Lurk brings the weak safety down on weak #2 vs 2x2, and the nickel-side safety on #3 vs trips', () => {
+    const doubles = filmScene({ formation: 'gun_spread_10', coverage: 'cover1_lurk', until: 0.3 });
+    expect(jobsOf(doubles, 'FS')).toEqual([`man:${doubles.numbering.W2}`]);
+    expect(jobsOf(doubles, 'SS')).toEqual(['zone']);
+    const trips = filmScene({ formation: 'gun_trips_11', coverage: 'cover1_lurk', until: 0.3 });
+    expect(trips.played).toBe('cover1_lurk_trips');
+    expect(jobsOf(trips, 'SS')).toEqual([`man:${trips.numbering.S3}`]);
+    expect(jobsOf(trips, 'FS')).toEqual(['zone']);
+  });
+
+  it('a two-high tree disguises from one quarters home shell and never shows a one-high look', async () => {
+    const { DefensiveCoordinator } = await import('../src/game/playcaller.js');
+    const { generateTeam, pickOffense } = await import('../src/league/team.js');
+    const { Rng } = await import('../src/core/rng.js');
+    const off = generateTeam(new Rng(41), 'O', 'OFF', { strength: 0.55 });
+    const base = generateTeam(new Rng(42), 'D', 'DEF', { strength: 0.55 });
+    const dc = new DefensiveCoordinator({ ...base, coach: { ...base.coach, coverageSystem: 'two-high', disguise: 0.45 } }, new Rng('shell'));
+    const shown = new Set<string>();
+    let open = 0;
+    for (let i = 0; i < 200; i++) {
+      const { call } = dc.call({ down: 1 + (i % 3), distance: 10, yardline: 40, quarter: 1, clock: 600, scoreDiff: 0, ballY: CENTER_Y, hurry: false }, '11', off, pickOffense(off, '11'));
+      if (call.shown) shown.add(call.shown.id);
+      const presented = call.shown ?? call.coverage;
+      if ((presented.look ?? presented.shell) === 'two-high') open++;
+    }
+    expect([...shown]).toEqual(['cover4']);
+    // 2025 Eagles: 87% of snaps open pre-snap (fangio-system.md D).
+    expect(open / 200).toBeGreaterThan(0.8);
+  });
+});

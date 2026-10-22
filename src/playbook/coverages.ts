@@ -77,6 +77,37 @@ export const COVERAGES: Coverage[] = [
     structureChecks: [{ when: ['bunch_strong'], to: ['cover1_banjo'] }],
   },
   {
+    id: 'cover1_lurk', name: 'Cover 1 Lurk', family: 'cover1', shell: 'one-high', man: true, press: false,
+    note: 'The two-high tree\'s Cover 1 (HNFL-240/209): corners man #1 from outside leverage, the weak safety comes down on weak #2, the other spins to the post, the Will has the back and the Mike lurks in the low hole.',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside' },
+      CB_W: { kind: 'man', prefer: ['W1'], lev: 'outside' },
+      NB: { kind: 'man', prefer: ['S2', 'W2'] },
+      FS: { kind: 'man', prefer: ['W2', 'S3'] },
+      SS: z('deep_mid'),
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+      LB_M: z('hole', 'rat'),
+    },
+    underneath: [],
+    structureChecks: [{ when: ['trips'], to: ['cover1_lurk_trips'] }, { when: ['bunch_strong'], to: ['cover1_banjo'] }],
+    needs: ['FS', 'SS'],
+  },
+  {
+    id: 'cover1_lurk_trips', name: 'Cover 1 Lurk (vs trips)', family: 'cover1', shell: 'one-high', man: true, press: false,
+    note: 'Vs 3x1 the nickel-side safety comes down on #3 and the weak safety spins to the post (HNFL-240).',
+    roles: {
+      CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside' },
+      CB_W: { kind: 'man', prefer: ['W1'], lev: 'outside' },
+      NB: { kind: 'man', prefer: ['S2'] },
+      SS: { kind: 'man', prefer: ['S3', 'S2'] },
+      FS: z('deep_mid'),
+      LB_W: { kind: 'man', prefer: ['B', 'W2'] },
+      LB_M: z('hole', 'rat'),
+    },
+    underneath: [],
+    needs: ['FS', 'SS'],
+  },
+  {
     id: 'cover1_banjo', name: 'Cover 1 Banjo (vs bunch)', family: 'cover1', shell: 'one-high', man: false, press: false,
     note: 'Man-free vs bunch: the nickel locks the point, the corner and strong safety banjo #1 and #3 by release (first out / the other); a rat in the hole.',
     roles: {
