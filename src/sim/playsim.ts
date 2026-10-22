@@ -347,7 +347,7 @@ export class PlaySim {
       const p = this.snapCount!.plans.get(a)!;
       a.snapReadyAt = p.stop !== undefined ? p.restart! : Math.max(0, p.go);
     }
-    if (!stem && !creep && !early && !this.motion) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
+    if (!stem && !creep && !this.motion && !early) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
     for (const seconds of [stem?.secondsBeforeSnap,creep?.secondsBeforeSnap]) {
       if (seconds !== undefined && (!Number.isFinite(seconds) || seconds<=0 || seconds>3)) throw new Error('Pre-snap movement must start within 0–3 seconds of snap');
     }
@@ -373,7 +373,9 @@ export class PlaySim {
     // A stem replaces the initial presentation above. Fit that starting
     // stance before its first observable history, never the moving endpoint.
     if (stem || creep || this.motion) fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
-    const ticks = Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0,early,this.motion?.plan.seconds ?? 0)/this.dt - 1e-9);
+    // SNAP_REACT's count keeps its own rounding; the installed movements keep theirs.
+    const ticks = Math.max(Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0,this.motion?.plan.seconds ?? 0)/this.dt),
+      Math.ceil(early/this.dt - 1e-9));
     // Prime with the presentation that was actually shown, never the called
     // destination. Observers with longer latency retain the old front.
     this.perception.record(this.agents, this.carrier?.idx ?? null);

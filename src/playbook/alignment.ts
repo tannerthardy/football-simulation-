@@ -779,7 +779,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const hasTE = teAt(sign);
     const tech = edgeTech.get(slot) ?? fa.tech;
     const lateral = FRONT_ALIGN && AGAP_ALIGN && tech === '1' && fa.depth < 2
-      ? (style.aGap ?? AGAP_LEAGUE) * (OL_SPLITS ? off.line.cg : 1.3)
+      ? (style.aGap ?? AGAP_LEAGUE) * off.line.cg
       : techniqueOffset(tech, hasTE, off.line) + (edgeShift.get(slot) ?? 0);
     const y = off.ballY + sign * lateral;
     const fit = call.front.fits?.[slot];

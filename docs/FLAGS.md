@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, generated from `src` on 2026-10-22 (trunk `d91c9014`). Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 45 are off. The 24 rows marked "expires: review 2" were added by PR #190 (all default off or identity). At the first review, set an expiry for each off flag and bring the experimental count to 10. Flags that are on by default can lose their switch, keeping only the new path.
+There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 45 are off. The 22 rows marked "expires: review 2" were added by PR #190 (all default off or identity). At the first review, set an expiry for each off flag and bring the experimental count to 10. Flags that are on by default can lose their switch, keeping only the new path.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -51,35 +51,35 @@ There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`
 | `TACKLE_TOUCH` | off | experimental | defense | `src/sim/tackle.ts:69` | set at first review |
 | `WRAP_BIND` | off | experimental | defense | `src/sim/tackle.ts:63` | set at first review |
 | `BLOCKED_REACH` | off | experimental | defense | `src/sim/tackle.ts:80` | expires: review 2 |
-| `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:205` | expires: review 2 |
+| `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:195` | expires: review 2 |
 | `DEF_ALIGN` | off | experimental | coverage | `src/playbook/alignment.ts:71` | expires: review 2 |
-| `DEF_GETOFF` | 1 (identity scale) | diagnostic | defense | `src/sim/agent.ts:25` | expires: review 2 |
+| `DEF_GETOFF` | 1 (identity scale) | diagnostic | trenches | `src/sim/agent.ts:25` | expires: review 2 |
 | `DL_ANCHOR` | off | experimental | trenches | `src/sim/engagement.ts:80` | expires: review 2 |
 | `DL_CHASE` | off | experimental | trenches | `src/sim/engagement.ts:685` | expires: review 2 |
 | `DL_FLATTEN` | off | experimental | trenches | `src/sim/engagement.ts:90` | expires: review 2 |
 | `DL_FLATTEN_WON` | off | experimental | trenches | `src/sim/engagement.ts:106` | expires: review 2 |
-| `DL_KEY` | off | experimental | trenches | `src/sim/behaviors/defense.ts:37` | expires: review 2 |
 | `DL_SQUEEZE` | off | experimental | trenches | `src/sim/engagement.ts:100` | expires: review 2 |
 | `FORCE_BOUNCE` | off | experimental | defense | `src/sim/run-fits.ts:174` | expires: review 2 |
 | `FRONT_ALIGN` | off | experimental | defense | `src/game/playcaller.ts:33`, `src/playbook/alignment.ts:104` | expires: review 2 |
-| `LB_LANDMARK` | off | experimental | defense | `src/sim/run-fits.ts:192` | expires: review 2 |
-| `LB_TEMPO` | off | experimental | defense | `src/sim/run-fits.ts:184` | expires: review 2 |
+| `LB_LANDMARK` | off | experimental | defense | `src/sim/run-fits.ts:182` | expires: review 2 |
 | `OL_SPLITS` | off | experimental | run | `src/playbook/alignment.ts:24` | expires: review 2 |
 | `OL_STAGGER` | off | experimental | run | `src/playbook/alignment.ts:32` | expires: review 2 |
 | `PAD_LEVERAGE` | off | experimental | physics | `src/physics/world.ts:313` | expires: review 2 |
 | `PASS_FEEL` | off | experimental | trenches | `src/sim/engagement.ts:713` | expires: review 2 |
 | `PULL_EARLY` | off | experimental | defense | `src/sim/run-fits.ts:165` | expires: review 2 |
-| `SAFETY_TEMPO` | off | experimental | defense | `src/sim/run-fits.ts:199` | expires: review 2 |
+| `SAFETY_TEMPO` | off | experimental | defense | `src/sim/run-fits.ts:189` | expires: review 2 |
 | `SHORT_PACKAGE` | off | experimental | defense | `src/game/playcaller.ts:47`, `src/playbook/alignment.ts:106` | expires: review 2 |
 | `SNAP_REACT` | off | experimental | rules | `src/sim/snap-count.ts:30` | expires: review 2 |
 | `TIP_AWAY` | off | experimental | coverage | `src/sim/catching.ts:23` | expires: review 2 |
 | `WR_ALIGN` | off | experimental | run | `src/playbook/alignment.ts:80` | expires: review 2 |
-| `FRONT_STRENGTH` | off | experimental | defense | `src/game/playcaller.ts:51`, `src/playbook/alignment.ts:120` | expires: review 2 |
-| `FRONT_MENU` | off | experimental | defense | `src/game/playcaller.ts:69`, `src/playbook/alignment.ts:129` | expires: review 2 |
+| `MOTION` | off | experimental | coverage | `src/sim/motion.ts:33` | review 2 |
+| `DEUCE` | off | experimental | coverage | `src/playbook/call-integrity.ts:67` | review 2 |
+| `FRONT_STRENGTH` | off | experimental | defense | `src/game/playcaller.ts:52`, `src/playbook/alignment.ts:120` | expires: review 2 |
+| `FRONT_MENU` | off | experimental | defense | `src/game/playcaller.ts:70`, `src/playbook/alignment.ts:129` | expires: review 2 |
 | `BOX_ALIGN` | off | experimental | defense | `src/playbook/alignment.ts:153` | expires: review 2 |
-| `DEF_PACKAGE` | off | experimental | defense | `src/game/playcaller.ts:79` | expires: review 2 |
-| `SHELL_SHOW` | off | experimental | defense | `src/game/playcaller.ts:93`, `src/playbook/alignment.ts:156` | expires: review 2 |
-| `COVER_CALL` | off | experimental | defense | `src/game/playcaller.ts:114` | expires: review 2 |
-| `MOTION_CHECK` | off | experimental | defense | `src/sim/motion.ts:277` | expires: review 2 |
-| `PRESSURE_CALL` | off | experimental | defense | `src/game/playcaller.ts:126` | expires: review 2 |
+| `DEF_PACKAGE` | off | experimental | defense | `src/game/playcaller.ts:80` | expires: review 2 |
+| `SHELL_SHOW` | off | experimental | defense | `src/game/playcaller.ts:94`, `src/playbook/alignment.ts:156` | expires: review 2 |
+| `COVER_CALL` | off | experimental | defense | `src/game/playcaller.ts:115` | expires: review 2 |
+| `MOTION_CHECK` | off | experimental | defense | `src/sim/motion.ts:277` | expires: review 2 (turn on with `MOTION`) |
+| `PRESSURE_CALL` | off | experimental | defense | `src/game/playcaller.ts:126` | expires: review 2 (turn on with `DEUCE`) |
 | `AGAP_ALIGN` | off | experimental | defense | `src/playbook/alignment.ts:167` | expires: review 2 |
