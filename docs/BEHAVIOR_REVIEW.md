@@ -1,5 +1,12 @@
 # Deciding whether changed behavior is better
 
+**Process precedence:** [PLAN](PLAN.md) and [GAPS](GAPS.md) supersede the
+older workflow requirements in this reference. Keep the football-model,
+mechanism-review and marginal-cost reasoning; use PLAN for current assignments,
+merge criteria and testing tiers. Integration-owner/full-suite obligations,
+receipt publication and historical flag profiles below are not current gates.
+Documentation-only navigation changes need documentation/path checks, not games.
+
 This is the shared judgment procedure for controllers, ratings, movement and
 contact changes. Use it alongside [testing costs](TESTING_COSTS.md) and the
 [validation layers](VALIDATION.md). A completed test batch establishes execution
