@@ -428,6 +428,22 @@ interface Plan {
   effortVy: number;
 }
 
+/** The current lean's unsupported share. Keep this outside the substep loop:
+ * constructing nested closures here is costly in the development runner.
+ * Each call still reads the current support and availability after a release. */
+function unsupportedLean(b: Body, plan: Plan, leanX: number, leanY: number,
+  capacity: number, mass: number): number {
+  const mag = Math.hypot(leanX, leanY);
+  if (mag <= 1e-6) return 0;
+  const hx = leanX / mag, hy = leanY / mag;
+  const balanced = Math.max(0, -(b.support!.felt.x * hx + b.support!.felt.y * hy));
+  const unsupported = mag - balanced * (1 + PUSH_GROWTH);
+  if (unsupported <= 0) return 0;
+  const env = followAccel(b, { x: hx * 1e3, y: hy * 1e3 }, plan.cut, capacity);
+  const absorb = Math.max(0, Math.hypot(env.x, env.y) - Math.max(0, plan.ax * hx + plan.ay * hy)) * mass;
+  return Math.min(mag, Math.max(0, unsupported - absorb));
+}
+
 export class World {
   readonly bodies: Body[];
   /** Production uses analytic recovery except during a lower hold. The
@@ -1608,19 +1624,11 @@ export class World {
         // A lean is his COM held ahead of his feet by the load. Whatever the
         // load no longer balances, beyond what his gait can accept as planned
         // acceleration, is a capture-point offset now: an overextension.
-        const releaseUnsupported = () => {
-          const excess = () => {
-            const mag = Math.hypot(leanX, leanY);
-            if (mag <= 1e-6) return 0;
-            const hx = leanX / mag, hy = leanY / mag;
-            const balanced = Math.max(0, -(sup.felt.x * hx + sup.felt.y * hy));
-            const unsupported = mag - balanced * (1 + PUSH_GROWTH);
-            if (unsupported <= 0) return 0;
-            const env = followAccel(b, { x: hx * 1e3, y: hy * 1e3 }, plan.cut, a);
-            const absorb = Math.max(0, Math.hypot(env.x, env.y) - Math.max(0, plan.ax * hx + plan.ay * hy)) * m;
-            return Math.min(mag, Math.max(0, unsupported - absorb));
-          };
-          let iterations = 0, conv = excess();
+        // Release the existing lean, blend toward the request, then release
+        // again. Preserve that order and every numerical update without
+        // allocating a release closure and two excess closures per body.
+        for (let phase = 0; phase < 2; phase++) {
+          let iterations = 0, conv = unsupportedLean(b, plan, leanX, leanY, a, m);
           const w0 = omega0(sp, sup.posture);
           // Each pass consumes only the remaining committed lean. A finite
           // local projection settles the existing reduced-model feedback;
@@ -1633,21 +1641,20 @@ export class World {
             leanX -= hx * conv; leanY -= hy * conv;
             // Transferred geometry changes what the same feet can absorb.
             a = availability(sup, sp, fat); this.alpha[i] = a;
-            conv = excess(); iterations++;
+            conv = unsupportedLean(b, plan, leanX, leanY, a, m); iterations++;
           }
           // Expose any unresolved local solve instead of silently claiming
           // that the iteration limit establishes convergence.
           report.maxLeanReleaseResidual = Math.max(report.maxLeanReleaseResidual, conv);
           report.maxLeanReleaseIterations = Math.max(report.maxLeanReleaseIterations, iterations);
-        };
-        // Existing committed lean is geometry, not a new force request.
-        // Transfer the unsupported share before damping it away; otherwise
-        // a coarse substep erases more of the same incoming overextension.
-        releaseUnsupported();
-        const rising = tx * tx + ty * ty >= leanX * leanX + leanY * leanY;
-        const k = 1 - Math.exp(-h / (rising ? LEAN_RISE : LEAN_DECAY));
-        leanX += (tx - leanX) * k; leanY += (ty - leanY) * k;
-        releaseUnsupported();
+          if (phase === 0) {
+            // Transfer unsupported geometry before damping it away, exactly
+            // as in the first release of the original two-pass technique.
+            const rising = tx * tx + ty * ty >= leanX * leanX + leanY * leanY;
+            const k = 1 - Math.exp(-h / (rising ? LEAN_RISE : LEAN_DECAY));
+            leanX += (tx - leanX) * k; leanY += (ty - leanY) * k;
+          }
+        }
         sup.lean = { x: leanX, y: leanY };
         // One budget: locomotion and lean share traction and leg strength.
         // Leg drive is directional: full straight ahead, a shuffle's or a
