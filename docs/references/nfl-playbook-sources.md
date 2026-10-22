@@ -551,6 +551,44 @@ Daberkow's clinic. Physical pages.
   outside-in, middle and half safeties fill the alley inside-out; break down
   3 yd from the pile (pp. 28–30).
 
+## Receivers
+
+Texas A&M 2009 WR drill book (TAMU), McKendree College WR manual (scan,
+2006 PDF, no author), "Offense Receiver Fundamentals" 2015 (FUN), and Drew
+Lieberman's press-release articles (USA Football, 2019). College material;
+physical pages.
+
+- **Release from the DB's leverage:** attack the side he shades (head-up
+  counts as outside), aiming 1–2 yd past his leverage so he must declare;
+  stopping routes take a modest release and win at the break (Lieberman).
+  Full steps against cushion, half steps against tight press; move him with
+  the feet and use the hands when he shoots his. Against press, sell one side
+  for 1–3 steps until he turns his hips, then cross under (TAMU p. 21).
+  Against a Cover 2 corner, attack his outside leg and rip inside if he takes
+  it (FUN p. 3); against a cloud corner at 5 yd, release outside and slip
+  inside if he widens (TAMU p. 20).
+- **Depth by drop** (FUN p. 3): "3 step drop by Qb = routes run at 6 yards
+  depth", 5-step = 12 yd, 7-step = 17 yd. McKendree route tree (pp. 22–24):
+  hitch and slant 5–6 yd on three steps, curl 13–15 back to a window,
+  comeback 17 back to 15, crosser 10 yd building to 20, post breaking at
+  8–10 yd. Break by planting the foot opposite the break; no rounded cut
+  except a speed cut (p. 13).
+- **Conversions:** cross bursts away against man and settles over the ball
+  against zone (TAMU p. 12); the #2 "get-open" route runs a post if the hook
+  defender blitzes and sits if he drops; with no middle safety, think post
+  (FUN). V route reads the safety at 15 yd; the post splits the near safety
+  against Cover 2 and stays thin against Cover 3 (McKendree p. 24).
+- **Splits** (McKendree p. 21): normal = top of the numbers, medium = 4 yd
+  inside the numbers, tight = split the distance to the end man. Run plays
+  align at the bottom of the numbers (FUN p. 3).
+- **Blocking:** stalk closes to a 3–4 yd cushion, breaks down, mirrors and
+  denies inside, engaging only when the defender commits (McKendree pp. 7,
+  14, 19); first force blocks a safety who comes downhill, else the corner
+  (TAMU p. 16); crack the end's outside shoulder from about 1.5 yd (TAMU
+  p. 17).
+- The sources conflict on stance (FUN inside foot back; Lieberman assumes it
+  up) and give no technical catching data.
+
 ## Tackling
 
 Pete Carroll's Seahawks tackling clinic, as summarized by FootballScoop
