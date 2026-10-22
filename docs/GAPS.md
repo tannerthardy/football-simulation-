@@ -5,6 +5,9 @@ top, at most three at once. Add gaps whenever they're found, and re-rank at a
 review. A "fixed when" number says when a gap stops being the problem. It
 doesn't judge any single mechanism ([PLAN.md](PLAN.md)).
 
+[KNOWN_PROBLEMS.md](KNOWN_PROBLEMS.md) is the long list behind these gaps:
+every known problem, its evidence, what was tried and what's still open.
+
 "Now" is the trunk at `d91c9014`, 24 games, measured on 2026-10-22.
 
 | ID | Gap | Lane | Measure | Now | Fixed when | Status | Evidence |

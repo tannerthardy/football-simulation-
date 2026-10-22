@@ -8,7 +8,7 @@ Rules:
 - Before reviving one, read its doc comment at the location given and port it onto a branch from develop. Don't merge the old branch.
 - Update the row when a flag lands on develop (then delete the row and register it in FLAGS.md) or when it is tried again.
 
-Built 2026-10-22 from every flag found in `src` on the repository's branches, plus 4 kept outside any branch; updated after #190 and #194 merged, so it lists the 93 branch flags not on develop `771d555e`. "What it does" is the first sentence of the flag's own doc comment. "Where" is the most recently updated branch carrying it.
+Built 2026-10-22 from every flag found in `src` on the repository's branches, plus 4 kept outside any branch; updated after #190, #194 and #196 merged, so it lists the 90 branch flags not on develop `5a52dae3`. "What it does" is the first sentence of the flag's own doc comment. "Where" is the most recently updated branch carrying it.
 
 ## G1 Defenders don't finish plays
 
@@ -37,7 +37,6 @@ Built 2026-10-22 from every flag found in `src` on the repository's branches, pl
 
 | Flag | What it does | Where | Status |
 |---|---|---|---|
-| `AGAP_ALIGN` | A lineman's 1 technique stands at his team's habit along the centre-guard split as set, not on the centre's shoulder. | `claude/run-game-v3` `src/playbook/alignment.ts:64` | In #196 (next in the merge queue, off). Centre covered 97 → 79-82% (NFL 48-51%). With it on, the offense's COMBO_GAP over-doubles a backside 2i (run-game-v3). |
 | `CLIMB_EXIT` | Leave off the old man's near shoulder at running speed instead of orbiting him. | `claude/open-field-tackling` `src/sim/behaviors/blocking.ts:737` | Older branch; result not recorded in this catalog: read the branch's review notes before reviving. |
 | `CLIMB_SPACE` | A climber takes the space between his backer and the hole the backer is going to fill, rather than chasing the backer's own extrapolated path. | `claude/open-field-tackling` `src/sim/behaviors/blocking.ts:733` | Older branch; result not recorded in this catalog: read the branch's review notes before reviving. |
 | `COMBO_GAP` | An uncovered zone blocker doubles the man in the gap beside him. | `claude/run-game-v3` `src/sim/behaviors/blocking.ts:573` | Port candidate. Uncovered blocker doubles the man in the gap beside him. Over-doubles a backside 2i on outside zone once AGAP_ALIGN is on (82% vs NFL 16%). run-game-v3 profile: on. |
@@ -124,11 +123,4 @@ Built 2026-10-22 from every flag found in `src` on the repository's branches, pl
 | `TRENCH_FLOW` | (no doc comment; see the code) | `claude/trench-investigation` `src/sim/engagement.ts:758` | Older branch; result not recorded in this catalog: read the branch's review notes before reviving. |
 | `TRENCH_LEAD` | Variant 2: beat him to the spot — lead his felt lateral movement. | `claude/trench-investigation` `src/sim/engagement.ts:771` | Older branch; result not recorded in this catalog: read the branch's review notes before reviving. |
 | `TRENCH_LEV` | Scale of the leverage/normal-load coupling (0 = off). | `claude/trench-investigation` `src/physics/world.ts:211` | Older branch; result not recorded in this catalog: read the branch's review notes before reviving. |
-
-## G7 Play-calling unlike the NFL
-
-| Flag | What it does | Where | Status |
-|---|---|---|---|
-| `MOTION_CHECK` | The defense answers motion as tracked defenses do (2022 BDB 2025 weeks 1-9, 3,856 single-motion plays, line set to snap; scripts/diag/align/nfl_motion.py and motionlook.py). | `claude/motion-checks` `src/sim/motion.ts:277` | In #196 (next in the merge queue, off). Defense answers motion as tracked; pair with MOTION. |
-| `PRESSURE_CALL` | How often the coordinator brings pressure depends on the shell behind it. | `claude/motion-checks` `src/game/playcaller.ts:126` | In #196 (next in the merge queue, off). Blitz rate by shell: one-high 24 → 36% (NFL 38). |
 
