@@ -217,6 +217,15 @@ rushers' paths. Holding him without the read-then-step-up pickup tracked
 backs make (0.4 yd forward by 1.0 s, 1.1 by 1.5 s) loses protection. That
 pickup timing is the change to make, not the hold alone. Reverted.
 
+Second version: hold until the QB's drop (as the back sees it) has taken the
+launch point behind him, then step up to the pickup spot at a jog. Motion:
+none forward by 1.0 s, 0.6 yd forward by 1.5 s (tracked 0.4 and 1.1).
+Pressure 26.2 -> 32.4% (NFL 31.3), but pressure by off-ball rushers doubled
+(2.3 -> 4.6 per 100 dropbacks; tracked 2.75): the later back meets blitzers
+nearer the QB. Mixed, and the remaining choice (when he steps up) would be
+tuned rather than read. Reverted. It belongs with the coordinated protection
+work (rusher moves, protection duration).
+
 ## The QB's drop settles (`QB_SETTLE`, off) and what it exposes
 
 Tracked QBs peak at the same drop speed as ours (2.75 yd/s) but stop at 2.8
