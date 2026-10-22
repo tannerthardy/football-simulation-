@@ -112,6 +112,16 @@ while in contact range, 0.3-1 / 1-2 / 2-3 s (yd/s):
   window positive (+0.32), but leave the first second and outside zone
   nearly unchanged.
 
+**Squeeze and `DOWN_SEAL` (run-defense's `DL_SQUEEZE`, d9369dcb, armed in a
+scratch worktree).** Gap-row DL flow, 0.3-1 / 1-2 / 2-3 s: profile -0.30 -0.46
+-0.08; with the squeeze -0.12 +0.17 +0.45; with `DOWN_SEAL` too -0.15 +0.11
++0.38 (NFL +0.24 +0.76 +1.35). Paired gap lab: the squeeze moves the median
+-0.25 yd on changed plays, losses 82 -> 97 (p 0.13), tails unchanged;
+`DOWN_SEAL` on top cuts counter losses 51 -> 36 (all gap 97 -> 78, p 0.025)
+but adds no flow, so the down blocker's drive request is not the remaining
+gap. The squeeze is a candidate for the first shared build; `DOWN_SEAL` stays
+off.
+
 ## Pair separation (in progress)
 
 Engaged pairs come apart only when a rule ends the rep. In run reps (lab,
