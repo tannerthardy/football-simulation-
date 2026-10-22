@@ -116,13 +116,21 @@ plan timing integrates the sprint. The numbers below are re-measured on them.
 The first measurement, on the old plans, also showed zone across far crossers
 at 59% → 20%.
 
-**Jets.** The remaining gap is the jet beating a reaction. A slot's jet ramps
-up and runs fastest in its last few tenths before the snap. The defender sees
-it 0.3 s late, so the locked defender is only starting to run at the snap
-(about 2 yd/s). He turns and runs to where the jet was a reaction time ago,
-carried on at its seen pace. Tracked jets start wider and run further (6.5 yd
-against the sim slot's 3.4), which gives a trailing defender time. The
-reaction time is left as it is, not shortened to fit this statistic.
+**Jets.** Two changes after the first measurement:
+- #193 93584284 runs jets only from slots and wideouts at least 7 yd out
+  (they snap a median 4.7 yd from the ball).
+- The locked defender now trails by matching the jet's seen pace and keeping
+  his leverage, turned and running whenever he is moving fast. He first
+  stepped the wrong way to re-align over the jet, then shuffled square and
+  could not accelerate.
+
+On the strict travel measure (moved 60% of the jet's lateral move and ended
+within 3 yd) man coverage reaches 5% against tracked 47%. The jet is still
+covered, though: the nearest non-lineman to a man-covered jet ends a median
+1.5 yd from him laterally (tracked 0.7). Sim jets move only about 4 yd, so
+the defender near him is often one who was already close. What separates the
+locked defender from the jet is the body's acceleration and a 0.3 s
+reaction; neither is tuned to this statistic.
 
 ## Game check
 

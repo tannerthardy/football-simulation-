@@ -347,6 +347,8 @@ export class MotionRuntime {
 
   /** MOTION_CHECK: the defender locked on the motion man (null: traded or zone; undefined: not yet recognized). */
   private lock: DefSlot | null | undefined;
+  /** MOTION_CHECK: the locked defender's lateral offset from the motion man at the last re-sort. */
+  private leverage = 0;
 
   /** The call and alignment for the formation `off`: the front held, a lock kept and the bump handed out by kind. */
   private answer(sim: MotionHost, off: OffenseAlignment): { call: DefensivePlayCall; align: DefenseAlignment } {
@@ -381,6 +383,7 @@ export class MotionRuntime {
       const seen = [...this.seen].reverse().find(s => s.t <= sim.t - BUMP_REACTION) ?? this.seen[0];
       const off = realignOffense(sim.offAlign, slot => (slot === this.plan.slot ? seen.pos : undefined));
       const { align } = this.answer(sim, off);
+      if (this.lock && align.spots[this.lock]) this.leverage = align.spots[this.lock]!.pos.y - seen.pos.y;
       this.targets.clear();
       for (const d of sim.defense) {
         const spot = align.spots[d.slot as DefSlot];
@@ -394,19 +397,21 @@ export class MotionRuntime {
       const facing = len > 2 ? Math.atan2(dy, dx) : Math.PI;
       intents[d.idx] = { vel: { x: len ? dx / len * speed : 0, y: len ? dy / len * speed : 0 }, facing };
     }
-    // MOTION_CHECK: a defender locked on a jet trails him: to where he was a
-    // reaction time ago, carried on at his seen pace, at the man's depth.
+    // MOTION_CHECK: a defender locked on a jet trails him: he matches the
+    // jet's pace as seen a reaction time ago and closes on where that puts
+    // him, at the man's depth; turned and running while behind, square once on.
     const locked = this.lock ? sim.slot(this.lock) : undefined;
     const spot = locked && this.targets.get(locked);
     if (motionCheckEnabled() && this.plan.live && locked && spot) {
       const seen = [...this.seen].reverse().find(s => s.t <= sim.t - BUMP_REACTION) ?? this.seen[0];
       const before = [...this.seen].reverse().find(s => s.t <= seen.t - 0.1);
       const vy = before && seen.t > before.t ? (seen.pos.y - before.pos.y) / (seen.t - before.t) : 0;
-      const target = { x: spot.x, y: seen.pos.y + vy * BUMP_REACTION };
-      const dx = target.x - locked.pos.x, dy = target.y - locked.pos.y, len = Math.hypot(dx, dy);
-      const speed = Math.min(locked.profile.vmax, len * 3 + Math.abs(vy));
-      // Turned and running while he is behind; square to the offense once on him.
-      intents[locked.idx] = { vel: { x: len ? dx / len * speed : 0, y: len ? dy / len * speed : 0 }, facing: len > 2 ? Math.atan2(dy, dx) : Math.PI };
+      // His leverage on the jet as the last re-sort set it (inside, outside).
+      const dx = spot.x - locked.pos.x, dy = seen.pos.y + vy * BUMP_REACTION + this.leverage - locked.pos.y;
+      let vx = 3 * dx, vyCmd = vy + 3 * dy;
+      const speed = Math.hypot(vx, vyCmd), cap = locked.profile.vmax;
+      if (speed > cap) { vx *= cap / speed; vyCmd *= cap / speed; }
+      intents[locked.idx] = { vel: { x: vx, y: vyCmd }, facing: Math.hypot(vx, vyCmd) > 2 ? Math.atan2(vyCmd, vx) : Math.PI };
     }
   }
 
