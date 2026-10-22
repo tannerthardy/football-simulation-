@@ -8,11 +8,12 @@ the down man) and backer - leave (the climb), plus the share of linemen who
 reach a backer by 2.0 s. Direct climbs: linemen who reach a backer before 3 s
 without first touching a line defender (time of the backer touch).
 --gun / --uc keep shotgun / under-center snaps (QB over 2.5 yd deep or not).
-usage: climbphase.py FILE [FILE ...] [--gun|--uc]"""
+usage: climbphase.py FILE [FILE ...] [--gun|--uc] [--concepts A,B]  (default: zone concepts)"""
 import gzip, json, sys
 q = lambda v, f=.5: round(sorted(v)[int(f * (len(v) - 1))], 2) if v else None
 ZONE = ('INSIDE ZONE', 'OUTSIDE ZONE', 'insideZone', 'outsideZone', 'wideZone')
 GUN = '--gun' in sys.argv; UC = '--uc' in sys.argv
+if '--concepts' in sys.argv: ZONE = tuple(sys.argv[sys.argv.index('--concepts') + 1].split(','))
 for path in [a for a in sys.argv[1:] if a.endswith('.gz')]:
     touch, leave, reach, on, climb, direct = [], [], [], [], [], []
     n = by2 = 0

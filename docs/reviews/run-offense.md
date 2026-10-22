@@ -625,6 +625,24 @@ called looks cut gap 40+ to 6.2% but overshoot the backers (TVD 12.7 /
 8.6), so they stay off; backer tempo and the secondary's run-support depth
 are with the run-defense session.
 
+Per concept on called looks (`c8`; NFL 2022, 60+ yd to go): power median
+3.9 (NFL 4.0), losses 7.8% (8.0); counter 4.4 (4.0), 8.8% (8.1); outside
+zone 3.2 (3.0), 11.5% (9.5); inside zone 4.5 (3.0), 2.5% (4.9). Every
+concept is short of 10-19 yd runs and long on 20+ (the tail above). Duo
+stands apart: median 6.3 with 0.5% losses (NFL man/duo 3.0, 7.5%).
+`scripts/diag/align/dlwash.py` (line defenders single- vs double-blocked,
+driven back by 1.5 / 2.5 s): duo doubles +0.47 / +1.49 yd (NFL -0.39 /
++0.06), singles -0.15 / +0.34 (-0.75 / -0.32); inside zone and power hold
+ground like NFL linemen. Duo climbs are NFL-like (`climbphase.py
+--concepts duo`: 41% touch then reach a backer, NFL 38%). The engaged reps
+(`scripts/diag/gap/drive-push.ts`): both sides push with saturated force
+(World's lean force saturates whenever a body is slower than its request
+along the load); duo's straight drive keeps pushing for 2.5 s where zone
+and power blockers taper after 1.5 s, so duo is a pure force contest the
+line wins. Both sides carry posture 0.85, so pad level does not enter it.
+Open, with the run-defense session: the defender's technique against a
+vertical drive, or a leverage term in the push law (physics).
+
 Climbs on the tracked line are NFL-like under center
 (`scripts/diag/align/climbphase.py --uc|--gun`: touch a down man then
 reach a backer 30% of linemen, NFL 34%; by 2.0 s 17%, NFL 18%; direct to a
