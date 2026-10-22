@@ -299,6 +299,26 @@ playside drift +0.1 throughout. The 2i excess is the offense's double
 rule (`COMBO_GAP`: an uncovered blocker doubles the man in the gap beside
 him), a candidate for the shotgun inside-zone cost.
 
+**A-gap doubling and `COMBO_GAP_IZ` (paused 2026-10-22, flag off).** Split by
+run side (`out/agapside.py`, the agapstep read by side and concept), tracked
+A-gap men are doubled about equally on either side of the run; ours under
+`AGAP_ALIGN` are doubled far more on the backside: outside zone backside 2i
+82% (NFL 16%), inside zone gap 85-92% (57%). The shotgun lab cost is not
+this. The lab's A-gap man is never a 2i: `AGAP_ALIGN` moves him from a shade
+into the gap, and inside zone loses there whether he is doubled or not. The
+paired cost is weak (IZ 71 better / 94 worse, p 0.09, mean -0.3 yd; OZ/WZ no
+paired signal). In outside zone the backside double comes from my
+`COMBO_GAP` switch: the uncovered center doubles a backside 2i. Attempt 1
+(no switch on stretch runs) also removed the canonical guard-center double
+on a play-side shade (lab OZ 10+ 108 -> 78, p<0.001). Attempt 2
+(17cbc0d3: on stretch runs only a man on the backside of the ball loses the
+switch): games give a backside 2i 82 -> 67% (n 18, before the guard-order
+fix), and the shotgun lab is neutral (OZ 20 better / 19 worse, WZ 18 / 22,
+IZ unchanged). Still open: the 8-game export and zone arm on 17cbc0d3. The
+larger mismatch in the same read is unchanged: in outside zone the tracked
+A-gap man flows +1.3 yd playside by 1.0 s, ours -0.1 to +0.4 (the parked
+OZ interior flow).
+
 ## Flags on
 
 | Flag | Value | Where | What it does (from its doc comment) |

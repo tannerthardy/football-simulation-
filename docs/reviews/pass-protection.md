@@ -319,3 +319,24 @@ at 2.5 s, NFL 1.2) and he then wins inside. Def-alignment takes the edge
 rusher's pre-contact path and aim (rusher side, cleared with run-defense);
 `PASS_KICK`'s follow term is revisited only if the tackle is still too deep
 after that.
+
+## Tackle's hands at arm's length (paused 2026-10-22)
+
+Def-alignment's throwaway probe (`follow = 0` in `PASS_KICK`, 8 games) made
+the tackle worse (edge past him by 2.0 s 27 -> 33%, holds 72 -> 66%), so the
+follow term is not the cause. Their edgepath read: in the rep the tracked pair
+stands 0.81-1.08 yd apart and the rusher slows 4.0 -> 2.5 yd/s; ours stands
+0.63-0.67 apart (chest to chest) and the rusher keeps about 4. My hand-joint
+probe (`out/handprobe.ts` from their reps.ts; 300 dropbacks, tackles' edge
+reps): the joint's target is torso contact + 0.2 yd (about 0.88 yd, inside
+the tracked range), but the bodies sit at 0.64 yd, inside even torso contact
+(0.68). The arm push is at its cap on 75-80% of ticks from +0.2 to +0.8 s
+(cap = `armForce` = 0.75 power g, a muscle limit applied at any elbow angle).
+So the arms are short of force, not reach: the rusher walks through them.
+Proposed next step (not started): `HAND_STRUT` (off) in `solveHands`. At
+lockout the compression is carried structurally (bone, not muscle), capped
+like the grasps' structural claim (3.36 armForce) and outside the arm
+budget, so the tackle's legs and traction take the load; once the joint is
+compressed past lockout, the muscle cap applies until he re-extends. This is
+physics (world.ts), for the physics owner's review; the rusher's defeat of a
+lockout is his moves (club, rip, swipe), not walking through it.
