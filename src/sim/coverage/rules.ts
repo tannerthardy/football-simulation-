@@ -158,9 +158,11 @@ const fastFlat = (rd: ReceiverRead | null): boolean => !!rd && rd.release === 'f
  * #1 settling short with #2 vertical sends the overhang to hunt #1 while the
  * corner bails under #2. */
 function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
-  const two = ref(c, 2);
+  // With no #2 to this side the released back is #2 (Cover 9's weak seam/flat on the RB).
+  const two0 = ref(c, 2);
+  const two = two0 ?? backTo(c);
   const one = ref(c, 1);
-  const three = threeTo(c);
+  const three = two0 ? threeTo(c) : null;
   if (c.state.mode === 'push' && three) return man(three, { lev: 'inside', overTop: true });
   if (c.state.mode === 'smash' && one) return man(one, { lev: 'inside' });
   if (!two || c.state.mode === 'zoned') return zoneOf(c);
@@ -558,6 +560,57 @@ function clueCorner(c: RuleCtx): Directive {
   return zoneOf(c);
 }
 
+/**
+ * #3 Receiver Hook (Cover 9 Strap/Grab, HNFL-203/054): key #3 to #2. Cut off
+ * and carry the final #3 up the seam or over the linebacker level; if #3
+ * cancels, zone the hook and look for the final #4 (the back) coming to you.
+ */
+function threeRecHook(c: RuleCtx): Directive {
+  const three = ref(c, 3, 'S');
+  const st = c.state;
+  // Under the linebacker level #3 belongs to the bonus hook; flat, to the seam/flat.
+  const underLb = (rd: ReceiverRead) => rd.release === 'flat' || rd.release === 'out' || (rd.release === 'under' && rd.depth < NO_COVER);
+  if (st.mode === 'three' && three) {
+    if (three.depth < 18 && !underLb(three)) return man(three, { lev: 'inside' });
+    st.mode = 'zoned';
+  }
+  if (st.mode === 'four') {
+    const b = c.reader.readRef(c.sim, 'B');
+    if (b) return man(b, { lev: 'inside' });
+  }
+  const back = c.reader.readRef(c.sim, 'B');
+  if (three && st.mode !== 'zoned') {
+    if (three.release === 'none' || (three.release === 'vertical' && three.depth <= 3)) return readRelease(three);
+    // Up the seam, or over the top of the linebackers (a dig or deep cross).
+    if (three.release === 'vertical' || (three.release === 'in' && three.depth >= 5)) {
+      st.mode = 'three';
+      return man(three, { lev: 'inside' });
+    }
+    if (three.release !== 'block') st.mode = 'zoned';
+  }
+  if (back && back.release !== 'none' && back.release !== 'block' && Math.abs(back.pos.y - c.a.pos.y) < 8 && st.mode !== 'four') {
+    st.mode = 'four';
+    return man(back, { lev: 'inside' });
+  }
+  return cut(c) ?? zoneOf(c);
+}
+
+/**
+ * Bonus hook (Cover 9 Strap Mike, HNFL-056/203): overdrop toward the #2/#3
+ * area to the strength and relate to the final #3 underneath, with no
+ * vertical responsibility; otherwise cut what comes under him.
+ */
+function bonusHook(c: RuleCtx): Directive {
+  const three = ref(c, 3, 'S');
+  if (c.state.mode === 'three' && three && three.depth < 9 && three.release !== 'vertical') return man(three, { lev: 'head' });
+  if (three && ['under', 'in', 'stop'].includes(three.release) && three.depth < 9) {
+    c.state.mode = 'three';
+    return man(three, { lev: 'head' });
+  }
+  c.state.mode = undefined;
+  return cut(c) ?? zoneOf(c);
+}
+
 // ------------------------------------------------------------ area pickups (Box, Banjo)
 
 const isOut = (rd: ReceiverRead) => rd.release === 'out' || rd.release === 'flat';
@@ -661,6 +714,8 @@ export function runRule(rule: MatchRule, c: RuleCtx): Directive {
     case 'banjo_out': return banjo(c, true);
     case 'banjo_in': return banjo(c, false);
     case 'clue_corner': return clueCorner(c);
+    case 'three_rec_hook': return threeRecHook(c);
+    case 'bonus_hook': return bonusHook(c);
     case 'tampa_mike': return tampaMike(c);
     case 'poach_safety': return poachSafety(c);
     case 'stubbie_safety': return stubbieSafety(c);

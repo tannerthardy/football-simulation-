@@ -12,10 +12,19 @@
  * are chosen by the coordinator (e.g. Cover 6 vs. Cover 6 reversed).
  */
 import { DEF_PERSONNEL, type Coverage, type CoverageRole, type DefensivePlayCall, type DefSlot, type FormationKey, type MatchRule, type ZoneId } from './types.js';
-import type { FormationStructure } from './structure.js';
+import type { OffenseAlignment } from './alignment.js';
+import { formationStructure, type FormationStructure } from './structure.js';
 
 const z = (zone: ZoneId, rule?: MatchRule, depth?: number): CoverageRole => ({ kind: 'zone', zone, ...(rule ? { rule } : {}), ...(depth !== undefined ? { depth } : {}) });
 const seat = (zone: ZoneId, rule: MatchRule) => ({ zone, rule });
+
+/** Cover 9 shell: Tight 1/3 corners, the nickel-away safety rotates down to seam/flat, the other spins to the post. */
+const NINE_DEEP = {
+  CB_S: z('deep_third_s', 'c3_corner'),
+  CB_W: z('deep_third_w', 'c3_corner'),
+  SS: z('deep_mid'),
+  FS: z('curl_flat_w', 'c3_seam', 9),
+};
 
 // Quarters pieces shared by several calls.
 /** Quarters structure checks (HNFL-194 Sub Quads menu): Box vs bunch, Book/Read vs empty. Trips keep the distribution checks. */
@@ -223,13 +232,32 @@ export const COVERAGES: Coverage[] = [
   {
     id: 'cover9', name: 'Cover 9 (weak rotation)', family: 'cover3', shell: 'one-high', look: 'two-high', man: false, press: false,
     note: 'Fangio\'s weak-rotation Cover 3 from two high: the weak safety spins down as a seam-flat player, the strong safety takes the middle, the slot side carries #2 vertical.',
-    roles: {
-      CB_S: z('deep_third_s', 'c3_corner'),
-      CB_W: z('deep_third_w', 'c3_corner'),
-      SS: z('deep_mid'),
-      FS: z('curl_flat_w', 'c3_seam', 9),
-    },
+    roles: NINE_DEEP,
     underneath: [seat('curl_flat_s', 'c3_seam'), seat('hook_s', 'c3_hook'), seat('hook_w', 'c3_hook'), seat('hook_mid', 'mike_3')],
+    structureChecks: [
+      { when: ['bunch_strong'], to: ['cover9_clue'] },
+      { when: ['stack_strong'], to: ['cover9_clue'] },
+      { when: ['empty_3x2'], to: ['cover9_grab'] },
+      { when: ['trips'], to: ['cover9_strap'] },
+    ],
+  },
+  {
+    id: 'cover9_strap', name: 'Cover 9 Strap (vs x1)', family: 'cover3', shell: 'one-high', look: 'two-high', man: false, press: false,
+    note: 'Weak rotation vs trips/x1 (HNFL-056/203): nickel seam/flat on #2, a #3 receiver hook carries #3 up or over, the Mike is a bonus hook relating to #3 underneath, the rotating safety plays seam/flat on the back.',
+    roles: NINE_DEEP,
+    underneath: [seat('curl_flat_s', 'c3_seam'), seat('hook_s', 'three_rec_hook'), seat('hook_mid', 'bonus_hook'), seat('hook_w', 'c3_hook')],
+  },
+  {
+    id: 'cover9_clue', name: 'Cover 9 Clue (vs bunch/stack)', family: 'cover3', shell: 'one-high', look: 'two-high', man: false, press: false,
+    note: 'Weak rotation with the bunch/stack side zoned off: the corner plays Clue 1/3 keying #2 to #1, the curl-flat and hook drop to spots (HNFL-056/204).',
+    roles: { ...NINE_DEEP, CB_S: z('deep_third_s', 'clue_corner') },
+    underneath: [{ zone: 'curl_flat_s', style: 'spot' }, { zone: 'hook_s', style: 'spot' }, seat('hook_mid', 'bonus_hook'), seat('hook_w', 'c3_hook')],
+  },
+  {
+    id: 'cover9_grab', name: 'Cover 9 Grab (vs empty)', family: 'cover3', shell: 'one-high', look: 'two-high', man: false, press: false,
+    note: 'Empty 3x2 (HNFL-054/063 "Grab"): rotation becomes Buzz. The weak overhang is seam/flat on weak #2 and the rotating safety becomes the #3 receiver hook on the final #3 up or over.',
+    roles: { ...NINE_DEEP, FS: z('hook_s', 'three_rec_hook', 9) },
+    underneath: [seat('curl_flat_s', 'c3_seam'), seat('curl_flat_w', 'c3_seam'), seat('hook_mid', 'bonus_hook'), 'hook_w'],
   },
   // ------------------------------------------------------------ two-deep zone
   {
@@ -371,7 +399,7 @@ export const COVERAGES: Coverage[] = [
     note: 'Quarter-quarter-half: quarters rules to the strength, a cloud corner and half safety away.',
     roles: {
       ...QUARTERS_S,
-      CB_W: z('flat_w', 'cloud_corner'),
+      CB_W: z('flat_w', 'sink_corner'),
       FS: z('deep_half_w'),
     },
     underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_w', 'hook_s'],
@@ -383,7 +411,7 @@ export const COVERAGES: Coverage[] = [
     roles: {
       CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside', protectDepth: true },
       SS: z('quarter_s_in', 'stubbie_safety'),
-      CB_W: z('flat_w', 'cloud_corner'),
+      CB_W: z('flat_w', 'sink_corner'),
       FS: z('deep_half_w'),
     },
     underneath: [seat('curl_flat_s', 'mush'), seat('hook_s', 'read_hook'), seat('hook_mid', 'mike_3'), 'hook_w'],
@@ -392,11 +420,23 @@ export const COVERAGES: Coverage[] = [
     id: 'cover6_rev', name: 'Cover 8 (half strong, quarters weak)', family: 'cover6', shell: 'two-high', man: false, press: false,
     note: 'Fangio\'s Cover 8: cloud corner under and half safety over to the strength — a natural double on #1 — quarters away.',
     roles: {
-      CB_S: z('flat_s', 'cloud_corner'),
+      CB_S: z('flat_s', 'sink_corner'),
       SS: z('deep_half_s'),
       ...QUARTERS_W,
     },
     underneath: [seat('curl_flat_w', 'q_apex'), seat('hook_mid', 'mike_3'), 'hook_s', 'hook_w'],
+    structureChecks: [{ when: ['trips'], to: ['cover8_trix'] }],
+  },
+  {
+    id: 'cover8_trix', name: 'Cover 8 Trix (vs trips)', family: 'cover6', shell: 'two-high', man: false, press: false,
+    note: 'Halves to the trips with a squat corner and a vertical-curl nickel; the backside safety keys #3 to X and overtakes #3, so the Mike has no vertical; tight 1/4 on X (HNFL-195/325/336).',
+    roles: {
+      CB_S: z('flat_s', 'sink_corner'),
+      SS: z('deep_half_s'),
+      FS: z('quarter_w_in', 'poach_safety'),
+      CB_W: z('quarter_w_out', 'q_corner_mod'),
+    },
+    underneath: [seat('curl_s', 'c2_hook'), seat('hook_s', 'read_hook'), seat('curl_flat_w', 'c3_seam'), 'hook_mid'],
   },
   {
     id: 'split_quarters_2man', name: 'Quarters / 2-Man split', family: 'cover6', shell: 'two-high', man: false, press: false,
@@ -465,7 +505,21 @@ function checkInstallable(call: DefensivePlayCall, to: Coverage): boolean {
  * safety bracket him) when he is inside.
  */
 export function resolveZeus(call: DefensivePlayCall, ref: string | undefined, weakCount: number): DefensivePlayCall {
-  const to = ref === 'S1' ? 'cover6_rev' : ref === 'W1' && weakCount === 1 ? 'cover6' : ref === 'W1' ? 'cover6' : 'cover4';
+  void weakCount;
+  const to = ref === 'S1' ? 'cover6_rev' : ref === 'W1' ? 'cover6' : 'cover4';
   const cov = COVERAGE_BY_ID[to];
   return { ...call, coverage: cov, label: `${call.label} (Zeus → ${cov.name})` };
+}
+
+/**
+ * The coverage the secondary installs against an offensive alignment: Zeus
+ * resolved by where the tagged receiver stands (Cover 8 on a strong #1,
+ * Stuff on the backside #1, Quads inside), then the structure check of the
+ * resolved call (Cover 8 vs trips is Trix; Stuff vs trips is Book;
+ * MatchQuarters Zeus/HNFL-261).
+ */
+export function installCoverage(call: DefensivePlayCall, off: OffenseAlignment): DefensivePlayCall {
+  const zeus = call.zeus;
+  const resolved = zeus ? resolveZeus(call, off.refOf[zeus], Math.min(off.counts.S, off.counts.W)) : call;
+  return checkCall(resolved, formationStructure(off));
 }

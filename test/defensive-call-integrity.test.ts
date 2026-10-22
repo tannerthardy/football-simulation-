@@ -5,8 +5,7 @@ import { DefensiveCoordinator, type Situation } from '../src/game/playcaller.js'
 import { generateTeam, pickOffense, type CoverageSystem, type DefScheme } from '../src/league/team.js';
 import { alignDefense, alignOffense, isDeepZone } from '../src/playbook/alignment.js';
 import { coverageHasDeepSupport, coverageHasNamedZonePlayers, pressureIsInstallable } from '../src/playbook/call-integrity.js';
-import { checkCall, resolveZeus } from '../src/playbook/coverages.js';
-import { formationStructure } from '../src/playbook/structure.js';
+import { installCoverage } from '../src/playbook/coverages.js';
 import { COVERAGE_BY_ID, COVERAGES, FRONT_BY_ID, FRONTS, PRESSURE_BY_ID, PRESSURES } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID, FORMATIONS } from '../src/playbook/formations.js';
 import { DEF_PERSONNEL, type Coverage, type DefPersonnelId, type DefSlot, type DefensivePlayCall, type Pressure } from '../src/playbook/types.js';
@@ -145,9 +144,9 @@ describe('automatic defensive call installation guards', () => {
         const aligned = alignOffense(formation, !!(seed % 2), yardlineToX(s.yardline), s.ballY);
         // The production constructor currently resolves Zeus OR a formation
         // check. Preserve that behavior while auditing its resulting roof.
-        const installed: DefensivePlayCall = call.zeus ? resolveZeus(call, aligned.refOf[call.zeus], Math.min(aligned.counts.S, aligned.counts.W)) : checkCall(call, formationStructure(aligned));
+        const installed: DefensivePlayCall = installCoverage(call, aligned);
         if (call.zeus) zeusCalls++;
-        if (installed.coverage.id !== call.coverage.id && !call.zeus) checkedTrips++;
+        if (installed.check) checkedTrips++;
         const jobs = alignDefense(installed, aligned, present(call.personnel), selection.prefs);
         expectRequiredRoof(installed.coverage, jobs);
         if (call.shown) expectRequiredRoof(call.shown, alignDefense({ ...call, coverage: call.shown, pressure: null, shown: undefined }, aligned, present(call.personnel)));

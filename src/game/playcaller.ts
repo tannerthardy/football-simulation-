@@ -380,8 +380,13 @@ export class DefensiveCoordinator {
     // Variants within the family by tree; spot vs. match by the coach's habit.
     const m = coach.matchRate;
     const VARIANTS: Record<string, Array<[string, number]>> = {
-      cover3: [['cover3', 1.1 - m], ['cover3_match', m * 0.75], ['cover3_seam', 0.18], ['cover9', system === 'two-high' ? 0.6 : 0.03],
-        ['cover3_buzz', system === 'single-high' || system === 'two-high' ? 0.3 : 0.12], ['cover3_cloud', system === 'two-high' ? 0.25 : 0.05]],
+      // A two-high (Fangio) tree plays its Cover 3 as weak rotation from the
+      // shell: 99 Weak Sky 21% vs 33 Buzz 3% in HNFL-186 scouting; Cover 3
+      // Seam is about a third of the Eagles' 2025 Cover 3.
+      cover3: system === 'two-high'
+        ? [['cover9', 2.0], ['cover3_seam', 0.6], ['cover3_match', 0.2 * m], ['cover3', 0.1], ['cover3_buzz', 0.12], ['cover3_cloud', 0.12]]
+        : [['cover3', 1.1 - m], ['cover3_match', m * 0.75], ['cover3_seam', 0.18], ['cover9', 0.03],
+          ['cover3_buzz', system === 'single-high' ? 0.3 : 0.12], ['cover3_cloud', 0.05]],
       cover1: [['cover1', 0.45], ['cover1_off', 0.25], ['cover1_robber', system === 'single-high' ? 0.3 : 0.15], ['cover1_double', 0.04 * (1 + (coach.shadow ? 1 : 0))]],
       cover2: [['cover2', 1 - m], ['cover2_match', m], ['cover2_invert', system === 'two-high' ? 0.15 : 0.04]],
       tampa2: [['tampa2', 1]],

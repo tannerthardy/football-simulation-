@@ -20,8 +20,7 @@
 import { CENTER_Y } from '../core/field.js';
 import type { Vec2 } from '../core/vec.js';
 import { alignDefense, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
-import { checkCall, resolveZeus } from '../playbook/coverages.js';
-import { formationStructure } from '../playbook/structure.js';
+import { installCoverage } from '../playbook/coverages.js';
 import type { DefensivePlayCall, DefSlot, MotionCall, MotionKind, ReceiverRef, Side, SkillSlot } from '../playbook/types.js';
 import { sideSign } from '../playbook/types.js';
 import type { Body } from '../physics/kinematics.js';
@@ -207,12 +206,6 @@ export function realignOffense(off: OffenseAlignment, at: (slot: string) => Vec2
     hasTE: { S: teSide(strong), W: teSide(weak) },
     counts: { S: bySide[strong].length, W: bySide[weak].length },
   };
-}
-
-/** The coverage the secondary plays against an offensive alignment: Zeus resolved by where the tagged man stands, else its structure check. */
-export function installCoverage(called: DefensivePlayCall, off: OffenseAlignment): DefensivePlayCall {
-  const zeus = called.zeus;
-  return zeus ? resolveZeus(called, off.refOf[zeus], Math.min(off.counts.S, off.counts.W)) : checkCall(called, formationStructure(off));
 }
 
 /** What a motion needs from the play: its bodies, the installed offense, and its pre-snap clock. */

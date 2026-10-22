@@ -239,6 +239,8 @@ export type MatchRule =
   | 'banjo_out'
   | 'banjo_in'
   | 'clue_corner'
+  | 'three_rec_hook'
+  | 'bonus_hook'
   | 'rat'
   | 'robber';
 

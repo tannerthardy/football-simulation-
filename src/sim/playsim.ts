@@ -27,8 +27,7 @@ import { containCoverage } from './coverage-space.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
 import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
-import { checkCall, resolveZeus } from '../playbook/coverages.js';
-import { formationStructure } from '../playbook/structure.js';
+import { installCoverage } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
 import { CoverageScouting, QBMind } from './qbmind.js';
@@ -233,9 +232,7 @@ export class PlaySim {
 
     this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY);
     // The secondary checks its call to the receiver distribution it sees.
-    const zeus = setup.defCall.zeus;
-    const called = zeus ? resolveZeus(setup.defCall, this.offAlign.refOf[zeus], Math.min(this.offAlign.counts.S, this.offAlign.counts.W)) : setup.defCall;
-    this.defCall = zeus ? called : checkCall(called, formationStructure(this.offAlign));
+    this.defCall = installCoverage(setup.defCall, this.offAlign);
     const defSlots = Object.keys(setup.defense) as DefSlot[];
     this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs);
 
