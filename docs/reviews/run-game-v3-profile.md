@@ -112,6 +112,28 @@ while in contact range, 0.3-1 / 1-2 / 2-3 s (yd/s):
   window positive (+0.32), but leave the first second and outside zone
   nearly unchanged.
 
+## Pair separation (in progress)
+
+Engaged pairs come apart only when a rule ends the rep. In run reps (lab,
+96 IZ/OZ/power/duo cases, `out/handratio.ts`):
+- A DL asking to move across his blocker requests 2.1 yd/s relative and gets
+  0.3. The blocker is asking the other way (-0.66 yd/s), so this is mostly a
+  leg contest with hands on, which is football.
+- The hand row's tangential force sits at its steer limit on 73% of those
+  ticks, and on 13-15% of all DL rep ticks the hands resist sliding with no
+  push at all (tangential load, zero normal load). A DL asking to separate
+  meets tangential load at a median 2.9 times the normal load.
+
+`HAND_FRICTION` (physics, `world.ts` `solveHands`, off) bounds the hands'
+tangential force by friction on the push they deliver (`HAND_MU` 0.6) plus the
+grip budget while gripping, within the old steer budget. Push-free glue falls
+from 14% to 1% of ticks. Paired lab vs `sb3`: zone and shotgun no detectable
+change; gap losses 82 -> 116 of 1,600 (p 0.001; tracked share 7.4%), almost all
+counter (35 -> 63 of 400, the kicked end slipping the kick-out) and trap
+(5 -> 13). Kick-outs held the end by sideways hand force with little push.
+Off: physics promotion belongs to the physics owner, and counter at 16% losses
+needs the kick-out's own contact (approach speed, push) examined first.
+
 ## Flags on
 
 | Flag | Value | Where | What it does (from its doc comment) |

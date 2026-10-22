@@ -300,6 +300,14 @@ const LEG_SLIDE = 0.3;
 const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);
 /** Experimental active hand motor (HAND_MOTOR=1): HandJoint.drive and .shove. */
 const HAND_MOTOR = process.env.HAND_MOTOR === '1';
+/** Experimental (HAND_FRICTION=1, off): hands resist sliding across the
+ * man they touch only through friction on the push they deliver (HAND_MU x the
+ * row's attained normal impulse) plus the grip's own capacity while the
+ * hands grip cloth (the hold budget), still within the arm's steer budget. Off, steering is a
+ * tangential force up to the steer budget with or without push or grip. */
+const HAND_FRICTION = process.env.HAND_FRICTION === '1';
+/** Hands and gloves on jersey and pads; 1.0 gives the same lab result. */
+const HAND_MU = 0.6;
 /** Experimental leg-hold bracing (LEG_BRACE=1); see addLoad. */
 const LEG_BRACE = process.env.LEG_BRACE === '1';
 /** TETHER=1 (on in the pinned profile): a passive hold on the legs is an inelastic
@@ -2250,7 +2258,12 @@ export class World {
         (r.ni ?? 0) * dn, (r.nj ?? 0) * dn);
       r.ln+=dn*fraction;
     }
-    if (r.steerLim > 0) this.solveTangent(r, a, b, r.steerLim);
+    if (r.steerLim > 0) {
+      const lim = HAND_FRICTION
+        ? Math.min(r.steerLim, HAND_MU * Math.max(0, r.ln) + r.holdLim)
+        : r.steerLim;
+      this.solveTangent(r, a, b, lim);
+    }
   }
 
   /** Patch reel and passive grip share a frozen force point and one budget.

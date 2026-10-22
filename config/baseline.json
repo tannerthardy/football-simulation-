@@ -44,6 +44,7 @@
     "GAP_OUT": "1",
     "GUN_MESH_SIDE": "0",
     "HAND_FIGHT": "0",
+    "HAND_FRICTION": "0",
     "HAND_MOTOR": "0",
     "HOLD_POINT": "1",
     "HOLD_SUBSTEPS": "0",
