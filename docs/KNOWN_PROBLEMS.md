@@ -367,6 +367,20 @@ Carried over from the issue register; each was measured on an older develop.
 
 ## Pass protection
 
+<a id="run-11"></a>
+### RUN-11: Staged scenes recorded on arm-force hands
+
+- **What:** `ARM_PRESS` (G5) puts a press through the hands at each player's
+  bench max, not the arm-force mapping. Six staged scenes were recorded on
+  arm-force hands. They are pinned to `ARM_PRESS=0` until review 2:
+  - run: `combo-strike-access`, `planned-climb-fit`, `zone-runoff-work`;
+  - legacy trace: `run-hand-control`;
+  - pass: `pass-cutoff-approach`, `cover3-cover2-rules`.
+- **Open:** whether a double still moves the DL and hands him to the climber
+  when the arms don't fold. That is a G2 question; a pin is not an answer.
+  Re-record each scene, or replace it with a contract that holds under strong
+  arms, by review 2.
+
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
 
@@ -525,20 +539,6 @@ Carried over from the issue register; each was measured on an older develop.
   a call problem. Logged 2026-10-22.
 
 ## Pass defense and coverage
-
-<a id="run-11"></a>
-### RUN-11: Staged scenes recorded on arm-force hands
-
-- **What:** `ARM_PRESS` (G5) puts a press through the hands at each player's
-  bench max, not the arm-force mapping. Six staged scenes were recorded on
-  arm-force hands. They are pinned to `ARM_PRESS=0` until review 2:
-  - run: `combo-strike-access`, `planned-climb-fit`, `zone-runoff-work`;
-  - legacy trace: `run-hand-control`;
-  - pass: `pass-cutoff-approach`, `cover3-cover2-rules`.
-- **Open:** whether a double still moves the DL and hands him to the climber
-  when the arms don't fold. That is a G2 question; a pin is not an answer.
-  Re-record each scene, or replace it with a contract that holds under strong
-  arms, by review 2.
 
 <a id="cov-1"></a>
 ### COV-1: Zone defenders barely close while the ball is in the air
