@@ -48,6 +48,13 @@ for arg in sys.argv[1:]:
         if before is None or before < 1:
             continue
         zone = "behind/at line" if x0 < 0.5 else "0-5 yd" if x0 < 5 else "5+ yd"
+        # Clean contact: the first contact's man is the nearest defender then;
+        # no other defender comes within 1.5 yd of the carrier in the next 1 s.
+        ds = [d for d in p.who("D") if p.pos(d, k0)[0] is not None]
+        first_man = min(ds, key=lambda d: p.dist(d, c, k0)) if ds else None
+        crowd = any(p.dist(d, c, kk) <= 1.5 for d in ds if d != first_man
+                    for kk in range(k0, min(p.frames, k0 + p.k(1.0) + 1)))
+        zone += " (crowd)" if crowd else " (clean)"
         r = rows.setdefault(zone, {"before": [], 0.3: [], 0.6: [], 1.0: [], 1.5: [], "min": [], "back": []})
         r["before"].append(before)
         sp = []
@@ -66,9 +73,9 @@ for arg in sys.argv[1:]:
         back = next((i * p.dt for i, s in enumerate(sp) if i > 0 and s is not None and s >= before), None)
         r["back"].append(back if back is not None else 9)
     print(f"== {label} (speeds as a share of his speed 0.2 s before contact)")
-    for zone in ("behind/at line", "0-5 yd", "5+ yd"):
+    for zone in [z + suffix for z in ("behind/at line", "0-5 yd", "5+ yd") for suffix in (" (clean)", " (crowd)")]:
         r = rows.get(zone)
         if not r:
             continue
-        print(f"  contact {zone:15s} n {len(r['before']):4d} | before {q(r['before']):.2f} yd/s | after 0.3/0.6/1.0/1.5 s {q(r[0.3]):.2f}/{q(r[0.6]):.2f}/{q(r[1.0]):.2f}/{q(r[1.5]):.2f}"
+        print(f"  contact {zone:23s} n {len(r['before']):4d} | before {q(r['before']):.2f} yd/s | after 0.3/0.6/1.0/1.5 s {q(r[0.3]):.2f}/{q(r[0.6]):.2f}/{q(r[1.0]):.2f}/{q(r[1.5]):.2f}"
               f" | lowest in 1 s {q(r['min']):.2f} | back to that speed p50 {q(r['back']):.1f} s")
