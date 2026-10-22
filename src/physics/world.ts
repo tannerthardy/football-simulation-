@@ -523,6 +523,13 @@ export class World {
   private readonly footImpulseY: Float64Array;
   /** Peak corrective speed allocated from this interval's common leg budget. */
   private readonly recovery: Float64Array;
+  /** Tick-local scratch never escapes through bodies, joints or StepReport.
+   * Reuse its storage; each step still rebuilds all values in body order. */
+  private readonly plans: Plan[];
+  private readonly near: Uint8Array;
+  private readonly island: number[] = [];
+  private readonly alone: number[] = [];
+  private readonly pairs = new Map<number, ContactRecord>();
   private report!: StepReport;
   private tickDt = .05;
 
@@ -562,6 +569,9 @@ export class World {
     this.armScale = f(); this.armCap = f(); this.active = f();
     this.footImpulseX = f(); this.footImpulseY = f();
     this.recovery = f();
+    this.plans = bodies.map(b => ({ ax: 0, ay: 0, facing: b.facing, cut: 1, free: false, dive: null, launch: 0,
+      activeTime: 0, activeSteps: 0, hadPassive: false, actionWork: 0, activeNow: false, effortVx: 0, effortVy: 0 }));
+    this.near = new Uint8Array(n);
   }
 
   indexOf(b: Body): number {
@@ -647,14 +657,16 @@ export class World {
     // Hold gait effort at the controller rate; physics subdivisions do not
     // become extra decisions. Center keeps stepBody's historical turn credit.
     // Patch plans from attained facing, before the loaded turn is executed.
-    const plans = bs.map((b, i) => this.plan(b, i, intents[i] ?? STAND, dt));
+    const plans = this.plans;
+    for (let i = 0; i < n; i++) this.plan(bs[i], i, intents[i] ?? STAND, dt);
     for (let i = 0; i < n; i++) {
       const l = intents[i]?.lunge, sup = bs[i].support!;
       if (l && sup.state === 'up' && Math.hypot(l.x, l.y) > 1e-6) sup.strike = { x: l.x, y: l.y };
     }
 
     // Islands: who can touch whom within this tick, or is held, or struck.
-    const near = new Uint8Array(n);
+    const near = this.near;
+    near.fill(0);
     let fastest = 0;
     for (const j of this.joints) { near[this.indexOf(j.a)] = 1; near[this.indexOf(j.b)] = 1; }
     for (const p of this.pending) { near[this.indexOf(p.a)] = 1; near[this.indexOf(p.b)] = 1; }
@@ -671,9 +683,11 @@ export class World {
         if (rel > fastest) fastest = rel;
       }
     }
-    const island: number[] = [], alone: number[] = [];
+    const island = this.island, alone = this.alone;
+    island.length = 0; alone.length = 0;
     for (let i = 0; i < n; i++) (near[i] ? island : alone).push(i);
-    const pairs = new Map<number, ContactRecord>();
+    const pairs = this.pairs;
+    pairs.clear();
     const t0 = this.time;
     if (alone.length) this.substep(alone, intents, plans, dt, dt, report, pairs, false);
     if (island.length) {
@@ -1036,12 +1050,17 @@ export class World {
 
   private plan(b: Body, i: number, intent: Intent, dt: number): Plan {
     const sup = b.support!;
-    const none: Plan = { ax: 0, ay: 0, facing: b.facing, cut: 1, free: !!intent.free, dive: null, launch: 0,
-      activeTime: 0, activeSteps: 0, hadPassive: false, actionWork: 0, activeNow: false, effortVx: 0, effortVy: 0 };
-    if (sup.state !== 'up' || intent.free) return none;
+    const plan = this.plans[i];
+    plan.ax = 0; plan.ay = 0; plan.facing = b.facing; plan.cut = 1;
+    plan.free = !!intent.free; plan.dive = null; plan.launch = 0;
+    plan.activeTime = 0; plan.activeSteps = 0; plan.hadPassive = false;
+    plan.actionWork = 0; plan.activeNow = false; plan.effortVx = 0; plan.effortVy = 0;
+    if (sup.state !== 'up' || intent.free) return plan;
     if (intent.dive && Math.hypot(intent.dive.x, intent.dive.y) > 1e-9) {
       const l = Math.hypot(intent.dive.x, intent.dive.y);
-      return { ...none, dive: { x: intent.dive.x / l, y: intent.dive.y / l }, launch: Math.min(1, l) };
+      plan.dive = { x: intent.dive.x / l, y: intent.dive.y / l };
+      plan.launch = Math.min(1, l);
+      return plan;
     }
     const a = availability(sup, this.sp[i], this.fat[i]);
     updateSqueeze(b, intent, dt);
@@ -1059,9 +1078,10 @@ export class World {
     // The yaw motor needs the requested angle to plan its own braking. The
     // rate-clipped pose above is only the existing gait estimate; making it
     // a new stopping target each tick turns a smooth rotation into a chase.
-    return { ...none, ax: acc.x, ay: acc.y,
-      facing: this.handContact === 'center' ? commandFacing(b, intent) : facing,
-      cut: intent.cutSkill ?? 1 };
+    plan.ax = acc.x; plan.ay = acc.y;
+    plan.facing = this.handContact === 'center' ? commandFacing(b, intent) : facing;
+    plan.cut = intent.cutSkill ?? 1;
+    return plan;
   }
 
   private substep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
