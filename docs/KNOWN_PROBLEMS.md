@@ -488,18 +488,29 @@ From #193's open list:
   Smack, Read and Patty;
 - Cover 2 and Cover 6 run a few points under tracking (#194);
 - Fangio E1 (strength and rotation to the nickel side) is not done (#196);
-- with `FRONT_ALIGN` on, the Quarters Flat defender's carry changes
-  (`test/quarters-trips-rules.test.ts` is pinned to the old front);
-- with `WR_ALIGN` and `OL_SPLITS` on, the match hook defender stops carrying
-  the doubles seam (5.7 yd away versus 4.8 yd for a spot dropper;
-  `test/integration/coverage-panel.test.ts` is pinned);
-- with the line stagger on, jet motion numbering inside the tight end is
-  unsettled (`test/offensive-motion.test.ts` is pinned);
-- with `WR_ALIGN` on, the Cover 3 Match corner never zones off the short out
-  (`test/corner-one-release.test.ts` is pinned);
-- with `OL_STAGGER` on, the weak linebacker bumps 5.3 yd on across motion,
-  past the test's 5-yd limit, which may itself need a look
-  (`test/motion-check.test.ts` is pinned).
+- with `WR_ALIGN` and `OL_SPLITS` on, the match hook and curl/flat defenders
+  stop carrying the doubles seams (`test/integration/coverage-panel.test.ts`
+  is pinned). *Confirmed cause:* the wider slot's seam is outside the hook's
+  band, and the curl/flat's carry starts only once the stem is past 2 yd at
+  4.5 yd/s. Until then the lane logic pulls him downhill toward the stem, so
+  the receiver runs past him at 2.7 yd/s and he finishes 6 yd behind. The
+  hook on Y trails 4 yd underneath the same way. Same failure as deep man
+  (G3): the carrier lets the stem eat his cushion without counting the time
+  his body needs to turn and reach the receiver's speed.
+
+Resolved with the promoted defaults (staging, not coverage):
+- Quarter Flat #3-away carry: the back's swing ran into the wider weak end
+  and stayed behind the line, which correctly reads as a block. Staged with
+  the back's flat release.
+- Jet numbering: receivers are numbered outside-in at the snap, so a jet
+  inside the inline end on the tracked splits is #2 on his own side. The
+  test asserts the side.
+- Cover 3 Match corner on #1's short out: his rule zones off and the
+  judgment's squeeze-break robs the out when nothing threatens deep. The old
+  assertion passed on a one-tick zone. The rep is now staged without the
+  rush instead of pinning four flags.
+- Weak hook's bump on across motion: a 5.3-yd slide that crosses the ball
+  from 2.2 yd is a bump, not a sideline-to-sideline run. The limit is 8 yd.
 
 <a id="cov-4"></a>
 ### COV-4: Defenders react late to jet motion
