@@ -545,6 +545,93 @@ with its `PASS_KICK` vertical set (`claude/run-game-v3@1abd6af`, 8 games;
 - Pocket movement (`depth/pocket.py`) is close to tracking: ours drop 0.6 yd
   deeper, and step up as tracked quarterbacks do with an edge at their depth.
 
+## Breakaway runs: the deep safety as the force player (`DEEP_NO_FORCE`, default off)
+
+**What the deep support does on breakaways.** `scripts/diag/depth/alleypath.py`
+works the same on NFL tracking and sim exports. Deep support means defenders
+8+ yd off the ball and within 12 yd of it at the snap. At the frames the
+back reaches 0, 5 and 10 yd, the nearest one's depth over him, lateral gap
+and speeds. Develop + line set + `SAFETY_TEMPO`, 8 games:
+
+| Runs reaching 20 | Snap depth | Depth over the back at 0 / 5 / 10 yd | Downhill speed at 5 yd |
+| --- | --- | --- | --- |
+| NFL | 12.8 | 11.6 / 6.1 / 2.3 | −0.25 |
+| Sim | 12 | 8.2 / 0.4 / −2.8 | +1.0 |
+
+The alignment is the same, but by the time the back reaches the line our
+safety has already given up about 4 yd. Tick traces of the nearest deep
+supporter on breakaways (`depth/alleytrace.ts`, `depth/alleyprobe.ts`) show
+two different plays:
+
+- **About a third: the safety is the force player.** When a side has no
+  flat or curl-flat seat (2-man, some quarters looks), `buildRunFits` falls
+  back to any available defender outside the ball, by priority × 4 plus his
+  distance from 5.5 yd wide. A deep zone (6) beats a man defender (7), so the
+  post or half safety at 10–12 yd becomes the force. His fit then sends him
+  to the line outside the back at 4+ yd/s. The back runs inside him, about
+  4 yd away, with no one behind.
+- **The rest: the alley safety sprints at the back** (see the cushion below).
+
+**`DEEP_NO_FORCE` (`run-fits.ts` `buildRunFits`).** A deep-zone defender is
+never a fallback force player. Flat-seat calls are unchanged; with no
+candidate, the existing rule boxes the edge. `test/deep-no-force.test.ts`.
+
+Paired lab: `depth/forcelab.ts` runs the same seeds, bodies and calls for every
+arm. Seven run concepts × four formations × the coverages, 12 plays a cell:
+
+| Plays where the force changed (459) | Mean | Median | 10+ | 20+ |
+| --- | --- | --- | --- | --- |
+| Off | 13.9 | 2.6 | 21.4% | 15.9% |
+| On | 7.7 | 2.9 | 17.9% | 7.2% |
+
+The other 1,221 plays are identical. A first run on different seeds gave
+the same result: 466 changed, 20+ went from 15.7% to 6.7%. In 2-man the mean
+falls from 17.4 to 9.0 yd and 20+ runs from 21.1% to 8.6%. That matches the
+calls whose force never changed (7.4%). The median rises by 0.3 yd because
+the replacement force (a man linebacker or corner) is a slower edge than a
+safety arriving from depth at full speed. Breakaways are cut in half.
+
+- **Dropped: `MAN_NO_FORCE`.** Also excluding man defenders, so the edge
+  boxes, is the textbook 2-man answer. In 2-man it is a little better (20+
+  7.1%, median back to 3.1), and in Cover 1 too (8.3 → 5.7%). But in Cover 0
+  20+ runs go from 9.5% to 14.0%: with everyone in man and blitzing, no one
+  contains the edge. The result is mixed and a separate question, so it is
+  not kept.
+- In 8-game exports, the deep supporter's depth over the back on runs
+  reaching 20 moves toward tracking: 8.2 / 0.4 / −2.8 becomes
+  10.7 / 3.1 / −1.6. Runs reaching 10 / 20 / 40 go from 16.4 / 7.8 / 5.6% to
+  13.4 / 7.8 / 5.5%. Games diverge after the first different play, so 8-game
+  arms cannot resolve a play-level change. The compare count moved 29 → 38
+  among unrelated flags, such as WR deceleration, man separation and handoff
+  times. The paired lab is the controlled evidence.
+
+**The alley safety after the back declares (three attempts dropped).**
+The other breakaways are alley safeties who chase the declared back
+(`chase(sim,a,c,3.5)`) up to 9 yd/s downhill from 12–14 yd and are passed
+about 3 yd to the side. The chase's gather starts only within contact plus
+max(2.5, stopping distance), so he runs flat out until about 5 yd away.
+- **`SAFETY_ANGLE` v1 (probe):** the intercept assumes the back reaches full
+  speed along his heading. Runs reaching 20, among those reaching 5 yd
+  (`depth/alleyprobe.ts`, 8 games): 26 / 100 off vs 28 / 117 on. No change.
+- **`SAFETY_ANGLE` v2 (probe):** the intercept assumes the back turns
+  upfield now at full speed. 51 / 110: worse. The safety meets him head-on at
+  speed and is beaten by the cut.
+- **`SAFETY_CUSHION` (lab, re-diagnosed first):** a defender aligned 8+ yd
+  deep mirrors the runner at his own depth, with inside-out leverage, until
+  the runner is inside his gather range. That is what tracked safeties do
+  (downhill about 0 when the back is at 5 yd). Paired lab, 3,360 plays
+  across ten coverages: 10+ goes 17.2 → 22.4%, 20+ 7.1 → 9.3%, worse in nine
+  of the ten calls that change. Holding the last level deep exposes the box,
+  as the earlier hold-deep probe found.
+
+Coming early and holding late both lose. In the 20+ runs the nearest deep
+supporter either never touches the back (about half; passed 2–3 yd to the
+side) or makes contact and the tackle breaks (about a third). So the
+defect is the open-field meeting, the near approach and the tackle, not
+where the safety starts from. The run-offense session found the same with
+its `TACKLE_HOLD` after the catch. Neither the approach nor the tackle
+belongs to the fit's aim, so `run-fits.ts` keeps its chase.
+
 ## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
 
 **Question.** With the line set on, the run break rate matches tracking (13.2%
@@ -1068,7 +1155,8 @@ holding the deep defender back.
 telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
-`runrally`, `crease`, `breakpoint`, `afterrelease`, and lab probes
+`runrally`, `crease`, `breakpoint`, `afterrelease`, `alleypath`, and lab probes
+`alleyprobe.ts`, `alleytrace.ts` (the nearest deep supporter on long runs), `forcelab.ts` (paired run lab, the same seeds per arm),
 `dlpursuit.ts` (linemen at a run's first contact), `dropprobe.ts` (the
 nearest zone defender when the ball comes near him), `catchact.ts`, `sideprobe.ts` (the side window from inside the
 chase), `breakprobe.ts` (the nearest defender through the flight). `scripts/mechanics/nfl_ytg.py` writes the
@@ -1079,7 +1167,7 @@ yards-to-goal filter their `--ytg60` option reads. `scripts/diag/runblock/`:
 ## Reproduce
 
 ```sh
-npx vitest run test/tip-away.test.ts test/catch-caller-interval.test.ts test/blocked-reach.test.ts test/pull-early.test.ts
+npx vitest run test/deep-no-force.test.ts test/safety-tempo.test.ts test/tip-away.test.ts test/catch-caller-interval.test.ts test/blocked-reach.test.ts test/pull-early.test.ts
 node scripts/baseline.mjs --candidate --flag TIP_AWAY=1 -- npx vitest run --project core
 for a in "" "--flag TIP_AWAY=1"; do node scripts/baseline.mjs --candidate $a -- node --import tsx scripts/diag/depth/ints.ts --games 8; done
 ```

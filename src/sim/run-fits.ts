@@ -67,6 +67,7 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const exchange = sim.defCall.gapExchange;
   const exchangeBacker = exchange && sim.slot(exchange.edge) ? sim.slot(exchange.backer) : undefined;
   const available = (d: Agent) => !first.has(d) && d !== exchangeBacker && jobs.get(d)!.kind !== 'force';
+  const deepZone = (d: Agent) => { const role = sim.defAlign.spots[d.slot as DefSlot]!.role; return role.kind === 'zone' && isDeepZone(role.zone); };
   const outsideSide = (d: Agent): number | null => {
     const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
     if (role.kind !== 'zone') return null;
@@ -81,7 +82,7 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   for (const side of [-1, 1]) {
     const designated = sim.defense.filter(d => available(d) && outsideSide(d) === side);
     const candidates = designated.length ? designated : sim.defense.filter(d => available(d)
-      && outsideSide(d) === null && (d.pos.y - sim.ballY) * side > 2);
+      && outsideSide(d) === null && (d.pos.y - sim.ballY) * side > 2 && !(DEEP_NO_FORCE && deepZone(d)));
     const priority = (d: Agent) => {
       const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
       return role.kind === 'zone' ? role.zone.startsWith('flat') ? 0 : role.zone.startsWith('curl_flat') ? 1 : isDeepZone(role.zone) ? 6 : 3 : 7;
@@ -196,6 +197,12 @@ const LB_LANDMARK = process.env.LB_LANDMARK === '1';
  * it is 5.3 yd behind the back at 10 yd where the NFL's is 3.1 ahead
  * (scripts/diag/long-run.py). Off: the installed 65% of alignment depth. */
 const SAFETY_TEMPO = process.env.SAFETY_TEMPO === '1';
+/** DEEP_NO_FORCE (off): a deep-zone defender is never the side's force
+ * player. Without a flat seat (man and quarters calls) the fallback could
+ * pick the post or half safety at 10-12 yd, who then sprints to the line
+ * outside the back; the back runs inside him with no one behind. Off: any
+ * available defender outside the ball. With no candidate the edge boxes. */
+const DEEP_NO_FORCE = process.env.DEEP_NO_FORCE === '1';
 const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
