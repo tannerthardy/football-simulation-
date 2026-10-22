@@ -34,7 +34,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "mechanics"))
-from metrics import Play  # noqa: E402
+from metrics import PRESSURE_OPERATOR, Play  # noqa: E402
 
 CONTACT, FREE = 1.0, 1.5
 q = lambda v, f: sorted(v)[int(f * (len(v) - 1))] if v else float("nan")
@@ -95,7 +95,7 @@ def escape(p, d, b, k, qb):
 
 
 def measure(path):
-    A = {"plays": 0, "pressured": 0}
+    A = {"plays": 0, "pressured": 0, "pressureObserved": 0, "pressureUnknown": 0}
     L = lambda k: A.setdefault(k, [])
 
     for line in gzip.open(path, "rt"):
@@ -154,7 +154,10 @@ def measure(path):
             if free is not None:
                 L(f"repFreeTime:{g}").append(free * p.dt - t0)
                 L(f"repEngagedFor:{g}").append((kr - e[0][0] + 1) * p.dt)
-        pk = next((k for k in range(p.k(0.5), last + 1) if min(p.dist(d, qb, k) for d in defenders) <= 2.0), None)
+        pressure = p.pressure(qb)
+        A["pressureObserved"] += pressure.value is not None
+        A["pressureUnknown"] += pressure.value is None
+        pk = pressure.first
         if pk is None:
             continue
         A["pressured"] += 1
@@ -187,8 +190,9 @@ def measure(path):
 
 for path in sys.argv[1:]:
     A = measure(path)
-    n, pr = A["plays"], A["pressured"]
-    print(f"== {os.path.basename(path)}: dropbacks without play action {n}, pressured {pr} ({100 * pr / max(1, n):.1f}%)")
+    n, pr, observed = A["plays"], A["pressured"], A["pressureObserved"]
+    rate = f"{100 * pr / observed:.1f}%" if observed else "unknown"
+    print(f"== {os.path.basename(path)}: dropbacks without play action {n}, pressured {pr} ({rate}; known {observed}, unknown {A['pressureUnknown']}; {PRESSURE_OPERATOR})")
     print(f"  pressure time after line start p25/50/75 {q(A.get('pressureTime', []), .25):.2f}/{q(A.get('pressureTime', []), .5):.2f}/{q(A.get('pressureTime', []), .75):.2f}")
     print("  pressurer                share of pressures  per 100 dropbacks  time p50")
     for g in ("interior", "edge", "offBall", "other"):

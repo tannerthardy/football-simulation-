@@ -102,6 +102,14 @@ def pressure_association(rows):
         for field in ("geometricPressure", "nativePressured")}
 
 
+def geometric_pressure(raw):
+    """Preserve the shared pressure operator's unknown value in outcome groups."""
+    play = tracking.Play(raw)
+    qbs = play.who("O", "QB")
+    value = play.pressure(qbs[0]).value if qbs else None
+    return bool(value) if value is not None else None
+
+
 def cells(rows, nfl_cells):
     grouped = defaultdict(list)
     for row in rows:
@@ -239,10 +247,7 @@ def main():
             if collector is not None and play["id"] in common:
                 collector.add(common[play["id"]])
             if ref.classify(row) == "dropback" and play["id"] in common:
-                metrics = defaultdict(list)
-                tracking.pass_metrics(tracking.Play(common[play["id"]]), metrics)
-                values = metrics["pass.pressure_2yd_before_throw"]
-                row["geometricPressure"] = bool(values[0]) if values else None
+                row["geometricPressure"] = geometric_pressure(common[play["id"]])
             audit["missingStats"] += not bool(play.get("stats"))
             rows.append(row)
         audit["cleanPlays"] = len(rows)
@@ -258,6 +263,7 @@ def main():
                 "offenses": {team: outcomes([r for r in rows if r["game_id"] == str(game["seed"]) and r["posteam"] == team])
                     for team in (game["home"], game["away"])}} for game in sidecar["games"]]})
     report = {"schema": "native-outcome-analysis-v1", "provenance": provenance,
+        "pressureOperator": tracking.PRESSURE_OPERATOR,
         "operators": {path: pin(ROOT / path) for path in ("scripts/mechanics/outcomes.py", "scripts/mechanics/nfl-outcomes.py", "scripts/mechanics/metrics.py",
             "scripts/data/rushing_benchmark.py", "scripts/data/run_outcome_context.py", "scripts/data/schematic_context_audit.py", "scripts/nflverse-reference.py")},
         "reference": pin(args.reference) if args.reference else None,
