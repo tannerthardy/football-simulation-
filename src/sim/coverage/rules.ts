@@ -72,10 +72,25 @@ function backTo(c: RuleCtx): ReceiverRead | null {
 
 const vertical = (rd: ReceiverRead | null, depth = 4): boolean => !!rd && rd.release === 'vertical' && rd.depth >= depth;
 const climbing = (rd: ReceiverRead | null): boolean => !!rd && (rd.release === 'vertical' || rd.climbed);
-/** Short or settling: what MOD/Rip-Liz corners call "under" — zone off and find the next vertical. */
-const under = (rd: ReceiverRead, maxDepth = 9): boolean =>
-  rd.release === 'under' || rd.release === 'flat' || (rd.release === 'stop' && rd.depth < maxDepth)
-  || ((rd.release === 'in' || rd.release === 'out') && rd.depth < maxDepth);
+/** The "no cover zone": a match corner owns any route by #1 whose stem gets past it. */
+const NO_COVER = 5;
+
+/**
+ * MOD/Rip-Liz corner's "In"/"Under" check on #1: should he zone off and find
+ * the next vertical? Only when #1 declares shallow: a break (under, flat, in or
+ * out) before his stem clears the no-cover zone. That locks the zone-off.
+ * A short stop zones off only while he sits; he can still turn upfield.
+ * Outs, curls and in-breakers past the no-cover zone stay the corner's man.
+ */
+function zoneOffOne(c: RuleCtx, one: ReceiverRead): boolean {
+  if (c.state.mode === 'zoned') return true;
+  if (one.deepest > NO_COVER) return false;
+  if (one.release === 'under' || one.release === 'flat' || one.release === 'in' || one.release === 'out') {
+    c.state.mode = 'zoned';
+    return true;
+  }
+  return one.release === 'stop';
+}
 
 /** Over-the-top help on #1 if he is going deep, else rob his in-breaker. */
 function helpOne(c: RuleCtx, one: ReceiverRead | null, lev: 'inside' | 'outside' = 'inside'): Directive {
@@ -86,14 +101,10 @@ function helpOne(c: RuleCtx, one: ReceiverRead | null, lev: 'inside' | 'outside'
 
 // ------------------------------------------------------------ rules
 
-/** Cover 3 match corner: carry #1 vertical in the outside third (outside leverage, post help inside); zone off when #1 goes under and find #2 high. */
+/** Cover 3 match corner: carry #1 in the outside third (outside leverage, post help inside); zone off when #1 declares shallow and find #2 high. */
 function c3Corner(c: RuleCtx): Directive {
   const one = ref(c, 1);
-  if (!one || c.state.mode === 'zoned') return zoneOf(c);
-  if (under(one, 9)) {
-    c.state.mode = 'zoned';
-    return zoneOf(c);
-  }
+  if (!one || zoneOffOne(c, one)) return zoneOf(c);
   return man(one, { lev: 'outside', overTop: true });
 }
 
@@ -178,16 +189,12 @@ function mike3(c: RuleCtx): Directive {
   return cut(c) ?? zoneOf(c);
 }
 
-/** Quarters corner. MEG: man on #1 wherever he goes. MOD: man on #1 deep, zone off his under/short routes into the quarter. */
+/** Quarters corner. MEG: man on #1 wherever he goes. MOD: man on #1 unless he declares shallow, then zone the quarter. */
 function qCorner(c: RuleCtx, meg: boolean): Directive {
   const one = ref(c, 1);
   if (!one) return zoneOf(c);
   if (meg) return man(one, { lev: 'outside' });
-  if (c.state.mode === 'zoned') return zoneOf(c);
-  if (under(one, 9)) {
-    c.state.mode = 'zoned';
-    return zoneOf(c);
-  }
+  if (zoneOffOne(c, one)) return zoneOf(c);
   return man(one, { lev: 'outside' });
 }
 
