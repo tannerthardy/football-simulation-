@@ -86,4 +86,4 @@ There are 81 flags: 57 are on by default, 1 is a diagnostic scale at identity (`
 | `PRESSURE_CALL` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:126` | review 2: drop the off path |
 | `AGAP_ALIGN` | on | default (promoted 2026-10-22) | defense | `src/playbook/alignment.ts:167` | review 2: drop the off path |
 | `GROUNDING_FACTS` | on | default (G6, #214) | rules | `src/sim/pass-legality.ts:20` | expires: review 2 (drop the off path) |
-| `HOLD_LEVERAGE` | on | default (G6) | rules | `src/sim/contact-holding.ts:25` | expires: review 2 (drop the off path) |
+| `HOLD_LEVERAGE` | on | default (G6, #219) | rules | `src/sim/contact-holding.ts:25` | expires: review 2 (drop the off path) |
