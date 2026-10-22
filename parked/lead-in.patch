@@ -1,0 +1,322 @@
+From 084becca9e3ec7dd3c54368eae330ffc4c921ed6 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 21 Oct 2026 17:29:42 +0000
+Subject: [PATCH] LEAD_IN (off): the power/counter lead wraps on the kick he
+ sees
+
+A lead puller (not counter GH, which keeps its surface read) turns up
+1.4 yd inside the kicked end's seen body, never outside the called hole,
+re-read each decision beat from his own pictures of the installed kicker
+and end; a log seen before his turn-up (kicker joined on the end's
+outside) sends him around it. The kicker's private 'block-log' tag is not
+read. Turned up, he takes the first unblocked second-level defender whose
+seen motion shows in his lane, inside-out, met on the climbs' intercept
+law, and fits him once he is within his own strike reach plus one
+decision beat of their seen closing speed (not a fixed 1.2 yd).
+
+The installed kick (kicker, end, called hole) is recorded on the lead's
+plan at the snap. Default off; flag-off probe rows are byte-identical.
+Contract test: test/lead-in.test.ts.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01A6JfZiaGFGyJ9mLcAx7JM5
+---
+ config/baseline.json          |   1 +
+ src/sim/behaviors/blocking.ts | 119 +++++++++++++++++++++++++++++++++-
+ test/lead-in.test.ts          |  91 ++++++++++++++++++++++++++
+ 3 files changed, 210 insertions(+), 1 deletion(-)
+ create mode 100644 test/lead-in.test.ts
+
+diff --git a/config/baseline.json b/config/baseline.json
+index b82df02b..5753aaf5 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -46,6 +46,7 @@
+     "LB_GLIDE": "0",
+     "LB_KEY": "0",
+     "LB_PLAN": "1",
++    "LEAD_IN": "0",
+     "LEAD_READ": "0",
+     "LEAN_AXIS": "1",
+     "LEG_BRACE": "1",
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index e951ebdc..b4fbcda3 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -442,6 +442,9 @@ export interface RunBlockPlan {
+   pullRole?: 'kick' | 'lead' | 'trap';
+   /** Explicit GH installation: first guard/end relationship known at the snap. */
+   pullSurface?: { blocker: Agent; defender: Agent };
++  /** A lead's installed kick (who kicks whom) and called hole, known to the
++   * offense at the snap. */
++  kickPair?: { kicker: Agent; end: Agent; holeY: number };
+   /** This exact installed perimeter defender uses a moving near-surface stalk. */
+   perimeterStalk?: Agent;
+   /** This exact installed inside defender needs an attainable ordinary strike. */
+@@ -731,6 +734,12 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+         lane: FB_TRACK && sim.offCall.formation.qb === 'under' ? { x: fb.pos.x + .7, y: by + ps * lineOffset(1.95, false) } : undefined });
+       claimedDL.add(emlos);
+     }
++    // The installed kick (who kicks whom) is part of the call every lead knows.
++    const kicker = [...plans].find(([, q]) => q.pullRole === 'kick' && q.target && q.target === emlos)?.[0];
++    if (kicker && emlos) for (const p of pullers) {
++      const q = plans.get(p);
++      if (q?.pullRole === 'lead' && !q.pullSurface && q.pullPath) q.kickPair = { kicker, end: emlos, holeY: q.pullPath.at(-1)!.y };
++    }
+   }
+ 
+   if (slicer && sliceEnd) {
+@@ -846,6 +855,23 @@ const TRACK_FACING = process.env.TRACK_FACING === '1';
+  * teammate's body is on; within 2.5 yd of his man he stays committed. The
+  * installed kick/trap targets keep their own blockers. */
+ const LEAD_READ = process.env.LEAD_READ === '1';
++/** Experimental (LEAD_IN=1, off): a power/counter lead (not counter GH,
++ * which keeps its own surface read) wraps on the kick he can see. His
++ * turn-up lies 1.4 yd inside the kicked end's seen body (never outside the
++ * called hole), re-read each decision beat from his own pictures of the
++ * installed kicker and end (who kicks whom is the play's design); on a seen
++ * log, the kicker joined on the end's outside, he goes outside the log. The
++ * kicker's private log tag is not read. Once turned up he blocks the first
++ * unblocked second-level defender whose seen motion brings him into that
++ * lane, scanning inside-out, met on the climbs' intercept law; he leaves the
++ * path for a fit once the man is within his own strike reach plus one
++ * decision beat of their closing speed. The fixed path to the snap hole ran
++ * the wrap onto the fullback's kick (FB to puller 0.64 yd; the end kicked
++ * behind the line blocked the wrap on 13 of 20 weak power-I plays), and the
++ * 1.2 yd fit gate let a moving backer cross him. */
++const LEAD_IN = process.env.LEAD_IN === '1';
++/** LEAD_IN: lateral offset of the turn-up inside the kicked end (yd). */
++const LEAD_INSIDE = 1.4;
+ 
+ /** Zone linemen run the track before contact (ZONE_FLOW=0 disables, for A/B). */
+ const ZONE_FLOW = process.env.ZONE_FLOW !== '0';
+@@ -883,6 +909,8 @@ export class RunBlocker implements Behavior {
+   private wrapCorner: Vec2 | null = null;
+   private wrapTraffic: {pos: Vec2; vel: Vec2}[] = [];
+   private wrapTrafficAt = 0;
++  /** LEAD_IN: the lead's flat and turn-up landmarks from his last kick read. */
++  private leadLane: { flat: Vec2; turn: Vec2 } | null = null;
+   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
+     flow: Vec2; backer: Perceived; from?: Vec2 } | null = null;
+   /** A personally consumed near-gap emergency, held through the normal beat. */
+@@ -1008,6 +1036,17 @@ export class RunBlocker implements Behavior {
+             plan.pullPath[plan.pullPath.length-1] = {...this.wrapCorner};
+             a.tags.add('wrap-log');
+           }
++        } else if (LEAD_IN && plan.kickPair) {
++          if (t >= this.nextSurfaceRead) {
++            this.nextSurfaceRead = t + a.mind.decisionInterval;
++            this.leadLane = this.readKickLane(a, sim, plan.kickPair);
++          }
++          const lane = this.leadLane;
++          if (lane) {
++            if (this.pullIdx <= 1) plan.pullPath[1] = { ...lane.flat };
++            plan.pullPath[plan.pullPath.length-1] = { ...lane.turn };
++            if (this.wrapOutside) a.tags.add('wrap-log');
++          }
+         } else {
+           const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
+           if(kick) {
+@@ -1064,7 +1103,8 @@ export class RunBlocker implements Behavior {
+           // TRAP_FIT: on his last leg the trapper fits the man as the kicker
+           // does, rather than running on to an inside station beneath him.
+           const lastLeg = this.pullIdx >= 2 && (plan.pullRole === 'kick' || (TRAP_FIT && plan.pullRole === 'trap'));
+-          const fit = plan.pullRole === 'lead' ? distance < 1.2
++          const fit = plan.pullRole === 'lead'
++            ? distance < (LEAD_IN && plan.kickPair ? this.leadFitReach(a, read.target, read.seen, distance) : 1.2)
+             : lastLeg || approachingDepth < sim.los || distance < 1.2;
+           if (this.pullCleared && fit)
+             return this.attack(a, sim, read.target, read.seen);
+@@ -1264,6 +1304,15 @@ export class RunBlocker implements Behavior {
+     // A named wrapper job cannot disappear because of the target's private
+     // live contact. Approach and unavailability use its acquired picture.
+     if (plan.kind === 'pull' && plan.pullRole === 'lead' && target) {
++      if (LEAD_IN && plan.kickPair) {
++        // Turned up: block the first color that shows in his lane.
++        if (this.pullIdx >= 2 && t >= this.nextLeadRead) {
++          this.nextLeadRead = t + a.mind.decisionInterval;
++          const threat = this.laneThreat(a, sim, target, plan.kickPair);
++          if (threat !== target) { plan.target = target = threat; this.pullRead = null; }
++        }
++        return target;
++      }
+       if (LEAD_READ && this.pullIdx > 0 && t >= this.nextLeadRead) {
+         this.nextLeadRead = t + a.mind.decisionInterval;
+         const threat = this.holeThreat(a, sim, target);
+@@ -1322,6 +1371,74 @@ export class RunBlocker implements Behavior {
+     return best;
+   }
+ 
++  /** LEAD_IN: the wrap's landmarks from this lead's own pictures of the
++   * installed kicker and end. Inside the kick he turns up LEAD_INSIDE inside
++   * the end's seen body, never outside the called hole: an end who widens
++   * opens the hole outside the lead; he does not move it. When the kicker is
++   * seen joined on the end's outside (a log) before he turns up, he goes
++   * around the log and stays committed to that side. Depth landmarks are the
++   * installed pull's. */
++  private readKickLane(a: Agent, sim: PlaySim, pair: NonNullable<RunBlockPlan['kickPair']>): { flat: Vec2; turn: Vec2 } {
++    const side = playSideSign(sim, sim.offCall.run!);
++    const k = sim.see(a, pair.kicker), e = sim.see(a, pair.end);
++    const reach = pair.kicker.profile.radius + pair.end.profile.radius + .1 + pair.kicker.player.measurables.armIn / 36 * .45;
++    const joined = Math.hypot(k.pos.x - e.pos.x, k.pos.y - e.pos.y) <= reach;
++    // The log is read before the turn-up; a lead already turned up inside
++    // the kick stays in that lane.
++    this.wrapOutside ||= this.pullIdx <= 1 && joined && (k.pos.y - e.pos.y) * side > .25;
++    const inside = Math.min(0, (e.pos.y - side * LEAD_INSIDE - pair.holeY) * side);
++    const turn = this.wrapOutside
++      ? { x: Math.max(sim.los + .5, k.pos.x + .6), y: k.pos.y + side * 1.1 }
++      : { x: sim.los + .5, y: pair.holeY + side * inside };
++    return { flat: { x: sim.los - 1.15, y: turn.y - side * .5 }, turn };
++  }
++
++  /** LEAD_IN: the first color in this lead's lane, from his own pictures. A
++   * second-level or nearer defender (seen within 5.5 yd of the line) shows
++   * when his seen motion, carried up to a second ahead, puts him across the
++   * lane between just behind the line and the second level; one with a
++   * teammate's seen body on him is already blocked, and the installed kicked
++   * end belongs to the kick. Those showing within one
++   * decision beat of the first are taken inside-out. The current man is kept
++   * when he is within reach or shows no later than that beat. */
++  private laneThreat(a: Agent, sim: PlaySim, current: Agent, pair: NonNullable<RunBlockPlan['kickPair']>): Agent {
++    const lane = this.plan.pullPath!.at(-1)!, side = playSideSign(sim, sim.offCall.run!), beat = a.mind.decisionInterval;
++    const held = sim.see(a, current);
++    const heldDistance = Math.hypot(held.pos.x - a.pos.x, held.pos.y - a.pos.y);
++    if (heldDistance < this.leadFitReach(a, current, held, heldDistance)) return current;
++    const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o !== sim.carrier)
++      .map(o => ({ seen: sim.see(a, o), r: o.profile.radius }));
++    let currentAt: number | null = null;
++    const shows: { d: Agent; at: number; inside: number }[] = [];
++    for (const d of sim.defense) {
++      if (d === pair.end) continue;
++      const s = d === current ? held : sim.see(a, d);
++      if (s.pose === 'down' || s.pose === 'rising' || s.pos.x - sim.los > 5.5) continue;
++      if (mates.some(m => Math.hypot(m.seen.pos.x - s.pos.x, m.seen.pos.y - s.pos.y) < m.r + d.profile.radius + .35)) continue;
++      for (let tau = 0; tau <= 1 + 1e-9; tau += .1) {
++        const x = s.pos.x + s.vel.x * tau, y = s.pos.y + s.vel.y * tau;
++        if (x > sim.los - 1 && x < sim.los + 4.5 && Math.abs(y - lane.y) < 1 + d.profile.radius) {
++          shows.push({ d, at: tau, inside: (s.pos.y - lane.y) * side });
++          if (d === current) currentAt = tau;
++          break;
++        }
++      }
++    }
++    if (!shows.length) return current;
++    const first = Math.min(...shows.map(s => s.at));
++    if (currentAt !== null && currentAt <= first + beat) return current;
++    return shows.filter(s => s.at <= first + beat).sort((p, q) => p.inside - q.inside)[0].d;
++  }
++
++  /** LEAD_IN: the lead fits a man within his own strike reach, plus what
++   * their seen closing speed covers before his next decision. */
++  private leadFitReach(a: Agent, target: Agent, seen: Perceived, distance: number): number {
++    const strike = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
++    const d = Math.max(distance, 1e-6);
++    const closing = Math.max(0, -((seen.vel.x - a.vel.x) * (seen.pos.x - a.pos.x) + (seen.vel.y - a.vel.y) * (seen.pos.y - a.pos.y)) / d);
++    return strike + closing * a.mind.decisionInterval;
++  }
++
+   private withBase(a: Agent, command: MoveCommand): Intent {
+     // The visible low stance does not set the physical posture. Keep the
+     // existing snap base through a first-level OL approach; World supplies
+diff --git a/test/lead-in.test.ts b/test/lead-in.test.ts
+new file mode 100644
+index 00000000..f92da7ae
+--- /dev/null
++++ b/test/lead-in.test.ts
+@@ -0,0 +1,91 @@
++/** LEAD_IN (experimental, off): a power/counter lead wraps on the kick he can
++ * see (src/sim/behaviors/blocking.ts RunBlocker readKickLane/laneThreat).
++ * His turn-up follows his own picture of the installed kicker and end: 1.4 yd
++ * inside a kicked end (never outside the called hole), outside a seen log,
++ * never from the kicker's private 'block-log' tag. Turned up, the first
++ * unblocked defender to show in his lane becomes his man. */
++import { afterEach, describe, expect, it, vi } from 'vitest';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++type Kick = 'kick' | 'log';
++
++/** Weak-side power from the I: the fullback kicks the end, the backside guard
++ * leads. The kicker and end are placed joined, the kicker inside the end
++ * ('kick') or on his outside ('log'); every body is held still and fully
++ * observed, so each picture is the placed scene. */
++async function scene(on: boolean, kick: Kick, tag = false) {
++  vi.stubEnv('LEAD_IN', on ? '1' : '0');
++  vi.resetModules();
++  const { makeSim, rosters } = await import('../scripts/diag/zone-lab/lab.js');
++  const { RunBlocker, playSideSign } = await import('../src/sim/behaviors/blocking.js');
++  const sim = makeSim({ concept: 'power', dir: 'weak', formation: 'i_pro_21', look: 'over3', roster: 'pair11', seed: 2 } as never, rosters());
++  const side = playSideSign(sim, sim.offCall.run!);
++  const plan = (o: (typeof sim.agents)[number]) => (o.behavior as InstanceType<typeof RunBlocker>).plan;
++  const lead = sim.offense.find(o => o.behavior instanceof RunBlocker && plan(o).kind === 'pull' && plan(o).pullRole === 'lead')!;
++  const kicker = sim.offense.find(o => o.behavior instanceof RunBlocker && plan(o).pullRole === 'kick')!;
++  const end = plan(kicker).target!, installed = plan(lead).target!;
++  const hole = plan(lead).pullPath!.at(-1)!.y;
++  const still = (a: (typeof sim.agents)[number], x: number, y: number) => { a.body.pos = { x, y }; a.body.vel = { x: 0, y: 0 }; };
++  // The end has squeezed 0.4 yd inside the called hole's outside; the kicker
++  // meets him from inside, or has been crossed and logs him from outside.
++  still(end, sim.los + .3, hole + side * .4);
++  still(kicker, sim.los - .3, end.pos.y + side * (kick === 'kick' ? -.75 : .6));
++  if (tag) kicker.tags.add('block-log');
++  // The lead is on his pull, at its first landmark.
++  const start = plan(lead).pullPath![0];
++  still(lead, start.x, start.y);
++  const observe = () => { for (let i = 0; i < 24; i++) sim.perception.record(sim.agents); };
++  observe();
++  sim.t = 1;
++  const intent = lead.behavior.update(lead, sim);
++  return { sim, side, lead, kicker, end, installed, hole, plan: plan(lead), intent, still, observe };
++}
++
++describe('LEAD_IN: the lead wraps on the kick he sees', () => {
++  it('turns up 1.4 yd inside a kicked end, outside a seen log, never off the tag', async () => {
++    const kick = await scene(true, 'kick');
++    const turn = kick.plan.pullPath!.at(-1)!;
++    expect((turn.y - kick.end.pos.y) * kick.side).toBeCloseTo(-1.4, 6);
++    expect((turn.y - kick.hole) * kick.side).toBeLessThan(0);
++    // The kicker's private log tag changes nothing he can see.
++    const tagged = await scene(true, 'kick', true);
++    expect(tagged.plan.pullPath).toEqual(kick.plan.pullPath);
++    expect(tagged.intent).toEqual(kick.intent);
++    // A seen log: the kicker joined on the end's outside sends him around it.
++    const log = await scene(true, 'log');
++    expect((log.plan.pullPath!.at(-1)!.y - log.kicker.pos.y) * log.side).toBeGreaterThan(.5);
++    // Control (off): the corner is the snap hole, moved only by the tag.
++    const off = await scene(false, 'kick'), offTagged = await scene(false, 'kick', true);
++    expect(off.plan.pullPath!.at(-1)!.y).toBe(off.hole);
++    expect(offTagged.plan.pullPath!.at(-1)!.y).not.toBe(offTagged.hole);
++  }, 60000);
++
++  it('turned up, takes the first unblocked defender to show in his lane', async () => {
++    const run = async (on: boolean) => {
++      const s = await scene(on, 'kick');
++      const { sim, side, lead, end, installed, still, observe } = s;
++      // The installed backer is far from the lane; one other backer is in it,
++      // stepping across it. Every other defender is out of the picture.
++      const crosser = sim.defense.find(d => d.slot.startsWith('LB') && d !== installed)!;
++      const lane = s.plan.pullPath!.at(-1)!;
++      for (const d of sim.defense) if (d !== end && d !== crosser) still(d, sim.los + 15, d.pos.y);
++      still(installed, sim.los + 5, lane.y - side * 6);
++      still(crosser, sim.los + 1.2, lane.y - side * .9);
++      crosser.body.vel = { x: 0, y: side * 2 };
++      // The lead has cleared the wall at his flat landmark and turns up.
++      const flat = s.plan.pullPath![1];
++      still(lead, sim.los - 1.6, flat.y);
++      observe();
++      sim.t = 2;
++      lead.behavior.update(lead, sim);
++      observe();
++      sim.t = 3;
++      lead.behavior.update(lead, sim);
++      return { target: s.plan.target, crosser, installed };
++    };
++    const on = await run(true), off = await run(false);
++    expect(on.target).toBe(on.crosser);
++    expect(off.target).toBe(off.installed);
++  }, 60000);
++});
+
+base-commit: 1903df6a934c2f73cc896727638c2dca62d513a5
+-- 
+2.43.0
+

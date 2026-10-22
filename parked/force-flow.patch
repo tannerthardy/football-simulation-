@@ -1,0 +1,113 @@
+From 34fd8c9a6c969cafaf3ab4006a8778eefd961255 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 20 Oct 2026 21:48:30 +0000
+Subject: [PATCH] Experimental FORCE_FLOW (off): force boundary follows the
+ pre-possession outward track
+
+Minimal increment on #176 (moving force boundary). Off, #176's carrying-only
+contract is unchanged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01A6JfZiaGFGyJ9mLcAx7JM5
+---
+ config/baseline.json    |  1 +
+ src/sim/force-track.ts  |  9 ++++++++-
+ test/force-flow.test.ts | 45 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 54 insertions(+), 1 deletion(-)
+ create mode 100644 test/force-flow.test.ts
+
+diff --git a/config/baseline.json b/config/baseline.json
+index 0074124c..02bbd649 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -15,6 +15,7 @@
+     "DL_HANDS": "0",
+     "FLOW_READ": "1",
+     "FLOW_RELEASE": "1",
++    "FORCE_FLOW": "0",
+     "GAIT_STEP": "0",
+     "HAND_FIGHT": "0",
+     "HAND_MOTOR": "0",
+diff --git a/src/sim/force-track.ts b/src/sim/force-track.ts
+index 891ee6d6..3d86e145 100644
+--- a/src/sim/force-track.ts
++++ b/src/sim/force-track.ts
+@@ -6,6 +6,13 @@ import { clamp, type Vec2 } from '../core/vec.js';
+ import type { Agent } from './agent.js';
+ import type { Perceived } from './perception.js';
+ 
++/** Experimental (FORCE_FLOW=1, off): the boundary also matches the outward
++ * track of the player this force fit is acquiring before possession is
++ * identified (the expected back before the handoff), not only a runner seen
++ * carrying. Football policy question: flow with backfield action versus
++ * waiting for a possession picture (PA/keeper risk). */
++const FORCE_FLOW = process.env.FORCE_FLOW === '1';
++
+ export interface ForceTrack {
+   point: Vec2;
+   velocity: Vec2;
+@@ -18,7 +25,7 @@ export interface ForceTrack {
+  */
+ export function forceTrack(a: Agent, seen: Perceived, x: number, surface: number,
+   surfaceVelocity: number, side: number): ForceTrack {
+-  const outward = seen.carrying === true && Number.isFinite(seen.age) && seen.vel.y * side > 0;
++  const outward = (seen.carrying === true || FORCE_FLOW) && Number.isFinite(seen.age) && seen.vel.y * side > 0;
+   const boundary = () => {
+     const runner = seen.pos.y + side * .7;
+     const line = surface + side * .5;
+diff --git a/test/force-flow.test.ts b/test/force-flow.test.ts
+new file mode 100644
+index 00000000..772bf4b8
+--- /dev/null
++++ b/test/force-flow.test.ts
+@@ -0,0 +1,45 @@
++/** FORCE_FLOW (experimental, off): the moving force boundary also follows an
++ * outward track acquired before possession is identified. Off, the accepted
++ * carrying-only contract (force-track.test.ts) is unchanged. */
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import { CENTER_Y } from '../src/core/field.js';
++import { Rng } from '../src/core/rng.js';
++import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
++import { PASS_BY_ID } from '../src/playbook/concepts.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import type { Perceived } from '../src/sim/perception.js';
++
++const offense = generateTeam(new Rng(41), 'Force track offense', 'FTO', { strength: .55 });
++const defense = generateTeam(new Rng(42), 'Force track defense', 'FTD', { strength: .55 });
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function plan(on: boolean, side: number, carrying: boolean | null | undefined, vy: number) {
++  vi.stubEnv('FORCE_FLOW', on ? '1' : '0');
++  vi.resetModules();
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  const { forceTrack } = await import('../src/sim/force-track.js');
++  const sim = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
++    offCall: { formation: FORMATION_BY_ID.gun_trey_11, flip: side > 0, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'flow' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'flow' },
++    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3 });
++  const a = sim.slot('FS')!;
++  a.runFit = { gap: 'D', side, kind: 'force', technique: 'attack', edge: 'box', pace: 'stack' };
++  a.body.pos = { x: 44, y: CENTER_Y + side * 5 }; a.body.vel = { x: -1, y: 0 }; a.body.facing = Math.PI;
++  const seen: Perceived = { pos: { x: 36.5, y: CENTER_Y + side * 5 }, vel: { x: 1, y: side * vy }, carrying, age: .25,
++    facing: 0, stance: null, pose: 'up' };
++  return forceTrack(a, seen, 40.3, CENTER_Y + side * 2, 0, side);
++}
++
++describe('FORCE_FLOW', () => {
++  it.each([-1, 1])('off: an outward back not yet seen carrying is not matched (side %s)', async (side) => {
++    for (const carrying of [false, null, undefined]) expect((await plan(false, side, carrying, 4)).velocity).toEqual({ x: 0, y: 0 });
++  });
++  it.each([-1, 1])('on: the same outward track is matched; inward or still tracks are not (side %s)', async (side) => {
++    for (const carrying of [false, null, undefined]) {
++      expect((await plan(true, side, carrying, 4)).velocity.y).toBe(side * 4);
++      expect((await plan(true, side, carrying, -3)).velocity).toEqual({ x: 0, y: 0 });
++      expect((await plan(true, side, carrying, 0)).velocity).toEqual({ x: 0, y: 0 });
++    }
++  });
++});
+
+base-commit: 0b2addbece94bc47f69ea729af27911398cf85fd
+-- 
+2.43.0
+
