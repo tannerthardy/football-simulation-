@@ -7,6 +7,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 // line (1.3 yd splits, 0.55 yd depth). The tracked line (OL_ALIGN) changes
 // the plays themselves; it is judged by lab arms (docs/reviews/presnap.md).
 vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
+// Recorded before DL_FLATTEN (on in the pinned profile) changed how an
+// attacking lineman plays a zone step; the case keeps the old technique.
+vi.hoisted(() => { process.env.DL_FLATTEN = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

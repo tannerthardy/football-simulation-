@@ -21,6 +21,9 @@ vi.hoisted(() => { for (const k of ['GAP_FIT', 'GAP_OUT', 'CUTOFF_SEAL']) proces
 // Recorded before SNAP_REACT (on in the pinned profile) changed every
 // player's start; the trace stays on the fixed get-off.
 vi.hoisted(() => { process.env.SNAP_REACT = '0'; });
+// Recorded before DL_FLATTEN (on in the pinned profile) changed how an
+// attacking lineman plays a zone step; the case keeps the old technique.
+vi.hoisted(() => { process.env.DL_FLATTEN = '0'; });
 import {CENTER_Y} from '../src/core/field.js';
 import type {Intent} from '../src/physics/world.js';
 import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';

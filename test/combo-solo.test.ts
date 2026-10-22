@@ -10,6 +10,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 // profile) put real tackles at DT_S/DT_W; the changed bodies change this
 // scenario. Pin it off here. test/front-fit.test.ts covers the depth chart.
 vi.hoisted(() => { process.env.FRONT_FIT = '0'; });
+// Recorded before DL_FLATTEN (on in the pinned profile) changed how an
+// attacking lineman plays a zone step; the case keeps the old technique.
+vi.hoisted(() => { process.env.DL_FLATTEN = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
