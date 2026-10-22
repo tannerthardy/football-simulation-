@@ -312,6 +312,12 @@ scrimmage snap
 | Neutral zone infraction | 0.8% | ~0.24% (82) |
 | Encroachment | 0.4% | not broken out (rare) |
 
+2023 ([PFR](https://www.pro-football-reference.com/years/2023/penalties.htm),
+272 games, accepted only): false start 618, offside 147, NZI 93,
+encroachment 38. Defensive pre-snap fouls are about 0.45 times the false
+starts there; ours are about 3.5 times. Accepted totals miss declined
+offsides on free plays. Our counts include every foul called.
+
 Defensive fouls are about three to four times NFL. Most come from hard-count
 bites, whose propensity is an assumption with no independent evidence; the
 foul totals are not used to set it. The offense's false starts are half of
