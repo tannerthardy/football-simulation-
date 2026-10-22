@@ -123,7 +123,7 @@ async function simulate(): Promise<Arm[]> {
 
 const fmt = (m: Metric, v: number) => (Number.isFinite(v) ? `${v.toFixed(m.scale ? 1 : 2)}${m.unit ?? ''}` : '—');
 const fmtDiff = (m: Metric, v: number) => (Number.isFinite(v) ? `${v >= 0 ? '+' : ''}${v.toFixed(m.scale ? 1 : 2)}` : '—');
-const band = (m: Metric) => (m.band ? `${m.band[0]}–${m.band[1]}${m.unit ?? ''}` : 'internal');
+const band = (m: Metric) => (m.band ? `${m.band[0]}–${m.band[1]}${m.unit ?? ''}${m.source ? ` (${m.source})` : ''}` : 'internal');
 const secPerGame = (a: Arm) => !a.games.length || a.games.some((g) => !Number.isFinite(g.ms) || g.ms < 0)
   ? NaN : a.games.reduce((s, g) => s + g.ms, 0) / a.games.length / 1000;
 const available = (v: unknown) => v === undefined || v === null ? 'unavailable' : `${v}`;
@@ -149,7 +149,8 @@ function compareTable(base: Arm, now: Arm, label: string, qualified: boolean): {
     const [lo, hi] = qualified ? interval(m, now.games, base.games) : [NaN, NaN];
     const real = lo > 0 || hi < 0;
     if (real) moves.push({ where: 'all plays', metric: m, base: b, now: v, lo, hi, n });
-    lines.push(`| ${m.label} | ${fmt(m, b)} | ${fmt(m, v)} | ${fmtDiff(m, v - b)} | ${fmtDiff(m, lo)} to ${fmtDiff(m, hi)} | ${!qualified ? 'unverified' : real ? '**moved**' : 'noise'} | ${band(m)} | ${status(m, v)} |`);
+    const reading = !Number.isFinite(b) || !Number.isFinite(v) ? 'unavailable' : !qualified ? 'unverified' : real ? '**moved**' : 'noise';
+    lines.push(`| ${m.label} | ${fmt(m, b)} | ${fmt(m, v)} | ${fmtDiff(m, v - b)} | ${fmtDiff(m, lo)} to ${fmtDiff(m, hi)} | ${reading} | ${band(m)} | ${status(m, v)} |`);
   }
   return { lines, moves };
 }
@@ -191,7 +192,7 @@ function report(card: Card, baseCard?: Card): string {
   out.push(`# Scorecard`, '');
   out.push(`Commit \`${meta.commit}\` · ${meta.games} games per arm over ${meta.leagues} leagues · seed ${meta.seed} · ${meta.date}`, '');
   out.push(`Rendering measurement SHA256: \`${measurementIdentity()}\`. Tables use this checkout's metric definitions; producer metadata below is preserved.`, '');
-  out.push('Read this as a diagnosis. A band says where our football looks unrealistic; it does not decide whether a mechanism is correct. A stat that moves the wrong way usually points at another mechanism to fix next. Ranges are 90% intervals from resampling whole games; "moved" means the interval excludes zero.', '');
+  out.push('Read this as a diagnosis. A band says where our football looks unrealistic; it does not decide whether a mechanism is correct. A stat that moves the wrong way usually points at another mechanism to fix next. Ranges are 90% intervals from resampling whole games; "moved" means the interval excludes zero. A dash means an unavailable measurement or no eligible denominator.', '');
   out.push('## Timing and provenance', '');
   out.push('Per-game ms is elapsed time around simulateGame only; it excludes roster generation, record/probe work and worker startup. Sums of worker elapsed times are not collection wall time or CPU time.', '');
   for (const [label, producer] of (baseCard ? [['saved base', baseCard], ['candidate', card]] : [['producer', card]]) as Array<[string, Card]>) {

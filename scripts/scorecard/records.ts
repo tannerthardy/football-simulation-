@@ -6,6 +6,7 @@
 import { Rng } from '../../src/core/rng.js';
 import { generateTeam, type Team } from '../../src/league/team.js';
 import type { GameResult } from '../../src/game/game.js';
+import type { PlayStats } from '../../src/sim/types.js';
 
 export interface PlayRec {
   kind: 'run' | 'pass';
@@ -36,6 +37,8 @@ export interface PlayRec {
   ybc?: number;
   missed: number;
   broken: number;
+  /** Unique failed defenders in the initial offensive carry; absent on legacy records. */
+  failedTackleOpportunities?: number;
   firstDown: boolean;
 }
 
@@ -104,7 +107,8 @@ export function gameSpecs(seed: number, games: number, leagues: number): GameSpe
   return specs;
 }
 
-export function gameRecord(spec: GameSpec, res: GameResult, ms: number): GameRec {
+export function gameRecord(spec: GameSpec, res: GameResult, ms: number,
+  failedTackles?: (stats: PlayStats) => number | undefined): GameRec {
   const rec: GameRec = {
     game: spec.game, league: spec.league, seed: spec.seed, home: res.home.abbr, away: res.away.abbr,
     points: res.score.home + res.score.away, totalYds: 0, penalties: 0, third: 0, thirdConv: 0,
@@ -161,6 +165,7 @@ export function gameRecord(spec: GameSpec, res: GameResult, ms: number): GameRec
       ybc: p.kind === 'run' ? st.yardsBeforeContact : undefined,
       missed: st.missedTackles,
       broken: st.brokenTackles,
+      failedTackleOpportunities: failedTackles?.(st),
       firstDown: !!p.firstDown,
     });
   }
