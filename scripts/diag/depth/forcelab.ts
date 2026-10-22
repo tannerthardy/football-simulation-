@@ -18,7 +18,7 @@ const out = arg('--out', 'out/forcelab.jsonl'), n = Number(arg('--n', '12'));
 writeFileSync(out, '');
 const rng = new Rng(7);
 const off = generateTeam(rng, 'O', 'OFF', { strength: .55 }), def = generateTeam(rng, 'D', 'DEF', { strength: .55 });
-const runs = ['iz_strong', 'oz_strong', 'duo', 'power', 'counter', 'toss', 'draw'];
+const runs = arg('--runs', 'iz_strong,oz_strong,duo,power,counter,toss,draw').split(',');
 const forms = ['ace_11', 'gun_trips_11', 'i_pro_21', 'ace_12'];
 const covs = arg('--covs', 'cover0,cover1,cover1_off,cover1_robber,cover2man,cover4,cover4_palms,cover6').split(',');
 for (const run of runs) for (const form of forms) for (const cov of covs) {

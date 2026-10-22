@@ -493,6 +493,34 @@ the man in front of him. "Squeeze the down block" is a lateral drive into the
 blocker with the base held: engagement hand/drive physics, the contact owner's.
 Dropped. Handed off with the operator.
 
+**Revisited: v2 kept as `DL_SQUEEZE` (default off).** The run-offense
+session's physics read reversed the hand-off. In washed reps the legs
+balance and the hand joint brakes slip, so the pair drifts by the sum of
+both players' leg forces. A lineman who asks to attack upfield spends his
+budget there, so v2's flatten-and-fight is the physically right request.
+Its matched operator (`stretch/lineflow.py` on `claude/run-game-v3`, the
+engaged lines' lateral velocity toward the play side) gives a target. On
+develop + line set + `SAFETY_TEMPO`, 8 games:
+
+| Gap runs, DL toward the play side at 0.3–1 / 1–2 / 2–3 s | Crease at the line (gap / IZ) |
+| --- | --- |
+| Off −0.18 / −0.38 / −0.16 yd/s | 4.5 / 4.8 yd |
+| On −0.15 / −0.07 / +0.11 | 3.5 / 3.2 |
+| NFL +0.24 / +0.76 / +1.35 | 2.4–2.9 |
+
+- **Paired lab** (`depth/forcelab.ts --runs`: IZ, duo, power, counter, trap;
+  four formations; five coverages; 1,200 plays, same seeds):
+  - Median 3.1 → 2.4 yd, stuffs 12.8 → 15.1%.
+  - 10+ yd 17.3 → 16.8%, 20+ 6.8 → 6.7%, paired McNemar z −0.47 / −0.09.
+- **The earlier "backs cut behind the squeezer" does not hold on develop.**
+  In `depth/squeezeprobe.ts`, carriers crossing on the side the squeezer
+  left and on the side he works to do the same: median 3.9 yd, 22% 10+,
+  the nearest free defender a backer 2.4 yd away. Game-level zone 10 / 20 yd
+  moved 16.2 / 6.5 → 20.3 / 10.2% in one 8-game arm, but the paired lab
+  shows no tail change. It is kept off as realistic technique: the sign
+  moves toward tracking, at about half the tracked size.
+- **Test:** `test/dl-squeeze.test.ts`.
+
 **`PASS_RIDE` (edge sheds, rusher side; the run-offense session takes the
 tackle).** With the set, edge pressurers are still on their blocker 5% of
 the time (NFL 73%) and have gone through 67% (11%), after 0.5 s of contact
@@ -1244,7 +1272,7 @@ telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
 `runrally`, `crease`, `breakpoint`, `afterrelease`, `alleypath`, `interiorrush`, and lab probes
-`rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
+`squeezeprobe.ts` (carrier vs a squeezing lineman), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
 `alleyprobe.ts`, `alleytrace.ts` (the nearest deep supporter on long runs), `forcelab.ts` (paired run lab, the same seeds per arm),
 `dlpursuit.ts` (linemen at a run's first contact), `dropprobe.ts` (the
 nearest zone defender when the ball comes near him), `catchact.ts`, `sideprobe.ts` (the side window from inside the
@@ -1256,7 +1284,7 @@ yards-to-goal filter their `--ytg60` option reads. `scripts/diag/runblock/`:
 ## Reproduce
 
 ```sh
-npx vitest run test/pass-feel.test.ts test/deep-no-force.test.ts test/safety-tempo.test.ts test/tip-away.test.ts test/catch-caller-interval.test.ts test/blocked-reach.test.ts test/pull-early.test.ts
+npx vitest run test/dl-squeeze.test.ts test/pass-feel.test.ts test/deep-no-force.test.ts test/safety-tempo.test.ts test/tip-away.test.ts test/catch-caller-interval.test.ts test/blocked-reach.test.ts test/pull-early.test.ts
 node scripts/baseline.mjs --candidate --flag TIP_AWAY=1 -- npx vitest run --project core
 for a in "" "--flag TIP_AWAY=1"; do node scripts/baseline.mjs --candidate $a -- node --import tsx scripts/diag/depth/ints.ts --games 8; done
 ```

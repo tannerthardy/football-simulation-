@@ -37,6 +37,7 @@ median run 3.95 → 3.46 yd, p90 17.9 → 11.7 (NFL 3.0).
 | Flag | Where | What it does | Evidence |
 | --- | --- | --- | --- |
 | `TIP_AWAY` | `sim/catching.ts` | The defender who just broke up a pass stays out of its tumbling flight. | INTs after a touch 54 → 21%; by the same defender 12 → 0 |
+| `DL_SQUEEZE` | `sim/engagement.ts` `stepRunRep` | An engaged first-level man whose blocker moves away from the ball flattens and fights back across toward it. | Gap-run DL flow −0.18/−0.38/−0.16 → −0.15/−0.07/+0.11 (NFL +0.24/+0.76/+1.35); crease 4.5 → 3.5; paired lab tails unchanged |
 | `PASS_FEEL` | `sim/engagement.ts` `stepPassRep` | The pass blocker mirrors the rusher he has felt (0.06 s plus attention lapses) or, hands cleared, seen, not his current velocity. | Information rule; paired dropback lab inert (pressure 33.4 → 33.8%) |
 | `DEEP_NO_FORCE` | `sim/run-fits.ts` `buildRunFits` | A deep-zone safety is never the fallback force player. | Paired lab: 20+ runs 15.9 → 7.2% on the plays it changes; others identical |
 
@@ -76,5 +77,5 @@ installed zone track. `DEF_GETOFF=1` is a diagnostic latency scale.
 | Pursuit arrival: fewer defenders reach the runner (2.10 vs 2.69 per run reaching 5 yd; DL 0.02 vs 0.30) | The meeting itself matches tracking (met 49 / 48%, broke 9 / 9%; run-game `open-field/meet.py`); DL stay latched after the back passes and never flowed with the play | DL re-latch and OZ pair flow: run-game (`SHED_PURSUE`, `BLOCK_FRONT`, W1); front-seven feet before the read: run-defense (`DL_KEY` exists, see below) |
 | Interior rush: pairs move as one body (engaged at the throw 97% vs 71%, with or without `GAIT_STEP`) | `GAIT_STEP=0.3` lifts interior pressure 5.9 → 7.5 per 100 (NFL 8.7) by push, not release; a pair comes apart only when a rule ends the rep (likely the same fact as run re-latch) | Physics (`GAIT_STEP` promotion); release mechanism shared with the run-offense re-latch work; `HAND_CLEAR` on hold |
 | Engaged linemen cannot escape to pursue | Hand steer up to 0.7 arm force; the work-off presses into the blocker | contact/hands owner (handoff on the workboard) |
-| Crease and down-block wash | `DL_SQUEEZE` v2 narrows the crease but exposes the cutback; needs the scrape backer's fill | run-defense (queued) |
+| Gap-run line flow at half the tracked size | `DL_SQUEEZE` fixes the sign; the remaining drift is the pair's legs (the down blocker's 45° drive, the run-offense session's `DOWN_SEAL`) | Shared build: `DL_SQUEEZE` + `DOWN_SEAL`, measured on `lineflow.py` |
 | After-catch leverage | The front man comes back at the receiver; team leverage (the front man holds, the second arrives) | run-defense (queued, after the meeting question) |
