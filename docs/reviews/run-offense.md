@@ -587,6 +587,32 @@ looks are base 4-3, and the goal-line Bear at 60+ yd to go supplies a third
 of counter's 40+ runs. The harness should call the defensive caller by
 look and situation once it picks fronts that way (asked).
 
+Where the gap-run tail comes from (`scripts/diag/gap/third-level.ts`,
+`headon.ts`, `scripts/diag/open-field/geometry.py`): on gap runs that reach
+10 yd, our defense has a median one defender downfield of the runner, the
+deepest 0.7 yd ahead (NFL three, 4.8 yd), and nobody able to reach his path
+on 124 of 263; 57% of them go 40+ (NFL 4.9%). The last men are defensive
+backs whose wraps at 6+ yd/s from the side or behind break (corner from the
+side 39%, safety from behind 45%; from the front 5-14%), with nobody behind
+them. The goal-line Bear at 60+ yd to go adds a third of counter's 40+.
+
+The earlier fit flags on this branch (Parts 11-12; not on develop or the
+run-defense branch), all six on (`d9`: `LB_DEPTH DEEP_CAP FORCE_DEPTH
+EDGE_SQUEEZE SHED_PURSUE BLOCK_FRONT`) against the profile (`p8`):
+
+| Lab | losses / 0-3 / 4-9 / 10-19 / 40+ | TVD |
+|---|---|---|
+| NFL zone | 7.6 / 44.7 / 36.8 / 8.6 / 0.8 | |
+| zone `p8` -> `d9` | 10.2 / 52.8 / 30.5 / 4.1 / 1.8 -> 5.9 / 44.8 / 41.2 / 6.5 / 1.1 | 11.7 -> 4.7 |
+| NFL gap | 7.4 / 36.8 / 39.2 / 11.3 / 2.0 | |
+| gap `p8` -> `d9` | 4.8 / 34.1 / 44.2 / 6.1 / 9.3 -> 3.2 / 28.2 / 37.8 / 21.9 / 5.6 | 12.4 -> 14.2 |
+
+The backers' tempo overshoots the other way (power downhill at 1.0 s 2.65
+-> 1.15 yd/s, NFL 1.55; depth at 2.0 s 1.59 -> 3.18, NFL 2.15), hence the
+gap 10-19 yd surplus; the secondary is still thin at 10 yd (deepest 1.8 yd
+ahead). Fits are the run-defense session's: the arm and a proposal went
+there (interim base for these arms, or their own port).
+
 Climbs on the tracked line are NFL-like under center
 (`scripts/diag/align/climbphase.py --uc|--gun`: touch a down man then
 reach a backer 30% of linemen, NFL 34%; by 2.0 s 17%, NFL 18%; direct to a
