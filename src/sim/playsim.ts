@@ -295,7 +295,7 @@ export class PlaySim {
     this.perception = new PerceptionBuffer(this.agents.length, this.dt);
     const motion = motionEnabled() && this.offCall.motion ? this.slot(this.offCall.motion.slot) : undefined;
     const plan = motion ? planMotion(this.offAlign, this.offCall.motion!, motion.profile) : null;
-    this.motion = plan ? new MotionRuntime(plan, setup.defCall, setup.manPrefs, this.defStyle) : null;
+    this.motion = plan ? new MotionRuntime(plan, setup.defCall, setup.manPrefs, this.defStyle, this.defAlign, this.rng.fork('motion-check')) : null;
     this.stageDefense(setup.manPrefs);
     if (this.motion) ({ offAlign: this.offAlign, defCall: this.defCall, defAlign: this.defAlign } = this.motion.finish(this));
     this.snapX = this.agents.map((a) => a.pos.x);
