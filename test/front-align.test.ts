@@ -3,7 +3,7 @@
  * surface (outside the tackle with no end there, at least on an end with
  * one), and his build moves him: lighter wider, never inside an end he is
  * set on. Off: the installed spots. */
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
@@ -11,8 +11,11 @@ import { DEF_PERSONNEL, type DefSlot } from '../src/playbook/types.js';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
+/** The line the front reads: the installed one unless a test sets OL_ALIGN's tracked line. */
+let olLine: '0' | '1' = '0';
 async function front(on: boolean, frontId = 'over', personnel: 'base43' | 'nickel' = 'base43', mass: Partial<Record<DefSlot, number>> = {}, edge?: 'tight' | 'base' | 'wide', formation = 'i_pro_21') {
   vi.stubEnv('FRONT_ALIGN', on ? '1' : '0');
+  vi.stubEnv('OL_ALIGN', olLine);
   vi.resetModules();
   const { alignDefense, alignOffense } = await import('../src/playbook/alignment.js');
   const los = 40, off = alignOffense(FORMATION_BY_ID[formation], false, los, CENTER_Y);
@@ -129,8 +132,9 @@ describe('the coordinator calls fronts as the installs use them', () => {
 });
 
 describe('on the tracked line (OL_ALIGN): the same rules from the line as set', () => {
+  beforeEach(() => { olLine = '1'; });
+  afterEach(() => { olLine = '0'; });
   it('a 3 technique on the guard\'s outside shoulder, the open end outside the tackle, the closed end at least on the end', async () => {
-    vi.stubEnv('OL_ALIGN', '1');
     const f = await front(true);
     const strongT = Math.max(f.y('LT'), f.y('RT'));
     expect(f.strongG).toBeGreaterThan(1.5);
@@ -140,7 +144,6 @@ describe('on the tracked line (OL_ALIGN): the same rules from the line as set', 
     expect(f.E - strongT).toBeCloseTo(1.52, 6);
   });
   it('off: the line flag\'s own techniques are unchanged', async () => {
-    vi.stubEnv('OL_ALIGN', '1');
     const f = await front(false);
     expect(f.y('DT_S') - f.strongG).toBeCloseTo(1.56 / 2, 6);
   });

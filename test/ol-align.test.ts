@@ -2,6 +2,8 @@
  * behind the ball, 1.5 yd splits) and the defensive techniques and gap
  * landmarks follow those splits rather than the 1.3 yd table. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// FRONT_ALIGN moves the front off its installed spots; this scene is staged on them.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';

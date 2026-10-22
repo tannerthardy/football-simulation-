@@ -1,6 +1,8 @@
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {describe,expect,it,vi} from 'vitest';
+// FRONT_ALIGN moves the front off its installed spots; this scene is staged on them.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 // Recorded on the installed flat line (1.3 yd splits, 0.55 yd depth): its
 // saved geometry, landmarks and plans are that line's. The tracked line
 // (OL_ALIGN, docs/reviews/presnap.md) moves every body; pin it off here.

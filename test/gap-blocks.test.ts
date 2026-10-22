@@ -11,6 +11,8 @@
  * TRAP_FIT    a trapper on the last leg of his pull fits his man, as the
  *             counter kicker does (RunBlocker.update). */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// FRONT_ALIGN moves the front off its installed spots; this scene is staged on them.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 // These compare the flag on and off on plays recorded on the installed flat
 // line (1.3 yd splits, 0.55 yd depth). The tracked line (OL_ALIGN) changes
 // the plays themselves; it is judged by lab arms (docs/reviews/presnap.md).

@@ -4,6 +4,8 @@
  * puller idle vs Odd, the counter cutoff leaving the 5 technique in the
  * vacated gap, the fullback idle with a box man free. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
+// FRONT_ALIGN moves the front off its installed spots; this scene is staged on them.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
