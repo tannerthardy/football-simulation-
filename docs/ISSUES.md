@@ -1,3 +1,14 @@
+# Historical issue register
+
+**Historical record; operating instructions superseded 2026-10-22.**
+[PLAN](PLAN.md) and [GAPS](GAPS.md) govern current work on `develop`.
+The pins, claims, approval requirements and process directions below describe
+past checkpoints. They do not select today's trunk, assign current work or
+reinstate mandatory integration-owner verification/Git-tracked receipts.
+Evidence, links and historical decisions are preserved in place.
+
+---
+
 <!-- Existing issue register from #37 / #63 retained for the current queue; no new issue system. -->
 
 ## #189 checkpoint interpretation — 2026-10-20

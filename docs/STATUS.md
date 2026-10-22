@@ -1,3 +1,14 @@
+# Historical project status
+
+**Historical record; operating instructions superseded 2026-10-22.**
+[PLAN](PLAN.md) and [GAPS](GAPS.md) govern current work on `develop`.
+The pins, claims, approval requirements and process directions below describe
+past checkpoints. They do not select today's trunk, assign current work or
+reinstate mandatory integration-owner verification/Git-tracked receipts.
+Evidence, links and historical decisions are preserved in place.
+
+---
+
 # Current project status
 
 Reviewed #189 checkpoint passes exact combined verification (3007TS/171Python,
