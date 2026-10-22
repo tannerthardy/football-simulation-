@@ -122,6 +122,7 @@ problem), resolved.
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
+| [PRO-5](#pro-5) | No pass protection calls | G9 | high | open |
 | [COV-1](#cov-1) | Zone defenders barely close while the ball is in the air | G3 | high | open |
 | [COV-2](#cov-2) | Too much yardage per attempt and after the catch | G3 | high | open |
 | [COV-3](#cov-3) | Coverage rules and calls not yet complete | G3 | medium | in work (#193) |
@@ -432,6 +433,35 @@ Carried over from the issue register; each was measured on an older develop.
 - **Measure** (#191): lateral slide after an edge gets level, p75/p90, 0.1 /
   0.2 yd; NFL 0.5 / 2.6 yd. Step-ups are similar: NFL 20%, sim 27%.
 - **Cause:** *likely* missing from the QB's pocket controller.
+
+<a id="pro-5"></a>
+### PRO-5: No pass protection calls
+
+- **Symptom:** the line has no protection call. There's no slide, half-slide
+  or BOB/man install, no Mike ID, no ordered back scan, and no hot or sight
+  answer when the defense rushes more than the protection can block.
+- **What exists** (*confirmed*, `src/sim/behaviors/blocking.ts`,
+  `ProtectionCoordinator`):
+  - one generic matcher: at the first rush read, linemen take rushers in
+    left-to-right order at the least total lateral distance, with no crossing
+    paths;
+  - each tick, free blockers pick up rushers in their zone, spare linemen
+    double, and backs and tight ends take leftovers;
+  - the playbook's `chip` pass assignment (`src/playbook/types.ts`) is declared
+    but nothing uses it.
+- **Information shortcut** (*confirmed*): `isRusher` reads the defender's
+  behavior (`rush` or `blitz`, with a short recognition delay for blitzers)
+  instead of what the blockers can see. That breaks the model rule that
+  players act on acquired information.
+- **Measure** (#191, `rg3`): on unblocked edge pressures, the same-side tackle
+  blocked nobody 86% of the time; NFL 39%. Unblocked edges added about 4
+  pressures per 100 dropbacks (PRO-2).
+- **Teaching:** [trenches handbook §7](football-handbook/trenches.md#7-pass-protection-is-linked-to-the-throw-and-launch-point)
+  covers the families, the count and the back scan.
+- **Open:** this is G9. Install calls as protection plans the line reads from
+  the visible front, with the QB and receivers sharing the hot answer. Start
+  it after G5's physics work, because PRO-1 (a tackle losing one-on-one) isn't
+  a call problem. Logged 2026-10-22.
 
 ## Pass defense and coverage
 
