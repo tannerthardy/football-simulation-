@@ -93,6 +93,32 @@ const DEF_PACKAGE = process.env.DEF_PACKAGE === '1';
 const SHELL_SHOW = process.env.SHELL_SHOW === '1';
 const SHOW: Record<string, number> = { cover3: .42, cover1: .26, cover0: .36, cover2: .28, tampa2: .28, cover4: .16, cover6: .11, cover2man: .12 };
 const SHOW_CHECK = { under: { oneHigh: .37, twoHigh: 1.6 }, empty: { oneHigh: 1.2, twoHigh: .7 } };
+/** COVER_CALL (experimental, off): the coverage call reads the matchup
+ * against the league and checks to the formation seen.
+ * - Matchup: the coordinator weighs his two best man corners against the
+ *   receivers on the field, each against what that group usually is (the
+ *   generator's league means: corners 79.3; receivers by personnel). Read
+ *   raw, the corners' man ratings sit 7-10 points above the receivers' route
+ *   ratings in every league, so an average matchup read as a 1.44x man edge
+ *   (generated teams' mean) and Cover 1 was 34% of early-down calls against
+ *   18% tracked (2022 dropbacks, PFF).
+ * - Formation: tracked early-down calls by the quarterback's alignment, as
+ *   ratios to the gun's (the shares the weights come from): under center
+ *   Cover 3 x1.38, quarters x0.8, Cover 6 x0.6, Cover 2 x0.75; against empty
+ *   quarters x1.5, Cover 1 x0.78, Cover 0 x1.7.
+ * - Early downs: the base shares are the league's over all dropbacks, and
+ *   the third-down factors are relative to them (Cover 1 x2 on third and
+ *   3-6: 44%, tracked 45%); first and second down get their own tracked
+ *   ratio to the whole (Cover 1 0.82, Cover 0 0.75, 2-man 0.5, Cover 3
+ *   1.12, quarters 1.07, Cover 6 1.1). */
+const COVER_CALL = process.env.COVER_CALL === '1';
+export const CB_NORM = 79.3;
+export const WR_NORM: Partial<Record<PersonnelId, number>> = { '10': 69.6, '11': 71.3, '12': 72.0, '21': 72.0, '13': 76.6, '22': 76.6 };
+const EARLY_DOWN: Record<string, number> = { cover1: .82, cover0: .75, cover2man: .5, cover3: 1.12, cover4: 1.07, cover6: 1.1 };
+const CALL_CHECK: Record<'under' | 'empty', Record<string, number>> = {
+  under: { cover3: 1.38, cover4: .8, cover6: .6, cover2: .75, tampa2: .75, cover0: 1.3 },
+  empty: { cover4: 1.5, cover1: .78, cover0: 1.7, cover3: .91, cover6: .92 },
+};
 function defPackage(rng: Rng, off: PersonnelId, s: Situation, scheme: string): DefPersonnelId {
   const third = s.down >= 3 && s.distance >= 3;
   const short = s.distance <= 2;
@@ -428,7 +454,8 @@ export class DefensiveCoordinator {
     const wrs = Object.values(offSlots).filter((p): p is Player => !!p && p.position === 'WR');
     const cbMan = avg(cbs.map((p) => p.ratings.manCoverage));
     const wrRoute = avg(wrs.map((p) => (p.ratings.routeRunning + p.ratings.releaseVsPress) / 2));
-    const matchupEdge = Math.exp((cbMan - wrRoute) / 25);
+    const matchupEdge = COVER_CALL ? Math.exp(((cbMan - CB_NORM) - (wrs.length ? wrRoute - (WR_NORM[offPersonnel] ?? 72) : 0)) / 25) : Math.exp((cbMan - wrRoute) / 25);
+    const seenForm = formation?.tags.includes('empty') ? 'empty' : formation?.qb === 'under' ? 'under' : undefined;
     const system = coach.coverageSystem;
     const toGoal = 100 - s.yardline;
     const famW: Array<[string, number]> = [
@@ -452,6 +479,8 @@ export class DefensiveCoordinator {
       if (toGoal <= 5) fw[1] *= f === 'cover0' ? 4 : f === 'cover1' ? 1.8 : f === 'cover2' || f === 'cover4' || f === 'tampa2' ? 0.7 : 1;
       else if (toGoal <= 20) fw[1] *= f === 'cover1' ? 1.4 : f === 'cover0' ? 1.5 : 1;
       if (s.hurry && s.scoreDiff < 0 && ['cover2', 'cover4', 'cover6', 'tampa2'].includes(f)) fw[1] *= 2;
+      if (COVER_CALL && seenForm) fw[1] *= CALL_CHECK[seenForm][f] ?? 1;
+      if (COVER_CALL && s.down <= 2) fw[1] *= EARLY_DOWN[f] ?? 1;
       fw[1] *= this.learned(f);
     }
     // Variants within the family by tree; spot vs. match by the coach's habit.

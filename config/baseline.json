@@ -74,7 +74,8 @@
     "FRONT_MENU": "1",
     "BOX_ALIGN": "1",
     "DEF_PACKAGE": "1",
-    "SHELL_SHOW": "1"
+    "SHELL_SHOW": "1",
+    "COVER_CALL": "0"
   },
   "worldDefaults": {
     "handContact": "center",
