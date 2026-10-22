@@ -336,6 +336,26 @@ starts only on snaps where someone moved before the snap, so most snaps
 kept the old latency. The contract test now checks that every start comes
 from the plan.
 
+**Get-off as Next Gen Stats measures it** (snap to the rusher's torso past
+the line, pass plays, `scripts/diag/align/getoff-cross.py`):
+
+| p10/50/90 (s) | edge | interior | interior never by 3 s |
+|---|---|---|---|
+| NFL 2022, from the tracked snap frame | 0.41/0.69/1.06 | 0.51/0.80/1.22 | 6% |
+| sim before (`sim-ps3`) | 0.68/0.75/0.96 | 0.75/0.80/0.87 | 0% |
+| sim `SNAP_REACT` (`sr3`) | 0.53/0.65/0.80 | 0.58/0.71/0.78 | 0% |
+
+The NFL frame reads about 0.1 s early, so NFL medians are about 0.79 edge
+and 0.90 interior from the snap. These match the published per-rep medians
+(DE 0.88, DT 1.00 in `data/bdb2025-summary.json`, which counts snap to
+crossing).
+
+Our rushers cross 0.1-0.2 s early with a narrow slow tail. Every interior
+rusher crosses (NFL: 6% never do by 3 s). That is the pass set conceding
+the line, not the start: it was already true before (interior 0.80 with
+p90 0.87) and the start only moved the whole distribution earlier. It is a
+pass-protection question for that owner, not tuned here.
+
 Contract: `test/snap-count.test.ts`: every start comes from the plan,
 fouls follow the represented acts, standing men are never offside, and
 reactors never start before 0.1 s.
