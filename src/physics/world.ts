@@ -302,7 +302,7 @@ const HOLD_SUBSTEPS = Number(process.env.HOLD_SUBSTEPS ?? 0);
 const HAND_MOTOR = process.env.HAND_MOTOR === '1';
 /** Experimental leg-hold bracing (LEG_BRACE=1); see addLoad. */
 const LEG_BRACE = process.env.LEG_BRACE === '1';
-/** Experimental (PAD_LEVERAGE=1, off): pad level loads and unloads the feet.
+/** Default on (PAD_LEVERAGE=0 turns it off): pad level loads and unloads the feet.
  * A push runs from the pusher's pads to the other man's; when one man's pads
  * are lower, the line of action tilts up into the higher man. Its vertical
  * part lifts the higher man (less weight on his cleats, so less traction)
@@ -310,7 +310,7 @@ const LEG_BRACE = process.env.LEG_BRACE === '1';
  * the actual normal load; nothing else changes. Off, every body keeps the
  * traction of his standing weight whatever the contact geometry: the low
  * man's advantage in football had no physical path. */
-const PAD_LEVERAGE = process.env.PAD_LEVERAGE === '1';
+const PAD_LEVERAGE = process.env.PAD_LEVERAGE !== '0';
 /** Steepest line of action credited, rise over run (about 30 degrees). */
 const LEVERAGE_SLOPE = .6;
 /** Knee height as a fraction of COM height (knee ~0.28, COM ~0.55 of stature). */
@@ -428,6 +428,22 @@ interface Plan {
   effortVy: number;
 }
 
+/** The current lean's unsupported share. Keep this outside the substep loop:
+ * constructing nested closures here is costly in the development runner.
+ * Each call still reads the current support and availability after a release. */
+function unsupportedLean(b: Body, plan: Plan, leanX: number, leanY: number,
+  capacity: number, mass: number): number {
+  const mag = Math.hypot(leanX, leanY);
+  if (mag <= 1e-6) return 0;
+  const hx = leanX / mag, hy = leanY / mag;
+  const balanced = Math.max(0, -(b.support!.felt.x * hx + b.support!.felt.y * hy));
+  const unsupported = mag - balanced * (1 + PUSH_GROWTH);
+  if (unsupported <= 0) return 0;
+  const env = followAccel(b, { x: hx * 1e3, y: hy * 1e3 }, plan.cut, capacity);
+  const absorb = Math.max(0, Math.hypot(env.x, env.y) - Math.max(0, plan.ax * hx + plan.ay * hy)) * mass;
+  return Math.min(mag, Math.max(0, unsupported - absorb));
+}
+
 export class World {
   readonly bodies: Body[];
   /** Production uses analytic recovery except during a lower hold. The
@@ -507,6 +523,13 @@ export class World {
   private readonly footImpulseY: Float64Array;
   /** Peak corrective speed allocated from this interval's common leg budget. */
   private readonly recovery: Float64Array;
+  /** Tick-local scratch never escapes through bodies, joints or StepReport.
+   * Reuse its storage; each step still rebuilds all values in body order. */
+  private readonly plans: Plan[];
+  private readonly near: Uint8Array;
+  private readonly island: number[] = [];
+  private readonly alone: number[] = [];
+  private readonly pairs = new Map<number, ContactRecord>();
   private report!: StepReport;
   private tickDt = .05;
 
@@ -546,6 +569,9 @@ export class World {
     this.armScale = f(); this.armCap = f(); this.active = f();
     this.footImpulseX = f(); this.footImpulseY = f();
     this.recovery = f();
+    this.plans = bodies.map(b => ({ ax: 0, ay: 0, facing: b.facing, cut: 1, free: false, dive: null, launch: 0,
+      activeTime: 0, activeSteps: 0, hadPassive: false, actionWork: 0, activeNow: false, effortVx: 0, effortVy: 0 }));
+    this.near = new Uint8Array(n);
   }
 
   indexOf(b: Body): number {
@@ -631,14 +657,16 @@ export class World {
     // Hold gait effort at the controller rate; physics subdivisions do not
     // become extra decisions. Center keeps stepBody's historical turn credit.
     // Patch plans from attained facing, before the loaded turn is executed.
-    const plans = bs.map((b, i) => this.plan(b, i, intents[i] ?? STAND, dt));
+    const plans = this.plans;
+    for (let i = 0; i < n; i++) this.plan(bs[i], i, intents[i] ?? STAND, dt);
     for (let i = 0; i < n; i++) {
       const l = intents[i]?.lunge, sup = bs[i].support!;
       if (l && sup.state === 'up' && Math.hypot(l.x, l.y) > 1e-6) sup.strike = { x: l.x, y: l.y };
     }
 
     // Islands: who can touch whom within this tick, or is held, or struck.
-    const near = new Uint8Array(n);
+    const near = this.near;
+    near.fill(0);
     let fastest = 0;
     for (const j of this.joints) { near[this.indexOf(j.a)] = 1; near[this.indexOf(j.b)] = 1; }
     for (const p of this.pending) { near[this.indexOf(p.a)] = 1; near[this.indexOf(p.b)] = 1; }
@@ -655,9 +683,11 @@ export class World {
         if (rel > fastest) fastest = rel;
       }
     }
-    const island: number[] = [], alone: number[] = [];
+    const island = this.island, alone = this.alone;
+    island.length = 0; alone.length = 0;
     for (let i = 0; i < n; i++) (near[i] ? island : alone).push(i);
-    const pairs = new Map<number, ContactRecord>();
+    const pairs = this.pairs;
+    pairs.clear();
     const t0 = this.time;
     if (alone.length) this.substep(alone, intents, plans, dt, dt, report, pairs, false);
     if (island.length) {
@@ -1020,12 +1050,17 @@ export class World {
 
   private plan(b: Body, i: number, intent: Intent, dt: number): Plan {
     const sup = b.support!;
-    const none: Plan = { ax: 0, ay: 0, facing: b.facing, cut: 1, free: !!intent.free, dive: null, launch: 0,
-      activeTime: 0, activeSteps: 0, hadPassive: false, actionWork: 0, activeNow: false, effortVx: 0, effortVy: 0 };
-    if (sup.state !== 'up' || intent.free) return none;
+    const plan = this.plans[i];
+    plan.ax = 0; plan.ay = 0; plan.facing = b.facing; plan.cut = 1;
+    plan.free = !!intent.free; plan.dive = null; plan.launch = 0;
+    plan.activeTime = 0; plan.activeSteps = 0; plan.hadPassive = false;
+    plan.actionWork = 0; plan.activeNow = false; plan.effortVx = 0; plan.effortVy = 0;
+    if (sup.state !== 'up' || intent.free) return plan;
     if (intent.dive && Math.hypot(intent.dive.x, intent.dive.y) > 1e-9) {
       const l = Math.hypot(intent.dive.x, intent.dive.y);
-      return { ...none, dive: { x: intent.dive.x / l, y: intent.dive.y / l }, launch: Math.min(1, l) };
+      plan.dive = { x: intent.dive.x / l, y: intent.dive.y / l };
+      plan.launch = Math.min(1, l);
+      return plan;
     }
     const a = availability(sup, this.sp[i], this.fat[i]);
     updateSqueeze(b, intent, dt);
@@ -1043,9 +1078,10 @@ export class World {
     // The yaw motor needs the requested angle to plan its own braking. The
     // rate-clipped pose above is only the existing gait estimate; making it
     // a new stopping target each tick turns a smooth rotation into a chase.
-    return { ...none, ax: acc.x, ay: acc.y,
-      facing: this.handContact === 'center' ? commandFacing(b, intent) : facing,
-      cut: intent.cutSkill ?? 1 };
+    plan.ax = acc.x; plan.ay = acc.y;
+    plan.facing = this.handContact === 'center' ? commandFacing(b, intent) : facing;
+    plan.cut = intent.cutSkill ?? 1;
+    return plan;
   }
 
   private substep(ids: number[], intents: ReadonlyArray<Intent | null | undefined>, plans: Plan[], h: number, remaining: number,
@@ -1608,19 +1644,11 @@ export class World {
         // A lean is his COM held ahead of his feet by the load. Whatever the
         // load no longer balances, beyond what his gait can accept as planned
         // acceleration, is a capture-point offset now: an overextension.
-        const releaseUnsupported = () => {
-          const excess = () => {
-            const mag = Math.hypot(leanX, leanY);
-            if (mag <= 1e-6) return 0;
-            const hx = leanX / mag, hy = leanY / mag;
-            const balanced = Math.max(0, -(sup.felt.x * hx + sup.felt.y * hy));
-            const unsupported = mag - balanced * (1 + PUSH_GROWTH);
-            if (unsupported <= 0) return 0;
-            const env = followAccel(b, { x: hx * 1e3, y: hy * 1e3 }, plan.cut, a);
-            const absorb = Math.max(0, Math.hypot(env.x, env.y) - Math.max(0, plan.ax * hx + plan.ay * hy)) * m;
-            return Math.min(mag, Math.max(0, unsupported - absorb));
-          };
-          let iterations = 0, conv = excess();
+        // Release the existing lean, blend toward the request, then release
+        // again. Preserve that order and every numerical update without
+        // allocating a release closure and two excess closures per body.
+        for (let phase = 0; phase < 2; phase++) {
+          let iterations = 0, conv = unsupportedLean(b, plan, leanX, leanY, a, m);
           const w0 = omega0(sp, sup.posture);
           // Each pass consumes only the remaining committed lean. A finite
           // local projection settles the existing reduced-model feedback;
@@ -1633,21 +1661,20 @@ export class World {
             leanX -= hx * conv; leanY -= hy * conv;
             // Transferred geometry changes what the same feet can absorb.
             a = availability(sup, sp, fat); this.alpha[i] = a;
-            conv = excess(); iterations++;
+            conv = unsupportedLean(b, plan, leanX, leanY, a, m); iterations++;
           }
           // Expose any unresolved local solve instead of silently claiming
           // that the iteration limit establishes convergence.
           report.maxLeanReleaseResidual = Math.max(report.maxLeanReleaseResidual, conv);
           report.maxLeanReleaseIterations = Math.max(report.maxLeanReleaseIterations, iterations);
-        };
-        // Existing committed lean is geometry, not a new force request.
-        // Transfer the unsupported share before damping it away; otherwise
-        // a coarse substep erases more of the same incoming overextension.
-        releaseUnsupported();
-        const rising = tx * tx + ty * ty >= leanX * leanX + leanY * leanY;
-        const k = 1 - Math.exp(-h / (rising ? LEAN_RISE : LEAN_DECAY));
-        leanX += (tx - leanX) * k; leanY += (ty - leanY) * k;
-        releaseUnsupported();
+          if (phase === 0) {
+            // Transfer unsupported geometry before damping it away, exactly
+            // as in the first release of the original two-pass technique.
+            const rising = tx * tx + ty * ty >= leanX * leanX + leanY * leanY;
+            const k = 1 - Math.exp(-h / (rising ? LEAN_RISE : LEAN_DECAY));
+            leanX += (tx - leanX) * k; leanY += (ty - leanY) * k;
+          }
+        }
         sup.lean = { x: leanX, y: leanY };
         // One budget: locomotion and lean share traction and leg strength.
         // Leg drive is directional: full straight ahead, a shuffle's or a

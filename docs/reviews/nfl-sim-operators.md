@@ -32,6 +32,12 @@ full NFL file.
 - **Pressure:** a defender within 2 yd of the QB from 0.5 s to the throw, as
   in `metrics.py`.
 
+Current geometric-pressure sampling and unknown denominators are versioned
+as [`sampled-geometric-pressure-v2`](pressure-measurement.md). The shared
+boundary witnesses also cover `passpro/pressure.py` and `passpro/qbdrop.py`;
+their different cohorts and engagement definitions remain separate. Historical
+#191/#198 numbers are from the earlier operator, not current validation.
+
 | Operator | Answers | Main outputs |
 |---|---|---|
 | `scripts/diag/pass-contact.py` | When and where line rushers first meet their blocker; how the OL sets | Contact time, rusher depth and blocker retreat at contact; crossing time; OL retreat by T/G/C at 0.3–1.5 s. Uses block pairs (NFL PFF labels, sim contact events). |

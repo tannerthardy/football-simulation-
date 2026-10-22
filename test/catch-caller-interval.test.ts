@@ -138,7 +138,7 @@ describe('live same-interval catch caller',()=>{
     expect(sim.events.some(e=>e.type==='pbu')).toBe(true);expect(sim.ball.flight.vel).not.toEqual(velocity);
     // The breaker may replay the tip after a beat; with TIP_AWAY his breakup
     // sent it away from his own hands for the rest of this flight.
-    expect(a.noCatchUntil).toBe(f.t+(process.env.TIP_AWAY==='1'?10:.25));
+    expect(a.noCatchUntil).toBe(f.t+(process.env.TIP_AWAY!=='0'?10:.25));
   });
 
   it('keeps a failed ordinary defensive opportunity an untouched flight',()=>{

@@ -26,11 +26,20 @@ smoothing on both sides, never from provider speed fields.
 """
 import math
 from collections import defaultdict
+from typing import NamedTuple
 
 GROUPS = ("QB", "RB", "WR", "TE", "OL", "DL", "LB", "DB")
 SPEED_HALF = 2        # speed: central difference over +/-0.2 s
 ENGAGED_YD = 1.5      # a box defender is "engaged" with an OL this close
 PRESSURE_YD = 2.0
+PRESSURE_OPERATOR = "sampled-geometric-pressure-v2"
+
+
+class PressureObservation(NamedTuple):
+    frames: range
+    first: int | None
+    value: float | None
+    complete: bool
 
 # Run concepts shared by PFF's labels (NFL) and the sim's schemes. Runs are also
 # measured within each family, e.g. "run.handoff_s@outside_zone".
@@ -127,6 +136,35 @@ class Play:
         found = min((self.dist(d, i, k) for d in self.who(side)), default=math.inf)
         return found if math.isfinite(found) else None
 
+    def pressure(self, qb):
+        """Sampled geometric pressure, v2; see docs/reviews/pressure-measurement.md.
+
+        Admit actual sample times in [0.5, min(release, whistle)], or through
+        min(4 s, end) without a release. Never round or clamp those bounds to
+        a neighboring frame. Unknown coverage cannot establish a negative;
+        an observed positive survives missing samples and recording cutoffs.
+        """
+        throw = self.events.get("pass_forward")
+        end = min(self.end, throw if throw is not None else 4.0)
+        start = max(0, math.ceil((0.5 - 1e-9) / self.dt))
+        stop = math.floor((end + 1e-9) / self.dt) + 1
+        frames = range(start, min(self.frames, stop))
+        defenders = self.who("D")
+        complete = bool(frames) and bool(defenders) and stop <= self.frames
+        first = None
+        for k in frames:
+            qpos = self.pos(qb, k)
+            for d in defenders:
+                coords = (*qpos, *self.pos(d, k))
+                if not all(v is not None and math.isfinite(v) for v in coords):
+                    complete = False
+                    continue
+                if math.hypot(coords[0] - coords[2], coords[1] - coords[3]) <= PRESSURE_YD:
+                    if first is None:
+                        first = k
+        value = 1.0 if first is not None else 0.0 if complete else None
+        return PressureObservation(frames, first, value, complete)
+
 
 def run_metrics(p, out):
     ev = p.events
@@ -184,14 +222,21 @@ def pass_metrics(p, out):
         out["pass.qb_depth_at_throw"].append(-p.pos(qb, kt)[0])
         out["pass.nearest_defender_to_qb_at_throw"].append(min(p.dist(d, qb, kt) for d in defenders))
     window_end = throw if throw is not None else min(p.end, 4.0)
-    pressure_k = next((k for k in range(p.k(0.5), p.k(window_end) + 1)
-                       if min(p.dist(d, qb, k) for d in defenders) <= PRESSURE_YD), None)
-    out["pass.pressure_2yd_before_throw"].append(0.0 if pressure_k is None else 1.0)
+    pressure = p.pressure(qb)
+    pressure_k = pressure.first
+    out["pass.pressure_2yd_before_throw"].append(pressure.value)
+    out["pass.pressure_2yd_unknown"].append(float(pressure.value is None))
     if pressure_k is not None:
         out["pass.time_to_pressure"].append(pressure_k * p.dt)
     rush_end = p.k(min(window_end, 2.5))
-    out["pass.rushers"].append(sum(1 for d in defenders
-                                   if min(p.pos(d, k)[0] for k in range(0, rush_end + 1)) <= -1.0))
+    # Missing coordinates must not crash after recording an unknown pressure,
+    # or count a not-observed rusher as an observed non-rusher.
+    rushers = []
+    for d in defenders:
+        xs = [p.pos(d, k)[0] for k in range(0, rush_end + 1)]
+        known = [x for x in xs if x is not None and math.isfinite(x)]
+        rushers.append(1 if any(x <= -1.0 for x in known) else 0 if len(known) == len(xs) else None)
+    out["pass.rushers"].append(sum(rushers) if None not in rushers else None)
     eligible = [i for i in p.who("O") if p.players[i]["group"] in ("WR", "TE", "RB")]
     for t in (1.5, 2.5):
         if p.live(t) and (throw is None or t <= throw):
@@ -339,7 +384,7 @@ class Collector:
                 run_metrics(p, _Suffixed(self.values, "@" + cell))
 
     def summary(self):
-        return {"plays": self.plays,
+        return {"plays": self.plays, "pressureOperator": PRESSURE_OPERATOR,
                 "metrics": {key: describe(vals) for key, vals in sorted(self.values.items())}}
 
 
@@ -370,7 +415,8 @@ DEFINITIONS = {
     "run.max_engaged_dl_driven_back_3s": "Per play, the furthest any engaged box defender has been driven back at 3 s.",
     "run.ol_forward_1s": "Mean forward movement of the OL at 1 s.",
     "pass.*": "Dropbacks. Throw = pass_forward event.",
-    "pass.pressure_2yd_before_throw": "Share of dropbacks with a defender within 2 yd of the QB between 0.5 s and the throw (or 4 s).",
+    "pass.pressure_2yd_before_throw": f"{PRESSURE_OPERATOR}: share of known observations with any defender <=2 yd from the QB at recorded times >=0.5 s and <=release/end (no release: end capped at 4 s). Unknown negatives excluded; positives retained. See docs/reviews/pressure-measurement.md.",
+    "pass.pressure_2yd_unknown": "Share of QB dropbacks with no pressure-window samples or incomplete coverage and no observed positive. Retained separately from observed negatives.",
     "pass.ol_depth_given_2s": "Mean OL retreat toward the QB at 2 s (includes the normal pass set).",
     "pass.box_rusher_speed_0_5s": "Speed of each box defender at 0.5 s (get-off).",
     "pass.box_rusher_depth_2s": "How far each box defender is into the backfield at 2 s.",
@@ -386,7 +432,7 @@ DEFINITIONS = {
     "contact.*.broke_contact": "Share of contacts after which the carrier is still running >= 4 yd/s half a second later and gains >= 5 more yards (tracking proxy for a broken tackle).",
     "catch.defenders_within_5yd_at_catch": "Defenders within 5 yd of the receiver at the catch.",
     "*@man|zone": "The metric within man or zone coverage (PFF / NGS / sim coverage labels).",
-    "pass.time_to_pressure": "On pressured dropbacks, first time a defender is within 2 yd of the QB.",
+    "pass.time_to_pressure": "First observed sampled geometric pressure in the admitted window. Missing earlier samples can hide earlier pressure; not continuous onset or native pressure credit.",
     "pass.rushers": "Defenders who get at least 1 yd into the backfield by the throw or 2.5 s.",
     "route.separation_Ns": "Before the throw, each WR/TE/RB at least 3 yd downfield: distance to the nearest defender.",
     "route.target_depth_at_throw": "Targeted receiver's depth past the line when the ball is thrown.",
