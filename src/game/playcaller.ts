@@ -147,9 +147,10 @@ export class OffensiveCoordinator {
     const backs = off.filter(([, a]) => a.depth >= 3 && (a.split === 0 || (typeof a.split === 'number' && a.split < 3.5)));
     const receivers = off.filter(([slot]) => !backs.some(([b]) => b === slot));
     const options: Array<[MotionCall, number]> = [];
-    for (const [slot] of receivers) {
+    for (const [slot, a] of receivers) {
       options.push([{ slot, kind: 'across' }, 0.45], [{ slot, kind: 'return' }, 0.15]);
-      if (f.qb !== 'under') options.push([{ slot, kind: 'jet' }, 0.25]);
+      // A jet needs a run-up: slots and wideouts, not a tight inside receiver.
+      if (f.qb !== 'under' && (a.split === 'slot' || a.split === 'wide')) options.push([{ slot, kind: 'jet' }, 0.25]);
     }
     if (isPass) for (const [slot] of backs.filter(([s]) => s === 'RB')) options.push([{ slot, kind: 'empty' }, 0.3]);
     return options.length ? pickWeighted(rng, options) : undefined;

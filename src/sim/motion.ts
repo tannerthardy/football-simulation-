@@ -51,6 +51,8 @@ export interface MotionPlan {
 const JET_DEPTH = 1.8;
 /** The jet man reaches the ball this long after the snap: the snap is timed to the mesh (s). */
 const JET_LEAD = 0.6;
+/** A jet needs this much lateral run-up (yd from the ball) to be at speed by the mesh; tracked jets start ~11.5 yd out. */
+const JET_RUNUP = 7;
 /** Fastest pace (fraction of top speed) a set motion is run at to fit the pre-snap clock. */
 const MAX_SET_SPEED = 0.9;
 /** A motion man must be off the line of scrimmage. */
@@ -97,7 +99,7 @@ export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<B
       break;
     }
     case 'jet': {
-      if (spot.backfield) return null;
+      if (spot.backfield || Math.abs(p0.y - off.ballY) < JET_RUNUP) return null;
       const x = off.los - JET_DEPTH;
       legs.push({ to: { x, y: p0.y - own * 1.5 }, speed: 0.6 });
       legs.push({ to: { x, y: off.ballY + far * 1.0 }, speed: 0.85 });

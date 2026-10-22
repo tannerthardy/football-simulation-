@@ -127,7 +127,7 @@ From [fangio-system.md](fangio-system.md) section E:
 `src/sim/motion.ts`. The offensive coordinator puts one off-ball player in
 motion on about half its snaps:
 - **across:** sets as the far side's new slot, tight inside a lone #1 (tracked median 5.4 yd from the ball), so 2x2 becomes 3x1;
-- **jet:** still running parallel to the line at the snap, short of the ball. The snap is timed so he reaches the mesh about 0.6 s later; tracked jets snap a median 5 yd from the ball;
+- **jet:** still running parallel to the line at the snap, short of the ball. The snap is timed so he reaches the mesh about 0.6 s later; tracked jets snap a median 5 yd from the ball. A jet needs a run-up: only a man aligned at least 7 yd from the ball (slots and wideouts) runs one;
 - **empty:** the back motions out to the weak side;
 - **return:** yo-yo back to his spot.
 
