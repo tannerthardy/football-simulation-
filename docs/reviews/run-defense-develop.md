@@ -760,6 +760,37 @@ uncommitted. The run-offense session's review
 applies when it returns: decide the clear from the joint's attained load,
 not from `e.control`, which is a rating random walk.
 
+## The lineman's first 0.5 s on outside zone (diagnosis, no change)
+
+The run-offense session's `stretch/ozstart.py` (its branch) on develop + line
+set, 8 games. Lateral speed toward the play side at 0.1 / 0.3 / 0.5 / 1.0 s:
+
+| | 0.1 | 0.3 | 0.5 | 1.0 s | In contact at 0.5 s |
+| --- | --- | --- | --- | --- | --- |
+| Sim OL | 0.27 | 0.54 | 0.80 | 1.03 | |
+| NFL OL | 0.85 | 1.30 | 1.88 | 2.81 | |
+| Sim DL | −0.03 | −0.02 | 0.08 | 0.73 | 56% |
+| NFL DL | 0.39 | 0.69 | 1.17 | 2.35 | 11% |
+
+Upfield, our linemen differ less: 0.39 vs 0.28 yd by 0.5 s.
+
+`depth/dlstart.ts` (lab: 320 linemen on outside zone, same seeds):
+- The blocker in front first steps across (0.35 yd/s) at a median 0.25 s,
+  and the lineman first moves at 0.25 s.
+- `DL_KEY` fired for only 24 of 320, at 0.65 s. A blocker stepping at 0.25 s
+  is seen about 0.2 s later, and by then most linemen have read run and are
+  in their fit, which this key does not serve. Contact comes at 0.4–0.5 s
+  because our blocker reaches a lineman who has not moved sideways.
+
+On develop, then, the first divergence is the offensive line's start (the
+movement law's start-up; with `GAIT_STEP` the run-offense profile's linemen
+step at about 0.15 s), plus an ordinary visual reaction. Neither belongs to
+the lineman's controller. Tracked linemen are already moving sideways
+before a reaction to the blocker's step could explain it, even allowing
+for about 0.1 s of snap-event lag. That points to called line movement
+(slants and angles), which the defensive calls here do not install. It is
+a play-calling question for the def-alignment session, not a change here.
+
 ## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
 
 **Question.** With the line set on, the run break rate matches tracking (13.2%
@@ -1284,7 +1315,7 @@ telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
 `runrally`, `crease`, `breakpoint`, `afterrelease`, `alleypath`, `interiorrush`, and lab probes
-`squeezeprobe.ts` (carrier vs a squeezing lineman), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
+`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
 `alleyprobe.ts`, `alleytrace.ts` (the nearest deep supporter on long runs), `forcelab.ts` (paired run lab, the same seeds per arm),
 `dlpursuit.ts` (linemen at a run's first contact), `dropprobe.ts` (the
 nearest zone defender when the ball comes near him), `catchact.ts`, `sideprobe.ts` (the side window from inside the

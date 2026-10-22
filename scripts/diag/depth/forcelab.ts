@@ -8,7 +8,7 @@ import { appendFileSync, writeFileSync } from 'node:fs';
 import { HASH_LEFT_Y } from '../../../src/core/field.js';
 import { Rng } from '../../../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
-import { RUN_BY_ID } from '../../../src/playbook/concepts.js';
+import { COUNTER_VARIANTS, RUN_BY_ID } from '../../../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../../../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
@@ -27,7 +27,7 @@ for (const run of runs) for (const form of forms) for (const cov of covs) {
   for (let i = 0; i < n; i++) {
     const seed = [...`${run}|${form}|${cov}|${i}`].reduce((h, ch) => Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0, 2166136261);
     const sim = new PlaySim({ offense: pickOffense(off, formation.personnel), defense: pickDefense(def, personnel),
-      offCall: { formation, flip: i % 2 === 1, kind: 'run', run: RUN_BY_ID[run], label: run },
+      offCall: { formation, flip: i % 2 === 1, kind: 'run', run: RUN_BY_ID[run] ?? COUNTER_VARIANTS[run.replace(/^counter_/, '') as keyof typeof COUNTER_VARIANTS], label: run },
       defCall: { personnel, front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[cov], pressure: cov === 'cover0' ? PRESSURE_BY_ID.zero_6 : null, label: cov },
       los: 35, ballY: HASH_LEFT_Y, firstDownX: 45, seed });
     const r = sim.run();
