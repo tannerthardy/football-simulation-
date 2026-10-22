@@ -643,6 +643,20 @@ line wins. Both sides carry posture 0.85, so pad level does not enter it.
 Open, with the run-defense session: the defender's technique against a
 vertical drive, or a leverage term in the push law (physics).
 
+Outside-zone flow, split between the sides (called looks; the run-defense
+session's measurement on this profile: their linemen follow the play-side
+guard at 0.62 / 0.80 of his lateral at handoff +0.3 / +1.0 s, NFL 0.79 /
+0.86, so the line's own flow is the main lever early). By state, the
+guard's 1.0-1.5 s shortfall is about 40% the climbing guard (0.3 yd/s
+sideways; NFL guard about 3), who aims at a backer that comes downhill
+before he scrapes (`lbfit.py` play-side scrape at 1.0 / 1.5 s: NFL 3.05 /
+3.95 yd/s with 1.45 downhill; ours 1.35 / 2.95 with 1.90 downhill), and
+the rest engaged reach/runoff/seal/helping reps at 1.6-1.9 yd/s achieved.
+The engaged reach follows the defender's lateral speed plus a shoulder
+correction, so each side follows the other. `RUN_CONTACT_TRACK` (existing
+trial: the reach's track tempo through contact) moved the guard 2.15 ->
+2.28 yd at 1.5 s and made zone slightly worse; it stays off.
+
 Climbs on the tracked line are NFL-like under center
 (`scripts/diag/align/climbphase.py --uc|--gun`: touch a down man then
 reach a backer 30% of linemen, NFL 34%; by 2.0 s 17%, NFL 18%; direct to a
