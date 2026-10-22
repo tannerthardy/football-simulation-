@@ -37,7 +37,7 @@ median run 3.95 → 3.46 yd, p90 17.9 → 11.7 (NFL 3.0).
 | Flag | Where | What it does | Evidence |
 | --- | --- | --- | --- |
 | `TIP_AWAY` | `sim/catching.ts` | The defender who just broke up a pass stays out of its tumbling flight. | INTs after a touch 54 → 21%; by the same defender 12 → 0 |
-| `PASS_FEEL` | `sim/engagement.ts` `stepPassRep` | The pass blocker mirrors the rusher he has felt (about 60 ms) or, hands cleared, seen, not his current velocity. | Information rule; paired dropback lab inert (pressure 33.4 → 33.8%) |
+| `PASS_FEEL` | `sim/engagement.ts` `stepPassRep` | The pass blocker mirrors the rusher he has felt (0.06 s plus attention lapses) or, hands cleared, seen, not his current velocity. | Information rule; paired dropback lab inert (pressure 33.4 → 33.8%) |
 | `DEEP_NO_FORCE` | `sim/run-fits.ts` `buildRunFits` | A deep-zone safety is never the fallback force player. | Paired lab: 20+ runs 15.9 → 7.2% on the plays it changes; others identical |
 
 **Realistic tempo, kept off until its partner lands.**

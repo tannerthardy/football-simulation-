@@ -655,7 +655,8 @@ from first contact with a blocker. Develop + line set, 8 games:
   He has the rusher's private state with no delay.
 
 **`PASS_FEEL` (`engagement.ts` `stepPassRep`).** The blocker mirrors the
-rusher he has acquired: by touch through his hands (about 60 ms) or, while
+rusher he has acquired: by touch through his hands (0.06 s plus attention
+lapses, through `sim.see`) or, while
 a landed move has his hands off, by sight (his visuomotor delay).
 `test/pass-feel.test.ts`.
 - With it, landed moves gain: on a landed rip the rusher slides at 2.2 yd/s

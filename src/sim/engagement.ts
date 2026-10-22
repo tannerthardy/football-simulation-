@@ -694,8 +694,8 @@ const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?:
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
 
 /** Experimental (PASS_FEEL=1, off): the pass blocker mirrors the rusher on
- * acquired information: the one he feels through his hands (a tactile
- * latency, about 60 ms) or, while a landed move has his hands off, the one
+ * acquired information: the one he feels through his hands (a 0.06 s
+ * tactile latency plus his attention lapses, via sim.see) or, while a landed move has his hands off, the one
  * he sees (his visuomotor delay), not the rusher's current velocity and
  * position. */
 const PASS_FEEL = process.env.PASS_FEEL === '1';
