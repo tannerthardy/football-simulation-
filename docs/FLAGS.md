@@ -1,6 +1,6 @@
 # Flags
 
-Every engine switch read from the environment, generated from `src` on 2026-10-22 (trunk `d91c9014`). Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
+Every engine switch read from the environment, generated from `src` on 2026-10-22 (trunk `d91c9014`). Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
 There are 44 flags: 22 are on by default and 22 are off. At the first review, set an expiry for each off flag and bring the experimental count to 10. Flags that are on by default can lose their switch, keeping only the new path.
 
