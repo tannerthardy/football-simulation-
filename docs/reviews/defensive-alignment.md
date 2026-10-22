@@ -352,23 +352,28 @@ sd 0.14, against a within-team sd of 0.23. Other factors move it much less:
 
 **Rule.** With `FRONT_ALIGN`, a lineman's 1 technique stands at his
 team's habit along the actual centre-guard split. The habit is
-`alignStyle`'s `aGap`, drawn once per team as N(0.63, 0.14) clamped to
-0.30-0.85, after the earlier habits so they keep their values. A defense
-with no habit uses 0.63. The gap is unchanged. Off: the shoulder.
+`alignStyle`'s `aGap`, from `aGapHabit(team)`: N(0.63, 0.14) clamped to
+0.30-0.85, on its own seed per team (the same draw as the shared build's
+port, #197), so the other habits keep their values. A defense with no habit
+uses 0.63. The gap is unchanged. Off: the shoulder.
 
-| Snap frames, 6,000 situations, profile | covered, over | covered, under | A-gap share p10/50/90 |
+| Snap frames, 6,000 situations, profile | covered, over | covered, under | A-gap share p10/50/90 (over) |
 |---|---|---|---|
 | tracked | 48% | 51% | 0.33/0.69/0.91 |
 | `AGAP_ALIGN` off | 97% | 96% | 0.32/0.47/0.65 |
-| `AGAP_ALIGN` on | 85% | 83% | 0.39/0.61/0.80 |
-| on, with `OL_SPLITS` | 56% | 53% | 0.41/0.63/0.79 |
+| `AGAP_ALIGN` on | 82% | 79% | 0.45/0.61/0.84 |
+| on, with `OL_SPLITS` | 57% | 54% | 0.48/0.63/0.84 |
 
-On runs in over/under: 98% off, 84% on, and 55% with `OL_SPLITS`, against
+On runs in over/under: 98% off, 81% on, and 56% with `OL_SPLITS`, against
 56% tracked. The rest of the gap is the line itself. The sim's 1.3-yd
 splits (tracked 1.51) leave a 0.63 share at 0.82 yd, inside the 1-yd test;
 #190's `OL_SPLITS` (off in the profile) places the tracked splits. The
 spread stays narrower than tracked because the within-team scatter
 (sd 0.23) is not drawn.
+
+On the shared build's own profile (`OL_ALIGN` on), the port (#197) takes
+over/under from 87/98% to 54/55% centre covered, and runs in over/under
+from 93% to 55%.
 
 Tests: `test/agap-align.test.ts`. #193's `cover3-cover2-rules` pins the flag
 off: in the vertical-curl scene, the wider 1 technique sends the rush

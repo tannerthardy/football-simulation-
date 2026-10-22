@@ -245,13 +245,21 @@ export function specialist(team: Team, pos: 'K' | 'P'): Player {
  * id, so it costs roster generation no draws. The front's lean to the
  * passing strength without a single attached end (FRONT_STRENGTH): 2022 team
  * shares of a 4-down front's 3 technique set toward the receivers run 0.34
- * (TEN) to 0.84 (NE), league about 0.6 (scripts/diag/align/deflook.py). The
- * 1 technique's spot along the centre-guard split (AGAP_ALIGN): 2022 team
- * medians 0.30 (NYG) to 0.82 (PHI), mean 0.63, sd 0.14. Each drawn after
- * the others, so the earlier habits keep their values. */
+ * (TEN) to 0.84 (NE), league about 0.6 (scripts/diag/align/deflook.py).
+ * Drawn last, so the earlier habits keep their values. The 1 technique's
+ * spot is `aGapHabit`'s own draw. */
 export function alignStyle(team: Pick<Team, 'id'>): AlignStyle {
   const rng = new Rng(`align:${team.id}`);
   return { wrRoom: rng.normalClamped(0, .8, -1.6, 1.6), olWidth: rng.normalClamped(0, .049, -.1, .1),
     cbDepth: rng.normalClamped(0, .85, -1.7, 1.7), safetyDepth: rng.normalClamped(0, .95, -1.9, 1.9),
-    passingStrength: rng.normalClamped(.6, .12, .3, .9), aGap: rng.normalClamped(.63, .14, .3, .85) };
+    passingStrength: rng.normalClamped(.6, .12, .3, .9), aGap: aGapHabit(team) };
+}
+
+/** AGAP_ALIGN: where a team's 1 technique stands, as a share of the
+ * centre-guard split from the centre. 2022 team medians run 0.30 (NYG) to
+ * 0.82 (PHI), mean 0.63, sd 0.14 (scripts/diag/align/deflook.py). Its own
+ * seed, as on the shared build's port (#197), so a team's habit is the same
+ * on both and costs no other draw. */
+export function aGapHabit(team: Pick<Team, 'id'>): number {
+  return new Rng(`agap:${team.id}`).normalClamped(.63, .14, .3, .85);
 }

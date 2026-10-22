@@ -67,7 +67,7 @@ motion plans):
 
 | Flag | Owner | What | Evidence |
 |---|---|---|---|
-| `AGAP_ALIGN` | this session | The 1 technique stands at the team's habit along the centre-guard split (tracked team medians 0.30-0.82), not on the centre's shoulder | Over/under centre covered: 48-51% tracked → 96-97% → 83-85%, and 53-56% with #190's `OL_SPLITS` |
+| `AGAP_ALIGN` | this session | The 1 technique stands at the team's habit along the centre-guard split (tracked team medians 0.30-0.82), not on the centre's shoulder | Over/under centre covered: 48-51% tracked → 96-97% → 79-82%, and 54-57% with #190's `OL_SPLITS`; the shared build's port (#197) on its wider line: 87-98% → 54-55% |
 
 ## Staged-scene pins
 
