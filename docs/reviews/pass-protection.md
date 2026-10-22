@@ -43,5 +43,11 @@ P019 one tackle is not yet engaged at the throw under `PASS_CORNER`.
 - Pressure was already 46% on this branch before this session's flags
   (`sim-ps3`). It is the next pass-protection question: interior contact is
   NFL-like, so the rushers' wins after contact are the place to look.
-- The NFL edge alignment: tracked edges are 1.5+ yd outside the tackle on
-  84% of dropbacks, ours 51% (playbook session).
+- Edge alignment. The def-alignment session (`claude/def-alignment`,
+  `docs/reviews/defensive-alignment.md`) measures the widest front player per
+  side on dropbacks: 1.5+ yd outside the tackle on 51% of sim snaps without
+  flags, 89% in the NFL. Its `FRONT_ALIGN` (#190) brings that to 88-92%.
+  - `PASS_CORNER`'s evidence above was gathered without `FRONT_ALIGN`, so
+    its edge rushers start about 1 yd tighter than tracked ones.
+  - The cause holds within matched width bins (playbook session). Contact
+    timing should be rechecked once `FRONT_ALIGN` is in this profile.
