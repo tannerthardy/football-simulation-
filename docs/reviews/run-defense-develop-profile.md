@@ -18,6 +18,21 @@ Reproduce: `node scripts/baseline.mjs --candidate --flag X=1 ... -- <command>`.
   affects. Use paired lab cases for play-level mechanisms and games for
   interactions.
 
+## First shared build
+
+`claude/run-game-v3@83b2fe2e` (the run-offense profile) turns on `DL_SQUEEZE`
+(with the held-decision fix `5dab06be`) and `DEEP_NO_FORCE`. `PULL_EARLY` is
+in but off, pending a games read of backer flow on `pullers.py`.
+- Run-offense paired lab: 40+ runs zone 54 → 29, gap 145 → 109, shotgun
+  36 → 22.
+- Two 8-game exports on that build at seed 301, defense flags off → on:
+  - Zone runs reaching 10 / 20 / 40: 22.1 / 7.5 / 3.8% → 13.3 / 3.2 / 1.4%.
+  - Crease gap / duo: 4.5 / 4.4 → 3.5 / 3.6 yd.
+  - Deep support over the back on 20+ runs at 5 yd: −0.4 → +1.2 yd (NFL
+    6.1).
+- Run contacts broken stay 18–19% on that profile (develop + line set 13.2,
+  NFL 12.6). That predates the build.
+
 ## Flags this branch adds
 
 **Proposed: the line set.** The arms below were all measured with it on.
@@ -76,7 +91,8 @@ installed zone track. `DEF_GETOFF=1` is a diagnostic latency scale.
 | Problem | Diagnosis | Owner |
 | --- | --- | --- |
 | Pursuit arrival: fewer defenders reach the runner (2.10 vs 2.69 per run reaching 5 yd; DL 0.02 vs 0.30) | The meeting itself matches tracking (met 49 / 48%, broke 9 / 9%; run-game `open-field/meet.py`); DL stay latched after the back passes and never flowed with the play | DL re-latch and OZ pair flow: run-game (`SHED_PURSUE`, `BLOCK_FRONT`, W1); front-seven feet before the read: run-defense (`DL_KEY` exists, see below) |
-| Interior rush: pairs move as one body (engaged at the throw 97% vs 71%, with or without `GAIT_STEP`) | `GAIT_STEP=0.3` lifts interior pressure 5.9 → 7.5 per 100 (NFL 8.7) by push, not release; a pair comes apart only when a rule ends the rep (likely the same fact as run re-latch) | Physics (`GAIT_STEP` promotion); release mechanism shared with the run-offense re-latch work; `HAND_CLEAR` on hold |
+| Edge rusher's path: deeper and wider than tracked (1.26 vs 0.69 yd at 1.0 s; edge:inside about 50% of pressures vs 23%) | The engaged `corner` aim follows the kicking tackle; the free rusher's ask is already right (cos 0.93–0.95). The user's rule: the tackle first (done: `PASS_KICK`, `PASS_RIDE`), then the rusher's decision, not a capped path | Def-alignment session (`claude/pass-pro`), default-off |
+| Interior rush: pairs move as one body (engaged at the throw 97% vs 71%, with or without `GAIT_STEP`) | `GAIT_STEP=0.3` lifts interior pressure 5.9 → 7.5 per 100 (NFL 8.7) by push, not release; a pair comes apart only when a rule ends the rep (likely the same fact as run re-latch) | Physics (`GAIT_STEP` promotion); release mechanism shared with the run-offense re-latch work; the power rush (bull / long-arm as a push contest, no roll) claimed by the def-alignment session on `claude/pass-pro`; `HAND_CLEAR` (finesse clears) on hold |
 | Engaged linemen cannot escape to pursue | Hand steer up to 0.7 arm force; the work-off presses into the blocker | contact/hands owner (handoff on the workboard) |
 | Gap-run line flow at half the tracked size | `DL_SQUEEZE` fixes the sign; the remaining drift is the pair's legs (the down blocker's 45° drive, the run-offense session's `DOWN_SEAL`) | Shared build: `DL_SQUEEZE` + `DOWN_SEAL`, measured on `lineflow.py` |
 | After-catch leverage | The front man comes back at the receiver; team leverage (the front man holds, the second arrives) | run-defense (queued, after the meeting question) |
