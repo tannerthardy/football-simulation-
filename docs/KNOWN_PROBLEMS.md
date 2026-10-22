@@ -425,9 +425,49 @@ Carried over from the issue register; each was measured on an older develop.
 - **Measure** (#191, research builds): 32–33% of close pursuers (0–6 yd) aim at the carrier
   himself; NFL 19–21%. Real pursuers aim ahead. On runs of 20+, our pursuers
   run at 0.55 of max speed; NFL 0.71.
-- **Cause:** *likely* the pursuit controller aims at the current position and
-  doesn't commit to full speed.
+- **Cause:** *revised* (#205). The pursuit controller asks for the right thing:
+  free defenders behind the runner request full speed (effort 1) toward him,
+  facing within 5–7° of the request. The low speeds come from where those
+  defenders start (below), not from the request.
 - **Where:** pursuit in `run-fits.ts` and `defense.ts`; `scripts/diag/pursuit.py`.
+- **Who is out of the play** (#205, `scripts/diag/g1/flow.py`; NFL 2022 weeks
+  1–9 vs 16 sim games, `SHED_PURSUE` on, promoted profile). Defenders who get
+  within 1.5 yd of the runner after he crosses 5 yd, per run reaching 5:
+
+  | | NFL | Sim |
+  | --- | --- | --- |
+  | **All** | **2.91** | **1.60** |
+  | DL | 0.54 | 0.04 |
+  | LB | 0.99 | 0.47 |
+  | DB | 1.38 | 1.09 |
+
+  - **In the NFL, a block doesn't take a defender out of the play.** Of those
+    who get there, 67% of DL and 45% of LB were blocked when the runner crossed
+    the line. In the sim almost none were (LB 5%).
+  - **Sim blocks are farther from the ball.** Blocked defenders' median distance
+    to the runner as he crosses the line: DL 4.3 yd (NFL 3.2), LB 4.8 (NFL 3.6).
+    This is the G2 crease.
+  - **Sim blocks hold longer.** DL who don't get there and are still within
+    1 yd of a blocker when the runner reaches 5 yd: 66% (NFL 34%). Run Game's
+    `rallybox.py` shows the same.
+  - **The runner gets away from the rally.** From the line to 5 yd takes 1.0 s
+    in both. The NFL runner then slows (5.9 → 5.1 yd/s) and the sim runner
+    speeds up (6.3 → 7.1 yd/s); see TKL-1, contact cost.
+- **Not the cause: acceleration** (`scripts/diag/g1/accel.py`). Speed gained by
+  free defenders from 1–3 yd/s within 1 s, p90: DL 2.48 vs NFL 2.50 yd/s; LB
+  3.11 vs 3.12.
+- **Released DL stay on the blocker's body.** Engine-side: free DL behind the
+  runner at 5 yd were released a median 0.45 s earlier. 29% are still touching
+  an opponent (median surface gap 0.12 yd); those go from 0.18 to 0.26 of top
+  speed in 0.3 s, against 0.35 to 0.44 for the clear ones. For 32%, the
+  nearest opponent stands between them and the runner. *Hypothesis:* the free
+  pursuer's path runs through the blocker's body instead of around it.
+- **Owners:**
+  - crease width and the DB fits: Run Game (G2);
+  - blocks that hold after the runner passes: shared engagement, Run Game, with
+    `SHED_PURSUE` done;
+  - contact cost: Main Engine;
+  - pursuit path around a released blocker: Defense, next.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
