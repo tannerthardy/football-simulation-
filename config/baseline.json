@@ -59,7 +59,9 @@
     "ZONE_FLOW": "1",
     "FORCE_BOUNCE": "0",
     "DL_CHASE": "0",
-    "FRONT_ALIGN": "0"
+    "FRONT_ALIGN": "0",
+    "DL_KEY": "0",
+    "SHORT_PACKAGE": "0"
   },
   "worldDefaults": {
     "handContact": "center",

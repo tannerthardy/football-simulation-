@@ -58,15 +58,15 @@ describe('the front aligns on bodies and its end men by who they are', () => {
     const tight = await front(true, 'over', 'base43', {}, 'tight'), base = await front(true, 'over', 'base43', {}, 'base');
     const wide = await front(true, 'over', 'base43', {}, 'wide');
     expect(tight.y('DE_S')).toBeCloseTo(tight.E, 9);
-    expect(base.y('DE_S')).toBeCloseTo(base.E + .57, 9);
-    expect(wide.y('DE_S')).toBeCloseTo(wide.E + 2.0, 9);
+    expect(base.y('DE_S')).toBeCloseTo(base.E + 1.5, 9);
+    expect(wide.y('DE_S')).toBeCloseTo(wide.E + 2.5, 9);
     expect(-tight.y('DE_W') - tight.weakT).toBeCloseTo(1.6, 9);
     expect(-wide.y('DE_W') - wide.weakT).toBeCloseTo(2.3, 9);
     expect(wide.def.spots.DE_S!.gap).toBe(tight.def.spots.DE_S!.gap);
   });
   it('on: a heavy end called on the outside shade stays on it', async () => {
     const base = await front(true, 'over', 'base43', { DE_S: 140 }, 'base');
-    expect(base.y('DE_S') - base.E).toBeGreaterThanOrEqual(.37 - 1e-9);
+    expect(base.y('DE_S') - base.E).toBeGreaterThanOrEqual(1.3 - 1e-9);
   });
 });
 
@@ -75,11 +75,11 @@ describe('the end men and the Over Sam follow the installs\' rules from the look
     const near = await front(true, 'over', 'nickel', {}, undefined, 'offset_i_21');
     const dot = await front(true, 'over', 'nickel', {}, undefined, 'i_pro_21');
     expect(near.y('DE_S')).toBeCloseTo(near.E, 9);
-    expect(dot.y('DE_S')).toBeCloseTo(dot.E + .57, 9);
+    expect(dot.y('DE_S')).toBeCloseTo(dot.E + 1.5, 9);
   });
   it('on: vs a pair of ends the end plays a 9, in base too', async () => {
     const pair = await front(true, 'over', 'base43', {}, undefined, 'gun_wing_12');
-    expect(pair.y('DE_S')).toBeCloseTo(pair.E + .57, 9);
+    expect(pair.y('DE_S')).toBeCloseTo(pair.E + 1.5, 9);
   });
   it('on: the Over Sam is a 90, the end\'s outside shade at linebacker depth', async () => {
     const off = await front(false), on = await front(true);

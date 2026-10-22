@@ -91,8 +91,10 @@ const WR_ALIGN = process.env.WR_ALIGN === '1';
  * out and 0.2 in (0.4 from a wide nine), so his feet stay within the called
  * technique, and never inside an end he is set on: half the tracked slope (about -0.05 yd
  * per kg; 235 lb ends 1.81 yd outside an end, 275 lb 1.03), since light ends
- * also draw the wide calls. A wide nine over an end stands 2.0 yd outside
- * him (the catalog counts a wide nine past 1.5). Over an end, the technique
+ * also draw the wide calls. An end man's 9 over an end stands 1.5 yd outside
+ * him and a wide nine 2.5: tracked ends outside an end form one hump at 1.65
+ * (IQR 1.20-2.14), with no separate peak at a shoulder's 0.57 (the open side
+ * likewise stands 2.4 outside the tackle). Over an end, the technique
  * comes from the call against the look, as team installs write it (2017
  * Colts pp. 13, 77, 79): vs a pair of ends a 9; in nickel ("Auto") a 6 vs
  * a near back and a 9 vs a dot or far one; base fronts keep their map; the
@@ -100,6 +102,8 @@ const WR_ALIGN = process.env.WR_ALIGN === '1';
  * head-up on a wing. An explicit edge call (tight, base, wide) overrides.
  * The call's gap is unchanged. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
+/** SHORT_PACKAGE (experimental, off): see game/playcaller.ts. */
+const SHORT_PACKAGE = process.env.SHORT_PACKAGE === '1';
 
 export interface OffSpot {
   slot: OffSlot;
@@ -365,8 +369,8 @@ function techniqueOffset(tech: Technique, hasTE: boolean, line: LineSplits = BAS
       case '5': return T + sh;
       case '6': return hasTE ? E : T + 1.0;
       case '7': return hasTE ? E - sh : T + .8;
-      case '9': return hasTE ? E + sh : T + 1.6;
-      case 'w9': return hasTE ? E + 2.0 : T + 2.3;
+      case '9': return hasTE ? E + 1.5 : T + 1.6;
+      case 'w9': return hasTE ? E + 2.5 : T + 2.3;
     }
   }
   if (OL_SPLITS) {
@@ -951,6 +955,10 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     }
   }
 
+  // SHORT_PACKAGE: the Bear's Sam is on the line outside the attached end
+  // ("Dubs" 9; HonestNFL HNFL-129), whatever he covers after the snap.
+  if (SHORT_PACKAGE && call.front.id === 'bear' && spots.LB_S && off.hasTE.S)
+    spots.LB_S.pos = { x: los + (frontSlots.DE_S?.depth ?? .9), y: off.ballY + s * techniqueOffset('9', true, off.line) };
   // Box count: defenders within the tackle box area at snap.
   let box = 0;
   for (const slot of present) {

@@ -31,6 +31,18 @@ import type { Team } from '../league/team.js';
  * Under is the base front and Over a secondary call; nickel lines up in the
  * Over family; its pass-down front is a wide "Rush". One draw either way. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
+/** SHORT_PACKAGE (experimental, off): a short-yardage package answers the
+ * offense's heavy package anywhere on the field, not only at the goal line:
+ * goal-line personnel and the Bear at 2 yd or less to go vs 13, 21 or 22
+ * personnel, and vs 12 at a yard or less. Tracked 2022 runs at 1-3 yd to go
+ * put six or more on the line on 27% of snaps (7% otherwise) and no deep
+ * safety on 27% (2%); the line tightens with the offense's package, not
+ * the down (run-offense session, docs/reviews/presnap.md). */
+const SHORT_PACKAGE = process.env.SHORT_PACKAGE === '1';
+function shortPackage(offPersonnel: PersonnelId, distance: number): boolean {
+  if (offPersonnel === '13' || offPersonnel === '21' || offPersonnel === '22') return distance <= 2;
+  return offPersonnel === '12' && distance <= 1;
+}
 function installWeight(id: string, personnel: DefPersonnelId, passingDown: boolean, scheme: string): number {
   if (personnel === 'base43') return id === 'under' ? 3 : id === 'over' ? 1 : 0;
   if (personnel === 'nickel' || personnel === 'dime') {
@@ -300,6 +312,7 @@ export class DefensiveCoordinator {
     const goalLine = 100 - s.yardline <= 2;
     let personnel: DefPersonnelId;
     if (goalLine && (offPersonnel === '22' || offPersonnel === '13' || offPersonnel === '21')) personnel = 'goalline';
+    else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance)) personnel = 'goalline';
     else if (offPersonnel === '10') personnel = rng.chance(passingDown ? 0.7 : 0.35) ? 'dime' : 'nickel';
     else if (offPersonnel === '11') personnel = passingDown && rng.chance(0.4) ? 'dime' : scheme === 'nickel-heavy' || rng.chance(0.85) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
     else if (offPersonnel === '12') personnel = rng.chance(scheme === 'nickel-heavy' ? 0.6 : 0.4) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
