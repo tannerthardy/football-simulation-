@@ -19,7 +19,8 @@ for line in gzip.open(path, 'rt'):
     raw = json.loads(line); raw = raw.get('common', raw) if 'common' in raw else raw
     if raw.get('kind') != 'run' or raw.get('carrier') is None: continue
     if ytg is not None and raw.get('source') != 'sim' and ytg.get(raw['id'], 0) < 60: continue
-    concept = raw['id'].split('/')[0] if raw.get('source') == 'sim' else (raw.get('cell') or {}).get('concept')
+    # Lab ids carry the concept; game exports carry it in the cell, as tracking does.
+    concept = raw['id'].split('/')[0] if raw.get('source') == 'sim' and '/' in raw['id'] else (raw.get('cell') or {}).get('concept')
     if CONCEPT_FAMILY.get(concept) != fam: continue
     p = Play(raw); by = raw['ball_y']; k15 = p.k(1.5)
     if k15 >= p.frames: continue
