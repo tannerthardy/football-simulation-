@@ -65,7 +65,8 @@
     "LB_TEMPO": "0",
     "PAD_LEVERAGE": "0",
     "DL_ANCHOR": "0",
-    "DL_FLATTEN": "0"
+    "DL_FLATTEN": "0",
+    "DEF_GETOFF": "1"
   },
   "worldDefaults": {
     "handContact": "center",

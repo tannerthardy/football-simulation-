@@ -16,6 +16,14 @@ import { Rng } from '../core/rng.js';
 import type { RunFitJob } from './run-fits.js';
 import type { VisiblePose } from './perception.js';
 
+/** Diagnostic scale (DEF_GETOFF, default 1; from the run-offense session's
+ * claude/run-game-v3): the defense's snap reaction latency, an unfitted
+ * assumption. A defender's get-off keys the ball moving, a simple reaction to
+ * one cue (Bucs: "get-off on ball movement"), shorter than a choice. 2022
+ * tracking has box defenders and offensive linemen first moving at the same
+ * median time; 0.5 makes ours equal (scripts/diag/runblock/startup.py). */
+const DEF_GETOFF = Number(process.env.DEF_GETOFF ?? 1);
+
 export type TeamSide = 'O' | 'D';
 
 export interface Behavior {
@@ -146,7 +154,7 @@ export class Agent {
     // Visual get-off is a shortened simple response, compared with identifying
     // a route break. This mapping is an assumption, not fitted latency.
     this.snapReadyAt = team === 'O' ? mind.snapDelay
-      : mind.snapDelay + profile.reactionTime * (1 - 0.4 * this.r('anticipation'));
+      : mind.snapDelay + DEF_GETOFF * profile.reactionTime * (1 - 0.4 * this.r('anticipation'));
   }
 
   get pos(): Vec2 {
