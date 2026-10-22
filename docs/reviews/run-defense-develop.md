@@ -586,9 +586,13 @@ Two blockers' summed drive still beats one defender's strength-capped
 resistance, so the rest is not pad level. Zone runs of 40+ doubled under
 the law (a fresh all-off control reproduced 21 exactly; other changes to
 this profile land at 27–30). Two diagnostics did not locate it: tacklers at
-posture 0.9 change nothing (41), and broken wraps are unchanged (321 vs
-311); runners in the open simply go further (20+ from about 305 open runs:
-28 → 52), with more passes without contact (211 → 236). Unresolved.
+posture 0.9 change nothing (41). Runners in the open go further (20+ from
+about 305 open runs: 28 → 52), with more passes without contact (211 →
+236). (Correction: an earlier version said broken wraps were unchanged,
+321 vs 311. Those were holds made with the runner already in the open, the
+trace's `open` field; the fate is `broke`. Wraps 8+ yd past the line break
+5 of 83 off and 9 of 89 with the law, 12 / 160 → 20 / 160 over both seed
+sets: a small rise, same direction both times.)
 
 Staged witnesses pinned off: `combo-strike-access`, `planned-climb-fit`
 (recorded plays), `redirect-protection` (its rusher must turn the corner
@@ -614,7 +618,8 @@ and box-rusher speed in the first half second.
 upstream shifts which roll each later tackle gets (a paired play had
 identical bodies through 3.30 s and a different roll). Over distributions,
 on two seed sets (1,800 runs), 20+ went 52 → 88. Carriers are 0.15–0.55
-yd/s faster from 0 to 3 yd past the line; broken wraps are unchanged. The
+yd/s faster from 0 to 3 yd past the line; open-field wraps break slightly
+more (8+ yd: 12 / 160 → 20 / 160; see the correction above). The
 carrier is lifted, not loaded, by the defenders he meets there (backers 9%,
 corners 39% of his weight), so the speed comes from his blockers. On zone
 our engaged linemen already ran upfield: the 'attack' technique requested
