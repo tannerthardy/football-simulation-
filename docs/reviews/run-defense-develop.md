@@ -167,6 +167,53 @@ no deep safety: 27% of tracked snaps at 1–3 yd to go). Staged native
 witnesses pin `FRONT_ALIGN` off, as for the line flags; `test/front-align.test.ts`.
 Core suite 2,828 / 2,828 with it on.
 
+### The installs' rules replace the random edge call
+
+The playbook session read the team installs (2017 Colts pp. 13, 77, 79;
+Ravens and Seahawks front sheets; HNFL-129). Their answer to the 23% wide
+nines was that the edge is a rule against the look, not a lean drawn per
+snap, so the random edge call is gone:
+- vs a pair of ends (a wing) the end plays a 9 on the end's outside
+  shoulder, inside the wing (p. 79), in base too;
+- in nickel ("Auto", p. 13) the closed end plays a 6 vs a near back and a
+  9 vs a dot or far back;
+- a 9 over an end stands 1.5 yd outside him, a wide nine 2.5;
+- the Over Sam is a "90", the end's outside shade at linebacker depth, and
+  on the line head-up on a wing (p. 77);
+- with no end on his side, a called 6 or 7 is a ghost, standing where the
+  end would (it was 1.0 yd outside the tackle, read as a 5 on 47% of our
+  empty-set strong edges; 2% tracked);
+- the coordinator weights fronts as the installs use them: base personnel
+  Under three to one over Over; nickel on passing downs mostly the wide
+  Rush front (`installWeight` in `playcaller.ts`).
+
+| 8-game runs, strong edge | 6 | 9 | wide nine | 5 | edge outside the surface, strong / weak |
+| --- | --- | --- | --- | --- | --- |
+| + build within the technique (`e2a257f`) | 27% | 33% | 23% | | 0.46 |
+| installs' rules | 22% | 45% | 12% | 11% | 0.45 |
+| + 9 at 1.5, pair 9 inside the wing (`e245812`) | 11% (+6% ghost) | 43% | 23% | 13% | 1.28 / 2.03 |
+| NFL | 13% | 31% | 46% | 1% | 1.46 / 2.05 |
+
+Guard 12/12; 37 flags. The remaining 5s were the empty-set ghosts, fixed
+after that run (`test/front-align.test.ts`). The strong edge is still a 9
+more often and a wide nine less often than tracking. The installs give
+rules for the 9; the wide nine comes from the Rush front and from team
+lean, which the playbook session is still reading. Front families: Over
+44% and Under 28% of our runs, against Over 22%, Under 13%, Even 18% and
+Tite 12% tracked. Our caller has no even or tite front in its nickel mix;
+that is the next caller question, not a width one.
+
+### Short-yardage package (`SHORT_PACKAGE`, default off)
+
+Tracking: 27% of snaps at 1–3 yd to go have six or more on the line and no
+deep safety. Develop calls goal-line personnel only inside the 2-yard line.
+On, the coordinator answers the offense's heavy package anywhere on the
+field: goal-line personnel and the Bear at 2 yd or less against 13, 21 or
+22, and against 12 at a yard or less. The Bear's Sam is on the line outside
+the attached end ("Dubs" 9, HNFL-129). `test/short-package.test.ts`; the
+Duo doubles witness pins it off (the Sam on the line changes the
+offense's count, a question for the run-offense session).
+
 `OL_SPLITS` and `OL_STAGGER` (above) are superseded by the run-offense
 session's `OL_ALIGN` as the one line source when the branches meet. It
 folds in `OL_STAGGER`'s pass-set depths.
@@ -383,6 +430,19 @@ are mild: median 4.96 → 4.74 yd, runs of 20+ 11.3 → 9.7%. On develop with
 all three flags the median falls 4.27 → 3.38 and stuffs rise 7.9 → 11.9%,
 while flow is still far from tracking. Not proposed: two attempts, stopped
 to re-diagnose the first second.
+
+**`DL_KEY` (`defense.ts` `PassRusher`): the first step.** The re-diagnosis
+measured lateral movement under centre on outside zone at 0.3 / 1.0 s after
+the handoff (`meshwidth.py` on the run-offense session's branch). Tracked
+linemen move 2.97 / 5.00 yd and the playside guard 3.76 / 5.80. On the
+run-offense profile ours move 1.39 / 2.80 and the guard 2.26 / 3.50. Our
+linemen already track their blocker at nearly the tracked ratio, so the
+gap is mostly the blocker's lateral speed, on the offense's side. On, a
+lineman whose run fit is interior or edge keys the man in front of him: a
+low hat stepping across at 0.35 yd/s or more (not a pass set or a
+release) and he steps with it, aiming at the blocker's seen spot plus his
+own shade. It adds 0.12 yd at 0.3 s and nothing later, so it stays off;
+the finding went to the run-offense session.
 
 ## Diagnostics (observation only)
 
