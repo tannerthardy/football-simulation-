@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, generated from `src` on 2026-10-22 (trunk `d91c9014`). Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 44 flags: 22 are on by default and 22 are off. At the first review, set an expiry for each off flag and bring the experimental count to 10. Flags that are on by default can lose their switch, keeping only the new path.
+There are 46 flags: 22 are on by default and 24 are off. At the first review, set an expiry for each off flag and bring the experimental count to 10. Flags that are on by default can lose their switch, keeping only the new path.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -50,3 +50,5 @@ There are 44 flags: 22 are on by default and 22 are off. At the first review, se
 | `TACKLE_ROLL` | off | experimental | defense | `src/sim/tackle.ts:60` | set at first review |
 | `TACKLE_TOUCH` | off | experimental | defense | `src/sim/tackle.ts:69` | set at first review |
 | `WRAP_BIND` | off | experimental | defense | `src/sim/tackle.ts:63` | set at first review |
+| `MOTION` | off | experimental | coverage | `src/sim/motion.ts:33` | second review after it lands (#193); pair with `MOTION_CHECK` (#196) |
+| `DEUCE` | off | experimental | coverage | `src/playbook/call-integrity.ts:67` | second review after it lands (#193); pair with `PRESSURE_CALL` (#196) |

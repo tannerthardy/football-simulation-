@@ -21,8 +21,8 @@ Edits here in shared files are minimal:
   `stageDefense`. #127's held
 `quarterFlat` edit predates and is superseded by the sourced Quarter Flat
 rules here; its author should reconcile. Sources and status:
-[coverage checks](references/coverage-checks/README.md); first evidence:
-[corner #1 release](reviews/corner-one-release.md). Integration owns
+[coverage checks](references/coverage-checks/README.md); evidence is in
+PR #193's description. Integration owns
 combined verification.
 
 ## #189 finished-work checkpoint — composition and verification complete

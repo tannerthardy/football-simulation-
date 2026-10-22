@@ -4,7 +4,7 @@
  * zone; he zones off only when #1 declares shallow (HNFL-079; Michigan DB
  * "man any vertical stem by #1 past 5 yards"; Saban's Under call inside the
  * first five yards). A short stop zones him off only until #1 turns upfield.
- * Film: data/reviews/current/corner-one-release.json.
+ * Film: node --import tsx scripts/corner-one-film.ts > out/corner-one-film.json
  */
 import { describe, expect, it, vi } from 'vitest';
 // The out-and-up and stop-and-go turn upfield at 2.6-3.1 s. Under the
