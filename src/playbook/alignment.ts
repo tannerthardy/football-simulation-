@@ -136,7 +136,11 @@ const FRONT_MENU = process.env.FRONT_MENU === '1';
  * 2x2 or empty is unanswered on 6% of snaps (the sim's zone calls 26-48%);
  * the answering backer stands 1.8-1.9 yd inside a #2 4-5 yd outside the
  * surface, 2.6 inside a #3, 4.5-4.8 deep. Against empty, nickel backers stay
- * in the box about half the time. Man defenders align on their men already. */
+ * in the box about half the time. Man defenders align on their men already.
+ * Off-ball backers also set their depth by the situation: half a yard
+ * tighter on third or fourth and 2 or less (tracked medians 4.0-4.1 against
+ * 4.6 on early downs), half a yard looser on third and 7 or more (tracked
+ * 75th percentile 5.6 against 5.2; "LBs loosen up", 1999 Buccaneers). */
 const BOX_ALIGN = process.env.BOX_ALIGN === '1';
 /** SHELL_SHOW (experimental, off; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
@@ -200,7 +204,12 @@ export interface AlignStyle { olWidth?: number; wrRoom?: number; cbDepth?: numbe
   /** FRONT_STRENGTH: how often the front sets to the passing strength when
    * the look has no single attached end (the call carries each snap's pick). */
   passingStrength?: number;
+  /** The defense's own picture of the snap: down, yards to gain and to the
+   * goal line. Never the offense's call. */
+  situation?: DefSituation;
 }
+
+export interface DefSituation { down: number; distance: number; toGoal: number }
 
 /** What an alignment may know of its own snap: the call, the situation and
  * the team's habits. */
@@ -895,6 +904,14 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
         if (backer) spots[backer]!.pos = { x: los + 4.6, y: apexY };
       }
     }
+  }
+
+  // BOX_ALIGN: backers' depth by down and distance.
+  const sit = style.situation;
+  if (BOX_ALIGN && sit && sit.down >= 3 && (sit.distance <= 2 || sit.distance >= 7)) {
+    const shift = sit.distance <= 2 ? -.5 : .5;
+    for (const lb of ['LB_W', 'LB_M', 'LB_S'] as DefSlot[])
+      if (spots[lb] && spots[lb]!.pos.x - los > 2.5) spots[lb]!.pos = { x: spots[lb]!.pos.x + shift, y: spots[lb]!.pos.y };
   }
 
   // --- roles ---

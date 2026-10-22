@@ -50,3 +50,24 @@ describe('every detached inside receiver is answered', () => {
     expect(on.def.spots.LB_M!.pos).toEqual(off.def.spots.LB_M!.pos);
   });
 });
+
+describe('backers set their depth by the situation', () => {
+  it('third and 1 tighter, third and 9 looser, first and 10 unchanged; off, unchanged', async () => {
+    const depth = async (on: boolean, down: number, distance: number) => {
+      vi.stubEnv('BOX_ALIGN', on ? '1' : '0');
+      vi.resetModules();
+      const { alignDefense, alignOffense } = await import('../src/playbook/alignment.js');
+      const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
+      const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
+      const off = alignOffense(FORMATION_BY_ID.i_pro_21, false, 40, CENTER_Y);
+      const def = alignDefense({ personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'd' },
+        off, Object.keys(DEF_PERSONNEL.base43) as DefSlot[], {}, { situation: { down, distance, toGoal: 60 } });
+      return def.spots.LB_M!.pos.x - 40;
+    };
+    const base = await depth(false, 1, 10);
+    expect(await depth(true, 1, 10)).toBeCloseTo(base, 9);
+    expect(await depth(true, 3, 1)).toBeCloseTo(base - .5, 9);
+    expect(await depth(true, 3, 9)).toBeCloseTo(base + .5, 9);
+    expect(await depth(false, 3, 1)).toBeCloseTo(base, 9);
+  });
+});
