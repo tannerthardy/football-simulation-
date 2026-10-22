@@ -31,6 +31,11 @@ checks `planRunBlocking` against those rules, and the
 [coverage rules source audit](../reviews/coverage-rules-source-audit.md)
 checks `src/sim/coverage/rules.ts` against HonestNFL and DB manuals.
 
+[snap-reaction-research.md](snap-reaction-research.md) collects measured
+lineman get-off and reaction-time evidence (NGS get-off by position, college
+fire-off and stance studies, preparation effects, snap-count anticipation) and
+compares it with the engine's snap model.
+
 ## Other supplied and researched references
 
 [reduced-physics-design-review.md](reduced-physics-design-review.md) is the
