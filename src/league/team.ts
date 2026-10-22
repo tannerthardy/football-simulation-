@@ -4,7 +4,7 @@
  * X vs. slot, nose vs. 3-tech, box vs. free safety — depend on how each
  * athlete fits each role.
  */
-import type { Rng } from '../core/rng.js';
+import { Rng } from '../core/rng.js';
 import { generatePlayer } from '../players/generator.js';
 import { overallAt, ROLE_BY_ID, roleSuitability } from '../players/roles.js';
 import { familiarityAt, type Player, type Position } from '../players/types.js';
@@ -252,4 +252,12 @@ export function pickDefense(team: Team, personnel: DefPersonnelId, av: Availabil
 
 export function specialist(team: Team, pos: 'K' | 'P'): Player {
   return team.roster.find((p) => p.position === pos) ?? team.roster[0];
+}
+
+/** AGAP_ALIGN: where a team's 1 technique stands, as a share of the
+ * centre-guard split from the centre. 2022 team medians run 0.30 (NYG) to
+ * 0.82 (PHI), mean 0.63, sd 0.14 (scripts/diag/align/deflook.py, PR #196).
+ * Seeded by the team's id, so it costs roster generation no draws. */
+export function aGapHabit(team: Pick<Team, 'id'>): number {
+  return new Rng(`agap:${team.id}`).normalClamped(.63, .14, .3, .85);
 }

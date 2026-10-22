@@ -66,6 +66,8 @@ export interface PlaySetup {
   /** Energy at the snap by player id (0–1). */
   energy?: Map<string, number>;
   manPrefs?: ManPreference;
+  /** The defense's 1-technique habit (AGAP_ALIGN; league/team.ts `aGapHabit`). */
+  aGap?: number;
   /** Ball carriers try to get out of bounds (2-minute drill). */
   hurry?: boolean;
   /** Wind (yd/s). */
@@ -252,7 +254,7 @@ export class PlaySim {
     this.defCall = zeus ? called : applyCheck(called, formationKey(this.offAlign));
     const defSlots = Object.keys(setup.defense) as DefSlot[];
     // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
-    this.defStyle = { mass: Object.fromEntries(defSlots.map(slot => [slot, derivePhysical(setup.defense[slot]!).massKg])) };
+    this.defStyle = { mass: Object.fromEntries(defSlots.map(slot => [slot, derivePhysical(setup.defense[slot]!).massKg])), aGap: setup.aGap };
     this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
 
     const idle: Behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };
