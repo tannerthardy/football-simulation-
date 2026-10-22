@@ -144,6 +144,17 @@ counter (35 -> 63 of 400, the kicked end slipping the kick-out) and trap
 Off: physics promotion belongs to the physics owner, and counter at 16% losses
 needs the kick-out's own contact (approach speed, push) examined first.
 
+**Kick-outs under `HAND_FRICTION`.** Kick-out reps (lab, `out/kickprobe.ts`)
+close at 2.85 yd/s with a median tangential/normal hand load of 0.6, right at
+the friction bound, so friction shortens them (1.75 -> 1.45 s). The back's
+kick-or-log choice is not the counter defect: on tracking
+(`scripts/diag/gap/kickside.py`, same code both sides) the end is kicked/logged
+58/42% (sim games 57/43%) and backs go inside the puller 79/70% of the time
+(sim 67-70/38-63%). Tracked backs mostly go inside even a log. Losses by lab
+concept against tracking: counter 8.8% (NFL 11.6), trap 1.2% (3.8), power
+10.0% (9.1), duo 0.5% (7.7). Duo never loses yards; that is the next run
+question.
+
 ## Flags on
 
 | Flag | Value | Where | What it does (from its doc comment) |
