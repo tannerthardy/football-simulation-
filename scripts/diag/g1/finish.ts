@@ -46,6 +46,8 @@ interface PlayOut {
   /** Each whiff and broken hold in order: [t, type, group, origin of the hold or note, engaged, distance,
    * carrier speed, defender speed, holders left after it, pocket QB]. */
   ev: Array<[number, string, string, string, number, number, number, number, number, number]>;
+  /** Every whiff after the carrier has the ball, with the tackler's recent history. */
+  whiffs: Array<{ t: number; g: string; note: string; engaged: number; hist: number[][] }>;
   /** Every hold taken: how (origin), the carrier's heading toward him (cosA, +1 straight at him), closing speed, and whether it broke. */
   holds: Array<{ hist: number[][]; t: number; d: number; g: string; origin: string; dist: number; cs: number; ds: number; cosA: number; closing: number; broken: boolean }>;
 }
@@ -88,7 +90,8 @@ function observe(sim: PlaySim, game: number): void {
   let seen = 0;
   const trail: PlayOut['ev'] = [];
   const holds: PlayOut['holds'] = [];
-  /** Per defender, the last ticks: [t, distance, arms, closing, his speed, cosA, attempt cooling (1/0), engaged]. */
+  const whiffs: PlayOut['whiffs'] = [];
+  /** Per defender within 15 yd, the last 60 ticks: [t, distance, arms, closing, his speed, cosA, attempt cooling (1/0), engaged, ...state; see the row]. */
   const ring = new Map<number, number[][]>();
   const origin = new Map<number, string>();
   sim.tick = () => {
@@ -103,7 +106,7 @@ function observe(sim: PlaySim, game: number): void {
       const cs = c.speed;
       const cosA = cs > .5 ? -(c.vel.x * dx + c.vel.y * dy) / (cs * dd) : 0;
       const closing = -((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / dd;
-      const hist = (ring.get(d.idx) ?? []).slice(-24);
+      const hist = (ring.get(d.idx) ?? []).slice(-60);
       holds.push({ hist, t: +(sim.t - start).toFixed(2), d: d.idx, g: group(d.slot), origin: (j as { origin?: string }).origin ?? '', dist: +dd.toFixed(2),
         cs: +cs.toFixed(2), ds: +d.speed.toFixed(2), cosA: +cosA.toFixed(2), closing: +closing.toFixed(2), broken: false });
     }
@@ -121,7 +124,12 @@ function observe(sim: PlaySim, game: number): void {
         trail.push([+(ev.t - start).toFixed(2), ev.type, group(d.slot), note, d.engagement ? 1 : 0, +Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y).toFixed(2),
           +c.speed.toFixed(2), +d.speed.toFixed(2), sim.bond?.tacklers.length ?? 0, pocket]);
       };
-      if (ev.type === 'missed_tackle') log(get(ev.a), get(ev.b), ev.note ?? '');
+      if (ev.type === 'missed_tackle') {
+        log(get(ev.a), get(ev.b), ev.note ?? '');
+        const d = get(ev.a);
+        if (d && start !== null) whiffs.push({ t: +(ev.t - start).toFixed(2), g: group(d.slot), note: ev.note ?? '', engaged: d.engagement ? 1 : 0,
+          hist: (ring.get(d.idx) ?? []).slice(-60) });
+      }
       if (ev.type === 'broken_tackle') {
         log(get(ev.b), get(ev.a), origin.get(ev.b ?? -1) ?? '');
         const h = holds.filter((x) => x.d === ev.b && !x.broken).at(-1);
@@ -142,14 +150,21 @@ function observe(sim: PlaySim, game: number): void {
     if (c !== carrier) return;
     for (const [d, r] of defs) {
       const dx = c.pos.x - d.pos.x, dy = c.pos.y - d.pos.y, dist = Math.hypot(dx, dy);
-      if (dist < 6) {
+      if (dist < 15) {
         const cs = c.speed, arms = c.profile.radius + d.profile.radius + d.profile.reach;
+        const iv = sim.intents[d.idx]?.vel ?? { x: 0, y: 0 };
+        const r2 = (v: number) => +v.toFixed(2);
         const row = [+(sim.t - start).toFixed(2), +dist.toFixed(2), +arms.toFixed(2),
           +(-((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dist || 1)).toFixed(2), +d.speed.toFixed(2),
-          +(cs > .5 ? -(c.vel.x * dx + c.vel.y * dy) / (cs * (dist || 1)) : 0).toFixed(2), sim.t < d.nextTackleAt ? 1 : 0, d.engagement ? 1 : 0];
+          +(cs > .5 ? -(c.vel.x * dx + c.vel.y * dy) / (cs * (dist || 1)) : 0).toFixed(2), sim.t < d.nextTackleAt ? 1 : 0, d.engagement ? 1 : 0,
+          // 8..: carrier and tackler state, his requested velocity, top speed, acceleration time constant,
+          // body-to-body (form) distance, on the ground
+          r2(c.pos.x), r2(c.pos.y), r2(c.vel.x), r2(c.vel.y), r2(d.pos.x), r2(d.pos.y), r2(d.vel.x), r2(d.vel.y),
+          r2(iv.x), r2(iv.y), r2(d.profile.vmax * d.speedScale), r2(d.profile.tau),
+          r2(c.profile.radius + d.profile.radius + d.profile.reach * .35), d.isDown(sim.t) ? 1 : 0];
         const list = ring.get(d.idx) ?? [];
         list.push(row);
-        if (list.length > 40) list.shift();
+        if (list.length > 60) list.shift();
         ring.set(d.idx, list);
       }
       if (dist < r.closest) { r.closest = dist; r.closestT = sim.t - start; }
@@ -183,7 +198,7 @@ function observe(sim: PlaySim, game: number): void {
       const dir = sim.attackDir(carrier.team);
       plays.push({ game, kind, gain: +((carrier.pos.x - sim.los) * dir).toFixed(1), afterStart: +((carrier.pos.x - startX) * dir).toFixed(1),
         startX: +((startX - sim.los) * dir).toFixed(1), start, end: sim.t,
-        defs: [...defs.values()], brokenAll: sim.stats.brokenTackles, missedAll: sim.stats.missedTackles, ev: trail, holds });
+        defs: [...defs.values()], brokenAll: sim.stats.brokenTackles, missedAll: sim.stats.missedTackles, ev: trail, holds, whiffs });
     }
     return r;
   };
