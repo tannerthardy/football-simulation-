@@ -3,7 +3,7 @@
  * velocity toward the play side (where the offensive line has gone by 1.5 s)
  * requested and achieved; and per lineman the
  * time he first moves (0.3 yd/s), the time the blocker in front of him first
- * steps across (0.35 yd/s, true), and the time his DL_KEY step first fires.
+ * steps across (0.35 yd/s, true).
  * node --import tsx scripts/diag/depth/dlstart.ts [--n 30] */
 import { HASH_LEFT_Y } from '../../../src/core/field.js';
 import { Rng } from '../../../src/core/rng.js';
@@ -20,7 +20,7 @@ const rng = new Rng(7);
 const off = generateTeam(rng, 'O', 'OFF', { strength: .55 }), def = generateTeam(rng, 'D', 'DEF', { strength: .55 });
 const T = [.1, .2, .3, .4, .5, .6, .7, .8];
 const req: number[][] = T.map(() => []), got: number[][] = T.map(() => []);
-const moved: number[] = [], stepped: number[] = [], keyed: number[] = [];
+const moved: number[] = [], stepped: number[] = [];
 const DL = /^(DE|DT|NT)/, LINE = ['LT', 'LG', 'C', 'RG', 'RT'];
 for (const form of ['ace_11', 'i_pro_21']) for (const front of ['over', 'under']) for (let i = 0; i < n; i++) {
   const formation = FORMATION_BY_ID[form], personnel = formation.personnel === '21' ? 'base43' : 'nickel';
@@ -34,7 +34,7 @@ for (const form of ['ace_11', 'i_pro_21']) for (const front of ['over', 'under']
   const line0 = sim.offense.filter(o => LINE.includes(o.slot)).map(o => [o, o.pos.y] as const);
   const dls = sim.defense.filter(d => DL.test(d.slot));
   const key = new Map<Agent, Agent>(dls.map(d => [d, sim.offense.filter(o => LINE.includes(o.slot)).reduce((p, q) => Math.abs(q.pos.y - d.pos.y) < Math.abs(p.pos.y - d.pos.y) ? q : p)]));
-  const first = new Map<Agent, { moved?: number; stepped?: number; keyed?: number }>(dls.map(d => [d, {}]));
+  const first = new Map<Agent, { moved?: number; stepped?: number }>(dls.map(d => [d, {}]));
   let next = 0;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
@@ -44,8 +44,8 @@ for (const form of ['ace_11', 'i_pro_21']) for (const front of ['over', 'under']
       const f = first.get(d)!, b = key.get(d)!;
       if (f.moved === undefined && d.speed > .3) f.moved = t;
       if (f.stepped === undefined && Math.abs(b.vel.y) > .35) f.stepped = t;
-      if (f.keyed === undefined && d.tags.has('dl-key-step')) f.keyed = t;
     }
+    if (!side && t >= 1.5) side = Math.sign(line0.reduce((s, [o, y]) => s + o.pos.y - y, 0)) || 1;
     if (next < T.length && t >= T[next] - 1e-9) {
       for (const d of dls) raw.push([next, sim.intents[d.idx]?.vel.y ?? 0, d.vel.y]);
       next++;
@@ -53,11 +53,11 @@ for (const form of ['ace_11', 'i_pro_21']) for (const front of ['over', 'under']
   };
   sim.run();
   for (const [k, r, g] of raw) { req[k].push(r * (side || 1)); got[k].push(g * (side || 1)); }
-  for (const f of first.values()) { if (f.moved !== undefined) moved.push(f.moved); if (f.stepped !== undefined) stepped.push(f.stepped); if (f.keyed !== undefined) keyed.push(f.keyed); }
+  for (const f of first.values()) { if (f.moved !== undefined) moved.push(f.moved); if (f.stepped !== undefined) stepped.push(f.stepped); }
 }
 const mean = (v: number[]) => v.length ? (v.reduce((a, b) => a + b, 0) / v.length).toFixed(2) : '-';
 const med = (v: number[]) => { const w = [...v].sort((a, b) => a - b); return w.length ? w[Math.floor(w.length / 2)].toFixed(2) : '-'; };
 console.log('t        ' + T.map(t => t.toFixed(1).padStart(6)).join(''));
 console.log('lat req  ' + req.map(v => mean(v).padStart(6)).join(''));
 console.log('lat got  ' + got.map(v => mean(v).padStart(6)).join(''));
-console.log(`first move p50 ${med(moved)} s | key blocker first steps across p50 ${med(stepped)} s | DL_KEY fires p50 ${med(keyed)} s (${keyed.length} of ${moved.length})`);
+console.log(`first move p50 ${med(moved)} s | key blocker first steps across p50 ${med(stepped)} s (${moved.length} linemen)`);

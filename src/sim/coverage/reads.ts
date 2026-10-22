@@ -37,6 +37,8 @@ export interface ReceiverRead {
   since: number;
   /** Has this receiver shown a vertical stem (depth beyond 7 while climbing)? */
   climbed: boolean;
+  /** Deepest he has been seen beyond the line since the snap. */
+  deepest: number;
 }
 
 interface Memory {
@@ -46,6 +48,7 @@ interface Memory {
   pending: Release;
   pendingSince: number;
   climbed: boolean;
+  deepest: number;
   obs: RouteObservation;
   start: Vec2;
   outSign: number;
@@ -70,7 +73,7 @@ export class ReleaseReader {
       if (r === sim.qb || isLineman(r)) continue;
       const outSign = Math.sign(r.pos.y - sim.ballY) || 0;
       this.memory.set(r, { release: 'none', first: 'none', since: 0, pending: 'none', pendingSince: 0, climbed: false,
-        obs: new RouteObservation(), start: { ...r.pos }, outSign });
+        deepest: -Infinity, obs: new RouteObservation(), start: { ...r.pos }, outSign });
     }
   }
 
@@ -95,6 +98,7 @@ export class ReleaseReader {
     const vx = seen.vel.x;
     const speed = Math.hypot(seen.vel.x, seen.vel.y);
     if (depth > 7 && vx > 2.5) m.climbed = true;
+    m.deepest = Math.max(m.deepest, depth);
     let now: Release = 'none';
     // A run reader need not invent a new vertical when his already accepted
     // blocker crosses the shallow admission boundary. Keep requiring current
@@ -125,7 +129,7 @@ export class ReleaseReader {
       m.pendingSince = sim.t;
     }
     const read: ReceiverRead = { r, pos: seen.pos, vel: seen.vel, depth, outward, outSign, release: m.release, first: m.first,
-      since: m.since, climbed: m.climbed };
+      since: m.since, climbed: m.climbed, deepest: m.deepest };
     this.cache.set(r, read);
     return read;
   }
