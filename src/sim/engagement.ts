@@ -778,6 +778,13 @@ const RIDE_LEAD = 0.3;
  * runs with him on his inside hip, hands pushing him past the launch point;
  * the rusher must still flatten through that. */
 const PASS_RIDE = process.env.PASS_RIDE === '1';
+/** RIDE_FACING (with PASS_RIDE, off): a ridden rusher is free when the hands
+ * come off or he is behind the blocker's shoulders (the run rep's facing
+ * test), not once his center is 0.4 yd nearer the QB than the blocker's. */
+const RIDE_FACING = process.env.RIDE_FACING === '1';
+/** PASS_HAND_FIGHT (off): pass reps take hand control from the bodies'
+ * upper-body leverage (the run rep's HAND_FIGHT law), not a ratings walk. */
+const PASS_HAND_FIGHT = process.env.PASS_HAND_FIGHT === '1';
 /** Experimental (DL_FIGHT=1, off): a defender driven sideways fights pressure. */
 const DL_FIGHT = process.env.DL_FIGHT === '1';
 
@@ -881,7 +888,10 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const stalled = t < e.moveUntil && !e.moveOk;
   e.pushBoost = Math.max(0, e.pushBoost - dt * 1.2);
   // Hand fight drifts toward the better hands; arm length keeps you off the body.
-  e.control = clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
+  // PASS_HAND_FIGHT: the run rep's hand fight, from each body's upper-body
+  // leverage now (support, facing, posture, arm strength, fatigue).
+  e.control = PASS_HAND_FIGHT ? handFight(e, tb, td, dt, rng)
+    : clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
   setHands(sim, e);
 
   const sep = b.profile.radius + d.profile.radius;
@@ -1624,6 +1634,14 @@ const legacyHoldVisible = new WeakSet<PlaySim>();
 function riddenFree(sim: PlaySim, e: Engagement, axis: Vec2): boolean {
   const b = e.blocker, d = e.defender;
   const handsOff = e.control < -0.3 || (sim.t < e.moveUntil && e.moveOk && e.move !== 'bull' && e.move !== 'longarm');
+  if (RIDE_FACING) {
+    // His hands and chest work in front of him: the ridden man is free once he
+    // is behind the blocker's shoulders relative to where the blocker's torso
+    // faces (beyond what he can turn back this step), as in a run rep.
+    const toD = Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x);
+    const off = Math.abs(Math.atan2(Math.sin(toD - b.facing), Math.cos(toD - b.facing)));
+    return handsOff || Math.max(0, off - b.profile.turnRate * sim.dt) >= Math.PI / 2;
+  }
   const past = (d.pos.x - b.pos.x) * axis.x + (d.pos.y - b.pos.y) * axis.y;
   return handsOff || past > 0.5 * (b.profile.radius + d.profile.radius);
 }

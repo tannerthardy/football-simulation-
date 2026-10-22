@@ -268,3 +268,28 @@ fixed width barely moves him; picking the width to match the tracked slide
 would be tuning. Reverted. Note on arm noise: at about 200 dropbacks a 4-game
 arm's pressure moves by several points between runs that change nothing
 relevant (26-34% on this profile).
+
+## Edge pressures come after a clean beat (two attempts, both off)
+
+`pass-pressure.py` on today's profile (8 games, seed 301) against tracking:
+edge engaged pressures 23.3 per 100 dropbacks (NFL 16.9) at 2.09 s (2.39);
+the edge pressurer is still engaged at pressure 14% of the time (NFL 73%) and
+has gone through his blocker 68% (11%), 0.6 s after contact (1.1 s). Pass
+reps end "turned the corner" 63 times per 100 dropbacks (`out/rideprobe.ts`),
+the rusher 0.54 yd nearer the QB than his blocker.
+
+- `RIDE_FACING` (with `PASS_RIDE`): the ride frees the rusher only when the
+  hands come off or he is behind the blocker's shoulders (the run rep's
+  facing test), not once he is 0.4 yd nearer the QB. Corner sheds 63 -> 27
+  per 100 dropbacks; edge pressure 23.3 -> 19.6, interior 6.7 -> 7.8, the
+  interior pressurer still engaged 66% (NFL 67%). Edge still through 55%.
+- What then frees the ride: `e.control < -0.3` in 102 of 129 frees, the pass
+  rep's ratings walk. `PASS_HAND_FIGHT` takes pass control from the run rep's
+  leverage law; frees are then mostly landed moves (dip 51 of 80). Edge
+  pressure 22.6 per 100, through 53%, still engaged 17%.
+
+Both are within 8-game noise on pressure and neither moves the edge
+pressurer's state. Stopped for re-diagnosis: the next question is what the
+QB's depth and the rusher's arc are when tracked edges pressure while still
+engaged. `HAND_FRICTION` on this profile raises edge pressure further (23.3
+-> 29.1 per 100), the wrong way.
