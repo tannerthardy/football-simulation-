@@ -482,6 +482,28 @@ coming to the installed 1.5 yd landmark. The first thing to read is where
 and when climbing linemen meet the backers, tracked against ours (an
 interaction with the run-offense session's climb). `test/lb-tempo.test.ts`.
 
+The run-offense session's `climbphase.py` answered that read. Tracked and
+our climbers meet the backer at nearly the same time and depth (zone 2.0 s,
+2.01 vs 1.76 yd past the ball). What differs is the backer's flow: tracked
+backers have moved 4.10 yd sideways by the meeting, ours 2.05, and tracked
+outside-zone backers scrape 3.05 yd/s at 1.0 s against our 1.50. Our
+outside-zone back moves sideways as tracked backs do (0.5 / 1.0 s: 1.40 /
+3.50 yd/s, NFL 1.40 / 3.45), so the cue is there.
+
+Probe, not committed (`LB_MIRROR`, run-offense profile, zone arm): before
+the mesh, a declared backer carried his landmark with the back's travel,
+with the key lineman's low-hat zone step as an early cue. Scrape at 1.0 /
+1.5 s rose 1.50 / 3.05 → 1.90 / 3.80 and lateral travel by the meeting 1.99
+→ 2.43 yd. But outside-zone runs of 20+ yd went 8 → 17 of 400, crossing the
+line 1.4 yd further inside. The arithmetic shows why: the mirror acts only
+where it carries a backer past the existing inside-out spot (a yard inside
+the back's projection), so its gain was overflow, and the back cut up
+inside it. Dropped. In this code, backer scrape follows the gaps' motion,
+which follows the offensive line's lateral speed (`DL_KEY` above): the
+offense's lever. One defensive piece remains: a backer does nothing until
+his run read at about 0.5 s (`lbtrace.ts`), while the coaching tables have
+the first step go with the key's flow before run or pass is known.
+
 ## Diagnostics (observation only)
 
 `scripts/diag/depth/`: `frontact.ts` (the defenders in front of the receiver after the catch), `drives.ts` (drives, results, points by scoring play),
