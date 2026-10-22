@@ -250,3 +250,19 @@ pressure total partly rested on quick throws. Off until protection
 duration is understood (interior rush, the post-contact rep).
 `test/qb-settle.test.ts`: on the three recorded dropbacks the QB's largest
 deceleration before the throw is lower.
+
+## Tried: the QB slides away from a level edge (`QB_SLIDE`, reverted)
+
+The playbook session's `qb-pocket.py` (section 8 of its
+`pressure-and-run-hole.md`): after an edge rusher gets level with the QB,
+tracked QBs slide 0.2 / 0.5 / 2.6 yd (p50/75/90) before the throw; ours 0.0
+/ 0.0 / 0.2. Climbing after edge level is already NFL-like (0.3+ yd: 27-29%
+vs 20%).
+
+`QB_SLIDE` moved the pocket spot away from a level edge until he had 3 yd of
+width (scaled by pocket presence): slide 0.0 / 0.1 / 0.4. A level edge is
+usually 3-4 yd wide already and the throw follows within about 0.3 s, so a
+fixed width barely moves him; picking the width to match the tracked slide
+would be tuning. Reverted. Note on arm noise: at about 200 dropbacks a 4-game
+arm's pressure moves by several points between runs that change nothing
+relevant (26-34% on this profile).

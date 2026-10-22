@@ -9,9 +9,8 @@ Generated from the code's doc comments on 2026-10-22 at `0cc4e074`;
 Reproduce: `npm run baseline:run -- --candidate -- <command>`. Lab arms:
 `scripts/diag/open-field/arm.mjs` (called looks 1-10, seeds
 77,71001,1,2,3). Games: `scripts/mechanics/sim-export.ts --seed 301` then
-`scripts/mechanics/measure.py`; the playbook session's operators
-(`pass-pressure.py`, `interior-rush.py`, `long-run.py`, `run-hole.py`,
-`pursuit.py` on claude/great-mccarthy-85uf8b) and the run-defense
+`scripts/mechanics/measure.py`; the playbook session's nine operators
+(index: `docs/reviews/nfl-sim-operators.md` on claude/great-mccarthy-85uf8b) and the run-defense
 session's (`depth/edgedepth.py`, `sidepass.py`, `catchbreak.py` on
 claude/run-defense-develop) read NFL tracking and sim exports with one code
 path.
@@ -20,16 +19,16 @@ path.
 
 | | Sim | NFL | Source |
 |---|---|---|---|
-| Pressure, dropbacks without play action | 26-33% | 31.3% | pass-pressure.py, 4-8 games |
-| Edge contact after line start / rusher depth | 1.09 s / 3.2 yd | 1.25 s / 3.4 yd | pass-contact.py |
+| Pressure, dropbacks without play action | 24-33% | 31.3% | pass-pressure.py, 4-8 games |
+| Edge contact after line start / rusher depth | 1.09-1.16 s / 3.2-3.3 yd | 1.25 s / 3.4 yd | pass-contact.py |
 | Tackle depth at 1.0 / 1.5 s | 2.29 / 3.62 | 2.17 / 3.42 | pass/tackle-kick.py |
-| Interior pressure per 100 dropbacks | 5.9-7.3 | 8.7-9.3 | pass-pressure.py |
+| Interior pressure per 100 dropbacks, engaged first / total | 5.9-7.1 / 7.3 | 8.7 / 9.3 | pass-pressure.py |
 | Time to pressure | 2.44 s | 2.71 s | measure.py |
 | Lab zone losses / 40+ (under center) | 2.6% / 5.7% | 7.6% / 0.8% | stretch/bands.py |
 | Lab gap TVD to NFL bands | 7.7 | - | stretch/bands.py |
 | Draw losses / median | 2.8% / 6.6 yd | 10.3% / 5.0 | concepts.py, ds1/pkdr |
 | Zone first contact by DL | 26-32% | 43-51% | gap/reach-contact.py |
-| Inside crease at the line | 3.9-4.6 yd | 2.3-2.9 yd | run-hole.py |
+| Inside crease at the line (before FRONT_ALIGN) | 3.0-4.6 yd | 2.3-2.9 yd | run-hole.py |
 | Runs reaching 20 that reach 40 | 67% | 26% | long-run.py |
 | Defensive pre-snap fouls per game | 2.0 | ~1.35 | align/snap-fouls.ts |
 
