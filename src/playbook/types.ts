@@ -118,12 +118,23 @@ export interface RunConcept {
   beats: string[];
 }
 
+/** Pre-snap motion kinds (src/sim/motion.ts). */
+export type MotionKind = 'across' | 'jet' | 'empty' | 'return';
+
+/** One player in motion before the snap. */
+export interface MotionCall {
+  slot: SkillSlot;
+  kind: MotionKind;
+}
+
 export interface OffensivePlayCall {
   formation: Formation;
   flip: boolean;
   kind: 'pass' | 'run';
   pass?: PassConcept;
   run?: RunConcept;
+  /** Pre-snap motion (played only with MOTION=1). */
+  motion?: MotionCall;
   /** Display label. */
   label: string;
 }

@@ -26,6 +26,7 @@
     "LEVER_FACING": "1",
     "LIVE_AIM": "1",
     "LIVE_GAPS": "1",
+    "MOTION": "0",
     "PASS_SINK": "0",
     "PULL_CUE": "0",
     "PULL_PLAN": "0",

@@ -22,9 +22,10 @@ import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/
 import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONTS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
-import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
+import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, MotionCall, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import type { CoverageSystem, Team } from '../league/team.js';
+import { motionEnabled } from '../sim/motion.js';
 
 export interface Situation {
   down: number;
@@ -61,6 +62,7 @@ const familyOf = (c: OffensivePlayCall) => (c.kind === 'run' ? `run:${c.run!.sch
 export class OffensiveCoordinator {
   private readonly learn = new Map<string, Learn>();
   private runN = 0;
+  private motionCalls = 0;
   private runSum = 0;
   private passN = 0;
   private passSum = 0;
@@ -122,12 +124,35 @@ export class OffensiveCoordinator {
     // Strength to the field (wide side) most of the time.
     const fieldLeft = s.ballY < CENTER_Y;
     const flip = rng.chance(0.7) ? fieldLeft : !fieldLeft;
+    const motion = motionEnabled() ? this.chooseMotion(formation, isPass) : undefined;
+    const tag = motion ? ` (${motion.slot} ${motion.kind} motion)` : '';
     if (isPass) {
       const concept = this.choosePass(s, formation, defense);
-      return { formation, flip, kind: 'pass', pass: concept, label: `${formation.name} — ${concept.name}` };
+      return { formation, flip, kind: 'pass', pass: concept, motion, label: `${formation.name} — ${concept.name}${tag}` };
     }
     const run = this.chooseRun(s, formation);
-    return { formation, flip, kind: 'run', run, label: `${formation.name} — ${run.name}` };
+    return { formation, flip, kind: 'run', run, motion, label: `${formation.name} — ${run.name}${tag}` };
+  }
+
+  /**
+   * Pre-snap motion (MOTION=1): modern offenses move someone on roughly half
+   * their snaps, to change the structure the defense must check (across),
+   * to threaten the edge (jet), to get to empty, or to read man/zone (return).
+   * Draws from its own forked stream so the rest of the call is unchanged.
+   */
+  private chooseMotion(f: Formation, isPass: boolean): MotionCall | undefined {
+    const rng = this.rng.fork(`motion:${this.motionCalls++}`);
+    if (!rng.chance(isPass ? 0.5 : 0.4)) return undefined;
+    const off = Object.entries(f.slots).filter(([, a]) => a && a.depth >= 1 && a.split !== 'inline') as Array<[SkillSlot, NonNullable<Formation['slots'][SkillSlot]>]>;
+    const backs = off.filter(([, a]) => a.depth >= 3 && (a.split === 0 || (typeof a.split === 'number' && a.split < 3.5)));
+    const receivers = off.filter(([slot]) => !backs.some(([b]) => b === slot));
+    const options: Array<[MotionCall, number]> = [];
+    for (const [slot] of receivers) {
+      options.push([{ slot, kind: 'across' }, 0.45], [{ slot, kind: 'return' }, 0.15]);
+      if (f.qb !== 'under') options.push([{ slot, kind: 'jet' }, 0.25]);
+    }
+    if (isPass) for (const [slot] of backs.filter(([s]) => s === 'RB')) options.push([{ slot, kind: 'empty' }, 0.3]);
+    return options.length ? pickWeighted(rng, options) : undefined;
   }
 
   private choosePersonnel(s: Situation, isPass: boolean): PersonnelId {

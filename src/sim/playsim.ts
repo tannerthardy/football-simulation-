@@ -40,6 +40,7 @@ import { PerceptionBuffer, type Perceived } from './perception.js';
 import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
 import { predictCalledMotion } from './called-motion.js';
+import { MotionRuntime, motionEnabled, planMotion } from './motion.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
 import { ReplayTrace } from './telemetry.js';
@@ -108,6 +109,8 @@ export class PlaySim {
   readonly defCall: DefensivePlayCall;
   readonly offAlign: OffenseAlignment;
   readonly defAlign: DefenseAlignment;
+  /** Pre-snap offensive motion being played (MOTION=1), if any. */
+  readonly motion: MotionRuntime | null;
   isPass: boolean;
   /** The quarterback's read of the defense (coverage belief, vision). */
   qbMind!: QBMind;
@@ -272,7 +275,11 @@ export class PlaySim {
     this.ball = { kind: 'held', carrier: qb };
     this.beginSegment(qb, 'snap');
     this.perception = new PerceptionBuffer(this.agents.length, this.dt);
+    const motion = motionEnabled() && this.offCall.motion ? this.slot(this.offCall.motion.slot) : undefined;
+    const plan = motion ? planMotion(this.offAlign, this.offCall.motion!, motion.profile) : null;
+    this.motion = plan ? new MotionRuntime(plan, setup.defCall, setup.manPrefs) : null;
     this.stageDefense(setup.manPrefs);
+    if (this.motion) ({ offAlign: this.offAlign, defCall: this.defCall, defAlign: this.defAlign } = this.motion.finish(this));
     this.snapX = this.agents.map((a) => a.pos.x);
     this.qbMind = new QBMind(this, qb);
     if (setup.audibles) {
@@ -315,7 +322,7 @@ export class PlaySim {
    * arrivals keep their velocity into the snap instead of teleporting home. */
   private stageDefense(prefs?: ManPreference): void {
     const stem = this.defCall.frontStem, creep = this.defCall.creep;
-    if (!stem && !creep) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
+    if (!stem && !creep && !this.motion) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
     for (const seconds of [stem?.secondsBeforeSnap,creep?.secondsBeforeSnap]) {
       if (seconds !== undefined && (!Number.isFinite(seconds) || seconds<=0 || seconds>3)) throw new Error('Pre-snap movement must start within 0–3 seconds of snap');
     }
@@ -341,7 +348,7 @@ export class PlaySim {
     // A stem replaces the initial presentation above. Fit that starting
     // stance before its first observable history, never the moving endpoint.
     fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
-    const ticks = Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0)/this.dt);
+    const ticks = Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0,this.motion?.plan.seconds ?? 0)/this.dt);
     // Prime with the presentation that was actually shown, never the called
     // destination. Observers with longer latency retain the old front.
     this.perception.record(this.agents, this.carrier?.idx ?? null);
@@ -354,6 +361,7 @@ export class PlaySim {
         const speed=active ? Math.min(d.profile.vmax*.45,length*3) : 0;
         intents[d.idx] = {vel:{x:length ? dx/length*speed : 0,y:length ? dy/length*speed : 0},facing:Math.PI};
       }
+      this.motion?.step(this, intents);
       this.world.time = this.t;
       this.world.step(intents, this.dt);
       for (const d of this.defense) d.body.pos.x=Math.max(this.los+d.profile.radius+.05,d.pos.x);

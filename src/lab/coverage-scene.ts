@@ -12,7 +12,7 @@ import { COVERAGE_BY_ID } from '../playbook/coverages.js';
 import { FRONT_BY_ID } from '../playbook/defense.js';
 import { FORMATION_BY_ID } from '../playbook/formations.js';
 import { ROUTES } from '../playbook/routes.js';
-import type { DefensivePlayCall, DefPersonnelId, PassConcept, RouteDef } from '../playbook/types.js';
+import type { DefensivePlayCall, DefPersonnelId, MotionCall, PassConcept, RouteDef } from '../playbook/types.js';
 import { CoverageDefender } from '../sim/coverage/defender.js';
 import { PlaySim } from '../sim/playsim.js';
 
@@ -51,6 +51,8 @@ export interface SceneOptions {
   call?: Partial<DefensivePlayCall>;
   /** Sample defender/receiver positions at these times (s). */
   sampleAt?: number[];
+  /** Pre-snap motion (played only with MOTION=1). */
+  motion?: MotionCall;
 }
 
 export interface DefenderFilm {
@@ -87,7 +89,7 @@ export function sceneSim(o: SceneOptions): PlaySim {
   const personnel = o.personnel ?? 'nickel';
   const sim = new PlaySim({
     offense: pickOffense(offenseTeam, formation.personnel), defense: pickDefense(defenseTeam, personnel),
-    offCall: { formation, flip: o.flip ?? false, kind: 'pass', pass: concept, label: 'lab' },
+    offCall: { formation, flip: o.flip ?? false, kind: 'pass', pass: concept, label: 'lab', motion: o.motion },
     defCall: { personnel, front: FRONT_BY_ID.over, coverage, pressure: null, zoneStyle: 'match', label: 'lab', checkPick: 0, ...o.call },
     los: 40, ballY: o.ballY ?? CENTER_Y, firstDownX: 50, seed: o.seed ?? 5,
   });

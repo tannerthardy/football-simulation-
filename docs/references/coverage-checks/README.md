@@ -88,23 +88,35 @@ bunch about 10%, so these answers are exercised in ordinary games.
   empty and red-zone tools (Red 7 Bracket etc.) are not installed: the
   offense has no stack or quads formation and no red-zone package yet.
 
-## Not started: motion
+## Motion (MOTION=1, off by default)
 
-The offense has no pre-snap motion, so no defensive motion adjustment can
-fire. A coherent version needs, in order:
+`src/sim/motion.ts`. The offensive coordinator puts one off-ball player in
+motion on about half its snaps:
+- **across:** sets as the far side's new slot, so 2x2 becomes 3x1;
+- **jet:** still running parallel to the line, just past the ball, at the snap;
+- **empty:** the back motions out to the weak side;
+- **return:** yo-yo back to his spot.
 
-1. **Offensive motion** in the call (jet, orbit, across, return, back out to
-   empty), legal under `src/game/presnap-rules.ts` (one man moving, not
-   toward the line at the snap).
-2. **Re-identify at the snap.** Run `formationStructure` on the final
-   alignment and re-check: "any motion to 3x1 will be handled with a TRIX
-   adjustment" (HNFL-193); "all motions are bumped across" (HNFL-063); the
-   nickel runs only with a change-of-strength motion (HNFL-192/228).
-3. **Defensive movement answers.** Man: Lock/travel vs Banjo/Switch,
-   Rock-and-Roll (post safety takes the motion man). Zone: bump the apexes,
-   spin the safeties (MS §A6, web §B). Scouting rates: bump 85%, run 15%
-   (HNFL-186).
+Each motion plays out in the existing pre-snap timeline, alongside front
+stems and creepers. Every plan is legal by construction under the installed
+snap law: one man, off the line, not moving toward it at the snap. At the
+snap the offense is renumbered from where players stand. Routes, the
+coverage check (Zeus or the structure check) and all match rules then use
+the final formation ("defend the final formation"; "any motion to 3x1 is
+handled with a TRIX adjustment", HNFL-193).
 
-Steps 2-3 move defenders before the snap, which is the defensive pre-snap
-alignment work in PR #190 (`alignment.ts`, `stageDefense`). Coordinate with
-that owner before starting.
+**Defense, provisional default.** The secondary "bumps"
+(HNFL-063, scouted 85%, HNFL-186):
+- every 0.2 s it re-sorts to the alignment for the formation it saw 0.3 s
+  earlier, and moves there at up to 0.75 of top speed;
+- so a man defender keeps or trades his man the way the call's man
+  preferences say, and the nickel runs with a change of strength;
+- it never sees the motion's endpoint in advance.
+
+Richer answers (lock/travel, spin or rock-and-roll safeties, linebackers
+walking out over an emptied back) are pre-snap defender positioning. That
+belongs to the defensive alignment owner (PR #190). `MotionRuntime.respond`
+is the single seam to replace.
+
+Tests: `test/offensive-motion.test.ts`, covering default-off parity, the
+structure and check per kind, snap-law legality and the bump.
