@@ -8,7 +8,7 @@ import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { PASS_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
-import type { Intent } from '../src/sim/agent.js';
+import type { Intent } from '../src/physics/world.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
