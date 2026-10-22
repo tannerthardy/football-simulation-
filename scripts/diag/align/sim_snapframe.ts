@@ -99,7 +99,7 @@ for (let k = 0; k < N; k++) {
   const dc = new DefensiveCoordinator(def, rng.fork(`dc${k}`));
   const offCall = oc.call(sit, def);
   const offPlayers = pickOffense(off, offCall.formation.personnel);
-  const { call: defCall, prefs } = dc.call(sit, offCall.formation.personnel, off, offPlayers);
+  const { call: defCall, prefs } = dc.call(sit, offCall.formation.personnel, off, offPlayers, offCall.formation);
   const defPlayers = pickDefense(def, defCall.personnel);
   const los = 10 + sit.yardline;
   let sim: PlaySim;

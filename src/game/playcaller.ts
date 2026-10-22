@@ -83,10 +83,16 @@ const DEF_PACKAGE = process.env.DEF_PACKAGE === '1';
  * 42% of the time, Cover 1 26%, a Cover 0 shows someone deep 36%; Cover 2 shows
  * one high 28%, quarters 16%, Cover 6 11%, 2-man 12%. The coordinator's habit
  * and his safeties' recognition scale it (the league mean habit is 0.275);
- * two-high trees disguise their one-high calls half again as often. Off:
- * every call disguises at the coordinator's one rate. */
+ * two-high trees disguise their one-high calls half again as often. Those
+ * rates are the shotgun's (most dropbacks); the shell is checked to the
+ * formation seen. Against the quarterback under center a one-high call shows
+ * two high a third as often (13% against 35% on early downs) and a two-high
+ * call rolls down to one high 1.6 times as often (30% against 19%): the run
+ * fit is wanted in place before the snap. Against empty, 1.2 and 0.7 times.
+ * Off: every call disguises at the coordinator's one rate. */
 const SHELL_SHOW = process.env.SHELL_SHOW === '1';
 const SHOW: Record<string, number> = { cover3: .42, cover1: .26, cover0: .36, cover2: .28, tampa2: .28, cover4: .16, cover6: .11, cover2man: .12 };
+const SHOW_CHECK = { under: { oneHigh: .37, twoHigh: 1.6 }, empty: { oneHigh: 1.2, twoHigh: .7 } };
 function defPackage(rng: Rng, off: PersonnelId, s: Situation, scheme: string): DefPersonnelId {
   const third = s.down >= 3 && s.distance >= 3;
   const short = s.distance <= 2;
@@ -385,7 +391,8 @@ export class DefensiveCoordinator {
     return Math.exp(-(rate - 0.45) * 2.0);
   }
 
-  call(s: Situation, offPersonnel: PersonnelId, offense: Team, offSlots: Partial<Record<OffSlot, Player>>): { call: DefensivePlayCall; prefs: ManPreference } {
+  /** formation: the offense's set as seen before the snap, for the shell check. */
+  call(s: Situation, offPersonnel: PersonnelId, offense: Team, offSlots: Partial<Record<OffSlot, Player>>, formation?: Formation): { call: DefensivePlayCall; prefs: ManPreference } {
     const rng = this.rng;
     const coach = this.team.coach;
     const scheme = this.team.defScheme;
@@ -507,7 +514,9 @@ export class DefensiveCoordinator {
     // Two-high trees show two high on everything; the rest disguise by habit.
     const look = coverage.look ?? coverage.shell;
     const habit = coach.disguise * (0.6 + 0.8 * dbIQ);
-    const disguiseRate = SHELL_SHOW ? Math.min(.9, (SHOW[family] ?? .2) * habit / .275 * (system === 'two-high' && look !== 'two-high' ? 1.5 : 1))
+    const seen = formation?.tags.includes('empty') ? SHOW_CHECK.empty : formation?.qb === 'under' ? SHOW_CHECK.under : undefined;
+    const check = seen ? (look === 'two-high' ? seen.twoHigh : seen.oneHigh) : 1;
+    const disguiseRate = SHELL_SHOW ? Math.min(.9, (SHOW[family] ?? .2) * habit / .275 * (system === 'two-high' && look !== 'two-high' ? 1.5 : 1) * check)
       : system === 'two-high' && look !== 'two-high' ? 0.85 : habit;
     if (rng.chance(disguiseRate)) {
       // SHELL_SHOW: a disguised zero shows one high as often as two (tracked 21% and 16%).

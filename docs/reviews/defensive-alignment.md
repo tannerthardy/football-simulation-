@@ -184,6 +184,38 @@ Deep defenders at the snap against PFF's post-snap coverage, on dropbacks:
   free: he starts deep and has to run. A first version took the look's
   spot across the field from his man; the existing shadow-trade test caught
   it.
+- **Checked to the formation (added after the game check).** The
+  run-defense session found two-high shells on far more sim runs than
+  tracked ones. The coverage *called* was not the cause: against the
+  quarterback under center the sim called two-high 32% of the time on early
+  downs, tracking 30%. What differs is what the secondary *shows*. Tracking
+  (early downs, deep defenders at the snap):
+
+  | Called | Shows the other shell: gun | under center | empty |
+  |---|---|---|---|
+  | one-high | 35% | 13% | 43% |
+  | two-high | 19% | 30% | 13% |
+
+  The sim disguised at the gun's rates against everything (32% and 22%
+  under center). The table's rates above are the gun's, since most
+  dropbacks are from the gun. The caller now receives the formation it sees
+  before the snap. Its disguise rate is scaled ×0.37 (one-high) and ×1.6
+  (two-high) against under center, and ×1.2 and ×0.7 against empty. Football
+  reason: against a run formation, the eighth defender is wanted in his fit
+  before the snap, not rotating down after it. Result
+  (`sim_snapframe.ts`, all flags):
+  - under center: one-high calls show two-high 12% (was 32%); two-high
+    calls roll down 35% (was 22%);
+  - gun: unchanged;
+  - empty: 48% and 15%;
+  - two-high at the snap on all runs: 40% → 32% (tracked 31%);
+  - dropbacks: 44% → 42% (tracked 52%, the Cover 1 overcall below).
+
+  The coverage call itself also depends on formation in tracking (Cover 3
+  is ×1.33 against under center, quarters ×1.5 against empty, relative to
+  dropbacks). The sim's call does not, but its under-center share already
+  matches. Its gun gap is the Cover 1 overcall, so this belongs with that
+  coverage-mix change.
 
 ## Contracts with the flags on
 
