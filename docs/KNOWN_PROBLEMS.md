@@ -708,7 +708,9 @@ These break the model rule that players act on acquired, delayed information.
 Later fixes: retained-snap credit and air depth (GAME-002), two-point energy
 writeback (GAME-003). On 2026-10-22, a false start at the 3 with a back
 standing in the end zone was enforced as a safety and spotted on the goal
-line, which crashed the next play; pre-snap fouls are now half the distance.
+line, which crashed the next play; pre-snap fouls are now half the distance
+(#211, which also rules a restricted teammate recovery dead in its own end
+zone).
 
 <a id="game-2"></a>
 ### GAME-2: Remaining accounting limits

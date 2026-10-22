@@ -11,7 +11,8 @@ import { DT } from '../core/units.js';
 import { clamp, dist, len, type Vec2, type Vec3 } from '../core/vec.js';
 import { DRAG_SPIRAL, DRAG_TUMBLE, solveLaunch, stepFlight, type BallFlight } from '../physics/ball.js';
 import { handoffReach } from './ball-transfer.js';
-import { assessForwardPass, fumbleRecovery, fumbleOutOfBounds, looseBallBoundaryStep, momentumDeadBallSpot } from './ball-rules.js';
+import { assessForwardPass, fumbleRecovery, fumbleOutOfBounds, looseBallBoundaryStep, momentumDeadBallSpot,
+  restrictedRecoveryInOwnEndZone } from './ball-rules.js';
 import { observePrethrowBlocks, assessPrethrowBlocksOnPass,
   capturePassContactStarts, observePassContacts, notePassRelease, notePassTouch, flushPassContacts } from './pass-interference.js';
 import { captureHoldingStart, observeHolding, type HoldingIntervalStart } from './contact-holding.js';
@@ -797,17 +798,27 @@ export class PlaySim {
             if (event) event.note = `${ruling.rule}: teammate recovery cannot advance`;
             this.whistle('tackle', { x: ruling.deadBallX, y: a.pos.y });
           } else {
-            const releaseX = loose.fumbleX;
-            if (releaseX !== undefined && releaseX > OWN_GOAL_X && releaseX < OPP_GOAL_X) {
-              // In this native branch an untouched true fumble entered the
-              // fumbler's own end zone from the field. No player momentum
-              // exception or intervening bat/kick is represented.
-              this.scoreKind = 'safety';
-              this.scoreTeam = a.team === 'O' ? 'D' : 'O';
-              this.event('safety', a, null, ruling.rule);
-              this.whistle('safety', { x: ruling.deadBallX, y: a.pos.y });
-            } else {
+            // A fumble spot beyond the opponent's goal line would already
+            // have been a touchdown, so the dead spot is in the own end zone.
+            const ownEndZone = a.team === 'O' ? ruling.deadBallX <= OWN_GOAL_X : ruling.deadBallX >= OPP_GOAL_X;
+            const endZone = ownEndZone ? restrictedRecoveryInOwnEndZone({ team: a.team,
+              fumbleX: loose.fumbleX ?? ruling.deadBallX, impetusTeam: loose.impetusTeam,
+              momentumExceptionExcluded: loose.momentumExceptionExcluded, momentumSpotX: loose.momentumSpotX }) : null;
+            if (!endZone || endZone.kind === 'unresolved') {
               throw new Error(`Unsupported NFL ${ruling.rule}: end-zone recovery impetus/momentum`);
+            }
+            const note = `${ruling.rule}/${endZone.rule}: teammate recovery dead in own end zone`;
+            if (endZone.kind === 'safety') {
+              this.scoreKind = 'safety';
+              this.scoreTeam = endZone.scoringTeam;
+              this.event('safety', a, null, note);
+              this.whistle('safety', { x: ruling.deadBallX, y: a.pos.y });
+            } else if (endZone.kind === 'touchback') {
+              this.event('touchback', a, null, note);
+              this.whistle('touchback', { x: ruling.deadBallX, y: a.pos.y });
+            } else {
+              this.event('momentum', a, null, note);
+              this.whistle('tackle', { x: endZone.spotX, y: a.pos.y });
             }
           }
         }

@@ -228,10 +228,14 @@ function enforcedOption(ctx: LivePenaltyContext, call: PenaltyCall, i: number): 
   const autoFirst = defenseFoul && spec.defensiveFirst;
   let lossDown = !stamp && !defenseFoul && (call.lossDown ?? spec.offensiveLossDown ?? false);
   let fromX: number;
+  // A pre-snap foul leaves the ball dead at the previous spot, in the field.
+  // There is no run, so a player aligned in his end zone cannot make the
+  // enforcement spot a goal-line spot (14-2-1, 14-2-2(b)).
+  const preSnap = phase === 'pre_snap';
   // 8-2-1(c)'s whole-body-and-ball exception belongs to grounding alone.
   // For second/returned-behind illegal passes, 8-6/14-4-5 Note1 instead
   // identifies the spot of the pass behind the passer's goal as the safety.
-  let safety = !defenseFoul && (call.kind === 'intentional_grounding'
+  let safety = !preSnap && !defenseFoul && (call.kind === 'intentional_grounding'
     ? call.penaltySafety ?? inOwnEndZone(possessor, foulX) : inOwnEndZone(possessor, foulX));
   if (call.kind === 'illegal_touching' && (call.reason === 'eligible_out_of_bounds' || call.lossDown)) lossDown = !stamp;
   if ((call.kind === 'illegal_bat' || call.kind === 'illegal_kick') && call.playPhase === 'kick' && foulX > ctx.los) lossDown = false;
@@ -290,9 +294,7 @@ function enforcedOption(ctx: LivePenaltyContext, call: PenaltyCall, i: number): 
       }
     }
   }
-  // A pre-snap foul kills the ball before a snap, so no ball is dead in the
-  // end zone: a back standing there cannot turn half the distance into a safety.
-  if (!stamp && phase !== 'pre_snap' && !defenseFoul && !passing(ctx, call) && inOwnEndZone(possessor, basicSpot(ctx, call))) safety = true;
+  if (!preSnap && !stamp && !defenseFoul && !passing(ctx, call) && inOwnEndZone(possessor, basicSpot(ctx, call))) safety = true;
   const amount = call.kind === 'illegal_touching' && lossDown ? 0 : nominal(call);
   const penalty = safety ? { spotX: ownGoal(possessor), yards: 0 } : moved(fromX, call.against, amount);
   return baseOption(ctx, call, i, fromX, penalty.spotX, penalty.yards, possessor, autoFirst, lossDown, safety);
