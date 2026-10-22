@@ -807,10 +807,11 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   // Eyes on the QB see the release; a trailing man defender reads it off
   // the receiver's eyes and hands a beat later.
   const react = a.mind.observationDelay(a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.25)) + (man ? 0.05 : 0);
-  // Spot droppers key the quarterback: his arm and body action give the
-  // throw away before the ball is out, so their reaction starts there.
-  const style = a.behavior instanceof ZoneCoverage ? a.behavior.style : (a.behavior as { style?: ZoneStyle }).style;
-  const keysQB = facingQB && sim.windupAt >= 0 && zoneEyes && style === 'spot';
+  // A zone defender with his eyes on the quarterback keys him, spot or
+  // match: the shoulders turning and the arm coming through give the throw
+  // away before the ball is out, so his reaction starts at the throwing
+  // motion. He still learns where it goes only from the visible flight.
+  const keysQB = facingQB && sim.windupAt >= 0 && zoneEyes;
   if (keysQB && sim.t - sim.windupAt >= react) {
     a.tags.add('readArm');
     return true;
