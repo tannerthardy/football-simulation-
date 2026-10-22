@@ -758,6 +758,39 @@ Still open:
 - Inside holes are 2.1-2.4 yd wide at the line vs NFL 1.6.
 - DBs make first contact on 38-53% of inside runs (NFL 19-28%).
 
+## Draws: sell pass by blocking pass (`DRAW_SET`, on in the profile)
+
+Lab draws (`gun_doubles_11` and `ace_12`, called looks 1-10, seeds
+77,71001,1,2,3; 400 plays per arm) lost 53.8% of the time with a median of
+-0.9 yd. Tracked draws lose 10.3% (p25/50/75 2/5/9 yd), with first contact
+1.2 yd past the ball. In the sim, the blocked DTs held the back first, 3 yd
+deep. During the presentation (the first 1.0 s) the linemen walked to a spot
+1.2 yd deep and blocked nobody, so the tackles ran free to the mesh.
+
+`DRAW_SET` (`blocking.ts`): during the presentation each lineman sets
+between his man (his planned target, else the man he can take) and the mesh,
+inside his contact range, and takes him on. It is the pass set the draw is
+selling. The DT engages him, so the run starts from blocks already in
+place.
+
+| Draw | Before | `DRAW_SET` | NFL |
+|---|---|---|---|
+| Losses | 53.8% | 7.8% | 10.3% |
+| Median gain | -0.9 yd | 6.8 yd | 5.0 yd |
+| First contact (yd past the ball, p50) | behind the line | +2.90 | +1.20 |
+| Reaching 5 yd | - | 62% | 53% |
+| First contact by DB / DL / LB | - | 33 / 9 / 58% | 29 / 36 / 35% |
+
+- For: the loss rate and median move to the tracked range; the blocks are
+  in place when the back gets the ball.
+- Against: first contact is now too deep and too rarely by the DL, the
+  inside-run crease pattern again (engaged DL do not squeeze; run-defense
+  session's `DL_SQUEEZE`).
+- `test/draw-set.test.ts`: on lab draws, DTs engaged at 0.9 s 1 -> 30
+  (15 snaps). `test/draw-presentation.test.ts` and
+  `test/run-block-fit.test.ts` are recorded witnesses of the legacy walk
+  and pin the flag off.
+
 ## Evidence against and unresolved risk
 
 - **Gap TVD worsens** (14.0 → 17.4): the pinned body's gap runs were already
@@ -896,5 +929,5 @@ adversarial re-check; why counter's kicked end tackles from his block under
 `OL_ALIGN` and zone crowds into 0-3 yd (diagnosis running; the alignment
 puts pullers on NFL timing but stays off until counter and zone hold); then
 the runner's commitment against a kick-out (synthesis O5, after the defense's
-force fix). Draws (42-48% losses in the lab) remain open. `GAIT_STEP` is a
+force fix). Draws: `DRAW_SET` above. `GAIT_STEP` is a
 physics law: promotion beyond this branch is the physics owner's decision.

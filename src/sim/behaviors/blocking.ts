@@ -480,6 +480,13 @@ export interface RunBlockPlan {
   departure?: { defender: Agent; keeper: Agent; backer: Agent };
 }
 
+/** Experimental (DRAW_SET=1, off): on a draw the linemen sell pass by pass
+ * blocking: each sets between his man and the mesh and takes him on with a
+ * pass rep, instead of walking to a spot 1.2 yd deep and blocking nobody for
+ * a second. Lab draws lost 54% (blocked DTs first held the back 3 yd deep,
+ * 1.0 s after the handoff; tracked draws lose 10%, first contact +1.2 yd). */
+const DRAW_SET = process.env.DRAW_SET === '1';
+
 function drawPresentation(plan: RunBlockPlan, t: number): boolean {
   return (plan.presentation === 'draw' || plan.kind === 'draw') && t < 1.0;
 }
@@ -1048,6 +1055,20 @@ export class RunBlocker implements Behavior {
         if (target && target === this.presentationThreat) {
           a.stance = 'low';
           return this.withBase(a, this.attack(a, sim, target));
+        }
+      }
+      if (DRAW_SET && isOL(a)) {
+        // Sell pass by blocking pass: set between his man and the mesh and
+        // take him on with a pass rep (invite him upfield, then turn him).
+        const man = plan.target && !plan.target.isDown(t) ? plan.target : this.availableTarget(a, sim);
+        if (man && Math.abs(man.pos.y - a.pos.y) < 2.5 && (man.pos.x - sim.los) * sim.attackDir(a.team) < 3) {
+          const arm = a.player.measurables.armIn / 36;
+          const contact = a.profile.radius + man.profile.radius + 0.1 + arm * 0.55;
+          if (Math.hypot(man.pos.x - a.pos.x, man.pos.y - a.pos.y) < contact + 0.15 && sim.engage(a, man, 'pass')) return stand();
+          const mesh = sim.slot('RB')?.pos ?? sim.qb.pos;
+          const toMesh = norm(sub(mesh, man.pos));
+          const set = { x: Math.min(man.pos.x + toMesh.x * contact * 0.85, sim.los - 0.6), y: man.pos.y + toMesh.y * contact * 0.85 };
+          return goTo(a, set, { speed: 0.7, facing: Math.atan2(man.pos.y - a.pos.y, man.pos.x - a.pos.x) });
         }
       }
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });

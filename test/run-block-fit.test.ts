@@ -16,6 +16,10 @@ import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage } from '../src/sim/run-block-fit.js';
 
+// Recorded witness of the legacy draw presentation (linemen walk to a spot
+// 1.2 yd deep), which predates DRAW_SET; pinned off so it keeps measuring it.
+vi.hoisted(() => { process.env.DRAW_SET = '0'; });
+
 const formation = FORMATION_BY_ID.ace_11;
 const wideDrive = norm({ x: 1, y: -1.8 });
 function stage(kind: RunBlockKind = 'cutoff') {

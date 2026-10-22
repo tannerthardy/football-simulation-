@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import type { Intent } from '../src/physics/world.js';
@@ -11,6 +11,10 @@ import { prepareJoinedCombinations, RunBlocker } from '../src/sim/behaviors/bloc
 import { goTo } from '../src/sim/behaviors/common.js';
 import { updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
+
+// Recorded witness of the legacy draw presentation (linemen walk to a spot
+// 1.2 yd deep), which predates DRAW_SET; pinned off so it keeps measuring it.
+vi.hoisted(() => { process.env.DRAW_SET = '0'; });
 
 function setup(flip = false, run: RunConcept = RUN_BY_ID.draw) {
   const offense = generateTeam(new Rng(31), 'Panel offense 1', 'O1', { strength: .55 });
