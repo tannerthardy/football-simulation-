@@ -823,6 +823,41 @@ the pair's leg contest. The divergence is the zone blocker's path before
 contact, on the offense's side (the run-offense session's outside-zone flow
 work). Two attempts; stopped.
 
+## Run contacts broken on the shared build (diagnosis; no defense change)
+
+The first shared build (`claude/run-game-v3@83b2fe2e`) breaks 18–19% of run
+contacts (`depth/runbreak.py`; NFL 12.6, develop + line set 13.2–15.6).
+- **Paired-lab bisection.** `forcelab.ts` now records whether the first
+  run contact broke, as `runbreak.py` defines it. 480 runs per arm, each
+  contact-family flag set back to develop's value:
+  - The build breaks 14.8%, and develop + line set 15.4% on the same cases.
+  - `LEG_BRACE` off: 11.9% (15 vs 1 changed contacts, z −3.5).
+  - `HOLD_POINT` off: 16.9% (z +3.2).
+  - Eight others are within noise: `TETHER`, `WRAP_BIND`, `TACKLE_ROLL`,
+    `LEG_FV`, `GAIT_STEP`, `SHED_PURSUE`, `LEAN_AXIS`, `RUN_ARMS` + `RUN_REACH`.
+- **Seed-301 exports**, 8 games each:
+
+  | | Broke | Fast entries | Broke when fast |
+  | --- | --- | --- | --- |
+  | Develop + line set | 15.6% | 45% | 30% |
+  | Build | 17.9% | 62% | 25% |
+  | Build, `LEG_BRACE` off | 12.6% | 58% | 20% |
+
+The excess is about five points of `LEG_BRACE` (a thigh hold the runner
+braces with his hips), plus the profile's faster entries. The brace is real
+football, so it is not turned off for this. The counter tracked runners
+meet is the second tackler: arrivals are short, at 2.28 meetings per run
+vs NFL 2.69 (run-offense `open-field/meet.py`). `LEG_BRACE` is in the
+run-offense session's contact model; it is reported to them and the physics
+owner.
+
+**The covered center on outside zone** (`depth/nosereach.ts`, lab). The
+center asks for only 0.50 yd/s across at 0.5 s. The nose follows his flow
+once it is seen: he asks for 1.39 at 0.75 s and achieves 0.53. Tracking has
+the center leading too (run-offense `stretch/ozcenter.py`: 0.6 / 1.9 vs
+0.4 / 1.4 yd at 0.5 / 1.0 s). So the first mover is the reach, not the
+lineman, and nothing is added on the defense.
+
 ## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
 
 **Question.** With the line set on, the run break rate matches tracking (13.2%
@@ -1376,7 +1411,7 @@ telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
 `runrally`, `crease`, `breakpoint`, `afterrelease`, `alleypath`, `interiorrush`, and lab probes
-`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `lbpull.ts` (backers against a pull), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
+`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `lbpull.ts` (backers against a pull), `nosereach.ts` (the covered center's nose), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
 `alleyprobe.ts`, `alleytrace.ts` (the nearest deep supporter on long runs), `forcelab.ts` (paired run lab, the same seeds per arm),
 `dlpursuit.ts` (linemen at a run's first contact), `dropprobe.ts` (the
 nearest zone defender when the ball comes near him), `catchact.ts`, `sideprobe.ts` (the side window from inside the
