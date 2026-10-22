@@ -8,7 +8,7 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { BallState } from '../src/sim/types.js';
 import { assessForwardPass, fumbleOutOfBounds, fumbleRecovery,
-  looseBallBoundaryStep, type FumbleRecoveryFacts } from '../src/sim/ball-rules.js';
+  looseBallBoundaryStep, restrictedRecoveryInOwnEndZone, type FumbleRecoveryFacts } from '../src/sim/ball-rules.js';
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -55,6 +55,28 @@ describe('NFL fumble recovery and advance rights', () => {
   it('does not convert a muffed backward pass into a restricted fumble', () => {
     expect(fumbleRecovery(recovery({ kind: 'backward_pass', afterTwoMinuteWarning: true, isTry: true })))
       .toEqual({ mayAdvance: true });
+  });
+});
+
+describe('restricted teammate recovery dead in its own end zone', () => {
+  it('is a safety on the team own impetus, from the field or inside the end zone', () => {
+    expect(restrictedRecoveryInOwnEndZone({ team: 'O', fumbleX: 12 }))
+      .toEqual({ kind: 'safety', scoringTeam: 'D', rule: '11-5-1' });
+    expect(restrictedRecoveryInOwnEndZone({ team: 'O', fumbleX: 7, impetusTeam: 'O', momentumExceptionExcluded: true }))
+      .toEqual({ kind: 'safety', scoringTeam: 'D', rule: '11-5-1' });
+  });
+  it('is a touchback on the opponent impetus', () => {
+    expect(restrictedRecoveryInOwnEndZone({ team: 'D', fumbleX: 113, impetusTeam: 'O', momentumExceptionExcluded: true }))
+      .toEqual({ kind: 'touchback', spotX: 90, rule: '11-6-1' });
+  });
+  it('returns the ball to the field acquisition spot under the momentum exception', () => {
+    expect(restrictedRecoveryInOwnEndZone({ team: 'D', fumbleX: 112, impetusTeam: 'O', momentumSpotX: 109.6 }))
+      .toEqual({ kind: 'spot', spotX: 109, rule: '11-5-1' });
+  });
+  it('does not guess without end-zone impetus and momentum facts', () => {
+    expect(restrictedRecoveryInOwnEndZone({ team: 'O', fumbleX: 7 })).toEqual({ kind: 'unresolved', missing: 'impetus_or_momentum' });
+    expect(restrictedRecoveryInOwnEndZone({ team: 'O', fumbleX: 7, impetusTeam: 'O' }))
+      .toEqual({ kind: 'unresolved', missing: 'impetus_or_momentum' });
   });
 });
 
@@ -270,11 +292,46 @@ describe('native fumble boundaries and dead-ball rulings', () => {
     expect(sim.events.filter(e => e.type === 'recovery')).toHaveLength(1);
   });
 
+  it('rules a late fourth-down teammate recovery of an end-zone strip sack a safety on Team A impetus', () => {
+    // Game seed 111 (rosters seed 109): 4th-and-25 at the A-5 with 0:49 left,
+    // the shotgun QB is stripped at x=7.0 and a guard falls on it at x=7.5.
+    const sim = nativeSim({ down: 4, afterTwoMinuteWarning: true }), fumbler = sim.slot('RB')!, recoverer = sim.slot('Y')!;
+    fumbler.body.pos = { x: 7, y: CENTER_Y };
+    sim.ball = { kind: 'held', carrier: fumbler };
+    sim.fumble(fumbler, null);
+    recoverer.body.pos = { x: 7.5, y: CENTER_Y };
+    sim.possess(recoverer, 'recovery');
+    expect(sim.phase).toBe('dead');
+    expect(sim.outcome).toBe('safety');
+    expect(sim.endSpot?.x).toBe(7);
+    expect(recoverer.pos).toEqual({ x: 7.5, y: CENTER_Y });
+    expect(sim.buildResult().score).toEqual({ kind: 'safety', team: 'D' });
+    expect(sim.events.find(e => e.type === 'safety')?.note).toBe('8-7-6/11-5-1: teammate recovery dead in own end zone');
+  });
+
+  it('rules a restricted teammate recovery in the end zone a touchback when the opponent supplied the impetus', () => {
+    const sim = nativeSim({ down: 2, afterTwoMinuteWarning: true }), fumbler = sim.slot('FS')!, recoverer = sim.slot('SS')!;
+    fumbler.body.pos = { x: 113, y: CENTER_Y };
+    sim.ball = { kind: 'held', carrier: fumbler };
+    sim.possession = 'D';
+    sim.fumble(fumbler, null);
+    // As after an end-zone interception: the pass, not the defense, put the ball there.
+    Object.assign(sim.ball, { impetusTeam: 'O', momentumExceptionExcluded: true });
+    recoverer.body.pos = { x: 112, y: CENTER_Y };
+    sim.possess(recoverer, 'recovery');
+    expect(sim.outcome).toBe('touchback');
+    expect(sim.possession).toBe('D');
+    expect(sim.buildResult().score).toBeNull();
+    expect(sim.stats.fumbleLost).toBeFalsy();
+  });
+
   it('fails explicitly rather than authorizing an advance when restricted own-end-zone recovery lacks impetus/momentum facts', () => {
     const sim = nativeSim({ down: 4 }), fumbler = sim.slot('RB')!, recoverer = sim.slot('Y')!;
     fumbler.body.pos = { x: 8, y: CENTER_Y };
     sim.ball = { kind: 'held', carrier: fumbler };
     sim.fumble(fumbler, null);
+    // A restored tape without acquisition history.
+    Object.assign(sim.ball, { impetusTeam: undefined, momentumExceptionExcluded: undefined });
     recoverer.body.pos = { x: 13, y: CENTER_Y };
     expect(() => sim.possess(recoverer, 'recovery')).toThrow(/Unsupported NFL 8-7-5: end-zone recovery impetus\/momentum/);
   });

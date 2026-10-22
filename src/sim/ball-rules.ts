@@ -45,6 +45,43 @@ export function fumbleRecovery(f: FumbleRecoveryFacts): FumbleRecoveryRuling {
   return { mayAdvance: false, deadBallX, rule: lateOrTry ? '8-7-6' : '8-7-5' };
 }
 
+export interface RestrictedEndZoneRecoveryFacts {
+  /** The fumbling and recovering team, dead in the end zone it defends. */
+  team: TeamSide;
+  fumbleX: number;
+  /** Loose-ball facts for a fumble from inside the end zone. */
+  impetusTeam?: TeamSide;
+  momentumExceptionExcluded?: boolean;
+  momentumSpotX?: number;
+}
+
+export type RestrictedEndZoneRecoveryRuling =
+  | { kind: 'spot'; spotX: number; rule: '11-5-1' }
+  | { kind: 'safety'; scoringTeam: TeamSide; rule: '11-5-1' }
+  | { kind: 'touchback'; spotX: number; rule: '11-6-1' }
+  | { kind: 'unresolved'; missing: 'impetus_or_momentum' };
+
+/** 8-7-5(c)/8-7-6(c) kill a restricted teammate recovery at the fumble spot,
+ * or the recovery spot if behind it. When that spot is in the team's own end
+ * zone the ball is dead there in its possession: a safety on its own impetus
+ * (11-5-1(b)), a touchback on the opponent's (11-6-1), or the acquisition
+ * spot under the momentum exception (11-5-1 exception 2). A fumble from the
+ * field supplies its own impetus; no bat, kick or at-rest muff is represented
+ * (11-5-1 Note 2). */
+export function restrictedRecoveryInOwnEndZone(f: RestrictedEndZoneRecoveryFacts): RestrictedEndZoneRecoveryRuling {
+  const fromField = f.fumbleX > OWN_GOAL_X && f.fumbleX < OPP_GOAL_X;
+  if (!fromField && f.momentumSpotX !== undefined
+    && f.momentumSpotX > OWN_GOAL_X && f.momentumSpotX < OPP_GOAL_X) {
+    return { kind: 'spot', spotX: momentumDeadBallSpot(f.momentumSpotX, f.team), rule: '11-5-1' };
+  }
+  const impetusTeam = fromField ? f.team : f.impetusTeam;
+  if (impetusTeam === undefined || !fromField && f.momentumExceptionExcluded !== true) {
+    return { kind: 'unresolved', missing: 'impetus_or_momentum' };
+  }
+  if (impetusTeam === f.team) return { kind: 'safety', scoringTeam: other(f.team), rule: '11-5-1' };
+  return { kind: 'touchback', spotX: f.team === 'O' ? OWN_GOAL_X + 20 : OPP_GOAL_X - 20, rule: '11-6-1' };
+}
+
 export interface ForwardPassFacts {
   previousForwardPasses: number;
   possessionChangedBeforePass: boolean;
