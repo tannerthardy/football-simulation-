@@ -23,6 +23,8 @@ export const LAB_ROUTES: Record<string, RouteDef> = {
   // skips a waypoint that lies behind the receiver on the way to the next.
   lab_stop_go: { id: 'lab_stop_go', family: 'deep', depth: 20, end: 'continue', points: [{ d: 6.5, l: 0, s: 0.1 }, { d: 6.5, l: 1, s: 0 }, { d: 50, l: 1.5 }] },
   /** Vertical stem, then flatten to the sideline at 12: a deep out. */
+  /** A hitch that never clears the no-cover zone. */
+  lab_hitch4: { id: 'lab_hitch4', family: 'quick', depth: 4, end: 'settle', points: [{ d: 4.5, l: 0, s: 0.2 }, { d: 4, l: 0.3, s: 0 }] },
   lab_out12: { id: 'lab_out12', family: 'intermediate', depth: 12, end: 'continue', points: [{ d: 12, l: 0, s: 0.4 }, { d: 11.5, l: 12, s: 0.9 }] },
 };
 Object.assign(ROUTES, LAB_ROUTES);

@@ -278,25 +278,25 @@ export const COVERAGES: Coverage[] = [
     checks: { '3x1': ['cover4_stubbie'] },
   },
   {
-    id: 'cover4_poach', name: 'Quarters Poach (vs trips)', family: 'cover4', shell: 'two-high', man: false, press: false,
-    note: 'Backside corner solos X; the backside safety poaches trips #3 vertical.',
+    id: 'cover4_poach', name: 'Quarters Poach/Trix (vs trips)', family: 'cover4', shell: 'two-high', man: false, press: false,
+    note: 'Backside corner solos X; the backside safety keys #3 to X: overtakes #3 vertical or squeezes X; the hook matches #3 underneath with no carry.',
     roles: {
       CB_S: z('quarter_s_out', 'q_corner_mod'),
       SS: z('quarter_s_in', 'q_safety'),
       CB_W: { kind: 'man', prefer: ['W1'], lev: 'inside', protectDepth: true },
       FS: z('quarter_w_in', 'poach_safety'),
     },
-    underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_s', 'c3_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
+    underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_s', 'read_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
   },
   {
     id: 'cover4_stubbie', name: 'Quarters Stubbie (vs trips)', family: 'cover4', shell: 'two-high', man: false, press: false,
-    note: 'Trips corner locks #1; nickel, safety and hook build a triangle on #2/#3; backside plays quarters on X.',
+    note: 'Trips corner MEGs #1; nickel MUSH on #2, hook reads #3 (no carry), safety 3/2 read; backside plays quarters on X.',
     roles: {
       CB_S: { kind: 'man', prefer: ['S1'], lev: 'outside', protectDepth: true },
       SS: z('quarter_s_in', 'stubbie_safety'),
       ...QUARTERS_W,
     },
-    underneath: [seat('curl_flat_s', 'q_apex'), seat('hook_s', 'c3_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
+    underneath: [seat('curl_flat_s', 'mush'), seat('hook_s', 'read_hook'), seat('hook_mid', 'mike_3'), 'hook_w', 'curl_flat_w'],
   },
   {
     id: 'cover6', name: 'Cover 6 / Stuff (quarters strong, half weak)', family: 'cover6', shell: 'two-high', man: false, press: false,

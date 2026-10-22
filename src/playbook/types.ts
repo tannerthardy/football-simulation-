@@ -218,6 +218,8 @@ export type MatchRule =
   | 'poach_safety'
   | 'stubbie_safety'
   | 'invert_safety'
+  | 'read_hook'
+  | 'mush'
   | 'rat'
   | 'robber';
 

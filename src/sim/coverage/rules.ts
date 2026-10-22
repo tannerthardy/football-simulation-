@@ -82,14 +82,32 @@ const NO_COVER = 5;
  * A short stop zones off only while he sits; he can still turn upfield.
  * Outs, curls and in-breakers past the no-cover zone stay the corner's man.
  */
-function zoneOffOne(c: RuleCtx, one: ReceiverRead): boolean {
+function zoneOffOne(c: RuleCtx, one: ReceiverRead, china = true): boolean {
   if (c.state.mode === 'zoned') return true;
   if (one.deepest > NO_COVER) return false;
-  if (one.release === 'under' || one.release === 'flat' || one.release === 'in' || one.release === 'out') {
+  // Without a #2 to his side there is no Smash to sink under ("China is not
+  // available" vs any x1, HNFL-095): only #1 running shallow across ("In")
+  // takes the corner off him; a short stop or out stays his man.
+  const declared = china ? ['under', 'flat', 'in', 'out'] : ['under'];
+  if (declared.includes(one.release)) {
     c.state.mode = 'zoned';
     return true;
   }
-  return one.release === 'stop';
+  return china && one.release === 'stop';
+}
+
+/** #1 failed to clear the no-cover zone or came under: the "China"/"Under" picture an apex pushes to. */
+const oneShallow = (one: ReceiverRead | null): boolean => !!one && one.deepest <= NO_COVER
+  && (one.release === 'under' || one.release === 'in' || one.release === 'stop' || one.release === 'out');
+
+/** #3 to this side: a third receiver, or the back once he releases here. */
+const threeTo = (c: RuleCtx): ReceiverRead | null => ref(c, 3) ?? backTo(c);
+
+/** #3 is away: no third receiver here, and the back has released to the other side. */
+function threeAway(c: RuleCtx): boolean {
+  if (ref(c, 3)) return false;
+  const b = c.reader.readRef(c.sim, 'B');
+  return !!b && b.release !== 'none' && b.release !== 'block' && b.outSign !== c.sign;
 }
 
 /** Over-the-top help on #1 if he is going deep, else rob his in-breaker. */
@@ -194,7 +212,7 @@ function qCorner(c: RuleCtx, meg: boolean): Directive {
   const one = ref(c, 1);
   if (!one) return zoneOf(c);
   if (meg) return man(one, { lev: 'outside' });
-  if (zoneOffOne(c, one)) return zoneOf(c);
+  if (zoneOffOne(c, one, !!ref(c, 2))) return zoneOf(c);
   return man(one, { lev: 'outside' });
 }
 
@@ -236,15 +254,36 @@ function wallTwo(c: RuleCtx, handoff: number, readStem = false): Directive {
 /** Quarter-flat owns #2's acquired low out, including a later wheel.
  * Palms shares the seam wall but installs its corner as the flat matcher;
  * its apex must instead retain the curl. This is installed call knowledge,
- * not a query of the corner's private live choice or a promised handoff. */
+ * not a query of the corner's private live choice or a promised handoff.
+ *
+ * Beyond #2's flat (HNFL-094/365, Quarter Flat): when #1 fails to clear the
+ * no-cover zone or comes under ("China"/"Under"), the corner sinks and the
+ * apex pushes to #1's route. When #2 runs shallow inside with #3 away, the
+ * midpoint is occupied by #3 and cannot take a delivery: the apex carries #2
+ * back across himself. */
 function quarterFlat(c: RuleCtx): Directive {
   const two = ref(c, 2);
+  const one = ref(c, 1);
   const corner = c.sim.defAlign.coverage.roles[c.side === 'S' ? 'CB_S' : 'CB_W'];
   const cornerTakesFlat = corner?.kind === 'zone' && corner.rule === 'palms_corner';
+  const cornerOnOne = corner?.kind === 'zone' && corner.rule === 'q_corner_mod';
+  // Key #3 every tick: a declaration is believed only after it persists in
+  // his own reads, so a glance at the moment #2 breaks would come too late.
+  const away = threeAway(c);
   if (!cornerTakesFlat && two && c.state.mode !== 'zoned'
     && (c.state.mode === 'flat' || isQuickOut(two, c.sim))) {
     c.state.mode = 'flat';
     return man(two, { lev: 'inside', overTop: true });
+  }
+  if (c.state.mode === 'one' && one) return man(one, { lev: 'inside' });
+  if (c.state.mode === 'two' && two) return man(two, { lev: 'head' });
+  if (cornerOnOne && two && c.state.mode !== 'zoned' && oneShallow(one) && two.release !== 'flat') {
+    c.state.mode = 'one';
+    return man(one!, { lev: 'inside' });
+  }
+  if (two && c.state.mode !== 'zoned' && two.release === 'under' && two.deepest <= 7 && away) {
+    c.state.mode = 'two';
+    return man(two, { lev: 'head' });
   }
   return wallTwo(c, 10, true);
 }
@@ -311,33 +350,100 @@ function tampaMike(c: RuleCtx): Directive {
   return best ? man(best, { lev: 'inside', trail: true }) : zoneOf(c);
 }
 
-/** Poach (backside) safety vs trips: take #3 vertical over the top; otherwise help the middle. */
+/** Trix/Poach (backside) safety vs trips, key #3 to X: overtake #3's
+ * vertical; if #3 cancels, zone the quarter and squeeze to X (HNFL-197:
+ * "take #3 deep or squeeze to X"), capping his vertical or robbing his
+ * in-breaker, rather than floating to the middle of the field. */
 function poachSafety(c: RuleCtx): Directive {
   const other = c.side === 'S' ? 'W' : 'S';
   const three = ref(c, 3, other);
+  const x = ref(c, 1);
   if (c.state.mode === 'three' && three) return man(three, { overTop: true, lev: 'inside' });
   if (three && vertical(three, 6)) {
     c.state.mode = 'three';
     return man(three, { overTop: true, lev: 'inside' });
   }
-  if (three && three.release !== 'none') return zoneOf(c, 'deep_mid');
+  if (c.state.mode === 'x' || (three && three.release !== 'none' && three.release !== 'vertical')) {
+    c.state.mode = 'x';
+    return helpOne(c, x);
+  }
   return zoneOf(c);
 }
 
-/** Stubbie/Special trips safety: cap the inner verticals — #2 first, then #3; otherwise rob #2's in-breaker. */
+/**
+ * Read hook (Book/Stubbie/Trix midpoint, HNFL-309/270/197): key #3. Reroute
+ * #3 up the seam and hand him to the safety who overtakes him (no carry);
+ * match the final #3 underneath when he runs shallow; with #3 out to the
+ * flat, zone the hook and cut what comes under. A back releasing fast to
+ * this side ("fast #4") is pushed through and matched.
+ */
+function readHook(c: RuleCtx, handoff = 8): Directive {
+  const three = ref(c, 3);
+  const st = c.state;
+  if (st.mode === 'four') {
+    const b = backTo(c);
+    if (b) return man(b, { lev: 'inside' });
+  }
+  if (st.mode === 'three' && three) {
+    if (three.release === 'vertical' && three.depth >= handoff) st.mode = 'zoned';
+    else return man(three, { lev: 'head' });
+  }
+  const back = backTo(c);
+  if (three && back && st.mode !== 'zoned' && (back.release === 'flat' || back.release === 'out') && back.depth < 3) {
+    st.mode = 'four';
+    return man(back, { lev: 'inside' });
+  }
+  if (three && st.mode !== 'zoned') {
+    if (three.release === 'none') return readRelease(three);
+    if (three.release === 'vertical') {
+      if (three.depth < handoff) return { t: 'wall', r: three.r };
+      st.mode = 'zoned';
+    } else if ((three.release === 'under' || three.release === 'in' || three.release === 'stop') && three.depth < handoff) {
+      st.mode = 'three';
+      return man(three, { lev: 'head' });
+    } else if (three.release !== 'block') st.mode = 'zoned';
+  }
+  return cut(c) ?? zoneOf(c);
+}
+
+/**
+ * MUSH nickel (Stubbie/Book apex, HNFL-270/309): man on #2 unless he runs
+ * shallow, or unless #3 cancels him by going to the flat; then 7-seam-flat
+ * (zone the curl-flat). With #2 and #3 both vertical the nickel keeps #2,
+ * because the safety has #3.
+ */
+function mush(c: RuleCtx): Directive {
+  const two = ref(c, 2);
+  const three = ref(c, 3);
+  if (!two || c.state.mode === 'zoned') return zoneOf(c);
+  const cancels = !!three && (three.release === 'flat' || three.release === 'out') && three.depth < NO_COVER;
+  const shallow = two.deepest <= NO_COVER && two.release !== 'none' && two.release !== 'vertical' && two.release !== 'block';
+  if (cancels || shallow) {
+    c.state.mode = 'zoned';
+    return zoneOf(c);
+  }
+  if (two.release === 'none' || (two.release === 'vertical' && two.depth < 3)) return readRelease(two);
+  return man(two, { lev: 'inside' });
+}
+
+/** Stubbie/Book trips safety, the 3/2 read (HNFL-270/309/195): match #3 up
+ * the seam with vertical separation; if #3 cancels, push for width and cap
+ * #2 up and over (the nickel stays under him); otherwise rob #2's in-breaker. */
 function stubbieSafety(c: RuleCtx): Directive {
   const two = ref(c, 2);
   const three = ref(c, 3);
   if (c.state.mode === 'two' && two) return man(two, { overTop: true, lev: 'inside' });
   if (c.state.mode === 'three' && three) return man(three, { overTop: true, lev: 'inside' });
-  if (two && vertical(two, 6)) {
-    c.state.mode = 'two';
-    return man(two, { overTop: true, lev: 'inside' });
-  }
   if (three && vertical(three, 6)) {
     c.state.mode = 'three';
     return man(three, { overTop: true, lev: 'inside' });
   }
+  const cancelled = !three || (three.release !== 'none' && three.release !== 'vertical');
+  if (cancelled && two && vertical(two, 6)) {
+    c.state.mode = 'two';
+    return man(two, { overTop: true, lev: 'inside' });
+  }
+  if (cancelled && two && (two.release === 'in' || two.release === 'stop')) return { t: 'rob', r: two.r };
   return zoneOf(c);
 }
 
@@ -369,6 +475,8 @@ export function runRule(rule: MatchRule, c: RuleCtx): Directive {
     case 'poach_safety': return poachSafety(c);
     case 'stubbie_safety': return stubbieSafety(c);
     case 'invert_safety': return invertSafety(c);
+    case 'read_hook': return readHook(c);
+    case 'mush': return mush(c);
     case 'rat': return cut(c, zoneLandmark(c.zone, c.sim.offAlign)) ?? zoneOf(c);
     case 'robber': return zoneOf(c);
   }
