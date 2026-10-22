@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import {vi, describe, expect, it } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam,pickOffense,pickDefense } from '../src/league/team.js';
@@ -12,6 +12,9 @@ import { helperSupport } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { buildRunFits,executeRunFit,blockingIndicator } from '../src/sim/run-fits.js';
 import { tryTackles } from '../src/sim/tackle.js';
+// The library's installed fronts. SHORT_PACKAGE puts the Bear's Sam on the line
+// (six men), where Duo has no double to take: an offensive check, not this contract.
+vi.hoisted(() => { process.env.SHORT_PACKAGE = '0'; });
 const o=generateTeam(new Rng(11),'O','O',{strength:.55});
 const d=generateTeam(new Rng(12),'D','D',{strength:.55});
 function make(concept='iz_strong',form='ace_11',patch:Partial<DefensivePlayCall>={},flip=false,record=false) {

@@ -639,6 +639,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   // FRONT_ALIGN: each side's end man (the widest defender on the line) sets
   // the edge; his technique comes from the call against the look and his build.
   const edgeTech = new Map<DefSlot, Technique>(), edgeShift = new Map<DefSlot, number>();
+  // Vs a pair the 9 is the end's outside shoulder, inside the wing.
+  const pairShade = new Set<DefSlot>();
   const sideSign = (side: 'S' | 'W') => side === 'S' ? s : -s;
   // A wing: an attached receiver just outside the inline end, off the ball.
   const wingOn = (side: 'S' | 'W') => Object.values(off.spots).find(sp => !sp.inline && !sp.backfield
@@ -659,7 +661,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     // Installs (2017 Colts pp. 13, 79): vs a pair of ends the end plays a 9;
     // in nickel ("Auto") a 6 vs a near back, a 9 vs a dot or far back. Base
     // fronts keep their own map, at least on the end.
-    else if (wingOn(side)) tech = '9';
+    else if (wingOn(side)) { tech = '9'; pairShade.add(end); }
     else if (nickel && end.startsWith('DE')) tech = nearBack(side) ? '6' : '9';
     else if (!EDGE_TECH.includes(tech)) tech = '6';
     edgeTech.set(end, tech);
@@ -667,7 +669,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     // and never inside a tight end he is set on (a wide nine has room to
     // come in). Half the tracked slope: light ends also draw the wide calls.
     const mass = style.mass?.[end];
-    if (mass !== undefined) edgeShift.set(end, Math.max(clamp(-.025 * (mass - 118), tech === 'w9' ? -.4 : -.2, .4),
+    if (pairShade.has(end)) edgeShift.set(end, inlineOf(off.line) + SHOULDER - techniqueOffset(tech, true, off.line));
+    else if (mass !== undefined) edgeShift.set(end, Math.max(clamp(-.025 * (mass - 118), tech === 'w9' ? -.4 : -.2, .4),
       hasTE ? -techniqueOffset(tech, true, off.line) + inlineOf(off.line) : -Infinity));
   }
   for (const slot of present) {

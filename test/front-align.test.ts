@@ -77,9 +77,10 @@ describe('the end men and the Over Sam follow the installs\' rules from the look
     expect(near.y('DE_S')).toBeCloseTo(near.E, 9);
     expect(dot.y('DE_S')).toBeCloseTo(dot.E + 1.5, 9);
   });
-  it('on: vs a pair of ends the end plays a 9, in base too', async () => {
+  it('on: vs a pair of ends the end plays a 9 on the end\'s outside shoulder, inside the wing, in base too', async () => {
     const pair = await front(true, 'over', 'base43', {}, undefined, 'gun_wing_12');
-    expect(pair.y('DE_S')).toBeCloseTo(pair.E + 1.5, 9);
+    expect(pair.y('DE_S')).toBeCloseTo(pair.E + .57, 9);
+    expect(pair.y('DE_S')).toBeLessThan(pair.y('H'));
   });
   it('on: the Over Sam is a 90, the end\'s outside shade at linebacker depth', async () => {
     const off = await front(false), on = await front(true);

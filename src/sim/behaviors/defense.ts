@@ -29,8 +29,8 @@ import { DeepCoverage } from '../coverage-leverage.js';
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 /** Experimental (DL_KEY=1, off): a down lineman keys the blocker in front
  * of him. Before he has read run, a seen lateral first step that does not
- * retreat (over 0.35 yd/s across, not backing off over 0.5 yd/s: a zone
- * reach or cutoff step, not a pass set or kick slide) is mirrored: he keeps his alignment offset on that blocker and matches the
+ * retreat (over 0.35 yd/s across, not backing off over 0.5 yd/s, and not a
+ * high hat: a zone reach or cutoff step, not a pass set) is mirrored: he keeps his alignment offset on that blocker and matches the
  * step, instead of rushing upfield past it. In 2022 tracking backside DL move
  * with the line's first step (r = +0.72 at 0.5 s on zone); ours did not. */
 const DL_KEY = process.env.DL_KEY === '1';
@@ -90,12 +90,14 @@ export class PassRusher implements Behavior {
   /** DL_KEY: mirror a seen lateral first step of the man in front. */
   private keyStep(a: Agent, sim: PlaySim): MoveCommand | null {
     if (!this.key) {
-      const line = sim.offense.filter(o => KEY_LINE.has(o.slot) || sim.offAlign.spots[o.slot]?.inline);
+      // Linemen only: an end's release on a route is a pass key, not a step to mirror.
+      const line = sim.offense.filter(o => KEY_LINE.has(o.slot));
       const blocker = line.reduce((p, q) => Math.abs(q.pos.y - a.pos.y) < Math.abs(p.pos.y - a.pos.y) ? q : p);
       this.key = { blocker, offset: a.pos.y - sim.offAlign.spots[blocker.slot].pos.y };
     }
     const seen = sim.see(a, this.key.blocker), up = sim.attackDir(this.key.blocker.team);
-    if (Math.abs(seen.vel.y) < .35 || seen.vel.x * up < -.5) return null;
+    // A high hat is a pass set: rush it. A play-action fake shows low and can fool him.
+    if (seen.stance === 'high' || Math.abs(seen.vel.y) < .35 || seen.vel.x * up < -.5) return null;
     a.tags.add('dl-key-step');
     // Where the blocker is now: the picture is `age` old.
     const now = seen.pos.y + seen.vel.y * (seen.age ?? 0);
