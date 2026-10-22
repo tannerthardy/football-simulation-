@@ -34,7 +34,9 @@ checks `src/sim/coverage/rules.ts` against HonestNFL and DB manuals.
 [snap-reaction-research.md](snap-reaction-research.md) collects measured
 lineman get-off and reaction-time evidence (NGS get-off by position, college
 fire-off and stance studies, preparation effects, snap-count anticipation) and
-compares it with the engine's snap model.
+compares it with the engine's snap model. The tracked follow-up,
+[pass sets and first contact](../reviews/pass-set-contact.md), measures OL set
+depth and first OL–DL contact in NFL tracking and the sim with one operator.
 
 ## Other supplied and researched references
 

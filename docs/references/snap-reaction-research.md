@@ -111,8 +111,10 @@ a moving dot, pressing either the same side or the opposite side:
   and Motor Skills*, doi 10.1177/00315125241288605) links choice-reaction
   accuracy to fewer false starts.
 - Nothing public measures offensive-line first movement, set depth at 0.5
-  or 1.0 s, or first contact between OL and DL. Those can be measured from the
-  repo's 10 Hz tracking.
+  or 1.0 s, or first contact between OL and DL. The repo's 10 Hz tracking
+  measures them: [pass sets and first contact](../reviews/pass-set-contact.md)
+  (NFL tackles give about 0.9 yd by 0.5 s and meet edge rushers about 1.25 s
+  after the line moves; interior contact comes at about 0.8 s).
 
 ## Coaching rules already collected
 
