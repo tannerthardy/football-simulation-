@@ -77,6 +77,10 @@ describe('the end men and the Over Sam follow the installs\' rules from the look
     expect(near.y('DE_S')).toBeCloseTo(near.E, 9);
     expect(dot.y('DE_S')).toBeCloseTo(dot.E + 1.5, 9);
   });
+  it('on: with no end on his side a called 6 is a ghost, where the end would stand', async () => {
+    const f = await front(true, 'over', 'nickel', {}, undefined, 'gun_empty_11');
+    expect(f.y('DE_S') - Math.max(f.y('LT'), f.y('RT'))).toBeCloseTo(1.6, 9);
+  });
   it('on: vs a pair of ends the end plays a 9 on the end\'s outside shoulder, inside the wing, in base too', async () => {
     const pair = await front(true, 'over', 'base43', {}, undefined, 'gun_wing_12');
     expect(pair.y('DE_S')).toBeCloseTo(pair.E + .57, 9);

@@ -657,7 +657,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     if (!end) continue;
     let tech = frontSlots[end]!.tech;
     if (call.edge) tech = hasTE ? EDGE_CALL_TE[call.edge] : call.edge === 'tight' ? '9' : 'w9';
-    else if (!hasTE) tech = EDGE_TECH.includes(tech) ? tech : 'w9';
+    // With no end there a 6 or 7 is a ghost: he stands where the end would.
+    else if (!hasTE) tech = tech === '6' || tech === '7' ? '9' : EDGE_TECH.includes(tech) ? tech : 'w9';
     // Installs (2017 Colts pp. 13, 79): vs a pair of ends the end plays a 9;
     // in nickel ("Auto") a 6 vs a near back, a 9 vs a dot or far back. Base
     // fronts keep their own map, at least on the end.
