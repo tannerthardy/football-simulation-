@@ -55,7 +55,7 @@ function olDepth(ctx: AlignContext): Record<LineSlot, number> {
 }
 /** OL_STAGGER: an inline end's tracked depth (formations install 0.6). */
 const INLINE_DEPTH = 1.19;
-/** Experimental (DEF_ALIGN=1, off): the secondary aligns by its job, as on
+/** Default on (DEF_ALIGN=0 turns it off): the secondary aligns by its job, as on
  * film (2022 tracking at the snap by PFF coverage assignment,
  * scripts/diag/align/nfl_scheme.py). A corner's depth and shade come from his
  * role: the hard (flat) corner 4 yd and outside, a deep-third or
@@ -68,8 +68,8 @@ const INLINE_DEPTH = 1.19;
  * the ball (0.36 and 0.45 of its offset); a deep-middle (thirds) safety stays
  * in the middle 14.5 deep, a man-free safety shades 0.34 toward the ball.
  * Off: the installed spots. */
-const DEF_ALIGN = process.env.DEF_ALIGN === '1';
-/** Experimental (WR_ALIGN=1, off): receivers align as tracked
+const DEF_ALIGN = process.env.DEF_ALIGN !== '0';
+/** Default on (WR_ALIGN=0 turns it off): receivers align as tracked
  * (scripts/diag/align/nfl_scheme.py, 2022 tracking at the snap). The #1's room
  * to his sideline follows his route (ROUTE_ROOM: wide to run vertical or
  * inside, reduced to break out or across) or the run; without a call, a lone
@@ -77,8 +77,8 @@ const DEF_ALIGN = process.env.DEF_ALIGN === '1';
  * the #1's split (0.62 in trips) and a #3 at 0.40. The installed split put
  * every #1 at 18 yd, 6 yd from the boundary sideline, and slots at a fixed
  * 8.4-8.6. Off: the installed spots. */
-const WR_ALIGN = process.env.WR_ALIGN === '1';
-/** Experimental (FRONT_ALIGN=1, off): the front aligns on bodies, not gaps,
+const WR_ALIGN = process.env.WR_ALIGN !== '0';
+/** Default on (FRONT_ALIGN=0 turns it off): the front aligns on bodies, not gaps,
  * and its end men by who they are. A shaded technique sits on its blocker's
  * shoulder, 0.57 yd off his centre in 2022 tracking for centres and guards
  * alike (scripts/diag/align/, nfl-snap extract); the installed 1 and 3 sat in
@@ -101,10 +101,10 @@ const WR_ALIGN = process.env.WR_ALIGN === '1';
  * Over Sam is a "90" (outside shade at linebacker depth), on the line
  * head-up on a wing. An explicit edge call (tight, base, wide) overrides.
  * The call's gap is unchanged. */
-const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
+const FRONT_ALIGN = process.env.FRONT_ALIGN !== '0';
 /** SHORT_PACKAGE (experimental, off): see game/playcaller.ts. */
-const SHORT_PACKAGE = process.env.SHORT_PACKAGE === '1';
-/** Experimental (FRONT_STRENGTH=1, off): the front sets its own strength,
+const SHORT_PACKAGE = process.env.SHORT_PACKAGE !== '0';
+/** Default on (FRONT_STRENGTH=0 turns it off): the front sets its own strength,
  * apart from the coverage's receiver strength. With one attached end it sets
  * to him, whatever the receivers do: in 2022 tracking a 4-down front's 3
  * technique is on the end's side 82-86% of over/under snaps, 86% against
@@ -117,8 +117,8 @@ const SHORT_PACKAGE = process.env.SHORT_PACKAGE === '1';
  * preferences) follow the front; defensive backs keep the coverage's. Off: the
  * front sets to the coverage strength (more receivers, then the end, then the
  * field). */
-const FRONT_STRENGTH = process.env.FRONT_STRENGTH === '1';
-/** Experimental (FRONT_MENU=1, off; with the caller's menu, game/playcaller.ts):
+const FRONT_STRENGTH = process.env.FRONT_STRENGTH !== '0';
+/** Default on (FRONT_MENU=0 turns it off; with the caller's menu, game/playcaller.ts):
  * off-ball backers stand where 2022 tracking puts them for the called
  * front's family and the number of backers off the ball (medians of body
  * positions in line units, 0 the ball, 1 a guard, 2 a tackle, 3 an attached
@@ -126,8 +126,8 @@ const FRONT_STRENGTH = process.env.FRONT_STRENGTH === '1';
  * nickel Over stack the B gaps, Will at -1.4 and Mike at +1.7, both 4.6 deep;
  * three in a base Over put the Mike in the strong A gap at +0.5 between a
  * weak Will at -1.9 and a Sam at +2.7. Off: the front's installed techniques. */
-const FRONT_MENU = process.env.FRONT_MENU === '1';
-/** Experimental (BOX_ALIGN=1, off): in a zone call every detached inside
+const FRONT_MENU = process.env.FRONT_MENU !== '0';
+/** Default on (BOX_ALIGN=0 turns it off): in a zone call every detached inside
  * receiver (#2, #3) is answered before the snap. When no defender stands over
  * him (within 1.5 yd laterally, under 8 deep) or at his apex (between him
  * and the next receiver inside, or the end of the line), the nearest off-ball
@@ -150,10 +150,10 @@ const FRONT_MENU = process.env.FRONT_MENU === '1';
  * under center, 3.9 and 5.8 in the gun (medians, 1,678 and 1,131 snaps). The
  * installed spot, 3 yd outside and 7.5 deep, left him out of the box against
  * an attached end on every snap (tracked: within 2 yd of the end on 70%). */
-const BOX_ALIGN = process.env.BOX_ALIGN === '1';
+const BOX_ALIGN = process.env.BOX_ALIGN !== '0';
 /** SHELL_SHOW (experimental, off; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
-const SHELL_SHOW = process.env.SHELL_SHOW === '1';
+const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
 /** Default on (AGAP_ALIGN=0 turns it off; acts with FRONT_ALIGN): a lineman's 1
  * technique stands at his team's habit along the centre-guard split, not on
  * the centre's shoulder. In 2022 tracking the A-gap man of a 4-down

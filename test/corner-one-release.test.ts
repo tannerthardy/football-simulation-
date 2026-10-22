@@ -13,8 +13,9 @@ import { describe, expect, it, vi } from 'vitest';
 // rep never asks the corner the question. The scene is staged on the
 // installed rush; each long rep also asserts the ball was still held at
 // the end (`held`), so a staging break fails as staging, not as coverage.
-// OL_STAGGER sets the line deeper; these timed releases are staged on the flat line.
-vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.OL_STAGGER = '0'; });
+// OL_STAGGER sets the line deeper and WR_ALIGN moves the receivers' splits;
+// these timed releases are staged on the flat line and the installed splits.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.OL_STAGGER = '0'; process.env.WR_ALIGN = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 // Registers the lab routes for #1 (lab_curl7, lab_stop_go, lab_out_up4).
 import '../src/lab/coverage-scene.js';
