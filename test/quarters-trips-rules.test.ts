@@ -4,11 +4,7 @@
  * China vs an x1 side (HNFL-095), Trix (HNFL-197) and Stubbie (HNFL-270/309).
  * Each case has an opposing control; assertions read who took whom on film.
  */
-import { describe, expect, it, vi } from 'vitest';
-// Filmed on the installed front spots. With FRONT_ALIGN the Quarter Flat
-// case's #2 carry reads differently; checking it on the aligned front is a
-// follow-up for Coverage (G3).
-vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
+import { describe, expect, it } from 'vitest';
 import { filmScene, jobsOf, modeOf } from '../src/lab/coverage-scene.js';
 
 const after = (jobs: string[], job: string) => jobs.slice(jobs.indexOf(job) + 1);
@@ -23,9 +19,14 @@ describe('Quarter Flat apex', () => {
   });
 
   it('carries #2 shallow back across himself when #3 releases away, and delivers him otherwise', () => {
-    const away = filmScene({ formation: 'gun_spread_10', coverage: 'cover4', strong: { 1: 'go', 2: 'slant' }, weak: { 1: 'go', 2: 'seam' }, back: 'swing', until: 2.8 });
+    // The back's flat release gets out past the aligned weak end; a swing
+    // runs into him and stays behind the line, which reads as a block.
+    const away = filmScene({ formation: 'gun_spread_10', coverage: 'cover4', strong: { 1: 'go', 2: 'slant' }, weak: { 1: 'go', 2: 'seam' }, back: 'back_flat', until: 2.8 });
     expect(away.sim.offAlign.spots.RB.pos.y - away.sim.ballY).not.toBe(0);
     expect(Math.sign(away.sim.offAlign.spots.RB.pos.y - away.sim.ballY)).toBe(-away.sim.offAlign.strongSign);
+    const rb = away.sim.slot('RB')!;
+    expect(rb.pos.x - away.sim.los).toBeGreaterThan(-1);
+    expect(Math.sign(rb.pos.y - away.sim.ballY)).toBe(-away.sim.offAlign.strongSign);
     expect(modeOf(away, 'NB')).toBe('two');
     expect(jobsOf(away, 'NB').at(-1)).toBe(`man:${away.numbering.S2}`);
     const blocks = filmScene({ formation: 'gun_spread_10', coverage: 'cover4', strong: { 1: 'go', 2: 'slant' }, weak: { 1: 'go', 2: 'seam' }, until: 2.8 });
