@@ -894,6 +894,7 @@ export class Game {
     const selected = resolution.options.find(o => o.id === resolution.recommendedId && o.kind !== 'decline')
       ?? resolution.options.find(o => o.kind !== 'decline');
     if (!selected) throw new Error('NFL blocked snap cannot become a charged down');
+    if (selected.safety) throw new Error('NFL blocked snap cannot score a safety: the ball is dead at the previous spot');
     const entry = this.entry('penalty', 'Pre-snap violation; ball remains dead', 0, callLabel);
     entry.foulRecords = result.foulRecords;
     entry.fouls = calls.map((p, i) => ({ kind: p.kind, team: p.against === 'O' ? off.abbr : def.abbr,
