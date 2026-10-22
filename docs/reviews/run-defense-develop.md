@@ -434,6 +434,34 @@ The "under 4 yd" group is mostly other jobs: rushers on screens and flats,
 man defenders. The next step is to split `breakpoint.py` by the defender's job
 before another attempt.
 
+**Where the zone break is lost, by job** (`depth/breakpoint.py --by-job`).
+LBs and DBs under 8 yd off the ball break like tracked players. Deep DBs (8+
+yd) with the ball arriving within 8 yd of them do not:
+- Within 4 yd: −2.7 → −0.6 yd/s toward the catch point over 0.6 s, NFL −0.5 → +1.8.
+- 4–8 yd: +0.1 → +1.5, NFL +1.6 → +3.8.
+
+Matched by the target's depth at the throw: with a receiver under 6 yd, our
+deep DB retreats at 2.75 yd/s, the receiver's own speed; tracked deep DBs at
+0.5 (they sit and read). At 10–14 yd it is the passing side: our targets
+are still stemming at 4.75 yd/s against 3.25.
+
+**`DEEP_SIT` (dropped after two attempts).**
+- v1: a deep zone defender, or a deep match carry with `protectDepth`, whose
+  cushion exceeds the turn-and-run need holds his depth. Retreat 2.75 → 2.5
+  yd/s.
+  - The sit triggered on 69% of ticks, but `DeepCoverage.choose` overrode 79%
+    of them.
+  - Its recovery charge, (target − v)(turn + tau), is about 4.8 yd for a
+    sitting DB against a 3 yd/s stem. His own sprint law loses about 1.6.
+- v2: v1 plus that charge computed from the sprint law. Unit-tested against
+  step integration; patch kept outside the repo.
+  - Retreat still 2.75. Breaks 22.7%, flags 28; nothing moved.
+- At the throw these DBs are mostly in plain man or match carries:
+  `ManCoverage` keeps a fixed cushion over the receiver and moves at his
+  speed, and never reaches the depth guard.
+- The next step is a probe of which branch commands the retreat for each
+  of them before another attempt.
+
 **`DL_SQUEEZE` (the run crease, for the run-offense session).** At the frame
 the back reaches the line, the gap between the nearest linemen on each side
 of him (`depth/crease.py`, the run-offense session's definition) is 4.2–4.8 yd
