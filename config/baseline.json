@@ -84,7 +84,8 @@
     "SHELL_SHOW": "1",
     "COVER_CALL": "1",
     "PRESSURE_CALL": "1",
-    "AGAP_ALIGN": "1"
+    "AGAP_ALIGN": "1",
+    "GROUNDING_FACTS": "1"
   },
   "worldDefaults": {
     "handContact": "center",

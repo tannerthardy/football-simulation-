@@ -38,6 +38,45 @@ much as on the line. Entries cross-reference each other where that matters.
 | `rg3` | The run-offense research build on `claude/run-game-v3` (archived; #153 is closed). Its numbers don't certify develop. |
 | `NFL` | Mostly Big Data Bowl 2025 tracking (2022, weeks 1–9). The outcome bands are the scorecard's. |
 
+### Current: develop at `57f50fc3`
+
+`npm run scorecard -- --tier pr` at seeds 7 and 8 (24 games, default flags),
+2026-10-22, after the flag promotion (#210), the rule fixes (#211) and
+Defense's pursuit fixes (#205). One 12-game seed can swing points by 10 a game
+when games diverge early, so read single-seed moves with care. Compare against
+a base arm in the same run.
+
+| Metric | Sim | 90% range | NFL band | vs band |
+| --- | --- | --- | --- | --- |
+| Points / team-game | 38.17 | 34.88 to 41.50 | 21–23.5 | HIGH |
+| Scrimmage plays / team-game | 61.58 | 60.27 to 62.85 | 61–65 | OK |
+| Total yards / team-game | 453.52 | 418.72 to 485.55 | 320–345 | HIGH |
+| Pass rate (dropbacks / plays) | 67.9% | 66.5% to 69.6% | 56–62% | HIGH |
+| Completion % | 64.8% | 63.1% to 66.5% | 63–66% | OK |
+| Yards / attempt | 10.70 | 10.09 to 11.41 | 6.8–7.2 | HIGH |
+| Sack rate (per dropback) | 10.8% | 9.6% to 11.9% | 6–7.5% | HIGH |
+| INT rate | 5.0% | 4.3% to 5.7% | 2–2.5% | HIGH |
+| Pass TD rate | 8.9% | 7.9% to 9.9% | 4–4.8% | HIGH |
+| 20+ yd completions / att | 16.6% | 15.4% to 18.0% | 7–9% | HIGH |
+| aDOT | 9.19 | 8.87 to 9.49 | 7.5–8.5 | HIGH |
+| YAC / reception | 8.77 | 8.06 to 9.59 | 4.8–5.6 | HIGH |
+| Time to throw (s) | 2.50 | 2.48 to 2.53 | 2.7–2.9 | LOW |
+| Scramble rate | 7.5% | 6.1% to 8.8% | 3–5% | HIGH |
+| Separation at catch point (yd) | 3.41 | 3.32 to 3.51 | 2.8–3.2 (NGS 2022–24) | HIGH |
+| Rush yards / carry | 6.51 | 5.47 to 7.53 | 4.1–4.5 | HIGH |
+| Run stuff rate (<=0) | 23.4% | 21.0% to 26.1% | 16–20% | HIGH |
+| 10+ yd runs | 15.9% | 13.7% to 18.4% | 10–12% | HIGH |
+| Runs of 20+ that reach 40 | 66.7% | 56.4% to 75.5% | 25–35% (PR #190, BDB 2022) | HIGH |
+| Yards before contact (runs) | 1.07 | 0.78 to 1.38 | 1.5–2.3 | LOW |
+| Missed + broken tackles / play | 0.34 | 0.31 to 0.36 | 0.11–0.16 (source unverified: PFF, definition unknown) | HIGH |
+| Failed tackle opportunities / play (unique defenders) | 0.22 | 0.20 to 0.23 | internal |  |
+| 3rd-down conversion | 30.8% | 27.6% to 34.0% | 37–41% | LOW |
+| FG % | 89.6% | 82.9% to 95.0% | 83–87% | HIGH |
+| XP % | 95.5% | 93.0% to 97.7% | 94–97% | OK |
+| Fumbles lost / team-game | 0.52 | 0.35 to 0.71 | 0.4–0.7 | OK |
+| Punts / team-game | 5.98 | 5.54 to 6.42 | 3.5–4.5 | HIGH |
+| Penalties / team-game | 7.10 | 6.27 to 7.88 | 2.5–4 | HIGH |
+
 ### After the flag promotion
 
 On 2026-10-22, 31 realistic flags were turned on by default in five groups
@@ -55,6 +94,9 @@ same `pr` tier against develop `5a52dae3`:
 The per-group runs are in the promotion PR.
 
 ### Baseline: develop at `3f26d694`
+
+Historical measured reference, not the current trunk or a new baseline designation.
+See [GAPS](GAPS.md) for the ranked problems; current checkpoint scope and readiness are recorded in the relevant PRs.
 
 `npm run scorecard -- --tier pr` (12 games, 2 leagues, seed 7), default flags,
 2026-10-22. It takes about 4 minutes on 4 cores. The splits behind it are in
@@ -115,10 +157,10 @@ problem), resolved.
 | [RUN-8](#run-8) | Center covered on almost every snap | G2 | medium | on |
 | [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | on |
 | [RUN-10](#run-10) | Older run-blocking and second-level issues | G2 | low–medium | open |
-| [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | open |
-| [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | open |
+| [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
+| [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#205) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
-| [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | open |
+| [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work |
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
@@ -578,8 +620,12 @@ Carried over from the issue register; each was measured on an older develop.
   On a `rg3` build (`547af69d`), #191 had 42.3 pressures per 100 dropbacks (NFL 31.3). The
   excess came from edges shedding after contact (+10) and unblocked edges
   (+4). Same-side tackles blocked nobody on 86% of unblocked edges, vs 39%.
-- **Cause:** *likely* PRO-1 and PRO-3. The overall rate can look right while
-  the timing and source are wrong.
+- **Measurement qualification:** #203's merged `sampled-geometric-pressure-v2`
+  fixes post-release/post-whistle sample admission and unknown exposure. The numbers above remain the original #191/#198
+  measurements, not corrected v2 results. Native QB credit and geometric pressure
+  remain different measures; see the [published contract](https://github.com/tannerthardy/football-simulation-/pull/203).
+- **Cause:** *likely* PRO-1 and PRO-3, with the measurement limits above. The
+  overall rate can look right while the timing and source are wrong.
 - **Where:** `scripts/diag/passpro/` (#198), `scripts/diag/pass-pressure.py`, `scripts/diag/edge-rep.py` (#191).
 - **Adverse control to keep:** a play-action post-dig snap where a near-matched
   sack persists at 3.15–3.20 s (#189 film).
@@ -821,10 +867,32 @@ need personnel the sim doesn't have.
 
 - **Measure:** 6.8 penalties per team-game (`dev-24`), 7.5 (`dev-12`); NFL 2.5–4.
   Defensive offside is about three times the NFL rate (#190).
-- **Cause:** *hypothesis* (#190): hard counts draw defenders too easily.
-  `SNAP_REACT` models the snap as perception and timing, which makes this
-  explicit.
-- **Open:** which fouls are in excess, by type, before tuning.
+- **By type** (develop `fdd767ab`, scorecard pr-tier games: 12 games, seed 7;
+  NFL: nflverse 2023 regular season, accepted, 544 team-games). Accepted per
+  team-game, sim vs NFL:
+  - all: 9.17 vs 5.71. The band above (2.5–4) is below the NFL's own total;
+    needs-tanner.
+  - offensive holding 5.29 vs 0.89;
+  - intentional grounding 1.46 vs 0.10;
+  - false start 0.67 vs 1.14;
+  - defensive offside 0.62 vs 0.27; neutral zone and encroachment 0.25 vs 0.24;
+  - illegal contact 0.46 vs 0.16;
+  - none in the sim: DPI (NFL 0.50), defensive holding (0.32), delay of game
+    (0.29), unnecessary roughness (0.30), face mask (0.16).
+- **Cause, grounding:** *confirmed* (G6). All 37 grounding calls were aimed
+  passes, not throwaways: 25 thrown from inside a defender's grasp, the rest
+  pressured misses landing 2.4–5.8 yd from any eligible receiver. 8-2-1's
+  contact exception was never fed (`contactAlteredPass` always false) and
+  "vicinity" meant within arm's reach of the ball's path. `GROUNDING_FACTS`
+  adds both facts: 1.46 → 0.46 on identical games.
+- **Cause, holding:** *confirmed* (G6). None of the 167 called holds followed a
+  deliberate grab (`tryHold`): all came from the ordinary controlling grip
+  (`hold = 0.25 × control × arm force`) on a defender moving off the block,
+  called on a single interval of 0.15 yd/s opposing Δv. Open: what makes a
+  grip prohibited grabbing.
+- **Cause, offside:** *hypothesis* (#190): hard counts draw defenders too
+  easily. `SNAP_REACT` models the snap as perception and timing.
+- **Open:** holding (above), then the missing defensive fouls.
 
 <a id="rule-2"></a>
 ### RULE-2: Rule coverage incomplete
@@ -953,10 +1021,20 @@ zone).
 <a id="perf-1"></a>
 ### PERF-1: Games are slow to simulate
 
-- **Measure:** 31.5 CPU s per game (`dev-24`), 43–70 s (`dev-12`, depending
-  on how many workers share the CPU); some games run
-  60–80 s, and high-scoring games are slower. The main branch ran at 1.2 s per
-  game. `physics/world.ts` takes 43% of a profiled game.
+- **Historical measure:** 31.5 reported CPU s per game (`dev-24`), with
+  43–70 s reported for `dev-12` and 60–80 s on some games. The original
+  timing operators/hardware must be retained; scorecard `ms` is elapsed, not
+  CPU. The legacy engine's reported 1.2 s is not a matched throughput comparison.
+- **Merged bounded repair:** #204 at `53d5c241` removes repeated lean-release
+  closures without changing physical calculations. On one worker, six quick
+  games use 180.117→154.302 measured child CPU seconds and 155.609→130.278
+  elapsed seconds; the compiled ordinary-game control saves 5.7% CPU / 6.1%
+  elapsed. All six records/probes and two full native state/RNG traces match;
+  existing PR-tier CI matches 1,488 play records across 12 games per arm.
+  These are sequential workload-specific results, not universal throughput.
+- **Profile:** #204's complete sampling tally places 58% in World and 10.7%
+  in lean-release function creation/naming. The earlier 43% was partial;
+  sampling shares are not measured CPU. [Exact pins, failures and limits](https://github.com/tannerthardy/football-simulation-/pull/204).
 - **Effect:** a CI comparison (12 games each for the base and the head)
   takes about 13 minutes, and the
   `game-record` integration tests hit their 60-s budget on a loaded machine
@@ -971,10 +1049,12 @@ zone).
   arm, and 5-point precision needs 22–42 games per arm (#191).
 - With about 30 metrics at 90% intervals, about 3 false "moved" readings are
   expected per comparison (#192).
-- `baseline-runner.test.ts` refuses Node versions other than 22.23.3, so 3
-  core tests fail on 22.22 machines.
-- `test:data` has 2 failures and 2 errors in `test_orientation_motion_audit`,
-  reproduced on #190's tip (#194).
+- `baseline-runner.test.ts` requires the supported Node 22.23.3. The earlier
+  three failures on Node 22.22 do not reproduce on that runtime (#203 and
+  combined checkpoint: all five baseline-runner checks pass).
+- Earlier `test_orientation_motion_audit` failures/errors were reported on
+  #190's tip (#194). All seven orientation checks pass on the assembled
+  #202/#203/#204 candidate. This does not claim the complete data suite passed.
 - The NFL play-call replay isn't built yet (CALL-1).
 
 ## Repository and process
@@ -982,19 +1062,25 @@ zone).
 <a id="repo-1"></a>
 ### REPO-1: Repository and process debt
 
-- GitHub's default branch is still the old engine (`main`, Oct 8). The trunk is
-  `develop` (REPO-001).
-- About 20 Codex draft PRs (#86–#166) and #114 sit outside the integration
-  pass. They're decided at the first review.
-- `docs/` holds about 128 MB of evidence and receipt files.
-- Flags: develop has 44; the integration pass adds about 35, all off by
-  default. Each must be made the default or deleted by review 2.
-- **Two meanings of "default":** `config/baseline.json` turns flags on for
-  `baseline:run` profiles (13 on `prof194`) while the source defaults stay off.
-  The scorecard and games use the source defaults. Numbers from a profile are
-  not numbers from develop.
-- `docs/STATUS.md`, `INTEGRATION.md`, `ISSUES.md` and `WORKBOARD.md` describe
-  the old process. `PLAN.md` and `GAPS.md` replace it.
+- GitHub's default branch is still `claude/football-sim-engine`, verified
+  2026-10-22; the trunk is `develop`. See the [dated branch map](BRANCHES.md#verified-entry-points--2026-10-22) (REPO-001).
+- The roughly 20 older Codex drafts (#86–#166) and #114 were a prior audit
+  snapshot, not the current ready queue. Their uncertain dispositions remain
+  separate; this checkpoint does not close or merge research to tidy the list.
+- Before this factual refresh, tracked `docs/` totaled 131,719,397 bytes
+  (about 125.6 MiB), including the source-diagram library and research. This
+  is not 128 MB of disposable receipts. Fixtures and unique evidence remain.
+- [FLAGS](FLAGS.md) is the source-checked switch inventory; #210 promoted
+  its documented defaults. Counts and expiry decisions belong there rather
+  than being duplicated in repository status. This navigation cleanup changes
+  no source default.
+- **Two meanings of "default":** historical `baseline:run` profiles can
+  override source defaults; `prof194` used 13 enabled profile flags. #210
+  subsequently changed the code defaults recorded in FLAGS. Scorecard/game
+  results describe their actual source and overrides, not a moving branch name.
+- STATUS, INTEGRATION, ISSUES and WORKBOARD preserve the old process;
+  PLAN/GAPS replace their operating instructions. Navigation-only maintenance
+  preserves evidence in place; no directory move follows.
 
 ## Not modeled yet
 
