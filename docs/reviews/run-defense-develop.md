@@ -405,6 +405,63 @@ commands `vmax` in the open; NFL receivers cruise near 6 yd/s) belongs to
 the run-offense session. Slowing him would steer a player away from what works,
 so it is not proposed either.
 
+## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
+
+**Question.** With the line set on, the run break rate matches tracking (13.2%
+vs 12.6%, `depth/runbreak.py`). But fewer defenders are around the runner at
+first contact: 1.55 others within 3 yd vs 2.44. Who is missing, and why?
+
+**By where the contact is** (`depth/runrally.py`, one operator):
+
+| First contact | Others within 3 yd, sim / NFL | Closing of men 3–10 yd away, sim / NFL |
+| --- | --- | --- |
+| Behind the line | 1.04 / 1.97 | +1.0 / +1.5 yd/s |
+| 0–2 yd | 2.05 / 2.91 | 0.0 / +1.2 |
+| 2–5 yd | 1.52 / 2.46 | −2.5 / +0.3 |
+| 5+ yd | 1.00 / 1.45 | −3.5 / −0.5 |
+
+Defensive linemen are most of the gap. Those 3–10 yd from the runner move
+1.5–1.9 yd/s (NFL 2.4–4.0). With contact 2–5 yd past the line they fall
+behind the runner at 4.3 yd/s (NFL 1.5). Backs are fine.
+
+**Why** (`depth/dlpursuit.ts`): at first contact, 63–85% of those linemen are
+still engaged with a blocker and winning by the leverage measure (win
+0.7–0.96).
+- Off, a first-level man tries to shed only when the runner is within 3.5 yd.
+- `DL_ESCAPE` let him try once the runner had declared anywhere: attempts
+  13 → 31%, 37 → 51% and 52 → 86% by band, but he stays engaged.
+- A second variant gave him the support players' direct exit toward the runner
+  when the blocker is not between them. Still about 80% engaged.
+- At those sheds the hand joint carries about 690 N, the bodies touch
+  (−0.02 yd), and the blocker controls the hands 65% of the time.
+
+Two pieces hold him:
+- `setContactHands` gives a blocker with inside hands steering up to 0.7 of
+  his arm force, plus a pull up to 0.25 × control.
+- The shed's work-off request presses into the blocker (axis × 0.6) while it
+  works across his face, so the bodies never come apart.
+- The experimental `DL_HANDS` + `HAND_MOTOR` rip only moves 2–5 yd from 62% to
+  47% engaged.
+- Linemen who are free also start slowly: they ask for 5–7.7 yd/s and move
+  1.3–2.1.
+
+Two attempts did not repair it, so `DL_ESCAPE` is not committed. The escape
+execution (hand law, the work-off request, a released man's start) is handed
+to the contact owner on the workboard. The run outcomes it would move already
+match tracking with the line set, so this is realism, not a bad statistic.
+
+**#194's calling with and without the line set.** Rerun of the def-alignment
+session's arm B at `ecba815`, 8 games, seed 101:
+
+| | Their B | B + line set | NFL |
+| --- | --- | --- | --- |
+| Run broke contact | 18.8% | 12.7% | 12.5% |
+| Run yards, median p90 | 3.95, 17.9 | 3.46, 11.7 | 3.0 |
+| Report flags | 50 | 37 | |
+
+Their adverse run result is mostly line play, which the set addresses.
+On runs, two deep at the snap is 50% there vs 26% tracked (told to that session).
+
 ## Run defense for the run-offense session (default off, not proposed)
 
 The run-offense session (`claude/run-game-v3`) listed defensive mechanisms its
@@ -870,8 +927,8 @@ holding the deep defender back.
 (interceptions by source), `holds.ts` (holds by origin and outcome, full
 telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
-`frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, and
-lab probes `catchact.ts`, `sideprobe.ts` (the side window from inside the
+`frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
+`runrally`, and lab probes `dlpursuit.ts` (linemen at a run's first contact), `catchact.ts`, `sideprobe.ts` (the side window from inside the
 chase), `breakprobe.ts` (the nearest defender through the flight). `scripts/mechanics/nfl_ytg.py` writes the
 yards-to-goal filter their `--ytg60` option reads. `scripts/diag/runblock/`:
 `blockedfirst.py`, `lbfill.py`, `dlflow.py` (NFL and sim, one operator),
