@@ -7,6 +7,19 @@ to this branch and asked that defenses "know how to line up in a variety of
 fronts and looks ... and all the checks". Everything here is default-off;
 #190's `DEF_ALIGN`, `FRONT_ALIGN` and `SHORT_PACKAGE` are kept and built on.
 
+**Candidate settings (user-approved, 2026-10-22).** After the run-defense
+rerun (see Game check), the user approved turning on the combination it
+measured. This branch's `config/baseline.json` sets twelve flags to "1":
+- the eight alignment flags: `FRONT_ALIGN DEF_ALIGN SHORT_PACKAGE
+  FRONT_STRENGTH FRONT_MENU BOX_ALIGN DEF_PACKAGE SHELL_SHOW`;
+- #190's line set: `PAD_LEVERAGE DL_ANCHOR DL_FLATTEN SNAP_REACT`.
+
+`DL_FLATTEN_WON` and `LB_LANDMARK` stay "0". Source defaults stay off, so
+plain `npm test` and env-less runs are unchanged. The profile drives baseline
+runs, verification and games. Acceptance into develop is still the
+integration owner's exact combined verification, and the line flags' physics
+promotion is still the primary's.
+
 **Question.** Given the offense's look (personnel, attached ends, receiver
 distribution, backs) and the situation, does the defense line up the way NFL
 defenses do: which front, set to which side, who stands in the box, who
