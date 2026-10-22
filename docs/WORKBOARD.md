@@ -1,14 +1,21 @@
 # Current work ownership
 
-## Match corner #1 release (coverage audit §1) — 2026-10-22
+## Coverage match rules and pre-snap checks — 2026-10-22
 
-Claude claims only `c3Corner`, `qCorner` (MOD branch) and the replaced
-`under` helper in `src/sim/coverage/rules.ts`, plus an additive
-`ReceiverRead.deepest` in `reads.ts`, on `claude/friendly-bardeen-56kqo2`
-from accepted `d91c9014`. No other rule, judgment, technique or flag changes.
-No open PR claimed these functions. #127's held `quarterFlat` edit is
-untouched. Catching keeps broader coverage triage. Focused evidence:
-[review](reviews/corner-one-release.md). Integration owns combined verification.
+Claude claims the pattern-match rules in `src/sim/coverage/rules.ts`, the
+additive `ReceiverRead.deepest` in `reads.ts`, coverage catalog entries and
+checks in `src/playbook/coverages.ts`, the new `src/playbook/structure.ts`,
+`src/lab/coverage-scene.ts`, and the coverage-check selection in the
+defensive coordinator, on `claude/friendly-bardeen-56kqo2` (PR #193) from
+accepted `d91c9014`. Judgment, techniques, man/zone movement and
+`alignment.ts` are not claimed; the defensive pre-snap alignment work (PR
+#190) keeps `alignment.ts`, `presnap-rules.ts` and its `playsim.ts` hunks.
+The only `playsim.ts` change here is the one-line check call. #127's held
+`quarterFlat` edit predates and is superseded by the sourced Quarter Flat
+rules here; its author should reconcile. Sources and status:
+[coverage checks](references/coverage-checks/README.md); first evidence:
+[corner #1 release](reviews/corner-one-release.md). Integration owns
+combined verification.
 
 ## #189 finished-work checkpoint — composition and verification complete
 
