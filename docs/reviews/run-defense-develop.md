@@ -318,6 +318,150 @@ start under a 0.15–0.3 s perception delay should allow that. This is
 coverage technique (Catching's on the workboard) plus turn and start
 physics. Handed off with the panel; no change made.
 
+## Breaks after the catch on develop (diagnosis; two attempts dropped)
+
+**Question.** With the recommended set (`PAD_LEVERAGE`, `DL_ANCHOR`,
+`DL_FLATTEN`, `SNAP_REACT`; 8 games, `sim-levs`), catch contacts are broken
+24% of the time (NFL 12.6%). Is that the tackle (physics), the tackler's
+approach (controller), or what happens before the catch?
+
+**Only fast carriers break too often** (`depth/catchbreak.py`, one operator):
+- Mid-speed carriers (3–5.5 yd/s): sim 7% broken, NFL 9%.
+- Fast carriers (5.5+): sim 47%, NFL 23%.
+- Approach angles match: from behind 71% vs 66%.
+- On fast carriers, sim first contact is made from further away: 36% at 1.5 yd
+  or more between the bodies' centers (NFL 7%), and those break 60%.
+
+**What the first act is** (`depth/catchact.ts`, 6 games): on fast carriers,
+25% of first acts are lunges from 1.7 yd. The tackler is at 4.8 yd/s against
+the carrier's 6.7, closing at about 0. Lunges get away 77%; form tackles 20%.
+One second earlier, the lunging tackler was 2.6 yd ahead and 3.3 yd to the
+side, asking for 9.1 yd/s and running 3.8. The receiver ran past him.
+
+**The situation, both sources** (`depth/sidepass.py`). A defender 1.5–4 yd
+ahead of the receiver along his path and 1.5–4.5 yd to his side, the receiver
+at 3–6 yd/s, before any contact. Over the next 1.0 s:
+
+| | Met | Passed | Receiver speed change, 0.5 s | Defender velocity along the path |
+| --- | --- | --- | --- | --- |
+| NFL | 52% | 23% | −0.14 | 0.0 |
+| Sim | 27% | 65% | +1.0 | −1.7 |
+
+The sim defender's momentum is coming back at the receiver, who accelerates
+past a body that cannot reverse in time. Turning and speed-up capacity match
+tracking (`pursuit/turn_capacity.py`), so this is not a body limit.
+
+**Two defender-side attempts, both dropped** (8 games each, same flags):
+- `PURSUIT_ACCEL`: `pursuitPoint` forecasts a runner seen speeding up to top
+  speed. Over a 0.7 s intercept that moves the aim only 0.4 yd. Breaks
+  24.3%, met 37% (about 100 situations), YAC p90 23.5 → 30.4, mismatch flags
+  28 → 39.
+- `PURSUIT_BODY`: `chase` aims for the earliest point where it can put its body
+  in the runner's path, falling back to arm's length. At window entry the
+  aim is still 0.8–1.2 yd behind the defender (`depth/sideprobe.ts`), because
+  the earliest meeting point is behind him whatever the radius. Breaks 25.3%,
+  met 21%, flags 28.
+
+**Re-diagnosis: the race starts in the air.** `pursuit/accel_by_side.py` and
+the new `depth/airclose.py` read the defender at the catch and through the
+flight:
+- At the catch, the nearest defender (within 4 yd) closes at:
+  - beside the receiver: 0.89 yd/s (NFL 2.46);
+  - behind him: −0.25 (NFL 0.73).
+- Only 5% of those defenders are ahead of the receiver (NFL 12%).
+- Through the flight in zone, the nearest defender closes 0.12 yd (NFL 0.65)
+  while the ball is in the air longer (1.0 s vs 0.8). He arrives at 1.5 yd/s
+  (NFL 2.1), into tighter windows (3.4 yd at the throw vs 4.4).
+- Man coverage is closer (−0.03 vs +0.36 yd).
+
+**The break itself** (`depth/breakcurve.py` on both sources,
+`depth/breakprobe.ts` inside the sim). Take the defender nearest the target at
+the throw, in zone coverage:
+- His speed from the release to +0.8 s:
+  - NFL: rises steadily, 3.8 → 5.6 yd/s (separation 2–5 yd at the throw).
+  - Sim: dips, 4.0 → 3.4 at +0.4 s, then 4.1.
+- With the receiver tight (under 2 yd), ours loses ground until +0.6 s
+  (closing −1.6 yd/s at +0.4 s, NFL −0.25).
+
+Inside the sim:
+- He recognizes the throw at +0.25 s (`onBall`).
+- Until then his coverage asks him to face 60–80° off his travel, eyes on the
+  quarterback; 21–39% are backpedaling.
+- After that he asks for 7.6–9.7 yd/s within 15–37° of his travel but has
+  only 3–3.8 by +0.6 s: the hip turn and start come after recognition. NFL
+  defenders are already accelerating at the release.
+- There is a throw-selection part too. On zone throws with 5+ yd of
+  separation, our target is running away from the nearest defender at
+  2.7 yd/s at the release (NFL 0.4): the vertical-route finding already
+  handed to passing.
+
+NFL defenders are driving on the catch point when the ball arrives. Ours start
+the after-catch race nearly flat-footed and come at the receiver from where he
+is, so the receiver who accelerates wins. That is coverage technique on the
+throw (`sawThrow`/`playBall`, Catching on the workboard), plus the passing
+side's flight time. It is handed off with these operators, and no engine
+change is proposed here. The receiver's open-field speed (`BallCarrier`
+commands `vmax` in the open; NFL receivers cruise near 6 yd/s) belongs to
+the run-offense session. Slowing him would steer a player away from what works,
+so it is not proposed either.
+
+## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
+
+**Question.** With the line set on, the run break rate matches tracking (13.2%
+vs 12.6%, `depth/runbreak.py`). But fewer defenders are around the runner at
+first contact: 1.55 others within 3 yd vs 2.44. Who is missing, and why?
+
+**By where the contact is** (`depth/runrally.py`, one operator):
+
+| First contact | Others within 3 yd, sim / NFL | Closing of men 3–10 yd away, sim / NFL |
+| --- | --- | --- |
+| Behind the line | 1.04 / 1.97 | +1.0 / +1.5 yd/s |
+| 0–2 yd | 2.05 / 2.91 | 0.0 / +1.2 |
+| 2–5 yd | 1.52 / 2.46 | −2.5 / +0.3 |
+| 5+ yd | 1.00 / 1.45 | −3.5 / −0.5 |
+
+Defensive linemen are most of the gap. Those 3–10 yd from the runner move
+1.5–1.9 yd/s (NFL 2.4–4.0). With contact 2–5 yd past the line they fall
+behind the runner at 4.3 yd/s (NFL 1.5). Backs are fine.
+
+**Why** (`depth/dlpursuit.ts`): at first contact, 63–85% of those linemen are
+still engaged with a blocker and winning by the leverage measure (win
+0.7–0.96).
+- Off, a first-level man tries to shed only when the runner is within 3.5 yd.
+- `DL_ESCAPE` let him try once the runner had declared anywhere: attempts
+  13 → 31%, 37 → 51% and 52 → 86% by band, but he stays engaged.
+- A second variant gave him the support players' direct exit toward the runner
+  when the blocker is not between them. Still about 80% engaged.
+- At those sheds the hand joint carries about 690 N, the bodies touch
+  (−0.02 yd), and the blocker controls the hands 65% of the time.
+
+Two pieces hold him:
+- `setContactHands` gives a blocker with inside hands steering up to 0.7 of
+  his arm force, plus a pull up to 0.25 × control.
+- The shed's work-off request presses into the blocker (axis × 0.6) while it
+  works across his face, so the bodies never come apart.
+- The experimental `DL_HANDS` + `HAND_MOTOR` rip only moves 2–5 yd from 62% to
+  47% engaged.
+- Linemen who are free also start slowly: they ask for 5–7.7 yd/s and move
+  1.3–2.1.
+
+Two attempts did not repair it, so `DL_ESCAPE` is not committed. The escape
+execution (hand law, the work-off request, a released man's start) is handed
+to the contact owner on the workboard. The run outcomes it would move already
+match tracking with the line set, so this is realism, not a bad statistic.
+
+**#194's calling with and without the line set.** Rerun of the def-alignment
+session's arm B at `ecba815`, 8 games, seed 101:
+
+| | Their B | B + line set | NFL |
+| --- | --- | --- | --- |
+| Run broke contact | 18.8% | 12.7% | 12.5% |
+| Run yards, median p90 | 3.95, 17.9 | 3.46, 11.7 | 3.0 |
+| Report flags | 50 | 37 | |
+
+Their adverse run result is mostly line play, which the set addresses.
+On runs, two deep at the snap is 50% there vs 26% tracked (told to that session).
+
 ## Run defense for the run-offense session (default off, not proposed)
 
 The run-offense session (`claude/run-game-v3`) listed defensive mechanisms its
@@ -783,7 +927,9 @@ holding the deep defender back.
 (interceptions by source), `holds.ts` (holds by origin and outcome, full
 telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
-`frontman`, `rally`, `zonebreak`. `scripts/mechanics/nfl_ytg.py` writes the
+`frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
+`runrally`, and lab probes `dlpursuit.ts` (linemen at a run's first contact), `catchact.ts`, `sideprobe.ts` (the side window from inside the
+chase), `breakprobe.ts` (the nearest defender through the flight). `scripts/mechanics/nfl_ytg.py` writes the
 yards-to-goal filter their `--ytg60` option reads. `scripts/diag/runblock/`:
 `blockedfirst.py`, `lbfill.py`, `dlflow.py` (NFL and sim, one operator),
 `lbtrace.ts`, `dltrace.ts` (lab backers and backside DL over time).
