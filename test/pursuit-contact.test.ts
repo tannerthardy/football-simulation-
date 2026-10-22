@@ -1,4 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
+// SAFETY_TEMPO (default on) holds the deep safety's depth until the back
+// declares, as tracked; the cap case checks the installed cap it replaces.
+vi.hoisted(() => { process.env.SAFETY_TEMPO = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';

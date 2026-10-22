@@ -38,10 +38,26 @@ much as on the line. Entries cross-reference each other where that matters.
 | `rg3` | The run-offense research build on `claude/run-game-v3` (archived; #153 is closed). Its numbers don't certify develop. |
 | `NFL` | Mostly Big Data Bowl 2025 tracking (2022, weeks 1–9). The outcome bands are the scorecard's. |
 
+### After the flag promotion
+
+On 2026-10-22, 31 realistic flags were turned on by default in five groups
+(line play, pre-snap alignment, ball and run defense, motion, pressure). The
+same `pr` tier against develop `5a52dae3`:
+
+- points 50.6 → 37.8 and total yards 607 → 461 per team-game;
+- rush yards per carry 10.5 → 7.8, stuffs 15.7% → 21.5%;
+- sacks 5.1% → 11.4% of dropbacks, now above the NFL's 6–7.5% (see PRO-1);
+- interceptions 9.0% → 6.0%;
+- aDOT 10.0 → 9.2, time to throw 2.60 → 2.49 s;
+- 3rd-down conversion 40% → 31%;
+- missed and broken tackles and penalties did not move.
+
+The per-group runs are in the promotion PR.
+
 ### Baseline: develop at `3f26d694`
 
 Historical measured reference, not the current trunk or a new baseline designation.
-Current merged code and checkpoint scope are in [GAPS](GAPS.md#checkpoint-status--2026-10-22-americaphoenix).
+See [GAPS](GAPS.md) for the ranked problems; current checkpoint scope and readiness are recorded in the relevant PRs.
 
 `npm run scorecard -- --tier pr` (12 games, 2 leagues, seed 7), default flags,
 2026-10-22. It takes about 4 minutes on 4 cores. The splits behind it are in
@@ -86,7 +102,8 @@ observations than to 1,000 plays (`scripts/diag/arm-power.py`, #191).
 Severity says how much the problem distorts ordinary football: **high**
 changes most games, **medium** shows up in specific situations, **low** is
 rare or cosmetic. Status: open, in work, flag (a fix exists behind a
-default-off flag), resolved.
+default-off flag), on (a fix is on by default but not yet shown to close the
+problem), resolved.
 
 | ID | Problem | Gap | Severity | Status |
 | --- | --- | --- | --- | --- |
@@ -94,12 +111,12 @@ default-off flag), resolved.
 | [RUN-1](#run-1) | Inside-run creases open wide and don't close | G2 | high | in work |
 | [RUN-2](#run-2) | Long runs don't get caught: the deep tail | G2, G1 | high | open |
 | [RUN-3](#run-3) | Double teams drive defenders back much too far | G2 | medium | open |
-| [RUN-4](#run-4) | Defensive linemen run upfield past reach blocks | G2 | medium | flag |
-| [RUN-5](#run-5) | Pad level had no effect on a push | G2 | medium | flag |
+| [RUN-4](#run-4) | Defensive linemen run upfield past reach blocks | G2 | medium | on |
+| [RUN-5](#run-5) | Pad level had no effect on a push | G2 | medium | on |
 | [RUN-6](#run-6) | Gap-scheme blockers took the wrong defenders | G2 | medium | resolved (#192) |
 | [RUN-7](#run-7) | The lead puller misses a Mike stacked inside his path | G2 | medium | open |
-| [RUN-8](#run-8) | Center covered on almost every snap | G2 | medium | flag |
-| [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | flag |
+| [RUN-8](#run-8) | Center covered on almost every snap | G2 | medium | on |
+| [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | on |
 | [RUN-10](#run-10) | Older run-blocking and second-level issues | G2 | low–medium | open |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | open |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | open |
@@ -108,22 +125,23 @@ default-off flag), resolved.
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
+| [PRO-5](#pro-5) | No pass protection calls | G9 | high | open |
 | [COV-1](#cov-1) | Zone defenders barely close while the ball is in the air | G3 | high | open |
 | [COV-2](#cov-2) | Too much yardage per attempt and after the catch | G3 | high | open |
 | [COV-3](#cov-3) | Coverage rules and calls not yet complete | G3 | medium | in work (#193) |
-| [COV-4](#cov-4) | Defenders react late to jet motion | G3 | low | flag |
+| [COV-4](#cov-4) | Defenders react late to jet motion | G3 | low | on |
 | [COV-5](#cov-5) | Older coverage contracts that fail or are unproven | G3 | medium | open |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
 | [QB-2](#qb-2) | Too many scrambles, and completions slightly low | G5, G7 | low | open |
 | [KICK-1](#kick-1) | Kicking too accurate, too many punts | — | low | open |
-| [ALN-1](#aln-1) | Defensive pre-snap picture unlike tracking | G2, G3 | medium | flag |
+| [ALN-1](#aln-1) | Defensive pre-snap picture unlike tracking | G2, G3 | medium | on |
 | [ALN-2](#aln-2) | Offensive formations over-compress the box | G2, G7 | medium | open |
 | [RULE-1](#rule-1) | Too many penalties, especially defensive offside | G6 | medium | open |
 | [RULE-2](#rule-2) | Rule coverage incomplete | G6 | low | open |
 | [CALL-1](#call-1) | Play-calling not checked against NFL tendencies | G7 | medium | open |
-| [CALL-2](#call-2) | Defensive calls read raw ratings that aren't on one scale | G7 | medium | flag |
-| [CALL-3](#call-3) | Pressure rate ignored the coverage shell | G7 | low | flag |
+| [CALL-2](#call-2) | Defensive calls read raw ratings that aren't on one scale | G7 | medium | on |
+| [CALL-3](#call-3) | Pressure rate ignored the coverage shell | G7 | low | on |
 | [INFO-1](#info-1) | Players use information they couldn't have seen | — | medium | open |
 | [PHY-1](#phy-1) | Contact and hand physics limits | F2, G5 | medium | open |
 | [PHY-2](#phy-2) | Movement detail that's costly or unproven | F2 | low | open |
@@ -289,6 +307,14 @@ default-off flag), resolved.
   - too many 9s and too few wide 9s;
   - no even or tite front in the nickel mix;
   - double-owned gaps in the installed Under, wide 9 and tite fronts (#194).
+- **After the promotion** (2026-10-22): gap-scheme assignments haven't been
+  checked against the aligned fronts (`FRONT_ALIGN`, `BOX_ALIGN`);
+  `test/gap-assignment.test.ts` is pinned to the old fronts. This is G2.
+  Unpinned, 12 of its 48 cases fail (8 from FRONT_ALIGN, 4 from BOX_ALIGN),
+  from two assigner bugs (*confirmed*, Run Game on #210):
+  - once the strong safety walks down, a receiver's stalk target becomes a
+    front-seven edge defender;
+  - trap against Under misclassifies the A-gap 1-technique on one mirror.
 
 <a id="run-10"></a>
 ### RUN-10: Older run-blocking and second-level issues
@@ -363,6 +389,13 @@ Carried over from the issue register; each was measured on an older develop.
   hands rather than the kick.
 - **Open:** the hands are a physics or trenches question, not the rusher's
   path. This is G5.
+- **After the promotion** (2026-10-22): sacks rose from 5.1% to 11.4% of
+  dropbacks. Realistic line splits and stagger (`OL_SPLITS`, `OL_STAGGER`)
+  and the line's snap reaction (`SNAP_REACT`) account for most of it: on
+  their own they take sacks to 7.8% and 8.8%. They are realistic alignment
+  and timing, so they stay on; they show the tackles can't hold an edge.
+  In the P019 pass-cutoff scene the tackle also loses edge contact with
+  `PASS_FEEL` on (`test/pass-cutoff-approach.test.ts` is pinned).
 
 <a id="pro-2"></a>
 ### PRO-2: Pressure arrives too early and from the wrong places
@@ -381,9 +414,8 @@ Carried over from the issue register; each was measured on an older develop.
   On a `rg3` build (`547af69d`), #191 had 42.3 pressures per 100 dropbacks (NFL 31.3). The
   excess came from edges shedding after contact (+10) and unblocked edges
   (+4). Same-side tackles blocked nobody on 86% of unblocked edges, vs 39%.
-- **Measurement qualification:** #203's reviewed `sampled-geometric-pressure-v2`
-  fixes post-release/post-whistle sample admission and unknown exposure; it is
-  awaiting merge authorization. The numbers above remain the original #191/#198
+- **Measurement qualification:** #203's merged `sampled-geometric-pressure-v2`
+  fixes post-release/post-whistle sample admission and unknown exposure. The numbers above remain the original #191/#198
   measurements, not corrected v2 results. Native QB credit and geometric pressure
   remain different measures; see the [published contract](https://github.com/tannerthardy/football-simulation-/pull/203).
 - **Cause:** *likely* PRO-1 and PRO-3, with the measurement limits above. The
@@ -408,6 +440,35 @@ Carried over from the issue register; each was measured on an older develop.
 - **Measure** (#191): lateral slide after an edge gets level, p75/p90, 0.1 /
   0.2 yd; NFL 0.5 / 2.6 yd. Step-ups are similar: NFL 20%, sim 27%.
 - **Cause:** *likely* missing from the QB's pocket controller.
+
+<a id="pro-5"></a>
+### PRO-5: No pass protection calls
+
+- **Symptom:** the line has no protection call. There's no slide, half-slide
+  or BOB/man install, no Mike ID, no ordered back scan, and no hot or sight
+  answer when the defense rushes more than the protection can block.
+- **What exists** (*confirmed*, `src/sim/behaviors/blocking.ts`,
+  `ProtectionCoordinator`):
+  - one generic matcher: at the first rush read, linemen take rushers in
+    left-to-right order at the least total lateral distance, with no crossing
+    paths;
+  - each tick, free blockers pick up rushers in their zone, spare linemen
+    double, and backs and tight ends take leftovers;
+  - the playbook's `chip` pass assignment (`src/playbook/types.ts`) is declared
+    but nothing uses it.
+- **Information shortcut** (*confirmed*): `isRusher` reads the defender's
+  behavior (`rush` or `blitz`, with a short recognition delay for blitzers)
+  instead of what the blockers can see. That breaks the model rule that
+  players act on acquired information.
+- **Measure** (#191, `rg3`): on unblocked edge pressures, the same-side tackle
+  blocked nobody 86% of the time; NFL 39%. Unblocked edges added about 4
+  pressures per 100 dropbacks (PRO-2).
+- **Teaching:** [trenches handbook §7](football-handbook/trenches.md#7-pass-protection-is-linked-to-the-throw-and-launch-point)
+  covers the families, the count and the back scan.
+- **Open:** this is G9. Install calls as protection plans the line reads from
+  the visible front, with the QB and receivers sharing the hot answer. Start
+  it after G5's physics work, because PRO-1 (a tackle losing one-on-one) isn't
+  a call problem. Logged 2026-10-22.
 
 ## Pass defense and coverage
 
@@ -442,7 +503,19 @@ From #193's open list:
 - not installed: stack, quads, red-zone and Tampa-variant calls, half-side
   Smack, Read and Patty;
 - Cover 2 and Cover 6 run a few points under tracking (#194);
-- Fangio E1 (strength and rotation to the nickel side) is not done (#196).
+- Fangio E1 (strength and rotation to the nickel side) is not done (#196);
+- with `FRONT_ALIGN` on, the Quarters Flat defender's carry changes
+  (`test/quarters-trips-rules.test.ts` is pinned to the old front);
+- with `WR_ALIGN` and `OL_SPLITS` on, the match hook defender stops carrying
+  the doubles seam (5.7 yd away versus 4.8 yd for a spot dropper;
+  `test/integration/coverage-panel.test.ts` is pinned);
+- with the line stagger on, jet motion numbering inside the tight end is
+  unsettled (`test/offensive-motion.test.ts` is pinned);
+- with `WR_ALIGN` on, the Cover 3 Match corner never zones off the short out
+  (`test/corner-one-release.test.ts` is pinned);
+- with `OL_STAGGER` on, the weak linebacker bumps 5.3 yd on across motion,
+  past the test's 5-yd limit, which may itself need a look
+  (`test/motion-check.test.ts` is pinned).
 
 <a id="cov-4"></a>
 ### COV-4: Defenders react late to jet motion
@@ -670,7 +743,11 @@ These break the model rule that players act on acquired, delayed information.
 - sprint endurance missing from the integrator.
 
 Later fixes: retained-snap credit and air depth (GAME-002), two-point energy
-writeback (GAME-003).
+writeback (GAME-003). On 2026-10-22, a false start at the 3 with a back
+standing in the end zone was enforced as a safety and spotted on the goal
+line, which crashed the next play; pre-snap fouls are now half the distance
+(#211, which also rules a restricted teammate recovery dead in its own end
+zone).
 
 <a id="game-2"></a>
 ### GAME-2: Remaining accounting limits
@@ -733,17 +810,17 @@ writeback (GAME-003).
 - Before this factual refresh, tracked `docs/` totaled 131,719,397 bytes
   (about 125.6 MiB), including the source-diagram library and research. This
   is not 128 MB of disposable receipts. Fixtures and unique evidence remain.
-- Source/registry recheck: 77 switches, 22 on / 54 off / one identity scale
-  ([FLAGS](FLAGS.md)). #204 and the proposed #202/#203 composition change no
-  flag default. Expiry and reduction to 10 experiments remain PLAN review
-  decisions, not performed by this checkpoint.
-- **Two meanings of "default":** `config/baseline.json` turns flags on for
-  `baseline:run` profiles (13 on `prof194`) while the source defaults stay off.
-  The scorecard and games use the source defaults. Numbers from a profile are
-  not numbers from develop.
-- #202's reviewed navigation cleanup explicitly labels STATUS, INTEGRATION,
-  ISSUES and WORKBOARD historical and points to PLAN/GAPS. It is verified but
-  awaiting merge authorization; no evidence removal or directory move follows.
+- [FLAGS](FLAGS.md) is the source-checked switch inventory; #210 promoted
+  its documented defaults. Counts and expiry decisions belong there rather
+  than being duplicated in repository status. This navigation cleanup changes
+  no source default.
+- **Two meanings of "default":** historical `baseline:run` profiles can
+  override source defaults; `prof194` used 13 enabled profile flags. #210
+  subsequently changed the code defaults recorded in FLAGS. Scorecard/game
+  results describe their actual source and overrides, not a moving branch name.
+- STATUS, INTEGRATION, ISSUES and WORKBOARD preserve the old process;
+  PLAN/GAPS replace their operating instructions. Navigation-only maintenance
+  preserves evidence in place; no directory move follows.
 
 ## Not modeled yet
 

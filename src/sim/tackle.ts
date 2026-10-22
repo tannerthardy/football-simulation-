@@ -67,7 +67,7 @@ const REACH_CONTACT = process.env.REACH_CONTACT === '1';
 /** Experimental early hand acquisition with coherent approach footwork through
  * a committed strike. Ordinary grip and strike; default-off. */
 const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
-/** Experimental (BLOCKED_REACH=1, off): a blocked defender reaches for a
+/** Default on (BLOCKED_REACH=0 turns it off): a blocked defender reaches for a
  * passing carrier with the arm his blocker does not control, rather than only
  * once he is beating the block. One free arm reaches 0.7 of his reach; a
  * blocker with inside hands latched pins it to 0.4. The grab gives up the
@@ -77,7 +77,7 @@ const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
  * (the installed gate holds there). Tracking: blocked defenders make 46% of
  * first contacts on gap runs and 55% on zone
  * (scripts/diag/runblock/blockedfirst.py); the gate left 32% and 41%. */
-const BLOCKED_REACH = process.env.BLOCKED_REACH === '1';
+const BLOCKED_REACH = process.env.BLOCKED_REACH !== '0';
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);

@@ -12,6 +12,8 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 async function over(on: boolean, aGap?: number) {
   vi.stubEnv('FRONT_ALIGN', '1');
   vi.stubEnv('AGAP_ALIGN', on ? '1' : '0');
+  // The expected spots are staged on the installed 1.3 yd line splits.
+  vi.stubEnv('OL_SPLITS', '0');
   vi.resetModules();
   const { alignDefense, alignOffense } = await import('../src/playbook/alignment.js');
   const off = alignOffense(FORMATION_BY_ID.i_pro_21, false, 40, CENTER_Y);
