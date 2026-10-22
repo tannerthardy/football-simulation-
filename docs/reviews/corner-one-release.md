@@ -1,6 +1,10 @@
 # Match corner: release #1 only on a declared shallow route
 
-2026-10-22, from accepted `develop` `d91c9014`. Source audit:
+2026-10-22, from accepted `develop` `d91c9014`. The film below is pinned to
+commit `5629d006`. Later commits on this branch extend the rule (see
+[coverage checks](../references/coverage-checks/README.md)): a slant's In
+call now becomes final 0.35 s after the break, and a short out or flat zones
+the corner off without locking, so an out-and-up returns to him. Source audit:
 [coverage rules against source installs, section 1](https://github.com/tannerthardy/football-simulation-/blob/claude/great-mccarthy-85uf8b/docs/reviews/coverage-rules-source-audit.md#1-the-corner-leaves-1-far-too-early-highest-impact)
 (PR #191).
 

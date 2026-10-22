@@ -20,16 +20,91 @@ The engine implements one coherent version per call and names its source.
 
 Shared thresholds the engine uses: the **no-cover zone is 5 yards**
 (HNFL-093/201, Saban "under in the first 5 yards", Michigan "past 5"); a
-route's stem "clears" it when the receiver has been seen deeper than 5.
+route "clears" it when the receiver has been seen deeper than 5. A corner's
+inside "In/Under" call becomes final once the break has held **0.35 s**
+(HNFL-079 "truly declares"). Every rule reads the receivers it keys every
+tick, because a declaration is believed only after it persists in the
+defender's own reads.
+
+## How it fits together
+
+1. **Call.** The defensive coordinator calls a coverage from the situation
+   and its tree (`src/game/playcaller.ts`), and ranks the checks it wants
+   this snap (`checkPrefer`): Trix on passing downs, Book/Stubbie when the
+   backside must stay 3-over-2; Saban-style quarters trees default to
+   Stubbie, Fangio-style two-high trees lean Trix; a check the offense keeps
+   beating gives way (learned from the installed call the game feeds back).
+2. **Identify.** At the snap the secondary reads the aligned offense
+   (`formationStructure`, `src/playbook/structure.ts`): trips open/closed,
+   bunch, stack, nub, empty 3x2, quads, two-back, isolated X, reduced splits,
+   field side.
+3. **Check.** `checkCall` (`src/playbook/coverages.ts`) applies the first
+   structure check whose tags match, then the old distribution checks. A
+   check is a whole installed call, made only when every player it names is
+   on the field and not spent by the pressure. The play log records the
+   structure checked on (`checkedOn`).
+4. **Play.** Each coverage seat runs its pattern-match rule
+   (`src/sim/coverage/rules.ts`) on its own delayed reads, including the
+   post-snap calls below.
+
+Film any scene with `node --import tsx scripts/coverage-rule-film.ts
+<formation> <coverage> S1=go,S2=seam,W1=slant,B=flat`.
 
 ## Implementation status
 
-| Area | Rule | Status |
+| Area | Rule (source) | Status / test |
 | --- | --- | --- |
-| Corner vs #1 | MOD/Cover 3 corner releases #1 only on a shallow declaration; short stop reversible | Done (`zoneOffOne`) |
-| Corner vs x1 | Tight 1/4: no China vs a lone #1, only In (HNFL-095) | Done |
-| Quarter Flat | China push to #1; #3-away carry of #2 shallow; first flat of #2 | Done (`quarterFlat`) |
-| Trix/Poach | Backside safety keys #3 to X, squeezes X when #3 cancels; read hook walls #3 | Done |
-| Stubbie | MEG #1, MUSH #2, read hook, 3/2 safety (#3 first) | Done |
-| Pre-snap structure | trips open/closed, bunch, stack, nub, empty, two-back, iso X, reduced, field side | Done (`formationStructure`) |
-| Check framework | ordered structure checks per coverage, recorded on the call | Done (`checkCall`) |
+| Corner vs #1 | MOD/Cover 3 corner: man on #1 unless he declares shallow; short stop/out/flat reversible; In/Under final after 0.35 s (HNFL-079, Michigan, Saban) | Done; `corner-one-release` |
+| Corner vs x1 | Tight 1/4: no China vs a lone #1, only In (HNFL-095) | Done; `quarters-trips-rules` |
+| Quarter Flat | China push to #1; #3-away carry of #2 shallow; first flat of #2 (HNFL-094/365) | Done; `quarters-trips-rules` |
+| Trix/Poach | Backside safety keys #3 to X, squeezes X when #3 cancels; read hook walls #3 (HNFL-197) | Done; `quarters-trips-rules` |
+| Stubbie/Book | MEG #1, MUSH #2, read hook, 3/2 safety #3 first (HNFL-270/309, Saban, Pruitt) | Done; `quarters-trips-rules` |
+| Cover 3 Push | Fast #3/back to the flat: seam/flat chases, hook pushes to #2 (HNFL-203/065) | Done; `cover3-cover2-rules` |
+| Cover 3 Smash | #1 short with #2 vertical: overhang hunts #1 (HNFL-016, Rip/Liz) | Done; `cover3-cover2-rules` |
+| Squat corner | No flat threat: man under #1 on any route (HNFL-099/255) | Done; `cover3-cover2-rules` |
+| Vertical curl | Halves apex matches #2 up and in (HNFL-097) | Done; `cover3-cover2-rules` |
+| Pre-snap structure | trips open/closed, bunch, stack, nub, empty, two-back, iso X, reduced, field side | Done; `formation-structure` |
+| Check framework | Ordered structure checks, installability guard, recorded check | Done; `presnap-coverage-checks` |
+| Quarters checks | Trix/Stubbie vs trips, Box vs bunch, Book/Read vs empty (HNFL-194) | Done; `presnap-coverage-checks` |
+| Cover 2 Wild | Vs trips the middle hook carries #3 (HNFL-131/334) | Done; `cover3-cover2-rules` |
+| Cover 6 checks | Book vs trips, Box vs bunch (HNFL-324) | Done; `presnap-coverage-checks` |
+| Cover 1 Banjo | Vs bunch: point locked, corner/safety trade #1/#3 by release (HNFL-074) | Done; `presnap-coverage-checks` |
+| Cover 3 Clue | Vs bunch: Clue 1/3 corner keying #2 to #1, bunch side spot-drops (HNFL-091/203) | Done; `presnap-coverage-checks` |
+| Coordinator menu | Trix vs Book by down, tree and learned results (HNFL-195) | Done; `defensive-check-menu` |
+
+In two seeded games (seeds 3 and 7, 262 snaps) checks fired on 41 snaps:
+Mable 9, Poach/Trix 7, Wild 5, Cover 6 Book 4, Banjo 6, Clue 3, Stubbie 4,
+Box 2, Book/Read 1. Trips-family formations were about 40% of snaps and
+bunch about 10%, so these answers are exercised in ordinary games.
+
+## Known limits
+
+- **Box vs three verticals** from the bunch leaves the middle one to the
+  deep zone; HNFL-194 answers this with Box Trix, not installed.
+- **Banjo** is installed as a match call (`man: false`) so the pair can
+  trade; receivers' option routes therefore read it as zone.
+- **Push** is post-snap only; some sheets also make it pre-snap vs a fast #3.
+- **Stack** checks (Lock, Top Hat, Zorro), **quads** checks, Cover 3 Grab vs
+  empty and red-zone tools (Red 7 Bracket etc.) are not installed: the
+  offense has no stack or quads formation and no red-zone package yet.
+
+## Not started: motion
+
+The offense has no pre-snap motion, so no defensive motion adjustment can
+fire. A coherent version needs, in order:
+
+1. **Offensive motion** in the call (jet, orbit, across, return, back out to
+   empty), legal under `src/game/presnap-rules.ts` (one man moving, not
+   toward the line at the snap).
+2. **Re-identify at the snap.** Run `formationStructure` on the final
+   alignment and re-check: "any motion to 3x1 will be handled with a TRIX
+   adjustment" (HNFL-193); "all motions are bumped across" (HNFL-063); the
+   nickel runs only with a change-of-strength motion (HNFL-192/228).
+3. **Defensive movement answers.** Man: Lock/travel vs Banjo/Switch,
+   Rock-and-Roll (post safety takes the motion man). Zone: bump the apexes,
+   spin the safeties (MS §A6, web §B). Scouting rates: bump 85%, run 15%
+   (HNFL-186).
+
+Steps 2-3 move defenders before the snap, which is the defensive pre-snap
+alignment work in PR #190 (`alignment.ts`, `stageDefense`). Coordinate with
+that owner before starting.
