@@ -61,7 +61,8 @@
     "DL_CHASE": "0",
     "FRONT_ALIGN": "0",
     "DL_KEY": "0",
-    "SHORT_PACKAGE": "0"
+    "SHORT_PACKAGE": "0",
+    "LB_TEMPO": "0"
   },
   "worldDefaults": {
     "handContact": "center",

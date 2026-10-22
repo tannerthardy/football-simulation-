@@ -171,6 +171,15 @@ const PULL_EARLY = process.env.PULL_EARLY === '1';
  * the surface has already given up the bounce. Once the runner is at the
  * line the installed track applies. */
 const FORCE_BOUNCE = process.env.FORCE_BOUNCE === '1';
+/** Experimental (LB_TEMPO=1, off): a box backer fits at the back's tempo.
+ * Until the runner declares, he keeps the depth he can still close in the
+ * time the back he sees needs to reach the line, net of his own reaction,
+ * instead of sprinting for his surface landmark at the read: arriving with
+ * the back, not before him to be climbed on or run past. Tracked backers
+ * come down about 1.5 yd/s in the first 1.5 s and are still 2.4 yd off the
+ * ball at 2.0 s (scripts/diag/align/lbfit.py on claude/run-game-v3); ours
+ * came down twice as fast to 1.8. */
+const LB_TEMPO = process.env.LB_TEMPO === '1';
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */
@@ -389,7 +398,15 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     if (threat && !declared) a.tags.add('fit-threat-read');
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
-  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
+  let depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
+  if (LB_TEMPO && job.kind === 'insert') {
+    // The back's time to the line from his seen motion; the depth this
+    // backer closes in that time after he reacts, at the pace he fits with.
+    const dirX = sim.attackDir(c.team), toLos = Math.max(0, (sim.los - seen.pos.x) * dirX);
+    const reach = toLos / Math.max(2, seen.vel.x * dirX);
+    const close = (.78 + .15 * a.mind.urgency) * a.profile.vmax * Math.max(0, reach - a.profile.reactionTime);
+    depth = clamp(close, depth, Math.max(depth, a.pos.x - sim.los));
+  }
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
   const fit = track(a,aim,{x:0,y:0},{speed:.78+.15*a.mind.urgency,gain:3,facing:Math.PI});
   // A moving landmark (the line flowing, or the back's declared track) is
