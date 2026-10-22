@@ -754,6 +754,25 @@ medians:
   DL move +0.6. It makes outcomes worse: gap TVD 8.2 -> 10.3, shotgun
   10.7 -> 16.0 (shotgun inside-zone losses 6 -> 11%). Off.
 
+Why the down-blocked lineman is washed (`scripts/diag/gap/downrep-split.ts`,
+power/counter/trap, seeds 77,71001,1; this session took the squeeze over from
+the run-defense session, whose `DL_SQUEEZE` v1/v2 narrowed the crease but let
+backs cut behind the squeezer; see `docs/reviews/run-defense-develop.md`):
+- Solo down reps wash the defender -0.98 yd backside in 1 s (686 reps),
+  doubled ones -0.54 (106). Tracked down blocks are about a stalemate.
+- Only -0.14 yd happens in the first 0.3 s. The rest accrues steadily, so
+  it is not the defender's first step with the blocker's flow.
+- In washed solo reps the two leg braces balance (defender 690 N, blocker
+  635 N). The blocker asks for -2.8 yd/s backside; the defender asks for
+  about 0. Held reps: blocker -0.4 to +0.9, defender +2.1 to +2.3.
+- Two attempts, then stopped:
+  - `DL_FIGHT` hold: -0.98 -> -0.72.
+  - Full lateral effort against any felt lateral load (both requests then
+    symmetric, +1.5 vs -1.7): -0.63. Reverted.
+  - What else moves a pair whose requests and braces balance (the depth
+    request splitting the leg budget, the 45-degree load axis, the hand
+    steer row) is the next question, before any controller change.
+
 Still open:
 - Inside holes are 2.1-2.4 yd wide at the line vs NFL 1.6.
 - DBs make first contact on 38-53% of inside runs (NFL 19-28%).
