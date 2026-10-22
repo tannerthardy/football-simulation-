@@ -6,7 +6,14 @@
  * first five yards). A short stop zones him off only until #1 turns upfield.
  * Film: data/reviews/current/corner-one-release.json.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+// The out-and-up and stop-and-go turn upfield at 2.6-3.1 s. Under the
+// candidate profile, FRONT_ALIGN's edges and SNAP_REACT's get-off let the
+// four-man rush sack or strip the QB at 2.4-2.7 s, before #1 turns, so the
+// rep never asks the corner the question. The scene is staged on the
+// installed rush; each long rep also asserts the ball was still held at
+// the end (`held`), so a staging break fails as staging, not as coverage.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 // Registers the lab routes for #1 (lab_curl7, lab_stop_go, lab_out_up4).
 import '../src/lab/coverage-scene.js';
@@ -46,7 +53,8 @@ function run(coverage: string, route: string, side: 'S' | 'W', until = 3.8) {
     step.tick();
     zoned ||= b.recordedRule(sim.t).mode === 'zoned';
   }
-  return { jobs: b.history.map(h => h.job), zoned, one: one.slot };
+  const held = sim.phase === 'live' && sim.ball.kind === 'held' && sim.t >= until - 0.05;
+  return { jobs: b.history.map(h => h.job), zoned, one: one.slot, held };
 }
 
 describe('match corner releases #1 only on a declared shallow route', () => {
@@ -60,7 +68,8 @@ describe('match corner releases #1 only on a declared shallow route', () => {
       });
 
       it(`${coverage} ${side}: carries #1 through a 6.5-yd stop and up the field`, () => {
-        const { jobs, zoned, one } = run(coverage, 'lab_stop_go', side);
+        const { jobs, zoned, one, held } = run(coverage, 'lab_stop_go', side);
+        expect(held).toBe(true);
         expect(zoned).toBe(false);
         expect(jobs.slice(1).some(j => j.startsWith('zone:'))).toBe(false);
         expect(jobs[jobs.length - 1]).toBe(`man:${one}`);
@@ -77,6 +86,7 @@ describe('match corner releases #1 only on a declared shallow route', () => {
   for (const coverage of ['cover4', 'cover3_match'])
     it(`${coverage}: a short out that turns up the sideline gets the corner back on #1; a slant commits the zone-off`, () => {
       const outUp = run(coverage, 'lab_out_up4', 'W', 3.4);
+      expect(outUp.held).toBe(true);
       expect(outUp.jobs.slice(1)).toContain(outUp.jobs[0]);
       expect(outUp.zoned).toBe(false);
       expect(outUp.jobs.at(-1)).toBe(`man:${outUp.one}`);
