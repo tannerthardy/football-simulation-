@@ -763,6 +763,18 @@ Same operator, current profile (`oz-flow-profile.py`, `oz-front.py`,
   matches the run-defense session's box-backer start measurement (late at
   0.2-0.4 s). It is not the back's choice. `backpace.py` now reports speed
   at contact by location and time.
+- `STRETCH_PRESS` (outside and wide zone read a crease only from a yard
+  outside the play-side line's heels instead of 4.5 yd deep).
+  - Narrower and worse: back-to-tackle lateral at +1.0 s 3.04 -> 2.34 yd
+    (NFL 3.54). Zone TVD 7.5 -> 13.9, shotgun 9.7 -> 14.3.
+  - Pressing longer pulls the back toward a landmark that is itself inside
+    where tracked backs run. The C-gap aim sits between tackle and end;
+    tracked outside-zone backs are 0.5 yd wider by +1.0 s and cross outside
+    the end 22% (ours 12.5%).
+  - What differs is the landmark, not when he reads.
+  - Probes: `scripts/diag/zone/back-start.ts` (request vs achieved: the back
+    asks for full speed from 0.4 s) and `scripts/diag/zone/back-startup.py`
+    (his start-up matches tracking once the snap frame is shifted 0.1 s).
 
 ## Reproduce
 
