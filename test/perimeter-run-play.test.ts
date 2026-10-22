@@ -94,3 +94,46 @@ describe('a receiver breaks down on the DB he stalks', () => {
     expect(cmd.vel.x).toBeGreaterThan(0);
   });
 });
+
+// BACK_BLOCK (blocking.ts): once the runner is past a defender who has turned
+// to chase him, the blocker behind that defender does not start a block on
+// him or run at him; with the runner still behind the man, he blocks as before.
+async function chaser(runnerPast: boolean, backBlock: boolean) {
+  vi.stubEnv('BACK_BLOCK', backBlock ? '1' : '0');
+  vi.resetModules();
+  const { RunBlocker: Blocker } = await import('../src/sim/behaviors/blocking.js');
+  const { PlaySim: Sim } = await import('../src/sim/playsim.js');
+  const formation = FORMATION_BY_ID.ace_11;
+  const sim = new Sim({ offense: pickOffense(generateTeam(new Rng(31), 'O', 'O', { strength: .55 }), formation.personnel),
+    defense: pickDefense(generateTeam(new Rng(32), 'D', 'D', { strength: .55 }), 'base43'),
+    offCall: { formation, flip: false, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'chase' },
+    defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'Over' },
+    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3 });
+  const a = sim.slot('LG')!, d = sim.slot('DT_W')!, back = sim.slot('RB')!;
+  // The tackle has come off the guard and turned downfield after the back.
+  a.body.pos = { x: 40.2, y: CENTER_Y - 1 }; a.body.vel = { x: 1, y: 0 }; a.body.facing = 0;
+  d.body.pos = { x: 41.1, y: CENTER_Y - 1 }; d.body.vel = { x: 2, y: 0 }; d.body.facing = 0;
+  back.body.pos = { x: runnerPast ? 45 : 37, y: CENTER_Y - 3 }; back.body.vel = { x: 6, y: 0 };
+  sim.ball = { kind: 'held', carrier: back };
+  sim.t = 2; sim.world.time = 2;
+  for (let i = 0; i < 24; i++) sim.perception.record(sim.agents);
+  const c = new Blocker({ kind: 'drive', target: d, drive: { x: 1, y: 0 } });
+  a.behavior = c;
+  const cmd = c.update(a, sim);
+  return { cmd, engaged: !!a.engagement };
+}
+
+describe('a blocker does not block a man in the back', () => {
+  it('leaves a defender who has turned to chase a runner already past him', async () => {
+    const on = await chaser(true, true), off = await chaser(true, false);
+    // Off: a fresh block on his back. On: no block, and he trails at the
+    // man's own pace (2 yd/s downfield) rather than running into him.
+    expect(off.engaged).toBe(true);
+    expect(on.engaged).toBe(false);
+    expect(on.cmd.vel.x).toBeLessThan(2.25);
+  });
+  it('still blocks him while the runner is behind him', async () => {
+    const before = await chaser(false, true), off = await chaser(false, false);
+    expect(before.cmd).toEqual(off.cmd);
+  });
+});

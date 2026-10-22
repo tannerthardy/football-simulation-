@@ -783,6 +783,26 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
 const STALK_CUSHION = process.env.STALK_CUSHION !== '0';
 const STALK_STANDOFF = 2, STALK_ATTACK = 1, STALK_ATTACK_IN = 1.5;
 
+/** On (BACK_BLOCK=0 for comparison): a blocker does not start a block on, or
+ * drive into, a man whose back is to him once the runner is past that man. A
+ * block in the back is a foul every blocker is coached out of, and his hands
+ * have no front to fit. Both reads are his own picture (the man's body
+ * facing, the runner's position). Develop at #205: 80% of the run blocks
+ * started after the ball crossed are from behind the defender's facing, and
+ * 61% of linemen are within 1 yd of a blocker when the back reaches 5 yd
+ * (NFL 27%; rallybox.py). */
+const BACK_BLOCK = process.env.BACK_BLOCK !== '0';
+
+/** The man has turned his back to this blocker to chase a runner already
+ * past him. */
+function backTurned(a: Agent, sim: PlaySim, target: Agent): boolean {
+  const c = sim.carrier;
+  if (!BACK_BLOCK || !c || c.team !== a.team || (c === sim.qb && !sim.scrambled)) return false;
+  const man = sim.see(a, target), runner = sim.see(a, c), dir = sim.attackDir(a.team);
+  if ((runner.pos.x - man.pos.x) * dir <= 0) return false;
+  return Math.cos(man.facing) * (a.pos.x - man.pos.x) + Math.sin(man.facing) * (a.pos.y - man.pos.y) < 0;
+}
+
 /** Receivers claim distinct stalk targets (STALK_CLAIM=0: each takes his nearest). */
 const STALK_CLAIM = process.env.STALK_CLAIM !== '0';
 
@@ -1022,6 +1042,13 @@ export class RunBlocker implements Behavior {
         return goTo(a, path, { speed: 0.95, through,
           facing: this.pullIdx === 0 ? (PULL_STEP ? Math.atan2(ps, 0) : 0) : undefined });
       }
+    }
+    if (target && backTurned(a, sim, target)) {
+      // Trail him at a stand-off: keep pace without running into his back.
+      const man = sim.see(a, target), dirX = sim.attackDir(a.team);
+      const trail = { x: man.pos.x - dirX * (a.profile.radius + target.profile.radius + .5), y: man.pos.y };
+      if ((trail.x - a.pos.x) * dirX < 0) trail.x = a.pos.x;
+      return goTo(a, trail, { speed: .85, through: Math.max(0, man.vel.x * dirX) });
     }
     if (!target) {
       const ref = this.workReference(a, sim);
