@@ -1,8 +1,11 @@
 # Operating plan (read first)
 
 As of 2026-10-22, [docs/PLAN.md](docs/PLAN.md) and [docs/GAPS.md](docs/GAPS.md)
-set what to work on and how work is merged. Where they differ from the
-integration-queue workflow below, the plan wins.
+set what to work on and how work is merged. They replace the older process
+below: the integration queue, WORKBOARD claims, `baseline:verify` by an
+integration owner, and receipts in Git no longer apply. The model rules below
+(one physics world, ratings don't award outcomes, never ban what works too
+well) still apply.
 
 - Work only on a gap from `docs/GAPS.md`, on a branch named
   `<lane>/<gap-id>-<short-goal>`. Keep one open PR. At most three agents are

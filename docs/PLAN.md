@@ -58,3 +58,11 @@ attaches its scorecard and explains each stat that moved.
   summary in the PR.
 - Anything that changes this plan, a gap's target or the trunk is labeled
   `needs-tanner` and waits for a review.
+- Agents may message each other directly for a concrete handoff between
+  lanes: a question, a measurement, or a shared function's contract. Mention
+  it in your next status. Priorities, assignments and plan changes come only
+  from Tanner, through the coordinator.
+- G1 to G3 meet where a defender reaches the ball. Coverage owns the reaction
+  before the catch, Run Game owns the gap fits before contact, and Defense
+  owns pursuit and the tackle. Agree on a change to a shared function with the
+  lane that owns it before you push it.
