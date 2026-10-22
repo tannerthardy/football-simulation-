@@ -690,6 +690,47 @@ Climbs on the tracked line are NFL-like under center
 reach a backer 30% of linemen, NFL 34%; by 2.0 s 17%, NFL 18%; direct to a
 backer 4%, NFL 5%); shotgun doubles reach backers less (24% vs 30%).
 
+## The defense's start and the trench (profile, 2026-10-22)
+
+On in this branch's pinned profile, in order:
+
+1. `SNAP_REACT` (snap reaction and count timing; [pre-snap](presnap.md)).
+2. `DL_FLATTEN` (run-defense session, cherry-picked). With an on-time start
+   the play-side end attacked upfield against the reach: shotgun outside
+   zone losses 5.0 -> 12.5%. Flattening against a seen zone step:
+   - losses 3.5%;
+   - single-blocked outside-zone DL at 2.5 s 0.59 yd upfield (NFL 0.63);
+   - runner meeting the end loses 20% (NFL 22%).
+3. `PAD_LEVERAGE` and `DL_ANCHOR` (run-defense session's law and anchor,
+   cherry-picked). Gap runs reached the second level too easily
+   (`scripts/diag/gap/reach-contact.py`). Duo, before -> after (NFL):
+
+   | Duo | Before | After | NFL |
+   |---|---|---|---|
+   | Runs reaching 5 yd | 58% | 48% | 31% |
+   | First contact (yd past the ball) | +1.74 | - | +0.40 |
+   | Linemen make first contact | 7% | 14% | 38% |
+   | Nearest DL as the back crosses the line | 2.49 yd | 2.14 yd | 1.64 yd |
+   | Doubled defender driven back at 2.5 s | 1.09 yd | 0.61 yd | - |
+
+   Losses: gap 3.1 -> 5.0% (NFL 7.4), zone 2.8 -> 4.0% (NFL 7.6). TVD zone
+   7.5 -> 7.0, gap 8.9 -> 8.2. Law promotion beyond this branch stays with
+   the physics owner.
+
+Off, measured:
+- `ENGAGED_REACH` (`tackle.ts`: a blocked defender may reach a passing
+  carrier without first winning the block). Duo DL first contact 7 -> 7%;
+  the holes were too wide for any reach. Gap TVD 8.9 -> 7.8, zone 7.5 ->
+  9.7.
+- `DL_FLATTEN_WON` (run-defense session: a lineman who has beaten the
+  reach keeps attacking). Zone TVD 7.0 -> 6.2 and gap 8.2 -> 7.4, but
+  shotgun 10.7 -> 12.8 (inside-zone median 3.8 -> 3.1 yd). Outside-zone
+  single-blocked DL 0.60 -> 0.80 yd upfield, overshooting the NFL's 0.63.
+
+Still open:
+- Inside holes are 2.1-2.4 yd wide at the line vs NFL 1.6.
+- DBs make first contact on 38-53% of inside runs (NFL 19-28%).
+
 ## Evidence against and unresolved risk
 
 - **Gap TVD worsens** (14.0 → 17.4): the pinned body's gap runs were already
