@@ -220,6 +220,7 @@ export type MatchRule =
   | 'invert_safety'
   | 'read_hook'
   | 'mush'
+  | 'vertical_hook'
   | 'rat'
   | 'robber';
 

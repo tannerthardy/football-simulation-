@@ -25,6 +25,8 @@ export const LAB_ROUTES: Record<string, RouteDef> = {
   /** Vertical stem, then flatten to the sideline at 12: a deep out. */
   /** A hitch that never clears the no-cover zone. */
   lab_hitch4: { id: 'lab_hitch4', family: 'quick', depth: 4, end: 'settle', points: [{ d: 4.5, l: 0, s: 0.2 }, { d: 4, l: 0.3, s: 0 }] },
+  /** A square in at 9, inside a curl player's seam handoff. */
+  lab_in9: { id: 'lab_in9', family: 'intermediate', depth: 9, end: 'continue', points: [{ d: 9, l: 0, s: 0.4 }, { d: 9.5, l: -16 }] },
   lab_out12: { id: 'lab_out12', family: 'intermediate', depth: 12, end: 'continue', points: [{ d: 12, l: 0, s: 0.4 }, { d: 11.5, l: 12, s: 0.9 }] },
 };
 Object.assign(ROUTES, LAB_ROUTES);

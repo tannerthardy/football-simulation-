@@ -221,6 +221,18 @@ export const COVERAGES: Coverage[] = [
       FS: z('deep_half_w'),
     },
     underneath: [seat('hook_s', 'c2_hook'), seat('hook_w', 'c2_hook'), seat('hook_mid', 'mike_3'), 'curl_flat_s', 'curl_flat_w'],
+    structureChecks: [{ when: ['trips'], to: ['cover2_wild'] }],
+  },
+  {
+    id: 'cover2_wild', name: 'Cover 2 Match Wild (vs trips)', family: 'cover2', shell: 'two-high', man: false, press: false,
+    note: 'Halves vs trips: the middle hook becomes a vertical hook and carries #3 up the middle between the halves; apexes wall #2.',
+    roles: {
+      CB_S: z('flat_s', 'sink_corner'),
+      CB_W: z('flat_w', 'sink_corner'),
+      SS: z('deep_half_s'),
+      FS: z('deep_half_w'),
+    },
+    underneath: [seat('hook_s', 'c2_hook'), seat('hook_w', 'c2_hook'), seat('hook_mid', 'vertical_hook'), 'curl_flat_s', 'curl_flat_w'],
   },
   {
     id: 'cover2_invert', name: 'Inverted Cover 2', family: 'cover2', shell: 'two-high', man: false, press: false,

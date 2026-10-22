@@ -126,10 +126,29 @@ function c3Corner(c: RuleCtx): Directive {
   return man(one, { lev: 'outside', overTop: true });
 }
 
-/** Rip/Liz curl-flat (seam) player: match #2 vertical to `carry` yards; anything else declares the curl-flat zone. */
+/** #3 (or the back) to this side releasing straight to the flat: the "fast 3" that triggers a Push. */
+const fastFlat = (rd: ReceiverRead | null): boolean => !!rd && rd.release === 'flat' && rd.depth < 2;
+
+/** Rip/Liz curl-flat (seam) player: match #2 vertical to `carry` yards; anything else declares the curl-flat zone.
+ * Push (HNFL-203/065, Saban): a fast #3 to the flat is chased top-down by the
+ * seam/flat player while the hook pushes to #2. Smash (HNFL-016, USAF Rip/Liz):
+ * #1 settling short with #2 vertical sends the overhang to hunt #1 while the
+ * corner bails under #2. */
 function seamCurlFlat(c: RuleCtx, carry: number, deliver = false): Directive {
   const two = ref(c, 2);
+  const one = ref(c, 1);
+  const three = threeTo(c);
+  if (c.state.mode === 'push' && three) return man(three, { lev: 'inside', overTop: true });
+  if (c.state.mode === 'smash' && one) return man(one, { lev: 'inside' });
   if (!two || c.state.mode === 'zoned') return zoneOf(c);
+  if (fastFlat(three) && two.depth < carry && two.release !== 'flat' && two.release !== 'out') {
+    c.state.mode = 'push';
+    return man(three!, { lev: 'inside', overTop: true });
+  }
+  if (oneShallow(one) && one!.release === 'stop' && two.release === 'vertical') {
+    c.state.mode = 'smash';
+    return man(one!, { lev: 'inside' });
+  }
   // Reading #2 is already an installed duty. Do not spend the release
   // cushion driving at a shallow lane before the route earns its match.
   if (two.release === 'none' || (two.release === 'vertical' && two.depth < 3)) return readRelease(two);
@@ -187,9 +206,19 @@ function cut(c: RuleCtx, area?: Vec2): Directive | null {
   return carry(best);
 }
 
-/** Match hook: carry #3 (or the back to his side) vertical to 15; cut a shallow crosser into him; otherwise play the hook and robot. */
+/** Match hook: carry #3 (or the back to his side) vertical to 15; cut a shallow crosser into him; otherwise play the hook and robot.
+ * On a Push (fast #3 to the flat while #2 climbs) he takes #2, the new #3, up the seam. */
 function c3Hook(c: RuleCtx): Directive {
   const three = ref(c, 3) ?? backTo(c);
+  const two = ref(c, 2);
+  if (c.state.mode === 'push' && two) {
+    if (two.depth < 15) return man(two, { lev: 'inside' });
+    c.state.mode = 'zoned';
+  }
+  if (two && c.state.mode !== 'zoned' && fastFlat(three) && two.release === 'vertical' && two.depth < 12) {
+    c.state.mode = 'push';
+    return man(two, { lev: 'inside' });
+  }
   if (three && c.state.mode !== 'zoned' && vertical(three, 3)) {
     if (three.depth < 15) return man(three, { lev: 'inside' });
     c.state.mode = 'zoned';
@@ -331,10 +360,17 @@ function cloudCorner(c: RuleCtx, sink: boolean): Directive {
     return zoneOf(c);
   }
   // Sink only once the inside receivers have declared away from the flat:
-  // eyes on #2 first, then carry #1.
+  // eyes on #2 first, then carry #1. With no flat threat the squat corner
+  // converts to man under #1 on whatever he runs (HNFL-099/255: "No flat
+  // threat = convert to man under on final #1. Only the ball will bring you
+  // down"), not only on a vertical inside 13.
   const inside = [ref(c, 2), ref(c, 3)].filter((rd): rd is ReceiverRead => !!rd);
   const declared = inside.every((rd) => rd.release !== 'none' && rd.release !== 'flat' && rd.release !== 'out');
-  if (sink && one && declared && vertical(one, 2) && one.depth < 13) return man(one, { lev: 'outside', trail: true });
+  if (c.state.mode === 'under' && one) return man(one, { lev: 'outside', trail: true });
+  if (sink && one && declared && one.release !== 'none' && one.release !== 'block') {
+    c.state.mode = 'under';
+    return man(one, { lev: 'outside', trail: true });
+  }
   return zoneOf(c);
 }
 
@@ -447,6 +483,36 @@ function stubbieSafety(c: RuleCtx): Directive {
   return zoneOf(c);
 }
 
+/** Halves apex, vertical curl (HNFL-097): wall #2's vertical to 12 and match
+ * #2 up and in; anything else zones the curl (a flat by #2 belongs to the
+ * squat corner) and cuts what comes under. */
+function verticalCurl(c: RuleCtx): Directive {
+  const two = ref(c, 2);
+  if (c.state.mode === 'in' && two) return man(two, { lev: 'inside' });
+  if (two && c.state.mode !== 'zoned' && two.release === 'in' && two.depth < 14) {
+    c.state.mode = 'in';
+    return man(two, { lev: 'inside' });
+  }
+  const d = wallTwo(c, 12);
+  return d.t === 'zone' ? cut(c) ?? d : d;
+}
+
+/** Wild vertical hook vs trips (HNFL-131/334): the midpoint has #3 vertical
+ * with minimal help, carried up the middle between the halves; otherwise he
+ * plays the 3-match Mike (the back, crossers). */
+function verticalHook(c: RuleCtx): Directive {
+  const three = ref(c, 3, 'S');
+  if (c.state.mode === 'three' && three) {
+    if (three.depth < 18) return man(three, { lev: 'inside', trail: true });
+    c.state.mode = 'zoned';
+  }
+  if (three && c.state.mode !== 'zoned' && vertical(three, 3)) {
+    c.state.mode = 'three';
+    return man(three, { lev: 'inside', trail: true });
+  }
+  return mike3(c);
+}
+
 /** Inverted Cover 2 safety: rotate down to curl-flat; wall #2's vertical to 12 for the bailing corner. */
 function invertSafety(c: RuleCtx): Directive {
   return wallTwo(c, 12);
@@ -467,10 +533,8 @@ export function runRule(rule: MatchRule, c: RuleCtx): Directive {
     case 'palms_safety': return palmsSafety(c);
     case 'cloud_corner': return cloudCorner(c, false);
     case 'sink_corner': return cloudCorner(c, true);
-    case 'c2_hook': {
-      const d = wallTwo(c, 12);
-      return d.t === 'zone' ? cut(c) ?? d : d;
-    }
+    case 'c2_hook': return verticalCurl(c);
+    case 'vertical_hook': return verticalHook(c);
     case 'tampa_mike': return tampaMike(c);
     case 'poach_safety': return poachSafety(c);
     case 'stubbie_safety': return stubbieSafety(c);
