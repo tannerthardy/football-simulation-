@@ -15,14 +15,14 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { DeepCoverage } from '../src/sim/coverage-leverage.js';
 
-function fixture(seed: number, run = false) {
+function fixture(seed: number, run = false, pass = 'four_verts') {
   return new PlaySim({
     offense: pickOffense(generateTeam(new Rng(91), 'Recording offense', 'RO'), '11'),
     defense: pickDefense(generateTeam(new Rng(92), 'Recording defense', 'RD'), 'nickel'),
     seed, audibles: false,
     offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false,
       ...(run ? { kind: 'run' as const, run: RUN_BY_ID.iz_strong }
-        : { kind: 'pass' as const, pass: PASS_BY_ID.four_verts }), label: 'rusher recording' },
+        : { kind: 'pass' as const, pass: PASS_BY_ID[pass] }), label: 'rusher recording' },
     defCall: { personnel: 'nickel', front: FRONT_BY_ID.over,
       coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'rusher recording' },
     los: 40, ballY: 26, firstDownX: 50,
@@ -115,7 +115,9 @@ describe('recording the actual rushing player', () => {
   });
 
   it.each([0, 1])('does not label an unmodified native Cover 3 pass as a rush (seed=%s)', seed => {
-    const sim = fixture(seed), result = sim.run();
+    // Needs a rep where the QB throws. Pattern-match Cover 3 carries four
+    // verticals' seams, and the QB is sacked or scrambles; hitches get out.
+    const sim = fixture(seed, false, 'hitches'), result = sim.run();
     expect(result.kind).toBe('pass');
     expect(result.stats.attempted).toBe(true);
     expect(result.stats.scramble).toBe(false);

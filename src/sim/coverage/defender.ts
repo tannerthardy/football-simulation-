@@ -41,7 +41,7 @@ export class CoverageDefender implements Behavior {
   ) {
     this.reader = new ReleaseReader(a, sim);
     this.side = zoneSide(zone) ?? ((a.pos.y - sim.ballY) * sim.offAlign.strongSign >= 0 ? 'S' : 'W');
-    this.sub = new ZoneCoverage(a, sim, zone, gap, gapSign, style);
+    this.sub = new ZoneCoverage(a, sim, zone, gap, gapSign, style, true);
     this.subKey = `zone:${zone}:${style}`;
     this.job = `zone:${zone}`;
     this.history.push({ t: sim.t, job: this.job });
@@ -126,7 +126,7 @@ export class CoverageDefender implements Behavior {
 
   private make(a: Agent, d: Directive): Behavior {
     switch (d.t) {
-      case 'zone': return new ZoneCoverage(a, this.sim, d.zone, this.gap, this.gapSign, d.style);
+      case 'zone': return new ZoneCoverage(a, this.sim, d.zone, this.gap, this.gapSign, d.style, true);
       case 'man':
         if (this.sub instanceof ReadRelease && this.sub.target === d.r
           && (d.opts.lev ?? 'inside') === 'inside' && !d.opts.trail && !d.opts.overTop) return this.sub.match();

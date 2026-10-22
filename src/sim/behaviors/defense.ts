@@ -435,6 +435,8 @@ export class ZoneCoverage implements Behavior {
     private readonly gap: Gap,
     private readonly gapSign: number,
     styleOverride?: ZoneStyle,
+    /** A rule-driven seat: its rule hands out the man carries. */
+    private readonly ruled = false,
   ) {
     this.landmark = zoneLandmark(zone, sim.offAlign);
     this.initialDepth = a.pos.x - sim.los;
@@ -612,8 +614,15 @@ export class ZoneCoverage implements Behavior {
     // otherwise sit in the throwing lane of the nearest threat.
     // Curl-flat players wall #2 only to ~10 yards, then hand him off and expand
     // under #1; hook players carry seams a little deeper.
+    // A pattern reader carries on a declared vertical stem, not once the
+    // seam is already at speed: by then the walled defender is level and
+    // slow, and the seam runs past him. A rule-driven seat keeps the late
+    // fallback; its rule decides which seams are its to carry.
     const carryTo = this.zone.startsWith('curl_flat') ? 10 : 13;
-    const carryable = threats.filter((th) => th.vel.x > 4.5 && th.pos.x - sim.los > 2 && th.pos.x - sim.los < carryTo && Math.abs(th.pos.y - lm.y) < 6);
+    const declared = (th: (typeof threats)[number]) => this.ruled
+      ? th.vel.x > 4.5 && th.pos.x - sim.los > 2
+      : th.vel.x > 2 && th.vel.x > Math.abs(th.vel.y) && th.pos.x - sim.los > 0;
+    const carryable = threats.filter((th) => declared(th) && th.pos.x - sim.los < carryTo && Math.abs(th.pos.y - lm.y) < 6);
     if (carryable.length > 0 && this.zone !== 'flat_s' && this.zone !== 'flat_w') {
       carryable.sort((p, q) => Math.abs(p.pos.y - lm.y) - Math.abs(q.pos.y - lm.y));
       const th = carryable[0];
@@ -623,7 +632,12 @@ export class ZoneCoverage implements Behavior {
       // then turn and run with him.
       const tgt = { x: Math.max(th.pos.x + 1.5, a.pos.x - 0.5), y: th.pos.y + inside(th.pos.y) * 0.9 };
       const runPast = th.vel.x > 4.5 && a.pos.x - th.pos.x < 2.5;
-      return track(a, tgt, { x: th.vel.x, y: th.vel.y }, { facing: runPast ? undefined : facingQB, speed: runPast ? 0.92 + 0.08 * a.r('zoneCoverage') : zs * 1.1, gain: 1.8 });
+      const command = track(a, tgt, { x: th.vel.x, y: th.vel.y }, { facing: runPast ? undefined : facingQB, speed: runPast ? 0.92 + 0.08 * a.r('zoneCoverage') : zs * 1.1, gain: 1.8 });
+      // Walling him is only worth anything if he cannot run past: keep level
+      // with the body he has (turn and the time to reach the seam's speed).
+      let depth = this.depthReads.get(th.r);
+      if (!depth) { depth = new DeepCoverage(); this.depthReads.set(th.r, depth); }
+      return depth.choose(a, th, th.cue, th.r.profile, 0, command, sim.t, sim.world.handContact);
     }
     let best: (typeof threats)[number] | null = null;
     let bd = Infinity;
