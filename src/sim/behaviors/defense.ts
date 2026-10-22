@@ -388,8 +388,11 @@ export class ManCoverage implements Behavior {
     // after. Press and trail technique play under the receiver by design.
     const keepsCushion = o.protectDepth || (o.manRole && !this.press && !o.trail);
     if (!keepsCushion) return command;
+    // Without deep responsibility he only has to stay level; the roof is the
+    // installed deep player's.
     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
-      : vx > 3 && deep > 3 ? cushion * .5 : cushion;
+      : !o.protectDepth ? 0
+        : vx > 3 && deep > 3 ? cushion * .5 : cushion;
     const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
     return selected;
