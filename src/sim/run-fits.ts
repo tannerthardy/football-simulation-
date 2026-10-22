@@ -172,16 +172,6 @@ const PULL_EARLY = process.env.PULL_EARLY === '1';
  * the surface has already given up the bounce. Once the runner is at the
  * line the installed track applies. */
 const FORCE_BOUNCE = process.env.FORCE_BOUNCE === '1';
-/** Experimental (LB_TEMPO=1, off): a box backer fits at the back's tempo.
- * Until the runner declares, he goes to his landmark at the pace that puts
- * him there when the back he sees reaches the line, net of his own
- * reaction, instead of sprinting for it at the read: arriving with the
- * back, not before him to be climbed on or run past. (Holding the depth he
- * could still close at full speed left backers standing still to 2 s.) Tracked backers
- * come down about 1.5 yd/s in the first 1.5 s and are still 2.4 yd off the
- * ball at 2.0 s (scripts/diag/align/lbfit.py on claude/run-game-v3); ours
- * came down twice as fast to 1.8. */
-const LB_TEMPO = process.env.LB_TEMPO === '1';
 /** Experimental (LB_LANDMARK=1, off): where a stack backer fits before the
  * runner declares. The installed 1.5 yd past the line is an unfitted
  * constant; tracked backers meet the climbing lineman at a median 2.01 yd
@@ -427,13 +417,6 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? STACK_LANDMARK : .5;
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
   let pace = .78+.15*a.mind.urgency;
-  if (LB_TEMPO && job.kind === 'insert') {
-    // The back's time to the line from his seen motion, less this backer's
-    // reaction: the pace that puts him on his landmark when the back gets there.
-    const dirX = sim.attackDir(c.team), toLos = Math.max(0, (sim.los - seen.pos.x) * dirX);
-    const reach = toLos / Math.max(2, seen.vel.x * dirX) - a.profile.reactionTime;
-    if (reach > 0) pace = Math.min(pace, Math.hypot(aim.x - a.pos.x, aim.y - a.pos.y) / (reach * a.profile.vmax));
-  }
   const fit = track(a,aim,{x:0,y:0},{speed:pace,gain:3,facing:Math.PI});
   // A moving landmark (the line flowing, or the back's declared track) is
   // chased with lateral work planned with his own body (the law every
