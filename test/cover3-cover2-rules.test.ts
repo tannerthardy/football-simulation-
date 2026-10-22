@@ -5,7 +5,12 @@
  * curl's up-and-in match (HNFL-097) and the Wild trips check with a
  * vertical hook on #3 (HNFL-131/334). Each case has an opposing control.
  */
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+// The scenes read the coverage rules on a held ball. AGAP_ALIGN's wider 1
+// technique sends the rush another way, and the far end sacks the vertical
+// curl's QB at 2.9 s, before the 3.4 s read: the rush, not the rule.
+vi.hoisted(() => { process.env.AGAP_ALIGN = '0'; });
 import { filmScene, jobsOf, modeOf, type SceneFilm } from '../src/lab/coverage-scene.js';
 
 /** The defender whose installed landmark is `zone`. */

@@ -23,6 +23,9 @@ Defense:
             yd of #2 laterally and under 8 yd ('over'), between #2 and the
             surface ('apex'), or none ('box')
   deep      defenders deeper than 9.5 yd
+  centre    covered: a front man within 1 yd of the centre laterally; in a
+            4-down over/under, the A-gap man's distance from the centre as a
+            share of the split to his guard
 
     python3 -I scripts/diag/align/deflook.py FILE.csv.gz [FILE ...] [--by look|down|front] [--min 40]
 """
@@ -182,6 +185,13 @@ def classify(rows):
             who = near or between
             kind = ('over' if near else 'apex' if between else 'none') + ('' if not who else '-DB' if who[0]['position'] in DB else '-LB')
             inside[f'{name}#{i}'] = kind
+    cy = lat(ol[2])
+    covered = any(abs(lat(r) - cy) < 1 for r in front)
+    agap = None
+    if fam in ('over', 'under'):
+        a = min(front, key=lambda r: abs(lat(r) - cy))
+        g = ol[3] if lat(a) > cy else ol[1]
+        agap = abs(lat(a) - cy) / abs(lat(g) - cy)
     try:
         togo = int(rows[0]['yardsToGo'])
     except ValueError:
@@ -195,7 +205,7 @@ def classify(rows):
         't3_te': rel(t3, ts), 't3_recv': rel(t3, rs), 't3_back': rel(t3, back), 't3_field': rel(t3, field),
         'box': box, 'nback': len(backers), 'bdepth': [r['_x'] for r in backers],
         'bwidth': [abs(lat(r)) for r in backers], 'two': answer, 'deep': deep,
-        'inside': inside, 'edge': [e[-1] for e in edges.values() if e],
+        'inside': inside, 'covered': covered, 'agap': agap, 'edge': [e[-1] for e in edges.values() if e],
         'shape': ' '.join(sorted(techs[-1])) + ' | ' + ' '.join(techs[0]) + ' | ' + ' '.join(sorted(techs[1])),
     }
 
@@ -219,6 +229,11 @@ def q(v):
     return f"{v[len(v) // 4]:.1f}/{v[len(v) // 2]:.1f}/{v[3 * len(v) // 4]:.1f}"
 
 
+def pq(v):
+    v = sorted(v)
+    return '/'.join(f"{v[int(f * (len(v) - 1))]:.2f}" for f in (.1, .5, .9))
+
+
 for path in FILES:
     out = [r for r in (classify(p) for p in plays(path)) if r]
     print(f"== {path.split('/')[-1]}: {len(out)} snaps")
@@ -240,6 +255,9 @@ for path in FILES:
               f" | #2: {pct(Counter(r['two'] for r in g), m, 4)}")
         print(f"   family: {pct(Counter(r['fam'] for r in g), m, 7)}")
         print(f"   edge outside the surface p25/50/75 {q([e for r in g for e in r['edge']])}")
+        ag = [r['agap'] for r in g if r['agap'] is not None]
+        print(f"   centre covered {100 * sum(r['covered'] for r in g) / m:.0f}%"
+              + (f" | over/under A-gap man, share of the centre-guard split p10/50/90 {pq(ag)} (n {len(ag)})" if ag else ''))
         for ref in ('S#2', 'S#3', 'W#2'):
             got = [r['inside'][ref] for r in g if ref in r['inside']]
             if len(got) >= MIN // 2:

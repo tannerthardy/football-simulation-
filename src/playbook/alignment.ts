@@ -154,6 +154,20 @@ const BOX_ALIGN = process.env.BOX_ALIGN === '1';
 /** SHELL_SHOW (experimental, off; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
 const SHELL_SHOW = process.env.SHELL_SHOW === '1';
+/** Experimental (AGAP_ALIGN=1, off; acts with FRONT_ALIGN): a lineman's 1
+ * technique stands at his team's habit along the centre-guard split, not on
+ * the centre's shoulder. In 2022 tracking the A-gap man of a 4-down
+ * over/under stands a median 0.66 of the split off the centre (0.99 yd; the
+ * shoulder put him at 0.47 and covered the centre on 97% of those snaps,
+ * tracked 51%). The spot is mostly the team's: team medians run 0.30 (NYG,
+ * a shade on the centre) to 0.82 (PHI, a 2i on the guard), sd 0.14, while
+ * his build barely moves it (-0.017 per 10 lb) and down, personnel and run
+ * or pass move the median under 0.06 (scripts/diag/align/deflook.py). The
+ * gap is unchanged. Off: the shoulder. */
+const AGAP_ALIGN = process.env.AGAP_ALIGN === '1';
+/** AGAP_ALIGN: the league's 1 technique, as a share of the centre-guard
+ * split (mean of the 2022 team medians), for a defense without a habit. */
+const AGAP_LEAGUE = .63;
 type BackerSpot = [units: number, depth: number];
 const BACKERS: Record<string, Partial<Record<1 | 2 | 3, BackerSpot[]>>> = {
   over: { 1: [[.35, 4.7]], 2: [[-1.4, 4.6], [1.7, 4.6]], 3: [[-1.9, 4.5], [.5, 4.8], [2.7, 4.5]] },
@@ -213,6 +227,9 @@ export interface AlignStyle { olWidth?: number; wrRoom?: number; cbDepth?: numbe
   /** FRONT_STRENGTH: how often the front sets to the passing strength when
    * the look has no single attached end (the call carries each snap's pick). */
   passingStrength?: number;
+  /** AGAP_ALIGN: where the front's 1 technique stands, as a share of the
+   * centre-guard split from the centre. */
+  aGap?: number;
   /** The defense's own picture of the snap: down, yards to gain and to the
    * goal line. Never the offense's call. */
   situation?: DefSituation;
@@ -760,7 +777,11 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     if (!fa) continue;
     const sign = sideSign(fa.side);
     const hasTE = teAt(sign);
-    const y = off.ballY + sign * (techniqueOffset(edgeTech.get(slot) ?? fa.tech, hasTE, off.line) + (edgeShift.get(slot) ?? 0));
+    const tech = edgeTech.get(slot) ?? fa.tech;
+    const lateral = FRONT_ALIGN && AGAP_ALIGN && tech === '1' && fa.depth < 2
+      ? (style.aGap ?? AGAP_LEAGUE) * (OL_SPLITS ? off.line.cg : 1.3)
+      : techniqueOffset(tech, hasTE, off.line) + (edgeShift.get(slot) ?? 0);
+    const y = off.ballY + sign * lateral;
     const fit = call.front.fits?.[slot];
     spots[slot] = { slot, pos: { x: los + fa.depth, y }, role: { kind: 'rush' },
       gap: fit?.gap ?? techniqueGap(fa.tech), gapSign: fit ? sideSign(fit.side) : sign };

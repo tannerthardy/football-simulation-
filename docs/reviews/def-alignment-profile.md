@@ -63,6 +63,12 @@ motion plans):
 - guard 11/12: run box percentiles, from the two games diverging; on the same
   motion plays the check lowers the box.
 
+## Off, proposed
+
+| Flag | Owner | What | Evidence |
+|---|---|---|---|
+| `AGAP_ALIGN` | this session | The 1 technique stands at the team's habit along the centre-guard split (tracked team medians 0.30-0.82), not on the centre's shoulder | Over/under centre covered: 48-51% tracked → 96-97% → 83-85%, and 53-56% with #190's `OL_SPLITS` |
+
 ## Staged-scene pins
 
 These tests hold a flag off because the scene was set up on the installed
@@ -72,6 +78,8 @@ alignment. Each pin was diagnosed rather than added blind:
 - `fangio-tree` Pounder: `FRONT_ALIGN` (the rush ends the ball-held rep);
 - #193's `corner-one-release` and `cover6-half-side`: `FRONT_ALIGN`,
   `SNAP_REACT`, with held/released preconditions;
+- #193's `cover3-cover2-rules`: `AGAP_ALIGN` (a sack ends the held rep
+  before the read);
 - #190's eight witness pins.
 
 ## Open items
