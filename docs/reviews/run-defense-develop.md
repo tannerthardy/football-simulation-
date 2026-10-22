@@ -722,6 +722,15 @@ profile's faster offense, not to a wrong landmark, so it stays off.
 Develop's own backer gap is the scrape: 0.25 yd/s toward the play at 1.0 s
 against 1.85 tracked (all runs under centre). `test/lb-landmark.test.ts`.
 
+**`DL_FLATTEN_WON` (with `DL_FLATTEN`, off, not in the set).** A lineman
+already beside or past the man on him keeps attacking instead of
+flattening ("beat the reach, penetrate"). On the run-offense profile:
+single-blocked outside-zone linemen −0.51 → −0.63 yd at 2.5 s (NFL −0.62);
+zone losses 4.1 → 4.8% and 1.8 → 3.3% on two seed sets (NFL 9.9%). On
+develop's games, where linemen beat the reach far more often, losses go
+17.5 → 23.3% and report flags 28 → 44. Profile-dependent; left off.
+`test/dl-flatten.test.ts`.
+
 Zone and gap arms against tracking (run-offense profile, under centre):
 zone 10+ is 6.4% ours against 10.2% tracked and 40+ 1.8% against 0.9%;
 the deep-cap arms put zone 10+ at 14–17% and 40+ at 2.5–2.8%. On this
