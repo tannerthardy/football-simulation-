@@ -504,6 +504,17 @@ offense's lever. One defensive piece remains: a backer does nothing until
 his run read at about 0.5 s (`lbtrace.ts`), while the coaching tables have
 the first step go with the key's flow before run or pass is known.
 
+Probe, not committed (`LB_STEP`): before his read, an underneath zone backer
+moved with a seen low-hat zone step of the lineman across from him, at his
+own depth (AFQ, Cowboys, Svec per the playbook session). Lateral speed at
+0.5 s rose only 0.07 → 0.17 yd/s. The key's step becomes visible at about
+the same time as the run read: our line has moved 0.37 yd by 0.5 s (NFL
+0.55) and the backer sees it 0.25 s late. After the read he asks for 9.25
+yd/s sideways and has 1.83 by 1.0 s. The run-offense session's guard shows
+the same start: 1.95 yd/s asked over the first 0.5 s, 0.80 achieved. The
+common limit is start-up acceleration from a stance, a movement-law
+question for the physics owner (the run-offense branch carries `GAIT_STEP`).
+
 ### The run tail and the secondary (diagnosis; two probes, neither committed)
 
 The run-offense session's `geometry.py` (its branch) puts the 40+ tail in
