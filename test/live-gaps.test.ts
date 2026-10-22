@@ -87,7 +87,9 @@ describe('live gaps move with the offensive bodies that form them', () => {
     const c = sim.slot('C')!, g = ['LG', 'RG'].map((k) => sim.slot(k)!).find((a) => Math.sign(a.pos.y - CENTER_Y) === 1)!;
     settle();
     const open = liveGap(sim, observer, 'A', 1);
-    expect(open.width).toBeCloseTo(1.3 - c.profile.radius - g.profile.radius, 6);
+    // The installed center-guard split (1.3 yd; wider under OL_SPLITS).
+    const split = Math.abs(sim.offAlign.spots[g.slot].pos.y - sim.offAlign.spots.C.pos.y);
+    expect(open.width).toBeCloseTo(split - c.profile.radius - g.profile.radius, 6);
     expect(open.vel).toBeCloseTo(0, 6);
     // The guard steps toward the center: the opening narrows.
     g.body.pos = { x: g.pos.x, y: g.pos.y - .4 };

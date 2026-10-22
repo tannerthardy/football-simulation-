@@ -11,6 +11,9 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { contactControl, inBlockReach, promoteContact, syncJoints, updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
+// A preserved legacy trace (commands, control and RNG) on the installed get-off.
+vi.hoisted(() => { process.env.SNAP_REACT = '0'; });
+
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
 afterEach(() => vi.restoreAllMocks());

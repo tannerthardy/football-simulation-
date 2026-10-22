@@ -1,9 +1,12 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { goTo } from '../src/sim/behaviors/common.js';
 import { RunBlocker } from '../src/sim/behaviors/blocking.js';
 import { PlaySim, type PlaySetup } from '../src/sim/playsim.js';
+// BOX_ALIGN puts the one-high down safety in the box, where the wrapper is
+// assigned him at the snap; these scenes are staged on the installed spot.
+vi.hoisted(() => { process.env.BOX_ALIGN = '0'; });
 
 const inputs = JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/puller-access-inputs.json.gz', import.meta.url))).toString());
 

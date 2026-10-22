@@ -15,6 +15,14 @@ import type { PlaySim } from './playsim.js';
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 /** Extra hand extension available while tracking a visible ball. */
 export const TRACKING_REACH_BONUS = .3;
+/** Experimental (TIP_AWAY=1, off): a defender who breaks up or bats a pass
+ * has sent it away from his own hands. He cannot also catch that deflection;
+ * teammates and the receiver still can. Without it he may play his own tip
+ * a quarter second later, a second interception chance after the contest
+ * already decided he could not catch it cleanly. */
+const TIP_AWAY = process.env.TIP_AWAY === '1';
+/** How long a defender who touched the ball stays out of its flight. */
+const touchedUntil = (sim: PlaySim, beat: number) => sim.t + (TIP_AWAY ? 10 : beat);
 
 interface Opp {
   a: Agent;
@@ -150,7 +158,7 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     } else if (roll < pbu) {
       sim.stats.passDefendedBy = D.player.id;
       sim.event('pbu', D, R);
-      D.noCatchUntil = sim.t + 0.25;
+      D.noCatchUntil = touchedUntil(sim, 0.25);
       R.noCatchUntil = sim.t + 0.6;
       deflect(sim, 0.3, 'tip', D);
       return;
@@ -205,7 +213,7 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
     if (rng.chance(pBat)) {
       sim.event('deflection', D, null, 'batted at the line');
       sim.stats.passDefendedBy = D.player.id;
-      D.noCatchUntil = sim.t + 0.3;
+      D.noCatchUntil = touchedUntil(sim, 0.3);
       deflect(sim, 0.25, 'tip', D);
       return true;
     }
@@ -224,7 +232,7 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
   if (roll < pInt + pDefl * (1 - pInt)) {
     sim.stats.passDefendedBy = D.player.id;
     sim.event('pbu', D, ball.target);
-    D.noCatchUntil = sim.t + 0.25;
+    D.noCatchUntil = touchedUntil(sim, 0.25);
     deflect(sim, 0.3, 'tip', D);
     return true;
   }

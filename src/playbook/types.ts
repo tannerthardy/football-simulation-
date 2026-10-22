@@ -118,12 +118,23 @@ export interface RunConcept {
   beats: string[];
 }
 
+/** Pre-snap motion kinds (src/sim/motion.ts). */
+export type MotionKind = 'across' | 'jet' | 'empty' | 'return';
+
+/** One player in motion before the snap. */
+export interface MotionCall {
+  slot: SkillSlot;
+  kind: MotionKind;
+}
+
 export interface OffensivePlayCall {
   formation: Formation;
   flip: boolean;
   kind: 'pass' | 'run';
   pass?: PassConcept;
   run?: RunConcept;
+  /** Pre-snap motion (played only with MOTION=1). */
+  motion?: MotionCall;
   /** Display label. */
   label: string;
 }
@@ -146,7 +157,7 @@ export type DefSlot =
   | 'FS'
   | 'SS';
 
-export type DefPersonnelId = 'base43' | 'base34' | 'nickel' | 'dime' | 'goalline';
+export type DefPersonnelId = 'base43' | 'base34' | 'nickel' | 'dime' | 'goalline' | 'heavy';
 
 export type Technique = '0' | '1' | '2i' | '2' | '3' | '4i' | '4' | '5' | '6' | '7' | '9' | 'w9';
 
@@ -218,6 +229,21 @@ export type MatchRule =
   | 'poach_safety'
   | 'stubbie_safety'
   | 'invert_safety'
+  | 'read_hook'
+  | 'mush'
+  | 'vertical_hook'
+  | 'box_out_low'
+  | 'box_in_low'
+  | 'box_out_deep'
+  | 'box_in_deep'
+  | 'area_flat'
+  | 'area_hook'
+  | 'topper'
+  | 'banjo_out'
+  | 'banjo_in'
+  | 'clue_corner'
+  | 'three_rec_hook'
+  | 'bonus_hook'
   | 'rat'
   | 'robber';
 
@@ -260,6 +286,22 @@ export type CoverageFamily = 'cover0' | 'cover1' | 'cover2' | 'tampa2' | 'cover2
 /** Receiver distribution a coverage can check against. */
 export type FormationKey = '2x2' | '3x1' | '2x1' | '3x2' | '4x1' | 'empty' | 'heavy';
 
+/** Pre-snap structure features a coverage check can key on (src/playbook/structure.ts). */
+export type StructureTag =
+  | 'quads' | 'empty_3x2' | 'empty'
+  | 'bunch_strong' | 'bunch_weak'
+  | 'stack_strong' | 'stack_weak'
+  | 'trips_closed' | 'trips_open' | 'trips' | 'close_23'
+  | 'nub_weak' | 'nub_strong'
+  | 'two_back' | 'iso_weak' | 'reduced_strong' | 'reduced_weak';
+
+/** A check: against this structure (every tag present), the call becomes one of `to`. */
+export interface CoverageCheck {
+  when: StructureTag[];
+  /** Coverage ids; the coordinator's preference index picks among several. */
+  to: string[];
+}
+
 /** An underneath seat: a zone, optionally with a match rule or style. */
 export type UnderSeat = ZoneId | { zone: ZoneId; rule?: MatchRule; style?: ZoneStyle };
 
@@ -280,6 +322,10 @@ export interface Coverage {
   family?: CoverageFamily;
   /** Formation checks: the call becomes one of these against that distribution. */
   checks?: Partial<Record<FormationKey, string[]>>;
+  /** Structure checks, most specific first; the first that matches applies before `checks`. */
+  structureChecks?: CoverageCheck[];
+  /** Players the call cannot be installed without, beyond its named zone seats (a rotation needs both safeties). */
+  needs?: DefSlot[];
   /** One line: what it is and what it takes away. */
   note?: string;
 }
@@ -289,10 +335,16 @@ export interface Pressure {
   name: string;
   /** Extra rushers: slot → gap. */
   blitzers: Partial<Record<DefSlot, { gap: Gap; side: 'S' | 'W' }>>;
-  /** Defensive linemen who drop into coverage instead of rushing. */
-  droppers?: Partial<Record<DefSlot, ZoneId>>;
-  /** Compatible coverages. */
+  /** Defensive linemen who drop into coverage instead of rushing: a zone, or a seat with a match rule. */
+  droppers?: Partial<Record<DefSlot, UnderSeat>>;
+  /** The rush count the call promises (a simulated pressure brings four, a fire zone five). */
+  rushers?: number;
+  /** Compatible coverages: the called coverage's family (or id) must be one of these. */
   coverages: string[];
+  /** A zone pressure that brings its own coverage (Deuce): installed in place of the called one. */
+  coverage?: string;
+  /** Experimental: installable only with this environment flag set to 1. */
+  flag?: string;
 }
 
 /**
@@ -317,6 +369,17 @@ export interface DefensivePlayCall {
   shown?: Coverage;
   /** Explicit run policy; support availability still comes from coverage. */
   runPolicy?: { edge: 'box' | 'spill'; linebacker: 'plug' | 'stack' };
+  /** FRONT_ALIGN: an explicit edge call for the end men (tight on the end or
+   * a tackle's ghost, an outside shade, or wide); absent = the installs'
+   * rules from the look. */
+  edge?: 'tight' | 'base' | 'wide';
+  /** FRONT_STRENGTH: where the front sets when the look has no single attached
+   * end (none, or one each side): toward the receivers' strength (the field
+   * when they are balanced), or the opposite way. With one, it sets to him. */
+  strength?: 'passing' | 'opposite';
+  /** FRONT_MENU: backers walked up into the open A gaps (one or both), each
+   * still playing his called job from there. */
+  mug?: 1 | 2;
   /** Called end spike / linebacker scrape exchanges both responsibilities. */
   gapExchange?: { edge: 'DE_S' | 'DE_W'; backer: 'LB_S' | 'LB_M' | 'LB_W' };
   /** Show another compatible front, then move at a finite rate before snap. */
@@ -325,6 +388,10 @@ export interface DefensivePlayCall {
   creep?: { slot: DefSlot; secondsBeforeSnap: number };
   /** Which of the coverage's formation checks this coordinator prefers (index). */
   checkPick?: number;
+  /** The coordinator's ranked preference among installed checks this snap (coverage ids), ahead of `checkPick`. */
+  checkPrefer?: string[];
+  /** The pre-snap check the secondary made, if any: called coverage, and the structure it saw. */
+  check?: { from: string; when: string };
   /** Zeus: the offensive slot this zone call doubles; resolved to Cover 8 / Stuff / Quads by his alignment. */
   zeus?: SkillSlot;
   label: string;
@@ -336,6 +403,8 @@ export const DEF_PERSONNEL: Record<DefPersonnelId, Partial<Record<DefSlot, Posit
   nickel: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', LB_M: 'LB', LB_W: 'LB', CB_S: 'CB', CB_W: 'CB', NB: 'CB', FS: 'S', SS: 'S' },
   dime: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', LB_M: 'LB', CB_S: 'CB', CB_W: 'CB', NB: 'CB', DB: 'CB', FS: 'S', SS: 'S' },
   goalline: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', NT: 'DT', LB_S: 'LB', LB_M: 'LB', LB_W: 'LB', CB_S: 'CB', CB_W: 'CB', SS: 'S' },
+  // Short yardage away from the goal line (SHORT_PACKAGE): five down, two backers, a safety deep.
+  heavy: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', NT: 'DT', LB_S: 'LB', LB_M: 'LB', CB_S: 'CB', CB_W: 'CB', FS: 'S', SS: 'S' },
 };
 
 export const OFF_PERSONNEL: Record<PersonnelId, Partial<Record<SkillSlot, Position>>> = {
