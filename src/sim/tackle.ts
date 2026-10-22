@@ -67,6 +67,17 @@ const REACH_CONTACT = process.env.REACH_CONTACT === '1';
 /** Experimental early hand acquisition with coherent approach footwork through
  * a committed strike. Ordinary grip and strike; default-off. */
 const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
+/** Experimental (BLOCKED_REACH=1, off): a blocked defender reaches for a
+ * passing carrier with the arm his blocker does not control, rather than only
+ * once he is beating the block. One free arm reaches 0.7 of his reach; a
+ * blocker with inside hands latched pins it to 0.4. The grab gives up the
+ * block (grasp disengages it) and its hold quality falls with distance, as
+ * for any reach. Only a runner on his free side, away from the blocker, is in
+ * that arm's reach: a blocker head-up or on the runner's side occupies it
+ * (the installed gate holds there). Tracking: blocked defenders make 46% of
+ * first contacts on gap runs and 55% on zone
+ * (scripts/diag/runblock/blockedfirst.py); the gate left 32% and 41%. */
+const BLOCKED_REACH = process.env.BLOCKED_REACH === '1';
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
@@ -86,9 +97,12 @@ export function tryTackles(sim: PlaySim): void {
     const engaged = !!d.engagement;
     // A blocked defender can only reach out for the carrier once he's clearly
     // working off the block (tracking: linemen make a third of run tackles).
-    if (engaged && d.engagement!.win < 0.6) continue;
+    const blockerY = engaged ? d.engagement!.blocker.pos.y - d.pos.y : 0;
+    const freeSide = engaged && BLOCKED_REACH && Math.abs(blockerY) >= 0.25 && blockerY * dy < 0;
+    if (engaged && !freeSide && d.engagement!.win < 0.6) continue;
     const body = c.profile.radius + d.profile.radius;
-    const arms = body + d.profile.reach * (engaged ? 0.4 : 1.0);
+    const freeArm = freeSide ? 0.7 - 0.3 * clamp(d.engagement!.control, 0, 1) : 0.4;
+    const arms = body + d.profile.reach * (engaged ? freeArm : 1.0);
     // A free tackler can lunge for the last half yard by committing his body;
     // a miss then leaves him off his base.
     const range = arms + (engaged ? 0 : 0.45);

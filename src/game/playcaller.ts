@@ -27,6 +27,38 @@ import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import type { CoverageSystem, Team } from '../league/team.js';
 import { motionEnabled } from '../sim/motion.js';
 
+/** FRONT_ALIGN (experimental, off): fronts are called as team installs use
+ * them (2017 Colts, 2013 Seahawks, 2020 Ravens via the playbook session):
+ * Under is the base front and Over a secondary call; nickel lines up in the
+ * Over family; its pass-down front is a wide "Rush". One draw either way. */
+const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
+/** SHORT_PACKAGE (experimental, off): a short-yardage package answers the
+ * offense's heavy package anywhere on the field, not only at the goal line:
+ * goal-line personnel and the Bear at 2 yd or less to go vs 13, 21 or 22
+ * personnel, and vs 12 at a yard or less. Tracked 2022 runs at 1-3 yd to go
+ * put six or more on the line on 27% of snaps (7% otherwise) and no deep
+ * safety on 27% (2%); the line tightens with the offense's package, not
+ * the down (run-offense session, docs/reviews/presnap.md). Goal-line
+ * personnel has no free safety, so it plays no one deep: the installs use it
+ * only at the goal line, where there is no deep field. Elsewhere their heavy
+ * answers keep one safety deep (Colts "36 Heavy" Cover 1, "44" 6-2 front):
+ * heavy personnel (five down, two backers, both safeties) in the Bear, a
+ * single-high or zero coverage (the zero call by the ordinary situational
+ * weights; tracked heavy fronts at 1-3 yd play no one deep 55% of snaps). */
+const SHORT_PACKAGE = process.env.SHORT_PACKAGE === '1';
+function shortPackage(offPersonnel: PersonnelId, distance: number): boolean {
+  if (offPersonnel === '13' || offPersonnel === '21' || offPersonnel === '22') return distance <= 2;
+  return offPersonnel === '12' && distance <= 1;
+}
+function installWeight(id: string, personnel: DefPersonnelId, passingDown: boolean, scheme: string): number {
+  if (personnel === 'base43') return id === 'under' ? 3 : id === 'over' ? 1 : 0;
+  if (personnel === 'nickel' || personnel === 'dime') {
+    if (id === 'wide9') return passingDown ? 3 : scheme === 'nickel-heavy' ? 1 : .5;
+    return id === 'over' ? passingDown ? 1 : 3 : id === 'under' ? passingDown ? .25 : 1 : 0;
+  }
+  return 1;
+}
+
 export interface Situation {
   down: number;
   distance: number;
@@ -331,7 +363,10 @@ export class DefensiveCoordinator {
     const passingDown = s.down >= 3 && s.distance >= 7;
     const goalLine = 100 - s.yardline <= 2;
     let personnel: DefPersonnelId;
+    let heavy = false;
     if (goalLine && (offPersonnel === '22' || offPersonnel === '13' || offPersonnel === '21')) personnel = 'goalline';
+    else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance) && 100 - s.yardline <= 5) personnel = 'goalline';
+    else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance)) { personnel = 'heavy'; heavy = true; }
     else if (offPersonnel === '10') personnel = rng.chance(passingDown ? 0.7 : 0.35) ? 'dime' : 'nickel';
     else if (offPersonnel === '11') personnel = passingDown && rng.chance(0.4) ? 'dime' : scheme === 'nickel-heavy' || rng.chance(0.85) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
     else if (offPersonnel === '12') personnel = rng.chance(scheme === 'nickel-heavy' ? 0.6 : 0.4) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
@@ -340,7 +375,8 @@ export class DefensiveCoordinator {
     const fronts = FRONTS.filter((f) => f.personnel.includes(personnel));
     const front = pickWeighted(
       rng,
-      fronts.map((f) => [f, scheme === '4-3' && (f.id === 'over' || f.id === 'under') ? 2 : scheme === 'nickel-heavy' && f.id === 'wide9' ? 2 : 1] as [typeof f, number]),
+      fronts.map((f) => [f, FRONT_ALIGN ? installWeight(f.id, personnel, passingDown, scheme)
+        : scheme === '4-3' && (f.id === 'over' || f.id === 'under') ? 2 : scheme === 'nickel-heavy' && f.id === 'wide9' ? 2 : 1] as [typeof f, number]),
     );
 
     // Coverage: family from NFL situational shares (2022 dropbacks, PFF
@@ -403,7 +439,7 @@ export class DefensiveCoordinator {
     // reject that installation rather than invent a replacement silently.
     const availableVariants = Object.fromEntries(Object.entries(VARIANTS).map(([family, variants]) =>
       [family, variants.filter(([id]) => coverageHasNamedZonePlayers(personnel, COVERAGE_BY_ID[id]))]));
-    const family = pickWeighted(rng, famW.filter(([id]) => availableVariants[id]?.length));
+    const family = pickWeighted(rng, famW.filter(([id]) => availableVariants[id]?.length && (!heavy || id === 'cover1' || id === 'cover3' || id === 'cover0')));
     const coverage = COVERAGE_BY_ID[pickWeighted(rng, availableVariants[family])];
     // Zeus: a two-high tree doubles the opponent's best receiver with Cover 8 /
     // Stuff / Quads, chosen by where he lines up (resolved at the snap).

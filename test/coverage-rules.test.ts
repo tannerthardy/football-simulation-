@@ -4,7 +4,7 @@
  * history) when a receiver declared a release — the exchanges the coverage
  * is built on.
  */
-import { describe, expect, it } from 'vitest';
+import { vi, describe, expect, it } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
@@ -15,6 +15,8 @@ import type { PassConcept, SkillSlot } from '../src/playbook/types.js';
 import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { Perceived } from '../src/sim/perception.js';
+// The rules play out in a full native rep; FRONT_ALIGN's rush changes when it ends.
+vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; });
 
 const offense = generateTeam(new Rng(21), 'Offense', 'OFF', { strength: 0.6 });
 const defense = generateTeam(new Rng(22), 'Defense', 'DEF', { strength: 0.6 });

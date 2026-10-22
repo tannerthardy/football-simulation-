@@ -51,8 +51,11 @@ describe('installed offensive contracts', () => {
       const aligned = alignOffense(formation, false, 40, CENTER_Y);
       expect(formation.slots.X!.depth).toBeGreaterThan(.6);
       expect(aligned.hasTE).toEqual({ S: true, W: true });
-      expect(Math.abs(aligned.coreEdge.S - CENTER_Y)).toBeCloseTo(3.9, 12);
-      expect(Math.abs(aligned.coreEdge.W - CENTER_Y)).toBeCloseTo(3.9, 12);
+      // The edge is each attached end (3.9 yd from the ball on the installed line).
+      const ends = Object.values(aligned.spots).filter(s => s.inline).map(s => Math.abs(s.pos.y - CENTER_Y));
+      expect(ends).toHaveLength(2);
+      expect(Math.abs(aligned.coreEdge.S - CENTER_Y)).toBeCloseTo(ends[0], 12);
+      expect(Math.abs(aligned.coreEdge.W - CENTER_Y)).toBeCloseTo(ends[1], 12);
     }
   });
 

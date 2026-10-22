@@ -157,7 +157,7 @@ export type DefSlot =
   | 'FS'
   | 'SS';
 
-export type DefPersonnelId = 'base43' | 'base34' | 'nickel' | 'dime' | 'goalline';
+export type DefPersonnelId = 'base43' | 'base34' | 'nickel' | 'dime' | 'goalline' | 'heavy';
 
 export type Technique = '0' | '1' | '2i' | '2' | '3' | '4i' | '4' | '5' | '6' | '7' | '9' | 'w9';
 
@@ -369,6 +369,10 @@ export interface DefensivePlayCall {
   shown?: Coverage;
   /** Explicit run policy; support availability still comes from coverage. */
   runPolicy?: { edge: 'box' | 'spill'; linebacker: 'plug' | 'stack' };
+  /** FRONT_ALIGN: an explicit edge call for the end men (tight on the end or
+   * a tackle's ghost, an outside shade, or wide); absent = the installs'
+   * rules from the look. */
+  edge?: 'tight' | 'base' | 'wide';
   /** Called end spike / linebacker scrape exchanges both responsibilities. */
   gapExchange?: { edge: 'DE_S' | 'DE_W'; backer: 'LB_S' | 'LB_M' | 'LB_W' };
   /** Show another compatible front, then move at a finite rate before snap. */
@@ -392,6 +396,8 @@ export const DEF_PERSONNEL: Record<DefPersonnelId, Partial<Record<DefSlot, Posit
   nickel: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', LB_M: 'LB', LB_W: 'LB', CB_S: 'CB', CB_W: 'CB', NB: 'CB', FS: 'S', SS: 'S' },
   dime: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', LB_M: 'LB', CB_S: 'CB', CB_W: 'CB', NB: 'CB', DB: 'CB', FS: 'S', SS: 'S' },
   goalline: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', NT: 'DT', LB_S: 'LB', LB_M: 'LB', LB_W: 'LB', CB_S: 'CB', CB_W: 'CB', SS: 'S' },
+  // Short yardage away from the goal line (SHORT_PACKAGE): five down, two backers, a safety deep.
+  heavy: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', NT: 'DT', LB_S: 'LB', LB_M: 'LB', CB_S: 'CB', CB_W: 'CB', FS: 'S', SS: 'S' },
 };
 
 export const OFF_PERSONNEL: Record<PersonnelId, Partial<Record<SkillSlot, Position>>> = {

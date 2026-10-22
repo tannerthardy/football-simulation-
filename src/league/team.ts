@@ -4,10 +4,11 @@
  * X vs. slot, nose vs. 3-tech, box vs. free safety — depend on how each
  * athlete fits each role.
  */
-import type { Rng } from '../core/rng.js';
+import { Rng } from '../core/rng.js';
 import { generatePlayer } from '../players/generator.js';
 import { overallAt, ROLE_BY_ID, roleSuitability } from '../players/roles.js';
 import type { Player, Position } from '../players/types.js';
+import type { AlignStyle } from '../playbook/alignment.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL, type DefPersonnelId, type DefSlot, type OffSlot, type PersonnelId, type SkillSlot } from '../playbook/types.js';
 
 export type OffScheme = 'west-coast' | 'air-raid' | 'spread' | 'power' | 'wide-zone';
@@ -235,4 +236,15 @@ export function pickDefense(team: Team, personnel: DefPersonnelId, av: Availabil
 
 export function specialist(team: Team, pos: 'K' | 'P'): Player {
   return team.roster.find((p) => p.position === pos) ?? team.roster[0];
+}
+
+/** A team's alignment habits on top of its scheme: one draw per team, one sd
+ * each, from 2022 team medians after removing the scheme (route, assignment,
+ * call): receivers' room to the sideline 0.8 yd, line width 4.9%, zone
+ * corners' depth 0.85 yd, deep safeties' depth 0.95 yd. Seeded by the team's
+ * id, so it costs roster generation no draws. */
+export function alignStyle(team: Pick<Team, 'id'>): AlignStyle {
+  const rng = new Rng(`align:${team.id}`);
+  return { wrRoom: rng.normalClamped(0, .8, -1.6, 1.6), olWidth: rng.normalClamped(0, .049, -.1, .1),
+    cbDepth: rng.normalClamped(0, .85, -1.7, 1.7), safetyDepth: rng.normalClamped(0, .95, -1.9, 1.9) };
 }

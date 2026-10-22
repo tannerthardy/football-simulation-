@@ -12,6 +12,14 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { RunBlocker, readCombination, type Combination } from '../src/sim/behaviors/blocking.js';
 import { updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
+// The helper witnesses are staged on the installed line. On OL_SPLITS's
+// tracked splits the Tite scene forms a different, sound combination (RG+RT
+// on the B-gap tackle, Y alone on the edge); OL_STAGGER also changes it.
+// FORCE_BOUNCE moves the Split Zone Bear force, and the recorded double no
+// longer releases within its 2 s window.
+// FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
+// SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FORCE_BOUNCE = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; });
 
 const offense = generateTeam(new Rng(31), 'Panel offense 1', 'O1', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'Panel defense 1', 'D1', { strength: .55 });

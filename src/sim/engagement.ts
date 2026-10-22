@@ -38,6 +38,7 @@ import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
+import { pullers } from './run-fits.js';
 import { runContactObservers } from './run-contact-observer.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
@@ -71,6 +72,44 @@ const runCache = new WeakMap<Agent, TrenchTraits>();
  * actual rep; knowing a pass set is not the same skill as sustaining a run fit.
  * The default remains the pass technique used by pre-contact protection.
  */
+/** Experimental (DL_ANCHOR=1, off): an engaged run defender who is doubled,
+ * or is being driven back by a real load, sits into his stance: pads down to
+ * get under the drive ("stay low", "drop the pressure leg"; Bucs, Kuchar,
+ * Shurmur). It only matters where pad level has a physical path
+ * (PAD_LEVERAGE); a blocker already anchors the same way when driven. */
+const DL_ANCHOR = process.env.DL_ANCHOR === '1';
+/** Experimental (DL_FLATTEN=1, off): an attacking lineman whose blocker steps
+ * across his face (a reach or zone step: the man on him, as he sees him, moving across
+ * faster than 1 yd/s and more across than at him) flattens on
+ * the line at the depth he met him, instead of driving upfield at 1.5 yd/s
+ * past the play ("flatten the guard on the L.O.S. and keep outside
+ * leverage", Bucs; "push & press", Allen; "do not run outside", Michigan).
+ * Upfield penetration against zone opens the cutback and the cut-up behind
+ * him: ours finish 1.61 yd upfield on single-blocked outside zone at 2.5 s,
+ * tracked linemen 0.62. A vertical drive block keeps the attack. */
+const DL_FLATTEN = process.env.DL_FLATTEN === '1';
+/** DL_SQUEEZE (off): an engaged first-level man who sees the man on him move
+ * away from the ball (a down block, a double driving him off) fights back
+ * across toward it ("fight pressure with pressure", "squeeze the down
+ * block"), instead of keeping his shoulder on a blocker who is washing him
+ * out of the hole. A blocker moving toward the ball (a reach) he still flows
+ * with. Tracked linemen close on the back as he reaches the line (lateral
+ * move since the snap -0.3 to -0.5 yd, crease 2.4-2.5 yd); ours drift
+ * 0.5-1.1 yd away (crease 4.2-4.8; scripts/diag/depth/crease.py). Off: he
+ * follows his blocker's flow. */
+const DL_SQUEEZE = process.env.DL_SQUEEZE === '1';
+/** DL_SQUEEZE: the squeeze side chosen at a read, and until when it is held. */
+const squeezes = new WeakMap<Engagement, { side: number; until: number }>();
+/** DL_FLATTEN_WON (with DL_FLATTEN, off): the flatten applies only while he is
+ * being reached; one already beside or past the man on him keeps attacking
+ * ("if you beat the reach, penetrate and make the play"). */
+const DL_FLATTEN_WON = process.env.DL_FLATTEN_WON === '1';
+function drivenBack(d: Agent): boolean {
+  const felt = d.body.support?.felt; if (!felt) return false;
+  const load = Math.hypot(felt.x, felt.y);
+  return load > 0.25 * d.profile.massKg * G && (d.vel.x * felt.x + d.vel.y * felt.y) / load > 0.15;
+}
+
 export function traits(a: Agent, type: 'pass' | 'run' = 'pass'): TrenchTraits {
   const common = commonTraits(a);
   if (type === 'pass' || a.team !== 'O') return common;
@@ -637,6 +676,13 @@ const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';
 
 /** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
 const DL_FLOW = process.env.DL_FLOW !== '0';
+/** Experimental (DL_CHASE=1, off): an engaged interior lineman keys the guard
+ * near him. When he sees him pull, his gap has left with him: he works across
+ * his blocker's face toward the pull and follows it down the line, instead of
+ * holding a shoulder that slides with the block. A backside edge closes the
+ * same way when the pull goes away from his side. The puller is the one he
+ * sees (`pullers`), within 3 yd (an edge: 4.5); nothing reads the call. */
+const DL_CHASE = process.env.DL_CHASE === '1';
 /** Experimental (RUN_HANDS=1, off): run blockers drive committed defenders off their body. */
 const RUN_HANDS = process.env.RUN_HANDS === '1';
 /** Experimental (DL_HANDS=1, off): a shedding defender in control of the hands works past with them. */
@@ -658,6 +704,13 @@ const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?:
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
+
+/** Experimental (PASS_FEEL=1, off): the pass blocker mirrors the rusher on
+ * acquired information: the one he feels through his hands (a 0.06 s
+ * tactile latency plus his attention lapses, via sim.see) or, while a landed move has his hands off, the one
+ * he sees (his visuomotor delay), not the rusher's current velocity and
+ * position. */
+const PASS_FEEL = process.env.PASS_FEEL === '1';
 
 /** Test hook: a fixed move sequence for a rep (identical across arms). */
 export const rushScripts = new WeakMap<Engagement, RushMove[]>();
@@ -765,8 +818,13 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     front.y += clamp((intent.laneY - front.y) * 0.5, -0.4, 0.4);
   }
   const lead = 0.15 + 0.15 * tb.read;
-  const offLat = (front.x + d.vel.x * lead - b.pos.x) * lat.x + (front.y + d.vel.y * lead - b.pos.y) * lat.y;
-  const dLat = d.vel.x * lat.x + d.vel.y * lat.y;
+  // PASS_FEEL: what the blocker has of the rusher, by touch or by sight.
+  const handsOff = inMove && e.move !== 'bull' && e.move !== 'longarm';
+  const rt = Math.max(0.1, b.profile.reactionTime);
+  const known = PASS_FEEL ? sim.see(b, d, (handsOff ? 0.12 + 0.12 * (1 - tb.read) : 0.06) / rt) : d;
+  if (PASS_FEEL) { front.x += known.pos.x - d.pos.x; front.y += known.pos.y - d.pos.y; }
+  const offLat = (front.x + known.vel.x * lead - b.pos.x) * lat.x + (front.y + known.vel.y * lead - b.pos.y) * lat.y;
+  const dLat = known.vel.x * lat.x + known.vel.y * lat.y;
   const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
   const vLat = clamp(dLat + felt(e, lat) * (0.6 + 0.6 * tb.feet) + offLat * (3 + 3 * tb.feet), -mirror, mirror);
   const depth = sim.los - b.pos.x;
@@ -871,6 +929,18 @@ function runContactRead(sim: PlaySim, e: Engagement) {
       stack.nextRead = sim.t + d.mind.decisionInterval;
     }
   }
+  let pullFlow: number | undefined;
+  if (DL_CHASE && stack && !declared) {
+    // An interior man keys the guard beside him; an edge keys a pull going
+    // away from his side (his contain is backside, the ball is not).
+    const pull = pullers(sim, d).find(p => Math.abs(p.pos.y - d.pos.y) < (edge ? 4.5 : 3)
+      && (!edge || Math.sign(p.vel.y) !== job!.side));
+    if (pull) {
+      stack.shoulder = Math.sign(pull.vel.y) * (b.profile.radius + d.profile.radius) * .65;
+      pullFlow = pull.vel.y;
+      d.tags.add('fit-follow-pull');
+    }
+  }
   // Preserve the box/spill shoulder until the runner is beyond the surface,
   // just as the free fit does. The touching blocker's position is haptic.
   const y = stack ? blockerY + stack.shoulder : job ? edge
@@ -900,6 +970,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
       flow = backSeen.vel.y;
     }
   }
+  if (flow === undefined && pullFlow !== undefined) flow = pullFlow;
   const aim = d.mind.aim(stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`, desired, sim.t);
   // The selected target mode belongs to the same held decision as its aim.
   // A newly seen declaration cannot drop flow feedforward midway through it.
@@ -1216,7 +1287,36 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // A declared runner can redirect the fit on the existing decision cadence.
   const work = td.lateral * (0.2 + 0.25 * d.r('blockShedding')) * (read.reading ? 1 : 0.3);
   const legacy = { x: -drive.x * 1.5 + lat.x * e.side * work, y: -drive.y * 1.5 + lat.y * e.side * work };
-  const recover = d.runFit?.technique !== 'attack';
+  // DL_FLATTEN: against a reach or zone step (the blocker's held flow across
+  // his face) an attacking lineman flattens on the line instead of driving on.
+  // He sees the man on him step across rather than come at him.
+  const blockerSeen = DL_FLATTEN && d.runFit?.technique === 'attack' ? sim.see(d, b) : null;
+  // A lineman who has already beaten the reach (beside or past the man on
+  // him toward the backfield) keeps attacking: penetrate and make the play.
+  const beaten = !!blockerSeen && (d.pos.x - blockerSeen.pos.x) * sim.attackDir(b.team) < d.profile.radius;
+  const zoneStep = !!blockerSeen && !(DL_FLATTEN_WON && beaten) && Math.abs(blockerSeen.vel.y) > 1
+    && Math.abs(blockerSeen.vel.y) > Math.abs(blockerSeen.vel.x);
+  // DL_SQUEEZE: the play's direction is the back's lateral flow (where he
+  // is going), or where he is when he comes straight downhill. A blocker
+  // moving against it is a down block or a wash; one moving with it, a reach.
+  let squeeze = 0;
+  // The squeeze is a decision: made at a read, held for its beat.
+  const lastSqueeze = squeezes.get(e);
+  if (lastSqueeze && sim.t < lastSqueeze.until) squeeze = lastSqueeze.side;
+  else if (DL_SQUEEZE && read.stack && !read.declared && Math.abs(read.stack.flow) > .5) {
+    // He reads the back, as the fit does; a pitch or another carrier is the ball.
+    const carrier = sim.carrier && sim.carrier.team !== d.team ? sim.carrier : null;
+    const back = sim.slot('RB');
+    const ball = back && (carrier === sim.qb || carrier === back) ? back : carrier;
+    const cue = ball ? sim.see(d, ball) : null;
+    const play = !cue ? 0 : Math.abs(cue.vel.y) > 1 ? Math.sign(cue.vel.y)
+      : Math.abs(cue.pos.y - d.pos.y) > .5 ? Math.sign(cue.pos.y - d.pos.y) : 0;
+    if (play && read.stack.flow * play < 0) { squeeze = play; d.tags.add('squeeze'); }
+  }
+  if (DL_SQUEEZE && !(lastSqueeze && sim.t < lastSqueeze.until)) squeezes.set(e, { side: squeeze, until: sim.t + d.mind.decisionInterval });
+  // Squeezing a down block is on the line: he flattens at his contact depth
+  // and works across, pressing the blocker into the hole, not upfield past him.
+  const recover = d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0;
   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
     : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
       : -sim.attackDir(b.team) * 1.5;
@@ -1234,7 +1334,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // and leans into it, instead of following the blocker's flow off his gap.
   // The lateral twin of the blocker's lost-depth anchor; the decision is held
   // for a decision beat, then renewed while the push lasts.
-  let lateralFlow = flow;
+  let lateralFlow = squeeze ? squeeze * td.lateral : flow;
   if (DL_FIGHT && read.stack && !read.declared) {
     const st = read.stack, push = d.body.support?.felt?.y ?? 0;
     // A push toward where he sees the ball heading (a reach running him
@@ -1281,7 +1381,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     vel: workOff ?? cf ?? (read.stack ? { x: depth, y: lateralFlow } : legacy),
     facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
-    posture: 0.85,
+    posture: DL_ANCHOR && (e.helpers.length > 0 || drivenBack(d)) ? 1 : 0.85,
     cutSkill: 0.8 + 0.4 * td.bend,
   };
   runContactObservers.get(sim)?.(e, 'defender-movement', { reading: read.reading,

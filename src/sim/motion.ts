@@ -21,7 +21,7 @@
  */
 import { CENTER_Y } from '../core/field.js';
 import type { Vec2 } from '../core/vec.js';
-import { alignDefense, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, type DefenseAlignment, type ManPreference, type OffenseAlignment, type AlignStyle } from '../playbook/alignment.js';
 import { installCoverage } from '../playbook/coverages.js';
 import type { DefensivePlayCall, DefSlot, MotionCall, MotionKind, ReceiverRef, Side, SkillSlot } from '../playbook/types.js';
 import { sideSign } from '../playbook/types.js';
@@ -271,6 +271,8 @@ export class MotionRuntime {
     readonly plan: MotionPlan,
     private readonly called: DefensivePlayCall,
     private readonly prefs: ManPreference | undefined,
+    /** The defense's alignment style (mass, habits, situation), as at the set. */
+    private readonly style: AlignStyle = {},
   ) {}
 
   /** Pre-snap tick: the motion man's intent and the secondary's bump. */
@@ -289,7 +291,7 @@ export class MotionRuntime {
       this.nextSort = sim.t + BUMP_EVERY;
       const seen = [...this.seen].reverse().find(s => s.t <= sim.t - BUMP_REACTION) ?? this.seen[0];
       const off = realignOffense(sim.offAlign, slot => (slot === this.plan.slot ? seen.pos : undefined));
-      const align = alignDefense(installCoverage(this.called, off), off, sim.defense.map(d => d.slot as DefSlot), this.prefs);
+      const align = alignDefense(installCoverage(this.called, off), off, sim.defense.map(d => d.slot as DefSlot), this.prefs, this.style);
       this.targets.clear();
       for (const d of sim.defense) {
         const spot = align.spots[d.slot as DefSlot];
@@ -309,6 +311,6 @@ export class MotionRuntime {
   finish(sim: MotionHost): { offAlign: OffenseAlignment; defCall: DefensivePlayCall; defAlign: DefenseAlignment } {
     const offAlign = realignOffense(sim.offAlign, slot => sim.slot(slot)?.pos);
     const defCall = installCoverage(this.called, offAlign);
-    return { offAlign, defCall, defAlign: alignDefense(defCall, offAlign, sim.defense.map(d => d.slot as DefSlot), this.prefs) };
+    return { offAlign, defCall, defAlign: alignDefense(defCall, offAlign, sim.defense.map(d => d.slot as DefSlot), this.prefs, this.style) };
   }
 }

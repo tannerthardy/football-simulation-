@@ -69,7 +69,7 @@ export const FRONTS: Front[] = [
     },
   },
   {
-    id: 'bear', name: 'Bear (goal line)', personnel: ['goalline'],
+    id: 'bear', name: 'Bear (goal line)', personnel: ['goalline', 'heavy'],
     slots: {
       DE_S: { tech: '6', side: 'S', depth: DL },
       DT_S: { tech: '3', side: 'S', depth: DL },
