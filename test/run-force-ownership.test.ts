@@ -1,4 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
+
+// The dual-force scene is staged on the installed seats (the Will as the Buzz
+// curl-flat player); BOX_ALIGN deals seats after its walk-outs (PR #194).
+vi.hoisted(() => { process.env.BOX_ALIGN = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';

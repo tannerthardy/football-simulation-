@@ -10,6 +10,8 @@ afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function load(on: boolean) {
   vi.stubEnv('FRONT_MENU', on ? '1' : '0');
+  // The installed techniques' geometry and the walk-outs are other flags'.
+  vi.stubEnv('FRONT_ALIGN', '0'); vi.stubEnv('BOX_ALIGN', '0');
   vi.resetModules();
   const alignment = await import('../src/playbook/alignment.js');
   const defense = await import('../src/playbook/defense.js');

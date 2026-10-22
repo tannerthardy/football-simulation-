@@ -880,7 +880,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   if (FRONT_ALIGN && call.front.id === 'over' && spots.LB_S && teAt(fs)) {
     const wing = wingOn('S'), sam = spots.LB_S;
     if (wing) sam.pos = { x: los + (frontSlots.DE_S?.depth ?? .9), y: wing.pos.y };
-    else if (!apex) sam.pos = { x: los + frontSlots.LB_S!.depth, y: off.ballY + fs * (inlineOf(off.line) + SHOULDER) };
+    // Lateral only: his depth is the front's (or FRONT_MENU's tracked) backer depth.
+    else if (!apex) sam.pos = { x: sam.pos.x, y: off.ballY + fs * (inlineOf(off.line) + SHOULDER) };
   }
 
   // BOX_ALIGN: answer every detached inside receiver in a zone call.
@@ -1144,8 +1145,11 @@ function alignDisguised(call: DefensivePlayCall, off: OffenseAlignment, present:
       const depth = target.backfield ? 5 : p.role.overTop ? 10 : corner ? 6 : 4;
       // SHELL_SHOW: a man safety may show the deep look and come down at the
       // snap, paying for it with his own feet (tracked: Cover 1 shows two
-      // high 26% of dropbacks, Cover 0 shows someone deep 36%).
-      if (SHELL_SHOW && (slot === 'FS' || slot === 'SS') && l.pos.x - off.los > 8)
+      // high 26% of dropbacks, Cover 0 shows someone deep 36%), when that
+      // spot is on his man's side of the ball and within 8 yd of him.
+      const side = (y: number) => Math.sign(y - off.ballY);
+      if (SHELL_SHOW && (slot === 'FS' || slot === 'SS') && l.pos.x - off.los > 8
+        && side(l.pos.y) === side(target.pos.y) && Math.abs(l.pos.y - target.pos.y) <= 8)
         p.pos = { x: Math.min(l.pos.x, off.los + coverageDepth(off.los, 12)), y: l.pos.y };
       else p.pos = { x: Math.min(l.pos.x, off.los + coverageDepth(off.los, depth)), y: p.pos.y };
     } else p.pos = { ...l.pos };
