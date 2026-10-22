@@ -72,6 +72,18 @@ const runCache = new WeakMap<Agent, TrenchTraits>();
  * actual rep; knowing a pass set is not the same skill as sustaining a run fit.
  * The default remains the pass technique used by pre-contact protection.
  */
+/** Experimental (DL_ANCHOR=1, off): an engaged run defender who is doubled,
+ * or is being driven back by a real load, sits into his stance: pads down to
+ * get under the drive ("stay low", "drop the pressure leg"; Bucs, Kuchar,
+ * Shurmur). It only matters where pad level has a physical path
+ * (PAD_LEVERAGE); a blocker already anchors the same way when driven. */
+const DL_ANCHOR = process.env.DL_ANCHOR === '1';
+function drivenBack(d: Agent): boolean {
+  const felt = d.body.support?.felt; if (!felt) return false;
+  const load = Math.hypot(felt.x, felt.y);
+  return load > 0.25 * d.profile.massKg * G && (d.vel.x * felt.x + d.vel.y * felt.y) / load > 0.15;
+}
+
 export function traits(a: Agent, type: 'pass' | 'run' = 'pass'): TrenchTraits {
   const common = commonTraits(a);
   if (type === 'pass' || a.team !== 'O') return common;
@@ -1302,7 +1314,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     vel: workOff ?? cf ?? (read.stack ? { x: depth, y: lateralFlow } : legacy),
     facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
-    posture: 0.85,
+    posture: DL_ANCHOR && (e.helpers.length > 0 || drivenBack(d)) ? 1 : 0.85,
     cutSkill: 0.8 + 0.4 * td.bend,
   };
   runContactObservers.get(sim)?.(e, 'defender-movement', { reading: read.reading,
