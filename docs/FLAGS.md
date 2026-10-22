@@ -72,7 +72,7 @@ There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`
 | `SNAP_REACT` | on | default (promoted 2026-10-22) | rules | `src/sim/snap-count.ts:30` | review 2: drop the off path |
 | `TIP_AWAY` | on | default (promoted 2026-10-22) | coverage | `src/sim/catching.ts:23` | review 2: drop the off path |
 | `WR_ALIGN` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:80` | review 2: drop the off path |
-| `MOTION` | off | experimental | coverage | `src/sim/motion.ts:33` | review 2 |
+| `MOTION` | on | default (promoted 2026-10-22) | coverage | `src/sim/motion.ts:34` | review 2: drop the off path |
 | `DEUCE` | off | experimental | coverage | `src/playbook/call-integrity.ts:67` | review 2 |
 | `FRONT_STRENGTH` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:52`, `src/playbook/alignment.ts:120` | review 2: drop the off path |
 | `FRONT_MENU` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:70`, `src/playbook/alignment.ts:129` | review 2: drop the off path |
@@ -80,6 +80,6 @@ There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`
 | `DEF_PACKAGE` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:80` | review 2: drop the off path |
 | `SHELL_SHOW` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:94`, `src/playbook/alignment.ts:156` | review 2: drop the off path |
 | `COVER_CALL` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:115` | review 2: drop the off path |
-| `MOTION_CHECK` | off | experimental | defense | `src/sim/motion.ts:277` | expires: review 2 (turn on with `MOTION`) |
+| `MOTION_CHECK` | on | default (promoted 2026-10-22) | defense | `src/sim/motion.ts:293` | review 2: drop the off path |
 | `PRESSURE_CALL` | off | experimental | defense | `src/game/playcaller.ts:126` | expires: review 2 (turn on with `DEUCE`) |
 | `AGAP_ALIGN` | on | default (promoted 2026-10-22) | defense | `src/playbook/alignment.ts:167` | review 2: drop the off path |

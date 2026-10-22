@@ -30,8 +30,8 @@ import type { Body } from '../physics/kinematics.js';
 import type { Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 
-/** Motion is experimental: played only with MOTION=1 (read at each snap, so a test can scope it). */
-export const motionEnabled = (): boolean => process.env.MOTION === '1';
+/** Motion is on by default; MOTION=0 turns it off (read at each snap, so a test can scope it). */
+export const motionEnabled = (): boolean => process.env.MOTION !== '0';
 
 export type { MotionCall, MotionKind };
 
@@ -290,7 +290,7 @@ export interface MotionHost {
  *   reaction time ago (tracked man coverage puts a defender with the jet on
  *   47% of jets).
  * Off: the provisional bump below. */
-export const motionCheckEnabled = (): boolean => process.env.MOTION_CHECK === '1';
+export const motionCheckEnabled = (): boolean => process.env.MOTION_CHECK !== '0';
 const LOCK: Record<MotionKind, number> = { across: .51, jet: .66, empty: .69, return: .58 };
 /** Defenders who exchange coverage jobs on a bump: the corners between themselves, the rest among themselves. */
 const KINDS: DefSlot[][] = [['CB_S', 'CB_W'], ['NB', 'DB', 'FS', 'SS', 'LB_S', 'LB_M', 'LB_W']];

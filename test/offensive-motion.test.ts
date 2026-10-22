@@ -37,8 +37,8 @@ describe('offensive motion', () => {
   beforeEach(() => { process.env.MOTION = '1'; });
   afterEach(() => { if (was === undefined) delete process.env.MOTION; else process.env.MOTION = was; });
 
-  it('is off by default: a called motion changes nothing without the flag', () => {
-    delete process.env.MOTION;
+  it('with MOTION=0 a called motion changes nothing', () => {
+    process.env.MOTION = '0';
     const plain = scene('gun_doubles_11', 'cover4'), called = scene('gun_doubles_11', 'cover4', { slot: 'H', kind: 'across' });
     expect(called.motion).toBeNull();
     expect(called.agents.map(a => a.pos)).toEqual(plain.agents.map(a => a.pos));
