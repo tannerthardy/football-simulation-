@@ -683,10 +683,31 @@ Carried over from the issue register; each was measured on an older develop.
 
 - **Measure** (#190): the nearest zone defender closes 0.12 yd during the
   flight; NFL 0.65.
-- **Cause:** *hypothesis:* a late trigger (reacting to the catch, not the
-  throw), the wrong aim point (the receiver, not the catch point), or a slow
-  closing speed. G3 is diagnosing this now.
-- **Where:** `src/sim/behaviors/defense.ts`, `coverage/`, `coverage-leverage.ts`.
+- **Cause** (G3, `scripts/diag/depth/throwbreak.py`, BDB 2022 vs promoted
+  profile):
+  - *Likely:* the trigger is late. Instant recognition at the release brought
+    sim zone closing to 0.60–0.82 yd on two seeds (NFL 0.61), but that was a
+    game-level comparison. Closing in 16 games swings ±0.25 yd between arms
+    whose recognition is the same, so it does not size the effect.
+  - Tracked deep defenders are already driving toward the catch point before
+    the release (+1.3 yd/s at −0.4 s, +2.2 at the release). Ours are not
+    (−0.5 to +0.5), and their speed dips while they redirect after it. Some of
+    that tracked lead is route anticipation, not a read of the arm.
+  - Underneath zone is not short: sim ends closer at the catch (2.5–2.8 yd
+    vs 4.2).
+  - The aim point is the catch point already. The motor's acceleration
+    matches tracking peaks.
+- **Fixed in part (#207):** zone defenders who watched the QB's throwing
+  motion, spot and match alike, react from its start or from when their eyes
+  reached him, whichever is later. Deep zone defenders recognize the throw a
+  median 0.10 s after the release (was 0.25 s). On 3,147 paired single plays
+  (`scripts/diag/paired-plays.ts`), closing in flight rises 0.05 yd (± 0.007)
+  for zone defenders, and yards per attempt fall 0.53 (± 0.18).
+- **Open:** the QB gives defenders little to read. His eyes settle on the
+  target a median 0.10 s before the release, and his throwing motion lasts
+  0.10–0.28 s by rating (about 0.15 s at an 80 rating). A full throwing
+  action is roughly 0.25–0.46 s on film. Next: the motion's length follows
+  the needed ball speed and the release rating (QB-1).
 
 <a id="cov-2"></a>
 ### COV-2: Too much yardage per attempt and after the catch
