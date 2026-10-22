@@ -1,10 +1,12 @@
-import {describe,expect,it} from 'vitest';
+import {vi,describe,expect,it} from 'vitest';
 import {readFileSync} from 'node:fs';
 import {alignOffense} from '../src/playbook/alignment.js';
 import {liveAim} from '../src/sim/behaviors/carrier.js';
 import {gapIn,linePicture} from '../src/sim/live-gaps.js';
 import type {Agent} from '../src/sim/agent.js';
 import type {PlaySim} from '../src/sim/playsim.js';
+// Recorded on the installed line; OL_SPLITS and OL_STAGGER stage a different play.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; });
 
 const fixture=JSON.parse(readFileSync(new URL('./fixtures/p033-gap-decision.json',import.meta.url),'utf8'));
 function scene(at:number,mirror=false){

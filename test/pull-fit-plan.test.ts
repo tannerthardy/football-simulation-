@@ -31,7 +31,9 @@ function stage(side: number, pulling = true, kind: RunFitJob['kind'] = 'insert',
   const picture = new Map(sim.offense.map(o => {
     const pos = { ...sim.offAlign.spots[o.slot].pos };
     const vel = { x: 0, y: 0 };
-    if (o === guard && pulling) { pos.x = 38.8; pos.y = CENTER_Y + side * .3; vel.y = side * 2; }
+    // The pulling guard has dropped 0.65 yd behind his stance (to 38.8 from
+    // the installed 0.55 yd line; OL_STAGGER stands him deeper).
+    if (o === guard && pulling) { pos.x = 38.8 - (40 - .55 - pos.x); pos.y = CENTER_Y + side * .3; vel.y = side * 2; }
     if (o.slot === 'RB') { pos.x = 36; pos.y = CENTER_Y; }
     return [o, { pos, vel, age: .2, carrying: null, stance: null, facing: 0, pose: 'up' } as Perceived] as const;
   }));

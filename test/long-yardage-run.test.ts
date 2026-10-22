@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+// The fixture's contract is that the situation changes nothing but roles;
+// BOX_ALIGN (PR #194) sets backers' depth and end width by down and distance.
+vi.hoisted(() => { process.env.BOX_ALIGN = '0'; });
 import { auditSnap, createLongYardageTeams, longYardageSetup } from '../scripts/diag/long-yardage-run.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
@@ -19,6 +23,8 @@ describe('actual long-yardage run stress fixture contracts', () => {
         inside: { kind: 'edge', gap: 'C', side: -sim.offAlign.strongSign } });
       expect(dropper.initialRead).toBe('unsure');
       expect(sim.snapContext).toMatchObject({ down: 3, distance: 27, hurry: false });
+      // Two-high safeties: 12 yd installed. DEF_ALIGN sets quarters safeties at
+      // 12 and halves at 14 by role; this drop-8 call's safeties play quarters.
       expect(snap.defenders.filter(d => ['FS', 'SS'].includes(d.slot)).map(d => d.depth)).toEqual([12, 12]);
     }
   });

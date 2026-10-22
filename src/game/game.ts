@@ -10,7 +10,7 @@ import { Rng } from '../core/rng.js';
 import { CENTER_Y, HASH_LEFT_Y, HASH_RIGHT_Y, OWN_GOAL_X, describeYardline } from '../core/field.js';
 import { clamp } from '../core/vec.js';
 import { r01, type Player } from '../players/types.js';
-import { pickDefense, pickOffense, specialist, type Team } from '../league/team.js';
+import { alignStyle, pickDefense, pickOffense, specialist, type Team } from '../league/team.js';
 import { PlaySim } from '../sim/playsim.js';
 import { CoverageScouting } from '../sim/qbmind.js';
 import { ScoutingReport } from '../sim/recognition.js';
@@ -111,6 +111,8 @@ export interface PlayPlan {
   rushers?: number;
   /** Coverage shown before the snap, if disguised. */
   shown?: string;
+  /** Structure the secondary checked against (e.g. `trips`, `bunch_strong`), if it made a check. */
+  checkedOn?: string;
 }
 
 export interface GameResult {
@@ -594,7 +596,7 @@ export class Game {
     const defTeam = this.def;
     const offCall = this.oc[offSide].call(sit, defTeam);
     const offPlayers = pickOffense(offTeam, offCall.formation.personnel, { energy: this.energy });
-    const { call: defCall, prefs } = this.dc[defSide].call(sit, offCall.formation.personnel, offTeam, offPlayers);
+    const { call: defCall, prefs } = this.dc[defSide].call(sit, offCall.formation.personnel, offTeam, offPlayers, offCall.formation);
     const defPlayers = pickDefense(defTeam, defCall.personnel, { energy: this.energy });
 
     // Explicit historical scenario seams precede the native snap inspection.
@@ -623,6 +625,8 @@ export class Game {
       manPrefs: prefs,
       hurry: sit.hurry,
       down: s.down,
+      offStyle: alignStyle(this.off),
+      defStyle: alignStyle(this.def),
       afterTwoMinuteWarning: afterWarningAtSnap,
       audibles: true,
       scouting: this.scouting[defSide],
@@ -674,6 +678,7 @@ export class Game {
       pressure: !!defCall.pressure,
       rushers: sim.defAlign.rushers.length,
       shown: defCall.shown?.id,
+      checkedOn: sim.defCall.check?.when,
     };
     if (this.opts.record && r.frames) {
       logEntry.replay = {
@@ -749,7 +754,7 @@ export class Game {
         if (clock.timeoutCharged) s.timeouts[offSide]--;
         if (clock.runoff) this.runClock(clock.runoff);
         this.untimedDown = clock.untimedDown;
-        this.observe(offSide, ranCall, defCall, 0);
+        this.observe(offSide, ranCall, defCall, 0, sim.defCall);
         if (selected.preservesPlay && r.score?.kind === 'TD') {
           const scoring = r.score.team === 'O' ? offSide : defSide;
           this.addScore(scoring, 6); this.afterTouchdown(scoring, s.inRedZone);
@@ -793,7 +798,7 @@ export class Game {
     // Success measure for coordinators (standard success rate definition).
     const need = startDown === 1 ? 0.4 * startDist : startDown === 2 ? 0.6 * startDist : startDist;
     const success = r.turnover ? 0 : offTD ? 1 : clamp(r.yards / Math.max(1, need), 0, 1.2) >= 1 ? 1 : clamp(r.yards / Math.max(1, need), 0, 1) * 0.5;
-    this.observe(offSide, ranCall, defCall, success);
+    this.observe(offSide, ranCall, defCall, success, sim.defCall);
 
     // Ball position for the next snap: inside the hashes.
     s.ballY = clamp(r.endY, HASH_LEFT_Y, HASH_RIGHT_Y);
@@ -1016,9 +1021,9 @@ export class Game {
     }
   }
 
-  private observe(offSide: Side, offCall: OffensivePlayCall, defCall: DefensivePlayCall, success: number): void {
+  private observe(offSide: Side, offCall: OffensivePlayCall, defCall: DefensivePlayCall, success: number, installed: DefensivePlayCall): void {
     this.oc[offSide].observe(offCall, success);
-    this.dc[other(offSide)].observe(defCall, success);
+    this.dc[other(offSide)].observe(defCall, success, installed);
   }
 
   /**
@@ -1096,12 +1101,13 @@ export class Game {
       const sit = this.situation();
       const offCall = this.oc[scorer].call({ ...sit, down: 3, distance: s.distance }, this.def);
       const offPlayers = pickOffense(this.off, offCall.formation.personnel, { energy: this.energy });
-      const { call: defCall, prefs } = this.dc[other(scorer)].call(sit, offCall.formation.personnel, this.off, offPlayers);
+      const { call: defCall, prefs } = this.dc[other(scorer)].call(sit, offCall.formation.personnel, this.off, offPlayers, offCall.formation);
       const defPlayers = pickDefense(this.def, defCall.personnel, { energy: this.energy });
       const los = OWN_GOAL_X + s.yardline;
       const sim = new PlaySim({ offense: offPlayers, defense: defPlayers, offCall, defCall,
         los, ballY: CENTER_Y, firstDownX: 110, seed: this.snaps.nextU32(),
         energy: this.energy, manPrefs: prefs, handContact: this.opts.handContact, down: 1, isTry: true,
+        offStyle: alignStyle(this.off), defStyle: alignStyle(this.def),
         afterTwoMinuteWarning: this.warningPeriod() && (s.twoMinWarned || s.clock <= 120) });
       const r = this.opts.hooks?.playResult?.(sim, 'two-point') ?? sim.run();
       for (const a of sim.agents) this.energy.set(a.player.id, a.body.energy);
