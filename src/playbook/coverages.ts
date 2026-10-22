@@ -432,7 +432,8 @@ export function checkCall(call: DefensivePlayCall, structure: FormationStructure
 
 function checkTo(call: DefensivePlayCall, options: string[] | undefined, when: string): DefensivePlayCall {
   if (!options?.length) return call;
-  const to = COVERAGE_BY_ID[options[Math.min(options.length - 1, call.checkPick ?? 0)]];
+  const preferred = call.checkPrefer?.find(id => options.includes(id) && checkInstallable(call, COVERAGE_BY_ID[id]));
+  const to = COVERAGE_BY_ID[preferred ?? options[Math.min(options.length - 1, call.checkPick ?? 0)]];
   if (!to || to.id === call.coverage.id || !checkInstallable(call, to)) return call;
   return { ...call, coverage: to, check: { from: call.coverage.id, when }, label: `${call.label} → ${to.name}` };
 }

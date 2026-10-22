@@ -352,6 +352,8 @@ export interface DefensivePlayCall {
   creep?: { slot: DefSlot; secondsBeforeSnap: number };
   /** Which of the coverage's formation checks this coordinator prefers (index). */
   checkPick?: number;
+  /** The coordinator's ranked preference among installed checks this snap (coverage ids), ahead of `checkPick`. */
+  checkPrefer?: string[];
   /** The pre-snap check the secondary made, if any: called coverage, and the structure it saw. */
   check?: { from: string; when: string };
   /** Zeus: the offensive slot this zone call doubles; resolved to Cover 8 / Stuff / Quads by his alignment. */

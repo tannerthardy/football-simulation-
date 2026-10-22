@@ -24,7 +24,7 @@ import { COVERAGE_BY_ID, FRONTS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
-import type { Team } from '../league/team.js';
+import type { CoverageSystem, Team } from '../league/team.js';
 
 export interface Situation {
   down: number;
@@ -262,13 +262,33 @@ export class DefensiveCoordinator {
     private readonly rng: Rng,
   ) {}
 
-  /** Feed back the offense's success against a coverage (higher = worse for us). */
-  observe(call: DefensivePlayCall, offenseSuccess: number): void {
-    const k = call.coverage.family ?? call.coverage.id;
-    const l = this.learn.get(k) ?? { n: 0, sum: 0 };
-    l.n++;
-    l.sum += offenseSuccess;
-    this.learn.set(k, l);
+  /** Feed back the offense's success against a coverage (higher = worse for us).
+   * `installed` is the call actually played after the secondary's check. */
+  observe(call: DefensivePlayCall, offenseSuccess: number, installed: DefensivePlayCall = call): void {
+    const keys = [call.coverage.family ?? call.coverage.id];
+    if (installed.check) keys.push(`check:${installed.coverage.id}`);
+    for (const k of keys) {
+      const l = this.learn.get(k) ?? { n: 0, sum: 0 };
+      l.n++;
+      l.sum += offenseSuccess;
+      this.learn.set(k, l);
+    }
+  }
+
+  /**
+   * The trips check this snap when the call offers several (HNFL-195):
+   * Trix (backside safety poaches #3, backside on its own) on passing downs;
+   * Book/Stubbie when the backside must stay 3-over-2, i.e. early downs with
+   * run support needed. A Saban-style quarters tree defaults to Stubbie
+   * against all 3x1, a Fangio-style two-high tree leans Trix. A check the
+   * offense has been beating today gives way to the other.
+   */
+  private checkPrefer(passingDown: boolean, system: CoverageSystem): string[] {
+    const trix = 'cover4_poach', book = 'cover4_stubbie';
+    let first = system === 'quarters' ? book : system === 'two-high' ? trix : passingDown ? trix : book;
+    const other = first === trix ? book : trix;
+    if (this.learned(`check:${other}`) > this.learned(`check:${first}`) * 1.2) first = other;
+    return [first, first === trix ? book : trix];
   }
 
   private learned(k: string): number {
@@ -417,7 +437,8 @@ export class DefensiveCoordinator {
       slot:motionRng.pick(pressureSlots),secondsBeforeSnap:motionRng.range(.3,1.2),
     } : undefined;
     return {
-      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick, zeus,
+      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick,
+        checkPrefer: this.checkPrefer(passingDown, system), zeus,
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
         label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
       prefs,
