@@ -199,3 +199,20 @@ action, 4 games, seeds 301-304, `PASS_KICK` + `FRONT_ALIGN`):
 Contract: `test/pass-ride.test.ts`. On the three recorded dropbacks, reps at
 the hip occur only with the ride, and corner sheds do not increase.
 `redirect-protection` stages a rusher who turns the corner and pins it off.
+
+## Tried: the protection back reads before moving (`BACK_READ`, reverted)
+
+Tracked backs who stay in on dropbacks barely move early: 0.14 yd by 0.5 s
+(none forward) and 1.1 yd by 1.0 s (0.4 forward). Ours ran 0.8 yd forward by
+0.5 s toward a set point 1.2 yd in front of the QB's snap spot, then braked
+to a stop. Their peak deceleration came in the first second on 126 of 243
+pass-play backs, against 14 of 2,385 tracked (`out/rbdisp.py`-style probe,
+mechanics export).
+
+`BACK_READ` held an unassigned back at his alignment depth (giving ground
+only with the QB's drop) at half speed. His motion matched: 0.5 yd by 0.5 s,
+none forward. But pressure rose 26.2 -> 38.0% (4 games, seeds 301-304),
+nearly all in shotgun (29 -> 39%). The early step-up was standing in the
+rushers' paths. Holding him without the read-then-step-up pickup tracked
+backs make (0.4 yd forward by 1.0 s, 1.1 by 1.5 s) loses protection. That
+pickup timing is the change to make, not the hold alone. Reverted.
