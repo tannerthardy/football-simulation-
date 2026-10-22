@@ -231,6 +231,32 @@ show no settled change (the heavy box gives up more passes).
 Exports `sim-sy0`/`sim-sy1` at `e245812` with `--review-out` for the
 situations; `scripts/mechanics/sim-export.ts` carries no down or distance.
 
+The zero-deep doubling was the package itself. Goal-line personnel has no
+free safety, so it played no one deep at midfield: 100% of its six-man
+fronts, against 55% of tracked heavy fronts at 1–3 yd (lighter fronts 15%;
+`fronts-joint`, a scratch join of `fronts.py`'s classifier with the
+situations). The installs use goal-line personnel only at the goal line;
+elsewhere their heavy calls keep a safety deep (Colts "36 Heavy" Cover 1,
+"44" 6-2). Now: goal-line personnel and the Bear inside the 5; elsewhere a
+new heavy personnel group (five down, Sam and Mike, both safeties) in the
+Bear, in a one-high or zero coverage by the caller's ordinary weights. A
+first cut that allowed only one-high was a ban on the zero call and was
+replaced.
+
+| 8 games at 1–3 yd to go | six or more on the line | none deep with them | none deep otherwise |
+| --- | --- | --- | --- |
+| develop | 5% | 80% (5 snaps) | 19% |
+| goal-line package anywhere (`e245812`) | 23% | 100% | 35% |
+| heavy package, one-high only (`6b8a715`) | 32% | 24% | 25% |
+| heavy package, one-high or zero (`bc53b18`) | 33% | 38% | 36% |
+| NFL | 25% | 55% | 15% |
+
+Runs converted 75% and passes 49% in the last arm, about 60 each. Lighter
+fronts play no one deep 19–36% across these arms with unchanged caller
+code: about 100 snaps each, situation mix diverging. Their zero rate is
+the ordinary caller's Cover 0 weighting at 2 yd or less, which predates
+the package; it is the next caller question if it holds up.
+
 `OL_SPLITS` and `OL_STAGGER` (above) are superseded by the run-offense
 session's `OL_ALIGN` as the one line source when the branches meet. It
 folds in `OL_STAGGER`'s pass-set depths.
