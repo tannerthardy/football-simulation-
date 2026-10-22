@@ -1,6 +1,7 @@
 /** Down linemen in the first 0.8 s of outside zone (lab; observation only,
  * flags from the environment). The same seeds per arm. Every 0.1 s: lateral
- * velocity toward the play side requested and achieved; and per lineman the
+ * velocity toward the play side (where the offensive line has gone by 1.5 s)
+ * requested and achieved; and per lineman the
  * time he first moves (0.3 yd/s), the time the blocker in front of him first
  * steps across (0.35 yd/s, true), and the time his DL_KEY step first fires.
  * node --import tsx scripts/diag/depth/dlstart.ts [--n 30] */
@@ -28,7 +29,9 @@ for (const form of ['ace_11', 'i_pro_21']) for (const front of ['over', 'under']
     offCall: { formation, flip: i % 2 === 1, kind: 'run', run: RUN_BY_ID.oz_strong, label: 'oz' },
     defCall: { personnel, front: FRONT_BY_ID[front], coverage: COVERAGE_BY_ID.cover3, pressure: null, label: front },
     los: 35, ballY: HASH_LEFT_Y, firstDownX: 45, seed });
-  const side = sim.offAlign.strongSign * (i % 2 === 1 ? -1 : 1);
+  let side = 0;
+  const raw: Array<[number, number, number]> = [];
+  const line0 = sim.offense.filter(o => LINE.includes(o.slot)).map(o => [o, o.pos.y] as const);
   const dls = sim.defense.filter(d => DL.test(d.slot));
   const key = new Map<Agent, Agent>(dls.map(d => [d, sim.offense.filter(o => LINE.includes(o.slot)).reduce((p, q) => Math.abs(q.pos.y - d.pos.y) < Math.abs(p.pos.y - d.pos.y) ? q : p)]));
   const first = new Map<Agent, { moved?: number; stepped?: number; keyed?: number }>(dls.map(d => [d, {}]));
@@ -44,11 +47,12 @@ for (const form of ['ace_11', 'i_pro_21']) for (const front of ['over', 'under']
       if (f.keyed === undefined && d.tags.has('dl-key-step')) f.keyed = t;
     }
     if (next < T.length && t >= T[next] - 1e-9) {
-      for (const d of dls) { req[next].push((sim.intents[d.idx]?.vel.y ?? 0) * side); got[next].push(d.vel.y * side); }
+      for (const d of dls) raw.push([next, sim.intents[d.idx]?.vel.y ?? 0, d.vel.y]);
       next++;
     }
   };
   sim.run();
+  for (const [k, r, g] of raw) { req[k].push(r * (side || 1)); got[k].push(g * (side || 1)); }
   for (const f of first.values()) { if (f.moved !== undefined) moved.push(f.moved); if (f.stepped !== undefined) stepped.push(f.stepped); if (f.keyed !== undefined) keyed.push(f.keyed); }
 }
 const mean = (v: number[]) => v.length ? (v.reduce((a, b) => a + b, 0) / v.length).toFixed(2) : '-';

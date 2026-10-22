@@ -791,6 +791,32 @@ for about 0.1 s of snap-event lag. That points to called line movement
 (slants and angles), which the defensive calls here do not install. It is
 a play-calling question for the def-alignment session, not a change here.
 
+**Follow-up: not called movement; contact timing.** The def-alignment session
+measured BDB 2025 weeks 1–9 (16,062 plays; `align/dlmove.py` on
+`claude/motion-checks`):
+- Same-way DL movement by 0.3 s appears on 10% of runs and 5% of passes.
+- Movers go where the play went 84% of the time, which a read can know and
+  a pre-snap call cannot.
+- Tracked DL trail the OL 2–3× at every sample (outside zone at 0.3 s:
+  OL 0.25 yd, DL 0.11). The early DL drift is a response to an early-moving
+  line. No movement calls are added.
+
+On a `GAIT_STEP` base (8 games), our OL moves 0.53 / 0.89 / 1.13 yd/s at
+0.1 / 0.3 / 0.5 s (NFL 0.85 / 1.30 / 1.88), but our DL only 0.00 / 0.04 / 0.19
+(NFL 0.39 / 0.69 / 1.17), and the DL are in contact by 0.5 s 75% of the time
+(NFL 11%).
+
+Second attempt, dropped: **`DL_READSTEP`** keyed the man in front with eyes
+on him (a 0.12 s delay, no held landmark) and kept the step until contact,
+whatever the run/pass read. It fires for 306 of 320 linemen at a median
+0.35 s (`DL_KEY` 77 of 320 at 0.50 s), but achieved lateral speed is
+unchanged (about 0.05 yd/s). Contact arrives at about 0.4 s: our blocker's
+first steps go at the defender, and NFL's run the track (OL near an opponent
+at 0.5 s: ours 53%, NFL 7%). Once the two are engaged, the defender's flow is
+the pair's leg contest. The divergence is the zone blocker's path before
+contact, on the offense's side (the run-offense session's outside-zone flow
+work). Two attempts; stopped.
+
 ## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
 
 **Question.** With the line set on, the run break rate matches tracking (13.2%
