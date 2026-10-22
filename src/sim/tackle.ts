@@ -90,7 +90,22 @@ const GRIP_HOLD = process.env.GRIP_HOLD !== '0';
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
-  return supportParams(d.profile).armForce * (0.3 + 2.5 * q * q) * (0.6 + 0.6 * d.r('tackling'));
+  const wrap = supportParams(d.profile).armForce * (0.3 + 2.5 * q * q) * (0.6 + 0.6 * d.r('tackling'));
+  return GRIP_HOLD ? Math.max(wrap, handHold(d, q)) : wrap;
+}
+
+/** What two hands closed on a jersey hold, kg·yd/s², by hold quality: a
+ * handful of cloth from about q 0.5, down to a fingertip pinch at 0.
+ * Hand grip is a capacity of the body, not of tackling technique (how good
+ * a handful he gets is the quality). Model assumption: Division I athletes'
+ * dynamometer grip is about 45-55 kg per hand (about half of body mass for a
+ * 100 kg player), scaled here by mass and strength; a tight, slick jersey
+ * keeps 3/4 of it; a pinch is about a third of a full grip. No combine drill
+ * measures grip, so this replaces only the arm-push mapping the old law used
+ * below a wrap. A locked wrap keeps the arm law above (GRIP_HOLD). */
+function handHold(d: Agent, q: number): number {
+  const perHand = d.profile.massKg * (0.42 + 0.16 * d.r('strength'));
+  return 2 * 0.75 * perHand * G * clamp(0.3 + 1.4 * q, 0, 1);
 }
 
 export function tryTackles(sim: PlaySim): void {
