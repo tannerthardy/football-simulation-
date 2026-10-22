@@ -143,7 +143,13 @@ const FRONT_MENU = process.env.FRONT_MENU === '1';
  * 75th percentile 5.6 against 5.2; "LBs loosen up", 1999 Buccaneers). On
  * third and 3 or more each side's end man widens 0.4 yd (tracked median 2.4
  * yd outside the surface against 1.9-2.1 on early downs; "closed end
- * widens", 1999 Buccaneers; "open end wide 5", 2005 Ravens). */
+ * widens", 1999 Buccaneers; "open end wide 5", 2005 Ravens). In a
+ * one-high shell the down safety stands where tracking puts the Cover 3 down
+ * safety: against an attached end 1.5 yd outside him, 4.4 deep with the
+ * quarterback under center and 5.2 in the gun; against a tackle 2.7 and 5.1
+ * under center, 3.9 and 5.8 in the gun (medians, 1,678 and 1,131 snaps). The
+ * installed spot, 3 yd outside and 7.5 deep, left him out of the box against
+ * an attached end on every snap (tracked: within 2 yd of the end on 70%). */
 const BOX_ALIGN = process.env.BOX_ALIGN === '1';
 /** SHELL_SHOW (experimental, off; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
@@ -856,7 +862,11 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
       const fs = DEF_ALIGN ? { x: los + (cov.man ? 14.7 : 14.5) + (style.safetyDepth ?? 0), y: CENTER_Y + (cov.man ? 0.34 : 0) * (off.ballY - CENTER_Y) }
         : { x: los + 13, y: clamp(off.ballY, 18, FIELD_WIDTH - 18) };
       if (has('FS')) spots.FS = { slot: 'FS', pos: fs, role: { kind: 'rush' }, gap: 'A', gapSign: -s };
-      if (has('SS')) spots.SS = { slot: 'SS', pos: { x: los + 7.5, y: off.coreEdge.S + s * 3 }, role: { kind: 'rush' }, gap: 'D', gapSign: s };
+      // BOX_ALIGN: the down safety at his tracked spot outside the strong
+      // side's end of the line (an attached end or the tackle).
+      const uc = (off.spots.QB?.pos.x ?? los - 5) > los - 2.5, te = off.hasTE.S;
+      const down = BOX_ALIGN ? { depth: te ? (uc ? 4.4 : 5.2) : (uc ? 5.1 : 5.8), out: te ? 1.5 : uc ? 2.7 : 3.9 } : { depth: 7.5, out: 3 };
+      if (has('SS')) spots.SS = { slot: 'SS', pos: { x: los + down.depth, y: off.coreEdge.S + s * down.out }, role: { kind: 'rush' }, gap: 'D', gapSign: s };
     }
   }
 

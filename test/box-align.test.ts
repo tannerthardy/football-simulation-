@@ -17,7 +17,7 @@ async function align(on: boolean, coverage: string, extra: Partial<DefensivePlay
   const off = alignOffense(FORMATION_BY_ID[formation], false, 40, CENTER_Y);
   const def = alignDefense({ personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[coverage], pressure: null, label: 'box', ...extra },
     off, Object.keys(DEF_PERSONNEL.nickel) as DefSlot[]);
-  const w2 = off.spots[off.numbering.W2!].pos, w = -off.strongSign;
+  const w2 = off.numbering.W2 ? off.spots[off.numbering.W2].pos : { x: 0, y: NaN }, w = -off.strongSign;
   return { def, off, w2, w, apexY: (w2.y + off.coreEdge.W) / 2 };
 }
 
@@ -90,5 +90,22 @@ describe('end men widen on passing downs', () => {
     expect(third[1] - early[1]).toBeCloseTo(.4, 9);
     expect(third[2]).toBeCloseTo(early[2], 9);
     expect(off).toEqual(early);
+  });
+});
+
+describe('the one-high down safety stands where tracking puts him', () => {
+  it('Cover 3 against an attached end: 1.5 outside him, 4.4 deep under center, 5.2 in the gun; off, 3 outside and 7.5 deep', async () => {
+    const at = async (on: boolean, formation: string) => {
+      const a = await align(on, 'cover3', {}, formation);
+      const ss = a.def.spots.SS!.pos, s = a.off.strongSign;
+      return { te: a.off.hasTE.S, depth: ss.x - 40, out: (ss.y - a.off.coreEdge.S) * s };
+    };
+    const uc = await at(true, 'ace_11'), gun = await at(true, 'gun_trey_11'), off = await at(false, 'ace_11');
+    expect(uc.te && gun.te).toBe(true);
+    expect(uc.depth).toBeCloseTo(4.4, 9);
+    expect(uc.out).toBeCloseTo(1.5, 9);
+    expect(gun.depth).toBeCloseTo(5.2, 9);
+    expect(off.depth).toBeCloseTo(7.5, 9);
+    expect(off.out).toBeCloseTo(3, 9);
   });
 });

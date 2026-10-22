@@ -147,6 +147,31 @@ are grouped as 3-4.
   - End men widen 0.4 yd on third and 3 or more (tracked 2.4 yd outside the
     surface against 1.9-2.1 early; "closed end widens", 1999 Buccaneers;
     "open end wide 5", 2005 Ravens).
+- **The down safety (added after the game check).** The run-defense
+  session reported DBs making first contact on 39% of sim runs (tracked
+  23%) and lighter boxes. Against 11 personnel with one high safety, the
+  sim's box held 5.6 defenders against under-center runs (tracked 6.3).
+  The missing man was the down safety. In tracked Cover 3 against an
+  attached end, he stands within 2 yd of the end on 70-73% of snaps: a
+  median 1.5 yd outside him, 4.4 deep under center and 5.2 in the gun. That
+  holds in 11, 12 and 21 personnel. Without an end on his side, he is 2.7
+  (under center) and 3.9 (gun) yd outside the tackle, 5.1 and 5.8 deep. The
+  installed spot (3 yd outside the end of the line, 7.5 deep) kept him out
+  of the box on every such snap. The rule moves the one-high down safety to
+  those medians. Post-snap he still runs to his zone landmark or his man,
+  so a curl-flat safety starting over the end has farther to go to the
+  flat; that cost is the one tracked defenses accept.
+  - Result: over the end on 64-77% of one-high snaps with an end (tracked
+    63-76%). The box against 11 under-center runs is 6.09 (tracked 6.34);
+    in the gun 5.48 (5.60). All runs: 6.27 (tracked 6.23).
+  - Not alignment: against 12 and 21 personnel the box is now heavier than
+    tracked (7.03 against 6.44; it was 6.76). The cause is in the offense.
+    The sim's 12 sets attach both ends with no flexed end or wing (tracked
+    12: about one receiver per snap 2-9 yd outside the end of the line;
+    sim: none). Its wide receivers stand 14+ yd outside the end of the line
+    1.1-1.5 times per snap, against 0.1-0.4 tracked. `WR_ALIGN` (off,
+    another owner's) covers the splits. Defenders align to the receivers they
+    see, so compressed formations compress the defense.
 
 ### 4. The package answers personnel and situation (`DEF_PACKAGE`)
 
