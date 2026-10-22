@@ -881,17 +881,31 @@ const runTargets = new WeakMap<Engagement, { aim: Vec2; runner: boolean; flow?: 
 
 function runContactRead(sim: PlaySim, e: Engagement) {
   const d = e.defender, b = e.blocker, job = d.runFit;
+  const firstLevel = job?.kind === 'interior' || job?.kind === 'edge';
   const back = sim.slot('RB');
   let backPicture: ReturnType<PlaySim['see']> | null = null;
   let acquired: { target: Agent; cue: ReturnType<PlaySim['see']> } | null = null;
-  if (job?.kind !== 'interior' && job?.kind !== 'edge') {
+  if (!firstLevel || (SHED_PHYSICAL && d.recog?.read === 'run')) {
     // Contact support looks into the installed backfield. A new work-off
     // decision cannot learn a give/keep from the hidden live holder identity.
     const qbPicture = sim.see(d, sim.qb);
     backPicture = back ? sim.see(d, back) : null;
-    if (qbPicture.carrying === true && backPicture?.carrying !== true)
+    // A first-level fit can leave the contact surface for a runner beyond
+    // the line, but the new exit cannot inherit the legacy live-holder key.
+    // Require both fresh possession pictures; an empty/unknown mesh retains
+    // the installed fit and its ordinary across-face work. Support keeps its
+    // existing admission contract.
+    const fresh = (cue: ReturnType<PlaySim['see']> | null) => cue?.age !== undefined
+      && Number.isFinite(cue.age) && cue.age >= 0
+      && cue.age <= d.profile.reactionTime + 2 * d.mind.decisionInterval;
+    const beyond = (cue: ReturnType<PlaySim['see']>) =>
+      (cue.pos.x - sim.los) * sim.attackDir(b.team) > 0;
+    const available = !firstLevel || (fresh(qbPicture) && fresh(backPicture));
+    if (available && qbPicture.carrying === true && backPicture?.carrying !== true
+      && (!firstLevel || (backPicture?.carrying === false && beyond(qbPicture))))
       acquired = { target: sim.qb, cue: qbPicture };
-    else if (back && backPicture?.carrying === true && qbPicture.carrying !== true)
+    else if (available && back && backPicture?.carrying === true && qbPicture.carrying !== true
+      && (!firstLevel || (qbPicture.carrying === false && beyond(backPicture))))
       acquired = { target: back, cue: backPicture };
   }
   const carrier = acquired?.target ?? sim.carrier;
@@ -1085,6 +1099,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const read = runContactRead(sim, e);
   const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredBackfield
     && read.declared && read.threat?.carrying === true;
+  const firstLevelRunner = SHED_PHYSICAL && !!read.stack && read.acquiredBackfield
+    && read.declared && read.threat?.carrying === true;
+  const runnerExit = supportRunner || firstLevelRunner;
   e.phi = measurePhi(axis, d, b);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
 
@@ -1128,7 +1145,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
         // Loaded hands supply the local body position; an extended, unloaded
         // reach supplies only this observer's acquired blocker picture.
         let runner = false;
-        if (supportRunner) {
+        if (runnerExit) {
           const loaded = Math.hypot(e.hands?.normalForce ?? 0, e.hands?.tangentForce ?? 0) > 0;
           const blocker = loaded ? b.pos : sim.see(d, b).pos;
           if ((blocker.x - d.pos.x) * toAim.x + (blocker.y - d.pos.y) * toAim.y < 0)
@@ -1384,7 +1401,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // The contact technique does not own a second, older runner waypoint.
   // Follow the existing read's held objective as it legitimately refreshes;
   // lost/contradictory acquisition retains the ordinary across-face response.
-  const exitAim = shedding && shed!.runner && supportRunner ? read.aim : undefined;
+  const exitAim = shedding && shed!.runner && runnerExit ? read.aim : undefined;
   const exit = exitAim ? norm(sub(exitAim, d.pos)) : null;
   const workOff = shedding ? exit
     ? { x: exit.x * Math.hypot(td.lateral, .6), y: exit.y * Math.hypot(td.lateral, .6) }

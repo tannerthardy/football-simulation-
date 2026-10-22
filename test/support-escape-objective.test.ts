@@ -143,10 +143,13 @@ describe('qualified support can leave toward its held runner objective',()=>{
   expect(f.engagement.nextMoveAt).toBe(0);
  });
 
- it('leaves first-level close-threat work on its existing across-face policy',()=>{
+ // G1: a first-level fit with fresh acquired possession beyond LOS now shares
+ // the clear-exit objective. The opposing front-blocker case above still
+ // requires across-face work; hands do not award the release.
+ it('lets a first-level fit use the same acquired clear exit after the runner crosses the line',()=>{
   const f=scene({kind:'interior'}),command=f.command();
   expect(f.defender.tags.has('shed-attempt')).toBe(true);
-  expect(toward(command,f)).toBeLessThan(.95);
+  expect(toward(command,f)).toBeCloseTo(1,12);
   expect(f.defender.engagement).toBe(f.engagement);
  });
 
