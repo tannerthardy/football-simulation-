@@ -344,9 +344,12 @@ the alignment back toward the old boxes is not the fix.
   or more on 88-96% of tracked dropback sides, by TE look and down (median
   2.3 yd with no TE on that side, 3.0 with one). The sim reaches it on
   84-96% with #190's flags (median 2.2 / 2.7) and on 90-100% with this
-  branch's flags too (median 2.2-3.1). A reported 84% vs 51% gap used a
-  different operator. It stays open only if that operator turns out to
-  measure something this one misses.
+  branch's flags too (median 2.2-3.1). A reported 84% vs 51% gap
+  (`docs/reviews/pass-set-contact.md`, playbook branch) was measured on
+  develop with no alignment flags. This operator reproduces it there: 51%
+  with an end on the side, 58% without (median 1.5 / 2.1 yd;
+  `sim_snapframe.ts` with no flags, 3,000 snaps). #190's `FRONT_ALIGN`
+  closes it, and nothing on this branch is needed.
 
 ## Reproduce
 
