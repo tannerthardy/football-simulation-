@@ -135,6 +135,80 @@ the profile's is 1.75–2.75.
   within 8 yd on 48% of runs (NFL 24%): the back runs off a single defender.
   Under center, the NFL opening is about the same (2.0–2.5).
 
+## 3. Edge reps: how the sim rusher gets free
+
+Follow-up question: does the rusher win because the tackle stops gaining
+depth, because the tackle cannot match his lateral speed, or because he is
+past the tackle's hip early?
+
+Method: `scripts/diag/edge-rep.py`, same samples, positions only.
+- **Reps:** each edge rusher whose first engagement is with an OL, followed
+  from that first contact to the throw or pressure.
+- **hip:** blocker x − rusher x; + means the rusher is deeper than the
+  tackle, toward the QB.
+- **lateral:** + means the rusher is outside the tackle.
+- Velocities are ±0.2 s central differences on both sources.
+
+Outcome of each rep:
+
+| | Still engaged | Free | Other |
+|---|---:|---:|---:|
+| NFL (9,295 reps) | 79% | 5% | 16% |
+| Run-offense profile (537) | 45% | **42%** | 13% |
+
+Medians at first contact and 0.4 s later:
+
+| | First contact (s after line start) | Hip at contact → 0.4 s | Lateral at contact → 0.4 s | Tackle retreat / outward speed, yd/s | Rusher speed, yd/s |
+|---|---:|---|---|---|---:|
+| NFL, engaged | 1.20 | −0.5 → −0.2 | +0.8 → +0.5 | 2.75 / −0.50 | 4.1 |
+| NFL, free | 1.15 | −0.5 → −0.1 | +0.7 → +0.1 | 2.25 / −0.25 | 4.0 |
+| Profile, engaged | 0.45 | −0.5 → −0.5 | +0.5 → +0.4 | 0.25 / **+0.75** | 2.5 |
+| Profile, free | 0.89 | **+0.4 → +0.9** | +0.7 → **−0.5** | 3.00 / **+1.25** | **4.7** |
+
+Where free rushers leave:
+- **NFL:** inside 38%, outside 33%, through 29%. Engaged for 0.9 s; at
+  release the hip is +0.4.
+- **Profile:** through 78%. Engaged for 0.4 s; at release the hip is +0.8.
+
+**Reading.**
+- **The sim rusher who gets free is already past the tackle's hip at first
+  contact** (+0.4 yd, against −0.5 for every NFL rep). The tackle meets him
+  late, after 0.89 s, while the rusher is running 4.7 yd/s.
+- **The tackle is still kicking outward** (+1.25 yd/s) as the rusher turns
+  back inside behind him (rusher lateral speed −1.5 → −3.0 yd/s, lateral
+  +0.7 → −0.5 yd). The rusher crosses under the tackle's hip toward the QB.
+- **So it is neither a stalled kick nor a lateral speed limit.** The
+  tackle's retreat (3.0–3.5 yd/s) is faster than the NFL's. The rep is lost
+  at the hip before contact, and the tackle's outward momentum cannot turn
+  back with the rusher.
+- **NFL rides close to the hip.** Engaged NFL reps bring the hip from
+  −0.5 to −0.1/−0.2 and keep it there: the tackle stays level with the
+  rusher.
+- **The profile's engaged reps are a different population.** First contact
+  is early (0.45 s), the tackle barely retreats and moves outward, and the
+  rusher is slow (2.5 yd/s). That is consistent with leftover early (jump)
+  meetings.
+
+## 4. Unblocked edge pressures
+
+Edge pressures where the rusher was never engaged: NFL 64, profile 22.
+
+| | NFL | Profile |
+|---|---|---|
+| Same-side tackle's first block before the pressure | nobody 39%; an edge inside the rusher 25%; interior 25%; an edge outside 6% | **nobody 86%**; interior 9%; edge inside 5% |
+| Nearest RB/TE at 0.5 s | 4.0 yd away; blocked nobody 77% | 5.7 yd away; blocked nobody 87% |
+| Nearest offensive player at 0.5 s | free OL 64%, 2.2 yd inside him | free OL 73%, 2.5 yd inside him |
+
+**Reading.**
+- **NFL unblocked edges are mostly by design** (a slide or a man
+  assignment): half the time the tackle blocked somebody inside the rusher.
+- **The sim's tackle usually blocks nobody at all.** He sits about 2.5 yd
+  inside the rusher, unengaged, and the rusher runs past him untouched.
+  That is a protector who neither takes the inside man nor the edge, not a
+  slide or a back's assignment. Check his requested target (for example,
+  an assignment to a rusher who dropped) before calling it execution.
+- The samples are small: 22 sim cases.
+
 ## Limits
 
 - Sim samples are small: 44–81 runs per concept, 188 pressures. Medians move
