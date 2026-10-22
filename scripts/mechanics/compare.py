@@ -27,6 +27,7 @@ REPLICATIONS = (("2017", ROOT / "data/reviews/mechanics/nfl-bdb2017.json"),
 RATES = {"pass.pressure_2yd_before_throw", "block.pass.still_engaged_2s",
          "contact.run.broke_contact", "contact.catch.broke_contact",
          "contact.run.approach_headon", "contact.catch.approach_headon"}
+PRESSURE_METRICS = {"pass.pressure_2yd_before_throw", "pass.time_to_pressure", "pass.pressure_2yd_unknown"}
 SECTIONS = (("Movement (every player, every play)", ("move.",)),
             ("Runs", ("run.",)),
             ("Contact and tackling", ("contact.",)),
@@ -71,6 +72,7 @@ def main():
     parser.add_argument("--guard", type=Path, help="JSON list of metrics that already match; exit 1 if any is now 'off'")
     args = parser.parse_args()
     nfl, sim = json.loads(args.nfl.read_text()), json.loads(args.sim.read_text())
+    same_pressure_operator = nfl.get("pressureOperator") == sim.get("pressureOperator")
     others = [(season, json.loads(path.read_text())) for season, path in REPLICATIONS if path.exists()]
     commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
     lines = [f"# Sim vs NFL mechanisms ({commit})", "",
@@ -78,15 +80,22 @@ def main():
              *[f"NFL {season} (replication): {data['source']}.  " for season, data in others],
              f"Sim: {sim['source']} ({sim['plays']['run']} runs, {sim['plays']['pass']} dropbacks).", "",
              "Values are median [25th, 75th percentile] 90th percentile; rates are shares.",
-             "Shift and tail: sim median and 90th percentile minus the 2022 NFL's, in 2022 NFL interquartile ranges."]
+             "Shift and tail: sim median and 90th percentile minus the 2022 NFL's, in 2022 NFL interquartile ranges.",
+             f"Pressure operators: NFL `{nfl.get('pressureOperator', 'legacy/unspecified')}`, sim `{sim.get('pressureOperator', 'legacy/unspecified')}`. Different versions are not compared."]
     counts = {"ok": 0, "check": 0, "off": 0, "few": 0}
     marks = {}
+    incompatible = set()
     header = ["| Metric | NFL 2022 | " + " | ".join(f"NFL {season}" for season, _ in others) + " | Sim | Shift | Tail | Flag |",
               "|---|---|" + "---|" * len(others) + "---|---:|---:|---|"]
 
     def row(metric, label):
         n, s = nfl["metrics"][metric], sim["metrics"].get(metric)
-        rep = " | ".join(fmt(data["metrics"].get(metric), metric) for _, data in others)
+        is_pressure = metric.split("@")[0] in PRESSURE_METRICS
+        rep = " | ".join("operator differs" if is_pressure and data.get("pressureOperator") != nfl.get("pressureOperator")
+                         else fmt(data["metrics"].get(metric), metric) for _, data in others)
+        if is_pressure and not same_pressure_operator:
+            incompatible.add(metric)
+            return f"| {label} | {fmt(n, metric)} | {rep} | {fmt(s, metric)} | | | operator differs |"
         if not n.get("n") or not s or s.get("n", 0) < args.min_n:
             counts["few"] += 1
             return f"| {label} | {fmt(n, metric)} | {rep} | n={s.get('n', 0) if s else 0} | | | too few |"
@@ -110,16 +119,19 @@ def main():
     lines += ["", f"{counts['ok']} ok, {counts['check']} check, {counts['off']} off, {counts['few']} without enough sim plays.",
               "", "Definitions: see `definitions` in either JSON, or scripts/mechanics/metrics.py."]
     broken = []
+    unavailable = []
     if args.guard:
         guarded = json.loads(args.guard.read_text())["metrics"]
         broken = [m for m in guarded if marks.get(m) == "off"]
-        lines += ["", f"Guard: {len(guarded) - len(broken)}/{len(guarded)} matched metrics still match."]
+        unavailable = [m for m in guarded if m in incompatible]
+        lines += ["", f"Guard: {len(guarded) - len(broken) - len(unavailable)}/{len(guarded)} matched metrics still match."]
         lines += [f"- GUARD BROKEN: {m} is now off" for m in broken]
+        lines += [f"- GUARD UNAVAILABLE: {m} pressure operator differs; reuse compatible evidence or explicitly remeasure saved plays." for m in unavailable]
     text = "\n".join(lines) + "\n"
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(text)
     print(text)
-    return 1 if broken else 0
+    return 1 if broken or unavailable else 0
 
 
 if __name__ == "__main__":
