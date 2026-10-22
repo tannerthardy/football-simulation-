@@ -78,7 +78,8 @@
     "BOX_ALIGN": "1",
     "DEF_PACKAGE": "1",
     "SHELL_SHOW": "1",
-    "COVER_CALL": "1"
+    "COVER_CALL": "1",
+    "PRESSURE_CALL": "0"
   },
   "worldDefaults": {
     "handContact": "center",

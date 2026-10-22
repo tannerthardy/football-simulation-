@@ -62,8 +62,12 @@ function initialRoles(personnel: DefPersonnelId, front: Front, coverage: Coverag
  * installed. A blitzer can leave deep help only if the package actually names
  * a replacement for that zone; a shared family label is insufficient.
  */
+/** Experimental pressures by their flag, read literally so the baseline
+ * profile's flag inventory sees them; an unknown flag name reads as off. */
+const PRESSURE_FLAGS: Record<string, () => boolean> = { DEUCE: () => process.env.DEUCE === '1' };
+
 export function pressureIsInstallable(personnel: DefPersonnelId, front: Front, called: Coverage, pressure: Pressure): boolean {
-  if (pressure.flag && process.env[pressure.flag] !== '1') return false;
+  if (pressure.flag && !PRESSURE_FLAGS[pressure.flag]?.()) return false;
   if (!pressure.coverages.includes(called.family ?? called.id)) return false;
   // A pressure with its own coverage (Deuce) is judged on what it installs.
   const coverage = pressure.coverage ? COVERAGE_BY_ID[pressure.coverage] : called;

@@ -168,6 +168,34 @@ profile: it acts only with `MOTION` on, and `MOTION` is the coverage-rules
 session's flag (off). Turning motion on is the user's call; turn on the
 check with it.
 
+## Also on this branch: pressure by the shell (`PRESSURE_CALL`, off)
+
+The coverage-rules session's Deuce (#193 128b0ab6, `DEUCE`) showed that the
+caller rolls one blitz chance whatever the coverage. On a two-high call no
+pressure was installable, so the roll silently rushed four.
+
+Tracked 2022 dropbacks (initial pass rushers against PFF's coverage), five
+or more rushers:
+
+| | tracked | sim, off | `PRESSURE_CALL` | with `DEUCE` |
+|---|---|---|---|---|
+| one-high | 38% | 24% | 36% | 36% |
+| two-high | 11% | 3% | 1% | 8% |
+| Cover 0 | 85% | 100% | 100% | 100% |
+| all | 29% | 17% | 23% | 25% |
+
+**Rule.** The coordinator's blitz chance is scaled by the shell's tracked
+ratio to the whole, normalized over the tracked mix: ×1.48 behind one high,
+×0.43 behind two. His overall habit keeps its level, and coordinator
+generation is still a later design. The two flags belong together:
+`PRESSURE_CALL` moves pressure toward one-high shells, and Deuce gives
+two-high calls a five-man pressure to bring.
+
+`pressureIsInstallable` now reads experimental pressure flags from a
+literal registry (`DEUCE`), so the baseline profile's flag inventory sees
+them. Test: `test/pressure-call.test.ts`. Core: 2,963/2,963 plain, and with
+the profile plus `MOTION MOTION_CHECK DEUCE PRESSURE_CALL`.
+
 ## Tests
 
 `test/motion-check.test.ts` (4):
