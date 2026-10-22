@@ -140,7 +140,10 @@ const FRONT_MENU = process.env.FRONT_MENU === '1';
  * Off-ball backers also set their depth by the situation: half a yard
  * tighter on third or fourth and 2 or less (tracked medians 4.0-4.1 against
  * 4.6 on early downs), half a yard looser on third and 7 or more (tracked
- * 75th percentile 5.6 against 5.2; "LBs loosen up", 1999 Buccaneers). */
+ * 75th percentile 5.6 against 5.2; "LBs loosen up", 1999 Buccaneers). On
+ * third and 3 or more each side's end man widens 0.4 yd (tracked median 2.4
+ * yd outside the surface against 1.9-2.1 on early downs; "closed end
+ * widens", 1999 Buccaneers; "open end wide 5", 2005 Ravens). */
 const BOX_ALIGN = process.env.BOX_ALIGN === '1';
 /** SHELL_SHOW (experimental, off; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
@@ -906,8 +909,14 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     }
   }
 
-  // BOX_ALIGN: backers' depth by down and distance.
+  // BOX_ALIGN: end men widen on passing downs; backers' depth by down and distance.
   const sit = style.situation;
+  if (BOX_ALIGN && sit && sit.down >= 3 && sit.distance >= 3) for (const sign of [fs, -fs]) {
+    const end = present.filter(slot => frontSlots[slot] && frontSlots[slot]!.depth < 2 && spots[slot]
+      && (spots[slot]!.pos.y - off.ballY) * sign > 0 && spots[slot]!.pos.x - los < 2)
+      .sort((a, b) => (spots[b]!.pos.y - spots[a]!.pos.y) * sign)[0];
+    if (end) spots[end]!.pos = { x: spots[end]!.pos.x, y: spots[end]!.pos.y + sign * .4 };
+  }
   if (BOX_ALIGN && sit && sit.down >= 3 && (sit.distance <= 2 || sit.distance >= 7)) {
     const shift = sit.distance <= 2 ? -.5 : .5;
     for (const lb of ['LB_W', 'LB_M', 'LB_S'] as DefSlot[])

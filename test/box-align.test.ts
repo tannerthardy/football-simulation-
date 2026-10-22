@@ -71,3 +71,24 @@ describe('backers set their depth by the situation', () => {
     expect(await depth(false, 3, 1)).toBeCloseTo(base, 9);
   });
 });
+
+describe('end men widen on passing downs', () => {
+  it('third and 6: each side\'s end man 0.4 yd wider than first and 10; off, unchanged', async () => {
+    const ends = async (on: boolean, down: number, distance: number) => {
+      vi.stubEnv('BOX_ALIGN', on ? '1' : '0');
+      vi.resetModules();
+      const { alignDefense, alignOffense } = await import('../src/playbook/alignment.js');
+      const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
+      const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
+      const off = alignOffense(FORMATION_BY_ID.gun_doubles_11, false, 40, CENTER_Y);
+      const def = alignDefense({ personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'd' },
+        off, Object.keys(DEF_PERSONNEL.nickel) as DefSlot[], {}, { situation: { down, distance, toGoal: 60 } });
+      return [Math.abs(def.spots.DE_S!.pos.y - CENTER_Y), Math.abs(def.spots.DE_W!.pos.y - CENTER_Y), Math.abs(def.spots.DT_S!.pos.y - CENTER_Y)];
+    };
+    const early = await ends(true, 1, 10), third = await ends(true, 3, 6), off = await ends(false, 3, 6);
+    expect(third[0] - early[0]).toBeCloseTo(.4, 9);
+    expect(third[1] - early[1]).toBeCloseTo(.4, 9);
+    expect(third[2]).toBeCloseTo(early[2], 9);
+    expect(off).toEqual(early);
+  });
+});

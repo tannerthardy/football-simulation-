@@ -63,8 +63,9 @@ const FRONT_STRENGTH = process.env.FRONT_STRENGTH === '1';
  * takes a fifth of the Over share on early downs and three fifths on third
  * down. Base personnel is rare on third down; it keeps its early weights.
  * Overrides FRONT_ALIGN's install weights. On third down and 4 or more, nickel
- * and dime walk backers into the open A gaps: four or more inside men on
- * about 10% of those snaps (both backers), three with a backer on about 5%. */
+ * and dime walk backers into the open A gaps: tracked on third and 7 or more,
+ * a non-lineman within 2 yd of the ball between the guards on 17% of snaps,
+ * two on 5% (docs/references/defensive-alignment-sources.md, section 8.2). */
 const FRONT_MENU = process.env.FRONT_MENU === '1';
 type Moment = 'early' | 'third' | 'short';
 /** DEF_PACKAGE (experimental, off): the defensive package answers the
@@ -538,7 +539,7 @@ export class DefensiveCoordinator {
       : own.fork('strength').chance(alignStyle(this.team).passingStrength ?? .6) ? 'passing' : 'opposite';
     const mugDraw = own.fork('mug').next();
     const mug: DefensivePlayCall['mug'] = FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
-      ? mugDraw < .10 ? 2 : mugDraw < .15 ? 1 : undefined : undefined;
+      ? mugDraw < .05 ? 2 : mugDraw < .17 ? 1 : undefined : undefined;
     return {
       call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick, zeus, strength, mug,
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
