@@ -118,6 +118,24 @@ const SHORT_PACKAGE = process.env.SHORT_PACKAGE === '1';
  * front sets to the coverage strength (more receivers, then the end, then the
  * field). */
 const FRONT_STRENGTH = process.env.FRONT_STRENGTH === '1';
+/** Experimental (FRONT_MENU=1, off; with the caller's menu, game/playcaller.ts):
+ * off-ball backers stand where 2022 tracking puts them for the called
+ * front's family and the number of backers off the ball (medians of body
+ * positions in line units, 0 the ball, 1 a guard, 2 a tackle, 3 an attached
+ * end; strong side positive; scripts/diag/align/deflook.py): two backers in a
+ * nickel Over stack the B gaps, Will at -1.4 and Mike at +1.7, both 4.6 deep;
+ * three in a base Over put the Mike in the strong A gap at +0.5 between a
+ * weak Will at -1.9 and a Sam at +2.7. Off: the front's installed techniques. */
+const FRONT_MENU = process.env.FRONT_MENU === '1';
+type BackerSpot = [units: number, depth: number];
+const BACKERS: Record<string, Partial<Record<1 | 2 | 3, BackerSpot[]>>> = {
+  over: { 1: [[.35, 4.7]], 2: [[-1.4, 4.6], [1.7, 4.6]], 3: [[-1.9, 4.5], [.5, 4.8], [2.7, 4.5]] },
+  under: { 1: [[.3, 4.6]], 2: [[-1.2, 4.5], [1.7, 4.6]], 3: [[-1.7, 4.5], [.7, 4.6], [3, 4.5]] },
+  even: { 1: [[.05, 4.7]], 2: [[-1.5, 4.8], [1.9, 4.8]], 3: [[-1.9, 4.5], [.5, 4.8], [2.7, 4.5]] },
+  bear: { 2: [[-.8, 4.6], [2, 4.4]] },
+  tite: { 2: [[-.8, 4.6], [1.85, 4.5]] },
+};
+const FAMILY: Record<string, string> = { over: 'over', wide9: 'over', under: 'under', under34: 'under', even: 'even', bear34: 'bear', tite: 'tite' };
 const FRONT_PLAYERS = new Set<DefSlot>(['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT', 'LB_S', 'LB_M', 'LB_W']);
 /** The front's strong side (+1 = +y). */
 export function frontSign(call: DefensivePlayCall, off: OffenseAlignment): number {
@@ -714,6 +732,32 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const fit = call.front.fits?.[slot];
     spots[slot] = { slot, pos: { x: los + fa.depth, y }, role: { kind: 'rush' },
       gap: fit?.gap ?? techniqueGap(fa.tech), gapSign: fit ? sideSign(fit.side) : sign };
+  }
+
+  // FRONT_MENU: off-ball backers by the front's family and their number.
+  const backerSpots = FRONT_MENU ? BACKERS[FAMILY[call.front.id] ?? ''] : undefined;
+  const offBall = (['LB_W', 'LB_M', 'LB_S'] as DefSlot[]).filter(slot => spots[slot] && frontSlots[slot]!.depth > 2);
+  const table = backerSpots?.[offBall.length as 1 | 2 | 3];
+  if (table) {
+    const G = OL_SPLITS ? off.line.cg : 1.3, T = tackleOf(off.line);
+    const across = (u: number) => {
+      const a = Math.abs(u), sign = u >= 0 ? fs : -fs;
+      const out = a <= 1 ? a * G : a <= 2 ? G + (a - 1) * (T - G) : T + (a - 2) * (teAt(sign) ? inlineOf(off.line) - T : T - G);
+      return off.ballY + sign * out;
+    };
+    // Weak to strong: the Will takes the weakest spot, the Sam the strongest.
+    offBall.forEach((slot, i) => { const [u, depth] = table[i]; spots[slot]!.pos = { x: los + depth, y: across(u) }; });
+    // A mug walks a backer into an A gap no lineman occupies, at the tracked
+    // 1.2 yd: the Mike first, to the strong side when both are open.
+    if (call.mug) {
+      const lined = present.filter(slot => frontSlots[slot] && frontSlots[slot]!.depth < 2 && !slot.startsWith('LB'));
+      const open = [fs, -fs].filter(sign => !lined.some(slot => {
+        const u = (spots[slot]!.pos.y - off.ballY) * sign / G;
+        return u > -.25 && u < .9;
+      }));
+      const muggers = (['LB_M', 'LB_W'] as DefSlot[]).filter(slot => offBall.includes(slot)).slice(0, Math.min(call.mug, open.length));
+      muggers.forEach((slot, i) => { spots[slot]!.pos = { x: los + 1.2, y: off.ballY + open[i] * .5 * G }; });
+    }
   }
 
   // --- receivers by side for DB alignment ---

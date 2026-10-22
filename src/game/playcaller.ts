@@ -20,7 +20,7 @@ import { r01, type Player } from '../players/types.js';
 import type { ManPreference } from '../playbook/alignment.js';
 import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/call-integrity.js';
 import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
-import { COVERAGE_BY_ID, FRONTS, PRESSURES } from '../playbook/defense.js';
+import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
@@ -49,6 +49,43 @@ const SHORT_PACKAGE = process.env.SHORT_PACKAGE === '1';
  * call carries where the front sets without a single attached end, from the
  * team's lean (league/team.ts alignStyle). */
 const FRONT_STRENGTH = process.env.FRONT_STRENGTH === '1';
+/** FRONT_MENU (experimental, off): the front is called from the families
+ * teams line up in, by defensive personnel and situation (2022 tracking,
+ * weeks 1-9; scripts/diag/align/deflook.py, families from body positions in
+ * line units). Teams whose base personnel shows three interior linemen on 45%
+ * or more of snaps call 3-4 fronts: the bear (3-0-3) about 45%, the tite
+ * about 20%, their Under about 15%, the 5-0-5 odd 2%. 4-3 base: Over about
+ * 47%, Under 21%, Even 5% (their bear and tite need a fifth lineman base
+ * 4-3 personnel does not have). Nickel early downs: Over 50%, Under 17%, Even
+ * 8%; third down: Even 20%, Over 17%, Under 11%; dime: Even 25%, Over 18%,
+ * Under 10%. Each listed weight is that family's share; families the
+ * personnel cannot form are left out. The wide-nine nickel is an Over: it
+ * takes a fifth of the Over share on early downs and three fifths on third
+ * down. Base personnel is rare on third down; it keeps its early weights.
+ * Overrides FRONT_ALIGN's install weights. On third down and 4 or more, nickel
+ * and dime walk backers into the open A gaps: four or more inside men on
+ * about 10% of those snaps (both backers), three with a backer on about 5%. */
+const FRONT_MENU = process.env.FRONT_MENU === '1';
+type Moment = 'early' | 'third' | 'short';
+const MENU: Record<'43' | '34', Partial<Record<DefPersonnelId, Record<Moment, Record<string, number>>>>> = {
+  '43': {
+    base43: { early: { over: 47, under: 21, even: 5 }, third: { over: 47, under: 21, even: 5 }, short: { over: 34, under: 16, even: 4 } },
+    nickel: { early: { over: 52, under: 19, even: 8 }, third: { over: 17, under: 11, even: 20 }, short: { over: 39, under: 14, even: 4 } },
+    dime: { early: { over: 26, under: 10, even: 27 }, third: { over: 11, under: 11, even: 23 }, short: { over: 26, under: 10, even: 20 } },
+  },
+  '34': {
+    base34: { early: { bear34: 44, tite: 20, under34: 16, odd: 2 }, third: { bear34: 44, tite: 20, under34: 16, odd: 2 }, short: { bear34: 39, tite: 9, under34: 13, odd: 2 } },
+    nickel: { early: { over: 45, under: 15, even: 8 }, third: { over: 20, under: 11, even: 20 }, short: { over: 33, under: 12, even: 8 } },
+    dime: { early: { over: 24, under: 10, even: 22 }, third: { over: 13, under: 9, even: 21 }, short: { over: 24, under: 10, even: 20 } },
+  },
+};
+function menuWeight(id: string, personnel: DefPersonnelId, scheme: string, moment: Moment): number {
+  const table = (MENU[scheme === '3-4' ? '34' : '43'][personnel] ?? MENU['43'][personnel])?.[moment];
+  if (!table) return 1;
+  if (id === 'wide9') return (table.over ?? 0) * (moment === 'third' ? .6 : .2) * (scheme === 'nickel-heavy' ? 2 : 1);
+  if (id === 'over' && (personnel === 'nickel' || personnel === 'dime')) return (table.over ?? 0) * (moment === 'third' ? .4 : .8);
+  return table[id] ?? 0;
+}
 function shortPackage(offPersonnel: PersonnelId, distance: number): boolean {
   if (offPersonnel === '13' || offPersonnel === '21' || offPersonnel === '22') return distance <= 2;
   return offPersonnel === '12' && distance <= 1;
@@ -333,10 +370,12 @@ export class DefensiveCoordinator {
     else if (offPersonnel === '12') personnel = rng.chance(scheme === 'nickel-heavy' ? 0.6 : 0.4) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
     else personnel = scheme === '3-4' ? 'base34' : 'base43';
 
-    const fronts = FRONTS.filter((f) => f.personnel.includes(personnel));
+    const fronts = FRONTS.filter((f) => f.personnel.includes(personnel) && (FRONT_MENU || !MENU_FRONTS.has(f.id)));
+    const moment: Moment = s.distance <= 2 ? 'short' : s.down >= 3 ? 'third' : 'early';
     const front = pickWeighted(
       rng,
-      fronts.map((f) => [f, FRONT_ALIGN ? installWeight(f.id, personnel, passingDown, scheme)
+      fronts.map((f) => [f, FRONT_MENU ? menuWeight(f.id, personnel, scheme, moment)
+        : FRONT_ALIGN ? installWeight(f.id, personnel, passingDown, scheme)
         : scheme === '4-3' && (f.id === 'over' || f.id === 'under') ? 2 : scheme === 'nickel-heavy' && f.id === 'wide9' ? 2 : 1] as [typeof f, number]),
     );
 
@@ -462,8 +501,11 @@ export class DefensiveCoordinator {
     const own = rng.fork(`call:${this.calls++}`);
     const strength: DefensivePlayCall['strength'] = !FRONT_STRENGTH ? undefined
       : own.fork('strength').chance(alignStyle(this.team).passingStrength ?? .6) ? 'passing' : 'opposite';
+    const mugDraw = own.fork('mug').next();
+    const mug: DefensivePlayCall['mug'] = FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
+      ? mugDraw < .10 ? 2 : mugDraw < .15 ? 1 : undefined : undefined;
     return {
-      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick, zeus, strength,
+      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick, zeus, strength, mug,
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
         label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
       prefs,
