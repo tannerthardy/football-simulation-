@@ -10,6 +10,15 @@ import type { Agent, TeamSide } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import type { BallState } from './types.js';
 
+/** Two 8-2-1 facts. A realistic chance of completion: an eligible receiver
+ * in the pass's direction who, from where he was at the release, could reach
+ * the landing point before the ball lands. And a pass altered by contact: the
+ * passer is in a defender's grasp at the release, which the throw itself
+ * feels (GROUNDING_FACTS=0: only a receiver within reach of the ball's path
+ * counts and contact is never recorded, so a missed or wrapped-up throw under
+ * pressure is grounding). */
+const GROUNDING_FACTS = process.env.GROUNDING_FACTS !== '0';
+
 export interface GroundingFacts {
   forwardPass: boolean;
   fromBehindLine: boolean;
@@ -161,6 +170,8 @@ interface PassTrace {
   outside: boolean;
   originalDirectionEligible: boolean;
   vicinity: boolean;
+  /** Eligible receivers in the pass's direction, as they were at the release. */
+  receiversAtRelease: Array<{ a: Agent; pos: Vec2; vel: Vec2 }>;
   contactAltered: boolean;
   spike?: 'immediate' | 'delayed';
   finished: boolean;
@@ -270,6 +281,12 @@ export function currentGroundingPressure(sim: PlaySim, passer: Agent): Grounding
   return { pressured: false, basis: 'none' };
 }
 
+/** The passer is in a defender's grasp: the tackle bond holds him with grip. */
+const heldAtRelease = (sim: PlaySim, passer: Agent): boolean => {
+  const bond = sim.bond;
+  return !!bond && bond.carrier === passer && bond.tacklers.some(d => (bond.grip?.get(d) ?? 1) > 0);
+};
+
 /** Capture the throw on the native action boundary before ball state changes. */
 export function capturePassLegality(sim: PlaySim, passer: Agent, release: Vec3, v0: Vec3,
   options: { spike?: 'immediate' | 'delayed'; contactAlteredPass?: boolean } = {}): void {
@@ -280,14 +297,17 @@ export function capturePassLegality(sim: PlaySim, passer: Agent, release: Vec3, 
   const [low, high] = pocket(sim), extent = bodyRadius(passer.body, 0, 1);
   if (passer.pos.y - extent < low || passer.pos.y + extent > high || release.y < low || release.y > high) h.outsidePocket = true;
   const pressure = currentGroundingPressure(sim, passer);
-  const towardEligible = sim.offense.some(a => eligible(sim, a) === true &&
+  const ahead = sim.offense.filter(a => eligible(sim, a) === true &&
     (a.pos.x - release.x) * v0.x + (a.pos.y - release.y) * v0.y > 0);
+  const towardEligible = ahead.length > 0;
   h.pass = { passer, release: { ...release }, t: sim.t, fromBehindLine: backX(passer) <= sim.los || release.x <= sim.los,
     afterPossessionChange: passer.team === 'D' || sim.segments.some(s => s.team === 'D'),
     frontXAtRelease: passer.pos.x + bodyRadius(passer.body, 1, 0), v0: { ...v0 },
     pressured: pressure.pressured, pressureBasis: pressure.basis, pressureActor: pressure.actorId, outside: h.outsidePocket || h.looseOutsidePocket,
     originalDirectionEligible: towardEligible, vicinity: false,
-    contactAltered: options.contactAlteredPass ?? false, spike: options.spike, finished: false };
+    receiversAtRelease: ahead.map(a => ({ a, pos: { ...a.pos }, vel: { ...a.vel } })),
+    contactAltered: options.contactAlteredPass ?? (GROUNDING_FACTS && heldAtRelease(sim, passer)),
+    spike: options.spike, finished: false };
   h.touched = false;
   const legalPass = sim.penalties.every(p => p.kind !== 'illegal_forward_pass' || p.t !== sim.t);
   if (legalPass && passer.team === 'O' && h.pass.fromBehindLine) {
@@ -310,9 +330,13 @@ export function finishPassLegality(sim: PlaySim, ball: Extract<BallState, { kind
   // The measured receiver location is at the same native endpoint as the ball.
   p.vicinity ||= sim.offense.some(a => eligible(sim, a) === true &&
     Math.hypot(a.pos.x - terminal.x, a.pos.y - terminal.y) <= a.profile.reach + a.profile.radius);
+  const flight = sim.t - p.t;
+  const chance = p.receiversAtRelease.some(r => timeToReach({ pos: r.pos, vel: r.vel, profile: r.a.profile,
+    speedScale: r.a.speedScale }, terminal, r.a.profile.reach + r.a.profile.radius) <= flight);
+  const vicinity = p.vicinity || GROUNDING_FACTS && chance;
   const ruling = assessGrounding({ forwardPass: true, fromBehindLine: p.fromBehindLine,
     afterPossessionChange: p.afterPossessionChange,
-    pressured: p.pressured, receiverInDirectionAndVicinity: !p.vicinity && firstTouchAgent ? null : p.vicinity,
+    pressured: p.pressured, receiverInDirectionAndVicinity: !vicinity && firstTouchAgent ? null : vicinity,
     passerEverOutsidePocket: p.outside, looseBallLeftPocket: h.looseOutsidePocket,
     landsAtOrBeyondLine: firstTouchAgent ? null : terminal.x >= sim.los, contactAlteredPass: p.contactAltered,
     passMotionOriginallyTowardEligible: p.originalDirectionEligible,
@@ -335,7 +359,8 @@ export function finishPassLegality(sim: PlaySim, ball: Extract<BallState, { kind
     releaseX: p.release.x, currentPressure: p.pressured, pressureBasis: p.pressureBasis, pressureActor: p.pressureActor ?? null,
     pressureJudgmentDistance: GROUNDING_PRESSURE_JUDGMENT.distance,
     pressureJudgmentSeconds: GROUNDING_PRESSURE_JUDGMENT.reachSeconds, outsidePocket: p.outside,
-    receiverInVicinity: p.vicinity, terminalX: terminal.x, safety: ruling.safety,
+    receiverInVicinity: p.vicinity, receiverCouldReachLanding: chance, contactAltered: p.contactAltered, flightTime: flight,
+    terminalX: terminal.x, safety: ruling.safety,
     fieldMostReleaseExtent: Math.max(p.release.x, p.frontXAtRelease),
     boundaryPlacementConvention: boundarySpot !== undefined ? 'field-most reduced torso/ball extent' : null } });
 }

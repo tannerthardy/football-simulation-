@@ -33,7 +33,7 @@ const run = (args: string[]) => execFileSync(process.execPath,
 describe('scorecard timing and provenance', () => {
   it('resolves source defaults and inherited/arm switches without recording unrelated secrets', () => {
     const defaults = engineSettings({});
-    expect(Object.keys(defaults)).toHaveLength(77);
+    expect(Object.keys(defaults)).toHaveLength(78);
     expect(defaults).toMatchObject({ LIVE_AIM: true, RUN_READ: false, RUN_CONTACT_COMPONENTS: true,
       CF_FLOW: null, DEF_GETOFF: 1, GAIT_STEP: 0 });
     const resolved = engineSettings({ GH_TOKEN: 'never-record-this', RUN_READ: '1', LIVE_AIM: '0',
