@@ -774,6 +774,15 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   return plans;
 }
 
+/** On (STALK_CUSHION=0 for comparison): a receiver stalking a DB breaks down
+ * at a stand-off and mirrors him until the DB attacks (downhill over
+ * STALK_ATTACK, or inside toward the ball over STALK_ATTACK_IN, yd/s), rather
+ * than running full speed to intercept him. Stalk coaching breaks down 2-3 yd
+ * off the DB. Tracked receivers on runs are within 1 yd of a DB 9 / 17% of the
+ * time at 1.5 / 2.0 s; ours 23 / 45% (out/wrrun.py, dbtempo.py). */
+const STALK_CUSHION = process.env.STALK_CUSHION !== '0';
+const STALK_STANDOFF = 2, STALK_ATTACK = 1, STALK_ATTACK_IN = 1.5;
+
 /** Receivers claim distinct stalk targets (STALK_CLAIM=0: each takes his nearest). */
 const STALK_CLAIM = process.env.STALK_CLAIM !== '0';
 
@@ -1023,6 +1032,19 @@ export class RunBlocker implements Behavior {
       const dd = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
       if (dd < a.profile.radius + target.profile.radius + 0.3 && sim.engage(a, target, 'run', plan.drive)) return stand();
       const seen = sim.see(a, target);
+      if (STALK_CUSHION && plan.perimeterStalk === target) {
+        // Break down short of a DB who is not attacking: mirror him at a
+        // stand-off until he comes downhill or inside toward the ball.
+        const dirX = sim.attackDir(a.team);
+        const downhill = -seen.vel.x * dirX;
+        const inside = (sim.ballY - seen.pos.y) * seen.vel.y > 0 ? Math.abs(seen.vel.y) : 0;
+        if (downhill < STALK_ATTACK && inside < STALK_ATTACK_IN) {
+          const stand = { x: seen.pos.x - dirX * STALK_STANDOFF, y: seen.pos.y };
+          if ((stand.x - a.pos.x) * dirX < 0) stand.x = a.pos.x;
+          return goTo(a, stand, { speed: .85, through: Math.max(0, seen.vel.x * dirX),
+            facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) });
+        }
+      }
       if (plan.perimeterStalk === target) {
         const capacity = a.body.support
           ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;

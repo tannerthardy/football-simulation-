@@ -27,6 +27,15 @@ import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { SNAP_REACT } from '../snap-count.js';
 
+/** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
+ * side's force player stays on his receiver when the receiver comes to block
+ * him, until the ball carrier is past the line. A corner plays pass first: a
+ * receiver closing on him may be stalking or selling a route, and the force
+ * player owns the edge. Tracked wide DBs are still bailing at 2.5 s on runs
+ * (3.7 -> 5.7 yd deep) and blocked 15% at 2.0 s; ours came to the run at the
+ * stalk read, sat at 4 yd and were blocked 62% (dbtempo.py). */
+const passFirstOn = () => process.env.PASS_FIRST !== '0';
+
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
   if (a.recog) return a.recog.read === 'run';
@@ -280,14 +289,18 @@ export class ManCoverage implements Behavior {
     // Once admitted, this informed duty owns its backfield interpretation.
     // A hidden holder change must not switch it through the legacy live-
     // carrier pursuit gate. Recognized flight already retired it in update.
-    if (this.blockingRun && run && blockingLook) return this.blockingSupport(a, sim, qbCue);
+    // Perimeter only: a man on a back or an inline end is a box defender,
+    // whose man blocking him is his run read.
+    const spot = sim.offAlign.spots[R.slot];
+    const passFirst = passFirstOn() && a.runFit?.kind !== 'force' && !!spot && !spot.backfield && !spot.inline;
+    if (this.blockingRun && run && blockingLook && !passFirst) return this.blockingSupport(a, sim, qbCue);
     this.blockingRun = false;
     const live = pursueIfLive(sim, a);
     if (live && (sim.carrier !== R || sim.catchAt >= 0 || !sim.isPass)) {
       // On runs, the man defender plays the run once he reads it (or when his man blocks).
       if (believesRun(sim, a) || sim.catchAt >= 0 || sim.throwAt >= 0) return live;
     }
-    if (run && blockingLook) {
+    if (run && blockingLook && !passFirst) {
       this.blockingRun = installedBackfield;
       return this.blockingSupport(a, sim, qbCue);
     }
