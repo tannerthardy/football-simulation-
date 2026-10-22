@@ -10,7 +10,8 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { Rng } from '../../../src/core/rng.js';
-import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
+import { generateTeam, pickDefense, pickOffense, type Team } from '../../../src/league/team.js';
+import { DefensiveCoordinator } from '../../../src/game/playcaller.js';
 import { RUN_BY_ID } from '../../../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../../../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../../../src/playbook/formations.js';
@@ -31,14 +32,25 @@ export const LOOK_SPECS = [
 const CONCEPT: Record<string, string> = { iz: 'iz', oz: 'oz', wz: 'wz' };
 
 export function rosters() {
-  const out: Record<string, { offense: Record<string, any>; defense: Record<string, any> }> = {};
+  const out: Record<string, { offense: Record<string, any>; defense: Record<string, any>; teams: { o: Team; d: Team } }> = {};
   for (const [id, os, ds] of [['pair11', 11, 12], ['pair31', 31, 32]] as const) {
     const o = generateTeam(new Rng(os), id + ' O', id + 'O', { strength: .55 });
     const d = generateTeam(new Rng(ds), id + ' D', id + 'D', { strength: .55 });
     out[id] = { offense: Object.fromEntries(['11', '12', '13', '21'].map(p => [p, pickOffense(o, p as '11')])),
-      defense: Object.fromEntries(['base43', 'base34', 'nickel', 'goalline'].map(p => [p, pickDefense(d, p as 'base43')])) };
+      defense: Object.fromEntries(['base43', 'base34', 'nickel', 'dime', 'goalline'].map(p => [p, pickDefense(d, p as 'base43')])), teams: { o, d } };
   }
   return out;
+}
+/** Called looks: `call<k>` asks the defense's own coordinator (a fresh one
+ * per rep, so no in-game learning) for its call on 1st and 10 from the
+ * offense's 30, given the formation's personnel, as in a huddle. The fixed
+ * looks above stay for matched comparisons with earlier arms. */
+export const CALLED_LOOKS = Array.from({ length: 10 }, (_, k) => `call${k + 1}`);
+function calledLook(c: LabCase, personnel: string, r: ReturnType<typeof rosters>[string]): DefensivePlayCall {
+  const k = Number(c.look.slice(4));
+  const dc = new DefensiveCoordinator(r.teams.d, new Rng(c.seed * 97 + k * 7919));
+  const s = { down: 1, distance: 10, yardline: 30, quarter: 1, clock: 600, scoreDiff: 0, ballY: 26.67, hurry: false };
+  return dc.call(s, personnel as '11', r.teams.o, r.offense[personnel]).call;
 }
 export function look(id: string): DefensivePlayCall {
   const s = LOOK_SPECS.find(l => l[0] === id)!;
@@ -54,7 +66,8 @@ export function makeSim(c: LabCase, R = rosters(), record = false, recordLevel?:
   const run = structuredClone(RUN_BY_ID[`${CONCEPT[c.concept] ?? c.concept}_${c.dir}`] ?? RUN_BY_ID[c.concept]);
   run.direction = c.dir;
   const offCall: OffensivePlayCall = { formation, flip: false, kind: 'run', run, label: c.concept };
-  const defCall = look(c.look), r = R[c.roster];
+  const r = R[c.roster];
+  const defCall = c.look.startsWith('call') ? calledLook(c, formation.personnel, r) : look(c.look);
   return new PlaySim({ offense: structuredClone(r.offense[formation.personnel]), defense: structuredClone(r.defense[defCall.personnel]),
     offCall, defCall, los: 40, ballY: 26.67, firstDownX: 50, down: 1, seed: c.seed, audibles: false, hurry: false, record,
     ...(recordLevel ? { recordLevel } : {}) });

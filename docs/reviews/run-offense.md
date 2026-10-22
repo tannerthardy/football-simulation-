@@ -613,6 +613,18 @@ gap 10-19 yd surplus; the secondary is still thin at 10 yd (deepest 1.8 yd
 ahead). Fits are the run-defense session's: the arm and a proposal went
 there (interim base for these arms, or their own port).
 
+Called looks (`scripts/diag/zone-lab/lab.ts`, `--looks call1,...,call10`: a
+fresh defensive coordinator per rep calls 1st and 10 from the offense's 30
+for the formation's personnel; the fixed ten looks stay for matched
+comparisons): on the same profile, gap TVD 12.4 -> 9.2, zone 11.7 -> 6.7,
+shotgun outside/wide zone losses 9-11% -> 5%. The fixed list inflated the
+distance from NFL. The tail stays (40+ gap 10.2%, zone 3.6%; NFL 2.0,
+0.8): at 10 yd the deepest defender is 0.2 yd ahead of the runner (NFL
+4.8), with 0-1 defenders downfield on 268 of 301 runs. The six fit flags on
+called looks cut gap 40+ to 6.2% but overshoot the backers (TVD 12.7 /
+8.6), so they stay off; backer tempo and the secondary's run-support depth
+are with the run-defense session.
+
 Climbs on the tracked line are NFL-like under center
 (`scripts/diag/align/climbphase.py --uc|--gun`: touch a down man then
 reach a backer 30% of linemen, NFL 34%; by 2.0 s 17%, NFL 18%; direct to a
