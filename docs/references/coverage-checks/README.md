@@ -84,6 +84,7 @@ Film any scene with `node --import tsx scripts/coverage-rule-film.ts
 | Home shell | Two-high tree disguises from one quarters look | Done; `fangio-tree` |
 | Cover 1 Lurk | Down safety by formation, lurker in the hole (HNFL-240) | Done; `fangio-tree` |
 | Hands family | Pounder, Finger, Rolex (HNFL-074/208/261) | Done; `fangio-tree` |
+| Hands vs bunch | Mini Fist/Pounder: nickel locks the point, corner and Mike banjo #1/#3, safeties as called; nickel personnel only (HNFL-074) | Done; `hands-bunch` |
 | Motion | Across, jet, empty, return; final-formation check; provisional bump (MOTION=1) | Done; `offensive-motion` |
 
 In two seeded games (seeds 3 and 7, 262 snaps) checks fired on 41 snaps:
