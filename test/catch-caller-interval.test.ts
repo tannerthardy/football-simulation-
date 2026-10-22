@@ -136,7 +136,9 @@ describe('live same-interval catch caller',()=>{
     if(sim.ball.kind!=='air')throw Error('Expected tipped flight');
     expect(sim.stats.passDefendedBy).toBe(a.player.id);expect(sim.ball.deflected).toBe(true);
     expect(sim.events.some(e=>e.type==='pbu')).toBe(true);expect(sim.ball.flight.vel).not.toEqual(velocity);
-    expect(a.noCatchUntil).toBe(f.t+.25);
+    // The breaker may replay the tip after a beat; with TIP_AWAY his breakup
+    // sent it away from his own hands for the rest of this flight.
+    expect(a.noCatchUntil).toBe(f.t+(process.env.TIP_AWAY==='1'?10:.25));
   });
 
   it('keeps a failed ordinary defensive opportunity an untouched flight',()=>{

@@ -27,7 +27,7 @@ export function environment(ambient, overrides = []) {
     if (key === 'CF_FLOW') {
       if (!['none', 'hold', 'over'].includes(value)) throw new Error('CF_FLOW must be none, hold or over');
       if (value === 'none') delete env[key]; else env[key] = value;
-    } else if (['GAIT_STEP', 'HOLD_SUBSTEPS'].includes(key)) {
+    } else if (['GAIT_STEP', 'HOLD_SUBSTEPS', 'DEF_GETOFF'].includes(key)) {
       if (!value.trim() || !Number.isFinite(Number(value)) || Number(value) < 0
         || (key === 'HOLD_SUBSTEPS' && !Number.isInteger(Number(value)))) throw new Error(`Invalid numeric flag: ${setting}`);
       env[key] = value;

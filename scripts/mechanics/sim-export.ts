@@ -97,7 +97,8 @@ export function commonPlay(p: PlayLog, id: string) {
     target: throwEv?.b ?? null,
     receiver,
     blocks: [...pairs.values()],
-    cell: { concept: p.plan?.concept ?? null, coverage: p.plan?.coverage ?? null },
+    cell: { concept: p.plan?.concept ?? null, coverage: p.plan?.coverage ?? null, front: p.plan?.front ?? null,
+      defPersonnel: p.plan?.defPersonnel ?? null, formation: p.plan?.formation ?? null },
   };
 }
 

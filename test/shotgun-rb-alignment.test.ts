@@ -34,7 +34,9 @@ describe('offset shotgun back alignment', () => {
   it('preserves seven on the line and eligible ends in every installed formation', () => {
     for (const formation of FORMATIONS) for (const flip of [false, true]) {
       const a = alignOffense(formation, flip, 40, CENTER_Y);
-      const eligibleOn = Object.keys(formation.slots).filter(slot => a.spots[slot].pos.x >= 39.4 - 1e-9);
+      // On the line as the rules read it (presnap-rules): the installed depth,
+      // not the body's (OL_STAGGER stands a legal end 1.19 yd off the ball).
+      const eligibleOn = Object.keys(formation.slots).filter(slot => formation.slots[slot as keyof typeof formation.slots]!.depth <= .6 + 1e-9);
       expect(eligibleOn, formation.id).toHaveLength(2); // five OL plus two ends
       for (const end of eligibleOn) {
         const endY = a.spots[end].pos.y - CENTER_Y;

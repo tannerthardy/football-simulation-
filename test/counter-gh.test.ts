@@ -4,6 +4,9 @@ import {describe,expect,it,vi} from 'vitest';
 import {COUNTER_VARIANTS} from '../src/playbook/concepts.js';
 import {RunBlocker} from '../src/sim/behaviors/blocking.js';
 import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
+// BOX_ALIGN puts the one-high down safety in the box (4-6 yd), a real second-level
+// defender: the all-walked-up scene is staged on the installed spot (7.5 yd).
+vi.hoisted(()=>{process.env.BOX_ALIGN='0';});
 
 const inputs=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/counter-second-level-inputs.json.gz',import.meta.url))).toString()) as {rows:{id:string;setup:PlaySetup}[]};
 function setup(){

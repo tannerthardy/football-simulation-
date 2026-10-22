@@ -1,7 +1,7 @@
 /** A support contract derived from the called front AND coverage, not the run call. */
 import { gaitLag } from '../physics/kinematics.js';
 import { clamp, type Vec2 } from '../core/vec.js';
-import { gapY, isDeepZone } from '../playbook/alignment.js';
+import { gapY, isDeepZone, lineDepth } from '../playbook/alignment.js';
 import type { DefSlot, Gap } from '../playbook/types.js';
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
@@ -67,6 +67,7 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const exchange = sim.defCall.gapExchange;
   const exchangeBacker = exchange && sim.slot(exchange.edge) ? sim.slot(exchange.backer) : undefined;
   const available = (d: Agent) => !first.has(d) && d !== exchangeBacker && jobs.get(d)!.kind !== 'force';
+  const deepZone = (d: Agent) => { const role = sim.defAlign.spots[d.slot as DefSlot]!.role; return role.kind === 'zone' && isDeepZone(role.zone); };
   const outsideSide = (d: Agent): number | null => {
     const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
     if (role.kind !== 'zone') return null;
@@ -81,7 +82,7 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   for (const side of [-1, 1]) {
     const designated = sim.defense.filter(d => available(d) && outsideSide(d) === side);
     const candidates = designated.length ? designated : sim.defense.filter(d => available(d)
-      && outsideSide(d) === null && (d.pos.y - sim.ballY) * side > 2);
+      && outsideSide(d) === null && (d.pos.y - sim.ballY) * side > 2 && !(DEEP_NO_FORCE && deepZone(d)));
     const priority = (d: Agent) => {
       const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
       return role.kind === 'zone' ? role.zone.startsWith('flat') ? 0 : role.zone.startsWith('curl_flat') ? 1 : isDeepZone(role.zone) ? 6 : 3 : 7;
@@ -154,15 +155,55 @@ const PULL_CUE = process.env.PULL_CUE === '1';
 /** How far ahead a puller's seen path is carried (about one decision beat), the
  * leverage kept on his arrival, and how far a fit will flow to it. */
 const PULL_LOOK = .4, PULL_SHOULDER = .6, PULL_REACH = 6;
+/** Experimental (PULL_EARLY=1, off): a backer keys the pull step itself. A
+ * lineman seen moving across at more than 1.5 yd/s while stepping back from
+ * his stance (not climbing) is pulling, before he has cleared a yard of
+ * ground. Coaching keys the guard's hips and first step; tracked gap-run
+ * backers are 0.6 yd toward the play at 1.0 s, while the displacement read
+ * fired near 1.35 s (scripts/diag/runblock/lbfill.py, lbtrace.ts). Same
+ * delayed picture; a kick-slide on play-action can fool him. */
+const PULL_EARLY = process.env.PULL_EARLY === '1';
+/** Experimental (FORCE_BOUNCE=1, off): the force keeps the ball on his inside
+ * shoulder until it declares. While the runner he sees is still behind the
+ * line, his boundary stays outside the outermost body at the point of attack
+ * (the line and inline ends as seen, plus blockers and engaged defenders
+ * within 4 yd outside them near the line) by the ground that runner covers
+ * at full speed in this defender's reaction time; a force half a yard outside
+ * the surface has already given up the bounce. Once the runner is at the
+ * line the installed track applies. */
+const FORCE_BOUNCE = process.env.FORCE_BOUNCE === '1';
+/** Experimental (LB_LANDMARK=1, off): where a stack backer fits before the
+ * runner declares. The installed 1.5 yd past the line is an unfitted
+ * constant; tracked backers meet the climbing lineman at a median 2.01 yd
+ * and settle about 2.3 yd off the ball at 2.0 s (climbphase.py, lbfit.py on
+ * the run-offense branch). On: 2.25 yd. On the run-offense profile his
+ * depth at the meeting goes 1.57 -> 2.08 and at 2.0 s 1.82 -> 2.21 (NFL
+ * 2.35), and he has moved further sideways by then (1.92 -> 2.29; NFL 4.10). */
+const LB_LANDMARK = process.env.LB_LANDMARK === '1';
+/** SAFETY_TEMPO (off): an alley safety eases down from his alignment depth
+ * (about a yard) until the back declares, instead of coming to 5-8 yd. Tracked
+ * deep support is 12.9 yd deep at the handoff and comes forward +0.5 / +1.75
+ * yd/s at 0.5 / 1.0 s after it; ours +1.75 / +2.5, and on runs reaching 20
+ * it is 5.3 yd behind the back at 10 yd where the NFL's is 3.1 ahead
+ * (scripts/diag/long-run.py). Off: the installed 65% of alignment depth. */
+const SAFETY_TEMPO = process.env.SAFETY_TEMPO === '1';
+/** DEEP_NO_FORCE (off): a deep-zone defender is never the side's force
+ * player. Without a flat seat (man and quarters calls) the fallback could
+ * pick the post or half safety at 10-12 yd, who then sprints to the line
+ * outside the back; the back runs inside him with no one behind. Off: any
+ * available defender outside the ball. With no candidate the edge boxes. */
+const DEEP_NO_FORCE = process.env.DEEP_NO_FORCE === '1';
+const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */
 export function pullers(sim: PlaySim, a: Agent): Perceived[] {
   const picture = linePicture(sim, a);
-  const candidates = PULL_CUE ? [...picture.surface, ...picture.departed].filter(b => {
-    const home = sim.offAlign.spots[b.agent.slot]!.pos;
-    const depth = (b.seen.pos.x - home.x) * sim.attackDir(b.agent.team);
-    return depth < -1.5 || depth < -.5 && Math.abs(b.seen.pos.y - home.y) > 1;
+  const candidates = PULL_CUE || PULL_EARLY ? [...picture.surface, ...picture.departed].filter(b => {
+    const home = sim.offAlign.spots[b.agent.slot]!.pos, dir = sim.attackDir(b.agent.team);
+    const depth = (b.seen.pos.x - home.x) * dir;
+    if (PULL_EARLY && depth < -.15 && b.seen.vel.x * dir <= .5 && Math.abs(b.seen.vel.y) > 1.5) return true;
+    return PULL_CUE && (depth < -1.5 || depth < -.5 && Math.abs(b.seen.pos.y - home.y) > 1);
   }) : picture.departed;
   return candidates.map((b) => b.seen)
     .filter((s) => (sim.los - s.pos.x) * sim.attackDir(sim.offense[0].team) > .3 && Math.abs(s.vel.y) > 1.5);
@@ -177,7 +218,7 @@ export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind:
       && homeSpot.pos.x<sim.los-.9 && Math.abs(homeSpot.pos.y-sim.ballY)<6;
     if (!guard && !slice) continue;
     const s = sim.see(a, o), home = sim.offAlign.spots[o.slot].pos;
-    if (s.pos.x > sim.los - (guard ? .65 : 1) || Math.abs(s.vel.y) < 1.5 || Math.abs(s.pos.y-home.y) < .6) continue;
+    if (s.pos.x > sim.los - (guard ? lineDepth(.65, sim.los - home.x) : 1) || Math.abs(s.vel.y) < 1.5 || Math.abs(s.pos.y-home.y) < .6) continue;
     return { side: Math.sign(s.vel.y), kind: guard ? 'pull' : 'slice', pos: s.pos };
   }
   return null;
@@ -228,7 +269,9 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // level and turns ordinary creases into breakaways.
     if (!premesh && seen.pos.x>sim.los-2.5) return chase(sim,a,c,3.5);
     const home=sim.defAlign.spots[a.slot as DefSlot]!.pos;
-    const depth=clamp((home.x-sim.los)*.65,5,8);
+    // SAFETY_TEMPO: until the back declares, the alley player eases down
+    // from his alignment and stays the last level over the ball.
+    const depth=SAFETY_TEMPO ? Math.max(5,home.x-sim.los-1) : clamp((home.x-sim.los)*.65,5,8);
     const aim=a.mind.aim('alley-fit',{x:sim.los+depth,y:seen.pos.y+job.side*1.2+a.mind.placementError},sim.t);
     return track(a,aim,{x:0,y:seen.vel.y},{speed:.65,gain:2,facing:Math.PI});
   }
@@ -269,7 +312,20 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     if (job.kind === 'force') {
       const boundary = core.reduce((p,q) => job.side*(p.pos.y+job.side*p.radius)
         >= job.side*(q.pos.y+job.side*q.radius) ? p : q);
-      const desired = forceTrack(a,seen,x,surface,boundary.vel.y,job.side);
+      let line = surface, lineVel = boundary.vel.y;
+      if (FORCE_BOUNCE) {
+        const dir = sim.attackDir(sim.offense[0].team);
+        for (const o of sim.agents) {
+          if (o === a || o === c || o === sim.qb || (o.team === a.team && !o.engagement)) continue;
+          const b = sim.see(a,o), outer = b.pos.y + job.side*o.profile.radius, depth = (b.pos.x - sim.los)*dir;
+          if (depth < -2.5 || depth > 1.5 || job.side*(outer-surface) <= 0 || job.side*(outer-surface) > 4) continue;
+          if (job.side*(outer-line) > 0) { line = outer; lineVel = b.vel.y; }
+        }
+      }
+      // Behind the line nothing has declared; keep a runner's outward cut inside
+      // the reach of his own reaction.
+      if (FORCE_BOUNCE && (premesh || seen.pos.x < sim.los - .5)) line += job.side * a.profile.reactionTime * (premesh && back ? back : c).profile.vmax;
+      const desired = forceTrack(a,seen,x,line,lineVel,job.side);
       desired.point.y += a.mind.placementError;
       const held = retainedForceTrack(a,desired,sim.t);
       aim = held.point; motion = held.velocity;
@@ -358,9 +414,10 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     if (threat && !declared) a.tags.add('fit-threat-read');
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
-  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
+  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? STACK_LANDMARK : .5;
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
-  const fit = track(a,aim,{x:0,y:0},{speed:.78+.15*a.mind.urgency,gain:3,facing:Math.PI});
+  let pace = .78+.15*a.mind.urgency;
+  const fit = track(a,aim,{x:0,y:0},{speed:pace,gain:3,facing:Math.PI});
   // A moving landmark (the line flowing, or the back's declared track) is
   // chased with lateral work planned with his own body (the law every
   // position plans with): the speed that puts him there within two reads,
@@ -388,7 +445,7 @@ function counterfactualFit(a: Agent, sim: PlaySim, c: Agent, job: RunFitJob, see
   let gy = gapY(sim.offAlign, job.gap, job.side);
   const declared = !premesh && seen.pos.x > sim.los - 1.6 && Math.abs(seen.pos.y - gy) < 2.5;
   if (declared) return chase(sim, a, c, 2);
-  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? 1.5 : .5;
+  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? STACK_LANDMARK : .5;
   if (CF_FLOW === 'over') {
     const f = lineFlow(linePicture(sim, a)), dir = Math.abs(f) > .5 ? Math.sign(f) : Math.abs(seen.vel.y) > 1 ? Math.sign(seen.vel.y) : 0;
     if (dir) {

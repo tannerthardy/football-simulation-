@@ -1,12 +1,16 @@
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {describe,expect,it} from 'vitest';
+import {vi,describe,expect,it} from 'vitest';
 import {supportParams} from '../src/physics/support.js';
 import {World} from '../src/physics/world.js';
 import {PassProtector,ProtectionCoordinator} from '../src/sim/behaviors/blocking.js';
 import {ScoutingReport} from '../src/sim/recognition.js';
 import {CoverageScouting} from '../src/sim/qbmind.js';
 import {PlaySim} from '../src/sim/playsim.js';
+// Recorded on the installed line; OL_SPLITS and OL_STAGGER stage a different play.
+// FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
+// SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; });
 
 const fixture=JSON.parse(gunzipSync(readFileSync('test/fixtures/pass-cutoff-inputs.json.gz')).toString());
 function saved(index:number):PlaySim {
