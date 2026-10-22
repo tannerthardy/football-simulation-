@@ -428,10 +428,21 @@ Carried over from the issue register; each was measured on an older develop.
     - `PASS_RIDE` (parked) is the candidate.
     - The pinned scenes are `pass-cutoff-approach`, `redirect-protection`
       and `qb-rusher-recording`.
-  - **Exposed, a back's flat path:** in the Cover 3 push scene the back's
-    flat release runs into the kicking tackle (3.5 to 1.9 yd/s at 0.9 s).
-    The route needs a path around a tackle who sets deep (G3/G7).
-    `cover3-cover2-rules` is pinned.
+  - **A back's release: `ROUTE_CLEAR`, on.** A back releasing from the
+    backfield ran straight at his waypoint and into the kicking tackle (3.5
+    to 1.9 yd/s at 0.9 s in the Cover 3 push scene). Now he paths around a
+    body he sees in his lane (a teammate, or a rusher coming at the
+    backfield): on the side he is on, or the other if that side is closed.
+    - Released backs within 0.8 yd of their own linemen in the first 2 s fall
+      from 11% to 6% (8 games). Their speeds are about unchanged.
+    - Completion rate on the quick scorecard moved 60.0% → 69.7%, but the
+      8-game exports show 64.1% → 62.5%: whole-game noise, not a finding.
+    - **Still open:** the back flat route aims at the line 4 yd outside the
+      back, which is the end's rush lane at 1.0–1.3 s under PASS_KICK. In
+      the Cover 3 scene the back now clears the tackle and the flat defender
+      pushes on him at 1.10 s, but he meets the end at 1.35 s. Where a back
+      releases against the rush is G3/G7's call; `cover3-cover2-rules` stays
+      pinned.
 
 <a id="pro-2"></a>
 ### PRO-2: Pressure arrives too early and from the wrong places

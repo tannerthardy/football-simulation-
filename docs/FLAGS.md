@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, generated from `src` on 2026-10-22 (trunk `d91c9014`). Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 79 flags: 54 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 24 are off. On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 80 flags: 55 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 24 are off. On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -20,6 +20,7 @@ There are 79 flags: 54 are on by default, 1 is a diagnostic scale at identity (`
 | `PASS_KICK` | on | default (G5, 2026-10-22) | trenches | `src/sim/behaviors/blocking.ts:332` | review 2: drop the off path. Vertical pass set against edge rushers (ported from `claude/run-game-v3`); decided by edge-rep first contact and tackle retreat vs tracking |
 | `PULL_READ` | on | default | defense | `src/sim/run-fits.ts:151` | — |
 | `READ_EYES` | on | default | defense | `src/sim/run-read.ts:42` | — |
+| `ROUTE_CLEAR` | on | default (G5, 2026-10-22) | coverage | `src/sim/behaviors/receiver.ts:39` | review 2: drop the off path. A back releasing from the backfield paths around a body in his lane (a teammate, or a rusher) instead of running into it; decided by the back's release speed past a kicking tackle |
 | `RUN_ANCHOR` | on | default | trenches | `src/sim/engagement.ts:718` | — |
 | `RUN_CONTACT_COMPONENTS` | on | default | trenches | `src/sim/engagement.ts:680` | — |
 | `SCRAPE` | on | default | defense | `src/sim/run-fits.ts:139` | — |
@@ -37,7 +38,7 @@ There are 79 flags: 54 are on by default, 1 is a diagnostic scale at identity (`
 | `HAND_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:1048` | set at first review |
 | `HAND_MOTOR` | off | experimental | physics | `src/physics/world.ts:302` | set at first review |
 | `HOLD_SUBSTEPS` | off | experimental | physics | `src/physics/world.ts:300` | set at first review |
-| `IN_STRIDE_CATCH` | off | experimental | coverage | `src/sim/behaviors/receiver.ts:283` | set at first review |
+| `IN_STRIDE_CATCH` | off | experimental | coverage | `src/sim/behaviors/receiver.ts:331` | set at first review |
 | `LEG_BRACE` | off | experimental | physics | `src/physics/world.ts:304` | set at first review |
 | `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:696` | set at first review |
 | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:154` | set at first review |
