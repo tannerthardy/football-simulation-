@@ -219,6 +219,14 @@ the first second short. Next: what an NFL center and his double do in the
 first second of outside zone (the double moving as one toward the play), on
 tracking, before any rule.
 
+Tracking settles the interior (`scripts/diag/stretch/ozcenter.py`): on NFL
+outside zone the center is covered (a DL within 1 yd laterally at the snap)
+64% of the time, ours 92%; and the DL nearest the center moves 0.4 / 1.4 yd
+toward the play by 0.5 / 1.0 s, where ours moves 0.0 / 0.0. The tracked nose
+flows with the reach and the pair moves; ours does not ask to, so the pair
+stands. That is the engaged lineman's controller (run-defense) and the front
+mix (def-alignment), not the blocker's path; sent to both.
+
 ## Flags on
 
 | Flag | Value | Where | What it does (from its doc comment) |
