@@ -405,6 +405,75 @@ commands `vmax` in the open; NFL receivers cruise near 6 yd/s) belongs to
 the run-offense session. Slowing him would steer a player away from what works,
 so it is not proposed either.
 
+## Throw reaction, the run crease and edge sheds (three attempts dropped)
+
+All arms: develop + the line set (`PAD_LEVERAGE`, `DL_ANCHOR`, `DL_FLATTEN`,
+`SNAP_REACT`), 8 games, against the same set alone (`sim-levs`).
+
+**`ZONE_ARM` (coverage throw reaction, user-assigned).** Match-zone
+defenders with eyes on the quarterback key his arm, as spot droppers do.
+- Recognition moves from +0.25 s to +0.05–0.10 s after the release (`depth/breakprobe.ts`).
+- The nearest zone defender's speed still dips after the release: 3.0 yd/s at
+  +0.4 s, against NFL 4.3 (`depth/breakcurve.py`).
+- He closes 0.10 yd through the flight (0.12 before, NFL 0.65). Breaks 24%,
+  YAC p90 23.5 → 29.5, flags 28 → 36.
+- Second failure (the research host's run moved the break, not the tail), so dropped.
+
+Where the break is lost (new `depth/breakpoint.py`, velocity toward where the
+target is when the ball arrives, release → +0.6 s):
+
+| Catch point from the defender at the throw | Sim | NFL |
+| --- | --- | --- |
+| 8+ yd | 3.2 → 4.9 yd/s | 2.7 → 4.3 |
+| 4–8 yd | 1.0 → 2.3 | 1.8 → 3.5 |
+| Under 4 yd | −1.3 → −0.3 | +0.3 → 1.9 |
+
+Inside the sim (`depth/dropprobe.ts`) only 12 of those near-ball defenders in
+8 games run zone coverage, and those are moving toward the point (+1.1 yd/s).
+The "under 4 yd" group is mostly other jobs: rushers on screens and flats,
+man defenders. The next step is to split `breakpoint.py` by the defender's job
+before another attempt.
+
+**`DL_SQUEEZE` (the run crease, for the run-offense session).** At the frame
+the back reaches the line, the gap between the nearest linemen on each side
+of him (`depth/crease.py`, the run-offense session's definition) is 4.2–4.8 yd
+with the set, against NFL 2.4–2.5. Tracked linemen have moved 0.3–0.5 yd
+toward him since the snap; ours 0.5–1.1 yd away.
+- v1: a first-level man whose blocker moves away from the back fights back
+  across at full lateral effort.
+  - Crease: IZ 2.7, duo 2.7, gap 3.8, OZ 3.5.
+  - Gap losses 22 → 35%; OZ 10+ 14 → 24%.
+  - It keyed on the back's position, so on OZ it squeezed against reaches,
+    and it kept the upfield attack.
+- v2: keyed on the back's lateral flow, holding contact depth.
+  - Crease: IZ 3.5, duo 3.3, gap 3.8, OZ 4.7.
+  - IZ 10+ 12 → 24%; run p90 12.7 → 25.8.
+  - The squeezer's body leaves his side of the block, and backs cut behind him.
+- The run-offense session's `DL_FIGHT` failed the same way.
+
+A lateral velocity request moves the defender off his gap; it does not drive
+the man in front of him. "Squeeze the down block" is a lateral drive into the
+blocker with the base held: engagement hand/drive physics, the contact owner's.
+Dropped. Handed off with the operator.
+
+**`PASS_RIDE` (edge sheds, rusher side; the run-offense session takes the
+tackle).** With the set, edge pressurers are still on their blocker 5% of
+the time (NFL 73%) and have gone through 67% (11%), after 0.5 s of contact
+(1.1) (`scripts/diag/pass-pressure.py`, the playbook session's, copied
+unchanged).
+- 89% of edge pass reps that end before the throw end at `stepPassRep`'s
+  `|phi| >= 1` corner beat.
+- Holding the rep to `phi >= 1.5` changed nothing: still engaged 3%, through 67%.
+- After the release (`depth/afterrelease.py`), separation from the blocker
+  grows as tracked (0.9 → 1.9 yd in 0.5 s), and the blocker keeps pace.
+- The difference is the release itself: 0.5 s after contact, against 1.0. That
+  is how long the tackle keeps the rusher in front (his set and mirror, the
+  run-offense session's).
+- Our released rushers then run past the quarterback (−1.6 yd/s away from him
+  at +0.5 s; NFL +0.95 toward). That's the rusher's aim, mine, but it takes
+  pressure away rather than adding it.
+- Dropped.
+
 ## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
 
 **Question.** With the line set on, the run break rate matches tracking (13.2%
@@ -928,7 +997,9 @@ holding the deep defender back.
 telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
-`runrally`, and lab probes `dlpursuit.ts` (linemen at a run's first contact), `catchact.ts`, `sideprobe.ts` (the side window from inside the
+`runrally`, `crease`, `breakpoint`, `afterrelease`, and lab probes
+`dlpursuit.ts` (linemen at a run's first contact), `dropprobe.ts` (the
+nearest zone defender when the ball comes near him), `catchact.ts`, `sideprobe.ts` (the side window from inside the
 chase), `breakprobe.ts` (the nearest defender through the flight). `scripts/mechanics/nfl_ytg.py` writes the
 yards-to-goal filter their `--ytg60` option reads. `scripts/diag/runblock/`:
 `blockedfirst.py`, `lbfill.py`, `dlflow.py` (NFL and sim, one operator),
