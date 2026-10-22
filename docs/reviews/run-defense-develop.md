@@ -493,6 +493,34 @@ the man in front of him. "Squeeze the down block" is a lateral drive into the
 blocker with the base held: engagement hand/drive physics, the contact owner's.
 Dropped. Handed off with the operator.
 
+**Revisited: v2 kept as `DL_SQUEEZE` (default off).** The run-offense
+session's physics read reversed the hand-off. In washed reps the legs
+balance and the hand joint brakes slip, so the pair drifts by the sum of
+both players' leg forces. A lineman who asks to attack upfield spends his
+budget there, so v2's flatten-and-fight is the physically right request.
+Its matched operator (`stretch/lineflow.py` on `claude/run-game-v3`, the
+engaged lines' lateral velocity toward the play side) gives a target. On
+develop + line set + `SAFETY_TEMPO`, 8 games:
+
+| Gap runs, DL toward the play side at 0.3–1 / 1–2 / 2–3 s | Crease at the line (gap / IZ) |
+| --- | --- |
+| Off −0.18 / −0.38 / −0.16 yd/s | 4.5 / 4.8 yd |
+| On −0.15 / −0.07 / +0.11 | 3.5 / 3.2 |
+| NFL +0.24 / +0.76 / +1.35 | 2.4–2.9 |
+
+- **Paired lab** (`depth/forcelab.ts --runs`: IZ, duo, power, counter, trap;
+  four formations; five coverages; 1,200 plays, same seeds):
+  - Median 3.1 → 2.4 yd, stuffs 12.8 → 15.1%.
+  - 10+ yd 17.3 → 16.8%, 20+ 6.8 → 6.7%, paired McNemar z −0.47 / −0.09.
+- **The earlier "backs cut behind the squeezer" does not hold on develop.**
+  In `depth/squeezeprobe.ts`, carriers crossing on the side the squeezer
+  left and on the side he works to do the same: median 3.9 yd, 22% 10+,
+  the nearest free defender a backer 2.4 yd away. Game-level zone 10 / 20 yd
+  moved 16.2 / 6.5 → 20.3 / 10.2% in one 8-game arm, but the paired lab
+  shows no tail change. It is kept off as realistic technique: the sign
+  moves toward tracking, at about half the tracked size.
+- **Test:** `test/dl-squeeze.test.ts`.
+
 **`PASS_RIDE` (edge sheds, rusher side; the run-offense session takes the
 tackle).** With the set, edge pressurers are still on their blocker 5% of
 the time (NFL 73%) and have gone through 67% (11%), after 0.5 s of contact
@@ -544,6 +572,250 @@ with its `PASS_KICK` vertical set (`claude/run-game-v3@1abd6af`, 8 games;
   rusher change.
 - Pocket movement (`depth/pocket.py`) is close to tracking: ours drop 0.6 yd
   deeper, and step up as tracked quarterbacks do with an edge at their depth.
+
+## Breakaway runs: the deep safety as the force player (`DEEP_NO_FORCE`, default off)
+
+**What the deep support does on breakaways.** `scripts/diag/depth/alleypath.py`
+works the same on NFL tracking and sim exports. Deep support means defenders
+8+ yd off the ball and within 12 yd of it at the snap. At the frames the
+back reaches 0, 5 and 10 yd, the nearest one's depth over him, lateral gap
+and speeds. Develop + line set + `SAFETY_TEMPO`, 8 games:
+
+| Runs reaching 20 | Snap depth | Depth over the back at 0 / 5 / 10 yd | Downhill speed at 5 yd |
+| --- | --- | --- | --- |
+| NFL | 12.8 | 11.6 / 6.1 / 2.3 | −0.25 |
+| Sim | 12 | 8.2 / 0.4 / −2.8 | +1.0 |
+
+The alignment is the same, but by the time the back reaches the line our
+safety has already given up about 4 yd. Tick traces of the nearest deep
+supporter on breakaways (`depth/alleytrace.ts`, `depth/alleyprobe.ts`) show
+two different plays:
+
+- **About a third: the safety is the force player.** When a side has no
+  flat or curl-flat seat (2-man, some quarters looks), `buildRunFits` falls
+  back to any available defender outside the ball, by priority × 4 plus his
+  distance from 5.5 yd wide. A deep zone (6) beats a man defender (7), so the
+  post or half safety at 10–12 yd becomes the force. His fit then sends him
+  to the line outside the back at 4+ yd/s. The back runs inside him, about
+  4 yd away, with no one behind.
+- **The rest: the alley safety sprints at the back** (see the cushion below).
+
+**`DEEP_NO_FORCE` (`run-fits.ts` `buildRunFits`).** A deep-zone defender is
+never a fallback force player. Flat-seat calls are unchanged; with no
+candidate, the existing rule boxes the edge. `test/deep-no-force.test.ts`.
+
+Paired lab: `depth/forcelab.ts` runs the same seeds, bodies and calls for every
+arm. Seven run concepts × four formations × the coverages, 12 plays a cell:
+
+| Plays where the force changed (459) | Mean | Median | 10+ | 20+ |
+| --- | --- | --- | --- | --- |
+| Off | 13.9 | 2.6 | 21.4% | 15.9% |
+| On | 7.7 | 2.9 | 17.9% | 7.2% |
+
+The other 1,221 plays are identical. A first run on different seeds gave
+the same result: 466 changed, 20+ went from 15.7% to 6.7%. In 2-man the mean
+falls from 17.4 to 9.0 yd and 20+ runs from 21.1% to 8.6%. That matches the
+calls whose force never changed (7.4%). The median rises by 0.3 yd because
+the replacement force (a man linebacker or corner) is a slower edge than a
+safety arriving from depth at full speed. Breakaways are cut in half.
+
+- **Dropped: `MAN_NO_FORCE`.** Also excluding man defenders, so the edge
+  boxes, is the textbook 2-man answer. In 2-man it is a little better (20+
+  7.1%, median back to 3.1), and in Cover 1 too (8.3 → 5.7%). But in Cover 0
+  20+ runs go from 9.5% to 14.0%: with everyone in man and blitzing, no one
+  contains the edge. The result is mixed and a separate question, so it is
+  not kept.
+- In 8-game exports, the deep supporter's depth over the back on runs
+  reaching 20 moves toward tracking: 8.2 / 0.4 / −2.8 becomes
+  10.7 / 3.1 / −1.6. Runs reaching 10 / 20 / 40 go from 16.4 / 7.8 / 5.6% to
+  13.4 / 7.8 / 5.5%. Games diverge after the first different play, so 8-game
+  arms cannot resolve a play-level change. The compare count moved 29 → 38
+  among unrelated flags, such as WR deceleration, man separation and handoff
+  times. The paired lab is the controlled evidence.
+
+**The alley safety after the back declares (three attempts dropped).**
+The other breakaways are alley safeties who chase the declared back
+(`chase(sim,a,c,3.5)`) up to 9 yd/s downhill from 12–14 yd and are passed
+about 3 yd to the side. The chase's gather starts only within contact plus
+max(2.5, stopping distance), so he runs flat out until about 5 yd away.
+- **`SAFETY_ANGLE` v1 (probe):** the intercept assumes the back reaches full
+  speed along his heading. Runs reaching 20, among those reaching 5 yd
+  (`depth/alleyprobe.ts`, 8 games): 26 / 100 off vs 28 / 117 on. No change.
+- **`SAFETY_ANGLE` v2 (probe):** the intercept assumes the back turns
+  upfield now at full speed. 51 / 110: worse. The safety meets him head-on at
+  speed and is beaten by the cut.
+- **`SAFETY_CUSHION` (lab, re-diagnosed first):** a defender aligned 8+ yd
+  deep mirrors the runner at his own depth, with inside-out leverage, until
+  the runner is inside his gather range. That is what tracked safeties do
+  (downhill about 0 when the back is at 5 yd). Paired lab, 3,360 plays
+  across ten coverages: 10+ goes 17.2 → 22.4%, 20+ 7.1 → 9.3%, worse in nine
+  of the ten calls that change. Holding the last level deep exposes the box,
+  as the earlier hold-deep probe found.
+
+Coming early and holding late both lose. In the 20+ runs the nearest deep
+supporter either never touches the back (about half; passed 2–3 yd to the
+side) or makes contact and the tackle breaks (about a third). That is the
+tail, not the meeting. The run-offense session's matched operator
+(`open-field/meet.py`, all runs reaching 5 yd) finds the meeting
+tracking-like: met / passed 49 / 14% vs 48 / 19%, broke after meeting 9%
+in both, 23 vs 25% against backs at 7+ yd/s. Fewer defenders arrive: 2.10
+meetings per run vs 2.69, defensive linemen 0.02 vs 0.30. So each miss
+costs more because nobody else is coming. The defect is pursuit arrival
+(linemen re-latched after the back passes, little lateral flow), not the
+safety's aim or the tackle, and `run-fits.ts` keeps its chase.
+
+## Interior pass rush: pairs move as one body (`PASS_FEEL`, default off; diagnosis)
+
+**What tracking shows.** `scripts/diag/depth/interiorrush.py` reads NFL
+tracking and sim exports with one code path. It covers dropbacks without
+play action and interior rushers (on the line inside the tackles' span),
+from first contact with a blocker. Develop + line set, 8 games:
+
+| | Sim | NFL |
+| --- | --- | --- |
+| At the throw: still engaged / past the blocker / separated | 96.9 / 2.9 / 0.2% | 70.9 / 14.7 / 14.4% |
+| Rusher vs his blocker since contact, +1.5 s: toward QB p75, across p50 / p75 | 0.32, 0.11 / 0.21 yd | 0.85, 0.49 / 0.92 yd |
+
+**Why** (`depth/rushmoves.ts`, every 0.3 s move window in the lab):
+- Moves land in 4.5% of windows. A landed move takes the blocker's hands
+  off (steer × 0.1) for its window.
+- Even landed moves gain nothing: across displacement over the window is
+  rip 0.03, swim 0.00, club 0.06 yd. The blocker matches the rusher's
+  lateral speed (swim 2.50 vs 2.53 yd/s).
+- His mirror in `stepPassRep` is `dLat + felt + offset × (3 + 3 feet)`, with
+  `dLat` and the lead taken from the rusher's current velocity and position.
+  He has the rusher's private state with no delay.
+
+**`PASS_FEEL` (`engagement.ts` `stepPassRep`).** The blocker mirrors the
+rusher he has acquired: by touch through his hands (0.06 s plus attention
+lapses, through `sim.see`) or, while
+a landed move has his hands off, by sight (his visuomotor delay).
+`test/pass-feel.test.ts`.
+- With it, landed moves gain: on a landed rip the rusher slides at 2.2 yd/s
+  against the blocker's 1.1.
+- Paired dropback lab (`depth/passlab.ts`, 1,920 plays, same seeds): pressure
+  33.4 → 33.8%, interior 4.3 → 4.0%, edge 27.7 → 28.2%. It is inert in
+  outcome, as expected, because hands come off in only about 5% of
+  windows. It is kept off as the information rule: the blocker cannot act on
+  what he has not acquired.
+- **Dropped: `RUSH_SETUP`'s jab.** A finesse move set up with one jab step
+  opposite the working side, then the go. The rusher's lateral speed fell to
+  0.2–0.4 yd/s with no net gain: back and forth within the hands. Attempt
+  one.
+
+**What binds: the gait, not the hands.** Three more attempts inside the
+rep gained nothing and are dropped:
+- **`HAND_CLEAR`:** the clear is decided by the rusher's swat against
+  friction under the blocker's hand push plus grip, and the window by his
+  re-fit time, not the rated roll. Clears went from 5 to 37% of windows;
+  lab pressure 33.8 → 37.0%, mostly edge (28.2 → 30.8; interior
+  4.0 → 4.8).
+- **No chest push while cleared ("skinny").**
+- **Hips turned to his travel while cleared.** Landed windows still slide
+  only 0.03–0.11 yd across.
+
+Ground forces in the probe show why. In a landed swim the rusher asks for
+4.4 yd/s across, and his feet give 440–550 sideways at 151 kg (3–3.5
+yd/s²). On develop a request below top speed is followed with the sprint
+time constant (`gaitLag` = tau, 1.34 s for this DT). The run-offense
+profile instead runs `GAIT_STEP` = 0.3 s (the time to level off at a wanted
+speed), and the paired dropback lab on develop + line set agrees:
+
+| | Pressure | Interior | Edge | Sacks | Throw p50 | Time to pressure p50 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Off | 33.4% | 4.3 | 27.7 | 4.9% | 2.55 s | 2.50 s |
+| `GAIT_STEP=0.3` | 28.0% | 9.1 | 16.6 | 3.4% | 2.40 s | 2.65 s |
+
+Tracking has about 9 interior and 17 edge pressures per 100 dropbacks, and
+2.71 s to pressure. In 8 games (`diag/pass-pressure.py`), `GAIT_STEP`
+raises interior engaged pressures from 5.9 to 7.5 per 100 (NFL 8.7), with
+edge 12.5 → 12.6. But the pairs stay together: at the throw 97.1% are
+still engaged, and across at +1.5 s is p50 0.12, p75 0.29
+(`interiorrush.py`; NFL 70.9%, 0.49 / 0.92). Three-quarters of those
+interior pressures arrive still engaged, pushing the man back, not past him.
+
+So there are two facts:
+- The pressure level is partly the movement law's start-up from a stance,
+  the same limit `LB_STEP` met below. It belongs to the physics owner and
+  is already on the run-offense profile.
+- An engaged pair does not come apart except when a rule ends the rep (the
+  corner beat or a landed move's window). This is probably the same engine
+  fact as run defenders re-latched after the back passes (run-offense
+  session, `SHED_PURSUE` / `BLOCK_FRONT`).
+
+Nothing in the rush controller changes.
+
+**The hand law with `GAIT_STEP`.** Measured on that base (line set +
+`PASS_FEEL` + `GAIT_STEP=0.3`, 1,920 paired dropbacks, scratch worktree):
+- The run-offense session's `HAND_FRICTION` (`world.ts`, `claude/run-game-v3`
+  `f263445`) bounds hand steering by friction on the push. Pressure
+  28.9 → 32.4%.
+- With `HAND_CLEAR` as well, 35.8%.
+- Interior stays at 9.8 / 9.7 / 9.8% while edge goes 17.2 / 21.3 / 24.1%.
+
+The interior pair is a leg contest with the hands on: the rusher asks for
+2.1 yd/s across and the blocker for −0.66, the run-offense session's run-rep
+probe. The hand law moves the edge, not the interior. `HAND_CLEAR` stays
+uncommitted. The run-offense session's review
+applies when it returns: decide the clear from the joint's attained load,
+not from `e.control`, which is a rating random walk.
+
+## The lineman's first 0.5 s on outside zone (diagnosis, no change)
+
+The run-offense session's `stretch/ozstart.py` (its branch) on develop + line
+set, 8 games. Lateral speed toward the play side at 0.1 / 0.3 / 0.5 / 1.0 s:
+
+| | 0.1 | 0.3 | 0.5 | 1.0 s | In contact at 0.5 s |
+| --- | --- | --- | --- | --- | --- |
+| Sim OL | 0.27 | 0.54 | 0.80 | 1.03 | |
+| NFL OL | 0.85 | 1.30 | 1.88 | 2.81 | |
+| Sim DL | −0.03 | −0.02 | 0.08 | 0.73 | 56% |
+| NFL DL | 0.39 | 0.69 | 1.17 | 2.35 | 11% |
+
+Upfield, our linemen differ less: 0.39 vs 0.28 yd by 0.5 s.
+
+`depth/dlstart.ts` (lab: 320 linemen on outside zone, same seeds):
+- The blocker in front first steps across (0.35 yd/s) at a median 0.25 s,
+  and the lineman first moves at 0.25 s.
+- `DL_KEY` fired for only 24 of 320, at 0.65 s. A blocker stepping at 0.25 s
+  is seen about 0.2 s later, and by then most linemen have read run and are
+  in their fit, which this key does not serve. Contact comes at 0.4–0.5 s
+  because our blocker reaches a lineman who has not moved sideways.
+
+On develop, then, the first divergence is the offensive line's start (the
+movement law's start-up; with `GAIT_STEP` the run-offense profile's linemen
+step at about 0.15 s), plus an ordinary visual reaction. Neither belongs to
+the lineman's controller. Tracked linemen are already moving sideways
+before a reaction to the blocker's step could explain it, even allowing
+for about 0.1 s of snap-event lag. That points to called line movement
+(slants and angles), which the defensive calls here do not install. It is
+a play-calling question for the def-alignment session, not a change here.
+
+**Follow-up: not called movement; contact timing.** The def-alignment session
+measured BDB 2025 weeks 1–9 (16,062 plays; `align/dlmove.py` on
+`claude/motion-checks`):
+- Same-way DL movement by 0.3 s appears on 10% of runs and 5% of passes.
+- Movers go where the play went 84% of the time, which a read can know and
+  a pre-snap call cannot.
+- Tracked DL trail the OL 2–3× at every sample (outside zone at 0.3 s:
+  OL 0.25 yd, DL 0.11). The early DL drift is a response to an early-moving
+  line. No movement calls are added.
+
+On a `GAIT_STEP` base (8 games), our OL moves 0.53 / 0.89 / 1.13 yd/s at
+0.1 / 0.3 / 0.5 s (NFL 0.85 / 1.30 / 1.88), but our DL only 0.00 / 0.04 / 0.19
+(NFL 0.39 / 0.69 / 1.17), and the DL are in contact by 0.5 s 75% of the time
+(NFL 11%).
+
+Second attempt, dropped: **`DL_READSTEP`** keyed the man in front with eyes
+on him (a 0.12 s delay, no held landmark) and kept the step until contact,
+whatever the run/pass read. It fires for 306 of 320 linemen at a median
+0.35 s (`DL_KEY` 77 of 320 at 0.50 s), but achieved lateral speed is
+unchanged (about 0.05 yd/s). Contact arrives at about 0.4 s: our blocker's
+first steps go at the defender, and NFL's run the track (OL near an opponent
+at 0.5 s: ours 53%, NFL 7%). Once the two are engaged, the defender's flow is
+the pair's leg contest. The divergence is the zone blocker's path before
+contact, on the offense's side (the run-offense session's outside-zone flow
+work). Two attempts; stopped.
 
 ## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
 
@@ -685,6 +957,35 @@ flow identical through 1.5 s with a few extra pull tags at 2.0 s, so the
 lab does not reproduce a mechanism. With about 50 runs a concept these counts
 are noisy (counter 10 of 39 off, 4 of 36 on), but it is not ruled out:
 games call zone against fronts the lab does not. Not proposed: unresolved risk.
+
+**Revisited on a `GAIT_STEP` base (risk resolved; proposed with `GAIT_STEP`).**
+The run-offense session's `stretch/pullers.py` (its branch) shows tracked
+second-level defenders moving toward the pull at 0.5 / 1.5 / 2.0 yd/s at
+0.6 / 1.0 / 1.4 s, ours about 0. On develop the guard himself pulls late
+(0.6 yd off his spot at 0.9 s), so first the movement law (`GAIT_STEP=0.3`,
+as on the run-offense profile).
+
+`depth/lbpull.ts`, lab power and counter, achieved lateral speed toward the
+pull at 1.0 / 1.2 / 1.4 s:
+
+| | 1.0 / 1.2 / 1.4 s |
+| --- | --- |
+| `GAIT_STEP` | −0.20 / −0.20 / 0.52 (they ask away from the pull until 1.0 s) |
+| + `PULL_EARLY` | 0.18 / 0.79 / 1.45 (pull read on for 72% by 1.0 s) |
+| NFL | 1.5 at 1.0 s, 2.0 at 1.4 s |
+
+A probe (`PULL_FLOW`) that also stopped the backer carrying the down blocks'
+backside wash of his gap changed nothing and is dropped.
+
+Paired lab (`forcelab.ts`, same seeds, `GAIT_STEP` base; IZ, OZ, power,
+counter, trap; 1,200 plays):
+- Inside zone is unchanged: 15+ yd 0 → 1 of 240, 10+ / 20+ identical. The
+  earlier game-level tail does not reproduce.
+- Counter 10+ 16.7 → 11.7% and 20+ 14.2 → 9.2% (paired z −2.0).
+- All concepts 10+ 7.5 → 6.0% (z −2.04), median 2.3 → 2.2.
+
+`PULL_EARLY` is proposed together with `GAIT_STEP`. Backers still trail
+tracking by about 0.4 s, which is the read and start, not the pull key.
 
 **`FORCE_BOUNCE` (`run-fits.ts` `executeRunFit`, force fit): D1, the
 outside on power, counter and trap.** The run-offense session's spec
@@ -1068,7 +1369,9 @@ holding the deep defender back.
 telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
-`runrally`, `crease`, `breakpoint`, `afterrelease`, and lab probes
+`runrally`, `crease`, `breakpoint`, `afterrelease`, `alleypath`, `interiorrush`, and lab probes
+`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `lbpull.ts` (backers against a pull), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
+`alleyprobe.ts`, `alleytrace.ts` (the nearest deep supporter on long runs), `forcelab.ts` (paired run lab, the same seeds per arm),
 `dlpursuit.ts` (linemen at a run's first contact), `dropprobe.ts` (the
 nearest zone defender when the ball comes near him), `catchact.ts`, `sideprobe.ts` (the side window from inside the
 chase), `breakprobe.ts` (the nearest defender through the flight). `scripts/mechanics/nfl_ytg.py` writes the
@@ -1079,7 +1382,7 @@ yards-to-goal filter their `--ytg60` option reads. `scripts/diag/runblock/`:
 ## Reproduce
 
 ```sh
-npx vitest run test/tip-away.test.ts test/catch-caller-interval.test.ts test/blocked-reach.test.ts test/pull-early.test.ts
+npx vitest run test/dl-squeeze.test.ts test/pass-feel.test.ts test/deep-no-force.test.ts test/safety-tempo.test.ts test/tip-away.test.ts test/catch-caller-interval.test.ts test/blocked-reach.test.ts test/pull-early.test.ts
 node scripts/baseline.mjs --candidate --flag TIP_AWAY=1 -- npx vitest run --project core
 for a in "" "--flag TIP_AWAY=1"; do node scripts/baseline.mjs --candidate $a -- node --import tsx scripts/diag/depth/ints.ts --games 8; done
 ```
