@@ -543,6 +543,30 @@ export const COVERAGES: Coverage[] = [
   },
 ];
 
+/**
+ * Hands-family bunch answers (HNFL-074 Mini Fist / Mini Pounder): the nickel
+ * locks the point, the corner and the midpoint (Mike) banjo #1 and #3 by
+ * release, and both safeties keep their call (halves or inside quarters), so
+ * the man pair is never rubbed off by crossing releases. Built from each call
+ * so the backside and the safeties stay exactly as called.
+ */
+for (const id of ['cover2man', 'pounder', 'finger', 'rolex']) {
+  const base = COVERAGES.find(c => c.id === id)!;
+  const mini: Coverage = {
+    id: `${id}_banjo`, name: `${base.name.split(' (')[0]} Banjo (vs bunch)`, family: base.family, shell: base.shell, man: false, press: false,
+    note: 'Vs bunch: nickel locks the point, corner and Mike banjo #1/#3 (first out / the other); backside man and safeties as called.',
+    roles: {
+      CB_S: z('flat_s', 'banjo_out'),
+      LB_M: z('hook_s', 'banjo_in'),
+      NB: { kind: 'man', prefer: ['S2'], press: true },
+      CB_W: base.roles.CB_W, LB_W: base.roles.LB_W, SS: base.roles.SS, FS: base.roles.FS,
+    },
+    underneath: [],
+  };
+  COVERAGES.push(mini);
+  base.structureChecks = [{ when: ['bunch_strong'], to: [mini.id] }];
+}
+
 export const COVERAGE_BY_ID: Record<string, Coverage> = Object.fromEntries(COVERAGES.map((c) => [c.id, c]));
 
 /** One representative call per family: what a quarterback tries to identify. */

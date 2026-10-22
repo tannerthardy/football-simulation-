@@ -5,7 +5,9 @@
  *  - `across`: jogs to the far side and sets as its innermost detached
  *    receiver (2x2 becomes 3x1, a single-width side gains a slot).
  *  - `jet`:    runs flat behind the line at speed and is still moving,
- *    parallel to the line, at the snap, just past the ball.
+ *    parallel to the line, at the snap, short of the ball: the snap is timed
+ *    so he reaches the mesh about JET_LEAD s later (tracked jets snap a median
+ *    5 yd from the ball, most before reaching it).
  *  - `empty`:  the back motions out of the backfield to the weak side and sets
  *    as a slot (one back becomes empty).
  *  - `return`: yo-yo; steps inside and returns to his spot.
@@ -48,6 +50,10 @@ export interface MotionPlan {
 
 /** Depth behind the line a jet runs at: clear of the center's body and the snap. */
 const JET_DEPTH = 1.8;
+/** The jet man reaches the ball this long after the snap: the snap is timed to the mesh (s). */
+const JET_LEAD = 0.6;
+/** Fastest pace (fraction of top speed) a set motion is run at to fit the pre-snap clock. */
+const MAX_SET_SPEED = 0.9;
 /** A motion man must be off the line of scrimmage. */
 const OFF_LINE = 1.0;
 /** A set motion man arrives this long before the snap. */
@@ -78,14 +84,15 @@ export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<B
   const far = -own;
   const legs: MotionPlan['legs'] = [];
   let live = false;
+  let jetSnap: Vec2 | null = null;
   switch (call.kind) {
     case 'across': {
       if (spot.backfield) return null;
-      // Set as the far side's new slot, the way alignOffense spaces slots:
-      // halfway in from a lone #1, or inside an existing slot.
+      // Set as the far side's new slot: tight inside a lone #1 (tracked across
+      // motion sets a median 5.4 yd from the ball), or inside an existing slot.
       const detached = sideReceivers(off, far).filter(r => !r.inline);
       const lateral = detached.length === 0 ? 9
-        : detached.length === 1 ? Math.max(5.5, detached[0].lateral * 0.45 + 0.5)
+        : detached.length === 1 ? Math.max(4.5, detached[0].lateral * 0.3)
         : Math.max(4.6, detached[detached.length - 1].lateral * 0.62);
       legs.push({ to: { x: p0.x, y: off.ballY + far * lateral }, speed: 0.7 });
       break;
@@ -96,6 +103,9 @@ export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<B
       legs.push({ to: { x, y: p0.y - own * 1.5 }, speed: 0.6 });
       legs.push({ to: { x, y: off.ballY + far * 1.0 }, speed: 0.85 });
       live = true;
+      // Snapped JET_LEAD s of running short of the ball, never behind his turn.
+      const turn = Math.abs(p0.y - own * 1.5 - off.ballY);
+      jetSnap = { x, y: off.ballY + own * Math.min(turn, JET_LEAD * 0.85 * body.vmax) };
       break;
     }
     case 'empty': {
@@ -113,22 +123,40 @@ export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<B
       break;
     }
   }
-  // Travel time: distance at each leg's pace, the sprint start-up lag (tau)
-  // once, a stop-and-reverse wherever the path turns back on itself, and the
-  // final braking for a set motion.
-  let t = body.tau, prev = p0, dir: Vec2 | null = null;
-  for (const leg of legs) {
-    const d = Math.hypot(leg.to.x - prev.x, leg.to.y - prev.y);
-    const v = leg.speed * body.vmax;
-    const nd = d > 1e-6 ? { x: (leg.to.x - prev.x) / d, y: (leg.to.y - prev.y) / d } : null;
-    if (dir && nd && dir.x * nd.x + dir.y * nd.y < 0) t += v / body.brake + body.tau;
-    t += d / v;
-    prev = leg.to;
-    dir = nd ?? dir;
-  }
-  if (!live) t += legs[legs.length - 1].speed * body.vmax / body.brake;
-  const seconds = Math.min(MAX_SECONDS, t + (live ? 0 : SET_MARGIN));
-  return { slot: call.slot, kind: call.kind, seconds, legs, live, snapPos: { ...prev } };
+  // Travel time: integrate his speed along the path under the same targets
+  // motionIntent commands. Speeding up follows the sprint law (dv/dt =
+  // (target - v) / tau), slowing is at his braking limit, a path that turns
+  // back on itself stops first, and a set motion tapers into its spot. A jet
+  // is timed to its snap point on the live leg.
+  const travel = (pace: number) => {
+    const dt = 0.01;
+    let t = 0, v = 0, prev = p0, dir: Vec2 | null = null;
+    for (const [i, leg] of legs.entries()) {
+      const final = i === legs.length - 1;
+      const to = jetSnap && final ? jetSnap : leg.to;
+      const d = Math.hypot(to.x - prev.x, to.y - prev.y);
+      const top = Math.min(MAX_SET_SPEED, leg.speed * pace) * body.vmax;
+      const nd = d > 1e-6 ? { x: (to.x - prev.x) / d, y: (to.y - prev.y) / d } : null;
+      if (dir && nd && dir.x * nd.x + dir.y * nd.y < 0) { t += v / body.brake; v = 0; }
+      const stopAt = final && !live ? 0.3 : 0;
+      for (let left = d; left > stopAt && t < 2 * MAX_SECONDS; t += dt) {
+        const target = final && !live ? Math.min(top, left * 2.5) : top;
+        v = target > v ? v + (target - v) * dt / body.tau : Math.max(target, v - body.brake * dt);
+        left -= v * dt;
+      }
+      prev = to;
+      dir = nd ?? dir;
+    }
+    if (!live) t += SET_MARGIN;
+    return { t, end: prev };
+  };
+  // A set motion too long for the pre-snap clock is run faster, up to
+  // MAX_SET_SPEED; one that still does not fit is not called.
+  let pace = 1, plan = travel(pace);
+  while (plan.t > MAX_SECONDS && legs.some(l => l.speed * pace < MAX_SET_SPEED)) plan = travel(pace += 0.05);
+  if (plan.t > MAX_SECONDS) return null;
+  for (const leg of legs) leg.speed = Math.min(MAX_SET_SPEED, leg.speed * pace);
+  return { slot: call.slot, kind: call.kind, seconds: plan.t, legs, live, snapPos: { ...plan.end } };
 }
 
 /** The motion man's requested velocity and facing at pre-snap time `t` (negative). */

@@ -84,6 +84,7 @@ Film any scene with `node --import tsx scripts/coverage-rule-film.ts
 | Home shell | Two-high tree disguises from one quarters look | Done; `fangio-tree` |
 | Cover 1 Lurk | Down safety by formation, lurker in the hole (HNFL-240) | Done; `fangio-tree` |
 | Hands family | Pounder, Finger, Rolex (HNFL-074/208/261) | Done; `fangio-tree` |
+| Hands vs bunch | Mini Fist/Pounder: nickel locks the point, corner and Mike banjo #1/#3, safeties as called; nickel personnel only (HNFL-074) | Done; `hands-bunch` |
 | Motion | Across, jet, empty, return; final-formation check; provisional bump (MOTION=1) | Done; `offensive-motion` |
 
 In two seeded games (seeds 3 and 7, 262 snaps) checks fired on 41 snaps:
@@ -124,12 +125,12 @@ From [fangio-system.md](fangio-system.md) section E:
 
 `src/sim/motion.ts`. The offensive coordinator puts one off-ball player in
 motion on about half its snaps:
-- **across:** sets as the far side's new slot, so 2x2 becomes 3x1;
-- **jet:** still running parallel to the line, just past the ball, at the snap;
+- **across:** sets as the far side's new slot, tight inside a lone #1 (tracked median 5.4 yd from the ball), so 2x2 becomes 3x1;
+- **jet:** still running parallel to the line at the snap, short of the ball. The snap is timed so he reaches the mesh about 0.6 s later; tracked jets snap a median 5 yd from the ball;
 - **empty:** the back motions out to the weak side;
 - **return:** yo-yo back to his spot.
 
-Each motion plays out in the existing pre-snap timeline, alongside front
+Plans are timed by integrating the mover's sprint law along the path (start-up, braking, stops), so the planned snap spot matches where he is to within about half a yard. A set motion too long for 5.5 s runs faster, up to 0.9 of top speed, or is not called. Each motion plays out in the existing pre-snap timeline, alongside front
 stems and creepers. Every plan is legal by construction under the installed
 snap law: one man, off the line, not moving toward it at the snap. At the
 snap the offense is renumbered from where players stand. Routes, the
