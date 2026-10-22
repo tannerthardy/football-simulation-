@@ -93,7 +93,7 @@ default-off flag), resolved.
 | [RUN-3](#run-3) | Double teams drive defenders back much too far | G2 | medium | open |
 | [RUN-4](#run-4) | Defensive linemen run upfield past reach blocks | G2 | medium | flag |
 | [RUN-5](#run-5) | Pad level had no effect on a push | G2 | medium | flag |
-| [RUN-6](#run-6) | Gap-scheme blockers took the wrong defenders | G2 | medium | in work (#192) |
+| [RUN-6](#run-6) | Gap-scheme blockers took the wrong defenders | G2 | medium | resolved (#192) |
 | [RUN-7](#run-7) | The lead puller misses a Mike stacked inside his path | G2 | medium | open |
 | [RUN-8](#run-8) | Center covered on almost every snap | G2 | medium | flag |
 | [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | flag |
@@ -236,10 +236,17 @@ default-off flag), resolved.
   - the backside cutoff took the outside man first;
   - the fullback stood idle once every linebacker was claimed;
   - on trap against Under, the playside tackle doubled across the trap.
-- **Fix:** #192, no flag. Default play changes. Yards per carry 11.15 → 9.55
+- **Fix:** #192 (merged), no flag. Default play changes. Yards per carry 11.15 → 9.55
   (`dev-12`, outside noise).
-- **Open:** see RUN-7, and counter vs Odd, where ≤0-yard runs rise from 5% to
-  11% because the fullback now blocks the backside backer per the written rule.
+- **Open:**
+  - see RUN-7;
+  - counter vs Odd, where ≤0-yard runs rise from 5% to 11% because the fullback
+    now blocks the backside backer per the written rule. The engine's counter
+    is GT (guard kicks, tackle wraps). The old fullback insert matches a
+    different play, GF / Counter F. These could be two named concepts, each
+    with its own fullback rule;
+  - `leadBacker` counts a backer as playside up to 0.5 yd backside of the ball,
+    which could misread a shaded front.
 
 <a id="run-7"></a>
 ### RUN-7: The lead puller misses a Mike stacked inside his path
@@ -466,6 +473,10 @@ From the issue register:
 - **Open:** the remaining excess (5.2% vs about 2.2%). *Hypotheses:* risky
   throw selection, how a contested catch is resolved, or late coverage
   producing tipped balls. These need separating.
+- **#193 raises it:** its coverage rules take INT from 5.1% to 8.1% in CI,
+  mostly against Cover 3 (3.2% → 9.6%), and on comebacks and shots. Being
+  explained on #193. Treat it as evidence for this entry, not a reason to drop
+  the rules.
 - **Where it comes from** (`dev-12` splits, 34–60 attempts each, so noisy):
   short outside throws are intercepted most. Quick outs 18.8%, slant-flat
   14.7%, curl-flat 10.5%, four verticals 8.6%, stick 8.9%. Comebacks, levels and
