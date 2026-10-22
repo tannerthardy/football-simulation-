@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, generated from `src` on 2026-10-22 (trunk `d91c9014`). Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 77 flags: 53 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off. On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 79 flags: 55 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off. On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST` and `STALK_CUSHION` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -17,6 +17,7 @@ There are 77 flags: 53 are on by default, 1 is a diagnostic scale at identity (`
 | `LEVER_FACING` | on | default | trenches | `src/sim/engagement.ts:696` | — |
 | `LIVE_AIM` | on | default | run | `src/sim/behaviors/carrier.ts:47` | — |
 | `LIVE_GAPS` | on | default | run | `src/sim/live-gaps.ts:25` | — |
+| `PASS_FIRST` | on | default (G2) | defense | `src/sim/behaviors/defense.ts:37` | review 2: drop the off path |
 | `PULL_READ` | on | default | defense | `src/sim/run-fits.ts:151` | — |
 | `READ_EYES` | on | default | defense | `src/sim/run-read.ts:42` | — |
 | `RUN_ANCHOR` | on | default | trenches | `src/sim/engagement.ts:706` | — |
@@ -24,6 +25,7 @@ There are 77 flags: 53 are on by default, 1 is a diagnostic scale at identity (`
 | `SCRAPE` | on | default | defense | `src/sim/run-fits.ts:139` | — |
 | `SHED_PHYSICAL` | on | default | trenches | `src/sim/engagement.ts:699` | — |
 | `STALK_CLAIM` | on | default | run | `src/sim/behaviors/blocking.ts:752` | — |
+| `STALK_CUSHION` | on | default (G2) | run | `src/sim/behaviors/blocking.ts:783` | review 2: drop the off path |
 | `STRETCH_MESH` | on | default | run | `src/sim/assign.ts:158` | — |
 | `STRETCH_REACH` | on | default | trenches | `src/sim/engagement.ts:671` | — |
 | `THREAT_READ` | on | default | defense | `src/sim/run-fits.ts:139` | — |
