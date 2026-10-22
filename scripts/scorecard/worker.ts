@@ -8,6 +8,7 @@ import { simulateGame } from '../../src/game/game.js';
 import { gameRecord, gameSpecs, makeLeague } from './records.js';
 import { PROBES } from './probes.js';
 import { inputIdentity } from './provenance.js';
+import { captureTackleOpportunities } from './tackles.js';
 
 const args = JSON.parse(process.argv[2] ?? '{}') as {
   seed: number;
@@ -25,12 +26,14 @@ for (const g of args.only) {
   const teams = leagues.get(spec.league)!;
   const record = probes.some((p) => p.needsReplay);
   const inputSha256 = inputIdentity(spec, teams[spec.home], teams[spec.away], record);
+  const tackles = captureTackleOpportunities();
   const t0 = performance.now();
   const res = simulateGame(teams[spec.home], teams[spec.away], {
     seed: spec.seed,
     record,
+    hooks: tackles.hooks,
   });
-  const rec = gameRecord(spec, res, performance.now() - t0);
+  const rec = gameRecord(spec, res, performance.now() - t0, tackles.count);
   rec.inputSha256 = inputSha256;
   for (const p of probes) for (const [k, v] of Object.entries(p.collect(res))) rec.probe[`${p.id}.${k}`] = v;
   process.stdout.write(`${JSON.stringify(rec)}\n`);

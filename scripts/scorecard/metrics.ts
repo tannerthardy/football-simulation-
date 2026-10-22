@@ -60,7 +60,8 @@ export const METRICS: Metric[] = [
     play: { on: (p) => run(p) && p.yards >= 20, num: (p) => yes(p.yards >= 40) },
   },
   { id: 'ybc', label: 'Yards before contact (runs)', band: [1.5, 2.3], play: { on: (p) => run(p) && p.ybc !== undefined, num: (p) => p.ybc ?? 0 } },
-  { id: 'missed', label: 'Missed + broken tackles / play', band: [0.11, 0.16], source: 'PFF', splitKind: 'run', play: { on: () => true, num: (p) => p.missed + p.broken } },
+  { id: 'missed', label: 'Missed + broken tackles / play', band: [0.11, 0.16], source: 'source unverified: PFF, definition unknown', splitKind: 'run', play: { on: () => true, num: (p) => p.missed + p.broken } },
+  { id: 'failedTackleOpportunities', label: 'Failed tackle opportunities / play (unique defenders)', play: { on: () => true, num: (p) => p.failedTackleOpportunities ?? NaN } },
   { id: 'third', label: '3rd-down conversion', scale: 100, unit: '%', band: [37, 41], game: { num: (g) => g.thirdConv, den: (g) => g.third } },
   { id: 'fg', label: 'FG %', scale: 100, unit: '%', band: [83, 87], game: { num: (g) => g.fgm, den: (g) => g.fga } },
   { id: 'xp', label: 'XP %', scale: 100, unit: '%', band: [94, 97], game: { num: (g) => g.xpm, den: (g) => g.xpa } },
@@ -144,6 +145,8 @@ const quantile = (xs: number[], q: number) => {
 export function interval(
   m: Metric, games: GameRec[], base?: GameRec[], filter?: (p: PlayRec) => boolean, resamples = 400,
 ): [number, number] {
+  // Missing measurements remain unavailable even if a resample omits the missing game.
+  if (!Number.isFinite(evaluate(m, games, filter).value) || (base && !Number.isFinite(evaluate(m, base, filter).value))) return [NaN, NaN];
   const rand = mulberry32(0x5c0e + m.id.length * 7919);
   const paired = !!base && base.length === games.length && base.every((g, i) => g.seed === games[i].seed);
   const draw = (pool: GameRec[], idx: number[]) => idx.map((i) => pool[i]);
