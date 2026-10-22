@@ -27,7 +27,9 @@ FootballXOs spread playbook's position-by-position power, counter, trap and
 protection rule pages, with a record format for extracted rules. No playbook
 file is stored here. The companion
 [run-blocking assignment audit](../reviews/run-blocking-assignment-audit.md)
-checks `planRunBlocking` against those rules.
+checks `planRunBlocking` against those rules, and the
+[coverage rules source audit](../reviews/coverage-rules-source-audit.md)
+checks `src/sim/coverage/rules.ts` against HonestNFL and DB manuals.
 
 ## Other supplied and researched references
 

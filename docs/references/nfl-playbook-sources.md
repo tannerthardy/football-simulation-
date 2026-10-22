@@ -101,7 +101,7 @@ outcomes.
 | Run-blocking assignments by front (`planRunBlocking` in `src/sim/behaviors/blocking.ts`) | [Run-blocking assignment audit](../reviews/run-blocking-assignment-audit.md); spread playbook pp. 62–64 trap, 66–68 power, 83–85 counter; Browns OL manual pp. 19–37 | [Trenches](../football-handbook/trenches.md), [moving run-game footwork](../football-handbook/moving-run-footwork.md); zone clinics |
 | Run fits and fronts (`FRONTS` in `src/playbook/defense.ts`, `src/sim/run-fits.ts`) | HonestNFL run-defense and fronts sheets | Cowboys Over Stack fits and NDSU article, if the user approves them |
 | Protection declaration (`ProtectionCoordinator`) | Browns OL manual pp. 38–51; spread playbook pp. 94–99 | [OL protection textbook](offensive_line_protection_textbook.pdf); HonestNFL protection sheets |
-| Coverage checks | [HonestNFL concept guide](honest-nfl/CONCEPTS.md) | 2008 Alabama, only if the user decides the rights question |
+| Coverage checks | [Coverage rules source audit](../reviews/coverage-rules-source-audit.md); [HonestNFL concept guide](honest-nfl/CONCEPTS.md) | 2008 Alabama, only if the user decides the rights question |
 | OL splits and depth off the ball (offensive alignment) | Browns OL manual pp. 9–10 | Spread playbook pp. 41–42 for back depths |
 | Formations, motion and strength (`Formation`/`Split` in `src/playbook/types.ts`, `src/sim/called-motion.ts`) | Spread playbook pp. 11–50 | [Playcalling and schematic packages](../football-handbook/playcalling-and-schematic-packages.md) |
 | Which fronts a play avoids (play-caller `beats`) | Spread playbook pp. 53, 63, 67, 84 | — |
