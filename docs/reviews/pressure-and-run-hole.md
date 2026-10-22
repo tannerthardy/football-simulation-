@@ -319,6 +319,73 @@ Medians:
 - **The pursuit angle is not the main long-run cause.** That remains the
   deep defenders' position (section 5).
 
+## 7. Interior pass rush
+
+Question: is the sim's interior a static wall where NFL interior gets pushed
+back? Do NFL DTs win with lateral quickness or by depth? Does the QB step
+up?
+
+Method: `scripts/diag/interior-rush.py`, position-only, definitions as
+`pass-pressure.py`.
+- **Sim:** `claude/run-game-v3` `c735a6dd` (`PASS_KICK`, `PASS_RIDE`,
+  `FRONT_ALIGN` on), candidate profile, 8 games, seeds 301–308. 425 dropbacks
+  without PA, 852 interior reps. Receipts `run-1792658120622-319` and
+  `-619-326`, inputs unchanged, exit 0.
+- **NFL:** 7,007 dropbacks, 10,868 reps.
+
+Medians, NFL vs sim:
+
+| | NFL | Sim |
+|---|---|---|
+| Rep outcome: engaged at the end / free / other | 71 / 9.3 / 20% | 96 / 1.5 / 2.6% |
+| Blocker depth at 1.0 / 2.0 s, engaged reps | 2.1 / 4.2 yd | 2.0 / 3.8 yd |
+| Blocker retreat since contact at 1.0 / 2.0 s | +0.4 / +2.3 | +0.7 / +2.5 |
+| Rusher depth at 1.0 / 2.0 s | +1.4 / +3.8 | +1.5 / +3.2 |
+| **Rusher relative to blocker at 1.0 s: toward the QB / across** | **+0.63 / 0.45 yd/s** | **0.00 / 0.16** |
+| Free reps: last 0.5 s before release, toward the QB / across | +1.11 / 0.87 | +2.14 / 0.63 |
+| Free reps leave | inside 39, outside 32, through 29% (n 1,014) | through 54, outside 31, inside 15% (n 13) |
+| Free reps: when, after how long engaged | 3.06 s, 1.50 s | 1.95 s, 1.10 s |
+| Interior pressure per 100 dropbacks (pass-pressure.py) | 9.3 | 7.3 |
+
+Window-controlled, among reps whose window is still open at T:
+
+| | 1.5 s | 2.0 s | 2.5 s | 3.0 s |
+|---|---|---|---|---|
+| NFL free by T / off the block by T | 0.9 / 5% | 1.6 / 12% | 2.9 / 20% | 7.4 / 34% |
+| Sim | 0.0 / 1% | 1.2 / 3% | 1.5 / 4% | 3.0 / 10% |
+
+QB depth at 1.0 / 1.5 / 2.0 s:
+- **NFL:** 6.0 / 7.1 / 7.8. Throws from 7.3; step-up p75 0.2 yd; nearest
+  interior rusher at the throw 3.8 yd.
+- **Sim:** 6.5 / 7.7 / 7.9. Throws from 7.9; step-up p75 0.0; nearest
+  interior rusher 4.6 yd.
+- **The window is shorter in the sim:** 25% of NFL dropbacks last 3 s or
+  more after line start, against 11% of the sim's.
+
+**Reading.**
+- **Not a static wall.** The pocket's depth over time, and how far the
+  blocker is driven back after contact, are NFL-like or slightly deeper.
+- **The difference is inside the engagement.** At 1.0 s an NFL DT is still
+  working: gaining 0.63 yd/s on his blocker toward the QB and moving 0.45
+  yd/s across him. The sim's pair moves as one rigid unit (0.00 / 0.16).
+- **NFL rushers come off blocks.** About a third of NFL interior reps are
+  off the block by 3 s (free, twisting, or reset), against a tenth in the
+  sim. The NFL wins that do happen mix push and lateral: exits are balanced
+  three ways, with about 0.9 yd/s across in the last half-second.
+- **Part of the low free rate is the window.** NFL interior wins come late
+  (median 3.06 s) and sim dropbacks end earlier. At equal time, the sim's
+  free rate is about half the NFL's from 2.5 s on (1.5 vs 2.9%, 3.0 vs
+  7.4%).
+- **The QB is part of it too.** The sim QB sits about 0.5 yd deeper, throws
+  from the top of his drop (no step-up), and ends 0.8 yd farther from the
+  interior rushers.
+- **Possible mechanisms** for the rigid engagement: the rusher's moves not
+  producing relative motion (hand fight, swim or rip, push-pull), or the
+  engagement holding the pair at a fixed offset. Check requested against
+  achieved relative motion in a 1v1 interior reproducer before changing
+  anything. The rusher must stay free to choose a move, and its cost and
+  the blocker's counter should decide it, not a cap.
+
 ## Limits
 
 - Sim samples are small: 44–81 runs per concept, 188 pressures. Medians move
