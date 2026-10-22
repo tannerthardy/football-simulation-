@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, generated from `src` on 2026-10-22 (trunk `d91c9014`). Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 45 are off. The 22 rows marked "expires: review 2" were added by PR #190 (all default off or identity). At the first review, set an expiry for each off flag and bring the experimental count to 10. Flags that are on by default can lose their switch, keeping only the new path.
+There are 77 flags: 53 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off. On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -50,36 +50,36 @@ There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`
 | `TACKLE_ROLL` | off | experimental | defense | `src/sim/tackle.ts:60` | set at first review |
 | `TACKLE_TOUCH` | off | experimental | defense | `src/sim/tackle.ts:69` | set at first review |
 | `WRAP_BIND` | off | experimental | defense | `src/sim/tackle.ts:63` | set at first review |
-| `BLOCKED_REACH` | off | experimental | defense | `src/sim/tackle.ts:80` | expires: review 2 |
-| `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:195` | expires: review 2 |
-| `DEF_ALIGN` | off | experimental | coverage | `src/playbook/alignment.ts:71` | expires: review 2 |
+| `BLOCKED_REACH` | on | default (promoted 2026-10-22) | defense | `src/sim/tackle.ts:80` | review 2: drop the off path |
+| `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:195` | expires: review 2. Open: who supplies force in Cover 2 Man and which inside jobs trade; Defense, Run Game and Coverage to agree (#193, #190 comments) |
+| `DEF_ALIGN` | on | default (promoted 2026-10-22) | coverage | `src/playbook/alignment.ts:71` | review 2: drop the off path |
 | `DEF_GETOFF` | 1 (identity scale) | diagnostic | trenches | `src/sim/agent.ts:25` | expires: review 2 |
-| `DL_ANCHOR` | off | experimental | trenches | `src/sim/engagement.ts:80` | expires: review 2 |
-| `DL_CHASE` | off | experimental | trenches | `src/sim/engagement.ts:685` | expires: review 2 |
-| `DL_FLATTEN` | off | experimental | trenches | `src/sim/engagement.ts:90` | expires: review 2 |
-| `DL_FLATTEN_WON` | off | experimental | trenches | `src/sim/engagement.ts:106` | expires: review 2 |
-| `DL_SQUEEZE` | off | experimental | trenches | `src/sim/engagement.ts:100` | expires: review 2 |
-| `FORCE_BOUNCE` | off | experimental | defense | `src/sim/run-fits.ts:174` | expires: review 2 |
-| `FRONT_ALIGN` | off | experimental | defense | `src/game/playcaller.ts:33`, `src/playbook/alignment.ts:104` | expires: review 2 |
-| `LB_LANDMARK` | off | experimental | defense | `src/sim/run-fits.ts:182` | expires: review 2 |
-| `OL_SPLITS` | off | experimental | run | `src/playbook/alignment.ts:24` | expires: review 2 |
-| `OL_STAGGER` | off | experimental | run | `src/playbook/alignment.ts:32` | expires: review 2 |
-| `PAD_LEVERAGE` | off | experimental | physics | `src/physics/world.ts:313` | expires: review 2 |
-| `PASS_FEEL` | off | experimental | trenches | `src/sim/engagement.ts:713` | expires: review 2 |
-| `PULL_EARLY` | off | experimental | defense | `src/sim/run-fits.ts:165` | expires: review 2 |
-| `SAFETY_TEMPO` | off | experimental | defense | `src/sim/run-fits.ts:189` | expires: review 2 |
-| `SHORT_PACKAGE` | off | experimental | defense | `src/game/playcaller.ts:47`, `src/playbook/alignment.ts:106` | expires: review 2 |
-| `SNAP_REACT` | off | experimental | rules | `src/sim/snap-count.ts:30` | expires: review 2 |
-| `TIP_AWAY` | off | experimental | coverage | `src/sim/catching.ts:23` | expires: review 2 |
-| `WR_ALIGN` | off | experimental | run | `src/playbook/alignment.ts:80` | expires: review 2 |
-| `MOTION` | off | experimental | coverage | `src/sim/motion.ts:33` | review 2 |
-| `DEUCE` | off | experimental | coverage | `src/playbook/call-integrity.ts:67` | review 2 |
-| `FRONT_STRENGTH` | off | experimental | defense | `src/game/playcaller.ts:52`, `src/playbook/alignment.ts:120` | expires: review 2 |
-| `FRONT_MENU` | off | experimental | defense | `src/game/playcaller.ts:70`, `src/playbook/alignment.ts:129` | expires: review 2 |
-| `BOX_ALIGN` | off | experimental | defense | `src/playbook/alignment.ts:153` | expires: review 2 |
-| `DEF_PACKAGE` | off | experimental | defense | `src/game/playcaller.ts:80` | expires: review 2 |
-| `SHELL_SHOW` | off | experimental | defense | `src/game/playcaller.ts:94`, `src/playbook/alignment.ts:156` | expires: review 2 |
-| `COVER_CALL` | off | experimental | defense | `src/game/playcaller.ts:115` | expires: review 2 |
-| `MOTION_CHECK` | off | experimental | defense | `src/sim/motion.ts:277` | expires: review 2 (turn on with `MOTION`) |
-| `PRESSURE_CALL` | off | experimental | defense | `src/game/playcaller.ts:126` | expires: review 2 (turn on with `DEUCE`) |
-| `AGAP_ALIGN` | off | experimental | defense | `src/playbook/alignment.ts:167` | expires: review 2 |
+| `DL_ANCHOR` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:80` | review 2: drop the off path |
+| `DL_CHASE` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:685` | review 2: drop the off path |
+| `DL_FLATTEN` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:90` | review 2: drop the off path |
+| `DL_FLATTEN_WON` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:106` | review 2: drop the off path |
+| `DL_SQUEEZE` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:100` | review 2: drop the off path |
+| `FORCE_BOUNCE` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:174` | review 2: drop the off path |
+| `FRONT_ALIGN` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:33`, `src/playbook/alignment.ts:104` | review 2: drop the off path |
+| `LB_LANDMARK` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:182` | review 2: drop the off path |
+| `OL_SPLITS` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:24` | review 2: drop the off path |
+| `OL_STAGGER` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:32` | review 2: drop the off path |
+| `PAD_LEVERAGE` | on | default (promoted 2026-10-22) | physics | `src/physics/world.ts:313` | review 2: drop the off path |
+| `PASS_FEEL` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:713` | review 2: drop the off path |
+| `PULL_EARLY` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:165` | review 2: drop the off path |
+| `SAFETY_TEMPO` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:189` | review 2: drop the off path |
+| `SHORT_PACKAGE` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:47`, `src/playbook/alignment.ts:106` | review 2: drop the off path |
+| `SNAP_REACT` | on | default (promoted 2026-10-22) | rules | `src/sim/snap-count.ts:30` | review 2: drop the off path |
+| `TIP_AWAY` | on | default (promoted 2026-10-22) | coverage | `src/sim/catching.ts:23` | review 2: drop the off path |
+| `WR_ALIGN` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:80` | review 2: drop the off path |
+| `MOTION` | on | default (promoted 2026-10-22) | coverage | `src/sim/motion.ts:34` | review 2: drop the off path |
+| `DEUCE` | on | default (promoted 2026-10-22) | coverage | `src/playbook/call-integrity.ts:67` | review 2: drop the off path |
+| `FRONT_STRENGTH` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:52`, `src/playbook/alignment.ts:120` | review 2: drop the off path |
+| `FRONT_MENU` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:70`, `src/playbook/alignment.ts:129` | review 2: drop the off path |
+| `BOX_ALIGN` | on | default (promoted 2026-10-22) | defense | `src/playbook/alignment.ts:153` | review 2: drop the off path |
+| `DEF_PACKAGE` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:80` | review 2: drop the off path |
+| `SHELL_SHOW` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:94`, `src/playbook/alignment.ts:156` | review 2: drop the off path |
+| `COVER_CALL` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:115` | review 2: drop the off path |
+| `MOTION_CHECK` | on | default (promoted 2026-10-22) | defense | `src/sim/motion.ts:293` | review 2: drop the off path |
+| `PRESSURE_CALL` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:126` | review 2: drop the off path |
+| `AGAP_ALIGN` | on | default (promoted 2026-10-22) | defense | `src/playbook/alignment.ts:167` | review 2: drop the off path |

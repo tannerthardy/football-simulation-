@@ -15,13 +15,13 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 
 const deuce = PRESSURE_BY_ID.deuce;
 
-describe('Deuce (DEUCE=1)', () => {
+describe('Deuce (on by default)', () => {
   const was = process.env.DEUCE;
   beforeAll(() => { process.env.DEUCE = '1'; });
   afterAll(() => { if (was === undefined) delete process.env.DEUCE; else process.env.DEUCE = was; });
 
-  it('is off by default: no call can install it without the flag', () => {
-    delete process.env.DEUCE;
+  it('with DEUCE=0 no call can install it', () => {
+    process.env.DEUCE = '0';
     expect(pressureIsInstallable('nickel', FRONT_BY_ID.over, COVERAGE_BY_ID.cover4, deuce)).toBe(false);
     process.env.DEUCE = '1';
   });

@@ -15,12 +15,12 @@ import type { PlaySim } from './playsim.js';
 const INELIGIBLE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 /** Extra hand extension available while tracking a visible ball. */
 export const TRACKING_REACH_BONUS = .3;
-/** Experimental (TIP_AWAY=1, off): a defender who breaks up or bats a pass
+/** Default on (TIP_AWAY=0 turns it off): a defender who breaks up or bats a pass
  * has sent it away from his own hands. He cannot also catch that deflection;
  * teammates and the receiver still can. Without it he may play his own tip
  * a quarter second later, a second interception chance after the contest
  * already decided he could not catch it cleanly. */
-const TIP_AWAY = process.env.TIP_AWAY === '1';
+const TIP_AWAY = process.env.TIP_AWAY !== '0';
 /** How long a defender who touched the ball stays out of its flight. */
 const touchedUntil = (sim: PlaySim, beat: number) => sim.t + (TIP_AWAY ? 10 : beat);
 
