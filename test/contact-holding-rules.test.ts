@@ -132,6 +132,20 @@ describe('achieved holding, NFL2026 12-1-2/3/5/6', () => {
     expect(calls(f.sim)).toEqual([expect.objectContaining({ kind: 'holding' })]);
   });
 
+  it('does not call the same sideways grip while the blocker is still squarely between the rusher and the QB', () => {
+    const f = scene();
+    // The rusher on the blocker's far side from the QB: the blocker is in his way.
+    f.blocker.body.facing = 0;
+    f.victim.body.pos.x = f.blocker.pos.x + f.rep.hands!.extension + .04 + .15;
+    f.victim.body.vel = { x: .2, y: 3 };
+    f.intents[f.victim.idx].vel = { x: .2, y: 3 };
+    step(f);
+    expect(f.rep.hands!.normalForce).toBeLessThan(0);
+    expect(calls(f.sim)).toEqual([]);
+    expect(f.sim.foulRecords).toContainEqual(expect.objectContaining({ called: false, assessment: 'unresolved',
+      evidence: expect.objectContaining({ facts: expect.objectContaining({ exception: 'blocker_still_in_front_of_opponent' }) }) }));
+  });
+
   it('can restrain escape from rest only when World actually delivers opposing leg drive', () => {
     const f = scene();
     f.victim.body.pos.x -= .15; // acquired cloth is taut beyond native hand slack
