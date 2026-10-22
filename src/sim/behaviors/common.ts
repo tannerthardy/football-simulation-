@@ -234,8 +234,55 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   const original = { ...runThrough(a, p, { speed: effort }), effort };
   // A new grip may exist before its first solved load reaches body support.
   if (sim.bond?.tacklers.includes(a)) return original;
-  return chooseApproach(a, seen, contact, offset, original, sim.t,
+  const chosen = chooseApproach(a, seen, contact, offset, original, sim.t,
     command => ownApproach(blendApproach(command, near, gather)));
+  return PURSUE_AROUND ? aroundBodies(sim, a, seen, look, chosen) : chosen;
+}
+
+/** A pursuer the runner has already passed works around an offensive body
+ * on his path instead of running into it (getting off a block and
+ * flattening to the ball). Only the requested path changes, from his own
+ * acquired picture of that body; bodies still collide and a blocker can
+ * still block him again. A defender in front of the runner, or engaged in a
+ * block, keeps his request: taking on a lead blocker is a fit, not pursuit.
+ * PURSUE_AROUND=0 restores the straight request for comparison. */
+const PURSUE_AROUND = process.env.PURSUE_AROUND !== '0';
+const AROUND_MARGIN = 0.15; // yd of clearance beyond the two bodies
+const AROUND_LOOK = 0.5;    // s of travel at the requested speed
+
+function aroundBodies(sim: PlaySim, a: Agent, runner: import('../perception.js').Perceived,
+  look: number, command: MoveCommand): MoveCommand {
+  if (a.engagement || a.isDown(sim.t)) return command;
+  const v = command.vel, speed = Math.hypot(v.x, v.y);
+  const rs = Math.hypot(runner.vel.x, runner.vel.y);
+  if (speed < 1 || rs < 1) return command;
+  // Only once the runner is past him: behind the runner along his travel.
+  if (((a.pos.x - runner.pos.x) * runner.vel.x + (a.pos.y - runner.pos.y) * runner.vel.y) / rs > -0.5) return command;
+  const ux = v.x / speed, uy = v.y / speed;
+  const toRunner = Math.hypot(runner.pos.x - a.pos.x, runner.pos.y - a.pos.y);
+  let block: { x: number; y: number; d: number; r: number } | null = null;
+  for (const o of sim.opponents(a)) {
+    if (o === sim.carrier || o.isDown(sim.t)) continue;
+    const seen = sim.see(a, o, look);
+    const rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, d = Math.hypot(rx, ry);
+    const r = a.profile.radius + o.profile.radius + AROUND_MARGIN;
+    const along = rx * ux + ry * uy;
+    // On the straight path, ahead of him, nearer than the runner and within this look.
+    if (along <= 0 || d >= toRunner || along > r + speed * AROUND_LOOK) continue;
+    if (Math.abs(rx * uy - ry * ux) >= r) continue;
+    if (!block || d < block.d) block = { x: rx, y: ry, d, r };
+  }
+  if (!block) return command;
+  // The tangent past the body on the side nearer his own request; already in
+  // contact, slide along it.
+  const centre = Math.atan2(block.y, block.x);
+  const half = block.d > block.r ? Math.asin(block.r / block.d) : Math.PI / 2;
+  const want = Math.atan2(uy, ux);
+  // Toward his request's side of the body; dead on, toward the runner's side
+  // (a mirrored play is played the mirrored way).
+  const side = angleDiff(centre, want) || angleDiff(centre, Math.atan2(runner.pos.y - a.pos.y, runner.pos.x - a.pos.x));
+  const heading = centre + (side >= 0 ? half : -half);
+  return { ...command, vel: { x: Math.cos(heading) * speed, y: Math.sin(heading) * speed }, facing: heading };
 }
 
 export function ttr(a: Agent, p: Vec2, radius = 0): number {
