@@ -77,6 +77,13 @@ const HOLD_POINT = process.env.HOLD_POINT === '1';
  * traction and the runner's legs decide what that achieves. */
 const PLANT_TRAVEL = process.env.PLANT_TRAVEL === '1';
 
+/** Experimental (ENGAGED_REACH=1, off): a blocked defender may reach for a
+ * carrier passing within his engaged reach (40% of full) unless a body is in
+ * between, rather than only once he is clearly winning the block. Tracked
+ * linemen make first contact on 38-51% of inside runs, ours on 7-25%
+ * (scripts/diag/gap/reach-contact.py). */
+const ENGAGED_REACH = process.env.ENGAGED_REACH === '1';
+
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
   return supportParams(d.profile).armForce * (0.3 + 2.5 * q * q) * (0.6 + 0.6 * d.r('tackling'));
@@ -95,7 +102,9 @@ export function tryTackles(sim: PlaySim): void {
     const engaged = !!d.engagement;
     // A blocked defender can only reach out for the carrier once he's clearly
     // working off the block (tracking: linemen make a third of run tackles).
-    if (engaged && d.engagement!.win < 0.6) continue;
+    // ENGAGED_REACH: a free arm can reach a back passing within it whatever
+    // the block's state; the bodies in between (occluded) decide.
+    if (engaged && !ENGAGED_REACH && d.engagement!.win < 0.6) continue;
     const body = c.profile.radius + d.profile.radius;
     const arms = body + d.profile.reach * (engaged ? 0.4 : 1.0);
     // A free tackler can lunge for the last half yard by committing his body;
