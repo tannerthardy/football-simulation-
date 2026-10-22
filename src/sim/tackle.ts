@@ -40,6 +40,11 @@ export interface TackleBond {
   down: boolean;
   /** Each tackler's hold quality: 0 = fingertips, 1 = a locked wrap. */
   grip?: Map<Agent, number>;
+  /** Each tackler's control of the carrier, 0-1: the grip his arms' current
+   * extension allows. Rulings (in the grasp, forward progress) and the
+   * carrier's sense of being held read this; physics reads `grip`. Without
+   * GRIP_HOLD the two are equal. */
+  control?: Map<Agent, number>;
   /** Each tackler's grasp joint in the world. */
   holds?: Map<Agent, GraspJoint>;
   /** Execution draw for each hold (median 1): technique and footing on this rep. */
@@ -338,7 +343,7 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   if (d.engagement) sim.disengage(d.engagement);
   if (!sim.bond) {
     sim.bond = { carrier: c, tacklers: [], start: sim.t, progressX: c.pos.x, down: false, stalled: 0,
-      grip: new Map(), holds: new Map(), execution: new Map() };
+      grip: new Map(), control: new Map(), holds: new Map(), execution: new Map() };
   }
   const bond = sim.bond;
   bond.tacklers.push(d);
@@ -354,6 +359,7 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
     joint.pull = 0;
   }
   (bond.grip ??= new Map()).set(d, quality);
+  (bond.control ??= new Map()).set(d, quality);
   (bond.holds ??= new Map()).set(d, joint);
   (bond.execution ??= new Map()).set(d, execution);
   sim.world.joints.push(joint);
@@ -384,12 +390,14 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   const grip = (bond.grip ??= new Map());
   const holds = (bond.holds ??= new Map());
   const execution = (bond.execution ??= new Map());
+  const control = (bond.control ??= new Map());
   for (const d of [...bond.tacklers]) {
     const joint = holds.get(d);
     if (joint && !joint.broken) continue;
     bond.tacklers = bond.tacklers.filter((x) => x !== d);
     holds.delete(d);
     grip.delete(d);
+    control.delete(d);
     if (joint) sim.world.joints = sim.world.joints.filter((j) => j !== joint);
     d.nextTackleAt = Math.max(d.nextTackleAt, t + 0.3);
     sim.stats.brokenTackles++;
@@ -411,10 +419,14 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     const stretched = d.body.support?.state !== 'up' ? GROUND_STRETCH : 0;
     const quality = clamp(1 - (distance - stretched - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
     const available = clamp(0.25 + 0.85 * quality, 0.1, 1) * (execution.get(d) ?? 1);
+    const rate = Math.min(1, dt * (1 + 2.5 * d.r('tackling')));
     const g = grip.get(d) ?? available;
-    const next = g < available ? g + (available - g) * Math.min(1, dt * (1 + 2.5 * d.r('tackling')))
-      : GRIP_HOLD ? g : available;
+    const next = g < available ? g + (available - g) * rate : GRIP_HOLD ? g : available;
     grip.set(d, clamp(next, 0.05, 1));
+    // Control follows the arms: a grip held at full stretch is strong but is
+    // not a firm hold on the man for the officials or for him.
+    const k = control.get(d) ?? g;
+    control.set(d, clamp(k < available ? k + (available - k) * rate : available, 0.05, 1));
     joint.capacity = gripForce(d, clamp(next, 0.05, 1));
     if (WRAP_BIND && joint.legs > 0) {
       // Use the same acquired grip and actual closing quality as the roll.
@@ -491,7 +503,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   // is ruled down at once (the rule protects him).
   const held = t - bond.start;
   const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled;
-  const inGrasp = pocketQB && held >= 0.25 && bond.tacklers.some((d) => (grip.get(d) ?? 0) >= 0.6);
+  const inGrasp = pocketQB && held >= 0.25 && bond.tacklers.some((d) => (control.get(d) ?? grip.get(d) ?? 0) >= 0.6);
   // A running carrier is not down merely because the arms held for seconds.
   // Upright tackles require stopped progress; physical falls are checked below.
   if (inGrasp || (bond.stalled ?? 0) >= STALL) whistleDown(sim, bond);
@@ -507,7 +519,7 @@ export function afterStep(sim: PlaySim): void {
     const before = bond.progressX;
     bond.progressX = dir > 0 ? Math.max(bond.progressX, c.pos.x) : Math.min(bond.progressX, c.pos.x);
     // Forward progress is stopped when a firmly held pile stops gaining ground.
-    const firm = bond.tacklers.some((d) => (bond.grip?.get(d) ?? 0) >= 0.4);
+    const firm = bond.tacklers.some((d) => (bond.control?.get(d) ?? bond.grip?.get(d) ?? 0) >= 0.4);
     bond.stalled = firm && Math.abs(bond.progressX - before) <= 0.5 * sim.dt ? (bond.stalled ?? 0) + sim.dt : 0;
   }
   const sup = c.body.support;
