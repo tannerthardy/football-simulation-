@@ -758,3 +758,19 @@ Sam at 7 off the ball) supported?
   (p. 232). Triggers are by personnel.
 - *Linebacker depths in yards:* none in any book; only alignment numbers
   such as the Raiders' Over 40 / 10 / 40.
+
+**A linebacker's first step before he knows run from pass (2026-10-22, for
+the run-defense session).** No source gives seconds, but none teaches
+standing still. AFQ steps *with* a zone or pull block, *away* from a down or
+base block, takes a "short initial step" on a scoop and a false step on a
+pass set. The Cowboys shuffle on full flow and cross over and run on fast flow.
+Michigan's run step is "always forward … at a 45°". Svec lists a jab read step
+as an option he does not use. So the first step starts at the snap in the
+key's direction, shortened when the key is ambiguous, and the commitment comes
+on the second key (the back's flow).
+
+**Tackle pass-set depth.** The Bucs DL manual has the end measure the tackle
+against a "tackle set line" at about 70° from the line back to 7–10 yd deep
+(p. 36). The Ravens OL manual uses vertical or 70° angle sets for dropback
+protection and the flat (22°) set only for quick three-step protection
+(p. 46).
