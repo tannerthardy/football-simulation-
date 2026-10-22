@@ -155,15 +155,15 @@ const PULL_CUE = process.env.PULL_CUE === '1';
 /** How far ahead a puller's seen path is carried (about one decision beat), the
  * leverage kept on his arrival, and how far a fit will flow to it. */
 const PULL_LOOK = .4, PULL_SHOULDER = .6, PULL_REACH = 6;
-/** Experimental (PULL_EARLY=1, off): a backer keys the pull step itself. A
+/** Default on (PULL_EARLY=0 turns it off): a backer keys the pull step itself. A
  * lineman seen moving across at more than 1.5 yd/s while stepping back from
  * his stance (not climbing) is pulling, before he has cleared a yard of
  * ground. Coaching keys the guard's hips and first step; tracked gap-run
  * backers are 0.6 yd toward the play at 1.0 s, while the displacement read
  * fired near 1.35 s (scripts/diag/runblock/lbfill.py, lbtrace.ts). Same
  * delayed picture; a kick-slide on play-action can fool him. */
-const PULL_EARLY = process.env.PULL_EARLY === '1';
-/** Experimental (FORCE_BOUNCE=1, off): the force keeps the ball on his inside
+const PULL_EARLY = process.env.PULL_EARLY !== '0';
+/** Default on (FORCE_BOUNCE=0 turns it off): the force keeps the ball on his inside
  * shoulder until it declares. While the runner he sees is still behind the
  * line, his boundary stays outside the outermost body at the point of attack
  * (the line and inline ends as seen, plus blockers and engaged defenders
@@ -171,22 +171,22 @@ const PULL_EARLY = process.env.PULL_EARLY === '1';
  * at full speed in this defender's reaction time; a force half a yard outside
  * the surface has already given up the bounce. Once the runner is at the
  * line the installed track applies. */
-const FORCE_BOUNCE = process.env.FORCE_BOUNCE === '1';
-/** Experimental (LB_LANDMARK=1, off): where a stack backer fits before the
+const FORCE_BOUNCE = process.env.FORCE_BOUNCE !== '0';
+/** Default on (LB_LANDMARK=0 turns it off): where a stack backer fits before the
  * runner declares. The installed 1.5 yd past the line is an unfitted
  * constant; tracked backers meet the climbing lineman at a median 2.01 yd
  * and settle about 2.3 yd off the ball at 2.0 s (climbphase.py, lbfit.py on
  * the run-offense branch). On: 2.25 yd. On the run-offense profile his
  * depth at the meeting goes 1.57 -> 2.08 and at 2.0 s 1.82 -> 2.21 (NFL
  * 2.35), and he has moved further sideways by then (1.92 -> 2.29; NFL 4.10). */
-const LB_LANDMARK = process.env.LB_LANDMARK === '1';
+const LB_LANDMARK = process.env.LB_LANDMARK !== '0';
 /** SAFETY_TEMPO (off): an alley safety eases down from his alignment depth
  * (about a yard) until the back declares, instead of coming to 5-8 yd. Tracked
  * deep support is 12.9 yd deep at the handoff and comes forward +0.5 / +1.75
  * yd/s at 0.5 / 1.0 s after it; ours +1.75 / +2.5, and on runs reaching 20
  * it is 5.3 yd behind the back at 10 yd where the NFL's is 3.1 ahead
  * (scripts/diag/long-run.py). Off: the installed 65% of alignment depth. */
-const SAFETY_TEMPO = process.env.SAFETY_TEMPO === '1';
+const SAFETY_TEMPO = process.env.SAFETY_TEMPO !== '0';
 /** DEEP_NO_FORCE (off): a deep-zone defender is never the side's force
  * player. Without a flat seat (man and quarters calls) the fallback could
  * pick the post or half safety at 10-12 yd, who then sprints to the line

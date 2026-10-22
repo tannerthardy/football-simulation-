@@ -50,8 +50,8 @@ There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`
 | `TACKLE_ROLL` | off | experimental | defense | `src/sim/tackle.ts:60` | set at first review |
 | `TACKLE_TOUCH` | off | experimental | defense | `src/sim/tackle.ts:69` | set at first review |
 | `WRAP_BIND` | off | experimental | defense | `src/sim/tackle.ts:63` | set at first review |
-| `BLOCKED_REACH` | off | experimental | defense | `src/sim/tackle.ts:80` | expires: review 2 |
-| `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:195` | expires: review 2 |
+| `BLOCKED_REACH` | on | default (promoted 2026-10-22) | defense | `src/sim/tackle.ts:80` | review 2: drop the off path |
+| `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:195` | expires: review 2. Open: who supplies force in Cover 2 Man and which inside jobs trade; Defense, Run Game and Coverage to agree (#193, #190 comments) |
 | `DEF_ALIGN` | on | default (promoted 2026-10-22) | coverage | `src/playbook/alignment.ts:71` | review 2: drop the off path |
 | `DEF_GETOFF` | 1 (identity scale) | diagnostic | trenches | `src/sim/agent.ts:25` | expires: review 2 |
 | `DL_ANCHOR` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:80` | review 2: drop the off path |
@@ -59,18 +59,18 @@ There are 68 flags: 22 are on by default, 1 is a diagnostic scale at identity (`
 | `DL_FLATTEN` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:90` | review 2: drop the off path |
 | `DL_FLATTEN_WON` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:106` | review 2: drop the off path |
 | `DL_SQUEEZE` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:100` | review 2: drop the off path |
-| `FORCE_BOUNCE` | off | experimental | defense | `src/sim/run-fits.ts:174` | expires: review 2 |
+| `FORCE_BOUNCE` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:174` | review 2: drop the off path |
 | `FRONT_ALIGN` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:33`, `src/playbook/alignment.ts:104` | review 2: drop the off path |
-| `LB_LANDMARK` | off | experimental | defense | `src/sim/run-fits.ts:182` | expires: review 2 |
+| `LB_LANDMARK` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:182` | review 2: drop the off path |
 | `OL_SPLITS` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:24` | review 2: drop the off path |
 | `OL_STAGGER` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:32` | review 2: drop the off path |
 | `PAD_LEVERAGE` | on | default (promoted 2026-10-22) | physics | `src/physics/world.ts:313` | review 2: drop the off path |
 | `PASS_FEEL` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:713` | review 2: drop the off path |
-| `PULL_EARLY` | off | experimental | defense | `src/sim/run-fits.ts:165` | expires: review 2 |
-| `SAFETY_TEMPO` | off | experimental | defense | `src/sim/run-fits.ts:189` | expires: review 2 |
+| `PULL_EARLY` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:165` | review 2: drop the off path |
+| `SAFETY_TEMPO` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:189` | review 2: drop the off path |
 | `SHORT_PACKAGE` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:47`, `src/playbook/alignment.ts:106` | review 2: drop the off path |
 | `SNAP_REACT` | on | default (promoted 2026-10-22) | rules | `src/sim/snap-count.ts:30` | review 2: drop the off path |
-| `TIP_AWAY` | off | experimental | coverage | `src/sim/catching.ts:23` | expires: review 2 |
+| `TIP_AWAY` | on | default (promoted 2026-10-22) | coverage | `src/sim/catching.ts:23` | review 2: drop the off path |
 | `WR_ALIGN` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:80` | review 2: drop the off path |
 | `MOTION` | off | experimental | coverage | `src/sim/motion.ts:33` | review 2 |
 | `DEUCE` | off | experimental | coverage | `src/playbook/call-integrity.ts:67` | review 2 |
