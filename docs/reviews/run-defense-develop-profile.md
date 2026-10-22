@@ -4,8 +4,10 @@ One page for integration. Branch `claude/run-defense-develop`
 ([#190](https://github.com/tannerthardy/football-simulation-/pull/190)) on
 accepted develop `d91c9014`, written at `cd4a602` (2026-10-22). Every flag
 this branch adds is **off** in `config/baseline.json`. A shared build opts
-in. Evidence is in [the review](run-defense-develop.md) and
-[the alignment review](pre-snap-alignment.md).
+in. Evidence is in [the alignment review](pre-snap-alignment.md) and the
+full working review, kept out of Git at
+[`03c64339`](https://github.com/tannerthardy/football-simulation-/blob/03c64339/docs/reviews/run-defense-develop.md)
+(1,458 lines; its arms reproduce from the scripts below).
 
 Reproduce: `node scripts/baseline.mjs --candidate --flag X=1 ... -- <command>`.
 - **Games:** `scripts/mechanics/sim-export.ts --games 8`, then `measure.py` and
@@ -62,16 +64,21 @@ median run 3.95 → 3.46 yd, p90 17.9 → 11.7 (NFL 3.0).
 | Flag | What it does | Partner |
 | --- | --- | --- |
 | `SAFETY_TEMPO` | Alley safeties ease down from alignment until the back declares (tempo matches tracking). | The open-field meeting (below); alone, more runs reach 10 |
-| `LB_TEMPO`, `LB_LANDMARK` | Stack backers fit at the back's tempo, at the tracked 2.25 yd landmark. | Second-level start |
+| `LB_LANDMARK` | Stack backers fit at the tracked 2.25 yd landmark. | Second-level start |
 
 **Pre-snap alignment (user-requested).** `DEF_ALIGN`, `WR_ALIGN`, `OL_SPLITS`
 and `OL_STAGGER` (`playbook/alignment.ts`). `FRONT_ALIGN` and
 `SHORT_PACKAGE` cover the front and short-yardage calls; their claim moved to
 the def-alignment session (#194).
+`OL_SPLITS` and `OL_STAGGER` are develop's line-alignment source; the
+run-offense session's `OL_ALIGN` is archived with `claude/run-game-v3`.
 
 **Not proposed (for the run-offense session's arms).** `BLOCKED_REACH`
 (`tackle.ts`), `FORCE_BOUNCE` (`run-fits.ts`), `DL_CHASE`,
-`DL_FLATTEN_WON` (`engagement.ts`) and `DL_KEY` (`defense.ts`).
+`DL_FLATTEN_WON` (`engagement.ts`). `DL_KEY` (a lineman mirroring the
+first step in front) and `LB_TEMPO` (backers fitting at the back's tempo)
+were removed at integration review: each missed tracking in two attempts and
+goes back to diagnosis.
 
 **Existing defaults, unchanged.** `ZONE_FLOW=1` is an A/B switch for the
 installed zone track. `DEF_GETOFF=1` is a diagnostic latency scale.
@@ -90,7 +97,7 @@ installed zone track. `DEF_GETOFF=1` is a diagnostic latency scale.
 
 | Problem | Diagnosis | Owner |
 | --- | --- | --- |
-| Pursuit arrival: fewer defenders reach the runner (2.10 vs 2.69 per run reaching 5 yd; DL 0.02 vs 0.30) | The meeting itself matches tracking (met 49 / 48%, broke 9 / 9%; run-game `open-field/meet.py`); DL stay latched after the back passes and never flowed with the play | DL re-latch and OZ pair flow: run-game (`SHED_PURSUE`, `BLOCK_FRONT`, W1); front-seven feet before the read: run-defense (`DL_KEY` exists, see below) |
+| Pursuit arrival: fewer defenders reach the runner (2.10 vs 2.69 per run reaching 5 yd; DL 0.02 vs 0.30) | The meeting itself matches tracking (met 49 / 48%, broke 9 / 9%; run-game `open-field/meet.py`); DL stay latched after the back passes and never flowed with the play | DL re-latch and OZ pair flow: run-game (`SHED_PURSUE`, `BLOCK_FRONT`, W1); front-seven feet before the read: run-defense (re-diagnose; `DL_KEY` removed) |
 | Edge rusher's path: deeper and wider than tracked (1.26 vs 0.69 yd at 1.0 s; edge:inside about 50% of pressures vs 23%) | The engaged `corner` aim follows the kicking tackle; the free rusher's ask is already right (cos 0.93–0.95). The user's rule: the tackle first (done: `PASS_KICK`, `PASS_RIDE`), then the rusher's decision, not a capped path | Def-alignment session (`claude/pass-pro`), default-off |
 | Interior rush: pairs move as one body (engaged at the throw 97% vs 71%, with or without `GAIT_STEP`) | `GAIT_STEP=0.3` lifts interior pressure 5.9 → 7.5 per 100 (NFL 8.7) by push, not release; a pair comes apart only when a rule ends the rep (likely the same fact as run re-latch) | Physics (`GAIT_STEP` promotion); release mechanism shared with the run-offense re-latch work; the power rush (bull / long-arm as a push contest, no roll) claimed by the def-alignment session on `claude/pass-pro`; `HAND_CLEAR` (finesse clears) on hold |
 | Engaged linemen cannot escape to pursue | Hand steer up to 0.7 arm force; the work-off presses into the blocker | contact/hands owner (handoff on the workboard) |

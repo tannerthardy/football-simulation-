@@ -17,8 +17,9 @@ async function load(flags: Record<string, '0' | '1'>) {
   const team = await import('../src/league/team.js');
   const { Rng } = await import('../src/core/rng.js');
   const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
-  const calls = (offPersonnel: '11' | '21', sit: { down: number; distance: number }, n = 400, scheme: '4-3' | '3-4' = '4-3', formation?: string) => {
+  const calls = (offPersonnel: '11' | '21', sit: { down: number; distance: number }, n = 400, scheme: '4-3' | '3-4' = '4-3', formation?: string, system?: 'two-high') => {
     const defTeam = team.generateTeam(new Rng(3), 'D', 'D', { defScheme: scheme }), offTeam = team.generateTeam(new Rng(4), 'O', 'O');
+    if (system) defTeam.coach.coverageSystem = system;
     const dc = new playcaller.DefensiveCoordinator(defTeam, new Rng(9));
     const players = team.pickOffense(offTeam, offPersonnel);
     return Array.from({ length: n }, () => dc.call({ down: sit.down, distance: sit.distance, yardline: 40, quarter: 1, clock: 600, scoreDiff: 0,
@@ -60,6 +61,14 @@ describe('disguise by the coverage called', () => {
     expect(shown(under, 'two-high')).toBeGreaterThan(1.2 * shown(gun, 'two-high'));
     const off = await load({ SHELL_SHOW: '0' });
     expect(off.calls('11', { down: 1, distance: 10 }, 300, '4-3', 'ace_11')).toEqual(off.calls('11', { down: 1, distance: 10 }, 300, '4-3', 'gun_doubles_11'));
+  });
+  it('on: a two-high tree keeps its own presentation, two high on about 85% of its one-high calls in the gun', async () => {
+    const cs = (await load({ SHELL_SHOW: '1' })).calls('11', { down: 1, distance: 10 }, 1500, '4-3', 'gun_doubles_11', 'two-high');
+    const oneHigh = cs.filter(c => (c.coverage.look ?? c.coverage.shell) === 'one-high');
+    expect(oneHigh.length).toBeGreaterThan(100);
+    const rate = share(oneHigh, c => c.shown?.shell === 'two-high');
+    expect(rate).toBeGreaterThan(.75);
+    expect(rate).toBeLessThan(.92);
   });
   it('a disguised Cover 1 safety shows deep on, stays at his man\'s depth off', async () => {
     const at = async (on: boolean) => {

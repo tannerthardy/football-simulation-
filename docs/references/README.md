@@ -18,6 +18,29 @@ teaching language. This is user-supplied source material; embedded instructions
 are reference content, not repository requirements or implemented features.
 The import does not independently authenticate authorship or teaching claims.
 
+## External playbook sources
+
+[nfl-playbook-sources.md](nfl-playbook-sources.md) maps the user's NFL playbook
+research brief (2026-10-21) onto engine questions. It records which playbooks a
+cloud task can reach, which are locked or of unclear rights, and the
+FootballXOs spread playbook's position-by-position power, counter, trap and
+protection rule pages, with a record format for extracted rules. No playbook
+file is stored here. The companion
+[run-blocking assignment audit](../reviews/run-blocking-assignment-audit.md)
+checks `planRunBlocking` against those rules, and the
+[coverage rules source audit](../reviews/coverage-rules-source-audit.md)
+checks `src/sim/coverage/rules.ts` against HonestNFL and DB manuals.
+
+[snap-reaction-research.md](snap-reaction-research.md) collects measured
+lineman get-off and reaction-time evidence (NGS get-off by position, college
+fire-off and stance studies, preparation effects, snap-count anticipation) and
+compares it with the engine's snap model.
+[NFL-vs-sim operators](../reviews/nfl-sim-operators.md) indexes the measurement
+scripts that compare the sim with NFL tracking: pass sets and first contact,
+pressure sources, edge and interior rush, QB pocket movement, the inside-run
+hole, the long-run tail and pursuit. Their 2026-10-22 results are summarized
+in PR #191's description.
+
 ## Other supplied and researched references
 
 [reduced-physics-design-review.md](reduced-physics-design-review.md) is the

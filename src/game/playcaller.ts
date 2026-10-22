@@ -615,8 +615,12 @@ export class DefensiveCoordinator {
     const habit = coach.disguise * (0.6 + 0.8 * dbIQ);
     const seen = formation?.tags.includes('empty') ? SHOW_CHECK.empty : formation?.qb === 'under' ? SHOW_CHECK.under : undefined;
     const check = seen ? (look === 'two-high' ? seen.twoHigh : seen.oneHigh) : 1;
-    const disguiseRate = SHELL_SHOW ? Math.min(.9, (SHOW[family] ?? .2) * habit / .275 * (system === 'two-high' && look !== 'two-high' ? 1.5 : 1) * check)
-      : system === 'two-high' && look !== 'two-high' ? 0.85 : habit;
+    // SHELL_SHOW: a two-high tree keeps its own presentation (tracked Fangio
+    // trees show two high on 85-87% of snaps: HNFL-186 scouting, 2025 Eagles
+    // 87%), checked to the formation; other systems disguise by family.
+    const tree = system === 'two-high' && look !== 'two-high';
+    const disguiseRate = SHELL_SHOW ? Math.min(.9, (tree ? 0.85 : (SHOW[family] ?? .2) * habit / .275) * check)
+      : tree ? 0.85 : habit;
     if (rng.chance(disguiseRate)) {
       // A two-high tree shows one home shell, quarters, on everything it
       // rotates out of (Fangio: "don't let them know"); others vary the look.

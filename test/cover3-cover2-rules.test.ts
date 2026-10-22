@@ -63,6 +63,9 @@ describe('Cover 2 match', () => {
   it('the vertical curl matches #2 up and in, and walls a seam', () => {
     const dig = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'lab_in9' }, weak: { 1: 'go', 2: 'seam' }, until: 3.4 });
     const curl = seat(dig, 'hook_s');
+    // The dig breaks late: the rep must reach 3.4 s with the ball held (a
+    // sack before the break is a staging failure, not a coverage one).
+    expect(dig.sim.phase === 'live' && dig.sim.ball.kind === 'held' && dig.sim.t >= 3.35).toBe(true);
     expect(modeOf(dig, curl)).toBe('in');
     expect(jobsOf(dig, curl).at(-1)).toBe(`man:${dig.numbering.S2}`);
     const seam = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'seam' }, until: 3.0 });
