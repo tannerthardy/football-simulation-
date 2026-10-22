@@ -51,9 +51,15 @@ attaches its scorecard and explains each stat that moved.
 - Keep one open PR per agent. At most three agents are active at once.
 - Add physics detail only when a gap's diagnosis traces the failure to physics,
   and check it against what tracking data can measure.
-- Register every new flag in [FLAGS.md](FLAGS.md) with an expiry two reviews
-  out. Keep at most 10 experimental flags. At expiry, a flag becomes the
-  default and its old path is removed, or the flag is deleted.
+- Commit to mechanisms that make clear football sense. A change that is
+  plainly more realistic lands on by default, with its moved stats explained
+  in the PR. A flag that stays off and changes nothing anyone tests is not
+  progress.
+- Use a flag only for a real open question: two credible ways to do it, or a
+  mechanism that needs another gap fixed first. Register it in
+  [FLAGS.md](FLAGS.md) with an expiry two reviews out, and say what evidence
+  decides it. Keep at most 10 experimental flags. At expiry, a flag becomes
+  the default and its old path is removed, or the flag is deleted.
 - No receipts, ledgers or evidence files in Git. Put output in `out/`, and the
   summary in the PR.
 - Anything that changes this plan, a gap's target or the trunk is labeled
