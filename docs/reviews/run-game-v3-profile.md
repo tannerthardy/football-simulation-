@@ -197,6 +197,28 @@ losses 11 -> 19, TVD 10.6 -> 7.1. Games (8, seed 301): meetings per run 2.28
 under center the 4-9 yd band grows where tracked runs have more 0-3 and
 10-19 yd runs, so the distribution's shape there is unchanged.
 
+## Outside-zone flow: the interior (diagnosis)
+
+Per lineman, outside zone (`scripts/diag/stretch/ozpath.py`, same code both
+sides; NFL vs the shared build, 8 games): the tackles match tracking
+(playside tackle 1.6 vs 1.7 yd toward the play at 1.0 s). The interior does
+not: center 0.5 yd (NFL 2.0), playside guard 1.1 (1.7), backside guard 1.0
+(2.0). The center is within 0.76 yd of a defender at 1.0 s and stays there.
+
+Lab (90 OZ cases, `out/ozint.ts`): free interior linemen request 2.3-3.1 yd/s
+toward the play and reach 1.5 by 0.5 s; once engaged (32% at 0.5 s, 64% at
+0.75 s) they request 0.45 and their defenders about 0, so the pair stands.
+The reach rep's lateral work is "match his flow, reach the seal offset":
+against a man who does not flow, nothing moves. `RUN_CONTACT_TRACK DL_FEEL`
+(existing, off) raise the engaged pair to 0.87 yd/s at 0.75 s and the OL at
+1.0 s from 1.47 to 1.67 yd/s (NFL 2.81); the center 0.5 -> 0.7 yd. The
+contact track covers only solo reaches at 45% of top speed; about a quarter
+of interior blocks are doubles, which it skips. Earlier attempts on this row
+(Parts 9-13: `RUN_LATERAL`, `DL_FEEL`, `LB_GLIDE`, `COMBO_LEAVE`) also left
+the first second short. Next: what an NFL center and his double do in the
+first second of outside zone (the double moving as one toward the play), on
+tracking, before any rule.
+
 ## Flags on
 
 | Flag | Value | Where | What it does (from its doc comment) |
