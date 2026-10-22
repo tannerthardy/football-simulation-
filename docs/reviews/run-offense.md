@@ -738,6 +738,31 @@ Same operator, current profile (`oz-flow-profile.py`, `oz-front.py`,
 - `LIVE_AIM=0` globally: same stretch gains as `STRETCH_AIM`, but shotgun
   inside-zone losses 3.5 → 5.0%; scoped to stretch instead.
 - `RUN_WALL` (above).
+- `CARRIER_GATHER` (profile with `SNAP_REACT` and `DL_FLATTEN`, arms
+  `b11`/`cg1`): the open-field back gathers to keep a cut available,
+  v <= d·sqrt(a/2w), against contact his lane forecasts.
+  - Speed at first contact barely moved: 0-2 yd past the ball 6.33 -> 6.20
+    yd/s (NFL 4.38); 2-5 yd 7.09 -> 6.42 (NFL 5.24).
+  - Every family got worse: TVD zone 7.5 -> 10.3, gap 8.9 -> 10.0, shotgun
+    9.7 -> 14.4.
+  - The lane forecast rarely predicts the contact that happens, so it
+    slowed backs on lanes that looked clean.
+
+  The back's speed after the handoff (`meshwidth.py`, under center) shows
+  why pacing is not the lever. Tracked backs take the ball faster and slow
+  from about 0.6 s as defenders fill. Ours keep accelerating through space:
+
+  | yd/s | +0 s | +0.6 s | +1.0 s | +1.5 s |
+  |---|---|---|---|---|
+  | NFL outside zone | 5.49 | 5.89 | 5.49 | 4.56 |
+  | sim outside zone | 4.72 | 5.50 | 6.17 | 4.96 |
+  | NFL power | 4.37 | 5.17 | 4.96 | 3.73 |
+  | sim power | 4.65 | 4.93 | 5.39 | 5.40 |
+
+  High contact speed follows from the second level arriving late, which
+  matches the run-defense session's box-backer start measurement (late at
+  0.2-0.4 s). It is not the back's choice. `backpace.py` now reports speed
+  at contact by location and time.
 
 ## Reproduce
 
