@@ -835,10 +835,32 @@ need personnel the sim doesn't have.
 
 - **Measure:** 6.8 penalties per team-game (`dev-24`), 7.5 (`dev-12`); NFL 2.5–4.
   Defensive offside is about three times the NFL rate (#190).
-- **Cause:** *hypothesis* (#190): hard counts draw defenders too easily.
-  `SNAP_REACT` models the snap as perception and timing, which makes this
-  explicit.
-- **Open:** which fouls are in excess, by type, before tuning.
+- **By type** (develop `fdd767ab`, scorecard pr-tier games: 12 games, seed 7;
+  NFL: nflverse 2023 regular season, accepted, 544 team-games). Accepted per
+  team-game, sim vs NFL:
+  - all: 9.17 vs 5.71. The band above (2.5–4) is below the NFL's own total;
+    needs-tanner.
+  - offensive holding 5.29 vs 0.89;
+  - intentional grounding 1.46 vs 0.10;
+  - false start 0.67 vs 1.14;
+  - defensive offside 0.62 vs 0.27; neutral zone and encroachment 0.25 vs 0.24;
+  - illegal contact 0.46 vs 0.16;
+  - none in the sim: DPI (NFL 0.50), defensive holding (0.32), delay of game
+    (0.29), unnecessary roughness (0.30), face mask (0.16).
+- **Cause, grounding:** *confirmed* (G6). All 37 grounding calls were aimed
+  passes, not throwaways: 25 thrown from inside a defender's grasp, the rest
+  pressured misses landing 2.4–5.8 yd from any eligible receiver. 8-2-1's
+  contact exception was never fed (`contactAlteredPass` always false) and
+  "vicinity" meant within arm's reach of the ball's path. `GROUNDING_FACTS`
+  adds both facts: 1.46 → 0.46 on identical games.
+- **Cause, holding:** *confirmed* (G6). None of the 167 called holds followed a
+  deliberate grab (`tryHold`): all came from the ordinary controlling grip
+  (`hold = 0.25 × control × arm force`) on a defender moving off the block,
+  called on a single interval of 0.15 yd/s opposing Δv. Open: what makes a
+  grip prohibited grabbing.
+- **Cause, offside:** *hypothesis* (#190): hard counts draw defenders too
+  easily. `SNAP_REACT` models the snap as perception and timing.
+- **Open:** holding (above), then the missing defensive fouls.
 
 <a id="rule-2"></a>
 ### RULE-2: Rule coverage incomplete
