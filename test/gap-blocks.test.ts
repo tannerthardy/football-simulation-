@@ -15,6 +15,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 // line (1.3 yd splits, 0.55 yd depth). The tracked line (OL_ALIGN) changes
 // the plays themselves; it is judged by lab arms (docs/reviews/presnap.md).
 vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
+// CUTOFF_SEAL's outcome (in front of his man a second after contact) was measured under the legacy push; PAD_LEVERAGE and DL_ANCHOR change the contact forces.
+vi.hoisted(() => { process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; });
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 

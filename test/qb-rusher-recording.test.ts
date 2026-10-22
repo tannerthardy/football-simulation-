@@ -6,6 +6,8 @@ vi.hoisted(() => { process.env.OL_ALIGN = '0'; });
 // Recorded before SNAP_REACT (on in the pinned profile) changed every
 // player's start; the trace stays on the fixed get-off.
 vi.hoisted(() => { process.env.SNAP_REACT = '0'; });
+// PAD_LEVERAGE and DL_ANCHOR change the contact forces this recorded scene is staged on.
+vi.hoisted(() => { process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; });
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import type { MoveCommand } from '../src/physics/kinematics.js';
