@@ -420,7 +420,7 @@ Carried over from the issue register; each was measured on an older develop.
   - The aim point is the catch point already. The motor's acceleration
     matches tracking peaks.
 - **Fixed in part:** zone defenders facing the QB break on his throwing
-  motion (spot and match alike; #G3 PR). Zone-deep closing +0.17 → +0.41 yd
+  motion (spot and match alike; #207). Zone-deep closing +0.17 → +0.41 yd
   (NFL +0.56).
 - **Open:** the QB gives defenders little to read. His eyes settle on the
   target a median 0.10 s before the release, and his throwing motion lasts
