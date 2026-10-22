@@ -18,6 +18,21 @@ Reproduce: `node scripts/baseline.mjs --candidate --flag X=1 ... -- <command>`.
   affects. Use paired lab cases for play-level mechanisms and games for
   interactions.
 
+## First shared build
+
+`claude/run-game-v3@83b2fe2e` (the run-offense profile) turns on `DL_SQUEEZE`
+(with the held-decision fix `5dab06be`) and `DEEP_NO_FORCE`. `PULL_EARLY` is
+in but off, pending a games read of backer flow on `pullers.py`.
+- Run-offense paired lab: 40+ runs zone 54 → 29, gap 145 → 109, shotgun
+  36 → 22.
+- Two 8-game exports on that build at seed 301, defense flags off → on:
+  - Zone runs reaching 10 / 20 / 40: 22.1 / 7.5 / 3.8% → 13.3 / 3.2 / 1.4%.
+  - Crease gap / duo: 4.5 / 4.4 → 3.5 / 3.6 yd.
+  - Deep support over the back on 20+ runs at 5 yd: −0.4 → +1.2 yd (NFL
+    6.1).
+- Run contacts broken stay 18–19% on that profile (develop + line set 13.2,
+  NFL 12.6). That predates the build.
+
 ## Flags this branch adds
 
 **Proposed: the line set.** The arms below were all measured with it on.
