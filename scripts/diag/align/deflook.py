@@ -166,6 +166,22 @@ def classify(rows):
         near = [r for r in D if r['_x'] < 8 and abs(lat(r) - y2) < 1.5]
         between = [r for r in D if 1 < r['_x'] < 8 and surf[side] + .5 < lat(r) * side < abs(y2) - 1.5]
         answer = 'over' if near else 'apex' if between else 'box'
+    # Every detached inside receiver (#2 and #3 on each side, strong = the
+    # receivers' side): who answers him, a defender within 1.5 yd laterally
+    # under 8 deep ('over'), one between him and the next receiver inside or
+    # the surface ('apex'), or nobody; and whether that defender is a back.
+    inside = {}
+    for k, name in ((side, 'S'), (-side, 'W')):
+        for i, r2 in enumerate(recv[k][1:3], start=2):
+            if r2 in te[k]:
+                continue
+            y2 = abs(lat(r2))
+            nxt = abs(lat(recv[k][i])) if i < len(recv[k]) and recv[k][i] not in te[k] else surf[k]
+            near = [d for d in D if d['_x'] < 8 and abs(lat(d) - lat(r2)) < 1.5]
+            between = [d for d in D if 1 < d['_x'] < 8 and lat(d) * k > nxt + .5 and lat(d) * k < y2 - 1.5]
+            who = near or between
+            kind = ('over' if near else 'apex' if between else 'none') + ('' if not who else '-DB' if who[0]['position'] in DB else '-LB')
+            inside[f'{name}#{i}'] = kind
     try:
         togo = int(rows[0]['yardsToGo'])
     except ValueError:
@@ -179,6 +195,7 @@ def classify(rows):
         't3_te': rel(t3, ts), 't3_recv': rel(t3, rs), 't3_back': rel(t3, back), 't3_field': rel(t3, field),
         'box': box, 'nback': len(backers), 'bdepth': [r['_x'] for r in backers],
         'bwidth': [abs(lat(r)) for r in backers], 'two': answer, 'deep': deep,
+        'inside': inside,
         'shape': ' '.join(sorted(techs[-1])) + ' | ' + ' '.join(techs[0]) + ' | ' + ' '.join(sorted(techs[1])),
     }
 
@@ -222,3 +239,7 @@ for path in FILES:
         print(f"   backer depth p25/50/75 {q([d for r in g for d in r['bdepth']])}  width {q([d for r in g for d in r['bwidth']])}"
               f" | #2: {pct(Counter(r['two'] for r in g), m, 4)}")
         print(f"   family: {pct(Counter(r['fam'] for r in g), m, 7)}")
+        for ref in ('S#2', 'S#3', 'W#2'):
+            got = [r['inside'][ref] for r in g if ref in r['inside']]
+            if len(got) >= MIN // 2:
+                print(f"   {ref} answered: {pct(Counter(got), len(got), 6)} (n {len(got)})")

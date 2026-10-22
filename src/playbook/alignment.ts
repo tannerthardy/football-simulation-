@@ -127,6 +127,17 @@ const FRONT_STRENGTH = process.env.FRONT_STRENGTH === '1';
  * three in a base Over put the Mike in the strong A gap at +0.5 between a
  * weak Will at -1.9 and a Sam at +2.7. Off: the front's installed techniques. */
 const FRONT_MENU = process.env.FRONT_MENU === '1';
+/** Experimental (BOX_ALIGN=1, off): in a zone call every detached inside
+ * receiver (#2, #3) is answered before the snap. When no defender stands over
+ * him (within 1.5 yd laterally, under 8 deep) or at his apex (between him
+ * and the next receiver inside, or the end of the line), the nearest off-ball
+ * backer not mugged or blitzing walks out to the apex, halfway between them,
+ * 4.6 deep. 2022 tracking (scripts/diag/align/deflook.py): a weak #2 against
+ * 2x2 or empty is unanswered on 6% of snaps (the sim's zone calls 26-48%);
+ * the answering backer stands 1.8-1.9 yd inside a #2 4-5 yd outside the
+ * surface, 2.6 inside a #3, 4.5-4.8 deep. Against empty, nickel backers stay
+ * in the box about half the time. Man defenders align on their men already. */
+const BOX_ALIGN = process.env.BOX_ALIGN === '1';
 type BackerSpot = [units: number, depth: number];
 const BACKERS: Record<string, Partial<Record<1 | 2 | 3, BackerSpot[]>>> = {
   over: { 1: [[.35, 4.7]], 2: [[-1.4, 4.6], [1.7, 4.6]], 3: [[-1.9, 4.5], [.5, 4.8], [2.7, 4.5]] },
@@ -855,6 +866,32 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const wing = wingOn('S'), sam = spots.LB_S;
     if (wing) sam.pos = { x: los + (frontSlots.DE_S?.depth ?? .9), y: wing.pos.y };
     else if (!apex) sam.pos = { x: los + frontSlots.LB_S!.depth, y: off.ballY + fs * (inlineOf(off.line) + SHOULDER) };
+  }
+
+  // BOX_ALIGN: answer every detached inside receiver in a zone call.
+  if (BOX_ALIGN && !cov.man) {
+    const blitzing = new Set(Object.keys(call.pressure?.blitzers ?? {}));
+    for (const side of ['W', 'S'] as const) {
+      const sign = side === 'S' ? s : -s;
+      for (const i of [2, 3]) {
+        const slot = off.numbering[`${side}${i}` as ReceiverRef];
+        if (!slot || off.spots[slot].inline || off.spots[slot].backfield) continue;
+        const y2 = (off.spots[slot].pos.y - off.ballY) * sign;
+        const inner = off.numbering[`${side}${i + 1}` as ReceiverRef];
+        const next = inner && !off.spots[inner].inline && !off.spots[inner].backfield
+          ? (off.spots[inner].pos.y - off.ballY) * sign : (off.coreEdge[side] - off.ballY) * sign;
+        const answered = Object.values(spots).some(sp => {
+          const depth = sp!.pos.x - los, y = (sp!.pos.y - off.ballY) * sign;
+          return depth < 8 && (Math.abs(y - y2) < 1.5 || (depth > 1 && y > next + .5 && y < y2 - 1.5));
+        });
+        if (answered) continue;
+        const apexY = off.ballY + sign * (y2 + next) / 2;
+        const backer = (['LB_W', 'LB_M', 'LB_S'] as DefSlot[]).filter(lb => spots[lb] && frontSlots[lb] && frontSlots[lb]!.depth > 2
+          && spots[lb]!.pos.x - los > 2 && !blitzing.has(lb))
+          .sort((a, b) => Math.abs(spots[a]!.pos.y - apexY) - Math.abs(spots[b]!.pos.y - apexY))[0];
+        if (backer) spots[backer]!.pos = { x: los + 4.6, y: apexY };
+      }
+    }
   }
 
   // --- roles ---
