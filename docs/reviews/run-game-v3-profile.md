@@ -290,7 +290,14 @@ blocker, not his stance, and with the flag the nose fits the same surface,
 is squeezed as often and ends at the same place; power yards unchanged. So
 the games' power crease change (one 8-game arm) is divergence or another
 defender, and the open cost is shotgun inside zone in the lab (4-9 yd 39 ->
-25%), not yet diagnosed.
+25%), not yet diagnosed. Def-alignment's tracked A-gap read
+(`scripts/diag/align/agapstep.py` on claude/pass-pro): tracked A-gap men in
+every alignment read and drift with the play (+0.3-0.6 yd playside at 1.0 s)
+and are doubled 24% (shade), 48% (gap), 35% (2i) of runs. On this profile:
+doubled 38% (shade), 63% (gap); with `AGAP_ALIGN` 17 / 61 / 63% (2i), and
+playside drift +0.1 throughout. The 2i excess is the offense's double
+rule (`COMBO_GAP`: an uncovered blocker doubles the man in the gap beside
+him), a candidate for the shotgun inside-zone cost.
 
 ## Flags on
 
