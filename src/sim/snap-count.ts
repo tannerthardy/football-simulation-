@@ -1,5 +1,5 @@
 /**
- * SNAP_REACT (experimental, off): the start of a scrimmage down as
+ * SNAP_REACT (on; =0 turns it off): the start of a scrimmage down as
  * perception and timing rather than one fixed defensive latency.
  *
  * The offense knows its count; each man goes on it after his readiness lag
@@ -27,7 +27,7 @@ import { clamp } from '../core/vec.js';
 import type { Rng } from '../core/rng.js';
 import type { Agent } from './agent.js';
 
-export const SNAP_REACT = process.env.SNAP_REACT === '1';
+export const SNAP_REACT = process.env.SNAP_REACT !== '0';
 
 /** Spacing of the QB's cadence sounds (s). */
 export const BEAT = 0.55;

@@ -33,7 +33,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mechanics'))
-from metrics import ENGAGED_YD, PRESSURE_YD, Play  # noqa: E402
+from metrics import ENGAGED_YD, PRESSURE_OPERATOR, Play  # noqa: E402
 
 FILES = [a for a in sys.argv[1:] if a.endswith('.gz')]
 LIMIT = int(sys.argv[sys.argv.index('--limit') + 1]) if '--limit' in sys.argv else None
@@ -59,18 +59,21 @@ def measure(p, acc):
     slot, ol = s
     by = p.raw['ball_y']
     throw = p.events.get('pass_forward')
-    end = throw if throw is not None else min(p.end, 4.0)
+    end = min(p.end, throw if throw is not None else 4.0)
     if end < 0.6:
         return
     acc['plays'] += 1
     D = p.who('D')
     prot = [i for i in p.who('O') if p.players[i]['group'] in PROTECT]
-    k0, k1 = p.k(0.5), p.k(end)
-    pk = next((k for k in range(k0, k1 + 1) if min(p.dist(d, qb, k) for d in D) <= PRESSURE_YD), None)
+    k1 = p.k(end)
+    pressure = p.pressure(qb)
+    pk = pressure.first
+    acc['pressureObserved'] += pressure.value is not None
+    acc['pressureUnknown'] += pressure.value is None
     # Hazard: at risk while clean, unthrown and live.
     for b in range(1, 8):
         lo, hi = b * .5, b * .5 + .5
-        if end <= lo or (pk is not None and pk * p.dt < lo):
+        if not pressure.complete or end <= lo or (pk is not None and pk * p.dt < lo):
             continue
         acc['risk'][lo] += 1
         if pk is not None and lo <= pk * p.dt < hi:
@@ -160,7 +163,7 @@ def pct(c, n, k=8):
 
 for path in FILES:
     acc = defaultdict(list)
-    for key in ('plays', 'pressured'):
+    for key in ('plays', 'pressured', 'pressureObserved', 'pressureUnknown'):
         acc[key] = 0
     acc['beat_t'] = defaultdict(list)
     acc['edge_deep'], acc['edge_beat'] = [], []
@@ -173,9 +176,11 @@ for path in FILES:
             measure(Play(json.loads(line)), acc)
     N, P = acc['plays'], acc['pressured']
     R = sum(acc['rusher_kind'].values())
-    print(f"== {Path(path).name}: {N} dropbacks, pressured {100 * P / N:.1f}%, time to pressure p25/50/75 "
+    observed = acc['pressureObserved']
+    rate = f"{100 * P / observed:.1f}%" if observed else 'unknown'
+    print(f"== {Path(path).name}: {N} dropbacks, pressured {rate} (known {observed}, unknown {acc['pressureUnknown']}; {PRESSURE_OPERATOR}), time to pressure p25/50/75 "
           f"{q(acc['ttp'], .25):.2f}/{q(acc['ttp'], .5):.2f}/{q(acc['ttp'], .75):.2f}")
-    print('   hazard per 0.5 s (pressures / clean, unthrown, live): ' + '  '.join(
+    print('   hazard per 0.5 s (complete windows only; pressures / clean, unthrown, live): ' + '  '.join(
         f"{lo:.1f}-{lo + .5:.1f} {100 * acc['hit'][lo] / acc['risk'][lo]:.1f}% (n {acc['risk'][lo]})" for lo in sorted(acc['risk']) if acc['risk'][lo]))
     print('   pocket: OL depth p50 at 1/2/3 s ' + ' / '.join(f"{q(acc[f'pocket{t}'], .5):.2f}" for t in (1, 2, 3)))
     print(f"   rushers per dropback: {pct(Counter(acc['rushers']), N, 5)}")

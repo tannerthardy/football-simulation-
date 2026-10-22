@@ -30,8 +30,8 @@ import type { Body } from '../physics/kinematics.js';
 import type { Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 
-/** Motion is experimental: played only with MOTION=1 (read at each snap, so a test can scope it). */
-export const motionEnabled = (): boolean => process.env.MOTION === '1';
+/** Motion is on by default; MOTION=0 turns it off (read at each snap, so a test can scope it). */
+export const motionEnabled = (): boolean => process.env.MOTION !== '0';
 
 export type { MotionCall, MotionKind };
 
@@ -58,15 +58,23 @@ const JET_RUNUP = 7;
 const MAX_SET_SPEED = 0.9;
 /** A motion man must be off the line of scrimmage. */
 const OFF_LINE = 1.0;
+/** How far a motion man's path stays from a lineman's or inline end's body
+ * centre (yd). With the line set flat at 0.55 yd an across motion at 1.2 yd
+ * passed clear; with the tracked stagger (OL_STAGGER: tackles 0.98, inline end
+ * 1.19) the same path ran into the tackle and stopped there. At the deepest
+ * tracked lineman this puts the path at about the tracked jet depth (1.8). */
+const LINE_CLEAR = 0.65;
 /** A set motion man arrives this long before the snap. */
 const SET_MARGIN = 1.0;
 /** Longest motion an offense runs before the snap (s). */
 const MAX_SECONDS = 5.5;
 
+const LINE_SLOTS: readonly string[] = ['LT', 'LG', 'C', 'RG', 'RT'];
+
 /** Receivers to one side (detached and attached), outside-in, with lateral distance from the ball. */
 function sideReceivers(off: OffenseAlignment, sign: number): Array<{ slot: string; lateral: number; inline: boolean }> {
   return Object.values(off.spots)
-    .filter(p => p.slot !== 'QB' && !p.backfield && !['LT', 'LG', 'C', 'RG', 'RT'].includes(p.slot) && (p.pos.y - off.ballY) * sign > 0)
+    .filter(p => p.slot !== 'QB' && !p.backfield && !LINE_SLOTS.includes(p.slot) && (p.pos.y - off.ballY) * sign > 0)
     .map(p => ({ slot: p.slot, lateral: Math.abs(p.pos.y - off.ballY), inline: p.inline }))
     .sort((a, b) => b.lateral - a.lateral);
 }
@@ -93,10 +101,18 @@ export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<B
       // Set as the far side's new slot: tight inside a lone #1 (tracked across
       // motion sets a median 5.4 yd from the ball), or inside an existing slot.
       const detached = sideReceivers(off, far).filter(r => !r.inline);
-      const lateral = detached.length === 0 ? 9
+      // He crosses behind the line and its inline ends and sets outside the
+      // far one, wherever the line stands (split and staggered or not).
+      const front = Object.values(off.spots).filter(p => !p.backfield && (LINE_SLOTS.includes(p.slot) || p.inline));
+      const farFront = Math.max(0, ...front.filter(p => (p.pos.y - off.ballY) * far > 0).map(p => Math.abs(p.pos.y - off.ballY)));
+      const lateral = Math.max(farFront + LINE_CLEAR, detached.length === 0 ? 9
         : detached.length === 1 ? Math.max(4.5, detached[0].lateral * 0.3)
-        : Math.max(4.6, detached[detached.length - 1].lateral * 0.62);
-      legs.push({ to: { x: p0.x, y: off.ballY + far * lateral }, speed: 0.7 });
+        : Math.max(4.6, detached[detached.length - 1].lateral * 0.62));
+      // He runs and sets at his own depth when that clears the line, else
+      // first steps back to the depth that does.
+      const depth = Math.min(p0.x, Math.min(...front.map(p => p.pos.x)) - LINE_CLEAR);
+      if (depth < p0.x) legs.push({ to: { x: depth, y: p0.y }, speed: 0.7 });
+      legs.push({ to: { x: depth, y: off.ballY + far * lateral }, speed: 0.7 });
       break;
     }
     case 'jet': {
@@ -274,7 +290,7 @@ export interface MotionHost {
  *   reaction time ago (tracked man coverage puts a defender with the jet on
  *   47% of jets).
  * Off: the provisional bump below. */
-export const motionCheckEnabled = (): boolean => process.env.MOTION_CHECK === '1';
+export const motionCheckEnabled = (): boolean => process.env.MOTION_CHECK !== '0';
 const LOCK: Record<MotionKind, number> = { across: .51, jet: .66, empty: .69, return: .58 };
 /** Defenders who exchange coverage jobs on a bump: the corners between themselves, the rest among themselves. */
 const KINDS: DefSlot[][] = [['CB_S', 'CB_W'], ['NB', 'DB', 'FS', 'SS', 'LB_S', 'LB_M', 'LB_W']];

@@ -44,7 +44,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "mechanics"))
-from metrics import Play  # noqa: E402
+from metrics import PRESSURE_OPERATOR, Play  # noqa: E402
 
 CONTACT, FREE = 1.0, 1.5
 STEPS = (0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2)
@@ -94,7 +94,7 @@ def escape(p, d, b, k, qb):
 
 
 def measure(path):
-    A = {"reps": 0}
+    A = {"reps": 0, "pressureUnknown": 0}
     L = lambda k: A.setdefault(k, [])
     for line in gzip.open(path, "rt"):
         raw = json.loads(line)
@@ -119,7 +119,9 @@ def measure(path):
         ylo, yhi = p.pos(ol[0], 0)[1], p.pos(ol[-1], 0)[1]
         by0 = raw["ball_y"]
         dfn = p.who("D")
-        pk = next((k for k in range(p.k(0.5), last + 1) if min(p.dist(d, qb, k) for d in dfn) <= 2.0), None)
+        pressure = p.pressure(qb)
+        A["pressureUnknown"] += pressure.value is None
+        pk = pressure.first
         end = pk if pk is not None else last
         presser = min(dfn, key=lambda d: p.dist(d, qb, pk)) if pk is not None else None
 
@@ -224,6 +226,7 @@ def counts(v):
 for path in [a for a in sys.argv[1:] if a.endswith(".gz")]:
     A = measure(path)
     n = A["reps"]
+    print(f"  pressure: {PRESSURE_OPERATOR}; unknown windows {A['pressureUnknown']}")
     print(f"== {os.path.basename(path)}: edge reps engaged first by an OL {n}: " + ", ".join(
         f"{oc} {100 * len(A.get(f'outcome:{oc}', [])) / max(1, n):.0f}%" for oc in ("engaged", "free", "other")))
     for oc in ("engaged", "free"):

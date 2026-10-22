@@ -6,7 +6,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // These are FRONT_ALIGN's own install weights; FRONT_MENU (PR #194) overrides them.
-vi.hoisted(() => { process.env.FRONT_MENU = '0'; });
+// The expected spots are staged on the installed 1.3 yd line splits.
+vi.hoisted(() => { process.env.FRONT_MENU = '0'; process.env.OL_SPLITS = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
