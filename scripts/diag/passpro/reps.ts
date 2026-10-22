@@ -36,6 +36,8 @@ interface Rep {
   play: number; blocker: string; rusher: string; spot: 'edge' | 'inside'; start: number;
   moves: Array<[string, boolean, number]>; end?: number; why?: string; phiEnd?: number; past?: number;
   helpers: number;
+  /** Hand control and the hand joint's extension and push, sampled each tick (blocker +). */
+  control: number[]; apart: number[]; push: number[]; actorB: number;
 }
 const reps: Rep[] = [];
 let plays = 0;
@@ -73,12 +75,15 @@ for (let k = 0; plays < N && k < N * 6; k++) {
       let r = open.get(e);
       if (!r) {
         const y0 = snapY.get(e.defender) ?? e.defender.pos.y;
-        r = { play: plays, blocker: e.blocker.slot, rusher: e.defender.slot, start: sim.t, moves: [], helpers: 0,
+        r = { play: plays, blocker: e.blocker.slot, rusher: e.defender.slot, start: sim.t, moves: [], helpers: 0, control: [], apart: [], push: [], actorB: 0,
           spot: Math.abs(y0 - sim.ballY) > tackleY(y0) + .5 ? 'edge' : 'inside' };
         open.set(e, r);
         reps.push(r);
       }
       r.helpers = Math.max(r.helpers, e.helpers.length);
+      r.control.push(+e.control.toFixed(2));
+      r.apart.push(+Math.hypot(e.blocker.pos.x - e.defender.pos.x, e.blocker.pos.y - e.defender.pos.y).toFixed(2));
+      if (e.hands) { r.push.push(Math.round(e.hands.push)); if (e.hands.actor === e.blocker.body) r.actorB++; }
       if (lastMove.get(e) !== e.nextMoveAt && sim.t - e.start >= 0.1) {
         lastMove.set(e, e.nextMoveAt);
         r.moves.push([e.move, e.moveOk, +sim.t.toFixed(2)]);

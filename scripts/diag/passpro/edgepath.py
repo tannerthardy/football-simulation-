@@ -88,6 +88,11 @@ for path in FILES:
                         acc[f'kk{dtc}'].append(-vk[0])
                         acc[f'ri{dtc}'].append(-side * vr[1])
                         acc[f'gap{dtc}'].append(p.dist(ru, tk, k))
+                        (rx, ry), (qx, qy) = p.pos(ru, k), p.pos(qb, k)
+                        if rx is not None and qx is not None and math.hypot(*vr) > 1:
+                            acc[f'rq{dtc}'].append(ang(vr, (qx - rx, qy - ry)))
+                            acc[f'rs{dtc}'].append(math.hypot(*vr))
+                            acc[f'qd{dtc}'].append(rx - qx)
                 for t in TIMES:
                     if t > end or (kc is not None and kc * p.dt < t):
                         continue   # until contact: the path he chose
@@ -116,4 +121,5 @@ for path in FILES:
         if len(acc[f'rr{dtc}']) < 20:
             continue
         print(f"   contact +{dtc:.1f}s (n {len(acc[f'rr{dtc}']):5d}) upfield speed: rusher {q(acc[f'rr{dtc}'], .5):+.2f}, tackle {q(acc[f'kk{dtc}'], .5):+.2f}"
-              f" | rusher inward {q(acc[f'ri{dtc}'], .5):+.2f} | apart {q(acc[f'gap{dtc}'], .5):.2f} yd")
+              f" | rusher inward {q(acc[f'ri{dtc}'], .5):+.2f}, speed {q(acc[f'rs{dtc}'], .5):.2f}, off the line to the QB {q(acc[f'rq{dtc}'], .25):.0f}/{q(acc[f'rq{dtc}'], .5):.0f}/{q(acc[f'rq{dtc}'], .75):.0f} deg,"
+              f" short of the QB's depth {q(acc[f'qd{dtc}'], .5):.2f} yd | apart {q(acc[f'gap{dtc}'], .5):.2f} yd")
