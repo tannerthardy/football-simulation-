@@ -708,6 +708,29 @@ tracked 2.35). DBs come up too fast (0.98 / 1.66 / 2.70 yd/s at 0.4 / 0.6 /
 Seven staged witnesses pin `SNAP_REACT` off. Core suite 2,858 / 2,858 with
 the four on and off.
 
+**`LB_LANDMARK` (`run-fits.ts`, off, not in the set).** The stack backer's
+pre-declaration landmark, an installed 1.5 yd, moved to 2.25 yd, where
+tracked backers meet the climbing lineman (2.01 yd median, `climbphase.py`).
+On the run-offense profile with the line set it moves every backer measure
+toward tracking: depth at the meeting 1.57 → 2.08, at 2.0 s 1.82 → 2.21
+(NFL 2.35); zone 20+ 4.0 → 2.9% (2.5), 40+ 3.5 → 2.2% (0.9); short zone
+runs rise (0–3 yd 55.7 → 58.8%, NFL 45.4). On develop's own games its
+backers already settle at the tracked depth without it (2.35 yd at 2.0 s,
+meeting 1.92), and with it they overshoot (2.74, 2.42): run mean 6.76 →
+8.05, 20+ 7.3 → 9.1%, flags 28 → 29. The shallow backer belongs to that
+profile's faster offense, not to a wrong landmark, so it stays off.
+Develop's own backer gap is the scrape: 0.25 yd/s toward the play at 1.0 s
+against 1.85 tracked (all runs under centre). `test/lb-landmark.test.ts`.
+
+**`DL_FLATTEN_WON` (with `DL_FLATTEN`, off, not in the set).** A lineman
+already beside or past the man on him keeps attacking instead of
+flattening ("beat the reach, penetrate"). On the run-offense profile:
+single-blocked outside-zone linemen −0.51 → −0.63 yd at 2.5 s (NFL −0.62);
+zone losses 4.1 → 4.8% and 1.8 → 3.3% on two seed sets (NFL 9.9%). On
+develop's games, where linemen beat the reach far more often, losses go
+17.5 → 23.3% and report flags 28 → 44. Profile-dependent; left off.
+`test/dl-flatten.test.ts`.
+
 Zone and gap arms against tracking (run-offense profile, under centre):
 zone 10+ is 6.4% ours against 10.2% tracked and 40+ 1.8% against 0.9%;
 the deep-cap arms put zone 10+ at 14–17% and 40+ at 2.5–2.8%. On this

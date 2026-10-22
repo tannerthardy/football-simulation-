@@ -88,6 +88,10 @@ const DL_ANCHOR = process.env.DL_ANCHOR === '1';
  * him: ours finish 1.61 yd upfield on single-blocked outside zone at 2.5 s,
  * tracked linemen 0.62. A vertical drive block keeps the attack. */
 const DL_FLATTEN = process.env.DL_FLATTEN === '1';
+/** DL_FLATTEN_WON (with DL_FLATTEN, off): the flatten applies only while he is
+ * being reached; one already beside or past the man on him keeps attacking
+ * ("if you beat the reach, penetrate and make the play"). */
+const DL_FLATTEN_WON = process.env.DL_FLATTEN_WON === '1';
 function drivenBack(d: Agent): boolean {
   const felt = d.body.support?.felt; if (!felt) return false;
   const load = Math.hypot(felt.x, felt.y);
@@ -1263,7 +1267,10 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // his face) an attacking lineman flattens on the line instead of driving on.
   // He sees the man on him step across rather than come at him.
   const blockerSeen = DL_FLATTEN && d.runFit?.technique === 'attack' ? sim.see(d, b) : null;
-  const zoneStep = !!blockerSeen && Math.abs(blockerSeen.vel.y) > 1
+  // A lineman who has already beaten the reach (beside or past the man on
+  // him toward the backfield) keeps attacking: penetrate and make the play.
+  const beaten = !!blockerSeen && (d.pos.x - blockerSeen.pos.x) * sim.attackDir(b.team) < d.profile.radius;
+  const zoneStep = !!blockerSeen && !(DL_FLATTEN_WON && beaten) && Math.abs(blockerSeen.vel.y) > 1
     && Math.abs(blockerSeen.vel.y) > Math.abs(blockerSeen.vel.x);
   const recover = d.runFit?.technique !== 'attack' || zoneStep;
   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
