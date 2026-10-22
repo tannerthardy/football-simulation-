@@ -873,6 +873,20 @@ the center leading too (run-offense `stretch/ozcenter.py`: 0.6 / 1.9 vs
 0.4 / 1.4 yd at 0.5 / 1.0 s). So the first mover is the reach, not the
 lineman, and nothing is added on the defense.
 
+**The A-gap nose with `AGAP_ALIGN`** (the def-alignment session's team
+1-technique spot, on `claude/run-game-v3@3763dd7e`, off). The engaged
+interior fit's shoulder is the live gap's position relative to the blocker
+(`liveGapY(job.gap) − blocker`), not his stance, and `AGAP_ALIGN` keeps the
+gap. So a nose standing in the A gap fits the same surface. `depth/agapnose.ts`
+(lab power, 120 plays, `AGAP_ALIGN` 0 / 1):
+- He stands 0.59 / 0.99 yd off the centre at the snap.
+- The first blocker is the centre 50%, a guard 50%, in both.
+- He squeezes on 99 / 100% of plays.
+- At the crossing he is 6.7 yd backside of the back in both, and yards
+  are unchanged (p50 3.4).
+
+The game-level power crease change (3.3 → 3.8 yd) is not this fit.
+
 ## Rally to the runner: linemen stay on blocks (diagnosis; `DL_ESCAPE` dropped)
 
 **Question.** With the line set on, the run break rate matches tracking (13.2%
@@ -1426,7 +1440,7 @@ telemetry), `holdtrace.ts` (one 1v1 panel rep every 0.1 s), `aftercatch.ts`,
 and one-operator NFL/sim scripts `yacsplit`, `longpass`, `infront`,
 `frontman`, `rally`, `zonebreak`, `catchbreak`, `sidepass`, `airclose`, `breakcurve`, `firstgroup`, `runbreak`,
 `runrally`, `crease`, `breakpoint`, `afterrelease`, `alleypath`, `interiorrush`, and lab probes
-`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `lbpull.ts` (backers against a pull), `nosereach.ts` (the covered center's nose), `secondtackler.py` (help at run contact), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
+`squeezeprobe.ts` (carrier vs a squeezing lineman), `dlstart.ts` (linemen's first 0.8 s on outside zone), `lbpull.ts` (backers against a pull), `nosereach.ts` (the covered center's nose), `secondtackler.py` (help at run contact), `agapnose.ts` (the A-gap nose on power), `rushmoves.ts` (interior move windows), `passlab.ts` (paired dropback lab),
 `alleyprobe.ts`, `alleytrace.ts` (the nearest deep supporter on long runs), `forcelab.ts` (paired run lab, the same seeds per arm),
 `dlpursuit.ts` (linemen at a run's first contact), `dropprobe.ts` (the
 nearest zone defender when the ball comes near him), `catchact.ts`, `sideprobe.ts` (the side window from inside the
