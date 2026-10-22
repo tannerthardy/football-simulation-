@@ -195,7 +195,7 @@ def classify(rows):
         't3_te': rel(t3, ts), 't3_recv': rel(t3, rs), 't3_back': rel(t3, back), 't3_field': rel(t3, field),
         'box': box, 'nback': len(backers), 'bdepth': [r['_x'] for r in backers],
         'bwidth': [abs(lat(r)) for r in backers], 'two': answer, 'deep': deep,
-        'inside': inside,
+        'inside': inside, 'edge': [e[-1] for e in edges.values() if e],
         'shape': ' '.join(sorted(techs[-1])) + ' | ' + ' '.join(techs[0]) + ' | ' + ' '.join(sorted(techs[1])),
     }
 
@@ -239,6 +239,7 @@ for path in FILES:
         print(f"   backer depth p25/50/75 {q([d for r in g for d in r['bdepth']])}  width {q([d for r in g for d in r['bwidth']])}"
               f" | #2: {pct(Counter(r['two'] for r in g), m, 4)}")
         print(f"   family: {pct(Counter(r['fam'] for r in g), m, 7)}")
+        print(f"   edge outside the surface p25/50/75 {q([e for r in g for e in r['edge']])}")
         for ref in ('S#2', 'S#3', 'W#2'):
             got = [r['inside'][ref] for r in g if ref in r['inside']]
             if len(got) >= MIN // 2:
