@@ -21,6 +21,7 @@ every known problem, its evidence, what was tried and what's still open.
 | G5 | Edge protection gives way | trenches | Contact time before an edge rusher releases | 0.4 s | about 1.1 s | Open | Interior pressure already matches the NFL, PR #191 |
 | G6 | Too many penalties | rules | Penalties per team-game | 6.8 | 2.5–4 | Open | Defensive offside about 3x the NFL, PR #190 |
 | G7 | Play-calling unlike the NFL | coaching | Pass rate and concept mix by situation | Pass rate 57%; mix untested | Within NFL bands by down and distance | Open | Archived evaluation plan, E3 |
+| G9 | No pass protection calls | trenches, coaching | Edge pressures where the same-side tackle blocked nobody | 86% of unblocked edges (#191, `rg3`) | Near the NFL's 39%, with the protection called from what the line can see | Open, after G5's physics | One generic matcher, no slide/BOB/Mike/back scan, rushers read from assignments; KNOWN_PROBLEMS PRO-5 |
 | G8 | No league or season | league | A multi-season league runs | One 238-line file | 10 seasons unattended; rating changes have the expected effect | Later | Roadmap phase 7 |
 
 G1 to G3 overlap: a defender who closes late on a run or a catch also misses
