@@ -22,7 +22,7 @@ from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mechanics'))
-from metrics import PRESSURE_YD, Play  # noqa: E402
+from metrics import PRESSURE_OPERATOR, Play  # noqa: E402
 
 FILES = [a for a in sys.argv[1:] if a.endswith('.gz')]
 TIMES = (0.5, 1.0, 1.5, 2.0, 2.5, 3.0)
@@ -73,10 +73,11 @@ for path in FILES:
                     tx = [p.pos(o, k)[0] for o in (ol[0], ol[4])]
                     if None not in tx and p.pos(qb, k)[0] is not None:
                         a[f'gap{t}'].append(-p.pos(qb, k)[0] - max(-x for x in tx))
-            D = p.who('D')
-            pk = next((k for k in range(p.k(.5), p.k(end) + 1) if min(p.dist(d, qb, k) for d in D) <= PRESSURE_YD), None)
-            if ks is not None:
-                a['press_by_set'].append((-p.pos(qb, ks)[0], pk is not None))
+            pressure = p.pressure(qb)
+            if pressure.value is None:
+                a['pressure_unknown'].append(1)
+            if ks is not None and pressure.value is not None:
+                a['press_by_set'].append((-p.pos(qb, ks)[0], pressure.value == 1.0))
             if throw is not None:
                 a['throw'].append(throw)
                 a['at_throw'].append(-p.pos(qb, p.k(throw))[0])
@@ -86,6 +87,7 @@ for path in FILES:
         n = len(a['n'])
         if not n:
             continue
+        print(f"  pressure: {PRESSURE_OPERATOR}; {look} unknown windows {len(a['pressure_unknown'])}")
         m = lambda k: f"{q(a[k], .5):.2f}"
         iq = lambda k: f"{q(a[k], .25):.2f}/{q(a[k], .5):.2f}/{q(a[k], .75):.2f}"
         print(f"  {look:5s} n {n:5d} | snap {m('snap')} | depth at " + ' '.join(f"{t:.1f}s {m(f'd{t}')}" for t in TIMES)
