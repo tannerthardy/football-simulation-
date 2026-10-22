@@ -242,9 +242,14 @@ export function specialist(team: Team, pos: 'K' | 'P'): Player {
  * each, from 2022 team medians after removing the scheme (route, assignment,
  * call): receivers' room to the sideline 0.8 yd, line width 4.9%, zone
  * corners' depth 0.85 yd, deep safeties' depth 0.95 yd. Seeded by the team's
- * id, so it costs roster generation no draws. */
+ * id, so it costs roster generation no draws. The front's lean to the
+ * passing strength without a single attached end (FRONT_STRENGTH): 2022 team
+ * shares of a 4-down front's 3 technique set toward the receivers run 0.34
+ * (TEN) to 0.84 (NE), league about 0.6 (scripts/diag/align/deflook.py). Drawn
+ * last, so the earlier habits keep their values. */
 export function alignStyle(team: Pick<Team, 'id'>): AlignStyle {
   const rng = new Rng(`align:${team.id}`);
   return { wrRoom: rng.normalClamped(0, .8, -1.6, 1.6), olWidth: rng.normalClamped(0, .049, -.1, .1),
-    cbDepth: rng.normalClamped(0, .85, -1.7, 1.7), safetyDepth: rng.normalClamped(0, .95, -1.9, 1.9) };
+    cbDepth: rng.normalClamped(0, .85, -1.7, 1.7), safetyDepth: rng.normalClamped(0, .95, -1.9, 1.9),
+    passingStrength: rng.normalClamped(.6, .12, .3, .9) };
 }

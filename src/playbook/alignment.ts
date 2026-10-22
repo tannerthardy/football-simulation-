@@ -104,6 +104,30 @@ const WR_ALIGN = process.env.WR_ALIGN === '1';
 const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
 /** SHORT_PACKAGE (experimental, off): see game/playcaller.ts. */
 const SHORT_PACKAGE = process.env.SHORT_PACKAGE === '1';
+/** Experimental (FRONT_STRENGTH=1, off): the front sets its own strength,
+ * apart from the coverage's receiver strength. With one attached end it sets
+ * to him, whatever the receivers do: in 2022 tracking a 4-down front's 3
+ * technique is on the end's side 82-86% of over/under snaps, 86% against
+ * trips away from him (scripts/diag/align/deflook.py); the remainder are
+ * Under calls, which put it away by design. Without a single attached end
+ * (none, or one each side) the league has no one rule (3 technique toward
+ * the back, the field or the receivers each about half), so the call carries
+ * the team's pick: toward the receivers' strength or the other way. Front
+ * players' called sides (blitz gaps, a dropping lineman's zone, a backer's man
+ * preferences) follow the front; defensive backs keep the coverage's. Off: the
+ * front sets to the coverage strength (more receivers, then the end, then the
+ * field). */
+const FRONT_STRENGTH = process.env.FRONT_STRENGTH === '1';
+const FRONT_PLAYERS = new Set<DefSlot>(['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT', 'LB_S', 'LB_M', 'LB_W']);
+/** The front's strong side (+1 = +y). */
+export function frontSign(call: DefensivePlayCall, off: OffenseAlignment): number {
+  if (!FRONT_STRENGTH) return off.strongSign;
+  if (off.hasTE.S !== off.hasTE.W) return off.hasTE.S ? off.strongSign : -off.strongSign;
+  return call.strength === 'opposite' ? -off.strongSign : off.strongSign;
+}
+const otherSide = (side: 'S' | 'W'): 'S' | 'W' => side === 'S' ? 'W' : 'S';
+const flipZone = (z: ZoneId): ZoneId => z.replace(/_(s|w)(?=_|$)/, (_, c: string) => c === 's' ? '_w' : '_s') as ZoneId;
+const flipRef = (r: ReceiverRef): ReceiverRef => (r[0] === 'S' ? `W${r.slice(1)}` : r[0] === 'W' ? `S${r.slice(1)}` : r) as ReceiverRef;
 
 export interface OffSpot {
   slot: OffSlot;
@@ -140,7 +164,11 @@ export interface OffenseAlignment {
  * corners' and deep safeties' depth (yd). Each applies under its flag only. */
 export interface AlignStyle { olWidth?: number; wrRoom?: number; cbDepth?: number; safetyDepth?: number;
   /** FRONT_ALIGN: the body mass (kg) of the player in each defensive slot. */
-  mass?: Partial<Record<DefSlot, number>> }
+  mass?: Partial<Record<DefSlot, number>>;
+  /** FRONT_STRENGTH: how often the front sets to the passing strength when
+   * the look has no single attached end (the call carries each snap's pick). */
+  passingStrength?: number;
+}
 
 /** What an alignment may know of its own snap: the call, the situation and
  * the team's habits. */
@@ -633,6 +661,9 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   const cov = call.coverage;
   const spots: Partial<Record<DefSlot, DefSpot>> = {};
   const has = (slot: DefSlot) => present.includes(slot);
+  // FRONT_STRENGTH: the front's own strong side; `s` stays the coverage's.
+  const fs = frontSign(call, off), flipFront = fs !== s;
+  const teAt = (sign: number) => sign === s ? off.hasTE.S : off.hasTE.W;
 
   // --- front ---
   const frontSlots = call.front.slots;
@@ -641,7 +672,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   const edgeTech = new Map<DefSlot, Technique>(), edgeShift = new Map<DefSlot, number>();
   // Vs a pair the 9 is the end's outside shoulder, inside the wing.
   const pairShade = new Set<DefSlot>();
-  const sideSign = (side: 'S' | 'W') => side === 'S' ? s : -s;
+  const sideSign = (side: 'S' | 'W') => side === 'S' ? fs : -fs;
   // A wing: an attached receiver just outside the inline end, off the ball.
   const wingOn = (side: 'S' | 'W') => Object.values(off.spots).find(sp => !sp.inline && !sp.backfield
     && !OL_SLOTS.has(sp.slot) && (sp.pos.y - off.ballY) * sideSign(side) > inlineOf(off.line) + .3
@@ -652,7 +683,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   const nickel = !present.includes('LB_S');
   if (FRONT_ALIGN) for (const side of ['S', 'W'] as const) {
     const onLine = present.filter(slot => frontSlots[slot]?.side === side && frontSlots[slot]!.depth < 2);
-    const hasTE = side === 'S' ? off.hasTE.S : off.hasTE.W;
+    const hasTE = teAt(sideSign(side));
     const end = onLine.sort((a, b) => techniqueOffset(frontSlots[b]!.tech, hasTE, off.line) - techniqueOffset(frontSlots[a]!.tech, hasTE, off.line))[0];
     if (!end) continue;
     let tech = frontSlots[end]!.tech;
@@ -677,12 +708,12 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   for (const slot of present) {
     const fa = frontSlots[slot];
     if (!fa) continue;
-    const sign = fa.side === 'S' ? s : -s;
-    const hasTE = fa.side === 'S' ? off.hasTE.S : off.hasTE.W;
+    const sign = sideSign(fa.side);
+    const hasTE = teAt(sign);
     const y = off.ballY + sign * (techniqueOffset(edgeTech.get(slot) ?? fa.tech, hasTE, off.line) + (edgeShift.get(slot) ?? 0));
     const fit = call.front.fits?.[slot];
     spots[slot] = { slot, pos: { x: los + fa.depth, y }, role: { kind: 'rush' },
-      gap: fit?.gap ?? techniqueGap(fa.tech), gapSign: fit ? (fit.side === 'S' ? s : -s) : sign };
+      gap: fit?.gap ?? techniqueGap(fa.tech), gapSign: fit ? sideSign(fit.side) : sign };
   }
 
   // --- receivers by side for DB alignment ---
@@ -766,17 +797,20 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
 
   // Off-ball LBs walk out to apex vs. spread looks in two-high shells.
   let apex = false;
-  if (!has('NB') && off.counts.S >= 2 && has('LB_S') && frontSlots.LB_S && frontSlots.LB_S.depth > 2) {
+  // FRONT_STRENGTH: the backer on the receivers' side, the Will when the
+  // front sets the other way.
+  const apexLB: DefSlot = flipFront ? 'LB_W' : 'LB_S';
+  if (!has('NB') && off.counts.S >= 2 && has(apexLB) && frontSlots[apexLB] && frontSlots[apexLB]!.depth > 2) {
     const r2 = rec('S2');
-    if (r2 && !off.spots[off.numbering.S2!].inline) { spots.LB_S!.pos = { x: los + 4.5, y: (r2.y + off.coreEdge.S) / 2 }; apex = true; }
+    if (r2 && !off.spots[off.numbering.S2!].inline) { spots[apexLB]!.pos = { x: los + 4.5, y: (r2.y + off.coreEdge.S) / 2 }; apex = !flipFront; }
   }
   // FRONT_ALIGN: the Over Sam is a "90", the end's outside shade at
   // linebacker depth; a wing is attached, not spread, so vs one he tightens
   // to the line head-up on him (2017 Colts p. 77). A detached #2 keeps the apex.
-  if (FRONT_ALIGN && call.front.id === 'over' && spots.LB_S && off.hasTE.S) {
+  if (FRONT_ALIGN && call.front.id === 'over' && spots.LB_S && teAt(fs)) {
     const wing = wingOn('S'), sam = spots.LB_S;
     if (wing) sam.pos = { x: los + (frontSlots.DE_S?.depth ?? .9), y: wing.pos.y };
-    else if (!apex) sam.pos = { x: los + frontSlots.LB_S!.depth, y: off.ballY + s * (inlineOf(off.line) + SHOULDER) };
+    else if (!apex) sam.pos = { x: los + frontSlots.LB_S!.depth, y: off.ballY + fs * (inlineOf(off.line) + SHOULDER) };
   }
 
   // --- roles ---
@@ -784,13 +818,16 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   const pressure = call.pressure;
   const blitzers = new Set<DefSlot>();
   if (pressure) {
+    // Sides are the coverage's (consumers read them against its strength);
+    // a front player's follow the front.
+    const front = (slot: DefSlot) => flipFront && FRONT_PLAYERS.has(slot);
     for (const [slot, b] of Object.entries(pressure.blitzers) as Array<[DefSlot, { gap: Gap; side: 'S' | 'W' }]>) {
       if (!has(slot)) continue;
-      roles[slot] = { kind: 'blitz', gap: b.gap, side: b.side };
+      roles[slot] = { kind: 'blitz', gap: b.gap, side: front(slot) ? otherSide(b.side) : b.side };
       blitzers.add(slot);
     }
     for (const [slot, z] of Object.entries(pressure.droppers ?? {}) as Array<[DefSlot, ZoneId]>) {
-      if (has(slot)) roles[slot] = { kind: 'zone', zone: z };
+      if (has(slot)) roles[slot] = { kind: 'zone', zone: front(slot) ? flipZone(z) : z };
     }
   }
   const dlSlots: DefSlot[] = ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT'];
@@ -801,7 +838,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   for (const slot of present) {
     if (roles[slot]) continue;
     const r = cov.roles[slot];
-    if (r) roles[slot] = r;
+    // A backer's man preferences are by his side of the front.
+    if (r) roles[slot] = r.kind === 'man' && r.prefer && flipFront && FRONT_PLAYERS.has(slot) ? { ...r, prefer: r.prefer.map(flipRef) } : r;
   }
 
   // Remaining defenders fill underneath zones (zone) or play man (man).
@@ -961,8 +999,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
 
   // SHORT_PACKAGE: the Bear's Sam is on the line outside the attached end
   // ("Dubs" 9; HonestNFL HNFL-129), whatever he covers after the snap.
-  if (SHORT_PACKAGE && call.front.id === 'bear' && spots.LB_S && off.hasTE.S)
-    spots.LB_S.pos = { x: los + (frontSlots.DE_S?.depth ?? .9), y: off.ballY + s * techniqueOffset('9', true, off.line) };
+  if (SHORT_PACKAGE && call.front.id === 'bear' && spots.LB_S && teAt(fs))
+    spots.LB_S.pos = { x: los + (frontSlots.DE_S?.depth ?? .9), y: off.ballY + fs * techniqueOffset('9', true, off.line) };
   // Box count: defenders within the tackle box area at snap.
   let box = 0;
   for (const slot of present) {

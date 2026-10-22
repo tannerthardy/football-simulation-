@@ -321,6 +321,10 @@ export interface DefensivePlayCall {
    * a tackle's ghost, an outside shade, or wide); absent = the installs'
    * rules from the look. */
   edge?: 'tight' | 'base' | 'wide';
+  /** FRONT_STRENGTH: where the front sets when the look has no single attached
+   * end (none, or one each side): toward the receivers' strength (the field
+   * when they are balanced), or the opposite way. With one, it sets to him. */
+  strength?: 'passing' | 'opposite';
   /** Called end spike / linebacker scrape exchanges both responsibilities. */
   gapExchange?: { edge: 'DE_S' | 'DE_W'; backer: 'LB_S' | 'LB_M' | 'LB_W' };
   /** Show another compatible front, then move at a finite rate before snap. */

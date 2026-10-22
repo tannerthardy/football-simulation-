@@ -24,7 +24,7 @@ import { COVERAGE_BY_ID, FRONTS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
-import type { Team } from '../league/team.js';
+import { alignStyle, type Team } from '../league/team.js';
 
 /** FRONT_ALIGN (experimental, off): fronts are called as team installs use
  * them (2017 Colts, 2013 Seahawks, 2020 Ravens via the playbook session):
@@ -45,6 +45,10 @@ const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
  * single-high or zero coverage (the zero call by the ordinary situational
  * weights; tracked heavy fronts at 1-3 yd play no one deep 55% of snaps). */
 const SHORT_PACKAGE = process.env.SHORT_PACKAGE === '1';
+/** FRONT_STRENGTH (experimental, off): see playbook/alignment.ts. Each snap's
+ * call carries where the front sets without a single attached end, from the
+ * team's lean (league/team.ts alignStyle). */
+const FRONT_STRENGTH = process.env.FRONT_STRENGTH === '1';
 function shortPackage(offPersonnel: PersonnelId, distance: number): boolean {
   if (offPersonnel === '13' || offPersonnel === '21' || offPersonnel === '22') return distance <= 2;
   return offPersonnel === '12' && distance <= 1;
@@ -289,6 +293,9 @@ const avg = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.le
 
 export class DefensiveCoordinator {
   private readonly learn = new Map<string, Learn>();
+  /** Calls made: names each call's own stream for draws added later, so they
+   * leave every earlier draw unchanged. */
+  private calls = 0;
   constructor(
     readonly team: Team,
     private readonly rng: Rng,
@@ -452,8 +459,11 @@ export class DefensiveCoordinator {
     const creep=pressureSlots.length && motionRng.chance(coach.disguise*.5) ? {
       slot:motionRng.pick(pressureSlots),secondsBeforeSnap:motionRng.range(.3,1.2),
     } : undefined;
+    const own = rng.fork(`call:${this.calls++}`);
+    const strength: DefensivePlayCall['strength'] = !FRONT_STRENGTH ? undefined
+      : own.fork('strength').chance(alignStyle(this.team).passingStrength ?? .6) ? 'passing' : 'opposite';
     return {
-      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick, zeus,
+      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick, zeus, strength,
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
         label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
       prefs,
