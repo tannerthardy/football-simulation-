@@ -214,6 +214,23 @@ the attached end ("Dubs" 9, HNFL-129). `test/short-package.test.ts`; the
 Duo doubles witness pins it off (the Sam on the line changes the
 offense's count, a question for the run-offense session).
 
+| 8 games, snaps at 1–3 yd to go (`fronts.py --kind all`) | develop | `SHORT_PACKAGE` | NFL |
+| --- | --- | --- | --- |
+| Snaps | 108 | 116 | 2,179 |
+| Six or more on the line | 5% | 24% | 25% |
+| No deep safety | 22% | 50% | 25% |
+| Goal-line personnel called | 8 / 116 | 45 / 129 | |
+| Runs converted / passes converted | 77% / 46% (52, 56) | 67% / 58% (57, 59) | |
+
+The front now carries the tracked share of heavy looks. Zero-deep shells
+doubled: the package plays no safety deep, and the rest of the caller kept
+its own 22%, which already matched tracking without any heavy front. The
+next caller question is whether that 22% belongs to these situations at all,
+not a cap on the package. The conversion rows are about 55 plays each and
+show no settled change (the heavy box gives up more passes).
+Exports `sim-sy0`/`sim-sy1` at `e245812` with `--review-out` for the
+situations; `scripts/mechanics/sim-export.ts` carries no down or distance.
+
 `OL_SPLITS` and `OL_STAGGER` (above) are superseded by the run-offense
 session's `OL_ALIGN` as the one line source when the branches meet. It
 folds in `OL_STAGGER`'s pass-set depths.
