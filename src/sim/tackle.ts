@@ -78,6 +78,15 @@ const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
  * first contacts on gap runs and 55% on zone
  * (scripts/diag/runblock/blockedfirst.py); the gate left 32% and 41%. */
 const BLOCKED_REACH = process.env.BLOCKED_REACH !== '0';
+/** Default on (GRIP_HOLD=0 turns it off): a hold keeps the grip it has
+ * acquired when the arms extend. Closing still works a grip toward a wrap,
+ * but a hand closed on a jersey is not weaker because the elbow straightened;
+ * extension costs the reel its leverage, not the hold its tension. The hold
+ * still slides out while slipping and breaks past reach (World). Without it,
+ * any extension cut the grip at once, so a slip extended the arms, the
+ * weaker grip slipped more and the hold broke: crowd holds on break-through
+ * runs sat at grip 0.45, slipping 79% of the time (KNOWN_PROBLEMS TKL-1). */
+const GRIP_HOLD = process.env.GRIP_HOLD !== '0';
 
 export function gripForce(d: Agent, quality: number): number {
   const q = clamp(quality, 0, 1);
@@ -388,7 +397,8 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     const quality = clamp(1 - (distance - stretched - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
     const available = clamp(0.25 + 0.85 * quality, 0.1, 1) * (execution.get(d) ?? 1);
     const g = grip.get(d) ?? available;
-    const next = g < available ? g + (available - g) * Math.min(1, dt * (1 + 2.5 * d.r('tackling'))) : available;
+    const next = g < available ? g + (available - g) * Math.min(1, dt * (1 + 2.5 * d.r('tackling')))
+      : GRIP_HOLD ? g : available;
     grip.set(d, clamp(next, 0.05, 1));
     joint.capacity = gripForce(d, clamp(next, 0.05, 1));
     if (WRAP_BIND && joint.legs > 0) {
