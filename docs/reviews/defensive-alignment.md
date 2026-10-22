@@ -260,6 +260,51 @@ Deep defenders at the snap against PFF's post-snap coverage, on dropbacks:
   matches. Its gun gap is the Cover 1 overcall, so this belongs with that
   coverage-mix change.
 
+### 6. The coverage call (`COVER_CALL`)
+
+Taken on at the run-defense session's request: the man/zone mix the throw
+reaction sees.
+
+- **Tracking (PFF on 2022 dropbacks).** Early downs: Cover 1 18%, Cover 3
+  37%, quarters 15%, Cover 2 15%, Cover 6 11%, Cover 0 3%. By the
+  quarterback's alignment on early downs, Cover 3 is 34% from the gun, 47%
+  under center and 31% against empty; quarters is 23% against empty.
+- **Was.** The sim called Cover 1 on 34% of early downs, and its call did not
+  depend on formation. Three causes:
+  1. **The matchup read was offset.** The man weights multiply by
+     exp((corners' man − receivers' route) / 25). Generated corners' ratings
+     sit 7-10 points above receivers' (a selection effect, the best two man
+     corners against the average receiver on the field), so a league-average
+     matchup read as a 1.44× man edge (mean over 64 generated pairs).
+  2. **Early downs used the league-wide shares.** The base shares include
+     third downs, and the third-down factors are relative to them (Cover 1 ×2
+     on third and 3-6 gives 44%; tracked 45%). First and second down had no
+     factor of their own.
+  3. **No formation check.**
+- **Rule.**
+  - Each group is read against its league norm: the top two man corners 79.3;
+    the receivers on the field 69.6-76.6 by personnel. The generator's means
+    carry a guard test.
+  - Early downs get their tracked ratio to the whole (Cover 1 0.82, Cover 0
+    0.75, 2-man 0.5, Cover 3 1.12, quarters 1.07, Cover 6 1.1).
+  - The call is checked to the formation seen, as tracked early-down ratios to
+    the gun: under center Cover 3 ×1.38, quarters ×0.8, Cover 6 ×0.6, Cover 2
+    ×0.75, Cover 0 ×1.3; against empty quarters ×1.5, Cover 1 ×0.78, Cover 0
+    ×1.7.
+- **Result (snap frame, all flags).**
+
+  | Early downs | sim before | sim now | tracked |
+  |---|---|---|---|
+  | Cover 1 | 34% | 23% | 18% |
+  | Cover 3 | 29% | 39% | 37% |
+  | Cover 3, under center | 29% | 47% | 47% |
+  | Quarters | 11% | 13% | 15% |
+
+  Third-down mixes are about unchanged. Across 64 coordinators at first and
+  10, Cover 1 is 26% → 17%. Cover 2 and Cover 6 stay a few points under
+  tracking. They follow the coordinators' coverage systems, and I stopped
+  rather than fit them.
+
 ## Contracts with the flags on
 
 The core suite with all five flags and `FRONT_ALIGN` on: 3,106 of 3,110 pass.
@@ -366,10 +411,9 @@ toward tracking without changing broken contacts. Still open:
 - **Offensive motion and shifts.** The offense has none, so there is nothing
   to bump, travel or re-set the front against. The sources' rules are in
   the catalog (section 5) for when it does.
-- **Coverage mix.** Cover 1 is 35% of the sim's dropbacks against 21%
-  tracked. The caller multiplies PFF's league share (which already includes
-  situations) by situational factors. That is a coverage-calling question
-  with large pass-game consequences, left for its own change.
+- **Coverage mix.** Now `COVER_CALL` (section 6). Early-down Cover 1 is 23% in
+  the snap frame against 18% tracked. Cover 2 and Cover 6 are a few points
+  under tracking.
 - **Formation library.** It has no 3x1 with the end attached away from the
   trips (423 tracked snaps), so `FRONT_STRENGTH`'s main case appears in the
   sim only as I-twins.
