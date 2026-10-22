@@ -727,6 +727,33 @@ Off, measured:
   shotgun 10.7 -> 12.8 (inside-zone median 3.8 -> 3.1 yd). Outside-zone
   single-blocked DL 0.60 -> 0.80 yd upfield, overshooting the NFL's 0.63.
 
+The crease (`scripts/diag/gap/crease.py`). At the frame the back reaches the
+line: the DL nearest him on each side, the width between them, and each
+one's lateral move since the snap (+ = away from the back). Under center,
+medians:
+
+| Concept | NFL crease | Sim crease | NFL DL move | Sim DL move |
+|---|---|---|---|---|
+| Duo | 2.38 yd | 5.01 yd | -0.33 | +1.06 |
+| Inside zone | 2.16 | 4.15 | -0.64 | +0.36 |
+| Power | 1.94 | 4.80 | -0.58 | +0.98 |
+| Counter | 1.97 | 4.83 | -0.66 | +1.04 |
+| Trap | 2.74 | 6.09 | -0.95 | +1.09 |
+
+- Tracked DL squeeze toward the back; ours are washed a yard away. The
+  crossing point relative to the DL's snap spots is the same in both
+  (0.9-1.4 yd), so the difference comes after the snap.
+- `scripts/diag/gap/squeeze.ts`: the engaged DL's own lateral request goes
+  away from the ball (duo -0.7 to -1.0 yd/s, inside zone -1.0 to -1.4,
+  technique 'attack' 76-87%). He follows the block's held flow
+  (`stepRunRep`: `held = read.flow ?? read.stack?.flow`); the blocker's
+  push only adds to it. This is the defense controller (run-defense
+  session).
+- The existing `DL_FIGHT` (hold where a push away from the ball began)
+  narrows it only a little: duo crease 5.01 -> 4.22, power 4.80 -> 4.19,
+  DL move +0.6. It makes outcomes worse: gap TVD 8.2 -> 10.3, shotgun
+  10.7 -> 16.0 (shotgun inside-zone losses 6 -> 11%). Off.
+
 Still open:
 - Inside holes are 2.1-2.4 yd wide at the line vs NFL 1.6.
 - DBs make first contact on 38-53% of inside runs (NFL 19-28%).
