@@ -18,7 +18,10 @@ measured. This branch's `config/baseline.json` sets twelve flags to "1":
 plain `npm test` and env-less runs are unchanged. The profile drives baseline
 runs, verification and games. Acceptance into develop is still the
 integration owner's exact combined verification, and the line flags' physics
-promotion is still the primary's.
+promotion is still the primary's. `PAD_LEVERAGE` is a World law. The
+run-defense session asked that its four flags stay in this config rather
+than be flipped on #190, and noted that #190's `stepRunRep` line numbers
+will move with its next change.
 
 **Question.** Given the offense's look (personnel, attached ends, receiver
 distribution, backs) and the situation, does the defense line up the way NFL
