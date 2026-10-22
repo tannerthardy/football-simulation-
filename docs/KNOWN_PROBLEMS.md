@@ -473,7 +473,12 @@ From #193's open list:
   the doubles seam (5.7 yd away versus 4.8 yd for a spot dropper;
   `test/integration/coverage-panel.test.ts` is pinned);
 - with the line stagger on, jet motion numbering inside the tight end is
-  unsettled (`test/offensive-motion.test.ts` is pinned).
+  unsettled (`test/offensive-motion.test.ts` is pinned);
+- with `WR_ALIGN` on, the Cover 3 Match corner never zones off the short out
+  (`test/corner-one-release.test.ts` is pinned);
+- with `OL_STAGGER` on, the weak linebacker bumps 5.3 yd on across motion,
+  past the test's 5-yd limit, which may itself need a look
+  (`test/motion-check.test.ts` is pinned).
 
 <a id="cov-4"></a>
 ### COV-4: Defenders react late to jet motion
