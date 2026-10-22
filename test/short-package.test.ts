@@ -26,10 +26,11 @@ describe('the short-yardage package answers a heavy package', () => {
   it('off: at midfield a heavy package still meets base personnel', async () => {
     expect((await calls(false, '22', 1)).some(c => c.personnel === 'goalline')).toBe(false);
   });
-  it('on: 22 personnel at a yard to go at midfield meets heavy personnel, the Bear and a single-high shell', async () => {
+  it('on: 22 personnel at a yard to go at midfield meets heavy personnel, the Bear and a one-high or zero shell', async () => {
     const all = await calls(true, '22', 1);
     expect(all.every(c => c.personnel === 'heavy' && c.front.id === 'bear')).toBe(true);
-    expect(all.every(c => c.coverage.shell === 'one-high')).toBe(true);
+    expect(all.every(c => c.coverage.shell !== 'two-high')).toBe(true);
+    expect(all.some(c => c.coverage.shell === 'one-high')).toBe(true);
   });
   it('on: inside the 5 it meets goal-line personnel', async () => {
     expect((await calls(true, '22', 1, 96)).every(c => c.personnel === 'goalline' && c.front.id === 'bear')).toBe(true);

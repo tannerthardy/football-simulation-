@@ -42,7 +42,8 @@ const FRONT_ALIGN = process.env.FRONT_ALIGN === '1';
  * only at the goal line, where there is no deep field. Elsewhere their heavy
  * answers keep one safety deep (Colts "36 Heavy" Cover 1, "44" 6-2 front):
  * heavy personnel (five down, two backers, both safeties) in the Bear, a
- * single-high coverage. */
+ * single-high or zero coverage (the zero call by the ordinary situational
+ * weights; tracked heavy fronts at 1-3 yd play no one deep 55% of snaps). */
 const SHORT_PACKAGE = process.env.SHORT_PACKAGE === '1';
 function shortPackage(offPersonnel: PersonnelId, distance: number): boolean {
   if (offPersonnel === '13' || offPersonnel === '21' || offPersonnel === '22') return distance <= 2;
@@ -385,7 +386,7 @@ export class DefensiveCoordinator {
     // reject that installation rather than invent a replacement silently.
     const availableVariants = Object.fromEntries(Object.entries(VARIANTS).map(([family, variants]) =>
       [family, variants.filter(([id]) => coverageHasNamedZonePlayers(personnel, COVERAGE_BY_ID[id]))]));
-    const family = pickWeighted(rng, famW.filter(([id]) => availableVariants[id]?.length && (!heavy || id === 'cover1' || id === 'cover3')));
+    const family = pickWeighted(rng, famW.filter(([id]) => availableVariants[id]?.length && (!heavy || id === 'cover1' || id === 'cover3' || id === 'cover0')));
     const coverage = COVERAGE_BY_ID[pickWeighted(rng, availableVariants[family])];
     // Zeus: a two-high tree doubles the opponent's best receiver with Cover 8 /
     // Stuff / Quads, chosen by where he lines up (resolved at the snap).
