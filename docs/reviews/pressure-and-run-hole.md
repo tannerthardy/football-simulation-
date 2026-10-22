@@ -268,6 +268,57 @@ On every run (not only long ones), deep defenders come forward at
 - **Limits:** 58 sim runs reached 20. The deep-defender set is an alignment
   proxy and includes off corners inside 12 yd on both sources.
 
+## 6. Pursuit angles
+
+Question: do sim pursuers aim at the carrier (pure pursuit) at all
+distances, or only up close where it is right anyway? Do they run flat out
+where NFL pursuers throttle?
+
+Method: `scripts/diag/pursuit.py`, same 16-game export.
+- **Samples:** every other frame from the line to 15 yd past it, for
+  defenders who are unengaged, more than 1 yd from the carrier, moving over
+  1.5 yd/s, and in front of or beside him. NFL 194,912 samples; sim 21,432.
+- **Intercept heading:** uses the defender's top speed on the play and the
+  carrier's current velocity.
+- **Aims at the carrier:** his heading is nearer the line to the carrier
+  than to the intercept heading.
+- **Speed/max:** his speed over his top speed on the play.
+
+Medians:
+
+| Bin | NFL error vs intercept | Sim error vs intercept | NFL aims at carrier | Sim aims at carrier | NFL speed/max | Sim speed/max | NFL can't intercept | Sim can't intercept |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| All | 20° | 18° | 23% | 26% | 0.85 | 0.82 | 25% | 18% |
+| 0–3 yd | 27° | 28° | 19% | **32%** | 0.78 | **0.70** | 22% | 28% |
+| 3–6 yd | 21° | 22° | 21% | **33%** | 0.82 | 0.79 | 22% | 21% |
+| 6–10 yd | 18° | 16° | 26% | 28% | 0.88 | 0.88 | 22% | 16% |
+| 10+ yd | 19° | 15° | 24% | 18% | 0.87 | 0.83 | 29% | 14% |
+| Carrier 6+ yd/s | 17° | 16° | 12% | **24%** | 0.88 | **0.77** | 57% | 30% |
+| Just cut (>30° in 0.5 s) | 26° | 28° | 33% | **44%** | 0.82 | 0.85 | 9% | 4% |
+| Runs reaching 20+, within 6 yd | 20° | 27° | 11% | **42%** | 0.71 | **0.55** | 30% | **8%** |
+| Runs reaching 20+, beyond 6 yd | 17° | 13° | 10% | 23% | 0.73 | 0.67 | 42% | **10%** |
+
+**Reading.**
+- **On ordinary runs, sim pursuit already looks NFL-like.** Heading error,
+  far-field aim and speed fraction are close. Far pursuers are slightly
+  better than NFL.
+- **Up close, sim pursuers aim at the carrier more often.** At 0–6 yd it
+  is about a third of samples, against a fifth in the NFL, and they run at a
+  lower fraction of top speed. The same happens after a cut (44% vs 33%) and
+  against a fast carrier (24% vs 12%).
+- **The long-run difference is in speed as much as angle.** On sim runs of
+  20+ yd, close pursuers run at 55% of their top speed and aim at the back
+  42% of the time; NFL pursuers run at 71% and aim at him 11% of the time.
+- **Sim pursuers could get there and don't.** Only 8–10% of sim pursuers
+  on long runs could not intercept at their top speed, against 30–42% in the
+  NFL, where the back really does outrun them.
+- **So it is not "aims at the carrier at all distances".** It is close-range
+  pursuers who are slow and aim at him: still accelerating after a shed or
+  a turn, or throttled. A pursuit fix should first check requested against
+  achieved speed for those defenders.
+- **The pursuit angle is not the main long-run cause.** That remains the
+  deep defenders' position (section 5).
+
 ## Limits
 
 - Sim samples are small: 44–81 runs per concept, 188 pressures. Medians move
