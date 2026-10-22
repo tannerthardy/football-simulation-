@@ -44,6 +44,10 @@ full NFL file.
 | `scripts/diag/pursuit.py` | Pursuit angles and speed | Error against the intercept heading and against pure pursuit; share aiming at the carrier; speed over play max. Binned by distance, carrier speed, cut and run length. |
 | `scripts/data/bdb2025_pass_set_contact.py` | Raw-CSV check of `pass-contact.py` | The same contact timing from PFF initial rushers, with men moving at the snap excluded; tracked crossing minus the NGS get-off label. Reads `data/raw/bdb2025/big-data-bowl-data` directly. |
 
+For sizing arm comparisons (games needed, same-seed pairing) see
+[arm comparison protocol](arm-comparison-protocol.md) and
+`scripts/diag/arm-power.py`.
+
 Results and readings are in [pass sets and first contact](pass-set-contact.md)
 and [pressure, run hole, pursuit and pocket](pressure-and-run-hole.md).
 
