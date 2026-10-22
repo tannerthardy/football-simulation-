@@ -9,7 +9,7 @@ Measured 2026-10-22 for the run-offense session, which asked two questions:
    the NFL. Do NFL backs run through tighter creases, or do the DL simply
    sit closer?
 
-Engine source unchanged.
+Engine source unchanged. Operator index: [NFL-vs-sim operators](nfl-sim-operators.md).
 
 Operators run one code path on NFL tracking and sim exports, using the
 common play format with positions quantized by `metrics.Play`. Every

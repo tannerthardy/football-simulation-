@@ -39,6 +39,7 @@ compares it with the engine's snap model. The tracked follow-up,
 depth and first OL–DL contact in NFL tracking and the sim with one operator.
 [Pressure sources and the inside-run hole](../reviews/pressure-and-run-hole.md)
 attributes pressure by rusher and escape, and measures the crease width runners use.
+[NFL-vs-sim operators](../reviews/nfl-sim-operators.md) indexes the measurement scripts.
 
 ## Other supplied and researched references
 
