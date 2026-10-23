@@ -973,6 +973,28 @@ From the issue register:
 - **Measurement oddity:** play-action shots show −1.73 yd YAC per catch
   (`dev-12`, 32 attempts). Check how YAC is measured on catches behind the
   catch point before reading it as football.
+- **M4 accounting diagnosis** (develop `c5667bc4`, PR tier, seed 7,
+  12 games): 545 official completions include 90 negative-YAC records.
+  Of those, 28 are end-zone TD catches: receiving yards stop at x110 but
+  physical catch depth extends into the end zone. This invents negative YAC
+  without any post-catch loss. The official statistical view now bounds those
+  catches at the goal line and credits zero YAC; physical stats, intended
+  depth and catch segments remain on the raw tape. The scorecard consumes
+  that official view and actual completed depth, with target depth on other
+  throws and the nflverse statistical goal-line bound. Unknown completed
+  depth remains unknown. See the M4 PR for every affected play.
+- The other 62 negatives are retained: 60 recorded endings behind the catch
+  and two receivers recovering their own fumbles (zero-based game/log indices
+  `G7-P159`, `G8-P157`). GSIS pp26,32–33 keeps own-recovery net yardage in the
+  original receiving category. This is not a validation of movement or
+  forward-progress officiating. One additional negative catch was nullified
+  and excluded. On identical games, YAC changes 7.406→7.602 and aDOT
+  10.020→9.196; these are measurement corrections, not improved football.
+  The legacy −1.73 aggregate is not reproduced on this newer engine:
+  `pa_shot` has 25 attempts/10 catches and changes 6.245→6.512 YAC.
+- Raw play descriptions/replay statistics and tools that explicitly consume
+  the physical tape are not rewritten by this repair. NFL statistical
+  consumers need the official view; intended `airYards` is not achieved depth.
 
 <a id="kick-1"></a>
 ### KICK-1: Kicking too accurate, too many punts
@@ -1179,6 +1201,15 @@ zone).
 - The historical baseline audit misses two takeaways in an INT → return
   fumble → recovery sequence. Current candidate games reconcile (#189).
 - Compare results through official credit, not raw nullified results.
+- **M4 follow-up, separate from the end-zone correction:** on `c5667bc4`,
+  zero-based game/log indices `G6-P094`, `G9-P134`, `G11-P092` have receiver
+  fumbles recovered by opponents behind the fumble spot. Existing reception
+  credit stops at the fumble spot; GSIS pp32–33 requires the lesser advance
+  or recovery spot. The raw YAC values are positive, so this does not explain
+  the audited negative-YAC anomaly. A complete allocation repair must change
+  receiving/passing yardage too, preserving physical endings, returns and
+  possession credit. It is outside M4's YAC/air-only correction; no yardage
+  adjustment or new fumble allocation is silently included.
 
 ## Speed and tools
 
