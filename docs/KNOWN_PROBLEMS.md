@@ -376,7 +376,7 @@ Carried over from the issue register; each was measured on an older develop.
 ### TKL-1: Too many missed and broken tackles
 
 - **Measure:** missed + broken tackles per play: 0.32 (`dev-24`), 0.36
-  (`dev-12`); NFL 0.11–0.16. Runs that break contact are 12.7–19% on the flag
+  (`dev-12`); unverified PFF band 0.11–0.16. Runs that break contact are 12.7–19% on the flag
   profiles (#194), NFL 12.5%.
 - **Cause:** *partly known* (#205). Too few defenders reach the runner
   (TKL-2), and getting through contact costs the runner nothing (below). The
@@ -1014,7 +1014,8 @@ need personnel the sim doesn't have.
 <a id="rule-1"></a>
 ### RULE-1: Too many penalties, especially defensive offside
 
-- **Measure:** 6.8 penalties per team-game (`dev-24`), 7.5 (`dev-12`); NFL 2.5–4.
+- **Measure:** 6.8 penalties per team-game (`dev-24`), 7.5 (`dev-12`); legacy
+  unsourced scorecard band 2.5–4 (waits on M1's committed game-layer reference).
   Defensive offside is about three times the NFL rate (#190).
 - **By type** (develop `fdd767ab`, scorecard pr-tier games: 12 games, seed 7;
   NFL: nflverse 2023 regular season, accepted, 544 team-games). Accepted per
@@ -1209,6 +1210,18 @@ zone).
 <a id="perf-2"></a>
 ### PERF-2: Measurement noise and tooling limits
 
+- M3: [`test/scorecard-bands.test.ts`](../test/scorecard-bands.test.ts) checks each sourced band against committed NFL reference keys: equal-weight 2022–2023 team-season p10–p90, linearly interpolated, rounded to 2 decimals. These are descriptive ranges; target approval remains with Tanner. Unsourced values remain explicit, including the unverified PFF definition and game-layer bands waiting on M1.
+- M3 `passRate`: 56–62% → 54.43–66.33%, from `reference.json#teamSeasons[].dropbackShare.percent`.
+- M3 `comp`: 63–66% → 60.59–68.09%, from `reference.json#teamSeasonRanges.completion`.
+- M3 `ypa`: 6.8–7.2 → 6.35–7.89 yd, from `reference.json#teamSeasons[]` completion yards × completions / throws; the 9.78–12.00 yards-per-completion range is a different measure.
+- M3 `sack`: 6–7.5% → 4.61–9.36%, from `reference.json#teamSeasonRanges.sackPerDropback`.
+- M3 `int`: 2–2.5% → 1.47–3.15%, from `reference.json#teamSeasonRanges.interception`.
+- M3 `comp20`: 7–9% → 6.66–11.08%, from `reference.json#teamSeasonRanges.twentyYardCompletionPerThrow`.
+- M3 `yac`: 4.8–5.6 → 4.53–5.91 yd, from `reference.json#teamSeasonRanges.meanCompletedYAC`.
+- M3 `scramble`: 3–5% → 2.18–7.32%, from `reference.json#teamSeasonRanges.scramblePerDropback`.
+- M3 `ypc`: 4.1–4.5 → 3.70–4.83 yd, from `reference.json#teamSeasons[].designedRun.yards.mean`.
+- M3 `stuff`: 16–20% → 15.89–23.54%, from `reference.json#teamSeasonRanges.stuffPerDesignedRun`.
+- M3 `run10`: 10–12% → 7.58–12.87%, from `reference.json#teamSeasons[].designedRun.explosive.percent`.
 - 12 games give wide intervals. Pressure rate is ±8–11 points at 4 games per
   arm, and 5-point precision needs 22–42 games per arm (#191).
 - With about 30 metrics at 90% intervals, about 3 false "moved" readings are
