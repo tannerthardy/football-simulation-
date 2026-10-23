@@ -60,7 +60,7 @@ const unsourced: Record<string, [number, number]> = {
   points: [21, 23.5], plays: [61, 65], totalYds: [320, 345], passTd: [4, 4.8],
   adot: [7.5, 8.5], ttt: [2.7, 2.9], sep: [2.8, 3.2], run20to40: [25, 35],
   ybc: [1.5, 2.3], missed: [0.11, 0.16], third: [37, 41], fg: [83, 87],
-  xp: [94, 97], fumLost: [0.4, 0.7], punts: [3.5, 4.5], penalties: [2.5, 4],
+  xp: [94, 97], fumLost: [0.4, 0.7], punts: [3.5, 4.5],
 };
 
 describe('scorecard band provenance', () => {
@@ -109,11 +109,13 @@ describe('scorecard band provenance', () => {
       expect(metric(id).band, id).toEqual(original);
       expect(metric(id).source, id).toMatch(/^unsourced: .+/);
     }
-    for (const id of ['points', 'plays', 'totalYds', 'third', 'fg', 'xp', 'fumLost', 'punts', 'penalties']) {
+    for (const id of ['points', 'plays', 'totalYds', 'third', 'fg', 'xp', 'fumLost', 'punts']) {
       expect(metric(id).source, id).toContain('waits on M1 game-layer.json');
     }
     expect(metric('adot').source).toContain('throwaways');
     expect(metric('missed').source).toContain('PFF, definition unknown');
-    expect(metric('penalties').source).toContain('below RULE-1 accepted NFL total');
+    // #231 removed the unqualified 2.5–4 total band; penalties are compared by type.
+    expect(metric('penalties').band).toBeUndefined();
+    expect(metric('penalties').source).toMatch(/^internal: .+NFL_RULES/);
   });
 });

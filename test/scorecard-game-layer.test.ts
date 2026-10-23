@@ -61,7 +61,7 @@ describe('game-layer scorecard arithmetic', () => {
     expect(actual.value).toBeCloseTo(expected as number, 10);
     expect(actual.n).toBe(n);
     expect(m.band).toBeUndefined();
-    expect(m.source).toBe('pending M1');
+    expect(m.source).toBe('internal: no band yet; NFL ranges in data/reviews/nflverse/game-layer.json');
   });
 
   it('counts accepted penalty names per team-game, including a zero in the other arm', () => {
@@ -73,12 +73,12 @@ describe('game-layer scorecard arithmetic', () => {
 
   it('keeps all older metrics identical when the additive measurements are attached', () => {
     const legacy = games.map(({ gameLayer: _layer, ...g }) => g);
-    for (const m of METRICS.filter(m => m.source !== 'pending M1'))
+    for (const m of METRICS.filter(m => m.source !== 'internal: no band yet; NFL ranges in data/reviews/nflverse/game-layer.json'))
       expect(evaluate(m, games)).toEqual(evaluate(m, legacy));
   });
 
   it('keeps missing legacy measurements and unknown return credit unavailable', () => {
-    for (const m of METRICS.filter(m => m.source === 'pending M1')) {
+    for (const m of METRICS.filter(m => m.source === 'internal: no band yet; NFL ranges in data/reviews/nflverse/game-layer.json')) {
       expect(evaluate(m, [game()]).value).toBeNaN();
       expect(evaluate(m, [games[0], game()]).value).toBeNaN();
     }
@@ -193,7 +193,7 @@ it('prints the new rows and accepted penalty types with quick-tier rendering and
       'kickTouchback', 'puntTouchback', 'fourthGo', 'fourthConversion', 'twoPoint', 'drives',
       'pointsPerDrive', 'redZoneTD', 'turnovers']) expect(report).toContain(`| ${metric(id).label} |`);
     expect(report).toContain('| Accepted penalties / team-game: false_start | 1.00 |');
-    expect(report).toContain('| pending M1 |');
+    expect(report).toContain('| internal: no band yet; NFL ranges in data/reviews/nflverse/game-layer.json |');
     expect(readFileSync(saved, 'utf8')).toBe(before);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

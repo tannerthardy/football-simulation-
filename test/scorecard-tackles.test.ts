@@ -135,7 +135,7 @@ describe('per-defender failed tackle opportunities', () => {
       // the band, raw counter and unknown PFF definition remain unchanged.
       expect(report).toContain('0.11–0.16 (unsourced: PFF, definition unknown)');
       expect(report).toContain('| Missed + broken tackles / play | 5.00 |');
-      expect(report).toContain('| Failed tackle opportunities / play (unique defenders) | — | — to — | internal |');
+      expect(report).toContain('| Failed tackle opportunities / play (unique defenders) | — | — to — | internal: unique failed defenders per official play; no NFL comparison band |');
       expect(readFileSync(input)).toEqual(bytes);
       // A producer with matching metadata can still predate this particular field.
       card.meta.provenance = { ...provenance(), cpuModel: null, cpuQuotaCores: null };

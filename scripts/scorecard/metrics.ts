@@ -44,7 +44,7 @@ const nflSource = (key: string) => `data/reviews/nflverse/reference.json#${key} 
 function layerMetric(id: string, label: string,
   num: (r: GameLayerRec, g: GameRec) => number, den: (r: GameLayerRec, g: GameRec) => number,
   percent = false): Metric {
-  return { id, label, source: 'pending M1', ...(percent ? { scale: 100, unit: '%' } : {}),
+  return { id, label, source: 'internal: no band yet; NFL ranges in data/reviews/nflverse/game-layer.json', ...(percent ? { scale: 100, unit: '%' } : {}),
     game: { num: g => g.gameLayer ? num(g.gameLayer, g) : NaN,
       den: g => g.gameLayer ? den(g.gameLayer, g) : NaN } };
 }
@@ -100,7 +100,7 @@ export const METRICS: Metric[] = [
   // The old 2.5–4 band was below the NFL's accepted total. An incomplete mix
   // of foul producers cannot be graded by matching a total; retain the count
   // and interval, and compare types/exposures under docs/NFL_RULES.md.
-  { id: 'penalties', label: 'Accepted penalties / team-game', source: 'unsourced: no qualified total band; compare types under docs/NFL_RULES.md', game: { num: (g) => g.penalties, den: () => 2 } },
+  { id: 'penalties', label: 'Accepted penalties / team-game', source: 'internal: accepted count, no qualified total band; compare types under docs/NFL_RULES.md', game: { num: (g) => g.penalties, den: () => 2 } },
   ...fieldGoalBins.map(([lo, hi]) => layerMetric(`fg${lo}`, `FG ${hi === Infinity ? '50+' : `${lo}–${hi}`} yd %`,
     r => fieldGoals(r, lo, hi)[0], r => fieldGoals(r, lo, hi)[1], true)),
   layerMetric('puntGross', 'Punt gross average (box yards)', r => r.puntGrossYards, (_r, g) => g.punts),
