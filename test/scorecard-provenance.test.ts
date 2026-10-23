@@ -33,7 +33,11 @@ const run = (args: string[]) => execFileSync(process.execPath,
 describe('scorecard timing and provenance', () => {
   it('resolves source defaults and inherited/arm switches without recording unrelated secrets', () => {
     const defaults = engineSettings({});
-    expect(Object.keys(defaults)).toHaveLength(81);
+    // Every source switch has exactly one FLAGS.md row, so a new flag needs its
+    // row rather than a hand-edited count here.
+    const registered = [...readFileSync('docs/FLAGS.md', 'utf8').matchAll(/^\| `([A-Z0-9_]+)` \|/gm)].map(m => m[1]);
+    expect(new Set(registered).size).toBe(registered.length);
+    expect(Object.keys(defaults).sort()).toEqual([...registered].sort());
     expect(defaults).toMatchObject({ LIVE_AIM: true, RUN_READ: false, RUN_CONTACT_COMPONENTS: true, SHED_PURSUE: true, PURSUE_AROUND: true,
       CF_FLOW: null, DEF_GETOFF: 1, GAIT_STEP: 0 });
     const resolved = engineSettings({ GH_TOKEN: 'never-record-this', RUN_READ: '1', LIVE_AIM: '0',

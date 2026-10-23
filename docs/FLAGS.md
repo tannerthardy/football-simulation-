@@ -2,51 +2,54 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 81 flags: 57 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off. On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 84 flags: 60 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
-| `ANCHOR_SPLIT` | on | default | trenches | `src/sim/engagement.ts:668` | — |
-| `CLIMB_INTERCEPT` | on | default | run | `src/sim/behaviors/blocking.ts:790` | — |
-| `CLIMB_PLAN` | on | default | run | `src/sim/behaviors/blocking.ts:787` | — |
-| `DL_FLOW` | on | default | trenches | `src/sim/engagement.ts:678` | — |
+| `ANCHOR_SPLIT` | on | default | trenches | `src/sim/engagement.ts:673` | — |
+| `ARM_PRESS` | on | default (G5, 2026-10-22) | physics | `src/physics/support.ts:106` | review 2: drop the off path. Pushing through the hands uses the bench press (combine reps, Epley), counted in press units in the arm budget and its work and impulse ledgers; agreed with G2 for run reps. Staged scenes recorded on arm-force hands are pinned under RUN-11 until review 2 |
+| `CLIMB_INTERCEPT` | on | default | run | `src/sim/behaviors/blocking.ts:813` | — |
+| `CLIMB_PLAN` | on | default | run | `src/sim/behaviors/blocking.ts:810` | — |
+| `DL_FLOW` | on | default | trenches | `src/sim/engagement.ts:683` | — |
 | `FLOW_READ` | on | default | defense | `src/sim/run-fits.ts:148` | — |
-| `FLOW_RELEASE` | on | default | run | `src/sim/behaviors/blocking.ts:781` | — |
-| `KEEPER_TORSO` | on | default | run | `src/sim/behaviors/blocking.ts:784` | — |
+| `FLOW_RELEASE` | on | default | run | `src/sim/behaviors/blocking.ts:804` | — |
+| `KEEPER_TORSO` | on | default | run | `src/sim/behaviors/blocking.ts:807` | — |
 | `LB_PLAN` | on | default | defense | `src/sim/run-fits.ts:142` | — |
-| `LEVER_FACING` | on | default | trenches | `src/sim/engagement.ts:696` | — |
+| `LEVER_FACING` | on | default | trenches | `src/sim/engagement.ts:708` | — |
 | `LIVE_AIM` | on | default | run | `src/sim/behaviors/carrier.ts:47` | — |
 | `LIVE_GAPS` | on | default | run | `src/sim/live-gaps.ts:25` | — |
+| `PASS_KICK` | on | default (G5, 2026-10-22) | trenches | `src/sim/behaviors/blocking.ts:332` | review 2: drop the off path. Vertical pass set against edge rushers (ported from `claude/run-game-v3`); decided by edge-rep first contact and tackle retreat vs tracking |
 | `PULL_READ` | on | default | defense | `src/sim/run-fits.ts:151` | — |
 | `PURSUE_AROUND` | on | default | defense | `src/sim/behaviors/common.ts:249` | — |
 | `READ_EYES` | on | default | defense | `src/sim/run-read.ts:42` | — |
-| `RUN_ANCHOR` | on | default | trenches | `src/sim/engagement.ts:715` | — |
-| `RUN_CONTACT_COMPONENTS` | on | default | trenches | `src/sim/engagement.ts:675` | — |
+| `ROUTE_CLEAR` | on | default (G5, 2026-10-22) | coverage | `src/sim/behaviors/receiver.ts:39` | review 2: drop the off path. A back releasing from the backfield paths around a body in his lane (a teammate, or a rusher) instead of running into it; decided by the back's release speed past a kicking tackle |
+| `RUN_ANCHOR` | on | default | trenches | `src/sim/engagement.ts:727` | — |
+| `RUN_CONTACT_COMPONENTS` | on | default | trenches | `src/sim/engagement.ts:680` | — |
 | `SCRAPE` | on | default | defense | `src/sim/run-fits.ts:139` | — |
-| `SHED_PHYSICAL` | on | default | trenches | `src/sim/engagement.ts:699` | — |
-| `SHED_PURSUE` | on | default | defense | `src/sim/engagement.ts:708` | — |
-| `STALK_CLAIM` | on | default | run | `src/sim/behaviors/blocking.ts:778` | — |
+| `SHED_PHYSICAL` | on | default | trenches | `src/sim/engagement.ts:711` | — |
+| `SHED_PURSUE` | on | default | defense | `src/sim/engagement.ts:720` | — |
+| `STALK_CLAIM` | on | default | run | `src/sim/behaviors/blocking.ts:801` | — |
 | `STRETCH_MESH` | on | default | run | `src/sim/assign.ts:158` | — |
-| `STRETCH_REACH` | on | default | trenches | `src/sim/engagement.ts:671` | — |
+| `STRETCH_REACH` | on | default | trenches | `src/sim/engagement.ts:676` | — |
 | `THREAT_READ` | on | default | defense | `src/sim/run-fits.ts:139` | — |
-| `ZONE_FLOW` | on | default | run | `src/sim/behaviors/blocking.ts:793` | — |
+| `ZONE_FLOW` | on | default | run | `src/sim/behaviors/blocking.ts:816` | — |
 | `CF_FLOW` | off | experimental | tools | `src/sim/counterfactual.ts:5` | set at first review |
-| `DL_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:693` | set at first review |
-| `DL_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:689` | set at first review |
+| `DL_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:705` | set at first review |
+| `DL_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:694` | set at first review |
 | `GAIT_STEP` | off | experimental | physics | `src/physics/kinematics.ts:94` | set at first review |
-| `HAND_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:1041` | set at first review |
+| `HAND_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:1061` | set at first review |
 | `HAND_MOTOR` | off | experimental | physics | `src/physics/world.ts:302` | set at first review |
 | `HOLD_SUBSTEPS` | off | experimental | physics | `src/physics/world.ts:300` | set at first review |
-| `IN_STRIDE_CATCH` | off | experimental | coverage | `src/sim/behaviors/receiver.ts:283` | set at first review |
+| `IN_STRIDE_CATCH` | off | experimental | coverage | `src/sim/behaviors/receiver.ts:330` | set at first review |
 | `LEG_BRACE` | off | experimental | physics | `src/physics/world.ts:304` | set at first review |
-| `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:691` | set at first review |
+| `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:696` | set at first review |
 | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:154` | set at first review |
 | `PULL_PLAN` | off | experimental | defense | `src/sim/run-fits.ts:145` | set at first review |
 | `PULL_STEP` | off | experimental | run | `src/sim/behaviors/blocking.ts:37` | set at first review |
 | `REACH_CONTACT` | off | experimental | defense | `src/sim/tackle.ts:66` | set at first review |
 | `READ_RISK_TRACE` | off | experimental | defense | `src/sim/run-read.ts:117` | set at first review |
-| `RUN_CONTACT_TRACK` | off | experimental | trenches | `src/sim/engagement.ts:673` | set at first review |
-| `RUN_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:687` | set at first review |
+| `RUN_CONTACT_TRACK` | off | experimental | trenches | `src/sim/engagement.ts:678` | set at first review |
+| `RUN_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:692` | set at first review |
 | `RUN_READ` | off | experimental | defense | `src/sim/run-read.ts:35` | set at first review |
 | `RUN_READ_TURN` | off | experimental | defense | `src/sim/run-read.ts:39` | set at first review |
 | `TACKLE_ROLL` | off | experimental | defense | `src/sim/tackle.ts:60` | set at first review |
@@ -57,7 +60,7 @@ There are 81 flags: 57 are on by default, 1 is a diagnostic scale at identity (`
 | `DEF_ALIGN` | on | default (promoted 2026-10-22) | coverage | `src/playbook/alignment.ts:71` | review 2: drop the off path |
 | `DEF_GETOFF` | 1 (identity scale) | diagnostic | trenches | `src/sim/agent.ts:25` | expires: review 2 |
 | `DL_ANCHOR` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:80` | review 2: drop the off path |
-| `DL_CHASE` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:685` | review 2: drop the off path |
+| `DL_CHASE` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:690` | review 2: drop the off path |
 | `DL_FLATTEN` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:90` | review 2: drop the off path |
 | `DL_FLATTEN_WON` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:106` | review 2: drop the off path |
 | `DL_SQUEEZE` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:100` | review 2: drop the off path |
@@ -67,7 +70,7 @@ There are 81 flags: 57 are on by default, 1 is a diagnostic scale at identity (`
 | `OL_SPLITS` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:24` | review 2: drop the off path |
 | `OL_STAGGER` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:32` | review 2: drop the off path |
 | `PAD_LEVERAGE` | on | default (promoted 2026-10-22) | physics | `src/physics/world.ts:313` | review 2: drop the off path |
-| `PASS_FEEL` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:722` | review 2: drop the off path |
+| `PASS_FEEL` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:734` | review 2: drop the off path |
 | `PULL_EARLY` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:165` | review 2: drop the off path |
 | `SAFETY_TEMPO` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:189` | review 2: drop the off path |
 | `SHORT_PACKAGE` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:48`, `src/playbook/alignment.ts:106` | review 2: drop the off path |

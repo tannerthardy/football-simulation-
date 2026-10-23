@@ -5,7 +5,8 @@ import { describe, expect, it, vi } from 'vitest';
 // installed geometry (read at import).
 // FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
 // SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.
-vi.hoisted(() => { process.env.WR_ALIGN = '0'; process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.DEF_ALIGN = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.PASS_FEEL = '0'; process.env.PAD_LEVERAGE = '0'; });
+// PASS_KICK's vertical set protects this recorded scramble's QB: the replay is staged on the cutoff set.
+vi.hoisted(() => { process.env.WR_ALIGN = '0'; process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.DEF_ALIGN = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.PASS_FEEL = '0'; process.env.PAD_LEVERAGE = '0'; process.env.PASS_KICK = '0'; });
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import type { MoveCommand } from '../src/physics/kinematics.js';
