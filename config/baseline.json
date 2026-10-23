@@ -94,7 +94,8 @@
     "ROUTE_CLEAR": "1",
     "GROUNDING_FACTS": "1",
     "HOLD_LEVERAGE": "1",
-    "HARD_COUNT_LAPSE": "1"
+    "HARD_COUNT_LAPSE": "1",
+    "RUN_FEEL": "1"
   },
   "worldDefaults": {
     "handContact": "center",
