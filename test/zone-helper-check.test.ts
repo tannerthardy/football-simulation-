@@ -19,7 +19,8 @@ import { PlaySim } from '../src/sim/playsim.js';
 // longer releases within its 2 s window.
 // FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
 // SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FORCE_BOUNCE = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; });
+// RUN_FEEL: the blocker mirrors the defender's acquired motion; this scene is staged on true-velocity mirroring (KNOWN_PROBLEMS RUN-11, re-record by review 2).
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FORCE_BOUNCE = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.RUN_FEEL = '0'; });
 
 const offense = generateTeam(new Rng(31), 'Panel offense 1', 'O1', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'Panel defense 1', 'D1', { strength: .55 });

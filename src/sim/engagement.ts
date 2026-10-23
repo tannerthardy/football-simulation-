@@ -694,6 +694,13 @@ const RUN_HANDS = process.env.RUN_HANDS === '1';
 const DL_HANDS = process.env.DL_HANDS === '1';
 /** Experimental (PASS_SINK=1, off): pass blockers sink their hips under a heavy load. */
 const PASS_SINK = process.env.PASS_SINK === '1';
+/** RUN_FEEL (G1, default on; RUN_FEEL=0 turns it off): a run blocker's
+ * mirror and seal lead use the defender's motion as he has it (PASS_FEEL's
+ * touch and sight delays), not the defender's true current velocity. With
+ * the true velocity a quicker defender could never gain a step: the blocker
+ * matched him in the same tick (G1 lab: DL released by the 5-yd crossing
+ * 36% -> 47%, ever 36% -> 73%). His felt hand load is unchanged. */
+const RUN_FEEL = process.env.RUN_FEEL !== '0';
 /** PASS_KICK (G5, default on; the set is in behaviors/blocking.ts): in the
  * rep a tackle keeps kicking with an outside rusher, level with or deeper
  * than him, short of the launch point, instead of stopping at the set spot
@@ -857,11 +864,11 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // PASS_KICK: against an outside rusher he keeps kicking with him in the rep
   // (level with or deeper than the rusher, short of the launch point) instead
   // of stopping at the set spot while the rusher runs on to his hip.
-  if (PASS_KICK && Math.abs(d.pos.y - sim.ballY) > Math.abs(b.pos.y - sim.ballY))
-    setDepth = Math.max(setDepth, Math.min(sim.los - d.pos.x + RIDE_LEAD, sim.los - sim.qb.pos.x - 0.5));
+  if (PASS_KICK && Math.abs(known.pos.y - sim.ballY) > Math.abs(b.pos.y - sim.ballY))
+    setDepth = Math.max(setDepth, Math.min(sim.los - known.pos.x + RIDE_LEAD, sim.los - sim.qb.pos.x - 0.5));
   // PASS_KICK: match the rusher's upfield speed as well as close the gap
   // (closing alone trails a moving rusher by his speed x 0.55 s).
-  const follow = PASS_KICK && setDepth > (b.passSet?.depth ?? passSetDepth(sim, b)) ? Math.max(0, -d.vel.x) : 0;
+  const follow = PASS_KICK && setDepth > (b.passSet?.depth ?? passSetDepth(sim, b)) ? Math.max(0, -known.vel.x) : 0;
   const kick = depth < setDepth ? Math.min(b.profile.vmax * b.profile.backpedal * (0.75 + 0.25 * tb.feet), (setDepth - depth) / 0.55 + follow) : 0;
   // PASS_SINK (experimental, off): under a heavy load he sinks his hips
   // rather than leaning his chest over his feet: a lower centre of mass
@@ -1207,11 +1214,17 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // Actual hand normal, ground traction and work remain physical constraints.
   const drive = e.drive ?? { x: -axis.x, y: -axis.y };
   const sep = b.profile.radius + d.profile.radius;
-  const dLat = d.vel.x * lat.x + d.vel.y * lat.y;
+  // RUN_FEEL: the blocker mirrors the defender's motion as he has it, by
+  // touch while his hands are on (0.06 s) or by sight (0.12-0.24 s), the
+  // pass rep's PASS_FEEL law, not the defender's true current velocity.
+  const runSeen = RUN_FEEL ? sim.see(b, d, ((e.hands?.normalForce || e.hands?.tangentForce)
+    ? 0.06 : 0.12 + 0.12 * (1 - tb.read)) / Math.max(0.1, b.profile.reactionTime)) : d;
+  const dv = runSeen.vel;
+  const dLat = dv.x * lat.x + dv.y * lat.y;
   // Seal target as a lateral offset of the blocker from the defender, where
   // the defender is heading in a beat.
   const lead = 0.15 + 0.15 * tb.read;
-  const offset = (b.pos.x - d.pos.x - d.vel.x * lead) * lat.x + (b.pos.y - d.pos.y - d.vel.y * lead) * lat.y;
+  const offset = (b.pos.x - d.pos.x - dv.x * lead) * lat.x + (b.pos.y - d.pos.y - dv.y * lead) * lat.y;
   const wantOffset = -Math.sin(e.sealTarget * Math.PI / 2) * sep;
   const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
   const feltCue = felt(e, lat), feedback = feltCue * (0.6 + 0.6 * tb.feet);
@@ -1270,7 +1283,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // Keep the existing projected closure and bounds: a tangential drive
     // earns no extra normal request, and no angle division is needed.
     const driveNormal = -(drive.x * axis.x + drive.y * axis.y);
-    const defenderNormal = -(d.vel.x * axis.x + d.vel.y * axis.y);
+    const defenderNormal = -(dv.x * axis.x + dv.y * axis.y);
     const normal = clamp(defenderNormal + driveNormal * gap * 3,
       Math.min(-driveNormal, 2.4 * driveNormal), Math.max(-driveNormal, 2.4 * driveNormal));
     blockVel = { x: -axis.x * normal + lat.x * lateral, y: -axis.y * normal + lat.y * lateral };
