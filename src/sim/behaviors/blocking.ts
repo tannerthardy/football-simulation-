@@ -865,6 +865,7 @@ export class RunBlocker implements Behavior {
   private homeY: number | null = null;
   private firstStep: Vec2 | null = null;
   private nextRuleRead = 0;
+  private nextThreatRead = 0;
   private soloKind: RunBlockKind | null = null;
   private soloDrive: Vec2 | null = null;
   /** The puller's last ordinary read, not the defender's current position. */
@@ -964,6 +965,10 @@ export class RunBlocker implements Behavior {
       return this.withBase(a, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
     }
 
+    if (t >= this.nextThreatRead) {
+      this.nextThreatRead = t + a.mind.decisionInterval;
+      this.rereadThreat(a, sim);
+    }
     const target = this.availableTarget(a, sim);
     if (plan.departure && (plan.kind !== 'climb' || target !== plan.departure.backer)) {
       delete plan.departure;
@@ -1630,6 +1635,49 @@ export class RunBlocker implements Behavior {
     delete p.contactFit;
     a.tags.add('block-collect');
     sim.event('block_collect',a,threat,'penetration before climb');
+  }
+
+  /** First threat to show: a free climbing lineman or lead back whose man
+   * is not the danger to the runner takes the free defender who is. All of
+   * it comes from his own delayed pictures: the runner he has acquired, each
+   * defender's body and whether it is visibly blocked, and his teammates'
+   * bodies. He switches only to a man clearly nearer the runner than his own,
+   * one he is nearer than the runner is, and one no teammate is nearer.
+   * Stalks keep their perimeter ledger. */
+  private rereadThreat(a: Agent, sim: PlaySim): void {
+    const p = this.plan, target = p.target;
+    if (!target || (p.kind !== 'climb' && p.kind !== 'lead')
+      || (p.combination && !p.combination.released) || p.departure) return;
+    const ref = this.workReference(a, sim), picture = this.workPicture!;
+    if (picture.source !== 'acquired' || picture.carrier === sim.qb.idx) return;
+    const dir = sim.attackDir(a.team);
+    // Distance to the runner, less what his closing speed takes off it over
+    // one second: a man running at the runner counts as nearer than he is.
+    const danger = (seen: Perceived) => {
+      const dx = ref.x - seen.pos.x, dy = ref.y - seen.pos.y, d = Math.hypot(dx, dy);
+      const closing = d > 1e-9 ? ((seen.vel.x - picture.vel.x) * dx + (seen.vel.y - picture.vel.y) * dy) / d : 0;
+      return { d, score: d - Math.max(0, closing) };
+    };
+    const mine = danger(sim.see(a, target));
+    if (mine.d < 4) return;
+    const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o.idx !== picture.carrier).map(o => sim.see(a, o).pos);
+    let best: { d: Agent; score: number } | null = null;
+    for (const d of sim.defense) {
+      if (d === target || d.engagement || d.isDown(sim.t)) continue;
+      const seen = sim.see(a, d), threat = danger(seen);
+      // Behind the runner he is pursuit, not a man to block in front of him.
+      if ((seen.pos.x - ref.x) * dir < -1 || threat.score > mine.score - 2.5) continue;
+      const reach = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
+      if (reach >= threat.d || mates.some(m => Math.hypot(m.x - seen.pos.x, m.y - seen.pos.y) < reach - .5)) continue;
+      if (!best || threat.score < best.score) best = { d, score: threat.score };
+    }
+    if (!best) return;
+    p.target = best.d;
+    delete p.contactFit;
+    this.climbRead = null;
+    this.climbAccess = null;
+    this.classifyWork(a, sim, best.d);
+    sim.event('block_threat', a, best.d, 'first threat to the runner');
   }
 
   /** A free first-level blocker recovers between his defender and the back
