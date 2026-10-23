@@ -869,7 +869,7 @@ export class RunBlocker implements Behavior {
   private soloKind: RunBlockKind | null = null;
   private soloDrive: Vec2 | null = null;
   /** The puller's last ordinary read, not the defender's current position. */
-  private pullRead: { target: Agent; seen: Perceived; clearanceX: number | null; nextRead: number } | null = null;
+  private pullRead: { target: Agent; seen: Perceived; clearanceX: number | null; nextRead: number; at: number } | null = null;
   private pullCleared = false;
   private nextSurfaceRead = 0;
   private wrapOutside = false;
@@ -1367,15 +1367,21 @@ export class RunBlocker implements Behavior {
       const clearanceX = surfaces.length ? Math.min(...surfaces.map(({b,seen}) => seen.pos.x-b.profile.radius))
         : this.plan.pullSurface ? this.plan.pullPath?.[0]?.x ?? a.pos.x+a.profile.radius : null;
       this.pullRead = { target, seen: { ...seen, pos: { ...seen.pos }, vel: { ...seen.vel } },
-        clearanceX, nextRead: sim.t + a.mind.decisionInterval };
+        clearanceX, nextRead: sim.t + a.mind.decisionInterval, at: sim.t };
     }
     return this.pullRead;
   }
 
   private attack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived): MoveCommand {
     const plan = this.plan;
-    const seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
+    let seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
+    // The held pull read is already dead-reckoned to its acquisition; carry
+    // it only through the time held since then.
+    if (plan.kind === 'pull' && this.pullRead && seen === this.pullRead.seen) {
+      const dt = sim.t - this.pullRead.at;
+      seen = { ...seen, pos: { x: seen.pos.x + seen.vel.x * dt, y: seen.pos.y + seen.vel.y * dt } };
+    }
     if (plan.kind === 'pull' && plan.pullRole === 'lead' && (seen.pose === 'down' || seen.pose === 'rising')) return stand();
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
     const combinationFit = this.combinationFit(a, sim, target);
@@ -1474,9 +1480,21 @@ export class RunBlocker implements Behavior {
     // defender's old spot. Match his lateral motion and brake the offset;
     // ordinary drive blocks retain their downhill strike.
     if (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')) {
-      const side = Math.sign(plan.drive.y) || 1;
-      const shoulder = { x: aim.x-.25, y: aim.y-side*.45 };
-      return track(a, shoulder, seen.vel, { speed: .95, gain: 3, facing: Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x) });
+      const facing = Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x);
+      if (a.tags.has('block-log')) {
+        const side = Math.sign(plan.drive.y) || 1;
+        return track(a, { x: aim.x-.25, y: aim.y-side*.45 }, seen.vel, { speed: .95, gain: 3, facing });
+      }
+      // Kick him out from inside: fit the shoulder he would run through to
+      // the ball, on his line to the runner the puller has acquired. Matching
+      // the end's own velocity let a penetrating end drag the puller 6 yd
+      // deep while still 3-5 yd away laterally, never touching him (G1 P031).
+      // Going for his path to the runner meets him wherever he comes from.
+      const ref = this.workReference(a, sim), dx = ref.x - seen.pos.x, dy = ref.y - seen.pos.y, n = Math.hypot(dx, dy);
+      const sep = a.profile.radius + target.profile.radius + .15;
+      const shoulder = n > sep ? { x: seen.pos.x + dx / n * sep, y: clamp(seen.pos.y + dy / n * sep + placementError, .5, FIELD_WIDTH - .5) }
+        : { x: aim.x-.25, y: aim.y-(Math.sign(plan.drive.y) || 1)*.45 };
+      return track(a, shoulder, { x: 0, y: 0 }, { speed: .95, gain: 3, facing });
     }
     if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
       const fit = this.plannedClimb(a, sim, target, contact);
