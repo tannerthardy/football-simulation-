@@ -105,6 +105,15 @@ describe('a motion played out by the bodies', () => {
     expect(touches).toEqual([]);
   }, 60000);
 
+  it('snaps a jet where his plan times him', () => {
+    for (const [f, slot] of [['gun_doubles_11', 'Z'], ['gun_trey_11', 'Z'], ['gun_doubles_11', 'H']] as const) {
+      const s = sim(f, slot, 'jet', '11'), man = s.slot(slot)!;
+      expect(s.motion, `${f} ${slot}`).not.toBeNull();
+      // Timed from where he cuts the corner: within half a yard of his snap point.
+      expect(Math.abs(man.pos.y - s.motion!.plan.snapPos.y), `${f} ${slot}`).toBeLessThan(.5);
+    }
+  });
+
   it('flags a motion man still moving toward the line at the snap', () => {
     const s = sim('gun_trips_11', 'Y', 'across', '11');
     expect(inspectInstalledSnap(s).fouls.some(f => f.kind === 'illegal_motion')).toBe(false);

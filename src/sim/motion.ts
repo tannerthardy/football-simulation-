@@ -306,7 +306,10 @@ export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<B
         v = target > v ? v + (target - v) * dt / body.tau : Math.max(target, v - body.brake * dt);
         left -= v * dt;
       }
-      prev = to;
+      // He turns for the next waypoint from where he cut this corner, not
+      // from the corner itself (timing the jet from the corner left him
+      // about 0.5 yd short of his snap point).
+      prev = stopAt === CORNER_CUT && nd && d > CORNER_CUT ? { x: to.x - nd.x * CORNER_CUT, y: to.y - nd.y * CORNER_CUT } : to;
       dir = nd ?? dir;
       if (leg.stop) v = 0;
     }
