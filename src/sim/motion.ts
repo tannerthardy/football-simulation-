@@ -15,6 +15,12 @@
  * Every plan is legal by construction (NFL 7-4-7/8): the motion man is off the
  * line, alone in motion, and never moving toward the line at the snap.
  *
+ * Every plan also goes around his set teammates, as a real motion man does:
+ * the path he will actually run (corners cut where motionIntent cuts them)
+ * keeps a step of daylight from every teammate's body, the QB and backs
+ * included. An across motion passes behind the line, and behind a QB under
+ * center; a motion that cannot find room is not called.
+ *
  * After the motion the offense is renumbered from where players actually
  * stand, so routes, coverage checks and match rules all see the final
  * structure ("defend the final formation"). Nothing here moves a defender.
@@ -26,7 +32,7 @@ import { alignDefense, frontSign, isDeepZone, type AlignStyle, type DefenseAlign
 import { installCoverage } from '../playbook/coverages.js';
 import type { DefensivePlayCall, DefSlot, MotionCall, MotionKind, ReceiverRef, Side, SkillSlot } from '../playbook/types.js';
 import { sideSign } from '../playbook/types.js';
-import type { Body } from '../physics/kinematics.js';
+import { cornerSpeed, type Body } from '../physics/kinematics.js';
 import type { Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 
@@ -40,15 +46,17 @@ export interface MotionPlan {
   kind: MotionKind;
   /** When the motion starts, seconds before the snap. */
   seconds: number;
-  /** Waypoints in order, each with its speed as a fraction of top speed. */
-  legs: Array<{ to: Vec2; speed: number }>;
+  /** Waypoints in order, each with its speed as a fraction of top speed;
+   * `stop` brakes into an interior waypoint instead of running through it. */
+  legs: Array<{ to: Vec2; speed: number; stop?: boolean }>;
   /** Still moving at the snap (jet): the last leg is run through, not stopped on. */
   live: boolean;
   /** Where the plan has him at the snap. */
   snapPos: Vec2;
 }
 
-/** Depth behind the line a jet runs at: clear of the center's body and the snap. */
+/** Depth behind the line a jet runs at: clear of the center's body and the
+ * snap. The shallowest lane he actually gets; deeper when his teammates need it. */
 const JET_DEPTH = 1.8;
 /** The jet man reaches the ball this long after the snap: the snap is timed to the mesh (s). */
 const JET_LEAD = 0.6;
@@ -62,8 +70,20 @@ const OFF_LINE = 1.0;
  * centre (yd). With the line set flat at 0.55 yd an across motion at 1.2 yd
  * passed clear; with the tracked stagger (OL_STAGGER: tackles 0.98, inline end
  * 1.19) the same path ran into the tackle and stopped there. At the deepest
- * tracked lineman this puts the path at about the tracked jet depth (1.8). */
+ * tracked lineman this puts the path at about the tracked jet depth (1.8).
+ * Superseded for the path itself by MOTION_CLEAR, which measures from the
+ * bodies' surfaces; kept as the lateral spacing for an across set spot. */
 const LINE_CLEAR = 0.65;
+/** Daylight a motion man leaves between his body and a set teammate's (yd,
+ * surface to surface): about a step. With LINE_CLEAR alone the planned path
+ * grazed the tackles and inline ends (radii sum about 0.6) and ran through a
+ * QB under center (1.6 yd off the ball): 33 of 35 across motions touched a
+ * teammate in one game (scripts/diag/motion-contacts.ts). */
+const MOTION_CLEAR = 0.2;
+/** motionIntent turns for the next waypoint this far short of an interior one (yd). */
+const CORNER_CUT = 0.6;
+/** Deepest a motion man drops to find a lane behind his teammates (yd off the ball). */
+const MAX_DEPTH = 8;
 /** A set motion man arrives this long before the snap. */
 const SET_MARGIN = 1.0;
 /** Longest motion an offense runs before the snap (s). */
@@ -79,6 +99,59 @@ function sideReceivers(off: OffenseAlignment, sign: number): Array<{ slot: strin
     .sort((a, b) => b.lateral - a.lateral);
 }
 
+/** A set teammate the motion man must go around: where he stands and how big he is. */
+export interface MotionObstacle { slot: string; pos: Vec2; radius: number }
+
+/** Body radius assumed for a teammate when the planner is given only the alignment (yd). */
+const DEFAULT_RADIUS = 0.35;
+
+/** The path a plan's body actually runs, as motionIntent steers it: he turns
+ * for the next waypoint CORNER_CUT short of an interior one, and one already
+ * within that distance is passed over (a planted stop is reached). */
+function runPath(p0: Vec2, points: Vec2[], stops: boolean[] = []): Vec2[] {
+  const out = [p0];
+  let at = p0;
+  for (const [i, to] of points.entries()) {
+    const d = Math.hypot(to.x - at.x, to.y - at.y);
+    if (i === points.length - 1 || stops[i]) { out.push(to); at = to; continue; }
+    if (d < CORNER_CUT) continue;
+    const u = (d - CORNER_CUT) / d;
+    at = { x: at.x + (to.x - at.x) * u, y: at.y + (to.y - at.y) * u };
+    out.push(at);
+  }
+  return out;
+}
+
+/** Speed he can carry into a planned corner and still make the turn (the
+ * geometry of cornerSpeed, from the previous waypoint rather than the body). */
+function turnSpeed(from: Vec2, corner: Vec2, next: Vec2, lateral: number): number {
+  const ix = corner.x - from.x, iy = corner.y - from.y, ox = next.x - corner.x, oy = next.y - corner.y;
+  const inLen = Math.hypot(ix, iy), outLen = Math.hypot(ox, oy);
+  if (inLen < 1e-6 || outLen < 1e-6) return 0;
+  const cosine = Math.max(-1, Math.min(1, (ix * ox + iy * oy) / (inLen * outLen)));
+  if (cosine > 1 - 1e-6) return Infinity;
+  const arc = Math.min(CORNER_CUT, inLen, outLen) / Math.sqrt((1 - cosine) / Math.max(1e-9, 1 + cosine));
+  return Math.sqrt(lateral * 0.8 * arc);
+}
+
+/** Closest approach of segment a-b to point p. */
+function segDist(a: Vec2, b: Vec2, p: Vec2): number {
+  const dx = b.x - a.x, dy = b.y - a.y, l2 = dx * dx + dy * dy;
+  const u = l2 > 1e-12 ? Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / l2)) : 0;
+  return Math.hypot(a.x + u * dx - p.x, a.y + u * dy - p.y);
+}
+
+/** Does the path he runs through `points` keep a step from every set teammate?
+ * A man who starts closer than that (a wing beside his end) only must not
+ * get any closer. */
+function pathClear(p0: Vec2, points: Vec2[], others: MotionObstacle[], radius: number, stops?: boolean[]): boolean {
+  const path = runPath(p0, points, stops);
+  return others.every(o => {
+    const need = Math.min(o.radius + radius + MOTION_CLEAR, Math.hypot(p0.x - o.pos.x, p0.y - o.pos.y) - 1e-6);
+    return path.every((q, i) => i === 0 || segDist(path[i - 1], q, o.pos) >= need);
+  });
+}
+
 /** Can this player legally go in motion from his installed spot? */
 export function canMotion(off: OffenseAlignment, slot: SkillSlot): boolean {
   const spot = off.spots[slot];
@@ -86,10 +159,20 @@ export function canMotion(off: OffenseAlignment, slot: SkillSlot): boolean {
 }
 
 /** Plan a motion for `call` from the installed alignment, or null if it is not legal or makes no sense. */
-export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<Body['profile'], 'vmax' | 'tau' | 'brake'>): MotionPlan | null {
+export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<Body['profile'], 'vmax' | 'tau' | 'brake' | 'lateral'> & { radius?: number },
+  teammates?: MotionObstacle[]): MotionPlan | null {
   if (!canMotion(off, call.slot)) return null;
   const spot = off.spots[call.slot];
   const p0 = { ...spot.pos };
+  const radius = body.radius ?? DEFAULT_RADIUS;
+  const others = (teammates ?? Object.values(off.spots).map(sp => ({ slot: sp.slot, pos: sp.pos, radius: DEFAULT_RADIUS })))
+    .filter(o => o.slot !== call.slot);
+  const clear = (points: Vec2[], stops?: boolean[]) => pathClear(p0, points, others, radius, stops);
+  /** Shallowest depth (x) at or behind `from` whose path `at(x)` (with its planted stops) is clear, or null. */
+  const laneDepth = (from: number, at: (x: number) => Vec2[], stops?: boolean[]): number | null => {
+    for (let x = from; x >= off.los - MAX_DEPTH; x -= 0.05) if (clear(at(x), stops)) return x;
+    return null;
+  };
   const own = Math.sign(p0.y - off.ballY) || -off.strongSign;
   const far = -own;
   const legs: MotionPlan['legs'] = [];
@@ -105,25 +188,68 @@ export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<B
       // far one, wherever the line stands (split and staggered or not).
       const front = Object.values(off.spots).filter(p => !p.backfield && (LINE_SLOTS.includes(p.slot) || p.inline));
       const farFront = Math.max(0, ...front.filter(p => (p.pos.y - off.ballY) * far > 0).map(p => Math.abs(p.pos.y - off.ballY)));
-      const lateral = Math.max(farFront + LINE_CLEAR, detached.length === 0 ? 9
+      let lateral = Math.max(farFront + LINE_CLEAR, detached.length === 0 ? 9
         : detached.length === 1 ? Math.max(4.5, detached[0].lateral * 0.3)
         : Math.max(4.6, detached[detached.length - 1].lateral * 0.62));
-      // He runs and sets at his own depth when that clears the line, else
-      // first steps back to the depth that does.
-      const depth = Math.min(p0.x, Math.min(...front.map(p => p.pos.x)) - LINE_CLEAR);
-      if (depth < p0.x) legs.push({ to: { x: depth, y: p0.y }, speed: 0.7 });
-      legs.push({ to: { x: depth, y: off.ballY + far * lateral }, speed: 0.7 });
+      // He sets at his own depth (off the line) in a spot with room around it
+      // (two steps from any teammate, so there is a way in from behind),
+      // nearest the called width; inside the far front's edge is no slot.
+      const setX = Math.min(p0.x, off.los - OFF_LINE);
+      const room = (l: number) => others.every(o =>
+        Math.hypot(o.pos.x - setX, o.pos.y - (off.ballY + far * l)) >= o.radius + radius + 2 * MOTION_CLEAR);
+      const want = lateral;
+      lateral = NaN;
+      for (let k = 0; k <= 80 && Number.isNaN(lateral); k++) for (const l of [want + k * 0.1, want - k * 0.1])
+        if (l >= farFront + LINE_CLEAR && room(l)) { lateral = l; break; }
+      if (Number.isNaN(lateral)) return null;
+      const set = { x: setX, y: off.ballY + far * lateral };
+      // He bellies back to the shallowest lane that passes behind the line
+      // and its ends (and behind a QB under center), crosses, and comes back
+      // up into his spot, each change of depth taken on a gentle diagonal
+      // that he can run through at speed: as long a run-in (`e`) and run-out
+      // (`e2`) as the traffic allows. Straight across when his own depth is
+      // already clear.
+      const span = Math.abs(set.y - p0.y);
+      const path = (x: number, e: number, e2: number): Vec2[] => {
+        const pts: Vec2[] = [];
+        if (x < p0.x) pts.push({ x, y: p0.y + far * e });
+        if (x < set.x) pts.push({ x, y: set.y - far * e2 });
+        else if (x < p0.x) pts.push({ x, y: set.y });
+        pts.push(set);
+        return pts;
+      };
+      const RUNS = [3, 2.5, 2, 1.5, 1, 0.5, 0];
+      const crowded = others.some(o => Math.hypot(p0.x - o.pos.x, p0.y - o.pos.y) < o.radius + radius + MOTION_CLEAR);
+      let best: Vec2[] | null = null;
+      for (let x = Math.min(p0.x, setX); x >= off.los - MAX_DEPTH && !best; x -= 0.05) {
+        // The shallowest lane, with the longest run-in, then run-out, that clear.
+        // A man who starts tight to a teammate (a wing) drops straight back
+        // off him first; a diagonal start drifted him into the end.
+        for (const e of x < p0.x && !crowded ? RUNS : [0]) {
+          const e2 = RUNS.find(r => e + r <= span && clear(path(x, e, r)));
+          if (e2 !== undefined) { best = path(x, e, e2); break; }
+        }
+      }
+      if (!best) return null;
+      for (const to of best) legs.push({ to, speed: 0.7 });
       break;
     }
     case 'jet': {
       if (spot.backfield || Math.abs(p0.y - off.ballY) < JET_RUNUP) return null;
-      const x = off.los - JET_DEPTH;
-      legs.push({ to: { x, y: p0.y - own * 1.5 }, speed: 0.6 });
+      // At the tracked jet depth, or the shallowest lane behind it that
+      // clears his teammates (behind a QB under center). He gets there on a
+      // long, gentle run-in that he rounds at speed, short of his snap point.
+      const lead = JET_LEAD * 0.85 * body.vmax;
+      const runIn = Math.max(1.5, Math.min(3, Math.abs(p0.y - off.ballY) - lead));
+      const turnY = p0.y - own * runIn, endY = off.ballY + far * 1.0;
+      const x = laneDepth(off.los - JET_DEPTH, d => [{ x: d, y: turnY }, { x: d, y: endY }]);
+      if (x === null) return null;
+      legs.push({ to: { x, y: turnY }, speed: 0.6 });
       legs.push({ to: { x, y: off.ballY + far * 1.0 }, speed: 0.85 });
       live = true;
       // Snapped JET_LEAD s of running short of the ball, never behind his turn.
-      const turn = Math.abs(p0.y - own * 1.5 - off.ballY);
-      jetSnap = { x, y: off.ballY + own * Math.min(turn, JET_LEAD * 0.85 * body.vmax) };
+      const turn = Math.abs(turnY - off.ballY);
+      jetSnap = { x, y: off.ballY + own * Math.min(turn, lead) };
       break;
     }
     case 'empty': {
@@ -131,12 +257,26 @@ export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<B
       const weak = -off.strongSign;
       const detached = sideReceivers(off, weak).filter(r => !r.inline);
       const lateral = detached.length ? Math.min(10, Math.max(6, detached[detached.length - 1].lateral - 4)) : 8;
-      legs.push({ to: { x: off.los - 1.2, y: off.ballY + weak * lateral }, speed: 0.6 });
+      const set = { x: off.los - 1.2, y: off.ballY + weak * lateral };
+      // Straight out when that is clear, else along his own depth (behind the
+      // QB beside him) and then up into the slot.
+      if (clear([set])) legs.push({ to: set, speed: 0.6 });
+      else {
+        const depth = laneDepth(p0.x, x => [{ x, y: p0.y }, { x, y: set.y }, set], [true, true]);
+        if (depth === null) return null;
+        if (depth < p0.x) legs.push({ to: { x: depth, y: p0.y }, speed: 0.6, stop: true });
+        legs.push({ to: { x: depth, y: set.y }, speed: 0.6, stop: true }, { to: set, speed: 0.6 });
+      }
       break;
     }
     case 'return': {
       if (spot.backfield) return null;
-      legs.push({ to: { x: p0.x, y: p0.y - own * 4 }, speed: 0.45 });
+      // Up to 4 yd inside, stopping a step short of the nearest teammate in
+      // his way; a man with no room to step inside does not yo-yo.
+      let step = 4;
+      while (step >= 1.5 && !clear([{ x: p0.x, y: p0.y - own * step }])) step -= 0.1;
+      if (step < 1.5) return null;
+      legs.push({ to: { x: p0.x, y: p0.y - own * step }, speed: 0.45 });
       legs.push({ to: p0, speed: 0.45 });
       break;
     }
@@ -144,8 +284,9 @@ export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<B
   // Travel time: integrate his speed along the path under the same targets
   // motionIntent commands. Speeding up follows the sprint law (dv/dt =
   // (target - v) / tau), slowing is at his braking limit, a path that turns
-  // back on itself stops first, and a set motion tapers into its spot. A jet
-  // is timed to its snap point on the live leg.
+  // back on itself stops first, a corner is taken no faster than he can turn
+  // it, and a set motion tapers into its spot. A jet is timed to its snap
+  // point on the live leg.
   const travel = (pace: number) => {
     const dt = 0.01;
     let t = 0, v = 0, prev = p0, dir: Vec2 | null = null;
@@ -156,14 +297,18 @@ export function planMotion(off: OffenseAlignment, call: MotionCall, body: Pick<B
       const top = Math.min(MAX_SET_SPEED, leg.speed * pace) * body.vmax;
       const nd = d > 1e-6 ? { x: (to.x - prev.x) / d, y: (to.y - prev.y) / d } : null;
       if (dir && nd && dir.x * nd.x + dir.y * nd.y < 0) { t += v / body.brake; v = 0; }
-      const stopAt = final && !live ? 0.3 : 0;
+      const brakes = (final && !live) || !!leg.stop;
+      const stopAt = brakes ? 0.3 : final ? 0 : CORNER_CUT;
+      const corner = !brakes && !final ? turnSpeed(prev, to, legs[i + 1].to, body.lateral) : Infinity;
       for (let left = d; left > stopAt && t < 2 * MAX_SECONDS; t += dt) {
-        const target = final && !live ? Math.min(top, left * 2.5) : top;
+        const target = brakes ? Math.min(top, left * 2.5)
+          : Math.min(top, Math.sqrt(corner * corner + 2 * body.brake * Math.max(0, left - CORNER_CUT)));
         v = target > v ? v + (target - v) * dt / body.tau : Math.max(target, v - body.brake * dt);
         left -= v * dt;
       }
       prev = to;
       dir = nd ?? dir;
+      if (leg.stop) v = 0;
     }
     if (!live) t += SET_MARGIN;
     return { t, end: prev };
@@ -193,14 +338,17 @@ export function motionIntent(plan: MotionPlan, body: Body, t: number, state: { l
   if (state.leg > lastLeg) return still;
   const leg = plan.legs[state.leg];
   const dx = leg.to.x - body.pos.x, dy = leg.to.y - body.pos.y, d = Math.hypot(dx, dy);
-  const final = state.leg === lastLeg;
-  if (d < (final ? 0.3 : 0.6)) {
+  const final = state.leg === lastLeg, brakes = final || !!leg.stop;
+  if (d < (brakes ? 0.3 : 0.6)) {
     state.leg++;
     return motionIntent(plan, body, t, state);
   }
-  // Waypoints are run through; a set motion brakes into its final spot.
+  // Waypoints are run through no faster than he can turn them; a set motion
+  // brakes into its final spot.
   const top = leg.speed * body.profile.vmax;
-  const speed = final ? Math.min(top, d * 2.5) : top;
+  const corner = brakes ? 0 : cornerSpeed(body, leg.to, plan.legs[state.leg + 1].to, CORNER_CUT);
+  const speed = brakes ? Math.min(top, d * 2.5)
+    : Math.min(top, Math.sqrt(corner * corner + 2 * body.profile.brake * Math.max(0, d - CORNER_CUT)));
   return { vel: { x: dx / d * speed, y: dy / d * speed }, facing: speed > 0.5 ? Math.atan2(dy, dx) : 0 };
 }
 
