@@ -157,10 +157,11 @@ problem), resolved.
 | [RUN-8](#run-8) | Center covered on almost every snap | G2 | medium | on |
 | [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | on |
 | [RUN-10](#run-10) | Older run-blocking and second-level issues | G2 | low–medium | open |
+| [RUN-11](#run-11) | Staged scenes recorded on arm-force hands | G2, G5 | low | pinned until review 2 |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#205) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
-| [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work |
+| [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work (G5, #215) |
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
@@ -575,6 +576,20 @@ Carried over from the issue register; each was measured on an older develop.
 
 ## Pass protection
 
+<a id="run-11"></a>
+### RUN-11: Staged scenes recorded on arm-force hands
+
+- **What:** `ARM_PRESS` (G5) puts a press through the hands at each player's
+  bench max, not the arm-force mapping. Six staged scenes were recorded on
+  arm-force hands. They are pinned to `ARM_PRESS=0` until review 2:
+  - run: `combo-strike-access`, `planned-climb-fit`, `zone-runoff-work`;
+  - legacy trace: `run-hand-control`;
+  - pass: `pass-cutoff-approach`, `cover3-cover2-rules`.
+- **Open:** whether a double still moves the DL and hands him to the climber
+  when the arms don't fold. That is a G2 question; a pin is not an answer.
+  Re-record each scene, or replace it with a contract that holds under strong
+  arms, by review 2.
+
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
 
@@ -602,6 +617,66 @@ Carried over from the issue register; each was measured on an older develop.
   and timing, so they stay on; they show the tackles can't hold an edge.
   In the P019 pass-cutoff scene the tackle also loses edge contact with
   `PASS_FEEL` on (`test/pass-cutoff-approach.test.ts` is pinned).
+- **G5** (2026-10-22, `trenches/G5-edge-hands`). Two mechanisms, each
+  measured with `scripts/diag/edge-rep.py` on 8 games (seed 301) against
+  tracking:
+  - **Contact timing: `PASS_KICK`, on.** The tackle sets vertically against
+    an edge rusher (ported from `claude/run-game-v3`). First contact moves from
+    0.55 s to 1.06 s (NFL 1.20), with the tackle 3.0 yd back (NFL 2.75).
+    Edge reps engaged move from 41% to 62% and free from 50% to 30% (NFL 79%
+    and 5%). `PASS_CORNER` (cut him off where the arc turns) didn't move
+    contact on develop (0.49 s), so it wasn't ported.
+  - **The hands: `ARM_PRESS`, on (agreed with G2 for run reps).** A hand joint's push was capped
+    at the arm-force mapping, 0.86 body weights for a tackle. That is less
+    than the leg drive it resists (traction, 1.1). So the joint asked for
+    0.88–0.93 yd and the bodies sat at 0.67, torso to torso, with the push
+    at its cap on 85% of edge ticks at 0.2 s. A push is a bench press: each
+    player's one-rep max from his combine reps (Epley), about 1.3 body
+    weights.
+    - Pairs now hold 0.90–0.93 yd apart from 0.6 s. The share of ticks at
+      the cap falls to 20–38%.
+    - Of free reps, the share that get free *through* the tackle falls from
+      71% to 43% (NFL 29%). With PASS_KICK alone it is 73%.
+    - The arm budget, and its work and impulse ledgers, count a press in
+      press units. Before that, the first version tripped the arm audit
+      (`armImpulseExcess`) in 106 staged-scene tests and capped a press's work
+      at arm-force work.
+    - Corrected, on top of PASS_KICK and ROUTE_CLEAR (8 games, seed 301):
+      edge reps engaged / free 62% / 29%, and free reps through the tackle
+      73% → 47% (NFL 29%).
+    - Quick tier, off → on: sacks 8.0% → 6.0% (moved). Run stuffs 21.7% →
+      19.1% and yards before contact 1.25 → 1.54 (both noise, both in band).
+      Completion % swings ±9 points between quick-tier arms, against 64–66%
+      on the 8-game exports: noise.
+    - Six staged scenes recorded on arm-force hands are pinned under RUN-11.
+  - **Both:** sacks fall from 13.9% (develop) to 5.9% of dropbacks (NFL
+    6–7.5%). PASS_KICK alone gives 7.5%, ARM_PRESS alone 8.8% (quick tier,
+    6 games). Time to throw rises 0.10 s. Interior reps (PRO-3) and
+    play-action losses are unchanged.
+  - **Still open, the hip:** a rusher still keeps speed into the rep (4.9
+    yd/s at contact, 3.1–3.3 at 1.2 s; NFL 4.1 and 2.5). The rep ends by
+    rule once he is hip to hip (`|phi| >= 1`, "turned the corner"), while
+    a tracked tackle rides him past the launch point.
+    - In P019 under PASS_KICK, both ends are met at 1.25 s and lost at the
+      hip at 1.9 s.
+    - `PASS_RIDE` (parked) is the candidate.
+    - The pinned scenes are `pass-cutoff-approach`, `redirect-protection`
+      and `qb-rusher-recording`.
+  - **A back's release: `ROUTE_CLEAR`, on.** A back releasing from the
+    backfield ran straight at his waypoint and into the kicking tackle (3.5
+    to 1.9 yd/s at 0.9 s in the Cover 3 push scene). Now he paths around a
+    body he sees in his lane (a teammate, or a rusher coming at the
+    backfield): on the side he is on, or the other if that side is closed.
+    - Released backs within 0.8 yd of their own linemen in the first 2 s fall
+      from 11% to 6% (8 games). Their speeds are about unchanged.
+    - Completion rate on the quick scorecard moved 60.0% → 69.7%, but the
+      8-game exports show 64.1% → 62.5%: whole-game noise, not a finding.
+    - **Still open:** the back flat route aims at the line 4 yd outside the
+      back, which is the end's rush lane at 1.0–1.3 s under PASS_KICK. In
+      the Cover 3 scene the back now clears the tackle and the flat defender
+      pushes on him at 1.10 s, but he meets the end at 1.35 s. Where a back
+      releases against the rush is G3/G7's call; `cover3-cover2-rules` stays
+      pinned.
 
 <a id="pro-2"></a>
 ### PRO-2: Pressure arrives too early and from the wrong places
@@ -731,18 +806,35 @@ From #193's open list:
   Smack, Read and Patty;
 - Cover 2 and Cover 6 run a few points under tracking (#194);
 - Fangio E1 (strength and rotation to the nickel side) is not done (#196);
-- with `FRONT_ALIGN` on, the Quarters Flat defender's carry changes
-  (`test/quarters-trips-rules.test.ts` is pinned to the old front);
-- with `WR_ALIGN` and `OL_SPLITS` on, the match hook defender stops carrying
-  the doubles seam (5.7 yd away versus 4.8 yd for a spot dropper;
-  `test/integration/coverage-panel.test.ts` is pinned);
-- with the line stagger on, jet motion numbering inside the tight end is
-  unsettled (`test/offensive-motion.test.ts` is pinned);
-- with `WR_ALIGN` on, the Cover 3 Match corner never zones off the short out
-  (`test/corner-one-release.test.ts` is pinned);
-- with `OL_STAGGER` on, the weak linebacker bumps 5.3 yd on across motion,
-  past the test's 5-yd limit, which may itself need a look
-  (`test/motion-check.test.ts` is pinned).
+- with `WR_ALIGN` and `OL_SPLITS` on, the match hook and curl/flat defenders
+  stop carrying the doubles seams (`test/integration/coverage-panel.test.ts`
+  is pinned). *Confirmed cause:* the wider slot's seam is outside the hook's
+  band, and the curl/flat's carry starts only once the stem is past 2 yd at
+  4.5 yd/s. Until then the lane logic pulls him downhill toward the stem, so
+  the receiver runs past him at 2.7 yd/s and he finishes 6 yd behind. The
+  hook on Y trails 4 yd underneath the same way. Same failure as deep man
+  (G3): the carrier lets the stem eat his cushion without counting the time
+  his body needs to turn and reach the receiver's speed.
+- with `PASS_KICK` on (#215), the Quarter Flat #3-away scene loses its
+  released #3 again: the back's flat release is walled behind the weak
+  tackle's vertical kick and is 3.7 yd behind the line at 2.8 s
+  (`test/quarters-trips-rules.test.ts` is pinned to `PASS_KICK=0`). Open
+  question for Main Engine and Coverage: should `ROUTE_CLEAR` take the back
+  around a kicking tackle, or does the scene need another release?
+
+Resolved with the promoted defaults (staging, not coverage):
+- Quarter Flat #3-away carry: the back's swing ran into the wider weak end
+  and stayed behind the line, which correctly reads as a block. Staged with
+  the back's flat release.
+- Jet numbering: receivers are numbered outside-in at the snap, so a jet
+  inside the inline end on the tracked splits is #2 on his own side. The
+  test asserts the side.
+- Cover 3 Match corner on #1's short out: his rule zones off and the
+  judgment's squeeze-break robs the out when nothing threatens deep. The old
+  assertion passed on a one-tick zone. The rep is now staged without the
+  rush instead of pinning four flags.
+- Weak hook's bump on across motion: a 5.3-yd slide that crosses the ball
+  from 2.2 yd is a bump, not a sideline-to-sideline run. The limit is 8 yd.
 
 <a id="cov-4"></a>
 ### COV-4: Defenders react late to jet motion

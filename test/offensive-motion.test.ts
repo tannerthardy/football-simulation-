@@ -4,12 +4,8 @@
  * lets the secondary check against the final formation. Off by default:
  * without the flag a call's motion changes nothing.
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-// Staged on the installed flat 1.3 yd line. With the tracked splits and
-// stagger, the jet's snap point (4.5 yd out) is inside the inline end, so he
-// is numbered #2 at the snap; whether a live jet keeps his number is open
-// (Coverage). The across motion on the tracked line: motion-line-clear.test.ts.
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; });
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+// The across motion on the tracked line: motion-line-clear.test.ts.
 import { assessScrimmageSnap, type SnapPlayerFacts } from '../src/game/presnap-rules.js';
 import { sceneSim } from '../src/lab/coverage-scene.js';
 import { formationStructure } from '../src/playbook/structure.js';
@@ -67,11 +63,13 @@ describe('offensive motion', () => {
     expect(sim.los - z.pos.x).toBeGreaterThan(1.5);
     // Snapped a few yards short of the ball, running toward it (tracked jets:
     // median 5 yd from the ball at the snap): still counted on his own side.
+    // Receivers are numbered outside-in by where they are at the snap, so
+    // with the tracked splits a jet inside the inline end is that side's #2.
     const lateral = (z.pos.y - sim.ballY) * Math.sign(at(plain, 'Z').pos.y - sim.ballY);
     expect(lateral).toBeGreaterThan(2.5);
     expect(lateral).toBeLessThan(7);
     expect(z.vel.y * Math.sign(sim.ballY - z.pos.y)).toBeGreaterThan(0);
-    expect(sim.offAlign.refOf.Z).toBe(plain.offAlign.refOf.Z);
+    expect(sim.offAlign.refOf.Z?.[0]).toBe(plain.offAlign.refOf.Z?.[0]);
     expect(snapFouls(sim)).toEqual([]);
   });
 

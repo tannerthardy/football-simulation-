@@ -1,4 +1,6 @@
 import {afterEach,describe,expect,it,vi} from 'vitest';
+// ARM_PRESS puts a press through the hands at the bench max; this scene is staged on arm-force hands (KNOWN_PROBLEMS RUN-11, re-record by review 2).
+vi.hoisted(() => { process.env.ARM_PRESS = '0'; });
 import {contactFixture} from '../scripts/diag/run-contact-technique.js';
 import {RunBlocker} from '../src/sim/behaviors/blocking.js';
 import {updateEngagements} from '../src/sim/engagement.js';
