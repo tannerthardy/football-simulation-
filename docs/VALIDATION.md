@@ -68,6 +68,85 @@ perception, applied force or the cause of a fall. Mark those cases **needs trace
 not confirmed physics failures. Use existing recording levels to collect the
 missing state only for the selected mechanism. Preserve unsuccessful examples.
 
+## Film weirdness detectors
+
+A person watching ordinary film finds things the averages hide: a motion man
+running into the quarterback, a defender with his back to the runner. The
+detectors in `scripts/scorecard/weird/` are cheap rules that read the games the
+scorecard already plays and point at clips, so an agent can notice these before
+a person has to. **A detector says where to look, never what number is right.**
+They only read: games are identical with them on
+(`scripts/weird-identity.ts`, `test/scorecard-weird-games.test.ts`). Fixing a
+mechanism a detector exposes is the owning lane's job, and nothing here is tuned
+to a target count.
+
+| Detector (`id`) | Fires when | Constants | Logged beside the event |
+| --- | --- | --- | --- |
+| Pre-snap teammate contact (`presnap`) | Two offensive bodies touch before the snap, from the physics world's contact log. Reports the motion kind and who the motion man is. Control: with no motion called it should give zero (`weird.presnap.control`). | None. | Closing speed, impulse. Nothing is requested before the snap. |
+| Defender turned away (`turned`) | After a handoff, catch or scramble (not a QB in the pocket): a defender within 5 yd of the carrier, facing more than 120° from the bearing to him, for 0.25 s, not engaged, down or in the tackle. | 5 yd, 120°, 0.25 s are chosen; 120° is "an analysis category, not a coaching truth" in `docs/football-handbook/orientation-pilot.md`. | Requested facing (or travel direction) against achieved facing. |
+| Blocker on a man out of the play (`stuck`) | A run play with a carrier: a blocker engaged with, or planning against, a defender more than 5 yd from the carrier and moving away at over 0.5 yd/s, while a free defender (not engaged, not down, no offensive teammate within 1 yd) is within 3.5 yd of the carrier. | 5 yd and 3.5 yd are RUN-12's; the 0.5 yd/s and the 0.25 s are chosen. RUN-12 is rebuilt from its text, since no script exists. | The blocker's requested and achieved velocity, and his job. |
+| Lineman backpedaling facing his backfield (`backpedal`) | An unengaged offensive lineman, while the offense still has the ball, faces more than 120° from downfield and moves back faster than 1 yd/s, for 0.25 s. Run and pass plays both; the play kind is logged. | 120°, 1 yd/s, 0.25 s are chosen. | Requested against achieved velocity and facing. The rate is a share of OL frames. |
+| Sliding through a cut (`slide`, **candidate**) | A sharp turn (60° or more over 0.5 s, entered at 3 yd/s or faster) in which no window of the turn shows him slowing: speed retention at or above the NFL 90th percentile for his role. | The turn operator and the retention percentiles are sourced from BDB2027 tracking (`scripts/data/bdb2027_movement.py`; the table in `detectors.ts` is checked against `bdb2027-movement.json` by a test). The 3 yd/s entry floor is chosen. **No plant-deceleration threshold exists anywhere**, hence "candidate". | Requested turn angle and speed ratio against achieved. The rate is a share of sharp turns. |
+
+The retention table describes how NFL players turn (their typical turn is
+entered at about 1.9 yd/s, so it is generous to a run-speed cut), not when a foot
+is planted. Windows that touch a block, a fall or a tackle are skipped, and a
+cut spans several overlapping windows, so it is judged by its worst one.
+
+**Reading the output.**
+- The scorecard report has a *Watch these first* section: the three most
+  severe events per detector as `play @ time: description`, plus rate rows
+  (`weird.*` metrics) that move like any other metric. Severity is duration,
+  smallest distance, closing speed or, for slides, speed carried through the cut.
+- The full list is `<saved card>.weird-events.json` (or `--weird path`), written
+  next to `--out`/`--md`; CI uploads it with `out/`. It keeps the worst 25 events
+  per detector per game; rate counts are never capped.
+- Scorecard ids look like `sc7/G2-P014` and belong to that run's own games, not the
+  film room's. `npm run weird -- 7 --games 6` plays the film room's games (the same
+  teams and seeds as `npm run replay`), so its ids (`G1-P007`) match the film.
+  `--expect list.json` scores a hand-made list of flagged plays for hits and
+  misses (see the header of `scripts/weird-film.ts`).
+- "Needs trace" still applies: the detectors see paths, facing, engagement and
+  requests, not hidden perception or applied force. Body facing is not gaze
+  ([BEHAVIOR_REVIEW](BEHAVIOR_REVIEW.md)).
+
+**What they miss, on purpose or by definition.** Anything outside the rule: a long
+curved glide that never turns 60° in half a second, a defender turned from the
+quarterback before there is a runner, a blocker on a man who is close and closing.
+When a clip like that matters, add a detector.
+
+**Add a detector in about 30 lines.** A detector is a pure function of one tick.
+1. In `scripts/scorecard/weird/detectors.ts`, write a `Detector` and append it to
+   `DETECTORS`:
+   ```ts
+   const holdSlot: Detector = {
+     id: 'cbBackToBall', label: 'Corner with his back to the ball',
+     minHold: 0.25,                       // seconds it must persist (0 = every hit)
+     hit(f) {                             // f: WFrame, one tick; return [] or Hit[]
+       if (f.phase !== 'live') return NONE;
+       const out: Hit[] = [];
+       for (const a of f.agents) {
+         if (a.team !== 'D' || !a.slot.startsWith('CB') || a.engaged || a.down) continue;
+         // ... compute from a.x, a.y, a.vx, a.vy, a.facing, a.rfacing (requested), f.runner
+         out.push({ key: String(a.idx), players: [a.idx], sev: 1, data: { /* numbers for the text */ } });
+       }
+       return out;
+     },
+     describe: (p, dur, slots) => `${slots[p.players[0]]} ... for ${dur.toFixed(2)} s`,
+   };
+   ```
+   A `Hit` can carry `intent` and `achieved` records; the tracker merges ticks into one
+   event per (detector, key) and keeps the worst tick. For a windowed rule, read
+   `History` (10 Hz positions for 0.8 s) as `slide` does.
+2. Add the id to `DetectorId` in `types.ts`.
+3. Add one scene where it fires and one where it must not to
+   `test/scorecard-weird.test.ts` (frames are object literals; no simulation).
+4. Add its metrics to `scripts/scorecard/weird/probe.ts` (`pair('id', ...)` gives
+   "plays with one or more" and "events per 100" rows). Counts, the events file
+   and *Watch these first* pick the new detector up with no other wiring.
+5. If it needs a field the adapter does not copy, add it to `WAgent`/`WFrame` and
+   fill it in `observe.ts` (`fill`), reading only.
+
 ## Change and stopping rules
 
 Use the [tiny default loop](TESTING_COSTS.md#default-loop-one-question-tiny-evidence):
