@@ -624,7 +624,10 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // run at the 3-technique; against a playside 1-technique the line makes it
     // a long trap of the next man out (spread playbook p. 62, Browns "log"
     // p. 37). The offense calls before seeing the front, so this is the check.
-    const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= 1.05).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
+    // Techniques are read off the guard, not a yard mark: inside the
+    // playside guard is the A-gap 1-technique; on or outside him, trapped.
+    const psg = line.filter((b) => isOL(b) && rel(b) > 0).sort((p, q) => rel(p) - rel(q))[0];
+    const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= (psg ? rel(psg) : 1.05)).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
     const kickReserved = scheme !== 'trap' && pullers.size ? dl.filter((d) => rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null : null;
 
     // Account for immediate inside threats first. Outside-in assignment can
@@ -737,11 +740,17 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // With every backer owned, the lead takes the most dangerous free box
     // defender, nearest the mesh; on counter and trap, the backside one the
     // pullers vacated first.
+    // Nearest the mesh counts depth: a safety walked down outside the end is
+    // farther from it than the edge on the line. The lead's backer is one
+    // inside the surface; a box safety outside it is a perimeter blocker's.
     const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
     const backsideFirst = scheme === 'counter' || scheme === 'trap';
+    const fromMesh = (d: Agent) => Math.hypot(d.pos.x - sim.los, rel(d));
     const free = [...dl, ...lb].filter((d) => !owned.has(d))
-      .sort((p, q) => (backsideFirst ? Number(rel(p) >= 0) - Number(rel(q) >= 0) : 0) || Math.abs(rel(p)) - Math.abs(rel(q)));
-    plans.set(fb, { kind: 'lead', target: lbNear(by + ps * 1.5) ?? free[0] ?? null, drive: up(0) });
+      .sort((p, q) => (backsideFirst ? Number(rel(p) >= 0) - Number(rel(q) >= 0) : 0) || fromMesh(p) - fromMesh(q));
+    const surface = line.map(rel), inside = (d: Agent) => rel(d) >= Math.min(...surface) - .5 && rel(d) <= Math.max(...surface) + .5;
+    const backer = lbNear(by + ps * 1.5);
+    plans.set(fb, { kind: 'lead', target: (backer && inside(backer) ? backer : null) ?? free[0] ?? null, drive: up(0) });
   }
   const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'
     && !(a.slot === 'F' && sim.offAlign.spots.F?.backfield));
@@ -762,7 +771,12 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // backers a lineman or lead already owns. Only a receiver left with
     // nobody unclaimed helps on the nearest man.
     const open = stalkPool.filter(d => !reserved.has(d));
-    const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d) }))).sort((p, q) => p.dist - q.dist);
+    // A box defender nobody owns (a safety walked down into an eight-man
+    // box) is claimed before the secondary, by a receiver on his side of the
+    // ball: the crack. Then the closest pairs.
+    const box = (a: Agent, d: Agent) => lb.includes(d) && (d.pos.y - by) * (a.pos.y - by) > 0 ? 0 : 1;
+    const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d), tier: box(a, d) })))
+      .sort((p, q) => p.tier - q.tier || p.dist - q.dist);
     const taken = new Set<Agent>();
     for (const { a, d } of pairs) if (!stalkTargets.has(a) && !taken.has(d)) { stalkTargets.set(a, d); taken.add(d); }
   }
@@ -795,6 +809,35 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       p.contactFit = { target: p.target, axis: norm({ x: -.3, y: p.drive.y * .6 }), sealTarget: 0 };
   }
   return plans;
+}
+
+/** On (STALK_CUSHION=0 for comparison): a receiver stalking a DB breaks down
+ * at a stand-off and mirrors him until the DB attacks (downhill over
+ * STALK_ATTACK, or inside toward the ball over STALK_ATTACK_IN, yd/s), rather
+ * than running full speed to intercept him. Stalk coaching breaks down 2-3 yd
+ * off the DB. Tracked receivers on runs are within 1 yd of a DB 9 / 17% of the
+ * time at 1.5 / 2.0 s; ours 23 / 45% (out/wrrun.py, dbtempo.py). */
+const STALK_CUSHION = process.env.STALK_CUSHION !== '0';
+const STALK_STANDOFF = 2, STALK_ATTACK = 1, STALK_ATTACK_IN = 1.5;
+
+/** On (BACK_BLOCK=0 for comparison): a blocker does not start a block on, or
+ * drive into, a man whose back is to him once the runner is past that man. A
+ * block in the back is a foul every blocker is coached out of, and his hands
+ * have no front to fit. Both reads are his own picture (the man's body
+ * facing, the runner's position). Develop at #205: 80% of the run blocks
+ * started after the ball crossed are from behind the defender's facing, and
+ * 61% of linemen are within 1 yd of a blocker when the back reaches 5 yd
+ * (NFL 27%; rallybox.py). */
+const BACK_BLOCK = process.env.BACK_BLOCK !== '0';
+
+/** The man has turned his back to this blocker to chase a runner already
+ * past him. */
+function backTurned(a: Agent, sim: PlaySim, target: Agent): boolean {
+  const c = sim.carrier;
+  if (!BACK_BLOCK || !c || c.team !== a.team || (c === sim.qb && !sim.scrambled)) return false;
+  const man = sim.see(a, target), runner = sim.see(a, c), dir = sim.attackDir(a.team);
+  if ((runner.pos.x - man.pos.x) * dir <= 0) return false;
+  return Math.cos(man.facing) * (a.pos.x - man.pos.x) + Math.sin(man.facing) * (a.pos.y - man.pos.y) < 0;
 }
 
 /** Receivers claim distinct stalk targets (STALK_CLAIM=0: each takes his nearest). */
@@ -1037,6 +1080,13 @@ export class RunBlocker implements Behavior {
           facing: this.pullIdx === 0 ? (PULL_STEP ? Math.atan2(ps, 0) : 0) : undefined });
       }
     }
+    if (target && backTurned(a, sim, target)) {
+      // Trail him at a stand-off: keep pace without running into his back.
+      const man = sim.see(a, target), dirX = sim.attackDir(a.team);
+      const trail = { x: man.pos.x - dirX * (a.profile.radius + target.profile.radius + .5), y: man.pos.y };
+      if ((trail.x - a.pos.x) * dirX < 0) trail.x = a.pos.x;
+      return goTo(a, trail, { speed: .85, through: Math.max(0, man.vel.x * dirX) });
+    }
     if (!target) {
       const ref = this.workReference(a, sim);
       return goTo(a, { x: ref.x + 3, y: a.pos.y }, { speed: 0.5 });
@@ -1046,6 +1096,19 @@ export class RunBlocker implements Behavior {
       const dd = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
       if (dd < a.profile.radius + target.profile.radius + 0.3 && sim.engage(a, target, 'run', plan.drive)) return stand();
       const seen = sim.see(a, target);
+      if (STALK_CUSHION && plan.perimeterStalk === target) {
+        // Break down short of a DB who is not attacking: mirror him at a
+        // stand-off until he comes downhill or inside toward the ball.
+        const dirX = sim.attackDir(a.team);
+        const downhill = -seen.vel.x * dirX;
+        const inside = (sim.ballY - seen.pos.y) * seen.vel.y > 0 ? Math.abs(seen.vel.y) : 0;
+        if (downhill < STALK_ATTACK && inside < STALK_ATTACK_IN) {
+          const stand = { x: seen.pos.x - dirX * STALK_STANDOFF, y: seen.pos.y };
+          if ((stand.x - a.pos.x) * dirX < 0) stand.x = a.pos.x;
+          return goTo(a, stand, { speed: .85, through: Math.max(0, seen.vel.x * dirX),
+            facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) });
+        }
+      }
       if (plan.perimeterStalk === target) {
         const capacity = a.body.support
           ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;

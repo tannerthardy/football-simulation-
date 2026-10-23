@@ -1,4 +1,4 @@
-import {describe,expect,it} from 'vitest';
+import {describe,expect,it,beforeAll,afterAll,vi} from 'vitest';
 import {Rng} from '../src/core/rng.js';
 import {generateTeam,pickDefense,pickOffense} from '../src/league/team.js';
 import {PASS_BY_ID} from '../src/playbook/concepts.js';
@@ -9,6 +9,12 @@ import {showsBlock} from '../src/sim/coverage-cues.js';
 import {ReleaseReader} from '../src/sim/coverage/reads.js';
 import type {Perceived} from '../src/sim/perception.js';
 import {PlaySim} from '../src/sim/playsim.js';
+
+// These panels record the blocking-admission contract of a man marker
+// on a perimeter receiver; PASS_FIRST (on) keeps such a marker on his man
+// until the ball crosses. Pin it off so the admission machinery is tested.
+beforeAll(() => { vi.stubEnv('PASS_FIRST', '0'); });
+afterAll(() => { vi.unstubAllEnvs(); });
 
 /** Synthetic controller boundary, not a reconstructed whole-play checkpoint. */
 function stage(side=1){
