@@ -914,9 +914,9 @@ Resolved with the promoted defaults (staging, not coverage):
   beats a 0.3-s reaction. The reaction time wasn't tuned to close it.
 - **Open:** whether the motion plan's acceleration or the reaction is wrong.
   Shifts and tight-end motion aren't modeled.
-- **Changed by ALN-3:** jets now run a deeper lane around their teammates and
-  snap about 0.8 yd farther from the ball (5.6 vs 4.8 yd) and slower (5.3 vs
-  6.1 yd/s). Re-measure the travel rate on the new timing.
+- **Changed by ALN-3:** jets now run a deeper lane around their teammates
+  (2.05 vs 1.8 yd) and are a little slower at the snap (5.3 vs 6.1 yd/s, at
+  5.0 vs 4.8 yd from the ball). Re-measure the travel rate on the new timing.
 
 <a id="cov-5"></a>
 ### COV-5: Older coverage contracts that fail or are unproven
@@ -1035,11 +1035,13 @@ need personnel the sim doesn't have.
   (behind a QB under center) on gentle diagonals. Corners are taken no faster
   than he can turn them (`cornerSpeed`), and the travel time models that. A
   wing starting beside his end drops straight back. A motion with no clear
-  path isn't called (3–7% of calls).
-- **After** (same seeds): 0 touches in 365 motions (368 on develop).
-- **Timing:** across motions run 4.6 s (4.3 before); jets snap 5.6 yd from
-  the ball (4.8 before; tracked median 5), 2.1 yd deep (1.8) and at 5.3 yd/s
-  (6.1). Jets therefore reach the mesh about 0.15 s later; see COV-4.
+  path isn't called: 13% of across calls (most need more than the 5.5-s
+  pre-snap limit), about 15% of yo-yos, 2% of jets.
+- **After** (same seeds): 0 touches in 348 motions (368 on develop).
+- **Timing:** across motions run 4.7 s (4.3 before). Jets snap 5.0 yd from
+  the ball (4.8 before; tracked median 5), 2.05 yd deep (1.8) and at 5.3 yd/s
+  (6.1), so they reach the mesh about 0.1 s later; see COV-4. The planner
+  now times each leg from where the body cuts the previous corner.
 - **Rule (RULE-2):** 7-4-8 never fired on a motion man, because the snap
   inspection had no motion facts. It now reads the motion man's velocity at
   the snap (moving above 0.5 yd/s; toward the line above 0.5 yd/s). Nothing
