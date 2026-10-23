@@ -1146,7 +1146,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const dc = Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y);
     // A support player who has personally declared the carrying runner must
     // work free toward him even when the block keeps him outside close range.
-    // First-level stack/shoulder and uncertain possession retain the old gate.
+    // Uncertain possession and an unadvanced edge retain the old gate.
     // Once that runner is past the line, any blocked defender works off
     // toward him at any range (SHED_PURSUE). It uses the declaration held
     // between ordinary reads, and a support job needs #169's acquired
@@ -1155,8 +1155,10 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const pursue = SHED_PURSUE && read.declared && read.threat.carrying === true
       && (firstLevel || read.acquiredBackfield)
       && (read.threat.pos.x - sim.los) * sim.attackDir(b.team) > 0;
-    // #169: acquiring hands does not restart already justified support.
-    const ready = t >= e.nextMoveAt || (supportRunner && !runSheds.has(e));
+    // Acquiring new hands does not restart an already justified runner
+    // response. First-level players need the same acquired declaration as
+    // their exit objective; an unadvanced edge still owns his shoulder.
+    const ready = t >= e.nextMoveAt || (runnerExit && !runSheds.has(e));
     if (ready && (dc < 3.5 || supportRunner || pursue)) {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(read.threat.pos, d.pos);

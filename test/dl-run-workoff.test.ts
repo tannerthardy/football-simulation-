@@ -144,6 +144,52 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
     expect(f.defender.engagement).toBe(f.engagement);
   });
 
+  it.each([-1, 1])('does not restart a move-selection wait after acquiring a declared runner, side=%s', side => {
+    const f = scene(side);
+    f.engagement.nextMoveAt = f.sim.t + .6;
+    const hands = f.engagement.hands, before = structuredClone(f.defender.body);
+    const command = f.command();
+    expect(f.defender.tags.has('shed-attempt')).toBe(true);
+    expect(command.vel.x).toBeGreaterThan(0);
+    expect(command.vel.y * side).toBeGreaterThan(0);
+    expect(f.engagement.hands).toBe(hands);
+    expect(f.defender.engagement).toBe(f.engagement);
+    expect(f.defender.body).toEqual(before);
+    expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
+  });
+
+  it('retains the initial wait when possession or the edge departure is not established', () => {
+    for (const kind of ['unknown', 'contradictory', 'expired', 'unadvanced-edge', 'not-read'] as const) {
+      const f = scene(1);
+      f.engagement.nextMoveAt = f.sim.t + .6;
+      if (kind === 'unknown') f.runner.carrying = null;
+      if (kind === 'contradictory') f.qb.carrying = true;
+      if (kind === 'expired') f.runner.age = 2;
+      if (kind === 'unadvanced-edge') {
+        f.defender.runFit!.kind = 'edge';
+        f.runner.pos.x = 41;
+      }
+      if (kind === 'not-read') {
+        f.defender.recog!.read = 'unknown';
+        f.runner.pos.x = 41;
+      }
+      f.command();
+      expect(f.defender.tags.has('shed-attempt'), kind).toBe(false);
+      expect(f.engagement.nextMoveAt, kind).toBe(f.sim.t + .6);
+    }
+  });
+
+  it('starts across-face work immediately when an acquired runner is still sealed off', () => {
+    const f = scene(1, true);
+    f.engagement.nextMoveAt = f.sim.t + .6;
+    const command = f.command();
+    expect(f.defender.tags.has('shed-attempt')).toBe(true);
+    expect(command.vel.x).toBeLessThan(0);
+    expect(command.push).toBe(1);
+    expect(f.defender.engagement).toBe(f.engagement);
+    expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
+  });
+
   it('executes the requested turn through the existing hand and support budgets', () => {
     const f = scene(1), commands = contactCommands(f);
     const report = f.sim.world.step(commands, f.sim.dt);
