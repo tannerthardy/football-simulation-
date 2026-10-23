@@ -710,14 +710,33 @@ Carried over from the issue register; each was measured on an older develop.
     population claim. Four complete pass-control executions remain identical.
     Earlier `d3e22420` cards and force witnesses are qualified to that source;
     they are not current #221-composition measurements.
-  - **Main Engine follow-up (#228, proposed on `2c26a86c`):** run blockers
-    mirror true current defender velocity, unlike the pass rep's delayed
-    touch/sight picture. Main Engine's `RUN_FEEL` probe reports original-operator
-    release onset 29%→36% on develop and 36%→47% with #225. This identifies an
-    offensive information advantage alongside the defensive direction error;
-    neither requires stronger hands or awarded sheds. #228 remains separately
-    reviewable. Whichever change lands second must repeat the unchanged lab
-    and its base on the accepted composition, retaining exposure/censoring.
+  - **Main Engine follow-up (#228, accepted in `c5667bc4`):** run blockers
+    previously mirrored true current defender velocity, unlike the pass rep's
+    delayed touch/sight picture. `RUN_FEEL` repairs that information advantage;
+    it does not strengthen hands or award sheds. Main Engine subsequently
+    corrected the reported 47% release-by-five composition: that came from an
+    intermediate mirror/seal probe, before the final stretch-follow correction.
+    It is not evidence for the accepted composition.
+    The second-change repeat uses identical collectors/settings on `c5667bc4`
+    versus #225 composed at `924fccf8`, RUN_FEEL on by default in both arms.
+    Original-operator native first-clear onset by five remains 4/11; ever clear
+    rises 5/11→7/11. The fresh Power/Toss cohort moves onset 3/7→4/7 and observed
+    median release 1.0→.8s, with all seven eventually clear in both arms.
+    Median blocked radial drift stays approximately zero; G1 is not solved.
+    Requiring .2s confirmation by the five-yard sample gives native 1/10 in both
+    arms and fresh 2/7→3/7. Different operators retain different exposure rules.
+    All 16 native run yardages and four complete pass-control executions are
+    unchanged. Fresh Toss has an adverse 15.15yd tackle→75yd touchdown. Exact
+    passive step reports preserve RB6/SS21 bodies and requests through the
+    first tackle opportunity at4.55s: distance1.343873yd, quality.230854,
+    miss probability.128609 in both arms. The shared-RNG uniform is.561342
+    versus.104937, producing wrap versus miss after line-contact draw history
+    diverges. This ending is not evidence of worsened safety geometry; the
+    long-run outcome remains visible. The existing 75yd Power win survives.
+    No timeout is a finish.
+    Main Engine passed the controller mechanism. The stale timing assertion is
+    split into a frontal wait and an immediate clear exit, retaining eventual
+    action and engagement checks; 49 focused combined-source checks pass.
     Broader released-defender sampling finds teammate spacing halves requests
     on only 0.9% of ticks in the first second after release (Main Engine,
     four games). The saved congestion witness is real but does not establish
