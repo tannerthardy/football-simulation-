@@ -247,6 +247,11 @@ problem), resolved.
   (#190, off) keeps deep defenders from taking force.
 - **Where:** `run-fits.ts`, `defense.ts`; `scripts/diag/long-run.py`.
 - **Open:** whether fixing RUN-1 lets the safeties stay deep on their own.
+- **Frontal DL blocks (G1, 2026-10-22):** a blocked first-level defender could
+  admit a shed but still press across the old surface while the runner was
+  past him. A bounded acquired-exit/body-turn correction improves the request,
+  but not confirmed release in the matched lab. See TKL-2 below. Do not widen
+  the block-in-the-back rule or award a release to compensate.
 
 <a id="run-3"></a>
 ### RUN-3: Double teams drive defenders back much too far
@@ -564,6 +569,29 @@ Carried over from the issue register; each was measured on an older develop.
     released man: Run Game, with `SHED_PURSUE` done;
   - contact cost: Main Engine;
   - pursuit path around a released blocker: done (`PURSUE_AROUND`).
+- **First-level frontal work-off, 2026-10-22 (G1):** native consumed-cue
+  traces on accepted `ac346c1e` show DL entering shed attempts but never using
+  the clear runner exit already available to support players. They continue
+  to request pressure into the old surface. The bounded correction uses fresh
+  QB/RB possession pictures beyond LOS, retains edge/fit admission and sealed
+  across-face work, and requests an actual body turn toward a clear exit.
+  Speed, hands, release geometry and physics are unchanged; two paired pass
+  controls remain identical.
+  - **Limit:** two controller attempts (exit only, then coherent facing) do
+    not add confirmed releases in the small published #221 taillab subset.
+    Better requests still leave near-zero pooled blocked radial drift, but
+    the blocker matches/overtakes most requested exits. Sustained positive
+    relative separation requests do produce separation in the saved control;
+    zero drift therefore does not establish a pinning hand-law defect.
+    Stop variants. Defense's next question is an attainable escape technique
+    against the acquired moving blocker, including why a forward exit still
+    uses contact-shuffle magnitude. Main Engine reviews the requested/achieved
+    hand/support witness before any physical change. A frontal block can win.
+  - The original #221-review `release.py` was unavailable. The restored path
+    contains an explicitly **reconstructed** version with real elapsed clear
+    windows and missing/censored exposure. Its figures are not numerically
+    interchangeable with the historical NFL 54% / +0.18 yd/s review rows.
+    Proximity release and actual engagement end remain distinct measures.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often

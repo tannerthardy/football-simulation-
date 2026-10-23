@@ -21,12 +21,12 @@ function scene(side: number, sealed = false) {
     ({ pos, vel: { x: 3, y: 0 }, carrying, facing: 0, pose: 'up', stance: null, age: .2 });
   const runner = cue({ x: 42, y: CENTER_Y + side * 2 }, true);
   const qb = cue({ x: 35, y: CENTER_Y }, false);
-  const blocker = cue({ ...b.pos }, false);
+  const blockerCue = cue({ ...b.pos }, false);
   const see = sim.see.bind(sim);
   vi.spyOn(sim, 'see').mockImplementation((observer, target, ...rest) => observer === d
-    ? structuredClone(target === back ? runner : target === sim.qb ? qb : target === b ? blocker : see(observer, target, ...rest))
+    ? structuredClone(target === back ? runner : target === sim.qb ? qb : target === b ? blockerCue : see(observer, target, ...rest))
     : see(observer, target, ...rest));
-  return { ...f, back, runner, qb, blocker,
+  return { ...f, back, runner, qb, blockerCue,
     command: () => contactCommands(f)[d.idx] };
 }
 
@@ -38,6 +38,8 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
     const hands = f.engagement.hands, command = f.command();
     expect(command.vel.x).toBeGreaterThan(0);
     expect(command.vel.y * side).toBeGreaterThan(0);
+    expect(command.facing).toBeCloseTo(Math.atan2(f.runner.pos.y - f.defender.pos.y,
+      f.runner.pos.x - f.defender.pos.x), 12);
     expect(f.defender.engagement).toBe(f.engagement);
     expect(f.engagement.hands).toBe(hands);
     expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
@@ -47,6 +49,7 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
   it('preserves across-face work against a blocker still ahead of the exit', () => {
     const f = scene(1, true), command = f.command();
     expect(command.vel.x).toBeLessThan(0);
+    expect(command.facing).toBeCloseTo(0, 12);
     expect(f.defender.engagement).toBe(f.engagement);
     expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
   });
@@ -79,5 +82,19 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
     f.runner.pos = { x: 39, y: CENTER_Y + 6 };
     expect(f.command().vel.x).toBeLessThanOrEqual(0);
     expect(f.defender.tags.has('shed-attempt')).toBe(false);
+  });
+
+  it('executes the requested turn through the existing hand and support budgets', () => {
+    const f = scene(1), commands = contactCommands(f);
+    const report = f.sim.world.step(commands, f.sim.dt);
+    // Requesting a turn is not an instantaneous body rotation or a release.
+    expect(Math.abs(f.defender.facing - commands[f.defender.idx].facing!)).toBeGreaterThan(.1);
+    expect(f.defender.engagement).toBe(f.engagement);
+    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+    for (const a of [f.blocker, f.defender]) {
+      expect(report.armImpulse[a.idx] - report.armImpulseLimit[a.idx]).toBeLessThan(1e-8);
+      expect(report.armWork[a.idx] - report.armWorkLimit[a.idx]).toBeLessThan(1e-8);
+      expect(report.supportMotorWork[a.idx] - report.supportMotorWorkLimit[a.idx]).toBeLessThan(1e-8);
+    }
   });
 });
