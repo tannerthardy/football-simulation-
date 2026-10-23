@@ -710,6 +710,20 @@ Carried over from the issue register; each was measured on an older develop.
     population claim. Four complete pass-control executions remain identical.
     Earlier `d3e22420` cards and force witnesses are qualified to that source;
     they are not current #221-composition measurements.
+  - **Main Engine follow-up (#228, proposed on `2c26a86c`):** run blockers
+    mirror true current defender velocity, unlike the pass rep's delayed
+    touch/sight picture. Main Engine's `RUN_FEEL` probe reports original-operator
+    release onset 29%→36% on develop and 36%→47% with #225. This identifies an
+    offensive information advantage alongside the defensive direction error;
+    neither requires stronger hands or awarded sheds. #228 remains separately
+    reviewable. Whichever change lands second must repeat the unchanged lab
+    and its base on the accepted composition, retaining exposure/censoring.
+    Broader released-defender sampling finds teammate spacing halves requests
+    on only 0.9% of ticks in the first second after release (Main Engine,
+    four games). The saved congestion witness is real but does not establish
+    G1's general limit. Leave shared spacing unchanged. The old hidden-holder
+    fallback outside acquired first-level admission remains a separate
+    awareness follow-up, not a new information contract for #225.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
