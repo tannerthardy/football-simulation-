@@ -14,6 +14,28 @@ import type { HandJoint, Joint, StepReport } from '../physics/world.js';
 import type { Agent, Engagement, TeamSide } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import type { FoulRecord } from './types.js';
+import { axisOf } from './engagement.js';
+
+/** 12-1-3(c) restricts grabbing an opponent, not blocking one. While the
+ * blocker is still between the defender and where he is going (|phi| < 1 on
+ * the rep's own axis, the line the engagement already uses for "beaten at the
+ * hip"), a grip on him is the block itself; it becomes a hold once he has
+ * leverage past the blocker, or when it takes his feet (HOLD_LEVERAGE=0: any
+ * achieved restriction of a defender moving off the block is a hold). */
+const HOLD_LEVERAGE = process.env.HOLD_LEVERAGE !== '0';
+
+/** Where the holder stands relative to the victim's line to his goal, in
+ * quarter turns: 0 squarely in his way, ±1 beside him at the hip, beyond 1
+ * behind him. The same measure as the engagement's phi, for any holder. */
+function holderPhi(sim: PlaySim, h: HoldStart): number | null {
+  if (!h.rep) return null;
+  const axis = axisOf(sim, h.rep);
+  const dx = h.actorStart.pos.x - h.victimStart.pos.x, dy = h.actorStart.pos.y - h.victimStart.pos.y;
+  const len = Math.hypot(dx, dy);
+  if (!(len > 1e-6)) return null;
+  const bx = dx / len, by = dy / len;
+  return Math.atan2(-(bx * -axis.y + by * axis.x), bx * axis.x + by * axis.y) / (Math.PI / 2);
+}
 
 /** Clear judgment margin in native velocity units; not a referee error roll. */
 export const HOLDING_JUDGMENT = Object.freeze({
@@ -335,6 +357,8 @@ export function observeHolding(sim: PlaySim, report: StepReport,
     const rip = !!h.rep && h.rep.move === 'rip' && h.rep.moveOk && start.t < h.rep.moveUntil && !tookFeet;
     const alreadyFalling = h.victim.body.support?.state !== 'up'
       && !report.falls.includes(h.victim.idx) && !tookFeet;
+    const phi = offense && HOLD_LEVERAGE && !tookFeet ? holderPhi(sim, h) : null;
+    const stillInFront = phi !== null && Math.abs(phi) < 1;
     const exemption = runnerException ? 'runner' : groundLooseException ? 'personal_ground_loose_ball_attempt'
       : offense && simultaneous ? 'simultaneous_runner_tackle_or_boundary'
         : offense && start.passBeyondLine ? 'after_downfield_forward_release'
@@ -342,6 +366,7 @@ export function observeHolding(sim: PlaySim, report: StepReport,
             : offense && !tookFeet && !outsideDouble(h, report, start.carrier) ? 'double_team_without_clear_split_or_outside_escape'
               : offense && rip ? 'defensive_rip_exception'
                 : offense && alreadyFalling ? 'opponent_already_falling'
+                  : stillInFront ? 'blocker_still_in_front_of_opponent'
                   : !offense && start.defenseTouchedPassException ? 'touched_forward_pass_across_neutral_zone'
                     : !offense && warding ? 'warding_or_defending_block'
                     : fakeRunner ? 'performed_fake_runner_in_pocket' : null;
@@ -358,12 +383,12 @@ export function observeHolding(sim: PlaySim, report: StepReport,
       // countercondition (feet taken, prevented rise or distant point-of-attack
       // causality). Preserve that uncertainty instead of calling it legal.
       if (exemption && ['away_from_point_of_attack', 'double_team_without_clear_split_or_outside_escape',
-        'defensive_rip_exception', 'opponent_already_falling'].includes(exemption)
+        'defensive_rip_exception', 'opponent_already_falling', 'blocker_still_in_front_of_opponent'].includes(exemption)
         && !sim.foulRecords.some(f => f.id === id && f.called)) {
         const record: FoulRecord = { id, t: start.t + sim.dt, kind, playerId: h.actor.player.id,
           called: false, assessment: 'unresolved', evidence: { source: 'native', rule,
             action: 'achieved_grab_exception_unresolved', victimId: h.victim.player.id,
-            facts: { exception: exemption, tookFeet, escapeSpeed: r.escapeSpeed,
+            facts: { exception: exemption, tookFeet, holderPhi: phi, escapeSpeed: r.escapeSpeed,
               opposingDeltaV: r.opposingDeltaV, observedSlowdown: r.observedSlowdown,
               judgment: 'exception countercondition lacks clear native proof; no automatic flag' } } };
         const old = sim.foulRecords.findIndex(f => f.id === id);
