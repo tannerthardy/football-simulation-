@@ -2,8 +2,13 @@
  * node --import tsx scripts/diag/g1/workoff.ts --out out/g1/workoff/base.json \
  *   --common out/g1/workoff/base-plays.jsonl.gz
  * Add --only 'iz_strong|ace_11|cover4|0' for one exact unchanged named input.
- * Sixteen run snaps, two separately named pass controls, one passive repeat.
+ * Default: sixteen run snaps, two pass controls and one passive repeat. Use
+ * --roster-seed, --runs and --forms for a labeled bounded transfer cohort.
+ * --step-reports passively retains actual contacts, grasps and RNG states.
  * i0/i1 have different named execution streams; they are not paired mirrors.
+ * --diagnostic-demand replaces only an existing first-level clear-exit demand
+ * with the own-body arrival law. This is a labeled intervention, not baseline
+ * football or a production engine flag; it preserves near-goal contact effort.
  */
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -12,6 +17,9 @@ import { dirname, join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { HASH_LEFT_Y } from '../../../src/core/field.js';
 import { Rng } from '../../../src/core/rng.js';
+import { fatigueFactor, movingArrivalVelocity } from '../../../src/physics/kinematics.js';
+import { availability, supportParams } from '../../../src/physics/support.js';
+import type { Intent } from '../../../src/physics/world.js';
 import type { Vec2 } from '../../../src/core/vec.js';
 import type { PlayLog } from '../../../src/game/game.js';
 import { generateTeam, pickDefense, pickOffense } from '../../../src/league/team.js';
@@ -22,6 +30,7 @@ import type { Agent, Engagement } from '../../../src/sim/agent.js';
 import type { Perceived } from '../../../src/sim/perception.js';
 import { PlaySim, type PlaySetup } from '../../../src/sim/playsim.js';
 import { runContactObservers } from '../../../src/sim/run-contact-observer.js';
+import { traits } from '../../../src/sim/engagement.js';
 import type { PlayResult } from '../../../src/sim/types.js';
 import { commonPlay } from '../../mechanics/sim-export.js';
 import { sourceVersion } from '../../source-version.js';
@@ -32,6 +41,13 @@ const arg = (name: string, fallback: string) => {
 };
 const out = arg('--out', 'out/g1/workoff/native.json'), commonOut = arg('--common', '');
 const only = arg('--only', '');
+const diagnosticDemand = process.argv.includes('--diagnostic-demand');
+const recordStepReports = process.argv.includes('--step-reports');
+const rosterSeed = Number(arg('--roster-seed', '7'));
+const runs = arg('--runs', 'iz_strong,oz_strong').split(',');
+const forms = arg('--forms', 'ace_11,gun_trips_11,i_pro_21,ace_12').split(',');
+if (!Number.isSafeInteger(rosterSeed) || rosterSeed < 0) throw new Error('Invalid roster seed');
+if (runs.some(id => !RUN_BY_ID[id]) || forms.some(id => !FORMATION_BY_ID[id])) throw new Error('Unknown run or formation');
 if (!out || (process.argv.includes('--common') && !commonOut)) throw new Error('Missing output path');
 if (process.argv.includes('--only') && !only) throw new Error('--only requires an exact seedName');
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
@@ -42,14 +58,14 @@ const envKeys = [...new Set(files('src').flatMap(f => [...readFileSync(f, 'utf8'
   .matchAll(/process\.env\.([A-Z][A-Z0-9_]*)/g)].map(m => m[1])))].sort();
 const environment = Object.fromEntries(envKeys.map(k => [k, process.env[k] ?? null]));
 const sourceBefore = sourceVersion(), started = performance.now();
-const rng = new Rng(7);
+const rng = new Rng(rosterSeed);
 // Exactly #221 taillab's sequential roster generation, not forked team RNGs.
 const off = generateTeam(rng, 'O', 'OFF', { strength: .55 });
 const def = generateTeam(rng, 'D', 'DEF', { strength: .55 });
 const seedFor = (name: string) => [...name].reduce((h, ch) => Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0, 2166136261);
 type Input = { kind: 'run' | 'pass'; concept: string; form: string; cov: string; i: number; seedName: string; seed: number };
 const inputs: Input[] = [];
-for (const concept of ['iz_strong', 'oz_strong']) for (const form of ['ace_11', 'gun_trips_11', 'i_pro_21', 'ace_12'])
+for (const concept of runs) for (const form of forms)
   for (const i of [0, 1]) {
     const seedName = `${concept}|${form}|cover4|${i}`;
     inputs.push({ kind: 'run', concept, form, cov: 'cover4', i, seedName, seed: seedFor(seedName) });
@@ -93,6 +109,17 @@ function hands(rep: Engagement) {
     actor: h.actor === rep.blocker.body ? rep.blocker.idx : h.actor === rep.defender.body ? rep.defender.idx : null };
 }
 type Seen = { at: number; target: number; role: 'QB' | 'RB' | 'blocker' | 'teammate'; cue: Perceived };
+function applyDiagnosticDemand(rep: Engagement, phase: string, data: Record<string, unknown>) {
+  if (!diagnosticDemand || phase !== 'defender-movement' || !data.exitAim
+    || !['interior', 'edge'].includes(rep.defender.runFit?.kind ?? '')) return;
+  const d = rep.defender, command = data.command as Intent, td = traits(d, 'run');
+  data.unmodifiedCommand = structuredClone(command);
+  const capacity = d.body.support
+    ? availability(d.body.support, supportParams(d.profile), fatigueFactor(d.body.energy)) : 1;
+  command.vel = movingArrivalVelocity(d.body, data.exitAim as Vec2, { x: 0, y: 0 },
+    d.profile.vmax * d.speedScale, .1, Math.hypot(td.lateral, .6), command.cutSkill ?? 1, capacity);
+  data.diagnosticIntervention = 'own-body-exit-demand';
+}
 function inspect(sim: PlaySim) {
   let nextRep = 0;
   const ids = new WeakMap<Engagement, number>();
@@ -101,6 +128,7 @@ function inspect(sim: PlaySim) {
   const pictures = new Map<number, Map<string, Seen>>();
   const requests = new Map<number, { t: number; data: Record<string, unknown> }>();
   const samples: Array<Record<string, unknown>> = [];
+  const stepReports: Array<Record<string, unknown>> = [];
   const calls = new Map<number, Array<{ target: number; called: Vec2 | null | undefined }>>();
   let peerQuery: { observer: number; target: number } | null = null;
   const restoreCalls: Array<() => void> = [];
@@ -128,6 +156,15 @@ function inspect(sim: PlaySim) {
     return ids.get(rep)!;
   };
   const originalSee = sim.see.bind(sim), originalStep = sim.world.step.bind(sim.world);
+  const execution = () => ({ bodies: sim.agents.map(a => structuredClone(a.body)),
+    rng: structuredClone(sim.rng),
+    grasps: sim.world.joints.filter(j => j.kind === 'grasp').map(j => {
+      const { a, b, ...rest } = j;
+      return { ...structuredClone(rest), a: sim.world.indexOf(a), b: sim.world.indexOf(b) };
+    }),
+    bond: sim.bond ? { carrier: sim.bond.carrier.idx, tacklers: sim.bond.tacklers.map(a => a.idx),
+      grip: [...(sim.bond.grip ?? [])].map(([a, q]) => [a.idx, q]),
+      execution: [...(sim.bond.execution ?? [])].map(([a, q]) => [a.idx, q]) } : null });
   sim.see = (...args) => {
     const cue = originalSee(...args), [observer, target] = args;
     peerQuery = observer.team === target.team ? { observer: observer.idx, target: target.idx } : null;
@@ -145,6 +182,7 @@ function inspect(sim: PlaySim) {
     return cue;
   };
   runContactObservers.set(sim, (rep, phase, data) => {
+    applyDiagnosticDemand(rep, phase, data);
     if (!isDL(rep.defender)) return;
     const id = repId(rep);
     lastRep.set(rep.defender.idx, rep);
@@ -193,7 +231,10 @@ function inspect(sim: PlaySim) {
         physicalCarrier: sim.carrier ? { actor: sim.carrier.idx, ...body(sim.carrier) } : null };
       return { d, b, rep, runner, sample };
     }).filter((v): v is NonNullable<typeof v> => v !== null);
+    const beforeExecution = recordStepReports ? execution() : null;
     const report = originalStep(intents, dt);
+    if (recordStepReports) stepReports.push({ t: sim.t, intervalEnd: sim.t + dt,
+      before: beforeExecution, after: execution(), report: structuredClone(report) });
     for (const { d, b, rep, runner, sample } of pending) {
       const separation = radial(d, b);
       sample.after = { defender: body(d), blocker: body(b), separation: separation.distance,
@@ -212,7 +253,7 @@ function inspect(sim: PlaySim) {
   const result = sim.run();
   sim.see = originalSee; sim.world.step = originalStep; runContactObservers.delete(sim);
   for (const restore of restoreCalls) restore();
-  return { result, reps, events, samples };
+  return { result, reps, events, samples, stepReports };
 }
 function common(sim: PlaySim, input: Input, result: PlayResult, index: number) {
   const call = sim.offCall, defense = sim.defCall;
@@ -238,7 +279,10 @@ for (const [index, input] of selectedInputs.entries()) {
   const collected = inspect(sim), executionSha256 = signature(sim, collected.result);
   let passiveVerified: boolean | null = null;
   if (index === 0) {
-    const plain = new PlaySim(setup(input)), plainResult = plain.run();
+    const plain = new PlaySim(setup(input));
+    if (diagnosticDemand) runContactObservers.set(plain, applyDiagnosticDemand);
+    const plainResult = plain.run();
+    runContactObservers.delete(plain);
     passiveVerified = executionSha256 === signature(plain, plainResult);
     if (!passiveVerified) throw new Error('Passive extraction changed the first native run');
   }
@@ -246,7 +290,8 @@ for (const [index, input] of selectedInputs.entries()) {
   const { frames: _frames, telemetry: _telemetry, ...result } = collected.result;
   rows.push({ input, actors: sim.agents.map(a => ({ idx: a.idx, id: a.player.id, slot: a.slot, team: a.team,
     position: a.player.position, profile: a.profile, runFit: a.runFit })), actualCalls: { offense: sim.offCall, defense: sim.defCall },
-    result, executionSha256, passiveVerified, reps: collected.reps, events: collected.events, samples: collected.samples });
+    result, executionSha256, passiveVerified, reps: collected.reps, events: collected.events, samples: collected.samples,
+    ...(recordStepReports ? { stepReports: collected.stepReports } : {}) });
 }
 if (sourceVersion() !== sourceBefore) throw new Error('Engine changed during collection');
 mkdirSync(dirname(out), { recursive: true });
@@ -255,21 +300,23 @@ if (commonOut) { mkdirSync(dirname(commonOut), { recursive: true });
 const document = { schema: 'g1-workoff-native-v2', commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
   sourceBefore, sourceAfter: sourceVersion(), toolSha256: fileHash('scripts/diag/g1/workoff.ts'), node: process.version,
   settings: { environment, allSourceEnvironmentAbsent: Object.values(environment).every(v => v === null),
-    rosterSeed: 7, rosterGeneration: 'one root Rng(7), generateTeam O then D sequentially', strength: .55,
+    rosterSeed, rosterGeneration: 'one root Rng(rosterSeed), generateTeam O then D sequentially', strength: .55,
     taillabSource: '753420f3b3eca4b7198abe499e58c5668bcff1cf', front: 'over', pressure: null,
-    onlyExactSeedName: only || null,
+    onlyExactSeedName: only || null, diagnosticDemand, recordStepReports, runs, forms,
     los: 35, ballY: HASH_LEFT_Y, firstDownX: 45, record: true, recordLevel: 'light', recordEvery: 2 },
-  definitions: { selection: '16 named taillab runs; i0/i1 are different seeds and flipped calls, not paired mirrors. Two separately named four-verts pass controls.',
+  definitions: { selection: 'Default 16 named taillab runs; optional explicit concept/formation/roster selectors define bounded transfer cohorts. i0/i1 are different seeds and flipped calls, not paired mirrors. Two separately named four-verts pass controls.',
     acquired: 'Only already-consumed PlaySim.see returns, copied by a passthrough. No new sighting, RNG draw or motion preview. carried-picture cohort excludes contradictory QB/RB positives.',
     requests: 'contactRequest is the existing run contact observer callback with its timestamp; final intents are read at World.step after modifiers.',
     timing: 'before at World.step entry t, after at t+dt with the same acquired cue. All DL rep samples are retained; selectedAfterLOS marks the primary acquired-carrying-past-LOS cohort.',
     relativeAway: 'Dot of achieved defender-minus-fixed-blocker velocity with blocker-to-defender radial direction. Request counterpart uses both final movement requests.',
     velocityProjections: 'Own and relative velocity projections on the stored blocker-to-defender radial unit and its counterclockwise tangent. Before/after use their respective achieved separation bases.',
     support: 'Passive structured copy of the existing own support state: foot, capture deviation, lean, load, felt load and other already-computed fields. No new physics or sensing.',
+    stepReports: 'Optional passive World.step reports, bodies, grasp parameters/bond qualities and play-RNG states immediately before/after World.step. No extra draws or contacts; before is after controller decisions, not a checkpoint for rerunning them.',
     towardRunner: 'Projection of own achieved/requested velocity toward the one acquired carrying QB/RB picture; never actual carrier position.',
     ending: 'Native outcome timeout remains unfinished. Run rep end reasons come from existing observer events; commonPlay end/proximity is a distinct operator.',
     common: 'Optional existing commonPlay adapter resamples native replay to0.1s and omits source actor IDs; use raw actor/rep maps for causal identity.' },
   limitations: ['Observed delayed picture is not modeled gaze/occlusion.', 'The carrying cue filter is offline exposure, not a claim that a particular read selected that cue.',
+    'diagnosticDemand=true is a controller intervention before ordinary spacing/World. It is not an engine default or a claim of a safe/achievable loaded path. Passive equivalence uses the same intervention without the recorder.',
     'V2 adds support/force projections and an exact-input filter; V1 fields and default 18-input cohort are retained. Filtered runs do not establish cohort rates.',
     'Stored engagement type may convert pass to run; pass controls retain actual conversion/outcome.',
     'Whole physical outcomes include fouls; they are not league rates or evidence that every block should be defeated.'],
