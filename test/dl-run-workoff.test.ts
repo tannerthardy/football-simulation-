@@ -3,6 +3,7 @@ import { CENTER_Y } from '../src/core/field.js';
 import { contactCommands, contactFixture } from '../scripts/diag/run-contact-technique.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { runContactObservers } from '../src/sim/run-contact-observer.js';
+import { traits } from '../src/sim/engagement.js';
 
 /** Reduced acquired-information/contact island, not a restored NFL snap. */
 function scene(side: number, sealed = false) {
@@ -49,7 +50,9 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
 
   it('preserves across-face work against a blocker still ahead of the exit', () => {
     const f = scene(1, true), command = f.command();
-    expect(command.vel.x).toBeLessThan(0);
+    // Positive x is pressure into this actual blocking face; across is y.
+    expect(command.vel.x).toBeCloseTo(.6, 12);
+    expect(command.vel.y).toBeGreaterThan(0);
     expect(command.facing).toBeCloseTo(0, 12);
     expect(f.defender.engagement).toBe(f.engagement);
     expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
@@ -203,6 +206,25 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
     expect(hiddenChange.defender.tags.has('shed-attempt')).toBe(true);
     loaded.command();
     expect(loaded.defender.tags.has('shed-attempt')).toBe(false);
+  });
+
+  it.each([-1, 1])('works across the actual blocking face after the bodies rotate, side=%s', side => {
+    const f = scene(side), { defender: d, blocker: b, engagement: e } = f;
+    b.body.pos = { x: d.pos.x - .5, y: d.pos.y + side * .45 };
+    b.body.facing = Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x);
+    e.surfaceAxis = { x: -.8574929257125443, y: -side * .5144957554275266 };
+    const dx = b.pos.x - d.pos.x, dy = b.pos.y - d.pos.y, L = Math.hypot(dx, dy);
+    const normal = { x: dx / L, y: dy / L }, tangent = { x: -normal.y, y: normal.x };
+    const command = f.command();
+    expect(command.vel.x * normal.x + command.vel.y * normal.y).toBeCloseTo(.6, 12);
+    const across = command.vel.x * tangent.x + command.vel.y * tangent.y;
+    const goalSide = (f.runner.pos.x - d.pos.x) * tangent.x + (f.runner.pos.y - d.pos.y) * tangent.y;
+    expect(Math.abs(across)).toBeCloseTo(traits(d, 'run').lateral, 12);
+    expect(across * goalSide).toBeGreaterThan(0);
+    expect(command.push).toBe(1);
+    expect(e.surfaceAxis).toEqual({ x: -.8574929257125443, y: -side * .5144957554275266 });
+    expect(d.engagement).toBe(e);
+    expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
   });
 
   it('executes the requested turn through the existing hand and support budgets', () => {

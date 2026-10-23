@@ -721,7 +721,7 @@ const SHED_PURSUE = process.env.SHED_PURSUE !== '0';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
-const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?: boolean }>();
+const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?: boolean; contactSide?: number }>();
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
@@ -1141,6 +1141,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // still belongs to the ordinary technique cadence.
   const clearFirstLevelExit = firstLevelRunner && !!read.localBlocker
     && (read.localBlocker.x - d.pos.x) * toAim.x + (read.localBlocker.y - d.pos.y) * toAim.y < 0;
+  const localFace = firstLevelRunner && read.localBlocker ? sub(read.localBlocker, d.pos) : null;
+  const contactAxis = localFace && Math.hypot(localFace.x, localFace.y) > 1e-9 ? norm(localFace) : axis;
+  const contactLat = latOf(contactAxis);
   const preferred = toAim.x * lat.x + toAim.y * lat.y;
   if (Math.abs(preferred) > .1) e.side = Math.sign(preferred);
   e.control = HAND_FIGHT ? handFight(e, tb, td, dt, rng)
@@ -1186,7 +1189,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
           if ((blocker.x - d.pos.x) * toAim.x + (blocker.y - d.pos.y) * toAim.y < 0)
             runner = true;
         }
-        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side, runner });
+        // Keep the selected shoulder for the existing decision beat. The
+        // installed fit frame can rotate away from the actual blocking face;
+        // working across that face needs its local tangent, not the old lane.
+        const contactSide = firstLevelRunner
+          ? Math.sign(toAim.x * contactLat.x + toAim.y * contactLat.y)
+            || runSheds.get(e)?.contactSide || ballSide || e.side
+          : undefined;
+        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side, runner, contactSide });
         e.nextMoveAt = t + d.mind.decisionInterval * 2;
         d.tags.add('shed-attempt');
       } else {
@@ -1438,9 +1448,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // lost/contradictory acquisition retains the ordinary across-face response.
   const exitAim = shedding && shed!.runner && runnerExit ? read.aim : undefined;
   const exit = exitAim ? norm(sub(exitAim, d.pos)) : null;
+  const acrossFace = firstLevelRunner && shed?.contactSide !== undefined;
+  const workAxis = acrossFace ? contactAxis : axis, workLat = acrossFace ? contactLat : lat;
+  const workSide = acrossFace ? shed!.contactSide! : shed?.side ?? e.side;
   const workOff = shedding ? exit
     ? { x: exit.x * Math.hypot(td.lateral, .6), y: exit.y * Math.hypot(td.lateral, .6) }
-    : { x: lat.x * shed!.side * td.lateral + axis.x * .6, y: lat.y * shed!.side * td.lateral + axis.y * .6 } : null;
+    : { x: workLat.x * workSide * td.lateral + workAxis.x * .6,
+      y: workLat.y * workSide * td.lateral + workAxis.y * .6 } : null;
   // Diagnostic counterfactual defenses (docs/reviews/counterfactual-defense.md).
   let cf: Vec2 | null = null;
   if (CF_FLOW && !read.declared) {
@@ -1464,7 +1478,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   };
   runContactObservers.get(sim)?.(e, 'defender-movement', { reading: read.reading,
     declared: read.declared, supportRunner, defensiveAim: read.aim,
-    exitAim, workOff, command: intents[d.idx] });
+    exitAim, workOff, workAxis, workSide, command: intents[d.idx] });
   helperIntents(sim, e, intents, axis);
 }
 
