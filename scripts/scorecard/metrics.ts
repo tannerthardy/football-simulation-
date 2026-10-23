@@ -67,7 +67,10 @@ export const METRICS: Metric[] = [
   { id: 'xp', label: 'XP %', scale: 100, unit: '%', band: [94, 97], game: { num: (g) => g.xpm, den: (g) => g.xpa } },
   { id: 'fumLost', label: 'Fumbles lost / team-game', band: [0.4, 0.7], game: { num: (g) => g.fumLost, den: () => 2 } },
   { id: 'punts', label: 'Punts / team-game', band: [3.5, 4.5], game: { num: (g) => g.punts, den: () => 2 } },
-  { id: 'penalties', label: 'Penalties / team-game', band: [2.5, 4], game: { num: (g) => g.penalties, den: () => 2 } },
+  // The old 2.5–4 band was below the NFL's accepted total. An incomplete mix
+  // of foul producers cannot be graded by matching a total; retain the count
+  // and interval, and compare types/exposures under docs/NFL_RULES.md.
+  { id: 'penalties', label: 'Accepted penalties / team-game', game: { num: (g) => g.penalties, den: () => 2 } },
 ];
 
 function playRatio(m: NonNullable<Metric['play']>, games: GameRec[], filter?: (p: PlayRec) => boolean): [number, number] {
