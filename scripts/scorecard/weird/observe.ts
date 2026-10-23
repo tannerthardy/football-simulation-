@@ -60,11 +60,13 @@ export interface ObserveCtx {
   idPrefix: string;
   /** 1-based game number in the run. */
   game: number;
+  /** Events kept per detector per game (default EVENT_CAP); film-room mode keeps them all. */
+  cap?: number;
 }
 
 const round2 = (v: number) => Math.round(v * 100) / 100;
 
-function blank(a: Agent): WAgent {
+export function blank(a: Agent): WAgent {
   return {
     idx: a.idx, team: a.team, slot: a.slot, x: 0, y: 0, vx: 0, vy: 0, facing: 0, rvx: 0, rvy: 0, rfacing: null,
     engaged: false, down: false, inBond: false, blocks: -1, job: '',
@@ -72,7 +74,7 @@ function blank(a: Agent): WAgent {
 }
 
 /** Copy this tick's state into the reused agent records. */
-function fill(sim: PlaySim, w: WAgent[]): void {
+export function fill(sim: PlaySim, w: WAgent[]): void {
   const bond = sim.bond;
   for (const a of sim.agents) {
     const o = w[a.idx];
@@ -208,18 +210,18 @@ export function weirdObserver(ctx: ObserveCtx): WeirdObserver {
         }
       }
       sums.ms = ms;
-      return { events: capEvents(events), sums, ms };
+      return { events: capEvents(events, ctx.cap ?? EVENT_CAP), sums, ms };
     },
   };
 }
 
-/** Keep the worst EVENT_CAP events per detector, in play order. */
-export function capEvents(events: WeirdEvent[]): WeirdEvent[] {
+/** Keep the worst `cap` events per detector, in play order. */
+export function capEvents(events: WeirdEvent[], cap = EVENT_CAP): WeirdEvent[] {
   const by = new Map<DetectorId, WeirdEvent[]>();
   for (const e of events) (by.get(e.detector) ?? by.set(e.detector, []).get(e.detector)!).push(e);
   const keep = new Set<WeirdEvent>();
   for (const list of by.values()) {
-    for (const e of [...list].sort((a, b) => b.severity - a.severity).slice(0, EVENT_CAP)) keep.add(e);
+    for (const e of [...list].sort((a, b) => b.severity - a.severity).slice(0, cap)) keep.add(e);
   }
   return events.filter((e) => keep.has(e));
 }
