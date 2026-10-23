@@ -134,10 +134,18 @@ export function gameRecord(spec: GameSpec, res: GameResult, ms: number,
     if (p.kind !== 'run' && p.kind !== 'pass') continue;
     // Official plays only, as in calibrate.ts.
     if (p.nullified || !p.stats) continue;
-    const st = p.stats;
+    // Physical stats remain on the tape; statistical corrections belong to
+    // the explicit official view. Older logs may not carry that view.
+    const st = p.officialCredit?.stats ?? p.stats;
     const pass = p.kind === 'pass';
     const att = pass && !st.sacked && !st.scramble && !!st.attempted;
     const comp = att && !!st.completed && !st.interceptedBy;
+    // NFL air yards: LOS-to-catch on completions, LOS-to-target/aim on other
+    // throws, bounded at the opponent's goal line (nflverse PBP convention).
+    // Intended airYards can differ from achieved completedAirYards. Missing
+    // achieved depth stays unknown rather than substituting the intended one.
+    const depth = comp ? st.completedAirYards : st.airYards;
+    const goalDepth = Math.round((100 - p.yardline) * 100) / 100;
     rec.plays.push({
       kind: p.kind,
       down: p.down,
@@ -158,14 +166,16 @@ export function gameRecord(spec: GameSpec, res: GameResult, ms: number,
       td: p.text.includes('TOUCHDOWN'),
       scramble: pass && !st.sacked && !!st.scramble,
       throwaway: !!st.throwaway,
-      air: att && !st.throwaway ? st.airYards : undefined,
+      air: att && !st.throwaway && depth !== undefined ? Math.min(depth, goalDepth) : undefined,
       yac: comp ? st.yac : undefined,
       sep: att && !st.throwaway ? st.separation : undefined,
       ttt: pass ? st.timeToThrow : undefined,
       ybc: p.kind === 'run' ? st.yardsBeforeContact : undefined,
       missed: st.missedTackles,
       broken: st.brokenTackles,
-      failedTackleOpportunities: failedTackles?.(st),
+      // Native-event capture is keyed to the original stats object, even
+      // when official statistical credit uses a corrected copy.
+      failedTackleOpportunities: failedTackles?.(p.stats),
       firstDown: !!p.firstDown,
     });
   }
