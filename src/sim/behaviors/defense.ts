@@ -256,20 +256,20 @@ export class ManCoverage implements Behavior {
     const receiverCue = sim.see(a, R);
     // A back carrying the ball will not look like a stalk blocker. A man
     // marker who reads run and personally acquires that possession uses his
-    // installed insertion or alley support, not receiver cushion. Alley
-    // support still preserves its cap through a deep mesh; it is not an
+    // installed run fit (insertion, alley, force...), not receiver cushion:
+    // cushion on a ball carrier is a retreat that turns his back on the ball.
+    // Alley support still preserves its cap through a deep mesh; it is not an
     // extra interior fitter just because this defender marks the back.
     // Unknown/negative possession preserves ordinary man/PA responsibility.
     const backfieldBack = sim.offAlign.spots[R.slot]?.backfield
       && (R.player.position === 'RB' || R.player.position === 'FB');
-    if ((a.runFit?.kind === 'insert' || a.runFit?.kind === 'alley')
-      && backfieldBack && believesRun(sim, a) && receiverCue.carrying === true) {
+    if (backfieldBack && believesRun(sim, a) && receiverCue.carrying === true) {
       if (!this.keyedFitRecorded) {
         this.keyedFitRecorded = true;
         if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-run-fit', chose: `keyed-fit:${R.slot}`,
-          cue: `${R.slot} carrying=true in consumed picture; run belief; installed ${a.runFit.kind}`,
+          cue: `${R.slot} carrying=true in consumed picture; run belief; installed ${a.runFit?.kind ?? 'fallback'}`,
           options: [`man:${R.slot}`, `keyed-fit:${R.slot}`],
-          detail: `Installed ${a.runFit.gap}-gap, side ${a.runFit.side}; known target ${R.slot}; picture age ${receiverCue.age === undefined ? 'unknown' : receiverCue.age.toFixed(2)} s, depth ${(receiverCue.pos.x - sim.los).toFixed(2)} yd. Keyed target is not confirmed live carrier; observed geometry decides insertion or pursuit.` });
+          detail: `Installed ${a.runFit?.gap ?? this.gap}-gap, side ${a.runFit?.side ?? this.gapSign}; known target ${R.slot}; picture age ${receiverCue.age === undefined ? 'unknown' : receiverCue.age.toFixed(2)} s, depth ${(receiverCue.pos.x - sim.los).toFixed(2)} yd. Keyed target is not confirmed live carrier; observed geometry decides insertion or pursuit.` });
       }
       return runFit(a, sim, this.gap, this.gapSign, { target: R, cue: receiverCue });
     }
@@ -708,7 +708,11 @@ export class ZoneCoverage implements Behavior {
     const facingQB = angleTo(a.pos, qb.pos);
     const toSpot = Math.hypot(lm.x - a.pos.x, lm.y - a.pos.y);
     if (toSpot > 2.5 && !a.tags.has('settled')) {
-      return goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: toSpot > 4 ? undefined : facingQB });
+      // Until he has read pass he is in his read step: eyes and chest stay
+      // on the backfield. Turning to run before the read turned his back on
+      // a run, and on a quick throw he could not yet have keyed.
+      const turned = toSpot > 4 && knowsPass(sim, a);
+      return goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: turned ? undefined : facingQB });
     }
     a.tags.add('settled');
     const read = 0.5 * a.r('zoneCoverage') + 0.5 * a.r('anticipation');

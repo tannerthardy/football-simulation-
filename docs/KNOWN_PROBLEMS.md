@@ -162,6 +162,7 @@ problem), resolved.
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#205) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
+| [TKL-4](#tkl-4) | Defenders turn their backs on the ball carrier | G1 | medium | on |
 | [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work (G5, #215) |
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
@@ -178,6 +179,7 @@ problem), resolved.
 | [KICK-1](#kick-1) | Kicking too accurate, too many punts | — | low | open |
 | [ALN-1](#aln-1) | Defensive pre-snap picture unlike tracking | G2, G3 | medium | on |
 | [ALN-2](#aln-2) | Offensive formations over-compress the box | G2, G7 | medium | open |
+| [ALN-3](#aln-3) | Motion men ran into the line and the QB | G6, G7 | high | fixed (this PR) |
 | [RULE-1](#rule-1) | Too many penalties, especially defensive offside | G6 | medium | open |
 | [RULE-2](#rule-2) | Rule coverage incomplete | G6 | low | open |
 | [CALL-1](#call-1) | Play-calling not checked against NFL tendencies | G7 | medium | open |
@@ -625,6 +627,53 @@ Carried over from the issue register; each was measured on an older develop.
 - **Cause:** *likely* it starts before the catch: the defender arrives late and
   moving the wrong way (COV-1), so the tackle is an arm tackle.
 
+<a id="tkl-4"></a>
+### TKL-4: Defenders turn their backs on the ball carrier
+
+- **Symptom:** film review of develop `c5667bc4` (seed 7, game 1), 8 notes:
+  linebackers and safeties spin away from the runner as he reaches them
+  (P003, P005, P013, P024, P025, P028); on P002 the SS "carries his momentum
+  and looks like he's on ice."
+- **Measure:** defenders within 5 yd of a non-pocket carrier and facing more
+  than 120° away from him, unengaged, LB/DB, per game (matched twin: every
+  scrimmage play run from identical setup with and without the change; probe
+  in the PR). Seeds 7/8/9: 19/11/17 → 11/9/13. Of the 11 unengaged
+  second-level cases in game 1, 11 were a man defender on a back.
+- **Cause:** *confirmed,* all six clips were **requested** turns (facing
+  intent flipped), not bodies rotated by contact. Five controller paths:
+  1. A run-reading man defender whose back has the ball covered him with
+     receiver cushion unless his fit was insert/alley. Force players matched
+     onto the RB bailed downfield (P003, P025; a 59-yd TD in game 1, P096).
+  2. A crossover-running backer braking from an overrun faced his braking
+     request, so he turned to run back the way he came (P024, P088).
+  3. Reversals took the shortest arc even when it swept his back past the
+     ball (P005).
+  4. Pull read: with linemen moving behind the line both ways, the fit took
+     whichever puller came first in the list, and the landmark jumped ~8 yd
+     between ticks.
+  5. A spot-dropping underneath defender turned to sprint to his landmark
+     before he had read pass (P013, 0.2–0.4 s).
+- **Fix (on):** 1 plays his installed fit, keyed on that back; 2 squares up
+  when braking; 3 `open-to-ball.ts` turns a defender through the side that
+  keeps the carrier in front when both ends of the turn face the ball's
+  side (the requested facing is unchanged, the longer turn costs time);
+  4 follows the fastest lateral mover; 5 keeps eyes and chest on the
+  backfield until the pass read.
+- **Kept:** turns that end facing away keep the shortest arc. LBs turning
+  to run with verticals on pass plays: 728 → 721 frames in the matched game.
+- **Open:**
+  - P028 is an overrun on a cutback: the turn is toward the ball but long.
+    That is run-fit flow speed, not turning.
+  - P002 SS: hips flip about 100° in 0.2 s while his velocity keeps its
+    lateral component for ~0.5 s (downfield braking ~6.5 m/s² is plausible).
+    Facing outruns momentum: `turnRateOf` only slows above 6 m/s. Check
+    yaw rate against speed and decel on plants in tracking before touching
+    the shared turn/traction capacity (TKL-2 has change-of-direction data).
+  - Remaining cases are mostly overruns at speed and defenders on the ground.
+  - Man defenders on receivers with a run carrier nearby still watch their
+    man; whether that is pass-first discipline or a late read is Defense's
+    call (`PASS_FIRST`).
+
 ## Pass protection
 
 <a id="run-11"></a>
@@ -686,8 +735,21 @@ run plays with the assignment layer (`--telemetry full`):
     them off their corners;
   - P013 is a climb that overran a downhill backer, not a stale target;
   - P029 RT stays on a combo the Y has won (combination release).
-- **Pullers whiff.** *Open.* P031 power: the kick-out guard follows a
-  penetrating end 6 yd deep instead of entering his gap. P007 trap.
+- **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
+  tracked the end's shoulder with the end's own velocity fed forward. On P031
+  the end penetrated 4 yd deep, so the guard matched his backward speed and
+  drifted 6 yd deep while still 3–5 yd away laterally, never touching him.
+  The puller now fits the end's shoulder on the end's line to the runner he
+  has acquired, with no velocity feed-forward, and carries the held pull
+  read through the time held. Restaged on 132 pullers (game 1 runs plus
+  power, counter and trap from seeds 8–13): contact with the assigned man
+  55 → 66, contact made inside-out 44 → 58, first contact 2.28 → 2.11 s.
+  P031's guard now kicks the end at 2.4 s. Still open: a kick target who
+  reaches the runner unblocked is unchanged (35 → 36). On P007 (trap) the end
+  still slips inside the trapper after contact; that's contact, not approach.
+- **Defensive gaps exposed so far.** None measurable yet: restaged mean run
+  yards moved within noise on each fix (6.94 → 7.20, 7.20 → 6.87, gap
+  schemes 4.35 → 4.48). Re-check after all three at the PR-tier scorecard.
 - **Wide/outside zone with no lateral movement** (P022, P025, P028). *Open.*
   Playside linemen gain 0.4–0.8 yd laterally by 0.6 s on these calls, so the
   first steps do move. On P025 the look comes after contact: the playside
@@ -958,6 +1020,9 @@ Resolved with the promoted defaults (staging, not coverage):
   beats a 0.3-s reaction. The reaction time wasn't tuned to close it.
 - **Open:** whether the motion plan's acceleration or the reaction is wrong.
   Shifts and tight-end motion aren't modeled.
+- **Changed by ALN-3:** jets now run a deeper lane around their teammates
+  (2.05 vs 1.8 yd) and are a little slower at the snap (5.3 vs 6.1 yd/s, at
+  5.0 vs 4.8 yd from the ball). Re-measure the travel rate on the new timing.
 
 <a id="cov-5"></a>
 ### COV-5: Older coverage contracts that fail or are unproven
@@ -1075,6 +1140,44 @@ need personnel the sim doesn't have.
   7.0 vs 6.4 tracked.
 - **Where:** the formation library; `WR_ALIGN` (#190, off) sets the #1's split by
   his route.
+
+<a id="aln-3"></a>
+### ALN-3: Motion men ran into the line and the QB
+
+- **Film** (Tanner, suite game 1 on `c5667bc4`): P007, P012, P013, P024 and
+  P026. The motion man knocks the QB aside and bumps through linemen.
+- **Measure** (`scripts/diag/motion-contacts.ts`, seeds 7–9, 2 games each):
+  on develop, 198 of 215 across motions and 39 of 65 yo-yo motions touched a
+  teammate before the snap, and so did 6 of 40 jets. With no motion, there
+  were 0 touches.
+- **Cause:** *confirmed: the planner.* The path cleared tackles and inline
+  ends by `LINE_CLEAR` (0.65 yd) center to center, which is about the sum of
+  the two bodies' radii. It ignored the QB (1.6 yd off the ball under center)
+  and the backs. A yo-yo stepped 4 yd inside straight into the end or tackle.
+  Separately, the body couldn't follow some clean plans: a sharp corner run
+  at full speed carried him past the lane or past his set spot, and a short
+  drop leg was skipped by the 0.6-yd waypoint capture.
+- **Fix** (on by default): the path he will actually run (corners cut where
+  `motionIntent` cuts them) keeps 0.2 yd of daylight from every set
+  teammate's body. An across motion bellies back to the shallowest clear lane
+  (behind a QB under center) on gentle diagonals. Corners are taken no faster
+  than he can turn them (`cornerSpeed`), and the travel time models that. A
+  wing starting beside his end drops straight back. A motion with no clear
+  path isn't called: 13% of across calls (most need more than the 5.5-s
+  pre-snap limit), about 15% of yo-yos, 2% of jets.
+- **After** (same seeds): 0 touches in 348 motions (368 on develop).
+- **Timing:** across motions run 4.7 s (4.3 before). Jets snap 5.0 yd from
+  the ball (4.8 before; tracked median 5), 2.05 yd deep (1.8) and at 5.3 yd/s
+  (6.1), so they reach the mesh about 0.1 s later; see COV-4. The planner
+  now times each leg from where the body cuts the previous corner.
+- **Rule (RULE-2):** 7-4-8 never fired on a motion man, because the snap
+  inspection had no motion facts. It now reads the motion man's velocity at
+  the snap (moving above 0.5 yd/s; toward the line above 0.5 yd/s). Nothing
+  fires on these seeds, so games are unchanged by the rule.
+- **P024's snap angle:** the ball is held by the QB from the start of the
+  play; no center-to-QB exchange is modeled. The odd snap angle was the QB
+  being knocked aside at −0.17 s, which no longer happens. Modeling the
+  exchange is open (RULE-2).
 
 ## Rules and penalties
 

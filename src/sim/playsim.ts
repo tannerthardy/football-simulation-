@@ -25,6 +25,7 @@ import { bodyRadius } from '../physics/bodyshape.js';
 import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
 import { containCoverage } from './coverage-space.js';
+import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
 import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
@@ -295,7 +296,8 @@ export class PlaySim {
     this.beginSegment(qb, 'snap');
     this.perception = new PerceptionBuffer(this.agents.length, this.dt);
     const motion = motionEnabled() && this.offCall.motion ? this.slot(this.offCall.motion.slot) : undefined;
-    const plan = motion ? planMotion(this.offAlign, this.offCall.motion!, motion.profile) : null;
+    const plan = motion ? planMotion(this.offAlign, this.offCall.motion!, motion.profile,
+      this.offense.map(a => ({ slot: a.slot, pos: a.pos, radius: a.profile.radius }))) : null;
     this.motion = plan ? new MotionRuntime(plan, setup.defCall, setup.manPrefs, this.defStyle, this.defAlign, this.rng.fork('motion-check')) : null;
     this.stageDefense(setup.manPrefs);
     if (this.motion) ({ offAlign: this.offAlign, defCall: this.defCall, defAlign: this.defAlign } = this.motion.finish(this));
@@ -960,7 +962,8 @@ export class PlaySim {
       const a = this.agents[i];
       // Reaction delays control, not collisions: he can still be pushed.
       const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
-      this.cmds[i] = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
+      const contained = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
+      this.cmds[i] = openToBall(a, this, contained);
     }
 
     // Intents: the decisions, refined by the techniques that own contact.
