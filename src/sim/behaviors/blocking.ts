@@ -39,6 +39,10 @@ const PULL_STEP = process.env.PULL_STEP === '1';
 const stanceDepth = (sim: PlaySim, a: Agent) => sim.los - (sim.offAlign.spots[a.slot]?.pos.x ?? sim.los - .55);
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 export const isOL = (a: Agent): boolean => OL.has(a.slot);
+/** A first-level run blocker on the line: the five linemen and an inline end
+ * doing the same job, who keeps the same base and strike fit into contact.
+ * A detached wing or slot keeps his own approach. */
+const onLine = (a: Agent, sim: PlaySim): boolean => isOL(a) || !!sim.offAlign?.spots[a.slot]?.inline;
 
 // ------------------------------------------------------------- protection
 
@@ -943,7 +947,7 @@ export class RunBlocker implements Behavior {
         const target = this.availableTarget(a, sim);
         if (target && target === this.presentationThreat) {
           a.stance = 'low';
-          return this.withBase(a, this.attack(a, sim, target));
+          return this.withBase(a, sim, this.attack(a, sim, target));
         }
       }
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
@@ -956,13 +960,13 @@ export class RunBlocker implements Behavior {
     const coordinated = !!plan.combination && !plan.combination.released && !stretch;
     if (ZONE_FLOW && isOL(a) && ['drive', 'reach', 'cutoff', 'combo'].includes(plan.kind) && !coordinated) {
       const flow = this.zoneFlow(a, sim);
-      if (flow) return this.withBase(a, flow);
+      if (flow) return this.withBase(a, sim, flow);
     }
     if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay) {
       // Establish the first foot and pad angle before running through a
       // target. Zone gains lateral ground; Duo stays vertical. These are
       // technique landmarks, still subject to acceleration and collisions.
-      return this.withBase(a, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
+      return this.withBase(a, sim, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
     }
 
     if (t >= this.nextThreatRead) {
@@ -1131,7 +1135,7 @@ export class RunBlocker implements Behavior {
         : { x: Math.max(seen.pos.x - 1.2, a.pos.x), y: seen.pos.y };
       return goTo(a, fit, { speed: .85, through: 1 });
     }
-    return this.withBase(a, this.attack(a, sim, target));
+    return this.withBase(a, sim, this.attack(a, sim, target));
   }
 
   /** The climb, planned on the read cadence from one acquired picture of the
@@ -1281,12 +1285,12 @@ export class RunBlocker implements Behavior {
     return target;
   }
 
-  private withBase(a: Agent, command: MoveCommand): Intent {
+  private withBase(a: Agent, sim: PlaySim, command: MoveCommand): Intent {
     // The visible low stance does not set the physical posture. Keep the
-    // existing snap base through a first-level OL approach; World supplies
+    // existing snap base through a first-level line approach; World supplies
     // finite posture changes, the movement cost and actual balance. Running
     // pullers, climbs, unassigned movement and contact techniques own theirs.
-    return isOL(a) && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(this.plan.kind)
+    return onLine(a, sim) && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(this.plan.kind)
       ? { ...command, posture: .7 } : command;
   }
 
@@ -1399,7 +1403,7 @@ export class RunBlocker implements Behavior {
     // A run block starts with the strike, before torsos meet. Keep functional
     // extension shorter than a pass-pro punch; long arms can catch a slant.
     const contact = a.profile.radius + target.profile.radius + 0.1 + (a.player.measurables.armIn / 36) * 0.45;
-    const fitCandidate = isOL(a) && (plan.kind === 'drive' || plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
+    const fitCandidate = onLine(a, sim) && (plan.kind === 'drive' || plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
       && (!plan.combination || plan.combination.released)
       && !sim.world.joints.some(j => j.a === a.body || j.b === a.body);
     const contactFit = fitCandidate && plan.kind === 'cutoff' && plan.contactFit?.target === target
@@ -1705,7 +1709,7 @@ export class RunBlocker implements Behavior {
    */
   private runnerSideFit(a: Agent, sim: PlaySim, target: Agent, seen: Perceived):
     { axis: Vec2; aim: Vec2; lost: boolean } | null {
-    if (!(isOL(a) || sim.offAlign.spots[a.slot]?.inline)
+    if (!onLine(a, sim)
       || !['drive', 'reach', 'down', 'cutoff'].includes(this.plan.kind)
       || (this.plan.combination && !this.plan.combination.released)) return null;
     const ref = this.workReference(a, sim);
