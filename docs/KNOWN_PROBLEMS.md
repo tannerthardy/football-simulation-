@@ -686,8 +686,21 @@ run plays with the assignment layer (`--telemetry full`):
     them off their corners;
   - P013 is a climb that overran a downhill backer, not a stale target;
   - P029 RT stays on a combo the Y has won (combination release).
-- **Pullers whiff.** *Open.* P031 power: the kick-out guard follows a
-  penetrating end 6 yd deep instead of entering his gap. P007 trap.
+- **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
+  tracked the end's shoulder with the end's own velocity fed forward. On P031
+  the end penetrated 4 yd deep, so the guard matched his backward speed and
+  drifted 6 yd deep while still 3–5 yd away laterally, never touching him.
+  The puller now fits the end's shoulder on the end's line to the runner he
+  has acquired, with no velocity feed-forward, and carries the held pull
+  read through the time held. Restaged on 132 pullers (game 1 runs plus
+  power, counter and trap from seeds 8–13): contact with the assigned man
+  55 → 66, contact made inside-out 44 → 58, first contact 2.28 → 2.11 s.
+  P031's guard now kicks the end at 2.4 s. Still open: a kick target who
+  reaches the runner unblocked is unchanged (35 → 36). On P007 (trap) the end
+  still slips inside the trapper after contact; that's contact, not approach.
+- **Defensive gaps exposed so far.** None measurable yet: restaged mean run
+  yards moved within noise on each fix (6.94 → 7.20, 7.20 → 6.87, gap
+  schemes 4.35 → 4.48). Re-check after all three at the PR-tier scorecard.
 - **Wide/outside zone with no lateral movement** (P022, P025, P028). *Open.*
   Playside linemen gain 0.4–0.8 yd laterally by 0.6 s on these calls, so the
   first steps do move. On P025 the look comes after contact: the playside
