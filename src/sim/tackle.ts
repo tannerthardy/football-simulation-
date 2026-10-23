@@ -94,9 +94,12 @@ const BLOCKED_REACH = process.env.BLOCKED_REACH !== '0';
  * runs sat at grip 0.45, slipping 79% of the time (KNOWN_PROBLEMS TKL-1). */
 const GRIP_HOLD = process.env.GRIP_HOLD !== '0';
 
-export function gripForce(d: Agent, quality: number): number {
-  const q = clamp(quality, 0, 1);
-  const wrap = supportParams(d.profile).armForce * (0.3 + 2.5 * q * q) * (0.6 + 0.6 * d.r('tackling'));
+/** `lock`: how much of the wrap the arms' geometry still locks (default
+ * the hold's quality). A wrap that slides out to arm's length is a hand hold
+ * again; the hands keep the grip they acquired (GRIP_HOLD). */
+export function gripForce(d: Agent, quality: number, lock = quality): number {
+  const q = clamp(quality, 0, 1), l = clamp(lock, 0, 1);
+  const wrap = supportParams(d.profile).armForce * (0.3 + 2.5 * l * l) * (0.6 + 0.6 * d.r('tackling'));
   return GRIP_HOLD ? Math.max(wrap, handHold(d, q)) : wrap;
 }
 
@@ -427,8 +430,9 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     // Control follows the arms: a grip held at full stretch is strong but is
     // not a firm hold on the man for the officials or for him.
     const k = control.get(d) ?? g;
-    control.set(d, clamp(k < available ? k + (available - k) * rate : available, 0.05, 1));
-    joint.capacity = gripForce(d, clamp(next, 0.05, 1));
+    const held = clamp(k < available ? k + (available - k) * rate : available, 0.05, 1);
+    control.set(d, held);
+    joint.capacity = gripForce(d, clamp(next, 0.05, 1), Math.min(clamp(next, 0.05, 1), held));
     if (WRAP_BIND && joint.legs > 0) {
       // Use the same acquired grip and actual closing quality as the roll.
       // Height/pitch stay on `legs`; a tighter wrap increases only the

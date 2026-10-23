@@ -118,6 +118,15 @@ describe('a hold keeps the grip it acquired when the arms extend', () => {
     expect(r.broke).toBe(true);
     expect(r.held).toBeLessThan(.3);
   });
+  it('a wrap pulled out to arm\'s length is a hand hold again: the lock follows the arms, the hands keep their grip', async () => {
+    const f = await hold(true, .6, .9, 4.5);
+    const r = f.run(.3);
+    expect(r.broke).toBe(false);
+    const grip = f.sim.bond!.grip!.get(f.defender)!, control = f.sim.bond!.control!.get(f.defender)!;
+    expect(grip).toBeGreaterThan(control);
+    expect(f.joint.capacity).toBeLessThan(f.gripForce(f.defender, grip));
+    expect(f.joint.capacity).toBeGreaterThanOrEqual(f.gripForce(f.defender, grip, 0));
+  });
   it('mirrored holds stay mirrored', async () => {
     const a = (await hold(true, .45, .45, 5, 1)).run(1), b = (await hold(true, .45, .45, 5, -1)).run(1);
     expect(b.speed).toBeCloseTo(a.speed, 9);
