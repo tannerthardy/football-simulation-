@@ -1170,6 +1170,14 @@ export class Game {
       this.recordKickFouls(ko.rules, kicking, entry); this.log.push(entry);
       this.runClock(ko.touchback || ko.rules.deadOnRecovery ? 0 : 6, true);
       if (ko.rules.retryKickFrom !== undefined) { kickSpot = ko.rules.retryKickFrom; continue; }
+      //16-1-5(c): the receiving team has its opportunity on a kickoff even
+      //when the kickers legally recover. Count that opportunity before K's
+      //new series; a re-kick above has not completed one. Do not replace the
+      //opening receivers with the recovery owner as the first OT team.
+      if (s.quarter >= 5 && ko.rules.possession === 'kicking') {
+        if (s.otPossessions === 0) s.otFirst = other(kicking);
+        this.otCheckPossession();
+      }
       this.applyKickRuling(ko.rules, kicking); return;
     }
   }
