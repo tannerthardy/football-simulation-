@@ -179,7 +179,8 @@ problem), resolved.
 | [KICK-1](#kick-1) | Kicking too accurate, too many punts | — | low | open |
 | [ALN-1](#aln-1) | Defensive pre-snap picture unlike tracking | G2, G3 | medium | on |
 | [ALN-2](#aln-2) | Offensive formations over-compress the box | G2, G7 | medium | open |
-| [ALN-3](#aln-3) | Motion men ran into the line and the QB | G6, G7 | high | fixed (this PR) |
+| [ALN-3](#aln-3) | Motion men ran into the line and the QB | G6, G7 | high | resolved (#237) |
+| [ALN-4](#aln-4) | Long across motions are called but not run | G7 | low | open |
 | [RULE-1](#rule-1) | Too many penalties, especially defensive offside | G6 | medium | open |
 | [RULE-2](#rule-2) | Rule coverage incomplete | G6 | low | open |
 | [CALL-1](#call-1) | Play-calling not checked against NFL tendencies | G7 | medium | open |
@@ -1179,6 +1180,21 @@ need personnel the sim doesn't have.
   being knocked aside at −0.17 s, which no longer happens. Modeling the
   exchange is open (RULE-2).
 
+<a id="aln-4"></a>
+### ALN-4: Long across motions are called but not run
+
+- **Measure** (`scripts/diag/motion-contacts.ts`, seeds 7–9, 2 games each,
+  develop after #237): the planner drops 28 of 222 across calls (13%), about
+  15% of yo-yos and 2% of jets. The play then runs with no motion.
+- **Cause:** *confirmed.* Since ALN-3, an across motion bellies back behind
+  the line (and behind a QB under center) and comes up into its spot. The
+  longest crossings, mostly a wide receiver going to the far side, no longer
+  fit `MAX_SECONDS` (5.5 s). A yo-yo with no room to step 1.5 yd inside isn't
+  run either.
+- **Open** (Tanner, 2026-10-23: logged, not being worked now): let a long
+  motion start earlier than 5.5 s, have him set wider, or have the
+  play-caller stop calling motions the formation can't fit (G7).
+
 ## Rules and penalties
 
 <a id="rule-1"></a>
@@ -1236,6 +1252,12 @@ need personnel the sim doesn't have.
   limitations. These are evidence gaps, not 350 proven fouls.
 - The holding enforcement spot is fixed, but the accept/decline choice is
   simple (GAME-001).
+- No snap exchange: the QB holds the ball from the start of the play, so
+  the center's snap, a bad snap and a fumbled exchange aren't modeled. Film
+  P024's odd snap angle was the QB being knocked aside before the snap
+  (ALN-3, fixed in #237), not a center's delivery.
+- Motion: 7-4-8 reads only the motion man's velocity at the snap (#237).
+  Shifts and the one-second set after a shift aren't simulated.
 
 ## Coaching and play-calling
 
