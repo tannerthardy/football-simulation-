@@ -4,6 +4,7 @@
  * A loss of down can charge an attempt despite nullifying the physical ending;
  * a spot-enforced rush can retain yards without a third-down attempt. */
 import type { CarrierSegment, PenaltyCall, PlayResult, PlayStats } from '../sim/types.js';
+import { OPP_GOAL_X } from '../core/field.js';
 import type { LivePenaltyOption } from './penalty-enforcement.js';
 
 export type OfficialStatsTreatment = 'none' | 'physical' | 'before_change_of_possession'
@@ -43,6 +44,18 @@ const physicalConversion = (r: PlayResult, distance: number): boolean =>
 
 function credited(treatment: OfficialStatsTreatment, result: PlayResult,
   downAttempt: boolean, converted: boolean): OfficialStatRuling {
+  // NFL YAC = receiving yards - completed air yards; air is measured from
+  // LOS to the catch, not from the QB. For an end-zone reception, statistical
+  // catch depth ends at the goal line, just as receiving yardage does. Keep
+  // the physical catch segment and intended airYards intact. Using credited
+  // yardage here also preserves the existing hundredth-yard TD rounding.
+  const catchSegment = result.kind === 'pass' && result.stats.completed
+    && result.segments.find(s => s.team === 'O' && s.how === 'catch');
+  if (result.score?.kind === 'TD' && result.score.team === 'O'
+    && catchSegment && catchSegment.startX >= OPP_GOAL_X) {
+    result = { ...result, stats: { ...result.stats,
+      completedAirYards: result.offenseYards, yac: 0 } };
+  }
   return { result, credit: { treatment, playCharged: true, downAttempt, converted,
     kind: result.kind, yards: result.offenseYards, stats: result.stats, segments: result.segments } };
 }
