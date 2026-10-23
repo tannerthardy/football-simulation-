@@ -190,6 +190,21 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
     expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
   });
 
+  it('uses the acquired blocker picture for an unloaded new exit, and felt geometry once loaded', () => {
+    const a = scene(1), hiddenChange = scene(1), loaded = scene(1);
+    for (const f of [a, hiddenChange, loaded]) f.engagement.nextMoveAt = f.sim.t + .6;
+    a.engagement.hands!.normalForce = 0;
+    hiddenChange.engagement.hands!.normalForce = 0;
+    // This puts the real blocker just across the runner approach. His
+    // acquired picture remains unchanged in both opposing scenes.
+    hiddenChange.blocker.body.pos.y += .5;
+    loaded.blocker.body.pos.y += .5;
+    expect(hiddenChange.command()).toEqual(a.command());
+    expect(hiddenChange.defender.tags.has('shed-attempt')).toBe(true);
+    loaded.command();
+    expect(loaded.defender.tags.has('shed-attempt')).toBe(false);
+  });
+
   it('executes the requested turn through the existing hand and support budgets', () => {
     const f = scene(1), commands = contactCommands(f);
     const report = f.sim.world.step(commands, f.sim.dt);
