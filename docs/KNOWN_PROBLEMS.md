@@ -172,8 +172,8 @@ problem), resolved.
 | [COV-2](#cov-2) | Too much yardage per attempt and after the catch | G3 | high | open |
 | [COV-3](#cov-3) | Coverage rules and calls not yet complete | G3 | medium | in work (#193) |
 | [COV-4](#cov-4) | Defenders react late to jet motion | G3 | low | on |
-| [COV-5](#cov-5) | Older coverage contracts that fail or are unproven | G3 | medium | open |
-| [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | medium | open |
+| [COV-5](#cov-5) | Older coverage contracts that fail or are unproven | G3 | high | open (next for Coverage) |
+| [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | open (next for Coverage) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
 | [QB-2](#qb-2) | Too many scrambles, and completions slightly low | G5, G7 | low | open |
@@ -1063,6 +1063,8 @@ From the issue register:
   square and the receiver's velocity (`hipsOpen`, `turnRun`,
   `carryingAcross`), and track() velocity that reverses on every receiver
   stem. The motor then turns at its ceiling, which is within NFL capability.
+- **Priority:** Tanner (2026-10-23): handle next, ahead of other
+  Coverage work.
 - **Open:** Coverage lane. Find which toggles flip most, and whether a real
   DB's slower, rounded turn is a technique (open the hips gradually) the
   controller should request. Keep the turn-rate ceiling.
