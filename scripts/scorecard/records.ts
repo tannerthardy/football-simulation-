@@ -7,6 +7,7 @@ import { Rng } from '../../src/core/rng.js';
 import { generateTeam, type Team } from '../../src/league/team.js';
 import type { GameResult, PlayLog } from '../../src/game/game.js';
 import type { PlayStats } from '../../src/sim/types.js';
+import type { WeirdEvent } from './weird/types.js';
 
 export interface PlayRec {
   kind: 'run' | 'pass';
@@ -68,6 +69,8 @@ export interface GameRec {
   plays: PlayRec[];
   /** Additive game-layer measurements; absent on older saved cards. */
   gameLayer?: GameLayerRec;
+  /** Film weirdness events (capped per detector, worst first) and the detector time; absent when the probe is off. */
+  weird?: { events: WeirdEvent[]; ms: number };
   /** Sums contributed by probes (see probes.ts), keyed `<probe>.<name>`. */
   probe: Record<string, number>;
 }

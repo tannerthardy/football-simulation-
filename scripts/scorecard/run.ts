@@ -34,6 +34,7 @@ import { fileURLToPath } from 'node:url';
 import type { GameRec, PlayRec } from './records.js';
 import { METRICS, SPLITS, evaluate, interval, penaltyMetrics, status, type Metric } from './metrics.js';
 import { PROBES } from './probes.js';
+import { eventsFile, overheadLine, watchSection } from './weird/report.js';
 import { compatibility, engineSettings, measurementIdentity, provenance, type Arm, type Card } from './provenance.js';
 
 const argv = process.argv.slice(2);
@@ -202,6 +203,7 @@ function report(card: Card, baseCard?: Card): string {
     out.push(`Workers requested: ${available(p.workersRequested)}; peak concurrent worker processes: ${available(p.workersUsed)}.`, '');
     out.push(`Collection elapsed: ${p.wallMs === undefined ? 'unavailable' : `${(p.wallMs / 1000).toFixed(1)} s`}. CPU time: not collected in scorecard records.`, '');
     for (const a of producer.arms) out.push(`- ${a.name}: ${Number.isFinite(secPerGame(a)) ? `${secPerGame(a).toFixed(1)} s elapsed per game` : 'elapsed time unavailable'}; worker processes: ${available(a.workerProcesses)}`);
+    for (const a of producer.arms) { const line = overheadLine(a.name, a.games); if (line) out.push(line); }
     for (const key of ['engineSha256', 'measurementSha256', 'lockfileSha256', 'platform', 'arch', 'cpuModel', 'cpuQuotaCores', 'execution'] as const)
       out.push(`- ${key}: ${available(p.provenance?.[key])}`);
     for (const a of producer.arms) out.push(`- ${a.name} resolved engine switches: ${a.settings ? `\`${JSON.stringify(a.settings)}\`` : 'unavailable (legacy overrides do not establish resolved defaults)'}`);
@@ -237,6 +239,7 @@ function report(card: Card, baseCard?: Card): string {
     allMoves.push(...ct.moves, ...st.moves);
     if (st.lines.length) out.push('', '### Splits', ...(qualified ? ['', '◆ marks a cell whose change is outside noise.'] : []), ...st.lines);
   }
+  out.push(...watchSection(card.arms));
   if (allMoves.length) {
     const size = (m: Move) => Math.abs(m.now - m.base) / Math.max(1e-9, (m.metric.band ? m.metric.band[1] - m.metric.band[0] : Math.abs(m.base)) || 1);
     out.push('', '## Biggest real moves', '');
@@ -280,4 +283,16 @@ for (const [flag, data] of [['out', JSON.stringify(card)], ['md', text]] as cons
   if (!path) continue;
   mkdirSync(dirname(path), { recursive: true });
   writeFileSync(path, data);
+}
+// The film weirdness events, in full, next to the saved card (`--weird` names the file).
+{
+  const explicit = opt('weird');
+  const beside = (p: string) => `${p.replace(/\.(json|md)$/, '')}.weird-events.json`;
+  const path = explicit ?? (fromPath ? undefined : opt('out') ? beside(opt('out')!) : opt('md') ? beside(opt('md')!) : 'out/scorecard/weird-events.json');
+  const file = eventsFile({ commit: card.meta.commit, date: card.meta.date, seed: card.meta.seed, games: card.meta.games, leagues: card.meta.leagues }, card.arms);
+  if (path && file.arms.length) {
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, JSON.stringify(file));
+    process.stderr.write(`scorecard: film weirdness events -> ${path}\n`);
+  }
 }
