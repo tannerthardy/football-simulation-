@@ -253,6 +253,11 @@ problem), resolved.
   past him. A bounded acquired-exit/body-turn correction improves the request,
   but not confirmed release in the matched lab. See TKL-2 below. Do not widen
   the block-in-the-back rule or award a release to compensate.
+  The 2026-10-23 native audit also separates live engagement from proximity:
+  eight of twelve near-blocker DL at the observed five-yard crossing have no
+  active rep, including a defender already completing a tackle. Their cached
+  old hand loads are not current force. G1 includes pursuit through congestion,
+  not only defeating loaded hands.
 
 <a id="run-3"></a>
 ### RUN-3: Double teams drive defenders back much too far
@@ -665,6 +670,27 @@ Carried over from the issue register; each was measured on an older develop.
     velocity windows; blocked drift is a tracking proxy, not proof of a
     particular force defect. Proximity release and actual engagement end remain
     distinct measures.
+  - **Re-diagnosis, 2026-10-23 (#225, based on `d3e22420`):** after stopping
+    the two technique attempts, loaded native probes do not support removing
+    teammate spacing or increasing the exit demand as a general shed fix.
+    Stopping active pressing helps one release confirmation but loses another
+    on fresh Power/Toss players. Its fresh touchdown adverse begins with a
+    different execution draw at an identical safety opportunity, following
+    extra line recontact; it does not prove lost containment. Neither
+    intervention is retained in the candidate.
+    A separate continuity defect remains: a new first-level block installs a
+    .35–.60s move wait even for an already acquired exit. The bounded correction
+    continues only that exit, using the blocker point already acquired in the
+    line read; frontal work and unadvanced edges keep their old cadence.
+    Broadly bypassing the wait made a fresh Power approach worse and was
+    rejected. Early clear exits also retain an adverse speed/turn tradeoff;
+    contact-shuffle effort does not establish an attainable loaded escape.
+    In the native audit, only four of twelve near-blocker DL retain loaded
+    hands at +5; another logical rep just outside one yard is unloaded.
+    A released DT's low request instead reconstructs exactly as teammate
+    spacing in real congestion. Keep force, release, free-path choice and
+    proximity separate. Main Engine still reviews shared engagement changes;
+    sustained frontal leverage and loaded navigation remain open.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
