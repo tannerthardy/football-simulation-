@@ -428,6 +428,14 @@ interface Plan {
   effortVy: number;
 }
 
+/** Forecast Worlds usually contain one body. Keep ordinary, independently
+ * owned report arrays, without the generic allocation/fill for that case. */
+function reportZeros(count: number): number[] {
+  return count === 1 ? [0] : new Array(count).fill(0);
+}
+
+function reportVector(): Vec2 { return { x: 0, y: 0 }; }
+
 /** The current lean's unsupported share. Keep this outside the substep loop:
  * constructing nested closures here is costly in the development runner.
  * Each call still reads the current support and availability after a release. */
@@ -614,13 +622,13 @@ export class World {
         b.support!.feetLock = 0;
       }
     }
-    const report: StepReport = { substeps: 1, groundImpulse: bs.map(() => ({ x: 0, y: 0 })),
-      groundWork: new Array(n).fill(0), groundYawImpulse: new Array(n).fill(0), groundYawWork: new Array(n).fill(0),
-      armWork: new Array(n).fill(0), armWorkLimit: new Array(n).fill(0), armImpulse: new Array(n).fill(0), armImpulseLimit: new Array(n).fill(0),
+    const report: StepReport = { substeps: 1, groundImpulse: bs.map(reportVector),
+      groundWork: reportZeros(n), groundYawImpulse: reportZeros(n), groundYawWork: reportZeros(n),
+      armWork: reportZeros(n), armWorkLimit: reportZeros(n), armImpulse: reportZeros(n), armImpulseLimit: reportZeros(n),
       work: {before: this.kineticEnergy(),after: 0,hands: 0,grasps: 0,strikes: 0,contacts: 0,residual: 0},
       contacts: [], strikes: [], falls: [], downs: [], rises: [], maxPenetration: 0,
-      maxLeanReleaseResidual: 0, maxLeanReleaseIterations: 0, leanRelease: bs.map(() => ({ x: 0, y: 0 })),
-      supportMotorWork: new Array(n).fill(0), supportMotorWorkLimit: new Array(n).fill(0), passiveGraspWork: 0,
+      maxLeanReleaseResidual: 0, maxLeanReleaseIterations: 0, leanRelease: bs.map(reportVector),
+      supportMotorWork: reportZeros(n), supportMotorWorkLimit: reportZeros(n), passiveGraspWork: 0,
       maxHeldRecoveryExcursion: 0, lowerHoldReleases: 0,
       impactSplits: 0, impactSplitLimitHits: 0, maxSupportIntegrationError: 0, supportIntegrationFailures: 0 };
     this.report = report; this.tickDt = dt;
@@ -754,12 +762,22 @@ export class World {
   /** Requested actions share one scalar arm capacity, so duplicate joints
    * or strike requests cannot multiply a body's force. Allocation uses
    * requested vector magnitudes, independent of body/solver iteration order. */
+  /** Arm-budget units per unit of press force: arm force / press capacity
+   * (exactly 1 without ARM_PRESS). */
+  private pressUnits(i: number): number {
+    const sp = this.sp[i];
+    return sp.pressForce === sp.armForce ? 1 : sp.armForce / sp.pressForce;
+  }
+
   private allocateArms(): void {
     this.active.fill(0);
     for (const jt of this.joints) {
       if (jt.kind==='hands') {
         const actor=this.indexOf(jt.actor??jt.a),holder=this.indexOf(jt.holder??jt.a);
-        this.active[actor]+=Math.hypot(Math.max(0,jt.push,actor===holder?jt.hold:0),Math.max(0,jt.steer));
+        // A press is counted in press units: a full press uses the whole arm
+        // budget, as a full grip does (ARM_PRESS; the ratio is 1 when off).
+        const units=this.pressUnits(actor),press=units===1?Math.max(0,jt.push):Math.max(0,jt.push)*units;
+        this.active[actor]+=Math.hypot(Math.max(press,actor===holder?jt.hold:0),Math.max(0,jt.steer));
         if(actor!==holder)this.active[holder]+=Math.max(0,jt.hold);
       }
       else if (!jt.broken) {
@@ -789,7 +807,7 @@ export class World {
    * the owner's remaining tick budget without cross-interval credit. */
   private pairImpulse(i: number,j: number,x: number,y: number,actor: number,
     kind: 'hands'|'grasps'|'strikes', active=true, channel?: { net: number },
-    angularA = 0, angularB = 0): number {
+    angularA = 0, angularB = 0, armUnits = 1): number {
     const a=this.bodies[i],b=this.bodies[j];
     let linear=(b.vel.x-a.vel.x)*x+(b.vel.y-a.vel.y)*y;
     let quadratic=.5*(x*x+y*y)*(1/this.mass[i]+1/this.mass[j]);
@@ -799,7 +817,9 @@ export class World {
     }
     const ledger = this.constraintWork === 'per-solve' ? channel : undefined;
     const previous = ledger?.net ?? 0;
-    const budget=(active?Math.max(0,this.report.armWorkLimit[actor]-this.report.armWork[actor]):0)
+    // armUnits converts this channel's work into arm-budget units (a press
+    // counts in press units; 1 for every other channel).
+    const budget=(active?Math.max(0,this.report.armWorkLimit[actor]-this.report.armWork[actor])/armUnits:0)
       + (ledger ? Math.max(0,-previous) : 0);
     const fraction=workFraction(linear,quadratic,budget);
     x*=fraction;y*=fraction;
@@ -811,8 +831,8 @@ export class World {
     this.report.work[kind]+=work;
     if (kind === 'grasps' && !active) this.report.passiveGraspWork += work;
     if (ledger) ledger.net = previous + work;
-    if(active)this.report.armWork[actor]+=ledger
-      ? Math.max(0,ledger.net)-Math.max(0,previous) : Math.max(0,work);
+    if(active)this.report.armWork[actor]+=(ledger
+      ? Math.max(0,ledger.net)-Math.max(0,previous) : Math.max(0,work))*armUnits;
     return fraction;
   }
 
@@ -1343,8 +1363,10 @@ export class World {
           }
         }
         if (jt.kind === 'hands') {
-          if(r.actor===r.steerActor) report.armImpulse[r.actor] += Math.hypot(r.ln,r.lt);
-          else { report.armImpulse[r.actor]+=Math.abs(r.ln);report.armImpulse[r.steerActor]+=Math.abs(r.lt); }
+          // A press is counted in press units, as allocateArms budgets it.
+          const ln = r.mode > 0 ? r.ln * this.pressUnits(r.actor) : r.ln;
+          if(r.actor===r.steerActor) report.armImpulse[r.actor] += Math.hypot(ln,r.lt);
+          else { report.armImpulse[r.actor]+=Math.abs(ln);report.armImpulse[r.steerActor]+=Math.abs(r.lt); }
           if (!r.handMembers) {
             jt.normalForce = (jt.normalForce ?? 0) + r.ln;
             jt.tangentForce = (jt.tangentForce ?? 0) + r.lt;
@@ -2231,7 +2253,7 @@ export class World {
       const ln = r.mode > 0 ? clamp(r.ln + imp, 0, r.pushLim) : clamp(r.ln + imp, -r.holdLim, 0);
       const dn = ln - r.ln;
       const fraction=this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'hands',true,r.normalWork??={net:0},
-        (r.ni ?? 0) * dn, (r.nj ?? 0) * dn);
+        (r.ni ?? 0) * dn, (r.nj ?? 0) * dn, r.mode > 0 ? this.pressUnits(r.actor) : 1);
       r.ln+=dn*fraction;
     }
     if (r.steerLim > 0) this.solveTangent(r, a, b, r.steerLim);

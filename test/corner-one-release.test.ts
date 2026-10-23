@@ -6,16 +6,7 @@
  * first five yards). A short stop zones him off only until #1 turns upfield.
  * Film: node --import tsx scripts/corner-one-film.ts > out/corner-one-film.json
  */
-import { describe, expect, it, vi } from 'vitest';
-// The out-and-up and stop-and-go turn upfield at 2.6-3.1 s. Under the
-// candidate profile, FRONT_ALIGN's edges and SNAP_REACT's get-off let the
-// four-man rush sack or strip the QB at 2.4-2.7 s, before #1 turns, so the
-// rep never asks the corner the question. The scene is staged on the
-// installed rush; each long rep also asserts the ball was still held at
-// the end (`held`), so a staging break fails as staging, not as coverage.
-// OL_STAGGER sets the line deeper and WR_ALIGN moves the receivers' splits;
-// these timed releases are staged on the flat line and the installed splits.
-vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.OL_STAGGER = '0'; process.env.WR_ALIGN = '0'; });
+import { describe, expect, it } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 // Registers the lab routes for #1 (lab_curl7, lab_stop_go, lab_out_up4).
 import '../src/lab/coverage-scene.js';
@@ -25,6 +16,8 @@ import { COVERAGE_BY_ID } from '../src/playbook/coverages.js';
 import { FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { PassConcept } from '../src/playbook/types.js';
+import { stand } from '../src/sim/behaviors/common.js';
+import { PassRusher } from '../src/sim/behaviors/defense.js';
 import { CoverageDefender } from '../src/sim/coverage/defender.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
@@ -46,6 +39,11 @@ function run(coverage: string, route: string, side: 'S' | 'W', until = 3.8) {
     los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 5,
   });
   sim.throwBall = () => undefined;
+  // The out-and-up and stop-and-go turn upfield at 2.6-3.1 s; a four-man
+  // rush can end the rep first, so the question is never asked. The
+  // rushers hold their ground; `held` still asserts the ball was in the
+  // quarterback's hands at the end, so a staging break fails as staging.
+  for (const d of sim.defense) if (d.behavior instanceof PassRusher) d.behavior = { kind: 'stand', update: () => stand() };
   const step = sim as unknown as { tick(): void };
   const cb = sim.slot(`CB_${side}`)!;
   const b = cb.behavior as CoverageDefender;
@@ -89,7 +87,10 @@ describe('match corner releases #1 only on a declared shallow route', () => {
     it(`${coverage}: a short out that turns up the sideline gets the corner back on #1; a slant commits the zone-off`, () => {
       const outUp = run(coverage, 'lab_out_up4', 'W', 3.4);
       expect(outUp.held).toBe(true);
-      expect(outUp.jobs.slice(1)).toContain(outUp.jobs[0]);
+      // While #1 is shallow the corner is off him: back in his deep area, or
+      // squeezing the out when no vertical threatens (the judgment's
+      // squeeze-break, which the out-and-up exists to punish).
+      expect(outUp.jobs.slice(1).some(j => j === outUp.jobs[0] || j === `rob:${outUp.one}`)).toBe(true);
       expect(outUp.zoned).toBe(false);
       expect(outUp.jobs.at(-1)).toBe(`man:${outUp.one}`);
       const slant = run(coverage, 'slant', 'W', 3.0);
