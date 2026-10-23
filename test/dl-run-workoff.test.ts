@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { contactCommands, contactFixture } from '../scripts/diag/run-contact-technique.js';
 import type { Perceived } from '../src/sim/perception.js';
+import { runContactObservers } from '../src/sim/run-contact-observer.js';
 
 /** Reduced acquired-information/contact island, not a restored NFL snap. */
 function scene(side: number, sealed = false) {
@@ -101,6 +102,46 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
     f.runner.pos = { x: 39, y: CENTER_Y + 6 };
     expect(f.command().vel.x).toBeLessThanOrEqual(0);
     expect(f.defender.tags.has('shed-attempt')).toBe(false);
+  });
+
+  it('keeps the held edge shoulder until the acquired runner actually admits its advanced objective', () => {
+    const f = scene(1);
+    f.defender.runFit!.kind = 'edge';
+    f.runner.pos = { x: 41, y: CENTER_Y + 6 };
+    f.runner.carrying = null;
+    f.engagement.nextMoveAt = 1.55;
+    let requestedAim: unknown;
+    runContactObservers.set(f.sim, (_rep, phase, data) => {
+      if (phase === 'defender-movement') requestedAim = structuredClone(data.defensiveAim);
+    });
+    try {
+      f.command();
+      const heldShoulder = requestedAim;
+      f.blocker.body.pos.y += .2; // An acquired local change, still within the same read beat.
+      f.runner.carrying = true;
+      f.sim.t = f.sim.world.time = 1.56;
+      f.command();
+      expect(requestedAim).toEqual(heldShoulder);
+      f.runner.pos = { x: 43, y: CENTER_Y + 6 };
+      f.sim.t = f.sim.world.time = 1.57;
+      f.command();
+      expect(requestedAim).toEqual(f.runner.pos);
+    } finally {
+      runContactObservers.delete(f.sim);
+    }
+  });
+
+  it('can follow a personally acquired QB run beyond the line while the offensive call remains pass', () => {
+    const f = scene(1);
+    f.sim.isPass = true; f.sim.scrambled = false; f.sim.handoffAt = -1;
+    f.runner.carrying = false;
+    f.qb.carrying = true; f.qb.pos = { x: 43, y: CENTER_Y + 2 };
+    // The hidden ball holder remains the RB: only the acquired picture supplies this exit.
+    const command = f.command();
+    expect(command.vel.x).toBeGreaterThan(0);
+    expect(command.facing).toBeCloseTo(Math.atan2(f.qb.pos.y - f.defender.pos.y,
+      f.qb.pos.x - f.defender.pos.x), 12);
+    expect(f.defender.engagement).toBe(f.engagement);
   });
 
   it('executes the requested turn through the existing hand and support budgets', () => {

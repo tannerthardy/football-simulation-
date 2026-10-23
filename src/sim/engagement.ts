@@ -1022,7 +1022,8 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   // A first-level acquired exit cannot inherit an aim selected earlier by
   // the legacy live-holder fallback. Keep its observed target identity with
   // its held decision; returning to this key only reuses an acquired picture.
-  const aim = d.mind.aim(firstLevel && acquired
+  // Possession alone does not end an edge duty or restart its landmark read.
+  const aim = d.mind.aim(firstLevel && acquired && declared && (!edge || advanced)
     ? `${aimJob}:acquired:${acquired.target.idx}` : aimJob, desired, sim.t);
   // The selected target mode belongs to the same held decision as its aim.
   // A newly seen declaration cannot drop flow feedforward midway through it.

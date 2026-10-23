@@ -92,7 +92,7 @@ function hands(rep: Engagement) {
     normalForce: h.normalForce ?? null, tangentForce: h.tangentForce ?? null,
     actor: h.actor === rep.blocker.body ? rep.blocker.idx : h.actor === rep.defender.body ? rep.defender.idx : null };
 }
-type Seen = { at: number; target: number; role: 'QB' | 'RB' | 'blocker'; cue: Perceived };
+type Seen = { at: number; target: number; role: 'QB' | 'RB' | 'blocker' | 'teammate'; cue: Perceived };
 function inspect(sim: PlaySim) {
   let nextRep = 0;
   const ids = new WeakMap<Engagement, number>();
@@ -101,6 +101,24 @@ function inspect(sim: PlaySim) {
   const pictures = new Map<number, Map<string, Seen>>();
   const requests = new Map<number, { t: number; data: Record<string, unknown> }>();
   const samples: Array<Record<string, unknown>> = [];
+  const calls = new Map<number, Array<{ target: number; called: Vec2 | null | undefined }>>();
+  let peerQuery: { observer: number; target: number } | null = null;
+  const restoreCalls: Array<() => void> = [];
+  // Observe actual installed-motion queries; never make an extra query.
+  for (const target of sim.agents) {
+    const behavior = target.behavior, original = behavior.calledMotion;
+    if (!original) continue;
+    behavior.calledMotion = function () {
+      const called = original.call(this);
+      if (peerQuery?.target === target.idx) {
+        const rows = calls.get(peerQuery.observer) ?? [];
+        rows.push({ target: target.idx, called: called ? { ...called } : called });
+        calls.set(peerQuery.observer, rows);
+      }
+      return called;
+    };
+    restoreCalls.push(() => { behavior.calledMotion = original; });
+  }
   const repId = (rep: Engagement) => {
     if (!ids.has(rep)) {
       const id = nextRep++;
@@ -112,9 +130,10 @@ function inspect(sim: PlaySim) {
   const originalSee = sim.see.bind(sim), originalStep = sim.world.step.bind(sim.world);
   sim.see = (...args) => {
     const cue = originalSee(...args), [observer, target] = args;
+    peerQuery = observer.team === target.team ? { observer: observer.idx, target: target.idx } : null;
     if (isDL(observer)) {
       const role = target === sim.qb ? 'QB' : target === sim.slot('RB') ? 'RB'
-        : target === observer.engagement?.blocker ? 'blocker' : null;
+        : target === observer.engagement?.blocker ? 'blocker' : target.team === observer.team ? 'teammate' : null;
       if (role) {
         const seen: Seen = { at: sim.t, target: target.idx, role, cue: structuredClone(cue) };
         const reads = currentReads.get(observer.idx) ?? [];
@@ -154,7 +173,7 @@ function inspect(sim: PlaySim) {
           runner: runner ? structuredClone(runner) : null,
           effectiveAge: runner?.cue.age === undefined ? null : runner.cue.age + sim.t - runner.at,
           qb: qb ? structuredClone(qb) : null, rb: rb ? structuredClone(rb) : null },
-        consumedThisTick: currentReads.get(d.idx) ?? [], contactRequest: contact ?? null,
+        consumedThisTick: currentReads.get(d.idx) ?? [], calledMotionQueries: calls.get(d.idx) ?? [], contactRequest: contact ?? null,
         finalDefenderIntent: final ? structuredClone(final) : null,
         finalBlockerIntent: blockerFinal ? structuredClone(blockerFinal) : null,
         before: { defender: body(d), blocker: body(b), separation: separation.distance,
@@ -187,10 +206,12 @@ function inspect(sim: PlaySim) {
       samples.push(sample);
     }
     currentReads.clear();
+    calls.clear(); peerQuery = null;
     return report;
   };
   const result = sim.run();
   sim.see = originalSee; sim.world.step = originalStep; runContactObservers.delete(sim);
+  for (const restore of restoreCalls) restore();
   return { result, reps, events, samples };
 }
 function common(sim: PlaySim, input: Input, result: PlayResult, index: number) {
@@ -224,7 +245,7 @@ for (const [index, input] of selectedInputs.entries()) {
   if (commonOut) commonRows.push(common(sim, input, collected.result, index));
   const { frames: _frames, telemetry: _telemetry, ...result } = collected.result;
   rows.push({ input, actors: sim.agents.map(a => ({ idx: a.idx, id: a.player.id, slot: a.slot, team: a.team,
-    position: a.player.position, runFit: a.runFit })), actualCalls: { offense: sim.offCall, defense: sim.defCall },
+    position: a.player.position, profile: a.profile, runFit: a.runFit })), actualCalls: { offense: sim.offCall, defense: sim.defCall },
     result, executionSha256, passiveVerified, reps: collected.reps, events: collected.events, samples: collected.samples });
 }
 if (sourceVersion() !== sourceBefore) throw new Error('Engine changed during collection');
