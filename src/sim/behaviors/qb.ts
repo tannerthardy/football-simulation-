@@ -680,9 +680,9 @@ export class QBHandoff implements Behavior {
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * clamp(t, 0, 1);
 
-/** The firmest grip a tackler has on `a` (0 when nobody is holding him). */
+/** The firmest control a tackler has of `a` (0 when nobody is holding him). */
 function heldBy(a: Agent, sim: PlaySim): number {
   const bond = sim.bond;
   if (!bond || bond.carrier !== a) return 0;
-  return Math.max(0, ...bond.tacklers.map((d) => bond.grip?.get(d) ?? 1));
+  return Math.max(0, ...bond.tacklers.map((d) => bond.control?.get(d) ?? bond.grip?.get(d) ?? 1));
 }
