@@ -8,14 +8,14 @@ const wrap = (x: number) => Math.atan2(Math.sin(x), Math.cos(x));
 
 /** A defender at the origin and a back he has seen `range` yards away at
  * `bearing`. Facing PI is chest to the line of scrimmage. */
-function scene(facing: number, bearing = Math.PI, range = 4, qbRun = false) {
+function scene(facing: number, bearing = Math.PI, range = 4, qbRun = false, carrying: boolean | null = true) {
   const carrier = { team: 'O' } as unknown as Agent;
   const qb = qbRun ? carrier : { team: 'O' } as unknown as Agent;
   const pos = { x: Math.cos(bearing) * range, y: Math.sin(bearing) * range };
   const a = { team: 'D', pos: { x: 0, y: 0 }, engagement: null, isDown: () => false, recog: { read: 'run' },
     body: { facing, vel: { x: 0, y: 0 }, pos: { x: 0, y: 0 } } } as unknown as Agent;
   const sim = { carrier, qb, scrambled: false, t: 2, bond: null, ball: { kind: 'held', carrier },
-    see: () => ({ pos, vel: { x: 0, y: 0 } }) } as unknown as PlaySim;
+    see: () => ({ pos, vel: { x: 0, y: 0 }, carrying }) } as unknown as PlaySim;
   return { a, sim };
 }
 
@@ -47,6 +47,13 @@ describe('a defender reversing near the ball opens toward it', () => {
   it('does not steer coverage on a pocket quarterback before a run read', () => {
     const { a, sim } = scene(1.4, Math.PI, 4, true);
     (a as unknown as { recog: { read: string } }).recog.read = 'pass';
+    const cmd = toward(-1.6);
+    expect(openToBall(a, sim, cmd)).toBe(cmd);
+  });
+
+  it.each([false, null])('leaves the turn alone when his picture does not show the carrier holding the ball (%s)', carrying => {
+    // A fake or a handoff he has not picked up: no true-possession steering.
+    const { a, sim } = scene(1.4, Math.PI, 4, false, carrying);
     const cmd = toward(-1.6);
     expect(openToBall(a, sim, cmd)).toBe(cmd);
   });

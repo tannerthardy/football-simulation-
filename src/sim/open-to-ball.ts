@@ -25,7 +25,10 @@ export function openToBall(a: Agent, sim: PlaySim, command: MoveCommand): MoveCo
   if (sim.bond?.tacklers.includes(a)) return command;
   // Run phase only: a pocket QB is not the threat a coverage player turns on.
   if (c === sim.qb && !sim.scrambled && !believesRun(sim, a)) return command;
+  // He opens to the ball he has seen, not to the true possession: a fake or
+  // a handoff he hasn't picked up leaves his turn as requested.
   const seen = sim.see(a, c);
+  if (seen.carrying !== true) return command;
   const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
   if (Math.hypot(dx, dy) > RANGE) return command;
   const ball = Math.atan2(dy, dx);
