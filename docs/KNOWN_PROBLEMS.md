@@ -703,6 +703,13 @@ Carried over from the issue register; each was measured on an older develop.
     median blocked radial drift and sustained-release failure remain open.
     Earlier finishes change the exposed +5 cohort, so release fractions must
     keep censoring and matched identities. Lower run yards are not its proof.
+    After accepted #221 (`2c26a86c`), the matched original operator moves
+    first-clear onset4/14→5/14, median.9→.8s and blocked drift−.07→0yd/s;
+    confirmation by +5 remains2/14. Fresh Power/Toss retains an adverse drift
+    −.04→−.16yd/s; confirmation remains1/6. The cohort is too small for a
+    population claim. Four complete pass-control executions remain identical.
+    Earlier `d3e22420` cards and force witnesses are qualified to that source;
+    they are not current #221-composition measurements.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
