@@ -721,7 +721,7 @@ run plays with the assignment layer (`--telemetry full`):
 - **Targets that never update.** *Partly fixed (on by default).* A climber or
   lead stayed on a backer or safety who was no danger to the runner while
   another free defender reached the runner (P024 FB on the FS while the Mike
-  came free; P013 LT; P032 Z; P029 RT on a combo the Y already won).
+  came free; P013 LT; P032 Z).
   Retargeting only happened when the target was engaged by someone else or
   down. Climbing linemen and lead backs now re-read on their decision beat
   ("first threat to show", event `block_threat`). From his own pictures,
@@ -735,7 +735,7 @@ run plays with the assignment layer (`--telemetry full`):
     first try that let receivers switch fired about 3 times a run and pulled
     them off their corners;
   - P013 is a climb that overran a downhill backer, not a stale target;
-  - P029 RT stays on a combo the Y has won (combination release).
+  - P029 RT staying on the end is correct: the Y fell (inline ends below).
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
@@ -748,6 +748,39 @@ run plays with the assignment layer (`--telemetry full`):
   P031's guard now kicks the end at 2.4 s. Still open: a kick target who
   reaches the runner unblocked is unchanged (35 → 36). On P007 (trap) the end
   still slips inside the trapper after contact; that's contact, not approach.
+- **Inline tight ends fall on first contact.** *Fixed (on by default).* An
+  inline Y or H on a lineman's first-level block (drive, reach, down,
+  cutoff) ran at full speed with no base into his man. In game 1's runs an
+  inline end fell within 0.3 s of his first block contact 16 times, a
+  lineman once. On P029 the Y engaged the end at 0.7 s, fell at 0.75 s and
+  stayed down until 2.3 s, so the RT had to stay on the end. The snap base
+  and strike fit only applied to the five linemen. An inline end now keeps
+  the same base and fit; a detached wing or slot keeps his own approach, and
+  the tackle's first step and zone track are unchanged (an inline end's own
+  zone track is a separate question). Restaged on the 151 runs of seeds 7–9:
+  inline-end falls within 0.3 s of first contact 21 → 3, linemen 3 → 3,
+  inline-end block engagements 132 → 133. Restaged run yards moved both
+  ways: mean 10.06 → 8.31 on seed 7, 5.63 → 5.93 on seed 8 and 5.45 → 3.31
+  on seed 9 (medians 3.09 → 2.73, 2.95 → 3.09, 1.99 → 1.31). A PR-tier
+  scorecard on seed 8 (develop `4d17e43` against the change, 12 games each)
+  moved rush yards per carry 4.56 → 5.11, stuff rate 25.1% → 22.6% and yards
+  before contact 0.93 → 1.10. Open: whether the full-speed run-through was
+  also moving defenders on the plays that now gain less (seeds 7 and 9).
+  On P029 the jet Z's assignment is a stalk on the corner, not a gap.
+  Tanner's idea that a jet-motion Z should insert (crack or arc) is a
+  play-design question, logged here, not changed.
+- **Left for later** (paused 2026-10-23, after this fix):
+  - *Backside crack.* A receiver on the backside of a run cracks into the box
+    instead of taking his man; a playside-only crack rule cut backside box
+    stalks from 14 to 8 in a first restage. Not landed.
+  - *P007 trap contact.* The end slips inside the trapper after contact;
+    the approach is fixed, the contact is not.
+  - *An inline end's first step and zone track.* He still runs his own
+    approach rather than the linemen's. Adding them cut falls no further
+    (track alone 21 → 12, base alone 21 → 4) and changed the recorded Duo
+    double and zone-helper scenes, so they need their own look.
+  - *Jet-motion Z.* See the inline-end bullet: crack or arc instead of the
+    corner stalk is a play-design idea, not a bug.
 - **Defensive gaps exposed so far.** None measurable yet: restaged mean run
   yards moved within noise on each fix (6.94 → 7.20, 7.20 → 6.87, gap
   schemes 4.35 → 4.48). Re-check after all three at the PR-tier scorecard.
