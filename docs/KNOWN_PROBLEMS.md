@@ -197,6 +197,7 @@ problem), resolved.
 | [GAME-2](#game-2) | Remaining accounting limits | — | low | open |
 | [PERF-1](#perf-1) | Games are slow to simulate | F2 | high | open |
 | [PERF-2](#perf-2) | Measurement noise and tooling limits | F1 | medium | open |
+| [VIEW-1](#view-1) | Reviewing film is hard and can mislead | F1 | medium | open (long-term) |
 | [REPO-1](#repo-1) | Repository and process debt | — | medium | open |
 | [MISS-1](#miss-1) | Football that isn't modeled yet | G7, G8 | — | open |
 
@@ -1547,6 +1548,37 @@ zone).
   #190's tip (#194). All seven orientation checks pass on the assembled
   #202/#203/#204 candidate. This does not claim the complete data suite passed.
 - The NFL play-call replay isn't built yet (CALL-1).
+
+<a id="view-1"></a>
+### VIEW-1: Reviewing film is hard and can mislead
+
+A long-term goal (Tanner, 2026-10-23), not a scoped task. Refine it as we
+learn what's needed.
+
+- **Symptom:** film review is how Tanner finds most real problems, but the
+  viewer doesn't give him all the information he needs, and some of what it
+  shows may mislead. We don't know how many apparent problems come from the
+  drawing rather than the football. Known example: QB-3, where a diving
+  tackler is drawn as a dot on the ground, so a real ankle tap looks like a
+  QB falling with nobody near him.
+- **Goals:**
+  - Show the best information for judging a play: what each player was
+    asked to do, what his body actually did, contact and reach, facing, and
+    what he could see.
+  - Fix visuals that misrepresent what happened.
+  - More control for looking through plays: finding, filtering, stepping,
+    comparing.
+  - Possibly a full program of its own where Tanner can run and test things
+    himself: move players, put in his own calls and situations, re-run a play.
+  - A way to flag a problem that agents can act on precisely: the play,
+    the player, the moment and what looked wrong, recorded in a structured
+    form rather than only in free text.
+- **Already exists:** the sim suite film room with notes saved per play, the
+  replay viewer's layers ([VISUALIZER_PLAN](VISUALIZER_PLAN.md)), and #243's
+  film detectors.
+- **Open:** what to build first, and how much of a separate tool it should
+  be. The outside audit's suggestions on drawing intent versus achieved
+  motion and showing reach and contact apply here.
 
 ## Repository and process
 
