@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-09",
+  "updatedAt": "2026-10-23",
   "rawDirectory": "data/raw",
   "sources": [
     {
@@ -303,6 +303,27 @@
       "coverage": "Complete REG PBP, conditional outcomes and 64 team-seasons; 2022 FTN charting, snap counts and Chiefs/Eagles anonymous profile benchmarks; roster snapshots, exact GSIS/PFR crosswalk and historical combine.",
       "status": "Downloaded, checksummed and extracted; no engine parameters, ratings or playcalling policy fitted.",
       "attribution": "FTN Data via nflverse; FTN charting and derived charting aggregates CC-BY-SA-4.0. Upstream data lineage differs by release.",
+      "schemaReferenceCommit": "23f915a5be30415aeaa0c5c80cd23b2c69cda122"
+    },
+    {
+      "id": "nflverse-2022-2023-game-layer",
+      "kind": "public-football-reference",
+      "sourceUrl": "https://github.com/nflverse/nflverse-data/releases/tag/pbp",
+      "seasons": [
+        2022,
+        2023
+      ],
+      "inputDirectory": "data/raw/nflverse",
+      "extractor": "scripts/data/nflverse_game_layer.py",
+      "summary": "data/reviews/nflverse/game-layer.json",
+      "inputManifest": "data/reviews/nflverse/game-layer-input-manifest.json",
+      "review": "data/reviews/nflverse/README.md#game-layer-reference-m1",
+      "coverage": "REG kicking, punts, kickoffs, fourth-down choices, two-point tries, accepted penalty clauses, drive outcomes, row-flag turnovers, spikes/kneels and regulation timeout inventory; per-season and pooled team-season percentiles.",
+      "status": "Reproducible descriptive reference; no engine parameters, defaults, scorecard bands or policy fitted.",
+      "attribution": "NFL/nflfastR PBP via nflverse. Source CC-BY-4.0; this adapted aggregate CC-BY-SA-4.0. No FTN charting used.",
+      "termsUrl": "https://github.com/nflverse/nflverse-data/blob/master/LICENSE.md",
+      "derivedAggregateTerms": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "limitations": "Punt return involvement includes muffs; net is not penalty-adjusted official punter accounting. Turnovers are provider row flags, not a complete multi-turnover ledger; ambiguous team attributions stay unavailable. Read per-metric definitions and denominators.",
       "schemaReferenceCommit": "23f915a5be30415aeaa0c5c80cd23b2c69cda122"
     }
   ]
