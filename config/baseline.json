@@ -7,6 +7,7 @@
   "sourceSha256": "8433e88d7deb31e5c1c031e2f0cb83d1cf0e805609820c0559f6b8f25747340c",
   "flags": {
     "ANCHOR_SPLIT": "1",
+    "ARM_PRESS": "1",
     "CF_FLOW": null,
     "CLIMB_INTERCEPT": "1",
     "CLIMB_PLAN": "1",
@@ -62,6 +63,7 @@
     "OL_STAGGER": "1",
     "BACK_BLOCK": "1",
     "BLOCKED_REACH": "1",
+    "GRIP_HOLD": "1",
     "PULL_EARLY": "1",
     "THREAT_READ": "1",
     "WRAP_BIND": "0",
@@ -88,6 +90,8 @@
     "COVER_CALL": "1",
     "PRESSURE_CALL": "1",
     "AGAP_ALIGN": "1",
+    "PASS_KICK": "1",
+    "ROUTE_CLEAR": "1",
     "GROUNDING_FACTS": "1",
     "HOLD_LEVERAGE": "1"
   },

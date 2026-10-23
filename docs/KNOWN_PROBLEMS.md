@@ -157,10 +157,11 @@ problem), resolved.
 | [RUN-8](#run-8) | Center covered on almost every snap | G2 | medium | on |
 | [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | on |
 | [RUN-10](#run-10) | Older run-blocking and second-level issues | G2 | low–medium | open |
+| [RUN-11](#run-11) | Staged scenes recorded on arm-force hands | G2, G5 | low | pinned until review 2 |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#205) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
-| [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work |
+| [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work (G5, #215) |
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
@@ -492,6 +493,56 @@ Carried over from the issue register; each was measured on an older develop.
   crowd takes about 2 yd/s off the runner in 1 s; our break-throughs lose about
   0.45 yd/s. This is physics: Main Engine (Run Game has already sent its
   sliding-grip question).
+- **`GRIP_HOLD` (#217, on): the hold, not the controller** (Tools/Physics;
+  `crowd.ts`/`crowd.py`, 24 games, seeds 7 and 8, on develop `0671f52`).
+  Two defects in `tackle.ts`:
+  - Grip followed the arms' current extension and dropped at once when they
+    stretched. With the slipping ratchet in `world.ts`, a slip stretched the
+    arms, the weaker grip slipped more, and the hold broke. Now a hold keeps
+    the grip it acquired; it still slides out while slipping and breaks past
+    reach.
+  - Below a locked wrap, capacity came from the arm-push mapping, about 0.55
+    of the holder's body weight at grip 0.45. A hand hold now holds what two
+    hands on a jersey can: Division I dynamometer grip, about half of body
+    mass per hand, with 3/4 kept on a slick jersey and a third for a pinch.
+    `tackling` stays technique.
+
+  Rulings (in the grasp, forward progress) and the carrier's sense of being
+  held read a separate control value that follows the arms, as grip did
+  before. Off vs on:
+
+  | | Off | On | NFL |
+  | --- | --- | --- | --- |
+  | Runs gaining 5+ yd after contact | 155 | 99 | |
+  | Clean contact, speed at 0.3 / 0.6 / 1.0 s | 1.03 / 1.12 / 1.17 | 0.98 / 0.94 / 0.98 | about 0.94 / 0.88 |
+  | Break-throughs, crowd, at 1.0 s | 0.99 | 0.95 | 0.72 |
+  | Break-throughs, 2+ holding, at 1.0 s | 0.91 | 0.81 | |
+  | Side/behind holders: braking, grip, slipping, used/capacity | 0.31 BW, 0.46, 79%, 0.98 | 0.41 BW, 0.49, 74%, 0.97 | |
+
+  Break rate by hold origin (6 games): form 2 → 1%, reach 16 → 9%, lunge
+  48 → 38%, dive 100 → 91%. A fingertip grab at full stretch on a faster
+  runner still breaks. Quick scorecard (paired): failed tackle opportunities
+  per play 0.21 → 0.17, missed + broken 0.33 → 0.28, YPC 7.7 → 6.0, 10+ runs
+  19.5 → 15.6% (noise in 6 games).
+
+  **Still open:**
+  - Side and behind holders are still saturated (0.97) and dragged at 0.64 of
+    the runner's speed: they arrive slow (TKL-2), and a hand hold can't make
+    up a 2-3 yd/s deficit within the arms' slack. Grip constants are not to be
+    tuned toward the crowd band.
+  - **Pocket-QB grabs break half as often** (12 → 6%, about 175 holds). The QB
+    escapes a grab only through grip physics; a real QB twists and spins out
+    of an arm grab. The sack rate's response is not settled: 10.0 → 13.4% per
+    dropback before #215; with #215 merged, 5.9% (off) and 7.3% (on), in the
+    NFL's 6–7.5%. Logged as a gap under PRO-1: a quarterback can't twist or
+    spin out of an arm grab.
+  - With #215 merged (quick tier, paired, on vs off): YPC 6.24 vs 9.05,
+    10+ runs 15.0 vs 21.5%, missed + broken 0.32 vs 0.38 per play (all
+    moved). A wrap pulled out to arm's length now holds as a hand hold, not
+    with the wrap law (physics review note).
+  - Staged scene pinned to `GRIP_HOLD=0` (re-record by review 2): the Cover 2
+    vertical curl in `test/cover3-cover2-rules.test.ts`, where the end's grab
+    now holds the QB until 3.2 s, before the 3.4 s read.
 - **Open:** fewer defenders reach the runner. Free defenders who reach him
   past 5 yd, per run: 1.89 with `SHED_PURSUE`, NFL 2.69. See TKL-2.
 
@@ -575,6 +626,20 @@ Carried over from the issue register; each was measured on an older develop.
 
 ## Pass protection
 
+<a id="run-11"></a>
+### RUN-11: Staged scenes recorded on arm-force hands
+
+- **What:** `ARM_PRESS` (G5) puts a press through the hands at each player's
+  bench max, not the arm-force mapping. Six staged scenes were recorded on
+  arm-force hands. They are pinned to `ARM_PRESS=0` until review 2:
+  - run: `combo-strike-access`, `planned-climb-fit`, `zone-runoff-work`;
+  - legacy trace: `run-hand-control`;
+  - pass: `pass-cutoff-approach`, `cover3-cover2-rules`.
+- **Open:** whether a double still moves the DL and hands him to the climber
+  when the arms don't fold. That is a G2 question; a pin is not an answer.
+  Re-record each scene, or replace it with a contract that holds under strong
+  arms, by review 2.
+
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
 
@@ -602,6 +667,75 @@ Carried over from the issue register; each was measured on an older develop.
   and timing, so they stay on; they show the tackles can't hold an edge.
   In the P019 pass-cutoff scene the tackle also loses edge contact with
   `PASS_FEEL` on (`test/pass-cutoff-approach.test.ts` is pinned).
+- **G5** (2026-10-22, `trenches/G5-edge-hands`). Two mechanisms, each
+  measured with `scripts/diag/edge-rep.py` on 8 games (seed 301) against
+  tracking:
+  - **Contact timing: `PASS_KICK`, on.** The tackle sets vertically against
+    an edge rusher (ported from `claude/run-game-v3`). First contact moves from
+    0.55 s to 1.06 s (NFL 1.20), with the tackle 3.0 yd back (NFL 2.75).
+    Edge reps engaged move from 41% to 62% and free from 50% to 30% (NFL 79%
+    and 5%). `PASS_CORNER` (cut him off where the arc turns) didn't move
+    contact on develop (0.49 s), so it wasn't ported.
+  - **The hands: `ARM_PRESS`, on (agreed with G2 for run reps).** A hand joint's push was capped
+    at the arm-force mapping, 0.86 body weights for a tackle. That is less
+    than the leg drive it resists (traction, 1.1). So the joint asked for
+    0.88–0.93 yd and the bodies sat at 0.67, torso to torso, with the push
+    at its cap on 85% of edge ticks at 0.2 s. A push is a bench press: each
+    player's one-rep max from his combine reps (Epley), about 1.3 body
+    weights.
+    - Pairs now hold 0.90–0.93 yd apart from 0.6 s. The share of ticks at
+      the cap falls to 20–38%.
+    - Of free reps, the share that get free *through* the tackle falls from
+      71% to 43% (NFL 29%). With PASS_KICK alone it is 73%.
+    - The arm budget, and its work and impulse ledgers, count a press in
+      press units. Before that, the first version tripped the arm audit
+      (`armImpulseExcess`) in 106 staged-scene tests and capped a press's work
+      at arm-force work.
+    - Corrected, on top of PASS_KICK and ROUTE_CLEAR (8 games, seed 301):
+      edge reps engaged / free 62% / 29%, and free reps through the tackle
+      73% → 47% (NFL 29%).
+    - Quick tier, off → on: sacks 8.0% → 6.0% (moved). Run stuffs 21.7% →
+      19.1% and yards before contact 1.25 → 1.54 (both noise, both in band).
+      Completion % swings ±9 points between quick-tier arms, against 64–66%
+      on the 8-game exports: noise.
+    - Six staged scenes recorded on arm-force hands are pinned under RUN-11.
+  - **Both:** sacks fall from 13.9% (develop) to 5.9% of dropbacks (NFL
+    6–7.5%). PASS_KICK alone gives 7.5%, ARM_PRESS alone 8.8% (quick tier,
+    6 games). Time to throw rises 0.10 s. Interior reps (PRO-3) and
+    play-action losses are unchanged.
+  - **Still open, the hip:** a rusher still keeps speed into the rep (4.9
+    yd/s at contact, 3.1–3.3 at 1.2 s; NFL 4.1 and 2.5). The rep ends by
+    rule once he is hip to hip (`|phi| >= 1`, "turned the corner"), while
+    a tracked tackle rides him past the launch point.
+    - In P019 under PASS_KICK, both ends are met at 1.25 s and lost at the
+      hip at 1.9 s.
+    - `PASS_RIDE` (parked) is the candidate.
+    - The pinned scenes are `pass-cutoff-approach`, `redirect-protection`
+      and `qb-rusher-recording`.
+  - **A back's release: `ROUTE_CLEAR`, on.** A back releasing from the
+    backfield ran straight at his waypoint and into the kicking tackle (3.5
+    to 1.9 yd/s at 0.9 s in the Cover 3 push scene). Now he paths around a
+    body he sees in his lane (a teammate, or a rusher coming at the
+    backfield): on the side he is on, or the other if that side is closed.
+    - Released backs within 0.8 yd of their own linemen in the first 2 s fall
+      from 11% to 6% (8 games). Their speeds are about unchanged.
+    - Completion rate on the quick scorecard moved 60.0% → 69.7%, but the
+      8-game exports show 64.1% → 62.5%: whole-game noise, not a finding.
+    - **Still open:** the back flat route aims at the line 4 yd outside the
+      back, which is the end's rush lane at 1.0–1.3 s under PASS_KICK. In
+      the Cover 3 scene the back now clears the tackle and the flat defender
+      pushes on him at 1.10 s, but he meets the end at 1.35 s. Where a back
+      releases against the rush is G3/G7's call; `cover3-cover2-rules` stays
+      pinned.
+- **After `GRIP_HOLD`** (#217, TKL-1): sacks rose from 10.0% to 13.4% of
+  dropbacks (quick tier, paired, moved). A rusher's arm grab on a pocket QB
+  now keeps its grip, and those grabs break half as often (12% → 6% of
+  about 175 holds; the number of grabs is unchanged). A quarterback can't
+  twist or spin out of an arm grab: he escapes only if the grip itself
+  slips past reach. That escape is missing, along with the slide away from
+  the edge (PRO-4). Don't weaken the grip to fix sacks. With #215 on
+  develop (`c22fba2`, quick tier, seed 7, paired), both changes give 7.3%
+  of dropbacks, inside the NFL's 6–7.5%; `GRIP_HOLD=0` gives 5.9%.
 
 <a id="pro-2"></a>
 ### PRO-2: Pressure arrives too early and from the wrong places
@@ -740,6 +874,12 @@ From #193's open list:
   hook on Y trails 4 yd underneath the same way. Same failure as deep man
   (G3): the carrier lets the stem eat his cushion without counting the time
   his body needs to turn and reach the receiver's speed.
+- with `PASS_KICK` on (#215), the Quarter Flat #3-away scene loses its
+  released #3 again: the back's flat release is walled behind the weak
+  tackle's vertical kick and is 3.7 yd behind the line at 2.8 s
+  (`test/quarters-trips-rules.test.ts` is pinned to `PASS_KICK=0`). Open
+  question for Main Engine and Coverage: should `ROUTE_CLEAR` take the back
+  around a kicking tackle, or does the scene need another release?
 
 Resolved with the promoted defaults (staging, not coverage):
 - Quarter Flat #3-away carry: the back's swing ran into the wider weak end

@@ -36,7 +36,8 @@ Sessions are named by lane (2026-10-22). Assignments change only at a review.
 | run | Run Game | `claude/zen-feynman-7712y8` | Gap-assigner bugs on aligned fronts (RUN-9); blockers who keep driving a released man; DB fits before 5 yd | G2, G1 support |
 | defense | Defense | #205 merged | Holds until the next pick | G1 |
 | coverage | Coverage | #207 (`coverage/G3-throw-break`) | Break on the throw; the pinned coverage scenes in COV-3 | G3 |
-| trenches, physics | Main Engine | `trenches/G5-*` | Why the tackle's hands can't hold an edge rusher (PRO-1); later, slipping crowd holds (TKL-1) | G5 |
+| trenches, physics | Main Engine | `trenches/G5-*` | Why the tackle's hands can't hold an edge rusher (PRO-1) | G5 |
+| physics | Tools/Physics | #217 (`claude/admiring-bell-t3ji19`) | Slipping crowd holds (TKL-1): `GRIP_HOLD` | G1 |
 | rules, coaching | Rules + Coaching | — | Holds | G6, G7 |
 | tools | ChatGPT chats | `tools/F1-*`, `physics/F2-*` | Scorecard hygiene, play-call replay, speed with identical games | F1, F2 |
 

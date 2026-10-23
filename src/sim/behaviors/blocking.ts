@@ -280,7 +280,7 @@ export class PassProtector implements Behavior {
     let ride = false;
     let cuttingOff = false;
     if (edgeRusher && isOL(a)) {
-      const meet = cutOffPoint(a, r, qb.pos, contact);
+      const meet = PASS_KICK ? null : cutOffPoint(a, r, qb.pos, contact);
       if (meet) {
         set = { x: meet.x, y: meet.y + out * overset };
         cuttingOff = true;
@@ -293,6 +293,14 @@ export class PassProtector implements Behavior {
         ride = true;
       }
     }
+    if (PASS_KICK && edgeRusher && isOL(a) && !ride && !runLook(a, sim)) {
+      // Vertical set: kick back, deeper than where the rusher will be a beat
+      // from now, on his inside shoulder; never take ground back toward the
+      // line, never past the launch point. He has to come to the tackle.
+      const ahead = { x: r.pos.x + r.vel.x * KICK_LOOK, y: r.pos.y + r.vel.y * KICK_LOOK };
+      const x = Math.max(qb.pos.x + 0.5, Math.min(a.pos.x, ahead.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
+      set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
+    }
     if (runLook(a, sim)) set = { x: Math.max(set.x, sim.los - 0.3), y: set.y };
     const dd = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
     // A tackle late to the spot can still get a punch on a speed rusher's near
@@ -303,6 +311,7 @@ export class PassProtector implements Behavior {
     const facing = Math.atan2(r.pos.y - a.pos.y, r.pos.x - a.pos.x);
     const quick = 0.85 + 0.3 * traits(a).feet;
     if (ride) return track(a, set, r.vel, { cutSkill: quick, gain: 3 });
+    if (PASS_KICK && edgeRusher && isOL(a)) return track(a, set, { x: Math.min(0, r.vel.x), y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
     // The cutoff is an interception, not a point on which to match the
     // rusher's present velocity. Approach through it at the kick-slide speed
     // already assumed by the forecast; physical movement and contact still
@@ -311,6 +320,20 @@ export class PassProtector implements Behavior {
     return track(a, set, { x: r.vel.x * 0.7, y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
   }
 }
+
+/** PASS_KICK (G5, default on; PASS_KICK=0 turns it off): a tackle sets against an edge
+ * rusher vertically instead of cutting off his arc. He kicks back to stay
+ * deeper than where the rusher will be a beat from now, on his inside
+ * shoulder, never takes ground back toward the line and never passes the
+ * launch point; the rusher has to come to him. Tracked tackles go nearly
+ * straight back (2.2 yd deep at 1.0 s, 3.4 at 1.5 s) with the rusher 1.3 and
+ * 0.8 yd shallower; the cutoff met him at the line (PRO-1). Ported from
+ * claude/run-game-v3 (docs/PARKED.md). */
+const PASS_KICK = process.env.PASS_KICK !== '0';
+/** How far deeper than an upfield edge rusher the kick keeps the tackle (yd). */
+const KICK_LEAD = 0.8;
+/** How far ahead on his present velocity the kick reads the rusher (s). */
+const KICK_LOOK = 0.4;
 
 /**
  * Where a blocker meets a rusher on his path: the earliest point on it
