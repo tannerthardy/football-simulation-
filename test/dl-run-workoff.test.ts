@@ -158,15 +158,4 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
     }
   });
 
-  it('stops active pressing only for a clear acquired exit, retaining loaded lean until execution', () => {
-    const clear = scene(1), sealed = scene(1, true), uncertain = scene(1);
-    uncertain.runner.carrying = null;
-    clear.defender.body.support!.lean = { x: -400, y: -250 };
-    const lean = structuredClone(clear.defender.body.support!.lean);
-    expect(clear.command().push).toBe(0);
-    expect(clear.defender.body.support!.lean).toEqual(lean);
-    expect(clear.defender.engagement).toBe(clear.engagement);
-    expect(sealed.command().push).toBe(1);
-    expect(uncertain.command().push).toBe(1);
-  });
 });

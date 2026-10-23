@@ -151,7 +151,8 @@ function inspect(sim: PlaySim) {
     if (!ids.has(rep)) {
       const id = nextRep++;
       ids.set(rep, id);
-      reps.push({ id, start: rep.start, initialType: rep.type, initialBlocker: rep.blocker.idx, defender: rep.defender.idx });
+      reps.push({ id, start: rep.start, initialType: rep.type, initialBlocker: rep.blocker.idx, defender: rep.defender.idx,
+        firstObservedNextMoveAt: rep.nextMoveAt });
     }
     return ids.get(rep)!;
   };
@@ -214,7 +215,7 @@ function inspect(sim: PlaySim) {
         consumedThisTick: currentReads.get(d.idx) ?? [], calledMotionQueries: calls.get(d.idx) ?? [], contactRequest: contact ?? null,
         finalDefenderIntent: final ? structuredClone(final) : null,
         finalBlockerIntent: blockerFinal ? structuredClone(blockerFinal) : null,
-        before: { defender: body(d), blocker: body(b), separation: separation.distance,
+        before: { defender: body(d), blocker: body(b), separation: separation.distance, nextMoveAt: rep.nextMoveAt,
           radialBasis: separation.away,
           velocityProjections: { defender: projections(d.vel, separation.away), blocker: projections(b.vel, separation.away),
             defenderRequest: projections(final?.vel, separation.away), blockerRequest: projections(blockerFinal?.vel, separation.away),
@@ -234,7 +235,7 @@ function inspect(sim: PlaySim) {
     const beforeExecution = recordStepReports ? execution() : null;
     const report = originalStep(intents, dt);
     if (recordStepReports) stepReports.push({ t: sim.t, intervalEnd: sim.t + dt,
-      before: beforeExecution, after: execution(), report: structuredClone(report) });
+      intents: structuredClone(intents), before: beforeExecution, after: execution(), report: structuredClone(report) });
     for (const { d, b, rep, runner, sample } of pending) {
       const separation = radial(d, b);
       sample.after = { defender: body(d), blocker: body(b), separation: separation.distance,
