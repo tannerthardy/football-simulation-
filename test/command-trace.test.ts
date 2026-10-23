@@ -45,7 +45,10 @@ describe('selected command attribution in normal execution', () => {
     expect(catchStep.endpoint!.behavior.controller).toBe('Pursuit');
     expect(catchStep.endpoint!.behavior.kind).toBe('pursuit');
     expect(catchStep.endpointTime).toBeCloseTo(catchStep.stepStart + on.sim.dt, 10);
-    expect(trace.steps.find(s => s.stepStart === catchStep.endpointTime)!.decision!.owner.kind).toBe('pursuit');
+    const nextDecision = trace.steps.find(s => s.stepStart === catchStep.endpointTime)!.decision!;
+    expect(nextDecision.owner.kind).toBe('pursuit');
+    expect(nextDecision.owner.target).toBeNull();
+    expect(nextDecision.owner.targetSource).toBe('not-exposed');
     expect(trace.steps.every(s => s.stepStart >= selection.from && s.stepStart < selection.to && s.actor.playerId === trace.actor.playerId)).toBe(true);
     expect(trace.steps[0].actor).toEqual({ playerId: on.sim.slot('CB_W')!.player.id, team: 'D', slot: 'CB_W', index: on.sim.slot('CB_W')!.idx });
     const free = trace.steps.find(s => s.stepStart === 2)!;
@@ -63,7 +66,7 @@ describe('selected command attribution in normal execution', () => {
     expect(JSON.stringify(trace.steps)).toBe(saved);
   });
 
-  it('attributes a runnerward facing rewrite to actual engagement technique, with the velocity retained where appropriate', () => {
+  it('attributes a runnerward facing rewrite to actual engagement technique', () => {
     // Staged contact island, not a restorable NFL/native-game checkpoint.
     const f = contactFixture({ type: 'run', runBlock: 60, passBlock: 60, side: 1, seed: 11 });
     f.defender.behavior = { kind: 'pursuit', update: () => ({ vel: { x: -5, y: 2 }, facing: 1.1 }) };
