@@ -4,7 +4,7 @@ import importlib.util
 import unittest
 from pathlib import Path
 
-SPEC = importlib.util.spec_from_file_location('g1_release', Path(__file__).parents[1] / 'scripts/diag/g1/release.py')
+SPEC = importlib.util.spec_from_file_location('g1_release', Path(__file__).parents[1] / 'scripts/diag/g1/release-censored.py')
 R = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(R)
 

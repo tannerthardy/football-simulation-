@@ -1018,7 +1018,12 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     }
   }
   if (flow === undefined && pullFlow !== undefined) flow = pullFlow;
-  const aim = d.mind.aim(stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`, desired, sim.t);
+  const aimJob = stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`;
+  // A first-level acquired exit cannot inherit an aim selected earlier by
+  // the legacy live-holder fallback. Keep its observed target identity with
+  // its held decision; returning to this key only reuses an acquired picture.
+  const aim = d.mind.aim(firstLevel && acquired
+    ? `${aimJob}:acquired:${acquired.target.idx}` : aimJob, desired, sim.t);
   // The selected target mode belongs to the same held decision as its aim.
   // A newly seen declaration cannot drop flow feedforward midway through it.
   // Support contacts hold the selected target mode too. A safety's acquired

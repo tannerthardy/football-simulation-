@@ -63,6 +63,25 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
     expect(JSON.stringify(b.sim.rng)).toBe(JSON.stringify(a.sim.rng));
   });
 
+  it('does not inherit a hidden-holder-selected aim when possession is acquired mid-beat', () => {
+    const a = scene(1), b = scene(1);
+    b.sim.ball = { kind: 'held', carrier: b.sim.qb };
+    for (const f of [a, b]) {
+      f.runner.carrying = null; f.qb.carrying = null;
+      f.qb.pos = { x: 42, y: CENTER_Y - 2 };
+      // The existing contact decision and movement-read cadences need not
+      // coincide. Legacy fallback may choose an aim before this attempt.
+      f.engagement.nextMoveAt = 1.55;
+      f.command();
+      f.runner.carrying = true; f.qb.carrying = false;
+      f.sim.t = f.sim.world.time = 1.56;
+    }
+    const acquired = a.command();
+    expect(acquired.vel.y).toBeGreaterThan(0);
+    expect(b.command()).toEqual(acquired);
+    expect(JSON.stringify(b.sim.rng)).toBe(JSON.stringify(a.sim.rng));
+  });
+
   it('does not infer a new exit from unknown, contradictory or expired possession', () => {
     for (const change of [
       (f: ReturnType<typeof scene>) => { f.runner.carrying = undefined; },
