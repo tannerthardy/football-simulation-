@@ -227,6 +227,25 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
     expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
   });
 
+  it('changes unloaded frontal footwork only when the acquired blocker picture changes', () => {
+    const a = scene(-1), hidden = scene(-1), observed = scene(-1);
+    for (const f of [a, hidden, observed]) {
+      f.blocker.body.pos = { x: f.defender.pos.x - .5, y: f.defender.pos.y - .45 };
+      f.blocker.body.facing = Math.atan2(f.defender.pos.y - f.blocker.pos.y, f.defender.pos.x - f.blocker.pos.x);
+      f.blockerCue.pos = { ...f.blocker.pos };
+      f.engagement.hands!.normalForce = 0;
+      f.engagement.hands!.tangentForce = 0;
+      f.engagement.surfaceAxis = { x: -.8574929257125443, y: .5144957554275266 };
+    }
+    hidden.blocker.body.pos.y -= .1;
+    observed.blocker.body.pos.y -= .1;
+    observed.blockerCue.pos = { ...observed.blocker.pos };
+    const request = a.command();
+    expect(hidden.command()).toEqual(request);
+    expect(observed.command()).not.toEqual(request);
+    expect(JSON.stringify(hidden.sim.rng)).toBe(JSON.stringify(a.sim.rng));
+  });
+
   it('executes the requested turn through the existing hand and support budgets', () => {
     const f = scene(1), commands = contactCommands(f);
     const report = f.sim.world.step(commands, f.sim.dt);

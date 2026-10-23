@@ -691,6 +691,18 @@ Carried over from the issue register; each was measured on an older develop.
     spacing in real congestion. Keep force, release, free-path choice and
     proximity separate. Main Engine still reviews shared engagement changes;
     sustained frontal leverage and loaded navigation remain open.
+  - **Frontal direction error found during that re-diagnosis:** across-face
+    work used the installed line axis after the bodies rotated. In one held
+    DT/RG rep, 37 consecutive acquired-run samples asked for a median2.126yd/s
+    into the actual blocker and only.012yd/s across him. Native family controls
+    repeat the error. The correction uses the existing tactile/visual blocker
+    point for the work-off tangent and facing, retaining the ordinary selected
+    side/decision beat, lateral effort and.6 normal pressure. It does not rotate
+    the installed gap/shoulder frame or alter the blocker, hands or physics.
+    The held pair makes more runnerward progress but can remain blocked;
+    median blocked radial drift and sustained-release failure remain open.
+    Earlier finishes change the exposed +5 cohort, so release fractions must
+    keep censoring and matched identities. Lower run yards are not its proof.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often

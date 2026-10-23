@@ -1471,7 +1471,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // his chest on the blocker would ask him to backpedal after the ball.
     // A blocker across the exit still calls for square across-face work.
     facing: firstLevelRunner && exit ? Math.atan2(exit.y, exit.x)
-      : Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
+      : acrossFace ? Math.atan2(workAxis.y, workAxis.x)
+        : Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
     posture: DL_ANCHOR && (e.helpers.length > 0 || drivenBack(d)) ? 1 : 0.85,
     cutSkill: 0.8 + 0.4 * td.bend,
