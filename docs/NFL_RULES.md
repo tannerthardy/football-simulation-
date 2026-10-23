@@ -26,11 +26,91 @@ Most article-level semantics remain `not_individually_qualified`. Existing
 partial behavior and absent foul pipelines are identified separately; do not
 interpret an unknown assessment as either full support or proof of illegality.
 
-The proposed ruleset is `NFL-2026`. Adoption must make the edition explicit in
-game/replay/evidence settings; this document changes no runtime default. Our
+`Game` now adopts `NFL-2026` by default, and native play results identify that
+edition. This is an edition declaration, not full rulebook certification. Our
 2022 tracking reference remains useful motion evidence, but not automatic
 precedent for 2026 legality. Later hip-drop and kickoff rules illustrate why
 reference season and simulated rules edition must remain separate.
+
+## Current implementation contracts
+
+The register below preserves its original source. Use the following current
+code paths to assess ordinary play; do not repeat that historical register's
+"DPI is type-only" or "pre-snap flags are sampled" as current facts. Native
+pre-snap, contact/pass and plural-enforcement paths were delivered in #178/#188
+and combined in #189. Later fixes include #211 (goal-line administration),
+#214 (grounding facts) and #219 (holding leverage).
+
+| Rules | What currently runs | Qualification still needed |
+| --- | --- | --- |
+| 1–3: field, ball, definitions | Shared field/ball geometry, possession, loose-ball and reduced progress/boundary states. | Venue/equipment inspection is assumed. Center/radius geometry does not supply every foot, body-part or control fact. |
+| 4: timing | Game clock, warnings, timeouts, supported foul runoffs/restarts and untimed downs in [clock-rules](../src/game/clock-rules.ts). | No ordinary achieved play-clock expiration procedure; a supplied delay-of-game predicate is not a native frequency model. |
+| 5, 7: players and snap | [Presnap rules](../src/game/presnap-rules.ts) consume installed alignment/eligibility and achieved snap-count acts. Normal legacy random pre-snap flags are disabled. | Ordinary motion/set/snap/substitution histories are incomplete; the installed adapter still supplies a legal one-second set instead of qualifying every achieved motion. Controller design guards do not replace adjudication. |
+| 6, 9–10: kicks | [Kick rules](../src/game/kick-rules.ts) adjudicate represented 2026 free/safety/onside and scrimmage-kick facts, touching, fair catches and supported fouls through Game. | Ordinary returns and many terminal facts are sampled. Native all-player kick contact, formation and protection coverage is incomplete. |
+| 8: passes, catches, fumbles | [Ball rules](../src/sim/ball-rules.ts), [pass legality](../src/sim/pass-legality.ts) and [PI](../src/sim/pass-interference.ts) feed native calls and official choices. | [Catching](../src/sim/catching.ts) immediately grants possession after success and tests inbounds by player center. Two-foot/body-part chronology, control through ground, football act and simultaneous catch need a complete native contract. |
+| 11: scoring | Reduced goal-plane, safety/touchback, represented kick outcomes and supported two-point Try enforcement. | Kicked XP still bypasses represented kick/Try foul adjudication. Missing impetus/momentum and anatomical boundary facts must stay explicit. |
+| 12: player conduct | [Contact legality](../src/sim/contact-legality.ts), [holding](../src/sim/contact-holding.ts), pass contact and [team contact](../src/sim/team-contact-rules.ts) preserve achieved evidence and unresolved acts. | Anatomy-dependent predicates require actual action/contact receipts. DB hand/grasp techniques, positive hip-drop qualification and deliberate teammate aid are not established by type names or proximity. The frontal holding boundary below remains open. |
+| 14: enforcement | [Plural foul resolution](../src/game/penalty-enforcement.ts), captain options, supported spots/downs/possession, clocks, Try/carryover and official credit run through Game. | Qualify each supported composition and exception. Explicit unsupported cases are not legal gains or a complete NFL option set. |
+| 16: overtime | Regular/postseason timing and ordinary opportunity sequences; Game counts receiving opportunity before kickers retain a free kick. | A phase counter is not a full possession ledger. Muffed scrimmage-kick opportunities and later postseason elections/toss administration still need qualification. |
+| 13, 15, 17–19: administration | Selected removal/repeated-conduct histories and deterministic option selection. | No complete non-player conduct, replay/challenge crew, emergency, unfair-act, captain-election or officials' consultation process. These remain administration abstractions. |
+
+### Holding is not decided by field angle alone
+
+Rule 12-1-2/3(c) distinguishes legal blocking from prohibited material
+restriction. A grip, time in contact, impulse or hands inside the frame alone
+does not prove a foul. Conversely, the rule has no general exemption for a
+blocker who remains in front of the defender. `HOLD_LEVERAGE` currently leaves
+those restrictions unresolved unless the isolated grab takes the defender's
+feet. This is an acknowledged officiating/materiality boundary, not a
+rulebook exception or a legal clearance.
+
+The Rules owner retains that follow-up: distinguish prohibited hand/arm
+restriction from what legal body contact already denies, preserving ordinary
+compression, position maintenance and the article's actual exceptions. Do not
+restore an excessive rate or suppress clear fouls just to match an average.
+
+### Penalty-rate context
+
+Keep accepted penalties, declined calls, offsetting calls, sanctions and
+uncalled/unresolved assessments separate. Count a plural call list once; its
+singular compatibility alias is not another foul. `Disqualification` entries
+in source descriptions can accompany an underlying foul and are not an
+independent rate target. A zero-yard enforcement can still be accepted; do
+not filter accepted calls by positive penalty yardage.
+
+The old scorecard band of 2.5–4 total penalties per team-game is unqualified
+and removed. The count and uncertainty remain. Two NFL seasonal means are
+not a replacement acceptance band, especially while ordinary kick and
+defensive-foul opportunities differ. A missing technique can hide an otherwise
+working detector. A lower total can also hide an unsupported no-call.
+
+Use the no-download [NFL penalty query](../scripts/diag/rules/nfl-penalties.py)
+on cached nflverse [2023 regular/postseason PBP][pbp2023] and
+[2025 PBP][pbp2025]; it selects regular season itself, preserves per-type
+dispositions and reports source hashes. It distinguishes accepted-penalty
+**rows** from plural described calls and preserves unknown dispositions.
+Source play types and the team possessing at the snap remain explicit:
+receiving-team holding during a punt return is still offensive holding,
+despite being charged to the team originally defending. `PENALTY` or
+`UNSPECIFIED` does not identify the underlying run/pass/kick phase.
+Description parsing is not an official box-score reconciliation and cannot
+measure uncalled fouls. Keep the raw files outside this repository:
+
+```sh
+python3 -I scripts/diag/rules/nfl-penalties.py \
+  /path/to/external-cache/play_by_play_2023.csv.gz \
+  /path/to/external-cache/play_by_play_2025.csv.gz \
+  --out out/rules/nfl-penalties.json
+```
+
+For simulations, retain every attempted/completed/censored game and actual
+source/settings/inputs. Compare like phases and opportunities by foul type,
+then inspect decisive native facts in saved witnesses. A few complete games
+can expose a reachable failure or absent producer; they cannot certify rare
+rules, establish a whole-engine foul rate or justify tuning call probabilities.
+
+[pbp2023]: https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2023.csv.gz
+[pbp2025]: https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2025.csv.gz
 
 ## Dated implementation inventory
 
