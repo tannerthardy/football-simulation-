@@ -157,7 +157,7 @@ problem), resolved.
 | [RUN-8](#run-8) | Center covered on almost every snap | G2 | medium | on |
 | [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | on |
 | [RUN-10](#run-10) | Older run-blocking and second-level issues | G2 | low–medium | open |
-| [RUN-11](#run-11) | Staged scenes recorded on arm-force hands | G2, G5 | low | pinned until review 2 |
+| [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#205) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -736,7 +736,7 @@ Carried over from the issue register; each was measured on an older develop.
 ## Pass protection
 
 <a id="run-11"></a>
-### RUN-11: Staged scenes recorded on arm-force hands
+### RUN-11: Staged scenes recorded on arm-force hands or true-velocity mirroring
 
 - **What:** `ARM_PRESS` (G5) puts a press through the hands at each player's
   bench max, not the arm-force mapping. Six staged scenes were recorded on
@@ -748,6 +748,15 @@ Carried over from the issue register; each was measured on an older develop.
   when the arms don't fold. That is a G2 question; a pin is not an answer.
   Re-record each scene, or replace it with a contract that holds under strong
   arms, by review 2.
+- **`RUN_FEEL` (G1).** A run blocker now mirrors the defender's motion as he
+  has it: by touch while his hands are on (0.06 s), by sight otherwise
+  (0.12–0.24 s). That's the pass rep's PASS_FEEL law. Before, he copied the
+  defender's true current velocity. Four tests are pinned to `RUN_FEEL=0`
+  until review 2:
+  - `stretch-normal-follow`: the island sets the incoming velocity with no
+    perception history;
+  - `planned-climb-fit`, `zone-helper-check`: staged scenes;
+  - `run-hand-control`: legacy trace.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
