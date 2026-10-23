@@ -59,3 +59,37 @@ describe('SNAP_REACT', () => {
     expect(dead).toBeGreaterThan(0);
   }, 120000);
 });
+
+describe('HARD_COUNT_LAPSE', () => {
+  // One snap plan's men: five offensive linemen and five defenders on the
+  // line, all of the same discipline and anticipation.
+  async function extraSoundStarts(flag: string, discipline: number) {
+    vi.stubEnv('HARD_COUNT_LAPSE', flag); vi.resetModules();
+    const { Rng } = await import('../src/core/rng.js');
+    const { planSnap, BEAT } = await import('../src/sim/snap-count.js');
+    const man = (team: 'O' | 'D', slot: string) => ({ team, slot, mind: { snapDelay: 0.05 },
+      profile: { reactionTime: 0.5 }, r: (k: string) => (k === 'discipline' ? discipline : 0.5) });
+    const men = [...['LT', 'LG', 'C', 'RG', 'RT'].map((s) => man('O', s)), ...['DE_L', 'DT_L', 'DT_R', 'DE_R', 'LB_S'].map((s) => man('D', s))];
+    const n = { O: 0, D: 0, hard: 0 };
+    for (let seed = 1; seed <= 6000; seed++) {
+      const c = planSnap(men as never, { down: 1, distance: 10, offBall: () => 0.5 }, new Rng(seed));
+      if (!c.hard) continue;
+      n.hard++;
+      // Going on the extra sound: a start about a beat before the snap.
+      for (const m of men) if (c.plans.get(m as never)!.go < -BEAT / 2) n[m.team]++;
+    }
+    return { o: n.O / (5 * n.hard), d: n.D / (5 * n.hard), hard: n.hard };
+  }
+
+  it('an extra sound draws a defender who times the count no more than a lineman who goes on the sound', async () => {
+    const on = await extraSoundStarts('1', 0.5);
+    expect(on.hard).toBeGreaterThan(400);
+    // Same lapse for both lines: 0.005 + 0.03 * 0.5 = 2% for a lineman; a
+    // defender is drawn only if he was timing the count (most do).
+    expect(on.o).toBeGreaterThan(0.01); expect(on.o).toBeLessThan(0.03);
+    expect(on.d).toBeLessThanOrEqual(on.o + 0.01);
+    const off = await extraSoundStarts('0', 0.5);
+    // The separate bite drew defenders about three times as readily.
+    expect(off.d).toBeGreaterThan(2 * on.d);
+  });
+});

@@ -28,6 +28,22 @@ import type { Rng } from '../core/rng.js';
 import type { Agent } from './agent.js';
 
 export const SNAP_REACT = process.env.SNAP_REACT !== '0';
+/**
+ * HARD_COUNT_LAPSE (on; =0 restores the separate defensive bite): an extra
+ * sound draws a man only when he loses the count, the same lapse on both
+ * lines. A defender who times the count anticipates the ball, which moves a
+ * beat after the extra sound; the lineman is the one conditioned to go on a
+ * sound. Tracked defensive linemen time the snap at least as early as ours
+ * (start relative to their offensive line), yet the NFL's most effective
+ * hard-count offenses draw a defensive pre-snap foul on about 1.1-1.3% of
+ * snaps; with the separate bite the average sim offense drew 1.7%.
+ */
+export const HARD_COUNT_LAPSE = process.env.HARD_COUNT_LAPSE !== '0';
+
+/** A man who times the count goes on an extra sound: he lost the count. */
+export function losesCount(discipline: number): number {
+  return 0.005 + 0.03 * (1 - discipline);
+}
 
 /** Spacing of the QB's cadence sounds (s). */
 export const BEAT = 0.55;
@@ -81,7 +97,7 @@ export function planSnap(agents: readonly Agent[], s: SnapSituation, rng: Rng): 
     if (a.team === 'O') {
       if (!LINE.has(a.slot)) { plans.set(a, { go: a.mind.snapDelay, timed: false }); continue; }
       // On a hard count a lineman can lose the count and go on the extra sound.
-      if (hard && rng.chance(0.005 + 0.03 * (1 - discipline))) { plans.set(a, { go: -BEAT + a.mind.snapDelay, timed: false }); continue; }
+      if (hard && rng.chance(losesCount(discipline))) { plans.set(a, { go: -BEAT + a.mind.snapDelay, timed: false }); continue; }
       // A lineman who wants a head start (most of all a tackle on a passing
       // down) goes on his own timing of the count, not after hearing it.
       const tackle = a.slot === 'LT' || a.slot === 'RT';
@@ -99,7 +115,7 @@ export function planSnap(agents: readonly Agent[], s: SnapSituation, rng: Rng): 
     const error = rng.normal(margin * sd, sd);
     if (hard) {
       // He hears the extra sound; nearly everyone waits for the ball.
-      if (!rng.chance(0.02 + 0.1 * (1 - discipline))) { plans.set(a, { go: react, timed: false }); continue; }
+      if (!rng.chance(HARD_COUNT_LAPSE ? losesCount(discipline) : 0.02 + 0.1 * (1 - discipline))) { plans.set(a, { go: react, timed: false }); continue; }
       plans.set(a, early(-BEAT + error, a, react));
       continue;
     }

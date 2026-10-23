@@ -894,8 +894,32 @@ need personnel the sim doesn't have.
   shoves and catch-restricting contact, so the gap is DB technique (G3), not
   recognition. Open: hands at the catch point (play through the hands, rake
   the arms) and a beaten DB's grab, at a discipline-set cost.
-- **Cause, offside:** *hypothesis* (#190): hard counts draw defenders too
-  easily. `SNAP_REACT` models the snap as perception and timing.
+- **Cause, offside:** *confirmed*: hard counts drew defenders too easily.
+  Every snap's start plan and act, live and dead-ball (develop `ac346c1e`,
+  12 pr-tier games, seed 7, 1,660 snaps; NFL: nflverse 2023, accepted):
+  - defensive pre-snap fouls (offside, neutral zone, encroachment) on 1.69%
+    of snaps vs 0.73%; 16 of 28 came from the 10% of snaps with a hard
+    count, which drew one on 9.5% of them;
+  - PFF's best hard-count offenses draw these on about 1.1–1.3% of snaps;
+  - tracked defensive linemen start no later than ours relative to their
+    offensive line (before the line's median start by 0.2 s or more: 6.8% of
+    NFL reps vs 2.6–3.8%), so the excess is the bite, not the timing share.
+
+  `HARD_COUNT_LAPSE` gives a defender the offensive lineman's lapse: on
+  identical games, 28 → 12 defensive pre-snap fouls (0.73% of snaps) and
+  hard-count bites 30 → 7.
+- **Cause, false starts:** *open*. Sim 0.85% of snaps vs NFL 1.69%, and
+  almost all of them are offensive linemen losing the count on a hard
+  count. Missing:
+  - own-timing jumps: none on 3rd and 7+ (NFL 3.0%, twice its 1st-down
+    rate);
+  - tight ends, receivers and backs never start early (TE 14%, WR 10%,
+    RB 3% of NFL false starts; offensive line 67%).
+
+  With the lapse the hard count costs the offense more often than it gains
+  (false start on 8% of hard-count snaps, defensive foul on 4%), yet it is
+  still called at a fixed 10% (30% on 3rd/4th and short). That is a
+  play-calling choice (G7).
 - **Open:** holding (above), then the missing defensive fouls.
 
 <a id="rule-2"></a>
