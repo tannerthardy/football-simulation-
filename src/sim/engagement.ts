@@ -943,6 +943,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   const fit = job ? `${job.kind}:${job.gap}:${job.side}:${job.edge}:${job.technique}` : 'unassigned';
   let stack: RunStackRead | undefined;
   let blockerY = b.pos.y;
+  let localBlocker: Vec2 | undefined;
   // Narrow installation: first-level gap/edge fits. Stalked support players,
   // inserts and unassigned pass-converted contacts retain their old policy.
   if (job && (job.kind === 'interior' || job.kind === 'edge')) {
@@ -950,6 +951,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     const picture = sim.see(d, b);
     const touch = !!(e.hands?.normalForce || e.hands?.tangentForce);
     const local = touch ? b.pos : picture.pos;
+    localBlocker = local;
     blockerY = local.y;
     // A contact episode remembers our own depth, not a displacement allowance.
     // Keeper promotion changes the opponent picture, not the point we defend.
@@ -1038,7 +1040,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   const threat = reading && carrierCue &&
     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
   return { aim, reading, threat, declared: runTargets.get(e)!.runner,
-    flow: runTargets.get(e)!.flow, stack, acquiredBackfield: !!acquired };
+    flow: runTargets.get(e)!.flow, stack, localBlocker, acquiredBackfield: !!acquired };
 }
 
 /** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
@@ -1134,6 +1136,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // The defender keeps the called fit/shoulder and can answer a declared
   // runner at his next decision. The blocker still seeks his seal surface.
   const toAim = sub(read.aim, d.pos);
+  // Reuse the position already acquired in the line read. A clear exit may
+  // continue through new contact; choosing a move across a frontal surface
+  // still belongs to the ordinary technique cadence.
+  const clearFirstLevelExit = firstLevelRunner && !!read.localBlocker
+    && (read.localBlocker.x - d.pos.x) * toAim.x + (read.localBlocker.y - d.pos.y) * toAim.y < 0;
   const preferred = toAim.x * lat.x + toAim.y * lat.y;
   if (Math.abs(preferred) > .1) e.side = Math.sign(preferred);
   e.control = HAND_FIGHT ? handFight(e, tb, td, dt, rng)
@@ -1155,10 +1162,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const pursue = SHED_PURSUE && read.declared && read.threat.carrying === true
       && (firstLevel || read.acquiredBackfield)
       && (read.threat.pos.x - sim.los) * sim.attackDir(b.team) > 0;
-    // Acquiring new hands does not restart an already justified runner
-    // response. First-level players need the same acquired declaration as
-    // their exit objective; an unadvanced edge still owns his shoulder.
-    const ready = t >= e.nextMoveAt || (runnerExit && !runSheds.has(e));
+    // New hands do not restart justified support or a first-level clear
+    // exit. A frontal block and an unadvanced edge retain their old cadence.
+    const ready = t >= e.nextMoveAt || ((supportRunner || clearFirstLevelExit) && !runSheds.has(e));
     if (ready && (dc < 3.5 || supportRunner || pursue)) {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(read.threat.pos, d.pos);
@@ -1173,7 +1179,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
         // Loaded hands supply the local body position; an extended, unloaded
         // reach supplies only this observer's acquired blocker picture.
         let runner = false;
-        if (runnerExit) {
+        if (firstLevelRunner) runner = clearFirstLevelExit;
+        else if (supportRunner) {
           const loaded = Math.hypot(e.hands?.normalForce ?? 0, e.hands?.tangentForce ?? 0) > 0;
           const blocker = loaded ? b.pos : sim.see(d, b).pos;
           if ((blocker.x - d.pos.x) * toAim.x + (blocker.y - d.pos.y) * toAim.y < 0)

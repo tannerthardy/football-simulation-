@@ -170,7 +170,7 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
         f.runner.pos.x = 41;
       }
       if (kind === 'not-read') {
-        f.defender.recog!.read = 'unknown';
+        f.defender.recog!.read = 'unsure';
         f.runner.pos.x = 41;
       }
       f.command();
@@ -179,12 +179,12 @@ describe('first-level work-off follows a legitimately acquired runner', () => {
     }
   });
 
-  it('starts across-face work immediately when an acquired runner is still sealed off', () => {
+  it('preserves the ordinary technique wait when an acquired runner is still sealed off', () => {
     const f = scene(1, true);
     f.engagement.nextMoveAt = f.sim.t + .6;
     const command = f.command();
-    expect(f.defender.tags.has('shed-attempt')).toBe(true);
-    expect(command.vel.x).toBeLessThan(0);
+    expect(f.defender.tags.has('shed-attempt')).toBe(false);
+    expect(command.facing).toBeCloseTo(0, 12);
     expect(command.push).toBe(1);
     expect(f.defender.engagement).toBe(f.engagement);
     expect(f.sim.events.some(e => e.type === 'shed')).toBe(false);
