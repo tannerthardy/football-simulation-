@@ -1219,6 +1219,12 @@ export class RunBlocker implements Behavior {
     const partner = combo?.members.find((b) => b !== a);
     const half = partner ? (Math.sign(a.pos.y - partner.pos.y) || ps) * .55 : ps * .6;
     const shoulder = seen.pos.y + seen.vel.y * meet + half;
+    // The track races a man in front of him to the playside. Once that man
+    // is already backside of the aim point and has run upfield past his
+    // depth, more track only carries him away from the man, backpedaling
+    // with his back to the line. Leave the track and fit the man's acquired
+    // body from here (G1 P003/P029/P032 backside cutoff).
+    if (!firstStep && (a.pos.y - shoulder) * ps > 0 && (seen.pos.x - a.pos.x) * dir < 0) return null;
     // Ask for the speed that gets there in time under his own acceleration
     // law (speed approaches the wanted speed with time constant tau): an
     // early, short distance needs an explosive first step, not a jog.
