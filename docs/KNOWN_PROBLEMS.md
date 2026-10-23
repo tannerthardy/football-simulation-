@@ -177,6 +177,7 @@ problem), resolved.
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
 | [QB-2](#qb-2) | Too many scrambles, and completions slightly low | G5, G7 | low | open |
+| [QB-3](#qb-3) | Scrambling QBs fall with nobody near them (film, Oct 23) | G1, G5 | medium | open |
 | [KICK-1](#kick-1) | Kicking too accurate, too many punts | — | low | open |
 | [ALN-1](#aln-1) | Defensive pre-snap picture unlike tracking | G2, G3 | medium | on |
 | [ALN-2](#aln-2) | Offensive formations over-compress the box | G2, G7 | medium | open |
@@ -1140,6 +1141,50 @@ From the issue register:
 - Raw play descriptions/replay statistics and tools that explicitly consume
   the physical tape are not rewritten by this repair. NFL statistical
   consumers need the official view; intended `airYards` is not achieved depth.
+
+<a id="qb-3"></a>
+### QB-3: Scrambling QBs fall with nobody near them (film, Oct 23)
+
+- **Symptom** (Tanner's film, seed 7 on develop `c5667bc4`, `G1-P009` and
+  `G1-P020`): the QB breaks out to scramble, then falls near the line with no
+  defender visibly close to him. Tanner saw it on every scramble he watched.
+- **Measure** (`c5667bc4`, seeds 7–9, one game each): 9 diving tackles that
+  got a hand on the carrier: 4 on QBs, 4 on backs, 1 on a receiver. All 3
+  seed-7 QB scrambles that ended this way (`G1-P009`, `G1-P020`, `G1-P120`)
+  had the QB fall 0.2–0.35 s after the grab, with the diver's body center
+  2.4–2.6 yd from his. On develop `4d17e43` the games diverge, but the same
+  falls show up: seed 8 `G1-P111` (QB scramble, 2.3 yd) and `G1-P112`
+  (receiver, 2.1 yd), seed 9 `G1-P049` (QB, 2.9 yd).
+- **Cause** (*confirmed*, execution, not the controller): no slide or give-up
+  is requested. The fall is `legs`: a defender who was beaten lays out from
+  behind (`tryTackles` dive branch, `src/sim/tackle.ts`) and on a roll of about 5–50% (tackling against elusiveness and balance)
+  gets "a hand on a foot", a hold that is all on the legs. That hold trips the
+  QB, then slips (dive holds break 91–100%, TKL-1). The dive only fires when
+  the carrier is already past standing-plus-lunge range (about 2.1 yd center
+  to center) and up to 0.3 yd beyond it, and the hold can stretch to about
+  2.4 yd (`grasp`'s `extended` adds 0.9 yd). By body geometry a laid-out
+  diver reaches about 0.71 of his height from his hips to his fingertips
+  (Winter's segment lengths), and a runner's trailing ankle is at most about
+  a quarter of his height behind his hips: about 2.0 yd for typical sizes. So
+  every dive grab is a foot the diver can't reach, and it happens instantly
+  while the runner is pulling away at more than 1.6 yd/s. QBs get most of
+  them because the dive needs the defender behind a runner escaping him,
+  which is a rusher the QB just slipped.
+- **Film:** the viewer draws the diver as a dot on the ground, not laid out,
+  and the hold shows only with the contact layer on full telemetry. Even a
+  reachable ankle tap would look like nobody touched him.
+- **Tried:** gating the dive at that layout reach and capping its hold there
+  (patch in the project files, `qb-scramble-fall/dive-layout-gate.patch`).
+  It removes every dive grasp on seeds 7–9 (from 1–2 per game to 0), because
+  the standing-plus-lunge range already reaches as far as a layout. Not
+  landed: it deletes the mechanism rather than fixing it, moves TKL-1's
+  missed-tackle counts, and needs a restaged check of the filmed plays.
+- **Where:** `src/sim/tackle.ts` (`tryTackles` dive branch, `grasp`),
+  `src/physics/world.ts` (leg hold, `feetLock`, trip impulse).
+- **Open:** decide with TKL-1 whether a dive should exist past the lunge
+  range at all, or whether the lunge range (radii plus reach plus 0.45 yd,
+  which counts the tackler's radius twice) is the thing that's long. Then
+  draw a diving or fallen player laid out in the viewer.
 
 <a id="kick-1"></a>
 ### KICK-1: Kicking too accurate, too many punts
