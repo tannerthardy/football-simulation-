@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 85 flags: 61 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, and G6 adds `HARD_COUNT_LAPSE`, all on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 89 flags: 65 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on; G6 adds `HARD_COUNT_LAPSE`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -19,6 +19,7 @@ There are 85 flags: 61 are on by default, 1 is a diagnostic scale at identity (`
 | `LIVE_AIM` | on | default | run | `src/sim/behaviors/carrier.ts:47` | — |
 | `LIVE_GAPS` | on | default | run | `src/sim/live-gaps.ts:25` | — |
 | `PASS_KICK` | on | default (G5, 2026-10-22) | trenches | `src/sim/behaviors/blocking.ts:332` | review 2: drop the off path. Vertical pass set against edge rushers (ported from `claude/run-game-v3`); decided by edge-rep first contact and tackle retreat vs tracking |
+| `PASS_FIRST` | on | default (G2) | defense | `src/sim/behaviors/defense.ts:37` | review 2: drop the off path |
 | `PULL_READ` | on | default | defense | `src/sim/run-fits.ts:151` | — |
 | `PURSUE_AROUND` | on | default | defense | `src/sim/behaviors/common.ts:249` | — |
 | `READ_EYES` | on | default | defense | `src/sim/run-read.ts:42` | — |
@@ -28,7 +29,9 @@ There are 85 flags: 61 are on by default, 1 is a diagnostic scale at identity (`
 | `SCRAPE` | on | default | defense | `src/sim/run-fits.ts:139` | — |
 | `SHED_PHYSICAL` | on | default | trenches | `src/sim/engagement.ts:711` | — |
 | `SHED_PURSUE` | on | default | defense | `src/sim/engagement.ts:720` | — |
-| `STALK_CLAIM` | on | default | run | `src/sim/behaviors/blocking.ts:801` | — |
+| `STALK_CLAIM` | on | default | run | `src/sim/behaviors/blocking.ts:844` | — |
+| `STALK_CUSHION` | on | default (G2) | run | `src/sim/behaviors/blocking.ts:820` | review 2: drop the off path |
+| `BACK_BLOCK` | on | default (G2) | run | `src/sim/behaviors/blocking.ts:831` | review 2: drop the off path |
 | `STRETCH_MESH` | on | default | run | `src/sim/assign.ts:158` | — |
 | `STRETCH_REACH` | on | default | trenches | `src/sim/engagement.ts:676` | — |
 | `THREAT_READ` | on | default | defense | `src/sim/run-fits.ts:139` | — |
@@ -46,16 +49,17 @@ There are 85 flags: 61 are on by default, 1 is a diagnostic scale at identity (`
 | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:154` | set at first review |
 | `PULL_PLAN` | off | experimental | defense | `src/sim/run-fits.ts:145` | set at first review |
 | `PULL_STEP` | off | experimental | run | `src/sim/behaviors/blocking.ts:37` | set at first review |
-| `REACH_CONTACT` | off | experimental | defense | `src/sim/tackle.ts:66` | set at first review |
+| `REACH_CONTACT` | off | experimental | defense | `src/sim/tackle.ts:71` | set at first review |
 | `READ_RISK_TRACE` | off | experimental | defense | `src/sim/run-read.ts:117` | set at first review |
 | `RUN_CONTACT_TRACK` | off | experimental | trenches | `src/sim/engagement.ts:678` | set at first review |
 | `RUN_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:692` | set at first review |
 | `RUN_READ` | off | experimental | defense | `src/sim/run-read.ts:35` | set at first review |
 | `RUN_READ_TURN` | off | experimental | defense | `src/sim/run-read.ts:39` | set at first review |
-| `TACKLE_ROLL` | off | experimental | defense | `src/sim/tackle.ts:60` | set at first review |
-| `TACKLE_TOUCH` | off | experimental | defense | `src/sim/tackle.ts:69` | set at first review |
-| `WRAP_BIND` | off | experimental | defense | `src/sim/tackle.ts:63` | set at first review |
-| `BLOCKED_REACH` | on | default (promoted 2026-10-22) | defense | `src/sim/tackle.ts:80` | review 2: drop the off path |
+| `TACKLE_ROLL` | off | experimental | defense | `src/sim/tackle.ts:65` | set at first review |
+| `TACKLE_TOUCH` | off | experimental | defense | `src/sim/tackle.ts:74` | set at first review |
+| `WRAP_BIND` | off | experimental | defense | `src/sim/tackle.ts:68` | set at first review |
+| `BLOCKED_REACH` | on | default (promoted 2026-10-22) | defense | `src/sim/tackle.ts:85` | review 2: drop the off path |
+| `GRIP_HOLD` | on | default (2026-10-22) | physics | `src/sim/tackle.ts:95` | review 2: drop the off path |
 | `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:195` | expires: review 2. Open: who supplies force in Cover 2 Man and which inside jobs trade; Defense, Run Game and Coverage to agree (#193, #190 comments) |
 | `DEF_ALIGN` | on | default (promoted 2026-10-22) | coverage | `src/playbook/alignment.ts:71` | review 2: drop the off path |
 | `DEF_GETOFF` | 1 (identity scale) | diagnostic | trenches | `src/sim/agent.ts:25` | expires: review 2 |
