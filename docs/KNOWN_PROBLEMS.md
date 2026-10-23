@@ -161,6 +161,7 @@ problem), resolved.
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#205) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
+| [TKL-4](#tkl-4) | Defenders turn their backs on the ball carrier | G1 | medium | on |
 | [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work (G5, #215) |
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
@@ -623,6 +624,53 @@ Carried over from the issue register; each was measured on an older develop.
   Fast receivers break 47% (NFL 23%); mid-speed receivers 7% (NFL 9%).
 - **Cause:** *likely* it starts before the catch: the defender arrives late and
   moving the wrong way (COV-1), so the tackle is an arm tackle.
+
+<a id="tkl-4"></a>
+### TKL-4: Defenders turn their backs on the ball carrier
+
+- **Symptom:** film review of develop `c5667bc4` (seed 7, game 1), 8 notes:
+  linebackers and safeties spin away from the runner as he reaches them
+  (P003, P005, P013, P024, P025, P028); on P002 the SS "carries his momentum
+  and looks like he's on ice."
+- **Measure:** defenders within 5 yd of a non-pocket carrier and facing more
+  than 120° away from him, unengaged, LB/DB, per game (matched twin: every
+  scrimmage play run from identical setup with and without the change; probe
+  in the PR). Seeds 7/8/9: 19/11/17 → 11/9/13. Of the 11 unengaged
+  second-level cases in game 1, 11 were a man defender on a back.
+- **Cause:** *confirmed,* all six clips were **requested** turns (facing
+  intent flipped), not bodies rotated by contact. Five controller paths:
+  1. A run-reading man defender whose back has the ball covered him with
+     receiver cushion unless his fit was insert/alley. Force players matched
+     onto the RB bailed downfield (P003, P025; a 59-yd TD in game 1, P096).
+  2. A crossover-running backer braking from an overrun faced his braking
+     request, so he turned to run back the way he came (P024, P088).
+  3. Reversals took the shortest arc even when it swept his back past the
+     ball (P005).
+  4. Pull read: with linemen moving behind the line both ways, the fit took
+     whichever puller came first in the list, and the landmark jumped ~8 yd
+     between ticks.
+  5. A spot-dropping underneath defender turned to sprint to his landmark
+     before he had read pass (P013, 0.2–0.4 s).
+- **Fix (on):** 1 plays his installed fit, keyed on that back; 2 squares up
+  when braking; 3 `open-to-ball.ts` turns a defender through the side that
+  keeps the carrier in front when both ends of the turn face the ball's
+  side (the requested facing is unchanged, the longer turn costs time);
+  4 follows the fastest lateral mover; 5 keeps eyes and chest on the
+  backfield until the pass read.
+- **Kept:** turns that end facing away keep the shortest arc. LBs turning
+  to run with verticals on pass plays: 728 → 721 frames in the matched game.
+- **Open:**
+  - P028 is an overrun on a cutback: the turn is toward the ball but long.
+    That is run-fit flow speed, not turning.
+  - P002 SS: hips flip about 100° in 0.2 s while his velocity keeps its
+    lateral component for ~0.5 s (downfield braking ~6.5 m/s² is plausible).
+    Facing outruns momentum: `turnRateOf` only slows above 6 m/s. Check
+    yaw rate against speed and decel on plants in tracking before touching
+    the shared turn/traction capacity (TKL-2 has change-of-direction data).
+  - Remaining cases are mostly overruns at speed and defenders on the ground.
+  - Man defenders on receivers with a run carrier nearby still watch their
+    man; whether that is pass-first discipline or a late read is Defense's
+    call (`PASS_FIRST`).
 
 ## Pass protection
 

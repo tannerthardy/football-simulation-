@@ -25,6 +25,7 @@ import { bodyRadius } from '../physics/bodyshape.js';
 import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
 import { containCoverage } from './coverage-space.js';
+import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
 import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
@@ -960,7 +961,8 @@ export class PlaySim {
       const a = this.agents[i];
       // Reaction delays control, not collisions: he can still be pushed.
       const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
-      this.cmds[i] = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
+      const contained = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
+      this.cmds[i] = openToBall(a, this, contained);
     }
 
     // Intents: the decisions, refined by the techniques that own contact.
