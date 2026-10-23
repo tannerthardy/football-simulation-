@@ -1072,6 +1072,14 @@ need personnel the sim doesn't have.
   still called at a fixed 10% (30% on 3rd/4th and short). That is a
   play-calling choice (G7).
 - **Open:** holding (above), then the missing defensive fouls.
+- **Open boundary, holding:** `HOLD_LEVERAGE` exempts any grip while the
+  blocker is still in front (|phi| < 1) unless it takes the rusher's feet.
+  12-1-3 has no frontal exception; the gate reads "materially restrict" as
+  "the grip adds nothing the body block isn't already doing". A frontal
+  grab that turns or jerks the rusher, changing his heading or speed beyond
+  what the body contact delivers, is likely an undercall. Those grips are kept
+  as `unresolved` (`blocker_still_in_front_of_opponent`), so they can be
+  counted before narrowing the gate.
 
 <a id="rule-2"></a>
 ### RULE-2: Rule coverage incomplete
