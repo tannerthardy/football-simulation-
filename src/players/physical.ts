@@ -39,6 +39,10 @@ export interface PhysicalProfile {
   reactionTime: number;
   /** Functional push force in "body-weight-g" units, used by engagements. */
   power: number;
+  /** Two-arm press capacity, kg lifted: the one-rep bench max implied by the
+   * combine's 225 lb reps (Epley). Absent without a bench measure; the support
+   * model then falls back to its arm-force mapping. */
+  press?: number;
   /**
    * Support and contact capacities (see physics/support.ts). Optional so a
    * hand-built test profile still works; the support model derives
@@ -157,6 +161,8 @@ export function derivePhysical(p: Player): PhysicalProfile {
   // Functional strength: bench reps and the strength rating, scaled by mass.
   const strength = r01(0.7 * r.strength + 0.3 * clamp(m.bench * 2.4, 1, 100));
   const power = massKg * (0.55 + 0.75 * strength);
+  // Press: the bench max those reps imply, 225 lb x (1 + reps / 30).
+  const press = m.bench > 0 ? lbToKg(225) * (1 + m.bench / 30) : undefined;
 
   // Support: change-of-direction drills measure how quickly the feet can be
   // re-placed; the balance rating covers what drills do not (base width,
@@ -183,6 +189,7 @@ export function derivePhysical(p: Player): PhysicalProfile {
     reactReach,
     reactionTime,
     power,
+    press,
     balance,
     bend,
     stepSpeed,
