@@ -1,0 +1,23 @@
+{
+  "source": "nflverse-data releases",
+  "files": [
+    {
+      "name": "play_by_play_2022.csv.gz",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2022.csv.gz",
+      "bytes": 19093961,
+      "sha256": "0c69a71eb39498956c7b1d5c1ca52ce7fe679934a95d1af249facb5ea9829ea4",
+      "assetId": 354728863,
+      "updatedAt": "2026-02-12T10:25:24Z",
+      "publishedDigest": "sha256:0c69a71eb39498956c7b1d5c1ca52ce7fe679934a95d1af249facb5ea9829ea4"
+    },
+    {
+      "name": "play_by_play_2023.csv.gz",
+      "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2023.csv.gz",
+      "bytes": 19169807,
+      "sha256": "4649804ee0f0a40b41e51ec75a1ce921949d7fab5459213488656b92f78560e8",
+      "assetId": 354728691,
+      "updatedAt": "2026-02-12T10:24:52Z",
+      "publishedDigest": "sha256:4649804ee0f0a40b41e51ec75a1ce921949d7fab5459213488656b92f78560e8"
+    }
+  ]
+}
