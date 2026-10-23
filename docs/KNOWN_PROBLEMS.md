@@ -498,6 +498,56 @@ Carried over from the issue register; each was measured on an older develop.
   crowd takes about 2 yd/s off the runner in 1 s; our break-throughs lose about
   0.45 yd/s. This is physics: Main Engine (Run Game has already sent its
   sliding-grip question).
+- **`GRIP_HOLD` (#217, on): the hold, not the controller** (Tools/Physics;
+  `crowd.ts`/`crowd.py`, 24 games, seeds 7 and 8, on develop `0671f52`).
+  Two defects in `tackle.ts`:
+  - Grip followed the arms' current extension and dropped at once when they
+    stretched. With the slipping ratchet in `world.ts`, a slip stretched the
+    arms, the weaker grip slipped more, and the hold broke. Now a hold keeps
+    the grip it acquired; it still slides out while slipping and breaks past
+    reach.
+  - Below a locked wrap, capacity came from the arm-push mapping, about 0.55
+    of the holder's body weight at grip 0.45. A hand hold now holds what two
+    hands on a jersey can: Division I dynamometer grip, about half of body
+    mass per hand, with 3/4 kept on a slick jersey and a third for a pinch.
+    `tackling` stays technique.
+
+  Rulings (in the grasp, forward progress) and the carrier's sense of being
+  held read a separate control value that follows the arms, as grip did
+  before. Off vs on:
+
+  | | Off | On | NFL |
+  | --- | --- | --- | --- |
+  | Runs gaining 5+ yd after contact | 155 | 99 | |
+  | Clean contact, speed at 0.3 / 0.6 / 1.0 s | 1.03 / 1.12 / 1.17 | 0.98 / 0.94 / 0.98 | about 0.94 / 0.88 |
+  | Break-throughs, crowd, at 1.0 s | 0.99 | 0.95 | 0.72 |
+  | Break-throughs, 2+ holding, at 1.0 s | 0.91 | 0.81 | |
+  | Side/behind holders: braking, grip, slipping, used/capacity | 0.31 BW, 0.46, 79%, 0.98 | 0.41 BW, 0.49, 74%, 0.97 | |
+
+  Break rate by hold origin (6 games): form 2 → 1%, reach 16 → 9%, lunge
+  48 → 38%, dive 100 → 91%. A fingertip grab at full stretch on a faster
+  runner still breaks. Quick scorecard (paired): failed tackle opportunities
+  per play 0.21 → 0.17, missed + broken 0.33 → 0.28, YPC 7.7 → 6.0, 10+ runs
+  19.5 → 15.6% (noise in 6 games).
+
+  **Still open:**
+  - Side and behind holders are still saturated (0.97) and dragged at 0.64 of
+    the runner's speed: they arrive slow (TKL-2), and a hand hold can't make
+    up a 2-3 yd/s deficit within the arms' slack. Grip constants are not to be
+    tuned toward the crowd band.
+  - **Pocket-QB grabs break half as often** (12 → 6%, about 175 holds). The QB
+    escapes a grab only through grip physics; a real QB twists and spins out
+    of an arm grab. The sack rate's response is not settled: 10.0 → 13.4% per
+    dropback before #215; with #215 merged, 5.9% (off) and 7.3% (on), in the
+    NFL's 6–7.5%. Logged as a gap under PRO-1: a quarterback can't twist or
+    spin out of an arm grab.
+  - With #215 merged (quick tier, paired, on vs off): YPC 6.24 vs 9.05,
+    10+ runs 15.0 vs 21.5%, missed + broken 0.32 vs 0.38 per play (all
+    moved). A wrap pulled out to arm's length now holds as a hand hold, not
+    with the wrap law (physics review note).
+  - Staged scene pinned to `GRIP_HOLD=0` (re-record by review 2): the Cover 2
+    vertical curl in `test/cover3-cover2-rules.test.ts`, where the end's grab
+    now holds the QB until 3.2 s, before the 3.4 s read.
 - **Open:** fewer defenders reach the runner. Free defenders who reach him
   past 5 yd, per run: 1.89 with `SHED_PURSUE`, NFL 2.69. See TKL-2.
 
@@ -720,6 +770,15 @@ Carried over from the issue register; each was measured on an older develop.
       pushes on him at 1.10 s, but he meets the end at 1.35 s. Where a back
       releases against the rush is G3/G7's call; `cover3-cover2-rules` stays
       pinned.
+- **After `GRIP_HOLD`** (#217, TKL-1): sacks rose from 10.0% to 13.4% of
+  dropbacks (quick tier, paired, moved). A rusher's arm grab on a pocket QB
+  now keeps its grip, and those grabs break half as often (12% → 6% of
+  about 175 holds; the number of grabs is unchanged). A quarterback can't
+  twist or spin out of an arm grab: he escapes only if the grip itself
+  slips past reach. That escape is missing, along with the slide away from
+  the edge (PRO-4). Don't weaken the grip to fix sacks. With #215 on
+  develop (`c22fba2`, quick tier, seed 7, paired), both changes give 7.3%
+  of dropbacks, inside the NFL's 6–7.5%; `GRIP_HOLD=0` gives 5.9%.
 
 <a id="pro-2"></a>
 ### PRO-2: Pressure arrives too early and from the wrong places

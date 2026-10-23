@@ -40,6 +40,11 @@ export interface TackleBond {
   down: boolean;
   /** Each tackler's hold quality: 0 = fingertips, 1 = a locked wrap. */
   grip?: Map<Agent, number>;
+  /** Each tackler's control of the carrier, 0-1: the grip his arms' current
+   * extension allows. Rulings (in the grasp, forward progress) and the
+   * carrier's sense of being held read this; physics reads `grip`. Without
+   * GRIP_HOLD the two are equal. */
+  control?: Map<Agent, number>;
   /** Each tackler's grasp joint in the world. */
   holds?: Map<Agent, GraspJoint>;
   /** Execution draw for each hold (median 1): technique and footing on this rep. */
@@ -78,10 +83,38 @@ const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
  * first contacts on gap runs and 55% on zone
  * (scripts/diag/runblock/blockedfirst.py); the gate left 32% and 41%. */
 const BLOCKED_REACH = process.env.BLOCKED_REACH !== '0';
+/** Default on (GRIP_HOLD=0 turns it off): a hold keeps the grip it has
+ * acquired when the arms extend. Closing still works a grip toward a wrap,
+ * but a hand closed on a jersey is not weaker because the elbow straightened;
+ * extension costs the reel its leverage, not the hold its tension. The held
+ * grip never weakens: the hold still slides out while slipping and ends when
+ * it slides past reach (World). Without it,
+ * any extension cut the grip at once, so a slip extended the arms, the
+ * weaker grip slipped more and the hold broke: crowd holds on break-through
+ * runs sat at grip 0.45, slipping 79% of the time (KNOWN_PROBLEMS TKL-1). */
+const GRIP_HOLD = process.env.GRIP_HOLD !== '0';
 
-export function gripForce(d: Agent, quality: number): number {
-  const q = clamp(quality, 0, 1);
-  return supportParams(d.profile).armForce * (0.3 + 2.5 * q * q) * (0.6 + 0.6 * d.r('tackling'));
+/** `lock`: how much of the wrap the arms' geometry still locks (default
+ * the hold's quality). A wrap that slides out to arm's length is a hand hold
+ * again; the hands keep the grip they acquired (GRIP_HOLD). */
+export function gripForce(d: Agent, quality: number, lock = quality): number {
+  const q = clamp(quality, 0, 1), l = clamp(lock, 0, 1);
+  const wrap = supportParams(d.profile).armForce * (0.3 + 2.5 * l * l) * (0.6 + 0.6 * d.r('tackling'));
+  return GRIP_HOLD ? Math.max(wrap, handHold(d, q)) : wrap;
+}
+
+/** What two hands closed on a jersey hold, kg·yd/s², by hold quality: a
+ * handful of cloth from about q 0.5, down to a fingertip pinch at 0.
+ * Hand grip is a capacity of the body, not of tackling technique (how good
+ * a handful he gets is the quality). Model assumption: Division I athletes'
+ * dynamometer grip is about 45-55 kg per hand (about half of body mass for a
+ * 100 kg player), scaled here by mass and strength; a tight, slick jersey
+ * keeps 3/4 of it; a pinch is about a third of a full grip. No combine drill
+ * measures grip, so this replaces only the arm-push mapping the old law used
+ * below a wrap. A locked wrap keeps the arm law above (GRIP_HOLD). */
+function handHold(d: Agent, q: number): number {
+  const perHand = d.profile.massKg * (0.42 + 0.16 * d.r('strength'));
+  return 2 * 0.75 * perHand * G * clamp(0.3 + 1.4 * q, 0, 1);
 }
 
 export function tryTackles(sim: PlaySim): void {
@@ -314,7 +347,7 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   if (d.engagement) sim.disengage(d.engagement);
   if (!sim.bond) {
     sim.bond = { carrier: c, tacklers: [], start: sim.t, progressX: c.pos.x, down: false, stalled: 0,
-      grip: new Map(), holds: new Map(), execution: new Map() };
+      grip: new Map(), control: new Map(), holds: new Map(), execution: new Map() };
   }
   const bond = sim.bond;
   bond.tacklers.push(d);
@@ -330,6 +363,7 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
     joint.pull = 0;
   }
   (bond.grip ??= new Map()).set(d, quality);
+  (bond.control ??= new Map()).set(d, quality);
   (bond.holds ??= new Map()).set(d, joint);
   (bond.execution ??= new Map()).set(d, execution);
   sim.world.joints.push(joint);
@@ -360,12 +394,14 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   const grip = (bond.grip ??= new Map());
   const holds = (bond.holds ??= new Map());
   const execution = (bond.execution ??= new Map());
+  const control = (bond.control ??= new Map());
   for (const d of [...bond.tacklers]) {
     const joint = holds.get(d);
     if (joint && !joint.broken) continue;
     bond.tacklers = bond.tacklers.filter((x) => x !== d);
     holds.delete(d);
     grip.delete(d);
+    control.delete(d);
     if (joint) sim.world.joints = sim.world.joints.filter((j) => j !== joint);
     d.nextTackleAt = Math.max(d.nextTackleAt, t + 0.3);
     sim.stats.brokenTackles++;
@@ -387,10 +423,16 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     const stretched = d.body.support?.state !== 'up' ? GROUND_STRETCH : 0;
     const quality = clamp(1 - (distance - stretched - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
     const available = clamp(0.25 + 0.85 * quality, 0.1, 1) * (execution.get(d) ?? 1);
+    const rate = Math.min(1, dt * (1 + 2.5 * d.r('tackling')));
     const g = grip.get(d) ?? available;
-    const next = g < available ? g + (available - g) * Math.min(1, dt * (1 + 2.5 * d.r('tackling'))) : available;
+    const next = g < available ? g + (available - g) * rate : GRIP_HOLD ? g : available;
     grip.set(d, clamp(next, 0.05, 1));
-    joint.capacity = gripForce(d, clamp(next, 0.05, 1));
+    // Control follows the arms: a grip held at full stretch is strong but is
+    // not a firm hold on the man for the officials or for him.
+    const k = control.get(d) ?? g;
+    const held = clamp(k < available ? k + (available - k) * rate : available, 0.05, 1);
+    control.set(d, held);
+    joint.capacity = gripForce(d, clamp(next, 0.05, 1), Math.min(clamp(next, 0.05, 1), held));
     if (WRAP_BIND && joint.legs > 0) {
       // Use the same acquired grip and actual closing quality as the roll.
       // Height/pitch stay on `legs`; a tighter wrap increases only the
@@ -466,7 +508,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   // is ruled down at once (the rule protects him).
   const held = t - bond.start;
   const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled;
-  const inGrasp = pocketQB && held >= 0.25 && bond.tacklers.some((d) => (grip.get(d) ?? 0) >= 0.6);
+  const inGrasp = pocketQB && held >= 0.25 && bond.tacklers.some((d) => (control.get(d) ?? grip.get(d) ?? 0) >= 0.6);
   // A running carrier is not down merely because the arms held for seconds.
   // Upright tackles require stopped progress; physical falls are checked below.
   if (inGrasp || (bond.stalled ?? 0) >= STALL) whistleDown(sim, bond);
@@ -482,7 +524,7 @@ export function afterStep(sim: PlaySim): void {
     const before = bond.progressX;
     bond.progressX = dir > 0 ? Math.max(bond.progressX, c.pos.x) : Math.min(bond.progressX, c.pos.x);
     // Forward progress is stopped when a firmly held pile stops gaining ground.
-    const firm = bond.tacklers.some((d) => (bond.grip?.get(d) ?? 0) >= 0.4);
+    const firm = bond.tacklers.some((d) => (bond.control?.get(d) ?? bond.grip?.get(d) ?? 0) >= 0.4);
     bond.stalled = firm && Math.abs(bond.progressX - before) <= 0.5 * sim.dt ? (bond.stalled ?? 0) + sim.dt : 0;
   }
   const sup = c.body.support;
