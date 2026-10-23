@@ -172,7 +172,8 @@ problem), resolved.
 | [COV-2](#cov-2) | Too much yardage per attempt and after the catch | G3 | high | open |
 | [COV-3](#cov-3) | Coverage rules and calls not yet complete | G3 | medium | in work (#193) |
 | [COV-4](#cov-4) | Defenders react late to jet motion | G3 | low | on |
-| [COV-5](#cov-5) | Older coverage contracts that fail or are unproven | G3 | medium | open |
+| [COV-5](#cov-5) | Older coverage contracts that fail or are unproven | G3 | high | open (next for Coverage) |
+| [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | open (next for Coverage) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
 | [QB-2](#qb-2) | Too many scrambles, and completions slightly low | G5, G7 | low | open |
@@ -665,11 +666,17 @@ Carried over from the issue register; each was measured on an older develop.
 - **Open:**
   - P028 is an overrun on a cutback: the turn is toward the ball but long.
     That is run-fit flow speed, not turning.
-  - P002 SS: hips flip about 100° in 0.2 s while his velocity keeps its
-    lateral component for ~0.5 s (downfield braking ~6.5 m/s² is plausible).
-    Facing outruns momentum: `turnRateOf` only slows above 6 m/s. Check
-    yaw rate against speed and decel on plants in tracking before touching
-    the shared turn/traction capacity (TKL-2 has change-of-direction data).
+  - P002 SS (*fix on*, PR after #240): hips flipped ~100° in 0.2 s while his
+    velocity kept its lateral component for ~0.5 s. Braking is not the cause
+    (sim DB decel p90 6.6 vs NFL 5.6 yd/s², `data/reviews/mechanics`). When a
+    command gives no facing, `commandFacing` faced the *requested* velocity at
+    once. Above 2.5 yd/s the default facing now leads his actual path by at
+    most 60°; below that he has planted and squares to the new heading.
+    Tracking (BDB2025 week 1, `yaw_speed_audit.py`): defenders at 4–6 yd/s
+    keep orientation within 60° of travel 72% of frames (6+: 91%).
+  - Turn *capability* is not the problem: per-path fastest 0.2 s turn, NFL
+    p99 650–790°/s vs sim profile ceiling 315–600°/s. Turn *frequency* is
+    (COV-6).
   - Remaining cases are mostly overruns at speed and defenders on the ground.
   - Man defenders on receivers with a run carrier nearby still watch their
     man; whether that is pass-first discipline or a late read is Defense's
@@ -1039,6 +1046,33 @@ From the issue register:
   ready.
 - **Catch and pursuit tradeoffs** (PASS-001): the accepted repair keeps some
   adverse outcomes.
+
+<a id="cov-6"></a>
+### COV-6: Coverage defenders snap through big turns far too often
+
+- **Measure** (BDB2025 week 1, CB/S/LB after the snap, provider `o`; sim
+  seeds 7–8 on develop `5637ae43`, same operator,
+  `scripts/data/yaw_speed_audit.py`, `yaw_capability_audit.py`):
+
+  | | NFL | Sim |
+  | --- | --- | --- |
+  | 0.2 s windows with a 90°+ swing, 2–4 yd/s | 0.34% | 2.7% |
+  | same, 4–6 yd/s | 0.24% | 2.0% |
+  | yaw rate p90, 2–4 yd/s | 106°/s | 304°/s |
+  | time for a 150°+ turn, median | ~1.5 s | 0.5 s |
+  | per-path fastest 0.2 s turn, p99 | 650–790°/s | 490–550°/s |
+
+- **Cause:** *confirmed* for the frequency. 99% of sim swings follow a
+  requested facing ≥90° off the body (373 of 374 at 2–4 yd/s), mostly in
+  man and zone technique: explicit facings that toggle between the QB,
+  square and the receiver's velocity (`hipsOpen`, `turnRun`,
+  `carryingAcross`), and track() velocity that reverses on every receiver
+  stem. The motor then turns at its ceiling, which is within NFL capability.
+- **Priority:** Tanner (2026-10-23): handle next, ahead of other
+  Coverage work.
+- **Open:** Coverage lane. Find which toggles flip most, and whether a real
+  DB's slower, rounded turn is a technique (open the hips gradually) the
+  controller should request. Keep the turn-rate ceiling.
 
 ## Ball and quarterback
 
