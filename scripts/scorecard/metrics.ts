@@ -9,7 +9,7 @@
  * To add a metric, append one entry to METRICS. To add a split, append one
  * entry to SPLITS.
  */
-import type { GameRec, PlayRec } from './records.js';
+import type { GameLayerRec, GameRec, PlayRec } from './records.js';
 
 export interface Metric {
   id: string;
@@ -35,6 +35,29 @@ const run = (p: PlayRec) => p.kind === 'run';
 const pass = (p: PlayRec) => p.kind === 'pass';
 const att = (p: PlayRec) => p.att;
 const yes = (b: boolean) => (b ? 1 : 0);
+
+function layerMetric(id: string, label: string,
+  num: (r: GameLayerRec, g: GameRec) => number, den: (r: GameLayerRec, g: GameRec) => number,
+  percent = false): Metric {
+  return { id, label, source: 'pending M1', ...(percent ? { scale: 100, unit: '%' } : {}),
+    game: { num: g => g.gameLayer ? num(g.gameLayer, g) : NaN,
+      den: g => g.gameLayer ? den(g.gameLayer, g) : NaN } };
+}
+
+function kicks(r: GameLayerRec, kind: 'punt' | 'kickoff', field: 'netYards' | 'returnYards' | 'touchback'): [number, number] {
+  const rows = r.kicks.filter(k => k.kind === kind);
+  if (field === 'returnYards' && rows.some(k => k.returned === undefined)) return [NaN, NaN];
+  const eligible = field === 'returnYards' ? rows.filter(k => k.returned) : rows;
+  return [eligible.reduce((sum, k) => sum + (field === 'touchback'
+    ? k.touchback === undefined ? NaN : yes(k.touchback) : k[field] ?? NaN), 0), eligible.length];
+}
+
+const fieldGoalBins = [[18, 29], [30, 39], [40, 49], [50, Infinity]] as const;
+const fieldGoals = (r: GameLayerRec, lo: number, hi: number): [number, number] => {
+  if (r.fieldGoals.some(k => k.distance === undefined)) return [NaN, NaN];
+  const rows = r.fieldGoals.filter(k => k.distance! >= lo && k.distance! <= hi);
+  return [rows.reduce((sum, k) => sum + (k.good === undefined ? NaN : yes(k.good)), 0), rows.length];
+};
 
 export const METRICS: Metric[] = [
   { id: 'points', label: 'Points / team-game', band: [21, 23.5], game: { num: (g) => g.points, den: () => 2 } },
@@ -71,7 +94,30 @@ export const METRICS: Metric[] = [
   // of foul producers cannot be graded by matching a total; retain the count
   // and interval, and compare types/exposures under docs/NFL_RULES.md.
   { id: 'penalties', label: 'Accepted penalties / team-game', game: { num: (g) => g.penalties, den: () => 2 } },
+  ...fieldGoalBins.map(([lo, hi]) => layerMetric(`fg${lo}`, `FG ${hi === Infinity ? '50+' : `${lo}–${hi}`} yd %`,
+    r => fieldGoals(r, lo, hi)[0], r => fieldGoals(r, lo, hi)[1], true)),
+  layerMetric('puntGross', 'Punt gross average (box yards)', r => r.puntGrossYards, (_r, g) => g.punts),
+  layerMetric('puntNet', 'Punt net field-position average', r => kicks(r, 'punt', 'netYards')[0], r => kicks(r, 'punt', 'netYards')[1]),
+  layerMetric('kickReturn', 'Kickoff return average (recorded yards)', r => kicks(r, 'kickoff', 'returnYards')[0], r => kicks(r, 'kickoff', 'returnYards')[1]),
+  layerMetric('puntReturn', 'Punt return average (recorded yards)', r => kicks(r, 'punt', 'returnYards')[0], r => kicks(r, 'punt', 'returnYards')[1]),
+  layerMetric('kickTouchback', 'Kickoff touchback % (regular kicks)', r => kicks(r, 'kickoff', 'touchback')[0], r => kicks(r, 'kickoff', 'touchback')[1], true),
+  layerMetric('puntTouchback', 'Punt touchback %', r => kicks(r, 'punt', 'touchback')[0], r => kicks(r, 'punt', 'touchback')[1], true),
+  layerMetric('fourthGo', 'Fourth-down go % (outside Q4 last 2:30)', r => r.fourthGoes, r => r.fourthOpportunities, true),
+  layerMetric('fourthConversion', 'Fourth-down conversion % (all official attempts)', r => r.fourthConversions, r => r.fourthAttempts, true),
+  layerMetric('twoPoint', 'Two-point attempts / TD (retries once)', r => r.twoPointChoices, r => r.touchdowns, true),
+  layerMetric('drives', 'Drives / team-game (logged offensive possessions)', r => r.drives, () => 2),
+  layerMetric('pointsPerDrive', 'Offensive points / drive (including Try)', r => r.drivePoints, r => r.drives),
+  layerMetric('redZoneTD', 'Red-zone TD % (box trips)', r => r.redZoneTDs, r => r.redZoneTrips, true),
+  layerMetric('turnovers', 'Turnovers / team-game (box)', r => r.turnovers, () => 2),
 ];
+
+/** Exact accepted/enforced names, including zero in an arm with no such foul.
+ * Legacy cards without the ledger stay unavailable rather than becoming zero. */
+export function penaltyMetrics(games: GameRec[]): Metric[] {
+  const names = [...new Set(games.flatMap(g => Object.keys(g.gameLayer?.penaltiesByType ?? {})))].sort();
+  return names.map(name => layerMetric(`penalty:${name}`, `Accepted penalties / team-game: ${name}`,
+    r => r.penaltiesByType[name] ?? 0, () => 2));
+}
 
 function playRatio(m: NonNullable<Metric['play']>, games: GameRec[], filter?: (p: PlayRec) => boolean): [number, number] {
   let num = 0;

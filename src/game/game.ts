@@ -72,6 +72,17 @@ export interface PlayLog {
   firstDown?: boolean;
   fgGood?: boolean;
   fgDistance?: number;
+  /** Read-only measurement of the already resolved kick. No consumer of game
+   * logic reads this field. Supplied events may lack distance/return credit. */
+  readonly kick?: Readonly<{
+    kind: 'punt' | 'kickoff' | 'onside' | 'safety';
+    retry: boolean;
+    touchback: boolean;
+    returned?: boolean;
+    returnYards?: number;
+    /** Field-position gain, excluding kicks with penalty enforcement. */
+    netYards?: number;
+  }>;
   /** Recorded frames (only when requested) + roster for the replay viewer. */
   replay?: {
     frames: Frame[];
@@ -1166,7 +1177,11 @@ export class Game {
       const event = first ? this.opts.hooks?.freeKickEvent?.(kicking, kickSpot) : undefined;
       const ko = kickoff(this.kicks, kTeam, rTeam, { onside, safetyKick: safety, kickSpot, event });
       first = false; s.possession = kicking;
-      const entry = this.entry('kickoff', `${kTeam.abbr} ${safety ? 'safety free kick: ' : ''}${ko.text}`, 0);
+      const entry: PlayLog = { ...this.entry('kickoff', `${kTeam.abbr} ${safety ? 'safety free kick: ' : ''}${ko.text}`, 0),
+        kick: { kind: ko.onside ? 'onside' : safety ? 'safety' : 'kickoff',
+          retry: ko.rules.retryKickFrom !== undefined, touchback: ko.touchback,
+          returned: event ? undefined : !!ko.returner && !ko.touchback,
+          returnYards: event ? undefined : ko.returnYards } };
       this.recordKickFouls(ko.rules, kicking, entry); this.log.push(entry);
       this.runClock(ko.touchback || ko.rules.deadOnRecovery ? 0 : 6, true);
       if (ko.rules.retryKickFrom !== undefined) { kickSpot = ko.rules.retryKickFrom; continue; }
@@ -1281,7 +1296,13 @@ export class Game {
       const event = first ? this.opts.hooks?.scrimmageKickEvent?.(s.possession) : undefined;
       first = false;
       const res = punt(this.kicks, kTeam, rTeam, s.yardline, { event });
-      const entry = this.entry('punt', `${p.firstName[0]}.${p.lastName} ${res.text}`, 0);
+      const entry: PlayLog = { ...this.entry('punt', `${p.firstName[0]}.${p.lastName} ${res.text}`, 0),
+        kick: { kind: 'punt', retry: res.rules.retryKickFrom !== undefined, touchback: res.touchback,
+          returned: event ? undefined : !res.touchback && !res.fairCatch && !res.blocked
+            && !res.muffLost && res.rules.advancePermitted,
+          returnYards: event ? undefined : res.returnYards,
+          netYards: res.rules.fouls.length || res.rules.unresolved.length ? undefined
+            : (res.rules.possession === 'receiving' ? 100 - res.rules.yardline : res.rules.yardline) - s.yardline } };
       this.log.push(entry);
       this.runClock(res.touchback || res.fairCatch ? 5 : 9, true);
       this.recoverAll(50);

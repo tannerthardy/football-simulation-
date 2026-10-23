@@ -32,7 +32,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { GameRec, PlayRec } from './records.js';
-import { METRICS, SPLITS, evaluate, interval, status, type Metric } from './metrics.js';
+import { METRICS, SPLITS, evaluate, interval, penaltyMetrics, status, type Metric } from './metrics.js';
 import { PROBES } from './probes.js';
 import { compatibility, engineSettings, measurementIdentity, provenance, type Arm, type Card } from './provenance.js';
 
@@ -61,7 +61,6 @@ const splitOpt = opt('splits', tier.splits)!;
 const splits = splitOpt === 'all' ? SPLITS : splitOpt === 'none' ? [] : SPLITS.filter((s) => splitOpt.split(',').includes(s.id));
 const metricIds = opt('metrics')?.split(',');
 const allMetrics = [...METRICS, ...PROBES.filter((p) => probeIds.includes(p.id)).flatMap((p) => p.metrics)];
-const metrics = metricIds ? allMetrics.filter((m) => metricIds.includes(m.id)) : allMetrics;
 
 const parseArm = (s: string): Omit<Arm, 'games'> => {
   const [name, rest = ''] = s.split(':');
@@ -123,12 +122,12 @@ async function simulate(): Promise<Arm[]> {
 
 const fmt = (m: Metric, v: number) => (Number.isFinite(v) ? `${v.toFixed(m.scale ? 1 : 2)}${m.unit ?? ''}` : '—');
 const fmtDiff = (m: Metric, v: number) => (Number.isFinite(v) ? `${v >= 0 ? '+' : ''}${v.toFixed(m.scale ? 1 : 2)}` : '—');
-const band = (m: Metric) => (m.band ? `${m.band[0]}–${m.band[1]}${m.unit ?? ''}${m.source ? ` (${m.source})` : ''}` : 'internal');
+const band = (m: Metric) => (m.band ? `${m.band[0]}–${m.band[1]}${m.unit ?? ''}${m.source ? ` (${m.source})` : ''}` : m.source ?? 'internal');
 const secPerGame = (a: Arm) => !a.games.length || a.games.some((g) => !Number.isFinite(g.ms) || g.ms < 0)
   ? NaN : a.games.reduce((s, g) => s + g.ms, 0) / a.games.length / 1000;
 const available = (v: unknown) => v === undefined || v === null ? 'unavailable' : `${v}`;
 
-function absoluteTable(a: Arm): string[] {
+function absoluteTable(a: Arm, metrics: Metric[]): string[] {
   const lines = ['| Metric | Sim | 90% range | NFL band | vs band |', '| --- | --- | --- | --- | --- |'];
   for (const m of metrics) {
     const { value } = evaluate(m, a.games);
@@ -140,7 +139,7 @@ function absoluteTable(a: Arm): string[] {
 
 interface Move { where: string; metric: Metric; base: number; now: number; lo: number; hi: number; n: number }
 
-function compareTable(base: Arm, now: Arm, label: string, qualified: boolean): { lines: string[]; moves: Move[] } {
+function compareTable(base: Arm, now: Arm, label: string, qualified: boolean, metrics: Metric[]): { lines: string[]; moves: Move[] } {
   const lines = [`| Metric | ${label} | ${now.name} | Change | 90% range of change | Reading | NFL band | vs band |`, '| --- | --- | --- | --- | --- | --- | --- | --- |'];
   const moves: Move[] = [];
   for (const m of metrics) {
@@ -155,7 +154,7 @@ function compareTable(base: Arm, now: Arm, label: string, qualified: boolean): {
   return { lines, moves };
 }
 
-function splitTables(now: Arm, base?: Arm, qualified = true): { lines: string[]; moves: Move[] } {
+function splitTables(now: Arm, metrics: Metric[], base?: Arm, qualified = true): { lines: string[]; moves: Move[] } {
   const lines: string[] = [];
   const moves: Move[] = [];
   for (const s of splits) {
@@ -188,6 +187,8 @@ function splitTables(now: Arm, base?: Arm, qualified = true): { lines: string[];
 
 function report(card: Card, baseCard?: Card): string {
   const out: string[] = [];
+  const availableMetrics = [...allMetrics, ...penaltyMetrics([...card.arms, ...(baseCard?.arms ?? [])].flatMap(a => a.games))];
+  const metrics = metricIds ? availableMetrics.filter(m => metricIds.includes(m.id)) : availableMetrics;
   const { meta } = card;
   out.push(`# Scorecard`, '');
   out.push(`Commit \`${meta.commit}\` · ${meta.games} games per arm over ${meta.leagues} leagues · seed ${meta.seed} · ${meta.date}`, '');
@@ -220,8 +221,8 @@ function report(card: Card, baseCard?: Card): string {
     ? [[baseCard.arms[0], card.arms[0], 'base']]
     : card.arms.slice(1).map((a) => [card.arms[0], a, card.arms[0].name] as [Arm, Arm, string]);
   if (!pairs.length) {
-    out.push('', '## Metrics', '', ...absoluteTable(card.arms[0]));
-    const st = splitTables(card.arms[0]);
+    out.push('', '## Metrics', '', ...absoluteTable(card.arms[0], metrics));
+    const st = splitTables(card.arms[0], metrics);
     if (st.lines.length) out.push('', '## Splits', ...st.lines);
   }
   for (const [b, n, label] of pairs) {
@@ -230,9 +231,9 @@ function report(card: Card, baseCard?: Card): string {
     const qualified = check.measurements.length === 0;
     out.push(qualified ? 'Measurement, runtime, probe and actual input identities agree; engine source/settings may differ intentionally. Paired units are whole games, not matched post-divergence football situations.'
       : `Comparison unverified: ${check.measurements.join('; ')}. Descriptive values remain visible; no moved/noise inference.`, '');
-    const ct = compareTable(b, n, label, qualified);
+    const ct = compareTable(b, n, label, qualified, metrics);
     out.push(...ct.lines);
-    const st = splitTables(n, b, qualified);
+    const st = splitTables(n, metrics, b, qualified);
     allMoves.push(...ct.moves, ...st.moves);
     if (st.lines.length) out.push('', '### Splits', ...(qualified ? ['', '◆ marks a cell whose change is outside noise.'] : []), ...st.lines);
   }
