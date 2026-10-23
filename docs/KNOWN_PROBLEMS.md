@@ -533,9 +533,13 @@ Carried over from the issue register; each was measured on an older develop.
   - **Pocket-QB grabs break half as often** (12 → 6%, about 175 holds). The QB
     escapes a grab only through grip physics; a real QB twists and spins out
     of an arm grab. The sack rate's response is not settled: 10.0 → 13.4% per
-    dropback on develop, but 8.6 → 4.9% stacked on #215 (6-game quick tier,
-    whole games diverge early). Logged as a gap under PRO-1: a quarterback
-    can't twist or spin out of an arm grab.
+    dropback before #215; with #215 merged, 5.9% (off) and 7.3% (on), in the
+    NFL's 6–7.5%. Logged as a gap under PRO-1: a quarterback can't twist or
+    spin out of an arm grab.
+  - With #215 merged (quick tier, paired, on vs off): YPC 6.24 vs 9.05,
+    10+ runs 15.0 vs 21.5%, missed + broken 0.32 vs 0.38 per play (all
+    moved). A wrap pulled out to arm's length now holds as a hand hold, not
+    with the wrap law (physics review note).
   - Staged scene pinned to `GRIP_HOLD=0` (re-record by review 2): the Cover 2
     vertical curl in `test/cover3-cover2-rules.test.ts`, where the end's grab
     now holds the QB until 3.2 s, before the 3.4 s read.
@@ -729,8 +733,9 @@ Carried over from the issue register; each was measured on an older develop.
   about 175 holds; the number of grabs is unchanged). A quarterback can't
   twist or spin out of an arm grab: he escapes only if the grip itself
   slips past reach. That escape is missing, along with the slide away from
-  the edge (PRO-4). Stacked on #215, the same switch went 8.6% → 4.9%, so
-  re-measure with both merged. Don't weaken the grip to fix sacks.
+  the edge (PRO-4). Don't weaken the grip to fix sacks. With #215 on
+  develop (`c22fba2`, quick tier, seed 7, paired), both changes give 7.3%
+  of dropbacks, inside the NFL's 6–7.5%; `GRIP_HOLD=0` gives 5.9%.
 
 <a id="pro-2"></a>
 ### PRO-2: Pressure arrives too early and from the wrong places
