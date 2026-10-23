@@ -116,11 +116,26 @@ export function updateSqueeze(body: Body, cmd: MoveCommand, dt: number): void {
   }
 }
 
-/** Facing a command asks for: explicit, else direction of travel. */
+/** Facing a command asks for: explicit, else direction of travel (bounded by
+ * his actual path while he carries speed). */
 export function commandFacing(body: Body, cmd: MoveCommand): number {
   const speed = len(body.vel);
-  return cmd.facing ?? (len(cmd.vel) > 0.4 ? angleOf(cmd.vel) : speed > 0.6 ? angleOf(body.vel) : body.facing);
+  if (cmd.facing !== undefined) return cmd.facing;
+  if (len(cmd.vel) <= 0.4) return speed > 0.6 ? angleOf(body.vel) : body.facing;
+  const wanted = angleOf(cmd.vel);
+  if (speed <= PLANT_SPEED) return wanted;
+  // Carrying speed, the hips lead the path he is actually on, not the one he
+  // has just asked for: momentum must come off (a plant) before he can face
+  // a new direction (BDB2025 week 1: defenders at 4+ yd/s keep body
+  // orientation within 60 deg of travel 72-91% of the time; the SS "on ice").
+  const travel = angleOf(body.vel);
+  return travel + clamp(angleDiff(travel, wanted), -FACING_LEAD, FACING_LEAD);
 }
+
+/** Below this speed (yd/s) he has planted and can square to a new heading. */
+const PLANT_SPEED = 2.5;
+/** How far ahead of his actual path his hips can lead while carrying speed. */
+const FACING_LEAD = Math.PI / 3;
 
 /** Maximum yaw rate at the current speed. */
 export function turnRateOf(body: Body): number {
