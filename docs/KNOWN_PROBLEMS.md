@@ -158,6 +158,7 @@ problem), resolved.
 | [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | on |
 | [RUN-10](#run-10) | Older run-blocking and second-level issues | G2 | low–medium | open |
 | [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
+| [RUN-12](#run-12) | Run blockers lost on their assignments (film, Oct 23) | G2 | high | in work |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#205) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -648,6 +649,37 @@ Carried over from the issue register; each was measured on an older develop.
     perception history;
   - `planned-climb-fit`, `zone-helper-check`: staged scenes;
   - `run-hand-control`: legacy trace.
+
+<a id="run-12"></a>
+### RUN-12: Run blockers lost on their assignments (film, Oct 23)
+
+Tanner's film review of game 1 on `c5667bc4` (seed 7) left 16 notes on run
+blockers, plus 3 on wide and outside zone footwork. Counted across that game's
+run plays with the assignment layer (`--telemetry full`):
+
+- **Zone track runs a blocker away from a beaten man.** *Confirmed, fixed
+  (on by default).* A backside cutoff whose end ran upfield outside him kept
+  running the playside track at full tempo, backpedaling with his back to the
+  line (P003, P029, P032 LT). Unengaged linemen facing their own backfield
+  were 30–36% of cutoff frames on inside, outside and wide zone, the most of
+  any job, on 18 run plays. The track now ends once the man is backside of
+  the aim point and deeper than the blocker; he fits the man instead.
+  Restaged on the same 61 runs: unengaged OL facing the backfield 6.3% →
+  4.0% of OL frames; cutoffs stuck on a man 5+ yd from the runner and moving
+  away while a free defender is within 3.5 yd of the runner, 116 → 51
+  frames; first-0.6 s lateral flow of every line position unchanged.
+- **Targets that never update.** *Open, next.* A climber or lead stays on a
+  backer or safety who has taken himself out of the play while another free
+  defender reaches the runner: P013 LT, P024 FB, P032 Z, P029 RT on a combo
+  the Y already won. Retargeting only happens when the target is engaged by
+  someone else or down; there is no threat re-read.
+- **Pullers whiff.** *Open.* P031 power: the kick-out guard follows a
+  penetrating end 6 yd deep instead of entering his gap. P007 trap.
+- **Wide/outside zone with no lateral movement** (P022, P025, P028). *Open.*
+  Playside linemen gain 0.4–0.8 yd laterally by 0.6 s on these calls, so the
+  first steps do move. On P025 the look comes after contact: the playside
+  reach and his end drift together into the backfield. Not yet compared
+  with tracking.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
