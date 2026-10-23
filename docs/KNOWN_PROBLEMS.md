@@ -179,6 +179,7 @@ problem), resolved.
 | [KICK-1](#kick-1) | Kicking too accurate, too many punts | — | low | open |
 | [ALN-1](#aln-1) | Defensive pre-snap picture unlike tracking | G2, G3 | medium | on |
 | [ALN-2](#aln-2) | Offensive formations over-compress the box | G2, G7 | medium | open |
+| [ALN-3](#aln-3) | Motion men ran into the line and the QB | G6, G7 | high | fixed (this PR) |
 | [RULE-1](#rule-1) | Too many penalties, especially defensive offside | G6 | medium | open |
 | [RULE-2](#rule-2) | Rule coverage incomplete | G6 | low | open |
 | [CALL-1](#call-1) | Play-calling not checked against NFL tendencies | G7 | medium | open |
@@ -1019,6 +1020,9 @@ Resolved with the promoted defaults (staging, not coverage):
   beats a 0.3-s reaction. The reaction time wasn't tuned to close it.
 - **Open:** whether the motion plan's acceleration or the reaction is wrong.
   Shifts and tight-end motion aren't modeled.
+- **Changed by ALN-3:** jets now run a deeper lane around their teammates
+  (2.05 vs 1.8 yd) and are a little slower at the snap (5.3 vs 6.1 yd/s, at
+  5.0 vs 4.8 yd from the ball). Re-measure the travel rate on the new timing.
 
 <a id="cov-5"></a>
 ### COV-5: Older coverage contracts that fail or are unproven
@@ -1136,6 +1140,44 @@ need personnel the sim doesn't have.
   7.0 vs 6.4 tracked.
 - **Where:** the formation library; `WR_ALIGN` (#190, off) sets the #1's split by
   his route.
+
+<a id="aln-3"></a>
+### ALN-3: Motion men ran into the line and the QB
+
+- **Film** (Tanner, suite game 1 on `c5667bc4`): P007, P012, P013, P024 and
+  P026. The motion man knocks the QB aside and bumps through linemen.
+- **Measure** (`scripts/diag/motion-contacts.ts`, seeds 7–9, 2 games each):
+  on develop, 198 of 215 across motions and 39 of 65 yo-yo motions touched a
+  teammate before the snap, and so did 6 of 40 jets. With no motion, there
+  were 0 touches.
+- **Cause:** *confirmed: the planner.* The path cleared tackles and inline
+  ends by `LINE_CLEAR` (0.65 yd) center to center, which is about the sum of
+  the two bodies' radii. It ignored the QB (1.6 yd off the ball under center)
+  and the backs. A yo-yo stepped 4 yd inside straight into the end or tackle.
+  Separately, the body couldn't follow some clean plans: a sharp corner run
+  at full speed carried him past the lane or past his set spot, and a short
+  drop leg was skipped by the 0.6-yd waypoint capture.
+- **Fix** (on by default): the path he will actually run (corners cut where
+  `motionIntent` cuts them) keeps 0.2 yd of daylight from every set
+  teammate's body. An across motion bellies back to the shallowest clear lane
+  (behind a QB under center) on gentle diagonals. Corners are taken no faster
+  than he can turn them (`cornerSpeed`), and the travel time models that. A
+  wing starting beside his end drops straight back. A motion with no clear
+  path isn't called: 13% of across calls (most need more than the 5.5-s
+  pre-snap limit), about 15% of yo-yos, 2% of jets.
+- **After** (same seeds): 0 touches in 348 motions (368 on develop).
+- **Timing:** across motions run 4.7 s (4.3 before). Jets snap 5.0 yd from
+  the ball (4.8 before; tracked median 5), 2.05 yd deep (1.8) and at 5.3 yd/s
+  (6.1), so they reach the mesh about 0.1 s later; see COV-4. The planner
+  now times each leg from where the body cuts the previous corner.
+- **Rule (RULE-2):** 7-4-8 never fired on a motion man, because the snap
+  inspection had no motion facts. It now reads the motion man's velocity at
+  the snap (moving above 0.5 yd/s; toward the line above 0.5 yd/s). Nothing
+  fires on these seeds, so games are unchanged by the rule.
+- **P024's snap angle:** the ball is held by the QB from the start of the
+  play; no center-to-QB exchange is modeled. The odd snap angle was the QB
+  being knocked aside at −0.17 s, which no longer happens. Modeling the
+  exchange is open (RULE-2).
 
 ## Rules and penalties
 
