@@ -1,6 +1,8 @@
 # Plan
 
-Approved by Tanner on 2026-10-22. It changes only at a review. The full
+Approved by Tanner on 2026-10-22; on 2026-10-23 he asked for the outside
+audit to be folded in (the seam check, measurement claims, and "Next after
+the film threads"). It changes only at a review. The full
 reasoning is in the [operating plan](https://claude.ai/artifact/QyJcg5wYYaxaYwHPzf7A6K)
 and the [audit](https://claude.ai/artifact/TXYF6DZsWiNVLnNALHxVGz).
 
@@ -29,6 +31,18 @@ It then becomes a management game.
   run, or a saved card whose provenance matches (#209). Games that change on
   the first few plays lose most of the pairing, so check a second seed before
   calling a whole-game move.
+- **Check the seams before the brain.** Most "dumb player" film examined so
+  far came from a hand-off between systems, not missing intelligence: an aim
+  kept after the target changed, a shortcut to hidden state, contact granted
+  before the body arrived, or a later stage rewriting the command (outside
+  audit, 2026-10-23). For a clip, restage the exact play, find where it first
+  diverges, and check what the player saw, what he asked for, which stage
+  changed the request and what the body did. Only then call it a decision
+  problem.
+- **Say what a number measures.** A tracking statistic supports only the
+  claim its operator measures. A per-play maximum of smoothed speed loss isn't
+  a braking capacity, and the fastest orientation change on a path isn't a
+  turning capacity. Label the limits next to the number.
 
 ## Merging
 
@@ -88,6 +102,32 @@ attaches its scorecard and explains each stat that moved.
   before the catch, Run Game owns the gap fits before contact, and Defense
   owns pursuit and the tackle. Agree on a change to a shared function with the
   lane that owns it before you push it.
+
+## Next after the film threads
+
+Set on 2026-10-23 from the outside audit; the findings are in
+[KNOWN_PROBLEMS.md](KNOWN_PROBLEMS.md). Each step is small and judged on
+restaged plays with a control:
+
+1. **Tools, with games identical** (F1): a fixed actor build order and
+   slot-keyed error streams, a record of who owned each command (PERF-6), the
+   mechanics guard and data tests in CI (PERF-3), scorecard wording (PERF-4).
+2. **Seam repairs** (G10): aims tied to their target (ACT-1); both routes to
+   the true ball carrier fixed together, and #238's hidden gate (INFO-1); one
+   reach geometry for standing, lunge, dive and hold (TKL-5, with QB-3 and
+   TKL-1).
+3. **COV-6** for Coverage, after ACT-1 or alongside it.
+4. **The first adaptation test:** the P029 corner (COV-7). From what he has
+   seen, he may stay in man, take his capped alley fit, or chase, and he pays
+   a real price when it's a halfback pass or a stalk-and-release.
+
+The decision-layer question, one shared chooser or role-specific policies,
+waits until these are done. Success is defined in football terms: a player
+keeps a valid commitment, drops an obsolete action without inheriting the old
+plan, and makes a justified adaptation for his role on a case he wasn't built
+for. A shared chooser has to be earned by a failure two roles share that local
+fixes can't solve. Tanner's research phase comes before any such build: how
+players process a play, and when rules should win over making a play.
 
 ## Long-term direction
 
