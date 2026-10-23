@@ -89,6 +89,10 @@ on cached nflverse [2023 regular/postseason PBP][pbp2023] and
 [2025 PBP][pbp2025]; it selects regular season itself, preserves per-type
 dispositions and reports source hashes. It distinguishes accepted-penalty
 **rows** from plural described calls and preserves unknown dispositions.
+Source play types and the team possessing at the snap remain explicit:
+receiving-team holding during a punt return is still offensive holding,
+despite being charged to the team originally defending. `PENALTY` or
+`UNSPECIFIED` does not identify the underlying run/pass/kick phase.
 Description parsing is not an official box-score reconciliation and cannot
 measure uncalled fouls. Keep the raw files outside this repository:
 

@@ -38,6 +38,8 @@ def calls(row):
 def measure(path):
     counts = {k: collections.Counter() for k in ("accepted", "declined", "offsetting", "unresolved")}
     sanctions = collections.Counter()
+    source_types = collections.defaultdict(collections.Counter)
+    snap_possession_team = collections.Counter()
     games, excluded, multi = set(), [], 0
     accepted_rows = 0
     with gzip.open(path, "rt", newline="") as stream:
@@ -55,6 +57,10 @@ def measure(path):
                     sanctions[call["status"]] += 1
                 else:
                     counts[call["status"]][call["type"]] += 1
+                    if call["status"] == "accepted":
+                        source_types[row.get("play_type_nfl") or "unknown"][call["type"]] += 1
+                        if call["team"] == row.get("posteam"):
+                            snap_possession_team[call["type"]] += 1
             if row["penalty"] == "1" and not any(c["status"] == "accepted" for c in parsed):
                 excluded.append({"game_id": row["game_id"], "play_id": row["play_id"],
                                  "reason": "accepted-penalty row without an unambiguous accepted description",
@@ -67,12 +73,16 @@ def measure(path):
             "accepted_penalty_rows_per_team_game": accepted_rows / team_games,
             "multiple_call_rows": multi, "counts": {k: dict(sorted(v.items())) for k, v in counts.items()},
             "disqualification_entries": dict(sanctions),
+            "accepted_by_source_play_type": {k: dict(v) for k, v in sorted(source_types.items())},
+            "accepted_against_snap_possession_team": dict(snap_possession_team),
             "accepted_described_fouls_per_team_game": sum(counts["accepted"].values()) / team_games,
             "excluded_accepted_rows": excluded,
             "limitations": ["Description-derived calls; not an official box-score reconciliation",
                             "Disqualification entries are reported separately, not counted again as fouls",
                             "No inference of uncalled violations or referee accuracy",
                             "All phases included; native special-teams exposure is not equivalent",
+                            "Snap-possession team is not always the ball-possessing team after a kick/turnover",
+                            "PENALTY/UNSPECIFIED source play types do not prove the underlying run/pass/kick phase",
                             "NFL season is separate from the simulator's NFL-2026 rules edition"]}
 
 
