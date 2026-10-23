@@ -649,6 +649,13 @@ Carried over from the issue register; each was measured on an older develop.
     result establishes a general shedding fix. The ordinary offensive 75-yard
     touchdown survives. Two attempts are complete; further technique variants
     wait for the attainable-escape diagnosis above.
+    After accepted `d3e22420` adds GRIP_HOLD, the same lab gives first-clear
+    onset 5/18 to 6/18 and observed-release median 1.2 to .9 s; confirmed-by-five
+    remains 3/18 and median drift remains zero. Both pass controls stay identical.
+    The earlier quick cards are qualified to their pre-GRIP_HOLD sources; CI
+    owns the new composition's PR card. Ordinary teammate spacing can redirect
+    the raw escape around a fresh acquired peer. This is an attainable loaded
+    path question, not evidence for removing teammate avoidance or weakening hands.
   - The original #221-review `release.py` was subsequently published at
     `ad13c819` and is preserved byte-for-byte. `release-censored.py` is the
     separately named reconstructed companion with real elapsed clear windows
