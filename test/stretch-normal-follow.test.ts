@@ -10,6 +10,9 @@ beforeEach(() => {
   vi.stubEnv('RUN_ANCHOR', '1');
   vi.stubEnv('ANCHOR_SPLIT', '1');
   vi.stubEnv('STRETCH_REACH', '1');
+  // This island supplies the defender's incoming velocity on his body, with
+  // no perception history; RUN_FEEL takes it from the blocker's acquired picture.
+  vi.stubEnv('RUN_FEEL', '0');
   vi.resetModules();
 });
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
