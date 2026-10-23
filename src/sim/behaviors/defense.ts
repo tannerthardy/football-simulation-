@@ -454,6 +454,12 @@ export class ZoneCoverage implements Behavior {
     this.style = style;
   }
 
+  private selectTarget(a: Agent, target: Agent | null): void {
+    // Retire only the held action. Per-receiver observation/depth memory stays.
+    a.mind.setAimTarget('zone-drive', target?.idx ?? null);
+    this.target = target;
+  }
+
   update(a: Agent, sim: PlaySim): MoveCommand {
     const live = pursueIfLive(sim, a);
     if (live) {
@@ -518,6 +524,7 @@ export class ZoneCoverage implements Behavior {
         if (owned) vert = [owned];
       }
       if (vert.length === 0) {
+        a.mind.setAimTarget('zone-drive', null);
         let tgt = lm;
         // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
         if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
@@ -533,7 +540,7 @@ export class ZoneCoverage implements Behavior {
       // (Pattern reads are match technique; a spot dropper waits for the QB's arm.)
       if ((!spot || OPP_GOAL_X - sim.los <= 10) && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1
         && deepest.pos.x - sim.los > Math.min(6, Math.max(1, (OPP_GOAL_X - sim.los) * 0.5))) {
-        this.target = deepest.r;
+        this.selectTarget(a, deepest.r);
         const drive = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: deepest.pos.y + deepest.vel.y * 0.4 };
         if (a.mind.focus * (0.4 + 0.6 * a.r('playRecognition')) > 0.35) {
           const aim = a.mind.aim('zone-drive', drive, sim.t);
@@ -563,7 +570,7 @@ export class ZoneCoverage implements Behavior {
         this.turnedWith = deepest.r;
       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
-      this.target = deepest.r;
+      this.selectTarget(a, deepest.r);
       const command = track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
         facing: turnRun ? undefined : facingQB,
         speed: turnRun ? 1 : zs * 1.05,
@@ -588,7 +595,7 @@ export class ZoneCoverage implements Behavior {
           && sign * th.vel.y > 1 && (Math.abs(th.fut.y - one.pos.y) < 6 || sign * (th.fut.y - sim.ballY) > 12))
           .sort((p, q) => Math.hypot(p.pos.x - a.pos.x, p.pos.y - a.pos.y) - Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y))[0];
         const key = flat ?? one;
-        this.target = key.r;
+        this.selectTarget(a, key.r);
         const tgt = { x: Math.max(sim.los + Math.min(2.5, this.initialDepth), key.pos.x - 0.8),
           y: clamp(key.pos.y + sign * 0.45, 0.5, FIELD_WIDTH - 0.5) };
         return track(a, tgt, { x: key.vel.x * 0.85, y: key.vel.y * 0.9 }, {
@@ -620,7 +627,7 @@ export class ZoneCoverage implements Behavior {
     if (carryable.length > 0 && this.zone !== 'flat_s' && this.zone !== 'flat_w') {
       carryable.sort((p, q) => Math.abs(p.pos.y - lm.y) - Math.abs(q.pos.y - lm.y));
       const th = carryable[0];
-      this.target = th.r;
+      this.selectTarget(a, th.r);
       // Wall and carry: keep him in front and inside, gaining depth before he
       // gets there. Eyes stay on the QB until the seam threatens to run past;
       // then turn and run with him.
@@ -660,7 +667,7 @@ export class ZoneCoverage implements Behavior {
         const outward = sign * (flat.pos.y - sim.offAlign.spots[flat.r.slot].pos.y);
         if (depth > -1 && depth < 7.5 && sign * (flat.pos.y - lm.y) > 0
           && ((vOut > 1.8 && vOut > Math.abs(flat.vel.x) * 0.6) || outward > 3)) {
-          this.target = flat.r;
+          this.selectTarget(a, flat.r);
           if (!this.flatExpansionRecorded) {
             this.flatExpansionRecorded = true;
             if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-flat-expand',
@@ -677,7 +684,7 @@ export class ZoneCoverage implements Behavior {
         }
       }
     }
-    this.target = best?.r ?? null;
+    this.selectTarget(a, best?.r ?? null);
     if (!best) {
       let tgt = lm;
       if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.25 * a.r('anticipation'));
