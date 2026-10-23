@@ -576,8 +576,10 @@ Carried over from the issue register; each was measured on an older develop.
   to request pressure into the old surface. The bounded correction uses fresh
   QB/RB possession pictures beyond LOS, retains edge/fit admission and sealed
   across-face work, and requests an actual body turn toward a clear exit.
-  Speed, hands, release geometry and physics are unchanged; two paired pass
-  controls remain identical.
+  Speed, hands, release geometry and physics are unchanged. Acquired first-level
+  objectives have their own held-decision key, so a previous live-holder-selected
+  fallback aim cannot contaminate a later acquired exit. Two paired pass
+  controls remain identical, including after accepted `5e018759`'s hand changes.
   - **Limit:** two controller attempts (exit only, then coherent facing) do
     not add confirmed releases in the small published #221 taillab subset.
     Better requests still leave near-zero pooled blocked radial drift, but
@@ -588,11 +590,24 @@ Carried over from the issue register; each was measured on an older develop.
     against the acquired moving blocker, including why a forward exit still
     uses contact-shuffle magnitude. Main Engine reviews the requested/achieved
     hand/support witness before any physical change. A frontal block can win.
-  - The original #221-review `release.py` was unavailable. The restored path
-    contains an explicitly **reconstructed** version with real elapsed clear
-    windows and missing/censored exposure. Its figures are not numerically
-    interchangeable with the historical NFL 54% / +0.18 yd/s review rows.
-    Proximity release and actual engagement end remain distinct measures.
+  - Repeating the unchanged correction on accepted `5e018759` gives a small
+    favorable result under the original operator: first-clear onset by five
+    yards rises 3/14 to 4/14, observed-release median 1.2 to 1.0 s; median blocked
+    radial drift stays zero. With confirmation required by the five-yard sample,
+    the censor-aware companion remains 3/18 in both arms. These denominators
+    differ because of quantization/bracketing and population rules; neither
+    result establishes a general shedding fix. The ordinary offensive 75-yard
+    touchdown survives. Two attempts are complete; further technique variants
+    wait for the attainable-escape diagnosis above.
+  - The original #221-review `release.py` was subsequently published at
+    `ad13c819` and is preserved byte-for-byte. `release-censored.py` is the
+    separately named reconstructed companion with real elapsed clear windows
+    and missing/censored exposure. Its figures are not numerically interchangeable
+    with the historical NFL 54% / +0.18 yd/s review rows. The original uses
+    quantized positions, the nearest blocker at each sample and centered
+    velocity windows; blocked drift is a tracking proxy, not proof of a
+    particular force defect. Proximity release and actual engagement end remain
+    distinct measures.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
