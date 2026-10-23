@@ -1,0 +1,2970 @@
+{
+  "schemaVersion": 1,
+  "task": "M1",
+  "provenance": {
+    "source": "NFL/nflfastR play-by-play via nflverse-data releases",
+    "inputs": [
+      {
+        "name": "play_by_play_2022.csv.gz",
+        "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2022.csv.gz",
+        "bytes": 19093961,
+        "sha256": "0c69a71eb39498956c7b1d5c1ca52ce7fe679934a95d1af249facb5ea9829ea4",
+        "assetId": 354728863,
+        "updatedAt": "2026-02-12T10:25:24Z",
+        "publishedDigest": "sha256:0c69a71eb39498956c7b1d5c1ca52ce7fe679934a95d1af249facb5ea9829ea4"
+      },
+      {
+        "name": "play_by_play_2023.csv.gz",
+        "url": "https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2023.csv.gz",
+        "bytes": 19169807,
+        "sha256": "4649804ee0f0a40b41e51ec75a1ce921949d7fab5459213488656b92f78560e8",
+        "assetId": 354728691,
+        "updatedAt": "2026-02-12T10:24:52Z",
+        "publishedDigest": "sha256:4649804ee0f0a40b41e51ec75a1ce921949d7fab5459213488656b92f78560e8"
+      }
+    ],
+    "extractors": [
+      {
+        "path": "scripts/data/nflverse_game_layer.py",
+        "sha256": "ff74e5c1846fffedb8abb615fb749c30a94438948da9c133d9b7886739f01997"
+      },
+      {
+        "path": "scripts/data/nflverse_penalties.py",
+        "sha256": "2bb53b910f5aca01fb629ea4407a0158bd7ae7321219f72d83d50115442457af"
+      },
+      {
+        "path": "scripts/nflverse-reference.py",
+        "sha256": "b96d38e71d0d0e21909c6d80394bae9d1cd2bf24f2a822260e4beeb387b6248f"
+      }
+    ],
+    "dictionaryCommit": "23f915a5be30415aeaa0c5c80cd23b2c69cda122"
+  },
+  "license": {
+    "source": "CC-BY-4.0",
+    "sourceTerms": "https://github.com/nflverse/nflverse-data/blob/master/LICENSE.md",
+    "derivedAggregate": "CC-BY-SA-4.0",
+    "terms": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution": "NFL/nflfastR PBP via nflverse; filtered, regrouped and aggregated by football-simulation-. No FTN charting used."
+  },
+  "definitions": {
+    "population": "2022 and 2023 REG PBP. Games/team-games are observed game IDs, not assumed schedule counts. No postseason.",
+    "units": "Rates are fractions, not percentages. Every table/row states n; averages also state their nonmissing n. Null means no eligible/known denominator.",
+    "kicks": "FG/XP/punts/kickoffs require the attempt flag and play_type != no_play, except a completed XP with an explicit between-downs foul is retained. FG outcomes made/missed/blocked; XP good/failed/blocked. FG bins are inclusive integer yards; outside/missing distance counted separately.",
+    "punts": "Rates use all recorded non-nullified punt attempts, blocked included. Gross/net averages exclude blocked punts. Net = kick_distance - return_yards - 20 for a touchback, with both yardage fields known; it is a PBP-derived net, not a penalty-adjusted official punter ledger. Return involvement means a returner ID without touchback, fair catch, downed, OOB or blocked flag; zero-yard/negative returns and muffs count. This proxy is not certified official credited returns.",
+    "kickoffs": "Kicking team is defteam (posteam receives). Touchback/return shares use all non-nullified kickoffs. Returns require returner ID and exclude touchback, fair catch, downed, OOB, own recovery and onside. Onside attempts are explicit onside labels in desc; no dedicated onside flag is supplied.",
+    "seasonRules": "Historical 2022/2023 populations, not 2026 rule-matched targets. The 2023 inside-25 kickoff fair-catch rule changed this population, and both seasons predate the 2024 dynamic kickoff. Prefer the separate season tables before using pooled team-season ranges.",
+    "fourthDown": "Regulation, half_seconds_remaining >120, known preplay margin, excluding Q4 abs(margin)>=17 as garbage time; exclude no_play, kneels and spikes. Observed choices only, not recommended policy. Go conversion uses known fourth_down_converted/failed flags, not assumed success from yardage.",
+    "fourthFieldGrid": "yardline_100 measures distance to opponent goal: own1-29=71..99; own30-49=50..70 including midfield (omitted in requested labels); opp49-35=35..49; opp34-20=20..34; redZone=0..19. For this disjoint decision grid, the 20 is assigned to opp34-20; drive red zone separately uses <=20.",
+    "fourthDistanceGrid": "ydstogo=1,2,3..5,6..10,11+. Unknown/invalid states excluded with audit counts. All 25 cells retained, including n=0.",
+    "twoPoint": "Tries with success/failure outcomes, per all official TDs including defensive/ST TDs. Exclude no_play except explicit fouls enforced between downs, which do not erase the completed try. Associate each try with the most recent same-team TD, using scoring-team margin immediately after its six points, before the try. Margin -15..15 plus outside/unknown rows; unmatched/repeated TD links audited.",
+    "penalties": "Accepted enforced description clauses after the last replay reversal; first-penalty columns alone are insufficient. Declined, offsetting and superseded clauses excluded and audited. Team/type/acceptance gaps stay unresolved; other contains known accepted types outside the listed categories. Delay of game combines offensive and defensive labels. Penalties include no_play and special teams.",
+    "drives": "One game/fixed_drive/posteam with at least one run/pass/punt/FG possession play (kneels/spikes included, tries excluded); kickoff-only/no-possession groups excluded. Splitting by owner avoids a known fixed_drive merge of two possessions. Outcome is unique provider fixed_drive_result. Offensive points only: owner's TD*6, made FG*3 and subsequent made XP/2pt in the group; defensive/ST returns and safeties do not inflate offensive PPD.",
+    "redZone": "Eligible drive with at least one possession-play preplay yardline_100<=20; long TDs without a preplay RZ snap are not trips. TD numerator requires the drive owner to score.",
+    "turnovers": "nflfastR interception + fumble_lost row flags on non-nullified, non-try rows. Interceptions credit posteam; fumble flags credit the unique differing-team recovery pair, or a unique known fumbler (covers muffs, repeated same-team fumbles and touchbacks). If both teams explicitly lose a fumble, retain one league row flag but leave team attribution unknown; affected team-season rates are null/excluded from quantiles. This is a provider row-flag reference, not a complete multiple-turnover ledger.",
+    "timeouts": "Charged inventory used =3 minus the last known home/away_timeouts_remaining in each regulation half, after ordering by numeric play_id; includes zero-use halves. Missing terminal inventories audited and excluded from known denominator. timeout==1 named-team annotations reported separately: they can include refunded/uncharged fourth timeouts and must not be called charged usage. Overtime excluded.",
+    "ranges": "Equal-weight team-season values, separately 32 per season and pooled 64 when nonmissing; linear-interpolated p10/p50/p90. Descriptive variation, not uncertainty intervals, fitted targets or independent play samples. Sparse fourth/margin cells have n but no team-season percentile bands."
+  },
+  "seasons": {
+    "2022": {
+      "n": 542,
+      "fieldGoals": {
+        "n": 1062,
+        "made": 903,
+        "blocked": 28,
+        "madeRate": 0.8502824858757062,
+        "blockedRate": 0.026365348399246705,
+        "distanceBins": [
+          {
+            "distanceYd": "18-29",
+            "n": 243,
+            "made": 237,
+            "blocked": 3,
+            "madeRate": 0.9753086419753086,
+            "blockedRate": 0.012345679012345678
+          },
+          {
+            "distanceYd": "30-39",
+            "n": 288,
+            "made": 265,
+            "blocked": 4,
+            "madeRate": 0.9201388888888888,
+            "blockedRate": 0.013888888888888888
+          },
+          {
+            "distanceYd": "40-49",
+            "n": 307,
+            "made": 247,
+            "blocked": 7,
+            "madeRate": 0.8045602605863192,
+            "blockedRate": 0.02280130293159609
+          },
+          {
+            "distanceYd": "50-54",
+            "n": 145,
+            "made": 106,
+            "blocked": 7,
+            "madeRate": 0.7310344827586207,
+            "blockedRate": 0.04827586206896552
+          },
+          {
+            "distanceYd": "55+",
+            "n": 79,
+            "made": 48,
+            "blocked": 7,
+            "madeRate": 0.6075949367088608,
+            "blockedRate": 0.08860759493670886
+          }
+        ],
+        "outsideBinsOrUnknownDistance": 0
+      },
+      "extraPoints": {
+        "n": 1187,
+        "made": 1123,
+        "madeRate": 0.9460825610783488
+      },
+      "punts": {
+        "n": 2200,
+        "touchback": 159,
+        "fairCatch": 607,
+        "returnInvolvement": 951,
+        "inside20": 813,
+        "blocked": 12,
+        "touchbackRate": 0.07227272727272727,
+        "fairCatchRate": 0.2759090909090909,
+        "returnInvolvementRate": 0.43227272727272725,
+        "inside20Rate": 0.36954545454545457,
+        "blockedRate": 0.005454545454545455,
+        "perTeamGame": 4.059040590405904,
+        "grossYards": {
+          "n": 2188,
+          "value": 46.99680073126142
+        },
+        "netYards": {
+          "n": 2188,
+          "value": 41.679159049360145
+        },
+        "returnInvolvementYards": {
+          "n": 951,
+          "value": 8.890641430073607
+        }
+      },
+      "kickoffs": {
+        "n": 2698,
+        "touchback": 1612,
+        "returned": 1010,
+        "onside": 56,
+        "touchbackRate": 0.597479614529281,
+        "returnedRate": 0.374351371386212,
+        "onsideRate": 0.020756115641215715,
+        "returnYards": {
+          "n": 1010,
+          "value": 22.856435643564357
+        },
+        "onsideRecovered": 3
+      },
+      "fourthDown": {
+        "n": 3187,
+        "go": 502,
+        "punt": 1910,
+        "fg": 775,
+        "goRate": 0.15751490429871354,
+        "puntRate": 0.5993096956385315,
+        "fgRate": 0.24317540006275495,
+        "conversions": {
+          "n": 501,
+          "converted": 272,
+          "rate": 0.5429141716566867
+        },
+        "cells": [
+          {
+            "field": "own1-29",
+            "yardsToGo": "1",
+            "n": 55,
+            "go": 9,
+            "punt": 46,
+            "fg": 0,
+            "goRate": 0.16363636363636364,
+            "puntRate": 0.8363636363636363,
+            "fgRate": 0.0,
+            "conversionN": 9,
+            "converted": 8,
+            "conversionRate": 0.8888888888888888
+          },
+          {
+            "field": "own1-29",
+            "yardsToGo": "2",
+            "n": 39,
+            "go": 2,
+            "punt": 37,
+            "fg": 0,
+            "goRate": 0.05128205128205128,
+            "puntRate": 0.9487179487179487,
+            "fgRate": 0.0,
+            "conversionN": 2,
+            "converted": 0,
+            "conversionRate": 0.0
+          },
+          {
+            "field": "own1-29",
+            "yardsToGo": "3-5",
+            "n": 101,
+            "go": 4,
+            "punt": 97,
+            "fg": 0,
+            "goRate": 0.039603960396039604,
+            "puntRate": 0.9603960396039604,
+            "fgRate": 0.0,
+            "conversionN": 4,
+            "converted": 4,
+            "conversionRate": 1.0
+          },
+          {
+            "field": "own1-29",
+            "yardsToGo": "6-10",
+            "n": 297,
+            "go": 6,
+            "punt": 291,
+            "fg": 0,
+            "goRate": 0.020202020202020204,
+            "puntRate": 0.9797979797979798,
+            "fgRate": 0.0,
+            "conversionN": 6,
+            "converted": 1,
+            "conversionRate": 0.16666666666666666
+          },
+          {
+            "field": "own1-29",
+            "yardsToGo": "11+",
+            "n": 303,
+            "go": 4,
+            "punt": 299,
+            "fg": 0,
+            "goRate": 0.013201320132013201,
+            "puntRate": 0.9867986798679867,
+            "fgRate": 0.0,
+            "conversionN": 4,
+            "converted": 1,
+            "conversionRate": 0.25
+          },
+          {
+            "field": "own30-49",
+            "yardsToGo": "1",
+            "n": 138,
+            "go": 74,
+            "punt": 64,
+            "fg": 0,
+            "goRate": 0.5362318840579711,
+            "puntRate": 0.463768115942029,
+            "fgRate": 0.0,
+            "conversionN": 74,
+            "converted": 49,
+            "conversionRate": 0.6621621621621622
+          },
+          {
+            "field": "own30-49",
+            "yardsToGo": "2",
+            "n": 97,
+            "go": 16,
+            "punt": 81,
+            "fg": 0,
+            "goRate": 0.16494845360824742,
+            "puntRate": 0.8350515463917526,
+            "fgRate": 0.0,
+            "conversionN": 16,
+            "converted": 9,
+            "conversionRate": 0.5625
+          },
+          {
+            "field": "own30-49",
+            "yardsToGo": "3-5",
+            "n": 256,
+            "go": 10,
+            "punt": 246,
+            "fg": 0,
+            "goRate": 0.0390625,
+            "puntRate": 0.9609375,
+            "fgRate": 0.0,
+            "conversionN": 10,
+            "converted": 6,
+            "conversionRate": 0.6
+          },
+          {
+            "field": "own30-49",
+            "yardsToGo": "6-10",
+            "n": 277,
+            "go": 11,
+            "punt": 266,
+            "fg": 0,
+            "goRate": 0.039711191335740074,
+            "puntRate": 0.9602888086642599,
+            "fgRate": 0.0,
+            "conversionN": 11,
+            "converted": 4,
+            "conversionRate": 0.36363636363636365
+          },
+          {
+            "field": "own30-49",
+            "yardsToGo": "11+",
+            "n": 234,
+            "go": 5,
+            "punt": 229,
+            "fg": 0,
+            "goRate": 0.021367521367521368,
+            "puntRate": 0.9786324786324786,
+            "fgRate": 0.0,
+            "conversionN": 5,
+            "converted": 0,
+            "conversionRate": 0.0
+          },
+          {
+            "field": "opp49-35",
+            "yardsToGo": "1",
+            "n": 55,
+            "go": 49,
+            "punt": 6,
+            "fg": 0,
+            "goRate": 0.8909090909090909,
+            "puntRate": 0.10909090909090909,
+            "fgRate": 0.0,
+            "conversionN": 49,
+            "converted": 32,
+            "conversionRate": 0.6530612244897959
+          },
+          {
+            "field": "opp49-35",
+            "yardsToGo": "2",
+            "n": 36,
+            "go": 25,
+            "punt": 9,
+            "fg": 2,
+            "goRate": 0.6944444444444444,
+            "puntRate": 0.25,
+            "fgRate": 0.05555555555555555,
+            "conversionN": 25,
+            "converted": 15,
+            "conversionRate": 0.6
+          },
+          {
+            "field": "opp49-35",
+            "yardsToGo": "3-5",
+            "n": 116,
+            "go": 50,
+            "punt": 51,
+            "fg": 15,
+            "goRate": 0.43103448275862066,
+            "puntRate": 0.4396551724137931,
+            "fgRate": 0.12931034482758622,
+            "conversionN": 50,
+            "converted": 21,
+            "conversionRate": 0.42
+          },
+          {
+            "field": "opp49-35",
+            "yardsToGo": "6-10",
+            "n": 139,
+            "go": 23,
+            "punt": 92,
+            "fg": 24,
+            "goRate": 0.16546762589928057,
+            "puntRate": 0.6618705035971223,
+            "fgRate": 0.17266187050359713,
+            "conversionN": 23,
+            "converted": 11,
+            "conversionRate": 0.4782608695652174
+          },
+          {
+            "field": "opp49-35",
+            "yardsToGo": "11+",
+            "n": 125,
+            "go": 8,
+            "punt": 93,
+            "fg": 24,
+            "goRate": 0.064,
+            "puntRate": 0.744,
+            "fgRate": 0.192,
+            "conversionN": 8,
+            "converted": 1,
+            "conversionRate": 0.125
+          },
+          {
+            "field": "opp34-20",
+            "yardsToGo": "1",
+            "n": 49,
+            "go": 41,
+            "punt": 0,
+            "fg": 8,
+            "goRate": 0.8367346938775511,
+            "puntRate": 0.0,
+            "fgRate": 0.16326530612244897,
+            "conversionN": 41,
+            "converted": 26,
+            "conversionRate": 0.6341463414634146
+          },
+          {
+            "field": "opp34-20",
+            "yardsToGo": "2",
+            "n": 31,
+            "go": 14,
+            "punt": 0,
+            "fg": 17,
+            "goRate": 0.45161290322580644,
+            "puntRate": 0.0,
+            "fgRate": 0.5483870967741935,
+            "conversionN": 14,
+            "converted": 8,
+            "conversionRate": 0.5714285714285714
+          },
+          {
+            "field": "opp34-20",
+            "yardsToGo": "3-5",
+            "n": 109,
+            "go": 20,
+            "punt": 0,
+            "fg": 89,
+            "goRate": 0.1834862385321101,
+            "puntRate": 0.0,
+            "fgRate": 0.8165137614678899,
+            "conversionN": 20,
+            "converted": 11,
+            "conversionRate": 0.55
+          },
+          {
+            "field": "opp34-20",
+            "yardsToGo": "6-10",
+            "n": 149,
+            "go": 8,
+            "punt": 0,
+            "fg": 141,
+            "goRate": 0.053691275167785234,
+            "puntRate": 0.0,
+            "fgRate": 0.9463087248322147,
+            "conversionN": 8,
+            "converted": 2,
+            "conversionRate": 0.25
+          },
+          {
+            "field": "opp34-20",
+            "yardsToGo": "11+",
+            "n": 98,
+            "go": 2,
+            "punt": 3,
+            "fg": 93,
+            "goRate": 0.02040816326530612,
+            "puntRate": 0.030612244897959183,
+            "fgRate": 0.9489795918367347,
+            "conversionN": 2,
+            "converted": 0,
+            "conversionRate": 0.0
+          },
+          {
+            "field": "redZone",
+            "yardsToGo": "1",
+            "n": 88,
+            "go": 72,
+            "punt": 0,
+            "fg": 16,
+            "goRate": 0.8181818181818182,
+            "puntRate": 0.0,
+            "fgRate": 0.18181818181818182,
+            "conversionN": 71,
+            "converted": 42,
+            "conversionRate": 0.5915492957746479
+          },
+          {
+            "field": "redZone",
+            "yardsToGo": "2",
+            "n": 53,
+            "go": 22,
+            "punt": 0,
+            "fg": 31,
+            "goRate": 0.41509433962264153,
+            "puntRate": 0.0,
+            "fgRate": 0.5849056603773585,
+            "conversionN": 22,
+            "converted": 10,
+            "conversionRate": 0.45454545454545453
+          },
+          {
+            "field": "redZone",
+            "yardsToGo": "3-5",
+            "n": 148,
+            "go": 20,
+            "punt": 0,
+            "fg": 128,
+            "goRate": 0.13513513513513514,
+            "puntRate": 0.0,
+            "fgRate": 0.8648648648648649,
+            "conversionN": 20,
+            "converted": 8,
+            "conversionRate": 0.4
+          },
+          {
+            "field": "redZone",
+            "yardsToGo": "6-10",
+            "n": 146,
+            "go": 6,
+            "punt": 0,
+            "fg": 140,
+            "goRate": 0.0410958904109589,
+            "puntRate": 0.0,
+            "fgRate": 0.958904109589041,
+            "conversionN": 6,
+            "converted": 3,
+            "conversionRate": 0.5
+          },
+          {
+            "field": "redZone",
+            "yardsToGo": "11+",
+            "n": 48,
+            "go": 1,
+            "punt": 0,
+            "fg": 47,
+            "goRate": 0.020833333333333332,
+            "puntRate": 0.0,
+            "fgRate": 0.9791666666666666,
+            "conversionN": 1,
+            "converted": 0,
+            "conversionRate": 0.0
+          }
+        ]
+      },
+      "twoPoint": {
+        "n": 119,
+        "success": 56,
+        "successRate": 0.47058823529411764,
+        "touchdowns": 1315,
+        "attemptsPerTouchdown": 0.09049429657794676,
+        "byMargin": [
+          {
+            "marginAfterTD": -15,
+            "n": 16,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": -14,
+            "n": 10,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": -13,
+            "n": 3,
+            "attempts": 3,
+            "attemptsPerTouchdown": 1.0,
+            "successes": 0,
+            "successRate": 0.0
+          },
+          {
+            "marginAfterTD": -12,
+            "n": 9,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.2222222222222222,
+            "successes": 0,
+            "successRate": 0.0
+          },
+          {
+            "marginAfterTD": -11,
+            "n": 21,
+            "attempts": 1,
+            "attemptsPerTouchdown": 0.047619047619047616,
+            "successes": 0,
+            "successRate": 0.0
+          },
+          {
+            "marginAfterTD": -10,
+            "n": 8,
+            "attempts": 8,
+            "attemptsPerTouchdown": 1.0,
+            "successes": 3,
+            "successRate": 0.375
+          },
+          {
+            "marginAfterTD": -9,
+            "n": 13,
+            "attempts": 4,
+            "attemptsPerTouchdown": 0.3076923076923077,
+            "successes": 2,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": -8,
+            "n": 35,
+            "attempts": 6,
+            "attemptsPerTouchdown": 0.17142857142857143,
+            "successes": 2,
+            "successRate": 0.3333333333333333
+          },
+          {
+            "marginAfterTD": -7,
+            "n": 23,
+            "attempts": 1,
+            "attemptsPerTouchdown": 0.043478260869565216,
+            "successes": 0,
+            "successRate": 0.0
+          },
+          {
+            "marginAfterTD": -6,
+            "n": 8,
+            "attempts": 1,
+            "attemptsPerTouchdown": 0.125,
+            "successes": 0,
+            "successRate": 0.0
+          },
+          {
+            "marginAfterTD": -5,
+            "n": 31,
+            "attempts": 16,
+            "attemptsPerTouchdown": 0.5161290322580645,
+            "successes": 6,
+            "successRate": 0.375
+          },
+          {
+            "marginAfterTD": -4,
+            "n": 54,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": -3,
+            "n": 12,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": -2,
+            "n": 21,
+            "attempts": 17,
+            "attemptsPerTouchdown": 0.8095238095238095,
+            "successes": 8,
+            "successRate": 0.47058823529411764
+          },
+          {
+            "marginAfterTD": -1,
+            "n": 104,
+            "attempts": 6,
+            "attemptsPerTouchdown": 0.057692307692307696,
+            "successes": 5,
+            "successRate": 0.8333333333333334
+          },
+          {
+            "marginAfterTD": 0,
+            "n": 27,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": 1,
+            "n": 9,
+            "attempts": 8,
+            "attemptsPerTouchdown": 0.8888888888888888,
+            "successes": 5,
+            "successRate": 0.625
+          },
+          {
+            "marginAfterTD": 2,
+            "n": 71,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.028169014084507043,
+            "successes": 2,
+            "successRate": 1.0
+          },
+          {
+            "marginAfterTD": 3,
+            "n": 105,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": 4,
+            "n": 8,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.25,
+            "successes": 1,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": 5,
+            "n": 16,
+            "attempts": 10,
+            "attemptsPerTouchdown": 0.625,
+            "successes": 6,
+            "successRate": 0.6
+          },
+          {
+            "marginAfterTD": 6,
+            "n": 250,
+            "attempts": 4,
+            "attemptsPerTouchdown": 0.016,
+            "successes": 2,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": 7,
+            "n": 24,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.08333333333333333,
+            "successes": 1,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": 8,
+            "n": 10,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": 9,
+            "n": 71,
+            "attempts": 1,
+            "attemptsPerTouchdown": 0.014084507042253521,
+            "successes": 0,
+            "successRate": 0.0
+          },
+          {
+            "marginAfterTD": 10,
+            "n": 51,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.0392156862745098,
+            "successes": 2,
+            "successRate": 1.0
+          },
+          {
+            "marginAfterTD": 11,
+            "n": 14,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": 12,
+            "n": 20,
+            "attempts": 7,
+            "attemptsPerTouchdown": 0.35,
+            "successes": 4,
+            "successRate": 0.5714285714285714
+          },
+          {
+            "marginAfterTD": 13,
+            "n": 80,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": 14,
+            "n": 10,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": 15,
+            "n": 8,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.25,
+            "successes": 0,
+            "successRate": 0.0
+          },
+          {
+            "marginAfterTD": "outside",
+            "n": 173,
+            "attempts": 14,
+            "attemptsPerTouchdown": 0.08092485549132948,
+            "successes": 7,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": "unknown",
+            "n": 0,
+            "attempts": 0,
+            "attemptsPerTouchdown": null,
+            "successes": 0,
+            "successRate": null
+          }
+        ]
+      },
+      "penalties": {
+        "n": 3032,
+        "perTeamGame": 5.594095940959409,
+        "byType": [
+          {
+            "type": "offensiveHolding",
+            "n": 594,
+            "perTeamGame": 1.0959409594095941
+          },
+          {
+            "type": "falseStart",
+            "n": 576,
+            "perTeamGame": 1.062730627306273
+          },
+          {
+            "type": "defensiveOffside",
+            "n": 135,
+            "perTeamGame": 0.24907749077490776
+          },
+          {
+            "type": "neutralZoneInfraction",
+            "n": 82,
+            "perTeamGame": 0.15129151291512916
+          },
+          {
+            "type": "encroachment",
+            "n": 28,
+            "perTeamGame": 0.05166051660516605
+          },
+          {
+            "type": "defensivePassInterference",
+            "n": 224,
+            "perTeamGame": 0.4132841328413284
+          },
+          {
+            "type": "defensiveHolding",
+            "n": 210,
+            "perTeamGame": 0.3874538745387454
+          },
+          {
+            "type": "illegalContact",
+            "n": 65,
+            "perTeamGame": 0.11992619926199262
+          },
+          {
+            "type": "roughingPasser",
+            "n": 91,
+            "perTeamGame": 0.16789667896678967
+          },
+          {
+            "type": "unnecessaryRoughness",
+            "n": 156,
+            "perTeamGame": 0.2878228782287823
+          },
+          {
+            "type": "faceMask",
+            "n": 77,
+            "perTeamGame": 0.14206642066420663
+          },
+          {
+            "type": "delayOfGame",
+            "n": 162,
+            "perTeamGame": 0.2988929889298893
+          },
+          {
+            "type": "intentionalGrounding",
+            "n": 41,
+            "perTeamGame": 0.07564575645756458
+          },
+          {
+            "type": "other",
+            "n": 591,
+            "perTeamGame": 1.0904059040590406
+          }
+        ]
+      },
+      "drives": {
+        "n": 5916,
+        "perTeamGame": 10.915129151291513,
+        "offensivePoints": 11327,
+        "pointsPerDrive": 1.9146382691007438,
+        "redZone": {
+          "n": 1733,
+          "touchdowns": 963,
+          "tdRate": 0.5556837853433353
+        },
+        "outcomes": [
+          {
+            "result": "End of half",
+            "n": 404,
+            "share": 0.068289384719405
+          },
+          {
+            "result": "Field goal",
+            "n": 903,
+            "share": 0.1526369168356998
+          },
+          {
+            "result": "Missed field goal",
+            "n": 157,
+            "share": 0.026538201487491548
+          },
+          {
+            "result": "Opp touchdown",
+            "n": 68,
+            "share": 0.011494252873563218
+          },
+          {
+            "result": "Punt",
+            "n": 2191,
+            "share": 0.37035158891142667
+          },
+          {
+            "result": "Safety",
+            "n": 13,
+            "share": 0.0021974306964164976
+          },
+          {
+            "result": "Touchdown",
+            "n": 1241,
+            "share": 0.20977011494252873
+          },
+          {
+            "result": "Turnover",
+            "n": 611,
+            "share": 0.10327924273157539
+          },
+          {
+            "result": "Turnover on downs",
+            "n": 328,
+            "share": 0.05544286680189317
+          }
+        ]
+      },
+      "turnovers": {
+        "n": 709,
+        "interceptions": 418,
+        "lostFumbleFlags": 291,
+        "unattributedFlags": 1,
+        "teamAttributionAmbiguous": 0,
+        "perTeamGame": 1.3081180811808117
+      },
+      "spikes": {
+        "n": 61,
+        "perTeamGame": 0.11254612546125461
+      },
+      "kneels": {
+        "n": 423,
+        "perTeamGame": 0.7804428044280443
+      },
+      "timeouts": {
+        "n": 1084,
+        "charged": 2063,
+        "annotations": 2071,
+        "perTeamHalf": 1.9031365313653137,
+        "usedPerTeamHalf": {
+          "n": 1084,
+          "mean": 1.9031365313653137,
+          "p10": 0.0,
+          "p50": 2.0,
+          "p90": 3.0
+        }
+      },
+      "games": {
+        "n": 271,
+        "teamGames": 542,
+        "byTeam": {
+          "ARI": 17,
+          "ATL": 17,
+          "BAL": 17,
+          "BUF": 16,
+          "CAR": 17,
+          "CHI": 17,
+          "CIN": 16,
+          "CLE": 17,
+          "DAL": 17,
+          "DEN": 17,
+          "DET": 17,
+          "GB": 17,
+          "HOU": 17,
+          "IND": 17,
+          "JAX": 17,
+          "KC": 17,
+          "LA": 17,
+          "LAC": 17,
+          "LV": 17,
+          "MIA": 17,
+          "MIN": 17,
+          "NE": 17,
+          "NO": 17,
+          "NYG": 17,
+          "NYJ": 17,
+          "PHI": 17,
+          "PIT": 17,
+          "SEA": 17,
+          "SF": 17,
+          "TB": 17,
+          "TEN": 17,
+          "WAS": 17
+        }
+      },
+      "teamSeasonRanges": {
+        "fg.makeRate": {
+          "n": 32,
+          "mean": 0.8512700550545678,
+          "p10": 0.7732323232323233,
+          "p50": 0.8588039867109634,
+          "p90": 0.9325925925925926
+        },
+        "fg.blockedRate": {
+          "n": 32,
+          "mean": 0.025985470097313904,
+          "p10": 0.0,
+          "p50": 0.026334026334026334,
+          "p90": 0.06431451612903226
+        },
+        "xp.makeRate": {
+          "n": 32,
+          "mean": 0.9471355127709424,
+          "p10": 0.8909090909090909,
+          "p50": 0.9595918367346938,
+          "p90": 1.0
+        },
+        "punt.perTeamGame": {
+          "n": 32,
+          "mean": 4.056181066176471,
+          "p10": 3.188235294117647,
+          "p50": 4.0,
+          "p90": 4.882352941176471
+        },
+        "kickoff.touchbackRate": {
+          "n": 32,
+          "mean": 0.5968057152274593,
+          "p10": 0.44223655913978493,
+          "p50": 0.5974884335756775,
+          "p90": 0.7789230769230769
+        },
+        "kickoff.returnRate": {
+          "n": 32,
+          "mean": 0.37441912322479126,
+          "p10": 0.1940769230769231,
+          "p50": 0.3596249672174141,
+          "p90": 0.5160312805474095
+        },
+        "two.attemptsPerTD": {
+          "n": 32,
+          "mean": 0.09428904549744875,
+          "p10": 0.030106951871657753,
+          "p50": 0.08098360655737705,
+          "p90": 0.17795566502463056
+        },
+        "two.successRate": {
+          "n": 29,
+          "mean": 0.4953475643130816,
+          "p10": 0.0,
+          "p50": 0.5,
+          "p90": 1.0
+        },
+        "penalties.perTeamGame": {
+          "n": 32,
+          "mean": 5.593405330882353,
+          "p10": 4.770588235294118,
+          "p50": 5.470588235294118,
+          "p90": 6.529411764705882
+        },
+        "drives.perTeamGame": {
+          "n": 32,
+          "mean": 10.914866727941176,
+          "p10": 10.358823529411765,
+          "p50": 10.941176470588236,
+          "p90": 11.576470588235294
+        },
+        "drives.pointsPerDrive": {
+          "n": 32,
+          "mean": 1.9235192300036068,
+          "p10": 1.4744492124129993,
+          "p50": 1.9330037664783428,
+          "p90": 2.4681818181818187
+        },
+        "redZone.tdRate": {
+          "n": 32,
+          "mean": 0.5514469840696614,
+          "p10": 0.4644088669950739,
+          "p50": 0.5403330731199584,
+          "p90": 0.6518688024408849
+        },
+        "turnovers.perTeamGame": {
+          "n": 30,
+          "mean": 1.3192401960784315,
+          "p10": 1.1058823529411765,
+          "p50": 1.3529411764705883,
+          "p90": 1.4882352941176473
+        },
+        "spikes.perTeamGame": {
+          "n": 32,
+          "mean": 0.11236213235294118,
+          "p10": 0.005882352941176476,
+          "p50": 0.0900735294117647,
+          "p90": 0.23529411764705882
+        },
+        "kneels.perTeamGame": {
+          "n": 32,
+          "mean": 0.7827435661764706,
+          "p10": 0.41764705882352937,
+          "p50": 0.7352941176470589,
+          "p90": 1.2764705882352945
+        },
+        "timeouts.perTeamHalf": {
+          "n": 32,
+          "mean": 1.9034352022058822,
+          "p10": 1.538235294117647,
+          "p50": 1.911764705882353,
+          "p90": 2.1735294117647057
+        },
+        "fg.18-29.makeRate": {
+          "n": 32,
+          "mean": 0.9745400432900433,
+          "p10": 0.8623376623376623,
+          "p50": 1.0,
+          "p90": 1.0
+        },
+        "fg.30-39.makeRate": {
+          "n": 32,
+          "mean": 0.9218539145699072,
+          "p10": 0.8018181818181819,
+          "p50": 0.9705882352941176,
+          "p90": 1.0
+        },
+        "fg.40-49.makeRate": {
+          "n": 32,
+          "mean": 0.8036578005328006,
+          "p10": 0.6666666666666666,
+          "p50": 0.8,
+          "p90": 0.9280219780219781
+        },
+        "fg.50-54.makeRate": {
+          "n": 32,
+          "mean": 0.7073514159451659,
+          "p10": 0.33999999999999997,
+          "p50": 0.8,
+          "p90": 1.0
+        },
+        "fg.55+.makeRate": {
+          "n": 25,
+          "mean": 0.594,
+          "p10": 0.0,
+          "p50": 0.6666666666666666,
+          "p90": 1.0
+        },
+        "punt.touchbackRate": {
+          "n": 32,
+          "mean": 0.07169422623101832,
+          "p10": 0.032898027229786055,
+          "p50": 0.06549657534246575,
+          "p90": 0.11947540983606558
+        },
+        "punt.fairCatchRate": {
+          "n": 32,
+          "mean": 0.27612711233747145,
+          "p10": 0.17395104895104896,
+          "p50": 0.2899529964747356,
+          "p90": 0.3496877787689563
+        },
+        "punt.returnInvolvementRate": {
+          "n": 32,
+          "mean": 0.43042170522384093,
+          "p10": 0.3386787125917561,
+          "p50": 0.423728813559322,
+          "p90": 0.5286240786240787
+        },
+        "punt.inside20Rate": {
+          "n": 32,
+          "mean": 0.37137387305542346,
+          "p10": 0.2753481012658228,
+          "p50": 0.3749652681300361,
+          "p90": 0.4551046290424857
+        },
+        "punt.blockedRate": {
+          "n": 32,
+          "mean": 0.005846661874353281,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 0.017563965884861414
+        },
+        "punt.grossYards": {
+          "n": 32,
+          "mean": 46.956176948132786,
+          "p10": 44.4836013986014,
+          "p50": 46.831325301204814,
+          "p90": 48.87803046556533
+        },
+        "punt.netYards": {
+          "n": 32,
+          "mean": 41.66387434586232,
+          "p10": 39.92219687092569,
+          "p50": 41.432033719704954,
+          "p90": 44.00758620689655
+        },
+        "punt.returnInvolvementYards": {
+          "n": 32,
+          "mean": 8.79074534652892,
+          "p10": 6.474331550802139,
+          "p50": 9.03125,
+          "p90": 10.941966101694916
+        },
+        "kickoff.returnYards": {
+          "n": 32,
+          "mean": 22.820437584889667,
+          "p10": 20.314473684210526,
+          "p50": 22.396103896103895,
+          "p90": 25.813051470588235
+        },
+        "fourth.goRate": {
+          "n": 32,
+          "mean": 0.15785510388310645,
+          "p10": 0.10161543098251959,
+          "p50": 0.15570409982174688,
+          "p90": 0.2490963855421687
+        },
+        "fourth.puntRate": {
+          "n": 32,
+          "mean": 0.5969267591392997,
+          "p10": 0.5185375494071146,
+          "p50": 0.5857861635220125,
+          "p90": 0.671833855799373
+        },
+        "fourth.fgRate": {
+          "n": 32,
+          "mean": 0.24521813697759387,
+          "p10": 0.2051706827309237,
+          "p50": 0.2329423159707275,
+          "p90": 0.29538277511961725
+        },
+        "penalty.offensiveHolding": {
+          "n": 32,
+          "mean": 1.0960477941176472,
+          "p10": 0.7705882352941176,
+          "p50": 1.1176470588235294,
+          "p90": 1.4058823529411766
+        },
+        "penalty.falseStart": {
+          "n": 32,
+          "mean": 1.0623851102941178,
+          "p10": 0.7058823529411765,
+          "p50": 1.0882352941176472,
+          "p90": 1.3529411764705883
+        },
+        "penalty.defensiveOffside": {
+          "n": 32,
+          "mean": 0.24942555147058823,
+          "p10": 0.058823529411764705,
+          "p50": 0.23529411764705882,
+          "p90": 0.47058823529411764
+        },
+        "penalty.neutralZoneInfraction": {
+          "n": 32,
+          "mean": 0.15130974264705882,
+          "p10": 0.058823529411764705,
+          "p50": 0.11764705882352941,
+          "p90": 0.28970588235294126
+        },
+        "penalty.encroachment": {
+          "n": 32,
+          "mean": 0.05170036764705882,
+          "p10": 0.0,
+          "p50": 0.058823529411764705,
+          "p90": 0.11764705882352941
+        },
+        "penalty.defensivePassInterference": {
+          "n": 32,
+          "mean": 0.4130284926470588,
+          "p10": 0.2411764705882353,
+          "p50": 0.4117647058823529,
+          "p90": 0.6411764705882355
+        },
+        "penalty.defensiveHolding": {
+          "n": 32,
+          "mean": 0.3879825367647059,
+          "p10": 0.23529411764705882,
+          "p50": 0.35294117647058826,
+          "p90": 0.5882352941176471
+        },
+        "penalty.illegalContact": {
+          "n": 32,
+          "mean": 0.11982996323529412,
+          "p10": 0.005882352941176476,
+          "p50": 0.11764705882352941,
+          "p90": 0.23529411764705882
+        },
+        "penalty.roughingPasser": {
+          "n": 32,
+          "mean": 0.16796875,
+          "p10": 0.058823529411764705,
+          "p50": 0.17647058823529413,
+          "p90": 0.28970588235294126
+        },
+        "penalty.unnecessaryRoughness": {
+          "n": 32,
+          "mean": 0.28768382352941174,
+          "p10": 0.17647058823529413,
+          "p50": 0.2720588235294118,
+          "p90": 0.4647058823529413
+        },
+        "penalty.faceMask": {
+          "n": 32,
+          "mean": 0.14188878676470587,
+          "p10": 0.058823529411764705,
+          "p50": 0.11764705882352941,
+          "p90": 0.23529411764705882
+        },
+        "penalty.delayOfGame": {
+          "n": 32,
+          "mean": 0.29836856617647056,
+          "p10": 0.17647058823529413,
+          "p50": 0.2426470588235294,
+          "p90": 0.47058823529411764
+        },
+        "penalty.intentionalGrounding": {
+          "n": 32,
+          "mean": 0.07548253676470588,
+          "p10": 0.0,
+          "p50": 0.058823529411764705,
+          "p90": 0.17647058823529413
+        },
+        "penalty.other": {
+          "n": 32,
+          "mean": 1.0903033088235294,
+          "p10": 0.711764705882353,
+          "p50": 1.0882352941176472,
+          "p90": 1.5823529411764705
+        }
+      },
+      "audit": {
+        "n": 47157,
+        "drives.excludedNoPossessionPlay": 1751,
+        "fourth.excludedGarbage": 161,
+        "fourth.excludedLastTwoMinutes": 574,
+        "fourth.excludedNoPlayOrClockAct": 156,
+        "fourth.excludedOvertimeOrUnknownContext": 39,
+        "fourth.excludedUnknownDecisionOrGrid": 6,
+        "penalties.declined": 444,
+        "penalties.offsetting": 105,
+        "penalties.superseded": 1,
+        "penalties.unknownTeam": 0,
+        "penalties.unresolved": 0,
+        "regularSeasonRows": 47157,
+        "turnovers.ambiguousFumbleAttribution": 1
+      }
+    },
+    "2023": {
+      "n": 544,
+      "fieldGoals": {
+        "n": 1060,
+        "made": 911,
+        "blocked": 17,
+        "madeRate": 0.8594339622641509,
+        "blockedRate": 0.016037735849056604,
+        "distanceBins": [
+          {
+            "distanceYd": "18-29",
+            "n": 244,
+            "made": 240,
+            "blocked": 1,
+            "madeRate": 0.9836065573770492,
+            "blockedRate": 0.004098360655737705
+          },
+          {
+            "distanceYd": "30-39",
+            "n": 311,
+            "made": 294,
+            "blocked": 4,
+            "madeRate": 0.9453376205787781,
+            "blockedRate": 0.012861736334405145
+          },
+          {
+            "distanceYd": "40-49",
+            "n": 275,
+            "made": 219,
+            "blocked": 5,
+            "madeRate": 0.7963636363636364,
+            "blockedRate": 0.01818181818181818
+          },
+          {
+            "distanceYd": "50-54",
+            "n": 154,
+            "made": 114,
+            "blocked": 4,
+            "madeRate": 0.7402597402597403,
+            "blockedRate": 0.025974025974025976
+          },
+          {
+            "distanceYd": "55+",
+            "n": 76,
+            "made": 44,
+            "blocked": 3,
+            "madeRate": 0.5789473684210527,
+            "blockedRate": 0.039473684210526314
+          }
+        ],
+        "outsideBinsOrUnknownDistance": 0
+      },
+      "extraPoints": {
+        "n": 1169,
+        "made": 1121,
+        "madeRate": 0.9589392643284859
+      },
+      "punts": {
+        "n": 2263,
+        "touchback": 166,
+        "fairCatch": 644,
+        "returnInvolvement": 975,
+        "inside20": 829,
+        "blocked": 6,
+        "touchbackRate": 0.07335395492708793,
+        "fairCatchRate": 0.2845779938135219,
+        "returnInvolvementRate": 0.4308440123729563,
+        "inside20Rate": 0.3663278833406982,
+        "blockedRate": 0.0026513477684489617,
+        "perTeamGame": 4.1599264705882355,
+        "grossYards": {
+          "n": 2257,
+          "value": 47.39432875498449
+        },
+        "netYards": {
+          "n": 2257,
+          "value": 41.777580859548074
+        },
+        "returnInvolvementYards": {
+          "n": 975,
+          "value": 9.596923076923076
+        }
+      },
+      "kickoffs": {
+        "n": 2698,
+        "touchback": 1970,
+        "returned": 586,
+        "onside": 41,
+        "touchbackRate": 0.7301704966641956,
+        "returnedRate": 0.21719792438843588,
+        "onsideRate": 0.01519644180874722,
+        "returnYards": {
+          "n": 586,
+          "value": 23.064846416382252
+        },
+        "onsideRecovered": 2
+      },
+      "fourthDown": {
+        "n": 3229,
+        "go": 537,
+        "punt": 1928,
+        "fg": 764,
+        "goRate": 0.1663053576958811,
+        "puntRate": 0.5970888820068132,
+        "fgRate": 0.23660576029730568,
+        "conversions": {
+          "n": 537,
+          "converted": 306,
+          "rate": 0.5698324022346368
+        },
+        "cells": [
+          {
+            "field": "own1-29",
+            "yardsToGo": "1",
+            "n": 44,
+            "go": 8,
+            "punt": 36,
+            "fg": 0,
+            "goRate": 0.18181818181818182,
+            "puntRate": 0.8181818181818182,
+            "fgRate": 0.0,
+            "conversionN": 8,
+            "converted": 6,
+            "conversionRate": 0.75
+          },
+          {
+            "field": "own1-29",
+            "yardsToGo": "2",
+            "n": 38,
+            "go": 5,
+            "punt": 33,
+            "fg": 0,
+            "goRate": 0.13157894736842105,
+            "puntRate": 0.868421052631579,
+            "fgRate": 0.0,
+            "conversionN": 5,
+            "converted": 4,
+            "conversionRate": 0.8
+          },
+          {
+            "field": "own1-29",
+            "yardsToGo": "3-5",
+            "n": 104,
+            "go": 5,
+            "punt": 99,
+            "fg": 0,
+            "goRate": 0.04807692307692308,
+            "puntRate": 0.9519230769230769,
+            "fgRate": 0.0,
+            "conversionN": 5,
+            "converted": 2,
+            "conversionRate": 0.4
+          },
+          {
+            "field": "own1-29",
+            "yardsToGo": "6-10",
+            "n": 335,
+            "go": 7,
+            "punt": 328,
+            "fg": 0,
+            "goRate": 0.020895522388059702,
+            "puntRate": 0.9791044776119403,
+            "fgRate": 0.0,
+            "conversionN": 7,
+            "converted": 2,
+            "conversionRate": 0.2857142857142857
+          },
+          {
+            "field": "own1-29",
+            "yardsToGo": "11+",
+            "n": 316,
+            "go": 6,
+            "punt": 310,
+            "fg": 0,
+            "goRate": 0.0189873417721519,
+            "puntRate": 0.9810126582278481,
+            "fgRate": 0.0,
+            "conversionN": 6,
+            "converted": 1,
+            "conversionRate": 0.16666666666666666
+          },
+          {
+            "field": "own30-49",
+            "yardsToGo": "1",
+            "n": 119,
+            "go": 60,
+            "punt": 59,
+            "fg": 0,
+            "goRate": 0.5042016806722689,
+            "puntRate": 0.4957983193277311,
+            "fgRate": 0.0,
+            "conversionN": 60,
+            "converted": 44,
+            "conversionRate": 0.7333333333333333
+          },
+          {
+            "field": "own30-49",
+            "yardsToGo": "2",
+            "n": 76,
+            "go": 11,
+            "punt": 65,
+            "fg": 0,
+            "goRate": 0.14473684210526316,
+            "puntRate": 0.8552631578947368,
+            "fgRate": 0.0,
+            "conversionN": 11,
+            "converted": 5,
+            "conversionRate": 0.45454545454545453
+          },
+          {
+            "field": "own30-49",
+            "yardsToGo": "3-5",
+            "n": 263,
+            "go": 14,
+            "punt": 249,
+            "fg": 0,
+            "goRate": 0.053231939163498096,
+            "puntRate": 0.9467680608365019,
+            "fgRate": 0.0,
+            "conversionN": 14,
+            "converted": 7,
+            "conversionRate": 0.5
+          },
+          {
+            "field": "own30-49",
+            "yardsToGo": "6-10",
+            "n": 291,
+            "go": 14,
+            "punt": 277,
+            "fg": 0,
+            "goRate": 0.048109965635738834,
+            "puntRate": 0.9518900343642611,
+            "fgRate": 0.0,
+            "conversionN": 14,
+            "converted": 5,
+            "conversionRate": 0.35714285714285715
+          },
+          {
+            "field": "own30-49",
+            "yardsToGo": "11+",
+            "n": 229,
+            "go": 5,
+            "punt": 224,
+            "fg": 0,
+            "goRate": 0.021834061135371178,
+            "puntRate": 0.9781659388646288,
+            "fgRate": 0.0,
+            "conversionN": 5,
+            "converted": 0,
+            "conversionRate": 0.0
+          },
+          {
+            "field": "opp49-35",
+            "yardsToGo": "1",
+            "n": 71,
+            "go": 69,
+            "punt": 2,
+            "fg": 0,
+            "goRate": 0.971830985915493,
+            "puntRate": 0.028169014084507043,
+            "fgRate": 0.0,
+            "conversionN": 69,
+            "converted": 50,
+            "conversionRate": 0.7246376811594203
+          },
+          {
+            "field": "opp49-35",
+            "yardsToGo": "2",
+            "n": 38,
+            "go": 29,
+            "punt": 8,
+            "fg": 1,
+            "goRate": 0.7631578947368421,
+            "puntRate": 0.21052631578947367,
+            "fgRate": 0.02631578947368421,
+            "conversionN": 29,
+            "converted": 17,
+            "conversionRate": 0.5862068965517241
+          },
+          {
+            "field": "opp49-35",
+            "yardsToGo": "3-5",
+            "n": 120,
+            "go": 54,
+            "punt": 47,
+            "fg": 19,
+            "goRate": 0.45,
+            "puntRate": 0.39166666666666666,
+            "fgRate": 0.15833333333333333,
+            "conversionN": 54,
+            "converted": 26,
+            "conversionRate": 0.48148148148148145
+          },
+          {
+            "field": "opp49-35",
+            "yardsToGo": "6-10",
+            "n": 158,
+            "go": 18,
+            "punt": 103,
+            "fg": 37,
+            "goRate": 0.11392405063291139,
+            "puntRate": 0.6518987341772152,
+            "fgRate": 0.23417721518987342,
+            "conversionN": 18,
+            "converted": 10,
+            "conversionRate": 0.5555555555555556
+          },
+          {
+            "field": "opp49-35",
+            "yardsToGo": "11+",
+            "n": 123,
+            "go": 7,
+            "punt": 88,
+            "fg": 28,
+            "goRate": 0.056910569105691054,
+            "puntRate": 0.7154471544715447,
+            "fgRate": 0.22764227642276422,
+            "conversionN": 7,
+            "converted": 1,
+            "conversionRate": 0.14285714285714285
+          },
+          {
+            "field": "opp34-20",
+            "yardsToGo": "1",
+            "n": 55,
+            "go": 39,
+            "punt": 0,
+            "fg": 16,
+            "goRate": 0.7090909090909091,
+            "puntRate": 0.0,
+            "fgRate": 0.2909090909090909,
+            "conversionN": 39,
+            "converted": 26,
+            "conversionRate": 0.6666666666666666
+          },
+          {
+            "field": "opp34-20",
+            "yardsToGo": "2",
+            "n": 40,
+            "go": 15,
+            "punt": 0,
+            "fg": 25,
+            "goRate": 0.375,
+            "puntRate": 0.0,
+            "fgRate": 0.625,
+            "conversionN": 15,
+            "converted": 8,
+            "conversionRate": 0.5333333333333333
+          },
+          {
+            "field": "opp34-20",
+            "yardsToGo": "3-5",
+            "n": 92,
+            "go": 21,
+            "punt": 0,
+            "fg": 71,
+            "goRate": 0.22826086956521738,
+            "puntRate": 0.0,
+            "fgRate": 0.7717391304347826,
+            "conversionN": 21,
+            "converted": 10,
+            "conversionRate": 0.47619047619047616
+          },
+          {
+            "field": "opp34-20",
+            "yardsToGo": "6-10",
+            "n": 115,
+            "go": 12,
+            "punt": 0,
+            "fg": 103,
+            "goRate": 0.10434782608695652,
+            "puntRate": 0.0,
+            "fgRate": 0.8956521739130435,
+            "conversionN": 12,
+            "converted": 4,
+            "conversionRate": 0.3333333333333333
+          },
+          {
+            "field": "opp34-20",
+            "yardsToGo": "11+",
+            "n": 94,
+            "go": 3,
+            "punt": 0,
+            "fg": 91,
+            "goRate": 0.031914893617021274,
+            "puntRate": 0.0,
+            "fgRate": 0.9680851063829787,
+            "conversionN": 3,
+            "converted": 0,
+            "conversionRate": 0.0
+          },
+          {
+            "field": "redZone",
+            "yardsToGo": "1",
+            "n": 87,
+            "go": 76,
+            "punt": 0,
+            "fg": 11,
+            "goRate": 0.8735632183908046,
+            "puntRate": 0.0,
+            "fgRate": 0.12643678160919541,
+            "conversionN": 76,
+            "converted": 52,
+            "conversionRate": 0.6842105263157895
+          },
+          {
+            "field": "redZone",
+            "yardsToGo": "2",
+            "n": 50,
+            "go": 25,
+            "punt": 0,
+            "fg": 25,
+            "goRate": 0.5,
+            "puntRate": 0.0,
+            "fgRate": 0.5,
+            "conversionN": 25,
+            "converted": 12,
+            "conversionRate": 0.48
+          },
+          {
+            "field": "redZone",
+            "yardsToGo": "3-5",
+            "n": 156,
+            "go": 24,
+            "punt": 0,
+            "fg": 132,
+            "goRate": 0.15384615384615385,
+            "puntRate": 0.0,
+            "fgRate": 0.8461538461538461,
+            "conversionN": 24,
+            "converted": 11,
+            "conversionRate": 0.4583333333333333
+          },
+          {
+            "field": "redZone",
+            "yardsToGo": "6-10",
+            "n": 164,
+            "go": 8,
+            "punt": 0,
+            "fg": 156,
+            "goRate": 0.04878048780487805,
+            "puntRate": 0.0,
+            "fgRate": 0.9512195121951219,
+            "conversionN": 8,
+            "converted": 3,
+            "conversionRate": 0.375
+          },
+          {
+            "field": "redZone",
+            "yardsToGo": "11+",
+            "n": 51,
+            "go": 2,
+            "punt": 0,
+            "fg": 49,
+            "goRate": 0.0392156862745098,
+            "puntRate": 0.0,
+            "fgRate": 0.9607843137254902,
+            "conversionN": 2,
+            "converted": 0,
+            "conversionRate": 0.0
+          }
+        ]
+      },
+      "twoPoint": {
+        "n": 127,
+        "success": 70,
+        "successRate": 0.5511811023622047,
+        "touchdowns": 1302,
+        "attemptsPerTouchdown": 0.09754224270353302,
+        "byMargin": [
+          {
+            "marginAfterTD": -15,
+            "n": 16,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": -14,
+            "n": 9,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": -13,
+            "n": 1,
+            "attempts": 1,
+            "attemptsPerTouchdown": 1.0,
+            "successes": 0,
+            "successRate": 0.0
+          },
+          {
+            "marginAfterTD": -12,
+            "n": 7,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.2857142857142857,
+            "successes": 2,
+            "successRate": 1.0
+          },
+          {
+            "marginAfterTD": -11,
+            "n": 16,
+            "attempts": 3,
+            "attemptsPerTouchdown": 0.1875,
+            "successes": 2,
+            "successRate": 0.6666666666666666
+          },
+          {
+            "marginAfterTD": -10,
+            "n": 11,
+            "attempts": 10,
+            "attemptsPerTouchdown": 0.9090909090909091,
+            "successes": 5,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": -9,
+            "n": 8,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.25,
+            "successes": 2,
+            "successRate": 1.0
+          },
+          {
+            "marginAfterTD": -8,
+            "n": 45,
+            "attempts": 6,
+            "attemptsPerTouchdown": 0.13333333333333333,
+            "successes": 4,
+            "successRate": 0.6666666666666666
+          },
+          {
+            "marginAfterTD": -7,
+            "n": 13,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": -6,
+            "n": 14,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": -5,
+            "n": 19,
+            "attempts": 11,
+            "attemptsPerTouchdown": 0.5789473684210527,
+            "successes": 4,
+            "successRate": 0.36363636363636365
+          },
+          {
+            "marginAfterTD": -4,
+            "n": 45,
+            "attempts": 3,
+            "attemptsPerTouchdown": 0.06666666666666667,
+            "successes": 1,
+            "successRate": 0.3333333333333333
+          },
+          {
+            "marginAfterTD": -3,
+            "n": 10,
+            "attempts": 1,
+            "attemptsPerTouchdown": 0.1,
+            "successes": 1,
+            "successRate": 1.0
+          },
+          {
+            "marginAfterTD": -2,
+            "n": 16,
+            "attempts": 13,
+            "attemptsPerTouchdown": 0.8125,
+            "successes": 9,
+            "successRate": 0.6923076923076923
+          },
+          {
+            "marginAfterTD": -1,
+            "n": 115,
+            "attempts": 6,
+            "attemptsPerTouchdown": 0.05217391304347826,
+            "successes": 3,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": 0,
+            "n": 22,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": 1,
+            "n": 13,
+            "attempts": 12,
+            "attemptsPerTouchdown": 0.9230769230769231,
+            "successes": 7,
+            "successRate": 0.5833333333333334
+          },
+          {
+            "marginAfterTD": 2,
+            "n": 51,
+            "attempts": 4,
+            "attemptsPerTouchdown": 0.0784313725490196,
+            "successes": 2,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": 3,
+            "n": 91,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": 4,
+            "n": 7,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.2857142857142857,
+            "successes": 1,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": 5,
+            "n": 11,
+            "attempts": 6,
+            "attemptsPerTouchdown": 0.5454545454545454,
+            "successes": 3,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": 6,
+            "n": 253,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.007905138339920948,
+            "successes": 1,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": 7,
+            "n": 22,
+            "attempts": 1,
+            "attemptsPerTouchdown": 0.045454545454545456,
+            "successes": 1,
+            "successRate": 1.0
+          },
+          {
+            "marginAfterTD": 8,
+            "n": 12,
+            "attempts": 1,
+            "attemptsPerTouchdown": 0.08333333333333333,
+            "successes": 1,
+            "successRate": 1.0
+          },
+          {
+            "marginAfterTD": 9,
+            "n": 59,
+            "attempts": 3,
+            "attemptsPerTouchdown": 0.05084745762711865,
+            "successes": 2,
+            "successRate": 0.6666666666666666
+          },
+          {
+            "marginAfterTD": 10,
+            "n": 44,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": 11,
+            "n": 10,
+            "attempts": 0,
+            "attemptsPerTouchdown": 0.0,
+            "successes": 0,
+            "successRate": null
+          },
+          {
+            "marginAfterTD": 12,
+            "n": 22,
+            "attempts": 7,
+            "attemptsPerTouchdown": 0.3181818181818182,
+            "successes": 2,
+            "successRate": 0.2857142857142857
+          },
+          {
+            "marginAfterTD": 13,
+            "n": 97,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.020618556701030927,
+            "successes": 2,
+            "successRate": 1.0
+          },
+          {
+            "marginAfterTD": 14,
+            "n": 14,
+            "attempts": 1,
+            "attemptsPerTouchdown": 0.07142857142857142,
+            "successes": 0,
+            "successRate": 0.0
+          },
+          {
+            "marginAfterTD": 15,
+            "n": 9,
+            "attempts": 2,
+            "attemptsPerTouchdown": 0.2222222222222222,
+            "successes": 1,
+            "successRate": 0.5
+          },
+          {
+            "marginAfterTD": "outside",
+            "n": 220,
+            "attempts": 26,
+            "attemptsPerTouchdown": 0.11818181818181818,
+            "successes": 14,
+            "successRate": 0.5384615384615384
+          },
+          {
+            "marginAfterTD": "unknown",
+            "n": 0,
+            "attempts": 0,
+            "attemptsPerTouchdown": null,
+            "successes": 0,
+            "successRate": null
+          }
+        ]
+      },
+      "penalties": {
+        "n": 3107,
+        "perTeamGame": 5.711397058823529,
+        "byType": [
+          {
+            "type": "offensiveHolding",
+            "n": 560,
+            "perTeamGame": 1.0294117647058822
+          },
+          {
+            "type": "falseStart",
+            "n": 618,
+            "perTeamGame": 1.1360294117647058
+          },
+          {
+            "type": "defensiveOffside",
+            "n": 146,
+            "perTeamGame": 0.26838235294117646
+          },
+          {
+            "type": "neutralZoneInfraction",
+            "n": 93,
+            "perTeamGame": 0.17095588235294118
+          },
+          {
+            "type": "encroachment",
+            "n": 39,
+            "perTeamGame": 0.07169117647058823
+          },
+          {
+            "type": "defensivePassInterference",
+            "n": 270,
+            "perTeamGame": 0.4963235294117647
+          },
+          {
+            "type": "defensiveHolding",
+            "n": 176,
+            "perTeamGame": 0.3235294117647059
+          },
+          {
+            "type": "illegalContact",
+            "n": 89,
+            "perTeamGame": 0.1636029411764706
+          },
+          {
+            "type": "roughingPasser",
+            "n": 93,
+            "perTeamGame": 0.17095588235294118
+          },
+          {
+            "type": "unnecessaryRoughness",
+            "n": 164,
+            "perTeamGame": 0.3014705882352941
+          },
+          {
+            "type": "faceMask",
+            "n": 88,
+            "perTeamGame": 0.16176470588235295
+          },
+          {
+            "type": "delayOfGame",
+            "n": 164,
+            "perTeamGame": 0.3014705882352941
+          },
+          {
+            "type": "intentionalGrounding",
+            "n": 56,
+            "perTeamGame": 0.10294117647058823
+          },
+          {
+            "type": "other",
+            "n": 551,
+            "perTeamGame": 1.0128676470588236
+          }
+        ]
+      },
+      "drives": {
+        "n": 6022,
+        "perTeamGame": 11.069852941176471,
+        "offensivePoints": 11274,
+        "pointsPerDrive": 1.872135503155098,
+        "redZone": {
+          "n": 1746,
+          "touchdowns": 946,
+          "tdRate": 0.5418098510882016
+        },
+        "outcomes": [
+          {
+            "result": "End of half",
+            "n": 413,
+            "share": 0.06858186648953836
+          },
+          {
+            "result": "Field goal",
+            "n": 911,
+            "share": 0.15127864496844903
+          },
+          {
+            "result": "Missed field goal",
+            "n": 148,
+            "share": 0.02457655264031883
+          },
+          {
+            "result": "Opp touchdown",
+            "n": 72,
+            "share": 0.01195616074393889
+          },
+          {
+            "result": "Punt",
+            "n": 2252,
+            "share": 0.37396213882431084
+          },
+          {
+            "result": "Safety",
+            "n": 17,
+            "share": 0.0028229823978744603
+          },
+          {
+            "result": "Touchdown",
+            "n": 1225,
+            "share": 0.2034207904350714
+          },
+          {
+            "result": "Turnover",
+            "n": 635,
+            "share": 0.1054466954500166
+          },
+          {
+            "result": "Turnover on downs",
+            "n": 349,
+            "share": 0.05795416805048157
+          }
+        ]
+      },
+      "turnovers": {
+        "n": 733,
+        "interceptions": 430,
+        "lostFumbleFlags": 303,
+        "unattributedFlags": 1,
+        "teamAttributionAmbiguous": 0,
+        "perTeamGame": 1.3474264705882353
+      },
+      "spikes": {
+        "n": 67,
+        "perTeamGame": 0.12316176470588236
+      },
+      "kneels": {
+        "n": 428,
+        "perTeamGame": 0.7867647058823529
+      },
+      "timeouts": {
+        "n": 1088,
+        "charged": 2012,
+        "annotations": 2025,
+        "perTeamHalf": 1.849264705882353,
+        "usedPerTeamHalf": {
+          "n": 1088,
+          "mean": 1.849264705882353,
+          "p10": 0.0,
+          "p50": 2.0,
+          "p90": 3.0
+        }
+      },
+      "games": {
+        "n": 272,
+        "teamGames": 544,
+        "byTeam": {
+          "ARI": 17,
+          "ATL": 17,
+          "BAL": 17,
+          "BUF": 17,
+          "CAR": 17,
+          "CHI": 17,
+          "CIN": 17,
+          "CLE": 17,
+          "DAL": 17,
+          "DEN": 17,
+          "DET": 17,
+          "GB": 17,
+          "HOU": 17,
+          "IND": 17,
+          "JAX": 17,
+          "KC": 17,
+          "LA": 17,
+          "LAC": 17,
+          "LV": 17,
+          "MIA": 17,
+          "MIN": 17,
+          "NE": 17,
+          "NO": 17,
+          "NYG": 17,
+          "NYJ": 17,
+          "PHI": 17,
+          "PIT": 17,
+          "SEA": 17,
+          "SF": 17,
+          "TB": 17,
+          "TEN": 17,
+          "WAS": 17
+        }
+      },
+      "teamSeasonRanges": {
+        "fg.makeRate": {
+          "n": 32,
+          "mean": 0.8579641358640009,
+          "p10": 0.7925,
+          "p50": 0.8610038610038611,
+          "p90": 0.9392045454545455
+        },
+        "fg.blockedRate": {
+          "n": 32,
+          "mean": 0.016387205592643297,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 0.03436781609195402
+        },
+        "xp.makeRate": {
+          "n": 32,
+          "mean": 0.9560804326638752,
+          "p10": 0.9096103896103895,
+          "p50": 0.9621428571428572,
+          "p90": 1.0
+        },
+        "punt.perTeamGame": {
+          "n": 32,
+          "mean": 4.1599264705882355,
+          "p10": 3.064705882352941,
+          "p50": 4.235294117647059,
+          "p90": 5.288235294117647
+        },
+        "kickoff.touchbackRate": {
+          "n": 32,
+          "mean": 0.7263285281278337,
+          "p10": 0.5848494983277592,
+          "p50": 0.7653963414634146,
+          "p90": 0.8691940615058324
+        },
+        "kickoff.returnRate": {
+          "n": 32,
+          "mean": 0.22027557088222505,
+          "p10": 0.09876378215836953,
+          "p50": 0.18956043956043955,
+          "p90": 0.34282575629542
+        },
+        "two.attemptsPerTD": {
+          "n": 32,
+          "mean": 0.10340084176215224,
+          "p10": 0.025854700854700853,
+          "p50": 0.10300618921308577,
+          "p90": 0.18113636363636365
+        },
+        "two.successRate": {
+          "n": 31,
+          "mean": 0.5886505967151128,
+          "p10": 0.25,
+          "p50": 0.5714285714285714,
+          "p90": 1.0
+        },
+        "penalties.perTeamGame": {
+          "n": 32,
+          "mean": 5.71139705882353,
+          "p10": 4.8882352941176475,
+          "p50": 5.705882352941177,
+          "p90": 6.688235294117647
+        },
+        "drives.perTeamGame": {
+          "n": 32,
+          "mean": 11.069852941176471,
+          "p10": 10.476470588235294,
+          "p50": 10.970588235294118,
+          "p90": 11.694117647058823
+        },
+        "drives.pointsPerDrive": {
+          "n": 32,
+          "mean": 1.8839335814188203,
+          "p10": 1.2248355177951615,
+          "p50": 1.8569987389659521,
+          "p90": 2.412970130292197
+        },
+        "redZone.tdRate": {
+          "n": 32,
+          "mean": 0.5358081738194477,
+          "p10": 0.4654761904761905,
+          "p50": 0.518552036199095,
+          "p90": 0.6309210526315789
+        },
+        "turnovers.perTeamGame": {
+          "n": 30,
+          "mean": 1.356862745098039,
+          "p10": 0.9411764705882353,
+          "p50": 1.2647058823529411,
+          "p90": 1.888235294117647
+        },
+        "spikes.perTeamGame": {
+          "n": 32,
+          "mean": 0.12316176470588236,
+          "p10": 0.0,
+          "p50": 0.11764705882352941,
+          "p90": 0.23529411764705882
+        },
+        "kneels.perTeamGame": {
+          "n": 32,
+          "mean": 0.7867647058823529,
+          "p10": 0.29411764705882354,
+          "p50": 0.7352941176470589,
+          "p90": 1.3470588235294119
+        },
+        "timeouts.perTeamHalf": {
+          "n": 32,
+          "mean": 1.849264705882353,
+          "p10": 1.588235294117647,
+          "p50": 1.8235294117647058,
+          "p90": 2.2029411764705884
+        },
+        "fg.18-29.makeRate": {
+          "n": 32,
+          "mean": 0.9739583333333334,
+          "p10": 1.0,
+          "p50": 1.0,
+          "p90": 1.0
+        },
+        "fg.30-39.makeRate": {
+          "n": 32,
+          "mean": 0.9466668747918748,
+          "p10": 0.8666666666666667,
+          "p50": 1.0,
+          "p90": 1.0
+        },
+        "fg.40-49.makeRate": {
+          "n": 32,
+          "mean": 0.8014649413086913,
+          "p10": 0.5509090909090909,
+          "p50": 0.8,
+          "p90": 1.0
+        },
+        "fg.50-54.makeRate": {
+          "n": 32,
+          "mean": 0.7161458333333334,
+          "p10": 0.5,
+          "p50": 0.6904761904761905,
+          "p90": 1.0
+        },
+        "fg.55+.makeRate": {
+          "n": 27,
+          "mean": 0.5383597883597884,
+          "p10": 0.0,
+          "p50": 0.5,
+          "p90": 1.0
+        },
+        "punt.touchbackRate": {
+          "n": 32,
+          "mean": 0.07226110820892125,
+          "p10": 0.03861538461538462,
+          "p50": 0.07020816967792615,
+          "p90": 0.11686147186147186
+        },
+        "punt.fairCatchRate": {
+          "n": 32,
+          "mean": 0.28394408286752065,
+          "p10": 0.18238636363636365,
+          "p50": 0.3062638580931264,
+          "p90": 0.3735655737704918
+        },
+        "punt.returnInvolvementRate": {
+          "n": 32,
+          "mean": 0.4328106487876345,
+          "p10": 0.36084016393442625,
+          "p50": 0.41333333333333333,
+          "p90": 0.5424242424242425
+        },
+        "punt.inside20Rate": {
+          "n": 32,
+          "mean": 0.3674603520529411,
+          "p10": 0.27222582738481504,
+          "p50": 0.3696037847427558,
+          "p90": 0.455859649122807
+        },
+        "punt.blockedRate": {
+          "n": 32,
+          "mean": 0.002631556044505732,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 0.014293478260869569
+        },
+        "punt.grossYards": {
+          "n": 32,
+          "mean": 47.4525171349265,
+          "p10": 45.738734739178696,
+          "p50": 47.01209039548023,
+          "p90": 50.051298701298705
+        },
+        "punt.netYards": {
+          "n": 32,
+          "mean": 41.793487762733285,
+          "p10": 39.7220350877193,
+          "p50": 41.82632621615672,
+          "p90": 43.74787300269765
+        },
+        "punt.returnInvolvementYards": {
+          "n": 32,
+          "mean": 9.610483852267912,
+          "p10": 6.636040044493882,
+          "p50": 9.935064935064934,
+          "p90": 12.443962848297213
+        },
+        "kickoff.returnYards": {
+          "n": 32,
+          "mean": 23.235661332929336,
+          "p10": 18.932517482517483,
+          "p50": 23.299107142857142,
+          "p90": 27.710909090909094
+        },
+        "fourth.goRate": {
+          "n": 32,
+          "mean": 0.16726388951604734,
+          "p10": 0.10535060546324979,
+          "p50": 0.16740412979351033,
+          "p90": 0.2119090909090909
+        },
+        "fourth.puntRate": {
+          "n": 32,
+          "mean": 0.5929870476784472,
+          "p10": 0.5289484887186037,
+          "p50": 0.5970452185405456,
+          "p90": 0.6736016949152543
+        },
+        "fourth.fgRate": {
+          "n": 32,
+          "mean": 0.2397490628055054,
+          "p10": 0.17719087635054023,
+          "p50": 0.24149532710280375,
+          "p90": 0.30189393939393944
+        },
+        "penalty.offensiveHolding": {
+          "n": 32,
+          "mean": 1.0294117647058825,
+          "p10": 0.711764705882353,
+          "p50": 1.0588235294117647,
+          "p90": 1.4058823529411766
+        },
+        "penalty.falseStart": {
+          "n": 32,
+          "mean": 1.1360294117647058,
+          "p10": 0.7705882352941176,
+          "p50": 1.1176470588235294,
+          "p90": 1.5294117647058822
+        },
+        "penalty.defensiveOffside": {
+          "n": 32,
+          "mean": 0.26838235294117646,
+          "p10": 0.058823529411764705,
+          "p50": 0.23529411764705882,
+          "p90": 0.4647058823529413
+        },
+        "penalty.neutralZoneInfraction": {
+          "n": 32,
+          "mean": 0.17095588235294118,
+          "p10": 0.058823529411764705,
+          "p50": 0.11764705882352941,
+          "p90": 0.3411764705882356
+        },
+        "penalty.encroachment": {
+          "n": 32,
+          "mean": 0.07169117647058823,
+          "p10": 0.0,
+          "p50": 0.058823529411764705,
+          "p90": 0.17647058823529413
+        },
+        "penalty.defensivePassInterference": {
+          "n": 32,
+          "mean": 0.4963235294117647,
+          "p10": 0.30000000000000004,
+          "p50": 0.5,
+          "p90": 0.7588235294117648
+        },
+        "penalty.defensiveHolding": {
+          "n": 32,
+          "mean": 0.3235294117647059,
+          "p10": 0.11764705882352941,
+          "p50": 0.29411764705882354,
+          "p90": 0.523529411764706
+        },
+        "penalty.illegalContact": {
+          "n": 32,
+          "mean": 0.1636029411764706,
+          "p10": 0.058823529411764705,
+          "p50": 0.14705882352941177,
+          "p90": 0.29411764705882354
+        },
+        "penalty.roughingPasser": {
+          "n": 32,
+          "mean": 0.17095588235294118,
+          "p10": 0.058823529411764705,
+          "p50": 0.17647058823529413,
+          "p90": 0.29411764705882354
+        },
+        "penalty.unnecessaryRoughness": {
+          "n": 32,
+          "mean": 0.3014705882352941,
+          "p10": 0.11764705882352941,
+          "p50": 0.29411764705882354,
+          "p90": 0.523529411764706
+        },
+        "penalty.faceMask": {
+          "n": 32,
+          "mean": 0.16176470588235295,
+          "p10": 0.058823529411764705,
+          "p50": 0.17647058823529413,
+          "p90": 0.29411764705882354
+        },
+        "penalty.delayOfGame": {
+          "n": 32,
+          "mean": 0.3014705882352941,
+          "p10": 0.11764705882352941,
+          "p50": 0.29411764705882354,
+          "p90": 0.47058823529411764
+        },
+        "penalty.intentionalGrounding": {
+          "n": 32,
+          "mean": 0.10294117647058823,
+          "p10": 0.005882352941176476,
+          "p50": 0.11764705882352941,
+          "p90": 0.17647058823529413
+        },
+        "penalty.other": {
+          "n": 32,
+          "mean": 1.0128676470588236,
+          "p10": 0.6588235294117647,
+          "p50": 1.0,
+          "p90": 1.2882352941176471
+        }
+      },
+      "audit": {
+        "n": 47399,
+        "drives.excludedNoPossessionPlay": 1714,
+        "fourth.excludedGarbage": 237,
+        "fourth.excludedLastTwoMinutes": 618,
+        "fourth.excludedNoPlayOrClockAct": 194,
+        "fourth.excludedOvertimeOrUnknownContext": 22,
+        "fourth.excludedUnknownDecisionOrGrid": 6,
+        "penalties.declined": 463,
+        "penalties.offsetting": 119,
+        "penalties.superseded": 3,
+        "penalties.unknownTeam": 0,
+        "penalties.unresolved": 0,
+        "regularSeasonRows": 47399,
+        "turnovers.ambiguousFumbleAttribution": 1
+      }
+    }
+  },
+  "teamSeasonRanges": {
+    "fg.makeRate": {
+      "n": 64,
+      "mean": 0.8546170954592843,
+      "p10": 0.7742424242424243,
+      "p50": 0.8588039867109634,
+      "p90": 0.9368951612903226
+    },
+    "fg.blockedRate": {
+      "n": 64,
+      "mean": 0.0211863378449786,
+      "p10": 0.0,
+      "p50": 0.02299154334038055,
+      "p90": 0.061931818181818185
+    },
+    "xp.makeRate": {
+      "n": 64,
+      "mean": 0.9516079727174088,
+      "p10": 0.8949494949494949,
+      "p50": 0.96,
+      "p90": 1.0
+    },
+    "punt.perTeamGame": {
+      "n": 64,
+      "mean": 4.108053768382353,
+      "p10": 3.1176470588235294,
+      "p50": 4.029411764705882,
+      "p90": 5.2176470588235295
+    },
+    "kickoff.touchbackRate": {
+      "n": 64,
+      "mean": 0.6615671216776465,
+      "p10": 0.472979797979798,
+      "p50": 0.6444197256210604,
+      "p90": 0.8447089947089947
+    },
+    "kickoff.returnRate": {
+      "n": 64,
+      "mean": 0.2973473470535082,
+      "p10": 0.13014867485455722,
+      "p50": 0.30058807805399623,
+      "p90": 0.47981266149870805
+    },
+    "two.attemptsPerTD": {
+      "n": 64,
+      "mean": 0.0988449436298005,
+      "p10": 0.026282051282051282,
+      "p50": 0.09280792420327304,
+      "p90": 0.18084415584415586
+    },
+    "two.successRate": {
+      "n": 60,
+      "mean": 0.5435541310541311,
+      "p10": 0.0,
+      "p50": 0.5,
+      "p90": 1.0
+    },
+    "penalties.perTeamGame": {
+      "n": 64,
+      "mean": 5.652401194852941,
+      "p10": 4.7823529411764705,
+      "p50": 5.647058823529412,
+      "p90": 6.611764705882353
+    },
+    "drives.perTeamGame": {
+      "n": 64,
+      "mean": 10.992359834558824,
+      "p10": 10.411764705882353,
+      "p50": 10.941176470588236,
+      "p90": 11.629411764705882
+    },
+    "drives.pointsPerDrive": {
+      "n": 64,
+      "mean": 1.9037264057112135,
+      "p10": 1.4432342122986066,
+      "p50": 1.8627064035440999,
+      "p90": 2.463201871657754
+    },
+    "redZone.tdRate": {
+      "n": 64,
+      "mean": 0.5436275789445545,
+      "p10": 0.4642857142857143,
+      "p50": 0.5384615384615384,
+      "p90": 0.6438866120218579
+    },
+    "turnovers.perTeamGame": {
+      "n": 60,
+      "mean": 1.3380514705882354,
+      "p10": 0.9941176470588236,
+      "p50": 1.323529411764706,
+      "p90": 1.7117647058823529
+    },
+    "spikes.perTeamGame": {
+      "n": 64,
+      "mean": 0.11776194852941177,
+      "p10": 0.0,
+      "p50": 0.11764705882352941,
+      "p90": 0.23529411764705882
+    },
+    "kneels.perTeamGame": {
+      "n": 64,
+      "mean": 0.7847541360294118,
+      "p10": 0.35294117647058826,
+      "p50": 0.7352941176470589,
+      "p90": 1.2941176470588236
+    },
+    "timeouts.perTeamHalf": {
+      "n": 64,
+      "mean": 1.8763499540441178,
+      "p10": 1.5470588235294116,
+      "p50": 1.8823529411764706,
+      "p90": 2.197058823529412
+    },
+    "fg.18-29.makeRate": {
+      "n": 64,
+      "mean": 0.9742491883116883,
+      "p10": 0.8727272727272727,
+      "p50": 1.0,
+      "p90": 1.0
+    },
+    "fg.30-39.makeRate": {
+      "n": 64,
+      "mean": 0.9342603946808911,
+      "p10": 0.8227272727272728,
+      "p50": 1.0,
+      "p90": 1.0
+    },
+    "fg.40-49.makeRate": {
+      "n": 64,
+      "mean": 0.802561370920746,
+      "p10": 0.6284090909090909,
+      "p50": 0.8,
+      "p90": 1.0
+    },
+    "fg.50-54.makeRate": {
+      "n": 64,
+      "mean": 0.7117486246392496,
+      "p10": 0.4,
+      "p50": 0.75,
+      "p90": 1.0
+    },
+    "fg.55+.makeRate": {
+      "n": 52,
+      "mean": 0.5651098901098901,
+      "p10": 0.0,
+      "p50": 0.5,
+      "p90": 1.0
+    },
+    "punt.touchbackRate": {
+      "n": 64,
+      "mean": 0.07197766721996979,
+      "p10": 0.03312031119755488,
+      "p50": 0.067141312184571,
+      "p90": 0.11864702461717387
+    },
+    "punt.fairCatchRate": {
+      "n": 64,
+      "mean": 0.2800355976024961,
+      "p10": 0.178989898989899,
+      "p50": 0.2963759213759214,
+      "p90": 0.3600061862047634
+    },
+    "punt.returnInvolvementRate": {
+      "n": 64,
+      "mean": 0.43161617700573773,
+      "p10": 0.34163596168017685,
+      "p50": 0.4190856313497823,
+      "p90": 0.5399732620320855
+    },
+    "punt.inside20Rate": {
+      "n": 64,
+      "mean": 0.36941711255418225,
+      "p10": 0.2709615384615385,
+      "p50": 0.37192454893384364,
+      "p90": 0.45614035087719296
+    },
+    "punt.blockedRate": {
+      "n": 64,
+      "mean": 0.0042391089594295064,
+      "p10": 0.0,
+      "p50": 0.0,
+      "p90": 0.014925373134328358
+    },
+    "punt.grossYards": {
+      "n": 64,
+      "mean": 47.204347041529644,
+      "p10": 44.489265734265736,
+      "p50": 46.945850340136055,
+      "p90": 49.90056818181819
+    },
+    "punt.netYards": {
+      "n": 64,
+      "mean": 41.7286810542978,
+      "p10": 39.73309090909091,
+      "p50": 41.650788363313346,
+      "p90": 43.95609195402299
+    },
+    "punt.returnInvolvementYards": {
+      "n": 64,
+      "mean": 9.200614599398415,
+      "p10": 6.536206896551724,
+      "p50": 9.122208436724566,
+      "p90": 11.903318077803204
+    },
+    "kickoff.returnYards": {
+      "n": 64,
+      "mean": 23.028049458909503,
+      "p10": 19.976939655172416,
+      "p50": 22.85,
+      "p90": 26.3640522875817
+    },
+    "fourth.goRate": {
+      "n": 64,
+      "mean": 0.1625594966995769,
+      "p10": 0.10243703358208955,
+      "p50": 0.15860591900311527,
+      "p90": 0.23405931417979617
+    },
+    "fourth.puntRate": {
+      "n": 64,
+      "mean": 0.5949569034088735,
+      "p10": 0.5192490118577076,
+      "p50": 0.5944399749709484,
+      "p90": 0.6743181818181818
+    },
+    "fourth.fgRate": {
+      "n": 64,
+      "mean": 0.24248359989154963,
+      "p10": 0.18614718614718614,
+      "p50": 0.23946902654867258,
+      "p90": 0.3007575757575758
+    },
+    "penalty.offensiveHolding": {
+      "n": 64,
+      "mean": 1.0627297794117647,
+      "p10": 0.7647058823529411,
+      "p50": 1.0882352941176472,
+      "p90": 1.411764705882353
+    },
+    "penalty.falseStart": {
+      "n": 64,
+      "mean": 1.0992072610294117,
+      "p10": 0.7058823529411765,
+      "p50": 1.1176470588235294,
+      "p90": 1.4529411764705884
+    },
+    "penalty.defensiveOffside": {
+      "n": 64,
+      "mean": 0.25890395220588236,
+      "p10": 0.058823529411764705,
+      "p50": 0.23529411764705882,
+      "p90": 0.47058823529411764
+    },
+    "penalty.neutralZoneInfraction": {
+      "n": 64,
+      "mean": 0.1611328125,
+      "p10": 0.058823529411764705,
+      "p50": 0.11764705882352941,
+      "p90": 0.29411764705882354
+    },
+    "penalty.encroachment": {
+      "n": 64,
+      "mean": 0.06169577205882353,
+      "p10": 0.0,
+      "p50": 0.058823529411764705,
+      "p90": 0.16102941176470603
+    },
+    "penalty.defensivePassInterference": {
+      "n": 64,
+      "mean": 0.45467601102941174,
+      "p10": 0.29411764705882354,
+      "p50": 0.4117647058823529,
+      "p90": 0.6470588235294118
+    },
+    "penalty.defensiveHolding": {
+      "n": 64,
+      "mean": 0.3557559742647059,
+      "p10": 0.17647058823529413,
+      "p50": 0.35294117647058826,
+      "p90": 0.5882352941176471
+    },
+    "penalty.illegalContact": {
+      "n": 64,
+      "mean": 0.14171645220588236,
+      "p10": 0.017647058823529453,
+      "p50": 0.11764705882352941,
+      "p90": 0.2764705882352943
+    },
+    "penalty.roughingPasser": {
+      "n": 64,
+      "mean": 0.1694623161764706,
+      "p10": 0.058823529411764705,
+      "p50": 0.17647058823529413,
+      "p90": 0.29411764705882354
+    },
+    "penalty.unnecessaryRoughness": {
+      "n": 64,
+      "mean": 0.2945772058823529,
+      "p10": 0.11764705882352941,
+      "p50": 0.29411764705882354,
+      "p90": 0.47058823529411764
+    },
+    "penalty.faceMask": {
+      "n": 64,
+      "mean": 0.1518267463235294,
+      "p10": 0.058823529411764705,
+      "p50": 0.11764705882352941,
+      "p90": 0.23529411764705882
+    },
+    "penalty.delayOfGame": {
+      "n": 64,
+      "mean": 0.29991957720588236,
+      "p10": 0.13529411764705887,
+      "p50": 0.29411764705882354,
+      "p90": 0.47058823529411764
+    },
+    "penalty.intentionalGrounding": {
+      "n": 64,
+      "mean": 0.08921185661764706,
+      "p10": 0.0,
+      "p50": 0.06066176470588235,
+      "p90": 0.17647058823529413
+    },
+    "penalty.other": {
+      "n": 64,
+      "mean": 1.0515854779411764,
+      "p10": 0.7058823529411765,
+      "p50": 1.0,
+      "p90": 1.4941176470588238
+    }
+  }
+}

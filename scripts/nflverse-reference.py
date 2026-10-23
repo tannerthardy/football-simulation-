@@ -237,9 +237,9 @@ def filenames(years, chart_year):
             "ftn_charting": [f"ftn_charting_{chart_year}.csv"]}
 
 
-def download(root, wanted):
+def download(root, wanted, manifest_name="download-manifest.json"):
     root.mkdir(parents=True, exist_ok=True)
-    previous_path = root / "download-manifest.json"
+    previous_path = root / manifest_name
     previous = {r["name"]: r for r in json.loads(previous_path.read_text())["files"]} if previous_path.exists() else {}
     records = []
     for tag, names in wanted.items():
@@ -276,7 +276,7 @@ def download(root, wanted):
             records.append({"name": name, "url": asset["browser_download_url"], "bytes": path.stat().st_size,
                             "sha256": digest, "assetId": asset["id"], "updatedAt": asset["updated_at"], "publishedDigest": published})
             print(f"Verified {name}", flush=True)
-    (root / "download-manifest.json").write_text(json.dumps({"source": "nflverse-data releases", "files": records}, indent=2) + "\n")
+    previous_path.write_text(json.dumps({"source": "nflverse-data releases", "files": records}, indent=2) + "\n")
 
 
 def study(root, years, chart_year, teams):

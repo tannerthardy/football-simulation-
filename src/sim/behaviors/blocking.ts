@@ -865,10 +865,11 @@ export class RunBlocker implements Behavior {
   private homeY: number | null = null;
   private firstStep: Vec2 | null = null;
   private nextRuleRead = 0;
+  private nextThreatRead = 0;
   private soloKind: RunBlockKind | null = null;
   private soloDrive: Vec2 | null = null;
   /** The puller's last ordinary read, not the defender's current position. */
-  private pullRead: { target: Agent; seen: Perceived; clearanceX: number | null; nextRead: number } | null = null;
+  private pullRead: { target: Agent; seen: Perceived; clearanceX: number | null; nextRead: number; at: number } | null = null;
   private pullCleared = false;
   private nextSurfaceRead = 0;
   private wrapOutside = false;
@@ -964,6 +965,10 @@ export class RunBlocker implements Behavior {
       return this.withBase(a, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
     }
 
+    if (t >= this.nextThreatRead) {
+      this.nextThreatRead = t + a.mind.decisionInterval;
+      this.rereadThreat(a, sim);
+    }
     const target = this.availableTarget(a, sim);
     if (plan.departure && (plan.kind !== 'climb' || target !== plan.departure.backer)) {
       delete plan.departure;
@@ -1219,6 +1224,12 @@ export class RunBlocker implements Behavior {
     const partner = combo?.members.find((b) => b !== a);
     const half = partner ? (Math.sign(a.pos.y - partner.pos.y) || ps) * .55 : ps * .6;
     const shoulder = seen.pos.y + seen.vel.y * meet + half;
+    // The track races a man in front of him to the playside. Once that man
+    // is already backside of the aim point and has run upfield past his
+    // depth, more track only carries him away from the man, backpedaling
+    // with his back to the line. Leave the track and fit the man's acquired
+    // body from here (G1 P003/P029/P032 backside cutoff).
+    if (!firstStep && (a.pos.y - shoulder) * ps > 0 && (seen.pos.x - a.pos.x) * dir < 0) return null;
     // Ask for the speed that gets there in time under his own acceleration
     // law (speed approaches the wanted speed with time constant tau): an
     // early, short distance needs an explosive first step, not a jog.
@@ -1356,15 +1367,21 @@ export class RunBlocker implements Behavior {
       const clearanceX = surfaces.length ? Math.min(...surfaces.map(({b,seen}) => seen.pos.x-b.profile.radius))
         : this.plan.pullSurface ? this.plan.pullPath?.[0]?.x ?? a.pos.x+a.profile.radius : null;
       this.pullRead = { target, seen: { ...seen, pos: { ...seen.pos }, vel: { ...seen.vel } },
-        clearanceX, nextRead: sim.t + a.mind.decisionInterval };
+        clearanceX, nextRead: sim.t + a.mind.decisionInterval, at: sim.t };
     }
     return this.pullRead;
   }
 
   private attack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived): MoveCommand {
     const plan = this.plan;
-    const seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
+    let seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
+    // The held pull read is already dead-reckoned to its acquisition; carry
+    // it only through the time held since then.
+    if (plan.kind === 'pull' && this.pullRead && seen === this.pullRead.seen) {
+      const dt = sim.t - this.pullRead.at;
+      seen = { ...seen, pos: { x: seen.pos.x + seen.vel.x * dt, y: seen.pos.y + seen.vel.y * dt } };
+    }
     if (plan.kind === 'pull' && plan.pullRole === 'lead' && (seen.pose === 'down' || seen.pose === 'rising')) return stand();
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
     const combinationFit = this.combinationFit(a, sim, target);
@@ -1463,9 +1480,21 @@ export class RunBlocker implements Behavior {
     // defender's old spot. Match his lateral motion and brake the offset;
     // ordinary drive blocks retain their downhill strike.
     if (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')) {
-      const side = Math.sign(plan.drive.y) || 1;
-      const shoulder = { x: aim.x-.25, y: aim.y-side*.45 };
-      return track(a, shoulder, seen.vel, { speed: .95, gain: 3, facing: Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x) });
+      const facing = Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x);
+      if (a.tags.has('block-log')) {
+        const side = Math.sign(plan.drive.y) || 1;
+        return track(a, { x: aim.x-.25, y: aim.y-side*.45 }, seen.vel, { speed: .95, gain: 3, facing });
+      }
+      // Kick him out from inside: fit the shoulder he would run through to
+      // the ball, on his line to the runner the puller has acquired. Matching
+      // the end's own velocity let a penetrating end drag the puller 6 yd
+      // deep while still 3-5 yd away laterally, never touching him (G1 P031).
+      // Going for his path to the runner meets him wherever he comes from.
+      const ref = this.workReference(a, sim), dx = ref.x - seen.pos.x, dy = ref.y - seen.pos.y, n = Math.hypot(dx, dy);
+      const sep = a.profile.radius + target.profile.radius + .15;
+      const shoulder = n > sep ? { x: seen.pos.x + dx / n * sep, y: clamp(seen.pos.y + dy / n * sep + placementError, .5, FIELD_WIDTH - .5) }
+        : { x: aim.x-.25, y: aim.y-(Math.sign(plan.drive.y) || 1)*.45 };
+      return track(a, shoulder, { x: 0, y: 0 }, { speed: .95, gain: 3, facing });
     }
     if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
       const fit = this.plannedClimb(a, sim, target, contact);
@@ -1624,6 +1653,49 @@ export class RunBlocker implements Behavior {
     delete p.contactFit;
     a.tags.add('block-collect');
     sim.event('block_collect',a,threat,'penetration before climb');
+  }
+
+  /** First threat to show: a free climbing lineman or lead back whose man
+   * is not the danger to the runner takes the free defender who is. All of
+   * it comes from his own delayed pictures: the runner he has acquired, each
+   * defender's body and whether it is visibly blocked, and his teammates'
+   * bodies. He switches only to a man clearly nearer the runner than his own,
+   * one he is nearer than the runner is, and one no teammate is nearer.
+   * Stalks keep their perimeter ledger. */
+  private rereadThreat(a: Agent, sim: PlaySim): void {
+    const p = this.plan, target = p.target;
+    if (!target || (p.kind !== 'climb' && p.kind !== 'lead')
+      || (p.combination && !p.combination.released) || p.departure) return;
+    const ref = this.workReference(a, sim), picture = this.workPicture!;
+    if (picture.source !== 'acquired' || picture.carrier === sim.qb.idx) return;
+    const dir = sim.attackDir(a.team);
+    // Distance to the runner, less what his closing speed takes off it over
+    // one second: a man running at the runner counts as nearer than he is.
+    const danger = (seen: Perceived) => {
+      const dx = ref.x - seen.pos.x, dy = ref.y - seen.pos.y, d = Math.hypot(dx, dy);
+      const closing = d > 1e-9 ? ((seen.vel.x - picture.vel.x) * dx + (seen.vel.y - picture.vel.y) * dy) / d : 0;
+      return { d, score: d - Math.max(0, closing) };
+    };
+    const mine = danger(sim.see(a, target));
+    if (mine.d < 4) return;
+    const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o.idx !== picture.carrier).map(o => sim.see(a, o).pos);
+    let best: { d: Agent; score: number } | null = null;
+    for (const d of sim.defense) {
+      if (d === target || d.engagement || d.isDown(sim.t)) continue;
+      const seen = sim.see(a, d), threat = danger(seen);
+      // Behind the runner he is pursuit, not a man to block in front of him.
+      if ((seen.pos.x - ref.x) * dir < -1 || threat.score > mine.score - 2.5) continue;
+      const reach = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
+      if (reach >= threat.d || mates.some(m => Math.hypot(m.x - seen.pos.x, m.y - seen.pos.y) < reach - .5)) continue;
+      if (!best || threat.score < best.score) best = { d, score: threat.score };
+    }
+    if (!best) return;
+    p.target = best.d;
+    delete p.contactFit;
+    this.climbRead = null;
+    this.climbAccess = null;
+    this.classifyWork(a, sim, best.d);
+    sim.event('block_threat', a, best.d, 'first threat to the runner');
   }
 
   /** A free first-level blocker recovers between his defender and the back

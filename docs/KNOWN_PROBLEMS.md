@@ -158,6 +158,7 @@ problem), resolved.
 | [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | on |
 | [RUN-10](#run-10) | Older run-blocking and second-level issues | G2 | low–medium | open |
 | [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
+| [RUN-12](#run-12) | Run blockers lost on their assignments (film, Oct 23) | G2 | high | in work |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#205) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -377,7 +378,7 @@ Carried over from the issue register; each was measured on an older develop.
 ### TKL-1: Too many missed and broken tackles
 
 - **Measure:** missed + broken tackles per play: 0.32 (`dev-24`), 0.36
-  (`dev-12`); NFL 0.11–0.16. Runs that break contact are 12.7–19% on the flag
+  (`dev-12`); unverified PFF band 0.11–0.16. Runs that break contact are 12.7–19% on the flag
   profiles (#194), NFL 12.5%.
 - **Cause:** *partly known* (#205). Too few defenders reach the runner
   (TKL-2), and getting through contact costs the runner nothing (below). The
@@ -696,6 +697,63 @@ Carried over from the issue register; each was measured on an older develop.
     perception history;
   - `planned-climb-fit`, `zone-helper-check`: staged scenes;
   - `run-hand-control`: legacy trace.
+
+<a id="run-12"></a>
+### RUN-12: Run blockers lost on their assignments (film, Oct 23)
+
+Tanner's film review of game 1 on `c5667bc4` (seed 7) left 16 notes on run
+blockers, plus 3 on wide and outside zone footwork. Counted across that game's
+run plays with the assignment layer (`--telemetry full`):
+
+- **Zone track runs a blocker away from a beaten man.** *Confirmed, fixed
+  (on by default).* A backside cutoff whose end ran upfield outside him kept
+  running the playside track at full tempo, backpedaling with his back to the
+  line (P003, P029, P032 LT). Unengaged linemen facing their own backfield
+  were 30–36% of cutoff frames on inside, outside and wide zone, the most of
+  any job, on 18 run plays. The track now ends once the man is backside of
+  the aim point and deeper than the blocker; he fits the man instead.
+  Restaged on the same 61 runs: unengaged OL facing the backfield 6.3% →
+  4.0% of OL frames; cutoffs stuck on a man 5+ yd from the runner and moving
+  away while a free defender is within 3.5 yd of the runner, 116 → 51
+  frames; first-0.6 s lateral flow of every line position unchanged.
+- **Targets that never update.** *Partly fixed (on by default).* A climber or
+  lead stayed on a backer or safety who was no danger to the runner while
+  another free defender reached the runner (P024 FB on the FS while the Mike
+  came free; P013 LT; P032 Z; P029 RT on a combo the Y already won).
+  Retargeting only happened when the target was engaged by someone else or
+  down. Climbing linemen and lead backs now re-read on their decision beat
+  ("first threat to show", event `block_threat`). From his own pictures,
+  when his man is 4+ yd from the acquired runner, he takes a free defender
+  who is clearly nearer the runner (by 2.5 yd, counting closing speed), whom
+  he is nearer than the runner is, and whom no teammate is nearer. Restaged
+  on game 1's 61 runs (after the track fix): fires 17 times on 9 runs.
+  Climbs stuck on a man out of the play went from 45 to 30 OL frames and
+  from 19 to 0 TE frames, and P024's FB now blocks the Mike. Still open:
+  - stalks (P032 Z, P024 Z on the Mike) keep their perimeter ledger. A
+    first try that let receivers switch fired about 3 times a run and pulled
+    them off their corners;
+  - P013 is a climb that overran a downhill backer, not a stale target;
+  - P029 RT stays on a combo the Y has won (combination release).
+- **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
+  tracked the end's shoulder with the end's own velocity fed forward. On P031
+  the end penetrated 4 yd deep, so the guard matched his backward speed and
+  drifted 6 yd deep while still 3–5 yd away laterally, never touching him.
+  The puller now fits the end's shoulder on the end's line to the runner he
+  has acquired, with no velocity feed-forward, and carries the held pull
+  read through the time held. Restaged on 132 pullers (game 1 runs plus
+  power, counter and trap from seeds 8–13): contact with the assigned man
+  55 → 66, contact made inside-out 44 → 58, first contact 2.28 → 2.11 s.
+  P031's guard now kicks the end at 2.4 s. Still open: a kick target who
+  reaches the runner unblocked is unchanged (35 → 36). On P007 (trap) the end
+  still slips inside the trapper after contact; that's contact, not approach.
+- **Defensive gaps exposed so far.** None measurable yet: restaged mean run
+  yards moved within noise on each fix (6.94 → 7.20, 7.20 → 6.87, gap
+  schemes 4.35 → 4.48). Re-check after all three at the PR-tier scorecard.
+- **Wide/outside zone with no lateral movement** (P022, P025, P028). *Open.*
+  Playside linemen gain 0.4–0.8 yd laterally by 0.6 s on these calls, so the
+  first steps do move. On P025 the look comes after contact: the playside
+  reach and his end drift together into the backfield. Not yet compared
+  with tracking.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
@@ -1021,6 +1079,28 @@ From the issue register:
 - **Measurement oddity:** play-action shots show −1.73 yd YAC per catch
   (`dev-12`, 32 attempts). Check how YAC is measured on catches behind the
   catch point before reading it as football.
+- **M4 accounting diagnosis** (develop `c5667bc4`, PR tier, seed 7,
+  12 games): 545 official completions include 90 negative-YAC records.
+  Of those, 28 are end-zone TD catches: receiving yards stop at x110 but
+  physical catch depth extends into the end zone. This invents negative YAC
+  without any post-catch loss. The official statistical view now bounds those
+  catches at the goal line and credits zero YAC; physical stats, intended
+  depth and catch segments remain on the raw tape. The scorecard consumes
+  that official view and actual completed depth, with target depth on other
+  throws and the nflverse statistical goal-line bound. Unknown completed
+  depth remains unknown. See the M4 PR for every affected play.
+- The other 62 negatives are retained: 60 recorded endings behind the catch
+  and two receivers recovering their own fumbles (zero-based game/log indices
+  `G7-P159`, `G8-P157`). GSIS pp26,32–33 keeps own-recovery net yardage in the
+  original receiving category. This is not a validation of movement or
+  forward-progress officiating. One additional negative catch was nullified
+  and excluded. On identical games, YAC changes 7.406→7.602 and aDOT
+  10.020→9.196; these are measurement corrections, not improved football.
+  The legacy −1.73 aggregate is not reproduced on this newer engine:
+  `pa_shot` has 25 attempts/10 catches and changes 6.245→6.512 YAC.
+- Raw play descriptions/replay statistics and tools that explicitly consume
+  the physical tape are not rewritten by this repair. NFL statistical
+  consumers need the official view; intended `airYards` is not achieved depth.
 
 <a id="kick-1"></a>
 ### KICK-1: Kicking too accurate, too many punts
@@ -1062,7 +1142,8 @@ need personnel the sim doesn't have.
 <a id="rule-1"></a>
 ### RULE-1: Too many penalties, especially defensive offside
 
-- **Measure:** 6.8 penalties per team-game (`dev-24`), 7.5 (`dev-12`); NFL 2.5–4.
+- **Measure:** 6.8 penalties per team-game (`dev-24`), 7.5 (`dev-12`); legacy
+  unsourced scorecard band 2.5–4 (waits on M1's committed game-layer reference).
   Defensive offside is about three times the NFL rate (#190).
 - **By type** (develop `fdd767ab`, scorecard pr-tier games: 12 games, seed 7;
   NFL: nflverse 2023 regular season, accepted, 544 team-games). Accepted per
@@ -1227,6 +1308,15 @@ zone).
 - The historical baseline audit misses two takeaways in an INT → return
   fumble → recovery sequence. Current candidate games reconcile (#189).
 - Compare results through official credit, not raw nullified results.
+- **M4 follow-up, separate from the end-zone correction:** on `c5667bc4`,
+  zero-based game/log indices `G6-P094`, `G9-P134`, `G11-P092` have receiver
+  fumbles recovered by opponents behind the fumble spot. Existing reception
+  credit stops at the fumble spot; GSIS pp32–33 requires the lesser advance
+  or recovery spot. The raw YAC values are positive, so this does not explain
+  the audited negative-YAC anomaly. A complete allocation repair must change
+  receiving/passing yardage too, preserving physical endings, returns and
+  possession credit. It is outside M4's YAC/air-only correction; no yardage
+  adjustment or new fumble allocation is silently included.
 
 ## Speed and tools
 
@@ -1257,6 +1347,18 @@ zone).
 <a id="perf-2"></a>
 ### PERF-2: Measurement noise and tooling limits
 
+- M3: [`test/scorecard-bands.test.ts`](../test/scorecard-bands.test.ts) checks each sourced band against committed NFL reference keys: equal-weight 2022–2023 team-season p10–p90, linearly interpolated, rounded to 2 decimals. These are descriptive ranges; target approval remains with Tanner. Unsourced values remain explicit, including the unverified PFF definition and game-layer bands waiting on M1.
+- M3 `passRate`: 56–62% → 54.43–66.33%, from `reference.json#teamSeasons[].dropbackShare.percent`.
+- M3 `comp`: 63–66% → 60.59–68.09%, from `reference.json#teamSeasonRanges.completion`.
+- M3 `ypa`: 6.8–7.2 → 6.35–7.89 yd, from `reference.json#teamSeasons[]` completion yards × completions / throws; the 9.78–12.00 yards-per-completion range is a different measure.
+- M3 `sack`: 6–7.5% → 4.61–9.36%, from `reference.json#teamSeasonRanges.sackPerDropback`.
+- M3 `int`: 2–2.5% → 1.47–3.15%, from `reference.json#teamSeasonRanges.interception`.
+- M3 `comp20`: 7–9% → 6.66–11.08%, from `reference.json#teamSeasonRanges.twentyYardCompletionPerThrow`.
+- M3 `yac`: 4.8–5.6 → 4.53–5.91 yd, from `reference.json#teamSeasonRanges.meanCompletedYAC`.
+- M3 `scramble`: 3–5% → 2.18–7.32%, from `reference.json#teamSeasonRanges.scramblePerDropback`.
+- M3 `ypc`: 4.1–4.5 → 3.70–4.83 yd, from `reference.json#teamSeasons[].designedRun.yards.mean`.
+- M3 `stuff`: 16–20% → 15.89–23.54%, from `reference.json#teamSeasonRanges.stuffPerDesignedRun`.
+- M3 `run10`: 10–12% → 7.58–12.87%, from `reference.json#teamSeasons[].designedRun.explosive.percent`.
 - 12 games give wide intervals. Pressure rate is ±8–11 points at 4 games per
   arm, and 5-point precision needs 22–42 games per arm (#191).
 - With about 30 metrics at 90% intervals, about 3 false "moved" readings are

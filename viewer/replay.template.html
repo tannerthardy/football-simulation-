@@ -535,7 +535,7 @@ window.TELEMETRY_READY = Promise.resolve(true);
     if (r?.audible) kv.push(`check at the line: <b>${esc(r.audible)}</b>`);
     kv.push(`duration <b>${dur.toFixed(1)}s</b>`);
     $('kv').innerHTML = kv.join('');
-    const colors = { throw: css('--accent'), catch: css('--good'), interception: css('--bad'), fumble: css('--bad'), sack: css('--warn'), tackle: css('--muted'), carrier_contact: css('--muted'), touchdown: css('--good'), pitch: css('--los'), pitch_catch: css('--los'), handoff: css('--los'), shed: css('--warn'), pbu: css('--bad'), missed_tackle: css('--warn'), broken_tackle: css('--accent'), block_contact: css('--muted'), block_exchange: css('--los'), block_collect: css('--warn'), block_abandon: css('--warn'), block_log: css('--accent'), block_climb: css('--los'), squeeze: css('--accent') };
+    const colors = { throw: css('--accent'), catch: css('--good'), interception: css('--bad'), fumble: css('--bad'), sack: css('--warn'), tackle: css('--muted'), carrier_contact: css('--muted'), touchdown: css('--good'), pitch: css('--los'), pitch_catch: css('--los'), handoff: css('--los'), shed: css('--warn'), pbu: css('--bad'), missed_tackle: css('--warn'), broken_tackle: css('--accent'), block_contact: css('--muted'), block_exchange: css('--los'), block_collect: css('--warn'), block_threat: css('--warn'), block_abandon: css('--warn'), block_log: css('--accent'), block_climb: css('--los'), squeeze: css('--accent') };
     const shown = p.ev.filter((e) => colors[e[1]]);
     const pct = (time) => Math.max(0, Math.min(100, ((time - p.frames.t[0]) / (dur - p.frames.t[0])) * 100));
     $('marks').innerHTML = shown.map((e) => `<span class="mark" style="left:${pct(e[0])}%;background:${colors[e[1]]}" title="${esc(e[1])} ${e[0]}s"></span>`).join('');
