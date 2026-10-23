@@ -37,7 +37,7 @@ const KIND_LABEL: Record<PlayLog['kind'], string> = {
   run: 'Run', pass: 'Pass', punt: 'Punt', fg: 'Field goal', xp: 'Extra point', kickoff: 'Kickoff',
   kneel: 'Kneel', penalty: 'Penalty', two: 'Two-point try',
 };
-const SHOWN_EVENTS = new Set(['pressure', 'pitch', 'pitch_catch', 'handoff', 'throw', 'throwaway', 'catch', 'drop', 'pbu', 'interception', 'shed', 'sack', 'tackle', 'tackle_wrap', 'carrier_contact', 'missed_tackle', 'broken_tackle', 'fumble', 'recovery', 'touchdown', 'safety', 'out_of_bounds', 'scramble', 'slide', 'block_contact', 'block_exchange', 'block_collect', 'block_abandon', 'block_log', 'block_climb', 'squeeze']);
+const SHOWN_EVENTS = new Set(['pressure', 'pitch', 'pitch_catch', 'handoff', 'throw', 'throwaway', 'catch', 'drop', 'pbu', 'interception', 'shed', 'sack', 'tackle', 'tackle_wrap', 'carrier_contact', 'missed_tackle', 'broken_tackle', 'fumble', 'recovery', 'touchdown', 'safety', 'out_of_bounds', 'scramble', 'slide', 'block_contact', 'block_exchange', 'block_collect', 'block_threat', 'block_abandon', 'block_log', 'block_climb', 'squeeze']);
 /** Frame coordinates in hundredths: tenths at 10 Hz alias anyone slower than
  * about 1 yd/s into stop-and-go steps on playback (tracking and the sim both
  * carry 0.01 yd). The viewer reads the scale from the frames. */

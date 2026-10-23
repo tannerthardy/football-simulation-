@@ -668,11 +668,24 @@ run plays with the assignment layer (`--telemetry full`):
   4.0% of OL frames; cutoffs stuck on a man 5+ yd from the runner and moving
   away while a free defender is within 3.5 yd of the runner, 116 → 51
   frames; first-0.6 s lateral flow of every line position unchanged.
-- **Targets that never update.** *Open, next.* A climber or lead stays on a
-  backer or safety who has taken himself out of the play while another free
-  defender reaches the runner: P013 LT, P024 FB, P032 Z, P029 RT on a combo
-  the Y already won. Retargeting only happens when the target is engaged by
-  someone else or down; there is no threat re-read.
+- **Targets that never update.** *Partly fixed (on by default).* A climber or
+  lead stayed on a backer or safety who was no danger to the runner while
+  another free defender reached the runner (P024 FB on the FS while the Mike
+  came free; P013 LT; P032 Z; P029 RT on a combo the Y already won).
+  Retargeting only happened when the target was engaged by someone else or
+  down. Climbing linemen and lead backs now re-read on their decision beat
+  ("first threat to show", event `block_threat`). From his own pictures,
+  when his man is 4+ yd from the acquired runner, he takes a free defender
+  who is clearly nearer the runner (by 2.5 yd, counting closing speed), whom
+  he is nearer than the runner is, and whom no teammate is nearer. Restaged
+  on game 1's 61 runs (after the track fix): fires 17 times on 9 runs.
+  Climbs stuck on a man out of the play went from 45 to 30 OL frames and
+  from 19 to 0 TE frames, and P024's FB now blocks the Mike. Still open:
+  - stalks (P032 Z, P024 Z on the Mike) keep their perimeter ledger. A
+    first try that let receivers switch fired about 3 times a run and pulled
+    them off their corners;
+  - P013 is a climb that overran a downhill backer, not a stale target;
+  - P029 RT stays on a combo the Y has won (combination release).
 - **Pullers whiff.** *Open.* P031 power: the kick-out guard follows a
   penetrating end 6 yd deep instead of entering his gap. P007 trap.
 - **Wide/outside zone with no lateral movement** (P022, P025, P028). *Open.*
