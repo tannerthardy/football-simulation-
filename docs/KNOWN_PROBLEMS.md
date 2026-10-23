@@ -1191,9 +1191,10 @@ need personnel the sim doesn't have.
   longest crossings, mostly a wide receiver going to the far side, no longer
   fit `MAX_SECONDS` (5.5 s). A yo-yo with no room to step 1.5 yd inside isn't
   run either.
-- **Open** (Tanner, 2026-10-23: logged, not being worked now): let a long
-  motion start earlier than 5.5 s, have him set wider, or have the
-  play-caller stop calling motions the formation can't fit (G7).
+- **Open** (Tanner, 2026-10-23: logged, for later). Tanner's leaning is the
+  simple fix: allow a motion to start more than 5.5 s before the snap. The
+  alternatives are to set him wider, or to have the play-caller stop calling
+  motions the formation can't fit (G7).
 
 ## Rules and penalties
 
