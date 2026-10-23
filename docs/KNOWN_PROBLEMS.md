@@ -778,6 +778,13 @@ Carried over from the issue register; each was measured on an older develop.
   median 0.10 s after the release (was 0.25 s). On 3,147 paired single plays
   (`scripts/diag/paired-plays.ts`), closing in flight rises 0.05 yd (± 0.007)
   for zone defenders, and yards per attempt fall 0.53 (± 0.18).
+- **Deep man (fixed, G3 man cushion):** off man defenders trailed the
+  receiver by 1.3 yd at the throw (tracking: level), because the controller
+  asked for less than the receiver's speed until the stem ate the cushion,
+  then turned and accelerated from about 2 yd/s. They now keep a level
+  margin with `DeepCoverage`'s body preview. Paired man plays: depth over a
+  10+ yd target at the release −0.29 → +0.79 yd, yards per attempt on those
+  throws 13.51 → 9.10 (NFL 10.09).
 - **Open:** the QB gives defenders little to read. His eyes settle on the
   target a median 0.10 s before the release, and his throwing motion lasts
   0.10–0.28 s by rating (about 0.15 s at an 80 rating). A full throwing
@@ -806,15 +813,15 @@ From #193's open list:
   Smack, Read and Patty;
 - Cover 2 and Cover 6 run a few points under tracking (#194);
 - Fangio E1 (strength and rotation to the nickel side) is not done (#196);
-- with `WR_ALIGN` and `OL_SPLITS` on, the match hook and curl/flat defenders
-  stop carrying the doubles seams (`test/integration/coverage-panel.test.ts`
-  is pinned). *Confirmed cause:* the wider slot's seam is outside the hook's
-  band, and the curl/flat's carry starts only once the stem is past 2 yd at
-  4.5 yd/s. Until then the lane logic pulls him downhill toward the stem, so
-  the receiver runs past him at 2.7 yd/s and he finishes 6 yd behind. The
-  hook on Y trails 4 yd underneath the same way. Same failure as deep man
-  (G3): the carrier lets the stem eat his cushion without counting the time
-  his body needs to turn and reach the receiver's speed.
+- **Fixed (G3, man cushion and seam carry):** with `WR_ALIGN` and
+  `OL_SPLITS`, the match hook and curl/flat defenders stopped carrying the
+  doubles seams. The wider slot's seam runs outside the hook's band, and the
+  curl/flat's carry started only once the stem was past 2 yd at 4.5 yd/s.
+  Until then the lane logic pulled him downhill toward the stem, so the
+  receiver ran past him at 2.7 yd/s and he finished 6 yd behind. A plain
+  pattern-match zone now carries on the declared vertical stem and keeps
+  level with the body preview; rule-driven seats keep their rules' carries.
+  `test/integration/coverage-panel.test.ts` is unpinned.
 - with `PASS_KICK` on (#215), the Quarter Flat #3-away scene loses its
   released #3 again: the back's flat release is walled behind the weak
   tackle's vertical kick and is 3.7 yd behind the line at 2.8 s
