@@ -1747,6 +1747,10 @@ These break the model rule that players act on acquired, delayed information.
   timing (`audit`: coverage recovery 0.15–0.30 s by trait).
 - **Open:** wire a trait to a technique channel only once that channel
   works; check other ratings the same way.
+- **Runnable measurement:** the [two-channel diagnostic](reviews/rating-channels.md)
+  separates actual FB/H-back selection from fixed-lineup lead execution, and
+  rebuilds recognition caches for a play-action read and inactive control.
+  It does not implement a missing lead technique or calibrate abilities.
 
 ## Game layer and accounting
 
