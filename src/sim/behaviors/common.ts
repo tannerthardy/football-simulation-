@@ -3,7 +3,7 @@ import { FIELD_WIDTH } from '../../core/field.js';
 import { angleDiff, angleOf, clamp, norm, type Vec2 } from '../../core/vec.js';
 import { arriveVelocity, fatigueFactor, followAccel, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
 import { availability, supportParams } from '../../physics/support.js';
-import { interceptPoint, timeToReach } from '../../physics/reach.js';
+import { interceptPoint, timeToReach, type SprintRequest } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { withMovementObjective } from '../movement-objective.js';
@@ -90,7 +90,8 @@ export function angleTo(from: Vec2, to: Vec2): number {
  *    perceived intercept. Lower pursuit ratings widen that error; they do
  *    not require every poorer pursuer to take a flat, trailing angle.
  */
-export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3): Vec2 {
+export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
+  request?: SprintRequest): Vec2 {
   const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
   const seen = sim.see(a, target, delay);
   const sp = Math.hypot(seen.vel.x, seen.vel.y);
@@ -109,7 +110,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3)
   const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
   const trace = sim.commandTraceFor?.(a);
   const mover = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
-  const ip = interceptPoint(mover, path, { horizon, step: 0.1, radius: reach, recordSamples: !!trace });
+  const ip = interceptPoint(mover, path, { horizon, step: 0.1, radius: reach, request, recordSamples: !!trace });
   let bias = angleBias.get(a);
   if (bias === undefined) {
     // The intercept already forecasts from acquired motion. Delayed cues
@@ -246,10 +247,11 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
       observed: seen, distance: dist, contact, offset, gather, requests: [{ stage: 'close-gather', command }] });
     return command;
   }
-  const p = pursuitPoint(sim, a, target, horizon);
   // Away from the ball, pursuit runs below top speed (more so for low motors).
   const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
-  const original = { ...runThrough(a, p, { speed: effort }), effort };
+  const request = { speed: effort, effort };
+  const p = pursuitPoint(sim, a, target, horizon, request);
+  const original = { ...runThrough(a, p, { speed: request.speed }), effort: request.effort };
   // A new grip may exist before its first solved load reaches body support.
   if (sim.bond?.tacklers.includes(a)) {
     trace?.pursuit(target, { kind: 'chase', planner: 'used', requestedHorizon: horizon, observed: seen,

@@ -684,6 +684,14 @@ Carried over from the issue register; each was measured on an older develop.
   distant chase requests reduced effort. Matching that assumed request changes
   the late arrival without changing capacities, but still misses the recorded
   runner. No production correction or capacity change is made here.
+- **Request-budget repair:** [planning/execution contract](reviews/pursuit-effort-contract.md)
+  gives chase's estimator and emitted interception sprint the same speed/effort
+  request, preserving distant work-rate pacing. The forward model retains the
+  full physical drive/braking/cutting profile and handles above-budget momentum.
+  It leaves sampled versus biased/shaded objectives distinct, gather/navigation/
+  contact ownership intact, and generic reach consumers unchanged. The earlier
+  frozen comparison remains historical; transverse/forecast error and contact
+  span remain open, including the adverse P002 native ending.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often

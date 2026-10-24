@@ -97,6 +97,7 @@ function main() {
     const estimate = helper?.kind === 'chase' && helper.planner === 'bypassed-close-gather'
       ? 'planner-bypassed-close-gather' : predicted?.kind === 'intercept'
         ? `${predicted.prediction.estimate.status} t=${f(predicted.prediction.t)} arrival=${f(predicted.prediction.estimate.arrivalTime ?? undefined)} slack=${f(predicted.prediction.estimate.slack ?? undefined)}` : undefined;
+    const budget = predicted?.kind === 'intercept' ? predicted.prediction.estimate.request : undefined;
     const travel = Math.hypot(end.body.velocity.x, end.body.velocity.y) > 1e-6
       ? Math.atan2(end.body.velocity.y, end.body.velocity.x) : undefined;
     console.log(`${f(step.stepStart)}→${f(step.endpointTime)} ${step.actor.team}:${step.actor.slot} ${d.evaluated ? d.owner.controller : 'snap-wait'}:${d.owner.kind}`
@@ -104,7 +105,8 @@ function main() {
       + ` rewrites=${step.rewrites.map(r => r.stage).join(',') || 'none'}`
       + ` final=(${f(step.final!.vel.x)},${f(step.final!.vel.y)}) face=${f(step.final!.facing)}`
       + ` endpoint=${end.behavior.controller}:${end.behavior.kind} v=(${f(end.body.velocity.x)},${f(end.body.velocity.y)})`
-      + ` bodyFace=${f(end.body.facing)} travel=${f(travel)}${estimate ? ` helperEstimate=[${estimate}]` : ''}`);
+      + ` bodyFace=${f(end.body.facing)} travel=${f(travel)}${estimate ? ` helperEstimate=[${estimate}]` : ''}`
+      + (budget ? ` sprintBudget=[effort=${f(budget.effort)} requestedSpeed=${f(budget.requestedSpeed)} wantedCeiling=${f(budget.wantedSpeedCeiling)}]` : ''));
   }
   console.log(`${trace.steps.length} steps → ${v.out}; ${result.outcome}, ${f(result.yards)} yd. Stored targets may be unavailable; endpoint behavior is not command authorship.`);
 }
