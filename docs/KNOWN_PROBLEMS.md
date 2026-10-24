@@ -918,6 +918,17 @@ run plays with the assignment layer (`--telemetry full`):
   - *Backside crack.* A receiver on the backside of a run cracks into the box
     instead of taking his man; a playside-only crack rule cut backside box
     stalks from 14 to 8 in a first restage. Not landed.
+    Current accepted `cac9e100` reproduction: seed-7 G1-P003, flipped Gun
+    Trips Outside Zone Weak with actual H-across motion, assigns detached Z
+    to backside LB_W and detached Y to NB; the box-first ledger explicitly
+    installs these jobs. Neither loads his target. Z's unassigned corner
+    stays at least 14.86 yd from RB, LB_W at least 4.46 yd; LB_M makes the
+    tackle from the separately installed C/RG combination responsibility.
+    No contradictory concept-specific crack/stalk rule or lost perimeter
+    protection is established in this case. Do not infer that every backside
+    crack is valid, or adopt playside-only eligibility from the old count.
+    The current LB_M access is a next witness, not proof of an unsafe/late
+    combo release. Helper policy and target/information contracts unchanged.
   - *P007 trap contact.* The end slips inside the trapper after contact;
     the approach is fixed, the contact is not.
   - *An inline end's first step and zone track.* He still runs his own
