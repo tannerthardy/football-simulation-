@@ -987,6 +987,10 @@ export class RunBlocker implements Behavior {
     if (plan.departure && (plan.kind !== 'climb' || target !== plan.departure.backer)) {
       delete plan.departure;
       this.departureRead = null;
+      this.climbRead = null;
+      this.climbAccess = null;
+      this.departureAccess = null;
+      this.departureStrikeClear = false;
     }
     if (plan.kind === 'climb' && plan.departure && target === plan.departure.backer) {
       const leaving = this.leaveCombination(a, sim);
@@ -1342,6 +1346,7 @@ export class RunBlocker implements Behavior {
     this.climbRead=null;
     this.climbAccess=null;
     this.departureAccess=null;
+    this.departureStrikeClear=false;
   }
 
   private leaveCombination(a: Agent, sim: PlaySim): MoveCommand | null {

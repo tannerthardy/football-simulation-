@@ -34,7 +34,7 @@ describe('released combination access prototype',()=>{
     expect(g.engagement?.defender).toBe(d);
     expect(Math.hypot(g.engagement.hands.normalForce,g.engagement.hands.tangentForce)).toBeGreaterThan(1);
     expect(rb.pos.x).toBeLessThan(c.pos.x);
-    expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(false);
+    expect(sim.events.some((e:any)=>e.type==='carrier_contact')).toBe(false);
     break;
    }
   }
@@ -62,4 +62,13 @@ describe('released combination access prototype',()=>{
   expect(again.vel).toBeDefined();expect(c.body).toEqual(before);
   expect(JSON.stringify(sim.rng)).toBe(rng);calls.mockRestore();
  });
+ it('retires departure access when an intervening job does not consume the old plan',()=>{
+  const {sim,c,d}=stage(),ctrl=c.behavior as any;
+  ctrl.update(c,sim);expect(ctrl.climbRead).not.toBeNull();
+  ctrl.plan.kind='stalk';ctrl.plan.target=d;
+  ctrl.update(c,sim);
+  expect(ctrl.plan.departure).toBeUndefined();expect(ctrl.climbRead).toBeNull();
+  expect(ctrl.climbAccess).toBeNull();expect(ctrl.departureAccess).toBeNull();
+ });
+
 });
