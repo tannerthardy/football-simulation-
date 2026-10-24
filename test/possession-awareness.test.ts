@@ -118,6 +118,17 @@ describe('possession identity comes from the observer, not the ball holder', () 
     expect(pursueIfLive(f.sim, f.a)).not.toBeNull();
   });
 
+  it('honors a newer acquired back instead of reviving an older QB-held mesh image', () => {
+    const f = stage(); f.a.runFit!.kind = 'alley'; f.a.recog!.read = 'run';
+    const rb = f.sim.slot('RB')!, back = f.pictures.get(rb)!, qb = f.pictures.get(f.sim.qb)!;
+    back.carrying = qb.carrying = true;
+    back.age = .1; qb.age = .3; back.pos = { x: f.sim.los - 1, y: 26 };
+    expect(observedHolder(f.a, f.sim)?.target).toBe(rb);
+    // The existing post-mesh alley approach follows the acquired runner here.
+    // Reconstructing a raw backfield pair must not discard that interpretation.
+    expect(movementObjective(runFit(f.a, f.sim, 'B', 1))?.point.x).toBe(back.pos.x);
+  });
+
   it('keeps an installed fit in Empty when possession is unresolved; an empty QB is not a runner', () => {
     const sim = new PlaySim(nativeTraceSetup({ ...input, formation: 'gun_empty_11' }));
     const a = sim.slot('LB_M')!;

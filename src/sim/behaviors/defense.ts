@@ -195,10 +195,10 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
     // selection inside the fit fallback. Reuse the installed mesh picture,
     // including unknown/negative carrying, rather than inventing a handoff.
     const holder = observedHolder(a, sim), back = sim.slot('RB');
-    if (back && sim.offAlign.spots[back.slot]?.backfield
-      && (!holder || holder.target === sim.qb || holder.target === back)) {
+    if (holder && (holder.target !== sim.qb || hasObservedFlight(a))) read = { possession: holder };
+    else if (back && sim.offAlign.spots[back.slot]?.backfield) {
       read = { backfield: { back, backCue: sim.see(a, back), qbCue: sim.see(a, sim.qb) } };
-    } else read = holder;
+    } else read = holder ? { possession: holder } : null;
   }
   return executeRunFit(a, sim, gap, gapSign, read);
 }

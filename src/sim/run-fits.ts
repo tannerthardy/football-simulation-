@@ -13,6 +13,7 @@ import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { handoffReach } from './ball-transfer.js';
 import { forceTrack, retainedForceTrack } from './force-track.js';
+import type { PossessionRead } from './possession-read.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -39,7 +40,10 @@ export interface KeyedRunFit {
 export interface BackfieldRunFit {
   backfield: { back: Agent; backCue: Perceived; qbCue: Perceived };
 }
-export type RunFitRead = KeyedRunFit | BackfieldRunFit;
+/** A personally identified holder uses the ordinary post-mesh fit, without
+ * promoting a possible key or an installed exchange into confirmed possession. */
+export interface AcquiredRunFit { possession: PossessionRead }
+export type RunFitRead = KeyedRunFit | BackfieldRunFit | AcquiredRunFit;
 
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const jobs = new Map<Agent, RunFitJob>();
@@ -236,17 +240,18 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   let job: RunFitJob = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
   const keyed = input && 'target' in input ? input : undefined;
   const picture = input && 'backfield' in input ? input.backfield : undefined;
+  const acquired = input && 'possession' in input ? input.possession : undefined;
   const back = picture?.back ?? sim.slot('RB');
   const acquiredBack = picture?.backCue.carrying === true && picture.qbCue.carrying !== true;
-  const c = input === null ? null : picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? sim.carrier;
+  const c = input === null ? null : acquired?.target ?? (picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? sim.carrier);
   // A keyed fit has already consumed its runner picture. Deep mesh geometry
   // keeps the insertion at its surface; the actual handoff/carrier cannot
   // choose another target or prematurely declare this observed crease.
-  let premesh = picture ? c === sim.qb : keyed ? keyed.cue.pos.x <= sim.los - 1.6
+  let premesh = acquired ? false : picture ? c === sim.qb : keyed ? keyed.cue.pos.x <= sim.los - 1.6
     : c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
   if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: liveGapY(sim, a, job.gap, job.side) }, { speed: .7 });
-  let seen = picture ? premesh || c === back ? picture.backCue : picture.qbCue
-    : keyed?.cue ?? sim.see(a, premesh ? back! : c);
+  let seen = acquired?.cue ?? (picture ? premesh || c === back ? picture.backCue : picture.qbCue
+    : keyed?.cue ?? sim.see(a, premesh ? back! : c));
   if (!keyed && premesh) {
     const qb = picture?.qbCue ?? sim.see(a, sim.qb);
     // Snap possession is expected. An empty back already beyond the line
