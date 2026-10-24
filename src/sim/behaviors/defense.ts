@@ -62,7 +62,7 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     // behind the line. Pass belief alone cannot turn a handoff into a catch
     // and discard an installed edge. Snap QB possession keeps the rush/fit.
     const caught = target !== sim.qb && hasObservedFlight(a);
-    if ((past || caught) && (sim.t >= a.readAt || cue.pos.x > sim.los + 2)) {
+    if (caught || (past && (sim.t >= a.readAt || cue.pos.x > sim.los + 2))) {
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'possession-pursuit', chose: target.slot,
         cue: 'carrying=true in this observer\'s acquired body picture',
         detail: `Sample age ${cue.age ?? 'unknown'} s; acquired x=${cue.pos.x}; installed ${a.runFit?.kind ?? 'fallback'} boundary. No authoritative holder/catch flag.` });

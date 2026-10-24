@@ -212,10 +212,12 @@ describe('an acquired trajectory supports anticipation, not certified possession
 
   it('responds on the first ordinary update with a newer acquired catch; no second recognition timer', () => {
     const f = flight(); playBall(f.a, f.sim, null);
+    f.a.readAt = 10; // Initial run/pass recognition cannot delay a personally acquired catch again.
     f.sim.t = 2.1; f.sim.ball = { kind: 'held', carrier: f.z };
     f.pictures.get(f.x)!.carrying = true; f.pictures.get(f.x)!.age = .05;
     f.pictures.get(f.x)!.pos.x = f.sim.los - 1; // a legitimately acquired catch behind the line
     const c = pursueIfLive(f.sim, f.a)!;
+    expect(c).not.toBeNull();
     expect(movementObjective(c)?.point.x).toBe(f.pictures.get(f.x)!.pos.x);
     expect(observedHolder(f.a, f.sim)?.target).toBe(f.x);
     f.pictures.get(f.x)!.carrying = null;
