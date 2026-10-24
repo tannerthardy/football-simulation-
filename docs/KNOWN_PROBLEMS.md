@@ -38,7 +38,7 @@ much as on the line. Entries cross-reference each other where that matters.
 | `prof190` | #190's line set on develop (PAD_LEVERAGE, DL_ANCHOR, DL_FLATTEN, SNAP_REACT), 8 games, seeds 101–108. |
 | `prof194` | #194's candidate profile (13 flags in `config/baseline.json`), 8 games. |
 | `rg3` | The run-offense research build on `claude/run-game-v3` (archived; #153 is closed). Its numbers don't certify develop. |
-| `audit` | The outside audit (2026-10-23) on develop `c4a03f6`: one seed-7 game (Ironmen v Comets, strength .55, 127 live plays), each play restaged exactly from its saved setup and changed one thing at a time. Its counts show that something happens and what causes it, not how often across a league. Play IDs are that game's; current `G1-P002` is a Comebacks pass, not TKL-4's older P002 clip. |
+| `audit` | The outside audit (2026-10-23) on develop [c4a03f6](https://github.com/tannerthardy/football-simulation-/commit/c4a03f6463eacb23ce63d01bd32b4f8b547b9bc0): one seed-7 game (Ironmen v Comets, strength .55, 127 live plays), each play restaged exactly from its saved setup and changed one thing at a time. Its counts support selected-case diagnoses, not league frequency or a shared cause for every similar-looking play. Play IDs are that game's; its `G1-P002` is a Comebacks pass, not TKL-4's older P002 clip. |
 | `NFL` | Mostly Big Data Bowl 2025 tracking (2022, weeks 1–9). The outcome bands are the scorecard's. |
 
 ### Current: develop at `ccdb69cb`
@@ -715,11 +715,12 @@ Carried over from the issue register; each was measured on an older develop.
 - **Open:**
   - P028 is an overrun on a cutback: the turn is toward the ball but long.
     That is run-fit flow speed, not turning.
-  - P002 SS (*fix on*, PR after #240): hips flipped ~100° in 0.2 s while his
-    velocity kept its lateral component for ~0.5 s. The earlier "braking is
+  - Earlier P002 SS (*fix on*, PR after #240): hips flipped ~100° in 0.2 s
+    while his velocity kept its lateral component for ~0.5 s. The earlier "braking is
     not the cause" (DB decel p90 6.6 vs NFL 5.6 yd/s²) is withdrawn as proof:
-    that operator is the largest smoothed speed loss anywhere in a play,
-    contact included, and can't say whether braking started on time. When a
+    this is a p90 across per-player-play maxima of filtered scalar speed
+    loss, including contact. It establishes neither lateral cutting capacity,
+    braking timing nor maximum hard-plant capability. When a
     command gives no facing, `commandFacing` faced the *requested* velocity at
     once. Above 2.5 yd/s the default facing now leads his actual path by at
     most 60°; below that he has planted and squares to the new heading.
@@ -727,12 +728,15 @@ Carried over from the issue register; each was measured on an older develop.
     keep orientation within 60° of travel 72% of frames (6+: 91%).
   - Turn *capability* is unproven either way. The NFL per-path fastest 0.2 s
     turn (p99 650–790°/s; sim ceiling 315–600°/s) comes from provider
-    orientation, where one 180° glitch sample reads as 1,800°/s, and both yaw
-    scripts count players with no roster match as DBs. Keeping the ceiling
+    orientation and cannot establish physiological capacity. One 180° glitch
+    sample reads as 1,800°/s, and both yaw scripts count players with no
+    roster match as DBs. Keeping the ceiling
     fixed during controller work is a controlled choice, not a proven NFL
-    capacity. Turn *frequency* is the problem (COV-6). In a one-body replay of
-    the recorded requests (`audit`), doubling yaw rate moved the SS's path
-    0.013 yd; doubling lateral capacity moved it 3.6 yd.
+    capacity. [COV-6](#cov-6) separately diagnoses requested-turn frequency.
+  - Native free sweep (`audit`, `G1-P002` SS at `c4a03f6`): the ordinary
+    motor with the recorded commands reproduces the path. Doubling yaw rate
+    moved it 0.013 yd; doubling lateral capacity moved it 3.6 yd. This is
+    selected-case parameter sensitivity, not calibration of either capacity.
   - Engaged defenders face their blocker (`audit`, `G1-P019` LB_W, exact
     restaging): engaged with the center at 4.40 s he faces 143° from the
     runner, because engagement technique (`engagement.ts`, near line 1436)
@@ -743,6 +747,8 @@ Carried over from the issue register; each was measured on an older develop.
     torque, and facing your blocker can be right. Open: whether a body-relative
     hand model lets him shed better facing the ball. Detector 2 skips engaged
     defenders.
+    This appearance change is distinct from the free sweep above; neither
+    establishes a common cause for all overruns or facing-away cases.
   - Remaining cases are mostly overruns at speed and defenders on the ground.
   - Man defenders on receivers with a run carrier nearby still watch their
     man; whether that is pass-first discipline or a late read is Defense's
@@ -1790,6 +1796,11 @@ zone).
 <a id="perf-3"></a>
 ### PERF-3: The mechanics guard passes on missing data; Python tests not in CI
 
+- **Current follow-up:** #249 repairs the missing-evidence guard. The separate
+  `.github/workflows/data-tests.yml` adds normal offline Python discovery,
+  including those guard cases, on Python 3.12 with declared dependencies;
+  reference-only changes do not schedule extra games. The observations below
+  describe the original audit; the precision comment remains a separate issue.
 - `scripts/mechanics/compare.py`: a guarded metric with no sim data falls
   into the "too few" branch, gets no mark, and counts as still matching. An
   empty sim file prints "12/12 matched metrics still match" and exits 0.
@@ -1852,9 +1863,10 @@ learn what's needed.
 - **Symptom:** film review is how Tanner finds most real problems, but the
   viewer doesn't give him all the information he needs, and some of what it
   shows may mislead. We don't know how many apparent problems come from the
-  drawing rather than the football. Known example: QB-3, where a diving
-  tackler is drawn as a dot on the ground, so a real ankle tap looks like a
-  QB falling with nobody near him.
+  drawing rather than the football. Known example: [QB-3](#qb-3), where a
+  diving tackler is drawn as a dot on the ground, hiding the acquired leg
+  hold. A clearer drawing does not establish that acquisition was geometrically
+  valid; that is a separate [reach question](#tkl-5).
 - **Goals:**
   - Show the best information for judging a play: what each player was
     asked to do, what his body actually did, contact and reach, facing, and
@@ -1869,7 +1881,8 @@ learn what's needed.
     form rather than only in free text.
 - **Already exists:** the sim suite film room with notes saved per play, the
   replay viewer's layers ([VISUALIZER_PLAN](VISUALIZER_PLAN.md)), and #243's
-  film detectors.
+  film detectors. The viewer's [copyable play reference](../viewer/replay.template.html#L596)
+  already includes film identity, play, timestamp and the selected player.
 - **Open:** what to build first, and how much of a separate tool it should
   be. The outside audit's suggestions on drawing intent versus achieved
   motion and showing reach and contact apply here.
