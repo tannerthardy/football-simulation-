@@ -64,7 +64,8 @@ retune their football decisions or certify those distances as hand contact:
 | `behaviors/common.ts` gather | both radii + .65 holder reach | Approach/stopping policy; may stop outside the actual contact envelope for some profiles. |
 | `behaviors/carrier.ts` threat forecasts | both radii + .75 defender reach | Risk region, not an admitted tackle or guaranteed arrival. |
 | `engagement.ts` acquired run trail | both radii + .65 defender reach | Work-off eligibility policy, not an admitted contact. |
-| Catch approach / `catchSpot` | receiver center to a point ball, own reach | The ball has no target body radius; this repair adds none. |
+| `catchSpot` / catch-approach ball forecast | .8 own reach / own reach to a point ball | The ball has no target body radius; this repair adds none. |
+| `movingCatchApproach` receiver proximity / arrival | both radii + own reach / both radii + .65 own reach | These receiver-body policy distances are distinct from point-ball reach and remain unmodified, not certified hand contact. |
 
 Admission correctness is not a new dive chooser. In particular the legacy
 desperation-dive branch selects a runner separating faster than 1.6 yd/s,
