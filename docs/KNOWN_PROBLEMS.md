@@ -937,6 +937,19 @@ run plays with the assignment layer (`--telemetry full`):
     crack is valid, or adopt playside-only eligibility from the old count.
     The current LB_M access is a next witness, not proof of an unsafe/late
     combo release. Helper policy and target/information contracts unchanged.
+  - *C/RG-to-Mike release timing.* The same saved P003 input on accepted
+    `50b80062` retains DT_S: C's first secure RG picture at 0.90 s does not
+    survive to the next personal read; the opposite departure lacks keeper
+    control. Joined reads already resolve before either movement update.
+    Diagnostic C releases at 0.80/0.90 s and RG at 0.90 s change real requests
+    but never load Mike, while DT_S gets closer to the runner. Do not promote
+    those forced transfers or shorten the release confirmation from this case.
+    A supported Over-front variant keeps the same installation and naturally
+    releases C at 1.10 s, still without reaching Mike. The next bounded
+    approach witness is that C's departure around the moving DT_S/RG surface,
+    not a demonstrated stale target or late shared transaction. This closes
+    the sampled timing remedy, not every possible climb or contact mechanism;
+    the historical constructor is not a fresh current-game P003 capture.
   - *P007 trap contact.* The end slips inside the trapper after contact;
     the approach is fixed, the contact is not.
   - *An inline end's first step and zone track.* He still runs his own
