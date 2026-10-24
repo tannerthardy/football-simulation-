@@ -117,8 +117,9 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
       expect(law.primaryEligibility?.eligible).toBe(true);
       expect(law.primaryContactsBeforeRelease).toEqual([]);
       expect(law.primaryEngagedBeforeRelease).toBe(false);
-      expect(law.maxIneligibleForwardEdgeBeforeRelease).toBeLessThan(41);
-      expect(law.maxQBForwardEdgeBeforeRelease).toBeLessThan(40);
+      expect(law.forwardPassRestrictionApplicable).toBe(true);
+      expect(law.maxIneligibleForwardEdgeBeforeRelease!).toBeLessThan(41);
+      expect(law.maxQBForwardEdgeBeforeRelease!).toBeLessThan(40);
       expect(law.nativeFouls).toEqual([]);
       expect(law.limitations).toEqual([]);
       expect(law.releases[0]).toMatchObject({ target: { playerId: 'OFF-WR2' }, priorForwardThrows: 0 });
@@ -127,6 +128,8 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
   });
 
   it('shows real runner participation on the run, while preserving both deceptive incompletions', () => {
+    expect(run.summary.legality.support.forwardPassRestrictionApplicable).toBe(false);
+    expect(run.summary.legality.support.maxIneligibleForwardEdgeBeforeRelease).toBeNull();
     expect(run.summary.legality.support.runCornerContacts.some(e => e.type === 'tackle_wrap')).toBe(true);
     expect(run.summary.legality.support.runCornerContacts.some(e => e.type === 'tackle')).toBe(true);
     expect(pass.summary.result.man.outcome).toBe('incomplete');
