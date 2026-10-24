@@ -1605,6 +1605,11 @@ From the outside audit (`audit`):
   (`blocking.ts`) skips defenders by their real `engagement` and `isDown`,
   not the blocker's picture, and ignores a helper's velocity. Fix before any
   blocker adaptation work.
+  The blocker input-provenance candidate replaces this eligibility gate with
+  acquired pose and retains it through `availableTarget`/`findWork`, including
+  a filling backer's climb-to-drive transition. Ordinary installed jobs keep
+  their existing contracts. Focused controls are in `first-threat-evidence`;
+  helper velocity, other live-state reads and possession paths remain separate.
 - **Run recognition uses the global handoff time** (`recognition.ts`), whether
   or not the defender could see the mesh.
 

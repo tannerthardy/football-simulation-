@@ -891,6 +891,10 @@ export class RunBlocker implements Behavior {
   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
   private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
   private workPicture: BlockerWorkPicture | null = null;
+  /** Keep acquired eligibility with the responsibility when a filling backer
+   * changes its technique from climb to drive. Null target means finding work;
+   * a null record means another installed job owns eligibility. */
+  private acquiredWork: { target: Agent | null } | null = null;
   /** The called track he is running this tick (known to teammates). */
   private track: Vec2 | null = null;
   constructor(public plan: RunBlockPlan) {}
@@ -934,6 +938,7 @@ export class RunBlocker implements Behavior {
       this.readRules(a,sim);
     }
     if (plan.combination) readCombination(a, sim, plan.combination);
+    if (this.acquiredWork && this.acquiredWork.target !== plan.target) this.acquiredWork = null;
     // Rules/combination reads can change work even when contact, a first step
     // or another branch returns without consuming block-fit this tick.
     a.mind.setAimTarget('block-fit', plan.target?.idx ?? null);
@@ -1263,26 +1268,35 @@ export class RunBlocker implements Behavior {
       a.mind.setAimTarget('block-fit', target.idx);
       return target;
     }
+    // This job selected a personally acquired first threat. Do not undo
+    // that responsibility using a remote live pose or somebody else's hands.
+    // The picture exposes pose, not engagement; nearby bodies do not prove a
+    // block. Physical engage eligibility still owns any eventual contact.
+    const acquiredEligibility = !!this.acquiredWork && this.acquiredWork.target === target;
+    const picture = acquiredEligibility && target ? sim.see(a, target) : null;
     // Either member can land first. The covered owner's drive/reach/down
     // label does not make his partner's contact somebody else's block.
     // Keep the shared responsibility until the combination read releases it;
     // ordinary reach and useful helper contact still decide whether he joins.
-    const partnerOwns = plan.combination && !plan.combination.released && target?.engagement
+    const partnerOwns = !acquiredEligibility && plan.combination && !plan.combination.released && target?.engagement
       && plan.combination.defender === target && plan.combination.members.includes(a)
       && plan.combination.members.includes(target.engagement.blocker);
     // A named stalk is still his job when a teammate momentarily gets hands
     // on that defender. Private engagement ownership is not an acquired
     // handoff; real spacing and contact eligibility still govern any help.
-    if (!target || target.isDown(t) || (plan.kind !== 'stalk' && target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && !partnerOwns)) {
+    if (!target || (acquiredEligibility
+      ? picture?.pose === 'down' || picture?.pose === 'rising'
+      : target.isDown(t) || (plan.kind !== 'stalk' && target.engagement && target.engagement.blocker !== a && !target.engagement.helpers.includes(a) && !partnerOwns))) {
       if (t >= this.retarget) {
         this.retarget = t + a.mind.decisionInterval;
         const previous = target;
-        const replacement = this.findWork(a, sim);
+        const replacement = this.findWork(a, sim, acquiredEligibility);
         const combination = plan.combination;
         if (combination && !combination.released && replacement !== combination.defender) {
           abandonCombination(a, sim, combination, 'original target unavailable; finding work');
         }
         plan.target = target = replacement;
+        if (acquiredEligibility) this.acquiredWork = { target: replacement };
         if (replacement !== previous) delete plan.contactFit;
         if (replacement && replacement !== previous && (!plan.combination || plan.combination.released))
           this.classifyWork(a, sim, replacement);
@@ -1692,8 +1706,10 @@ export class RunBlocker implements Behavior {
     const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o.idx !== picture.carrier).map(o => sim.see(a, o).pos);
     let best: { d: Agent; score: number } | null = null;
     for (const d of sim.defense) {
-      if (d === target || d.engagement || d.isDown(sim.t)) continue;
-      const seen = sim.see(a, d), threat = danger(seen);
+      if (d === target) continue;
+      const seen = sim.see(a, d);
+      if (seen.pose === 'down' || seen.pose === 'rising') continue;
+      const threat = danger(seen);
       // Behind the runner he is pursuit, not a man to block in front of him.
       if ((seen.pos.x - ref.x) * dir < -1 || threat.score > mine.score - 2.5) continue;
       const reach = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
@@ -1702,6 +1718,7 @@ export class RunBlocker implements Behavior {
     }
     if (!best) return;
     p.target = best.d;
+    this.acquiredWork = { target: best.d };
     delete p.contactFit;
     this.climbRead = null;
     this.climbAccess = null;
@@ -1738,13 +1755,14 @@ export class RunBlocker implements Behavior {
     return blockerWorkPoint(this.workPicture, sim.t);
   }
 
-  private findWork(a: Agent, sim: PlaySim): Agent | null {
+  private findWork(a: Agent, sim: PlaySim, acquiredEligibility: boolean): Agent | null {
     const ref = this.workReference(a, sim);
     let best: Agent | null = null;
     let bs = Infinity;
     for (const d of sim.defense) {
-      if (d.engagement || d.isDown(sim.t)) continue;
+      if (!acquiredEligibility && (d.engagement || d.isDown(sim.t))) continue;
       const seen = sim.see(a, d);
+      if (acquiredEligibility && (seen.pose === 'down' || seen.pose === 'rising')) continue;
       // Find work within this responsibility, not the omniscient nearest man
       // to the ball anywhere on the field. Pullers/lead blockers own the exit.
       const laneY = this.plan.pullPath?.at(-1)?.y ?? (this.plan.kind === 'lead' ? ref.y : this.homeY ?? a.pos.y);
