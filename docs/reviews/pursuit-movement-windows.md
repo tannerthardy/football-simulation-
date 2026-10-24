@@ -168,3 +168,117 @@ intervention rows remain missing. A focused synthetic pair proves the command
 can distinguish transverse response when final yards are unchanged; it makes
 no claim of an actual controller improvement. No NFL download, capacity retune,
 physiological ceiling or new aggregate target is part of this diagnostic.
+
+## Treatment evidence extension (pursuit-window-v2)
+
+This extends the same command and numeric operators. It does not replace the
+original six-case selection, SHA256
+`f98586042870657058ec7876403793fec1a0e37d229afffe8d0bf4156832dc5d`.
+A new `selectionVersion` identifies additional cases; `extends.selectionSha256`
+identifies the original. Old saved reports keep their old operator hashes.
+Existing native quantities on those six saved references remain exactly equal;
+the additional fields have version `pursuit-window-v2`.
+
+Accepted starting develop is `27617221a5d0cc2100226af7107be8fca64a401b`,
+including prediction contract #259. Turning #255 (`035214e0942238bb9fdd10241b42bd5a923b2ca7`)
+and the actor-window panel (`b7e12948aac78f41461ca9688abd17a63103c981`)
+are **pending dependencies**. Their measurement composition is not accepted
+trunk. Source/settings/input identity belongs to each trajectory; a common
+play label does not join different captures.
+
+The owner witnesses are the actual ordinary P002 **D:SS / COM-LB1** and P012
+**D:LB_W / IRN-LB4**, regenerated on #259's exact source
+`06bf5ef7ee18ff0bca87362fa37386c6e002af55`, Node 22.23.3, engine
+`1b9fb92ca2fca728214dd95a3386ecf8ea1ec206b47706701fc4e7e9a335cdc2`.
+P002's actual recorded target is **IRN-RB3**, despite RB1 in #259's prose;
+P012's target is **COM-RB1**. Neither is a renamed original P012 corner window.
+All resolved settings and constructor checksums remain in their captures.
+
+Before any treatment implementation/export or outcomes were available, these
+two existing native transfer entries were reserved in the owner handoff:
+
+| ID | Actor | Fixed window | Situation |
+| --- | --- | --- | --- |
+| PT-R1-oblique-Z-R-S83 | FS | [2.00,5.00] s | Existing crossing/oblique pursuit from stationary entry, roster pair 19/20 |
+| PT-R2-freeCut-RB-L-S131 | FS | [2.00,5.00] s | Existing ungrasped runner stop/reversal, roster pair 31/32 |
+
+These are staged native 22-body encounters, not ordinary-game exposures. No
+profile is changed. They are distinct from P002/P012, but use a previously known
+fixture family, not a blind population holdout. The free-cut runner command switches at t=3; physical
+reversal is measured, not assigned that time. Its redirection anchor is t=3,
+with a declared negative-X evaluation axis. The crossing case uses its declared
+negative-Y closing axis. Baseline planner calls do not establish that a future
+treatment executes. Retain an inactive or early-ending case; do not substitute
+another after seeing outcomes. The original gathering, coverage and
+contact/fall controls stay in the extended selection.
+
+The existing transfer collector can export just these entries, without another
+128-entry run:
+
+```sh
+node --import tsx scripts/diag/pursuit-transfer.ts out/treatment-evidence/reserved-transfer-baseline.json.gz --select PT-R1-oblique-Z-R-S83 --select PT-R2-freeCut-RB-L-S131 --command-traces out/treatment-evidence/transfer
+```
+
+The geometry/input cohort is unchanged. Each optional trace uses the existing
+selected recorder and retains collector hash, source/settings, initial-state
+hash and exact observer parity. Its target trajectory comes from the existing
+transfer collector's simultaneous full-precision states. Default full-panel
+collection remains available. No new simulation/evaluation framework is added.
+
+For the two ordinary owner inputs, run #259's documented captures on its pinned
+source. Obtain full-precision actual target states with the same existing CLI,
+rather than calling a perceived hip the actual runner:
+
+```sh
+node --import tsx scripts/diag/command-trace.ts --capture out/treatment-evidence/P002/play.bin --actor D:SS --from 3.30 --to 7.40 --out out/treatment-evidence/P002/extended-trace.json
+node --import tsx scripts/diag/command-trace.ts --capture out/treatment-evidence/P002/play.bin --player-id IRN-RB3 --from 3.30 --to 7.40 --out out/treatment-evidence/P002/target-trace.json
+node --import tsx scripts/diag/command-trace.ts --capture out/treatment-evidence/P012/play.bin --actor D:LB_W --from 2.90 --to 3.30 --out out/treatment-evidence/P012/trace.json
+node --import tsx scripts/diag/command-trace.ts --capture out/treatment-evidence/P012/play.bin --player-id COM-RB1 --from 2.90 --to 3.95 --out out/treatment-evidence/P012/target-trace.json
+```
+
+An optional case `target` supplies a stable identity. A trial's `targetTraceFile`
+and optional `targetTraceSha256` identify that actor's trace. A separate target
+trace must match source/settings/Node and constructor identity, and pass its
+observer check. Otherwise actual approach stays unavailable. Native inline
+`targetTrajectory` is also supported with an explicit identity/source. Duplicate
+conflicts are rejected; positions join only at actual simultaneous timestamps.
+No time/position interpolation supplies an arrival.
+
+`steps[].pursuit` now supplies the actual recorded horizon, selected time,
+arrival estimate, signed slack, fallback/bypass status, target and pipeline
+phase. All raw helper records remain with requests. Equality of a chase helper's
+last returned command and `decision.raw` is reported; equality alone does not
+establish policy activation or validate a shifted steering point. The recorder
+can see helpers whose return is later discarded.
+
+`predictionEvaluationWindow` explicitly bounds later observations used for a
+sampled prediction deadline. P002's measurement remains [3.30,4.40], while its
+declared deadline-observation span is [3.30,7.40]. Distances to the sampled point
+and simultaneous actual target at that recorded time describe the continued
+replanning trajectory. They are not a fixed-command reachability experiment,
+nor evidence that the biased/leverage-shifted steering point was feasible.
+Actual objective deadlines remain unavailable unless explicitly recorded.
+
+Redirection reports the first contiguous reduction in heading error and,
+separately, the first observed positive velocity along the sourced axis, after
+`redirectionAfter` (window entry by default). Already-positive entry/anchor is
+labelled. Native zero-speed headings stay undefined. These explicit response
+events do not assert a correct football decision; inspect contact/support,
+raw/applied requests and later response with them.
+
+For treatment handoff, retain `exposureKind` (for example
+`fixed-input-continuation` versus `new-whole-game-exposure`). Optional
+`treatmentActivity` records the owner's activation witness, exact `actor`,
+`window`, `appliedCalls` and `source`. Unscoped or missing activity is unavailable;
+zero applications is an inactivity control. This is a proposed downstream
+annotation, not an additional engine field or an agreed producer contract.
+The controller owner must supply the actual activation definition/export.
+
+The JSON comparison preserves raw/applied request differences, observer parity,
+actual input identities, engine/settings identities and actor-level deltas.
+It does not infer a favorable policy result from changed paths or final yards.
+In particular, a fumble by another player cannot certify selected-pursuer
+execution. Missing, rejected, partial, unknown-target and filtered-rejected
+exposures remain visible. Raw portable captures, traces, manifests, tables and
+test logs stay in ignored `out/treatment-evidence/`. Actual treatment and useful
+independent transfer remain pending until the owner supplies those executions.

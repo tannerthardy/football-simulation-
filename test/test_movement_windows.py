@@ -63,6 +63,160 @@ def inputs(kind='body-only', support=True):
 
 
 class MovementWindowTests(unittest.TestCase):
+    def prediction_pair(self):
+        fixtures, trials = inputs()
+        fixtures['cases'][0]['target'] = {'team': 'O', 'slot': 'RB', 'playerId': 'recorded-target'}
+        for trial in trials['trials']:
+            trial['trace']['meta']['node'] = 'declared synthetic fixture runtime'
+            trial['exposureKind'] = 'fixed-input-continuation'
+            trial['trace']['targetTrajectory'] = dict(actor=fixtures['cases'][0]['target'],
+                source='same synthetic execution, declared target',
+                samples=[dict(t=k/20, position=dict(x=3*k/20+1, y=0)) for k in range(21)])
+            trial['trace']['steps'][0]['pursuit'] = [dict(phase='decision', target=fixtures['cases'][0]['target'], data=dict(
+                kind='intercept', prediction=dict(t=.5, point=dict(x=2, y=0),
+                estimate=dict(status='estimated-feasible', horizon=3, arrivalTime=.4, slack=.1, physicalGuarantee=False)),
+                estimateAppliesTo='sampled-point-before-bias-and-leverage', steeringPoint=dict(x=2.1, y=0),
+                biasedTime=.55, steeringPointEstimate='not-evaluated'))]
+        return fixtures, trials
+
+    def test_recorded_prediction_join_uses_actual_target_not_perceived_goal(self):
+        row = panel.build_report(*self.prediction_pair())['rows'][0]
+        self.assertAlmostEqual(row['pursuit']['actualApproach']['closestObservedSeparationYd'], 1.)
+        p = row['pursuit']['predictions'][0]
+        self.assertEqual(p['sampledPredictionDeadline'], .5)
+        self.assertEqual(p['actualPursuerDistanceToSampledPointYd'], .5)
+        self.assertEqual(p['actualTargetDistanceToSampledPointYd'], .5)
+        self.assertEqual(p['actualSeparationAtSampledDeadlineYd'], 1.)
+        self.assertEqual(p['steeringPointEstimate'], 'not-evaluated')
+        self.assertIn('unverified', p['requestConsumption'])
+        self.assertEqual(row['requests'][0]['prediction']['status'], 'estimated-feasible')
+        self.assertEqual(row['native']['objective']['status'], 'unavailable')
+        fixtures, trials = self.prediction_pair()
+        trials['trials'][0]['trace']['steps'][0]['pursuit'][0]['target'] = {'playerId': 'different-target'}
+        p = panel.build_report(fixtures, trials)['rows'][0]['pursuit']['predictions'][0]
+        self.assertEqual(p['actualPursuerDistanceToSampledPointYd'], .5)
+        self.assertIsNone(p['actualTargetDistanceToSampledPointYd'])
+        self.assertIn('different', p['targetIdentityStatus'])
+
+    def test_deadline_without_observed_state_is_not_an_invented_arrival(self):
+        fixtures, trials = self.prediction_pair()
+        for trial in trials['trials']:
+            trial['trace']['steps'][0]['pursuit'][0]['data']['prediction']['t'] = 1.5
+        p = panel.build_report(fixtures, trials)['rows'][0]['pursuit']['predictions'][0]
+        self.assertIsNone(p['actualPursuerDistanceToSampledPointYd'])
+        self.assertIn('unavailable', p['deadlineObservationStatus'])
+
+    def test_redirection_anchor_excludes_earlier_responses_without_moving_the_window(self):
+        fixtures, trials = inputs('stop-turn')
+        fixtures['cases'][0]['redirectionAfter'] = .75
+        row = panel.build_report(fixtures, trials)['rows'][0]
+        turn = row['native']['redirection']
+        self.assertEqual(turn['firstPositiveAlongAxisAt'], .75)
+        self.assertTrue(turn['positiveAtAnchor'])
+        self.assertEqual(row['native']['actualStart'], 0.)
+        self.assertEqual(row['native']['elapsedSeconds'], 1.)
+        fixtures['cases'][0]['redirectionAfter'] = 1.1
+        with self.assertRaisesRegex(ValueError, 'anchor'):
+            panel.build_report(fixtures, trials)
+
+    def test_portable_target_trace_checksums_and_conflicting_source_are_explicit(self):
+        from movement_window_report import load_trace_files
+        fixtures, trials = self.prediction_pair()
+        with tempfile.TemporaryDirectory() as directory:
+            target = copy.deepcopy(trials['trials'][0]['trace'])
+            target.pop('targetTrajectory')
+            target['verification']['traceVsPlain'] = None
+            for step in target['steps']:
+                step['actor'] = fixtures['cases'][0]['target']
+            path = Path(directory)/'target.json'
+            path.write_text(json.dumps(target))
+            trial = trials['trials'][0]
+            trial['trace'].pop('targetTrajectory')
+            trial['targetTraceFile'] = path.name
+            trial['targetTraceSha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
+            loaded = load_trace_files(trials, directory)
+            report = panel.build_report(fixtures, loaded)
+            self.assertEqual(report['rows'][0]['pursuit']['actualApproach']['status'], 'observed')
+            self.assertEqual(report['rows'][0]['targetTraceIdentity']['sha256'], trial['targetTraceSha256'])
+            path.write_text(json.dumps({**target, 'meta': {'engineSha256': 'changed'}}))
+            row = panel.build_report(fixtures, load_trace_files(trials, directory))['rows'][0]
+            self.assertEqual(row['pursuit']['actualApproach']['status'], 'unavailable')
+            self.assertIn('checksum', row['pursuit']['actualApproach']['unavailableReason'])
+
+    def test_wrong_or_conflicting_target_evidence_stays_unknown(self):
+        for failure in ('identity', 'clock', 'source'):
+            fixtures, trials = self.prediction_pair()
+            target = trials['trials'][1]['trace']['targetTrajectory']
+            if failure == 'identity':
+                target['actor'] = {'playerId': 'someone-else'}
+            elif failure == 'source':
+                del target['source']
+            else:
+                target['samples'].append(dict(t=0., position=dict(x=99., y=99.)))
+            with self.subTest(failure=failure):
+                report = panel.build_report(fixtures, trials)
+                self.assertEqual(report['rows'][1]['pursuit']['actualApproach']['status'], 'unavailable')
+                self.assertEqual(report['rows'][1]['status'], 'complete')
+                self.assertEqual(report['exposure']['unknownActualApproachTrials'], 1)
+
+    def test_first_positive_axis_time_handles_an_actual_stop_and_entry_already_positive(self):
+        row = panel.build_report(*inputs('stop-turn'))['rows'][0]
+        self.assertEqual(row['native']['redirection']['firstPositiveAlongAxisAt'], .55)
+        self.assertIsNone(row['native']['redirection']['firstHeadingErrorReductionAt']) # Native zero splits headings.
+        self.assertFalse(row['native']['redirection']['positiveAtEntry'])
+        straight = panel.build_report(*inputs())['rows'][0]['native']['redirection']
+        self.assertTrue(straight['positiveAtEntry'])
+        self.assertIsNone(straight['firstHeadingErrorReductionAt'])
+
+    def test_inactive_policy_and_other_player_fumble_cannot_certify_transfer(self):
+        fixtures, trials = self.prediction_pair()
+        trials['trials'][1]['treatmentActivity'] = dict(source='owner activation witness', appliedCalls=0,
+            actor=ACTOR, window=[0., 1.])
+        trials['trials'][1]['trace']['result'] = dict(yards=0, outcome='fumble-by-another-player')
+        report = panel.build_report(fixtures, trials)
+        comparison = report['pairedComparisons'][0]
+        self.assertEqual(comparison['activityStatus'], 'owner-reported-inactive')
+        self.assertEqual(comparison['closestActualSeparationDeltaYd'], 0.)
+        self.assertEqual(comparison['requests']['raw']['changedIntervals'], 0)
+        self.assertEqual(report['rows'][1]['playResult']['outcome'], 'fumble-by-another-player')
+
+    def test_activity_requires_a_source_and_keeps_whole_game_exposure_distinct(self):
+        fixtures, trials = self.prediction_pair()
+        candidate = trials['trials'][1]
+        candidate['exposureKind'] = 'new-whole-game-exposure'
+        candidate['treatmentActivity'] = dict(appliedCalls=1, actor=ACTOR, window=[0., 1.])
+        candidate['trace']['steps'][3]['decision']['raw']['vel']['y'] = 1.
+        report = panel.build_report(fixtures, trials)
+        comparison = report['pairedComparisons'][0]
+        self.assertEqual(comparison['activityStatus'], 'unavailable')
+        self.assertEqual(comparison['exposureKind'], 'new-whole-game-exposure')
+        self.assertEqual(comparison['requests']['raw']['firstChangedAt'], .15)
+        candidate['treatmentActivity']['source'] = 'owner activation witness, exact selected case/window'
+        comparison = panel.build_report(fixtures, trials)['pairedComparisons'][0]
+        self.assertEqual(comparison['activityStatus'], 'owner-reported-active/request-changed')
+        candidate['treatmentActivity']['window'] = [0., .5]
+        self.assertEqual(panel.build_report(fixtures, trials)['pairedComparisons'][0]['activityStatus'], 'unavailable')
+
+    def test_separate_target_trace_requires_same_source_input_and_observer_parity(self):
+        for failure in ('none', 'source', 'observer', 'input'):
+            fixtures, trials = self.prediction_pair()
+            base = trials['trials'][0]['trace']
+            base.pop('targetTrajectory')
+            target = copy.deepcopy(base)
+            target['verification']['traceVsPlain'] = None
+            for s in target['steps']:
+                s['actor'] = fixtures['cases'][0]['target']
+            if failure == 'source':
+                target['meta']['engineSha256'] = 'another-source'
+            elif failure == 'observer':
+                target['verification'].pop('traceVsPlain')
+            elif failure == 'input':
+                target['verification']['setupSha256'] = 'another-input'
+            base['targetTrace'] = target
+            with self.subTest(failure=failure):
+                row = panel.build_report(fixtures, trials)['rows'][0]
+                self.assertEqual(row['pursuit']['actualApproach']['status'], 'observed' if failure == 'none' else 'unavailable')
+
     def test_identical_saved_case_metrics_and_deterministic_report(self):
         fixtures, trials = inputs()
         a = panel.build_report(fixtures, trials)

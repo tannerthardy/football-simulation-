@@ -6,6 +6,7 @@
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
+import { parseArgs } from 'node:util';
 import { gzipSync } from 'node:zlib';
 import { CENTER_Y, FIELD_WIDTH } from '../../src/core/field.js';
 import { Rng } from '../../src/core/rng.js';
@@ -23,9 +24,13 @@ import type { Perceived } from '../../src/sim/perception.js';
 import { PlaySim } from '../../src/sim/playsim.js';
 import type { PlayResult } from '../../src/sim/types.js';
 import { sourceVersion } from '../source-version.js';
+import { executionIdentity } from './saved-play.js';
 
-const output = process.argv[2] ?? 'out/pursuit-controller/transfer-baseline.json.gz';
-if (process.argv.length > 3) throw new Error('Usage: pursuit-transfer.ts [output.json.gz]');
+const { values: options, positionals } = parseArgs({ allowPositionals: true, options: {
+  select: { type: 'string', multiple: true }, 'command-traces': { type: 'string' },
+} });
+const output = positionals[0] ?? 'out/pursuit-controller/transfer-baseline.json.gz';
+if (positionals.length > 1) throw new Error('Usage: pursuit-transfer.ts [output.json.gz] [--select ID ...] [--command-traces DIRECTORY]');
 const sourceBefore = sourceVersion(), startedAt = new Date().toISOString();
 const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const collectorSha256 = createHash('sha256').update(readFileSync(import.meta.filename)).digest('hex');
@@ -105,6 +110,9 @@ function trial(input:Input) {
   const {sim,c,d}=make(input,true),start=sim.t,initial={bodies:sim.agents.map(a=>structuredClone(a.body)),
     profiles:sim.agents.map(a=>({idx:a.idx,slot:a.slot,id:a.player.id,profile:a.profile,ratings:a.player.ratings})),
     rng:JSON.parse(JSON.stringify(sim.rng)),fit:d.runFit??null};
+  const native = options['command-traces'] ? sim.recordCommands({ actor: { playerId: d.player.id },
+    from: start, to: start + cohort.setup.maxTicks * sim.dt }) : undefined;
+  const targetEntry = { t: start, position: { ...c.pos }, velocity: { ...c.vel } };
   const commands:any[]=[],states:any[]=[],contacts:any[]=[],attempts:any[]=[],holds:any[]=[];
   const holdIndex=new WeakMap<GraspJoint,number>(),see=sim.see,step=sim.world.step,event=sim.event,update=d.behavior.update;
   let inDecision=false,cues:Perceived[]=[],raw:MoveCommand|null=null;
@@ -134,6 +142,20 @@ function trial(input:Input) {
   const result=run(sim),plain=make(input,false),control=run(plain.sim);
   const physicalSha256=signature(sim,result),observerVerified=physicalSha256===signature(plain.sim,control);
   if(!observerVerified)throw new Error(`Observer or recording changes state/RNG: ${input.id}`);
+  if (native) {
+    const directory = options['command-traces']!;
+    mkdirSync(directory, { recursive: true });
+    writeFileSync(`${directory}/${input.id}.json`, JSON.stringify({ version: 1, meta: {
+      ...executionIdentity(), collectorSha256, input: { kind: 'staged-native-transfer', input, cohortSha256: inputSha256 },
+      selection: native.selection, command: process.argv.slice(1),
+    }, verification: { setupSha256: hash(initial), traceVsPlain: null,
+      scope: 'complete native result, all bodies, intents, perception and RNG versus unobserved execution' },
+    result: { outcome: result.outcome, yards: result.yards, duration: sim.t }, events: result.events,
+    steps: native.steps, targetTrajectory: { actor: { team: c.team, slot: c.slot, playerId: c.player.id },
+      source: 'Same native execution; existing transfer collector states, full-precision tick-end positions',
+      samples: [targetEntry, ...states.map(s => ({ t: start + s.t, position: s.c.pos, velocity: s.c.vel }))] },
+    }, null, 2) + '\n');
+  }
   const min=(seconds:number)=>Math.min(distanceFromInitial(initial),...states.filter(s=>s.t<=seconds+1e-9).map(s=>s.distance));
   function distanceFromInitial(_:unknown){const a=initial.bodies[c.idx],b=initial.bodies[d.idx];return Math.hypot(a.pos.x-b.pos.x,a.pos.y-b.pos.y);}
   return {input,initialSha256:hash(initial),profileSha256:hash(initial.profiles),physicalSha256,observerVerified,initial,
@@ -146,9 +168,13 @@ function trial(input:Input) {
     firstLoadedGrip:holds.find(h=>h.firstPositiveForceAt!==null)??null,holds,attempts,contacts,commands,states,
     events:result.events.map(e=>({...e,t:e.t-start})),finalRng:JSON.parse(JSON.stringify(sim.rng))};
 }
-const rows=inputs.map(trial),sourceAfter=sourceVersion();
+const selected = options.select ?? inputs.map(i => i.id);
+if (new Set(selected).size !== selected.length || selected.some(id => !inputs.some(i => i.id === id)))
+  throw new Error('Select unique existing transfer IDs; do not silently substitute cases');
+const rows=inputs.filter(i => selected.includes(i.id)).map(trial),sourceAfter=sourceVersion();
 if(sourceAfter!==sourceBefore)throw new Error('Source changed during transfer collector');
-const report={schema:'pursuit-transfer-v1',sourceBefore,sourceAfter,collectorSha256,inputSha256,startedAt,finishedAt:new Date().toISOString(),cohort,
+const report={schema:'pursuit-transfer-v1',sourceBefore,sourceAfter,collectorSha256,inputSha256,selectedInputs:selected,
+  selectedInputSha256:hash({inputSha256,selected}),startedAt,finishedAt:new Date().toISOString(),cohort,
   definitions:{command:'raw ordinary chase request versus held post-modifier World intent; achieved state is tick-end',
     target:'selected private error-shifted aim is not exposed; unbiasedIntercept is a pure reconstruction from actual consumed cues, not the chosen aim',
     contact:'solver body and achieved strike contacts; created grips, positive solved forces, slips and breaks kept separate',

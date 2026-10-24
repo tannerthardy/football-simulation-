@@ -55,7 +55,25 @@ def residual(velocity, direction):
     return {**v, 'magnitudeYdS': magnitude(v), 'alongDesiredYdS': along}
 
 
-def kinematics(rows, direction, objective, requested, native_intervals=None):
+def redirection(rows, velocities, direction, joins, after):
+    if direction is None:
+        return {'status': 'unavailable: no sourced evaluation direction'}
+    angle = heading(direction, 0)
+    errors = [abs(circular_difference(h, angle)) if (h := heading(v, 0)) is not None else None for v in velocities]
+    first = next((b['t'] for i, (a, b) in enumerate(zip(rows, rows[1:]))
+                  if a['t'] >= after - EPS and joins(a, b) and errors[i] is not None and errors[i + 1] is not None
+                  and errors[i + 1] < errors[i] - EPS), None)
+    positive = next((r['t'] for r, v in zip(rows, velocities)
+                     if r['t'] >= after - EPS and v is not None and residual(v, direction)['alongDesiredYdS'] > EPS), None)
+    return dict(status='measured', anchorAt=after, anchorObserved=any(abs(r['t'] - after) <= EPS for r in rows),
+        firstHeadingErrorReductionAt=first, firstPositiveAlongAxisAt=positive,
+        firstHeadingErrorReductionElapsedSeconds=first - rows[0]['t'] if first is not None else None,
+        firstPositiveAlongAxisElapsedSeconds=positive - rows[0]['t'] if positive is not None else None,
+        positiveAtEntry=positive == rows[0]['t'], positiveAtAnchor=positive == after,
+        definition='After the declared anchor (window start by default), first contiguous heading-error reduction; separately first observed positive velocity along the sourced axis. Already positive is not a new redirection. Times since window entry, numeric tolerance 1e-7; neither establishes a correct policy or interception.')
+
+
+def kinematics(rows, direction, objective, requested, native_intervals=None, redirection_after=None):
     if len(rows) < 2:
         return {'status': 'unavailable', 'reason': 'fewer than two observed states', 'frames': len(rows)}
     velocities = [vector({'x': r.get('vx'), 'y': r.get('vy')}) for r in rows]
@@ -80,6 +98,7 @@ def kinematics(rows, direction, objective, requested, native_intervals=None):
                    entryToExitLossYdS=speeds[0] - speeds[-1] if speeds[0] is not None and speeds[-1] is not None else None,
                    entryToMinimumLossYdS=speeds[0] - min(known_speeds) if speeds[0] is not None and known_speeds else None),
         transverseVelocity=dict(direction=direction, entry=residual(velocities[0], direction), exit=residual(velocities[-1], direction)),
+        redirection=redirection(rows, velocities, direction, joins, requested[0] if redirection_after is None else redirection_after),
         orientationExcursionFrames=len(isolated_excursions(rows, POLICY)))
     rates = [(a - b) / (rows[i + 1]['t'] - rows[i]['t']) for i, (a, b) in enumerate(zip(speeds, speeds[1:]))
              if a is not None and b is not None and joins(rows[i], rows[i + 1])]
@@ -102,6 +121,93 @@ def kinematics(rows, direction, objective, requested, native_intervals=None):
             closestObservedAt=closest[0] if closest else None, arrivalAt=at, arrivalErrorYd=arrival,
             arrivalStatus='observed' if arrival is not None else 'unavailable: no recorded deadline/state at deadline')
     return out
+
+
+def native_states(trace):
+    samples = [body_sample(t, step.get(key, {})) for step in trace.get('steps', [])
+               for key, t in [('start', step.get('stepStart')), ('endpoint', step.get('endpointTime'))]] if trace else []
+    rows, failure, _ = clean(samples)
+    return rows, failure
+
+
+def position_at(rows, t):
+    row = next((r for r in rows if abs(r['t'] - t) <= EPS), None) if t is not None else None
+    return vector({'x': row.get('x'), 'y': row.get('y')}) if row else None
+
+
+def distance(a, b):
+    return math.hypot(a['x'] - b['x'], a['y'] - b['y']) if a is not None and b is not None else None
+
+
+def pursuit_evidence(case, trace, rows, requests):
+    """Join recorded predictions to actual observations, never a forecast of intention."""
+    target, target_error = None, 'actual target trajectory not supplied'
+    declared = case.get('target')
+    target_trace = trace.get('targetTrace')
+    if target_trace is not None:
+        before, after = trace.get('meta', {}), target_trace.get('meta', {})
+        verification = target_trace.get('verification') or {}
+        if not before.get('engineSha256') or not before.get('node') or not isinstance(before.get('settings'), dict):
+            target_error = 'target trace compatibility source/settings are unavailable'
+        elif any(before.get(k) != after.get(k) for k in ('engineSha256', 'settings', 'node')):
+            target_error = 'target trace source/settings differ'
+        elif 'traceVsPlain' not in verification or verification['traceVsPlain'] is not None:
+            target_error = 'target trace observer parity unavailable or failed'
+        elif not declared or any(any(s.get('actor', {}).get(k) != v for k, v in declared.items()) for s in target_trace.get('steps', [])):
+            target_error = 'target trace identity is unavailable or differs from selection'
+        elif not verification.get('setupSha256') or verification['setupSha256'] != (trace.get('verification') or {}).get('setupSha256'):
+            target_error = 'target trace constructor differs or is unavailable'
+        else:
+            target, target_error = native_states(target_trace)
+    elif isinstance(trace.get('targetTrajectory'), dict):
+        supplied = trace['targetTrajectory']
+        if not declared or any(supplied.get('actor', {}).get(k) != v for k, v in declared.items()) or not supplied.get('source'):
+            target_error = 'target trajectory identity/source differs or is unavailable'
+        else:
+            target, target_error, _ = clean([dict(t=s.get('t'), x=(s.get('position') or {}).get('x'),
+                y=(s.get('position') or {}).get('y')) for s in supplied.get('samples', [])])
+    if trace.get('targetLoadError'):
+        target, target_error = None, trace['targetLoadError']
+    target = target or []
+    separations = [(r['t'], distance(position_at(rows, r['t']), position_at(target, r['t']))) for r in rows]
+    separations = [(t, d) for t, d in separations if d is not None]
+    closest = min(separations, key=lambda x: x[1]) if separations else None
+    all_rows, all_error = native_states(trace)
+    evaluation_window = case.get('predictionEvaluationWindow', case['window'])
+    all_rows = [r for r in all_rows or [] if evaluation_window[0] - EPS <= r['t'] <= evaluation_window[1] + EPS] if not all_error else []
+    predictions, helpers = [], []
+    for request in requests:
+        for record in request.get('pursuitHelpers', []):
+            data = record.get('data') or {}
+            if data.get('kind') != 'intercept':
+                stages = data.get('requests') or []
+                last = stages[-1].get('command') if stages else None
+                helpers.append(dict(t=request['t'], phase=record.get('phase'), target=record.get('target'),
+                    recordedHelperReturnMatchesRaw=last == request.get('raw') if last is not None else None, **data))
+                continue
+            prediction = data.get('prediction') or {}
+            relative = number(prediction.get('t'))
+            deadline = request['t'] + relative if relative is not None else None
+            point = vector(prediction.get('point'))
+            own = position_at(all_rows, deadline)
+            same_target = bool(declared) and all((record.get('target') or {}).get(k) == v for k, v in declared.items())
+            other = position_at(target, deadline) if own is not None and same_target else None
+            predictions.append(dict(t=request['t'], phase=record.get('phase'), target=record.get('target'),
+                targetIdentityStatus='matches-declared' if same_target else 'different-or-unavailable: actual target deadline join unavailable',
+                prediction=prediction, estimateAppliesTo=data.get('estimateAppliesTo'),
+                biasedTime=data.get('biasedTime'), steeringPoint=data.get('steeringPoint'),
+                steeringPointEstimate=data.get('steeringPointEstimate'), sampledPredictionDeadline=deadline,
+                actualPursuerDistanceToSampledPointYd=distance(own, point),
+                actualTargetDistanceToSampledPointYd=distance(other, point),
+                actualSeparationAtSampledDeadlineYd=distance(own, other),
+                deadlineObservationStatus='observed' if own is not None else 'unavailable: no actual state at sampled deadline in declared evaluation window',
+                requestConsumption='unverified: helper return may be discarded or rewritten'))
+    return dict(actualApproach=dict(status='observed' if separations else 'unavailable', target=declared,
+        unavailableReason=target_error if target_error else None if separations else 'no simultaneous observed actor/target positions',
+        knownPairedStates=len(separations), requestedActorStates=len(rows),
+        closestObservedSeparationYd=closest[1] if closest else None, closestObservedAt=closest[0] if closest else None),
+        predictionEvaluationWindow=evaluation_window, predictions=predictions, chaseHelpers=helpers,
+        definitions='Actual separation uses the declared target and simultaneous native states, without interpolation. Sampled prediction deadlines are recorded estimator query times, not committed objective/arrival promises. Distances at those times describe the continued replanning trajectory, not a fixed-command reachability test; bias/leverage steering is not validated by the sampled slack.')
 
 
 def trace_window(case, trace, measured):
@@ -131,9 +237,20 @@ def trace_window(case, trace, measured):
         prediction = step.get('prediction')
         if prediction is None:
             prediction = decision.get('prediction')
+        if prediction is None:
+            intercepts = [r.get('data') or {} for r in step.get('pursuit', []) if (r.get('data') or {}).get('kind') == 'intercept']
+            chases = [r.get('data') or {} for r in step.get('pursuit', []) if (r.get('data') or {}).get('kind') == 'chase']
+            if intercepts:
+                p = intercepts[-1].get('prediction') or {}
+                prediction = {**(p.get('estimate') or {}), 'selectedTime': p.get('t'),
+                    'source': 'recorded helper estimate; consumption is not established'}
+            elif chases:
+                prediction = {'status': 'planner:' + str(chases[-1].get('planner', 'unavailable')),
+                              'source': 'recorded chase helper; consumption is not established'}
         requests.append(dict(t=step['stepStart'], endpointTime=step.get('endpointTime'), raw=raw, applied=applied,
                              owner=decision.get('owner'), decisionEvaluated=decision.get('evaluated'),
                              ownerAfterUpdate=decision.get('ownerAfterUpdate'), rewrites=step.get('rewrites'),
+                             pursuitHelpers=copy.deepcopy(step.get('pursuit', [])),
                              prediction=prediction if prediction is not None else {'status': 'unavailable:not-recorded'}))
         contacts = b.get('lastStepContacts')
         if isinstance(contacts, list):
@@ -192,7 +309,7 @@ def trace_window(case, trace, measured):
                       for r in requests if r['applied'] and vector((r['applied'].get('objective') or {}).get('point'))]
             if points:
                 objective = {'samples': points, 'source': 'applied objective point at its recorded request time; no extrapolation'}
-    native = kinematics(rows, direction, objective, case['window'], intervals)
+    native = kinematics(rows, direction, objective, case['window'], intervals, case.get('redirectionAfter'))
     # Observe the 10Hz grid without interpolating orientation; retain the exact
     # terminal sample, whose shorter interval is handled by #255's clock logic.
     selected = [r for r in rows if abs((r['t'] - start) / .1 - round((r['t'] - start) / .1)) <= .002 / .1]
@@ -209,7 +326,7 @@ def trace_window(case, trace, measured):
             r['vx'], r['vy'] = 0., 0.
         else:
             r['vx'], r['vy'] = None, None
-    sampled_measurement = kinematics(sampled, direction, objective, case['window'])
+    sampled_measurement = kinematics(sampled, direction, objective, case['window'], redirection_after=case.get('redirectionAfter'))
     points = [[r['t'], r['x'], r['y'], r['vx'], r['vy']] for r in rows]
     filtered = measured(points) if len(rows) >= 2 and all(number(r['x']) is not None and number(r['y']) is not None for r in rows) else None
     filtered_info = dict(status='measured' if filtered is not None else 'rejected', measurements=filtered,
@@ -218,6 +335,7 @@ def trace_window(case, trace, measured):
         filtered_info['positionResampleWindow'] = [rows[0]['t'], rows[0]['t'] + filtered['duration']]
         filtered_info['speedDerivativeCentersWindow'] = [rows[0]['t'] + .3, rows[0]['t'] + filtered['duration'] - .3]
     return dict(status=native['status'], native=native, sampled=sampled_measurement, filteredMotion=filtered_info,
+        pursuit=pursuit_evidence(case, trace, rows, requests),
         context=context, requests=requests, directionSource=direction_source if direction else 'unavailable: zero or missing request/direction',
         exactDuplicateStatesCollapsed=duplicates)
 
@@ -225,18 +343,74 @@ def trace_window(case, trace, measured):
 def load_trace_files(trials, directory):
     trials = copy.deepcopy(trials)
     for trial in trials['trials']:
-        if 'traceFile' not in trial:
-            continue
-        path = Path(directory) / trial['traceFile']
-        try:
-            identity = pin(path)
-            trial['traceIdentity'] = identity
-            if trial.get('traceSha256') and trial['traceSha256'] != identity['sha256']:
-                raise ValueError('trace checksum differs')
-            trial['trace'] = json.loads(path.read_text())
-        except (OSError, ValueError) as error:
-            trial['loadError'] = str(error)
+        if 'traceFile' in trial:
+            path = Path(directory) / trial['traceFile']
+            try:
+                identity = pin(path)
+                trial['traceIdentity'] = identity
+                if trial.get('traceSha256') and trial['traceSha256'] != identity['sha256']:
+                    raise ValueError('trace checksum differs')
+                trial['trace'] = json.loads(path.read_text())
+            except (OSError, ValueError) as error:
+                trial['loadError'] = str(error)
+        if 'targetTraceFile' in trial and isinstance(trial.get('trace'), dict):
+            target_path = Path(directory) / trial['targetTraceFile']
+            try:
+                trial['targetTraceIdentity'] = pin(target_path)
+                if trial.get('targetTraceSha256') and trial['targetTraceSha256'] != trial['targetTraceIdentity']['sha256']:
+                    raise ValueError('target trace checksum differs')
+                trial['trace']['targetTrace'] = json.loads(target_path.read_text())
+            except (OSError, ValueError) as error:
+                trial.setdefault('trace', {})['targetLoadError'] = str(error)
     return trials
+
+
+def paired_requests(rows, arms):
+    comparisons = []
+    for baseline in rows:
+        if baseline['arm'] != arms[0]:
+            continue
+        for candidate in (r for r in rows if r['caseId'] == baseline['caseId'] and r['arm'] != arms[0]):
+            changed = {}
+            common = 0
+            for kind in ('raw', 'applied'):
+                changes = []
+                for b in baseline.get('requests', []):
+                    c = next((r for r in candidate.get('requests', []) if abs(r['t'] - b['t']) <= EPS), None)
+                    if c is not None:
+                        if kind == 'raw':
+                            common += 1
+                        if b.get(kind) is not None and c.get(kind) is not None and b[kind] != c[kind]:
+                            changes.append(b['t'])
+                changed[kind] = dict(changedIntervals=len(changes), firstChangedAt=changes[0] if changes else None)
+            def delta(access):
+                a, b = access(baseline), access(candidate)
+                return b - a if a is not None and b is not None else None
+            activity = candidate.get('treatmentActivity') or {}
+            scoped = (activity.get('source') and activity.get('window') == candidate['requestedWindow']
+                      and activity.get('actor') == candidate['actor'])
+            applications = number(activity.get('appliedCalls')) if scoped else None
+            if applications is not None and applications != int(applications):
+                applications = None
+            activity_status = ('unavailable' if applications is None or applications < 0 else
+                               'owner-reported-inactive' if applications == 0 else
+                               'owner-reported-active/request-changed' if changed['raw']['changedIntervals'] else
+                               'owner-reported-executed/no-observed-request-change')
+            counts = [baseline['status'], candidate['status']]
+            settings = [r['source'].get('settings') for r in (baseline, candidate)]
+            pins = [r.get('recordedInputSha256') for r in (baseline, candidate)]
+            comparisons.append(dict(caseId=baseline['caseId'], arm=candidate['arm'],
+                measurementStatus='missing' if 'missing' in counts else 'rejected' if 'rejected' in counts else 'partial' if 'partial' in counts else 'complete',
+                exposureKind=candidate.get('exposureKind'), activityStatus=activity_status,
+                ownerActivity=activity, simultaneousRequestIntervals=common, requests=changed,
+                observerParity=[r['replayVerification']['observerParity'] for r in (baseline, candidate)],
+                sourceEngineSha256=[r['source'].get('engineSha256') for r in (baseline, candidate)],
+                resolvedSettingsMatch=settings[0] == settings[1] if all(isinstance(s, dict) for s in settings) else None,
+                sameFrozenInput=pins[0] == pins[1] == baseline.get('inputSha256') if all(pins) else None,
+                closestActualSeparationDeltaYd=delta(lambda r: r.get('pursuit', {}).get('actualApproach', {}).get('closestObservedSeparationYd')),
+                exitTransverseDeltaYdS=delta(lambda r: (r.get('native', {}).get('transverseVelocity', {}).get('exit') or {}).get('magnitudeYdS')),
+                qualification='Descriptive paired deltas, not a benefit verdict. Activation needs the owner witness; changed trajectory/request alone does not prove it. Fixed-input continuation and whole-game exposure are distinct. A different final result/fumble does not establish better selected-pursuer execution.'))
+    return comparisons
 
 
 def build_window_report(fixtures, trials, measured):
@@ -253,6 +427,12 @@ def build_window_report(fixtures, trials, measured):
         direction = case.get('desiredDirection')
         if direction is not None and (not isinstance(direction, dict) or not direction.get('source') or vector(direction.get('vector')) is None):
             raise ValueError('A declared evaluation direction needs a source and finite vector')
+        evaluation = case.get('predictionEvaluationWindow', case['window'])
+        if len(evaluation) != 2 or any(number(t) is None for t in evaluation) or evaluation[0] > a or evaluation[1] < b:
+            raise ValueError('Prediction evaluation span must cover the frozen measurement window')
+        anchor = number(case.get('redirectionAfter', a))
+        if anchor is None or not a <= anchor <= b:
+            raise ValueError('Redirection anchor must be declared inside the frozen window')
         cases[case['id']] = case
     arms = fixtures['arms']
     if not arms or len(set(arms)) != len(arms):
@@ -299,6 +479,7 @@ def build_window_report(fixtures, trials, measured):
                 'unknownContactTrials': int(not context.get('intervals') or context.get('unrecordedIntervalSeconds', 0) > EPS or context.get('contactContextKnownIntervals', 0) < context['intervals']),
                 'unknownSupportTrials': int(not context.get('intervals') or context.get('unrecordedIntervalSeconds', 0) > EPS or context.get('supportKnownIntervals', 0) < context['intervals']),
                 'unknownSourceTrials': int(not source_known),
+                'unknownActualApproachTrials': int(result.get('pursuit', {}).get('actualApproach', {}).get('status') != 'observed'),
                 'changedReferenceExecutionTrials': int(reference_changed),
                 'fallingOrDownTrials': int(context.get('fallingOrDownIntervals', 0) > 0)}
             if 'filteredMotion' in result:
@@ -307,19 +488,25 @@ def build_window_report(fixtures, trials, measured):
             by_arm[arm].update(counts)
             rows.append(dict(caseId=case['id'], category=case['category'], actor=case['actor'], requestedWindow=case['window'], arm=arm,
                 caseSource=case['source'], inputSha256=case.get('inputSha256'), source=meta,
+                recordedInputSha256=verification.get('setupSha256'),
                 sourceIdentityStatus='supplied' if source_known else 'unavailable',
+                targetTraceIdentity=trial.get('targetTraceIdentity') if trial else None,
+                treatmentActivity=copy.deepcopy(trial.get('treatmentActivity')) if trial else None,
+                exposureKind=trial.get('exposureKind', 'unavailable') if trial else 'unavailable',
+                playResult=trace.get('result') if isinstance(trace, dict) else None,
                 replayVerification=dict(status=verification_state, missingChecks=[k for k in check_keys if k not in verification],
                     referenceDifferences={k: verification[k] for k in check_keys[:2] if k in verification},
                     observerParity='unavailable' if 'traceVsPlain' not in verification else 'failed' if observer_changed else 'passed'),
                 traceIdentity=(trial.get('traceIdentity') or {'kind': 'canonical inline JSON',
                     'sha256': hashlib.sha256(json.dumps(trace, sort_keys=True).encode()).hexdigest()})
                     if isinstance(trace, dict) else None, **result))
-    return dict(schema='movement-window-report-v1', measurementVersion='pursuit-window-v1', inputSha256=trials['inputSha256'],
+    return dict(schema='movement-window-report-v1', measurementVersion='pursuit-window-v2', inputSha256=trials['inputSha256'],
         selectionSource=fixtures.get('source'), clockPolicy=dict(native='Explicit recorded step-start/endpoint intervals',
              sampledMaximumGapSeconds=POLICY['maxGapSeconds'], sampledCadenceSeconds=.1, sampledClockToleranceSeconds=.002,
              nativeMinimumHeadingSpeedYdS=0, sampledMinimumHeadingSpeedYdS=POLICY['minimumTravelSpeedYdS']),
         frozenSelection=fixtures.get('selection'), cases=fixtures['cases'], arms=arms, exposure=dict(exposure),
         exposureByArm={arm: dict(counts) for arm, counts in by_arm.items()}, rows=rows,
+        pairedComparisons=paired_requests(rows, arms),
         operators={name: pin(Path(__file__).with_name(name)) for name in ('movement_window_report.py', 'movement_task_report.py', 'bdb2027_movement.py', 'yaw_measurement.py')},
         definitions=dict(native='Stored native velocity, heading from nonzero v (undefined at zero; near-stop angles are sensitive and not capacity). Body facing radians converted to circular degrees. Actual recorded physics intervals, no cadence assumption; endpoint angles and contiguous shortest-step sums are separate.',
             sampled='Observed .1s grid clipped to the frozen window, plus exact terminal sample; no body interpolation. Position secants from #255, centered inside runs and one-sided at window/gap edges; heading needs >=1yd/s under that tracking-style rule. Actual elapsed intervals, not a .2s multiplier.',
@@ -360,4 +547,18 @@ def markdown(report):
     lines += ['', 'Unknown is unavailable evidence, not zero. Native/sampled states and filtered derivatives use different declared operators.',
               'Exposure (includes missing/rejected/partial trials): ' + json.dumps(report['exposure'], sort_keys=True),
               'By arm: ' + json.dumps(report['exposureByArm'], sort_keys=True), '']
+    lines += ['| Case | Arm | Actual target closest yd (paired states) | First heading reduction / positive-axis elapsed s | Recorded helper horizon / selected t / arrival / slack s | Exposure / treatment witness |',
+              '|---|---|---|---|---|---|']
+    for row in report['rows']:
+        pursuit = row.get('pursuit', {})
+        approach = pursuit.get('actualApproach', {})
+        turn = row.get('native', {}).get('redirection', {})
+        predictions = pursuit.get('predictions', [])
+        first = predictions[0].get('prediction', {}) if predictions else {}
+        estimate = first.get('estimate', {})
+        activity = row.get('treatmentActivity') or {}
+        scoped = activity.get('source') and activity.get('actor') == row['actor'] and activity.get('window') == row['requestedWindow']
+        marker = str(activity.get('appliedCalls')) + ' owner-reported applied calls' if scoped else 'unavailable'
+        lines.append(f"| {row['caseId']} | {row['arm']} | {f(approach.get('closestObservedSeparationYd'))} ({approach.get('knownPairedStates', 0)}) | {f(turn.get('firstHeadingErrorReductionElapsedSeconds'))} / {f(turn.get('firstPositiveAlongAxisElapsedSeconds'))} | {f(estimate.get('horizon'))} / {f(first.get('t'))} / {f(estimate.get('arrivalTime'))} / {f(estimate.get('slack'))} | {row.get('exposureKind', 'unavailable')} / {marker} |")
+    lines += ['', 'Helper estimates can be discarded or rewritten. Sampled deadlines are estimator queries, not committed arrival objectives. Positive-axis at entry is not a new redirection. JSON retains every prediction, actual deadline observation and paired request change. Final gain/fumble alone does not measure selected-pursuer execution.', '']
     return '\n'.join(lines)
