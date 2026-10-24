@@ -9,7 +9,7 @@ import type { PlaySim } from './playsim.js';
 export interface PossessionRead { target: Agent; cue: Perceived }
 type FlightSample = PlaySim['ballPath'][number];
 const flights = new WeakMap<Agent, { acquiredAt: number; path: FlightSample[];
-  opportunity?: { receiver: Agent; t: number } }>();
+  opportunity?: { receiver: Agent; t: number }; resolved?: boolean }>();
 
 /** Called only after the existing throw-recognition gate. Copy the acquired
  * trajectory, never an intended receiver or a private catch result. */
@@ -22,7 +22,7 @@ export function acquireFlight(a: Agent, sim: PlaySim): FlightSample[] {
 /** A forecast remains a possibility until its own ground endpoint. There is
  * no extension of body history and no claim that a receiver caught it. */
 export function rememberedFlight(a: Agent, t: number): FlightSample[] | null {
-  const path = flights.get(a)?.path;
+  const flight = flights.get(a), path = flight && !flight.resolved ? flight.path : null;
   return path?.length && t <= path[path.length - 1].t ? path : null;
 }
 
@@ -41,7 +41,10 @@ export function anticipatedCatcher(a: Agent, sim: PlaySim): PossessionRead | nul
   const cue = sim.see(a, opportunity.receiver);
   // An empty image from before the opportunity says nothing about its result.
   // Newer empty evidence refutes this hypothesis; unknown stays unknown.
-  if (cue.carrying === false && cue.age !== undefined && sim.t - cue.age > opportunity.t) return null;
+  if (cue.carrying === false && cue.age !== undefined && sim.t - cue.age > opportunity.t) {
+    flights.get(a)!.opportunity = undefined;
+    return null;
+  }
   return { target: opportunity.receiver, cue };
 }
 
@@ -64,5 +67,9 @@ export function observedHolder(a: Agent, sim: PlaySim): PossessionRead | null {
     if (cue.age < newest.cue.age!) { newest = { target, cue }; ambiguous = false; }
     else if (cue.age === newest.cue.age) ambiguous = true;
   }
-  return ambiguous || unknownTime ? null : newest;
+  const read = ambiguous || unknownTime ? null : newest;
+  // A newer acquired holder supersedes this flight hypothesis. Losing that
+  // body picture later cannot resurrect the older possible catch.
+  if (read && flight) flight.resolved = true;
+  return read;
 }

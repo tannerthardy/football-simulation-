@@ -203,6 +203,8 @@ describe('an acquired trajectory supports anticipation, not certified possession
     expect(anticipatedCatcher(f.a, f.sim)?.target).toBe(f.x);
     f.sim.t = 2.3; f.pictures.get(f.x)!.age = .05;
     expect(anticipatedCatcher(f.a, f.sim)).toBeNull();
+    f.pictures.get(f.x)!.carrying = null;
+    expect(anticipatedCatcher(f.a, f.sim)).toBeNull(); // refuted hypothesis cannot revive with unknown
     f.sim.t = 2.55;
     expect(rememberedFlight(f.a, f.sim.t)).toBeNull();
     expect(pursueIfLive(f.sim, f.a)).toBeNull();
@@ -216,6 +218,9 @@ describe('an acquired trajectory supports anticipation, not certified possession
     const c = pursueIfLive(f.sim, f.a)!;
     expect(movementObjective(c)?.point.x).toBe(f.pictures.get(f.x)!.pos.x);
     expect(observedHolder(f.a, f.sim)?.target).toBe(f.x);
+    f.pictures.get(f.x)!.carrying = null;
+    expect(rememberedFlight(f.a, f.sim.t)).toBeNull();
+    expect(pursueIfLive(f.sim, f.a)).toBeNull(); // acquired catch retired the older forecast
   });
 
   it('replaces the estimate on a newly recognized deflection and preserves it against unseen path changes', () => {
