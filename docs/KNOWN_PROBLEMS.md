@@ -863,6 +863,15 @@ run plays with the assignment layer (`--telemetry full`):
     them off their corners;
   - P013 is a climb that overran a downhill backer, not a stale target;
   - P029 RT staying on the end is correct: the Y fell (inline ends below).
+  - **Nearby-help follow-up on accepted `27617221` (includes #258):** a
+    bounded ordinary seed-7 prefix produced 60 competing candidate/read vetoes
+    across 20 designed runs, not 60 missed blocks. No sole off-feet/departing
+    helper met the declared opportunity screen. Exact constructor replays of
+    P007 (Ace/Over) and P047 (Gun Wing/Under) retain useful first-level help;
+    P047's later corner is beyond the climber's native arrival window. No
+    helper-policy correction is supported by these cases. This is a bounded
+    negative finding, not a claim that proximity proves protection generally;
+    pending possession/work-off changes require their own source qualification.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
