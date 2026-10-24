@@ -1277,6 +1277,17 @@ From the issue register:
 <a id="cov-7"></a>
 ### COV-7: A man corner can't support a run he has recognized
 
+- **Active cost capability** (accepted base `50b80062`, subsequent candidate):
+  [one installed block-look pair](reviews/cov7-abandonment-cost.md) uses fixed
+  Cover1 Off / ace / roster7 / snap1, with a shared Z split and physical
+  non-contact presentation. The actor-local existing alley option activates
+  at.65 on both Toss and PA; it is **unconfirmed-exchange**, not acquired
+  non-QB possession. PA reacquires upright Z at1.4 but takes until2.0 to
+  arrest inward movement; same-clock2.4 center separation1.34→3.04yd.
+  Both PA passes remain incomplete. This supplies a cost fixture, not a
+  promoted defensive rule. #260/#224 are pending and excluded; raw results
+  and exact final source/settings remain in the candidate PR/ignored output.
+
 - **Symptom** (`audit`, `G1-P029`, Toss with Z across motion against Cover 0):
   CB_S recognizes run at 0.65 s and sees the back carrying at 1.20 s, but
   keeps tracking Z until the runner crosses the line at 2.70 s.
