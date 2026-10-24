@@ -675,6 +675,15 @@ Carried over from the issue register; each was measured on an older develop.
   This is an approximate-estimator contract, with point selection and steering
   unchanged. Forecast/steering repairs and any native link to the isolated
   reach-bound violation remain open.
+- **Frozen arrival comparison:** [bounded operator and clock contract](reviews/pursuit-arrival-comparison.md)
+  separate the consumed forecast, held/fixed-goal World response and recorded
+  future runner. The approximate test can reject an earlier point that the
+  tested seek reaches and accept a later point that it misses. A miss under
+  that policy is not proof of optimal unreachability; a forecast-point arrival
+  is not a tackle. On #259's P002, the estimate budgets full effort while the
+  distant chase requests reduced effort. Matching that assumed request changes
+  the late arrival without changing capacities, but still misses the recorded
+  runner. No production correction or capacity change is made here.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
