@@ -73,11 +73,25 @@ describe('support players work off toward a personally declared carrier',()=>{
    expect(next.nextMoveAt).toBe(pending);
   });
 
- it('retains initial contact timing for a close first-level threat',()=>{
-  const f=scene('interior');f.setCue({pos:{x:41,y:CENTER_Y+1}});
+ it('retains initial contact timing for a first-level threat across a frontal block',()=>{
+  // The blocker is between the defender and the runner: across-face work keeps its cadence.
+  const f=scene('interior');f.setCue({pos:{x:41,y:CENTER_Y-6}});
   f.engagement.nextMoveAt=f.sim.t+.5;f.command();
   expect(f.defender.tags.has('shed-attempt')).toBe(false);
   expect(f.engagement.nextMoveAt).toBe(f.sim.t+.5);
+  // The runner is actionable; the wait does not silently suppress this duty forever.
+  f.sim.t+=.51;f.command();
+  expect(f.defender.tags.has('shed-attempt')).toBe(true);
+  expect(f.defender.engagement).toBe(f.engagement);
+ });
+
+ it('starts a first-level clear exit at once when the blocker is behind its approach (#225)',()=>{
+  // The defender is past his blocker and the runner is beside him on the far side.
+  const f=scene('interior');f.setCue({pos:{x:41,y:CENTER_Y+1}});
+  f.engagement.nextMoveAt=f.sim.t+.5;f.command();
+  expect(f.defender.tags.has('shed-attempt')).toBe(true);
+  expect(f.engagement.nextMoveAt).toBeCloseTo(f.sim.t+2*f.defender.mind.decisionInterval,12);
+  expect(f.defender.engagement).toBe(f.engagement);
  });
 
  it.each([['force',-1],['force',1],['insert',-1],['insert',1]] as const)(

@@ -290,6 +290,16 @@ problem), resolved.
   (#190, off) keeps deep defenders from taking force.
 - **Where:** `run-fits.ts`, `defense.ts`; `scripts/diag/long-run.py`.
 - **Open:** whether fixing RUN-1 lets the safeties stay deep on their own.
+- **Frontal DL blocks (G1, 2026-10-22):** a blocked first-level defender could
+  admit a shed but still press across the old surface while the runner was
+  past him. A bounded acquired-exit/body-turn correction improves the request,
+  but not confirmed release in the matched lab. See TKL-2 below. Do not widen
+  the block-in-the-back rule or award a release to compensate.
+  The 2026-10-23 native audit also separates live engagement from proximity:
+  eight of twelve near-blocker DL at the observed five-yard crossing have no
+  active rep, including a defender already completing a tackle. Their cached
+  old hand loads are not current force. G1 includes pursuit through congestion,
+  not only defeating loaded hands.
 
 <a id="run-3"></a>
 ### RUN-3: Double teams drive defenders back much too far
@@ -669,6 +679,124 @@ Carried over from the issue register; each was measured on an older develop.
   shape as a feasible point. Neither is shown to cause P002: its chosen
   points pass the bound. **Open:** return feasible vs fallback explicitly
   and log it, then compare candidate forecasts on frozen cases. Defense.
+- **First-level frontal work-off, 2026-10-22 (G1):** native consumed-cue
+  traces on accepted `ac346c1e` show DL entering shed attempts but never using
+  the clear runner exit already available to support players. They continue
+  to request pressure into the old surface. The bounded correction uses fresh
+  QB/RB possession pictures beyond LOS, retains edge/fit admission and sealed
+  across-face work, and requests an actual body turn toward a clear exit.
+  Speed, hands, release geometry and physics are unchanged. Acquired first-level
+  objectives have their own held-decision key, so a previous live-holder-selected
+  fallback aim cannot contaminate a later acquired exit. Two paired pass
+  controls remain identical, including after accepted `5e018759`'s hand changes.
+  - **Limit:** two controller attempts (exit only, then coherent facing) do
+    not add confirmed releases in the small published #221 taillab subset.
+    Better requests still leave near-zero pooled blocked radial drift, but
+    the blocker matches/overtakes most requested exits. Sustained positive
+    relative separation requests do produce separation in the saved control;
+    zero drift therefore does not establish a pinning hand-law defect.
+    Stop variants. Defense's next question is an attainable escape technique
+    against the acquired moving blocker, including why a forward exit still
+    uses contact-shuffle magnitude. Main Engine reviews the requested/achieved
+    hand/support witness before any physical change. A frontal block can win.
+  - Repeating the unchanged correction on accepted `5e018759` gives a small
+    favorable result under the original operator: first-clear onset by five
+    yards rises 3/14 to 4/14, observed-release median 1.2 to 1.0 s; median blocked
+    radial drift stays zero. With confirmation required by the five-yard sample,
+    the censor-aware companion remains 3/18 in both arms. These denominators
+    differ because of quantization/bracketing and population rules; neither
+    result establishes a general shedding fix. The ordinary offensive 75-yard
+    touchdown survives. Two attempts are complete; further technique variants
+    wait for the attainable-escape diagnosis above.
+    After accepted `d3e22420` adds GRIP_HOLD, the same lab gives first-clear
+    onset 5/18 to 6/18 and observed-release median 1.2 to .9 s; confirmed-by-five
+    remains 3/18 and median drift remains zero. Both pass controls stay identical.
+    The earlier quick cards are qualified to their pre-GRIP_HOLD sources; CI
+    owns the new composition's PR card. Ordinary teammate spacing can redirect
+    the raw escape around a fresh acquired peer. This is an attainable loaded
+    path question, not evidence for removing teammate avoidance or weakening hands.
+  - The original #221-review `release.py` was subsequently published at
+    `ad13c819` and is preserved byte-for-byte. `release-censored.py` is the
+    separately named reconstructed companion with real elapsed clear windows
+    and missing/censored exposure. Its figures are not numerically interchangeable
+    with the historical NFL 54% / +0.18 yd/s review rows. The original uses
+    quantized positions, the nearest blocker at each sample and centered
+    velocity windows; blocked drift is a tracking proxy, not proof of a
+    particular force defect. Proximity release and actual engagement end remain
+    distinct measures.
+  - **Re-diagnosis, 2026-10-23 (#225, based on `d3e22420`):** after stopping
+    the two technique attempts, loaded native probes do not support removing
+    teammate spacing or increasing the exit demand as a general shed fix.
+    Stopping active pressing helps one release confirmation but loses another
+    on fresh Power/Toss players. Its fresh touchdown adverse begins with a
+    different execution draw at an identical safety opportunity, following
+    extra line recontact; it does not prove lost containment. Neither
+    intervention is retained in the candidate.
+    A separate continuity defect remains: a new first-level block installs a
+    .35–.60s move wait even for an already acquired exit. The bounded correction
+    continues only that exit, using the blocker point already acquired in the
+    line read; frontal work and unadvanced edges keep their old cadence.
+    Broadly bypassing the wait made a fresh Power approach worse and was
+    rejected. Early clear exits also retain an adverse speed/turn tradeoff;
+    contact-shuffle effort does not establish an attainable loaded escape.
+    In the native audit, only four of twelve near-blocker DL retain loaded
+    hands at +5; another logical rep just outside one yard is unloaded.
+    A released DT's low request instead reconstructs exactly as teammate
+    spacing in real congestion. Keep force, release, free-path choice and
+    proximity separate. Main Engine still reviews shared engagement changes;
+    sustained frontal leverage and loaded navigation remain open.
+  - **Frontal direction error found during that re-diagnosis:** across-face
+    work used the installed line axis after the bodies rotated. In one held
+    DT/RG rep, 37 consecutive acquired-run samples asked for a median2.126yd/s
+    into the actual blocker and only.012yd/s across him. Native family controls
+    repeat the error. The correction uses the existing tactile/visual blocker
+    point for the work-off tangent and facing, retaining the ordinary selected
+    side/decision beat, lateral effort and.6 normal pressure. It does not rotate
+    the installed gap/shoulder frame or alter the blocker, hands or physics.
+    The held pair makes more runnerward progress but can remain blocked;
+    median blocked radial drift and sustained-release failure remain open.
+    Earlier finishes change the exposed +5 cohort, so release fractions must
+    keep censoring and matched identities. Lower run yards are not its proof.
+    After accepted #221 (`2c26a86c`), the matched original operator moves
+    first-clear onset4/14→5/14, median.9→.8s and blocked drift−.07→0yd/s;
+    confirmation by +5 remains2/14. Fresh Power/Toss retains an adverse drift
+    −.04→−.16yd/s; confirmation remains1/6. The cohort is too small for a
+    population claim. Four complete pass-control executions remain identical.
+    Earlier `d3e22420` cards and force witnesses are qualified to that source;
+    they are not current #221-composition measurements.
+  - **Main Engine follow-up (#228, accepted in `c5667bc4`):** run blockers
+    previously mirrored true current defender velocity, unlike the pass rep's
+    delayed touch/sight picture. `RUN_FEEL` repairs that information advantage;
+    it does not strengthen hands or award sheds. Main Engine subsequently
+    corrected the reported 47% release-by-five composition: that came from an
+    intermediate mirror/seal probe, before the final stretch-follow correction.
+    It is not evidence for the accepted composition.
+    The second-change repeat uses identical collectors/settings on `c5667bc4`
+    versus #225 composed at `924fccf8`, RUN_FEEL on by default in both arms.
+    Original-operator native first-clear onset by five remains 4/11; ever clear
+    rises 5/11→7/11. The fresh Power/Toss cohort moves onset 3/7→4/7 and observed
+    median release 1.0→.8s, with all seven eventually clear in both arms.
+    Median blocked radial drift stays approximately zero; G1 is not solved.
+    Requiring .2s confirmation by the five-yard sample gives native 1/10 in both
+    arms and fresh 2/7→3/7. Different operators retain different exposure rules.
+    All 16 native run yardages and four complete pass-control executions are
+    unchanged. Fresh Toss has an adverse 15.15yd tackle→75yd touchdown. Exact
+    passive step reports preserve RB6/SS21 bodies and requests through the
+    first tackle opportunity at4.55s: distance1.343873yd, quality.230854,
+    miss probability.128609 in both arms. The shared-RNG uniform is.561342
+    versus.104937, producing wrap versus miss after line-contact draw history
+    diverges. This ending is not evidence of worsened safety geometry; the
+    long-run outcome remains visible. The existing 75yd Power win survives.
+    No timeout is a finish.
+    Main Engine passed the controller mechanism. The stale timing assertion is
+    split into a frontal wait and an immediate clear exit, retaining eventual
+    action and engagement checks; 49 focused combined-source checks pass.
+    Broader released-defender sampling finds teammate spacing halves requests
+    on only 0.9% of ticks in the first second after release (Main Engine,
+    four games). The saved congestion witness is real but does not establish
+    G1's general limit. Leave shared spacing unchanged. The old hidden-holder
+    fallback outside acquired first-level admission remains a separate
+    awareness follow-up, not a new information contract for #225.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often

@@ -728,7 +728,7 @@ const SHED_PURSUE = process.env.SHED_PURSUE !== '0';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
-const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?: boolean }>();
+const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?: boolean; contactSide?: number }>();
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
@@ -908,17 +908,31 @@ const runTargets = new WeakMap<Engagement, { aim: Vec2; runner: boolean; flow?: 
 
 function runContactRead(sim: PlaySim, e: Engagement) {
   const d = e.defender, b = e.blocker, job = d.runFit;
+  const firstLevel = job?.kind === 'interior' || job?.kind === 'edge';
   const back = sim.slot('RB');
   let backPicture: ReturnType<PlaySim['see']> | null = null;
   let acquired: { target: Agent; cue: ReturnType<PlaySim['see']> } | null = null;
-  if (job?.kind !== 'interior' && job?.kind !== 'edge') {
+  if (!firstLevel || (SHED_PHYSICAL && d.recog?.read === 'run')) {
     // Contact support looks into the installed backfield. A new work-off
     // decision cannot learn a give/keep from the hidden live holder identity.
     const qbPicture = sim.see(d, sim.qb);
     backPicture = back ? sim.see(d, back) : null;
-    if (qbPicture.carrying === true && backPicture?.carrying !== true)
+    // A first-level fit can leave the contact surface for a runner beyond
+    // the line, but the new exit cannot inherit the legacy live-holder key.
+    // Require both fresh possession pictures; an empty/unknown mesh retains
+    // the installed fit and its ordinary across-face work. Support keeps its
+    // existing admission contract.
+    const fresh = (cue: ReturnType<PlaySim['see']> | null) => cue?.age !== undefined
+      && Number.isFinite(cue.age) && cue.age >= 0
+      && cue.age <= d.profile.reactionTime + 2 * d.mind.decisionInterval;
+    const beyond = (cue: ReturnType<PlaySim['see']>) =>
+      (cue.pos.x - sim.los) * sim.attackDir(b.team) > 0;
+    const available = !firstLevel || (fresh(qbPicture) && fresh(backPicture));
+    if (available && qbPicture.carrying === true && backPicture?.carrying !== true
+      && (!firstLevel || (backPicture?.carrying === false && beyond(qbPicture))))
       acquired = { target: sim.qb, cue: qbPicture };
-    else if (back && backPicture?.carrying === true && qbPicture.carrying !== true)
+    else if (available && back && backPicture?.carrying === true && qbPicture.carrying !== true
+      && (!firstLevel || (qbPicture.carrying === false && beyond(backPicture))))
       acquired = { target: back, cue: backPicture };
   }
   const carrier = acquired?.target ?? sim.carrier;
@@ -936,6 +950,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   const fit = job ? `${job.kind}:${job.gap}:${job.side}:${job.edge}:${job.technique}` : 'unassigned';
   let stack: RunStackRead | undefined;
   let blockerY = b.pos.y;
+  let localBlocker: Vec2 | undefined;
   // Narrow installation: first-level gap/edge fits. Stalked support players,
   // inserts and unassigned pass-converted contacts retain their old policy.
   if (job && (job.kind === 'interior' || job.kind === 'edge')) {
@@ -943,6 +958,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     const picture = sim.see(d, b);
     const touch = !!(e.hands?.normalForce || e.hands?.tangentForce);
     const local = touch ? b.pos : picture.pos;
+    localBlocker = local;
     blockerY = local.y;
     // A contact episode remembers our own depth, not a displacement allowance.
     // Keeper promotion changes the opponent picture, not the point we defend.
@@ -1011,7 +1027,13 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     }
   }
   if (flow === undefined && pullFlow !== undefined) flow = pullFlow;
-  const aim = d.mind.aim(stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`, desired, sim.t);
+  const aimJob = stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`;
+  // A first-level acquired exit cannot inherit an aim selected earlier by
+  // the legacy live-holder fallback. Keep its observed target identity with
+  // its held decision; returning to this key only reuses an acquired picture.
+  // Possession alone does not end an edge duty or restart its landmark read.
+  const aim = d.mind.aim(firstLevel && acquired && declared && (!edge || advanced)
+    ? `${aimJob}:acquired:${acquired.target.idx}` : aimJob, desired, sim.t);
   // The selected target mode belongs to the same held decision as its aim.
   // A newly seen declaration cannot drop flow feedforward midway through it.
   // Support contacts hold the selected target mode too. A safety's acquired
@@ -1025,7 +1047,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   const threat = reading && carrierCue &&
     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
   return { aim, reading, threat, declared: runTargets.get(e)!.runner,
-    flow: runTargets.get(e)!.flow, stack, acquiredBackfield: !!acquired };
+    flow: runTargets.get(e)!.flow, stack, localBlocker, acquiredBackfield: !!acquired };
 }
 
 /** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
@@ -1112,12 +1134,23 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const read = runContactRead(sim, e);
   const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredBackfield
     && read.declared && read.threat?.carrying === true;
+  const firstLevelRunner = SHED_PHYSICAL && !!read.stack && read.acquiredBackfield
+    && read.declared && read.threat?.carrying === true;
+  const runnerExit = supportRunner || firstLevelRunner;
   e.phi = measurePhi(axis, d, b);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
 
   // The defender keeps the called fit/shoulder and can answer a declared
   // runner at his next decision. The blocker still seeks his seal surface.
   const toAim = sub(read.aim, d.pos);
+  // Reuse the position already acquired in the line read. A clear exit may
+  // continue through new contact; choosing a move across a frontal surface
+  // still belongs to the ordinary technique cadence.
+  const clearFirstLevelExit = firstLevelRunner && !!read.localBlocker
+    && (read.localBlocker.x - d.pos.x) * toAim.x + (read.localBlocker.y - d.pos.y) * toAim.y < 0;
+  const localFace = firstLevelRunner && read.localBlocker ? sub(read.localBlocker, d.pos) : null;
+  const contactAxis = localFace && Math.hypot(localFace.x, localFace.y) > 1e-9 ? norm(localFace) : axis;
+  const contactLat = latOf(contactAxis);
   const preferred = toAim.x * lat.x + toAim.y * lat.y;
   if (Math.abs(preferred) > .1) e.side = Math.sign(preferred);
   e.control = HAND_FIGHT ? handFight(e, tb, td, dt, rng)
@@ -1130,7 +1163,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const dc = Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y);
     // A support player who has personally declared the carrying runner must
     // work free toward him even when the block keeps him outside close range.
-    // First-level stack/shoulder and uncertain possession retain the old gate.
+    // Uncertain possession and an unadvanced edge retain the old gate.
     // Once that runner is past the line, any blocked defender works off
     // toward him at any range (SHED_PURSUE). It uses the declaration held
     // between ordinary reads, and a support job needs #169's acquired
@@ -1139,8 +1172,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const pursue = SHED_PURSUE && read.declared && read.threat.carrying === true
       && (firstLevel || read.acquiredBackfield)
       && (read.threat.pos.x - sim.los) * sim.attackDir(b.team) > 0;
-    // #169: acquiring hands does not restart already justified support.
-    const ready = t >= e.nextMoveAt || (supportRunner && !runSheds.has(e));
+    // New hands do not restart justified support or a first-level clear
+    // exit. A frontal block and an unadvanced edge retain their old cadence.
+    const ready = t >= e.nextMoveAt || ((supportRunner || clearFirstLevelExit) && !runSheds.has(e));
     if (ready && (dc < 3.5 || supportRunner || pursue)) {
       // Shedding toward the ball is hard if the blocker has sealed you away from it.
       const toBall = sub(read.threat.pos, d.pos);
@@ -1155,13 +1189,21 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
         // Loaded hands supply the local body position; an extended, unloaded
         // reach supplies only this observer's acquired blocker picture.
         let runner = false;
-        if (supportRunner) {
+        if (firstLevelRunner) runner = clearFirstLevelExit;
+        else if (supportRunner) {
           const loaded = Math.hypot(e.hands?.normalForce ?? 0, e.hands?.tangentForce ?? 0) > 0;
           const blocker = loaded ? b.pos : sim.see(d, b).pos;
           if ((blocker.x - d.pos.x) * toAim.x + (blocker.y - d.pos.y) * toAim.y < 0)
             runner = true;
         }
-        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side, runner });
+        // Keep the selected shoulder for the existing decision beat. The
+        // installed fit frame can rotate away from the actual blocking face;
+        // working across that face needs its local tangent, not the old lane.
+        const contactSide = firstLevelRunner
+          ? Math.sign(toAim.x * contactLat.x + toAim.y * contactLat.y)
+            || runSheds.get(e)?.contactSide || ballSide || e.side
+          : undefined;
+        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side, runner, contactSide });
         e.nextMoveAt = t + d.mind.decisionInterval * 2;
         d.tags.add('shed-attempt');
       } else {
@@ -1417,11 +1459,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // The contact technique does not own a second, older runner waypoint.
   // Follow the existing read's held objective as it legitimately refreshes;
   // lost/contradictory acquisition retains the ordinary across-face response.
-  const exitAim = shedding && shed!.runner && supportRunner ? read.aim : undefined;
+  const exitAim = shedding && shed!.runner && runnerExit ? read.aim : undefined;
   const exit = exitAim ? norm(sub(exitAim, d.pos)) : null;
+  const acrossFace = firstLevelRunner && shed?.contactSide !== undefined;
+  const workAxis = acrossFace ? contactAxis : axis, workLat = acrossFace ? contactLat : lat;
+  const workSide = acrossFace ? shed!.contactSide! : shed?.side ?? e.side;
   const workOff = shedding ? exit
     ? { x: exit.x * Math.hypot(td.lateral, .6), y: exit.y * Math.hypot(td.lateral, .6) }
-    : { x: lat.x * shed!.side * td.lateral + axis.x * .6, y: lat.y * shed!.side * td.lateral + axis.y * .6 } : null;
+    : { x: workLat.x * workSide * td.lateral + workAxis.x * .6,
+      y: workLat.y * workSide * td.lateral + workAxis.y * .6 } : null;
   // Diagnostic counterfactual defenses (docs/reviews/counterfactual-defense.md).
   let cf: Vec2 | null = null;
   if (CF_FLOW && !read.declared) {
@@ -1433,14 +1479,20 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   intents[d.idx] = {
     vel: workOff ?? cf ?? (read.stack ? { x: depth, y: lateralFlow } : legacy),
-    facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
+    // Once the first-level man's acquired exit is clear, his body must turn
+    // with that objective while the existing hands still resist him. Keeping
+    // his chest on the blocker would ask him to backpedal after the ball.
+    // A blocker across the exit still calls for square across-face work.
+    facing: firstLevelRunner && exit ? Math.atan2(exit.y, exit.x)
+      : acrossFace ? Math.atan2(workAxis.y, workAxis.x)
+        : Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
     posture: DL_ANCHOR && (e.helpers.length > 0 || drivenBack(d)) ? 1 : 0.85,
     cutSkill: 0.8 + 0.4 * td.bend,
   };
   runContactObservers.get(sim)?.(e, 'defender-movement', { reading: read.reading,
     declared: read.declared, supportRunner, defensiveAim: read.aim,
-    exitAim, workOff, command: intents[d.idx] });
+    exitAim, workOff, workAxis, workSide, command: intents[d.idx] });
   helperIntents(sim, e, intents, axis);
 }
 
