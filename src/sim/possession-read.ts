@@ -28,6 +28,16 @@ export function rememberedFlight(a: Agent, t: number): FlightSample[] | null {
 
 export function hasObservedFlight(a: Agent): boolean { return flights.has(a); }
 
+/** Once a defender sees the pass, his job is to find/play the ball until a
+ * newer cue or the whistle. The trajectory can end without answering who
+ * caught it. Retain the last acquired landing area, not a fictitious flight
+ * or an unconfirmed receiver's continuing route. */
+export function unresolvedBallArea(a: Agent): { x: number; y: number } | null {
+  const flight = flights.get(a);
+  const last = flight && !flight.resolved ? flight.path.at(-1) : null;
+  return last ? { x: last.x, y: last.y } : null;
+}
+
 /** The first catch opportunity on an acquired trajectory is a hypothesis,
  * not the real catcher's identity. A visible tip replaces it with the path. */
 export function rememberCatchOpportunity(a: Agent, opportunity: { receiver: Agent; t: number } | null): void {

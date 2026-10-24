@@ -58,9 +58,12 @@ describe('ordinary-game constructor capture and independent replay', () => {
     const boundary = traced.trace!.steps.find(s => s.stepStart === catcher.t)!;
     expect(boundary.decision!.owner.controller).toBe('ManCoverage');
     expect(boundary.decision!.owner.kind).toBe('man');
-    expect(boundary.endpoint!.behavior.kind).toBe('pursuit');
+    // INFO-1 retires the physical catch's universal controller notification.
+    // The same observer-off/on restoration assertions above remain exact.
+    expect(boundary.endpoint!.behavior.controller).toBe('ManCoverage');
+    expect(boundary.endpoint!.behavior.kind).toBe('man');
     expect(boundary.rewrites).toEqual([]);
-    expect(traced.trace!.steps.some(s => s.decision!.owner.kind === 'pursuit')).toBe(true);
+    expect(traced.trace!.steps.every(s => s.decision!.owner.kind === 'man')).toBe(true);
     const noEnergy = restoreSetup(saved.setup); delete noEnergy.energy;
     const rested = new PlaySim(noEnergy);
     expect(rested.agents.some((a, i) => a.body.energy !== saved.original.initial.actors[i].energy)).toBe(true);

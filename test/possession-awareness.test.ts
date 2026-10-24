@@ -5,7 +5,7 @@ import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { onBallCaught } from '../src/sim/assign.js';
 import { Blitzer, ManCoverage, PassRusher, playBall, Pursuit, pursueIfLive, RunDefender, runFit, ZoneCoverage } from '../src/sim/behaviors/defense.js';
 import { CoverageDefender } from '../src/sim/coverage/defender.js';
-import { observedHolder, acquireFlight, anticipatedCatcher, rememberedFlight } from '../src/sim/possession-read.js';
+import { observedHolder, acquireFlight, anticipatedCatcher, rememberedFlight, unresolvedBallArea } from '../src/sim/possession-read.js';
 import { movementObjective } from '../src/sim/movement-objective.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
@@ -146,6 +146,8 @@ describe('possession identity comes from the observer, not the ball holder', () 
     // rather than toward the known-empty QB ten yards beyond the line.
     expect(runFit(a, sim, 'B', 1).vel.x).toBeLessThan(0);
   });
+
+
 });
 
 describe('an acquired trajectory supports anticipation, not certified possession', () => {
@@ -204,7 +206,7 @@ describe('an acquired trajectory supports anticipation, not certified possession
     expect(observedHolder(f.a, f.sim)?.target).toBe(f.x);
   });
 
-  it('pays for the plausible miss/bobble without inventing a holder, then exhausts its forecast', () => {
+  it('pays for the plausible miss/bobble, then rallies to the last ball area without inventing a holder', () => {
     const f = flight(); playBall(f.a, f.sim, null);
     f.sim.ball = { kind: 'held', carrier: f.sim.qb }; // unseen identity is irrelevant to the estimate
     f.sim.t = 2.1;
@@ -218,7 +220,12 @@ describe('an acquired trajectory supports anticipation, not certified possession
     expect(anticipatedCatcher(f.a, f.sim)).toBeNull(); // refuted hypothesis cannot revive with unknown
     f.sim.t = 2.55;
     expect(rememberedFlight(f.a, f.sim.t)).toBeNull();
-    expect(pursueIfLive(f.sim, f.a)).toBeNull();
+    expect(observedHolder(f.a, f.sim)).toBeNull();
+    expect(unresolvedBallArea(f.a)).toEqual({ x: 56, y: 33 });
+    const rally = pursueIfLive(f.sim, f.a)!;
+    expect(rally).not.toBeNull();
+    expect(rally.vel.x).toBeGreaterThan(0);
+    expect(rally.vel.y).toBeGreaterThan(0);
   });
 
   it('responds on the first ordinary update with a newer acquired catch; no second recognition timer', () => {
@@ -246,5 +253,22 @@ describe('an acquired trajectory supports anticipation, not certified possession
     expect(rememberedFlight(f.a, f.sim.t)).not.toEqual(old);
     f.sim.ballPath[0].y = 40;
     expect(rememberedFlight(f.a, f.sim.t)![0].y).toBe(22);
+  });
+
+  it('keeps rallying instead of reopening route coverage after the native mirror forecast ends', () => {
+    const sim = new PlaySim({ ...nativeTraceSetup({ ...input, flip: true }), record: true, recordLevel: 'full' });
+    const trace = sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 4.35, to: 4.6 });
+    const result = sim.run();
+    // Exact native input from the opposing control. The correction owns the
+    // request/response, not this play's yardage or the receiver's earned catch.
+    expect(result.events.find(e => e.type === 'catch')?.t).toBe(4.25);
+    for (const t of [4.4, 4.45, 4.5]) {
+      const s = trace.steps.find(s => s.stepStart === t)!;
+      expect(s.decision!.raw.vel.y).toBeGreaterThan(0);
+      expect(s.final!.vel.y).toBeGreaterThan(0);
+      expect(s.endpoint!.body.velocity.y).toBeGreaterThan(0);
+      expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === t && d.kind === 'ball-rally')).toBe(true);
+    }
+    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 4.55 && d.kind === 'possession-pursuit')).toBe(true);
   });
 });

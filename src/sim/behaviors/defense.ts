@@ -26,7 +26,7 @@ import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, rememberCatchOpportunity, rememberedFlight } from '../possession-read.js';
+import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 
 /** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
  * side's force player stays on his receiver when the receiver comes to block
@@ -83,7 +83,15 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   if (sim.ball.kind !== 'air' && path && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'flight-continuation',
     chose: 'continue acquired catch opportunity', cue: 'recognized trajectory; no newer acquired holder',
     detail: `Forecast ends at ${path[path.length - 1].t} s. Catch is possible, not confirmed.` });
-  return sim.ball.kind !== 'air' && path ? playObservedFlight(a, sim, path) : null;
+  if (sim.ball.kind !== 'air' && path) return playObservedFlight(a, sim, path);
+  const area = sim.ball.kind !== 'air' ? unresolvedBallArea(a) : null;
+  if (area) {
+    if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
+      chose: 'locate ball at acquired landing area', cue: 'recognized pass; flight ended without acquired possession',
+      detail: 'Keep ball responsibility instead of reopening route coverage. No holder is inferred.' });
+    return goTo(a, area);
+  }
+  return null;
 }
 
 // ------------------------------------------------------------- pass rush
