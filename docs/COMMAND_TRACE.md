@@ -97,7 +97,7 @@ authoritative input/reference**: its V8 encoding also preserves undefined,
 Maps, nonfinite numbers, property order and shared object references. Use the
 supported Node version. Keep all generated output in ignored `out/`.
 
-On accepted develop `0293f70306870891aca112687ea93c3218ef7f81` plus this
+On accepted develop `a8c0455ce7ad35d494688cd7fad9d36c479cc2be` plus this
 capture path, this is Comets' Q1 second-and-15 Levels pass against Cover 1
 and Mike A-gap pressure. It catches at 2.15 s and ends in a tackle. The
 game prefix stops after nine normal steps; **the play is complete, the game
@@ -138,8 +138,9 @@ events, replay, initialization RNG, actual installed calls and actor readiness/
 energy** against the original and each other. A matching ending is insufficient.
 On mismatch it stops with the first field, expected/actual values, time and time
 basis. It selects the earliest disagreement among saved frame/event/telemetry
-streams, including negative-time staging; constructor completion is time zero, and a summary-only difference is labeled
-at the result endpoint. This is the first saved witness, not an inferred
+streams, including negative-time staging; constructor completion is time zero,
+and a summary-only difference is labeled at the result endpoint. This is the
+first saved witness, not an inferred
 unrecorded substep or causal decision.
 
 The ordinary witness exercises fatigue, nonzero styles, man preferences,
