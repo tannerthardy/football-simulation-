@@ -36,6 +36,7 @@ import { METRICS, SPLITS, evaluate, interval, penaltyMetrics, status, type Metri
 import { PROBES } from './probes.js';
 import { eventsFile, overheadLine, watchSection } from './weird/report.js';
 import { compatibility, engineSettings, measurementIdentity, provenance, type Arm, type Card } from './provenance.js';
+import { changeReading, rateCounts } from './format.js';
 
 const argv = process.argv.slice(2);
 const opt = (name: string, dflt?: string) => {
@@ -133,12 +134,12 @@ function absoluteTable(a: Arm, metrics: Metric[]): string[] {
   for (const m of metrics) {
     const { value } = evaluate(m, a.games);
     const [lo, hi] = interval(m, a.games);
-    lines.push(`| ${m.label} | ${fmt(m, value)} | ${fmt(m, lo)} to ${fmt(m, hi)} | ${band(m)} | ${status(m, value)} |`);
+    lines.push(`| ${m.label} | ${fmt(m, value)}${rateCounts(m, a.games)} | ${fmt(m, lo)} to ${fmt(m, hi)} | ${band(m)} | ${status(m, value)} |`);
   }
   return lines;
 }
 
-interface Move { where: string; metric: Metric; base: number; now: number; lo: number; hi: number; n: number }
+interface Move { where: string; metric: Metric; base: number; now: number; lo: number; hi: number; n: number; baseCounts: string; nowCounts: string }
 
 function compareTable(base: Arm, now: Arm, label: string, qualified: boolean, metrics: Metric[]): { lines: string[]; moves: Move[] } {
   const lines = [`| Metric | ${label} | ${now.name} | Change | 90% range of change | Reading | NFL band | vs band |`, '| --- | --- | --- | --- | --- | --- | --- | --- |'];
@@ -148,9 +149,10 @@ function compareTable(base: Arm, now: Arm, label: string, qualified: boolean, me
     const { value: v, n } = evaluate(m, now.games);
     const [lo, hi] = qualified ? interval(m, now.games, base.games) : [NaN, NaN];
     const real = lo > 0 || hi < 0;
-    if (real) moves.push({ where: 'all plays', metric: m, base: b, now: v, lo, hi, n });
-    const reading = !Number.isFinite(b) || !Number.isFinite(v) ? 'unavailable' : !qualified ? 'unverified' : real ? '**moved**' : 'noise';
-    lines.push(`| ${m.label} | ${fmt(m, b)} | ${fmt(m, v)} | ${fmtDiff(m, v - b)} | ${fmtDiff(m, lo)} to ${fmtDiff(m, hi)} | ${reading} | ${band(m)} | ${status(m, v)} |`);
+    const baseCounts = rateCounts(m, base.games), nowCounts = rateCounts(m, now.games);
+    if (real) moves.push({ where: 'all plays', metric: m, base: b, now: v, lo, hi, n, baseCounts, nowCounts });
+    const reading = changeReading(b, v, lo, hi, qualified);
+    lines.push(`| ${m.label} | ${fmt(m, b)}${baseCounts} | ${fmt(m, v)}${nowCounts} | ${fmtDiff(m, v - b)} | ${fmtDiff(m, lo)} to ${fmtDiff(m, hi)} | ${reading} | ${band(m)} | ${status(m, v)} |`);
   }
   return { lines, moves };
 }
@@ -172,12 +174,14 @@ function splitTables(now: Arm, metrics: Metric[], base?: Arm, qualified = true):
         const f = (p: PlayRec) => p.kind === kind && s.key(p) === k;
         const cells = ms.map((m) => {
           const v = evaluate(m, now.games, f).value;
-          if (!base) return `${fmt(m, v)} ${status(m, v) === 'OK' ? '' : status(m, v).toLowerCase()}`.trim();
+          const nowCounts = rateCounts(m, now.games, f);
+          if (!base) return `${fmt(m, v)}${nowCounts} ${status(m, v) === 'OK' ? '' : status(m, v).toLowerCase()}`.trim();
           const b = evaluate(m, base.games, f).value;
           const [lo, hi] = qualified ? interval(m, now.games, base.games, f, 200) : [NaN, NaN];
           const real = lo > 0 || hi < 0;
-          if (real) moves.push({ where: `${s.label.toLowerCase()} = ${k}`, metric: m, base: b, now: v, lo, hi, n: counts.get(k)! });
-          return `${fmt(m, b)} → ${fmt(m, v)}${real ? ' **◆**' : ''}`;
+          const baseCounts = rateCounts(m, base.games, f);
+          if (real) moves.push({ where: `${s.label.toLowerCase()} = ${k}`, metric: m, base: b, now: v, lo, hi, n: counts.get(k)!, baseCounts, nowCounts });
+          return `${fmt(m, b)}${baseCounts} → ${fmt(m, v)}${nowCounts}${real ? ' **◆**' : ''}`;
         });
         lines.push(`| ${k} | ${counts.get(k)} | ${cells.join(' | ')} |`);
       }
@@ -195,6 +199,7 @@ function report(card: Card, baseCard?: Card): string {
   out.push(`Commit \`${meta.commit}\` · ${meta.games} games per arm over ${meta.leagues} leagues · seed ${meta.seed} · ${meta.date}`, '');
   out.push(`Rendering measurement SHA256: \`${measurementIdentity()}\`. Tables use this checkout's metric definitions; producer metadata below is preserved.`, '');
   out.push('Read this as a diagnosis. A band says where our football looks unrealistic; it does not decide whether a mechanism is correct. A stat that moves the wrong way usually points at another mechanism to fix next. Ranges are 90% intervals from resampling whole games; "moved" means the interval excludes zero. A dash means an unavailable measurement or no eligible denominator.', '');
+  out.push('Rate counts are recorded events / eligible exposure; missing legacy counts remain unavailable. An observed 17/17 is 100%, not a certain future success rate: whole-game resampling can give a zero-width interval when every observed outcome is the same. These intervals do not rule out unobserved rare failures.', '');
   out.push('## Timing and provenance', '');
   out.push('Per-game ms is elapsed time around simulateGame only; it excludes roster generation, record/probe work and worker startup. Sums of worker elapsed times are not collection wall time or CPU time.', '');
   for (const [label, producer] of (baseCard ? [['saved base', baseCard], ['candidate', card]] : [['producer', card]]) as Array<[string, Card]>) {
@@ -232,19 +237,19 @@ function report(card: Card, baseCard?: Card): string {
     const check = compatibility(baseCard ?? card, card, b, n);
     const qualified = check.measurements.length === 0;
     out.push(qualified ? 'Measurement, runtime, probe and actual input identities agree; engine source/settings may differ intentionally. Paired units are whole games, not matched post-divergence football situations.'
-      : `Comparison unverified: ${check.measurements.join('; ')}. Descriptive values remain visible; no moved/noise inference.`, '');
+      : `Comparison unverified: ${check.measurements.join('; ')}. Descriptive values remain visible; no change inference.`, '');
     const ct = compareTable(b, n, label, qualified, metrics);
     out.push(...ct.lines);
     const st = splitTables(n, metrics, b, qualified);
     allMoves.push(...ct.moves, ...st.moves);
-    if (st.lines.length) out.push('', '### Splits', ...(qualified ? ['', '◆ marks a cell whose change is outside noise.'] : []), ...st.lines);
+    if (st.lines.length) out.push('', '### Splits', ...(qualified ? ['', '◆ marks a cell whose 90% change interval excludes zero.'] : []), ...st.lines);
   }
   out.push(...watchSection(card.arms));
   if (allMoves.length) {
     const size = (m: Move) => Math.abs(m.now - m.base) / Math.max(1e-9, (m.metric.band ? m.metric.band[1] - m.metric.band[0] : Math.abs(m.base)) || 1);
-    out.push('', '## Biggest real moves', '');
+    out.push('', '## Largest estimated changes', '');
     for (const m of [...allMoves].sort((x, y) => size(y) - size(x)).slice(0, 8)) {
-      out.push(`- ${m.metric.label}, ${m.where} (${m.n} plays): ${fmt(m.metric, m.base)} → ${fmt(m.metric, m.now)}`);
+      out.push(`- ${m.metric.label}, ${m.where} (n=${m.n}): ${fmt(m.metric, m.base)}${m.baseCounts} → ${fmt(m.metric, m.now)}${m.nowCounts}`);
     }
   }
   return `${out.join('\n')}\n`;
