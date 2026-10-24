@@ -10,6 +10,7 @@ import { movementObjective } from '../src/sim/movement-objective.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { World } from '../src/physics/world.js';
+import { handoffReach } from '../src/sim/ball-transfer.js';
 
 const input = { coverage: 'cover3_buzz', concept: 'curl_flat', seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false };
 function stage(role = 'zone', side = 1) {
@@ -147,7 +148,45 @@ describe('possession identity comes from the observer, not the ball holder', () 
     expect(runFit(a, sim, 'B', 1).vel.x).toBeLessThan(0);
   });
 
+  it.each([-1, 1])('caps both visible threats when a still-empty back outruns the QB mesh, side=%s', side => {
+    const f = stage('zone', side); f.a.runFit!.kind = 'alley'; f.a.recog!.read = 'run';
+    const rb = f.sim.slot('RB')!, qb = f.pictures.get(f.sim.qb)!, back = f.pictures.get(rb)!;
+    qb.carrying = true; qb.pos = { x: 35, y: 26 }; qb.vel = { x: 0, y: side * 2 };
+    back.carrying = false; back.pos = { x: qb.pos.x + handoffReach(f.sim.qb, rb) + .2, y: 26 + side * 6 };
+    back.vel = { x: 3, y: side * -2 };
+    const before = structuredClone(f.a.runFit), c = runFit(f.a, f.sim, 'B', side);
+    expect(movementObjective(c)?.point.y).toBeCloseTo(26 + side * 3 + side * 1.2 + f.a.mind.placementError, 10);
+    const goal = movementObjective(c);
+    expect(goal?.kind).toBe('moving');
+    if (goal?.kind !== 'moving') throw new Error('Expected the installed moving cap');
+    expect(goal.velocity?.y).toBe(0);
+    expect(f.a.runFit).toEqual(before);
+    expect(f.sim.trace.data!.decisions.some(d => d.kind === 'run-fit-mesh')).toBe(false);
+    const rng = structuredClone(f.sim.rng), body = structuredClone(f.a.body);
+    f.sim.ball = { kind: 'held', carrier: rb }; // change hidden reality, keep the acquired split fixed
+    expect(runFit(f.a, f.sim, 'B', side)).toEqual(c);
+    expect(f.a.body).toEqual(body);
+    expect(f.sim.rng).toEqual(rng);
+  });
 
+  it('preserves ordinary expected flow without a dated QB-held/empty-back separation cue', () => {
+    for (const control of ['within-reach', 'behind-QB', 'unknown-QB', 'unknown-back', 'undated', 'acquired-back']) {
+      const f = stage(); f.a.runFit!.kind = 'alley'; f.a.recog!.read = 'run';
+      const rb = f.sim.slot('RB')!, qb = f.pictures.get(f.sim.qb)!, back = f.pictures.get(rb)!;
+      qb.carrying = true; qb.pos = { x: 35, y: 26 }; qb.vel = { x: 0, y: 1 };
+      back.carrying = false; back.pos = { x: qb.pos.x + handoffReach(f.sim.qb, rb) + .2, y: 32 };
+      back.vel = { x: 3, y: -2 };
+      if (control === 'within-reach') back.pos.x = qb.pos.x + handoffReach(f.sim.qb, rb) / 2;
+      if (control === 'behind-QB') back.pos.x = qb.pos.x - 2;
+      if (control === 'unknown-QB') qb.carrying = null;
+      if (control === 'unknown-back') back.carrying = null;
+      if (control === 'undated') back.age = undefined;
+      if (control === 'acquired-back') { qb.carrying = false; back.carrying = true; }
+      const goal = movementObjective(runFit(f.a, f.sim, 'B', 1));
+      expect(goal?.point.y).toBeCloseTo(back.pos.y + 1.2 + f.a.mind.placementError, 10);
+      expect(f.sim.trace.data!.decisions.some(d => d.kind === 'run-fit-cap')).toBe(false);
+    }
+  });
 });
 
 describe('an acquired trajectory supports anticipation, not certified possession', () => {

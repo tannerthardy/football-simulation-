@@ -277,11 +277,24 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // level and turns ordinary creases into breakaways.
     if (!premesh && seen.pos.x>sim.los-2.5) return chase(sim,a,c,3.5);
     const home=sim.defAlign.spots[a.slot as DefSlot]!.pos;
+    // The expected exchange is no longer a single visible threat when an
+    // empty back has gone ahead and out of handoff reach while the QB still
+    // shows possession. Keep both capped until the picture resolves it. A
+    // pitch is still possible; this is not a declaration of a failed mesh.
+    const split = premesh && picture && picture.qbCue.carrying === true
+      && picture.backCue.carrying === false
+      && picture.qbCue.age !== undefined && picture.backCue.age !== undefined
+      && picture.backCue.pos.x - picture.qbCue.pos.x > handoffReach(sim.qb, back!);
+    const flowY = split ? (picture.backCue.pos.y + picture.qbCue.pos.y) / 2 : seen.pos.y;
+    const flowVy = split ? (picture.backCue.vel.y + picture.qbCue.vel.y) / 2 : seen.vel.y;
+    if (split && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'run-fit-cap',
+      chose: 'cap QB and empty back', cue: 'QB carrying; empty back ahead and outside handoff reach',
+      detail: 'Retain installed cap depth. Neither a completed exchange nor a keeper is assumed.' });
     // SAFETY_TEMPO: until the back declares, the alley player eases down
     // from his alignment and stays the last level over the ball.
     const depth=SAFETY_TEMPO ? Math.max(5,home.x-sim.los-1) : clamp((home.x-sim.los)*.65,5,8);
-    const aim=a.mind.aim('alley-fit',{x:sim.los+depth,y:seen.pos.y+job.side*1.2+a.mind.placementError},sim.t);
-    return track(a,aim,{x:0,y:seen.vel.y},{speed:.65,gain:2,facing:Math.PI});
+    const aim=a.mind.aim('alley-fit',{x:sim.los+depth,y:flowY+job.side*1.2+a.mind.placementError},sim.t);
+    return track(a,aim,{x:0,y:flowVy},{speed:.65,gain:2,facing:Math.PI});
   }
   const core = sim.offense.filter((o) => ['LT','LG','C','RG','RT'].includes(o.slot) || sim.offAlign.spots[o.slot]?.inline)
     .map((o) => ({ ...sim.see(a,o), radius:o.profile.radius }));
