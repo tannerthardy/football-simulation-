@@ -14,6 +14,7 @@ import { PlaySim } from '../src/sim/playsim.js';
 import type { Agent } from '../src/sim/agent.js';
 import { inBlockReach, traits } from '../src/sim/engagement.js';
 import { afterStep as afterTackleStep, tryTackles, updateBond } from '../src/sim/tackle.js';
+import { tackleReach } from '../src/sim/tackle-geometry.js';
 
 function make(run=false) {
   return new PlaySim({offense:pickOffense(generateTeam(new Rng(11),'O','OFF'),'11'),
@@ -170,7 +171,10 @@ describe('physical tackle contact',()=>{
   });
   it('a wrapped defender releases his block and cannot join a second constraint',()=>{
     const {sim,c,d}=stage(),b=sim.slot('C')!;
-    d.body.pos={x:50,y:CENTER_Y+.7};b.body.pos={x:49.7,y:CENTER_Y+.7};b.downUntil=-1;
+    // The blocked arm has 0.4 of center-to-hand reach; the old .7yd
+    // fixture included an extra holder radius beyond that physical span.
+    const span=tackleReach(d.profile,c.profile,.4)-.01;
+    d.body.pos={x:50,y:CENTER_Y+span};b.body.pos={x:49.7,y:CENTER_Y+span};b.downUntil=-1;
     const block=sim.engage(b,d,'run',{x:1,y:0})!;block.win=.8;
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);tryTackles(sim);
     expect(sim.bond?.tacklers).toContain(d);expect(d.engagement).toBeNull();expect(b.engagement).toBeNull();
@@ -214,13 +218,13 @@ describe('physical tackle contact',()=>{
     }
   });
   it('a whiff at full reach neither records contact nor slows the carrier',()=>{
-    const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+1.4};c.body.vel={x:8,y:0};
+    const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+tackleReach(d.profile,c.profile)-.01};c.body.vel={x:8,y:0};
     vi.spyOn(sim.rng,'chance').mockReturnValue(true);
     tryTackles(sim);
     expect(sim.stats.missedTackles).toBe(1);expect(sim.firstContactX).toBeNull();expect(c.vel.x).toBe(8);
   });
   it('takes a glancing opportunity instead of waiting for unreachable better contact',()=>{
-    const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+1.4};c.body.vel={x:8,y:2};
+    const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+tackleReach(d.profile,c.profile)-.01};c.body.vel={x:8,y:2};
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
     tryTackles(sim);
     expect(sim.bond?.tacklers).toContain(d);expect(sim.firstContactX).toBe(50);
@@ -240,7 +244,7 @@ describe('physical tackle contact',()=>{
     tryTackles(sim);expect(sim.bond).toBeNull();expect(d.nextTackleAt).toBe(0);
   });
   it('a grab at full reach couples only partly, still conserving momentum',()=>{
-    const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+1.4};c.body.vel={x:8,y:2};d.body.vel={x:0,y:0};
+    const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+tackleReach(d.profile,c.profile)-.01};c.body.vel={x:8,y:2};d.body.vel={x:0,y:0};
     vi.spyOn(sim.rng,'chance').mockReturnValue(false);
     tryTackles(sim);expect(sim.bond?.tacklers).toContain(d);
     expect(sim.bond!.grip!.get(d)!).toBeLessThan(.6);
@@ -248,6 +252,11 @@ describe('physical tackle contact',()=>{
     stepFree(sim,4);
     expect(c.vel.x).toBeGreaterThan(d.vel.x+2);
     expect(totals([c,d]).x).toBeCloseTo(before.x,6);expect(totals([c,d]).y).toBeCloseTo(before.y,6);
+  });
+  it('retains the old 1.4yd full-reach fixture as an outside-envelope control',()=>{
+    const {sim,c,d}=stage();d.body.pos={x:50,y:CENTER_Y+1.4};c.body.vel={x:8,y:2};
+    const roll=vi.spyOn(sim.rng,'chance');tryTackles(sim);
+    expect(sim.bond).toBeNull();expect(sim.firstContactX).toBeNull();expect(roll).not.toHaveBeenCalled();
   });
   const park=(sim:PlaySim,keep:Agent[])=>{for(const a of sim.agents)if(!keep.includes(a))a.behavior={kind:'idle',update:()=>({vel:{x:0,y:0}})} as never;};
   it('a carrier dragging a tackler from behind keeps gaining ground before he goes down',()=>{
