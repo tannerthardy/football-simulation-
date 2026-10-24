@@ -44,6 +44,7 @@ import { predictCalledMotion } from './called-motion.js';
 import { MotionRuntime, motionEnabled, planMotion } from './motion.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
+import { orderedDefense, orderedOffense } from './lineup.js';
 import { SNAP_REACT, VISIBLE, planSnap, snapResponse, type SnapCount } from './snap-count.js';
 import { ReplayTrace } from './telemetry.js';
 import { CommandTrace, type CommandTraceSelection } from './command-trace.js';
@@ -235,6 +236,8 @@ export class PlaySim {
   ballPath: Array<{ t: number; x: number; y: number; z: number }> = [];
 
   constructor(setup: PlaySetup) {
+    // Normalize once before alignment, actor indices and any ordered consumer.
+    const offense = orderedOffense(setup.offense), defense = orderedDefense(setup.defense);
     this.rng = typeof setup.seed === 'number' ? new Rng(setup.seed) : setup.seed;
     this.coverageScouting = setup.coverageScouting;
     this.los = setup.los;
@@ -255,9 +258,9 @@ export class PlaySim {
       { kind: setup.offCall.kind, pass: setup.offCall.pass, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
     // The secondary checks its call to the receiver distribution it sees.
     this.defCall = installCoverage(setup.defCall, this.offAlign);
-    const defSlots = Object.keys(setup.defense) as DefSlot[];
+    const defSlots = defense.map(([slot]) => slot);
     // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
-    const mass = Object.fromEntries(defSlots.map(slot => [slot, derivePhysical(setup.defense[slot]!).massKg]));
+    const mass = Object.fromEntries(defense.map(([slot, player]) => [slot, derivePhysical(player).massKg]));
     this.defStyle = { ...setup.defStyle, mass, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los } };
     this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
 
@@ -274,14 +277,14 @@ export class PlaySim {
       this.bySlot.set(slot, a);
       return a;
     };
-    for (const [slot, player] of Object.entries(setup.offense) as Array<[OffSlot, Player]>) {
+    for (const [slot, player] of offense) {
       const spot = this.offAlign.spots[slot];
-      if (!spot) continue;
+      if (!spot) throw new Error(`Offense lineup slot ${slot} has no alignment in ${setup.offCall.formation.id}`);
       mk('O', slot, player, spot.pos, 0);
     }
-    for (const [slot, player] of Object.entries(setup.defense) as Array<[DefSlot, Player]>) {
+    for (const [slot, player] of defense) {
       const spot = this.defAlign.spots[slot];
-      if (!spot) continue;
+      if (!spot) throw new Error(`Defense lineup slot ${slot} has no alignment in ${this.defCall.front.id}`);
       mk('D', slot, player, spot.pos, Math.PI);
     }
     fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
