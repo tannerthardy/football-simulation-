@@ -1790,6 +1790,11 @@ zone).
 <a id="perf-3"></a>
 ### PERF-3: The mechanics guard passes on missing data; Python tests not in CI
 
+- **Current follow-up:** #249 repairs the missing-evidence guard. The separate
+  `.github/workflows/data-tests.yml` adds normal offline Python discovery,
+  including those guard cases, on Python 3.12 with declared dependencies;
+  reference-only changes do not schedule extra games. The observations below
+  describe the original audit; the precision comment remains a separate issue.
 - `scripts/mechanics/compare.py`: a guarded metric with no sim data falls
   into the "too few" branch, gets no mark, and counts as still matching. An
   empty sim file prints "12/12 matched metrics still match" and exits 0.
