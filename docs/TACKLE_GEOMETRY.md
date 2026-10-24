@@ -68,9 +68,11 @@ retune their football decisions or certify those distances as hand contact:
 
 Admission correctness is not a new dive chooser. In particular the legacy
 desperation-dive branch selects a runner separating faster than 1.6 yd/s,
-whereas its existing launch adds at most 1.5 yd/s before drag. With unchanged
-straight target motion this cannot close the gap. A future cut/contact can
-change that, and a nearer committed lunge can physically arrive. Useful native
+whereas its existing launch adds at most 1.5 yd/s before subsequent fall motion.
+The launch alone cannot overcome that initial recession; the existing fall-tip
+force, drag and target motion still need evaluation. The straight receding
+control fails to arrive. A future cut/contact can change that, and a nearer
+committed lunge can physically arrive. Useful native
 dive selection and an explicitly represented layout/ankle geometry remain
 separate questions; no distance bonus substitutes for either.
 
