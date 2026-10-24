@@ -11,7 +11,8 @@ import { ScoutingReport } from '../src/sim/recognition.js';
 import { CoverageScouting } from '../src/sim/qbmind.js';
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { captureOrdinaryPlay, originalFilm } from '../scripts/diag/capture-game-play.js';
-import { captureSetup, compareExecution, copySaved, firstDifference, identityDifference, readSavedPlay, restoreSetup, runRestoredPlay } from '../scripts/diag/saved-play.js';
+import { captureSetup, compareExecution, copySaved, firstDifference, identityDifference, initialState,
+  readSavedPlay, replayState, restoreSetup, runRestoredPlay } from '../scripts/diag/saved-play.js';
 import { composeHooks } from '../scripts/scorecard/hooks.js';
 
 describe('ordinary-game constructor capture and independent replay', () => {
@@ -51,13 +52,38 @@ describe('ordinary-game constructor capture and independent replay', () => {
     expect(plain.difference).toBeNull();
     const catcher = saved.original.result.events.find(e => e.type === 'catch')!;
     expect(catcher).toBeDefined();
-    const traced = runRestoredPlay(saved, { actor: { team: 'D', slot: 'CB_W' }, from: catcher.t - .05, to: catcher.t + .15 });
+    const sim = new PlaySim(restoreSetup(saved.setup)), initial = initialState(sim);
+    const selected = sim.defense.find(a => a.slot === 'CB_W')!;
+    const entries = new Map<number, { controller: string; kind: string }>();
+    const tick = sim.tick.bind(sim);
+    sim.tick = () => {
+      const owner = selected.behavior, update = owner.update;
+      const descriptor = Object.getOwnPropertyDescriptor(owner, 'update');
+      owner.update = (a, s) => {
+        if (a === selected) entries.set(s.t, { controller: owner.constructor.name, kind: owner.kind });
+        return update.call(owner, a, s);
+      };
+      try { tick(); } finally {
+        if (descriptor) Object.defineProperty(owner, 'update', descriptor);
+        else Reflect.deleteProperty(owner, 'update');
+      }
+    };
+    const trace = sim.recordCommands({ actor: { team: 'D', slot: 'CB_W' }, from: catcher.t - .05, to: catcher.t + .15 });
+    const result = sim.run(), execution = { initial, result, replay: replayState(sim, result, saved.context) };
+    const traced = { trace, execution, difference: compareExecution(saved.original, execution) };
     expect(traced.difference).toBeNull();
     expect(compareExecution(plain.execution, traced.execution)).toBeNull();
     expect(traced.execution).toEqual(saved.original); // Every field, including the game replay envelope.
     const boundary = traced.trace!.steps.find(s => s.stepStart === catcher.t)!;
-    expect(boundary.decision!.owner.controller).toBe('ManCoverage');
+    // The normal game's later call may install a direct man controller or a
+    // matching-coverage wrapper. Assert actual update entry independently of
+    // the recorder; never derive authorship from the endpoint's replacement.
+    expect(entries.has(catcher.t)).toBe(true);
+    expect(boundary.decision!.owner.controller).toBe(entries.get(catcher.t)!.controller);
+    expect(boundary.decision!.owner.kind).toBe(entries.get(catcher.t)!.kind);
     expect(boundary.decision!.owner.kind).toBe('man');
+    expect(boundary.decision!.owner.controller).not.toBe(boundary.endpoint!.behavior.controller);
+    expect(boundary.endpoint!.behavior.controller).toBe('Pursuit');
     expect(boundary.endpoint!.behavior.kind).toBe('pursuit');
     expect(boundary.rewrites).toEqual([]);
     expect(traced.trace!.steps.some(s => s.decision!.owner.kind === 'pursuit')).toBe(true);
@@ -94,13 +120,24 @@ describe('ordinary-game constructor capture and independent replay', () => {
     expect(d.time).toBe(frame.t); expect(d.timeBasis).toBe('recorded');
     const initialization = copySaved(expected); initialization.initial.actors[0].energy -= .01;
     expect(compareExecution(expected, initialization)).toMatchObject({ path: '$.initial.actors[0].energy', time: 0, timeBasis: 'initialization' });
-    // Constructor staging has recorded negative times; don't hide an earlier witness behind its time-zero completion check.
-    expect(frame.t).toBeLessThan(0);
-    altered.initial.actors[0].energy -= .01;
-    expect(compareExecution(expected, altered)).toMatchObject({ path: '$.result.frames[5].agents[0]', time: frame.t, timeBasis: 'recorded' });
     expect(firstDifference([], [undefined])).toMatchObject({ path: '$[0]', expected: '<absent>', actual: '<undefined>' });
     expect(firstDifference({}, { missing: undefined })).not.toBeNull();
     expect(firstDifference({ value: null }, {})).toMatchObject({ expected: null, actual: '<absent>' });
+  });
+
+  it.each([-.5, .5])('orders a declared synthetic %ss frame against time-zero initialization', time => {
+    // Clock-order unit fixture, not a restorable simulator checkpoint. Ordinary
+    // plays need not contain pre-snap motion or a negative fifth frame.
+    const expected = copySaved(captured.saved.original);
+    const shift = time - expected.result.frames![5].t;
+    for (const frame of expected.result.frames!) frame.t += shift;
+    for (const event of expected.result.events) event.t += shift;
+    const altered = copySaved(expected);
+    altered.result.frames![5].agents[0] += .01;
+    altered.initial.actors[0].energy -= .01;
+    const frameDifference = { path: '$.result.frames[5].agents[0]', time, timeBasis: 'recorded' };
+    const initializationDifference = { path: '$.initial.actors[0].energy', time: 0, timeBasis: 'initialization' };
+    expect(compareExecution(expected, altered)).toMatchObject(time < 0 ? frameDifference : initializationDifference);
   });
 });
 
