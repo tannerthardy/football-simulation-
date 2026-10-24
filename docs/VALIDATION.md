@@ -374,3 +374,23 @@ peek at the reserved weeks to choose those definitions.
   seeds/rosters before treating the ranking as a league-wide failure rate.
 - The untouched final exam is not available yet. No existing averages certify
   the whole engine, and no evidence establishes a percentage of work remaining.
+
+### Paired ordinary scout recording
+
+`node --import tsx scripts/paired-scout-recording.ts out/paired-scout 24`
+records a bounded seed-7 ordinary prefix twice, first without observers and then
+with composed constructor capture and existing scouts. Complete GameResult JSON
+must match. It keeps at most two alerts per existing detector and their source-
+qualified native inputs and original standalone replay. This is a new sample,
+never a restoration of the unavailable historical #262 cohort.
+
+Use the recorded `index.json` identities and `events.json`, open each play's
+`original.html`, and regenerate a selected trace with:
+
+```sh
+node --import tsx scripts/diag/command-trace.ts --capture out/paired-scout/G1-P006/play.bin --actor O:Y --from 2.5 --to 4 --out out/paired-scout/selected.json
+```
+
+The existing command verifies source/settings/Node/lockfile and independently
+restores the complete native result before tracing. The prefix is not a full
+game or a population precision sample. Keep raw artifacts in ignored out/.
