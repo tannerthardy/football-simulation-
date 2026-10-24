@@ -110,6 +110,59 @@ cut spans several overlapping windows, so it is judged by its worst one.
   requests, not hidden perception or applied force. Body facing is not gaze
   ([BEHAVIOR_REVIEW](BEHAVIOR_REVIEW.md)).
 
+### Review saved scouts without more games (PERF-5 / VIEW-1)
+
+```sh
+node --import tsx scripts/film-scout-review.ts --card out/scorecard/head.json --seed 243 --out out/scout-review
+```
+
+This offline command freezes twelve official retained episodes (1 pre-snap,
+3 turned, 3 stuck, 3 backpedal, 2 slide), or the available smaller set. It saves
+the input-card checksum, actual source/settings/input identities, population
+counts, seed and selection recipe in `queue.json`; `review.md` is the index.
+It does not run a detector or simulate a play. Use a single saved arm. A
+historical card remains historical; scorecard `sc7/` IDs must not be joined
+to ordinary film-room IDs by play number alone.
+
+Six opposing half-second windows are sampled after 1s from the same saved
+plays: three negative for `turned`, three for `slide`. A game's official stored
+and uncapped event counts must agree for that detector. Missing/capped streams
+cannot prove absence. Controls are conditioned on another alert in the play;
+eligibility in the selected window is unknown until its film/trace is inspected.
+They expose questions, not a reliable population recall estimate. Nullified
+events remain in the input and population counts but are not sampled.
+
+Keep agent dispositions and optional Tanner observations in a per-play notes
+file, alongside the report in ignored `out/`, as with existing film notes.
+`notes-template.json` supplies `sourceCardSha256`, `sourceSha256` and `notes`.
+Each note uses an episode `key`, `verdict` (`defect`, `legitimate`, `unresolved`),
+`reason` and `competingExplanation`; resolved labels also need `evidence` links.
+`userObservationParaphrase` is optional. Re-render with `--notes review.json`.
+Regeneration preserves existing notes. Unreviewed alerts are not errors;
+uncertain labels are not successes. Counts describe this small stratified
+sample, including its uncertain cases; they do not certify detector precision.
+
+If the producer supplies existing replay/trace files, add `--films films.json`.
+The sidecar has `entries: [{key, path, sha256, engineSha256, settingsSha256,
+inputSha256, playId}]`; paths are relative to that sidecar. Each entry links the
+existing standalone replay envelope, with its source, actor and interval
+checked. Settings/input must match the queue's recorded hashes, but this is an
+owner-declared join, not an independent execution proof. Do not fill missing
+legacy identity from today's defaults. Optional `traces: [{key, path, sha256,
+inputSha256}]` consume existing selected-actor command-trace JSON (see
+[COMMAND_TRACE](COMMAND_TRACE.md)); the tool checks its source/settings/play
+and actor, then copies only recorded steps. Missing steps and useful-intervention
+opportunities remain unknown. Commands are displayed, never executed.
+
+Use the viewer's existing **Copy reference** and **Export clip** controls;
+search the exact play, select its player and seek to the reported interval.
+Only unresolved notes with `needsFootballJudgment: true` **and matching film**
+enter Tanner's shortlist. Missing artifacts are an agent access task. Request
+the existing evidence rather than recollect a panel or invent an intent/contact
+diagnosis from dots. Contact-owned facing, legitimate coverage turns, an unused
+stale cache and a far-side player with no achievable useful intervention are
+opposing explanations to check, not automatic false-positive labels.
+
 **What they miss, on purpose or by definition.** Anything outside the rule: a long
 curved glide that never turns 60° in half a second, a defender turned from the
 quarterback before there is a runner, a blocker on a man who is close and closing.
