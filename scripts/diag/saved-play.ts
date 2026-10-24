@@ -150,8 +150,8 @@ export function firstDifference(expected: unknown, actual: unknown, path = '$', 
  * This identifies the first saved witness, not an unrecorded substep or causal decision. */
 export function compareExecution(expected: SavedPlay['original'], actual: SavedPlay['original']): ExecutionDifference | null {
   const initialization = firstDifference(expected.initial, actual.initial, '$.initial');
-  if (initialization) return initialization;
   const differences: ExecutionDifference[] = [];
+  if (initialization) differences.push(initialization);
   for (const [path, e, a] of [
     ['$.result.frames', expected.result.frames, actual.result.frames],
     ['$.result.events', expected.result.events, actual.result.events],

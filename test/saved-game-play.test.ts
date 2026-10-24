@@ -94,6 +94,10 @@ describe('ordinary-game constructor capture and independent replay', () => {
     expect(d.time).toBe(frame.t); expect(d.timeBasis).toBe('recorded');
     const initialization = copySaved(expected); initialization.initial.actors[0].energy -= .01;
     expect(compareExecution(expected, initialization)).toMatchObject({ path: '$.initial.actors[0].energy', time: 0, timeBasis: 'initialization' });
+    // Constructor staging has recorded negative times; don't hide an earlier witness behind its time-zero completion check.
+    expect(frame.t).toBeLessThan(0);
+    altered.initial.actors[0].energy -= .01;
+    expect(compareExecution(expected, altered)).toMatchObject({ path: '$.result.frames[5].agents[0]', time: frame.t, timeBasis: 'recorded' });
     expect(firstDifference([], [undefined])).toMatchObject({ path: '$[0]', expected: '<absent>', actual: '<undefined>' });
     expect(firstDifference({}, { missing: undefined })).not.toBeNull();
     expect(firstDifference({ value: null }, {})).toMatchObject({ expected: null, actual: '<absent>' });

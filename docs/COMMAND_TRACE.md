@@ -138,7 +138,7 @@ events, replay, initialization RNG, actual installed calls and actor readiness/
 energy** against the original and each other. A matching ending is insufficient.
 On mismatch it stops with the first field, expected/actual values, time and time
 basis. It selects the earliest disagreement among saved frame/event/telemetry
-streams; initialization is time zero, and a summary-only difference is labeled
+streams, including negative-time staging; constructor completion is time zero, and a summary-only difference is labeled
 at the result endpoint. This is the first saved witness, not an inferred
 unrecorded substep or causal decision.
 
