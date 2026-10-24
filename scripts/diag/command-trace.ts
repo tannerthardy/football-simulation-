@@ -14,6 +14,7 @@ import { PlaySim, type PlaySetup } from '../../src/sim/playsim.js';
 import type { CommandTraceSelection } from '../../src/sim/command-trace.js';
 import { engineSettings } from '../scorecard/provenance.js';
 import { sourceVersion } from '../source-version.js';
+import { compareExecution, identityDifference, readSavedPlay, runRestoredPlay } from './saved-play.js';
 
 /** Same generated-team/input recipe as coverage-trace.ts, without its extra diagnostic reads. */
 export function nativeTraceSetup(input: { coverage: string; concept: string; seed: number; roster: number; formation: string; flip: boolean }): PlaySetup {
@@ -34,6 +35,7 @@ export function nativeTraceSetup(input: { coverage: string; concept: string; see
 
 function main() {
   const { values: v } = parseArgs({ options: {
+    capture: { type: 'string' },
     actor: { type: 'string' }, 'player-id': { type: 'string' }, from: { type: 'string' }, to: { type: 'string' },
     coverage: { type: 'string', default: 'cover3_buzz' }, concept: { type: 'string', default: 'curl_flat' },
     seed: { type: 'string', default: '1' }, roster: { type: 'string', default: '7' },
@@ -42,6 +44,7 @@ function main() {
   } });
   if (v.help) {
     console.log('node --import tsx scripts/diag/command-trace.ts --actor D:CB_W --from 3.45 --to 3.6 [--coverage cover3_buzz --concept curl_flat --seed 1 --roster 7 --formation gun_doubles_11 --flip --out out/command-trace.json]');
+    console.log('Or: --capture out/saved-game-play/play.bin --actor D:CB_W --from T --to T; verifies original, independent replay, and trace-on replay.');
     return;
   }
   if (!!v.actor === !!v['player-id'] || v.from === undefined || v.to === undefined)
@@ -53,15 +56,36 @@ function main() {
     if (!match) throw new Error('--actor must be O:SLOT or D:SLOT');
     actor = { team: match[1] as 'O' | 'D', slot: match[2] };
   }
-  const input = { coverage: v.coverage!, concept: v.concept!, seed: Number(v.seed), roster: Number(v.roster),
+  const recipe = { coverage: v.coverage!, concept: v.concept!, seed: Number(v.seed), roster: Number(v.roster),
     formation: v.formation!, flip: v.flip! };
-  const sim = new PlaySim(nativeTraceSetup(input));
-  const trace = sim.recordCommands({ actor, from: Number(v.from), to: Number(v.to) });
-  const result = sim.run();
+  const selection = { actor, from: Number(v.from), to: Number(v.to) };
+  const saved = v.capture ? readSavedPlay(v.capture) : undefined;
+  let verification: Record<string, unknown> | undefined;
+  let sim: PlaySim, trace: ReturnType<PlaySim['recordCommands']>, result: ReturnType<PlaySim['run']>;
+  if (saved) {
+    if (process.argv.slice(2).some(arg => ['coverage', 'concept', 'seed', 'roster', 'formation', 'flip']
+      .some(name => arg === `--${name}` || arg.startsWith(`--${name}=`)))) throw new Error('--capture cannot be combined with generated-recipe overrides');
+    const mismatch = identityDifference(saved);
+    if (mismatch) throw new Error(`Capture identity differs before construction: ${JSON.stringify(mismatch)}`);
+    const plain = runRestoredPlay(saved);
+    if (plain.difference) throw new Error(`Restoration differs: ${JSON.stringify(plain.difference)}`);
+    const traced = runRestoredPlay(saved, selection);
+    const traceDifference = compareExecution(plain.execution, traced.execution);
+    verification = { originalVsPlain: plain.difference, originalVsTrace: traced.difference,
+      traceVsPlain: traceDifference, originalPlay: saved.game.playId, setupSha256: saved.setupSha256, originalIdentity: saved.identity };
+    if (traced.difference || traceDifference) throw new Error(`Traced restoration differs: ${JSON.stringify(traced.difference ?? traceDifference)}`);
+    ({ sim } = traced); trace = traced.trace!; result = traced.execution.result;
+    console.log(`${saved.game.playId}: complete result/events/replay and constructor checks EXACT; trace off/on EXACT.`);
+  } else {
+    sim = new PlaySim(nativeTraceSetup(recipe));
+    trace = sim.recordCommands(selection);
+    result = sim.run();
+  }
+  const input = saved ? { capture: v.capture, originalPlay: saved.game.playId } : recipe;
   const output = { version: 1, meta: { commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
     engineSha256: sourceVersion(), node: process.version, settings: engineSettings(process.env),
     command: process.argv.slice(1), input, selection: trace.selection },
-    result: { outcome: result.outcome, yards: result.yards, duration: result.duration },
+    verification, result: { outcome: result.outcome, yards: result.yards, duration: result.duration },
     events: result.events.filter(e => e.t >= Number(v.from) && e.t <= Number(v.to)), steps: trace.steps };
   mkdirSync(dirname(v.out!), { recursive: true });
   writeFileSync(v.out!, JSON.stringify(output, null, 2) + '\n');
