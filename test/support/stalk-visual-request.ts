@@ -5,6 +5,7 @@ import type {Agent} from '../../src/sim/agent.js';
 import type {PlaySim} from '../../src/sim/playsim.js';
 import type {Perceived} from '../../src/sim/perception.js';
 import {RunBlocker} from '../../src/sim/behaviors/blocking.js';
+import {SnapMind} from '../../src/sim/mind.js';
 
 export interface StalkWitness {
   protocol:string;sourceBase:string;comparisonBaseline:string;controllerT:number;
@@ -25,7 +26,10 @@ export function stalkRequest(f:StalkWitness,opts:{hiddenY?:number;visibleY?:numb
   const ownBefore=structuredClone(own),otherBefore=structuredClone(other);
   const actor={idx:f.actor.id,slot:f.actor.slot,team:'O',body:own,profile:own.profile,engagement:null,
     get pos(){return own.pos;},get vel(){return own.vel;},get facing(){return own.facing;},
-    mind:{snapDelay:f.actor.snapReadyAt,decisionInterval:.2},isDown:()=>false}as unknown as Agent;
+    // This frozen witness only needs the stalk's readiness and target-action
+    // lifecycle. Execute the production method rather than stubbing it away.
+    mind:{snapDelay:f.actor.snapReadyAt,decisionInterval:.2,aims:new Map(),aimTargets:new Map(),
+      setAimTarget:SnapMind.prototype.setAimTarget},isDown:()=>false}as unknown as Agent;
   const target={idx:f.target.id,slot:f.target.slot,team:'D',body:other,profile:other.profile,engagement:null,
     get pos(){return other.pos;},get vel(){return other.vel;},get facing(){return other.facing;},
     isDown:()=>false}as unknown as Agent;
