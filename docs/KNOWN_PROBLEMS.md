@@ -669,6 +669,12 @@ Carried over from the issue register; each was measured on an older develop.
   shape as a feasible point. Neither is shown to cause P002: its chosen
   points pass the bound. **Open:** return feasible vs fallback explicitly
   and log it, then compare candidate forecasts on frozen cases. Defense.
+- **Prediction interface:** [selected command traces](COMMAND_TRACE.md#inspect-pursuit-prediction-feasibility)
+  expose the sampled estimate vs fallback, horizon/arrival/slack and forecast
+  assumptions, including the existing bias/leverage applied after that test.
+  This is an approximate-estimator contract, with point selection and steering
+  unchanged. Forecast/steering repairs and any native link to the isolated
+  reach-bound violation remain open.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
