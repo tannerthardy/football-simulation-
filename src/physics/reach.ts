@@ -65,26 +65,55 @@ export function timeToReach(m: Mover, target: Vec2, radius = 0): number {
   return penalty + sprintTime(D + extra, u0, vmax, p.tau);
 }
 
-/**
- * Earliest interception of a target moving along a predicted path.
- * `path(t)` gives the target's position at time t from now. Returns the time
- * and point where the pursuer can first arrive no later than the target.
+export const REACH_ESTIMATE_ASSUMPTIONS = {
+  model: 'sprint-with-approximate-redirect',
+  targetPath: 'caller-supplied; information source is not validated by this estimator',
+  speed: 'profile.vmax * speedScale; exponential sprint with profile.tau',
+  redirect: 'half transverse-speed/lateral penalty; away braking time plus overshoot distance',
+  omitted: 'requested effort, body facing/yaw, support/load, contacts, obstacles and subsequent target changes',
+} as const;
+
+export interface InterceptEstimate {
+  status: 'estimated-feasible' | 'fallback-no-estimated-feasible-candidate';
+  horizon: number;
+  step: number;
+  radius: number;
+  /** Seconds from now, for this sampled point, not a World movement preview. */
+  arrivalTime: number | null;
+  /** Target sample time minus estimated arrival time; positive means estimated spare time. */
+  slack: number | null;
+  physicalGuarantee: false;
+  assumptions: typeof REACH_ESTIMATE_ASSUMPTIONS;
+}
+
+export interface InterceptSample { t: number; point: Vec2; arrivalTime: number; slack: number; estimatedFeasible: boolean }
+export interface InterceptPrediction { t: number; point: Vec2; estimate: InterceptEstimate; samples?: InterceptSample[] }
+
+/** First sampled point passing timeToReach's approximate test, or the sampled
+ * point with least estimated lateness. Neither branch guarantees physical
+ * arrival. `path(t)` is the caller's forecast at seconds from now.
  */
 export function interceptPoint(
   m: Mover,
   path: (t: number) => Vec2,
-  opts: { horizon?: number; step?: number; radius?: number } = {},
-): { t: number; point: Vec2 } {
+  opts: { horizon?: number; step?: number; radius?: number; recordSamples?: boolean } = {},
+): InterceptPrediction {
   const horizon = opts.horizon ?? 4;
   const step = opts.step ?? 0.1;
   const radius = opts.radius ?? 0.5;
-  let best = { t: horizon, point: path(horizon), slack: Infinity };
+  const samples: InterceptSample[] | undefined = opts.recordSamples ? [] : undefined;
+  let best = { t: horizon, point: path(horizon), slack: Infinity, arrivalTime: null as number | null };
+  const result = (t: number, point: Vec2, arrivalTime: number | null,
+    status: InterceptEstimate['status']): InterceptPrediction => ({ t, point,
+    estimate: { status, horizon, step, radius, arrivalTime, slack: arrivalTime === null ? null : t - arrivalTime,
+      physicalGuarantee: false, assumptions: REACH_ESTIMATE_ASSUMPTIONS }, ...(samples ? { samples } : {}) });
   for (let t = 0; t <= horizon + 1e-9; t += step) {
     const pt = path(t);
     const tt = timeToReach(m, pt, radius);
-    if (tt <= t) return { t, point: pt };
+    samples?.push({ t, point: { ...pt }, arrivalTime: tt, slack: t - tt, estimatedFeasible: tt <= t });
+    if (tt <= t) return result(t, pt, tt, 'estimated-feasible');
     const slack = tt - t;
-    if (slack < best.slack) best = { t, point: pt, slack };
+    if (slack < best.slack) best = { t, point: pt, slack, arrivalTime: tt };
   }
-  return { t: best.t, point: best.point };
+  return result(best.t, best.point, best.arrivalTime, 'fallback-no-estimated-feasible-candidate');
 }

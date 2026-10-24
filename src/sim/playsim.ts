@@ -956,6 +956,11 @@ export class PlaySim {
     return this.commandTrace = new CommandTrace(matches[0], selection);
   }
 
+  /** A pending selected-player window only; helpers need not allocate diagnostic data otherwise. */
+  commandTraceFor(a: Agent): CommandTrace | undefined {
+    return this.commandTrace?.isCollecting(a) ? this.commandTrace : undefined;
+  }
+
   tick(): void {
     const t = this.t;
     const commandTrace = this.commandTrace;
