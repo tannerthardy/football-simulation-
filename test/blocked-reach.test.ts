@@ -14,8 +14,9 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Engagement } from '../src/sim/agent.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
-/** The carrier passes a blocked tackle 0.55 of an arm beyond body contact. */
-function stage(control: number, blocker: 'free' | 'covered' | 'square') {
+/** The carrier passes within 0.55 of the center-to-hand arm span. The old
+ * fixture also added the holder's radius; retain that as an outside control. */
+function stage(control: number, blocker: 'free' | 'covered' | 'square', oldRadius = false) {
   const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(19), 'O', 'O'), '11'),
     defense: pickDefense(generateTeam(new Rng(20), 'D', 'D'), 'base43'),
     offCall: { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.power, label: 'reach' },
@@ -24,7 +25,7 @@ function stage(control: number, blocker: 'free' | 'covered' | 'square') {
   const c = sim.slot('RB')!, d = sim.slot('DT_S')!, b = sim.slot('RG')!;
   for (const a of sim.agents) { a.body.pos = { x: 5 + Math.floor(a.idx / 12) * 2, y: 2 + a.idx % 12 * 4 }; a.body.vel = { x: 0, y: 0 }; a.downUntil = 99; }
   c.downUntil = d.downUntil = -1;
-  const gap = c.profile.radius + d.profile.radius + .55 * d.profile.reach;
+  const gap = c.profile.radius + (oldRadius ? d.profile.radius : 0) + .55 * d.profile.reach;
   d.body.pos = { x: 41, y: CENTER_Y }; d.body.facing = Math.PI / 2;
   c.body.pos = { x: 41, y: CENTER_Y + gap }; c.body.vel = { x: 1, y: 0 };
   // In front of him, offset away from the runner, toward him, or head-up.
@@ -60,5 +61,12 @@ describe('a blocked defender reaches with his free arm', () => {
   });
   it.each(['covered', 'square'] as const)('on: a blocker %s occupies that arm', async blocker => {
     expect((await reach(true, 0, blocker)).reached).toBe(false);
+  });
+  it('does not grant the former extra-holder-radius reach', async () => {
+    vi.stubEnv('BLOCKED_REACH', '1'); vi.resetModules();
+    const { tryTackles } = await import('../src/sim/tackle.js');
+    const f = stage(0, 'free', true), chance = vi.spyOn(f.sim.rng, 'chance');
+    tryTackles(f.sim);
+    expect(chance).not.toHaveBeenCalled(); expect(f.sim.bond).toBeNull();
   });
 });

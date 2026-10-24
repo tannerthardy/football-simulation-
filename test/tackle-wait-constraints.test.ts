@@ -11,6 +11,7 @@ import type { GraspJoint } from '../src/physics/world.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { contactQuality } from '../src/sim/tackle-window.js';
 import { tryTackles } from '../src/sim/tackle.js';
+import { tackleReach } from '../src/sim/tackle-geometry.js';
 
 function stage(side = 1) {
   const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(19), 'O', 'OFF'), '11'),
@@ -42,14 +43,21 @@ function stage(side = 1) {
       })));
     }
   }
-  function withinReach(arms = body + defender.profile.reach) {
+  function withinReach(arms = tackleReach(defender.profile, carrier.profile)) {
     // Extended but physically reachable now. Ideal straight motion predicts
     // torso contact soon, although the current constraint has not disappeared.
     const distance = arms - .03;
     carrier.body.pos = { x: defender.pos.x + distance, y: defender.pos.y + side * .01 };
     const q = contactQuality(Math.hypot(distance, .01), body, arms);
-    expect(q).toBeLessThan(.85 - .15 * defender.r('tackling'));
-    expect(contactQuality(Math.hypot(distance - .6, .01), body, arms)).toBeGreaterThan(q + .1);
+    expect(Math.hypot(distance, .01)).toBeLessThan(arms);
+    if (arms > body + .25) {
+      expect(q).toBeLessThan(.85 - .15 * defender.r('tackling'));
+      expect(contactQuality(Math.hypot(distance - .6, .01), body, arms)).toBeGreaterThan(q + .1);
+    } else {
+      // With a pinned arm, genuine reach lies in the existing torso-quality
+      // band. The earlier extra-radius fixture was outside physical reach.
+      expect(q).toBe(1);
+    }
     picture();
   }
   return { sim, carrier, defender, body, picture, withinReach };
@@ -63,7 +71,7 @@ describe('waiting requires a supported acquired-picture forecast', () => {
     const engagement = f.sim.engage(blocker, f.defender, 'run', { x: 1, y: 0 })!;
     expect(engagement).toBeTruthy(); expect(engagement.hands).toBeTruthy();
     engagement.win = .8;
-    f.withinReach(f.body + f.defender.profile.reach * .4);
+    f.withinReach(tackleReach(f.defender.profile, f.carrier.profile, .4));
     const preview = vi.spyOn(MovementPreview, 'previewFreeMovement');
     const chance = vi.spyOn(f.sim.rng, 'chance').mockReturnValue(false);
     try {
