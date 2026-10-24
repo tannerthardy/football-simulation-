@@ -9,6 +9,10 @@ import type { GameHooks } from '../../src/game/game.js';
  */
 export function composeHooks(...sets: GameHooks[]): GameHooks {
   const out: GameHooks = {};
+  const setups = sets.flatMap(h => h.playSetup ? [h.playSetup] : []);
+  if (setups.length) out.playSetup = (setup, context) => {
+    for (const observe of setups) observe(setup, context);
+  };
   const results = sets.map((h) => h.playResult).filter((f): f is NonNullable<GameHooks['playResult']> => !!f);
   if (results.length) {
     out.playResult = (sim, kind) => {

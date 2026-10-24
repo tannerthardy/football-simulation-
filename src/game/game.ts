@@ -11,7 +11,7 @@ import { CENTER_Y, HASH_LEFT_Y, HASH_RIGHT_Y, OWN_GOAL_X, describeYardline } fro
 import { clamp } from '../core/vec.js';
 import { r01, type Player } from '../players/types.js';
 import { alignStyle, pickDefense, pickOffense, specialist, type Team } from '../league/team.js';
-import { PlaySim } from '../sim/playsim.js';
+import { PlaySim, type PlaySetup } from '../sim/playsim.js';
 import { CoverageScouting } from '../sim/qbmind.js';
 import { ScoutingReport } from '../sim/recognition.js';
 import type { Frame, PenaltyCall, PlayResult } from '../sim/types.js';
@@ -160,6 +160,9 @@ export interface GameRules {
 }
 
 export interface GameHooks {
+  /** Diagnostic notification at the constructor input, before any native initialization.
+   * Read only: observers must copy retained data and must not alter the setup/state. */
+  playSetup?: (setup: Readonly<PlaySetup>, context: PlaySetupContext) => void;
   /** Scripted result for a snap instead of simulating it (`undefined` simulates). */
   playResult?: (sim: PlaySim, kind: 'scrimmage' | 'two-point') => PlayResult | undefined;
   /** Force a pre-snap foul, or `null` for none, instead of rolling for one. */
@@ -168,6 +171,13 @@ export interface GameHooks {
   tryChoice?: (scorer: Side) => 'kick' | 'two' | undefined;
   freeKickEvent?: (kicking: Side, kickSpot: number) => FreeKickFacts | undefined;
   scrimmageKickEvent?: (kicking: Side) => ScrimmageKickFacts | undefined;
+}
+
+export interface PlaySetupContext {
+  readonly index: number;
+  readonly kind: 'scrimmage' | 'two-point';
+  readonly offense: string;
+  readonly state: Readonly<GameState>;
 }
 
 export interface GameState {
@@ -620,7 +630,7 @@ export class Game {
     const los = 10 + s.yardline;
     const afterWarningAtSnap = this.warningPeriod() && (s.twoMinWarned || s.clock <= 120);
     const firstDownX = Math.min(110, los + s.distance);
-    const sim = new PlaySim({
+    const setup: PlaySetup = {
       offense: offPlayers,
       defense: defPlayers,
       offCall,
@@ -642,7 +652,9 @@ export class Game {
       audibles: true,
       scouting: this.scouting[defSide],
       coverageScouting: this.coverageScouting[offSide],
-    });
+    };
+    this.opts.hooks?.playSetup?.(setup, { index: this.playIndex, kind: 'scrimmage', offense: offTeam.abbr, state: s });
+    const sim = new PlaySim(setup);
     if (!sim.snapAssessment.snapPermitted) {
       this.applyNativePresnap(sim, offCall.label);
       this.refreshFairCatchEntitlement();
@@ -1116,11 +1128,13 @@ export class Game {
       const { call: defCall, prefs } = this.dc[other(scorer)].call(sit, offCall.formation.personnel, this.off, offPlayers, offCall.formation);
       const defPlayers = pickDefense(this.def, defCall.personnel, { energy: this.energy });
       const los = OWN_GOAL_X + s.yardline;
-      const sim = new PlaySim({ offense: offPlayers, defense: defPlayers, offCall, defCall,
+      const setup: PlaySetup = { offense: offPlayers, defense: defPlayers, offCall, defCall,
         los, ballY: CENTER_Y, firstDownX: 110, seed: this.snaps.nextU32(),
         energy: this.energy, manPrefs: prefs, handContact: this.opts.handContact, down: 1, isTry: true,
         offStyle: alignStyle(this.off), defStyle: alignStyle(this.def),
-        afterTwoMinuteWarning: this.warningPeriod() && (s.twoMinWarned || s.clock <= 120) });
+        afterTwoMinuteWarning: this.warningPeriod() && (s.twoMinWarned || s.clock <= 120) };
+      this.opts.hooks?.playSetup?.(setup, { index: this.playIndex, kind: 'two-point', offense: this.off.abbr, state: s });
+      const sim = new PlaySim(setup);
       const r = this.opts.hooks?.playResult?.(sim, 'two-point') ?? sim.run();
       for (const a of sim.agents) this.energy.set(a.player.id, a.body.energy);
       const good = r.score?.kind === 'TD' && r.score.team === 'O';
