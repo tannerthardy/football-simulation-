@@ -77,6 +77,12 @@ defender; the frozen future is not a simulated counterfactual runner.
 - `seek-candidate`: recompute only the direction to that fixed point at 20 Hz,
   retaining the same requested speed/effort/intent and all physical capacities.
   It is an offline fixed-point seek, **not** a production commitment timer.
+- `seek-estimator-effort` (one attribution alternative): use the same seek,
+  but match the estimator's full-effort assumption when the native command
+  requests reduced effort. Both wanted speed and effort are aligned; the
+  profile/body/support/forecast stay identical. Already-full-effort controls
+  are inactive and exactly retain their requests. This is not a proposal to
+  globally increase speed. The output states both native and response envelopes.
 
 Selected native points also get their **actually recorded** bias/leverage
 steering goal. Shifts are not invented for unselected points. Raw/applied
@@ -145,6 +151,7 @@ actors, absolute window, input/body/source pins, fixed evaluation point/deadline
 and explicitly inactive arms. The selection bytes are hashed into the trials.
 The manifest also indexes all eight recorded-point cross-comparisons, exported
 with full timestamps/commands/states to `recorded-pair-trials.json`.
+The fourth panel arm is the effort attribution, not an adopted controller fix.
 Use the measurement owner's branch (an explicit tooling dependency) to run:
 
 ```sh
@@ -160,7 +167,10 @@ arms and filtered short-window rejection remain visible in exposure counts.
 
 The next decision concerns a **steering-consistent estimate of the consumed
 forecast**, not faster yaw/braking, mandatory stopping, a .8-second horizon or
-a permanent held objective. Forecast accuracy still needs independent opposing
+a permanent held objective. The estimate also needs to agree with the request's
+planned effort. Matching that assumption can change an arrival without any
+capacity change; it does not establish contact with the actual runner.
+Forecast accuracy still needs independent opposing
 native inputs before a policy change can be justified. This experiment does
 not establish that the audit's isolated reach-bound violation caused its native
 P002 sweep, nor that touching a frozen forecast point would end P002 in a tackle.

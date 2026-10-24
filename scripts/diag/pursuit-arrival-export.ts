@@ -8,14 +8,15 @@ import { pathToFileURL } from 'node:url';
 import { arrivalJson, compareBundle, parseArrivalJson, type ArrivalBundle, type TrialRow } from './pursuit-arrival.js';
 
 export function movementPanel(bundle: ArrivalBundle, result: ReturnType<typeof compareBundle>) {
-  const arms = ['held-original', 'held-candidate', 'seek-candidate'];
+  const arms = ['held-original', 'held-candidate', 'seek-candidate', 'seek-estimator-effort'];
   const cases: any[] = [], trials: any[] = [];
   const snapshot = (row: TrialRow) => ({ body: { position: row.body.pos, velocity: row.body.vel,
     facing: row.body.facing, energy: row.body.energy, spin: row.body.spin,
     support: row.body.support ? { state: row.body.support.state, deviation: row.body.support.xi, lean: row.body.support.lean } : null },
     engagement: null, tackleBond: null, lastStepContacts: [] }); // exactly one isolated body, no joints
   for (const c of bundle.cases) {
-    const ts = result.trials.filter(t => t.caseId === c.id);
+    const ts = [...result.trials, ...result.effortTrials].filter(t => t.caseId === c.id);
+    const armFor = (t: typeof ts[number]) => t.requestEnvelope.mode === 'estimator-full-effort' ? 'seek-estimator-effort' : t.policy;
     const groups = [...new Set(ts.map(t => `${t.objective.id}:${t.shifted ? 'shifted' : 'sampled'}`))];
     for (const group of groups) {
       const selected = ts.filter(t => `${t.objective.id}:${t.shifted ? 'shifted' : 'sampled'}` === group);
@@ -30,7 +31,7 @@ export function movementPanel(bundle: ArrivalBundle, result: ReturnType<typeof c
           source: `${objective.information}; ${objective.horizon}s relative to ${c.clock}s live step-start; radius=${objective.radius}yd` },
         inactiveArms: c.intercept ? [] : arms.slice(1), inactiveReason: c.intercept ? null : 'planner-bypassed-close-gather' });
       for (const arm of arms) {
-        const t = selected.find(t => t.policy === arm)
+        const t = selected.find(t => armFor(t) === arm)
           ?? (arm === 'held-original' ? ts.find(t => t.policy === arm && t.objective.id === objective.id) : undefined);
         if (!t) continue; // intentionally inactive, retained as missing in panel exposure
         const trace = { version: 1, meta: { ...result.execution, input: { kind: 'isolated-frozen-arrival',
@@ -38,6 +39,7 @@ export function movementPanel(bundle: ArrivalBundle, result: ReturnType<typeof c
           verification: { setupSha256: c.source.setupSha256, nativeCaptureReplay: c.source.kind === 'native' ? 'exact-at-freeze' : 'not-applicable',
             wholePlayCounterfactual: 'not-performed', firstNativeStepDifference: t.firstNativeStepDifference,
             heldCommandPreviewDifference: t.heldCommandPreviewDifference },
+          requestEnvelope: t.requestEnvelope,
           steps: t.rows.slice(0, -1).map((row, k) => ({ stepStart: row.t, endpointTime: t.rows[k + 1].t, actor: c.actor,
             start: snapshot(row), endpoint: snapshot(t.rows[k + 1]),
             decision: { evaluated: false, owner: { controller: 'OfflineArrivalExperiment', kind: arm }, raw: t.rows[k + 1].command },

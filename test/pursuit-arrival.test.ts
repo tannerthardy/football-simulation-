@@ -53,7 +53,12 @@ describe('frozen native pursuit arrival experiment', () => {
       const origin = native.find(c => c.id === p.sourceDecision)!;
       expect(p.objectiveAbsoluteTime).toBe(origin.clock + origin.intercept!.prediction.t);
       expect(p.trial.objective.point).toStrictEqual(origin.intercept!.prediction.point);
+      expect(p.trial.objective.forecastHeading).toStrictEqual(origin.intercept!.forecast.heading);
       if (p.trial.policy === 'held-recorded') expect(p.trial.rows[1].command).toStrictEqual(origin.trace.final);
+      const bodyCase = native.find(c => c.id === p.trial.caseId)!;
+      const future = bodyCase.native.find(r => Math.abs(r.end - p.objectiveAbsoluteTime) < 1e-7)!.targetAfter.pos;
+      expect(p.trial.metrics.runnerForecastError).toBe(Math.hypot(future.x - p.trial.objective.point.x,
+        future.y - p.trial.objective.point.y));
     }
     expect(pairs.some(p => !p.cueAvailableAtBodyClock)).toBe(true);
   });
@@ -81,6 +86,11 @@ describe('frozen native pursuit arrival experiment', () => {
     expect(a.clocks.deadline).toBeCloseTo(c.clock + goal.horizon, 12);
     expect(a.necessaryBound.passingDoesNotProveReachability).toBe(true);
     expect(a.metrics.maxGroundAcceleration).toBeLessThanOrEqual(a.necessaryBound.acceleration + 1e-8);
+    const full = response(c, goal, 'seek-candidate', false, undefined, 'estimator-full-effort');
+    expect(full.rows[0].body).toStrictEqual(a.rows[0].body);
+    expect(full.requestEnvelope.responseEffort).toBe(1);
+    expect(full.requestEnvelope.responseRequestedSpeed).toBeCloseTo(restoreBody(c).profile.vmax, 12);
+    expect(c.trace.final!.effort).toBe(a.requestEnvelope.nativeEffort);
   });
 
   it('retains aligned, transverse, faster crossing and no-feasible-candidate opposing inputs', () => {
@@ -98,6 +108,8 @@ describe('frozen native pursuit arrival experiment', () => {
         expect(t.rows[0].body.vel).toStrictEqual(restoreBody(c).vel);
         expect(t.metrics.maxGroundAcceleration).toBeLessThanOrEqual(t.necessaryBound.acceleration + 1e-8);
       }
+      const full = response(c, o, 'seek-candidate', false, undefined, 'estimator-full-effort');
+      expect(full.rows).toStrictEqual(response(c, o, 'seek-candidate').rows); // already-full-effort opposing cases are inactive
       expect(arrivalJson(c)).toBe(before);
     }
     const b = restoreBody(controls[0]);
@@ -119,7 +131,8 @@ describe('frozen native pursuit arrival experiment', () => {
     expect(result.trials.filter(t => t.caseId === gather.id).map(t => t.policy)).toEqual(['held-original']);
     expect(exportData.trials.inputSha256).toBe(createHash('sha256').update(exportData.selection).digest('hex'));
     const cases = JSON.parse(exportData.selection).cases;
-    expect(cases.find((c: any) => c.id.startsWith(gather.id)).inactiveArms).toEqual(['held-candidate', 'seek-candidate']);
+    expect(cases.find((c: any) => c.id.startsWith(gather.id)).inactiveArms)
+      .toEqual(['held-candidate', 'seek-candidate', 'seek-estimator-effort']);
     for (const t of exportData.trials.trials) {
       expect(t.trace.verification).not.toHaveProperty('originalVsPlain'); // no false full-play counterfactual claim
       expect(t.trace.steps[0].decision.owner.controller).toBe('OfflineArrivalExperiment');

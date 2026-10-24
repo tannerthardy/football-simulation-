@@ -160,7 +160,8 @@ export function necessaryBound(body: Body, point: Vec2, t: number, radius: numbe
 
 export interface Objective { id: string; point: Vec2; horizon: number; radius: number;
   information: 'consumed-forecast' | 'observed-gather-picture' | 'other-recorded-decision-diagnostic-only';
-  pointSource?: 'recorded-estimator-sample' | 'offline-evaluation-of-frozen-forecast'; steeringPoint?: Vec2 }
+  pointSource?: 'recorded-estimator-sample' | 'offline-evaluation-of-frozen-forecast'; steeringPoint?: Vec2;
+  forecastHeading?: Vec2 }
 export function objectives(c: ArrivalCase): Objective[] {
   const p = c.intercept;
   if (!p) {
@@ -174,6 +175,7 @@ export function objectives(c: ArrivalCase): Objective[] {
     return { id: `candidate-${horizon.toFixed(1)}`, point: sampled?.point ?? forecast(p, horizon),
       horizon: sampled?.t ?? horizon, radius: p.prediction.estimate.radius,
       information: 'consumed-forecast',
+      forecastHeading: p.forecast.heading,
       pointSource: sampled ? 'recorded-estimator-sample' : 'offline-evaluation-of-frozen-forecast',
       steeringPoint: Math.abs(horizon - p.prediction.t) < 1e-7 ? p.steeringPoint : undefined };
   });
@@ -225,7 +227,7 @@ export function frozenControls(reference: ArrivalCase): ArrivalCase[] {
 
 export interface TrialRow { t: number; elapsed: number; body: State; command: Intent }
 export function response(c: ArrivalCase, objective: Objective, policy: 'held-original' | 'held-candidate' | 'seek-candidate' | 'held-recorded',
-  shifted = false, recordedRequest?: Intent) {
+  shifted = false, recordedRequest?: Intent, envelope: 'recorded' | 'estimator-full-effort' = 'recorded') {
   if (!(objective.horizon > 0) || !Number.isFinite(objective.horizon)
     || Math.abs(objective.horizon / c.dt - Math.round(objective.horizon / c.dt)) > 1e-7)
     throw new Error('Objective must have a positive horizon on the native decision grid');
@@ -235,10 +237,13 @@ export function response(c: ArrivalCase, objective: Objective, policy: 'held-ori
   if (firstDifference(before, body)) throw new Error('World construction discarded native body history');
   const goal = shifted ? objective.steeringPoint ?? objective.point : objective.point;
   const original = c.trace.final!;
-  const speed = Math.hypot(original.vel.x, original.vel.y);
+  if (envelope !== 'recorded' && policy !== 'seek-candidate') throw new Error('Effort attribution uses the same seek rule');
+  const changedEffort = envelope === 'estimator-full-effort' && (original.effort ?? 1) < 1;
+  const speed = changedEffort ? body.profile.vmax : Math.hypot(original.vel.x, original.vel.y);
   const seek = (): Intent => {
     const d = distance(body.pos, goal) || 1;
-    return { ...original, vel: { x: (goal.x - body.pos.x) / d * speed, y: (goal.y - body.pos.y) / d * speed } };
+    return { ...original, effort: envelope === 'estimator-full-effort' ? 1 : original.effort,
+      vel: { x: (goal.x - body.pos.x) / d * speed, y: (goal.y - body.pos.y) / d * speed } };
   };
   if (policy === 'held-recorded' && !recordedRequest) throw new Error('Missing recorded request');
   const held = policy === 'held-recorded' ? copySaved(recordedRequest!) : policy === 'held-original' ? copySaved(original) : seek();
@@ -262,8 +267,10 @@ export function response(c: ArrivalCase, objective: Objective, policy: 'held-ori
   const firstEntry = rows.find((_, i) => errors[i] <= objective.radius);
   const end = rows.at(-1)!;
   const target = c.native.find(r => Math.abs(r.end - end.t) < 1e-7)?.targetAfter;
-  const pred = c.intercept && forecast(c.intercept, objective.horizon);
-  const axis = c.intercept?.forecast.heading;
+  // Cross-decision trials retain the originating forecast's point and axis,
+  // rather than substituting the body's newer picture at the remaining time.
+  const pred = c.intercept ? objective.point : null;
+  const axis = objective.forecastHeading ?? c.intercept?.forecast.heading;
   const miss = { x: end.body.pos.x - objective.point.x, y: end.body.pos.y - objective.point.y };
   const forecastMiss = pred && target ? { x: target.pos.x - pred.x, y: target.pos.y - pred.y } : null;
   const futureDistances = rows.map(r => {
@@ -279,6 +286,10 @@ export function response(c: ArrivalCase, objective: Objective, policy: 'held-ori
       const b = restoreBody(c), w = new World([b], c.model); w.time = c.clock; w.step([held], c.dt); return b;
     })()) : null;
   return { caseId: c.id, policy, shifted, objective, requestGoal: goal,
+    requestEnvelope: { mode: envelope, changedEffort, nativeRequestedSpeed: Math.hypot(original.vel.x, original.vel.y),
+      nativeEffort: original.effort ?? 1, responseRequestedSpeed: Math.hypot(held.vel.x, held.vel.y),
+      responseEffort: held.effort ?? 1, estimatorEffortAssumption: 1,
+      estimatorSpeedCeiling: c.intercept ? body.profile.vmax * c.intercept.pursuer.speedScale : null },
     clocks: { start: c.clock, duration: objective.horizon, deadline: end.t, basis: 'native-live-step-start-plus-relative-horizon' },
     original: c.trace, necessaryBound: necessaryBound(before, objective.point, objective.horizon, objective.radius, c.dt),
     heldCommandPreviewDifference: previewDifference, firstNativeStepDifference: firstStepDifference,
@@ -315,6 +326,7 @@ export function compareBundle(bundle: ArrivalBundle) {
     const p = origin.intercept!, horizon = origin.clock + p.prediction.t - c.clock;
     const objective: Objective = { id: `recorded-${origin.clock.toFixed(2)}`, point: p.prediction.point,
       horizon, radius: p.prediction.estimate.radius, steeringPoint: p.steeringPoint,
+      forecastHeading: p.forecast.heading,
       information: origin === c ? 'consumed-forecast' : 'other-recorded-decision-diagnostic-only',
       pointSource: 'recorded-estimator-sample' };
     return (['held-recorded', 'seek-candidate'] as const).map(policy => ({ sourceDecision: origin.id,
@@ -322,9 +334,12 @@ export function compareBundle(bundle: ArrivalBundle) {
       cueAvailableAtBodyClock: origin.clock <= c.clock,
       trial: response(c, objective, policy, true, origin.trace.final) }));
   }));
+  const effortTrials = bundle.cases.filter(c => c.intercept).flatMap(c => objectives(c).flatMap(o =>
+    (o.steeringPoint && distance(o.steeringPoint, o.point) > 1e-9 ? [false, true] : [false])
+      .map(shifted => response(c, o, 'seek-candidate', shifted, undefined, 'estimator-full-effort'))));
   return { schema: 'pursuit-arrival-results-v1', execution, operatorSha256: operatorSha256(), worldSourceSha256: worldHash,
     fixtureSha256: createHash('sha256').update(arrivalJson(bundle)).digest('hex'),
-    recordedPairTrials,
+    recordedPairTrials, effortTrials,
     trials: bundle.cases.flatMap(c => objectives(c).flatMap(o =>
       (c.intercept ? ['held-original', 'held-candidate', 'seek-candidate'] as const : ['held-original'] as const).flatMap(policy =>
         (o.steeringPoint && distance(o.steeringPoint, o.point) > 1e-9 && policy !== 'held-original' ? [false, true] : [false])
