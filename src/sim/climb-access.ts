@@ -45,29 +45,38 @@ export function climbAccessCommand(a: Agent, read: ClimbAccess, now: number): Mo
  * whether a request clears. Pictures move at their observed velocity only.
  * The ordinary controller read cadence owns expiry; there is no route timer.
  */
-export function chooseClimbAccess(a: Agent, backer: Perceived, surfaces: readonly ClimbSurface[],
-  original: MoveCommand, now: number, interval: number, handContact: World['handContact']): ClimbAccess | null {
+export type ClimbAccessResult =
+  | { kind: 'direct' }
+  | { kind: 'detour'; plan: ClimbAccess }
+  | { kind: 'unvalidated'; command: MoveCommand };
+
+/** Explicit result for released combinations. A failed search must not imply
+ * that the original interception is clear. The legacy adapter below keeps
+ * ordinary climbs' existing policy; gathering is scoped to departure only. */
+export function assessClimbAccess(a: Agent, backer: Perceived, surfaces: readonly ClimbSurface[],
+  original: MoveCommand, now: number, interval: number, handContact: World['handContact'],
+  gather = false): ClimbAccessResult {
   const path = previewFreeMovement(a.body,original,now,STEPS,handContact);
   const originalGaps = surfaces.map(p=>gap(a,path,p));
   const blocking = surfaces.map((p,i)=>({p,gap:originalGaps[i]}))
     .filter(q=>q.gap<-.025).sort((a,b)=>a.gap-b.gap)[0];
-  if (!blocking) return null;
+  if (!blocking) return { kind: 'direct' };
   const body = blocking.p;
   const relative = { x:a.pos.x-body.seen.pos.x, y:a.pos.y-body.seen.pos.y };
   const distance = Math.hypot(relative.x,relative.y);
-  if (distance<1e-9) return null;
+  if (distance<1e-9) return { kind: 'unvalidated', command: {vel:{x:0,y:0},facing:a.facing} };
   const ray = { x:backer.pos.x-body.seen.pos.x, y:backer.pos.y-body.seen.pos.y };
   const preferred = Math.sign(relative.x*ray.y-relative.y*ray.x)||1;
   const radius = Math.max(a.profile.radius+body.radius+.15,distance);
   let best: ClimbAccess | null = null, bestScore = Infinity;
-  for (const sign of [preferred,-preferred]) {
+  for (const sign of (gather ? [preferred,-preferred,0] : [preferred,-preferred])) {
     // Same short foot-replacement arc as the existing run-block fit recovery.
     const angle = sign*.35;
     const goal = { x:body.seen.pos.x+(relative.x*Math.cos(angle)-relative.y*Math.sin(angle))*radius/distance,
       y:body.seen.pos.y+(relative.x*Math.sin(angle)+relative.y*Math.cos(angle))*radius/distance };
     if (goal.y<.5||goal.y>FIELD_WIDTH-.5) continue;
     const read: ClimbAccess = { at:now, goal, flow:{...body.seen.vel},
-      through:cornerSpeed(a.body,goal,backer.pos,radius), backer:structuredClone(backer), obstacle:body.key };
+      through:sign===0?0:cornerSpeed(a.body,goal,backer.pos,radius), backer:structuredClone(backer), obstacle:body.key };
     const trial = previewFreeMovement(a.body,climbAccessCommand(a,read,now),now,STEPS,handContact);
     if (trial.some(s=>s.support!=='up')) continue;
     const gaps = surfaces.map(p=>gap(a,trial,p));
@@ -79,5 +88,19 @@ export function chooseClimbAccess(a: Agent, backer: Perceived, surfaces: readonl
       last.pos.y-backer.pos.y-backer.vel.y*last.t);
     if (score<bestScore) { best=read; bestScore=score; }
   }
-  return best;
+  if (best) return { kind: 'detour', plan: best };
+  // Braking is an explicit unvalidated fallback, not a claim that standing
+  // clears a moving surface. Compare its swept incursion to the original.
+  const braking: MoveCommand = {vel:{x:0,y:0},facing:a.facing};
+  if (!gather) return {kind:'unvalidated',command:original};
+  const brakePath = previewFreeMovement(a.body,braking,now,STEPS,handContact);
+  const incursion = (p: ReturnType<typeof previewFreeMovement>) => Math.min(...surfaces.map(s=>gap(a,p,s)));
+  return {kind:'unvalidated',command:incursion(brakePath)>incursion(path)?braking:original};
+}
+
+/** Preserve the existing ordinary-climb contract and candidate set. */
+export function chooseClimbAccess(a: Agent, backer: Perceived, surfaces: readonly ClimbSurface[],
+  original: MoveCommand, now: number, interval: number, handContact: World['handContact']): ClimbAccess | null {
+  const result=assessClimbAccess(a,backer,surfaces,original,now,interval,handContact);
+  return result.kind==='detour'?result.plan:null;
 }

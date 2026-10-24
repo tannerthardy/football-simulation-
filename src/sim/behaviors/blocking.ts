@@ -30,7 +30,7 @@ import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
 import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
-import { chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
+import { assessClimbAccess, type ClimbAccessResult, chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
 import { lineDepth, lineOffset } from '../../playbook/alignment.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
@@ -888,6 +888,8 @@ export class RunBlocker implements Behavior {
   zoneRead: ZoneReachRead | null = null;
   /** Held climb plan from one acquired picture of the backer. */
   private climbAccess: ClimbAccess | null = null;
+  private departureAccess: ClimbAccessResult | null = null;
+  private departureStrikeClear = false;
   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
   private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
   private workPicture: BlockerWorkPicture | null = null;
@@ -1177,16 +1179,30 @@ export class RunBlocker implements Behavior {
       this.climbRead = { target, nextRead: sim.t + a.mind.decisionInterval, meet: best!.meet,
         through: Math.hypot(seen.vel.x, seen.vel.y), attainable: best!.gap <= 0, seenVel: { ...seen.vel } };
       this.climbAccess = null;
-      if (Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)>strike+a.profile.radius+target.profile.radius) {
+      this.departureAccess=null;
+      if (this.plan.departure || Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)>strike+a.profile.radius+target.profile.radius) {
         // A backer assignment does not remove the bodies between us. Read
         // first-level surfaces on the same beat; never inspect their private
         // assignments, engagement state or future controller requests.
         const surfaces = sim.agents.filter(b=>b!==a&&b!==target&&(isOL(b)
+          || b===this.plan.departure?.defender || b===this.plan.departure?.keeper
           ||sim.offAlign.spots[b.slot]?.inline||['DE_W','DE_S','DT_W','DT_S','NT'].includes(b.slot)))
           .map(b=>({key:b.idx,radius:b.profile.radius,seen:sim.see(a,b)}))
           .filter(p=>Math.hypot(p.seen.pos.x-a.pos.x,p.seen.pos.y-a.pos.y)<6);
         const original = { vel:best!.vel, facing:Math.atan2(best!.meet.y-a.pos.y,best!.meet.x-a.pos.x) };
-        this.climbAccess = chooseClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact);
+        if (this.plan.departure) {
+          this.departureAccess=assessClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact,true);
+          if (this.departureAccess.kind==='detour') this.climbAccess=this.departureAccess.plan;
+          const down=surfaces.find(s=>s.key===this.plan.departure!.defender.idx);
+          const keeper=surfaces.find(s=>s.key===this.plan.departure!.keeper.idx);
+          const route=down&&keeper&&climbRoute(a,this.plan.departure.defender,down.seen,
+            this.plan.departure.keeper,keeper.seen,seen,strike);
+          this.departureStrikeClear=!!route&&!route.exit;
+          if (this.departureStrikeClear && this.departureAccess.kind==='direct') {
+            delete this.plan.departure;
+            this.departureRead=null;
+          }
+        } else this.climbAccess = chooseClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact);
       }
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'climb-plan',
         chose: this.climbRead.attainable ? 'attainable meeting point' : 'closest approach (no attainable fit)',
@@ -1194,6 +1210,7 @@ export class RunBlocker implements Behavior {
         options: ['attainable meeting point', 'closest approach (no attainable fit)'],
         detail: `meet in ${best!.t.toFixed(2)} s, margin ${best!.gap.toFixed(2)} yd` });
     }
+    if (this.plan.departure && this.departureAccess?.kind==='unvalidated') return this.departureAccess.command;
     if (this.climbAccess) return climbAccessCommand(a,this.climbAccess,sim.t);
     const r = this.climbRead!;
     const capacity = a.body.support
@@ -1322,35 +1339,31 @@ export class RunBlocker implements Behavior {
     this.plan.departure = { defender, keeper, backer };
     this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
       exit: { ...picture.exit }, flow: { ...picture.flow }, backer: structuredClone(picture.backer) };
+    this.climbRead=null;
+    this.climbAccess=null;
+    this.departureAccess=null;
   }
 
   private leaveCombination(a: Agent, sim: PlaySim): MoveCommand | null {
-    const departure = this.plan.departure!;
-    if (!this.departureRead || sim.t >= this.departureRead.nextRead) {
-      const down = sim.see(a, departure.defender), keeper = sim.see(a, departure.keeper);
-      const backer = sim.see(a, departure.backer);
-      // Once released, he needs access to the first possible backer strike,
-      // not a walk through that defender's center beyond useful contact.
-      const strike = a.profile.radius + departure.backer.profile.radius + .1
-        + a.player.measurables.armIn / 36 * .45;
-      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer, strike);
-      this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
-        exit: route?.exit ?? null, flow: { ...(route?.flow ?? down.vel) }, backer };
-      // Only a personally observed clear route ends the departure. A blocked
-      // first step waits for another read; it cannot tunnel through the old DL.
-      if (route && !route.exit) {
-        delete this.plan.departure;
-        this.departureRead = null;
-        return null;
-      }
+    const target=this.plan.departure!.backer;
+    const strike=a.profile.radius+target.profile.radius+.1+a.player.measurables.armIn/36*.45;
+    const approach=this.plannedClimb(a,sim,target,strike);
+    if (!this.plan.departure) return null;
+    // A short unloaded preview being clear does not mean the old surface is
+    // already behind us. Keep this access responsibility through subsequent
+    // reads; only a clear near-strike corridor permits the normal hand/fit.
+    const seen=sim.see(a,target);
+    // Already within an acquired strike, fitting hands is not a demand to
+    // walk the torso through the backer's center. The ordinary physical
+    // strike still owns range, facing, budgets and whether hands exist.
+    const near=Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)<=strike;
+    if (!this.departureStrikeClear && !near) return approach;
+    const command=this.attack(a,sim,target);
+    if (a.engagement?.defender===target) {
+      delete this.plan.departure;
+      this.departureRead=null;
     }
-    const read = this.departureRead;
-    if (!read?.exit) return stand();
-    const dt = sim.t - read.at;
-    const goal = { x: read.exit.x + read.flow.x * dt,
-      y: read.exit.y + read.flow.y * dt + a.mind.placementError * (1 - .5 * a.r('runBlock')) };
-    return track(a, goal, read.flow, { speed: 1, gain: 3,
-      facing: Math.atan2(read.backer.pos.y-a.pos.y, read.backer.pos.x-a.pos.x) });
+    return command;
   }
 
   private readPull(a: Agent, sim: PlaySim, target: Agent): NonNullable<RunBlocker['pullRead']> {
@@ -1722,6 +1735,7 @@ export class RunBlocker implements Behavior {
     delete p.contactFit;
     this.climbRead = null;
     this.climbAccess = null;
+    this.departureAccess = null;
     this.classifyWork(a, sim, best.d);
     sim.event('block_threat', a, best.d, 'first threat to the runner');
   }

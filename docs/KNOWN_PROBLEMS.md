@@ -889,6 +889,16 @@ run plays with the assignment layer (`--telemetry full`):
     helper-policy correction is supported by these cases. This is a bounded
     negative finding, not a claim that proximity proves protection generally;
     pending possession/work-off changes require their own source qualification.
+- **Combination departure execution prototype (not accepted).** On accepted
+  `50b80062`, joining the existing swept-movement climb planner to departure
+  can produce real backer load in mirrored constructed post-release states,
+  while the keeper retains load. Explicit direct/detour/unvalidated access
+  replaces the ambiguous null in that scoped path; ordinary climbs keep their
+  adapter. The first nominated native Toss loses upstream and does not prove
+  useful transfer. Six saved-fixture assertions remain unresolved, including
+  an adverse protection outcome; do not promote this prototype or weaken
+  those assertions to obtain green. Earlier timing/traversal remedies remain
+  rejected; no capacity, contact law or keeper eligibility change is supported.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and

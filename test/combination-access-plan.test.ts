@@ -1,0 +1,65 @@
+import {Rng} from '../src/core/rng.js';import {generateTeam,pickOffense,pickDefense} from '../src/league/team.js';import {PlaySim} from '../src/sim/playsim.js';import {RunBlocker} from '../src/sim/behaviors/blocking.js';import {RUN_BY_ID} from '../src/playbook/concepts.js';import {FORMATION_BY_ID} from '../src/playbook/formations.js';import {FRONT_BY_ID,COVERAGE_BY_ID} from '../src/playbook/defense.js';import {CENTER_Y} from '../src/core/field.js';import {goTo,stand} from '../src/sim/behaviors/common.js';
+
+import {describe,it,expect,vi} from 'vitest';
+import * as preview from '../src/physics/movement-preview.js';
+import {assessClimbAccess} from '../src/sim/climb-access.js';
+function stage(side=1){
+const off=generateTeam(new Rng(31),'O','O',{strength:.55}),def=generateTeam(new Rng(32),'D','D',{strength:.55}),formation=FORMATION_BY_ID.ace_11;
+const sim:any=new PlaySim({offense:pickOffense(off,formation.personnel),defense:pickDefense(def,'base43'),offCall:{formation,flip:side>0,kind:'run',run:RUN_BY_ID.oz_strong,label:'constructed released C'},defCall:{personnel:'base43',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,label:'Over'},los:40,ballY:CENTER_Y,firstDownX:50,seed:3,record:true,recordLevel:'full'});
+for(const a of sim.agents){a.body.pos={x:70+(a.idx%5)*3,y:3+Math.floor(a.idx/5)*3};a.body.vel={x:0,y:0};a.behavior={kind:'idle',update:()=>stand(a.facing)};}
+sim.t=1;sim.world.time=1;const c=sim.slot('C'),g=sim.slot('RG'),d=sim.slot('DT_S'),b=sim.slot('LB_M'),rb=sim.slot('RB');
+c.body.pos={x:40,y:CENTER_Y+side*.85};g.body.pos={x:40,y:CENTER_Y-side*.5};d.body.pos={x:40.7,y:CENTER_Y};b.body.pos={x:43,y:CENTER_Y-side};rb.body.pos={x:36,y:CENTER_Y+side*1.2};
+c.body.facing=g.body.facing=0;d.body.facing=b.body.facing=Math.PI;
+g.behavior=new RunBlocker({kind:'drive',target:d,drive:{x:1,y:0}});c.behavior=new RunBlocker({kind:'climb',target:b,drive:{x:1,y:0}});
+d.behavior={kind:'idle',update:()=>stand(Math.PI)};b.behavior={kind:'idle',update:()=>goTo(b,{x:38,y:CENTER_Y+side*1.2},{speed:.5})};rb.behavior={kind:'idle',update:()=>goTo(rb,{x:48,y:CENTER_Y+side*1.2},{speed:.65})};sim.ball={kind:'held',carrier:rb};
+for(let i=0;i<24;i++)sim.perception.record(sim.agents,rb.idx);const e=sim.engage(g,d,'run',{x:1,y:0});if(!e)throw new Error('no keeper contact');
+const seen=sim.see(c,b);c.behavior.startDeparture(c,sim,d,g,b,{exit:{x:40.35,y:CENTER_Y+side*.97},flow:{x:0,y:0},backer:seen});
+return {sim,c,g,d,b,rb};
+}
+
+describe('released combination access prototype',()=>{
+ it.each([-1,1])('executes a constructed release into real second-level load before the runner arrives, side %s',side=>{
+  // Constructed post-release opportunity, not an ordinary play or a proof
+  // of release eligibility. Keeper hands are real; all motion/contact uses
+  // normal World limits, with a moving scripted backer and approaching RB.
+  const {sim,c,g,d,b,rb}=stage(side);let load:number|null=null;
+  while(sim.phase==='live'&&sim.t<3){
+   sim.tick();const report=sim.lastStep;
+   expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+   for(const a of [c,g,d,b])expect(report.armImpulse[a.idx]).toBeLessThanOrEqual(report.armImpulseLimit[a.idx]+1e-8);
+   const e=c.engagement;
+   if(e?.defender===b&&Math.hypot(e.hands.normalForce,e.hands.tangentForce)>1){
+    load=sim.t;
+    expect(sim.world.joints).toContain(e.hands);
+    expect(g.engagement?.defender).toBe(d);
+    expect(Math.hypot(g.engagement.hands.normalForce,g.engagement.hands.tangentForce)).toBeGreaterThan(1);
+    expect(rb.pos.x).toBeLessThan(c.pos.x);
+    expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(false);
+    break;
+   }
+  }
+  expect(load).not.toBeNull();
+ });
+ it('distinguishes an unobstructed request from an unvalidated momentum-constrained exit',()=>{
+  const {sim,c,d,b}=stage();c.body.vel={x:4,y:0};
+  const backer=sim.see(c,b), original={vel:{x:c.profile.vmax,y:0},facing:0};
+  const seen={...sim.see(c,d),pos:{x:c.pos.x+.7,y:c.pos.y},vel:{x:0,y:0}};
+  const before=structuredClone(c.body),rng=JSON.stringify(sim.rng);
+  const blocked=assessClimbAccess(c,backer,[{key:d.idx,radius:d.profile.radius,seen}],original,sim.t,c.mind.decisionInterval,sim.world.handContact,true);
+  expect(blocked.kind).toBe('unvalidated');
+  const clear=assessClimbAccess(c,backer,[],original,sim.t,c.mind.decisionInterval,sim.world.handContact,true);
+  expect(clear.kind).toBe('direct');
+  expect(c.body).toEqual(before);expect(JSON.stringify(sim.rng)).toBe(rng);
+ });
+ it('holds the chosen responsibility and access read without previewing on every tick',()=>{
+  const {sim,c,b}=stage(),ctrl=c.behavior as any;
+  const calls=vi.spyOn(preview,'previewFreeMovement');
+  const before=structuredClone(c.body),rng=JSON.stringify(sim.rng);
+  ctrl.update(c,sim);const held=ctrl.climbRead,count=calls.mock.calls.length;
+  const again=ctrl.update(c,sim);
+  expect(ctrl.climbRead).toBe(held);expect(calls.mock.calls.length).toBe(count);
+  expect(count).toBeGreaterThan(0);expect(ctrl.target).toBe(b);
+  expect(again.vel).toBeDefined();expect(c.body).toEqual(before);
+  expect(JSON.stringify(sim.rng)).toBe(rng);calls.mockRestore();
+ });
+});
