@@ -4,11 +4,52 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { pathToFileURL } from 'node:url';
-import { interceptPoint, type InterceptPrediction, type SprintRequest } from '../../src/physics/reach.js';
+import { interceptPoint, type SprintRequest } from '../../src/physics/reach.js';
+import * as Reach from '../../src/physics/reach.js';
+import { PlaySim } from '../../src/sim/playsim.js';
 import type { CommandTraceStep } from '../../src/sim/command-trace.js';
 import { arrivalJson, parseArrivalJson, restoreBody, forecast, response, type ArrivalBundle,
   type ArrivalCase, type Objective } from './pursuit-arrival.js';
-import { bytesHash, compareExecution, executionIdentity, firstDifference, readSavedPlay, runRestoredPlay } from './saved-play.js';
+import { bytesHash, compareExecution, executionIdentity, firstDifference, initialState,
+  readSavedPlay, replayState, restoreSetup, runRestoredPlay } from './saved-play.js';
+
+/** Passive attribution for a material adverse contact. Copy only genuine
+ * consumed operations; the subsequent native event supplies actor identity.
+ * No draws, technique evaluations or opportunities are added. */
+function recordTackleTrials(sim: PlaySim, window: [number, number]) {
+  const trials: unknown[] = [], rng = sim.rng;
+  type Operation = { method: string; args: number[]; result?: number | boolean; draws: number[] };
+  let active: Operation | null = null, pending: Operation[] = [], at = NaN;
+  const within = () => sim.t >= window[0] && sim.t <= window[1];
+  const original = { next: rng.next, chance: rng.chance, normal: rng.normal, event: sim.event };
+  const own = { next: Object.getOwnPropertyDescriptor(rng, 'next'), chance: Object.getOwnPropertyDescriptor(rng, 'chance'),
+    normal: Object.getOwnPropertyDescriptor(rng, 'normal'), event: Object.getOwnPropertyDescriptor(sim, 'event') };
+  rng.next = function() { const value = original.next.call(this); active?.draws.push(value); return value; };
+  const operation = (method: 'chance' | 'normal', args: number[], invoke: () => number | boolean) => {
+    if (!within() || !new Error().stack?.includes('/sim/tackle.ts')) return invoke();
+    if (at !== sim.t) { pending = []; at = sim.t; }
+    const record: Operation = { method, args, draws: [] };
+    active = record; try { record.result = invoke(); } finally { active = null; }
+    pending.push(record); return record.result;
+  };
+  rng.chance = function(p) { return operation('chance', [p], () => original.chance.call(this, p)) as boolean; };
+  rng.normal = function(mean, sd) { return operation('normal', [mean, sd], () => original.normal.call(this, mean, sd)) as number; };
+  sim.event = function(type, a, b, note) {
+    original.event.call(this, type, a, b, note);
+    if (within() && (type === 'missed_tackle' || type === 'tackle_wrap') && a && b && at === sim.t) {
+      const actor = (x: typeof a) => ({ playerId: x.player.id, team: x.team, slot: x.slot, index: x.idx });
+      trials.push({ eventTime: sim.t, worldTime: sim.world.time, type, note, actor: actor(a), target: actor(b),
+        actorBody: structuredClone(a.body), targetBody: structuredClone(b.body), operations: pending });
+      pending = [];
+    }
+  };
+  return { trials, restore() {
+    for (const key of ['next', 'chance', 'normal'] as const) {
+      if (own[key]) Object.defineProperty(rng, key, own[key]!); else Reflect.deleteProperty(rng, key);
+    }
+    if (own.event) Object.defineProperty(sim, 'event', own.event); else Reflect.deleteProperty(sim, 'event');
+  } };
+}
 
 function sprintRequest(c: ArrivalCase): SprintRequest {
   const chase = c.trace.pursuit?.find(r => r.data.kind === 'chase')?.data;
@@ -40,7 +81,8 @@ export function compareFrozenEffort(bundle: ArrivalBundle) {
           const horizon = prediction.t > 0 ? prediction.t : prediction.estimate.horizon;
           const objective: Objective = { id: arm, point: prediction.point, horizon,
             radius: prediction.estimate.radius, information: 'consumed-forecast',
-            pointSource: 'recorded-estimator-sample', forecastHeading: p.forecast.heading };
+            pointSource: arm === 'baseline-full-estimate' ? 'recorded-estimator-sample' : 'offline-evaluation-of-frozen-forecast',
+            forecastHeading: p.forecast.heading };
           const r = response(c, objective, 'seek-candidate');
           if (prediction.t === 0) {
             r.metrics.runnerForecastError = null;
@@ -64,6 +106,9 @@ function plan(step: CommandTraceStep) {
     raw: step.decision?.raw, final: step.final, rewrites: step.rewrites,
     bodyBefore: step.start.body, bodyAfter: step.endpoint?.body,
     prediction: p?.kind === 'intercept' ? p.prediction : null,
+    observed: p?.kind === 'intercept' ? p.observed : null,
+    older: p?.kind === 'intercept' ? p.older : null,
+    forecast: p?.kind === 'intercept' ? p.forecast : null,
     steeringPoint: p?.kind === 'intercept' ? p.steeringPoint : null,
     steeringPointEstimate: p?.kind === 'intercept' ? p.steeringPointEstimate : null,
     planner: q?.kind === 'chase' ? q.planner : null,
@@ -71,10 +116,15 @@ function plan(step: CommandTraceStep) {
     contact: step.endpoint?.lastStepContacts, tackleBond: step.endpoint?.tackleBond };
 }
 
-export function compareNativeEffort(capture: string, baselineTrace: string, slot: string) {
+export function compareNativeEffort(capture: string, baselineTrace: string, slot: string, tackleWindow?: [number, number]) {
   const saved = readSavedPlay(capture), before = JSON.parse(readFileSync(baselineTrace, 'utf8'));
   const plain = runRestoredPlay(saved);
-  const traced = runRestoredPlay(saved, { actor: { team: 'D', slot }, from: 0, to: 15 });
+  const sim = new PlaySim(restoreSetup(saved.setup)), initial = initialState(sim);
+  const trace = sim.recordCommands({ actor: { team: 'D', slot }, from: 0, to: 15 });
+  const tackle = tackleWindow && recordTackleTrials(sim, tackleWindow);
+  const result = sim.run(); tackle?.restore();
+  const execution = { initial, result, replay: replayState(sim, result, saved.context) };
+  const traced = { sim, trace, execution, difference: compareExecution(saved.original, execution) };
   const observer = compareExecution(plain.execution, traced.execution);
   const state = (r: typeof plain) => ({ bodies: r.sim.agents.map(a => a.body), rng: r.sim.rng,
     minds: r.sim.agents.map(a => a.mind) });
@@ -100,13 +150,22 @@ export function compareNativeEffort(capture: string, baselineTrace: string, slot
     const sprint = q.requests.find(r => r.stage === 'intercept-sprint' || r.stage === 'held-tackle')?.command;
     const budget = p.prediction.estimate.request;
     const profile = traced.sim.agents[step.actor.index].profile;
-    if (!sprint || !budget) throw new Error('No explicit native request budget');
+    if (!sprint) throw new Error('No native interception sprint');
+    // The same passive operator can be copied into a baseline checkout.
+    // Missing budget is explicit there, never certified as a repaired contract.
+    if (!budget) {
+      if ('timeToReachRequested' in Reach) throw new Error('No explicit native request budget');
+      return [{ at: step.stepStart, effort: sprint.effort ?? 1, speed: Math.hypot(sprint.vel.x, sprint.vel.y) / profile.vmax,
+        status: p.prediction.estimate.status, explicitBudget: false,
+        laterStages: step.rewrites.map(r => r.stage), actualFinalEffort: step.final?.effort ?? 1 }];
+    }
     if (sprint.effort !== budget.effort || Math.abs(Math.hypot(sprint.vel.x, sprint.vel.y) - profile.vmax * budget.speed) > 1e-8)
       throw new Error('Native estimate/emitted sprint budget differs');
-    return [{ at: step.stepStart, effort: budget.effort, speed: budget.speed, status: p.prediction.estimate.status,
+    return [{ at: step.stepStart, effort: budget.effort, speed: budget.speed, status: p.prediction.estimate.status, explicitBudget: true,
       laterStages: step.rewrites.map(r => r.stage), actualFinalEffort: step.final?.effort ?? 1 }];
   });
   return { schema: 'pursuit-effort-native-v1', source: executionIdentity(), originalSource: saved.identity,
+    operatorSha256: bytesHash(readFileSync(new URL(import.meta.url))),
     playId: saved.game.playId, setupSha256: saved.setupSha256, gamePrefix: saved.game, selection: traced.trace!.selection,
     observerDifference: observer, observerStateDifference: observerState,
     wholePlayFirstDifference: traced.difference,
@@ -114,17 +173,20 @@ export function compareNativeEffort(capture: string, baselineTrace: string, slot
     result: { before: { outcome: saved.original.result.outcome, yards: saved.original.result.yards, duration: saved.original.result.duration },
       after: { outcome: traced.execution.result.outcome, yards: traced.execution.result.yards, duration: traced.execution.result.duration } },
     baselinePlans: oldPlans, candidatePlans: newPlans, requestChecks: checks,
+    requestBudgetComplete: checks.every(c => c.explicitBudget),
     baselineEvents: saved.original.result.events, candidateEvents: traced.execution.result.events,
+    ...(tackle ? { tackleTrials: tackle.trials } : {}),
     candidateTrace: { meta: { ...executionIdentity(), selection: traced.trace!.selection },
       verification: { originalVsPlain: plain.difference, originalVsTrace: traced.difference, traceVsPlain: observer, setupSha256: saved.setupSha256 }, steps } };
 }
 
 function main() {
   const { values: v } = parseArgs({ options: { frozen: { type: 'string' }, capture: { type: 'string' },
-    baseline: { type: 'string' }, actor: { type: 'string', default: 'FS' }, out: { type: 'string', default: 'out/effort/result.json' } } });
+    baseline: { type: 'string' }, actor: { type: 'string', default: 'FS' }, 'tackle-window': { type: 'string' },
+    out: { type: 'string', default: 'out/effort/result.json' } } });
   if (!!v.frozen === !!v.capture) throw new Error('Use --frozen INPUT or --capture PLAY --baseline TRACE [--actor SLOT]');
   const result = v.frozen ? compareFrozenEffort(parseArrivalJson(readFileSync(v.frozen, 'utf8')))
-    : compareNativeEffort(v.capture!, v.baseline!, v.actor!);
+    : compareNativeEffort(v.capture!, v.baseline!, v.actor!, v['tackle-window']?.split(',').map(Number) as [number, number] | undefined);
   mkdirSync(dirname(v.out!), { recursive: true }); writeFileSync(v.out!, arrivalJson(result));
   console.log(v.out);
 }

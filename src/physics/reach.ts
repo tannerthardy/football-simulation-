@@ -35,7 +35,8 @@ export interface Mover {
   pos: Vec2;
   vel: Vec2;
   profile: PhysicalProfile;
-  /** Optional speed multiplier (fatigue, effort). */
+  /** Frozen speed multiplier. Legacy callers may bundle effort here; when
+   * supplying a SprintRequest it must exclude that request's separate effort. */
   speedScale?: number;
 }
 
@@ -130,6 +131,7 @@ export const REQUEST_REACH_ASSUMPTIONS = {
   targetPath: REACH_ESTIMATE_ASSUMPTIONS.targetPath,
   speed: 'min(profile.vmax * requested speed, profile.vmax * speedScale * effort); frozen scale',
   propulsion: 'submaximal wanted-speed easing; GAIT_STEP also bounded by full-profile drive; overspeed brakes toward budget',
+  requestScope: 'held scalar sprint budget; reassessed by normal cadence; bias/shade, gather/navigation and contact overrides are not evaluated',
   redirect: REACH_ESTIMATE_ASSUMPTIONS.redirect,
   omitted: 'body facing/yaw, support/load, near-stop drive floor, posture and evolving fatigue, contacts, obstacles and subsequent target changes',
 } as const;
@@ -145,7 +147,7 @@ export interface InterceptEstimate {
   slack: number | null;
   physicalGuarantee: false;
   assumptions: typeof REACH_ESTIMATE_ASSUMPTIONS | typeof REQUEST_REACH_ASSUMPTIONS;
-  request?: SprintRequest & { requestedSpeed: number; speedCeiling: number; levelingTime: number };
+  request?: SprintRequest & { requestedSpeed: number; wantedSpeedCeiling: number; levelingTime: number };
 }
 
 export interface InterceptSample { t: number; point: Vec2; arrivalTime: number; slack: number; estimatedFeasible: boolean }
@@ -171,7 +173,7 @@ export function interceptPoint(
     estimate: { status, horizon, step, radius, arrivalTime, slack: arrivalTime === null ? null : t - arrivalTime,
       physicalGuarantee: false, assumptions: request ? REQUEST_REACH_ASSUMPTIONS : REACH_ESTIMATE_ASSUMPTIONS,
       ...(request ? { request: { ...request, requestedSpeed: m.profile.vmax * Math.max(0, request.speed),
-        speedCeiling: Math.min(m.profile.vmax * Math.max(0, request.speed),
+        wantedSpeedCeiling: Math.min(m.profile.vmax * Math.max(0, request.speed),
           m.profile.vmax * (m.speedScale ?? 1) * Math.max(0, Math.min(1, request.effort))),
         levelingTime: gaitLag(m.profile) } } : {}) }, ...(samples ? { samples } : {}) });
   for (let t = 0; t <= horizon + 1e-9; t += step) {

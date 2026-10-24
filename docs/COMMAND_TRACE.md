@@ -152,6 +152,13 @@ ordinary-game witnesses or claims about football quality.
 
 ## Inspect pursuit prediction feasibility
 
+Chase predictions now also expose the [requested speed/effort contract](reviews/pursuit-effort-contract.md)
+in `estimate.request`: raw requested speed, wanted-speed ceiling and leveling
+time. Console traces print this existing budget. It applies to the sampled
+interception sprint; later biased/shaded objectives and modifier-owned requests
+do not inherit feasibility. Other generic reach callers remain on their existing
+model unless they explicitly supply a request.
+
 `steps[].pursuit` contains helper calls actually made for the selected actor,
 tagged by pipeline phase and stable target identity. It is absent when none
 were recorded. A helper can be called and its request discarded by its caller:

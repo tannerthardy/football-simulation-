@@ -19,9 +19,15 @@ Frozen native nominations, before comparing responses:
 
 | Input | Actor | Target | Live decision time | Candidate horizons |
 |---|---|---|---:|---|
-| G1-P002 | D:SS `COM-LB1`, index 21 | O:RB `IRN-RB1`, index 1 | 4.25 s | 1.8 / 2.8 s |
+| G1-P002 | D:SS `COM-LB1`, index 21 | O:RB `IRN-RB3`, index 6 | 4.25 s | 1.8 / 2.8 s |
 | G1-P002 | same SS | same RB | 4.30 s | 1.8 / 2.8 s |
-| G1-P012 | D:LB_W `IRN-LB4`, index 16 | O:RB `COM-RB1`, index 1 | 2.95 s | .15 s gather control |
+| G1-P012 | D:LB_W `IRN-LB4`, index 16 | O:RB `COM-RB1`, index 6 | 2.95 s | .15 s gather control |
+
+Identity erratum (follow-up to #263): the earlier handwritten table/handoffs
+mislabelled P002's catcher as `IRN-RB1`/index 1 and P012's index as 1. The
+authoritative checksum-verified fixture already records `IRN-RB3`/index 6 and
+`COM-RB1`/index 6 respectively. Those saved bodies, IDs, inputs and measurements
+are unchanged; this corrects their human-readable labels.
 
 The two normal plays are completed outcomes in unfinished game prefixes, not
 completed games. P002 is **Comebacks**, not the audit's historical P002 sweep.

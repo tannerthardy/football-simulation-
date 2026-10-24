@@ -31,7 +31,7 @@ describe('interception uses the sprint request budget', () => {
     expect(profile).toStrictEqual(before);
     const p = interceptPoint({ pos: { x: 40, y: 26 }, vel: { x: 0, y: 0 }, profile }, () => target,
       { request, radius, recordSamples: true });
-    expect(p.estimate.request!.speedCeiling).toBe(8 * Math.min(request.speed, request.effort));
+    expect(p.estimate.request!.wantedSpeedCeiling).toBe(8 * Math.min(request.speed, request.effort));
     expect(p.estimate.physicalGuarantee).toBe(false);
     expect(p.estimate.assumptions.model).toBe('requested-sprint-with-approximate-redirect');
   });
@@ -127,6 +127,9 @@ describe('interception uses the sprint request budget', () => {
     expect(command.effort).toBe(expected);
     expect(p.steeringPointEstimate).toBe('not-evaluated');
     expect(seen).toHaveBeenCalledTimes(3); // Existing chase, current forecast and older cue only.
+    c.body.pos = { x: -100, y: 50 }; c.body.vel = { x: -8, y: 0 };
+    expect(chase(sim, d, c)).toEqual(command); // Unacquired reality cannot move the effort boundary.
+    expect(seen).toHaveBeenCalledTimes(6);
     vi.restoreAllMocks();
   });
 });
