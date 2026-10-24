@@ -1625,6 +1625,19 @@ These break the model rule that players act on acquired, delayed information.
   A→B→A (it returns A's old point). Same-target, no-new-cue and expired-aim
   controls must stay identical. Small shared fix; Coverage (COV-6 seam) and
   Run Game.
+- **Candidate, not yet adopted:** [#251](https://github.com/tannerthardy/football-simulation-/pull/251),
+  implementation `6a3f9974`, on accepted `30fbae92`, registers one current
+  target index per job and invalidates the old action only on a transition.
+  RunBlocker and ZoneCoverage register at selection, including branches that
+  do not consume the aim. The other six aim calls retain their existing
+  contracts; per-receiver observation/depth memory is not cleared. Twelve
+  minimal command witnesses cover both roles, same-target cadence/expiry,
+  A→B→A, a non-consuming branch and an ignored planned-climb return; they are
+  explicitly not restorations of the unavailable P093/P095 audit inputs.
+  The six-game paired quick check changes three games and retains three
+  complete play-record sequences. Adverse YAC, fumble and penalty moves
+  remain in the PR; no aggregate-yardage benefit is claimed. Run/Coverage
+  consumer review and ordinary CI govern readiness.
 
 ## Physics and movement
 
