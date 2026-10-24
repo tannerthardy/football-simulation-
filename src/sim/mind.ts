@@ -23,6 +23,7 @@ export class SnapMind {
   private readonly recognition: number;
   private readonly reaction: number;
   private readonly aims = new Map<string, { pos: Vec2; until: number }>();
+  private readonly aimTargets = new Map<string, number | null>();
   private readonly judgments = new Map<string, number>();
 
   constructor(player: Player, private readonly rng: Rng, energy = 1) {
@@ -69,7 +70,17 @@ export class SnapMind {
     return t >= this.lapseStart && t < this.lapseEnd ? 0.35 : 0.8 + 0.2 * this.focus;
   }
 
-  /** Hold an action long enough to execute it; changed cues affect the next read. */
+  /** Register the play-local target index selected by existing policy, even when
+   * its next branch does not consume an aim. One current owner per job prevents
+   * A→B→A from reviving A's obsolete action. This makes no new target decision. */
+  setAimTarget(job: string, target: number | null): void {
+    if (this.aimTargets.get(job) === target) return;
+    this.aimTargets.set(job, target);
+    this.aims.delete(job);
+  }
+
+  /** Hold an action long enough to execute it; changed cues for the same
+   * target affect the next read. Targeted callers register selection above. */
   aim(job: string, desired: Vec2, t: number): Vec2 {
     const previous = this.aims.get(job);
     if (previous && t < previous.until) return previous.pos;

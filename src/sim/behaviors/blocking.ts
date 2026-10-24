@@ -934,6 +934,9 @@ export class RunBlocker implements Behavior {
       this.readRules(a,sim);
     }
     if (plan.combination) readCombination(a, sim, plan.combination);
+    // Rules/combination reads can change work even when contact, a first step
+    // or another branch returns without consuming block-fit this tick.
+    a.mind.setAimTarget('block-fit', plan.target?.idx ?? null);
     if (a.engagement) {
       if (this.zoneEligible(a, sim)) this.readZone(a, sim, a.engagement.defender);
       return stand();
@@ -1256,7 +1259,10 @@ export class RunBlocker implements Behavior {
     let target = plan.target;
     // A named wrapper job cannot disappear because of the target's private
     // live contact. Approach and unavailability use its acquired picture.
-    if (plan.kind === 'pull' && plan.pullRole === 'lead' && target) return target;
+    if (plan.kind === 'pull' && plan.pullRole === 'lead' && target) {
+      a.mind.setAimTarget('block-fit', target.idx);
+      return target;
+    }
     // Either member can land first. The covered owner's drive/reach/down
     // label does not make his partner's contact somebody else's block.
     // Keep the shared responsibility until the combination read releases it;
@@ -1282,6 +1288,7 @@ export class RunBlocker implements Behavior {
           this.classifyWork(a, sim, replacement);
       }
     }
+    a.mind.setAimTarget('block-fit', target?.idx ?? null);
     return target;
   }
 
