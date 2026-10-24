@@ -385,9 +385,14 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // Read the guards: every puller this player sees crossing behind the line
     // shows where an extra blocker will turn up. Flow with him to keep the
     // installed leverage on his arrival (box outside him, spill inside him);
-    // never flow against the pull.
-    if (job.kind !== 'interior') for (const p of pullers(sim, a)) {
+    // never flow against the pull. When linemen move behind the line both
+    // ways (a puller and a hinging tackle), the fastest lateral mover is the
+    // pull; reading whichever came first flipped the fit from tick to tick.
+    const moving = job.kind === 'interior' ? [] : pullers(sim, a);
+    const lead = moving.reduce<Perceived | null>((m, p) => !m || Math.abs(p.vel.y) > Math.abs(m.vel.y) ? p : m, null);
+    for (const p of moving) {
       const dir = Math.sign(p.vel.y), arrive = p.pos.y + p.vel.y * PULL_LOOK;
+      if (dir !== Math.sign(lead!.vel.y)) continue;
       const target = arrive + dir * (job.edge === 'spill' ? -PULL_SHOULDER : PULL_SHOULDER);
       if ((target - gy) * dir > 0 && (target - gy) * dir < PULL_REACH) {
         gy = target; pullSide = dir; a.tags.add('fit-pull-read');
@@ -433,7 +438,10 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // Once the acquired track calls for lateral running, use a crossover
   // rather than holding square shoulders and limiting that request to a
   // shuffle. Interior/lag/cutback and still-patient landmarks stay square.
-  const facing = job.kind === 'insert' && flowing && Math.abs(vy) > Math.abs(fit.vel.x)
+  // A request against the landmark's side is braking from an overrun: he
+  // plants and squares up, he does not turn to run back the way he came.
+  const toward = Math.sign(vy) === Math.sign(aim.y - a.pos.y);
+  const facing = job.kind === 'insert' && flowing && toward && Math.abs(vy) > Math.abs(fit.vel.x)
     ? Math.atan2(vy, fit.vel.x) : fit.facing;
   return { ...fit, vel: { x: fit.vel.x, y: vy }, facing };
 }

@@ -7,6 +7,64 @@ merge criteria and testing tiers. Integration-owner/full-suite obligations,
 receipt publication and historical flag profiles below are not current gates.
 Documentation-only navigation changes need documentation/path checks, not games.
 
+## Core and integration timing — F2, 2026-10-23
+
+Measured against develop `c5667bc4f7d4aa0411599ac5db25127f285bf4bf` with
+Node 22.23.3, Linux x64 and a four-CPU container quota. Runs were sequential
+in the same workspace, using `npm test -- --reporter=json --outputFile=...`.
+Wall time includes npm/Vitest startup and JSON reporting. Report all three
+runs rather than comparing the slowest baseline with the fastest candidate.
+
+| Core configuration | Run 1 | Run 2 | Run 3 | Median |
+| --- | ---: | ---: | ---: | ---: |
+| Original isolated forks | 147.739 s | 113.860 s | 116.255 s | 116.255 s |
+| Isolated threads, slow file assigned to integration | 106.844 s | 103.501 s | 134.235 s | 106.844 s |
+
+The median improvement is **8.1%**. Wall time still varies; this is not a
+latency guarantee under arbitrary machine load. All three runs of each
+configuration pass with no pass/fail changes. Every candidate core test is
+under five seconds in these runs.
+
+`hands-bunch.test.ts` reached 29.667 s for its native crossing-release test
+in the cold baseline run (three-run median 1.357 s). Its entire two-test file
+is now assigned to integration through one shared include/exclude list in
+`vitest.config.ts`; its path, assertions, seeds and fixtures are untouched.
+The existing full-game tests took 35.1–45.5 s each in the serial baseline
+integration run and remain there. The PR contains the 30 slowest test names,
+files, medians and maxima from the three baseline core runs plus that
+integration run. Raw reports remain in ignored `out/F2-test-time/`.
+
+| Project | Before | After |
+| --- | ---: | ---: |
+| Core | 3,086 | 3,084 |
+| Integration | 7 | 9 |
+| Research, unchanged discovery | 225 | 225 |
+| Total | 3,318 | 3,318 |
+
+Core uses worker threads with **file isolation retained**; flag/module state
+must not be shared between files. All 60-second test limits remain unchanged.
+`npm run test:integration` retains `--maxWorkers=1`. The new
+`.github/workflows/tests.yml` runs core and integration in separate matrix
+jobs/runners, with fail-fast disabled so a core failure does not cancel the
+integration checks. Previously the only workflow ran the scorecard. Research
+is still available separately; its count above is discovery, not a new claim
+that the paused research suite passes. `npm run test:all` still selects all
+three projects.
+
+One serial integration run per configuration passed: 212.884 s before and
+226.758 s after, including the newly assigned file. There is no claim that
+the complete test workload became cheaper or that native games cannot exceed
+their existing budget on an overloaded host. The tests-only quick scorecard
+comparison preserved all six games and 800 play records exactly, excluding
+only metadata and per-game elapsed milliseconds.
+
+To reproduce timings and preserve per-test results:
+
+```sh
+npm test -- --reporter=json --outputFile=out/core.json
+npm run test:integration -- --reporter=json --outputFile=out/integration.json
+```
+
 Shared policy requested 2026-10-13. This adds a marginal-cost constraint to the
 [roster audit](reviews/roster-capability-audit.md) and [validation](VALIDATION.md).
 Choose the smallest check that answers the remaining question. **Do not multiply
@@ -67,7 +125,8 @@ transfer. Known conservation/accounting failures remain failures.
 
 ## Opt-in screen: 2, 8, 16 or 32 snaps
 
-`npm test` is unchanged: no roster multiplication or new game collector.
+`npm test` has no roster multiplication or new game collector; its measured
+project split is documented above.
 [`screen:roster`](../scripts/roster-screen.ts) without arguments prints a plan
 and **simulates zero snaps**. Use .nvmrc Node 22.23.3 and `npm ci` once.
 

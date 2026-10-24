@@ -13,9 +13,12 @@ Rates (0/1 metrics) compare means, flagged by relative difference.
 Other seasons (2017 all plays, 2021 dropbacks, 2023 ball in the air) are shown
 for replication when their summaries exist; flags use 2022.
 These flags point at mechanisms to investigate. They are not targets to tune.
+With --guard, "check" remains an accepted warning; "off" or unavailable
+evidence exits 1. Without a guard the report remains descriptive.
 """
 import argparse
 import json
+import math
 import subprocess
 import sys
 from pathlib import Path
@@ -55,8 +58,35 @@ def flag(metric, nfl, sim):
     return shift, tail, "ok" if worst < 0.25 else "check" if worst < 0.75 else "off"
 
 
+def summary_issue(summary, metric, source, min_n=1):
+    if not isinstance(summary, dict) or not summary:
+        return f"{source} metric missing"
+    n = summary.get("n")
+    if not isinstance(n, (int, float)) or isinstance(n, bool) or not math.isfinite(n) or n < 0:
+        return f"{source} sample count unavailable"
+    if n == 0:
+        return f"no known {source} samples"
+    if n < min_n:
+        return f"too few {source} samples (n={n}, minimum {min_n})"
+    fields = ("mean",) if metric.split("@")[0] in RATES else ("p25", "p50", "p75", "p90")
+    unknown = [field for field in fields if not isinstance(summary.get(field), (int, float))
+               or isinstance(summary[field], bool) or not math.isfinite(summary[field])]
+    if unknown:
+        return f"{source} statistics unavailable ({', '.join(unknown)})"
+    return None
+
+
+def pressure_operator_issue(nfl, sim):
+    operators = (nfl.get("pressureOperator"), sim.get("pressureOperator"))
+    if operators[0] != operators[1]:
+        return "pressure operator differs"
+    if any(not isinstance(value, str) or not value.strip() for value in operators):
+        return "pressure operator unavailable"
+    return None
+
+
 def fmt(summary, metric):
-    if not summary or not summary.get("n"):
+    if summary_issue(summary, metric, "summary"):
         return "-"
     if metric.split("@")[0] in RATES:
         return f"{100 * summary['mean']:.1f}%"
@@ -68,11 +98,11 @@ def main():
     parser.add_argument("--nfl", type=Path, default=ROOT / "data/reviews/mechanics/nfl-bdb2022.json")
     parser.add_argument("--sim", type=Path, default=ROOT / "out/mechanics/sim.json")
     parser.add_argument("--out", type=Path, default=ROOT / "out/mechanics/report.md")
-    parser.add_argument("--min-n", type=int, default=30)
-    parser.add_argument("--guard", type=Path, help="JSON list of metrics that already match; exit 1 if any is now 'off'")
+    parser.add_argument("--min-n", type=int, default=30, help="minimum known sim samples; NFL needs positive n")
+    parser.add_argument("--guard", type=Path, help="JSON metrics list; exit 1 if any is 'off' or unavailable ('check' remains a warning)")
     args = parser.parse_args()
     nfl, sim = json.loads(args.nfl.read_text()), json.loads(args.sim.read_text())
-    same_pressure_operator = nfl.get("pressureOperator") == sim.get("pressureOperator")
+    pressure_issue = pressure_operator_issue(nfl, sim)
     others = [(season, json.loads(path.read_text())) for season, path in REPLICATIONS if path.exists()]
     commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
     lines = [f"# Sim vs NFL mechanisms ({commit})", "",
@@ -81,24 +111,27 @@ def main():
              f"Sim: {sim['source']} ({sim['plays']['run']} runs, {sim['plays']['pass']} dropbacks).", "",
              "Values are median [25th, 75th percentile] 90th percentile; rates are shares.",
              "Shift and tail: sim median and 90th percentile minus the 2022 NFL's, in 2022 NFL interquartile ranges.",
-             f"Pressure operators: NFL `{nfl.get('pressureOperator', 'legacy/unspecified')}`, sim `{sim.get('pressureOperator', 'legacy/unspecified')}`. Different versions are not compared."]
-    counts = {"ok": 0, "check": 0, "off": 0, "few": 0}
+             f"Pressure operators: NFL `{nfl.get('pressureOperator', 'legacy/unspecified')}`, sim `{sim.get('pressureOperator', 'legacy/unspecified')}`. Missing or different versions are unavailable."]
+    counts = {"ok": 0, "check": 0, "off": 0, "unavailable": 0}
     marks = {}
-    incompatible = set()
+    reasons = {}
     header = ["| Metric | NFL 2022 | " + " | ".join(f"NFL {season}" for season, _ in others) + " | Sim | Shift | Tail | Flag |",
               "|---|---|" + "---|" * len(others) + "---|---:|---:|---|"]
 
     def row(metric, label):
         n, s = nfl["metrics"][metric], sim["metrics"].get(metric)
         is_pressure = metric.split("@")[0] in PRESSURE_METRICS
-        rep = " | ".join("operator differs" if is_pressure and data.get("pressureOperator") != nfl.get("pressureOperator")
-                         else fmt(data["metrics"].get(metric), metric) for _, data in others)
-        if is_pressure and not same_pressure_operator:
-            incompatible.add(metric)
-            return f"| {label} | {fmt(n, metric)} | {rep} | {fmt(s, metric)} | | | operator differs |"
-        if not n.get("n") or not s or s.get("n", 0) < args.min_n:
-            counts["few"] += 1
-            return f"| {label} | {fmt(n, metric)} | {rep} | n={s.get('n', 0) if s else 0} | | | too few |"
+        rep = " | ".join((pressure_operator_issue(nfl, data) if is_pressure else None)
+                         or fmt(data["metrics"].get(metric), metric) for _, data in others)
+        # Keep the existing sample policy: positive NFL n, sim n >= --min-n.
+        reason = ((pressure_issue if is_pressure else None) or summary_issue(n, metric, "NFL")
+                  or summary_issue(s, metric, "sim", args.min_n))
+        if reason:
+            marks[metric] = "unavailable"
+            reasons[metric] = reason
+            counts["unavailable"] += 1
+            label_state = reason.replace("pressure ", "", 1) if is_pressure and pressure_issue else f"unavailable: {reason}"
+            return f"| {label} | {fmt(n, metric)} | {rep} | {fmt(s, metric)} | | | {label_state} |"
         shift, tail, mark = flag(metric, n, s)
         counts[mark] += 1
         marks[metric] = mark
@@ -116,17 +149,31 @@ def main():
         lines += ["", f"## {title}", "", *header]
         for cell in cells:
             lines += [row(f"{base}@{cell}", f"{cell}: {base}") for base in BY_CELL if f"{base}@{cell}" in nfl["metrics"]]
-    lines += ["", f"{counts['ok']} ok, {counts['check']} check, {counts['off']} off, {counts['few']} without enough sim plays.",
+    lines += ["", f"{counts['ok']} ok, {counts['check']} check, {counts['off']} off, {counts['unavailable']} unavailable comparisons.",
               "", "Definitions: see `definitions` in either JSON, or scripts/mechanics/metrics.py."]
     broken = []
     unavailable = []
     if args.guard:
         guarded = json.loads(args.guard.read_text())["metrics"]
+        for metric in guarded:
+            if metric not in marks:
+                marks[metric] = "unavailable"
+                reasons[metric] = "NFL metric missing" if metric not in nfl["metrics"] else "not evaluated by report"
         broken = [m for m in guarded if marks.get(m) == "off"]
-        unavailable = [m for m in guarded if m in incompatible]
-        lines += ["", f"Guard: {len(guarded) - len(broken) - len(unavailable)}/{len(guarded)} matched metrics still match."]
-        lines += [f"- GUARD BROKEN: {m} is now off" for m in broken]
-        lines += [f"- GUARD UNAVAILABLE: {m} pressure operator differs; reuse compatible evidence or explicitly remeasure saved plays." for m in unavailable]
+        unavailable = [m for m in guarded if marks.get(m) == "unavailable"]
+        ok = sum(marks[m] == "ok" for m in guarded)
+        check = sum(marks[m] == "check" for m in guarded)
+        lines += ["", f"Guard: {ok + check}/{len(guarded)} guarded metrics within policy ({ok} ok, {check} check/warning); {len(broken)} off, {len(unavailable)} unavailable."]
+        for metric in guarded:
+            mark = marks[metric]
+            if mark == "unavailable":
+                lines += [f"- GUARD UNAVAILABLE: {metric} {reasons[metric]}; reuse compatible evidence or explicitly remeasure saved plays."]
+            elif mark == "off":
+                lines += [f"- GUARD BROKEN: {metric} is now off"]
+            elif mark == "check":
+                lines += [f"- GUARD CHECK: {metric} is check (warning accepted by existing guard policy)"]
+            else:
+                lines += [f"- GUARD OK: {metric} is ok"]
     text = "\n".join(lines) + "\n"
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(text)

@@ -58,14 +58,16 @@ describe('free first-level recovery screens a personally acquired carrying back'
   it.each([false,undefined])('keeps unavailable/negative possession out of recovery even when the hidden runner carries, %s',signal=>{
     const f=scene();f.pictures.get(f.rb)!.carrying=signal;f.sim.ball={kind:'held',carrier:f.rb};
     const command=f.command();
-    expect(command.posture).toBeUndefined();
-    expect(Math.hypot(command.vel.x,command.vel.y)).toBeCloseTo(f.a.profile.vmax,12);
+    // The installed first-level fit, exactly as without an acquired runner.
+    expect(command).toEqual(scene(false).command());
     expect(Reflect.get(f.controller,'workPicture').source).toBe('installed');
   });
 
   it('does not treat a carrying QB at the mesh as an acquired back',()=>{
     const f=scene(false);f.pictures.get(f.sim.qb)!.carrying=true;
-    expect(f.command().posture).toBeUndefined();
+    const command=f.command();
+    // The installed first-level fit, exactly as without an acquired runner.
+    expect(command).toEqual(scene(false).command());
     expect(Reflect.get(f.controller,'workPicture').carrier).toBe(f.sim.qb.idx);
   });
 
@@ -86,8 +88,8 @@ describe('free first-level recovery screens a personally acquired carrying back'
   it('does not renew the recovery objective after the acquired runner has passed the defender',()=>{
     const f=scene();f.pictures.get(f.rb)!.pos={x:f.d.pos.x+2.51,y:CENTER_Y};
     const command=f.command();
-    expect(command.posture).toBeUndefined();
-    expect(Math.hypot(command.vel.x,command.vel.y)).toBeCloseTo(f.a.profile.vmax,12);
+    // The installed first-level fit, exactly as without an acquired runner.
+    expect(command).toEqual(scene(false).command());
   });
 
   it('preserves detached receiver work and an unreleased double',()=>{
@@ -103,7 +105,8 @@ describe('free first-level recovery screens a personally acquired carrying back'
           released:false,secureSince:-1,nextRead:10,soloKind:'drive'};
         f.controller.plan.combination=combination;
       }
-      expect(f.command().posture).toBeUndefined();
+      // The inline end keeps his line base (posture) either way; the detached wing has none.
+      expect(f.command().posture).toBe(control==='detached'?undefined:.7);
       expect(Reflect.get(f.controller,'workPicture')).toBeNull();
       expect(f.controller.target).toBe(f.d);
     }

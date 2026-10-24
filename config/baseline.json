@@ -32,6 +32,7 @@
     "DEUCE": "1",
     "PASS_SINK": "0",
     "PULL_CUE": "0",
+    "PASS_FIRST": "1",
     "PULL_PLAN": "0",
     "PULL_READ": "1",
     "PURSUE_AROUND": "1",
@@ -46,6 +47,7 @@
     "RUN_READ": "0",
     "RUN_READ_TURN": "0",
     "SCRAPE": "1",
+    "STALK_CUSHION": "1",
     "SHED_PHYSICAL": "1",
     "SHED_PURSUE": "1",
     "SNAP_REACT": "1",
@@ -59,7 +61,9 @@
     "WR_ALIGN": "1",
     "OL_SPLITS": "1",
     "OL_STAGGER": "1",
+    "BACK_BLOCK": "1",
     "BLOCKED_REACH": "1",
+    "GRIP_HOLD": "1",
     "PULL_EARLY": "1",
     "THREAT_READ": "1",
     "WRAP_BIND": "0",
@@ -89,7 +93,8 @@
     "PASS_KICK": "1",
     "ROUTE_CLEAR": "1",
     "GROUNDING_FACTS": "1",
-    "HOLD_LEVERAGE": "1"
+    "HOLD_LEVERAGE": "1",
+    "RUN_FEEL": "1"
   },
   "worldDefaults": {
     "handContact": "center",

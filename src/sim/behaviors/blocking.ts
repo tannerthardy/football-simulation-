@@ -39,6 +39,10 @@ const PULL_STEP = process.env.PULL_STEP === '1';
 const stanceDepth = (sim: PlaySim, a: Agent) => sim.los - (sim.offAlign.spots[a.slot]?.pos.x ?? sim.los - .55);
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 export const isOL = (a: Agent): boolean => OL.has(a.slot);
+/** A first-level run blocker on the line: the five linemen and an inline end
+ * doing the same job, who keeps the same base and strike fit into contact.
+ * A detached wing or slot keeps his own approach. */
+const onLine = (a: Agent, sim: PlaySim): boolean => isOL(a) || !!sim.offAlign?.spots[a.slot]?.inline;
 
 // ------------------------------------------------------------- protection
 
@@ -624,7 +628,10 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // run at the 3-technique; against a playside 1-technique the line makes it
     // a long trap of the next man out (spread playbook p. 62, Browns "log"
     // p. 37). The offense calls before seeing the front, so this is the check.
-    const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= 1.05).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
+    // Techniques are read off the guard, not a yard mark: inside the
+    // playside guard is the A-gap 1-technique; on or outside him, trapped.
+    const psg = line.filter((b) => isOL(b) && rel(b) > 0).sort((p, q) => rel(p) - rel(q))[0];
+    const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= (psg ? rel(psg) : 1.05)).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
     const kickReserved = scheme !== 'trap' && pullers.size ? dl.filter((d) => rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null : null;
 
     // Account for immediate inside threats first. Outside-in assignment can
@@ -737,11 +744,17 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // With every backer owned, the lead takes the most dangerous free box
     // defender, nearest the mesh; on counter and trap, the backside one the
     // pullers vacated first.
+    // Nearest the mesh counts depth: a safety walked down outside the end is
+    // farther from it than the edge on the line. The lead's backer is one
+    // inside the surface; a box safety outside it is a perimeter blocker's.
     const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
     const backsideFirst = scheme === 'counter' || scheme === 'trap';
+    const fromMesh = (d: Agent) => Math.hypot(d.pos.x - sim.los, rel(d));
     const free = [...dl, ...lb].filter((d) => !owned.has(d))
-      .sort((p, q) => (backsideFirst ? Number(rel(p) >= 0) - Number(rel(q) >= 0) : 0) || Math.abs(rel(p)) - Math.abs(rel(q)));
-    plans.set(fb, { kind: 'lead', target: lbNear(by + ps * 1.5) ?? free[0] ?? null, drive: up(0) });
+      .sort((p, q) => (backsideFirst ? Number(rel(p) >= 0) - Number(rel(q) >= 0) : 0) || fromMesh(p) - fromMesh(q));
+    const surface = line.map(rel), inside = (d: Agent) => rel(d) >= Math.min(...surface) - .5 && rel(d) <= Math.max(...surface) + .5;
+    const backer = lbNear(by + ps * 1.5);
+    plans.set(fb, { kind: 'lead', target: (backer && inside(backer) ? backer : null) ?? free[0] ?? null, drive: up(0) });
   }
   const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'
     && !(a.slot === 'F' && sim.offAlign.spots.F?.backfield));
@@ -762,7 +775,12 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // backers a lineman or lead already owns. Only a receiver left with
     // nobody unclaimed helps on the nearest man.
     const open = stalkPool.filter(d => !reserved.has(d));
-    const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d) }))).sort((p, q) => p.dist - q.dist);
+    // A box defender nobody owns (a safety walked down into an eight-man
+    // box) is claimed before the secondary, by a receiver on his side of the
+    // ball: the crack. Then the closest pairs.
+    const box = (a: Agent, d: Agent) => lb.includes(d) && (d.pos.y - by) * (a.pos.y - by) > 0 ? 0 : 1;
+    const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d), tier: box(a, d) })))
+      .sort((p, q) => p.tier - q.tier || p.dist - q.dist);
     const taken = new Set<Agent>();
     for (const { a, d } of pairs) if (!stalkTargets.has(a) && !taken.has(d)) { stalkTargets.set(a, d); taken.add(d); }
   }
@@ -797,6 +815,35 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   return plans;
 }
 
+/** On (STALK_CUSHION=0 for comparison): a receiver stalking a DB breaks down
+ * at a stand-off and mirrors him until the DB attacks (downhill over
+ * STALK_ATTACK, or inside toward the ball over STALK_ATTACK_IN, yd/s), rather
+ * than running full speed to intercept him. Stalk coaching breaks down 2-3 yd
+ * off the DB. Tracked receivers on runs are within 1 yd of a DB 9 / 17% of the
+ * time at 1.5 / 2.0 s; ours 23 / 45% (out/wrrun.py, dbtempo.py). */
+const STALK_CUSHION = process.env.STALK_CUSHION !== '0';
+const STALK_STANDOFF = 2, STALK_ATTACK = 1, STALK_ATTACK_IN = 1.5;
+
+/** On (BACK_BLOCK=0 for comparison): a blocker does not start a block on, or
+ * drive into, a man whose back is to him once the runner is past that man. A
+ * block in the back is a foul every blocker is coached out of, and his hands
+ * have no front to fit. Both reads are his own picture (the man's body
+ * facing, the runner's position). Develop at #205: 80% of the run blocks
+ * started after the ball crossed are from behind the defender's facing, and
+ * 61% of linemen are within 1 yd of a blocker when the back reaches 5 yd
+ * (NFL 27%; rallybox.py). */
+const BACK_BLOCK = process.env.BACK_BLOCK !== '0';
+
+/** The man has turned his back to this blocker to chase a runner already
+ * past him. */
+function backTurned(a: Agent, sim: PlaySim, target: Agent): boolean {
+  const c = sim.carrier;
+  if (!BACK_BLOCK || !c || c.team !== a.team || (c === sim.qb && !sim.scrambled)) return false;
+  const man = sim.see(a, target), runner = sim.see(a, c), dir = sim.attackDir(a.team);
+  if ((runner.pos.x - man.pos.x) * dir <= 0) return false;
+  return Math.cos(man.facing) * (a.pos.x - man.pos.x) + Math.sin(man.facing) * (a.pos.y - man.pos.y) < 0;
+}
+
 /** Receivers claim distinct stalk targets (STALK_CLAIM=0: each takes his nearest). */
 const STALK_CLAIM = process.env.STALK_CLAIM !== '0';
 
@@ -822,10 +869,11 @@ export class RunBlocker implements Behavior {
   private homeY: number | null = null;
   private firstStep: Vec2 | null = null;
   private nextRuleRead = 0;
+  private nextThreatRead = 0;
   private soloKind: RunBlockKind | null = null;
   private soloDrive: Vec2 | null = null;
   /** The puller's last ordinary read, not the defender's current position. */
-  private pullRead: { target: Agent; seen: Perceived; clearanceX: number | null; nextRead: number } | null = null;
+  private pullRead: { target: Agent; seen: Perceived; clearanceX: number | null; nextRead: number; at: number } | null = null;
   private pullCleared = false;
   private nextSurfaceRead = 0;
   private wrapOutside = false;
@@ -886,6 +934,9 @@ export class RunBlocker implements Behavior {
       this.readRules(a,sim);
     }
     if (plan.combination) readCombination(a, sim, plan.combination);
+    // Rules/combination reads can change work even when contact, a first step
+    // or another branch returns without consuming block-fit this tick.
+    a.mind.setAimTarget('block-fit', plan.target?.idx ?? null);
     if (a.engagement) {
       if (this.zoneEligible(a, sim)) this.readZone(a, sim, a.engagement.defender);
       return stand();
@@ -899,7 +950,7 @@ export class RunBlocker implements Behavior {
         const target = this.availableTarget(a, sim);
         if (target && target === this.presentationThreat) {
           a.stance = 'low';
-          return this.withBase(a, this.attack(a, sim, target));
+          return this.withBase(a, sim, this.attack(a, sim, target));
         }
       }
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
@@ -912,15 +963,19 @@ export class RunBlocker implements Behavior {
     const coordinated = !!plan.combination && !plan.combination.released && !stretch;
     if (ZONE_FLOW && isOL(a) && ['drive', 'reach', 'cutoff', 'combo'].includes(plan.kind) && !coordinated) {
       const flow = this.zoneFlow(a, sim);
-      if (flow) return this.withBase(a, flow);
+      if (flow) return this.withBase(a, sim, flow);
     }
     if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay) {
       // Establish the first foot and pad angle before running through a
       // target. Zone gains lateral ground; Duo stays vertical. These are
       // technique landmarks, still subject to acceleration and collisions.
-      return this.withBase(a, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
+      return this.withBase(a, sim, track(a,this.firstStep,{x:0,y:0},{speed:.45,gain:5,facing:0}));
     }
 
+    if (t >= this.nextThreatRead) {
+      this.nextThreatRead = t + a.mind.decisionInterval;
+      this.rereadThreat(a, sim);
+    }
     const target = this.availableTarget(a, sim);
     if (plan.departure && (plan.kind !== 'climb' || target !== plan.departure.backer)) {
       delete plan.departure;
@@ -1037,6 +1092,13 @@ export class RunBlocker implements Behavior {
           facing: this.pullIdx === 0 ? (PULL_STEP ? Math.atan2(ps, 0) : 0) : undefined });
       }
     }
+    if (target && backTurned(a, sim, target)) {
+      // Trail him at a stand-off: keep pace without running into his back.
+      const man = sim.see(a, target), dirX = sim.attackDir(a.team);
+      const trail = { x: man.pos.x - dirX * (a.profile.radius + target.profile.radius + .5), y: man.pos.y };
+      if ((trail.x - a.pos.x) * dirX < 0) trail.x = a.pos.x;
+      return goTo(a, trail, { speed: .85, through: Math.max(0, man.vel.x * dirX) });
+    }
     if (!target) {
       const ref = this.workReference(a, sim);
       return goTo(a, { x: ref.x + 3, y: a.pos.y }, { speed: 0.5 });
@@ -1046,6 +1108,19 @@ export class RunBlocker implements Behavior {
       const dd = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
       if (dd < a.profile.radius + target.profile.radius + 0.3 && sim.engage(a, target, 'run', plan.drive)) return stand();
       const seen = sim.see(a, target);
+      if (STALK_CUSHION && plan.perimeterStalk === target) {
+        // Break down short of a DB who is not attacking: mirror him at a
+        // stand-off until he comes downhill or inside toward the ball.
+        const dirX = sim.attackDir(a.team);
+        const downhill = -seen.vel.x * dirX;
+        const inside = (sim.ballY - seen.pos.y) * seen.vel.y > 0 ? Math.abs(seen.vel.y) : 0;
+        if (downhill < STALK_ATTACK && inside < STALK_ATTACK_IN) {
+          const stand = { x: seen.pos.x - dirX * STALK_STANDOFF, y: seen.pos.y };
+          if ((stand.x - a.pos.x) * dirX < 0) stand.x = a.pos.x;
+          return goTo(a, stand, { speed: .85, through: Math.max(0, seen.vel.x * dirX),
+            facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) });
+        }
+      }
       if (plan.perimeterStalk === target) {
         const capacity = a.body.support
           ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
@@ -1063,7 +1138,7 @@ export class RunBlocker implements Behavior {
         : { x: Math.max(seen.pos.x - 1.2, a.pos.x), y: seen.pos.y };
       return goTo(a, fit, { speed: .85, through: 1 });
     }
-    return this.withBase(a, this.attack(a, sim, target));
+    return this.withBase(a, sim, this.attack(a, sim, target));
   }
 
   /** The climb, planned on the read cadence from one acquired picture of the
@@ -1156,6 +1231,12 @@ export class RunBlocker implements Behavior {
     const partner = combo?.members.find((b) => b !== a);
     const half = partner ? (Math.sign(a.pos.y - partner.pos.y) || ps) * .55 : ps * .6;
     const shoulder = seen.pos.y + seen.vel.y * meet + half;
+    // The track races a man in front of him to the playside. Once that man
+    // is already backside of the aim point and has run upfield past his
+    // depth, more track only carries him away from the man, backpedaling
+    // with his back to the line. Leave the track and fit the man's acquired
+    // body from here (G1 P003/P029/P032 backside cutoff).
+    if (!firstStep && (a.pos.y - shoulder) * ps > 0 && (seen.pos.x - a.pos.x) * dir < 0) return null;
     // Ask for the speed that gets there in time under his own acceleration
     // law (speed approaches the wanted speed with time constant tau): an
     // early, short distance needs an explosive first step, not a jog.
@@ -1178,7 +1259,10 @@ export class RunBlocker implements Behavior {
     let target = plan.target;
     // A named wrapper job cannot disappear because of the target's private
     // live contact. Approach and unavailability use its acquired picture.
-    if (plan.kind === 'pull' && plan.pullRole === 'lead' && target) return target;
+    if (plan.kind === 'pull' && plan.pullRole === 'lead' && target) {
+      a.mind.setAimTarget('block-fit', target.idx);
+      return target;
+    }
     // Either member can land first. The covered owner's drive/reach/down
     // label does not make his partner's contact somebody else's block.
     // Keep the shared responsibility until the combination read releases it;
@@ -1204,15 +1288,16 @@ export class RunBlocker implements Behavior {
           this.classifyWork(a, sim, replacement);
       }
     }
+    a.mind.setAimTarget('block-fit', target?.idx ?? null);
     return target;
   }
 
-  private withBase(a: Agent, command: MoveCommand): Intent {
+  private withBase(a: Agent, sim: PlaySim, command: MoveCommand): Intent {
     // The visible low stance does not set the physical posture. Keep the
-    // existing snap base through a first-level OL approach; World supplies
+    // existing snap base through a first-level line approach; World supplies
     // finite posture changes, the movement cost and actual balance. Running
     // pullers, climbs, unassigned movement and contact techniques own theirs.
-    return isOL(a) && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(this.plan.kind)
+    return onLine(a, sim) && ['drive', 'reach', 'down', 'combo', 'cutoff'].includes(this.plan.kind)
       ? { ...command, posture: .7 } : command;
   }
 
@@ -1293,15 +1378,21 @@ export class RunBlocker implements Behavior {
       const clearanceX = surfaces.length ? Math.min(...surfaces.map(({b,seen}) => seen.pos.x-b.profile.radius))
         : this.plan.pullSurface ? this.plan.pullPath?.[0]?.x ?? a.pos.x+a.profile.radius : null;
       this.pullRead = { target, seen: { ...seen, pos: { ...seen.pos }, vel: { ...seen.vel } },
-        clearanceX, nextRead: sim.t + a.mind.decisionInterval };
+        clearanceX, nextRead: sim.t + a.mind.decisionInterval, at: sim.t };
     }
     return this.pullRead;
   }
 
   private attack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived): MoveCommand {
     const plan = this.plan;
-    const seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
+    let seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
+    // The held pull read is already dead-reckoned to its acquisition; carry
+    // it only through the time held since then.
+    if (plan.kind === 'pull' && this.pullRead && seen === this.pullRead.seen) {
+      const dt = sim.t - this.pullRead.at;
+      seen = { ...seen, pos: { x: seen.pos.x + seen.vel.x * dt, y: seen.pos.y + seen.vel.y * dt } };
+    }
     if (plan.kind === 'pull' && plan.pullRole === 'lead' && (seen.pose === 'down' || seen.pose === 'rising')) return stand();
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
     const combinationFit = this.combinationFit(a, sim, target);
@@ -1319,7 +1410,7 @@ export class RunBlocker implements Behavior {
     // A run block starts with the strike, before torsos meet. Keep functional
     // extension shorter than a pass-pro punch; long arms can catch a slant.
     const contact = a.profile.radius + target.profile.radius + 0.1 + (a.player.measurables.armIn / 36) * 0.45;
-    const fitCandidate = isOL(a) && (plan.kind === 'drive' || plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
+    const fitCandidate = onLine(a, sim) && (plan.kind === 'drive' || plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
       && (!plan.combination || plan.combination.released)
       && !sim.world.joints.some(j => j.a === a.body || j.b === a.body);
     const contactFit = fitCandidate && plan.kind === 'cutoff' && plan.contactFit?.target === target
@@ -1400,9 +1491,21 @@ export class RunBlocker implements Behavior {
     // defender's old spot. Match his lateral motion and brake the offset;
     // ordinary drive blocks retain their downhill strike.
     if (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')) {
-      const side = Math.sign(plan.drive.y) || 1;
-      const shoulder = { x: aim.x-.25, y: aim.y-side*.45 };
-      return track(a, shoulder, seen.vel, { speed: .95, gain: 3, facing: Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x) });
+      const facing = Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x);
+      if (a.tags.has('block-log')) {
+        const side = Math.sign(plan.drive.y) || 1;
+        return track(a, { x: aim.x-.25, y: aim.y-side*.45 }, seen.vel, { speed: .95, gain: 3, facing });
+      }
+      // Kick him out from inside: fit the shoulder he would run through to
+      // the ball, on his line to the runner the puller has acquired. Matching
+      // the end's own velocity let a penetrating end drag the puller 6 yd
+      // deep while still 3-5 yd away laterally, never touching him (G1 P031).
+      // Going for his path to the runner meets him wherever he comes from.
+      const ref = this.workReference(a, sim), dx = ref.x - seen.pos.x, dy = ref.y - seen.pos.y, n = Math.hypot(dx, dy);
+      const sep = a.profile.radius + target.profile.radius + .15;
+      const shoulder = n > sep ? { x: seen.pos.x + dx / n * sep, y: clamp(seen.pos.y + dy / n * sep + placementError, .5, FIELD_WIDTH - .5) }
+        : { x: aim.x-.25, y: aim.y-(Math.sign(plan.drive.y) || 1)*.45 };
+      return track(a, shoulder, { x: 0, y: 0 }, { speed: .95, gain: 3, facing });
     }
     if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
       const fit = this.plannedClimb(a, sim, target, contact);
@@ -1563,6 +1666,49 @@ export class RunBlocker implements Behavior {
     sim.event('block_collect',a,threat,'penetration before climb');
   }
 
+  /** First threat to show: a free climbing lineman or lead back whose man
+   * is not the danger to the runner takes the free defender who is. All of
+   * it comes from his own delayed pictures: the runner he has acquired, each
+   * defender's body and whether it is visibly blocked, and his teammates'
+   * bodies. He switches only to a man clearly nearer the runner than his own,
+   * one he is nearer than the runner is, and one no teammate is nearer.
+   * Stalks keep their perimeter ledger. */
+  private rereadThreat(a: Agent, sim: PlaySim): void {
+    const p = this.plan, target = p.target;
+    if (!target || (p.kind !== 'climb' && p.kind !== 'lead')
+      || (p.combination && !p.combination.released) || p.departure) return;
+    const ref = this.workReference(a, sim), picture = this.workPicture!;
+    if (picture.source !== 'acquired' || picture.carrier === sim.qb.idx) return;
+    const dir = sim.attackDir(a.team);
+    // Distance to the runner, less what his closing speed takes off it over
+    // one second: a man running at the runner counts as nearer than he is.
+    const danger = (seen: Perceived) => {
+      const dx = ref.x - seen.pos.x, dy = ref.y - seen.pos.y, d = Math.hypot(dx, dy);
+      const closing = d > 1e-9 ? ((seen.vel.x - picture.vel.x) * dx + (seen.vel.y - picture.vel.y) * dy) / d : 0;
+      return { d, score: d - Math.max(0, closing) };
+    };
+    const mine = danger(sim.see(a, target));
+    if (mine.d < 4) return;
+    const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o.idx !== picture.carrier).map(o => sim.see(a, o).pos);
+    let best: { d: Agent; score: number } | null = null;
+    for (const d of sim.defense) {
+      if (d === target || d.engagement || d.isDown(sim.t)) continue;
+      const seen = sim.see(a, d), threat = danger(seen);
+      // Behind the runner he is pursuit, not a man to block in front of him.
+      if ((seen.pos.x - ref.x) * dir < -1 || threat.score > mine.score - 2.5) continue;
+      const reach = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
+      if (reach >= threat.d || mates.some(m => Math.hypot(m.x - seen.pos.x, m.y - seen.pos.y) < reach - .5)) continue;
+      if (!best || threat.score < best.score) best = { d, score: threat.score };
+    }
+    if (!best) return;
+    p.target = best.d;
+    delete p.contactFit;
+    this.climbRead = null;
+    this.climbAccess = null;
+    this.classifyWork(a, sim, best.d);
+    sim.event('block_threat', a, best.d, 'first threat to the runner');
+  }
+
   /** A free first-level blocker recovers between his defender and the back
    * he has acquired, rather than blindly returning to the original drive
    * angle. This chooses feet only: target, drive and contact frame stay owned
@@ -1570,7 +1716,7 @@ export class RunBlocker implements Behavior {
    */
   private runnerSideFit(a: Agent, sim: PlaySim, target: Agent, seen: Perceived):
     { axis: Vec2; aim: Vec2; lost: boolean } | null {
-    if (!(isOL(a) || sim.offAlign.spots[a.slot]?.inline)
+    if (!onLine(a, sim)
       || !['drive', 'reach', 'down', 'cutoff'].includes(this.plan.kind)
       || (this.plan.combination && !this.plan.combination.released)) return null;
     const ref = this.workReference(a, sim);

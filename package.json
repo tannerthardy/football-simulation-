@@ -23,6 +23,7 @@
     "calibrate": "tsx scripts/calibrate.ts",
     "scorecard": "node --import tsx scripts/scorecard/run.ts",
     "replay": "tsx scripts/export-replay.ts",
+    "weird": "node --import tsx scripts/weird-film.ts",
     "test:data": "python3 -m unittest discover -s test -p 'test_*.py'",
     "nfl:fetch": "python3 -I scripts/data/fetch_nfl_data.py",
     "mech:nfl": "python3 -I scripts/mechanics/nfl_bdb2025.py --plays-out out/mechanics/nfl-plays.jsonl.gz && python3 -I scripts/mechanics/nfl_bdb2019.py && python3 -I scripts/mechanics/nfl_bdb2023.py && python3 -I scripts/mechanics/nfl_bdb2026.py",

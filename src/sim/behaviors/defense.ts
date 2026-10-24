@@ -27,6 +27,15 @@ import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { SNAP_REACT } from '../snap-count.js';
 
+/** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
+ * side's force player stays on his receiver when the receiver comes to block
+ * him, until the ball carrier is past the line. A corner plays pass first: a
+ * receiver closing on him may be stalking or selling a route, and the force
+ * player owns the edge. Tracked wide DBs are still bailing at 2.5 s on runs
+ * (3.7 -> 5.7 yd deep) and blocked 15% at 2.0 s; ours came to the run at the
+ * stalk read, sat at 4 yd and were blocked 62% (dbtempo.py). */
+const passFirstOn = () => process.env.PASS_FIRST !== '0';
+
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
   if (a.recog) return a.recog.read === 'run';
@@ -249,20 +258,20 @@ export class ManCoverage implements Behavior {
     const receiverCue = sim.see(a, R);
     // A back carrying the ball will not look like a stalk blocker. A man
     // marker who reads run and personally acquires that possession uses his
-    // installed insertion or alley support, not receiver cushion. Alley
-    // support still preserves its cap through a deep mesh; it is not an
+    // installed run fit (insertion, alley, force...), not receiver cushion:
+    // cushion on a ball carrier is a retreat that turns his back on the ball.
+    // Alley support still preserves its cap through a deep mesh; it is not an
     // extra interior fitter just because this defender marks the back.
     // Unknown/negative possession preserves ordinary man/PA responsibility.
     const backfieldBack = sim.offAlign.spots[R.slot]?.backfield
       && (R.player.position === 'RB' || R.player.position === 'FB');
-    if ((a.runFit?.kind === 'insert' || a.runFit?.kind === 'alley')
-      && backfieldBack && believesRun(sim, a) && receiverCue.carrying === true) {
+    if (backfieldBack && believesRun(sim, a) && receiverCue.carrying === true) {
       if (!this.keyedFitRecorded) {
         this.keyedFitRecorded = true;
         if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-run-fit', chose: `keyed-fit:${R.slot}`,
-          cue: `${R.slot} carrying=true in consumed picture; run belief; installed ${a.runFit.kind}`,
+          cue: `${R.slot} carrying=true in consumed picture; run belief; installed ${a.runFit?.kind ?? 'fallback'}`,
           options: [`man:${R.slot}`, `keyed-fit:${R.slot}`],
-          detail: `Installed ${a.runFit.gap}-gap, side ${a.runFit.side}; known target ${R.slot}; picture age ${receiverCue.age === undefined ? 'unknown' : receiverCue.age.toFixed(2)} s, depth ${(receiverCue.pos.x - sim.los).toFixed(2)} yd. Keyed target is not confirmed live carrier; observed geometry decides insertion or pursuit.` });
+          detail: `Installed ${a.runFit?.gap ?? this.gap}-gap, side ${a.runFit?.side ?? this.gapSign}; known target ${R.slot}; picture age ${receiverCue.age === undefined ? 'unknown' : receiverCue.age.toFixed(2)} s, depth ${(receiverCue.pos.x - sim.los).toFixed(2)} yd. Keyed target is not confirmed live carrier; observed geometry decides insertion or pursuit.` });
       }
       return runFit(a, sim, this.gap, this.gapSign, { target: R, cue: receiverCue });
     }
@@ -282,14 +291,18 @@ export class ManCoverage implements Behavior {
     // Once admitted, this informed duty owns its backfield interpretation.
     // A hidden holder change must not switch it through the legacy live-
     // carrier pursuit gate. Recognized flight already retired it in update.
-    if (this.blockingRun && run && blockingLook) return this.blockingSupport(a, sim, qbCue);
+    // Perimeter only: a man on a back or an inline end is a box defender,
+    // whose man blocking him is his run read.
+    const spot = sim.offAlign.spots[R.slot];
+    const passFirst = passFirstOn() && a.runFit?.kind !== 'force' && !!spot && !spot.backfield && !spot.inline;
+    if (this.blockingRun && run && blockingLook && !passFirst) return this.blockingSupport(a, sim, qbCue);
     this.blockingRun = false;
     const live = pursueIfLive(sim, a);
     if (live && (sim.carrier !== R || sim.catchAt >= 0 || !sim.isPass)) {
       // On runs, the man defender plays the run once he reads it (or when his man blocks).
       if (believesRun(sim, a) || sim.catchAt >= 0 || sim.throwAt >= 0) return live;
     }
-    if (run && blockingLook) {
+    if (run && blockingLook && !passFirst) {
       this.blockingRun = installedBackfield;
       return this.blockingSupport(a, sim, qbCue);
     }
@@ -453,6 +466,12 @@ export class ZoneCoverage implements Behavior {
     this.style = style;
   }
 
+  private selectTarget(a: Agent, target: Agent | null): void {
+    // Retire only the held action. Per-receiver observation/depth memory stays.
+    a.mind.setAimTarget('zone-drive', target?.idx ?? null);
+    this.target = target;
+  }
+
   update(a: Agent, sim: PlaySim): MoveCommand {
     const live = pursueIfLive(sim, a);
     if (live) {
@@ -517,6 +536,7 @@ export class ZoneCoverage implements Behavior {
         if (owned) vert = [owned];
       }
       if (vert.length === 0) {
+        a.mind.setAimTarget('zone-drive', null);
         let tgt = lm;
         // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
         if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
@@ -532,7 +552,7 @@ export class ZoneCoverage implements Behavior {
       // (Pattern reads are match technique; a spot dropper waits for the QB's arm.)
       if ((!spot || OPP_GOAL_X - sim.los <= 10) && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1
         && deepest.pos.x - sim.los > Math.min(6, Math.max(1, (OPP_GOAL_X - sim.los) * 0.5))) {
-        this.target = deepest.r;
+        this.selectTarget(a, deepest.r);
         const drive = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: deepest.pos.y + deepest.vel.y * 0.4 };
         if (a.mind.focus * (0.4 + 0.6 * a.r('playRecognition')) > 0.35) {
           const aim = a.mind.aim('zone-drive', drive, sim.t);
@@ -562,7 +582,7 @@ export class ZoneCoverage implements Behavior {
         this.turnedWith = deepest.r;
       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
-      this.target = deepest.r;
+      this.selectTarget(a, deepest.r);
       const command = track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
         facing: turnRun ? undefined : facingQB,
         speed: turnRun ? 1 : zs * 1.05,
@@ -587,7 +607,7 @@ export class ZoneCoverage implements Behavior {
           && sign * th.vel.y > 1 && (Math.abs(th.fut.y - one.pos.y) < 6 || sign * (th.fut.y - sim.ballY) > 12))
           .sort((p, q) => Math.hypot(p.pos.x - a.pos.x, p.pos.y - a.pos.y) - Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y))[0];
         const key = flat ?? one;
-        this.target = key.r;
+        this.selectTarget(a, key.r);
         const tgt = { x: Math.max(sim.los + Math.min(2.5, this.initialDepth), key.pos.x - 0.8),
           y: clamp(key.pos.y + sign * 0.45, 0.5, FIELD_WIDTH - 0.5) };
         return track(a, tgt, { x: key.vel.x * 0.85, y: key.vel.y * 0.9 }, {
@@ -626,7 +646,7 @@ export class ZoneCoverage implements Behavior {
     if (carryable.length > 0 && this.zone !== 'flat_s' && this.zone !== 'flat_w') {
       carryable.sort((p, q) => Math.abs(p.pos.y - lm.y) - Math.abs(q.pos.y - lm.y));
       const th = carryable[0];
-      this.target = th.r;
+      this.selectTarget(a, th.r);
       // Wall and carry: keep him in front and inside, gaining depth before he
       // gets there. Eyes stay on the QB until the seam threatens to run past;
       // then turn and run with him.
@@ -671,7 +691,7 @@ export class ZoneCoverage implements Behavior {
         const outward = sign * (flat.pos.y - sim.offAlign.spots[flat.r.slot].pos.y);
         if (depth > -1 && depth < 7.5 && sign * (flat.pos.y - lm.y) > 0
           && ((vOut > 1.8 && vOut > Math.abs(flat.vel.x) * 0.6) || outward > 3)) {
-          this.target = flat.r;
+          this.selectTarget(a, flat.r);
           if (!this.flatExpansionRecorded) {
             this.flatExpansionRecorded = true;
             if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-flat-expand',
@@ -688,7 +708,7 @@ export class ZoneCoverage implements Behavior {
         }
       }
     }
-    this.target = best?.r ?? null;
+    this.selectTarget(a, best?.r ?? null);
     if (!best) {
       let tgt = lm;
       if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.25 * a.r('anticipation'));
@@ -719,7 +739,11 @@ export class ZoneCoverage implements Behavior {
     const facingQB = angleTo(a.pos, qb.pos);
     const toSpot = Math.hypot(lm.x - a.pos.x, lm.y - a.pos.y);
     if (toSpot > 2.5 && !a.tags.has('settled')) {
-      return goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: toSpot > 4 ? undefined : facingQB });
+      // Until he has read pass he is in his read step: eyes and chest stay
+      // on the backfield. Turning to run before the read turned his back on
+      // a run, and on a quick throw he could not yet have keyed.
+      const turned = toSpot > 4 && knowsPass(sim, a);
+      return goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: turned ? undefined : facingQB });
     }
     a.tags.add('settled');
     const read = 0.5 * a.r('zoneCoverage') + 0.5 * a.r('anticipation');
