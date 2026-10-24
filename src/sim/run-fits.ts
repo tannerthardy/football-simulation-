@@ -228,14 +228,17 @@ export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind:
 // sight of the empty back later does not reinstall the expected exchange.
 const contradictedMesh = new WeakSet<Agent>();
 
-export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, input?: RunFitRead) {
+/** Explicit null means unresolved possession: keep the installed fit, without
+ * falling through to the authoritative holder. Undefined preserves older
+ * direct callers; defense.runFit always supplies its acquired interpretation. */
+export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, input?: RunFitRead | null) {
   if (a.engagement) return stand();
   let job: RunFitJob = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
   const keyed = input && 'target' in input ? input : undefined;
   const picture = input && 'backfield' in input ? input.backfield : undefined;
   const back = picture?.back ?? sim.slot('RB');
   const acquiredBack = picture?.backCue.carrying === true && picture.qbCue.carrying !== true;
-  const c = picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? sim.carrier;
+  const c = input === null ? null : picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? sim.carrier;
   // A keyed fit has already consumed its runner picture. Deep mesh geometry
   // keeps the insertion at its surface; the actual handoff/carrier cannot
   // choose another target or prematurely declare this observed crease.

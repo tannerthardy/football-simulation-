@@ -8,7 +8,7 @@
 import type { MoveCommand } from '../../physics/kinematics.js';
 import type { Gap, MatchRule, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
-import { believesRun, ManCoverage, runFit, sawThrow, ZoneCoverage } from '../behaviors/defense.js';
+import { believesRun, ManCoverage, pursueIfLive, runFit, sawThrow, ZoneCoverage } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { ReleaseReader } from './reads.js';
 import { runRule, zoneSide, type Directive, type RuleState } from './rules.js';
@@ -82,6 +82,8 @@ export class CoverageDefender implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    const live = pursueIfLive(sim, a);
+    if (live) return live;
     const sign = this.side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
     const primary = runRule(this.rule, { a, sim, reader: this.reader, side: this.side, sign, zone: this.zone, style: this.style, state: this.state });
     const d = this.judgment.decide(a, sim, this.reader, primary, isDeepZone(this.zone));

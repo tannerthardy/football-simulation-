@@ -323,7 +323,8 @@ export function onBallCaught(sim: PlaySim, r: Agent): void {
   clearPressContacts(sim);
   r.behavior = new BallCarrier({}, r);
   for (const a of sim.offense) if (a !== r) a.behavior = new DownfieldBlocker();
-  for (const d of sim.defense) d.behavior = new Pursuit();
+  // A physical catch is authoritative for the ball/rules, not a notification
+  // to every opponent. Defenders retain their job and acquire their own cue.
 }
 
 export function onInterception(sim: PlaySim, d: Agent): void {
