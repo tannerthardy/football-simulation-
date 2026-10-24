@@ -1,6 +1,8 @@
 """Measure NFL and simulated task paths identically; commit only aggregates.
 
 python3 scripts/data/movement_task_report.py out/movement-inputs.json out/movement-trials.json out/movement-report.json
+Frozen native actor windows also use this command, with --table output.md;
+see docs/reviews/pursuit-movement-windows.md for the source/measurement contract.
 """
 import argparse
 import hashlib
@@ -21,6 +23,9 @@ def fixture_key(row):
 
 
 def build_report(fixtures, trials):
+    if fixtures.get('schema') == 'movement-window-panel-v1':
+        from movement_window_report import build_window_report
+        return build_window_report(fixtures, trials, measured)
     observations, errors, rejected = [], defaultdict(list), Counter()
     references, eligible = {}, set()
     for f in fixtures["fixtures"]:
@@ -85,14 +90,31 @@ def main():
     p.add_argument("fixtures", type=Path)
     p.add_argument("trials", type=Path)
     p.add_argument("out", type=Path)
+    p.add_argument("--table", type=Path, help="Markdown table for a frozen actor-window panel")
     args = p.parse_args()
     fixtures, trials = json.loads(args.fixtures.read_text()), json.loads(args.trials.read_text())
+    if args.table and fixtures.get('schema') != 'movement-window-panel-v1':
+        p.error('--table applies to a frozen actor-window panel')
     if hashlib.sha256(args.fixtures.read_bytes()).hexdigest() != trials["inputSha256"]:
         raise ValueError("Trial inputs differ from measured reference fixtures")
+    if fixtures.get('schema') == 'movement-window-panel-v1':
+        from movement_window_report import load_trace_files
+        trials = load_trace_files(trials, args.trials.parent)
     report = build_report(fixtures, trials)
+    if report.get('schema') == 'movement-window-report-v1':
+        from movement_window_report import pin
+        report['inputFiles'] = {'selection': pin(args.fixtures), 'trials': pin(args.trials)}
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
-    print(report["fixtureCount"], "fixtures;", report["trialCount"], "trials;", len(report["measuredPaths"]), "task/mode/split groups")
+    if report.get('schema') == 'movement-window-report-v1':
+        from movement_window_report import markdown
+        table = markdown(report)
+        if args.table:
+            args.table.parent.mkdir(parents=True, exist_ok=True)
+            args.table.write_text(table)
+        print(table)
+    else:
+        print(report["fixtureCount"], "fixtures;", report["trialCount"], "trials;", len(report["measuredPaths"]), "task/mode/split groups")
 
 
 if __name__ == "__main__":
