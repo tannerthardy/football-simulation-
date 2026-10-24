@@ -46,6 +46,7 @@ import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
 import { SNAP_REACT, VISIBLE, planSnap, snapResponse, type SnapCount } from './snap-count.js';
 import { ReplayTrace } from './telemetry.js';
+import { CommandTrace, type CommandTraceSelection } from './command-trace.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
@@ -146,6 +147,7 @@ export class PlaySim {
   readonly perception: PerceptionBuffer;
   readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
   readonly trace: ReplayTrace;
+  private commandTrace?: CommandTrace;
   private readonly record: boolean;
   private readonly recordEvery: number;
   private tickCount = 0;
@@ -521,6 +523,7 @@ export class PlaySim {
     if (observer.team === target.team) {
       const seen = this.perception.perceive(target.idx, 0.05);
       this.trace.observe(observer, target, seen, this.t);
+      this.commandTrace?.observe(observer, target, seen, this.t);
       return seen;
     }
     let delay = observer.mind.observationDelay(observer.profile.reactionTime * delayScale);
@@ -531,6 +534,7 @@ export class PlaySim {
     if (observer.eyes && !observer.eyes.keys.includes(target)) delay += observer.eyes.peripheral;
     const seen = this.perception.perceive(target.idx, delay);
     this.trace.observe(observer, target, seen, this.t);
+    this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
   }
 
@@ -940,8 +944,19 @@ export class PlaySim {
     return this.buildResult();
   }
 
+  /** Optional selected-actor recording, independent of packed replay and its cadence. */
+  recordCommands(selection: CommandTraceSelection): CommandTrace {
+    const actor = selection.actor;
+    const matches = this.agents.filter(a => 'playerId' in actor ? a.player.id === actor.playerId
+      : a.team === actor.team && a.slot === actor.slot);
+    if (matches.length !== 1) throw new Error('Command trace must select exactly one actor');
+    return this.commandTrace = new CommandTrace(matches[0], selection);
+  }
+
   tick(): void {
     const t = this.t;
+    const commandTrace = this.commandTrace;
+    commandTrace?.begin(this);
     this.perception.record(this.agents, this.carrier?.idx ?? null);
     for (const a of this.agents) {
       let nearby = 0;
@@ -960,10 +975,16 @@ export class PlaySim {
     this.presentedFakeRunners.clear();
     for (let i = 0; i < this.agents.length; i++) {
       const a = this.agents[i];
+      commandTrace?.at('decision');
+      const owner = a.behavior, before = commandTrace?.decisionStart(a, this);
       // Reaction delays control, not collisions: he can still be pushed.
       const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
+      commandTrace?.decisionEnd(a, owner, before, command, t >= a.snapReadyAt, this);
       const contained = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
+      commandTrace?.command(a, 'containment', contained);
+      commandTrace?.at('open-to-ball');
       this.cmds[i] = openToBall(a, this, contained);
+      commandTrace?.command(a, 'open-to-ball', this.cmds[i]);
     }
 
     // Intents: the decisions, refined by the techniques that own contact.
@@ -974,8 +995,13 @@ export class PlaySim {
     }
     this.dives.clear();
     this.lunges.clear();
+    commandTrace?.stage('technique-intents', this.intents);
+    commandTrace?.at('engagement');
     updateEngagements(this, this.intents);
+    commandTrace?.stage('engagement', this.intents);
+    commandTrace?.at('tackle-bond');
     if (this.bond) updateBond(this, this.bond, this.intents);
+    commandTrace?.stage('tackle-bond', this.intents);
     // Constraint ownership and last-step touch are felt by the actor. Free
     // movement forecasts must not pretend these loads or joints are absent.
     const constrained=new Set(this.world.joints.filter(j=>j.kind!=='grasp'||!j.broken)
@@ -989,15 +1015,20 @@ export class PlaySim {
     }
     // A called track is an announced target, not already achieved velocity.
     // Advance the acquired picture only by the bounded free response to it.
+    commandTrace?.at('spacing');
     spaceTeammates(this.agents, this.intents, (a,b)=>{
       const seen = this.see(a,b), called = a.team === b.team ? b.behavior.calledMotion?.() : null;
       return predictCalledMotion(seen, called, b.profile);
     },{now:t,constrained});
+    commandTrace?.stage('spacing', this.intents);
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,
         push: 0, dive: undefined, lunge: undefined, posture: a.body.support!.posture };
     }
+    commandTrace?.stage('snap-guard', this.intents);
+    commandTrace?.final(this.intents);
+    commandTrace?.at('execution');
 
     // Physics: feet, contacts, holds and balance, in substeps.
     let catchStarts: Vec2[] | undefined;
@@ -1044,6 +1075,7 @@ export class PlaySim {
     if (holdingStart && this.lastStep) observeHolding(this, this.lastStep, holdingStart);
     if (this.record && (this.tickCount++ % this.recordEvery === 0 || this.phase === 'dead')) this.recordFrame();
     this.t = round2(this.t + this.dt);
+    commandTrace?.finish(this);
   }
 
   /** Touches, first contact, falls and the pile's external impulse from the step. */
