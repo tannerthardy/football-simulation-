@@ -710,6 +710,9 @@ const PASS_KICK = process.env.PASS_KICK !== '0';
 const RIDE_LEAD = 0.3;
 /** Experimental (DL_FIGHT=1, off): a defender driven sideways fights pressure. */
 const DL_FIGHT = process.env.DL_FIGHT === '1';
+/** An edge widens with a reach only as far as containing the runner needs
+ * (EDGE_CONTAIN=0 restores widening with the blocker without bound). */
+const EDGE_CONTAIN = process.env.EDGE_CONTAIN !== '0';
 
 /** Run release measured against the blocker's torso (LEVER_FACING=0: fixed frame). */
 const LEVER_FACING = process.env.LEVER_FACING !== '0';
@@ -1011,6 +1014,21 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     }
   }
   if (flow === undefined && pullFlow !== undefined) flow = pullFlow;
+  // EDGE_CONTAIN: an edge's outside shoulder is leverage on the ball, not on
+  // the blocker. Widening with a reach only pays while the runner he sees
+  // could still get outside him; beyond that he is running himself (and his
+  // blocker) out of the play. He reads the back's track: where it crosses
+  // his own depth at the pace he sees (a deep, flat stretch threatens far
+  // outside; a planted, downhill back does not). His lateral objective is
+  // bounded to just outside that point; the blocker-relative shoulder still
+  // governs whenever it is the tighter of the two.
+  let contain: number | undefined;
+  if (EDGE_CONTAIN && stack && edge && job!.edge !== 'spill' && reading && runnerCue && back) {
+    const up = sim.attackDir(back.team);
+    const arrive = clamp((d.pos.x - runnerCue.pos.x) * up / Math.max(runnerCue.vel.x * up, .5), 0, 1.5);
+    const margin = d.profile.radius + back.profile.radius + d.profile.reach * .65;
+    contain = runnerCue.pos.y + runnerCue.vel.y * arrive + job!.side * margin;
+  }
   const aim = d.mind.aim(stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`, desired, sim.t);
   // The selected target mode belongs to the same held decision as its aim.
   // A newly seen declaration cannot drop flow feedforward midway through it.
@@ -1025,7 +1043,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   const threat = reading && carrierCue &&
     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
   return { aim, reading, threat, declared: runTargets.get(e)!.runner,
-    flow: runTargets.get(e)!.flow, stack, acquiredBackfield: !!acquired };
+    flow: runTargets.get(e)!.flow, stack, contain, acquiredBackfield: !!acquired };
 }
 
 /** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
@@ -1380,9 +1398,16 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // being reached works laterally to keep his gap instead of lagging it.
   // DL_FLOW=0 restores the proportional follow.
   const held = read.declared ? 0 : read.flow ?? read.stack?.flow ?? 0, horizon = 2 * d.mind.decisionInterval;
+  let target = read.aim.y + held * horizon;
+  // Never widen past what containing the runner needs (EDGE_CONTAIN, read
+  // above). Already wider than that, he stops and holds his ground; this
+  // bounds his widening only and never pulls him inside his shoulder.
+  const side = d.runFit?.side ?? 0;
+  if (read.contain !== undefined && (target - read.contain) * side > 0)
+    target = (d.pos.y - read.contain) * side > 0 ? d.pos.y : read.contain;
   const flow = clamp(DL_FLOW
-    ? requestToCover(gaitLag(d.profile), read.aim.y + held * horizon - d.pos.y, horizon, d.vel.y)
-    : held + (read.aim.y - d.pos.y) * 3, -td.lateral, td.lateral);
+    ? requestToCover(gaitLag(d.profile), target - d.pos.y, horizon, d.vel.y)
+    : held + (target - d.pos.y) * 3, -td.lateral, td.lateral);
   // DL_FIGHT (experimental, off): fight pressure with pressure. A defender
   // who feels himself driven sideways holds the point where the push began
   // and leans into it, instead of following the blocker's flow off his gap.
