@@ -16,7 +16,7 @@ function runnerPicture(f: ReturnType<typeof contact>, pos = { x: 35, y: CENTER_Y
   const see = f.sim.see;
   f.sim.see = function (a, b, ...rest) {
     if (a === f.defender && (b === this.qb || b.slot === 'RB'))
-      return { pos: { ...pos }, vel: { x: 0, y: 0 }, stance: null, facing: 0, pose: 'up', age: .25 };
+      return { pos: { ...pos }, vel: { x: 0, y: 0 }, stance: null, facing: 0, pose: 'up', age: .25, carrying: b === this.carrier };
     return see.call(this, a, b, ...rest);
   };
 }
@@ -70,7 +70,7 @@ describe('engaged defenders preserve known duties and delayed runner pictures', 
     const see = f.sim.see;
     f.sim.see = function (a, b, ...rest) {
       if (a === f.defender && (b === this.qb || b.slot === 'RB'))
-        return { pos: { x: 39, y }, vel: { x: 0, y: 0 }, stance: null, facing: 0, pose: 'up', age: .25 };
+        return { pos: { x: 39, y }, vel: { x: 0, y: 0 }, stance: null, facing: 0, pose: 'up', age: .25, carrying: b === this.carrier };
       return see.call(this, a, b, ...rest);
     };
     command(f); const firstSide = f.engagement.side;
