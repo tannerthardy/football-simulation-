@@ -2060,9 +2060,17 @@ learn what's needed.
   replay viewer's layers ([VISUALIZER_PLAN](VISUALIZER_PLAN.md)), and #243's
   film detectors. The viewer's [copyable play reference](../viewer/replay.template.html#L596)
   already includes film identity, play, timestamp and the selected player.
-- **Open:** what to build first, and how much of a separate tool it should
-  be. The outside audit's suggestions on drawing intent versus achieved
-  motion and showing reach and contact apply here.
+- **In progress:** [Play Lab](PLAY_LAB.md) (`npm run lab`). Tanner builds
+  plays and situations, runs them on the real engine, and studies them with
+  these layers: requested vs achieved motion, command owner, delayed
+  perception, reach and contact, falls, ball flight, pursuit intercepts and
+  run fits. Player moves are labelled coach's-hand interventions. Notes
+  restore their exact moment headless with `npm run lab:replay`. Still to
+  come: branching from a moment (it needs engine snapshot/restore), scripted
+  situations, A/B batches and an agent hand-off export.
+- **Open:** the outside audit's suggestions on drawing intent versus achieved
+  motion and showing reach and contact are now lab layers; whether the shared
+  replay viewer should adopt them is open.
 
 ## Repository and process
 
