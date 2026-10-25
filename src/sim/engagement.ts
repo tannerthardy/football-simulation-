@@ -1387,6 +1387,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       }
     }
   }
+  // The installed helper may prepare feet for its acquired next job while
+  // these same real hands keep working. Existing forced anchoring wins.
+  const preparation=!anchored?b.behavior.contactMotion?.(b,'prepare'):null;
+  if (preparation) {
+    // Preparing feet cannot surrender the current normal blocking work.
+    const change=(preparation.x-blockVel.x)*lat.x+(preparation.y-blockVel.y)*lat.y;
+    blockVel={x:blockVel.x+lat.x*change,y:blockVel.y+lat.y*change};
+  }
   intents[b.idx] = {
     vel: blockVel,
     facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
@@ -1603,10 +1611,16 @@ function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec
     const hs = Math.sign((h.pos.x - b.pos.x) * lat.x + (h.pos.y - b.pos.y) * lat.y) || e.side;
     const spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
     const toSpot = sub(spot, h.pos);
+    const preparation=e.type==='run'?h.behavior.contactMotion?.(h,'prepare'):null;
     const direction = e.drive ?? { x: -axis.x, y: -axis.y };
     const drive = e.type === 'run' ? { x: direction.x * 2.2, y: direction.y * 2.2 } : { x: -axis.x * 0.5, y: -axis.y * 0.5 };
+    const feet={x:drive.x+toSpot.x*3,y:drive.y+toSpot.y*3};
+    if (preparation) {
+      const change=(preparation.x-feet.x)*lat.x+(preparation.y-feet.y)*lat.y;
+      feet.x+=lat.x*change;feet.y+=lat.y*change;
+    }
     intents[h.idx] = {
-      vel: { x: drive.x + toSpot.x * 3, y: drive.y + toSpot.y * 3 },
+      vel: feet,
       facing: Math.atan2(d.pos.y - h.pos.y, d.pos.x - h.pos.x),
       push: 1,
       posture: 0.75,

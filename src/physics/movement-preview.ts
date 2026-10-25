@@ -1,6 +1,7 @@
 /** Short free-movement predictions through the production World.
  * This is a controller aid, not a contact/reachability oracle. It predicts a
- * held command in empty space; callers must exclude grips and engagements.
+ * held or own-state feedback command in empty space; callers must exclude
+ * grips and engagements. Feedback cannot observe another live body.
  */
 import type { Vec2 } from '../core/vec.js';
 import type { Body } from './kinematics.js';
@@ -15,6 +16,8 @@ export interface MovementSample {
 }
 
 type MovementModel = World['handContact'];
+/** Feedback sees only the actor's scratch body and elapsed forecast time. */
+export type MovementRequest = Intent | ((body: Readonly<Body>, elapsed: number) => Intent);
 const previews = new WeakMap<Body, Partial<Record<MovementModel, { body: Body; world: World }>>>();
 
 /** No mutation of the real body, observations or RNG. Each candidate starts
@@ -25,7 +28,13 @@ const previews = new WeakMap<Body, Partial<Record<MovementModel, { body: Body; w
  * it also selects that World's gait and yaw. Each model has separate scratch
  * state. This remains an unloaded forecast, never a prediction of held contact.
  */
+export function previewFreeMovement(source: Body, intent: MovementRequest, now: number,
+  steps?: number, handContact?: MovementModel): MovementSample[];
+// Keep the original held-Intent signature last for existing typed observers
+// and mocks; feedback is an additive call form, not a changed Intent contract.
 export function previewFreeMovement(source: Body, intent: Intent, now: number,
+  steps?: number, handContact?: MovementModel): MovementSample[];
+export function previewFreeMovement(source: Body, intent: MovementRequest, now: number,
   steps = 8, handContact: MovementModel = 'center'): MovementSample[] {
   let models = previews.get(source);
   if (!models) {
@@ -51,7 +60,8 @@ export function previewFreeMovement(source: Body, intent: Intent, now: number,
   world.time = now;
   const samples: MovementSample[] = [];
   for (let k = 0; k < steps; k++) {
-    world.step([intent], .05);
+    const command = typeof intent === 'function' ? intent(body, k * .05) : intent;
+    world.step([command], .05);
     samples.push({ t: (k + 1) * .05, pos: { ...body.pos }, vel: { ...body.vel },
       support: body.support!.state });
   }

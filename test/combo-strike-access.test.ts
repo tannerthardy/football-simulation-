@@ -75,12 +75,21 @@ describe('earned departure ends at achievable first strike rather than the backe
  it('develops real second-level load while the original keeper still protects the down surface',()=>{
   const {sim,rg}=stage(2.3),rt=sim.slot('RT')!,down=sim.slot('DT_S')!,backer=sim.slot('LB_M')!;
   const hands=rt.engagement!.hands;
-  while(sim.phase==='live'&&sim.t<2.65)sim.tick();
-  expect(rg.engagement?.defender).toBe(backer);
+  // The down defender may be taken to the ground before runner arrival.
+  // Require the real keeper joint until that defeat, not after a fallen
+  // defender legitimately ends the rep. Never permit an upright escape.
+  let defeated=false;
+  while(sim.phase==='live'&&sim.t<2.65){
+   sim.tick();
+   defeated ||= sim.events.some(e=>e.type==='fall'&&e.a===down.idx);
+   if(!defeated){
+    expect(rt.engagement?.defender===down).toBe(true);expect(rt.engagement!.hands).toBe(hands);
+    expect(sim.world.joints).toContain(hands);
+    expect(Math.hypot(hands!.normalForce??0,hands!.tangentForce??0)).toBeGreaterThan(0);
+   }
+  }
+  expect(rg.engagement?.defender===backer).toBe(true);
   expect(Math.hypot(rg.engagement!.hands!.normalForce??0,rg.engagement!.hands!.tangentForce??0)).toBeGreaterThan(0);
-  expect(rt.engagement?.defender).toBe(down);expect(rt.engagement!.hands).toBe(hands);
-  expect(sim.world.joints).toContain(hands);
-  expect(Math.hypot(hands!.normalForce??0,hands!.tangentForce??0)).toBeGreaterThan(0);
   expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(false);
  });
 });
