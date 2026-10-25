@@ -133,6 +133,9 @@ export interface OffensivePlayCall {
   kind: 'pass' | 'run';
   pass?: PassConcept;
   run?: RunConcept;
+  /** Installed non-contact stalk presentation before the player's normal
+   * route/blocking job. Seconds from the snap, not a defender belief timer. */
+  receiverBlockLook?: Partial<Record<SkillSlot, { until: number }>>;
   /** Pre-snap motion (played only with MOTION=1). */
   motion?: MotionCall;
   /** Display label. */

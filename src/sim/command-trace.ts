@@ -7,6 +7,7 @@ import { PassProtector } from './behaviors/blocking.js';
 import { movementObjective, type MovementObjective } from './movement-objective.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
+import type { PursuitPredictionRecord } from './pursuit-prediction.js';
 
 export interface CommandTraceSelection {
   actor: { team: TeamSide; slot: string } | { playerId: string };
@@ -69,6 +70,7 @@ export interface CommandTraceStep {
   final?: CommandSnapshot;
   endpoint?: ReturnType<typeof stateSnapshot> & { phase: string; ballKind: string };
   observations: Array<{ phase: TracePhase; target: ActorIdentity; requestedAt: number; age: number | null; sampledAt: number | null }>;
+  pursuit?: Array<{ phase: TracePhase; target: ActorIdentity; data: PursuitPredictionRecord }>;
 }
 
 /** Numbers within 1e-9 are omitted from the rewrite list; raw/final retain full precision. */
@@ -104,6 +106,17 @@ export class CommandTrace {
   }
 
   at(phase: TracePhase): void { this.phase = phase; }
+
+  isCollecting(a: Agent): boolean { return !!this.pending && a === this.selected; }
+
+  /** No prediction here: the helper supplies only values it already computed. */
+  pursuit(target: Agent, data: PursuitPredictionRecord): void {
+    if (!this.pending) return;
+    const snapshot = structuredClone(data);
+    if (data.kind === 'chase' && snapshot.kind === 'chase') snapshot.requests = data.requests
+      .map(r => ({ stage: r.stage, command: commandSnapshot(r.command) }));
+    (this.pending.pursuit ??= []).push({ phase: this.phase, target: identity(target), data: snapshot });
+  }
 
   decisionStart(a: Agent, sim: PlaySim): BehaviorSnapshot | undefined {
     return this.pending && a === this.selected ? behaviorSnapshot(a.behavior, a, sim) : undefined;

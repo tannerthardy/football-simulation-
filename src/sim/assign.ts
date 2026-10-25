@@ -8,7 +8,7 @@ import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import { gapY, lineOffset } from '../playbook/alignment.js';
 import { getRoute } from '../playbook/routes.js';
-import type { Gap, RunConcept } from '../playbook/types.js';
+import type { Gap, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
 import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
@@ -20,12 +20,19 @@ import type { PlaySim } from './playsim.js';
 import { buildRunFits } from './run-fits.js';
 import { CoverageDefender } from './coverage/defender.js';
 import { installReceiverRoute, type InstalledReceiverRoute } from './receiver-forecast.js';
+import { installBlockLook } from './behaviors/block-look.js';
 
 const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.25, CB: 0.5, NB: 0.4, DB: 0.45, FS: 0.45, SS: 0.38 };
 
 export function assignBehaviors(sim: PlaySim): void {
   const off = sim.offAlign;
   const call = sim.offCall;
+  for (const [slot, look] of Object.entries(call.receiverBlockLook ?? {})) {
+    if (!look) continue;
+    const spot = off.spots[slot];
+    if (!spot || spot.inline || spot.backfield) throw new Error('Block look is a detached perimeter receiver responsibility');
+    if (!Number.isFinite(look.until) || look.until <= 0) throw new Error('Block look requires a positive called release time');
+  }
 
   // ---------------------------------------------------------- defense first
   const fits = buildRunFits(sim);
@@ -81,15 +88,17 @@ export function assignBehaviors(sim: PlaySim): void {
       const ref = off.refOf[a.slot as keyof typeof off.refOf];
       const spot = off.spots[a.slot];
       const outside = Math.sign(a.pos.y - sim.ballY) || off.strongSign;
+      const blockLook = call.receiverBlockLook?.[a.slot as SkillSlot];
       const mkRoute = (id: string, delay = 0, conditional = false) => {
         const route = getRoute(id);
         // Capture the installed call/alignment now, including deferred checkdowns.
         // Neither live route progress nor the eventual protector release position
         // becomes the QB's prior. Play-action activation is also conditional.
         receiverPriors.set(a, installReceiverRoute(a.pos, sim.los, outside, route,
-          conditional || (concept.fake && (ref === 'B' || ref === 'B2')) ? null : delay,
+          conditional || blockLook || (concept.fake && (ref === 'B' || ref === 'B2')) ? null : delay,
           a.profile, a.r('routeRunning')));
-        return () => new RouteRunner(a, sim, route, outside, delay);
+        return () => installBlockLook(a, sim, () => new RouteRunner(a, sim, route, outside,
+          blockLook ? sim.t + delay : delay), true);
       };
       if (ref === 'B' || ref === 'B2' || !ref) {
         const assign = ref === 'B' ? concept.back : 'check';
@@ -141,6 +150,10 @@ export function assignBehaviors(sim: PlaySim): void {
   }
   for (const a of sim.offense) {
     if (a.behavior.kind === 'idle') a.behavior = new DownfieldBlocker();
+    if (a !== qb && !isOL(a) && call.receiverBlockLook?.[a.slot as SkillSlot]) {
+      const job = a.behavior;
+      a.behavior = installBlockLook(a, sim, () => job, false);
+    }
   }
 }
 

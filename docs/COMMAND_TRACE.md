@@ -149,3 +149,68 @@ scouting still contains the prior only; separate focused checks exercise
 populated coverage history, nondefault scouting strengths and an advanced RNG
 with a cached normal draw. These are restoration controls, not additional
 ordinary-game witnesses or claims about football quality.
+
+## Inspect pursuit prediction feasibility
+
+Chase predictions now also expose the [requested speed/effort contract](reviews/pursuit-effort-contract.md)
+in `estimate.request`: raw requested speed, wanted-speed ceiling and leveling
+time. Console traces print this existing budget. It applies to the sampled
+interception sprint; later biased/shaded objectives and modifier-owned requests
+do not inherit feasibility. Other generic reach callers remain on their existing
+model unless they explicitly supply a request.
+
+`steps[].pursuit` contains helper calls actually made for the selected actor,
+tagged by pipeline phase and stable target identity. It is absent when none
+were recorded. A helper can be called and its request discarded by its caller:
+compare its returned request with `decision.raw`, then follow the normal rewrite
+list and achieved body state. The outer behavior remains the recorded owner.
+
+An `intercept` record includes the two already consumed pictures, their ages,
+the existing fixed-heading/relaxing-speed forecast and its field bounds,
+pursuer velocity/capacities/speed scale, and the original sampled prediction:
+
+- `prediction.estimate.status` is `estimated-feasible` or
+  `fallback-no-estimated-feasible-candidate`. The latter means no **sampled**
+  candidate in this search passed `timeToReach`; it does not prove interception
+  impossible between samples or under a different forecast.
+- `horizon`, `step` and `radius` describe the search. `prediction.t` and
+  `arrivalTime` are seconds from this helper call. `slack = t - arrivalTime`;
+  positive is estimated spare time, negative is estimated lateness. Null means
+  the selected default did not receive an arrival estimate, not zero time.
+- `physicalGuarantee` is always false. The scalar estimator omits body yaw,
+  detailed support/contact/traffic and the later request's effort. The target
+  path comes from the caller; the generic estimator does not validate its
+  information source. Pursuit records its actual acquired-picture assumptions.
+- `samples` copies the candidates the existing loop evaluated, through the
+  first passing sample or search end. It adds no estimator/path evaluations.
+  It exists only when a selected recorder requests it (`recordSamples` at the
+  scalar API); ordinary prediction calls retain no candidate tape.
+- The estimate applies to the **sampled point before time bias and leverage**.
+  `biasedTime`, `forecastPoint`, `leverage` and `steeringPoint` show those
+  existing later changes. `steeringPointEstimate: 'not-evaluated'` prevents
+  treating the sampled test as validation of the shifted point.
+
+A `chase` record gives the acquired hip, gathering fraction, contact radius
+and existing helper requests: intercept sprint, approach/gather composition,
+then around-body routing. These are before pipeline containment, engagement,
+tackle bond, spacing and snap guard. A full close gather says
+`planner: 'bypassed-close-gather'` and has no invented interception estimate.
+A held tackle preserves its contact-owned request and the later bond rewrite.
+
+For ordinary recorded witnesses, first capture their constructor inputs on the
+same source/settings, then use the existing command:
+
+```sh
+node --import tsx scripts/diag/capture-game-play.ts --seed 7 --play 2 --max-steps 2 --out out/pursuit-P002
+node --import tsx scripts/diag/command-trace.ts --capture out/pursuit-P002/play.bin --actor D:SS --from 3.30 --to 4.40 --out out/pursuit-P002/trace.json
+node --import tsx scripts/diag/capture-game-play.ts --seed 7 --play 12 --max-steps 12 --out out/pursuit-P012
+node --import tsx scripts/diag/command-trace.ts --capture out/pursuit-P012/play.bin --actor D:LB_W --from 2.90 --to 3.30 --out out/pursuit-P012/trace.json
+```
+
+Console summaries include the helper's estimate or gathering bypass, body
+facing and actual travel heading (radians, undefined at negligible speed).
+Facing is not velocity direction or gaze. Use full-precision JSON for small
+slack differences. A changed forecast point, an unachieved request and a
+modified request are different findings; none alone establishes a bad physical
+capacity or the cause of an entire play. Point selection, steering, sensing,
+physics and capacities are unchanged by this diagnostic contract.
