@@ -1427,6 +1427,14 @@ From the issue register:
   the capped alley fit, or chase. Judge against a matched halfback pass,
   stalk-then-release and delayed route, and keep force/alley duties. Not a
   special case for Toss or this receiver. Coverage with Defense.
+- **Re-qualified** (`b559fdc5`, [design](reviews/cov7-support-choice.md)):
+  both arms still activate at 0.65 s on the same pictures; PA is unchanged.
+  The run benefit (corner wraps, 6.26 → 4.85 yd) holds only under the
+  fixture test's `EDGE_CONTAIN=0 SEAL_HOLD=0`; on today's defaults (since
+  #275) he never touches the runner. With the look sold until 1.3 s the
+  bitten corner intercepts PA Shot from 4 yd inside Z (see BALL-1). The
+  design for the leave-or-stay choice and the evidence its code PR owes are
+  in the review; code waits for COV-6.
 
 ## Ball and quarterback
 
@@ -1453,6 +1461,12 @@ From the issue register:
   sitting on a short out is real football. At these rates it suggests the
   throw decision ignores a defender squatting on the route, or that the
   quick out's 6.3-yd stem (COV-3) gives him too long to break.
+- **A matched reproducer** (COV-7 PA Shot, look until 1.3 s, support arm;
+  [review](reviews/cov7-support-choice.md#results)): the QB throws Z's
+  sideline break with an interception risk of 0.03 while the corner is 4.0 yd
+  inside and level, recovering into the ball's line. He intercepts 2.0 yd
+  short of Z. *Hypothesis:* the risk estimate doesn't weigh an inside
+  defender already closing on the lane.
 
 <a id="ball-2"></a>
 ### BALL-2: Throws always leave from standing height

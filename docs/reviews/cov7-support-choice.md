@@ -214,4 +214,50 @@ go.
 
 ### Results
 
-*(to be filled from the run of `--until 1.3`)*
+Declared in `47c33761` and run afterwards on `b559fdc5`. Setup SHA: run
+`486592b8…`, deception `b8ca357e…`.
+
+| Prediction | Result | |
+| --- | --- | --- |
+| 1. Admitted 0.65 s, same pictures | 0.65 s in both; first support row's pictures, body and command identical to the 1.0 s fixture | held |
+| 2. Upright picture and return to man ≈1.65–1.75 s | both 1.70 s; inward motion arrested 2.40 s (was 2.0) | held |
+| 3. Lateral gap at the QB's release: support ≥ 3.0, man ≤ 1.5 yd | support 4.00 yd (throw to Z at 2.80 s); man 0.75 yd (but the throw went to H at 3.80 s) | held |
+| 4. Toss, fixture settings: each arm moves < 1 yd, corner still wraps | man 6.26 → 6.34, support 4.85 → 5.44; corner wraps at 3.35 s | held |
+
+Outcomes, man → support:
+
+| | Fixture settings | Today's defaults |
+| --- | --- | --- |
+| Toss | tackle 6.34 → tackle 5.44 | tackle 1.70 → tackle 1.02 (corner no contact) |
+| PA Shot | 14.1 yd catch by H → **CB_S interception, returned for a touchdown** | same |
+
+**The strongest adverse case is the support arm's PA play: the corner who bit
+is the one who intercepts.** At the throw (2.80 s) he is 4.0 yd inside Z and
+0.33 yd deeper, recovering outward at 3.4 yd/s. The QB throws Z's breaking
+route toward the sideline, (51.8, 12.0), with a 1.23 s flight. The ball's
+line crosses the inside recovery lane, and the corner catches it at 3.85 s at
+(48.5, 14.9), 2.0 yd short of Z. The QB's last evaluation of Z put the
+interception risk at 0.03 and completion at 0.66. His coverage read was
+Cover 3 before and after the snap; the call was Cover 1.
+
+With the 1.3 s look, retaining man takes Z away completely: the QB
+evaluates Z 12 times and throws to H instead (14.1 yd, two uncalled
+unresolved fouls: holding by TE2 and teammate assistance by OT1). With the
+1.0 s look both arms were incomplete to Z.
+
+What this says for the design:
+
+- **The cost is real but route-dependent.** Inside-and-level is what a
+  vertical stalk-and-go punishes. Against a route that breaks toward the
+  sideline it puts the bitten corner under the throw. Being fooled isn't
+  automatically fatal in real football either; here the bite helped him.
+  The design doesn't change for it: the PA arm must neither force the bite
+  nor guarantee its price.
+- **The interception exposes a QB question, not a coverage one:** a 0.03
+  risk on a lane an inside defender is already recovering into. Logged as a
+  candidate gap for the passing lane, with this scene as its reproducer, and
+  not fixed here.
+- **The code PR's cost arm should add one vertical continuation** (the same
+  look, then a go) next to PA Shot, declared before running, so the price of
+  the bite is measured against the route that charges it. Today's PA Shot
+  stays as the case where the bite can pay.
