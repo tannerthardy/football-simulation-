@@ -543,7 +543,10 @@ export class QBPass implements Behavior {
     const lanes = [-4, -2, 0, 2, 4].map((dy) => ({ x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + dy, 1, FIELD_WIDTH - 1) }));
     if (panic) for (const side of [-1, 1]) lanes.push({ x: a.pos.x + 1, y: clamp(a.pos.y + side * 5.5, 1, FIELD_WIDTH - 1) });
     for (const q of lanes) {
-      const myT = Math.hypot(q.x - a.pos.x, q.y - a.pos.y) / (a.profile.vmax * 0.8);
+      // His own run as scramble() will ask for it: the carrier's full-speed
+      // sprint from the velocity he has now, with the same estimate as the
+      // defenders'. A set QB starts from rest, not at speed.
+      const myT = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q);
       let margin = Infinity;
       for (const d of sim.defense) {
         if (d.isDown(sim.t)) continue;
