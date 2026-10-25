@@ -16,6 +16,8 @@ export type PursuitPredictionRecord = {
   forecast: { model: 'fixed-observed-heading-relaxing-speed'; heading: Vec2; initialSpeed: number;
     acceleration: number; speedLimit: number; targetBrake: number; targetSprintTau: number;
     relaxedSpeed: number; relaxationTime: number; lateralBoundary: [number, number] };
+  /** Whether the held intercept time was kept or replanned (absent before the lifetime existed). */
+  lifetime?: AimLifetime;
   timeBias: number;
   biasedTime: number;
   forecastPoint: Vec2;
@@ -51,4 +53,12 @@ export interface PursuitEffortRead {
   /** Held decision after hysteresis. */
   mode: 'sprint' | 'pace';
   effort: number;
+}
+
+/** Intercept lifetime: a held aim, or why it was replanned this tick. */
+export interface AimLifetime {
+  kept: boolean;
+  reason: 'new' | 'expired' | 'picture-changed' | 'held-late' | 'earlier' | 'held';
+  /** Estimated lateness of the held point (arrival minus runner time), when evaluated. */
+  heldLate?: number;
 }

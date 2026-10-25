@@ -3,12 +3,12 @@ import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../../core/field.js';
 import { angleDiff, angleOf, clamp, norm, type Vec2 } from '../../core/vec.js';
 import { arriveVelocity, fatigueFactor, followAccel, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
 import { availability, supportParams } from '../../physics/support.js';
-import { interceptPoint, timeToReach, type SprintRequest } from '../../physics/reach.js';
+import { interceptPoint, timeToReach, timeToReachRequested, type InterceptPrediction, type Mover, type SprintRequest } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { withMovementObjective } from '../movement-objective.js';
 import type { Perceived } from '../perception.js';
-import type { PursuitEffortRead } from '../pursuit-prediction.js';
+import type { AimLifetime, PursuitEffortRead } from '../pursuit-prediction.js';
 import type { PlaySim } from '../playsim.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
@@ -93,7 +93,7 @@ export function angleTo(from: Vec2, to: Vec2): number {
  *    not require every poorer pursuer to take a flat, trailing angle.
  */
 export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
-  request?: SprintRequest, forecast = runnerForecast(sim, a, target)): Vec2 {
+  request?: SprintRequest, forecast = runnerForecast(sim, a, target), holdAim = false): Vec2 {
   const { seen, older, sp, heading, acceleration, tau, V, path, reach } = forecast;
   const trace = sim.commandTraceFor?.(a);
   const mover = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
@@ -106,7 +106,10 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
-  const biasedTime = clamp(ip.t - bias, 0, horizon);
+  // Only chase holds its aim; rush angles at the QB replan every call as before.
+  const aim = holdAim ? keepAim(sim, a, target, forecast, ip, mover, horizon, request)
+    : { t: ip.t, lifetime: undefined };
+  const biasedTime = clamp(aim.t - bias, 0, horizon);
   const p = path(biasedTime);
   // Keep the support contract while approaching, then close onto the near
   // hip. A permanent two-yard sideline shade is outside tackling reach.
@@ -120,11 +123,52 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     forecast: { model: 'fixed-observed-heading-relaxing-speed', heading, initialSpeed: sp, acceleration,
       speedLimit: target.profile.vmax, targetBrake: target.profile.brake, targetSprintTau: target.profile.tau,
       relaxedSpeed: V, relaxationTime: tau, lateralBoundary: [0, FIELD_WIDTH] },
-    timeBias: bias, biasedTime, forecastPoint: p, leverage: lev, steeringPoint: point });
+    lifetime: aim.lifetime, timeBias: bias, biasedTime, forecastPoint: p, leverage: lev, steeringPoint: point });
   return point;
 }
 
 const angleBias = new WeakMap<Agent, number>();
+
+/** A held aim is replanned when the picture of the runner turns or changes
+ * speed by this much, when its point has become this late, or when a new
+ * feasible point is this much earlier. */
+const AIM_TURN = 20 * Math.PI / 180, AIM_SPEED = 1.5, AIM_LATE = 0.15, AIM_BETTER = 0.3;
+const heldAim = new WeakMap<Agent, { target: Agent; at: number; time: number; heading: Vec2; speed: number }>();
+
+/**
+ * Intercept lifetime (TKL-2, ACT-1 style). The earliest-feasible sample is a
+ * threshold: as slack crosses zero, or when the least-late fallback is flat,
+ * the chosen point can move many yards in one tick with no change in what the
+ * pursuer sees (P002: 8.3 yd while the runner moved 0.4). He keeps the point
+ * he chose, as a time on the runner's forecast path, while his picture of
+ * the runner holds its heading and speed and the point stays reachable; a
+ * cut, a burst, a point gone late or a clearly earlier one replans. Only his
+ * own pictures and body enter; the point still moves with the forecast.
+ */
+function keepAim(sim: PlaySim, a: Agent, target: Agent, forecast: RunnerForecast, ip: InterceptPrediction,
+  mover: Mover, horizon: number, request?: SprintRequest): { t: number; lifetime: AimLifetime } {
+  const held = heldAim.get(a);
+  const store = (t: number, lifetime: AimLifetime) => {
+    heldAim.set(a, { target, at: sim.t, time: sim.t + t, heading: forecast.heading, speed: forecast.sp });
+    return { t, lifetime };
+  };
+  const feasible = ip.estimate.status === 'estimated-feasible';
+  if (!held || held.target !== target || sim.t - held.at > 0.25) return store(ip.t, { kept: false, reason: 'new' });
+  const remaining = held.time - sim.t;
+  if (remaining < 0.1 || remaining > horizon) return store(ip.t, { kept: false, reason: 'expired' });
+  const turn = Math.abs(angleDiff(Math.atan2(held.heading.y, held.heading.x), Math.atan2(forecast.heading.y, forecast.heading.x)));
+  if ((forecast.sp > 1 && held.speed > 1 && turn > AIM_TURN) || Math.abs(forecast.sp - held.speed) > AIM_SPEED)
+    return store(ip.t, { kept: false, reason: 'picture-changed' });
+  const point = forecast.path(remaining);
+  const arrival = request ? timeToReachRequested(mover, point, forecast.reach, request) : timeToReach(mover, point, forecast.reach);
+  const late = arrival - remaining;
+  if (late > AIM_LATE && (feasible || ip.estimate.slack! > -late + AIM_LATE))
+    return store(ip.t, { kept: false, reason: 'held-late', heldLate: late });
+  if (feasible && ip.t < remaining - AIM_BETTER) return store(ip.t, { kept: false, reason: 'earlier', heldLate: late });
+  // Keep the time; the picture-based heading/speed stay the held reference.
+  heldAim.set(a, { ...held, at: sim.t });
+  return { t: remaining, lifetime: { kept: true, reason: 'held', heldLate: late } };
+}
 
 /** The pursuer's forecast of the runner's path from his own delayed pictures:
  * observed heading, speed relaxing toward a burst seen in recent motion. */
@@ -317,7 +361,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   const forecast = runnerForecast(sim, a, target, seen);
   const effortRead = pursuitEffort(sim, a, target, forecast);
   const request = { speed: effortRead.effort, effort: effortRead.effort };
-  const p = pursuitPoint(sim, a, target, horizon, request, forecast);
+  const p = pursuitPoint(sim, a, target, horizon, request, forecast, true);
   const original = { ...runThrough(a, p, { speed: request.speed }), effort: request.effort };
   // A new grip may exist before its first solved load reaches body support.
   if (sim.bond?.tacklers.includes(a)) {
