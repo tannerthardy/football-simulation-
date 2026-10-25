@@ -394,3 +394,32 @@ node --import tsx scripts/diag/command-trace.ts --capture out/paired-scout/G1-P0
 The existing command verifies source/settings/Node/lockfile and independently
 restores the complete native result before tracing. The prefix is not a full
 game or a population precision sample. Keep raw artifacts in ignored out/.
+
+### Review the delivered paired recordings
+
+`paired-scout-review.ts` adapts the exact selected episodes from the paired
+producer into the existing film-scout queue, notes and report consumer. It does
+not resample a scorecard or replace the unavailable historical18 recordings.
+Retrieve the [original #265 bundle](https://github.com/tannerthardy/football-simulation-/blob/d91e50665d2e3b2cbac9e5065769059e31e53b92/artifacts/pr265/README.md)
+into ignored `out/`, then use Node22.23.3:
+
+```sh
+node --import tsx scripts/paired-scout-review.ts --paired out/pr265-transfer/paired-scout --out out/paired-review
+# Reapply source-qualified agent notes when supplied:
+node --import tsx scripts/paired-scout-review.ts --paired out/pr265-transfer/paired-scout --out out/paired-review --notes out/notes.json
+```
+
+The adapter verifies the manifest, constructor bytes, source/settings/runtime,
+recorded restoration results, roster index/player/team/slot, and every20Hz step
+of the selected interval. It copies the actual owner, raw request, rewrites,
+final command, contact/support and consumed reads through the existing consumer.
+Counts describe only this selected prefix. Notes never become automatic grades.
+Paths in `queue.json` and `review.md` are relative to their output directory;
+move that directory together with the original recordings. Trace commands use
+bundle-relative capture paths: resolve them from the original-recordings folder,
+then invoke the script from its source checkout with absolute capture/output paths.
+
+Offline attachment validates saved evidence; it does not simulate restoration.
+For fresh restoration, use the recorded producer source `cac9e1000b27e9222d47a23db6ebdf65eaac25f9`,
+Node22.23.3 and its lockfile in a separate checkout. Current develop includes a
+later pursuit change and must not be relabelled as that original execution.
