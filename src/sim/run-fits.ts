@@ -13,6 +13,7 @@ import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { handoffReach } from './ball-transfer.js';
 import { forceTrack, retainedForceTrack } from './force-track.js';
+import { APPROACH, approachDistance } from './tackle-geometry.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -341,7 +342,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // even before he crosses the old LOS pursuit gate. Keep the installed
     // shoulder and use the same short, force-limited approach preview as
     // ordinary pursuit; a distant/inside runner still leaves the edge intact.
-    const contact = a.profile.radius + c.profile.radius + a.profile.reach * .65;
+    const contact = approachDistance(a.profile, c.profile, APPROACH.gather);
     const support = a.body.support;
     const free = !a.isDown(sim.t) && !sim.bond?.tacklers.includes(a) && (!support ||
       (support.state === 'up' && !support.foot && !support.strike &&

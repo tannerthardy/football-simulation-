@@ -29,6 +29,7 @@ import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 import { observeRunRead, runReadObservers } from './run-read-observer.js';
+import { APPROACH, approachDistance } from './tackle-geometry.js';
 
 /** Press-and-read for zone runs. Experimental, off by default (RUN_READ=1 on):
  * see docs/reviews/run-read.md. */
@@ -230,7 +231,7 @@ export function runRead(a: Agent, sim: PlaySim, scheme: RunScheme, side: number,
   const unsafe = sim.opponents(a).some((d) => {
     if (d.isDown(sim.t) || d.engagement) return false;
     const s = sim.see(a, d);
-    return timeToReach({ ...s, profile: d.profile, speedScale: d.speedScale }, a.pos, a.profile.radius + d.profile.radius + d.profile.reach * .75) < 2 * a.mind.decisionInterval;
+    return timeToReach({ ...s, profile: d.profile, speedScale: d.speedScale }, a.pos, approachDistance(d.profile, a.profile, APPROACH.intercept)) < 2 * a.mind.decisionInterval;
   });
   const ok = order.find((ans) => risks[ans]! < .6);
   // The read forms early, but the cut is made near the decision point:

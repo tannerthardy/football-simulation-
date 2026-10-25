@@ -82,19 +82,20 @@ describe('attainable tackle opportunity', () => {
     expect(window.closestAt).toBe(0);
     expect(window.closest).toBeGreaterThan(arms);
     expect(window.closest).toBeLessThan(arms + .45);
-    const dive = vi.spyOn(sim, 'diveAt');
+    const dive = vi.spyOn(sim, 'diveAt'), step = vi.spyOn(sim, 'lungeAt');
     const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(false);
     const before = structuredClone(d.body);
     try {
       tryTackles(sim);
-      expect(dive).toHaveBeenCalledOnce();
+      // A last reach is an upright step at the hip, not a layout.
+      expect(step).toHaveBeenCalledOnce(); expect(dive).not.toHaveBeenCalled();
       // This retained geometry used to grant the lunge's hold before World
       // moved its body. The committed request must now earn contact first.
       expect(sim.bond).toBeNull(); expect(sim.world.joints).toHaveLength(0);
       expect(rolls).not.toHaveBeenCalled(); expect(d.body).toEqual(before);
       expect(sim.outcome).toBeNull();
       expect(sim.trace.data!.decisions.find(row => row.a === d.idx)?.chose).toBe('take last reach');
-    } finally { dive.mockRestore(); rolls.mockRestore(); }
+    } finally { dive.mockRestore(); step.mockRestore(); rolls.mockRestore(); }
   });
 
   it.each([false, undefined])('does not upgrade a last reach before acquiring possession: %s', carrying => {

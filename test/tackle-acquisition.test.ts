@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { tryTackles } from '../src/sim/tackle.js';
-import { tackleReach } from '../src/sim/tackle-geometry.js';
+import { diveProgress, handSpan, LAYOUT_SHARE, legTarget, tackleReach, TRAILING_FOOT_SHARE } from '../src/sim/tackle-geometry.js';
 import { World, type Intent } from '../src/physics/world.js';
 
 function stage(target = 'Z', side = 1) {
@@ -56,7 +56,7 @@ describe('tackle contact admission and retained span', () => {
   });
 
   it.each(['QB', 'Z'].flatMap(target => [-1, 1].map(side => ({ target, side }))))(
-    'a $target closing reach acquires only after its planted dive moves, mirror=$side', ({ target, side }) => {
+    'a $target closing reach is a step: it acquires at standing span only after World moves him, mirror=$side', ({ target, side }) => {
       const f = stage(target, side), { sim, c, d, reach } = f;
       c.body.pos.x = d.pos.x + side * (reach + .005);
       d.body.vel.x = side * 6; c.body.vel.x = side * 6.2;
@@ -66,40 +66,105 @@ describe('tackle contact admission and retained span', () => {
       c.behavior = { kind: 'carrier', update: () => ({ vel: { x: side * 6.2, y: 0 }, facing: c.facing }) };
       seeMoving(f);
       const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(false);
-      const launch = vi.spyOn(sim, 'diveAt');
+      const step = vi.spyOn(sim, 'lungeAt'), launch = vi.spyOn(sim, 'diveAt');
       const before = structuredClone(d.body);
       tryTackles(sim);
-      expect(launch).toHaveBeenCalledOnce(); expect(sim.bond).toBeNull();
-      expect(rolls).not.toHaveBeenCalled(); expect(d.body).toEqual(before);
-      for (let i = 0; i < 8 && !sim.bond && sim.phase === 'live'; i++) sim.tick();
+      expect(step).toHaveBeenCalledOnce(); expect(launch).not.toHaveBeenCalled();
+      expect(sim.bond).toBeNull(); expect(rolls).not.toHaveBeenCalled(); expect(d.body).toEqual(before);
+      let steps = 0;
+      for (; steps < 6 && !sim.bond && sim.phase === 'live'; steps++) {
+        sim.tick(); if (!sim.bond) expect(d.body.support!.strike).toBeDefined();
+      }
       const hold = sim.bond?.holds?.get(d);
-      expect(hold).toBeDefined();
-      expect(d.body.support!.cause).toBe('dive');
-      expect(d.body.support!.state).toBe('falling');
+      expect(hold).toBeDefined(); expect(hold!.origin).toMatch(/^lunge/);
+      expect(steps * sim.dt).toBeLessThanOrEqual(.25); // within the push-off
       expect(Math.abs(d.pos.x - before.pos.x)).toBeGreaterThan(0);
+      // Admitted on his feet, inside standing span, with no layout credit.
       expect(Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y)).toBeLessThanOrEqual(reach);
       expect(hold!.ground).toBe(reach); expect(hold!.reach).toBe(reach);
-      expect(sim.world.time).toBeGreaterThan(2);
       expect(rolls).toHaveBeenCalledTimes(2); // one miss trial and one fumble trial, on arrival
       tryTackles(sim); expect(rolls).toHaveBeenCalledTimes(2);
-      expect(launch).toHaveBeenCalledOnce();
+      expect(step).toHaveBeenCalledOnce();
     });
 
-  it('preserves a finite committed dive with the unchanged seeded technique stream', () => {
+  it('a lunge whose step cannot arrive misses once, without a technique draw or a hold', () => {
     const f = stage('Z'), { sim, c, d, reach } = f;
-    c.body.pos.x = d.pos.x + reach + .005; d.body.vel.x = 6; c.body.vel.x = 6.2;
+    c.body.pos.x = d.pos.x + reach + .35; d.body.vel.x = 5; c.body.vel.x = 6.4;
     f.command = { vel: { x: 5.5, y: 0 }, facing: 0 }; sim.intents[d.idx] = f.command;
     d.behavior = { kind: 'fixture-pursuit', update: () => f.command };
-    c.behavior = { kind: 'carrier', update: () => ({ vel: { x: 6.2, y: 0 }, facing: 0 }) };
+    c.behavior = { kind: 'carrier', update: () => ({ vel: { x: 7, y: 0 }, facing: 0 }) };
     seeMoving(f);
-    const rng = structuredClone(sim.rng), launch = vi.spyOn(sim, 'diveAt');
-    tryTackles(sim); expect(sim.rng).toEqual(rng); expect(sim.bond).toBeNull();
-    for (let i = 0; i < 8 && !sim.bond && sim.phase === 'live'; i++) sim.tick();
-    const joint = sim.bond?.holds?.get(d);
-    expect(joint).toBeDefined(); expect(launch).toHaveBeenCalledOnce();
-    expect(d.body.support!.cause).toBe('dive');
-    expect(Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y)).toBeLessThanOrEqual(reach);
-    expect(joint!.reach).toBe(reach); expect(sim.rng).not.toEqual(rng);
+    const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(true), step = vi.spyOn(sim, 'lungeAt');
+    tryTackles(sim); expect(step).toHaveBeenCalledOnce();
+    for (let i = 0; i < 8 && sim.phase === 'live'; i++) { sim.tick(); expect(sim.bond).toBeNull(); }
+    expect(rolls).not.toHaveBeenCalled(); expect(step).toHaveBeenCalledOnce();
+    expect(sim.events.filter(e => e.type === 'missed_tackle' && e.a === d.idx && e.note === 'lunge')).toHaveLength(1);
+  });
+
+  it('a diver\'s span grows from standing to laid out only as his fall runs', () => {
+    const { d } = stage();
+    const standing = handSpan(d, 'standing');
+    expect(handSpan(d, 'lunge')).toBe(standing);
+    expect(handSpan(d, 'dive', 0)).toBe(standing);
+    expect(handSpan(d, 'dive', 1)).toBeCloseTo(Math.max(standing, LAYOUT_SHARE * d.profile.heightYd), 12);
+    expect(handSpan(d, 'dive', 2)).toBe(handSpan(d, 'dive', 1));
+    let last = -Infinity;
+    for (let k = 0; k <= 10; k++) { const s = handSpan(d, 'dive', k / 10); expect(s).toBeGreaterThanOrEqual(last); last = s; }
+    // A body on his feet has no fall progress, whatever he intends.
+    expect(diveProgress(d.body, d.profile, 99)).toBe(0);
+  });
+
+  it.each([-1, 1])('a laid-out diver reaches a trailing foot beyond standing span, only after going down, mirror=%s', side => {
+    const f = stage('QB', side), { sim, c, d, reach } = f;
+    // Desperation window, runner pulling away; a near teammate slows him
+    // through a real collision so the dive has something to reach.
+    const traffic = sim.slot('C')!;
+    c.body.pos.x = d.pos.x + side * (reach + d.profile.radius + .5);
+    d.body.vel.x = side * 4; c.body.vel.x = side * 6;
+    traffic.body.pos = { x: c.pos.x + side * (c.profile.radius + traffic.profile.radius + .3), y: c.pos.y };
+    d.behavior = { kind: 'fixture-pursuit', update: () => ({ vel: { x: side * 7, y: 0 }, facing: d.facing }) };
+    c.behavior = { kind: 'carrier', update: () => ({ vel: { x: side * 6, y: 0 }, facing: c.facing }) };
+    seeMoving(f);
+    const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(true), launch = vi.spyOn(sim, 'diveAt');
+    tryTackles(sim); expect(launch).toHaveBeenCalledOnce(); expect(sim.bond).toBeNull();
+    let admitted: { center: number; span: number; legs: number; up: boolean } | undefined;
+    for (let i = 0; i < 14 && !sim.bond && sim.phase === 'live'; i++) {
+      const wasUp = d.body.support!.state === 'up';
+      sim.tick();
+      const sup = d.body.support!;
+      if (!sim.bond && sup.state === 'falling') expect(legTarget(d, c).distance)
+        .toBeGreaterThan(handSpan(d, 'dive', diveProgress(d.body, d.profile, sim.world.time)));
+      if (sim.bond) {
+        const span = handSpan(d, 'dive', diveProgress(d.body, d.profile, sim.world.time));
+        admitted = { center: Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y), span, legs: legTarget(d, c).distance, up: wasUp };
+      }
+    }
+    expect(admitted).toBeDefined();
+    const joint = sim.bond!.holds!.get(d)!;
+    expect(joint.origin).toBe('dive'); expect(d.body.support!.state).toBe('falling');
+    // Every admission: the leg target is within that moment's hand span.
+    expect(admitted!.legs).toBeLessThanOrEqual(admitted!.span + 1e-12);
+    expect(admitted!.span).toBeGreaterThan(handSpan(d, 'standing'));
+    expect(diveProgress(d.body, d.profile, sim.world.time)).toBeGreaterThan(0);
+    // The joint starts inside the span it keeps; the span cannot grow later.
+    expect(joint.hold).toBeLessThanOrEqual(joint.reach); expect(joint.ground).toBe(joint.reach);
+    expect(joint.reach).toBeLessThanOrEqual(handSpan(d, 'dive', 1) + TRAILING_FOOT_SHARE * c.profile.heightYd + c.profile.radius);
+    expect(rolls).toHaveBeenCalledOnce();
+    const kept = joint.reach; for (let i = 0; i < 3 && sim.phase === 'live'; i++) sim.tick();
+    expect(joint.reach).toBe(kept);
+  });
+
+  it('fall progress, and so layout span, starts only when the body leaves its feet', () => {
+    const { d } = stage();
+    const s = d.body.support!;
+    s.state = 'falling'; s.cause = 'dive'; s.since = 3;
+    expect(diveProgress(d.body, d.profile, 3)).toBe(0);
+    expect(handSpan(d, 'dive', diveProgress(d.body, d.profile, 3))).toBe(handSpan(d, 'standing'));
+    const half = diveProgress(d.body, d.profile, 3.1);
+    expect(half).toBeGreaterThan(0); expect(half).toBeLessThan(1);
+    expect(diveProgress(d.body, d.profile, 4)).toBe(1);
+    // A fall from contact is not a layout.
+    s.cause = 'contact'; expect(diveProgress(d.body, d.profile, 4)).toBe(0);
   });
 
   it('does not grant a receding runner a remote dive hold or repeated success draws', () => {
@@ -139,8 +204,8 @@ describe('tackle contact admission and retained span', () => {
     const joint = sim.bond?.holds?.get(d);
     expect(collision).toBe(true); expect(joint).toBeDefined(); expect(joint!.origin).toBe('dive');
     expect(d.body.support!.cause).toBe('dive'); expect(c.speed).toBeLessThan(6);
-    expect(Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y)).toBeLessThanOrEqual(reach);
-    expect(joint!.reach).toBe(reach); expect(joint!.ground).toBe(reach);
+    expect(legTarget(d, c).distance).toBeLessThanOrEqual(handSpan(d, 'dive', diveProgress(d.body, d.profile, sim.world.time)));
+    expect(joint!.hold).toBeLessThanOrEqual(joint!.reach); expect(joint!.ground).toBe(joint!.reach);
     expect(rolls).toHaveBeenCalledOnce(); expect(launch).toHaveBeenCalledOnce();
     tryTackles(sim); expect(rolls).toHaveBeenCalledOnce();
   });
