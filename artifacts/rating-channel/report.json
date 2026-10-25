@@ -1,0 +1,871 @@
+{
+ "identity": {
+  "commit": "5daae12c8060b62648ad7dbb3fe3b0679eaab971",
+  "engineSha256": "0dea552c9a488bb1399338ae165d948db7db11e744320507d6ea52978c4ed225",
+  "settings": {
+   "AGAP_ALIGN": true,
+   "ANCHOR_SPLIT": true,
+   "ARM_PRESS": true,
+   "BACK_BLOCK": true,
+   "BLOCKED_REACH": true,
+   "BOX_ALIGN": true,
+   "CF_FLOW": null,
+   "CLIMB_INTERCEPT": true,
+   "CLIMB_PLAN": true,
+   "COVER_CALL": true,
+   "DEEP_NO_FORCE": false,
+   "DEF_ALIGN": true,
+   "DEF_GETOFF": 1,
+   "DEF_PACKAGE": true,
+   "DEUCE": true,
+   "DL_ANCHOR": true,
+   "DL_CHASE": true,
+   "DL_FIGHT": false,
+   "DL_FLATTEN": true,
+   "DL_FLATTEN_WON": true,
+   "DL_FLOW": true,
+   "DL_HANDS": false,
+   "DL_SQUEEZE": true,
+   "EDGE_CONTAIN": true,
+   "FLOW_READ": true,
+   "FLOW_RELEASE": true,
+   "FORCE_BOUNCE": true,
+   "FRONT_ALIGN": true,
+   "FRONT_MENU": true,
+   "FRONT_STRENGTH": true,
+   "GAIT_STEP": 0,
+   "GAP_MATCH": true,
+   "GRIP_HOLD": true,
+   "GROUNDING_FACTS": true,
+   "HAND_FIGHT": false,
+   "HAND_MOTOR": false,
+   "HOLD_LEVERAGE": true,
+   "HOLD_SUBSTEPS": 0,
+   "IN_STRIDE_CATCH": false,
+   "KEEPER_TORSO": true,
+   "LB_LANDMARK": true,
+   "LB_PLAN": true,
+   "LEG_BRACE": false,
+   "LEVER_FACING": true,
+   "LIVE_AIM": true,
+   "LIVE_GAPS": true,
+   "MOTION": true,
+   "MOTION_CHECK": true,
+   "OL_SPLITS": true,
+   "OL_STAGGER": true,
+   "PAD_LEVERAGE": true,
+   "PASS_FEEL": true,
+   "PASS_FIRST": true,
+   "PASS_KICK": true,
+   "PASS_SINK": false,
+   "PRESSURE_CALL": true,
+   "PULL_CUE": false,
+   "PULL_EARLY": true,
+   "PULL_PLAN": false,
+   "PULL_READ": true,
+   "PULL_STEP": false,
+   "PURSUE_AROUND": true,
+   "REACH_CONTACT": false,
+   "READ_EYES": true,
+   "READ_RISK_TRACE": false,
+   "ROUTE_CLEAR": true,
+   "RUN_ANCHOR": true,
+   "RUN_CONTACT_COMPONENTS": true,
+   "RUN_CONTACT_TRACK": false,
+   "RUN_FEEL": true,
+   "RUN_HANDS": false,
+   "RUN_READ": false,
+   "RUN_READ_TURN": false,
+   "SAFETY_TEMPO": true,
+   "SCRAPE": true,
+   "SEAL_HOLD": true,
+   "SHED_PHYSICAL": true,
+   "SHED_PURSUE": true,
+   "SHELL_SHOW": true,
+   "SHORT_PACKAGE": true,
+   "SNAP_REACT": true,
+   "STALK_CLAIM": true,
+   "STALK_CUSHION": true,
+   "STRETCH_MESH": true,
+   "STRETCH_REACH": true,
+   "TACKLE_ROLL": false,
+   "TACKLE_TOUCH": false,
+   "THREAT_READ": true,
+   "TIP_AWAY": true,
+   "WRAP_BIND": false,
+   "WR_ALIGN": true,
+   "ZONE_FLOW": true
+  },
+  "node": "v22.22.0",
+  "lockfileSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+ },
+ "recipe": {
+  "coverage": "cover3_buzz",
+  "concept": "iz_strong",
+  "seed": 1,
+  "roster": 7,
+  "formation": "i_pro_21",
+  "flip": false
+ },
+ "window": {
+  "from": 0,
+  "to": 3
+ },
+ "lowHigh": [
+  1,
+  99
+ ],
+ "fbLeadTarget": "LB_W",
+ "rows": [
+  {
+   "role": "question",
+   "subject": "O:F",
+   "rating": "leadBlock",
+   "lowVsHigh": [
+    1,
+    99
+   ],
+   "steps": 60,
+   "planAtSnap": {
+    "kind": "lead",
+    "target": "LB_W"
+   },
+   "profileFieldsChanged": [],
+   "firstDifference": null,
+   "wholePlayResultIdentical": true,
+   "play": {
+    "low": {
+     "outcome": "tackle",
+     "yards": 0.6,
+     "duration": 3.3
+    },
+    "high": {
+     "outcome": "tackle",
+     "yards": 0.6,
+     "duration": 3.3
+    }
+   }
+  },
+  {
+   "role": "control: rating the run-block code reads, same player and duty",
+   "subject": "O:F",
+   "rating": "runBlock",
+   "lowVsHigh": [
+    1,
+    99
+   ],
+   "steps": 60,
+   "planAtSnap": {
+    "kind": "lead",
+    "target": "LB_W"
+   },
+   "profileFieldsChanged": [],
+   "firstDifference": {
+    "stepStart": 0.1,
+    "stage": "decision",
+    "path": "decision.raw.vel.x",
+    "low": 7.984471726482089,
+    "high": 7.986962375542643,
+    "means": "request: the command his controller produced"
+   },
+   "wholePlayResultIdentical": false,
+   "play": {
+    "low": {
+     "outcome": "tackle",
+     "yards": 0.6,
+     "duration": 3.3
+    },
+    "high": {
+     "outcome": "tackle",
+     "yards": 0.6,
+     "duration": 3.3
+    }
+   }
+  },
+  {
+   "role": "mental timing",
+   "subject": "O:F",
+   "rating": "awareness",
+   "lowVsHigh": [
+    1,
+    99
+   ],
+   "steps": 60,
+   "planAtSnap": {
+    "kind": "lead",
+    "target": "LB_W"
+   },
+   "profileFieldsChanged": [
+    {
+     "field": "reactionTime",
+     "low": 0.2949387755102041,
+     "high": 0.2109387755102041
+    }
+   ],
+   "firstDifference": {
+    "stepStart": 0.2,
+    "stage": "observations",
+    "path": "observations[0].age",
+    "low": 0.25,
+    "high": 0.2,
+    "means": "timing: what he consumed, or how old it was"
+   },
+   "wholePlayResultIdentical": false,
+   "play": {
+    "low": {
+     "outcome": "tackle",
+     "yards": 0.41,
+     "duration": 3.3
+    },
+    "high": {
+     "outcome": "tackle",
+     "yards": 0.23,
+     "duration": 3.3
+    }
+   }
+  },
+  {
+   "role": "mental timing",
+   "subject": "O:F",
+   "rating": "playRecognition",
+   "lowVsHigh": [
+    1,
+    99
+   ],
+   "steps": 60,
+   "planAtSnap": {
+    "kind": "lead",
+    "target": "LB_W"
+   },
+   "profileFieldsChanged": [
+    {
+     "field": "reactionTime",
+     "low": 0.3554285714285715,
+     "high": 0.19942857142857146
+    }
+   ],
+   "firstDifference": {
+    "stepStart": 0.2,
+    "stage": "observations",
+    "path": "observations[0].age",
+    "low": 0.25,
+    "high": 0.2,
+    "means": "timing: what he consumed, or how old it was"
+   },
+   "wholePlayResultIdentical": false,
+   "play": {
+    "low": {
+     "outcome": "tackle",
+     "yards": 0.53,
+     "duration": 3.3
+    },
+    "high": {
+     "outcome": "tackle",
+     "yards": 0.23,
+     "duration": 3.3
+    }
+   }
+  },
+  {
+   "role": "control: defender whose reaction time the sim derives from it",
+   "subject": "D:LB_W",
+   "rating": "playRecognition",
+   "lowVsHigh": [
+    1,
+    99
+   ],
+   "steps": 60,
+   "planAtSnap": null,
+   "profileFieldsChanged": [
+    {
+     "field": "reactionTime",
+     "low": 0.33142857142857146,
+     "high": 0.17542857142857146
+    }
+   ],
+   "firstDifference": {
+    "stepStart": 0.15,
+    "stage": "observations",
+    "path": "observations[3].phase",
+    "low": "open-to-ball",
+    "high": "pre-decision",
+    "means": "timing: what he consumed, or how old it was"
+   },
+   "wholePlayResultIdentical": false,
+   "play": {
+    "low": {
+     "outcome": "tackle",
+     "yards": 0.41,
+     "duration": 3.3
+    },
+    "high": {
+     "outcome": "tackle",
+     "yards": 0.6,
+     "duration": 3.3
+    }
+   }
+  },
+  {
+   "role": "control: defender whose reaction time the sim derives from it",
+   "subject": "D:LB_W",
+   "rating": "awareness",
+   "lowVsHigh": [
+    1,
+    99
+   ],
+   "steps": 60,
+   "planAtSnap": null,
+   "profileFieldsChanged": [
+    {
+     "field": "reactionTime",
+     "low": 0.2678775510204082,
+     "high": 0.1838775510204082
+    }
+   ],
+   "firstDifference": {
+    "stepStart": 0.15,
+    "stage": "observations",
+    "path": "observations[3].phase",
+    "low": "open-to-ball",
+    "high": "pre-decision",
+    "means": "timing: what he consumed, or how old it was"
+   },
+   "wholePlayResultIdentical": false,
+   "play": {
+    "low": {
+     "outcome": "tackle",
+     "yards": 0.53,
+     "duration": 3.3
+    },
+    "high": {
+     "outcome": "tackle",
+     "yards": 0.6,
+     "duration": 3.3
+    }
+   }
+  }
+ ],
+ "selection": {
+  "fbWithGeneratedRating": "OFF-FB1",
+  "leadBlock": 80,
+  "pickedAt99": "OFF-FB1",
+  "pickedAt1": "OFF-TE1",
+  "selectionChanges": true
+ },
+ "classes": [
+  {
+   "rating": "strength",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "players/physical.ts, sim/engagement.ts, sim/tackle.ts"
+  },
+  {
+   "rating": "stamina",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "game/game.ts"
+  },
+  {
+   "rating": "balance",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "players/physical.ts, sim/engagement.ts, sim/tackle.ts"
+  },
+  {
+   "rating": "toughness",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "sim/behaviors/carrier.ts"
+  },
+  {
+   "rating": "throwPower",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 2,
+   "evidence": "game/playcaller.ts, sim/behaviors/qb.ts"
+  },
+  {
+   "rating": "accShort",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "sim/behaviors/qb.ts"
+  },
+  {
+   "rating": "accMid",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "sim/behaviors/qb.ts"
+  },
+  {
+   "rating": "accDeep",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 2,
+   "evidence": "game/playcaller.ts, sim/behaviors/qb.ts"
+  },
+  {
+   "rating": "release",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "sim/behaviors/qb.ts, sim/coverage/defender.ts, sim/coverage/judgment.ts"
+  },
+  {
+   "rating": "throwOnRun",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "sim/behaviors/qb.ts"
+  },
+  {
+   "rating": "touch",
+   "class": "generated, unread (not even in role weights)",
+   "named": 0,
+   "evidence": "static scan"
+  },
+  {
+   "rating": "pocketPresence",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "game/playcaller.ts, sim/behaviors/qb.ts, sim/tackle.ts"
+  },
+  {
+   "rating": "vision",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "game/specialteams.ts, sim/behaviors/carrier.ts, sim/run-read.ts"
+  },
+  {
+   "rating": "elusiveness",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 6,
+   "evidence": "game/playcaller.ts, game/specialteams.ts, players/physical.ts, …"
+  },
+  {
+   "rating": "breakTackle",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "sim/tackle.ts"
+  },
+  {
+   "rating": "ballSecurity",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "game/specialteams.ts, sim/behaviors/carrier.ts, sim/tackle.ts"
+  },
+  {
+   "rating": "patience",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 2,
+   "evidence": "sim/assign.ts, sim/behaviors/carrier.ts"
+  },
+  {
+   "rating": "routeRunning",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 5,
+   "evidence": "game/playcaller.ts, players/physical.ts, sim/assign.ts, …"
+  },
+  {
+   "rating": "releaseVsPress",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "game/playcaller.ts, sim/behaviors/qb.ts, sim/behaviors/receiver.ts"
+  },
+  {
+   "rating": "hands",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 2,
+   "evidence": "sim/behaviors/qb.ts, sim/catching.ts"
+  },
+  {
+   "rating": "contestedCatch",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "sim/catching.ts"
+  },
+  {
+   "rating": "ballTracking",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "sim/behaviors/receiver.ts, sim/catch-readiness.ts, sim/catching.ts"
+  },
+  {
+   "rating": "passBlock",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 2,
+   "evidence": "players/physical.ts, sim/engagement.ts"
+  },
+  {
+   "rating": "runBlock",
+   "class": "affects execution",
+   "named": 2,
+   "evidence": "O:F: decision decision.raw.vel.x"
+  },
+  {
+   "rating": "handTechnique",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "sim/engagement.ts"
+  },
+  {
+   "rating": "leadBlock",
+   "class": "selection-only",
+   "named": 0,
+   "evidence": "scene: no difference over 0-3 s, whole play identical"
+  },
+  {
+   "rating": "passRushPower",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 2,
+   "evidence": "sim/behaviors/defense.ts, sim/engagement.ts"
+  },
+  {
+   "rating": "passRushFinesse",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 2,
+   "evidence": "sim/behaviors/defense.ts, sim/engagement.ts"
+  },
+  {
+   "rating": "blockShedding",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "sim/engagement.ts"
+  },
+  {
+   "rating": "tackling",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 6,
+   "evidence": "game/specialteams.ts, sim/approach-control.ts, sim/behaviors/common.ts, …"
+  },
+  {
+   "rating": "hitPower",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "sim/tackle.ts"
+  },
+  {
+   "rating": "pursuit",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "game/specialteams.ts, sim/behaviors/common.ts, sim/tackle.ts"
+  },
+  {
+   "rating": "manCoverage",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 4,
+   "evidence": "game/playcaller.ts, players/physical.ts, sim/behaviors/defense.ts, …"
+  },
+  {
+   "rating": "zoneCoverage",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "players/physical.ts, sim/behaviors/defense.ts, sim/coverage/techniques.ts"
+  },
+  {
+   "rating": "press",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "sim/behaviors/receiver.ts"
+  },
+  {
+   "rating": "ballSkills",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "sim/behaviors/defense.ts, sim/behaviors/qb.ts, sim/catching.ts"
+  },
+  {
+   "rating": "kickPower",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "game/specialteams.ts"
+  },
+  {
+   "rating": "kickAccuracy",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "game/specialteams.ts"
+  },
+  {
+   "rating": "puntPower",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "game/specialteams.ts"
+  },
+  {
+   "rating": "puntAccuracy",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "game/specialteams.ts"
+  },
+  {
+   "rating": "awareness",
+   "class": "affects execution",
+   "named": 9,
+   "evidence": "O:F: observations observations[0].age; D:LB_W: observations observations[3].phase"
+  },
+  {
+   "rating": "playRecognition",
+   "class": "affects execution",
+   "named": 10,
+   "evidence": "O:F: observations observations[0].age; D:LB_W: observations observations[3].phase"
+  },
+  {
+   "rating": "decisionMaking",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 1,
+   "evidence": "sim/behaviors/qb.ts"
+  },
+  {
+   "rating": "composure",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 3,
+   "evidence": "game/specialteams.ts, sim/behaviors/qb.ts, sim/mind.ts"
+  },
+  {
+   "rating": "discipline",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 5,
+   "evidence": "sim/coverage/judgment.ts, sim/engagement.ts, sim/mind.ts, …"
+  },
+  {
+   "rating": "anticipation",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 9,
+   "evidence": "sim/agent.ts, sim/behaviors/common.ts, sim/behaviors/defense.ts, …"
+  },
+  {
+   "rating": "consistency",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 2,
+   "evidence": "sim/behaviors/qb.ts, sim/mind.ts"
+  },
+  {
+   "rating": "workRate",
+   "class": "unknown (named by sim code, not exercised here)",
+   "named": 2,
+   "evidence": "game/specialteams.ts, sim/behaviors/common.ts"
+  }
+ ],
+ "consumers": {
+  "strength": [
+   "players/physical.ts",
+   "sim/engagement.ts",
+   "sim/tackle.ts"
+  ],
+  "stamina": [
+   "game/game.ts"
+  ],
+  "balance": [
+   "players/physical.ts",
+   "sim/engagement.ts",
+   "sim/tackle.ts"
+  ],
+  "toughness": [
+   "sim/behaviors/carrier.ts"
+  ],
+  "throwPower": [
+   "game/playcaller.ts",
+   "sim/behaviors/qb.ts"
+  ],
+  "accShort": [
+   "sim/behaviors/qb.ts"
+  ],
+  "accMid": [
+   "sim/behaviors/qb.ts"
+  ],
+  "accDeep": [
+   "game/playcaller.ts",
+   "sim/behaviors/qb.ts"
+  ],
+  "release": [
+   "sim/behaviors/qb.ts",
+   "sim/coverage/defender.ts",
+   "sim/coverage/judgment.ts"
+  ],
+  "throwOnRun": [
+   "sim/behaviors/qb.ts"
+  ],
+  "touch": [],
+  "pocketPresence": [
+   "game/playcaller.ts",
+   "sim/behaviors/qb.ts",
+   "sim/tackle.ts"
+  ],
+  "vision": [
+   "game/specialteams.ts",
+   "sim/behaviors/carrier.ts",
+   "sim/run-read.ts"
+  ],
+  "elusiveness": [
+   "game/playcaller.ts",
+   "game/specialteams.ts",
+   "players/physical.ts",
+   "sim/behaviors/carrier.ts",
+   "sim/behaviors/qb.ts",
+   "sim/tackle.ts"
+  ],
+  "breakTackle": [
+   "sim/tackle.ts"
+  ],
+  "ballSecurity": [
+   "game/specialteams.ts",
+   "sim/behaviors/carrier.ts",
+   "sim/tackle.ts"
+  ],
+  "patience": [
+   "sim/assign.ts",
+   "sim/behaviors/carrier.ts"
+  ],
+  "routeRunning": [
+   "game/playcaller.ts",
+   "players/physical.ts",
+   "sim/assign.ts",
+   "sim/behaviors/qb.ts",
+   "sim/behaviors/receiver.ts"
+  ],
+  "releaseVsPress": [
+   "game/playcaller.ts",
+   "sim/behaviors/qb.ts",
+   "sim/behaviors/receiver.ts"
+  ],
+  "hands": [
+   "sim/behaviors/qb.ts",
+   "sim/catching.ts"
+  ],
+  "contestedCatch": [
+   "sim/catching.ts"
+  ],
+  "ballTracking": [
+   "sim/behaviors/receiver.ts",
+   "sim/catch-readiness.ts",
+   "sim/catching.ts"
+  ],
+  "passBlock": [
+   "players/physical.ts",
+   "sim/engagement.ts"
+  ],
+  "runBlock": [
+   "sim/behaviors/blocking.ts",
+   "sim/engagement.ts"
+  ],
+  "handTechnique": [
+   "sim/engagement.ts"
+  ],
+  "leadBlock": [],
+  "passRushPower": [
+   "sim/behaviors/defense.ts",
+   "sim/engagement.ts"
+  ],
+  "passRushFinesse": [
+   "sim/behaviors/defense.ts",
+   "sim/engagement.ts"
+  ],
+  "blockShedding": [
+   "sim/engagement.ts"
+  ],
+  "tackling": [
+   "game/specialteams.ts",
+   "sim/approach-control.ts",
+   "sim/behaviors/common.ts",
+   "sim/behaviors/defense.ts",
+   "sim/catch-approach.ts",
+   "sim/tackle.ts"
+  ],
+  "hitPower": [
+   "sim/tackle.ts"
+  ],
+  "pursuit": [
+   "game/specialteams.ts",
+   "sim/behaviors/common.ts",
+   "sim/tackle.ts"
+  ],
+  "manCoverage": [
+   "game/playcaller.ts",
+   "players/physical.ts",
+   "sim/behaviors/defense.ts",
+   "sim/behaviors/qb.ts"
+  ],
+  "zoneCoverage": [
+   "players/physical.ts",
+   "sim/behaviors/defense.ts",
+   "sim/coverage/techniques.ts"
+  ],
+  "press": [
+   "sim/behaviors/receiver.ts"
+  ],
+  "ballSkills": [
+   "sim/behaviors/defense.ts",
+   "sim/behaviors/qb.ts",
+   "sim/catching.ts"
+  ],
+  "kickPower": [
+   "game/specialteams.ts"
+  ],
+  "kickAccuracy": [
+   "game/specialteams.ts"
+  ],
+  "puntPower": [
+   "game/specialteams.ts"
+  ],
+  "puntAccuracy": [
+   "game/specialteams.ts"
+  ],
+  "awareness": [
+   "players/physical.ts",
+   "sim/behaviors/common.ts",
+   "sim/behaviors/qb.ts",
+   "sim/behaviors/receiver.ts",
+   "sim/engagement.ts",
+   "sim/mind.ts",
+   "sim/qbmind.ts",
+   "sim/recognition.ts",
+   "sim/tackle.ts"
+  ],
+  "playRecognition": [
+   "game/playcaller.ts",
+   "players/physical.ts",
+   "sim/assign.ts",
+   "sim/behaviors/defense.ts",
+   "sim/catching.ts",
+   "sim/coverage/judgment.ts",
+   "sim/mind.ts",
+   "sim/qbmind.ts",
+   "sim/recognition.ts",
+   "sim/run-read.ts"
+  ],
+  "decisionMaking": [
+   "sim/behaviors/qb.ts"
+  ],
+  "composure": [
+   "game/specialteams.ts",
+   "sim/behaviors/qb.ts",
+   "sim/mind.ts"
+  ],
+  "discipline": [
+   "sim/coverage/judgment.ts",
+   "sim/engagement.ts",
+   "sim/mind.ts",
+   "sim/playsim.ts",
+   "sim/snap-count.ts"
+  ],
+  "anticipation": [
+   "sim/agent.ts",
+   "sim/behaviors/common.ts",
+   "sim/behaviors/defense.ts",
+   "sim/behaviors/qb.ts",
+   "sim/coverage/reads.ts",
+   "sim/coverage/techniques.ts",
+   "sim/mind.ts",
+   "sim/run-read.ts",
+   "sim/snap-count.ts"
+  ],
+  "consistency": [
+   "sim/behaviors/qb.ts",
+   "sim/mind.ts"
+  ],
+  "workRate": [
+   "game/specialteams.ts",
+   "sim/behaviors/common.ts"
+  ]
+ },
+ "unreadByName": [
+  "touch",
+  "leadBlock"
+ ]
+}
