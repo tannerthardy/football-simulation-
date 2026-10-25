@@ -1015,6 +1015,21 @@ run plays with the assignment layer (`--telemetry full`):
   first steps do move. On P025 the look comes after contact: the playside
   reach and his end drift together into the backfield. Not yet compared
   with tracking.
+- **Blocker and end slide down the line together** (run lane film, Ace12
+  weak wide zone vs Under, roster 7 / seed 1; Oct 25). *Fixed (on by
+  default, `EDGE_CONTAIN`).* After contact a reach blocker and a blocked edge
+  slid sideways in lockstep, 7.5 yd on that clip, while the back cut back
+  inside the end. The edge's contact aim was the blocker's live position
+  plus 0.65 yd outside, led by the blocker's own velocity, and a stretch
+  blocker matches the end's play-side speed, so each chased a point the other
+  moved. The edge now widens only as far as containing the back's observed
+  track (where it crosses his depth) needs; already wider, he holds. The
+  blocker side is unchanged. Restaged on the same snaps, 154 runs of seeds
+  7-9 (`scripts/diag/edge-contain-restage.ts`): edge reps carried 4+ yd
+  outside with the blocker 18 -> 7, those ending with the runner 3+ yd inside
+  the end 11 -> 0. The 7 left go with a runner going wide. Mean run yards
+  5.36 -> 4.67 (paired 90% interval -1.67 to +0.31). Still open: the
+  playside C gap has no owner in the installed Under (RUN-9).
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
@@ -2028,9 +2043,17 @@ learn what's needed.
   replay viewer's layers ([VISUALIZER_PLAN](VISUALIZER_PLAN.md)), and #243's
   film detectors. The viewer's [copyable play reference](../viewer/replay.template.html#L596)
   already includes film identity, play, timestamp and the selected player.
-- **Open:** what to build first, and how much of a separate tool it should
-  be. The outside audit's suggestions on drawing intent versus achieved
-  motion and showing reach and contact apply here.
+- **In progress:** [Play Lab](PLAY_LAB.md) (`npm run lab`). Tanner builds
+  plays and situations, runs them on the real engine, and studies them with
+  these layers: requested vs achieved motion, command owner, delayed
+  perception, reach and contact, falls, ball flight, pursuit intercepts and
+  run fits. Player moves are labelled coach's-hand interventions. Notes
+  restore their exact moment headless with `npm run lab:replay`. Still to
+  come: branching from a moment (it needs engine snapshot/restore), scripted
+  situations, A/B batches and an agent hand-off export.
+- **Open:** the outside audit's suggestions on drawing intent versus achieved
+  motion and showing reach and contact are now lab layers; whether the shared
+  replay viewer should adopt them is open.
 
 ## Repository and process
 

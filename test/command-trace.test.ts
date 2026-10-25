@@ -42,13 +42,17 @@ describe('selected command attribution in normal execution', () => {
     expect(catchStep.decision!.owner.controller).toBe('CoverageDefender');
     expect(catchStep.decision!.owner.kind).toBe('man');
     expect(catchStep.decision!.ownerAfterUpdate.target?.slot).toBe('X');
-    expect(catchStep.endpoint!.behavior.controller).toBe('Pursuit');
-    expect(catchStep.endpoint!.behavior.kind).toBe('pursuit');
+    // INFO-1 deliberately removes the catch's global controller broadcast.
+    // Attribution still distinguishes evaluated and endpoint ownership, and
+    // the existing complete observer-off/on equality remains mandatory.
+    expect(catchStep.endpoint!.behavior.controller).toBe('CoverageDefender');
+    expect(catchStep.endpoint!.behavior.kind).toBe('man');
     expect(catchStep.endpointTime).toBeCloseTo(catchStep.stepStart + on.sim.dt, 10);
     const nextDecision = trace.steps.find(s => s.stepStart === catchStep.endpointTime)!.decision!;
-    expect(nextDecision.owner.kind).toBe('pursuit');
-    expect(nextDecision.owner.target).toBeNull();
-    expect(nextDecision.owner.targetSource).toBe('not-exposed');
+    expect(nextDecision.owner.controller).toBe('CoverageDefender');
+    expect(nextDecision.owner.kind).toBe('man');
+    expect(nextDecision.owner.target?.slot).toBe('X');
+    expect(nextDecision.owner.targetSource).toBe('stored-target');
     expect(trace.steps.every(s => s.stepStart >= selection.from && s.stepStart < selection.to && s.actor.playerId === trace.actor.playerId)).toBe(true);
     expect(trace.steps[0].actor).toEqual({ playerId: on.sim.slot('CB_W')!.player.id, team: 'D', slot: 'CB_W', index: on.sim.slot('CB_W')!.idx });
     const free = trace.steps.find(s => s.stepStart === 2)!;
