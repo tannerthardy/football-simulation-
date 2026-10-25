@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-16",
+  "scope": "First-pass familiar-language interpretation and navigation; same source-library PR; no runtime changes or simulations.",
+  "original_import_commit": "0f81f9a1efb260c2ee4880ab3233a07eca40f5d4",
+  "review_method": "Reviewed every image in full-page overview contact sheets and consulted machine source text; enlarged selected diagrams to resolve named concepts. Sparse or unclear details retain descriptive labels.",
+  "limitations": "First-pass familiar-language navigation for all 385 unique sheets; not a complete route/assignment transcription or independently authenticated playbook.",
+  "unique_sheets_with_interpretations": 385,
+  "basis_counts": {
+    "source-stated": 303,
+    "description-only": 12,
+    "diagram-supported": 70
+  },
+  "familiar_family_groups": 37,
+  "curated_crosswalk_entries": 27,
+  "preservation": {
+    "images_ids_paths_and_source_metadata_unchanged_from_import": 385,
+    "raw_ocr_blocks_byte_equal_to_import": 385,
+    "original_archive_mappings": 403,
+    "retained_similarity_pairs": 26,
+    "original_batch_records_unchanged": true
+  },
+  "checks": {
+    "local_links_and_fragment_targets": "pass",
+    "metadata_negative_controls_rejected": [
+      "missing_interpretation",
+      "unknown_family",
+      "unknown_crosswalk_source",
+      "empty_explanation",
+      "source_ocr_change_even_with_updated_card_hash"
+    ],
+    "source_preservation_vs_original_git_tree": "pass",
+    "library_check": "pass",
+    "git_diff_check": "pass"
+  },
+  "catalog_sha256": "a3cdf0f32db0043714e989554d6c28bd435e006d6573ae2af1fe5cd912381540",
+  "interpretation_changes_do_not_prove": "Independent football accuracy, source authenticity, engine implementation or exact assignment/protection equivalence."
+}

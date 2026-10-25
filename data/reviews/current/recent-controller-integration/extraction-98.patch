@@ -1,0 +1,335 @@
+diff --git a/src/playbook/alignment.ts b/src/playbook/alignment.ts
+index b162f6f..4ceed95 100644
+--- a/src/playbook/alignment.ts
++++ b/src/playbook/alignment.ts
+@@ -253,6 +253,43 @@ export interface DefenseAlignment {
+   boxCount: number;
+ }
+ 
++/** Actual initial bodies, after the ordinary alignment error is applied. */
++export interface DefensiveStanceBody {
++  slot: DefSlot;
++  pos: Vec2;
++  radius: number;
++}
++
++/** A pressed marker retains his receiver and lateral shade when the called
++ * front occupies that stance. Choose the nearest unoccupied depth, rather
++ * than beginning with interpenetrating teammates. This installs an initial
++ * stance; it must never reposition players after pre-snap movement begins. */
++export function fitPressStances(alignment: DefenseAlignment, bodies: readonly DefensiveStanceBody[], los: number): void {
++  for (const body of bodies) {
++    const spot = alignment.spots[body.slot];
++    const corner = body.slot === 'CB_S' || body.slot === 'CB_W' || body.slot === 'NB' || body.slot === 'DB';
++    if (!corner || !spot?.press || spot.role.kind !== 'man' || !spot.manTarget) continue;
++    const occupied = bodies.flatMap(other => {
++      if (other === body) return [];
++      const radius = body.radius + other.radius, lateral = body.pos.y - other.pos.y;
++      if (Math.abs(lateral) >= radius) return [];
++      const half = Math.sqrt(radius * radius - lateral * lateral);
++      return [{ low: other.pos.x - half, high: other.pos.x + half }];
++    });
++    const original = body.pos.x;
++    const clear = (x: number) => occupied.every(({ low, high }) => x <= low || x >= high);
++    if (clear(original)) continue;
++    const minimum = los + body.radius;
++    // Every boundary of the occupied intervals is a possible nearest stance.
++    // Checking all teammates also prevents a front correction entering a
++    // second player's body. Equally near depths retain the tighter cushion.
++    const candidates = [minimum, ...occupied.flatMap(({ low, high }) => [low, high])]
++      .filter(x => x >= minimum && clear(x));
++    candidates.sort((a, b) => Math.abs(a - original) - Math.abs(b - original) || a - b);
++    if (candidates.length) body.pos.x = candidates[0];
++  }
++}
++
+ /** Landmark for a zone (field coordinates). */
+ export function zoneLandmark(zone: ZoneId, off: OffenseAlignment): Vec2 {
+   const s = off.strongSign;
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index 49e7f25..3d42fce 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -16,7 +16,7 @@ import { World, type Intent, type StepReport } from '../physics/world.js';
+ import { containCoverage } from './coverage-space.js';
+ import { derivePhysical } from '../players/physical.js';
+ import type { Player } from '../players/types.js';
+-import { alignDefense, alignOffense, formationKey, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
++import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+ import { applyCheck, resolveZeus } from '../playbook/coverages.js';
+ import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
+ import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
+@@ -211,6 +211,7 @@ export class PlaySim {
+       if (!spot) continue;
+       mk('D', slot, player, spot.pos, Math.PI);
+     }
++    fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
+     this.snapX = this.agents.map((a) => a.pos.x);
+     this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact });
+     // Linemen and backs start in their stances; skill players upright.
+@@ -275,6 +276,9 @@ export class PlaySim {
+       targets.set(mug!,{x:this.los+.65,y:gapY(this.offAlign,spot.role.gap,side)});
+       mug!.body.pos.x = Math.max(mug!.pos.x,this.los+4);
+     }
++    // A stem replaces the initial presentation above. Fit that starting
++    // stance before its first observable history, never the moving endpoint.
++    fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
+     const ticks = Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0)/this.dt);
+     // Prime with the presentation that was actually shown, never the called
+     // destination. Observers with longer latency retain the old front.
+diff --git a/test/fixtures/press-front-stance.json b/test/fixtures/press-front-stance.json
+new file mode 100644
+index 0000000..c733d46
+--- /dev/null
++++ b/test/fixtures/press-front-stance.json
+@@ -0,0 +1,98 @@
++{
++  "schema": "press-front-stance-v1",
++  "caseId": "A002",
++  "acceptedCommit": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
++  "sourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
++  "inputSha256": "c89114b0e70a701a69f3429a69e709d4897b825b4547fbd5ee0834b2b2dd8c2f",
++  "los": 35,
++  "bodies": [
++    {
++      "slot": "DE_W",
++      "pos": {
++        "x": 35.9,
++        "y": 31.738873431375136
++      },
++      "radius": 0.2809090909090909
++    },
++    {
++      "slot": "DE_S",
++      "pos": {
++        "x": 35.9,
++        "y": 23.314022529086827
++      },
++      "radius": 0.3
++    },
++    {
++      "slot": "DT_S",
++      "pos": {
++        "x": 35.9,
++        "y": 26.235836592367285
++      },
++      "radius": 0.37363636363636366
++    },
++    {
++      "slot": "DT_W",
++      "pos": {
++        "x": 35.9,
++        "y": 28.618329143730133
++      },
++      "radius": 0.29
++    },
++    {
++      "slot": "LB_M",
++      "pos": {
++        "x": 39.9,
++        "y": 24.8143770953425
++      },
++      "radius": 0.28727272727272724
++    },
++    {
++      "slot": "LB_W",
++      "pos": {
++        "x": 40,
++        "y": 27.369739300955516
++      },
++      "radius": 0.3090909090909091
++    },
++    {
++      "slot": "CB_S",
++      "pos": {
++        "x": 36.2,
++        "y": 9.398907203229925
++      },
++      "radius": 0.26454545454545453
++    },
++    {
++      "slot": "CB_W",
++      "pos": {
++        "x": 36.2,
++        "y": 43.80342295202108
++      },
++      "radius": 0.24909090909090909
++    },
++    {
++      "slot": "NB",
++      "pos": {
++        "x": 36.2,
++        "y": 23.281769335272212
++      },
++      "radius": 0.24818181818181817
++    },
++    {
++      "slot": "FS",
++      "pos": {
++        "x": 48,
++        "y": 26.639482460446278
++      },
++      "radius": 0.2509090909090909
++    },
++    {
++      "slot": "SS",
++      "pos": {
++        "x": 39,
++        "y": 34.63406289361976
++      },
++      "radius": 0.28545454545454546
++    }
++  ]
++}
+diff --git a/test/press-front-stance.test.ts b/test/press-front-stance.test.ts
+new file mode 100644
+index 0000000..68e6f3e
+--- /dev/null
++++ b/test/press-front-stance.test.ts
+@@ -0,0 +1,146 @@
++import { readFileSync } from 'node:fs';
++import { describe, expect, it } from 'vitest';
++import { FIELD_WIDTH } from '../src/core/field.js';
++import { clamp } from '../src/core/vec.js';
++import { alignDefense, alignOffense, fitPressStances, type DefensiveStanceBody } from '../src/playbook/alignment.js';
++import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
++import { RUN_BY_ID } from '../src/playbook/concepts.js';
++import { FORMATION_BY_ID } from '../src/playbook/formations.js';
++import type { DefSlot } from '../src/playbook/types.js';
++import { PlaySim, type PlaySetup } from '../src/sim/playsim.js';
++
++const witness = JSON.parse(readFileSync(new URL('./fixtures/press-front-stance.json', import.meta.url), 'utf8')) as {
++  los: number; bodies: DefensiveStanceBody[];
++};
++const panel = JSON.parse(readFileSync(new URL('../config/roster-screen.json', import.meta.url), 'utf8')) as {
++  matchups: Array<Pick<PlaySetup, 'offense' | 'defense'>>;
++};
++
++function alignment(flip = false) {
++  const off = alignOffense(FORMATION_BY_ID.ace_11, flip, witness.los, FIELD_WIDTH / 2);
++  return alignDefense({ personnel: 'nickel', front: FRONT_BY_ID.under, coverage: COVERAGE_BY_ID.cover1,
++    pressure: null, label: 'Under Cover 1' }, off, witness.bodies.map(b => b.slot));
++}
++
++function distance(a: DefensiveStanceBody, b: DefensiveStanceBody) {
++  return Math.hypot(a.pos.x - b.pos.x, a.pos.y - b.pos.y);
++}
++
++describe('initial pressed man stance around the fixed front', () => {
++  it.each([false, true])('clears the saved A002 overlap while retaining lateral shade and duty, flip=%s', flip => {
++    const bodies = structuredClone(witness.bodies);
++    if (flip) for (const b of bodies) b.pos.y = FIELD_WIDTH - b.pos.y;
++    const before = structuredClone(bodies), jobs = alignment(flip), originalJobs = structuredClone(jobs);
++    const nb = bodies.find(b => b.slot === 'NB')!, end = bodies.find(b => b.slot === 'DE_S')!;
++    expect(distance(nb, end)).toBeLessThan(nb.radius + end.radius);
++    fitPressStances(jobs, bodies, witness.los);
++    expect(jobs).toEqual(originalJobs);
++    for (const [i, b] of bodies.entries()) {
++      expect(b.radius).toBe(before[i].radius);
++      expect(b.pos.y).toBe(before[i].pos.y);
++      if (b !== nb) expect(b).toEqual(before[i]);
++      else expect(b.pos.x).toBeCloseTo(end.pos.x + Math.sqrt((nb.radius + end.radius) ** 2 - (nb.pos.y - end.pos.y) ** 2), 12);
++    }
++    for (const other of bodies) if (other !== nb)
++      expect(distance(nb, other)).toBeGreaterThanOrEqual(nb.radius + other.radius - 1e-12);
++    expect(nb.pos.x - nb.radius).toBeGreaterThanOrEqual(witness.los);
++    const once = structuredClone(bodies);
++    fitPressStances(jobs, bodies, witness.los);
++    expect(bodies).toEqual(once);
++  });
++
++  it('takes the closer forward stance when the teammate is behind the marker', () => {
++    const bodies: DefensiveStanceBody[] = [
++      { slot: 'NB', pos: { x: 36.2, y: 23.4 }, radius: .3 },
++      { slot: 'DE_S', pos: { x: 36.5, y: 23.4 }, radius: .3 },
++    ];
++    fitPressStances(alignment(), bodies, 35);
++    expect(bodies[0].pos).toEqual({ x: 35.9, y: 23.4 });
++    expect(bodies[1].pos).toEqual({ x: 36.5, y: 23.4 });
++  });
++
++  it('does not resolve the front overlap by entering a nearby backfield teammate', () => {
++    const bodies: DefensiveStanceBody[] = [
++      { slot: 'NB', pos: { x: 36.2, y: 23.4 }, radius: .3 },
++      { slot: 'DE_S', pos: { x: 35.9, y: 23.4 }, radius: .3 },
++      { slot: 'LB_M', pos: { x: 36.9, y: 23.4 }, radius: .3 },
++    ];
++    const before = structuredClone(bodies);
++    fitPressStances(alignment(), bodies, 35);
++    expect(bodies[0].pos.x).toBeCloseTo(35.3, 12);
++    expect(bodies.slice(1)).toEqual(before.slice(1));
++    for (const other of bodies.slice(1)) expect(distance(bodies[0], other)).toBeGreaterThanOrEqual(.6 - 1e-12);
++  });
++
++  it('keeps the whole body on the defensive side when the forward escape would cross the LOS', () => {
++    const bodies: DefensiveStanceBody[] = [
++      { slot: 'NB', pos: { x: 35.4, y: 23.4 }, radius: .3 },
++      { slot: 'DE_S', pos: { x: 35.6, y: 23.4 }, radius: .4 },
++    ];
++    fitPressStances(alignment(), bodies, 35);
++    expect(bodies[0].pos.x).toBeCloseTo(36.3, 12);
++  });
++
++  it('leaves an already clear pressed layout exact', () => {
++    const bodies = structuredClone(witness.bodies);
++    bodies.find(b => b.slot === 'NB')!.pos.y += 2;
++    const before = structuredClone(bodies);
++    fitPressStances(alignment(), bodies, witness.los);
++    expect(bodies).toEqual(before);
++  });
++
++  it.each(['off', 'zone', 'unassigned', 'front'] as const)('does not relocate a %s player', kind => {
++    const bodies = structuredClone(witness.bodies), jobs = alignment();
++    if (kind === 'off') jobs.spots.NB!.press = false;
++    if (kind === 'zone') jobs.spots.NB!.role = { kind: 'zone', zone: 'hook_s' };
++    if (kind === 'unassigned') delete jobs.spots.NB!.manTarget;
++    if (kind === 'front') { jobs.spots.DE_S!.press = true; jobs.spots.DE_S!.role = { kind: 'man' }; jobs.spots.DE_S!.manTarget = 'Y'; jobs.spots.NB!.press = false; }
++    const before = structuredClone(bodies);
++    fitPressStances(jobs, bodies, witness.los);
++    expect(bodies).toEqual(before);
++  });
++});
++
++function setup(front: string, coverage: string): PlaySetup {
++  return { ...panel.matchups[0],
++    offCall: { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.oz_strong, label: 'OZ' },
++    defCall: { personnel: 'nickel', front: FRONT_BY_ID[front], coverage: COVERAGE_BY_ID[coverage], pressure: null, label: 'stance setup' },
++    los: 35, ballY: FIELD_WIDTH / 2, firstDownX: 45, seed: coverage === 'cover1' ? 71002 : 71001, audibles: false };
++}
++
++describe('initial PlaySim staging hook', () => {
++  it('fits A002 actual scattered bodies before installing blocking and priming observation history', () => {
++    const sim = new PlaySim(setup('under', 'cover1'));
++    const nb = sim.slot('NB')!, end = sim.slot('DE_S')!;
++    expect(Math.hypot(nb.pos.x - end.pos.x, nb.pos.y - end.pos.y)).toBeGreaterThanOrEqual(nb.profile.radius + end.profile.radius - 1e-12);
++    expect(sim.defAlign.spots.NB!.manTarget).toBe('Y');
++    expect(sim.defAlign.spots.NB!.press).toBe(true);
++    expect(sim.defAlign.spots.NB!.role.kind).toBe('man');
++    for (const d of sim.defense) {
++      const spot = sim.defAlign.spots[d.slot as DefSlot]!;
++      expect(d.pos.y).toBe(clamp(spot.pos.y + d.mind.alignmentError, .5, FIELD_WIDTH - .5));
++      if (d !== nb) expect(d.pos.x).toBe(spot.pos.x);
++      expect(d.vel).toEqual({ x: 0, y: 0 });
++      expect(d.facing).toBe(Math.PI);
++    }
++    // The first legitimate picture must reflect the installed physical stance.
++    expect(sim.see(sim.slot('RT')!, nb).pos.x).toBeCloseTo(nb.pos.x, 12);
++    expect(sim.snapX[nb.idx]).toBe(nb.pos.x);
++    const endPosition = { ...end.pos }, nbPosition = { ...nb.pos };
++    sim.tick();
++    // Neither player has reacted: no initial overlap should move the front
++    // through positional contact correction before either requests a step.
++    expect(sim.intents[end.idx].vel).toEqual({ x: 0, y: 0 });
++    expect(sim.intents[nb.idx].vel).toEqual({ x: 0, y: 0 });
++    expect(end.pos).toEqual(endPosition);
++    expect(nb.pos).toEqual(nbPosition);
++  });
++
++  it('keeps every clear Wide9/Quarters body at its original scattered stance', () => {
++    const sim = new PlaySim(setup('wide9', 'cover4'));
++    for (const d of sim.defense) {
++      const spot = sim.defAlign.spots[d.slot as DefSlot]!;
++      expect(d.pos).toEqual({ x: spot.pos.x, y: clamp(spot.pos.y + d.mind.alignmentError, .5, FIELD_WIDTH - .5) });
++    }
++  });
++});

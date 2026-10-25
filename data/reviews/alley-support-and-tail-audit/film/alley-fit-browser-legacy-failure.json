@@ -1,0 +1,14 @@
+{
+  "tool": "out/coverage-continuation/alley-fit-browser-tool.py",
+  "status": "failed",
+  "phase": "auto-next after finish",
+  "error": "Page.wait_for_function timed out at 15000 ms waiting for current clip index to change.",
+  "passedBeforeFailure": [
+    "Offline initial load and full telemetry readiness",
+    "All filmed clips and concept groups present",
+    "All grouping modes preserve collection",
+    "Watch group and next/previous transport",
+    "Seeking finish pauses without immediate advance"
+  ],
+  "action": "Retained this failure and followed with focused checks of the actual paired-film scope, full inspection, selection, playback and real WebM export. No viewer changes made."
+}

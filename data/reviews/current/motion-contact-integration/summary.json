@@ -1,0 +1,99 @@
+{
+  "accepted": "2c98bed94adad8087c65f381d4090444ad283985",
+  "failedCombined": "075e2148a8c94c80ba90743a324e4670091998c0",
+  "isolated185": "ed3583afcdff6c3c02b9df932adc8b2308d3afcc",
+  "repair": "436e9e61bea24170addcf4ff748164de09fb9c19",
+  "finalTested": "4ee751d5ffd5af1d500a913bbb7d41ed1a0357e4",
+  "nativeDiagnosticExecutions": 12,
+  "completedGames": 0,
+  "sharedSuites": 0,
+  "focusedAttempts": [
+    {
+      "passed": 45,
+      "failed": 2
+    },
+    {
+      "passed": 49,
+      "failed": 0
+    }
+  ],
+  "question": "Does PR185 admit remote acquired lateral wall bodies that do not intersect its crossing path, and does a geometric relevance repair preserve near obstruction and actual contact?",
+  "causalFinding": "185-only exactly reproduces combined first TE request at0.05: (-8.382734804988027,-1.5806700815695742), versus accepted(+.12824314443856136,-7.897355108808619). Remote parked x5.. reference bodies were selected solely by installed lateral stations. Penetrating contact1.40 becomes no acquisition/4.839yd closest.",
+  "repairScope": "Retain only acquired x-sweeps overlapping current/installed flat path plus combined radii and ordinary free-ground acceleration reach over the existing decision interval; preserve lateral closing filter and GH override. No hidden coordinates, new timer, clearance bubble, physical law or capability. Future external impulses remain unknown.",
+  "firstRepairFinding": "Actual acquisition and native mirror restored, four near/GH/puller test groups pass. New initial.plan alias exposed as achieved pullPath updated; natural stationary kick acquires at1.75 before a personally acquired inside crossing, so former incidental log is no longer required.",
+  "testAdjudication": "Capture initial drive/path by value. Keep native both-side actual acquisition/load and unchanged budgets/negative/mirror controls. Preserve positive/negative acquired log contract in explicit mirrored free-approach production-hook controls, opposing private live target coordinates.",
+  "costSeconds": 8.851134789,
+  "evidenceFiles": [
+    {
+      "path": "data/reviews/current/motion-contact-integration/185-only-failed-receipt.json",
+      "sha256": "bacec078c15dc29e63e6533109ade3fa1f9616a48d09d30f5f643dfb3dce8136"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/185-only-failed.json.gz",
+      "sha256": "222b52a62ea2671372f47d203707680c93116dd4eb93934a0d373e73062a2559"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/accepted-receipt.json",
+      "sha256": "86be606a1db5edebd2aa8acc0277256b03a9a9b423ee4cbfdda4e874ca2308cd"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/accepted.json.gz",
+      "sha256": "70b8140597429ced1031ddde39ebe6636ea8ea73be7785777fe5c85cc0d35447"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/candidate-failed-receipt.json",
+      "sha256": "57938a615ccaf75786e9454f0f847c3d21105c77374a5f1d85d33e06876472e5"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/candidate-failed.json.gz",
+      "sha256": "9a701b426e281a848d416019b9b9daf3d445716316531b83d53e7f19f449d1b4"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/final-focused-receipt.json",
+      "sha256": "78bdc82e2714fb158e289022c5f16631c2176bf78a7e4c0413689079ae679606"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/final-focused.log",
+      "sha256": "0f71aa71889f83a65f7447d03e11cc587af7c52abae55fcde096ad44c8727736"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/first-repair-focused-receipt.json",
+      "sha256": "4d6639b04b28985d3311e33d8ca78c2d84523c82e0dc92aed0c00d438407ad5f"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/first-repair-focused.log",
+      "sha256": "781cb0dcadcc78fde4e83d4513f356bbe9160a81115a11048f226e74a9e8e48a"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/redirect-geometric-focused.log",
+      "sha256": "17dab000f6f4dbe61c4d1dcbdae0eef678ecc93067704c880ad4dc5d9167ac34"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/redirect-geometric-receipt.json",
+      "sha256": "0ea407f5c79e0d231a9fd17bbfc390fcd2ffe46bcc16cf5b53b94643cb6333ad"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/repaired-stationary-receipt.json",
+      "sha256": "459e8ce24039b26762a2140c267f77f160e75bf6f6e1e8cfec586f5d6f35a766"
+    },
+    {
+      "path": "data/reviews/current/motion-contact-integration/repaired-stationary.json.gz",
+      "sha256": "fc10787b36805e7aa69daaf54b7159bb732c2aae5feac159b19908314dd2dfa0"
+    }
+  ],
+  "independentReview": {
+    "reviewer": "/root/run_contact_composition",
+    "decision": "ACCEPT exact runtime436e9e61 and final4ee751d5 after full patch/source and49-pass receipt review",
+    "newRuns": 0
+  },
+  "redirectQualification": {
+    "commit": "8928b9f66f59eaa1477971ac94b9f7a17d752968",
+    "decision": "ACCEPT by /root/motor_review after raw traces/exact patch/evidence hashes review",
+    "focusedPassed": 2,
+    "commandSeconds": 2.034265198,
+    "historicalDiagnosis": "2ce93896b191e70cda9a2e12a9e4d5de48b98dfe",
+    "positionAccuracyYd": 1e-09,
+    "velocityAccuracyYdPerS": 2e-08,
+    "productionChange": false
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "baseCommit": "627964cc44f6c6829d04898ebd7a563b26dc12d7",
+  "baselineSourceSha256": "d9cac8e394cc24ee1e7402b854577870ba28fb855ab64ad6bedb95c1531d27f2",
+  "finalSourceSha256": "6368ce73ec217e52860d34533d9de102b028725b23688735c5f0b58aace472c5",
+  "node": "v22.23.3",
+  "branch": "claude/engine-priorities",
+  "cohorts": {
+    "calibration": {
+      "games": 32,
+      "seed": 7,
+      "leagues": 4,
+      "teamsPerLeague": 8,
+      "baselineScrimmagePlays": 4009,
+      "finalScrimmagePlays": 4131,
+      "measurementCodeUnchanged": true
+    },
+    "kinematics": {
+      "games": 4,
+      "seed": 5,
+      "teams": "new equal-strength .55 pairs; same source roster generation in both revisions"
+    },
+    "height": "Three prescribed active heights, 6/12/24/48 steps, rotated/reflected; two sustained-pressure postures.",
+    "press": "Five roster seeds, two field sides, 6/12/24 steps, hands/no-hands paired geometry.",
+    "film": {
+      "games": 6,
+      "seeds": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "clips": 858,
+      "concepts": 27,
+      "teams": "same .55 Ironmen/Comets roster; distinct from calibration and tracking cohorts"
+    }
+  },
+  "commands": [
+    "npm test",
+    "npm run typecheck",
+    "npm run build",
+    "node --import tsx scripts/calibrate.ts 32 7 4",
+    "node --import tsx scripts/kinematics-compare.ts 4 5",
+    "node --import tsx scripts/scenario-pack.ts out/pack.json",
+    "node --import tsx scripts/contact-height-lab.ts out/height.json",
+    "node --import tsx scripts/press-contact-lab.ts out/press.json",
+    "node --import tsx scripts/interaction-readiness.ts out/readiness.json",
+    "node --import tsx scripts/diag/hand-convergence.ts out/convergence.json",
+    "node --import tsx scripts/export-replay.ts 7 --games 6 --out viewer/film-room.html --doc",
+    "python3 scripts/check-replay-viewer.py viewer/film-room.html"
+  ],
+  "notes": [
+    "Baseline archived from baseCommit; only small tracking reference summaries copied into archive for kinematics script. Raw data not required.",
+    "Paired panels change physics jointly; cannot attribute outcomes to one mechanism.",
+    "Final test suite rerun without concurrent game panels after initial successful assertions but worker shutdown timeout.",
+    "CPU floor comparison has separate intermediate source identities in data/reviews/physics-world/hand-fight-convergence; it is not a timed measurement of final entire change.",
+    "No AddBiomechanics subject files downloaded or engine parameters fitted from that dataset."
+  ],
+  "scripts": {
+    "scripts/calibrate.ts": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+    "scripts/kinematics-compare.ts": "907a928cfff8375c88ccf596f3bf159509b72aeae032ac04cfe70630152999e2",
+    "scripts/scenario-pack.ts": "f6ddc3db78358bdc6615cd3e2305991a98ba78aeb401d6bc4823569553bffe94",
+    "scripts/contact-height-lab.ts": "c674239f98aa8804a07e2648c624935a0efa493fdab3515c3c2c26e0f90e3c30",
+    "scripts/press-contact-lab.ts": "8548337fa313ae3a1d1f74fa43b1a8d4fe2020e4c03d794f80ab29b3c9eeb387",
+    "scripts/interaction-readiness.ts": "1f68ac486d0d7fb7ff102ab9ed4d07e49c375d8912640a7accc9ef70a79d07ed",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/diag/physics-cost.ts": "664ac493760cb63983c5105ec87a9ba0df32840ba7c10060cdf507b5deb625e5",
+    "scripts/export-replay.ts": "9f85970b4c86e4a46af63c6205fb743cab5ec7700e5e1d354ff08b18446829bf",
+    "scripts/check-replay-viewer.py": "5952fa8098902eb0a8ff4e9ed5531ae1a1d4570305b26053f9c22e896ee3f0e9",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+  },
+  "references": {
+    "data/bdb2025-summary.json": "0fc753d56edfa3dcb2337fd28daa2890386a27ab49a0430b7a02c76d5fd1f8ba",
+    "data/bdb2026-summary.json": "c9e506a25ae634f7e2daed57df5fc1c3ecb73bf579f99b875647ab7b1c0aba77"
+  },
+  "artifacts": {
+    "before-calibration-32.txt": "d0bdde07d0739f70fcee5e067d80ac680aa5c06adae62b92e85b2bc095610352",
+    "hand-convergence.json": "506c0ca9515ab0e49052cc78bcf060ed4918b8b2ee234ca18651722763fdb822",
+    "tests.txt": "9c2c37b44a695a6a7ecb420c04be8479c5356b6172136d1620a43dd6d575bad0",
+    "contact-height.json": "c26ee4dca0c92298159afef28df193196488d55f538a6a915591ef75cd9a1c0e",
+    "film-export.txt": "dbf2b5ab1e159b6558a3a7cbf31518da7d6e9cc614e2b9907f9602aa56635c8d",
+    "build.txt": "31332ab7887258443be380e6c1625535b3d7d264ea650945cd8804c31347a7d7",
+    "after-kinematics.txt": "64e3dc3fa64b955ea63d9a30bbc490eb05c515dc8e4e8090180056343aa6dc15",
+    "typecheck.txt": "da261241a3139ef6606e87edd53392ca08b8ac6355e004628743c15bad96e2b9",
+    "press-contact.json": "e8a3a84d91c092bbb458c5f30ca70118080c89e53f982723f4f709ee8aa3d61e",
+    "after-scenarios.json": "715b3730938bade3dfac4cc7aee33f28e7ef12cffd781150d59bca66e948345f",
+    "before-scenarios.json": "9b2d2a009f35ceae376dbf9e1e2e6077bd084e8dfa8c7ce50f5a0e0766faa894",
+    "interaction-readiness.json": "61dc57bbe7831d43739323a46a6079c3b8a09200c34aa9e90b9e665596a689b6",
+    "viewer-check.json": "71adec646ae0a41c2675bc28bbafc0f1fb2bfaff37e6a24afc12e833c03a6e08",
+    "before-kinematics.txt": "af31592a538e47d109a451619aa450bee92037cf3f80494d5ee010ebacbe3df8",
+    "after-calibration-32.txt": "ae119898ba2a03624314d6d00e493d830a9e278d8791ece2f225ab526ca0a550"
+  },
+  "filmFiles": {
+    "viewer/film-room.html": "bcc7eb83444b9ae5d2f4ef72aa85131a994909427f4b13077535623e888e9e99",
+    "viewer/film-room.zip": "5aec589d044374162cbce09e261108152e4ed77457c144385ba338c473a90ef7"
+  },
+  "integratedDevelopmentGuideCommit": "437b20c"
+}

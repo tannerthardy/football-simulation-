@@ -1,0 +1,50 @@
+{
+  "query": {
+    "schema": "run-outcome-context-query-v1",
+    "seasons": [
+      2022,
+      2023
+    ],
+    "selection": "Same REG/live pass-run and kneel/spike/two-point exclusions as schematic_context_audit. Designed runs exclude scrambles; scramble means qb_scramble=true, rush_attempt=true and observed dropback. Retain all runner positions and touchdowns/fumbles; do not infer the original RPO call.",
+    "outcomes": "Require penalty=false and finite yards_gained. Live flagged/missing-flag runs are counted separately. This is an explicit penalty-flag filter, not reconstructed acceptance/enforcement.",
+    "gains": "Whole-play yards_gained, not individual rushing_yards. Report interpolated p10/p25/p50/p75/p90/p95/p99, mean/max, disjoint bins below0/zero/positiveUnder4/4toUnder7/7toUnder10/10toUnder20/20plus, negative<0, stuff<=0,10plus,20plus.",
+    "success": "Known positive ydstogo and down1-4: gain>=40% on first,60% on second,100% on third/fourth. Separately report gain>=ydstogo, recorded first_down_rush or rush_touchdown, and positive model-derived EPA. Turnovers retain their gain but have separate recorded fumble_lost and distance-gain-without-turnover counts.",
+    "explosiveGeometry": "10+/20+ all-run rates plus eligible-field rates where yardline_100>=10/>=20 respectively. Excludes no touchdowns; geometry-conditioned rates are still selected mixtures, not NFL targets.",
+    "carrier": "Exact season+rusher_player_id match to season roster gsis_id; QB, RB/FB, other or unknown. Roster position is not snap role. Conflicting listed positions for an identity remain ambiguous/unknown rather than guessed.",
+    "context": "Reuse schematic pilot down,distance1to3/4to7/8to10/11to19/20plus, field0to20/21to50/51to100, scoretrailing9plus/within8/leading9plus, regulation-last600s vs earlier/overtime/unknown. Retain all thin cells and actual n.",
+    "jointCells": [
+      "season",
+      "kind",
+      "down",
+      "distance",
+      "field"
+    ],
+    "margins": [
+      "down",
+      "distance",
+      "field",
+      "score",
+      "period",
+      "carrier",
+      "run_location",
+      "run_gap"
+    ],
+    "chart2022": "Exact FTN game/play join. Separate known boolean QB sneak,motion,RPO strata and known integer0-11 n_defense_box strata<=5/6/7/8plus. Box count is charted presentation, never a called Over/Under/Odd/Tite/Bear front. Missing2023 charting is unavailable, not false/zero.",
+    "boxContextCells": [
+      "kind",
+      "carrier",
+      "down",
+      "distance",
+      "field",
+      "box"
+    ],
+    "witnesses": "Third and20plus; exact third-and27; ordinary RB/FB designed runs on down1/2,distance8to10,outside redzone,within8,earlier regulation. Declared before outcomes; witnesses never imply identified concepts/fronts.",
+    "variation": "Describe 64 team-season designed-run distributions and their metric percentiles. Observed roster/opponent/game-script mixture, not confidence intervals, independent trials or generated-roster limits.",
+    "limitations": "PBP has no blocking concept, all-22 front, contact force, tackle control or yards-before-contact field. Run_location/run_gap describe observed direction/location, not blocking scheme. No causal score/box effects, significance test or physical calibration."
+  },
+  "querySha256": "608a6699ab910b6cfe14ff307bbdefb055a149aa01499ba03f206470074a02d5",
+  "collectorSha256": "43af2d0bcd7255c7dbec94423dc0e4b38faac645d4e097c8ce5fd40a900909c8",
+  "helperSha256": "1b4e2b7b7e2cfe30495b2887a9e950d74a636a32b16b9867130fad7d86c90582",
+  "contextHelperSha256": "fca850cdac0e1837f68ae449ae94c2826b1f1cd5a802166e88074f0e6a365a9b",
+  "declaredAtUtc": "2026-10-11T11:34:37.111448+00:00"
+}

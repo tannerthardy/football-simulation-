@@ -1,0 +1,680 @@
+[
+  {
+    "path": "Big-Data-Bowl-master/.gitignore",
+    "bytes": 40,
+    "compressedBytes": 35,
+    "crc32": "160378f2"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Big-Data-Bowl.Rproj",
+    "bytes": 205,
+    "compressedBytes": 146,
+    "crc32": "92811039"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/games.csv",
+    "bytes": 15825,
+    "compressedBytes": 4134,
+    "crc32": "32f3f03d"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/players.csv",
+    "bytes": 105229,
+    "compressedBytes": 34455,
+    "crc32": "648e1507"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/plays.csv",
+    "bytes": 3038568,
+    "compressedBytes": 544008,
+    "crc32": "33f4b424"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017090700.csv",
+    "bytes": 31659157,
+    "compressedBytes": 5004518,
+    "crc32": "63609a2d"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091000.csv",
+    "bytes": 25882989,
+    "compressedBytes": 4105577,
+    "crc32": "d11c25a7"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091001.csv",
+    "bytes": 25234682,
+    "compressedBytes": 4044017,
+    "crc32": "a85a1d0a"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091002.csv",
+    "bytes": 24305010,
+    "compressedBytes": 3855896,
+    "crc32": "406368c3"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091003.csv",
+    "bytes": 24791355,
+    "compressedBytes": 3929981,
+    "crc32": "a8a91d15"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091004.csv",
+    "bytes": 29275415,
+    "compressedBytes": 4640283,
+    "crc32": "62e0c788"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091005.csv",
+    "bytes": 25753267,
+    "compressedBytes": 4041312,
+    "crc32": "7845255e"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091007.csv",
+    "bytes": 25859667,
+    "compressedBytes": 4074102,
+    "crc32": "9d19395a"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091008.csv",
+    "bytes": 27121424,
+    "compressedBytes": 4315973,
+    "crc32": "0a859611"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091009.csv",
+    "bytes": 25648501,
+    "compressedBytes": 4064838,
+    "crc32": "f1f839a7"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091010.csv",
+    "bytes": 26532810,
+    "compressedBytes": 4181300,
+    "crc32": "c094603a"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091011.csv",
+    "bytes": 23242244,
+    "compressedBytes": 3742494,
+    "crc32": "332f59a6"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091012.csv",
+    "bytes": 25395035,
+    "compressedBytes": 4038731,
+    "crc32": "1c5f148f"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091100.csv",
+    "bytes": 25895695,
+    "compressedBytes": 4114205,
+    "crc32": "ccfacd19"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091101.csv",
+    "bytes": 24762768,
+    "compressedBytes": 3896968,
+    "crc32": "419b2242"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091400.csv",
+    "bytes": 27940905,
+    "compressedBytes": 4425111,
+    "crc32": "26fe27e7"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091700.csv",
+    "bytes": 29563732,
+    "compressedBytes": 4684090,
+    "crc32": "1a79df91"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091701.csv",
+    "bytes": 23856247,
+    "compressedBytes": 3811531,
+    "crc32": "3a3c50aa"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091702.csv",
+    "bytes": 27493163,
+    "compressedBytes": 4342590,
+    "crc32": "b4fe0252"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091703.csv",
+    "bytes": 26505987,
+    "compressedBytes": 4237710,
+    "crc32": "ad841540"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091704.csv",
+    "bytes": 26708400,
+    "compressedBytes": 4041468,
+    "crc32": "f18878c6"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091705.csv",
+    "bytes": 28344293,
+    "compressedBytes": 4491387,
+    "crc32": "7167bd21"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091706.csv",
+    "bytes": 27611137,
+    "compressedBytes": 4325051,
+    "crc32": "e8f6dbe8"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091707.csv",
+    "bytes": 25370078,
+    "compressedBytes": 4041854,
+    "crc32": "4e0218a2"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091708.csv",
+    "bytes": 25555521,
+    "compressedBytes": 4018508,
+    "crc32": "cb8b922e"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091709.csv",
+    "bytes": 24037623,
+    "compressedBytes": 3788472,
+    "crc32": "856de9d6"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091710.csv",
+    "bytes": 27261805,
+    "compressedBytes": 4336426,
+    "crc32": "8a6f23ed"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091711.csv",
+    "bytes": 25988925,
+    "compressedBytes": 4098248,
+    "crc32": "108368f4"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091712.csv",
+    "bytes": 26824645,
+    "compressedBytes": 4268410,
+    "crc32": "77d7ddf0"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091713.csv",
+    "bytes": 26322654,
+    "compressedBytes": 4142417,
+    "crc32": "11dfa7e9"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017091800.csv",
+    "bytes": 24311766,
+    "compressedBytes": 3855111,
+    "crc32": "63e1909d"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092100.csv",
+    "bytes": 28324611,
+    "compressedBytes": 4498806,
+    "crc32": "a973a78a"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092400.csv",
+    "bytes": 25611084,
+    "compressedBytes": 4063573,
+    "crc32": "0a73a957"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092401.csv",
+    "bytes": 27332677,
+    "compressedBytes": 4309173,
+    "crc32": "fd811d49"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092402.csv",
+    "bytes": 24111395,
+    "compressedBytes": 3863070,
+    "crc32": "dbc40474"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092403.csv",
+    "bytes": 27761100,
+    "compressedBytes": 4373476,
+    "crc32": "5ad6c9e7"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092404.csv",
+    "bytes": 28803019,
+    "compressedBytes": 4557422,
+    "crc32": "78ebdf6c"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092405.csv",
+    "bytes": 28612039,
+    "compressedBytes": 4541441,
+    "crc32": "44c72647"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092406.csv",
+    "bytes": 24990321,
+    "compressedBytes": 3947975,
+    "crc32": "1254304e"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092407.csv",
+    "bytes": 29504563,
+    "compressedBytes": 4221905,
+    "crc32": "e6655a56"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092408.csv",
+    "bytes": 25351891,
+    "compressedBytes": 4029008,
+    "crc32": "575aa087"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092409.csv",
+    "bytes": 27019259,
+    "compressedBytes": 4267519,
+    "crc32": "b745fccf"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092410.csv",
+    "bytes": 30536740,
+    "compressedBytes": 4931516,
+    "crc32": "6ed60465"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092411.csv",
+    "bytes": 28239154,
+    "compressedBytes": 4511128,
+    "crc32": "64e46780"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092412.csv",
+    "bytes": 26359242,
+    "compressedBytes": 4184445,
+    "crc32": "0de0caba"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092413.csv",
+    "bytes": 24520646,
+    "compressedBytes": 3840483,
+    "crc32": "def955c7"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092500.csv",
+    "bytes": 25730324,
+    "compressedBytes": 4098330,
+    "crc32": "8ff81c37"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017092800.csv",
+    "bytes": 24978610,
+    "compressedBytes": 3941877,
+    "crc32": "a50b4eea"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100100.csv",
+    "bytes": 23127176,
+    "compressedBytes": 3660512,
+    "crc32": "681f1d92"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100101.csv",
+    "bytes": 27496340,
+    "compressedBytes": 4335643,
+    "crc32": "f7a5c0d4"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100102.csv",
+    "bytes": 29574296,
+    "compressedBytes": 4728661,
+    "crc32": "2804ab6b"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100103.csv",
+    "bytes": 26938913,
+    "compressedBytes": 4264577,
+    "crc32": "d839802f"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100104.csv",
+    "bytes": 29730982,
+    "compressedBytes": 4717489,
+    "crc32": "d8f78e89"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100105.csv",
+    "bytes": 26374943,
+    "compressedBytes": 4150180,
+    "crc32": "c4994c80"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100106.csv",
+    "bytes": 25682030,
+    "compressedBytes": 4045169,
+    "crc32": "c31dce2c"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100107.csv",
+    "bytes": 26331977,
+    "compressedBytes": 4182892,
+    "crc32": "509a01a8"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100108.csv",
+    "bytes": 30940513,
+    "compressedBytes": 4868896,
+    "crc32": "0f13fc41"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100109.csv",
+    "bytes": 32684027,
+    "compressedBytes": 5183957,
+    "crc32": "d0e65e04"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100110.csv",
+    "bytes": 26458810,
+    "compressedBytes": 4170469,
+    "crc32": "05dda07d"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100111.csv",
+    "bytes": 28506160,
+    "compressedBytes": 4517007,
+    "crc32": "00b20776"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100112.csv",
+    "bytes": 24657637,
+    "compressedBytes": 3904147,
+    "crc32": "e57dd6fb"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100113.csv",
+    "bytes": 26891123,
+    "compressedBytes": 4221662,
+    "crc32": "87e9d140"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100200.csv",
+    "bytes": 25640251,
+    "compressedBytes": 4000755,
+    "crc32": "c106f3e5"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100500.csv",
+    "bytes": 28692861,
+    "compressedBytes": 4554515,
+    "crc32": "f22dcd87"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100800.csv",
+    "bytes": 28814024,
+    "compressedBytes": 4574721,
+    "crc32": "4d22afdb"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100801.csv",
+    "bytes": 24617814,
+    "compressedBytes": 3861231,
+    "crc32": "a9792f6c"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100802.csv",
+    "bytes": 25855028,
+    "compressedBytes": 4105609,
+    "crc32": "61c7be24"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100803.csv",
+    "bytes": 30751003,
+    "compressedBytes": 4877529,
+    "crc32": "fb799cec"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100804.csv",
+    "bytes": 26673299,
+    "compressedBytes": 4248906,
+    "crc32": "db214821"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100805.csv",
+    "bytes": 30695914,
+    "compressedBytes": 4839385,
+    "crc32": "8226deac"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100806.csv",
+    "bytes": 26136751,
+    "compressedBytes": 4128725,
+    "crc32": "e568a6f5"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100807.csv",
+    "bytes": 27685763,
+    "compressedBytes": 4346163,
+    "crc32": "477b4e9b"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100808.csv",
+    "bytes": 28161038,
+    "compressedBytes": 4462041,
+    "crc32": "5a471e21"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100809.csv",
+    "bytes": 24621752,
+    "compressedBytes": 3912985,
+    "crc32": "f65ffcc3"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100810.csv",
+    "bytes": 27021743,
+    "compressedBytes": 4259122,
+    "crc32": "23c343f3"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100811.csv",
+    "bytes": 30451615,
+    "compressedBytes": 4767823,
+    "crc32": "bcc2bc31"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017100900.csv",
+    "bytes": 27571019,
+    "compressedBytes": 4377675,
+    "crc32": "59e53330"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101200.csv",
+    "bytes": 29485449,
+    "compressedBytes": 4676458,
+    "crc32": "74fe2f5d"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101500.csv",
+    "bytes": 23460852,
+    "compressedBytes": 3713159,
+    "crc32": "8c994778"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101501.csv",
+    "bytes": 35174581,
+    "compressedBytes": 5601669,
+    "crc32": "519d2b81"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101502.csv",
+    "bytes": 29303495,
+    "compressedBytes": 4564402,
+    "crc32": "15ff4988"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101503.csv",
+    "bytes": 28080926,
+    "compressedBytes": 4437784,
+    "crc32": "c8f53efd"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101504.csv",
+    "bytes": 33121790,
+    "compressedBytes": 5244399,
+    "crc32": "06aed223"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101505.csv",
+    "bytes": 29601474,
+    "compressedBytes": 4649954,
+    "crc32": "13ab8f04"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101506.csv",
+    "bytes": 29898411,
+    "compressedBytes": 4722772,
+    "crc32": "3fe8e46c"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101507.csv",
+    "bytes": 26004751,
+    "compressedBytes": 4107605,
+    "crc32": "ba8946c9"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101508.csv",
+    "bytes": 28350094,
+    "compressedBytes": 4464003,
+    "crc32": "56a54536"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101509.csv",
+    "bytes": 25939453,
+    "compressedBytes": 4048216,
+    "crc32": "26226448"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101510.csv",
+    "bytes": 24703749,
+    "compressedBytes": 3914791,
+    "crc32": "faf66019"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101511.csv",
+    "bytes": 27103022,
+    "compressedBytes": 4271631,
+    "crc32": "a790ec5d"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Data/tracking_gameId_2017101600.csv",
+    "bytes": 27735524,
+    "compressedBytes": 4381537,
+    "crc32": "e0aaa9ea"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Extras/Fig1.PNG",
+    "bytes": 2336531,
+    "compressedBytes": 2335642,
+    "crc32": "1598b877"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Extras/bdb.png",
+    "bytes": 40487,
+    "compressedBytes": 39356,
+    "crc32": "05ca7768"
+  },
+  {
+    "path": "Big-Data-Bowl-master/Extras/fig1.jpg",
+    "bytes": 885928,
+    "compressedBytes": 864808,
+    "crc32": "7120efaf"
+  },
+  {
+    "path": "Big-Data-Bowl-master/README.Rmd",
+    "bytes": 7582,
+    "compressedBytes": 3062,
+    "crc32": "dc1843eb"
+  },
+  {
+    "path": "Big-Data-Bowl-master/README.md",
+    "bytes": 7453,
+    "compressedBytes": 3048,
+    "crc32": "84b9582d"
+  },
+  {
+    "path": "Big-Data-Bowl-master/README_cache/markdown_github/__packages",
+    "bytes": 97,
+    "compressedBytes": 77,
+    "crc32": "a65e916b"
+  },
+  {
+    "path": "Big-Data-Bowl-master/README_cache/markdown_github/unnamed-chunk-2_d3cb20361fe8a1417b8a2567345548ca.RData",
+    "bytes": 3163,
+    "compressedBytes": 3163,
+    "crc32": "aa20d17a"
+  },
+  {
+    "path": "Big-Data-Bowl-master/README_cache/markdown_github/unnamed-chunk-2_d3cb20361fe8a1417b8a2567345548ca.rdb",
+    "bytes": 7217661,
+    "compressedBytes": 6593390,
+    "crc32": "f16a0db1"
+  },
+  {
+    "path": "Big-Data-Bowl-master/README_cache/markdown_github/unnamed-chunk-2_d3cb20361fe8a1417b8a2567345548ca.rdx",
+    "bytes": 257,
+    "compressedBytes": 257,
+    "crc32": "29261094"
+  },
+  {
+    "path": "Big-Data-Bowl-master/README_cache/markdown_github/unnamed-chunk-3_174295873ce65364f93621cf83043e12.RData",
+    "bytes": 3804,
+    "compressedBytes": 3804,
+    "crc32": "69c814f1"
+  },
+  {
+    "path": "Big-Data-Bowl-master/README_cache/markdown_github/unnamed-chunk-3_174295873ce65364f93621cf83043e12.rdb",
+    "bytes": 542621,
+    "compressedBytes": 463806,
+    "crc32": "8cababc7"
+  },
+  {
+    "path": "Big-Data-Bowl-master/README_cache/markdown_github/unnamed-chunk-3_174295873ce65364f93621cf83043e12.rdx",
+    "bytes": 3460,
+    "compressedBytes": 3208,
+    "crc32": "32575f84"
+  },
+  {
+    "path": "Big-Data-Bowl-master/faqs.Rmd",
+    "bytes": 1816,
+    "compressedBytes": 1014,
+    "crc32": "bd62e8f5"
+  },
+  {
+    "path": "Big-Data-Bowl-master/faqs.md",
+    "bytes": 1666,
+    "compressedBytes": 907,
+    "crc32": "a553cf50"
+  },
+  {
+    "path": "Big-Data-Bowl-master/man/figures/README-unnamed-chunk-3-1.gif",
+    "bytes": 355448,
+    "compressedBytes": 227373,
+    "crc32": "113eaf93"
+  },
+  {
+    "path": "Big-Data-Bowl-master/schema.Rmd",
+    "bytes": 5717,
+    "compressedBytes": 2083,
+    "crc32": "cb4f8f12"
+  },
+  {
+    "path": "Big-Data-Bowl-master/schema.md",
+    "bytes": 5816,
+    "compressedBytes": 1980,
+    "crc32": "0bc6c42a"
+  }
+]

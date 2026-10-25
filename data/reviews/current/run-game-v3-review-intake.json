@@ -1,0 +1,969 @@
+{
+  "schemaVersion": 1,
+  "kind": "review-intake-not-verification",
+  "recordedAtUtc": "2026-10-19T03:14:19.210470+00:00",
+  "pullRequest": 153,
+  "url": "https://github.com/tannerthardy/football-simulation-/pull/153",
+  "acceptedDevelop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "researchBranch": "claude/run-game-v3",
+  "researchHead": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+  "latestRuntimeCheckpoint": "c8d638086e69961de2ff45d41df0a9871947ca83",
+  "mergeBase": "f4146275ce7539816bf57b4ed55a0d2be10e48c7",
+  "researchCommitCount": 5,
+  "changedFileCount": 140,
+  "runtimeFiles": [
+    "src/sim/agent.ts",
+    "src/sim/assign.ts",
+    "src/sim/behaviors/blocking.ts",
+    "src/sim/behaviors/qb.ts",
+    "src/sim/engagement.ts",
+    "src/sim/run-fits.ts"
+  ],
+  "testFiles": [
+    "test/back-chase.test.ts",
+    "test/deep-cap.test.ts",
+    "test/run-game-flags.test.ts",
+    "test/shed-pursue.test.ts",
+    "test/stretch-flat.test.ts"
+  ],
+  "sourceSha256": {
+    "f4146275ce7539816bf57b4ed55a0d2be10e48c7": "7d23555ad67094fbe2e79726d9b761dd5f068c06fb90ff0796ec61c953750197",
+    "c8d638086e69961de2ff45d41df0a9871947ca83": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8",
+    "1c578afb38f2eb6fc4886639e63fccc4e79c4354": "013858af1c0313799995e10bdfe1d70358744e707ba9bb5844dab81db966f3d8"
+  },
+  "sourceHashMethod": "SHA256 of full relative path strings sorted, each path + NUL + file bytes + NUL; src tree only",
+  "flagProfileSha256": {
+    "f4146275ce7539816bf57b4ed55a0d2be10e48c7": "e9b97b1c55905956e5e356fa4f87985aaf60103ef6e92d2c3a35f84e81ef2f69",
+    "1c578afb38f2eb6fc4886639e63fccc4e79c4354": "bb2ef1a0ece9007c386b74218bc7e55dd4bb53145b15aed59f6c2071e6499dd8"
+  },
+  "flagHashMethod": "SHA256 of compact sorted-key JSON flags object, no trailing newline",
+  "existingFlagCount": 44,
+  "researchFlagCount": 54,
+  "existingFlagValuesPreserved": true,
+  "otherProfileFieldsPreserved": true,
+  "newFlagDefaults": {
+    "BACK_CHASE": "0",
+    "DEEP_CAP": "0",
+    "DEF_GETOFF": "1",
+    "LB_KEY": "0",
+    "MESH_TEMPO": "0",
+    "RUN_LATERAL": "0",
+    "SHED_PURSUE": "0",
+    "STRETCH_FLAT": "0",
+    "UC_MESH": "0",
+    "ZONE_TE": "0"
+  },
+  "submittedText": {
+    "bytes": 30505,
+    "sha256": "9edee6c9cc976d805b172a01a086b788008d9a76b0efaaa6a6f3fc021437f77e"
+  },
+  "reviewScopes": {
+    "mesh": [
+      "MESH_TEMPO scheduling",
+      "MESH_TEMPO shotgun geometry",
+      "UC_MESH separately"
+    ],
+    "contact": [
+      "SHED_PURSUE acquired post-LOS intent",
+      "SHED_PURSUE new cooldown trigger separately"
+    ],
+    "olderPackage": [
+      "ZONE_TE",
+      "STRETCH_FLAT",
+      "LB_KEY"
+    ],
+    "parked": [
+      "DEEP_CAP",
+      "BACK_CHASE",
+      "RUN_LATERAL",
+      "DEF_GETOFF nonidentity",
+      "physics arms",
+      "reverted trials"
+    ]
+  },
+  "authorReportedChecks": {
+    "typescriptCore": 1913,
+    "typecheck": "pass",
+    "node": "22.23.3",
+    "defaultOffIdentityPlays": 1200,
+    "independentlyReexecuted": false,
+    "fullCombinedVerification": false,
+    "phaseLogsAndRuntimeEstablishedByIntake": false
+  },
+  "evidenceLimits": [
+    "No shared saved raw/native tapes established by intake; local out paths are not archive access.",
+    "Arm aliases include intermediate code; source/settings fingerprints must be qualified by the author.",
+    "Sim body contact does not establish NFL annotation or end/whistle equivalence.",
+    "Proximity is not an engagement or continuous hold.",
+    "Pooled NFL/lab distributions have different design/concept mix and do not establish football improvement.",
+    "DEF_GETOFF=0.5 is not supported by unchanged baseline override parser; raw research launchers inherit ambient flags.",
+    "Some rejected-arm code is not present on the final branch; preserve reports without claiming final-source reproducibility."
+  ],
+  "integrationWork": {
+    "engineTicks": 0,
+    "newCodeTestExecutions": 0,
+    "newLabArms": 0,
+    "newGames": 0,
+    "combinedVerificationRuns": 0,
+    "runtime": "metadata/source inspection only; no aggregate metadata wall timer",
+    "codeAcceptance": false,
+    "activation": false,
+    "merge": false,
+    "newBaseline": false
+  },
+  "files": [
+    {
+      "path": "config/baseline.json",
+      "blob": "acc22c96e759c4ceed7a5e457fcd7513bd9021b7",
+      "sha256": "b1a0cb7236f57a8437cbcae9bc0802976a5cbc39249add33728a40dc174286a9",
+      "bytes": 2193
+    },
+    {
+      "path": "docs/WORKBOARD.md",
+      "blob": "f53e35284650a631bd0c2d650c19d10e504cc96c",
+      "sha256": "7a198a8a649ad3a48571d49902e6e4a162ab6a8bd0af513a6eb77e64b41429ab",
+      "bytes": 97367
+    },
+    {
+      "path": "docs/reviews/run-game-v3.md",
+      "blob": "bc4a020e9b0a0cf189a066cb57ecbfeea8ed4657",
+      "sha256": "c164ca672bbbf30d05c9591ba1ce142fc9116aaceeb70b9f2e53dbff020de93a",
+      "bytes": 31858
+    },
+    {
+      "path": "docs/reviews/run-game-v3/flag-arms.txt",
+      "blob": "c9ce9c47fa555cd5770a415183e87e6cfdb982c5",
+      "sha256": "664dd69eefe0a99380be1dd8e42698824552edcfabe5b6059c437160dd077d30",
+      "bytes": 1477
+    },
+    {
+      "path": "docs/reviews/run-game-v3/holds.txt",
+      "blob": "fc44049a76d344636947a42df024db9557a4514b",
+      "sha256": "59ef94b1cf22b04bf6abb6c79b7b9e6aeeedb991c9410b567555c876426295ea",
+      "bytes": 9986
+    },
+    {
+      "path": "docs/reviews/run-game-v3/mechanisms.txt",
+      "blob": "6835b6c639d4ea28a084cbfed963a4de4cd9e0fe",
+      "sha256": "bff392553ccbadbdac9714311535a761f5e9b026fa43fcce163a4069b7e22627",
+      "bytes": 13394
+    },
+    {
+      "path": "docs/reviews/run-game-v3/part2.txt",
+      "blob": "f56b7567e5faa38e9743071f3a3b43b057f9d300",
+      "sha256": "98f2c6baba2c83be930c4177315bdda6e230369bba3b3ead14de5bb8a87e2192",
+      "bytes": 21786
+    },
+    {
+      "path": "docs/reviews/run-game-v3/part3-gap.txt",
+      "blob": "fa1110fb565abc230b333edc2f85d49fcbdabb1e",
+      "sha256": "906068859837dcf054028aad0cca7fe86f290d3b14697f484000324b42872d31",
+      "bytes": 9183
+    },
+    {
+      "path": "docs/reviews/run-game-v3/part3.txt",
+      "blob": "db154eb67d5fdeb94459123c3569cec2a4fbd6ca",
+      "sha256": "25735ac5d6e21433c76b8dbe240e38b0251acc10478fdc3a592569b012f32b61",
+      "bytes": 37920
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-bc.txt",
+      "blob": "9cceebb44b7fbb181b7bb72aabd8b61414f9008b",
+      "sha256": "1b4e344418a06fe4c2358e2a42e14a208706e2d5e44ccf4836e11d841c2fc888",
+      "bytes": 5437
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-cap.txt",
+      "blob": "0ca384fe349ace76d8d7cd6f3436fe2ae86ab89d",
+      "sha256": "51f536dd95e137225607e701bba8150e12e18efc9a7928620423775ed41b0322",
+      "bytes": 5438
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-d0.txt",
+      "blob": "0b42d8cb50c3a0fc5b848d497be80a935686800b",
+      "sha256": "26cdf1c7a8b2eb124823ae6d97c0f915b23e2fdae75c85509db4d2d12e944c98",
+      "bytes": 5435
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-d0gap.txt",
+      "blob": "0261aca808b3704535627e47474c07515dee88cc",
+      "sha256": "7a5a75eef0f7a697551c7bee29a55e6e204f79e2e609c230c5e6a677c3dcb5d6",
+      "bytes": 5643
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-d0tf.txt",
+      "blob": "bf693fbfb0ba43a86edbd355805feac02fd7aed5",
+      "sha256": "a462a66023e1b676863e5111595d32af990c254df4adeecfafabcf0e98ee6fdf",
+      "bytes": 5449
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-fl.txt",
+      "blob": "13beb837c82ecbfc9569e8997323864f6fe3bc0f",
+      "sha256": "406b916b0e3877d73f6be0a62bb533f0cb58aae145bf62f9ec20a28e91bc5c1f",
+      "bytes": 4133
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-g5.txt",
+      "blob": "bde4f1b55d95b42a5a0bcad49ddd39e40a1ac662",
+      "sha256": "caac0d766a30971f7f408d796ec8bb20fef8c4c59ea0e81852881ca30118f838",
+      "bytes": 5438
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-gsgap.txt",
+      "blob": "97d0e609dc47e57e651253f984572f35c4bf223e",
+      "sha256": "59ecd754a395cf4c02bb2c7110896a21ec69dea20d52d4b4392219adccf5b6d8",
+      "bytes": 5645
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-id0.txt",
+      "blob": "9f6ba89b36bd260b11d19e2dea1a380be7fb40e9",
+      "sha256": "852922a5b4dc76b8aac9b648d85bc0a1f4b00f4360b23006d3a151070f7f8cbd",
+      "bytes": 5436
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-m1.txt",
+      "blob": "64995cae399894289a849e4f2cf604a044c5ca86",
+      "sha256": "52c955814e087ffd0b0640c1bde3e8c889deaa02d974499d0a7a47be734c3e28",
+      "bytes": 5437
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-mt.txt",
+      "blob": "0cc5451fcaeb376c955290dee182f4b42c4c4259",
+      "sha256": "49ec072b2595861f6389bd620b9d210a46af1baf82df197e08c9d7930a44afa4",
+      "bytes": 5436
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-mt2tf.txt",
+      "blob": "4b50fb1708f3a01c47c75c228d25aeac27666905",
+      "sha256": "3f334764cc9661210394cc41eb9cad627a7d43944765924217048992b2b35b9d",
+      "bytes": 5448
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-mtr.txt",
+      "blob": "80a714f570ee77db0493d866dca54ff43c5982bc",
+      "sha256": "16cf0694a6d7db2618f504f76cef4fad5fa33506d675b86227e18fdab2631a6a",
+      "bytes": 5438
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-mtrc.txt",
+      "blob": "8ed09558d2326a3535bef59b3d0c401b316d2d23",
+      "sha256": "a6f5769ee957cbdcc223b0f91baf1998b2d3459657d592c36c2a912bd96d43fe",
+      "bytes": 5438
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-mtrgap.txt",
+      "blob": "85da2192c3262e4e3aac67cb1603a60044fea084",
+      "sha256": "a388f99b22c5030cbe37a07eb57a43f061325c7b40385683c939d7be1a9d30fd",
+      "bytes": 5644
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-mtrtf.txt",
+      "blob": "f31ca717e2f40dbfa084a40b81464ff8025113cf",
+      "sha256": "8456403b10c23b402c220069c7f3f9513cf9ae08e85fc821fd5ab0582fab9bae",
+      "bytes": 5451
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-pbgap.txt",
+      "blob": "2f4be1724da6fd44129b09b9f42dfdb52e5209d3",
+      "sha256": "236339b3a7fbbba5d313f322b921f0031c77a02f2d6a7d881847eba281c9ac69",
+      "bytes": 5643
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-pcgap.txt",
+      "blob": "fdca9cb3f1a8c5791ffaf0f96d5552f350c530bd",
+      "sha256": "142995305f80cb210c90a44e9bd7aff973211e330d8abc417bffca67d376253d",
+      "bytes": 5642
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-pfgap.txt",
+      "blob": "bc6b970137005d175077c0296bb2667e657e7574",
+      "sha256": "0566ded6907d831e7689eb5e2813af086e4b6428a0dce9f235bf01d0e0e25b23",
+      "bytes": 5641
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-ppgap.txt",
+      "blob": "1a55d2e18c50565cf336b48321a9d48ff55340cd",
+      "sha256": "39417c4ee56119de26ef2d81383d114b217e2e094657abd73cc26cf95b1b81c8",
+      "bytes": 5642
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-psgap.txt",
+      "blob": "d87232ba0dbcd0cae303a004dca46242a7199d29",
+      "sha256": "d14d3ea3c3855d2c5ec61af6fbdbf17bc68ac32a95509dae4ec544941daabb43",
+      "bytes": 5639
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-r3.txt",
+      "blob": "bd224ca5c7bc23ddc1c092f9638a9898453c7292",
+      "sha256": "5dfa7dc3dd5acad52ac9db091f679eabcdee0757430cab59774dca9ffae255c2",
+      "bytes": 5438
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-r3c.txt",
+      "blob": "b533ab0e8c93c98da3bcccb6cc78bbcbd79af8da",
+      "sha256": "2776b947941471c65616ea1a5c5327dbd11a03ac3e5e9dbe6c83786fc47d5196",
+      "bytes": 5437
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-r3cr.txt",
+      "blob": "b4f74d174e901171976907a59e5927aa40e90eac",
+      "sha256": "ed94cd519bc48934b1cbf9009a0f3e8a33289f1e8aff7ba48cabc8308e3d6790",
+      "bytes": 5436
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-rec.txt",
+      "blob": "f58f66ab53f996d38abc81e85eaa7ad01d3bd3d8",
+      "sha256": "7130db7b9650ccd95b0d040ee21a76cfcdd151f831c77de7270ccfa8e5337bb9",
+      "bytes": 5434
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-rec2.txt",
+      "blob": "3a2268ef5f652da748b6820963cc63a42361e0d7",
+      "sha256": "87a4c3ec431e460e82d74a41cfbc138471e1ebd92ba040257c0990855483d955",
+      "bytes": 5439
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-rec2gap.txt",
+      "blob": "757a9c480f5f614cc99c2d59d82aa9343ee76b79",
+      "sha256": "73ffaa29bb248a8d5928f143907c56bcbb41d99b012e2f2ac418c5a9bec5f836",
+      "bytes": 5646
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-rec2tf.txt",
+      "blob": "a0660faa442027116d55571dc46e524cbc76b5cb",
+      "sha256": "f1a6c523df3e2d8089a304e2e6366aab6913c3a11394a293f1538d82f7339917",
+      "bytes": 5450
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-recgap.txt",
+      "blob": "2ed70405ff2dc1334a3eb7d083f58657fe67cf46",
+      "sha256": "c7b19be27194262e5f3c1cd6828aff47cc219633c8e64d358884eef3078b62fd",
+      "bytes": 5645
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-rectf.txt",
+      "blob": "880dce54044d46d3d5dd0c156153c48c3e96545b",
+      "sha256": "9b458c6cdb3027392b0d7ef5657d704b1f664a4db43b35d6d860afc10838df61",
+      "bytes": 5448
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-rl.txt",
+      "blob": "42a3da25fda65cd5a20aa86ffbdb4d56c854159b",
+      "sha256": "aa1ea5c6a0eea92d5766f787f3aac894f4d3c372145d70e42cf10c6b9178dfdb",
+      "bytes": 4134
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-rlc.txt",
+      "blob": "eab5f8a24262f3075b4b213341f6ebb14a0ad5d9",
+      "sha256": "4282c2e4895a8ac4b8490418d735b6ebc6001de01156a2ef3089386adc4a4e30",
+      "bytes": 4133
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-sp.txt",
+      "blob": "2a3722e11140f54c96a38ff1d10a7b13e8778c36",
+      "sha256": "bbc3b9280976c8e2fc022849ac3310ac3208d8e0f078ebdb16de2d06367624a3",
+      "bytes": 5437
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-sp0.txt",
+      "blob": "6bb3f268acab7e144a9486b17ab3b16e35123165",
+      "sha256": "25de8a39a5abc779e9b4dd67f6f250c65046e385991c471db850c779a5be48ca",
+      "bytes": 5436
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-spc.txt",
+      "blob": "a57155b8076a244ea4048bbb2fd180b735a14d2d",
+      "sha256": "8bd411ff43e3417bef375ff99aeb07a63fba14038add606960eed82e4ec08f72",
+      "bytes": 5436
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-spcgap.txt",
+      "blob": "39d43ebfa658312501696b4c710521a6a425f2e0",
+      "sha256": "12eb9c0bde9da3a63a784bdb3fcc38494f74a6438f8e383b9aeaca2f785898d9",
+      "bytes": 5647
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-spgap.txt",
+      "blob": "8188639cae085156b89638c75b256eab5bd12500",
+      "sha256": "ec5054293618d3d223a727bf7225977bcd68385c4a0aa4365dfc6dbfee27514f",
+      "bytes": 5644
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-sptf.txt",
+      "blob": "6d350d3453c3e8a772b59fa6c61d4a2bb6159643",
+      "sha256": "78e0fc657c861f0b054d5314d94ee9e4a4843a1b40e1af450757f3958178eff8",
+      "bytes": 5448
+    },
+    {
+      "path": "docs/reviews/run-game-v3/report-te2.txt",
+      "blob": "1784eeb935927eb3efa327ad1d04440fc83b56be",
+      "sha256": "b5397d0da42a4ba28917b67c00364c1c2000b6a8f37b78c9d5bb34e1dabebe0d",
+      "bytes": 4136
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/README.txt",
+      "blob": "474e647f3765c065756ac1a5226d9fe36d9fe3c2",
+      "sha256": "444fafd85e312e354777d818bf81ca18f1ff8dbfacaa3220e21bacfa06477d40",
+      "bytes": 804
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-ck.txt",
+      "blob": "d16f065294eb92810d075e3af7f20e4c930e05a2",
+      "sha256": "210abbad95c9fb06e41895c53f51bb2e56f491e5bf88c48ce58169ec4603df59",
+      "bytes": 5437
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-ctf.txt",
+      "blob": "ad57201bd3abd2156938ef5b34467894ac01259c",
+      "sha256": "f39321ba6159d1e1c76255477d6dbef38512840396fd61205ffefa084d6c685c",
+      "bytes": 5439
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-full.txt",
+      "blob": "50e37723769728ee8d6512a3614b522d27d68e57",
+      "sha256": "1b6abfeb13dc90529a881ae621fe3ced320a5aaf4ec44374404e6c67c2f5c620",
+      "bytes": 5439
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-fullg.txt",
+      "blob": "66488dc9ad21cd61d7ed31da0a32870ddb9a319f",
+      "sha256": "f4849340d05c677ed877f01c1938517b3a1fea2d2eea8d6d0a2a57e99963fae8",
+      "bytes": 5441
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-gc5.txt",
+      "blob": "434b5cdff61dc04d720ddd081a4b9f88b7f424f4",
+      "sha256": "4216575b3f8bf153cabe92ef8126993b74a5a8d6a30ee0fa09d43067a85dcb1f",
+      "bytes": 5433
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-mt3-handoffgate.txt",
+      "blob": "5467ae6a8b954bdcd5c52930965956469af03561",
+      "sha256": "2039a9a81d110476bfa73f81787553aabb99921d97d77a3a17b4aeb33cab0d69",
+      "bytes": 5438
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-mt3tf-handoffgate.txt",
+      "blob": "9a7bd603772421d7c1fd7efc69eb0352f838c9ca",
+      "sha256": "e57bc6373f2f822d00d4a2543bf9b36546a834c4965eacb593e4e285e170eeb6",
+      "bytes": 5450
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-nocap.txt",
+      "blob": "4ab787c16c422a7a75f69c94a4d168eb3ec2b293",
+      "sha256": "926c5e291371cef7c62a7e5c8613acd71705ff8992fb99f0f8eeb27da7a7eb4d",
+      "bytes": 5439
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-pkgap.txt",
+      "blob": "7e44274b2e2e936c6423bf463936b5aae033f459",
+      "sha256": "7fd762388ecb83c7d5ae5357eaaeeaea48aea1a28ed7b5d39df2dba76ef73d88",
+      "bytes": 5644
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-ptgap.txt",
+      "blob": "9828a4d52fec57cb0e12f23936cae1edf6aff38c",
+      "sha256": "6690a998aec6ed81d7d9619a9c8dab84efce1a3cf9a4fa53dfbba0c3532b8af3",
+      "bytes": 5644
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-rtf.txt",
+      "blob": "f5a901464bafdb33d513929d25d3b193e3d5cb77",
+      "sha256": "ef38febc98744055546b8ea6325f1526772e20674ed9bedf2c5888ab10c33f09",
+      "bytes": 4132
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-te.txt",
+      "blob": "f789c0028ab19200eaba704d9e252e7439680d71",
+      "sha256": "2164b85a8a45750feb7b7d06a8c1ab3fd4145900521efaba153e321bd3ed7462",
+      "bytes": 4134
+    },
+    {
+      "path": "docs/reviews/run-game-v3/superseded/report-tf.txt",
+      "blob": "171b7d66fb07ae3799b7993c86982ad85012075c",
+      "sha256": "c48253d9c0883129753fb4dc876253cc17402ae1a1310f7bee77f19e7df9028d",
+      "bytes": 4134
+    },
+    {
+      "path": "scripts/diag/open-field/box.ts",
+      "blob": "c881df4efda96a679f733a62dfec6f0959a925f6",
+      "sha256": "8b5f6e66557203a77eaea1e2c57ebfdc36c8bfaa261f81c51c9f671bb633e0cd",
+      "bytes": 4003
+    },
+    {
+      "path": "scripts/diag/open-field/boxsum.py",
+      "blob": "0f7620201b6b497355c0577a6ea49030ac870125",
+      "sha256": "be8e477d55bcfcf619e786ec57bac029bad7b218d0268649ddc6bbc06672ef9a",
+      "bytes": 1972
+    },
+    {
+      "path": "scripts/diag/open-field/common.sh",
+      "blob": "85b5b788cf8bddb88b96f3be3f491da4dbc10992",
+      "sha256": "1288e16e5be97513bbe962ce7a8fe0d66d7bd6ccd2f0d10d3b6074dc3bf1c171",
+      "bytes": 750
+    },
+    {
+      "path": "scripts/diag/open-field/encounters.py",
+      "blob": "3e37e34945079c03304577abb502277bcc6c7e7d",
+      "sha256": "3eb1b3a3f5f6b2fa2a1cc084c878acbf099c7db33a5bde562725318f16ef3452",
+      "bytes": 2110
+    },
+    {
+      "path": "scripts/diag/open-field/firsttackler.py",
+      "blob": "ec56b9055863ed38ae6620240273980dbbfaf2de",
+      "sha256": "0aa44765995acea1780959e2816af50947c822556bafec108c4cd96d645b1580",
+      "bytes": 1499
+    },
+    {
+      "path": "scripts/diag/open-field/geometry.py",
+      "blob": "5a011d3522a7af74398baad9d44d9e149938bcbd",
+      "sha256": "f648b0c674f81b07969eaaed5159831a791040279ae424ddf8c61a38f03636b5",
+      "bytes": 4132
+    },
+    {
+      "path": "scripts/diag/open-field/getoff.py",
+      "blob": "a48fd1ff7f4717cfe7f451beb7899bcc2d7e60eb",
+      "sha256": "0e41b5604f27d70642be545f3e5c17386d341f81973b2ad9babedf22ecbdbc45",
+      "bytes": 1323
+    },
+    {
+      "path": "scripts/diag/open-field/lbpass.py",
+      "blob": "21b4f64a33a9b8b8b0e27da0003ed038b446b008",
+      "sha256": "36e89b60aa29777ad6ab269dc6aca614d44a09b7bc73b2aa5b107f18cd5a6440",
+      "bytes": 2501
+    },
+    {
+      "path": "scripts/diag/open-field/mech.py",
+      "blob": "9a6fd7ceeef9a6b14b2fb935908bd69560a0d499",
+      "sha256": "2162daf1e4571f07ef4ba3b0d5c372dd6b84581aba41399966851953b3ace13b",
+      "bytes": 1258
+    },
+    {
+      "path": "scripts/diag/open-field/mesh.py",
+      "blob": "f02aa622fbef5ff1a9e21820d991896c135d1f30",
+      "sha256": "a2fd27eae426b5c8e00f3ea1a60714bd0294f4d2539b593c554f42631e44be6b",
+      "bytes": 2220
+    },
+    {
+      "path": "scripts/diag/open-field/qbdrop.py",
+      "blob": "80b6410a6a612af783973dc91318eaf5898acb50",
+      "sha256": "21392e3972c03f0d8ece6e363076e71a0c6dd32308c22ef5a7259ca0d778251d",
+      "bytes": 2002
+    },
+    {
+      "path": "scripts/diag/open-field/report.py",
+      "blob": "212357ec1040afa0af0d6894eefdaec054f1a7da",
+      "sha256": "ec570ccc96db8b3ab66b4c0c0e5bc1c089bbb5fc7bb42b2f022edce69b8bac1e",
+      "bytes": 3867
+    },
+    {
+      "path": "scripts/diag/open-field/run.sh",
+      "blob": "09d3d285a5186cd93d2b2e8497b06131fa203fee",
+      "sha256": "8303f2bdd4432c173f3eff33795f4558dab0bd225a0c04d03e550274c5af84d7",
+      "bytes": 644
+    },
+    {
+      "path": "scripts/diag/open-field/runbox.sh",
+      "blob": "5afc512024430f3f002682233c87e1e798eb92f6",
+      "sha256": "e3be1da51b3b54947fea2f0e0523be0816c38221804dda3bfb7197d974562dd8",
+      "bytes": 615
+    },
+    {
+      "path": "scripts/diag/open-field/runner.py",
+      "blob": "a1318fe7b0100ca16155ce84ed2193dc2cbbc78d",
+      "sha256": "51ca156f98fef1ac236bea9db7e84473cf05504752717b085647e38583706b5e",
+      "bytes": 2194
+    },
+    {
+      "path": "scripts/diag/open-field/second.py",
+      "blob": "4703c225b2669ac6602e506aeeb81f6a55c53e76",
+      "sha256": "d8083f1e2495c733a0ebe9a7f23ef60ebfa0f5407f13a3ff9d4cc81e5ea0dbe7",
+      "bytes": 2498
+    },
+    {
+      "path": "scripts/diag/open-field/space.ts",
+      "blob": "7067f214291139c944fe78445d4bd941ce2e60b2",
+      "sha256": "7e1b61ae513a5158acfc08423470a7958a06c81928c3074de8557f323620d238",
+      "bytes": 6057
+    },
+    {
+      "path": "scripts/diag/open-field/summary.py",
+      "blob": "0bceeaafa3589b58777fa45bc8fb2dc0191eecfb",
+      "sha256": "0a9da36d3d076e7f33eeaf1c07a3b52e0e967f37c47818de38bace86bdae5ae0",
+      "bytes": 2794
+    },
+    {
+      "path": "scripts/diag/open-field/timing.py",
+      "blob": "6e51948309f2d975df7e5b77efa357762e4c7164",
+      "sha256": "f33a23f5e9eb25f02f8aeb0fb99cfc783548574aec460905eb80986b7c1e1557",
+      "bytes": 1984
+    },
+    {
+      "path": "scripts/diag/open-field/trace.ts",
+      "blob": "8cfb1186a7cc65459e1cfe93111648e9bf02b274",
+      "sha256": "760c8ee85aeab5b2ae25f0530b7e4d24da77c742b4c862be94dc09a4f6b9a275",
+      "bytes": 10458
+    },
+    {
+      "path": "scripts/diag/open-field/trench.py",
+      "blob": "9fe934c1f1ba435a4b502c6f8deb785db5883e0c",
+      "sha256": "59fe08bb7e59a54e7d94bd70c5ad4aac51e6caccae7ec53cbd167124ceffd96e",
+      "bytes": 1589
+    },
+    {
+      "path": "scripts/diag/stretch/aftercontact.py",
+      "blob": "f40aef4f6ef98af82b05e897beb89817a84596a0",
+      "sha256": "358020ebaf89720fe9d573902a7ad2751866bb070870848257801f1ec3f4b431",
+      "bytes": 1514
+    },
+    {
+      "path": "scripts/diag/stretch/arms.ts",
+      "blob": "07e82af4e18c7f98472c2ba30adfa8f29140a114",
+      "sha256": "765b1a41fe023174ac6398482ef6b990d0d82ea88d6dbd58f8ce140306fb823c",
+      "bytes": 4950
+    },
+    {
+      "path": "scripts/diag/stretch/bendread.ts",
+      "blob": "96bf3e11e654dad972cf298d7073784a5fa37ea8",
+      "sha256": "821cfd766be9e376fdbdace804cd7c1032030f8c7953b92173745760e348dcd4",
+      "bytes": 4001
+    },
+    {
+      "path": "scripts/diag/stretch/bondend.ts",
+      "blob": "37b092486874e17eb2477ab2a093ba941591a5e3",
+      "sha256": "fef170c00863b207d0adb987cc65580ce1aa9cc10ce6fafb4e110e28c9abdcf9",
+      "bytes": 4062
+    },
+    {
+      "path": "scripts/diag/stretch/bondheading.ts",
+      "blob": "158d40de7c6003d44e0d4eea004e82d063d61811",
+      "sha256": "a3e5c00587540b16b2ed5692b592966ec73426a607042a75047349da00c63ab5",
+      "bytes": 2577
+    },
+    {
+      "path": "scripts/diag/stretch/carrierpace.py",
+      "blob": "943fa4a3ebf6f5b2cf019ef105e848dc8a144b14",
+      "sha256": "781df9ca5092f7c8943ba178bab06a5e216b807a4d675d009efaf1e866f79a81",
+      "bytes": 2043
+    },
+    {
+      "path": "scripts/diag/stretch/crowd.py",
+      "blob": "3b87337b5cb73c9da85c6276bffaf3682a2dc884",
+      "sha256": "00fa163fb51f743fbf3819c21bff34533f77946c7bc47f0f9d056c355d14cca5",
+      "bytes": 1563
+    },
+    {
+      "path": "scripts/diag/stretch/dbdepth.py",
+      "blob": "b7e99e0bc933d07c08df706694b74b27af752a72",
+      "sha256": "78838796b60805805bb03cfd3c7b337ebd813fce7d2abed7dfe9c4e559163c06",
+      "bytes": 3702
+    },
+    {
+      "path": "scripts/diag/stretch/dbgroups.py",
+      "blob": "6e4361bf93020da0dfc00bd1ba5791dde70f6a9c",
+      "sha256": "bbb32ccbbb3ccd12ecb54b68e81c83bcfed6f3ebac6b1039c84f62741ae4a12f",
+      "bytes": 2545
+    },
+    {
+      "path": "scripts/diag/stretch/dlconvert.py",
+      "blob": "a88c32031e10a3f6742f2680c0e4fd415b568a41",
+      "sha256": "49af006addbe9097c89467ef78afc02355f88a8b9b38310fc0257af2a6039bbc",
+      "bytes": 1983
+    },
+    {
+      "path": "scripts/diag/stretch/dldepth.py",
+      "blob": "e8cca1beaf66f743ed9ce2c9874cef154a4f2ceb",
+      "sha256": "c259c244b5a88f765ab50740dd2cb61fee084475d72d4e44dc8f2cfc912b67b4",
+      "bytes": 2836
+    },
+    {
+      "path": "scripts/diag/stretch/engreach.ts",
+      "blob": "8fa6712d474b30338eaad9287eaaa26e6d34b067",
+      "sha256": "a1779b13f9fc85684481a13fdcc9928d521fa326f29a1f6e98db425ece9373fd",
+      "bytes": 2869
+    },
+    {
+      "path": "scripts/diag/stretch/fallcause.ts",
+      "blob": "6664751784d6f92dda0aa01594e716312c7e2e06",
+      "sha256": "ba0306b27164f26bab9a3a71e14c8ef2d68a8cf692281e06d1f65aafb2bbe2fa",
+      "bytes": 4800
+    },
+    {
+      "path": "scripts/diag/stretch/flow.ts",
+      "blob": "f1488a50ae49049fd9d6e01c6f2feff1ebae479a",
+      "sha256": "cc5f686822ae704f284639c8b3020734beb9370eafe1862ceff7738e901368e1",
+      "bytes": 6325
+    },
+    {
+      "path": "scripts/diag/stretch/frontstate.ts",
+      "blob": "c7a32b14f672969712c6df247c3ab622cf3e007b",
+      "sha256": "2326f2058fb904a58ace75c86518465b894844e3ae8044158dacaf0cffab9bc9",
+      "bytes": 3630
+    },
+    {
+      "path": "scripts/diag/stretch/holdtrace.ts",
+      "blob": "3b6722a1292cef1c4897db196977f2486515ca09",
+      "sha256": "c52f598bf36701e69b96d842ad30bae38456e8a8f67111394c6b44d87a415031",
+      "bytes": 2024
+    },
+    {
+      "path": "scripts/diag/stretch/lanes.py",
+      "blob": "8cd78fe1e6d365c9d82b738a57d0807c58260e99",
+      "sha256": "327cfd58c0a2ee11aa179fab0a71e89996491e210f8bb57d10e5fb34539cdb85",
+      "bytes": 2496
+    },
+    {
+      "path": "scripts/diag/stretch/lbblock.py",
+      "blob": "7e588e3557170fc54dea1d1c98ff5776ff07d1dc",
+      "sha256": "42342c6ed16eb29c31d33427408bd5f47a8cebb4d73de7e8bc8215c667efa66a",
+      "bytes": 2184
+    },
+    {
+      "path": "scripts/diag/stretch/lbblocks.py",
+      "blob": "2aab22fdd11039d1836f989bb73a8f9ed1475963",
+      "sha256": "424ea654cbc4d89b8bfdd6ca0834ebb7ea3bf517362aa3f28e5d2b0c9ec1b825",
+      "bytes": 2760
+    },
+    {
+      "path": "scripts/diag/stretch/lbdepth.py",
+      "blob": "dfca34655a46897828fa2079eed6b90e576f62f1",
+      "sha256": "14524fd5b84b383b60a393e3813fbc98dfbf240b3294c35647ab58c27264ac9b",
+      "bytes": 1798
+    },
+    {
+      "path": "scripts/diag/stretch/lbflow.ts",
+      "blob": "b40e8c294ea86ec5261549fad120c2fec1a816c7",
+      "sha256": "532bd2acb0bf57ee1a6c24e60cd6730d921ccce5e90c1b87bc408e94a53441aa",
+      "bytes": 2761
+    },
+    {
+      "path": "scripts/diag/stretch/lbmotion.py",
+      "blob": "ffbbc6594783a01897e350a18f37cf3685aa6e2f",
+      "sha256": "7f0f04e1c3520e90e55842ef4a7c1f55d23fd8293e9f97674cb07ee692949436",
+      "bytes": 2543
+    },
+    {
+      "path": "scripts/diag/stretch/lbpass2.py",
+      "blob": "06e66de620924143eca1572f895a6d7339817bab",
+      "sha256": "dfc2fe297e11160fa0eaf89235c696b14a17ef35d65d3fb57c69cb73c6f8c54c",
+      "bytes": 2523
+    },
+    {
+      "path": "scripts/diag/stretch/lineholes.py",
+      "blob": "233891b703b0ae2c62a4961fccf3efedc14182fb",
+      "sha256": "83cce205a1d2b6c1e35544e9b6bd50206912076f682a7f94b6c6ea235ddee808",
+      "bytes": 4117
+    },
+    {
+      "path": "scripts/diag/stretch/losses.ts",
+      "blob": "2b0fb90f9f242a98db40d94b547dd9b5e12b5cc7",
+      "sha256": "4e19fb84e7651051d31ee11d9a7b39e9e9d5d419bfc57556d1dc13a7b671872a",
+      "bytes": 4388
+    },
+    {
+      "path": "scripts/diag/stretch/meshgeo.py",
+      "blob": "8b95c7b7654971cea5b7e13f9395e7b7f0a43efb",
+      "sha256": "f302931fb07075a03400d5287768c7496d04b00c8b87d23f7ba7bc0286d00c7e",
+      "bytes": 3020
+    },
+    {
+      "path": "scripts/diag/stretch/meshspeed.ts",
+      "blob": "2fb50b90b8a4cc4eafe5d11222c6e4cabd4b3eb3",
+      "sha256": "60223d934a34af29f37c5fda1d35d9f88c633b7935ca36051c27109c4cd5e291",
+      "bytes": 1301
+    },
+    {
+      "path": "scripts/diag/stretch/olstep.py",
+      "blob": "fa195bd784086064bf9147efe989d18685ead2f6",
+      "sha256": "dee7bd9a75e96e9c587088918c83fabc0217ecac6f280c265402a958391ef44b",
+      "bytes": 1651
+    },
+    {
+      "path": "scripts/diag/stretch/openfield.py",
+      "blob": "782e577b2a31ac893952a175150bb542e661b4f3",
+      "sha256": "0eb56325f46b3b2bba4d0560783fa47515ea389e4cc28f3c5e0e1d8e001ae07e",
+      "bytes": 3343
+    },
+    {
+      "path": "scripts/diag/stretch/pairtrace.ts",
+      "blob": "eba85292f51f3196e3efe9c478b8cf6a6694e8c5",
+      "sha256": "290a48610d056069a7b315e30d7fe692f2a8404ec139041a20039444d3caa60a",
+      "bytes": 2734
+    },
+    {
+      "path": "scripts/diag/stretch/pullers.py",
+      "blob": "4ccde7f5bdca1b4a9ddc45731f5d174d94a0509a",
+      "sha256": "061201435742e76add8033d49dc1e268c6c2ba4b0140a82630b8dc39d7000bfb",
+      "bytes": 3305
+    },
+    {
+      "path": "scripts/diag/stretch/pursuit.py",
+      "blob": "41bd412db3857e0e37b70358fe32164f531b6ad0",
+      "sha256": "5cca408d4e4b8a90657a9a8cb2990350e31f7be93a853011d78f9d7bd1c3f514",
+      "bytes": 3172
+    },
+    {
+      "path": "scripts/diag/stretch/rbspeed.py",
+      "blob": "40652e3306f972ff839b11c5ab3767f93f469d81",
+      "sha256": "5e64f3baba7983ef303cec41714754075fc4b53512003a5de298b5f6f21703c8",
+      "bytes": 2361
+    },
+    {
+      "path": "scripts/diag/stretch/relatch.ts",
+      "blob": "ee083d9a7ce8e0d39b5d27c7635c0f00e1f9453d",
+      "sha256": "e16d066472e1e84a6360853522c1deeb61ed626eb7cf2f477d5a499b5e4b32f8",
+      "bytes": 2984
+    },
+    {
+      "path": "scripts/diag/stretch/release.py",
+      "blob": "5a1f91927ad1d5cae5ac4fd249aa6715ac5e858a",
+      "sha256": "349cb35eb424b575d3de4866d04d4d5a9a93d5d5168b060a6e8610dec4779f2b",
+      "bytes": 2498
+    },
+    {
+      "path": "scripts/diag/stretch/shape.py",
+      "blob": "de89df5ccabaf28d9b0316ae0f95d8598cb89c58",
+      "sha256": "851de5f754df936753bd13ba53b52f2f91777dbe8ab07bbb1fa0145d3733ed5f",
+      "bytes": 1577
+    },
+    {
+      "path": "scripts/diag/zone-lab/attrib.py",
+      "blob": "9e2fba5303eb015f222528bb063b277a6e0aadf3",
+      "sha256": "f6b1a4ad41ac5530f903610646d75ef09f6c73243a27aace8b81d44dcb657c74",
+      "bytes": 2046
+    },
+    {
+      "path": "scripts/diag/zone-lab/climbs.py",
+      "blob": "867eb3dfadc15c7f44f9ed14ac425b9ef88103b6",
+      "sha256": "4148b66f53893f099a006054c9a6201a18860554ff9965b0581379b58ab93f5b",
+      "bytes": 1959
+    },
+    {
+      "path": "scripts/diag/zone-lab/combos.py",
+      "blob": "d279a74ca5fefc0863d4518ddee3fff33ed053cd",
+      "sha256": "16d3d19f92d2c6b3c2cd60c0c4e121ee1672644530a4d69bb88f392c326b7551",
+      "bytes": 2089
+    },
+    {
+      "path": "scripts/diag/zone-lab/film.py",
+      "blob": "99d8dd8ea478e1bfe5cdae676e7153531f710abe",
+      "sha256": "799d156aecc8030a53ab6d2b74af93ba09f9448bbc68e7224d48ad33a2ad1f44",
+      "bytes": 2506
+    },
+    {
+      "path": "scripts/diag/zone-lab/lab.ts",
+      "blob": "443f25c67a5d01a0e56774182468e20520a54c41",
+      "sha256": "bfbb1c6a20faddab93fd39a7db47beb201b6f41a94b2ab1b84c3aa0e1846afbf",
+      "bytes": 7914
+    },
+    {
+      "path": "scripts/diag/zone-lab/leverage.py",
+      "blob": "906940ea3ab291dffdd86dd5e375109edcef5e9b",
+      "sha256": "5b6525409a0768e867128e3fbb030fad5bff7379971e6376f47f1594cd345622",
+      "bytes": 1197
+    },
+    {
+      "path": "scripts/diag/zone-lab/oracle-summary.py",
+      "blob": "065deee2578f3bd565e75f6653ba72175cd8e856",
+      "sha256": "1618908262bd64eea76280165cf59b295f6e436a4f57366545b167d5bf0a8a81",
+      "bytes": 1205
+    },
+    {
+      "path": "scripts/diag/zone-lab/oracle.ts",
+      "blob": "4cf68ff1d5cf486d80df900dfd2c6966d069f0d0",
+      "sha256": "38d10c5814b053e3b6b1009f7b1f5e30fc6e7084eb99dd4ce5982f32de8cdb6b",
+      "bytes": 3924
+    },
+    {
+      "path": "scripts/diag/zone-lab/run.sh",
+      "blob": "301d68b2a07dfb72d7906d905185be1b9256e59f",
+      "sha256": "9bca42a209237d542a6fa2876674d96abdc6870649dbf161abc46eda61353a07",
+      "bytes": 690
+    },
+    {
+      "path": "scripts/diag/zone-lab/summary.py",
+      "blob": "01ed26f45a0649fc5b8c233e6b9a8d29d6250017",
+      "sha256": "98f4c6c70f675533ff7303895853875cc6c859fcebaa98eb550217cedabc008f",
+      "bytes": 2069
+    },
+    {
+      "path": "src/sim/agent.ts",
+      "blob": "6bb6fade667a2b1889aaba569d9eb3b44b9981dc",
+      "sha256": "10474a833912abebed8b0b8ea6610e75274f8bc06ad190e5abbcf75e31ed0a84",
+      "bytes": 8523
+    },
+    {
+      "path": "src/sim/assign.ts",
+      "blob": "93d82abe78a0133c57f72fd91b9bc0a8be3508e1",
+      "sha256": "7d4ae23b57daad2f0791d64a4a25f49d44473fd9c3f0be2d4542d2c31782ea02",
+      "bytes": 19168
+    },
+    {
+      "path": "src/sim/behaviors/blocking.ts",
+      "blob": "a64df7fef3543673f0409d7a83a3d8cfad7e11a5",
+      "sha256": "a9e70545d5e5570c4b5ebbed212395435c5babe1746b0367daa903739079b35c",
+      "bytes": 101705
+    },
+    {
+      "path": "src/sim/behaviors/qb.ts",
+      "blob": "b6f8cba93a2eea5225fa7e6d510d69bad19f4e78",
+      "sha256": "f3c5d36a12bbe5dff887d599a135e15a1d5dc4c3a6bb326c62d41176bc1d2160",
+      "bytes": 31479
+    },
+    {
+      "path": "src/sim/engagement.ts",
+      "blob": "cd2a29872e2ada9011914ce1a6350eb9a6f726f4",
+      "sha256": "0b11b0411ed0915b42bbd7feb9fb50247b8c5e4f23cbe8e93efd9283d444b801",
+      "bytes": 71459
+    },
+    {
+      "path": "src/sim/run-fits.ts",
+      "blob": "9ed48ea020e16809b6221eba2a5a0643843d13c3",
+      "sha256": "fa948b4e9ef0d578f6e58dfc07263bfcff5e5219fea41abf538cd2932242ae48",
+      "bytes": 25113
+    },
+    {
+      "path": "test/back-chase.test.ts",
+      "blob": "b3277ad280418c846d133f748d8fcd298e80c0d7",
+      "sha256": "47b4ad65eb91d9ee8e9573640cd73c9c38a52986147e8ff4dcfc17df4b048185",
+      "bytes": 3624
+    },
+    {
+      "path": "test/deep-cap.test.ts",
+      "blob": "57c3fe7d2bbcde6352c0170b1cae9e7dd0fe1fae",
+      "sha256": "78eeac8135c357c0aed5006b92e0eafb61b8148b06c9f1789403f528aa5f25bd",
+      "bytes": 3455
+    },
+    {
+      "path": "test/run-game-flags.test.ts",
+      "blob": "a2577300986ad50e4bf069a7ed100644513ff6c8",
+      "sha256": "0a3270140999b6d28355bc5e641b7675a44f77cf0c5259d7f2757102569d3f3f",
+      "bytes": 9658
+    },
+    {
+      "path": "test/shed-pursue.test.ts",
+      "blob": "b35a78b786c538d63501cb63ade745eb9a9da25c",
+      "sha256": "523a8549011917c9d0f10481c1b30d2bd36133a4658e7e8f5d1e758d615e2805",
+      "bytes": 2374
+    },
+    {
+      "path": "test/stretch-flat.test.ts",
+      "blob": "0122b290aac2174e409bdff50a6f6342e752a91a",
+      "sha256": "a803ccadd7e90c832954ab24e657c1a75c929907dd660579b175a26b9d825d33",
+      "bytes": 3745
+    }
+  ],
+  "prepublicationRemoteRefs": {
+    "refs/heads/claude/run-game-v3": "1c578afb38f2eb6fc4886639e63fccc4e79c4354",
+    "refs/heads/codex/integration-queue": "df4ee4dfe58aed5bd357ce3d2e3b73074eae5356",
+    "refs/heads/develop": "f4146275ce7539816bf57b4ed55a0d2be10e48c7"
+  },
+  "documentationChecks": {
+    "addedLocalLinks": 8,
+    "pinnedRemoteLinkTargets": 6,
+    "prLink": 153,
+    "failures": [],
+    "diffWhitespace": "pass",
+    "checkedAtUtc": "2026-10-19T03:15:01.758745+00:00"
+  }
+}

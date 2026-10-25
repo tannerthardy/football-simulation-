@@ -1,0 +1,172 @@
+{
+  "baselineCommit": "aa5fcded27176ce0123cf7178f85f271982c79a1",
+  "baselineSourceSha256": "622c45f18386aad28e724d8745933626a1f4e49adf1410fc687cfddb517a1218",
+  "finalSourceSha256": "e0ecd30f2c6c160f463f1fbbdeef599b0956587ec61f0e74ab24a222e3041a18",
+  "branch": "claude/engine-priorities",
+  "node": "v22.23.3",
+  "physicsReady": false,
+  "cohorts": {
+    "sharedCapabilities": {
+      "reps": 120,
+      "tasks": [
+        "anchor",
+        "double-drive",
+        "shed",
+        "absorb",
+        "jam"
+      ],
+      "profileVariants": [
+        "base",
+        "strong",
+        "heavy",
+        "wideBase"
+      ],
+      "substeps": [
+        6,
+        12,
+        48
+      ],
+      "referenceSteps": 48,
+      "mirrorSides": [
+        1,
+        -1
+      ],
+      "controllerHz": 20
+    },
+    "handConvergence": {
+      "fixtures": 9,
+      "seeds": [
+        3,
+        7,
+        11
+      ],
+      "powers": [
+        0.7,
+        1,
+        1.4
+      ],
+      "substeps": [
+        6,
+        12,
+        24,
+        48,
+        96,
+        192
+      ],
+      "referenceSteps": 192,
+      "nativeSteps": 12,
+      "nativeFallDisagreements": 2
+    },
+    "tracking": {
+      "games": 4,
+      "seed": 5,
+      "note": "Same generated team cohort in both revisions; existing narrow BDB reference summaries. Not film rosters."
+    },
+    "calibration": {
+      "games": 16,
+      "seed": 7,
+      "leagues": 2,
+      "teamsPerLeague": 8,
+      "baselineScrimmagePlays": 1998,
+      "finalScrimmagePlays": 1974
+    },
+    "film": {
+      "games": 6,
+      "seeds": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "clips": 845,
+      "concepts": 27,
+      "rosters": "One fixed equal-strength .55 Ironmen/Comets pair."
+    }
+  },
+  "validation": {
+    "engineTestsPassed": 262,
+    "pythonTestsPassed": 12,
+    "typecheck": "pass",
+    "build": "pass",
+    "viewerChecksPassed": 20
+  },
+  "commands": [
+    "npm test",
+    "npm run typecheck",
+    "npm run build",
+    "python3 -m unittest discover -s test -p 'test_*.py'",
+    "node --import tsx scripts/diag/shared-capabilities.ts out/shared.json",
+    "node --import tsx scripts/diag/hand-fight-trace.ts out/trace.json 3 1",
+    "node --import tsx scripts/diag/hand-convergence.ts out/convergence.json",
+    "node --import tsx scripts/scenario-pack.ts out/pack.json",
+    "node --import tsx scripts/kinematics-compare.ts 4 5",
+    "node --import tsx scripts/calibrate.ts 16 7 2",
+    "node --import tsx scripts/export-replay.ts 7 --games 6 --out viewer/film-room.html --doc",
+    "python3 scripts/film-outcomes.py viewer/film-room.html --out out/film-outcomes.json",
+    "python3 scripts/check-replay-viewer.py viewer/film-room.html"
+  ],
+  "notes": [
+    "The work ledger covers translational/yaw kinetic energy, not full support/3D/metabolic energy.",
+    "Arm shortening speed, passive full-wrap envelope and ground friction-wrench model are explicit unvalidated proxies; no NFL or scoring fitting.",
+    "Same mechanical probe executed in git archive of baseline; other baseline guards reused from the unchanged prior measurement scripts and source-pinned reports.",
+    "The real-technique hand-fighting probe regresses at default resolution despite improved simple mechanical transfer. No global step-count increase.",
+    "abandoned-yaw-experiment.patch reproduces only the rejected candidate, not the final engine; its report has a different source hash.",
+    "Packed film pressure starts at 0.5 s and ends at the first throw/throwaway/sack/scramble event; it establishes proximity, not causal throw error.",
+    "Other incompletions remain causally unclassified. Fixed-film outcome rates and generated-league rates have different cohorts/denominators.",
+    "Source-pinned owner observations retain old play IDs; the regenerated film changes their contents.",
+    "Scenarios and text-only game/tracking logs receive their source pin through this manifest; runtime under concurrent load is not a benchmark.",
+    "Tests were run on the final engine source before diagnostics-only/report additions; final typecheck/build include all added scripts.",
+    "Reviewed logs normalize trailing whitespace/EOF blank lines. ZIP is byte-identical to the final HTML and contains a source/readiness README.",
+    "PR #1 was not modified.",
+    "The rejected experiment patch has zero context; use git apply --unidiff-zero only in an isolated snapshot if reproducing it."
+  ],
+  "scripts": {
+    "scripts/diag/shared-capabilities.ts": "3e5477aadfa597a0d476314a1851b0b4f783baa9456ddc662d342f891f91c505",
+    "scripts/diag/hand-fight-trace.ts": "be83db6ee61b7ecc8a729632bac1c407f434dde71781a42560630e86f9787e22",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/film-outcomes.py": "883e24923149066b81917578dc18b47bbc2f7f8e7ecc20b2fd7be8007dc862f2",
+    "scripts/scenario-pack.ts": "f6ddc3db78358bdc6615cd3e2305991a98ba78aeb401d6bc4823569553bffe94",
+    "scripts/kinematics-compare.ts": "907a928cfff8375c88ccf596f3bf159509b72aeae032ac04cfe70630152999e2",
+    "scripts/calibrate.ts": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+    "scripts/export-replay.ts": "9f85970b4c86e4a46af63c6205fb743cab5ec7700e5e1d354ff08b18446829bf",
+    "scripts/replay-data.ts": "2f41af5aad0124730fb04714b0602f26e21a97985daefa258288e3cfda0fd741",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/check-replay-viewer.py": "53e9ea5cd642331444c4279a791c0e75e04d5320ca63b7a18cdd0aa0fa7de2f0"
+  },
+  "references": {
+    "data/bdb2023-summary.json": "cbade5fb94d33af434c3a3f52511c9d97d744c79755d7869249904d4d62c165c",
+    "data/bdb2025-summary.json": "0fc753d56edfa3dcb2337fd28daa2890386a27ab49a0430b7a02c76d5fd1f8ba",
+    "data/reviews/physics-world/nfl-movement/manifest.json": "fad82ff6d4209880d3018a9cc3d53661ab2f79411b4f74b3e423fce672a3d5f8"
+  },
+  "artifacts": {
+    "data/reviews/physics-world/shared-actuation/abandoned-yaw-experiment.json": "dfa0bfa3ee43808c09a9498d633da0f16f3282eedd13d1ef7f3129ff187b6014",
+    "data/reviews/physics-world/shared-actuation/abandoned-yaw-experiment.patch": "7c9862d8f2ca36b62da670b0729eebee9dbb8a3c7f05a666555412a649a94087",
+    "data/reviews/physics-world/shared-actuation/before-calibration-16.txt": "a7ad1432da232dd606e91d10a4ccc591692c48363e05b7f7c0aacb4a1fe03b23",
+    "data/reviews/physics-world/shared-actuation/before-film-outcomes.json": "6c0e3e9a4b800e2cb78bcce028b9e9d33ece7506ad749ae5d9fb756edc0bb34d",
+    "data/reviews/physics-world/shared-actuation/before-hand-convergence.json": "6d36470a7cbf2dc7111e18ebd0fd140c64b01a16d49a9d1f014b98f6843e25f9",
+    "data/reviews/physics-world/shared-actuation/before-kinematics.txt": "afdb71e96c2f5ce9b39fd3287f9a1ba97a765fb51fb75b687147c40f126250ad",
+    "data/reviews/physics-world/shared-actuation/before-scenarios.json": "fd7e512404a071318fbfbea07b73f258bc58ec8ae2410908c276aec4a8612dfc",
+    "data/reviews/physics-world/shared-actuation/before-shared-capabilities.json": "b37697db25bb5272edf283143208b99b97dae3b9cc52ebda78c5aa00a53e7ea9",
+    "data/reviews/physics-world/shared-actuation/build.txt": "31332ab7887258443be380e6c1625535b3d7d264ea650945cd8804c31347a7d7",
+    "data/reviews/physics-world/shared-actuation/calibration-16.txt": "a1c77e52cd24f3a50e82f699581ca33b94649eda7d47879d4c261f79150de92e",
+    "data/reviews/physics-world/shared-actuation/data-tests.txt": "c0cb98a70693b463069afba413d352f8fdc8540f469b9f3860e3385ec8c426dd",
+    "data/reviews/physics-world/shared-actuation/film-export.txt": "3950249b8882d41bccb63b6f29f7fb8efbc34efb31aec03d3c275e80a0c2ed74",
+    "data/reviews/physics-world/shared-actuation/film-outcomes.json": "aed7958369291cdc2ef3ab789ab7ca0166bd79158db687d118297fd1efa8e9ba",
+    "data/reviews/physics-world/shared-actuation/hand-convergence.json": "235f9b5e056b812767affbde25e52a9f42abcd647bd7edac40b6686eb2a30f08",
+    "data/reviews/physics-world/shared-actuation/hand-fight-trace.json": "336c7e2a3906082a5b361a61da461ac663a208dfa70ca0c373464ad3e0e455fb",
+    "data/reviews/physics-world/shared-actuation/kinematics.txt": "b4e76b4b8eb7a19fbe47bddfedca95307c4afb1ae17f91dbe1910b8c39a125ef",
+    "data/reviews/physics-world/shared-actuation/owner-film-observations.json": "8909a8381ee02aca408f007aa5accc99e1d2a127aba15cc4f9e5b63fd9e6234e",
+    "data/reviews/physics-world/shared-actuation/scenarios.json": "bb2d5a5bb6fd050b7edfb2f7bf3657e6193bb890ed75582e8df0374902765200",
+    "data/reviews/physics-world/shared-actuation/shared-capabilities.json": "295f874a1bfc1ce3f7b5ff4b013d790d306d8c3dca4c9ebe0f0ebab7317457b3",
+    "data/reviews/physics-world/shared-actuation/tests.txt": "2a4ded188d1d5af9d46ff453e79bfc10698c1764cee060d07e311faed9e2e164",
+    "data/reviews/physics-world/shared-actuation/typecheck.txt": "da261241a3139ef6606e87edd53392ca08b8ac6355e004628743c15bad96e2b9",
+    "data/reviews/physics-world/shared-actuation/viewer-check.json": "e73fa8fb07dd4c9c7d8448241762abc1928bcdb55f9ffe6a5614d94a01f46e11"
+  },
+  "filmArtifacts": {
+    "viewer/film-room.html": "136054e30ffa278dd0c9b62768db0df73011dab7b55c90fa8d39f6a865340b34",
+    "viewer/film-room.zip": "d7b6c09df39b23e7930e8ac963d938b65d6c9a715dc8bd94a5178327c15b23e1",
+    "viewer/replay.template.html": "1152caf83f4983e24410f2c5b5939dc4dee62a6735b96f6a2ad1ccfb876b4e1b"
+  }
+}

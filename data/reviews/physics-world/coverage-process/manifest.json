@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "sourceSha256": "0f1124fde702bfd754944b10bc2d35f2ebf4914c1a2fa864e701afb6683b47ad",
+  "sourceScope": "All src/ file paths (relative strings), NUL, bytes, NUL in lexical path order; scripts/docs excluded.",
+  "cohort": {
+    "type": "controlled lab",
+    "offenseRosterSeed": 21,
+    "defenseRosterSeed": 22,
+    "strength": 0.6,
+    "substeps": 12,
+    "fixtureCount": 8,
+    "fixtureSeeds": [
+      15,
+      15,
+      11,
+      5,
+      9,
+      13,
+      7,
+      11
+    ]
+  },
+  "summary": {
+    "fixtureCount": 8,
+    "contractViolations": 0,
+    "fixturesWithInvalidContract": 0,
+    "inspectionPoints": 7,
+    "inspectionPointsByCategory": {
+      "direct-relationship-ended": 2,
+      "overlap-with-directly-unowned-route": 4,
+      "force-with-route-relationship": 1
+    },
+    "actualStateKeyTransitions": 342,
+    "omittedRawTransitions": 0
+  },
+  "commands": [
+    "node --import tsx scripts/diag/coverage-contracts.ts out/literature/coverage-contracts-final.json",
+    "node --import tsx scripts/diag/coverage-contracts.ts out/split-zone-contracts.json quarters-split-zone"
+  ],
+  "inputs": [
+    {
+      "path": "scripts/diag/coverage-contracts.ts",
+      "bytes": 13989,
+      "sha256": "4e0d37e17d1dd5d5dc1733f9942870fbde3e642845a1df6e9a6216efb73b44a7"
+    },
+    {
+      "path": "scripts/source-version.ts",
+      "bytes": 607,
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    {
+      "path": "src/sim/coverage/defender.ts",
+      "bytes": 5635,
+      "sha256": "a297cbf7c3ebaef1d6023aef0087c1b25848b226b7a4ff5b7726ba1985c6cfa4"
+    },
+    {
+      "path": "test/replay-telemetry.test.ts",
+      "bytes": 6146,
+      "sha256": "895d9892907717f17dfb5364fd416b06d0f540ac9d3f085b56691f0141f2088b"
+    },
+    {
+      "path": "docs/references/Coverage_Operating_System_Manuscript.md",
+      "bytes": 142730,
+      "sha256": "d73cd1e8cd2ddd319d01cbf6de9eba3246d507525fe201e8ced0318b881486a2"
+    },
+    {
+      "path": "docs/references/WR_DB_Mechanics_Textbook.md",
+      "bytes": 78647,
+      "sha256": "f829bf0d44cd586e535ca8c9a839768af9fd6c50866d33f662ac7ce595efcd0d"
+    },
+    {
+      "path": "docs/references/football_coverage_mechanics_textbook.pdf",
+      "bytes": 1223239,
+      "sha256": "58d0e9e50f1cec0f3fcc9c0e3454d4bf7cb61d36d7bb007e042bf3c976b5ca58"
+    },
+    {
+      "path": "docs/references/football_defense_textbook.pdf",
+      "bytes": 519275,
+      "sha256": "b04ec6869cb218bc50f1609c8f5049cd6f6ce0115389c44bc3e8c645af7494c5"
+    }
+  ],
+  "retainedOutputs": [
+    {
+      "path": "data/reviews/physics-world/coverage-process/README.md",
+      "bytes": 5361,
+      "sha256": "409ab37bca48c514ac5df01e9271e128d0d7c69c195bf0ef3071359576b436f6"
+    },
+    {
+      "path": "data/reviews/physics-world/coverage-process/coverage-contracts.json",
+      "bytes": 164281,
+      "sha256": "009b96e3e26fcb44e6f87c31b409c7754054196c409ecac815aa0edaab1eb145"
+    },
+    {
+      "path": "docs/reviews/coverage-literature-applications.md",
+      "bytes": 13755,
+      "sha256": "a0b933a3ce41fc0e193facddd43466a7270d85b4c3bce20418d7b05f5c13be85"
+    }
+  ],
+  "ignoredRawInputs": [
+    {
+      "path": "out/literature/coverage-contracts-final.json",
+      "bytes": 1447207,
+      "sha256": "119455a113d7c0270e906c9c1f260e5b1f9482ad2b837717ffbab09f69d5a1a3"
+    },
+    {
+      "path": "out/literature/force-exact-witness.json",
+      "bytes": 2419,
+      "sha256": "6b95796883a17837cf2269066a5e2743feec237eec4208a744bf1cd67967886d"
+    },
+    {
+      "path": "out/literature/force-exact-diagnostic.json",
+      "bytes": 370123,
+      "sha256": "1cbbd803b6837907f3f47dfc5afd13ecfee8c09f6194cdb2742e14bf8bc234cb"
+    },
+    {
+      "path": "out/literature/capture-force-witness.ts",
+      "bytes": 2461,
+      "sha256": "9a654fddfd613894b141369aa9c99b65a1cb3a466fd2f098aa316f4a4b5abff2"
+    }
+  ],
+  "verified": {
+    "sourceStableDuringLab": true,
+    "sourcePinCheckedAtRetention": true,
+    "allSevenWitnessesAtInspectionControllerT": true,
+    "forceRecaptureResultEventsAndEveryRetainedTransitionUnchanged": true,
+    "noRawTransitionsOmitted": true
+  },
+  "limitations": [
+    "Controlled generated-player lab, not NFL charting, held-out validation or frequency estimation.",
+    "Zero exact contract failures does not validate realistic coverage or physics readiness.",
+    "Seven descriptive inspection points are not confirmed busts, failed messages or causal explanations.",
+    "Structured rule/key fields were read live; old replays are not retroactively upgraded.",
+    "Current-source whole-engine test/typecheck/build evidence is owned by the physics handoff."
+  ]
+}

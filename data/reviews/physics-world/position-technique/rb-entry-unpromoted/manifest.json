@@ -1,0 +1,109 @@
+{
+  "schema": "unpromoted-rb-entry-prototype-v1",
+  "status": "not promoted",
+  "archivedAt": "2026-10-11T09:29:42.676800+00:00",
+  "baselineCommit": "80e815102709a19026eb5398a7e5daaa844d7bb4",
+  "pinnedBaselineArchive": "/tmp/football-technique-baseline-80e8151",
+  "prototypeCarrierSha256": "2a833208ab8f4d07219a22ce7f3f5d69e5a24c772ad1905e2da73c8b4ecc0669",
+  "prototypeTestSha256": "3225bc5a7213937856964757b06e9df85772323c3c1df440051c5e285b6bf704",
+  "patchSha256": "ddf4f67e0e0699132804ffe82018174310494a766406667401408672c6a2ea55",
+  "restoredCarrierSha256": "4ba684552d96b4eb4dd0e8d0954b395d6b4eb4754c0665507e59c5b5e5861d66",
+  "currentCombinedSourceAfterRestoration": "f641f128241746ab1b0b6a90f13affb05a0c8505e35792195ce19497ea5bccdd",
+  "historicalFocusedResult": {
+    "note": "Recorded prior session 22518 terminal output; not a freshly persisted raw log",
+    "files": {
+      "test/run-system.test.ts": {
+        "passed": 26
+      },
+      "test/run-execution.test.ts": {
+        "passed": 17
+      },
+      "test/carrier-boundary.test.ts": {
+        "passed": 6
+      },
+      "test/contact-choice.test.ts": {
+        "passed": 6
+      },
+      "test/carrier-entry.test.ts": {
+        "passed": 9,
+        "failed": 2
+      }
+    },
+    "failedTests": [
+      "rejects a staggered open endpoint and brakes before an occupied approach, mirror=false",
+      "rejects a staggered open endpoint and brakes before an occupied approach, mirror=true"
+    ],
+    "failure": "Expected zero native runner contacts; actual 1 tiny contact after delayed braking in each mirror.",
+    "existingDuoControl": "Passed unchanged with same-pair near-face mouth waypoint."
+  },
+  "remainingGaps": [
+    "Free-body preview excludes no grip/engagement/held-foot/load/lean/strike state.",
+    "Forecast lacks executed squeeze demand and uses frozen current body shape.",
+    "All-closed wait/escape policy needs native penetrator control."
+  ],
+  "scope": "Only carrier.ts restored and unpromoted new test removed; no physics, OL, QB, or prior asset changes.",
+  "isolatedSourcePins": {
+    "before": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+    "candidate": "bc4797237c0df47c26eff9ba4f13024bfda25b19d16badfc5437a18109012b15"
+  },
+  "sourcePinEncoding": "Canonical scripts/source-version.ts: sorted relative path strings, NUL, file bytes, NUL.",
+  "discardedCalculatorIdentifier": {
+    "value": "cdab988de7676b19975a8e021891fb7fda753130e36521119b961006d058ef42",
+    "reason": "Erroneous earlier calculator sorted Path components rather than canonical relative-path strings. This is not an engine source pin."
+  },
+  "isolatedFocusedRuns": {
+    "before": {
+      "sourceSha256": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+      "passed": 60,
+      "failed": 6,
+      "total": 66,
+      "existingTestsPassed": 55,
+      "prototypeTestsPassed": 5,
+      "prototypeTestsFailed": 6,
+      "log": "isolated-before-focused.log",
+      "exitCode": 1
+    },
+    "candidate": {
+      "sourceSha256": "bc4797237c0df47c26eff9ba4f13024bfda25b19d16badfc5437a18109012b15",
+      "passed": 64,
+      "failed": 2,
+      "total": 66,
+      "existingTestsPassed": 55,
+      "prototypeTestsPassed": 9,
+      "prototypeTestsFailed": 2,
+      "log": "isolated-candidate-focused.log",
+      "exitCode": 1
+    },
+    "interpretation": "A bounded exploratory controller changes the first bad instruction, but does not meet promotion criteria. Failed candidate zero-contact assertions and missing shape/load/escape guards remain explicit. These are selected mechanical tests, not full football or NFL-rate validation."
+  },
+  "artifacts": {
+    "carrier-prototype.patch": {
+      "bytes": 9003,
+      "sha256": "ddf4f67e0e0699132804ffe82018174310494a766406667401408672c6a2ea55"
+    },
+    "isolated-candidate-focused.log": {
+      "bytes": 10267,
+      "sha256": "faa5854a734e9769a469c4f364462e8afb3aafcc86cbea9a073a72c12ce24989"
+    },
+    "isolated-before-focused.log": {
+      "bytes": 13207,
+      "sha256": "f2b6a732ab4c90cf01c4db4c425b94d05606a65e739451aa25aa35b43338e69c"
+    },
+    "carrier-before.ts": {
+      "bytes": 17688,
+      "sha256": "4ba684552d96b4eb4dd0e8d0954b395d6b4eb4754c0665507e59c5b5e5861d66"
+    },
+    "README.md": {
+      "bytes": 3533,
+      "sha256": "0a0c33408d79298d96fc3eac9d9a1d6dc1a5334155e5c339622395ec7d01a0c9"
+    },
+    "test/carrier-entry.test.ts": {
+      "bytes": 7006,
+      "sha256": "3225bc5a7213937856964757b06e9df85772323c3c1df440051c5e285b6bf704"
+    },
+    "src/sim/behaviors/carrier.ts": {
+      "bytes": 21827,
+      "sha256": "2a833208ab8f4d07219a22ce7f3f5d69e5a24c772ad1905e2da73c8b4ecc0669"
+    }
+  }
+}

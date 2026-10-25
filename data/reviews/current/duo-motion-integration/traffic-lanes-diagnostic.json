@@ -1,0 +1,43 @@
+{
+  "question": "Does the failed zero-preview assertion conceal changed movement/contact in any of its three original lane scenarios?",
+  "sourceTest": "test/traffic-turning.test.ts",
+  "sourceLines": "stage/bounded helpers and original three-lane loop, with no forecast-count policy assertion",
+  "newNativeFootballContinuations": 0,
+  "mechanicalWorldSteps": 48,
+  "rows": [
+    {
+      "kind": "original straight",
+      "frames": 16,
+      "originalCommandPreservedEveryFrame": true,
+      "actualContacts": 0,
+      "existingPhysicalBudgetsPass": true,
+      "attainedX": 57.2000000000001,
+      "previewCalls": 15,
+      "previewMilliseconds": 11.60696500000006,
+      "totalMilliseconds": 22.413005999999996
+    },
+    {
+      "kind": "parallel",
+      "frames": 16,
+      "originalCommandPreservedEveryFrame": true,
+      "actualContacts": 0,
+      "existingPhysicalBudgetsPass": true,
+      "attainedX": 57.200000000000045,
+      "previewCalls": 0,
+      "previewMilliseconds": 0,
+      "totalMilliseconds": 4.022623999999951
+    },
+    {
+      "kind": "close passable",
+      "frames": 16,
+      "originalCommandPreservedEveryFrame": true,
+      "actualContacts": 0,
+      "existingPhysicalBudgetsPass": true,
+      "attainedX": 54.00000000000014,
+      "previewCalls": 14,
+      "previewMilliseconds": 6.672929999999951,
+      "totalMilliseconds": 15.563411000000087
+    }
+  ],
+  "scope": "Targeted diagnostic only; does not amend the supported no-preview contract or certify global forecast cost. Baseline prior passing receipt reused."
+}

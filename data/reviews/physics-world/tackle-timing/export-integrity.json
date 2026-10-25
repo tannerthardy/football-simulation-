@@ -1,0 +1,27 @@
+{
+  "schema": "tackle-timing-export-integrity-v1",
+  "clips": 26,
+  "concepts": 9,
+  "censoredClips": [
+    {
+      "id": "BASE-TT-R1-glancingEscapeReach-S83-L",
+      "observedAdvanceYd": 35.9
+    },
+    {
+      "id": "BASE-TT-R1-fasterCarrierEscape-S83-L",
+      "observedAdvanceYd": 54.7
+    },
+    {
+      "id": "CAND-TT-R1-glancingEscapeReach-S83-L",
+      "observedAdvanceYd": 35.9
+    },
+    {
+      "id": "CAND-TT-R1-fasterCarrierEscape-S83-L",
+      "observedAdvanceYd": 54.7
+    }
+  ],
+  "censoredCompletedResultFlagsCleared": true,
+  "parkedQbPressureFlagExcluded": true,
+  "shiftedFullTelemetryFramesAndDecisionsVerified": 26,
+  "viewerSha256": "a71e1e14390a4199863658e38afaa85b8e3a1847526893882bd9fa875589b5de"
+}

@@ -1,0 +1,185 @@
+{
+  "schema": "combo-transfer-verification-v1",
+  "baselineCommit": "a4068854079e4a875c0c8d89d542d65d368a194d",
+  "beforeSourceSha256": "cf53e3f0e72915d9798ed0cd411f669ae8bba40db9ed4bd9f6b630173f939316",
+  "finalSourceSha256": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
+  "worldSha256": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+  "collectorSha256": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+  "comparisonSha256": "fed54abaf570205301bd588b0066dadee653c6712b34dc250d7e1aa6138475ea",
+  "changedEngineFiles": [
+    "src/sim/behaviors/blocking.ts"
+  ],
+  "addedEngineFiles": [],
+  "files": {
+    "data/reviews/physics-world/combo-transfer/README.md": "89af7b43b95ac5fccd7b1c1a806b937bfc49aca4c83ccc65ba53b3726f13cbbc",
+    "data/reviews/physics-world/combo-transfer/after-film.json.gz": "b2758fd51d91e218de2c3b15f56c2d1a2cb9f341456606f8ca4711cd04f786ab",
+    "data/reviews/physics-world/combo-transfer/after.json.gz": "516b283112b38d7617d626a300c50b2e91edec07e8c012991fd30cc0ad0c529b",
+    "data/reviews/physics-world/combo-transfer/after.log": "551c6e4089bfd6b60e5d76bb80e4b909360188f225bffddf33a73f1a7857429d",
+    "data/reviews/physics-world/combo-transfer/before-film.json.gz": "63cac3cdd4369bb34df9a318a11588992efb6274f2eca11863cad4e2ef9160f3",
+    "data/reviews/physics-world/combo-transfer/before.json.gz": "a830d5210fbf92f041a2802e0c0ce48723d363a952d6225685013db119d99ad2",
+    "data/reviews/physics-world/combo-transfer/before.log": "1b536450fbcd2c330a71d57b2cc75b1cdd55199aae39bae34a45f1c6a2954ee5",
+    "data/reviews/physics-world/combo-transfer/browser-check.json": "8d402608e56c894bc2d216dff9a83f84f85f9a8978ecff0f03684a352e4879f8",
+    "data/reviews/physics-world/combo-transfer/build.log": "28e141251be58027e9718154ee6bea5e285f008b4b4fc9439712f2c2b0ecf24d",
+    "data/reviews/physics-world/combo-transfer/checks.json": "b21ddb49ca917f07498c58468160c53d52f1667240ce699d0b21419209ff73d7",
+    "data/reviews/physics-world/combo-transfer/compare-guards.py": "2ae2534973cb8ef9fb7f1a02aed2c7deaeee2416ce5e9021675cb36cd4964a20",
+    "data/reviews/physics-world/combo-transfer/comparison.json": "41d8d328da6665d28d2c59ed4d789270957a537f896769e38c9856e8fd5a8713",
+    "data/reviews/physics-world/combo-transfer/comparison.log": "ebc3a6737069d5020192b327541bcbbc364778dc1239e8d5b7c7755abe58a46e",
+    "data/reviews/physics-world/combo-transfer/concurrent-tests.log": "c2156491b6eee3ecc25ecbbb4df61c7781ba444e8b3dd3fadc66d5bdd43660ef",
+    "data/reviews/physics-world/combo-transfer/current-games9.json": "a35c41911299116de6b32ddb30eaae7b7f6ea8e6e472bdac2984292ac9612f02",
+    "data/reviews/physics-world/combo-transfer/current-games9.log": "803c24d5fac28d2eb410a8f6b6ee9ee838562be81dac16bde7fb7cf7e30fdb6b",
+    "data/reviews/physics-world/combo-transfer/current-runs.json.gz": "2ee00176ecdf9a008fd918dbe2c0f4b9cd91e2d3b5373c58b59edaedad3c6e6f",
+    "data/reviews/physics-world/combo-transfer/current-runs.log": "88059dd1d08c49472ef0a2139d06399be0e4983d4b77fa247d928507618adde2",
+    "data/reviews/physics-world/combo-transfer/current-tackles.json.gz": "d7a929381fbfb4fd63381a0491f4a25abc6677f001c68af7fa13e1c4212921fa",
+    "data/reviews/physics-world/combo-transfer/current-tackles.log": "7219184efaaf1954a911ceb479ca90e3086a3c83756c780ae72c212317fdb0eb",
+    "data/reviews/physics-world/combo-transfer/engine.patch": "1f6e96ec0ff676289f0ffb6c87d9f3a3c9617b34782c5103e89d980f22790326",
+    "data/reviews/physics-world/combo-transfer/existing-focused-tests.log": "c74ee861b382f0706e773718def39ef0e4576e7d5259fa535fe56b208992de38",
+    "data/reviews/physics-world/combo-transfer/export-typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/reviews/physics-world/combo-transfer/film-check.py": "1de36184fadea0a3fbb77e95d1ca18e6ccc15f64c4e84f8fca1f163e167995af",
+    "data/reviews/physics-world/combo-transfer/film-integrity.json": "93903acb391086e7af90820732d64ffb1f5a9fe09b147c76998f630aa4f5baf2",
+    "data/reviews/physics-world/combo-transfer/focused-tests-after.log": "7574d5fe73887e193ad4b1b6ae2b14ba6a7088602f1c2cb1c7b84480cfce9d05",
+    "data/reviews/physics-world/combo-transfer/focused-tests-before.log": "17fafebae8c6eb90e3db3e14461bde8178f22fb84894a82b6898e8d6879dad32",
+    "data/reviews/physics-world/combo-transfer/guard-comparison.json": "99a01bf3d758e9483e4e6205dbef6b50847a43993ceeea66e40cd616cbe77611",
+    "data/reviews/physics-world/combo-transfer/guard-comparison.log": "add1aba33702e1b64db6ad8a2ca64d76010d0bc902d70c0f4148e40c1d9c2506",
+    "data/reviews/physics-world/combo-transfer/native-findings.md": "a2171f6176b8b9b45634134bebd1319294b1aab70c138966edc7f8470e874f8a",
+    "data/reviews/physics-world/combo-transfer/python.log": "dc85e72f51efd3e73812cfe239bf57c2aeadeff965c3ed91eec80356aee3008c",
+    "data/reviews/physics-world/combo-transfer/saved-audit.json": "c6a9fdddd790621aa284f783ccff18bf538a643a3511bdea95796db12791a93d",
+    "data/reviews/physics-world/combo-transfer/saved-audit.py": "1bb177c42bac4ddcb2908af0e85b0b02d665c2083b5064ce001b134054c60937",
+    "data/reviews/physics-world/combo-transfer/teaching-review.md": "d048f2b8d436a517a3028ac22996838af36effee9d618d6fb43806e1112d9b4f",
+    "data/reviews/physics-world/combo-transfer/tests.log": "384b0d81bd7affea11fff13e2f462016f0dffe5dc75ba77703f6f41e7f94668c",
+    "data/reviews/physics-world/combo-transfer/typecheck.log": "dd16ef02ff824ff04f37965a8617dfe8ea7324e67486126d3aa6980dfaca9c63",
+    "data/reviews/physics-world/combo-transfer/verify-evidence.py": "8f39208fe17727df6579cb6cf32142de248a14ec8200e70905db1700902a0c5c",
+    "data/reviews/physics-world/zone-reach/after-film.json.gz": "035784041428bc93825482e1e32801e7c873998903a159d78ecd0f609a0f02f3",
+    "data/reviews/physics-world/zone-reach/current-games9.json": "b837b1b2bb8c7e9c8176d34384373f060f33fe4c5d16a8adb91ca9f37c430ffe",
+    "data/reviews/physics-world/zone-reach/current-runs.json.gz": "a9bc7a8b4ab603ffbd0d06513f106a52fcb2ee8464b2ddb4621ed04e57db66c0",
+    "data/reviews/physics-world/zone-reach/current-tackles.json.gz": "0ee045159cf74fd33dc4bbe522e512dd12bbfa828ffc96aeee6b52c02c071af8",
+    "docs/reviews/keeper-based-combination-work.md": "7832411da6dcdff7b09489f80b042ba0d034ba43071c7c0eabb9bd978fb23ba1",
+    "viewer/combo-transfer.html": "e40d3367187cd9e9722bc044c99d8fddcf56b4810fa8a1adc3212bfdeab3a438",
+    "viewer/combo-transfer.zip": "753e6d0d7ed6cc4627f23598cf089a314ae0428ce808eac783e469015ed39397"
+  },
+  "currentCodeFiles": {
+    "src/sim/behaviors/blocking.ts": "65a88253937a1ca6d438472f6eb84f339b03df4676ff9413fc78b6f6f435a56c",
+    "src/sim/agent.ts": "e9cb4f775ad823225cbf1c53a7d1a2fad0704c47845280aa354ec995dc2e6ebc",
+    "src/sim/engagement.ts": "cf77b6946da3b82518d796a31b844d8113fb1d2b27d207a9df7e19560ddbdfbb",
+    "src/physics/world.ts": "4944084ea63112a5bf9caa7e39867b2024fe9ba0a726c89ad80f8fdde2f8134f",
+    "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+    "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+    "scripts/diag/combo-transfer-review.ts": "1e6180d476b3a8ff5476badcf02309cf8706adcf0e954d9e475c4cce5f3685f6",
+    "scripts/diag/compare-combo-transfer.py": "fed54abaf570205301bd588b0066dadee653c6712b34dc250d7e1aa6138475ea",
+    "scripts/diag/run-contact-review.ts": "f82dcec7ab457346bab57ea82fc8cebf47da967f3c738a92f1380f4249451971",
+    "scripts/diag/tackle-timing-review.ts": "34ec2d65255b06d9182311ebd1d31de86e74993638ff2636a1df9232d5fcce91",
+    "scripts/diag/held-recovery-football.ts": "32f79f3b9f32981cf6548ea5edacc0b377116618c6df8b7e6d2c9bbd492a0b91",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/export-combo-transfer.ts": "0345aa1f8ae10d66ccb18a5dd8e38b1ba272627dca5693504275ebc9af3da9cd",
+    "scripts/replay-data.ts": "3f496288959ef0dbea6e721cdc66728a9985bb741f7e753e5bed2d5d9f3ca5c3",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "viewer/replay.template.html": "5b7e96dd49226f266de3d4d1a431b191772e6fe6054b7c67a8a5ceec989714f4",
+    "test/combo-transfer.test.ts": "d2782ebbf2ebce5d8009177890c1b3d6175115fa1a4044a967a7a50086cc354e",
+    "test/run-execution.test.ts": "d3fcfc8cb7f40b116ce3f1562aaaeefe55997f336ed17b99d6dd60e30825a374",
+    "test/run-technique.test.ts": "c469c46023deb9b875082bd554690a8956de19ecbd02991f1e4366ced7c224fa",
+    "test/zone-reach.test.ts": "2d447bbb78d032e34c64db7971b7e5ff469856a6f6d782e2a4b1dffd1b4b9e4a",
+    "test/run-system.test.ts": "445e89ed4384727469013c6c7f0061890509bed8a4e830ce2b84eacd6e9623ca",
+    "CLAUDE.md": "40e2efd01114bac6fea063380962a7b26ceddb0723115096adb136243fc85e3e",
+    "docs/PHYSICS_DEVELOPMENT.md": "c899e567636474a2fd1ba2973368c72392293c135c8e81b95ffbd021baf48b6b",
+    "data/README.md": "4fe8d5f9e6e2b5e3db36c84b107366adb61a303ea5c504d66de8f25fc388ff0a"
+  },
+  "checks": {
+    "schema": "combo-transfer-checks-v1",
+    "testsPassed": 749,
+    "testsFilesPassed": 69,
+    "testsExitCode": 0,
+    "focusedTestsPassed": 17,
+    "focusedExitCode": 0,
+    "beforeFeatureFailures": 10,
+    "beforeControlsPassed": 7,
+    "existingFocusedTestsPassed": 80,
+    "existingFocusedExitCode": 0,
+    "pythonTestsPassed": 22,
+    "pythonExitCode": 0,
+    "typecheckExitCode": 0,
+    "buildExitCode": 0,
+    "panelBeforeExitCode": 0,
+    "panelAfterExitCode": 0,
+    "comparisonExitCode": 0,
+    "runGuardExitCode": 0,
+    "tackleGuardExitCode": 0,
+    "gameGuardExitCode": 0,
+    "guardComparisonExitCode": 0,
+    "initialConcurrentTestsPassed": 749,
+    "initialConcurrentTestsExitCode": 1,
+    "initialConcurrentTestError": "Vitest worker onTaskUpdate RPC timeout while full collectors ran; unchanged source rerun with --maxWorkers=1 passed cleanly.",
+    "finalSourceSha256": "ff641a802030edddaa1eac42b8d0991b4cba43dd9f4fa0f3ef45ee3dd3bcfbac",
+    "filmCheckExitCode": 0,
+    "clipsBrowserChecked": 20,
+    "transferInspections": 12,
+    "videoExportsChecked": 2,
+    "exporterTypecheckExitCode": 0
+  },
+  "independentChecks": {
+    "fixedInputProfilePairs": 162,
+    "observedPlainControls": 324,
+    "ordinarySnapsPerPhase": 160,
+    "supplementalSnapsPerPhase": 2,
+    "ordinaryCompleteExecutionsExact": 90,
+    "ordinaryNativeTransfers": [
+      68,
+      118
+    ],
+    "ordinaryKeeperJointContinuity": [
+      65,
+      118
+    ],
+    "ordinaryPromotedHelpers": [
+      3,
+      2
+    ],
+    "ordinaryNativeLoadedKeeperJoints": [
+      68,
+      118
+    ],
+    "ordinaryKeeperRecordsWithOLDeliveredLoad": [
+      65,
+      102
+    ],
+    "ordinaryImmediateClimberRetargets": [
+      0,
+      2
+    ],
+    "ordinaryScheduledComboReads": [
+      {
+        "actualCombinationReads": 1580,
+        "weakHelperReads": 662,
+        "weakHelperReadsWithConservativelySecurePrimary": 421
+      },
+      {
+        "actualCombinationReads": 1210,
+        "weakHelperReads": 311,
+        "weakHelperReadsWithConservativelySecurePrimary": 108
+      }
+    ],
+    "oldFilmAttachedCombinationReads": 115,
+    "oldFilmSecurePrimaryWeakHelperReads": 61,
+    "oldFilmVetoReadsWithoutConsumedBackerImage": 60,
+    "oldFilmAffectedCombinationJobs": 7,
+    "loadedSurvivingFilmHandEntries": [
+      1882,
+      2027
+    ],
+    "broaderCompleteRunRowsExact": 73,
+    "unchangedTackleRows": 64,
+    "naturalFilmClips": 20,
+    "ordinaryStuffs": [
+      31,
+      37
+    ],
+    "retainedAdverseDuoYards": [
+      7.39,
+      2.7
+    ],
+    "retainedAdverseSupplementalOZYards": [
+      70,
+      28.49
+    ]
+  },
+  "scope": "Keeper-based combination transfers on one balanced 160-input generated-roster panel plus two separately labelled second-roster witnesses. Consumed delayed cues, stable current support and actual live hands constrain the keeper; all 118 candidate transfers preserve the keeper joint and its next solved native load. The 16 Y keepers have native joint force but no recorded OL arm impulse. Whole controller updates may subsequently change OZ drive or immediately retarget two climbers. Rushing gains, stuffs and fall counts retain adverse outcomes; no NFL-rate match, general league improvement, training mastery or performance benchmark is inferred.",
+  "historicalVerification": "Default pins immutable panels, native audits, comparisons, fixed films, logs, phase review and this verifier. Mutable current source/tools/tests/latest pointers are checked only with --engine, which verifies full src identity and reconstructs the baseline from the exact one-file engine.patch."
+}

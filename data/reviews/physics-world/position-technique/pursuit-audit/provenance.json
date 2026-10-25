@@ -1,0 +1,50 @@
+{
+  "schema": "retained-pursuit-diagnosis-v1",
+  "baselineCommit": "80e815102709a19026eb5398a7e5daaa844d7bb4",
+  "baselineSourceSha256": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+  "publication": "Original held-intent JSON and collectors retained unchanged; deterministic gzip. The feedback control was then re-run from git archive 80e8151 using the published adjusted runner, with exact C whole-source checks before and after. No live engine source was modified or sampled.",
+  "scope": "Post-hoc selected counterexamples, not football occurrence rates or NFL calibration. Primary evidence is source C246931. The old interim feedback receipt is retained separately; its full source was not archived and it is not relabeled as a C-source replay.",
+  "receipts": [
+    {
+      "name": "probe",
+      "sourceBefore": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+      "sourceAfter": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+      "originalTool": "original-probe.ts.txt",
+      "originalToolSha256": "1c0c3f49d7567ab9602d22ab87cee295b6831d0cc4d8b23dcdb4c7fcb14d73ff",
+      "rawJsonSha256": "2c09538a95748b98349470a32651ab9a620e8f74887e564332b8cf24c4bb5053",
+      "gzip": "probe.json.gz",
+      "gzipSha256": "b4648425ee53c983b533d9fa78d3bd3caa8fbde27c6f6de333eac9cbbb750f91",
+      "publishedRunner": "scripts/diag/pursuit-technique-probe.ts",
+      "publishedRunnerSha256": "11f48c842c1aeeff575d481c569da7d86d71b75b9b18a47f6247785e63116e7e",
+      "runnerCollectedRetainedReceipt": false
+    },
+    {
+      "name": "interim-replanned",
+      "sourceBefore": "a1606da372d2c4fe0ef0dad9830a539a3a0d7d356d172d7e5fae9464fd0cf475",
+      "sourceAfter": "a1606da372d2c4fe0ef0dad9830a539a3a0d7d356d172d7e5fae9464fd0cf475",
+      "originalTool": "original-replanned.ts.txt",
+      "originalToolSha256": "ec9261efebfb49c618727dfbd7c57f4890d092165231aa64802c1aaa748234ac",
+      "rawJsonSha256": "d10d363c65e611cbd36bf889edd7e37fa6edb5b59a6a9ea46f09f4f73ace6d7d",
+      "gzip": "interim-replanned.json.gz",
+      "gzipSha256": "59f021cdd971ac5e21b2a49d950b2970417fc47ad0b00c1bc158779d6efb92ee",
+      "publishedRunner": "scripts/diag/pursuit-technique-replanned.ts",
+      "publishedRunnerSha256": "8793836245abf14d9970ce43560288273f12096224255432e4c67114891a0adb",
+      "runnerCollectedRetainedReceipt": false
+    },
+    {
+      "name": "replanned-C",
+      "sourceBefore": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+      "sourceAfter": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+      "rawJsonSha256": "88742a8876617c5a8c8c06df17def0ad6648ed1ed797d01772b2106fda1db2eb",
+      "gzip": "replanned-C.json.gz",
+      "gzipSha256": "4806be7650e60b4a3c14495dc570d61cf63d7ce1e241eaeac803c4f6de7dbf09",
+      "publishedRunner": "scripts/diag/pursuit-technique-replanned.ts",
+      "publishedRunnerSha256": "8793836245abf14d9970ce43560288273f12096224255432e4c67114891a0adb",
+      "runnerCollectedRetainedReceipt": true,
+      "log": "replanned-C.log",
+      "logSha256": "3063a7d4d0c04dc2a874838b1a8ba0dbc06d6891e0e63632372b88de6faf7aed",
+      "immutableSourcePreparation": "git archive 80e815102709a19026eb5398a7e5daaa844d7bb4 src scripts/source-version.ts package.json; copy the pinned published runner; existing node_modules symlink only",
+      "wholeNumericPayloadExactAgainstInterimReceipt": true
+    }
+  ]
+}

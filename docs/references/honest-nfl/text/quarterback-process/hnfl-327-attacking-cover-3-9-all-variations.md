@@ -1,0 +1,285 @@
+# HNFL-327 — Attacking Cover 3/9 — all variations
+
+[Original image](../../images/quarterback-process/hnfl-327-attacking-cover-3-9-all-variations.jpeg) · [Topic](../../topics/quarterback-process.md) · [Catalog](../../CATALOG.md)
+
+**Familiar language:** Attacking spot and match Cover 3 with different conflicts
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Vertical stretches, deep horizontals, individual matchups and clearout/void reads target different distributions. Clue third and tight-third match do not offer the same two-on-one.
+
+**Browse:** [Cover 3 / three-deep match / sky–buzz–cloud](../../CONCEPTS.md#cover3), [QB reads / progressions / alerts](../../CONCEPTS.md#qb-reads)
+
+Original archive path(s): `HonestNFL/HSsNjKJXIAARE87.jpeg`.
+
+**Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.
+
+```text
+ATTACKING COVER 3/9 (ALL VARIATIONS)
+
+HORIZONTAL STRETCH ON CLUE 1/3 CORNERS
+
+THREE-LEVEL VERTICAL STRETCHES ON CB/APEX
+
+HORIZONTAL STRETCH
+
+FOR “TREY” COVERAGE WITH
+
+THREE-LEVEL VERTICALS ALLOW
+
+ALERT
+
+“CLUE 1/3” CORNERS THAT ARE
+
+US TO STRETCH THE CURL-FLAT
+
+RESPONSIBLE FOR BOTH #1 & #2
+
+DEFENDER VS. “TREY” AND
+
+UPFIELD. THEY PLAY “VISION &
+
+WORK OFF OF THEIR DEPTH. IF
+
+THEY MATCH (“DANGER”), WE
+
+SQUEEZE” TECHNIQUE WHEN
+
+ms
+
+STILL LIKE IT BECAUSE #2 WILL
+
+THAT OCCURS. CONFIRM TRUE
+
+HAVE GOOD LEVERAGE AND
+
+CURLFLAT
+
+ZONE BY KEYING WHETHER
+
+APEX CARRIES #2 OR NOT.
+
+CAN FILL THE VOID UNDER THE
+
+FOR “3x” FORMATIONS, THE
+
+M
+
+CORNER AFTER THE EXCHANGE.
+
+POST SAFETY IS RESPONSIBLE
+
+ALERT THE CLEAROUT IF #1
+
+FOR BOTH #2 & #3.
+
+STACKS THE CORNER EARLY.
+
+OODOOg
+
+oo
+
+so1Mon)
+
+THREE-LEVEL VERTICAL ELEMENTS
+
+cur
+
+ALSO APPLIES TO THE POST SAFETY
+
+- A DEEP CLEAROUT
+
+~ AN INTERMEDIATE FILLER
+
+IF WE RUN ALL VERTICALS OR RUN
+
+- AN ANCHOR UNDERNEATH
+
+‘DAVIS’ FROM A 3x1 FORMATION
+
+uIP FLAT
+
+“SEATTLE”
+
+“MADDEN”
+
+(ex. 33/99 TREY)
+
+(ex. 33/99 TREY)
+
+ATTACK THE TECHNIQUE/MATCHUP OF THE CORNER
+
+CLEAR OUT THE POST SAFETY & ATTACK THE VOID
+
+IF THEY MATCH, THE
+
+ATTACK THE
+
+‘ALERT
+
+ALERT
+
+WE LIKE
+
+CORNERS ARE
+
+»f
+
+‘CORNER
+
+THESE VS.
+
+CLEAR OUT THESS
+
+“TREY” WHEN
+
+RESPONSIBLE FOR
+
+FILL THE VOID
+
+THEY DON'T
+
+STAYING ON TOP OF #1
+
+CARRY DEEP.
+
+IF THEY SHOVE,
+
+AT ANY EXPENSE, SO WE
+
+APEX CARRIES #2
+
+PROGRESS TO
+
+WANT TO PRESS THEM
+
+“DANGER” AND
+
+VERTICALLY, FLIP THEIR
+
+THAT THE CORNER
+
+THE SHALLOW.
+
+{SSOLATED ONS
+
+HIPS, THEN BREAK IT OFF.
+
+M
+
+WIN WITH RHYTHM!
+
+jokey Tere)
+
+BENDER
+
+HINGE
+
+OOMo
+
+foxy
+
+THIS IS ALL ABOUT TIMING BETWEEN US
+
+Pr
+
+opas @
+
+SH
+
+AND THE RECEIVER. GOOD TIMING
+
+KOPN MEANS THE CB CAN'T RECOVER.
+
+a 0
+
+“RAIDER”
+
+(ex. 33/99 DANGER)
+
+“83 DBL POST ‘Y’ DIESEL”
+
+(ex. 99 TREY)|
+
+STRETCH THE UNDERCOVERAGE HORIZONTALLY
+
+STRETCH THE STRONG SIDE (TO #3) TRIANGULARLY
+
+WE WILL ALWAYS LOOK TO
+
+WE WILL ALSO LOOK TO STRETCH 5
+
+STRETCH THE UNDERCOVERAGE
+
+THE STRONG SIDE
+
+READ EVERYTHING INSIDE-OUT OFF THE
+
+HORIZONTALLY AGAINST
+
+SQUEEZE OF THE UNDERCOVERAGE.
+
+(TO #3) WITH A TRIANGLE READ
+
+“TREY” (TRUE ZONE). USE OUR ALWAYS TAKE THE 15" OPEN RECEIVER!
+
+USING THREE ROUTES ON TWO
+
+VISION TO STEER
+
+LEVELS. WE CAN BUILD THIS OUT
+
+STRETCH
+
+DEFENDERS, THEN WE WORK
+
+OF NORMAL SPLITS FROM ANY
+
+ei
+
+N
+
+AWAY FROM THE SQUEEZE.
+
+STRUCTURE (UNLESS “DANGER”)
+
+LUKE ALL ZONE BEATERS,
+
+THEY ONLY WORK IF WE
+
+FORCE THEM TO TAKE
+
+AWAY THE ROUTES AS WE
+
+OOHOO
+
+WORK THROUGH THE
+
+ik ale
+
+MAKE THEIR JOB EASY.
+
+PROGRESSION. DON'T
+
+WE CAN ALSO BUILDA
+
+IDEN
+
+spoT
+
+TRIANGLE OVER THE
+
+MIDDLE TO STRETCH THE
+
+POINT MAN GOES 1°"
+
+LUNDERCOVERAGE
+
+“SPACING”
+
+“OAKLAND”
+
+(ex. 33/99 TREY)
+
+(ex. 99 CLUE)
+```

@@ -1,0 +1,342 @@
+{
+  "schema": "strike-contact-publication-v1",
+  "parentCommit": "9be35b25e77c8f49a4b13bd2164002180ef1fbb3",
+  "branch": "claude/engine-priorities",
+  "node": "v22.23.3",
+  "sourceBeforeWithCorrectedFixture": "e931efde36934de1231dc9c1fad7a2179b61026bbb78a4d1eabb6e252d9747e8",
+  "sourceAfter": "623b1c16aca5c6aa1a5f99bf178b789edaa1a12951058b75ef7ecd177a84217f",
+  "historicalSource": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+  "sourceHashAlgorithm": "Sorted src relative paths; SHA256(path + NUL + bytes + NUL). Before substitutes only retained world-before.ts.",
+  "engineFileSha256": {
+    "src/core/field.ts": "379112225696271a6c61db19ef5d2ea0dded095effe79b95eba5715470c0f332",
+    "src/core/rng.ts": "2eccea53d34258ab76b3a2bb0df42ecf5526172dd5b92c5000abc486e9b92f60",
+    "src/core/units.ts": "50534706486617753133a238d0cf84719d65f620bf04497af9d68897ad4955d1",
+    "src/core/vec.ts": "39edd3c2a4e69e14cf18176ce5fbe9791cae396ee4342ae77c88f3132233b9ff",
+    "src/game/game.ts": "955f09e18492b4da9013dff7861b0b541e53f372aa6561757a22ca54c862f8bf",
+    "src/game/playcaller.ts": "2913301ad7ceca47a38ea1562f5db8dfc140e4844e2193af98f2649ad58f006e",
+    "src/game/specialteams.ts": "96dcba7951c422f78af286e4b66e22d5d941686a1af213433a01b54e4e2a0a93",
+    "src/game/stats.ts": "a0324dc20c389efdd8a9d65a122d9a23a7d80b84f700a36d64dba068a6ae9c85",
+    "src/lab/contact-height.ts": "bb40418858594ae7ff243bfba795c8ce3f2b47a93206d9d1aacfb780747a9aa0",
+    "src/lab/motion-contact.ts": "13ce1f657100a8924345f5b68a40f0bcafacd2f93458e02c83dbb58de1f76c56",
+    "src/lab/scenarios.ts": "f3c25ae19611c10f1e5fbcbe6ac13598c55651b2280308d13485dd532971c480",
+    "src/league/team.ts": "21af83a256f892329eadbba2a4a3a9922d5085815b77ec30d034acfee7cd423c",
+    "src/physics/actuation.ts": "68f6a0326976baab0d37d7f4400e446f9f9f2c28e3c3d2a6d1fd28d97d2601a5",
+    "src/physics/ball.ts": "c7f6f136485861b0abcd05524e62f59b2dd43fb8d43bc98e64716c1f5e74a3a3",
+    "src/physics/bodyshape.ts": "142289f67f83c43486a8c26e662fc6ff6fe4d8f11b650e3afd44da8465a65b5d",
+    "src/physics/bounded-attachment.ts": "695cffe6fb2385cfa30e3417660631ab2d888234ced754beac7e6f2b6daaf78c",
+    "src/physics/contact.ts": "b041f03b73d2b9abb84d5bf159a7cc2a21c1ec416dfdfb7e7cefca08e13c46d2",
+    "src/physics/filtered-follow.ts": "58c04e99f807fad36b49d22fbb6891593d6988a9bd653fc9f898552a8168e3e0",
+    "src/physics/finite-support.ts": "8848e2343659f74d34a795608d61cfec140e64649f8685060158c145d3673662",
+    "src/physics/inertial-gait.ts": "272906b4e12bd575990e62bd25a5b5fc2cd746310a044f365cc86ad800d29e22",
+    "src/physics/inertial-support.ts": "a44871b69c8573d45b98a4f3976ff6a4b058b4fee27da2f0f727aeaea8533199",
+    "src/physics/kinematics.ts": "a4045f160d0814424eeb4748f7e0769d591bed5cbded8d350c9793e93530d3cc",
+    "src/physics/leg-compliance.ts": "d5538fafc286e6d55c9f25459bf49bcd5a3e6bd1eaffcff7d58ef8e8ce651431",
+    "src/physics/material-plane.ts": "71dc8ec304e54bb849cc2a5275733af6ee941bbd490383b65dc0abd8a9ad29d6",
+    "src/physics/material-rigid.ts": "c5e038cab6fa1b1969467785de17c30b963c1cec963c69c87f08bf9124cec9b5",
+    "src/physics/movement-preview.ts": "7583b3555f69cde7150c4ed3bf9543e83176e802435e2945429ed1c1554ae133",
+    "src/physics/reach.ts": "86387b202fb1e9eff44c5d308fd1e6534493c4621ccbbdf4279f4c7988022756",
+    "src/physics/sole-contact.ts": "90b5004019f65c7d2f07d6ae1b1216701c6031d64fc5315136553c6c42d104f9",
+    "src/physics/sole-shear.ts": "7cede92a819cfd298544801db9187c5666193cc29cf30848989161a735fda28a",
+    "src/physics/spatial-ground.ts": "769fa0b67e69182433e44f6af4c9d05fd46fea09155b320e354c36c569b6e161",
+    "src/physics/spatial-sole-compliance.ts": "137b9327b0465c2bdbe024d7814232d6042564a5aa000b0ddf908591d3ba8b1b",
+    "src/physics/spatial-support.ts": "d67f8f17341e91115f30fa886366714e7d33bb260db45b297bfa51252edc69a9",
+    "src/physics/support.ts": "cc507b9e0168359dad772c6409125aa9f9309f5464a5020c4976ff157801d301",
+    "src/physics/vertical-support.ts": "5ff3d038fb929899a30d2a48e82fd6b2570c144c4b771e798396a6f699545cb2",
+    "src/physics/virtual-foot.ts": "ac1e522bbe28a45bbcb7494db115eea0b1266e2c133c936a60a5c06ac0c30c92",
+    "src/physics/world.ts": "6b8abedfa540b68e4b8997c14bd461dfd16e90f9b541722cf06056d26aa75b0e",
+    "src/playbook/alignment.ts": "c4752a58b2b1b549e9a64efdfa1127610c275ee988cdc6e3c4b41afba1e57d10",
+    "src/playbook/concepts.ts": "482bfe03127436ae4f4736d12bdc0916aa9583c811e5557673114368bcf52418",
+    "src/playbook/coverages.ts": "b79e9b031bb05bde8b450eecdad7d5b5e7139c538223eb3080fa0e88943641aa",
+    "src/playbook/defense.ts": "c7ace4c288906b2bb718909050c7348d6a7df5e6ffb296f07ab0553f522cc262",
+    "src/playbook/formations.ts": "b972f17c0574ba4a03700ab3fe0ffc505ed2816ab8734c379ad08d61356c095f",
+    "src/playbook/routes.ts": "a8834a8f953b156e9330309479a7208dd6d157a7eb54f99daad79ee1c571f6d2",
+    "src/playbook/types.ts": "5c3b9e3f5ca2b083dd08029c845d75297e4f1e41b47b55b61b9dfe274bed7fe4",
+    "src/players/generator.ts": "f4ec6a5004eb8a57bb100f627b7f691cbf52eafaa36b8c2bdd39f7e5c4da2f02",
+    "src/players/names.ts": "91e7f346d0835612d90696e6c49f4f8389ce5f09729b188e198d0f5a5b15fd4e",
+    "src/players/physical.ts": "9450c6a551d14d36789b8439df6c494e1b60bef194ee763bc461f4c01fef7f88",
+    "src/players/roles.ts": "d4cf0a0c4cb4fe26287ad2975264be72768c245d4bf80e8a7fc62abdf0833079",
+    "src/players/types.ts": "384d961c3c4efcdc958ecbe82db86b7427adacb287ac7a579110eb99ac440f06",
+    "src/sim/agent.ts": "e0405a506332be8b7c6643796cf793e9bad23f9ea5de93812f76fc50ddd1be43",
+    "src/sim/approach-control.ts": "a38253b365ee337820e0f9478dd9cb8a709a53ae77bd62d31180c92a2dd3c40a",
+    "src/sim/assign.ts": "be4017b9125b758e511f03b6556e9982bf7fdf6022f6acbfa9f54e893f6ba5f9",
+    "src/sim/ball-transfer.ts": "3bd279ca86c66a198a2c170940e644f6d9ae3d4991ffa3bf91dc4bb39ee22959",
+    "src/sim/behaviors/blocking.ts": "440e82f0b1296bd768f59c3395510767e639c20f54ade8f4bccd29e72387f7c3",
+    "src/sim/behaviors/carrier.ts": "4ba684552d96b4eb4dd0e8d0954b395d6b4eb4754c0665507e59c5b5e5861d66",
+    "src/sim/behaviors/common.ts": "08690f3e7f339ecd941e87df41eb19715e76da454e890df2b70603a8f6e8986d",
+    "src/sim/behaviors/defense.ts": "1f8bb4d1be4be9ae682eb75e03b688441607045cf9cb1da40a645c0523914008",
+    "src/sim/behaviors/qb.ts": "85f7dbae4dcab691fac2b050878aa8a0e0bc46dc6a7f7b5cd8a07fa2dfeafe6a",
+    "src/sim/behaviors/receiver.ts": "f481e399fece5e5a23902c66dace0fb672b47e1e75ce429cf57624916221e1bc",
+    "src/sim/catching.ts": "d74a42ec5f2af4b255d5636055ae6b120dc3b0a605c4f6a7ccad8697e337a2d7",
+    "src/sim/contact-choice.ts": "6b7b56e4a81f0c6b4e697f89ca2bd6c84ecba8e559054f8f91fccacd2fbe5eb6",
+    "src/sim/coverage-cues.ts": "837a77673237bd975e742428e029572b8405559b5267c0a5918a7ca2f1658640",
+    "src/sim/coverage-read.ts": "64d6a8d2df30384f29a0b70e7b162ac8cc8b927220279050cf202bb0609a5eac",
+    "src/sim/coverage-space.ts": "55dc3dd3c6e80d0ac996b1fa40b693431a00bb3144f8a7bf0b989921ac6f5176",
+    "src/sim/coverage/defender.ts": "a297cbf7c3ebaef1d6023aef0087c1b25848b226b7a4ff5b7726ba1985c6cfa4",
+    "src/sim/coverage/judgment.ts": "6bf015ffce5625654b0379cfce7829c92ed2dff9b69d97a54b6630b01b46f69e",
+    "src/sim/coverage/reads.ts": "d0cdb7fc0eaee81f1f4c6e4093bc838a2f7a060ed3bac1329b13fb3378c991db",
+    "src/sim/coverage/rules.ts": "b295898a8de96b836be1fca47d0d2ef0d86fa0d56e767f5b5a26186569754373",
+    "src/sim/coverage/techniques.ts": "606b909cda7a81234a255a090cba1b513bee7f40b94d31d530d18f0f60a9ff1d",
+    "src/sim/engagement.ts": "6168ef133fa75463113d62043dca4b6eda06ee21727d2bc879b953cd6cf314b4",
+    "src/sim/mind.ts": "e32f7cce63fabd0e44787e7036e53c36a42def2cac29fcb49967610ed1015186",
+    "src/sim/perception.ts": "28599f095e9784fdcb4ff4d7a95ef4d1d584f86be985f393fa19fd16e9a92545",
+    "src/sim/playsim.ts": "8e5c03f5cb82d0e49e526e9976a759556bbb38f7646f08ebc47b898250010b3b",
+    "src/sim/qbmind.ts": "af6c431da7ce160ccf3ebb264b2cb504a3f17327b12ee4c4775ec36095c6866a",
+    "src/sim/recognition.ts": "90525df3f0e633dc277fbe01166ec649ee518417b7f85fd5a48cb176e8fcfb68",
+    "src/sim/run-fits.ts": "1e95c4211021cae601f2c6fe7151bf76936c012b610d79354760c79099cc6917",
+    "src/sim/spacing.ts": "6c10be2d199caa316bbc7a0b17b6132606e5174b512e0cc61a0472cf0eeb1867",
+    "src/sim/tackle-window.ts": "f4f3028307293bc1fb85b1076c0d938358c623ee4100204dd1956f5521f08b6c",
+    "src/sim/tackle.ts": "33e9e60eea085fcb77d1b1f4420bd3e71b2fc3d8c687c7e2c7351850a5653475",
+    "src/sim/telemetry.ts": "5da74e98686f4dfe49732158725c29d8331b9684d0c25d3fb9b698063568fc57",
+    "src/sim/types.ts": "998d21a66d39eff1b44e2e89eeba819d101e336e80fbf68f3a92b7a97a67d217"
+  },
+  "toolAndTestSha256": {
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/diag/strike-force-review.ts": "c2391785495575fd5ed6e2012515a4ab050bfa53f15c373b8bb1253bb8c0f515",
+    "scripts/diag/motion-contact-review.ts": "f1ee6effb2f8d7de5a8da01ccf705ec800a729d46523bcd6bd64176b28f227da",
+    "scripts/export-motion-contact.ts": "ba8f6cead08f9b9e1cf278c3e48683a07a88aec71b533f227a96e8cf449f4d37",
+    "scripts/diag/run-contact-review.ts": "f82dcec7ab457346bab57ea82fc8cebf47da967f3c738a92f1380f4249451971",
+    "scripts/diag/tackle-timing-review.ts": "34ec2d65255b06d9182311ebd1d31de86e74993638ff2636a1df9232d5fcce91",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/diag/held-recovery-football.ts": "32f79f3b9f32981cf6548ea5edacc0b377116618c6df8b7e6d2c9bbd492a0b91",
+    "test/strike-force-integration.test.ts": "44806740383a2dcf4b80b58d3efb4f5088b1a569d58186fd7f568608a4316da5",
+    "test/motion-contact.test.ts": "2a4dcafb84e0e2409775dc602077b600c94154d48c45319c5da47499a9700d2a"
+  },
+  "correctedFixtureMatchedBeforeAfter": {
+    "fixtureBefore": "13ce1f657100a8924345f5b68a40f0bcafacd2f93458e02c83dbb58de1f76c56",
+    "scriptBefore": "f1ee6effb2f8d7de5a8da01ccf705ec800a729d46523bcd6bd64176b28f227da",
+    "inputSha256": "4571f99b536edaf524a9b754cecf2850b86ec2d7aa5611ef99955d7ba5c8c69c",
+    "negativeInputSha256": "8a888f415d81238a2ec5c24f4a9ce89d4fb0a5cad6021dfb3d5db9cf8e5ec39d",
+    "profileSha256": "3e502abfdfd6c0c4df8fd65cfe63d98e8698f931020e8143990c1f00f9abaf5f"
+  },
+  "commands": [
+    {
+      "evidence": "strike-before.json.gz",
+      "source": "e931efde36934de1231dc9c1fad7a2179b61026bbb78a4d1eabb6e252d9747e8",
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "/workspace/football-simulation-/scripts/diag/strike-force-review.ts",
+        "out/strike-contact-review/strike-before.json"
+      ],
+      "scope": "Independent constant bounded planar force oracle, unequal masses, rotations and resolutions. No ground forces or torso contacts. This exact restricted test does not establish nonlinear contact onset or football realism."
+    },
+    {
+      "evidence": "strike-after.json.gz",
+      "source": "623b1c16aca5c6aa1a5f99bf178b789edaa1a12951058b75ef7ecd177a84217f",
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "/workspace/football-simulation-/scripts/diag/strike-force-review.ts",
+        "out/strike-contact-review/strike-after.json"
+      ],
+      "scope": "Independent constant bounded planar force oracle, unequal masses, rotations and resolutions. No ground forces or torso contacts. This exact restricted test does not establish nonlinear contact onset or football realism."
+    },
+    {
+      "evidence": "motion-before-summary.json.gz",
+      "source": "e931efde36934de1231dc9c1fad7a2179b61026bbb78a4d1eabb6e252d9747e8",
+      "argv": [
+        "/workspace/football-simulation-/scripts/diag/motion-contact-review.ts",
+        "out/strike-contact-review/corrected-before"
+      ],
+      "scope": null
+    },
+    {
+      "evidence": "motion-after-summary.json.gz",
+      "source": "623b1c16aca5c6aa1a5f99bf178b789edaa1a12951058b75ef7ecd177a84217f",
+      "argv": [
+        "/workspace/football-simulation-/scripts/diag/motion-contact-review.ts",
+        "out/strike-contact-review/corrected-after"
+      ],
+      "scope": null
+    },
+    {
+      "evidence": "current-runs.json.gz",
+      "source": "623b1c16aca5c6aa1a5f99bf178b789edaa1a12951058b75ef7ecd177a84217f",
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/run-contact-review.ts",
+        "out/strike-contact-review/current-runs.json"
+      ],
+      "scope": null
+    },
+    {
+      "evidence": "current-tackles.json.gz",
+      "source": "623b1c16aca5c6aa1a5f99bf178b789edaa1a12951058b75ef7ecd177a84217f",
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/tackle-timing-review.ts",
+        "out/strike-contact-review/current-tackles.json.gz"
+      ],
+      "scope": "Production 22-body PlaySim.tick, ordinary 50ms decisions, unchanged tackle draws and World/grasp/fall/whistle lifecycle. Straight post-catch carrier, pursuing defender, bystanders parked; traffic case has one idle standing TE. No football call, future obstacle oracle, grip-strength edits, forced outcome or NFL-rate target.",
+      "commandOrigin": "Retained invocation history; diagnostic does not embed argv."
+    },
+    {
+      "evidence": "current-games9.json",
+      "source": "623b1c16aca5c6aa1a5f99bf178b789edaa1a12951058b75ef7ecd177a84217f",
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/held-recovery-football.ts",
+        "out/strike-contact-review/current-games9.json",
+        "9",
+        "--games-only"
+      ],
+      "scope": null
+    },
+    {
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "--import",
+        "tsx",
+        "scripts/diag/hand-convergence.ts",
+        "out/strike-contact-review/current-hands.json"
+      ],
+      "scope": "Final transfer panel; tool does not save actual argv, so this is retained invocation history."
+    },
+    {
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--maxWorkers=1",
+        "--minWorkers=1"
+      ],
+      "exitCode": 0,
+      "testsPassed": 606
+    },
+    {
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "tsconfig.json",
+        "--noEmit"
+      ],
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test",
+        "-p",
+        "test_*.py"
+      ],
+      "exitCode": 0,
+      "testsPassed": 22
+    },
+    {
+      "argv": [
+        "python3",
+        "data/reviews/physics-world/strike-contact/transfer-validation.py"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "films": {
+    "motion-contact": {
+      "htmlSha256": "719be2a8631bc873359f8545d396c8e2887bc295a5cc450caf1c24b73632c5f8",
+      "zipSha256": "a050a630c094c33fc17e6948503243f6d5bf273375686fc6bb15d32bb64c6156",
+      "zipHtmlByteExact": true
+    },
+    "motion-contact-historical": {
+      "htmlSha256": "662263e41d37019b1399cc919ed60b493cee5e5ba2fdc1a8bdc21e3209601c55",
+      "zipSha256": "6f133e9d1f9a6a2c23fb97490b749e05358704532a3e3dc5f4262bfc38186401",
+      "zipHtmlByteExact": true
+    }
+  },
+  "filmCheckOriginalToPublicationPaths": "Top-level film-check files are prefixed film-; historical-v1/* moved to film-historical-v1/*. Original file hashes verified. Historical HTML/ZIP are exact parent bytes; current-exporter v1 checks refer separately labelled scratch exports.",
+  "checks": {
+    "allJsonDecoded": true,
+    "bothViewerZipHtmlByteExact": true,
+    "historicalViewerExactParentBytes": true,
+    "sourceReconstructionVerified": true,
+    "typescriptTests": 606,
+    "pythonTests": 22,
+    "typecheckExit": 0,
+    "buildExit": 0,
+    "intentionalBeforeTests": {
+      "failed": 2,
+      "passed": 2,
+      "purpose": "Independent oracle fails with preceding integration; not an unresolved publication failure."
+    },
+    "currentOfflineFilmClips": 14,
+    "historicalCurrentExporterClips": 14,
+    "transfer": {
+      "runs": 144,
+      "tackles": 64,
+      "handRedirects": 54,
+      "frontalTackles": 12,
+      "gamesMeasured": 2
+    },
+    "localDocumentLinksResolved": 192
+  },
+  "limits": [
+    "Physics repair is achieved finite-strike quadrature; no physical capacity or NFL outcome calibration.",
+    "Historical v1 installation/accounting differences are not an isolated physical effect.",
+    "50ms contact bins do not establish continuous sustained duration or precise within-bin channel onset order.",
+    "All game timings were concurrent with other diagnostics; no runtime speedup claim.",
+    "Two games and selected diagnostics do not establish NFL-fit or improved football outcomes; 68\u201329 and adverse rows retained.",
+    "OL/controller prototypes are rejected; no live approach fix shipped."
+  ],
+  "files": {
+    "data/reviews/physics-world/strike-contact/README.md": "acd8d8ea26af0dcd4f5229690a0589051788f4f270f0faf080432628aceefbed",
+    "data/reviews/physics-world/strike-contact/build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/reviews/physics-world/strike-contact/current-games9.json": "210dadf0a875be8b8c3898d92eae9082e976f02d96b2eedb89c2a697d98d5b74",
+    "data/reviews/physics-world/strike-contact/current-hands.json": "6b982cf42c84264a93193b1c97f8e9dd27e5f0c0cd1ac1e987839aec19689660",
+    "data/reviews/physics-world/strike-contact/current-runs.json.gz": "2b1e80512b3308f9bb06c9b5b9650a85077664ce25a7e04c41504d3941675227",
+    "data/reviews/physics-world/strike-contact/current-tackles.json.gz": "3964765b50febcecb596f71eb5473cae6f0481b5d81a714764ecbf4127a61791",
+    "data/reviews/physics-world/strike-contact/film-browser-check.json": "da0762864dcdcd5c51919bba0ba0c35839ea34453f1ba5dd4bfbccd530c18a25",
+    "data/reviews/physics-world/strike-contact/film-browser-integrity-check.log": "ce112624a58733eb8e1862768c3e155436404e4fcd0c5eb6d6e8d0f2f59bf56e",
+    "data/reviews/physics-world/strike-contact/film-browser-integrity-check.py": "b866a8fa4478009c34293a47b9ef1f415882dee0b3a6513ad6787919c6077737",
+    "data/reviews/physics-world/strike-contact/film-export-validation.json": "2ac153990a9234473b8d4b4e9b701d8ba3a2bd99abddecf82c8c86cc3bb294c0",
+    "data/reviews/physics-world/strike-contact/film-film-integrity.json": "f0a72acc22f2981b3d8e93db8024ef205b522af07bdb964262eb2014da095b81",
+    "data/reviews/physics-world/strike-contact/film-historical-v1/browser-check.json": "0081a8894ca2466d8cb248a1d98b5d6042c3dc455e4e186367cf9bd578a4c805",
+    "data/reviews/physics-world/strike-contact/film-historical-v1/export-validation.json": "a53bbc4b2f822579a303b0d9bcdd9ab91a33dd490033351e3ad9696609aa20ec",
+    "data/reviews/physics-world/strike-contact/film-historical-v1/film-integrity.json": "a9478d4fb452dc0147a9c2236a1b5a6c9c0a719189dbb354b832e85421cfe6fb",
+    "data/reviews/physics-world/strike-contact/film-manifest.json": "08f97d1d8a52c45abb946d2b4bbc4c368dd3ba540bcae38d294203665b8ef23c",
+    "data/reviews/physics-world/strike-contact/focused-tests.log": "875887ab14e79e3e4639bb899ab99983ecf30baad4b72c8e36991d4ec250f912",
+    "data/reviews/physics-world/strike-contact/historical-accounting-audit.json": "1ea3bc0946efd607725496e64884fcdb67443fde0506c96f4ff8343cb9458bcb",
+    "data/reviews/physics-world/strike-contact/motion-after-raw.json.gz": "f7aef68b39633439e14f6606294945716d12bb379458ee0f0b5c9840e131a773",
+    "data/reviews/physics-world/strike-contact/motion-after-summary.json.gz": "6993756ac407d4df8d147242e2b7349f2615c01094c90208d56831067d08d043",
+    "data/reviews/physics-world/strike-contact/motion-before-raw.json.gz": "6f4bb139bd0aaa650111548c86e268bd9d378356bde76c5fcfda6392c9ae8a15",
+    "data/reviews/physics-world/strike-contact/motion-before-summary.json.gz": "e84acbcadf485d52a362fce940a282e2e20692049544f44826d5c0e63d4be274",
+    "data/reviews/physics-world/strike-contact/motion-film.json.gz": "7b23f24350c0125c0672091f7bb1af3a10607ae69d55b28af6e8804594baa6c1",
+    "data/reviews/physics-world/strike-contact/paired-run-witnesses.json.gz": "44c62316c1030d34ba93c5c043846d195ad5b859b2c426c4490766d04d2e0969",
+    "data/reviews/physics-world/strike-contact/python.log": "18e9df80e98fa0ebb2bb262c2b9a42ad9808762382edf5ef7d8d198f67f006cd",
+    "data/reviews/physics-world/strike-contact/rejected-cutoff-probe.json": "4e1abc299182473f4d1fcfbf010e325b58083bb0672f84609bfcc6d52e716f4b",
+    "data/reviews/physics-world/strike-contact/rejected-tracked-probe.json": "86315d748a2f7e749fabc1f4221c18d6b25fba50e34a5a6887c66a0aca79e273",
+    "data/reviews/physics-world/strike-contact/strike-after.json.gz": "58041e5d5174781c058876ddff110de022145dd16951248dbb7f61ee38894f8e",
+    "data/reviews/physics-world/strike-contact/strike-before-tests.log": "2335c77636ca30b0dab10c0853157c5c917fa1667c151cdf8c909f76cea2a624",
+    "data/reviews/physics-world/strike-contact/strike-before.json.gz": "f16a55f7261a48e19792a6f16966f183a24533af28f9f70d3d5c381f8bd57e75",
+    "data/reviews/physics-world/strike-contact/tests.log": "2b9cbddde4425f79369df80e720b4076e3ff022008910fd97fea6a01341979d9",
+    "data/reviews/physics-world/strike-contact/transfer-validation.json": "11acbeecec36a50bbc7c243eeec6a42c116cd531a60f91e55c286221f9e55e35",
+    "data/reviews/physics-world/strike-contact/transfer-validation.py": "5819df739b8f2a07e949ada17034f86a1abd621da5eaa46191e68f819b0320c8",
+    "data/reviews/physics-world/strike-contact/typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "data/reviews/physics-world/strike-contact/world-before.ts": "958d6fb1f8797771a13b4e4a365dbb19b48a3ebea1734052812b692219a54302"
+  },
+  "documentsSha256": {
+    "CLAUDE.md": "a157c76c90b40b47c8ec533126cadc1f57457ddab4e5ddce85728da8c328cf7b",
+    "docs/PHYSICS_DEVELOPMENT.md": "41269aee868d7336e70f058d27b66e1e64cb59a88d0a42804403795ce9d92c84",
+    "data/README.md": "aa491c7deccc8565ff27d06fbb55b7edf1853c77e70db7cecaa5a9fa77eb3e94",
+    "data/reviews/physics-world/motion-contact/README.md": "eb1effc965f73a159ae4840a06d2026d14859e66745ae826756110ae9d24661f",
+    "data/reviews/physics-world/strike-contact/README.md": "acd8d8ea26af0dcd4f5229690a0589051788f4f270f0faf080432628aceefbed",
+    "docs/reviews/strike-force-and-slice-validation.md": "be9b97b77bf2dace4868879bd6bcba799788bbb742f7b5159c5e6c692751e426",
+    "docs/reviews/hand-force-integration.md": "192b7048e1db6b2de2f2b301695798a60c03a8f18c59be3f1cf32e4a3cb3b4be"
+  }
+}

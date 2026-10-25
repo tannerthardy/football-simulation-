@@ -1,0 +1,36 @@
+{
+  "query": {
+    "schema": "rushing-benchmark-query-v1",
+    "selection": "REG live pass/run rows; exclude kneels, spikes and two-point attempts. Designed runs exclude observed dropbacks and scrambles; scrambles require qb_dropback/pass_attempt classification plus qb_scramble=true and rush_attempt=true. Failed QB escapes recorded as sacks are not successful scrambles. This is realized action, not hidden designed-call intent.",
+    "outcome": "Primary clean outcome requires penalty=false AND finite whole-play yards_gained. Keep all live flagged/missing-penalty populations and missing gains in audit. No-play penalties excluded by live selection remain audited separately, not silently counted as successful runs. No accepted/enforced-penalty reconstruction. Individual rushing_yards audited separately from whole-play gain.",
+    "yardSuccess": "Chosen yard-based40/60/100 rule: gain >=40% ydstogo on first,60% on second,100% third/fourth; only valid down1-4 and positive finite distance. Not a universalNFL standard; include45/60/100 sensitivity. Preserve yard-only success on turnovers; successWithoutLostFumble separately needs known fumble_lost=false. PositiveEPA uses finite provider nflfastR expected-points-model EPA, distinct from yard success and immediate conversion.",
+    "conversion": "Separate gain>=ydstogo; gain>=ydstogo without known lost fumble; recorded first_down_rush OR rush_touchdown with both flags known. No missing flag becomes false.",
+    "distribution": "Whole-play gain; interpolated p10/25/50/75/90/95/99, max; bins negative,zero,positiveUnder4,4toUnder7,7toUnder10,10toUnder15,15toUnder20,20toUnder30,30toUnder40,40plus. Stuff<=0 differs from negative<0. Each tail's share of net gained yards and positive gained yards is a separate composition diagnostic, not an event rate. Report excess beyond threshold and upper-capped mean10/20 preserving losses, not truncated/excluded-tail mean.",
+    "tails": "Separate10/15/20/30/40+ all-clean-gain frequencies. Field-eligible rates require valid yardline_100>=threshold; excluded short fields and unknown fields counted. TD at goal is a geometrically censored endpoint, not evidence the run could/could not continue. No invented latent yardage; retain short-field TDs.",
+    "carrier": "Exact season roster gsis_id + listed position: RB_FB/QB/other/unknown. Conflicts remain unknown, no name matching. Position is not snap role. Sneak only positive/negative available FTN is_qb_sneak chart; missing charting unavailable, not false.",
+    "situations": "Joint down\u00d7distance\u00d7field per carrier/run-kind and per season. Distance1/2to3/4to6/7to10/11to19/20plus; fieldgoalLine1to5/redZone6to20/plus21to50/own51to89/backedUp90to100. ScorelargeTrailing17plus/trailing9to16/trailing1to8/tied/leading1to8/leading9to16/largeLeading17plus; clockearlyRegulation/last10to2min/final2min/overtime; margins and score\u00d7clock, not giant all-variable cross.",
+    "chart": "Exact game/play join to available FTN, with per-season missingness. Known positive integer1-11 box<=5/6/7/8plus; observed zero labelledzeroUnverified separately, not inferred zero defenders/lightbox. Actual number of offense backfield players (not11/12personnel), qb_location, starting_hash, motionbeforeORatsnap,RPO,trick,sneak. No charted blocking concept or named defensive front inferred. FTN and derived charted aggregates attributed CC-BY-SA-4.0.",
+    "cohorts": "Declared ordinaryRB_FB: designed run,RB/FB,down1/2,distance8-10,outside20,scorewithin8,regulationbeforelast600s. Also allRB_FB, shortYardageLateDown (down3/4,1-2), goalLine (field1-5), third20plus, final2minLeading9plus, positivechartedSneak, and scramble. These are observational selected jobs, not causal treatment effects.",
+    "bootstrap": "Season-stratified GAME-cluster percentile bootstrap, identical shared deterministic draws across strata. Sample each season's full live-game universe with replacement, retaining both teams and all selected plays from a sampled game; cells absent in a sampled game contribute zero. 95% percentile intervals require each metric's own denominator and games-with-known-denominator to meet declared exposure minima. Does not make games across repeated teams independent or give synthetic-roster tolerance bands. Under10 observed events flaggedrare; zero-event [0,0] only describes resampling observed games, not proofzero-risk or an unseen-event upper bound.",
+    "variation": "Observed team-season and defense-team-season distributions retain gain and game exposure; do not confuse their across-team spread with uncertainty, isolated talent, causal scheme effect or generated-roster hardlimits.",
+    "standardization": "Reference2022/23 versus holdout2024/25 common weights within kind\u00d7carrier\u00d7down\u00d7distance\u00d7field cells with >=30 clean gains per period; score leading9plus versus trailing9plus within season\u00d7kind\u00d7carrier\u00d7down\u00d7distance\u00d7field\u00d7clock with >=20 clean gains per group. Metric-specific denominators required and common weighting uses their summed denominators. Report excluded mass; common-support descriptive comparison, no causal score/box effect.",
+    "fallback": "Lookup never averages thin exact rows: exact >=100 gains/>=20games else broaden by removing field, then distance, then down, retaining kind/carrier. A broader supported row is context-broader reference and reports discarded dimensions; no invented tiny-cell target. If none qualify return unavailable.",
+    "limitations": "PBP cannot identify blocking force, grip, footing, contact timing, called front, inside/outside zone, gap exchange, particular run technique or causal counterfactual. Final outcome mismatches nominate film/first-transition diagnosis, not automatic strength or traction tuning. EPA is model-derived and engine adapter need not fabricate it.",
+    "seasons": [
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "bootstrapReplicates": 250,
+    "bootstrapSeed": 20261011,
+    "minimumBootstrapGains": 100,
+    "minimumBootstrapGames": 20
+  },
+  "querySha256": "33f59002dcdb1ff0ddc6f9a774a2ea1dee36fb065fb89950f8c005adedb3150c",
+  "collectorSha256": "0b5d645953c303fcb5804643a2829de83418c135952c25c122f69bb28a4df238",
+  "operatorSha256": "43af2d0bcd7255c7dbec94423dc0e4b38faac645d4e097c8ce5fd40a900909c8",
+  "referenceHelperSha256": "1b4e2b7b7e2cfe30495b2887a9e950d74a636a32b16b9867130fad7d86c90582",
+  "contextHelperSha256": "fca850cdac0e1837f68ae449ae94c2826b1f1cd5a802166e88074f0e6a365a9b",
+  "declaredAtUtc": "2026-10-11T17:58:49.052193+00:00"
+}

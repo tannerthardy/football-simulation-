@@ -1,0 +1,871 @@
+{
+  "approach": [
+    {
+      "side": 1,
+      "bearing": 0,
+      "speed": 4,
+      "tackled": true,
+      "time": 1.65,
+      "afterContact": 0.5241400747729088,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": 0,
+      "momentumErr": 1.580957587066223e-13,
+      "pen": 0.0033586954099368294,
+      "falls": [
+        "Z"
+      ]
+    },
+    {
+      "side": 1,
+      "bearing": 0,
+      "speed": 7,
+      "tackled": true,
+      "time": 1.1,
+      "afterContact": 1.2399413835117201,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": 0,
+      "momentumErr": 1.8474111129762605e-13,
+      "pen": 0.005636687915938965,
+      "falls": [
+        "Z",
+        "FS"
+      ]
+    },
+    {
+      "side": 1,
+      "bearing": 30,
+      "speed": 4,
+      "tackled": false,
+      "time": 4,
+      "afterContact": 8.225993103555794,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.301242368193126,
+      "momentumErr": 4.646998382169082e-13,
+      "pen": 0.007455279842928486,
+      "falls": [
+        "FS"
+      ]
+    },
+    {
+      "side": 1,
+      "bearing": 30,
+      "speed": 7,
+      "tackled": true,
+      "time": 1.25,
+      "afterContact": 2.8205471981109014,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.13223181692085717,
+      "momentumErr": 2.6605651043959027e-13,
+      "pen": 0,
+      "falls": [
+        "FS",
+        "Z"
+      ]
+    },
+    {
+      "side": 1,
+      "bearing": 60,
+      "speed": 4,
+      "tackled": true,
+      "time": 1.5499999999999998,
+      "afterContact": 1.751372108535051,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.6733105666280181,
+      "momentumErr": 2.4158453015843406e-13,
+      "pen": 0,
+      "falls": [
+        "FS",
+        "Z"
+      ]
+    },
+    {
+      "side": 1,
+      "bearing": 60,
+      "speed": 7,
+      "tackled": false,
+      "time": 4,
+      "afterContact": 2.9652719368780964,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.021206102248573444,
+      "momentumErr": 1.259600864791789e-12,
+      "pen": 0.0052451420534246895,
+      "falls": [
+        "FS"
+      ]
+    },
+    {
+      "side": 1,
+      "bearing": 90,
+      "speed": 4,
+      "tackled": true,
+      "time": 2.05,
+      "afterContact": 2.3144547957201453,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.6983052017611655,
+      "momentumErr": 3.7840987238141404e-13,
+      "pen": 0.000493273383312065,
+      "falls": [
+        "FS",
+        "Z"
+      ]
+    },
+    {
+      "side": 1,
+      "bearing": 90,
+      "speed": 7,
+      "tackled": false,
+      "time": 4,
+      "afterContact": 1.3998627302082554,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.000505863480871227,
+      "momentumErr": 3.2625382236733274e-13,
+      "pen": 0,
+      "falls": [
+        "FS"
+      ]
+    },
+    {
+      "side": 1,
+      "bearing": 135,
+      "speed": 4,
+      "tackled": true,
+      "time": 2.45,
+      "afterContact": 3.438600204719023,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.06241481631288792,
+      "momentumErr": 1.066764770717835e-12,
+      "pen": 0.0036075382917643006,
+      "falls": [
+        "FS",
+        "Z"
+      ]
+    },
+    {
+      "side": 1,
+      "bearing": 135,
+      "speed": 7,
+      "tackled": false,
+      "time": 4,
+      "afterContact": 0,
+      "wraps": 0,
+      "broken": 0,
+      "missed": 0,
+      "endDy": 0,
+      "momentumErr": 3.6684456826464435e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "side": 1,
+      "bearing": 180,
+      "speed": 4,
+      "tackled": true,
+      "time": 2.5999999999999996,
+      "afterContact": 3.522282969374899,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": 0,
+      "momentumErr": 9.14823772291129e-13,
+      "pen": 0.00014005953847429087,
+      "falls": [
+        "FS",
+        "Z"
+      ]
+    },
+    {
+      "side": 1,
+      "bearing": 180,
+      "speed": 7,
+      "tackled": false,
+      "time": 4,
+      "afterContact": 0,
+      "wraps": 0,
+      "broken": 0,
+      "missed": 0,
+      "endDy": 0,
+      "momentumErr": 2.744471316873387e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "side": -1,
+      "bearing": 0,
+      "speed": 4,
+      "tackled": true,
+      "time": 1.65,
+      "afterContact": 0.5241400747729088,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": 0,
+      "momentumErr": 1.580957587066223e-13,
+      "pen": 0.0033586954099368294,
+      "falls": [
+        "Z"
+      ]
+    },
+    {
+      "side": -1,
+      "bearing": 0,
+      "speed": 7,
+      "tackled": true,
+      "time": 1.1,
+      "afterContact": 1.2399413835117201,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": 0,
+      "momentumErr": 1.8474111129762605e-13,
+      "pen": 0.005636687915938965,
+      "falls": [
+        "Z",
+        "FS"
+      ]
+    },
+    {
+      "side": -1,
+      "bearing": 30,
+      "speed": 4,
+      "tackled": false,
+      "time": 4,
+      "afterContact": 8.225993103555808,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.3012423681931331,
+      "momentumErr": 4.646998382169082e-13,
+      "pen": 0.007455279842928486,
+      "falls": [
+        "FS"
+      ]
+    },
+    {
+      "side": -1,
+      "bearing": 30,
+      "speed": 7,
+      "tackled": true,
+      "time": 1.25,
+      "afterContact": 2.8205471981109014,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.13223181692085717,
+      "momentumErr": 2.6605651043959027e-13,
+      "pen": 0,
+      "falls": [
+        "FS",
+        "Z"
+      ]
+    },
+    {
+      "side": -1,
+      "bearing": 60,
+      "speed": 4,
+      "tackled": true,
+      "time": 1.5499999999999998,
+      "afterContact": 1.751372108535051,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.6733105666280181,
+      "momentumErr": 2.4787657853426603e-13,
+      "pen": 0,
+      "falls": [
+        "FS",
+        "Z"
+      ]
+    },
+    {
+      "side": -1,
+      "bearing": 60,
+      "speed": 7,
+      "tackled": false,
+      "time": 4,
+      "afterContact": 2.9652719368780964,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.021206102248573444,
+      "momentumErr": 1.259600864791789e-12,
+      "pen": 0.0052451420534246895,
+      "falls": [
+        "FS"
+      ]
+    },
+    {
+      "side": -1,
+      "bearing": 90,
+      "speed": 4,
+      "tackled": true,
+      "time": 2.05,
+      "afterContact": 2.3144547957201453,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.6983052017611655,
+      "momentumErr": 4.278033777464535e-13,
+      "pen": 0.0004932733833145075,
+      "falls": [
+        "FS",
+        "Z"
+      ]
+    },
+    {
+      "side": -1,
+      "bearing": 90,
+      "speed": 7,
+      "tackled": false,
+      "time": 4,
+      "afterContact": 1.3998627302082554,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.000505863480871227,
+      "momentumErr": 5.495955643410749e-13,
+      "pen": 0,
+      "falls": [
+        "FS"
+      ]
+    },
+    {
+      "side": -1,
+      "bearing": 135,
+      "speed": 4,
+      "tackled": true,
+      "time": 2.45,
+      "afterContact": 3.438600204719023,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": -0.06241481631288792,
+      "momentumErr": 1.066764770717835e-12,
+      "pen": 0.0036075382917643006,
+      "falls": [
+        "FS",
+        "Z"
+      ]
+    },
+    {
+      "side": -1,
+      "bearing": 135,
+      "speed": 7,
+      "tackled": false,
+      "time": 4,
+      "afterContact": 0,
+      "wraps": 0,
+      "broken": 0,
+      "missed": 0,
+      "endDy": 0,
+      "momentumErr": 3.6684456826464435e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "side": -1,
+      "bearing": 180,
+      "speed": 4,
+      "tackled": true,
+      "time": 2.5999999999999996,
+      "afterContact": 3.522282969374899,
+      "wraps": 1,
+      "broken": 0,
+      "missed": 0,
+      "endDy": 0,
+      "momentumErr": 9.14823772291129e-13,
+      "pen": 0.00014005953847429087,
+      "falls": [
+        "FS",
+        "Z"
+      ]
+    },
+    {
+      "side": -1,
+      "bearing": 180,
+      "speed": 7,
+      "tackled": false,
+      "time": 4,
+      "afterContact": 0,
+      "wraps": 0,
+      "broken": 0,
+      "missed": 0,
+      "endDy": 0,
+      "momentumErr": 2.744471316873387e-13,
+      "pen": 0,
+      "falls": []
+    }
+  ],
+  "sideways": [
+    {
+      "side": 1,
+      "hitter": 2,
+      "posture": 0.2,
+      "fell": false,
+      "peak": 0.11146027515805992,
+      "recovered": 0.10000000000000009,
+      "pushed": 0.14745135140646326,
+      "speedAfter": 6.000000000000004,
+      "timeDown": null,
+      "momentumErr": 8.624212455288216e-13,
+      "pen": 0.005441346273872105
+    },
+    {
+      "side": 1,
+      "hitter": 2,
+      "posture": 0.8,
+      "fell": false,
+      "peak": 0.1166690650239978,
+      "recovered": 0.10000000000000009,
+      "pushed": 0.14725950049930248,
+      "speedAfter": 6.000000000000004,
+      "timeDown": null,
+      "momentumErr": 1.1668999100322708e-12,
+      "pen": 0.005441346273872105
+    },
+    {
+      "side": 1,
+      "hitter": 4,
+      "posture": 0.2,
+      "fell": false,
+      "peak": 0.32706608775119217,
+      "recovered": 0.20000000000000018,
+      "pushed": 0.506295648342654,
+      "speedAfter": 6.0000000000000036,
+      "timeDown": null,
+      "momentumErr": 1.0734576887688236e-12,
+      "pen": 0.010897168458842199
+    },
+    {
+      "side": 1,
+      "hitter": 4,
+      "posture": 0.8,
+      "fell": false,
+      "peak": 0.3510575379112402,
+      "recovered": 0.20000000000000018,
+      "pushed": 0.5048818829515049,
+      "speedAfter": 6.0000000000000036,
+      "timeDown": null,
+      "momentumErr": 1.0861311849907906e-12,
+      "pen": 0.010897168458842199
+    },
+    {
+      "side": 1,
+      "hitter": 6,
+      "posture": 0.2,
+      "fell": false,
+      "peak": 0.5839658848916915,
+      "recovered": 0.3500000000000001,
+      "pushed": 1.060511838111129,
+      "speedAfter": 6.065372077526576,
+      "timeDown": null,
+      "momentumErr": 5.915750019030667e-13,
+      "pen": 0.01320308976456519
+    },
+    {
+      "side": 1,
+      "hitter": 6,
+      "posture": 0.8,
+      "fell": false,
+      "peak": 0.6208977828486307,
+      "recovered": 0.3500000000000001,
+      "pushed": 1.0713828044909377,
+      "speedAfter": 6.068830428555317,
+      "timeDown": null,
+      "momentumErr": 9.969414051864808e-13,
+      "pen": 0.01320308976456519
+    },
+    {
+      "side": 1,
+      "hitter": 8,
+      "posture": 0.2,
+      "fell": false,
+      "peak": 0.5676307196685495,
+      "recovered": 0.3500000000000001,
+      "pushed": 0.9835412708645386,
+      "speedAfter": 6.141908643608302,
+      "timeDown": null,
+      "momentumErr": 6.780745328799377e-13,
+      "pen": 0.009434507367034661
+    },
+    {
+      "side": 1,
+      "hitter": 8,
+      "posture": 0.8,
+      "fell": false,
+      "peak": 0.633617275859787,
+      "recovered": 0.3500000000000001,
+      "pushed": 1.0165902886043305,
+      "speedAfter": 6.1656765809282295,
+      "timeDown": null,
+      "momentumErr": 8.310697385746211e-13,
+      "pen": 0.009434507367034661
+    },
+    {
+      "side": -1,
+      "hitter": 2,
+      "posture": 0.2,
+      "fell": false,
+      "peak": 0.11146027515805992,
+      "recovered": 0.10000000000000009,
+      "pushed": 0.14745135140646326,
+      "speedAfter": 6.000000000000004,
+      "timeDown": null,
+      "momentumErr": 8.624212455288216e-13,
+      "pen": 0.005441346273872105
+    },
+    {
+      "side": -1,
+      "hitter": 2,
+      "posture": 0.8,
+      "fell": false,
+      "peak": 0.1166690650239978,
+      "recovered": 0.10000000000000009,
+      "pushed": 0.14725950049930248,
+      "speedAfter": 6.000000000000004,
+      "timeDown": null,
+      "momentumErr": 1.1668999100322708e-12,
+      "pen": 0.005441346273872105
+    },
+    {
+      "side": -1,
+      "hitter": 4,
+      "posture": 0.2,
+      "fell": false,
+      "peak": 0.32706608775119217,
+      "recovered": 0.20000000000000018,
+      "pushed": 0.506295648342654,
+      "speedAfter": 6.0000000000000036,
+      "timeDown": null,
+      "momentumErr": 1.0734576887688236e-12,
+      "pen": 0.010897168458842199
+    },
+    {
+      "side": -1,
+      "hitter": 4,
+      "posture": 0.8,
+      "fell": false,
+      "peak": 0.3510575379112402,
+      "recovered": 0.20000000000000018,
+      "pushed": 0.5048818829515049,
+      "speedAfter": 6.0000000000000036,
+      "timeDown": null,
+      "momentumErr": 1.0861311849907906e-12,
+      "pen": 0.010897168458842199
+    },
+    {
+      "side": -1,
+      "hitter": 6,
+      "posture": 0.2,
+      "fell": false,
+      "peak": 0.5839658848916915,
+      "recovered": 0.3500000000000001,
+      "pushed": 1.060511838111129,
+      "speedAfter": 6.065372077526576,
+      "timeDown": null,
+      "momentumErr": 5.915750019030667e-13,
+      "pen": 0.01320308976456519
+    },
+    {
+      "side": -1,
+      "hitter": 6,
+      "posture": 0.8,
+      "fell": false,
+      "peak": 0.6208977828486307,
+      "recovered": 0.3500000000000001,
+      "pushed": 1.0713828044909377,
+      "speedAfter": 6.068830428555317,
+      "timeDown": null,
+      "momentumErr": 9.969414051864808e-13,
+      "pen": 0.01320308976456519
+    },
+    {
+      "side": -1,
+      "hitter": 8,
+      "posture": 0.2,
+      "fell": false,
+      "peak": 0.5676307196685495,
+      "recovered": 0.3500000000000001,
+      "pushed": 0.9835412708645386,
+      "speedAfter": 6.141908643608302,
+      "timeDown": null,
+      "momentumErr": 6.780745328799377e-13,
+      "pen": 0.009434507367034661
+    },
+    {
+      "side": -1,
+      "hitter": 8,
+      "posture": 0.8,
+      "fell": false,
+      "peak": 0.633617275859787,
+      "recovered": 0.3500000000000001,
+      "pushed": 1.0165902886043305,
+      "speedAfter": 6.1656765809282295,
+      "timeDown": null,
+      "momentumErr": 8.310697385746211e-13,
+      "pen": 0.009434507367034661
+    }
+  ],
+  "redirect": [
+    {
+      "side": 1,
+      "rusherPower": 0.7,
+      "closest": 4.747659420571014,
+      "carriedPast": 2.414968103513168,
+      "corner": false,
+      "peakN": 1104.116052659047,
+      "peakT": 790.0998622797864,
+      "momentumErr": 4.623444307582485e-13,
+      "pen": 0.0011871671203507184,
+      "falls": []
+    },
+    {
+      "side": 1,
+      "rusherPower": 1,
+      "closest": 2.931743652130349,
+      "carriedPast": 2.033874625650377,
+      "corner": true,
+      "peakN": 1093.3759508791059,
+      "peakT": 766.1922768943301,
+      "momentumErr": 4.587955242392117e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "side": 1,
+      "rusherPower": 1.4,
+      "closest": 2.931743652130349,
+      "carriedPast": 2.033874625650377,
+      "corner": true,
+      "peakN": 1093.3759508791059,
+      "peakT": 766.1922768943301,
+      "momentumErr": 4.587955242392117e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "side": -1,
+      "rusherPower": 0.7,
+      "closest": 4.747659420571014,
+      "carriedPast": 2.414968103513168,
+      "corner": false,
+      "peakN": 1104.116052659047,
+      "peakT": 790.0998622797864,
+      "momentumErr": 4.623444307582485e-13,
+      "pen": 0.0011871671203507184,
+      "falls": []
+    },
+    {
+      "side": -1,
+      "rusherPower": 1,
+      "closest": 2.931743652130349,
+      "carriedPast": 2.033874625650377,
+      "corner": true,
+      "peakN": 1093.3759508791059,
+      "peakT": 766.1922768943301,
+      "momentumErr": 4.587955242392117e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "side": -1,
+      "rusherPower": 1.4,
+      "closest": 2.931743652130349,
+      "carriedPast": 2.033874625650377,
+      "corner": true,
+      "peakN": 1093.3759508791059,
+      "peakT": 766.1922768943301,
+      "momentumErr": 4.587955242392117e-13,
+      "pen": 0,
+      "falls": []
+    }
+  ],
+  "seal": [
+    {
+      "side": 1,
+      "flow": 1.5,
+      "sealedFor": 1.9500000000000002,
+      "progress": 1.0251199598570437,
+      "ended": "held",
+      "momentumErr": 1.9197807555011502e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "side": 1,
+      "flow": 3,
+      "sealedFor": 1.9500000000000002,
+      "progress": 2.8203442627957216,
+      "ended": "held",
+      "momentumErr": 1.9092324297594705e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "side": 1,
+      "flow": 4.5,
+      "sealedFor": 1.9500000000000002,
+      "progress": 4.398702045411454,
+      "ended": "held",
+      "momentumErr": 8.601163106252007e-13,
+      "pen": 0.002472604570931125,
+      "falls": []
+    },
+    {
+      "side": -1,
+      "flow": 1.5,
+      "sealedFor": 1.9500000000000002,
+      "progress": 1.0251199598570437,
+      "ended": "held",
+      "momentumErr": 2.99066964798786e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "side": -1,
+      "flow": 3,
+      "sealedFor": 1.9500000000000002,
+      "progress": 2.8203442627957216,
+      "ended": "held",
+      "momentumErr": 1.9092324297594705e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "side": -1,
+      "flow": 4.5,
+      "sealedFor": 1.9500000000000002,
+      "progress": 4.398702045411454,
+      "ended": "held",
+      "momentumErr": 8.601163106252007e-13,
+      "pen": 0.002472604570931125,
+      "falls": []
+    }
+  ],
+  "squeeze": [
+    {
+      "side": 1,
+      "endPower": 0.7,
+      "inside": 0.05806071627252862,
+      "drivenBack": -1.3470266355747071,
+      "ended": "run: leverage",
+      "momentumErr": 2.1363599072362987e-13,
+      "pen": 0.0018197142792754084,
+      "falls": []
+    },
+    {
+      "side": 1,
+      "endPower": 1,
+      "inside": -0.13073387529955482,
+      "drivenBack": -1.4501034521507705,
+      "ended": "run: leverage",
+      "momentumErr": 1.605024664012904e-13,
+      "pen": 0.0018621466308540446,
+      "falls": []
+    },
+    {
+      "side": 1,
+      "endPower": 1.4,
+      "inside": -0.13073387529955482,
+      "drivenBack": -1.4501034521507705,
+      "ended": "run: leverage",
+      "momentumErr": 1.605024664012904e-13,
+      "pen": 0.0018621466308540446,
+      "falls": []
+    },
+    {
+      "side": -1,
+      "endPower": 0.7,
+      "inside": 0.05806071627252862,
+      "drivenBack": -1.3470266355747142,
+      "ended": "run: leverage",
+      "momentumErr": 1.640415288849112e-13,
+      "pen": 0.0018197142792754084,
+      "falls": []
+    },
+    {
+      "side": -1,
+      "endPower": 1,
+      "inside": -0.13073387529956548,
+      "drivenBack": -1.4501034521507776,
+      "ended": "run: leverage",
+      "momentumErr": 2.567803534190126e-13,
+      "pen": 0.0018621466308540446,
+      "falls": []
+    },
+    {
+      "side": -1,
+      "endPower": 1.4,
+      "inside": -0.13073387529956548,
+      "drivenBack": -1.4501034521507776,
+      "ended": "run: leverage",
+      "momentumErr": 2.567803534190126e-13,
+      "pen": 0.0018621466308540446,
+      "falls": []
+    }
+  ],
+  "release": [
+    {
+      "seed": 3,
+      "jammed": true,
+      "depth": 3.2579926984495557,
+      "rerouted": 0.518152838268918,
+      "momentumErr": 2.542611431278329e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "seed": 5,
+      "jammed": true,
+      "depth": 3.182833272828283,
+      "rerouted": 0.5094302505888706,
+      "momentumErr": 4.938303962293366e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "seed": 7,
+      "jammed": true,
+      "depth": 3.1054806678273295,
+      "rerouted": 0.5088852362761926,
+      "momentumErr": 2.5248202277304724e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "seed": 9,
+      "jammed": true,
+      "depth": 2.3861793639550797,
+      "rerouted": 0.507998143688674,
+      "momentumErr": 3.2482082499664316e-13,
+      "pen": 0,
+      "falls": []
+    },
+    {
+      "seed": 11,
+      "jammed": true,
+      "depth": 3.0687464102913964,
+      "rerouted": 0.5201854829482215,
+      "momentumErr": 2.877752905134522e-13,
+      "pen": 0,
+      "falls": []
+    }
+  ]
+}

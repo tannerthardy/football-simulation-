@@ -1,0 +1,28 @@
+{
+  "schema": "matched-controller-game-report-v1",
+  "inputSha256": "fd67d00a40fbcf90ca78297946e415a7dd62185034dc4ed9894ff045da3e8c80",
+  "checks": [
+    {
+      "id": "candidate/zone-reference/complete",
+      "pass": false,
+      "detail": "running"
+    }
+  ],
+  "games": [],
+  "limitations": [
+    "Two matched games per source; outcomes are context, not NFL calibration or population evidence.",
+    "Full-game paths diverge after source changes; identical game seed is not identical later snap execution.",
+    "Kneels currently consume down/clock without ordinary box rushing credit; separately identified.",
+    "Raw-film gain and official credit are distinct."
+  ],
+  "failed": [
+    {
+      "id": "candidate/zone-reference/complete",
+      "pass": false,
+      "detail": "running"
+    }
+  ],
+  "passed": false,
+  "completedGames": 0,
+  "pairs": []
+}

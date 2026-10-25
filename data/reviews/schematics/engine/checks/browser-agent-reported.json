@@ -1,0 +1,16 @@
+{
+  "schema": "schematic-browser-agent-reported-check-v1",
+  "evidenceKind": "Reported by /root/schematic_stress_lab from a completed tool result; original stdout was not saved as a file.",
+  "command": "python3 scripts/check-replay-viewer.py viewer/schematic-stress.html --screenshots out/schematic-stress/browser-check",
+  "toolSession": 17321,
+  "exitCode": 0,
+  "checksPassed": 31,
+  "clips": 7,
+  "concepts": 6,
+  "sourceGroups": 3,
+  "compressedTelemetry": true,
+  "initialLoadSeconds": 0.741,
+  "loadTimeLimit": "One run, not a performance benchmark.",
+  "scope": "Local HTTP Chromium checks with external HTTPS/fonts blocked; offline-delivery-check.json separately checks ZIP inline content.",
+  "fileProtocolLimit": "Direct file:// blocked by cloud browser administrator policy; not verified."
+}

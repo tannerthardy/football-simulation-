@@ -1,0 +1,92 @@
+Profile candidate: run-game-2026-10-13, commit 075e2148a8c94c80ba90743a324e4670091998c0, source 889bbd59981b680afb915d96108acbbe8f3ebe5fc395446f82d83b8dfe655f6a
+Running node --import tsx scripts/diag/integration/redirect-numeric.mjs /workspace/football-big-redirect-diagnostic /workspace/football-big-redirect-diagnostic/out/redirect-numeric-candidate.json
+{
+  "output": "/workspace/football-big-redirect-diagnostic/out/redirect-numeric-candidate.json",
+  "totalSeconds": 0.6224022459999999,
+  "summary": [
+    {
+      "handContact": "center",
+      "closestDifference": 9.547918011776346e-15,
+      "requests": 16,
+      "mirrorRequests": 16,
+      "firstNumericDifference": {
+        "t": 0.95,
+        "pos": 0,
+        "vel": 4.163336342344337e-17,
+        "facing": 0,
+        "spin": 0,
+        "energy": 0,
+        "xi": 0,
+        "lean": 0,
+        "command": 0
+      },
+      "maxErrors": {
+        "pos": 1.0658141036401503e-14,
+        "vel": 5.10702591327572e-14,
+        "facing": 7.105427357601002e-15,
+        "spin": 0,
+        "energy": 1.1102230246251565e-16,
+        "xi": 2.0872192862952943e-14,
+        "lean": 2.290789780090563e-11,
+        "command": 8.171241461241152e-14
+      },
+      "requestMax": {
+        "x": 3.9968028886505635e-14,
+        "y": 5.46229728115577e-14,
+        "facing": 8.43769498715119e-15
+      }
+    },
+    {
+      "handContact": "patch",
+      "closestDifference": 3.3233416019129436e-11,
+      "requests": 35,
+      "mirrorRequests": 35,
+      "firstNumericDifference": {
+        "t": 1,
+        "pos": 0,
+        "vel": 8.326672684688674e-17,
+        "facing": 0,
+        "spin": 0,
+        "energy": 0,
+        "xi": 5.551115123125783e-16,
+        "lean": 2.2737367544323206e-13,
+        "command": 0
+      },
+      "firstBeyondTolerance": {
+        "t": 3,
+        "pos": 5.6907367707026424e-11,
+        "vel": 4.4731429671429623e-10,
+        "facing": 4.02302635649221e-11,
+        "spin": 0,
+        "energy": 1.7951196085164156e-12,
+        "xi": 3.6120037516518266e-11,
+        "lean": 3.032767281752058e-7,
+        "command": 5.886233722662837e-10
+      },
+      "maxErrors": {
+        "pos": 7.5168316016061e-11,
+        "vel": 6.024045151598045e-10,
+        "facing": 9.238448894777207e-11,
+        "spin": 0,
+        "energy": 1.8095525078365426e-12,
+        "xi": 4.796577024457349e-11,
+        "lean": 3.032767281752058e-7,
+        "command": 7.118794442817489e-10
+      },
+      "requestFirstFail": {
+        "t": 3,
+        "target": "DE_S",
+        "mirrorTarget": "DE_S",
+        "x": 2.4479107629815644e-10,
+        "y": 5.886233722662837e-10,
+        "facing": 1.112976377726227e-11
+      },
+      "requestMax": {
+        "x": 2.974442914194242e-10,
+        "y": 7.118794442817489e-10,
+        "facing": 1.2729373111142195e-11
+      }
+    }
+  ]
+}
+Validation receipt: out/redirect-numeric/candidate-final-receipt.json; exit 0

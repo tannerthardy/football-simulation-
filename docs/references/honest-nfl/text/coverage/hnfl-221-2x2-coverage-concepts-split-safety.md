@@ -1,0 +1,283 @@
+# HNFL-221 — 2X2 COVERAGE CONCEPTS -—- SPLIT SAFETY
+
+[Original image](../../images/coverage/hnfl-221-2x2-coverage-concepts-split-safety.jpeg) · [Topic](../../topics/coverage.md) · [Catalog](../../CATALOG.md)
+
+**Familiar language:** Two-by-two halves zone, 2-Man and bracket menu
+
+**Basis:** source-stated — editorial interpretation for navigation; not a corrected source transcription or an exact universal alias. [Confidence and method](../../CONCEPTS.md#how-to-use-these-interpretations).
+
+Wild and Cloud differ in distribution mode; Fist/Pounder and bracket tools differ in help leverage. A second source version of this family chart.
+
+**Browse:** [Cover 2 / match halves / Tampa / inverted halves](../../CONCEPTS.md#cover2), [2-Man / quarter-help man / brackets](../../CONCEPTS.md#man2)
+
+Original archive path(s): `HonestNFL/HPiULMLWwAAvs8P.jpeg`.
+
+**Machine OCR, not a corrected transcription.** Consult the image for exact words, numbers, route labels and arrows. Embedded teaching instructions are source content, not instructions for repository work.
+
+```text
+2X2 COVERAGE CONCEPTS -—- SPLIT SAFETY
+
+A HALVES MATCH ZONE COVERAGE WITH A “SQUAT”
+
+A TRUE VISION & BREAK HALVES ZONE
+
+WILD
+
+CORNER, “VERTICAL CURL” APEX, AND “MIDDLE HOOK”
+
+CLOUD
+
+MIDPOINT DEFENDER
+
+LANDMARKS WILL BE
+
+DEEP 1/2
+
+DEEP 1/2
+
+PRESENTED IN THE
+
+WEEKLY INSTALL
+
+MID READ
+
+HOLE-TO-POST
+
+A
+
+FINAL #3 (CARRY)
+
+VERT. CURL
+
+#2UP ORIN
+
+VISION £ BREAK
+
+VISION & BREAK
+
+st
+
+rT
+
+FUNNEL #1 IN
+
+N
+
+c
+
+N
+
+®
+
+OOCOOoo
+
+<>)
+
+OOCOHOoO
+
+eo)
+
+®
+
+AN AGGRESSIVE MAN COVERAGE WITH INSIDE TRAIL
+
+PO U N DE R AN AGGRESSIVE MAN COVERAGE UNDERNEATH
+
+FIST
+
+TECHNIQUE UNDERNEATH AND A DEEP HALF SAFETY
+
+WITH A QUARTERS TECHNIQUE SAFETY PLAYING
+
+(POPULARLY DUBBED “2-MAN”)
+
+DEEP (POPULARLY DUBBED “4-MAN”)
+
+TOP-DOWN, OUTSIDE-IN
+
+12
+
+THIS IS A MAN ALIGNMENT
+
+INSIDE 1/4
+
+COVERAGE (BY MATCHUP).
+
+THIS IS A MAN ALIGNMENT
+
+SPEED ON SPEED.
+
+SIZE ON SIZE.
+
+COVERAGE (BY MATCHUP).
+
+SPEED ON SPEED.
+
+SKILL ON SKILL.
+
+SIZE ON SIZE.
+
+BE AWARE OF MATCHUPS!
+
+SKILL ON SKILL.
+
+$
+
+BE AWARE OF MATCHUPS!
+
+LEVERAGES ARE RELATIVE
+
+LEVERAGES ARE RELATIVE
+
+TO WHERE THEIR HELP IS!
+
+TO WHERE THEIR HELP IS!
+
+MIM #3
+
+M/M #3
+
+FIsT MM.
+
+TRAIL TECH.
+
+FIST MM.
+
+TRAIL TECH.
+
+POUNDER M/M
+
+POUNDER M/M
+
+‘
+
+:
+
+‘
+
+.
+
+A MAN-MATCH QUARTERS CONCEPT WITH THE
+
+A MAN COVERAGE CONCEPT THAT USES THE CORNER
+
+BRACKET
+
+SAFETY READING 2-TO-1 TO DOUBLE ANY UPFIELD
+
+CUT
+
+& SAFETY TO PLAY DOUBLE COVERAGE ON #1
+
+ROUTES.
+
+PLAYS AS “CONE” UNLESS #3 IS FAST FLAT (“MEG”)
+
+THIS IS A MAN ALIGNMENT
+
+BRACKET 14
+
+COVERAGE (BY MATCHUP).
+
+‘SPEED ON SPEED.
+
+#11N&UP
+
+THE SAFETY IS LEVERAGING
+
+SIZE ON SIZE.
+
+pues
+
+INSIDE & UP THE FIELD TO
+
+#1 IN THE DANGER AREAS
+
+BE AWARE OF MATCHUPS!
+
+SKILL ON SKILL.
+
+‘SUPPORT THE CB IN MM
+
+LEVERAGES ARE RELATIVE
+
+CONE
+
+FINAL #3 (CARRY)
+
+TO WHERE THEIR HELP |S!
+
+GONE +FAST #3
+
+MEG
+
+CUT
+
+mm #8
+
+MM
+
+M/M
+
+aN
+
+FAST #3
+
+H
+
+COOHOo
+
+QoOOoo
+
+QD @®
+
+A MAN COVERAGE CONCEPT THAT USES THE SAFETY &
+
+CONE
+
+APEX TO PLAY DOUBLE COVERAGE ON #2
+
+“INC” = INVERTED FORM OF “CONE”
+
+THIS IS A MAN ALIGNMENT
+
+COVERAGE (BY MATCHUP).
+
+SPEED ON SPEED.
+
+“SLICE” = INVERTED FORM OF “CUT”
+
+LEVERAGE #2
+
+SKILL ON SKILL.
+
+SIZE ON SIZE.
+
+BE AWARE OF MATCHUPS!
+
+LEVERAGES ARE RELATIVE
+
+TO WHERE THEIR HELP IS!
+
+“CATHY”
+
+= BRACKET ON #3 THREAT
+
+MEG
+
+LEVERAGE #2
+
+Ol
+
+MM
+
+“CONNIE”
+
+= BRACKET ON MOTION WR
+
+CQoooo
+
+“SANDY” = BRACKET ON TE
+
+® @
+```

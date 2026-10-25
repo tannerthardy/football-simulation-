@@ -1,0 +1,261 @@
+{
+  "touch": 0.4696363636363636,
+  "rows": [
+    {
+      "offset": 0.9,
+      "selected": {
+        "vel": {
+          "x": 0,
+          "y": 2.25
+        },
+        "cutSkill": 1
+      },
+      "forecasts": [
+        {
+          "fraction": 1,
+          "clearance": -0.26122690714627617,
+          "upright": true
+        },
+        {
+          "fraction": 0.5,
+          "clearance": -0.11437127348897941,
+          "upright": true
+        },
+        {
+          "fraction": 0.25,
+          "clearance": 0.13689375625403183,
+          "upright": true
+        },
+        {
+          "fraction": 0,
+          "clearance": 0.45117215764548774,
+          "upright": true
+        }
+      ]
+    },
+    {
+      "offset": 0.8,
+      "selected": {
+        "vel": {
+          "x": 0,
+          "y": 2.25
+        },
+        "cutSkill": 1
+      },
+      "forecasts": [
+        {
+          "fraction": 1,
+          "clearance": -0.35429435088499306,
+          "upright": true
+        },
+        {
+          "fraction": 0.5,
+          "clearance": -0.2143135087066797,
+          "upright": true
+        },
+        {
+          "fraction": 0.25,
+          "clearance": 0.039768507770812034,
+          "upright": true
+        },
+        {
+          "fraction": 0,
+          "clearance": 0.35370337964417903,
+          "upright": true
+        }
+      ]
+    },
+    {
+      "offset": 0.7,
+      "selected": {
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "cutSkill": 1
+      },
+      "forecasts": [
+        {
+          "fraction": 1,
+          "clearance": -0.4473617946237101,
+          "upright": true
+        },
+        {
+          "fraction": 0.5,
+          "clearance": -0.3141814305481538,
+          "upright": true
+        },
+        {
+          "fraction": 0.25,
+          "clearance": -0.05598450555705442,
+          "upright": true
+        },
+        {
+          "fraction": 0,
+          "clearance": 0.25692287886576687,
+          "upright": true
+        }
+      ]
+    },
+    {
+      "offset": 0.6,
+      "selected": {
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "cutSkill": 1
+      },
+      "forecasts": [
+        {
+          "fraction": 1,
+          "clearance": -0.3988434889103001,
+          "upright": true
+        },
+        {
+          "fraction": 0.5,
+          "clearance": -0.4135764653714256,
+          "upright": true
+        },
+        {
+          "fraction": 0.25,
+          "clearance": -0.149133015180269,
+          "upright": true
+        },
+        {
+          "fraction": 0,
+          "clearance": 0.1611475398244569,
+          "upright": true
+        }
+      ]
+    },
+    {
+      "offset": 0.5,
+      "selected": {
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "cutSkill": 1
+      },
+      "forecasts": [
+        {
+          "fraction": 1,
+          "clearance": -0.3052266093753335,
+          "upright": true
+        },
+        {
+          "fraction": 0.5,
+          "clearance": -0.4298737823784419,
+          "upright": true
+        },
+        {
+          "fraction": 0.25,
+          "clearance": -0.23653352570710845,
+          "upright": true
+        },
+        {
+          "fraction": 0,
+          "clearance": 0.06691590116667462,
+          "upright": true
+        }
+      ]
+    },
+    {
+      "offset": 0.4,
+      "selected": {
+        "vel": {
+          "x": 0,
+          "y": 0
+        },
+        "cutSkill": 1
+      },
+      "forecasts": [
+        {
+          "fraction": 1,
+          "clearance": -0.21075534849958955,
+          "upright": true
+        },
+        {
+          "fraction": 0.5,
+          "clearance": -0.33445650984210085,
+          "upright": true
+        },
+        {
+          "fraction": 0.25,
+          "clearance": -0.3085417649380323,
+          "upright": true
+        },
+        {
+          "fraction": 0,
+          "clearance": -0.02478994871850715,
+          "upright": true
+        }
+      ]
+    },
+    {
+      "offset": 0.3,
+      "selected": {
+        "vel": {
+          "x": 0,
+          "y": 9
+        },
+        "cutSkill": 1
+      },
+      "forecasts": [
+        {
+          "fraction": 1,
+          "clearance": -0.11628408762384551,
+          "upright": true
+        },
+        {
+          "fraction": 0.5,
+          "clearance": -0.2390392373057597,
+          "upright": true
+        },
+        {
+          "fraction": 0.25,
+          "clearance": -0.3370995521126206,
+          "upright": true
+        },
+        {
+          "fraction": 0,
+          "clearance": -0.11202158085289188,
+          "upright": true
+        }
+      ]
+    },
+    {
+      "offset": 0,
+      "selected": {
+        "vel": {
+          "x": 0,
+          "y": 9
+        },
+        "cutSkill": 1
+      },
+      "forecasts": [
+        {
+          "fraction": 1,
+          "clearance": 0.16712969500338642,
+          "upright": true
+        },
+        {
+          "fraction": 0.5,
+          "clearance": 0.04721258030326353,
+          "upright": true
+        },
+        {
+          "fraction": 0.25,
+          "clearance": -0.1343609299311911,
+          "upright": true
+        },
+        {
+          "fraction": 0,
+          "clearance": -0.27498710762630413,
+          "upright": true
+        }
+      ]
+    }
+  ]
+}

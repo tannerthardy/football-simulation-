@@ -1,0 +1,86 @@
+{
+  "schema": "movement-validation-audit-v1",
+  "engineCommit": "80e8151",
+  "sourceSha256": "246931590ef723662a4e6178755660185b13487efe2a7d7e8dce503710b08469",
+  "sourceScope": "scripts/source-version.ts full src content digest; immutable pre-position-technique C snapshot. Later candidate source is not claimed here.",
+  "selection": "Audit subset, predeclared before current run: three deterministic lowest SHA256 athlete:event:drill keys per six task groups, 2025 draft and measured shuttle+threeCone required. Not population accuracy or calibrated holdout; original 888-fixture extraction unchanged.",
+  "fixtureCount": 18,
+  "trialCount": 72,
+  "allCompleteAgility": true,
+  "originalInputs": {
+    "combine_results.csv": {
+      "bytes": 41020,
+      "sha256": "e4773ef68167d508f3916d446cd411dfd77a87e5765d3babcb986201fb143b86"
+    },
+    "combine_tracking.csv": {
+      "bytes": 83788174,
+      "sha256": "541c69f6629f5f803b08033c5c386735582120973562134b2c1e7ec6553fb0d3"
+    }
+  },
+  "subsetInputSha256": "d6e1a492f11326a05b76d298ee86b9c753c6d4f21b6a3d57755fe20b907f2155",
+  "original888FixturePath": "data/reviews/physics-world/held-foot-and-movement-tasks/manifest.json",
+  "tools": {
+    "scripts/diag/movement-tasks.ts": "f945412b4fafb62f222dbdd973d28f2e49f0cc312324b587b6efe9130e535845",
+    "scripts/data/movement_task_fixtures.py": "8ebdd21504989132a4ab3bf759fe823844b5ebbf8a138e5ac7471bcd9b0edb42",
+    "scripts/data/movement_task_report.py": "ad903efe49292b6e4fa183486c0ae0c222e975a89859b6233ac8655efcfb9605",
+    "scripts/data/bdb2027_movement.py": "6f68795e3e441d7de5acb039473a2d6668d464d794e476543208afb1c0dc2925",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+  },
+  "originalReportScriptPins": {
+    "extractor": "8ebdd21504989132a4ab3bf759fe823844b5ebbf8a138e5ac7471bcd9b0edb42",
+    "runner": "f945412b4fafb62f222dbdd973d28f2e49f0cc312324b587b6efe9130e535845",
+    "reporter": "ad903efe49292b6e4fa183486c0ae0c222e975a89859b6233ac8655efcfb9605",
+    "measurement": "6f68795e3e441d7de5acb039473a2d6668d464d794e476543208afb1c0dc2925"
+  },
+  "profileCheck": {
+    "seed": 90210,
+    "teams": 16,
+    "strength": 0.55,
+    "activeSelection": [
+      "11",
+      "base43"
+    ],
+    "rosterProfiles": 848,
+    "selectedPlayers": 352,
+    "ignoredFullProfilesSha256": "66ec6697fac2880931f451d74c626fc7d484209ac3a8d99bb2d5d4a3b0541238",
+    "note": "Summary-only publication of profile check; no games or NFL ratings inferred."
+  },
+  "artifacts": {
+    "current-subset-inputs.json.gz": {
+      "bytes": 41196,
+      "sha256": "7a843663d3c669c86a793d75f5e49227b702495718a5436315f07bcf62f93e76",
+      "decompressedBytes": 90361,
+      "decompressedSha256": "d6e1a492f11326a05b76d298ee86b9c753c6d4f21b6a3d57755fe20b907f2155"
+    },
+    "current-subset-trials.json.gz": {
+      "bytes": 317338,
+      "sha256": "8099f3da78ce70e84dade22be74ef5bd2b97af6d7ed727aac5c6077b5910a07a",
+      "decompressedBytes": 765611,
+      "decompressedSha256": "00cc3c261d17476233f6fda9c5fc5e994eccd38d3f33f5ba71d3cbfff2f32778"
+    },
+    "current-subset-report.json.gz": {
+      "bytes": 12903,
+      "sha256": "e4f065575f0b3c81a573be629d6f88a0cabbc86017e8c1e0fa06115a7fd778f1",
+      "decompressedBytes": 73018,
+      "decompressedSha256": "36abed00421018373df08e8c882a93e96421fefbe89a856f905f9af5aa91b66c"
+    },
+    "generated-profile-summary.json": {
+      "bytes": 1865,
+      "sha256": "db7cce17efb4b2d1980763e14ada1a2994fb27e8898d9f5f6e54c394115d0abc"
+    }
+  },
+  "limits": [
+    "No parameters changed, no fitting, no NFL calibration or holdout-accuracy claim.",
+    "Known-path controller; combine facing and OL dummy contact unobserved.",
+    "2025 subset selected by deterministic athlete:event:drill hash, complete agility only; three paths per six task groups.",
+    "Original historical888/3552 panel and its92eb source remain unchanged.",
+    "Gzip timestamps zero; decompression restores exact originally measured JSON bytes and input/trial pins."
+  ],
+  "runtime": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "node": "v22.23.3",
+    "note": "Existing environment versions used for the native subset/reporter; no dependency installation or lockfile changes."
+  }
+}

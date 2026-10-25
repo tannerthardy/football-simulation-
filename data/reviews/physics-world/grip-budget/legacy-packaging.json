@@ -1,0 +1,11 @@
+{
+  "input": "out/contact-integration-baseline/viewer/film-room.html",
+  "output": "out/grip-budget-final/legacy-room.html",
+  "source": "0f6b4078a3857a2f4664d2e4d91176ccfb252dbcc836c498a3bafdfa32792df7",
+  "entries": 1152,
+  "telemetryRoundtrips": 0,
+  "originalBytes": 13260275,
+  "compactBytes": 13290783,
+  "outerFieldsUnchanged": true,
+  "metadataUnchanged": true
+}

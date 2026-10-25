@@ -1,0 +1,323 @@
+{
+  "schemaVersion": 1,
+  "branch": "claude/engine-priorities",
+  "parentCommit": "94174df8b8b3bd7ea802dde17355e9090c0d9162",
+  "physicsReady": false,
+  "sourceDefinition": "scripts/source-version.ts: SHA-256 of lexical full src/ path strings, NUL, file bytes, NUL; every source file. Runtime and constructor policies are separate coordinates.",
+  "sourceVersions": {
+    "parent": {
+      "commit": "94174df8b8b3bd7ea802dde17355e9090c0d9162",
+      "sourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5"
+    },
+    "final": {
+      "sourceSha256": "35030d91ffbaadef8e358c668cb4cb88a6ce9145da1f62c93d467445913be0e0",
+      "scope": "All retained work-contracts, convergence, impact summaries, final tests and final game/tracking guards; actual Node22."
+    },
+    "auxiliaryWorkRepair": {
+      "sourceSha256": "05846247d14709855127a04f09f6e7210938c433b1c8e13a0b7a2f57fac40cc8",
+      "node": "v24.19.0",
+      "scope": "Earlier frozen validation, ignored out/constraint-work-validation; not the final source or Node22 cohort."
+    },
+    "auxiliaryExperiments": {
+      "sourceSha256": "7bb4fe6ce1f2a940dbe5f83bada56af96ddf5481f9cce6b2ba02dbfe412a29d2",
+      "node": "v24.19.0",
+      "scope": "Earlier frozen validation before whole-island guard and explicit null estimate, ignored out/constraint-work-final-validation; not the final source or Node22 cohort."
+    }
+  },
+  "runtime": {
+    "node": "v22.23.3",
+    "execPath": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node",
+    "python": "3.12",
+    "repositoryPin": ".nvmrc / package engines 22.x",
+    "scope": "Parent and final-source primary measurements; no dependence on a PATH export from another shell call."
+  },
+  "defaultWorldPolicy": {
+    "constraintWork": "per-solve",
+    "supportModel": "legacy",
+    "impactTiming": "speculative",
+    "supportIntegration": "mean",
+    "substeps": "unchanged adaptive contact resolution (native 12); explicit panels override this"
+  },
+  "commands": {
+    "workContracts": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node --import tsx scripts/diag/constraint-work.ts out/constraint-work/work.json",
+    "handConvergence": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node --import tsx scripts/diag/hand-convergence.ts out/constraint-work/hand.json",
+    "sharedTransfer": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node --import tsx scripts/diag/shared-capabilities.ts out/constraint-work/shared.json",
+    "traceDefault": "IMPACT_TIMING=speculative SUPPORT_INTEGRATION=mean TRACE_STEM=out/constraint-work/trace-default /workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node --import tsx scripts/diag/sustained-contact-trace.ts",
+    "traceLocal": "IMPACT_TIMING=local-sweep SUPPORT_INTEGRATION=mean TRACE_STEM=out/constraint-work/trace-local /workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node --import tsx scripts/diag/sustained-contact-trace.ts",
+    "traceIntegrated": "IMPACT_TIMING=local-sweep SUPPORT_INTEGRATION=integrated TRACE_STEM=out/constraint-work/trace-integrated /workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node --import tsx scripts/diag/sustained-contact-trace.ts",
+    "tests": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node node_modules/vitest/vitest.mjs run --maxWorkers=2 --minWorkers=1",
+    "typecheck": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
+    "build": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node node_modules/typescript/bin/tsc -p tsconfig.json",
+    "dataTests": "python3 -m unittest discover -s test -p 'test_*.py'",
+    "tracking": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node dist/scripts/kinematics-compare.js 4 5",
+    "games": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node dist/scripts/calibrate.js 8 7 2"
+  },
+  "originalExecution": {
+    "nodeSelection": "Use /workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node or export its bin directory in each invocation. Final source was compiled before plain-Node probes. No tsx CLI IPC dependency.",
+    "parentSnapshot": "out/constraint-work-node22-parent/snapshot",
+    "parentPerCommandManifest": {
+      "runtime": {
+        "version": "v22.23.3",
+        "execPath": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node"
+      },
+      "parentSourceSha256": "8ac0781ef5229498819474668af5ccce0326099c7076e7071f2d9ca55b0772c5",
+      "parentRuns": [
+        {
+          "command": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node node_modules/typescript/bin/tsc -p tsconfig.json",
+          "exit": 0
+        },
+        {
+          "command": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node dist/scripts/kinematics-compare.js 4 5",
+          "exit": 0,
+          "report": "tracking-parent-node22.txt"
+        },
+        {
+          "command": "/workspace/.cloud-tools/node-v22.23.3-linux-x64/bin/node dist/scripts/calibrate.js 8 7 2",
+          "exit": 0,
+          "report": "calibration-parent-node22-8.txt"
+        }
+      ],
+      "currentNode22ReportsCopiedFrom": "/workspace/football-simulation-/out/plant-transfer",
+      "comparison": "printed game outcome metrics differ; elapsed times disregarded",
+      "priorValidationAudit": "Older validation snapshots are Node v24.19.0 artifacts; see runtime-audit-appendix.md"
+    },
+    "finalReports": "out/plant-transfer/{work-final-source,hand-final-source,shared-final-source,trace-final-*}.json and {tests,typecheck,build,tracking,calibration}-final*.txt",
+    "auxiliaryAudit": "runtime-audit-appendix.md records the actual Node24 runtime; these earlier snapshots are never relabeled as Node22 or final-source evidence.",
+    "rawRuntimeProvenance": "The original shared/trace JSON does not include a node field. Root invoked each final-source run with the explicit Node22 executable or its bin directory exported within that same call. Curated summaries and this manifest retain that runtime coordinate; it is not inferred from generic node resolution."
+  },
+  "cohorts": {
+    "work": {
+      "cases": 48,
+      "scope": "Actual World private row methods on three unit masses, not a separate approximation or full game."
+    },
+    "hands": {
+      "seeds": [
+        3,
+        7,
+        11
+      ],
+      "powerMultipliers": [
+        0.7,
+        1,
+        1.4
+      ],
+      "substeps": [
+        6,
+        12,
+        24,
+        48,
+        96,
+        192
+      ],
+      "referenceSteps": 192,
+      "controllerHz": 20,
+      "redirectCases": 54,
+      "frontalTackleCases": 12
+    },
+    "shared": {
+      "scope": "Anchor, double-team drive, shed, absorbed contact and jam; one shared profile/capability model; 120 runs including mirrored and refined cases."
+    },
+    "impact": {
+      "seed": 19,
+      "seconds": 5,
+      "controllerHz": 20,
+      "substeps": [
+        12,
+        48
+      ],
+      "modes": [
+        "closed-loop",
+        "matched-coarse"
+      ],
+      "policies": "Three identical-source policy combinations retained in impact-summary.json. No grasps; local sweep only in wholly unconstrained, strike-free island. Observer tick differences are zero."
+    },
+    "tracking": {
+      "games": 4,
+      "seed": 5,
+      "scope": "Generated-roster conditional movement/contact guards against existing BDB2023/BDB2022 summaries, not fitted physical targets."
+    },
+    "games": {
+      "games": 8,
+      "seed": 7,
+      "leagues": 2,
+      "finalScrimmagePlays": 1005,
+      "parentScrimmagePlays": 1013,
+      "scope": "Descriptive guard, small sample, closed-loop histories differ. No per-play causal attribution."
+    }
+  },
+  "verification": {
+    "typescriptTests": 308,
+    "testFiles": 32,
+    "pythonTests": 22,
+    "typecheck": "pass",
+    "build": "pass",
+    "diffCheck": "pass",
+    "node": "v22.23.3"
+  },
+  "aggregation": {
+    "work": "Keep all 48 cases unchanged.",
+    "convergence": "Preserve source/node/cohort and hand/frontal summaries; shared summary metrics. Full per-fixture trajectories remain ignored.",
+    "impact": "Preserve all policy summaries, observer checks and first-divergence evidence. Full substep trace arrays remain ignored.",
+    "gameComparison": "Keep full parent/current printed reports; compare same seed and actual Node runtime, omit elapsed time from interpretation.",
+    "stdout": "Committed text logs strip trailing whitespace and excess blank lines at EOF; printed measurements remain unchanged. Original stdout stays in ignored out/."
+  },
+  "limitations": [
+    "No finite planted/swinging foot lifecycle, physically solved normal-load transfer or vertical articulated dynamics yet.",
+    "Per-solve channel accounting tests establish the reproduced defect and work isolation; they are not a proof of mixed-sign shared-budget row-order invariance.",
+    "Pitch, vertical and limb energy are outside the planar work closure.",
+    "Local sweep and integrated support remain default-off and still disagree on the sustained fall.",
+    "Production hand fall flips remain 3/9 at native resolution.",
+    "More pressure does not repair high explosives, YAC, penalties or run stuff rate; guards worsen as well as improve.",
+    "Moore recovery metadata remains missing; this blocks disturbance-aligned fitting, not all engine progress."
+  ],
+  "sourceAndScriptHashes": {
+    "src/physics/world.ts": {
+      "bytes": 77110,
+      "sha256": "926821ce63836e860ae6e803f82755a614d28e98ce3d4c6d586e95465ce83deb"
+    },
+    "src/physics/filtered-follow.ts": {
+      "bytes": 5339,
+      "sha256": "58c04e99f807fad36b49d22fbb6891593d6988a9bd653fc9f898552a8168e3e0"
+    },
+    "src/lab/scenarios.ts": {
+      "bytes": 19382,
+      "sha256": "f3c25ae19611c10f1e5fbcbe6ac13598c55651b2280308d13485dd532971c480"
+    },
+    "src/sim/playsim.ts": {
+      "bytes": 37307,
+      "sha256": "8e5c03f5cb82d0e49e526e9976a759556bbb38f7646f08ebc47b898250010b3b"
+    },
+    "scripts/source-version.ts": {
+      "bytes": 607,
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    },
+    "scripts/diag/constraint-work.ts": {
+      "bytes": 3037,
+      "sha256": "6a791c9c2fabc2639d74b18f97cc5146a12487570d835767ce24182313e99043"
+    },
+    "scripts/diag/sustained-contact-trace.ts": {
+      "bytes": 16496,
+      "sha256": "ee6286f220bbf5187ecbf4a8eb148096b928790ca60ad1714aa1b777e6e108bc"
+    },
+    "scripts/diag/hand-convergence.ts": {
+      "bytes": 3169,
+      "sha256": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8"
+    },
+    "scripts/diag/shared-capabilities.ts": {
+      "bytes": 6749,
+      "sha256": "3e5477aadfa597a0d476314a1851b0b4f783baa9456ddc662d342f891f91c505"
+    },
+    "scripts/diag/enable-solver-work.ts": {
+      "bytes": 358,
+      "sha256": "6787b1b40082ac686eb1db2ebddd5f3d6bc72b39484859385ffdf352b6114f17"
+    },
+    "scripts/diag/enable-update-work.ts": {
+      "bytes": 357,
+      "sha256": "980a9898695f7b6e9f618bae960a776785eda0f2fa368311067fedb25b855ac7"
+    },
+    "scripts/diag/enable-local-impact.ts": {
+      "bytes": 350,
+      "sha256": "a7fd60aeabdd75e2a3ce11f8e90b2d4f80cb402f3e2531d010c132e3f83b923f"
+    },
+    "scripts/diag/enable-integrated-support.ts": {
+      "bytes": 362,
+      "sha256": "7a894ab3160d02d50039d35d53531e21b67b53401db1c935818c13ba8ec3f0d3"
+    },
+    "scripts/calibrate.ts": {
+      "bytes": 9382,
+      "sha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749"
+    },
+    "scripts/kinematics-compare.ts": {
+      "bytes": 12263,
+      "sha256": "907a928cfff8375c88ccf596f3bf159509b72aeae032ac04cfe70630152999e2"
+    },
+    "test/constraint-work.test.ts": {
+      "bytes": 6855,
+      "sha256": "4336596f0bad46c7bfb3d224e008e59c04612b33e40f3ddf0865799141b46e76"
+    },
+    "test/impact-timing.test.ts": {
+      "bytes": 4186,
+      "sha256": "23fec77cf08585fd4f51dcf3bca8a5a7d64bf22412a8005f7a341a5dfbc1af96"
+    },
+    "test/filtered-follow.test.ts": {
+      "bytes": 3574,
+      "sha256": "7b4625833be13f378089337cfb6bfdaf203b1ec2369754961e577e74b16aaa74"
+    },
+    "package.json": {
+      "bytes": 746,
+      "sha256": "c8f44e8e12230a9e5d36237220501e9d203cac23aa840f47ec5d4ca1cdff9b6c"
+    },
+    "package-lock.json": {
+      "bytes": 70134,
+      "sha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+    },
+    ".nvmrc": {
+      "bytes": 8,
+      "sha256": "6d07ac247e81cd42c2c20abf8dfe504413d6b2422e4aba9b2c975a776f155921"
+    }
+  },
+  "inputHashes": {
+    "data/bdb2025-summary.json": {
+      "bytes": 17710,
+      "sha256": "0fc753d56edfa3dcb2337fd28daa2890386a27ab49a0430b7a02c76d5fd1f8ba"
+    },
+    "data/bdb2026-summary.json": {
+      "bytes": 21089,
+      "sha256": "c9e506a25ae634f7e2daed57df5fc1c3ecb73bf579f99b875647ab7b1c0aba77"
+    }
+  },
+  "artifacts": {
+    "README.md": {
+      "bytes": 4779,
+      "sha256": "87c8395c99bbe626a74a7acff21607c064230d98b2ecd86909c5c8e7e6826c16"
+    },
+    "build-final.txt": {
+      "bytes": 54,
+      "sha256": "13333e10fb6707c07f416a6d7a0befe85eed52cb75cb60060bcaa5790759e529"
+    },
+    "calibration-final-8.txt": {
+      "bytes": 2309,
+      "sha256": "f1166b2184c672b166854699e34756edf9c4c5ac9080a4d97f1b566933f2d84a"
+    },
+    "calibration-parent-node22-8.txt": {
+      "bytes": 2308,
+      "sha256": "9329adfe8a6d1f73b7e1eeee3eca7f7a23e0cea9adef6b368f7cf2b4660cf32c"
+    },
+    "convergence-summary.json": {
+      "bytes": 10536,
+      "sha256": "3352b38bc643194ec6463260dc913ec705f66fd9c4d0e1251c40300d2ea86b79"
+    },
+    "data-tests-final.txt": {
+      "bytes": 121,
+      "sha256": "063fb5f9ef35dd62a371bb35f9805f7cfc6a64d3eff0d7d92a0d17ea25b76524"
+    },
+    "impact-summary.json": {
+      "bytes": 99753,
+      "sha256": "e76d69eb070f28f3351a0ca9c6815797ae8f05dcb6e45ecc161db37217d2e5a9"
+    },
+    "runtime-audit-appendix.md": {
+      "bytes": 718,
+      "sha256": "4ece68570a25a28fadd83bd3a2891cfab99f137552e3312222aad0c7e82e6f3b"
+    },
+    "tests-final.txt": {
+      "bytes": 3033,
+      "sha256": "e1e93b1e67c9efdafd73dded4f1f0c6d06b2daf854c35b3b3e0947eb5e6a1f85"
+    },
+    "tracking-final.txt": {
+      "bytes": 3913,
+      "sha256": "a4b43439696e0b7468887e3841e21855584960f97466df4a7ed493d2dabead2b"
+    },
+    "tracking-parent-node22.txt": {
+      "bytes": 3913,
+      "sha256": "4a6d2184da1cd1c8979ed26bfa587307acd184c1a58440c7adba91e3466f2b93"
+    },
+    "typecheck-final.txt": {
+      "bytes": 67,
+      "sha256": "9228c8e246ad46d9b3e79d0cfd8cc80516e2b0b7aaa6d36c1e3857b373eb7c4d"
+    },
+    "work-contracts.json": {
+      "bytes": 36261,
+      "sha256": "163ccafad0443d1f9febdb6ac54fcdf2dd4e76204ed8c03ed0bc4893f005ba98"
+    }
+  }
+}

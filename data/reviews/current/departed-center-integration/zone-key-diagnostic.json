@@ -1,0 +1,727 @@
+{
+  "schema": "zone-key-contract-diagnostic-v1",
+  "approvedSource": "a1b16e666a9ee7d1bc1d2aecba141fc535863b24",
+  "approvedModuleSha256": "67f7d96153ade8d06c9620bbc357a3efa5c28a3a384e16184c6e2c3606421311",
+  "compared": "same selected nearby Y pictures, only Recognition implementation differs; far X does not change current result",
+  "rows": [
+    {
+      "name": "upright-stationary",
+      "speed": 0,
+      "cue": "upright",
+      "before": {
+        "read": "run",
+        "pPass": 0.09078142256358167,
+        "legitimateBlockingCue": false,
+        "trajectory": [
+          {
+            "read": "run",
+            "pPass": 0.29909293208684234,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.20001855866334953,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.1513297342852462,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.12587147265137222,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.11173535468494836,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.10352914948213283,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.0986190131994217,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09562206708975211,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09376920231936457,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09261420261418128,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09189043842398113,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09143538850440895,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09114868135172823,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09096779771250967,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09085358142451061,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09078142256358167,
+            "readAt": 0.65
+          }
+        ]
+      },
+      "after": {
+        "read": "unsure",
+        "pPass": 0.5425164915495125,
+        "legitimateBlockingCue": false,
+        "trajectory": [
+          {
+            "read": "unsure",
+            "pPass": 0.5146823071236563,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5249457504412496,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5314256017419525,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5355178582818005,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5381031951859915,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5397370034532217,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.540769715580198,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5414225784320807,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5418353477224107,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5420963357641897,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5422613615225195,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5423657119682349,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5424316968079106,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.542473422029391,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5424998069668799,
+            "readAt": -1
+          },
+          {
+            "read": "unsure",
+            "pPass": 0.5425164915495125,
+            "readAt": -1
+          }
+        ]
+      }
+    },
+    {
+      "name": "release",
+      "speed": 6,
+      "cue": "upright",
+      "before": {
+        "read": "pass",
+        "pPass": 0.9031435390942133,
+        "legitimateBlockingCue": false,
+        "trajectory": [
+          {
+            "read": "unsure",
+            "pPass": 0.6936810428151071,
+            "readAt": -1
+          },
+          {
+            "read": "pass",
+            "pPass": 0.7921997289970163,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8412555662942529,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8671366565214388,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8815906377623048,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8900120657973334,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8950626106554453,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8981497452104931,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9000601232818608,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9012516656314975,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9019986025719442,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9024683306630527,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9027643292523557,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9029510921589723,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9030690277291936,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9031435390942133,
+            "readAt": 0.7000000000000001
+          }
+        ]
+      },
+      "after": {
+        "read": "pass",
+        "pPass": 0.9031435390942133,
+        "legitimateBlockingCue": false,
+        "trajectory": [
+          {
+            "read": "unsure",
+            "pPass": 0.6936810428151071,
+            "readAt": -1
+          },
+          {
+            "read": "pass",
+            "pPass": 0.7921997289970163,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8412555662942529,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8671366565214388,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8815906377623048,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8900120657973334,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8950626106554453,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.8981497452104931,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9000601232818608,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9012516656314975,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9019986025719442,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9024683306630527,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9027643292523557,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9029510921589723,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9030690277291936,
+            "readAt": 0.7000000000000001
+          },
+          {
+            "read": "pass",
+            "pPass": 0.9031435390942133,
+            "readAt": 0.7000000000000001
+          }
+        ]
+      }
+    },
+    {
+      "name": "low-pads",
+      "speed": 1,
+      "cue": "low-pads",
+      "before": {
+        "read": "run",
+        "pPass": 0.09078142256358167,
+        "legitimateBlockingCue": true,
+        "trajectory": [
+          {
+            "read": "run",
+            "pPass": 0.29909293208684234,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.20001855866334953,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.1513297342852462,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.12587147265137222,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.11173535468494836,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.10352914948213283,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.0986190131994217,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09562206708975211,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09376920231936457,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09261420261418128,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09189043842398113,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09143538850440895,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09114868135172823,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09096779771250967,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09085358142451061,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09078142256358167,
+            "readAt": 0.65
+          }
+        ]
+      },
+      "after": {
+        "read": "run",
+        "pPass": 0.09078142256358167,
+        "legitimateBlockingCue": true,
+        "trajectory": [
+          {
+            "read": "run",
+            "pPass": 0.29909293208684234,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.20001855866334953,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.1513297342852462,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.12587147265137222,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.11173535468494836,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.10352914948213283,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.0986190131994217,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09562206708975211,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09376920231936457,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09261420261418128,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09189043842398113,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09143538850440895,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09114868135172823,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09096779771250967,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09085358142451061,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09078142256358167,
+            "readAt": 0.65
+          }
+        ]
+      }
+    },
+    {
+      "name": "own-contact",
+      "speed": 0,
+      "cue": "own-contact",
+      "before": {
+        "read": "run",
+        "pPass": 0.09078142256358167,
+        "legitimateBlockingCue": true,
+        "trajectory": [
+          {
+            "read": "run",
+            "pPass": 0.29909293208684234,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.20001855866334953,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.1513297342852462,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.12587147265137222,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.11173535468494836,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.10352914948213283,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.0986190131994217,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09562206708975211,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09376920231936457,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09261420261418128,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09189043842398113,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09143538850440895,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09114868135172823,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09096779771250967,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09085358142451061,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09078142256358167,
+            "readAt": 0.65
+          }
+        ]
+      },
+      "after": {
+        "read": "run",
+        "pPass": 0.09078142256358167,
+        "legitimateBlockingCue": true,
+        "trajectory": [
+          {
+            "read": "run",
+            "pPass": 0.29909293208684234,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.20001855866334953,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.1513297342852462,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.12587147265137222,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.11173535468494836,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.10352914948213283,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.0986190131994217,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09562206708975211,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09376920231936457,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09261420261418128,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09189043842398113,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09143538850440895,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09114868135172823,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09096779771250967,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09085358142451061,
+            "readAt": 0.65
+          },
+          {
+            "read": "run",
+            "pPass": 0.09078142256358167,
+            "readAt": 0.65
+          }
+        ]
+      }
+    }
+  ],
+  "newWorldSteps": 0,
+  "newGames": 0,
+  "elapsedSeconds": 0.045545140000000005
+}

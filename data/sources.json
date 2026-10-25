@@ -1,0 +1,330 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-23",
+  "rawDirectory": "data/raw",
+  "sources": [
+    {
+      "id": "bdb2019-2017",
+      "repository": "https://github.com/ryurko/Big-Data-Bowl",
+      "commit": "0dac66ce81e5fd22ca48f35ea6a637c523dda12b",
+      "competitionYear": 2019,
+      "season": 2017,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "trackingGames": 91,
+      "fileManifest": "data/sources/ryurko-bdb2019-files.json",
+      "extractor": "scripts/data/bdb2017.ts",
+      "summary": "data/bdb2017-summary.json",
+      "inputDirectory": "data/raw/bdb2019/Data",
+      "extractorTrackingFiles": [
+        "tracking_gameId_2017090700.csv"
+      ],
+      "summaryVerification": "Regenerated from supplied archive; equals committed JSON. Metadata covers 91 games; tracking metrics use one game.",
+      "termsUrl": "https://github.com/ryurko/Big-Data-Bowl/blob/0dac66ce81e5fd22ca48f35ea6a637c523dda12b/README.md#official-rules",
+      "reusePermission": "Not established by public availability or private-repository access.",
+      "sourceUrl": "https://drive.google.com/file/d/1x5Po8NAEgFfNQGHf0Dks-CToPxkoIU-I/view",
+      "archiveName": "Big-Data-Bowl-master.zip",
+      "archiveBytes": 401360678,
+      "archiveUncompressedBytes": 2484171322,
+      "archiveSha256": "4cc73c4c22443736b750e9a0cca8cf3e8a25a44ceb6a6e853ca98563269089ca",
+      "archiveRootDirectory": "Big-Data-Bowl-master",
+      "archiveManifest": "data/reviews/2026-10-08/bdb2019-archive-manifest.json",
+      "archiveVerification": "data/reviews/2026-10-08/bdb2019-archive-verification.json",
+      "archiveIdentity": "All 94 CSV contents and byte sizes match the pinned GitHub source; this is an alternate access route to the same dataset.",
+      "review": "docs/reviews/bdb2019-archive-review.md"
+    },
+    {
+      "id": "bdb2023-2021",
+      "competitionYear": 2023,
+      "season": 2021,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/1hVJ-AJh1tpc0fvCvgcEksmOK3RKyPm16/view",
+      "archiveName": "nfl-big-data-bowl-2023.zip",
+      "archiveBytes": 180535422,
+      "archiveUncompressedBytes": 965072781,
+      "archiveSha256": "129ad4fc656919ffb13fcc6f7670d15040add6c60a655e5dd9aa269e1aea72b3",
+      "archiveManifest": "data/reviews/2026-10-08/bdb2023-archive-manifest.json",
+      "extractor": "scripts/data/bdb2023.py",
+      "summary": "data/bdb2023-summary.json",
+      "inputDirectory": "data/raw/bdb2023",
+      "trackingScope": "Selected pass/dropback plays. Whole-play all-player coverage checked in week 1; tracked throws end shortly after release. Not full-play trajectories.",
+      "reviewedLabelWeeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "reviewedTrackingWeeks": [
+        1
+      ],
+      "summaryScope": "All metadata labels; zero trajectory rows processed by the summary extractor. Separate week-1 tracking audit contains 1,118,122 rows over 1,175 plays.",
+      "review": "docs/reviews/bdb2023-data-review.md",
+      "reusePermission": "Confirm competition terms and permission for team sharing; Drive access is granted separately."
+    },
+    {
+      "id": "bdb2025-2022",
+      "competitionYear": 2025,
+      "season": 2022,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/1gL9sbsrRPvrR21alUB83fcsvWRbgohk7/view",
+      "archiveName": "archive.zip",
+      "archiveBytes": 1219840421,
+      "archiveSha256": "743794b44b5ef49da7cb7d3f488a9418ac16c5ef269199a4044eecb8258550d3",
+      "extractor": "scripts/data/bdb2025.ts",
+      "summary": "data/bdb2025-summary.json",
+      "inputDirectory": "data/raw/bdb2025/big-data-bowl-data",
+      "reviewedTrackingWeeks": [
+        1,
+        2
+      ],
+      "reviewedLabelWeeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "summaryVerification": "Regenerated summary equals committed JSON at reviewed commit.",
+      "reusePermission": "Confirm competition terms and permission for team sharing; Drive access is granted separately."
+    },
+    {
+      "id": "bdb2026-2023",
+      "competitionYear": 2026,
+      "season": 2023,
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "sourceUrl": "https://drive.google.com/file/d/13Q5f54OG3FZOKA49Y6RO8k7jnAHweLmL/view",
+      "archiveName": "nfl-big-data-bowl-2026-analytics.zip",
+      "archiveBytes": 107953117,
+      "archiveSha256": "360a32614d528e69220cacb39f6beddc580bfd2b9818c22194f1c3c394ccc1a1",
+      "extractor": "scripts/data/bdb2026.ts",
+      "summary": "data/bdb2026-summary.json",
+      "inputDirectory": "data/raw/bdb2026/114239_nfl_competition_files_published_analytics_final",
+      "trackingScope": "Selected pass plays and selected players; not all 22 players.",
+      "reviewedTrackingWeeks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "summaryVerification": "Regenerated summary equals committed JSON at reviewed commit.",
+      "reusePermission": "Confirm competition terms and permission for team sharing; Drive access is granted separately."
+    },
+    {
+      "id": "bdb2027-2023-2025",
+      "competitionYear": 2027,
+      "sourceUrl": "https://www.kaggle.com/competitions/nfl-big-data-bowl-2027",
+      "downloadedAtUtc": "2026-10-08T05:17:49.338181+00:00",
+      "seasons": [
+        2023,
+        2024,
+        2025
+      ],
+      "draftYears": [
+        2023,
+        2024,
+        2025
+      ],
+      "players": 510,
+      "fileCount": 9,
+      "datasetBytes": 2306804135,
+      "fileManifest": "data/sources/kaggle-bdb2027-files.json",
+      "downloader": "scripts/data/download_kaggle.py",
+      "extractor": "scripts/data/bdb2027.py",
+      "summary": "data/bdb2027-summary.json",
+      "inputDirectory": "data/raw/kaggle/nfl-big-data-bowl-2027/nfl-big-data-bowl-2027",
+      "trackingScope": "Selected draft-cohort trajectories, not all-22. All combine drill trajectories and all three downloaded game seasons processed for descriptive movement; eligible game metrics use the documented pre-throw window.",
+      "reviewedGameTrackingSeasons": [
+        2023,
+        2024,
+        2025
+      ],
+      "review": "docs/reviews/bdb2027-data-review.md",
+      "reusePermission": "Kaggle authentication and applicable competition access/terms are required; a private repo does not automatically grant another user access.",
+      "movementExtractor": "scripts/data/bdb2027_movement.py",
+      "movementSummary": "data/reviews/physics-world/nfl-movement/bdb2027-movement.json",
+      "movementReview": "docs/reviews/bdb2027-movement-transfer.md",
+      "movementStatus": "Descriptive observations only; no fitted engine constants or held-out accuracy claim."
+    },
+    {
+      "id": "addbiomechanics-core-1.0",
+      "kind": "biomechanics-dataset",
+      "version": "1.0",
+      "sourceUrl": "https://addbiomechanics.org/download_data.html",
+      "paperUrl": "https://doi.org/10.1007/978-3-031-73223-2_27",
+      "termsUrl": "https://addbiomechanics.org/tos.html",
+      "license": "CC BY 4.0; retain actual selected-file attribution and LICENSE.txt",
+      "reviewedAt": "2026-10-09",
+      "status": "Catalog and documentation reviewed only; no subject files downloaded or engine constants validated.",
+      "inputDirectory": "data/raw/addbiomechanics",
+      "participants": 273,
+      "catalogMotionHours": 71.47,
+      "catalogGroundReactionForceHours": 57.55,
+      "formats": [
+        "b3d",
+        "OpenSim export"
+      ],
+      "readerDocumentation": "https://nimblephysics.org/docs/working-with-addbiomechanics-data.html",
+      "proposedUse": [
+        "COM/posture and segment inertia",
+        "support geometry and foot placement",
+        "measured ground-force movement envelopes",
+        "perturbation recovery"
+      ],
+      "proposedSourceSubsets": [
+        {
+          "source": "Hamner and Delp (2013)",
+          "paperUrl": "https://doi.org/10.1016/j.jbiomech.2012.11.024",
+          "purpose": "Running posture, support timing and impulses at 2\u20135 m/s; proposed two subjects."
+        },
+        {
+          "source": "Moore et al. (2015)",
+          "paperUrl": "https://doi.org/10.7717/peerj.918",
+          "purpose": "Longitudinal treadmill perturbation and recovery foot placement; proposed two subjects."
+        }
+      ],
+      "measurementLimits": "Exclude missing/invalid GRF and inspect trial residuals and processing passes. COM and joint torques are derived. No football collision/grip forces or maximum cleat friction established.",
+      "review": "docs/references/physical-contact-evidence.md"
+    },
+    {
+      "id": "capture-point-hof-2005",
+      "kind": "biomechanics-reference",
+      "sourceUrl": "https://doi.org/10.1016/j.jbiomech.2004.03.025",
+      "reviewedAt": "2026-10-09",
+      "evidence": "Extrapolated COM and support-base stability; football thresholds not validated.",
+      "status": "Public metadata/abstract reviewed, no raw experimental data obtained.",
+      "review": "docs/references/physical-contact-evidence.md"
+    },
+    {
+      "id": "football-grip-otterson-2020",
+      "kind": "biomechanics-reference",
+      "sourceUrl": "https://doi.org/10.31459/turkjkin.675067",
+      "reviewedAt": "2026-10-09",
+      "evidence": "16 DII players: grip/squat correlation r=.09, nonsignificant; not a wrap or jersey grip measurement.",
+      "status": "Public metadata/abstract reviewed, no raw experimental data obtained.",
+      "review": "docs/references/physical-contact-evidence.md"
+    },
+    {
+      "id": "football-cleat-villwock-2009",
+      "kind": "biomechanics-reference",
+      "sourceUrl": "https://doi.org/10.1177/0363546508328108",
+      "reviewedAt": "2026-10-09",
+      "evidence": "Rotational cleat-surface resistance; no universal translational friction coefficient established.",
+      "status": "Public metadata/abstract reviewed, no raw experimental data obtained.",
+      "review": "docs/references/physical-contact-evidence.md"
+    },
+    {
+      "id": "segment-inertia-deleva-1996",
+      "kind": "biomechanics-reference",
+      "sourceUrl": "https://doi.org/10.1016/0021-9290(95)00178-6",
+      "reviewedAt": "2026-10-09",
+      "evidence": "Segment inertia reference; current whole-body pitch inertia remains an assumption.",
+      "status": "Public metadata/abstract reviewed, no raw experimental data obtained.",
+      "review": "docs/references/physical-contact-evidence.md"
+    },
+    {
+      "id": "nflverse-2022-2023-reference",
+      "kind": "public-football-reference",
+      "sourceUrl": "https://github.com/nflverse/nflverse-data/releases",
+      "seasons": [
+        2022,
+        2023
+      ],
+      "inputDirectory": "data/raw/nflverse",
+      "extractor": "scripts/nflverse-reference.py",
+      "summary": "data/reviews/nflverse/reference.json",
+      "inputManifest": "data/reviews/nflverse/input-manifest.json",
+      "review": "docs/reviews/nfl-reference-and-support-integration.md",
+      "coverage": "Complete REG PBP, conditional outcomes and 64 team-seasons; 2022 FTN charting, snap counts and Chiefs/Eagles anonymous profile benchmarks; roster snapshots, exact GSIS/PFR crosswalk and historical combine.",
+      "status": "Downloaded, checksummed and extracted; no engine parameters, ratings or playcalling policy fitted.",
+      "attribution": "FTN Data via nflverse; FTN charting and derived charting aggregates CC-BY-SA-4.0. Upstream data lineage differs by release.",
+      "schemaReferenceCommit": "23f915a5be30415aeaa0c5c80cd23b2c69cda122"
+    },
+    {
+      "id": "nflverse-2022-2023-game-layer",
+      "kind": "public-football-reference",
+      "sourceUrl": "https://github.com/nflverse/nflverse-data/releases/tag/pbp",
+      "seasons": [
+        2022,
+        2023
+      ],
+      "inputDirectory": "data/raw/nflverse",
+      "extractor": "scripts/data/nflverse_game_layer.py",
+      "summary": "data/reviews/nflverse/game-layer.json",
+      "inputManifest": "data/reviews/nflverse/game-layer-input-manifest.json",
+      "review": "data/reviews/nflverse/README.md#game-layer-reference-m1",
+      "coverage": "REG kicking, punts, kickoffs, fourth-down choices, two-point tries, accepted penalty clauses, drive outcomes, row-flag turnovers, spikes/kneels and regulation timeout inventory; per-season and pooled team-season percentiles.",
+      "status": "Reproducible descriptive reference; no engine parameters, defaults, scorecard bands or policy fitted.",
+      "attribution": "NFL/nflfastR PBP via nflverse. Source CC-BY-4.0; this adapted aggregate CC-BY-SA-4.0. No FTN charting used.",
+      "termsUrl": "https://github.com/nflverse/nflverse-data/blob/master/LICENSE.md",
+      "derivedAggregateTerms": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "limitations": "Punt return involvement includes muffs; net is not penalty-adjusted official punter accounting. Turnovers are provider row flags, not a complete multi-turnover ledger; ambiguous team attributions stay unavailable. Read per-metric definitions and denominators.",
+      "schemaReferenceCommit": "23f915a5be30415aeaa0c5c80cd23b2c69cda122"
+    }
+  ]
+}

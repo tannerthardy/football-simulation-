@@ -1,0 +1,435 @@
+{
+  "version": 1,
+  "baselineCommit": "844145cfa1e3506789ee204b0bef2915cb03689f",
+  "baselineSourceSha256": "23fd4c510883618b454f75354cfafcd7540c0b6c08de0c4906358cb1e9769296",
+  "afterSourceSha256": "0f1124fde702bfd754944b10bc2d35f2ebf4914c1a2fa864e701afb6683b47ad",
+  "sourceScope": "Lexically sorted src/ relative path strings, NUL, file bytes, NUL; scripts/docs/viewer excluded.",
+  "status": "NOT READY: isolated finite lean release repaired; native fall regression, sustained-contact drift/mirror failure, infeasible foot restraint and pursuit remain. Passing/scoring guards worsen.",
+  "mechanism": "Transfer existing unsupported committed lean before relaxation; bounded local availability projection consumes finite remaining lean without replenishing muscle/work budget. No force/traction/profile/global subdivision constant changes.",
+  "scripts": {
+    "scripts/diag/support-budget.ts": {
+      "bytes": 7079,
+      "sha256": "d08c6360f7d299cd717cb2635c08a70f55d743b375ccdd6abbee5e2aba43ac61"
+    },
+    "scripts/diag/wrap-feedback.ts": {
+      "bytes": 4939,
+      "sha256": "e8df5c9c5181997dde855b120b2d03a65d9bf778d4814a1d2d5bd08874e20103"
+    },
+    "scripts/diag/hand-convergence.ts": {
+      "bytes": 3169,
+      "sha256": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8"
+    },
+    "scripts/diag/moving-contact.ts": {
+      "bytes": 4735,
+      "sha256": "811b407b6e895c24e81048700177e937356d3207bf5ea700686dbaf10a57064c"
+    },
+    "scripts/diag/shared-capabilities.ts": {
+      "bytes": 6749,
+      "sha256": "3e5477aadfa597a0d476314a1851b0b4f783baa9456ddc662d342f891f91c505"
+    },
+    "scripts/diag/run-concept-process.ts": {
+      "bytes": 13063,
+      "sha256": "ead3d5e513c20851fb56a3ad5f05075fb9f7d3bc2b1e8ad9848e5ca46145e918"
+    },
+    "scripts/diag/coverage-contracts.ts": {
+      "bytes": 13989,
+      "sha256": "4e0d37e17d1dd5d5dc1733f9942870fbde3e642845a1df6e9a6216efb73b44a7"
+    },
+    "scripts/kinematics-compare.ts": {
+      "bytes": 12263,
+      "sha256": "907a928cfff8375c88ccf596f3bf159509b72aeae032ac04cfe70630152999e2"
+    },
+    "scripts/calibrate.ts": {
+      "bytes": 9382,
+      "sha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749"
+    },
+    "scripts/source-version.ts": {
+      "bytes": 607,
+      "sha256": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010"
+    }
+  },
+  "tests": {
+    "test/world-physics.test.ts": {
+      "bytes": 23427,
+      "sha256": "c690c13b5bb4c8f06af0532de706f26a2b0d1f3e9532df657279ada8bf79a5e1"
+    },
+    "test/replay-telemetry.test.ts": {
+      "bytes": 6146,
+      "sha256": "895d9892907717f17dfb5364fd416b06d0f540ac9d3f085b56691f0141f2088b"
+    }
+  },
+  "references": {
+    "data/reviews/physics-world/grip-budget/manifest.json": {
+      "bytes": 12707,
+      "sha256": "290221250eb784fcd33e2a43cb64d8bc4917c83c3d0deecc01f007389e8fcd15"
+    },
+    "data/reviews/physics-world/grip-budget/hand-convergence.json": {
+      "bytes": 29311,
+      "sha256": "145969c0e135612cd3c13ea4f8bc019ab0fc75ed8f1ed3ba8fda97f4cbf831c7"
+    },
+    "data/reviews/physics-world/grip-budget/shared-capabilities.json": {
+      "bytes": 136758,
+      "sha256": "9a8ab9b1c8686e426b7c48e755d3182f93fb6bc3f06011374d84a24f61b8e9af"
+    },
+    "data/reviews/physics-world/grip-budget/calibration-16.txt": {
+      "bytes": 2309,
+      "sha256": "e14d8dea42a24cddc1482fa12acb46d8fe3adafe0553809f65ea7c79cc1bbeea"
+    },
+    "data/reviews/physics-world/grip-budget/kinematics.txt": {
+      "bytes": 3914,
+      "sha256": "41d345a54df119669c06b46a855c16993fe2136e7a37b072074a2829c6d83c61"
+    },
+    "data/reviews/physics-world/controlled-approach/manifest.json": {
+      "bytes": 9958,
+      "sha256": "55309f6b9be65851fa2cbe723f791c0014400e2670bbe5671fe18adb36cbc9db"
+    },
+    "data/bdb2025-summary.json": {
+      "bytes": 17710,
+      "sha256": "0fc753d56edfa3dcb2337fd28daa2890386a27ab49a0430b7a02c76d5fd1f8ba"
+    },
+    "data/bdb2026-summary.json": {
+      "bytes": 21089,
+      "sha256": "c9e506a25ae634f7e2daed57df5fc1c3ecb73bf579f99b875647ab7b1c0aba77"
+    },
+    "data/reviews/nflverse/reference.json": {
+      "bytes": 1598226,
+      "sha256": "ef13f27b292dab73d0d4aedf6128b9b3364d326446b03c5dd49567f65889caff"
+    }
+  },
+  "artifacts": {
+    "data/reviews/physics-world/lean-release/README.md": {
+      "bytes": 9626,
+      "sha256": "2cd2beb17707261fc8f61573ace9e61f59aae475bda72ba26adcec5bfd952a53"
+    },
+    "data/reviews/physics-world/lean-release/build.txt": {
+      "bytes": 54,
+      "sha256": "13333e10fb6707c07f416a6d7a0befe85eed52cb75cb60060bcaa5790759e529"
+    },
+    "data/reviews/physics-world/lean-release/calibration-16.txt": {
+      "bytes": 2306,
+      "sha256": "accdbaf33061b34350610e3c1d35a2c9c097c904261db6c82a3fcde2f293f58a"
+    },
+    "data/reviews/physics-world/lean-release/data-tests.txt": {
+      "bytes": 211,
+      "sha256": "48d06069fb6939b6f7994175bdf4042a1a1e36707e86aa749b7ba475a5db63da"
+    },
+    "data/reviews/physics-world/lean-release/hand-convergence.json": {
+      "bytes": 29300,
+      "sha256": "fe1ffa7a7c99c2fe0b5f99beaf23d723b727be21702b266979190a4ff4aa8cc1"
+    },
+    "data/reviews/physics-world/lean-release/kinematics.txt": {
+      "bytes": 3913,
+      "sha256": "24f3d97563e585b7bb72ddda17c82a9105a92cb14f26e07a3c40db971a2eaa30"
+    },
+    "data/reviews/physics-world/lean-release/moving-contact-after.json": {
+      "bytes": 278241,
+      "sha256": "973b5c2cd70d395d576f0a0f1b90bf172b216e8f9a4381c506157ceb798b7f0e"
+    },
+    "data/reviews/physics-world/lean-release/moving-contact-before.json": {
+      "bytes": 278253,
+      "sha256": "af4f5c8f4c2c93f49dd320166ee0bb1b07e6cde1ea55d95d2bfd81697cb145a6"
+    },
+    "data/reviews/physics-world/lean-release/shared-capabilities.json": {
+      "bytes": 136754,
+      "sha256": "da997ba21dfebb2e77758e61316a19bb2d34d0f99860784e90136cf29403d366"
+    },
+    "data/reviews/physics-world/lean-release/support-after.json": {
+      "bytes": 859798,
+      "sha256": "03015f4e5dcd6074d52190a38b4c274ff7d8e13d752d6dd4f0d5d428a22f9784"
+    },
+    "data/reviews/physics-world/lean-release/support-before.json": {
+      "bytes": 860579,
+      "sha256": "ddf9d3ef3728c61dae1d2501349c92711a430f002fa1b0e2817a1c5c72e611ee"
+    },
+    "data/reviews/physics-world/lean-release/tests.txt": {
+      "bytes": 3134,
+      "sha256": "277358b503ebd31fb3fcb6a93decf2f29d333d75a5a47ce7f42e3f8ab42986d2"
+    },
+    "data/reviews/physics-world/lean-release/typecheck.txt": {
+      "bytes": 67,
+      "sha256": "9228c8e246ad46d9b3e79d0cfd8cc80516e2b0b7aaa6d36c1e3857b373eb7c4d"
+    },
+    "data/reviews/physics-world/lean-release/wrap-feedback-after.json": {
+      "bytes": 838105,
+      "sha256": "850598b978e22574b81dd13710639644d2a93b1af57c63c17038fd9a7f6e09ee"
+    },
+    "data/reviews/physics-world/lean-release/wrap-feedback-before.json": {
+      "bytes": 824122,
+      "sha256": "094d8eb04796a41a5d698f8a9ffe81a30f3dc7dc01bc05e97c69ca98ae3b00d4"
+    }
+  },
+  "literature": {
+    "data/reviews/physics-world/offense-process/manifest.json": {
+      "bytes": 3191,
+      "sha256": "b78ca009a333732bea4309a3fd124a70d8bfe6ad2fe0949151bebbd124bbcf21"
+    },
+    "data/reviews/physics-world/coverage-process/manifest.json": {
+      "bytes": 4657,
+      "sha256": "c0205a0152fd7cb82eb6db904db4fefd6e7fc64d16f311246cb89b2ecba859c7"
+    },
+    "docs/reviews/offense-literature-applications.md": {
+      "bytes": 12416,
+      "sha256": "ac8b6472d8cce647596c7a47360c06da6eb158876c5744c4904633337f0dcfd3"
+    },
+    "docs/reviews/coverage-literature-applications.md": {
+      "bytes": 13755,
+      "sha256": "a0b933a3ce41fc0e193facddd43466a7270d85b4c3bce20418d7b05f5c13be85"
+    },
+    "docs/reviews/contact-literature-applications.md": {
+      "bytes": 15085,
+      "sha256": "a583ce895b940323f22a9a8cbcc510eb8292b4eb59e7ab648f674b6aa83a050d"
+    }
+  },
+  "handoff": {
+    "docs/reviews/physics-step-back-and-local-repair.md": {
+      "bytes": 22930,
+      "sha256": "1558fcd5580cd87b1f26928a31182e7484e458ba625593d24885c83a14c19fe1"
+    },
+    "docs/PHYSICS_DEVELOPMENT.md": {
+      "bytes": 17700,
+      "sha256": "c1f4a853d5fccc7c24ee0c037dacb73e83ceb776d5298b29a2fa8a6712f72926"
+    },
+    "CLAUDE.md": {
+      "bytes": 15128,
+      "sha256": "917a3491d4b35a15f8c76eb0958b9bd79e15bc01539220ae041fbd0290a0e903"
+    },
+    "data/README.md": {
+      "bytes": 39319,
+      "sha256": "f7591b41820206197d20b5c6966658a236b944ab59502e503e167f3e0a82a327"
+    },
+    "docs/references/README.md": {
+      "bytes": 6059,
+      "sha256": "0233dc125ac638deb84f72c249c32c0c784eef5b17c84f66bc1a6b080c6350c7"
+    }
+  },
+  "uploadedReferences": {
+    "docs/references/Offensive_Playcalling_Textbook.md": {
+      "bytes": 137016,
+      "sha256": "f06753393eced8c45ba640011f8eaf1dc8aaa5c0d2f4448d2e1a9c1a50e32311",
+      "provenance": "User-supplied document retained byte-for-byte; teaching aid, not engine instructions or independently verified NFL measurements."
+    },
+    "docs/references/Offensive_Playcalling_Glossary_453_Terms.md": {
+      "bytes": 37688,
+      "sha256": "25a9a9a0bc51ad6a4889d12ef282201f007e5bd05fccb7f981db82c373c05609",
+      "provenance": "User-supplied document retained byte-for-byte; teaching aid, not engine instructions or independently verified NFL measurements."
+    }
+  },
+  "verification": {
+    "engineTests": 287,
+    "engineTestFiles": 28,
+    "dataTests": 22,
+    "typecheck": "pass",
+    "build": "pass",
+    "runObserverExactComparisons": 84,
+    "coverageObservationCopyAndRngContract": "pass",
+    "sourceStableAtFinalChecks": true
+  },
+  "cohorts": {
+    "isolatedSupport": {
+      "leanTrials": 48,
+      "incomingLean": [
+        300,
+        600,
+        900,
+        1100
+      ],
+      "sensedLoadMemory": [
+        false,
+        true
+      ],
+      "leanSubsteps": [
+        6,
+        12,
+        24,
+        48,
+        96,
+        192
+      ],
+      "leanTicks": 4,
+      "legTrials": 20,
+      "legCapacities": [
+        null,
+        0,
+        1,
+        50,
+        900
+      ],
+      "legSubsteps": [
+        6,
+        12,
+        48,
+        192
+      ],
+      "legTicks": 5,
+      "tickDt": 0.05,
+      "massKg": 100
+    },
+    "liveWrap": {
+      "seed": 3,
+      "rusherPower": 1,
+      "beforeWrapSubsteps": 192,
+      "afterWrapSubsteps": [
+        6,
+        12,
+        24,
+        48,
+        96,
+        192
+      ],
+      "matchedIncomingPhysicalStateWithinRevision": true,
+      "realControllersAndOfficiating": true
+    },
+    "handConvergence": {
+      "fixtures": 9,
+      "seeds": [
+        3,
+        7,
+        11
+      ],
+      "rusherPowers": [
+        0.7,
+        1,
+        1.4
+      ],
+      "substeps": [
+        6,
+        12,
+        24,
+        48,
+        96,
+        192
+      ],
+      "referenceSubsteps": 192
+    },
+    "movingContact": {
+      "reps": 96,
+      "rosterSeeds": [
+        7,
+        19,
+        31,
+        43
+      ],
+      "mirrors": 2,
+      "scenarios": [
+        "cross",
+        "nearCross",
+        "frontal",
+        "trailing"
+      ],
+      "substeps": [
+        6,
+        12,
+        48
+      ],
+      "horizonSeconds": 5,
+      "acquisitionRollsWrapsEvasion": false
+    },
+    "sharedCapabilities": {
+      "reps": 120,
+      "tasks": [
+        "anchor",
+        "double",
+        "shed",
+        "absorbed-contact",
+        "jam"
+      ],
+      "profiles": 4,
+      "mirrors": 2,
+      "substeps": [
+        6,
+        12,
+        48
+      ],
+      "commonProfilesAcrossTasks": true
+    },
+    "trackingGuard": {
+      "games": 4,
+      "seed": 5
+    },
+    "leagueGuard": {
+      "games": 16,
+      "seed": 7,
+      "leagues": 2
+    },
+    "offenseProcess": {
+      "reps": 84,
+      "horizonSeconds": 4,
+      "concepts": 7,
+      "fronts": 3,
+      "observerPlainExactStateEventsIntentsStatsAndNextRng": 84
+    },
+    "coverageProcess": {
+      "fixtures": 8,
+      "narrowContractViolations": 0,
+      "inspectionPoints": 7,
+      "stateKeyTransitions": 342,
+      "omittedRawTransitions": 0
+    }
+  },
+  "reportedLimits": {
+    "largestLocalLeanReleaseResidualKgYdPerS2": 3.1611193662683945e-09,
+    "maxProjectionIterations": 64,
+    "handFallDisagreementsNative12": {
+      "before": 2,
+      "after": 3,
+      "fixtures": 9
+    },
+    "liveWrapFallSubsteps": {
+      "before": [
+        48,
+        96,
+        192
+      ],
+      "after": [
+        24,
+        48,
+        96,
+        192
+      ]
+    },
+    "longContactWorstDefenderEndingErrorYd": {
+      "before": 8.501703989237207,
+      "after": 8.101550008642905
+    },
+    "longContactWorstCarrierEndingErrorYd": {
+      "before": 11.842049448061807,
+      "after": 10.943127138941772
+    },
+    "longContactFullPathMirrorErrorYd": {
+      "before": 0.6905965912052383,
+      "after": 0.6905965912052383
+    },
+    "longContactNativeVs48FallDisagreements": {
+      "before": 2,
+      "after": 2
+    },
+    "zeroCapacityLegHoldStillRestrictsFeet": true,
+    "pointsPerTeamGame": {
+      "before": 32.03,
+      "after": 35.28
+    },
+    "twentyPlusCompletionsPerAttemptPct": {
+      "before": 14.26,
+      "after": 16.14
+    },
+    "yacPerCompletionYd": {
+      "before": 8.88,
+      "after": 9.17
+    },
+    "newNflRawDataOrContactForceFit": false,
+    "humanFullEnergyOrAnatomicalValidation": false,
+    "performanceClaim": false,
+    "oldReplayIdsAreSourceSpecific": true,
+    "inheritedMetricProblems": [
+      "Called-pass QB scrambles behind the line misclassified in legacy sack/rush accounting.",
+      "Generic calibration YBC targets differ from conditional NFL first-contact definitions."
+    ]
+  },
+  "unchangedPublishedViewer": {
+    "recordedSourceSha256": "23fd4c510883618b454f75354cfafcd7540c0b6c08de0c4906358cb1e9769296",
+    "hashesAndPriorBrowserEvidence": "data/reviews/physics-world/grip-budget/manifest.json",
+    "regeneratedForThisRepair": false,
+    "browserRevalidatedForThisRepair": false
+  },
+  "pr1Touched": false
+}

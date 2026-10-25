@@ -1,0 +1,74 @@
+{
+  "independentRawLoop": {
+    "operator": "Independent raw CSV loop without collector/helper imports; primary counts, mean gains, team-season counts verified.",
+    "independentCounts": {
+      "designedRun": {
+        "observedRuns": 26585,
+        "gainKnown": 26228,
+        "stuff": 4908,
+        "negative": 2515,
+        "explosive10plus": 2778,
+        "explosive20plus": 622,
+        "success4060100": 12915,
+        "gainDistanceConversion": 6379,
+        "gainDistanceWithoutLostFumble": 6356,
+        "positiveEPA": 10612
+      },
+      "scramble": {
+        "observedRuns": 1940,
+        "gainKnown": 1838,
+        "stuff": 3,
+        "negative": 2,
+        "explosive10plus": 459,
+        "explosive20plus": 75,
+        "success4060100": 1145,
+        "gainDistanceConversion": 727,
+        "gainDistanceWithoutLostFumble": 720,
+        "positiveEPA": 1065
+      }
+    },
+    "allPassed": true
+  },
+  "allAggregateChecks": {
+    "operator": "All partitions, outcome bin partitions and bounded explicit numerator/denominator/rate checks across all published aggregates.",
+    "checks": {
+      "seasons/designedRun/None": 2,
+      "seasons/scramble/None": 2,
+      "jointCells/designedRun/None": 100,
+      "jointCells/scramble/None": 93,
+      "margins/designedRun/down": 4,
+      "margins/designedRun/distance": 5,
+      "margins/designedRun/field": 3,
+      "margins/designedRun/score": 3,
+      "margins/designedRun/period": 3,
+      "margins/designedRun/carrier": 3,
+      "margins/designedRun/run_location": 4,
+      "margins/designedRun/run_gap": 4,
+      "margins/scramble/down": 4,
+      "margins/scramble/distance": 5,
+      "margins/scramble/field": 3,
+      "margins/scramble/score": 3,
+      "margins/scramble/period": 3,
+      "margins/scramble/carrier": 2,
+      "margins/scramble/run_location": 3,
+      "margins/scramble/run_gap": 4,
+      "teamSeasons/designedRun/None": 64,
+      "teamSeasons/scramble/None": 64,
+      "scorePeriod/designedRun/None": 14,
+      "scorePeriod/scramble/None": 14,
+      "jointCellsSupport": {
+        "cells": 193,
+        "below20": 96,
+        "below100": 152,
+        "zeroClean": 0
+      },
+      "box2022CellsSupport": {
+        "cells": 539,
+        "below20": 436,
+        "below100": 515,
+        "zeroClean": 3
+      }
+    },
+    "allPassed": true
+  }
+}

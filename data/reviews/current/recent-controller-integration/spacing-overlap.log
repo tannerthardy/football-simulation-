@@ -1,0 +1,14 @@
+Profile candidate: run-game-2026-10-13, commit bb1c44dcdfdd6f767b9750d1d1724f7914df1175, source cda44ed806395aa3dcbeab8f4516da3e302633e3e28408fbf97119ff82ced318
+Running node node_modules/vitest/vitest.mjs run --project core test/spacing-forecast-reuse.test.ts test/joint-spacing.test.ts
+
+ RUN  v3.2.4 /workspace/football-recent-controller-integration
+
+ ✓ |core| test/joint-spacing.test.ts (8 tests) 12ms
+ ✓ |core| test/spacing-forecast-reuse.test.ts (2 tests) 41ms
+
+ Test Files  2 passed (2)
+      Tests  10 passed (10)
+   Start at  16:48:17
+   Duration  593ms (transform 373ms, setup 0ms, collect 597ms, tests 53ms, environment 0ms, prepare 166ms)
+
+Validation receipt: out/recent-controller-integration/spacing-overlap.json; exit 0

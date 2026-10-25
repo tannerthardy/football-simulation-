@@ -1,0 +1,17 @@
+{
+  "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+  "node": "v22.23.3",
+  "games": 2,
+  "seed": 9,
+  "plays": 394,
+  "playsPerGame": [
+    203,
+    191
+  ],
+  "wallSeconds": 29.703501453,
+  "cpuSeconds": 38.431624,
+  "wallSecondsPerGame": 14.8517507265,
+  "cpuSecondsPerGame": 19.215812,
+  "wallMillisecondsPerPlay": 75.3895975964467,
+  "cpuMillisecondsPerPlay": 97.54219289340102
+}

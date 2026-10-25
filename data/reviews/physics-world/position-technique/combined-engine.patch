@@ -1,0 +1,408 @@
+diff --git a/src/sim/agent.ts b/src/sim/agent.ts
+index e4e73ad..43f6466 100644
+--- a/src/sim/agent.ts
++++ b/src/sim/agent.ts
+@@ -33,6 +33,14 @@ export interface PassSetIntent {
+   outside: number;
+ }
+ 
++/** Installed run-contact shoulder, separate from the displacement request. */
++export interface RunContactSurface {
++  /** Unit axis from defender toward the desired blocker shoulder. */
++  axis: Vec2;
++  /** Desired signed angle in this frame, in quarter turns. */
++  sealTarget: number;
++}
++
+ /**
+  * A block in progress (see engagement.ts for the model). Angles/positions are
+  * relative to the engagement axis: toward the protected QB on pass pro or
+@@ -68,7 +76,7 @@ export interface Engagement {
+   /** Direction the blocker is driving (unit vector), for run blocks. */
+   drive: Vec2 | null;
+   /** Optional stable contact surface, separate from displacement intention.
+-   * Stretch-zone fit uses the vertical front while its feet may run laterally. */
++   * Stretch-zone and cutoff fits can wall a shoulder while driving elsewhere. */
+   surfaceAxis?: Vec2;
+   /** Desired signed lateral surface angle on runs, in quarter turns. */
+   sealTarget: number;
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 249c36d..ddaf4ed 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -18,7 +18,7 @@ import { cornerSpeed, fatigueFactor, type MoveCommand } from '../../physics/kine
+ import { availability, supportParams } from '../../physics/support.js';
+ import type { HandJoint, Intent } from '../../physics/world.js';
+ import type { RunConcept } from '../../playbook/types.js';
+-import type { Agent, Behavior, Engagement } from '../agent.js';
++import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
+ import type { PlaySim } from '../playsim.js';
+ import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
+ import { axisOf, helperSupport, passSetDepth, traits } from '../engagement.js';
+@@ -388,6 +388,8 @@ export interface RunBlockPlan {
+   /** Pullers: 'kick' the end man or 'lead' to a linebacker. */
+   pullRole?: 'kick' | 'lead' | 'trap';
+   combination?: Combination;
++  /** A solo cutoff's installed shoulder belongs to this exact down threat. */
++  contactFit?: RunContactSurface & { target: Agent };
+ }
+ 
+ function classify(sim: PlaySim): { dl: Agent[]; lb: Agent[]; db: Agent[] } {
+@@ -645,6 +647,13 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+   // pass-influence conversion, rather than an intermediate owner label.
+   for (const p of plans.values()) if (p.combination)
+     p.combination.soloKind = plans.get(p.combination.members[0])!.kind;
++  for (const [b, p] of plans) {
++    // Only a clearly outside solo backside threat calls for this wall. Inside
++    // shades, doubles, pullers and Draw retain their original contact frame.
++    if (isOL(b) && p.kind === 'cutoff' && p.target && dl.includes(p.target) && !p.combination
++      && rel(b) < 0 && (b.pos.y - p.target.pos.y) * ps > b.profile.radius + p.target.profile.radius)
++      p.contactFit = { target: p.target, axis: norm({ x: -.3, y: p.drive.y * .6 }), sealTarget: 0 };
++  }
+   return plans;
+ }
+ 
+@@ -668,6 +677,8 @@ export class RunBlocker implements Behavior {
+   update(a: Agent, sim: PlaySim): Intent {
+     const plan = this.plan;
+     const t = sim.t;
++    if (plan.contactFit && (plan.kind !== 'cutoff' || plan.target !== plan.contactFit.target
++      || (plan.combination && !plan.combination.released))) delete plan.contactFit;
+     this.homeY ??= a.pos.y;
+     this.firstStep ??= {x:a.pos.x+.18,y:a.pos.y+plan.drive.y*.55};
+     this.rememberSoloWork();
+@@ -712,6 +723,7 @@ export class RunBlocker implements Behavior {
+           abandonCombination(a, sim, combination, 'original target unavailable; finding work');
+         }
+         plan.target = target = replacement;
++        if (replacement !== previous) delete plan.contactFit;
+         if (replacement && replacement !== previous && (!plan.combination || plan.combination.released))
+           this.classifyWork(a, sim, replacement);
+       }
+@@ -785,13 +797,16 @@ export class RunBlocker implements Behavior {
+     const fit = isOL(a) && (plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
+       && (!plan.combination || plan.combination.released)
+       && !sim.world.joints.some(j => j.a === a.body || j.b === a.body);
++    const contactFit = fit && plan.kind === 'cutoff' && plan.contactFit?.target === target
++      ? plan.contactFit : null;
+     // A clearly lost shoulder is a foot-recovery decision, not a fresh hold.
+     // Keep marginal reaches and actual collisions; use the same observed
+     // leverage boundary as an established run block, without a time grace.
+-    const fitDrive = zone ? { x: 1, y: 0 } : plan.drive;
++    const fitDrive = contactFit ? { x: -contactFit.axis.x, y: -contactFit.axis.y }
++      : zone ? { x: 1, y: 0 } : plan.drive;
+     const lost = fit && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
+     if (!lost && dd < contact) {
+-      const e = sim.engage(a, target, 'run', plan.drive);
++      const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? undefined);
+       if (e) {
+         if (zone && e.blocker === a && !e.helpers.length) this.applyZoneContact(a, sim, true);
+         return stand();
+@@ -799,7 +814,10 @@ export class RunBlocker implements Behavior {
+     }
+     // Aiming point: reach blocks work to the playside shoulder.
+     let aim = seen.pos;
+-    if (zone) {
++    if (contactFit) {
++      const sep = a.profile.radius + target.profile.radius + .15;
++      aim = { x: seen.pos.x + contactFit.axis.x * sep, y: seen.pos.y + contactFit.axis.y * sep };
++    } else if (zone) {
+       const side = zone.phase === 'runoff' ? -zone.side : zone.side;
+       aim = { x: seen.pos.x - .3, y: seen.pos.y + side * .6 };
+     } else if (plan.kind === 'combo' && plan.combination) {
+@@ -832,7 +850,7 @@ export class RunBlocker implements Behavior {
+     const original = runThrough(a, aim, { speed: 1 });
+     return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
+       contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
+-      !!zone, zone ? 2.4 : 0) : original;
++      !!zone || !!contactFit, zone ? 2.4 : 0) : original;
+   }
+ 
+   private zoneEligible(a: Agent, sim: PlaySim): boolean {
+@@ -883,6 +901,7 @@ export class RunBlocker implements Behavior {
+ 
+   private classifyWork(a: Agent, sim: PlaySim, target: Agent): void {
+     const p = this.plan;
++    delete p.contactFit;
+     // Reserved kick/trap jobs and pass influence retain their installed
+     // responsibility. A wrap/lead already has a second-level approach.
+     if (RESERVED_RUN_KINDS.has(p.kind)) return;
+@@ -939,6 +958,7 @@ export class RunBlocker implements Behavior {
+     if (p.combination && !p.combination.released)
+       abandonCombination(a, sim, p.combination, 'collecting penetration before climb');
+     p.target = threat; p.kind = 'drive';
++    delete p.contactFit;
+     a.tags.add('block-collect');
+     sim.event('block_collect',a,threat,'penetration before climb');
+   }
+@@ -1263,6 +1283,7 @@ function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, comb
+   climber.engagement = null;
+   climber.behavior.plan.kind = 'climb';
+   climber.behavior.plan.target = combo.backer;
++  delete climber.behavior.plan.contactFit;
+   // The installed backer fit drives upfield. The old diagonal wall/stretch
+   // vector belongs to the keeper's first-level job, not the new approach.
+   climber.behavior.plan.drive = { x: 1, y: 0 };
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 010603c..1decb08 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -20,6 +20,9 @@ import { catchSpot } from './receiver.js';
+ import { showsBlock } from '../coverage-cues.js';
+ import { executeRunFit } from '../run-fits.js';
+ import { RouteObservation } from '../coverage-read.js';
++import { inferQBDirection, qbCueAffinity } from '../coverage/qb-cue.js';
++
++interface ZoneThreat { r: Agent; pos: Vec2; vel: Vec2; fut: Vec2; qbAffinity: number }
+ 
+ /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
+ export function believesRun(sim: PlaySim, a: Agent): boolean {
+@@ -343,7 +346,8 @@ export class ZoneCoverage implements Behavior {
+     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
+     const spot = this.style === 'spot';
+ 
+-    const qb = sim.qb;
++    const qb = sim.see(a, sim.qb);
++    const qbCue = inferQBDirection(a.pos, a.facing, qb);
+     const lm = this.landmark;
+     const [ylo, yhi] = this.band;
+     const facingQB = angleTo(a.pos, qb.pos);
+@@ -355,7 +359,7 @@ export class ZoneCoverage implements Behavior {
+     const inside = (y: number) => Math.sign(sim.ballY - y) || 1;
+ 
+     // Perceived routes in (or about to enter) this zone's lateral band.
+-    const threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }> = [];
++    const threats: ZoneThreat[] = [];
+     for (const r of sim.offense) {
+       if (r === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot)) continue;
+       let observation = this.observations.get(r);
+@@ -364,7 +368,11 @@ export class ZoneCoverage implements Behavior {
+         a.r('anticipation') * a.r('zoneCoverage') * a.mind.focus);
+       const fut = { x: seen.pos.x + seen.vel.x * 0.7, y: seen.pos.y + seen.vel.y * 0.7 };
+       if (fut.y < ylo || fut.y > yhi) continue;
+-      threats.push({ r, pos: seen.pos, vel: seen.vel, fut });
++      // Neutral pre-snap/drop torso facing does not identify a route. Require
++      // observed release/movement before that broad bearing biases a threat.
++      const released = seen.pos.x > sim.los || Math.hypot(seen.vel.x, seen.vel.y) > 1;
++      threats.push({ r, pos: seen.pos, vel: seen.vel, fut,
++        qbAffinity: released ? qbCueAffinity(qbCue, seen.pos) : 0 });
+     }
+ 
+     if (this.deep) {
+@@ -392,8 +400,15 @@ export class ZoneCoverage implements Behavior {
+       }
+       if (vert.length === 0) {
+         let tgt = lm;
+-        // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
+-        if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
++        // Lean only toward observed released routes in this responsibility.
++        // A bare torso ray into empty grass cannot manufacture a receiver cue.
++        const total = threats.reduce((sum, th) => sum + th.qbAffinity, 0);
++        if (total > 1e-6) {
++          const y = threats.reduce((sum, th) => sum + th.pos.y * th.qbAffinity / total, 0);
++          const confidence = Math.max(...threats.map(th => th.qbAffinity));
++          const lean = ((spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0)) * confidence;
++          tgt = lerp(lm, { x: lm.x, y: clamp(y, ylo, yhi) }, lean);
++        }
+         return goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs });
+       }
+       vert.sort((p, q) => q.fut.x - p.fut.x);
+@@ -419,7 +434,7 @@ export class ZoneCoverage implements Behavior {
+       let ty: number;
+       if (vert.length >= 2) {
+         // Split them, leaning toward where the QB is looking.
+-        const w = sim.qbEyes === vert[1].r ? 0.65 : sim.qbEyes === vert[0].r ? 0.35 : 0.5;
++        const w = 0.5 + 0.15 * a.r('anticipation') * (vert[1].qbAffinity - vert[0].qbAffinity);
+         ty = vert[0].fut.y * (1 - w) + vert[1].fut.y * w;
+       } else ty = deepest.fut.y + inside(deepest.fut.y) * 0.8;
+       // A landmark describes responsibility, not a minimum depth to sprint
+@@ -464,7 +479,7 @@ export class ZoneCoverage implements Behavior {
+       }
+     }
+ 
+-    if (spot) return this.spotUnderneath(a, sim, threats);
++    if (spot) return this.spotUnderneath(a, sim, threats, qb);
+ 
+     // An overloaded pattern reader can spend a beat zoning grass when two
+     // routes demand an exchange. He can recover on the next read; the called
+@@ -477,7 +492,7 @@ export class ZoneCoverage implements Behavior {
+         a.tags.add('match-hesitation');
+       }
+     }
+-    if (sim.t < this.patternHesitationUntil) return this.spotUnderneath(a, sim, threats);
++    if (sim.t < this.patternHesitationUntil) return this.spotUnderneath(a, sim, threats, qb);
+ 
+     // Underneath: carry a vertical #2/#3 through the zone (seam carry / wall),
+     // otherwise sit in the throwing lane of the nearest threat.
+@@ -502,7 +517,7 @@ export class ZoneCoverage implements Behavior {
+       const depth = th.fut.x - sim.los;
+       if (depth > 16) continue;
+       let dd = Math.hypot(th.fut.x - lm.x, th.fut.y - lm.y);
+-      if (sim.qbEyes === th.r) dd -= 3 * a.r('anticipation');
++      dd -= 3 * a.r('anticipation') * th.qbAffinity;
+       if (dd < bd && dd < this.radius + 2) {
+         bd = dd;
+         best = th;
+@@ -510,9 +525,7 @@ export class ZoneCoverage implements Behavior {
+     }
+     this.target = best?.r ?? null;
+     if (!best) {
+-      let tgt = lm;
+-      if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.25 * a.r('anticipation'));
+-      return goTo(a, tgt, { facing: facingQB, speed: zs });
++      return goTo(a, lm, { facing: facingQB, speed: zs });
+     }
+     const lane = lerp(qb.pos, best.pos, 0.82);
+     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
+@@ -533,8 +546,7 @@ export class ZoneCoverage implements Behavior {
+    * He leans where the QB looks and squeezes the lane of a receiver in his
+    * zone, but keeps his depth and never leaves his zone with a route.
+    */
+-  private spotUnderneath(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>): MoveCommand {
+-    const qb = sim.qb;
++  private spotUnderneath(a: Agent, sim: PlaySim, threats: ZoneThreat[], qb: { pos: Vec2 }): MoveCommand {
+     const lm = this.landmark;
+     const facingQB = angleTo(a.pos, qb.pos);
+     const toSpot = Math.hypot(lm.x - a.pos.x, lm.y - a.pos.y);
+@@ -544,22 +556,16 @@ export class ZoneCoverage implements Behavior {
+     a.tags.add('settled');
+     const read = 0.5 * a.r('zoneCoverage') + 0.5 * a.r('anticipation');
+     let tgt: Vec2 = lm;
+-    const eyes = sim.qbEyes;
+     const inZone = threats.filter((th) => Math.hypot(th.pos.x - lm.x, th.pos.y - lm.y) < this.radius && th.pos.x - sim.los > 1);
+-    const looked = eyes ? inZone.find((th) => th.r === eyes) : undefined;
+-    if (looked) {
+-      // The QB is looking at a receiver in my zone: get in the throwing lane.
+-      const lane = lerp(qb.pos, looked.pos, 0.82);
+-      tgt = lerp(lm, lane, 0.45 + 0.4 * read);
+-    } else if (eyes) {
+-      // Looking elsewhere: drift that way ("rally to the eyes"), and squeeze
+-      // whoever is in my zone on the way.
+-      const seen = sim.see(a, eyes);
+-      tgt = lerp(lm, seen.pos, 0.15 + 0.25 * read);
+-      if (inZone.length) {
+-        const near = inZone.reduce((p, q) => (Math.hypot(p.pos.x - lm.x, p.pos.y - lm.y) < Math.hypot(q.pos.x - lm.x, q.pos.y - lm.y) ? p : q));
+-        tgt = lerp(tgt, lerp(qb.pos, near.pos, 0.82), 0.3);
+-      }
++    const affinities = inZone.map(th => ({ th, weight: th.qbAffinity }));
++    const total = affinities.reduce((sum, item) => sum + item.weight, 0);
++    if (total > 1e-6) {
++      // Multiple routes on the same bearing stay ambiguous. Squeeze their
++      // observed lanes rather than learning which one the QB privately read.
++      const looked = affinities.reduce((p, { th, weight }) => ({ x: p.x + th.pos.x * weight / total, y: p.y + th.pos.y * weight / total }), { x: 0, y: 0 });
++      const lane = lerp(qb.pos, looked, 0.82);
++      const confidence = Math.max(...affinities.map(item => item.weight));
++      tgt = lerp(lm, lane, (0.45 + 0.4 * read) * confidence);
+     }
+     // Hold the spot's depth until the ball is thrown; stay within the zone.
+     tgt = { x: Math.max(tgt.x, lm.x - 2), y: tgt.y };
+diff --git a/src/sim/coverage/qb-cue.ts b/src/sim/coverage/qb-cue.ts
+new file mode 100644
+index 0000000..7eb2e72
+--- /dev/null
++++ b/src/sim/coverage/qb-cue.ts
+@@ -0,0 +1,36 @@
++/** Coarse QB body-direction evidence; this is not access to his private read. */
++import { clamp, type Vec2 } from '../../core/vec.js';
++import type { Perceived } from '../perception.js';
++
++export interface QBDirectionCue {
++  pos: Vec2;
++  direction: Vec2;
++  confidence: number;
++}
++
++/**
++ * Use the defender's already delayed QB picture. A wide shoulder-glance sector
++ * is a temporary body-orientation proxy, not an articulated head/eye model.
++ * The 135-degree acquisition and 35-degree read cone are model assumptions.
++ */
++export function inferQBDirection(observerPos: Vec2, observerFacing: number, qb: Perceived): QBDirectionCue | null {
++  if (qb.pose === 'down' || !Number.isFinite(qb.facing)) return null;
++  const dx = qb.pos.x - observerPos.x, dy = qb.pos.y - observerPos.y;
++  const distance = Math.hypot(dx, dy);
++  if (distance < 1e-6) return null;
++  const visible = (Math.cos(observerFacing) * dx + Math.sin(observerFacing) * dy) / distance;
++  if (visible <= Math.cos(3 * Math.PI / 4)) return null;
++  return { pos: qb.pos, direction: { x: Math.cos(qb.facing), y: Math.sin(qb.facing) }, confidence: 1 };
++}
++
++/** Nearby bearings remain ambiguous; only consumed route pictures are inputs. */
++export function qbCueAffinity(cue: QBDirectionCue | null, receiverPos: Vec2): number {
++  if (!cue) return 0;
++  const dx = receiverPos.x - cue.pos.x, dy = receiverPos.y - cue.pos.y;
++  const distance = Math.hypot(dx, dy);
++  if (distance < 1e-6) return 0;
++  const alignment = (cue.direction.x * dx + cue.direction.y * dy) / distance;
++  const edge = Math.cos(35 * Math.PI / 180);
++  return cue.confidence * clamp((alignment - edge) / (1 - edge), 0, 1);
++}
++
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 03c4ef0..3657d4e 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -33,7 +33,7 @@ import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
+ import { fatigueFactor } from '../physics/kinematics.js';
+ import { availability, supportParams } from '../physics/support.js';
+ import type { HandJoint, Intent } from '../physics/world.js';
+-import type { Agent, Engagement, RushMove } from './agent.js';
++import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
+ import type { PlaySim } from './playsim.js';
+ 
+ // ------------------------------------------------------------ traits
+@@ -125,7 +125,7 @@ function baseOf(a: Agent): number {
+ 
+ // ------------------------------------------------------------ creation
+ 
+-export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null): Engagement | null {
++export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null, surface?: RunContactSurface): Engagement | null {
+   const t = sim.t;
+   if (sim.bond && [sim.bond.carrier, ...sim.bond.tacklers].some((a) => a === blocker || a === defender)) return null;
+   if (blocker.engagement) return blocker.engagement;
+@@ -170,6 +170,12 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent,
+     repEdge: rng.normal(0, 0.08),
+     holding: false,
+   };
++  // This is the installed shoulder, never inferred from the actual arrival.
++  // Existing hands and joining helpers returned above keep their acquired frame.
++  if (type === 'run' && surface) {
++    e.surfaceAxis = { ...surface.axis };
++    e.sealTarget = surface.sealTarget;
++  }
+   const axis = axisOf(sim, e);
+   const lat = latOf(axis);
+   e.phi = clamp(measurePhi(axis, defender, blocker), -0.95, 0.95);
+@@ -215,7 +221,7 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent,
+     e.control = clamp(punchB - strike + 0.1, -0.8, 0.8);
+     e.move = 'shed';
+     // Reach blocks want the defender sealed on the backside.
+-    if (drive) e.sealTarget = clamp(-0.45 * Math.abs(drive.y), -0.5, 0) * e.side;
++    if (drive && !surface) e.sealTarget = clamp(-0.45 * Math.abs(drive.y), -0.5, 0) * e.side;
+   }
+   blocker.engagement = e;
+   defender.engagement = e;
+diff --git a/src/sim/playsim.ts b/src/sim/playsim.ts
+index cf8629b..1d5340c 100644
+--- a/src/sim/playsim.ts
++++ b/src/sim/playsim.ts
+@@ -19,7 +19,7 @@ import type { Player } from '../players/types.js';
+ import { alignDefense, alignOffense, formationKey, gapY, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+ import { applyCheck, resolveZeus } from '../playbook/coverages.js';
+ import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
+-import { Agent, type Behavior, type Engagement, type TeamSide } from './agent.js';
++import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
+ import { CoverageScouting, QBMind } from './qbmind.js';
+ import { Recognition, leaguePassLogOdds, type ScoutingReport, type SnapContext } from './recognition.js';
+ import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
+@@ -482,8 +482,8 @@ export class PlaySim {
+     this.lunges.set(a, dv);
+   }
+ 
+-  engage(blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null = null): Engagement | null {
+-    return createEngagement(this, blocker, defender, type, drive);
++  engage(blocker: Agent, defender: Agent, type: 'pass' | 'run', drive: Vec2 | null = null, surface?: RunContactSurface): Engagement | null {
++    return createEngagement(this, blocker, defender, type, drive, surface);
+   }
+ 
+   disengage(e: Engagement): void {

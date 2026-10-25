@@ -1,0 +1,218 @@
+{
+  "baselineCommit": "60c149ba2f351bb6c801e70aa63cdc421071afc9",
+  "baselineSourceSha256": "0f6b4078a3857a2f4664d2e4d91176ccfb252dbcc836c498a3bafdfa32792df7",
+  "afterSourceSha256": "23fd4c510883618b454f75354cfafcd7540c0b6c08de0c4906358cb1e9769296",
+  "sourceScope": "Lexically sorted src/ relative path strings, NUL, file bytes, NUL; docs/scripts/viewers excluded.",
+  "status": "NOT READY: native hand/grasp/support disagreement and open-field pursuit remain unresolved. Force-budget contracts pass; game guards contain regressions.",
+  "scripts": {
+    "scripts/diag/grip-budget.ts": "4112d79bc6bb80abf4f65aa080b9c8916b6be340bfdff7072fbf815f4bf214f9",
+    "scripts/diag/grasp-support-convergence.ts": "4f158baf5214a8fe223d33c6bda6541204247b3b9935d83c822b7f7315bddc9f",
+    "scripts/diag/hand-convergence.ts": "cbcb5d94ffddd61fed9d7a35e869453c2a5b214df4258f69f6ec3558dd6e48b8",
+    "scripts/diag/shared-capabilities.ts": "3e5477aadfa597a0d476314a1851b0b4f783baa9456ddc662d342f891f91c505",
+    "scripts/diag/open-field-lab.ts": "2665ebf007d84079aa0537fa131c007f74fe9fc882145c059f798dad0cc274d1",
+    "scripts/scenario-pack.ts": "f6ddc3db78358bdc6615cd3e2305991a98ba78aeb401d6bc4823569553bffe94",
+    "scripts/kinematics-compare.ts": "907a928cfff8375c88ccf596f3bf159509b72aeae032ac04cfe70630152999e2",
+    "scripts/calibrate.ts": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+    "scripts/export-replay.ts": "274668775b34416844aaf14c1440896f05f26a4dfc48435bfbb89308270892d5",
+    "scripts/export-inspection.ts": "6a478eda8715c8f5b160acb3bdbdc03a690b4023ba4787ac4aaefdf0b16c438b",
+    "scripts/replay-data.ts": "09fbee60a1fdc46f9ddc83ceb83c278f2df12b7a0d61a2bf9b373f110752f5b6",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "scripts/repack-replay.ts": "0de95615992153d1443ae2a79258084152fed8c988bf87305ef6cf5758006343",
+    "scripts/source-version.ts": "292138d9133cfccca5fa9bf07b764394356e78b08e180a9b3cbef2723f161010",
+    "scripts/film-outcomes.py": "7413472b2668bbeb08c31082efbf1c5a722c5eb264faf3d2982ade567118f8b6",
+    "scripts/check-replay-viewer.py": "3c5df680a87e4144461333e3dac1ab986d6261d69725026e65db6dac238dd12b",
+    "viewer/replay.template.html": "79981288c4253003e0e8d379e68dfc1f120c9bb952cd05474e7d79c5c2838ec2"
+  },
+  "tests": {
+    "test/actuation.test.ts": "7f2f7f1a07677ee9e349638cd84d1ed010f97a2454c0c8766723da5f14af8bad",
+    "test/grasp-world.test.ts": "42fe1bf160046323adec7dbb5ac6e306b3d866a8476cb75e3158f0dba75f5b92",
+    "test/replay-export.test.ts": "19296529d65352e30e987fa4a9ed58fcc74dcb53a2d60ed5977cc04c5d88e372",
+    "test/replay-telemetry.test.ts": "3bb41c51528f1811da81b9ce14752d33aed9d8342653787d59288cb2f1e32992",
+    "test/replay-telemetry-packing.test.ts": "00f1fa888be44531abc8ff0709b9b395a68d35f2693d4676d679808c7d40721c"
+  },
+  "references": {
+    "data/reviews/physics-world/traffic-and-man-accounting/manifest.json": "77f87c2b01f0e86ab62ca61086fe16ec5aef55645dccbef3ddcf5ccb1e7a73b8",
+    "data/reviews/physics-world/traffic-and-man-accounting/hand-convergence.json": "dfb9ba4931ffbb8c5bc97e9277c8835b2adc0e89af86f3a3db5a7731a03e622f",
+    "data/reviews/physics-world/traffic-and-man-accounting/calibration-16.txt": "c7de77e854a7d14b7207654113a89d1b0e4650aaefc812f2e29fa8d1eaefb13e",
+    "data/reviews/physics-world/traffic-and-man-accounting/kinematics.txt": "3d33f2c51f8af7659bf56653561a9c2e951b3bb6555d4e8c68b9d476405eeff3",
+    "data/reviews/physics-world/traffic-and-man-accounting/film-outcomes-after.json": "e82a87f4dd26b2b7ef69a091b99d3e1d9b63cf491aff8f29cfffc2898eefbf10",
+    "data/reviews/physics-world/controlled-approach/manifest.json": "55309f6b9be65851fa2cbe723f791c0014400e2670bbe5671fe18adb36cbc9db",
+    "data/bdb2025-summary.json": "0fc753d56edfa3dcb2337fd28daa2890386a27ab49a0430b7a02c76d5fd1f8ba",
+    "data/bdb2026-summary.json": "c9e506a25ae634f7e2daed57df5fc1c3ecb73bf579f99b875647ab7b1c0aba77",
+    "data/reviews/nflverse/reference.json": "ef13f27b292dab73d0d4aedf6128b9b3364d326446b03c5dd49567f65889caff"
+  },
+  "artifacts": {
+    "data/reviews/physics-world/grip-budget/README.md": "011a6f3e14a2a9ddc453c89fb25ce9e08a6284e6e5cb1d22699178df74c57cfd",
+    "data/reviews/physics-world/grip-budget/build.txt": "13333e10fb6707c07f416a6d7a0befe85eed52cb75cb60060bcaa5790759e529",
+    "data/reviews/physics-world/grip-budget/calibration-16.txt": "e14d8dea42a24cddc1482fa12acb46d8fe3adafe0553809f65ea7c79cc1bbeea",
+    "data/reviews/physics-world/grip-budget/data-tests.txt": "18e9df80e98fa0ebb2bb262c2b9a42ad9808762382edf5ef7d8d198f67f006cd",
+    "data/reviews/physics-world/grip-budget/film-browser.json": "02b3edf2fd59c5227a8b7b224b34660c505771ce61c5f518725ee750bfcae5af",
+    "data/reviews/physics-world/grip-budget/film-export.txt": "245b0c858d64fc47ad5a61ecc4c766f1727e4995473577a1dc67bcde9a65802a",
+    "data/reviews/physics-world/grip-budget/film-outcomes-after.json": "67055f15fbb771c0dd0ecbfe9f425554963fcf945c0471cf2b0ecaa3ae832137",
+    "data/reviews/physics-world/grip-budget/film-packaging.json": "cceeb0519e0faa8fabad8e984567b7ceeebd7b7c113c4f51ce91ca9adcef5755",
+    "data/reviews/physics-world/grip-budget/grasp-support-after.json": "183b7db7a3207706478330bbb427aa9b390b37d62e224b4ed4608c6e87143125",
+    "data/reviews/physics-world/grip-budget/grasp-support-before.json": "b03eb1e0cb2578bdea4dc27dda8d213a23887e7aa601b0b016427520887bdf65",
+    "data/reviews/physics-world/grip-budget/grip-budget-after.json": "62b82f914679d0dff0be8a86077b6a9298b2bf6967b3a8ee8b684e49e4baec7a",
+    "data/reviews/physics-world/grip-budget/grip-budget-before.json": "e9294c574f79e6e572ab1aa6f5bcbf6f5cc865b6cd8fcbaa86f8a5f8f36d9deb",
+    "data/reviews/physics-world/grip-budget/hand-convergence.json": "145969c0e135612cd3c13ea4f8bc019ab0fc75ed8f1ed3ba8fda97f4cbf831c7",
+    "data/reviews/physics-world/grip-budget/inspection-browser.json": "0501edca2258089928a4a9ef4d6f806a8325297093bb0f621deb136448d1dbfa",
+    "data/reviews/physics-world/grip-budget/inspection-export.txt": "16fd9196c38c5885a9845a784c5ce6e4f8a26ab499c771da0fe5da117f4dd861",
+    "data/reviews/physics-world/grip-budget/inspection-packaging.json": "0262015c2e5aaa9293781078dc8c4f37dc1a466ff4bae652be448b6d090b8a97",
+    "data/reviews/physics-world/grip-budget/kinematics.txt": "41d345a54df119669c06b46a855c16993fe2136e7a37b072074a2829c6d83c61",
+    "data/reviews/physics-world/grip-budget/legacy-browser.json": "5c4b7e12e0d6f71b7da30bb829bd096e2cb7336c7a749dedb43ab4f2cbade963",
+    "data/reviews/physics-world/grip-budget/legacy-packaging.json": "3e2a77d58e0b0f21eb5b48ab234dd380deb386ad18b8bca38afb3bc9182366e1",
+    "data/reviews/physics-world/grip-budget/open-field-before-front.txt": "ca9468405275fc26a032ff98e4a522f2c7b3d48f58cd5ee86314bb4f8fab39ec",
+    "data/reviews/physics-world/grip-budget/open-field-before-side.txt": "7a4519a804253b4c7f9586db776ebac86e3f1f4f05658f2dda132379b25ccc3b",
+    "data/reviews/physics-world/grip-budget/open-field-before-trail.txt": "00eb5fcbb31df942081a97a078a65d03c7153259769c3b3bd01d6a86767ecbcb",
+    "data/reviews/physics-world/grip-budget/open-field-before-two.txt": "297d517460b41cd7687c80e9da4b89f5583d526d35f314e5482da6bd6cb47ad6",
+    "data/reviews/physics-world/grip-budget/open-field-front.txt": "09a076d4d73bf47155c3df4825660e22fe91884a76746fa5b4d8d6dee0cf9067",
+    "data/reviews/physics-world/grip-budget/open-field-side.txt": "7a4519a804253b4c7f9586db776ebac86e3f1f4f05658f2dda132379b25ccc3b",
+    "data/reviews/physics-world/grip-budget/open-field-trail.txt": "c01cafd59916722bcddc7cb1501170a4276731f44ec21d2eb2f28f0583d6c273",
+    "data/reviews/physics-world/grip-budget/open-field-two.txt": "e44d16851c8de3c840688bc56320bf1c26010f9de2841a529f293a9fe7ef6127",
+    "data/reviews/physics-world/grip-budget/scenario-pack.json": "60403fcb6ffd369cd90f93506d1281c0c19f805e272ae8f94f041463eecf2a52",
+    "data/reviews/physics-world/grip-budget/shared-capabilities.json": "9a8ab9b1c8686e426b7c48e755d3182f93fb6bc3f06011374d84a24f61b8e9af",
+    "data/reviews/physics-world/grip-budget/tests.txt": "4986aada614c495c5bc1f1d3848c4bfe6d86058d09dc99fe2e5fbf7e24cc5885",
+    "data/reviews/physics-world/grip-budget/typecheck.txt": "9228c8e246ad46d9b3e79d0cfd8cc80516e2b0b7aaa6d36c1e3857b373eb7c4d",
+    "data/reviews/physics-world/grip-budget/video-verification.json": "9a583c6371c95a24c1f27cbb930b87548fe7c0cc45cdc1df850fe42a001d80fb"
+  },
+  "film": {
+    "viewer/film-room.html": {
+      "sha256": "b6e10fd474d9c065b6ab53280960947e9f9a4d20250cbaf117eeb4abb786ecba",
+      "bytes": 43510636
+    },
+    "viewer/film-room.zip": {
+      "sha256": "728ecd55a68eec6ab95567cb2c79a46edcf53b01bc62298c9e8eb39c6b2d19c4",
+      "bytes": 18303806
+    },
+    "viewer/inspection-room.html": {
+      "sha256": "ddcea5a8eaaae1588ddfd9107f4c7f47bad2e01c571d93b5938d6d2e414a61c9",
+      "bytes": 1394932
+    },
+    "viewer/inspection-room.zip": {
+      "sha256": "868fb6bd35d428c81e24ba2ad0ba2b21d3c196760094acdd228bdfa19e573c99",
+      "bytes": 907776
+    }
+  },
+  "handoff": {
+    "docs/reviews/grip-budget-and-replay-foundation.md": "0f92ab2bb2f8f0ff612b6dd2696539b557122ddd239d6131949e81e0d489cbfd",
+    "docs/reviews/replay-telemetry-and-export.md": "90c141e3658a2e14838360237c244d24e108cfaa53722dbb7b6b1293e407446b",
+    "docs/PHYSICS_DEVELOPMENT.md": "dc160ab52499a431dc55ad51e1a95fcf40db95cd41a060cc4d93331daf935f79",
+    "docs/VISUALIZER_PLAN.md": "366e28c3546942a8eb2434f8d32f554301bbd36fe9c1488895777f0bafced2ed",
+    "docs/references/README.md": "35632e9625aedcd49d5ab028b8040b9721a302c8af591ef7d1956eb359e6b158",
+    "data/README.md": "00e55dfd2f92802f87ec712c2f6196d24239868ceaa3c087ebc8d93b3b511f02",
+    "CLAUDE.md": "19c6e7c2b4c8cd323a36df23b95d3742acfc0eacb071e8511e90103811e48f9a"
+  },
+  "uploadedReference": {
+    "docs/references/Coverage_Operating_System_Manuscript.md": {
+      "sha256": "d73cd1e8cd2ddd319d01cbf6de9eba3246d507525fe201e8ced0318b881486a2",
+      "bytes": 142730,
+      "note": "User-supplied reference retained verbatim; not engine instructions or independently verified NFL evidence."
+    }
+  },
+  "verification": {
+    "engineTests": 285,
+    "dataTests": 22,
+    "typecheck": "pass",
+    "build": "pass",
+    "browserChecks": {
+      "film": 32,
+      "inspection": 34,
+      "legacy": 28
+    },
+    "decodedDownloadedVideo": "VP9 1280x840; film 43, full inspection 36, legacy 40 frames; requested 30 fps/1.2s, actual counts depend on scheduling",
+    "observationalRecording": "Pass/run light/standard/full preserve exact results, events, positional frames, final bodies and next RNG draw. No extra perception/throw evaluation or RNG consumption.",
+    "losslessTelemetryRoundtrips": {
+      "film": 875,
+      "inspection": 6
+    }
+  },
+  "cohorts": {
+    "gripForce": {
+      "isolated": 9,
+      "footballSeedsPowers": 9,
+      "footballResolutions": [
+        12,
+        48,
+        192
+      ]
+    },
+    "handConvergence": {
+      "fixtures": 9,
+      "resolutions": [
+        6,
+        12,
+        24,
+        48,
+        96,
+        192
+      ]
+    },
+    "frozenAndSwitchedWrap": {
+      "fixtures": 5,
+      "frozenTicks": 8,
+      "notAnOriginalPlayCounterfactual": true
+    },
+    "sharedCapabilities": {
+      "reps": 120,
+      "tasks": 5,
+      "profiles": 4,
+      "mirrors": 2,
+      "resolutions": [
+        6,
+        12,
+        48
+      ]
+    },
+    "openField": {
+      "repsPerSetup": 40,
+      "setups": [
+        "front",
+        "side",
+        "two",
+        "trail"
+      ]
+    },
+    "trackingStyle": {
+      "games": 4,
+      "seed": 5
+    },
+    "leagueGuard": {
+      "games": 16,
+      "seed": 7,
+      "leagues": 2
+    },
+    "film": {
+      "games": 6,
+      "seed": 7,
+      "entries": 1118,
+      "recordedClips": 875,
+      "officialScrimmagePlays": 765,
+      "concepts": 27,
+      "level": "standard"
+    },
+    "inspection": {
+      "fixtures": 6,
+      "ids": "LAB-P001..LAB-P006",
+      "rosterSeeds": [
+        21,
+        22
+      ],
+      "playSeeds": [
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ],
+      "level": "full",
+      "notAGameOrNFLsample": true
+    },
+    "legacy": {
+      "clips": 884,
+      "sourceSha256": "0f6b4078a3857a2f4664d2e4d91176ccfb252dbcc836c498a3bafdfa32792df7",
+      "rebakedCurrentTemplate": true
+    }
+  },
+  "rawNote": "Raw/prototype exports, screenshots and WebM binaries stay ignored under out/. Export text logs describe pre-compression size; packaging logs identify the final files. Retained browser/video logs verify actual downloaded frames. Previous reviewed reports supply baseline game/film/NFL references; cohorts are descriptive, not outcome targets. No physical constants/profiles fitted."
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "native-recovery-final-receipt-v1",
+  "baselineSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "isolatedSource": "0863dc038fd1f5046cf47bb6ff49096dc554807cbdcf1f50039b94e011c6e74c",
+  "finalSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "profileSha256": "0c6147a907f8f3983165460788ed8a549fa712bb1f85825f5e153a46be06f6c0",
+  "initialSha256": "89f62ffcb41aee062d3de276b24ddec18b1d621cb434493b82c22de81c90f813",
+  "observerVerifiedAll": true,
+  "finalEqualsIsolatedRecordedTicksBodiesBondsRngChoicesAndResult": true,
+  "callerPathsExcludedFromChoiceComparison": true,
+  "toolSha256": "501527ef2514f83bfd0bc9cda33675814db8171c14ecb32af31c61b47057ad47",
+  "tests": {
+    "path": "test/loose-ball-recovery.test.ts",
+    "cases": 15,
+    "publishedBaselinePass": 13,
+    "publishedBaselineFail": 2,
+    "candidatePass": 15,
+    "testSha256": "2d043225faf9fcca35fe8db1a6aec8bea2828ba56dbbeacc9d520c697713a049",
+    "sameTestBytesBaselineCandidate": true,
+    "typeFixtureFix": "Explicitly widen local ball after mutating fumble() call; same runtime loose-kind guard, state and assertions. Full1074 suite preceded this type-only fixture change; final15 contracts rerun."
+  },
+  "baselineOutcome": {
+    "gain": 3.47,
+    "duration": 3.4,
+    "carrierAtFinish": "C",
+    "supportAtFinish": "up"
+  },
+  "finalOutcome": {
+    "gain": 3.72,
+    "duration": 4.15,
+    "carrierAtFinish": "C",
+    "supportAtFinish": "down"
+  },
+  "limits": [
+    "One retained native causal witness, not an NFL-rate estimate.",
+    "Removed chance changes future RNG assignments intentionally.",
+    "Final compound source only matches isolated source for this input; other inputs can differ earlier."
+  ]
+}

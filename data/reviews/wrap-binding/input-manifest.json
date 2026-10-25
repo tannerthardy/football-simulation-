@@ -1,0 +1,258 @@
+{
+  "schema": "wrap-binding-native-inputs-v1",
+  "baseCommit": "5a1888743fada76a1534571843072df88574aefb",
+  "baseSource": "36fa5bce7adcb4f596b58d2e1f203729d8f72852c3efffafab3f559442d93dab",
+  "candidateSource": "2ff52b84ad0f4fe57c5e8f4dad430ee82d3463a7b8f212c4c2d6b0d9b19ccf85",
+  "matched": {
+    "teamSeeds": [
+      61,
+      62
+    ],
+    "decisionSeeds": [
+      3000,
+      3001,
+      3002,
+      3003,
+      3004,
+      3005
+    ],
+    "cells": [
+      {
+        "angle": 0,
+        "speed": 3,
+        "cut": false
+      },
+      {
+        "angle": 0,
+        "speed": 3,
+        "cut": true
+      },
+      {
+        "angle": 0,
+        "speed": 6,
+        "cut": false
+      },
+      {
+        "angle": 0,
+        "speed": 6,
+        "cut": true
+      },
+      {
+        "angle": 0,
+        "speed": 8,
+        "cut": false
+      },
+      {
+        "angle": 0,
+        "speed": 8,
+        "cut": true
+      },
+      {
+        "angle": 45,
+        "speed": 3,
+        "cut": false
+      },
+      {
+        "angle": 45,
+        "speed": 3,
+        "cut": true
+      },
+      {
+        "angle": 45,
+        "speed": 6,
+        "cut": false
+      },
+      {
+        "angle": 45,
+        "speed": 6,
+        "cut": true
+      },
+      {
+        "angle": 45,
+        "speed": 8,
+        "cut": false
+      },
+      {
+        "angle": 45,
+        "speed": 8,
+        "cut": true
+      },
+      {
+        "angle": 90,
+        "speed": 3,
+        "cut": false
+      },
+      {
+        "angle": 90,
+        "speed": 3,
+        "cut": true
+      },
+      {
+        "angle": 90,
+        "speed": 6,
+        "cut": false
+      },
+      {
+        "angle": 90,
+        "speed": 6,
+        "cut": true
+      },
+      {
+        "angle": 90,
+        "speed": 8,
+        "cut": false
+      },
+      {
+        "angle": 90,
+        "speed": 8,
+        "cut": true
+      },
+      {
+        "angle": 135,
+        "speed": 3,
+        "cut": false
+      },
+      {
+        "angle": 135,
+        "speed": 6,
+        "cut": false
+      },
+      {
+        "angle": 135,
+        "speed": 8,
+        "cut": false
+      },
+      {
+        "angle": 180,
+        "speed": 3,
+        "cut": false
+      },
+      {
+        "angle": 180,
+        "speed": 6,
+        "cut": false
+      },
+      {
+        "angle": 180,
+        "speed": 8,
+        "cut": false
+      }
+    ],
+    "sides": [
+      1,
+      -1
+    ],
+    "handContact": "center",
+    "substeps": "adaptive",
+    "stopTime": 7
+  },
+  "fresh": {
+    "teamSeedPairs": [
+      [
+        71,
+        72
+      ],
+      [
+        81,
+        82
+      ]
+    ],
+    "decisionSeeds": [
+      4001
+    ],
+    "cells": "same 24 cells",
+    "sides": [
+      1,
+      -1
+    ]
+  },
+  "refinement": {
+    "decisionSeed": 3001,
+    "cells": [
+      {
+        "angle": 45,
+        "speed": 6,
+        "handContact": "center"
+      },
+      {
+        "angle": 90,
+        "speed": 6,
+        "handContact": "center"
+      },
+      {
+        "angle": 180,
+        "speed": 6,
+        "handContact": "center"
+      },
+      {
+        "angle": 45,
+        "speed": 8,
+        "handContact": "patch"
+      }
+    ],
+    "sides": [
+      1,
+      -1
+    ],
+    "nativeSubsteps": 12,
+    "frozenTapeSubsteps": [
+      12,
+      24,
+      48,
+      96
+    ]
+  },
+  "games": {
+    "cohortSeeds": [
+      211,
+      212
+    ],
+    "gamesEach": 1,
+    "strength": 0.55,
+    "arms": [
+      "baseline",
+      "brace-roll",
+      "bind-brace-roll"
+    ]
+  },
+  "flags": {
+    "baseline": {
+      "WRAP_BIND": 0,
+      "LEG_BRACE": 0,
+      "TACKLE_ROLL": 0
+    },
+    "brace": {
+      "WRAP_BIND": 0,
+      "LEG_BRACE": 1,
+      "TACKLE_ROLL": 0
+    },
+    "brace-roll": {
+      "WRAP_BIND": 0,
+      "LEG_BRACE": 1,
+      "TACKLE_ROLL": 1
+    },
+    "bind-only": {
+      "WRAP_BIND": 1,
+      "LEG_BRACE": 0,
+      "TACKLE_ROLL": 0
+    },
+    "bind-brace": {
+      "WRAP_BIND": 1,
+      "LEG_BRACE": 1,
+      "TACKLE_ROLL": 0
+    },
+    "bind-brace-roll": {
+      "WRAP_BIND": 1,
+      "LEG_BRACE": 1,
+      "TACKLE_ROLL": 1
+    }
+  },
+  "toolFiles": {
+    "scripts/diag/tackle/panel.ts": "d26bfcb123bed33fe40854bc442488db812e10cb91368af9d13b21f017d37459",
+    "scripts/diag/physics/wrap-binding-fresh.ts": "f9963c4b7078e9918d0f1d85ab6d3b29ecb98f0f2d5828cf9cce1f9da1b45bf4",
+    "scripts/diag/physics/wrap-binding-refinement.ts": "1bdaa8ca2ea96b8f03228e371ca488c4c4c329c4fa133fff5c825e4c17ec697e",
+    "scripts/diag/physics/wrap-binding-report.py": "fd7c24b52659948c22086eb3cf2c3dd93c9831d8d761ad29e6bf1242058a0d0e",
+    "scripts/mechanics/sim-export.ts": "fd889f71e67c624298eb7b06c73bc0f85e4b7dc423328745e5ac0ebf01f5d39b",
+    "scripts/mechanics/metrics.py": "368ac89d2a24ccfb2ab3ea712b9d21734455648f473e76532e3f4ddb4cc541b0"
+  }
+}

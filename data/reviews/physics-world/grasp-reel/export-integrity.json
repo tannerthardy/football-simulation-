@@ -1,0 +1,206 @@
+{
+  "schema": "tackle-timing-export-integrity-v1",
+  "clips": 18,
+  "concepts": 8,
+  "sourceComparison": [
+    {
+      "label": "Baseline",
+      "sourceSha256": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84"
+    },
+    {
+      "label": "Candidate",
+      "sourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57"
+    }
+  ],
+  "rawFilms": [
+    {
+      "path": "data/reviews/physics-world/grasp-reel/film-before.json.gz",
+      "sha256": "399b1eb870da50e9f5a4f66db19604ecee4a49d1f3ae8c3ba9fa118989a56ffa"
+    },
+    {
+      "path": "data/reviews/physics-world/grasp-reel/film-after.json.gz",
+      "sha256": "32abb41d3168e75fc1ed11b8f1082508542900a42f94466f5f9f3727d08798c6"
+    }
+  ],
+  "fullRecordingChecks": [
+    {
+      "id": "BASE-TT-R1-frontalForm-S83-L",
+      "sourceSha256": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84",
+      "recordedPhysicalSha256": "a38dd63248909df83517f396d4c35f776a0038af8691496a88d9cd2099d16e91",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "BASE-TT-R1-imminentCrossing-S83-L",
+      "sourceSha256": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84",
+      "recordedPhysicalSha256": "58be1684d7b22d9543d3809c349cc48240dc0a434fda1439c6093a46fe1e820b",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "BASE-TT-R1-glancingEscapeReach-S83-L",
+      "sourceSha256": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84",
+      "recordedPhysicalSha256": "93d04a62ba5daaafc6bcb1a14f68814270441a73d6b0b02d31d8f45041883e87",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": true
+    },
+    {
+      "id": "BASE-TT-R1-fasterCarrierEscape-S83-L",
+      "sourceSha256": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84",
+      "recordedPhysicalSha256": "b9a95d1be69bc0ed7bfbea55441f3d7603acab8436c9c0015c7d335f0e5f4651",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": true
+    },
+    {
+      "id": "BASE-TT-R1-fatiguedCrossing-S83-L",
+      "sourceSha256": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84",
+      "recordedPhysicalSha256": "23b1ed8932e4cac462ef239ca44532951557e5b9e83c47528f5c20f4170eea6c",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "BASE-TT-R1-recoveringCrossing-S83-L",
+      "sourceSha256": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84",
+      "recordedPhysicalSha256": "bcbb592328f465c1899d1f5b2d9b18708608c40b9fdb76a22f56ddb46e50273b",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "BASE-TT-R1-trafficCrossing-S83-L",
+      "sourceSha256": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84",
+      "recordedPhysicalSha256": "1ef6200c2d8defcd5d314921d600ba7b753850a0ec74ef4a47bbae217ea03454",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "BASE-TT-W-crossing-S19-L",
+      "sourceSha256": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84",
+      "recordedPhysicalSha256": "b024bae3e8f317120b3de1b562a986c9523f370ec45497a2b237e0c505b63830",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "BASE-TT-W-crossing-S19-R",
+      "sourceSha256": "5b6c2f84e77672496996cb7caeb58341e09b7f53f6455919329b8823ea334f84",
+      "recordedPhysicalSha256": "90a7d6886d0a684bbde008c5c70866586521d3790e4ba07892476d041ba1d7ed",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "CAND-TT-R1-frontalForm-S83-L",
+      "sourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57",
+      "recordedPhysicalSha256": "4e614fbb7ca19addf427a5ef1c1268666d17b1d76bf5f30bba8cc45e2fbf2cba",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "CAND-TT-R1-imminentCrossing-S83-L",
+      "sourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57",
+      "recordedPhysicalSha256": "87b0aee52f38e938109c97d54929a9a7974fa4301f299c91a57a74a41a8899c0",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "CAND-TT-R1-glancingEscapeReach-S83-L",
+      "sourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57",
+      "recordedPhysicalSha256": "9845d8d5fe924d1cc9de9e770e31a88ecfffe9940ec2e03249522c7303390a96",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": true
+    },
+    {
+      "id": "CAND-TT-R1-fasterCarrierEscape-S83-L",
+      "sourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57",
+      "recordedPhysicalSha256": "b9a95d1be69bc0ed7bfbea55441f3d7603acab8436c9c0015c7d335f0e5f4651",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": true
+    },
+    {
+      "id": "CAND-TT-R1-fatiguedCrossing-S83-L",
+      "sourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57",
+      "recordedPhysicalSha256": "eee529e16592d5ff25fe29efe9cc018134064172bfdc1de4546652e69d425b60",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "CAND-TT-R1-recoveringCrossing-S83-L",
+      "sourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57",
+      "recordedPhysicalSha256": "84f6542cd6b9309eb0a1c4db2b75358a5bc8920d49df621938c7be55afcf86de",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "CAND-TT-R1-trafficCrossing-S83-L",
+      "sourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57",
+      "recordedPhysicalSha256": "d34fd96854db41400adff170cfef6a31f7a9255c46d4f50f424a4d8998ac8a9b",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "CAND-TT-W-crossing-S19-L",
+      "sourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57",
+      "recordedPhysicalSha256": "3eeb3c56a045391f3c6569ba7f5a056f7c6d27a24b36c8ab38bff7676b33388b",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    },
+    {
+      "id": "CAND-TT-W-crossing-S19-R",
+      "sourceSha256": "248a44cfeab595291717eb5ace15b98c55b19a17e3fd29d87a706bc30018bd57",
+      "recordedPhysicalSha256": "1269d59dc3bdbd583f9738ba23d11cc716d19890c7e09f10cfb223fbe47bf1da",
+      "fullShiftedTelemetryAndEvents": true,
+      "profileAndInputPairMatch": true,
+      "windowCensored": false
+    }
+  ],
+  "censoredClips": [
+    "BASE-TT-R1-glancingEscapeReach-S83-L",
+    "BASE-TT-R1-fasterCarrierEscape-S83-L",
+    "CAND-TT-R1-glancingEscapeReach-S83-L",
+    "CAND-TT-R1-fasterCarrierEscape-S83-L"
+  ],
+  "naturalClips": [
+    "BASE-TT-R1-frontalForm-S83-L",
+    "BASE-TT-R1-imminentCrossing-S83-L",
+    "BASE-TT-R1-fatiguedCrossing-S83-L",
+    "BASE-TT-R1-recoveringCrossing-S83-L",
+    "BASE-TT-R1-trafficCrossing-S83-L",
+    "BASE-TT-W-crossing-S19-L",
+    "BASE-TT-W-crossing-S19-R",
+    "CAND-TT-R1-frontalForm-S83-L",
+    "CAND-TT-R1-imminentCrossing-S83-L",
+    "CAND-TT-R1-fatiguedCrossing-S83-L",
+    "CAND-TT-R1-recoveringCrossing-S83-L",
+    "CAND-TT-R1-trafficCrossing-S83-L",
+    "CAND-TT-W-crossing-S19-L",
+    "CAND-TT-W-crossing-S19-R"
+  ],
+  "censoredCompletedResultFlagsCleared": true,
+  "parkedQbPressureFlagExcluded": true,
+  "shiftedFullTelemetryFramesAndDecisionsVerified": 18,
+  "exactShiftedEventActorsNotesPositions": true,
+  "allGeneratedProfilesRatingsWeightsAndRosterNamesVerified": true,
+  "postCatchAdvanceUsesObservedOrWhistleAsLabelled": true,
+  "maxExistingPackingPositionFacingError": 0,
+  "zipHtmlByteExact": true,
+  "exporterSha256": "74aa23f674cd9e65bf9252fd48b1181e3a1c3d8ee592bce8d34b101aac6c276a",
+  "templateSha256": "79e448ec2d6840689f345dcb1d78d70bd67e05afbd8da4631a89cb4954b72306",
+  "checkerSha256": "35124a4bd0a28c1c96b71df34e601853025028b74d3da03bff1e25f795a13626",
+  "viewerSha256": "610e5f268051386c30c4d194ae9ccc65f14ab8fa1bb72d72dd3f70993a90a5b0",
+  "zipSha256": "58b94f1e557f3c19e1756cfe9dbaa1a346cc695b9c861404749af0ff27a8e627"
+}

@@ -1,0 +1,4061 @@
+{
+  "schema": "spatial-ground-conditioning-v1",
+  "nodeVersion": "v22.23.3",
+  "sourceHashStart": "85380f9939728fcab866857478016f7707865fe06bf79634e08e003f90895148",
+  "sourceHashEnd": "85380f9939728fcab866857478016f7707865fe06bf79634e08e003f90895148",
+  "scriptHashStart": "d703d00beca54bf5630402e2dcb88082c6ac80ddde752b55bf6603463e321170",
+  "scriptHashEnd": "d703d00beca54bf5630402e2dcb88082c6ac80ddde752b55bf6603463e321170",
+  "hashesStable": true,
+  "fixture": {
+    "torsoMass": 96,
+    "torsoInertia": 8,
+    "footMass": 2,
+    "footInertia": 0.008,
+    "hipLateral": 0.08,
+    "ankleLateral": 0,
+    "footCenterLateral": 0.16,
+    "stiffness": 4800,
+    "damping": 30,
+    "gravity": 10,
+    "shoveForces": [
+      0,
+      10,
+      50,
+      100
+    ],
+    "durations": [
+      0.004,
+      0.002,
+      0.001
+    ],
+    "duration": 0.012
+  },
+  "regular": [
+    {
+      "dt": 0.004,
+      "shoveForce": 0,
+      "steps": 3,
+      "acceptedSteps": 3,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0,
+      "finalTorsoVelocityX": 0,
+      "status": "accepted"
+    },
+    {
+      "dt": 0.004,
+      "shoveForce": 10,
+      "steps": 3,
+      "acceptedSteps": 3,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0.000007501250158921322,
+      "finalTorsoVelocityX": 0.0012503599041312871,
+      "status": "accepted"
+    },
+    {
+      "dt": 0.004,
+      "shoveForce": 50,
+      "steps": 3,
+      "acceptedSteps": 3,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0.00003750625079697566,
+      "finalTorsoVelocityX": 0.006251799520637482,
+      "status": "accepted"
+    },
+    {
+      "dt": 0.004,
+      "shoveForce": 100,
+      "steps": 3,
+      "acceptedSteps": 3,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0.00007501250158885317,
+      "finalTorsoVelocityX": 0.012503599041154168,
+      "status": "accepted"
+    },
+    {
+      "dt": 0.002,
+      "shoveForce": 0,
+      "steps": 6,
+      "acceptedSteps": 6,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0,
+      "finalTorsoVelocityX": 0,
+      "status": "accepted"
+    },
+    {
+      "dt": 0.002,
+      "shoveForce": 10,
+      "steps": 6,
+      "acceptedSteps": 6,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0.000007501079635229441,
+      "finalTorsoVelocityX": 0.0012503456841461912,
+      "status": "accepted"
+    },
+    {
+      "dt": 0.002,
+      "shoveForce": 50,
+      "steps": 6,
+      "acceptedSteps": 6,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0.00003750539817972911,
+      "finalTorsoVelocityX": 0.006251728421314292,
+      "status": "accepted"
+    },
+    {
+      "dt": 0.002,
+      "shoveForce": 100,
+      "steps": 6,
+      "acceptedSteps": 6,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0.00007501079635622028,
+      "finalTorsoVelocityX": 0.012503456841903232,
+      "status": "accepted"
+    },
+    {
+      "dt": 0.001,
+      "shoveForce": 0,
+      "steps": 12,
+      "acceptedSteps": 12,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0,
+      "finalTorsoVelocityX": 0,
+      "status": "accepted"
+    },
+    {
+      "dt": 0.001,
+      "shoveForce": 10,
+      "steps": 12,
+      "acceptedSteps": 12,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0.000007501037005774315,
+      "finalTorsoVelocityX": 0.0012503421291297817,
+      "status": "accepted"
+    },
+    {
+      "dt": 0.001,
+      "shoveForce": 50,
+      "steps": 12,
+      "acceptedSteps": 12,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0.00003750518502778331,
+      "finalTorsoVelocityX": 0.0062517106456291185,
+      "status": "accepted"
+    },
+    {
+      "dt": 0.001,
+      "shoveForce": 100,
+      "steps": 12,
+      "acceptedSteps": 12,
+      "firstReject": null,
+      "initialState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 1.1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.16,
+              "z": 0.04
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.08,
+              "z": -0.15
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0.03
+            },
+            "compliance": {
+              "restLength": 0.9840412542585015,
+              "stiffness": 4800,
+              "forceCap": 1600,
+              "damping": 30,
+              "dampingCap": 300
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ],
+        [
+          {
+            "id": "right-heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": -0.04
+            },
+            "friction": 0.8
+          },
+          {
+            "id": "right-toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": -0.04
+            },
+            "friction": 0.8
+          }
+        ]
+      ],
+      "options": {
+        "duration": 0.012,
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "finalTorsoX": 0.00007501037005626214,
+      "finalTorsoVelocityX": 0.012503421291135235,
+      "status": "accepted"
+    }
+  ],
+  "hiddenNegativeControls": [
+    {
+      "dt": 0.3,
+      "accepted": false,
+      "reason": "Axial leg elastic phase exceeds the local interval limit; subdivide the physical interval",
+      "residual": 1.6083053491419694e-9,
+      "minCandidateSoleGap": -1.570155018099485e-11,
+      "minEndpointInstantaneousNormal": 6.038709677423365,
+      "elasticPhase": 13.579322516237694,
+      "energyResidual": 1.0658141036401503e-13,
+      "interiorEventCertification": "not-provided",
+      "classification": "rejected",
+      "inputState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0.75
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 1.5
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.12,
+              "z": 0
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.12,
+              "z": 0
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": 0
+            },
+            "friction": 0
+          }
+        ],
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": 0
+            },
+            "friction": 0
+          }
+        ]
+      ],
+      "externalImpulses": [
+        {
+          "center": {
+            "x": 0,
+            "y": 0,
+            "z": -240
+          }
+        },
+        {
+          "center": {
+            "x": 0,
+            "y": 0,
+            "z": 120
+          }
+        },
+        {
+          "center": {
+            "x": 0,
+            "y": 0,
+            "z": 120
+          }
+        }
+      ],
+      "options": {
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "candidateState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": -4.213386188870365e-27,
+            "z": 0.798387096774201
+          },
+          "velocity": {
+            "x": 0,
+            "y": -2.8089241259135765e-26,
+            "z": -1.1774193548386598
+          },
+          "angularMomentum": {
+            "x": 1.0574643916592963e-14,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 1.9827457343611804e-16
+            },
+            {
+              "x": 0,
+              "y": -1.9827457343611804e-16,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.12,
+              "z": 1.5169803059118632e-14
+            },
+            "velocity": {
+              "x": 0,
+              "y": 6.7414714097023755e-25,
+              "z": 1.0113202039412421e-13
+            },
+            "angularMomentum": {
+              "x": -2.500903210101448e-16,
+              "y": 6.447885121663166e-12,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": -2.834566980316309e-25,
+                "z": -1.2089784603118437e-10
+              },
+              {
+                "x": -2.834566980316309e-25,
+                "y": 1,
+                "z": -4.689193518940215e-15
+              },
+              {
+                "x": 1.2089784603118437e-10,
+                "y": 4.689193518940215e-15,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.12,
+              "z": 1.5547973980067475e-14
+            },
+            "velocity": {
+              "x": 0,
+              "y": 6.741364374219786e-25,
+              "z": 1.036531598671165e-13
+            },
+            "angularMomentum": {
+              "x": 1.4918543471818785e-16,
+              "y": 6.44768571866905e-12,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 1.6908412444908286e-25,
+                "z": -1.2089410722504468e-10
+              },
+              {
+                "x": 1.6908412444908286e-25,
+                "y": 1,
+                "z": 2.797226900966022e-15
+              },
+              {
+                "x": 1.2089410722504468e-10,
+                "y": -2.797226900966022e-15,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      }
+    },
+    {
+      "dt": 0.4,
+      "accepted": false,
+      "reason": "Axial leg elastic phase exceeds the local interval limit; subdivide the physical interval",
+      "residual": 4.813927025857672e-14,
+      "minCandidateSoleGap": -1.3300027274248661e-15,
+      "minEndpointInstantaneousNormal": 37.699999999999854,
+      "elasticPhase": 18.10576335498359,
+      "energyResidual": -4.618527782440651e-14,
+      "interiorEventCertification": "not-provided",
+      "classification": "rejected",
+      "inputState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0.75
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 1.5
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.12,
+              "z": 0
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.12,
+              "z": 0
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": 0
+            },
+            "friction": 0
+          }
+        ],
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": 0
+            },
+            "friction": 0
+          }
+        ]
+      ],
+      "externalImpulses": [
+        {
+          "center": {
+            "x": 0,
+            "y": 0,
+            "z": -320
+          }
+        },
+        {
+          "center": {
+            "x": 0,
+            "y": 0,
+            "z": 160
+          }
+        },
+        {
+          "center": {
+            "x": 0,
+            "y": 0,
+            "z": 160
+          }
+        }
+      ],
+      "options": {
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "candidateState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": -2.3451383624442557e-27,
+            "z": 0.7375
+          },
+          "velocity": {
+            "x": 0,
+            "y": -1.1725691812221279e-26,
+            "z": -1.5624999999999998
+          },
+          "angularMomentum": {
+            "x": 2.7622895837930782e-14,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 6.905723959482696e-16
+            },
+            {
+              "x": 0,
+              "y": -6.905723959482696e-16,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.12,
+              "z": -3.639354475483289e-16
+            },
+            "velocity": {
+              "x": 0,
+              "y": 2.814132012576366e-25,
+              "z": -1.8196772377416444e-15
+            },
+            "angularMomentum": {
+              "x": 2.781381112292422e-16,
+              "y": 2.972514707312422e-16,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 2.58365508216569e-29,
+                "z": -7.431286768281055e-15
+              },
+              {
+                "x": 2.58365508216569e-29,
+                "y": 1,
+                "z": 6.953452780731055e-15
+              },
+              {
+                "x": 7.431286768281055e-15,
+                "y": -6.953452780731055e-15,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.12,
+              "z": 5.211830925869784e-16
+            },
+            "velocity": {
+              "x": 0,
+              "y": 2.8142000572869677e-25,
+              "z": 2.605915462934892e-15
+            },
+            "angularMomentum": {
+              "x": 8.160195490815627e-18,
+              "y": -3.8511416206861373e-16,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": -9.820646402379816e-31,
+                "z": 9.627854051715344e-15
+              },
+              {
+                "x": -9.820646402379816e-31,
+                "y": 1,
+                "z": 2.040048872703907e-16
+              },
+              {
+                "x": -9.627854051715344e-15,
+                "y": -2.040048872703907e-16,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      }
+    },
+    {
+      "dt": 0.6,
+      "accepted": false,
+      "reason": "Axial leg elastic phase exceeds the local interval limit; subdivide the physical interval",
+      "residual": 1.6508951730621541e-12,
+      "minCandidateSoleGap": -3.800441511451754e-14,
+      "minEndpointInstantaneousNormal": 88.67368421052666,
+      "elasticPhase": 27.158645032475388,
+      "energyResidual": 8.526512829121202e-14,
+      "interiorEventCertification": "not-provided",
+      "classification": "rejected",
+      "inputState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0.75
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 1.5
+          },
+          "angularMomentum": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.12,
+              "z": 0
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.12,
+              "z": 0
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularMomentum": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": 0,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      },
+      "patches": [
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": 0
+            },
+            "friction": 0
+          }
+        ],
+        [
+          {
+            "id": "heel-left",
+            "local": {
+              "x": -0.12,
+              "y": -0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "heel-right",
+            "local": {
+              "x": -0.12,
+              "y": 0.05,
+              "z": 0
+            },
+            "friction": 0
+          },
+          {
+            "id": "toe",
+            "local": {
+              "x": 0.13,
+              "y": 0,
+              "z": 0
+            },
+            "friction": 0
+          }
+        ]
+      ],
+      "externalImpulses": [
+        {
+          "center": {
+            "x": 0,
+            "y": 0,
+            "z": -480
+          }
+        },
+        {
+          "center": {
+            "x": 0,
+            "y": 0,
+            "z": 240
+          }
+        },
+        {
+          "center": {
+            "x": 0,
+            "y": 0,
+            "z": 240
+          }
+        }
+      ],
+      "options": {
+        "maxAngularPhase": 0.5,
+        "maxElasticPhase": 0.5
+      },
+      "candidateState": {
+        "torso": {
+          "mass": 96,
+          "inertia": 8,
+          "position": {
+            "x": 0,
+            "y": 4.23021066591017e-25,
+            "z": 0.6394736842105329
+          },
+          "velocity": {
+            "x": 0,
+            "y": 1.4100702219700568e-24,
+            "z": -1.8684210526315572
+          },
+          "angularMomentum": {
+            "x": 1.865403278622068e-13,
+            "y": 0,
+            "z": 0
+          },
+          "basis": [
+            {
+              "x": 1,
+              "y": 0,
+              "z": 0
+            },
+            {
+              "x": 0,
+              "y": 1,
+              "z": 6.995262294832755e-15
+            },
+            {
+              "x": 0,
+              "y": -6.995262294832755e-15,
+              "z": 1
+            }
+          ]
+        },
+        "feet": [
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": -0.12,
+              "z": 6.305462568028422e-15
+            },
+            "velocity": {
+              "x": 0,
+              "y": -6.275138922420344e-20,
+              "z": 2.101820856009474e-14
+            },
+            "angularMomentum": {
+              "x": -2.6040798757715954e-14,
+              "y": 1.003693330704769e-15,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": -1.8377561277664132e-26,
+                "z": -3.763849990142884e-14
+              },
+              {
+                "x": -1.8377561277664132e-26,
+                "y": 1,
+                "z": -9.765299534143484e-13
+              },
+              {
+                "x": 3.763849990142884e-14,
+                "y": 9.765299534143484e-13,
+                "z": 1
+              }
+            ]
+          },
+          {
+            "mass": 2,
+            "inertia": 0.008,
+            "position": {
+              "x": 0,
+              "y": 0.12,
+              "z": 1.0518874430900704e-14
+            },
+            "velocity": {
+              "x": 0,
+              "y": 6.268370585354839e-20,
+              "z": 3.5062914769669014e-14
+            },
+            "angularMomentum": {
+              "x": -2.536913275734195e-14,
+              "y": 1.7199967578679366e-16,
+              "z": 0
+            },
+            "basis": [
+              {
+                "x": 1,
+                "y": -3.068073709632381e-27,
+                "z": -6.449987842004762e-15
+              },
+              {
+                "x": -3.068073709632381e-27,
+                "y": 1,
+                "z": -9.51342478400323e-13
+              },
+              {
+                "x": 6.449987842004762e-15,
+                "y": 9.51342478400323e-13,
+                "z": 1
+              }
+            ]
+          }
+        ],
+        "legs": [
+          {
+            "hip": {
+              "x": 0,
+              "y": -0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          },
+          {
+            "hip": {
+              "x": 0,
+              "y": 0.12,
+              "z": 0
+            },
+            "ankle": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "compliance": {
+              "restLength": 1,
+              "stiffness": 2000,
+              "forceCap": 2000,
+              "damping": 0,
+              "dampingCap": 0
+            }
+          }
+        ],
+        "gravity": {
+          "x": 0,
+          "y": 0,
+          "z": -10
+        }
+      }
+    }
+  ],
+  "interpretation": "Solver conditioning probe only. Hidden-event controls rejected by an elastic-phase budget are discretization rejects, not certified event handling. Accepted hidden-event rows remain uncertified; no trajectory readiness claim."
+}

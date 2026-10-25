@@ -1,0 +1,52 @@
+{
+  "schema": "tackle-timing-browser-smoke-v1",
+  "clips": [
+    {
+      "id": "BASE-TT-R1-frontalForm-S83-L",
+      "playerInspectionAndLayers": true,
+      "honestEndpointCaption": true
+    },
+    {
+      "id": "BASE-TT-R1-glancingEscapeReach-S83-L",
+      "playerInspectionAndLayers": true,
+      "honestEndpointCaption": true
+    },
+    {
+      "id": "BASE-TT-R1-trafficCrossing-S83-L",
+      "playerInspectionAndLayers": true,
+      "honestEndpointCaption": true
+    },
+    {
+      "id": "BASE-TT-W-crossing-S19-R",
+      "playerInspectionAndLayers": true,
+      "honestEndpointCaption": true
+    },
+    {
+      "id": "CAND-TT-R1-frontalForm-S83-L",
+      "playerInspectionAndLayers": true,
+      "honestEndpointCaption": true
+    },
+    {
+      "id": "CAND-TT-R1-glancingEscapeReach-S83-L",
+      "playerInspectionAndLayers": true,
+      "honestEndpointCaption": true
+    },
+    {
+      "id": "CAND-TT-R1-trafficCrossing-S83-L",
+      "playerInspectionAndLayers": true,
+      "honestEndpointCaption": true
+    },
+    {
+      "id": "CAND-TT-W-crossing-S19-R",
+      "playerInspectionAndLayers": true,
+      "honestEndpointCaption": true
+    }
+  ],
+  "pageErrors": [],
+  "offlineFontsBlocked": true,
+  "playerInspectionAndLayers": true,
+  "stuffFilterExcludesLiveWindows": true,
+  "pairedFixtureSearch": true,
+  "recordedSourceFilter": true,
+  "mobileNoHorizontalOverflow": true
+}

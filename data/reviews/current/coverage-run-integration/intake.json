@@ -1,0 +1,91 @@
+{
+  "schema": "coverage-run-integration-intake-v1",
+  "acceptedBase": "3723204bd0743713bca3e87f10ca01bfebf00a15",
+  "queueMetadata": "db0d512666823c49f7d5afed84138b32ffcf449f",
+  "reviewCommit": "ba3997125cb31495e99da8ba1f9eef96ce1dd272",
+  "question": "Do the approved narrow coverage, installed-inline role, rat duty and existing-span lifecycle corrections compose without violating preserved contracts?",
+  "included": [
+    {
+      "pr": 95,
+      "head": "45c3308b82312dc9cfca86f4663507c17dc73aa2",
+      "branch": "codex/rat-crosser-duty",
+      "review": [
+        {
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/95#issuecomment-6220831736",
+          "body": "Independent Do-It-All adjudication: **ACCEPT the narrow acquired installed-rat duty**, preserving its Drive contact/fall cost. Reviewed head45c3308b82312dc9cfca86f4663507c17dc73aa2/runtime8a935a8793c3143d8db712b6891af9e4954bd232 against accepted3723204bd0743713bca3e87f10ca01bfebf00a15. [Pinned report and limitations](https://github.com/tannerthardy/football-simulation-/blob/ba3997125cb31495e99da8ba1f9eef96ce1dd272/docs/reviews/coverage-contract-review.md); review/extraction evidence ba3997125cb31495e99da8ba1f9eef96ce1dd272 on codex/coverage-contract-review. Standalone95.patch is exactly two runtime files plus rat test; cached-index application passes on3723204. Keep rat policy separate from97/100; if later composed, reconcile the shared acquired-entry interface once and separately verify that composition.\n\nThe duty uses a confirmed acquired under declaration, predominantly lateral motion toward the fixed installed hole and existing distance/depth limits. It releases through the installed-area boundary or contradictory acquired declaration, supplies acquired entry position, and does not invent an original-man exchange. Ordinary Cover1 robber remains separate. Unknown control means absent acquired declaration, not a new absent-image/expired-velocity API. Existing run-support and recognized-flight controls remain.\n\nDrive does not prove improved tackling. First cut1.70 has the genuine acquired H crossing picture, depth3.656yd, velocity(+2.928,−4.087)yd/s and equal entry body state. Real impact2.45 at5.67yd/s closing/252.83kg·yd/s impulse is followed by rat fall2.65 through catch3.15. The achieved2.40 gap is0.608yd vs1.217yd, with residual momentum converging. The local receiver win/lost rat availability are accepted costs of attempting the called cut through real contact. This is an explained consequence, not an information/assignment defect or a collision exemption; saved evidence does not demonstrate an available safer action forbidden by the policy. A fall alone does not veto the duty. This does not certify NFL contact legality or physical-law accuracy, and exact get-up timing is not invented from compact records.\n\nSS's later surviving wrap/tackle is separate; final0.89YAC cannot be compared as two completed endings with baseline's live/censored8.05 observed yards. Two Mesh controls improve upright carry, not completed tackle success; original Mesh fall is later4.80→4.85, both unfinished5s. Vertical and ordinary Cover1 controls remain exact. Early diagonal-cut variant remains rejected. Reused82 focused/typecheck and five matched pairs; zero new selected-play variants/tests/native runs or suite repetition.\n\nEvidence access is sufficient for this bounded source/contract disposition: fetchable compact summary, hashes and exact bounded reproducer in45c3308. Raw archive upload failed and no release asset exists. Historical native outcomes remain source-qualified, not claimed as current3723204 combined behavior. Integration owns exact candidate verification/adoption."
+        }
+      ],
+      "approval": "Independent reviewed ACCEPT"
+    },
+    {
+      "pr": 97,
+      "head": "1a52e6b51be6c33cbb50f07c25c2471c5a1e54f6",
+      "branch": "codex/pass-defense-panel",
+      "review": [
+        {
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/97#issuecomment-6220823099",
+          "body": "Independent review **ACCEPT** at head1a52e6b51be6c33cbb50f07c25c2471c5a1e54f6/runtime d4eaf85f11fe7c71a36391948ccd0143753e9974 on accepted3723204bd0743713bca3e87f10ca01bfebf00a15. ACCEPT the minimal #97/#100 composition for Integration verification, preserving acquired entry once and all three provisional-block conditions. Detailed decision and adverse Drive/seam adjudication are posted on#100. [Pinned report](https://github.com/tannerthardy/football-simulation-/blob/ba3997125cb31495e99da8ba1f9eef96ce1dd272/docs/reviews/coverage-contract-review.md); evidence ba3997125cb31495e99da8ba1f9eef96ce1dd272, branch codex/coverage-contract-review. Separate three-file97.patch and eight-file97-100.patch are fetchable there. Zero new behavioral tests/simulations, no diagnostic ancestry or shared-suite repetition. Ordinary block response, real flat/under/depth exchanges, useful outside verticals, PA/offensive wins and changed execution remain visible. No whole-engine information-clean or general YAC claim."
+        }
+      ],
+      "approval": "Independent reviewed ACCEPT"
+    },
+    {
+      "pr": 100,
+      "head": "9f30428df552301ec25b51bade76ce4965d9fcda",
+      "branch": "codex/match-release-cushion",
+      "review": [
+        {
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/100#issuecomment-6220822038",
+          "body": "Independent Do-It-All adjudication: **ACCEPT #97, ACCEPT #100, ACCEPT their minimal compatible composition for Integration verification**, pinned to accepted develop3723204bd0743713bca3e87f10ca01bfebf00a15. Author heads rechecked unchanged: #97 1a52e6b51be6c33cbb50f07c25c2471c5a1e54f6; #100 9f30428df552301ec25b51bade76ce4965d9fcda. Runtime implementations d4eaf85f11fe7c71a36391948ccd0143753e9974 and19d520f00dd3b521078d6f24be9d645e90a78ebc.\n\nFetchable review/extraction branch codex/coverage-contract-review, evidence ba3997125cb31495e99da8ba1f9eef96ce1dd272. [Full adjudication](https://github.com/tannerthardy/football-simulation-/blob/ba3997125cb31495e99da8ba1f9eef96ce1dd272/docs/reviews/coverage-contract-review.md); [portable eight-file composition](https://github.com/tannerthardy/football-simulation-/blob/ba3997125cb31495e99da8ba1f9eef96ce1dd272/data/reviews/current/coverage-contract-review/97-100.patch), SHA256 f19b6f3e086bcdfa6ba7c94daa0d47e8ca7abdb5dbe2586cb7d5763fba12eb49. Four runtime files/four tests only. Cached-index application to3723204 passes; all extracted blobs equal the reviewed0b346b6373e77d6001973830c6efe9b753245dd1 interaction scope. No host ancestry, #95, #102, #104, diagnostics or accepted-work reversion.\n\nResolved contract: initialPosition interface/constructor/producer once; exclude entry metadata from directive identity. Preserve #100 early read and observed-cap delivery; seamCurlFlat block remains nonterminal after its early none return; qSafety block may help#1 on knowsPass without locking one; wallTwo excludes block from terminal exit. Genuine acquired shallow and earned depth exits remain. ReadRelease retains zone support/recognized-flight priorities and transfers its existing inner movement state only into the same inside-man relationship.\n\nAdverse outcomes remain part of acceptance: #97 Drive3.15→6.92 and1.57→10.03 shallowYAC reflects deeper obligation costing shallow help; #100 opposing Cover3 changes4.21-YAC Y catch→25.31-YAC H seam catch. Do not call the accepted short completion incorrect or claim universal YAC improvement. The43.93→46.90 #97 seam retains identical recorded approach/grasp geometry with changed existing execution/leg-placement draws; unchanged probability is not matched execution. Keep changed targets, interception returns, no-pass finishes, broken holds and censored windows distinct. #100's geometric cap is fallible acquired help, not assignment acknowledgment or guaranteed whole-route clearance.\n\nReused82/159 focused/typecheck and64-check/three-case historical interaction receipts. Zero new tests/typechecks/native simulations/games; no Integration suite repeat. New source/patch artifact audit0.315s. Coverage files are byte-identical bb→372, but shared controllers/setup changed, so historical football outcomes are not relabeled current-source results. Direct-man and CoverageJudgment emergency-man legacy entry fallback remain outside the acquired-rule-producer fix. No additional local test is needed to settle these contract questions. Catching remains author; Integration owns exact combined verification/adoption, no merge performed."
+        }
+      ],
+      "approval": "Independent reviewed ACCEPT"
+    },
+    {
+      "pr": 102,
+      "head": "7b09c65b770583d404d173972c50d7ee5ed87645",
+      "branch": "codex/run-contact-span",
+      "review": [
+        {
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/102#issuecomment-6220760634",
+          "body": "**Physics independent review: ACCEPT — bounded isolated-run lifecycle correction.**\n\nPins: implementation `84a71afb85298b8e154bc3a3a468f1cebd801f28`, reviewed head `7b09c65b770583d404d173972c50d7ee5ed87645`, accepted base `bb6d4c73948d53ba841dd9338dd240146c739f8c`. I independently reconstructed the engine content hashes: base `668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac`; implementation/head both `4cbbfe279bee04aeba650d95932da4c9c5caf7721a2b3515e71dafa46e00c8e0`, matching the focused/typecheck receipts. Only `src/sim/engagement.ts` changes at runtime. The saved D-only→D-plus-span comparison contains this identical hunk.\n\n**Validity versus law:** this enforces the existing one-arm-to-opponent-torso contact interpretation, using the existing nominal torso radii and measured arms. It deliberately changes the stale rep's lifetime/commands, but does not retune working extension, acquisition, steer/tension strengths, capacities or the World force law. The removed .35 yd is lifecycle grace, not represented jersey elasticity or additional anatomical reach. A joint can otherwise retain steer while normal force is zero; zero normal load alone is neither proof of valid contact nor a reason to suppress reachable steering. The captured A015 probe reports all12 rows already beyond full span; the focused production-path fixture covers release through World.\n\n**Lifecycle/exclusions checked:** `disengage` calls `releaseJoints`, removes live primary/helper joints and their run-hand state, clears both primary actor engagement pointers, clears matching helper pointers, and removes the rep. Old joint objects need not have their actor fields nulled once absent from World. Reachable full-extension steering and acquired tensile cloth holds remain supported by opposing controls. Any rep with `helpers.length > 0` retains the old grace: this preserves useful helper work but does not solve primary validity inside combinations. Active pass reps retain their old separation and post-throw behavior. The pre-existing pass→run conversion happens before this check, so a converted solo rep uses the new run cutoff; “pass excluded” should be read with that qualification.\n\n**Timing limit:** a 20Hz lifecycle boundary, not a continuous contact-law guarantee. The release is before joint sync/hand-fight update and the next World solve. A contact starting inside the bound can still transmit after crossing it within that50ms tick; an excursion returning inside before the next boundary can be missed. Behavior decisions also precede this cleanup. No exact substep release or immediate new free-player decision is established by this patch.\n\n**Reused evidence/adverse results:**20 focused checks plus typecheck (13.047s original total including the expected baseline failure); captured-state probe;248 identical original coupled-prefix frames. The additional F002/A002/A027 contacts really are isolated, separating and over span before the first divergence, with equal before bodies/goals/RNG. F002 defensive access2.95→2.85 and A0022.75→2.70/.397yd shorter cutoff are retained consequences, not generic rushing-benefit claims. A027's fumble→wrap includes an altered hand-fight draw stream and tiny runner motion change; it is not demonstrated ball-security improvement. All transfer prefixes remain live/censored at3.10s. No new simulations, games or test suite were run for this review.\n\n**User approval / next decision:** no new law/capability approval is required for this narrowly reviewed validity fix. Treating the extra .35yd as real reach/cloth stretch, changing the nominal geometric bound, or adopting experimental force/capacity laws would be a separate law/capability proposal requiring explicit user approval; this ACCEPT does not authorize those choices. Integration owns its exact combined verification/adoption, including interaction with the D-gap correction. No merge or default/baseline change was performed. Existing mechanical holds and the paused solver/calibration work remain unchanged.\n"
+        }
+      ],
+      "approval": "Independent reviewed ACCEPT"
+    },
+    {
+      "pr": 104,
+      "head": "bcd0dc8eb5bcd26731934694b32fd068c03bfb56",
+      "branch": "codex/inline-zone-keeper",
+      "review": [
+        {
+          "url": "https://github.com/tannerthardy/football-simulation-/pull/104#issuecomment-6220832776",
+          "body": "Do-It-All source/evidence adjudication at c07a9fdc7e7cf44ff9ae0c09dd248da7c7244a95/headbcd0dc8eb5bcd26731934694b32fd068c03bfb56 against accepted3723204bd0743713bca3e87f10ca01bfebf00a15: **technical role correctness supported; HOLD the requested author-independent approval for Run**. I authored this correction, so this report must not count as its independent signoff. No technical blocker was demonstrated and no new panel/suite is requested.\n\n[Exact report](https://github.com/tannerthardy/football-simulation-/blob/ba3997125cb31495e99da8ba1f9eef96ce1dd272/docs/reviews/coverage-contract-review.md); portable104.patch and manifest at review evidence ba3997125cb31495e99da8ba1f9eef96ce1dd272, branch codex/coverage-contract-review. Minimal extraction is blocking.ts's one zoneEligible predicate plus inline-zone-keeper.test.ts, two files. Patch applies to accepted3723204 and preserves #96's near-fit edit. New #96 branch requires climb, eligibility requires reach: mutually exclusive. Existing scheme/combo/helper/joint guards remain; no #102 lifecycle, force, strength, release or information expansion is imported.\n\nReuse nine production-hook contrasts/typecheck for the functional-role finding. Native evidence is explicitly contextual: D-gap plus **unaccepted #102 contact-span**, with legal A002 additionally using #98 stance, and without accepted92/94 shared changes. D-gap and stance becoming accepted does not make the old source all-accepted or establish current-source football benefit. The330→843kg·yd/s pre-RNG normal Y–NB gain supports the mechanism in that context only. Press-side keeper loss, nonsecure/tangential Mike contact, freeWill win and censored endings remain.\n\nRun can resolve the independent gate from these exact source/controls/qualifications; no named interaction currently requires another behavioral test. Zero new tests/typechecks/native simulations/games in this adjudication. Integration owns verification/adoption. No merge or physical-law promotion."
+        }
+      ],
+      "approval": "Explicit user approval overrides author-independent review hold; not represented as independent review"
+    }
+  ],
+  "held": {
+    "101": {
+      "head": "ed2fed9e204c0e916ea8f788afadb4805016ff05",
+      "decision": "Tooling-only HOLD: wall-censored attempts omitted from index/censor counts and classified as skipped tail; numerical errors lose partial traces.",
+      "review": "https://github.com/tannerthardy/football-simulation-/pull/101#issuecomment-6220802845",
+      "nextOwner": "Run repairs tooling; Measurement reviews stubbed wall-censor/error/partial-trace controls; no study rerun."
+    }
+  },
+  "composition": [
+    "Apply exact eight-file reviewed #97/#100 composition once.",
+    "#95 adds zoneLandmark import, cut policy and rat dispatch/test; shared man producer supplies acquired initialPosition exactly once. Rat carry helper uses that shared producer; no duplicate optional metadata.",
+    "#104 reviewed portable one-line eligibility patch preserves accepted #96 near-fit branch; reach/climb mutually exclusive.",
+    "#102 exact engagement.ts and two fixture/test blobs; no helper, active-pass, World force/capacity or flag change."
+  ],
+  "evidencePolicy": "Historical native evidence retains original source, adverse costs, unfinished endpoints, RNG distinctions and archive retention limits. No new native/game campaign.",
+  "targetedDecision": "Run existing rat-coverage and match-block-release controls once to reject an incompatible #95/#97/#100 composition before full verification; all other focused receipts reused.",
+  "userOverride": {
+    "pr": 104,
+    "head": "bcd0dc8eb5bcd26731934694b32fd068c03bfb56",
+    "text": "Ok I approve #104 then. This is override from ME.",
+    "scope": "Reviewed one-line installed-inline role eligibility and focused test only."
+  }
+}

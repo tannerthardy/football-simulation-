@@ -1,0 +1,65 @@
+/** Fixed native24; observation forwards existing calls exactly once; no extra cue/RNG requests. */
+import {createHash} from 'node:crypto';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {gzipSync} from 'node:zlib';
+const base='/workspace/football-simulation-/out/run-fit-follow-up',phase=process.argv[2];
+if(!['baseline','final'].includes(phase))throw Error('Usage: targeted-panel.ts baseline|final, cwd frozen archive');
+const expected=phase==='baseline'?'8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942':'c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8';
+const {sourceVersion}=await import(pathToFileURL(resolve('scripts/source-version.ts')).href);
+const {PlaySim}=await import(pathToFileURL(resolve('src/sim/playsim.ts')).href);
+const {RunBlocker,isOL}=await import(pathToFileURL(resolve('src/sim/behaviors/blocking.ts')).href);
+const hash=(v:any)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
+const fileHash=(p:string)=>createHash('sha256').update(readFileSync(p)).digest('hex');
+const sourceBefore=sourceVersion();if(sourceBefore!==expected)throw Error('Wrong frozen source');
+const cohort=JSON.parse(readFileSync(base+'/targeted-cohort.json','utf8'));
+if(hash(cohort.rows)!==cohort.cohortSha256||cohort.rows.length!==24)throw Error('Cohort mismatch');
+function canonical(sim:any,value:any,expandRoot=false){
+ const agents=new Map(sim.agents.map((a:any)=>[a,a.idx])),bodies=new Map(sim.agents.map((a:any)=>[a.body,a.idx])),seen=new Map<object,string>();
+ const visit=(v:any,path:string,expand=false):any=>{
+  if(v===null||typeof v!=='object')return typeof v==='function'?'[function]':v;
+  if(!expand&&v===sim)return {sim:true};if(!expand&&agents.has(v))return {agent:agents.get(v)};if(!expand&&bodies.has(v))return {body:bodies.get(v)};
+  if(seen.has(v))return {ref:seen.get(v)};seen.set(v,path);
+  if(v instanceof Map)return {map:[...v].map(([k,x],i)=>[visit(k,`${path}.${i}.key`),visit(x,`${path}.${i}.val`)])};
+  if(v instanceof Set)return {set:[...v].map((x,i)=>visit(x,`${path}.${i}`))};
+  if(ArrayBuffer.isView(v))return {typed:v.constructor.name,data:Array.from(v as any)};
+  if(Array.isArray(v))return v.map((x,i)=>visit(x,`${path}.${i}`));
+  return Object.fromEntries(Object.keys(v).sort().filter(k=>typeof v[k]!=='function').map(k=>[k,visit(v[k],`${path}.${k}`)]));
+ };return visit(value,'root',expandRoot);
+}
+function endpoint(sim:any,result:any){return {result:{...result,frames:undefined,telemetry:undefined},t:sim.t,worldTime:sim.world.time,phase:sim.phase,outcome:sim.outcome,endSpot:canonical(sim,sim.endSpot),agents:sim.agents.map((a:any)=>({idx:a.idx,team:a.team,slot:a.slot,player:canonical(sim,a.player),profile:canonical(sim,a.profile),body:canonical(sim,a.body,true),mind:canonical(sim,a.mind,true),recognition:canonical(sim,a.recog,true),behavior:canonical(sim,a.behavior,true),fields:canonical(sim,Object.fromEntries(Object.entries(a).filter(([k])=>!['player','profile','body','mind','recog','behavior'].includes(k))))})),rng:canonical(sim,sim.rng,true),intents:canonical(sim,sim.intents),cmds:canonical(sim,sim.cmds),qbMind:canonical(sim,sim.qbMind,true),ball:canonical(sim,sim.ball),engagements:canonical(sim,sim.engagements),bond:canonical(sim,sim.bond),joints:canonical(sim,sim.world.joints),lastStep:canonical(sim,sim.lastStep),stats:canonical(sim,sim.stats),events:canonical(sim,sim.events),touchedAt:canonical(sim,sim.touchedAt),dives:canonical(sim,sim.dives),lunges:canonical(sim,sim.lunges),handoffAt:sim.handoffAt,throwAt:sim.throwAt,catchAt:sim.catchAt,firstContactX:sim.firstContactX,possession:sim.possession,penalty:canonical(sim,sim.penalty),segments:canonical(sim,sim.segments),perception:canonical(sim,sim.perception,true)};}
+function agent(a:any,sim:any){return {idx:a.idx,slot:a.slot,team:a.team,pos:{...a.pos},vel:{...a.vel},facing:a.facing,stance:a.stance,support:structuredClone(a.body.support),energy:a.body.energy,job:a.behavior.kind,target:a.behavior.target?.slot??a.behavior.plan?.target?.slot??null,plan:a.behavior instanceof RunBlocker?canonical(sim,a.behavior.plan,true):null,fit:a.runFit?{...a.runFit}:null,read:a.recog?.read??null,focus:a.mind.focus,stress:a.mind.stress,tags:[...a.tags],engagement:a.engagement?{blocker:a.engagement.blocker.slot,defender:a.engagement.defender.slot,helpers:a.engagement.helpers.map((x:any)=>x.slot),win:a.engagement.win,phi:a.engagement.phi,control:a.engagement.control}:null};}
+const startedAt=new Date().toISOString(),start=performance.now(),rows:any[]=[],films:any[]=[],traces:any[]=[];
+for(const input of cohort.rows){
+ if(hash(input.setup)!==input.inputSha256)throw Error('Input changed '+input.id);
+ const sim=new PlaySim({...structuredClone(input.setup),record:true,recordEvery:1,recordLevel:'full'});
+ const initialProfiles=sim.agents.map((a:any)=>({idx:a.idx,slot:a.slot,team:a.team,player:structuredClone(a.player),profile:structuredClone(a.profile)}));
+ const profilesSha256=hash(initialProfiles),initialPhysical=sim.agents.map((a:any)=>({idx:a.idx,slot:a.slot,profile:structuredClone(a.profile),body:canonical(sim,a.body,true),mind:canonical(sim,a.mind,true),snapReadyAt:a.snapReadyAt}));
+ const initialSha256=hash(initialPhysical),initialRng=canonical(sim,sim.rng,true),initialRoles=sim.agents.map((a:any)=>({idx:a.idx,slot:a.slot,team:a.team,job:a.behavior.kind,target:a.behavior.target?.slot??a.behavior.plan?.target?.slot??null,fit:a.runFit?{...a.runFit}:null,plan:a.behavior instanceof RunBlocker?canonical(sim,a.behavior.plan,true):null}));
+ const commands:any[]=[],pictures:any[]=[],ticks:any[]=[],restores:Array<()=>void>=[];let activeCommand:number|null=null;
+ const originalSee=sim.see,originalStep=sim.world.step;
+ sim.see=function(a:any,b:any,...rest:any[]){const picture=originalSee.call(this,a,b,...rest);pictures.push({t:this.t,observer:a.slot,target:b.slot,scale:rest[0]??1,command:activeCommand,picture:structuredClone(picture)});return picture;};
+ restores.push(()=>{sim.see=originalSee;});
+ for(const a of sim.agents){const b=a.behavior,update=b.update;const wrapper=function(aa:any,s:any){const n=commands.length,from=pictures.length;const before={t:s.t,observer:aa.slot,idx:aa.idx,carrier:s.carrier?.slot??null,ball:s.ball.kind,handoffAt:s.handoffAt,state:agent(aa,s)};const previous=activeCommand;activeCommand=n;let command:any;try{command=update.call(this,aa,s);}finally{activeCommand=previous;}commands.push({...before,command:structuredClone(command),picturesFrom:from,picturesTo:pictures.length,afterPlan:this instanceof RunBlocker?canonical(s,this.plan,true):null});return command;};b.update=wrapper;restores.push(()=>{b.update=update;});}
+ sim.world.step=function(intents:any,dt:number){const before={t:sim.t,worldTime:this.time,carrier:sim.carrier?.slot??null,ball:sim.ball.kind,agents:sim.agents.map((a:any)=>agent(a,sim)),intents:structuredClone(intents)};const report=originalStep.call(this,intents,dt);ticks.push({...before,after:sim.agents.map((a:any)=>agent(a,sim)),contacts:structuredClone(report.contacts),firstContactX:sim.firstContactX});return report;};restores.push(()=>{sim.world.step=originalStep;});
+ let result:any;try{result=sim.run();}finally{for(const restore of restores.reverse())restore();}
+ const observedEndpoint=endpoint(sim,result),observedSignature=hash(observedEndpoint);
+ const plain=new PlaySim({...structuredClone(input.setup),record:false,recordEvery:1,recordLevel:'full'}),plainProfiles=plain.agents.map((a:any)=>({idx:a.idx,slot:a.slot,team:a.team,player:structuredClone(a.player),profile:structuredClone(a.profile)}));
+ if(hash(plainProfiles)!==profilesSha256)throw Error('Observed/plain initial player mismatch '+input.id);
+ const plainResult=plain.run(),plainEndpoint=endpoint(plain,plainResult),plainSignature=hash(plainEndpoint);
+ if(observedSignature!==plainSignature)throw Error('Observer/recording changed complete endpoint '+input.id);
+ const decisions=result.telemetry?.decisions??[],fitDecisions=decisions.filter((d:any)=>d.kind==='coverage-run-fit');
+ const fitWitnesses=fitDecisions.map((d:any)=>{const c=commands.find(x=>x.idx===d.a&&Math.abs(x.t-d.t)<.001);return {decision:d,command:c??null,consumedPictures:c?pictures.slice(c.picturesFrom,c.picturesTo):[]};});
+ const ol=sim.offense.filter(isOL),firstOLCommands=ol.map((a:any)=>({slot:a.slot,firstUpdate:commands.find(c=>c.idx===a.idx),firstMoving:commands.find(c=>c.idx===a.idx&&Math.hypot(c.command.vel.x,c.command.vel.y)>.1),atQuarterSecond:commands.find(c=>c.idx===a.idx&&c.t>=.25),firstClimb:result.events.find((e:any)=>e.type==='block_climb'&&e.a===a.idx)??null}));
+ const row={id:input.id,roster:input.roster,seed:input.seed,run:input.run,front:input.front,coverage:input.coverage,flip:input.flip,family:input.family,inputSha256:input.inputSha256,profilesSha256,initialSha256,initialPhysical,initialRng,initialRoles,observerVerified:true,observedSignature,plainSignature,endpoint:observedEndpoint,result:{...result,frames:undefined,telemetry:undefined},naturalEnd:result.outcome!=='timeout',firstCoverageRunFit:fitWitnesses[0]??null,allCoverageRunFits:fitWitnesses,firstOLCommands,commandCount:commands.length,pictureCount:pictures.length,tickCount:ticks.length};
+ rows.push(row);films.push({id:input.id,selection:input.selection,sourceVersion:sourceBefore,inputSha256:input.inputSha256,profilesSha256,initialSha256,observerVerified:true,observedSignature,plainSignature,roster:input.roster,run:input.run,front:input.front,coverage:input.coverage,flip:input.flip,seed:input.seed,family:input.family,offCall:sim.offCall.label,defCall:sim.defCall.label,los:sim.los,firstDownX:sim.firstDownX,result,players:initialProfiles.map(a=>({idx:a.idx,team:a.team,slot:a.slot,name:sim.agents[a.idx].name,jersey:a.player.jersey,position:a.player.position,weightLb:a.player.measurables.weightLb,heightIn:a.player.measurables.heightIn,player:a.player,ratings:a.player.ratings,profile:a.profile}))});
+ traces.push({id:input.id,inputSha256:input.inputSha256,profilesSha256,commands,pictures,ticks});
+ console.log(JSON.stringify({id:input.id,outcome:result.outcome,yards:result.offenseYards,duration:result.duration,fitTransitions:fitWitnesses.map(x=>({t:x.decision.t,slot:sim.agents[x.decision.a].slot})),observerVerified:true}));
+}
+const sourceAfter=sourceVersion();if(sourceBefore!==sourceAfter)throw Error('Frozen source changed');
+const toolSha256=fileHash(base+'/targeted-panel.ts'),cohortFileSha256=fileHash(base+'/targeted-cohort.json');
+const summary=(rs:any[])=>({snaps:rs.length,observerVerified:rs.filter(x=>x.observerVerified).length,naturalEnds:rs.filter(x=>x.naturalEnd).length,timeouts:rs.filter(x=>!x.naturalEnd).length,meanYards:rs.reduce((n,x)=>n+x.result.offenseYards,0)/rs.length,medianYards:[...rs].sort((a,b)=>a.result.offenseYards-b.result.offenseYards).slice((rs.length-1)>>1,(rs.length>>1)+1).reduce((n,x)=>n+x.result.offenseYards,0)/(rs.length%2?1:2),stuffs:rs.filter(x=>x.result.offenseYards<=0).length,gain10:rs.filter(x=>x.result.offenseYards>=10).length,gain20:rs.filter(x=>x.result.offenseYards>=20).length,fumbles:rs.filter(x=>x.result.events.some((e:any)=>e.type==='fumble')).length,fumbleLostFlags:rs.filter(x=>x.result.stats.fumbleLost).length,fitSnaps:rs.filter(x=>x.allCoverageRunFits.length).length});
+const report={schema:'run-fit-targeted-native-v1',phase,sourceBefore,sourceAfter,node:process.version,toolSha256,cohortFileSha256,cohortSha256:cohort.cohortSha256,rosterSha256:cohort.rosterSha256,declaredAt:cohort.declaredAt,startedAt,finishedAt:new Date().toISOString(),wallMs:performance.now()-start,worldSha256:fileHash(resolve('src/physics/world.ts')),summary:summary(rows),byFamily:Object.fromEntries(['back-man','draw'].map(f=>[f,summary(rows.filter(x=>x.family===f))])),rows,limitations:[...cohort.limits,'Complete observed/plain endpoints include all bodies, intents, commands, minds, recognition, behavior state, sim RNG, result/events and perception buffer, excluding only observational frames/telemetry.','Recorded full clips are all24 predeclared native executions. No selected-snap counterfactual is mixed into this panel.','The first recorded fit transition explains one installed gate; it is not proof of acquired contact or successful tackling.','Raw offensive possession gain is before game penalty enforcement; fumble/return outcomes remain separate.']};
+for(const [name,data]of [[`targeted-${phase}.json.gz`,report],[`targeted-${phase}-film.json.gz`,{schema:'run-fit-targeted-film-v1',phase,sourceBefore,sourceAfter,toolSha256,cohortSha256:cohort.cohortSha256,cohortFileSha256,plays:films}],[`targeted-${phase}-traces.json.gz`,{schema:'run-fit-targeted-tick-traces-v1',phase,sourceBefore,sourceAfter,toolSha256,cohortSha256:cohort.cohortSha256,trials:traces}] ]as const)writeFileSync(base+'/'+name,gzipSync(JSON.stringify(data),{level:9}));
+console.log(JSON.stringify({phase,sourceBefore,sourceAfter,summary:report.summary,byFamily:report.byFamily,wallMs:report.wallMs},null,2));

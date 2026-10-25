@@ -1,0 +1,157 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 09e1d29..092e3d0 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -349,6 +349,10 @@ export interface Combination {
+   nextRead: number;
+   /** Installed covered-player technique; either member may become keeper. */
+   soloKind?: RunBlockKind;
++  /** Optional check/post work is an installation, not a weaker double team. */
++  helpPolicy?: { kind: 'check'; homeY: number; side: number };
++  /** Stability read only by the original uncovered check player. */
++  checkSince?: number;
+ }
+ 
+ export interface RunBlockPlan {
+@@ -443,6 +447,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+   const combo = (b: Agent, partner: Agent, target: Agent, backer: Agent | null, drive: Vec2) => {
+     const combination: Combination = { members: [partner, b], defender: target, backer, released: false, secureSince: -1, nextRead: 0,
+       soloKind: plans.get(partner)!.kind };
++    if (concept.scheme === 'insideZone' || concept.scheme === 'splitZone')
++      combination.helpPolicy = { kind: 'check', homeY: b.pos.y, side: Math.sign(b.pos.y - partner.pos.y) };
+     plans.get(partner)!.combination = combination;
+     plans.set(b, { kind: 'combo', target, climbTo: backer, drive, combination });
+   };
+@@ -963,28 +969,106 @@ function combinationSoloKind(combo: Combination | undefined): RunBlockKind {
+   return original && ['drive', 'reach', 'down', 'cutoff', 'draw'].includes(original) ? original : 'drive';
+ }
+ 
++/** The uncovered player's own picture of the near surface and replacing work.
++ * Native contact/support eligibility is checked separately, never presented as
++ * his exact knowledge of a partner's control or footing. */
++function readCheckSurface(helper: Agent, sim: PlaySim, combo: Combination): Perceived | null {
++  const policy = combo.helpPolicy!, owner = combo.members[0];
++  const covered = sim.see(helper, owner), down = sim.see(helper, combo.defender);
++  const drive = (helper.behavior as RunBlocker).plan.drive;
++  const axis = norm({ x: -drive.x, y: -drive.y }), lat = { x: -axis.y, y: axis.x };
++  const relative = norm(sub(covered.pos, down.pos));
++  const phi = Math.atan2(-(relative.x * lat.x + relative.y * lat.y),
++    relative.x * axis.x + relative.y * axis.y) / (Math.PI / 2);
++  // A full measured arm is a visible contact envelope, not a demand to
++  // reacquire extended existing hands at the shorter fresh-strike range.
++  const reach = owner.profile.radius + combo.defender.profile.radius + owner.player.measurables.armIn / 36;
++  if (covered.pose !== 'up' || down.pose !== 'up' || Math.abs(phi) >= .55
++    || Math.hypot(covered.pos.x - down.pos.x, covered.pos.y - down.pos.y) > reach
++    || policy.side * (down.pos.y - covered.pos.y) >= 0) return null;
++
++  for (const d of sim.defense) {
++    if (d === combo.defender || d === combo.backer || d.isDown(sim.t)) continue;
++    const seen = sim.see(helper, d);
++    // Preserve the installed gap even after the helper has drifted toward a
++    // far shoulder. Use the existing near-level and collection-lane bounds.
++    if (seen.pos.x >= sim.los + 2 || seen.pos.x <= helper.pos.x - 1
++      || Math.min(Math.abs(seen.pos.y - policy.homeY), Math.abs(seen.pos.y - helper.pos.y)) >= .9) continue;
++    const e = d.engagement, hands = e?.hands;
++    const held = !!e && !!hands && hands.a === e.blocker.body && hands.b === d.body
++      && sim.world.joints.includes(hands);
++    // A real adjacent contact accounts for an upfield body. Observed actual
++    // penetration remains a reason to stay even if that contact still exists.
++    if (!held || seen.pos.x < sim.los - .25) return null;
++  }
++  return down;
++}
++
++/** Does the observed near body leave room for the requested backer approach?
++ * Project its observed flow only until this player's next decision. World,
++ * not this visual corridor, determines whether the climb is executable. */
++function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, backer: Perceived): boolean {
++  const clear = (dt: number) => {
++    const goal = { x: backer.pos.x + backer.vel.x * dt, y: backer.pos.y + backer.vel.y * dt };
++    const point = { x: down.pos.x + down.vel.x * dt, y: down.pos.y + down.vel.y * dt };
++    const lane = sub(goal, helper.pos), length2 = lane.x * lane.x + lane.y * lane.y;
++    const along = clamp(((point.x - helper.pos.x) * lane.x + (point.y - helper.pos.y) * lane.y) / Math.max(1e-12, length2), 0, 1);
++    return Math.hypot(point.x - helper.pos.x - along * lane.x, point.y - helper.pos.y - along * lane.y)
++      > helper.profile.radius + defender.profile.radius;
++  };
++  return clear(0) && clear(helper.mind.decisionInterval);
++}
++
+ /** A double team releases from leverage and the filling backer, never a mesh timer. */
+ export function readCombination(observer: Agent, sim: PlaySim, combo: Combination): void {
+-  if (combo.released || sim.t < combo.nextRead || !combo.backer || combo.backer.isDown(sim.t)) return;
+-  combo.nextRead = sim.t + observer.mind.decisionInterval;
++  if (combo.released || !combo.backer || combo.backer.isDown(sim.t)) return;
++  const [owner, helper] = combo.members;
+   const e = combo.defender.engagement;
+-  if (!e || !combo.members.includes(e.blocker) || !combo.members.every((b) => b.engagement === e)) {
++  const check = !!combo.helpPolicy && (!e || helper.engagement !== e);
++  // Optional work belongs to the uncovered player's own eyes. An earlier
++  // owner update must not consume his cadence or reset his stability read.
++  if (check && observer !== helper) return;
++  if (!check && combo.helpPolicy) combo.checkSince = -1;
++  if (sim.t < combo.nextRead) return;
++  combo.nextRead = sim.t + observer.mind.decisionInterval;
++  if (check) {
++    const hands = e?.hands;
++    const base = owner.body.support
++      ? availability(owner.body.support, supportParams(owner.profile), fatigueFactor(owner.body.energy)) : 1;
++    if (!e || e.type !== 'run' || e.blocker !== owner || owner.engagement !== e || e.helpers.length
++      || owner.isDown(sim.t) || base <= .60 || helper.engagement || helper.isDown(sim.t) || combo.defender.isDown(sim.t)
++      || !(helper.behavior instanceof RunBlocker) || helper.behavior.plan.combination !== combo || helper.behavior.plan.kind !== 'combo'
++      || !(owner.behavior instanceof RunBlocker) || owner.behavior.plan.combination !== combo
++      || !hands || hands.a !== owner.body || hands.b !== combo.defender.body || !sim.world.joints.includes(hands)
++      || sim.world.joints.some((j) => j.a === helper.body || j.b === helper.body)) {
++      combo.checkSince = -1;
++      return;
++    }
++  } else if (!e || !combo.members.includes(e.blocker) || !combo.members.every((b) => b.engagement === e)) {
+     combo.secureSince = -1;
+     return;
+   }
+   const secure = e.control > -0.12 + 0.12 * (0.5 - observer.mind.urgency) && e.baseB > 0.60 && Math.abs(e.phi) < 0.55;
+   if (!secure) {
+-    combo.secureSince = -1;
++    if (check) combo.checkSince = -1; else combo.secureSince = -1;
+     observer.tags.add('combo-held');
+     return;
+   }
+-  if (combo.secureSince < 0) combo.secureSince = sim.t;
+-  if (sim.t - combo.secureSince < 0.15) return;
++  const surface = check ? readCheckSurface(observer, sim, combo) : null;
++  if (check && !surface) { combo.checkSince = -1; return; }
++  if (check) {
++    if ((combo.checkSince ?? -1) < 0) combo.checkSince = sim.t;
++    if (sim.t - combo.checkSince! < .15) return;
++  } else {
++    if (combo.secureSince < 0) combo.secureSince = sim.t;
++    if (sim.t - combo.secureSince < 0.15) return;
++  }
+   const backer = sim.see(observer, combo.backer);
+   const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2;
+   const runner = sim.slot('RB');
+   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
+   if (!filling && !arriving) return;
++  if (check && !checkBackerCorridor(observer, combo.defender, surface!, backer)) return;
+ 
+   // The defender's slant can change who stays and who climbs. Require the
+   // remaining blocker to have his body on the drive side before transferring.
+@@ -1024,7 +1108,9 @@ export function readCombination(observer: Agent, sim: PlaySim, combo: Combinatio
+   }
+   e.blocker = keeper;
+   e.helpers = e.helpers.filter((b) => b !== climber && b !== keeper);
+-  e.phi = phi;
++  // A check player never joined these hands. Leave the unchanged owner's
++  // contact state for the ordinary engagement refresh; no ownership changed.
++  if (!check) e.phi = phi;
+   climber.engagement = null;
+   climber.behavior.plan.kind = 'climb';
+   climber.behavior.plan.target = combo.backer;
+@@ -1040,6 +1126,7 @@ export function readCombination(observer: Agent, sim: PlaySim, combo: Combinatio
+     if (member === keeper) p.kind = solo;
+   }
+   climber.tags.add('combo-climb');
++  if (check) climber.tags.add('combo-check-climb');
+   keeper.tags.add('combo-stay');
+-  sim.event('block_climb', climber, combo.backer, `secured ${combo.defender.slot}; ${keeper.slot} stays`);
++  sim.event('block_climb', climber, combo.backer, `${check ? 'check' : 'secured'} ${combo.defender.slot}; ${keeper.slot} stays`);
+ }

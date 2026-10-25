@@ -1,0 +1,38 @@
+{
+ "source": "Big Data Bowl 2025 tracking, 2 week(s) present",
+ "dropbacks": 2304,
+ "pressuredPct": 30.7,
+ "timeToPressure": {
+  "n": 707,
+  "mean": 2.68,
+  "p10": 1.9,
+  "p50": 2.7,
+  "p90": 3.6
+ },
+ "afterPressure": {
+  "throw": 73.7,
+  "sack": 18.4,
+  "scramble": 7.9
+ },
+ "pressureToOutcome": {
+  "n": 707,
+  "mean": 0.9,
+  "p10": 0.0,
+  "p50": 0.3999999999999999,
+  "p90": 2.5000000000000004
+ },
+ "timeToThrowClean": {
+  "n": 1551,
+  "mean": 2.55,
+  "p10": 1.7,
+  "p50": 2.4,
+  "p90": 3.5
+ },
+ "timeToThrowPressured": {
+  "n": 521,
+  "mean": 3.32,
+  "p10": 2.3,
+  "p50": 3.1,
+  "p90": 4.8
+ }
+}

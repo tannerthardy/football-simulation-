@@ -1,0 +1,36 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "/workspace/datasets/nfl/run-sequence-09a8780/scripts/diag/trench/run-sequence.py",
+    "--nfl-dir",
+    "/workspace/datasets/nfl/bdb2025/big-data-bowl-data",
+    "--selection",
+    "/workspace/datasets/nfl/run-sequence-09a8780/config/run-sequence-reference.json",
+    "--out",
+    "/workspace/datasets/nfl/run-sequence-09a8780/nfl.json"
+  ],
+  "started_at_utc": "2026-10-20T21:08:18.662153+00:00",
+  "elapsed_seconds": 4.986239,
+  "returncode": 0,
+  "operator_commit": "09a8780da98b5ca8fa511e77247fc5aecef9c684",
+  "result_bytes": 2910607,
+  "result_sha256": "0ffa01542282b81451f0ac6ca9ea6aa594e8120ebb48ecd087495cdd4f34c8d3",
+  "result_file": "/workspace/datasets/nfl/run-sequence-09a8780/nfl.json.gz",
+  "compressed_bytes": 359606,
+  "compressed_sha256": "f460309e1b107ed668114c68cf59993cb404363cbd2f282ab27e2e517d3048a0",
+  "execution_count": 1,
+  "canonical_queue_commit": "6575988fe9e72bd0aaf9e3573787f0dcb81ebf52",
+  "accepted_develop": "2c98bed94adad8087c65f381d4090444ad283985",
+  "prior_publication_commit": "066add740055c6ce7900a0a7fb9b822f3f673f33",
+  "coordination": [
+    "https://github.com/tannerthardy/football-simulation-/pull/171#issuecomment-6301515145",
+    "https://github.com/tannerthardy/football-simulation-/pull/179#issuecomment-6301515652"
+  ],
+  "publication_scope": "Compact summary/fixed-ID ledger and three pair witnesses only; complete generated operator output remains in the external local cache, with exact hashes.",
+  "published_compact_summary": {
+    "file": "summary.json",
+    "bytes": 73393,
+    "sha256": "d70f61916cc6245c77365196991b5342f0fd300431270f2ec9cade1693e59a04"
+  }
+}

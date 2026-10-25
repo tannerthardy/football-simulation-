@@ -1,0 +1,208 @@
+{
+  "provenance": {
+    "commit": "23d5f6d4f7e88fdd3225a49cc74ae5582a52522e",
+    "archive": "accepted-games-deep-audit-v1.tar.gz",
+    "member": "out/accepted-game-deep-audit-2026-10-16/run/G1-P018.json",
+    "runtime": "70b4db6a3ef53acc1a0e90cd055f1087205daa30",
+    "note": "Rounded first nonnegative telemetry in canonical offensive coordinates; installationFlip follows the recorded bunch side (minus-y), whereas original call metadata recordedFlip=true is retained separately. Separate generated profiles; assignment-only reconstruction, not exact native resimulation or achieved benefit."
+  },
+  "formation": "gun_bunch_11",
+  "run": "oz_strong",
+  "front": "over",
+  "coverage": "cover0",
+  "pressure": "zero_6",
+  "personnel": "nickel",
+  "los": 45,
+  "ballY": 26.67,
+  "positions": {
+    "QB": [
+      40,
+      26.7
+    ],
+    "LT": [
+      44.5,
+      29.3
+    ],
+    "RT": [
+      44.5,
+      24.1
+    ],
+    "C": [
+      44.5,
+      26.7
+    ],
+    "LG": [
+      44.5,
+      28
+    ],
+    "RG": [
+      44.5,
+      25.4
+    ],
+    "RB": [
+      39.8,
+      28.3
+    ],
+    "Y": [
+      44.4,
+      19.2
+    ],
+    "X": [
+      44.4,
+      44.7
+    ],
+    "Z": [
+      43.3,
+      17.7
+    ],
+    "H": [
+      43.1,
+      20.5
+    ],
+    "DE_W": [
+      45.9,
+      29.8
+    ],
+    "DE_S": [
+      45.9,
+      23
+    ],
+    "DT_S": [
+      45.9,
+      24.6
+    ],
+    "DT_W": [
+      45.9,
+      27.2
+    ],
+    "LB_M": [
+      50,
+      26
+    ],
+    "LB_W": [
+      49.6,
+      28.8
+    ],
+    "CB_S": [
+      46.2,
+      18.5
+    ],
+    "CB_W": [
+      46.2,
+      43.8
+    ],
+    "NB": [
+      46.2,
+      19.9
+    ],
+    "FS": [
+      50,
+      27.8
+    ],
+    "SS": [
+      49,
+      21.2
+    ]
+  },
+  "savedAssignments": [
+    {
+      "a": 1,
+      "slot": "LT",
+      "kind": "cutoff",
+      "b": 11,
+      "target": "DE_W",
+      "climbTo": null,
+      "firstEngaged": null,
+      "firstPrimaryPositiveNormal": null
+    },
+    {
+      "a": 2,
+      "slot": "RT",
+      "kind": "reach",
+      "b": 12,
+      "target": "DE_S",
+      "climbTo": null,
+      "firstEngaged": 0.7,
+      "firstPrimaryPositiveNormal": 0.8
+    },
+    {
+      "a": 3,
+      "slot": "C",
+      "kind": "reach",
+      "b": 14,
+      "target": "DT_W",
+      "climbTo": null,
+      "firstEngaged": 0.5,
+      "firstPrimaryPositiveNormal": null
+    },
+    {
+      "a": 4,
+      "slot": "LG",
+      "kind": "combo",
+      "b": 14,
+      "target": "DT_W",
+      "climbTo": "LB_M",
+      "firstEngaged": 0.5,
+      "firstPrimaryPositiveNormal": 0.5
+    },
+    {
+      "a": 5,
+      "slot": "RG",
+      "kind": "reach",
+      "b": 13,
+      "target": "DT_S",
+      "climbTo": null,
+      "firstEngaged": 0.6,
+      "firstPrimaryPositiveNormal": 0.6
+    },
+    {
+      "a": 7,
+      "slot": "Y",
+      "kind": "stalk",
+      "b": 21,
+      "target": "SS",
+      "climbTo": null,
+      "firstEngaged": 2.3,
+      "firstPrimaryPositiveNormal": 2.4
+    },
+    {
+      "a": 8,
+      "slot": "X",
+      "kind": "stalk",
+      "b": 18,
+      "target": "CB_W",
+      "climbTo": null,
+      "firstEngaged": null,
+      "firstPrimaryPositiveNormal": null
+    },
+    {
+      "a": 9,
+      "slot": "Z",
+      "kind": "stalk",
+      "b": 16,
+      "target": "LB_W",
+      "climbTo": null,
+      "firstEngaged": 2.7,
+      "firstPrimaryPositiveNormal": 2.7
+    },
+    {
+      "a": 10,
+      "slot": "H",
+      "kind": "stalk",
+      "b": 20,
+      "target": "FS",
+      "climbTo": null,
+      "firstEngaged": null,
+      "firstPrimaryPositiveNormal": null
+    }
+  ],
+  "savedFirstContact": {
+    "t": 2.55,
+    "defender": "DE_S",
+    "initialBlocker": "RT",
+    "initialContact": 0.7,
+    "initialPositiveLoad": 0.8
+  },
+  "recordedFlip": true,
+  "installationFlip": false
+}

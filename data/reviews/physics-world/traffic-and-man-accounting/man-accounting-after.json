@@ -1,0 +1,115 @@
+{
+  "sourceSha256": "0f6b4078a3857a2f4664d2e4d91176ccfb252dbcc836c498a3bafdfa32792df7",
+  "note": "Compatible catalog fronts/personnel and advertised pressure families, all formations/flips/three hashes, Cover 2 presentation with CB_S shadowing X. Required unique targets are every eligible ref, regardless of hidden route/block assignment. Far means >1 yd lateral offset from the assigned man. Static assignment check, not a coverage success or disguise-fidelity test.",
+  "cases": 19224,
+  "missingCases": 0,
+  "farMarkerCases": 0,
+  "byCall": {
+    "cover0/none": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover0/mike_a": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover0/double_a": {
+      "cases": 864,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover0/zero_6": {
+      "cases": 864,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1/none": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1/mike_a": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1/will_b": {
+      "cases": 864,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_off/none": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_off/mike_a": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_off/will_b": {
+      "cases": 864,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_robber/none": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_robber/mike_a": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_robber/will_b": {
+      "cases": 864,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_double/none": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_double/mike_a": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_double/will_b": {
+      "cases": 864,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover2man/none": {
+      "cases": 1080,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1/nickel_edge": {
+      "cases": 540,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_off/nickel_edge": {
+      "cases": 540,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_robber/nickel_edge": {
+      "cases": 540,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    },
+    "cover1_double/nickel_edge": {
+      "cases": 540,
+      "missingCases": 0,
+      "farMarkerCases": 0
+    }
+  },
+  "samples": []
+}

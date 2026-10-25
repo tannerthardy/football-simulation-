@@ -1,0 +1,72 @@
+{
+  "schema": "mesh-policy-failed-integration-v1",
+  "testedCommit": "b3caeb84c4fe72b603dbf68ef48b2628889d24ce",
+  "sourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "validationSha256": "7c0ab6c43f4ac1e6c141c958c1b321c62f74b30a60fafa017d981858925f2f29",
+  "outcome": {
+    "typecheck": "pass",
+    "build": "pass",
+    "typescriptPassed": 1774,
+    "typescriptFailed": 6,
+    "typescriptFilesPassed": 150,
+    "typescriptFilesFailed": 1,
+    "pythonPassed": 145,
+    "allPhasesComplete": true,
+    "inputsUnchanged": true,
+    "exitCode": 1
+  },
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 9.254616742
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 11.586180424
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:all"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 179.070456714
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:data"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.9001002189999854
+    }
+  ],
+  "commandSeconds": 200.81135409899997,
+  "failureScope": "Six whole-command equality checks in test/pull-fit-plan.test.ts across vi.resetModules. Symbols print the same label but may have distinct identities. No conclusion that physical/goal semantics are equal until targeted diagnostic.",
+  "decision": "HOLD. Preserve failure; diagnose one narrow module-identity comparison and retain complete physical plus objective equality if reconciling the harness. No blanket assertion waiver or source change.",
+  "artifacts": {
+    "failed-combined.json": {
+      "bytes": 2616,
+      "sha256": "b70d75589aa1d77173ca505a8c675b73c945472f19fa88391e85e634b95ae126"
+    },
+    "failed-combined.log": {
+      "bytes": 20780,
+      "sha256": "4c09a619b0bef5263fe0e8b9733d24e078d304723a979df8a99c6db51a325fcd"
+    }
+  },
+  "newNative": 0,
+  "newPanel": 0,
+  "newEvaluationGames": 0
+}

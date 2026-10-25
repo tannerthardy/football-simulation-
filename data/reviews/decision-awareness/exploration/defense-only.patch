@@ -1,0 +1,154 @@
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -31,6 +31,7 @@
+  */
+ import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
+ import { fatigueFactor } from '../physics/kinematics.js';
++import { gapY } from '../playbook/alignment.js';
+ import { availability, supportParams } from '../physics/support.js';
+ import type { HandJoint, Intent } from '../physics/world.js';
+ import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
+@@ -204,13 +205,11 @@
+   // their gap / the ball; a defender who is already beside the blocker keeps
+   // working that way.
+   let pref: Vec2;
+-  const c = sim.carrier;
+   if (type === 'pass') {
+     const out = Math.sign(defender.pos.y - sim.ballY) || 1;
+     const isEdge = Math.abs(defender.pos.y - sim.ballY) > 3.0;
+     pref = isEdge ? { x: 0, y: out } : { x: 0, y: Math.sign(defender.pos.y - blocker.pos.y) || out };
+-  } else if (c && c.team !== defender.team) pref = sub(c.pos, defender.pos);
+-  else pref = { x: 0, y: Math.sign(defender.pos.y - blocker.pos.y) || 1 };
++  } else pref = sub(runContactRead(sim, e).aim, defender.pos);
+   e.side = Math.sign(pref.x * lat.x + pref.y * lat.y) || 1;
+   if (Math.abs(e.phi) > 0.3) e.side = Math.sign(e.phi);
+ 
+@@ -545,7 +544,7 @@
+     if (e.type === 'pass' && (!sim.isPass || (sim.carrier !== null && sim.carrier !== sim.qb) || sim.scrambled)) e.type = 'run';
+     const c = sim.carrier;
+     if (e.type === 'run' && c && c.team !== d.team) {
+-      const past = (c.pos.x - d.pos.x) * sim.attackDir(c.team);
++      const past = (sim.see(d, c).pos.x - d.pos.x) * sim.attackDir(c.team);
+       if (past > 2.5 && t - e.start > 0.4) {
+         sim.disengage(e);
+         continue;
+@@ -641,6 +640,43 @@
+   helperIntents(sim, e, intents, axis);
+ }
+ 
++/** The installed fit survives contact. Body/contact geometry is felt locally;
++ * the runner's location is a delayed picture, never the offensive call.
++ * This shares the free-fit declaration boundary, not a new strength rule.
++ * Ball-holder identity remains the engine's existing public interface; this
++ * does not claim a complete model of seeing possession through congestion.
++ */
++function runContactRead(sim: PlaySim, e: Engagement) {
++  const d = e.defender, b = e.blocker, job = d.runFit;
++  const carrier = sim.carrier;
++  const enemy = carrier && carrier.team !== d.team ? carrier : null;
++  const carrierCue = enemy ? sim.see(d, enemy) : null;
++  // Read through the mesh instead of working toward a stationary QB. This
++  // uses only the observed depth; a QB draw/scramble can declare at the surface.
++  const back = sim.slot('RB');
++  const runnerCue = enemy === sim.qb && carrierCue && carrierCue.pos.x < sim.los - 1.6 && back
++    ? sim.see(d, back) : carrierCue;
++  const advanced = !!(enemy && carrierCue &&
++    (carrierCue.pos.x - sim.los) * sim.attackDir(enemy.team) > 2);
++  const reading = d.recog?.read === 'run' || advanced;
++  const declared = !!(reading && runnerCue && runnerCue.pos.x > sim.los - 1.6);
++  const edge = job?.kind === 'edge' || job?.kind === 'force';
++  // Preserve the box/spill shoulder until the runner is beyond the surface,
++  // just as the free fit does. The touching blocker's position is haptic.
++  const y = job ? edge ? b.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65)
++    : gapY(sim.offAlign, job.gap, job.side) : b.pos.y;
++  let desired = { x: d.pos.x, y };
++  if (declared && (!edge || advanced)) desired = { ...runnerCue!.pos };
++  else if (!job && runnerCue && reading) desired = { ...runnerCue.pos };
++  const aim = d.mind.aim(`run-contact:${b.idx}`, desired, sim.t);
++  // A recognised run is not an immediate shed at the deep mesh. A visible
++  // advanced carrier also makes post-catch contact a run interaction even
++  // though the original snap was correctly read as pass.
++  const threat = declared && carrierCue &&
++    (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
++  return { aim, reading, threat };
++}
++
+ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   const t = sim.t;
+   const dt = sim.dt;
+@@ -651,27 +687,24 @@
+   const td = traits(d, e.type);
+   const axis = axisOf(sim, e); // defender toward the intended contact surface
+   const lat = latOf(axis);
+-  const c = sim.carrier;
++  const read = runContactRead(sim, e);
+   e.phi = measurePhi(axis, d, b);
+   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
+ 
+-  // Lateral: the defender works toward the ball; the blocker works to his
+-  // seal target (reach) or square (drive).
+-  if (c && c.team !== d.team) {
+-    const toBall = sub(c.pos, d.pos);
+-    const s = Math.sign(toBall.x * lat.x + toBall.y * lat.y);
+-    if (s !== 0 && Math.abs(toBall.y) > 0.8) e.side = s;
+-  }
++  // The defender keeps the called fit/shoulder and can answer a declared
++  // runner at his next decision. The blocker still seeks his seal surface.
++  const toAim = sub(read.aim, d.pos);
++  const preferred = toAim.x * lat.x + toAim.y * lat.y;
++  if (Math.abs(preferred) > .1) e.side = Math.sign(preferred);
+   e.control = clamp(e.control + dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + rng.normal(0, 0.25)), -1, 1);
+ 
+   // Shed attempts once the ball carrier threatens his area — not the QB
+   // standing at the mesh before the handoff.
+-  const meshing = c?.behavior.kind === 'qb-handoff';
+-  if (c && c.team !== d.team && !meshing && t >= e.nextMoveAt) {
+-    const dc = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
++  if (read.threat && t >= e.nextMoveAt) {
++    const dc = Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y);
+     if (dc < 3.5) {
+       // Shedding toward the ball is hard if the blocker has sealed you away from it.
+-      const toBall = sub(c.pos, d.pos);
++      const toBall = sub(read.threat.pos, d.pos);
+       const ballSide = Math.sign(toBall.x * lat.x + toBall.y * lat.y);
+       const sealed = -e.phi * ballSide; // >0: blocker is between you and the ball laterally
+       const skill = 0.6 * d.r('blockShedding') + 0.4 * d.r('strength');
+@@ -713,8 +746,7 @@
+   // Engaged, a defender stacks the block and keeps his gap leverage; he
+   // escapes sideways by winning a shed with his hands, not by running out of
+   // a blocker's grip.
+-  const reading = d.recog?.read === 'run' || !sim.isPass;
+-  const work = td.lateral * (0.2 + 0.25 * d.r('blockShedding')) * (reading ? 1 : 0.3);
++  const work = td.lateral * (0.2 + 0.25 * d.r('blockShedding')) * (read.reading ? 1 : 0.3);
+   intents[d.idx] = {
+     vel: { x: -drive.x * 1.5 + lat.x * e.side * work, y: -drive.y * 1.5 + lat.y * e.side * work },
+     facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
+--- a/src/sim/recognition.ts
++++ b/src/sim/recognition.ts
+@@ -280,7 +280,7 @@
+     // (run, or play action's run look) or one sitting back in a pass set.
+     if (this.group === 'DL' && a.engagement) {
+       const st = a.engagement.blocker.stance;
+-      add(st === 'low' ? -1.2 : st === 'high' ? 1.2 : a.engagement.type === 'pass' ? 1.2 : -1.2, 1.5);
++      if (st) add(st === 'low' ? -1.2 : 1.2, 1.5);
+     }
+ 
+     // The quarterback: dropping past the mesh depth is a pass; riding a mesh
+@@ -307,9 +307,15 @@
+ 
+     // Receivers: releasing hard is pass; closing down on a defender to block is run.
+     if (w.wr > 0) {
+-      let best: Agent | null = null;
++      // A man player keys the receiver he was assigned, including a back.
++      // Crossing/stacked receivers do not silently replace that known job.
++      // Zone players retain their existing local key; this is not a global
++      // attention budget or access to another defender's private read.
++      const man = a.behavior.kind === 'man'
++        ? (a.behavior as typeof a.behavior & { target?: Agent | null }).target : null;
++      let best: Agent | null = man?.team !== a.team && man !== sim.qb ? man ?? null : null;
+       let bd = Infinity;
+-      for (const o of sim.offense) {
++      if (!best) for (const o of sim.offense) {
+         if (o === sim.qb || o === rbAgent || OL_SLOTS.includes(o.slot as (typeof OL_SLOTS)[number])) continue;
+         const seen = sim.see(a, o);
+         const d = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);

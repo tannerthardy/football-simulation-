@@ -1,0 +1,34 @@
+{
+  "schema": "helper-coverage-cost-guard-v1",
+  "source": "601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b",
+  "toolSha256": "664ac493760cb63983c5105ec87a9ba0df32840ba7c10060cdf507b5deb625e5",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "scripts/diag/physics-cost.ts",
+    "out/helper-fit/cost-promoted.json",
+    "2",
+    "9"
+  ],
+  "exitCode": 0,
+  "node": "v22.23.3",
+  "final": {
+    "path": "data/reviews/helper-fit-and-coverage/cost/final.json",
+    "bytes": 422,
+    "sha256": "27633476ed6dd3e4b02df288cf6a551eeac088f29135c1fa0a23a5fadb0b217e"
+  },
+  "reusedParent": {
+    "path": "data/reviews/run-fit-and-recovery/cost/final.json",
+    "bytes": 418,
+    "sha256": "0a0d35d397a73c7ce3551b55221da39195e710406f50de3f5c694348c1c472d5"
+  },
+  "CPUmsPerPlayBefore": 96.72748691099477,
+  "CPUmsPerPlayAfter": 104.67229057591622,
+  "CPUpercentHigher": 8.21359462407203,
+  "limits": [
+    "Quiet final run without heavy collectors/tests; parent is a reused pinned guard, not a concurrent A/B benchmark.",
+    "382 plays in both, but per-game populations and contact/play duration differ.",
+    "Timing noise and changed football execution remain; not isolated controller overhead or a demonstrated speed gain."
+  ]
+}

@@ -1,0 +1,538 @@
+{
+  "schema": "pursuit-tackle-saved-viewer-receipt-v1",
+  "command": "node --import tsx scripts/export-pursuit-tackle.ts data/reviews/pursuit-and-tackle out/tackle-breakthrough/pursuit-tackle-comparison.html",
+  "exporter": {
+    "path": "scripts/export-pursuit-tackle.ts",
+    "sha256": "7619479dd726835b961965315d966a3699333a1710f12b08453fa6857a2a5fa6"
+  },
+  "template": {
+    "path": "viewer/replay.template.html",
+    "sha256": "5b7e96dd49226f266de3d4d1a431b191772e6fe6054b7c67a8a5ceec989714f4"
+  },
+  "dependencySha256": {
+    "scripts/replay-data.ts": "3f496288959ef0dbea6e721cdc66728a9985bb741f7e753e5bed2d5d9f3ca5c3",
+    "scripts/replay-telemetry-packing.ts": "1e09326dfcbc47d8e7d44ccc41809d16450f71194e345c185c6557069f5af581",
+    "src/playbook/concepts.ts": "482bfe03127436ae4f4736d12bdc0916aa9583c811e5557673114368bcf52418",
+    "src/playbook/defense.ts": "c7ace4c288906b2bb718909050c7348d6a7df5e6ffb296f07ab0553f522cc262",
+    "src/playbook/formations.ts": "990e05c58e996b2c05fec70cff73ac12883a525ff528efe7f5a5e11af9b00b35",
+    "package-lock.json": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f"
+  },
+  "sources": [
+    "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+    "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942"
+  ],
+  "simulation": false,
+  "counts": {
+    "ordinaryRuns": 20,
+    "ordinaryPasses": 12,
+    "retainedCues": 6,
+    "total": 38,
+    "all22PlayersAndFullTelemetry": true
+  },
+  "inputs": [
+    {
+      "path": "data/reviews/decision-awareness/runs/final-film.json.gz",
+      "sha256": "5589aa803a17b13bc648008550383b2b33eebc63441922a02e9ad7407bd3d0ac"
+    },
+    {
+      "path": "data/reviews/decision-awareness/runs/final.json.gz",
+      "sha256": "7f0da5cb45c7a66e3d1121b307ed13debfe7926a00dc92fa7952fa7aec63a52c"
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/runs/final-film.json.gz",
+      "sha256": "378ea92e092b3bce66a6712ae80f5859ef73d075ca90bfdc28e28010d03a2f7e"
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/runs/final.json.gz",
+      "sha256": "e40f3bb57be5dbf1bf962fe7651d76d6baed99ee01c59d3a2b20c1ac02b0ac82"
+    },
+    {
+      "path": "data/reviews/decision-awareness/passing/final-film.json.gz",
+      "sha256": "eb1879dfc15d014b2cd1db3976ee3e7d48f753a2215754d18f79e02dec8981a1"
+    },
+    {
+      "path": "data/reviews/decision-awareness/passing/final.json.gz",
+      "sha256": "9e1c4968e1025fd8c02e592fd26b31aab72453fd2a45aea358b6fc33bb5e82d1"
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/passing/final-film.json.gz",
+      "sha256": "fed3a96126e25358ec3965c53d5d0a62a1ee565849f645ac4553cefaa8260bcf"
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/passing/final.json.gz",
+      "sha256": "ce9695394f4145814326bc01cb36d67285ea7fcace29cd1caf6e9b6e69ae5147"
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/witnesses/cue-boundary-baseline.json.gz",
+      "sha256": "284327fa4bd87163778af35096516af2bf94b25e0bcaaa9cbe047ef669f68056"
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/witnesses/cue-boundary-final.json.gz",
+      "sha256": "9db26f4d39f16108c075274d8ceebd667047a3915ea7c14a58553b15a8ac8476"
+    },
+    {
+      "path": "data/reviews/pursuit-and-tackle/witnesses/cue-boundary-players.json",
+      "sha256": "2f1b5914513ad39a16c1841cf0882fb092e2a4e86657a9a674a65acab2b32865"
+    }
+  ],
+  "html": {
+    "path": "out/tackle-breakthrough/pursuit-tackle-comparison.html",
+    "bytes": 14797148,
+    "sha256": "7cf286e60bc8fd61d891455c433f7f9c88a0c1d1f666525549c261f1cc471cc0"
+  },
+  "zip": {
+    "path": "viewer/pursuit-and-tackle.zip",
+    "bytes": 10148984,
+    "sha256": "67fc17ba2dbb8f2f91ed3752fd4eceeec86d34d66a4117090c06e3e3fd3d4de2",
+    "entries": [
+      "pursuit-tackle-comparison.html"
+    ],
+    "decodedHtmlMatches": true
+  },
+  "checks": {
+    "typecheck": {
+      "command": "npm run typecheck",
+      "passed": true,
+      "log": "export-pursuit-tackle-typecheck.log.gz"
+    },
+    "packingExportTests": {
+      "command": "node node_modules/vitest/vitest.mjs run test/replay-export.test.ts test/replay-telemetry-packing.test.ts --maxWorkers=1",
+      "passed": 22,
+      "failed": 0,
+      "log": "export-pursuit-tackle-tests.log.gz"
+    },
+    "browser": {
+      "passed": true,
+      "results": {
+        "clips": 38,
+        "concepts": 6,
+        "games": 6,
+        "initialLoadSeconds": 0.779,
+        "compressedTelemetry": true,
+        "checks": [
+          "Controlled inspection fixtures are explicitly labeled and do not imply a played-game score",
+          "All filmed clips appear once, grouped by actual concept",
+          "Controlled fixture clocks use each actual fixture seed",
+          "All grouping modes preserve the clip collection",
+          "Watch group and next/previous stay in the selected concept",
+          "Seeking to the finish pauses without auto-advancing",
+          "Auto-next advances to the next matching clip",
+          "The playlist stops cleanly at its last clip",
+          "Loop selection returns to the first matching clip",
+          "Pausing cancels a pending auto-next",
+          "Source-group filters select the matching controlled fixtures and keep fictional scores hidden",
+          "Front and coverage filters compose correctly",
+          "Result filters agree with recorded outcomes and nullified plays",
+          "Play IDs search precisely; copied references include film version and timestamp",
+          "Populated family/kind filters retain exactly the recorded clips (gap)",
+          "Player inspection shows weight and recorded-path speed; facing ticks are labelled",
+          "Clicking a player on the field selects the live inspector",
+          "Recorded telemetry feeds stackable layers and player detail at sampled times",
+          "Detailed event timestamps seek the same replay timeline",
+          "Browsers without WebM recording show an explicit unsupported message",
+          "Recorder initialization failures stop capture and leave normal playback usable",
+          "Lazy telemetry survives rapid selection, discards stale decodes and retains at most three decoded plays",
+          "An intentionally delayed in-flight decode cannot overwrite a newer selected play",
+          "Missing gzip decompression disables inspection explicitly while positions and playback remain usable",
+          "Telemetry decode failures show a visible message without breaking the physical replay",
+          "Physical block timing verified; pitch ordering checked where present (0 releases, 0 catches)",
+          "Empty selections are safe and clear filters restores all clips",
+          "Filters can be hidden to give the field more room",
+          "Mobile layout has no horizontal overflow; filters and playback work",
+          "Opening the empty template shows visible download instructions instead of a blank field",
+          "No JavaScript errors; viewer works without external fonts"
+        ]
+      },
+      "method": "Installed Chromium, temporary loopback HTTP, external HTTP/HTTPS blocked. Original checker reached its single-source copied-reference assumption and failed; ignored copy checks selected clip source and uses explicit unchanged template path. Existing viewer and checker unchanged.",
+      "originalCheckerSha256": "ecaefcffc61087c736fe7f6c7ad6b4626d7c4db544559d61ff29306b5395f589",
+      "adaptedCheckerSha256": "fbc3936b438687d7b58a000b8ed8fd1bddd0645da1f4d46fd341fc39490f8e44",
+      "originalFailureLog": "export-pursuit-tackle-browser-original.log.gz",
+      "finalLog": "export-pursuit-tackle-browser-packet.log.gz",
+      "limitations": [
+        "Direct file navigation was not tested under managed Chromium policy; ZIP contains self-contained HTML and offline HTTP playback passes. Browser smoke does not judge football realism."
+      ]
+    }
+  },
+  "clips": [
+    {
+      "id": "B-CT-R1-iz_strong-over-R-S3",
+      "fixtureId": "CT-R1-iz_strong-over-R-S3",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 37,
+      "fullTelemetryFrames": 37
+    },
+    {
+      "id": "F-CT-R1-iz_strong-over-R-S3",
+      "fixtureId": "CT-R1-iz_strong-over-R-S3",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 36,
+      "fullTelemetryFrames": 36
+    },
+    {
+      "id": "B-CT-R1-iz_strong-over-L-S3",
+      "fixtureId": "CT-R1-iz_strong-over-L-S3",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 40,
+      "fullTelemetryFrames": 40
+    },
+    {
+      "id": "F-CT-R1-iz_strong-over-L-S3",
+      "fixtureId": "CT-R1-iz_strong-over-L-S3",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 40,
+      "fullTelemetryFrames": 40
+    },
+    {
+      "id": "B-CT-R1-power-under-R-S3",
+      "fixtureId": "CT-R1-power-under-R-S3",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 47,
+      "fullTelemetryFrames": 47
+    },
+    {
+      "id": "F-CT-R1-power-under-R-S3",
+      "fixtureId": "CT-R1-power-under-R-S3",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 48,
+      "fullTelemetryFrames": 48
+    },
+    {
+      "id": "B-CT-R1-power-under-L-S3",
+      "fixtureId": "CT-R1-power-under-L-S3",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 42,
+      "fullTelemetryFrames": 42
+    },
+    {
+      "id": "F-CT-R1-power-under-L-S3",
+      "fixtureId": "CT-R1-power-under-L-S3",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 41,
+      "fullTelemetryFrames": 41
+    },
+    {
+      "id": "B-CT-R1-counter-odd-R-S11",
+      "fixtureId": "CT-R1-counter-odd-R-S11",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 39,
+      "fullTelemetryFrames": 39
+    },
+    {
+      "id": "F-CT-R1-counter-odd-R-S11",
+      "fixtureId": "CT-R1-counter-odd-R-S11",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 38,
+      "fullTelemetryFrames": 38
+    },
+    {
+      "id": "B-CT-R1-counter-odd-L-S11",
+      "fixtureId": "CT-R1-counter-odd-L-S11",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 42,
+      "fullTelemetryFrames": 42
+    },
+    {
+      "id": "F-CT-R1-counter-odd-L-S11",
+      "fixtureId": "CT-R1-counter-odd-L-S11",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 46,
+      "fullTelemetryFrames": 46
+    },
+    {
+      "id": "B-CT-R1-duo-odd-R-S11",
+      "fixtureId": "CT-R1-duo-odd-R-S11",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 35,
+      "fullTelemetryFrames": 35
+    },
+    {
+      "id": "F-CT-R1-duo-odd-R-S11",
+      "fixtureId": "CT-R1-duo-odd-R-S11",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 32,
+      "fullTelemetryFrames": 32
+    },
+    {
+      "id": "B-CT-R1-duo-odd-L-S11",
+      "fixtureId": "CT-R1-duo-odd-L-S11",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 34,
+      "fullTelemetryFrames": 34
+    },
+    {
+      "id": "F-CT-R1-duo-odd-L-S11",
+      "fixtureId": "CT-R1-duo-odd-L-S11",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 34,
+      "fullTelemetryFrames": 34
+    },
+    {
+      "id": "B-CT-R1-split_zone-tite-R-S3",
+      "fixtureId": "CT-R1-split_zone-tite-R-S3",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 29,
+      "fullTelemetryFrames": 29
+    },
+    {
+      "id": "F-CT-R1-split_zone-tite-R-S3",
+      "fixtureId": "CT-R1-split_zone-tite-R-S3",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 29,
+      "fullTelemetryFrames": 29
+    },
+    {
+      "id": "B-CT-R1-split_zone-tite-L-S3",
+      "fixtureId": "CT-R1-split_zone-tite-L-S3",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 33,
+      "fullTelemetryFrames": 33
+    },
+    {
+      "id": "F-CT-R1-split_zone-tite-L-S3",
+      "fixtureId": "CT-R1-split_zone-tite-L-S3",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-runs",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 33,
+      "fullTelemetryFrames": 33
+    },
+    {
+      "id": "B-DA-R1-four_verts-cover0-R",
+      "fixtureId": "DA-R1-four_verts-cover0-R",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 65,
+      "fullTelemetryFrames": 65
+    },
+    {
+      "id": "F-DA-R1-four_verts-cover0-R",
+      "fixtureId": "DA-R1-four_verts-cover0-R",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 66,
+      "fullTelemetryFrames": 66
+    },
+    {
+      "id": "B-DA-R1-four_verts-cover1-R",
+      "fixtureId": "DA-R1-four_verts-cover1-R",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 113,
+      "fullTelemetryFrames": 113
+    },
+    {
+      "id": "F-DA-R1-four_verts-cover1-R",
+      "fixtureId": "DA-R1-four_verts-cover1-R",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 108,
+      "fullTelemetryFrames": 108
+    },
+    {
+      "id": "B-DA-R1-four_verts-cover2-R",
+      "fixtureId": "DA-R1-four_verts-cover2-R",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 84,
+      "fullTelemetryFrames": 84
+    },
+    {
+      "id": "F-DA-R1-four_verts-cover2-R",
+      "fixtureId": "DA-R1-four_verts-cover2-R",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 84,
+      "fullTelemetryFrames": 84
+    },
+    {
+      "id": "B-DA-R1-four_verts-cover3-R",
+      "fixtureId": "DA-R1-four_verts-cover3-R",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 90,
+      "fullTelemetryFrames": 90
+    },
+    {
+      "id": "F-DA-R1-four_verts-cover3-R",
+      "fixtureId": "DA-R1-four_verts-cover3-R",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 90,
+      "fullTelemetryFrames": 90
+    },
+    {
+      "id": "B-DA-R1-four_verts-cover4-R",
+      "fixtureId": "DA-R1-four_verts-cover4-R",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 158,
+      "fullTelemetryFrames": 158
+    },
+    {
+      "id": "F-DA-R1-four_verts-cover4-R",
+      "fixtureId": "DA-R1-four_verts-cover4-R",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 142,
+      "fullTelemetryFrames": 142
+    },
+    {
+      "id": "B-DA-R1-four_verts-cover6-R",
+      "fixtureId": "DA-R1-four_verts-cover6-R",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 155,
+      "fullTelemetryFrames": 155
+    },
+    {
+      "id": "F-DA-R1-four_verts-cover6-R",
+      "fixtureId": "DA-R1-four_verts-cover6-R",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "ordinary-passes",
+      "selection": "fixed-before-outcomes",
+      "players": 22,
+      "positionalFrames": 124,
+      "fullTelemetryFrames": 124
+    },
+    {
+      "id": "B-CUE-CT-R1-split_zone-over-L-S11",
+      "fixtureId": "CT-R1-split_zone-over-L-S11",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "retained-cues",
+      "selection": "retrospective-explosive-cue-witness",
+      "players": 22,
+      "positionalFrames": 222,
+      "fullTelemetryFrames": 222
+    },
+    {
+      "id": "F-CUE-CT-R1-split_zone-over-L-S11",
+      "fixtureId": "CT-R1-split_zone-over-L-S11",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "retained-cues",
+      "selection": "retrospective-explosive-cue-witness",
+      "players": 22,
+      "positionalFrames": 94,
+      "fullTelemetryFrames": 94
+    },
+    {
+      "id": "B-CUE-CT-R1-split_zone-odd-R-S11",
+      "fixtureId": "CT-R1-split_zone-odd-R-S11",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "retained-cues",
+      "selection": "retrospective-explosive-cue-witness",
+      "players": 22,
+      "positionalFrames": 221,
+      "fullTelemetryFrames": 221
+    },
+    {
+      "id": "F-CUE-CT-R1-split_zone-odd-R-S11",
+      "fixtureId": "CT-R1-split_zone-odd-R-S11",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "retained-cues",
+      "selection": "retrospective-explosive-cue-witness",
+      "players": 22,
+      "positionalFrames": 87,
+      "fullTelemetryFrames": 87
+    },
+    {
+      "id": "B-CUE-CT-R1-iz_strong-over-R-S3",
+      "fixtureId": "CT-R1-iz_strong-over-R-S3",
+      "sourceSha256": "178751b67048eeaa91741090a4a19e43c108add8c5f1c5e0a586c09d57b3402c",
+      "cohort": "retained-cues",
+      "selection": "predeclared-ordinary-cue-control",
+      "players": 22,
+      "positionalFrames": 72,
+      "fullTelemetryFrames": 72
+    },
+    {
+      "id": "F-CUE-CT-R1-iz_strong-over-R-S3",
+      "fixtureId": "CT-R1-iz_strong-over-R-S3",
+      "sourceSha256": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+      "cohort": "retained-cues",
+      "selection": "predeclared-ordinary-cue-control",
+      "players": 22,
+      "positionalFrames": 71,
+      "fullTelemetryFrames": 71
+    }
+  ]
+}

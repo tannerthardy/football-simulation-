@@ -1,0 +1,255 @@
+{
+  "schema": "accepted-broad-audit-shared-access-v1",
+  "status": "Resolved: both immediate subsets independently verified by Integration; Measurement also published both full48 arms and completed the #82 comparison. No recollection or duplicate full download.",
+  "acceptedDevelop": "86250bb4f0c6f421878c204161864d523c3e30b6",
+  "savedAuditCommit": "8ca8deebe4afa91c3021bdd119bed8976cf00e47",
+  "savedAuditSourceSha256": "f56a2156a0c1dcecfc3de128581ec875ca1ef93ac813a389d391282be585c956",
+  "publishedInventoryCommit": "58303d6e22a42a5dce78b6ad0b967229140a59e1",
+  "inventoryUrl": "https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/data/reviews/current/accepted-broad-audit/archive.json",
+  "archive": {
+    "fileName": "accepted-8ca8dee-48snap-v1.tar.gz",
+    "bytes": 40559081,
+    "sha256": "72a62b95145cd64bb3bf06d60a62adbb7735cf872d777ff35faa5883e138e397",
+    "publishedUrl": "https://github.com/tannerthardy/football-simulation-/blob/ebef199a3986b2749e5c8c86921cfd6c7e42b2b4/accepted-8ca8dee-48snap-v1.tar.gz",
+    "sharedBytesIndependentlyVerified": false,
+    "measurementPublicationVerified": true,
+    "integrationFullObjectDownloadedThisPass": false
+  },
+  "manifestSha256": "fbb8ee4147163842758ee308a2d8f4e836d70602358ed777b10a1531a8b4fa53",
+  "immediateConsumer": {
+    "owner": "Flex / Do-It-All",
+    "cases": [
+      "A020",
+      "A044"
+    ],
+    "controls": [
+      "A008",
+      "A032"
+    ],
+    "need": "Exact saved cases and their setup/identity/raw-hash metadata for mesh request attribution; no recollection.",
+    "rawCases": [
+      {
+        "id": "A008",
+        "matchup": "speed-gap",
+        "concept": "mesh",
+        "seed": 71002,
+        "status": "complete",
+        "inputSha256": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229",
+        "sha256": "6d068579a58470c9d0de710bd4d9b094d4723e1b2ae02b440d3cbd14200cbdd4",
+        "bytes": 10624983,
+        "rawPath": "out/accepted-broad-audit/cases/A008.json"
+      },
+      {
+        "id": "A020",
+        "matchup": "technique-elusive",
+        "concept": "mesh",
+        "seed": 71002,
+        "status": "complete",
+        "inputSha256": "02cc38e880ce494dd2142c92ad9646814ea89a52f9bef350b6ca177ab95c2688",
+        "sha256": "f504c46e2844555aa3621a1cca49618951afe7768b8060b2da7e526848613db8",
+        "bytes": 16777002,
+        "rawPath": "out/accepted-broad-audit/cases/A020.json"
+      },
+      {
+        "id": "A032",
+        "matchup": "ordinary",
+        "concept": "mesh",
+        "seed": 71002,
+        "status": "complete",
+        "inputSha256": "2bb6a3ca5934811058b5fc7483369477fc34bfaf108f1cfcfa1f0f1ec4e2ea3d",
+        "sha256": "8bc7691123387e127bc8b92e39a42eff21fcd9aae6a290cdee2f0c62292c25e4",
+        "bytes": 13678159,
+        "rawPath": "out/accepted-broad-audit/cases/A032.json"
+      },
+      {
+        "id": "A044",
+        "matchup": "offensive-advantage",
+        "concept": "mesh",
+        "seed": 71002,
+        "status": "complete",
+        "inputSha256": "8fcc80c75bf0770392a32cf1364a8bf8321957ed76258bd38684ebf9ee32daa5",
+        "sha256": "385853b69c07e1188585874dabb82fba99e5cdd10843238c0f45fd1a6b6cbbd0",
+        "bytes": 36353213,
+        "rawPath": "out/accepted-broad-audit/cases/A044.json"
+      }
+    ],
+    "rawBytes": 77433357,
+    "hashVerificationScope": "All four original raw case sizes/hashes independently verified from published Flex subset; no recollection."
+  },
+  "publicationOwner": "Measurement",
+  "validationOwner": "Integration",
+  "coordination": [
+    "https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203266536",
+    "https://github.com/tannerthardy/football-simulation-/pull/78#issuecomment-6203274129"
+  ],
+  "requirements": [
+    "Keep data-only artifact branches separate; never merge them into simulator history.",
+    "Reuse original saved cases and source8ca8dee; no recollection to distribute evidence.",
+    "The two subsets have separate archive hashes; do not call either the original full48 archive.",
+    "Final-intent telemetry cannot recover discarded producer stages or every-tick RNG."
+  ],
+  "savedEvidenceUrls": {
+    "diagnosis": "https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-football-diagnosis-2026-10-15.md",
+    "protocol": "https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-audit-protocol-2026-10-15.md",
+    "runReview": "https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-audit-run-notes.md",
+    "passReview": "https://github.com/tannerthardy/football-simulation-/blob/58303d6e22a42a5dce78b6ad0b967229140a59e1/docs/reviews/accepted-broad-audit-pass-notes.md"
+  },
+  "newSimulations": 0,
+  "newSharedSuiteRuns": 0,
+  "validation": {
+    "acceptedRefRechecked": "86250bb4f0c6f421878c204161864d523c3e30b6",
+    "completed69ReviewRepeated": false,
+    "sourceTestsSettingsFixturesChanged": false,
+    "originalCommittedReceiptsChanged": false,
+    "newSimulations": 0,
+    "newCodeSuiteRuns": 0,
+    "checks": "Fresh separate-repository Git fetches, archive hash/size, safe member paths, all eight original raw case hashes/sizes, manifest/run receipt/summary file hashes; zero simulations.",
+    "immediateConsumersResolved": true,
+    "byteValidationAcceptedSource": "90edc52530caa71efdebf257f17d954a8a629ea0"
+  },
+  "sharedSubsets": [
+    {
+      "consumer": "flex",
+      "artifactRef": "codex/accepted-audit-flex-evidence-v1",
+      "artifactCommit": "30285db48245e662f9785c331820b7564ea02f9b",
+      "archiveName": "accepted-8ca8dee-flex-A008-A020-A032-A044.tar.gz",
+      "bytes": 2543148,
+      "sha256": "6082578ebf476e4975f51585c958eea31894a0cfc2aa03fe1ac271e31804a5cc",
+      "artifactReceiptSha256": "672173273d566200f9dcb6606b3b38af5bbf7b678b1bfbf5228fc5adc3e2df2d",
+      "archiveUrl": "https://github.com/tannerthardy/football-simulation-/blob/30285db48245e662f9785c331820b7564ea02f9b/accepted-8ca8dee-flex-A008-A020-A032-A044.tar.gz",
+      "receiptUrl": "https://github.com/tannerthardy/football-simulation-/blob/30285db48245e662f9785c331820b7564ea02f9b/receipt.json",
+      "freshShallowRemoteFetchVerified": true,
+      "oneCommitDataOnlyTree": true,
+      "originalCaseHashesVerified": [
+        {
+          "id": "A008",
+          "bytes": 10624983,
+          "sha256": "6d068579a58470c9d0de710bd4d9b094d4723e1b2ae02b440d3cbd14200cbdd4",
+          "inputSha256": "87645a60c8669235390eace771f16d941880adf4d4aa8e3167640fd2fc619229",
+          "originalRawPath": "out/accepted-broad-audit/cases/A008.json"
+        },
+        {
+          "id": "A020",
+          "bytes": 16777002,
+          "sha256": "f504c46e2844555aa3621a1cca49618951afe7768b8060b2da7e526848613db8",
+          "inputSha256": "02cc38e880ce494dd2142c92ad9646814ea89a52f9bef350b6ca177ab95c2688",
+          "originalRawPath": "out/accepted-broad-audit/cases/A020.json"
+        },
+        {
+          "id": "A032",
+          "bytes": 13678159,
+          "sha256": "8bc7691123387e127bc8b92e39a42eff21fcd9aae6a290cdee2f0c62292c25e4",
+          "inputSha256": "2bb6a3ca5934811058b5fc7483369477fc34bfaf108f1cfcfa1f0f1ec4e2ea3d",
+          "originalRawPath": "out/accepted-broad-audit/cases/A032.json"
+        },
+        {
+          "id": "A044",
+          "bytes": 36353213,
+          "sha256": "385853b69c07e1188585874dabb82fba99e5cdd10843238c0f45fd1a6b6cbbd0",
+          "inputSha256": "8fcc80c75bf0770392a32cf1364a8bf8321957ed76258bd38684ebf9ee32daa5",
+          "originalRawPath": "out/accepted-broad-audit/cases/A044.json"
+        }
+      ],
+      "originalMetadataHashesVerified": [
+        {
+          "path": "accepted-broad-audit/manifest.json",
+          "bytes": 2657415,
+          "sha256": "c4285b3bd9ab6834b3849fd76be0bc081629687048b6a751597d24007fb1b416"
+        },
+        {
+          "path": "accepted-broad-audit/run-receipt.json",
+          "bytes": 2400,
+          "sha256": "a623ce28b16985e9a3b4e63841b01e472fe2a903c807f265bedbf726d66b3f00"
+        },
+        {
+          "path": "accepted-broad-audit/summary.json",
+          "bytes": 367908,
+          "sha256": "161b9916080f4fe9a519d28fbbdc0acca61d3dc1d52d213ee0db7afa2f4b88cc"
+        }
+      ],
+      "neverMergeIntoSimulator": true
+    },
+    {
+      "consumer": "run",
+      "artifactRef": "codex/accepted-audit-run-evidence-v1",
+      "artifactCommit": "2c52a3d100978cde17905102e574f7d169b19aa7",
+      "archiveName": "accepted-8ca8dee-run-A018-A027-A030-A042.tar.gz",
+      "bytes": 1947618,
+      "sha256": "9941dd1103186ff98e1d726971650138bbb1aaeb1ff763c1f243835714af2e77",
+      "artifactReceiptSha256": "5988d769e8d92c35b1eef5a8b038225e3e893434736c41e357a5f20ce360440e",
+      "archiveUrl": "https://github.com/tannerthardy/football-simulation-/blob/2c52a3d100978cde17905102e574f7d169b19aa7/accepted-8ca8dee-run-A018-A027-A030-A042.tar.gz",
+      "receiptUrl": "https://github.com/tannerthardy/football-simulation-/blob/2c52a3d100978cde17905102e574f7d169b19aa7/receipt.json",
+      "freshShallowRemoteFetchVerified": true,
+      "oneCommitDataOnlyTree": true,
+      "originalCaseHashesVerified": [
+        {
+          "id": "A018",
+          "bytes": 11498785,
+          "sha256": "72d6d9b5837d74fc469411a46c73936509cc6f739c32cc316354f1ceae6f0c42",
+          "inputSha256": "2b3d2f1616c7af44728dcc4e8f15e2d761ee706ebea61e99b431b7e9f6231ed1",
+          "originalRawPath": "out/accepted-broad-audit/cases/A018.json"
+        },
+        {
+          "id": "A027",
+          "bytes": 14237672,
+          "sha256": "40ad8eb8ac8a0da88c193615abaedd736f47c5933cbe0e9d92e32dbe06cddadc",
+          "inputSha256": "804bffd02cb7aa9b8978d45b4cce245b991fb8368594cb0262cb96651f9ce403",
+          "originalRawPath": "out/accepted-broad-audit/cases/A027.json"
+        },
+        {
+          "id": "A030",
+          "bytes": 11474767,
+          "sha256": "7d60bf3e23dd5b023b7dfe7a2f9071168776181983e2fbe517b58f8b8cb05dd1",
+          "inputSha256": "17e60c1492aee67a48c56ac5897a22c095d6c116f9439b751a29325054d73f62",
+          "originalRawPath": "out/accepted-broad-audit/cases/A030.json"
+        },
+        {
+          "id": "A042",
+          "bytes": 13379482,
+          "sha256": "fbee9a2d1b1dea734687aafa5bb1733c67c0782d0a5712d81b33997c184daa4b",
+          "inputSha256": "419d117ffe8299f781f3e1d194e9504538475e364cf6543049c857025c1797be",
+          "originalRawPath": "out/accepted-broad-audit/cases/A042.json"
+        }
+      ],
+      "originalMetadataHashesVerified": [
+        {
+          "path": "accepted-broad-audit/manifest.json",
+          "bytes": 2657415,
+          "sha256": "c4285b3bd9ab6834b3849fd76be0bc081629687048b6a751597d24007fb1b416"
+        },
+        {
+          "path": "accepted-broad-audit/run-receipt.json",
+          "bytes": 2400,
+          "sha256": "a623ce28b16985e9a3b4e63841b01e472fe2a903c807f265bedbf726d66b3f00"
+        },
+        {
+          "path": "accepted-broad-audit/summary.json",
+          "bytes": 367908,
+          "sha256": "161b9916080f4fe9a519d28fbbdc0acca61d3dc1d52d213ee0db7afa2f4b88cc"
+        }
+      ],
+      "neverMergeIntoSimulator": true
+    }
+  ],
+  "additionalConsumer": {
+    "owner": "Run Game",
+    "cases": [
+      "A018",
+      "A030"
+    ],
+    "controls": [
+      "A027",
+      "A042"
+    ],
+    "status": "Published, delivered and independently byte-verified."
+  },
+  "byteValidationReceipt": "coverage-contract-integration/witness-access-validation.json",
+  "completedCheckpoint": {
+    "evidence": "40af332f3c988b5abe19d9236b49a43bde27200c",
+    "reportUrl": "https://github.com/tannerthardy/football-simulation-/blob/40af332f3c988b5abe19d9236b49a43bde27200c/docs/reviews/panel-pr82-comparison.md",
+    "publicationUrl": "https://github.com/tannerthardy/football-simulation-/blob/40af332f3c988b5abe19d9236b49a43bde27200c/data/reviews/current/panel-pr82/artifact-publication.json",
+    "measurementVerifiedNativeMembers": 96,
+    "state": "complete; no automatic repeat for new intake",
+    "currentAcceptedPinNotMeasured": "86250bb4f0c6f421878c204161864d523c3e30b6"
+  }
+}

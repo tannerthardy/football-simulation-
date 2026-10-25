@@ -1,0 +1,278 @@
+diff --git a/src/sim/agent.ts b/src/sim/agent.ts
+--- a/src/sim/agent.ts
++++ b/src/sim/agent.ts
+@@ -35,8 +35,8 @@
+ 
+ /**
+  * A block in progress (see engagement.ts for the model). Angles/positions are
+- * relative to the engagement axis: from the defender toward the thing the
+- * blocker protects (QB on pass pro) or against the drive direction (runs).
++ * relative to the engagement axis: toward the protected QB on pass pro or
++ * the intended contact surface on runs (normally against the drive).
+  */
+ export interface Engagement {
+   /** Emitted once when the physical hands/torso actually carry load. */
+@@ -67,7 +67,10 @@
+   pushBoost: number;
+   /** Direction the blocker is driving (unit vector), for run blocks. */
+   drive: Vec2 | null;
+-  /** Blocker's target lateral position on run blocks: 0 drive, <0 seal/reach. */
++  /** Optional stable contact surface, separate from displacement intention.
++   * Stretch-zone fit uses the vertical front while its feet may run laterally. */
++  surfaceAxis?: Vec2;
++  /** Desired signed lateral surface angle on runs, in quarter turns. */
+   sealTarget: number;
+   /** Per-rep variance (positive favors the blocker). */
+   repEdge: number;
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -20,7 +20,9 @@
+ import type { Agent, Behavior } from '../agent.js';
+ import type { PlaySim } from '../playsim.js';
+ import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
+-import { helperSupport, passSetDepth, traits } from '../engagement.js';
++import { axisOf, helperSupport, passSetDepth, traits } from '../engagement.js';
++import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
++import type { Perceived } from '../perception.js';
+ import { goTo, runThrough, stand, track } from './common.js';
+ 
+ const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+@@ -623,6 +625,8 @@
+   private nextRuleRead = 0;
+   private soloKind: RunBlockKind | null = null;
+   private soloDrive: Vec2 | null = null;
++  /** Native technique read, retained between the player's ordinary decisions. */
++  zoneRead: ZoneReachRead | null = null;
+   constructor(public plan: RunBlockPlan) {}
+ 
+   get target(): Agent | null {
+@@ -646,6 +650,7 @@
+     }
+     if (plan.combination) readCombination(a, sim, plan.combination);
+     if (a.engagement) {
++      if (this.zoneEligible(a, sim)) this.readZone(a, sim, a.engagement.defender);
+       return stand();
+     }
+     // Sell pass until just before the handoff.
+@@ -732,6 +737,7 @@
+   private attack(a: Agent, sim: PlaySim, target: Agent): MoveCommand {
+     const plan = this.plan;
+     const seen = sim.see(a,target);
++    const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
+     if ((plan.pullRole === 'kick' || plan.pullRole === 'trap') && !a.tags.has('block-log')) {
+       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
+       // If the end crosses the puller's inside shoulder, getting back inside
+@@ -752,11 +758,21 @@
+     // A clearly lost shoulder is a foot-recovery decision, not a fresh hold.
+     // Keep marginal reaches and actual collisions; use the same observed
+     // leverage boundary as an established run block, without a time grace.
+-    const lost = fit && Math.abs(observedBlockLeverage(a, seen, plan.drive)) >= 1.1;
+-    if (!lost && dd < contact && sim.engage(a, target, 'run', plan.drive)) return stand();
++    const fitDrive = zone ? { x: 1, y: 0 } : plan.drive;
++    const lost = fit && Math.abs(observedBlockLeverage(a, seen, fitDrive)) >= 1.1;
++    if (!lost && dd < contact) {
++      const e = sim.engage(a, target, 'run', plan.drive);
++      if (e) {
++        if (zone && e.blocker === a && !e.helpers.length) this.applyZoneContact(a);
++        return stand();
++      }
++    }
+     // Aiming point: reach blocks work to the playside shoulder.
+     let aim = seen.pos;
+-    if (plan.kind === 'combo' && plan.combination) {
++    if (zone) {
++      const side = zone.phase === 'runoff' ? -zone.side : zone.side;
++      aim = { x: seen.pos.x - .3, y: seen.pos.y + side * .6 };
++    } else if (plan.kind === 'combo' && plan.combination) {
+       const partner = plan.combination.members.find((b) => b !== a)!;
+       const side = Math.sign(a.pos.y - partner.pos.y) || 1;
+       aim = { x: seen.pos.x - 0.35, y: seen.pos.y + side * 0.55 };
+@@ -784,8 +800,44 @@
+         contact, a.profile.radius + target.profile.radius, command, sim.t);
+     }
+     const original = runThrough(a, aim, { speed: 1 });
+-    return fit ? chooseRunBlockFit(a, seen, plan.drive, nominalAim, placementError,
+-      contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t) : original;
++    return fit ? chooseRunBlockFit(a, seen, fitDrive, nominalAim, placementError,
++      contact, a.profile.radius + target.profile.radius, { ...original, posture: .7 }, sim.t,
++      !!zone, zone ? 2.4 : 0) : original;
++  }
++
++  private zoneEligible(a: Agent, sim: PlaySim): boolean {
++    const e = a.engagement;
++    return isOL(a) && this.plan.kind === 'reach'
++      && (sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone')
++      && (!this.plan.combination || this.plan.combination.released)
++      && (!e || (e.type === 'run' && e.blocker === a && !e.helpers.length))
++      && !sim.world.joints.some(j => (j.a === a.body || j.b === a.body) && j !== e?.hands);
++  }
++
++  private readZone(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived): ZoneReachRead {
++    if (!this.zoneRead || this.zoneRead.target !== target.idx || sim.t >= this.zoneRead.nextRead) {
++      const seen = picture ?? sim.see(a, target);
++      const bodyContact = a.profile.radius + target.profile.radius;
++      const contact = bodyContact + .1 + a.player.measurables.armIn / 36 * .45;
++      const side = playSideSign(sim, sim.offCall.run!);
++      const choice = readZoneReach(a, seen, side, this.soloDrive!, contact, bodyContact);
++      this.zoneRead = { ...choice, target: target.idx, side, t: sim.t,
++        nextRead: sim.t + a.mind.decisionInterval,
++        seen: { ...seen, pos: { ...seen.pos }, vel: { ...seen.vel } } };
++      this.plan.drive = { ...choice.drive };
++      this.applyZoneContact(a);
++    }
++    return this.zoneRead;
++  }
++
++  private applyZoneContact(a: Agent): void {
++    const e = a.engagement, read = this.zoneRead;
++    if (!e || !read || e.blocker !== a || e.helpers.length) return;
++    // One stable surface keeps a changed lateral intention from changing the
++    // loss angle without any body movement. Physical hands are left intact.
++    e.surfaceAxis = { x: -1, y: 0 };
++    e.drive = { ...read.drive };
++    e.sealTarget = read.sealTarget;
+   }
+ 
+   private classifyWork(a: Agent, sim: PlaySim, target: Agent): void {
+@@ -918,8 +970,7 @@
+ 
+   // The defender's slant can change who stays and who climbs. Require the
+   // remaining blocker to have his body on the drive side before transferring.
+-  const drive = e.drive ?? { x: 1, y: 0 };
+-  const axis = { x: -drive.x, y: -drive.y };
++  const axis = e.drive || e.surfaceAxis ? axisOf(sim, e) : { x: -1, y: 0 };
+   const lat = { x: -axis.y, y: axis.x };
+   const candidates = combo.members.map((climber) => {
+     const keeper = combo.members.find((b) => b !== climber)!;
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -88,9 +88,10 @@
+ 
+ // ------------------------------------------------------------ geometry
+ 
+-/** Engagement axis: unit vector from the defender toward the protected point. */
+-function axisOf(sim: PlaySim, e: Engagement): Vec2 {
++/** Reference contact surface, normally against the displacement intention. */
++export function axisOf(sim: PlaySim, e: Engagement): Vec2 {
+   if (e.type === 'pass') return norm(sub(sim.qb.pos, e.defender.pos));
++  if (e.surfaceAxis) return e.surfaceAxis;
+   const d = e.drive ?? norm(sub(e.defender.pos, e.blocker.pos));
+   return { x: -d.x, y: -d.y };
+ }
+@@ -622,7 +623,7 @@
+   const d = e.defender;
+   const tb = traits(b);
+   const td = traits(d);
+-  const axis = axisOf(sim, e); // from defender back toward the blocker (against the drive)
++  const axis = axisOf(sim, e); // defender toward the intended contact surface
+   const lat = latOf(axis);
+   const c = sim.carrier;
+   e.phi = measurePhi(axis, d, b);
+@@ -663,10 +664,10 @@
+     return;
+   }
+   setHands(sim, e);
+-  // The blocker drives his man along the drive line, mirrors his lateral
+-  // work and fits his head to the seal side; the defender stacks him and
+-  // works toward the ball.
+-  const drive = { x: -axis.x, y: -axis.y };
++  // Feet request displacement along the drive line; contact geometry and the
++  // lateral fit use the surface frame. These can differ in a stretch-zone rep.
++  // Actual hand normal, ground traction and work remain physical constraints.
++  const drive = e.drive ?? { x: -axis.x, y: -axis.y };
+   const sep = b.profile.radius + d.profile.radius;
+   const dLat = d.vel.x * lat.x + d.vel.y * lat.y;
+   // Seal target as a lateral offset of the blocker from the defender, where
+@@ -689,7 +690,7 @@
+   const reading = d.recog?.read === 'run' || !sim.isPass;
+   const work = td.lateral * (0.2 + 0.25 * d.r('blockShedding')) * (reading ? 1 : 0.3);
+   intents[d.idx] = {
+-    vel: { x: axis.x * 1.5 + lat.x * e.side * work, y: axis.y * 1.5 + lat.y * e.side * work },
++    vel: { x: -drive.x * 1.5 + lat.x * e.side * work, y: -drive.y * 1.5 + lat.y * e.side * work },
+     facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
+     push: 1,
+     posture: 0.85,
+@@ -707,7 +708,8 @@
+     const hs = Math.sign((h.pos.x - b.pos.x) * lat.x + (h.pos.y - b.pos.y) * lat.y) || e.side;
+     const spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
+     const toSpot = sub(spot, h.pos);
+-    const drive = e.type === 'run' ? { x: -axis.x * 2.2, y: -axis.y * 2.2 } : { x: -axis.x * 0.5, y: -axis.y * 0.5 };
++    const direction = e.drive ?? { x: -axis.x, y: -axis.y };
++    const drive = e.type === 'run' ? { x: direction.x * 2.2, y: direction.y * 2.2 } : { x: -axis.x * 0.5, y: -axis.y * 0.5 };
+     intents[h.idx] = {
+       vel: { x: drive.x + toSpot.x * 3, y: drive.y + toSpot.y * 3 },
+       facing: Math.atan2(d.pos.y - h.pos.y, d.pos.x - h.pos.x),
+diff --git a/src/sim/zone-reach.ts b/src/sim/zone-reach.ts
+new file mode 100644
+--- /dev/null
++++ b/src/sim/zone-reach.ts
+@@ -0,0 +1,67 @@
++/** Solo stretch-zone technique. Surface acquisition and displacement are
++ * separate intentions; neither supplies a contact force or a successful seal.
++ */
++import { clamp, type Vec2 } from '../core/vec.js';
++import { fatigueFactor, locomotionAccel } from '../physics/kinematics.js';
++import { availability, supportParams } from '../physics/support.js';
++import type { Agent } from './agent.js';
++import type { Perceived } from './perception.js';
++import { observedBlockLeverage } from './run-block-fit.js';
++
++export interface ZoneReachChoice {
++  phase: 'reach' | 'runoff' | 'seal';
++  drive: Vec2;
++  /** Desired lateral surface in the stable vertical contact frame. */
++  sealTarget: number;
++  aim: Vec2;
++  horizon: number;
++  neededTravel: number;
++  availableTravel: number;
++}
++export interface ZoneReachRead extends ZoneReachChoice {
++  target: number;
++  side: number;
++  t: number;
++  nextRead: number;
++  seen: Perceived;
++}
++
++/** The consumed hip picture can be wrong. The short free lateral estimate
++ * uses existing locomotion/support/traction limits, ignores traffic and hand
++ * loads, and is a football read aid rather than a contact reachability proof.
++ * Only World can establish the body position and transmit the actual load.
++ */
++export function readZoneReach(a: Agent, seen: Perceived, side: number,
++  stretchDrive: Vec2, contact: number, bodyContact: number): ZoneReachChoice {
++  const lateral = (a.pos.y - seen.pos.y) * side;
++  const longitudinal = a.pos.x - seen.pos.x;
++  const horizon = clamp(Math.max(0, -longitudinal - bodyContact)
++    / Math.max(.5, a.vel.x - seen.vel.x), .1, .4);
++  const params = supportParams(a.profile);
++  const capacity = a.body.support
++    ? availability(a.body.support, params, fatigueFactor(a.body.energy)) : 1;
++  // An outward-step estimate using the current envelope. It gives all free
++  // effort to lateral closure, but holds initial facing/acceleration rather
++  // than certifying future gait, yaw, traffic or contact feasibility.
++  const accel = locomotionAccel(a.body, { vel: { x: 0, y: side * a.profile.vmax } }, .05, capacity);
++  const magnitude = Math.hypot(accel.x, accel.y);
++  const traction = Math.min(1, params.traction / Math.max(1e-9, magnitude * a.profile.massKg));
++  const availableTravel = Math.max(0, a.vel.y * side * horizon
++    + .5 * accel.y * side * traction * horizon * horizon);
++  const neededTravel = Math.max(0, -lateral + .45 * bodyContact + seen.vel.y * side * horizon);
++  const outside = lateral >= .45 * bodyContact && longitudinal >= -bodyContact
++    && longitudinal <= .35 * bodyContact
++    && Math.hypot(longitudinal, a.pos.y - seen.pos.y) <= contact
++    && Math.abs(observedBlockLeverage(a, seen, { x: 1, y: 0 })) < 1.1
++    && (!a.body.support || a.body.support.state === 'up');
++  // Outside position takes precedence: our contact can itself make D widen.
++  // No phase is permanent; a later picture can reveal a lost fit.
++  const phase = outside ? 'seal'
++    : seen.vel.y * side > 0 && lateral < .45 * bodyContact && neededTravel > availableTravel
++      ? 'runoff' : 'reach';
++  const surface = phase === 'runoff' ? -side : side;
++  return { phase, drive: phase === 'runoff' ? { ...stretchDrive } : { x: 1, y: 0 },
++    sealTarget: surface * .3,
++    aim: { x: seen.pos.x - .3, y: seen.pos.y + surface * .6 },
++    horizon, neededTravel, availableTravel };
++}

@@ -1,0 +1,32 @@
+{
+  "scope": "Changed links and JSON only; no engine runs",
+  "relativeLinksChecked": [
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/zone-force-integration/intake.json"
+    },
+    {
+      "from": "docs/INTEGRATION.md",
+      "target": "../data/reviews/current/zone-force-integration/audit-data-check.json"
+    },
+    {
+      "from": "docs/ISSUES.md",
+      "target": "INTEGRATION.md#accepted-development"
+    },
+    {
+      "from": "docs/STATUS.md",
+      "target": "../data/reviews/current/zone-force-integration/intake.json"
+    },
+    {
+      "from": "docs/STATUS.md",
+      "target": "INTEGRATION.md#accepted-development"
+    },
+    {
+      "from": "docs/WORKBOARD.md",
+      "target": "../data/reviews/current/zone-force-integration/intake.json"
+    }
+  ],
+  "protectedDelta": [],
+  "initialFinding": "Audit issue amendment referred to an unextracted local checkpoint report; changed it to immutable published94f25c6 link.",
+  "resolved": true
+}

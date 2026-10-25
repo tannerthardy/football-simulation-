@@ -1,0 +1,67 @@
+{
+  "schema": "selected-counterfactual-metadata-normalization-v1",
+  "method": "Metadata-only repair of inherited candidate method/limits wording. No simulation rerun, no outcome/state/telemetry/RNG changes. Original execution collector bytes and packet bytes are preserved separately. Packet toolSha256 continues to identify the collector actually executed, not the later corrected collector.",
+  "normalizationToolSha256": "dcdc3b46db9f303467b9075ea32f433aef9dfb61b167193089f966b91e559931",
+  "executedCollectorPath": "selected-counterfactual.executed.ts",
+  "executedCollectorSha256": "d83327fbdd5a5fba013e9f8652feed88b1d802ea866090e2ae9df89f3ef53e29",
+  "correctedFutureCollectorPath": "selected-counterfactual.ts",
+  "correctedFutureCollectorSha256": "d39e3f78940eb04e896afba4dc3c4d204858cdb92e0fe57c1ac79e5ec8d7f7b3",
+  "rows": [
+    {
+      "id": "G4-P127",
+      "path": "counterfactual/G4-P127-candidate.json.gz",
+      "originalBackup": "metadata-original/G4-P127-candidate.json.gz",
+      "originalFileSha256": "cb74077d845830fbb02387ec1b400d6a24b58413b588357c49328d67b97d9360",
+      "correctedFileSha256": "acb059ee44bf4a4068c5cd8a102e610bb0994775e59faf09f997d3a19f8456d6",
+      "rowSha256Before": "0be734c3f10a1265cbde644315a6944d7da0f1d2bbc12ed688e3236a1fa39e78",
+      "rowSha256After": "0be734c3f10a1265cbde644315a6944d7da0f1d2bbc12ed688e3236a1fa39e78",
+      "changedTopLevelKeys": [
+        "method",
+        "limits"
+      ],
+      "preservedExecutionToolSha256": "d83327fbdd5a5fba013e9f8652feed88b1d802ea866090e2ae9df89f3ef53e29"
+    },
+    {
+      "id": "G3-P099",
+      "path": "counterfactual/G3-P099-candidate.json.gz",
+      "originalBackup": "metadata-original/G3-P099-candidate.json.gz",
+      "originalFileSha256": "62c098080ec0bd8389a07c36205d3b7f0bb24058e2ec7ad32c8c795242f791eb",
+      "correctedFileSha256": "5bda65d7284fac7fac73078bfb226e4cde3b2d14367a5cfb3651776c00381e30",
+      "rowSha256Before": "24b14e1bf1868e7c87c6d0dacca4af494286beffad975e2c660bfe59d7e4f6db",
+      "rowSha256After": "24b14e1bf1868e7c87c6d0dacca4af494286beffad975e2c660bfe59d7e4f6db",
+      "changedTopLevelKeys": [
+        "method",
+        "limits"
+      ],
+      "preservedExecutionToolSha256": "d83327fbdd5a5fba013e9f8652feed88b1d802ea866090e2ae9df89f3ef53e29"
+    },
+    {
+      "id": "G4-P012",
+      "path": "counterfactual/G4-P012-candidate.json.gz",
+      "originalBackup": "metadata-original/G4-P012-candidate.json.gz",
+      "originalFileSha256": "87a8047853daf5c80b23521dd3d94c85b68507f7a3a52ae05e3213d0880f1feb",
+      "correctedFileSha256": "61b2ad7c91b423d447cff32bfcc71e35622950bb260d47a9407190f5c8827f3f",
+      "rowSha256Before": "0dc9e1aeee5aaade9463d6c229c117da093f0cc1e28a2a0c9afa1419cd4f60b4",
+      "rowSha256After": "0dc9e1aeee5aaade9463d6c229c117da093f0cc1e28a2a0c9afa1419cd4f60b4",
+      "changedTopLevelKeys": [
+        "method",
+        "limits"
+      ],
+      "preservedExecutionToolSha256": "d83327fbdd5a5fba013e9f8652feed88b1d802ea866090e2ae9df89f3ef53e29"
+    },
+    {
+      "id": "G2-P188",
+      "path": "counterfactual/G2-P188-candidate.json.gz",
+      "originalBackup": "metadata-original/G2-P188-candidate.json.gz",
+      "originalFileSha256": "5825c45749bbc51155643952bf5b093fee0ee0026310173a25582b859df62703",
+      "correctedFileSha256": "e97ab6e41b05369ea096eb71438eff5ddc93650eaaa34545562ca84aa1d25f79",
+      "rowSha256Before": "f6bfea36094e16d8c35ea6987e3c3d234112fa161bfa217ea20a5eca6da151e2",
+      "rowSha256After": "f6bfea36094e16d8c35ea6987e3c3d234112fa161bfa217ea20a5eca6da151e2",
+      "changedTopLevelKeys": [
+        "method",
+        "limits"
+      ],
+      "preservedExecutionToolSha256": "d83327fbdd5a5fba013e9f8652feed88b1d802ea866090e2ae9df89f3ef53e29"
+    }
+  ]
+}

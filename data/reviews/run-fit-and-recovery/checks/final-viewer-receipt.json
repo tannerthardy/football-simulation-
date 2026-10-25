@@ -1,0 +1,166 @@
+{
+  "schema": "run-fit-recovery-viewer-receipt-v1",
+  "baselineCommit": "9c3c809af5506fa6882831b1f36602ed07684d02",
+  "baselineSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "finalSource": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "liveSourceAfterChecks": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "cohortSha256": "ef6fd9055da106169390e33626cd2211079e24cac4c0cbcb74f3adeb66d35eec",
+  "nativeInputPairs": 24,
+  "savedClips": 48,
+  "backManInputs": 16,
+  "drawInputs": 8,
+  "simulation": false,
+  "outcomeSelection": false,
+  "counterfactuals": false,
+  "exportCommand": "node --import tsx scripts/export-run-fit-recovery.ts data/reviews/run-fit-and-recovery/targeted/baseline-film.json.gz data/reviews/run-fit-and-recovery/targeted/final-film.json.gz data/reviews/run-fit-and-recovery/targeted/cohort.json viewer/run-fit-and-recovery.html",
+  "browserCommand": "python3 out/run-fit-follow-up/review/run-fit-recovery-browser.py viewer/run-fit-and-recovery.html --screenshots out/run-fit-follow-up/review/final-screenshots --video-out out/run-fit-follow-up/review/run-fit-and-recovery-final.webm",
+  "browser": {
+    "checksPassed": 38,
+    "javascriptErrors": 0,
+    "externalFontsBlocked": true,
+    "initialLoadSeconds": 0.791,
+    "compressedTelemetry": true
+  },
+  "possessionWitness": {
+    "finalClip": "F-RFT-R1-duo-over-cover1_off-R-S3",
+    "baselineClip": "B-RFT-R1-duo-over-cover1_off-R-S3",
+    "time": 1.35,
+    "finalDisplay": "saw ball held",
+    "baselineCarrying": "unknown",
+    "decision": "coverage-run-fit"
+  },
+  "videoProbe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "vp9",
+        "width": 1280,
+        "height": 840,
+        "nb_read_frames": "43"
+      }
+    ],
+    "format": {
+      "size": "356185"
+    }
+  },
+  "singleHTMLArchiveVerified": true,
+  "limits": [
+    "Predeclared targeted mechanisms, not NFL frequencies or league statistics.",
+    "All pairs retained including unchanged Cover0 pressure controls and adverse Draw outcomes.",
+    "Body facing is not gaze; possession is delayed snapshot state, not occlusion, visual certainty, or current-carrier lookup.",
+    "Three prior cue witness pairs are retained as separate raw controls; they are not outcome-selected into this native24 panel."
+  ],
+  "files": [
+    {
+      "path": "scripts/export-run-fit-recovery.ts",
+      "bytes": 11415,
+      "sha256": "fb10e47ea498d34641a34dde3c4397773d6b061579108b47a1be9e2a313b7833"
+    },
+    {
+      "path": "viewer/replay.template.html",
+      "bytes": 78947,
+      "sha256": "9ee7232840e1ef442e17c35e3bd43013d13551ff071c838c65701de5fb268ae0"
+    },
+    {
+      "path": "data/reviews/run-fit-and-recovery/targeted/cohort.json",
+      "bytes": 1825373,
+      "sha256": "4a2819b12e089a0588c9d2b744b454bbac8a9e145c4221a3dda42662b00aece6"
+    },
+    {
+      "path": "data/reviews/run-fit-and-recovery/targeted/baseline.json.gz",
+      "bytes": 1642756,
+      "sha256": "75ce3825182147eff0fc4017d8fca2c9bc6dfe970cd4fde11e91cdfcf37e9e3c"
+    },
+    {
+      "path": "data/reviews/run-fit-and-recovery/targeted/final.json.gz",
+      "bytes": 1662528,
+      "sha256": "0f6738e28c176999acbf5e12768c558358683e25009f1cfa08c12a214af0165c"
+    },
+    {
+      "path": "data/reviews/run-fit-and-recovery/targeted/baseline-film.json.gz",
+      "bytes": 5959291,
+      "sha256": "a4b62057c606eb32867f5e5a7942618185d902876a7cab9c03bada1e55ec37b2"
+    },
+    {
+      "path": "data/reviews/run-fit-and-recovery/targeted/final-film.json.gz",
+      "bytes": 5965729,
+      "sha256": "9dcc8b305d68354f9afa8ee7109dd5cbbc42781c569a466e8284b5b6abaa610a"
+    },
+    {
+      "path": "viewer/run-fit-and-recovery.html",
+      "bytes": 16945757,
+      "sha256": "b7efa05ed0ccc05e62e5a37acae68cc34b53f335ed723c948deb792a86633be2"
+    },
+    {
+      "path": "viewer/run-fit-and-recovery.zip",
+      "bytes": 11477279,
+      "sha256": "dea3d9ebcedfe7b3f41b691d2cf5e7fa2ccc0038bdfe9c1e3c40629b0d792f66"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/run-fit-recovery-browser.py",
+      "bytes": 36753,
+      "sha256": "dab17c1f22562c16b1a29c27e96ba1048f5eae5e1ce7af5f36da6def38dc70e2"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/exporter-published-inputs.log",
+      "bytes": 1206,
+      "sha256": "da636ae486f28040d2f08ee33413b27fb4234b122707f0c299b3997644a242be"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/browser-published-inputs.log",
+      "bytes": 3182,
+      "sha256": "777df2179108bc8f39a6b086599c28ef9b6223b356babc6194d93fe7b1e5ebff"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/final-browser-checks.json",
+      "bytes": 3182,
+      "sha256": "777df2179108bc8f39a6b086599c28ef9b6223b356babc6194d93fe7b1e5ebff"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/final-video-ffprobe.json",
+      "bytes": 214,
+      "sha256": "54137c14a9ed686cb55cee16f17545653128ea18ad2236b5a5b0884b1cfbdbd7"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/run-fit-and-recovery-final.webm",
+      "bytes": 356185,
+      "sha256": "4ce4c4d34f4c20fd56881e0049ff518c20e415a1c41904d5ff60306c048f4582"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/final-screenshots/desktop.png",
+      "bytes": 587660,
+      "sha256": "963dde0da70fdd8e0bd1efe1b86807fa22fd9d0cf328b1b25ea6249118e22349"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/final-screenshots/dark.png",
+      "bytes": 467324,
+      "sha256": "0e32912de800a84defbaee45fdf35fbdca1e22e389034aa594cdf1b8154d3480"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/final-screenshots/mobile.png",
+      "bytes": 460180,
+      "sha256": "75c4ea03c121d986f04f9942fab60b6cae0dc18bfbc63cd936cdf8702dc21ab6"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/final-screenshots/possession-cue.png",
+      "bytes": 614958,
+      "sha256": "6b341a8dc2e51488caa564ec336deddbce67c26cbf4a90204a992d20a7757052"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/cue-boundary-final.ts",
+      "bytes": 9384,
+      "sha256": "486c08d4a7133d81215fd8a7b5f7cb2c985f76f3ca7741b9bc89e586b97a2a6a"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/cue-boundary-final.json.gz",
+      "bytes": 1344250,
+      "sha256": "df9508256b2a760f7643704f1afaae57b9319c741526287fb09d6585e8f68c62"
+    },
+    {
+      "path": "out/run-fit-follow-up/review/cue-boundary-players.json",
+      "bytes": 216007,
+      "sha256": "5cc4d6c7d25ba284b86cc23d13ca121eb5d5b9609ea97592b1f3bb87db267f78"
+    }
+  ]
+}

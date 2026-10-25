@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "baselineRevision": "6bf0c80853e0e359405fe552d273a5e629013a5e",
+  "evaluationIntegration": "3c00ca01f84383c05cae22578b7c095b29e9706c",
+  "afterSourceSha256": "ca41d72dfd320f96589bdd165db13cb97d2b0cae41d079d98054a7bdb210fb0d",
+  "sourceHashDefinition": "Sorted src/**/*.ts path bytes, NUL, file bytes, NUL.",
+  "extractors": {
+    "scripts/data/run-game-reference.py": "1ac9a35964a12e75a794d08342c6774dc28aafceb877f64208a3969505226362",
+    "scripts/data/bdb2025_tendencies.py": "72f64785615c0682fd0c6db00cba0f692e300c6ae25565901844b8b5d723974c",
+    "scripts/run-blocking-lab.ts": "978c88003d92d67df8bee21ed5a86f807e1a0c9f16a3ebdd88f59086e11bf591",
+    "scripts/run-development-lab.ts": "93d89e95e2aaa6aff756ba90bc7a48e7476022b18e692b53cfa3da081bd67e4a",
+    "scripts/tendencies.ts": "7711c0b255ec46421e4ff24d35baa3fb8b212c62c78a15be38423b40cc55e44a"
+  },
+  "artifacts": {
+    "after-games.log": {
+      "bytes": 2301,
+      "sha256": "4c32559198da71cbda8582a12b9cd4dee617929bdfe18cb573ab897e93c17349"
+    },
+    "after-tendencies.log": {
+      "bytes": 2627,
+      "sha256": "0810ed04c94ad6e938da0ab4bc4430fc058b04f9a8d6e291a654103b3f74a4b6"
+    },
+    "before-games.log": {
+      "bytes": 2296,
+      "sha256": "c9cb1174514d9d3e57ae34a87564675a68c8cf345fdc849f2ae63ab0149e88f3"
+    },
+    "before-tendencies.log": {
+      "bytes": 2291,
+      "sha256": "8772a445247728b31b76490761175f5fb8f922aae368f8c3cba12bb36bf6007a"
+    },
+    "development-matrix.json": {
+      "bytes": 4380865,
+      "sha256": "0f3790008b32f6b6cdb4c6f8ef69403d7273dc7075a3c84895d6d6349f43ca48"
+    },
+    "nfl-reference.json": {
+      "bytes": 137723,
+      "sha256": "b80d6dc4ae65916c51b00001993a5b95ab707722960be581b50add17f09c9201"
+    },
+    "nfl-tendencies.json": {
+      "bytes": 7190,
+      "sha256": "fa049b60a02e2699328cbacc74842fd2e3a949e238e18ce362ff930d2f180cd8"
+    },
+    "paired-run-matrix.json": {
+      "bytes": 133202,
+      "sha256": "7d370e0e39001688c4f4a7d746f8ca000dcbc2484560b95433976dba457ed95d"
+    },
+    "policy-check.json": {
+      "bytes": 10231,
+      "sha256": "49cd5b25fbb245a508498e5182bbb1134689e24ebb50dcc934655890fcd884ab"
+    }
+  },
+  "recordingAmendment": "Replay t=0 frame deduplication after physical lab capture; no execution changes."
+}

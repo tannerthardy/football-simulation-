@@ -1,0 +1,21 @@
+{
+  "schema": "engine-rushing-commands-v1",
+  "commands": [
+    {
+      "label": "baseline601",
+      "declare": "python3 scripts/data/engine_rushing_benchmark.py --index data/reviews/alley-support-and-tail-audit/games/baseline-index.json.gz --nfl-report out/rushing-benchmark/nfl-benchmark.json.gz --expected-source 601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b --expected-collector 5e2670bef92c09685047f70fdf5f79d878b5f777f83ecf8fce3238445abdd60f --label baseline601 --plan-only out/rushing-benchmark/baseline601-engine-query.json",
+      "execute": "python3 scripts/data/engine_rushing_benchmark.py --index data/reviews/alley-support-and-tail-audit/games/baseline-index.json.gz --nfl-report out/rushing-benchmark/nfl-benchmark.json.gz --expected-source 601b66e8e30123b20e1c5cfe9c5c883f41219180a5eaf26be8a477dff89b2a5b --expected-collector 5e2670bef92c09685047f70fdf5f79d878b5f777f83ecf8fce3238445abdd60f --label baseline601 --query-receipt out/rushing-benchmark/baseline601-engine-query.json --out out/rushing-benchmark/baseline601-engine-benchmark.json"
+    },
+    {
+      "label": "current3cb",
+      "declare": "python3 scripts/data/engine_rushing_benchmark.py --index data/reviews/alley-support-and-tail-audit/games/candidate-index.json.gz --nfl-report out/rushing-benchmark/nfl-benchmark.json.gz --expected-source 3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f --expected-collector c13d6ceee5c2e1510aa2a0d6f1f2820e327ce8e424d84fb2463aa2d9807eefa5 --label current3cb --plan-only out/rushing-benchmark/current3cb-engine-query.json",
+      "execute": "python3 scripts/data/engine_rushing_benchmark.py --index data/reviews/alley-support-and-tail-audit/games/candidate-index.json.gz --nfl-report out/rushing-benchmark/nfl-benchmark.json.gz --expected-source 3cbabd8fbb1fb4fea34c6bb98725a97f3f6de175c0bb59bece69f3c1e7371a7f --expected-collector c13d6ceee5c2e1510aa2a0d6f1f2820e327ce8e424d84fb2463aa2d9807eefa5 --label current3cb --query-receipt out/rushing-benchmark/current3cb-engine-query.json --out out/rushing-benchmark/current3cb-engine-benchmark.json"
+    },
+    {
+      "label": "withheldQuarter8d27",
+      "declare": "python3 scripts/data/engine_rushing_benchmark.py --index out/rushing-benchmark/validation/games/index.json.gz --nfl-report out/rushing-benchmark/nfl-benchmark.json.gz --expected-source 8d27d085b6e469115435aeae79835c571f0e124f330c8ff856a55532a5e77006 --expected-collector c13d6ceee5c2e1510aa2a0d6f1f2820e327ce8e424d84fb2463aa2d9807eefa5 --label withheldQuarter8d27 --plan-only out/rushing-benchmark/withheldQuarter8d27-engine-query.json",
+      "execute": "python3 scripts/data/engine_rushing_benchmark.py --index out/rushing-benchmark/validation/games/index.json.gz --nfl-report out/rushing-benchmark/nfl-benchmark.json.gz --expected-source 8d27d085b6e469115435aeae79835c571f0e124f330c8ff856a55532a5e77006 --expected-collector c13d6ceee5c2e1510aa2a0d6f1f2820e327ce8e424d84fb2463aa2d9807eefa5 --label withheldQuarter8d27 --query-receipt out/rushing-benchmark/withheldQuarter8d27-engine-query.json --out out/rushing-benchmark/withheldQuarter8d27-engine-benchmark.json"
+    }
+  ],
+  "tests": "python3 -m unittest discover -s test -p test_engine_rushing_benchmark.py -v"
+}

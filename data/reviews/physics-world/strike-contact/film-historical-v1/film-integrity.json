@@ -1,0 +1,14 @@
+{
+  "schema": "motion-contact-film-integrity-v2",
+  "filmSchema": "motion-contact-film-v1",
+  "clips": 14,
+  "exactFullTelemetry": true,
+  "recordedFrameTimesAndPossession": true,
+  "eventActorsNotesAndRoundedTimes": true,
+  "exactContactObservations": true,
+  "exactParticipantsPhysicalProfilesRatingsAndWeights": true,
+  "sourceFixtureDiagnosticPins": true,
+  "noInventedFootballResult": true,
+  "maxExistingPackingPositionFacingError": 0.04998382361232245,
+  "zipHtmlByteExact": null
+}

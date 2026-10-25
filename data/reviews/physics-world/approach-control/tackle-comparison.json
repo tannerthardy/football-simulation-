@@ -1,0 +1,630 @@
+{
+  "schema": "approach-tackle-comparison-v1",
+  "baselineSource": "6100c9b5c338a993e04ffcdb5dbe7171bbbfc3e09a19ceb4f720c5407be8b4ca",
+  "candidateSource": "2b405d9a79bbb09c21e5e1146a32632c62263fb9e67f319091196f45d8a80ef4",
+  "scriptSha256": "b823a56a374884b3cec7c2a549a63f1b2f4eac0c283290797956a3d1c2577efd",
+  "inputSha256": "e2fe01e85b26dff5d68e495de65e8841b34aa03b652dedace966432697178c7a",
+  "independentFixtures": 4,
+  "mirrorsPerFixture": 2,
+  "recordingMatchesUnrecorded": {
+    "baseline": 8,
+    "candidate": 8
+  },
+  "mirrorFirstsAndEndpointCheck": true,
+  "pairs": [
+    {
+      "seed": 19,
+      "side": -1,
+      "baseline": {
+        "firsts": {
+          "reach": 0.9500000000000002,
+          "wrap": 0.9500000000000002,
+          "carrierFall": 4.25,
+          "defenderFall": 3.6500000000000004,
+          "carrierDown": 4.65,
+          "defenderDown": 4.1,
+          "broken": 1.25,
+          "tackle": 4.6
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 1,
+          "separationYd": 1.2574367327414884,
+          "normalClosingYdS": 1.0373282608601584,
+          "transverseRelativeYdS": 6.392641214067638
+        },
+        "final": {
+          "elapsed": 4.65,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 77.84106501761518,
+            "y": 26.612165868158442
+          },
+          "carrierPos": {
+            "x": 77.54115289882915,
+            "y": 26.612165868158442
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 1,
+          "draws": 8
+        }
+      },
+      "candidate": {
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": 1.0499999999999998,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": 1.5,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 0.9500000000000002,
+          "separationYd": 0.8157746583123183,
+          "normalClosingYdS": 6.070934353476752,
+          "transverseRelativeYdS": 0.0027384631086296023
+        },
+        "final": {
+          "elapsed": 1.7000000000000002,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.366243317465994,
+            "y": 27.89343383942097
+          },
+          "carrierPos": {
+            "x": 58.366243317465994,
+            "y": 27.89343383942097
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      }
+    },
+    {
+      "seed": 19,
+      "side": 1,
+      "baseline": {
+        "firsts": {
+          "reach": 0.9500000000000002,
+          "wrap": 0.9500000000000002,
+          "carrierFall": 4.25,
+          "defenderFall": 3.6500000000000004,
+          "carrierDown": 4.65,
+          "defenderDown": 4.1,
+          "broken": 1.25,
+          "tackle": 4.6
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 1,
+          "separationYd": 1.2574367327414884,
+          "normalClosingYdS": 1.0373282608601584,
+          "transverseRelativeYdS": 6.392641214067638
+        },
+        "final": {
+          "elapsed": 4.65,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 77.84106501761518,
+            "y": 26.721167465174894
+          },
+          "carrierPos": {
+            "x": 77.54115289882915,
+            "y": 26.721167465174894
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 1,
+          "draws": 8
+        }
+      },
+      "candidate": {
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": 1.0499999999999998,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": 1.5,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 0.9500000000000002,
+          "separationYd": 0.815774658312326,
+          "normalClosingYdS": 6.070934353476758,
+          "transverseRelativeYdS": 0.0027384631086295767
+        },
+        "final": {
+          "elapsed": 1.7000000000000002,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.36624331747072,
+            "y": 25.439899493919
+          },
+          "carrierPos": {
+            "x": 58.36624331747072,
+            "y": 25.439899493919
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      }
+    },
+    {
+      "seed": 20,
+      "side": -1,
+      "baseline": {
+        "firsts": {
+          "reach": 0.8999999999999999,
+          "wrap": 0.9500000000000002,
+          "carrierFall": 1.2999999999999998,
+          "defenderFall": 1.2999999999999998,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 1,
+          "separationYd": 1.2076941283959135,
+          "normalClosingYdS": 0.922621678007796,
+          "transverseRelativeYdS": 6.430791466560224
+        },
+        "final": {
+          "elapsed": 1.7000000000000002,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 59.05221868054683,
+            "y": 27.5081815516997
+          },
+          "carrierPos": {
+            "x": 58.86571969932871,
+            "y": 27.5081815516997
+          },
+          "carrierState": "down",
+          "defenderState": "falling",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      },
+      "candidate": {
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.2000000000000002,
+          "defenderFall": 1.0499999999999998,
+          "carrierDown": 1.65,
+          "defenderDown": 1.5,
+          "broken": null,
+          "tackle": 1.6
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 0.9500000000000002,
+          "separationYd": 0.8157746583123183,
+          "normalClosingYdS": 6.070934353476752,
+          "transverseRelativeYdS": 0.0027384631086296023
+        },
+        "final": {
+          "elapsed": 1.65,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.194964177045044,
+            "y": 27.83821299406142
+          },
+          "carrierPos": {
+            "x": 58.194964177045044,
+            "y": 27.83821299406142
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      }
+    },
+    {
+      "seed": 20,
+      "side": 1,
+      "baseline": {
+        "firsts": {
+          "reach": 0.8999999999999999,
+          "wrap": 0.9500000000000002,
+          "carrierFall": 1.2999999999999998,
+          "defenderFall": 1.2999999999999998,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 1,
+          "separationYd": 1.2076941283959062,
+          "normalClosingYdS": 0.9226216780078657,
+          "transverseRelativeYdS": 6.430791466560221
+        },
+        "final": {
+          "elapsed": 1.7000000000000002,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 59.05221868052651,
+            "y": 25.825151781662562
+          },
+          "carrierPos": {
+            "x": 58.865719699306894,
+            "y": 25.825151781662562
+          },
+          "carrierState": "down",
+          "defenderState": "falling",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      },
+      "candidate": {
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.2000000000000002,
+          "defenderFall": 1.0499999999999998,
+          "carrierDown": 1.65,
+          "defenderDown": 1.5,
+          "broken": null,
+          "tackle": 1.6
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 0.9500000000000002,
+          "separationYd": 0.815774658312326,
+          "normalClosingYdS": 6.070934353476758,
+          "transverseRelativeYdS": 0.0027384631086295767
+        },
+        "final": {
+          "elapsed": 1.65,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.19496417704284,
+            "y": 25.495120339270137
+          },
+          "carrierPos": {
+            "x": 58.19496417704284,
+            "y": 25.495120339270137
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      }
+    },
+    {
+      "seed": 21,
+      "side": -1,
+      "baseline": {
+        "firsts": {
+          "reach": 0.8999999999999999,
+          "wrap": 0.9500000000000002,
+          "carrierFall": 1.25,
+          "defenderFall": null,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 1,
+          "separationYd": 1.032155999661136,
+          "normalClosingYdS": 1.7274714430960427,
+          "transverseRelativeYdS": 6.207249182784623
+        },
+        "final": {
+          "elapsed": 1.7000000000000002,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.67096992126899,
+            "y": 27.362867627628336
+          },
+          "carrierPos": {
+            "x": 58.48510314165501,
+            "y": 27.362867627628336
+          },
+          "carrierState": "down",
+          "defenderState": "up",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      },
+      "candidate": {
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": 1.0499999999999998,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": 1.5,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 0.9500000000000002,
+          "separationYd": 0.8157746583123183,
+          "normalClosingYdS": 6.070934353476752,
+          "transverseRelativeYdS": 0.0027384631086296023
+        },
+        "final": {
+          "elapsed": 1.7000000000000002,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.35737546539747,
+            "y": 27.892985326306334
+          },
+          "carrierPos": {
+            "x": 58.35737546539747,
+            "y": 27.892985326306334
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      }
+    },
+    {
+      "seed": 21,
+      "side": 1,
+      "baseline": {
+        "firsts": {
+          "reach": 0.8999999999999999,
+          "wrap": 0.9500000000000002,
+          "carrierFall": 1.25,
+          "defenderFall": null,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": null,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 1,
+          "separationYd": 1.032155999661136,
+          "normalClosingYdS": 1.7274714430960427,
+          "transverseRelativeYdS": 6.207249182784623
+        },
+        "final": {
+          "elapsed": 1.7000000000000002,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.67096992128182,
+            "y": 25.970465705696956
+          },
+          "carrierPos": {
+            "x": 58.48510314166706,
+            "y": 25.970465705696956
+          },
+          "carrierState": "down",
+          "defenderState": "up",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      },
+      "candidate": {
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": 1.0499999999999998,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": 1.5,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 0.9500000000000002,
+          "separationYd": 0.815774658312326,
+          "normalClosingYdS": 6.070934353476758,
+          "transverseRelativeYdS": 0.0027384631086295767
+        },
+        "final": {
+          "elapsed": 1.7000000000000002,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.35737546539939,
+            "y": 25.440348007029122
+          },
+          "carrierPos": {
+            "x": 58.35737546539939,
+            "y": 25.440348007029122
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      }
+    },
+    {
+      "seed": 22,
+      "side": -1,
+      "baseline": {
+        "firsts": {
+          "reach": 0.8999999999999999,
+          "wrap": 0.9500000000000002,
+          "carrierFall": 1.35,
+          "defenderFall": 1.25,
+          "carrierDown": 1.75,
+          "defenderDown": 1.7000000000000002,
+          "broken": null,
+          "tackle": 1.7000000000000002
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 1,
+          "separationYd": 1.165595909586354,
+          "normalClosingYdS": 0.8355759222055608,
+          "transverseRelativeYdS": 6.457652587945403
+        },
+        "final": {
+          "elapsed": 1.75,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 59.31012090821345,
+            "y": 27.585513505983062
+          },
+          "carrierPos": {
+            "x": 59.0849780169652,
+            "y": 27.585513505983062
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      },
+      "candidate": {
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": 1.0499999999999998,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": 1.5,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 0.9500000000000002,
+          "separationYd": 0.8157746583123183,
+          "normalClosingYdS": 6.070934353476752,
+          "transverseRelativeYdS": 0.0027384631086296023
+        },
+        "final": {
+          "elapsed": 1.7000000000000002,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.337425090950276,
+            "y": 27.90005921757141
+          },
+          "carrierPos": {
+            "x": 58.337425090950276,
+            "y": 27.90005921757141
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      }
+    },
+    {
+      "seed": 22,
+      "side": 1,
+      "baseline": {
+        "firsts": {
+          "reach": 0.8999999999999999,
+          "wrap": 0.9500000000000002,
+          "carrierFall": 1.35,
+          "defenderFall": 1.25,
+          "carrierDown": 1.75,
+          "defenderDown": 1.7000000000000002,
+          "broken": null,
+          "tackle": 1.7000000000000002
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 1,
+          "separationYd": 1.165595909586354,
+          "normalClosingYdS": 0.8355759222055608,
+          "transverseRelativeYdS": 6.457652587945403
+        },
+        "final": {
+          "elapsed": 1.75,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 59.31012090821345,
+            "y": 25.747819827350273
+          },
+          "carrierPos": {
+            "x": 59.0849780169652,
+            "y": 25.747819827350273
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      },
+      "candidate": {
+        "firsts": {
+          "reach": 0.8500000000000001,
+          "wrap": 0.8999999999999999,
+          "carrierFall": 1.25,
+          "defenderFall": 1.0499999999999998,
+          "carrierDown": 1.7000000000000002,
+          "defenderDown": 1.5,
+          "broken": null,
+          "tackle": 1.65
+        },
+        "firstHeldEndpointSample": {
+          "endpointElapsedS": 0.9500000000000002,
+          "separationYd": 0.815774658312326,
+          "normalClosingYdS": 6.070934353476758,
+          "transverseRelativeYdS": 0.0027384631086295767
+        },
+        "final": {
+          "elapsed": 1.7000000000000002,
+          "phase": "dead",
+          "outcome": "tackle",
+          "endSpot": {
+            "x": 58.33742509095384,
+            "y": 25.433274115765443
+          },
+          "carrierPos": {
+            "x": 58.33742509095384,
+            "y": 25.433274115765443
+          },
+          "carrierState": "down",
+          "defenderState": "down",
+          "missedTackles": 0,
+          "brokenTackles": 0,
+          "draws": 4
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Geometry selected after a mechanical crossing witness; four play seeds share one roster and are not a random tackle-rate cohort.",
+    "Both sources eventually tackle all eight rows.",
+    "Firsts/events retain tick-start labels; first-held body geometry is a tick-end sample and must not be treated as an instantaneous impact measurement.",
+    "Normal closing increases for the closer, squarer holds. This does not prove universally slower or gentler impact."
+  ]
+}

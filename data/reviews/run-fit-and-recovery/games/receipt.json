@@ -1,0 +1,26 @@
+{
+  "schema": "run-fit-recovery-game-guard-v1",
+  "sourceBefore": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "sourceAfter": "c2b65e9f02a95a80dde97625d6e2dd1bdf89da327eb15f2eb093860af08e1ff8",
+  "parentSource": "8bc3eec8d0b842021d000585bb71331be17d6a644c763b2e510303cb4372d942",
+  "toolSha256": "9e46c2d28f16fc0ef416596f09465679b76242972606c90dd36d289019dbb749",
+  "node": "v22.23.3",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "scripts/calibrate.ts",
+    "8",
+    "7",
+    "2"
+  ],
+  "games": 8,
+  "leagues": 2,
+  "scrimmagePlays": 1023,
+  "logSha256": "82d125e685704a2596c1dcf0faca368c6b3f2f91f595f3ee2b641ecde4f70b8b",
+  "limits": [
+    "Matching initial league generation, tool and seed; later calls and snap populations diverge.",
+    "Not paired snaps or NFL population rates; no calibration conclusion.",
+    "Concurrent work during guard; wall time is not a performance benchmark."
+  ]
+}

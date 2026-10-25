@@ -1,0 +1,1012 @@
+{
+  "schema": "outer-d-gap-review-v1",
+  "date": "2026-10-16",
+  "branch": "codex/outer-d-gap",
+  "acceptedBase": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+  "acceptedSourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+  "codeCommit": "6cf700db7a475ed6e95833509229b30eececba52",
+  "sourceSha256": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+  "runtimeExtraction": {
+    "file": "src/sim/live-gaps.ts",
+    "change": "gapIn D with n>=3 selects o[n-1], matching existing outermost width/velocity identity; one line only.",
+    "dependency": "Accepted base only; no #96, primary-footwork, controller experiments or physics change."
+  },
+  "mechanism": [
+    {
+      "case": "A039",
+      "source": "accepted",
+      "fixture": "test/fixtures/outer-d-gap-accepted.json",
+      "fixtureSha256": "441468a22e362632cab93c8111a82bab0725cf1c6d7bba5fd0d555a107725838",
+      "rawTape": "/workspace/zone-contact-reference/A039.json.gz",
+      "rawSha256": "0903524edf83b7d162e99199a434ef3ff7066ff0a01bfb2559084c5100d1ec1e",
+      "times": [
+        1.7,
+        1.75
+      ],
+      "oldD": [
+        19.614952247755873,
+        22.732995035643743
+      ],
+      "fixedD": [
+        19.614952247755873,
+        19.49932340462082
+      ],
+      "outerBody": "RT",
+      "explanation": "LT crossing fallback center adds a fourth outward entry. Old D binds an interior RG vacancy while width/velocity remain RT. Fixed D follows RT movement -0.115628843135053yd."
+    },
+    {
+      "case": "A003",
+      "source": "5e68386c893613af9313122a31b963d5bba6ea79be20f1bc00d340a737dc5323",
+      "fixture": "test/fixtures/outer-d-gap.json",
+      "fixtureSha256": "46d80db785f699a6ce8f0712e51e7686d7d27926c59eb03fe01891bb495e73d0",
+      "rawTape": "/workspace/zone-final-wz/A003.json.gz",
+      "rawSha256": "50721d207b0837870d75216ac2e642443b0279639ea74d06540766cc14a0b58f",
+      "times": [
+        1.95,
+        2
+      ],
+      "oldD": [
+        19.66695545309691,
+        23.51077900910762
+      ],
+      "fixedD": [
+        19.66695545309691,
+        19.607774078938167
+      ],
+      "outerBody": "Y",
+      "explanation": "Acquired C departure adds outward entries under existing classification; fixed position follows the same outer Y already providing width/velocity."
+    }
+  ],
+  "informationBoundary": "Focused fixtures replay only saved consumed pictures plus public installed alignment/body radius. Live pos/vel getters throw. No new observation, hidden state, altered timestamp, perception/memory extension or physics change.",
+  "receipts": [
+    {
+      "path": "out/outer-d-gap/red.json",
+      "sha256": "389f29a348e8ae0f040de01d5057a3d730d16615ba2f6f658bc91a455401bf0b",
+      "commit": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+      "sourceSha256": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "validationSha256": "16a3bd528506e1377dd7a28cb378d86d7c1fda42717e1e7ecd309914c216185e",
+      "node": "v22.23.3",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "--maxWorkers=1",
+            "test/outer-d-gap.test.ts"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 0.9301000200000001
+        }
+      ],
+      "exitCode": 1,
+      "inputsUnchanged": true,
+      "qualification": "Expected red proof on accepted source: 3 fail, 6 pass; neither candidate failure nor passing validation."
+    },
+    {
+      "path": "out/outer-d-gap/focused.json",
+      "sha256": "def7acba3c8f33227a6fe0352853b1d468a4799f8117069c641fb5c5ee760555",
+      "commit": "bb6d4c73948d53ba841dd9338dd240146c739f8c",
+      "sourceSha256": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "validationSha256": "16a3bd528506e1377dd7a28cb378d86d7c1fda42717e1e7ecd309914c216185e",
+      "node": "v22.23.3",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "--maxWorkers=1",
+            "test/outer-d-gap.test.ts",
+            "test/live-gaps.test.ts",
+            "test/departed-center-gap.test.ts"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.934833384
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "qualification": "18 pass across new picture fixture, live-gaps and departed-center/#63 regression."
+    },
+    {
+      "path": "out/outer-d-gap/accepted-fixture.json",
+      "sha256": "07fa06579cab6ef0ada6c5d45329f95b205d876aa5d6a9b2d0c84f830ec63f52",
+      "commit": "cc9af270d1a0c8c88f54dc089b599858df0b5f31",
+      "sourceSha256": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "validationSha256": "61cb0a09da7caedd667f329989f34207e8445ea1f8895da44f7062aee5f9c0e1",
+      "node": "v22.23.3",
+      "commands": [
+        {
+          "command": [
+            "npx",
+            "vitest",
+            "run",
+            "--project",
+            "core",
+            "--maxWorkers=1",
+            "test/outer-d-gap.test.ts",
+            "-t",
+            "accepted-source"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.9395558599999999
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "qualification": "2 added accepted-source mirrored checks pass; 9 previously passed cases intentionally skipped; no repeated compatible suite."
+    },
+    {
+      "path": "out/outer-d/a039-standalone.json",
+      "sha256": "ac8e341d3dd7ff06b4809daa62ea5b87ea7678dd10afa66cea37d6e3fa835732",
+      "commit": "cc9af270d1a0c8c88f54dc089b599858df0b5f31",
+      "sourceSha256": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "validationSha256": "647a88a00469020f7f05746898681210d6b5863947632e66b366672312fd7635",
+      "node": "v22.23.3",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone-access-breakthrough.ts",
+            "--run",
+            "--cases",
+            "A039",
+            "--until",
+            "3.1",
+            "--input",
+            "/tmp/zone-native-input",
+            "--out",
+            "/workspace/outer-d-a039"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 1.292383792
+        }
+      ],
+      "exitCode": 1,
+      "inputsUnchanged": false,
+      "qualification": "FAILED validation: engine command exited0 but test/fixture changes during collection made inputsUnchanged=false. Preserved and repeated once after freeze; not passing evidence."
+    },
+    {
+      "path": "out/outer-d/frozen-wz.json",
+      "sha256": "fabc30669bac4f8f00a4fe3be8d97371d3d0bc65a8b4af12e1370f976e762f8f",
+      "commit": "6cf700db7a475ed6e95833509229b30eececba52",
+      "sourceSha256": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "validationSha256": "61cb0a09da7caedd667f329989f34207e8445ea1f8895da44f7062aee5f9c0e1",
+      "node": "v22.23.3",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone-access-breakthrough.ts",
+            "--run",
+            "--cases",
+            "A039,A003,A015,A027",
+            "--until",
+            "3.1",
+            "--input",
+            "/tmp/zone-native-input",
+            "--out",
+            "/workspace/outer-d-frozen-wz"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 3.077235396
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "qualification": "Passing frozen candidate batch: A039,A003,A015,A027 to3.10."
+    },
+    {
+      "path": "out/outer-d/transfer.json",
+      "sha256": "bd785f49272728190c3f4834561f6ff29b966e56d3940f01aff7840fdf948952",
+      "commit": "6cf700db7a475ed6e95833509229b30eececba52",
+      "sourceSha256": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "validationSha256": "61cb0a09da7caedd667f329989f34207e8445ea1f8895da44f7062aee5f9c0e1",
+      "node": "v22.23.3",
+      "commands": [
+        {
+          "command": [
+            "node",
+            "--import",
+            "tsx",
+            "scripts/diag/zone-access-breakthrough.ts",
+            "--run",
+            "--cases",
+            "A002,A025,F002",
+            "--until",
+            "3.1",
+            "--input",
+            "/tmp/zone-native-input",
+            "--out",
+            "/workspace/outer-d-transfer"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.2386266729999997
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "qualification": "Passing frozen transfer: A002 OZ,A025 IZ,F002 fresh Over to3.10."
+    },
+    {
+      "path": "out/outer-d/typecheck.json",
+      "sha256": "21d03d67bd3b5da25b74c1bd958405cf42494ee06c6612148f3c1ee4e5a8c87b",
+      "commit": "1a5551d8a417767a8ac5030da5f65ce89cc8677a",
+      "sourceSha256": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "validationSha256": "c6e8f2fe49ad6bc338a63df3a3480f382acaeac0c01bf145d30a5d6c2ec8e739",
+      "node": "v22.23.3",
+      "commands": [
+        {
+          "command": [
+            "npm",
+            "run",
+            "typecheck"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 9.553637057
+        }
+      ],
+      "exitCode": 0,
+      "inputsUnchanged": true,
+      "qualification": "Root typecheck passes at evidence/reproducer/input pin1a5551d; no runtime, test or operator changes; no simulation."
+    }
+  ],
+  "environment": {
+    "node": "v22.23.3",
+    "platform": "linux",
+    "arch": "x64",
+    "flags": {
+      "ANCHOR_SPLIT": "1",
+      "CF_FLOW": null,
+      "CLIMB_INTERCEPT": "1",
+      "CLIMB_PLAN": "1",
+      "DL_FIGHT": "0",
+      "DL_FLOW": "1",
+      "DL_HANDS": "0",
+      "FLOW_READ": "1",
+      "FLOW_RELEASE": "1",
+      "GAIT_STEP": "0",
+      "HAND_FIGHT": "0",
+      "HAND_MOTOR": "0",
+      "HOLD_SUBSTEPS": "0",
+      "IN_STRIDE_CATCH": "0",
+      "KEEPER_TORSO": "1",
+      "LB_PLAN": "1",
+      "LEG_BRACE": "0",
+      "LEVER_FACING": "1",
+      "LIVE_AIM": "1",
+      "LIVE_GAPS": "1",
+      "PASS_SINK": "0",
+      "PULL_CUE": "0",
+      "PULL_PLAN": "0",
+      "PULL_READ": "1",
+      "PULL_STEP": "0",
+      "REACH_CONTACT": "0",
+      "READ_EYES": "1",
+      "READ_RISK_TRACE": "0",
+      "RUN_ANCHOR": "1",
+      "RUN_CONTACT_COMPONENTS": "1",
+      "RUN_CONTACT_TRACK": "0",
+      "RUN_HANDS": "0",
+      "RUN_READ": "0",
+      "RUN_READ_TURN": "0",
+      "SCRAPE": "1",
+      "SHED_PHYSICAL": "1",
+      "STALK_CLAIM": "1",
+      "STRETCH_MESH": "1",
+      "STRETCH_REACH": "1",
+      "TACKLE_ROLL": "0",
+      "TACKLE_TOUCH": "0",
+      "THREAT_READ": "1",
+      "WRAP_BIND": "0",
+      "ZONE_FLOW": "1"
+    },
+    "worldDefaults": {
+      "handContact": "center",
+      "handIntegration": "centered",
+      "supportModel": "legacy",
+      "constraintWork": "per-solve",
+      "impactTiming": "speculative",
+      "supportIntegration": "mean",
+      "boundedAttachment": true,
+      "substeps": "adaptive 12-16 for nearby/contact bodies; 1 for isolated bodies"
+    }
+  },
+  "nativeWZ": [
+    {
+      "id": "A039",
+      "source": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "input": "1fd9ea480df7164d76fe72a4c470cfdc16a6570c2dbc6cbb7c4f27aaf4f5815d",
+      "gzipSHA256": "8c4c3ea1bcb222945f7f68a753fc9c955c2c77206ede02bd4a748f8e6efbff44",
+      "packedPrefixExact": false,
+      "firstRBRequestChange": 1.45,
+      "rngComparison": "full native accepted A039",
+      "firstRNGDifference": 2.5,
+      "firstContact": {
+        "accepted": {
+          "t": 2.5,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 35.75,
+            "y": 20.79
+          },
+          "note": "grasp"
+        },
+        "candidate": {
+          "t": 2.8,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 35.79,
+            "y": 19.35
+          },
+          "note": "grasp"
+        }
+      },
+      "LOS": {
+        "accepted": {
+          "t": 2.35,
+          "x": 35,
+          "y": 21.3
+        },
+        "candidate": {
+          "t": 2.6,
+          "pos": {
+            "x": 35.12566500588204,
+            "y": 19.831252585694237
+          },
+          "vel": {
+            "x": 2.9134269475264043,
+            "y": -2.638065941518712
+          }
+        }
+      },
+      "progressSamples": [
+        {
+          "t": 2.25,
+          "baselinePos": [
+            34.5,
+            21.5
+          ],
+          "candidatePos": {
+            "x": 34.00276803934229,
+            "y": 20.77074729444309
+          },
+          "additionalOutsideApprox": 0.7292527055569096,
+          "additionalDepthApprox": -0.49723196065770736,
+          "candidateVelocity": {
+            "x": 3.5888006417287905,
+            "y": -2.8724141110919943
+          }
+        },
+        {
+          "t": 2.5,
+          "baselinePos": [
+            35.8,
+            20.8
+          ],
+          "candidatePos": {
+            "x": 34.835380576716,
+            "y": 20.105521965571825
+          },
+          "additionalOutsideApprox": 0.694478034428176,
+          "additionalDepthApprox": -0.9646194232839989,
+          "candidateVelocity": {
+            "x": 3.12077641956968,
+            "y": -2.811142482531512
+          }
+        },
+        {
+          "t": 2.75,
+          "baselinePos": [
+            36.8,
+            19.9
+          ],
+          "candidatePos": {
+            "x": 35.609902149932466,
+            "y": 19.47195707295149
+          },
+          "additionalOutsideApprox": 0.42804292704850866,
+          "additionalDepthApprox": -1.1900978500675308,
+          "candidateVelocity": {
+            "x": 3.5194414787022934,
+            "y": -2.3943624733310918
+          }
+        }
+      ],
+      "endAt3_05": {
+        "at": 3.05,
+        "accepted": {
+          "pos": {
+            "x": 37.7,
+            "y": 18.6
+          },
+          "vel": [
+            3.08,
+            -4.1
+          ],
+          "state": "falling"
+        },
+        "candidate": {
+          "pos": {
+            "x": 36.45160038058175,
+            "y": 18.610663496907623
+          },
+          "vel": {
+            "x": 1.5211836463556547,
+            "y": -3.2547067572380577
+          },
+          "state": "falling"
+        },
+        "deltaX": -1.248399619418251,
+        "additionalOutside": -0.010663496907621806,
+        "censored": true
+      },
+      "primaryLoadIntegralNs": {
+        "DE_S": [
+          929.235,
+          984.499
+        ],
+        "DT_S": [
+          1715.195,
+          1738.671
+        ],
+        "DT_W": [
+          775.966,
+          960.239
+        ],
+        "Mike": [
+          0,
+          0
+        ],
+        "Will": [
+          220.735,
+          220.533
+        ]
+      },
+      "newTeammateContacts": []
+    },
+    {
+      "id": "A003",
+      "source": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "input": "a3b3f69cf398bda7eb47ffaf163928ed383ecf9eeb4db90b7f64d622a090fd5a",
+      "gzipSHA256": "1b5cf366bd4b9b00734bca583ed8e4b275cf696595dae120aac97c0c438dfabd",
+      "packedPrefixExact": false,
+      "firstRBRequestChange": 2,
+      "rngComparison": "not recorded in original packed baseline; no first-divergence claim",
+      "firstRNGDifference": null,
+      "firstContact": {
+        "accepted": {
+          "t": 2.6,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 35.43,
+            "y": 21.54
+          },
+          "note": "grasp"
+        },
+        "candidate": {
+          "t": 3.05,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 16,
+          "pos": {
+            "x": 34.99,
+            "y": 18.85
+          },
+          "note": "grasp"
+        }
+      },
+      "LOS": {
+        "accepted": {
+          "t": 2.55,
+          "x": 35.2,
+          "y": 21.5
+        },
+        "candidate": null
+      },
+      "progressSamples": [
+        {
+          "t": 2.25,
+          "baselinePos": [
+            33.7,
+            21.7
+          ],
+          "candidatePos": {
+            "x": 33.418849148186915,
+            "y": 21.369364970086707
+          },
+          "additionalOutsideApprox": 0.3306350299132923,
+          "additionalDepthApprox": -0.28115085181308785,
+          "candidateVelocity": {
+            "x": 2.4942928553425965,
+            "y": -2.5340373714884445
+          }
+        },
+        {
+          "t": 2.5,
+          "baselinePos": [
+            34.9,
+            21.5
+          ],
+          "candidatePos": {
+            "x": 33.94642259216042,
+            "y": 20.681903060470056
+          },
+          "additionalOutsideApprox": 0.8180969395299442,
+          "additionalDepthApprox": -0.9535774078395818,
+          "candidateVelocity": {
+            "x": 1.7937898755219042,
+            "y": -3.070354177652648
+          }
+        },
+        {
+          "t": 2.75,
+          "baselinePos": [
+            35.9,
+            21.6
+          ],
+          "candidatePos": {
+            "x": 34.321999848303854,
+            "y": 19.92495659442174
+          },
+          "additionalOutsideApprox": 1.6750434055782613,
+          "additionalDepthApprox": -1.5780001516961448,
+          "candidateVelocity": {
+            "x": 1.8918747314083202,
+            "y": -2.9542384894080884
+          }
+        }
+      ],
+      "endAt3_05": {
+        "at": 3.05,
+        "accepted": {
+          "pos": {
+            "x": 36,
+            "y": 21.4
+          },
+          "vel": [
+            -0.09,
+            -0.36
+          ],
+          "state": "falling"
+        },
+        "candidate": {
+          "pos": {
+            "x": 34.98528834021104,
+            "y": 18.854238531833545
+          },
+          "vel": {
+            "x": 2.4509068997549397,
+            "y": -4.167588724456876
+          },
+          "state": "up"
+        },
+        "deltaX": -1.0147116597889578,
+        "additionalOutside": 2.5457614681664538,
+        "censored": true
+      },
+      "primaryLoadIntegralNs": {
+        "DE_S": [
+          928.599,
+          969.898
+        ],
+        "DT_S": [
+          2193.233,
+          2189.882
+        ],
+        "DT_W": [
+          1729.096,
+          1741.058
+        ],
+        "Mike": [
+          0,
+          0
+        ],
+        "Will": [
+          0,
+          0
+        ]
+      },
+      "newTeammateContacts": []
+    },
+    {
+      "id": "A015",
+      "source": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "input": "ebefc4cf373e9e26df5093fc3a092a472a81ae8dcf8361622a7e85af89b0cd54",
+      "gzipSHA256": "42b3c14de6fcb2b96d0894fca5b9e85642eeed7926c4fc56030190c8c70506f4",
+      "packedPrefixExact": true,
+      "firstRBRequestChange": null,
+      "rngComparison": "not recorded in original packed baseline; no first-divergence claim",
+      "firstRNGDifference": null,
+      "firstContact": {
+        "accepted": {
+          "t": 2.9,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 34.32,
+            "y": 20.07
+          },
+          "note": "grasp"
+        },
+        "candidate": {
+          "t": 2.9,
+          "type": "carrier_contact",
+          "a": 6,
+          "b": 15,
+          "pos": {
+            "x": 34.32,
+            "y": 20.07
+          },
+          "note": "grasp"
+        }
+      },
+      "LOS": {
+        "accepted": null,
+        "candidate": null
+      },
+      "progressSamples": [
+        {
+          "t": 2.25,
+          "baselinePos": [
+            33.4,
+            21.4
+          ],
+          "candidatePos": {
+            "x": 33.379008280788135,
+            "y": 21.399025165809924
+          },
+          "additionalOutsideApprox": 0.0009748341900746027,
+          "additionalDepthApprox": -0.020991719211863824,
+          "candidateVelocity": {
+            "x": 2.872941979137429,
+            "y": -2.6612980181639267
+          }
+        },
+        {
+          "t": 2.5,
+          "baselinePos": [
+            33.9,
+            20.8
+          ],
+          "candidatePos": {
+            "x": 33.93971614022624,
+            "y": 20.79840845527371
+          },
+          "additionalOutsideApprox": 0.0015915447262919713,
+          "additionalDepthApprox": 0.039716140226239816,
+          "candidateVelocity": {
+            "x": 1.7067541302172082,
+            "y": -2.040038955362881
+          }
+        },
+        {
+          "t": 2.75,
+          "baselinePos": [
+            34.3,
+            20.4
+          ],
+          "candidatePos": {
+            "x": 34.25504862379238,
+            "y": 20.350128595544106
+          },
+          "additionalOutsideApprox": 0.04987140445589233,
+          "additionalDepthApprox": -0.04495137620761369,
+          "candidateVelocity": {
+            "x": 0.5860236864915109,
+            "y": -1.934000696986613
+          }
+        }
+      ],
+      "endAt3_05": {
+        "at": 3.05,
+        "accepted": {
+          "pos": {
+            "x": 34.5,
+            "y": 19.9
+          },
+          "vel": [
+            1.42,
+            -0.71
+          ],
+          "state": "up"
+        },
+        "candidate": {
+          "pos": {
+            "x": 34.477640290559,
+            "y": 19.90314215125529
+          },
+          "vel": {
+            "x": 1.4208373871053819,
+            "y": -0.7115608937721386
+          },
+          "state": "up"
+        },
+        "deltaX": -0.022359709440998188,
+        "additionalOutside": -0.0031421512552931574,
+        "censored": true
+      },
+      "primaryLoadIntegralNs": {
+        "DE_S": [
+          1361.712,
+          1361.712
+        ],
+        "DT_S": [
+          2651.067,
+          2651.067
+        ],
+        "DT_W": [
+          1356.982,
+          1356.982
+        ],
+        "Mike": [
+          0,
+          0
+        ],
+        "Will": [
+          0,
+          0
+        ]
+      },
+      "newTeammateContacts": []
+    },
+    {
+      "id": "A027",
+      "source": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "input": "804bffd02cb7aa9b8978d45b4cce245b991fb8368594cb0262cb96651f9ce403",
+      "gzipSHA256": "f07d481a0911b4606c3d1a6499927d37f3c2018056438a06f8eed25ff6d7525f",
+      "packedPrefixExact": true,
+      "firstRBRequestChange": null,
+      "rngComparison": "not recorded in original packed baseline; no first-divergence claim",
+      "firstRNGDifference": null,
+      "firstContact": {
+        "accepted": {
+          "t": 2.8,
+          "type": "hit",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 35.85,
+            "y": 20.78
+          }
+        },
+        "candidate": {
+          "t": 2.8,
+          "type": "hit",
+          "a": 15,
+          "b": 6,
+          "pos": {
+            "x": 35.85,
+            "y": 20.78
+          }
+        }
+      },
+      "LOS": {
+        "accepted": {
+          "t": 2.8,
+          "x": 35,
+          "y": 20.4
+        },
+        "candidate": {
+          "t": 2.8,
+          "pos": {
+            "x": 35.00621786976566,
+            "y": 20.420193631909267
+          },
+          "vel": {
+            "x": 2.2722439408014843,
+            "y": -3.0006231093134472
+          }
+        }
+      },
+      "progressSamples": [
+        {
+          "t": 2.25,
+          "baselinePos": [
+            33.4,
+            21.5
+          ],
+          "candidatePos": {
+            "x": 33.363153671734494,
+            "y": 21.513529453040437
+          },
+          "additionalOutsideApprox": -0.01352945304043729,
+          "additionalDepthApprox": -0.03684632826550427,
+          "candidateVelocity": {
+            "x": 2.85688216412308,
+            "y": -1.9722779248517628
+          }
+        },
+        {
+          "t": 2.5,
+          "baselinePos": [
+            34.1,
+            21.1
+          ],
+          "candidatePos": {
+            "x": 34.137485721299186,
+            "y": 21.090163775034853
+          },
+          "additionalOutsideApprox": 0.009836224965148688,
+          "additionalDepthApprox": 0.03748572129918415,
+          "candidateVelocity": {
+            "x": 3.215773252243454,
+            "y": -1.6510640348819612
+          }
+        },
+        {
+          "t": 2.75,
+          "baselinePos": [
+            34.9,
+            20.6
+          ],
+          "candidatePos": {
+            "x": 34.886531955574966,
+            "y": 20.56411097735487
+          },
+          "additionalOutsideApprox": 0.03588902264513294,
+          "additionalDepthApprox": -0.013468044425032133,
+          "candidateVelocity": {
+            "x": 2.5151926268265683,
+            "y": -2.7560707085106086
+          }
+        }
+      ],
+      "endAt3_05": {
+        "at": 3.05,
+        "accepted": {
+          "pos": {
+            "x": 35.3,
+            "y": 19.7
+          },
+          "vel": [
+            -0.08,
+            -2.86
+          ],
+          "state": "up"
+        },
+        "candidate": {
+          "pos": {
+            "x": 35.302051644468854,
+            "y": 19.6958759507591
+          },
+          "vel": {
+            "x": -0.07954602790706838,
+            "y": -2.8603638680264036
+          },
+          "state": "up"
+        },
+        "deltaX": 0.0020516444688567503,
+        "additionalOutside": 0.004124049240900263,
+        "censored": true
+      },
+      "primaryLoadIntegralNs": {
+        "DE_S": [
+          1923.098,
+          1923.098
+        ],
+        "DT_S": [
+          3178.655,
+          3178.655
+        ],
+        "DT_W": [
+          699.714,
+          699.714
+        ],
+        "Mike": [
+          0,
+          0
+        ],
+        "Will": [
+          0,
+          0
+        ]
+      },
+      "newTeammateContacts": []
+    }
+  ],
+  "transferAndFreshControls": [
+    {
+      "id": "A002",
+      "source": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "input": "c89114b0e70a701a69f3429a69e709d4897b825b4547fbd5ee0834b2b2dd8c2f",
+      "gzipSHA256": "1a08e15c9f210dfc49ff23da46116211bfb5d021ff02920b7c92005ac680909b",
+      "acceptedRawSHA256": "e093e5914788e435031ef7ebf27145f0504defcfcdb082617c690329b645f804",
+      "packedPrefixExact": true,
+      "allPrimaryHandForceRowsExact": true,
+      "until": 3.1
+    },
+    {
+      "id": "A025",
+      "source": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "input": "8a161e45e553df685dfa51e51c63719151aa70d2c534fb4dd157b42dd1d6c3e0",
+      "gzipSHA256": "326c6eabcdb4b57ac2cab22747d061a8a97c51fc0f1741bde22a0bf01b8400b1",
+      "acceptedRawSHA256": "013b170d4208160f8216e31de7c0f77c150e04211a7fcc1cbea5438405584d26",
+      "packedPrefixExact": true,
+      "allPrimaryHandForceRowsExact": true,
+      "until": 3.1
+    },
+    {
+      "id": "F002",
+      "candidateSource": "e29daf4badc62643290fe8d9d750ceb74e3ec4270e89d58c78294d87a7867068",
+      "acceptedReferenceSource": "668acb1784799c93d4704aaaa41233a11627ee0a862b41dc279cd11a0a22eeac",
+      "input": "09e74ac4bf76cc1f7fe96d02b3384792f3573c8c787f13fbc8f5dbd69f20b760",
+      "candidateGzipSHA256": "745bd3d38c63813636f1b26a89797b23b3b83b7627f2d880b8e9407d49faae57",
+      "referenceGzipSHA256": "96b53595e36865a9650d0642578e64adc4a4d2a2ebd0927c5aa75fe36ea8c507",
+      "sameInputsInitialFlagsWorldNode": true,
+      "physicalPrefixExact": true,
+      "eventsExact": true,
+      "until": 3.1,
+      "finalRB": {
+        "pos": {
+          "x": 34.89677734959433,
+          "y": 19.97357391379354
+        },
+        "vel": {
+          "x": 1.670852398103951,
+          "y": -1.5402125861387177
+        }
+      },
+      "earnedDefensiveContact": "DE grasp2.95, Will assist2.95; DE dive fall3.00"
+    }
+  ],
+  "independentReview": {
+    "reviewer": "zone_evidence",
+    "analysisNativeSeconds": 0,
+    "analysisPreviewSeconds": 0,
+    "recommendation": "Accept narrow objective identity correction for independent Integration review; do not claim faster rushing or yardage improvement.",
+    "comparisonDetails": "A015/A027 all packed prefix and primary hand-force rows exact; A002/A025 packed prefix and primary hand-force rows exact. F002 all62 full physical/job/goal/command/RNG/contact/work/hand rows and native events exact against accepted source668."
+  },
+  "footballLimits": [
+    "A039 LOS crossing is later2.60 vs2.35 and candidate x36.452 at3.05 is about1.25yd less upfield; both falling.",
+    "A003 remains just behind LOS at3.05 although upright and farther outside; later first contact does not establish benefit.",
+    "No new Mike blocking load in A039 or A003; A003 also has no Will blocking load. Existing first-level load and earned defensive outcomes remain.",
+    "Short prefixes censored3.10; no final-yardage, league-wide or guaranteed-contact-avoidance claim. Original packed A003 lacks per-tick RNG; no first-RNG causality claim."
+  ],
+  "costSeconds": {
+    "contributorFocusedCommands": 3.804489264,
+    "rootCandidateNativeCommandsIncludingFailedValidation": 6.608245861,
+    "knownLauncherCommandTotal": 19.966372182,
+    "freshAcceptedReferenceCollectorSeparately": 0.726387503,
+    "freshAcceptedReferenceLauncher": 0.972718962,
+    "rootFrozenWZCollector": 2.858657554,
+    "rootTransferCollector": 1.986488998,
+    "contributorNative": 0,
+    "contributorPreview": 0,
+    "extraSimulationsForPackaging": 0,
+    "fullSuites": 0,
+    "rootTypecheckCommand": 9.553637057,
+    "freshAcceptedReferenceLauncherQualification": "Exact command time provided by root; distinct from collector0.726387503s. Receipt reference follows when available; no rerun.",
+    "includingFreshAcceptedReferenceCommandTotal": 20.939091144
+  },
+  "portableReproducer": {
+    "file": "scripts/diag/outer-d-gap-replay.ts",
+    "sha256": "102ca5637fd257a491cc91ac7b45c5f4278d0ef868657926e107a0f1e52b74e5",
+    "historicalUsedOperator": "scripts/diag/zone-access-breakthrough.ts",
+    "historicalUsedOperatorSha256": "4fabe58fe9d4b5e9a2f25738967c27cd48fe063266d089307c79afbe3402dda1",
+    "qualification": "Native captures used the historical no-intervention operator; distributed version removes its inactive intervention CLI/branch, retaining the ordinary observation path and intervention:null schema. Default plan checked with zero World runs; no duplicate native parity campaign.",
+    "inputManifest": "data/reviews/current/outer-d-gap/input-manifest.json",
+    "inputManifestSha256": "8c793f46ff765bf88c4ef9e156c25c4c9d9a6510631b10fa847d348c468ed8c3",
+    "inputManifestBytes": 339924,
+    "manifestQualification": "Seven exact setup/initialBodies/actors; historical result.frames omitted. Extraction makes fresh input files. savedFramePrefixEqual=false is expected for condensed inputs; not a failed physics comparison. F002 actual setup hash09e74ac4 is authoritative despite inherited A003 storedInput metadata.",
+    "rawRetention": "Original saved full inputs retained locally /tmp/zone-native-input and in /workspace/contact-approach-evidence/current.tar.gz SHA25691c9e1d3713e2ce6e84610c319b7638dddfddec492363dadf66d9475e69dbc84. Native tapes retained locally at the documented /workspace output paths; raw telemetry is not committed."
+  },
+  "nextDecision": "Independent objective-correctness review and Integration exact combined verification; reassess actual runner entry-speed/second-level limitation on correct objective. Keep held blocking/footwork and separate physics candidates separate. No merge/promotion performed.",
+  "pullRequest": "https://github.com/tannerthardy/football-simulation-/pull/103"
+}

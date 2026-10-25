@@ -1,0 +1,168 @@
+{
+  "sourceSha256": "192b8d9644146584c6d9315cb1795b3a74e41451d8074703593513b4addf8f97",
+  "setup": {
+    "seeds": [
+      7,
+      19,
+      31,
+      43
+    ],
+    "dt": 0.05,
+    "reps": 20
+  },
+  "definitions": {
+    "normal": "One contact tick with lateral acceleration disabled; identical bodies, shifted remote QB, zero blocker power.",
+    "internal": "Zero-power run block; relative leverage may change, but internal correction must preserve center and momentum.",
+    "bump": "An arriving neighbor bumps a pass block. Collision preserves total center and block separation, and momentum persists into the next block solve.",
+    "limitations": "Synthetic mechanical invariants, not NFL targets. Does not validate limb mechanics, torque, coefficient of friction or game realism."
+  },
+  "summary": {
+    "maxNormalSideways": 0.019709405539902747,
+    "meanInternalDrift": 0.08058455243978209,
+    "meanBumpDistortion": 0.12983767369460786,
+    "meanBumpY": -1.0764299715002505,
+    "meanNextSolveY": 2.5712587923986644e-14
+  },
+  "rows": [
+    {
+      "seed": 7,
+      "test": "normal-force",
+      "shift": -10,
+      "backward": 0.007196523601457727,
+      "sideways": -0.01547034583076723
+    },
+    {
+      "seed": 7,
+      "test": "normal-force",
+      "shift": 0,
+      "backward": 0.017062284491530022,
+      "sideways": 0
+    },
+    {
+      "seed": 7,
+      "test": "normal-force",
+      "shift": 10,
+      "backward": 0.007196523601457727,
+      "sideways": 0.015470345830770782
+    },
+    {
+      "seed": 7,
+      "test": "internal-reposition",
+      "centerDrift": 0.09881602914389358,
+      "relativeChange": 0.1750000000000004
+    },
+    {
+      "seed": 7,
+      "test": "outside-bump",
+      "centerDrift": 0,
+      "blockDistortion": 0.13338728982616033,
+      "commonYAfterBump": -1.1611879107639422,
+      "commonYAfterNextSolve": 4.348476083256247e-14
+    },
+    {
+      "seed": 19,
+      "test": "normal-force",
+      "shift": -10,
+      "backward": 0.008857320156742787,
+      "sideways": -0.01891854790759595
+    },
+    {
+      "seed": 19,
+      "test": "normal-force",
+      "shift": 0,
+      "backward": 0.020889317252866135,
+      "sideways": 0
+    },
+    {
+      "seed": 19,
+      "test": "normal-force",
+      "shift": 10,
+      "backward": 0.008857320156742787,
+      "sideways": 0.01891854790759595
+    },
+    {
+      "seed": 19,
+      "test": "internal-reposition",
+      "centerDrift": 0.09104877922714914,
+      "relativeChange": 0.17148993368997434
+    },
+    {
+      "seed": 19,
+      "test": "outside-bump",
+      "centerDrift": 0,
+      "blockDistortion": 0.13070745368375825,
+      "commonYAfterBump": -1.0870181267406067,
+      "commonYAfterNextSolve": 3.595902740492848e-14
+    },
+    {
+      "seed": 31,
+      "test": "normal-force",
+      "shift": -10,
+      "backward": 0.007810299251012509,
+      "sideways": -0.016691916021216002
+    },
+    {
+      "seed": 31,
+      "test": "normal-force",
+      "shift": 0,
+      "backward": 0.01842880448779738,
+      "sideways": 0
+    },
+    {
+      "seed": 31,
+      "test": "normal-force",
+      "shift": 10,
+      "backward": 0.007810299251012509,
+      "sideways": 0.016691916021219555
+    },
+    {
+      "seed": 31,
+      "test": "internal-reposition",
+      "centerDrift": 0.09143118655099937,
+      "relativeChange": 0.1664737641919117
+    },
+    {
+      "seed": 31,
+      "test": "outside-bump",
+      "centerDrift": 0,
+      "blockDistortion": 0.13567725165097855,
+      "commonYAfterBump": -1.1171208687365362,
+      "commonYAfterNextSolve": 4.372071502417974e-14
+    },
+    {
+      "seed": 43,
+      "test": "normal-force",
+      "shift": -10,
+      "backward": 0.009361967631456025,
+      "sideways": -0.019709405539902747
+    },
+    {
+      "seed": 43,
+      "test": "normal-force",
+      "shift": 0,
+      "backward": 0.021819878658433822,
+      "sideways": 0
+    },
+    {
+      "seed": 43,
+      "test": "normal-force",
+      "shift": 10,
+      "backward": 0.009361967631456025,
+      "sideways": 0.019709405539899194
+    },
+    {
+      "seed": 43,
+      "test": "internal-reposition",
+      "centerDrift": 0.041042214837086276,
+      "relativeChange": 0.08587495270053785
+    },
+    {
+      "seed": 43,
+      "test": "outside-bump",
+      "centerDrift": 0,
+      "blockDistortion": 0.11957869961753431,
+      "commonYAfterBump": -0.9403929797599168,
+      "commonYAfterNextSolve": -2.031415156572409e-14
+    }
+  ]
+}

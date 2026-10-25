@@ -1,0 +1,1070 @@
+{
+  "schema": "long-yardage-run-v1",
+  "sourceBefore": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+  "sourceAfter": "bf3da801c3f8ad3b9729d6e808665bb6f67f9e59c0dbdb0262316267307cf631",
+  "scriptSha256": "6e28e9988e7a82013526acc6e8652287d502f43db9622e663e774248468dcb5f",
+  "cohort": {
+    "rosterSeeds": [
+      [
+        31,
+        32
+      ],
+      [
+        41,
+        42
+      ]
+    ],
+    "strength": 0.55,
+    "playSeed": 3,
+    "runs": [
+      "iz_strong",
+      "draw"
+    ],
+    "flips": [
+      false,
+      true
+    ],
+    "situations": [
+      "1st10",
+      "3rd27"
+    ],
+    "looks": [
+      "rush4",
+      "drop3"
+    ],
+    "formation": "gun_doubles_11",
+    "personnel": "dime",
+    "front": "over",
+    "coverage": "cover4",
+    "zoneStyle": "spot",
+    "los": 40,
+    "ballY": 26.666666666666668,
+    "hurry": false,
+    "rosterSha256": "9bde8358fc08785be2ace3e747f37bec52e93a75d9d09b820c72c940c4c9067f",
+    "selectedProfilesSha256": "c7804d8846f603c43d0d40accff1bebe42354a6a203c17bcc80a0dd53853e7ad",
+    "pressureDrop": {
+      "id": "lab_weak_edge_drop",
+      "name": "Lab weak-edge drop (three rushers/eight cover)",
+      "blitzers": {},
+      "droppers": {
+        "DE_W": "curl_flat_w"
+      },
+      "coverages": [
+        "cover4"
+      ]
+    }
+  },
+  "definitions": {
+    "yards": "PlaySim offenseYards before game-level penalty acceptance/enforcement; lost-fumble gain credited at fumble spot.",
+    "conversion": "No turnover and final endX >= firstDownX before game-level penalty enforcement; field gain and conversion deliberately separate.",
+    "firstContact": "First existing carrier_contact event: body contact or acquired grasp, not mere proximity or blocking contact.",
+    "firstLOS": "First completed World step with a non-QB offensive carrier at or beyond LOS; tick-end sample, not exact substep crossing.",
+    "clock": "Play duration and engine clockStops only; no quarter/time/score or game-level clock management in these isolated plays.",
+    "motion": "No offensive presnap motion is added in this probe.",
+    "snapshots": "Existing controller kind, intended movement and read at named native tick; read changes are observed facts, not invented choice causes."
+  },
+  "limitations": [
+    "32 balanced synthetic plays, two roster pairs and one reused play seed are a debugging panel, not NFL rate estimates.",
+    "This is a four-front-player dime package with one edge dropping; it is not three-DL NFL personnel or a complete prevent call.",
+    "Stock spot Quarters uses actual snap safety depth12yd; third&27 changes belief prior/line to gain, not a new deep-shell depth policy.",
+    "A 5\u201310yd run gain can coexist with a failed third&27 conversion; no fixed gain target or success bonus was applied.",
+    "Existing recognition buckets all third&7+ together; there is no separate third&27 prior or clock/score policy here.",
+    "Role/fit contracts and read transitions are audited; controller kind persists while its internal branches change, so snapshots do not prove which branch caused a movement.",
+    "Read-only World observer and full recording are equivalence checked on four predetermined films, not every fixture.",
+    "Observer signatures cover result/events, final bodies, intents and enumerable primary RNG state; they do not serialize private solver WeakMaps or the full controller object graph.",
+    "Mirror calls reuse the same random stream but slot-specific traits/scatter are not mirrored anonymous bodies, so exact mirrored trajectories are not expected."
+  ],
+  "filmIds": [
+    "LY-R1-iz_strong-3rd27-rush4-R",
+    "LY-R1-iz_strong-3rd27-drop3-R",
+    "LY-R1-draw-3rd27-rush4-R",
+    "LY-R1-draw-3rd27-drop3-R"
+  ],
+  "observerVerifiedCount": 4,
+  "summary": {
+    "snaps": 32,
+    "meanYards": 2.3975,
+    "meanFirstContactTime": 2.7296875,
+    "meanYardsBeforeContact": 0.7654474205160462,
+    "conversionsBeforePenalties": 0,
+    "gains10OrMore": 2,
+    "stuffs": 12,
+    "timeouts": 0,
+    "defenderReadTiming": [
+      {
+        "slot": "DE_W",
+        "samples": 32,
+        "runReadSamples": 32,
+        "meanFirstRunAt": 1.1937499999999996,
+        "initialPassReadSamples": 5,
+        "changedMindSamples": 5
+      },
+      {
+        "slot": "DE_S",
+        "samples": 32,
+        "runReadSamples": 32,
+        "meanFirstRunAt": 1.1156249999999999,
+        "initialPassReadSamples": 8,
+        "changedMindSamples": 8
+      },
+      {
+        "slot": "DT_S",
+        "samples": 32,
+        "runReadSamples": 32,
+        "meanFirstRunAt": 1.0421874999999998,
+        "initialPassReadSamples": 10,
+        "changedMindSamples": 10
+      },
+      {
+        "slot": "DT_W",
+        "samples": 32,
+        "runReadSamples": 32,
+        "meanFirstRunAt": 1.0828125000000002,
+        "initialPassReadSamples": 0,
+        "changedMindSamples": 0
+      },
+      {
+        "slot": "LB_M",
+        "samples": 32,
+        "runReadSamples": 31,
+        "meanFirstRunAt": 1.3145161290322578,
+        "initialPassReadSamples": 24,
+        "changedMindSamples": 23
+      },
+      {
+        "slot": "CB_S",
+        "samples": 32,
+        "runReadSamples": 20,
+        "meanFirstRunAt": 1.9100000000000001,
+        "initialPassReadSamples": 20,
+        "changedMindSamples": 8
+      },
+      {
+        "slot": "CB_W",
+        "samples": 32,
+        "runReadSamples": 19,
+        "meanFirstRunAt": 1.6868421052631581,
+        "initialPassReadSamples": 16,
+        "changedMindSamples": 3
+      },
+      {
+        "slot": "NB",
+        "samples": 32,
+        "runReadSamples": 20,
+        "meanFirstRunAt": 1.8174999999999997,
+        "initialPassReadSamples": 16,
+        "changedMindSamples": 4
+      },
+      {
+        "slot": "DB",
+        "samples": 32,
+        "runReadSamples": 19,
+        "meanFirstRunAt": 1.8263157894736843,
+        "initialPassReadSamples": 16,
+        "changedMindSamples": 3
+      },
+      {
+        "slot": "FS",
+        "samples": 32,
+        "runReadSamples": 26,
+        "meanFirstRunAt": 1.5038461538461536,
+        "initialPassReadSamples": 8,
+        "changedMindSamples": 2
+      },
+      {
+        "slot": "SS",
+        "samples": 32,
+        "runReadSamples": 29,
+        "meanFirstRunAt": 1.5172413793103443,
+        "initialPassReadSamples": 8,
+        "changedMindSamples": 5
+      }
+    ],
+    "outcomes": {
+      "tackle": 32
+    },
+    "maxMomentumResidual": 3.4823626265062874e-12,
+    "maxWorkResidual": 1.283817496755546e-11,
+    "maxMotorWorkExcess": 0
+  },
+  "groups": [
+    {
+      "run": "iz_strong",
+      "situation": "1st10",
+      "look": "rush4",
+      "snaps": 4,
+      "meanYards": 1.7925,
+      "meanFirstContactTime": 2.425,
+      "meanYardsBeforeContact": 0.28603534246079576,
+      "conversionsBeforePenalties": 0,
+      "gains10OrMore": 0,
+      "stuffs": 1,
+      "timeouts": 0,
+      "defenderReadTiming": [
+        {
+          "slot": "DE_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.5625,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DE_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.5,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DT_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.65,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DT_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.7,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "LB_M",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.8375,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "CB_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.275,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "CB_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.275,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "NB",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.275,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DB",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.3,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "FS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.325,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "SS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.3,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        }
+      ],
+      "outcomes": {
+        "tackle": 4
+      },
+      "maxMomentumResidual": 2.0534562131829764e-12,
+      "maxWorkResidual": 7.178257988016412e-12,
+      "maxMotorWorkExcess": 0
+    },
+    {
+      "run": "iz_strong",
+      "situation": "1st10",
+      "look": "drop3",
+      "snaps": 4,
+      "meanYards": 1.5474999999999999,
+      "meanFirstContactTime": 2.4625000000000004,
+      "meanYardsBeforeContact": 0.4549614989006443,
+      "conversionsBeforePenalties": 0,
+      "gains10OrMore": 0,
+      "stuffs": 1,
+      "timeouts": 0,
+      "defenderReadTiming": [
+        {
+          "slot": "DE_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.95,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DE_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.5,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DT_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.625,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DT_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.7,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "LB_M",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.8250000000000001,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "CB_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.275,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "CB_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.275,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "NB",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.275,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DB",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.3,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "FS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.325,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "SS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.3,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        }
+      ],
+      "outcomes": {
+        "tackle": 4
+      },
+      "maxMomentumResidual": 3.2053353828728113e-12,
+      "maxWorkResidual": 7.607470209336498e-12,
+      "maxMotorWorkExcess": 0
+    },
+    {
+      "run": "iz_strong",
+      "situation": "3rd27",
+      "look": "rush4",
+      "snaps": 4,
+      "meanYards": 5.4625,
+      "meanFirstContactTime": 2.7749999999999995,
+      "meanYardsBeforeContact": 2.487200607621652,
+      "conversionsBeforePenalties": 0,
+      "gains10OrMore": 1,
+      "stuffs": 1,
+      "timeouts": 0,
+      "defenderReadTiming": [
+        {
+          "slot": "DE_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.025,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DE_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.8500000000000001,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DT_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.05,
+          "initialPassReadSamples": 2,
+          "changedMindSamples": 2
+        },
+        {
+          "slot": "DT_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.075,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "LB_M",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.275,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 4
+        },
+        {
+          "slot": "CB_S",
+          "samples": 4,
+          "runReadSamples": 1,
+          "meanFirstRunAt": 3.9,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 1
+        },
+        {
+          "slot": "CB_W",
+          "samples": 4,
+          "runReadSamples": 2,
+          "meanFirstRunAt": 3.2,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 2
+        },
+        {
+          "slot": "NB",
+          "samples": 4,
+          "runReadSamples": 2,
+          "meanFirstRunAt": 3.2,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 2
+        },
+        {
+          "slot": "DB",
+          "samples": 4,
+          "runReadSamples": 1,
+          "meanFirstRunAt": 4,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 1
+        },
+        {
+          "slot": "FS",
+          "samples": 4,
+          "runReadSamples": 2,
+          "meanFirstRunAt": 1.35,
+          "initialPassReadSamples": 2,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "SS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.3,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        }
+      ],
+      "outcomes": {
+        "tackle": 4
+      },
+      "maxMomentumResidual": 3.4823626265062874e-12,
+      "maxWorkResidual": 1.0388134796812665e-11,
+      "maxMotorWorkExcess": 0
+    },
+    {
+      "run": "iz_strong",
+      "situation": "3rd27",
+      "look": "drop3",
+      "snaps": 4,
+      "meanYards": 2.5875,
+      "meanFirstContactTime": 2.5,
+      "meanYardsBeforeContact": 0.9296944616197766,
+      "conversionsBeforePenalties": 0,
+      "gains10OrMore": 0,
+      "stuffs": 1,
+      "timeouts": 0,
+      "defenderReadTiming": [
+        {
+          "slot": "DE_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.25,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DE_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.8500000000000001,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DT_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.05,
+          "initialPassReadSamples": 2,
+          "changedMindSamples": 2
+        },
+        {
+          "slot": "DT_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.0625,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "LB_M",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.275,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 4
+        },
+        {
+          "slot": "CB_S",
+          "samples": 4,
+          "runReadSamples": 0,
+          "meanFirstRunAt": null,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "CB_W",
+          "samples": 4,
+          "runReadSamples": 0,
+          "meanFirstRunAt": null,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "NB",
+          "samples": 4,
+          "runReadSamples": 0,
+          "meanFirstRunAt": null,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DB",
+          "samples": 4,
+          "runReadSamples": 0,
+          "meanFirstRunAt": null,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "FS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.7,
+          "initialPassReadSamples": 2,
+          "changedMindSamples": 2
+        },
+        {
+          "slot": "SS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.3,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        }
+      ],
+      "outcomes": {
+        "tackle": 4
+      },
+      "maxMomentumResidual": 3.159063733837373e-12,
+      "maxWorkResidual": 8.64996962945952e-12,
+      "maxMotorWorkExcess": 0
+    },
+    {
+      "run": "draw",
+      "situation": "1st10",
+      "look": "rush4",
+      "snaps": 4,
+      "meanYards": 1.2574999999999998,
+      "meanFirstContactTime": 2.6999999999999997,
+      "meanYardsBeforeContact": -0.09926424873576423,
+      "conversionsBeforePenalties": 0,
+      "gains10OrMore": 0,
+      "stuffs": 3,
+      "timeouts": 0,
+      "defenderReadTiming": [
+        {
+          "slot": "DE_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.1749999999999998,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DE_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.5,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DT_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DT_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.0625,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "LB_M",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.525,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 4
+        },
+        {
+          "slot": "CB_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.525,
+          "initialPassReadSamples": 2,
+          "changedMindSamples": 2
+        },
+        {
+          "slot": "CB_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.525,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "NB",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.525,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DB",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.55,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "FS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.575,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "SS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.55,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        }
+      ],
+      "outcomes": {
+        "tackle": 4
+      },
+      "maxMomentumResidual": 3.084934028563056e-12,
+      "maxWorkResidual": 9.419576230129678e-12,
+      "maxMotorWorkExcess": 0
+    },
+    {
+      "run": "draw",
+      "situation": "1st10",
+      "look": "drop3",
+      "snaps": 4,
+      "meanYards": 2.5875,
+      "meanFirstContactTime": 3.05,
+      "meanYardsBeforeContact": 0.8984653024087201,
+      "conversionsBeforePenalties": 0,
+      "gains10OrMore": 0,
+      "stuffs": 1,
+      "timeouts": 0,
+      "defenderReadTiming": [
+        {
+          "slot": "DE_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.5,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DE_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.175,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DT_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 0.975,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DT_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.0625,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "LB_M",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.525,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 4
+        },
+        {
+          "slot": "CB_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.525,
+          "initialPassReadSamples": 2,
+          "changedMindSamples": 2
+        },
+        {
+          "slot": "CB_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.525,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "NB",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.525,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "DB",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.55,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "FS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.575,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "SS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.55,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        }
+      ],
+      "outcomes": {
+        "tackle": 4
+      },
+      "maxMomentumResidual": 2.0745901100434202e-12,
+      "maxWorkResidual": 8.775202786637237e-12,
+      "maxMotorWorkExcess": 0
+    },
+    {
+      "run": "draw",
+      "situation": "3rd27",
+      "look": "rush4",
+      "snaps": 4,
+      "meanYards": 1.4700000000000002,
+      "meanFirstContactTime": 2.75,
+      "meanYardsBeforeContact": 0.3406237101686216,
+      "conversionsBeforePenalties": 0,
+      "gains10OrMore": 1,
+      "stuffs": 3,
+      "timeouts": 0,
+      "defenderReadTiming": [
+        {
+          "slot": "DE_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.5,
+          "initialPassReadSamples": 2,
+          "changedMindSamples": 2
+        },
+        {
+          "slot": "DE_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.9749999999999999,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 4
+        },
+        {
+          "slot": "DT_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.4875,
+          "initialPassReadSamples": 3,
+          "changedMindSamples": 3
+        },
+        {
+          "slot": "DT_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.5,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "LB_M",
+          "samples": 4,
+          "runReadSamples": 3,
+          "meanFirstRunAt": 1.7333333333333334,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 3
+        },
+        {
+          "slot": "CB_S",
+          "samples": 4,
+          "runReadSamples": 0,
+          "meanFirstRunAt": null,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "CB_W",
+          "samples": 4,
+          "runReadSamples": 1,
+          "meanFirstRunAt": 3.25,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 1
+        },
+        {
+          "slot": "NB",
+          "samples": 4,
+          "runReadSamples": 1,
+          "meanFirstRunAt": 3.25,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 1
+        },
+        {
+          "slot": "DB",
+          "samples": 4,
+          "runReadSamples": 0,
+          "meanFirstRunAt": null,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "FS",
+          "samples": 4,
+          "runReadSamples": 2,
+          "meanFirstRunAt": 1.6,
+          "initialPassReadSamples": 2,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "SS",
+          "samples": 4,
+          "runReadSamples": 1,
+          "meanFirstRunAt": 1.55,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 1
+        }
+      ],
+      "outcomes": {
+        "tackle": 4
+      },
+      "maxMomentumResidual": 2.5987705946375127e-12,
+      "maxWorkResidual": 1.283817496755546e-11,
+      "maxMotorWorkExcess": 0
+    },
+    {
+      "run": "draw",
+      "situation": "3rd27",
+      "look": "drop3",
+      "snaps": 4,
+      "meanYards": 2.4749999999999996,
+      "meanFirstContactTime": 3.1750000000000003,
+      "meanYardsBeforeContact": 0.8258626896839232,
+      "conversionsBeforePenalties": 0,
+      "gains10OrMore": 0,
+      "stuffs": 1,
+      "timeouts": 0,
+      "defenderReadTiming": [
+        {
+          "slot": "DE_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.5875000000000001,
+          "initialPassReadSamples": 3,
+          "changedMindSamples": 3
+        },
+        {
+          "slot": "DE_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.5750000000000002,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 4
+        },
+        {
+          "slot": "DT_S",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.5,
+          "initialPassReadSamples": 3,
+          "changedMindSamples": 3
+        },
+        {
+          "slot": "DT_W",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.5,
+          "initialPassReadSamples": 0,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "LB_M",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 1.625,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 4
+        },
+        {
+          "slot": "CB_S",
+          "samples": 4,
+          "runReadSamples": 3,
+          "meanFirstRunAt": 3.966666666666667,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 3
+        },
+        {
+          "slot": "CB_W",
+          "samples": 4,
+          "runReadSamples": 0,
+          "meanFirstRunAt": null,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "NB",
+          "samples": 4,
+          "runReadSamples": 1,
+          "meanFirstRunAt": 4.3,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 1
+        },
+        {
+          "slot": "DB",
+          "samples": 4,
+          "runReadSamples": 2,
+          "meanFirstRunAt": 3.95,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 2
+        },
+        {
+          "slot": "FS",
+          "samples": 4,
+          "runReadSamples": 2,
+          "meanFirstRunAt": 1.6,
+          "initialPassReadSamples": 2,
+          "changedMindSamples": 0
+        },
+        {
+          "slot": "SS",
+          "samples": 4,
+          "runReadSamples": 4,
+          "meanFirstRunAt": 2.3125,
+          "initialPassReadSamples": 4,
+          "changedMindSamples": 4
+        }
+      ],
+      "outcomes": {
+        "tackle": 4
+      },
+      "maxMomentumResidual": 2.514156848996284e-12,
+      "maxWorkResidual": 1.0036416142611415e-11,
+      "maxMotorWorkExcess": 0
+    }
+  ],
+  "additionalInterpretationLimits": [
+    "Changing the pressure removes one PassRusher constructor and changes the existing primary RNG draw sequence. Reusing the play seed does not promise identical component-level random choices across defensive looks. This is a matched whole-system probe, not a one-force causal experiment.",
+    "The first&10 and third&27 comparison changes both down and line to gain by design; first&10 is used because existing third&7+ recognition shares one situation bucket.",
+    "Final controller kind is not a literal count of players still covering after the ball declares. Three/eight and four/seven describe audited snap and first-native-step jobs; defenders retain run-fit contracts and subsequently pursue.",
+    "The four films are all first-roster/right-direction fixtures fixed before outcomes. Their gains are not representative of the four-snap group means."
+  ]
+}

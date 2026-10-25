@@ -1,0 +1,911 @@
+diff --git a/scripts/diag/physics/directional-brace.ts b/scripts/diag/physics/directional-brace.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..1dd27d78edc415966154b371646f10996a6cf6f6
+--- /dev/null
++++ b/scripts/diag/physics/directional-brace.ts
+@@ -0,0 +1,118 @@
++/** Bounded actual World impulses: an ordinary counterlean plus an independent
++ * height-derived couple. Tests moment direction, not NFL calibration or 3D energy.
++ * A deliberately prepared felt-load checkpoint isolates the first response. */
++import assert from 'node:assert/strict';
++import { createHash } from 'node:crypto';
++import { execFileSync } from 'node:child_process';
++import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
++import { dirname } from 'node:path';
++import { fileURLToPath } from 'node:url';
++import { G } from '../../../src/core/units.js';
++import type { Vec2 } from '../../../src/core/vec.js';
++import type { Body } from '../../../src/physics/kinematics.js';
++import { baseRadiusAt, comHeightAt, newSupport, supportParams } from '../../../src/physics/support.js';
++import { World, type Intent } from '../../../src/physics/world.js';
++import type { PhysicalProfile } from '../../../src/players/physical.js';
++import { sourceVersion } from '../../source-version.js';
++
++export interface BraceCase { id: string; xLoad?: number; coupleForce?: number; plane?: 'parallel' | 'transverse';
++  angle?: number; mirror?: number; substeps?: number }
++const magnitude = (v: Vec2) => Math.hypot(v.x, v.y);
++const dot = (a: Vec2, b: Vec2) => a.x * b.x + a.y * b.y;
++const sum = (vs: Vec2[]) => vs.reduce((a, b) => ({ x: a.x + b.x, y: a.y + b.y }), { x: 0, y: 0 });
++export const braceCases: BraceCase[] = [
++  { id: 'transverse-with-lean', xLoad: 400, coupleForce: 500 },
++  { id: 'transverse-without-lean', xLoad: 0, coupleForce: 500 },
++  { id: 'collinear-with-lean', xLoad: 400, coupleForce: 500, plane: 'parallel' },
++  { id: 'small-transverse-without-lean', xLoad: 0, coupleForce: 100 },
++  { id: 'transverse-with-lean-mirror', xLoad: 400, coupleForce: 500, mirror: -1 },
++  { id: 'transverse-with-lean-rotate', xLoad: 400, coupleForce: 500, angle: .7 },
++  { id: 'transverse-with-lean-48', xLoad: 400, coupleForce: 500, substeps: 48 },
++];
++
++export function directionalBrace(c: BraceCase) {
++  const angle = c.angle ?? 0, mirror = c.mirror ?? 1;
++  const map = (v: Vec2): Vec2 => ({ x: v.x * Math.cos(angle) - mirror * v.y * Math.sin(angle),
++    y: v.x * Math.sin(angle) + mirror * v.y * Math.cos(angle) });
++  const xAxis = map({ x: 1, y: 0 }), coupleAxis = map(c.plane === 'parallel' ? { x: 1, y: 0 } : { x: 0, y: 1 });
++  const p: PhysicalProfile = { massKg: 130, radius: .3, reach: 1, heightYd: 2.05,
++    vmax: 9, tau: 1.3, brake: 6, lateral: 6, turnRate: 8, backpedal: .6, shuffle: .55,
++    maxCatchHeight: 3, reactReach: 2.6, reactionTime: .25, power: 130,
++    balance: .5, bend: .5, stepSpeed: 3.4, getUp: .9 };
++  const make = (pos: Vec2): Body => ({ pos: map(pos), vel: { x: 0, y: 0 }, facing: angle,
++    energy: 1, profile: { ...p }, support: newSupport(.6) });
++  const target = make({ x: 0, y: 0 }), source = make({ x: .9, y: 0 });
++  const actors = c.plane === 'parallel'
++    ? [make({ x: -.9, y: .6 }), make({ x: .9, y: .6 })]
++    : [make({ x: 0, y: -.9 }), make({ x: 0, y: .9 })];
++  const bs = [target, source, ...actors], sp = supportParams(p), hc = comHeightAt(sp, .6);
++  const load = c.xLoad ?? 400, f = c.coupleForce ?? 500, offset = .4, dt = .05;
++  const moment = 2 * f * offset; // Independent external force×height oracle.
++  target.support!.felt = { x: -load * xAxis.x, y: -load * xAxis.y };
++  target.support!.lean = { x: load * xAxis.x, y: load * xAxis.y };
++  const equivalent = moment * hc / (p.massKg * sp.pitchRadiusSq);
++  target.support!.feltTip = { x: equivalent * coupleAxis.x, y: equivalent * coupleAxis.y };
++  const before = structuredClone(bs), world = new World(bs, { substeps: c.substeps ?? 12 });
++  const w: any = world, records: any[] = [];
++  let oldTip = { x: 0, y: 0 }, incomingTip = { x: 0, y: 0 };
++  const feet = w.feet;
++  w.feet = function(i: number, ...args: any[]) {
++    if (i === 0) { oldTip = { ...target.support!.feltTip! }; incomingTip = { x: 0, y: 0 }; }
++    return feet.call(this, i, ...args);
++  };
++  const addLoad = w.addLoad;
++  w.addLoad = function(...args: any[]) {
++    const x = this.tipX[0], y = this.tipY[0];
++    const r = addLoad.apply(this, args);
++    incomingTip.x += this.tipX[0] - x; incomingTip.y += this.tipY[0] - y;
++    return r;
++  };
++  const support = w.updateSupport;
++  w.updateSupport = function(i: number, h: number, ...args: any[]) {
++    if (i === 0) {
++      const scale = p.massKg * sp.pitchRadiusSq / this.comHeight[0];
++      const remaining = { x: this.tipX[0] / h * scale, y: this.tipY[0] / h * scale };
++      const incoming = { x: incomingTip.x / h * scale, y: incomingTip.y / h * scale };
++      const canceled = { x: incoming.x - remaining.x, y: incoming.y - remaining.y };
++      records.push({ t: this.time, h, incomingMoment: incoming, remainingMoment: remaining,
++        canceledMoment: canceled, oldTip, achievedBrace: { x: this.braceX[0], y: this.braceY[0] },
++        ankleMomentBudget: p.massKg * G * baseRadiusAt(sp, target.support!.posture) * this.alpha[0],
++        canceledAlongCouple: dot(canceled, coupleAxis), remainingAlongCouple: dot(remaining, coupleAxis) });
++    }
++    return support.call(this, i, h, ...args);
++  };
++  if (load) world.strike(source, target, { x: -load * dt * xAxis.x, y: -load * dt * xAxis.y }, hc);
++  for (const [i, sign] of [[0, 1], [1, -1]] as const)
++    world.strike(actors[i], target, { x: sign * f * dt * coupleAxis.x, y: sign * f * dt * coupleAxis.y }, hc + sign * offset);
++  // A tiny counter-drive maintains willingness to lean. Zero wanted velocity
++  // is not an existing maximal-brace command; do not confuse the two tasks.
++  const cmd: Intent = { vel: { x: load ? .001 * xAxis.x : 0, y: load ? .001 * xAxis.y : 0 },
++    facing: angle, posture: .6, push: load ? 1 : 0 };
++  const free: Intent = { vel: { x: 0, y: 0 }, free: true };
++  const report = world.step([cmd, free, free, free], dt);
++  const momentum = sum(bs.map(b => ({ x: b.vel.x * p.massKg, y: b.vel.y * p.massKg })));
++  const ground = sum(report.groundImpulse);
++  const momentumResidual = magnitude({ x: momentum.x - ground.x, y: momentum.y - ground.y });
++  assert(momentumResidual < 1e-8); assert(Math.abs(report.work.residual) < 1e-8);
++  for (let i = 0; i < bs.length; i++) {
++    assert(report.armImpulse[i] <= report.armImpulseLimit[i] + 1e-8);
++    assert(report.armWork[i] <= report.armWorkLimit[i] + 1e-8);
++  }
++  return { input: c, preparedCheckpoint: before, commands: [cmd, free, free, free],
++    independentMoment: moment, heightOffset: offset, records,
++    after: structuredClone(bs), momentumResidual, planarWorkResidual: report.work.residual,
++    groundImpulse: report.groundImpulse, armImpulse: report.armImpulse, armImpulseLimit: report.armImpulseLimit,
++    tipAlongCouple: dot(target.support!.tipAccel!, coupleAxis), deviationAlongCouple: dot(target.support!.xi, coupleAxis) };
++}
++
++if (process.argv[1] === fileURLToPath(import.meta.url)) {
++  const out = process.argv[2] ?? 'out/directional-brace/mechanical.json';
++  const start = performance.now(), source = sourceVersion(), rows = braceCases.map(directionalBrace);
++  mkdirSync(dirname(out), { recursive: true });
++  const result = { testedRevision: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
++    source, toolSha256: createHash('sha256').update(readFileSync(fileURLToPath(import.meta.url))).digest('hex'),
++    elapsedSeconds: (performance.now() - start) / 1000, rows };
++  writeFileSync(out, JSON.stringify(result, null, 2) + '\n');
++  console.log(JSON.stringify(rows.map(r => ({ id: r.input.id, first: r.records[0],
++    tip: r.tipAlongCouple, xi: r.deviationAlongCouple, momentumResidual: r.momentumResidual })), null, 2));
++}
+diff --git a/src/physics/world.ts b/src/physics/world.ts
+index 3c54a3d7fcd2d64a3e124a4776dc58dad7729dfb..43a4d4d14657c1662d6d3b3ee2aea2b92fb4ddce 100644
+--- a/src/physics/world.ts
++++ b/src/physics/world.ts
+@@ -1312,10 +1312,23 @@ export class World {
+       const feltMoment = Math.hypot(oldTip.x, oldTip.y) * this.mass[i] * this.sp[i].pitchRadiusSq / hc;
+       const ankleMoment = plans[i].free || sup.state !== 'up' ? 0
+         : this.mass[i] * G * baseRadiusAt(this.sp[i], sup.posture) * this.alpha[i];
+-      const braced = Math.max(leanBrace, feltMoment > 1e-9 ? Math.min(1, ankleMoment / feltMoment) : 0);
++      const ankleBrace = feltMoment > 1e-9 ? Math.min(1, ankleMoment / feltMoment) : 0;
++      const braced = Math.max(leanBrace, ankleBrace);
+       const tx = this.tipX[i] / h, ty = this.tipY[i] / h;
+       this.tipX[i] -= oldTip.x * braced * h;
+       this.tipY[i] -= oldTip.y * braced * h;
++      // A committed lean balances moments in its attained plane. It cannot
++      // also erase an independent transverse couple. Restore that component
++      // beyond the common bounded ankle response; do not add another budget.
++      // The cross-product form is exactly zero for collinear components,
++      // preserving the old arithmetic there without an angular tolerance.
++      const bx = this.braceX[i], by = this.braceY[i], brace2 = bx * bx + by * by;
++      const transverse = bx * oldTip.y - by * oldTip.x;
++      if (leanBrace > ankleBrace && brace2 > 0 && transverse !== 0) {
++        const restore = (leanBrace - ankleBrace) * transverse / brace2 * h;
++        this.tipX[i] -= by * restore;
++        this.tipY[i] += bx * restore;
++      }
+       sup.feltTip = { x: oldTip.x + (tx - oldTip.x) * kf, y: oldTip.y + (ty - oldTip.y) * kf };
+       sup.load = { x: lx, y: ly };
+       sup.felt = { x: sup.felt.x + (lx - sup.felt.x) * kf, y: sup.felt.y + (ly - sup.felt.y) * kf };
+diff --git a/test/directional-brace.test.ts b/test/directional-brace.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..97f784029c9c658c4c09e5dda23b7c95a56c6d7d
+--- /dev/null
++++ b/test/directional-brace.test.ts
+@@ -0,0 +1,71 @@
++import { readFileSync } from 'node:fs';
++import { describe, expect, it } from 'vitest';
++import { directionalBrace } from '../scripts/diag/physics/directional-brace.js';
++
++describe('settled moment follows the attained brace direction', () => {
++  it('cannot spend forward lean on a transverse couple beyond the ankle allowance', () => {
++    const r = directionalBrace({ id: 'transverse', xLoad: 400, coupleForce: 500 });
++    const first = r.records[0];
++    // Independent force×height witness: equal/opposite transverse forces
++    // have no net transverse force, but a 2F*heightOffset moment.
++    expect(first.incomingMoment.y).toBeCloseTo(2 * 500 * .4, 10);
++    expect(first.achievedBrace.y).toBe(0);
++    expect(first.achievedBrace.x).toBeGreaterThan(0);
++    expect(first.canceledAlongCouple).toBeLessThanOrEqual(first.ankleMomentBudget + 1e-9);
++    expect(first.remainingAlongCouple).toBeCloseTo(r.independentMoment - first.ankleMomentBudget, 10);
++  });
++
++  it('preserves the saved accepted collinear execution exactly', () => {
++    const saved = JSON.parse(readFileSync('test/fixtures/directional-brace-control.json', 'utf8'));
++    // JSON encodes the existing never-transitioned `since=-Infinity` as null.
++    // Restore that sentinel only; compare every finite body/state bit exactly.
++    for (const b of saved.after) if (b.support.since === null) b.support.since = -Infinity;
++    const r = directionalBrace(saved.input);
++    expect(r.after).toEqual(saved.after);
++    expect(r.records).toEqual(saved.records);
++    expect(r.tipAlongCouple).toBe(saved.tip);
++    expect(r.deviationAlongCouple).toBe(saved.xi);
++  });
++
++  it('keeps a sub-ankle couple supportable without an unrelated lean', () => {
++    const r = directionalBrace({ id: 'small', xLoad: 0, coupleForce: 100 });
++    expect(r.records[0].canceledAlongCouple).toBeCloseTo(r.independentMoment, 10);
++    expect(Math.abs(r.tipAlongCouple)).toBeLessThan(1e-10);
++    expect(Math.abs(r.deviationAlongCouple)).toBeLessThan(1e-10);
++  });
++
++  it('does not require a lean to use the existing bounded ankle response', () => {
++    const r = directionalBrace({ id: 'without-lean', xLoad: 0, coupleForce: 500 });
++    expect(r.records[0].remainingAlongCouple)
++      .toBeCloseTo(r.independentMoment - r.records[0].ankleMomentBudget, 10);
++    expect(r.tipAlongCouple).toBeGreaterThan(0);
++  });
++
++  it('handles zero moments and zero brace without introducing a direction or NaN', () => {
++    for (const xLoad of [0, 400]) {
++      const r = directionalBrace({ id: 'zero', xLoad, coupleForce: 0 });
++      expect(r.tipAlongCouple).toBe(0);
++      expect(r.records.every(e => e.canceledAlongCouple === 0)).toBe(true);
++    }
++  });
++
++  it('respects the same transverse moment bound after reflection and rotation', () => {
++    const r = directionalBrace({ id: 'base', xLoad: 400, coupleForce: 500 });
++    for (const orientation of [{ mirror: -1 }, { angle: .7 }, { angle: 1.2, mirror: -1 }]) {
++      const other = directionalBrace({ id: 'transformed', xLoad: 400, coupleForce: 500, ...orientation });
++      expect(other.records[0].canceledAlongCouple)
++        .toBeLessThanOrEqual(other.records[0].ankleMomentBudget + 1e-9);
++      expect(other.tipAlongCouple).toBeCloseTo(r.tipAlongCouple, 10);
++      expect(other.deviationAlongCouple).toBeCloseTo(r.deviationAlongCouple, 10);
++    }
++  });
++
++  it('retains the bound at finer contact subdivision without retuning support', () => {
++    const coarse = directionalBrace({ id: '12', xLoad: 400, coupleForce: 500, substeps: 12 });
++    const fine = directionalBrace({ id: '48', xLoad: 400, coupleForce: 500, substeps: 48 });
++    expect(fine.records[0].remainingAlongCouple)
++      .toBeCloseTo(fine.independentMoment - fine.records[0].ankleMomentBudget, 10);
++    expect(Math.abs(coarse.deviationAlongCouple - fine.deviationAlongCouple)).toBeLessThan(.001);
++    expect(Math.abs(coarse.tipAlongCouple - fine.tipAlongCouple)).toBeLessThan(.02);
++  });
++});
+diff --git a/test/fixtures/directional-brace-control.json b/test/fixtures/directional-brace-control.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..f604f16bcb9f0b20afea23bab892ff0734125305
+--- /dev/null
++++ b/test/fixtures/directional-brace-control.json
+@@ -0,0 +1,675 @@
++{
++  "source": "bed3c36cf08407762fed67abdf0a1651fe6ed7fc8c09b43ab3d9b33f1dfd4616",
++  "testedRevision": "342173ca6ea534afdfbe3888b96057ca047fb156",
++  "toolSha256": "961eb9a7ef65d0a1be23f47a1ce65691296a6f5adaa5a41f8971d26722754e6a",
++  "input": {
++    "id": "collinear-with-lean",
++    "xLoad": 400,
++    "coupleForce": 500,
++    "plane": "parallel"
++  },
++  "after": [
++    {
++      "pos": {
++        "x": -0.00031315951869390253,
++        "y": 0
++      },
++      "vel": {
++        "x": -0.01490658019424561,
++        "y": 0
++      },
++      "facing": 0,
++      "energy": 0.9993891419826461,
++      "profile": {
++        "massKg": 130,
++        "radius": 0.3,
++        "reach": 1,
++        "heightYd": 2.05,
++        "vmax": 9,
++        "tau": 1.3,
++        "brake": 6,
++        "lateral": 6,
++        "turnRate": 8,
++        "backpedal": 0.6,
++        "shuffle": 0.55,
++        "maxCatchHeight": 3,
++        "reactReach": 2.6,
++        "reactionTime": 0.25,
++        "power": 130,
++        "balance": 0.5,
++        "bend": 0.5,
++        "stepSpeed": 3.4,
++        "getUp": 0.9
++      },
++      "support": {
++        "xi": {
++          "x": 0.0047652101300379975,
++          "y": 0
++        },
++        "state": "up",
++        "since": null,
++        "posture": 0.6,
++        "lean": {
++          "x": 361.9854271557952,
++          "y": 0
++        },
++        "load": {
++          "x": -399.99999999999994,
++          "y": 0
++        },
++        "felt": {
++          "x": -400,
++          "y": 0
++        },
++        "feetLock": 0,
++        "feetVel": {
++          "x": 0,
++          "y": 0
++        },
++        "fall": {
++          "x": 0,
++          "y": 0
++        },
++        "peak": 0.003929476586791707,
++        "out": 0,
++        "feltTip": {
++          "x": 8.209297477590164,
++          "y": 0
++        },
++        "causes": {
++          "contact": 0.004793046567574799,
++          "legs": 0,
++          "overspeed": 0
++        },
++        "accel": {
++          "x": -0.23046298667059575,
++          "y": 0
++        },
++        "tipAccel": {
++          "x": 0.6529526583388193,
++          "y": 0
++        }
++      },
++      "spin": 0,
++      "squeeze": 0,
++      "sprintLoad": 0
++    },
++    {
++      "pos": {
++        "x": 0.9038461538461545,
++        "y": 0
++      },
++      "vel": {
++        "x": 0.15384615384615385,
++        "y": 0
++      },
++      "facing": 0,
++      "energy": 1,
++      "profile": {
++        "massKg": 130,
++        "radius": 0.3,
++        "reach": 1,
++        "heightYd": 2.05,
++        "vmax": 9,
++        "tau": 1.3,
++        "brake": 6,
++        "lateral": 6,
++        "turnRate": 8,
++        "backpedal": 0.6,
++        "shuffle": 0.55,
++        "maxCatchHeight": 3,
++        "reactReach": 2.6,
++        "reactionTime": 0.25,
++        "power": 130,
++        "balance": 0.5,
++        "bend": 0.5,
++        "stepSpeed": 3.4,
++        "getUp": 0.9
++      },
++      "support": {
++        "xi": {
++          "x": 0,
++          "y": 0
++        },
++        "state": "up",
++        "since": null,
++        "posture": 0.6,
++        "lean": {
++          "x": 0,
++          "y": 0
++        },
++        "load": {
++          "x": 399.99999999999994,
++          "y": 0
++        },
++        "felt": {
++          "x": 285.3980812559239,
++          "y": 0
++        },
++        "feetLock": 0,
++        "feetVel": {
++          "x": 0,
++          "y": 0
++        },
++        "fall": {
++          "x": 0,
++          "y": 0
++        },
++        "peak": 0,
++        "out": 0,
++        "feltTip": {
++          "x": 0,
++          "y": 0
++        },
++        "causes": {
++          "contact": 0,
++          "legs": 0,
++          "overspeed": 0
++        },
++        "accel": {
++          "x": 2.1953698558148003,
++          "y": 0
++        },
++        "tipAccel": {
++          "x": 0,
++          "y": 0
++        }
++      },
++      "spin": 0
++    },
++    {
++      "pos": {
++        "x": -0.9048076923076923,
++        "y": 0.6
++      },
++      "vel": {
++        "x": -0.1923076923076923,
++        "y": 0
++      },
++      "facing": 0,
++      "energy": 1,
++      "profile": {
++        "massKg": 130,
++        "radius": 0.3,
++        "reach": 1,
++        "heightYd": 2.05,
++        "vmax": 9,
++        "tau": 1.3,
++        "brake": 6,
++        "lateral": 6,
++        "turnRate": 8,
++        "backpedal": 0.6,
++        "shuffle": 0.55,
++        "maxCatchHeight": 3,
++        "reactReach": 2.6,
++        "reactionTime": 0.25,
++        "power": 130,
++        "balance": 0.5,
++        "bend": 0.5,
++        "stepSpeed": 3.4,
++        "getUp": 0.9
++      },
++      "support": {
++        "xi": {
++          "x": -0.02547621161495546,
++          "y": 0
++        },
++        "state": "up",
++        "since": null,
++        "posture": 0.6,
++        "lean": {
++          "x": 0,
++          "y": 0
++        },
++        "load": {
++          "x": -499.99999999999994,
++          "y": 0
++        },
++        "felt": {
++          "x": -356.74760156990493,
++          "y": 0
++        },
++        "feetLock": 0,
++        "feetVel": {
++          "x": 0,
++          "y": 0
++        },
++        "fall": {
++          "x": 0,
++          "y": 0
++        },
++        "peak": 0.021008134862736925,
++        "out": 0,
++        "feltTip": {
++          "x": -2.9286471857041603,
++          "y": 0
++        },
++        "causes": {
++          "contact": 0.025619686896192578,
++          "legs": 0,
++          "overspeed": 0
++        },
++        "accel": {
++          "x": -2.7442123197684998,
++          "y": 0
++        },
++        "tipAccel": {
++          "x": -2.9286471857041603,
++          "y": 0
++        }
++      },
++      "spin": 0
++    },
++    {
++      "pos": {
++        "x": 0.9048076923076923,
++        "y": 0.6
++      },
++      "vel": {
++        "x": 0.1923076923076923,
++        "y": 0
++      },
++      "facing": 0,
++      "energy": 1,
++      "profile": {
++        "massKg": 130,
++        "radius": 0.3,
++        "reach": 1,
++        "heightYd": 2.05,
++        "vmax": 9,
++        "tau": 1.3,
++        "brake": 6,
++        "lateral": 6,
++        "turnRate": 8,
++        "backpedal": 0.6,
++        "shuffle": 0.55,
++        "maxCatchHeight": 3,
++        "reactReach": 2.6,
++        "reactionTime": 0.25,
++        "power": 130,
++        "balance": 0.5,
++        "bend": 0.5,
++        "stepSpeed": 3.4,
++        "getUp": 0.9
++      },
++      "support": {
++        "xi": {
++          "x": -0.025476211614955467,
++          "y": 0
++        },
++        "state": "up",
++        "since": null,
++        "posture": 0.6,
++        "lean": {
++          "x": 0,
++          "y": 0
++        },
++        "load": {
++          "x": 499.99999999999994,
++          "y": 0
++        },
++        "felt": {
++          "x": 356.74760156990493,
++          "y": 0
++        },
++        "feetLock": 0,
++        "feetVel": {
++          "x": 0,
++          "y": 0
++        },
++        "fall": {
++          "x": 0,
++          "y": 0
++        },
++        "peak": 0.02100813486273693,
++        "out": 0,
++        "feltTip": {
++          "x": -2.928647185704161,
++          "y": 0
++        },
++        "causes": {
++          "contact": 0.025619686896192588,
++          "legs": 0,
++          "overspeed": 0
++        },
++        "accel": {
++          "x": 2.7442123197684998,
++          "y": 0
++        },
++        "tipAccel": {
++          "x": -2.928647185704161,
++          "y": 0
++        }
++      },
++      "spin": 0
++    }
++  ],
++  "records": [
++    {
++      "t": 0,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 10.174697198988191,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 389.8253028010117,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 389.8253028010118,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 389.8253028010117,
++      "remainingAlongCouple": 10.174697198988191
++    },
++    {
++      "t": 0.004166666666666667,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 19.863140457575607,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 380.1368595424243,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 380.1368595424243,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 380.1368595424243,
++      "remainingAlongCouple": 19.863140457575607
++    },
++    {
++      "t": 0.008333333333333333,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 28.81323098771634,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 371.18676901228355,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 371.1867690122836,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 371.18676901228355,
++      "remainingAlongCouple": 28.81323098771634
++    },
++    {
++      "t": 0.0125,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 36.80000393854937,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 363.1999960614505,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 363.1999960614506,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 363.1999960614505,
++      "remainingAlongCouple": 36.80000393854937
++    },
++    {
++      "t": 0.016666666666666666,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 43.63104807772192,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 356.368951922278,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 356.3689519222781,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 356.368951922278,
++      "remainingAlongCouple": 43.63104807772192
++    },
++    {
++      "t": 0.020833333333333332,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 49.150885174306985,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 350.8491148256929,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 350.849114825693,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 350.8491148256929,
++      "remainingAlongCouple": 49.150885174306985
++    },
++    {
++      "t": 0.024999999999999998,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 53.24421760735156,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 346.7557823926483,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 346.75578239264837,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 346.7557823926483,
++      "remainingAlongCouple": 53.24421760735156
++    },
++    {
++      "t": 0.029166666666666664,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 55.83798623566948,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 344.1620137643304,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 344.1620137643305,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 344.1620137643304,
++      "remainingAlongCouple": 55.83798623566948
++    },
++    {
++      "t": 0.03333333333333333,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 56.90221474597654,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 343.09778525402334,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 343.0977852540234,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 343.09778525402334,
++      "remainingAlongCouple": 56.90221474597654
++    },
++    {
++      "t": 0.0375,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 55.268011187578374,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 344.7319888124215,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 344.73198881242155,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 344.7319888124215,
++      "remainingAlongCouple": 55.268011187578374
++    },
++    {
++      "t": 0.041666666666666664,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 48.58529360482361,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 351.41470639517627,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 351.4147063951763,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 351.41470639517627,
++      "remainingAlongCouple": 48.58529360482361
++    },
++    {
++      "t": 0.04583333333333333,
++      "h": 0.004166666666666667,
++      "incomingMoment": {
++        "x": 399.9999999999999,
++        "y": 0
++      },
++      "remainingMoment": {
++        "x": 38.01457284420476,
++        "y": 0
++      },
++      "canceledMoment": {
++        "x": 361.98542715579515,
++        "y": 0
++      },
++      "oldTip": {
++        "x": 8.209297477590164,
++        "y": 0
++      },
++      "achievedBrace": {
++        "x": 361.9854271557952,
++        "y": 0
++      },
++      "ankleMomentBudget": 236.6669388396763,
++      "canceledAlongCouple": 361.98542715579515,
++      "remainingAlongCouple": 38.01457284420476
++    }
++  ],
++  "tip": 0.6529526583388193,
++  "xi": 0.0047652101300379975
++}

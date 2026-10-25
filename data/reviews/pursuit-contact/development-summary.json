@@ -1,0 +1,4506 @@
+{
+  "schemaVersion": 1,
+  "afterSourceSha256": "359843ba6feed5740c88a7037b220a5d70f586ca53a3dee57c520852dc2083dd",
+  "plays": 7200,
+  "cohort": "Same development lab as prior review: roster seeds 7/19, four forms, six fronts, both flips, ten repetitions per eligible cell. After-only breadth check; cell medians are not pooled.",
+  "byConcept": {
+    "iz_strong": {
+      "block_collect": {
+        "n": 960,
+        "mean": 0.005208333333333333
+      },
+      "block_exchange": {
+        "n": 960,
+        "mean": 0.013541666666666667
+      },
+      "block_log": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "climbs": {
+        "n": 960,
+        "mean": 0.6927083333333334
+      },
+      "explosive": {
+        "n": 960,
+        "mean": 0.06666666666666667
+      },
+      "firstBlockStrike": {
+        "n": 960,
+        "mean": 0.3883854166666667
+      },
+      "firstClimb": {
+        "n": 559,
+        "mean": 1.4216457960644007
+      },
+      "firstContactTime": {
+        "n": 956,
+        "mean": 2.3848326359832637
+      },
+      "firstSustainedOlProximity": {
+        "n": 960,
+        "mean": 0.5222916666666666
+      },
+      "foul": {
+        "n": 960,
+        "mean": 0.03958333333333333
+      },
+      "handoffTime": {
+        "n": 960,
+        "mean": 1.1553645833333335
+      },
+      "olForwardAt0p5": {
+        "n": 960,
+        "mean": 0.24852724469241305
+      },
+      "olLateralAbsAt0p5": {
+        "n": 960,
+        "mean": 0.1287515615095946
+      },
+      "stuff": {
+        "n": 960,
+        "mean": 0.184375
+      },
+      "timeToLos": {
+        "n": 783,
+        "mean": 2.2227330779054917
+      },
+      "timeout": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "unassignedDL": {
+        "n": 960,
+        "mean": 0.005208333333333333
+      },
+      "yards": {
+        "n": 960,
+        "mean": 3.7711145833333335
+      },
+      "yardsBeforeContact": {
+        "n": 956,
+        "mean": 1.4267991512506504
+      }
+    },
+    "oz_strong": {
+      "block_collect": {
+        "n": 960,
+        "mean": 0.004166666666666667
+      },
+      "block_exchange": {
+        "n": 960,
+        "mean": 0.010416666666666666
+      },
+      "block_log": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "climbs": {
+        "n": 960,
+        "mean": 0.5760416666666667
+      },
+      "explosive": {
+        "n": 960,
+        "mean": 0.027083333333333334
+      },
+      "firstBlockStrike": {
+        "n": 960,
+        "mean": 0.39515625000000004
+      },
+      "firstClimb": {
+        "n": 453,
+        "mean": 1.4816777041942606
+      },
+      "firstContactTime": {
+        "n": 958,
+        "mean": 2.4063152400835075
+      },
+      "firstSustainedOlProximity": {
+        "n": 960,
+        "mean": 0.5317708333333333
+      },
+      "foul": {
+        "n": 960,
+        "mean": 0.04479166666666667
+      },
+      "handoffTime": {
+        "n": 960,
+        "mean": 1.1335937499999997
+      },
+      "olForwardAt0p5": {
+        "n": 960,
+        "mean": 0.23071683254057399
+      },
+      "olLateralAbsAt0p5": {
+        "n": 960,
+        "mean": 0.1543133045316935
+      },
+      "stuff": {
+        "n": 960,
+        "mean": 0.203125
+      },
+      "timeToLos": {
+        "n": 766,
+        "mean": 2.2768929503916446
+      },
+      "timeout": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "unassignedDL": {
+        "n": 960,
+        "mean": 0.00625
+      },
+      "yards": {
+        "n": 960,
+        "mean": 3.037125
+      },
+      "yardsBeforeContact": {
+        "n": 958,
+        "mean": 1.1492057670997409
+      }
+    },
+    "power": {
+      "block_collect": {
+        "n": 960,
+        "mean": 0.003125
+      },
+      "block_exchange": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "block_log": {
+        "n": 960,
+        "mean": 0.184375
+      },
+      "climbs": {
+        "n": 960,
+        "mean": 0.6833333333333333
+      },
+      "explosive": {
+        "n": 960,
+        "mean": 0.04583333333333333
+      },
+      "firstBlockStrike": {
+        "n": 960,
+        "mean": 0.43255208333333334
+      },
+      "firstClimb": {
+        "n": 596,
+        "mean": 1.6293624161073825
+      },
+      "firstContactTime": {
+        "n": 958,
+        "mean": 2.5194676409185806
+      },
+      "firstSustainedOlProximity": {
+        "n": 960,
+        "mean": 0.5542708333333333
+      },
+      "foul": {
+        "n": 960,
+        "mean": 0.030208333333333334
+      },
+      "handoffTime": {
+        "n": 933,
+        "mean": 1.4633976420150052
+      },
+      "olForwardAt0p5": {
+        "n": 960,
+        "mean": 0.12216145232677252
+      },
+      "olLateralAbsAt0p5": {
+        "n": 960,
+        "mean": 0.16217197927589894
+      },
+      "pullerToLos": {
+        "n": 442,
+        "mean": 2.5718325791855206
+      },
+      "stuff": {
+        "n": 960,
+        "mean": 0.36666666666666664
+      },
+      "timeToLos": {
+        "n": 602,
+        "mean": 2.539700996677741
+      },
+      "timeout": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "unassignedDL": {
+        "n": 960,
+        "mean": 0.20520833333333333
+      },
+      "yards": {
+        "n": 960,
+        "mean": 1.9024270833333332
+      },
+      "yardsBeforeContact": {
+        "n": 958,
+        "mean": 0.3780501925195212
+      }
+    },
+    "counter": {
+      "block_collect": {
+        "n": 960,
+        "mean": 0.023958333333333335
+      },
+      "block_exchange": {
+        "n": 960,
+        "mean": 0.0020833333333333333
+      },
+      "block_log": {
+        "n": 960,
+        "mean": 0.13333333333333333
+      },
+      "climbs": {
+        "n": 960,
+        "mean": 0.4791666666666667
+      },
+      "explosive": {
+        "n": 960,
+        "mean": 0.03958333333333333
+      },
+      "firstBlockStrike": {
+        "n": 960,
+        "mean": 0.3894270833333333
+      },
+      "firstClimb": {
+        "n": 460,
+        "mean": 1.4757608695652173
+      },
+      "firstContactTime": {
+        "n": 954,
+        "mean": 2.5284591194968553
+      },
+      "firstSustainedOlProximity": {
+        "n": 960,
+        "mean": 0.5558333333333333
+      },
+      "foul": {
+        "n": 960,
+        "mean": 0.020833333333333332
+      },
+      "handoffTime": {
+        "n": 879,
+        "mean": 1.8094425483503982
+      },
+      "olForwardAt0p5": {
+        "n": 960,
+        "mean": 0.033918666339322084
+      },
+      "olLateralAbsAt0p5": {
+        "n": 960,
+        "mean": 0.19495384896509374
+      },
+      "pullerToLos": {
+        "n": 639,
+        "mean": 2.5482785602503912
+      },
+      "stuff": {
+        "n": 960,
+        "mean": 0.24166666666666667
+      },
+      "timeToLos": {
+        "n": 721,
+        "mean": 2.5446601941747575
+      },
+      "timeout": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "unassignedDL": {
+        "n": 960,
+        "mean": 0.36666666666666664
+      },
+      "yards": {
+        "n": 960,
+        "mean": 1.7800416666666665
+      },
+      "yardsBeforeContact": {
+        "n": 954,
+        "mean": 0.3656626430186482
+      }
+    },
+    "trap": {
+      "block_collect": {
+        "n": 960,
+        "mean": 0.10625
+      },
+      "block_exchange": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "block_log": {
+        "n": 960,
+        "mean": 0.215625
+      },
+      "climbs": {
+        "n": 960,
+        "mean": 0.95625
+      },
+      "explosive": {
+        "n": 960,
+        "mean": 0.022916666666666665
+      },
+      "firstBlockStrike": {
+        "n": 960,
+        "mean": 0.4116145833333333
+      },
+      "firstClimb": {
+        "n": 722,
+        "mean": 1.5378808864265927
+      },
+      "firstContactTime": {
+        "n": 955,
+        "mean": 2.1300523560209426
+      },
+      "firstSustainedOlProximity": {
+        "n": 960,
+        "mean": 0.5404166666666667
+      },
+      "foul": {
+        "n": 960,
+        "mean": 0.030208333333333334
+      },
+      "handoffTime": {
+        "n": 957,
+        "mean": 1.0573667711598747
+      },
+      "olForwardAt0p5": {
+        "n": 960,
+        "mean": 0.15260771851171054
+      },
+      "olLateralAbsAt0p5": {
+        "n": 960,
+        "mean": 0.2362941889911553
+      },
+      "pullerToLos": {
+        "n": 537,
+        "mean": 2.101862197392924
+      },
+      "stuff": {
+        "n": 960,
+        "mean": 0.39895833333333336
+      },
+      "timeToLos": {
+        "n": 571,
+        "mean": 2.2984238178633976
+      },
+      "timeout": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "unassignedDL": {
+        "n": 960,
+        "mean": 0.17291666666666666
+      },
+      "yards": {
+        "n": 960,
+        "mean": 1.5803020833333332
+      },
+      "yardsBeforeContact": {
+        "n": 955,
+        "mean": -0.06207551124972788
+      }
+    },
+    "duo": {
+      "block_collect": {
+        "n": 960,
+        "mean": 0.005208333333333333
+      },
+      "block_exchange": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "block_log": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "climbs": {
+        "n": 960,
+        "mean": 1.0145833333333334
+      },
+      "explosive": {
+        "n": 960,
+        "mean": 0.04583333333333333
+      },
+      "firstBlockStrike": {
+        "n": 960,
+        "mean": 0.38083333333333336
+      },
+      "firstClimb": {
+        "n": 796,
+        "mean": 1.3155778894472363
+      },
+      "firstContactTime": {
+        "n": 956,
+        "mean": 2.4167364016736403
+      },
+      "firstSustainedOlProximity": {
+        "n": 960,
+        "mean": 0.5023958333333333
+      },
+      "foul": {
+        "n": 960,
+        "mean": 0.036458333333333336
+      },
+      "handoffTime": {
+        "n": 960,
+        "mean": 1.140625
+      },
+      "olForwardAt0p5": {
+        "n": 960,
+        "mean": 0.3258121602690898
+      },
+      "olLateralAbsAt0p5": {
+        "n": 960,
+        "mean": 0.11070193847251787
+      },
+      "stuff": {
+        "n": 960,
+        "mean": 0.1375
+      },
+      "timeToLos": {
+        "n": 824,
+        "mean": 2.217111650485437
+      },
+      "timeout": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "unassignedDL": {
+        "n": 960,
+        "mean": 0.003125
+      },
+      "yards": {
+        "n": 960,
+        "mean": 3.4289375000000004
+      },
+      "yardsBeforeContact": {
+        "n": 956,
+        "mean": 1.502686987963837
+      }
+    },
+    "wz_strong": {
+      "block_collect": {
+        "n": 960,
+        "mean": 0.0010416666666666667
+      },
+      "block_exchange": {
+        "n": 960,
+        "mean": 0.00625
+      },
+      "block_log": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "climbs": {
+        "n": 960,
+        "mean": 0.5614583333333333
+      },
+      "explosive": {
+        "n": 960,
+        "mean": 0.03333333333333333
+      },
+      "firstBlockStrike": {
+        "n": 960,
+        "mean": 0.39916666666666667
+      },
+      "firstClimb": {
+        "n": 448,
+        "mean": 1.700111607142857
+      },
+      "firstContactTime": {
+        "n": 957,
+        "mean": 2.4199059561128524
+      },
+      "firstSustainedOlProximity": {
+        "n": 960,
+        "mean": 0.5333333333333333
+      },
+      "foul": {
+        "n": 960,
+        "mean": 0.040625
+      },
+      "handoffTime": {
+        "n": 960,
+        "mean": 1.1551041666666668
+      },
+      "olForwardAt0p5": {
+        "n": 960,
+        "mean": 0.22214798015581302
+      },
+      "olLateralAbsAt0p5": {
+        "n": 960,
+        "mean": 0.16171676367890847
+      },
+      "stuff": {
+        "n": 960,
+        "mean": 0.22083333333333333
+      },
+      "timeToLos": {
+        "n": 741,
+        "mean": 2.3292847503373815
+      },
+      "timeout": {
+        "n": 960,
+        "mean": 0.0
+      },
+      "unassignedDL": {
+        "n": 960,
+        "mean": 0.007291666666666667
+      },
+      "yards": {
+        "n": 960,
+        "mean": 2.738875
+      },
+      "yardsBeforeContact": {
+        "n": 957,
+        "mean": 0.9800491889884346
+      }
+    },
+    "split_zone": {
+      "block_collect": {
+        "n": 480,
+        "mean": 0.016666666666666666
+      },
+      "block_exchange": {
+        "n": 480,
+        "mean": 0.0020833333333333333
+      },
+      "block_log": {
+        "n": 480,
+        "mean": 0.10208333333333333
+      },
+      "climbs": {
+        "n": 480,
+        "mean": 1.2416666666666667
+      },
+      "explosive": {
+        "n": 480,
+        "mean": 0.029166666666666667
+      },
+      "firstBlockStrike": {
+        "n": 480,
+        "mean": 0.38875
+      },
+      "firstClimb": {
+        "n": 381,
+        "mean": 1.2896325459317586
+      },
+      "firstContactTime": {
+        "n": 479,
+        "mean": 2.2707724425887266
+      },
+      "firstSustainedOlProximity": {
+        "n": 480,
+        "mean": 0.521875
+      },
+      "foul": {
+        "n": 480,
+        "mean": 0.027083333333333334
+      },
+      "handoffTime": {
+        "n": 480,
+        "mean": 1.1612500000000001
+      },
+      "olForwardAt0p5": {
+        "n": 480,
+        "mean": 0.2763985997056075
+      },
+      "olLateralAbsAt0p5": {
+        "n": 480,
+        "mean": 0.16510781204041988
+      },
+      "pullerToLos": {
+        "n": 181,
+        "mean": 2.1712707182320443
+      },
+      "stuff": {
+        "n": 480,
+        "mean": 0.17916666666666667
+      },
+      "timeToLos": {
+        "n": 392,
+        "mean": 2.1885204081632654
+      },
+      "timeout": {
+        "n": 480,
+        "mean": 0.0
+      },
+      "unassignedDL": {
+        "n": 480,
+        "mean": 0.0
+      },
+      "yards": {
+        "n": 480,
+        "mean": 2.746958333333333
+      },
+      "yardsBeforeContact": {
+        "n": 479,
+        "mean": 0.9013814426248382
+      }
+    }
+  },
+  "byConceptFront": {
+    "iz_strong": {
+      "bear": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.49375
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.1
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.34875
+        },
+        "firstClimb": {
+          "n": 79,
+          "mean": 1.2879746835443038
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.256875
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5037499999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.2434375000000002
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.27239897185181605
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.1206794769023704
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.28125
+        },
+        "timeToLos": {
+          "n": 115,
+          "mean": 2.2243478260869565
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.7321874999999998
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.7441900184692122
+        }
+      },
+      "odd": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.89375
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.3943749999999999
+        },
+        "firstClimb": {
+          "n": 140,
+          "mean": 1.4514285714285713
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.4365625
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.531875
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1378125000000001
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.22901527087164153
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.12051053760102844
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.175
+        },
+        "timeToLos": {
+          "n": 132,
+          "mean": 2.235606060606061
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.4935625000000003
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 1.5572677968089432
+        }
+      },
+      "over": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.9125
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.35125
+        },
+        "firstClimb": {
+          "n": 103,
+          "mean": 1.296601941747573
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.33875
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5262499999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.05
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1384375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.26082289789084023
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.15520349129109487
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.15625
+        },
+        "timeToLos": {
+          "n": 135,
+          "mean": 2.202962962962963
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.3998125
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 1.112086896844581
+        }
+      },
+      "tite": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.425
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.39468749999999997
+        },
+        "firstClimb": {
+          "n": 68,
+          "mean": 1.2742647058823529
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.2540625
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.518125
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.24977630353914523
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.09191808673365767
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.23125
+        },
+        "timeToLos": {
+          "n": 123,
+          "mean": 2.2333333333333334
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.4196874999999998
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.7094267907972226
+        }
+      },
+      "under": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.4375
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.06875
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.42000000000000004
+        },
+        "firstClimb": {
+          "n": 70,
+          "mean": 1.5264285714285712
+        },
+        "firstContactTime": {
+          "n": 157,
+          "mean": 2.429936305732484
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5306249999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.21944050335087448
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.13578453430853513
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.175
+        },
+        "timeToLos": {
+          "n": 132,
+          "mean": 2.2295454545454545
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 5.3938125
+        },
+        "yardsBeforeContact": {
+          "n": 157,
+          "mean": 1.6007201362680714
+        }
+      },
+      "wide9": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.075
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.99375
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.175
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.42125
+        },
+        "firstClimb": {
+          "n": 99,
+          "mean": 1.6434343434343432
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.594968553459119
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.523125
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.05625
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.2597095206501608
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.14841324222088112
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.0875
+        },
+        "timeToLos": {
+          "n": 146,
+          "mean": 2.213013698630137
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 7.187625
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": 2.849254633549314
+        }
+      }
+    },
+    "oz_strong": {
+      "bear": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.4875
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.35625
+        },
+        "firstClimb": {
+          "n": 78,
+          "mean": 1.3173076923076923
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.2721875000000002
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5193749999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0625
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.2390625
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.25231840480731116
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.14479518677882863
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.25625
+        },
+        "timeToLos": {
+          "n": 118,
+          "mean": 2.2788135593220336
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 1.9628125
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.473017976787638
+        }
+      },
+      "odd": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.75625
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.39999999999999997
+        },
+        "firstClimb": {
+          "n": 117,
+          "mean": 1.4683760683760685
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.355625
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5424999999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1125
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.2092613463761436
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.1539299029112806
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.24375
+        },
+        "timeToLos": {
+          "n": 120,
+          "mean": 2.2775000000000003
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.5758125
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.7247637655434942
+        }
+      },
+      "over": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.75
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.3590625
+        },
+        "firstClimb": {
+          "n": 87,
+          "mean": 1.3810344827586207
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.4140625
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.53
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1125
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.24702145800667555
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.17297955478701085
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.0875
+        },
+        "timeToLos": {
+          "n": 145,
+          "mean": 2.2696551724137928
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 4.0729999999999995
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 1.0375845929665912
+        }
+      },
+      "tite": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.2625
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.3996875
+        },
+        "firstClimb": {
+          "n": 42,
+          "mean": 1.4535714285714285
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.3459375000000002
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5312499999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.05625
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1125
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.22686857152457499
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.12507338150080305
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.2625
+        },
+        "timeToLos": {
+          "n": 119,
+          "mean": 2.300840336134454
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.4888125
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.7576589595781362
+        }
+      },
+      "under": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.3125
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.4296875
+        },
+        "firstClimb": {
+          "n": 50,
+          "mean": 1.656
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.345625
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5393749999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1125
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.19824407755325102
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.16549572660679063
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.325
+        },
+        "timeToLos": {
+          "n": 111,
+          "mean": 2.2810810810810813
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.1183125
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.7671767884239948
+        }
+      },
+      "wide9": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.05625
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.8875
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.05
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.42625
+        },
+        "firstClimb": {
+          "n": 79,
+          "mean": 1.679113924050633
+        },
+        "firstContactTime": {
+          "n": 158,
+          "mean": 2.7082278481012656
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.528125
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1125
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.2505871369754876
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.16360607460544735
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "timeToLos": {
+          "n": 153,
+          "mean": 2.2601307189542483
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 5.004
+        },
+        "yardsBeforeContact": {
+          "n": 158,
+          "mean": 3.16016956679478
+        }
+      }
+    },
+    "power": {
+      "bear": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.175
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.53125
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.05
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.45531249999999995
+        },
+        "firstClimb": {
+          "n": 85,
+          "mean": 1.3705882352941177
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.4409375
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5393749999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.05
+        },
+        "handoffTime": {
+          "n": 150,
+          "mean": 1.4906666666666664
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.1166274778069881
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.19185657067322712
+        },
+        "pullerToLos": {
+          "n": 84,
+          "mean": 2.4541666666666666
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.33125
+        },
+        "timeToLos": {
+          "n": 105,
+          "mean": 2.548571428571429
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.175
+        },
+        "yards": {
+          "n": 160,
+          "mean": 1.72775
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.3882458705614969
+        }
+      },
+      "odd": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.1875
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 1.25
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.3878125
+        },
+        "firstClimb": {
+          "n": 140,
+          "mean": 1.5510714285714287
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.5415094339622644
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5487499999999998
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "handoffTime": {
+          "n": 158,
+          "mean": 1.4651898734177213
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.1404175682115336
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.14137552148705998
+        },
+        "pullerToLos": {
+          "n": 74,
+          "mean": 2.680405405405405
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.35
+        },
+        "timeToLos": {
+          "n": 103,
+          "mean": 2.5572815533980586
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.96875
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.1674375
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": 0.2039548593862239
+        }
+      },
+      "over": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.24375
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.68125
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.08125
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.42781250000000004
+        },
+        "firstClimb": {
+          "n": 109,
+          "mean": 1.686697247706422
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.7172955974842767
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5225
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.4749999999999999
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.14868837594155587
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.1570399546217997
+        },
+        "pullerToLos": {
+          "n": 100,
+          "mean": 2.5340000000000003
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.19375
+        },
+        "timeToLos": {
+          "n": 128,
+          "mean": 2.53515625
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 3.9638749999999994
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": 1.3127896111867223
+        }
+      },
+      "tite": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.20625
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.39375
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.4365625000000001
+        },
+        "firstClimb": {
+          "n": 63,
+          "mean": 2.3126984126984125
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.46375
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.543125
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.4749999999999999
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.12394371648818299
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.16778774265956817
+        },
+        "pullerToLos": {
+          "n": 64,
+          "mean": 2.54921875
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.4125
+        },
+        "timeToLos": {
+          "n": 94,
+          "mean": 2.527659574468085
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.06875
+        },
+        "yards": {
+          "n": 160,
+          "mean": 0.8958125000000001
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.17156026191923468
+        }
+      },
+      "under": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.11875
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.56875
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.39875
+        },
+        "firstClimb": {
+          "n": 91,
+          "mean": 1.4736263736263735
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.4699999999999998
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5812499999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "handoffTime": {
+          "n": 149,
+          "mean": 1.4177852348993287
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.09595119076078999
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.16253914256219504
+        },
+        "pullerToLos": {
+          "n": 66,
+          "mean": 2.585606060606061
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.39375
+        },
+        "timeToLos": {
+          "n": 97,
+          "mean": 2.5061855670103093
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "yards": {
+          "n": 160,
+          "mean": 1.12375
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.07694337125567978
+        }
+      },
+      "wide9": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.175
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.675
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.075
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.4890625
+        },
+        "firstClimb": {
+          "n": 108,
+          "mean": 1.6092592592592594
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.4846875
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.590625
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "handoffTime": {
+          "n": 156,
+          "mean": 1.4551282051282048
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.10734038475158454
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.15243294365154356
+        },
+        "pullerToLos": {
+          "n": 54,
+          "mean": 2.6861111111111113
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.51875
+        },
+        "timeToLos": {
+          "n": 75,
+          "mean": 2.5693333333333332
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "yards": {
+          "n": 160,
+          "mean": 1.5359375
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.11956120634235638
+        }
+      }
+    },
+    "counter": {
+      "bear": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.26875
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.3559375
+        },
+        "firstClimb": {
+          "n": 4,
+          "mean": 2.2375
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.3106918238993712
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5731249999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "handoffTime": {
+          "n": 133,
+          "mean": 1.7962406015037595
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.011344383300807328
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.2074911619822064
+        },
+        "pullerToLos": {
+          "n": 84,
+          "mean": 2.4773809523809525
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.3625
+        },
+        "timeToLos": {
+          "n": 101,
+          "mean": 2.616831683168317
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.19375
+        },
+        "yards": {
+          "n": 160,
+          "mean": 0.9925
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": -0.6283156743338244
+        }
+      },
+      "odd": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.1125
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.7625
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.3865625
+        },
+        "firstClimb": {
+          "n": 122,
+          "mean": 1.4491803278688526
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.584375
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.549375
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "handoffTime": {
+          "n": 144,
+          "mean": 1.788888888888889
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.04813024218809642
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.1550574059682234
+        },
+        "pullerToLos": {
+          "n": 106,
+          "mean": 2.613679245283019
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.18125
+        },
+        "timeToLos": {
+          "n": 130,
+          "mean": 2.503846153846154
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.975
+        },
+        "yards": {
+          "n": 160,
+          "mean": 1.2868125000000001
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.5547107118272121
+        }
+      },
+      "over": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.09375
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.16875
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.7625
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.05625
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.35531250000000003
+        },
+        "firstClimb": {
+          "n": 122,
+          "mean": 1.4954918032786884
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.600943396226415
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5425
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "handoffTime": {
+          "n": 152,
+          "mean": 1.8210526315789475
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.024674998916329093
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.22396159580091002
+        },
+        "pullerToLos": {
+          "n": 119,
+          "mean": 2.3861344537815126
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.2
+        },
+        "timeToLos": {
+          "n": 126,
+          "mean": 2.5238095238095237
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.52325
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": 1.06893961669564
+        }
+      },
+      "tite": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.1
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.05625
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.4090625
+        },
+        "firstClimb": {
+          "n": 4,
+          "mean": 1.325
+        },
+        "firstContactTime": {
+          "n": 158,
+          "mean": 2.532911392405063
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.59
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "handoffTime": {
+          "n": 146,
+          "mean": 1.8054794520547948
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.027705891340694837
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.2015083683325012
+        },
+        "pullerToLos": {
+          "n": 96,
+          "mean": 2.625
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.275
+        },
+        "timeToLos": {
+          "n": 114,
+          "mean": 2.5
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.1405000000000003
+        },
+        "yardsBeforeContact": {
+          "n": 158,
+          "mean": 0.3545558420475636
+        }
+      },
+      "under": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.1
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.6125
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.05625
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.396875
+        },
+        "firstClimb": {
+          "n": 98,
+          "mean": 1.1877551020408164
+        },
+        "firstContactTime": {
+          "n": 158,
+          "mean": 2.6202531645569622
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.54125
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "handoffTime": {
+          "n": 152,
+          "mean": 1.8210526315789475
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.05132022285847786
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.17701142081118268
+        },
+        "pullerToLos": {
+          "n": 118,
+          "mean": 2.5622881355932203
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.21875
+        },
+        "timeToLos": {
+          "n": 122,
+          "mean": 2.541803278688525
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 1.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 3.18525
+        },
+        "yardsBeforeContact": {
+          "n": 158,
+          "mean": 0.7341304789830865
+        }
+      },
+      "wide9": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.05
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.6875
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.4328125
+        },
+        "firstClimb": {
+          "n": 110,
+          "mean": 1.717727272727273
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.521875
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.53875
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "handoffTime": {
+          "n": 152,
+          "mean": 1.8210526315789475
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.04033625943152696
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.20469314089553867
+        },
+        "pullerToLos": {
+          "n": 116,
+          "mean": 2.628448275862069
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.2125
+        },
+        "timeToLos": {
+          "n": 128,
+          "mean": 2.5921875
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 0.5519375
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.11260501243165652
+        }
+      }
+    },
+    "trap": {
+      "bear": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.1625
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.23125
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.64375
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.35125
+        },
+        "firstClimb": {
+          "n": 103,
+          "mean": 1.5257281553398059
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 1.9553124999999998
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.536875
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "handoffTime": {
+          "n": 159,
+          "mean": 1.0553459119496855
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.13513933195787434
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.23834983359760095
+        },
+        "pullerToLos": {
+          "n": 66,
+          "mean": 2.3303030303030305
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.61875
+        },
+        "timeToLos": {
+          "n": 57,
+          "mean": 2.6070175438596492
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 0.224875
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": -1.1876064346692137
+        }
+      },
+      "odd": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.20625
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 1.59375
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.401875
+        },
+        "firstClimb": {
+          "n": 155,
+          "mean": 1.5348387096774194
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.3537735849056602
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5512499999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.0615625
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.16678254708584045
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.2104963799782104
+        },
+        "pullerToLos": {
+          "n": 106,
+          "mean": 2.0014150943396225
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "timeToLos": {
+          "n": 153,
+          "mean": 2.1915032679738564
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.9375
+        },
+        "yards": {
+          "n": 160,
+          "mean": 3.488875
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": 1.2931890374282788
+        }
+      },
+      "over": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.225
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 1.5125
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.34875
+        },
+        "firstClimb": {
+          "n": 149,
+          "mean": 1.4187919463087248
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.11125
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.526875
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.05625
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.1640962042386549
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.24151328523157795
+        },
+        "pullerToLos": {
+          "n": 91,
+          "mean": 1.9241758241758242
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.3875
+        },
+        "timeToLos": {
+          "n": 97,
+          "mean": 2.243298969072165
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 1.4693749999999999
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.08847629535922441
+        }
+      },
+      "tite": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.325
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.15
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.5875
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.406875
+        },
+        "firstClimb": {
+          "n": 91,
+          "mean": 1.693956043956044
+        },
+        "firstContactTime": {
+          "n": 158,
+          "mean": 1.9886075949367088
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5512499999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "handoffTime": {
+          "n": 158,
+          "mean": 1.0585443037974684
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.1200444956927749
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.2168720792309649
+        },
+        "pullerToLos": {
+          "n": 72,
+          "mean": 2.2284722222222224
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.56875
+        },
+        "timeToLos": {
+          "n": 69,
+          "mean": 2.4391304347826086
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.09375
+        },
+        "yards": {
+          "n": 160,
+          "mean": 1.25475
+        },
+        "yardsBeforeContact": {
+          "n": 158,
+          "mean": -0.8364183361245593
+        }
+      },
+      "under": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.075
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.175
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.8
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.42750000000000005
+        },
+        "firstClimb": {
+          "n": 128,
+          "mean": 1.583203125
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.382704402515723
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5743749999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.05625
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.13147584098070794
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.22933058494820494
+        },
+        "pullerToLos": {
+          "n": 97,
+          "mean": 2.1329896907216495
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.1
+        },
+        "timeToLos": {
+          "n": 144,
+          "mean": 2.2666666666666666
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.4314375
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": 0.9832919629934426
+        }
+      },
+      "wide9": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.30625
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.6
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.5334374999999999
+        },
+        "firstClimb": {
+          "n": 96,
+          "mean": 1.5322916666666666
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 1.9889937106918238
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.501875
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.05625
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.1981078911144106
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.2812029709603728
+        },
+        "pullerToLos": {
+          "n": 105,
+          "mean": 2.098095238095238
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.68125
+        },
+        "timeToLos": {
+          "n": 51,
+          "mean": 2.2784313725490195
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 0.6125
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": -0.7121237290142463
+        }
+      }
+    },
+    "duo": {
+      "bear": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.7125
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.34468750000000004
+        },
+        "firstClimb": {
+          "n": 114,
+          "mean": 1.193859649122807
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.2867924528301886
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.48125
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.3548194822295474
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.13891705033304733
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.15
+        },
+        "timeToLos": {
+          "n": 135,
+          "mean": 2.2192592592592595
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.190625
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": 0.5385585962191153
+        }
+      },
+      "odd": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.89375
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.05
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.3837499999999999
+        },
+        "firstClimb": {
+          "n": 140,
+          "mean": 1.3839285714285714
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.4242138364779873
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.499375
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.3099719894620078
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.11479543085566088
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.175
+        },
+        "timeToLos": {
+          "n": 132,
+          "mean": 2.2098484848484854
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "yards": {
+          "n": 160,
+          "mean": 3.1690625
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": 1.7178892312660774
+        }
+      },
+      "over": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 1.35625
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.01875
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.34687500000000004
+        },
+        "firstClimb": {
+          "n": 144,
+          "mean": 1.2756944444444445
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.3759375
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.50125
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.3217833445504259
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.11637090470530242
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.15
+        },
+        "timeToLos": {
+          "n": 136,
+          "mean": 2.2176470588235295
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.2653749999999997
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 1.2207567841805527
+        }
+      },
+      "tite": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.89375
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.08125
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.37749999999999995
+        },
+        "firstClimb": {
+          "n": 143,
+          "mean": 1.401048951048951
+        },
+        "firstContactTime": {
+          "n": 158,
+          "mean": 2.52753164556962
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.48875
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.3567633938018814
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.09933700731568032
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.08125
+        },
+        "timeToLos": {
+          "n": 147,
+          "mean": 2.213605442176871
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 5.5146875
+        },
+        "yardsBeforeContact": {
+          "n": 158,
+          "mean": 2.198028840295954
+        }
+      },
+      "under": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.6125
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.0125
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.4171875
+        },
+        "firstClimb": {
+          "n": 98,
+          "mean": 1.3270408163265304
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.3003125
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.53125
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1562500000000002
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.2916330959065265
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.11542003014895832
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.21875
+        },
+        "timeToLos": {
+          "n": 123,
+          "mean": 2.2105691056910572
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.0916875
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.931156304604184
+        }
+      },
+      "wide9": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 1.61875
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.06875
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.41500000000000004
+        },
+        "firstClimb": {
+          "n": 157,
+          "mean": 1.2945859872611465
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.58625
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5125
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.31990165566415013
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.07937120747645793
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.05
+        },
+        "timeToLos": {
+          "n": 151,
+          "mean": 2.2298013245033115
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 5.3421875
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 2.4137431559435236
+        }
+      }
+    },
+    "wz_strong": {
+      "bear": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.43125
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.36062500000000003
+        },
+        "firstClimb": {
+          "n": 69,
+          "mean": 1.6318840579710143
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.3434375
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5225
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0625
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.2431250000000003
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.2423140028487885
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.15459352186929534
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.2375
+        },
+        "timeToLos": {
+          "n": 121,
+          "mean": 2.3314049586776857
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 1.6657500000000003
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.6255221369503483
+        }
+      },
+      "odd": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.8
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.39999999999999997
+        },
+        "firstClimb": {
+          "n": 122,
+          "mean": 1.7188524590163934
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.4371875
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5406249999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.20473631959564162
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.15734749881764215
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.1625
+        },
+        "timeToLos": {
+          "n": 133,
+          "mean": 2.3180451127819546
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.04375
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.6986250000000003
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.8812946045146279
+        }
+      },
+      "over": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.675
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.365625
+        },
+        "firstClimb": {
+          "n": 79,
+          "mean": 1.6063291139240505
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.419496855345912
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.525
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.025
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.23648409582910715
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.18349150749984616
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.1625
+        },
+        "timeToLos": {
+          "n": 132,
+          "mean": 2.3295454545454546
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 3.2236249999999997
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": 0.8760942483247732
+        }
+      },
+      "tite": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.29375
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.00625
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.40531249999999996
+        },
+        "firstClimb": {
+          "n": 47,
+          "mean": 1.40531914893617
+        },
+        "firstContactTime": {
+          "n": 160,
+          "mean": 2.3024999999999998
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5287499999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.21567921819995672
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.13501384523252985
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.3
+        },
+        "timeToLos": {
+          "n": 111,
+          "mean": 2.3414414414414413
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 1.5595625
+        },
+        "yardsBeforeContact": {
+          "n": 160,
+          "mean": 0.3617002102900529
+        }
+      },
+      "under": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.3375
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.42781250000000004
+        },
+        "firstClimb": {
+          "n": 54,
+          "mean": 1.9509259259259257
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.3462264150943395
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5456249999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.0375
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.189590198069905
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.1720957560003306
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.3125
+        },
+        "timeToLos": {
+          "n": 110,
+          "mean": 2.338181818181818
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 2.8191875
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": 0.5015767384373951
+        }
+      },
+      "wide9": {
+        "block_collect": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 160,
+          "mean": 0.03125
+        },
+        "block_log": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "climbs": {
+          "n": 160,
+          "mean": 0.83125
+        },
+        "explosive": {
+          "n": 160,
+          "mean": 0.05625
+        },
+        "firstBlockStrike": {
+          "n": 160,
+          "mean": 0.43562500000000004
+        },
+        "firstClimb": {
+          "n": 77,
+          "mean": 1.831818181818182
+        },
+        "firstContactTime": {
+          "n": 159,
+          "mean": 2.671698113207547
+        },
+        "firstSustainedOlProximity": {
+          "n": 160,
+          "mean": 0.5374999999999999
+        },
+        "foul": {
+          "n": 160,
+          "mean": 0.05
+        },
+        "handoffTime": {
+          "n": 160,
+          "mean": 1.1375
+        },
+        "olForwardAt0p5": {
+          "n": 160,
+          "mean": 0.24408404639147913
+        },
+        "olLateralAbsAt0p5": {
+          "n": 160,
+          "mean": 0.1677584526538068
+        },
+        "stuff": {
+          "n": 160,
+          "mean": 0.15
+        },
+        "timeToLos": {
+          "n": 134,
+          "mean": 2.3208955223880596
+        },
+        "timeout": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 160,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 160,
+          "mean": 4.4665
+        },
+        "yardsBeforeContact": {
+          "n": 159,
+          "mean": 2.640847010603412
+        }
+      }
+    },
+    "split_zone": {
+      "bear": {
+        "block_collect": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 80,
+          "mean": 0.0875
+        },
+        "climbs": {
+          "n": 80,
+          "mean": 1.1125
+        },
+        "explosive": {
+          "n": 80,
+          "mean": 0.0125
+        },
+        "firstBlockStrike": {
+          "n": 80,
+          "mean": 0.345625
+        },
+        "firstClimb": {
+          "n": 65,
+          "mean": 1.1538461538461537
+        },
+        "firstContactTime": {
+          "n": 80,
+          "mean": 2.13375
+        },
+        "firstSustainedOlProximity": {
+          "n": 80,
+          "mean": 0.5149999999999999
+        },
+        "foul": {
+          "n": 80,
+          "mean": 0.0125
+        },
+        "handoffTime": {
+          "n": 80,
+          "mean": 1.1618750000000002
+        },
+        "olForwardAt0p5": {
+          "n": 80,
+          "mean": 0.2736705984674528
+        },
+        "olLateralAbsAt0p5": {
+          "n": 80,
+          "mean": 0.15024773063366484
+        },
+        "pullerToLos": {
+          "n": 21,
+          "mean": 2.2142857142857144
+        },
+        "stuff": {
+          "n": 80,
+          "mean": 0.3125
+        },
+        "timeToLos": {
+          "n": 55,
+          "mean": 2.1945454545454544
+        },
+        "timeout": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 80,
+          "mean": 1.1783750000000002
+        },
+        "yardsBeforeContact": {
+          "n": 80,
+          "mean": 0.09571019199502784
+        }
+      },
+      "odd": {
+        "block_collect": {
+          "n": 80,
+          "mean": 0.0125
+        },
+        "block_exchange": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 80,
+          "mean": 0.0625
+        },
+        "climbs": {
+          "n": 80,
+          "mean": 1.625
+        },
+        "explosive": {
+          "n": 80,
+          "mean": 0.0125
+        },
+        "firstBlockStrike": {
+          "n": 80,
+          "mean": 0.39875
+        },
+        "firstClimb": {
+          "n": 75,
+          "mean": 1.2133333333333334
+        },
+        "firstContactTime": {
+          "n": 80,
+          "mean": 2.3737500000000002
+        },
+        "firstSustainedOlProximity": {
+          "n": 80,
+          "mean": 0.5312499999999999
+        },
+        "foul": {
+          "n": 80,
+          "mean": 0.025
+        },
+        "handoffTime": {
+          "n": 80,
+          "mean": 1.1618750000000002
+        },
+        "olForwardAt0p5": {
+          "n": 80,
+          "mean": 0.25346783960410907
+        },
+        "olLateralAbsAt0p5": {
+          "n": 80,
+          "mean": 0.1628608897355208
+        },
+        "pullerToLos": {
+          "n": 30,
+          "mean": 2.113333333333333
+        },
+        "stuff": {
+          "n": 80,
+          "mean": 0.1
+        },
+        "timeToLos": {
+          "n": 72,
+          "mean": 2.2333333333333334
+        },
+        "timeout": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 80,
+          "mean": 2.230375
+        },
+        "yardsBeforeContact": {
+          "n": 80,
+          "mean": 1.2437193027823685
+        }
+      },
+      "over": {
+        "block_collect": {
+          "n": 80,
+          "mean": 0.0625
+        },
+        "block_exchange": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 80,
+          "mean": 0.1125
+        },
+        "climbs": {
+          "n": 80,
+          "mean": 1.3
+        },
+        "explosive": {
+          "n": 80,
+          "mean": 0.0125
+        },
+        "firstBlockStrike": {
+          "n": 80,
+          "mean": 0.34937500000000005
+        },
+        "firstClimb": {
+          "n": 64,
+          "mean": 1.30859375
+        },
+        "firstContactTime": {
+          "n": 80,
+          "mean": 2.285625
+        },
+        "firstSustainedOlProximity": {
+          "n": 80,
+          "mean": 0.51875
+        },
+        "foul": {
+          "n": 80,
+          "mean": 0.0375
+        },
+        "handoffTime": {
+          "n": 80,
+          "mean": 1.1606250000000002
+        },
+        "olForwardAt0p5": {
+          "n": 80,
+          "mean": 0.29113315246517696
+        },
+        "olLateralAbsAt0p5": {
+          "n": 80,
+          "mean": 0.1829088025767936
+        },
+        "pullerToLos": {
+          "n": 38,
+          "mean": 2.123684210526316
+        },
+        "stuff": {
+          "n": 80,
+          "mean": 0.15
+        },
+        "timeToLos": {
+          "n": 68,
+          "mean": 2.1676470588235297
+        },
+        "timeout": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 80,
+          "mean": 2.1618749999999998
+        },
+        "yardsBeforeContact": {
+          "n": 80,
+          "mean": 1.0206343467460472
+        }
+      },
+      "tite": {
+        "block_collect": {
+          "n": 80,
+          "mean": 0.0125
+        },
+        "block_exchange": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 80,
+          "mean": 0.075
+        },
+        "climbs": {
+          "n": 80,
+          "mean": 1.125
+        },
+        "explosive": {
+          "n": 80,
+          "mean": 0.025
+        },
+        "firstBlockStrike": {
+          "n": 80,
+          "mean": 0.394375
+        },
+        "firstClimb": {
+          "n": 68,
+          "mean": 1.247794117647059
+        },
+        "firstContactTime": {
+          "n": 80,
+          "mean": 2.1950000000000003
+        },
+        "firstSustainedOlProximity": {
+          "n": 80,
+          "mean": 0.5137499999999999
+        },
+        "foul": {
+          "n": 80,
+          "mean": 0.025
+        },
+        "handoffTime": {
+          "n": 80,
+          "mean": 1.1606250000000002
+        },
+        "olForwardAt0p5": {
+          "n": 80,
+          "mean": 0.28339332693845576
+        },
+        "olLateralAbsAt0p5": {
+          "n": 80,
+          "mean": 0.14798486631187527
+        },
+        "pullerToLos": {
+          "n": 28,
+          "mean": 2.126785714285714
+        },
+        "stuff": {
+          "n": 80,
+          "mean": 0.15
+        },
+        "timeToLos": {
+          "n": 68,
+          "mean": 2.1676470588235297
+        },
+        "timeout": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 80,
+          "mean": 2.887375
+        },
+        "yardsBeforeContact": {
+          "n": 80,
+          "mean": 0.5181283368763434
+        }
+      },
+      "under": {
+        "block_collect": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "block_exchange": {
+          "n": 80,
+          "mean": 0.0125
+        },
+        "block_log": {
+          "n": 80,
+          "mean": 0.15
+        },
+        "climbs": {
+          "n": 80,
+          "mean": 0.6375
+        },
+        "explosive": {
+          "n": 80,
+          "mean": 0.0875
+        },
+        "firstBlockStrike": {
+          "n": 80,
+          "mean": 0.41875
+        },
+        "firstClimb": {
+          "n": 38,
+          "mean": 1.325
+        },
+        "firstContactTime": {
+          "n": 80,
+          "mean": 2.350625
+        },
+        "firstSustainedOlProximity": {
+          "n": 80,
+          "mean": 0.5237499999999999
+        },
+        "foul": {
+          "n": 80,
+          "mean": 0.0375
+        },
+        "handoffTime": {
+          "n": 80,
+          "mean": 1.1606250000000002
+        },
+        "olForwardAt0p5": {
+          "n": 80,
+          "mean": 0.2757842580279346
+        },
+        "olLateralAbsAt0p5": {
+          "n": 80,
+          "mean": 0.16662994135733647
+        },
+        "pullerToLos": {
+          "n": 29,
+          "mean": 2.3620689655172415
+        },
+        "stuff": {
+          "n": 80,
+          "mean": 0.25
+        },
+        "timeToLos": {
+          "n": 60,
+          "mean": 2.186666666666667
+        },
+        "timeout": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 80,
+          "mean": 5.2955000000000005
+        },
+        "yardsBeforeContact": {
+          "n": 80,
+          "mean": 1.4530240222923243
+        }
+      },
+      "wide9": {
+        "block_collect": {
+          "n": 80,
+          "mean": 0.0125
+        },
+        "block_exchange": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "block_log": {
+          "n": 80,
+          "mean": 0.125
+        },
+        "climbs": {
+          "n": 80,
+          "mean": 1.65
+        },
+        "explosive": {
+          "n": 80,
+          "mean": 0.025
+        },
+        "firstBlockStrike": {
+          "n": 80,
+          "mean": 0.425625
+        },
+        "firstClimb": {
+          "n": 71,
+          "mean": 1.4985915492957746
+        },
+        "firstContactTime": {
+          "n": 79,
+          "mean": 2.2860759493670884
+        },
+        "firstSustainedOlProximity": {
+          "n": 80,
+          "mean": 0.5287499999999999
+        },
+        "foul": {
+          "n": 80,
+          "mean": 0.025
+        },
+        "handoffTime": {
+          "n": 80,
+          "mean": 1.1618750000000002
+        },
+        "olForwardAt0p5": {
+          "n": 80,
+          "mean": 0.28094242273051584
+        },
+        "olLateralAbsAt0p5": {
+          "n": 80,
+          "mean": 0.1800146416273285
+        },
+        "pullerToLos": {
+          "n": 35,
+          "mean": 2.124285714285714
+        },
+        "stuff": {
+          "n": 80,
+          "mean": 0.1125
+        },
+        "timeToLos": {
+          "n": 69,
+          "mean": 2.1797101449275362
+        },
+        "timeout": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "unassignedDL": {
+          "n": 80,
+          "mean": 0.0
+        },
+        "yards": {
+          "n": 80,
+          "mean": 2.72825
+        },
+        "yardsBeforeContact": {
+          "n": 79,
+          "mean": 1.0792963919231469
+        }
+      }
+    }
+  }
+}

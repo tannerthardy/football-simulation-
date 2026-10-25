@@ -1,0 +1,186 @@
+{
+ "source": "Big Data Bowl 2026: 2023 regular season weeks 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18 (ball in the air, selected players)",
+ "provenance": {
+  "archive": "nfl-big-data-bowl-2026-analytics.zip",
+  "archiveSha256": "360a32614d528e69220cacb39f6beddc580bfd2b9818c22194f1c3c394ccc1a1",
+  "commands": [
+   "npm run nfl:fetch -- bdb2026-2023",
+   "python3 -I scripts/mechanics/nfl_bdb2026.py"
+  ],
+  "note": "Aggregates only. After the throw only the target and selected defenders are tracked."
+ },
+ "skippedPlays": 482,
+ "plays": {
+  "run": 0,
+  "pass": 0,
+  "air": 12523
+ },
+ "metrics": {
+  "air.defender_closing": {
+   "n": 12523,
+   "mean": 0.821,
+   "p10": -1.402,
+   "p25": -0.23,
+   "p50": 0.721,
+   "p75": 2.039,
+   "p90": 3.264
+  },
+  "air.defender_closing@man": {
+   "n": 3726,
+   "mean": 0.365,
+   "p10": -1.396,
+   "p25": -0.377,
+   "p50": 0.348,
+   "p75": 1.219,
+   "p90": 2.442
+  },
+  "air.defender_closing@zone": {
+   "n": 8764,
+   "mean": 1.012,
+   "p10": -1.406,
+   "p25": -0.152,
+   "p50": 0.995,
+   "p75": 2.33,
+   "p90": 3.52
+  },
+  "air.separation_at_arrival": {
+   "n": 12523,
+   "mean": 3.021,
+   "p10": 0.721,
+   "p25": 1.237,
+   "p50": 2.4,
+   "p75": 4.123,
+   "p90": 6.1
+  },
+  "air.separation_at_arrival@man": {
+   "n": 3726,
+   "mean": 2.322,
+   "p10": 0.632,
+   "p25": 0.943,
+   "p50": 1.649,
+   "p75": 2.953,
+   "p90": 4.738
+  },
+  "air.separation_at_arrival@zone": {
+   "n": 8764,
+   "mean": 3.32,
+   "p10": 0.806,
+   "p25": 1.456,
+   "p50": 2.778,
+   "p75": 4.512,
+   "p90": 6.528
+  },
+  "air.separation_at_throw": {
+   "n": 12523,
+   "mean": 3.842,
+   "p10": 1.118,
+   "p25": 1.836,
+   "p50": 3.324,
+   "p75": 5.25,
+   "p90": 7.24
+  },
+  "air.separation_at_throw@man": {
+   "n": 3726,
+   "mean": 2.686,
+   "p10": 0.922,
+   "p25": 1.237,
+   "p50": 2.059,
+   "p75": 3.578,
+   "p90": 5.304
+  },
+  "air.separation_at_throw@zone": {
+   "n": 8764,
+   "mean": 4.332,
+   "p10": 1.393,
+   "p25": 2.335,
+   "p50": 3.912,
+   "p75": 5.77,
+   "p90": 7.752
+  },
+  "air.target_depth_at_arrival": {
+   "n": 12523,
+   "mean": 9.869,
+   "p10": 1.2,
+   "p25": 3.8,
+   "p50": 6.8,
+   "p75": 14.2,
+   "p90": 21.8
+  },
+  "air.target_depth_at_arrival@man": {
+   "n": 3726,
+   "mean": 10.3,
+   "p10": 1.7,
+   "p25": 4.0,
+   "p50": 7.9,
+   "p75": 14.6,
+   "p90": 22.9
+  },
+  "air.target_depth_at_arrival@zone": {
+   "n": 8764,
+   "mean": 9.665,
+   "p10": 1.0,
+   "p25": 3.7,
+   "p50": 6.3,
+   "p75": 13.9,
+   "p90": 21.0
+  },
+  "air.time": {
+   "n": 12523,
+   "mean": 1.169,
+   "p10": 0.7,
+   "p25": 0.8,
+   "p50": 1.0,
+   "p75": 1.4,
+   "p90": 1.9
+  },
+  "air.time@man": {
+   "n": 3726,
+   "mean": 1.241,
+   "p10": 0.7,
+   "p25": 0.8,
+   "p50": 1.1,
+   "p75": 1.5,
+   "p90": 2.1
+  },
+  "air.time@zone": {
+   "n": 8764,
+   "mean": 1.138,
+   "p10": 0.7,
+   "p25": 0.8,
+   "p50": 1.0,
+   "p75": 1.3,
+   "p90": 1.8
+  }
+ },
+ "definitions": {
+  "run.*": "Designed handoffs to an RB (no QB runs, no scrambles). Times are seconds after the snap.",
+  "run.carrier_cross_los_s": "First frame the carrier is past the line, before first contact.",
+  "run.yards_before_contact": "Carrier's x at the first-contact event (negative = behind the line).",
+  "run.yards_after_contact": "Play yards minus yards before contact.",
+  "run.engaged_dl_driven_back_Ns": "Per box defender within 1.5 yd of an OL at N s: yards he has moved toward his own goal since the snap. Live plays only.",
+  "run.max_engaged_dl_driven_back_3s": "Per play, the furthest any engaged box defender has been driven back at 3 s.",
+  "run.ol_forward_1s": "Mean forward movement of the OL at 1 s.",
+  "pass.*": "Dropbacks. Throw = pass_forward event.",
+  "pass.pressure_2yd_before_throw": "Share of dropbacks with a defender within 2 yd of the QB between 0.5 s and the throw (or 4 s).",
+  "pass.ol_depth_given_2s": "Mean OL retreat toward the QB at 2 s (includes the normal pass set).",
+  "pass.box_rusher_speed_0_5s": "Speed of each box defender at 0.5 s (get-off).",
+  "pass.box_rusher_depth_2s": "How far each box defender is into the backfield at 2 s.",
+  "pass.separation_at_arrival": "Target receiver to nearest defender when the ball arrives.",
+  "run.defenders_within_2yd_at_end": "Defenders within 2 yd of the carrier at the whistle (gang tackling).",
+  "run.box_count": "Defenders within 7 yd of the line and 6.5 yd of the ball at the snap (matches PFF's box count within one on 96% of 2021 dropbacks).",
+  "run.*@boxN": "The run metric within a box-count cell (box6-, box7, box8+).",
+  "contact.run|catch.*": "From the carrier's first contact (run: RB; catch: receiver after the catch): entry speed, speed 0.5 s later, yards after contact (also by entry speed: slow < 3, mid < 5.5, fast yd/s), contact to whistle.",
+  "block.pass.*": "Labeled OL/defender pairs on dropbacks (PFF labels pass blocks only). NFL: PFF blocked-player assignment; sim: block-contact events. still_engaged_2s: pair within 1.5 yd at 2 s; defender_depth: how far the blocked defender is into the backfield.",
+  "air.*": "Ball in the air, targeted receiver: air time, depth where the ball arrives, nearest defender at the throw and at arrival, and how much that gap closed.",
+  "contact.*.broke_contact": "Share of contacts after which the carrier is still running >= 4 yd/s half a second later and gains >= 5 more yards (tracking proxy for a broken tackle).",
+  "catch.defenders_within_5yd_at_catch": "Defenders within 5 yd of the receiver at the catch.",
+  "*@man|zone": "The metric within man or zone coverage (PFF / NGS / sim coverage labels).",
+  "pass.time_to_pressure": "On pressured dropbacks, first time a defender is within 2 yd of the QB.",
+  "pass.rushers": "Defenders who get at least 1 yd into the backfield by the throw or 2.5 s.",
+  "route.separation_Ns": "Before the throw, each WR/TE/RB at least 3 yd downfield: distance to the nearest defender.",
+  "route.target_depth_at_throw": "Targeted receiver's depth past the line when the ball is thrown.",
+  "catch.*": "Completed passes: catch depth, receiver speed at the catch, yards after the catch.",
+  "run.*@family": "The same run metric within one concept family (inside_zone, outside_zone, gap_pull, man_duo, draw).",
+  "move.*": "Per player per play, from positions: top speed (yd/s), peak acceleration and deceleration (yd/s^2), players who reach at least 1 yd/s."
+ }
+}
