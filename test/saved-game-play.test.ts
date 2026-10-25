@@ -17,7 +17,10 @@ import { composeHooks } from '../scripts/scorecard/hooks.js';
 
 // GAP_MATCH changes seed 7's game history, so its first catch from play 10 comes on a drive the
 // defense hasn't scouted yet; the captured catch and CB_W entries are staged on nearest-first fits
-// (re-record by review 2).
+// (re-record by review 2). INFO-1 PR 3 moves the history again: on game play 1 (a checkdown to the
+// back) the blocked edge and corners see no holder for the 0.25 s before their pictures show the
+// catch, where they were handed the true catcher; that run ends in a tackle, not a touchdown, and the
+// first catch from play 10 becomes G1-P012, whose corner is a matching wrapper.
 vi.hoisted(() => { process.env.GAP_MATCH = '0'; });
 
 describe('ordinary-game constructor capture and independent replay', () => {
@@ -86,16 +89,19 @@ describe('ordinary-game constructor capture and independent replay', () => {
     expect(entries.has(catcher.t)).toBe(true);
     expect(boundary.decision!.owner.controller).toBe(entries.get(catcher.t)!.controller);
     expect(boundary.decision!.owner.kind).toBe(entries.get(catcher.t)!.kind);
-    // The captured game decides man or zone for this corner; either way it is
-    // a coverage controller, not a pursuit broadcast.
-    const kind = boundary.decision!.owner.kind;
-    expect(['man', 'zone']).toContain(kind);
+    // The captured game decides man or zone for this corner, and a matching
+    // wrapper may hand its man job to zone inside the same controller; either
+    // way it is a coverage controller, not a pursuit broadcast.
+    const owner = boundary.decision!.owner.controller;
     // INFO-1 retires the physical catch's universal controller notification.
     // The same observer-off/on restoration assertions above remain exact.
-    expect(boundary.endpoint!.behavior.controller).toBe(boundary.decision!.owner.controller);
-    expect(boundary.endpoint!.behavior.kind).toBe(kind);
+    expect(boundary.endpoint!.behavior.controller).toBe(owner);
     expect(boundary.rewrites).toEqual([]);
-    expect(traced.trace!.steps.every(s => s.decision!.owner.kind === kind)).toBe(true);
+    for (const s of traced.trace!.steps) {
+      expect(s.decision!.owner.controller).toBe(owner);
+      expect(['man', 'zone']).toContain(s.decision!.owner.kind);
+      expect(['man', 'zone']).toContain(s.endpoint!.behavior.kind);
+    }
     const noEnergy = restoreSetup(saved.setup); delete noEnergy.energy;
     const rested = new PlaySim(noEnergy);
     expect(rested.agents.some((a, i) => a.body.energy !== saved.original.initial.actors[i].energy)).toBe(true);
