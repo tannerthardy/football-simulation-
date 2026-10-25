@@ -8,6 +8,7 @@ import { isDeepZone } from '../../playbook/alignment.js';
 import type { Agent } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
+import { hasObservedFlight, observedHolder } from '../possession-read.js';
 import type { ReceiverRead, ReleaseReader } from './reads.js';
 import type { Directive } from './rules.js';
 
@@ -18,7 +19,10 @@ export class CoverageJudgment {
   reason = 'rule';
 
   decide(a: Agent, sim: PlaySim, reader: ReleaseReader, primary: Directive, deep: boolean): Directive {
-    if (!deep || sim.catchAt >= 0) return primary;
+    // A catch he has acquired (he saw the throw, then a receiver holding
+    // it) ends help decisions; the ball is the job now.
+    const holder = deep ? observedHolder(a, sim) : null;
+    if (!deep || (holder && holder.target !== sim.qb && hasObservedFlight(a))) return primary;
     // Release is not a cue to undo a help decision. Keep the current job
     // until its technique sees the ball and transitions to playing it.
     if (sim.ball.kind === 'air') return this.override ?? primary;

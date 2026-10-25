@@ -1,8 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
-// The assignments are checked against the installed front spots. FRONT_ALIGN
-// and BOX_ALIGN move the front and backers to their tracked spots; whether
-// every gap-scheme rule holds there is a follow-up (G2).
-vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; process.env.BOX_ALIGN = '0'; });
+import { describe, expect, it } from 'vitest';
+// The assignments are checked on the default aligned fronts (FRONT_ALIGN,
+// BOX_ALIGN): the shaded techniques and a strong safety walked into the box.
 import { CENTER_Y, HASH_LEFT_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';

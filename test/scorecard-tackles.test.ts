@@ -131,9 +131,11 @@ describe('per-defender failed tackle opportunities', () => {
       const bytes = readFileSync(input);
       const report = execFileSync(process.execPath, ['--import', 'tsx', 'scripts/scorecard/run.ts',
         '--from', input, '--metrics', 'missed,failedTackleOpportunities'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
-      expect(report).toContain('0.11–0.16 (source unverified: PFF, definition unknown)');
+      // M3 gives every missing reference the same explicit "unsourced:" prefix;
+      // the band, raw counter and unknown PFF definition remain unchanged.
+      expect(report).toContain('0.11–0.16 (unsourced: PFF, definition unknown)');
       expect(report).toContain('| Missed + broken tackles / play | 5.00 |');
-      expect(report).toContain('| Failed tackle opportunities / play (unique defenders) | — | — to — | internal |');
+      expect(report).toContain('| Failed tackle opportunities / play (unique defenders) | — | — to — | internal: unique failed defenders per official play; no NFL comparison band |');
       expect(readFileSync(input)).toEqual(bytes);
       // A producer with matching metadata can still predate this particular field.
       card.meta.provenance = { ...provenance(), cpuModel: null, cpuQuotaCores: null };

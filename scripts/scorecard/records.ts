@@ -5,8 +5,9 @@
  */
 import { Rng } from '../../src/core/rng.js';
 import { generateTeam, type Team } from '../../src/league/team.js';
-import type { GameResult } from '../../src/game/game.js';
+import type { GameResult, PlayLog } from '../../src/game/game.js';
 import type { PlayStats } from '../../src/sim/types.js';
+import type { WeirdEvent } from './weird/types.js';
 
 export interface PlayRec {
   kind: 'run' | 'pass';
@@ -66,8 +67,107 @@ export interface GameRec {
   /** Actual pre-simulation teams/options/seed identity. Absent on legacy records. */
   inputSha256?: string;
   plays: PlayRec[];
+  /** Additive game-layer measurements; absent on older saved cards. */
+  gameLayer?: GameLayerRec;
+  /** Film weirdness events (capped per detector, worst first) and the detector time; absent when the probe is off. */
+  weird?: { events: WeirdEvent[]; ms: number };
   /** Sums contributed by probes (see probes.ts), keyed `<probe>.<name>`. */
   probe: Record<string, number>;
+}
+
+export interface GameLayerRec {
+  fieldGoals: Array<{ distance?: number; good?: boolean }>;
+  kicks: Array<Partial<NonNullable<PlayLog['kick']>> & { kind: NonNullable<PlayLog['kick']>['kind'] }>;
+  puntGrossYards: number;
+  fourthOpportunities: number;
+  fourthGoes: number;
+  fourthAttempts: number;
+  fourthConversions: number;
+  twoPointChoices: number;
+  touchdowns: number;
+  drives: number;
+  drivePoints: number;
+  redZoneTrips: number;
+  redZoneTDs: number;
+  turnovers: number;
+  penaltiesByType: Record<string, number>;
+}
+
+/** Observe completed records only; never call a controller, sample RNG or
+ * alter a game. Drives are offensive possessions with a logged offensive
+ * action (including kneels/dead-ball fouls), separated at kicks, halftime,
+ * scores and possession changes. Return scores are not offensive drive points;
+ * a touchdown's Try is included. Two-point choices count a re-Try once.
+ * Fourth-down go opportunities exclude kneels, replayed downs and Q4 <=150s.
+ * Conversion rate separately uses all official fourth-down box credit. */
+export function gameLayerRecord(res: GameResult): GameLayerRec {
+  const r: GameLayerRec = { fieldGoals: [], kicks: [], puntGrossYards: 0,
+    fourthOpportunities: 0, fourthGoes: 0, fourthAttempts: 0, fourthConversions: 0,
+    twoPointChoices: 0, touchdowns: 0, drives: 0, drivePoints: 0,
+    redZoneTrips: 0, redZoneTDs: 0, turnovers: 0, penaltiesByType: {} };
+  for (const team of [res.home, res.away]) {
+    // BoxScore.team() creates missing entries. Inspect the completed ledger
+    // directly so even extracting an empty game cannot mutate its result.
+    const box = res.box.teams?.[team.abbr], empty = res.box.teams ? 0 : NaN;
+    r.fourthAttempts += box?.fourthAtt ?? empty;
+    r.fourthConversions += box?.fourthConv ?? empty;
+    r.redZoneTrips += box?.redZoneTrips ?? empty;
+    r.redZoneTDs += box?.redZoneTDs ?? empty;
+    r.turnovers += box?.turnovers ?? empty;
+    for (const line of res.box.teamPlayers(team.abbr)) r.puntGrossYards += line.puntYds;
+  }
+  let drive: string | undefined, period = 0, inTry = false;
+  for (const [i, p] of res.log.entries()) {
+    // The plural ledger supersedes its copied legacy singular alias.
+    for (const f of p.fouls ?? (p.foul ? [p.foul] : [])) {
+      if (f.accepted && !('offset' in f && f.offset))
+        r.penaltiesByType[f.kind] = (r.penaltiesByType[f.kind] ?? 0) + 1;
+    }
+    const scoreAfter = res.log[i + 1]?.score ?? res.score;
+    const side = p.offense === res.home.abbr ? 'home' : 'away';
+    const ownPoints = p.score && scoreAfter ? scoreAfter[side] - p.score[side] : NaN;
+    if (p.kind !== 'xp' && p.kind !== 'two') {
+      if (p.score && scoreAfter) {
+        // A TD may appear with its already scored XP in the next snapshot.
+        for (const s of ['home', 'away'] as const) {
+          const points = scoreAfter[s] - p.score[s];
+          if (points >= 6 && points <= 8) r.touchdowns++;
+        }
+      } else r.touchdowns = NaN;
+    }
+    if (p.kind === 'xp' || p.kind === 'two') {
+      if (!inTry && p.kind === 'two') r.twoPointChoices++;
+      inTry = true;
+      if (drive === p.offense) r.drivePoints += ownPoints;
+      continue;
+    }
+    inTry = false;
+    if (p.kind === 'kickoff') {
+      if (!p.kick?.retry) r.kicks.push(p.kick ?? { kind: 'kickoff' });
+      drive = undefined;
+      continue;
+    }
+    // Quarters 1->2/3->4 keep possession. Halftime and the first OT do not.
+    const half = p.quarter <= 2 ? 1 : p.quarter <= 4 ? 2 : 3;
+    if (half !== period) { drive = undefined; period = half; }
+    if (drive !== p.offense) { r.drives++; drive = p.offense; }
+    r.drivePoints += ownPoints;
+    const charged = p.officialCredit?.downAttempt ?? (!p.nullified && !!p.stats);
+    if (p.down === 4 && !(p.quarter === 4 && p.clock <= 150)
+      && ((charged && (p.kind === 'run' || p.kind === 'pass'))
+        || (!p.nullified && (p.kind === 'punt' || p.kind === 'fg')))) {
+      r.fourthOpportunities++;
+      if (p.kind === 'run' || p.kind === 'pass') r.fourthGoes++;
+    }
+    if (p.kind === 'fg' && !p.nullified)
+      r.fieldGoals.push({ distance: p.fgDistance,
+        good: Number.isFinite(ownPoints) ? ownPoints === 3 : p.fgGood });
+    if (p.kind === 'punt' && !p.nullified) r.kicks.push(p.kick ?? { kind: 'punt' });
+    const segments = p.officialCredit?.segments ?? (!p.nullified ? p.segments : undefined);
+    if ((!p.nullified && (p.kind === 'punt' || p.kind === 'fg'))
+      || segments?.some(s => s.team === 'D')) drive = undefined;
+  }
+  return r;
 }
 
 const TEAM_NAMES = ['Ironmen', 'Comets', 'Wolves', 'Rangers', 'Pilots', 'Barons', 'Hornets', 'Mariners'];
@@ -134,10 +234,18 @@ export function gameRecord(spec: GameSpec, res: GameResult, ms: number,
     if (p.kind !== 'run' && p.kind !== 'pass') continue;
     // Official plays only, as in calibrate.ts.
     if (p.nullified || !p.stats) continue;
-    const st = p.stats;
+    // Physical stats remain on the tape; statistical corrections belong to
+    // the explicit official view. Older logs may not carry that view.
+    const st = p.officialCredit?.stats ?? p.stats;
     const pass = p.kind === 'pass';
     const att = pass && !st.sacked && !st.scramble && !!st.attempted;
     const comp = att && !!st.completed && !st.interceptedBy;
+    // NFL air yards: LOS-to-catch on completions, LOS-to-target/aim on other
+    // throws, bounded at the opponent's goal line (nflverse PBP convention).
+    // Intended airYards can differ from achieved completedAirYards. Missing
+    // achieved depth stays unknown rather than substituting the intended one.
+    const depth = comp ? st.completedAirYards : st.airYards;
+    const goalDepth = Math.round((100 - p.yardline) * 100) / 100;
     rec.plays.push({
       kind: p.kind,
       down: p.down,
@@ -158,16 +266,19 @@ export function gameRecord(spec: GameSpec, res: GameResult, ms: number,
       td: p.text.includes('TOUCHDOWN'),
       scramble: pass && !st.sacked && !!st.scramble,
       throwaway: !!st.throwaway,
-      air: att && !st.throwaway ? st.airYards : undefined,
+      air: att && !st.throwaway && depth !== undefined ? Math.min(depth, goalDepth) : undefined,
       yac: comp ? st.yac : undefined,
       sep: att && !st.throwaway ? st.separation : undefined,
       ttt: pass ? st.timeToThrow : undefined,
       ybc: p.kind === 'run' ? st.yardsBeforeContact : undefined,
       missed: st.missedTackles,
       broken: st.brokenTackles,
-      failedTackleOpportunities: failedTackles?.(st),
+      // Native-event capture is keyed to the original stats object, even
+      // when official statistical credit uses a corrected copy.
+      failedTackleOpportunities: failedTackles?.(p.stats),
       firstDown: !!p.firstDown,
     });
   }
+  rec.gameLayer = gameLayerRecord(res);
   return rec;
 }

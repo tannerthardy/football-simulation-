@@ -9,14 +9,26 @@
  *
  * To add one: write a Probe, add it to PROBES, and list its metrics.
  */
-import type { GameResult } from '../../src/game/game.js';
+import type { GameHooks, GameResult } from '../../src/game/game.js';
 import type { Metric } from './metrics.js';
+import type { GameRec } from './records.js';
+import { weirdProbe } from './weird/probe.js';
 
 export interface Probe {
   id: string;
   /** Record replay frames for every play (slow; only when the probe needs positions). */
   needsReplay?: boolean;
   collect: (res: GameResult) => Record<string, number>;
+  /**
+   * Watch each game as it is played, for rules that need more than the finished
+   * log (facing, engagement, the pre-snap phase). Returns hooks to run with the
+   * game and a `finish` that turns what they saw into sums (and may add to the
+   * record). It must only read: games stay identical with it on.
+   */
+  observe?: (ctx: { idPrefix: string; game: number }) => {
+    hooks: GameHooks;
+    finish: (res: GameResult, rec: GameRec) => Record<string, number>;
+  };
   metrics: Metric[];
 }
 
@@ -51,4 +63,4 @@ const missedBy: Probe = {
   ],
 };
 
-export const PROBES: Probe[] = [missedBy];
+export const PROBES: Probe[] = [missedBy, weirdProbe];

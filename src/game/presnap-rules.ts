@@ -249,14 +249,21 @@ export function assessScrimmageSnap(f: ScrimmageSnapFacts): PresnapAssessment {
     && f.snap?.officialsReady !== false && !f.defensiveMatchupOpportunityDenied && !fouls.some(p => p.deadBall) };
 }
 
+/** A motion man moving faster than this at the snap is in motion (yd/s);
+ * slower is a set man's settle, which an official does not flag. */
+const IN_MOTION = 0.5;
+
 /** Current engine installs an offensive set instead of simulating huddle/helmet
  * geometry. Freeze these declared positions at setup; do not re-evaluate route
- * locations for eligibility. No made-up offensive motion history is supplied. */
+ * locations for eligibility. No made-up offensive motion history is supplied:
+ * the one man the play put in motion is judged by where his body is going at
+ * the snap (7-4-8: in motion, never toward the line). */
 export function inspectInstalledSnap(sim: PlaySim,
   reports: Readonly<Record<string, 'eligible' | 'ineligible'>> = {},
   context: Pick<ScrimmageSnapFacts, 'afterTwoMinuteWarning' | 'gameClockRunning'
     | 'allSetSeconds' | 'hadFullSet' | 'shiftAfterLastSet'> = {}): PresnapAssessment {
   const core = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+  const motionSlot = sim.motion?.plan.slot;
   const players: SnapPlayerFacts[] = sim.agents.map(a => {
     const installed = sim.offAlign.spots[a.slot];
     const skill = sim.offCall.formation.slots[a.slot as keyof typeof sim.offCall.formation.slots];
@@ -277,7 +284,9 @@ export function inspectInstalledSnap(sim: PlaySim,
         : snapX + radius > sim.los,
       tFormationQB: a.team === 'O' && a.slot === 'QB' && sim.offCall.formation.qb === 'under',
       // SNAP_REACT: an abrupt start before the snap that the count produced.
-      simulatesSnap: a.team === 'O' && !!sim.snapActs?.falseStarts.has(a.player.id) };
+      simulatesSnap: a.team === 'O' && !!sim.snapActs?.falseStarts.has(a.player.id),
+      ...(a.team === 'O' && a.slot === motionSlot ? {
+        moving: Math.hypot(a.vel.x, a.vel.y) > IN_MOTION, movingTowardLine: a.vel.x > IN_MOTION } : {}) };
   });
   //The current install explicitly supplies a legal stationary set, rather
   //than simulating huddle/stance history. Preserve a caller's actual recorded
@@ -285,7 +294,7 @@ export function inspectInstalledSnap(sim: PlaySim,
   const assessment = assessScrimmageSnap({ players, readyForPlay: true, snapOccurred: true,
     defensiveIncidents: sim.snapActs?.incidents,
     ...context, allSetSeconds: context.allSetSeconds ?? 1, hadFullSet: context.hadFullSet ?? true });
-  assessment.unresolved.push('3-18/7-4: declared installed line/set abstraction; helmet/beltline, offensive motion and snap mechanics not recorded');
+  assessment.unresolved.push('3-18/7-4: declared installed line/set abstraction; helmet/beltline and snap mechanics not recorded; offensive motion judged only by the motion man\'s velocity at the snap');
   return assessment;
 }
 

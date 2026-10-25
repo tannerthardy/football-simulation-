@@ -26,6 +26,16 @@ import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { SNAP_REACT } from '../snap-count.js';
+import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
+
+/** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
+ * side's force player stays on his receiver when the receiver comes to block
+ * him, until the ball carrier is past the line. A corner plays pass first: a
+ * receiver closing on him may be stalking or selling a route, and the force
+ * player owns the edge. Tracked wide DBs are still bailing at 2.5 s on runs
+ * (3.7 -> 5.7 yd deep) and blocked 15% at 2.0 s; ours came to the run at the
+ * stalk read, sat at 4 yd and were blocked 62% (dbtempo.py). */
+const passFirstOn = () => process.env.PASS_FIRST !== '0';
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -39,17 +49,54 @@ export function knowsPass(sim: PlaySim, a: Agent): boolean {
 
 /**
  * Common transition: once the ball carrier is past the line (or the QB is
- * scrambling), everyone pursues. Behind the line, a defender who has read
- * run plays his fit — he doesn't abandon his gap to chase.
+ * seen running out of the pocket), everyone pursues. Behind the line, a
+ * defender who has read run plays his fit — he doesn't abandon his gap to
+ * chase, including against a designed QB run.
  */
 export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
-  const c = sim.carrier;
-  if (!c || c.team === a.team) return null;
-  const seen = sim.see(a,c);
+  const read = observedHolder(a, sim);
   const preserveEdge = a.runFit?.kind === 'edge' || a.runFit?.kind === 'force' || a.runFit?.kind === 'cutback';
-  const past = seen.pos.x > sim.los + (preserveEdge ? 2 : 0);
-  if (past || (c === sim.qb && sim.scrambled)) {
-    if (sim.t >= a.readAt || seen.pos.x > sim.los + 2) return chase(sim, a, c);
+  if (read) {
+    const { target, cue } = read;
+    const past = cue.pos.x > sim.los + (preserveEdge ? 2 : 0);
+    // A newer held-body image after recognized flight supports a catch even
+    // behind the line. Pass belief alone cannot turn a handoff into a catch
+    // and discard an installed edge. Snap QB possession keeps the rush/fit.
+    const caught = target !== sim.qb && hasObservedFlight(a);
+    // A QB seen leaving the pocket as a runner, by a defender who has not
+    // read run: the scramble response, from his own QB picture. Rushers and
+    // underneath zones come up; each role keeps its own contract.
+    // Man and deep defenders keep plastering until he crosses the line.
+    const plaster = (a.behavior as { plastersScramble?: boolean } | undefined)?.plastersScramble === true;
+    const scramble = target === sim.qb && !plaster && !believesRun(sim, a) && qbRunning(a, sim);
+    if (caught || ((past || scramble) && (sim.t >= a.readAt || cue.pos.x > sim.los + 2))) {
+      if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'possession-pursuit', chose: target.slot,
+        cue: 'carrying=true in this observer\'s acquired body picture',
+        detail: `Sample age ${cue.age ?? 'unknown'} s; acquired x=${cue.pos.x}; installed ${a.runFit?.kind ?? 'fallback'} boundary. No authoritative holder/catch flag.` });
+      return chase(sim, a, target);
+    }
+  }
+  // Continue the acquired flight estimate while possession is unresolved.
+  // Disappearance of the authoritative air state does not announce a catch,
+  // or reopen coverage. A receiver can still miss this predicted opportunity.
+  const path = rememberedFlight(a, sim.t);
+  const anticipated = sim.ball.kind !== 'air' && path ? anticipatedCatcher(a, sim) : null;
+  if (anticipated) {
+    if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'catch-anticipation', chose: anticipated.target.slot,
+      cue: 'first acquired catch opportunity; result not yet acquired',
+      detail: 'Keep working with the possible catcher; an empty picture after the opportunity refutes it. No confirmed possession.' });
+    return track(a, anticipated.cue.pos, anticipated.cue.vel);
+  }
+  if (sim.ball.kind !== 'air' && path && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'flight-continuation',
+    chose: 'continue acquired catch opportunity', cue: 'recognized trajectory; no newer acquired holder',
+    detail: `Forecast ends at ${path[path.length - 1].t} s. Catch is possible, not confirmed.` });
+  if (sim.ball.kind !== 'air' && path) return playObservedFlight(a, sim, path);
+  const area = sim.ball.kind !== 'air' ? unresolvedBallArea(a) : null;
+  if (area) {
+    if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
+      chose: 'locate ball at acquired landing area', cue: 'recognized pass; flight ended without acquired possession',
+      detail: 'Keep ball responsibility instead of reopening route coverage. No holder is inferred.' });
+    return goTo(a, area);
   }
   return null;
 }
@@ -81,16 +128,18 @@ export class PassRusher implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.t < this.getOff) return stand(Math.PI);
     if (a.engagement) return stand();
-    const c = sim.carrier;
+    const live = pursueIfLive(sim, a);
+    if (live) return live;
     // Throw in the air: peel off toward the ball.
-    if (sim.ball.kind === 'air') {
-      const spot = catchSpot(a, sim);
+    if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) {
+      const path = acquireFlight(a, sim), spot = catchSpot(a, { t: sim.t, ballPath: path });
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
     }
     // The ball is handed off or the QB takes off: play the run. Up close a
     // lineman sees the exchange; a rusher who has read run plays it too
     // (on play action, that's being fooled).
-    if (c && c.team !== a.team && (c !== sim.qb || sim.scrambled)) return runFit(a, sim, this.gap, this.gapSign);
+    const holder = observedHolder(a, sim);
+    if (holder && (holder.target !== sim.qb || qbRunning(a, sim))) return runFit(a, sim, this.gap, this.gapSign);
     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
 
     // Rush lane by plan: power rushers go through the blocker's chest at the
@@ -155,7 +204,18 @@ export class Blitzer implements Behavior {
  * Gap-sound run defense: defend the assigned gap until the carrier commits,
  * then fit on him with pursuit leverage. DBs force/alley from outside-in.
  */
-export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?: RunFitRead): MoveCommand {
+export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?: RunFitRead | null): MoveCommand {
+  if (read === undefined) {
+    // Removing the catch broadcast must not uncover a second private-holder
+    // selection inside the fit fallback. Reuse the installed mesh picture,
+    // including unknown/negative carrying, rather than inventing a handoff.
+    const holder = observedHolder(a, sim), back = sim.slot('RB');
+    // A QB seen running is the runner himself, not a mesh still to resolve.
+    if (holder && (holder.target !== sim.qb || hasObservedFlight(a) || qbRunning(a, sim))) read = { possession: holder };
+    else if (back && sim.offAlign.spots[back.slot]?.backfield) {
+      read = { backfield: { back, backCue: sim.see(a, back), qbCue: sim.see(a, sim.qb) } };
+    } else read = holder ? { possession: holder } : null;
+  }
   return executeRunFit(a, sim, gap, gapSign, read);
 }
 
@@ -166,6 +226,8 @@ export class RunDefender implements Behavior {
     private readonly gapSign: number,
   ) {}
   update(a: Agent, sim: PlaySim): MoveCommand {
+    const live = pursueIfLive(sim, a);
+    if (live) return live;
     return runFit(a, sim, this.gap, this.gapSign);
   }
 }
@@ -191,6 +253,8 @@ export interface ManOptions {
 /** Man coverage with press/off technique, leverage and hip turn. */
 export class ManCoverage implements Behavior {
   readonly kind = 'man';
+  /** A seen scramble does not release his man until the QB crosses the line. */
+  readonly plastersScramble = true;
   private readonly press: boolean;
   private readonly initialCushion: number;
   private hipsOpen = false;
@@ -244,31 +308,31 @@ export class ManCoverage implements Behavior {
   /** An unrecognized throw does not erase the installed man technique. */
   private coverMan(a: Agent, sim: PlaySim): MoveCommand {
     const R = this.target;
+    const live = pursueIfLive(sim, a);
+    if (live) return live;
     const receiverCue = sim.see(a, R);
     // A back carrying the ball will not look like a stalk blocker. A man
     // marker who reads run and personally acquires that possession uses his
-    // installed insertion or alley support, not receiver cushion. Alley
-    // support still preserves its cap through a deep mesh; it is not an
+    // installed run fit (insertion, alley, force...), not receiver cushion:
+    // cushion on a ball carrier is a retreat that turns his back on the ball.
+    // Alley support still preserves its cap through a deep mesh; it is not an
     // extra interior fitter just because this defender marks the back.
     // Unknown/negative possession preserves ordinary man/PA responsibility.
     const backfieldBack = sim.offAlign.spots[R.slot]?.backfield
       && (R.player.position === 'RB' || R.player.position === 'FB');
-    if ((a.runFit?.kind === 'insert' || a.runFit?.kind === 'alley')
-      && backfieldBack && believesRun(sim, a) && receiverCue.carrying === true) {
+    if (backfieldBack && believesRun(sim, a) && receiverCue.carrying === true) {
       if (!this.keyedFitRecorded) {
         this.keyedFitRecorded = true;
         if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-run-fit', chose: `keyed-fit:${R.slot}`,
-          cue: `${R.slot} carrying=true in consumed picture; run belief; installed ${a.runFit.kind}`,
+          cue: `${R.slot} carrying=true in consumed picture; run belief; installed ${a.runFit?.kind ?? 'fallback'}`,
           options: [`man:${R.slot}`, `keyed-fit:${R.slot}`],
-          detail: `Installed ${a.runFit.gap}-gap, side ${a.runFit.side}; known target ${R.slot}; picture age ${receiverCue.age === undefined ? 'unknown' : receiverCue.age.toFixed(2)} s, depth ${(receiverCue.pos.x - sim.los).toFixed(2)} yd. Keyed target is not confirmed live carrier; observed geometry decides insertion or pursuit.` });
+          detail: `Installed ${a.runFit?.gap ?? this.gap}-gap, side ${a.runFit?.side ?? this.gapSign}; known target ${R.slot}; picture age ${receiverCue.age === undefined ? 'unknown' : receiverCue.age.toFixed(2)} s, depth ${(receiverCue.pos.x - sim.los).toFixed(2)} yd. Keyed target is not confirmed live carrier; observed geometry decides insertion or pursuit.` });
       }
       return runFit(a, sim, this.gap, this.gapSign, { target: R, cue: receiverCue });
     }
-    // Snap possession alone is not a run cue. Once his own picture puts
-    // the carrying QB clearly beyond the line, retained pass belief must
-    // not discard pursuit. No private scramble/handoff state is required.
+    // The shared transition above handles an acquired committed QB. Support
+    // below still interprets his picture with the installed backfield.
     const qbCue = sim.see(a, sim.qb);
-    if (qbCue.carrying === true && qbCue.pos.x > sim.los + 2) return chase(sim, a, sim.qb);
     const back = sim.slot('RB');
     const installedBackfield = !!back && !!sim.offAlign.spots[back.slot]?.backfield;
     // Do not extend this duty where its explicit information input is absent.
@@ -280,14 +344,13 @@ export class ManCoverage implements Behavior {
     // Once admitted, this informed duty owns its backfield interpretation.
     // A hidden holder change must not switch it through the legacy live-
     // carrier pursuit gate. Recognized flight already retired it in update.
-    if (this.blockingRun && run && blockingLook) return this.blockingSupport(a, sim, qbCue);
+    // Perimeter only: a man on a back or an inline end is a box defender,
+    // whose man blocking him is his run read.
+    const spot = sim.offAlign.spots[R.slot];
+    const passFirst = passFirstOn() && a.runFit?.kind !== 'force' && !!spot && !spot.backfield && !spot.inline;
+    if (this.blockingRun && run && blockingLook && !passFirst) return this.blockingSupport(a, sim, qbCue);
     this.blockingRun = false;
-    const live = pursueIfLive(sim, a);
-    if (live && (sim.carrier !== R || sim.catchAt >= 0 || !sim.isPass)) {
-      // On runs, the man defender plays the run once he reads it (or when his man blocks).
-      if (believesRun(sim, a) || sim.catchAt >= 0 || sim.throwAt >= 0) return live;
-    }
-    if (run && blockingLook) {
+    if (run && blockingLook && !passFirst) {
       this.blockingRun = installedBackfield;
       return this.blockingSupport(a, sim, qbCue);
     }
@@ -405,6 +468,8 @@ export class ZoneCoverage implements Behavior {
   /** Inspect the exact adjusted landmark used by this technique. */
   recordedLandmark(): Vec2 { return { ...this.landmark }; }
   private readonly deep: boolean;
+  /** Deep zones stay on top of a scramble until the QB crosses the line. */
+  get plastersScramble(): boolean { return this.deep; }
   private readonly radius: number;
   /** Lateral band of responsibility (field y range). */
   private readonly band: [number, number];
@@ -441,13 +506,15 @@ export class ZoneCoverage implements Behavior {
     this.style = style;
   }
 
+  private selectTarget(a: Agent, target: Agent | null): void {
+    // Retire only the held action. Per-receiver observation/depth memory stays.
+    a.mind.setAimTarget('zone-drive', target?.idx ?? null);
+    this.target = target;
+  }
+
   update(a: Agent, sim: PlaySim): MoveCommand {
     const live = pursueIfLive(sim, a);
-    if (live) {
-      // Deep defenders don't bite on runs until the ball crosses the line.
-      const c = sim.carrier!;
-      if (!this.deep || c.pos.x > sim.los - 0.5 || sim.catchAt >= 0) return live;
-    }
+    if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
     // A deep defender who reads run executes his cap/force contract. Alley
@@ -505,6 +572,7 @@ export class ZoneCoverage implements Behavior {
         if (owned) vert = [owned];
       }
       if (vert.length === 0) {
+        a.mind.setAimTarget('zone-drive', null);
         let tgt = lm;
         // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
         if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
@@ -520,7 +588,7 @@ export class ZoneCoverage implements Behavior {
       // (Pattern reads are match technique; a spot dropper waits for the QB's arm.)
       if ((!spot || OPP_GOAL_X - sim.los <= 10) && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1
         && deepest.pos.x - sim.los > Math.min(6, Math.max(1, (OPP_GOAL_X - sim.los) * 0.5))) {
-        this.target = deepest.r;
+        this.selectTarget(a, deepest.r);
         const drive = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: deepest.pos.y + deepest.vel.y * 0.4 };
         if (a.mind.focus * (0.4 + 0.6 * a.r('playRecognition')) > 0.35) {
           const aim = a.mind.aim('zone-drive', drive, sim.t);
@@ -550,7 +618,7 @@ export class ZoneCoverage implements Behavior {
         this.turnedWith = deepest.r;
       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
-      this.target = deepest.r;
+      this.selectTarget(a, deepest.r);
       const command = track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
         facing: turnRun ? undefined : facingQB,
         speed: turnRun ? 1 : zs * 1.05,
@@ -575,7 +643,7 @@ export class ZoneCoverage implements Behavior {
           && sign * th.vel.y > 1 && (Math.abs(th.fut.y - one.pos.y) < 6 || sign * (th.fut.y - sim.ballY) > 12))
           .sort((p, q) => Math.hypot(p.pos.x - a.pos.x, p.pos.y - a.pos.y) - Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y))[0];
         const key = flat ?? one;
-        this.target = key.r;
+        this.selectTarget(a, key.r);
         const tgt = { x: Math.max(sim.los + Math.min(2.5, this.initialDepth), key.pos.x - 0.8),
           y: clamp(key.pos.y + sign * 0.45, 0.5, FIELD_WIDTH - 0.5) };
         return track(a, tgt, { x: key.vel.x * 0.85, y: key.vel.y * 0.9 }, {
@@ -607,7 +675,7 @@ export class ZoneCoverage implements Behavior {
     if (carryable.length > 0 && this.zone !== 'flat_s' && this.zone !== 'flat_w') {
       carryable.sort((p, q) => Math.abs(p.pos.y - lm.y) - Math.abs(q.pos.y - lm.y));
       const th = carryable[0];
-      this.target = th.r;
+      this.selectTarget(a, th.r);
       // Wall and carry: keep him in front and inside, gaining depth before he
       // gets there. Eyes stay on the QB until the seam threatens to run past;
       // then turn and run with him.
@@ -647,7 +715,7 @@ export class ZoneCoverage implements Behavior {
         const outward = sign * (flat.pos.y - sim.offAlign.spots[flat.r.slot].pos.y);
         if (depth > -1 && depth < 7.5 && sign * (flat.pos.y - lm.y) > 0
           && ((vOut > 1.8 && vOut > Math.abs(flat.vel.x) * 0.6) || outward > 3)) {
-          this.target = flat.r;
+          this.selectTarget(a, flat.r);
           if (!this.flatExpansionRecorded) {
             this.flatExpansionRecorded = true;
             if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'coverage-flat-expand',
@@ -664,7 +732,7 @@ export class ZoneCoverage implements Behavior {
         }
       }
     }
-    this.target = best?.r ?? null;
+    this.selectTarget(a, best?.r ?? null);
     if (!best) {
       let tgt = lm;
       if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.25 * a.r('anticipation'));
@@ -695,7 +763,11 @@ export class ZoneCoverage implements Behavior {
     const facingQB = angleTo(a.pos, qb.pos);
     const toSpot = Math.hypot(lm.x - a.pos.x, lm.y - a.pos.y);
     if (toSpot > 2.5 && !a.tags.has('settled')) {
-      return goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: toSpot > 4 ? undefined : facingQB });
+      // Until he has read pass he is in his read step: eyes and chest stay
+      // on the backfield. Turning to run before the read turned his back on
+      // a run, and on a quick throw he could not yet have keyed.
+      const turned = toSpot > 4 && knowsPass(sim, a);
+      return goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: turned ? undefined : facingQB });
     }
     a.tags.add('settled');
     const read = 0.5 * a.r('zoneCoverage') + 0.5 * a.r('anticipation');
@@ -849,8 +921,15 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
     return { vel: a.vel };
   }
   a.tags.add('onBall');
-  const spot = catchSpot(a, sim);
-  const window = observedCatchWindow(a, sim);
+  return playObservedFlight(a, sim, acquireFlight(a, sim), true);
+}
+
+/** Same catch approach, seeded only by this defender's acquired trajectory.
+ * A newer body-possession picture takes priority in pursueIfLive. */
+function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand {
+  const spot = catchSpot(a, { t: sim.t, ballPath: path });
+  const window = observedCatchWindow(a, sim, path);
+  if (acquired) rememberCatchOpportunity(a, window);
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
@@ -882,7 +961,7 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
   // Can't beat the ball to its path: drive on the catch point to arrive with
   // the ball — on the receiver's near side, ready to play through the hands
   // or make the tackle the moment it's caught.
-  const land = window?.p ?? arrivalPoint(sim);
+  const land = window?.p ?? arrivalPoint(sim, path);
   if (land) {
     // Close to the catch itself. A fixed yard of standoff plus inside shade
     // keeps a late defender outside the hands even when he can recover.
@@ -904,10 +983,10 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
 /** First plausible receiver catch from the defender's delayed picture and
  * the visible flight. Does not inspect the intended target or called route.
  * This is a possibility estimate; a receiver can still drop or miss it. */
-function observedCatchWindow(a: Agent, sim: PlaySim): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
+function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
   const receivers = sim.offense.filter(r => r !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
     .map(r => ({ r, seen: sim.see(a, r) }));
-  for (const s of sim.ballPath) {
+  for (const s of path) {
     const remaining = s.t - sim.t;
     if (remaining < 0 || s.z < 0.25) continue;
     for (const { r, seen } of receivers) {
@@ -930,9 +1009,9 @@ function observedCatchWindow(a: Agent, sim: PlaySim): { p: Vec2; t: number; rece
 }
 
 /** Where the ball comes down to catch height on its current flight. */
-function arrivalPoint(sim: PlaySim): Vec2 | null {
+function arrivalPoint(sim: PlaySim, path: PlaySim['ballPath']): Vec2 | null {
   let last: Vec2 | null = null;
-  for (const s of sim.ballPath) {
+  for (const s of path) {
     if (s.t < sim.t) continue;
     last = { x: s.x, y: s.y };
     if (s.z < 1.4 && s.t > sim.t + 0.1) break;
@@ -945,10 +1024,11 @@ export class Pursuit implements Behavior {
   readonly kind = 'pursuit';
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (a.engagement) return stand();
-    const c = sim.carrier;
     if (sim.ball.kind === 'loose') return runThrough(a, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
-    if (!c || c.team === a.team) return stand();
-    return chase(sim, a, c);
+    const holder = observedHolder(a, sim);
+    if (holder) return chase(sim, a, holder.target);
+    if (sim.ball.kind === 'air') return playBall(a, sim, null);
+    return pursueIfLive(sim, a) ?? stand();
   }
 }
 

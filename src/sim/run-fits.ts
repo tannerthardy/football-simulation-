@@ -13,6 +13,7 @@ import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { handoffReach } from './ball-transfer.js';
 import { forceTrack, retainedForceTrack } from './force-track.js';
+import { qbRunning, type PossessionRead } from './possession-read.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -39,7 +40,10 @@ export interface KeyedRunFit {
 export interface BackfieldRunFit {
   backfield: { back: Agent; backCue: Perceived; qbCue: Perceived };
 }
-export type RunFitRead = KeyedRunFit | BackfieldRunFit;
+/** A personally identified holder uses the ordinary post-mesh fit, without
+ * promoting a possible key or an installed exchange into confirmed possession. */
+export interface AcquiredRunFit { possession: PossessionRead }
+export type RunFitRead = KeyedRunFit | BackfieldRunFit | AcquiredRunFit;
 
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const jobs = new Map<Agent, RunFitJob>();
@@ -112,10 +116,47 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
     .sort((a, b) => Number(jobs.get(a)!.kind === 'force') - Number(jobs.get(b)!.kind === 'force') || a.pos.y - b.pos.y);
   const bubbles = [-1, 1].flatMap((side) => (['A', 'B', 'C'] as Gap[])
     .filter((gap) => !claimed.has(`${side}:${gap}`)).map((gap) => ({ side, gap })));
-  for (const d of backers) {
+  const reach = (d: Agent, b: { side: number; gap: Gap }) => Math.abs(gapY(sim.offAlign, b.gap, b.side) - d.pos.y);
+  if (GAP_MATCH) {
+    // More gaps than backers (a second tight end adds one): fill them as a
+    // set, not nearest-first. A gap left open should be the one an
+    // underneath support player (a rotated-down safety or hook defender, not
+    // deep help) still covers on that side, so the Mike slides away from him;
+    // an unsupported or A gap left open is worse. Distance breaks ties.
+    const support = (side: number) => sim.defense.some(d => jobs.get(d)!.kind === 'alley' && !deepZone(d)
+      && (d.pos.y - sim.ballY) * side > 0);
+    const open = (b: { side: number; gap: Gap }) => (support(b.side) ? 1 : 2) + (b.gap === 'A' ? .5 : 0);
+    let best: { cost: number; dist: number; pick: (typeof bubbles[number] | undefined)[] } | null = null;
+    const pick: (typeof bubbles[number] | undefined)[] = [];
+    const search = (i: number, used: Set<number>) => {
+      if (i === backers.length) {
+        // Every insertion keeps a gap while one remains; a force's inside duty is optional.
+        if (backers.some((d, k) => jobs.get(d)!.kind !== 'force' && !pick[k] && used.size < bubbles.length)) return;
+        const cost = bubbles.reduce((c, b, k) => used.has(k) ? c : c + open(b), 0);
+        const dist = backers.reduce((c, d, k) => c + (pick[k] ? reach(d, pick[k]!) : 0), 0);
+        if (!best || cost < best.cost - 1e-9 || (Math.abs(cost - best.cost) < 1e-9 && dist < best.dist)) best = { cost, dist, pick: [...pick] };
+        return;
+      }
+      const job = jobs.get(backers[i])!;
+      pick[i] = undefined; search(i + 1, used);
+      bubbles.forEach((b, k) => {
+        if (used.has(k) || (job.kind === 'force' && b.side !== job.side)) return;
+        pick[i] = b; used.add(k); search(i + 1, used); used.delete(k);
+      });
+      pick[i] = undefined;
+    };
+    search(0, new Set());
+    backers.forEach((d, k) => {
+      const bubble = best?.pick[k], job = jobs.get(d)!;
+      if (!bubble) return;
+      bubbles.splice(bubbles.indexOf(bubble), 1);
+      if (job.kind === 'force') job.inside = bubble;
+      else Object.assign(job, bubble);
+    });
+  } else for (const d of backers) {
     const job = jobs.get(d)!;
     const eligible = job.kind === 'force' ? bubbles.filter(b => b.side === job.side) : bubbles;
-    eligible.sort((a, b) => Math.abs(gapY(sim.offAlign, a.gap, a.side) - d.pos.y) - Math.abs(gapY(sim.offAlign, b.gap, b.side) - d.pos.y));
+    eligible.sort((a, b) => reach(d, a) - reach(d, b));
     const bubble = eligible[0];
     if (bubble) {
       bubbles.splice(bubbles.indexOf(bubble), 1);
@@ -193,6 +234,13 @@ const SAFETY_TEMPO = process.env.SAFETY_TEMPO !== '0';
  * outside the back; the back runs inside him with no one behind. Off: any
  * available defender outside the ball. With no candidate the edge boxes. */
 const DEEP_NO_FORCE = process.env.DEEP_NO_FORCE === '1';
+/** GAP_MATCH (on; =0 restores nearest-first): backers fill the front's open
+ * gaps as a set. Nearest-first sent the Will in the nickel Under vs 12
+ * personnel to the weak A gap and the Mike to the strong B, leaving the gap
+ * between the weak tackle and the second tight end empty while the
+ * rotated-down safety sat over the strong B. Real Under/cover 3 fits slide
+ * the Mike weak and give the strong side's open gap to that safety. */
+const GAP_MATCH = process.env.GAP_MATCH !== '0';
 const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
@@ -228,22 +276,26 @@ export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind:
 // sight of the empty back later does not reinstall the expected exchange.
 const contradictedMesh = new WeakSet<Agent>();
 
-export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, input?: RunFitRead) {
+/** Explicit null means unresolved possession: keep the installed fit, without
+ * falling through to the authoritative holder. Undefined preserves older
+ * direct callers; defense.runFit always supplies its acquired interpretation. */
+export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallbackSide: number, input?: RunFitRead | null) {
   if (a.engagement) return stand();
   let job: RunFitJob = a.runFit ?? { gap: fallbackGap, side: fallbackSide, kind: 'insert', technique: 'attack', edge: 'box', pace: 'stack' };
   const keyed = input && 'target' in input ? input : undefined;
   const picture = input && 'backfield' in input ? input.backfield : undefined;
+  const acquired = input && 'possession' in input ? input.possession : undefined;
   const back = picture?.back ?? sim.slot('RB');
   const acquiredBack = picture?.backCue.carrying === true && picture.qbCue.carrying !== true;
-  const c = picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? sim.carrier;
+  const c = input === null ? null : acquired?.target ?? (picture ? acquiredBack ? back! : sim.qb : keyed?.target ?? sim.carrier);
   // A keyed fit has already consumed its runner picture. Deep mesh geometry
   // keeps the insertion at its surface; the actual handoff/carrier cannot
   // choose another target or prematurely declare this observed crease.
-  let premesh = picture ? c === sim.qb : keyed ? keyed.cue.pos.x <= sim.los - 1.6
-    : c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
+  let premesh = acquired ? false : picture ? c === sim.qb : keyed ? keyed.cue.pos.x <= sim.los - 1.6
+    : c === sim.qb && !qbRunning(a, sim) && sim.handoffAt < 0 && !!back;
   if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: liveGapY(sim, a, job.gap, job.side) }, { speed: .7 });
-  let seen = picture ? premesh || c === back ? picture.backCue : picture.qbCue
-    : keyed?.cue ?? sim.see(a, premesh ? back! : c);
+  let seen = acquired?.cue ?? (picture ? premesh || c === back ? picture.backCue : picture.qbCue
+    : keyed?.cue ?? sim.see(a, premesh ? back! : c));
   if (!keyed && premesh) {
     const qb = picture?.qbCue ?? sim.see(a, sim.qb);
     // Snap possession is expected. An empty back already beyond the line
@@ -269,11 +321,24 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // level and turns ordinary creases into breakaways.
     if (!premesh && seen.pos.x>sim.los-2.5) return chase(sim,a,c,3.5);
     const home=sim.defAlign.spots[a.slot as DefSlot]!.pos;
+    // The expected exchange is no longer a single visible threat when an
+    // empty back has gone ahead and out of handoff reach while the QB still
+    // shows possession. Keep both capped until the picture resolves it. A
+    // pitch is still possible; this is not a declaration of a failed mesh.
+    const split = premesh && picture && picture.qbCue.carrying === true
+      && picture.backCue.carrying === false
+      && picture.qbCue.age !== undefined && picture.backCue.age !== undefined
+      && picture.backCue.pos.x - picture.qbCue.pos.x > handoffReach(sim.qb, back!);
+    const flowY = split ? (picture.backCue.pos.y + picture.qbCue.pos.y) / 2 : seen.pos.y;
+    const flowVy = split ? (picture.backCue.vel.y + picture.qbCue.vel.y) / 2 : seen.vel.y;
+    if (split && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'run-fit-cap',
+      chose: 'cap QB and empty back', cue: 'QB carrying; empty back ahead and outside handoff reach',
+      detail: 'Retain installed cap depth. Neither a completed exchange nor a keeper is assumed.' });
     // SAFETY_TEMPO: until the back declares, the alley player eases down
     // from his alignment and stays the last level over the ball.
     const depth=SAFETY_TEMPO ? Math.max(5,home.x-sim.los-1) : clamp((home.x-sim.los)*.65,5,8);
-    const aim=a.mind.aim('alley-fit',{x:sim.los+depth,y:seen.pos.y+job.side*1.2+a.mind.placementError},sim.t);
-    return track(a,aim,{x:0,y:seen.vel.y},{speed:.65,gain:2,facing:Math.PI});
+    const aim=a.mind.aim('alley-fit',{x:sim.los+depth,y:flowY+job.side*1.2+a.mind.placementError},sim.t);
+    return track(a,aim,{x:0,y:flowVy},{speed:.65,gain:2,facing:Math.PI});
   }
   const core = sim.offense.filter((o) => ['LT','LG','C','RG','RT'].includes(o.slot) || sim.offAlign.spots[o.slot]?.inline)
     .map((o) => ({ ...sim.see(a,o), radius:o.profile.radius }));
@@ -385,9 +450,14 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // Read the guards: every puller this player sees crossing behind the line
     // shows where an extra blocker will turn up. Flow with him to keep the
     // installed leverage on his arrival (box outside him, spill inside him);
-    // never flow against the pull.
-    if (job.kind !== 'interior') for (const p of pullers(sim, a)) {
+    // never flow against the pull. When linemen move behind the line both
+    // ways (a puller and a hinging tackle), the fastest lateral mover is the
+    // pull; reading whichever came first flipped the fit from tick to tick.
+    const moving = job.kind === 'interior' ? [] : pullers(sim, a);
+    const lead = moving.reduce<Perceived | null>((m, p) => !m || Math.abs(p.vel.y) > Math.abs(m.vel.y) ? p : m, null);
+    for (const p of moving) {
       const dir = Math.sign(p.vel.y), arrive = p.pos.y + p.vel.y * PULL_LOOK;
+      if (dir !== Math.sign(lead!.vel.y)) continue;
       const target = arrive + dir * (job.edge === 'spill' ? -PULL_SHOULDER : PULL_SHOULDER);
       if ((target - gy) * dir > 0 && (target - gy) * dir < PULL_REACH) {
         gy = target; pullSide = dir; a.tags.add('fit-pull-read');
@@ -433,7 +503,10 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // Once the acquired track calls for lateral running, use a crossover
   // rather than holding square shoulders and limiting that request to a
   // shuffle. Interior/lag/cutback and still-patient landmarks stay square.
-  const facing = job.kind === 'insert' && flowing && Math.abs(vy) > Math.abs(fit.vel.x)
+  // A request against the landmark's side is braking from an overrun: he
+  // plants and squares up, he does not turn to run back the way he came.
+  const toward = Math.sign(vy) === Math.sign(aim.y - a.pos.y);
+  const facing = job.kind === 'insert' && flowing && toward && Math.abs(vy) > Math.abs(fit.vel.x)
     ? Math.atan2(vy, fit.vel.x) : fit.facing;
   return { ...fit, vel: { x: fit.vel.x, y: vy }, facing };
 }

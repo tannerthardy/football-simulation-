@@ -76,20 +76,28 @@ describe('retire an unkeyed mesh expectation from acquired contradiction', () =>
         s.pictures.get(s.sim.qb.idx)!.carrying = qb;
         s.pictures.get(s.back.idx)!.carrying = rb;
       }
-      expected.pictures.get(expected.sim.qb.idx)!.carrying = null;
-      expect(f.update()).toEqual(expected.update());
+      // INFO-1 now resolves competing possession pictures. Clearing only
+      // QB possession can legitimately identify the back, so that is no
+      // longer an unchanged-information comparator. Keep all six original
+      // cases and compare the explicit installed-backfield request instead.
+      expect(f.update()).toEqual(runFit(expected.a, expected.sim, expected.a.runFit!.gap, expected.a.runFit!.side,
+        { backfield: { back: expected.back, backCue: expected.pictures.get(expected.back.idx)!,
+          qbCue: expected.pictures.get(expected.sim.qb.idx)! } }));
+      expect(f.sim.trace.data!.decisions.some(d => d.kind === 'run-fit-mesh')).toBe(false);
     }
   });
 
   it('retains retirement for this observer without sharing it or reviving the mesh when the back returns', () => {
     const f = stage(saved.cases[1]), untouched = stage(saved.cases[1]), expected = stage(saved.cases[1]);
     f.update();
+    // Both remembering observers must actually acquire the contradiction.
+    // Private `scrambled` no longer supplies a substitute for this history.
+    expected.update();
     for (const s of [f, untouched, expected]) {
       s.sim.t = 10;
       s.pictures.get(s.back.idx)!.pos = { x: s.sim.los - 2, y: s.sim.ballY + 8 };
       s.pictures.get(s.back.idx)!.vel = { x: -1, y: 4 };
     }
-    expected.sim.scrambled = true;
     expect(f.update()).toEqual(expected.fit());
     expect(f.update()).not.toEqual(untouched.update());
     expect(untouched.sim.trace.data!.decisions.some(d => d.kind === 'run-fit-mesh')).toBe(false);

@@ -25,6 +25,7 @@ import { bodyRadius } from '../physics/bodyshape.js';
 import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
 import { containCoverage } from './coverage-space.js';
+import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
 import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
@@ -43,8 +44,10 @@ import { predictCalledMotion } from './called-motion.js';
 import { MotionRuntime, motionEnabled, planMotion } from './motion.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
+import { orderedDefense, orderedOffense } from './lineup.js';
 import { SNAP_REACT, VISIBLE, planSnap, snapResponse, type SnapCount } from './snap-count.js';
 import { ReplayTrace } from './telemetry.js';
+import { CommandTrace, type CommandTraceSelection } from './command-trace.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
@@ -94,6 +97,9 @@ export interface PlaySetup {
   supportIntegration?: 'mean' | 'integrated';
   /** Experimental angular hand patch; default center keeps production law. */
   handContact?: 'center' | 'patch';
+  /** Hand-placed pre-snap spots (Play Lab's coach's hand), replacing the
+   * installed spot before any staging; absent in games. Fouls stay the engine's. */
+  alignment?: Array<{ team: TeamSide; slot: string; pos: Vec2 }>;
 }
 
 const MAX_PLAY_TIME = 25;
@@ -145,6 +151,7 @@ export class PlaySim {
   readonly perception: PerceptionBuffer;
   readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
   readonly trace: ReplayTrace;
+  private commandTrace?: CommandTrace;
   private readonly record: boolean;
   private readonly recordEvery: number;
   private tickCount = 0;
@@ -232,6 +239,8 @@ export class PlaySim {
   ballPath: Array<{ t: number; x: number; y: number; z: number }> = [];
 
   constructor(setup: PlaySetup) {
+    // Normalize once before alignment, actor indices and any ordered consumer.
+    const offense = orderedOffense(setup.offense), defense = orderedDefense(setup.defense);
     this.rng = typeof setup.seed === 'number' ? new Rng(setup.seed) : setup.seed;
     this.coverageScouting = setup.coverageScouting;
     this.los = setup.los;
@@ -252,9 +261,9 @@ export class PlaySim {
       { kind: setup.offCall.kind, pass: setup.offCall.pass, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
     // The secondary checks its call to the receiver distribution it sees.
     this.defCall = installCoverage(setup.defCall, this.offAlign);
-    const defSlots = Object.keys(setup.defense) as DefSlot[];
+    const defSlots = defense.map(([slot]) => slot);
     // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
-    const mass = Object.fromEntries(defSlots.map(slot => [slot, derivePhysical(setup.defense[slot]!).massKg]));
+    const mass = Object.fromEntries(defense.map(([slot, player]) => [slot, derivePhysical(player).massKg]));
     this.defStyle = { ...setup.defStyle, mass, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los } };
     this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
 
@@ -271,17 +280,18 @@ export class PlaySim {
       this.bySlot.set(slot, a);
       return a;
     };
-    for (const [slot, player] of Object.entries(setup.offense) as Array<[OffSlot, Player]>) {
+    for (const [slot, player] of offense) {
       const spot = this.offAlign.spots[slot];
-      if (!spot) continue;
+      if (!spot) throw new Error(`Offense lineup slot ${slot} has no alignment in ${setup.offCall.formation.id}`);
       mk('O', slot, player, spot.pos, 0);
     }
-    for (const [slot, player] of Object.entries(setup.defense) as Array<[DefSlot, Player]>) {
+    for (const [slot, player] of defense) {
       const spot = this.defAlign.spots[slot];
-      if (!spot) continue;
+      if (!spot) throw new Error(`Defense lineup slot ${slot} has no alignment in ${this.defCall.front.id}`);
       mk('D', slot, player, spot.pos, Math.PI);
     }
     fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
+    if (setup.alignment?.length) this.placeByHand(setup.alignment);
     this.snapX = this.agents.map((a) => a.pos.x);
     this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact });
     // Linemen and backs start in their stances; skill players upright.
@@ -295,7 +305,8 @@ export class PlaySim {
     this.beginSegment(qb, 'snap');
     this.perception = new PerceptionBuffer(this.agents.length, this.dt);
     const motion = motionEnabled() && this.offCall.motion ? this.slot(this.offCall.motion.slot) : undefined;
-    const plan = motion ? planMotion(this.offAlign, this.offCall.motion!, motion.profile) : null;
+    const plan = motion ? planMotion(this.offAlign, this.offCall.motion!, motion.profile,
+      this.offense.map(a => ({ slot: a.slot, pos: a.pos, radius: a.profile.radius }))) : null;
     this.motion = plan ? new MotionRuntime(plan, setup.defCall, setup.manPrefs, this.defStyle, this.defAlign, this.rng.fork('motion-check')) : null;
     this.stageDefense(setup.manPrefs);
     if (this.motion) ({ offAlign: this.offAlign, defCall: this.defCall, defAlign: this.defAlign } = this.motion.finish(this));
@@ -334,6 +345,17 @@ export class PlaySim {
         enforcement: 'previous', possessionChanges: 0, possessionTeam: 'O' }, {
         source: 'native', rule: foul.rule, action: 'installed_snap_law',
         facts: { reason: foul.reason, deadBall: foul.deadBall } });
+    }
+  }
+
+  /** The installed spot moves with the body, so jobs keyed to it start from where he stands. */
+  private placeByHand(spots: NonNullable<PlaySetup['alignment']>): void {
+    for (const { team, slot, pos } of spots) {
+      const a = this.agents.find(x => x.team === team && x.slot === slot);
+      if (!a || !Number.isFinite(pos.x) || !Number.isFinite(pos.y)) throw new Error(`Hand-placed ${team} ${slot} is not in this play`);
+      a.body.pos = { x: pos.x, y: clamp(pos.y, 0.5, FIELD_WIDTH - 0.5) };
+      const installed = team === 'O' ? this.offAlign.spots : this.defAlign.spots as Record<string, { pos: Vec2 }>;
+      installed[slot] = { ...installed[slot], pos: { ...a.body.pos } } as never;
     }
   }
 
@@ -519,6 +541,7 @@ export class PlaySim {
     if (observer.team === target.team) {
       const seen = this.perception.perceive(target.idx, 0.05);
       this.trace.observe(observer, target, seen, this.t);
+      this.commandTrace?.observe(observer, target, seen, this.t);
       return seen;
     }
     let delay = observer.mind.observationDelay(observer.profile.reactionTime * delayScale);
@@ -529,6 +552,7 @@ export class PlaySim {
     if (observer.eyes && !observer.eyes.keys.includes(target)) delay += observer.eyes.peripheral;
     const seen = this.perception.perceive(target.idx, delay);
     this.trace.observe(observer, target, seen, this.t);
+    this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
   }
 
@@ -938,8 +962,24 @@ export class PlaySim {
     return this.buildResult();
   }
 
+  /** Optional selected-actor recording, independent of packed replay and its cadence. */
+  recordCommands(selection: CommandTraceSelection): CommandTrace {
+    const actor = selection.actor;
+    const matches = this.agents.filter(a => 'playerId' in actor ? a.player.id === actor.playerId
+      : a.team === actor.team && a.slot === actor.slot);
+    if (matches.length !== 1) throw new Error('Command trace must select exactly one actor');
+    return this.commandTrace = new CommandTrace(matches[0], selection);
+  }
+
+  /** A pending selected-player window only; helpers need not allocate diagnostic data otherwise. */
+  commandTraceFor(a: Agent): CommandTrace | undefined {
+    return this.commandTrace?.isCollecting(a) ? this.commandTrace : undefined;
+  }
+
   tick(): void {
     const t = this.t;
+    const commandTrace = this.commandTrace;
+    commandTrace?.begin(this);
     this.perception.record(this.agents, this.carrier?.idx ?? null);
     for (const a of this.agents) {
       let nearby = 0;
@@ -958,9 +998,16 @@ export class PlaySim {
     this.presentedFakeRunners.clear();
     for (let i = 0; i < this.agents.length; i++) {
       const a = this.agents[i];
+      commandTrace?.at('decision');
+      const owner = a.behavior, before = commandTrace?.decisionStart(a, this);
       // Reaction delays control, not collisions: he can still be pushed.
       const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
-      this.cmds[i] = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
+      commandTrace?.decisionEnd(a, owner, before, command, t >= a.snapReadyAt, this);
+      const contained = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
+      commandTrace?.command(a, 'containment', contained);
+      commandTrace?.at('open-to-ball');
+      this.cmds[i] = openToBall(a, this, contained);
+      commandTrace?.command(a, 'open-to-ball', this.cmds[i]);
     }
 
     // Intents: the decisions, refined by the techniques that own contact.
@@ -971,8 +1018,13 @@ export class PlaySim {
     }
     this.dives.clear();
     this.lunges.clear();
+    commandTrace?.stage('technique-intents', this.intents);
+    commandTrace?.at('engagement');
     updateEngagements(this, this.intents);
+    commandTrace?.stage('engagement', this.intents);
+    commandTrace?.at('tackle-bond');
     if (this.bond) updateBond(this, this.bond, this.intents);
+    commandTrace?.stage('tackle-bond', this.intents);
     // Constraint ownership and last-step touch are felt by the actor. Free
     // movement forecasts must not pretend these loads or joints are absent.
     const constrained=new Set(this.world.joints.filter(j=>j.kind!=='grasp'||!j.broken)
@@ -986,15 +1038,20 @@ export class PlaySim {
     }
     // A called track is an announced target, not already achieved velocity.
     // Advance the acquired picture only by the bounded free response to it.
+    commandTrace?.at('spacing');
     spaceTeammates(this.agents, this.intents, (a,b)=>{
       const seen = this.see(a,b), called = a.team === b.team ? b.behavior.calledMotion?.() : null;
       return predictCalledMotion(seen, called, b.profile);
     },{now:t,constrained});
+    commandTrace?.stage('spacing', this.intents);
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,
         push: 0, dive: undefined, lunge: undefined, posture: a.body.support!.posture };
     }
+    commandTrace?.stage('snap-guard', this.intents);
+    commandTrace?.final(this.intents);
+    commandTrace?.at('execution');
 
     // Physics: feet, contacts, holds and balance, in substeps.
     let catchStarts: Vec2[] | undefined;
@@ -1041,6 +1098,7 @@ export class PlaySim {
     if (holdingStart && this.lastStep) observeHolding(this, this.lastStep, holdingStart);
     if (this.record && (this.tickCount++ % this.recordEvery === 0 || this.phase === 'dead')) this.recordFrame();
     this.t = round2(this.t + this.dt);
+    commandTrace?.finish(this);
   }
 
   /** Touches, first contact, falls and the pile's external impulse from the step. */

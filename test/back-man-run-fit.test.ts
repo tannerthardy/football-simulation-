@@ -9,7 +9,7 @@ import { PASS_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Gap } from '../src/playbook/types.js';
-import { ManCoverage, playBall, sawThrow } from '../src/sim/behaviors/defense.js';
+import { ManCoverage, playBall, runFit, sawThrow } from '../src/sim/behaviors/defense.js';
 import { chase } from '../src/sim/behaviors/common.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { Perceived } from '../src/sim/perception.js';
@@ -203,11 +203,15 @@ describe('inside man players insert from their acquired back possession', () => 
     expect(f.update()).toEqual(unknown.update());
   });
 
-  it('keeps force/cutback contracts outside the keyed back insertion/alley rule', () => {
+  it('force/cutback markers play their own installed fit on the acquired carrying back', () => {
+    // Receiver cushion on a ball carrier is a retreat with his back to the
+    // ball (film G1-P003/P025, a 59-yd TD in a matched twin). The keyed fit
+    // runs his own contract: force stays force, cutback stays cutback.
     for (const kind of ['force', 'cutback'] as const) {
-      const f = stage(), unknown = stage(null);
-      f.a.runFit!.kind = kind; unknown.a.runFit!.kind = kind;
-      expect(f.update()).toEqual(unknown.update());
+      const f = stage(), expected = stage(), unknown = stage(null);
+      for (const item of [f, expected, unknown]) item.a.runFit!.kind = kind;
+      expect(f.update()).toEqual(runFit(expected.a, expected.sim, 'B', 1, { target: expected.r, cue: expected.picture() }));
+      expect(f.update()).not.toEqual(unknown.update());
     }
   });
 
