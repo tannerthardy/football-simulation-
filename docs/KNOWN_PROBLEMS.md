@@ -1047,6 +1047,32 @@ run plays with the assignment layer (`--telemetry full`):
   runs of seeds 7-11 (`scripts/diag/flag-restage.ts`): backer fits changed on
   110, results on 96. Mean run yards 4.51 -> 3.94 (paired 90% interval -1.06
   to -0.09), 10+ yd runs 25 -> 19, stuffs 56 -> 56.
+- **A drive blocker runs the end he caught on the inside half out of the
+  play** (CEO restage of #275: seed 10 P46 Pistol Twin TE duo, Y on DE_S;
+  seed 10 P123 Twin TE duo, RT on DE_S; seed 11 P99 Gun Spread wide zone weak,
+  LT on DE_S; Oct 25). *Fixed (on by default, `SEAL_HOLD`).* The end was
+  working inside the whole rep (P46: commanded 4.1 yd/s inside from 0.6 to
+  2.7 s). The blocker had caught him on his inside half (lateral offset 1.1
+  to 1.5 yd) and the rep wanted him head-up (sealTarget 0; 0.31 yd on the
+  P99 stretch), so his seal correction ran him toward the end's outside at
+  his top lateral request (Y 3.82, RT 2.13, LT 3.01 yd/s) with the hands on.
+  The pair moved together, the offset never closed and the request stayed
+  pinned for about 2.5 s; the velocity lead in the offset moved the target
+  further out as the end was carried. Now, once his own felt load says the
+  hands are on, he keeps the leverage he caught the man with (the closest to
+  the wanted shoulder reached while loaded) and drives him on it; unloaded
+  closing keeps the old correction. Those snaps, end carried outward: P46
+  4.50 -> 2.76 yd, P123 4.05 -> 2.80, P99 4.34 -> 1.68. Restaged on the same
+  snaps, 250 runs of seeds 7-11 (`scripts/diag/seal-hold-restage.ts`): run
+  reps with blocker and defender carried 4+ yd the same way 78 -> 43; stretch
+  reps where the blocker reached play side and stayed there 283/359 (79%) ->
+  277/341 (81%); edges working outside on their own (mean commanded lateral
+  outward over 1 yd/s, 41 reps in both arms) still go outward 0.58 -> 0.56 yd
+  with the same lost-block endings. Results changed on 234 runs; median run
+  2.78 -> 2.66 yd, stuffs 56 -> 57, 10+ yd runs 25 -> 29, mean +1.26 yd
+  (paired 90% -0.18 to +2.70; capped at 20 yd +0.02, -0.58 to +0.62): the
+  mean moves with a few breakaways. The rest of the carry on P46 and P123 is
+  the open push question in PHY-1.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
@@ -1833,6 +1859,17 @@ These break the model rule that players act on acquired, delayed information.
   what turned P019's linebacker (TKL-4).
 - **Hands at the muscle cap** in pass protection (PRO-1).
 - **Summed double-team drive** (RUN-3).
+- **A slightly stronger blocker carries a square, resisting end sideways**
+  (open question; seed 10 P46 Pistol Twin TE duo, Y on DE_S, captured by
+  `scripts/diag/edge-contain-restage.ts`; Oct 25). Y 113 kg, strength 0.77;
+  DE 111 kg, strength 0.62. Both face each other square, the contact normal
+  is 87% lateral, and the end commands 4.1 yd/s inside with a committed lean
+  of about 1410 kg·yd/s² (1290 N) inside against the Y's 1010 (920 N)
+  outside. Even so the pair moves outward at 1.6-1.95 yd/s (about 1.7 m/s)
+  for 2 s. With `SEAL_HOLD` the Y no longer runs at him and the carry halves,
+  but the end is still carried 2.8 yd. Not yet checked: whether equal-mass
+  push contests should resolve this fast, and how ratings enter the force
+  budget. Not fixed.
 - **Raw hand operator trusts stale contact validity** (PHY-004): a synthetic
   input contract; not shown to happen in real play.
 - **Withdrawn:** `LEG_BIND` broke the rear-finish load contract (#190); the
