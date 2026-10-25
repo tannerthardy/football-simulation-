@@ -75,7 +75,7 @@ function ordinaryWindow(setup: ReturnType<typeof stage>, now = 2) {
 }
 
 describe('attainable tackle opportunity', () => {
-  it.each([-1, 1])('takes a passing last reach without promising a standing wrap, side %s', side => {
+  it.each([-1, 1])('commits a passing last reach without a premature hold, side %s', side => {
     const { sim, c, d, body, arms, command } = passingStage(side, true, true);
     const seen = sim.see(d, c);
     const window = previewTackleWindow(d, seen, command, body, arms, sim.world.time)!;
@@ -84,16 +84,14 @@ describe('attainable tackle opportunity', () => {
     expect(window.closest).toBeLessThan(arms + .45);
     const dive = vi.spyOn(sim, 'diveAt');
     const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(false);
+    const before = structuredClone(d.body);
     try {
       tryTackles(sim);
       expect(dive).toHaveBeenCalledOnce();
-      expect(sim.bond?.tacklers).toContain(d);
-      const hold = sim.bond!.holds!.get(d)!;
-      expect(hold.origin).toContain('lunge');
-      expect(hold.capacity).toBeGreaterThan(0);
-      expect(hold.capacity).toBeLessThan(supportParams(d.profile).armForce);
-      // Acquisition does not claim a successful tackle or a body impact.
-      expect(hold.force ?? 0).toBe(0);
+      // This retained geometry used to grant the lunge's hold before World
+      // moved its body. The committed request must now earn contact first.
+      expect(sim.bond).toBeNull(); expect(sim.world.joints).toHaveLength(0);
+      expect(rolls).not.toHaveBeenCalled(); expect(d.body).toEqual(before);
       expect(sim.outcome).toBeNull();
       expect(sim.trace.data!.decisions.find(row => row.a === d.idx)?.chose).toBe('take last reach');
     } finally { dive.mockRestore(); rolls.mockRestore(); }

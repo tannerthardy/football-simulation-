@@ -26,10 +26,11 @@ import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import { supportParams, TURF_MU } from '../physics/support.js';
-import { GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
+import { type GraspJoint, type Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { contactQuality, previewTackleWindow } from './tackle-window.js';
+import { tackleReach } from './tackle-geometry.js';
 
 export interface TackleBond {
   carrier: Agent;
@@ -94,6 +95,53 @@ const BLOCKED_REACH = process.env.BLOCKED_REACH !== '0';
  * runs sat at grip 0.45, slipping 79% of the time (KNOWN_PROBLEMS TKL-1). */
 const GRIP_HOLD = process.env.GRIP_HOLD !== '0';
 
+/** A committed motion, not an acquired contact. It survives the ordinary
+ * off-feet gate only through this dive's fall. Technique is tried once, at
+ * the first post-World sample within physical hand reach. */
+const pending = new WeakMap<Agent, { target: Agent; mode: 'lunge' | 'dive'; started: number }>();
+
+function missedAttempt(sim: PlaySim, d: Agent, c: Agent, mode: string): void {
+  d.missedTackles++;
+  sim.stats.missedTackles++;
+  sim.event('missed_tackle', d, c, mode);
+}
+
+function beginDive(sim: PlaySim, d: Agent, c: Agent, mode: 'lunge' | 'dive'): void {
+  pending.set(d, { target: c, mode, started: sim.world.time });
+  d.nextTackleAt = sim.t + 1;
+  sim.diveAt(d, { x: c.pos.x - d.pos.x, y: c.pos.y - d.pos.y });
+}
+
+function continueDive(sim: PlaySim, d: Agent, c: Agent): boolean {
+  const p = pending.get(d);
+  if (!p) return false;
+  if (p.target !== c || sim.t < d.downUntil || d.engagement
+    || sim.bond?.tacklers.includes(d)) { pending.delete(d); return false; }
+  // A queued request has not moved the body yet. Do not resolve it twice
+  // when a caller samples the same execution boundary more than once.
+  if (sim.world.time <= p.started) return true;
+  const s = d.body.support;
+  const distance = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
+  if (s?.state === 'falling' && s.cause === 'dive') {
+    const arms = tackleReach(d.profile, c.profile);
+    if (distance > arms || occluded(sim, d, c)) return true;
+    pending.delete(d); // One genuine opportunity, one technique trial.
+    if (p.mode === 'lunge') {
+      attempt(sim, d, c, contactQuality(distance, c.profile.radius + d.profile.radius, arms), false, true, true);
+    } else {
+      const success = .22 + .3 * d.r('tackling') - .15 * c.r('elusiveness') - .1 * c.r('balance');
+      if (sim.rng.chance(Math.max(.05, success))) {
+        grasp(sim, d, c, .3, 1, distance, 1, true, 'dive');
+        sim.event('hit', d, c, 'diving tackle');
+      } else missedAttempt(sim, d, c, 'dive');
+    }
+    return true;
+  }
+  pending.delete(d);
+  missedAttempt(sim, d, c, p.mode);
+  return true;
+}
+
 /** `lock`: how much of the wrap the arms' geometry still locks (default
  * the hold's quality). A wrap that slides out to arm's length is a hand hold
  * again; the hands keep the grip they acquired (GRIP_HOLD). */
@@ -119,9 +167,16 @@ function handHold(d: Agent, q: number): number {
 
 export function tryTackles(sim: PlaySim): void {
   const c = sim.carrier;
-  if (!c || sim.ball.kind !== 'held') return;
+  if (!c || sim.ball.kind !== 'held') {
+    for (const a of sim.agents) pending.delete(a);
+    return;
+  }
   const t = sim.t;
   for (const d of sim.opponents(c)) {
+    if (continueDive(sim, d, c)) {
+      if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
+      continue;
+    }
     if (d.isDown(t) || t < d.nextTackleAt) continue;
     if (sim.bond && sim.bond.tacklers.includes(d)) continue;
     const dx = c.pos.x - d.pos.x;
@@ -135,10 +190,12 @@ export function tryTackles(sim: PlaySim): void {
     if (engaged && !freeSide && d.engagement!.win < 0.6) continue;
     const body = c.profile.radius + d.profile.radius;
     const freeArm = freeSide ? 0.7 - 0.3 * clamp(d.engagement!.control, 0, 1) : 0.4;
-    const arms = body + d.profile.reach * (engaged ? freeArm : 1.0);
+    const arms = tackleReach(d.profile, c.profile, engaged ? freeArm : 1);
     // A free tackler can lunge for the last half yard by committing his body;
     // a miss then leaves him off his base.
-    const range = arms + (engaged ? 0 : 0.45);
+    // Preserve the existing launch window, now explicitly distinct from
+    // contact reach. Its old body-radius/margin terms never admit a grasp.
+    const range = engaged ? arms : arms + d.profile.radius + .45;
     if (dd <= range && !occluded(sim, d, c)) {
       // Contact quality: 1 = body to body (form tackle), 0 = fingertips / lunge.
       const q = contactQuality(dd, body, arms);
@@ -191,7 +248,8 @@ export function tryTackles(sim: PlaySim): void {
       }
       if (needsLastReach && !lastReach) continue;
       if (waitForBetter && !acquireAtReach) continue;
-      attempt(sim, d, c, q, engaged, dd > arms);
+      if (dd > arms) beginDive(sim, d, c, 'lunge');
+      else attempt(sim, d, c, q, engaged, false);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
     }
@@ -201,18 +259,7 @@ export function tryTackles(sim: PlaySim): void {
     const separating = ((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
     const behind = (d.pos.x - c.pos.x) * c.vel.x + (d.pos.y - c.pos.y) * c.vel.y < 0;
     if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond && !occluded(sim, d, c)) {
-      d.nextTackleAt = t + 1;
-      sim.diveAt(d, { x: dx, y: dy });
-      const p = 0.22 + 0.3 * d.r('tackling') - 0.15 * c.r('elusiveness') - 0.1 * c.r('balance');
-      if (sim.rng.chance(Math.max(0.05, p))) {
-        // He gets a hand on a foot: a weak hold, all of it on the legs.
-        grasp(sim, d, c, 0.3, 1, dd, 1, true, 'dive');
-        sim.event('hit', d, c, 'diving tackle');
-        return;
-      }
-      d.missedTackles++;
-      sim.stats.missedTackles++;
-      sim.event('missed_tackle', d, c, 'dive');
+      beginDive(sim, d, c, 'dive');
     }
   }
 }
@@ -235,7 +282,7 @@ function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
   return false;
 }
 
-function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean): void {
+function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean, launched = false): void {
   const t = sim.t;
   const rng = sim.rng;
   // Arms reach and recoil: one attempt per beat, not per physics tick.
@@ -272,8 +319,10 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
       sim.event('missed_tackle', d, c);
       // The reach committed his body: a lay-out leaves his feet, a lunge
       // leaves his base. Physics decides whether he stays up.
-      if (lunged && q < 0.25) sim.diveAt(d, { x: dx, y: dy });
-      else if (!engaged) commitLunge(d, nx, ny, q);
+      if (!launched) {
+        if (lunged && q < 0.25) sim.diveAt(d, { x: dx, y: dy });
+        else if (!engaged) commitLunge(d, nx, ny, q);
+      }
       return;
     }
   }
@@ -302,7 +351,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
   // Out of standing reach he has to lay out to get there. Within it he
   // strikes: the last step drives his body into the carrier's near hip, so
   // the wrap follows a collision instead of a reach at a passing runner.
-  if (lunged) sim.diveAt(d, { x: dx, y: dy });
+  if (lunged) { if (!launched) sim.diveAt(d, { x: dx, y: dy }); }
   else if (!engaged) strike(sim, d, c, d.r('tackling'));
   grasp(sim, d, c, quality, legs, dd, execution, lunged, `${lunged ? 'lunge' : engaged ? 'block' : q > 0.6 ? 'form' : 'reach'}${alreadyWrapped ? '+assist' : ''}${fromBehind ? '+behind' : ''}`);
   sim.event('tackle_wrap', d, c, alreadyWrapped ? 'assist' : 'initial');
@@ -351,13 +400,13 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   }
   const bond = sim.bond;
   bond.tacklers.push(d);
-  // A standing hold keeps the arms' length; a diving catch adds his body
-  // stretched along the ground toward the legs.
-  const reach = c.profile.radius + d.profile.radius + d.profile.reach * 0.9 + (extended ? 0.9 : 0);
+  // Translation has already brought the body to the contact. No acquisition
+  // distance or unrepresented laid-out segment enlarges retained arm reach.
+  const reach = tackleReach(d.profile, c.profile);
   // He pulls himself into the runner: a sure tackler's arms reel faster.
   const pull = extended ? 0.6 : 1.2 + 1.2 * d.r('tackling');
-  const joint: GraspJoint = { kind: 'grasp', a: d.body, b: c.body, reach: Math.max(reach, dd + 0.15), capacity: gripForce(d, quality), legs, pull, hold: dd, origin,
-    ground: extended ? Math.max(reach, dd + 0.15) : undefined };
+  const joint: GraspJoint = { kind: 'grasp', a: d.body, b: c.body, reach, capacity: gripForce(d, quality), legs, pull, hold: dd, origin,
+    ground: reach };
   if (REACH_CONTACT && !extended && !wasEngaged && dd > c.profile.radius + d.profile.radius) {
     joint.brace = dd;
     joint.pull = 0;
@@ -418,10 +467,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     // a body wrap because time passed.
     const distance = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
     const torso = c.profile.radius + d.profile.radius;
-    // A holder on the ground is stretched out behind his arms; the arms
-    // themselves are as close as they were.
-    const stretched = d.body.support?.state !== 'up' ? GROUND_STRETCH : 0;
-    const quality = clamp(1 - (distance - stretched - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
+    const quality = contactQuality(distance, torso, tackleReach(d.profile, c.profile));
     const available = clamp(0.25 + 0.85 * quality, 0.1, 1) * (execution.get(d) ?? 1);
     const rate = Math.min(1, dt * (1 + 2.5 * d.r('tackling')));
     const g = grip.get(d) ?? available;
@@ -486,7 +532,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   if (TACKLE_ROLL && c.body.support?.state === 'up') for (const d of bond.tacklers) {
     const distance = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
     const torso = c.profile.radius + d.profile.radius;
-    const quality = clamp(1 - (distance - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
+    const quality = contactQuality(distance, torso, tackleReach(d.profile, c.profile));
     const secure = clamp(grip.get(d) ?? 0, 0, 1) * quality;
     if (d.body.support?.state !== 'up' || distance > torso + .15 || secure < .5) continue;
     const cs = Math.hypot(c.vel.x, c.vel.y);
