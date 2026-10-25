@@ -1,6 +1,6 @@
 # Gridiron Engine: what the deeper investigation changed
 
-**For Tanner · October 23, 2026 · forensic review and architectural challenge**  
+**For Tanner · October 23, 2026 · forensic review and architectural challenge**
 Experimental source: `c4a03f6463eacb23ce63d01bd32b4f8b547b9bc0`, through PR #245. Final freshness check found develop at `ccdb69cba81e07c578f607ff1bf8ce0efe2edc68` (PR #246): documentation-only VIEW-1 addition, reviewed below; simulation source is identical. Production code and approved plans are unchanged by this audit. The [revised roadmap](ROADMAP.md), seven technical appendices and [reproduction guide](REPRODUCE.md) form part of this report.
 
 ## 1. The revised judgment

@@ -82,4 +82,3 @@ This preserves the intended supporting role and prevents the week becoming anoth
 - Feedback utility confirmation request: https://github.com/tannerthardy/football-simulation-/pull/255#issuecomment-6390773699
 
 No correction here requires rerunning a campaign or changing the strategic recommendation.
-

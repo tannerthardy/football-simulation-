@@ -499,4 +499,3 @@ The strategic checkpoint is whether a player can keep a valid responsibility, re
 - Fetchable ordinary53 packet: https://github.com/tannerthardy/football-simulation-/blob/64c438dae4acb804cd9cb29d1ba654369845ee25/artifacts/ordinary53/README.md
 - QB exact owner handoff: https://github.com/tannerthardy/football-simulation-/blob/64c438dae4acb804cd9cb29d1ba654369845ee25/artifacts/ordinary53/owner-handoff.md
 - Prior root push probe: experiments/push-readiness/probe.ts and results.json.
-

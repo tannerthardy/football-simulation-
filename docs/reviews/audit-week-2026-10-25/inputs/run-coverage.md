@@ -144,4 +144,3 @@ A09: ACT-1 is delivered; preserve its action lifetime in new transitions.
 A12: a supported one-family installation/ownership map is a useful parallel preparation task; assignment semantics need not await perfect physics.
 A18: active opposing cases now exist for one weak-cue COV-7 boundary; broad exploit search still premature.
 A19: use existing cue provenance/cadence and real finite preparation/recovery. Do not infer a need for gaze simulation or generic cognition rewrite from these remaining failures.
-

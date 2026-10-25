@@ -84,4 +84,3 @@ Do-It-All's section4 role should remain coordination with the existing #273/#274
 - Accepted COV-7 capability and source-qualified limits: https://github.com/tannerthardy/football-simulation-/pull/271
 - Current COV-7 documentation: https://github.com/tannerthardy/football-simulation-/blob/9ace17336ce8593b9d29454bebaa9ebaf11132e0/docs/reviews/cov7-abandonment-cost.md
 - COV-6 priority/current source: https://github.com/tannerthardy/football-simulation-/blob/9ace17336ce8593b9d29454bebaa9ebaf11132e0/docs/KNOWN_PROBLEMS.md#cov-6
-

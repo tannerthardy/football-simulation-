@@ -168,4 +168,3 @@ An independent reviewer should reproduce one decisive positive and one strongest
 - Deep audit: original-audit/ROADMAP.md, original-audit/REVIEW.md.
 
 No production source was edited; no GitHub comments/messages/PRs were posted by this review. Refresh #274 status/head before final publication because its correction is actively in flight.
-

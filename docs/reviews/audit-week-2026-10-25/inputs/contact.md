@@ -87,4 +87,3 @@ Stop a local treatment after two failed mechanism attempts; change the hypothesi
 - evidence/contact-source-excerpts.json (actual current/candidate grasp and World attachment source)
 
 No production changes, test runs, GitHub comments or PR actions were performed by this reviewer.
-

@@ -159,4 +159,3 @@ The week should end with fewer unexplained mechanisms and usable native behavior
 - QB source inspected: https://github.com/tannerthardy/football-simulation-/blob/9ace17336ce8593b9d29454bebaa9ebaf11132e0/src/sim/behaviors/qb.ts#L537
 - Measurin completed T4: https://github.com/tannerthardy/football-simulation-/pull/255#issuecomment-6389270790
 - Run feedback contract: https://github.com/tannerthardy/football-simulation-/pull/255#issuecomment-6390773699
-
