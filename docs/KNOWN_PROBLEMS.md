@@ -1012,6 +1012,36 @@ run plays with the assignment layer (`--telemetry full`):
 
   In the two native develop cases, SEAL_HOLD stops neither climb; turning it
   off mostly frees the down linemen.
+
+  **Ordinary set.** Declared before any treatment result:
+  `scripts/diag/zone-climb-ordinary.ts`, the first 10 inside, outside, wide
+  and split zone runs of normal games 7 and 8, nothing dropped. Each was
+  replayed from identical setup bytes on develop `b559fdc5` and on #284.
+  - The counting changes no installation among the 20 plays. It repairs the
+    constructed case only.
+  - The ported prototype works 12 of 36 installed backers before the runner
+    reaches them, against 9 on develop: S7-P044, S8-P012 and S8-P025. None is
+    lost.
+  - Keepers hold the same men at runner arrival in both trees. The same two
+    losses (S7-P018, S8-P049) occur on both.
+  - On S7-P044, the first changed command is RT's held preparation on DT_S at
+    0.75 s (sideways 1.41 → 1.14 yd/s). The consequential one is LG's release
+    to LB_W at 1.50 s. On develop it is rewritten by spacing into a backward
+    step (−0.64 yd/s at 1.60 s) and never arrives. On #284 it is a detour
+    around the bodies in its way: 3.9–4.4 yd/s, engaging LB_W at 2.25 s,
+    before the runner (2.55 s).
+  - S8-P036 is the strongest adverse case (4.8 → 2.7 yd). LT's held
+    preparation on DT_W keeps him on that man until 3.05 s instead of
+    2.55 s, the runner's path shifts and SS tackles at 3.25 s. Protection is
+    not lost.
+  - The remaining 24 backers are not worked:
+    - 16 releases come 1.2–2.2 s after the snap with the backer 4–6 yd away,
+      and the runner arrives about a second later;
+    - 4 doubles never release;
+    - 3 release after the runner arrives;
+    - 1 reaches the backer without engaging.
+
+    The next stage is release timing and access, not installation.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
