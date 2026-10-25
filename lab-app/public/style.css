@@ -108,3 +108,5 @@ label.inline input { display: inline-block; width: 90px; }
 .lib-row { display: flex; justify-content: space-between; gap: 6px; border-bottom: 1px solid var(--line); padding: 4px 0; }
 .lib-row small { color: var(--muted); display: block; }
 code { font-size: 11px; }
+.views button { white-space: nowrap; }
+.banner { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; text-align: right; }

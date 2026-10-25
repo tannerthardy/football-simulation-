@@ -223,9 +223,11 @@ function describe(run) {
 
 function setRun(run, keepTime) {
   S.run = run; S.arrange = false; $('arrange').classList.remove('on');
-  if (!keepTime) { S.t = 0; S.playing = true; }
+  const T = run.frames.t;
+  if (!keepTime) { S.t = T[0]; S.playing = true; }
   S.zoom = 1; S.pan = [0, 0];
-  const T = run.frames.t; $('time').max = String(T[T.length - 1]); $('time').step = '0.05';
+  // Frames before 0 are the recorded pre-snap (stems, motion, the count).
+  $('time').min = String(T[0]); $('time').max = String(T[T.length - 1]); $('time').step = '0.05';
   $('empty').hidden = true;
   renderEvents(); renderTicks(); renderRuns(); renderNotes(); loadTraceIfNeeded(); draw();
 }
@@ -306,11 +308,11 @@ function renderEvents() {
 }
 function renderTicks() {
   const run = S.run; if (!run) return;
-  const T = run.frames.t, span = T[T.length - 1] || 1;
+  const T = run.frames.t, t0 = T[0], span = (T[T.length - 1] - t0) || 1, at = (t) => (100 * (t - t0) / span).toFixed(2);
   const ev = run.events.filter(e => KEY_EVENTS.has(e.type));
-  const windows = S.notes.filter(n => n.runKey === runKey(run)).map(n => `<span class="window" style="left:${100 * n.window.from / span}%;width:${100 * (n.window.to - n.window.from) / span}%"></span>`);
-  $('ticks').innerHTML = windows.join('') + ev.map(e => `<i class="${['throw', 'catch', 'tackle', 'handoff', 'sack', 'interception', 'touchdown'].includes(e.type) ? 'key' : ''}" style="left:${(100 * e.t / span).toFixed(2)}%" title="${e.t.toFixed(2)}s ${esc(e.type)}"></i>`).join('')
-    + (run.interventions.length ? '<i class="coach" style="left:0%" title="coach\'s hand"></i>' : '');
+  const windows = S.notes.filter(n => n.runKey === runKey(run)).map(n => `<span class="window" style="left:${at(n.window.from)}%;width:${100 * (n.window.to - n.window.from) / span}%"></span>`);
+  $('ticks').innerHTML = windows.join('') + ev.map(e => `<i class="${['throw', 'catch', 'tackle', 'handoff', 'sack', 'interception', 'touchdown', 'snap'].includes(e.type) ? 'key' : ''}" style="left:${at(e.t)}%" title="${e.t.toFixed(2)}s ${esc(e.type)}"></i>`).join('')
+    + (run.interventions.length ? `<i class="coach" style="left:${at(Math.max(t0, 0))}%" title="coach's hand"></i>` : '');
 }
 const runKey = (run) => `${run.scenario.setup.sha256}:${run.seed}:${JSON.stringify(run.interventions.map(i => [i.slot, i.to]))}`;
 
@@ -523,7 +525,7 @@ function draw() {
       const [, W, H] = sizeCanvas(canvases[0]);
       const cam = allCamera(a.frames.t.length > b.frames.t.length ? a : b, W, H, S.t, S.zoom, S.pan);
       S.hits = [drawOne(canvases[0], a, { cam }), drawOne(canvases[1], b, { cam })];
-      $('banner').className = 'banner'; $('banner').textContent = `A = ${a.id}, B = ${b.id} · ${divergence(a, b)}`;
+      $('banner').className = 'banner'; $('banner').textContent = $('banner').title = `A = ${a.id}, B = ${b.id} · ${divergence(a, b)}`;
     }
   } else S.hits = [drawOne(canvases[0], S.run)];
   const T = S.run.frames.t;
@@ -533,16 +535,23 @@ function draw() {
   void T;
 }
 
-/** First recorded frame where any body differs by more than 1 cm, and whose. */
+/** First recorded time where any body differs by more than 1 cm, and whose. Frames are matched by time, not index. */
 function divergence(a, b) {
-  if (a.roster.length !== b.roster.length) return 'different lineups';
-  const n = a.roster.length, m = Math.min(a.frames.t.length, b.frames.t.length);
-  for (let k = 0; k < m; k++) for (let i = 0; i < n; i++) {
-    const ia = (k * n + i) * 3;
-    if (Math.hypot(a.frames.p[ia] - b.frames.p[ia], a.frames.p[ia + 1] - b.frames.p[ia + 1]) > 0.01)
-      return `first divergence at ${a.frames.t[k].toFixed(2)}s: ${a.roster[i].team} ${a.roster[i].slot}`;
+  if (a.roster.length !== b.roster.length || a.roster.some((r, i) => r.slot !== b.roster[i].slot || r.team !== b.roster[i].team)) return 'different lineups';
+  const n = a.roster.length, key = (t) => Math.round(t * 1000), bAt = new Map(b.frames.t.map((t, k) => [key(t), k]));
+  const firstShared = a.frames.t.find(t => bAt.has(key(t)));
+  const what = [a.scenario.setup.sha256 !== b.scenario.setup.sha256 ? 'different setups' : null, a.seed !== b.seed ? `seeds ${a.seed ?? 'own'}/${b.seed ?? 'own'}` : null,
+    JSON.stringify(a.interventions) !== JSON.stringify(b.interventions) ? "different coach's hand" : null, JSON.stringify(a.flags) !== JSON.stringify(b.flags) ? 'different switches' : null].filter(Boolean);
+  const note = (a.frames.t[0] !== b.frames.t[0] ? ` (pre-snap starts differ: ${a.frames.t[0].toFixed(2)}s vs ${b.frames.t[0].toFixed(2)}s)` : '') + (what.length ? ` · ${what.join(', ')}` : ' · same inputs');
+  for (let k = 0; k < a.frames.t.length; k++) {
+    const kb = bAt.get(key(a.frames.t[k])); if (kb === undefined) continue;
+    for (let i = 0; i < n; i++) {
+      const ia = (k * n + i) * 3, ib = (kb * n + i) * 3;
+      if (Math.hypot(a.frames.p[ia] - b.frames.p[ib], a.frames.p[ia + 1] - b.frames.p[ib + 1]) > 0.01)
+        return `first divergence at ${a.frames.t[k].toFixed(2)}s: ${a.roster[i].team} ${a.roster[i].slot}${a.frames.t[k] === firstShared ? ' (already different at the first shared frame)' : ''}${note}`;
+    }
   }
-  return a.frames.t.length === b.frames.t.length ? 'identical bodies throughout' : 'same bodies until one play ended';
+  return (a.frames.t.length === b.frames.t.length ? 'identical bodies throughout' : 'same bodies until one play ended') + note;
 }
 
 function highlightEvents() {
@@ -564,7 +573,7 @@ function loop(now) {
   requestAnimationFrame(loop);
 }
 
-function seek(t) { if (!S.run) return; const T = S.run.frames.t; S.t = Math.max(0, Math.min(T[T.length - 1], t)); draw(); }
+function seek(t) { if (!S.run) return; const T = S.run.frames.t; S.t = Math.max(T[0], Math.min(T[T.length - 1], t)); draw(); }
 function stepFrame(dir) {
   if (!S.run) return; S.playing = false;
   const T = S.run.frames.t, k = nearestIndex(T, S.t);
@@ -722,7 +731,7 @@ function wire() {
     if (e.target.dataset.delete && confirm('Delete this scenario file?')) { await api(`scenarios/${e.target.dataset.delete}`, undefined, 'DELETE'); renderLibrary(); }
   };
   $('saved-plays').onclick = async (e) => { if (e.target.dataset.import) openScenario(await api('import-saved', { path: e.target.dataset.import })).then(() => toast('Imported. Its setup is the saved bytes; the builder is locked.')).catch(fail); };
-  $('play').onclick = () => { if (!S.run) return; const T = S.run.frames.t; if (S.t >= T[T.length - 1]) S.t = 0; S.playing = !S.playing; draw(); };
+  $('play').onclick = () => { if (!S.run) return; const T = S.run.frames.t; if (S.t >= T[T.length - 1]) S.t = T[0]; S.playing = !S.playing; draw(); };
   $('back').onclick = () => stepFrame(-1); $('fwd').onclick = () => stepFrame(1);
   $('time').oninput = () => { S.playing = false; seek(Number($('time').value)); };
   $('copy-ref').onclick = () => copy(momentReference());
