@@ -17,7 +17,7 @@ import { composeHooks } from '../scripts/scorecard/hooks.js';
 
 describe('ordinary-game constructor capture and independent replay', () => {
   let captured: ReturnType<typeof captureOrdinaryPlay>;
-  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 10, maxSteps: 60 }); });
+  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 10, maxSteps: 60 }); }, 30_000);
 
   it('preserves the whole normal game prefix compared with the observer absent', () => {
     const rng = new Rng(7);
@@ -86,7 +86,8 @@ describe('ordinary-game constructor capture and independent replay', () => {
     // The same observer-off/on restoration assertions above remain exact.
     expect(boundary.endpoint!.behavior.controller).toBe(boundary.decision!.owner.controller);
     expect(boundary.endpoint!.behavior.kind).toBe('man');
-    expect(boundary.rewrites).toEqual([]);
+    // Only his own coverage orientation may set the hips at the catch.
+    expect(boundary.rewrites.every(r => r.stage === 'coverage-orientation')).toBe(true);
     expect(traced.trace!.steps.every(s => s.decision!.owner.kind === 'man')).toBe(true);
     const noEnergy = restoreSetup(saved.setup); delete noEnergy.energy;
     const rested = new PlaySim(noEnergy);

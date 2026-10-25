@@ -226,7 +226,7 @@ problem), resolved.
 | [COV-3](#cov-3) | Coverage rules and calls not yet complete | G3 | medium | in work (#193) |
 | [COV-4](#cov-4) | Defenders react late to jet motion | G3 | low | on |
 | [COV-5](#cov-5) | Older coverage contracts that fail or are unproven | G3 | high | open (next for Coverage) |
-| [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | open (next for Coverage; #255 measure held) |
+| [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | on (orientation technique); run-fit and ball-play turns open |
 | [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | in work (cost fixture #271; pilot #269) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
@@ -1345,11 +1345,43 @@ From the issue register:
   stands.
 - **Priority:** Tanner (2026-10-23): handle next, ahead of other
   Coverage work.
-- **Open:** Coverage lane. Find which toggles flip most, and whether a real
-  DB's slower, rounded turn is a technique (open the hips gradually) the
-  controller should request. Keep the turn-rate ceiling. Measure body turn
-  and travel turn separately. Check ACT-1 (a stale aim after a receiver
-  switch) before blaming a technique.
+- **Which branches** (develop `6ae4bd87`, seeds 7 and 8, two games each,
+  `scripts/diag/coverage-turns.ts`, same windows as `yaw-sim.ts`): inside a
+  coverage technique, 4.0–4.2% of 2–4 yd/s windows had a 90°+ swing. The
+  man pedal-to-run flip (`hipsOpen`) led with 200–273 swings per two games,
+  then the seam carry's run-past, the deep turn-and-run and the depth
+  chooser dropping the facing. 703 of 705 technique swings turned the body
+  while travel turned less than 30°. A fresh match technique (a
+  `CoverageDefender` job change) also restarted `hipsOpen` and pedal facing.
+- **Tried:** orientation technique, `src/sim/coverage/orientation.ts`, on
+  in code. Each technique branch labels the facing it asks for
+  (`facingTechnique` in the command trace, stage `coverage-orientation`). The
+  defender keeps one orientation across coverage jobs: a change of state
+  (square, open with a receiver, run) is held for 0.3–0.5 s by anticipation
+  and focus unless his receiver's acquired heading breaks by 60°+; a turn
+  from a cue is a rounded hip turn at half the body's turn-rate ceiling, a
+  seen break gets the ceiling; running, the hips follow smoothed travel. The
+  ceiling is unchanged. Spot droppers start their re-square early enough to
+  arrive square. Result, 2–4 yd/s windows with a 90°+ swing: 2.82% → 0.89%
+  (seed 7), 2.52% → 0.75% (seed 8), NFL 0.34%; inside a technique 0.08–0.09%.
+  Yaw p90 at 2–4 yd/s 305 → 267°/s (NFL 106): the big turns still happen,
+  rounded over more frames. Staged controls
+  (`scripts/diag/coverage-turn-controls.ts`, 16 plays each): the flip on a
+  vertical still happens on 16/16 plays, about 0.25 s later; the out beats
+  press man by more (separation 0.6 s after the break 1.96 → 2.54 yd).
+  PR tier against develop, seeds 7 and 8: nothing passing-related resolved;
+  separation at the catch +0.05 and +0.03 yd, YPA +1.03 and +0.27, YAC
+  +0.92 and +0.52 (both up, neither resolved); rush yards per carry +0.57
+  and −1.30 (opposite signs, divergence).
+- **Caveats:** measured with the legacy operator (#255 is still held), on
+  run and pass plays, as the original entry. Off-man separation in the
+  staged plays did not change to 0.01 yd with a later flip, so pedaling
+  costs that corner nothing there: the hip turn has no price yet in that
+  case, a possible missing cost in the motor (open question).
+- **Open:** the remaining swings come from run fits, pursuit and ball play
+  (behaviors outside the coverage techniques), about 0.6–0.8% of 2–4 yd/s
+  windows. Measure with #255's operator once it lands. Check whether a
+  pedaling corner should pay more for a late flip.
 
 <a id="cov-7"></a>
 ### COV-7: A man corner can't support a run he has recognized
