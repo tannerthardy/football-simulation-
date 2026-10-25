@@ -16,5 +16,5 @@
     "declaration": false,
     "sourceMap": false
   },
-  "include": ["src", "scripts", "test"]
+  "include": ["src", "scripts", "test", "lab-app"]
 }
