@@ -81,7 +81,11 @@ describe('ordinary-game constructor capture and independent replay', () => {
     expect(entries.has(catcher.t)).toBe(true);
     expect(boundary.decision!.owner.controller).toBe(entries.get(catcher.t)!.controller);
     expect(boundary.decision!.owner.kind).toBe(entries.get(catcher.t)!.kind);
-    expect(boundary.decision!.owner.kind).toBe('man');
+    // Earlier run decisions can change which ordinary catch is nominated.
+    // Current combo execution nominates zone here; require actual coverage
+    // ownership (independently sampled above), not the old game's man call.
+    // command-trace.test.ts retains the explicit native man -> Pursuit case.
+    expect(['man', 'zone']).toContain(boundary.decision!.owner.kind);
     expect(boundary.decision!.owner.controller).not.toBe(boundary.endpoint!.behavior.controller);
     expect(boundary.endpoint!.behavior.controller).toBe('Pursuit');
     expect(boundary.endpoint!.behavior.kind).toBe('pursuit');

@@ -889,6 +889,22 @@ run plays with the assignment layer (`--telemetry full`):
     helper-policy correction is supported by these cases. This is a bounded
     negative finding, not a claim that proximity proves protection generally;
     pending possession/work-off changes require their own source qualification.
+- **Combination departure execution prototype (not accepted).** Against
+  `50b80062`, the released branch bypasses the existing swept-movement climb
+  planner, whose null also conflates clear and unvalidated access. Scoped
+  direct/detour/unvalidated access and own-state feedback forecasts now compose
+  with loaded, tangential foot preparation on the installed helper's acquired
+  next-job half. In mirrored controlled opportunities the ordinary release
+  earns real backer work while the keeper stays loaded through runner arrival;
+  neither component alone produces that protection. An unsafe, unearned
+  departure still loses to the down defender. Native transfer remains unproved:
+  the selected Ace IZ has no meaningful benefit, Ace weak WZ still misses both
+  backers, and the Over stress case still lets Mike wrap at 3.05 s. The initial
+  full-vector preparation and preparation across the keeper were adverse and
+  are not the candidate. Historical fall/joint-after-fall assertions are not
+  protection contracts. Earlier release/traversal remedies remain rejected;
+  no capacity, contact law or keeper eligibility change is supported. Pending
+  work-off/possession/reach changes remain separate.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and

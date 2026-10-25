@@ -9,7 +9,8 @@ import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { RunBlocker, readCombination, type Combination } from '../src/sim/behaviors/blocking.js';
-import { contactControl, helperSupport, updateEngagements } from '../src/sim/engagement.js';
+import { axisOf, contactControl, helperSupport, updateEngagements } from '../src/sim/engagement.js';
+import { goTo } from '../src/sim/behaviors/common.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
@@ -439,4 +440,87 @@ describe('Duo keeps the surface while its acquired backer belongs to the other h
     readCombination(f.helper, f.sim, f.combination);
     expect(f.combination.released).toBe(true);
   });
+});
+
+
+describe('loaded combination preparation',()=>{
+ it.each([-1,1])('does not prepare the uncovered keeper across his partner for the other half, side %s',side=>{
+  const f=fixture(side),controller=f.helper.behavior as RunBlocker;
+  f.sim.tick();
+  expect(controller.contactMotion(f.helper,'prepare')).toBeNull();
+  expect(f.combination.released).toBe(false);
+  expect(f.engagement.helpers).toContain(f.helper);
+  expect(f.sim.world.joints).toContain(f.engagement.hands);
+ });
+ it('holds acquired preparation only for the installed combination and next job',()=>{
+  const f=fixture(),controller=f.helper.behavior as RunBlocker;
+  f.backer.body.pos.y=CENTER_Y+1.2;f.observe();f.sim.tick();
+  expect(controller.contactMotion(f.helper,'prepare')).not.toBeNull();
+  expect(f.combination.released).toBe(false);
+  const held=controller.contactMotion(f.helper,'prepare');
+  // Unseen backer motion is not a new preparation cue between decisions.
+  f.backer.body.pos={x:48,y:CENTER_Y-8};
+  expect(controller.contactMotion(f.helper,'prepare')).toEqual(held);
+  // A different intervening job must retire preparation even when that
+  // branch never consumes its feet, preserving target/action lifetime.
+  controller.plan.target=f.backer;controller.update(f.helper,f.sim);
+  controller.plan.target=f.defender;
+  expect(controller.contactMotion(f.helper,'prepare')).toBeNull();
+ });
+ it.each(['primary','helper'] as const)('preserves current normal work when consuming preparation as %s',role=>{
+  const plain=fixture(),prepared=fixture();
+  const actor=prepared[role],spy=vi.spyOn(actor.behavior as RunBlocker,'contactMotion')
+   .mockImplementation((_a,work)=>work==='prepare'?{x:-4,y:3}:null);
+  const requests=(f:Fixture)=>{
+   const intents=f.sim.agents.map(a=>({vel:{x:0,y:0},facing:a.facing}));
+   updateEngagements(f.sim,intents);return intents;
+  };
+  const a=requests(plain)[plain[role].idx],b=requests(prepared)[actor.idx],axis=axisOf(plain.sim,plain.engagement);
+  expect(spy.mock.calls.some(c=>c[1]==='prepare')).toBe(true);
+  expect(b.vel.x*axis.x+b.vel.y*axis.y).toBeCloseTo(a.vel.x*axis.x+a.vel.y*axis.y,12);
+  expect(b.vel).not.toEqual(a.vel);
+  expect({...b,vel:a.vel}).toEqual(a);
+  spy.mockRestore();
+ });
+});
+
+describe('earned combination-to-climb execution in the coupled World',()=>{
+ it.each([-1,1])('collects the backer with a real keeper before the controlled runner arrives, side %s',side=>{
+  // Controlled opportunity, installed before the first physics step. This
+  // backer threatens the helper's half; the runner approaches outside the
+  // down surface. Release is earned by the ordinary joined reads, never
+  // forced by the test. Other bodies remain present in World.
+  const f=fixture(side);
+  const rb=f.sim.slot('RB')!;
+  f.backer.body.pos={x:42,y:CENTER_Y+side*1.2};
+  f.backer.body.facing=Math.PI;
+  f.backer.behavior={kind:'idle',update:()=>goTo(f.backer,{x:38,y:CENTER_Y+side*2.2},{speed:.5})};
+  rb.body.pos={x:34,y:CENTER_Y+side*2.2};
+  rb.behavior={kind:'idle',update:()=>goTo(rb,{x:48,y:CENTER_Y+side*2.2},{speed:.65})};
+  f.sim.ball={kind:'held',carrier:rb};f.observe();
+  const keeperHands=f.engagement.hands;
+  let loaded=false,passed=false;
+  while(f.sim.phase==='live'&&f.sim.t<3.6){
+   f.sim.tick();budget(f,f.sim.lastStep!);
+   if(f.helper.engagement?.defender===f.backer
+     &&Math.hypot(f.helper.engagement.hands!.normalForce??0,f.helper.engagement.hands!.tangentForce??0)>1){
+    expect(f.combination.released).toBe(true);
+    expect(f.sim.world.joints).toContain(f.helper.engagement.hands);
+    loaded=true;
+   }
+   expect(f.primary.engagement?.defender===f.defender).toBe(true);
+   expect(f.primary.engagement!.hands).toBe(keeperHands);
+   expect(f.sim.world.joints).toContain(keeperHands);
+   expect(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)).toBeGreaterThan(1);
+   expect(f.sim.events.some(e=>e.type==='tackle_wrap')).toBe(false);
+   expect(rb.body.support!.state).toBe('up');
+   if(rb.pos.x>f.backer.pos.x+f.backer.profile.radius){passed=true;break;}
+  }
+  expect(loaded).toBe(true);
+  expect(passed).toBe(true);
+  // A glancing body contact can coexist with useful protection. It must not
+  // stop the back short or substitute for the keeper's first-level work.
+  expect(rb.pos.x).toBeGreaterThan(f.defender.pos.x);
+  expect((f.backer.pos.y-rb.pos.y)*side).toBeGreaterThan(0);
+ });
 });
