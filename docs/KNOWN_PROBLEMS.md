@@ -416,6 +416,9 @@ problem), resolved.
   - too many 9s and too few wide 9s;
   - no even or tite front in the nickel mix;
   - double-owned gaps in the installed Under, wide 9 and tite fronts (#194).
+    The nickel Under's empty weak C vs a second tight end is fixed
+    (`GAP_MATCH`, RUN-12); the doubled weak D (boxing end plus the Will's
+    force) remains by design as outside support.
 - **After the promotion** (2026-10-22): gap-scheme assignments haven't been
   checked against the aligned fronts (`FRONT_ALIGN`, `BOX_ALIGN`);
   `test/gap-assignment.test.ts` is pinned to the old fronts. This is G2.
@@ -1028,8 +1031,22 @@ run plays with the assignment layer (`--telemetry full`):
   7-9 (`scripts/diag/edge-contain-restage.ts`): edge reps carried 4+ yd
   outside with the blocker 18 -> 7, those ending with the runner 3+ yd inside
   the end 11 -> 0. The 7 left go with a runner going wide. Mean run yards
-  5.36 -> 4.67 (paired 90% interval -1.67 to +0.31). Still open: the
-  playside C gap has no owner in the installed Under (RUN-9).
+  5.36 -> 4.67 (paired 90% interval -1.67 to +0.31).
+- **Nobody owned the gap between the weak tackle and a second tight end in
+  the nickel Under** (same clip; Oct 25). *Fixed (on by default,
+  `GAP_MATCH`).* Backers took open gaps nearest-first: the Will, the weak
+  curl-flat (force behind the boxing wide-9 end), picked the weak A as his
+  inside duty and the Mike the strong B, so the weak C was empty while the
+  rotated-down strong safety sat over the strong B. Backers now fill the open
+  gaps as a set. The gap left open is one an underneath support player still
+  covers on that side, never an unsupported or A gap, and distance breaks
+  ties. On that snap the Will fits the C inside the end (force only once the
+  back bounces outside him), the Mike slides to the weak A and the strong B is
+  the safety's, the Seattle/Kiffin Under and cover 3 fit. Over fronts now put
+  the Mike in the strong A instead of the C. Restaged on the same snaps, 250
+  runs of seeds 7-11 (`scripts/diag/flag-restage.ts`): backer fits changed on
+  110, results on 96. Mean run yards 4.51 -> 3.94 (paired 90% interval -1.06
+  to -0.09), 10+ yd runs 25 -> 19, stuffs 56 -> 56.
 - **A drive blocker runs the end he caught on the inside half out of the
   play** (CEO restage of #275: seed 10 P46 Pistol Twin TE duo, Y on DE_S;
   seed 10 P123 Twin TE duo, RT on DE_S; seed 11 P99 Gun Spread wide zone weak,
@@ -2080,9 +2097,17 @@ learn what's needed.
   replay viewer's layers ([VISUALIZER_PLAN](VISUALIZER_PLAN.md)), and #243's
   film detectors. The viewer's [copyable play reference](../viewer/replay.template.html#L596)
   already includes film identity, play, timestamp and the selected player.
-- **Open:** what to build first, and how much of a separate tool it should
-  be. The outside audit's suggestions on drawing intent versus achieved
-  motion and showing reach and contact apply here.
+- **In progress:** [Play Lab](PLAY_LAB.md) (`npm run lab`). Tanner builds
+  plays and situations, runs them on the real engine, and studies them with
+  these layers: requested vs achieved motion, command owner, delayed
+  perception, reach and contact, falls, ball flight, pursuit intercepts and
+  run fits. Player moves are labelled coach's-hand interventions. Notes
+  restore their exact moment headless with `npm run lab:replay`. Still to
+  come: branching from a moment (it needs engine snapshot/restore), scripted
+  situations, A/B batches and an agent hand-off export.
+- **Open:** the outside audit's suggestions on drawing intent versus achieved
+  motion and showing reach and contact are now lab layers; whether the shared
+  replay viewer should adopt them is open.
 
 ## Repository and process
 

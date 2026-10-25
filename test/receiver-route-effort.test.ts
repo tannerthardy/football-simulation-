@@ -95,9 +95,12 @@ describe('installed route effort during unrelated flight', () => {
   it('retains the existing caught-ball transfer to carrier and blocking duties', () => {
     const f = fixture('other');
     f.sim.ball = { kind: 'held', carrier: f.r };
+    const defenders = f.sim.defense.map(a => a.behavior);
     onBallCaught(f.sim, f.r);
     expect(f.r.behavior.kind).toBe('carrier');
     expect(f.sim.offense.filter(a => a !== f.r).every(a => a.behavior.kind === 'downfield-block')).toBe(true);
-    expect(f.sim.defense.every(a => a.behavior.kind === 'pursuit')).toBe(true);
+    // INFO-1: the physical catch no longer notifies every opponent. Their
+    // installed controllers retain ownership until their own evidence acts.
+    expect(f.sim.defense.map(a => a.behavior)).toEqual(defenders);
   });
 });

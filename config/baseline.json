@@ -14,6 +14,7 @@
     "DL_FIGHT": "0",
     "DL_FLOW": "1",
     "EDGE_CONTAIN": "1",
+    "GAP_MATCH": "1",
     "SEAL_HOLD": "1",
     "DL_HANDS": "0",
     "FLOW_READ": "1",

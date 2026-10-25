@@ -17,6 +17,7 @@ import { r01, type Player } from '../players/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { showsBlock } from './coverage-cues.js';
+import { sawThrow } from './behaviors/defense.js';
 
 // ------------------------------------------------------------ expectations
 
@@ -173,6 +174,8 @@ export class Recognition {
   logOdds: number;
   /** He committed to run and it's a pass (or the reverse). */
   changedMind = false;
+  /** He has seen this play's throw; the ball cue stays once acquired. */
+  private sawPass = false;
   private evidence = 0;
   private readonly prior: number;
   private readonly gain: number;
@@ -206,11 +209,17 @@ export class Recognition {
   update(a: Agent, sim: PlaySim): void {
     const t = sim.t;
     const delay = a.mind.observationDelay(a.profile.reactionTime);
-    // Definitive cues: the throw, and the handoff once he can see it.
+    // Definitive cues, each from his own pictures: the throw once he has seen
+    // it, a back he sees holding the ball (linemen at the mesh see it
+    // sooner), or the QB he sees carrying it past the line.
+    if (!this.sawPass && sawThrow(a, sim, null)) this.sawPass = true;
     let ball = 0;
-    if (sim.throwAt >= 0 && t - sim.throwAt >= delay) ball = 4;
-    else if (sim.handoffAt >= 0 && t - sim.handoffAt >= delay * (this.group === 'DL' ? 0.6 : 1)) ball = -3;
-    else if (sim.carrier === sim.qb && sim.see(a, sim.qb).pos.x > sim.los + 0.5) ball = -3;
+    if (this.sawPass) ball = 4;
+    else if (this.seesBackCarrying(a, sim)) ball = -3;
+    else {
+      const qb = sim.see(a, sim.qb);
+      if (qb.carrying === true && qb.pos.x > sim.los + 0.5) ball = -3;
+    }
 
     let visual = 0;
     if (t >= delay * 0.6) visual = this.cues(a, sim);
@@ -239,6 +248,18 @@ export class Recognition {
       commit('run');
       this.changedMind = true;
     }
+  }
+
+  /** A backfield player holding the ball in his picture: the exchange, a
+   * pitch or a direct snap. A fake shows an empty-handed back. */
+  private seesBackCarrying(a: Agent, sim: PlaySim): boolean {
+    const scale = this.group === 'DL' ? 0.6 : 1;
+    for (const o of sim.offense) {
+      if (o === sim.qb || !sim.offAlign.spots[o.slot]?.backfield) continue;
+      const seen = sim.see(a, o, scale);
+      if (seen.carrying === true && seen.pos.x <= sim.los + 1) return true;
+    }
+    return false;
   }
 
   private commit(r: Read, t: number): void {

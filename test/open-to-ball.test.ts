@@ -8,14 +8,19 @@ const wrap = (x: number) => Math.atan2(Math.sin(x), Math.cos(x));
 
 /** A defender at the origin and a back he has seen `range` yards away at
  * `bearing`. Facing PI is chest to the line of scrimmage. */
-function scene(facing: number, bearing = Math.PI, range = 4, qbRun = false, carrying: boolean | null = true) {
+function scene(facing: number, bearing = Math.PI, range = 4, qbRun = false, carrying: boolean | null = true,
+  vel = { x: 0, y: 0 }) {
   const carrier = { team: 'O' } as unknown as Agent;
   const qb = qbRun ? carrier : { team: 'O' } as unknown as Agent;
   const pos = { x: Math.cos(bearing) * range, y: Math.sin(bearing) * range };
   const a = { team: 'D', pos: { x: 0, y: 0 }, engagement: null, isDown: () => false, recog: { read: 'run' },
     body: { facing, vel: { x: 0, y: 0 }, pos: { x: 0, y: 0 } } } as unknown as Agent;
-  const sim = { carrier, qb, scrambled: false, t: 2, bond: null, ball: { kind: 'held', carrier },
-    see: () => ({ pos, vel: { x: 0, y: 0 }, carrying }) } as unknown as PlaySim;
+  // Only the defender's pictures decide: the back (or QB) he sees with the
+  // ball, and an empty-handed QB when the two differ.
+  const sim = { qb, t: 2, los: -3, bond: null, ball: { kind: 'held', carrier },
+    opponents: () => (qbRun ? [carrier] : [carrier, qb]), slot: () => undefined,
+    see: (_: Agent, target: Agent) => (target === carrier
+      ? { pos, vel, carrying, age: .1 } : { pos: { x: -8, y: 0 }, vel: { x: 0, y: 0 }, carrying: false, age: .1 }) } as unknown as PlaySim;
   return { a, sim };
 }
 
@@ -64,10 +69,9 @@ describe('a defender reversing near the ball opens toward it', () => {
     expect(openToBall(a, sim, cmd)).toBe(cmd);
   });
 
-  it('a scrambling quarterback is a carrier to open to', () => {
-    const { a, sim } = scene(1.4, Math.PI, 4, true);
+  it('a quarterback he sees running at the line is a carrier to open to', () => {
+    const { a, sim } = scene(1.4, Math.PI, 4, true, true, { x: 3.5, y: 0 });
     (a as unknown as { recog: { read: string } }).recog.read = 'pass';
-    (sim as unknown as { scrambled: boolean }).scrambled = true;
     const out = openToBall(a, sim, toward(-1.6));
     expect(Math.sign(wrap(out.facing! - a.body.facing))).toBe(1);
   });

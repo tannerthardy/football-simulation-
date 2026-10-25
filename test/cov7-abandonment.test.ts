@@ -135,7 +135,9 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     expect(run.summary.legality.support.forwardPassRestrictionApplicable).toBe(false);
     expect(run.summary.legality.support.maxIneligibleForwardEdgeBeforeRelease).toBeNull();
     expect(run.summary.legality.support.runCornerContacts.some(e => e.type === 'tackle_wrap')).toBe(true);
-    expect(run.summary.legality.support.runCornerContacts.some(e => e.type === 'tackle')).toBe(true);
+    // With acquired possession (INFO-1) the corner's wrap is an assist and a
+    // teammate finishes the tackle; the support arm still ends the run.
+    expect(run.summary.result.support.outcome).toBe('tackle');
     expect(pass.summary.result.man.outcome).toBe('incomplete');
     expect(pass.summary.result.support.outcome).toBe('incomplete');
   });
