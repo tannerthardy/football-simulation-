@@ -118,3 +118,33 @@ Matched games and the 42 snaps need a temporary toggle patch (never commit it):
 ```sh
 node --import tsx scripts/diag/yac-grid.ts out/grid.0.jsonl 1 0/8   # repeat with 4/8; same on each commit
 ```
+
+## Arrival diagnosis and an intercept lifetime (also held)
+
+On #273, 512 episodes where a free defender came within 2 yd of the
+envelope of a non-QB runner moving faster than 4 yd/s (seeds 7/8 game 1,
+`convert.mts` in project files): 58% finished, by him or a teammate within
+0.6 s. Among failures, an aim-point jump of more than 3 yd in one tick
+appears in 55% (successes 16%); braking below his and the runner's speed while short and
+the runner pulls away, 14% (3%); outrun from behind, mostly DL, 64; missed or
+broken wraps, 34.
+
+Jump anatomy (seeds 7/8): the earliest-feasible sample flipping across the
+feasibility edge (556 of 1,388 jumps), the least-late fallback flipping on a
+flat lateness (the DT that alternates between 0.3 s and 3.0 s ahead), and
+small heading changes times a 2–3 s straight-line lead.
+
+Lifetime tried: chase keeps its chosen runner-path time until the picture
+turns more than 20° or changes speed by 1.5 yd/s, the held point is 0.15 s
+late, or a feasible point is 0.3 s earlier. Result:
+
+| Base | Δ yd/play | Δ YAC | TDs | Finish rate (512 episodes) | Jump share, failed / succeeded |
+| --- | --- | --- | --- | --- | --- |
+| develop | +0.11 ± 0.18 | −0.02 ± 0.16 | 73 → 72 | | |
+| #273 | +0.45 ± 0.23 | +0.52 ± 0.39 | 107 → 115 | 0.58 → 0.52 | 0.55/0.16 → 0.55/0.13 |
+
+It doesn't remove jumps: most remaining ones happen while the time is held,
+because a few degrees of heading in the delayed picture move a 2–3 s
+straight-line lead by several yards. The lever is the forecast itself (how far
+ahead a pursuer commits on a straight extrapolation), which needs the plan's
+frozen case set before any change.
