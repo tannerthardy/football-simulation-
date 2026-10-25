@@ -8,7 +8,8 @@ import type { ReceiverForecast } from '../src/sim/receiver-forecast.js';
 import type { Agent } from '../src/sim/agent.js';
 // EDGE_CONTAIN keeps the blocked edge home on the toss, so the corner never reaches the runner; this native run
 // benefit is staged on unbounded edge widening (re-record by review 2).
-vi.hoisted(() => { process.env.EDGE_CONTAIN = '0'; });
+// SEAL_HOLD changes how far the toss's blockers carry their men; the corner's run participation is staged without it.
+vi.hoisted(() => { process.env.EDGE_CONTAIN = '0'; process.env.SEAL_HOLD = '0'; });
 
 describe('installed non-contact receiver block look', () => {
   it('keeps the release conditional in the QB prior and physically executes the called transition', () => {

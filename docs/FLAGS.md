@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 90 flags: 66 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 91 flags: 67 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -12,11 +12,12 @@ There are 90 flags: 66 are on by default, 1 is a diagnostic scale at identity (`
 | `CLIMB_PLAN` | on | default | run | `src/sim/behaviors/blocking.ts:853` | — |
 | `DL_FLOW` | on | default | trenches | `src/sim/engagement.ts:683` | — |
 | `EDGE_CONTAIN` | on | default (G1/G2, 2026-10-25) | trenches | `src/sim/engagement.ts:715` | review 2: drop the off path. A blocked edge widens with a reach only as far as containing the back's observed track needs; already wider, he holds. Recorded scenes staged on unbounded widening (`planned-climb-fit`, `zone-helper-check`) pin it off until re-recorded |
+| `SEAL_HOLD` | on | default (G1/G2, 2026-10-25) | trenches | `src/sim/engagement.ts:720` | review 2: drop the off path. A run blocker whose own felt load says his hands are on keeps the leverage he caught the man with; he no longer runs to a new shoulder and carries the man along |
 | `FLOW_READ` | on | default | defense | `src/sim/run-fits.ts:148` | — |
 | `FLOW_RELEASE` | on | default | run | `src/sim/behaviors/blocking.ts:847` | — |
 | `KEEPER_TORSO` | on | default | run | `src/sim/behaviors/blocking.ts:850` | — |
 | `LB_PLAN` | on | default | defense | `src/sim/run-fits.ts:142` | — |
-| `LEVER_FACING` | on | default | trenches | `src/sim/engagement.ts:715` | — |
+| `LEVER_FACING` | on | default | trenches | `src/sim/engagement.ts:723` | — |
 | `LIVE_AIM` | on | default | run | `src/sim/behaviors/carrier.ts:47` | — |
 | `LIVE_GAPS` | on | default | run | `src/sim/live-gaps.ts:25` | — |
 | `PASS_KICK` | on | default (G5, 2026-10-22) | trenches | `src/sim/behaviors/blocking.ts:332` | review 2: drop the off path. Vertical pass set against edge rushers (ported from `claude/run-game-v3`); decided by edge-rep first contact and tackle retreat vs tracking |
@@ -25,12 +26,12 @@ There are 90 flags: 66 are on by default, 1 is a diagnostic scale at identity (`
 | `PURSUE_AROUND` | on | default | defense | `src/sim/behaviors/common.ts:249` | — |
 | `READ_EYES` | on | default | defense | `src/sim/run-read.ts:42` | — |
 | `ROUTE_CLEAR` | on | default (G5, 2026-10-22) | coverage | `src/sim/behaviors/receiver.ts:39` | review 2: drop the off path. A back releasing from the backfield paths around a body in his lane (a teammate, or a rusher) instead of running into it; decided by the back's release speed past a kicking tackle |
-| `RUN_ANCHOR` | on | default | trenches | `src/sim/engagement.ts:734` | — |
+| `RUN_ANCHOR` | on | default | trenches | `src/sim/engagement.ts:744` | — |
 | `RUN_CONTACT_COMPONENTS` | on | default | trenches | `src/sim/engagement.ts:680` | — |
 | `RUN_FEEL` | on | default (G1, 2026-10-23) | trenches | `src/sim/engagement.ts:703` | review 2: drop the off path. A run blocker mirrors the defender's motion as he has it (PASS_FEEL's touch/sight delays), not his true velocity; decided by DL release in the G1 lab |
 | `SCRAPE` | on | default | defense | `src/sim/run-fits.ts:139` | — |
-| `SHED_PHYSICAL` | on | default | trenches | `src/sim/engagement.ts:718` | — |
-| `SHED_PURSUE` | on | default | defense | `src/sim/engagement.ts:727` | — |
+| `SHED_PHYSICAL` | on | default | trenches | `src/sim/engagement.ts:726` | — |
+| `SHED_PURSUE` | on | default | defense | `src/sim/engagement.ts:735` | — |
 | `STALK_CLAIM` | on | default | run | `src/sim/behaviors/blocking.ts:844` | — |
 | `STALK_CUSHION` | on | default (G2) | run | `src/sim/behaviors/blocking.ts:820` | review 2: drop the off path |
 | `BACK_BLOCK` | on | default (G2) | run | `src/sim/behaviors/blocking.ts:831` | review 2: drop the off path |
@@ -42,7 +43,7 @@ There are 90 flags: 66 are on by default, 1 is a diagnostic scale at identity (`
 | `DL_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:712` | set at first review |
 | `DL_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:694` | set at first review |
 | `GAIT_STEP` | off | experimental | physics | `src/physics/kinematics.ts:94` | set at first review |
-| `HAND_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:1068` | set at first review |
+| `HAND_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:1093` | set at first review |
 | `HAND_MOTOR` | off | experimental | physics | `src/physics/world.ts:302` | set at first review |
 | `HOLD_SUBSTEPS` | off | experimental | physics | `src/physics/world.ts:300` | set at first review |
 | `IN_STRIDE_CATCH` | off | experimental | coverage | `src/sim/behaviors/receiver.ts:330` | set at first review |
@@ -76,7 +77,7 @@ There are 90 flags: 66 are on by default, 1 is a diagnostic scale at identity (`
 | `OL_SPLITS` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:24` | review 2: drop the off path |
 | `OL_STAGGER` | on | default (promoted 2026-10-22) | run | `src/playbook/alignment.ts:32` | review 2: drop the off path |
 | `PAD_LEVERAGE` | on | default (promoted 2026-10-22) | physics | `src/physics/world.ts:313` | review 2: drop the off path |
-| `PASS_FEEL` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:741` | review 2: drop the off path |
+| `PASS_FEEL` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:751` | review 2: drop the off path |
 | `PULL_EARLY` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:165` | review 2: drop the off path |
 | `SAFETY_TEMPO` | on | default (promoted 2026-10-22) | defense | `src/sim/run-fits.ts:189` | review 2: drop the off path |
 | `SHORT_PACKAGE` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:48`, `src/playbook/alignment.ts:106` | review 2: drop the off path |

@@ -20,7 +20,8 @@ import { PlaySim } from '../src/sim/playsim.js';
 // FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
 // SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.
 // RUN_FEEL: the blocker mirrors the defender's acquired motion; this scene is staged on true-velocity mirroring (KNOWN_PROBLEMS RUN-11, re-record by review 2).
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FORCE_BOUNCE = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.RUN_FEEL = '0'; process.env.EDGE_CONTAIN = '0'; });
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FORCE_BOUNCE = '0'; process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; process.env.RUN_FEEL = '0'; process.env.EDGE_CONTAIN = '0'; process.env.SEAL_HOLD = '0'; });
+// SEAL_HOLD keeps a loaded run blocker's caught leverage; this scene is staged on the unbounded seal correction (re-record by review 2).
 // EDGE_CONTAIN bounds a blocked edge's widening to what containing the back needs; this scene is staged on unbounded widening (re-record by review 2).
 
 const offense = generateTeam(new Rng(31), 'Panel offense 1', 'O1', { strength: .55 });

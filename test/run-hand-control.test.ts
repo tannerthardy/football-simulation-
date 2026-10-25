@@ -14,7 +14,8 @@ import { PlaySim } from '../src/sim/playsim.js';
 // A preserved legacy trace (commands, control and RNG) on the installed get-off.
 // ARM_PRESS puts a press through the hands at the bench max; this scene is staged on arm-force hands (KNOWN_PROBLEMS RUN-11, re-record by review 2).
 // RUN_FEEL: the blocker mirrors the defender's acquired motion; this scene is staged on true-velocity mirroring (KNOWN_PROBLEMS RUN-11, re-record by review 2).
-vi.hoisted(() => { process.env.SNAP_REACT = '0'; process.env.ARM_PRESS = '0'; process.env.RUN_FEEL = '0'; });
+vi.hoisted(() => { process.env.SNAP_REACT = '0'; process.env.ARM_PRESS = '0'; process.env.RUN_FEEL = '0'; process.env.SEAL_HOLD = '0'; });
+// SEAL_HOLD keeps a loaded run blocker's caught leverage; this scene is staged on the unbounded seal correction (re-record by review 2).
 
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'D', 'D', { strength: .55 });
