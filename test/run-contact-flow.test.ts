@@ -39,7 +39,7 @@ function fixture(technique: RunFitJob['technique'] = 'control', side = 1, read: 
     if (observer === f.defender) {
       const held = pictures.get(target);
       if (held) return structuredClone(held);
-      if (target === f.sim.qb || target.slot === 'RB') return structuredClone(runner);
+      if (target === f.sim.qb || target.slot === 'RB') return { ...structuredClone(runner), carrying: target === f.sim.carrier };
     }
     return original(observer, target, ...rest);
   });
@@ -104,7 +104,7 @@ describe('engaged run fits follow acquired contact flow through bounded movement
       vi.spyOn(f.sim, 'see').mockImplementation((observer, target, ...rest) => {
         if (observer === f.defender && target === f.blocker) return structuredClone(held);
         if (observer === f.defender && (target === f.sim.qb || target.slot === 'RB'))
-          return { ...structuredClone(held), pos: { x: 35, y: CENTER_Y }, vel: { x: 0, y: 0 } };
+          return { ...structuredClone(held), pos: { x: 35, y: CENTER_Y }, vel: { x: 0, y: 0 }, carrying: target === f.sim.carrier };
         return original(observer, target, ...rest);
       });
       const engagement = f.sim.engage(f.blocker, f.defender, 'run', { x: 1, y: 0 }, { axis: { x: -1, y: 0 }, sealTarget: 0 })!;
@@ -234,6 +234,22 @@ describe('engaged run fits follow acquired contact flow through bounded movement
     expect(command(box).vel.y * side).toBeGreaterThan(0);
     expect(command(spill).vel.y * side).toBeLessThan(0);
     expect(box.engagement.side).toBe(-side); expect(spill.engagement.side).toBe(side);
+  });
+
+  it.each([-1, 1])('an edge plays a runner he saw flow away cutting back inside him, not one flowing at him, side %s', side => {
+    const cut = fixture('control', side), front = fixture('control', side);
+    for (const f of [cut, front]) {
+      Object.assign(f.defender.runFit!, { gap: 'C', kind: 'edge', edge: 'box' });
+      f.runner.pos = { x: 39, y: f.defender.pos.y - side * 2 };
+    }
+    cut.runner.vel = { x: 1, y: -side * 2 };
+    front.runner.vel = { x: 1, y: side * 2 };
+    command(cut); command(front);
+    nextRead(cut); nextRead(front);
+    cut.runner.vel = { x: 1, y: side * 2 };
+    command(cut); command(front);
+    expect(cut.defender.tags.has('edge-cutback')).toBe(true);
+    expect(front.defender.tags.has('edge-cutback')).toBe(false);
   });
 
   it('promotion retains the defender\'s old depth but replaces the departing blocker\'s acquired flow', () => {

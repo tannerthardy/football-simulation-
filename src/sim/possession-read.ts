@@ -58,12 +58,14 @@ export function anticipatedCatcher(a: Agent, sim: PlaySim): PossessionRead | nul
   return { target: opportunity.receiver, cue };
 }
 
-export function observedHolder(a: Agent, sim: PlaySim): PossessionRead | null {
+/** `blocker`: the man on him, whose body he feels rather than reads for the ball. */
+export function observedHolder(a: Agent, sim: PlaySim, blocker?: Agent): PossessionRead | null {
   let newest: PossessionRead | null = null;
   let ambiguous = false;
   let unknownTime = false;
   const flight = flights.get(a);
   for (const target of sim.opponents(a)) {
+    if (target === blocker) continue;
     const cue = sim.see(a, target);
     if (cue.carrying !== true) continue;
     if (cue.age === undefined) { unknownTime = true; continue; }
