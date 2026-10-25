@@ -97,6 +97,9 @@ export interface PlaySetup {
   supportIntegration?: 'mean' | 'integrated';
   /** Experimental angular hand patch; default center keeps production law. */
   handContact?: 'center' | 'patch';
+  /** Hand-placed pre-snap spots (Play Lab's coach's hand), replacing the
+   * installed spot before any staging; absent in games. Fouls stay the engine's. */
+  alignment?: Array<{ team: TeamSide; slot: string; pos: Vec2 }>;
 }
 
 const MAX_PLAY_TIME = 25;
@@ -288,6 +291,7 @@ export class PlaySim {
       mk('D', slot, player, spot.pos, Math.PI);
     }
     fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
+    if (setup.alignment?.length) this.placeByHand(setup.alignment);
     this.snapX = this.agents.map((a) => a.pos.x);
     this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact });
     // Linemen and backs start in their stances; skill players upright.
@@ -341,6 +345,17 @@ export class PlaySim {
         enforcement: 'previous', possessionChanges: 0, possessionTeam: 'O' }, {
         source: 'native', rule: foul.rule, action: 'installed_snap_law',
         facts: { reason: foul.reason, deadBall: foul.deadBall } });
+    }
+  }
+
+  /** The installed spot moves with the body, so jobs keyed to it start from where he stands. */
+  private placeByHand(spots: NonNullable<PlaySetup['alignment']>): void {
+    for (const { team, slot, pos } of spots) {
+      const a = this.agents.find(x => x.team === team && x.slot === slot);
+      if (!a || !Number.isFinite(pos.x) || !Number.isFinite(pos.y)) throw new Error(`Hand-placed ${team} ${slot} is not in this play`);
+      a.body.pos = { x: pos.x, y: clamp(pos.y, 0.5, FIELD_WIDTH - 0.5) };
+      const installed = team === 'O' ? this.offAlign.spots : this.defAlign.spots as Record<string, { pos: Vec2 }>;
+      installed[slot] = { ...installed[slot], pos: { ...a.body.pos } } as never;
     }
   }
 
