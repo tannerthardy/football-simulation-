@@ -84,7 +84,7 @@ describe('ordinary-game constructor capture and independent replay', () => {
     expect(boundary.decision!.owner.kind).toBe('man');
     // INFO-1 retires the physical catch's universal controller notification.
     // The same observer-off/on restoration assertions above remain exact.
-    expect(boundary.endpoint!.behavior.controller).toBe('ManCoverage');
+    expect(boundary.endpoint!.behavior.controller).toBe(boundary.decision!.owner.controller);
     expect(boundary.endpoint!.behavior.kind).toBe('man');
     expect(boundary.rewrites).toEqual([]);
     expect(traced.trace!.steps.every(s => s.decision!.owner.kind === 'man')).toBe(true);
