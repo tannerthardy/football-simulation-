@@ -42,8 +42,11 @@ describe('frozen native pursuit arrival experiment', () => {
     for (const r of changed.native) r.targetAfter.pos = { x: -1e4, y: 1e4 };
     expect(objectives(changed)).toStrictEqual(goals);
     expect(forecast(changed.intercept!, 2.8)).toStrictEqual(forecast(c.intercept!, 2.8));
-    const baseline = response(c, goals[1], 'seek-candidate');
-    const truthChanged = response(changed, goals[1], 'seek-candidate');
+    // A goal inside the recorded play, so the diagnostic future truth exists.
+    const goal = goals.find(o => response(c, o, 'seek-candidate').metrics.runnerForecastError !== null)!;
+    expect(goal).toBeDefined();
+    const baseline = response(c, goal, 'seek-candidate');
+    const truthChanged = response(changed, goal, 'seek-candidate');
     expect(truthChanged.rows).toStrictEqual(baseline.rows);
     expect(truthChanged.metrics.runnerForecastError).not.toBe(baseline.metrics.runnerForecastError);
     expect(arrivalJson(c)).toBe(before);
