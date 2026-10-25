@@ -21,7 +21,7 @@ const ALLOWED = new Set([
 /** Known remaining defensive reads, with exact counts, until each is repaired. */
 const DEBT: Record<string, { reads: number; why: string }> = {
   'src/sim/behaviors/defense.ts': { reads: 1, why: 'sawThrow reaction gate on throwAt (shared by coverage and recognition)' },
-  'src/sim/engagement.ts': { reads: 14, why: 'shared engagement state and work-off target (#256 recomposes)' },
+  'src/sim/engagement.ts': { reads: 5, why: 'pass-block lifecycle: release after the throw and conversion to run blocking (blocker side)' },
   'src/sim/run-fits.ts': { reads: 2, why: 'legacy direct-caller fallback when no acquired read is supplied' },
 };
 
