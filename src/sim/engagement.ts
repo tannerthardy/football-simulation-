@@ -715,6 +715,11 @@ const DL_FIGHT = process.env.DL_FIGHT === '1';
  * (EDGE_CONTAIN=0 restores widening with the blocker without bound). */
 const EDGE_CONTAIN = process.env.EDGE_CONTAIN !== '0';
 
+/** A run blocker whose hands are loaded keeps the leverage he caught the man
+ * with instead of running to a new shoulder and carrying him along
+ * (SEAL_HOLD=0 restores the unbounded seal correction). */
+const SEAL_HOLD = process.env.SEAL_HOLD !== '0';
+
 /** Run release measured against the blocker's torso (LEVER_FACING=0: fixed frame). */
 const LEVER_FACING = process.env.LEVER_FACING !== '0';
 
@@ -732,6 +737,8 @@ const SHED_PURSUE = process.env.SHED_PURSUE !== '0';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
+/** SEAL_HOLD: the lateral offset a loaded run blocker keeps (see stepRunRep). */
+const sealHolds = new WeakMap<Engagement, number>();
 const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?: boolean }>();
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
@@ -1275,7 +1282,22 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const wantOffset = -Math.sin(e.sealTarget * Math.PI / 2) * sep;
   const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
   const feltCue = felt(e, lat), feedback = feltCue * (0.6 + 0.6 * tb.feet);
-  const correction = (wantOffset - offset) * (3 + 3 * tb.feet);
+  let correction = (wantOffset - offset) * (3 + 3 * tb.feet);
+  // SEAL_HOLD: with his hands loaded (his own felt load) he cannot run around
+  // the man to a new shoulder; running sideways only carries the man with
+  // him, the offset never closes and the request stays pinned at his top
+  // lateral speed. He keeps the leverage he caught him with (the closest to
+  // the wanted shoulder he has reached while loaded) and drives him on it;
+  // ground he gains toward the wanted shoulder is kept. Unloaded closing
+  // keeps the ordinary correction.
+  const feltLoad0 = b.body.support?.felt;
+  if (SEAL_HOLD && feltLoad0 && Math.hypot(feltLoad0.x, feltLoad0.y) > 0.1 * b.profile.massKg * G) {
+    const raw = (b.pos.x - d.pos.x) * lat.x + (b.pos.y - d.pos.y) * lat.y;
+    const prev = sealHolds.get(e);
+    const caught = prev === undefined || Math.abs(raw - wantOffset) < Math.abs(prev - wantOffset) ? raw : prev;
+    sealHolds.set(e, caught);
+    correction = (caught - raw) * (3 + 3 * tb.feet);
+  } else sealHolds.delete(e);
   const seal = clamp(dLat + feedback + correction, -mirror, mirror);
   // Anchor against felt lost depth. A stretch keeps its shoulder footwork;
   // drive blocks reduce it. Locomotion and lean share one physical budget.
