@@ -13,7 +13,7 @@ import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { handoffReach } from './ball-transfer.js';
 import { forceTrack, retainedForceTrack } from './force-track.js';
-import type { PossessionRead } from './possession-read.js';
+import { qbRunning, type PossessionRead } from './possession-read.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -248,7 +248,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // keeps the insertion at its surface; the actual handoff/carrier cannot
   // choose another target or prematurely declare this observed crease.
   let premesh = acquired ? false : picture ? c === sim.qb : keyed ? keyed.cue.pos.x <= sim.los - 1.6
-    : c === sim.qb && !sim.scrambled && sim.handoffAt < 0 && !!back;
+    : c === sim.qb && !qbRunning(a, sim) && sim.handoffAt < 0 && !!back;
   if (!c || c.team === a.team) return goTo(a, { x: sim.los + .6, y: liveGapY(sim, a, job.gap, job.side) }, { speed: .7 });
   let seen = acquired?.cue ?? (picture ? premesh || c === back ? picture.backCue : picture.qbCue
     : keyed?.cue ?? sim.see(a, premesh ? back! : c));

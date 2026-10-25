@@ -47,6 +47,11 @@ export class CoverageDefender implements Behavior {
     this.history.push({ t: sim.t, job: this.job });
   }
 
+  /** The current job's scramble contract (man and deep zones plaster). */
+  get plastersScramble(): boolean {
+    return (this.sub as { plastersScramble?: boolean }).plastersScramble === true;
+  }
+
   /** Man while covering a receiver, zone otherwise (for code that asks). */
   get kind(): string {
     return this.sub.kind;

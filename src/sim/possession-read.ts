@@ -83,3 +83,40 @@ export function observedHolder(a: Agent, sim: PlaySim): PossessionRead | null {
   if (read && flight) flight.resolved = true;
   return read;
 }
+
+// A QB who leaves the pocket as a runner, from this defender's own delayed
+// QB picture. Rollouts and scrambles look alike for a beat; this is the
+// visible cue, never the QB's private decision to run.
+const QB_RUN_SPEED = 2.5;   // yd/s toward the line
+const QB_BOX_MARGIN = 1.5;  // yd outside the pictured tackles
+const QB_BOX_SPEED = 1;     // yd/s downfield while outside the box
+const QB_SETTLED_SPEED = .5;
+const QB_SETTLE_TIME = .3;
+const qbRuns = new WeakMap<Agent, { settledSince: number | null }>();
+
+/** Does this defender's own picture show the QB running with the ball? Once
+ * seen it holds until the picture shows him settled (scramble drill reset)
+ * or no longer carrying (thrown or handed off). */
+export function qbRunning(a: Agent, sim: PlaySim): boolean {
+  const cue = sim.see(a, sim.qb), latch = qbRuns.get(a);
+  if (cue.carrying === false) { qbRuns.delete(a); return false; }
+  if (cue.carrying !== true) return !!latch; // Unknown neither starts nor ends it.
+  const up = cue.vel.x;
+  if (latch) {
+    if (up >= QB_SETTLED_SPEED) { latch.settledSince = null; return true; }
+    latch.settledSince ??= sim.t;
+    if (sim.t - latch.settledSince < QB_SETTLE_TIME) return true;
+    qbRuns.delete(a);
+    return false;
+  }
+  let running = up > QB_RUN_SPEED;
+  if (!running && up > QB_BOX_SPEED) {
+    const lt = sim.slot('LT'), rt = sim.slot('RT');
+    if (lt && rt) {
+      const l = sim.see(a, lt).pos.y, r = sim.see(a, rt).pos.y;
+      running = cue.pos.y < Math.min(l, r) - QB_BOX_MARGIN || cue.pos.y > Math.max(l, r) + QB_BOX_MARGIN;
+    }
+  }
+  if (running) qbRuns.set(a, { settledSince: null });
+  return running;
+}

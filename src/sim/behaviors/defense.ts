@@ -26,7 +26,7 @@ import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
 import { SNAP_REACT } from '../snap-count.js';
-import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
+import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 
 /** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
  * side's force player stays on his receiver when the receiver comes to block
@@ -49,8 +49,9 @@ export function knowsPass(sim: PlaySim, a: Agent): boolean {
 
 /**
  * Common transition: once the ball carrier is past the line (or the QB is
- * scrambling), everyone pursues. Behind the line, a defender who has read
- * run plays his fit — he doesn't abandon his gap to chase.
+ * seen running out of the pocket), everyone pursues. Behind the line, a
+ * defender who has read run plays his fit — he doesn't abandon his gap to
+ * chase, including against a designed QB run.
  */
 export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
   const read = observedHolder(a, sim);
@@ -62,7 +63,13 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
     // behind the line. Pass belief alone cannot turn a handoff into a catch
     // and discard an installed edge. Snap QB possession keeps the rush/fit.
     const caught = target !== sim.qb && hasObservedFlight(a);
-    if (caught || (past && (sim.t >= a.readAt || cue.pos.x > sim.los + 2))) {
+    // A QB seen leaving the pocket as a runner, by a defender who has not
+    // read run: the scramble response, from his own QB picture. Rushers and
+    // underneath zones come up; each role keeps its own contract.
+    // Man and deep defenders keep plastering until he crosses the line.
+    const plaster = (a.behavior as { plastersScramble?: boolean } | undefined)?.plastersScramble === true;
+    const scramble = target === sim.qb && !plaster && !believesRun(sim, a) && qbRunning(a, sim);
+    if (caught || ((past || scramble) && (sim.t >= a.readAt || cue.pos.x > sim.los + 2))) {
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'possession-pursuit', chose: target.slot,
         cue: 'carrying=true in this observer\'s acquired body picture',
         detail: `Sample age ${cue.age ?? 'unknown'} s; acquired x=${cue.pos.x}; installed ${a.runFit?.kind ?? 'fallback'} boundary. No authoritative holder/catch flag.` });
@@ -132,7 +139,7 @@ export class PassRusher implements Behavior {
     // lineman sees the exchange; a rusher who has read run plays it too
     // (on play action, that's being fooled).
     const holder = observedHolder(a, sim);
-    if (holder && holder.target !== sim.qb) return runFit(a, sim, this.gap, this.gapSign);
+    if (holder && (holder.target !== sim.qb || qbRunning(a, sim))) return runFit(a, sim, this.gap, this.gapSign);
     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
 
     // Rush lane by plan: power rushers go through the blocker's chest at the
@@ -203,7 +210,8 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
     // selection inside the fit fallback. Reuse the installed mesh picture,
     // including unknown/negative carrying, rather than inventing a handoff.
     const holder = observedHolder(a, sim), back = sim.slot('RB');
-    if (holder && (holder.target !== sim.qb || hasObservedFlight(a))) read = { possession: holder };
+    // A QB seen running is the runner himself, not a mesh still to resolve.
+    if (holder && (holder.target !== sim.qb || hasObservedFlight(a) || qbRunning(a, sim))) read = { possession: holder };
     else if (back && sim.offAlign.spots[back.slot]?.backfield) {
       read = { backfield: { back, backCue: sim.see(a, back), qbCue: sim.see(a, sim.qb) } };
     } else read = holder ? { possession: holder } : null;
@@ -245,6 +253,8 @@ export interface ManOptions {
 /** Man coverage with press/off technique, leverage and hip turn. */
 export class ManCoverage implements Behavior {
   readonly kind = 'man';
+  /** A seen scramble does not release his man until the QB crosses the line. */
+  readonly plastersScramble = true;
   private readonly press: boolean;
   private readonly initialCushion: number;
   private hipsOpen = false;
@@ -458,6 +468,8 @@ export class ZoneCoverage implements Behavior {
   /** Inspect the exact adjusted landmark used by this technique. */
   recordedLandmark(): Vec2 { return { ...this.landmark }; }
   private readonly deep: boolean;
+  /** Deep zones stay on top of a scramble until the QB crosses the line. */
+  get plastersScramble(): boolean { return this.deep; }
   private readonly radius: number;
   /** Lateral band of responsibility (field y range). */
   private readonly band: [number, number];
