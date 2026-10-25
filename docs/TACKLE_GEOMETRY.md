@@ -93,14 +93,26 @@ is contact, which only tackle admission grants.
 | `catchSpot` / catch-approach ball forecast | .8 own reach / own reach to a point ball | The ball has no target body radius; this repair adds none. |
 | `movingCatchApproach` receiver proximity / arrival | both radii + own reach / both radii + .65 own reach | These receiver-body policy distances are distinct from point-ball reach and remain unmodified, not certified hand contact. |
 
-Admission correctness is not a new dive chooser. The legacy desperation-dive
-branch selects a runner separating faster than 1.6 yd/s from 0.8 to 1.1 yd
-beyond standing reach, while its launch adds at most 1.5 yd/s. In the matched
-seed 7/8 probe every such dive's closest leg gap during the fall stayed 0.8 to
-1.25 yd beyond even the growing laid-out span. Laying out adds about 0.4 yd;
-those launches start about 0.9 yd short and lose ground. Choosing a dive only
-when the fingertip arc can meet the forecast trailing foot is the next
-separate change; no distance bonus substitutes for it.
+## Choosing a lunge or a dive
+
+A tackler commits his body only to a motion that the forecast says can reach
+the runner he sees: the delayed picture, its velocity dead-reckoned to now and
+held. Outside standing reach, inside the existing lunge window:
+
+- **Step** if one push-off (present relative motion over 0.2 s plus half the
+  traction-limited strike velocity) brings the hip within standing span.
+- Else **dive** if a layout can reach the trailing foot: the World's launch
+  bound (at most 1.5 yd/s, never past top speed, within traction over one
+  plant), the body keeping that velocity through the fall (the fall drive and
+  ground friction roughly cancel), and `handSpan(d, 'dive', progress)` on the
+  same fall clock admission uses.
+- Else he keeps running. The trace records "keep feet moving".
+
+The escape window beyond that (runner separating, tackler behind) uses the
+same layout forecast instead of the old fixed "separating faster than 1.6
+yd/s" rule, which picked launches that start about 0.9 yd short and lose
+ground. No probability or distance bonus makes a dive "work": one that cannot
+reach is simply not chosen, and one that can still needs its technique trial.
 
 Possession acquisition, coverage policy and engaged work-off are separate
 interfaces. This contract does not import pending INFO-1 or work-off changes.

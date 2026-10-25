@@ -25,12 +25,13 @@
 import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
-import { supportParams, TURF_MU } from '../physics/support.js';
+import { fallTime, supportParams, TURF_MU } from '../physics/support.js';
 import { type GraspJoint, type Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { contactQuality, previewTackleWindow } from './tackle-window.js';
-import { diveProgress, gripQuality, handSpan, legTarget, tackleReach } from './tackle-geometry.js';
+import { diveProgress, gripQuality, handSpan, legTarget, tackleReach, trailingFoot } from './tackle-geometry.js';
+import type { Perceived } from './perception.js';
 
 export interface TackleBond {
   carrier: Agent;
@@ -95,6 +96,9 @@ const BLOCKED_REACH = process.env.BLOCKED_REACH !== '0';
  * runs sat at grip 0.45, slipping 79% of the time (KNOWN_PROBLEMS TKL-1). */
 const GRIP_HOLD = process.env.GRIP_HOLD !== '0';
 
+/** Push-off of one explosive step, s. */
+const PUSH_OFF = 0.2;
+
 /** A committed motion, not an acquired contact. A lunge is one upright step:
  * after the World step that moved him, he has his standing span or he
  * missed. A dive survives the ordinary off-feet gate only through its fall;
@@ -110,10 +114,55 @@ function missedAttempt(sim: PlaySim, d: Agent, c: Agent, mode: string): void {
   sim.event('missed_tackle', d, c, mode);
 }
 
-function beginDive(sim: PlaySim, d: Agent, c: Agent): void {
+function beginDive(sim: PlaySim, d: Agent, c: Agent, seen: Perceived): void {
   pending.set(d, { target: c, mode: 'dive', started: sim.world.time });
   d.nextTackleAt = sim.t + 1;
-  sim.diveAt(d, { x: c.pos.x - d.pos.x, y: c.pos.y - d.pos.y });
+  sim.diveAt(d, { x: seen.pos.x - d.pos.x, y: seen.pos.y - d.pos.y });
+}
+
+/** The carrier as this tackler sees him now: delayed perception, its stale
+ * velocity dead-reckoned to this post-World body-state boundary. */
+function observeCarrier(sim: PlaySim, d: Agent, c: Agent): Perceived {
+  const look = (.12 + .12 * (1 - d.r('awareness'))) / Math.max(.1, d.profile.reactionTime);
+  const seen = sim.see(d, c, look);
+  const elapsed = clamp(sim.world.time - sim.t, 0, sim.dt);
+  return { ...seen, pos: { x: seen.pos.x + seen.vel.x * elapsed, y: seen.pos.y + seen.vel.y * elapsed } };
+}
+
+/** Can one push-off at the seen hip bring him within `arms` of it? Present
+ * relative motion over the step, plus the step's own displacement (its
+ * velocity is added over the push-off, so on average half of it). */
+function lungeCanArrive(d: Agent, seen: Perceived, arms: number): boolean {
+  const gx = seen.pos.x - d.pos.x + (seen.vel.x - d.vel.x) * PUSH_OFF;
+  const gy = seen.pos.y - d.pos.y + (seen.vel.y - d.vel.y) * PUSH_OFF;
+  return Math.hypot(gx, gy) - .5 * strikeBudget(d.r('tackling')) * PUSH_OFF <= arms;
+}
+
+/** Can a dive launched now put his hands on the seen runner's legs before
+ * he is flat? The forecast uses the World's own launch bound (at most
+ * 1.5 yd/s, never past top speed, within traction over one plant), the fall clock and the
+ * span admission will use, against the runner holding his seen velocity.
+ * On the way down the fall drive roughly cancels ground friction, so the
+ * body keeps its launch velocity. A dive that cannot reach is not chosen. */
+function diveCanArrive(sim: PlaySim, d: Agent, c: Agent, seen: Perceived): boolean {
+  const dx = seen.pos.x - d.pos.x, dy = seen.pos.y - d.pos.y, l = Math.hypot(dx, dy) || 1;
+  const speed = Math.hypot(d.vel.x, d.vel.y);
+  // The plant's force is also traction-limited over that one tick.
+  const dv = Math.min(1.5, Math.max(0, d.profile.vmax - speed), TURF_MU * G * sim.dt);
+  const vx = d.vel.x + dx / l * dv, vy = d.vel.y + dy / l * dv;
+  const plant = sim.dt;
+  const px = d.pos.x + .5 * (d.vel.x + vx) * plant, py = d.pos.y + .5 * (d.vel.y + vy) * plant;
+  const fall = fallTime(supportParams(d.profile), d.body.support?.posture ?? 0);
+  for (let k = 0; k <= 10; k++) {
+    const t = fall * k / 10, ahead = plant + t;
+    const runner = { pos: { x: seen.pos.x + seen.vel.x * ahead, y: seen.pos.y + seen.vel.y * ahead }, vel: seen.vel, profile: c.profile };
+    const body = { pos: { x: px + vx * t, y: py + vy * t } };
+    const foot = trailingFoot(runner);
+    const legs = Math.min(Math.hypot(runner.pos.x - body.pos.x, runner.pos.y - body.pos.y) - c.profile.radius,
+      Math.hypot(foot.x - body.pos.x, foot.y - body.pos.y));
+    if (legs <= handSpan(d, 'dive', k / 10)) return true;
+  }
+  return false;
 }
 
 /** The last half yard is a step, not longer arms: drive the body at the
@@ -251,13 +300,9 @@ export function tryTackles(sim: PlaySim): void {
         && !sim.lastStep?.contacts.some(hit => hit.i === d.idx || hit.j === d.idx)) {
         // Forecast the command actually executed, without asking the behavior
         // for another decision or drawing from its pursuit-error stream.
-        const look = (.12 + .12 * (1 - d.r('awareness'))) / Math.max(.1, d.profile.reactionTime);
-        const seen = sim.see(d, c, look);
         // tryTackles follows physics. Perception was sampled at tick start;
         // dead-reckon only its stale velocity to this body-state boundary.
-        const elapsed = clamp(sim.world.time - sim.t, 0, sim.dt);
-        const observed = { ...seen, pos: { x: seen.pos.x + seen.vel.x * elapsed,
-          y: seen.pos.y + seen.vel.y * elapsed } };
+        const observed = observeCarrier(sim, d, c);
         const window = previewTackleWindow(d, observed, sim.intents[d.idx], body, qualityArms, sim.world.time);
         if (window) {
           // Compare two estimates from the same observation. Actual reach and
@@ -277,7 +322,21 @@ export function tryTackles(sim: PlaySim): void {
       }
       if (needsLastReach && !lastReach) continue;
       if (waitForBetter && !acquireAtReach) continue;
-      if (dd > arms) beginLunge(sim, d, c);
+      if (dd > arms) {
+        // Commit the body only to a motion that can get the hands there:
+        // a step if one reaches the hip, else a layout if it reaches the
+        // trailing foot. Otherwise he keeps running.
+        const seen = observeCarrier(sim, d, c);
+        if (lungeCanArrive(d, seen, arms)) beginLunge(sim, d, c);
+        else if (!engaged && !sim.bond && diveCanArrive(sim, d, c, seen)) beginDive(sim, d, c, seen);
+        else {
+          if (sim.trace.data) sim.trace.decide({ t: sim.t, a: d.idx, kind: 'tackle-opportunity',
+            chose: 'keep feet moving', cue: 'no step or layout reaches the seen runner',
+            options: ['keep feet moving', 'lunge', 'dive'],
+            detail: 'Neither one push-off to the hip nor a layout to the trailing foot can arrive before the runner moves on.' });
+          continue;
+        }
+      }
       else attempt(sim, d, c, q, engaged, false);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
@@ -287,8 +346,9 @@ export function tryTackles(sim: PlaySim): void {
     const dive = range + 0.3;
     const separating = ((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / (dd || 1);
     const behind = (d.pos.x - c.pos.x) * c.vel.x + (d.pos.y - c.pos.y) * c.vel.y < 0;
-    if (!engaged && dd <= dive && separating > 1.6 && behind && !sim.bond && !occluded(sim, d, c)) {
-      beginDive(sim, d, c);
+    if (!engaged && dd <= dive && separating > 0 && behind && !sim.bond && !occluded(sim, d, c)) {
+      const seen = observeCarrier(sim, d, c);
+      if (diveCanArrive(sim, d, c, seen)) beginDive(sim, d, c, seen);
     }
   }
 }
@@ -384,8 +444,6 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
   sim.event('tackle_wrap', d, c, alreadyWrapped ? 'assist' : 'initial');
   if (closing > 4) sim.event('hit', d, c);
 }
-
-const PUSH_OFF = 0.2;
 
 /** Most velocity one push-off can add, yd/s: traction over that step. */
 function strikeBudget(skill: number): number {

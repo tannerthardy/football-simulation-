@@ -87,18 +87,19 @@ describe('tackle contact admission and retained span', () => {
       expect(step).toHaveBeenCalledOnce();
     });
 
-  it('a lunge whose step cannot arrive misses once, without a technique draw or a hold', () => {
+  it('a step that cannot reach the hip is not taken: no lunge, no miss, no draw', () => {
     const f = stage('Z'), { sim, c, d, reach } = f;
     c.body.pos.x = d.pos.x + reach + .35; d.body.vel.x = 5; c.body.vel.x = 6.4;
     f.command = { vel: { x: 5.5, y: 0 }, facing: 0 }; sim.intents[d.idx] = f.command;
     d.behavior = { kind: 'fixture-pursuit', update: () => f.command };
     c.behavior = { kind: 'carrier', update: () => ({ vel: { x: 7, y: 0 }, facing: 0 }) };
     seeMoving(f);
-    const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(true), step = vi.spyOn(sim, 'lungeAt');
-    tryTackles(sim); expect(step).toHaveBeenCalledOnce();
+    const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(true);
+    const step = vi.spyOn(sim, 'lungeAt'), launch = vi.spyOn(sim, 'diveAt');
     for (let i = 0; i < 8 && sim.phase === 'live'; i++) { sim.tick(); expect(sim.bond).toBeNull(); }
-    expect(rolls).not.toHaveBeenCalled(); expect(step).toHaveBeenCalledOnce();
-    expect(sim.events.filter(e => e.type === 'missed_tackle' && e.a === d.idx && e.note === 'lunge')).toHaveLength(1);
+    expect(rolls).not.toHaveBeenCalled(); expect(step).not.toHaveBeenCalled(); expect(launch).not.toHaveBeenCalled();
+    expect(sim.events.filter(e => e.type === 'missed_tackle' && e.a === d.idx)).toHaveLength(0);
+    expect(d.body.support!.state).toBe('up'); // he is still chasing
   });
 
   it('a diver\'s span grows from standing to laid out only as his fall runs', () => {
@@ -114,38 +115,33 @@ describe('tackle contact admission and retained span', () => {
     expect(diveProgress(d.body, d.profile, 99)).toBe(0);
   });
 
-  it.each([-1, 1])('a laid-out diver reaches a trailing foot beyond standing span, only after going down, mirror=%s', side => {
+  it.each([-1, 1])('a dive is chosen where only a layout reaches, and its hands arrive only after he goes down, mirror=%s', side => {
     const f = stage('QB', side), { sim, c, d, reach } = f;
-    // Desperation window, runner pulling away; a near teammate slows him
-    // through a real collision so the dive has something to reach.
-    const traffic = sim.slot('C')!;
-    c.body.pos.x = d.pos.x + side * (reach + d.profile.radius + .5);
-    d.body.vel.x = side * 4; c.body.vel.x = side * 6;
-    traffic.body.pos = { x: c.pos.x + side * (c.profile.radius + traffic.profile.radius + .3), y: c.pos.y };
-    d.behavior = { kind: 'fixture-pursuit', update: () => ({ vel: { x: side * 7, y: 0 }, facing: d.facing }) };
-    c.behavior = { kind: 'carrier', update: () => ({ vel: { x: side * 6, y: 0 }, facing: c.facing }) };
+    // Just past what one step can close, within a laid-out reach of his foot.
+    c.body.pos.x = d.pos.x + side * (reach + .45);
+    d.body.vel.x = side * 6; c.body.vel.x = side * 6.2;
+    f.command = { vel: { x: side * 6, y: 0 }, facing: d.facing }; sim.intents[d.idx] = f.command;
+    d.behavior = { kind: 'fixture-pursuit', update: () => f.command };
+    c.behavior = { kind: 'carrier', update: () => ({ vel: { x: side * 6.2, y: 0 }, facing: c.facing }) };
     seeMoving(f);
-    const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(true), launch = vi.spyOn(sim, 'diveAt');
-    tryTackles(sim); expect(launch).toHaveBeenCalledOnce(); expect(sim.bond).toBeNull();
-    let admitted: { center: number; span: number; legs: number; up: boolean } | undefined;
-    for (let i = 0; i < 14 && !sim.bond && sim.phase === 'live'; i++) {
-      const wasUp = d.body.support!.state === 'up';
+    const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(true);
+    const step = vi.spyOn(sim, 'lungeAt'), launch = vi.spyOn(sim, 'diveAt');
+    let admitted: { span: number; legs: number } | undefined;
+    for (let i = 0; i < 16 && !sim.bond && sim.phase === 'live'; i++) {
       sim.tick();
       const sup = d.body.support!;
-      if (!sim.bond && sup.state === 'falling') expect(legTarget(d, c).distance)
-        .toBeGreaterThan(handSpan(d, 'dive', diveProgress(d.body, d.profile, sim.world.time)));
-      if (sim.bond) {
-        const span = handSpan(d, 'dive', diveProgress(d.body, d.profile, sim.world.time));
-        admitted = { center: Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y), span, legs: legTarget(d, c).distance, up: wasUp };
-      }
+      const span = handSpan(d, 'dive', diveProgress(d.body, d.profile, sim.world.time));
+      if (!sim.bond && sup.state === 'falling') expect(legTarget(d, c).distance).toBeGreaterThan(span);
+      if (sim.bond) admitted = { span, legs: legTarget(d, c).distance };
     }
+    expect(launch).toHaveBeenCalledOnce(); expect(step).not.toHaveBeenCalled();
     expect(admitted).toBeDefined();
     const joint = sim.bond!.holds!.get(d)!;
     expect(joint.origin).toBe('dive'); expect(d.body.support!.state).toBe('falling');
-    // Every admission: the leg target is within that moment's hand span.
+    // Every admission: the leg target is within that moment's hand span,
+    // which by then exceeds standing reach because he has gone down.
     expect(admitted!.legs).toBeLessThanOrEqual(admitted!.span + 1e-12);
     expect(admitted!.span).toBeGreaterThan(handSpan(d, 'standing'));
-    expect(diveProgress(d.body, d.profile, sim.world.time)).toBeGreaterThan(0);
     // The joint starts inside the span it keeps; the span cannot grow later.
     expect(joint.hold).toBeLessThanOrEqual(joint.reach); expect(joint.ground).toBe(joint.reach);
     expect(joint.reach).toBeLessThanOrEqual(handSpan(d, 'dive', 1) + TRAILING_FOOT_SHARE * c.profile.heightYd + c.profile.radius);
@@ -167,7 +163,7 @@ describe('tackle contact admission and retained span', () => {
     s.cause = 'contact'; expect(diveProgress(d.body, d.profile, 4)).toBe(0);
   });
 
-  it('does not grant a receding runner a remote dive hold or repeated success draws', () => {
+  it('does not lay out for a receding runner no dive can reach', () => {
     const f = stage('QB'), { sim, c, d, reach } = f;
     c.body.pos.x = d.pos.x + reach + d.profile.radius + .55;
     d.body.vel.x = 4; c.body.vel.x = 7;
@@ -177,16 +173,16 @@ describe('tackle contact admission and retained span', () => {
     seeMoving(f);
     const draw = vi.spyOn(sim.rng, 'chance').mockReturnValue(true), launch = vi.spyOn(sim, 'diveAt');
     tryTackles(sim);
-    expect(launch).toHaveBeenCalledOnce(); expect(sim.bond).toBeNull();
+    // No layout reaches him, so none is chosen: no grounded defender.
+    expect(launch).not.toHaveBeenCalled(); expect(sim.bond).toBeNull();
     for (let i = 0; i < 14; i++) { sim.tick(); expect(sim.bond).toBeNull(); }
-    expect(draw).not.toHaveBeenCalled(); expect(launch).toHaveBeenCalledOnce();
-    expect(sim.events.filter(e => e.type === 'missed_tackle' && e.a === d.idx)).toHaveLength(1);
+    expect(draw).not.toHaveBeenCalled(); expect(launch).not.toHaveBeenCalled();
+    expect(sim.events.filter(e => e.type === 'missed_tackle' && e.a === d.idx)).toHaveLength(0);
+    expect(d.body.support!.state).toBe('up');
   });
 
-  it('a desperation dive can acquire after real teammate traffic slows its target', () => {
+  it('does not gamble a dive on traffic it cannot forecast; the runner meets the traffic anyway', () => {
     const f = stage('QB'), { sim, c, d, reach } = f, traffic = sim.slot('C')!;
-    // Same inherited desperation window. The runner must lose speed through
-    // an actual body collision, not a hidden velocity replacement or bonus.
     c.body.pos.x = d.pos.x + reach + d.profile.radius + .45 + .01;
     d.body.vel.x = 4; c.body.vel.x = 6;
     traffic.body.pos = { x: c.pos.x + c.profile.radius + traffic.profile.radius + .02, y: c.pos.y };
@@ -194,20 +190,19 @@ describe('tackle contact admission and retained span', () => {
     c.behavior = { kind: 'carrier', update: () => ({ vel: { x: 6, y: 0 }, facing: 0 }) };
     seeMoving(f);
     const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(true), launch = vi.spyOn(sim, 'diveAt');
-    tryTackles(sim); expect(sim.bond).toBeNull(); expect(rolls).not.toHaveBeenCalled();
+    tryTackles(sim);
+    // The seen runner, holding his velocity, is out of any layout's reach.
+    expect(launch).not.toHaveBeenCalled(); expect(rolls).not.toHaveBeenCalled();
     let collision = false;
-    for (let i = 0; i < 12 && !sim.bond && sim.phase === 'live'; i++) {
+    for (let i = 0; i < 12 && sim.phase === 'live'; i++) {
       sim.tick();
       collision ||= sim.lastStep!.contacts.some(hit => hit.impulse > 0
         && (hit.i === c.idx && hit.j === traffic.idx || hit.j === c.idx && hit.i === traffic.idx));
     }
+    expect(collision).toBe(true);
+    // Any hold he later gets is an ordinary one, from his feet, inside reach.
     const joint = sim.bond?.holds?.get(d);
-    expect(collision).toBe(true); expect(joint).toBeDefined(); expect(joint!.origin).toBe('dive');
-    expect(d.body.support!.cause).toBe('dive'); expect(c.speed).toBeLessThan(6);
-    expect(legTarget(d, c).distance).toBeLessThanOrEqual(handSpan(d, 'dive', diveProgress(d.body, d.profile, sim.world.time)));
-    expect(joint!.hold).toBeLessThanOrEqual(joint!.reach); expect(joint!.ground).toBe(joint!.reach);
-    expect(rolls).toHaveBeenCalledOnce(); expect(launch).toHaveBeenCalledOnce();
-    tryTackles(sim); expect(rolls).toHaveBeenCalledOnce();
+    if (joint) { expect(joint.origin).not.toBe('dive'); expect(joint.hold).toBeLessThanOrEqual(reach); }
   });
 
   it('a genuinely acquired grip transmits load then slips beyond the same finite span', () => {

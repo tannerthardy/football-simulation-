@@ -87,14 +87,17 @@ describe('attainable tackle opportunity', () => {
     const before = structuredClone(d.body);
     try {
       tryTackles(sim);
-      // A last reach is an upright step at the hip, not a layout.
-      expect(step).toHaveBeenCalledOnce(); expect(dive).not.toHaveBeenCalled();
+      // A last reach commits at most one motion, and only one that the
+      // forecast says can arrive: a step at the hip or a layout.
+      expect(step.mock.calls.length + dive.mock.calls.length).toBeLessThanOrEqual(1);
       // This retained geometry used to grant the lunge's hold before World
       // moved its body. The committed request must now earn contact first.
       expect(sim.bond).toBeNull(); expect(sim.world.joints).toHaveLength(0);
       expect(rolls).not.toHaveBeenCalled(); expect(d.body).toEqual(before);
       expect(sim.outcome).toBeNull();
-      expect(sim.trace.data!.decisions.find(row => row.a === d.idx)?.chose).toBe('take last reach');
+      const rows = sim.trace.data!.decisions.filter(row => row.a === d.idx);
+      expect(rows[0]?.chose).toBe('take last reach');
+      if (!step.mock.calls.length && !dive.mock.calls.length) expect(rows.at(-1)?.chose).toBe('keep feet moving');
     } finally { dive.mockRestore(); step.mockRestore(); rolls.mockRestore(); }
   });
 
