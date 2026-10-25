@@ -103,33 +103,90 @@ describe('interception uses the sprint request budget', () => {
     }
   });
 
-  it.each([11.99, 12, 12.01])('uses the same acquired-distance effort on both sides of 12yd: %s', distance => {
+  type Pic = { x: number; y: number; vx?: number; vy?: number };
+  /** One FS chasing Z, with chosen pictures of the runner and of teammates. */
+  function scene(runner: Pic, mates: Pic[] = []) {
     const sim = new PlaySim(nativeTraceSetup({ coverage: 'cover3', concept: 'four_verts', seed: 19, roster: 7,
       formation: 'gun_doubles_11', flip: false }));
     const d = sim.slot('FS')!, c = sim.slot('Z')!;
     d.body.pos = { x: 40, y: 26 }; d.body.vel = { x: 0, y: 0 };
     sim.ball = { kind: 'held', carrier: c };
-    const seen = vi.spyOn(sim, 'see').mockReturnValue({ pos: { x: 40 + distance, y: 26 }, vel: { x: 4, y: 0 }, facing: 0, stance: null, age: .2 });
+    const others = sim.defense.filter(m => m !== d).slice(0, mates.length);
+    const pics = new Map<unknown, Pic>([[c, runner], ...others.map((m, k) => [m, mates[k]] as const)]);
+    const see = vi.spyOn(sim, 'see').mockImplementation((_o, t) => {
+      const p = pics.get(t) ?? { x: -50, y: 0 };
+      return { pos: { x: p.x, y: p.y }, vel: { x: p.vx ?? 0, y: p.vy ?? 0 }, facing: 0, stance: null, age: .2 };
+    });
     vi.spyOn(sim, 'opponents').mockReturnValue([c]);
+    vi.spyOn(sim, 'teammates').mockReturnValue([d, ...others]);
     const r = d.r.bind(d); vi.spyOn(d, 'r').mockImplementation(key => key === 'workRate' ? .2 : r(key));
-    const trace = sim.recordCommands({ actor: { playerId: d.player.id }, from: 0, to: .05 }); trace.begin(sim);
-    const command = chase(sim, d, c);
-    trace.finish(sim);
-    const p = trace.steps[0].pursuit!.find(r => r.data.kind === 'intercept')!.data;
-    const q = trace.steps[0].pursuit!.find(r => r.data.kind === 'chase')!.data;
-    if (p.kind !== 'intercept' || q.kind !== 'chase') throw new Error('Missing active request');
-    const expected = distance > 12 ? .79 : 1;
-    expect(p.prediction.estimate.request!.effort).toBe(expected);
-    expect(p.prediction.estimate.request!.speed).toBe(expected);
-    const far = q.requests.find(r => r.stage === 'intercept-sprint')!.command;
-    expect(far.effort).toBe(expected);
-    expect(Math.hypot(far.vel.x, far.vel.y)).toBeCloseTo(d.profile.vmax * expected, 12);
-    expect(command.effort).toBe(expected);
+    const run = () => {
+      const trace = sim.recordCommands({ actor: { playerId: d.player.id }, from: sim.t, to: sim.t + .05 }); trace.begin(sim);
+      const command = chase(sim, d, c);
+      trace.finish(sim);
+      const p = trace.steps[0].pursuit!.find(r => r.data.kind === 'intercept')!.data;
+      const q = trace.steps[0].pursuit!.find(r => r.data.kind === 'chase')!.data;
+      if (p.kind !== 'intercept' || q.kind !== 'chase') throw new Error('Missing active request');
+      return { command, p, q };
+    };
+    return { sim, d, c, see, run };
+  }
+
+  it('the last chance sprints at any distance, and plans on that budget in the same tick', () => {
+    // Runner 20 yd away crossing toward the FS's side of the field: reachable, nobody else.
+    const { run } = scene({ x: 60, y: 10, vx: 0, vy: 6 });
+    const { command, p, q } = run();
+    expect(q.effortRead).toMatchObject({ feasible: true, betterPlaced: 0, wants: 'sprint', mode: 'sprint', effort: 1 });
+    expect(p.prediction.estimate.request).toMatchObject({ speed: 1, effort: 1 });
+    expect(q.requests.find(r => r.stage === 'intercept-sprint')!.command.effort).toBe(1);
+    expect(command.effort).toBe(1);
     expect(p.steeringPointEstimate).toBe('not-evaluated');
-    expect(seen).toHaveBeenCalledTimes(3); // Existing chase, current forecast and older cue only.
+    vi.restoreAllMocks();
+  });
+
+  it('paces close to the ball when two teammates are already better placed', () => {
+    // A 5-yd gain with two teammates in front of the runner: the trailer paces.
+    const { run } = scene({ x: 45, y: 26, vx: 3, vy: 0 }, [{ x: 47, y: 26 }, { x: 47.5, y: 27 }]);
+    const { command, p, q } = run();
+    expect(q.effortRead).toMatchObject({ feasible: true, betterPlaced: 2, wants: 'pace', mode: 'pace' });
+    expect(q.effortRead!.effort).toBeCloseTo(.79, 12);
+    expect(p.prediction.estimate.request!.effort).toBeCloseTo(.79, 12);
+    expect(command.effort).toBeCloseTo(.79, 12);
+    vi.restoreAllMocks();
+  });
+
+  it('one better-placed teammate still leaves him among the two best placed', () => {
+    const { run } = scene({ x: 45, y: 26, vx: 3, vy: 0 }, [{ x: 47, y: 26 }]);
+    expect(run().q.effortRead).toMatchObject({ betterPlaced: 1, mode: 'sprint', effort: 1 });
+    vi.restoreAllMocks();
+  });
+
+  it('paces a hopeless trail, but a committed sprint holds for the hold time first', () => {
+    // Runner 14 yd ahead and pulling away at full speed: no feasible intercept.
+    const away = { x: 54, y: 26, vx: 9.5, vy: 0 };
+    const hopeless = scene(away);
+    expect(hopeless.run().q.effortRead).toMatchObject({ feasible: false, wants: 'pace', mode: 'pace' });
+    vi.restoreAllMocks();
+
+    // Committed on a reachable crosser, then the runner breaks away.
+    const s = scene({ x: 55, y: 18, vx: 0, vy: 5 });
+    expect(s.run().q.effortRead!.mode).toBe('sprint');
+    s.see.mockImplementation((_o, t) => ({ pos: t === s.c ? { x: away.x, y: away.y } : { x: -50, y: 0 },
+      vel: t === s.c ? { x: away.vx, y: 0 } : { x: 0, y: 0 }, facing: 0, stance: null, age: .2 }));
+    s.sim.t += .05;
+    expect(s.run().q.effortRead).toMatchObject({ feasible: false, wants: 'pace', mode: 'sprint', effort: 1 });
+    s.sim.t += .2;
+    expect(s.run().q.effortRead!.mode).toBe('sprint');
+    s.sim.t += .1;
+    expect(s.run().q.effortRead).toMatchObject({ mode: 'pace' });
+    vi.restoreAllMocks();
+  });
+
+  it('reads only pictures: unacquired reality cannot move the effort decision', () => {
+    const { c, run } = scene({ x: 60, y: 10, vx: 0, vy: 6 });
+    const first = run().command;
     c.body.pos = { x: -100, y: 50 }; c.body.vel = { x: -8, y: 0 };
-    expect(chase(sim, d, c)).toEqual(command); // Unacquired reality cannot move the effort boundary.
-    expect(seen).toHaveBeenCalledTimes(6);
+    expect(run().command).toEqual(first);
     vi.restoreAllMocks();
   });
 });

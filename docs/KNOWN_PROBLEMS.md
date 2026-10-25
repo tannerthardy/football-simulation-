@@ -736,6 +736,15 @@ Carried over from the issue register; each was measured on an older develop.
     matched replay. A real defender sprints when he is the last chance,
     from what he can see (runner free, nobody ahead of him). Defense, G1;
     judge on matched breakaways and a short-gain control.
+- **Effort read tried** (draft, [evidence](reviews/pursuit-effort-read.md),
+  2026-10-25): sprint when he can still get there and is the last man or one
+  of the two best placed, pace otherwise. It turns P002 into a 25-yd tackle,
+  but on matched games it doesn't lower yardage (develop −0.20 ± 0.19 yd/play;
+  on #273 +0.64 ± 0.26), and even every pursuer at full effort adds yards on
+  #273 (+0.33 ± 0.22). Effort isn't the lever; arrivals don't convert. Matched
+  pass plays also clear #251, #258 and #267 of the YAC rise. **Next:** the
+  arrival (gather braking against a fast runner, the jumping intercept), then
+  re-test effort on top.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often

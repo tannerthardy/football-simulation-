@@ -17,7 +17,8 @@ import { composeHooks } from '../scripts/scorecard/hooks.js';
 
 describe('ordinary-game constructor capture and independent replay', () => {
   let captured: ReturnType<typeof captureOrdinaryPlay>;
-  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 10, maxSteps: 60 }); });
+  // The first catch after play 16 comes on an offense the defense has already scouted.
+  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 16, maxSteps: 60 }); });
 
   it('preserves the whole normal game prefix compared with the observer absent', () => {
     const rng = new Rng(7);

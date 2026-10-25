@@ -59,14 +59,15 @@ export function worldSourceSha256(): string {
  * The authoritative full Body is also V8 encoded, with its own checksum. */
 export function arrivalJson(value: unknown): string {
   return JSON.stringify(value, (_, v) => v === undefined ? { $arrivalValue: 'undefined' }
-    : typeof v === 'number' && !Number.isFinite(v) ? { $arrivalValue: String(v) } : v) + '\n';
+    : typeof v === 'number' && !Number.isFinite(v) ? { $arrivalValue: String(v) }
+    : Object.is(v, -0) ? { $arrivalValue: '-0' } : v) + '\n';
 }
 export function parseArrivalJson(text: string): any {
   function restore(v: any): any {
     if (v && typeof v === 'object') {
       if (Object.keys(v).length === 1 && typeof v.$arrivalValue === 'string') {
         if (v.$arrivalValue === 'undefined') return undefined;
-        if (['Infinity', '-Infinity', 'NaN'].includes(v.$arrivalValue)) return Number(v.$arrivalValue);
+        if (['Infinity', '-Infinity', 'NaN', '-0'].includes(v.$arrivalValue)) return Number(v.$arrivalValue);
         throw new Error('Unknown arrival value tag');
       }
       for (const k of Object.keys(v)) v[k] = restore(v[k]);
