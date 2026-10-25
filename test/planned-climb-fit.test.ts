@@ -12,7 +12,8 @@ import type {Perceived} from '../src/sim/perception.js';
 // SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.
 // ARM_PRESS puts a press through the hands at the bench max; this scene is staged on arm-force hands (KNOWN_PROBLEMS RUN-11, re-record by review 2).
 // RUN_FEEL: the blocker mirrors the defender's acquired motion; this scene is staged on true-velocity mirroring (KNOWN_PROBLEMS RUN-11, re-record by review 2).
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; process.env.SNAP_REACT = '0'; process.env.LB_LANDMARK = '0'; process.env.BLOCKED_REACH = '0'; process.env.ARM_PRESS = '0'; process.env.PASS_FIRST = '0'; process.env.RUN_FEEL = '0'; });
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; process.env.SNAP_REACT = '0'; process.env.LB_LANDMARK = '0'; process.env.BLOCKED_REACH = '0'; process.env.ARM_PRESS = '0'; process.env.PASS_FIRST = '0'; process.env.RUN_FEEL = '0'; process.env.EDGE_CONTAIN = '0'; });
+// EDGE_CONTAIN bounds a blocked edge's widening to what containing the back needs; this scene is staged on unbounded widening (re-record by review 2).
 // BLOCKED_REACH lets the blocked Mike give up the block to grab a runner on his free side; this scene checks the block held through the runner's arrival.
 // PASS_FIRST keeps the cover-4 corners on their receivers; the back reads that secondary and bends into the keeper's end, a different run than the one recorded.
 

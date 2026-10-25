@@ -13,6 +13,7 @@
     "CLIMB_PLAN": "1",
     "DL_FIGHT": "0",
     "DL_FLOW": "1",
+    "EDGE_CONTAIN": "1",
     "DL_HANDS": "0",
     "FLOW_READ": "1",
     "FLOW_RELEASE": "1",
