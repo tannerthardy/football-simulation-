@@ -116,10 +116,47 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
     .sort((a, b) => Number(jobs.get(a)!.kind === 'force') - Number(jobs.get(b)!.kind === 'force') || a.pos.y - b.pos.y);
   const bubbles = [-1, 1].flatMap((side) => (['A', 'B', 'C'] as Gap[])
     .filter((gap) => !claimed.has(`${side}:${gap}`)).map((gap) => ({ side, gap })));
-  for (const d of backers) {
+  const reach = (d: Agent, b: { side: number; gap: Gap }) => Math.abs(gapY(sim.offAlign, b.gap, b.side) - d.pos.y);
+  if (GAP_MATCH) {
+    // More gaps than backers (a second tight end adds one): fill them as a
+    // set, not nearest-first. A gap left open should be the one an
+    // underneath support player (a rotated-down safety or hook defender, not
+    // deep help) still covers on that side, so the Mike slides away from him;
+    // an unsupported or A gap left open is worse. Distance breaks ties.
+    const support = (side: number) => sim.defense.some(d => jobs.get(d)!.kind === 'alley' && !deepZone(d)
+      && (d.pos.y - sim.ballY) * side > 0);
+    const open = (b: { side: number; gap: Gap }) => (support(b.side) ? 1 : 2) + (b.gap === 'A' ? .5 : 0);
+    let best: { cost: number; dist: number; pick: (typeof bubbles[number] | undefined)[] } | null = null;
+    const pick: (typeof bubbles[number] | undefined)[] = [];
+    const search = (i: number, used: Set<number>) => {
+      if (i === backers.length) {
+        // Every insertion keeps a gap while one remains; a force's inside duty is optional.
+        if (backers.some((d, k) => jobs.get(d)!.kind !== 'force' && !pick[k] && used.size < bubbles.length)) return;
+        const cost = bubbles.reduce((c, b, k) => used.has(k) ? c : c + open(b), 0);
+        const dist = backers.reduce((c, d, k) => c + (pick[k] ? reach(d, pick[k]!) : 0), 0);
+        if (!best || cost < best.cost - 1e-9 || (Math.abs(cost - best.cost) < 1e-9 && dist < best.dist)) best = { cost, dist, pick: [...pick] };
+        return;
+      }
+      const job = jobs.get(backers[i])!;
+      pick[i] = undefined; search(i + 1, used);
+      bubbles.forEach((b, k) => {
+        if (used.has(k) || (job.kind === 'force' && b.side !== job.side)) return;
+        pick[i] = b; used.add(k); search(i + 1, used); used.delete(k);
+      });
+      pick[i] = undefined;
+    };
+    search(0, new Set());
+    backers.forEach((d, k) => {
+      const bubble = best?.pick[k], job = jobs.get(d)!;
+      if (!bubble) return;
+      bubbles.splice(bubbles.indexOf(bubble), 1);
+      if (job.kind === 'force') job.inside = bubble;
+      else Object.assign(job, bubble);
+    });
+  } else for (const d of backers) {
     const job = jobs.get(d)!;
     const eligible = job.kind === 'force' ? bubbles.filter(b => b.side === job.side) : bubbles;
-    eligible.sort((a, b) => Math.abs(gapY(sim.offAlign, a.gap, a.side) - d.pos.y) - Math.abs(gapY(sim.offAlign, b.gap, b.side) - d.pos.y));
+    eligible.sort((a, b) => reach(d, a) - reach(d, b));
     const bubble = eligible[0];
     if (bubble) {
       bubbles.splice(bubbles.indexOf(bubble), 1);
@@ -197,6 +234,13 @@ const SAFETY_TEMPO = process.env.SAFETY_TEMPO !== '0';
  * outside the back; the back runs inside him with no one behind. Off: any
  * available defender outside the ball. With no candidate the edge boxes. */
 const DEEP_NO_FORCE = process.env.DEEP_NO_FORCE === '1';
+/** GAP_MATCH (on; =0 restores nearest-first): backers fill the front's open
+ * gaps as a set. Nearest-first sent the Will in the nickel Under vs 12
+ * personnel to the weak A gap and the Mike to the strong B, leaving the gap
+ * between the weak tackle and the second tight end empty while the
+ * rotated-down safety sat over the strong B. Real Under/cover 3 fits slide
+ * the Mike weak and give the strong side's open gap to that safety. */
+const GAP_MATCH = process.env.GAP_MATCH !== '0';
 const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving

@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { serialize } from 'node:v8';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import { Game } from '../src/game/game.js';
 import { generateTeam } from '../src/league/team.js';
@@ -14,6 +14,11 @@ import { captureOrdinaryPlay, originalFilm } from '../scripts/diag/capture-game-
 import { captureSetup, compareExecution, copySaved, firstDifference, identityDifference, initialState,
   readSavedPlay, replayState, restoreSetup, runRestoredPlay } from '../scripts/diag/saved-play.js';
 import { composeHooks } from '../scripts/scorecard/hooks.js';
+
+// GAP_MATCH changes seed 7's game history, so its first catch from play 10 comes on a drive the
+// defense hasn't scouted yet; the captured catch and CB_W entries are staged on nearest-first fits
+// (re-record by review 2).
+vi.hoisted(() => { process.env.GAP_MATCH = '0'; });
 
 describe('ordinary-game constructor capture and independent replay', () => {
   let captured: ReturnType<typeof captureOrdinaryPlay>;
