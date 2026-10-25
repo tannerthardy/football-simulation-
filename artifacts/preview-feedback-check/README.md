@@ -9,7 +9,7 @@ git worktree add --detach /tmp/pr284 2590d3af3fb1c44463afd093a28afa9b1fc2f913 &&
 for w in /tmp/pr284 /tmp/dev; do ln -s "$PWD/node_modules" $w/node_modules; done
 # copy scripts/diag/preview-probe.mjs and preview-feedback-check.ts from this branch into both, then in each:
 node scripts/diag/preview-probe.mjs apply
-(cd /tmp/pr284 && node --import tsx scripts/diag/zone-climb-ordinary.ts capture "$PWD/../set.bin")                       # the declared set
+(cd /tmp/pr284 && node --import tsx scripts/diag/zone-climb-ordinary.ts capture /tmp/set.bin)                       # the declared set
 (cd /tmp/pr284 && node --import tsx scripts/diag/preview-feedback-check.ts /tmp/set.bin /tmp/pr284.json --write-samples /tmp/samples.bin)
 (cd /tmp/dev   && node --import tsx scripts/diag/preview-feedback-check.ts /tmp/set.bin /tmp/dev.json   --contract /tmp/samples.bin)
 ```
