@@ -8,7 +8,7 @@ import { qbRunning } from '../src/sim/possession-read.js';
 // give it those pictures directly. Field: offense attacks +x, LOS at x=50,
 // tackles pictured at y=24 and y=29.67.
 type Picture = Pick<Perceived, 'pos' | 'vel' | 'carrying'>;
-function scene() {
+function scene(tackleX = 49) {
   const qb = { slot: 'QB' } as Agent, lt = { slot: 'LT' } as Agent, rt = { slot: 'RT' } as Agent;
   const defender = { slot: 'DE_L' } as Agent;
   let picture: Picture = { pos: { x: 43, y: 26.67 }, vel: { x: 0, y: 0 }, carrying: true };
@@ -17,7 +17,7 @@ function scene() {
     slot: (name: string) => (name === 'LT' ? lt : name === 'RT' ? rt : undefined),
     see: (_: Agent, target: Agent) => ({
       stance: null, facing: 0, age: 0.2,
-      ...(target === qb ? picture : { pos: { x: 49, y: target === lt ? 24 : 29.67 }, vel: { x: 0, y: 0 }, carrying: false }),
+      ...(target === qb ? picture : { pos: { x: tackleX, y: target === lt ? 24 : 29.67 }, vel: { x: 0, y: 0 }, carrying: false }),
     }),
   } as unknown as PlaySim;
   return {
@@ -41,6 +41,17 @@ describe('qbRunning: a scramble from what a defender can see', () => {
     for (const t of [3.20, 3.25, 3.30, 3.40, 3.50]) {
       expect(s.show({ pos: { x: 44 + (t - 3.2) * 2.6, y: 27 }, vel: { x: 2.6, y: 0.5 } }, t)).toBe(false);
     }
+  });
+
+  it('does not let tackles driven deep move the front of the pocket back to him', () => {
+    // Review case (smash cover3 #5): tackles pushed 10 yd deep; QB 6 yd
+    // behind the line, between them, at v=(2.51, 0.5). Not a runner yet.
+    const s = scene(40);
+    for (const t of [3.20, 3.25, 3.30]) {
+      expect(s.show({ pos: { x: 44 + (t - 3.2) * 2.5, y: 27 }, vel: { x: 2.51, y: 0.5 } }, t)).toBe(false);
+    }
+    // Reaching the line itself still shows a runner.
+    expect(s.show({ pos: { x: 48.3, y: 27 }, vel: { x: 3, y: 0.5 } }, 3.8)).toBe(true);
   });
 
   it('does not treat a sideways rollout as a scramble until he turns upfield', () => {

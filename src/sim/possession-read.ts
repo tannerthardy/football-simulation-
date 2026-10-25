@@ -90,6 +90,7 @@ export function observedHolder(a: Agent, sim: PlaySim): PossessionRead | null {
 const QB_RUN_SPEED = 2.5;   // yd/s toward the line
 const QB_BOX_MARGIN = 1.5;  // yd outside the pictured tackles
 const QB_POCKET_FRONT = 1;  // yd behind the pictured tackles still counts as the front
+const QB_LOS_FRONT = 2;     // yd behind the line: the deepest the front can be
 const QB_BOX_SPEED = 1;     // yd/s downfield while outside the box
 const QB_SETTLED_SPEED = .5;
 const QB_SETTLE_TIME = .3;
@@ -112,12 +113,16 @@ export function qbRunning(a: Agent, sim: PlaySim): boolean {
   }
   // Speed alone is not runner evidence: a QB climbing away from a rush can
   // move just as fast inside the pocket. He must be at its front (the
-  // pictured tackles' depth) or outside it and moving downfield.
+  // shallower of the pictured tackles' depth and the line) or outside the
+  // tackles and moving downfield.
   let running = false;
   if (up > QB_BOX_SPEED) {
     const lt = sim.slot('LT'), rt = sim.slot('RT');
     const tackles = lt && rt ? [sim.see(a, lt).pos, sim.see(a, rt).pos] : null;
-    const front = (tackles ? Math.min(tackles[0].x, tackles[1].x) : sim.los) - QB_POCKET_FRONT;
+    // Tackles driven back move the pocket, not the line: the front is never
+    // deeper than QB_LOS_FRONT behind the line of scrimmage.
+    const front = Math.max(sim.los - QB_LOS_FRONT,
+      (tackles ? Math.min(tackles[0].x, tackles[1].x) : sim.los) - QB_POCKET_FRONT);
     const outside = !!tackles && (cue.pos.y < Math.min(tackles[0].y, tackles[1].y) - QB_BOX_MARGIN
       || cue.pos.y > Math.max(tackles[0].y, tackles[1].y) + QB_BOX_MARGIN);
     running = outside || (up > QB_RUN_SPEED && cue.pos.x >= front);
