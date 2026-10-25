@@ -1,7 +1,0 @@
-{
-  "negativeInfinity": true,
-  "positiveInfinity": true,
-  "ownUndefined": true,
-  "numericFields": true,
-  "sourceGuardOutputAbsent": true
-}
