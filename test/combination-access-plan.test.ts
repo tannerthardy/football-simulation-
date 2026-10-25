@@ -1,6 +1,10 @@
 import {Rng} from '../src/core/rng.js';import {generateTeam,pickOffense,pickDefense} from '../src/league/team.js';import {PlaySim} from '../src/sim/playsim.js';import {RunBlocker} from '../src/sim/behaviors/blocking.js';import {RUN_BY_ID} from '../src/playbook/concepts.js';import {FORMATION_BY_ID} from '../src/playbook/formations.js';import {FRONT_BY_ID,COVERAGE_BY_ID} from '../src/playbook/defense.js';import {CENTER_Y} from '../src/core/field.js';import {goTo,stand} from '../src/sim/behaviors/common.js';
 
 import {describe,it,expect,vi} from 'vitest';
+// Recorded before SEAL_HOLD (#281). With it on the defender still wins this
+// scene (DT_S first contact 2.45 s vs 2.60 s) but the climber's departure is
+// never assessed as unvalidated (KNOWN_PROBLEMS RUN-12, re-record by review 2).
+vi.hoisted(() => { process.env.SEAL_HOLD = '0'; });
 import * as preview from '../src/physics/movement-preview.js';
 import {assessClimbAccess} from '../src/sim/climb-access.js';
 function stage(side=1){

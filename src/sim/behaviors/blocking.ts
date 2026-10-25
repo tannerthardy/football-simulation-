@@ -506,6 +506,10 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Ag
   return best?.targets ?? new Map();
 }
 
+/** A zone climber does not take a backer more than three gaps (4.5 yd)
+ * from him across the formation. */
+const ZONE_BACKER_REACH = 4.5;
+
 export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, RunBlockPlan> {
   if (concept.pullers.includes('H') && concept.scheme !== 'counter')
     throw new Error('The off-ball H pull tag is installed only for Counter GH');
@@ -563,17 +567,58 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       plans.set(b, { kind: reach ? 'reach' : 'drive', target: d, drive: up(ps * (scheme === 'wideZone' ? 1.8 : reach ? 1.1 : 0.6)) });
     }
     const pending = line.filter((b) => !plans.has(b));
+    // An uncovered man doubles with the covered man on his play side; the
+    // rest climb. The uncovered men count the backers across the front in
+    // order: every backer one of them can reach is someone's, the assignments
+    // never cross, and among those they keep the shortest total walk from
+    // their tracks. Taken one at a time outside-in, the outside double took
+    // the Mike over the 3-technique's double and left the backside double the
+    // overhang on the far side of the formation. A backer more than three
+    // gaps from a climber is not his to take.
+    const doubles: Array<{ b: Agent; neighbor: Agent; np: RunBlockPlan }> = [];
+    const climbers: Agent[] = [];
     for (const b of pending) {
-      if (plans.has(b)) continue;
-      const i = line.indexOf(b);
-      const neighbor = line[i - 1];
+      const neighbor = line[line.indexOf(b) - 1];
       const np = neighbor ? plans.get(neighbor) : undefined;
-      if (np?.target && !np.combination && (np.kind === 'drive' || np.kind === 'reach')) {
-        combo(b, neighbor, np.target, lbNear(b.pos.y + ps * 1.5, scheme === 'insideZone' || scheme === 'splitZone'), np.drive);
-      } else {
-        plans.set(b, { kind: 'climb', target: lbNear(b.pos.y + ps * 1.0), drive: up(ps * 0.4) });
-      }
+      if (np?.target && (np.kind === 'drive' || np.kind === 'reach') && !doubles.some((d) => d.neighbor === neighbor))
+        doubles.push({ b, neighbor, np });
+      else climbers.push(b);
     }
+    // Every uncovered man going to the second level counts: a double's
+    // climber aims 1.5 yd play side of himself (inside zone and split zone
+    // keep their backside preference), a lone climber 1 yd.
+    const insideFirst = scheme === 'insideZone' || scheme === 'splitZone';
+    const workers = [...doubles.map((d) => ({ b: d.b, double: d, lead: 1.5, inside: insideFirst })),
+      ...climbers.map((b) => ({ b, double: null, lead: 1.0, inside: false }))].sort((p, q) => p.b.pos.y - q.b.pos.y);
+    const cost = (w: (typeof workers)[number], l: Agent) => {
+      const track = w.b.pos.y + ps * w.lead;
+      return Math.abs(l.pos.y - track) + (w.inside && (l.pos.y - track) * ps > 0 ? 1.5 : 0);
+    };
+    const open = lb.filter((l) => !claimedLB.has(l)).sort((p, q) => p.pos.y - q.pos.y);
+    // Order-preserving assignment: fewest workers left without a backer
+    // first, then the shortest total distance.
+    type Count = { missed: number; total: number; picks: Array<Agent | null> };
+    const memo = new Map<string, Count>();
+    const assign = (i: number, j: number): Count => {
+      if (i === workers.length) return { missed: 0, total: 0, picks: [] };
+      const key = `${i}:${j}`, known = memo.get(key);
+      if (known) return known;
+      const skip = assign(i + 1, j);
+      let best: Count = { missed: skip.missed + 1, total: skip.total, picks: [null, ...skip.picks] };
+      for (let k = j; k < open.length; k++) {
+        if (Math.abs(open[k].pos.y - workers[i].b.pos.y) > ZONE_BACKER_REACH) continue;
+        const rest = assign(i + 1, k + 1), total = rest.total + cost(workers[i], open[k]);
+        if (rest.missed < best.missed || (rest.missed === best.missed && total < best.total - 1e-9))
+          best = { missed: rest.missed, total, picks: [open[k], ...rest.picks] };
+      }
+      memo.set(key, best);
+      return best;
+    };
+    const counted = assign(0, 0).picks;
+    const backerOf = new Map(workers.map((w, k) => [w.b, counted[k]]));
+    for (const l of counted) if (l) claimedLB.add(l);
+    for (const { b, neighbor, np } of doubles) combo(b, neighbor, np.target!, backerOf.get(b) ?? null, np.drive);
+    for (const b of climbers) plans.set(b, { kind: 'climb', target: backerOf.get(b) ?? null, drive: up(ps * 0.4) });
     // Backside end of the line walls off (cutoff).
     const last = line[line.length - 1];
     const lp = plans.get(last);

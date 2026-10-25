@@ -970,6 +970,48 @@ run plays with the assignment layer (`--telemetry full`):
   protection contracts. Earlier release/traversal remedies remain rejected;
   no capacity, contact law or keeper eligibility change is supported. Pending
   work-off/possession/reach changes remain separate.
+- **Zone doubles were given each other's backers.** *Fixed (on by default,
+  #284).* The zone installer let each double take the nearest unclaimed
+  backer one at a time, outside-in, with no reach. On Ace12 IZ Strong/Over
+  (roster 7, seed 1):
+  - the outside double H+LT took the Mike (+2.7 yd) over the 3-technique's
+    double LG+C;
+  - the backside double RG+RT got the nickel 9.6 yd across the formation;
+  - the Mike made the tackle (3.10–3.25 s).
+
+  The prototype's native film showed "RT never collects his far NB job".
+  This was the cause: an installation fault, not access or spacing. The
+  uncovered men now count the backers across the front in order:
+  - assignments never cross;
+  - they keep the shortest total walk;
+  - none takes a backer more than 4.5 yd from him.
+
+  Now LG+C→Mike, RG+RT→Will and H+LT→nickel. RT blocks the Will at 1.90 s
+  and C blocks the Mike at 2.10 s, both before the runner reaches them
+  (2.85, 3.10 s).
+
+  Ace12 WZ Weak/Under and the recorded climb-traffic fixture keep their
+  installation exactly. In WZ/Under:
+  - RT already collects the Will at 2.30 s, before the runner (2.50 s);
+  - C misses the Mike (closest 0.75 yd);
+  - LT's nickel is not reachable.
+
+  **Open (SEAL_HOLD owner):** with his hands loaded on a moving backer, a
+  climber keeps the offset he caught him at instead of working to the
+  backer's play-side shoulder. At 2.00 s in the controlled climb (C/LG on
+  DT_W, LG to LB_W), LG asks for +2.42 yd/s sideways with SEAL_HOLD off and
+  +0.40 with it on.
+
+  The prototype recorded these scenes before #281, and they are pinned to
+  `SEAL_HOLD=0` until review 2:
+  - its two coupled-World climbs;
+  - the three combo-strike-access scenes;
+  - the two mirrored unsafe-release controls. With SEAL_HOLD on, the down
+    defender still wins those (first contact 2.45 s instead of 2.60 s), but
+    the departure is never assessed as unvalidated.
+
+  In the two native develop cases, SEAL_HOLD stops neither climb; turning it
+  off mostly frees the down linemen.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
