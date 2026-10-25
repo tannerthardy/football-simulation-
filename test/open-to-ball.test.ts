@@ -17,7 +17,7 @@ function scene(facing: number, bearing = Math.PI, range = 4, qbRun = false, carr
     body: { facing, vel: { x: 0, y: 0 }, pos: { x: 0, y: 0 } } } as unknown as Agent;
   // Only the defender's pictures decide: the back (or QB) he sees with the
   // ball, and an empty-handed QB when the two differ.
-  const sim = { qb, t: 2, bond: null, ball: { kind: 'held', carrier },
+  const sim = { qb, t: 2, los: -3, bond: null, ball: { kind: 'held', carrier },
     opponents: () => (qbRun ? [carrier] : [carrier, qb]), slot: () => undefined,
     see: (_: Agent, target: Agent) => (target === carrier
       ? { pos, vel, carrying, age: .1 } : { pos: { x: -8, y: 0 }, vel: { x: 0, y: 0 }, carrying: false, age: .1 }) } as unknown as PlaySim;

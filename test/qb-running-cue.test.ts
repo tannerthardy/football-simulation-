@@ -13,7 +13,7 @@ function scene() {
   const defender = { slot: 'DE_L' } as Agent;
   let picture: Picture = { pos: { x: 43, y: 26.67 }, vel: { x: 0, y: 0 }, carrying: true };
   const sim = {
-    t: 0, qb,
+    t: 0, qb, los: 50,
     slot: (name: string) => (name === 'LT' ? lt : name === 'RT' ? rt : undefined),
     see: (_: Agent, target: Agent) => ({
       stance: null, facing: 0, age: 0.2,
@@ -29,8 +29,18 @@ function scene() {
 describe('qbRunning: a scramble from what a defender can see', () => {
   it('sees a QB breaking the pocket toward the line', () => {
     const s = scene();
-    expect(s.show({ vel: { x: 1.5, y: 0 } }, 2.0)).toBe(false);
-    expect(s.show({ vel: { x: 3.2, y: 0.5 } }, 2.1)).toBe(true);
+    expect(s.show({ pos: { x: 47, y: 26.67 }, vel: { x: 1.5, y: 0 } }, 2.0)).toBe(false);
+    expect(s.show({ pos: { x: 47.5, y: 26.67 }, vel: { x: 3.2, y: 0.5 } }, 2.1)).toBe(false);
+    // At the front of the pocket (the tackles' depth): a runner.
+    expect(s.show({ pos: { x: 48.2, y: 26.8 }, vel: { x: 3.4, y: 0.5 } }, 2.3)).toBe(true);
+  });
+
+  it('does not treat a fast climb deep in the pocket as a scramble', () => {
+    // Review case: 6 yd deep, inside the tackles, escaping a missed dive.
+    const s = scene();
+    for (const t of [3.20, 3.25, 3.30, 3.40, 3.50]) {
+      expect(s.show({ pos: { x: 44 + (t - 3.2) * 2.6, y: 27 }, vel: { x: 2.6, y: 0.5 } }, t)).toBe(false);
+    }
   });
 
   it('does not treat a sideways rollout as a scramble until he turns upfield', () => {
@@ -49,7 +59,7 @@ describe('qbRunning: a scramble from what a defender can see', () => {
 
   it('holds through a stutter and releases when the QB resets to throw', () => {
     const s = scene();
-    expect(s.show({ vel: { x: 3.5, y: 0 } }, 2.0)).toBe(true);
+    expect(s.show({ pos: { x: 48.5, y: 26.67 }, vel: { x: 3.5, y: 0 } }, 2.0)).toBe(true);
     expect(s.show({ vel: { x: 0.2, y: 1 } }, 2.1)).toBe(true);   // Settling starts.
     expect(s.show({ vel: { x: 1.0, y: 1 } }, 2.25)).toBe(true);  // Moving again: timer restarts.
     expect(s.show({ vel: { x: 0.1, y: 0 } }, 2.3)).toBe(true);
@@ -61,13 +71,13 @@ describe('qbRunning: a scramble from what a defender can see', () => {
   it('ignores a pump fake and lets go once the ball has left his hands', () => {
     const s = scene();
     expect(s.show({ vel: { x: 0.4, y: 0 } }, 2.0)).toBe(false);
-    expect(s.show({ vel: { x: 3, y: 0 } }, 2.4)).toBe(true);
+    expect(s.show({ pos: { x: 48.5, y: 26.67 }, vel: { x: 3, y: 0 } }, 2.4)).toBe(true);
     expect(s.show({ vel: { x: 3, y: 0 }, carrying: false }, 2.5)).toBe(false);
   });
 
   it('keeps the latch through an unknown picture but never starts on one', () => {
     const s = scene();
-    expect(s.show({ vel: { x: 4, y: 0 }, carrying: null }, 2.0)).toBe(false);
+    expect(s.show({ pos: { x: 48.5, y: 26.67 }, vel: { x: 4, y: 0 }, carrying: null }, 2.0)).toBe(false);
     expect(s.show({ vel: { x: 4, y: 0 }, carrying: true }, 2.1)).toBe(true);
     expect(s.show({ vel: { x: 0, y: 0 }, carrying: null }, 3.0)).toBe(true);
   });
