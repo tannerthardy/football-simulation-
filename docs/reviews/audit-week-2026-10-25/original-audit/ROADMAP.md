@@ -1,6 +1,6 @@
 # Revised implementation roadmap
 
-Proposed for the next review, October 23, 2026. Experimental source: `c4a03f6463eacb23ce63d01bd32b4f8b547b9bc0`. Final develop `ccdb69cba81e07c578f607ff1bf8ce0efe2edc68` adds only VIEW-1 documentation; simulation code is identical. This document revises the [first audit's A01–A21 proposals](evidence/first-audit/ROADMAP-original.md); it does not amend the repository's approved PLAN, ranked gaps, assignments or merge rules. Read the [revised review](REVIEW.md) and linked investigations for evidence. These are actionable handoff briefs for the coordinator to select, not automatic assignments.
+Proposed for the next review, October 23, 2026. Experimental source: `c4a03f6463eacb23ce63d01bd32b4f8b547b9bc0`. Final develop `ccdb69cba81e07c578f607ff1bf8ce0efe2edc68` adds only VIEW-1 documentation; simulation code is identical. This document revises the [first audit's A01–A21 proposals](https://github.com/tannerthardy/football-simulation-/blob/73a800464a7b2a057a2f4df59d772c89bbd87b21/artifacts/audit-2026-10-25/Football-Sim-Deep-Audit.zip); it does not amend the repository's approved PLAN, ranked gaps, assignments or merge rules. Read the [revised review](REVIEW.md) and linked investigations for evidence. These are actionable handoff briefs for the coordinator to select, not automatic assignments.
 
 The next milestone is a trustworthy football experiment: a supported call and selected lineup reproduce, a player's action can be followed from acquired evidence through physical response, and changing one meaningful input has an explainable effect. A universal decision chooser is no longer part of the success criterion.
 
@@ -84,7 +84,7 @@ Add an **S diagnostic** for falling-body throw release: fixed `z=2.2` currently 
 
 **Accept:** changed target, unchanged target, no new cue, expiry and A→B→A controls; preserve P029 and planned-climb nonconsumption. Native command/body effects should match the intended boundary without claiming outcome improvement. Do not accumulate target keys that revive an obsolete goal.
 
-**Stop:** no extra scheduler. A common chooser needs a shared policy failure after these repairs; cache recurrence justifies a cache contract, not universal football semantics. Evidence: [native summaries](evidence/architecture/root-aim-native-summary.json).
+**Stop:** no extra scheduler. A common chooser needs a shared policy failure after these repairs; cache recurrence justifies a cache contract, not universal football semantics. Evidence: [native summaries](https://github.com/tannerthardy/football-simulation-/blob/73a800464a7b2a057a2f4df59d772c89bbd87b21/artifacts/audit-2026-10-25/Football-Sim-Deep-Audit.zip).
 
 ### A10 — Reusable short causal experiments
 

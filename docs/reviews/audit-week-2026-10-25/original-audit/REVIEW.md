@@ -73,7 +73,7 @@ The table deliberately separates a demonstrated connection from a plausible exte
 
 ![Three controlled native investigations separate path, facing and command effects](figures/native-mechanisms.png)
 
-The figure uses saved traces only. Panel A is an open-loop motor replay, not a counterfactual tackle. Panel B labels the physical endpoint at 4.45 seconds, corresponding to the recorded step starting at 4.40. Panel C shows a real action-cache intervention with unchanged final yardage. [Inputs, script and source hashes](figures/native-mechanisms-inputs.json) accompany it.
+The figure uses saved traces only. Panel A is an open-loop motor replay, not a counterfactual tackle. Panel B labels the physical endpoint at 4.45 seconds, corresponding to the recorded step starting at 4.40. Panel C shows a real action-cache intervention with unchanged final yardage. [Inputs, script and source hashes](https://github.com/tannerthardy/football-simulation-/blob/73a800464a7b2a057a2f4df59d772c89bbd87b21/artifacts/audit-2026-10-25/Football-Sim-Deep-Audit.zip) accompany it.
 
 ## 5. A genuine shared defect: actions outlive their targets
 
