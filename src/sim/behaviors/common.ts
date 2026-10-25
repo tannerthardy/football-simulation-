@@ -260,7 +260,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   }
   const chosen = chooseApproach(a, seen, contact, offset, original, sim.t,
     command => ownApproach(blendApproach(command, near, gather)));
-  const command = PURSUE_AROUND ? aroundBodies(sim, a, seen, look, chosen) : chosen;
+  const command = PURSUE_AROUND ? aroundBodies(sim, a, target, seen, look, chosen) : chosen;
   trace?.pursuit(target, { kind: 'chase', planner: 'used', requestedHorizon: horizon, observed: seen,
     distance: dist, contact, offset, gather, requests: [{ stage: 'intercept-sprint', command: original },
       { stage: 'approach-and-gather', command: chosen }, { stage: 'around-bodies', command }] });
@@ -278,7 +278,7 @@ const PURSUE_AROUND = process.env.PURSUE_AROUND !== '0';
 const AROUND_MARGIN = 0.15; // yd of clearance beyond the two bodies
 const AROUND_LOOK = 0.5;    // s of travel at the requested speed
 
-function aroundBodies(sim: PlaySim, a: Agent, runner: import('../perception.js').Perceived,
+function aroundBodies(sim: PlaySim, a: Agent, target: Agent, runner: import('../perception.js').Perceived,
   look: number, command: MoveCommand): MoveCommand {
   if (a.engagement || a.isDown(sim.t)) return command;
   const v = command.vel, speed = Math.hypot(v.x, v.y);
@@ -290,7 +290,7 @@ function aroundBodies(sim: PlaySim, a: Agent, runner: import('../perception.js')
   const toRunner = Math.hypot(runner.pos.x - a.pos.x, runner.pos.y - a.pos.y);
   let block: { x: number; y: number; d: number; r: number } | null = null;
   for (const o of sim.opponents(a)) {
-    if (o === sim.carrier || o.isDown(sim.t)) continue;
+    if (o === target || o.isDown(sim.t)) continue;
     const seen = sim.see(a, o, look);
     const rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, d = Math.hypot(rx, ry);
     const r = a.profile.radius + o.profile.radius + AROUND_MARGIN;
