@@ -192,6 +192,62 @@ export interface Situation {
 const secondsLeftInHalf = (s: Situation) => (s.quarter === 1 || s.quarter === 3 ? 900 : 0) + s.clock;
 const lateGame = (s: Situation) => s.quarter >= 4;
 
+export type FourthDownChoice = 'go' | 'punt' | 'fg';
+
+/** Fourth-down policy, separate from executing a snap or kick. Range is the
+ * coach's estimate for the available kicker, never the next kick's result.
+ *
+ * C3 activation is held at the game.ts ownership boundary: its fourthDown
+ * method must delegate here before these corrections affect games. */
+export function chooseFourthDown(
+  s: Pick<Situation, 'distance' | 'yardline' | 'quarter' | 'clock' | 'scoreDiff'>,
+  options: { fieldGoalRange: number; aggression: number },
+): FourthDownChoice {
+  const toGoal = 100 - s.yardline;
+  const fgDistance = toGoal + 17;
+  const inRange = fgDistance <= options.fieldGoalRange;
+  // Retain the existing short endgame window. A kick can win a tied game,
+  // too: short yardage is not a reason to spend this scoring opportunity.
+  if (s.quarter === 4 && s.clock < 36 && s.scoreDiff === 0 && inRange) return 'fg';
+  if (s.quarter >= 4 && s.scoreDiff < 0 && (s.clock < 150 || (s.scoreDiff < -8 && s.clock < 300))) {
+    if (s.scoreDiff >= -3 && inRange && s.clock < 36) return 'fg';
+    return 'go';
+  }
+
+  // Preserve the existing ordinary field-position/distance/aggression policy.
+  // NFL choice rates diagnose its limits; they are not fitted probabilities.
+  let goThreshold = 0;
+  if (s.yardline >= 40) goThreshold = 1;
+  if (s.yardline >= 55) goThreshold = 2;
+  if (s.yardline >= 62 && !inRange) goThreshold = 4;
+  if (toGoal <= 5) goThreshold = 1.5;
+  goThreshold += (options.aggression - 0.5) * 2;
+  if (s.yardline < 30) goThreshold -= 1;
+  if (s.distance <= goThreshold) return 'go';
+  return inRange ? 'fg' : 'punt';
+}
+
+/** Score margin is AFTER the touchdown's six points, BEFORE the Try.
+ * The game still owns whether a Try is required, hook overrides and overtime
+ * adjudication. Its afterTouchdown call site must delegate here to activate C3.
+ * This repairs the existing chart, not a win-probability optimizer. */
+export function chooseTry(
+  s: Pick<Situation, 'quarter' | 'clock' | 'scoreDiff'>,
+  aggression: number,
+  rng: Rng,
+): 'kick' | 'two' {
+  // With regulation over and the score tied, one point already wins. Don't
+  // let the discretionary two-point draw spend that opportunity at random.
+  if (s.quarter === 4 && s.clock === 0 && s.scoreDiff === 0) return 'kick';
+  // -13 -> -11 permits a TD+two and FG to tie; +12 -> +14 protects against
+  // two TD+XP scores. Both were absent from the old late-game chart.
+  if (s.quarter === 4 && (s.scoreDiff === -13 || s.scoreDiff === 12)) return 'two';
+  if (s.quarter >= 4 && [-12, -10, -9, -5, -2, 1, 5].includes(s.scoreDiff)) return 'two';
+  // Retain the existing discretionary coach tendency elsewhere. Estimating
+  // conversion chances and a fuller risk policy are separate coaching work.
+  return rng.chance(0.06 + 0.1 * aggression) ? 'two' : 'kick';
+}
+
 function pickWeighted<T>(rng: Rng, items: Array<[T, number]>): T {
   return rng.weighted(
     items.map((i) => i[0]),
