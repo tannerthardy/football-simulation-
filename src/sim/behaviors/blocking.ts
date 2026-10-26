@@ -30,7 +30,7 @@ import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
 import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
-import { chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
+import { assessClimbAccess, type ClimbAccessResult, chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
 import { lineDepth, lineOffset } from '../../playbook/alignment.js';
 
 /** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
@@ -506,6 +506,10 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Ag
   return best?.targets ?? new Map();
 }
 
+/** A zone climber does not take a backer more than three gaps (4.5 yd)
+ * from him across the formation. */
+const ZONE_BACKER_REACH = 4.5;
+
 export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, RunBlockPlan> {
   if (concept.pullers.includes('H') && concept.scheme !== 'counter')
     throw new Error('The off-ball H pull tag is installed only for Counter GH');
@@ -563,17 +567,58 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       plans.set(b, { kind: reach ? 'reach' : 'drive', target: d, drive: up(ps * (scheme === 'wideZone' ? 1.8 : reach ? 1.1 : 0.6)) });
     }
     const pending = line.filter((b) => !plans.has(b));
+    // An uncovered man doubles with the covered man on his play side; the
+    // rest climb. The uncovered men count the backers across the front in
+    // order: every backer one of them can reach is someone's, the assignments
+    // never cross, and among those they keep the shortest total walk from
+    // their tracks. Taken one at a time outside-in, the outside double took
+    // the Mike over the 3-technique's double and left the backside double the
+    // overhang on the far side of the formation. A backer more than three
+    // gaps from a climber is not his to take.
+    const doubles: Array<{ b: Agent; neighbor: Agent; np: RunBlockPlan }> = [];
+    const climbers: Agent[] = [];
     for (const b of pending) {
-      if (plans.has(b)) continue;
-      const i = line.indexOf(b);
-      const neighbor = line[i - 1];
+      const neighbor = line[line.indexOf(b) - 1];
       const np = neighbor ? plans.get(neighbor) : undefined;
-      if (np?.target && !np.combination && (np.kind === 'drive' || np.kind === 'reach')) {
-        combo(b, neighbor, np.target, lbNear(b.pos.y + ps * 1.5, scheme === 'insideZone' || scheme === 'splitZone'), np.drive);
-      } else {
-        plans.set(b, { kind: 'climb', target: lbNear(b.pos.y + ps * 1.0), drive: up(ps * 0.4) });
-      }
+      if (np?.target && (np.kind === 'drive' || np.kind === 'reach') && !doubles.some((d) => d.neighbor === neighbor))
+        doubles.push({ b, neighbor, np });
+      else climbers.push(b);
     }
+    // Every uncovered man going to the second level counts: a double's
+    // climber aims 1.5 yd play side of himself (inside zone and split zone
+    // keep their backside preference), a lone climber 1 yd.
+    const insideFirst = scheme === 'insideZone' || scheme === 'splitZone';
+    const workers = [...doubles.map((d) => ({ b: d.b, double: d, lead: 1.5, inside: insideFirst })),
+      ...climbers.map((b) => ({ b, double: null, lead: 1.0, inside: false }))].sort((p, q) => p.b.pos.y - q.b.pos.y);
+    const cost = (w: (typeof workers)[number], l: Agent) => {
+      const track = w.b.pos.y + ps * w.lead;
+      return Math.abs(l.pos.y - track) + (w.inside && (l.pos.y - track) * ps > 0 ? 1.5 : 0);
+    };
+    const open = lb.filter((l) => !claimedLB.has(l)).sort((p, q) => p.pos.y - q.pos.y);
+    // Order-preserving assignment: fewest workers left without a backer
+    // first, then the shortest total distance.
+    type Count = { missed: number; total: number; picks: Array<Agent | null> };
+    const memo = new Map<string, Count>();
+    const assign = (i: number, j: number): Count => {
+      if (i === workers.length) return { missed: 0, total: 0, picks: [] };
+      const key = `${i}:${j}`, known = memo.get(key);
+      if (known) return known;
+      const skip = assign(i + 1, j);
+      let best: Count = { missed: skip.missed + 1, total: skip.total, picks: [null, ...skip.picks] };
+      for (let k = j; k < open.length; k++) {
+        if (Math.abs(open[k].pos.y - workers[i].b.pos.y) > ZONE_BACKER_REACH) continue;
+        const rest = assign(i + 1, k + 1), total = rest.total + cost(workers[i], open[k]);
+        if (rest.missed < best.missed || (rest.missed === best.missed && total < best.total - 1e-9))
+          best = { missed: rest.missed, total, picks: [open[k], ...rest.picks] };
+      }
+      memo.set(key, best);
+      return best;
+    };
+    const counted = assign(0, 0).picks;
+    const backerOf = new Map(workers.map((w, k) => [w.b, counted[k]]));
+    for (const l of counted) if (l) claimedLB.add(l);
+    for (const { b, neighbor, np } of doubles) combo(b, neighbor, np.target!, backerOf.get(b) ?? null, np.drive);
+    for (const b of climbers) plans.set(b, { kind: 'climb', target: backerOf.get(b) ?? null, drive: up(ps * 0.4) });
     // Backside end of the line walls off (cutoff).
     const last = line[line.length - 1];
     const lp = plans.get(last);
@@ -890,8 +935,12 @@ export class RunBlocker implements Behavior {
   private presentationThreat: Agent | null = null;
   /** Native technique read, retained between the player's ordinary decisions. */
   zoneRead: ZoneReachRead | null = null;
+  private preparation: { combination: Combination; backer: Agent | null; at: number; until: number; exit: Vec2; flow: Vec2 } | null = null;
+  private contactAt = -1;
   /** Held climb plan from one acquired picture of the backer. */
   private climbAccess: ClimbAccess | null = null;
+  private departureAccess: ClimbAccessResult | null = null;
+  private departureStrikeClear = false;
   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
   private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
   private workPicture: BlockerWorkPicture | null = null;
@@ -905,7 +954,15 @@ export class RunBlocker implements Behavior {
 
   calledMotion(): Vec2 | null { return this.track; }
 
-  contactMotion(a: Agent, work: 'reach' | 'runoff' = 'reach'): Vec2 | null {
+  contactMotion(a: Agent, work: 'reach' | 'runoff' | 'prepare' = 'reach'): Vec2 | null {
+    if (work === 'prepare') {
+      const read=this.preparation,combo=this.plan.combination;
+      if (!read || combo!==read.combination || combo.released || combo.backer!==read.backer || this.plan.target!==combo.defender
+        || !a.engagement || this.contactAt>=read.until) return null;
+      const dt=this.contactAt-read.at;
+      return track(a,{x:read.exit.x+read.flow.x*dt,y:read.exit.y+read.flow.y*dt},read.flow,
+        {speed:1,gain:3}).vel;
+    }
     const e = a.engagement, read = this.zoneRead;
     if (!e || e.blocker !== a || e.helpers.length || this.plan.kind !== 'reach'
       || !read || read.target !== e.defender.idx || read.phase !== work
@@ -927,6 +984,10 @@ export class RunBlocker implements Behavior {
   update(a: Agent, sim: PlaySim): Intent {
     const plan = this.plan;
     const t = sim.t;
+    this.contactAt=t;
+    if(this.preparation && (plan.combination!==this.preparation.combination
+      || plan.target!==this.preparation.combination.defender
+      || plan.combination.backer!==this.preparation.backer))this.preparation=null;
     this.track = null;
     if (plan.contactFit && (plan.kind !== 'cutoff' || plan.target !== plan.contactFit.target
       || (plan.combination && !plan.combination.released))) delete plan.contactFit;
@@ -989,6 +1050,10 @@ export class RunBlocker implements Behavior {
     if (plan.departure && (plan.kind !== 'climb' || target !== plan.departure.backer)) {
       delete plan.departure;
       this.departureRead = null;
+      this.climbRead = null;
+      this.climbAccess = null;
+      this.departureAccess = null;
+      this.departureStrikeClear = false;
     }
     if (plan.kind === 'climb' && plan.departure && target === plan.departure.backer) {
       const leaving = this.leaveCombination(a, sim);
@@ -1164,12 +1229,18 @@ export class RunBlocker implements Behavior {
       const side = playSideSign(sim, run) * .5;
       const capacity = a.body.support
         ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
+      const previousAccess=this.climbAccess;
       let best: { meet: Vec2; vel: Vec2; t: number; gap: number } | null = null;
       for (const lead of [.2, .4, .6, .8, 1.0, 1.3]) {
         const meet = { x: seen.pos.x + seen.vel.x * lead, y: clamp(seen.pos.y + seen.vel.y * lead + side, .5, FIELD_WIDTH - .5) };
         const vel = movingArrivalVelocity(a.body, meet, seen.vel, a.profile.vmax, .1, Math.hypot(seen.vel.x, seen.vel.y), 1, capacity);
         const facing = Math.atan2(meet.y - a.pos.y, meet.x - a.pos.x);
-        const path = previewFreeMovement(a.body, { vel, facing }, sim.t, 26, sim.world.handContact);
+        const demand=(body: Readonly<import('../../physics/kinematics.js').Body>)=>{
+          const base=body.support?availability(body.support,supportParams(body.profile),fatigueFactor(body.energy)):1;
+          return {vel:movingArrivalVelocity(body,meet,seen.vel,a.profile.vmax,.1,Math.hypot(seen.vel.x,seen.vel.y),1,base),
+            facing:Math.atan2(meet.y-body.pos.y,meet.x-body.pos.x)};
+        };
+        const path = previewFreeMovement(a.body, this.plan.departure?demand:{ vel, facing }, sim.t, 26, sim.world.handContact);
         for (const s of path) {
           const bx = seen.pos.x + seen.vel.x * s.t, by = seen.pos.y + seen.vel.y * s.t;
           const gap = Math.hypot(s.pos.x - bx, s.pos.y - by) - strike;
@@ -1181,16 +1252,35 @@ export class RunBlocker implements Behavior {
       this.climbRead = { target, nextRead: sim.t + a.mind.decisionInterval, meet: best!.meet,
         through: Math.hypot(seen.vel.x, seen.vel.y), attainable: best!.gap <= 0, seenVel: { ...seen.vel } };
       this.climbAccess = null;
-      if (Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)>strike+a.profile.radius+target.profile.radius) {
+      this.departureAccess=null;
+      if (this.plan.departure || Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)>strike+a.profile.radius+target.profile.radius) {
         // A backer assignment does not remove the bodies between us. Read
         // first-level surfaces on the same beat; never inspect their private
         // assignments, engagement state or future controller requests.
         const surfaces = sim.agents.filter(b=>b!==a&&b!==target&&(isOL(b)
+          || b===this.plan.departure?.defender || b===this.plan.departure?.keeper
           ||sim.offAlign.spots[b.slot]?.inline||['DE_W','DE_S','DT_W','DT_S','NT'].includes(b.slot)))
           .map(b=>({key:b.idx,radius:b.profile.radius,seen:sim.see(a,b)}))
           .filter(p=>Math.hypot(p.seen.pos.x-a.pos.x,p.seen.pos.y-a.pos.y)<6);
         const original = { vel:best!.vel, facing:Math.atan2(best!.meet.y-a.pos.y,best!.meet.x-a.pos.x) };
-        this.climbAccess = chooseClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact);
+        if (this.plan.departure) {
+          const control=(body: Readonly<import('../../physics/kinematics.js').Body>)=>{
+            const base=body.support?availability(body.support,supportParams(body.profile),fatigueFactor(body.energy)):1;
+            return {vel:movingArrivalVelocity(body,best!.meet,seen.vel,a.profile.vmax,.1,Math.hypot(seen.vel.x,seen.vel.y),1,base),
+              facing:Math.atan2(best!.meet.y-body.pos.y,best!.meet.x-body.pos.x)};
+          };
+          this.departureAccess=assessClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact,true,control,previousAccess);
+          if (this.departureAccess.kind==='detour') this.climbAccess=this.departureAccess.plan;
+          const down=surfaces.find(s=>s.key===this.plan.departure!.defender.idx);
+          const keeper=surfaces.find(s=>s.key===this.plan.departure!.keeper.idx);
+          const route=down&&keeper&&climbRoute(a,this.plan.departure.defender,down.seen,
+            this.plan.departure.keeper,keeper.seen,seen,strike);
+          this.departureStrikeClear=!!route&&!route.exit;
+          if (this.departureStrikeClear && this.departureAccess.kind==='direct') {
+            delete this.plan.departure;
+            this.departureRead=null;
+          }
+        } else this.climbAccess = chooseClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact);
       }
       if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'climb-plan',
         chose: this.climbRead.attainable ? 'attainable meeting point' : 'closest approach (no attainable fit)',
@@ -1198,6 +1288,7 @@ export class RunBlocker implements Behavior {
         options: ['attainable meeting point', 'closest approach (no attainable fit)'],
         detail: `meet in ${best!.t.toFixed(2)} s, margin ${best!.gap.toFixed(2)} yd` });
     }
+    if (this.plan.departure && this.departureAccess?.kind==='unvalidated') return this.departureAccess.command;
     if (this.climbAccess) return climbAccessCommand(a,this.climbAccess,sim.t);
     const r = this.climbRead!;
     const capacity = a.body.support
@@ -1299,11 +1390,13 @@ export class RunBlocker implements Behavior {
         if (combination && !combination.released && replacement !== combination.defender) {
           abandonCombination(a, sim, combination, 'original target unavailable; finding work');
         }
+        const trace = sim.commandTraceFor?.(a), previousWork = trace?.blockingState(a);
         plan.target = target = replacement;
         if (acquiredEligibility) this.acquiredWork = { target: replacement };
         if (replacement !== previous) delete plan.contactFit;
         if (replacement && replacement !== previous && (!plan.combination || plan.combination.released))
           this.classifyWork(a, sim, replacement);
+        trace?.blockingChange(a, previousWork, 'available-target/find-work', sim);
       }
     }
     a.mind.setAimTarget('block-fit', target?.idx ?? null);
@@ -1319,42 +1412,45 @@ export class RunBlocker implements Behavior {
       ? { ...command, posture: .7 } : command;
   }
 
+  prepareCombination(a: Agent, sim: PlaySim, combo: Combination,
+    route: {exit: Vec2|null;flow:Vec2} | null, until: number): void {
+    this.preparation=route?.exit && combo.members[1]===a
+      ? {combination:combo,backer:combo.backer,at:sim.t,until,exit:{...route.exit},flow:{...route.flow}} : null;
+  }
+
   /** Keep the cue that authorized departure until the next ordinary read. */
   startDeparture(a: Agent, sim: PlaySim, defender: Agent, keeper: Agent, backer: Agent,
     picture: NonNullable<CombinationProposal['departure']>): void {
-    if (!picture.exit) return;
+    this.preparation=null;
     this.plan.departure = { defender, keeper, backer };
     this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
-      exit: { ...picture.exit }, flow: { ...picture.flow }, backer: structuredClone(picture.backer) };
+      exit: picture.exit?{ ...picture.exit }:null, flow: { ...picture.flow }, backer: structuredClone(picture.backer) };
+    this.climbRead=null;
+    this.climbAccess=null;
+    this.departureAccess=null;
+    this.departureStrikeClear=false;
   }
 
   private leaveCombination(a: Agent, sim: PlaySim): MoveCommand | null {
-    const departure = this.plan.departure!;
-    if (!this.departureRead || sim.t >= this.departureRead.nextRead) {
-      const down = sim.see(a, departure.defender), keeper = sim.see(a, departure.keeper);
-      const backer = sim.see(a, departure.backer);
-      // Once released, he needs access to the first possible backer strike,
-      // not a walk through that defender's center beyond useful contact.
-      const strike = a.profile.radius + departure.backer.profile.radius + .1
-        + a.player.measurables.armIn / 36 * .45;
-      const route = climbRoute(a, departure.defender, down, departure.keeper, keeper, backer, strike);
-      this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
-        exit: route?.exit ?? null, flow: { ...(route?.flow ?? down.vel) }, backer };
-      // Only a personally observed clear route ends the departure. A blocked
-      // first step waits for another read; it cannot tunnel through the old DL.
-      if (route && !route.exit) {
-        delete this.plan.departure;
-        this.departureRead = null;
-        return null;
-      }
+    const target=this.plan.departure!.backer;
+    const strike=a.profile.radius+target.profile.radius+.1+a.player.measurables.armIn/36*.45;
+    const approach=this.plannedClimb(a,sim,target,strike);
+    if (!this.plan.departure) return this.attack(a,sim,target,undefined,approach);
+    // A short unloaded preview being clear does not mean the old surface is
+    // already behind us. Keep this access responsibility through subsequent
+    // reads; only a clear near-strike corridor permits the normal hand/fit.
+    const seen=sim.see(a,target);
+    // Already within an acquired strike, fitting hands is not a demand to
+    // walk the torso through the backer's center. The ordinary physical
+    // strike still owns range, facing, budgets and whether hands exist.
+    const near=Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)<=strike;
+    if (!this.departureStrikeClear && !near) return approach;
+    const command=this.attack(a,sim,target,seen,approach);
+    if (a.engagement?.defender===target) {
+      delete this.plan.departure;
+      this.departureRead=null;
     }
-    const read = this.departureRead;
-    if (!read?.exit) return stand();
-    const dt = sim.t - read.at;
-    const goal = { x: read.exit.x + read.flow.x * dt,
-      y: read.exit.y + read.flow.y * dt + a.mind.placementError * (1 - .5 * a.r('runBlock')) };
-    return track(a, goal, read.flow, { speed: 1, gain: 3,
-      facing: Math.atan2(read.backer.pos.y-a.pos.y, read.backer.pos.x-a.pos.x) });
+    return command;
   }
 
   private readPull(a: Agent, sim: PlaySim, target: Agent): NonNullable<RunBlocker['pullRead']> {
@@ -1401,7 +1497,7 @@ export class RunBlocker implements Behavior {
     return this.pullRead;
   }
 
-  private attack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived): MoveCommand {
+  private attack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived, preparedClimb?: Intent | null): MoveCommand {
     const plan = this.plan;
     let seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
@@ -1526,7 +1622,7 @@ export class RunBlocker implements Behavior {
       return track(a, shoulder, { x: 0, y: 0 }, { speed: .95, gain: 3, facing });
     }
     if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
-      const fit = this.plannedClimb(a, sim, target, contact);
+      const fit = preparedClimb ?? this.plannedClimb(a, sim, target, contact);
       if (fit) {
         const bodyContact = a.profile.radius + target.profile.radius;
         // Interception supplies the approach, not permission to run through
@@ -1653,6 +1749,8 @@ export class RunBlocker implements Behavior {
       const d = sim.see(a,p.target), other = sim.see(a,q.target);
       const mine = Math.abs(d.pos.y-a.pos.y), theirs = Math.abs(other.pos.y-b.pos.y);
       if (Math.abs(other.pos.y-a.pos.y)+.35 < mine && Math.abs(d.pos.y-b.pos.y)+.35 < theirs) {
+        const traceA = sim.commandTraceFor?.(a), previousA = traceA?.blockingState(a);
+        const traceB = sim.commandTraceFor?.(b), previousB = traceB?.blockingState(b);
         // The recipient may not have updated yet. Save his installed solo
         // technique before exchanging and reclassifying either responsibility.
         b.behavior.rememberSoloWork();
@@ -1662,6 +1760,8 @@ export class RunBlocker implements Behavior {
         // exchanging neighbor's image or the defender's roster position.
         this.classifyWork(a, sim, p.target);
         b.behavior.classifyWork(b, sim, q.target);
+        traceA?.blockingChange(a, previousA, 'crossing-exchange', sim);
+        traceB?.blockingChange(b, previousB, 'crossing-exchange', sim);
         sim.event('block_exchange',a,b,'adjacent crossing threats');
         return;
       }
@@ -1678,9 +1778,11 @@ export class RunBlocker implements Behavior {
     if (!threat || threat === p.target) return;
     if (p.combination && !p.combination.released)
       abandonCombination(a, sim, p.combination, 'collecting penetration before climb');
+    const trace = sim.commandTraceFor?.(a), previousWork = trace?.blockingState(a);
     p.target = threat; p.kind = 'drive';
     delete p.contactFit;
     a.tags.add('block-collect');
+    trace?.blockingChange(a, previousWork, 'penetration-collection', sim);
     sim.event('block_collect',a,threat,'penetration before climb');
   }
 
@@ -1721,12 +1823,15 @@ export class RunBlocker implements Behavior {
       if (!best || threat.score < best.score) best = { d, score: threat.score };
     }
     if (!best) return;
+    const trace = sim.commandTraceFor?.(a), previousWork = trace?.blockingState(a);
     p.target = best.d;
     this.acquiredWork = { target: best.d };
     delete p.contactFit;
     this.climbRead = null;
     this.climbAccess = null;
+    this.departureAccess = null;
     this.classifyWork(a, sim, best.d);
+    trace?.blockingChange(a, previousWork, 'threat-reread', sim);
     sim.event('block_threat', a, best.d, 'first threat to the runner');
   }
 
@@ -1796,9 +1901,11 @@ function abandonCombination(observer: Agent, sim: PlaySim, combo: Combination, r
     if (!(member.behavior instanceof RunBlocker)) continue;
     const p = member.behavior.plan;
     if (p.combination !== combo) continue;
+    const trace = sim.commandTraceFor?.(member), previousWork = trace?.blockingState(member);
     p.combination = undefined;
     p.climbTo = undefined;
     if (p.kind === 'combo') p.kind = solo;
+    trace?.blockingChange(member, previousWork, `combination-abandoned: ${reason}`, sim);
   }
   sim.event('block_abandon', observer, combo.defender, reason);
 }
@@ -1986,6 +2093,8 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   read.nextRead = sim.t + observer.mind.decisionInterval;
   read.readAt = sim.t;
   read.proposal = null;
+  if (observer.behavior instanceof RunBlocker)
+    observer.behavior.prepareCombination(observer,sim,combo,null,read.nextRead);
   const candidate = keeperCandidate(observer, sim, combo, e);
   const surface = candidate && readJoinedSurface(observer, sim, candidate.keeper, e);
   if (!candidate || !surface) {
@@ -1994,12 +2103,32 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
     return;
   }
   if (read.secureSince < 0) read.secureSince = sim.t;
-  if (sim.t - read.secureSince < .15) return;
   const backer = sim.see(observer, combo.backer!);
   const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2
     || (FLOW_RELEASE && backerShows(observer, sim, backer));
   const runner = sim.slot('RB');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
+  const prepareRoute=climbRoute(observer,combo.defender,surface.down,candidate.keeper,surface.covered,backer);
+  const relative=sub(observer.pos,surface.down.pos);
+  const inward=(observer.vel.x-surface.down.vel.x)*relative.x+(observer.vel.y-surface.down.vel.y)*relative.y<0;
+  const needsFeet=!prepareRoute||!!prepareRoute.exit||inward;
+  const axis = axisOf(sim,e), lat = {x:-axis.y,y:axis.x};
+  const ownHalf = relative.x*lat.x+relative.y*lat.y;
+  const partnerHalf = (surface.covered.pos.x-surface.down.pos.x)*lat.x
+    +(surface.covered.pos.y-surface.down.pos.y)*lat.y;
+  const backerHalf = (backer.pos.x-surface.down.pos.x)*lat.x
+    +(backer.pos.y-surface.down.pos.y)*lat.y;
+  // The uncovered member may have to KEEP while his partner climbs. Do not
+  // start clearing away from the double for a backer on the partner's half.
+  // This changes preparation only; both members retain their release reads.
+  const acrossKeeper = ownHalf*partnerHalf<0 && ownHalf*backerHalf<0 && partnerHalf*backerHalf>0;
+  if (needsFeet && !acrossKeeper && backer.pose==='up' && observer.behavior instanceof RunBlocker) {
+    // Match the acquired surface while gathering the current contact half
+    // if a ray is clear but loaded momentum has not yet prepared the feet.
+    const preparation=prepareRoute?.exit?prepareRoute:{exit:{...observer.pos},flow:{...surface.down.vel}};
+    observer.behavior.prepareCombination(observer,sim,combo,preparation,read.nextRead);
+  }
+  if (sim.t - read.secureSince < .15) return;
   if (!filling && !arriving) return;
   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
   if (!route) { observer.tags.add('combo-held'); return; }
@@ -2162,6 +2291,8 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
 function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, combo: Combination, check: boolean): void {
   const { climber, keeper, phi, engagement: e } = choice;
   if (!(climber.behavior instanceof RunBlocker)) return;
+  const climberTrace = sim.commandTraceFor?.(climber), previousClimber = climberTrace?.blockingState(climber);
+  const keeperTrace = sim.commandTraceFor?.(keeper), previousKeeper = keeperTrace?.blockingState(keeper);
   const solo = combinationSoloKind(combo);
   if (keeper !== e.blocker) {
     // Transfer ownership of hands that already exist, not a fresh hand fight.
@@ -2193,5 +2324,7 @@ function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, comb
   climber.tags.add('combo-climb');
   if (check) climber.tags.add('combo-check-climb');
   keeper.tags.add('combo-stay');
+  climberTrace?.blockingChange(climber, previousClimber, 'combination-release', sim);
+  keeperTrace?.blockingChange(keeper, previousKeeper, 'combination-release', sim);
   sim.event('block_climb', climber, combo.backer, `${check ? 'check' : 'secured'} ${combo.defender.slot}; ${keeper.slot} stays`);
 }

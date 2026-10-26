@@ -195,7 +195,7 @@ describe('an acquired trajectory supports anticipation, not certified possession
     f.sim.ball = { kind: 'air', flight: { pos: { x: 52, y: 29, z: 2 }, vel: { x: 8, y: 3, z: -1 }, drag: 0 },
       thrower: f.sim.qb, target: f.z, releaseT: 1, releaseX: 35,
       intended: { x: 54, y: 32, z: 1 }, arrivalT: 2.4, deflected: false, throwaway: false };
-    f.sim.throwAt = 1;
+    f.sim.throwAt = 1; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
     f.sim.ballPath = [{ t: 2.2, x: 54, y: 32, z: 1.5 }, { t: 2.5, x: 56, y: 33, z: .1 }];
     f.a.tags.add('looking');
     return f;

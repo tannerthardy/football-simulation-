@@ -141,7 +141,7 @@ describe('installed low-hole rat', () => {
     f.sim.t = 2; f.sim.throwAt = .5;
     f.sim.ball = { kind: 'air', flight: { pos: { x: 45, y: 26, z: 2 }, vel: { x: 10, y: 0, z: -1 }, drag: 0 },
       thrower: f.sim.qb, target: f.r, releaseT: .5, releaseX: 35,
-      intended: { x: 46, y: 26, z: 1.2 }, arrivalT: 2.2, deflected: false, throwaway: false };
+      intended: { x: 46, y: 26, z: 1.2 }, arrivalT: 2.2, deflected: false, throwaway: false }; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
     f.sim.ballPath = [{ t: 2.2, x: 46, y: 26, z: 1.2 }];
     expect(sawThrow(f.a, f.sim, f.r)).toBe(true);
     const expected = playBall(f.a, f.sim, f.r);
