@@ -1522,6 +1522,28 @@ run plays with the assignment layer (`--telemetry full`):
   2. Trace one stuck double's lateral request against what it achieves, to
      separate the controller (what is asked, including SEAL_HOLD's kept
      offset) from contact physics (PHY-1, #297).
+
+  *Traced: it is the request.* Both members of every declared double were
+  traced from 0.3 s to the release decision, over engaged ticks only.
+  Velocities are play-side sideways, in yd/s:
+
+  | Scheme | member-ticks | decision | after the engagement stage | achieved |
+  |---|---|---|---|---|
+  | outside zone | 1,111 | 0.04 | 0.88 | 0.68 |
+  | inside zone | 1,481 | 0.00 | 0.67 | 0.47 |
+  | wide zone | 1,524 | 0.01 | 0.78 | 0.64 |
+  | split zone | 377 | 0.03 | 1.46 | 0.49 |
+
+  - The engagement stage (`stepRunRep`, `engagement.ts`) rewrites about
+    98% of engaged ticks.
+  - The body achieves 75–85% of what is asked on outside, inside and wide
+    zone, so contact physics is not the main limit there.
+  - The double asks to carry the down man sideways at under 1 yd/s.
+
+  The lever is the engaged zone double's sideways drive request in
+  `stepRunRep`. That function holds the SEAL_HOLD and `runContactRead`
+  lines owned elsewhere, so the change needs routing to its owner before
+  anyone edits it.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
