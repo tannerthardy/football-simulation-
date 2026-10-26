@@ -14,29 +14,15 @@ The research isolates two traction-budget defects, an acquired-protection/runner
 
 ## Evidence access
 
-The reports and next-work briefs are available in this PR. **Remote raw evidence is not yet published.** GitHub accepted the documentation push and PR creation, but release uploads returned `HTTP 401: Bad credentials` for both the full archive and a tiny checksum file. The created empty draft release was removed. Do not treat a planned release URL as an available artifact.
+**The complete evidence is now available through private Google Drive downloads.** See [download links and reassembly instructions](EVIDENCE_DOWNLOAD.md). Sign in to Tanner Hardy's connected Google account, or use its authenticated Drive tools; the files were not made public.
 
-The verified packages remain in the originating workspace and are downloadable from its Codex conversation:
+The original681,429,310-byte archive is split into seven parts to fit transfer limits. It includes all Phase II raw experiments, saved initial states, source/patches, per-job classifications, film, failed/adverse evidence, and the complete original Phase I ZIP. Each uploaded part was fetched back and SHA256-checked; the reassembled downloaded bytes match the original archive hash:
 
-| Local artifact | Purpose | SHA256 |
-|---|---|---|
-| `/workspace/gridiron-run-game-phase2-full.zip` | Full Phase II raw data/scripts/inputs/patches/source, all53 job rows, adverse evidence, native film, and the complete Phase I ZIP; about650 MiB | `b841f54a1c8c14e3552223a37893a00e10a5a392cb11397ec481215393788947` |
-| `/workspace/gridiron-run-game-phase2-review.zip` | Small reading copy; not the full evidence | `10f946f85fedb1db24afa6fcecd7a6ea12977519ec4acbb8b13f39a0db1e2c10` |
-| `/workspace/gridiron-run-game-research.zip` | Complete original Phase I research package | Embedded byte-for-byte in the full archive |
+`b841f54a1c8c14e3552223a37893a00e10a5a392cb11397ec481215393788947`
 
-Agents sharing that workspace can read `/workspace/run-game-phase2/` directly. An agent in another environment must obtain the full archive from the originating conversation or an authorized artifact host before claiming to reproduce the experiments. Obtaining and verifying this evidence is the first prerequisite for new experimental work; reading this PR alone does not satisfy it. An authorized publisher can retry a research prerelease when authentication to GitHub's upload endpoint is available, then replace this status with verified asset URLs and checksums.
+The archive contains787 files, including786 manifest-listed hashes. Its original integrity/source-reconstruction checks remain unchanged. A smaller reading ZIP is linked in the download guide; it does not replace raw evidence. Original constructor artifacts require Node22.23.3.
 
-After obtaining the archive, extract into a fresh directory and run:
-
-```bash
-sha256sum gridiron-run-game-phase2-full.zip
-unzip gridiron-run-game-phase2-full.zip
-python run-game-phase2/VERIFY_PACKAGE.py
-```
-
-The archive contains787 files;786 manifest-listed hashes and archive CRCs were checked. Its accepted-source snapshot reconstructs ten tested variants with matching source hashes. The original216-file Phase I manifest was independently verified. Frozen archive contents were not rewritten to include subsequent publication plans.
-
-Native film is `run-game-phase2/figures/native-film.html` after extraction. It is self-contained. Constructor artifacts require pinned Node22.23.3; consult the reproduction guide before running scripts that use absolute workspace paths.
+GitHub's release-upload endpoint still returned HTTP401, so these are Drive links rather than unavailable release URLs. Local originals remain at `/workspace/run-game-phase2/` and `/workspace/gridiron-run-game-phase2-full.zip`. The frozen archive was not rewritten to include publication plans or subsequent reviews.
 
 ## Review and ownership
 
