@@ -64,9 +64,38 @@ not a replay of the ones below. Seed 7 / seed 8:
 | Accepted penalties / team-game | 3.96 | 3.67 | 4.77–6.53 (nflverse 2022) |
 
 YAC per catch rose from 6.87 / 7.19 to 8.03 / 7.83, and seed 7's old value
-sits below its new 90% interval (7.13–8.83). It is a place to look, not yet
-tied to a change; #267's pursuit planning (TKL-2, held reduced budget and
-breakaway effort) is the first suspect to check on matched catches.
+sits below its new 90% interval (7.13–8.83). **No engine change in the window
+raises YAC; the move is sampling between two sets of diverged games** (Defense
+diagnosis, 2026-10-25, `scripts/diag/yac/`):
+
+- **Matched pass plays.** 2,154 scrimmage pass setups were captured from 24
+  ordinary games at `211db9cc` and replayed unchanged at `ccdb69cb`, at
+  `211db9cc` and at each engine merge between them (#250, #252, #251, #254,
+  #259, #258, #267, #271).
+  - Completions are identical (no flips).
+  - Separation at the catch (3.36 yd), catch depth (8.18 yd), catch to first
+    contact (0.90 s) and first-contact tackles (87%) are unchanged.
+  - YAC per catch goes 7.75 → 7.61 (paired −0.14, SE 0.10).
+  - Six of the eight merges leave every pass play's metrics identical; #258
+    changes one play's row (completion and YAC unchanged). Only #267 changes
+    pass plays: 453 of them, with changed catches split 163 up / 181 down.
+- **Whole games.** 24 games per arm, same seeds, at both endpoints: YAC
+  7.62 (90% 6.97–8.32) vs 7.74 (7.00–8.49). Defender energy at the snap, a
+  path matched setups can't see, is unchanged (median 0.966 both).
+- **Scale of chance.** An independent 12-game sample's YAC varies by about
+  0.6 yd (one game ranges 3.7–12.6), because long catch-and-runs dominate the
+  mean. The scorecard's two snapshots are independent samples once games
+  diverge: seed 7 moved 1.16, seed 8 0.64, both seeds 0.90, about 1.5 SD of
+  the difference. Reading an old point against the new sample's interval
+  ignores the old sample's own spread.
+- **Strongest adverse case** (#267, setup `10:0:124`, Gun Trips Slant-Flat vs
+  Cover 1). YAC 35.1 → 65.3, a touchdown instead of an FS tackle at 6.65 s.
+  The first changed command is the FS's pursuit, 0.2 s after the catch (frame
+  2.95 s, facing 4.20 → 4.21). It's a small pursuit difference compounding
+  over a long chase, as common in the other direction (largest: −44.0).
+
+Not a bug, and no separation change for Coverage. G3's YAC excess (about 7.7
+vs NFL 4.5–5.9) is the standing level, not a new regression.
 
 ### Earlier: develop at `ccdb69cb`
 
