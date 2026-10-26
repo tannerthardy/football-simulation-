@@ -41,7 +41,7 @@ function accept(f:ReturnType<typeof stage>){expect(showsBlock(f.a,f.sim,f.r,f.cu
 function flight(f:ReturnType<typeof stage>,recognized=false){
  const release=recognized?.01:f.sim.t;f.sim.throwAt=release;
  f.sim.ball={kind:'air',flight:{pos:{x:44,y:f.a.pos.y,z:2},vel:{x:20,y:0,z:-1},drag:0},thrower:f.sim.qb,target:f.r,
-  releaseT:release,releaseX:36,intended:{x:46,y:f.a.pos.y,z:1.2},arrivalT:f.sim.t+.1,deflected:false,throwaway:false};
+  releaseT:release,releaseX:36,intended:{x:46,y:f.a.pos.y,z:1.2},arrivalT:f.sim.t+.1,deflected:false,throwaway:false}; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
  f.sim.ballPath=[{t:f.sim.t+.1,x:f.a.pos.x-.2,y:f.a.pos.y,z:1.2}];
 }
 

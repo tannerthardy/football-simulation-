@@ -108,7 +108,7 @@ describe('Quarters owns the acquired #2 flat and its possible wheel',()=>{
     const f=stage();f.flat();f.sim.throwAt=.01;
     f.sim.ball={kind:'air',flight:{pos:{x:43,y:f.a.pos.y,z:2},vel:{x:20,y:0,z:-1},drag:0},
       thrower:f.sim.qb,target:f.r,releaseT:.01,releaseX:35,intended:{x:f.a.pos.x-.2,y:f.a.pos.y,z:1.2},
-      arrivalT:f.sim.t+.1,deflected:false,throwaway:false};
+      arrivalT:f.sim.t+.1,deflected:false,throwaway:false}; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
     f.sim.ballPath=[{t:f.sim.t+.1,x:f.a.pos.x-.2,y:f.a.pos.y,z:1.2}];
     expect(sawThrow(f.a,f.sim,f.r)).toBe(true);
     const expected=playBall(f.a,f.sim,f.r);expect(f.update(.65)).toEqual(expected);expect(f.a.tags.has('onBall')).toBe(true);

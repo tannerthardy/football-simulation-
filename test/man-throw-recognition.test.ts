@@ -39,7 +39,7 @@ function release(sim: PlaySim, r: PlaySim['offense'][number]) {
   sim.throwAt = sim.t;
   sim.ball = { kind: 'air', flight: { pos: { x: 40, y: 26, z: 2 }, vel: { x: 20, y: 0, z: 2 }, drag: 0 },
     thrower: sim.qb, target: r, releaseT: sim.t, releaseX: 35, intended: { x: 55, y: 33, z: 1.2 },
-    arrivalT: sim.t + .8, deflected: false, throwaway: false };
+    arrivalT: sim.t + .8, deflected: false, throwaway: false }; sim.throwSight.stageRelease(sim, sim.throwAt);
   sim.ballPath = [{ t: sim.t + .8, x: 55, y: 33, z: 1.2 }];
 }
 
@@ -96,7 +96,7 @@ describe('man technique before acquired throw recognition', () => {
 
   it('switches to the unchanged attainable ball contest after recognition', () => {
     const s = stage(true, { overTop: true });
-    s.sim.throwAt = 1;
+    s.sim.throwAt = 1; s.sim.throwSight.stageRelease(s.sim, s.sim.throwAt);
     s.d.tags.add('looking');
     s.sim.ballPath = [{ t: 2.1, x: 53.8, y: 33.5, z: 1.2 }, { t: 2.8, x: 55, y: 33, z: 1.2 }];
     expect(sawThrow(s.d, s.sim, s.r)).toBe(true);

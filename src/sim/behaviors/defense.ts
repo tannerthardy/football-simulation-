@@ -893,9 +893,7 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
   // route. A defender sprinting directly away still cannot see the release.
   const zoneEyes = a.behavior instanceof ZoneCoverage || (a.behavior as { zoneEyes?: boolean }).zoneEyes === true;
   const facingQB = Math.cos(a.body.facing - qbAngle) > (zoneEyes ? -0.2 : 0.1);
-  // Eyes on the QB see the release; a trailing man defender reads it off
-  // the receiver's eyes and hands a beat later.
-  const react = a.mind.observationDelay(a.profile.reactionTime * (facingQB ? 1 - 0.4 * a.r('anticipation') : 1.25)) + (man ? 0.05 : 0);
+  const react = a.mind.observationDelay(a.profile.reactionTime * (1 - 0.4 * a.r('anticipation'))) + (man ? 0.05 : 0);
   // A zone defender with his eyes on the quarterback keys him, spot or
   // match: the shoulders turning and the arm coming through give the throw
   // away before the ball is out, so his reaction starts at the throwing
@@ -908,7 +906,26 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
     a.tags.add('readArm');
     return true;
   }
-  return sim.t - sim.throwAt >= react;
+  // Otherwise he reacts from the first moment the ball was in his view (the
+  // release itself if he was watching), or, trailing his man, from the
+  // receiver turning his head and hands back for it. Not from the release
+  // time he never saw.
+  const seen = sim.throwSight.seenAt(a);
+  const cue = man ? readsHandsAt(a, sim, man, seen) : seen;
+  return cue !== undefined && sim.t - cue >= react;
+}
+
+/** A man defender in phase with his receiver sees him look back for the
+ * ball: the receiver's acquired body facing turned well off his own running
+ * line. The first such picture is remembered for this flight. */
+function readsHandsAt(a: Agent, sim: PlaySim, man: Agent, seen: number | undefined): number | undefined {
+  const cue = sim.see(a, man);
+  const speed = Math.hypot(cue.vel.x, cue.vel.y);
+  const lookingBack = cue.facing !== undefined && speed >= 2
+    && Math.hypot(cue.pos.x - a.pos.x, cue.pos.y - a.pos.y) <= 3
+    && Math.cos(cue.facing - Math.atan2(cue.vel.y, cue.vel.x)) <= -0.2;
+  const hands = lookingBack ? sim.throwSight.sawHands(a, sim.t) : sim.throwSight.handsAt(a);
+  return hands === undefined ? seen : seen === undefined ? hands : Math.min(seen, hands);
 }
 
 /** His own recorded body kept the quarterback in view (cosine of the angle

@@ -32,7 +32,7 @@ function stage(side = 1, runnerSpeed = 8) {
   sim.t = 2; sim.throwAt = 1;
   sim.ball = { kind: 'air', flight: { pos: { x: 49, y: CENTER_Y, z: 2 }, vel: { x: 20, y: side, z: -1 }, drag: 0 },
     thrower: sim.qb, target: r, releaseT: 1, releaseX: 35,
-    intended: { x: 51.2, y: CENTER_Y + side * .15, z: 1.5 }, arrivalT: 2.15, deflected: false, throwaway: false };
+    intended: { x: 51.2, y: CENTER_Y + side * .15, z: 1.5 }, arrivalT: 2.15, deflected: false, throwaway: false }; sim.throwSight.stageRelease(sim, sim.throwAt);
   sim.ballPath = [{ t: 2.15, x: 51.2, y: CENTER_Y + side * .15, z: 1.5 }];
   // Head-turn availability is held fixed; this checks the motion request.
   d.tags.add('looking');
