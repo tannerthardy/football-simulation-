@@ -329,8 +329,8 @@ problem), resolved.
 | [ACT-1](#act-1) | Aims outlive the target they were made for | G10 | medium | on (#251) |
 | [PHY-1](#phy-1) | Contact and hand physics limits | F2, G5 | medium | open |
 | [PHY-2](#phy-2) | Movement detail that's costly or unproven | F2 | low | open |
-| [FAT-1](#fat-1) | Starters never rotate: DL, edge and RB play every snap | — | medium | in work (coach rotation, PR #298) |
-| [FAT-2](#fat-2) | Fatigue too small to matter: linemen go full power every snap | — | medium | in work (two pools, PR #298) |
+| [FAT-1](#fat-1) | Starters never rotate: DL, edge and RB play every snap | — | medium | partly fixed (#298); visible-fade cue open |
+| [FAT-2](#fat-2) | Fatigue too small to matter: linemen go full power every snap | — | medium | fixed (#298); rush-fade slope noisy under rotation |
 | [FAT-3](#fat-3) | No fade within a long engaged rep | — | low–medium | open (waits on Move 1, `world.ts`) |
 | [FAT-4](#fat-4) | Fatigue doesn't feed tempo, pacing or coaching | G7 | low | open |
 | [RAT-1](#rat-1) | Ratings and capability mappings uncalibrated | — | medium | open |
@@ -2501,13 +2501,16 @@ seeds 7–10; write-up in the project files, `fatigue/fatigue-audit-2026-10-25.m
   on the field, visible fade), with depth quality deciding who goes in.
   Defensive substitutions are limited when the offense doesn't substitute
   (no-huddle; FAT-4).
-- **In work (PR #298):** the coach counts each player's snaps, forgets them
+- **Fixed in #298 (merged 2026-10-26):** the coach counts each player's snaps, forgets them
   over about 10 minutes off the field, and spells a player once that count
   passes a stamina-based tolerance, weighted by position (DT and edge most,
   OL and QB never). Changing a unit inside a series costs extra, more so
   against hurry-up. It never reads energy. Seeds 7–14: DT1/2/3 0.60/0.53/0.31,
-  EDGE1/2 0.71/0.65, RB1 0.77, TE1 0.74, OL 1.00. Visible fade is not used
-  yet; streaks run shorter than the NFL's because sim drives are short.
+  EDGE1/2 0.71/0.65, RB1 0.77, TE1 0.74, OL 1.00. Streaks run shorter than
+  the NFL's (5+ snaps: 7% against 14%), partly because sim drives are short.
+- **Still open:** the coach doesn't read visible fade (a slower get-off or a
+  lineman giving ground late in reps). He needs observable evidence, not
+  energy. The no-huddle limit on defensive subs is FAT-4.
 
 <a id="fat-2"></a>
 ### FAT-2: Fatigue too small to matter: linemen go full power every snap
@@ -2532,14 +2535,17 @@ seeds 7–10; write-up in the project files, `fatigue/fatigue-audit-2026-10-25.m
 - **Open:** a fast pool (phosphocreatine-like, refills in tens of seconds)
   and a slow game pool, judged with the same rush-rep operator
   (`scripts/diag/fatigue-probe.ts`).
-- **In work (PR #298):** fast pool drains 3× under load with curve
+- **Fixed in #298 (merged 2026-10-26):** fast pool drains 3× under load with curve
   `1 − 0.3 × deficit^2.5`; refill `0.006 + 0.010 × stamina` per s toward a slow
   reserve that loses 1% of each play's spend and gets half back at halftime.
   Seeds 7–14 with rotation: speed 2.5–4.0 s fades −0.053 yd/s per consecutive
   snap (NFL −0.039); peak acceleration +0.039 (NFL −0.017, wrong sign, noisy:
   only 149 reps at 5+ in a row); peak speed −0.03 (NFL flat). Without
   rotation: −0.023, −0.019, −0.013. Lowest energy at a snap 0.27. A fresh 40
-  is unchanged.
+  is unchanged. Matched-snap check: no measurable pass effect; the
+  matched-pair pass delta was catch-roll variance (see the #298 PR body).
+- **Still open:** re-measure the fade slopes on more games once rotation
+  settles; the long-streak bins are thin.
 
 <a id="fat-3"></a>
 ### FAT-3: No fade within a long engaged rep
@@ -2554,6 +2560,9 @@ seeds 7–10; write-up in the project files, `fatigue/fatigue-audit-2026-10-25.m
   only through `world.ts`.
 - **Where:** `src/physics/kinematics.ts` `enduranceFactor`, `spendEnergy`;
   `src/physics/world.ts` (`spendEnergy` call, arm cap).
+- **After #298:** a 5 s all-out push now spends 0.4–0.6 of the fast pool,
+  but the flatter curve keeps the output loss small until the pool is low,
+  so the fade inside one rep is still unmeasured and probably small.
 - **Open:** waits on the leg force–velocity work in `world.ts` (Move 1).
   Whether tracking can isolate a fade within a rep (long-hold pass-rush reps,
   depth given up by the OL over time).
@@ -2565,7 +2574,12 @@ seeds 7–10; write-up in the project files, `fatigue/fatigue-audit-2026-10-25.m
   Players never pace themselves.
 - **Cause:** *confirmed:* tempo depends only on the clock situation
   (`hurry` / `milking`); no effort choices are tied to fatigue.
-- **Open:** depends on FAT-1 and FAT-2. Pacing belongs with the
+- **After #298:** a defense facing a hurry-up pays double to substitute
+  inside a series; nothing else ties tempo to fatigue. Against a no-huddle
+  offense that doesn't substitute, the defense gets no matching time and
+  should be limited to quick subs at its own risk (a procedure limit, not
+  only a cost). Offenses should be able to choose tempo to tire a front.
+- **Open:** pacing belongs with the
   decision-layer research.
 
 ## Players and ratings
