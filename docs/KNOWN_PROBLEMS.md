@@ -1118,6 +1118,77 @@ run plays with the assignment layer (`--telemetry full`):
     - 1 reaches the backer without engaging.
 
     The next stage is release timing and access, not installation.
+
+  **Move 4 step 1 (2026-10-26): stop rule hit, planner expansion stops.**
+  Treatment 2 of the climb planner did not pass. Release timing is not the
+  first wrong stage. What is missing is a measured reference and lineman
+  capability, not another planner rule.
+  - *Sets.* The declared games 7–8 set (SHA `f3648920…`, captured on
+    `b559fdc5`) and a fresh set declared before any treatment: the first 10
+    zone runs of games 9 and 10 (`ZONE_SEEDS=9,10`, SHA `3ec2e3db…`,
+    captured on #290's step-0 head `2c863cd`). Backers worked before the
+    runner on that head: 12/36 and 9/26.
+  - *Trace.* Most unworked climbers release with 0.8–2.2 s to spare and the
+    backer 4–6 yd away. They then spend most of that time departing at about
+    1 yd/s:
+    - the gathered access check brakes (`unvalidated`) or arcs them backward
+      around the down man (detour goals at 130–180° from the backer);
+    - they are often still in body contact with him.
+  - *Probes, all reverted* (patches in project files `zone-climbs/`):
+    - Release on the climber's own clock (his sprint time from his current
+      motion plus one read, against the runner's time to the backer's
+      level). Releases come 0.25–1.2 s earlier and no keeper is lost, but
+      12 → 11 and 9 → 11.
+    - Departure never brakes or backs up: 12 → 12 and 9 → 10.
+    - Both together: 13 and 10, but keepers holding drop 30 → 27.
+  - *Ceiling (cheats, not candidates).* Strike range reached before the
+    runner, out of 31 and 20 released doubles:
+
+    | Arm | Games 7–8 | Games 9–10 |
+    |---|---|---|
+    | Real controller | 10/31 | 9/20 |
+    | Run at the backer's true live position at full speed from the real release | 10/31 | 9/20 |
+    | Lead his true velocity (up to 1.2 s) | 14/31 | 12/20 |
+    | Lead, released 1 s earlier | 19/31 | 14/20 |
+    | Lead, 1 s earlier, lineman burst about 2x | 20/31 | 15/20 |
+
+    No honest planner rule gets near the omniscient arms. Backers 4–6 yd away
+    flow at 2–5 yd/s. A 142 kg guard from a stand covers 2.4 yd in his first
+    second, and `GAME_BURST` (2.2) was fitted on WR/TE/RB/CB/S/LB tracking,
+    not linemen.
+  - *Missing:*
+    1. An NFL reference for climbs: the double's release time, the
+       climber's speed off the double, and the share of backers contacted
+       before the runner reaches them (BDB tracking). Without it, 12/36 has
+       no target.
+    2. Lineman in-game acceleration checked against tracking. This is
+       physics; it pairs with Move 1's force-velocity work.
+
+    Revisit a lead-aim and release-clock treatment only after both.
+
+  **NFL side measured (partial, 2026-10-26).** Source: BDB 2025 weeks 1–2,
+  1,394 runs, 693 of them zone. The operator is
+  `scripts/mechanics/climb_reference.py`, the same on the sim's common-format
+  export. The sim run on develop is not done yet.
+  - *Lineman starts:* pullers from the snap reach 2.3 yd/s at 0.5 s and
+    3.6 yd/s at 1.0 s, covering 2.2 yd in the first second (p50, n=598).
+    Our free-running 142 kg guard reaches 2.5 yd/s, then 4.2 yd/s, and covers
+    2.4 yd. So lineman burst is not the gap, and missing item 2 above is
+    probably not the cause. The same operator still has to run on the sim
+    export to confirm.
+  - *Combo climbers* (n=997):
+    - release at p50 2.1 s (p25–p75 1.6–2.6 s);
+    - the backer is only 2.45 yd away at release (p25–p75 1.55–3.54);
+    - they depart at 3.1 yd/s over the first 0.5 s;
+    - 58% touch their backer before the carrier reaches him, at p50 0.8 s
+      earlier.
+  - *Uncovered climbers* (n=287): the backer is 5.4 yd away at the snap, and
+    66% touch him first.
+  - *Reading:* NFL doubles hold until the backer is about 2.5 yd away; ours
+    release with him 4–6 yd away. The likely lever is the double staying on
+    until the backer comes to it, and the climber leaving fast. Release isn't
+    too late, and the body isn't too slow. Next: the same operator on a
+    develop export (`npm run mech:sim` writes the input).
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
