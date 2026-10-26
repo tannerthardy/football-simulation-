@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { CENTER_Y, OPP_GOAL_X } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
-import { Game } from '../src/game/game.js';
+import { fastRefillRate, Game, RESERVE_SHARE } from '../src/game/game.js';
 import { generateTeam } from '../src/league/team.js';
-import { r01, type Player } from '../src/players/types.js';
+import type { Player } from '../src/players/types.js';
 import type { PlaySim } from '../src/sim/playsim.js';
 import type { PlayResult } from '../src/sim/types.js';
 
@@ -30,14 +30,23 @@ function persistentEnergy(game: Game): Map<string, number> {
   return (game as unknown as { energy: Map<string, number> }).energy;
 }
 
-function recovered(energy: number, player: Player, seconds: number): number {
-  return 1 - (1 - energy) * Math.exp(-seconds * (.012 + .022 * r01(player.ratings.stamina)));
+function persistentReserve(game: Game): Map<string, number> {
+  return (game as unknown as { reserve: Map<string, number> }).reserve;
 }
+
+/** The fast pool after the snap: the reserve loses its share of what the
+ * play spent, and only the rest after the play refills toward it. */
+function recovered(p: Participant, rest: number): number {
+  const reserve = p.reserve - RESERVE_SHARE * Math.max(0, p.before - p.energy);
+  return p.energy + (reserve - p.energy) * (1 - Math.exp(-rest * fastRefillRate(p.player)));
+}
+
+interface Participant { player: Player; energy: number; before: number; reserve: number }
 
 describe('completed-snap energy persistence', () => {
   it.each([true, false])('saves both teams after a two-point try (successful: %s)', (good) => {
     const kinds: string[] = [];
-    const participants: Array<{ player: Player; energy: number }> = [];
+    const participants: Participant[] = [];
     const appeared = new Set<string>();
     const game = new Game(home, away, { seed: 5, hooks: {
       preSnapFoul: () => null,
@@ -46,8 +55,9 @@ describe('completed-snap energy persistence', () => {
         kinds.push(kind);
         for (const [index, agent] of sim.agents.entries()) {
           appeared.add(agent.player.id);
+          const before = persistentEnergy(game).get(agent.player.id)!, reserve = persistentReserve(game).get(agent.player.id)!;
           agent.body.energy = kind === 'two-point' ? .35 + .007 * index : .75;
-          if (kind === 'two-point') participants.push({ player: agent.player, energy: agent.body.energy });
+          if (kind === 'two-point') participants.push({ player: agent.player, energy: agent.body.energy, before, reserve });
         }
         return scripted(sim, kind === 'scrimmage' || good);
       },
@@ -63,9 +73,9 @@ describe('completed-snap energy persistence', () => {
     expect(game.state.over).toBe(true);
     expect(game.result().log.filter(play => play.kind === 'two')).toHaveLength(1);
     expect(participants).toHaveLength(22);
-    for (const { player, energy } of participants) {
+    for (const p of participants) {
       // Keep the existing TD recovery interval; this correction adds no rest.
-      expect(persistentEnergy(game).get(player.id)).toBeCloseTo(recovered(energy, player, duration + 60), 12);
+      expect(persistentEnergy(game).get(p.player.id)).toBeCloseTo(recovered(p, 60), 12);
     }
     const bench = home.roster.find(player => !appeared.has(player.id))!;
     // A player outside both snaps retains full energy.
@@ -73,15 +83,16 @@ describe('completed-snap energy persistence', () => {
   });
 
   it('preserves ordinary-scrimmage writeback and recovery', () => {
-    const participants: Array<{ player: Player; energy: number }> = [];
+    const participants: Participant[] = [];
     const kinds: string[] = [];
     const game = new Game(home, away, { seed: 5, hooks: {
       preSnapFoul: () => null,
       playResult: (sim, kind) => {
         kinds.push(kind);
         for (const [index, agent] of sim.agents.entries()) {
+          const before = persistentEnergy(game).get(agent.player.id)!, reserve = persistentReserve(game).get(agent.player.id)!;
           agent.body.energy = .35 + .007 * index;
-          participants.push({ player: agent.player, energy: agent.body.energy });
+          participants.push({ player: agent.player, energy: agent.body.energy, before, reserve });
         }
         return scripted(sim);
       },
@@ -92,9 +103,10 @@ describe('completed-snap energy persistence', () => {
 
     expect(kinds).toEqual(['scrimmage']);
     expect(participants).toHaveLength(22);
-    for (const { player, energy } of participants) {
-      // An incompletion has zero clock runoff but the existing 25-second rest.
-      expect(persistentEnergy(game).get(player.id)).toBeCloseTo(recovered(energy, player, duration + 25), 12);
+    for (const p of participants) {
+      // An incompletion has zero clock runoff, but players still get the
+      // ordinary 30 seconds between snaps.
+      expect(persistentEnergy(game).get(p.player.id)).toBeCloseTo(recovered(p, 30), 12);
     }
   });
 });

@@ -10,7 +10,7 @@ import { Rng } from '../core/rng.js';
 import { CENTER_Y, HASH_LEFT_Y, HASH_RIGHT_Y, OWN_GOAL_X, describeYardline } from '../core/field.js';
 import { clamp } from '../core/vec.js';
 import { r01, type Player } from '../players/types.js';
-import { alignStyle, pickDefense, pickOffense, specialist, type Team } from '../league/team.js';
+import { alignStyle, decayWorkload, pickDefense, pickOffense, specialist, SUBSTITUTION_COST, type Availability, type Team } from '../league/team.js';
 import { PlaySim, type PlaySetup } from '../sim/playsim.js';
 import { CoverageScouting } from '../sim/qbmind.js';
 import { ScoutingReport } from '../sim/recognition.js';
@@ -136,6 +136,18 @@ export interface GameResult {
   disqualifiedPlayers?: string[];
 }
 
+/** Share of each play's fast-pool spend that also comes out of the slow
+ * game reserve: a few percent over a full game for a starting lineman. */
+export const RESERVE_SHARE = 0.01;
+
+/** Share of the slow reserve's loss that halftime gives back. */
+export const HALFTIME_RESERVE_REFILL = 0.5;
+
+/** Fast-pool refill rate per second of rest; conditioning (stamina) speeds it. */
+export function fastRefillRate(p: Player): number {
+  return 0.006 + 0.010 * r01(p.ratings.stamina);
+}
+
 export interface GameOptions {
   seed?: number;
   /** Explicit contact-law experiment; omitted uses production center hands. */
@@ -220,7 +232,27 @@ export class Game {
   private readonly dc: Record<Side, DefensiveCoordinator>;
   private readonly box = new BoxScore();
   private readonly log: PlayLog[] = [];
+  /** Fast energy pool at the next snap, by player id. */
   private readonly energy = new Map<string, number>();
+  /** Slow game reserve by player id: the ceiling the fast pool refills to. */
+  private readonly reserve = new Map<string, number>();
+  /** Who was on the field for the last snap and how long it lasted: the
+   * play itself is work for them, not rest. */
+  private justPlayed: { ids: Set<string>; seconds: number } | null = null;
+  /** The staff's count of each player's recent snaps (rotation). */
+  private readonly workload = new Map<string, number>();
+  /** Both units on the last scrimmage snap, while the series goes on. */
+  private lastUnits: { offense: string; off: Set<string>; def: Set<string> } | null = null;
+
+  /** What each staff knows when it sends a unit out: its players' recent
+   * work and, inside a series, who was just on the field. A defense facing
+   * a hurry-up offense rarely gets to match a substitution. */
+  private availability(side: 'O' | 'D'): Availability {
+    const last = this.lastUnits?.offense === this.off.abbr ? this.lastUnits : null;
+    const hurried = side === 'D' && this.hurry();
+    return { workload: this.workload, lastSnap: last ? (side === 'O' ? last.off : last.def) : undefined,
+      substitutionCost: SUBSTITUTION_COST * (hurried ? 2 : 1) };
+  }
   private readonly disqualified = new Set<string>();
   private readonly qualifyingConduct = new Map<string, number>();
   private readonly pendingCarryover: Array<{ target: 'try' | 'kickoff'; against: Side; yards: number;
@@ -259,7 +291,7 @@ export class Game {
       score: { home: 0, away: 0 }, timeouts: { home: 3, away: 3 }, twoMinWarned: false, openingReceiver: receiver,
       driveStartYard: 25, inRedZone: false, otPossessions: 0, otFirst: receiver, over: false,
     };
-    for (const t of [home, away]) for (const p of t.roster) this.energy.set(p.id, 1);
+    for (const t of [home, away]) for (const p of t.roster) { this.energy.set(p.id, 1); this.reserve.set(p.id, 1); }
   }
 
   private get off(): Team {
@@ -341,13 +373,15 @@ export class Game {
       s.clock = 900;
       s.timeouts = { home: 3, away: 3 };
       s.twoMinWarned = false;
-      this.recoverAll(600);
+      this.recoverAll(600, HALFTIME_RESERVE_REFILL);
       this.doKickoff(s.openingReceiver);
       return;
     }
     if (s.quarter < 4) {
       s.quarter++;
       s.clock = 900;
+      // The break between quarters (about two minutes on a broadcast).
+      this.recoverAll(120);
       s.twoMinWarned = false;
       if (this.pendingKickoff !== undefined) {
         const pending = this.pendingKickoff; this.pendingKickoff = undefined;
@@ -364,7 +398,7 @@ export class Game {
       s.otPossessions = 0;
       const recv: Side = this.coin.chance(0.5) ? 'home' : 'away';
       s.otFirst = recv;
-      this.recoverAll(180);
+      this.recoverAll(180, HALFTIME_RESERVE_REFILL / 3);
       this.doKickoff(other(recv));
       return;
     }
@@ -500,14 +534,40 @@ export class Game {
 
   // ---------------------------------------------------------------- fatigue
 
-  private recoverAll(seconds: number): void {
+  /**
+   * Rest. The fast pool refills toward the slow reserve, exponentially with
+   * time off (phosphocreatine-like: most of it within a minute or two). The
+   * reserve itself comes back only at long breaks, and only partly
+   * (`reserveRefill`, a share of what it has lost). The last snap's players
+   * get no rest credit for the play they worked.
+   */
+  private recoverAll(seconds: number, reserveRefill = 0): void {
+    const played = this.justPlayed;
+    this.justPlayed = null;
     for (const t of [this.teams.home, this.teams.away]) {
       for (const p of t.roster) {
-        const e = this.energy.get(p.id) ?? 1;
-        const rate = 0.012 + 0.022 * r01(p.ratings.stamina);
-        this.energy.set(p.id, e + (1 - e) * (1 - Math.exp(-seconds * rate)));
+        const res = this.reserve.get(p.id) ?? 1;
+        const reserve = res + (1 - res) * reserveRefill;
+        this.reserve.set(p.id, reserve);
+        const e = Math.min(this.energy.get(p.id) ?? 1, reserve);
+        const rest = Math.max(0, seconds - (played?.ids.has(p.id) ? played.seconds : 0));
+        this.energy.set(p.id, e + (reserve - e) * (1 - Math.exp(-rest * fastRefillRate(p))));
+        const load = this.workload.get(p.id);
+        if (load) this.workload.set(p.id, decayWorkload(load, rest));
       }
     }
+  }
+
+  /** Write back both pools of everyone who played the snap: the body's
+   * fast pool, and the reserve less its share of what the play spent. */
+  private writeBackEnergy(sim: PlaySim, seconds: number): void {
+    for (const a of sim.agents) {
+      const id = a.player.id, spent = Math.max(0, (this.energy.get(id) ?? 1) - a.body.energy);
+      this.energy.set(id, a.body.energy);
+      this.reserve.set(id, Math.max(0, (this.reserve.get(id) ?? 1) - RESERVE_SHARE * spent));
+      this.workload.set(id, (this.workload.get(id) ?? 0) + 1);
+    }
+    this.justPlayed = { ids: new Set(sim.agents.map((a) => a.player.id)), seconds };
   }
 
   // ---------------------------------------------------------------- plays
@@ -593,9 +653,9 @@ export class Game {
     const offTeam = this.off;
     const defTeam = this.def;
     const offCall = this.oc[offSide].call(sit, defTeam);
-    const offPlayers = pickOffense(offTeam, offCall.formation.personnel, { energy: this.energy });
+    const offPlayers = pickOffense(offTeam, offCall.formation.personnel, this.availability('O'));
     const { call: defCall, prefs } = this.dc[defSide].call(sit, offCall.formation.personnel, offTeam, offPlayers, offCall.formation);
-    const defPlayers = pickDefense(defTeam, defCall.personnel, { energy: this.energy });
+    const defPlayers = pickDefense(defTeam, defCall.personnel, this.availability('D'));
 
     // Explicit historical scenario seams precede the native snap inspection.
     const foul = this.preSnapFoul();
@@ -642,8 +702,10 @@ export class Game {
     // The QB may have checked out of the call at the line.
     const ranCall = sim.offCall;
     const r = this.opts.hooks?.playResult?.(sim, 'scrimmage') ?? sim.run();
-    // Fatigue: write back energy of players who were on the field.
-    for (const a of sim.agents) this.energy.set(a.player.id, a.body.energy);
+    // Fatigue: write back both pools of players who were on the field.
+    this.writeBackEnergy(sim, r.duration);
+    this.lastUnits = { offense: offTeam.abbr, off: new Set(sim.agents.filter((a) => a.team === 'O').map((a) => a.player.id)),
+      def: new Set(sim.agents.filter((a) => a.team === 'D').map((a) => a.player.id)) };
     for (const a of sim.agents) this.box.line(a.player, a.team === 'O' ? offTeam.abbr : defTeam.abbr).snaps++;
     // Both sides learn from the snap they just saw.
     this.scouting[defSide].observe(sim.snapContext, ranCall.kind === 'pass');
@@ -844,7 +906,10 @@ export class Game {
     const warnedBetween = this.runClock(this.lastTimeoutUsed ? 0 : between);
     this.clockAfter = { index: this.playIndex, quarter: s.quarter, running: clockRunning && !this.lastTimeoutUsed && !warnedBetween };
     this.lastTimeoutUsed = false;
-    this.recoverAll(r.duration + Math.max(between, 25));
+    // Rest is the time between snaps whether or not the game clock runs: an
+    // offense huddles after an incompletion too (NFL median snap to snap
+    // inside a drive about 42 s, BDB 2025).
+    this.recoverAll(r.duration + Math.max(between, this.hurry() ? 15 : 30));
   }
 
   private enforcedYards(option: LivePenaltyOption, index: number): number {
@@ -1101,9 +1166,9 @@ export class Game {
     for (;;) {
       const sit = this.situation();
       const offCall = this.oc[scorer].call({ ...sit, down: 3, distance: s.distance }, this.def);
-      const offPlayers = pickOffense(this.off, offCall.formation.personnel, { energy: this.energy });
+      const offPlayers = pickOffense(this.off, offCall.formation.personnel, this.availability('O'));
       const { call: defCall, prefs } = this.dc[other(scorer)].call(sit, offCall.formation.personnel, this.off, offPlayers, offCall.formation);
-      const defPlayers = pickDefense(this.def, defCall.personnel, { energy: this.energy });
+      const defPlayers = pickDefense(this.def, defCall.personnel, this.availability('D'));
       const los = OWN_GOAL_X + s.yardline;
       const setup: PlaySetup = { offense: offPlayers, defense: defPlayers, offCall, defCall,
         los, ballY: CENTER_Y, firstDownX: 110, seed: this.snaps.nextU32(),
@@ -1113,7 +1178,7 @@ export class Game {
       this.opts.hooks?.playSetup?.(setup, { index: this.playIndex, kind: 'two-point', offense: this.off.abbr, state: s });
       const sim = new PlaySim(setup);
       const r = this.opts.hooks?.playResult?.(sim, 'two-point') ?? sim.run();
-      for (const a of sim.agents) this.energy.set(a.player.id, a.body.energy);
+      this.writeBackEnergy(sim, r.duration);
       const good = r.score?.kind === 'TD' && r.score.team === 'O';
       const entry = this.entry('two', `two-point try (${offCall.label}): ${good ? 'GOOD' : 'FAILED'}`, 0, offCall.label, defCall.label);
       entry.foulRecords = r.foulRecords; entry.ruleLimitations = r.ruleLimitations;
