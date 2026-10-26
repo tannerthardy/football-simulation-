@@ -3,7 +3,7 @@ import type { Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import type { Intent } from '../physics/world.js';
 import type { Agent, Behavior, TeamSide } from './agent.js';
-import { PassProtector } from './behaviors/blocking.js';
+import { PassProtector, RunBlocker } from './behaviors/blocking.js';
 import { facingTechnique } from './coverage/orientation.js';
 import { movementObjective, type MovementObjective } from './movement-objective.js';
 import type { Perceived } from './perception.js';
@@ -48,6 +48,22 @@ function behaviorSnapshot(b: Behavior, a: Agent, sim: PlaySim) {
 }
 type BehaviorSnapshot = ReturnType<typeof behaviorSnapshot>;
 
+export interface BlockingResponsibility {
+  target: ActorIdentity | null;
+  workKind: string;
+}
+
+export interface BlockingResponsibilityChange {
+  actor: ActorIdentity;
+  /** Native decision/event clock; the containing step retains endpointTime. */
+  t: number;
+  phase: TracePhase;
+  previous: BlockingResponsibility;
+  current: BlockingResponsibility;
+  /** The actual mutation path, not an inferred block outcome. */
+  reason: string;
+}
+
 function stateSnapshot(a: Agent, sim: PlaySim) {
   const body = a.body, support = body.support, e = a.engagement, bond = sim.bond;
   return { behavior: behaviorSnapshot(a.behavior, a, sim),
@@ -78,6 +94,7 @@ export interface CommandTraceStep {
   endpoint?: ReturnType<typeof stateSnapshot> & { phase: string; ballKind: string };
   observations: Array<{ phase: TracePhase; target: ActorIdentity; requestedAt: number; age: number | null; sampledAt: number | null }>;
   pursuit?: Array<{ phase: TracePhase; target: ActorIdentity; data: PursuitPredictionRecord }>;
+  blockingChanges?: BlockingResponsibilityChange[];
 }
 
 /** Numbers within 1e-9 are omitted from the rewrite list; raw/final retain full precision. */
@@ -113,6 +130,21 @@ export class CommandTrace {
   }
 
   at(phase: TracePhase): void { this.phase = phase; }
+
+  /** Copy only existing plan fields. Callers never acquire another picture. */
+  blockingState(a: Agent): BlockingResponsibility | undefined {
+    if (!this.pending || a !== this.selected || !(a.behavior instanceof RunBlocker)) return;
+    return { target: a.behavior.plan.target ? identity(a.behavior.plan.target) : null,
+      workKind: a.behavior.plan.kind };
+  }
+
+  blockingChange(a: Agent, previous: BlockingResponsibility | undefined, reason: string, sim: PlaySim): void {
+    const current = this.blockingState(a);
+    if (!previous || !current || (previous.target?.index === current.target?.index
+      && previous.workKind === current.workKind)) return;
+    (this.pending!.blockingChanges ??= []).push({ actor: { ...this.actor }, t: sim.t,
+      phase: this.phase, previous, current, reason });
+  }
 
   isCollecting(a: Agent): boolean { return !!this.pending && a === this.selected; }
 
