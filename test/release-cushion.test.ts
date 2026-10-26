@@ -53,7 +53,7 @@ function flight(f: ReturnType<typeof stage>, recognized: boolean) {
   f.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: f.a.pos.y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
     thrower: f.sim.qb, target: f.r, releaseT: f.sim.throwAt, releaseX: 35,
     intended: { x: f.a.pos.x - .2, y: f.a.pos.y, z: 1.2 }, arrivalT: f.sim.t + .1,
-    deflected: false, throwaway: false };
+    deflected: false, throwaway: false }; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
   f.sim.ballPath = [{ t: f.sim.t + .1, x: f.a.pos.x - .2, y: f.a.pos.y, z: 1.2 }];
 }
 

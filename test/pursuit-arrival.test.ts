@@ -10,7 +10,8 @@ beforeAll(() => {
   const { saved } = captureOrdinaryPlay({ seed: 7, play: 2, minPlay: 1, maxSteps: 2 });
   // Full constructor replay equality is checked inside the capture, including
   // result/events/replay. We do not assert that the bad pursuit stays bad.
-  native = freezeNative(saved, 'SS', 'RB', [4.25, 4.30]);
+  // Clocks late in the safety's pursuit of the back (the play now ends at 6.75 s).
+  native = freezeNative(saved, 'SS', 'RB', [4.0, 4.05]);
 }, 30_000);
 
 describe('frozen native pursuit arrival experiment', () => {
@@ -32,18 +33,32 @@ describe('frozen native pursuit arrival experiment', () => {
     const c = native[1], before = arrivalJson(c);
     const goals = objectives(c);
     expect(goals).toHaveLength(2);
+    // The estimator records samples only up to its first feasible intercept;
+    // a candidate beyond it is evaluated offline from the frozen forecast.
+    // Which candidates fall inside depends on the recorded play, so each is
+    // checked by its own source, and at least one must be a recorded sample.
+    const samples = c.intercept!.prediction.samples!;
+    expect(goals.some(o => o.pointSource === 'recorded-estimator-sample')).toBe(true);
     for (const o of goals) {
-      const sample = c.intercept!.prediction.samples!.find(s => Math.abs(s.t - o.horizon) < 1e-7)!;
-      expect(o.point).toStrictEqual(sample.point);
-      expect(o.horizon).toBe(sample.t);
-      expect(o.pointSource).toBe('recorded-estimator-sample');
+      const sample = samples.find(s => Math.abs(s.t - o.horizon) < 1e-7);
+      if (sample) {
+        expect(o.point).toStrictEqual(sample.point);
+        expect(o.horizon).toBe(sample.t);
+        expect(o.pointSource).toBe('recorded-estimator-sample');
+      } else {
+        expect(o.horizon).toBeGreaterThan(samples.at(-1)!.t);
+        expect(o.point).toStrictEqual(forecast(c.intercept!, o.horizon));
+        expect(o.pointSource).toBe('offline-evaluation-of-frozen-forecast');
+      }
     }
     const changed = parseArrivalJson(before) as ArrivalCase;
     for (const r of changed.native) r.targetAfter.pos = { x: -1e4, y: 1e4 };
     expect(objectives(changed)).toStrictEqual(goals);
     expect(forecast(changed.intercept!, 2.8)).toStrictEqual(forecast(c.intercept!, 2.8));
-    const baseline = response(c, goals[1], 'seek-candidate');
-    const truthChanged = response(changed, goals[1], 'seek-candidate');
+    // Truth independence needs recorded truth at the goal: the latest goal the play still covers.
+    const goal = goals.filter(o => c.clock + o.horizon <= c.native.at(-1)!.end + 1e-7).at(-1)!;
+    const baseline = response(c, goal, 'seek-candidate');
+    const truthChanged = response(changed, goal, 'seek-candidate');
     expect(truthChanged.rows).toStrictEqual(baseline.rows);
     expect(truthChanged.metrics.runnerForecastError).not.toBe(baseline.metrics.runnerForecastError);
     expect(arrivalJson(c)).toBe(before);

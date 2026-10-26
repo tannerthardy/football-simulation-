@@ -67,6 +67,51 @@ Each step separates:
   made directly through other perception APIs and earlier cached pictures
   are not reconstructed. Later execution reads do not explain an earlier
   decision.
+- `blockingChanges`: actual changes to the selected run blocker's stored
+  responsibility, including replacements that emit no football event. Each
+  row copies actor identity, native decision time `t`, pipeline phase, previous
+  and current target/work kind, and the mutation path's reason. This includes
+  changes made by a neighboring blocker or combination resolution before the
+  selected actor's update. Stable target/kind pairs produce no row; a null
+  target remains null. Recording does not add `block_threat` or any other
+  native event, acquire another picture, or classify block success.
+- `climbAccess`: each departure access search a released combination
+  climber actually ran, holding the values the search itself computed:
+  - per surface: the current gap, its clearance bound and the original
+    route's swept gap;
+  - per candidate arc: sign and goal, whether it failed the field, support
+    or clearance check, its per-surface swept gaps, and the surfaces that
+    failed;
+  - the braking fallback: both incursions and the per-surface braking gaps.
+
+  No extra preview, picture or controller run is made for the record.
+  `scripts/diag/climb-access-trace.ts` prints it for one saved play.
+
+- `carrier`: the selected ball carrier's own decision, as the evaluator
+  already computed it. An `evaluate` row lists every seen threat's arrival
+  evidence (picture, pose, age) with each part of the time added to his
+  reach estimate: scenario `parking`, observed `recovery`, and
+  `blockerBonus`, the 0.25 s or 0.7 s "held up" credit for a perceived
+  blocker within touching distance. Then the score of each candidate heading,
+  the selected lane and the aim's score. A `design-exit` row gives the
+  designed track's stay/exit decision with its operands: best score, aim
+  score, patience margin, threshold and whether the aim was blocked. Nothing
+  is evaluated for the trace, and nothing is computed unless one is selected.
+
+Blocking reasons name existing paths: available-target/find-work, crossing
+exchange, penetration collection, threat reread, and combination release or
+abandonment. Work-kind changes are retained even when the target is unchanged.
+Multiple changes within a step remain ordered and chained, rather than being
+collapsed to an endpoint guess.
+
+On the frozen Phase II inputs replayed at develop `a5b024b9`, S9-P062 C changes
+DT_S/combo to LB_W/climb at decision time 1.05; that state is visible in the
+1.10 endpoint. His LB_W→LB_M reread is at 1.25, visible at endpoint 1.30.
+S10-P009 LT's LB_M→SS replacement at 1.65, visible at 1.70, has no
+`block_threat` event and is recorded as available-target/find-work. The first
+C/LB_M load in S9-P062 is separately sampled at endpoint 2.25, after the
+2.20–2.25 physics interval. Those clocks describe different stages; load is
+not another responsibility transition or proof of a useful block.
 
 A null target with `targetSource: 'not-exposed'` means the controller does
 not expose a stored target. In particular, the recorder never guesses a
