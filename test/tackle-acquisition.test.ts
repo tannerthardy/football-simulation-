@@ -87,6 +87,31 @@ describe('tackle contact admission and retained span', () => {
       expect(step).toHaveBeenCalledOnce();
     });
 
+  it.each(['lunge', 'dive'] as const)('a %s launch aims from the tackler\'s own picture, not the hidden true carrier', mode => {
+    const launch = (hidden: boolean) => {
+      const f = stage('QB'), { sim, c, d, reach } = f;
+      // Lunge: just past standing reach. Dive: where only a layout reaches.
+      c.body.pos.x = d.pos.x + reach + (mode === 'lunge' ? .005 : .45);
+      d.body.vel.x = 6; c.body.vel.x = 6.2;
+      f.command = { vel: { x: 6, y: 0 }, facing: 0 }; sim.intents[d.idx] = f.command;
+      d.behavior = { kind: 'fixture-pursuit', update: () => f.command };
+      c.behavior = { kind: 'carrier', update: () => ({ vel: { x: 6.2, y: 0 }, facing: 0 }) };
+      seeMoving(f); // freeze his picture
+      if (hidden) { // move the true carrier after the picture was taken
+        c.body.pos.y += .06; c.body.pos.x += .02; c.body.vel = { x: 6.6, y: .4 };
+      }
+      const step = vi.spyOn(sim, 'lungeAt'), dive = vi.spyOn(sim, 'diveAt');
+      vi.spyOn(sim.rng, 'chance').mockReturnValue(false);
+      tryTackles(sim);
+      const calls = { step: step.mock.calls.map(c => c[1]), dive: dive.mock.calls.map(c => c[1]) };
+      vi.restoreAllMocks();
+      return calls;
+    };
+    const seen = launch(false), moved = launch(true);
+    expect(seen[mode === 'lunge' ? 'step' : 'dive']).toHaveLength(1);
+    expect(moved).toEqual(seen);
+  });
+
   it('a step that cannot reach the hip is not taken: no lunge, no miss, no draw', () => {
     const f = stage('Z'), { sim, c, d, reach } = f;
     c.body.pos.x = d.pos.x + reach + .35; d.body.vel.x = 5; c.body.vel.x = 6.4;
