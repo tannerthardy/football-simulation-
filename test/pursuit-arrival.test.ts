@@ -1,17 +1,26 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { createHash } from 'node:crypto';
 import { captureOrdinaryPlay } from '../scripts/diag/capture-game-play.js';
-import { arrivalJson, compareBundle, forecast, freezeNative, frozenControls, necessaryBound, objectives,
+import { arrivalJson, compareBundle, findNativePursuit, forecast, freezeNative, frozenControls, necessaryBound, objectives,
   parseArrivalJson, response, restoreBody, type ArrivalCase } from '../scripts/diag/pursuit-arrival.js';
 import { movementPanel } from '../scripts/diag/pursuit-arrival-export.js';
 
 let native: ArrivalCase[];
+let saved: ReturnType<typeof captureOrdinaryPlay>['saved'];
 beforeAll(() => {
-  const { saved } = captureOrdinaryPlay({ seed: 7, play: 2, minPlay: 1, maxSteps: 2 });
-  // Full constructor replay equality is checked inside the capture, including
-  // result/events/replay. We do not assert that the bad pursuit stays bad.
-  // Clocks late in the safety's pursuit of the back (the play now ends at 6.75 s).
-  native = freezeNative(saved, 'SS', 'RB', [4.0, 4.05]);
+  // The first completed pass of an ordinary game. Full constructor replay
+  // equality is checked inside the capture, including result/events/replay.
+  saved = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 1, maxSteps: 12 }).saved;
+}, 30_000);
+beforeAll(() => {
+  // The first defender who makes exact native intercept decisions on that
+  // receiver as a lone, settled body. Choosing the case from the play, rather
+  // than pinning a play, actor and clock, keeps these contracts from depending
+  // on incidental outcomes (a catch that a changed dice phase or body turns
+  // incomplete). Capture and choice each retain the 30 s setup limit. These
+  // clocks nominate pursuit decisions, not an expected football ending.
+  const pick = findNativePursuit(saved);
+  native = freezeNative(saved, pick.actorSlot, pick.targetSlot, pick.clocks);
 }, 30_000);
 
 describe('frozen native pursuit arrival experiment', () => {
@@ -30,7 +39,18 @@ describe('frozen native pursuit arrival experiment', () => {
   });
 
   it('uses recorded candidates verbatim and keeps frozen forecast independent of diagnostic future truth', () => {
-    const c = native[1], before = arrivalJson(c);
+    const source = native[1];
+    // This is a provenance/independence contract, not a required intercept at
+    // 1.8 or 2.8 s. The native estimator exits at its first feasible sample,
+    // which can move with incidental RNG phase. Always exercise both sources:
+    // one actually sampled point and one point just beyond the sampled range.
+    const withBothSources = (c: ArrivalCase): ArrivalCase => {
+      const samples = c.intercept!.prediction.samples!;
+      const positive = samples.find(s => s.t > 0);
+      if (!positive) throw new Error('Arrival fixture needs a positive recorded horizon');
+      return { ...c, candidateHorizons: [positive.t, samples.at(-1)!.t + .1] };
+    };
+    const c = withBothSources(source), before = arrivalJson(c);
     const goals = objectives(c);
     expect(goals).toHaveLength(2);
     // The estimator records samples only up to its first feasible intercept;
@@ -50,6 +70,22 @@ describe('frozen native pursuit arrival experiment', () => {
         expect(o.point).toStrictEqual(forecast(c.intercept!, o.horizon));
         expect(o.pointSource).toBe('offline-evaluation-of-frozen-forecast');
       }
+    }
+    expect(goals.map(o => o.pointSource)).toEqual([
+      'recorded-estimator-sample', 'offline-evaluation-of-frozen-forecast',
+    ]);
+    // Opposing early/late exits (1.3/2.1 s) must exercise the same exact-source
+    // contract. Fixed 1.8/2.8 s goals miss every sample in the early control.
+    for (const control of frozenControls(source).slice(0, 2)) {
+      const input = withBothSources(control), samples = input.intercept!.prediction.samples!;
+      const [recorded, offline] = objectives(input);
+      const positive = samples.find(s => s.t > 0)!;
+      expect(recorded.point).toStrictEqual(positive.point);
+      expect(recorded.horizon).toBe(positive.t);
+      expect(recorded.pointSource).toBe('recorded-estimator-sample');
+      expect(offline.horizon).toBeGreaterThan(samples.at(-1)!.t);
+      expect(offline.point).toStrictEqual(forecast(input.intercept!, offline.horizon));
+      expect(offline.pointSource).toBe('offline-evaluation-of-frozen-forecast');
     }
     const changed = parseArrivalJson(before) as ArrivalCase;
     for (const r of changed.native) r.targetAfter.pos = { x: -1e4, y: 1e4 };

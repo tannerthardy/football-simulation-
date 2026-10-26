@@ -131,6 +131,68 @@ export function freezeNative(saved: SavedPlay, actorSlot: string, targetSlot: st
   });
 }
 
+/**
+ * Choose a native pursuit case from a saved completed pass instead of pinning
+ * one actor and clock: the catcher is the target, and the first defender (in
+ * defensive order, then by clock) whose exact intercept decisions on two
+ * consecutive ticks freeze cleanly and replay exactly as a lone body, with
+ * each recorded intercept (plus `follow` seconds) inside the play, is returned. A changed engine can move the play; this
+ * keeps the experiment on a real pursuit of the actual ball carrier.
+ */
+export function findNativePursuit(saved: SavedPlay, follow = .1, settle = 1): { actorSlot: string; targetSlot: string; clocks: number[] } {
+  const probe = new PlaySim(restoreSetup(saved.setup)), result = saved.original.result;
+  const receiver = probe.offense.find(a => a.player.id === result.stats.receiver);
+  if (!result.stats.completed || !receiver) throw new Error('Pursuit case needs a completed pass');
+  const end = result.duration, dt = probe.dt;
+  for (const d of probe.defense) {
+    const sim = new PlaySim(restoreSetup(saved.setup));
+    const trace = sim.recordCommands({ actor: { playerId: d.player.id }, from: 0, to: end });
+    // World state a lone body does not carry (smoothed contact lift, held
+    // joints) must have settled: no contact or joint in the last `settle` s.
+    const actor = sim.defense.find(a => a.player.id === d.player.id)!;
+    let touched = -Infinity;
+    const step = sim.world.step.bind(sim.world);
+    sim.world.step = (commands, h) => {
+      const report = step(commands, h);
+      if (report.contacts.some(c => c.i === actor.idx || c.j === actor.idx)
+        || sim.world.joints.some(j => j.a === actor.body || j.b === actor.body)) touched = sim.t;
+      return report;
+    };
+    const lastTouch = new Map<number, number>();
+    const tick = sim.tick.bind(sim);
+    sim.tick = () => { lastTouch.set(Math.round(sim.t / dt), touched); tick(); };
+    sim.run();
+    let attempts = 0;
+    // A real chase: an intercept decision on the receiver whose recorded point
+    // is ahead of him (a positive sampled horizon) and inside the play.
+    const decided = (s: CommandTraceStep) => s.pursuit?.some(r => {
+      if (r.phase !== 'decision' || r.data.kind !== 'intercept' || r.target.playerId !== receiver.player.id) return false;
+      const p = r.data.prediction;
+      return p.t >= 2 * dt && !!p.samples?.some(q => q.t > 0) && s.stepStart + p.t + follow <= end + 1e-7;
+    });
+    for (const [k, s] of trace.steps.entries()) {
+      const next = trace.steps[k + 1];
+      if (sim.catchAt < 0 || s.stepStart < sim.catchAt || !next) continue;
+      if (Math.abs(next.stepStart - s.stepStart - dt) > 1e-7 || !decided(s) || !decided(next)) continue;
+      if (s.stepStart - (lastTouch.get(Math.round(s.stepStart / dt)) ?? -Infinity) < settle) continue;
+      if (++attempts > 2) break;
+      const clocks = [s.stepStart, next.stepStart];
+      try {
+        // A free pursuer: the offline experiment steps his body alone, so its
+        // first step and held-command preview must reproduce the native ones.
+        const free = (x: ArrivalCase) => {
+          if (!x.intercept || x.native[0]?.contactCount !== 0 || x.native[0]?.jointCount !== 0) return false;
+          if (x.clock + x.intercept.prediction.t + follow > x.native.at(-1)!.end + 1e-7) return false;
+          const held = response(x, objectives(x)[0], 'held-original');
+          return held.firstNativeStepDifference === null && held.heldCommandPreviewDifference === null;
+        };
+        if (freezeNative(saved, d.slot, receiver.slot, clocks).every(free)) return { actorSlot: d.slot, targetSlot: receiver.slot, clocks };
+      } catch { /* not an exact native decision boundary; try the next */ }
+    }
+  }
+  throw new Error('No native pursuit of the receiver freezes on this play');
+}
+
 export function restoreBody(c: Pick<ArrivalCase, 'bodyV8' | 'bodySha256'>): Body {
   const bytes = Buffer.from(c.bodyV8, 'base64');
   if (bytesHash(bytes) !== c.bodySha256) throw new Error('Frozen body checksum mismatch');
@@ -318,7 +380,10 @@ export function compareBundle(bundle: ArrivalBundle) {
       || c.source.execution.node !== execution.node)
       throw new Error(`Incompatible movement source/settings/Node for ${c.id}`);
   }
-  const pair = bundle.cases.filter(c => c.source.kind === 'native' && c.source.playId === 'G1-P002' && c.actor.slot === 'SS' && c.intercept);
+  // The nominated decisions: the first native actor's intercepts on its play.
+  const nominated = bundle.cases.find(c => c.source.kind === 'native' && c.intercept);
+  const pair = bundle.cases.filter(c => c.source.kind === 'native' && c.intercept && nominated
+    && c.source.playId === nominated.source.playId && c.actor.playerId === nominated.actor.playerId);
   // Cross both *recorded* requests/points from the two nominated decisions.
   // A later decision's cue at the earlier body clock is diagnostic only,
   // explicitly not an available-information controller intervention.
