@@ -273,7 +273,7 @@ problem), resolved.
 | [CALL-2](#call-2) | Defensive calls read raw ratings that aren't on one scale | G7 | medium | on |
 | [CALL-3](#call-3) | Pressure rate ignored the coverage shell | G7 | low | on |
 | [CALL-4](#call-4) | The play-caller reads the roster, not the players on the field | G7 | low–medium | open |
-| [INFO-1](#info-1) | Players use information they couldn't have seen | G10 | high | in work (#258 landed; #260 needs rework) |
+| [INFO-1](#info-1) | Players use information they couldn't have seen | G10 | high | in work (#258, #274, #280, #282 landed; jet-sweep give cue open) |
 | [ACT-1](#act-1) | Aims outlive the target they were made for | G10 | medium | on (#251) |
 | [PHY-1](#phy-1) | Contact and hand physics limits | F2, G5 | medium | open |
 | [PHY-2](#phy-2) | Movement detail that's costly or unproven | F2 | low | open |
@@ -1897,6 +1897,31 @@ From the outside audit (`audit`):
   TKL-5).
 - **Run recognition uses the global handoff time** (`recognition.ts`), whether
   or not the defender could see the mesh.
+  *Landed* (#280): run/pass ball cues come from the defender's pictures (a
+  seen throw, a backfield player seen holding it at or behind the line, the
+  QB seen carrying past it); a seen give latches until a throw (#282).
+- **Move 1 landed (2026-10-25):** #274 replaced #260 with an acquired
+  scramble cue (`qbRunning`: the pictured QB carrying toward the line faster
+  than 2.5 yd/s near the pocket front, or 1.5 yd outside his tackles moving
+  downfield; man and deep defenders stay on their men until he crosses).
+  #282 recomposed #256: engaged run contacts key the holder in their own
+  pictures (the blocker on them is felt, not read for the ball), and an edge
+  plays a cutback he saw develop inside him without waiting for the runner to
+  clear the line. Matched arms: all within noise. Guard debt left: the
+  `sawThrow` reaction gate on `throwAt` (`defense.ts`, with COV-6), the
+  blockers' own pass-pro lifecycle in `engagement.ts` (offense side), and the
+  `run-fits.ts` legacy fallback.
+- **Open: no give cue for a non-backfield carrier** (jet sweep, end-around).
+  The give cue watches only backfield spots, so a handoff to a motion
+  receiver reaches defenders through the QB's empty hands and the runner's
+  later picture. Watching every receiver for the ball breaks the attention
+  boundary (a defender queries only his keys). Design question: which
+  defenders key a jet motion man through the mesh, and at what cost to their
+  other reads. Related: COV-4.
+- **Open: the scramble choice is binary.** Tanner (2026-10-25): an
+  underneath defender's call between coming up on a scrambling QB and staying
+  on his man is a feel read with a real price either way; make it a
+  cost-bearing choice when the decision-layer work starts.
 
 These break the model rule that players act on acquired, delayed information.
 
