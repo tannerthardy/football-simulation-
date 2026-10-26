@@ -4,13 +4,14 @@
 // Each row holds the chooser's inputs (pursuer state, consumed picture, forecast,
 // request, horizon, radius) and the sampled slack curve, so jumps can be re-run
 // offline by substitution (attribute.ts). Restaging is checked against the untraced run.
-//   node --import tsx scripts/diag/aim-jump/scan.ts setups.bin out.jsonl [maxPlays]
+//   node --import tsx scripts/diag/aim-jump/scan.ts setups.bin out.jsonl [maxPlays] [runs]   (runs: designed runs only)
 import { readFileSync, writeFileSync } from 'node:fs';
 import { deserialize } from 'node:v8';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { restoreSetup } from '../saved-play.js';
-const [setupsPath, out, maxPlays] = process.argv.slice(2);
-const plays = (deserialize(readFileSync(setupsPath)) as any[]).slice(0, Number(maxPlays ?? 1e9));
+const [setupsPath, out, maxPlays, only] = process.argv.slice(2);
+const plays = (deserialize(readFileSync(setupsPath)) as any[]).slice(0, Number(maxPlays) || 1e9)
+  .filter(p => only !== 'runs' || restoreSetup(p.setup).offCall.kind === 'run');
 const lines: string[] = [];
 const profiles: Record<string, any> = {};
 let mismatched = 0, traced = 0;
@@ -56,6 +57,9 @@ for (const p of plays) {
         gather: ch ? r3(ch.gather) : null, horizon: ch?.requestedHorizon ?? null,
         final: s.final ? v3(s.final.vel) : null, owner: s.decision?.owner?.controller ?? null,
         ownerKind: s.decision?.owner?.kind ?? null, evaluated: s.decision?.evaluated ?? null,
+        los: sim.los, dir: sim.attackDir('O'), job: s.decision?.owner?.job ?? null,
+        // The raw command's movement objective (a fixed landmark or a moving target), when it carries one.
+        objective: s.decision?.raw.objective ? { kind: s.decision.raw.objective.kind, point: v3(s.decision.raw.objective.point) } : null,
         // Every stage's requested velocity, in pipeline order: the chase's own requests (when it ran),
         // the controller's raw command, then each post-decision rewrite, then the final command.
         stages: [...(ch?.requests ?? []).map((q: any) => [q.stage, v3(q.command.vel)]),
