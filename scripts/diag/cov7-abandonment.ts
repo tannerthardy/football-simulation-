@@ -270,7 +270,7 @@ function main() {
   for (const item of pair) {
     writeFileSync(`${out}/${item.summary.kind}.setup.bin`, item.bytes);
     writeFileSync(`${out}/${item.summary.kind}.json`, arrivalJson({ identity,
-      recipe, ...item.summary, baseline: item.baseline, alternative: item.alternative }));
+      recipe, ...item.summary, baseline: item.baseline, alternative: item.alternative, squeezeArm: item.squeeze }));
   }
   writeFileSync(`${out}/summary.json`, arrivalJson({ identity, recipe, pair: pair.map(p => p.summary) }));
   // Reuse the existing viewer/packing. Clock/score labels below are display
