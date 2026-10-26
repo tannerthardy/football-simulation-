@@ -783,6 +783,25 @@ Carried over from the issue register; each was measured on an older develop.
     matched replay. A real defender sprints when he is the last chance,
     from what he can see (runner free, nobody ahead of him). Defense, G1;
     judge on matched breakaways and a short-gain control.
+- **Effort read tried** (draft, [evidence](reviews/pursuit-effort-read.md),
+  2026-10-25): sprint when he can still get there and is the last man or one
+  of the two best placed, pace otherwise. It turns P002 into a 25-yd tackle,
+  but on matched games it doesn't lower yardage (develop −0.20 ± 0.19 yd/play;
+  on #273 +0.64 ± 0.26), and even every pursuer at full effort adds yards on
+  #273 (+0.33 ± 0.22). Effort isn't the lever; arrivals don't convert. Matched
+  pass plays also clear #251, #258 and #267 of the YAC rise. **Next:** the
+  arrival (gather braking against a fast runner, the jumping intercept), then
+  re-test effort on top.
+- **Re-steer cause named** ([evidence](reviews/pursuit-resteer-cause.md),
+  2026-10-26): two more aim attempts failed (intercept lifetime, heading
+  damping). On the same operator as NFL, pursuers at or above the runner's
+  speed re-steer at the NFL rate beyond 3 yd. Slower pursuers re-steer 2–3×
+  the NFL rate at every distance (44% vs 15% inside 3 yd), which is about 76%
+  of the excess. 58% of their re-steers come from the close gather: the
+  near-hip arrival asks a slower body to match the runner's across speed, so
+  the line of sight rotates every step (the slow hip chase). **Next
+  (proposed, not built):** bypass to the near hip only when his attainable
+  speed covers the runner's across speed; otherwise keep the intercept line.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
