@@ -5,15 +5,31 @@
 // At the named step it re-runs the chooser offline with the previous step's inputs and
 // one group of new inputs at a time, to show which input alone moves the choice.
 //   node --import tsx scripts/diag/aim-jump/repro.ts --seed 7 --play 12 --slot SS --at 3.4 [--from 2.9 --to 3.9]
+// --frozen KEY replays a saved setup from scripts/diag/aim-jump/frozen.bin.gz instead (KEY s7-P115 or
+// s8-P111, captured at develop a27ccd84), so the same constructor input runs on any later engine.
+// --freeze OUT writes the play's setup to a frozen file entry (append).
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
+import { gunzipSync, gzipSync } from 'node:zlib';
+import { deserialize, serialize } from 'node:v8';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { captureOrdinaryPlay } from '../capture-game-play.js';
 import { compareExecution, initialState, replayState, restoreSetup } from '../saved-play.js';
 import { choose, inputs, swaps } from './chooser.js';
 const { values: v } = parseArgs({ options: { seed: { type: 'string', default: '7' }, play: { type: 'string' }, slot: { type: 'string' },
-  at: { type: 'string' }, from: { type: 'string' }, to: { type: 'string' } } });
+  at: { type: 'string' }, from: { type: 'string' }, to: { type: 'string' }, frozen: { type: 'string' }, freeze: { type: 'string' } } });
 const at = Number(v.at), from = Number(v.from ?? at - 0.5), to = Number(v.to ?? at + 0.5);
-const { saved } = captureOrdinaryPlay({ seed: Number(v.seed), play: Number(v.play), minPlay: 1, maxSteps: 400 });
+const FROZEN = new URL('./frozen.bin.gz', import.meta.url);
+type Frozen = Record<string, { capturedAt: string; setupSha256: string; setup: Buffer; yards: number; duration: number }>;
+const frozen: Frozen = existsSync(FROZEN) ? deserialize(gunzipSync(readFileSync(FROZEN))) : {};
+const saved: any = v.frozen ? { ...frozen[v.frozen], game: { playId: v.frozen, seed: '-' } }
+  : captureOrdinaryPlay({ seed: Number(v.seed), play: Number(v.play), minPlay: 1, maxSteps: 400 }).saved;
+if (!saved.setup) throw new Error(`No frozen setup ${v.frozen}`);
+if (v.freeze) {
+  frozen[v.freeze] = { capturedAt: saved.identity.commit, setupSha256: saved.setupSha256, setup: saved.setup,
+    yards: saved.original.result.yards, duration: saved.original.result.duration };
+  writeFileSync(FROZEN, gzipSync(serialize(frozen)));
+}
 const sim: any = new PlaySim(restoreSetup(saved.setup));
 const initial = initialState(sim);
 const trace = sim.recordCommands({ actor: { team: 'D', slot: v.slot! }, from, to: to + 0.05 });
@@ -22,7 +38,9 @@ const tick = sim.tick.bind(sim);
 sim.tick = () => { const c = sim.carrier; if (c && sim.ball.kind === 'held' && c.team === 'O')
   truth.set(Math.round(sim.t * 1000), { id: c.player.id, slot: c.slot, pos: { ...c.pos }, vel: { ...c.vel } }); tick(); };
 const result = sim.run();
-const same = compareExecution(saved.original, { initial, result, replay: replayState(sim, result, saved.context) });
+const same = v.frozen ? (result.yards === saved.yards && result.duration === saved.duration ? null
+  : `no: ${result.yards} yd in ${result.duration} s here, ${saved.yards} yd in ${saved.duration} s at capture (${saved.capturedAt.slice(0, 8)})`)
+  : compareExecution(saved.original, { initial, result, replay: replayState(sim, result, saved.context) });
 const me = sim.defense.find((d: any) => d.slot === v.slot);
 const f2 = (x: number) => x.toFixed(2), deg = (p: any) => Math.round(Math.atan2(p.y, p.x) * 180 / Math.PI);
 console.log(`${saved.game.playId} seed ${saved.game.seed}, setup sha256 ${saved.setupSha256.slice(0, 16)}; ${saved.setup.length} bytes`);

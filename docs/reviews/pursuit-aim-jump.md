@@ -1,6 +1,6 @@
 # Why a slow pursuer's chosen intercept jumps (TKL-2, Stage 4)
 
-2026-10-26, develop `a27ccd84`. Diagnosis only: no behavior change. It follows
+2026-10-26, develop `a27ccd84` (reproducers rechecked on `4e6fed4e`). Diagnosis only: no behavior change. It follows
 [the re-steer cause](pursuit-resteer-cause.md) and #296 (slow gather, stop
 rule). Slow pursuers re-steer at about 2× the NFL rate at 6–15 yd, outside the
 close gather, so the aim layer owns part of that excess. Question: why does the
@@ -112,12 +112,25 @@ separate.
 
 ## Frozen reproducers (exact setup)
 
-`node --import tsx scripts/diag/aim-jump/repro.ts --seed S --play N --slot SLOT --at T`
-restores the play with `captureOrdinaryPlay` and checks the restage against the
-original play. It prints, for each step, the true runner, the picture, the
-forecast, the choice, the aim and command bearings and his body heading. It
-then re-runs the chooser with the previous step's inputs and one new input
-group at a time.
+```sh
+node --import tsx scripts/diag/aim-jump/repro.ts --frozen s7-P115 --slot LB_W --at 3.05 --from 2.8 --to 3.75
+node --import tsx scripts/diag/aim-jump/repro.ts --frozen s8-P111 --slot LB_M --at 3.6 --from 3.2 --to 4.4
+```
+
+`--frozen` replays the exact constructor input saved in
+`scripts/diag/aim-jump/frozen.bin.gz` (14 KB, captured at `a27ccd84`). It also
+checks the result against the result recorded at capture. Use `--seed S --play
+N` to capture any audit-game play instead (`captureOrdinaryPlay`); later engine
+changes can move which play that is. On develop `4e6fed4e` both frozen plays
+replay with traces identical to `a27ccd84`.
+
+The script prints, step by step:
+- the true runner, the picture and the forecast;
+- the choice, the aim and command bearings, and his body heading.
+
+At `--at` it re-runs the chooser with the previous step's inputs and one new
+input group at a time. It also shows the same inputs with a longer horizon and
+without the acceleration term.
 
 ### s7 G1-P115, LB_W
 
