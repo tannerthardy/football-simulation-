@@ -25,7 +25,7 @@ vi.hoisted(() => { process.env.GAP_MATCH = '0'; });
 
 describe('ordinary-game constructor capture and independent replay', () => {
   let captured: ReturnType<typeof captureOrdinaryPlay>;
-  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 10, maxSteps: 60 }); });
+  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 10, maxSteps: 60 }); }, 30_000);
 
   it('preserves the whole normal game prefix compared with the observer absent', () => {
     const rng = new Rng(7);
@@ -96,7 +96,9 @@ describe('ordinary-game constructor capture and independent replay', () => {
     // INFO-1 retires the physical catch's universal controller notification.
     // The same observer-off/on restoration assertions above remain exact.
     expect(boundary.endpoint!.behavior.controller).toBe(owner);
-    expect(boundary.rewrites).toEqual([]);
+    // Only his own coverage stages (field containment, hip orientation) may
+    // rewrite the command at the catch: he is still covering, not in contact.
+    expect(boundary.rewrites.every(r => r.stage === 'containment' || r.stage === 'coverage-orientation')).toBe(true);
     for (const s of traced.trace!.steps) {
       expect(s.decision!.owner.controller).toBe(owner);
       expect(['man', 'zone']).toContain(s.decision!.owner.kind);

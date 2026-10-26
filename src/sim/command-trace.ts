@@ -4,6 +4,7 @@ import type { MoveCommand } from '../physics/kinematics.js';
 import type { Intent } from '../physics/world.js';
 import type { Agent, Behavior, TeamSide } from './agent.js';
 import { PassProtector } from './behaviors/blocking.js';
+import { facingTechnique } from './coverage/orientation.js';
 import { movementObjective, type MovementObjective } from './movement-objective.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
@@ -20,14 +21,20 @@ const vector = (v: Vec2): Vec2 => ({ x: v.x, y: v.y });
 const identity = (a: Agent) => ({ playerId: a.player.id, team: a.team, slot: a.slot, index: a.idx });
 type ActorIdentity = ReturnType<typeof identity>;
 
-export interface CommandSnapshot extends Intent { objective?: MovementObjective }
+export interface CommandSnapshot extends Intent {
+  objective?: MovementObjective;
+  /** The coverage technique branch that asked for this facing (COV-6). */
+  facingTechnique?: string;
+}
 
 function commandSnapshot(c: Intent): CommandSnapshot {
   const goal = movementObjective(c);
+  const technique = facingTechnique(c)?.label;
   return { vel: vector(c.vel), facing: c.facing, effort: c.effort, cutSkill: c.cutSkill, squeeze: c.squeeze,
     push: c.push, posture: c.posture, dive: c.dive && vector(c.dive), lunge: c.lunge && vector(c.lunge), free: c.free,
     objective: goal && (goal.kind === 'fixed' ? { kind: 'fixed', point: vector(goal.point) }
-      : { kind: 'moving', point: vector(goal.point), velocity: goal.velocity && vector(goal.velocity) }) };
+      : { kind: 'moving', point: vector(goal.point), velocity: goal.velocity && vector(goal.velocity) }),
+    ...(technique ? { facingTechnique: technique } : {}) };
 }
 
 /** These are stored controller fields, not a guessed target from true possession. */
@@ -56,7 +63,7 @@ function stateSnapshot(a: Agent, sim: PlaySim) {
       .map(c => ({ other: identity(sim.agents[c.i === a.idx ? c.j : c.i]), impulse: c.impulse, closing: c.closing })) };
 }
 
-export type CommandStage = 'technique-intents' | 'containment' | 'open-to-ball' | 'engagement' | 'tackle-bond' | 'spacing' | 'snap-guard';
+export type CommandStage = 'technique-intents' | 'containment' | 'coverage-orientation' | 'open-to-ball' | 'engagement' | 'tackle-bond' | 'spacing' | 'snap-guard';
 type TracePhase = 'pre-decision' | 'decision' | CommandStage | 'execution';
 
 export interface CommandTraceStep {

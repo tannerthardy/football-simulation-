@@ -24,6 +24,7 @@ import { captureTeamContactStart, observeTeamContactRules } from './team-contact
 import { bodyRadius } from '../physics/bodyshape.js';
 import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
+import { coverageOrientation } from './coverage/orientation.js';
 import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
@@ -1003,8 +1004,13 @@ export class PlaySim {
       // Reaction delays control, not collisions: he can still be pushed.
       const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
       commandTrace?.decisionEnd(a, owner, before, command, t >= a.snapReadyAt, this);
-      const contained = a.behavior.kind === 'man' || a.behavior.kind === 'zone' ? containCoverage(a, command) : command;
+      const coverage = a.behavior.kind === 'man' || a.behavior.kind === 'zone';
+      let contained = coverage ? containCoverage(a, command) : command;
       commandTrace?.command(a, 'containment', contained);
+      if (coverage) {
+        contained = coverageOrientation(a).steer(a, t, this.dt, contained);
+        commandTrace?.command(a, 'coverage-orientation', contained);
+      }
       commandTrace?.at('open-to-ball');
       this.cmds[i] = openToBall(a, this, contained);
       commandTrace?.command(a, 'open-to-ball', this.cmds[i]);
