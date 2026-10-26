@@ -12,7 +12,7 @@ import type { GameRec } from './scorecard/records.js';
 import type { DetectorId, WeirdEvent } from './scorecard/weird/types.js';
 import type { CommandTraceStep } from '../src/sim/command-trace.js';
 
-const IDS: DetectorId[] = ['presnap', 'turned', 'stuck', 'backpedal', 'slide'];
+const IDS = ['presnap', 'turned', 'stuck', 'backpedal', 'slide'] as const;
 const QUOTAS = { presnap: 1, turned: 3, stuck: 3, backpedal: 3, slide: 2 };
 export const hash = (s: string | Buffer) => createHash('sha256').update(s).digest('hex');
 const canonical = (v: unknown): string => JSON.stringify(v, (_k, x) => x && typeof x === 'object' && !Array.isArray(x)
