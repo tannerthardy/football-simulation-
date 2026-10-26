@@ -94,6 +94,18 @@ function drawTurf(ctx, cam, W, H, los, firstDownX) {
   if (firstDownX < 110) { ctx.strokeStyle = '#ffd34d'; seg(firstDownX, 0, firstDownX, FIELD_W); }
 }
 
+/** The duty span in force at time t (the last span stays in force to the end of the play). */
+export function dutySpanAt(spans, t) {
+  let hit = null;
+  for (const s of spans) if (s.from <= t + 1e-9) hit = s;
+  return hit;
+}
+function nearestTick(times, t) {
+  let best = -1, bd = Infinity;
+  for (let k = 0; k < times.length; k++) { const d = Math.abs(times[k] - t); if (d < bd) { bd = d; best = k; } }
+  return best;
+}
+
 function arrow(ctx, x1, y1, x2, y2, color, width = 2, dash = []) {
   const len = Math.hypot(x2 - x1, y2 - y1); if (len < 2) return;
   ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = width; ctx.setLineDash(dash);
@@ -195,6 +207,28 @@ export function drawTop(ctx, W, H, opts) {
       if (ag.passSet) { const [lx, ly] = cam.P(pos[i][0], ag.passSet.laneY); ctx.fillStyle = '#b8f7c8'; ctx.fillRect(lx - 2, ly - 2, 4, 4); }
     });
     void n;
+  }
+
+  // Responsibility ledger: each blocker's current duty against the one he was given at the snap. A recorder, not a grade.
+  if (layers.duty && !opts.arrange && run.responsibility) {
+    for (const b of run.responsibility.timeline) {
+      const i = b.actor;
+      if (!focus(i) || !pos[i]) continue;
+      const span = dutySpanAt(b.spans, t), first = b.spans[0];
+      if (!span) continue;
+      const tick = run.responsibility.ticks.find(k => k.actor === i), k = tick ? nearestTick(tick.endpoint, t) : -1;
+      const cur = k >= 0 ? tick.loadCurrent[k] : null, ini = k >= 0 ? tick.loadInitial[k] : null;
+      const [x, y] = P(i);
+      if (first.target != null && first.target !== span.target && pos[first.target]) {
+        const [tx, ty] = P(first.target); ctx.strokeStyle = 'rgba(190,190,190,0.8)'; ctx.lineWidth = 1.2; ctx.setLineDash([2, 4]); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(tx, ty); ctx.stroke(); ctx.setLineDash([]);
+      }
+      if (span.target != null && pos[span.target]) {
+        const [tx, ty] = P(span.target); ctx.strokeStyle = '#63f2f5'; ctx.lineWidth = cur != null && cur > 1 ? 3.5 : 1.5; ctx.setLineDash(span.departure ? [8, 3] : []); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(tx, ty); ctx.stroke(); ctx.setLineDash([]);
+      }
+      const name = (j) => j == null ? 'nobody' : slotLabel(run.roster[j]);
+      const loads = [cur != null && cur > 1 ? `load ${cur.toFixed(1)} on ${name(span.target)}` : null, first.target !== span.target && ini != null && ini > 1 ? `${ini.toFixed(1)} on ${name(first.target)}` : null].filter(Boolean);
+      tag(ctx, x, y - R(i) - 10, `${span.kind} → ${name(span.target)}${span.departure ? ' (departing)' : ''}${first.target !== span.target ? ` · was ${name(first.target)}` : ''}${loads.length ? ' · ' + loads.join(', ') : ''}`, '#63f2f5');
+    }
   }
 
   // Job and target.

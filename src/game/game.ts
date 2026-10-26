@@ -16,7 +16,7 @@ import { CoverageScouting } from '../sim/qbmind.js';
 import { ScoutingReport } from '../sim/recognition.js';
 import type { Frame, PenaltyCall, PlayResult } from '../sim/types.js';
 import { BoxScore } from './stats.js';
-import { DefensiveCoordinator, OffensiveCoordinator, type Situation } from './playcaller.js';
+import { DefensiveCoordinator, OffensiveCoordinator, chooseFourthDown, chooseTry, type Situation } from './playcaller.js';
 import { fieldGoalRange, kickFieldGoal, kickFairCatch, kickoff, punt, generatedMissedFieldGoalEvent } from './specialteams.js';
 import { assessScrimmageKick, type FreeKickFacts, type ScrimmageKickFacts, type KickRuling } from './kick-rules.js';
 import { resolveLivePenalties, resolveTryPenalties, type LivePenaltyOption } from './penalty-enforcement.js';
@@ -553,30 +553,7 @@ export class Game {
   }
 
   private fourthDown(sit: Situation): 'go' | 'punt' | 'fg' {
-    const s = this.s;
-    const k = specialist(this.off, 'K');
-    const toGoal = 100 - s.yardline;
-    const fgDist = toGoal + 17;
-    const range = fieldGoalRange(k);
-    const aggr = this.off.coach.aggression;
-    const diff = sit.scoreDiff;
-    const late = s.quarter >= 4;
-    const minutes = s.clock / 60;
-    // Desperation.
-    if (late && diff < 0 && (minutes < 2.5 || (diff < -8 && minutes < 5))) {
-      if (diff >= -3 && fgDist <= range && minutes < 0.6) return 'fg';
-      return 'go';
-    }
-    let goThreshold = 0;
-    if (s.yardline >= 40) goThreshold = 1;
-    if (s.yardline >= 55) goThreshold = 2;
-    if (s.yardline >= 62 && fgDist > range) goThreshold = 4;
-    if (toGoal <= 5) goThreshold = 1.5;
-    goThreshold += (aggr - 0.5) * 2;
-    if (s.yardline < 30) goThreshold -= 1;
-    if (s.distance <= goThreshold) return 'go';
-    if (fgDist <= range) return 'fg';
-    return 'punt';
+    return chooseFourthDown(sit, { fieldGoalRange: fieldGoalRange(specialist(this.off, 'K')), aggression: this.off.coach.aggression });
   }
 
   private kneel(): void {
@@ -1085,9 +1062,9 @@ export class Game {
     // lead is already a win; a defensive return is not a reason to require
     // an otherwise unnecessary Try after the final down.
     if (s.quarter === 4 && s.clock === 0 && (diffAfter > 0 || diffAfter < -2)) return;
-    const late = s.quarter >= 4;
     const choice = this.opts.hooks?.tryChoice?.(scorer);
-    const goForTwo = choice ? choice === 'two' : (late && [-2, -5, -9, -10, -12, 1, 5].includes(diffAfter)) || this.calls.chance(0.06 + 0.1 * this.teams[scorer].coach.aggression);
+    const goForTwo = choice ? choice === 'two'
+      : chooseTry({ quarter: s.quarter, clock: s.clock, scoreDiff: diffAfter }, this.teams[scorer].coach.aggression, this.calls) === 'two';
     if (goForTwo) {
       const success = this.twoPointTry(scorer);
       if (success) this.addScore(scorer, 2);

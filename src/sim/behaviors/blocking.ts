@@ -1048,12 +1048,14 @@ export class RunBlocker implements Behavior {
     }
     const target = this.availableTarget(a, sim);
     if (plan.departure && (plan.kind !== 'climb' || target !== plan.departure.backer)) {
+      const sink = sim.blockingSink(a), previousWork = sink?.blockingState(a);
       delete plan.departure;
       this.departureRead = null;
       this.climbRead = null;
       this.climbAccess = null;
       this.departureAccess = null;
       this.departureStrikeClear = false;
+      sink?.blockingChange(a, previousWork, 'departure-end: target or kind left the departure backer', sim);
     }
     if (plan.kind === 'climb' && plan.departure && target === plan.departure.backer) {
       const leaving = this.leaveCombination(a, sim);
@@ -1279,8 +1281,10 @@ export class RunBlocker implements Behavior {
             this.plan.departure.keeper,keeper.seen,seen,strike);
           this.departureStrikeClear=!!route&&!route.exit;
           if (this.departureStrikeClear && this.departureAccess.kind==='direct') {
+            const sink = sim.blockingSink(a), previousWork = sink?.blockingState(a);
             delete this.plan.departure;
             this.departureRead=null;
+            sink?.blockingChange(a, previousWork, 'departure-end: strike corridor clear, direct access', sim);
           }
         } else this.climbAccess = chooseClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact);
       }
@@ -1392,7 +1396,7 @@ export class RunBlocker implements Behavior {
         if (combination && !combination.released && replacement !== combination.defender) {
           abandonCombination(a, sim, combination, 'original target unavailable; finding work');
         }
-        const trace = sim.commandTraceFor?.(a), previousWork = trace?.blockingState(a);
+        const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
         plan.target = target = replacement;
         if (acquiredEligibility) this.acquiredWork = { target: replacement };
         if (replacement !== previous) delete plan.contactFit;
@@ -1449,8 +1453,10 @@ export class RunBlocker implements Behavior {
     if (!this.departureStrikeClear && !near) return approach;
     const command=this.attack(a,sim,target,seen,approach);
     if (a.engagement?.defender===target) {
+      const sink = sim.blockingSink(a), previousWork = sink?.blockingState(a);
       delete this.plan.departure;
       this.departureRead=null;
+      sink?.blockingChange(a, previousWork, 'departure-end: engaged the backer', sim);
     }
     return command;
   }
@@ -1751,8 +1757,8 @@ export class RunBlocker implements Behavior {
       const d = sim.see(a,p.target), other = sim.see(a,q.target);
       const mine = Math.abs(d.pos.y-a.pos.y), theirs = Math.abs(other.pos.y-b.pos.y);
       if (Math.abs(other.pos.y-a.pos.y)+.35 < mine && Math.abs(d.pos.y-b.pos.y)+.35 < theirs) {
-        const traceA = sim.commandTraceFor?.(a), previousA = traceA?.blockingState(a);
-        const traceB = sim.commandTraceFor?.(b), previousB = traceB?.blockingState(b);
+        const traceA = sim.blockingSink(a), previousA = traceA?.blockingState(a);
+        const traceB = sim.blockingSink(b), previousB = traceB?.blockingState(b);
         // The recipient may not have updated yet. Save his installed solo
         // technique before exchanging and reclassifying either responsibility.
         b.behavior.rememberSoloWork();
@@ -1780,7 +1786,7 @@ export class RunBlocker implements Behavior {
     if (!threat || threat === p.target) return;
     if (p.combination && !p.combination.released)
       abandonCombination(a, sim, p.combination, 'collecting penetration before climb');
-    const trace = sim.commandTraceFor?.(a), previousWork = trace?.blockingState(a);
+    const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
     p.target = threat; p.kind = 'drive';
     delete p.contactFit;
     a.tags.add('block-collect');
@@ -1825,7 +1831,7 @@ export class RunBlocker implements Behavior {
       if (!best || threat.score < best.score) best = { d, score: threat.score };
     }
     if (!best) return;
-    const trace = sim.commandTraceFor?.(a), previousWork = trace?.blockingState(a);
+    const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
     p.target = best.d;
     this.acquiredWork = { target: best.d };
     delete p.contactFit;
@@ -1903,7 +1909,7 @@ function abandonCombination(observer: Agent, sim: PlaySim, combo: Combination, r
     if (!(member.behavior instanceof RunBlocker)) continue;
     const p = member.behavior.plan;
     if (p.combination !== combo) continue;
-    const trace = sim.commandTraceFor?.(member), previousWork = trace?.blockingState(member);
+    const trace = sim.blockingSink(member), previousWork = trace?.blockingState(member);
     p.combination = undefined;
     p.climbTo = undefined;
     if (p.kind === 'combo') p.kind = solo;
@@ -2293,8 +2299,8 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
 function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, combo: Combination, check: boolean): void {
   const { climber, keeper, phi, engagement: e } = choice;
   if (!(climber.behavior instanceof RunBlocker)) return;
-  const climberTrace = sim.commandTraceFor?.(climber), previousClimber = climberTrace?.blockingState(climber);
-  const keeperTrace = sim.commandTraceFor?.(keeper), previousKeeper = keeperTrace?.blockingState(keeper);
+  const climberTrace = sim.blockingSink(climber), previousClimber = climberTrace?.blockingState(climber);
+  const keeperTrace = sim.blockingSink(keeper), previousKeeper = keeperTrace?.blockingState(keeper);
   const solo = combinationSoloKind(combo);
   if (keeper !== e.blocker) {
     // Transfer ownership of hands that already exist, not a fresh hand fight.
