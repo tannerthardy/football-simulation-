@@ -1593,7 +1593,7 @@ run plays with the assignment layer (`--telemetry full`):
 
   The double is one pusher plus a helper leaning on the man's flank.
 
-  *E2, kept as experimental `HELPER_DRIVE` (off).* The helper drives along
+  *E2, a `HELPER_DRIVE` flag (off), not landed.* The helper drives along
   the track, keeping only his width at the partner's hip, with no foot
   replacement while his hands are loaded. Judged on sets not used to
   choose it:
@@ -1619,7 +1619,8 @@ run plays with the assignment layer (`--telemetry full`):
   A loaded helper level with or past the man already carries zero
   `helperSupport`, and recovery fires on 77–100% of those ticks.
 
-  *E3, still experimental `HELPER_DRIVE` (off): the width-only spot alone.*
+  *E3, the width-only spot alone (`HELPER_DRIVE`, removed before merge; the
+  code is kept on `run/G2-helper-hip-spot` and listed in PARKED.md).*
   `helperFit` is unchanged, so helper-fit's wrong-side tests pass with the
   flag on. Measured on develop 58ae15d7 (branch merged), flag off vs on:
 

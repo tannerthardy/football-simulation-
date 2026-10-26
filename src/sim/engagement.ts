@@ -719,11 +719,6 @@ const EDGE_CONTAIN = process.env.EDGE_CONTAIN !== '0';
  * with instead of running to a new shoulder and carrying him along
  * (SEAL_HOLD=0 restores the unbounded seal correction). */
 const SEAL_HOLD = process.env.SEAL_HOLD !== '0';
-/** Experimental (HELPER_DRIVE=1, off): a run double's helper drives the man
- * along the track and holds only his width at his partner's hip, not his
- * partner's depth (KNOWN_PROBLEMS RUN-12). A helper on the wrong side still
- * replaces his feet (helperFit). */
-const HELPER_DRIVE = process.env.HELPER_DRIVE === '1';
 
 /** Run release measured against the blocker's torso (LEVER_FACING=0: fixed frame). */
 const LEVER_FACING = process.env.LEVER_FACING !== '0';
@@ -1619,12 +1614,7 @@ function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec
     const preparation=e.type==='run'?h.behavior.contactMotion?.(h,'prepare'):null;
     const direction = e.drive ?? { x: -axis.x, y: -axis.y };
     const drive = e.type === 'run' ? { x: direction.x * 2.2, y: direction.y * 2.2 } : { x: -axis.x * 0.5, y: -axis.y * 0.5 };
-    // Hip to hip is a width, not a depth: on a run double the helper drives
-    // along the track and works up the man's near hip instead of being held
-    // back level with his partner.
-    const width = toSpot.x*lat.x+toSpot.y*lat.y;
-    const feet = e.type === 'run' && HELPER_DRIVE ? {x:drive.x+lat.x*width*3,y:drive.y+lat.y*width*3}
-      : {x:drive.x+toSpot.x*3,y:drive.y+toSpot.y*3};
+    const feet={x:drive.x+toSpot.x*3,y:drive.y+toSpot.y*3};
     if (preparation) {
       const change=(preparation.x-feet.x)*lat.x+(preparation.y-feet.y)*lat.y;
       feet.x+=lat.x*change;feet.y+=lat.y*change;
