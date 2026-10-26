@@ -42,10 +42,11 @@ afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs(); vi.resetModules(); }
 
 describe('early hand contact preserves a coherent committed approach', () => {
   it('acquires an ordinary standing hold when the default waits', async () => {
-    const off = await acquire(false, 1.4, 8);
+    // Center-to-hand plus target radius excludes the old 1.4yd fixture.
+    const off = await acquire(false, 1.2, 8);
     expect(off.sim.bond).toBeNull(); expect(off.chance).not.toHaveBeenCalled();
     vi.restoreAllMocks();
-    const on = await acquire(true, 1.4, 8), j = on.sim.bond?.holds?.get(on.d);
+    const on = await acquire(true, 1.2, 8), j = on.sim.bond?.holds?.get(on.d);
     expect(j).toBeDefined(); expect(on.strike).not.toHaveBeenCalled(); expect(on.dive).not.toHaveBeenCalled();
     expect(j?.brace).toBeUndefined(); expect(j?.pull).toBeGreaterThan(0);
     expect(on.chance).toHaveBeenCalledTimes(2); // existing miss and fumble attempts
@@ -63,13 +64,17 @@ describe('early hand contact preserves a coherent committed approach', () => {
   });
 
   it('keeps the existing strike for a last reachable opportunity', async () => {
-    const f = await acquire(true, 1.4, -4);
+    const f = await acquire(true, 1.2, -4);
     expect(f.sim.bond?.holds?.get(f.d)).toBeDefined(); expect(f.strike).toHaveBeenCalledOnce();
   });
 
   it('does not add a hold outside physical standing reach', async () => {
     const f = await acquire(true, 3, 8);
     expect(f.sim.bond).toBeNull(); expect(f.strike).not.toHaveBeenCalled(); expect(f.chance).not.toHaveBeenCalled();
+  });
+  it.each([false, true])('the former 1.4yd standing fixture stays outside reach, touch=%s', async enabled => {
+    const f = await acquire(enabled, 1.4, -4);
+    expect(f.sim.bond).toBeNull(); expect(f.chance).not.toHaveBeenCalled();
   });
 });
 

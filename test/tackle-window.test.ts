@@ -75,28 +75,30 @@ function ordinaryWindow(setup: ReturnType<typeof stage>, now = 2) {
 }
 
 describe('attainable tackle opportunity', () => {
-  it.each([-1, 1])('takes a passing last reach without promising a standing wrap, side %s', side => {
+  it.each([-1, 1])('commits a passing last reach without a premature hold, side %s', side => {
     const { sim, c, d, body, arms, command } = passingStage(side, true, true);
     const seen = sim.see(d, c);
     const window = previewTackleWindow(d, seen, command, body, arms, sim.world.time)!;
     expect(window.closestAt).toBe(0);
     expect(window.closest).toBeGreaterThan(arms);
     expect(window.closest).toBeLessThan(arms + .45);
-    const dive = vi.spyOn(sim, 'diveAt');
+    const dive = vi.spyOn(sim, 'diveAt'), step = vi.spyOn(sim, 'lungeAt');
     const rolls = vi.spyOn(sim.rng, 'chance').mockReturnValue(false);
+    const before = structuredClone(d.body);
     try {
       tryTackles(sim);
-      expect(dive).toHaveBeenCalledOnce();
-      expect(sim.bond?.tacklers).toContain(d);
-      const hold = sim.bond!.holds!.get(d)!;
-      expect(hold.origin).toContain('lunge');
-      expect(hold.capacity).toBeGreaterThan(0);
-      expect(hold.capacity).toBeLessThan(supportParams(d.profile).armForce);
-      // Acquisition does not claim a successful tackle or a body impact.
-      expect(hold.force ?? 0).toBe(0);
+      // A last reach commits at most one motion, and only one that the
+      // forecast says can arrive: a step at the hip or a layout.
+      expect(step.mock.calls.length + dive.mock.calls.length).toBeLessThanOrEqual(1);
+      // This retained geometry used to grant the lunge's hold before World
+      // moved its body. The committed request must now earn contact first.
+      expect(sim.bond).toBeNull(); expect(sim.world.joints).toHaveLength(0);
+      expect(rolls).not.toHaveBeenCalled(); expect(d.body).toEqual(before);
       expect(sim.outcome).toBeNull();
-      expect(sim.trace.data!.decisions.find(row => row.a === d.idx)?.chose).toBe('take last reach');
-    } finally { dive.mockRestore(); rolls.mockRestore(); }
+      const rows = sim.trace.data!.decisions.filter(row => row.a === d.idx);
+      expect(rows[0]?.chose).toBe('take last reach');
+      if (!step.mock.calls.length && !dive.mock.calls.length) expect(rows.at(-1)?.chose).toBe('keep feet moving');
+    } finally { dive.mockRestore(); step.mockRestore(); rolls.mockRestore(); }
   });
 
   it.each([false, undefined])('does not upgrade a last reach before acquiring possession: %s', carrying => {

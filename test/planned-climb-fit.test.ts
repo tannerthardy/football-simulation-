@@ -66,17 +66,33 @@ describe('planned climb acquires a useful near strike without running through th
   }
  });
 
- it('maintains acquired Mike load and the keeper through runner arrival with ordinary World limits',()=>{
+ it('maintains acquired Mike load and the keeper until reachable runner contact with ordinary World limits',()=>{
   // With the inline Y on the line's base, this native climb engages a beat
   // earlier; the Mike works under the RT's hands and goes down while still
   // blocked, before the runner arrives, and never reaches him.
   const {sim,rt}=stage(1.45),y=sim.slot('Y')!,mike=sim.slot('LB_M')!,end=sim.slot('DE_S')!;
   expect(y.engagement?.defender).toBe(end);const keeperHands=y.engagement!.hands;
-  let mikeDown=false;
+  let mikeDown=false,keeperLoaded=false,legitimateRelease=false;
   while(sim.phase==='live'&&sim.t<2.95){
    sim.tick();const report=sim.lastStep!;
    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
    for(const actor of [rt,y,mike])expect(report.armImpulse[actor.idx]).toBeLessThanOrEqual(report.armImpulseLimit[actor.idx]+1e-8);
+   if(y.engagement?.defender===end){
+    expect(y.engagement.hands).toBe(keeperHands);expect(sim.world.joints).toContain(keeperHands);
+    if(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)>0)keeperLoaded=true;
+   }else if(!legitimateRelease){
+    // TKL-5 no longer consumes a whiff/cooldown at the old, unreachable
+    // blocked-arm distance at 2.70. At 2.75 the runner actually collides
+    // with this end (0.588yd); releasing the keeper to wrap is legitimate.
+    // Keep the loaded-block contract up to that physical opportunity.
+    expect(keeperLoaded).toBe(true);expect(sim.firstContactX).not.toBeNull();
+    expect(sim.bond?.tacklers).toContain(end);
+    const hold=sim.bond!.holds!.get(end)!;
+    expect(hold.origin).toBe('block');
+    expect(Math.hypot(end.pos.x-sim.bond!.carrier.pos.x,end.pos.y-sim.bond!.carrier.pos.y))
+     .toBeLessThanOrEqual(end.profile.reach*.4+sim.bond!.carrier.profile.radius);
+    expect(sim.world.joints).not.toContain(keeperHands);legitimateRelease=true;
+   }
    if(!mikeDown&&sim.events.some(e=>e.type==='fall'&&e.a===mike.idx)){
     mikeDown=true;
     expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(false);
@@ -86,8 +102,6 @@ describe('planned climb acquires a useful near strike without running through th
   }
   expect(mikeDown).toBe(true);
   expect(sim.events.some(e=>e.type==='carrier_contact'&&(e.a===mike.idx||e.b===mike.idx))).toBe(false);
-  expect(y.engagement?.defender).toBe(end);expect(y.engagement!.hands).toBe(keeperHands);
-  expect(sim.world.joints).toContain(keeperHands);
-  expect(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)).toBeGreaterThan(0);
+  expect(keeperLoaded).toBe(true);expect(legitimateRelease).toBe(true);
  });
 });

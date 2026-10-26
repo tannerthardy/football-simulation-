@@ -27,6 +27,7 @@ import { contactCost } from '../contact-choice.js';
 import type { Perceived } from '../perception.js';
 import { READ_SCHEMES, RUN_READ, runRead } from '../run-read.js';
 import { observeRunRead, runReadObservers } from '../run-read-observer.js';
+import { APPROACH, approachDistance } from '../tackle-geometry.js';
 
 export interface CarrierOptions {
   /** Designed aiming point (run concept) and how long to honor it. */
@@ -118,7 +119,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   // bodies do not promise retention or a future pursuit delay. In particular,
   // a defender occupying the entry remains a threat, on either side of a block.
   const threatTime = (d: Agent, s: Perceived, p: Vec2): number =>
-    timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + d.profile.reach * .75)
+    timeToReach({ ...s, profile: d.profile }, p, approachDistance(d.profile, a.profile, APPROACH.intercept))
       + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
   let best: Vec2 | null = null, cost = Infinity;
   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
@@ -249,7 +250,7 @@ export class BallCarrier implements Behavior {
           if (d.isDown(sim.t) || d.engagement) return false;
           const threat = sim.see(a, d);
           return timeToReach({ ...threat, profile: d.profile, speedScale: d.speedScale }, a.pos,
-            a.profile.radius + d.profile.radius + d.profile.reach * 0.75) < 2 * a.mind.decisionInterval;
+            approachDistance(d.profile, a.profile, APPROACH.intercept)) < 2 * a.mind.decisionInterval;
         });
         if (entering && !closing && sim.t < this.opts.aimUntil!) {
           // Pace the lead block instead of outrunning a guard who is still
@@ -430,7 +431,7 @@ export class BallCarrier implements Behavior {
         let minMargin = Infinity;
         for (const th of threats) {
           // Respect the tackler's arms: his reach plus a lunge.
-          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
+          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, approachDistance(th.d.profile, a.profile, APPROACH.intercept)) + th.extra;
           const m = tt - arrival;
           if (m < minMargin) {
             minMargin = m;

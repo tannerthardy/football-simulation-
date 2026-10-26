@@ -8,6 +8,7 @@ import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { withMovementObjective } from '../movement-objective.js';
 import type { PlaySim } from '../playsim.js';
+import { APPROACH, approachDistance } from '../tackle-geometry.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
 
@@ -107,7 +108,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
     return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
   };
-  const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
+  const reach = approachDistance(a.profile, target.profile, APPROACH.intercept);
   const trace = sim.commandTraceFor?.(a);
   const mover = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
   const ip = interceptPoint(mover, path, { horizon, step: 0.1, radius: reach, request, recordSamples: !!trace });
@@ -230,7 +231,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   const seen = sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
-  const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
+  const contact = approachDistance(a.profile, target.profile, APPROACH.gather);
   const offset = pursuitLeverage(a, seen.pos.y)
     * clamp((dist - contact) / 6, 0, 1);
   // Teammate navigation needs the responsibility this request serves. This

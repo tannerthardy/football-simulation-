@@ -44,6 +44,7 @@ import { runContactObservers } from './run-contact-observer.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { APPROACH, approachDistance } from './tackle-geometry.js';
 
 // ------------------------------------------------------------ traits
 
@@ -1038,7 +1039,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     const horizon = 2 * d.mind.decisionInterval;
     const fresh = (age: number | undefined) => age !== undefined && Number.isFinite(age)
       && age >= 0 && age <= d.profile.reactionTime + horizon;
-    const trail = d.profile.radius + back.profile.radius + d.profile.reach * .65;
+    const trail = approachDistance(d.profile, back.profile, APPROACH.gather);
     const side = Math.sign(backSeen.vel.y);
     if (backSeen.carrying === true && qbSeen.carrying === false
       && fresh(backSeen.age) && fresh(qbSeen.age) && Math.abs(backSeen.vel.y) > 1.5
@@ -1062,7 +1063,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   if (EDGE_CONTAIN && stack && edge && job!.edge !== 'spill' && reading && runnerCue && back) {
     const up = sim.attackDir(back.team);
     const arrive = clamp((d.pos.x - runnerCue.pos.x) * up / Math.max(runnerCue.vel.x * up, .5), 0, 1.5);
-    const margin = d.profile.radius + back.profile.radius + d.profile.reach * .65;
+    const margin = approachDistance(d.profile, back.profile, APPROACH.gather);
     contain = runnerCue.pos.y + runnerCue.vel.y * arrive + job!.side * margin;
   }
   const aim = d.mind.aim(stack ? `run-contact:${b.idx}:${fit}` : `run-contact:${b.idx}`, desired, sim.t);
