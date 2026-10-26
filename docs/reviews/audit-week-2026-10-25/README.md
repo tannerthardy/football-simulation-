@@ -1,5 +1,7 @@
 # Audit follow-through: plan and agent handoffs
 
+> **Archived 2026-10-26. Superseded; don't act on these briefs.** Packages A and INFO-next are done (#274, #280, #282), and later work merged (#283, #287). Current work is in the "Next moves, Oct 26" plan and docs/PLAN.md and docs/GAPS.md. This folder is kept as a dated record of the audit.
+
 Published at Tanner’s request. This is the canonical reading index for the October25 audit follow-through package. It proposes the October26–November1 work; it does not amend the approved repository PLAN or make pending PRs accepted. The review snapshot is develop `9ace17336ce8593b9d29454bebaa9ebaf11132e0`, October25 at12:23p.m. Phoenix. Refresh heads before implementation.
 
 ## Start here
