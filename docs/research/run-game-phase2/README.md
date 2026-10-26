@@ -1,5 +1,11 @@
 # Run-game Phase II: evidence and next work
 
+> **Archived 2026-10-26.** Dated research record. The findings are kept and still serve as background reading. The next-work briefs (`NEXT_WORK*.md`, `IMPLEMENTATION_ROADMAP.md`) are superseded: don't act on them directly. The work was re-scoped into the Claude lanes of 2026-10-26 and the road plan to the film review, as follows:
+> - Main Engine owns the grip-budget repair: the zero-traction allocator first, then the yaw qualification.
+> - Rules + Coaching owns the runner exit and hidden reads.
+> - Run Game owns the S7-P070 climber departure.
+> - Tools owns the responsibility ledger, built on #300.
+
 Read the [executive report](MASTER_REPORT.md), then [next work](NEXT_WORK.md). This publication makes the completed research and concrete agent handoffs available for review. It is documentation only; experimental patches are retained in the evidence archive and are not applied to the engine by this PR.
 
 The research isolates two traction-budget defects, an acquired-protection/runner-transition coupling, center-hand angular geometry, and a separate live-gap information seam. The number of genuinely feasible, useful missed blocks among the original53 jobs remains unidentified. Zero tested conversions passed the complete usefulness standard; this does not establish zero actual opportunities.
