@@ -81,6 +81,11 @@ for (const p of players) {
     const purs = (st.pursuit ?? []).map(x => x.data.kind === 'intercept' ? `${x.data.prediction.estimate.status === 'estimated-feasible' ? 'feasible' : 'fallback'} intercept (${x.data.prediction.point.x.toFixed(1)}, ${x.data.prediction.point.y.toFixed(1)}) in ${x.data.prediction.t.toFixed(2)}s` : `chase ${x.data.planner}`).join('; ');
     say(`   ${st.stepStart.toFixed(2)}s ${d ? `${d.ownerAfterUpdate.controller}${d.ownerAfterUpdate.job ? ':' + d.ownerAfterUpdate.job : ''}` : '(no decision)'}`
       + `${st.final ? ` → vel (${st.final.vel.x.toFixed(2)}, ${st.final.vel.y.toFixed(2)})${st.final.effort != null ? ' effort ' + st.final.effort.toFixed(2) : ''}` : ''}${rw ? ' [rewritten: ' + rw + ']' : ''}${purs ? ' · ' + purs : ''}`);
+    for (const { data: c } of st.carrier ?? []) {
+      if (c.kind === 'design-exit') say(`     design exit: ${c.exit ? 'LEAVE' : 'stay'} · aim blocked ${c.aimBlocked} · best ${c.bestScore?.toFixed(2)} vs aim ${c.aimScore?.toFixed(2)} + ${c.margin.toFixed(2)}`);
+      else say(`     runner lane ${c.selected?.heading.toFixed(2)} score ${c.selected?.score.toFixed(2)}${c.selected?.blocked ? ' blocked' : ''}${c.aim ? ` · aim ${c.aim.score.toFixed(2)}${c.aim.blocked ? ' blocked' : ''}` : ''}`
+        + ` · held-up credit: ${c.arrival.filter(t => t.blockerBonus > 0).map(t => `${t.defender.slot} +${t.blockerBonus}`).join(', ') || 'none'}`);
+    }
   }
 }
 const evs = run.events.filter(e => e.t >= window.from - pad && e.t <= window.to + pad);

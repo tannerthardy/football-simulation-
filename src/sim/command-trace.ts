@@ -3,6 +3,7 @@ import type { Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import type { Intent } from '../physics/world.js';
 import type { Agent, Behavior, TeamSide } from './agent.js';
+import type { CarrierDecisionRecord } from './behaviors/carrier.js';
 import { PassProtector, RunBlocker } from './behaviors/blocking.js';
 import { facingTechnique } from './coverage/orientation.js';
 import { movementObjective, type MovementObjective } from './movement-objective.js';
@@ -99,6 +100,8 @@ export interface CommandTraceStep {
   climbAccess?: Array<{ phase: TracePhase; target: ActorIdentity; data: ClimbAccessRecord;
     surfaces: ActorIdentity[]; }>;
   blockingChanges?: BlockingResponsibilityChange[];
+  /** The ball carrier's arrival evidence, route assessment and design-exit operands. */
+  carrier?: Array<{ phase: TracePhase; data: CarrierDecisionRecord }>;
 }
 
 /** Numbers within 1e-9 are omitted from the rewrite list; raw/final retain full precision. */
@@ -159,6 +162,12 @@ export class CommandTrace {
     if (data.kind === 'chase' && snapshot.kind === 'chase') snapshot.requests = data.requests
       .map(r => ({ stage: r.stage, command: commandSnapshot(r.command) }));
     (this.pending.pursuit ??= []).push({ phase: this.phase, target: identity(target), data: snapshot });
+  }
+
+  /** Values the carrier already computed for its own decision; nothing re-evaluated. */
+  carrier(data: CarrierDecisionRecord): void {
+    if (!this.pending) return;
+    (this.pending.carrier ??= []).push({ phase: this.phase, data: structuredClone(data) });
   }
 
   /** The search supplied its own computed values; nothing is re-evaluated. */

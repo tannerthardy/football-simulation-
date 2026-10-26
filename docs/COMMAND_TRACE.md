@@ -87,6 +87,17 @@ Each step separates:
   No extra preview, picture or controller run is made for the record.
   `scripts/diag/climb-access-trace.ts` prints it for one saved play.
 
+- `carrier`: the selected ball carrier's own decision, as the evaluator
+  already computed it. An `evaluate` row lists every seen threat's arrival
+  evidence (picture, pose, age) with each part of the time added to his
+  reach estimate: scenario `parking`, observed `recovery`, and
+  `blockerBonus`, the 0.25 s or 0.7 s "held up" credit for a perceived
+  blocker within touching distance. Then the score of each candidate heading,
+  the selected lane and the aim's score. A `design-exit` row gives the
+  designed track's stay/exit decision with its operands: best score, aim
+  score, patience margin, threshold and whether the aim was blocked. Nothing
+  is evaluated for the trace, and nothing is computed unless one is selected.
+
 Blocking reasons name existing paths: available-target/find-work, crossing
 exchange, penetration collection, threat reread, and combination release or
 abandonment. Work-kind changes are retained even when the target is unchanged.
