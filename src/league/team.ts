@@ -7,7 +7,7 @@
 import { Rng } from '../core/rng.js';
 import { generatePlayer } from '../players/generator.js';
 import { overallAt, ROLE_BY_ID, roleSuitability } from '../players/roles.js';
-import type { Player, Position } from '../players/types.js';
+import { r01, type Player, type Position } from '../players/types.js';
 import type { AlignStyle } from '../playbook/alignment.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL, type DefPersonnelId, type DefSlot, type OffSlot, type PersonnelId, type SkillSlot } from '../playbook/types.js';
 
@@ -143,21 +143,65 @@ function pickJersey(rng: Rng, pos: Position, used: Set<number>): number {
 export interface Availability {
   /** Players who cannot play (injured, resting). */
   unavailable?: Set<string>;
-  /** Energy by player id; tired players lose snaps to rested backups. */
-  energy?: Map<string, number>;
+  /** The coach's count of each player's recent work: snaps played, fading
+   * with time off the field (`decayWorkload`). What a staff tracks on the
+   * sideline, never the body's energy. */
+  workload?: Map<string, number>;
+  /** The unit's players on its last snap of this series. A change between
+   * snaps costs `substitutionCost` slot-score points, so a staff spells a
+   * player for a stretch instead of swapping every snap. */
+  lastSnap?: Set<string>;
+  substitutionCost?: number;
+}
+
+/** Slot-score points a substitution between snaps of a series costs: the
+ * call, the run on and off, the risk of a short-handed snap. Staffs mostly
+ * rotate between series and give a breather inside one only to a player
+ * well past his tolerance. */
+export const SUBSTITUTION_COST = 20;
+
+/** How long the staff's count of a player's recent snaps lasts: about five
+ * minutes of time off the field to forget most of a series. */
+export const ROTATION_MEMORY_SECONDS = 600;
+
+/** The coach's count after `seconds` without a snap. */
+export function decayWorkload(load: number, seconds: number): number {
+  return load * Math.exp(-Math.max(0, seconds) / ROTATION_MEMORY_SECONDS);
+}
+
+/**
+ * How readily a staff gives a player a breather for a fresher backup, in
+ * slot-score points per recent snap past his tolerance. Linemen and backs
+ * rotate; the offensive line and the QB don't (cohesion and the snap count).
+ * BDB 2025, median per game: DT1 63%, DE/OLB1 76%, RB1 63%, TE1 74%, WR1 91%,
+ * LB1, S1, CB1–2 and the OL about 100%.
+ */
+const ROTATION_WEIGHT: Partial<Record<Position, number>> = { DT: 20, EDGE: 12, RB: 12, TE: 5, WR: 2, LB: 1.5, CB: 1, S: 1.5 };
+
+/** Recent snaps a player takes before his coach wants him spelled: more for
+ * a well-conditioned player. The staff knows its players' conditioning. */
+export function workloadTolerance(p: Player): number {
+  return 1.5 + 2.5 * r01(p.ratings.stamina);
+}
+
+/** The slot-score a staff gives up to keep a worked player on the field. */
+export function rotationCost(p: Player, av: Availability): number {
+  const load = av.workload?.get(p.id) ?? 0;
+  return (ROTATION_WEIGHT[p.position] ?? 0) * Math.max(0, load - workloadTolerance(p));
 }
 
 function pool(team: Team, positions: Position[], av: Availability, taken: Set<string>): Player[] {
   return team.roster.filter((p) => positions.includes(p.position) && !taken.has(p.id) && !av.unavailable?.has(p.id));
 }
 
-/** Score for a slot: role suitability, discounted for fatigue. */
+/** Score for a slot: role suitability, less the cost of keeping a worked
+ * player in. Depth decides who goes in: a weak backup needs a starter far
+ * past his tolerance before he plays. */
 function pickBest(cands: Player[], score: (p: Player) => number, av: Availability): Player | null {
   let best: Player | null = null;
   let bs = -Infinity;
   for (const p of cands) {
-    const e = av.energy?.get(p.id) ?? 1;
-    const s = score(p) - Math.max(0, 0.8 - e) * 60;
+    const s = score(p) - rotationCost(p, av) - (av.lastSnap && !av.lastSnap.has(p.id) ? av.substitutionCost ?? SUBSTITUTION_COST : 0);
     if (s > bs) {
       bs = s;
       best = p;

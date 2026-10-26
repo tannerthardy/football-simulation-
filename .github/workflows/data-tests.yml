@@ -1,23 +1,9 @@
 name: offline data tests
 
+# Manual only (Tanner, 2026-10-26): GitHub Actions minutes are not used for
+# routine checks. Agents run these checks locally and report them in the PR;
+# the merger re-runs them locally before merging (AGENTS.md, "No GitHub Actions").
 on:
-  pull_request:
-    paths:
-      - 'test/**'
-      - 'scripts/**'
-      - 'data/**'
-      - 'config/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'tsconfig.json'
-      - '**/requirements*.txt'
-      - '**/pyproject.toml'
-      - '**/poetry.lock'
-      - '**/uv.lock'
-      - '.nvmrc'
-      - '.github/workflows/data-tests.yml'
-  push:
-    branches: [develop]
   workflow_dispatch:
 
 permissions:
