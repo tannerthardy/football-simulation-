@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { HASH_LEFT_Y } from '../../src/core/field.js';
 import { Rng } from '../../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../../src/league/team.js';
@@ -43,12 +43,27 @@ function linebackers(playId: string, down: number, dist: number, plays = 24): { 
 }
 
 describe('reading run and pass', () => {
+  // Each cohort keeps all 24 seeds. Give each independent sample its own
+  // existing 60 s setup budget; one assertion need not simulate 96 plays.
+  const cohorts = [
+    ['pass1', 'curl_flat', 1], ['pass3', 'curl_flat', 3],
+    ['run1', 'iz_strong', 1], ['run3', 'iz_strong', 3],
+    ['early', 'pa_post_dig', 1], ['late', 'pa_post_dig', 3],
+  ] as const;
+  const reads = new Map<string, ReturnType<typeof linebackers>>();
+  for (const [id, call, down] of cohorts) {
+    beforeAll(async () => {
+      reads.set(id, linebackers(call, down, 10));
+      await new Promise<void>(resolve => setImmediate(resolve));
+    }, 60_000);
+  }
+
   it('anticipates from the situation: pass reads come sooner on 3rd and long, run reads later', () => {
-    const pass1 = linebackers('curl_flat', 1, 10);
-    const pass3 = linebackers('curl_flat', 3, 10);
+    const pass1 = reads.get('pass1')!;
+    const pass3 = reads.get('pass3')!;
     expect(pass3.readAt).toBeLessThan(pass1.readAt - 0.2);
-    const run1 = linebackers('iz_strong', 1, 10);
-    const run3 = linebackers('iz_strong', 3, 10);
+    const run1 = reads.get('run1')!;
+    const run3 = reads.get('run3')!;
     expect(run3.readAt).toBeGreaterThan(run1.readAt + 0.2);
     // Plain reads on early downs are quick and right.
     expect(run1.fooled).toBeLessThan(0.1);
@@ -57,8 +72,8 @@ describe('reading run and pass', () => {
   });
 
   it('play action fools linebackers when they expect run, not on 3rd and long', () => {
-    const early = linebackers('pa_post_dig', 1, 10);
-    const late = linebackers('pa_post_dig', 3, 10);
+    const early = reads.get('early')!;
+    const late = reads.get('late')!;
     expect(early.fooled).toBeGreaterThan(0.5);
     expect(late.fooled).toBeLessThan(0.2);
   });
