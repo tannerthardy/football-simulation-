@@ -22,12 +22,12 @@ const actor = (a: Agent) => ({ playerId: a.player.id, team: a.team, slot: a.slot
 /** Explicit Z split prevents automatic route/run room from changing the
  * selected receiver's alignment. This is a declared installed scenario,
  * not an ordinary-game capture or the historical P029 checkpoint. */
-export function abandonmentSetup(kind: 'run' | 'deception'): PlaySetup {
+export function abandonmentSetup(kind: 'run' | 'deception', until = BLOCK_LOOK_UNTIL): PlaySetup {
   const setup = nativeTraceSetup({ ...recipe, concept: kind === 'run' ? 'toss' : 'pa_shot' });
   setup.offCall.formation = { ...setup.offCall.formation, id: 'cov7_ace_fixed_z',
     name: 'Ace / COV-7 fixed Z', slots: { ...setup.offCall.formation.slots,
       Z: { ...setup.offCall.formation.slots.Z!, split: 8 + 1 / 3 } } };
-  setup.offCall.receiverBlockLook = { Z: { until: BLOCK_LOOK_UNTIL } };
+  setup.offCall.receiverBlockLook = { Z: { until } };
   return { ...setup, record: true, recordLevel: 'full' };
 }
 
@@ -157,8 +157,19 @@ function geometry(r: any) {
     travelHeading: Math.hypot(r.body.vel.x, r.body.vel.y) > .01 ? Math.atan2(r.body.vel.y, r.body.vel.x) : null };
 }
 
-export function compareAbandonment(kind: 'run' | 'deception') {
-  const bytes = captureSetup(abandonmentSetup(kind));
+/** Corner and Z at the native release, with the QB's consumed evaluations of Z
+ * before it. Diagnostic reality, never defender input. */
+function atRelease(run: ReturnType<typeof runAbandonment>) {
+  const r = run.releases[0];
+  if (!r) return null;
+  const d = r.corner.position, p = r.primary.position;
+  return { at: r.at, target: r.target, depthLeverage: d.x - p.x, lateralGap: Math.abs(d.y - p.y),
+    distance: Math.hypot(d.x - p.x, d.y - p.y),
+    zEvaluations: run.qbEvaluations.filter(e => e.at <= r.at && e.target.slot === 'Z' && e.evaluation).length };
+}
+
+export function compareAbandonment(kind: 'run' | 'deception', until = BLOCK_LOOK_UNTIL) {
+  const bytes = captureSetup(abandonmentSetup(kind, until));
   const plain = runAbandonment(bytes, false, false), baseline = runAbandonment(bytes, false, true);
   const alternative = runAbandonment(bytes, true, true), alternativePlain = runAbandonment(bytes, true, false);
   assert.deepEqual(baseline.execution, plain.execution, 'baseline observer changed execution');
@@ -173,7 +184,7 @@ export function compareAbandonment(kind: 'run' | 'deception') {
   assert(alternative.rows.every(r => r.retainedPrimary.playerId === baseline.installed.primary.playerId));
   const reacquired = alternative.rows.find(r => r.at > first.at && r.branch === 'trackReceiver');
   const reversed = reacquired && alternative.rows.find(r => r.at >= reacquired.at && r.body.vel.y <= 0);
-  const summary = { kind, setupSha256: bytesHash(bytes), installed: baseline.installed,
+  const summary = { kind, until, setupSha256: bytesHash(bytes), installed: baseline.installed,
     observerEquality: true, firstSupport: first.at, supportEntries: supportRows.length,
     firstSupportEvidence: first,
     acquiredUpright: alternative.rows.find(r => r.at > first.at && primaryCue(r)?.stance === 'high')?.at ?? null,
@@ -181,6 +192,7 @@ export function compareAbandonment(kind: 'run' | 'deception') {
     legality: { man: legalityEvidence(baseline), support: legalityEvidence(alternative) },
     samples: [.65, 1, 1.4, 2, 2.4].map(at => ({ at,
       man: geometry(baseline.rows.find(r => r.at === at)), support: geometry(alternative.rows.find(r => r.at === at)) })),
+    atRelease: { man: atRelease(baseline), support: atRelease(alternative) },
     result: { man: { outcome: baseline.execution.result.outcome, yards: baseline.execution.result.yards },
       support: { outcome: alternative.execution.result.outcome, yards: alternative.execution.result.yards } } };
   return { bytes, summary, baseline, alternative };
@@ -189,9 +201,13 @@ export function compareAbandonment(kind: 'run' | 'deception') {
 function main() {
   assert.equal(process.version, 'v22.23.3');
   assert.notEqual(process.env.PASS_FIRST, '0', 'Use the accepted global PASS_FIRST default');
-  const out = process.argv[2] ?? 'out/cov7-abandonment';
+  // Usage: cov7-abandonment.ts [out-dir] [--until seconds]  (release variation)
+  const args = process.argv.slice(2), u = args.indexOf('--until');
+  const until = u >= 0 ? Number(args.splice(u, 2)[1]) : BLOCK_LOOK_UNTIL;
+  assert(until > 0, 'until must be a positive time');
+  const out = args[0] ?? 'out/cov7-abandonment';
   mkdirSync(out, { recursive: true });
-  const identity = executionIdentity(), pair = (['run', 'deception'] as const).map(compareAbandonment);
+  const identity = executionIdentity(), pair = (['run', 'deception'] as const).map(kind => compareAbandonment(kind, until));
   // Same primary picture and own body across calls at admission. QB/back
   // pictures may differ and are retained; do not call all cues identical.
   assert.deepEqual(primaryCue(pair[0].summary.firstSupportEvidence), primaryCue(pair[1].summary.firstSupportEvidence));
@@ -224,9 +240,9 @@ function main() {
   writeFileSync(`${out}/film.html`, '<!doctype html><html><head><meta charset="utf-8"></head><body>'
     + '<p>Declared COV-7 native scenarios. Clock/score are display placeholders, not ordinary game film.</p>'
     + template.replace('/*__REPLAY_DATA__*/null', () => JSON.stringify(data).replace(/<\//g, '<\\/')) + '</body></html>');
-  console.log(arrivalJson(pair.map(p => ({ kind: p.summary.kind, setupSha256: p.summary.setupSha256,
-    firstSupport: p.summary.firstSupport, returnedToMan: p.summary.returnedToMan,
-    inwardMomentumArrested: p.summary.inwardMomentumArrested, result: p.summary.result }))));
+  console.log(arrivalJson(pair.map(p => ({ kind: p.summary.kind, until, setupSha256: p.summary.setupSha256,
+    firstSupport: p.summary.firstSupport, acquiredUpright: p.summary.acquiredUpright, returnedToMan: p.summary.returnedToMan,
+    inwardMomentumArrested: p.summary.inwardMomentumArrested, atRelease: p.summary.atRelease, result: p.summary.result }))));
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) main();

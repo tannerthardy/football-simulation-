@@ -9,7 +9,8 @@ import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { RunBlocker, readCombination, type Combination } from '../src/sim/behaviors/blocking.js';
-import { contactControl, helperSupport, updateEngagements } from '../src/sim/engagement.js';
+import { axisOf, contactControl, helperSupport, updateEngagements } from '../src/sim/engagement.js';
+import { goTo } from '../src/sim/behaviors/common.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
@@ -439,4 +440,46 @@ describe('Duo keeps the surface while its acquired backer belongs to the other h
     readCombination(f.helper, f.sim, f.combination);
     expect(f.combination.released).toBe(true);
   });
+});
+
+
+describe('loaded combination preparation',()=>{
+ it.each([-1,1])('does not prepare the uncovered keeper across his partner for the other half, side %s',side=>{
+  const f=fixture(side),controller=f.helper.behavior as RunBlocker;
+  f.sim.tick();
+  expect(controller.contactMotion(f.helper,'prepare')).toBeNull();
+  expect(f.combination.released).toBe(false);
+  expect(f.engagement.helpers).toContain(f.helper);
+  expect(f.sim.world.joints).toContain(f.engagement.hands);
+ });
+ it('holds acquired preparation only for the installed combination and next job',()=>{
+  const f=fixture(),controller=f.helper.behavior as RunBlocker;
+  f.backer.body.pos.y=CENTER_Y+1.2;f.observe();f.sim.tick();
+  expect(controller.contactMotion(f.helper,'prepare')).not.toBeNull();
+  expect(f.combination.released).toBe(false);
+  const held=controller.contactMotion(f.helper,'prepare');
+  // Unseen backer motion is not a new preparation cue between decisions.
+  f.backer.body.pos={x:48,y:CENTER_Y-8};
+  expect(controller.contactMotion(f.helper,'prepare')).toEqual(held);
+  // A different intervening job must retire preparation even when that
+  // branch never consumes its feet, preserving target/action lifetime.
+  controller.plan.target=f.backer;controller.update(f.helper,f.sim);
+  controller.plan.target=f.defender;
+  expect(controller.contactMotion(f.helper,'prepare')).toBeNull();
+ });
+ it.each(['primary','helper'] as const)('preserves current normal work when consuming preparation as %s',role=>{
+  const plain=fixture(),prepared=fixture();
+  const actor=prepared[role],spy=vi.spyOn(actor.behavior as RunBlocker,'contactMotion')
+   .mockImplementation((_a,work)=>work==='prepare'?{x:-4,y:3}:null);
+  const requests=(f:Fixture)=>{
+   const intents=f.sim.agents.map(a=>({vel:{x:0,y:0},facing:a.facing}));
+   updateEngagements(f.sim,intents);return intents;
+  };
+  const a=requests(plain)[plain[role].idx],b=requests(prepared)[actor.idx],axis=axisOf(plain.sim,plain.engagement);
+  expect(spy.mock.calls.some(c=>c[1]==='prepare')).toBe(true);
+  expect(b.vel.x*axis.x+b.vel.y*axis.y).toBeCloseTo(a.vel.x*axis.x+a.vel.y*axis.y,12);
+  expect(b.vel).not.toEqual(a.vel);
+  expect({...b,vel:a.vel}).toEqual(a);
+  spy.mockRestore();
+ });
 });

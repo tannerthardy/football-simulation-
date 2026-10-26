@@ -273,7 +273,7 @@ problem), resolved.
 | [CALL-2](#call-2) | Defensive calls read raw ratings that aren't on one scale | G7 | medium | on |
 | [CALL-3](#call-3) | Pressure rate ignored the coverage shell | G7 | low | on |
 | [CALL-4](#call-4) | The play-caller reads the roster, not the players on the field | G7 | low–medium | open |
-| [INFO-1](#info-1) | Players use information they couldn't have seen | G10 | high | in work (#258 landed; #260 needs rework) |
+| [INFO-1](#info-1) | Players use information they couldn't have seen | G10 | high | in work (#258, #274, #280, #282 landed; jet-sweep give cue open) |
 | [ACT-1](#act-1) | Aims outlive the target they were made for | G10 | medium | on (#251) |
 | [PHY-1](#phy-1) | Contact and hand physics limits | F2, G5 | medium | open |
 | [PHY-2](#phy-2) | Movement detail that's costly or unproven | F2 | low | open |
@@ -783,6 +783,25 @@ Carried over from the issue register; each was measured on an older develop.
     matched replay. A real defender sprints when he is the last chance,
     from what he can see (runner free, nobody ahead of him). Defense, G1;
     judge on matched breakaways and a short-gain control.
+- **Effort read tried** (draft, [evidence](reviews/pursuit-effort-read.md),
+  2026-10-25): sprint when he can still get there and is the last man or one
+  of the two best placed, pace otherwise. It turns P002 into a 25-yd tackle,
+  but on matched games it doesn't lower yardage (develop −0.20 ± 0.19 yd/play;
+  on #273 +0.64 ± 0.26), and even every pursuer at full effort adds yards on
+  #273 (+0.33 ± 0.22). Effort isn't the lever; arrivals don't convert. Matched
+  pass plays also clear #251, #258 and #267 of the YAC rise. **Next:** the
+  arrival (gather braking against a fast runner, the jumping intercept), then
+  re-test effort on top.
+- **Re-steer cause named** ([evidence](reviews/pursuit-resteer-cause.md),
+  2026-10-26): two more aim attempts failed (intercept lifetime, heading
+  damping). On the same operator as NFL, pursuers at or above the runner's
+  speed re-steer at the NFL rate beyond 3 yd. Slower pursuers re-steer 2–3×
+  the NFL rate at every distance (44% vs 15% inside 3 yd), which is about 76%
+  of the excess. 58% of their re-steers come from the close gather: the
+  near-hip arrival asks a slower body to match the runner's across speed, so
+  the line of sight rotates every step (the slow hip chase). **Next
+  (proposed, not built):** bypass to the near hip only when his attainable
+  speed covers the runner's across speed; otherwise keep the intercept line.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
@@ -998,6 +1017,106 @@ run plays with the assignment layer (`--telemetry full`):
     helper-policy correction is supported by these cases. This is a bounded
     negative finding, not a claim that proximity proves protection generally;
     pending possession/work-off changes require their own source qualification.
+- **Combination departure execution prototype (not accepted).** Against
+  `50b80062`, the released branch bypasses the existing swept-movement climb
+  planner, whose null also conflates clear and unvalidated access. Scoped
+  direct/detour/unvalidated access and own-state feedback forecasts now compose
+  with loaded, tangential foot preparation on the installed helper's acquired
+  next-job half. In mirrored controlled opportunities the ordinary release
+  earns real backer work while the keeper stays loaded through runner arrival;
+  neither component alone produces that protection. An unsafe, unearned
+  departure still loses to the down defender. Native transfer remains unproved:
+  the selected Ace IZ has no meaningful benefit, Ace weak WZ still misses both
+  backers, and the Over stress case still lets Mike wrap at 3.05 s. The initial
+  full-vector preparation and preparation across the keeper were adverse and
+  are not the candidate. Historical fall/joint-after-fall assertions are not
+  protection contracts. Earlier release/traversal remedies remain rejected;
+  no capacity, contact law or keeper eligibility change is supported. Pending
+  work-off/possession/reach changes remain separate.
+- **Zone doubles were given each other's backers.** *Fixed (on by default,
+  #284).* The zone installer let each double take the nearest unclaimed
+  backer one at a time, outside-in, with no reach. On Ace12 IZ Strong/Over
+  (roster 7, seed 1):
+  - the outside double H+LT took the Mike (+2.7 yd) over the 3-technique's
+    double LG+C;
+  - the backside double RG+RT got the nickel 9.6 yd across the formation;
+  - the Mike made the tackle (3.10–3.25 s).
+
+  The prototype's native film showed "RT never collects his far NB job".
+  This was the cause: an installation fault, not access or spacing. The
+  uncovered men now count the backers across the front in order:
+  - assignments never cross;
+  - they keep the shortest total walk;
+  - none takes a backer more than 4.5 yd from him.
+
+  Now LG+C→Mike, RG+RT→Will and H+LT→nickel. RT blocks the Will at 1.90 s
+  and C blocks the Mike at 2.10 s, both before the runner reaches them
+  (2.85, 3.10 s).
+
+  Ace12 WZ Weak/Under and the recorded climb-traffic fixture keep their
+  installation exactly. In WZ/Under:
+  - RT already collects the Will at 2.30 s, before the runner (2.50 s);
+  - C misses the Mike (closest 0.75 yd);
+  - LT's nickel is not reachable.
+
+  **Decided (Move 4, 2026-10-26): SEAL_HOLD stays on for climbers.** With
+  his hands loaded on a moving backer, a climber keeps the offset he caught
+  him at instead of working to the backer's play-side shoulder (at 2.00 s in
+  the controlled climb, C/LG on DT_W, LG to LB_W, LG asks for +2.42 yd/s
+  sideways with SEAL_HOLD off and +0.40 with it on). That is the football
+  answer: a blocker who catches a moving backer takes him where he is going,
+  and the runner cuts off it. Main Engine's alternative (scope the hold to a
+  man resisting laterally) is noted on #284; revisit it only after PHY-1's
+  force-velocity fix changes the carry.
+
+  The seven scenes the prototype recorded before #281 were pinned to
+  `SEAL_HOLD=0`; the pins are removed and the scenes re-baselined on today's
+  defaults:
+  - the three combo-strike-access scenes: RG now strikes LB_M at 2.20 s
+    instead of 2.35 s, so the near-strike decision is staged at 2.15 s; RT
+    keeps DT_S to 2.65 s without him falling;
+  - the two coupled-World climbs: the backer is loaded with the runner more
+    than 4 yd short, and the keeper holds through the runner reaching the
+    first level. The scripted runner holds a fixed line into the backer's
+    scrape instead of cutting off the block, so the scene ends at the first
+    level rather than past the backer;
+  - the two mirrored unsafe-release controls: the keeper now holds DT_S on
+    his caught leverage, so the climber's exit is no longer obstructed and
+    is not assessed as unvalidated, but DT_S still makes first contact on
+    the runner (2.45 s). The unvalidated label keeps its own unit test.
+
+  In the two native develop cases, SEAL_HOLD stops neither climb; turning it
+  off mostly frees the down linemen.
+
+  **Ordinary set.** Declared before any treatment result:
+  `scripts/diag/zone-climb-ordinary.ts`, the first 10 inside, outside, wide
+  and split zone runs of normal games 7 and 8, nothing dropped. Each was
+  replayed from identical setup bytes on develop `b559fdc5` and on #284.
+  - The counting changes no installation among the 20 plays. It repairs the
+    constructed case only.
+  - The ported prototype works 12 of 36 installed backers before the runner
+    reaches them, against 9 on develop: S7-P044, S8-P012 and S8-P025. None is
+    lost.
+  - Keepers hold the same men at runner arrival in both trees. The same two
+    losses (S7-P018, S8-P049) occur on both.
+  - On S7-P044, the first changed command is RT's held preparation on DT_S at
+    0.75 s (sideways 1.41 → 1.14 yd/s). The consequential one is LG's release
+    to LB_W at 1.50 s. On develop it is rewritten by spacing into a backward
+    step (−0.64 yd/s at 1.60 s) and never arrives. On #284 it is a detour
+    around the bodies in its way: 3.9–4.4 yd/s, engaging LB_W at 2.25 s,
+    before the runner (2.55 s).
+  - S8-P036 is the strongest adverse case (4.8 → 2.7 yd). LT's held
+    preparation on DT_W keeps him on that man until 3.05 s instead of
+    2.55 s, the runner's path shifts and SS tackles at 3.25 s. Protection is
+    not lost.
+  - The remaining 24 backers are not worked:
+    - 16 releases come 1.2–2.2 s after the snap with the backer 4–6 yd away,
+      and the runner arrives about a second later;
+    - 4 doubles never release;
+    - 3 release after the runner arrives;
+    - 1 reaches the backer without engaging.
+
+    The next stage is release timing and access, not installation.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
@@ -1503,6 +1622,16 @@ From the issue register:
   the capped alley fit, or chase. Judge against a matched halfback pass,
   stalk-then-release and delayed route, and keep force/alley duties. Not a
   special case for Toss or this receiver. Coverage with Defense.
+- **Re-qualified** (`b559fdc5`, [design](reviews/cov7-support-choice.md)):
+  both arms still activate at 0.65 s on the same pictures; PA is unchanged.
+  The run benefit (corner wraps, 6.26 → 4.85 yd) holds only under the
+  fixture test's `EDGE_CONTAIN=0 SEAL_HOLD=0`; on today's defaults (since
+  #275) he never touches the runner. With the look sold until 1.3 s the
+  bitten corner intercepts PA Shot from 4 yd inside Z on `b559fdc5` (see
+  BALL-1); after #283 (COV-6) Z drops it instead, and nothing else in the
+  arms changes beyond 0.1 yd. The
+  design for the leave-or-stay choice and the evidence its code PR owes are
+  in the review; code waits for COV-6.
 
 ## Ball and quarterback
 
@@ -1529,6 +1658,15 @@ From the issue register:
   sitting on a short out is real football. At these rates it suggests the
   throw decision ignores a defender squatting on the route, or that the
   quick out's 6.3-yd stem (COV-3) gives him too long to break.
+- **A matched reproducer, pinned to develop `b559fdc5`** (COV-7 PA Shot,
+  look until 1.3 s, support arm; [review](reviews/cov7-support-choice.md#results)):
+  the QB throws Z's sideline break with an interception risk of 0.03 while
+  the corner is 4.0 yd inside and level, recovering into the ball's line. He
+  intercepts 2.0 yd short of Z. Since #283 the throw leaves 0.05 s later to a
+  point 2 yd shorter, and Z drops it; the risk is still 0.04. *Hypothesis:*
+  the risk estimate doesn't weigh an inside defender already closing on the
+  lane. The pick depends on the release to within 0.05 s, so it's a fragile
+  reproducer.
 
 <a id="ball-2"></a>
 ### BALL-2: Throws always leave from standing height
@@ -1878,6 +2016,31 @@ From the outside audit (`audit`):
   TKL-5).
 - **Run recognition uses the global handoff time** (`recognition.ts`), whether
   or not the defender could see the mesh.
+  *Landed* (#280): run/pass ball cues come from the defender's pictures (a
+  seen throw, a backfield player seen holding it at or behind the line, the
+  QB seen carrying past it); a seen give latches until a throw (#282).
+- **Move 1 landed (2026-10-25):** #274 replaced #260 with an acquired
+  scramble cue (`qbRunning`: the pictured QB carrying toward the line faster
+  than 2.5 yd/s near the pocket front, or 1.5 yd outside his tackles moving
+  downfield; man and deep defenders stay on their men until he crosses).
+  #282 recomposed #256: engaged run contacts key the holder in their own
+  pictures (the blocker on them is felt, not read for the ball), and an edge
+  plays a cutback he saw develop inside him without waiting for the runner to
+  clear the line. Matched arms: all within noise. Guard debt left: the
+  `sawThrow` reaction gate on `throwAt` (`defense.ts`, with COV-6), the
+  blockers' own pass-pro lifecycle in `engagement.ts` (offense side), and the
+  `run-fits.ts` legacy fallback.
+- **Open: no give cue for a non-backfield carrier** (jet sweep, end-around).
+  The give cue watches only backfield spots, so a handoff to a motion
+  receiver reaches defenders through the QB's empty hands and the runner's
+  later picture. Watching every receiver for the ball breaks the attention
+  boundary (a defender queries only his keys). Design question: which
+  defenders key a jet motion man through the mesh, and at what cost to their
+  other reads. Related: COV-4.
+- **Open: the scramble choice is binary.** Tanner (2026-10-25): an
+  underneath defender's call between coming up on a scrambling QB and staying
+  on his man is a feel read with a real price either way; make it a
+  cost-bearing choice when the decision-layer work starts.
 
 These break the model rule that players act on acquired, delayed information.
 
