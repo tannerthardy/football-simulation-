@@ -133,3 +133,42 @@ stop and write down the missing piece.
 **Fresh panel** (after freezing): seeds 15 and 16, the first 12 designated
 runs of each in order, no filtering, every arm, once. A failure returns the
 read to development and spends the seeds.
+
+## Attempt 1 result (passive read check): fails
+
+On 1,653 designed-phase threat-beats with persistent visible contact
+(develop trajectories, 210 plays):
+
+| | two-beat read (`T_trend(aim) ≥ H` = held) | snapshot 0.7 s credit |
+| --- | --- | --- |
+| "Held" was right (still engaged at +0.5 s, never within 1.5 yd) | 78% (1,183 / 1,524) | 81% (1,112 / 1,370) |
+| Sheds within 0.5 s flagged as not held | 6% (6 / 107) | 38% (41 / 107) |
+
+It is worse on both, so it fails the predeclared criterion before any
+treatment. On the named cases:
+- holds: correct for DT_S (∞ at the aim); DT_W is unknown at 1.25, because
+  his contact is not yet two beats old;
+- loses late: wrong on all three. At the aim, `T_trend` is 6.7 s, ∞ and
+  11.0 s, so the read calls each "held";
+- only looks beaten: correct on both, where the snapshot wrongly says
+  "coming through".
+
+A defender about to shed is still making slow progress toward the aim, so the
+approach rate does not foresee the shed.
+
+## Attempt 2 (predeclared here, after seeing the named cases' values)
+
+**Disclosure.** Before writing this I looked at the named cases'
+blocker-relative positions in the attempt-1 log. The named cases are
+therefore not blind for attempt 2. The aggregate check below had not been
+computed when it was written.
+
+**Gaining** = persistent visible contact with blocker b, and either:
+- **on the blocker:** with û from b toward the runner, his lead
+  `λ = (d − b) · û` is rising and projected to clear the blocker's body
+  within the horizon: `λ_k > λ_{k−1}` and
+  `λ_k + (λ_k − λ_{k−1}) / Δ · H ≥ r_b + r_d`; or
+- **on the runner:** `T_trend(runner position) < H`.
+
+**Held** = persistent contact and not gaining. The same aggregate criterion
+as attempt 1 applies, and so do the same named-case requirements.
