@@ -25,6 +25,7 @@ import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
+import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
 import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 
@@ -441,14 +442,17 @@ export class ManCoverage implements Behavior {
     const tgt = { x: tx, y: ty };
     const cs = 0.85 + 0.35 * a.r('manCoverage');
     const command = this.hipsOpen
-      ? track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') })
-      : track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
+      ? withFacingTechnique(track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') }),
+        { label: 'man-open', key: seen.vel })
+      : withFacingTechnique(track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 }),
+        { label: 'man-pedal', key: seen.vel });
     if (!o.protectDepth) return command;
     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
       : vx > 3 && deep > 3 ? cushion * .5 : cushion;
     const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
-    return selected;
+    return selected.facing === undefined && command.facing !== undefined
+      ? withFacingTechnique(selected, { label: 'man-depth-run', key: seen.vel }) : selected;
   }
 }
 
@@ -576,7 +580,8 @@ export class ZoneCoverage implements Behavior {
         let tgt = lm;
         // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
         if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
-        return goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs });
+        return withFacingTechnique(goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs }),
+          { label: 'deep-read' });
       }
       vert.sort((p, q) => q.fut.x - p.fut.x);
       const deepest = vert[0];
@@ -592,7 +597,8 @@ export class ZoneCoverage implements Behavior {
         const drive = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: deepest.pos.y + deepest.vel.y * 0.4 };
         if (a.mind.focus * (0.4 + 0.6 * a.r('playRecognition')) > 0.35) {
           const aim = a.mind.aim('zone-drive', drive, sim.t);
-          return track(a, { x: aim.x, y: clamp(aim.y, 0.5, FIELD_WIDTH - 0.5) }, { x: deepest.vel.x, y: deepest.vel.y }, { facing: facingQB, speed: zs * 1.05, gain: 2.2 });
+          return withFacingTechnique(track(a, { x: aim.x, y: clamp(aim.y, 0.5, FIELD_WIDTH - 0.5) }, { x: deepest.vel.x, y: deepest.vel.y },
+            { facing: facingQB, speed: zs * 1.05, gain: 2.2 }), { label: 'deep-drive', key: deepest.vel });
         }
       }
       // Stay 2–3 yards over the top: deep enough not to be beaten vertically,
@@ -619,16 +625,17 @@ export class ZoneCoverage implements Behavior {
       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
       this.selectTarget(a, deepest.r);
-      const command = track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
+      const command = withFacingTechnique(track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
         facing: turnRun ? undefined : facingQB,
         speed: turnRun ? 1 : zs * 1.05,
         gain: 1.8,
-      });
+      }), { label: turnRun ? 'deep-turn-run' : 'deep-over', key: deepest.vel });
       let depth = this.depthReads.get(deepest.r);
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
       const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
-      return selected;
+      return selected.facing === undefined && command.facing !== undefined
+        ? withFacingTechnique(selected, { label: 'deep-depth-run', key: deepest.vel }) : selected;
     }
 
     // Low red-zone Cover 2: the corner sinks under #1 with outside leverage
@@ -646,8 +653,10 @@ export class ZoneCoverage implements Behavior {
         this.selectTarget(a, key.r);
         const tgt = { x: Math.max(sim.los + Math.min(2.5, this.initialDepth), key.pos.x - 0.8),
           y: clamp(key.pos.y + sign * 0.45, 0.5, FIELD_WIDTH - 0.5) };
-        return track(a, tgt, { x: key.vel.x * 0.85, y: key.vel.y * 0.9 }, {
-          facing: key.vel.x > 3 && a.pos.x - key.pos.x < 1.5 ? undefined : facingQB, speed: zs * 1.1, gain: 2 });
+        const run = key.vel.x > 3 && a.pos.x - key.pos.x < 1.5;
+        return withFacingTechnique(track(a, tgt, { x: key.vel.x * 0.85, y: key.vel.y * 0.9 }, {
+          facing: run ? undefined : facingQB, speed: zs * 1.1, gain: 2 }),
+          { label: run ? 'low-flat-run' : 'low-flat', key: key.vel });
       }
     }
 
@@ -681,7 +690,9 @@ export class ZoneCoverage implements Behavior {
       // then turn and run with him.
       const tgt = { x: Math.max(th.pos.x + 1.5, a.pos.x - 0.5), y: th.pos.y + inside(th.pos.y) * 0.9 };
       const runPast = th.vel.x > 4.5 && a.pos.x - th.pos.x < 2.5;
-      return track(a, tgt, { x: th.vel.x, y: th.vel.y }, { facing: runPast ? undefined : facingQB, speed: runPast ? 0.92 + 0.08 * a.r('zoneCoverage') : zs * 1.1, gain: 1.8 });
+      return withFacingTechnique(track(a, tgt, { x: th.vel.x, y: th.vel.y }, { facing: runPast ? undefined : facingQB,
+        speed: runPast ? 0.92 + 0.08 * a.r('zoneCoverage') : zs * 1.1, gain: 1.8 }),
+        { label: runPast ? 'carry-run-past' : 'carry-wall', key: th.vel });
     }
     let best: (typeof threats)[number] | null = null;
     let bd = Infinity;
@@ -726,9 +737,9 @@ export class ZoneCoverage implements Behavior {
           const across = Math.abs(flat.vel.y) > 3 && Math.abs(flat.vel.y) > Math.abs(flat.vel.x);
           const tgt = { x: Math.min(lm.x, Math.max(a.pos.x, flat.pos.x + 1)),
             y: clamp(flat.fut.y + sign * 0.6, 0.5, FIELD_WIDTH - 0.5) };
-          return track(a, tgt, { x: Math.max(0, flat.vel.x) * 0.5, y: flat.vel.y * 0.9 }, {
+          return withFacingTechnique(track(a, tgt, { x: Math.max(0, flat.vel.x) * 0.5, y: flat.vel.y * 0.9 }, {
             facing: across ? Math.atan2(flat.vel.y, flat.vel.x) : facingQB,
-            speed: across ? 1 : zs * 1.05, gain: 1.8 });
+            speed: across ? 1 : zs * 1.05, gain: 1.8 }), { label: across ? 'flat-across' : 'flat-expand', key: flat.vel });
         }
       }
     }
@@ -736,7 +747,7 @@ export class ZoneCoverage implements Behavior {
     if (!best) {
       let tgt = lm;
       if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.25 * a.r('anticipation'));
-      return goTo(a, tgt, { facing: facingQB, speed: zs });
+      return withFacingTechnique(goTo(a, tgt, { facing: facingQB, speed: zs }), { label: 'zone-landmark' });
     }
     const lane = lerp(qb.pos, best.pos, 0.82);
     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
@@ -747,8 +758,9 @@ export class ZoneCoverage implements Behavior {
     // QB. Treating gaze as hip orientation forced him to shuffle at ~60% of
     // top speed forever, even after accepting the route into his zone.
     const carryingAcross = Math.abs(best.vel.y) > 3 && Math.abs(best.vel.y) > Math.abs(best.vel.x);
-    return track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
-      facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 });
+    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
+      facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 }),
+      { label: carryingAcross ? 'lane-carry' : 'lane', key: best.vel });
   }
 
   /**
@@ -766,8 +778,12 @@ export class ZoneCoverage implements Behavior {
       // Until he has read pass he is in his read step: eyes and chest stay
       // on the backfield. Turning to run before the read turned his back on
       // a run, and on a quick throw he could not yet have keyed.
-      const turned = toSpot > 4 && knowsPass(sim, a);
-      return goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: turned ? undefined : facingQB });
+      // He gathers and re-squares before the spot, not on it: the rounded
+      // hip turn back to the QB takes time he must start early.
+      const resquare = Math.hypot(a.vel.x, a.vel.y) * roundedTurnTime(a, Math.PI) * 0.5;
+      const turned = toSpot > 4 + resquare && knowsPass(sim, a);
+      return withFacingTechnique(goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: turned ? undefined : facingQB }),
+        { label: turned ? 'spot-drop-run' : 'spot-drop' });
     }
     a.tags.add('settled');
     const read = 0.5 * a.r('zoneCoverage') + 0.5 * a.r('anticipation');
@@ -794,7 +810,8 @@ export class ZoneCoverage implements Behavior {
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
-    return goTo(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { facing: facingQB, speed: 0.7 + 0.15 * a.r('zoneCoverage') });
+    return withFacingTechnique(goTo(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { facing: facingQB, speed: 0.7 + 0.15 * a.r('zoneCoverage') }),
+      { label: 'spot-settle' });
   }
 }
 
