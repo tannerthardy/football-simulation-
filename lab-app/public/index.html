@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play Lab</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="brand">Play Lab</div>
+  <input id="scenario-name" class="name" value="Untitled play" aria-label="Scenario name">
+  <button id="new" title="Start a new play in the builder">New play</button>
+  <button id="save" title="Save this scenario to out/lab/scenarios">Save</button>
+  <button id="run" class="primary" title="Run this play on the engine (R)">▶ Run play</button>
+  <label class="inline">Seed <input id="seed" type="number" min="0" max="4294967295" value="1"></label>
+  <button id="seed-next" title="Next seed and run">Next seed</button>
+  <label class="inline" title="How many seeds the batch runs, starting at the seed above">Batch <input id="batch-count" type="number" min="2" max="500" value="20"></label>
+  <button id="batch" title="Run many seeds of this exact setup">Run batch</button>
+  <span id="status" class="status"></span>
+  <span id="engine" class="engine"></span>
+</header>
+
+<main>
+  <aside id="left">
+    <nav class="tabs" data-for="left">
+      <button data-tab="build" class="on">Build</button>
+      <button data-tab="players">Players</button>
+      <button data-tab="runs">Runs</button>
+      <button data-tab="notes">Notes</button>
+      <button data-tab="library">Library</button>
+    </nav>
+
+    <section data-pane="build" class="pane on">
+      <h3>Offense</h3>
+      <label>Formation <select id="formation"></select></label>
+      <div class="row">
+        <label class="radio"><input type="radio" name="kind" value="pass" checked> Pass</label>
+        <label class="radio"><input type="radio" name="kind" value="run"> Run</label>
+        <label class="radio"><input type="checkbox" id="flip"> Flip</label>
+      </div>
+      <label>Play <select id="concept"></select></label>
+      <label class="radio"><input type="checkbox" id="audibles"> Let the QB check out at the line</label>
+
+      <h3>Defense</h3>
+      <label>Personnel <select id="def-personnel"></select></label>
+      <label>Front <select id="front"></select></label>
+      <label>Coverage <select id="coverage"></select></label>
+      <label>Pressure <select id="pressure"></select></label>
+      <label>Zone technique <select id="zone-style"><option value="match">Pattern match</option><option value="spot">Spot drop</option></select></label>
+
+      <h3>Situation</h3>
+      <div class="row">
+        <label>Down <select id="down"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+        <label>To go <input id="distance" type="number" min="1" max="99" value="10"></label>
+      </div>
+      <div class="row">
+        <label>Ball on <select id="side"><option value="own">Own</option><option value="opp">Opp</option></select></label>
+        <label>&nbsp;<input id="yard" type="number" min="1" max="50" value="30"></label>
+        <label>Hash <select id="hash"><option value="left">Left</option><option value="middle" selected>Middle</option><option value="right">Right</option></select></label>
+      </div>
+
+      <h3>Rosters</h3>
+      <div class="row">
+        <label>Roster seed <input id="roster-seed" type="number" min="0" value="7"></label>
+        <label>Team strength <input id="strength" type="range" min="0.3" max="0.9" step="0.05" value="0.6"><output id="strength-out">0.60</output></label>
+      </div>
+
+      <h3>Alignment</h3>
+      <p class="hint">Click <b>Arrange</b>, then drag any player on the field. Each move is recorded as a <span class="coach">coach's hand</span> change and drawn on the replay.</p>
+      <div class="row"><button id="arrange">Arrange players</button><button id="reset-align">Reset alignment</button></div>
+      <ul id="interventions" class="list"></ul>
+
+      <details>
+        <summary>Engine switches</summary>
+        <p class="hint">Each switch set runs in its own engine worker. Changed switches are saved with the scenario.</p>
+        <input id="flag-filter" placeholder="Filter switches…">
+        <div id="flags" class="flags"></div>
+      </details>
+    </section>
+
+    <section data-pane="players" class="pane">
+      <p class="hint">Swap who plays a spot, or change a player's ratings and measurables. Changes are saved with the scenario.</p>
+      <div id="lineup"></div>
+      <div id="editor"></div>
+    </section>
+
+    <section data-pane="runs" class="pane">
+      <div id="batch-progress"></div>
+      <div id="batch-summary"></div>
+      <h3>This session's runs</h3>
+      <p class="hint">Pick A and B to compare side by side.</p>
+      <table id="run-list" class="table"></table>
+    </section>
+
+    <section data-pane="notes" class="pane">
+      <button id="note-new" class="primary">✎ Note this moment (N)</button>
+      <form id="note-form" class="note-form" hidden>
+        <label>What kind of problem?
+          <select id="note-category">
+            <option>bad decision</option><option>impossible physics</option><option>wrong information</option>
+            <option>missing technique</option><option>looks great</option><option>other</option>
+          </select></label>
+        <div class="row">
+          <label>From <input id="note-from" type="number" step="0.05"></label>
+          <button type="button" id="note-from-now">= now</button>
+          <label>To <input id="note-to" type="number" step="0.05"></label>
+          <button type="button" id="note-to-now">= now</button>
+        </div>
+        <div id="note-players" class="hint"></div>
+        <textarea id="note-text" rows="5" placeholder="What did you see? What should have happened?"></textarea>
+        <div class="row"><button class="primary" type="submit">Save note</button><button type="button" id="note-cancel">Cancel</button></div>
+      </form>
+      <div id="notes"></div>
+    </section>
+
+    <section data-pane="library" class="pane">
+      <h3>Saved scenarios</h3>
+      <div id="library"></div>
+      <h3>Import a saved game play</h3>
+      <p class="hint">Plays captured from a game (<code>play.bin</code> under <code>out/</code>) replay exactly.</p>
+      <div id="saved-plays"></div>
+    </section>
+  </aside>
+
+  <section id="center">
+    <nav class="tabs views">
+      <button data-view="all22" class="on">All-22</button>
+      <button data-view="endzone">End zone</button>
+      <button data-view="playercam">Player cam</button>
+      <button data-view="compare">Compare A | B</button>
+      <span class="spacer"></span>
+      <span id="banner" class="banner"></span>
+    </nav>
+    <div id="stage">
+      <canvas id="canvas-a"></canvas>
+      <canvas id="canvas-b" hidden></canvas>
+      <div id="empty" class="empty">Build a play on the left, then press <b>▶ Run play</b>.</div>
+    </div>
+    <div id="transport">
+      <button id="play" title="Play / pause (space)">▶</button>
+      <button id="back" title="Back one frame (←)">⏮</button>
+      <button id="fwd" title="Forward one frame (→)">⏭</button>
+      <select id="speed" title="Playback speed"><option value="0.1">0.1×</option><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select>
+      <div id="scrub"><div id="ticks"></div><input id="time" type="range" min="0" max="1" step="0.001" value="0"></div>
+      <span id="clock" class="clock">0.00s</span>
+      <button id="copy-ref" title="Copy a reference that restores this exact moment">Copy reference</button>
+    </div>
+    <div id="lower">
+      <div id="events-box">
+        <div class="box-head">Events <label class="inline"><input type="checkbox" id="events-all"> all</label></div>
+        <ol id="events"></ol>
+      </div>
+      <div id="controls-box">
+        <div class="box-head">Layers</div>
+        <div id="layers" class="checks"></div>
+        <div class="box-head">Filter (others dimmed)</div>
+        <div class="row">
+          <select id="f-team"><option value="all">Both teams</option><option value="O">Offense</option><option value="D">Defense</option></select>
+          <select id="f-group"></select>
+        </div>
+        <label>Within <input id="f-near" type="range" min="0" max="30" step="1" value="0"> <output id="f-near-out">any distance</output> of the ball</label>
+        <label class="radio"><input type="checkbox" id="jerseys"> Show jersey numbers</label>
+      </div>
+    </div>
+  </section>
+
+  <aside id="right">
+    <div id="player-panel"><p class="hint">Click a player to follow him. Shift-click a second player for notes.</p></div>
+  </aside>
+</main>
+<div id="toast" class="toast" hidden></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

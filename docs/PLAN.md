@@ -109,17 +109,29 @@ Set on 2026-10-23 from the outside audit; the findings are in
 [KNOWN_PROBLEMS.md](KNOWN_PROBLEMS.md). Each step is small and judged on
 restaged plays with a control:
 
-1. **Tools, with games identical** (F1): a fixed actor build order and
-   slot-keyed error streams, a record of who owned each command (PERF-6), the
-   mechanics guard and data tests in CI (PERF-3), scorecard wording (PERF-4).
-2. **Seam repairs** (G10): aims tied to their target (ACT-1); both routes to
-   the true ball carrier fixed together, and #238's hidden gate (INFO-1); one
-   reach geometry for standing, lunge, dive and hold (TKL-5, with QB-3 and
-   TKL-1).
-3. **COV-6** for Coverage, after ACT-1 or alongside it.
+1. **Tools, with games identical** (F1). *Done* (#249, #250, #252–#254, #257,
+   #262, #265, #270): a fixed actor build order and slot-keyed error streams, a
+   record of who owned each command (PERF-6), the mechanics guard and data
+   tests in CI (PERF-3), scorecard wording (PERF-4), saved-play capture and
+   replay, and the film-scout and paired-scout review queues.
+2. **Seam repairs** (G10). *In progress.* Aims tied to their target (ACT-1)
+   landed in #251. #238's hidden gate now reads acquired pose (#258). Both
+   routes to the true ball carrier (INFO-1, #260) and one reach geometry for
+   standing, lunge, dive and hold (TKL-5, #264, with QB-3 and TKL-1) are held
+   for rework: each removed a leak or a wrong rule correctly but also removed
+   something a real player has (a scramble cue, the laid-out body), and the
+   matched plays showed it. #256 (engaged work-off) waits on #260.
+3. **COV-6** for Coverage. ACT-1 has landed, so it can start; the turning
+   measurement in #255 is held.
 4. **The first adaptation test:** the P029 corner (COV-7). From what he has
    seen, he may stay in man, take his capped alley fit, or chase, and he pays
-   a real price when it's a halfback pass or a stalk-and-release.
+   a real price when it's a halfback pass or a stalk-and-release. Its
+   abandonment-cost fixture landed in #271; the pilot (#269) is next.
+
+**Rule from the latest reviews:** a PR that removes a leak adds back, in the
+same PR, what a real player could see or do. Judge it on matched plays (same
+seed, bodies and call), not only on the card, because the card mixes the
+mechanism with game divergence.
 
 The decision-layer question, one shared chooser or role-specific policies,
 waits until these are done. Success is defined in football terms: a player

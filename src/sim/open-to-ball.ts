@@ -11,6 +11,7 @@ import { commandFacing, type MoveCommand } from '../physics/kinematics.js';
 import type { Agent } from './agent.js';
 import { believesRun } from './behaviors/defense.js';
 import type { PlaySim } from './playsim.js';
+import { observedHolder, qbRunning } from './possession-read.js';
 
 /** A turn endpoint further than this from the ball is facing away. */
 const AWAY = 5 * Math.PI / 6;
@@ -20,15 +21,15 @@ const STEP = 2 * Math.PI / 3;
 const RANGE = 10;
 
 export function openToBall(a: Agent, sim: PlaySim, command: MoveCommand): MoveCommand {
-  const c = sim.carrier;
-  if (!c || c.team === a.team || sim.ball.kind !== 'held' || a.engagement || a.isDown(sim.t)) return command;
+  if (sim.ball.kind !== 'held' || a.engagement || a.isDown(sim.t)) return command;
   if (sim.bond?.tacklers.includes(a)) return command;
-  // Run phase only: a pocket QB is not the threat a coverage player turns on.
-  if (c === sim.qb && !sim.scrambled && !believesRun(sim, a)) return command;
   // He opens to the ball he has seen, not to the true possession: a fake or
   // a handoff he hasn't picked up leaves his turn as requested.
-  const seen = sim.see(a, c);
-  if (seen.carrying !== true) return command;
+  const read = observedHolder(a, sim);
+  if (!read) return command;
+  const { target: c, cue: seen } = read;
+  // Run phase only: a pocket QB is not the threat a coverage player turns on.
+  if (c === sim.qb && !believesRun(sim, a) && !qbRunning(a, sim)) return command;
   const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
   if (Math.hypot(dx, dy) > RANGE) return command;
   const ball = Math.atan2(dy, dx);

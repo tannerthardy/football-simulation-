@@ -38,10 +38,66 @@ much as on the line. Entries cross-reference each other where that matters.
 | `prof190` | #190's line set on develop (PAD_LEVERAGE, DL_ANCHOR, DL_FLATTEN, SNAP_REACT), 8 games, seeds 101–108. |
 | `prof194` | #194's candidate profile (13 flags in `config/baseline.json`), 8 games. |
 | `rg3` | The run-offense research build on `claude/run-game-v3` (archived; #153 is closed). Its numbers don't certify develop. |
-| `audit` | The outside audit (2026-10-23) on develop `c4a03f6`: one seed-7 game (Ironmen v Comets, strength .55, 127 live plays), each play restaged exactly from its saved setup and changed one thing at a time. Its counts show that something happens and what causes it, not how often across a league. Play IDs are that game's; current `G1-P002` is a Comebacks pass, not TKL-4's older P002 clip. |
+| `audit` | The outside audit (2026-10-23) on develop [c4a03f6](https://github.com/tannerthardy/football-simulation-/commit/c4a03f6463eacb23ce63d01bd32b4f8b547b9bc0): one seed-7 game (Ironmen v Comets, strength .55, 127 live plays), each play restaged exactly from its saved setup and changed one thing at a time. Its counts support selected-case diagnoses, not league frequency or a shared cause for every similar-looking play. Play IDs are that game's; its `G1-P002` is a Comebacks pass, not TKL-4's older P002 clip. |
 | `NFL` | Mostly Big Data Bowl 2025 tracking (2022, weeks 1–9). The outcome bands are the scorecard's. |
 
-### Current: develop at `ccdb69cb`
+### Current: develop at `211db9cc`
+
+`npm run scorecard -- --tier pr` at seeds 7 and 8 (12 games each), 2026-10-25,
+after #248–#271. #251, #252, #258 and #267 change games, so these are new games,
+not a replay of the ones below. Seed 7 / seed 8:
+
+| Metric | Seed 7 | Seed 8 | NFL |
+| --- | --- | --- | --- |
+| Points / team-game | 34.7 | 36.6 | 21–23.5 (unsourced) |
+| Total yards / team-game | 434 | 456 | 320–345 (unsourced) |
+| Pass rate | 63.5% | 68.7% | 54.4–66.3% |
+| Yards / attempt | 9.57 | 9.80 | 6.35–7.89 |
+| Sack rate | 7.5% | 8.2% | 4.6–9.4% |
+| INT rate | 3.9% | 4.4% | 1.5–3.2% |
+| YAC / reception | 8.03 | 7.83 | 4.53–5.91 |
+| Rush yards / carry | 5.59 | 5.60 | 3.70–4.83 |
+| 10+ yd runs | 13.8% | 14.5% | 7.6–12.9% |
+| Runs of 20+ that reach 40 | 61.5% | 73.1% | 25–35% (unsourced) |
+| Missed + broken tackles / play | 0.26 | 0.26 | 0.11–0.16 (unsourced) |
+| 3rd-down conversion | 32.0% | 33.6% | 37–41% (unsourced) |
+| Accepted penalties / team-game | 3.96 | 3.67 | 4.77–6.53 (nflverse 2022) |
+
+YAC per catch rose from 6.87 / 7.19 to 8.03 / 7.83, and seed 7's old value
+sits below its new 90% interval (7.13–8.83). **No engine change in the window
+raises YAC; the move is sampling between two sets of diverged games** (Defense
+diagnosis, 2026-10-25, `scripts/diag/yac/`):
+
+- **Matched pass plays.** 2,154 scrimmage pass setups were captured from 24
+  ordinary games at `211db9cc` and replayed unchanged at `ccdb69cb`, at
+  `211db9cc` and at each engine merge between them (#250, #252, #251, #254,
+  #259, #258, #267, #271).
+  - Completions are identical (no flips).
+  - Separation at the catch (3.36 yd), catch depth (8.18 yd), catch to first
+    contact (0.90 s) and first-contact tackles (87%) are unchanged.
+  - YAC per catch goes 7.75 → 7.61 (paired −0.14, SE 0.10).
+  - Six of the eight merges leave every pass play's metrics identical; #258
+    changes one play's row (completion and YAC unchanged). Only #267 changes
+    pass plays: 453 of them, with changed catches split 163 up / 181 down.
+- **Whole games.** 24 games per arm, same seeds, at both endpoints: YAC
+  7.62 (90% 6.97–8.32) vs 7.74 (7.00–8.49). Defender energy at the snap, a
+  path matched setups can't see, is unchanged (median 0.966 both).
+- **Scale of chance.** An independent 12-game sample's YAC varies by about
+  0.6 yd (one game ranges 3.7–12.6), because long catch-and-runs dominate the
+  mean. The scorecard's two snapshots are independent samples once games
+  diverge: seed 7 moved 1.16, seed 8 0.64, both seeds 0.90, about 1.5 SD of
+  the difference. Reading an old point against the new sample's interval
+  ignores the old sample's own spread.
+- **Strongest adverse case** (#267, setup `10:0:124`, Gun Trips Slant-Flat vs
+  Cover 1). YAC 35.1 → 65.3, a touchdown instead of an FS tackle at 6.65 s.
+  The first changed command is the FS's pursuit, 0.2 s after the catch (frame
+  2.95 s, facing 4.20 → 4.21). It's a small pursuit difference compounding
+  over a long chase, as common in the other direction (largest: −44.0).
+
+Not a bug, and no separation change for Coverage. G3's YAC excess (about 7.7
+vs NFL 4.5–5.9) is the standing level, not a new regression.
+
+### Earlier: develop at `ccdb69cb`
 
 `npm run scorecard -- --tier pr` at seeds 7 and 8 (12 games each), 2026-10-23,
 after the film-review fixes (#235–#245). Seed 7 / seed 8, with the scorecard's
@@ -185,10 +241,10 @@ problem), resolved.
 | [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
 | [RUN-12](#run-12) | Run blockers lost on their assignments (film, Oct 23) | G2 | high | in work |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
-| [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#205) |
+| [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
 | [TKL-4](#tkl-4) | Defenders turn their backs on the ball carrier | G1 | medium | on |
-| [TKL-5](#tkl-5) | "Reach" means different things in each tackle branch | G1, G10 | high | open |
+| [TKL-5](#tkl-5) | "Reach" means different things in each tackle branch | G1, G10 | high | in work (#264 needs rework) |
 | [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work (G5, #215) |
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
@@ -199,8 +255,8 @@ problem), resolved.
 | [COV-3](#cov-3) | Coverage rules and calls not yet complete | G3 | medium | in work (#193) |
 | [COV-4](#cov-4) | Defenders react late to jet motion | G3 | low | on |
 | [COV-5](#cov-5) | Older coverage contracts that fail or are unproven | G3 | high | open (next for Coverage) |
-| [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | open (next for Coverage) |
-| [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | open |
+| [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | on (orientation technique); run-fit and ball-play turns open |
+| [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | in work (cost fixture #271; pilot #269) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
@@ -217,8 +273,8 @@ problem), resolved.
 | [CALL-2](#call-2) | Defensive calls read raw ratings that aren't on one scale | G7 | medium | on |
 | [CALL-3](#call-3) | Pressure rate ignored the coverage shell | G7 | low | on |
 | [CALL-4](#call-4) | The play-caller reads the roster, not the players on the field | G7 | low–medium | open |
-| [INFO-1](#info-1) | Players use information they couldn't have seen | G10 | high | open |
-| [ACT-1](#act-1) | Aims outlive the target they were made for | G10 | medium | open |
+| [INFO-1](#info-1) | Players use information they couldn't have seen | G10 | high | in work (#258 landed; #260 needs rework) |
+| [ACT-1](#act-1) | Aims outlive the target they were made for | G10 | medium | on (#251) |
 | [PHY-1](#phy-1) | Contact and hand physics limits | F2, G5 | medium | open |
 | [PHY-2](#phy-2) | Movement detail that's costly or unproven | F2 | low | open |
 | [RAT-1](#rat-1) | Ratings and capability mappings uncalibrated | — | medium | open |
@@ -228,10 +284,10 @@ problem), resolved.
 | [GAME-2](#game-2) | Remaining accounting limits | — | low | open |
 | [PERF-1](#perf-1) | Games are slow to simulate | F2 | high | open |
 | [PERF-2](#perf-2) | Measurement noise and tooling limits | F1 | medium | open |
-| [PERF-3](#perf-3) | The mechanics guard passes on missing data; Python tests not in CI | F1 | medium | open |
-| [PERF-4](#perf-4) | Scorecard labels claim more than they show | F1 | low | open |
+| [PERF-3](#perf-3) | The mechanics guard passes on missing data; Python tests not in CI | F1 | medium | resolved (#249, #253) except one comment |
+| [PERF-4](#perf-4) | Scorecard labels claim more than they show | F1 | low | resolved (#257) |
 | [PERF-5](#perf-5) | Film detectors' precision unknown | F1 | medium | open |
-| [PERF-6](#perf-6) | The same lineup in a different order plays a different game | F1 | medium | open |
+| [PERF-6](#perf-6) | The same lineup in a different order plays a different game | F1 | medium | resolved (#250, #252) |
 | [VIEW-1](#view-1) | Reviewing film is hard and can mislead | F1 | medium | open (long-term) |
 | [REPO-1](#repo-1) | Repository and process debt | — | medium | open |
 | [MISS-1](#miss-1) | Football that isn't modeled yet | G7, G8 | — | open |
@@ -290,6 +346,10 @@ problem), resolved.
   (#190, off) keeps deep defenders from taking force.
 - **Where:** `run-fits.ts`, `defense.ts`; `scripts/diag/long-run.py`.
 - **Open:** whether fixing RUN-1 lets the safeties stay deep on their own.
+- **Not grip** (#217, Run Game `taillab.ts`). 32% (`GRIP_HOLD` off) and 38%
+  (on) of 40+ runs have no contact past 5 yd. The deep defender reaches the
+  runner in 41–42% of them, and breaks are 34–36% either way. The tail is
+  about arrivals.
 
 <a id="run-3"></a>
 ### RUN-3: Double teams drive defenders back much too far
@@ -389,6 +449,9 @@ problem), resolved.
   - too many 9s and too few wide 9s;
   - no even or tite front in the nickel mix;
   - double-owned gaps in the installed Under, wide 9 and tite fronts (#194).
+    The nickel Under's empty weak C vs a second tight end is fixed
+    (`GAP_MATCH`, RUN-12); the doubled weak D (boxing end plus the Will's
+    force) remains by design as outside support.
 - **After the promotion** (2026-10-22): gap-scheme assignments haven't been
   checked against the aligned fronts (`FRONT_ALIGN`, `BOX_ALIGN`);
   `test/gap-assignment.test.ts` is pinned to the old fronts. This is G2.
@@ -582,6 +645,17 @@ Carried over from the issue register; each was measured on an older develop.
     10+ runs 15.0 vs 21.5%, missed + broken 0.32 vs 0.38 per play (all
     moved). A wrap pulled out to arm's length now holds as a hand hold, not
     with the wrap law (physics review note).
+  - **Independent check (Run Game, `4355cac`, off vs on):**
+    - `contactcost.py`, 8 games per arm, all contact zones pooled:
+      - Runs through first contact for 5+ yd: 47 → 26.
+      - Crowd speed at 0.3 / 0.6 / 1.0 s: 1.05 / 1.09 / 0.96 → 1.02 / 1.00 /
+        0.92, against NFL 0.92 / 0.86 / 0.75.
+      - Clean contacts still gain speed; in the NFL they lose about 3%.
+      - n 12–26: directional only.
+    - `taillab.ts`, 1,120 identical lab plays per arm:
+      - Runs reaching 20 yd: 82 → 60. Reaching 40 yd: 69 → 56.
+      - P(40 | 20) rises 84 → 93%, because the cut falls mostly on 20–39 yd
+        runs.
   - Staged scene pinned to `GRIP_HOLD=0` (re-record by review 2): the Cover 2
     vertical curl in `test/cover3-cover2-rules.test.ts`, where the end's grab
     now holds the QB until 3.2 s, before the 3.4 s read.
@@ -669,6 +743,46 @@ Carried over from the issue register; each was measured on an older develop.
   shape as a feasible point. Neither is shown to cause P002: its chosen
   points pass the bound. **Open:** return feasible vs fallback explicitly
   and log it, then compare candidate forecasts on frozen cases. Defense.
+- **Prediction interface:** [selected command traces](COMMAND_TRACE.md#inspect-pursuit-prediction-feasibility)
+  expose the sampled estimate vs fallback, horizon/arrival/slack and forecast
+  assumptions, including the existing bias/leverage applied after that test.
+  This is an approximate-estimator contract, with point selection and steering
+  unchanged. Forecast/steering repairs and any native link to the isolated
+  reach-bound violation remain open.
+- **Frozen arrival comparison:** [bounded operator and clock contract](reviews/pursuit-arrival-comparison.md)
+  separate the consumed forecast, held/fixed-goal World response and recorded
+  future runner. The approximate test can reject an earlier point that the
+  tested seek reaches and accept a later point that it misses. A miss under
+  that policy is not proof of optimal unreachability; a forecast-point arrival
+  is not a tackle. On #259's P002, the estimate budgets full effort while the
+  distant chase requests reduced effort. Matching that assumed request changes
+  the late arrival without changing capacities, but still misses the recorded
+  runner. No production correction or capacity change is made here.
+- **Request-budget repair:** [planning/execution contract](reviews/pursuit-effort-contract.md)
+  gives chase's estimator and emitted interception sprint the same speed/effort
+  request, preserving distant work-rate pacing. The forward model retains the
+  full physical drive/braking/cutting profile and handles above-budget momentum.
+  It leaves sampled versus biased/shaded objectives distinct, gather/navigation/
+  contact ownership intact, and generic reach consumers unchanged. The earlier
+  frozen comparison remains historical; transverse/forecast error and contact
+  span remain open, including the adverse P002 native ending.
+- **Landed** (#259, #263, #267): the feasible-vs-fallback return and its
+  trace, the frozen arrival comparison, and the shared speed/effort request.
+  Matched plays showed no systematic effect from #267: it makes planning and
+  execution agree, it doesn't make pursuers faster.
+- **Open from the #267 review** (2026-10-24):
+  - *The planner keeps the reduced budget too long.* A pursuer who closes
+    inside 12 yd switches to full effort, but the point he chose was planned
+    on the reduced budget, so the forecast is pessimistic until the next
+    replan and the aim point jumps when it comes.
+  - *Far pursuers jog on breakaways.* The distance rule (`dist > 12` →
+    effort 0.75 + 0.2 × work rate) ignores the game situation: a defender
+    who is the last man between a runner and the goal line paces himself
+    like one trailing a short gain. On P002 this is the likely reason a
+    32.3-yd run ending out of bounds became a 72.9-yd touchdown in the
+    matched replay. A real defender sprints when he is the last chance,
+    from what he can see (runner free, nobody ahead of him). Defense, G1;
+    judge on matched breakaways and a short-gain control.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
@@ -715,11 +829,12 @@ Carried over from the issue register; each was measured on an older develop.
 - **Open:**
   - P028 is an overrun on a cutback: the turn is toward the ball but long.
     That is run-fit flow speed, not turning.
-  - P002 SS (*fix on*, PR after #240): hips flipped ~100° in 0.2 s while his
-    velocity kept its lateral component for ~0.5 s. The earlier "braking is
+  - Earlier P002 SS (*fix on*, PR after #240): hips flipped ~100° in 0.2 s
+    while his velocity kept its lateral component for ~0.5 s. The earlier "braking is
     not the cause" (DB decel p90 6.6 vs NFL 5.6 yd/s²) is withdrawn as proof:
-    that operator is the largest smoothed speed loss anywhere in a play,
-    contact included, and can't say whether braking started on time. When a
+    this is a p90 across per-player-play maxima of filtered scalar speed
+    loss, including contact. It establishes neither lateral cutting capacity,
+    braking timing nor maximum hard-plant capability. When a
     command gives no facing, `commandFacing` faced the *requested* velocity at
     once. Above 2.5 yd/s the default facing now leads his actual path by at
     most 60°; below that he has planted and squares to the new heading.
@@ -727,12 +842,15 @@ Carried over from the issue register; each was measured on an older develop.
     keep orientation within 60° of travel 72% of frames (6+: 91%).
   - Turn *capability* is unproven either way. The NFL per-path fastest 0.2 s
     turn (p99 650–790°/s; sim ceiling 315–600°/s) comes from provider
-    orientation, where one 180° glitch sample reads as 1,800°/s, and both yaw
-    scripts count players with no roster match as DBs. Keeping the ceiling
+    orientation and cannot establish physiological capacity. One 180° glitch
+    sample reads as 1,800°/s, and both yaw scripts count players with no
+    roster match as DBs. Keeping the ceiling
     fixed during controller work is a controlled choice, not a proven NFL
-    capacity. Turn *frequency* is the problem (COV-6). In a one-body replay of
-    the recorded requests (`audit`), doubling yaw rate moved the SS's path
-    0.013 yd; doubling lateral capacity moved it 3.6 yd.
+    capacity. [COV-6](#cov-6) separately diagnoses requested-turn frequency.
+  - Native free sweep (`audit`, `G1-P002` SS at `c4a03f6`): the ordinary
+    motor with the recorded commands reproduces the path. Doubling yaw rate
+    moved it 0.013 yd; doubling lateral capacity moved it 3.6 yd. This is
+    selected-case parameter sensitivity, not calibration of either capacity.
   - Engaged defenders face their blocker (`audit`, `G1-P019` LB_W, exact
     restaging): engaged with the center at 4.40 s he faces 143° from the
     runner, because engagement technique (`engagement.ts`, near line 1436)
@@ -743,6 +861,8 @@ Carried over from the issue register; each was measured on an older develop.
     torque, and facing your blocker can be right. Open: whether a body-relative
     hand model lets him shed better facing the ball. Detector 2 skips engaged
     defenders.
+    This appearance change is distinct from the free sweep above; neither
+    establishes a common cause for all overruns or facing-away cases.
   - Remaining cases are mostly overruns at speed and defenders on the ground.
   - Man defenders on receivers with a run carrier nearby still watch their
     man; whether that is pass-first discipline or a late read is Defense's
@@ -789,6 +909,24 @@ Carried over from the issue register; each was measured on an older develop.
   before the throw). Removing a later SS hold on that play changed almost
   nothing. A correct fix can move yardage either way, so yardage can't judge
   it.
+- **First attempt, #264** (held for rework, 2026-10-24 review, two passes and
+  an independent matched probe):
+  - *Right:* the standing envelope. The old `c.r + d.r + d.reach` counted
+    the holder's radius on top of a reach already measured from his center;
+    for an LB on an RB the envelope goes 1.60 → 1.30 yd.
+  - *Missing:* the laid-out body. Lunges and dives now get no extra span, so
+    every grasp beyond arm's length becomes a full dive chosen on the last
+    reach cue. A horizontal tackler's hip-to-fingertip reach is about 1.5 yd
+    (QB-3's segment lengths), well past a standing arm. Matched probe:
+    dives 17 → 40, about 39 of 40 missed, yards per play 5.54 → 10.47.
+  - *Also open:* a retained hold reaches 1.30 yd from the ground point
+    against a realistic 1.5–1.9; `contactQuality` shrinks its denominator by
+    the holder's radius, dropping a typical grip from 0.59 to 0.25; other
+    consumers still disagree (interception stops at 1.34 yd against a 1.30
+    reach). Film from the PR also showed a P013 CB_S who reached the runner
+    and then slipped, a hold problem rather than a reach one.
+  - *Next:* keep the standing fix and add the layout span back in the same
+    change, with the grip and consumer radii, then re-run the matched probe.
 
 ## Pass protection
 
@@ -851,6 +989,15 @@ run plays with the assignment layer (`--telemetry full`):
     them off their corners;
   - P013 is a climb that overran a downhill backer, not a stale target;
   - P029 RT staying on the end is correct: the Y fell (inline ends below).
+  - **Nearby-help follow-up on accepted `27617221` (includes #258):** a
+    bounded ordinary seed-7 prefix produced 60 competing candidate/read vetoes
+    across 20 designed runs, not 60 missed blocks. No sole off-feet/departing
+    helper met the declared opportunity screen. Exact constructor replays of
+    P007 (Ace/Over) and P047 (Gun Wing/Under) retain useful first-level help;
+    P047's later corner is beyond the climber's native arrival window. No
+    helper-policy correction is supported by these cases. This is a bounded
+    negative finding, not a claim that proximity proves protection generally;
+    pending possession/work-off changes require their own source qualification.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
@@ -888,6 +1035,17 @@ run plays with the assignment layer (`--telemetry full`):
   - *Backside crack.* A receiver on the backside of a run cracks into the box
     instead of taking his man; a playside-only crack rule cut backside box
     stalks from 14 to 8 in a first restage. Not landed.
+    Current accepted `cac9e100` reproduction: seed-7 G1-P003, flipped Gun
+    Trips Outside Zone Weak with actual H-across motion, assigns detached Z
+    to backside LB_W and detached Y to NB; the box-first ledger explicitly
+    installs these jobs. Neither loads his target. Z's unassigned corner
+    stays at least 14.86 yd from RB, LB_W at least 4.46 yd; LB_M makes the
+    tackle from the separately installed C/RG combination responsibility.
+    No contradictory concept-specific crack/stalk rule or lost perimeter
+    protection is established in this case. Do not infer that every backside
+    crack is valid, or adopt playside-only eligibility from the old count.
+    The current LB_M access is a next witness, not proof of an unsafe/late
+    combo release. Helper policy and target/information contracts unchanged.
   - *P007 trap contact.* The end slips inside the trapper after contact;
     the approach is fixed, the contact is not.
   - *An inline end's first step and zone track.* He still runs his own
@@ -904,6 +1062,61 @@ run plays with the assignment layer (`--telemetry full`):
   first steps do move. On P025 the look comes after contact: the playside
   reach and his end drift together into the backfield. Not yet compared
   with tracking.
+- **Blocker and end slide down the line together** (run lane film, Ace12
+  weak wide zone vs Under, roster 7 / seed 1; Oct 25). *Fixed (on by
+  default, `EDGE_CONTAIN`).* After contact a reach blocker and a blocked edge
+  slid sideways in lockstep, 7.5 yd on that clip, while the back cut back
+  inside the end. The edge's contact aim was the blocker's live position
+  plus 0.65 yd outside, led by the blocker's own velocity, and a stretch
+  blocker matches the end's play-side speed, so each chased a point the other
+  moved. The edge now widens only as far as containing the back's observed
+  track (where it crosses his depth) needs; already wider, he holds. The
+  blocker side is unchanged. Restaged on the same snaps, 154 runs of seeds
+  7-9 (`scripts/diag/edge-contain-restage.ts`): edge reps carried 4+ yd
+  outside with the blocker 18 -> 7, those ending with the runner 3+ yd inside
+  the end 11 -> 0. The 7 left go with a runner going wide. Mean run yards
+  5.36 -> 4.67 (paired 90% interval -1.67 to +0.31).
+- **Nobody owned the gap between the weak tackle and a second tight end in
+  the nickel Under** (same clip; Oct 25). *Fixed (on by default,
+  `GAP_MATCH`).* Backers took open gaps nearest-first: the Will, the weak
+  curl-flat (force behind the boxing wide-9 end), picked the weak A as his
+  inside duty and the Mike the strong B, so the weak C was empty while the
+  rotated-down strong safety sat over the strong B. Backers now fill the open
+  gaps as a set. The gap left open is one an underneath support player still
+  covers on that side, never an unsupported or A gap, and distance breaks
+  ties. On that snap the Will fits the C inside the end (force only once the
+  back bounces outside him), the Mike slides to the weak A and the strong B is
+  the safety's, the Seattle/Kiffin Under and cover 3 fit. Over fronts now put
+  the Mike in the strong A instead of the C. Restaged on the same snaps, 250
+  runs of seeds 7-11 (`scripts/diag/flag-restage.ts`): backer fits changed on
+  110, results on 96. Mean run yards 4.51 -> 3.94 (paired 90% interval -1.06
+  to -0.09), 10+ yd runs 25 -> 19, stuffs 56 -> 56.
+- **A drive blocker runs the end he caught on the inside half out of the
+  play** (CEO restage of #275: seed 10 P46 Pistol Twin TE duo, Y on DE_S;
+  seed 10 P123 Twin TE duo, RT on DE_S; seed 11 P99 Gun Spread wide zone weak,
+  LT on DE_S; Oct 25). *Fixed (on by default, `SEAL_HOLD`).* The end was
+  working inside the whole rep (P46: commanded 4.1 yd/s inside from 0.6 to
+  2.7 s). The blocker had caught him on his inside half (lateral offset 1.1
+  to 1.5 yd) and the rep wanted him head-up (sealTarget 0; 0.31 yd on the
+  P99 stretch), so his seal correction ran him toward the end's outside at
+  his top lateral request (Y 3.82, RT 2.13, LT 3.01 yd/s) with the hands on.
+  The pair moved together, the offset never closed and the request stayed
+  pinned for about 2.5 s; the velocity lead in the offset moved the target
+  further out as the end was carried. Now, once his own felt load says the
+  hands are on, he keeps the leverage he caught the man with (the closest to
+  the wanted shoulder reached while loaded) and drives him on it; unloaded
+  closing keeps the old correction. Those snaps, end carried outward: P46
+  4.50 -> 2.76 yd, P123 4.05 -> 2.80, P99 4.34 -> 1.68. Restaged on the same
+  snaps, 250 runs of seeds 7-11 (`scripts/diag/seal-hold-restage.ts`): run
+  reps with blocker and defender carried 4+ yd the same way 78 -> 43; stretch
+  reps where the blocker reached play side and stayed there 283/359 (79%) ->
+  277/341 (81%); edges working outside on their own (mean commanded lateral
+  outward over 1 yd/s, 41 reps in both arms) still go outward 0.58 -> 0.56 yd
+  with the same lost-block endings. Results changed on 234 runs; median run
+  2.78 -> 2.66 yd, stuffs 56 -> 57, 10+ yd runs 25 -> 29, mean +1.26 yd
+  (paired 90% -0.18 to +2.70; capped at 20 yd +0.02, -0.58 to +0.62): the
+  mean moves with a few breakaways. The rest of the carry on P46 and P123 is
+  the open push question in PHY-1.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
@@ -1219,14 +1432,59 @@ From the issue register:
   stands.
 - **Priority:** Tanner (2026-10-23): handle next, ahead of other
   Coverage work.
-- **Open:** Coverage lane. Find which toggles flip most, and whether a real
-  DB's slower, rounded turn is a technique (open the hips gradually) the
-  controller should request. Keep the turn-rate ceiling. Measure body turn
-  and travel turn separately. Check ACT-1 (a stale aim after a receiver
-  switch) before blaming a technique.
+- **Which branches** (develop `6ae4bd87`, seeds 7 and 8, two games each,
+  `scripts/diag/coverage-turns.ts`, same windows as `yaw-sim.ts`): inside a
+  coverage technique, 4.0–4.2% of 2–4 yd/s windows had a 90°+ swing. The
+  man pedal-to-run flip (`hipsOpen`) led with 200–273 swings per two games,
+  then the seam carry's run-past, the deep turn-and-run and the depth
+  chooser dropping the facing. 703 of 705 technique swings turned the body
+  while travel turned less than 30°. A fresh match technique (a
+  `CoverageDefender` job change) also restarted `hipsOpen` and pedal facing.
+- **Tried:** orientation technique, `src/sim/coverage/orientation.ts`, on
+  in code. Each technique branch labels the facing it asks for
+  (`facingTechnique` in the command trace, stage `coverage-orientation`). The
+  defender keeps one orientation across coverage jobs: a change of state
+  (square, open with a receiver, run) is held for 0.3–0.5 s by anticipation
+  and focus unless his receiver's acquired heading breaks by 60°+; a turn
+  from a cue is a rounded hip turn at half the body's turn-rate ceiling, a
+  seen break gets the ceiling; running, the hips follow smoothed travel. The
+  ceiling is unchanged. Spot droppers start their re-square early enough to
+  arrive square. Result, 2–4 yd/s windows with a 90°+ swing: 2.82% → 0.89%
+  (seed 7), 2.52% → 0.75% (seed 8), NFL 0.34%; inside a technique 0.08–0.09%.
+  Yaw p90 at 2–4 yd/s 305 → 267°/s (NFL 106): the big turns still happen,
+  rounded over more frames. Staged controls
+  (`scripts/diag/coverage-turn-controls.ts`, 16 plays each): the flip on a
+  vertical still happens on 16/16 plays, about 0.25 s later; the out beats
+  press man by more (separation 0.6 s after the break 1.96 → 2.54 yd).
+  PR tier against develop, seeds 7 and 8: nothing passing-related resolved;
+  separation at the catch +0.05 and +0.03 yd, YPA +1.03 and +0.27, YAC
+  +0.92 and +0.52 (both up, neither resolved); rush yards per carry +0.57
+  and −1.30 (opposite signs, divergence).
+- **Caveats:** measured with the legacy operator (#255 is still held), on
+  run and pass plays, as the original entry. Off-man separation in the
+  staged plays did not change to 0.01 yd with a later flip, so pedaling
+  costs that corner nothing there: the hip turn has no price yet in that
+  case, a possible missing cost in the motor (open question).
+- **Open:** the remaining swings come from run fits, pursuit and ball play
+  (behaviors outside the coverage techniques), about 0.6–0.8% of 2–4 yd/s
+  windows. Measure with #255's operator once it lands. Check whether a
+  pedaling corner should pay more for a late flip.
 
 <a id="cov-7"></a>
 ### COV-7: A man corner can't support a run he has recognized
+
+- **Active cost capability** (accepted base `50b80062`, subsequent candidate):
+  [one installed block-look pair](reviews/cov7-abandonment-cost.md) uses fixed
+  Cover1 Off / ace / roster7 / snap1, with a shared Z split and physical
+  non-contact presentation. The actor-local existing alley option activates
+  at.65 on both Toss and PA; it is **unconfirmed-exchange**, not acquired
+  non-QB possession. PA reacquires upright Z at1.4 but takes until2.0 to
+  arrest inward movement; same-clock2.4 center separation1.34→3.04yd.
+  Both PA passes remain incomplete. This supplies a cost fixture, not a
+  promoted defensive rule. #260/#224 are pending and excluded; raw results
+  and exact final source/settings remain in the candidate PR/ignored output.
+  Landed as #271 (games identical). The pilot gated on it, #269, can now
+  proceed against this fixture.
 
 - **Symptom** (`audit`, `G1-P029`, Toss with Z across motion against Cover 0):
   CB_S recognizes run at 0.65 s and sees the back carrying at 1.20 s, but
@@ -1593,6 +1851,31 @@ From the outside audit (`audit`):
   (`blocking.ts`) skips defenders by their real `engagement` and `isDown`,
   not the blocker's picture, and ignores a helper's velocity. Fix before any
   blocker adaptation work.
+  *Landed* (#258): the gate now uses the blocker's acquired pose of each
+  defender, through `availableTarget`/`findWork`, including a filling
+  backer's climb-to-drive transition; installed jobs keep their contracts.
+  Matched runs were unchanged (2.35 vs 2.37 yd). Open: there is no
+  perception channel for "engaged", so a blocker can't see that a defender is
+  already taken and slightly over-corrects; helper velocity and other
+  live-state reads remain.
+- **#260, both possession routes** (held for rework, 2026-10-24). The
+  possession belief is coherent, but removing `sim.scrambled` left no
+  acquired cue for a QB who has started to run. On matched Smash plays
+  scrambles of 0–3 yd became 15–25 yd (1.46 → 5.04 yd per play). A test cue
+  (the carrying QB moving toward the line faster than 2.5 yd/s reads as a
+  runner) brought it back to 1.47. The carrying channel itself is still
+  perfect: no fakes and no occlusion. Next: add the scramble cue in the same
+  PR; recompose with #256, which still falls back to
+  `acquired?.target ?? sim.carrier`.
+- **#256 (#225 rebuilt), engaged work-off toward the runner** (held): coherent,
+  with no matched gain on runs; its scorecard moved yards per carry
+  5.52 → 6.92. Waiting on Defense's native lab rerun and recomposition with
+  #260.
+- **Lesson from these reviews:** when a PR removes a leak, add back what a
+  real player could see or do in the same PR. In matched plays the honest
+  information alone barely moved designed runs; the large jumps came from
+  what was deleted with the leak (the scramble cue here, the layout span in
+  TKL-5).
 - **Run recognition uses the global handoff time** (`recognition.ts`), whether
   or not the defender could see the mesh.
 
@@ -1625,7 +1908,7 @@ These break the model rule that players act on acquired, delayed information.
   A→B→A (it returns A's old point). Same-target, no-new-cue and expired-aim
   controls must stay identical. Small shared fix; Coverage (COV-6 seam) and
   Run Game.
-- **Candidate, not yet adopted:** [#251](https://github.com/tannerthardy/football-simulation-/pull/251),
+- **Landed:** [#251](https://github.com/tannerthardy/football-simulation-/pull/251),
   implementation `6a3f9974`, on accepted `30fbae92`, registers one current
   target index per job and invalidates the old action only on a transition.
   RunBlocker and ZoneCoverage register at selection, including branches that
@@ -1636,8 +1919,8 @@ These break the model rule that players act on acquired, delayed information.
   explicitly not restorations of the unavailable P093/P095 audit inputs.
   The six-game paired quick check changes three games and retains three
   complete play-record sequences. Adverse YAC, fumble and penalty moves
-  remain in the PR; no aggregate-yardage benefit is claimed. Run/Coverage
-  consumer review and ordinary CI govern readiness.
+  remain in the PR; no aggregate-yardage benefit is claimed. Merged after
+  review; COV-6 work starts from it.
 
 ## Physics and movement
 
@@ -1652,6 +1935,71 @@ These break the model rule that players act on acquired, delayed information.
   what turned P019's linebacker (TKL-4).
 - **Hands at the muscle cap** in pass protection (PRO-1).
 - **Summed double-team drive** (RUN-3).
+- **A slightly stronger blocker carries a square, resisting end sideways**
+  (first seen on seed 10 P46, Pistol Twin TE duo, Y on DE_S, Oct 25; Y
+  113 kg strength 0.77, DE 111 kg 0.62, end asking 4.1 yd/s inside, carried
+  outward 1.6-1.95 yd/s for 2 s). **Diagnosed (Oct 25): the leg budget has no
+  force-velocity term.** Not fixed.
+  - **Reproducer** (`scripts/diag/lateral-carry.ts`): two bodies on the
+    World, square, hands on, the P46 masses and strengths, the end asking
+    inside with full lean. The end's feet deliver his strength cap, 1208
+    kg·yd/s² (1105 N), with traction 1309 to spare. The Y's feet deliver
+    1333, where his strength is capped by traction (1.1 mg). So the real
+    force gap is 10%, smaller than the ratings suggest. The 125 difference
+    never shrinks: the pair accelerates at a constant 0.55 yd/s² and is
+    still speeding up at 3 s (1.4 yd/s, 2.1 yd). Controls:
+    - equal strength: no carry;
+    - same pair, end not resisting: carried at 3.1 yd/s;
+    - end the stronger one: he drives the Y back.
+  - **Mechanism:** in `world.ts` `feet()`, total ground force is capped by
+    `max(gait, pushForce · direction · availability)` and by traction.
+    Neither cap depends on speed.
+    - The pusher keeps his full static force at any speed: his lean falls
+      with speed, and the gait share refills it.
+    - The man being driven backward gets no eccentric gain: his lean's 1.2
+      credit (`clamp(1 - vp/vmax, 0, 1.2)`) is clipped by the shared cap.
+
+    So any strength gap is a constant net force, and the carry builds on
+    itself. This is not:
+    - a missing traction limit: the end isn't traction-bound;
+    - a bad request: the end leans inside at full strength;
+    - leaked hand force: momentum ledgers close to zero.
+  - **Statics:** with a linear force-velocity law F = F0(1 - v/vmax), the
+    Y's ceiling at 1.65 m/s is 1220 (1 - 1.65/8.06) = 970 N. That is below
+    the end's 1105 N even before any eccentric gain; measured multi-joint
+    eccentric force is typically 1.1-1.3 times isometric. Sustaining 1.65 m/s
+    would need the end to resist with 970 N or less, 0.89 of his weight,
+    while his turf friction allows 1.1. A 10% gap should give a stalemate or
+    a drift of a few tenths of a yard per second.
+  - **Counterfactual** (local, not committed): the strength term scaled by
+    `clamp(1 - v_along_force / vmax, 0, 1.2)` gives:
+    - the P46 pair: settles at 0.41 yd/s (0.43 by hand), 0.84 yd in 3 s;
+    - equal strength: still 0;
+    - end not resisting: still carried at 2.5 yd/s;
+    - end stronger: drives the Y back at 0.22 yd/s.
+  - **Game snaps** (`scripts/diag/lateral-carry-game.ts`, seed 10 on
+    b559fdc5): 51 runs with a Y, 32 Y/H/F-on-end run blocks, 4 carried
+    episodes (end asking more than 1 yd/s one way, carried more than 1 yd/s
+    the other, for 0.5 s or longer): 1.2-2.45 yd/s for 0.5-1.05 s. Ledgers
+    close to zero. Two other causes show up:
+    - Run 37 (inside zone) is the pure case: ground forces balanced at about
+      1060 each, so the pair coasts at 2.4 yd/s on the speed it entered with.
+      Carrying the end costs the Y nothing extra.
+    - Run 4 (wide zone) is mostly the end's own command flipping (he asks
+      3-4 yd/s *with* the carry at 1.05-1.45 s), then the RT's helper hands
+      (1.1-1.2k outward from 2.05 s).
+
+    P46 is a different play on current develop. A whole-game comparison
+    isn't matched (every play diverges), so none is claimed.
+  - **Recommendation:** fix in physics: one force-velocity leg budget in
+    `feet()`. Force along his motion shrinks with speed (concentric); this is
+    the propulsion half of the parked `LEG_FV`. Force against his motion
+    keeps the lean's eccentric credit through the shared cap instead of
+    losing it there. It's a realistic law, so it lands on by default in its
+    own physics PR, with law tests (equal-strength stalemate, bounded drift
+    for small gaps, free running and the sprint curve unchanged) and matched
+    restages. Owner: Main Engine. The end's flipping command on run 4 is a
+    Defense controller question, not physics.
 - **Raw hand operator trusts stale contact validity** (PHY-004): a synthetic
   input contract; not shown to happen in real play.
 - **Withdrawn:** `LEG_BIND` broke the rear-finish load contract (#190); the
@@ -1790,6 +2138,11 @@ zone).
 <a id="perf-3"></a>
 ### PERF-3: The mechanics guard passes on missing data; Python tests not in CI
 
+- **Current follow-up:** #249 repairs the missing-evidence guard. The separate
+  `.github/workflows/data-tests.yml` adds normal offline Python discovery,
+  including those guard cases, on Python 3.12 with declared dependencies;
+  reference-only changes do not schedule extra games. The observations below
+  describe the original audit; the precision comment remains a separate issue.
 - `scripts/mechanics/compare.py`: a guarded metric with no sim data falls
   into the "too few" branch, gets no mark, and counts as still matching. An
   empty sim file prints "12/12 matched metrics still match" and exits 0.
@@ -1798,8 +2151,9 @@ zone).
 - `scripts/mechanics/metrics.py` says the sim records positions to 0.1 yd;
   it records hundredths (`playsim.ts`). It changes the DB/LB decel p90 a
   little (6.93 → 6.66 on current film).
-- **Open:** fail on missing or empty metrics; add the data tests to CI; fix
-  the comment. Tools, games unchanged.
+- **Resolved** (#249, #253): missing or empty metrics now fail, and the
+  data tests run in CI (`data-tests.yml`). Still open: `metrics.py` says
+  the sim records 0.1 yd (it records hundredths). Wording only.
 
 <a id="perf-4"></a>
 ### PERF-4: Scorecard labels claim more than they show
@@ -1808,8 +2162,8 @@ zone).
   heads a section "Biggest real moves". With ~30 metrics at 90% intervals,
   ~3 false moves per card are expected (PERF-2). Rare rates (17/17 FGs) show
   100–100% intervals.
-- **Open:** "not resolved" / "largest signals", and show counts for rare
-  rates. Wording only.
+- **Resolved** (#257): intervals that include zero read "not resolved by
+  this sample", and rare rates show their counts.
 
 <a id="perf-5"></a>
 ### PERF-5: Film detectors' precision unknown
@@ -1839,9 +2193,10 @@ zone).
   (`telemetry.ts`). Several stages rewrite a command after the behavior
   (containment, engagement technique, tackle bond, spacing, snap guard);
   the final intent alone can't say who decided it.
-- **Open:** build actors in a fixed slot order at the API boundary; key
-  per-player error streams by slot. Record the command owner and target at
-  decision time. No full event-keyed RNG migration. Tools.
+- **Resolved** (#252, #250): actors are built in a fixed slot order and
+  the per-player streams keyed on actor index no longer depend on input
+  order; the selective command trace records
+  who owned each command. #254 adds saved-play capture and replay on top.
 
 <a id="view-1"></a>
 ### VIEW-1: Reviewing film is hard and can mislead
@@ -1852,9 +2207,10 @@ learn what's needed.
 - **Symptom:** film review is how Tanner finds most real problems, but the
   viewer doesn't give him all the information he needs, and some of what it
   shows may mislead. We don't know how many apparent problems come from the
-  drawing rather than the football. Known example: QB-3, where a diving
-  tackler is drawn as a dot on the ground, so a real ankle tap looks like a
-  QB falling with nobody near him.
+  drawing rather than the football. Known example: [QB-3](#qb-3), where a
+  diving tackler is drawn as a dot on the ground, hiding the acquired leg
+  hold. A clearer drawing does not establish that acquisition was geometrically
+  valid; that is a separate [reach question](#tkl-5).
 - **Goals:**
   - Show the best information for judging a play: what each player was
     asked to do, what his body actually did, contact and reach, facing, and
@@ -1869,10 +2225,19 @@ learn what's needed.
     form rather than only in free text.
 - **Already exists:** the sim suite film room with notes saved per play, the
   replay viewer's layers ([VISUALIZER_PLAN](VISUALIZER_PLAN.md)), and #243's
-  film detectors.
-- **Open:** what to build first, and how much of a separate tool it should
-  be. The outside audit's suggestions on drawing intent versus achieved
-  motion and showing reach and contact apply here.
+  film detectors. The viewer's [copyable play reference](../viewer/replay.template.html#L596)
+  already includes film identity, play, timestamp and the selected player.
+- **In progress:** [Play Lab](PLAY_LAB.md) (`npm run lab`). Tanner builds
+  plays and situations, runs them on the real engine, and studies them with
+  these layers: requested vs achieved motion, command owner, delayed
+  perception, reach and contact, falls, ball flight, pursuit intercepts and
+  run fits. Player moves are labelled coach's-hand interventions. Notes
+  restore their exact moment headless with `npm run lab:replay`. Still to
+  come: branching from a moment (it needs engine snapshot/restore), scripted
+  situations, A/B batches and an agent hand-off export.
+- **Open:** the outside audit's suggestions on drawing intent versus achieved
+  motion and showing reach and contact are now lab layers; whether the shared
+  replay viewer should adopt them is open.
 
 ## Repository and process
 

@@ -110,6 +110,59 @@ cut spans several overlapping windows, so it is judged by its worst one.
   requests, not hidden perception or applied force. Body facing is not gaze
   ([BEHAVIOR_REVIEW](BEHAVIOR_REVIEW.md)).
 
+### Review saved scouts without more games (PERF-5 / VIEW-1)
+
+```sh
+node --import tsx scripts/film-scout-review.ts --card out/scorecard/head.json --seed 243 --out out/scout-review
+```
+
+This offline command freezes twelve official retained episodes (1 pre-snap,
+3 turned, 3 stuck, 3 backpedal, 2 slide), or the available smaller set. It saves
+the input-card checksum, actual source/settings/input identities, population
+counts, seed and selection recipe in `queue.json`; `review.md` is the index.
+It does not run a detector or simulate a play. Use a single saved arm. A
+historical card remains historical; scorecard `sc7/` IDs must not be joined
+to ordinary film-room IDs by play number alone.
+
+Six opposing half-second windows are sampled after 1s from the same saved
+plays: three negative for `turned`, three for `slide`. A game's official stored
+and uncapped event counts must agree for that detector. Missing/capped streams
+cannot prove absence. Controls are conditioned on another alert in the play;
+eligibility in the selected window is unknown until its film/trace is inspected.
+They expose questions, not a reliable population recall estimate. Nullified
+events remain in the input and population counts but are not sampled.
+
+Keep agent dispositions and optional Tanner observations in a per-play notes
+file, alongside the report in ignored `out/`, as with existing film notes.
+`notes-template.json` supplies `sourceCardSha256`, `sourceSha256` and `notes`.
+Each note uses an episode `key`, `verdict` (`defect`, `legitimate`, `unresolved`),
+`reason` and `competingExplanation`; resolved labels also need `evidence` links.
+`userObservationParaphrase` is optional. Re-render with `--notes review.json`.
+Regeneration preserves existing notes. Unreviewed alerts are not errors;
+uncertain labels are not successes. Counts describe this small stratified
+sample, including its uncertain cases; they do not certify detector precision.
+
+If the producer supplies existing replay/trace files, add `--films films.json`.
+The sidecar has `entries: [{key, path, sha256, engineSha256, settingsSha256,
+inputSha256, playId}]`; paths are relative to that sidecar. Each entry links the
+existing standalone replay envelope, with its source, actor and interval
+checked. Settings/input must match the queue's recorded hashes, but this is an
+owner-declared join, not an independent execution proof. Do not fill missing
+legacy identity from today's defaults. Optional `traces: [{key, path, sha256,
+inputSha256}]` consume existing selected-actor command-trace JSON (see
+[COMMAND_TRACE](COMMAND_TRACE.md)); the tool checks its source/settings/play
+and actor, then copies only recorded steps. Missing steps and useful-intervention
+opportunities remain unknown. Commands are displayed, never executed.
+
+Use the viewer's existing **Copy reference** and **Export clip** controls;
+search the exact play, select its player and seek to the reported interval.
+Only unresolved notes with `needsFootballJudgment: true` **and matching film**
+enter Tanner's shortlist. Missing artifacts are an agent access task. Request
+the existing evidence rather than recollect a panel or invent an intent/contact
+diagnosis from dots. Contact-owned facing, legitimate coverage turns, an unused
+stale cache and a far-side player with no achievable useful intervention are
+opposing explanations to check, not automatic false-positive labels.
+
 **What they miss, on purpose or by definition.** Anything outside the rule: a long
 curved glide that never turns 60° in half a second, a defender turned from the
 quarterback before there is a runner, a blocker on a man who is close and closing.
@@ -321,3 +374,52 @@ peek at the reserved weeks to choose those definitions.
   seeds/rosters before treating the ranking as a league-wide failure rate.
 - The untouched final exam is not available yet. No existing averages certify
   the whole engine, and no evidence establishes a percentage of work remaining.
+
+### Paired ordinary scout recording
+
+`node --import tsx scripts/paired-scout-recording.ts out/paired-scout 24`
+records a bounded seed-7 ordinary prefix twice, first without observers and then
+with composed constructor capture and existing scouts. Complete GameResult JSON
+must match. It keeps at most two alerts per existing detector and their source-
+qualified native inputs and original standalone replay. This is a new sample,
+never a restoration of the unavailable historical #262 cohort.
+
+Use the recorded `index.json` identities and `events.json`, open each play's
+`original.html`, and regenerate a selected trace with:
+
+```sh
+node --import tsx scripts/diag/command-trace.ts --capture out/paired-scout/G1-P006/play.bin --actor O:Y --from 2.5 --to 4 --out out/paired-scout/selected.json
+```
+
+The existing command verifies source/settings/Node/lockfile and independently
+restores the complete native result before tracing. The prefix is not a full
+game or a population precision sample. Keep raw artifacts in ignored out/.
+
+### Review the delivered paired recordings
+
+`paired-scout-review.ts` adapts the exact selected episodes from the paired
+producer into the existing film-scout queue, notes and report consumer. It does
+not resample a scorecard or replace the unavailable historical18 recordings.
+Retrieve the [original #265 bundle](https://github.com/tannerthardy/football-simulation-/blob/d91e50665d2e3b2cbac9e5065769059e31e53b92/artifacts/pr265/README.md)
+into ignored `out/`, then use Node22.23.3:
+
+```sh
+node --import tsx scripts/paired-scout-review.ts --paired out/pr265-transfer/paired-scout --out out/paired-review
+# Reapply source-qualified agent notes when supplied:
+node --import tsx scripts/paired-scout-review.ts --paired out/pr265-transfer/paired-scout --out out/paired-review --notes out/notes.json
+```
+
+The adapter verifies the manifest, constructor bytes, source/settings/runtime,
+recorded restoration results, roster index/player/team/slot, and every20Hz step
+of the selected interval. It copies the actual owner, raw request, rewrites,
+final command, contact/support and consumed reads through the existing consumer.
+Counts describe only this selected prefix. Notes never become automatic grades.
+Paths in `queue.json` and `review.md` are relative to their output directory;
+move that directory together with the original recordings. Trace commands use
+bundle-relative capture paths: resolve them from the original-recordings folder,
+then invoke the script from its source checkout with absolute capture/output paths.
+
+Offline attachment validates saved evidence; it does not simulate restoration.
+For fresh restoration, use the recorded producer source `cac9e1000b27e9222d47a23db6ebdf65eaac25f9`,
+Node22.23.3 and its lockfile in a separate checkout. Current develop includes a
+later pursuit change and must not be relabelled as that original execution.

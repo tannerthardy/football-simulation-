@@ -4,9 +4,11 @@ import type { MoveCommand } from '../physics/kinematics.js';
 import type { Intent } from '../physics/world.js';
 import type { Agent, Behavior, TeamSide } from './agent.js';
 import { PassProtector } from './behaviors/blocking.js';
+import { facingTechnique } from './coverage/orientation.js';
 import { movementObjective, type MovementObjective } from './movement-objective.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
+import type { PursuitPredictionRecord } from './pursuit-prediction.js';
 
 export interface CommandTraceSelection {
   actor: { team: TeamSide; slot: string } | { playerId: string };
@@ -19,14 +21,20 @@ const vector = (v: Vec2): Vec2 => ({ x: v.x, y: v.y });
 const identity = (a: Agent) => ({ playerId: a.player.id, team: a.team, slot: a.slot, index: a.idx });
 type ActorIdentity = ReturnType<typeof identity>;
 
-export interface CommandSnapshot extends Intent { objective?: MovementObjective }
+export interface CommandSnapshot extends Intent {
+  objective?: MovementObjective;
+  /** The coverage technique branch that asked for this facing (COV-6). */
+  facingTechnique?: string;
+}
 
 function commandSnapshot(c: Intent): CommandSnapshot {
   const goal = movementObjective(c);
+  const technique = facingTechnique(c)?.label;
   return { vel: vector(c.vel), facing: c.facing, effort: c.effort, cutSkill: c.cutSkill, squeeze: c.squeeze,
     push: c.push, posture: c.posture, dive: c.dive && vector(c.dive), lunge: c.lunge && vector(c.lunge), free: c.free,
     objective: goal && (goal.kind === 'fixed' ? { kind: 'fixed', point: vector(goal.point) }
-      : { kind: 'moving', point: vector(goal.point), velocity: goal.velocity && vector(goal.velocity) }) };
+      : { kind: 'moving', point: vector(goal.point), velocity: goal.velocity && vector(goal.velocity) }),
+    ...(technique ? { facingTechnique: technique } : {}) };
 }
 
 /** These are stored controller fields, not a guessed target from true possession. */
@@ -55,7 +63,7 @@ function stateSnapshot(a: Agent, sim: PlaySim) {
       .map(c => ({ other: identity(sim.agents[c.i === a.idx ? c.j : c.i]), impulse: c.impulse, closing: c.closing })) };
 }
 
-export type CommandStage = 'technique-intents' | 'containment' | 'open-to-ball' | 'engagement' | 'tackle-bond' | 'spacing' | 'snap-guard';
+export type CommandStage = 'technique-intents' | 'containment' | 'coverage-orientation' | 'open-to-ball' | 'engagement' | 'tackle-bond' | 'spacing' | 'snap-guard';
 type TracePhase = 'pre-decision' | 'decision' | CommandStage | 'execution';
 
 export interface CommandTraceStep {
@@ -69,6 +77,7 @@ export interface CommandTraceStep {
   final?: CommandSnapshot;
   endpoint?: ReturnType<typeof stateSnapshot> & { phase: string; ballKind: string };
   observations: Array<{ phase: TracePhase; target: ActorIdentity; requestedAt: number; age: number | null; sampledAt: number | null }>;
+  pursuit?: Array<{ phase: TracePhase; target: ActorIdentity; data: PursuitPredictionRecord }>;
 }
 
 /** Numbers within 1e-9 are omitted from the rewrite list; raw/final retain full precision. */
@@ -104,6 +113,17 @@ export class CommandTrace {
   }
 
   at(phase: TracePhase): void { this.phase = phase; }
+
+  isCollecting(a: Agent): boolean { return !!this.pending && a === this.selected; }
+
+  /** No prediction here: the helper supplies only values it already computed. */
+  pursuit(target: Agent, data: PursuitPredictionRecord): void {
+    if (!this.pending) return;
+    const snapshot = structuredClone(data);
+    if (data.kind === 'chase' && snapshot.kind === 'chase') snapshot.requests = data.requests
+      .map(r => ({ stage: r.stage, command: commandSnapshot(r.command) }));
+    (this.pending.pursuit ??= []).push({ phase: this.phase, target: identity(target), data: snapshot });
+  }
 
   decisionStart(a: Agent, sim: PlaySim): BehaviorSnapshot | undefined {
     return this.pending && a === this.selected ? behaviorSnapshot(a.behavior, a, sim) : undefined;

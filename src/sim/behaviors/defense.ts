@@ -25,7 +25,9 @@ import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
+import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
+import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
 
 /** On (PASS_FIRST=0 for comparison): a man-coverage defender who is not the
  * side's force player stays on his receiver when the receiver comes to block
@@ -48,17 +50,54 @@ export function knowsPass(sim: PlaySim, a: Agent): boolean {
 
 /**
  * Common transition: once the ball carrier is past the line (or the QB is
- * scrambling), everyone pursues. Behind the line, a defender who has read
- * run plays his fit — he doesn't abandon his gap to chase.
+ * seen running out of the pocket), everyone pursues. Behind the line, a
+ * defender who has read run plays his fit — he doesn't abandon his gap to
+ * chase, including against a designed QB run.
  */
 export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
-  const c = sim.carrier;
-  if (!c || c.team === a.team) return null;
-  const seen = sim.see(a,c);
+  const read = observedHolder(a, sim);
   const preserveEdge = a.runFit?.kind === 'edge' || a.runFit?.kind === 'force' || a.runFit?.kind === 'cutback';
-  const past = seen.pos.x > sim.los + (preserveEdge ? 2 : 0);
-  if (past || (c === sim.qb && sim.scrambled)) {
-    if (sim.t >= a.readAt || seen.pos.x > sim.los + 2) return chase(sim, a, c);
+  if (read) {
+    const { target, cue } = read;
+    const past = cue.pos.x > sim.los + (preserveEdge ? 2 : 0);
+    // A newer held-body image after recognized flight supports a catch even
+    // behind the line. Pass belief alone cannot turn a handoff into a catch
+    // and discard an installed edge. Snap QB possession keeps the rush/fit.
+    const caught = target !== sim.qb && hasObservedFlight(a);
+    // A QB seen leaving the pocket as a runner, by a defender who has not
+    // read run: the scramble response, from his own QB picture. Rushers and
+    // underneath zones come up; each role keeps its own contract.
+    // Man and deep defenders keep plastering until he crosses the line.
+    const plaster = (a.behavior as { plastersScramble?: boolean } | undefined)?.plastersScramble === true;
+    const scramble = target === sim.qb && !plaster && !believesRun(sim, a) && qbRunning(a, sim);
+    if (caught || ((past || scramble) && (sim.t >= a.readAt || cue.pos.x > sim.los + 2))) {
+      if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'possession-pursuit', chose: target.slot,
+        cue: 'carrying=true in this observer\'s acquired body picture',
+        detail: `Sample age ${cue.age ?? 'unknown'} s; acquired x=${cue.pos.x}; installed ${a.runFit?.kind ?? 'fallback'} boundary. No authoritative holder/catch flag.` });
+      return chase(sim, a, target);
+    }
+  }
+  // Continue the acquired flight estimate while possession is unresolved.
+  // Disappearance of the authoritative air state does not announce a catch,
+  // or reopen coverage. A receiver can still miss this predicted opportunity.
+  const path = rememberedFlight(a, sim.t);
+  const anticipated = sim.ball.kind !== 'air' && path ? anticipatedCatcher(a, sim) : null;
+  if (anticipated) {
+    if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'catch-anticipation', chose: anticipated.target.slot,
+      cue: 'first acquired catch opportunity; result not yet acquired',
+      detail: 'Keep working with the possible catcher; an empty picture after the opportunity refutes it. No confirmed possession.' });
+    return track(a, anticipated.cue.pos, anticipated.cue.vel);
+  }
+  if (sim.ball.kind !== 'air' && path && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'flight-continuation',
+    chose: 'continue acquired catch opportunity', cue: 'recognized trajectory; no newer acquired holder',
+    detail: `Forecast ends at ${path[path.length - 1].t} s. Catch is possible, not confirmed.` });
+  if (sim.ball.kind !== 'air' && path) return playObservedFlight(a, sim, path);
+  const area = sim.ball.kind !== 'air' ? unresolvedBallArea(a) : null;
+  if (area) {
+    if (sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'ball-rally',
+      chose: 'locate ball at acquired landing area', cue: 'recognized pass; flight ended without acquired possession',
+      detail: 'Keep ball responsibility instead of reopening route coverage. No holder is inferred.' });
+    return goTo(a, area);
   }
   return null;
 }
@@ -90,16 +129,18 @@ export class PassRusher implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.t < this.getOff) return stand(Math.PI);
     if (a.engagement) return stand();
-    const c = sim.carrier;
+    const live = pursueIfLive(sim, a);
+    if (live) return live;
     // Throw in the air: peel off toward the ball.
-    if (sim.ball.kind === 'air') {
-      const spot = catchSpot(a, sim);
+    if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) {
+      const path = acquireFlight(a, sim), spot = catchSpot(a, { t: sim.t, ballPath: path });
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
     }
     // The ball is handed off or the QB takes off: play the run. Up close a
     // lineman sees the exchange; a rusher who has read run plays it too
     // (on play action, that's being fooled).
-    if (c && c.team !== a.team && (c !== sim.qb || sim.scrambled)) return runFit(a, sim, this.gap, this.gapSign);
+    const holder = observedHolder(a, sim);
+    if (holder && (holder.target !== sim.qb || qbRunning(a, sim))) return runFit(a, sim, this.gap, this.gapSign);
     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
 
     // Rush lane by plan: power rushers go through the blocker's chest at the
@@ -164,7 +205,18 @@ export class Blitzer implements Behavior {
  * Gap-sound run defense: defend the assigned gap until the carrier commits,
  * then fit on him with pursuit leverage. DBs force/alley from outside-in.
  */
-export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?: RunFitRead): MoveCommand {
+export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?: RunFitRead | null): MoveCommand {
+  if (read === undefined) {
+    // Removing the catch broadcast must not uncover a second private-holder
+    // selection inside the fit fallback. Reuse the installed mesh picture,
+    // including unknown/negative carrying, rather than inventing a handoff.
+    const holder = observedHolder(a, sim), back = sim.slot('RB');
+    // A QB seen running is the runner himself, not a mesh still to resolve.
+    if (holder && (holder.target !== sim.qb || hasObservedFlight(a) || qbRunning(a, sim))) read = { possession: holder };
+    else if (back && sim.offAlign.spots[back.slot]?.backfield) {
+      read = { backfield: { back, backCue: sim.see(a, back), qbCue: sim.see(a, sim.qb) } };
+    } else read = holder ? { possession: holder } : null;
+  }
   return executeRunFit(a, sim, gap, gapSign, read);
 }
 
@@ -175,6 +227,8 @@ export class RunDefender implements Behavior {
     private readonly gapSign: number,
   ) {}
   update(a: Agent, sim: PlaySim): MoveCommand {
+    const live = pursueIfLive(sim, a);
+    if (live) return live;
     return runFit(a, sim, this.gap, this.gapSign);
   }
 }
@@ -200,6 +254,8 @@ export interface ManOptions {
 /** Man coverage with press/off technique, leverage and hip turn. */
 export class ManCoverage implements Behavior {
   readonly kind = 'man';
+  /** A seen scramble does not release his man until the QB crosses the line. */
+  readonly plastersScramble = true;
   private readonly press: boolean;
   private readonly initialCushion: number;
   private hipsOpen = false;
@@ -253,6 +309,8 @@ export class ManCoverage implements Behavior {
   /** An unrecognized throw does not erase the installed man technique. */
   private coverMan(a: Agent, sim: PlaySim): MoveCommand {
     const R = this.target;
+    const live = pursueIfLive(sim, a);
+    if (live) return live;
     const receiverCue = sim.see(a, R);
     // A back carrying the ball will not look like a stalk blocker. A man
     // marker who reads run and personally acquires that possession uses his
@@ -273,11 +331,9 @@ export class ManCoverage implements Behavior {
       }
       return runFit(a, sim, this.gap, this.gapSign, { target: R, cue: receiverCue });
     }
-    // Snap possession alone is not a run cue. Once his own picture puts
-    // the carrying QB clearly beyond the line, retained pass belief must
-    // not discard pursuit. No private scramble/handoff state is required.
+    // The shared transition above handles an acquired committed QB. Support
+    // below still interprets his picture with the installed backfield.
     const qbCue = sim.see(a, sim.qb);
-    if (qbCue.carrying === true && qbCue.pos.x > sim.los + 2) return chase(sim, a, sim.qb);
     const back = sim.slot('RB');
     const installedBackfield = !!back && !!sim.offAlign.spots[back.slot]?.backfield;
     // Do not extend this duty where its explicit information input is absent.
@@ -295,11 +351,6 @@ export class ManCoverage implements Behavior {
     const passFirst = passFirstOn() && a.runFit?.kind !== 'force' && !!spot && !spot.backfield && !spot.inline;
     if (this.blockingRun && run && blockingLook && !passFirst) return this.blockingSupport(a, sim, qbCue);
     this.blockingRun = false;
-    const live = pursueIfLive(sim, a);
-    if (live && (sim.carrier !== R || sim.catchAt >= 0 || !sim.isPass)) {
-      // On runs, the man defender plays the run once he reads it (or when his man blocks).
-      if (believesRun(sim, a) || sim.catchAt >= 0 || sim.throwAt >= 0) return live;
-    }
     if (run && blockingLook && !passFirst) {
       this.blockingRun = installedBackfield;
       return this.blockingSupport(a, sim, qbCue);
@@ -391,14 +442,17 @@ export class ManCoverage implements Behavior {
     const tgt = { x: tx, y: ty };
     const cs = 0.85 + 0.35 * a.r('manCoverage');
     const command = this.hipsOpen
-      ? track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') })
-      : track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
+      ? withFacingTechnique(track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') }),
+        { label: 'man-open', key: seen.vel })
+      : withFacingTechnique(track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 }),
+        { label: 'man-pedal', key: seen.vel });
     if (!o.protectDepth) return command;
     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
       : vx > 3 && deep > 3 ? cushion * .5 : cushion;
     const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
-    return selected;
+    return selected.facing === undefined && command.facing !== undefined
+      ? withFacingTechnique(selected, { label: 'man-depth-run', key: seen.vel }) : selected;
   }
 }
 
@@ -418,6 +472,8 @@ export class ZoneCoverage implements Behavior {
   /** Inspect the exact adjusted landmark used by this technique. */
   recordedLandmark(): Vec2 { return { ...this.landmark }; }
   private readonly deep: boolean;
+  /** Deep zones stay on top of a scramble until the QB crosses the line. */
+  get plastersScramble(): boolean { return this.deep; }
   private readonly radius: number;
   /** Lateral band of responsibility (field y range). */
   private readonly band: [number, number];
@@ -462,11 +518,7 @@ export class ZoneCoverage implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     const live = pursueIfLive(sim, a);
-    if (live) {
-      // Deep defenders don't bite on runs until the ball crosses the line.
-      const c = sim.carrier!;
-      if (!this.deep || c.pos.x > sim.los - 0.5 || sim.catchAt >= 0) return live;
-    }
+    if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) return playBall(a, sim, null);
     // A deep defender who reads run executes his cap/force contract. Alley
@@ -528,7 +580,8 @@ export class ZoneCoverage implements Behavior {
         let tgt = lm;
         // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
         if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
-        return goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs });
+        return withFacingTechnique(goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs }),
+          { label: 'deep-read' });
       }
       vert.sort((p, q) => q.fut.x - p.fut.x);
       const deepest = vert[0];
@@ -544,7 +597,8 @@ export class ZoneCoverage implements Behavior {
         const drive = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: deepest.pos.y + deepest.vel.y * 0.4 };
         if (a.mind.focus * (0.4 + 0.6 * a.r('playRecognition')) > 0.35) {
           const aim = a.mind.aim('zone-drive', drive, sim.t);
-          return track(a, { x: aim.x, y: clamp(aim.y, 0.5, FIELD_WIDTH - 0.5) }, { x: deepest.vel.x, y: deepest.vel.y }, { facing: facingQB, speed: zs * 1.05, gain: 2.2 });
+          return withFacingTechnique(track(a, { x: aim.x, y: clamp(aim.y, 0.5, FIELD_WIDTH - 0.5) }, { x: deepest.vel.x, y: deepest.vel.y },
+            { facing: facingQB, speed: zs * 1.05, gain: 2.2 }), { label: 'deep-drive', key: deepest.vel });
         }
       }
       // Stay 2–3 yards over the top: deep enough not to be beaten vertically,
@@ -571,16 +625,17 @@ export class ZoneCoverage implements Behavior {
       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
       this.selectTarget(a, deepest.r);
-      const command = track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
+      const command = withFacingTechnique(track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
         facing: turnRun ? undefined : facingQB,
         speed: turnRun ? 1 : zs * 1.05,
         gain: 1.8,
-      });
+      }), { label: turnRun ? 'deep-turn-run' : 'deep-over', key: deepest.vel });
       let depth = this.depthReads.get(deepest.r);
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
       const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
-      return selected;
+      return selected.facing === undefined && command.facing !== undefined
+        ? withFacingTechnique(selected, { label: 'deep-depth-run', key: deepest.vel }) : selected;
     }
 
     // Low red-zone Cover 2: the corner sinks under #1 with outside leverage
@@ -598,8 +653,10 @@ export class ZoneCoverage implements Behavior {
         this.selectTarget(a, key.r);
         const tgt = { x: Math.max(sim.los + Math.min(2.5, this.initialDepth), key.pos.x - 0.8),
           y: clamp(key.pos.y + sign * 0.45, 0.5, FIELD_WIDTH - 0.5) };
-        return track(a, tgt, { x: key.vel.x * 0.85, y: key.vel.y * 0.9 }, {
-          facing: key.vel.x > 3 && a.pos.x - key.pos.x < 1.5 ? undefined : facingQB, speed: zs * 1.1, gain: 2 });
+        const run = key.vel.x > 3 && a.pos.x - key.pos.x < 1.5;
+        return withFacingTechnique(track(a, tgt, { x: key.vel.x * 0.85, y: key.vel.y * 0.9 }, {
+          facing: run ? undefined : facingQB, speed: zs * 1.1, gain: 2 }),
+          { label: run ? 'low-flat-run' : 'low-flat', key: key.vel });
       }
     }
 
@@ -633,7 +690,9 @@ export class ZoneCoverage implements Behavior {
       // then turn and run with him.
       const tgt = { x: Math.max(th.pos.x + 1.5, a.pos.x - 0.5), y: th.pos.y + inside(th.pos.y) * 0.9 };
       const runPast = th.vel.x > 4.5 && a.pos.x - th.pos.x < 2.5;
-      return track(a, tgt, { x: th.vel.x, y: th.vel.y }, { facing: runPast ? undefined : facingQB, speed: runPast ? 0.92 + 0.08 * a.r('zoneCoverage') : zs * 1.1, gain: 1.8 });
+      return withFacingTechnique(track(a, tgt, { x: th.vel.x, y: th.vel.y }, { facing: runPast ? undefined : facingQB,
+        speed: runPast ? 0.92 + 0.08 * a.r('zoneCoverage') : zs * 1.1, gain: 1.8 }),
+        { label: runPast ? 'carry-run-past' : 'carry-wall', key: th.vel });
     }
     let best: (typeof threats)[number] | null = null;
     let bd = Infinity;
@@ -678,9 +737,9 @@ export class ZoneCoverage implements Behavior {
           const across = Math.abs(flat.vel.y) > 3 && Math.abs(flat.vel.y) > Math.abs(flat.vel.x);
           const tgt = { x: Math.min(lm.x, Math.max(a.pos.x, flat.pos.x + 1)),
             y: clamp(flat.fut.y + sign * 0.6, 0.5, FIELD_WIDTH - 0.5) };
-          return track(a, tgt, { x: Math.max(0, flat.vel.x) * 0.5, y: flat.vel.y * 0.9 }, {
+          return withFacingTechnique(track(a, tgt, { x: Math.max(0, flat.vel.x) * 0.5, y: flat.vel.y * 0.9 }, {
             facing: across ? Math.atan2(flat.vel.y, flat.vel.x) : facingQB,
-            speed: across ? 1 : zs * 1.05, gain: 1.8 });
+            speed: across ? 1 : zs * 1.05, gain: 1.8 }), { label: across ? 'flat-across' : 'flat-expand', key: flat.vel });
         }
       }
     }
@@ -688,7 +747,7 @@ export class ZoneCoverage implements Behavior {
     if (!best) {
       let tgt = lm;
       if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.25 * a.r('anticipation'));
-      return goTo(a, tgt, { facing: facingQB, speed: zs });
+      return withFacingTechnique(goTo(a, tgt, { facing: facingQB, speed: zs }), { label: 'zone-landmark' });
     }
     const lane = lerp(qb.pos, best.pos, 0.82);
     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
@@ -699,8 +758,9 @@ export class ZoneCoverage implements Behavior {
     // QB. Treating gaze as hip orientation forced him to shuffle at ~60% of
     // top speed forever, even after accepting the route into his zone.
     const carryingAcross = Math.abs(best.vel.y) > 3 && Math.abs(best.vel.y) > Math.abs(best.vel.x);
-    return track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
-      facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 });
+    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
+      facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 }),
+      { label: carryingAcross ? 'lane-carry' : 'lane', key: best.vel });
   }
 
   /**
@@ -718,8 +778,12 @@ export class ZoneCoverage implements Behavior {
       // Until he has read pass he is in his read step: eyes and chest stay
       // on the backfield. Turning to run before the read turned his back on
       // a run, and on a quick throw he could not yet have keyed.
-      const turned = toSpot > 4 && knowsPass(sim, a);
-      return goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: turned ? undefined : facingQB });
+      // He gathers and re-squares before the spot, not on it: the rounded
+      // hip turn back to the QB takes time he must start early.
+      const resquare = Math.hypot(a.vel.x, a.vel.y) * roundedTurnTime(a, Math.PI) * 0.5;
+      const turned = toSpot > 4 + resquare && knowsPass(sim, a);
+      return withFacingTechnique(goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: turned ? undefined : facingQB }),
+        { label: turned ? 'spot-drop-run' : 'spot-drop' });
     }
     a.tags.add('settled');
     const read = 0.5 * a.r('zoneCoverage') + 0.5 * a.r('anticipation');
@@ -746,7 +810,8 @@ export class ZoneCoverage implements Behavior {
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
-    return goTo(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { facing: facingQB, speed: 0.7 + 0.15 * a.r('zoneCoverage') });
+    return withFacingTechnique(goTo(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { facing: facingQB, speed: 0.7 + 0.15 * a.r('zoneCoverage') }),
+      { label: 'spot-settle' });
   }
 }
 
@@ -873,8 +938,15 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
     return { vel: a.vel };
   }
   a.tags.add('onBall');
-  const spot = catchSpot(a, sim);
-  const window = observedCatchWindow(a, sim);
+  return playObservedFlight(a, sim, acquireFlight(a, sim), true);
+}
+
+/** Same catch approach, seeded only by this defender's acquired trajectory.
+ * A newer body-possession picture takes priority in pursueIfLive. */
+function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], acquired = false): MoveCommand {
+  const spot = catchSpot(a, { t: sim.t, ballPath: path });
+  const window = observedCatchWindow(a, sim, path);
+  if (acquired) rememberCatchOpportunity(a, window);
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
@@ -906,7 +978,7 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
   // Can't beat the ball to its path: drive on the catch point to arrive with
   // the ball — on the receiver's near side, ready to play through the hands
   // or make the tackle the moment it's caught.
-  const land = window?.p ?? arrivalPoint(sim);
+  const land = window?.p ?? arrivalPoint(sim, path);
   if (land) {
     // Close to the catch itself. A fixed yard of standoff plus inside shade
     // keeps a late defender outside the hands even when he can recover.
@@ -928,10 +1000,10 @@ export function playBall(a: Agent, sim: PlaySim, man: Agent | null,
 /** First plausible receiver catch from the defender's delayed picture and
  * the visible flight. Does not inspect the intended target or called route.
  * This is a possibility estimate; a receiver can still drop or miss it. */
-function observedCatchWindow(a: Agent, sim: PlaySim): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
+function observedCatchWindow(a: Agent, sim: PlaySim, path: PlaySim['ballPath']): { p: Vec2; t: number; receiver: Agent; seen: Perceived } | null {
   const receivers = sim.offense.filter(r => r !== sim.qb && !['LT', 'LG', 'C', 'RG', 'RT'].includes(r.slot))
     .map(r => ({ r, seen: sim.see(a, r) }));
-  for (const s of sim.ballPath) {
+  for (const s of path) {
     const remaining = s.t - sim.t;
     if (remaining < 0 || s.z < 0.25) continue;
     for (const { r, seen } of receivers) {
@@ -954,9 +1026,9 @@ function observedCatchWindow(a: Agent, sim: PlaySim): { p: Vec2; t: number; rece
 }
 
 /** Where the ball comes down to catch height on its current flight. */
-function arrivalPoint(sim: PlaySim): Vec2 | null {
+function arrivalPoint(sim: PlaySim, path: PlaySim['ballPath']): Vec2 | null {
   let last: Vec2 | null = null;
-  for (const s of sim.ballPath) {
+  for (const s of path) {
     if (s.t < sim.t) continue;
     last = { x: s.x, y: s.y };
     if (s.z < 1.4 && s.t > sim.t + 0.1) break;
@@ -969,10 +1041,11 @@ export class Pursuit implements Behavior {
   readonly kind = 'pursuit';
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (a.engagement) return stand();
-    const c = sim.carrier;
     if (sim.ball.kind === 'loose') return runThrough(a, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y });
-    if (!c || c.team === a.team) return stand();
-    return chase(sim, a, c);
+    const holder = observedHolder(a, sim);
+    if (holder) return chase(sim, a, holder.target);
+    if (sim.ball.kind === 'air') return playBall(a, sim, null);
+    return pursueIfLive(sim, a) ?? stand();
   }
 }
 

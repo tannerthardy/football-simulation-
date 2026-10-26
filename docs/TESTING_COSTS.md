@@ -7,6 +7,27 @@ merge criteria and testing tiers. Integration-owner/full-suite obligations,
 receipt publication and historical flag profiles below are not current gates.
 Documentation-only navigation changes need documentation/path checks, not games.
 
+## Offline data checks in CI
+
+The separate [offline-data workflow](../.github/workflows/data-tests.yml) runs
+`npm run test:data -- --verbose` on Python **3.12** and the Node version in
+`.nvmrc` (**22.23.3**). Install Python dependencies with
+`python3 -m pip install -r scripts/data/requirements-movement.txt` (pinned
+NumPy and pandas), and Node dependencies with `npm ci --no-audit --no-fund`.
+Dependency installation/import errors and test failures fail the job.
+
+Add offline measurement checks as `test/test_*.py` using ordinary
+`unittest.TestCase` discovery. There is no module allowlist: mechanics-guard
+checks and new measurement fixtures join automatically. Keep required checks
+unconditional; missing tools or packages must produce errors, not skips.
+Verbose output identifies every discovered test and reports any skips.
+
+The job uses committed or synthetic fixtures, with no NFL download or game
+collector. Relevant test, script, dependency, config and reference-data changes
+trigger it on PRs; every develop push also runs it. Core/integration and
+scorecard triggers are unchanged, so a reference-only PR does not schedule
+extra simulated games.
+
 ## Core and integration timing — F2, 2026-10-23
 
 Measured against develop `c5667bc4f7d4aa0411599ac5db25127f285bf4bf` with
