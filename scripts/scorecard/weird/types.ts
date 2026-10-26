@@ -7,7 +7,8 @@
  * with an object literal. See docs/VALIDATION.md for how to add one.
  */
 
-export type DetectorId = 'presnap' | 'turned' | 'stuck' | 'backpedal' | 'slide';
+export type DetectorId = 'presnap' | 'turned' | 'stuck' | 'backpedal' | 'slide'
+  | 'frozen' | 'downalone' | 'blindball' | 'phantomlane';
 
 /** One body on one tick. Angles are radians, 0 = +x (the offense attacks +x); speeds are yd/s. */
 export interface WAgent {
@@ -33,6 +34,22 @@ export interface WAgent {
   blocks: number;
   /** Behavior kind or run-block job, for the event text. */
   job: string;
+  /** Installed man assignment, copied without asking the defender to observe. */
+  manTarget?: number | null;
+}
+
+/** Recorded ball state. Positions/velocity exist only for an actual flight. */
+export interface WBall {
+  kind: 'held' | 'pitch' | 'air' | 'loose' | 'dead';
+  x?: number;
+  y?: number;
+  z?: number;
+  vx?: number;
+  vy?: number;
+  target?: number;
+  releaseT?: number;
+  throwaway?: boolean;
+  deflected?: boolean;
 }
 
 /** A pre-snap body contact from the physics world's contact log. */
@@ -57,6 +74,16 @@ export interface WFrame {
   contacts?: WContact[];
   /** The pre-snap motion being played, if any. */
   motion?: { kind: string; slot: string } | null;
+  qb?: number;
+  scrambled?: boolean;
+  ended?: boolean;
+  ball?: WBall;
+  /** Static installed aim, NOT a newly evaluated live-gap or achievable path. */
+  runAim?: { x: number; y: number };
+  /** Copied prior ticks (0.55 s); snapshots have no nested history. */
+  recent?: readonly WFrame[];
+  /** Copied ticks of this flight, including the current airborne tick. */
+  flight?: readonly WFrame[];
 }
 
 /** One tick's worth of a rule firing. The tracker merges consecutive ticks into an event. */

@@ -14,6 +14,8 @@ const ALLOWED = new Set([
   'src/sim/pass-interference.ts', 'src/sim/pass-legality.ts', 'src/sim/team-contact-rules.ts',
   // The offense reading its own QB and ball.
   'src/sim/assign.ts', 'src/sim/behaviors/qb.ts', 'src/sim/behaviors/blocking.ts', 'src/sim/behaviors/receiver.ts',
+  // Recording: the responsibility ledger notes who actually holds the ball; no controller reads it.
+  'src/sim/responsibility-ledger.ts',
   // Lab scene construction, not in-play decisions.
   'src/lab/coverage-scene.ts', 'src/lab/scenarios.ts', 'src/lab/schematic-stress.ts',
 ]);
@@ -23,6 +25,12 @@ const DEBT: Record<string, { reads: number; why: string }> = {
   'src/sim/engagement.ts': { reads: 5, why: 'pass-block lifecycle: release after the throw and conversion to run blocking (blocker side)' },
   'src/sim/run-fits.ts': { reads: 2, why: 'legacy direct-caller fallback when no acquired read is supplied' },
 };
+
+// The ball carrier decides from his own pictures (pose, perceived position,
+// visible contact), not the engagement record or true support state. Remaining
+// reads, with exact counts, until each is repaired.
+const RUNNER_HIDDEN = /\.(?:engagement\b|isDown\()/g;
+const RUNNER_DEBT = { reads: 2, why: 'QB slide threat (true positions and isDown) and squeeze bodies in command()' };
 
 function sources(dir: string): string[] {
   return readdirSync(dir).flatMap(name => {
@@ -49,6 +57,14 @@ describe('decision-code information guard', () => {
   it('keeps each debt file at or below its listed count', () => {
     const grown = Object.entries(DEBT).filter(([file, debt]) => (reads.get(file) ?? 0) > debt.reads);
     expect(grown).toEqual([]);
+  });
+
+  it('keeps the ball carrier off the engagement record and true support state', () => {
+    const carrier = readFileSync(join(root, 'src/sim/behaviors/carrier.ts'), 'utf8');
+    // The designed phase's lead blocker and closing threats come from the runner's pictures.
+    const designed = carrier.slice(carrier.indexOf('// Designed phase: press the aiming point.'), carrier.indexOf('// QB slide:'));
+    expect(designed.match(RUNNER_HIDDEN) ?? []).toEqual([]);
+    expect((carrier.match(RUNNER_HIDDEN) ?? []).length).toBeLessThanOrEqual(RUNNER_DEBT.reads);
   });
 
   it('has no defensive decision reading the private scramble flag', () => {

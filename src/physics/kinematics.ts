@@ -22,7 +22,10 @@ export interface Body {
   vel: Vec2;
   /** Facing angle, radians (0 = +x, downfield for the offense). */
   facing: number;
-  /** 0–1 energy reservoir. */
+  /** 0–1 fast energy pool: what hard work spends now and the next tens of
+   * seconds of rest refill (phosphocreatine-like). Every fatigue reader
+   * takes this. Between plays it refills only up to the game's slow
+   * reserve (game.ts), so it carries both pools. */
   energy: number;
   profile: PhysicalProfile;
   /** Seconds of recent near-max sprinting (speed endurance). */
@@ -49,9 +52,15 @@ export interface MoveCommand {
   squeeze?: number;
 }
 
-/** 1 − 0.14·deficit^1.4, tabulated: it is evaluated many times per tick. */
+/** Output lost at an empty fast pool, and how sharply the loss grows with
+ * the deficit. A partly drained pool still supports a near-full burst; the
+ * loss grows as it runs low (repeated max efforts: Gaitanos 1993; recovery
+ * tracks phosphocreatine, Mendez-Villanueva 2012). */
+export const FATIGUE_MAX_LOSS = 0.3;
+export const FATIGUE_SHAPE = 2.5;
+/** 1 − FATIGUE_MAX_LOSS·deficit^FATIGUE_SHAPE, tabulated: it is evaluated many times per tick. */
 const FATIGUE_STEPS = 4096;
-const FATIGUE = Float64Array.from({ length: FATIGUE_STEPS + 1 }, (_, k) => 1 - 0.14 * Math.pow(k / FATIGUE_STEPS, 1.4));
+const FATIGUE = Float64Array.from({ length: FATIGUE_STEPS + 1 }, (_, k) => 1 - FATIGUE_MAX_LOSS * Math.pow(k / FATIGUE_STEPS, FATIGUE_SHAPE));
 
 /** Fatigue multiplier on speed/acceleration. */
 export function fatigueFactor(energy: number): number {
@@ -251,10 +260,16 @@ export function followAccel(body: Body, a: Vec2, cutSkill = 1, capacity = 1): Ve
   return { x: (at * tx - an * ty) * s, y: (at * ty + an * tx) * s };
 }
 
+/** Fast-pool cost of the intensity terms (work, speed, isometric pushing),
+ * relative to the proxy's base rate: a max-effort rep spends a large part of
+ * the fast pool, as a 5–6 s all-out effort spends much of the muscle's
+ * phosphocreatine. */
+export const FAST_DRAIN = 3;
 /** Metabolic proxy: base, planned work, speed, and isometric pushing.
  * additionalWork is delivered positive action work per kg (yd²/s²), already
  * integrated over the active interval; it must be charged only once. velocity
- * may be the last active velocity when later passive motion ends the tick. */
+ * may be the last active velocity when later passive motion ends the tick.
+ * The charge comes out of the fast pool. */
 export function spendEnergy(body: Body, accel: Vec2, isometric: number, dt: number, additionalWork = 0, velocity = body.vel): void {
   const p = body.profile;
   const nspeed = Math.hypot(velocity.x, velocity.y);
@@ -262,8 +277,9 @@ export function spendEnergy(body: Body, accel: Vec2, isometric: number, dt: numb
   body.sprintLoad = Math.max(0, (body.sprintLoad ?? 0) + (frac > 0.85 ? dt : frac < 0.7 ? -0.5 * dt : 0));
   const work = Math.max(0, accel.x * velocity.x + accel.y * velocity.y) / (p.vmax * (p.vmax / p.tau));
   const speedCost = (nspeed / p.vmax) ** 2;
-  const cost = (0.0045 + 0.03 * work + 0.012 * speedCost + 0.03 * clamp(isometric, 0, 1.5)) * dt;
-  body.energy = clamp(body.energy - (cost + 0.03 * additionalWork / (p.vmax * (p.vmax / p.tau))), 0, 1);
+  const intensity = (0.03 * work + 0.012 * speedCost + 0.03 * clamp(isometric, 0, 1.5)) * dt + 0.03 * additionalWork / (p.vmax * (p.vmax / p.tau));
+  const cost = 0.0045 * dt + FAST_DRAIN * intensity;
+  body.energy = clamp(body.energy - cost, 0, 1);
 }
 
 export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {

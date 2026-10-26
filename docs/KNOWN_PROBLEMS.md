@@ -292,7 +292,7 @@ problem), resolved.
 | [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
 | [RUN-12](#run-12) | Run blockers lost on their assignments (film, Oct 23) | G2 | high | in work |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
-| [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed) |
+| [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
 | [TKL-4](#tkl-4) | Defenders turn their backs on the ball carrier | G1 | medium | on |
 | [TKL-5](#tkl-5) | "Reach" means different things in each tackle branch | G1, G10 | high | in work (#264 needs rework) |
@@ -329,6 +329,10 @@ problem), resolved.
 | [ACT-1](#act-1) | Aims outlive the target they were made for | G10 | medium | on (#251) |
 | [PHY-1](#phy-1) | Contact and hand physics limits | F2, G5 | medium | open |
 | [PHY-2](#phy-2) | Movement detail that's costly or unproven | F2 | low | open |
+| [FAT-1](#fat-1) | Starters never rotate: DL, edge and RB play every snap | — | medium | partly fixed (#298); visible-fade cue open |
+| [FAT-2](#fat-2) | Fatigue too small to matter: linemen go full power every snap | — | medium | fixed (#298); rush-fade slope noisy under rotation |
+| [FAT-3](#fat-3) | No fade within a long engaged rep | — | low–medium | open (waits on Move 1, `world.ts`) |
+| [FAT-4](#fat-4) | Fatigue doesn't feed tempo, pacing or coaching | G7 | low | open |
 | [RAT-1](#rat-1) | Ratings and capability mappings uncalibrated | — | medium | open |
 | [RAT-2](#rat-2) | Team habits drawn without within-team scatter | — | low | open |
 | [RAT-3](#rat-3) | Ratings with no effect on the field | — | low–medium | open |
@@ -854,6 +858,24 @@ Carried over from the issue register; each was measured on an older develop.
   the line of sight rotates every step (the slow hip chase). **Next
   (proposed, not built):** bypass to the near hip only when his attainable
   speed covers the runner's across speed; otherwise keep the intercept line.
+- **Aim jump named** ([evidence](reviews/pursuit-aim-jump.md), 2026-10-26,
+  develop `a27ccd84`):
+  - **Mechanism: forecast acceleration whiplash on a marginal chase.**
+    `pursuitPoint` turns one 0.2 s difference of seen speed into a trend
+    (V = speed + acceleration·τ). Ordinary runner speed changes are within
+    NFL's range on the same operator, yet they swing V by 1–3 yd/s.
+  - For a slower pursuer the chooser's slack curve is near-tied, so that swing
+    flips feasible↔fallback or hops the least-bad point between t = 0 and the
+    horizon.
+  - Slow pursuers at 6–15 yd, 8,375 windows: holding only the acceleration
+    term equal removes 35% of intercept jumps and 51% of aim turns over 15°.
+    No other input removes more than 8% / 20%.
+  - Frozen reproducers: s7 G1-P115 LB_W at 3.05 s (the acceleration term
+    alone flips F 2.9 → B 3.0) and s8 G1-P111 LB_M at 3.60 s (fallback hop).
+  - It's a bug in the chase layer (Defense). #296 can close.
+  - **Next (proposed, not built):** estimate the speed trend from about
+    0.4–0.6 s of seen pictures. Then, if needed, a commitment margin on the
+    chosen time.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
@@ -2481,6 +2503,109 @@ These break the model rule that players act on acquired, delayed information.
 - Vertical and airborne motion, and richer hand and foot detail, are
   deferred (MODEL-001). They return only for a repeatable failure that a
   simpler model can't express.
+
+## Fatigue and rotation
+
+Diagnosed in the fatigue audit of 2026-10-25 (develop `b559fdc`, 4 games,
+seeds 7–10; write-up in the project files, `fatigue/fatigue-audit-2026-10-25.md`).
+`NFL` here is BDB 2025: snap shares from weeks 1–9, rush reps from weeks 1–2.
+
+<a id="fat-1"></a>
+### FAT-1: Starters never rotate: DL, edge and RB play every snap
+
+- **Symptom:** The same four linemen and the same RB play the whole game.
+  Depth on the line is worthless.
+- **Measure:** `dev` (`b559fdc`, seeds 7–10): the top DT, edge and RB each play
+  1.00 of snaps. `NFL` (median per game): DT1 0.63, DT2 0.46, DE/OLB1 0.76,
+  RB1 0.63, TE1 0.74; OL 1.00 in both.
+- **Cause:** *confirmed:* `team.ts` `pickBest` only discounts a player below
+  0.8 energy, and energy at the snap never goes below about 0.75 (median
+  0.95–0.97). No planned rotation exists. See FAT-2.
+- **Where:** `src/league/team.ts` `pickBest`, `src/game/game.ts` `recoverAll`.
+- **Open:** a coach's rotation from what he can observe (snaps in a row, time
+  on the field, visible fade), with depth quality deciding who goes in.
+  Defensive substitutions are limited when the offense doesn't substitute
+  (no-huddle; FAT-4).
+- **Fixed in #298 (merged 2026-10-26):** the coach counts each player's snaps, forgets them
+  over about 10 minutes off the field, and spells a player once that count
+  passes a stamina-based tolerance, weighted by position (DT and edge most,
+  OL and QB never). Changing a unit inside a series costs extra, more so
+  against hurry-up. It never reads energy. Seeds 7–14: DT1/2/3 0.60/0.53/0.31,
+  EDGE1/2 0.71/0.65, RB1 0.77, TE1 0.74, OL 1.00. Streaks run shorter than
+  the NFL's (5+ snaps: 7% against 14%), partly because sim drives are short.
+- **Still open:** the coach doesn't read visible fade (a slower get-off or a
+  lineman giving ground late in reps). He needs observable evidence, not
+  energy. The no-huddle limit on defensive subs is FAT-4.
+
+<a id="fat-2"></a>
+### FAT-2: Fatigue too small to matter: linemen go full power every snap
+
+- **Symptom:** Long drives and hurry-up don't wear a front down. The most
+  tired player in a game is about 2% weaker.
+- **Measure:** `dev`: drain per rep is 0.04–0.08 of the tank (DT 0.076);
+  energy at the snap settles near 0.95; the worst fatigue factor in 4 games
+  is 0.977–0.980. `NFL` (9,159 pass-rush reps by DL and edge rushers,
+  centred on each player's own mean): speed 2.5–4.0 s into the rep fades
+  about 1.5% per consecutive snap on the field (−0.039 ± 0.008 yd/s); peak
+  acceleration in the first 1.5 s fades about 0.6% per snap and is 6–10%
+  lower on snaps under 30 s after the last; peak speed in the first 1.5 s is
+  flat. These are confounded first-pass numbers: late-drive snaps differ in
+  situation and play type.
+- **Cause:** *confirmed:* the curve `1 − 0.14 × deficit^1.4` is flat for
+  small deficits and `spendEnergy` charges a max-effort rep only about 8%.
+  Recovery (`0.012 + 0.022 × stamina` per s) is in a realistic range. One
+  pool, fully refilled at halftime. Stamina changes only recovery.
+- **Where:** `src/physics/kinematics.ts` `fatigueFactor`, `spendEnergy`;
+  `src/game/game.ts` `recoverAll`.
+- **Open:** a fast pool (phosphocreatine-like, refills in tens of seconds)
+  and a slow game pool, judged with the same rush-rep operator
+  (`scripts/diag/fatigue-probe.ts`).
+- **Fixed in #298 (merged 2026-10-26):** fast pool drains 3× under load with curve
+  `1 − 0.3 × deficit^2.5`; refill `0.006 + 0.010 × stamina` per s toward a slow
+  reserve that loses 1% of each play's spend and gets half back at halftime.
+  Seeds 7–14 with rotation: speed 2.5–4.0 s fades −0.053 yd/s per consecutive
+  snap (NFL −0.039); peak acceleration +0.039 (NFL −0.017, wrong sign, noisy:
+  only 149 reps at 5+ in a row); peak speed −0.03 (NFL flat). Without
+  rotation: −0.023, −0.019, −0.013. Lowest energy at a snap 0.27. A fresh 40
+  is unchanged. Matched-snap check: no measurable pass effect; the
+  matched-pair pass delta was catch-roll variance (see the #298 PR body).
+- **Still open:** re-measure the fade slopes on more games once rotation
+  settles; the long-streak bins are thin.
+
+<a id="fat-3"></a>
+### FAT-3: No fade within a long engaged rep
+
+- **Symptom:** A blocker or rusher on a 6–8 s rep pushes as hard at the end
+  as at the start.
+- **Measure:** not yet measured against tracking. `dev` drain in the longest
+  DT rep is 0.13, a fatigue factor of 0.996.
+- **Cause:** *confirmed:* `enduranceFactor` (sprint load) builds only above
+  85% of top speed, so engaged pushing never builds it; isometric work
+  drains the tank only slightly, and contact force reads the fatigue factor
+  only through `world.ts`.
+- **Where:** `src/physics/kinematics.ts` `enduranceFactor`, `spendEnergy`;
+  `src/physics/world.ts` (`spendEnergy` call, arm cap).
+- **After #298:** a 5 s all-out push now spends 0.4–0.6 of the fast pool,
+  but the flatter curve keeps the output loss small until the pool is low,
+  so the fade inside one rep is still unmeasured and probably small.
+- **Open:** waits on the leg force–velocity work in `world.ts` (Move 1).
+  Whether tracking can isolate a fade within a rep (long-hold pass-rush reps,
+  depth given up by the OL over time).
+
+<a id="fat-4"></a>
+### FAT-4: Fatigue doesn't feed tempo, pacing or coaching
+
+- **Symptom:** Offenses never use tempo to wear out or freeze a front.
+  Players never pace themselves.
+- **Cause:** *confirmed:* tempo depends only on the clock situation
+  (`hurry` / `milking`); no effort choices are tied to fatigue.
+- **After #298:** a defense facing a hurry-up pays double to substitute
+  inside a series; nothing else ties tempo to fatigue. Against a no-huddle
+  offense that doesn't substitute, the defense gets no matching time and
+  should be limited to quick subs at its own risk (a procedure limit, not
+  only a cost). Offenses should be able to choose tempo to tire a front.
+- **Open:** pacing belongs with the
+  decision-layer research.
 
 ## Players and ratings
 

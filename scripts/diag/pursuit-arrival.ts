@@ -15,6 +15,7 @@ import { World, type Intent } from '../../src/physics/world.js';
 import { PlaySim } from '../../src/sim/playsim.js';
 import type { CommandTraceStep } from '../../src/sim/command-trace.js';
 import type { PursuitPredictionRecord } from '../../src/sim/pursuit-prediction.js';
+import { captureOrdinaryPlay } from './capture-game-play.js';
 import { bytesHash, compareExecution, copySaved, executionIdentity, firstDifference, initialState,
   readSavedPlay, replayState, restoreSetup, type SavedPlay } from '../../scripts/diag/saved-play.js';
 
@@ -79,6 +80,12 @@ export function parseArrivalJson(text: string): any {
 /** Offline acquisition of full states during an exact constructor replay.
  * Wraps this instance's existing World step once, without extra brain/physics calls. */
 export function freezeNative(saved: SavedPlay, actorSlot: string, targetSlot: string, clocks: number[]): ArrivalCase[] {
+  return freezeNativeAll(saved, actorSlot, targetSlot, clocks).map(c => { if (c instanceof Error) throw c; return c; });
+}
+
+/** freezeNative in one replay for many clocks: each clock's case, or the
+ * error that clock would raise. The play itself must still reproduce. */
+export function freezeNativeAll(saved: SavedPlay, actorSlot: string, targetSlot: string, clocks: number[]): Array<ArrivalCase | Error> {
   const sim = new PlaySim(restoreSetup(saved.setup));
   const initial = initialState(sim);
   const a = sim.defense.find(a => a.slot === actorSlot)!;
@@ -114,21 +121,98 @@ export function freezeNative(saved: SavedPlay, actorSlot: string, targetSlot: st
   const model: Model = { handContact: w.handContact, supportModel: w.supportModel, handIntegration: w.handIntegration,
     constraintWork: w.constraintWork, impactTiming: w.impactTiming, supportIntegration: w.supportIntegration,
     boundedAttachment: w.boundedAttachment };
-  return clocks.map(clock => {
+  const execution = executionIdentity(), operator = operatorSha256(), worldSource = worldSourceSha256();
+  return clocks.map((clock): ArrivalCase | Error => {
     const bytes = bodies.get(clock), row = trace.steps.find(s => Math.abs(s.stepStart - clock) < 1e-7);
-    if (!bytes || !row) throw new Error(`No exact native decision at ${clock}`);
+    if (!bytes || !row) return new Error(`No exact native decision at ${clock}`);
     const changedBody = firstDifference(decisionBodies.get(clock), deserialize(bytes));
-    if (changedBody) throw new Error(`Body changed between consumed helper and execution boundary: ${JSON.stringify(changedBody)}`);
+    if (changedBody) return new Error(`Body changed between consumed helper and execution boundary: ${JSON.stringify(changedBody)}`);
     const intercept = row.pursuit?.find(r => r.data.kind === 'intercept')?.data as Intercept | undefined;
     if (intercept && distance(intercept.pursuer.position, deserialize(bytes).pos) !== 0)
-      throw new Error('Body changed between helper and execution boundary');
+      return new Error('Body changed between helper and execution boundary');
     return { id: `${saved.game.playId}-${actorSlot}-${clock.toFixed(2)}`, actor: identity(a), target: identity(target),
       clock: row.stepStart, dt: sim.dt, bodyV8: bytes.toString('base64'), bodySha256: bytesHash(bytes), model,
       intercept: intercept ?? null, trace: row, native: rows.filter(r => r.start >= row.stepStart - 1e-7 && r.start < row.stepStart + 3.01),
-      source: { kind: 'native', capture: saved.identity, execution: executionIdentity(), setupSha256: saved.setupSha256,
-        operatorSha256: operatorSha256(), worldSourceSha256: worldSourceSha256(),
+      source: { kind: 'native', capture: saved.identity, execution, setupSha256: saved.setupSha256,
+        operatorSha256: operator, worldSourceSha256: worldSource,
         playId: saved.game.playId, originalOutcome: result.outcome, originalYards: result.yards } };
   });
+}
+
+/**
+ * Choose a native pursuit case from a saved completed pass instead of pinning
+ * one actor and clock: the catcher is the target, and the first defender (in
+ * defensive order, then by clock) whose exact intercept decisions on two
+ * consecutive ticks freeze cleanly and replay exactly as a lone body, with
+ * each recorded intercept (plus `follow` seconds) inside the play and his
+ * request below full effort, is returned. A changed engine can move the play; this
+ * keeps the experiment on a real pursuit of the actual ball carrier.
+ */
+export function findNativePursuit(saved: SavedPlay, follow = .1, settle = 1, moving = 1): { actorSlot: string; targetSlot: string; clocks: number[] } {
+  const probe = new PlaySim(restoreSetup(saved.setup)), result = saved.original.result, dt = probe.dt;
+  const receiver = probe.offense.find(a => a.player.id === result.stats.receiver);
+  const caught = result.events.find(e => e.type === 'catch')?.t;
+  if (!result.stats.completed || !receiver || caught === undefined) throw new Error('Pursuit case needs a completed pass');
+  for (const d of probe.defense) {
+    // A plain traced replay finds his candidate decisions: a real chase of the
+    // receiver, already moving (at least `moving` yd/s), below full effort (so the estimator-full-effort arm is a real
+    // comparison), with the recorded point ahead of him (a positive sampled
+    // horizon) and inside the play, after `settle` s free of contact and
+    // joints (world state a lone body does not carry, such as smoothed
+    // contact lift, must have died away).
+    const sim = new PlaySim(restoreSetup(saved.setup));
+    const trace = sim.recordCommands({ actor: { playerId: d.player.id }, from: caught - 1e-6, to: result.duration });
+    const actor = sim.defense.find(a => a.player.id === d.player.id)!;
+    let touched = -Infinity;
+    const step = sim.world.step.bind(sim.world);
+    sim.world.step = (commands, h) => {
+      const start = sim.t, report = step(commands, h);
+      if (report.contacts.some(c => c.i === actor.idx || c.j === actor.idx)
+        || sim.world.joints.some(j => j.a === actor.body || j.b === actor.body)) touched = start;
+      return report;
+    };
+    const lastTouch = new Map<number, number>();
+    const tick = sim.tick.bind(sim);
+    sim.tick = () => { lastTouch.set(Math.round(sim.t / dt), touched); tick(); };
+    sim.run();
+    const chase = (s: CommandTraceStep) => s.pursuit?.some(r => {
+      if (r.phase !== 'decision' || r.data.kind !== 'intercept' || r.target.playerId !== receiver.player.id) return false;
+      const p = r.data.prediction;
+      return p.t >= 2 * dt && !!p.samples?.some(q => q.t > 0) && s.stepStart + p.t + follow <= result.duration + 1e-7;
+    }) && (s.final?.effort ?? 1) < 1 && s.stepStart - (lastTouch.get(Math.round(s.stepStart / dt)) ?? -Infinity) >= settle - 1e-7
+      && Math.hypot(s.start.body.velocity.x, s.start.body.velocity.y) >= moving;
+    const pairs: number[][] = [];
+    for (const [k, s] of trace.steps.entries()) {
+      const next = trace.steps[k + 1];
+      if (next && Math.abs(next.stepStart - s.stepStart - dt) < 1e-7 && chase(s) && chase(next)) pairs.push([s.stepStart, next.stepStart]);
+    }
+    if (!pairs.length) continue;
+    // One exact freeze of his candidates. The offline experiment steps his
+    // body alone, so its first step and held-command preview must reproduce
+    // the native ones.
+    const frozen = freezeNativeAll(saved, d.slot, receiver.slot, pairs.flat());
+    const exact = (x: ArrivalCase | Error) => !(x instanceof Error) && !!x.intercept
+      && x.native[0]?.contactCount === 0 && x.native[0]?.jointCount === 0
+      && x.clock + x.intercept.prediction.t + follow <= x.native.at(-1)!.end + 1e-7
+      && (({ firstNativeStepDifference: a, heldCommandPreviewDifference: b }) => a === null && b === null)(
+        response(x, objectives(x)[0], 'held-original'));
+    for (let k = 0; k < pairs.length; k++)
+      if (exact(frozen[2 * k]) && exact(frozen[2 * k + 1])) return { actorSlot: d.slot, targetSlot: receiver.slot, clocks: pairs[k] };
+  }
+  throw new Error('No native pursuit of the receiver freezes on this play');
+}
+
+/** The first completed pass of an ordinary game (seeded as capture-game-play)
+ * that has a native pursuit case, within `catches` completed passes of one
+ * game run. A pass whose receiver is tackled before any chaser's recorded
+ * intercept has none. */
+export function captureNativePursuit(seed: number, catches = 6): { saved: SavedPlay; pick: ReturnType<typeof findNativePursuit> } {
+  let pick: ReturnType<typeof findNativePursuit> | undefined, tried = 0;
+  const { saved } = captureOrdinaryPlay({ seed, play: 'first-catch', minPlay: 1, maxSteps: 80, accept: s => {
+    if (++tried > catches) throw new Error(`No native pursuit case in the first ${catches} completed passes of seed ${seed}`);
+    try { pick = findNativePursuit(s); return true; } catch { return false; }
+  } });
+  return { saved, pick: pick! };
 }
 
 export function restoreBody(c: Pick<ArrivalCase, 'bodyV8' | 'bodySha256'>): Body {
@@ -318,7 +402,10 @@ export function compareBundle(bundle: ArrivalBundle) {
       || c.source.execution.node !== execution.node)
       throw new Error(`Incompatible movement source/settings/Node for ${c.id}`);
   }
-  const pair = bundle.cases.filter(c => c.source.kind === 'native' && c.source.playId === 'G1-P002' && c.actor.slot === 'SS' && c.intercept);
+  // The nominated decisions: the first native actor's intercepts on its play.
+  const nominated = bundle.cases.find(c => c.source.kind === 'native' && c.intercept);
+  const pair = bundle.cases.filter(c => c.source.kind === 'native' && c.intercept && nominated
+    && c.source.playId === nominated.source.playId && c.actor.playerId === nominated.actor.playerId);
   // Cross both *recorded* requests/points from the two nominated decisions.
   // A later decision's cue at the earlier body clock is diagnostic only,
   // explicitly not an available-information controller intervention.

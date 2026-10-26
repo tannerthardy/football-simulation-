@@ -123,6 +123,84 @@ Use the achieved body state and contact evidence to investigate execution.
 This is optional diagnostic recording, independent of the lightweight packed
 replay. It does not repair pursuit, tackle or awareness mechanisms.
 
+## Responsibility ledger: every blocker, every tick
+
+The `blockingChanges` rows above follow one selected run blocker. The ledger is
+the same recorder for **all** offensive blockers at once, plus the contact and
+play facts needed to read a block count correctly. It reuses the same hook
+sites and reason strings (`sim.blockingSink(a)` returns the ledger when it is
+on; the ledger forwards to the selected-actor trace, so both see the same
+mutation) and adds the departure-end paths.
+
+```ts
+const ledger = sim.recordResponsibility();   // before run(); off by default, like recordCommands
+sim.run();
+ledger.data;                                  // initialJobs, initialPlans, changes, rows, play
+```
+
+`scripts/diag/responsibility-ledger.ts` runs it over a saved set (`census`),
+replays seeds 7 and 8 with the recorder on and off (`restage`, after
+`matched-restage.ts capture`), replays saved plays (`saved`) and times it
+(`time`). Play Lab runs have it on: the **Blocking responsibility** layer draws
+each blocker's current duty against the one he was given at the snap, and the
+selected blocker's panel lists his duty over time with the reason for each
+change.
+
+| Field | Meaning | Does not mean |
+| --- | --- | --- |
+| `initialJobs`, `initialPlans` | Plans at the first tick, before any decision: each combination with a backer plus each direct climber (the Phase II census jobs), with members, covered defender and assigned target. | An obligation. A job is a sampling unit; the blocker's duty can change. |
+| `changes` | Every change to a blocker's target, work kind, combination, `climbTo` or departure: decision time `t`, `reason`, changed `fields`, plan before and after. Reasons are the command trace's: `available-target/find-work`, `crossing-exchange`, `penetration-collection`, `threat-reread`, `combination-abandoned: …`, `combination-release`, and the ledger's own `departure-end: …`. Several changes in one decision stay ordered and chained. | That the change was right or wrong. Rereads and find-work replacements are normal. |
+| `unattributed` (a reason) | The plan moved and no hook claimed it. A path this recorder does not know. It never occurs on the 40-call zone set or 287 restaged snaps, and a test fails if a hook is bypassed. | A bug in the play. It is a gap in the recorder. |
+| `rows[]` | One per blocker per tick, `t` = step start, `endpoint` = `t + dt`: the plan at the end of the tick (incl. departure state and combination release), his engagement, every hands joint on a defender (`magnitude` = hypot of normal and steering force, `loaded` = above `LOAD_PRESENT` = 1 engine force unit, plus the signed force on the defender), hand load on the current and on the **initial** target, torso contacts, `access` and who owned his final command. | Success. Load presence is not restriction. |
+| `command` | Controller, whether it ran at all, the stages after it that changed the command, and `finalOwner`: `raw`, `rewritten` or `engagement`. | A reason the stage was right. |
+| `access` | For each defender in contact with the blocker this step: what he asked for and what his body did along the line to the ball holder, and the difference times dt (`deficit`, yd; positive: he got less than he asked for). | A counterfactual. Other bodies, the ground and balance are all in `achieved`. In S12-P011 it orders Y→DE_W above C→DT_W (0.60 vs 0.33 yd over the 14 ticks the review used) but does not reproduce the counterfactual 1.208 vs 0.054 yd, which needs removing the hands. |
+| `play.carrierByTick` | The true holder at each tick endpoint, so a QB keep reads as QB, not the scheduled RB. | A decision input. Defenders still use their own pictures. |
+| `play.carrierEvents` | `carrier_contact`, `hit`, `tackle_wrap`, `tackle` events with their defender, ties kept. | A unique first defender: several defenders can share the first timestamp. |
+| `play.censored` | `snap-prevented` (no tick ran, no jobs), `play-ended` or `still-live`. | A fact about the blocking. It says how far the window could see. |
+
+Times: a change has the decision time of the tick whose update made it; its new
+plan is visible in that tick's row and in the next frame. Hand load and torso
+contact belong to the step ending at `endpoint`, which is `t + 0.05`. A first
+load at endpoint 2.25 and a reread at decision time 1.25 are different clocks.
+
+### The two derived views
+
+`src/sim/responsibility-views.ts` derives both from the same records. Neither
+adds a grade, a score or a reward, and a missing fact stays `null`.
+
+- **`initialJobCensus`**: each initial job followed to its facts: release, first
+  member load on the assigned target (members' summed hand force above the load
+  threshold at an endpoint), first carrier contact with every tied defender, the
+  target's own contacts, a factual stratum (`L` a member loaded the target, `U`
+  none did but the target later contacted the carrier, `?` neither), and, kept
+  separate, whether the departing member later reread (`threat-reread`) or held
+  another climb target.
+- **`dutyTimeline`**: each blocker's duty over time, one span per plan, with the
+  reason it began. S9-P062's C reads `combo → DT_S` (initial job), `climb →
+  LB_W` (combination-release 1.05), `climb → LB_M` (threat-reread 1.25). Graded
+  against the initial job he never loaded LB_W; against his current duty he
+  loaded LB_M at 2.25.
+
+### What it was checked against (develop `a5b024b9`, Node 22.22.0)
+
+- **Changes nothing.** 287 saved snaps (seeds 7 and 8: 101 runs, 186 passes):
+  0 plays changed with the ledger on, 0 with the ledger and a selected-actor
+  trace both on, and 0 for the plain-versus-plain control. Fingerprint =
+  result, every event, RNG state, every body, last intents and minds. Four saved
+  game plays replay with no difference in frames, events or telemetry. No
+  `unattributed` change anywhere.
+- **Reproduces the Phase II census** on the 40-call zone set: 37 snaps run, the
+  three prevented snaps (S7-P029, S8-P004, S9-P039), 53 initial jobs, strata
+  16 `L` / 11 `U` / 26 `?`, 14 of 16 loaded jobs by first carrier contact, and the first
+  member load and the target's first contact of all 53 jobs equal the review's
+  current-source columns. Responsibility rows: 9 jobs with a later reread, 7
+  that hold another climb target, 4 in both (the review's 9, 6 and 3 are from
+  the historical source; the extra row is S8-P039, where this source's C
+  rereads to LB_W at 1.7 and stays a climb, as the review notes).
+- **Cost.** With the recorder off, per-game wall time on develop and on this
+  branch: +1.5% in sequential alternation (7 pairs) and -0.4% in ABBA order (4
+  each), i.e. within noise. With it on: about +13% on the zone set.
+
 ## Reproduce an ordinary game play
 
 First capture the **actual constructor input**, before `PlaySim` consumes or

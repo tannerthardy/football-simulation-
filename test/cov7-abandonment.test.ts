@@ -131,7 +131,7 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     }
   });
 
-  it('brings the corner to the runner on the run, while preserving both deceptive incompletions', () => {
+  it('brings the corner to the runner on the run, while the deceptive pass punishes abandonment', () => {
     expect(run.summary.legality.support.forwardPassRestrictionApplicable).toBe(false);
     expect(run.summary.legality.support.maxIneligibleForwardEdgeBeforeRelease).toBeNull();
     // On defaults the contained edge and LB_W finish the toss in every arm; the
@@ -142,7 +142,14 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     expect(approach.squeeze!.distance).toBeLessThan(1.5);
     expect(run.summary.result.support.outcome).toBe('tackle');
     expect(pass.summary.result.man.outcome).toBe('incomplete');
-    expect(pass.summary.result.support.outcome).toBe('incomplete');
+    // Under the two-pool fatigue model (FAT-2) the same throw to WR2 is now
+    // caught: the corner who left his man is 3 yd off at 2.4 s and gives up a
+    // 70-yard touchdown, while the corner who stayed still forces the
+    // incompletion. Before FAT-2 both arms were incomplete. The abandonment
+    // cost is the point, so pin that the support arm is no better for the
+    // defense, not the exact result.
+    expect(pass.summary.result.support.outcome).not.toBe('incomplete');
+    expect(pass.summary.result.support.yards).toBeGreaterThan(pass.summary.result.man.yards);
   });
 });
 

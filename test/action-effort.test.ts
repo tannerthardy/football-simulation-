@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { spendEnergy, type Body } from '../src/physics/kinematics.js';
+import { FAST_DRAIN, spendEnergy, type Body } from '../src/physics/kinematics.js';
 import { newSupport } from '../src/physics/support.js';
 import { World, type Intent } from '../src/physics/world.js';
 
@@ -18,7 +18,7 @@ function scene(substeps = 1, impactTiming: 'speculative' | 'local-sweep' = 'spec
   return { b, other, w };
 }
 const kineticPerKg = (b: Body) => .5 * (b.vel.x ** 2 + b.vel.y ** 2);
-const restingCost = (b: Body, elapsed: number) => (.0045 + .012 * (Math.hypot(b.vel.x, b.vel.y) / profile.vmax) ** 2) * elapsed;
+const restingCost = (b: Body, elapsed: number) => (.0045 + FAST_DRAIN * .012 * (Math.hypot(b.vel.x, b.vel.y) / profile.vmax) ** 2) * elapsed;
 
 describe('completed action effort', () => {
   it('charges delivered dive work once despite the terminal falling/free state', () => {
@@ -27,7 +27,7 @@ describe('completed action effort', () => {
       const r = w.step([{ vel: { x: 0, y: 0 }, dive: { x: 1, y: 0 } }, free], dt);
       expect(b.support!.state).toBe('falling');
       expect(r.groundWork[0] / profile.massKg).toBeCloseTo(kineticPerKg(b), 12);
-      const expected = restingCost(b, dt) + .03 * kineticPerKg(b) / workScale;
+      const expected = restingCost(b, dt) + FAST_DRAIN * .03 * kineticPerKg(b) / workScale;
       expect(1 - b.energy).toBeCloseTo(expected, 14);
       expect(r.groundWork[0]).toBeGreaterThan(0);
       expect(Math.abs(r.work.residual)).toBeLessThan(1e-9);
@@ -43,7 +43,7 @@ describe('completed action effort', () => {
       expect(b.support!.state).toBe('up');
       expect(r.groundWork[0]).toBeCloseTo(.5, 12);
       costs.push(1 - b.energy);
-      expect(costs.at(-1)).toBeCloseTo(restingCost(b, dt) + .03 * .005 / workScale, 14);
+      expect(costs.at(-1)).toBeCloseTo(restingCost(b, dt) + FAST_DRAIN * .03 * .005 / workScale, 14);
     }
     expect(Math.max(...costs) - Math.min(...costs)).toBeLessThan(1e-15);
   });
@@ -54,7 +54,7 @@ describe('completed action effort', () => {
     const r = w.step([{ vel: { ...b.vel }, facing: 0, lunge: { x: .2, y: 0 } }, free], dt);
     expect(b.vel.x).toBeCloseTo(.1, 13);
     expect(r.groundWork[0]).toBeCloseTo(0, 12);
-    expect(1 - b.energy).toBeCloseTo(restingCost(b, dt) + .03 * .005 / workScale, 14);
+    expect(1 - b.energy).toBeCloseTo(restingCost(b, dt) + FAST_DRAIN * .03 * .005 / workScale, 14);
   });
 
   it('charges achieved force rather than an unmet lunge request', () => {
@@ -65,7 +65,7 @@ describe('completed action effort', () => {
       expect(b.vel.x).toBeLessThan(request);
       expect(r.groundWork[0] / profile.massKg).toBeCloseTo(kineticPerKg(b), 12);
       costs.push(1 - b.energy);
-      expect(costs.at(-1)).toBeCloseTo(restingCost(b, dt) + .03 * kineticPerKg(b) / workScale, 14);
+      expect(costs.at(-1)).toBeCloseTo(restingCost(b, dt) + FAST_DRAIN * .03 * kineticPerKg(b) / workScale, 14);
     }
     expect(costs[0]).toBe(costs[1]);
   });
@@ -82,7 +82,7 @@ describe('completed action effort', () => {
     expect(r.contacts.every(c => c.i !== 2 && c.j !== 2)).toBe(true);
     expect(b.support!.state).toBe('up');
     expect(b.vel.x).toBeCloseTo(.1, 13);
-    expect(1 - b.energy).toBeCloseTo(restingCost(b, dt) + .03 * .005 / workScale, 14);
+    expect(1 - b.energy).toBeCloseTo(restingCost(b, dt) + FAST_DRAIN * .03 * .005 / workScale, 14);
     expect(a.energy).toBe(1); expect(target.energy).toBe(1);
   });
 

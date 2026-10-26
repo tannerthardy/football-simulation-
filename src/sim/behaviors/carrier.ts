@@ -236,10 +236,14 @@ export class BallCarrier implements Behavior {
         sim.commandTraceFor?.(a)?.carrier({ kind: 'design-exit', t: sim.t, ...exit });
         if (exit.exit) this.opts.aimUntil = sim.t;
       }
-      const lead = this.opts.follow?.filter((b) => !b.isDown(sim.t) && !b.engagement)
-        .sort((p, q) => Math.hypot(p.pos.x - aim.x, p.pos.y - aim.y) - Math.hypot(q.pos.x - aim.x, q.pos.y - aim.y))[0];
-      if (lead) {
-        const seen = sim.see(a, lead);
+      // His lead blocker and the closing threats come from his own pictures:
+      // a teammate he sees off his feet or on a defender is not leading him;
+      // a defender he sees off his feet or on a teammate is not closing.
+      const leads = this.opts.follow?.map((b) => ({ b, seen: sim.see(a, b) }))
+        .filter(({ b, seen }) => !offFeet(seen) && !sim.opponents(a).some((d) => touching({ ...seen, radius: b.profile.radius }, sim.see(a, d, 0.7).pos, d.profile.radius)))
+        .sort((p, q) => Math.hypot(p.seen.pos.x - aim.x, p.seen.pos.y - aim.y) - Math.hypot(q.seen.pos.x - aim.x, q.seen.pos.y - aim.y));
+      if (leads?.length) {
+        const seen = leads[0].seen;
         const dx = seen.pos.x - a.pos.x;
         const dy = seen.pos.y - a.pos.y;
         const ahead = dx * Math.cos(h) + dy * Math.sin(h);
@@ -248,8 +252,12 @@ export class BallCarrier implements Behavior {
         // Patience ends when an unblocked defender can close before the next
         // two reads. Waiting for a late puller must not become a mandatory stop.
         const closing = entering && sim.opponents(a).some((d) => {
-          if (d.isDown(sim.t) || d.engagement) return false;
           const threat = sim.see(a, d);
+          if (offFeet(threat) || sim.teammates(a).some((b) => {
+            if (b === a) return false;
+            const mate = sim.see(a, b);
+            return mate.pose !== 'down' && touching({ ...mate, radius: b.profile.radius }, threat.pos, d.profile.radius);
+          })) return false;
           return timeToReach({ ...threat, profile: d.profile, speedScale: d.speedScale }, a.pos,
             a.profile.radius + d.profile.radius + d.profile.reach * 0.75) < 2 * a.mind.decisionInterval;
         });
@@ -529,7 +537,7 @@ function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vis
     // A defender he sees a blocker on is held up; one he sees coming at
     // him through it is getting off the block.
     let blockerBonus = 0;
-    if (blockers.some((b) => Math.hypot(b.pos.x - seen.pos.x, b.pos.y - seen.pos.y) < b.radius + d.profile.radius + 0.35)) {
+    if (blockers.some((b) => touching(b, seen.pos, d.profile.radius))) {
       const rx = p.x - seen.pos.x, ry = p.y - seen.pos.y;
       blockerBonus = (seen.vel.x * rx + seen.vel.y * ry) / (Math.hypot(rx, ry) || 1) > 1 ? 0.25 : 0.7;
       extra += blockerBonus;
@@ -537,6 +545,17 @@ function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vis
     threats.push({ d, pos: seen.pos, vel: seen.vel, seen, parking, recovery, blockerBonus, extra });
   }
   return { blockers, threats };
+}
+
+/** The runner's visible-block test: a perceived teammate within touching
+ * distance of a perceived defender. */
+function touching(b: { pos: Vec2; radius: number }, d: Vec2, dRadius: number): boolean {
+  return Math.hypot(b.pos.x - d.x, b.pos.y - d.y) < b.radius + dRadius + 0.35;
+}
+
+/** Seen down or getting up: off his feet, as far as the runner can tell. */
+function offFeet(seen: Perceived): boolean {
+  return seen.pose === 'down' || seen.pose === 'rising';
 }
 
 /** One candidate heading as the evaluator scored it. */
