@@ -152,3 +152,75 @@ a slow reaction to the ball.
 - The QB-defender link (QBs throwing under bailing droppers) isn't tested.
 - After the random-stream split lands, the seeds' plays change. The operator
   doesn't, so re-run it then.
+
+## Step 2: when a zone defender stops running with a receiver
+
+Matched snaps: `matched-restage.ts capture` seeds 7, 8, 101–104 on `58ae15d7`
+(835 snaps, 369 zone throws), written in the common format by
+`scripts/diag/matched-common.ts` so the NFL operators measure them unchanged.
+
+### What the defender does over a vertical
+
+`scripts/diag/depth/carrypace.py`: every frame in the second before the
+throw, a zone defender with a receiver within 4 yd running downfield faster
+than 4 yd/s and shallower than him. "Pace" is his downfield speed divided by
+the receiver's; "matching" is the share with pace > 0.8.
+
+| Pair | Cushion | NFL pace / matching | Sim (matched base) |
+| --- | --- | --- | --- |
+| Wide, receiver 10+ yd | 0–1 yd | 0.79 / 0.47 | 0.90 / 0.57 |
+| | 1–2 | 0.73 / 0.31 | 0.90 / 0.85 |
+| | 2–3 | 0.71 / 0.28 | 0.90 / 0.91 |
+| | 3–5 | 0.68 / 0.22 | 0.87 / 0.84 |
+| Box, receiver 10+ yd | 2–3 | 0.59 / 0.16 | 0.86 / 0.84 |
+| | 3–5 | 0.54 / 0.18 | 0.93 / 0.86 |
+| Wide, receiver under 10 yd | 3–5 | 0.54 / 0.06 | 0.76 / 0.32 |
+
+- A tracked defender with cushion gives ground below the receiver's speed and
+  matches him only when the cushion is nearly gone. Ours copies his speed at
+  any cushion.
+- It isn't the release of a carry. With the nearby receiver below 3 yd/s, 4–5%
+  of ours run faster than 4 yd/s (NFL 2%). When a receiver throttles, ours
+  starts slowing a median 0.2 s after him (NFL 0.1).
+- On the matched throws where the target is under the nearest defender within
+  6 yd, the commonest technique is a pattern-match `man-open` on the target
+  himself (73 of 205), 2.7 yd over a receiver who is slowing at 6.8 yd.
+
+### Where the speed copy is in the code
+
+Three over-the-top carries feed the receiver's full downfield speed forward:
+
+- `ZoneCoverage` deep (`deep-over` / `deep-turn-run`): target the receiver plus
+  a 2.2–2.7 yd roof, receiver speed fed forward.
+- `ManCoverage` with `overTop` (match rules): target the receiver plus
+  0.8 + 0.15·v, receiver velocity fed forward.
+- `ZoneCoverage` underneath carry (`carry-wall` / `carry-run-past`): the target
+  never comes more than 0.5 yd below his current depth, with the seam's speed
+  fed forward, so spare cushion is kept for the whole carry.
+
+`DeepCoverage.choose` already previews the body and escalates to matching or
+running when the roof would be lost; it returns the technique's own request
+when it is safe. So the copy is in the request, not in the safety check.
+
+### Attempt 1, declared before running: spend the spare cushion
+
+**Rule.** Over a receiver he has more cushion on than his technique's roof,
+the defender feeds forward only the share of the receiver's speed that the
+roof needs, `roof / cushion`; at or under the roof he copies it in full. No new
+constant: each site's existing roof is the `need`. The preview check still
+escalates. Reads: his own position and his acquired picture of the receiver.
+Switch `CARRY_PACE` (on; `=0` is today's request) for the matched comparison.
+
+**Predictions** (matched snaps, `CARRY_PACE=0` vs on):
+
+1. Matching share at 2+ yd of cushion falls below 0.5 for wide and box pairs
+   over receivers 10+ yd deep.
+2. The nearest defender's downfield speed at the throw, with the target under
+   him in a 2–6 yd window, falls by at least 0.5 yd/s.
+3. Closing in flight re-weighted to the NFL separation mix rises by at least
+   0.1 yd.
+4. Cost: completions with 20+ air yards don't fall; no size predicted.
+5. Runs: no run snap changes.
+
+**Stop.** If 1 or 2 doesn't happen, or 20+ yd completions more than double on
+the matched snaps, stop and re-diagnose before a second attempt.
