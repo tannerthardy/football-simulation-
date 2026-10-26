@@ -1,8 +1,10 @@
 /** Declared ordinary zone set for the combination-to-climb question (KNOWN_PROBLEMS RUN-12).
  *   node --import tsx scripts/diag/zone-climb-ordinary.ts capture out/g2-ordinary/set.bin
  *   node --import tsx scripts/diag/zone-climb-ordinary.ts measure out/g2-ordinary/set.bin out/g2-ordinary/arm.json
- * capture: the first 10 inside/outside/wide/split zone runs of normal games 7 and 8, in game
- * order, nothing dropped; also writes a Play Lab scenario per play (npm run lab:replay).
+ * capture: the first 10 inside/outside/wide/split zone runs of normal games 7 and 8 (or the
+ * games named in ZONE_SEEDS, e.g. ZONE_SEEDS=9,10), in game order, nothing dropped; also
+ * writes a Play Lab scenario per play (npm run lab:replay). Capture on the base checkout:
+ * the set is a prefix of a normal game, so an engine that blocks differently picks other plays.
  * measure: identical setup bytes on the current checkout. Engine state and engagements only. */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
@@ -22,7 +24,7 @@ const [mode, input, output] = process.argv.slice(2);
 
 function capture(): void {
   const plays: Saved[] = [];
-  for (const seed of [7, 8]) {
+  for (const seed of (process.env.ZONE_SEEDS ?? '7,8').split(',').map(Number)) {
     const rng = new Rng(seed);
     const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
     let n = 0;
