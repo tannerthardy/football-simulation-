@@ -24,6 +24,7 @@
     "scorecard": "node --import tsx scripts/scorecard/run.ts",
     "replay": "tsx scripts/export-replay.ts",
     "film-pack": "node --import tsx scripts/film-pack.ts",
+    "film-pairs": "node --import tsx scripts/film-pairs.ts",
     "weird": "node --import tsx scripts/weird-film.ts",
     "lab": "node --import tsx lab-app/server.ts",
     "lab:replay": "node --import tsx lab-app/replay-cli.ts",

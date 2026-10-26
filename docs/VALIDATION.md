@@ -110,6 +110,18 @@ still need the existing selected-play traces. The small native determinism
 test builds one game twice and requires identical manifest and film bytes;
 synthetic tests cover stratification, caps, exclusions and duplicate prevention.
 
+### Before/after pairs from one saved snap
+
+`npm run film-pairs -- --base <ref> --head <ref> --plays out/selection.json --out out/film-pairs/name`
+captures once on the declared source and replays the identical constructor on
+both pinned refs. Saved IDs resolve through exact paths/hashes; seed/game/play
+triples use film-room numbering, not scorecard IDs. See [FILM_PAIRS](FILM_PAIRS.md)
+for the versioned input, compatibility checks and measurement limits. Open the
+standalone index.html for synced playback and first recorded differences.
+Keep generated inputs/films in ignored out/ and deliver them through the film-pack
+artifact channel. Same-ref pairs must say no change; whole-game comparisons do
+not replace these paired snapshots.
+
 ## Film weirdness detectors
 
 A person watching ordinary film finds things the averages hide: a motion man
