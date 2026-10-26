@@ -215,7 +215,7 @@ export function createEngagement(sim: PlaySim, blocker: Agent, defender: Agent, 
     return null;
   }
 
-  const rng = sim.rng;
+  const rng = sim.dice('rep', blocker, defender);
   const tb = traits(blocker, type);
   const td = traits(defender, type);
   const e: Engagement = {
@@ -400,9 +400,10 @@ function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoi
       return;
     }
     const armEdge = (tb.arm-td.arm)/3;
-    const repEdge = sim.rng.normal(0, 0.08);
-    const punch = tb.hands + 0.12*armEdge + sim.rng.normal(0, 0.18) + repEdge;
-    const strike = 0.5*td.hands + 0.5*d.r('strength') - 0.12*armEdge + sim.rng.normal(0, 0.18);
+    const dice = sim.dice('help', h, d);
+    const repEdge = dice.normal(0, 0.08);
+    const punch = tb.hands + 0.12*armEdge + dice.normal(0, 0.18) + repEdge;
+    const strike = 0.5*td.hands + 0.5*d.r('strength') - 0.12*armEdge + dice.normal(0, 0.18);
     state = { control: clamp(punch-strike+0.1, -0.8, 0.8) };
     runHands.set(joint, state);
     helperTouches.set(h, { rep: e, at: sim.t, pos: { ...d.pos } });
@@ -416,7 +417,7 @@ function advanceRunHelperHands(sim: PlaySim, e: Engagement): void {
     const joint = e.helperHands?.get(h), state = joint && runHands.get(joint);
     if (!state) continue;
     const tb = traits(h, 'run');
-    state.control = clamp(state.control + sim.dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + sim.rng.normal(0, 0.25)), -1, 1);
+    state.control = clamp(state.control + sim.dt * (0.5 * (tb.hands - td.hands) + 0.08 * ((tb.arm - td.arm) / 3) + sim.dice('help', h, e.defender).normal(0, 0.25)), -1, 1);
   }
 }
 
@@ -529,7 +530,7 @@ function planMove(sim: PlaySim, e: Engagement, d: Agent, b: Agent): RushMove {
     : approach === 'power' ? move === 'bull' || move === 'longarm'
     : approach === 'finesse' ? move === 'swim' || move === 'rip' || move === 'club' : true;
   const planned = w.filter(([move]) => fits(move));
-  return sim.rng.weighted(
+  return sim.dice('rep', b, d).weighted(
     planned.map((x) => x[0]),
     planned.map((x) => Math.max(0, x[1])),
   );
@@ -553,7 +554,7 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
   if (e.phi * e.side > 0.4) w.push(['dip', 1.0 + td.bend * 1.5]);
   // Blocker over-set (rusher is inside his leverage): inside counter.
   if (e.phi * e.side < -0.15 || (e.type === 'pass' && e.blocker.vel.x < -2 && e.phi * e.side < 0.1)) w.push(['spin', 0.4 + fin * 1.2], ['swim', 0.4 + fin * 0.6]);
-  return sim.rng.weighted(
+  return sim.dice('rep', e.blocker, d).weighted(
     w.map((x) => x[0]),
     w.map((x) => Math.max(0.01, x[1])),
   );
@@ -565,7 +566,7 @@ function chooseMove(sim: PlaySim, e: Engagement): RushMove {
  */
 function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
   const t = sim.t;
-  const rng = sim.rng;
+  const rng = sim.dice('rep', e.blocker, e.defender);
   const b = e.blocker;
   const d = e.defender;
   const tb = traits(b);
@@ -805,7 +806,7 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
 function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const t = sim.t;
   const dt = sim.dt;
-  const rng = sim.rng;
+  const rng = sim.dice('rep', e.blocker, e.defender);
   const b = e.blocker;
   const d = e.defender;
   const tb = traits(b);
@@ -1156,7 +1157,7 @@ function handFight(e: Engagement, tb: TrenchTraits, td: TrenchTraits, dt: number
 function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const t = sim.t;
   const dt = sim.dt;
-  const rng = sim.rng;
+  const rng = sim.dice('rep', e.blocker, e.defender);
   const b = e.blocker;
   const d = e.defender;
   const tb = traits(b, e.type);
@@ -1641,7 +1642,7 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
   // Only possible with hands on him.
   if (e.control < -0.4) return false;
   const pHold = (0.04 + 0.13 * (1 - b.r('discipline'))) * (e.type === 'pass' ? 1 : 0.6);
-  if (!sim.rng.chance(pHold)) return false;
+  if (!sim.dice('hold', b).chance(pHold)) return false;
   e.holding = true;
   b.tags.add('held');
   setHands(sim, e);
@@ -1657,7 +1658,7 @@ function tryHold(sim: PlaySim, e: Engagement): boolean {
   const visible = 0.35 + 0.35 * Math.min(1, Math.abs(e.phi) + (1 - e.baseB));
   const legacyCall = [sim.penalty, ...sim.penalties].some(p => p?.kind === 'holding'
     && !p.id?.startsWith('native-holding:'));
-  if (!legacyCall && !legacyHoldVisible.has(sim) && sim.rng.chance(visible)) legacyHoldVisible.add(sim);
+  if (!legacyCall && !legacyHoldVisible.has(sim) && sim.dice('hold', b).chance(visible)) legacyHoldVisible.add(sim);
   return true;
 }
 

@@ -7,6 +7,8 @@ import {PassProtector,ProtectionCoordinator} from '../src/sim/behaviors/blocking
 import {ScoutingReport} from '../src/sim/recognition.js';
 import {CoverageScouting} from '../src/sim/qbmind.js';
 import {PlaySim} from '../src/sim/playsim.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 // Recorded on the installed line; OL_SPLITS and OL_STAGGER stage a different play.
 // FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
 // SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.

@@ -10,6 +10,8 @@ import { captureHoldingStart, observeHolding } from '../src/sim/contact-holding.
 import { syncJoints } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { gripForce } from '../src/sim/tackle.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 const offense = generateTeam(new Rng(603), 'Offense', 'OFF', { strength: .55 });
 const defense = generateTeam(new Rng(604), 'Defense', 'DEF', { strength: .55 });
