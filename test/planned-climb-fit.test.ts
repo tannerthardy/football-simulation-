@@ -6,6 +6,8 @@ import type {Intent} from '../src/physics/world.js';
 import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
 import {RunBlocker} from '../src/sim/behaviors/blocking.js';
 import type {Perceived} from '../src/sim/perception.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 // Recorded on the installed line; OL_SPLITS and OL_STAGGER stage a different play.
 // FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
 // PAD_LEVERAGE and DL_ANCHOR change the contact forces this recorded scene is staged on.

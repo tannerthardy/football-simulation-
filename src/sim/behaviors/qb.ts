@@ -104,7 +104,7 @@ export class QBPass implements Behavior {
     this.snapAt = gun ? 0.3 : 0.1;
     this.drop = dropSpec(concept.drop, a.pos.x, sim.los, gun);
     this.dropY = a.pos.y;
-    this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.rng.normal(0, 0.25);
+    this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.dice('qb', a).normal(0, 0.25);
     this.armSpeed = qbArmSpeed(a.player.ratings.throwPower);
     if (concept.family === 'playaction') this.fakeUntil = 0.7;
     this.mind = sim.qbMind;
@@ -257,11 +257,11 @@ export class QBPass implements Behavior {
       this.lookOffChecked = true;
       const vet = Math.min(1, a.player.experience / 6);
       const p = 0.08 + 0.45 * a.r('decisionMaking') * a.r('anticipation') * (0.5 + 0.5 * vet);
-      if (this.concept.family !== 'quick' && this.reads.length > 1 && sim.rng.chance(p)) {
+      if (this.concept.family !== 'quick' && this.reads.length > 1 && sim.dice('qb', a).chance(p)) {
         const side = Math.sign(this.reads[0].pos.y - sim.ballY);
         const decoy = this.reads.find((r) => Math.sign(r.pos.y - sim.ballY) !== side);
         if (decoy) {
-          this.lookOff = { until: t + 0.25 + 0.1 * sim.rng.next(), decoy };
+          this.lookOff = { until: t + 0.25 + 0.1 * sim.dice('qb', a).next(), decoy };
           this.readStart = this.lookOff.until;
         }
       }
@@ -300,7 +300,7 @@ export class QBPass implements Behavior {
       if (best && best.P > 0.3 && best.intRisk < 0.18) return this.startThrow(a, sim, best);
       if (this.shouldScramble(a, sim, true)) return this.scramble(a, sim);
       // Veterans throw it away (or at a back's feet) rather than eat a sack.
-      if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.rng.chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
+      if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.dice('qb', a).chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
       return this.evade(a, sim, pressure.agent);
     }
 
@@ -310,11 +310,11 @@ export class QBPass implements Behavior {
       sim.scrambleDrill = true;
       if (this.shouldScramble(a, sim, false)) return this.scramble(a, sim);
       const over = timeSet + this.snapAt + this.drop.time - this.clock;
-      if (timeSet > 1.4 + this.clock * 0.5 && this.outsidePocket(a, sim) && sim.rng.chance(0.06)) return this.throwAway(a, sim);
-      if ((over > 0.8 && sim.rng.chance(0.06 + 0.1 * a.r('awareness'))) || over > 2.2) return this.throwAway(a, sim);
+      if (timeSet > 1.4 + this.clock * 0.5 && this.outsidePocket(a, sim) && sim.dice('qb', a).chance(0.06)) return this.throwAway(a, sim);
+      if ((over > 0.8 && sim.dice('qb', a).chance(0.06 + 0.1 * a.r('awareness'))) || over > 2.2) return this.throwAway(a, sim);
     }
     // Mobile QBs leave the pocket when coverage holds and the lane is there.
-    if (timeSet > 1.0 && this.readIdx >= 2 && this.shouldScramble(a, sim, false) && sim.rng.chance(0.06 + 0.14 * a.r('elusiveness'))) {
+    if (timeSet > 1.0 && this.readIdx >= 2 && this.shouldScramble(a, sim, false) && sim.dice('qb', a).chance(0.06 + 0.14 * a.r('elusiveness'))) {
       return this.scramble(a, sim);
     }
 
@@ -518,13 +518,14 @@ export class QBPass implements Behavior {
     const pressure = this.pressure(a, sim);
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1);
     let sigma = this.missSigma(a, sim, dist, urgency);
-    sigma *= Math.exp(sim.rng.normal(0, 0.2 * (1 - a.r('consistency'))));
+    const dice = sim.dice('throw', a);
+    sigma *= Math.exp(dice.normal(0, 0.2 * (1 - a.r('consistency'))));
     const miss: Vec3 = {
-      x: point.x + sim.rng.normal(0, sigma * 0.8),
-      y: point.y + sim.rng.normal(0, sigma),
-      z: Math.max(0.4, point.z + sim.rng.normal(0, sigma * 0.45)),
+      x: point.x + dice.normal(0, sigma * 0.8),
+      y: point.y + dice.normal(0, sigma),
+      z: Math.max(0.4, point.z + dice.normal(0, sigma * 0.45)),
     };
-    const T = ev.T * (1 + sim.rng.normal(0, 0.03));
+    const T = ev.T * (1 + dice.normal(0, 0.03));
     const v0 = solveLaunch(from, miss, T, DRAG_SPIRAL, sim.wind);
     sim.throwBall(a, r, v0, point, sim.t + T);
   }
@@ -565,7 +566,7 @@ export class QBPass implements Behavior {
       }
       if (margin > 0.35) open++;
     }
-    return open >= (panic ? 1 : 2) && (panic ? mobility > 0.2 || sim.rng.chance(0.3) : true);
+    return open >= (panic ? 1 : 2) && (panic ? mobility > 0.2 || sim.dice('qb', a).chance(0.3) : true);
   }
 
   private scramble(a: Agent, sim: PlaySim): MoveCommand {

@@ -166,7 +166,7 @@ export class QBMind {
     this.vision = r01(p.ratings.awareness);
     this.clearHalf = 0.33 + 0.22 * this.vision;
     this.periphHalf = this.clearHalf + 0.45 + 0.2 * this.vision;
-    this.identifyAt = 0.45 + 0.4 * (1 - this.rec) + Math.abs(sim.rng.normal(0, 0.08));
+    this.identifyAt = 0.45 + 0.4 * (1 - this.rec) + Math.abs(sim.dice('qb-mind').normal(0, 0.08));
     // What he expects from this defense: league habits, adjusted by what
     // he's seen of them today (the sharper QB uses more of it).
     const scout = sim.coverageScouting;
@@ -230,7 +230,7 @@ export class QBMind {
     const sigPos = 0.3 + 1.0 * (1 - this.rec);
     const seen = new Map<DefSlot, Vec2>();
     for (const d of sim.defense) {
-      seen.set(d.slot as DefSlot, { x: d.pos.x + sim.rng.normal(0, sigPos), y: d.pos.y + sim.rng.normal(0, sigPos * 0.7) });
+      seen.set(d.slot as DefSlot, { x: d.pos.x + sim.dice('qb-mind').normal(0, sigPos), y: d.pos.y + sim.dice('qb-mind').normal(0, sigPos * 0.7) });
     }
     const obs = this.preFeatures(seen);
     const ns = this.noiseScale();
@@ -495,7 +495,7 @@ export class QBMind {
     const p = this.qb.player;
     // How much freedom the staff gives him: veterans with good awareness get the keys.
     const authority = clamp(0.1 + 0.5 * this.vision + 0.035 * p.experience, 0, 0.85);
-    if (opts.hurry || !sim.rng.chance(authority)) return call;
+    if (opts.hurry || !sim.dice('qb-mind').chance(authority)) return call;
 
     const los = sim.los;
     const by = sim.ballY;
@@ -503,8 +503,8 @@ export class QBMind {
     let boxL = 0;
     let boxR = 0;
     for (const d of sim.defense) {
-      const x = d.pos.x + sim.rng.normal(0, sigPos) - los;
-      const y = d.pos.y + sim.rng.normal(0, sigPos * 0.7);
+      const x = d.pos.x + sim.dice('qb-mind').normal(0, sigPos) - los;
+      const y = d.pos.y + sim.dice('qb-mind').normal(0, sigPos * 0.7);
       if (x < 7.5 && Math.abs(y - by) < 6.5) {
         if (y >= by) boxL++;
         else boxR++;
@@ -551,7 +551,7 @@ export class QBMind {
     if (call.kind === 'pass' && call.pass && call.pass.family !== 'playaction') {
       // Light box against two-high on a running down: run it.
       const runDown = opts.down <= 2 && opts.distance <= 7;
-      if (runDown && box <= blockers - 1 && this.pSingleHigh() < 0.35 && sim.slot('RB') && sim.rng.chance(0.5)) {
+      if (runDown && box <= blockers - 1 && this.pSingleHigh() < 0.35 && sim.slot('RB') && sim.dice('qb-mind').chance(0.5)) {
         const run = RUN_BY_ID[boxL <= boxR ? (sim.offAlign.strongSign > 0 ? 'iz_strong' : 'iz_weak') : sim.offAlign.strongSign > 0 ? 'iz_weak' : 'iz_strong'];
         this.report.audible = `check to ${run.name}`;
         return { ...call, kind: 'run', run, pass: undefined, label: `${call.formation.name} — ${run.name} (audible)` };
