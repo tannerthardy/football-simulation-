@@ -311,6 +311,10 @@ const LEG_BRACE = process.env.LEG_BRACE === '1';
  * traction of his standing weight whatever the contact geometry: the low
  * man's advantage in football had no physical path. */
 const PAD_LEVERAGE = process.env.PAD_LEVERAGE !== '0';
+/** Leg force-velocity (PHY-1): ground drive scales as 1 - v/vmax along the
+ * force. Yielding legs, driven backward, keep up to this multiple of their
+ * isometric strength (multi-joint eccentric force is about 1.1-1.3x). */
+const ECCENTRIC_GAIN = 1.2;
 /** Steepest line of action credited, rise over run (about 30 degrees). */
 const LEVERAGE_SLOPE = .6;
 /** Knee height as a fraction of COM height (knee ~0.28, COM ~0.55 of stature). */
@@ -1657,7 +1661,7 @@ export class World {
             const vp = b.vel.x * ux + b.vel.y * uy;
             // Legs drive hardest straight ahead; sideways or backward far less.
             const dir = directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux)));
-            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, 1.2) * fat * a * push;
+            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
             const mag = Math.min(capacity, L * (1 + PUSH_GROWTH), m * ex / h);
             tx = ux * mag; ty = uy * mag;
           }
@@ -1702,8 +1706,16 @@ export class World {
         // Leg drive is directional: full straight ahead, a shuffle's or a
         // backpedal's share sideways or backward. Traction caps all of it.
         const tfx = lx + leanX, tfy = ly + leanY;
-        const along = tfx * tfx + tfy * tfy > 1e-18 ? directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) : 1;
-        const capacity = Math.min(Math.max(Math.hypot(lx, ly), sp.pushForce * along * a), traction * a);
+        // Muscle force-velocity: legs pushing the way he already moves lose
+        // force with speed (concentric); legs yielding against his motion
+        // keep the eccentric credit, up to 1.2x isometric, but never beyond
+        // his standing friction, the same ceiling pushForce has. Without it,
+        // a strength gap is a constant net force and a carry keeps building.
+        const tf = Math.hypot(tfx, tfy);
+        const along = tf > 1e-9 ? directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) : 1;
+        const fv = tf > 1e-9 ? clamp(1 - (b.vel.x * tfx + b.vel.y * tfy) / (tf * p.vmax), 0, ECCENTRIC_GAIN) : 1;
+        const strength = Math.min(sp.pushForce * fv, sp.traction) * along * a;
+        const capacity = Math.min(Math.max(Math.hypot(lx, ly), strength), traction * a);
         // Availability already limits gait during recovery. Reserve actual
         // unused effort after ordinary translation and yaw, for every body.
         const cap = capacity;

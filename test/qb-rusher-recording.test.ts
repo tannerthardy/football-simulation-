@@ -91,7 +91,9 @@ describe('recording the actual rushing player', () => {
     const coaching = vi.spyOn(DeepCoverage.prototype, 'choose').mockImplementation(
       (_a, _seen, _cue, _receiver, _cushion, original) => original);
     try {
-      const recorded = fixture(0), unrecorded = fixture(0);
+      // Re-selected under the leg force-velocity law (PHY-1): seed 0's QB now
+      // throws. Seed 12 is the one scramble in seeds 0-39 of this call.
+      const recorded = fixture(12), unrecorded = fixture(12);
       Object.defineProperty(unrecorded.stats, 'rusher', {
         configurable: true, enumerable: true, get: () => undefined, set: () => {},
       });

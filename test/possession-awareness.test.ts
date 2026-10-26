@@ -295,19 +295,23 @@ describe('an acquired trajectory supports anticipation, not certified possession
   });
 
   it('keeps rallying instead of reopening route coverage after the native mirror forecast ends', () => {
-    const sim = new PlaySim({ ...nativeTraceSetup({ ...input, flip: true }), record: true, recordLevel: 'full' });
-    const trace = sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 4.35, to: 4.6 });
+    // Re-selected under the leg force-velocity law (PHY-1): the original
+    // roster-7 flip now catches earlier with no rally phase. This native play
+    // has the same sequence: flight continuation, rally, possession pursuit.
+    const sim = new PlaySim({ ...nativeTraceSetup({ ...input, roster: 5, seed: 7 }), record: true, recordLevel: 'full' });
+    const trace = sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 3.9, to: 4.2 });
     const result = sim.run();
     // Exact native input from the opposing control. The correction owns the
     // request/response, not this play's yardage or the receiver's earned catch.
-    expect(result.events.find(e => e.type === 'catch')?.t).toBe(4.25);
-    for (const t of [4.4, 4.45, 4.5]) {
+    expect(result.events.find(e => e.type === 'catch')?.t).toBe(3.85);
+    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 3.9 && d.kind === 'flight-continuation')).toBe(true);
+    for (const t of [3.95, 4, 4.05]) {
       const s = trace.steps.find(s => s.stepStart === t)!;
       expect(s.decision!.raw.vel.y).toBeGreaterThan(0);
       expect(s.final!.vel.y).toBeGreaterThan(0);
       expect(s.endpoint!.body.velocity.y).toBeGreaterThan(0);
       expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === t && d.kind === 'ball-rally')).toBe(true);
     }
-    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 4.55 && d.kind === 'possession-pursuit')).toBe(true);
+    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 4.15 && d.kind === 'possession-pursuit')).toBe(true);
   });
 });

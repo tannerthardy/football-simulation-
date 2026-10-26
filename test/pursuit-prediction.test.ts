@@ -71,7 +71,9 @@ describe('approximate interception prediction contract', () => {
   });
 
   it('preserves a whole ordinary play and its prediction/read/draw/physics counts with selected diagnostics enabled', () => {
-    const saved = captureOrdinaryPlay({ seed: 7, play: 2, minPlay: 1, maxSteps: 2 }).saved;
+    // Play 4: under the leg force-velocity law (PHY-1) play 2's catch is now an
+    // incompletion; play 4 has the SS forecasting an intercept on a caught RB.
+    const saved = captureOrdinaryPlay({ seed: 7, play: 4, minPlay: 1, maxSteps: 4 }).saved;
     const original = Reach.interceptPoint;
     const execute = (record: boolean) => {
       let pathCalls = 0;
