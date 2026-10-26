@@ -3,12 +3,13 @@ import type { Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import type { Intent } from '../physics/world.js';
 import type { Agent, Behavior, TeamSide } from './agent.js';
-import { PassProtector } from './behaviors/blocking.js';
+import { PassProtector, RunBlocker } from './behaviors/blocking.js';
 import { facingTechnique } from './coverage/orientation.js';
 import { movementObjective, type MovementObjective } from './movement-objective.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 import type { PursuitPredictionRecord } from './pursuit-prediction.js';
+import type { ClimbAccessRecord } from './climb-access.js';
 
 export interface CommandTraceSelection {
   actor: { team: TeamSide; slot: string } | { playerId: string };
@@ -48,6 +49,22 @@ function behaviorSnapshot(b: Behavior, a: Agent, sim: PlaySim) {
 }
 type BehaviorSnapshot = ReturnType<typeof behaviorSnapshot>;
 
+export interface BlockingResponsibility {
+  target: ActorIdentity | null;
+  workKind: string;
+}
+
+export interface BlockingResponsibilityChange {
+  actor: ActorIdentity;
+  /** Native decision/event clock; the containing step retains endpointTime. */
+  t: number;
+  phase: TracePhase;
+  previous: BlockingResponsibility;
+  current: BlockingResponsibility;
+  /** The actual mutation path, not an inferred block outcome. */
+  reason: string;
+}
+
 function stateSnapshot(a: Agent, sim: PlaySim) {
   const body = a.body, support = body.support, e = a.engagement, bond = sim.bond;
   return { behavior: behaviorSnapshot(a.behavior, a, sim),
@@ -78,6 +95,10 @@ export interface CommandTraceStep {
   endpoint?: ReturnType<typeof stateSnapshot> & { phase: string; ballKind: string };
   observations: Array<{ phase: TracePhase; target: ActorIdentity; requestedAt: number; age: number | null; sampledAt: number | null }>;
   pursuit?: Array<{ phase: TracePhase; target: ActorIdentity; data: PursuitPredictionRecord }>;
+  /** Departure access searches, as computed; surface keys resolved to identities. */
+  climbAccess?: Array<{ phase: TracePhase; target: ActorIdentity; data: ClimbAccessRecord;
+    surfaces: ActorIdentity[]; }>;
+  blockingChanges?: BlockingResponsibilityChange[];
 }
 
 /** Numbers within 1e-9 are omitted from the rewrite list; raw/final retain full precision. */
@@ -114,6 +135,21 @@ export class CommandTrace {
 
   at(phase: TracePhase): void { this.phase = phase; }
 
+  /** Copy only existing plan fields. Callers never acquire another picture. */
+  blockingState(a: Agent): BlockingResponsibility | undefined {
+    if (!this.pending || a !== this.selected || !(a.behavior instanceof RunBlocker)) return;
+    return { target: a.behavior.plan.target ? identity(a.behavior.plan.target) : null,
+      workKind: a.behavior.plan.kind };
+  }
+
+  blockingChange(a: Agent, previous: BlockingResponsibility | undefined, reason: string, sim: PlaySim): void {
+    const current = this.blockingState(a);
+    if (!previous || !current || (previous.target?.index === current.target?.index
+      && previous.workKind === current.workKind)) return;
+    (this.pending!.blockingChanges ??= []).push({ actor: { ...this.actor }, t: sim.t,
+      phase: this.phase, previous, current, reason });
+  }
+
   isCollecting(a: Agent): boolean { return !!this.pending && a === this.selected; }
 
   /** No prediction here: the helper supplies only values it already computed. */
@@ -123,6 +159,13 @@ export class CommandTrace {
     if (data.kind === 'chase' && snapshot.kind === 'chase') snapshot.requests = data.requests
       .map(r => ({ stage: r.stage, command: commandSnapshot(r.command) }));
     (this.pending.pursuit ??= []).push({ phase: this.phase, target: identity(target), data: snapshot });
+  }
+
+  /** The search supplied its own computed values; nothing is re-evaluated. */
+  climbAccess(target: Agent, data: ClimbAccessRecord, sim: PlaySim): void {
+    if (!this.pending) return;
+    (this.pending.climbAccess ??= []).push({ phase: this.phase, target: identity(target), data: structuredClone(data),
+      surfaces: data.surfaces.map(s => identity(sim.agents[s.key])) });
   }
 
   decisionStart(a: Agent, sim: PlaySim): BehaviorSnapshot | undefined {

@@ -10,6 +10,7 @@
  * Settings are read once at load, so each arm runs in its own process.
  * Output goes to out/matched-restage/.
  */
+import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { Rng } from '../../src/core/rng.js';
 import { simulateGame } from '../../src/game/game.js';
@@ -17,10 +18,15 @@ import { generateTeam } from '../../src/league/team.js';
 import { PlaySim, type PlaySetup } from '../../src/sim/playsim.js';
 import { captureSetup, restoreSetup } from './saved-play.js';
 
-type Row = { pass: boolean; call: string; y: number; o: string };
+type Row = { pass: boolean; call: string; y: number; o: string; events?: string };
 const [mode, ...rest] = process.argv.slice(2);
 const dir = 'out/matched-restage'; mkdirSync(dir, { recursive: true });
-const run = (s: PlaySetup) => { const r = new PlaySim(s).run(); return { y: +r.yards.toFixed(2), o: r.outcome as string }; };
+const run = (s: PlaySetup) => {
+  const r = new PlaySim(s).run();
+  // Yards and outcome, plus a digest of the event sequence so equal yards by a different path still count as changed.
+  const events = createHash('sha256').update(JSON.stringify(r.events)).digest('hex').slice(0, 16);
+  return { y: +r.yards.toFixed(2), o: r.outcome as string, events };
+};
 
 if (mode === 'capture') {
   const seed = Number(rest[0]), rng = new Rng(seed);
@@ -44,7 +50,7 @@ if (mode === 'capture') {
     const ypp = (rs: Row[]) => +(rs.reduce((s, r) => s + r.y, 0) / Math.max(1, rs.length)).toFixed(2);
     return { runYd: ypp(runs), passYd: ypp(passes), incomplete: rows.filter(r => r.o === 'incomplete').length };
   };
-  const changed = A.map((r, i) => ({ i, a: r, b: B[i] })).filter(d => d.a.y !== d.b.y || d.a.o !== d.b.o);
+  const changed = A.map((r, i) => ({ i, a: r, b: B[i] })).filter(d => d.a.y !== d.b.y || d.a.o !== d.b.o || (d.a.events !== undefined && d.b.events !== undefined && d.a.events !== d.b.events));
   console.log(JSON.stringify({ base, arm, snaps: A.length, changed: changed.length, [base]: stats(A), [arm]: stats(B) }));
   for (const d of changed) console.log(`  #${d.i} ${d.a.pass ? 'pass' : 'run '} ${d.a.call.slice(0, 36)}: ${d.a.y} ${d.a.o} -> ${d.b.y} ${d.b.o}`);
 } else {

@@ -1269,7 +1269,9 @@ export class RunBlocker implements Behavior {
             return {vel:movingArrivalVelocity(body,best!.meet,seen.vel,a.profile.vmax,.1,Math.hypot(seen.vel.x,seen.vel.y),1,base),
               facing:Math.atan2(best!.meet.y-body.pos.y,best!.meet.x-body.pos.x)};
           };
-          this.departureAccess=assessClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact,true,control,previousAccess);
+          const trace=sim.commandTraceFor(a);
+          this.departureAccess=assessClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact,true,control,previousAccess,
+            trace&&(r=>trace.climbAccess(target,r,sim)));
           if (this.departureAccess.kind==='detour') this.climbAccess=this.departureAccess.plan;
           const down=surfaces.find(s=>s.key===this.plan.departure!.defender.idx);
           const keeper=surfaces.find(s=>s.key===this.plan.departure!.keeper.idx);
@@ -1390,11 +1392,13 @@ export class RunBlocker implements Behavior {
         if (combination && !combination.released && replacement !== combination.defender) {
           abandonCombination(a, sim, combination, 'original target unavailable; finding work');
         }
+        const trace = sim.commandTraceFor?.(a), previousWork = trace?.blockingState(a);
         plan.target = target = replacement;
         if (acquiredEligibility) this.acquiredWork = { target: replacement };
         if (replacement !== previous) delete plan.contactFit;
         if (replacement && replacement !== previous && (!plan.combination || plan.combination.released))
           this.classifyWork(a, sim, replacement);
+        trace?.blockingChange(a, previousWork, 'available-target/find-work', sim);
       }
     }
     a.mind.setAimTarget('block-fit', target?.idx ?? null);
@@ -1747,6 +1751,8 @@ export class RunBlocker implements Behavior {
       const d = sim.see(a,p.target), other = sim.see(a,q.target);
       const mine = Math.abs(d.pos.y-a.pos.y), theirs = Math.abs(other.pos.y-b.pos.y);
       if (Math.abs(other.pos.y-a.pos.y)+.35 < mine && Math.abs(d.pos.y-b.pos.y)+.35 < theirs) {
+        const traceA = sim.commandTraceFor?.(a), previousA = traceA?.blockingState(a);
+        const traceB = sim.commandTraceFor?.(b), previousB = traceB?.blockingState(b);
         // The recipient may not have updated yet. Save his installed solo
         // technique before exchanging and reclassifying either responsibility.
         b.behavior.rememberSoloWork();
@@ -1756,6 +1762,8 @@ export class RunBlocker implements Behavior {
         // exchanging neighbor's image or the defender's roster position.
         this.classifyWork(a, sim, p.target);
         b.behavior.classifyWork(b, sim, q.target);
+        traceA?.blockingChange(a, previousA, 'crossing-exchange', sim);
+        traceB?.blockingChange(b, previousB, 'crossing-exchange', sim);
         sim.event('block_exchange',a,b,'adjacent crossing threats');
         return;
       }
@@ -1772,9 +1780,11 @@ export class RunBlocker implements Behavior {
     if (!threat || threat === p.target) return;
     if (p.combination && !p.combination.released)
       abandonCombination(a, sim, p.combination, 'collecting penetration before climb');
+    const trace = sim.commandTraceFor?.(a), previousWork = trace?.blockingState(a);
     p.target = threat; p.kind = 'drive';
     delete p.contactFit;
     a.tags.add('block-collect');
+    trace?.blockingChange(a, previousWork, 'penetration-collection', sim);
     sim.event('block_collect',a,threat,'penetration before climb');
   }
 
@@ -1815,6 +1825,7 @@ export class RunBlocker implements Behavior {
       if (!best || threat.score < best.score) best = { d, score: threat.score };
     }
     if (!best) return;
+    const trace = sim.commandTraceFor?.(a), previousWork = trace?.blockingState(a);
     p.target = best.d;
     this.acquiredWork = { target: best.d };
     delete p.contactFit;
@@ -1822,6 +1833,7 @@ export class RunBlocker implements Behavior {
     this.climbAccess = null;
     this.departureAccess = null;
     this.classifyWork(a, sim, best.d);
+    trace?.blockingChange(a, previousWork, 'threat-reread', sim);
     sim.event('block_threat', a, best.d, 'first threat to the runner');
   }
 
@@ -1891,9 +1903,11 @@ function abandonCombination(observer: Agent, sim: PlaySim, combo: Combination, r
     if (!(member.behavior instanceof RunBlocker)) continue;
     const p = member.behavior.plan;
     if (p.combination !== combo) continue;
+    const trace = sim.commandTraceFor?.(member), previousWork = trace?.blockingState(member);
     p.combination = undefined;
     p.climbTo = undefined;
     if (p.kind === 'combo') p.kind = solo;
+    trace?.blockingChange(member, previousWork, `combination-abandoned: ${reason}`, sim);
   }
   sim.event('block_abandon', observer, combo.defender, reason);
 }
@@ -2279,6 +2293,8 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
 function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, combo: Combination, check: boolean): void {
   const { climber, keeper, phi, engagement: e } = choice;
   if (!(climber.behavior instanceof RunBlocker)) return;
+  const climberTrace = sim.commandTraceFor?.(climber), previousClimber = climberTrace?.blockingState(climber);
+  const keeperTrace = sim.commandTraceFor?.(keeper), previousKeeper = keeperTrace?.blockingState(keeper);
   const solo = combinationSoloKind(combo);
   if (keeper !== e.blocker) {
     // Transfer ownership of hands that already exist, not a fresh hand fight.
@@ -2310,5 +2326,7 @@ function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, comb
   climber.tags.add('combo-climb');
   if (check) climber.tags.add('combo-check-climb');
   keeper.tags.add('combo-stay');
+  climberTrace?.blockingChange(climber, previousClimber, 'combination-release', sim);
+  keeperTrace?.blockingChange(keeper, previousKeeper, 'combination-release', sim);
   sim.event('block_climb', climber, combo.backer, `${check ? 'check' : 'secured'} ${combo.defender.slot}; ${keeper.slot} stays`);
 }
