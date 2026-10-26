@@ -12,7 +12,9 @@ import { packReplayPlay } from '../replay-data.js';
 import { compactReplayPlays } from '../replay-telemetry-packing.js';
 import { bytesHash, captureSetup, copySaved, executionIdentity, initialState, type SavedPlay } from './saved-play.js';
 
-export interface CaptureGameOptions { seed: number; play: number | 'first-catch'; minPlay: number; maxSteps: number }
+export interface CaptureGameOptions { seed: number; play: number | 'first-catch'; minPlay: number; maxSteps: number;
+  /** With 'first-catch': skip a completed pass this rejects and keep playing the same game. */
+  accept?: (saved: SavedPlay) => boolean }
 type Candidate = { setup: Buffer; context: PlaySetupContext; initial?: ReturnType<typeof initialState>; result?: PlayResult };
 
 /** Same teams, kickoff, calls and rules as export-replay.ts. No forced call/result/state. */
@@ -61,6 +63,7 @@ export function captureOrdinaryPlay(options: CaptureGameOptions): { saved: Saved
         context: candidate.context, setup: candidate.setup, setupSha256: bytesHash(candidate.setup),
         original: { initial: candidate.initial, result: candidate.result, replay: copySaved(film.replay) }, film: copySaved(film) };
       if (executionIdentity().engineSha256 !== identity.engineSha256) throw new Error('Source changed during capture');
+      if (options.play === 'first-catch' && options.accept && !options.accept(saved)) continue;
       return { saved, prefix, endpoint: copySaved(game.state) };
     }
     if (typeof wantedPlay === 'number' && prefix.log.some(p => p.index + 1 >= wantedPlay))
