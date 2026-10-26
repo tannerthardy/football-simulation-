@@ -18,6 +18,8 @@ import { PlaySim, type PlaySetup } from '../src/sim/playsim.js';
 import { captureSetup, restoreSetup } from '../scripts/diag/saved-play.js';
 import { engineSettings } from '../scripts/scorecard/provenance.js';
 import { sourceVersion } from '../scripts/source-version.js';
+import type { LedgerData } from '../src/sim/responsibility-ledger.js';
+import { dutyTimeline, initialJobCensus } from '../src/sim/responsibility-views.js';
 
 export const SCENARIO_FORMAT = 'play-lab-scenario-v1';
 
@@ -220,6 +222,24 @@ export function identity() {
 
 // ------------------------------------------------------------------ runs
 
+/** The ledger as the client needs it: the census, each blocker's duty spans and a light per-tick load/access series. */
+function responsibilityPayload(d: LedgerData) {
+  const r3 = (v: number | null) => v === null ? null : Math.round(v * 1000) / 1000;
+  const byActor = new Map<number, LedgerData['rows']>();
+  for (const row of d.rows) (byActor.get(row.actor) ?? byActor.set(row.actor, []).get(row.actor)!).push(row);
+  return {
+    jobs: initialJobCensus(d),
+    timeline: dutyTimeline(d).map(b => ({ actor: b.actor, spans: b.spans.map(s => ({ from: s.from, to: s.to, because: s.because,
+      kind: s.plan.kind, target: s.plan.target, departure: !!s.plan.departure, combination: s.plan.combination?.id ?? null })) })),
+    changes: d.changes.map(c => ({ t: c.t, actor: c.actor, reason: c.reason, fields: c.fields })),
+    ticks: [...byActor].map(([actor, rows]) => ({ actor, endpoint: rows.map(x => x.endpoint),
+      loadCurrent: rows.map(x => r3(x.loadOnCurrent?.magnitude ?? null)), loadInitial: rows.map(x => r3(x.loadOnInitial?.magnitude ?? null)),
+      deficit: rows.map(x => r3(x.access.reduce<number | null>((s, a) => a.deficit === null ? s : (s ?? 0) + a.deficit, null))),
+      owner: rows.map(x => x.command?.finalOwner ?? null) })),
+    play: { censored: d.play.censored, carrierEvents: d.play.carrierEvents },
+  };
+}
+
 const round = (v: number, k = 1000) => Math.round(v * k) / k;
 
 function rosterOf(sim: PlaySim) {
@@ -245,6 +265,8 @@ function execute(scenario: Scenario, seed: number | undefined, record: boolean) 
   const setup = runSetup(scenario, seed);
   if (record) Object.assign(setup, { record: true, recordLevel: 'full', recordEvery: 1 });
   const sim = new PlaySim(setup);
+  // The responsibility ledger only reads; it is on for watched runs, never for batches.
+  const ledger = record ? sim.recordResponsibility() : null;
   const t0 = performance.now();
   const result = sim.run();
   const ms = performance.now() - t0;
@@ -252,7 +274,7 @@ function execute(scenario: Scenario, seed: number | undefined, record: boolean) 
     duration: round(result.duration, 100), turnover: result.turnover, kind: result.kind,
     penalty: result.penalty ? { kind: result.penalty.kind, against: result.penalty.against } : null,
     stats: result.stats, snapPermitted: sim.snapAssessment.snapPermitted, ms: Math.round(ms) };
-  return { sim, result, summary, seed: typeof setup.seed === 'number' ? setup.seed : null };
+  return { sim, result, summary, ledger, seed: typeof setup.seed === 'number' ? setup.seed : null };
 }
 
 /** One ordinary play, summary only (batches). Recording is off, as in games. */
@@ -263,7 +285,7 @@ export function runSummary(scenario: Scenario, seed?: number) {
 
 /** One ordinary play with full recording at every tick. */
 export function run(scenario: Scenario, options: { seed?: number } = {}) {
-  const { sim, result, summary, seed } = execute(scenario, options.seed, true);
+  const { sim, result, summary, seed, ledger } = execute(scenario, options.seed, true);
   const frames = result.frames ?? [];
   return {
     seed, summary,
@@ -278,6 +300,7 @@ export function run(scenario: Scenario, options: { seed?: number } = {}) {
     segments: result.segments,
     telemetry: result.telemetry ?? null,
     fouls: sim.snapAssessment.fouls,
+    responsibility: ledger && responsibilityPayload(ledger.data),
   };
 }
 
