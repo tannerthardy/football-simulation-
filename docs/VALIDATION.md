@@ -141,6 +141,16 @@ to a target count.
 | Blocker on a man out of the play (`stuck`) | A run play with a carrier: a blocker engaged with, or planning against, a defender more than 5 yd from the carrier and moving away at over 0.5 yd/s, while a free defender (not engaged, not down, no offensive teammate within 1 yd) is within 3.5 yd of the carrier. | 5 yd and 3.5 yd are RUN-12's; the 0.5 yd/s and the 0.25 s are chosen. RUN-12 is rebuilt from its text, since no script exists. | The blocker's requested and achieved velocity, and his job. |
 | Lineman backpedaling facing his backfield (`backpedal`) | An unengaged offensive lineman, while the offense still has the ball, faces more than 120° from downfield and moves back faster than 1 yd/s, for 0.25 s. Run and pass plays both; the play kind is logged. | 120°, 1 yd/s, 0.25 s are chosen. | Requested against achieved velocity and facing. The rate is a share of OL frames. |
 | Sliding through a cut (`slide`, **candidate**) | A sharp turn (60° or more over 0.5 s, entered at 3 yd/s or faster) in which no window of the turn shows him slowing: speed retention at or above the NFL 90th percentile for his role. | The turn operator and the retention percentiles are sourced from BDB2027 tracking (`scripts/data/bdb2027_movement.py`; the table in `detectors.ts` is checked against `bdb2027-movement.json` by a test). The 3 yd/s entry floor is chosen. **No plant-deceleration threshold exists anywhere**, hence "candidate". | Requested turn angle and speed ratio against achieved. The rate is a share of sharp turns. |
+| Free second-level OL requests stop (`frozen`, **candidate**) | Live designed run, OL job climb/lead, unengaged/up/out of tackle bond; request under 0.3 yd/s for at least 0.4 s of consecutive 20 Hz samples, including before handoff. | 0.3 yd/s and 0.4 s are chosen review thresholds, not NFL calibration. | Requested and achieved speeds and job. A stop may be lawful braking/traffic; not a failed-block verdict. |
+| QB down without nearby defender (`downalone`, **candidate**) | New QB down onset on a pass/scramble, with complete preceding 0.5 s of samples, no engagement/bond, and all defender centers over 2 yd away throughout the lookback and onset. | 2 yd and 0.5 s are chosen. Missing history/defenders mean unknown. | Smallest sampled defender distance and onset; positions do not establish valid/invalid reach or cause of fall. |
+| Trailing man body stays turned from ball (`blindball`, **candidate**) | At flight end, man marker stayed within 2 yd of the target and behind along flight direction, body over 120° from ball throughout recorded undeflected/non-throwaway flight, accumulating no more than 30° facing travel. Missing/partial flight is skipped. | 2 yd, 120°, 30° and the 20 Hz window are chosen. | Target, sampled offsets, facing travel and signed arrival angle/left-rear or right-rear shoulder side. Body facing is not gaze or proof of missed recognition. |
+| Runner departs static installed aim toward defender (`phantomlane`, **candidate**) | Before passing the installed aim on a designed run, achieved travel at least 0.3 yd/s departs its bearing by 30°+, with an upright defender 0–3 yd forward along that ray and within 1.5 yd perpendicular. | 30°, 0.3 yd/s, 3 yd and 1.5 yd are chosen geometry heuristics. | Achieved/requested travel headings, installed-aim bearing and defender offsets/engagement. Static aim is not a newly evaluated live-gap route, and a nearby defender does not establish a wrong cut. |
+
+The four additional candidate definitions landed in
+[#318](https://github.com/tannerthardy/football-simulation-/pull/318) at
+`58ae15d7dd285d33ddd058f3743f706b4f4f886c` (head `0f6329e3`).
+Their chosen thresholds nominate review clips; they are not calibrated football
+limits or automatic defect verdicts.
 
 The retention table describes how NFL players turn (their typical turn is
 entered at about 1.9 yd/s, so it is generous to a run-speed cut), not when a foot
@@ -163,21 +173,6 @@ cut spans several overlapping windows, so it is judged by its worst one.
 - "Needs trace" still applies: the detectors see paths, facing, engagement and
   requests, not hidden perception or applied force. Body facing is not gaze
   ([BEHAVIOR_REVIEW](BEHAVIOR_REVIEW.md)).
-
-### Pending detector definitions from F4
-
-These four candidate definitions were supplied by
-[#318 at `1046c946`](https://github.com/tannerthardy/football-simulation-/pull/318).
-Their implementation remains pending in that PR and is not part of this
-film-pack composition. The current detector table above describes the available
-operators; these rows document the proposed handoff, not additional emitted flags.
-
-| Detector (`id`) | Fires when | Constants | Logged beside the event |
-| --- | --- | --- | --- |
-| Free second-level OL requests stop (`frozen`, **candidate**) | Live designed run, OL job climb/lead, unengaged/up/out of tackle bond; request under 0.3 yd/s for at least 0.4 s of consecutive 20 Hz samples, including before handoff. | 0.3 yd/s and 0.4 s are chosen review thresholds, not NFL calibration. | Requested and achieved speeds and job. A stop may be lawful braking/traffic; not a failed-block verdict. |
-| QB down without nearby defender (`downalone`, **candidate**) | New QB down onset on a pass/scramble, with complete preceding 0.5 s of samples, no engagement/bond, and all defender centers over 2 yd away throughout the lookback and onset. | 2 yd and 0.5 s are chosen. Missing history/defenders mean unknown. | Smallest sampled defender distance and onset; positions do not establish valid/invalid reach or cause of fall. |
-| Trailing man body stays turned from ball (`blindball`, **candidate**) | At flight end, man marker stayed within 2 yd of the target and behind along flight direction, body over 120° from ball throughout recorded undeflected/non-throwaway flight, accumulating no more than 30° facing travel. Missing/partial flight is skipped. | 2 yd, 120°, 30° and the 20 Hz window are chosen. | Target, sampled offsets, facing travel and signed arrival angle/left-rear or right-rear shoulder side. Body facing is not gaze or proof of missed recognition. |
-| Runner departs static installed aim toward defender (`phantomlane`, **candidate**) | Before passing the installed aim on a designed run, achieved travel at least 0.3 yd/s departs its bearing by 30°+, with an upright defender 0–3 yd forward along that ray and within 1.5 yd perpendicular. | 30°, 0.3 yd/s, 3 yd and 1.5 yd are chosen geometry heuristics. | Achieved/requested travel headings, installed-aim bearing and defender offsets/engagement. Static aim is not a newly evaluated live-gap route, and a nearby defender does not establish a wrong cut. |
 
 ### Review saved scouts without more games (PERF-5 / VIEW-1)
 

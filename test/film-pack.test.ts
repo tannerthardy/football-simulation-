@@ -80,6 +80,17 @@ describe('film pack sampling', () => {
     expect(() => selectFilmPlays([play(1), play(1)], [], 7)).toThrow('Duplicate input play id');
     expect(() => selectFilmPlays([play(1)], [event(1, 'stuck', NaN)], 7)).toThrow('Invalid event severity');
   });
+
+  it('carries an added candidate detector through the existing ranking and ten-play cap', () => {
+    const population = Array.from({ length: 20 }, (_, n) => play(n + 1));
+    const events = population.map((_, n) => ({ ...event(n + 1, 'frozen', n + 1), candidate: true as const }));
+    const result = selectFilmPlays(population, events, 19, { ordinary: 1, 'watch-first': 40, 'big-plays': 0 });
+    const watch = result.plays.filter(p => p.group === 'watch-first');
+    expect(watch).toHaveLength(10);
+    expect(watch.every(p => p.detector?.id === 'frozen' && p.detector.candidate
+      && p.detector.frequency === 20 && p.detector.rankScore === 20 * p.detector.severity)).toBe(true);
+    expect(new Set(result.plays.map(p => p.id)).size).toBe(11);
+  });
 });
 
 describe('film pack documents and command', () => {
