@@ -172,3 +172,52 @@ computed when it was written.
 
 **Held** = persistent contact and not gaining. The same aggregate criterion
 as attempt 1 applies, and so do the same named-case requirements.
+
+## Attempt 2 result: passes the aggregate check, fails the controls. Stop.
+
+**Aggregate (same 1,653 threat-beats):** it passes, beating the snapshot on
+both counts:
+- "held" was right 82% of the time (920 / 1,121), against 81% for the
+  snapshot;
+- it flagged 50% of sheds in advance (54 / 107), against 38%.
+
+The cost is that it calls 32% of persistent contacts "gaining", most of them
+falsely.
+
+**Named cases (not blind, as disclosed):**
+
+| Case | Required | Attempt 2 |
+| --- | --- | --- |
+| Holds: S11-P029 DT_S/LG | held | ✗ "gaining on the blocker" at 1.25, 1.45 and 1.65 s. Yet he stays engaged through +0.5 s and never gets within 1.5 yd; his lead past LG goes −0.09 → 0.37 → 0.81 against radii of 0.74 |
+| Loses late: S13-P019, S13-P032, S11-P022 | gaining by the shed | ✓ all three (2.05, 1.75 and 2.20 s) |
+| Only looks beaten: S13-P003 DE_W, SS | held | ✗ both flip to "gaining" (2.50 and 2.25 s) |
+
+Both attempts failed, so per the stop rule no treatment arm was run and seeds
+15–16 are not spent. The held-up credit stays as develop has it, and Model A
+does not ship.
+
+## The missing piece
+
+Positions alone, across the runner's own beats, do not separate a block that
+holds from one about to break in this engine:
+- **Track-approach trend (attempt 1)** misses sheds. A defender about to get
+  free is still closing slowly on the track until the moment he sheds.
+- **Blocker-relative trend (attempt 2)** catches sheds but fires on holds.
+  Held defenders often slide along and past their blocker's shoulder while
+  the block keeps them away from the runner (S11-P029 DT_S, S13-P003 DE_W and
+  SS). Geometry cannot tell "working around" from "being walled off".
+
+What separates them is the state of the contact itself:
+- **Leverage:** is the blocker's body between the defender and the track?
+- **Facing:** where are the defender's hips and facing pointing, toward the
+  track or toward the blocker?
+
+The runner's picture already carries `facing` and `stance` (`Perceived`), so
+a next attempt can stay acquired-only. It needs **fresh named cases**,
+because these six are no longer blind, and the same aggregate check.
+
+A related question for the trenches/physics owner, outside this lane: an
+engagement that persists while the defender's center is beyond the blocker's
+body sideways (λ 0.81 > radii 0.74) may be a hold the hands make physically
+plausible, or a contact that should already be breaking. Which it is changes
+what any read can learn from position.
