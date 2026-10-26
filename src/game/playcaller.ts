@@ -196,9 +196,7 @@ export type FourthDownChoice = 'go' | 'punt' | 'fg';
 
 /** Fourth-down policy, separate from executing a snap or kick. Range is the
  * coach's estimate for the available kicker, never the next kick's result.
- *
- * C3 activation is held at the game.ts ownership boundary: its fourthDown
- * method must delegate here before these corrections affect games. */
+ * Game.fourthDown delegates here. */
 export function chooseFourthDown(
   s: Pick<Situation, 'distance' | 'yardline' | 'quarter' | 'clock' | 'scoreDiff'>,
   options: { fieldGoalRange: number; aggression: number },
@@ -229,7 +227,7 @@ export function chooseFourthDown(
 
 /** Score margin is AFTER the touchdown's six points, BEFORE the Try.
  * The game still owns whether a Try is required, hook overrides and overtime
- * adjudication. Its afterTouchdown call site must delegate here to activate C3.
+ * adjudication; its afterTouchdown delegates the default choice here.
  * This repairs the existing chart, not a win-probability optimizer. */
 export function chooseTry(
   s: Pick<Situation, 'quarter' | 'clock' | 'scoreDiff'>,
