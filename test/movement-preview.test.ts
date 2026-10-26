@@ -55,6 +55,30 @@ function reflected(source: Body): Body {
   return mirror;
 }
 
+describe('feedback movement preview contract',()=>{
+  it.each(['center','patch'] as const)('preserves held-command execution with a constant callback, %s',mode=>{
+    const source=body(),before=structuredClone(source);
+    expect(previewFreeMovement(source,()=>COMMAND,9.2,8,mode)).toEqual(independent(source,COMMAND,9.2,8,mode));
+    expect(source).toEqual(before);
+  });
+  it('executes the same feedback in a separate ordinary World and resets between requests',()=>{
+    const source=body(),before=structuredClone(source),target={x:53,y:7};
+    const demand=(b:Readonly<Body>,t:number):Intent=>({vel:{x:2*(target.x+.5*t-b.pos.x),y:2*(target.y-b.pos.y)},facing:Math.atan2(target.y-b.pos.y,target.x-b.pos.x)});
+    const predicted=structuredClone(source),world=new World([predicted]),expected:MovementSample[]=[];
+    world.time=9.2;
+    for(let k=0;k<8;k++){
+      world.step([demand(predicted,k*.05)],.05);
+      expected.push({t:(k+1)*.05,pos:{...predicted.pos},vel:{...predicted.vel},support:predicted.support!.state});
+    }
+    const actual=previewFreeMovement(source,demand,9.2);
+    expect(actual).toEqual(expected);
+    expect(actual).not.toEqual(independent(source,demand(source,0),9.2));
+    previewFreeMovement(source,COMMAND,2);
+    expect(previewFreeMovement(source,demand,9.2)).toEqual(actual);
+    expect(source).toEqual(before);
+  });
+});
+
 describe('free-movement controller previews', () => {
   it.each(['fresh', 'tired and recovering', 'rising'] as const)('uses the production movement law for %s bodies', (kind) => {
     const source = body();
