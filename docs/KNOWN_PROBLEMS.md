@@ -1656,11 +1656,82 @@ run plays with the assignment layer (`--telemetry full`):
   - the helper's spot at the owner's depth holds him back. Width-only
     clearly frees climbers on the larger sets, without breaking a contract.
 
-  What is open is why the holdout climbers do not follow. Next:
-  - look at the holdout climbers that released but stayed stuck (14 on,
-    15 off), and name what still holds each one at the first level;
-  - re-score the keeper criterion from the first carrier contact, not from
-    the runner's arrival at the down man.
+  *What holds the stuck holdout climbers (develop 58ae15d7, default path).*
+  "Stuck" uses the fate definition: the double released, the climber never
+  got +2 before the carrier did, and he was still within 1.5 yd of a
+  first-level defender when the carrier got there. That is 15 climbers on
+  the default path (14 with the flag on).
+
+  Each climber's window runs from release to the carrier reaching +2 (else
+  first carrier contact). Sources:
+  - responsibility ledger (#307): his job, every change and its reason,
+    his engagement, loaded hands, torso contacts, and which stage owned
+    his command;
+  - command trace: raw request vs final;
+  - `climb-access-trace.ts` for the two stand-stills.
+
+  | play | climber → backer | what holds him |
+  |---|---|---|
+  | S12-P050 | C → LB_W | Not stuck: he blocks his backer for 62% of the window. The backer filled to him at the line. |
+  | S12-P061 | C → FS | Not stuck: he blocks his backer (the rotated safety) for 45%. |
+  | S12-P045 | C → LB_W | A threat reread at 2.20 sends him to SS, who is filling. He blocks SS for 30%. |
+  | S12-P007 | LG → LB_M | A threat reread at 1.95 returns him to helping on the down man (DT_S), helper for 80%. |
+  | S12-P045 | H → SS | find-work retargets him twice, SS → LB_M (2.50) → LB_W (2.80). Free, no contact. |
+  | S12-P056 | LG → LB_M | Not a hold: the double releases at 2.85, after first contact (2.35, DE_W). |
+  | S11-P021 | LT → LB_M | Late release: 0.55 s before the carrier arrives. Free, no contact, still accelerating (1.41 of 5.08 yd/s). |
+  | S12-P007 | RG → LB_W | Free all the way. Asks 4.56 yd/s upfield, gets 1.86. Reaches +1.92, just short. |
+  | S11-P012 | LG → NB | **Stand-still**: raw request zero for the whole 0.75 s. Access is unvalidated, every arc fails clearance against DE_W (a neighbouring defender, not his down man, already overlapped), and braking falls back to zero. |
+  | S11-P074 | RG → DB | **Stand-still**: raw request zero for 0.85 s. Same rejection, but the overlapped obstacle is his own keeper, RT. Only `spacing` moves him (0.46 yd/s sideways). |
+  | S11-P074 | C → LB_M | Asks mostly sideways: 3.02 yd/s, 0.29 of it upfield. |
+  | S12-P048 | RG → LB_W | `spacing` cuts his 3.34 yd/s upfield request to 1.16 on half the ticks. Achieves 0.25. |
+  | S11-P026 | C → LB_W | Asks 2.20 upfield, achieves 0.36. Beside DT_W, torso contact on 3 ticks. |
+  | S11-P030 | RT → NB | Asks 1.40 upfield, achieves 0.72. Torso contact with DE_S (53%) and LB_M. |
+  | S11-P019 | C → LB_W | Asks 5.56 yd/s, mostly sideways (2.07 upfield). Achieves 0.87. Torso contact with DT_W (32%). |
+
+  No stuck climber is held by hands on his down man. Only S12-P007 LG is
+  engaged with him again, and that came from a reread, not a hold. By
+  first cause:
+  - **3 are not failures.** Two block their own backer, who came to them.
+    One blocks a filling safety after a reread.
+  - **3 are timing.** One releases after the play is decided. Two release
+    with too little time left to reach +2.
+  - **2 are responsibility churn** (threat reread, find-work).
+  - **2 stand still** on the #303 access rejection. Both are overlapped
+    with a surface that is not their down man: a neighbouring defender,
+    or their own keeper.
+  - **5 ask too little or the wrong way.** That is a sideways or low raw
+    request, `spacing` cutting the request, or torso contact without hands.
+
+  So the hip-side spot cannot help these climbers: it changes the helper
+  before release, and none of these 15 is held by the double itself. That
+  is why the holdout climbers stay flat (10 → 10) under E3.
+
+  *Keepers re-scored at the runner's first carrier contact.* "Holding"
+  now means the down man is still engaged by a blocker at the first
+  carrier contact, and did not make it himself. Plays with no carrier
+  contact are excluded. Scored this way, E3's keeper loss disappears:
+
+  | set | at runner arrival, off → on | at first contact, off → on |
+  |---|---|---|
+  | Move 4 (7–8) | 30/31 → 27/31 | 20/34 → 18/34 |
+  | 9–10 | 18/20 → 18/19 | 15/23 → 18/23 |
+  | Phase II | 40/44 → 40/44 | 31/51 → 31/49 |
+  | holdout 11–12 | 22/25 → 23/24 | 21/30 → 21/30 |
+  | all | 110/120 → 108/118 | 87/138 → 88/136 |
+
+  The first-contact score has its own censoring. On long runs the first
+  contact is a defensive back at 3.5–5 s, and every keeper block has ended
+  by then (S7-P031, S8-P054). It is reported alongside, not substituted.
+
+  Next, in order of how many climbers it covers:
+  1. The low or sideways climb request, and `spacing` rewriting it
+     (5 climbers). Trace the raw climb request against the backer's seen
+     path.
+  2. The #303 overlap rejection where the overlapped surface is a
+     teammate or a neighbouring defender (2 climbers). #303's two
+     corrections both targeted the down man.
+  3. Reread and find-work churn after release (2 climbers): Competing
+     duty (S9-P062).
 
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
