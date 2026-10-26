@@ -26,7 +26,7 @@ export function renderFilmPart(template: string, context: FilmReplayContext,
   const data = { ...context, plays };
   const json = JSON.stringify(data).replace(/<\//g, '<\\/');
   const banner = `<section class="app" aria-label="Film pack review order"><h1>Film review pack</h1><p>Watch in the listed order. Light film shows bodies, facing, ball and events; intent and applied forces need a trace. <a href="manifest.json">Manifest</a> · <a href="index.md">Pack index</a></p>`
-    + GROUP_ORDER.filter(g => items.some(i => i.selection.group === g)).map(g => `<details open><summary>${esc(GROUP_LABELS[g])}</summary><ol>${items.filter(i => i.selection.group === g).map(({ selection: p }) => `<li>${esc(p.id)} — ${esc(p.reason)}</li>`).join('')}</ol></details>`).join('')
+    + GROUP_ORDER.filter(g => items.some(i => i.selection.group === g)).map(g => `<details><summary>${esc(GROUP_LABELS[g])}</summary><ol>${items.filter(i => i.selection.group === g).map(({ selection: p }) => `<li>${esc(p.id)} — ${esc(p.reason)}</li>`).join('')}</ol></details>`).join('')
     + '<p>Before/after: 20 pair slots reserved for F2; no pairs are included.</p></section>';
   const body = template.replace(marker, () => json).replace(groupSelect,
     `${groupSelect}<option value="_filmPackGroup" selected>Film review order</option>`);

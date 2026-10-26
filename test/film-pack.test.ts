@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { Rng } from '../src/core/rng.js';
-import { filmPackOptions } from '../scripts/film-pack.js';
+import { eventDevelopCommit, filmPackOptions } from '../scripts/film-pack.js';
 import { fieldZone, selectFilmPlays, stratifiedSample, stratum, type SelectionPlay } from '../scripts/film-pack-selection.js';
 import { renderFilmPart, splitFilmParts } from '../scripts/film-pack-render.js';
 import { packReplayPlay } from '../scripts/replay-data.js';
@@ -83,6 +83,18 @@ describe('film pack sampling', () => {
 });
 
 describe('film pack documents and command', () => {
+  it('qualifies shallow CI source identity against actual merge parents', () => {
+    const base = 'a'.repeat(40), branch = 'b'.repeat(40), merge = 'c'.repeat(40);
+    const commit = `tree ${'d'.repeat(40)}\nparent ${base}\nparent ${branch}\n\nMerge PR`;
+    const event = { pull_request: { base: { ref: 'develop', sha: base }, head: { sha: branch } } };
+    expect(eventDevelopCommit(merge, commit, event)).toBe(base);
+    expect(eventDevelopCommit(merge, commit, { pull_request: { ...event.pull_request, head: { sha: merge } } })).toBeUndefined();
+    expect(eventDevelopCommit(merge, commit, { pull_request: { ...event.pull_request, base: { ref: 'main', sha: base } } })).toBeUndefined();
+    expect(eventDevelopCommit(merge, '', event)).toBeUndefined();
+    expect(eventDevelopCommit(base, '', { ref: 'refs/heads/develop', after: base })).toBe(base);
+    expect(eventDevelopCommit(branch, '', { ref: 'refs/heads/develop', after: base })).toBeUndefined();
+  });
+
   it('splits by actual UTF-8 bytes and rejects an oversized individual clip', () => {
     const render = (items: string[]) => `<p>${items.join('')}</p>`;
     const parts = splitFilmParts(['éé', 'éé', 'éé'], render, 16);
@@ -106,6 +118,7 @@ describe('film pack documents and command', () => {
     expect(html).toContain('<option value="_filmPackGroup" selected>');
     expect(html).toContain('20 pair slots reserved for F2');
     expect(html).toContain('1. Ordinary');
+    expect(html).not.toContain('<details open>'); // The index must not bury the viewer below 180 reasons.
     expect(html).toContain('<canvas');
     expect(html).not.toContain('</script><script>bad()');
     expect(JSON.stringify(clip)).toBe(before);

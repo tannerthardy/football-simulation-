@@ -40,6 +40,33 @@ export function filmPackOptions(args: string[]) {
 }
 
 const sha256 = (s: string) => createHash('sha256').update(s).digest('hex');
+
+/** Actions' shallow PR checkout need not contain origin/develop. Accept its
+ * declared base only when it is the actual first parent of the checked-out
+ * merge, with the declared PR head as second parent; never guess from an id.
+ */
+export function eventDevelopCommit(head: string, commit: string, event: {
+  ref?: string; after?: string;
+  pull_request?: { base: { ref: string; sha: string }; head: { sha: string } };
+}): string | undefined {
+  if (event.ref === 'refs/heads/develop' && event.after === head) return head;
+  const parents = [...commit.matchAll(/^parent ([a-f0-9]{40})$/gm)].map(m => m[1]);
+  const pr = event.pull_request;
+  if (pr?.base?.ref === 'develop' && parents.length === 2
+    && parents[0] === pr.base.sha && parents[1] === pr.head?.sha) return pr.base.sha;
+  return undefined;
+}
+
+function developCommit(head: string, git: (...args: string[]) => string): string {
+  if (process.env.GITHUB_EVENT_PATH) {
+    const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+    const declared = eventDevelopCommit(head, git('cat-file', '-p', 'HEAD'), event);
+    if (declared) return declared;
+  }
+  try { return git('merge-base', 'HEAD', 'origin/develop'); }
+  catch { throw new Error('Develop identity unavailable: fetch origin develop with its history before building a film pack.'); }
+}
+
 function measurementIdentity() {
   const files = (dir: string): string[] => readdirSync(dir, { withFileTypes: true })
     .flatMap(e => e.isDirectory() ? files(join(dir, e.name)) : [join(dir, e.name)]).sort();
@@ -68,7 +95,7 @@ export function buildFilmPack(options: ReturnType<typeof filmPackOptions>, progr
   const git = (...args: string[]) => execFileSync('git', args, { encoding: 'utf8' }).trim();
   const headCommit = git('rev-parse', 'HEAD');
   const source: FilmPackManifest['source'] = {
-    developCommit: git('merge-base', 'HEAD', 'origin/develop'), headCommit,
+    developCommit: developCommit(headCommit, git), headCommit,
     engineSha256: sourceVersion(), engineDirty: git('status', '--porcelain', '--', 'src') !== '',
     measurementSha256: measurementIdentity(), lockfileSha256: sha256(readFileSync('package-lock.json', 'utf8')),
     node: process.version, settings: engineSettings(process.env),
