@@ -1394,6 +1394,11 @@ run plays with the assignment layer (`--telemetry full`):
   The first wrong stage is the release decision. The runner's arrival and
   the backer's flow each release a climber to a backer he cannot reach.
 
+  The #307 responsibility ledger reproduces this on develop `4e6fed4e`
+  (after #306/#308). Its `combination-release` rows count 30, 17 and 42
+  climber releases; 21, 10 and 28 of them leave the backer at least 4 yd
+  away (p50 4.52, 4.15 and 4.24 yd).
+
   **One fix tried, reverted.** Declared on #311 before running: a joined
   double holds its climber until he is no longer moving into the down man
   and the backer is within reach (`near` or `ahead`). The runner's arrival
