@@ -11,6 +11,7 @@
  */
 import type { Rng } from '../core/rng.js';
 import { CROSSBAR_HEIGHT, UPRIGHT_HALF_WIDTH } from '../core/field.js';
+import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import { DRAG_KICK, stepFlight, type BallFlight } from '../physics/ball.js';
 import { derivePhysical } from '../players/physical.js';
@@ -27,20 +28,53 @@ export interface FieldGoalResult {
   distance: number;
 }
 
+export interface PlaceKickOptions {
+  fairCatchKick?: boolean;
+  /** Supplied operation facts, not a sampled snap/holder quality rating.
+   * Omitted means the existing nominal controlled snap and set hold. The
+   * caller must resolve a failed exchange without inventing an FG attempt.
+   * Strike errors are achieved launch offsets, not inferred from ball tilt. */
+  operation?: {
+    snapControlled?: boolean;
+    holdSet?: boolean;
+    yawErrorDeg?: number;
+    elevationErrorDeg?: number;
+  };
+}
+
 /** Attempt a place kick of `distance` yards (spot to goal posts). */
 export function kickFieldGoal(rng: Rng, kicker: Player, distance: number, wind: Vec2 = { x: 0, y: 0 }, pressure = 0,
-  options: { fairCatchKick?: boolean } = {}): FieldGoalResult {
+  options: PlaceKickOptions = {}): FieldGoalResult {
+  const operation = options.operation;
+  if ((!options.fairCatchKick && operation?.snapControlled === false) || operation?.holdSet === false)
+    throw new Error('No place-kick attempt without a controlled snap and set hold');
+  const yawError = operation?.yawErrorDeg ?? 0, elevationError = operation?.elevationErrorDeg ?? 0;
+  if (!Number.isFinite(yawError) || !Number.isFinite(elevationError))
+    throw new Error('Place-kick strike errors must be finite degrees');
   const pow = r01(kicker.ratings.kickPower);
   const acc = r01(kicker.ratings.kickAccuracy);
   const comp = r01(kicker.ratings.composure);
   // The old block sample describes a scrimmage rush, which a fair-catch kick
   // does not have. Actual airborne interception/touching needs its own event.
-  if (!options.fairCatchKick && rng.chance(0.012 + 0.004 * Math.max(0, distance - 40) / 10)) return { good: false, blocked: true, distance };
-  const v0 = (25.5 + 7.5 * pow) * (1 + rng.normal(0, 0.015));
+  // Reduced rush risk, fitted to BLOCKED labels in pooled 2022–23 FG/XP.
+  // Share a smooth distance curve because the native caller supplies no try
+  // phase. It is not an observed rush/engagement or a strike-error correction.
+  const blockRisk = clamp(.0066 + .0017 * Math.max(0, distance - 33), 0, 1);
+  if (!options.fairCatchKick && rng.chance(blockRisk)) return { good: false, blocked: true, distance };
+  const legSpeed = 25.5 + 7.5 * pow;
+  const v0 = legSpeed * (1 + rng.normal(0, 0.015));
   // Long kicks are struck flatter to get distance.
-  const elev = ((distance > 50 ? 34 : 38) + rng.normal(0, 1.2)) * (Math.PI / 180);
-  const sigmaDeg = (1.7 + 2.6 * (1 - acc)) * (1 + 0.4 * pressure * (1 - comp));
-  const yaw = rng.normal(0, sigmaDeg) * (Math.PI / 180);
+  const elev = ((distance > 50 ? 34 : 38) + rng.normal(0, 1.2) + elevationError) * (Math.PI / 180);
+  // A longer demand on the same leg makes the strike less repeatable, beyond
+  // the narrowing angular window already imposed by the uprights. v²/g is a
+  // length scale, not the drag-limited makeable range or a coach's range call.
+  // 0.70/0.29 calibrate this reduced scatter to pooled 2022–23 UNBLOCKED FG/XP
+  // outcomes underlying game-layer.json. Blocked kicks do not calibrate the
+  // strike. These are not measured biomechanics or a make-rate roll.
+  const rangeDemand = distance * G / (legSpeed * legSpeed);
+  const scatter = 1 + .70 * Math.max(0, rangeDemand - .29);
+  const sigmaDeg = (1.7 + 2.6 * (1 - acc)) * scatter * (1 + 0.4 * pressure * (1 - comp));
+  const yaw = (rng.normal(0, sigmaDeg) + yawError) * (Math.PI / 180);
   const f: BallFlight = {
     pos: { x: 0, y: 0, z: 0.3 },
     vel: { x: v0 * Math.cos(elev) * Math.cos(yaw), y: v0 * Math.cos(elev) * Math.sin(yaw), z: v0 * Math.sin(elev) },

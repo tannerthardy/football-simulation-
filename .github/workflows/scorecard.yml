@@ -1,12 +1,12 @@
 # Scorecard: a diagnosis of where the football looks unrealistic and where a
 # change moved it. It never fails a PR; reviewers read it beside the
-# mechanism's own evidence (docs/PLAN.md). It runs only when engine code
-# changes, at the cheap PR tier; run the full tier by hand for big fixes.
+# mechanism's own evidence (docs/PLAN.md).
 name: scorecard
 
+# Manual only (Tanner, 2026-10-26): GitHub Actions minutes are not used for
+# routine checks. Agents run these checks locally and report them in the PR;
+# the merger re-runs them locally before merging (AGENTS.md, "No GitHub Actions").
 on:
-  pull_request:
-    paths: ['src/**', 'scripts/scorecard/**']
   workflow_dispatch:
     inputs:
       tier:

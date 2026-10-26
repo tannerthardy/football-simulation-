@@ -12,6 +12,8 @@ import type { Agent, Engagement } from '../src/sim/agent.js';
 import { RunBlocker, planRunBlocking, type RunBlockPlan } from '../src/sim/behaviors/blocking.js';
 import { axisOf, updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 // FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
 // SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.
 vi.hoisted(() => { process.env.FRONT_ALIGN = '0'; process.env.SNAP_REACT = '0'; });

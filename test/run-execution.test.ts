@@ -13,6 +13,8 @@ import { RunBlocker, planRunBlocking, readCombination, type Combination } from '
 import { BallCarrier } from '../src/sim/behaviors/carrier.js';
 import { contactControl, updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 const offense = generateTeam(new Rng(11), 'O', 'OFF', { strength: 0.55 });
 const defense = generateTeam(new Rng(12), 'D', 'DEF', { strength: 0.55 });

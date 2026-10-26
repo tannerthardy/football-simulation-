@@ -12,6 +12,8 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { RunBlocker, readCombination, type Combination } from '../src/sim/behaviors/blocking.js';
 import { updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 // The helper witnesses are staged on the installed line. On OL_SPLITS's
 // tracked splits the Tite scene forms a different, sound combination (RG+RT
 // on the B-gap tackle, Y alone on the edge); OL_STAGGER also changes it.

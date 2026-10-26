@@ -11,6 +11,8 @@ import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { World } from '../src/physics/world.js';
 import { handoffReach } from '../src/sim/ball-transfer.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 const input = { coverage: 'cover3_buzz', concept: 'curl_flat', seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false };
 function stage(role = 'zone', side = 1) {

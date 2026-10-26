@@ -41,7 +41,7 @@ export function assignBehaviors(sim: PlaySim): void {
     const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots]!;
     const key = d.slot.split('_')[0];
     const base = READ_BASE[key] ?? 0.3;
-    d.readAt = d.profile.reactionTime + base * (1.35 - d.r('playRecognition')) + Math.abs(sim.rng.normal(0, 0.08));
+    d.readAt = d.profile.reactionTime + base * (1.35 - d.r('playRecognition')) + Math.abs(sim.dice('read', d).normal(0, 0.08));
     const role = spot.role;
     switch (role.kind) {
       case 'rush':
@@ -107,7 +107,7 @@ export function assignBehaviors(sim: PlaySim): void {
           a.behavior = new PassProtector(coord);
         } else if (assign === 'check') {
           coord.add(a);
-          a.behavior = new PassProtector(coord, mkRoute(ref === 'B2' ? 'back_flat' : 'checkdown', 0, true), 1.0 + sim.rng.range(0, 0.3));
+          a.behavior = new PassProtector(coord, mkRoute(ref === 'B2' ? 'back_flat' : 'checkdown', 0, true), 1.0 + sim.dice('check', a).range(0, 0.3));
         } else {
           a.behavior = mkRoute(assign, 0.1)();
         }

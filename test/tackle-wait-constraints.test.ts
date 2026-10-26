@@ -11,6 +11,8 @@ import type { GraspJoint } from '../src/physics/world.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { contactQuality } from '../src/sim/tackle-window.js';
 import { tryTackles } from '../src/sim/tackle.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 function stage(side = 1) {
   const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(19), 'O', 'OFF'), '11'),

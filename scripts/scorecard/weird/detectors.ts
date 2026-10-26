@@ -268,4 +268,127 @@ const slide: Detector = {
   score: (p) => Number(p.data.entry) * Number(p.data.retention),
 };
 
-export const DETECTORS: Detector[] = [presnap, turned, stuck, backpedal, slide];
+/** All new cutoffs are chosen review heuristics, not tracking calibrations. */
+const CLIMB = new Set(['climb', 'lead']);
+
+/** 6. A free second-level OL asks to stop. This can be lawful braking. */
+const frozen: Detector = {
+  id: 'frozen', label: 'Free climber requesting near-zero movement', candidate: true, minHold: .4,
+  hit(f) {
+    if (f.phase !== 'live' || f.isPass || !f.offense) return NONE;
+    const quiet = (s: WFrame, idx: number) => {
+      const a = s.agents[idx];
+      return !s.isPass && s.offense && a?.team === 'O' && OL.has(a.slot)
+        && CLIMB.has(a.job) && !a.engaged && !a.down && !a.inBond && Math.hypot(a.rvx, a.rvy) < .3;
+    };
+    const out: Hit[] = [];
+    for (const a of f.agents) {
+      if (!quiet(f, a.idx)) continue;
+      // Require eight consecutive 20 Hz requests; a bridged tracker episode
+      // must not turn two short stops into a qualifying .4-second stop.
+      let at = f.t, last = f.t;
+      for (const s of [...(f.recent ?? [])].reverse()) {
+        if (last - s.t > .050001 || !quiet(s, a.idx)) break;
+        at = s.t; last = s.t;
+      }
+      if (f.t - at < .35 - 1e-9) continue;
+      out.push({ key: String(a.idx), players: [a.idx], at, sev: f.t - at,
+        data: { job: a.job }, intent: { speed: r2(Math.hypot(a.rvx, a.rvy)) },
+        achieved: { speed: r2(Math.hypot(a.vx, a.vy)) } });
+    }
+    return out;
+  },
+  describe: (p, dur, slots) => `${slots[p.players[0]]} (${p.data.job}) free, requesting under 0.3 yd/s for ${dur.toFixed(2)} s; achieved ${p.achieved?.speed} yd/s (review braking/traffic)`,
+};
+
+/** 7. A QB goes down with no nearby defender in the preceding half second. */
+const downalone: Detector = {
+  id: 'downalone', label: 'QB goes down without a nearby defender', candidate: true, minHold: 0,
+  hit(f) {
+    if (f.phase !== 'live' || !f.offense || !(f.isPass || f.scrambled) || f.qb === undefined) return NONE;
+    const q = f.agents[f.qb], prior = f.recent ?? [];
+    const prev = prior.at(-1);
+    if (!q?.down || q.engaged || q.inBond || !prev || prev.agents[q.idx]?.down || f.t - prev.t > .050001) return NONE;
+    const window = prior.filter(s => s.t >= f.t - .5 - 1e-9);
+    // Missing onset/history means unknown, never "nobody near".
+    if (!window.length || window[0].t > f.t - .5 + 1e-9) return NONE;
+    let nearest = Infinity, last = window[0].t;
+    for (const s of [...window, f]) {
+      if (s.t - last > .050001 || !s.agents[q.idx]) return NONE;
+      last = s.t;
+      const qb = s.agents[q.idx], defenders = s.agents.filter(a => a.team === 'D');
+      if (!defenders.length || qb.engaged || qb.inBond) return NONE;
+      for (const d of defenders) nearest = Math.min(nearest, Math.hypot(d.x - qb.x, d.y - qb.y));
+    }
+    if (nearest <= 2) return NONE;
+    return [{ key: String(q.idx), players: [q.idx], sev: nearest,
+      data: { nearest: r2(nearest) }, achieved: { down: 'onset', nearestDefender: r2(nearest), priorSeconds: .5 } }];
+  },
+  describe: (p, _dur, slots) => `${slots[p.players[0]]} went down; nearest defender ${p.data.nearest} yd over the preceding 0.5 s and onset (positions/contact need review)`,
+};
+
+/** 8. Whole-flight body-facing proxy. It does not measure gaze/recognition. */
+const blindball: Detector = {
+  id: 'blindball', label: 'Trailing man defender stays turned from the ball', candidate: true, minHold: 0,
+  hit(f) {
+    const flight = f.flight ?? [], first = flight[0], last = flight.at(-1), ball = first?.ball;
+    if (f.phase !== 'live' || !f.offense || (f.ball?.kind === 'air' && !f.ended) || !first || !last
+      || ball?.kind !== 'air' || ball.target === undefined || ball.target < 0 || ball.releaseT === undefined
+      || first.t - ball.releaseT > .050001 || first.t < ball.releaseT - .050001) return NONE;
+    const out: Hit[] = [];
+    for (const d of first.agents) {
+      if (d.team !== 'D' || d.manTarget !== ball.target) continue;
+      let turn = 0, previousFacing = d.facing, previousT = first.t, maxDist = 0, minOff = Math.PI, valid = true;
+      for (const s of flight) {
+        const a = s.agents[d.idx], r = s.agents[ball.target], b = s.ball;
+        if (!a || !r || b?.x === undefined || b.y === undefined || b.vx === undefined || b.vy === undefined
+          || b.releaseT !== ball.releaseT || b.target !== ball.target || b.throwaway || b.deflected
+          || s.t - previousT > .050001 || a.manTarget !== ball.target || a.down || a.engaged || a.inBond) { valid = false; break; }
+        previousT = s.t;
+        const dist = Math.hypot(a.x - r.x, a.y - r.y), speed = Math.hypot(b.vx, b.vy);
+        const behind = (r.x - a.x) * b.vx + (r.y - a.y) * b.vy;
+        const off = angDiff(a.facing, Math.atan2(b.y - a.y, b.x - a.x));
+        turn += angDiff(a.facing, previousFacing); previousFacing = a.facing;
+        if (dist > 2 || speed < .1 || behind <= 0 || off <= 120 / DEG || turn > 30 / DEG) { valid = false; break; }
+        maxDist = Math.max(maxDist, dist); minOff = Math.min(minOff, off);
+      }
+      if (!valid || flight.length < 2) continue;
+      const a = last.agents[d.idx], b = last.ball!;
+      const side = wrap(Math.atan2(b.y! - a.y, b.x! - a.x) - a.facing);
+      const shoulder = side > 0 ? 'left-rear' : 'right-rear';
+      out.push({ key: `${d.idx}:${ball.releaseT}`, players: [d.idx, ball.target], at: first.t,
+        sev: last.t - first.t, data: { distance: r2(maxDist), off: deg(minOff), shoulder, side: Math.round(side * DEG), turn: deg(turn) },
+        intent: { facing: a.rfacing === null ? 'none' : Math.round(a.rfacing * DEG) },
+        achieved: { minimumBallOffset: deg(minOff), facingTravel: deg(turn), arrivalSide: shoulder, arrivalAngle: Math.round(side * DEG) } });
+    }
+    return out;
+  },
+  describe: (p, _dur, slots) => `${slots[p.players[0]]} trailing ${slots[p.players[1]]} within ${p.data.distance} yd through the recorded flight, body >${p.data.off}° from ball; arrival ${p.data.shoulder} (${p.data.side}°), turned ${p.data.turn}° (not gaze evidence)`,
+};
+
+/** 9. Geometric nomination, NOT proof a lane is closed or a cut was wrong. */
+const phantomlane: Detector = {
+  id: 'phantomlane', label: 'Runner leaves installed aim toward a nearby defender', candidate: true, minHold: 0,
+  hit(f) {
+    if (f.phase !== 'live' || f.isPass || !f.offense || f.runner < 0 || !f.runAim) return NONE;
+    const r = f.agents[f.runner];
+    if (!r || r.down || r.inBond || Math.hypot(r.vx, r.vy) < .3 || f.runAim.x <= r.x) return NONE;
+    const heading = Math.atan2(r.vy, r.vx), designed = Math.atan2(f.runAim.y - r.y, f.runAim.x - r.x);
+    if (angDiff(heading, designed) < 30 / DEG) return NONE;
+    const ux = Math.cos(heading), uy = Math.sin(heading);
+    let near: WAgent | undefined, along = 3, lateral = 0;
+    for (const d of f.agents) {
+      if (d.team !== 'D' || d.down) continue;
+      const dx = d.x - r.x, dy = d.y - r.y, ahead = dx * ux + dy * uy, off = Math.abs(dx * uy - dy * ux);
+      if (ahead > 0 && ahead <= along && off <= 1.5) { near = d; along = ahead; lateral = off; }
+    }
+    if (!near) return NONE;
+    return [{ key: String(r.idx), players: [r.idx, near.idx], sev: 3 - along,
+      data: { heading: Math.round(heading * DEG), designed: Math.round(designed * DEG), along: r2(along), lateral: r2(lateral), engaged: String(near.engaged) },
+      intent: { heading: Math.hypot(r.rvx, r.rvy) < .1 ? 'none' : Math.round(Math.atan2(r.rvy, r.rvx) * DEG), installedAimHeading: Math.round(designed * DEG) },
+      achieved: { heading: Math.round(heading * DEG), defenderAhead: r2(along), defenderLateral: r2(lateral), defenderEngaged: String(near.engaged) } }];
+  },
+  describe: (p, _dur, slots) => `${slots[p.players[0]]} travel ${p.data.heading}° vs installed-aim bearing ${p.data.designed}°; ${slots[p.players[1]]} ${p.data.along} yd ahead, ${p.data.lateral} yd off heading (engaged ${p.data.engaged}; geometry only)`,
+};
+
+export const DETECTORS: Detector[] = [presnap, turned, stuck, backpedal, slide, frozen, downalone, blindball, phantomlane];

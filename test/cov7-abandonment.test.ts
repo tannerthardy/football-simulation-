@@ -6,6 +6,8 @@ import { RouteRunner } from '../src/sim/behaviors/receiver.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { ReceiverForecast } from '../src/sim/receiver-forecast.js';
 import type { Agent } from '../src/sim/agent.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 // EDGE_CONTAIN keeps the blocked edge home on the toss, so the corner never reaches the runner; this native run
 // benefit is staged on unbounded edge widening (re-record by review 2).
 // SEAL_HOLD changes how far the toss's blockers carry their men; the corner's run participation is staged without it.
@@ -131,7 +133,7 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     }
   });
 
-  it('shows real runner participation on the run, while preserving both deceptive incompletions', () => {
+  it('shows real runner participation on the run, while the deceptive pass punishes abandonment', () => {
     expect(run.summary.legality.support.forwardPassRestrictionApplicable).toBe(false);
     expect(run.summary.legality.support.maxIneligibleForwardEdgeBeforeRelease).toBeNull();
     expect(run.summary.legality.support.runCornerContacts.some(e => e.type === 'tackle_wrap')).toBe(true);
@@ -139,6 +141,13 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     // teammate finishes the tackle; the support arm still ends the run.
     expect(run.summary.result.support.outcome).toBe('tackle');
     expect(pass.summary.result.man.outcome).toBe('incomplete');
-    expect(pass.summary.result.support.outcome).toBe('incomplete');
+    // Under the two-pool fatigue model (FAT-2) the same throw to WR2 is now
+    // caught: the corner who left his man is 3 yd off at 2.4 s and gives up a
+    // 70-yard touchdown, while the corner who stayed still forces the
+    // incompletion. Before FAT-2 both arms were incomplete. The abandonment
+    // cost is the point, so pin that the support arm is no better for the
+    // defense, not the exact result.
+    expect(pass.summary.result.support.outcome).not.toBe('incomplete');
+    expect(pass.summary.result.support.yards).toBeGreaterThan(pass.summary.result.man.yards);
   });
 });
