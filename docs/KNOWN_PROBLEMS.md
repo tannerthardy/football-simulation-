@@ -802,6 +802,17 @@ Carried over from the issue register; each was measured on an older develop.
   the line of sight rotates every step (the slow hip chase). **Next
   (proposed, not built):** bypass to the near hip only when his attainable
   speed covers the runner's across speed; otherwise keep the intercept line.
+- **Slow-gather gate tried, stop rule hit** ([evidence](reviews/pursuit-resteer-cause.md#result-two-gate-attempts-2026-10-26),
+  2026-10-26). Two attempts to keep a slower pursuer on his intercept line
+  instead of the near hip didn't cut slow-band re-steering without adding
+  yards. The slip test (attainable speed vs across speed) rarely fires
+  (40.0% to 39.7% inside 3 yd). The plain speed test (`speed >= carrierSpeed`)
+  moves it only to 37.8% inside 3 yd and 22.9% at 3–6 yd (NFL 15% and 12%);
+  develop +0.22 ± 0.18 yd/play, #273 643bf8b −0.00 ± 0.27. Slow pursuers'
+  re-steering at 6–15 yd, outside the gather, is also about 2× NFL, so the
+  gather isn't the whole cause. **Next:** re-diagnose whether turning makes
+  them slow rather than slowness making them turn, and compare body turn
+  capacity at low speed with tracking.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often

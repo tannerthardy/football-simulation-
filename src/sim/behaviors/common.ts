@@ -193,7 +193,13 @@ export function gatheringApproach(a: Agent, seen: import('../perception.js').Per
     const pathMiss = dist * Math.abs(ux * seen.vel.y - uy * seen.vel.x) / Math.max(.1, carrierSpeed);
     const headOn = clamp((contact + .5 - pathMiss) / .75, 0, 1)
       * clamp((incoming - 1.5) / 1.5, 0, 1);
-    const close = clamp((contact + Math.max(2.5, stopping) - dist) / .75, 0, 1);
+    // TKL-2: the near-hip arrival matches the runner's motion. A pursuer who
+    // is slower than the runner can't run with him: the sight line swings past
+    // every step and he arcs in behind the hip. He keeps his intercept line
+    // and gathers only for the grab itself.
+    const speed = Math.hypot(a.vel.x, a.vel.y);
+    const gatherWindow = speed >= carrierSpeed ? Math.max(2.5, stopping) : .5;
+    const close = clamp((contact + gatherWindow - dist) / .75, 0, 1);
     gather = Math.max(headOn, close);
     if (gather > 0) {
       const goal = { x: seen.pos.x, y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) };

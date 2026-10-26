@@ -182,3 +182,37 @@ Checks for that change, using the same operators:
 - The approach-choice split needs an uncommitted `__approachHook` in
   `chooseApproach`. Without it those windows read `none`, and no other number
   here changes.
+
+## Result: two gate attempts (2026-10-26)
+
+Both attempts were built in `gatheringApproach` and checked with the operators
+above: develop 9654b03, #273 643bf8b, seeds 7 and 8, four games each,
+restaged per play.
+
+| | Develop | Attempt 1: slip test | Attempt 2: speed ≥ runner |
+| --- | --- | --- | --- |
+| Slow-band re-steer, 1.5–3 yd (NFL 15.2%) | 40.0% | 39.7% | 37.8% |
+| Slow-band re-steer, 3–6 yd (NFL 11.8%) | 25.9% | 25.3% | 22.9% |
+| Slow-band re-steer, 6–15 yd (NFL 8–11%) | 17–18% | 18–19% | 19–20% |
+| Matched/fast re-steer, 3+ yd | 1.6–3.9% | 1.7–5.6% | 1.5–3.5% |
+| Matched yards/play, develop (1,115 plays) | | +0.03 ± 0.05 | +0.22 ± 0.18 |
+| Matched yards/play, #273 (1,170 plays) | | −0.01 ± 0.09 | −0.00 ± 0.27 |
+| Plays changed, develop / #273 | | 29 / 19 | 343 / 346 |
+
+- **Attempt 1.** Hip only if the runner's across speed, beyond what he can
+  build in 0.3 s, wouldn't carry the hip out of arm's reach before contact.
+  Closing speed makes the time to contact short, so it almost never fires.
+- **Attempt 2.** Hip only if he is at least as fast as the runner. It fires
+  often, but the slow band falls only 2–3 points inside 6 yd, and develop
+  gains yards (20+ yd plays 91 to 106).
+- **Reproducers** (`scripts/diag/slow-gather-cases.ts` on 734e70e):
+  - P036 SS and P051 LB_M keep a steady command about 0.3 s longer (P051's
+    body turn falls from 71° to 50°), but both still end up behind the runner.
+  - P006 LB_M loses his missed-tackle contact (9.5 to 16.5 yd).
+  - A slower pursuer often can't get in front at all, so the intercept line
+    doesn't convert either.
+
+The stop rule is hit. The gather doesn't own the slow pursuers' excess:
+re-steering stays 2× NFL at 6–15 yd, outside the gather. The speed ratio may
+also partly be an effect of turning rather than its cause. Re-diagnose before
+another change.

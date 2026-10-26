@@ -47,7 +47,8 @@ describe('approximate interception prediction contract', () => {
   it('records close gathering as a planner bypass without calling the intercept planner', () => {
     const sim = new PlaySim(nativeTraceSetup({ coverage: 'cover3', concept: 'four_verts', seed: 19, roster: 7, formation: 'gun_doubles_11', flip: false }));
     const defender = sim.slot('FS')!, runner = sim.slot('Z')!;
-    defender.body.pos = { x: 51, y: 31.5 }; defender.body.vel = { x: 0, y: -3 };
+    // As fast as the runner: a slower pursuer keeps his intercept line (TKL-2).
+    defender.body.pos = { x: 51, y: 31.5 }; defender.body.vel = { x: 0, y: -6 };
     const see = vi.spyOn(sim, 'see').mockReturnValue({ pos: { x: 50, y: 30 }, vel: { x: 6, y: 0 },
       facing: 0, stance: null, carrying: true, age: .2 });
     const planner = vi.spyOn(Reach, 'interceptPoint');

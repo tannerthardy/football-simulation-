@@ -24,7 +24,8 @@ function stage(close = false, side = 1) {
   const picture: Perceived = { pos: { x: 50, y: CENTER_Y + side * 5 },
     vel: { x: 6, y: 0 }, facing: 0, stance: null, carrying: true, age: .2 };
   defender.body.pos = { x: close ? 51 : 40, y: picture.pos.y + side * (close ? 1.5 : 6) };
-  defender.body.vel = { x: close ? 0 : 4, y: -side * 3 };
+  // A close gather on the hip needs a pursuer who can run with the runner.
+  defender.body.vel = { x: close ? 0 : 4, y: -side * (close ? 6 : 3) };
   defender.body.facing = Math.atan2(defender.vel.y, defender.vel.x);
   // This fixture supplies an acquired picture, not a claim about natural gaze.
   const see = vi.spyOn(sim, 'see').mockImplementation(() => structuredClone(picture));
