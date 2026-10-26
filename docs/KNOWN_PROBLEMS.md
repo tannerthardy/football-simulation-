@@ -346,6 +346,10 @@ problem), resolved.
   (#190, off) keeps deep defenders from taking force.
 - **Where:** `run-fits.ts`, `defense.ts`; `scripts/diag/long-run.py`.
 - **Open:** whether fixing RUN-1 lets the safeties stay deep on their own.
+- **Not grip** (#217, Run Game `taillab.ts`). 32% (`GRIP_HOLD` off) and 38%
+  (on) of 40+ runs have no contact past 5 yd. The deep defender reaches the
+  runner in 41–42% of them, and breaks are 34–36% either way. The tail is
+  about arrivals.
 
 <a id="run-3"></a>
 ### RUN-3: Double teams drive defenders back much too far
@@ -641,6 +645,17 @@ Carried over from the issue register; each was measured on an older develop.
     10+ runs 15.0 vs 21.5%, missed + broken 0.32 vs 0.38 per play (all
     moved). A wrap pulled out to arm's length now holds as a hand hold, not
     with the wrap law (physics review note).
+  - **Independent check (Run Game, `4355cac`, off vs on):**
+    - `contactcost.py`, 8 games per arm, all contact zones pooled:
+      - Runs through first contact for 5+ yd: 47 → 26.
+      - Crowd speed at 0.3 / 0.6 / 1.0 s: 1.05 / 1.09 / 0.96 → 1.02 / 1.00 /
+        0.92, against NFL 0.92 / 0.86 / 0.75.
+      - Clean contacts still gain speed; in the NFL they lose about 3%.
+      - n 12–26: directional only.
+    - `taillab.ts`, 1,120 identical lab plays per arm:
+      - Runs reaching 20 yd: 82 → 60. Reaching 40 yd: 69 → 56.
+      - P(40 | 20) rises 84 → 93%, because the cut falls mostly on 20–39 yd
+        runs.
   - Staged scene pinned to `GRIP_HOLD=0` (re-record by review 2): the Cover 2
     vertical curl in `test/cover3-cover2-rules.test.ts`, where the end's grab
     now holds the QB until 3.2 s, before the 3.4 s read.
