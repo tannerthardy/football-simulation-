@@ -257,6 +257,13 @@ What this says for the design:
   risk on a lane an inside defender is already recovering into. Logged as a
   candidate gap for the passing lane, with this scene as its reproducer, and
   not fixed here.
+- **The pick is fragile.** After COV-6 (#283, develop `51eeb0ad`) the same
+  play throws 0.05 s later to a point 2 yd shorter; Z gets there and drops
+  it. Admission, return to man and the 2.4 s geometry are unchanged on all
+  16 runs; the first divergence is LB_M's facing at 0.20 s, and orientation
+  rewrites CB_S's facing only after he is back in man (2.15 s). Every other
+  result is unchanged to within 0.1 yd
+  ([matched comment](https://github.com/tannerthardy/football-simulation-/pull/283#issuecomment-6405270604)).
 - **The code PR's cost arm should add one vertical continuation** (the same
   look, then a go) next to PA Shot, declared before running, so the price of
   the bite is measured against the route that charges it. Today's PA Shot

@@ -1464,7 +1464,9 @@ From the issue register:
   The run benefit (corner wraps, 6.26 → 4.85 yd) holds only under the
   fixture test's `EDGE_CONTAIN=0 SEAL_HOLD=0`; on today's defaults (since
   #275) he never touches the runner. With the look sold until 1.3 s the
-  bitten corner intercepts PA Shot from 4 yd inside Z (see BALL-1). The
+  bitten corner intercepts PA Shot from 4 yd inside Z on `b559fdc5` (see
+  BALL-1); after #283 (COV-6) Z drops it instead, and nothing else in the
+  arms changes beyond 0.1 yd. The
   design for the leave-or-stay choice and the evidence its code PR owes are
   in the review; code waits for COV-6.
 
@@ -1493,12 +1495,15 @@ From the issue register:
   sitting on a short out is real football. At these rates it suggests the
   throw decision ignores a defender squatting on the route, or that the
   quick out's 6.3-yd stem (COV-3) gives him too long to break.
-- **A matched reproducer** (COV-7 PA Shot, look until 1.3 s, support arm;
-  [review](reviews/cov7-support-choice.md#results)): the QB throws Z's
-  sideline break with an interception risk of 0.03 while the corner is 4.0 yd
-  inside and level, recovering into the ball's line. He intercepts 2.0 yd
-  short of Z. *Hypothesis:* the risk estimate doesn't weigh an inside
-  defender already closing on the lane.
+- **A matched reproducer, pinned to develop `b559fdc5`** (COV-7 PA Shot,
+  look until 1.3 s, support arm; [review](reviews/cov7-support-choice.md#results)):
+  the QB throws Z's sideline break with an interception risk of 0.03 while
+  the corner is 4.0 yd inside and level, recovering into the ball's line. He
+  intercepts 2.0 yd short of Z. Since #283 the throw leaves 0.05 s later to a
+  point 2 yd shorter, and Z drops it; the risk is still 0.04. *Hypothesis:*
+  the risk estimate doesn't weigh an inside defender already closing on the
+  lane. The pick depends on the release to within 0.05 s, so it's a fragile
+  reproducer.
 
 <a id="ball-2"></a>
 ### BALL-2: Throws always leave from standing height
