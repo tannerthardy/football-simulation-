@@ -1,28 +1,20 @@
 # Scorecard: a diagnosis of where the football looks unrealistic and where a
 # change moved it. It never fails a PR; reviewers read it beside the
-# mechanism's own evidence (docs/PLAN.md). It costs about ten Actions minutes,
-# so it runs only on PRs labelled `scorecard` that change engine code, at the
-# cheap PR tier; run the full tier by hand for big fixes.
+# mechanism's own evidence (docs/PLAN.md).
 name: scorecard
 
+# Manual only (Tanner, 2026-10-26): GitHub Actions minutes are not used for
+# routine checks. Agents run these checks locally and report them in the PR;
+# the merger re-runs them locally before merging (AGENTS.md, "No GitHub Actions").
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, labeled]
-    paths: ['src/**', 'scripts/scorecard/**']
   workflow_dispatch:
     inputs:
       tier:
         description: quick, pr or full
         default: pr
 
-# A new push to the same PR cancels the run still going for the old commit.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
   scorecard:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'scorecard')
     runs-on: ubuntu-latest
     continue-on-error: true
     timeout-minutes: 60

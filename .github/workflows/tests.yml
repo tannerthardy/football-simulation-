@@ -1,27 +1,10 @@
 name: tests
 
+# Manual only (Tanner, 2026-10-26): GitHub Actions minutes are not used for
+# routine checks. Agents run these checks locally and report them in the PR;
+# the merger re-runs them locally before merging (AGENTS.md, "No GitHub Actions").
 on:
-  # Draft PRs skip CI; marking a PR ready for review runs it. Agents run
-  # these same checks locally while a PR is a draft.
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths:
-      - 'src/**'
-      - 'test/**'
-      - 'scripts/**'
-      - 'config/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'tsconfig.json'
-      - 'vitest.config.*'
-      - '.nvmrc'
-      - '.github/workflows/tests.yml'
   workflow_dispatch:
-
-# A new push to the same PR cancels the run still going for the old commit.
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -29,7 +12,6 @@ permissions:
 jobs:
   tests:
     name: ${{ matrix.project }}
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
