@@ -15,6 +15,7 @@ import type { PlaySim } from '../playsim.js';
 import { angleTo, track } from '../behaviors/common.js';
 import { believesRun, ManCoverage, playBall, pursueIfLive, runFit, sawThrow, unsureFactor } from '../behaviors/defense.js';
 import type { ReleaseReader } from './reads.js';
+import { withFacingTechnique } from './orientation.js';
 
 abstract class Technique implements Behavior {
   readonly kind = 'zone';
@@ -76,7 +77,7 @@ export class Trap extends Technique {
       x: Math.min(rd.pos.x + rd.vel.x * lead + 0.6, Math.max(a.pos.x, rd.pos.x + 0.6)),
       y: clamp(rd.pos.y + rd.vel.y * lead + rd.outSign * 0.6, 0.5, FIELD_WIDTH - 0.5),
     };
-    return track(a, aim, { x: rd.vel.x * 0.8, y: rd.vel.y }, { speed: 1, gain: 2.4 });
+    return withFacingTechnique(track(a, aim, { x: rd.vel.x * 0.8, y: rd.vel.y }, { speed: 1, gain: 2.4 }), { label: 'trap', key: rd.vel });
   }
 }
 
@@ -96,7 +97,8 @@ export class Wall extends Technique {
     const turnTime = Math.PI / a.profile.turnRate;
     if (rd.vel.x > a.profile.vmax * a.profile.backpedal && a.pos.x - rd.pos.x < 1.2 + closing * turnTime) this.opened = true;
     const speed = this.opened ? 0.92 + 0.08 * a.r('zoneCoverage') : (0.8 + 0.15 * a.r('zoneCoverage')) * unsureFactor(a);
-    return track(a, aim, { x: Math.max(0, rd.vel.x), y: rd.vel.y }, { facing: this.opened ? undefined : angleTo(a.pos, sim.qb.pos), speed, gain: 2 });
+    return withFacingTechnique(track(a, aim, { x: Math.max(0, rd.vel.x), y: rd.vel.y }, { facing: this.opened ? undefined : angleTo(a.pos, sim.qb.pos), speed, gain: 2 }),
+      { label: this.opened ? 'wall-open' : 'wall', key: rd.vel });
   }
 }
 
@@ -115,6 +117,7 @@ export class Rob extends Technique {
     const aim = { x: clamp(lane.x, floor, Math.max(floor, rd.pos.x + 1)), y: clamp(lane.y, 0.5, FIELD_WIDTH - 0.5) };
     const carry = Math.abs(rd.vel.y) > 3 && Math.abs(rd.vel.y) > Math.abs(rd.vel.x);
     const speed = carry ? 1 : (0.75 + 0.2 * a.r('zoneCoverage')) * unsureFactor(a);
-    return track(a, aim, { x: rd.vel.x * 0.5, y: rd.vel.y * 0.7 }, { facing: carry ? Math.atan2(rd.vel.y, rd.vel.x) : angleTo(a.pos, sim.qb.pos), speed, gain: 1.8 });
+    return withFacingTechnique(track(a, aim, { x: rd.vel.x * 0.5, y: rd.vel.y * 0.7 }, { facing: carry ? Math.atan2(rd.vel.y, rd.vel.x) : angleTo(a.pos, sim.qb.pos), speed, gain: 1.8 }),
+      { label: carry ? 'rob-carry' : 'rob', key: rd.vel });
   }
 }

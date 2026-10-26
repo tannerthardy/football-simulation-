@@ -42,17 +42,13 @@ describe('frozen native pursuit arrival experiment', () => {
     for (const r of changed.native) r.targetAfter.pos = { x: -1e4, y: 1e4 };
     expect(objectives(changed)).toStrictEqual(goals);
     expect(forecast(changed.intercept!, 2.8)).toStrictEqual(forecast(c.intercept!, 2.8));
-    // A goal inside the recorded play, so the diagnostic future truth exists.
-    const goal = goals.find(o => response(c, o, 'seek-candidate').metrics.runnerForecastError !== null)!;
-    expect(goal).toBeDefined();
-    const baseline = response(c, goal, 'seek-candidate');
-    const truthChanged = response(changed, goal, 'seek-candidate');
+    const baseline = response(c, goals[1], 'seek-candidate');
+    const truthChanged = response(changed, goals[1], 'seek-candidate');
     expect(truthChanged.rows).toStrictEqual(baseline.rows);
     expect(truthChanged.metrics.runnerForecastError).not.toBe(baseline.metrics.runnerForecastError);
     expect(arrivalJson(c)).toBe(before);
     const pairs = compareBundle({ schema: 'pursuit-arrival-v1', cases: native }).recordedPairTrials;
     expect(pairs).toHaveLength(8);
-    let compared = 0;
     for (const p of pairs) {
       const origin = native.find(c => c.id === p.sourceDecision)!;
       expect(p.objectiveAbsoluteTime).toBe(origin.clock + origin.intercept!.prediction.t);
@@ -60,15 +56,10 @@ describe('frozen native pursuit arrival experiment', () => {
       expect(p.trial.objective.forecastHeading).toStrictEqual(origin.intercept!.forecast.heading);
       if (p.trial.policy === 'held-recorded') expect(p.trial.rows[1].command).toStrictEqual(origin.trace.final);
       const bodyCase = native.find(c => c.id === p.trial.caseId)!;
-      // An objective past the recorded play's end has no runner future to compare.
-      const row = bodyCase.native.find(r => Math.abs(r.end - p.objectiveAbsoluteTime) < 1e-7);
-      if (!row) { expect(p.objectiveAbsoluteTime).toBeGreaterThan(bodyCase.native.at(-1)!.end); continue; }
-      const future = row.targetAfter.pos;
+      const future = bodyCase.native.find(r => Math.abs(r.end - p.objectiveAbsoluteTime) < 1e-7)!.targetAfter.pos;
       expect(p.trial.metrics.runnerForecastError).toBe(Math.hypot(future.x - p.trial.objective.point.x,
         future.y - p.trial.objective.point.y));
-      compared++;
     }
-    expect(compared).toBeGreaterThan(0);
     expect(pairs.some(p => !p.cueAvailableAtBodyClock)).toBe(true);
   });
 

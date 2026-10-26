@@ -21,6 +21,7 @@ import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import type { DropType, PassConcept, ReceiverRef } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
+import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
 import { BallCarrier } from './carrier.js';
 import { handoffReach } from '../ball-transfer.js';
@@ -344,26 +345,31 @@ export class QBPass implements Behavior {
     return Math.abs(a.pos.y - sim.ballY) > 4.5;
   }
 
+  /** A defender as the QB has him. Blind-side rushers are sensed late by
+   * QBs with poor pocket presence. */
+  private felt(a: Agent, sim: PlaySim, d: Agent): Perceived {
+    const ang = Math.abs(Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing);
+    const blind = ang > 1.8 && ang < 4.5;
+    return sim.see(a, d, blind ? 2.2 - 1.4 * a.r('pocketPresence') : 1);
+  }
+
+  /** Pocket feel: a rusher still in a block arrives later the more square
+   * the block is. Good pocket presence reads a rep being lost before the
+   * rusher is free; poor pocket presence only notices when he's loose. */
+  private held(a: Agent, d: Agent): number {
+    if (!d.engagement) return 0;
+    const feltWin = Math.min(1, d.engagement.win) * (0.35 + 0.65 * a.r('pocketPresence'));
+    return 0.35 + 1.4 * (1 - feltWin);
+  }
+
   private pressure(a: Agent, sim: PlaySim): { time: number; agent: Agent | null; dist: number } {
     let best = Infinity;
     let who: Agent | null = null;
     let dist = Infinity;
-    const pp = a.r('pocketPresence');
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
-      // Pocket feel: a rusher still in a block arrives later the more square
-      // the block is. Good pocket presence reads a rep being lost before the
-      // rusher is free; poor pocket presence only notices when he's loose.
-      let held = 0;
-      if (d.engagement) {
-        const feltWin = Math.min(1, d.engagement.win) * (0.35 + 0.65 * pp);
-        held = 0.35 + 1.4 * (1 - feltWin);
-      }
-      // Blind-side rushers are sensed late by QBs with poor pocket presence.
-      const ang = Math.abs(Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing);
-      const blind = ang > 1.8 && ang < 4.5;
-      const seen = sim.see(a, d, blind ? 2.2 - 1.4 * pp : 1);
-      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + held;
+      const seen = this.felt(a, sim, d);
+      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + this.held(a, d);
       if (tt < best) {
         best = tt;
         who = d;
@@ -542,12 +548,19 @@ export class QBPass implements Behavior {
     let open = 0;
     const lanes = [-4, -2, 0, 2, 4].map((dy) => ({ x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + dy, 1, FIELD_WIDTH - 1) }));
     if (panic) for (const side of [-1, 1]) lanes.push({ x: a.pos.x + 1, y: clamp(a.pos.y + side * 5.5, 1, FIELD_WIDTH - 1) });
+    // Each defender as he has him, not where he truly is: an unseen rusher
+    // behind his shoulder is still where he last registered him.
+    const threats = sim.defense.filter((d) => !d.isDown(sim.t))
+      .map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d) }));
     for (const q of lanes) {
-      const myT = Math.hypot(q.x - a.pos.x, q.y - a.pos.y) / (a.profile.vmax * 0.8);
+      // His own run as scramble() will ask for it: the carrier's full-speed
+      // sprint from the velocity he has now, with the same estimate as the
+      // defenders'. A set QB starts from rest, not at speed.
+      const myT = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q);
       let margin = Infinity;
-      for (const d of sim.defense) {
-        if (d.isDown(sim.t)) continue;
-        const tt = timeToReach({ pos: d.pos, vel: d.vel, profile: d.profile, speedScale: d.speedScale }, q, 1) + (d.engagement ? 0.5 : 0);
+      for (const { d, seen, held } of threats) {
+        // A rusher still in a block is held as long as the pressure check feels him held.
+        const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 1) + held;
         margin = Math.min(margin, tt - myT);
       }
       if (margin > 0.35) open++;
@@ -587,9 +600,7 @@ export class QBPass implements Behavior {
     let edge = false;
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
-      const ang = Math.abs(Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing);
-      const blind = ang > 1.8 && ang < 4.5;
-      const seen = sim.see(a, d, blind ? 2.2 - 1.4 * pp : 1).pos;
+      const seen = this.felt(a, sim, d).pos;
       const dx = a.pos.x - seen.x;
       const dy = a.pos.y - seen.y;
       const dd = Math.hypot(dx, dy);

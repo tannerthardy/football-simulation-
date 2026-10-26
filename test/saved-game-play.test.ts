@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { serialize } from 'node:v8';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import { Game } from '../src/game/game.js';
 import { generateTeam } from '../src/league/team.js';
@@ -15,10 +15,17 @@ import { captureSetup, compareExecution, copySaved, firstDifference, identityDif
   readSavedPlay, replayState, restoreSetup, runRestoredPlay } from '../scripts/diag/saved-play.js';
 import { composeHooks } from '../scripts/scorecard/hooks.js';
 
+// GAP_MATCH changes seed 7's game history, so its first catch from play 10 comes on a drive the
+// defense hasn't scouted yet; the captured catch and CB_W entries are staged on nearest-first fits
+// (re-record by review 2). INFO-1 PR 3 moves the history again: on game play 1 (a checkdown to the
+// back) the blocked edge and corners see no holder for the 0.25 s before their pictures show the
+// catch, where they were handed the true catcher; that run ends in a tackle, not a touchdown, and the
+// first catch from play 10 becomes G1-P012, whose corner is a matching wrapper.
+vi.hoisted(() => { process.env.GAP_MATCH = '0'; });
+
 describe('ordinary-game constructor capture and independent replay', () => {
   let captured: ReturnType<typeof captureOrdinaryPlay>;
-  // The first catch after play 16 comes on an offense the defense has already scouted.
-  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 16, maxSteps: 60 }); }, 30_000);
+  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 10, maxSteps: 60 }); }, 30_000);
 
   it('preserves the whole normal game prefix compared with the observer absent', () => {
     const rng = new Rng(7);
@@ -82,12 +89,21 @@ describe('ordinary-game constructor capture and independent replay', () => {
     expect(entries.has(catcher.t)).toBe(true);
     expect(boundary.decision!.owner.controller).toBe(entries.get(catcher.t)!.controller);
     expect(boundary.decision!.owner.kind).toBe(entries.get(catcher.t)!.kind);
-    expect(boundary.decision!.owner.kind).toBe('man');
-    expect(boundary.decision!.owner.controller).not.toBe(boundary.endpoint!.behavior.controller);
-    expect(boundary.endpoint!.behavior.controller).toBe('Pursuit');
-    expect(boundary.endpoint!.behavior.kind).toBe('pursuit');
-    expect(boundary.rewrites).toEqual([]);
-    expect(traced.trace!.steps.some(s => s.decision!.owner.kind === 'pursuit')).toBe(true);
+    // The captured game decides man or zone for this corner, and a matching
+    // wrapper may hand its man job to zone inside the same controller; either
+    // way it is a coverage controller, not a pursuit broadcast.
+    const owner = boundary.decision!.owner.controller;
+    // INFO-1 retires the physical catch's universal controller notification.
+    // The same observer-off/on restoration assertions above remain exact.
+    expect(boundary.endpoint!.behavior.controller).toBe(owner);
+    // Only his own coverage stages (field containment, hip orientation) may
+    // rewrite the command at the catch: he is still covering, not in contact.
+    expect(boundary.rewrites.every(r => r.stage === 'containment' || r.stage === 'coverage-orientation')).toBe(true);
+    for (const s of traced.trace!.steps) {
+      expect(s.decision!.owner.controller).toBe(owner);
+      expect(['man', 'zone']).toContain(s.decision!.owner.kind);
+      expect(['man', 'zone']).toContain(s.endpoint!.behavior.kind);
+    }
     const noEnergy = restoreSetup(saved.setup); delete noEnergy.energy;
     const rested = new PlaySim(noEnergy);
     expect(rested.agents.some((a, i) => a.body.energy !== saved.original.initial.actors[i].energy)).toBe(true);

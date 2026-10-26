@@ -400,7 +400,7 @@ function strideCatchSpot(a: Agent, sim: PlaySim): { p: Vec2; t: number } | null 
 }
 
 /** Earliest reachable point on the ball's remaining flight path for agent `a`. */
-export function catchSpot(a: Agent, sim: PlaySim): { p: Vec2; t: number; z: number } | null {
+export function catchSpot(a: Agent, sim: Pick<PlaySim, 'ballPath' | 't'>): { p: Vec2; t: number; z: number } | null {
   const path = sim.ballPath;
   if (path.length === 0) return null;
   let last: { p: Vec2; t: number; z: number } | null = null;

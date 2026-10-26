@@ -28,6 +28,11 @@ to the question: 2022 motion evidence is not automatic 2026 legal precedent.
 Keep decisive native facts and unsupported branches explicit in the existing
 review, without an extra query or full-game requirement.
 
+For body rotation versus travel-direction change, use the separate
+[versioned turning measurement contract](reviews/turning-measurements.md).
+Its elapsed-time, eligibility and excursion-sensitivity rules qualify what a
+turning observation can establish; historical yaw reports retain their definitions.
+
 ## Commands
 
 For routine football investigations, start with the

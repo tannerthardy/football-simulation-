@@ -6,7 +6,7 @@ import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { PASS_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
-import { chase, gatheringApproach, leverage, pursuitEffort, pursuitPoint, runnerForecast, runThrough } from '../src/sim/behaviors/common.js';
+import { chase, gatheringApproach, leverage, pursuitPoint, runThrough } from '../src/sim/behaviors/common.js';
 import { movementObjective } from '../src/sim/movement-objective.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
@@ -75,11 +75,9 @@ describe('pursuit carries its acquired responsibility through teammate navigatio
     expect(goal.kind === 'moving' && goal.velocity).toEqual(picture.vel);
     if (close) expect(command.vel).toEqual(gather.near!.vel);
     else {
-      // The sprint request is the TKL-2 effort read on the same pictures.
-      const { effort } = pursuitEffort(sim, defender, runner, runnerForecast(sim, defender, runner));
-      const intercept = pursuitPoint(sim, defender, runner, 3, { speed: effort, effort });
+      const intercept = pursuitPoint(sim, defender, runner);
       expect(intercept.x).toBeGreaterThan(goal.point.x + 1);
-      expect(command.vel).toEqual(runThrough(defender, intercept, { speed: effort }).vel);
+      expect(command.vel).toEqual(runThrough(defender, intercept, { speed: 1 }).vel);
     }
   });
 
@@ -117,8 +115,6 @@ describe('pursuit carries its acquired responsibility through teammate navigatio
     sim.bond = { carrier: runner, tacklers: [defender], start: sim.t, progressX: runner.pos.x, down: false };
     const command = chase(sim, defender, runner);
     expect(movementObjective(command)).toBeUndefined();
-    const { effort } = pursuitEffort(sim, defender, runner, runnerForecast(sim, defender, runner));
-    expect(command).toEqual({ ...runThrough(defender, pursuitPoint(sim, defender, runner, 3, { speed: effort, effort }),
-      { speed: effort }), effort });
+    expect(command).toEqual({ ...runThrough(defender, pursuitPoint(sim, defender, runner), { speed: 1 }), effort: 1 });
   });
 });

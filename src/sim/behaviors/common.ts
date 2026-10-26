@@ -1,14 +1,12 @@
 /** Steering helpers shared by behaviors. */
-import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../../core/field.js';
+import { FIELD_WIDTH } from '../../core/field.js';
 import { angleDiff, angleOf, clamp, norm, type Vec2 } from '../../core/vec.js';
 import { arriveVelocity, fatigueFactor, followAccel, movingArrivalVelocity, type MoveCommand } from '../../physics/kinematics.js';
 import { availability, supportParams } from '../../physics/support.js';
-import { interceptPoint, timeToReach, timeToReachRequested, type InterceptPrediction, type Mover, type SprintRequest } from '../../physics/reach.js';
+import { interceptPoint, timeToReach, type SprintRequest } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { withMovementObjective } from '../movement-objective.js';
-import type { Perceived } from '../perception.js';
-import type { AimLifetime, PursuitEffortRead } from '../pursuit-prediction.js';
 import type { PlaySim } from '../playsim.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
@@ -93,8 +91,23 @@ export function angleTo(from: Vec2, to: Vec2): number {
  *    not require every poorer pursuer to take a flat, trailing angle.
  */
 export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
-  request?: SprintRequest, forecast = runnerForecast(sim, a, target), holdAim = false): Vec2 {
-  const { seen, older, sp, heading, acceleration, tau, V, path, reach } = forecast;
+  request?: SprintRequest): Vec2 {
+  const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
+  const seen = sim.see(a, target, delay);
+  const sp = Math.hypot(seen.vel.x, seen.vel.y);
+  const heading = sp > 0.1 ? norm(seen.vel) : { x: 0, y: 0 };
+  const older = sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
+  const acceleration = clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / 0.2,
+    -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau));
+  // Recent acceleration is evidence for a short burst, not a promise of full
+  // speed throughout the horizon. Reassess as new motion becomes visible.
+  const tau = 0.3 + 0.3 * a.r('anticipation');
+  const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
+  const path = (t: number): Vec2 => {
+    const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
+    return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
+  };
+  const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
   const trace = sim.commandTraceFor?.(a);
   const mover = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
   const ip = interceptPoint(mover, path, { horizon, step: 0.1, radius: reach, request, recordSamples: !!trace });
@@ -106,10 +119,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     bias = sim.rng.fork(`pursuit:${a.idx}`).normal(0, 0.12 * (1.2 - a.r('pursuit')));
     angleBias.set(a, bias);
   }
-  // Only chase holds its aim; rush angles at the QB replan every call as before.
-  const aim = holdAim ? keepAim(sim, a, target, forecast, ip, mover, horizon, request)
-    : { t: ip.t, lifetime: undefined };
-  const biasedTime = clamp(aim.t - bias, 0, horizon);
+  const biasedTime = clamp(ip.t - bias, 0, horizon);
   const p = path(biasedTime);
   // Keep the support contract while approaching, then close onto the near
   // hip. A permanent two-yard sideline shade is outside tackling reach.
@@ -123,130 +133,11 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
     forecast: { model: 'fixed-observed-heading-relaxing-speed', heading, initialSpeed: sp, acceleration,
       speedLimit: target.profile.vmax, targetBrake: target.profile.brake, targetSprintTau: target.profile.tau,
       relaxedSpeed: V, relaxationTime: tau, lateralBoundary: [0, FIELD_WIDTH] },
-    lifetime: aim.lifetime, timeBias: bias, biasedTime, forecastPoint: p, leverage: lev, steeringPoint: point });
+    timeBias: bias, biasedTime, forecastPoint: p, leverage: lev, steeringPoint: point });
   return point;
 }
 
 const angleBias = new WeakMap<Agent, number>();
-
-/** A held aim is replanned when the picture of the runner turns or changes
- * speed by this much, when its point has become this late, or when a new
- * feasible point is this much earlier. */
-const AIM_TURN = 20 * Math.PI / 180, AIM_SPEED = 1.5, AIM_LATE = 0.15, AIM_BETTER = 0.3;
-const heldAim = new WeakMap<Agent, { target: Agent; at: number; time: number; heading: Vec2; speed: number }>();
-
-/**
- * Intercept lifetime (TKL-2, ACT-1 style). The earliest-feasible sample is a
- * threshold: as slack crosses zero, or when the least-late fallback is flat,
- * the chosen point can move many yards in one tick with no change in what the
- * pursuer sees (P002: 8.3 yd while the runner moved 0.4). He keeps the point
- * he chose, as a time on the runner's forecast path, while his picture of
- * the runner holds its heading and speed and the point stays reachable; a
- * cut, a burst, a point gone late or a clearly earlier one replans. Only his
- * own pictures and body enter; the point still moves with the forecast.
- */
-function keepAim(sim: PlaySim, a: Agent, target: Agent, forecast: RunnerForecast, ip: InterceptPrediction,
-  mover: Mover, horizon: number, request?: SprintRequest): { t: number; lifetime: AimLifetime } {
-  const held = heldAim.get(a);
-  const store = (t: number, lifetime: AimLifetime) => {
-    heldAim.set(a, { target, at: sim.t, time: sim.t + t, heading: forecast.heading, speed: forecast.sp });
-    return { t, lifetime };
-  };
-  const feasible = ip.estimate.status === 'estimated-feasible';
-  if (!held || held.target !== target || sim.t - held.at > 0.25) return store(ip.t, { kept: false, reason: 'new' });
-  const remaining = held.time - sim.t;
-  if (remaining < 0.1 || remaining > horizon) return store(ip.t, { kept: false, reason: 'expired' });
-  const turn = Math.abs(angleDiff(Math.atan2(held.heading.y, held.heading.x), Math.atan2(forecast.heading.y, forecast.heading.x)));
-  if ((forecast.sp > 1 && held.speed > 1 && turn > AIM_TURN) || Math.abs(forecast.sp - held.speed) > AIM_SPEED)
-    return store(ip.t, { kept: false, reason: 'picture-changed' });
-  const point = forecast.path(remaining);
-  const arrival = request ? timeToReachRequested(mover, point, forecast.reach, request) : timeToReach(mover, point, forecast.reach);
-  const late = arrival - remaining;
-  if (late > AIM_LATE && (feasible || ip.estimate.slack! > -late + AIM_LATE))
-    return store(ip.t, { kept: false, reason: 'held-late', heldLate: late });
-  if (feasible && ip.t < remaining - AIM_BETTER) return store(ip.t, { kept: false, reason: 'earlier', heldLate: late });
-  // Keep the time; the picture-based heading/speed stay the held reference.
-  heldAim.set(a, { ...held, at: sim.t });
-  return { t: remaining, lifetime: { kept: true, reason: 'held', heldLate: late } };
-}
-
-/** The pursuer's forecast of the runner's path from his own delayed pictures:
- * observed heading, speed relaxing toward a burst seen in recent motion. */
-export function runnerForecast(sim: PlaySim, a: Agent, target: Agent, seen?: Perceived) {
-  const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
-  seen ??= sim.see(a, target, delay);
-  const now = seen;
-  const sp = Math.hypot(now.vel.x, now.vel.y);
-  const heading = sp > 0.1 ? norm(now.vel) : { x: 0, y: 0 };
-  const older = sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
-  const acceleration = clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / 0.2,
-    -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau));
-  // Recent acceleration is evidence for a short burst, not a promise of full
-  // speed throughout the horizon. Reassess as new motion becomes visible.
-  const tau = 0.3 + 0.3 * a.r('anticipation');
-  const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
-  const path = (t: number): Vec2 => {
-    const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
-    return { x: now.pos.x + heading.x * d, y: clamp(now.pos.y + heading.y * d, 0, FIELD_WIDTH) };
-  };
-  const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
-  return { seen: now, older, sp, heading, acceleration, tau, V, path, reach };
-}
-type RunnerForecast = ReturnType<typeof runnerForecast>;
-
-/** Pace below a full sprint (more so for low motors). */
-const paceEffort = (a: Agent) => 0.75 + 0.2 * a.r('workRate');
-/** A committed sprint survives this long without a feasible intercept. */
-const SPRINT_HOLD = 0.3;
-const READ_MIN = 3, READ_MAX = 8;
-const effortState = new WeakMap<Agent, { sprint: boolean; lostAt: number | null }>();
-
-/**
- * TKL-2: is this pursuer in the play? Built only from his own pictures.
- *  - Can I still get there? A full-effort intercept on his forecast of the
- *    runner, over the time the runner needs to reach the goal line (3–8 s).
- *  - Am I needed? Unblocked, standing teammates whose pictures intercept that
- *    same path strictly earlier. The last chance, or one of the two best
- *    placed, sprints; everyone else paces.
- * A committed sprint holds until two teammates are better placed or no
- * feasible intercept has existed for SPRINT_HOLD. The World already charges
- * completed effort to body energy, so sprinting is a choice with a price.
- */
-export function pursuitEffort(sim: PlaySim, a: Agent, target: Agent, forecast: RunnerForecast): PursuitEffortRead {
-  const { seen, V, heading, path, reach } = forecast;
-  // The runner's goal line: the offense attacks OPP_GOAL_X.
-  const toGoal = Math.abs((a.team === 'D' ? OPP_GOAL_X : OWN_GOAL_X) - seen.pos.x);
-  const horizon = clamp(toGoal / Math.max(V * Math.abs(heading.x), 1), READ_MIN, READ_MAX);
-  const full = { speed: 1, effort: 1 };
-  const mine = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale },
-    path, { horizon, step: 0.1, radius: reach, request: full });
-  const feasible = mine.estimate.status === 'estimated-feasible';
-  let state = effortState.get(a);
-  if (!state) effortState.set(a, state = { sprint: false, lostAt: null });
-  // Teammates only matter while a sprint is possible or held.
-  let betterPlaced = 0;
-  if (feasible || state.sprint) for (const m of sim.teammates(a)) {
-    if (betterPlaced >= 2) break;
-    if (m === a || m.engagement || m.isDown(sim.t)) continue;
-    const pic = sim.see(a, m);
-    const r = m.profile.radius + target.profile.radius + m.profile.reach * 0.75;
-    const theirs = interceptPoint({ pos: pic.pos, vel: pic.vel, profile: m.profile, speedScale: m.speedScale },
-      path, { horizon: feasible ? mine.t : horizon, step: 0.1, radius: r, request: full });
-    if (theirs.estimate.status === 'estimated-feasible' && (!feasible || theirs.t < mine.t - 1e-9)) betterPlaced++;
-  }
-  const wants = feasible && betterPlaced < 2 ? 'sprint' : 'pace';
-  if (wants === 'sprint') { state.sprint = true; state.lostAt = null; }
-  else if (state.sprint) {
-    if (betterPlaced >= 2) state.sprint = false;
-    else {
-      state.lostAt ??= sim.t;
-      if (sim.t - state.lostAt >= SPRINT_HOLD - 1e-9) state.sprint = false;
-    }
-  }
-  if (!state.sprint) state.lostAt = null;
-  return { horizon, feasible, interceptTime: feasible ? mine.t : null, betterPlaced, wants,
-    mode: state.sprint ? 'sprint' : 'pace', effort: state.sprint ? 1 : paceEffort(a) };
-}
 
 /** Signed lateral offset (toward the field's middle) a pursuer keeps on a carrier at `y`. */
 export function leverage(a: Agent, y: number): number {
@@ -356,24 +247,22 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
       observed: seen, distance: dist, contact, offset, gather, requests: [{ stage: 'close-gather', command }] });
     return command;
   }
-  // Sprint when he can still get there and is needed; pace otherwise. The
-  // intercept is planned on the chosen budget in the same tick.
-  const forecast = runnerForecast(sim, a, target, seen);
-  const effortRead = pursuitEffort(sim, a, target, forecast);
-  const request = { speed: effortRead.effort, effort: effortRead.effort };
-  const p = pursuitPoint(sim, a, target, horizon, request, forecast, true);
+  // Away from the ball, pursuit runs below top speed (more so for low motors).
+  const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
+  const request = { speed: effort, effort };
+  const p = pursuitPoint(sim, a, target, horizon, request);
   const original = { ...runThrough(a, p, { speed: request.speed }), effort: request.effort };
   // A new grip may exist before its first solved load reaches body support.
   if (sim.bond?.tacklers.includes(a)) {
     trace?.pursuit(target, { kind: 'chase', planner: 'used', requestedHorizon: horizon, observed: seen,
-      distance: dist, contact, offset, gather, effortRead, requests: [{ stage: 'held-tackle', command: original }] });
+      distance: dist, contact, offset, gather, requests: [{ stage: 'held-tackle', command: original }] });
     return original;
   }
   const chosen = chooseApproach(a, seen, contact, offset, original, sim.t,
     command => ownApproach(blendApproach(command, near, gather)));
-  const command = PURSUE_AROUND ? aroundBodies(sim, a, seen, look, chosen) : chosen;
+  const command = PURSUE_AROUND ? aroundBodies(sim, a, target, seen, look, chosen) : chosen;
   trace?.pursuit(target, { kind: 'chase', planner: 'used', requestedHorizon: horizon, observed: seen,
-    distance: dist, contact, offset, gather, effortRead, requests: [{ stage: 'intercept-sprint', command: original },
+    distance: dist, contact, offset, gather, requests: [{ stage: 'intercept-sprint', command: original },
       { stage: 'approach-and-gather', command: chosen }, { stage: 'around-bodies', command }] });
   return command;
 }
@@ -389,7 +278,7 @@ const PURSUE_AROUND = process.env.PURSUE_AROUND !== '0';
 const AROUND_MARGIN = 0.15; // yd of clearance beyond the two bodies
 const AROUND_LOOK = 0.5;    // s of travel at the requested speed
 
-function aroundBodies(sim: PlaySim, a: Agent, runner: import('../perception.js').Perceived,
+function aroundBodies(sim: PlaySim, a: Agent, target: Agent, runner: import('../perception.js').Perceived,
   look: number, command: MoveCommand): MoveCommand {
   if (a.engagement || a.isDown(sim.t)) return command;
   const v = command.vel, speed = Math.hypot(v.x, v.y);
@@ -401,7 +290,7 @@ function aroundBodies(sim: PlaySim, a: Agent, runner: import('../perception.js')
   const toRunner = Math.hypot(runner.pos.x - a.pos.x, runner.pos.y - a.pos.y);
   let block: { x: number; y: number; d: number; r: number } | null = null;
   for (const o of sim.opponents(a)) {
-    if (o === sim.carrier || o.isDown(sim.t)) continue;
+    if (o === target || o.isDown(sim.t)) continue;
     const seen = sim.see(a, o, look);
     const rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, d = Math.hypot(rx, ry);
     const r = a.profile.radius + o.profile.radius + AROUND_MARGIN;
