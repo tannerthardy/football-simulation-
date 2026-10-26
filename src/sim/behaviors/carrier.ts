@@ -354,7 +354,18 @@ export class BallCarrier implements Behavior {
     return { vel, cutSkill, squeeze };
   }
 
-  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean } | null {
+  /** The run he would make if he took off now, scored by the same
+   * evaluator that steers it: its heading, the yards he gains before any
+   * defender he sees can reach him, and whether that lane stays clean. A
+   * caller who is not yet a runner (a QB weighing a scramble) passes his
+   * own pictures (`see`) and `lag`: how long a defender takes to start once
+   * the run shows. Scouting leaves no tag and no trace record. */
+  scout(a: Agent, sim: PlaySim, scouting: Scouting): { heading: number; gain: number; clean: boolean } | null {
+    const best = this.evaluate(a, sim, sim.attackDir(a.team), false, scouting);
+    return best && { heading: best.heading, gain: best.gain, clean: best.clean };
+  }
+
+  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean, scouting?: Scouting): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean; gain: number; clean: boolean } | null {
     const vision = a.r('vision');
     const range = 7 + 22 * vision;
     const p = a.pos;
@@ -364,7 +375,7 @@ export class BallCarrier implements Behavior {
     const goalX = dir > 0 ? OPP_GOAL_X : OWN_GOAL_X;
     const hurry = sim.hurry && a.team === 'O';
 
-    const { blockers, threats } = arrivalEvidence(a, sim, dir, range, vision);
+    const { blockers, threats } = arrivalEvidence(a, sim, dir, range, vision, scouting?.see);
 
     const cands: number[] = [];
     const spread = designed ? 0.9 : 1.55;
@@ -374,12 +385,14 @@ export class BallCarrier implements Behavior {
     if (designed) cands.push(aimHeading);
 
     // Diagnostics only: the selected-player command trace, never consulted.
-    const trace = sim.commandTraceFor?.(a);
+    const trace = scouting ? undefined : sim.commandTraceFor?.(a);
     const routes: RouteAssessment[] | undefined = trace ? [] : undefined;
-    let best: { heading: number; score: number; blocked: boolean; exits: boolean } | null = null;
+    let best: { heading: number; score: number; blocked: boolean; exits: boolean; gain: number; clean: boolean } | null = null;
     let curScore = -Infinity;
     let curBlocked = false;
     let curExits = false;
+    let curGain = 0;
+    let curClean = false;
     let aimBlocked = false;
     let aimScore = -Infinity;
     const vmax = a.profile.vmax;
@@ -426,7 +439,8 @@ export class BallCarrier implements Behavior {
         let minMargin = Infinity;
         for (const th of threats) {
           // Respect the tackler's arms: his reach plus a lunge.
-          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
+          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra
+            + (scouting ? scouting.lag(th.d, th.seen, h) : 0);
           const m = tt - arrival;
           if (m < minMargin) {
             minMargin = m;
@@ -480,15 +494,17 @@ export class BallCarrier implements Behavior {
         curScore = score;
         curBlocked = blocked;
         curExits = exits;
+        curGain = safeGain;
+        curClean = clean;
       }
       routes?.push({ heading: h, score, blocked, clean, exits, safeGain, aim: h === aimHeading, current: h === cur });
-      if (!best || score > best.score) best = { heading: h, score, blocked, exits };
+      if (!best || score > best.score) best = { heading: h, score, blocked, exits, gain: safeGain, clean };
     }
     // Hysteresis: keep the current lane unless the new one is clearly better.
     const kept = !!best && best.heading !== cur && best.score - curScore < 0.4;
-    if (best && kept) best = { heading: cur, score: curScore, blocked: curBlocked, exits: curExits };
-    if (best?.exits) a.tags.add('chose-sideline');
-    const result = best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits } : null;
+    if (best && kept) best = { heading: cur, score: curScore, blocked: curBlocked, exits: curExits, gain: curGain, clean: curClean };
+    if (best?.exits && !scouting) a.tags.add('chose-sideline');
+    const result = best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits, gain: best.gain, clean: best.clean } : null;
     trace?.carrier({ kind: 'evaluate', t: sim.t, designed, arrival: threats.map(arrivalRecord), routes: routes!,
       selected: result && { heading: result.heading, score: result.score, blocked: result.blocked, exits: result.exits, keptCurrent: kept },
       aim: designed ? { heading: aimHeading, score: aimScore, blocked: aimBlocked } : null });
@@ -515,14 +531,15 @@ export interface ArrivalEvidence {
 
 /** Perceived teammates near the runner, and defenders he can see within his
  * vision range, each from his own pictures. */
-function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vision: number) {
+function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vision: number,
+  see: (d: Agent) => Perceived = (d) => sim.see(a, d, 0.7)) {
   const p = a.pos;
   const blockers = sim.teammates(a).filter((b) => b !== a)
     .map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }))
     .filter((b) => b.pose !== 'down' && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12);
   const threats: ArrivalEvidence[] = [];
   for (const d of sim.opponents(a)) {
-    const seen = sim.see(a, d, 0.7);
+    const seen = see(d);
     const dd = Math.hypot(seen.pos.x - p.x, seen.pos.y - p.y);
     if (dd > range) continue;
     // Backside defenders behind the runner are easy to miss for poor-vision backs.
@@ -556,6 +573,13 @@ function touching(b: { pos: Vec2; radius: number }, d: Vec2, dRadius: number): b
 /** Seen down or getting up: off his feet, as far as the runner can tell. */
 function offFeet(seen: Perceived): boolean {
   return seen.pose === 'down' || seen.pose === 'rising';
+}
+
+/** A would-be runner's own pictures of the defenders, and each one's start
+ * lag on a heading, for `BallCarrier.scout`. */
+export interface Scouting {
+  see: (d: Agent) => Perceived;
+  lag: (d: Agent, seen: Perceived, heading: number) => number;
 }
 
 /** One candidate heading as the evaluator scored it. */

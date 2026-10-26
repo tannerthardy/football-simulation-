@@ -113,6 +113,11 @@ export const GAME_BURST = 2.2;
 /** In-game braking/cutting relative to peak plant forces. */
 export const GAME_CUT = 0.55;
 
+/** Reaction time from recognition (0..1). */
+export function reactionTimeFor(recog: number): number {
+  return clamp(0.4 - 0.24 * recog, 0.14, 0.42);
+}
+
 export function derivePhysical(p: Player): PhysicalProfile {
   const m = p.measurables;
   const r = p.ratings;
@@ -156,7 +161,7 @@ export function derivePhysical(p: Player): PhysicalProfile {
   const reactReach = inchesToYards(m.heightIn * 1.33 + m.vertical * 0.3);
 
   const recog = r01(0.65 * r.playRecognition + 0.35 * r.awareness);
-  const reactionTime = clamp(0.4 - 0.24 * recog, 0.14, 0.42);
+  const reactionTime = reactionTimeFor(recog);
 
   // Functional strength: bench reps and the strength rating, scaled by mass.
   const strength = r01(0.7 * r.strength + 0.3 * clamp(m.bench * 2.4, 1, 100));
