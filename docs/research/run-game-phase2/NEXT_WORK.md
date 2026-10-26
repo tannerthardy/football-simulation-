@@ -20,7 +20,7 @@ The limit remains three active agents. Tools, Physics and Run can perform the in
 - [Ground-budget repair, P019 and conditional contact-law work](NEXT_WORK_PHYSICS.md).
 - [Implementation requirements and completion criteria](IMPLEMENTATION_ROADMAP.md).
 
-Each receiving agent should first download the full evidence package, verify hashes, read the relevant adverse case and restage only that exact constructor. A short report should state which competing explanation the first experiment can eliminate before changing source.
+Each receiving agent should first obtain the full evidence package using the [actual access status](README.md#evidence-access), verify hashes, read the relevant adverse case and restage only that exact constructor. A short report should state which competing explanation the first experiment can eliminate before changing source.
 
 ## Minimum experiment contract
 

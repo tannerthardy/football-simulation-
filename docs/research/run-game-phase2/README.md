@@ -12,32 +12,31 @@ The research isolates two traction-budget defects, an acquired-protection/runner
 - [Runner information investigation](information/RUNNER_INFORMATION_REPORT.md).
 - [Implementation briefs](IMPLEMENTATION_ROADMAP.md), [baseline revalidation](BASELINE_REVALIDATION.md), and [reproduction instructions](REPRODUCE.md).
 
-## Download the complete evidence
+## Evidence access
 
-The [research evidence prerelease](https://github.com/tannerthardy/football-simulation-/releases/tag/research-run-game-phase2-20261026) retains the repository's access restrictions. It is a research artifact, not an engine release. Raw evidence stays outside Git history, consistent with PLAN.
+The reports and next-work briefs are available in this PR. **Remote raw evidence is not yet published.** GitHub accepted the documentation push and PR creation, but release uploads returned `HTTP 401: Bad credentials` for both the full archive and a tiny checksum file. The created empty draft release was removed. Do not treat a planned release URL as an available artifact.
 
-| Asset | Purpose | SHA256 |
+The verified packages remain in the originating workspace and are downloadable from its Codex conversation:
+
+| Local artifact | Purpose | SHA256 |
 |---|---|---|
-| `gridiron-run-game-phase2-full.zip` | Full Phase II raw data/scripts/inputs/patches/source, all53 job rows, failed/adverse evidence, native film, and the complete original Phase I ZIP; about650 MiB | `b841f54a1c8c14e3552223a37893a00e10a5a392cb11397ec481215393788947` |
-| `gridiron-run-game-phase2-review.zip` | Small reading copy; does not replace the full evidence | `10f946f85fedb1db24afa6fcecd7a6ea12977519ec4acbb8b13f39a0db1e2c10` |
+| `/workspace/gridiron-run-game-phase2-full.zip` | Full Phase II raw data/scripts/inputs/patches/source, all53 job rows, adverse evidence, native film, and the complete Phase I ZIP; about650 MiB | `b841f54a1c8c14e3552223a37893a00e10a5a392cb11397ec481215393788947` |
+| `/workspace/gridiron-run-game-phase2-review.zip` | Small reading copy; not the full evidence | `10f946f85fedb1db24afa6fcecd7a6ea12977519ec4acbb8b13f39a0db1e2c10` |
+| `/workspace/gridiron-run-game-research.zip` | Complete original Phase I research package | Embedded byte-for-byte in the full archive |
 
-The release also exposes the original Phase I ZIP, job table/CSV, and checksums individually. Download with an authenticated GitHub CLI:
+Agents sharing that workspace can read `/workspace/run-game-phase2/` directly. An agent in another environment must obtain the full archive from the originating conversation or an authorized artifact host before claiming to reproduce the experiments. Obtaining and verifying this evidence is the first prerequisite for new experimental work; reading this PR alone does not satisfy it. An authorized publisher can retry a research prerelease when authentication to GitHub's upload endpoint is available, then replace this status with verified asset URLs and checksums.
+
+After obtaining the archive, extract into a fresh directory and run:
 
 ```bash
-gh release download research-run-game-phase2-20261026 \
-  --repo tannerthardy/football-simulation- \
-  --pattern gridiron-run-game-phase2-full.zip \
-  --pattern SHA256SUMS \
-  --dir out/run-game-phase2-download
-cd out/run-game-phase2-download
-sha256sum --ignore-missing -c SHA256SUMS
+sha256sum gridiron-run-game-phase2-full.zip
 unzip gridiron-run-game-phase2-full.zip
 python run-game-phase2/VERIFY_PACKAGE.py
 ```
 
-The archive contains787 files;786 manifest-listed file hashes and archive CRCs were checked. Its accepted-source snapshot reconstructs ten tested variants with matching source hashes. The original216-file Phase I manifest was independently verified. Files inside this frozen archive are not rewritten to include subsequent publication plans.
+The archive contains787 files;786 manifest-listed hashes and archive CRCs were checked. Its accepted-source snapshot reconstructs ten tested variants with matching source hashes. The original216-file Phase I manifest was independently verified. Frozen archive contents were not rewritten to include subsequent publication plans.
 
-Native film is `run-game-phase2/figures/native-film.html` after extraction. It is self-contained and runs without a server. Original constructor artifacts require pinned Node22.23.3; see the detailed reproduction instructions before running scripts that use absolute workspace paths.
+Native film is `run-game-phase2/figures/native-film.html` after extraction. It is self-contained. Constructor artifacts require pinned Node22.23.3; consult the reproduction guide before running scripts that use absolute workspace paths.
 
 ## Review and ownership
 

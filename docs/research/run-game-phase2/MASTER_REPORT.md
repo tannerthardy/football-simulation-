@@ -17,7 +17,7 @@ The central question—how many of the original53 jobs were genuine useful misse
 | Neither event recorded |27|
 | Total |53|
 
-Only14 of the16 loaded jobs have a loaded endpoint by first carrier contact. This remains a contact fact, not a26% success rate. Among the ten actual-target-contact cases, four have no/late release, four fail a sampled unloaded pursuit from actual release, and two pass that relaxation. Independent scrutiny then separates those two: S7-P070 has a retained-target command stall but marginal, rearward hypothetical reach to a later assist; S9-P062 deliberately retargets to a more urgent acquired threat and blocks him. Neither is a proven useful missed block. All53 rows and uncertainties are retained in [JOB_LEDGER.md](https://github.com/tannerthardy/football-simulation-/releases/download/research-run-game-phase2-20261026/JOB_LEDGER.md), CSV and JSON.
+Only14 of the16 loaded jobs have a loaded endpoint by first carrier contact. This remains a contact fact, not a26% success rate. Among the ten actual-target-contact cases, four have no/late release, four fail a sampled unloaded pursuit from actual release, and two pass that relaxation. Independent scrutiny then separates those two: S7-P070 has a retained-target command stall but marginal, rearward hypothetical reach to a later assist; S9-P062 deliberately retargets to a more urgent acquired threat and blocks him. Neither is a proven useful missed block. All53 rows and uncertainties are retained in [JOB_LEDGER.md](README.md#evidence-access), CSV and JSON.
 
 ### What survives, changes or fails
 
