@@ -5,7 +5,7 @@ import * as Reach from '../src/physics/reach.js';
 import { chase } from '../src/sim/behaviors/common.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
-import { captureOrdinaryPlay } from '../scripts/diag/capture-game-play.js';
+import { captureNativePursuit } from '../scripts/diag/pursuit-arrival.js';
 import { compareExecution, initialState, replayState, restoreSetup } from '../scripts/diag/saved-play.js';
 
 /** Four fixed capacities used only by this scalar estimator; not a World-body fixture.
@@ -71,7 +71,9 @@ describe('approximate interception prediction contract', () => {
   });
 
   it('preserves a whole ordinary play and its prediction/read/draw/physics counts with selected diagnostics enabled', () => {
-    const saved = captureOrdinaryPlay({ seed: 7, play: 2, minPlay: 1, maxSteps: 2 }).saved;
+    // The play, actor and clocks come from the first native pursuit case of an
+    // ordinary game (as in pursuit-arrival), not a pinned play and clock.
+    const { saved, pick } = captureNativePursuit(7);
     const original = Reach.interceptPoint;
     const execute = (record: boolean) => {
       let pathCalls = 0;
@@ -80,7 +82,8 @@ describe('approximate interception prediction contract', () => {
       const draws = vi.spyOn(Rng.prototype, 'nextU32');
       const sim = new PlaySim(restoreSetup(saved.setup)), initial = initialState(sim);
       const reads = vi.spyOn(sim.perception, 'perceive'), steps = vi.spyOn(sim.world, 'step');
-      const trace = record ? sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 3.9, to: 4.5 }) : undefined;
+      const trace = record ? sim.recordCommands({ actor: { team: 'D', slot: pick.actorSlot },
+        from: Math.max(0, pick.clocks[0] - .3), to: pick.clocks.at(-1)! + .3 }) : undefined;
       const result = sim.run();
       const execution = { initial, result, replay: replayState(sim, result, saved.context) };
       const counts = { planner: planner.mock.calls.length, paths: pathCalls, reads: reads.mock.calls.length,
@@ -102,5 +105,5 @@ describe('approximate interception prediction contract', () => {
       expect(p.steeringPointEstimate).toBe('not-evaluated');
       expect(p.prediction.samples!.length).toBeGreaterThan(0);
     }
-  });
+  }, 120_000);
 });

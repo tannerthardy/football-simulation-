@@ -127,10 +127,11 @@ describe('interception uses the sprint request budget', () => {
     expect(command.effort).toBe(expected);
     expect(p.steeringPointEstimate).toBe('not-evaluated');
     // Existing chase, the current forecast and the older pictures behind its speed trend only.
-    expect(seen).toHaveBeenCalledTimes(2 + Math.round(SPEED_TREND_WINDOW / sim.dt));
+    const reads = 2 + Math.round(SPEED_TREND_WINDOW / sim.dt);
+    expect(seen).toHaveBeenCalledTimes(reads);
     c.body.pos = { x: -100, y: 50 }; c.body.vel = { x: -8, y: 0 };
     expect(chase(sim, d, c)).toEqual(command); // Unacquired reality cannot move the effort boundary.
-    expect(seen).toHaveBeenCalledTimes(6);
+    expect(seen).toHaveBeenCalledTimes(2 * reads);
     vi.restoreAllMocks();
   });
 });
