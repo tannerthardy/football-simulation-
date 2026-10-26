@@ -1,0 +1,538 @@
+{
+ "identity": {
+  "commit": "a501dda0c9cbd50a8347211de58c83be34635e99",
+  "engineSha256": "0dea552c9a488bb1399338ae165d948db7db11e744320507d6ea52978c4ed225",
+  "settings": {
+   "AGAP_ALIGN": true,
+   "ANCHOR_SPLIT": true,
+   "ARM_PRESS": true,
+   "BACK_BLOCK": true,
+   "BLOCKED_REACH": true,
+   "BOX_ALIGN": true,
+   "CF_FLOW": null,
+   "CLIMB_INTERCEPT": true,
+   "CLIMB_PLAN": true,
+   "COVER_CALL": true,
+   "DEEP_NO_FORCE": false,
+   "DEF_ALIGN": true,
+   "DEF_GETOFF": 1,
+   "DEF_PACKAGE": true,
+   "DEUCE": true,
+   "DL_ANCHOR": true,
+   "DL_CHASE": true,
+   "DL_FIGHT": false,
+   "DL_FLATTEN": true,
+   "DL_FLATTEN_WON": true,
+   "DL_FLOW": true,
+   "DL_HANDS": false,
+   "DL_SQUEEZE": true,
+   "EDGE_CONTAIN": true,
+   "FLOW_READ": true,
+   "FLOW_RELEASE": true,
+   "FORCE_BOUNCE": true,
+   "FRONT_ALIGN": true,
+   "FRONT_MENU": true,
+   "FRONT_STRENGTH": true,
+   "GAIT_STEP": 0,
+   "GAP_MATCH": true,
+   "GRIP_HOLD": true,
+   "GROUNDING_FACTS": true,
+   "HAND_FIGHT": false,
+   "HAND_MOTOR": false,
+   "HOLD_LEVERAGE": true,
+   "HOLD_SUBSTEPS": 0,
+   "IN_STRIDE_CATCH": false,
+   "KEEPER_TORSO": true,
+   "LB_LANDMARK": true,
+   "LB_PLAN": true,
+   "LEG_BRACE": false,
+   "LEVER_FACING": true,
+   "LIVE_AIM": true,
+   "LIVE_GAPS": true,
+   "MOTION": true,
+   "MOTION_CHECK": true,
+   "OL_SPLITS": true,
+   "OL_STAGGER": true,
+   "PAD_LEVERAGE": true,
+   "PASS_FEEL": true,
+   "PASS_FIRST": true,
+   "PASS_KICK": true,
+   "PASS_SINK": false,
+   "PRESSURE_CALL": true,
+   "PULL_CUE": false,
+   "PULL_EARLY": true,
+   "PULL_PLAN": false,
+   "PULL_READ": true,
+   "PULL_STEP": false,
+   "PURSUE_AROUND": true,
+   "REACH_CONTACT": false,
+   "READ_EYES": true,
+   "READ_RISK_TRACE": false,
+   "ROUTE_CLEAR": true,
+   "RUN_ANCHOR": true,
+   "RUN_CONTACT_COMPONENTS": true,
+   "RUN_CONTACT_TRACK": false,
+   "RUN_FEEL": true,
+   "RUN_HANDS": false,
+   "RUN_READ": false,
+   "RUN_READ_TURN": false,
+   "SAFETY_TEMPO": true,
+   "SCRAPE": true,
+   "SEAL_HOLD": true,
+   "SHED_PHYSICAL": true,
+   "SHED_PURSUE": true,
+   "SHELL_SHOW": true,
+   "SHORT_PACKAGE": true,
+   "SNAP_REACT": true,
+   "STALK_CLAIM": true,
+   "STALK_CUSHION": true,
+   "STRETCH_MESH": true,
+   "STRETCH_REACH": true,
+   "TACKLE_ROLL": false,
+   "TACKLE_TOUCH": false,
+   "THREAT_READ": true,
+   "TIP_AWAY": true,
+   "WRAP_BIND": false,
+   "WR_ALIGN": true,
+   "ZONE_FLOW": true
+  },
+  "node": "v22.22.0",
+  "lockfileSha256": "cee32ba14d404c05dff4e8e3b4506bc1ea1e1afbfd40b35461511e7ff8fdb98f",
+  "nodeNeeded": "22.23.3"
+ },
+ "recipe": {
+  "seed": 53,
+  "cohort": 6,
+  "maxSteps": 20,
+  "steps": 6
+ },
+ "neutrality": "game result identical with tap on/off (firstDifference null)",
+ "threshold": 0.35,
+ "ledger": [
+  {
+   "id": "G1-P001",
+   "kind": "kickoff",
+   "nullified": false,
+   "selected": false,
+   "call": "",
+   "defense": "",
+   "yards": 0,
+   "shouldScrambleCalls": 0,
+   "firstOpenCallAt": null,
+   "scrambleEventAt": null,
+   "scrambledStat": false
+  },
+  {
+   "id": "G1-P002",
+   "kind": "pass",
+   "nullified": false,
+   "selected": true,
+   "call": "Pistol Doubles — Y-Cross (Z across motion)",
+   "defense": "4-3 Over Cover 3 Seam (match) + Slug (nickel edge, end drops)",
+   "outcome": "incomplete",
+   "yards": 0,
+   "setupSha256": "59df1308186c0991182f2389dfb768d1439d9dd6fffa43b06181784520fdcb92",
+   "shouldScrambleCalls": 0,
+   "firstOpenCallAt": null,
+   "scrambleEventAt": null,
+   "scrambledStat": false
+  },
+  {
+   "id": "G1-P003",
+   "kind": "run",
+   "nullified": false,
+   "selected": true,
+   "call": "Singleback Trips — Inside Zone Weak (Z across motion)",
+   "defense": "Wide-9 Nickel Cover 1 Robber",
+   "outcome": "tackle",
+   "yards": 8.78,
+   "setupSha256": "793bef4ef64b3d049fed8d2eeb612315cd08c3a710fa0165c6d7685e1287a387",
+   "shouldScrambleCalls": 0,
+   "firstOpenCallAt": null,
+   "scrambleEventAt": null,
+   "scrambledStat": false
+  },
+  {
+   "id": "G1-P004",
+   "kind": "run",
+   "nullified": false,
+   "selected": true,
+   "call": "Singleback Twin TE — Trap",
+   "defense": "Bear (goal line) Cover 3 (Sky) (match)",
+   "outcome": "tackle",
+   "yards": 6.24,
+   "setupSha256": "1afcecdffacb799a8d5ba89a5e5fdf1839b750622d79482feffe113929d8b287",
+   "shouldScrambleCalls": 0,
+   "firstOpenCallAt": null,
+   "scrambleEventAt": null,
+   "scrambledStat": false
+  },
+  {
+   "id": "G1-P005",
+   "kind": "pass",
+   "nullified": false,
+   "selected": true,
+   "call": "Gun Doubles — PA Flood",
+   "defense": "4-3 Under Cover 3 Buzz (match) (shows Cover 1 (Man-Free))",
+   "outcome": "incomplete",
+   "yards": 0,
+   "setupSha256": "8feda499e567252bc5c7bf2b2a7ed4e5aff3fc6ae4f7946e1478b61dab6c6250",
+   "shouldScrambleCalls": 0,
+   "firstOpenCallAt": null,
+   "scrambleEventAt": null,
+   "scrambledStat": false
+  },
+  {
+   "id": "G1-P006",
+   "kind": "pass",
+   "nullified": false,
+   "selected": true,
+   "call": "Gun Trips Open — Comebacks (RB empty motion)",
+   "defense": "Wide-9 Nickel Quarters (MOD) (match)",
+   "outcome": "tackle",
+   "yards": 16.46,
+   "setupSha256": "10105a1becb3ae3eecd72dd1420302b38ff86e8282fed74cc1fb3f9fba3cbef9",
+   "shouldScrambleCalls": 0,
+   "firstOpenCallAt": null,
+   "scrambleEventAt": null,
+   "scrambledStat": false
+  },
+  {
+   "id": "G1-P007",
+   "kind": "pass",
+   "nullified": false,
+   "selected": true,
+   "call": "I-Form Pro — PA Post-Dig",
+   "defense": "4-3 Even Cover 3 (Sky) (match)",
+   "outcome": "tackle",
+   "yards": -2.5,
+   "setupSha256": "e9477c6b195099a42ee77a1dcf20024c1d280cb544621bfb8a3f9574376b84af",
+   "shouldScrambleCalls": 2,
+   "firstOpenCallAt": 3.55,
+   "scrambleEventAt": 3.6,
+   "scrambledStat": true
+  }
+ ],
+ "plays": {
+  "G1-P007": {
+   "index": 6,
+   "id": "G1-P007",
+   "setupSha256": "e9477c6b195099a42ee77a1dcf20024c1d280cb544621bfb8a3f9574376b84af",
+   "calls": [
+    {
+     "t": 3.55,
+     "panic": false,
+     "result": true,
+     "readIdx": 2,
+     "mobility": 0.4644557823129255,
+     "qb": {
+      "pos": {
+       "x": 68.31421717489198,
+       "y": 29.748460010678713
+      },
+      "speed": 0,
+      "vmax": 9.130303272785337,
+      "tau": 1.471443329013996
+     },
+     "threshold": 0.35,
+     "open": {
+      "liveNative": 4,
+      "consumedNative": 4,
+      "liveFull": 0,
+      "consumedFull": 0
+     },
+     "lanes": [
+      {
+       "q": {
+        "x": 77.5,
+        "y": 25.748460010678713
+       },
+       "dist": 10.01891242151809,
+       "selfNative": 1.371656576208896,
+       "selfFull": 2.249827909625289,
+       "liveNative": {
+        "margin": 0.014998803229637314,
+        "limiter": "SS"
+       },
+       "consumedNative": {
+        "margin": 0.1237025983151725,
+        "limiter": "DE_S",
+        "estimatesUsed": 11
+       },
+       "liveFull": {
+        "margin": -0.8631725301867559,
+        "limiter": "SS"
+       },
+       "consumedFull": {
+        "margin": -0.7544687351012207,
+        "limiter": "DE_S"
+       }
+      },
+      {
+       "q": {
+        "x": 77.5,
+        "y": 27.748460010678713
+       },
+       "dist": 9.400989634610257,
+       "selfNative": 1.2870587856911273,
+       "selfFull": 2.1626922892889158,
+       "liveNative": {
+        "margin": 0.4318368894887037,
+        "limiter": "LB_S"
+       },
+       "consumedNative": {
+        "margin": 0.5033610017263443,
+        "limiter": "DE_S",
+        "estimatesUsed": 11
+       },
+       "liveFull": {
+        "margin": -0.4437966141090848,
+        "limiter": "LB_S"
+       },
+       "consumedFull": {
+        "margin": -0.3722725018714441,
+        "limiter": "DE_S"
+       }
+      },
+      {
+       "q": {
+        "x": 77.5,
+        "y": 29.748460010678713
+       },
+       "dist": 9.18578282510802,
+       "selfNative": 1.2575955243031263,
+       "selfFull": 2.1319856642649913,
+       "liveNative": {
+        "margin": 0.6338156958186261,
+        "limiter": "LB_S"
+       },
+       "consumedNative": {
+        "margin": 0.8441536828468206,
+        "limiter": "DE_S",
+        "estimatesUsed": 11
+       },
+       "liveFull": {
+        "margin": -0.24057444414323892,
+        "limiter": "LB_S"
+       },
+       "consumedFull": {
+        "margin": -0.030236457115044413,
+        "limiter": "DE_S"
+       }
+      },
+      {
+       "q": {
+        "x": 77.5,
+        "y": 31.748460010678713
+       },
+       "dist": 9.400989634610257,
+       "selfNative": 1.2870587856911273,
+       "selfFull": 2.1626922892889158,
+       "liveNative": {
+        "margin": 0.7932697608695674,
+        "limiter": "LB_S"
+       },
+       "consumedNative": {
+        "margin": 0.8061882395653597,
+        "limiter": "DT_W",
+        "estimatesUsed": 11
+       },
+       "liveFull": {
+        "margin": -0.08236374272822111,
+        "limiter": "LB_S"
+       },
+       "consumedFull": {
+        "margin": -0.06944526403242879,
+        "limiter": "DT_W"
+       }
+      },
+      {
+       "q": {
+        "x": 77.5,
+        "y": 33.74846001067871
+       },
+       "dist": 10.01891242151809,
+       "selfNative": 1.371656576208896,
+       "selfFull": 2.249827909625289,
+       "liveNative": {
+        "margin": 0.912174669475776,
+        "limiter": "LB_S"
+       },
+       "consumedNative": {
+        "margin": 0.9240550642908607,
+        "limiter": "DT_W",
+        "estimatesUsed": 11
+       },
+       "liveFull": {
+        "margin": 0.03400333605938277,
+        "limiter": "LB_S"
+       },
+       "consumedFull": {
+        "margin": 0.04588373087446751,
+        "limiter": "DT_W"
+       }
+      }
+     ]
+    },
+    {
+     "t": 3.6,
+     "panic": false,
+     "result": true,
+     "readIdx": 2,
+     "mobility": 0.4644557823129255,
+     "qb": {
+      "pos": {
+       "x": 68.31421717489198,
+       "y": 29.748460010678713
+      },
+      "speed": 0,
+      "vmax": 9.130303272785337,
+      "tau": 1.471443329013996
+     },
+     "threshold": 0.35,
+     "open": {
+      "liveNative": 4,
+      "consumedNative": 4,
+      "liveFull": 0,
+      "consumedFull": 0
+     },
+     "lanes": [
+      {
+       "q": {
+        "x": 77.5,
+        "y": 25.748460010678713
+       },
+       "dist": 10.01891242151809,
+       "selfNative": 1.371656576208896,
+       "selfFull": 2.249827909625289,
+       "liveNative": {
+        "margin": -0.0049792193047015765,
+        "limiter": "SS"
+       },
+       "consumedNative": {
+        "margin": 0.24769718276859276,
+        "limiter": "DE_S",
+        "estimatesUsed": 11
+       },
+       "liveFull": {
+        "margin": -0.8831505527210948,
+        "limiter": "SS"
+       },
+       "consumedFull": {
+        "margin": -0.6304741506478004,
+        "limiter": "DE_S"
+       }
+      },
+      {
+       "q": {
+        "x": 77.5,
+        "y": 27.748460010678713
+       },
+       "dist": 9.400989634610257,
+       "selfNative": 1.2870587856911273,
+       "selfFull": 2.1626922892889158,
+       "liveNative": {
+        "margin": 0.3958699256047358,
+        "limiter": "LB_S"
+       },
+       "consumedNative": {
+        "margin": 0.6106821942537941,
+        "limiter": "DE_S",
+        "estimatesUsed": 11
+       },
+       "liveFull": {
+        "margin": -0.4797635779930527,
+        "limiter": "LB_S"
+       },
+       "consumedFull": {
+        "margin": -0.26495130934399436,
+        "limiter": "DE_S"
+       }
+      },
+      {
+       "q": {
+        "x": 77.5,
+        "y": 29.748460010678713
+       },
+       "dist": 9.18578282510802,
+       "selfNative": 1.2575955243031263,
+       "selfFull": 2.1319856642649913,
+       "liveNative": {
+        "margin": 0.5998373141120115,
+        "limiter": "LB_S"
+       },
+       "consumedNative": {
+        "margin": 0.8982751381709824,
+        "limiter": "LB_S",
+        "estimatesUsed": 11
+       },
+       "liveFull": {
+        "margin": -0.2745528258498535,
+        "limiter": "LB_S"
+       },
+       "consumedFull": {
+        "margin": 0.02388499820911738,
+        "limiter": "LB_S"
+       }
+      },
+      {
+       "q": {
+        "x": 77.5,
+        "y": 31.748460010678713
+       },
+       "dist": 9.400989634610257,
+       "selfNative": 1.2870587856911273,
+       "selfFull": 2.1626922892889158,
+       "liveNative": {
+        "margin": 0.7696374168785347,
+        "limiter": "LB_S"
+       },
+       "consumedNative": {
+        "margin": 0.8504204249768601,
+        "limiter": "DT_W",
+        "estimatesUsed": 11
+       },
+       "liveFull": {
+        "margin": -0.10599608671925376,
+        "limiter": "LB_S"
+       },
+       "consumedFull": {
+        "margin": -0.025213078620928364,
+        "limiter": "DT_W"
+       }
+      },
+      {
+       "q": {
+        "x": 77.5,
+        "y": 33.74846001067871
+       },
+       "dist": 10.01891242151809,
+       "selfNative": 1.371656576208896,
+       "selfFull": 2.249827909625289,
+       "liveNative": {
+        "margin": 0.895529485862427,
+        "limiter": "LB_S"
+       },
+       "consumedNative": {
+        "margin": 0.9649472258004814,
+        "limiter": "DT_W",
+        "estimatesUsed": 11
+       },
+       "liveFull": {
+        "margin": 0.01735815244603378,
+        "limiter": "LB_S"
+       },
+       "consumedFull": {
+        "margin": 0.08677589238408823,
+        "limiter": "DT_W"
+       }
+      }
+     ]
+    }
+   ],
+   "scramble": {
+    "t": 3.55
+   }
+  }
+ }
+}

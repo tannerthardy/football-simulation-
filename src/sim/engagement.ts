@@ -39,6 +39,7 @@ import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
 import { pullers } from './run-fits.js';
+import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
@@ -715,6 +716,11 @@ const DL_FIGHT = process.env.DL_FIGHT === '1';
  * (EDGE_CONTAIN=0 restores widening with the blocker without bound). */
 const EDGE_CONTAIN = process.env.EDGE_CONTAIN !== '0';
 
+/** A run blocker whose hands are loaded keeps the leverage he caught the man
+ * with instead of running to a new shoulder and carrying him along
+ * (SEAL_HOLD=0 restores the unbounded seal correction). */
+const SEAL_HOLD = process.env.SEAL_HOLD !== '0';
+
 /** Run release measured against the blocker's torso (LEVER_FACING=0: fixed frame). */
 const LEVER_FACING = process.env.LEVER_FACING !== '0';
 
@@ -732,6 +738,8 @@ const SHED_PURSUE = process.env.SHED_PURSUE !== '0';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
+/** SEAL_HOLD: the lateral offset a loaded run blocker keeps (see stepRunRep). */
+const sealHolds = new WeakMap<Engagement, number>();
 const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?: boolean }>();
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
@@ -763,9 +771,10 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
     }
     // Pass pro converts to run blocking once the QB hands off / scrambles.
     if (e.type === 'pass' && (!sim.isPass || (sim.carrier !== null && sim.carrier !== sim.qb) || sim.scrambled)) e.type = 'run';
-    const c = sim.carrier;
-    if (e.type === 'run' && c && c.team !== d.team) {
-      const past = (sim.see(d, c).pos.x - d.pos.x) * sim.attackDir(c.team);
+    // The runner he sees with the ball, not the live holder.
+    const held = e.type === 'run' ? observedHolder(d, sim, b) : null;
+    if (held) {
+      const past = (held.cue.pos.x - d.pos.x) * sim.attackDir(held.target.team);
       if (past > 2.5 && t - e.start > 0.4) {
         runContactObservers.get(sim)?.(e, 'end', { reason: 'runner passed defender', past });
         sim.disengage(e);
@@ -909,6 +918,17 @@ interface RunStackRead {
 }
 const runStacks = new WeakMap<Engagement, RunStackRead>();
 const runTargets = new WeakMap<Engagement, { aim: Vec2; runner: boolean; flow?: number }>();
+/** The runner's first clear lateral flow an edge saw in this contact. */
+const runFlows = new WeakMap<Engagement, number>();
+const CUTBACK_RANGE = 3.5; // yd: a cutback this close is his to play
+
+/** The body a lineman keys for the play's direction: the back through the
+ * mesh (a QB or back he sees holding it), else whoever he sees holding it. */
+function ballKey(sim: PlaySim, d: Agent): Agent | null {
+  const held = observedHolder(d, sim), back = sim.slot('RB');
+  if (!held) return null;
+  return back && (held.target === sim.qb || held.target === back) ? back : held.target;
+}
 
 function runContactRead(sim: PlaySim, e: Engagement) {
   const d = e.defender, b = e.blocker, job = d.runFit;
@@ -925,9 +945,12 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     else if (back && backPicture?.carrying === true && qbPicture.carrying !== true)
       acquired = { target: back, cue: backPicture };
   }
-  const carrier = acquired?.target ?? sim.carrier;
-  const enemy = carrier && carrier.team !== d.team ? carrier : null;
-  const carrierCue = acquired?.cue ?? (enemy ? sim.see(d, enemy) : null);
+  // The holder comes from his own pictures. First-level fits take whoever
+  // they see holding it; support contacts keep their backfield key, so a
+  // give or keep they have not seen leaves no runner rather than the truth.
+  const held = job?.kind === 'interior' || job?.kind === 'edge' ? observedHolder(d, sim, b) : acquired;
+  const enemy = held?.target ?? null;
+  const carrierCue = held?.cue ?? null;
   // Read through the mesh instead of working toward a stationary QB. This
   // uses only the observed depth; a QB draw/scramble can declare at the surface.
   const runnerCue = enemy === sim.qb && carrierCue && carrierCue.pos.x < sim.los - 1.6 && back
@@ -991,7 +1014,20 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     ? b.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65)
     : gapY(sim.offAlign, job.gap, job.side) : b.pos.y;
   let desired = { x: d.pos.x, y };
-  if (declared && (!edge || advanced)) desired = { ...runnerCue!.pos };
+  // An edge keeps his outside leverage while the runner he sees could still
+  // get outside him. A runner who first flowed away from his side and now
+  // cuts back toward it from inside him has no outside left: play the ball,
+  // without waiting for him to clear the line.
+  let cutback = false;
+  if (edge && declared && runnerCue && !advanced) {
+    const side = job!.side, lateral = runnerCue.vel.y * side;
+    const first = runFlows.get(e);
+    if (first === undefined && Math.abs(runnerCue.vel.y) > 1) runFlows.set(e, Math.sign(runnerCue.vel.y));
+    cutback = first !== undefined && first * side < 0 && lateral > 1
+      && (d.pos.y - runnerCue.pos.y) * side > 0 && Math.abs(d.pos.y - runnerCue.pos.y) < CUTBACK_RANGE;
+    if (cutback) d.tags.add('edge-cutback');
+  }
+  if (declared && (!edge || advanced || cutback)) desired = { ...runnerCue!.pos };
   else if (!job && runnerCue && reading) desired = { ...runnerCue.pos };
   let flow: number | undefined;
   if (stack && job!.kind === 'interior' && job!.technique !== 'lag' && d.recog?.read === 'run' && back) {
@@ -1036,7 +1072,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   // Support contacts hold the selected target mode too. A safety's acquired
   // runner aim must not keep being treated as an undeclared force landmark.
   if (runTargets.get(e)?.aim !== aim)
-    runTargets.set(e, { aim, runner: flow === undefined && declared && (!edge || advanced), flow });
+    runTargets.set(e, { aim, runner: flow === undefined && declared && (!edge || advanced || cutback), flow });
   // A close observed back can threaten a penetrating lineman deep behind
   // the surface; shedding must not wait for the free-fit declaration depth.
   // A standing deep QB is still a mesh key, not a run target. An observed
@@ -1247,7 +1283,22 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const wantOffset = -Math.sin(e.sealTarget * Math.PI / 2) * sep;
   const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
   const feltCue = felt(e, lat), feedback = feltCue * (0.6 + 0.6 * tb.feet);
-  const correction = (wantOffset - offset) * (3 + 3 * tb.feet);
+  let correction = (wantOffset - offset) * (3 + 3 * tb.feet);
+  // SEAL_HOLD: with his hands loaded (his own felt load) he cannot run around
+  // the man to a new shoulder; running sideways only carries the man with
+  // him, the offset never closes and the request stays pinned at his top
+  // lateral speed. He keeps the leverage he caught him with (the closest to
+  // the wanted shoulder he has reached while loaded) and drives him on it;
+  // ground he gains toward the wanted shoulder is kept. Unloaded closing
+  // keeps the ordinary correction.
+  const feltLoad0 = b.body.support?.felt;
+  if (SEAL_HOLD && feltLoad0 && Math.hypot(feltLoad0.x, feltLoad0.y) > 0.1 * b.profile.massKg * G) {
+    const raw = (b.pos.x - d.pos.x) * lat.x + (b.pos.y - d.pos.y) * lat.y;
+    const prev = sealHolds.get(e);
+    const caught = prev === undefined || Math.abs(raw - wantOffset) < Math.abs(prev - wantOffset) ? raw : prev;
+    sealHolds.set(e, caught);
+    correction = (caught - raw) * (3 + 3 * tb.feet);
+  } else sealHolds.delete(e);
   const seal = clamp(dLat + feedback + correction, -mirror, mirror);
   // Anchor against felt lost depth. A stretch keeps its shoulder footwork;
   // drive blocks reduce it. Locomotion and lean share one physical budget.
@@ -1378,9 +1429,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   if (lastSqueeze && sim.t < lastSqueeze.until) squeeze = lastSqueeze.side;
   else if (DL_SQUEEZE && read.stack && !read.declared && Math.abs(read.stack.flow) > .5) {
     // He reads the back, as the fit does; a pitch or another carrier is the ball.
-    const carrier = sim.carrier && sim.carrier.team !== d.team ? sim.carrier : null;
-    const back = sim.slot('RB');
-    const ball = back && (carrier === sim.qb || carrier === back) ? back : carrier;
+    const ball = ballKey(sim, d);
     const cue = ball ? sim.see(d, ball) : null;
     const play = !cue ? 0 : Math.abs(cue.vel.y) > 1 ? Math.sign(cue.vel.y)
       : Math.abs(cue.pos.y - d.pos.y) > .5 ? Math.sign(cue.pos.y - d.pos.y) : 0;
@@ -1420,9 +1469,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // A push toward where he sees the ball heading (a reach running him
     // wide) costs him nothing; one driving him away from it (a down block,
     // a seal) washes him out of the play. He reads the back he can see.
-    const carrier = sim.carrier && sim.carrier.team !== d.team ? sim.carrier : null;
-    const back = sim.slot('RB');
-    const ball = carrier && carrier === sim.qb && sim.handoffAt < 0 && back ? back : carrier;
+    const ball = ballKey(sim, d);
     const cue = ball ? sim.see(d, ball) : null;
     const toBall = cue ? cue.pos.y + cue.vel.y * d.mind.decisionInterval - d.pos.y : 0;
     const away = Math.abs(toBall) > .5 && push * toBall < 0;

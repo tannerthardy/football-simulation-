@@ -57,8 +57,10 @@ describe('selected command attribution in normal execution', () => {
     expect(trace.steps[0].actor).toEqual({ playerId: on.sim.slot('CB_W')!.player.id, team: 'D', slot: 'CB_W', index: on.sim.slot('CB_W')!.idx });
     const free = trace.steps.find(s => s.stepStart === 2)!;
     expect(free.start.engagement).toBeNull();
-    expect(free.rewrites).toEqual([]);
-    expect(free.final).toEqual(free.decision!.raw);
+    // Free coverage: only his own orientation technique sets the hips.
+    expect(free.rewrites.map(r => r.stage)).toEqual(['coverage-orientation']);
+    expect(free.decision!.raw.facingTechnique).toBe('man-open');
+    expect(free.final).toEqual({ ...free.decision!.raw, facing: free.rewrites[0].command.facing });
     const observations = trace.steps.flatMap(s => s.observations);
     expect(observations.some(o => o.phase === 'decision' && o.target.slot === 'X')).toBe(true);
     for (const observation of observations) {

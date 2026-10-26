@@ -514,8 +514,12 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   const { dl, lb, db } = classify(sim);
   const by = sim.ballY;
   const rel = (a: Agent) => (a.pos.y - by) * ps; // + = playside
+  // A core slicer sets within two yards outside the surface; a fixed 6 yd
+  // missed a wing set outside an inline end at the wider line splits (5.9 yd,
+  // 6.2 after an across motion), which the play caller installs.
+  const surface = Math.max(Math.abs(sim.offAlign.coreEdge.S - by), Math.abs(sim.offAlign.coreEdge.W - by));
   const slicer = concept.scheme === 'splitZone' ? sim.offense.find((a) => (a.player.position === 'TE' || a.player.position === 'FB')
-    && !sim.offAlign.spots[a.slot]?.inline && Math.abs(a.pos.y-by) < 6 && a.pos.x < sim.los-.9) : null;
+    && !sim.offAlign.spots[a.slot]?.inline && Math.abs(a.pos.y-by) < Math.max(6, surface + 2) && a.pos.x < sim.los-.9) : null;
   if (concept.scheme === 'splitZone' && !slicer) throw new Error('Split zone requires a core off-ball TE or FB');
   const sliceEnd = slicer ? dl.filter((d) => rel(d)<0).sort((a,b) => rel(a)-rel(b))[0] : null;
   const line = sim.offense.filter((a) => a !== slicer && (isOL(a) || (sim.offAlign.spots[a.slot]?.inline ?? false)));

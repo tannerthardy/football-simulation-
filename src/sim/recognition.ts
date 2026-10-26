@@ -176,6 +176,8 @@ export class Recognition {
   changedMind = false;
   /** He has seen this play's throw; the ball cue stays once acquired. */
   private sawPass = false;
+  /** He has seen the ball given to a runner; held unless a throw follows. */
+  private sawGive = false;
   private evidence = 0;
   private readonly prior: number;
   private readonly gain: number;
@@ -214,8 +216,9 @@ export class Recognition {
     // sooner), or the QB he sees carrying it past the line.
     if (!this.sawPass && sawThrow(a, sim, null)) this.sawPass = true;
     let ball = 0;
+    if (!this.sawPass && !this.sawGive && this.seesGive(a, sim)) this.sawGive = true;
     if (this.sawPass) ball = 4;
-    else if (this.seesBackCarrying(a, sim)) ball = -3;
+    else if (this.sawGive) ball = -3;
     else {
       const qb = sim.see(a, sim.qb);
       if (qb.carrying === true && qb.pos.x > sim.los + 0.5) ball = -3;
@@ -250,9 +253,11 @@ export class Recognition {
     }
   }
 
-  /** A backfield player holding the ball in his picture: the exchange, a
-   * pitch or a direct snap. A fake shows an empty-handed back. */
-  private seesBackCarrying(a: Agent, sim: PlaySim): boolean {
+  /** A backfield player holding the ball behind the line in his picture:
+   * the exchange, a pitch or a direct snap. A fake shows an empty-handed
+   * back. Linemen at the mesh see it sooner. Only the backfield is watched
+   * for this; a give to a receiver comes through the QB's empty hands. */
+  private seesGive(a: Agent, sim: PlaySim): boolean {
     const scale = this.group === 'DL' ? 0.6 : 1;
     for (const o of sim.offense) {
       if (o === sim.qb || !sim.offAlign.spots[o.slot]?.backfield) continue;
