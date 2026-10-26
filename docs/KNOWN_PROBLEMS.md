@@ -1353,6 +1353,46 @@ run plays with the assignment layer (`--telemetry full`):
      down man. This is the NFL 2.45 yd release question already open above.
 
   Revisit the route search only after one of them.
+
+  **Why doubles release with the backer 4–6 yd away (2026-10-26).** This
+  traces every joined release in the three declared sets on develop
+  `a27ccd84`: which trigger fired, the backer's distance in the releasing
+  member's picture, and whether he was still moving into the down man. #300's
+  `blockingChanges` hook confirms the release time on 30 of 31 climbers in
+  games 7–8. The 31st, S8-P004, is now a pre-snap foul.
+
+  Dead-ball plays are excluded: S8-P004, plus S7-P029 and S9-P039 in the
+  Phase II set. `PlaySim.run` whistles them before the first tick, but the
+  collector ticked them by hand; it now reports them as dead balls.
+
+  A joined double releases once the keeper has been secure for 0.15 s and
+  any one of these fires, in the releasing member's own pictures:
+  - the backer is within 4.2 yd (`near`);
+  - he will be within 4.2 yd in 0.5 s (`ahead`, `FLOW_RELEASE`);
+  - he is flowing play side faster than 1.5 yd/s, at any distance (`flow`,
+    `FLOW_RELEASE`);
+  - the runner's picture is within 2.8 yd of the line (`arriving`), at any
+    backer distance.
+
+  Most releases leave the backer at least 4 yd away: 22 of 30 (games 7–8),
+  10 of 17 (games 9–10), 29 of 42 (Phase II). By the trigger that released
+  them, across the three sets:
+
+  | Trigger that released a late double | Releases | Backer worked before the runner |
+  |---|---|---|
+  | runner arriving only | 14 | **0** |
+  | flow only | 17 | 5 |
+  | backer coming (`ahead`, not yet `near`) | 23 | 11 |
+  | backer `near` | 7 | 3 |
+
+  - "Still moving into the down man" at release predicts little: 13/36
+    worked with the backer in reach, against 12/25 for a climber not moving
+    into him.
+  - Backer out of reach (neither `near` nor `ahead`): 5 of 32 worked, and
+    0 of 12 when the climber was also moving into the down man.
+
+  The first wrong stage is the release decision. The runner's arrival and
+  the backer's flow each release a climber to a backer he cannot reach.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and

@@ -54,6 +54,10 @@ function measure(): void {
   const rows = plays.map(p => {
     const sim = new PlaySim(restoreSetup(Buffer.from(p.setup)));
     const started = performance.now();
+    // A pre-snap foul is whistled before the first tick (PlaySim.run). Ticking
+    // by hand would play a snap that never happens.
+    if (sim.snapAssessment && !sim.snapAssessment.snapPermitted)
+      return { id: p.id, concept: p.concept, front: p.front, ms: 0, yards: sim.run().yards, deadBall: true, first: null, jobs: [] };
     sim.tick();
     const dir = sim.attackDir('O'), jobs: Job[] = [];
     const job = (keeper: Agent | null, climber: Agent, dl: Agent | null, lb: Agent | null, combo: Combination | null): Job =>
