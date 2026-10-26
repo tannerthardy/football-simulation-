@@ -1,25 +1,24 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { createHash } from 'node:crypto';
-import { captureOrdinaryPlay } from '../scripts/diag/capture-game-play.js';
-import { arrivalJson, compareBundle, findNativePursuit, forecast, freezeNative, frozenControls, necessaryBound, objectives,
+import { arrivalJson, captureNativePursuit, compareBundle, forecast, freezeNative, frozenControls, necessaryBound, objectives,
   parseArrivalJson, response, restoreBody, type ArrivalCase } from '../scripts/diag/pursuit-arrival.js';
 import { movementPanel } from '../scripts/diag/pursuit-arrival-export.js';
 
 let native: ArrivalCase[];
-let saved: ReturnType<typeof captureOrdinaryPlay>['saved'];
+let chosen: ReturnType<typeof captureNativePursuit>;
 beforeAll(() => {
-  // The first completed pass of an ordinary game. Full constructor replay
-  // equality is checked inside the capture, including result/events/replay.
-  saved = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 1, maxSteps: 12 }).saved;
-}, 30_000);
+  // The first completed pass of an ordinary game that has a native pursuit
+  // case: the first defender who makes exact native intercept decisions on
+  // that receiver as a lone, settled body. Choosing the case from the play,
+  // rather than pinning a play, actor and clock, keeps these contracts from
+  // depending on incidental outcomes (a catch that a changed dice phase or
+  // body turns incomplete). Full constructor replay equality is checked
+  // inside the capture. Each tried pass replays the game from the kickoff.
+  chosen = captureNativePursuit(7);
+}, 60_000);
 beforeAll(() => {
-  // The first defender who makes exact native intercept decisions on that
-  // receiver as a lone, settled body. Choosing the case from the play, rather
-  // than pinning a play, actor and clock, keeps these contracts from depending
-  // on incidental outcomes (a catch that a changed dice phase or body turns
-  // incomplete). Capture and choice each retain the 30 s setup limit. These
-  // clocks nominate pursuit decisions, not an expected football ending.
-  const pick = findNativePursuit(saved);
+  // These clocks nominate pursuit decisions, not an expected football ending.
+  const { saved, pick } = chosen;
   native = freezeNative(saved, pick.actorSlot, pick.targetSlot, pick.clocks);
 }, 30_000);
 
