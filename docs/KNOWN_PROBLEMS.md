@@ -39,9 +39,60 @@ much as on the line. Entries cross-reference each other where that matters.
 | `prof194` | #194's candidate profile (13 flags in `config/baseline.json`), 8 games. |
 | `rg3` | The run-offense research build on `claude/run-game-v3` (archived; #153 is closed). Its numbers don't certify develop. |
 | `audit` | The outside audit (2026-10-23) on develop [c4a03f6](https://github.com/tannerthardy/football-simulation-/commit/c4a03f6463eacb23ce63d01bd32b4f8b547b9bc0): one seed-7 game (Ironmen v Comets, strength .55, 127 live plays), each play restaged exactly from its saved setup and changed one thing at a time. Its counts support selected-case diagnoses, not league frequency or a shared cause for every similar-looking play. Play IDs are that game's; its `G1-P002` is a Comebacks pass, not TKL-4's older P002 clip. |
+| `weekly-2026-10-26` | The dated weekly-plan comparison at `a5b024b9`, PR tier, seeds 7 / 8. Seed 7 checked against an existing matching-source CI base card; seed 8 remains plan-supplied. See the evidence qualification below. |
 | `NFL` | Mostly Big Data Bowl 2025 tracking (2022, weeks 1–9). The outcome bands are the scorecard's. |
 
-### Current: develop at `211db9cc`
+<a id="weekly-check-2026-10-26"></a>
+### Current dated comparison: weekly check at `a5b024b9`, 2026-10-26
+
+Source: develop
+[`a5b024b9fbf8c51fc31401eefb79737be586814a`](https://github.com/tannerthardy/football-simulation-/commit/a5b024b9fbf8c51fc31401eefb79737be586814a),
+PR tier, seeds **7 / 8**, 12 games each as reported in Tanner's October 26
+weekly-plan handoff. These identify where to inspect; they are not tuning
+targets or measurements of every later develop head.
+
+| Metric | Seed 7 (checked saved CI base) | Seed 8 (plan-supplied) | NFL comparison |
+| --- | --- | --- | --- |
+| Points / team-game | 43.6 | 38.1 | 21–23.5 (unsourced) |
+| Rush yards / carry | 6.19 | 4.40 | 3.70–4.83 |
+| 10+ yd runs | 16.1% | 11.4% | 7.6–12.9% |
+| Missed + broken tackles / play | 0.29 | 0.27 | 0.11–0.16 (source unverified: PFF, definition unknown) |
+| Yards / attempt | 10.54 | 10.01 | 6.35–7.89 |
+| YAC / reception | 8.88 | 8.66 | 4.53–5.91 |
+| Scramble rate / dropback | 1.4% | 1.4% | 2.2–7.3% |
+| Sack rate / dropback | 9.0% | 10.0% | 4.6–9.4% |
+| INT rate / throw | 4.3% | 3.3% | 1.5–3.2% |
+
+**Evidence checked without rerunning games:** the saved
+[#300 CI scorecard](https://github.com/tannerthardy/football-simulation-/actions/runs/40362404508)
+([artifact 12669557335](https://github.com/tannerthardy/football-simulation-/actions/runs/40362404508/artifacts/12669557335))
+contains `base.json` pinned to the full `a5b024b9` source above, dated 2026-10-26,
+seed 7, 12 games/two leagues, Node 22.23.3, two workers and the `missedBy`/`weird`
+probes. Its recorded settings are retained in the artifact. Its rendered base
+values match all nine supplied seed-7 figures; scramble is **15/1,061**
+dropbacks. The raw seed-8 weekly card was not available in this refresh, so its
+figures are attributed to the supplied plan, not an independent reproduction.
+No unavailable weekly quantities are filled from an older snapshot. NFL
+percent ranges here use the plan's rounded presentation; this does not change
+the scorecard's underlying definitions or the GAPS stopping criteria.
+
+**Subsequent accepted correction:** [#300](https://github.com/tannerthardy/football-simulation-/pull/300)
+merged at `d81befa1ff33404c19781585f2b3e2a3b6bd29fc`. It adds silent blocking
+responsibility transitions to the selected command trace, not a new blocking
+policy. The existing CI artifact's base/head arms have exactly matching
+football/probe records (12 games, 1,609 play records), excluding only the
+explicit wall timers `game.ms`, `game.probe["weird.ms"]` and `game.weird.ms`.
+The artifact labels its head as the CI merge `b82fe671`; its engine content
+matches the accepted #300 source. This is a saved seed-7 observer comparison,
+not a fresh seed-8 card or evidence of improved football outcomes.
+
+Whole-game sampling is noisy, and games with the same seed can diverge after
+the first changed play. Use matched snaps and first changed requests to judge
+mechanisms; do not restore historical endings or infer a universal noise floor.
+The dated YAC study retained below has its own source, sample and uncertainty;
+its numerical spread is not a general threshold for other metrics or cohorts.
+
+### Earlier: develop at `211db9cc`
 
 `npm run scorecard -- --tier pr` at seeds 7 and 8 (12 games each), 2026-10-25,
 after #248–#271. #251, #252, #258 and #267 change games, so these are new games,
@@ -261,7 +312,7 @@ problem), resolved.
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
-| [QB-2](#qb-2) | Too many scrambles, and completions slightly low | G5, G7 | low | open |
+| [QB-2](#qb-2) | Scramble frequency and escape-lane criteria | G5, G7 | low | open |
 | [QB-3](#qb-3) | Scrambling QBs fall with nobody near them (film, Oct 23) | G1, G5 | medium | open |
 | [KICK-1](#kick-1) | Kicking too accurate, too many punts | — | low | open |
 | [ALN-1](#aln-1) | Defensive pre-snap picture unlike tracking | G2, G3 | medium | on |
@@ -1189,6 +1240,119 @@ run plays with the assignment layer (`--telemetry full`):
     until the backer comes to it, and the climber leaving fast. Release isn't
     too late, and the body isn't too slow. Next: the same operator on a
     develop export (`npm run mech:sim` writes the input).
+
+  **Why a released climber stands still (2026-10-26): unresolved.** The
+  command trace now records each departure access search
+  (`scripts/diag/climb-access-trace.ts`). It is observation only: matched
+  restage on games 7–8 changes 0 of 287 snaps, and tracing on or off leaves
+  the play byte-identical.
+
+  *Witness.* S7-P070 RT, from the Phase II `current-zone-set.bin`, replayed
+  on develop `a5b024b9`. RG+RT double DT_S and LB_M is the backer. RT
+  releases at 1.05 s, 4.25 yd from LB_M, and requests exactly zero until
+  1.55. The ten zero ticks come from two searches, at 1.05 and 1.30:
+  - *1.05 (obstacle DT_S).* All three arcs (+1, −1, 0) fail only the
+    clearance check, and only against DT_S, the down man RT is leaving and
+    already overlaps (gap −0.174 yd). The check forbids any route deeper
+    than his current gap. His own momentum (0.84, 1.74 yd/s) takes every
+    request deeper, braking included:
+
+    | Request | DT_S gap |
+    |---|---|
+    | arc +1 | −0.3006 |
+    | braking | −0.3012 |
+    | arc 0 | −0.3187 |
+    | arc −1 | −0.3348 |
+
+    Arc +1 clears every other surface (RG +0.285). The search rejects it,
+    then brakes, and braking is the deeper of the two on the very check
+    that rejected the arc.
+  - *1.30 (obstacle RG; the original route runs into RG, −0.540).* All
+    arcs fail against DT_S again. Arcs −1 and 0 end 0.0007–0.001 yd deeper
+    than braking.
+
+  So the first wrong check is the clearance bound on an overlap he already
+  has. It is case (i): no request can meet it.
+
+  *One correction, reverted* (its patch is in the description of the PR
+  that added this entry). On a surface already overlapped, a route could go no
+  deeper than braking would leave him; new collisions stayed forbidden.
+  - RT requests movement from 1.05. But the admitted arc aims 0.23 yd
+    upfield and further outside DT_S. RT already moves upfield at
+    0.84 yd/s, so the arrival law asks him to step back. Later reads arc
+    around RG, further back: RT drifts from x 90.24 to 88.9 by 3.15 and
+    never works LB_M. DE_W still hits the runner first at 2.20.
+  - Sets (base → correction; backers worked before the runner, keepers
+    holding at arrival):
+
+    | Set | Backers worked | Keepers holding |
+    |---|---|---|
+    | Phase II set, 58 backers | 19 → 20 | 42/48 → 42/48 |
+    | Move 4 games 7–8 (`f3648920…`) | 11 → 11 | 29/32 → 27/31 |
+    | Fresh games 9–10 on `a5b024b9` (`153c308e…`) | 4 → 4 | 17/19 → 17/19 |
+
+  - Matched restage: 15 of 287 snaps change, all runs. The null control
+    moved 12.
+  - Controls: S7-P041's LG now works LB_W at 2.60, before the runner, with
+    the keeper holding. S10-P015, S8-P039 and S7-P071 are unchanged.
+  - Adverse:
+    - S8-P037: keeper LT loses DE_S, who makes first contact at 2.70;
+      2.4 → 0.6 yd.
+    - S7-P053: DT_S makes first contact.
+    - S10-P009: LB_W makes first contact at 2.55; 4.8 → 1.4 yd.
+
+  *Missing capability.* The search only offers ±0.35 rad foot steps around
+  the obstacle at contact radius. When the down man stands between the
+  climber and the backer, every step goes around his side or back. None
+  reaches his upfield shoulder, so unfreezing the check only exposes a
+  backward route. This matches #299's 45°/90° arc witness (S10-P015). An
+  upfield-shoulder candidate, with the overlap bound changed alongside it,
+  is the next single question. Two changes at once need their own declared
+  test.
+
+  On develop, releases still leave the backer at p50 4.1–4.5 yd (p25–p75
+  about 3.6–5.3) across the three sets, against NFL p50 2.45. S9-P062 is
+  left for Tools' responsibility ledger.
+
+  **Second correction failed (2026-10-26): planner expansion stops.** The
+  two-change question was declared on #303 before any result:
+  - an upfield-shoulder candidate: the point on the down man's contact
+    circle halfway between the climber's flank and the down man → backer
+    line;
+  - plus the braking-reference overlap bound.
+
+  On develop `d81befa1`, same sets:
+
+  | Set | Backers worked (base / both / shoulder only) | Keepers holding (base / both) |
+  |---|---|---|
+  | Phase II set | 19 / 20 / 19 | 42/48 / 42/48 |
+  | games 7–8 | 11 / 11 / 11 | 29/32 / 27/31 |
+  | games 9–10 | 4 / 4 / 4 | 17/19 / 17/19 |
+
+  - Matched restage: 21 of 287 snaps change with both changes (shoulder
+    alone: 7).
+  - The new candidate points the right way on S7-P070: at 1.05 its goal is
+    0.9 yd upfield of RT, outside DT_S. It still fails clearance against
+    DT_S, reaching −0.3020 against the braking floor of −0.3012. At 1.30 it
+    would run through RG. RT takes the same backward arc as correction 1.
+  - Everything else matches correction 1: S7-P041 gains, S8-P037 loses its
+    keeper.
+
+  *Missing capability.* Every departure route is judged by
+  `previewFreeMovement`, a single-body forecast with no contact. Leaving a
+  double, the climber is still touching the down man, and his own momentum
+  into him is the deepest thing in every forecast. Braking, the arcs and the
+  shoulder all land within a millimetre of the same floor. The forecast
+  cannot tell sliding off a shoulder from pushing into the man, because it
+  has no contact response.
+
+  Two things would answer it; neither is a planner rule:
+  1. A departure preview that includes the bodies he is touching, owned by
+     Main Engine and Tools (it is World physics).
+  2. Releases that don't start while the climber is still moving into the
+     down man. This is the NFL 2.45 yd release question already open above.
+
+  Revisit the route search only after one of them.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
@@ -1799,9 +1963,26 @@ From the issue register:
   open deep windows (COV-1) invite the throw.
 
 <a id="qb-2"></a>
-### QB-2: Too many scrambles, and completions slightly low
+### QB-2: Scramble frequency and escape-lane criteria
 
-- **Measure** (`dev-12`): scramble rate 6.4% (NFL 3–5%); completion 62.6%
+- **Dated weekly regression** (`weekly-2026-10-26`, `a5b024b9`): scrambles are
+  **1.4% / 1.4%** of dropbacks, below the plan's rounded NFL 2.2–7.3%
+  comparison; sacks are **9.0% / 10.0%**. Seed 7's saved count is 15/1,061;
+  seed 8 remains plan-supplied as qualified [above](#weekly-check-2026-10-26).
+  [#287](https://github.com/tannerthardy/football-simulation-/pull/287) corrected
+  the optimistic own-arrival estimate and uses the QB's defender pictures,
+  while retaining the strict lane criterion: a non-panic escape needs at least
+  two candidate lanes beating every eligible defender by more than 0.35 s.
+  Upfield points can sit at LOS+1, 8–9 yd from a set QB. This criterion remains
+  an open football question, not a reason to undo the honest timing/input fix.
+- **Retained opposing evidence from #287:** its matched sample reports useful
+  escapes lost (g5-p111, g0-p87, g1-p85), alongside falsely promised losing
+  scrambles removed. It reports 14/534 dropbacks scrambling (2.6%) in the
+  matched set, versus 13/1,066 (1.2%) in its diverged CI sample. Those are
+  different cohorts from the weekly card, not substitute weekly counts.
+  Diagnose the escape criterion and actual opportunity before changing it;
+  no capacity, margin or band retune is authorized by the aggregate rate.
+- **Historical measure** (`dev-12`): scramble rate 6.4% (NFL 3–5%); completion 62.6%
   (63–66%); sack rate 5.6% (6–7.5%). Pressure arriving early (PRO-2) can turn
   sacks into scrambles.
 - **Measurement oddity:** play-action shots show −1.73 yd YAC per catch

@@ -75,6 +75,17 @@ Each step separates:
   selected actor's update. Stable target/kind pairs produce no row; a null
   target remains null. Recording does not add `block_threat` or any other
   native event, acquire another picture, or classify block success.
+- `climbAccess`: each departure access search a released combination
+  climber actually ran, holding the values the search itself computed:
+  - per surface: the current gap, its clearance bound and the original
+    route's swept gap;
+  - per candidate arc: sign and goal, whether it failed the field, support
+    or clearance check, its per-surface swept gaps, and the surfaces that
+    failed;
+  - the braking fallback: both incursions and the per-surface braking gaps.
+
+  No extra preview, picture or controller run is made for the record.
+  `scripts/diag/climb-access-trace.ts` prints it for one saved play.
 
 Blocking reasons name existing paths: available-target/find-work, crossing
 exchange, penetration collection, threat reread, and combination release or

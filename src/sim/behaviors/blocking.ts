@@ -1271,7 +1271,9 @@ export class RunBlocker implements Behavior {
             return {vel:movingArrivalVelocity(body,best!.meet,seen.vel,a.profile.vmax,.1,Math.hypot(seen.vel.x,seen.vel.y),1,base),
               facing:Math.atan2(best!.meet.y-body.pos.y,best!.meet.x-body.pos.x)};
           };
-          this.departureAccess=assessClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact,true,control,previousAccess);
+          const trace=sim.commandTraceFor(a);
+          this.departureAccess=assessClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact,true,control,previousAccess,
+            trace&&(r=>trace.climbAccess(target,r,sim)));
           if (this.departureAccess.kind==='detour') this.climbAccess=this.departureAccess.plan;
           const down=surfaces.find(s=>s.key===this.plan.departure!.defender.idx);
           const keeper=surfaces.find(s=>s.key===this.plan.departure!.keeper.idx);
