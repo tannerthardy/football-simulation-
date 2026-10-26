@@ -1429,6 +1429,58 @@ run plays with the assignment layer (`--telemetry full`):
 
   Untested, the next single question: the runner-arriving-only release
   (0 of 14 worked) on its own, with the `inward` test left out.
+
+  **Correction: the "4–6 yd vs NFL 2.45 yd" comparison used two different
+  measures.** The NFL figure comes from `climb_reference.py`:
+  - release is the climber's *last frame within 1.5 yd of a first-level
+    man*;
+  - only linemen who reach 2 yd past the line before the carrier count;
+  - the backer is whichever one the climber comes closest to.
+
+  Our 4–6 yd was the release *decision* against the *installed* backer.
+  The identical operator on 8 develop games (`sim-export.ts`, seeds
+  101–108, `4e6fed4e`, 147 zone runs):
+
+  | Combo climbers | Sim | NFL |
+  |---|---|---|
+  | release time p50 | 2.2 s | 2.1 s |
+  | backer distance at release p50 | **1.87 yd** | 2.45 yd |
+  | speed in the first 0.5 s | 2.19 yd/s | 3.1 yd/s |
+  | backer touched before the carrier | 74.5% | 58% |
+  | climbers per zone run (combo + uncovered) | **0.67** (98 + 1) | **1.85** (997 + 287) |
+
+  Climbers who do get off already "let the backer come to them". What is
+  missing is how many get off at all. In 76 of the 147 sim zone runs, no
+  lineman reaches 2 yd past the line before the carrier.
+
+  *Where they are lost.* There are 109 installed doubles in the three
+  declared sets:
+  - 17 never release;
+  - 30 release and reach 2 yd before the carrier;
+  - 62 release but don't. In 46 of these the climber is still within
+    1.5 yd of a first-level man about until the carrier arrives.
+
+  From the release decision to that last frame takes a median 1.0 s
+  (p25–p75 0.7–1.65 s).
+
+  The stuck climbers:
+  - are free: within 1.5 yd of their own down man on 79% of ticks, but
+    engaged with him on 3%, while the keeper holds him on 89%;
+  - request 3.57 yd/s, only 0.92 yd/s of it upfield (climbed: 4.34 and
+    2.34).
+
+  The backer's position at release is the same for both groups. The
+  difference is the down man: for the stuck climbers he stands between
+  both doubled blockers and the backer (backer stacked behind him) in 31 of
+  59. `climbRoute`'s `exit` flag shows it:
+  - releases with a clear route: 20 of 47 climb, 19 work the backer;
+  - releases that must go around the down man: 8 of 41 climb, 9 work.
+
+  *Coaching reading.* "Let the backer come to you" is about the backer
+  *declaring*: stepping off the stack to one side, which puts him in a
+  lane for the blocker on that side. It is not about his distance. Until
+  then the double keeps moving the down man to him. The release triggers
+  (`near`, `ahead`, `flow`, `arriving`) don't ask whether anyone has a lane.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
