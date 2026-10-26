@@ -540,66 +540,32 @@ export class QBPass implements Behavior {
     return stand();
   }
 
-  /** Running for yards: is there a full lane past the line? */
   private shouldScramble(a: Agent, sim: PlaySim, panic: boolean): boolean {
     const mobility = 0.5 * clamp((5.0 - a.player.measurables.forty) / 0.6, 0, 1) + 0.5 * a.r('elusiveness');
     if (!panic && mobility < 0.18) return false;
-    // Lane points a yard past the line, across the front of the pocket.
+    // Is there a lane? Check points a few yards upfield; under pressure also
+    // escapes outside the pocket to either side.
+    let open = 0;
     const lanes = [-4, -2, 0, 2, 4].map((dy) => ({ x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + dy, 1, FIELD_WIDTH - 1) }));
-    const threats = this.laneThreats(a, sim), box = this.pocketBox(a, sim);
-    const open = lanes.filter((q) => this.laneMargin(a, sim, q, threats, box) > 0.35).length;
-    return open >= (panic ? 1 : 2) && (panic ? mobility > 0.2 || sim.rng.chance(0.3) : true);
-  }
-
-  /** Each defender as he has him, not where he truly is: an unseen rusher
-   * behind his shoulder is still where he last registered him. */
-  private laneThreats(a: Agent, sim: PlaySim): { d: Agent; seen: Perceived; held: number }[] {
-    return sim.defense.filter((d) => !d.isDown(sim.t))
+    if (panic) for (const side of [-1, 1]) lanes.push({ x: a.pos.x + 1, y: clamp(a.pos.y + side * 5.5, 1, FIELD_WIDTH - 1) });
+    // Each defender as he has him, not where he truly is: an unseen rusher
+    // behind his shoulder is still where he last registered him.
+    const threats = sim.defense.filter((d) => !d.isDown(sim.t))
       .map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d) }));
-  }
-
-  /** The pocket as he pictures it from his tackles: a defender off the
-   * rush keys the QB once he is outside it or at its front. */
-  private pocketBox(a: Agent, sim: PlaySim): { front: number; lo: number; hi: number } {
-    const lt = sim.slot('LT'), rt = sim.slot('RT');
-    if (!lt || !rt) return { front: sim.los - 2, lo: -Infinity, hi: Infinity };
-    const l = sim.see(a, lt).pos, r = sim.see(a, rt).pos;
-    return { front: Math.max(sim.los - 2, Math.min(l.x, r.x) - 1),
-      lo: Math.min(l.y, r.y) - 1.5, hi: Math.max(l.y, r.y) + 1.5 };
-  }
-
-  /** The worst margin, over the defenders, on his path to a lane point. His
-   * run is timed from the velocity he has (a set QB starts from rest), the
-   * same estimate as the defenders'. A defender counts where he can get onto
-   * that path before the QB is past it, not just at its end: a rusher
-   * beside the path closes it even if he can't beat him to the line. A
-   * rusher, or one still in a block, comes now (held as long as his pocket
-   * feel holds him). A defender downfield in coverage, not coming at him,
-   * stays in his drop until he sees the QB leave the pocket as a runner, and
-   * only then reacts and starts. */
-  private laneMargin(a: Agent, sim: PlaySim, q: Vec2,
-    threats: { d: Agent; seen: Perceived; held: number }[], box: { front: number; lo: number; hi: number }): number {
-    const me = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
-    const dx = q.x - a.pos.x, dy = q.y - a.pos.y;
-    // When his run shows: the first point of the path at the pocket's front or outside it.
-    const shows = (p: Vec2) => p.x >= box.front || p.y < box.lo || p.y > box.hi;
-    let show = 1;
-    for (let s = 0; s <= 1; s += 0.125) if (shows({ x: a.pos.x + dx * s, y: a.pos.y + dy * s })) { show = s; break; }
-    const showT = timeToReach(me, { x: a.pos.x + dx * show, y: a.pos.y + dy * show });
-    let margin = Infinity;
-    for (const f of [0.1, 0.2, 0.35, 0.5, 0.75, 1]) {
-      const p = { x: a.pos.x + dx * f, y: a.pos.y + dy * f };
-      const myT = timeToReach(me, p);
+    for (const q of lanes) {
+      // His own run as scramble() will ask for it: the carrier's full-speed
+      // sprint from the velocity he has now, with the same estimate as the
+      // defenders'. A set QB starts from rest, not at speed.
+      const myT = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q);
+      let margin = Infinity;
       for (const { d, seen, held } of threats) {
-        const rx = a.pos.x - seen.pos.x, ry = a.pos.y - seen.pos.y;
-        const closing = (seen.vel.x * rx + seen.vel.y * ry) / (Math.hypot(rx, ry) || 1);
-        const rushing = held > 0 || seen.pos.x <= sim.los || closing > 1;
-        const start = rushing ? held : showT + d.profile.reactionTime;
-        const tt = start + timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, p, 1);
+        // A rusher still in a block is held as long as the pressure check feels him held.
+        const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 1) + held;
         margin = Math.min(margin, tt - myT);
       }
+      if (margin > 0.35) open++;
     }
-    return margin;
+    return open >= (panic ? 1 : 2) && (panic ? mobility > 0.2 || sim.rng.chance(0.3) : true);
   }
 
   private scramble(a: Agent, sim: PlaySim): MoveCommand {

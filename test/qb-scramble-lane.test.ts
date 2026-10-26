@@ -1,8 +1,6 @@
 /** The QB's scramble lane check uses what he can know: his own run timed
  * from his current velocity, and each defender as his delayed picture has
- * him, not where the defender truly is. A defender coming at him counts at
- * once, along the whole path; one sitting in coverage starts only after he
- * sees the QB leave the pocket. */
+ * him, not where the defender truly is. */
 import { describe, expect, it } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
@@ -39,13 +37,12 @@ describe('QB scramble lane check', () => {
     const { sim, qb, settle, decide } = scene();
     const d = sim.defense[0];
     const lane = { x: Math.max(qb.pos.x + 4, sim.los + 1), y: qb.pos.y };
-    // One defender straight upfield of the lanes, seen there and coming
-    // at him. Somewhere along that line he closes the lanes on a QB starting
-    // from rest but not on the same QB already running at speed (a constant
-    // own speed gives both the same answer at every distance).
-    d.body.vel = { x: -1.5, y: 0 };
+    // One defender straight upfield of the lanes, seen there. Somewhere along
+    // that line he closes the lanes on a QB starting from rest but not on
+    // the same QB already running at speed (a constant own speed gives both
+    // the same answer at every distance).
     const answers: { off: number; rest: boolean; moving: boolean }[] = [];
-    for (let off = 0.5; off <= 16; off += 0.25) {
+    for (let off = 0.5; off <= 12; off += 0.25) {
       d.body.pos = { x: lane.x + off, y: lane.y };
       settle();
       qb.body.vel = { x: 0, y: 0 };
@@ -63,12 +60,10 @@ describe('QB scramble lane check', () => {
   it('ignores a defender he has not seen move, and answers one he has', () => {
     const { sim, qb, settle, decide } = scene();
     expect(decide()).toBe(true);
-    // Move one defender's body onto the lanes, coming at him, without the
-    // QB seeing it.
+    // Move one defender's body onto the lanes without the QB seeing it.
     const d = sim.defense[0];
     const lane = { x: Math.max(qb.pos.x + 4, sim.los + 1), y: qb.pos.y };
     d.body.pos = { ...lane };
-    d.body.vel = { x: -1.5, y: 0 };
     // A reader of true positions would close every lane: he is nearer each
     // lane point than the QB's own run allows.
     for (const dy of [-4, -2, 0, 2, 4]) {
@@ -81,51 +76,5 @@ describe('QB scramble lane check', () => {
     // Once his picture shows the defender there, the lanes are closed.
     settle();
     expect(decide()).toBe(false);
-  });
-
-  it('a defender sitting in coverage waits for the QB to leave the pocket; the same man coming at him does not', () => {
-    const { sim, qb, settle, decide } = scene();
-    const d = sim.defense[0];
-    const lane = { x: Math.max(qb.pos.x + 4, sim.los + 1), y: qb.pos.y };
-    const me = { pos: qb.pos, vel: qb.body.vel, profile: qb.profile, speedScale: qb.speedScale };
-    // Standing 8 yd past the lanes: started now, he would beat the set QB
-    // to every lane point by more than the margin.
-    d.body.pos = { x: lane.x + 8, y: lane.y };
-    d.body.vel = { x: 0, y: 0 };
-    settle();
-    for (const dy of [-4, -2, 0, 2, 4]) {
-      const q = { x: lane.x, y: lane.y + dy };
-      expect(timeToReach({ pos: d.pos, vel: d.body.vel, profile: d.profile, speedScale: d.speedScale }, q, 1)
-        - timeToReach(me, q)).toBeLessThan(0.35);
-    }
-    // In his drop he only starts once the QB's run shows: the lanes are there.
-    expect(decide()).toBe(true);
-    // Seen already coming at the QB, he closes them.
-    d.body.vel = { x: -2, y: 0 };
-    settle();
-    expect(decide()).toBe(false);
-  });
-
-  it('a rusher beside his path closes the lanes even when he cannot beat him to the line', () => {
-    const { sim, qb, settle, decide } = scene();
-    const d = sim.defense[0];
-    const me = { pos: qb.pos, vel: qb.body.vel, profile: qb.profile, speedScale: qb.speedScale };
-    const lanes = [-4, -2, 0, 2, 4].map((dy) => ({ x: Math.max(qb.pos.x + 4, sim.los + 1), y: qb.pos.y + dy }));
-    // A slow rusher just behind the QB's shoulder, coming at him.
-    d.profile.vmax = 0.5 * qb.profile.vmax;
-    d.body.pos = { x: qb.pos.x - 1.2, y: qb.pos.y + 1 };
-    d.body.vel = { x: 1, y: -1 };
-    settle();
-    // Racing to the lane points, he loses every one by more than the margin.
-    for (const q of lanes) {
-      expect(timeToReach({ pos: d.pos, vel: d.body.vel, profile: d.profile, speedScale: d.speedScale }, q, 1)
-        - timeToReach(me, q)).toBeGreaterThan(0.35);
-    }
-    // But he is on the QB before the QB is clear of him.
-    expect(decide()).toBe(false);
-    // Out of reach of the path's start, he no longer closes it.
-    d.body.pos = { x: qb.pos.x - 6, y: qb.pos.y + 1 };
-    settle();
-    expect(decide()).toBe(true);
   });
 });
