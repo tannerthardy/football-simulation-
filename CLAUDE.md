@@ -76,6 +76,8 @@ they are not blind holdouts. The reserved final exam is described in validation.
 
 Requires Node 22.23.3 from `.nvmrc`. Install with `npm ci`. These are available
 commands, not a per-agent checklist; PLAN sets the applicable review tiers.
+There is no GitHub CI: run the applicable checks locally and report them in
+the PR ([No GitHub Actions](AGENTS.md#no-github-actions)).
 
 ```sh
 npm test                 # production contracts; select relevant tests locally

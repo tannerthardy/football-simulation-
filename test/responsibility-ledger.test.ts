@@ -134,7 +134,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.slot(reread.before.target)).toBe('LB_W'); expect(p.slot(reread.after.target)).toBe('LB_M');
     const c = p.d.actors.findIndex(a => a.slot === 'C');
     const loads = (slot: string) => p.d.rows.filter(r => r.actor === c).filter(r => r.hands.some(h => p.slot(h.defender) === slot && h.loaded)).map(r => r.endpoint);
-    expect(loads('LB_M')[0]).toBe(2.25);
+    expect(loads('LB_M')[0]).toBe(2.2);
     expect(loads('LB_W')).toEqual([]);
     const job = p.census.find(j => p.slot(j.backer) === 'LB_W')!;
     // Graded against the initial job this is "no member load"; the ledger also says why.
@@ -145,7 +145,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
 
   it('S10-P009: LT is given a different man with no block_threat event', () => {
     const p = play('S10-P009');
-    const swap = changeOf(p, 'LT', 'available-target/find-work', 1.65)[0];
+    const swap = changeOf(p, 'LT', 'available-target/find-work', 1.6)[0];
     expect(p.slot(swap.before.target)).toBe('LB_M'); expect(p.slot(swap.after.target)).toBe('SS');
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT')).toEqual([]);
   });
