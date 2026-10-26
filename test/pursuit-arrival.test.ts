@@ -6,11 +6,15 @@ import { arrivalJson, compareBundle, forecast, freezeNative, frozenControls, nec
 import { movementPanel } from '../scripts/diag/pursuit-arrival-export.js';
 
 let native: ArrivalCase[];
+let saved: ReturnType<typeof captureOrdinaryPlay>['saved'];
 beforeAll(() => {
-  const { saved } = captureOrdinaryPlay({ seed: 7, play: 2, minPlay: 1, maxSteps: 2 });
-  // Full constructor replay equality is checked inside the capture, including
-  // result/events/replay. We do not assert that the bad pursuit stays bad.
-  // Clocks late in the safety's pursuit of the back (the play now ends at 6.75 s).
+  saved = captureOrdinaryPlay({ seed: 7, play: 2, minPlay: 1, maxSteps: 2 }).saved;
+}, 30_000);
+beforeAll(() => {
+  // Constructor capture and independently checked replay each retain the 30 s
+  // setup limit. Combining both can exceed it on parallel, contended workers.
+  // Replay checks the complete original initialization/result/events/replay.
+  // These clocks nominate pursuit decisions, not an expected football ending.
   native = freezeNative(saved, 'SS', 'RB', [4.0, 4.05]);
 }, 30_000);
 
