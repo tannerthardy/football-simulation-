@@ -1189,6 +1189,79 @@ run plays with the assignment layer (`--telemetry full`):
     until the backer comes to it, and the climber leaving fast. Release isn't
     too late, and the body isn't too slow. Next: the same operator on a
     develop export (`npm run mech:sim` writes the input).
+
+  **Why a released climber stands still (2026-10-26): unresolved.** The
+  command trace now records each departure access search
+  (`scripts/diag/climb-access-trace.ts`). It is observation only: matched
+  restage on games 7–8 changes 0 of 287 snaps, and tracing on or off leaves
+  the play byte-identical.
+
+  *Witness.* S7-P070 RT, from the Phase II `current-zone-set.bin`, replayed
+  on develop `a5b024b9`. RG+RT double DT_S and LB_M is the backer. RT
+  releases at 1.05 s, 4.25 yd from LB_M, and requests exactly zero until
+  1.55. The ten zero ticks come from two searches, at 1.05 and 1.30:
+  - *1.05 (obstacle DT_S).* All three arcs (+1, −1, 0) fail only the
+    clearance check, and only against DT_S, the down man RT is leaving and
+    already overlaps (gap −0.174 yd). The check forbids any route deeper
+    than his current gap. His own momentum (0.84, 1.74 yd/s) takes every
+    request deeper, braking included:
+
+    | Request | DT_S gap |
+    |---|---|
+    | arc +1 | −0.3006 |
+    | braking | −0.3012 |
+    | arc 0 | −0.3187 |
+    | arc −1 | −0.3348 |
+
+    Arc +1 clears every other surface (RG +0.285). The search rejects it,
+    then brakes, and braking is the deeper of the two on the very check
+    that rejected the arc.
+  - *1.30 (obstacle RG; the original route runs into RG, −0.540).* All
+    arcs fail against DT_S again. Arcs −1 and 0 end 0.0007–0.001 yd deeper
+    than braking.
+
+  So the first wrong check is the clearance bound on an overlap he already
+  has. It is case (i): no request can meet it.
+
+  *One correction, reverted* (its patch is in the description of the PR
+  that added this entry). On a surface already overlapped, a route could go no
+  deeper than braking would leave him; new collisions stayed forbidden.
+  - RT requests movement from 1.05. But the admitted arc aims 0.23 yd
+    upfield and further outside DT_S. RT already moves upfield at
+    0.84 yd/s, so the arrival law asks him to step back. Later reads arc
+    around RG, further back: RT drifts from x 90.24 to 88.9 by 3.15 and
+    never works LB_M. DE_W still hits the runner first at 2.20.
+  - Sets (base → correction; backers worked before the runner, keepers
+    holding at arrival):
+
+    | Set | Backers worked | Keepers holding |
+    |---|---|---|
+    | Phase II set, 58 backers | 19 → 20 | 42/48 → 42/48 |
+    | Move 4 games 7–8 (`f3648920…`) | 11 → 11 | 29/32 → 27/31 |
+    | Fresh games 9–10 on `a5b024b9` (`153c308e…`) | 4 → 4 | 17/19 → 17/19 |
+
+  - Matched restage: 15 of 287 snaps change, all runs. The null control
+    moved 12.
+  - Controls: S7-P041's LG now works LB_W at 2.60, before the runner, with
+    the keeper holding. S10-P015, S8-P039 and S7-P071 are unchanged.
+  - Adverse:
+    - S8-P037: keeper LT loses DE_S, who makes first contact at 2.70;
+      2.4 → 0.6 yd.
+    - S7-P053: DT_S makes first contact.
+    - S10-P009: LB_W makes first contact at 2.55; 4.8 → 1.4 yd.
+
+  *Missing capability.* The search only offers ±0.35 rad foot steps around
+  the obstacle at contact radius. When the down man stands between the
+  climber and the backer, every step goes around his side or back. None
+  reaches his upfield shoulder, so unfreezing the check only exposes a
+  backward route. This matches #299's 45°/90° arc witness (S10-P015). An
+  upfield-shoulder candidate, with the overlap bound changed alongside it,
+  is the next single question. Two changes at once need their own declared
+  test.
+
+  On develop, releases still leave the backer at p50 4.1–4.5 yd (p25–p75
+  about 3.6–5.3) across the three sets, against NFL p50 2.45. S9-P062 is
+  left for Tools' responsibility ledger.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
