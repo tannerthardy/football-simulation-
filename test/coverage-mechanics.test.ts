@@ -202,7 +202,7 @@ describe('coverage footwork and distribution', () => {
     s.t = 2; s.throwAt = 1;
     d.body.pos = { x: 50, y: 30 }; d.body.vel = { x: 0, y: 0 };
     s.ball = { kind: 'air', flight: { pos: { x: 49, y: 30, z: 1.5 }, vel: { x: 10, y: 0, z: 0 }, drag: 0 },
-      thrower: s.qb, target: r, releaseT: 1, releaseX: 35, intended: { x: 50.5, y: 30, z: 1.2 }, arrivalT: 2.2, deflected: false, throwaway: false };
+      thrower: s.qb, target: r, releaseT: 1, releaseX: 35, intended: { x: 50.5, y: 30, z: 1.2 }, arrivalT: 2.2, deflected: false, throwaway: false }; s.throwSight.stageRelease(s, s.throwAt);
     s.ballPath = [{ t: 2.2, x: 50.5, y: 30, z: 1.2 }];
     const cmd = playBall(d, s, r);
     expect(Math.hypot(cmd.vel.x, cmd.vel.y)).toBeLessThan(d.profile.vmax / 2);
@@ -217,7 +217,7 @@ describe('coverage footwork and distribution', () => {
     r.body.pos = { x: 45, y: 30 }; r.body.vel = { x: 0, y: 0 };
     for (let i = 0; i < 24; i++) s.perception.record(s.agents);
     s.ball = { kind: 'air', flight: { pos: { x: 43, y: 30, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
-      thrower: s.qb, target: s.slot('H')!, releaseT: 1, releaseX: 35, intended: { x: 55, y: 30, z: 1 }, arrivalT: 2.6, deflected: false, throwaway: false };
+      thrower: s.qb, target: s.slot('H')!, releaseT: 1, releaseX: 35, intended: { x: 55, y: 30, z: 1 }, arrivalT: 2.6, deflected: false, throwaway: false }; s.throwSight.stageRelease(s, s.throwAt);
     // The intended target deliberately differs from the visible catcher.
     s.ballPath = [{ t: 2.2, x: 45, y: 30, z: 1.8 }, { t: 2.6, x: 55, y: 30, z: 0.4 }];
     expect(playBall(d, s, null).vel.x).toBeLessThan(0);

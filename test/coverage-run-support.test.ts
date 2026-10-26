@@ -48,7 +48,7 @@ function flight(f: ReturnType<typeof stage>, recognized = false) {
   f.sim.throwAt = recognized ? .1 : f.sim.t;
   f.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: 26, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
     thrower: f.sim.qb, target: f.receiver, releaseT: f.sim.throwAt, releaseX: 35,
-    intended: { x: 46, y: 26, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false };
+    intended: { x: 46, y: 26, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false }; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
   f.sim.ballPath = [{ t: 1.9, x: 46, y: 26, z: 1.2 }];
 }
 

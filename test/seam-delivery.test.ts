@@ -166,7 +166,7 @@ describe('an installed seam delivery needs a sustainable acquired roof', () => {
       f.sim.ball = { kind: 'air', flight: { pos: { x: f.a.pos.x, y: f.a.pos.y, z: 2 },
         vel: { x: 12, y: 0, z: -1 }, drag: 0 }, thrower: f.sim.qb, target: f.r,
         releaseT: .1, releaseX: 35, intended: { x: f.a.pos.x + .2, y: f.a.pos.y, z: 1.2 },
-        arrivalT: 1.5, deflected: false, throwaway: false };
+        arrivalT: 1.5, deflected: false, throwaway: false }; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
       f.sim.ballPath = [{ t: 1.5, x: f.a.pos.x + .2, y: f.a.pos.y, z: 1.2 }];
     }
     expect(sawThrow(actual.a, actual.sim, actual.r)).toBe(true);
