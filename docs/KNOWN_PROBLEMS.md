@@ -1697,6 +1697,24 @@ run plays with the assignment layer (`--telemetry full`):
   0.10–0.28 s by rating (about 0.15 s at an 80 rating). A full throwing
   action is roughly 0.25–0.46 s on film. Next: the motion's length follows
   the needed ball speed and the release rating (QB-1).
+- **Diagnosis, Oct 26** ([review](reviews/cov1-flight-closing.md), develop
+  `58ae15d7`, seeds 101/109 vs 2022 tracking, one operator): the first wrong
+  stage is before the throw, not seeing, reacting or running after it.
+  - *Confirmed:* where the ball goes. 62–65% of our zone throws go into
+    windows under 4 yd (NFL 43%). Re-weighted to the NFL's separation mix,
+    our mean closing goes 0.16/0.21 → 0.48/0.60 (NFL 0.61). From 4 yd up,
+    closing matches.
+  - *Confirmed:* the drop pace at the throw. Zone droppers run about 1 yd/s
+    faster in the last second, and 32–42% are faster than 4 yd/s downfield
+    at the release (NFL 18–22%). With the target under him in a 2–4 yd window,
+    our nearest defender moves away from him at 2.3–2.8 yd/s; the NFL's moves
+    toward him at 0.65. The speed is in turned-and-running techniques
+    (`deep-turn-run` 43% of deep defenders at 4.7 yd/s, `carry-run-past`).
+  - After the throw the ramp toward the target is within about 0.5 yd/s of
+    the NFL's over 0.8 s.
+  - *Next:* when a zone defender stops running with a receiver before the
+    throw (the turn-run and carry latches), on matched snaps. Throw selection
+    is logged for the QB lane.
 
 <a id="cov-2"></a>
 ### COV-2: Too much yardage per attempt and after the catch
