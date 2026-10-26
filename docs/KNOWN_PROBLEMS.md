@@ -1650,16 +1650,29 @@ From the issue register:
   16.0 → 18.0% and 13.3 → 17.3% (moved on seed 8), YPA +0.34 and +0.94.
   Landed anyway (Tanner, 2026-10-26): the old reaction was hidden
   information, and this gap names the missing mechanism.
-- **Missing mechanism:** a trailing defender's head turn (looking back for
-  the ball when he is in phase, or when the receiver's eyes and hands
-  show it), and the receiver's own look-back as a visible cue that comes
-  before the hands. In real football the corner in phase plays the
-  receiver's hands or turns to find the ball; neither exists yet. Body
-  facing stands in for gaze.
-- **Next:** add a head/eyes direction separate from the hips (perceived
-  through the same delayed picture), and let in-phase man defenders choose
-  to look back. Judge on matched go and fade throws: separation at the
-  catch, PBU and INT on contested balls. Don't cap deep completions.
+- **Matched split** (smash, four verts, mesh vs Cover 1/2/3, 40 plays
+  each, develop `9654b03` vs the PR; identical up to the release): of
+  1,053 non-DL defenders with the ball in view at the release, none
+  reacted more than 0.1 s later than on develop, so the view gate itself
+  is clean. Of 1,306 with the release behind the shoulder line, the ball
+  enters view at a median 0.55 s and they react at 0.75 s (develop: a
+  fixed 0.30 s), and **856 never react before the play ends** (develop: 5).
+  Only 41 get the receiver look-back cue. Mean yards per play on those
+  plays 7.45 → 9.09 (CEO check, seed 11).
+- **Missing mechanism:** a head turn separate from the hips. A coverage
+  defender with his back to the QB looks back at moments he could know
+  to look: his receiver's visible turn or hands, the expected timing of
+  the route stem (from the QB alignment and the snap he saw), or a
+  teammate's "ball" call. Looking costs him awareness of his receiver
+  (a staler picture of his man while his head is back). Ratings
+  (ball skills, awareness) change how often and how well he looks, not
+  whether he sees a ball that is in view. Body facing stands in for gaze
+  today.
+- **Next:** build that look-back. Judge on the same matched 360 plays:
+  the behind-the-shoulder bucket must react, without a fixed timer. Then
+  check separation at the catch, PBU and INT on contested go and fade
+  throws. Don't cap deep completions. Stop rule: two attempts, then
+  re-diagnose.
 
 <a id="ball-1"></a>
 ### BALL-1: Too many interceptions
