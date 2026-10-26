@@ -9,6 +9,7 @@ import { movementObjective, type MovementObjective } from './movement-objective.
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 import type { PursuitPredictionRecord } from './pursuit-prediction.js';
+import type { ClimbAccessRecord } from './climb-access.js';
 
 export interface CommandTraceSelection {
   actor: { team: TeamSide; slot: string } | { playerId: string };
@@ -78,6 +79,9 @@ export interface CommandTraceStep {
   endpoint?: ReturnType<typeof stateSnapshot> & { phase: string; ballKind: string };
   observations: Array<{ phase: TracePhase; target: ActorIdentity; requestedAt: number; age: number | null; sampledAt: number | null }>;
   pursuit?: Array<{ phase: TracePhase; target: ActorIdentity; data: PursuitPredictionRecord }>;
+  /** Departure access searches, as computed; surface keys resolved to identities. */
+  climbAccess?: Array<{ phase: TracePhase; target: ActorIdentity; data: ClimbAccessRecord;
+    surfaces: ActorIdentity[]; }>;
 }
 
 /** Numbers within 1e-9 are omitted from the rewrite list; raw/final retain full precision. */
@@ -123,6 +127,13 @@ export class CommandTrace {
     if (data.kind === 'chase' && snapshot.kind === 'chase') snapshot.requests = data.requests
       .map(r => ({ stage: r.stage, command: commandSnapshot(r.command) }));
     (this.pending.pursuit ??= []).push({ phase: this.phase, target: identity(target), data: snapshot });
+  }
+
+  /** The search supplied its own computed values; nothing is re-evaluated. */
+  climbAccess(target: Agent, data: ClimbAccessRecord, sim: PlaySim): void {
+    if (!this.pending) return;
+    (this.pending.climbAccess ??= []).push({ phase: this.phase, target: identity(target), data: structuredClone(data),
+      surfaces: data.surfaces.map(s => identity(sim.agents[s.key])) });
   }
 
   decisionStart(a: Agent, sim: PlaySim): BehaviorSnapshot | undefined {
