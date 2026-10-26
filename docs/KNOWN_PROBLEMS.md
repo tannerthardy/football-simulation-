@@ -1262,6 +1262,46 @@ run plays with the assignment layer (`--telemetry full`):
   On develop, releases still leave the backer at p50 4.1–4.5 yd (p25–p75
   about 3.6–5.3) across the three sets, against NFL p50 2.45. S9-P062 is
   left for Tools' responsibility ledger.
+
+  **Second correction failed (2026-10-26): planner expansion stops.** The
+  two-change question was declared on #303 before any result:
+  - an upfield-shoulder candidate: the point on the down man's contact
+    circle halfway between the climber's flank and the down man → backer
+    line;
+  - plus the braking-reference overlap bound.
+
+  On develop `d81befa1`, same sets:
+
+  | Set | Backers worked (base / both / shoulder only) | Keepers holding (base / both) |
+  |---|---|---|
+  | Phase II set | 19 / 20 / 19 | 42/48 / 42/48 |
+  | games 7–8 | 11 / 11 / 11 | 29/32 / 27/31 |
+  | games 9–10 | 4 / 4 / 4 | 17/19 / 17/19 |
+
+  - Matched restage: 21 of 287 snaps change with both changes (shoulder
+    alone: 7).
+  - The new candidate points the right way on S7-P070: at 1.05 its goal is
+    0.9 yd upfield of RT, outside DT_S. It still fails clearance against
+    DT_S, reaching −0.3020 against the braking floor of −0.3012. At 1.30 it
+    would run through RG. RT takes the same backward arc as correction 1.
+  - Everything else matches correction 1: S7-P041 gains, S8-P037 loses its
+    keeper.
+
+  *Missing capability.* Every departure route is judged by
+  `previewFreeMovement`, a single-body forecast with no contact. Leaving a
+  double, the climber is still touching the down man, and his own momentum
+  into him is the deepest thing in every forecast. Braking, the arcs and the
+  shoulder all land within a millimetre of the same floor. The forecast
+  cannot tell sliding off a shoulder from pushing into the man, because it
+  has no contact response.
+
+  Two things would answer it; neither is a planner rule:
+  1. A departure preview that includes the bodies he is touching, owned by
+     Main Engine and Tools (it is World physics).
+  2. Releases that don't start while the climber is still moving into the
+     down man. This is the NFL 2.45 yd release question already open above.
+
+  Revisit the route search only after one of them.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
