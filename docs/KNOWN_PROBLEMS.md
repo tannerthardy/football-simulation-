@@ -1921,16 +1921,70 @@ These break the model rule that players act on acquired, delayed information.
 - **Hands at the muscle cap** in pass protection (PRO-1).
 - **Summed double-team drive** (RUN-3).
 - **A slightly stronger blocker carries a square, resisting end sideways**
-  (open question; seed 10 P46 Pistol Twin TE duo, Y on DE_S, captured by
-  `scripts/diag/edge-contain-restage.ts`; Oct 25). Y 113 kg, strength 0.77;
-  DE 111 kg, strength 0.62. Both face each other square, the contact normal
-  is 87% lateral, and the end commands 4.1 yd/s inside with a committed lean
-  of about 1410 kg·yd/s² (1290 N) inside against the Y's 1010 (920 N)
-  outside. Even so the pair moves outward at 1.6-1.95 yd/s (about 1.7 m/s)
-  for 2 s. With `SEAL_HOLD` the Y no longer runs at him and the carry halves,
-  but the end is still carried 2.8 yd. Not yet checked: whether equal-mass
-  push contests should resolve this fast, and how ratings enter the force
-  budget. Not fixed.
+  (first seen on seed 10 P46, Pistol Twin TE duo, Y on DE_S, Oct 25; Y
+  113 kg strength 0.77, DE 111 kg 0.62, end asking 4.1 yd/s inside, carried
+  outward 1.6-1.95 yd/s for 2 s). **Diagnosed (Oct 25): the leg budget has no
+  force-velocity term.** Not fixed.
+  - **Reproducer** (`scripts/diag/lateral-carry.ts`): two bodies on the
+    World, square, hands on, the P46 masses and strengths, the end asking
+    inside with full lean. The end's feet deliver his strength cap, 1208
+    kg·yd/s² (1105 N), with traction 1309 to spare. The Y's feet deliver
+    1333, where his strength is capped by traction (1.1 mg). So the real
+    force gap is 10%, smaller than the ratings suggest. The 125 difference
+    never shrinks: the pair accelerates at a constant 0.55 yd/s² and is
+    still speeding up at 3 s (1.4 yd/s, 2.1 yd). Controls:
+    - equal strength: no carry;
+    - same pair, end not resisting: carried at 3.1 yd/s;
+    - end the stronger one: he drives the Y back.
+  - **Mechanism:** in `world.ts` `feet()`, total ground force is capped by
+    `max(gait, pushForce · direction · availability)` and by traction.
+    Neither cap depends on speed.
+    - The pusher keeps his full static force at any speed: his lean falls
+      with speed, and the gait share refills it.
+    - The man being driven backward gets no eccentric gain: his lean's 1.2
+      credit (`clamp(1 - vp/vmax, 0, 1.2)`) is clipped by the shared cap.
+
+    So any strength gap is a constant net force, and the carry builds on
+    itself. This is not:
+    - a missing traction limit: the end isn't traction-bound;
+    - a bad request: the end leans inside at full strength;
+    - leaked hand force: momentum ledgers close to zero.
+  - **Statics:** with a linear force-velocity law F = F0(1 - v/vmax), the
+    Y's ceiling at 1.65 m/s is 1220 (1 - 1.65/8.06) = 970 N. That is below
+    the end's 1105 N even before any eccentric gain; measured multi-joint
+    eccentric force is typically 1.1-1.3 times isometric. Sustaining 1.65 m/s
+    would need the end to resist with 970 N or less, 0.89 of his weight,
+    while his turf friction allows 1.1. A 10% gap should give a stalemate or
+    a drift of a few tenths of a yard per second.
+  - **Counterfactual** (local, not committed): the strength term scaled by
+    `clamp(1 - v_along_force / vmax, 0, 1.2)` gives:
+    - the P46 pair: settles at 0.41 yd/s (0.43 by hand), 0.84 yd in 3 s;
+    - equal strength: still 0;
+    - end not resisting: still carried at 2.5 yd/s;
+    - end stronger: drives the Y back at 0.22 yd/s.
+  - **Game snaps** (`scripts/diag/lateral-carry-game.ts`, seed 10 on
+    b559fdc5): 51 runs with a Y, 32 Y/H/F-on-end run blocks, 4 carried
+    episodes (end asking more than 1 yd/s one way, carried more than 1 yd/s
+    the other, for 0.5 s or longer): 1.2-2.45 yd/s for 0.5-1.05 s. Ledgers
+    close to zero. Two other causes show up:
+    - Run 37 (inside zone) is the pure case: ground forces balanced at about
+      1060 each, so the pair coasts at 2.4 yd/s on the speed it entered with.
+      Carrying the end costs the Y nothing extra.
+    - Run 4 (wide zone) is mostly the end's own command flipping (he asks
+      3-4 yd/s *with* the carry at 1.05-1.45 s), then the RT's helper hands
+      (1.1-1.2k outward from 2.05 s).
+
+    P46 is a different play on current develop. A whole-game comparison
+    isn't matched (every play diverges), so none is claimed.
+  - **Recommendation:** fix in physics: one force-velocity leg budget in
+    `feet()`. Force along his motion shrinks with speed (concentric); this is
+    the propulsion half of the parked `LEG_FV`. Force against his motion
+    keeps the lean's eccentric credit through the shared cap instead of
+    losing it there. It's a realistic law, so it lands on by default in its
+    own physics PR, with law tests (equal-strength stalemate, bounded drift
+    for small gaps, free running and the sprint curve unchanged) and matched
+    restages. Owner: Main Engine. The end's flipping command on run 4 is a
+    Defense controller question, not physics.
 - **Raw hand operator trusts stale contact validity** (PHY-004): a synthetic
   input contract; not shown to happen in real play.
 - **Withdrawn:** `LEG_BIND` broke the rear-finish load contract (#190); the
