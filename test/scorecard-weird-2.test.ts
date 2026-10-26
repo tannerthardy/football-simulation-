@@ -44,6 +44,9 @@ describe('frozen: a request flag, not a failed-block verdict', () => {
     expect(events[0]).toMatchObject({ candidate: true, t0: 0, t1: .45,
       intent: { speed: 0 }, achieved: { speed: .8 } });
   });
+  it('also flags installed run work before the handoff (historical S7-P070)', () => {
+    expect(run('frozen', ticks(10, t => ({ ...scene(t), runner: -1 })))).toHaveLength(1);
+  });
   it('does not flag an engaged/down blocker, pass protection, or an unknown job', () => {
     for (const patch of [{ engaged: true }, { down: true }, { inBond: true }, { job: 'drive' }, { rvx: .3 }])
       expect(run('frozen', ticks(10, t => scene(t, patch)))).toEqual([]);

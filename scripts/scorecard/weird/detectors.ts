@@ -275,10 +275,10 @@ const CLIMB = new Set(['climb', 'lead']);
 const frozen: Detector = {
   id: 'frozen', label: 'Free climber requesting near-zero movement', candidate: true, minHold: .4,
   hit(f) {
-    if (f.phase !== 'live' || f.isPass || !f.offense || f.runner < 0) return NONE;
+    if (f.phase !== 'live' || f.isPass || !f.offense) return NONE;
     const quiet = (s: WFrame, idx: number) => {
       const a = s.agents[idx];
-      return !s.isPass && s.offense && s.runner >= 0 && a?.team === 'O' && OL.has(a.slot)
+      return !s.isPass && s.offense && a?.team === 'O' && OL.has(a.slot)
         && CLIMB.has(a.job) && !a.engaged && !a.down && !a.inBond && Math.hypot(a.rvx, a.rvy) < .3;
     };
     const out: Hit[] = [];
