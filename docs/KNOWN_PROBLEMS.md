@@ -1544,6 +1544,62 @@ run plays with the assignment layer (`--telemetry full`):
   `stepRunRep`. That function holds the SEAL_HOLD and `runContactRead`
   lines owned elsewhere, so the change needs routing to its owner before
   anyone edits it.
+
+  **Tanner approved working in `engagement.ts`; two tests followed, both
+  declared on #311.**
+
+  *E1, reverted.* The owner of a live double stops being a stretch reach
+  (on a stretch rep he only mirrors the man) and drives at the drive-block
+  tempo.
+  - Owner sideways request on outside zone rose 0.88 → 1.22 yd/s, but
+    achieved speed only 0.68 → 0.73.
+  - Climbers reaching +2 stayed at 30; backers worked rose in all three
+    sets (11→12, 4→6, 18→20).
+  - It fails the declared climber criterion.
+
+  *Why the down man doesn't move.* The doubled DL is never driven back:
+  −0.06 to −0.16 yd/s on outside, inside and wide zone. The probes:
+  - turning off `DL_ANCHOR` or `PAD_LEVERAGE` changes nothing;
+  - removing his depth-hold request moves him (inside zone +0.54 yd/s),
+    so two blockers can move one man in this World;
+  - ground force along the attack direction is owner +677, **helper
+    +144**, DL −804;
+  - the helper's final request is 0.38 yd/s upfield, 1.21 sideways: his
+    hip-to-hip spot (`toSpot × 3`, set at the owner's depth) and the
+    `helperFit` foot replacement pull him back;
+  - his sideways force nets −98, toward the backside.
+
+  The double is one pusher plus a helper leaning on the man's flank.
+
+  *E2, kept as experimental `HELPER_DRIVE` (off).* The helper drives along
+  the track, keeping only his width at the partner's hip, with no foot
+  replacement while his hands are loaded. Judged on sets not used to
+  choose it:
+
+  | | develop | E2 |
+  |---|---|---|
+  | holdout games 11–12 (`59827691…`): climbers reaching +2 / backers worked / keepers holding | 10 / 11 / 22 of 25 | 12 / 11 / 26 of 26 |
+  | 8-game export (seeds 101–108): climbers per zone run / backer touched first | 0.67 / 74.5% | **0.86** / 73.9% |
+  | matched restage, seeds 7–8: snaps changed / run yards | — / 8.09 | 77 / 6.92 |
+
+  - Of the 77 restage changes, one pass changes its event path but ends
+    with the same yards. Among the runs, #181 (64 yd → 17) is a downfield
+    tackle flip at 4.45 s after identical events; #180 (49 → 7.5) is a
+    keeper losing DT_S at 2.65 s after the release.
+  - On the earlier sets, which only report, keepers holding on games 7–8
+    fell 27/30 → 24/30.
+
+  *Why it stays off.* It breaks `helper-fit.test.ts`. A helper whose hands
+  are loaded on the wrong side no longer replaces his feet and never
+  becomes useful support. Most of E2's gain comes from removing exactly
+  that foot replacement (its far-side and unloaded cases). It also changes
+  Tools' recorded ledger cases and the combo-strike-access timing.
+
+  Next:
+  - decide what a useful helper surface is. Working up the near hip is the
+    coached technique, but `helperFit` counts a helper level with or past
+    the man's front as unusable;
+  - re-record the ledger and strike scenes if that changes.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
