@@ -39,9 +39,60 @@ much as on the line. Entries cross-reference each other where that matters.
 | `prof194` | #194's candidate profile (13 flags in `config/baseline.json`), 8 games. |
 | `rg3` | The run-offense research build on `claude/run-game-v3` (archived; #153 is closed). Its numbers don't certify develop. |
 | `audit` | The outside audit (2026-10-23) on develop [c4a03f6](https://github.com/tannerthardy/football-simulation-/commit/c4a03f6463eacb23ce63d01bd32b4f8b547b9bc0): one seed-7 game (Ironmen v Comets, strength .55, 127 live plays), each play restaged exactly from its saved setup and changed one thing at a time. Its counts support selected-case diagnoses, not league frequency or a shared cause for every similar-looking play. Play IDs are that game's; its `G1-P002` is a Comebacks pass, not TKL-4's older P002 clip. |
+| `weekly-2026-10-26` | The dated weekly-plan comparison at `a5b024b9`, PR tier, seeds 7 / 8. Seed 7 checked against an existing matching-source CI base card; seed 8 remains plan-supplied. See the evidence qualification below. |
 | `NFL` | Mostly Big Data Bowl 2025 tracking (2022, weeks 1–9). The outcome bands are the scorecard's. |
 
-### Current: develop at `211db9cc`
+<a id="weekly-check-2026-10-26"></a>
+### Current dated comparison: weekly check at `a5b024b9`, 2026-10-26
+
+Source: develop
+[`a5b024b9fbf8c51fc31401eefb79737be586814a`](https://github.com/tannerthardy/football-simulation-/commit/a5b024b9fbf8c51fc31401eefb79737be586814a),
+PR tier, seeds **7 / 8**, 12 games each as reported in Tanner's October 26
+weekly-plan handoff. These identify where to inspect; they are not tuning
+targets or measurements of every later develop head.
+
+| Metric | Seed 7 (checked saved CI base) | Seed 8 (plan-supplied) | NFL comparison |
+| --- | --- | --- | --- |
+| Points / team-game | 43.6 | 38.1 | 21–23.5 (unsourced) |
+| Rush yards / carry | 6.19 | 4.40 | 3.70–4.83 |
+| 10+ yd runs | 16.1% | 11.4% | 7.6–12.9% |
+| Missed + broken tackles / play | 0.29 | 0.27 | 0.11–0.16 (source unverified: PFF, definition unknown) |
+| Yards / attempt | 10.54 | 10.01 | 6.35–7.89 |
+| YAC / reception | 8.88 | 8.66 | 4.53–5.91 |
+| Scramble rate / dropback | 1.4% | 1.4% | 2.2–7.3% |
+| Sack rate / dropback | 9.0% | 10.0% | 4.6–9.4% |
+| INT rate / throw | 4.3% | 3.3% | 1.5–3.2% |
+
+**Evidence checked without rerunning games:** the saved
+[#300 CI scorecard](https://github.com/tannerthardy/football-simulation-/actions/runs/40362404508)
+([artifact 12669557335](https://github.com/tannerthardy/football-simulation-/actions/runs/40362404508/artifacts/12669557335))
+contains `base.json` pinned to the full `a5b024b9` source above, dated 2026-10-26,
+seed 7, 12 games/two leagues, Node 22.23.3, two workers and the `missedBy`/`weird`
+probes. Its recorded settings are retained in the artifact. Its rendered base
+values match all nine supplied seed-7 figures; scramble is **15/1,061**
+dropbacks. The raw seed-8 weekly card was not available in this refresh, so its
+figures are attributed to the supplied plan, not an independent reproduction.
+No unavailable weekly quantities are filled from an older snapshot. NFL
+percent ranges here use the plan's rounded presentation; this does not change
+the scorecard's underlying definitions or the GAPS stopping criteria.
+
+**Subsequent accepted correction:** [#300](https://github.com/tannerthardy/football-simulation-/pull/300)
+merged at `d81befa1ff33404c19781585f2b3e2a3b6bd29fc`. It adds silent blocking
+responsibility transitions to the selected command trace, not a new blocking
+policy. The existing CI artifact's base/head arms have exactly matching
+football/probe records (12 games, 1,609 play records), excluding only the
+explicit wall timers `game.ms`, `game.probe["weird.ms"]` and `game.weird.ms`.
+The artifact labels its head as the CI merge `b82fe671`; its engine content
+matches the accepted #300 source. This is a saved seed-7 observer comparison,
+not a fresh seed-8 card or evidence of improved football outcomes.
+
+Whole-game sampling is noisy, and games with the same seed can diverge after
+the first changed play. Use matched snaps and first changed requests to judge
+mechanisms; do not restore historical endings or infer a universal noise floor.
+The dated YAC study retained below has its own source, sample and uncertainty;
+its numerical spread is not a general threshold for other metrics or cohorts.
+
+### Earlier: develop at `211db9cc`
 
 `npm run scorecard -- --tier pr` at seeds 7 and 8 (12 games each), 2026-10-25,
 after #248–#271. #251, #252, #258 and #267 change games, so these are new games,
@@ -261,7 +312,7 @@ problem), resolved.
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
-| [QB-2](#qb-2) | Too many scrambles, and completions slightly low | G5, G7 | low | open |
+| [QB-2](#qb-2) | Scramble frequency and escape-lane criteria | G5, G7 | low | open |
 | [QB-3](#qb-3) | Scrambling QBs fall with nobody near them (film, Oct 23) | G1, G5 | medium | open |
 | [KICK-1](#kick-1) | Kicking too accurate, too many punts | — | low | open |
 | [ALN-1](#aln-1) | Defensive pre-snap picture unlike tracking | G2, G3 | medium | on |
@@ -1799,9 +1850,26 @@ From the issue register:
   open deep windows (COV-1) invite the throw.
 
 <a id="qb-2"></a>
-### QB-2: Too many scrambles, and completions slightly low
+### QB-2: Scramble frequency and escape-lane criteria
 
-- **Measure** (`dev-12`): scramble rate 6.4% (NFL 3–5%); completion 62.6%
+- **Dated weekly regression** (`weekly-2026-10-26`, `a5b024b9`): scrambles are
+  **1.4% / 1.4%** of dropbacks, below the plan's rounded NFL 2.2–7.3%
+  comparison; sacks are **9.0% / 10.0%**. Seed 7's saved count is 15/1,061;
+  seed 8 remains plan-supplied as qualified [above](#weekly-check-2026-10-26).
+  [#287](https://github.com/tannerthardy/football-simulation-/pull/287) corrected
+  the optimistic own-arrival estimate and uses the QB's defender pictures,
+  while retaining the strict lane criterion: a non-panic escape needs at least
+  two candidate lanes beating every eligible defender by more than 0.35 s.
+  Upfield points can sit at LOS+1, 8–9 yd from a set QB. This criterion remains
+  an open football question, not a reason to undo the honest timing/input fix.
+- **Retained opposing evidence from #287:** its matched sample reports useful
+  escapes lost (g5-p111, g0-p87, g1-p85), alongside falsely promised losing
+  scrambles removed. It reports 14/534 dropbacks scrambling (2.6%) in the
+  matched set, versus 13/1,066 (1.2%) in its diverged CI sample. Those are
+  different cohorts from the weekly card, not substitute weekly counts.
+  Diagnose the escape criterion and actual opportunity before changing it;
+  no capacity, margin or band retune is authorized by the aggregate rate.
+- **Historical measure** (`dev-12`): scramble rate 6.4% (NFL 3–5%); completion 62.6%
   (63–66%); sack rate 5.6% (6–7.5%). Pressure arriving early (PRO-2) can turn
   sacks into scrambles.
 - **Measurement oddity:** play-action shots show −1.73 yd YAC per catch
