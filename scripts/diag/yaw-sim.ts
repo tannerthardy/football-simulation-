@@ -1,74 +1,104 @@
-/**
- * Sim side of scripts/data/yaw_speed_audit.py and yaw_capability_audit.py
- * (KNOWN_PROBLEMS TKL-4, COV-6): LB/DB body yaw after the snap, by speed.
- *   node --import tsx scripts/diag/yaw-sim.ts [seed] [--games 2]
- * Same operator as the tracking scripts: 10 Hz frames, speed from positions.
+/** Offline replay turning audit; shared numeric operator: data/yaw_measurement.py.
+ * node --import tsx scripts/diag/yaw-sim.ts --input out/saved-game.json
+ * Historical generation mode remains: [seed] [--games 2]. Tests use saved inputs.
+ * Python 3 is required. Body facing and position-derived travel are separate.
+ * Operator contract: docs/reviews/turning-measurements.md.
  */
-import { Rng } from '../../src/core/rng.js';
-import { simulateGame } from '../../src/game/game.js';
-import { generateTeam } from '../../src/league/team.js';
+import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { wrapAngle } from '../../src/core/vec.js';
+import type { PlayLog } from '../../src/game/game.js';
+import { sourceVersion } from '../source-version.js';
+import { engineSettings } from '../scorecard/provenance.js';
 
-const argv = process.argv.slice(2);
-const gi = argv.indexOf('--games');
-const games = gi >= 0 ? Number(argv[gi + 1]) || 1 : 2;
-const seed = Number(argv.find((a, i) => !a.startsWith('--') && (gi < 0 || i !== gi + 1)) ?? 7);
-const rng = new Rng(seed);
-const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 });
-const away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
-const BINS = [[0, 2], [2, 4], [4, 6], [6, 99]] as const;
-const wrap = (d: number) => ((d + 180) % 360 + 360) % 360 - 180;
-const binOf = (s: number) => { const b = BINS.find(([lo, hi]) => s >= lo && s < hi); return b ? `${b[0]}-${b[1]}` : null; };
-const yaw: Record<string, number[]> = {}, windows: Record<string, [number, number]> = {};
-const fastest: Record<string, number[]> = {}, turn150: Record<string, number[]> = {};
-for (let g = 0; g < games; g++) {
-  for (const p of simulateGame(home, away, { seed: seed + g, record: true }).log) {
-    const r = p.replay;
-    if (!r || (p.kind !== 'run' && p.kind !== 'pass')) continue;
-    const F = r.frames.filter(f => f.t >= 0);
-    r.players.forEach((pl, i) => {
-      if (pl.team !== 'D' || /^(DE|DT|NT)/.test(pl.slot)) return;
-      const rows = F.map((f, k) => {
-        const a = F[Math.max(0, k - 1)], b = F[Math.min(F.length - 1, k + 1)];
-        return { s: Math.hypot(b.agents[i * 3] - a.agents[i * 3], b.agents[i * 3 + 1] - a.agents[i * 3 + 1]) / Math.max(1e-6, b.t - a.t),
-          o: f.agents[i * 3 + 2] * 180 / Math.PI };
-      });
-      const best: Record<string, number> = {};
-      rows.forEach((row, k) => {
-        const b = binOf(row.s);
-        if (!b) return;
-        if (k + 1 < rows.length) (yaw[b] ??= []).push(Math.abs(wrap(rows[k + 1].o - row.o)) * 10);
-        if (k + 2 < rows.length) {
-          const swing = Math.abs(wrap(rows[k + 2].o - row.o));
-          const w = windows[b] ??= [0, 0];
-          w[0]++;
-          if (swing >= 90) w[1]++;
-          best[b] = Math.max(best[b] ?? 0, swing / 0.2);
-        }
-      });
-      for (const [b, v] of Object.entries(best)) (fastest[b] ??= []).push(v);
-      // Cumulative same-direction turns of 150 deg or more (3 deg/frame dead band).
-      for (let k = 0; k < rows.length - 1;) {
-        let start = k, acc = 0, j = k, sign = 0;
-        while (j < rows.length - 1) {
-          const d = wrap(rows[j + 1].o - rows[j].o);
-          if (Math.abs(d) < 3) { if (acc === 0) start = j + 1; j++; continue; }
-          if (sign && (d > 0) !== (sign > 0)) break;
-          sign = d > 0 ? 1 : -1; acc += Math.abs(d); j++;
-          if (acc >= 150) { const b = binOf(rows[start].s); if (b) (turn150[b] ??= []).push((j - start) / 10); break; }
-        }
-        k = Math.max(j, k + 1);
-      }
-    });
-  }
-}
-const q = (v: number[] = []) => {
-  const s = [...v].sort((a, b) => a - b), at = (p: number) => s.length ? +s[Math.min(s.length - 1, Math.floor(p * s.length))].toFixed(1) : null;
-  return { n: s.length, p50: at(.5), p90: at(.9), p99: at(.99) };
+type Replay = NonNullable<PlayLog['replay']>;
+type Counts = { eligible: number; excluded: number; unknown: number };
+const empty = (): Counts => ({ eligible: 0, excluded: 0, unknown: 0 });
+const fingerprint = (path: string) => {
+  const bytes = readFileSync(path);
+  return { path, bytes: bytes.length, sha256: createHash('sha256').update(bytes).digest('hex') };
 };
-const report: Record<string, unknown> = {};
-for (const [lo, hi] of BINS) {
-  const b = `${lo}-${hi}`, w = windows[b] ?? [0, 0];
-  report[`${b} yd/s`] = { yawDegS: q(yaw[b]), swing90In02s: w[0] ? +(w[1] / w[0]).toFixed(4) : null,
-    fastest02sPerPath: q(fastest[b]), turn150Seconds: q(turn150[b]) };
+const finite = (value: number | undefined) => typeof value === 'number' && Number.isFinite(value) ? value : null;
+
+export function replayPaths(replay: Replay, id: string) {
+  if (!Array.isArray(replay.players) || !Array.isArray(replay.frames)) throw new Error('Replay requires players and timed frames');
+  for (const frame of replay.frames) {
+    if (!Array.isArray(frame.agents) || frame.agents.length !== replay.players.length * 3) {
+      throw new Error('Replay agent columns do not match its player roster');
+    }
+  }
+  const eligibility = { paths: empty(), rows: empty() };
+  const paths = replay.players.flatMap((player, i) => {
+    const state: keyof Counts = player.team === 'O' ? 'excluded' : player.team !== 'D' || typeof player.slot !== 'string' ? 'unknown'
+      : /^(CB|SS|FS|S|DB|ILB|MLB|OLB|LB)(_|$)/.test(player.slot) ? 'eligible'
+        : /^(DE|DT|NT)(_|$)/.test(player.slot) ? 'excluded' : 'unknown';
+    eligibility.paths[state]++;
+    eligibility.rows[state] += replay.frames.length;
+    if (state !== 'eligible') return [];
+    return [{ id: `${id}/${i}:${player.slot}`, deriveMotion: true, afterTime: 0,
+      rows: replay.frames.map(frame => {
+        const facing = finite(frame.agents[i * 3 + 2]);
+        return { t: finite(frame.t), x: finite(frame.agents[i * 3]), y: finite(frame.agents[i * 3 + 1]),
+          body: facing === null ? null : (wrapAngle(facing) * 180 / Math.PI + 360) % 360 };
+      }) }];
+  });
+  return { paths, eligibility };
 }
-console.log(JSON.stringify(report, null, 2));
+
+export async function main(argv = process.argv.slice(2)) {
+  const inputAt = argv.indexOf('--input');
+  const inputs: unknown[] = [];
+  const eligibility = { paths: empty(), rows: empty() };
+  const quality = { playsWithoutReplay: 0 };
+  const paths: ReturnType<typeof replayPaths>['paths'] = [];
+  let logs: PlayLog[][];
+  if (inputAt >= 0) {
+    const path = argv[inputAt + 1];
+    if (!path) throw new Error('--input needs a saved GameResult JSON path');
+    const raw = readFileSync(path), data = JSON.parse(raw.toString()) as { log?: PlayLog[]; meta?: unknown };
+    if (!Array.isArray(data.log)) throw new Error('Saved input needs a GameResult log with replay frames; scorecard summaries are incompatible');
+    inputs.push({ ...fingerprint(path), recordedProvenance: data.meta ?? null,
+      engineIdentity: 'Only embedded provenance identifies the saved engine; current checkout is not its identity.' });
+    logs = [data.log];
+  } else {
+    const at = argv.indexOf('--games');
+    const games = at >= 0 ? Number(argv[at + 1]) : 2;
+    const seed = Number(argv.find((a, i) => !a.startsWith('--') && (at < 0 || i !== at + 1)) ?? 7);
+    if (!Number.isInteger(games) || games < 1 || !Number.isInteger(seed)) throw new Error('Provide integer seed and positive --games');
+    const [{ Rng }, { simulateGame }, { generateTeam }] = await Promise.all([
+      import('../../src/core/rng.js'), import('../../src/game/game.js'), import('../../src/league/team.js'),
+    ]);
+    const rng = new Rng(seed), home = generateTeam(rng, 'Ironmen', 'IRN', { strength: .55 });
+    const away = generateTeam(rng, 'Comets', 'COM', { strength: .55 });
+    inputs.push({ mode: 'generated', engineSha256: sourceVersion(), settings: engineSettings({}), node: process.version, seed, games });
+    logs = Array.from({ length: games }, (_, g) => simulateGame(home, away, { seed: seed + g, record: true }).log);
+  }
+  logs.forEach((log, g) => log.forEach((play, p) => {
+    if (play.kind !== 'run' && play.kind !== 'pass') return;
+    if (!play.replay) { quality.playsWithoutReplay++; return; }
+    const adapted = replayPaths(play.replay, `${g}/${p}`);
+    paths.push(...adapted.paths);
+    for (const unit of ['rows', 'paths'] as const) for (const state of ['eligible', 'excluded', 'unknown'] as const) {
+      eligibility[unit][state] += adapted.eligibility[unit][state];
+    }
+  }));
+  const helper = fileURLToPath(new URL('../data/yaw_measurement.py', import.meta.url));
+  const input = { source: 'Simulator recorded replay; explicit defensive LB/DB slots', inputs,
+    adapter: { ...fingerprint(fileURLToPath(import.meta.url)), node: process.version,
+      angleHelper: fingerprint(fileURLToPath(new URL('../../src/core/vec.ts', import.meta.url))) }, eligibility, quality, paths,
+    cadence: { clock: 'Recorded frame.t seconds; no assumed 10Hz multiplier', fallbackSeconds: null },
+    comparison: 'NFL uses provider s/o/dir; simulator uses recorded body facing and centered position secants (one-sided at recording/gap edges). Both exclude the snap frame; sim derivatives may use it as a neighbor. Travel heading below 1yd/s is unavailable. Provider smoothing, angle semantics, role labels and recording cutoff differ; these are descriptive observations, not gaze, force or turning capacity.' };
+  const result = spawnSync('python3', ['-I', helper], { input: JSON.stringify(input), encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+  if (result.error) throw result.error;
+  if (result.status !== 0) throw new Error(result.stderr || 'Shared turning operator failed');
+  const report = JSON.parse(result.stdout) as { status: string; adapter: unknown };
+  report.adapter = input.adapter;
+  console.log(JSON.stringify(report, null, 2));
+  return report.status === 'unavailable' ? 1 : 0;
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  process.exitCode = await main();
+}
