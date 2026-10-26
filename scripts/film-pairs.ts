@@ -1,12 +1,13 @@
 /** Matched saved-snap film across pinned refs. No caller checkout modifications. */
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, symlinkSync, mkdtempSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { dirname, resolve, relative, isAbsolute } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { parseArgs, isDeepStrictEqual } from 'node:util';
 import { deserialize } from 'node:v8';
 import { digest, selections, outcome, executionBytes, type Captured, type ArmRecord } from './film-pairs/model.js';
 import { renderPairs, type PairView } from './film-pairs/render.js';
+import { PairWorktrees } from './film-pairs/worktrees.js';
 import { compareExecution, readSavedPlay } from './diag/saved-play.js';
 
 export interface PairOptions { base: string; head: string; plays: string; out: string }
@@ -26,7 +27,8 @@ export function runFilmPairs(options: PairOptions) {
   const pin = (ref: string) => git(['rev-parse', '--verify', '--end-of-options', `${ref}^{commit}`]);
   const base = pin(options.base), head = pin(options.head), capture = pin(manifest.captureRef ?? options.base);
   const scratch = mkdtempSync(resolve(out, 'worktrees-'));
-  const roots: string[] = [];
+  const worktrees = new PairWorktrees(git);
+  let primaryError: unknown;
   const loader = resolve(toolRoot, 'node_modules/tsx/dist/loader.mjs');
   const invoke = (root: string, mode: string, request: unknown, stem: string) => {
     const file = resolve(out, `${stem}-request.json`); writeFileSync(file, JSON.stringify(request));
@@ -34,9 +36,9 @@ export function runFilmPairs(options: PairOptions) {
       { cwd: root, env: process.env, stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 16 * 1024 * 1024 });
   };
   const worktree = (name: string, sha: string) => {
-    const root = resolve(scratch, name); git(['worktree', 'add', '--detach', root, sha]); roots.push(root);
+    const root = resolve(scratch, name); worktrees.create(root, sha);
     if (digest(readFileSync(resolve(root, 'package-lock.json'))) === digest(readFileSync(resolve(toolRoot, 'package-lock.json'))))
-      symlinkSync(resolve(toolRoot, 'node_modules'), resolve(root, 'node_modules'), 'dir');
+      worktrees.shareDependencies(root, resolve(toolRoot, 'node_modules'));
     else execFileSync('npm', ['ci', '--no-audit', '--no-fund', '--cache', resolve(out, 'npm-cache')], { cwd: root, stdio: 'pipe' });
     return root;
   };
@@ -82,9 +84,15 @@ export function runFilmPairs(options: PairOptions) {
     writeFileSync(resolve(out, 'batch.json'), JSON.stringify(batch, null, 2) + '\n');
     return batch;
   } catch (error) {
+    primaryError = error;
     writeFileSync(resolve(out, 'error.txt'), String(error) + '\n'); throw error;
   } finally {
-    for (const root of roots.reverse()) git(['worktree', 'remove', root]); // Only worktrees created by this invocation; no --force.
+    try { worktrees.cleanup(); }
+    catch (cleanupError) {
+      if (primaryError !== undefined) throw new AggregateError([primaryError, cleanupError],
+        'Film pairing failed and cleanup preserved unfamiliar worktree data');
+      throw cleanupError;
+    }
   }
 }
 

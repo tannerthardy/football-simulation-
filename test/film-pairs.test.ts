@@ -29,6 +29,8 @@ describe('matched snap film pairs', () => {
     writeFileSync(file, JSON.stringify({ format: 'film-pairs-v1', plays: [2, 3, 4].map(play => ({ id: `same-P${play}`, seed: 7, game: 1, play, note: 'same ref native control' })) }));
     try {
       const batch = runFilmPairs({ base: sha, head: sha, plays: file, out: resolve(dir, 'batch') });
+      const registered = execFileSync('git', ['worktree', 'list', '--porcelain'], { encoding: 'utf8' });
+      expect(registered.split('\n').filter(line => line.startsWith('worktree ' + dir + '/'))).toEqual([]);
       expect(batch.captureCount).toBe(3);
       expect(batch.pairs.map(p => [p.noChange, p.firstDifference])).toEqual([[true, null], [true, null], [true, null]]);
       expect(batch.htmlBytes).toBeLessThan(15_000_000);
@@ -43,7 +45,11 @@ describe('matched snap film pairs', () => {
       const captured = JSON.parse(readFileSync(resolve(dir, 'batch/captured.json'), 'utf8'));
       writeFileSync(registry, JSON.stringify({ format: 'film-pairs-v1', sources: Object.fromEntries(captured.map((p: any) => [p.id, { path: p.path, sha256: p.fileSha256 }])), plays: captured.map((p: any) => p.id) }));
       expect(selections(JSON.parse(readFileSync(registry, 'utf8'))).plays).toHaveLength(3);
-    } finally { rmSync(dir, { recursive: true, force: true }); }
+    } finally {
+      const registered = execFileSync('git', ['worktree', 'list', '--porcelain'], { encoding: 'utf8' });
+      if (!registered.split('\n').some(line => line.startsWith('worktree ' + dir + '/')))
+        rmSync(dir, { recursive: true, force: true });
+    }
   }, 60_000);
 
   it('labels missing contact unknown, preserves event times and safely embeds notes', () => {
