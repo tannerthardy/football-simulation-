@@ -1,9 +1,4 @@
 import { describe, expect, it, vi } from 'vitest';
-// SEAL_HOLD keeps a loaded blocker on the offset he caught the man at. This
-// controlled climb was recorded before it, with the climber still working to
-// the scripted backer's play-side shoulder after contact (KNOWN_PROBLEMS
-// RUN-12, re-record by review 2). The rest of combo-transfer runs with it on.
-vi.hoisted(() => { process.env.SEAL_HOLD = '0'; });
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { fatigueFactor } from '../src/physics/kinematics.js';
@@ -99,13 +94,14 @@ describe('earned combination-to-climb execution in the coupled World',()=>{
   rb.behavior={kind:'idle',update:()=>goTo(rb,{x:48,y:CENTER_Y+side*2.2},{speed:.65})};
   f.sim.ball={kind:'held',carrier:rb};f.observe();
   const keeperHands=f.engagement.hands;
-  let loaded=false,passed=false;
+  let loaded=false,passed=false,loadedAhead=Infinity;
   while(f.sim.phase==='live'&&f.sim.t<3.6){
    f.sim.tick();budget(f,f.sim.lastStep!);
    if(f.helper.engagement?.defender===f.backer
      &&Math.hypot(f.helper.engagement.hands!.normalForce??0,f.helper.engagement.hands!.tangentForce??0)>1){
     expect(f.combination.released).toBe(true);
     expect(f.sim.world.joints).toContain(f.helper.engagement.hands);
+    if(!loaded)loadedAhead=f.backer.pos.x-rb.pos.x;
     loaded=true;
    }
    expect(f.primary.engagement?.defender===f.defender).toBe(true);
@@ -114,13 +110,17 @@ describe('earned combination-to-climb execution in the coupled World',()=>{
    expect(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)).toBeGreaterThan(1);
    expect(f.sim.events.some(e=>e.type==='tackle_wrap')).toBe(false);
    expect(rb.body.support!.state).toBe('up');
-   if(rb.pos.x>f.backer.pos.x+f.backer.profile.radius){passed=true;break;}
+   if(rb.pos.x>f.defender.pos.x){passed=true;break;}
   }
+  // The climber has the backer loaded while the runner is still well short
+  // of him, and the keeper holds the down man until the runner reaches the
+  // first level. Under SEAL_HOLD the climber keeps the leverage he caught the
+  // scraping backer with and takes him where he is going; this scripted
+  // runner holds a fixed line into that scrape rather than cutting off the
+  // block, so the scene ends at the first level, not past the backer.
   expect(loaded).toBe(true);
+  expect(loadedAhead).toBeGreaterThan(4);
   expect(passed).toBe(true);
-  // A glancing body contact can coexist with useful protection. It must not
-  // stop the back short or substitute for the keeper's first-level work.
-  expect(rb.pos.x).toBeGreaterThan(f.defender.pos.x);
-  expect((f.backer.pos.y-rb.pos.y)*side).toBeGreaterThan(0);
+  expect(f.helper.engagement?.defender===f.backer).toBe(true);
  });
 });

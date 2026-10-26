@@ -1040,19 +1040,31 @@ run plays with the assignment layer (`--telemetry full`):
   - C misses the Mike (closest 0.75 yd);
   - LT's nickel is not reachable.
 
-  **Open (SEAL_HOLD owner):** with his hands loaded on a moving backer, a
-  climber keeps the offset he caught him at instead of working to the
-  backer's play-side shoulder. At 2.00 s in the controlled climb (C/LG on
-  DT_W, LG to LB_W), LG asks for +2.42 yd/s sideways with SEAL_HOLD off and
-  +0.40 with it on.
+  **Decided (Move 4, 2026-10-26): SEAL_HOLD stays on for climbers.** With
+  his hands loaded on a moving backer, a climber keeps the offset he caught
+  him at instead of working to the backer's play-side shoulder (at 2.00 s in
+  the controlled climb, C/LG on DT_W, LG to LB_W, LG asks for +2.42 yd/s
+  sideways with SEAL_HOLD off and +0.40 with it on). That is the football
+  answer: a blocker who catches a moving backer takes him where he is going,
+  and the runner cuts off it. Main Engine's alternative (scope the hold to a
+  man resisting laterally) is noted on #284; revisit it only after PHY-1's
+  force-velocity fix changes the carry.
 
-  The prototype recorded these scenes before #281, and they are pinned to
-  `SEAL_HOLD=0` until review 2:
-  - its two coupled-World climbs;
-  - the three combo-strike-access scenes;
-  - the two mirrored unsafe-release controls. With SEAL_HOLD on, the down
-    defender still wins those (first contact 2.45 s instead of 2.60 s), but
-    the departure is never assessed as unvalidated.
+  The seven scenes the prototype recorded before #281 were pinned to
+  `SEAL_HOLD=0`; the pins are removed and the scenes re-baselined on today's
+  defaults:
+  - the three combo-strike-access scenes: RG now strikes LB_M at 2.20 s
+    instead of 2.35 s, so the near-strike decision is staged at 2.15 s; RT
+    keeps DT_S to 2.65 s without him falling;
+  - the two coupled-World climbs: the backer is loaded with the runner more
+    than 4 yd short, and the keeper holds through the runner reaching the
+    first level. The scripted runner holds a fixed line into the backer's
+    scrape instead of cutting off the block, so the scene ends at the first
+    level rather than past the backer;
+  - the two mirrored unsafe-release controls: the keeper now holds DT_S on
+    his caught leverage, so the climber's exit is no longer obstructed and
+    is not assessed as unvalidated, but DT_S still makes first contact on
+    the runner (2.45 s). The unvalidated label keeps its own unit test.
 
   In the two native develop cases, SEAL_HOLD stops neither climb; turning it
   off mostly frees the down linemen.

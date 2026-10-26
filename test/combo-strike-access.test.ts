@@ -12,8 +12,7 @@ import {RunBlocker} from '../src/sim/behaviors/blocking.js';
 // PAD_LEVERAGE and DL_ANCHOR change the contact forces this recorded scene is staged on.
 // SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.
 // ARM_PRESS puts a press through the hands at the bench max; this scene is staged on arm-force hands (KNOWN_PROBLEMS RUN-11, re-record by review 2).
-// SEAL_HOLD keeps a loaded blocker on the offset he caught the man at; the climber's work to the backer's play-side shoulder in this scene was recorded before it (KNOWN_PROBLEMS RUN-12, re-record by review 2).
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; process.env.FRONT_MENU = '0'; process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; process.env.SNAP_REACT = '0'; process.env.LB_LANDMARK = '0'; process.env.ARM_PRESS = '0'; process.env.SEAL_HOLD = '0'; });
+vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; process.env.FRONT_MENU = '0'; process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; process.env.SNAP_REACT = '0'; process.env.LB_LANDMARK = '0'; process.env.ARM_PRESS = '0'; });
 
 const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/combo-strike-access.json.gz',import.meta.url))).toString()) as {setup:PlaySetup};
 function stage(t:number){
@@ -68,13 +67,13 @@ function decision(t:number,mirror:boolean,expectClear:boolean){
 
 describe('earned departure ends at achievable first strike rather than the backer center',()=>{
  it.each([false,true])('uses the clear near strike through the production hook, reflected=%s',mirror=>{
-  decision(2.3,mirror,true);
+  decision(2.15,mirror,true);
  });
  it.each([false,true])('keeps the departure when the down body obstructs even first strike, reflected=%s',mirror=>{
   decision(1.3,mirror,false);
  });
  it('develops real second-level load while the original keeper still protects the down surface',()=>{
-  const {sim,rg}=stage(2.3),rt=sim.slot('RT')!,down=sim.slot('DT_S')!,backer=sim.slot('LB_M')!;
+  const {sim,rg}=stage(2.15),rt=sim.slot('RT')!,down=sim.slot('DT_S')!,backer=sim.slot('LB_M')!;
   const hands=rt.engagement!.hands;
   // The down defender may be taken to the ground before runner arrival.
   // Require the real keeper joint until that defeat, not after a fallen
