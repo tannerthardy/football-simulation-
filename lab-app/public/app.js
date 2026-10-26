@@ -354,6 +354,16 @@ function renderPlayer() {
     <details><summary>Ratings</summary><div class="ratings">${Object.entries(r.ratings).map(([k, v]) => `<span>${k}</span><b>${v}</b>`).join('')}</div></details></div>`;
 }
 
+/** The runner's own decision: arrival evidence, chosen lane, and the designed track's exit gate. */
+function carrierLine(r) {
+  const n = (v) => v == null ? '-' : v.toFixed(2);
+  if (r.kind === 'design-exit')
+    return `design exit: ${r.exit ? 'LEAVE' : 'stay'} · aim blocked ${r.aimBlocked} · best ${n(r.bestScore)} vs aim ${n(r.aimScore)} + ${n(r.margin)}`;
+  const held = r.arrival.filter(a => a.blockerBonus > 0).map(a => `${a.defender.slot} +${a.blockerBonus}`);
+  return `runner (${r.designed ? 'designed' : 'open field'}): lane ${n(r.selected?.heading)} score ${n(r.selected?.score)}${r.selected?.blocked ? ' blocked' : ''}`
+    + `${r.aim ? ` · aim ${n(r.aim.score)}${r.aim.blocked ? ' blocked' : ''}` : ''} · ${r.arrival.length} threats seen${held.length ? `, held-up credit: ${held.join(', ')}` : ''}`;
+}
+
 function traceText(step) {
   const trace = currentTrace();
   if (trace === null && S.selected >= 0) return 'Loading the command trace…';
@@ -374,6 +384,7 @@ function traceText(step) {
     lines.push(`looked at ${seen.size}: ${[...seen].map(([k, o]) => `${k} ${o.age == null ? '?' : o.age.toFixed(2) + 's'}`).join(', ')}`);
   }
   for (const p of step.pursuit ?? []) lines.push(p.data.kind === 'intercept' ? `pursuit: ${p.data.prediction.estimate.status} at ${p.data.prediction.t.toFixed(2)}s` : `pursuit: chase (${p.data.planner})`);
+  for (const c of step.carrier ?? []) lines.push(carrierLine(c.data));
   if (step.start.engagement) lines.push(`engaged: ${step.start.engagement.type} ${step.start.engagement.move ?? ''} with ${step.start.engagement.blocker.slot}/${step.start.engagement.defender.slot}`);
   return esc(lines.join('\n'));
 }

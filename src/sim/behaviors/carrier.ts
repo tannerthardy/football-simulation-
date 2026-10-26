@@ -232,7 +232,9 @@ export class BallCarrier implements Behavior {
       if (sim.t >= this.nextEval) {
         this.nextEval = sim.t + a.mind.decisionInterval;
         const best = this.evaluate(a, sim, dir, true);
-        if (best && best.aimBlocked && best.score > best.aimScore + 0.5 + 0.5 * a.r('patience')) this.opts.aimUntil = sim.t;
+        const exit = designExit(best, a.r('patience'));
+        sim.commandTraceFor?.(a)?.carrier({ kind: 'design-exit', t: sim.t, ...exit });
+        if (exit.exit) this.opts.aimUntil = sim.t;
       }
       const lead = this.opts.follow?.filter((b) => !b.isDown(sim.t) && !b.engagement)
         .sort((p, q) => Math.hypot(p.pos.x - aim.x, p.pos.y - aim.y) - Math.hypot(q.pos.x - aim.x, q.pos.y - aim.y))[0];
@@ -354,32 +356,7 @@ export class BallCarrier implements Behavior {
     const goalX = dir > 0 ? OPP_GOAL_X : OWN_GOAL_X;
     const hurry = sim.hurry && a.team === 'O';
 
-    // Perceived defenders (vision-filtered), each from the runner's own
-    // pictures: where he sees him, and whether he sees a blocker on him.
-    const threats: Array<{ pos: Vec2; vel: Vec2; d: Agent; extra: number }> = [];
-    const blockers = sim.teammates(a).filter((b) => b !== a)
-      .map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }))
-      .filter((b) => b.pose !== 'down' && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12);
-    for (const d of sim.opponents(a)) {
-      const seen = sim.see(a, d, 0.7);
-      const dd = Math.hypot(seen.pos.x - p.x, seen.pos.y - p.y);
-      if (dd > range) continue;
-      // Backside defenders behind the runner are easy to miss for poor-vision backs.
-      const behind = (seen.pos.x - p.x) * dir < -1.5;
-      if (behind && a.mind.focus < 0.35 + 0.5 * (1 - vision)) continue;
-      // Explicit scenario parking keeps its scheduled absence. Physical falls
-      // leave downUntil=-1; infer their allowance only from the delayed pose,
-      // never hidden support state/since or an exact recovery deadline.
-      let extra = d.downUntil > sim.t ? d.downUntil - sim.t + 0.2
-        : observedRecoveryAllowance(seen, d.profile.getUp, sim.dt);
-      // A defender he sees a blocker on is held up; one he sees coming at
-      // him through it is getting off the block.
-      if (blockers.some((b) => Math.hypot(b.pos.x - seen.pos.x, b.pos.y - seen.pos.y) < b.radius + d.profile.radius + 0.35)) {
-        const rx = p.x - seen.pos.x, ry = p.y - seen.pos.y;
-        extra += (seen.vel.x * rx + seen.vel.y * ry) / (Math.hypot(rx, ry) || 1) > 1 ? 0.25 : 0.7;
-      }
-      threats.push({ pos: seen.pos, vel: seen.vel, d, extra });
-    }
+    const { blockers, threats } = arrivalEvidence(a, sim, dir, range, vision);
 
     const cands: number[] = [];
     const spread = designed ? 0.9 : 1.55;
@@ -388,6 +365,9 @@ export class BallCarrier implements Behavior {
     const aimHeading = this.opts.aim ? angleOfPoint(p, this.opts.aim) : base;
     if (designed) cands.push(aimHeading);
 
+    // Diagnostics only: the selected-player command trace, never consulted.
+    const trace = sim.commandTraceFor?.(a);
+    const routes: RouteAssessment[] | undefined = trace ? [] : undefined;
     let best: { heading: number; score: number; blocked: boolean; exits: boolean } | null = null;
     let curScore = -Infinity;
     let curBlocked = false;
@@ -493,14 +473,96 @@ export class BallCarrier implements Behavior {
         curBlocked = blocked;
         curExits = exits;
       }
+      routes?.push({ heading: h, score, blocked, clean, exits, safeGain, aim: h === aimHeading, current: h === cur });
       if (!best || score > best.score) best = { heading: h, score, blocked, exits };
     }
     // Hysteresis: keep the current lane unless the new one is clearly better.
-    if (best && best.heading !== cur && best.score - curScore < 0.4) best = { heading: cur, score: curScore, blocked: curBlocked, exits: curExits };
+    const kept = !!best && best.heading !== cur && best.score - curScore < 0.4;
+    if (best && kept) best = { heading: cur, score: curScore, blocked: curBlocked, exits: curExits };
     if (best?.exits) a.tags.add('chose-sideline');
-    return best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits } : null;
+    const result = best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits } : null;
+    trace?.carrier({ kind: 'evaluate', t: sim.t, designed, arrival: threats.map(arrivalRecord), routes: routes!,
+      selected: result && { heading: result.heading, score: result.score, blocked: result.blocked, exits: result.exits, keptCurrent: kept },
+      aim: designed ? { heading: aimHeading, score: aimScore, blocked: aimBlocked } : null });
+    return result;
   }
 }
+
+/** One defender as the runner has him, and each part of the time added to
+ * his reach estimate. `extra` is what the route assessment consumes. */
+export interface ArrivalEvidence {
+  d: Agent;
+  pos: Vec2;
+  vel: Vec2;
+  seen: Perceived;
+  /** Explicit scenario parking (a scheduled absence), when one applies. */
+  parking: number | null;
+  /** Recovery inferred from his delayed pose; 0 when parking applies. */
+  recovery: number;
+  /** "Held up" credit for a perceived blocker within touching distance:
+   * 0.25 s if he is visibly coming through, else 0.7 s. */
+  blockerBonus: number;
+  extra: number;
+}
+
+/** Perceived teammates near the runner, and defenders he can see within his
+ * vision range, each from his own pictures. */
+function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vision: number) {
+  const p = a.pos;
+  const blockers = sim.teammates(a).filter((b) => b !== a)
+    .map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }))
+    .filter((b) => b.pose !== 'down' && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12);
+  const threats: ArrivalEvidence[] = [];
+  for (const d of sim.opponents(a)) {
+    const seen = sim.see(a, d, 0.7);
+    const dd = Math.hypot(seen.pos.x - p.x, seen.pos.y - p.y);
+    if (dd > range) continue;
+    // Backside defenders behind the runner are easy to miss for poor-vision backs.
+    const behind = (seen.pos.x - p.x) * dir < -1.5;
+    if (behind && a.mind.focus < 0.35 + 0.5 * (1 - vision)) continue;
+    // Explicit scenario parking keeps its scheduled absence. Physical falls
+    // leave downUntil=-1; infer their allowance only from the delayed pose,
+    // never hidden support state/since or an exact recovery deadline.
+    const parking = d.downUntil > sim.t ? d.downUntil - sim.t + 0.2 : null;
+    const recovery = parking === null ? observedRecoveryAllowance(seen, d.profile.getUp, sim.dt) : 0;
+    let extra = parking ?? recovery;
+    // A defender he sees a blocker on is held up; one he sees coming at
+    // him through it is getting off the block.
+    let blockerBonus = 0;
+    if (blockers.some((b) => Math.hypot(b.pos.x - seen.pos.x, b.pos.y - seen.pos.y) < b.radius + d.profile.radius + 0.35)) {
+      const rx = p.x - seen.pos.x, ry = p.y - seen.pos.y;
+      blockerBonus = (seen.vel.x * rx + seen.vel.y * ry) / (Math.hypot(rx, ry) || 1) > 1 ? 0.25 : 0.7;
+      extra += blockerBonus;
+    }
+    threats.push({ d, pos: seen.pos, vel: seen.vel, seen, parking, recovery, blockerBonus, extra });
+  }
+  return { blockers, threats };
+}
+
+/** One candidate heading as the evaluator scored it. */
+export interface RouteAssessment { heading: number; score: number; blocked: boolean; clean: boolean; exits: boolean; safeGain: number; aim: boolean; current: boolean }
+
+/** Leave the designed track only when its aiming point is blocked and the
+ * best lane beats it by a patience margin, on the evaluator's own score. */
+export function designExit(best: { score: number; aimBlocked: boolean; aimScore: number } | null, patience: number) {
+  const threshold = best ? best.aimScore + 0.5 + 0.5 * patience : null;
+  return { exit: !!best && best.aimBlocked && best.score > threshold!, aimBlocked: best?.aimBlocked ?? null,
+    bestScore: best?.score ?? null, aimScore: best?.aimScore ?? null, margin: 0.5 + 0.5 * patience, threshold };
+}
+
+function arrivalRecord(th: ArrivalEvidence) {
+  return { defender: { playerId: th.d.player.id, slot: th.d.slot, index: th.d.idx },
+    seen: { pos: { ...th.pos }, vel: { ...th.vel }, pose: th.seen.pose ?? null, age: th.seen.age ?? null },
+    parking: th.parking, recovery: th.recovery, blockerBonus: th.blockerBonus, extra: th.extra };
+}
+export type CarrierArrivalRecord = ReturnType<typeof arrivalRecord>;
+
+/** What the command trace keeps of the runner's decision, for Play Lab. */
+export type CarrierDecisionRecord =
+  | { kind: 'evaluate'; t: number; designed: boolean; arrival: CarrierArrivalRecord[]; routes: RouteAssessment[];
+      selected: { heading: number; score: number; blocked: boolean; exits: boolean; keptCurrent: boolean } | null;
+      aim: { heading: number; score: number; blocked: boolean } | null }
+  | ({ kind: 'design-exit'; t: number } & ReturnType<typeof designExit>);
 
 function angleOfPoint(from: Vec2, to: Vec2): number {
   return Math.atan2(to.y - from.y, to.x - from.x);
