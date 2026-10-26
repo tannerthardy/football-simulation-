@@ -1393,6 +1393,37 @@ run plays with the assignment layer (`--telemetry full`):
 
   The first wrong stage is the release decision. The runner's arrival and
   the backer's flow each release a climber to a backer he cannot reach.
+
+  **One fix tried, reverted.** Declared on #311 before running: a joined
+  double holds its climber until he is no longer moving into the down man
+  and the backer is within reach (`near` or `ahead`). The runner's arrival
+  and the flow speed no longer release on their own. Results on identical
+  snaps, develop `a27ccd84` → fix:
+
+  | Set | Backers worked | Keepers holding | Release p50 | Never released |
+  |---|---|---|---|---|
+  | games 7–8 | 11/35 → 8/35 | 27/30 → 28/30 | 4.43 → 3.48 yd | 3 → 12 |
+  | games 9–10 | 4/24 → 4/24 | 17/19 → 16/19 | 4.30 → 4.09 yd | 5 → 9 |
+  | Phase II set | 18/53 → 17/53 | 38/43 → 40/43 | 4.11 → 3.84 yd | 9 → 17 |
+
+  - Matched restage, seeds 7–8: 52 of 276 snaps change, all runs (run
+    yards 4.88 → 4.40; passes identical). Plain develop replayed twice
+    changes 0.
+  - Doubled linemen making first contact: 1 → 0, 2 → 2, 7 → 4.
+  - Over 20 release-contract scenes fail (`combo-transfer`,
+    `planned-climb-fit`, `combination-access-plan`). They fail through the
+    "moving into" hold, not through the removed triggers.
+
+  It fails the declared criteria: backer work falls and a keeper set falls.
+  The losses are well-timed releases, made at 1.15–1.55 s with the backer
+  3.1–4.8 yd away (S7-P041, S7-P043, S8-P012, S8-P025, S10-P009). The hold
+  delays each by 0.2–1.0 s, and the backer gets past. A climber leaving at
+  the right moment is usually still pressed into the down man; that is what
+  a double is. So "stopped moving into him" can't be a precondition to
+  leave.
+
+  Untested, the next single question: the runner-arriving-only release
+  (0 of 14 worked) on its own, with the `inward` test left out.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
