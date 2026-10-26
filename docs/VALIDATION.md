@@ -68,6 +68,48 @@ perception, applied force or the cause of a fall. Mark those cases **needs trace
 not confirmed physics failures. Use existing recording levels to collect the
 missing state only for the selected mechanism. Preserve unsuccessful examples.
 
+## Building the film pack
+
+```sh
+npm ci --no-audit --no-fund
+npm run film-pack -- --seed 101 --games 12 --out out/film-pack/review
+```
+
+Use Node 22.23.3 and a fresh ignored output directory. This plays the same
+Ironmen/Comets teams and consecutive game seeds as `npm run replay`. The
+existing detectors read those same recorded games. `manifest.json` records the
+develop base, actual HEAD and engine/tool/lockfile hashes, resolved settings,
+roster/input identity, selection version, exclusions, strata and selected IDs.
+Keep the manifest with its source: later engine changes can change the plays
+behind the same IDs. Build duration is separate in `build.json` so the manifest
+contains no wall-clock values.
+
+Watch the HTML parts in `index.md` order, using the default **Film review order**
+grouping. Each standalone part uses the existing replay renderer, light body
+frames and fewer than 15,000,000 UTF-8 bytes. The ordinary group is a seeded
+proportional sample of 120 eligible run/pass plays across kind, down, distance
+(≤3, 4–7, 8+) and offensive field zone (own 20 and in, middle, opponent 20 and
+in). Every non-empty cell gets at least one play; if cells exceed the quota,
+the tool explicitly expands it. Nullified, unfilmed and invalid situations are
+excluded and counted. Ordinary selection precedes any inspection of gains or
+detector results.
+
+The remaining unique plays supply up to 40 **watch first** clips, ranked by
+uncapped eligible detector-event frequency times severity, with at most ten
+selected per detector; then up to 20 **big plays** (20+ yard gains, sacks or
+turnovers). Shortages are reported, never padded. Alerts indicate where to look,
+not confirmed defects, and this enriched queue is not a population defect rate.
+The 20 before/after pair slots are explicitly empty for F2, which writes a
+separate source-qualified sidecar. No play appears in two groups.
+
+Raw original clips and uncapped detector events stay in the pack's `raw/`
+directory for offline inspection. Only the indexed HTML parts are publication
+size-limited; do not commit the generated pack. Light film shows body facing
+and travel, not hidden perception, intention or applied force. Those questions
+still need the existing selected-play traces. The small native determinism
+test builds one game twice and requires identical manifest and film bytes;
+synthetic tests cover stratification, caps, exclusions and duplicate prevention.
+
 ## Film weirdness detectors
 
 A person watching ordinary film finds things the averages hide: a motion man
