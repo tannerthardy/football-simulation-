@@ -292,7 +292,7 @@ problem), resolved.
 | [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
 | [RUN-12](#run-12) | Run blockers lost on their assignments (film, Oct 23) | G2 | high | in work |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
-| [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed) |
+| [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
 | [TKL-4](#tkl-4) | Defenders turn their backs on the ball carrier | G1 | medium | on |
 | [TKL-5](#tkl-5) | "Reach" means different things in each tackle branch | G1, G10 | high | in work (#264 needs rework) |
@@ -854,6 +854,24 @@ Carried over from the issue register; each was measured on an older develop.
   the line of sight rotates every step (the slow hip chase). **Next
   (proposed, not built):** bypass to the near hip only when his attainable
   speed covers the runner's across speed; otherwise keep the intercept line.
+- **Aim jump named** ([evidence](reviews/pursuit-aim-jump.md), 2026-10-26,
+  develop `a27ccd84`):
+  - **Mechanism: forecast acceleration whiplash on a marginal chase.**
+    `pursuitPoint` turns one 0.2 s difference of seen speed into a trend
+    (V = speed + acceleration·τ). Ordinary runner speed changes are within
+    NFL's range on the same operator, yet they swing V by 1–3 yd/s.
+  - For a slower pursuer the chooser's slack curve is near-tied, so that swing
+    flips feasible↔fallback or hops the least-bad point between t = 0 and the
+    horizon.
+  - Slow pursuers at 6–15 yd, 8,375 windows: holding only the acceleration
+    term equal removes 35% of intercept jumps and 51% of aim turns over 15°.
+    No other input removes more than 8% / 20%.
+  - Frozen reproducers: s7 G1-P115 LB_W at 3.05 s (the acceleration term
+    alone flips F 2.9 → B 3.0) and s8 G1-P111 LB_M at 3.60 s (fallback hop).
+  - It's a bug in the chase layer (Defense). #296 can close.
+  - **Next (proposed, not built):** estimate the speed trend from about
+    0.4–0.6 s of seen pictures. Then, if needed, a commitment margin on the
+    chosen time.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
