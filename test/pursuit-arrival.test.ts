@@ -10,7 +10,8 @@ beforeAll(() => {
   const { saved } = captureOrdinaryPlay({ seed: 7, play: 2, minPlay: 1, maxSteps: 2 });
   // Full constructor replay equality is checked inside the capture, including
   // result/events/replay. We do not assert that the bad pursuit stays bad.
-  native = freezeNative(saved, 'SS', 'RB', [4.25, 4.30]);
+  // Clocks whose full 3 s forecast horizon ends inside the recorded play (to 7.1 s).
+  native = freezeNative(saved, 'SS', 'RB', [4.0, 4.05]);
 }, 30_000);
 
 describe('frozen native pursuit arrival experiment', () => {

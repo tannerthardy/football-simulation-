@@ -257,6 +257,7 @@ problem), resolved.
 | [COV-5](#cov-5) | Older coverage contracts that fail or are unproven | G3 | high | open (next for Coverage) |
 | [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | on (orientation technique); run-fit and ball-play turns open |
 | [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | in work (cost fixture #271; pilot #269) |
+| [COV-8](#cov-8) | Trailing man defenders can't find the ball | G3, G4 | high | open (logged with the throw-sight change) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
@@ -1635,6 +1636,44 @@ From the issue register:
 
 ## Ball and quarterback
 
+<a id="cov-8"></a>
+### COV-8: Trailing man defenders can't find the ball
+
+- **What:** since the throw reaction keys off what each defender sees
+  (`src/sim/throw-sight.ts`, INFO-1), a man defender running with his back
+  to the quarterback learns of the throw only when the ball enters his view
+  or when his receiver visibly turns for it (his perceived body facing and
+  speed, within 3 yd). Before, every defender broke on the ball one reaction
+  time after the exact release.
+- **Effect** (PR tier against the COV-6 branch, seeds 7 and 8): INT
+  5.1 → 3.8% and 5.2 → 3.3% (moved on seed 8), 20+ yd completions
+  16.0 → 18.0% and 13.3 → 17.3% (moved on seed 8), YPA +0.34 and +0.94.
+  Landed anyway (Tanner, 2026-10-26): the old reaction was hidden
+  information, and this gap names the missing mechanism.
+- **Matched split** (smash, four verts, mesh vs Cover 1/2/3, 40 plays
+  each, develop `9654b03` vs the PR; identical up to the release): of
+  1,053 non-DL defenders with the ball in view at the release, none
+  reacted more than 0.1 s later than on develop, so the view gate itself
+  is clean. Of 1,306 with the release behind the shoulder line, the ball
+  enters view at a median 0.55 s and they react at 0.75 s (develop: a
+  fixed 0.30 s), and **856 never react before the play ends** (develop: 5).
+  Only 41 get the receiver look-back cue. Mean yards per play on those
+  plays 7.45 → 9.09 (CEO check, seed 11).
+- **Missing mechanism:** a head turn separate from the hips. A coverage
+  defender with his back to the QB looks back at moments he could know
+  to look: his receiver's visible turn or hands, the expected timing of
+  the route stem (from the QB alignment and the snap he saw), or a
+  teammate's "ball" call. Looking costs him awareness of his receiver
+  (a staler picture of his man while his head is back). Ratings
+  (ball skills, awareness) change how often and how well he looks, not
+  whether he sees a ball that is in view. Body facing stands in for gaze
+  today.
+- **Next:** build that look-back. Judge on the same matched 360 plays:
+  the behind-the-shoulder bucket must react, without a fixed timer. Then
+  check separation at the catch, PBU and INT on contested go and fade
+  throws. Don't cap deep completions. Stop rule: two attempts, then
+  re-diagnose.
+
 <a id="ball-1"></a>
 ### BALL-1: Too many interceptions
 
@@ -2014,6 +2053,12 @@ From the outside audit (`audit`):
   information alone barely moved designed runs; the large jumps came from
   what was deleted with the leak (the scramble cue here, the layout span in
   TKL-5).
+- **Throw reaction used the exact release time** (*landed*, COV-8 PR):
+  `sawThrow` in `behaviors/defense.ts` now waits on the first tick the
+  ball was in the defender's own view (`ThrowSight`), or, for a man
+  defender, on his receiver's visible turn for the ball. A QB windup read
+  is kept for defenders keying the QB. The leftover gap is
+  [COV-8](#cov-8).
 - **Run recognition uses the global handoff time** (`recognition.ts`), whether
   or not the defender could see the mesh.
   *Landed* (#280): run/pass ball cues come from the defender's pictures (a
