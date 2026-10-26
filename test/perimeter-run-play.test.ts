@@ -29,18 +29,66 @@ function corner(kind: 'alley' | 'force', side = 1) {
   // The receiver comes at him low, as a stalk; the ball is still in the backfield.
   const cue: Perceived = { pos: { x: 41, y: a.pos.y - side * .5 }, vel: { x: 4, y: side * .2 }, facing: 0, stance: 'low', pose: 'up', carrying: false, age: .25 };
   const far: Perceived = { pos: { x: 70, y: 50 }, vel: { x: 0, y: 0 }, facing: 0, stance: 'high', pose: 'up', carrying: false, age: .25 };
-  sim.see = (_o, target) => structuredClone(target === r ? cue : target === sim.qb ? { ...far, pos: { x: 36, y: 26 }, carrying: true }
-    : target === sim.slot('RB') ? { ...far, pos: { x: 36, y: 25 } } : far);
+  const pictures = { qb: { ...far, pos: { x: 36, y: 26 }, carrying: true } as Perceived,
+    back: { ...far, pos: { x: 36, y: 25 } } as Perceived };
+  sim.see = (_o, target) => structuredClone(target === r ? cue : target === sim.qb ? pictures.qb
+    : target === sim.slot('RB') ? pictures.back : far);
   const man = new ManCoverage(a, sim, r, false, 'D', side, { initialPosition: cue.pos });
   a.behavior = man;
   expect(showsBlock(a, sim, r, cue)).toBe(true);
-  return { sim, a, man };
+  return { sim, a, man, cue, pictures, r };
 }
 
 describe('a perimeter man defender plays pass first', () => {
-  it.each([-1, 1])('stays on his receiver when the receiver comes to block, side=%s', side => {
+  it.each([-1, 1])('STALK_SQUEEZE=0: stays on his receiver when the receiver comes to block, side=%s', side => {
+    vi.stubEnv('STALK_SQUEEZE', '0');
     const f = corner('alley', side);
     expect(f.man.update(f.a, f.sim)).toEqual(f.man.trackReceiver(f.a, f.sim));
+  });
+  // STALK_SQUEEZE (COV-7): he plays through the stalk instead of backpedalling
+  // on a blocker or running around him to the alley.
+  it.each([-1, 1])('squeezes the stalk on the flow side, within hand reach of him, side=%s', side => {
+    const f = corner('alley', side);
+    const command = f.man.update(f.a, f.sim);
+    const man = f.man.trackReceiver(f.a, f.sim);
+    expect(command).not.toEqual(man);
+    // He meets the receiver coming at him instead of giving ground.
+    expect(command.vel.x).toBeLessThan(Math.min(0, man.vel.x));
+    // On the flow side (the backfield is inside, at y 25), but his offset is
+    // capped at hand reach of the receiver: less lateral run than the alley fit.
+    expect(Math.sign(command.vel.y)).toBe(-side);
+    vi.stubEnv('PASS_FIRST', '0');
+    const alley = corner('alley', side);
+    expect(Math.abs(command.vel.y)).toBeLessThan(Math.abs(alley.man.update(alley.a, alley.sim).vel.y));
+  });
+  it('returns to man on an upright release, and takes his fit only on an exchange he sees', () => {
+    const f = corner('alley');
+    const squeeze = f.man.update(f.a, f.sim);
+    // The back with the ball and the QB without it: an exchange in his pictures.
+    f.pictures.back = { ...f.pictures.back, carrying: true };
+    f.pictures.qb = { ...f.pictures.qb, carrying: false };
+    const fit = f.man.update(f.a, f.sim);
+    expect(fit).not.toEqual(squeeze);
+    expect(fit).not.toEqual(f.man.trackReceiver(f.a, f.sim));
+    // A fresh marker with the receiver upright and running never squeezes.
+    const g = corner('alley');
+    Object.assign(g.cue, { stance: 'high', vel: { x: 6, y: 0 } });
+    expect(g.man.update(g.a, g.sim)).toEqual(g.man.trackReceiver(g.a, g.sim));
+  });
+  it('a route runner stemming into his hands is a release, not a stalk', () => {
+    // Ordinary dropbacks (seeds 7/8): a receiver releasing at 2.5-3.8 yd/s came
+    // within hand reach facing the corner, and that contact geometry alone
+    // admitted the squeeze. Without low pads in his picture it is a route.
+    const f = corner('alley');
+    Object.assign(f.cue, { stance: null, vel: { x: 3.5, y: 0 } });
+    f.a.body.pos = { x: f.cue.pos.x + .7, y: f.cue.pos.y };
+    expect(showsBlock(f.a, f.sim, f.r, f.cue)).toBe(true);
+    expect(f.man.update(f.a, f.sim)).toEqual(f.man.trackReceiver(f.a, f.sim));
+    // The same picture with his pads low is a stalk.
+    const g = corner('alley');
+    Object.assign(g.cue, { vel: { x: 3.5, y: 0 } });
+    g.a.body.pos = { x: g.cue.pos.x + .7, y: g.cue.pos.y };
+    expect(g.man.update(g.a, g.sim)).not.toEqual(g.man.trackReceiver(g.a, g.sim));
   });
   it('the force player still comes to the run off the same picture', () => {
     const f = corner('force');

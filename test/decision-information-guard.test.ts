@@ -74,4 +74,14 @@ describe('decision-code information guard', () => {
       && /\bsim\.scrambled\b/.test(readFileSync(join(root, file), 'utf8')));
     expect(scrambled).toEqual([]);
   });
+
+  it('has no defensive decision reading the called receiver block look', () => {
+    // COV-7: a corner sees a stalk only in his pictures of the receiver, never
+    // the call's tag, its release clock or the receiver's behavior object.
+    const offense = new Set(['src/sim/assign.ts', 'src/sim/behaviors/block-look.ts', 'src/playbook/types.ts']);
+    const look = /\breceiverBlockLook\b|\bReceiverBlockLook\b|block-look\.js/;
+    const readers = sources(join(root, 'src')).map(path => relative(root, path).split('\\').join('/'))
+      .filter(file => !offense.has(file) && look.test(readFileSync(join(root, file), 'utf8')));
+    expect(readers).toEqual([]);
+  });
 });

@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 92 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 92 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms, and so did `STALK_SQUEEZE` (G3, COV-7). At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -23,6 +23,7 @@ There are 92 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `LIVE_GAPS` | on | default | run | `src/sim/live-gaps.ts:25` | — |
 | `PASS_KICK` | on | default (G5, 2026-10-22) | trenches | `src/sim/behaviors/blocking.ts:332` | review 2: drop the off path. Vertical pass set against edge rushers (ported from `claude/run-game-v3`); decided by edge-rep first contact and tackle retreat vs tracking |
 | `PASS_FIRST` | on | default (G2) | defense | `src/sim/behaviors/defense.ts:37` | review 2: drop the off path |
+| `STALK_SQUEEZE` | on | default (G3, COV-7, 2026-10-26) | coverage | `src/sim/behaviors/defense.ts:47` | review 2: drop the off path. A pass-first man corner who reads run and sees his receiver stalk him plays through the block (closes downhill on the flow side within hand reach) instead of backpedalling on a blocker; an upright release returns him to man, a seen exchange sends him to his fit. `=0` is the retain-man arm in `scripts/diag/cov7-abandonment.ts` |
 | `PULL_READ` | on | default | defense | `src/sim/run-fits.ts:192` | — |
 | `PURSUE_AROUND` | on | default | defense | `src/sim/behaviors/common.ts:249` | — |
 | `READ_EYES` | on | default | defense | `src/sim/run-read.ts:42` | — |

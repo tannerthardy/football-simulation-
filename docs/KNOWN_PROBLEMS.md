@@ -307,7 +307,7 @@ problem), resolved.
 | [COV-4](#cov-4) | Defenders react late to jet motion | G3 | low | on |
 | [COV-5](#cov-5) | Older coverage contracts that fail or are unproven | G3 | high | open (next for Coverage) |
 | [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | on (orientation technique); run-fit and ball-play turns open |
-| [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | in work (cost fixture #271; pilot #269) |
+| [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | in work (squeeze #295) |
 | [COV-8](#cov-8) | Trailing man defenders can't find the ball | G3, G4 | high | open (logged with the throw-sight change) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
@@ -1890,6 +1890,15 @@ From the issue register:
   arms changes beyond 0.1 yd. The
   design for the leave-or-stay choice and the evidence its code PR owes are
   in the review; code waits for COV-6.
+- **Squeeze the stalk** (`STALK_SQUEEZE`, on; [review](reviews/cov7-squeeze.md)):
+  a pass-first man corner who reads run and sees low pads on his man closes
+  downhill on him instead of backpedalling; an upright release returns him to
+  man, a seen exchange to his fit. It fired on 9 ordinary passes until
+  admission required low pads: a route stemming into his hands had passed
+  the contact-geometry block test. Seeds 7/8 matched (`58ae15d7`): 71 of
+  102 runs, 0 of 171 passes; paired grid 0 of 7,896. Run arm re-recorded on
+  default switches. Open: the installed alley fit holds a corner ~5 yd off
+  a runner after a seen exchange (s7 P3).
 
 ## Ball and quarterback
 
