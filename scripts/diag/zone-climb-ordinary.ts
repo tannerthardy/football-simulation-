@@ -47,7 +47,7 @@ function capture(): void {
 }
 
 type Job = { keeper: Agent | null; climber: Agent; dl: Agent | null; lb: Agent | null; combo: Combination | null;
-  released: number; workedBy: string | null; workedAt: number; lbArrive: number; close: number; dlArrive: number; dlHeld: string | null; dlHit: boolean };
+  released: number; releaseDistance: number | null; workedBy: string | null; workedAt: number; lbArrive: number; close: number; dlArrive: number; dlHeld: string | null; dlHit: boolean };
 
 function measure(): void {
   const plays = deserialize(readFileSync(input)) as Saved[];
@@ -57,7 +57,7 @@ function measure(): void {
     sim.tick();
     const dir = sim.attackDir('O'), jobs: Job[] = [];
     const job = (keeper: Agent | null, climber: Agent, dl: Agent | null, lb: Agent | null, combo: Combination | null): Job =>
-      ({ keeper, climber, dl, lb, combo, released: -1, workedBy: null, workedAt: -1, lbArrive: -1, close: Infinity, dlArrive: -1, dlHeld: null, dlHit: false });
+      ({ keeper, climber, dl, lb, combo, released: -1, releaseDistance: null, workedBy: null, workedAt: -1, lbArrive: -1, close: Infinity, dlArrive: -1, dlHeld: null, dlHit: false });
     for (const o of sim.offense) {
       const plan = o.behavior instanceof RunBlocker ? o.behavior.plan : null, c = plan?.combination;
       if (c && c.members[1] === o) jobs.push(job(c.members[0], o, c.defender, c.backer, c));
@@ -70,7 +70,12 @@ function measure(): void {
       sim.tick();
       if (sim.carrier && sim.carrier !== sim.qb && sim.carrier.team === 'O') carrier = sim.carrier;
       for (const j of jobs) {
-        if (j.released < 0 && (j.combo ? j.combo.released : true)) j.released = t();
+        if (j.released < 0 && (j.combo ? j.combo.released : true)) {
+          j.released = t();
+          // The member who leaves the double (either may), at the tick the combination releases.
+          const leaver = [j.climber, j.keeper].find(m => m?.behavior instanceof RunBlocker && m.behavior.plan.departure) ?? j.climber;
+          if (j.lb) j.releaseDistance = +Math.hypot(leaver.pos.x - j.lb.pos.x, leaver.pos.y - j.lb.pos.y).toFixed(2);
+        }
         if (j.lb && j.lbArrive < 0) {
           const e = sim.engagements.find(e => e.defender === j.lb);
           if (e && j.workedAt < 0) { j.workedAt = t(); j.workedBy = e.blocker.slot; }
@@ -88,7 +93,7 @@ function measure(): void {
     return { id: p.id, concept: p.concept, front: p.front, ms: Math.round(performance.now() - started), yards: result.yards,
       first: first && first.b !== undefined ? { slot: sim.agents[first.b].slot, t: first.t } : null,
       jobs: jobs.map(j => ({ keeper: j.keeper?.slot ?? null, climber: j.climber.slot, dl: j.dl?.slot ?? null, lb: j.lb?.slot ?? null,
-        released: j.released, lbWorked: j.lb ? j.workedAt >= 0 && (j.lbArrive < 0 || j.workedAt <= j.lbArrive) : null,
+        released: j.released, releaseDistance: j.releaseDistance, lbWorked: j.lb ? j.workedAt >= 0 && (j.lbArrive < 0 || j.workedAt <= j.lbArrive) : null,
         workedBy: j.workedBy, workedAt: j.workedAt, lbArrive: j.lbArrive, closest: Number.isFinite(j.close) ? +j.close.toFixed(2) : null,
         // The runner may never reach the down man's level (tackled short): reported, not scored as protection.
         dlProtected: j.dl ? (j.dlArrive < 0 ? null : !j.dlHit && j.dlHeld !== null) : null, dlHeld: j.dlHeld, dlArrive: j.dlArrive })) };

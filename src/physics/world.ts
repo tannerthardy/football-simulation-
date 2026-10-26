@@ -456,6 +456,35 @@ function unsupportedLean(b: Body, plan: Plan, leanX: number, leanY: number,
   return Math.min(mag, Math.max(0, unsupported - absorb));
 }
 
+/** Gait gets the budget first; lean fills what is left; the attained net is
+ * then rechecked. Writes [gait x, gait y, lean x, lean y, gait scale] to out.
+ * Opposing gait and lean can leave a positive lean share after gait alone is
+ * clipped to the cap, so the net is scaled back to the cap: no ground force
+ * beyond traction, even at zero traction. Exported for the law test. */
+export function allocateGroundForce(out: Float64Array, lx: number, ly: number,
+  leanX: number, leanY: number, cap: number): Float64Array {
+  let px = leanX, py = leanY, r = 1;
+  const tfx = lx + leanX, tfy = ly + leanY;
+  if (tfx * tfx + tfy * tfy > cap * cap) {
+    const qa = px * px + py * py, qb = lx * px + ly * py, qc = lx * lx + ly * ly - cap * cap;
+    const scale = qa > 1e-12 ? clamp((-qb + Math.sqrt(Math.max(0, qb * qb - qa * qc))) / qa, 0, 1) : 0;
+    px *= scale; py *= scale;
+    if (qc > 0) {
+      r = cap / Math.max(1e-9, Math.hypot(lx, ly));
+      lx *= r; ly *= r;
+    }
+    // Recheck the attained net after clipping gait separately from lean.
+    const attained = Math.hypot(lx + px, ly + py);
+    if (attained > cap + 1e-9) {
+      const k = cap / attained;
+      lx *= k; ly *= k; px *= k; py *= k; r *= k;
+    }
+  }
+  out[0] = lx; out[1] = ly; out[2] = px; out[3] = py; out[4] = r;
+  return out;
+}
+const allocation = new Float64Array(5);
+
 export class World {
   readonly bodies: Body[];
   /** Production uses analytic recovery except during a lower hold. The
@@ -1719,16 +1748,10 @@ export class World {
         // Availability already limits gait during recovery. Reserve actual
         // unused effort after ordinary translation and yaw, for every body.
         const cap = capacity;
-        let px = leanX, py = leanY;
-        if (tfx * tfx + tfy * tfy > cap * cap) {
-          const qa = px * px + py * py, qb = lx * px + ly * py, qc = lx * lx + ly * ly - cap * cap;
-          const scale = qa > 1e-12 ? clamp((-qb + Math.sqrt(Math.max(0, qb * qb - qa * qc))) / qa, 0, 1) : 0;
-          px *= scale; py *= scale;
-          if (qc > 0) {
-            const r = cap / Math.max(1e-9, Math.hypot(lx, ly));
-            lx *= r; ly *= r; actionX *= r; actionY *= r;
-          }
-        }
+        allocateGroundForce(allocation, lx, ly, leanX, leanY, cap);
+        lx = allocation[0]; ly = allocation[1];
+        const px = allocation[2], py = allocation[3];
+        actionX *= allocation[4]; actionY *= allocation[4];
         fx += lx + px; fy += ly + py;
         this.braceX[i] = px; this.braceY[i] = py;
         const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;

@@ -3,12 +3,14 @@ import type { Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import type { Intent } from '../physics/world.js';
 import type { Agent, Behavior, TeamSide } from './agent.js';
+import type { CarrierDecisionRecord } from './behaviors/carrier.js';
 import { PassProtector, RunBlocker } from './behaviors/blocking.js';
 import { facingTechnique } from './coverage/orientation.js';
 import { movementObjective, type MovementObjective } from './movement-objective.js';
 import type { Perceived } from './perception.js';
 import type { PlaySim } from './playsim.js';
 import type { PursuitPredictionRecord } from './pursuit-prediction.js';
+import type { ClimbAccessRecord } from './climb-access.js';
 
 export interface CommandTraceSelection {
   actor: { team: TeamSide; slot: string } | { playerId: string };
@@ -18,8 +20,8 @@ export interface CommandTraceSelection {
 }
 
 const vector = (v: Vec2): Vec2 => ({ x: v.x, y: v.y });
-const identity = (a: Agent) => ({ playerId: a.player.id, team: a.team, slot: a.slot, index: a.idx });
-type ActorIdentity = ReturnType<typeof identity>;
+export const identity = (a: Agent) => ({ playerId: a.player.id, team: a.team, slot: a.slot, index: a.idx });
+export type ActorIdentity = ReturnType<typeof identity>;
 
 export interface CommandSnapshot extends Intent {
   objective?: MovementObjective;
@@ -27,7 +29,7 @@ export interface CommandSnapshot extends Intent {
   facingTechnique?: string;
 }
 
-function commandSnapshot(c: Intent): CommandSnapshot {
+export function commandSnapshot(c: Intent): CommandSnapshot {
   const goal = movementObjective(c);
   const technique = facingTechnique(c)?.label;
   return { vel: vector(c.vel), facing: c.facing, effort: c.effort, cutSkill: c.cutSkill, squeeze: c.squeeze,
@@ -51,6 +53,13 @@ type BehaviorSnapshot = ReturnType<typeof behaviorSnapshot>;
 export interface BlockingResponsibility {
   target: ActorIdentity | null;
   workKind: string;
+}
+
+/** The two calls every blocking-responsibility hook makes. The selected-actor trace and the all-blockers
+ * ledger both implement them; a hook site holds whichever `sim.blockingSink(a)` returns. */
+export interface BlockingSink {
+  blockingState(a: Agent): BlockingResponsibility | undefined;
+  blockingChange(a: Agent, previous: BlockingResponsibility | undefined, reason: string, sim: PlaySim): void;
 }
 
 export interface BlockingResponsibilityChange {
@@ -94,11 +103,16 @@ export interface CommandTraceStep {
   endpoint?: ReturnType<typeof stateSnapshot> & { phase: string; ballKind: string };
   observations: Array<{ phase: TracePhase; target: ActorIdentity; requestedAt: number; age: number | null; sampledAt: number | null }>;
   pursuit?: Array<{ phase: TracePhase; target: ActorIdentity; data: PursuitPredictionRecord }>;
+  /** Departure access searches, as computed; surface keys resolved to identities. */
+  climbAccess?: Array<{ phase: TracePhase; target: ActorIdentity; data: ClimbAccessRecord;
+    surfaces: ActorIdentity[]; }>;
   blockingChanges?: BlockingResponsibilityChange[];
+  /** The ball carrier's arrival evidence, route assessment and design-exit operands. */
+  carrier?: Array<{ phase: TracePhase; data: CarrierDecisionRecord }>;
 }
 
 /** Numbers within 1e-9 are omitted from the rewrite list; raw/final retain full precision. */
-function materiallyDifferent(a: unknown, b: unknown): boolean {
+export function materiallyDifferent(a: unknown, b: unknown): boolean {
   if (typeof a === 'number' && typeof b === 'number') return Math.abs(a - b) > 1e-9 || Number.isNaN(a) !== Number.isNaN(b);
   if (a === b) return false;
   if (a && b && typeof a === 'object' && typeof b === 'object') {
@@ -155,6 +169,19 @@ export class CommandTrace {
     if (data.kind === 'chase' && snapshot.kind === 'chase') snapshot.requests = data.requests
       .map(r => ({ stage: r.stage, command: commandSnapshot(r.command) }));
     (this.pending.pursuit ??= []).push({ phase: this.phase, target: identity(target), data: snapshot });
+  }
+
+  /** Values the carrier already computed for its own decision; nothing re-evaluated. */
+  carrier(data: CarrierDecisionRecord): void {
+    if (!this.pending) return;
+    (this.pending.carrier ??= []).push({ phase: this.phase, data: structuredClone(data) });
+  }
+
+  /** The search supplied its own computed values; nothing is re-evaluated. */
+  climbAccess(target: Agent, data: ClimbAccessRecord, sim: PlaySim): void {
+    if (!this.pending) return;
+    (this.pending.climbAccess ??= []).push({ phase: this.phase, target: identity(target), data: structuredClone(data),
+      surfaces: data.surfaces.map(s => identity(sim.agents[s.key])) });
   }
 
   decisionStart(a: Agent, sim: PlaySim): BehaviorSnapshot | undefined {

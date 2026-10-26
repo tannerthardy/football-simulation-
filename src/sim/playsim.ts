@@ -49,7 +49,8 @@ import { SnapMind } from './mind.js';
 import { orderedDefense, orderedOffense } from './lineup.js';
 import { SNAP_REACT, VISIBLE, planSnap, snapResponse, type SnapCount } from './snap-count.js';
 import { ReplayTrace } from './telemetry.js';
-import { CommandTrace, type CommandTraceSelection } from './command-trace.js';
+import { CommandTrace, type BlockingSink, type CommandTraceSelection } from './command-trace.js';
+import { ResponsibilityLedger } from './responsibility-ledger.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
@@ -156,6 +157,8 @@ export class PlaySim {
   readonly throwSight = new ThrowSight();
   readonly trace: ReplayTrace;
   private commandTrace?: CommandTrace;
+  /** Optional passive recorder of every offensive blocker's responsibility (docs/COMMAND_TRACE.md). Off unless asked for. */
+  responsibility?: ResponsibilityLedger;
   private readonly record: boolean;
   private readonly recordEvery: number;
   private tickCount = 0;
@@ -955,6 +958,7 @@ export class PlaySim {
   run(): PlayResult {
     if (this.snapAssessment && !this.snapAssessment.snapPermitted) {
       this.whistle('timeout', { x: this.los, y: this.ballY });
+      this.responsibility?.seal(this);
       return this.buildResult();
     }
     this.event('snap', this.slot('C') ?? this.qb);
@@ -963,7 +967,18 @@ export class PlaySim {
       const c = this.carrier ?? this.qb;
       this.whistle('timeout', c.pos);
     }
+    this.responsibility?.seal(this);
     return this.buildResult();
+  }
+
+  /** Responsibility recording for every offensive blocker; passive, off unless requested here. */
+  recordResponsibility(): ResponsibilityLedger {
+    return this.responsibility = new ResponsibilityLedger();
+  }
+
+  /** Where a blocking-responsibility hook reports: the all-blockers ledger if on (it forwards to the selected trace), else the selected trace. */
+  blockingSink(a: Agent): BlockingSink | undefined {
+    return this.responsibility ?? this.commandTraceFor(a);
   }
 
   /** Optional selected-actor recording, independent of packed replay and its cadence. */
@@ -984,6 +999,8 @@ export class PlaySim {
     const t = this.t;
     const commandTrace = this.commandTrace;
     commandTrace?.begin(this);
+    const ledger = this.responsibility;
+    ledger?.begin(this);
     this.perception.record(this.agents, this.carrier?.idx ?? null);
     for (const a of this.agents) {
       let nearby = 0;
@@ -1008,16 +1025,20 @@ export class PlaySim {
       // Reaction delays control, not collisions: he can still be pushed.
       const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
       commandTrace?.decisionEnd(a, owner, before, command, t >= a.snapReadyAt, this);
+      ledger?.decision(a, owner, command, t >= a.snapReadyAt);
       const coverage = a.behavior.kind === 'man' || a.behavior.kind === 'zone';
       let contained = coverage ? containCoverage(a, command) : command;
       commandTrace?.command(a, 'containment', contained);
+      ledger?.stage('containment', a, contained);
       if (coverage) {
         contained = coverageOrientation(a).steer(a, t, this.dt, contained);
         commandTrace?.command(a, 'coverage-orientation', contained);
+        ledger?.stage('coverage-orientation', a, contained);
       }
       commandTrace?.at('open-to-ball');
       this.cmds[i] = openToBall(a, this, contained);
       commandTrace?.command(a, 'open-to-ball', this.cmds[i]);
+      ledger?.stage('open-to-ball', a, this.cmds[i]);
     }
 
     // Intents: the decisions, refined by the techniques that own contact.
@@ -1029,12 +1050,15 @@ export class PlaySim {
     this.dives.clear();
     this.lunges.clear();
     commandTrace?.stage('technique-intents', this.intents);
+    ledger?.stageAll('technique-intents', this.intents);
     commandTrace?.at('engagement');
     updateEngagements(this, this.intents);
     commandTrace?.stage('engagement', this.intents);
+    ledger?.stageAll('engagement', this.intents);
     commandTrace?.at('tackle-bond');
     if (this.bond) updateBond(this, this.bond, this.intents);
     commandTrace?.stage('tackle-bond', this.intents);
+    ledger?.stageAll('tackle-bond', this.intents);
     // Constraint ownership and last-step touch are felt by the actor. Free
     // movement forecasts must not pretend these loads or joints are absent.
     const constrained=new Set(this.world.joints.filter(j=>j.kind!=='grasp'||!j.broken)
@@ -1054,12 +1078,14 @@ export class PlaySim {
       return predictCalledMotion(seen, called, b.profile);
     },{now:t,constrained});
     commandTrace?.stage('spacing', this.intents);
+    ledger?.stageAll('spacing', this.intents);
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
     for (const a of this.agents) if (t < a.snapReadyAt) {
       this.intents[a.idx] = { ...this.intents[a.idx], vel: { x: 0, y: 0 }, facing: a.facing,
         push: 0, dive: undefined, lunge: undefined, posture: a.body.support!.posture };
     }
     commandTrace?.stage('snap-guard', this.intents);
+    ledger?.stageAll('snap-guard', this.intents);
     commandTrace?.final(this.intents);
     commandTrace?.at('execution');
 
@@ -1109,6 +1135,7 @@ export class PlaySim {
     if (this.record && (this.tickCount++ % this.recordEvery === 0 || this.phase === 'dead')) this.recordFrame();
     this.t = round2(this.t + this.dt);
     commandTrace?.finish(this);
+    ledger?.finish(this);
   }
 
   /** Touches, first contact, falls and the pile's external impulse from the step. */

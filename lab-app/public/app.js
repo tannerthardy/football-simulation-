@@ -15,6 +15,7 @@ const LAYERS = [
   ['ball', 'Ball flight', '#ffe6a0', 'Recorded flight path, aimed point and arrival, catch point, QB\'s pending target.'],
   ['pursuit', 'Pursuit intercepts', '#5cff8d', 'Selected player: intercept point from his own pursuit estimate. Green feasible, orange fallback.'],
   ['fits', 'Run fits & blocks', '#b8f7c8', 'Gap fits, block assignments, drive direction, pull paths, pass-set lanes. Gap letters are drawn from OL spots at the snap.'],
+  ['duty', 'Blocking responsibility', '#63f2f5', 'Each blocker\'s current duty (solid cyan, dashed when he is departing a double team) against the one he was given at the snap (grey dotted), with hand load. A recorder: no block is graded.'],
   ['trails', 'Trails', '#aaaaaa', 'Path so far.'],
   ['coach', "Coach's hand", '#ff9d2e', 'Your changes: original spot, moved spot, and an H badge on the player.'],
 ];
@@ -23,7 +24,7 @@ const KEY_EVENTS = new Set(['snap', 'handoff', 'pitch', 'throw', 'throwaway', 'c
 const S = {
   catalog: null, rosters: null, recipe: null, scenario: null, preview: null, run: null, runs: [], runA: null, runB: null,
   t: 0, playing: false, view: 'all22', selected: -1, second: -1, traces: new Map(), notes: [],
-  layers: { motion: false, job: false, owner: true, perception: true, contact: false, support: true, ball: true, pursuit: true, fits: false, trails: true, coach: true },
+  layers: { motion: false, job: false, owner: true, perception: true, contact: false, support: true, ball: true, pursuit: true, fits: false, duty: false, trails: true, coach: true },
   filter: { team: 'all', group: 'all', near: 0 }, labels: 'slot', arrange: false, zoom: 1, pan: [0, 0], hits: [], building: null,
 };
 try { Object.assign(S.layers, JSON.parse(localStorage.getItem('lab-layers') ?? '{}')); } catch { /* storage may be unavailable */ }
@@ -278,6 +279,19 @@ function renderBatch(results, scenario) {
 
 // ------------------------------------------------------------------ trace
 
+/** The selected blocker's responsibility ledger: his duty over time, why it changed, and his initial job's facts. */
+function dutyHtml(run, i) {
+  const R = run.responsibility, b = R?.timeline.find(x => x.actor === i);
+  if (!b) return '';
+  const nm = (j) => j == null ? '–' : esc(name(run, j)), f = (v) => v == null ? '–' : v.toFixed(2);
+  const spans = b.spans.map(s => `<div class="ev" data-t="${s.from}">${s.from.toFixed(2)}–${s.to.toFixed(2)}s ${esc(s.kind)} → ${nm(s.target)}${s.departure ? ' · departing' : ''} <span class="hint">(${esc(s.because)})</span></div>`).join('');
+  const jobs = R.jobs.filter(j => j.members.includes(i)).map(j => {
+    const fc = j.firstCarrierContact;
+    return `<div class="hint">Job ${j.id}: ${j.members.map(m => nm(m)).join(' + ')} → ${nm(j.backer)} · stratum ${j.stratum} · member load first ${f(j.firstMemberLoad)}s · first carrier contact ${fc ? f(fc.t) + 's (' + fc.defenders.map(nm).join(', ') + ')' : '–'} · his target\'s own contact ${j.targetCarrierContacts.length ? f(Math.min(...j.targetCarrierContacts.map(c => c.t))) + 's' : '–'}</div>`;
+  }).join('');
+  return `<h3>Responsibility</h3>${spans}${jobs}<div class="hint">A recorder: contact and load are not a block grade. A dash means not recorded.</div>`;
+}
+
 function wantsTrace() { return S.selected >= 0 && S.run && (S.layers.owner || S.layers.pursuit || true); }
 async function loadTraceIfNeeded() {
   if (!wantsTrace()) return;
@@ -345,6 +359,7 @@ function renderPlayer() {
       ${ag?.runFit ? `<dt>Run fit</dt><dd>${esc(ag.runFit.gap)} ${esc(ag.runFit.technique)} · ${esc(ag.runFit.kind)} · ${esc(ag.runFit.pace)}</dd>` : ''}
       ${ag?.belief ? `<dt>Read</dt><dd>${esc(ag.belief.read)} · pass ${(ag.belief.passProbability * 100).toFixed(0)}%</dd>` : ''}
     </dl>
+    ${dutyHtml(run, i)}
     <h3>Command trace at ${S.t.toFixed(2)}s</h3>
     <div class="trace">${traceText(step)}</div>
     <h3>Recent decisions</h3>
@@ -352,6 +367,16 @@ function renderPlayer() {
     <h3>His events</h3>
     ${evs.length ? evs.map(e => `<div class="ev" data-t="${e.t}">${e.t.toFixed(2)}s ${esc(e.type)}${e.b != null && e.a === i ? ' → ' + esc(name(run, e.b)) : e.a !== i ? ' ← ' + esc(name(run, e.a)) : ''}</div>`).join('') : '<div class="hint">None.</div>'}
     <details><summary>Ratings</summary><div class="ratings">${Object.entries(r.ratings).map(([k, v]) => `<span>${k}</span><b>${v}</b>`).join('')}</div></details></div>`;
+}
+
+/** The runner's own decision: arrival evidence, chosen lane, and the designed track's exit gate. */
+function carrierLine(r) {
+  const n = (v) => v == null ? '-' : v.toFixed(2);
+  if (r.kind === 'design-exit')
+    return `design exit: ${r.exit ? 'LEAVE' : 'stay'} · aim blocked ${r.aimBlocked} · best ${n(r.bestScore)} vs aim ${n(r.aimScore)} + ${n(r.margin)}`;
+  const held = r.arrival.filter(a => a.blockerBonus > 0).map(a => `${a.defender.slot} +${a.blockerBonus}`);
+  return `runner (${r.designed ? 'designed' : 'open field'}): lane ${n(r.selected?.heading)} score ${n(r.selected?.score)}${r.selected?.blocked ? ' blocked' : ''}`
+    + `${r.aim ? ` · aim ${n(r.aim.score)}${r.aim.blocked ? ' blocked' : ''}` : ''} · ${r.arrival.length} threats seen${held.length ? `, held-up credit: ${held.join(', ')}` : ''}`;
 }
 
 function traceText(step) {
@@ -374,6 +399,7 @@ function traceText(step) {
     lines.push(`looked at ${seen.size}: ${[...seen].map(([k, o]) => `${k} ${o.age == null ? '?' : o.age.toFixed(2) + 's'}`).join(', ')}`);
   }
   for (const p of step.pursuit ?? []) lines.push(p.data.kind === 'intercept' ? `pursuit: ${p.data.prediction.estimate.status} at ${p.data.prediction.t.toFixed(2)}s` : `pursuit: chase (${p.data.planner})`);
+  for (const c of step.carrier ?? []) lines.push(carrierLine(c.data));
   if (step.start.engagement) lines.push(`engaged: ${step.start.engagement.type} ${step.start.engagement.move ?? ''} with ${step.start.engagement.blocker.slot}/${step.start.engagement.defender.slot}`);
   return esc(lines.join('\n'));
 }
