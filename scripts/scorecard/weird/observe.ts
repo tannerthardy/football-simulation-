@@ -92,6 +92,11 @@ export function fill(sim: PlaySim, w: WAgent[]): void {
     o.inBond = !!bond && (bond.carrier === a || bond.tacklers.includes(a));
     o.blocks = -1;
     o.job = a.behavior.kind;
+    o.manTarget = null;
+    if (a.team === 'D' && a.behavior.kind === 'man') {
+      const man = a.behavior as unknown as { target?: Agent };
+      o.manTarget = man.target?.idx ?? null;
+    }
     if (a.team === 'O') {
       const e = a.engagement;
       if (e && (e.blocker === a || e.helpers.includes(a))) o.blocks = e.defender.idx;
@@ -129,6 +134,8 @@ export function watchPlay(sim: PlaySim, clock: (ms: number) => void = () => {}):
     tracker.feed({ t: round2(step.t), phase: 'pre', isPass: sim.isPass, offense: true, runner: -1, agents: w, contacts: step.list, motion });
   }
   const frame: WFrame = { t: 0, phase: 'live', isPass: sim.isPass, offense: true, runner: -1, agents: w };
+  const recent: WFrame[] = [];
+  let flight: WFrame[] = [];
   const olCount = w.filter((a) => a.team === 'O' && OL.has(a.slot)).length;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
@@ -140,7 +147,37 @@ export function watchPlay(sim: PlaySim, clock: (ms: number) => void = () => {}):
     frame.isPass = sim.isPass;
     frame.offense = sim.possession === 'O';
     frame.runner = c && c.team === 'O' && (c !== sim.qb || sim.scrambled) ? c.idx : -1;
+    frame.qb = sim.qb.idx;
+    frame.scrambled = sim.scrambled;
+    frame.ended = sim.phase === 'dead';
+    const b = sim.ball;
+    frame.ball = { kind: b.kind };
+    if ('flight' in b) Object.assign(frame.ball, {
+      x: b.flight.pos.x, y: b.flight.pos.y, z: b.flight.pos.z,
+      vx: b.flight.vel.x, vy: b.flight.vel.y,
+    });
+    if (b.kind === 'air') Object.assign(frame.ball, {
+      target: b.target?.idx ?? -1, releaseT: b.releaseT,
+      throwaway: b.throwaway, deflected: b.deflected,
+    });
+    // Read installed data only. liveAim() would acquire a new line picture;
+    // calling it here would change what the player consumes.
+    const opts = c?.behavior.kind === 'carrier'
+      ? (c.behavior as unknown as { opts?: { aim?: { x: number; y: number }; run?: unknown } }).opts : undefined;
+    frame.runAim = !sim.isPass && opts?.run && opts.aim ? { ...opts.aim } : undefined;
+    // One immutable copy per tick, shared by the short onset window and the
+    // current flight. No controllers, perception, flight prediction or RNG.
+    const sample: WFrame = { ...frame, agents: w.map(a => ({ ...a })), recent: undefined, flight: undefined };
+    if (b.kind === 'air') {
+      if (flight[0]?.ball?.releaseT !== b.releaseT) flight = [];
+      flight.push(sample);
+    }
+    frame.recent = recent;
+    frame.flight = flight;
     tracker.feed(frame);
+    if (b.kind !== 'air') flight = [];
+    recent.push(sample);
+    while (recent.length && frame.t - recent[0].t > .55 + 1e-9) recent.shift();
     tracker.count('ticks');
     tracker.count('olFrames', olCount);
     if (frame.runner >= 0) {

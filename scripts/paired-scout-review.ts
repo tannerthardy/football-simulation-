@@ -73,7 +73,10 @@ export function pairedQueue(directory: string): Queue {
           inputSha256: saved.setupSha256, arm: 'original-paired-prefix', game: 1, seed: all.seed, node: saved.identity.node},
         context: {responsibility: null, rawRequest: null, finalRequest: null, achieved: null, contactSupport: null, observations: null, opportunity: null},
         review: null, film: null};
-      q.episodes.push(episode); q.recipe.quotas[event.detector]++;
+      q.episodes.push(episode);
+      // This consumer preserves the original five-detector cohort; new scout
+      // families do not silently change its declared sampling recipe.
+      if (event.detector in q.recipe.quotas) q.recipe.quotas[event.detector as keyof typeof q.recipe.quotas]++;
       const filmName = `${entry.id}/original.html`; checked(filmName);
       films.entries.push({key, path: filmName, sha256: manifest[filmName], engineSha256: saved.identity.engineSha256,
         settingsSha256: episode.source.settingsSha256!, inputSha256: saved.setupSha256, playId: entry.id});
