@@ -24,6 +24,12 @@ const DEBT: Record<string, { reads: number; why: string }> = {
   'src/sim/run-fits.ts': { reads: 2, why: 'legacy direct-caller fallback when no acquired read is supplied' },
 };
 
+// The ball carrier decides from his own pictures (pose, perceived position,
+// visible contact), not the engagement record or true support state. Remaining
+// reads, with exact counts, until each is repaired.
+const RUNNER_HIDDEN = /\.(?:engagement\b|isDown\()/g;
+const RUNNER_DEBT = { reads: 2, why: 'QB slide threat (true positions and isDown) and squeeze bodies in command()' };
+
 function sources(dir: string): string[] {
   return readdirSync(dir).flatMap(name => {
     const path = join(dir, name);
@@ -49,6 +55,14 @@ describe('decision-code information guard', () => {
   it('keeps each debt file at or below its listed count', () => {
     const grown = Object.entries(DEBT).filter(([file, debt]) => (reads.get(file) ?? 0) > debt.reads);
     expect(grown).toEqual([]);
+  });
+
+  it('keeps the ball carrier off the engagement record and true support state', () => {
+    const carrier = readFileSync(join(root, 'src/sim/behaviors/carrier.ts'), 'utf8');
+    // The designed phase's lead blocker and closing threats come from the runner's pictures.
+    const designed = carrier.slice(carrier.indexOf('// Designed phase: press the aiming point.'), carrier.indexOf('// QB slide:'));
+    expect(designed.match(RUNNER_HIDDEN) ?? []).toEqual([]);
+    expect((carrier.match(RUNNER_HIDDEN) ?? []).length).toBeLessThanOrEqual(RUNNER_DEBT.reads);
   });
 
   it('has no defensive decision reading the private scramble flag', () => {
