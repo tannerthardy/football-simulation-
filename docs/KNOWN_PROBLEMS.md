@@ -1522,6 +1522,21 @@ run plays with the assignment layer (`--telemetry full`):
   and timing, so they stay on; they show the tackles can't hold an edge.
   In the P019 pass-cutoff scene the tackle also loses edge contact with
   `PASS_FEEL` on (`test/pass-cutoff-approach.test.ts` is pinned).
+- **P019 hold duration** (2026-10-26, Main Engine). The pinned P019 scene
+  (`test/pass-cutoff-approach.test.ts`, cutoff approach with PASS_KICK and
+  five other settings off) now asserts only that both tackles get loaded
+  contact with their edge rusher, on their feet, before the throw. How long
+  they hold is this problem's measure, re-measured on defaults in Stage 1
+  step 5 (week 2):
+  - develop: the LT holds DE_W through the 3.15 s throw;
+  - turning on actual traction (Stage 1 step 2): the LT, lifted 0.11–0.23
+    of body weight by the lower-padded DE from 0.75 s, has less yaw grip;
+    DE_W rounds him from 2.0 s and he is free at 3.0 s, just before the
+    3.05 s throw;
+  - leg force-velocity (#297): DE_W turns the corner at 2.9 s and the throw
+    moves to 3.2 s;
+  - on defaults (pins off), develop already loses both edges (LT at
+    1.5–1.75 s, RT by 2.5 s) and the QB is sacked.
 - **G5** (2026-10-22, `trenches/G5-edge-hands`). Two mechanisms, each
   measured with `scripts/diag/edge-rep.py` on 8 games (seed 301) against
   tracking:
