@@ -12,7 +12,8 @@ import {RunBlocker} from '../src/sim/behaviors/blocking.js';
 // PAD_LEVERAGE and DL_ANCHOR change the contact forces this recorded scene is staged on.
 // SNAP_REACT plans every start from the count; this recorded moment is staged on the installed get-off.
 // ARM_PRESS puts a press through the hands at the bench max; this scene is staged on arm-force hands (KNOWN_PROBLEMS RUN-11, re-record by review 2).
-vi.hoisted(() => { process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; process.env.FRONT_MENU = '0'; process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; process.env.SNAP_REACT = '0'; process.env.LB_LANDMARK = '0'; process.env.ARM_PRESS = '0'; });
+// STALK_SQUEEZE: CB_W squeezes his stalking receiver from 0.70 s on this Duo, moving LB_M 0.2 yd by the recorded 2.15 s strike; staged on the retain-man corner (re-record by review 2).
+vi.hoisted(() => { process.env.STALK_SQUEEZE = '0'; process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0'; process.env.FRONT_MENU = '0'; process.env.PAD_LEVERAGE = '0'; process.env.DL_ANCHOR = '0'; process.env.SNAP_REACT = '0'; process.env.LB_LANDMARK = '0'; process.env.ARM_PRESS = '0'; });
 
 const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/combo-strike-access.json.gz',import.meta.url))).toString()) as {setup:PlaySetup};
 function stage(t:number){

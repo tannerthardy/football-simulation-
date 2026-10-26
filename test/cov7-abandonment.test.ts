@@ -1,15 +1,15 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { captureSetup } from '../scripts/diag/saved-play.js';
-import { abandonmentSetup, BLOCK_LOOK_UNTIL, compareAbandonment } from '../scripts/diag/cov7-abandonment.js';
+import { abandonmentSetup, BLOCK_LOOK_UNTIL, compareAbandonment, Z_SPLIT } from '../scripts/diag/cov7-abandonment.js';
 import { ReceiverBlockLook } from '../src/sim/behaviors/block-look.js';
 import { RouteRunner } from '../src/sim/behaviors/receiver.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { ReceiverForecast } from '../src/sim/receiver-forecast.js';
 import type { Agent } from '../src/sim/agent.js';
-// EDGE_CONTAIN keeps the blocked edge home on the toss, so the corner never reaches the runner; this native run
-// benefit is staged on unbounded edge widening (re-record by review 2).
-// SEAL_HOLD changes how far the toss's blockers carry their men; the corner's run participation is staged without it.
-vi.hoisted(() => { process.env.EDGE_CONTAIN = '0'; process.env.SEAL_HOLD = '0'; });
+// Recorded on default switches. The original run benefit was staged with
+// EDGE_CONTAIN=0 SEAL_HOLD=0, whose off paths review 2 drops; on defaults the
+// corner's run participation is measured below by approach and, at the declared
+// wider split, by the tackle itself.
 
 describe('installed non-contact receiver block look', () => {
   it('keeps the release conditional in the QB prior and physically executes the called transition', () => {
@@ -61,7 +61,7 @@ describe('installed non-contact receiver block look', () => {
 
 describe('COV-7 active run benefit and legal abandonment cost', () => {
   let run: ReturnType<typeof compareAbandonment>, pass: ReturnType<typeof compareAbandonment>;
-  beforeAll(() => { run = compareAbandonment('run'); pass = compareAbandonment('deception'); });
+  beforeAll(() => { run = compareAbandonment('run'); pass = compareAbandonment('deception'); }, 120_000);
 
   it('activates on both calls with the same acquired primary picture and own body, without a carrying-back cue', () => {
     const cue = (row: any, slot: string) => row.observations.find((o: any) => o.target.slot === slot)?.cue;
@@ -131,14 +131,59 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     }
   });
 
-  it('shows real runner participation on the run, while preserving both deceptive incompletions', () => {
+  it('brings the corner to the runner on the run, while preserving both deceptive incompletions', () => {
     expect(run.summary.legality.support.forwardPassRestrictionApplicable).toBe(false);
     expect(run.summary.legality.support.maxIneligibleForwardEdgeBeforeRelease).toBeNull();
-    expect(run.summary.legality.support.runCornerContacts.some(e => e.type === 'tackle_wrap')).toBe(true);
-    // With acquired possession (INFO-1) the corner's wrap is an assist and a
-    // teammate finishes the tackle; the support arm still ends the run.
+    // On defaults the contained edge and LB_W finish the toss in every arm; the
+    // corner who plays the run arrives within reach, the retained man stays
+    // on Z more than 4 yd away.
+    const approach = run.summary.squeeze.carrierApproach;
+    expect(approach.man!.distance).toBeGreaterThan(4);
+    expect(approach.squeeze!.distance).toBeLessThan(1.5);
     expect(run.summary.result.support.outcome).toBe('tackle');
     expect(pass.summary.result.man.outcome).toBe('incomplete');
     expect(pass.summary.result.support.outcome).toBe('incomplete');
+  });
+});
+
+describe('COV-7 squeeze: the stalk-and-go cost and the wider split (defaults)', () => {
+  // The vertical call and the 11 2/3 yd split were declared with their
+  // predictions before any squeeze run (c2d8c404).
+  const WIDE = 11 + 2 / 3;
+  let vertical: ReturnType<typeof compareAbandonment>, wideRun: ReturnType<typeof compareAbandonment>,
+    widePass: ReturnType<typeof compareAbandonment>;
+  beforeAll(() => {
+    vertical = compareAbandonment('vertical');
+    wideRun = compareAbandonment('run', BLOCK_LOOK_UNTIL, WIDE);
+    widePass = compareAbandonment('deception', BLOCK_LOOK_UNTIL, WIDE);
+  }, 120_000);
+
+  it('pays for the squeeze in depth on the go, not in lateral abandonment', () => {
+    const q = vertical.summary.squeeze, release = vertical.summary.atRelease;
+    expect(q.firstSqueeze).toBe(vertical.summary.firstSupport);
+    expect(q.returnedToMan).toBe(vertical.summary.returnedToMan);
+    // Z is past the squeezed corner at the throw; the man corner is level.
+    expect(q.atRelease!.depthLeverage).toBeLessThan(-2);
+    expect(release.man!.depthLeverage).toBeGreaterThan(-0.5);
+    // ...but he stays nearer Z's line than the corner who ran to the alley.
+    expect(q.atRelease!.lateralGap).toBeLessThan(release.support!.lateralGap - 0.5);
+  });
+
+  it('at the wider split the run corner makes the play that retained man gives up', () => {
+    const man = wideRun.summary.result.man, support = wideRun.summary.result.support;
+    expect(wideRun.summary.legality.support.runCornerContacts.some(e => e.type === 'tackle')).toBe(true);
+    expect(man.yards).toBeGreaterThan(support.yards + 10);
+    expect(wideRun.summary.squeeze.result.yards).toBeLessThan(man.yards - 10);
+    expect(wideRun.summary.squeeze.carrierApproach.squeeze!.distance).toBeLessThan(1.5);
+  });
+
+  it('at the wider split the permissive alley run is the one PA completes on', () => {
+    expect(widePass.summary.result.support.outcome).not.toBe('incomplete');
+    expect(widePass.summary.result.man.outcome).toBe('incomplete');
+    expect(widePass.summary.squeeze.result.outcome).toBe('incomplete');
+  });
+
+  it('keeps the original fixture split', () => {
+    expect(Z_SPLIT).toBeCloseTo(8 + 1 / 3);
   });
 });

@@ -380,7 +380,11 @@ export class ManCoverage implements Behavior {
         this.squeezing = false;
         return this.blockingSupport(a, sim, qbCue);
       }
-      if (blockingLook) {
+      // Admission needs the stalk itself: low pads on his man. A route runner
+      // stemming at him also comes within hand reach facing him, and on
+      // dropbacks that contact geometry alone admitted the squeeze. Once he is
+      // squeezing, the contact he is playing keeps it.
+      if (blockingLook && (this.squeezing || receiverCue.stance === 'low')) {
         if (!this.squeezing && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'stalk-squeeze',
           chose: `squeeze:${R.slot}`, options: [`man:${R.slot}`, `squeeze:${R.slot}`, 'installed-fit'],
           cue: `run belief; ${R.slot} stance=${receiverCue.stance}, vx=${receiverCue.vel.x.toFixed(2)}; ${back!.slot} carrying=${backCue.carrying}, QB carrying=${qbCue.carrying}`,

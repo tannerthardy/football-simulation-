@@ -75,6 +75,21 @@ describe('a perimeter man defender plays pass first', () => {
     Object.assign(g.cue, { stance: 'high', vel: { x: 6, y: 0 } });
     expect(g.man.update(g.a, g.sim)).toEqual(g.man.trackReceiver(g.a, g.sim));
   });
+  it('a route runner stemming into his hands is a release, not a stalk', () => {
+    // Ordinary dropbacks (seeds 7/8): a receiver releasing at 2.5-3.8 yd/s came
+    // within hand reach facing the corner, and that contact geometry alone
+    // admitted the squeeze. Without low pads in his picture it is a route.
+    const f = corner('alley');
+    Object.assign(f.cue, { stance: null, vel: { x: 3.5, y: 0 } });
+    f.a.body.pos = { x: f.cue.pos.x + .7, y: f.cue.pos.y };
+    expect(showsBlock(f.a, f.sim, f.r, f.cue)).toBe(true);
+    expect(f.man.update(f.a, f.sim)).toEqual(f.man.trackReceiver(f.a, f.sim));
+    // The same picture with his pads low is a stalk.
+    const g = corner('alley');
+    Object.assign(g.cue, { vel: { x: 3.5, y: 0 } });
+    g.a.body.pos = { x: g.cue.pos.x + .7, y: g.cue.pos.y };
+    expect(g.man.update(g.a, g.sim)).not.toEqual(g.man.trackReceiver(g.a, g.sim));
+  });
   it('the force player still comes to the run off the same picture', () => {
     const f = corner('force');
     expect(f.man.update(f.a, f.sim)).not.toEqual(f.man.trackReceiver(f.a, f.sim));
