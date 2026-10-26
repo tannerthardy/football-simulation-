@@ -24,12 +24,17 @@ import type { Agent, Behavior } from '../agent.js';
 import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
 import { BallCarrier } from './carrier.js';
+import { reactionTimeFor } from '../../players/physical.js';
 import { handoffReach } from '../ball-transfer.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
 import type { ReplayTelemetryFrame } from '../types.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
+
+/** A defender's reaction as a QB can allow for it without seeing it: an
+ * average recognizer's. */
+const TYPICAL_REACTION = reactionTimeFor(0.5);
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -540,32 +545,56 @@ export class QBPass implements Behavior {
     return stand();
   }
 
+  /** Is there an escape he can actually run? He asks the same evaluator
+   * that will steer the run, from his own pictures (blind-side rushers felt
+   * late, as his pressure read has them), as if he tucked it now: a heading
+   * on which no defender he sees can get to him in the next two seconds,
+   * with the same 0.35 s to spare the old lane check wanted. Running for
+   * yards, that lane must take him a yard past the line; under pressure,
+   * getting out of the rush is enough. */
   private shouldScramble(a: Agent, sim: PlaySim, panic: boolean): boolean {
     const mobility = 0.5 * clamp((5.0 - a.player.measurables.forty) / 0.6, 0, 1) + 0.5 * a.r('elusiveness');
     if (!panic && mobility < 0.18) return false;
-    // Is there a lane? Check points a few yards upfield; under pressure also
-    // escapes outside the pocket to either side.
-    let open = 0;
-    const lanes = [-4, -2, 0, 2, 4].map((dy) => ({ x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + dy, 1, FIELD_WIDTH - 1) }));
-    if (panic) for (const side of [-1, 1]) lanes.push({ x: a.pos.x + 1, y: clamp(a.pos.y + side * 5.5, 1, FIELD_WIDTH - 1) });
-    // Each defender as he has him, not where he truly is: an unseen rusher
-    // behind his shoulder is still where he last registered him.
-    const threats = sim.defense.filter((d) => !d.isDown(sim.t))
-      .map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d) }));
-    for (const q of lanes) {
-      // His own run as scramble() will ask for it: the carrier's full-speed
-      // sprint from the velocity he has now, with the same estimate as the
-      // defenders'. A set QB starts from rest, not at speed.
-      const myT = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, q);
-      let margin = Infinity;
-      for (const { d, seen, held } of threats) {
-        // A rusher still in a block is held as long as the pressure check feels him held.
-        const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 1) + held;
-        margin = Math.min(margin, tt - myT);
-      }
-      if (margin > 0.35) open++;
-    }
-    return open >= (panic ? 1 : 2) && (panic ? mobility > 0.2 || sim.rng.chance(0.3) : true);
+    const box = this.pocketBox(a, sim);
+    const run = new BallCarrier({ qb: true }, a).scout(a, sim, {
+      see: (d) => this.felt(a, sim, d),
+      lag: (_d, seen, h) => this.startLag(a, sim, box, seen, h) - 0.35,
+    });
+    if (!run?.clean) return false;
+    if (!panic) return run.gain >= (sim.los - a.pos.x) * sim.attackDir(a.team) + 1;
+    return mobility > 0.2 || sim.rng.chance(0.3);
+  }
+
+  /** The pocket as he pictures it from his tackles: a defender off the
+   * rush keys the QB once he is outside it or at its front. */
+  private pocketBox(a: Agent, sim: PlaySim): { front: number; lo: number; hi: number } {
+    const lt = sim.slot('LT'), rt = sim.slot('RT');
+    if (!lt || !rt) return { front: sim.los - 2, lo: -Infinity, hi: Infinity };
+    const l = sim.see(a, lt).pos, r = sim.see(a, rt).pos;
+    return { front: Math.max(sim.los - 2, Math.min(l.x, r.x) - 1),
+      lo: Math.min(l.y, r.y) - 1.5, hi: Math.max(l.y, r.y) + 1.5 };
+  }
+
+  /** How long a defender he sees takes to start after him on heading `h`. A
+   * rusher (at or behind the line, or closing on him) is already coming. A
+   * defender in coverage stays in his drop until the QB's run shows outside
+   * the pocket, then reacts. He cannot see a defender's reaction time, so he
+   * allows a typical one. */
+  private startLag(a: Agent, sim: PlaySim, box: { front: number; lo: number; hi: number },
+    seen: Perceived, h: number): number {
+    const rx = a.pos.x - seen.pos.x, ry = a.pos.y - seen.pos.y;
+    const closing = (seen.vel.x * rx + seen.vel.y * ry) / (Math.hypot(rx, ry) || 1);
+    if (closing > 1 || seen.pos.x <= sim.los) return 0;
+    // Where his run on this heading first shows: the pocket's front or its side.
+    if (a.pos.x >= box.front || a.pos.y < box.lo || a.pos.y > box.hi) return TYPICAL_REACTION;
+    const hx = Math.cos(h), hy = Math.sin(h);
+    let k = Infinity;
+    if (hx > 1e-6) k = Math.min(k, (box.front - a.pos.x) / hx);
+    if (hy > 1e-6) k = Math.min(k, (box.hi - a.pos.y) / hy);
+    if (hy < -1e-6) k = Math.min(k, (box.lo - a.pos.y) / hy);
+    if (!Number.isFinite(k)) return 2 + TYPICAL_REACTION;
+    const me = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
+    return timeToReach(me, { x: a.pos.x + hx * k, y: a.pos.y + hy * k }) + TYPICAL_REACTION;
   }
 
   private scramble(a: Agent, sim: PlaySim): MoveCommand {
