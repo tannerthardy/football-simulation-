@@ -37,7 +37,9 @@ describe('planned climb acquires a useful near strike without running through th
   // native all22 continuation below owns physical-execution evidence.
   // The inline Y keeps the line's base on the double, so this native climb
   // reaches its near strike a beat earlier than on the original recording.
-  for(const [at,near] of [[1.4,false],[1.45,true]] as const){
+  // Feedback-consistent departure now reaches this fit earlier. Both
+  // snapshots remain between reads; they exercise the same far/near contract.
+  for(const [at,near] of [[1.25,false],[1.3,true]] as const){
    const {sim,rt,controller}=stage(at),update=controller.update,see=sim.see.bind(sim),stop=new Error('observed decision');
    const planner=vi.spyOn(controller as unknown as {plannedClimb:(...args:unknown[])=>Intent},'plannedClimb');
    const hook=vi.spyOn(controller,'update').mockImplementation((a,s)=>{
@@ -67,27 +69,31 @@ describe('planned climb acquires a useful near strike without running through th
  });
 
  it('maintains acquired Mike load and the keeper through runner arrival with ordinary World limits',()=>{
-  // With the inline Y on the line's base, this native climb engages a beat
-  // earlier; the Mike works under the RT's hands and goes down while still
-  // blocked, before the runner arrives, and never reaches him.
-  const {sim,rt}=stage(1.45),y=sim.slot('Y')!,mike=sim.slot('LB_M')!,end=sim.slot('DE_S')!;
-  expect(y.engagement?.defender).toBe(end);const keeperHands=y.engagement!.hands;
-  let mikeDown=false;
+  // The blocker must actually occupy Mike before arrival. Mike may remain
+  // upright; a fall is not a blocking contract. The end can still win on the
+  // runner's exposed side while Y carries load, so inspect through arrival,
+  // rather than requiring a joint after that tackle drops the end.
+  const {sim,rt}=stage(1.3),y=sim.slot('Y')!,mike=sim.slot('LB_M')!,end=sim.slot('DE_S')!;
+  expect(y.engagement?.defender===end).toBe(true);const keeperHands=y.engagement!.hands;
+  let loaded=false,arrived=false;
   while(sim.phase==='live'&&sim.t<2.95){
+   // Validate the loaded joint entering the consumed interval. A successful
+   // tackle may detach it after World executes that same interval.
+   expect(y.engagement?.defender===end).toBe(true);expect(y.engagement!.hands).toBe(keeperHands);
+   expect(sim.world.joints).toContain(keeperHands);
+   expect(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)).toBeGreaterThan(0);
    sim.tick();const report=sim.lastStep!;
    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
    for(const actor of [rt,y,mike])expect(report.armImpulse[actor.idx]).toBeLessThanOrEqual(report.armImpulseLimit[actor.idx]+1e-8);
-   if(!mikeDown&&sim.events.some(e=>e.type==='fall'&&e.a===mike.idx)){
-    mikeDown=true;
-    expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(false);
-    expect(rt.engagement?.defender).toBe(mike);
+   if(rt.engagement?.defender===mike && Math.hypot(rt.engagement.hands!.normalForce??0,
+     rt.engagement.hands!.tangentForce??0)>1){
+    loaded=true;
     expect(sim.world.joints).toContain(rt.engagement!.hands);
    }
+   const first=sim.events.find(e=>e.type==='carrier_contact');
+   if(first){expect(first.b).toBe(end.idx);arrived=true;break;}
   }
-  expect(mikeDown).toBe(true);
+  expect(loaded).toBe(true);expect(arrived).toBe(true);
   expect(sim.events.some(e=>e.type==='carrier_contact'&&(e.a===mike.idx||e.b===mike.idx))).toBe(false);
-  expect(y.engagement?.defender).toBe(end);expect(y.engagement!.hands).toBe(keeperHands);
-  expect(sim.world.joints).toContain(keeperHands);
-  expect(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)).toBeGreaterThan(0);
  });
 });

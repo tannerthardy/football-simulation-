@@ -25,6 +25,7 @@ import { bodyRadius } from '../physics/bodyshape.js';
 import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
 import { coverageOrientation } from './coverage/orientation.js';
+import { ThrowSight } from './throw-sight.js';
 import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
@@ -151,6 +152,8 @@ export class PlaySim {
   readonly frames: Frame[] = [];
   readonly perception: PerceptionBuffer;
   readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
+  /** When each defender first had the current pass in view. */
+  readonly throwSight = new ThrowSight();
   readonly trace: ReplayTrace;
   private commandTrace?: CommandTrace;
   private readonly record: boolean;
@@ -991,6 +994,7 @@ export class PlaySim {
       a.mind.update(t, this.dt, a.body.energy, a.engagement ? 0.65 : Math.min(1, nearby / 4));
     }
     this.incidentalCatchReadiness.sense(this);
+    this.throwSight.sense(this);
     for (const d of this.defense) d.recog?.update(d, this);
 
     this.prepareJoinedRunBlocks();

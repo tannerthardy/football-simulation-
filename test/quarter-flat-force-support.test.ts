@@ -94,11 +94,11 @@ describe('acquired quarter-flat match retains its installed force duty',()=>{
     air.sim.throwAt=.7;air.sim.t=.7;
     air.sim.ball={kind:'air',flight:{pos:{x:43,y:air.a.pos.y,z:2},vel:{x:20,y:0,z:-1},drag:0},
       thrower:air.sim.qb,target:air.r,releaseT:.7,releaseX:35,intended:{x:45,y:air.a.pos.y,z:1.2},
-      arrivalT:.8,deflected:false,throwaway:false};
+      arrivalT:.8,deflected:false,throwaway:false}; air.sim.throwSight.stageRelease(air.sim, air.sim.throwAt);
     air.sim.ballPath=[{t:.8,x:44.8,y:air.a.pos.y,z:1.2}];
     expect(sawThrow(air.a,air.sim,air.r)).toBe(false);
     expect(air.update(.7)).toEqual(held.update(.7));
-    air.sim.throwAt=.01;air.a.tags.add('looking');
+    air.sim.throwAt=.01;air.sim.throwSight.stageRelease(air.sim, air.sim.throwAt);air.a.tags.add('looking');
     expect(sawThrow(air.a,air.sim,air.r)).toBe(true);
     const expected=playBall(air.a,air.sim,air.r);
     expect(air.update(.7)).toEqual(expected);expect(air.a.tags.has('onBall')).toBe(true);

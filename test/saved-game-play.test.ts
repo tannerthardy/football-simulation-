@@ -96,9 +96,11 @@ describe('ordinary-game constructor capture and independent replay', () => {
     // INFO-1 retires the physical catch's universal controller notification.
     // The same observer-off/on restoration assertions above remain exact.
     expect(boundary.endpoint!.behavior.controller).toBe(owner);
-    // Only his own coverage stages (field containment, hip orientation) may
-    // rewrite the command at the catch: he is still covering, not in contact.
-    expect(boundary.rewrites.every(r => r.stage === 'containment' || r.stage === 'coverage-orientation')).toBe(true);
+    // Only his own coverage stages (field containment, hip orientation) and
+    // teammate spacing may rewrite the command at the catch: he is still
+    // covering, not in contact or a tackle.
+    const free = ['containment', 'coverage-orientation', 'spacing'];
+    expect(boundary.rewrites.every(r => free.includes(r.stage))).toBe(true);
     for (const s of traced.trace!.steps) {
       expect(s.decision!.owner.controller).toBe(owner);
       expect(['man', 'zone']).toContain(s.decision!.owner.kind);

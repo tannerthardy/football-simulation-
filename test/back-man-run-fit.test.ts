@@ -255,7 +255,7 @@ describe('inside man players insert from their acquired back possession', () => 
       item.sim.throwAt = 1.4;
       item.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: CENTER_Y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
         thrower: item.sim.qb, target: item.r, releaseT: 1.4, releaseX: 35,
-        intended: { x: 46, y: CENTER_Y, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false };
+        intended: { x: 46, y: CENTER_Y, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false }; item.sim.throwSight.stageRelease(item.sim, item.sim.throwAt);
       item.sim.ballPath = [{ t: 1.9, x: 46, y: CENTER_Y, z: 1.2 }];
     }
     // The fixtures' old .20-second flight is still unrecognized. Hidden
@@ -264,6 +264,7 @@ describe('inside man players insert from their acquired back possession', () => 
     expect(f.update()).toEqual(held.update());
     expect(f.sim.rng).toEqual(held.sim.rng);
     f.sim.throwAt = expected.sim.throwAt = .1;
+    for (const item of [f, expected]) item.sim.throwSight.stageRelease(item.sim, item.sim.throwAt);
     for (const item of [f, expected]) {
       item.a.tags.add('looking');
       item.sim.ballPath = [{ t: item.sim.t + .1, x: item.a.pos.x - .2, y: item.a.pos.y, z: 1.2 }];
@@ -405,7 +406,7 @@ describe('back man markers preserve their installed alley support instead of rec
       f.sim.throwAt = 1.1;
       f.sim.ball = { kind: 'air', flight: { pos: { x: 43, y: CENTER_Y, z: 2 }, vel: { x: 20, y: 0, z: -1 }, drag: 0 },
         thrower: f.sim.qb, target: f.r, releaseT: 1.1, releaseX: 35,
-        intended: { x: 46, y: CENTER_Y, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false };
+        intended: { x: 46, y: CENTER_Y, z: 1.2 }, arrivalT: 1.9, deflected: false, throwaway: false }; f.sim.throwSight.stageRelease(f.sim, f.sim.throwAt);
       f.sim.ballPath = [{ t: 1.9, x: 46, y: CENTER_Y, z: 1.2 }];
     }
     expect(sawThrow(air.a, air.sim, air.r)).toBe(false);
@@ -413,6 +414,7 @@ describe('back man markers preserve their installed alley support instead of rec
     expect(air.sim.rng).toEqual(held.sim.rng);
     air.sim.throwAt = expected.sim.throwAt = .1;
     for (const item of [air, expected]) {
+      item.sim.throwSight.stageRelease(item.sim, item.sim.throwAt);
       item.a.tags.add('looking');
       item.sim.ballPath = [{ t: item.sim.t + .1, x: item.a.pos.x - .2, y: item.a.pos.y, z: 1.2 }];
     }
