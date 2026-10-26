@@ -20,8 +20,8 @@ export interface CommandTraceSelection {
 }
 
 const vector = (v: Vec2): Vec2 => ({ x: v.x, y: v.y });
-const identity = (a: Agent) => ({ playerId: a.player.id, team: a.team, slot: a.slot, index: a.idx });
-type ActorIdentity = ReturnType<typeof identity>;
+export const identity = (a: Agent) => ({ playerId: a.player.id, team: a.team, slot: a.slot, index: a.idx });
+export type ActorIdentity = ReturnType<typeof identity>;
 
 export interface CommandSnapshot extends Intent {
   objective?: MovementObjective;
@@ -29,7 +29,7 @@ export interface CommandSnapshot extends Intent {
   facingTechnique?: string;
 }
 
-function commandSnapshot(c: Intent): CommandSnapshot {
+export function commandSnapshot(c: Intent): CommandSnapshot {
   const goal = movementObjective(c);
   const technique = facingTechnique(c)?.label;
   return { vel: vector(c.vel), facing: c.facing, effort: c.effort, cutSkill: c.cutSkill, squeeze: c.squeeze,
@@ -53,6 +53,13 @@ type BehaviorSnapshot = ReturnType<typeof behaviorSnapshot>;
 export interface BlockingResponsibility {
   target: ActorIdentity | null;
   workKind: string;
+}
+
+/** The two calls every blocking-responsibility hook makes. The selected-actor trace and the all-blockers
+ * ledger both implement them; a hook site holds whichever `sim.blockingSink(a)` returns. */
+export interface BlockingSink {
+  blockingState(a: Agent): BlockingResponsibility | undefined;
+  blockingChange(a: Agent, previous: BlockingResponsibility | undefined, reason: string, sim: PlaySim): void;
 }
 
 export interface BlockingResponsibilityChange {
@@ -105,7 +112,7 @@ export interface CommandTraceStep {
 }
 
 /** Numbers within 1e-9 are omitted from the rewrite list; raw/final retain full precision. */
-function materiallyDifferent(a: unknown, b: unknown): boolean {
+export function materiallyDifferent(a: unknown, b: unknown): boolean {
   if (typeof a === 'number' && typeof b === 'number') return Math.abs(a - b) > 1e-9 || Number.isNaN(a) !== Number.isNaN(b);
   if (a === b) return false;
   if (a && b && typeof a === 'object' && typeof b === 'object') {
