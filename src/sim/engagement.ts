@@ -720,9 +720,9 @@ const EDGE_CONTAIN = process.env.EDGE_CONTAIN !== '0';
  * (SEAL_HOLD=0 restores the unbounded seal correction). */
 const SEAL_HOLD = process.env.SEAL_HOLD !== '0';
 /** Experimental (HELPER_DRIVE=1, off): a run double's helper drives the man
- * along the track and holds only his width at his partner's hip, with no foot
- * replacement while his hands are loaded. It conflicts with helper-fit's
- * wrong-side contract (KNOWN_PROBLEMS RUN-12). */
+ * along the track and holds only his width at his partner's hip, not his
+ * partner's depth (KNOWN_PROBLEMS RUN-12). A helper on the wrong side still
+ * replaces his feet (helperFit). */
 const HELPER_DRIVE = process.env.HELPER_DRIVE === '1';
 
 /** Run release measured against the blocker's torso (LEVER_FACING=0: fixed frame). */
@@ -1611,10 +1611,7 @@ function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec
   const lat = latOf(axis);
   const sep = b.profile.radius + d.profile.radius;
   for (const h of e.helpers) {
-    // With his hands loaded on the man he works the surface he has; foot
-    // replacement is for a helper still finding it.
-    const loaded = !!(e.helperHands?.get(h)?.normalForce || e.helperHands?.get(h)?.tangentForce);
-    const recovery = e.type === 'run' && !(HELPER_DRIVE && loaded) ? helperFit(sim,e,h,axis) : null;
+    const recovery = e.type === 'run' ? helperFit(sim,e,h,axis) : null;
     if (recovery) { intents[h.idx] = recovery; continue; }
     const hs = Math.sign((h.pos.x - b.pos.x) * lat.x + (h.pos.y - b.pos.y) * lat.y) || e.side;
     const spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
