@@ -1481,6 +1481,47 @@ run plays with the assignment layer (`--telemetry full`):
   lane for the blocker on that side. It is not about his distance. Until
   then the double keeps moving the down man to him. The release triggers
   (`near`, `ahead`, `flow`, `arriving`) don't ask whether anyone has a lane.
+
+  **Second release fix tried, reverted; release changes stop here.**
+  Declared on #311 before running: no joined release while the member's
+  own route needs an exit around the down man, i.e. until the backer
+  declares to his side. On identical snaps, develop `4e6fed4e` → fix:
+
+  | Set | Backers worked | Keepers holding |
+  |---|---|---|
+  | games 7–8 | 11 → 10 | 27/30 → 28/31 |
+  | games 9–10 | 4 → 5 | 17/19 → 16/18 |
+  | Phase II | 18 → 16 | 38/43 → 34/41 |
+
+  - Doubles never released 17 → 34; climbers reaching 2 yd before the
+    carrier 30 → 28.
+  - Same-operator 8-game export: climbers per zone run 0.67 → 0.58, and
+    the backer touched first 74.5% → 60.7%.
+  - Matched restage: 37 of 285 snaps change, all runs.
+
+  A stacked backer usually doesn't declare in time, so the double just
+  stays and nobody climbs. That is two failed release holds (this one and
+  the `inward` hold), so release-rule changes stop.
+
+  *Re-diagnosis: the double doesn't move the down man.* Coaching's other
+  half is "push the down man to the backer". `trench/timeline.py` on the
+  8-game develop export, against the NFL values in
+  `docs/reviews/trench-timeline.md` (historical: the NFL tracking export
+  isn't in this workspace, so they need refreshing):
+
+  | | Sim | NFL (historical) |
+  |---|---|---|
+  | engaged OL sideways speed, outside zone | 0.75 yd/s | 3.0 |
+  | engaged OL sideways speed, inside zone | 0.50 yd/s | 1.25 |
+  | engaged DL depth at 3 s, outside zone | −0.15 | +1.0 |
+  | double duration, outside / inside zone | 1.7 / 1.7 s | 1.1 / 1.5 |
+
+  A down man the double doesn't carry stays between the climber and a
+  stacked backer, so no route leaves him. Next:
+  1. Re-measure the engaged-pair numbers against fresh NFL tracking.
+  2. Trace one stuck double's lateral request against what it achieves, to
+     separate the controller (what is asked, including SEAL_HOLD's kept
+     offset) from contact physics (PHY-1, #297).
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
