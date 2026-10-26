@@ -6,6 +6,8 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { resolveCatchOpportunities } from '../src/sim/catching.js';
 import { PlaySim } from '../src/sim/playsim.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 function contest(distance: number) {
   const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(7), 'O', 'OFF'), '11'),

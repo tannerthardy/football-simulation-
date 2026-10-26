@@ -6,6 +6,8 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { RunBlocker } from '../src/sim/behaviors/blocking.js';
 import { PlaySim } from '../src/sim/playsim.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 const offense = generateTeam(new Rng(31), 'Box offense', 'BOXO', { strength: .55 });
 const defense = generateTeam(new Rng(32), 'Box defense', 'BOXD', { strength: .55 });

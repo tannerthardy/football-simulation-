@@ -117,13 +117,13 @@ export class PassRusher implements Behavior {
   ) {
     const burst = clamp((1.8 - a.player.measurables.tenSplit) / 0.35, 0, 1);
     // SNAP_REACT plans every start from the count itself.
-    const scatter = sim.rng.normal(0, 0.03);
+    const scatter = sim.dice('rush', a).normal(0, 0.03);
     this.getOff = a.snapReadyAt = SNAP_REACT ? a.snapReadyAt : clamp(a.snapReadyAt + scatter, 0.02, 0.4);
     const edge = gap === 'C' || gap === 'D';
     const pw = 0.3 + a.r('passRushPower') + (a.profile.massKg - 120) / 60;
     const fi = 0.3 + a.r('passRushFinesse');
     const sp = edge ? 0.2 + burst * 1.2 + traits(a).bend * 0.5 : 0;
-    this.plan = sim.rng.weighted(['power', 'finesse', 'speed'] as const, [pw, fi, sp]);
+    this.plan = sim.dice('rush', a).weighted(['power', 'finesse', 'speed'] as const, [pw, fi, sp]);
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
@@ -177,7 +177,7 @@ export class Blitzer implements Behavior {
     private readonly gap: Gap,
     private readonly gapSign: number,
   ) {
-    const scatter = sim.rng.normal(0, 0.04);
+    const scatter = sim.dice('get-off', a).normal(0, 0.04);
     this.delay = a.snapReadyAt = SNAP_REACT ? a.snapReadyAt : clamp(a.snapReadyAt + scatter, 0.02, 0.4);
     void a;
   }
@@ -967,7 +967,7 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
-  if (nearPath && !a.tags.has('looking') && sim.rng.chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
+  if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
   // A defender already carrying the visible catcher must not brake out of
   // phase toward a stationary point on the flight. Keep his feet with the
   // receiver unless he can play the ball before that receiver's window.

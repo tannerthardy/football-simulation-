@@ -16,6 +16,8 @@ async function breakupThenTip(flag: string) {
   const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
   const { resolveCatchOpportunities } = await import('../src/sim/catching.js');
   const { PlaySim } = await import('../src/sim/playsim.js');
+  // Scene recorded, and roll forced, on the play's single random stream (see PlaySim.dice).
+  PlaySim.recordedSingleStream = true;
   const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(7), 'O', 'OFF'), '11'),
     defense: pickDefense(generateTeam(new Rng(19), 'D', 'DEF'), 'nickel'),
     offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },

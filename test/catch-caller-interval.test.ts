@@ -10,6 +10,8 @@ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Player } from '../src/players/types.js';
 import { resolveCatchOpportunities, TRACKING_REACH_BONUS } from '../src/sim/catching.js';
 import { PlaySim } from '../src/sim/playsim.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 type Case = {id:string;slot:'NB'|'H';player:Player;energy:number;t:number;retry:number;releaseT:number;
   tracking:boolean;deflected:boolean;body0:Vec2;body1:Vec2;ball0:Vec3;ball1:Vec3;ballVel:Vec3;
