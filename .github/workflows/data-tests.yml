@@ -1,7 +1,10 @@
 name: offline data tests
 
 on:
+  # Draft PRs skip CI; marking a PR ready for review runs it. Agents run
+  # these same checks locally while a PR is a draft.
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - 'test/**'
       - 'scripts/**'
@@ -16,8 +19,6 @@ on:
       - '**/uv.lock'
       - '.nvmrc'
       - '.github/workflows/data-tests.yml'
-  push:
-    branches: [develop]
   workflow_dispatch:
 
 # A new push to the same PR cancels the run still going for the old commit.
@@ -31,6 +32,7 @@ permissions:
 jobs:
   data:
     name: offline data
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
