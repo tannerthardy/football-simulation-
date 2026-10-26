@@ -48,6 +48,20 @@ describe('released combination access prototype',()=>{
   expect(clear.kind).toBe('direct');
   expect(c.body).toEqual(before);expect(JSON.stringify(sim.rng)).toBe(rng);
  });
+ it('records why each route was rejected without changing the result',()=>{
+  const {sim,c,d,b}=stage();c.body.vel={x:4,y:0};
+  const backer=sim.see(c,b), original={vel:{x:c.profile.vmax,y:0},facing:0};
+  const surfaces=[{key:d.idx,radius:d.profile.radius,seen:{...sim.see(c,d),pos:{x:c.pos.x+.7,y:c.pos.y},vel:{x:0,y:0}}}];
+  const rng=JSON.stringify(sim.rng),records:any[]=[];
+  const plain=assessClimbAccess(c,backer,surfaces,original,sim.t,c.mind.decisionInterval,sim.world.handContact,true);
+  const logged=assessClimbAccess(c,backer,surfaces,original,sim.t,c.mind.decisionInterval,sim.world.handContact,true,original,null,r=>records.push(r));
+  expect(logged).toEqual(plain);expect(JSON.stringify(sim.rng)).toBe(rng);
+  expect(records).toHaveLength(1);const r=records[0];
+  expect(r.result).toBe('unvalidated');expect(r.obstacle).toBe(d.idx);
+  expect(r.candidates.length).toBeGreaterThan(0);
+  for(const k of r.candidates){expect(k.rejected).not.toBeNull();if(k.rejected==='clearance')expect(k.failed).toEqual([d.idx]);}
+  expect(r.fallback.chose).toBe(plain.kind==='unvalidated'&&plain.command===original?'original':'braking');
+ });
  it('holds the chosen responsibility and access read without previewing on every tick',()=>{
   const {sim,c,b}=stage(),ctrl=c.behavior as any;
   const calls=vi.spyOn(preview,'previewFreeMovement');
