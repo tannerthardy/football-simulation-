@@ -25,6 +25,23 @@ function yawSpread(player: ReturnType<typeof kicker>, distance: number, pressure
 }
 
 describe('place-kick execution by distance and operation', () => {
+  it('the reduced block risk grows with distance and is separate from strike ratings', () => {
+    const short = centered(kicker(), 33), long = centered(kicker(), 55);
+    expect(short.block.mock.calls[0]![0]).toBeLessThan(long.block.mock.calls[0]![0]);
+    expect(centered(kicker({ kickAccuracy: 99, kickPower: 99 }), 33).block.mock.calls[0])
+      .toEqual(short.block.mock.calls[0]);
+  });
+
+  it('ordinary make frequency decreases across distance with matched kick draws', () => {
+    const made = [20, 33, 45, 52, 58].map(distance => {
+      let total = 0;
+      for (let seed = 0; seed < 1000; seed++)
+        total += Number(kickFieldGoal(new Rng(`C1-distance-${seed}`), kicker(), distance).good);
+      return total;
+    });
+    for (let i = 1; i < made.length; i++) expect(made[i]).toBeLessThan(made[i - 1]!);
+  });
+
   it('a longer demand on the same leg increases directional scatter', () => {
     expect(yawSpread(kicker(), 55)).toBeGreaterThan(yawSpread(kicker(), 33));
   });

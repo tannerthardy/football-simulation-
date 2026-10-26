@@ -56,7 +56,11 @@ export function kickFieldGoal(rng: Rng, kicker: Player, distance: number, wind: 
   const comp = r01(kicker.ratings.composure);
   // The old block sample describes a scrimmage rush, which a fair-catch kick
   // does not have. Actual airborne interception/touching needs its own event.
-  if (!options.fairCatchKick && rng.chance(0.012 + 0.004 * Math.max(0, distance - 40) / 10)) return { good: false, blocked: true, distance };
+  // Reduced rush risk, fitted to BLOCKED labels in pooled 2022–23 FG/XP.
+  // Share a smooth distance curve because the native caller supplies no try
+  // phase. It is not an observed rush/engagement or a strike-error correction.
+  const blockRisk = clamp(.0066 + .0017 * Math.max(0, distance - 33), 0, 1);
+  if (!options.fairCatchKick && rng.chance(blockRisk)) return { good: false, blocked: true, distance };
   const legSpeed = 25.5 + 7.5 * pow;
   const v0 = legSpeed * (1 + rng.normal(0, 0.015));
   // Long kicks are struck flatter to get distance.
@@ -64,11 +68,11 @@ export function kickFieldGoal(rng: Rng, kicker: Player, distance: number, wind: 
   // A longer demand on the same leg makes the strike less repeatable, beyond
   // the narrowing angular window already imposed by the uprights. v²/g is a
   // length scale, not the drag-limited makeable range or a coach's range call.
-  // 0.38/0.125 calibrate this reduced scatter to 2022 UNBLOCKED FG/XP
+  // 0.70/0.29 calibrate this reduced scatter to pooled 2022–23 UNBLOCKED FG/XP
   // outcomes underlying game-layer.json. Blocked kicks do not calibrate the
   // strike. These are not measured biomechanics or a make-rate roll.
   const rangeDemand = distance * G / (legSpeed * legSpeed);
-  const scatter = 1 + .38 * Math.max(0, rangeDemand - .125);
+  const scatter = 1 + .70 * Math.max(0, rangeDemand - .29);
   const sigmaDeg = (1.7 + 2.6 * (1 - acc)) * scatter * (1 + 0.4 * pressure * (1 - comp));
   const yaw = (rng.normal(0, sigmaDeg) + yawError) * (Math.PI / 180);
   const f: BallFlight = {
