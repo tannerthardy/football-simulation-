@@ -30,7 +30,18 @@ describe('frozen native pursuit arrival experiment', () => {
   });
 
   it('uses recorded candidates verbatim and keeps frozen forecast independent of diagnostic future truth', () => {
-    const c = native[1], before = arrivalJson(c);
+    const source = native[1];
+    // This is a provenance/independence contract, not a required intercept at
+    // 1.8 or 2.8 s. The native estimator exits at its first feasible sample,
+    // which can move with incidental RNG phase. Always exercise both sources:
+    // one actually sampled point and one point just beyond the sampled range.
+    const withBothSources = (c: ArrivalCase): ArrivalCase => {
+      const samples = c.intercept!.prediction.samples!;
+      const positive = samples.find(s => s.t > 0);
+      if (!positive) throw new Error('Arrival fixture needs a positive recorded horizon');
+      return { ...c, candidateHorizons: [positive.t, samples.at(-1)!.t + .1] };
+    };
+    const c = withBothSources(source), before = arrivalJson(c);
     const goals = objectives(c);
     expect(goals).toHaveLength(2);
     // The estimator records samples only up to its first feasible intercept;
@@ -50,6 +61,22 @@ describe('frozen native pursuit arrival experiment', () => {
         expect(o.point).toStrictEqual(forecast(c.intercept!, o.horizon));
         expect(o.pointSource).toBe('offline-evaluation-of-frozen-forecast');
       }
+    }
+    expect(goals.map(o => o.pointSource)).toEqual([
+      'recorded-estimator-sample', 'offline-evaluation-of-frozen-forecast',
+    ]);
+    // Opposing early/late exits (1.3/2.1 s) must exercise the same exact-source
+    // contract. Fixed 1.8/2.8 s goals miss every sample in the early control.
+    for (const control of frozenControls(source).slice(0, 2)) {
+      const input = withBothSources(control), samples = input.intercept!.prediction.samples!;
+      const [recorded, offline] = objectives(input);
+      const positive = samples.find(s => s.t > 0)!;
+      expect(recorded.point).toStrictEqual(positive.point);
+      expect(recorded.horizon).toBe(positive.t);
+      expect(recorded.pointSource).toBe('recorded-estimator-sample');
+      expect(offline.horizon).toBeGreaterThan(samples.at(-1)!.t);
+      expect(offline.point).toStrictEqual(forecast(input.intercept!, offline.horizon));
+      expect(offline.pointSource).toBe('offline-evaluation-of-frozen-forecast');
     }
     const changed = parseArrivalJson(before) as ArrivalCase;
     for (const r of changed.native) r.targetAfter.pos = { x: -1e4, y: 1e4 };
