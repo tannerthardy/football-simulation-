@@ -1611,17 +1611,56 @@ run plays with the assignment layer (`--telemetry full`):
   - On the earlier sets, which only report, keepers holding on games 7–8
     fell 27/30 → 24/30.
 
-  *Why it stays off.* It breaks `helper-fit.test.ts`. A helper whose hands
-  are loaded on the wrong side no longer replaces his feet and never
-  becomes useful support. Most of E2's gain comes from removing exactly
-  that foot replacement (its far-side and unloaded cases). It also changes
-  Tools' recorded ledger cases and the combo-strike-access timing.
+  *Correction: where E2's gain came from.* I wrote here that most of it
+  came from removing foot replacement. The split on the holdout says the
+  opposite. The width-only spot alone gives 12/35 backers and 26/26
+  keepers. No foot replacement while loaded, alone, gives 11/35 and 22/25,
+  the same as develop. Foot replacement is not what holds the helper back.
+  A loaded helper level with or past the man already carries zero
+  `helperSupport`, and recovery fires on 77–100% of those ticks.
 
-  Next:
-  - decide what a useful helper surface is. Working up the near hip is the
-    coached technique, but `helperFit` counts a helper level with or past
-    the man's front as unusable;
-  - re-record the ledger and strike scenes if that changes.
+  *E3, still experimental `HELPER_DRIVE` (off): the width-only spot alone.*
+  `helperFit` is unchanged, so helper-fit's wrong-side tests pass with the
+  flag on. Measured on develop 58ae15d7 (branch merged), flag off vs on:
+
+  | | off | on |
+  |---|---|---|
+  | holdout 11–12: climbers reaching +2 / backers worked / keepers holding | 10 / 10 of 35 / 22 of 25 | 10 / **12** of 35 / 23 of 24 |
+  | Move 4, 9–10, Phase II sets (109 doubles): climbers reaching +2 / stuck within 1.5 yd | 24 / 49 | **34 / 37** |
+  | Move 4 set keepers holding | 30 of 31 | 27 of 31 |
+  | 8-game export: climbers per zone run / backer touched first / departure speed | 0.60 / 65.8% / 2.27 | **0.67** / 66.3% / 2.37 |
+  | matched restage, seeds 7–8 (273 snaps): changed / run yards | 0 / 6.37 | 87 / 4.93 |
+
+  It fails two of the criteria declared on #311:
+  - holdout climbers do not rise (10 → 10);
+  - the Move 4 set loses 3 keepers (S7-P053 twice, S8-P055).
+
+  Both keeper-loss plays are short gains in both arms (1.46 → 0.56 and
+  1.51 → −0.11). In S8-P055 the first carrier contact (1.7 s) comes before
+  the runner reaches the down man (2.4 s). The keeper count is grading a
+  block that broke up after the play was decided.
+
+  The restage run-yard drop is a tail, not a mean shift. Of 85 changed
+  runs, 23 gain more than half a yard, 22 lose more, and 40 move less than
+  that. Four long runs cut short (−64.5, −60.6, −37.0, −33.4 yd) carry the
+  difference. Two passes change: #58 (−2.49 → −2.47) and #160 (same yards,
+  different path).
+
+  *Status.* This mechanism has now had five attempts (H, D, E1, E2, E3).
+  The stop rule applies.
+
+  What is established:
+  - the release decision is not the main loss;
+  - the double does not move the down man;
+  - the helper's spot at the owner's depth holds him back. Width-only
+    clearly frees climbers on the larger sets, without breaking a contract.
+
+  What is open is why the holdout climbers do not follow. Next:
+  - look at the holdout climbers that released but stayed stuck (14 on,
+    15 off), and name what still holds each one at the first level;
+  - re-score the keeper criterion from the first carrier contact, not from
+    the runner's arrival at the down man.
+
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
