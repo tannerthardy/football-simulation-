@@ -76,7 +76,12 @@ describe('announced teammate target stays distinct from achieved motion',()=>{
   expect(a.vel.x).toBeCloseTo(b.vel.x,12);expect(a.vel.y).toBeCloseTo(-b.vel.y,12);
  });
  it('does not invent an instantaneous fast center in the saved WZ handoff',()=>{
-  expect(select('old').vel).toEqual(saved.finalCommand.vel);
+  // The saved command was recorded under the old fatigue curve. The actor's
+  // energy (0.9965) now gives a slightly different braking capacity, so the
+  // old selection reproduces the record to within 1e-4 yd/s (it moves
+  // 2.4e-5), not bit for bit. A fast center would be off by about 0.5 yd/s.
+  const old=select('old').vel;
+  expect(old.x).toBeCloseTo(saved.finalCommand.vel.x,4);expect(old.y).toBeCloseTo(saved.finalCommand.vel.y,4);
   expect(select('candidate')).toEqual(saved.before);
  });
  it('preserves avoidance when the teammate is actually acquired moving at the fast called speed',()=>{
