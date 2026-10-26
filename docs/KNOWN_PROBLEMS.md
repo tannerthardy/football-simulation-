@@ -998,6 +998,106 @@ run plays with the assignment layer (`--telemetry full`):
     helper-policy correction is supported by these cases. This is a bounded
     negative finding, not a claim that proximity proves protection generally;
     pending possession/work-off changes require their own source qualification.
+- **Combination departure execution prototype (not accepted).** Against
+  `50b80062`, the released branch bypasses the existing swept-movement climb
+  planner, whose null also conflates clear and unvalidated access. Scoped
+  direct/detour/unvalidated access and own-state feedback forecasts now compose
+  with loaded, tangential foot preparation on the installed helper's acquired
+  next-job half. In mirrored controlled opportunities the ordinary release
+  earns real backer work while the keeper stays loaded through runner arrival;
+  neither component alone produces that protection. An unsafe, unearned
+  departure still loses to the down defender. Native transfer remains unproved:
+  the selected Ace IZ has no meaningful benefit, Ace weak WZ still misses both
+  backers, and the Over stress case still lets Mike wrap at 3.05 s. The initial
+  full-vector preparation and preparation across the keeper were adverse and
+  are not the candidate. Historical fall/joint-after-fall assertions are not
+  protection contracts. Earlier release/traversal remedies remain rejected;
+  no capacity, contact law or keeper eligibility change is supported. Pending
+  work-off/possession/reach changes remain separate.
+- **Zone doubles were given each other's backers.** *Fixed (on by default,
+  #284).* The zone installer let each double take the nearest unclaimed
+  backer one at a time, outside-in, with no reach. On Ace12 IZ Strong/Over
+  (roster 7, seed 1):
+  - the outside double H+LT took the Mike (+2.7 yd) over the 3-technique's
+    double LG+C;
+  - the backside double RG+RT got the nickel 9.6 yd across the formation;
+  - the Mike made the tackle (3.10–3.25 s).
+
+  The prototype's native film showed "RT never collects his far NB job".
+  This was the cause: an installation fault, not access or spacing. The
+  uncovered men now count the backers across the front in order:
+  - assignments never cross;
+  - they keep the shortest total walk;
+  - none takes a backer more than 4.5 yd from him.
+
+  Now LG+C→Mike, RG+RT→Will and H+LT→nickel. RT blocks the Will at 1.90 s
+  and C blocks the Mike at 2.10 s, both before the runner reaches them
+  (2.85, 3.10 s).
+
+  Ace12 WZ Weak/Under and the recorded climb-traffic fixture keep their
+  installation exactly. In WZ/Under:
+  - RT already collects the Will at 2.30 s, before the runner (2.50 s);
+  - C misses the Mike (closest 0.75 yd);
+  - LT's nickel is not reachable.
+
+  **Decided (Move 4, 2026-10-26): SEAL_HOLD stays on for climbers.** With
+  his hands loaded on a moving backer, a climber keeps the offset he caught
+  him at instead of working to the backer's play-side shoulder (at 2.00 s in
+  the controlled climb, C/LG on DT_W, LG to LB_W, LG asks for +2.42 yd/s
+  sideways with SEAL_HOLD off and +0.40 with it on). That is the football
+  answer: a blocker who catches a moving backer takes him where he is going,
+  and the runner cuts off it. Main Engine's alternative (scope the hold to a
+  man resisting laterally) is noted on #284; revisit it only after PHY-1's
+  force-velocity fix changes the carry.
+
+  The seven scenes the prototype recorded before #281 were pinned to
+  `SEAL_HOLD=0`; the pins are removed and the scenes re-baselined on today's
+  defaults:
+  - the three combo-strike-access scenes: RG now strikes LB_M at 2.20 s
+    instead of 2.35 s, so the near-strike decision is staged at 2.15 s; RT
+    keeps DT_S to 2.65 s without him falling;
+  - the two coupled-World climbs: the backer is loaded with the runner more
+    than 4 yd short, and the keeper holds through the runner reaching the
+    first level. The scripted runner holds a fixed line into the backer's
+    scrape instead of cutting off the block, so the scene ends at the first
+    level rather than past the backer;
+  - the two mirrored unsafe-release controls: the keeper now holds DT_S on
+    his caught leverage, so the climber's exit is no longer obstructed and
+    is not assessed as unvalidated, but DT_S still makes first contact on
+    the runner (2.45 s). The unvalidated label keeps its own unit test.
+
+  In the two native develop cases, SEAL_HOLD stops neither climb; turning it
+  off mostly frees the down linemen.
+
+  **Ordinary set.** Declared before any treatment result:
+  `scripts/diag/zone-climb-ordinary.ts`, the first 10 inside, outside, wide
+  and split zone runs of normal games 7 and 8, nothing dropped. Each was
+  replayed from identical setup bytes on develop `b559fdc5` and on #284.
+  - The counting changes no installation among the 20 plays. It repairs the
+    constructed case only.
+  - The ported prototype works 12 of 36 installed backers before the runner
+    reaches them, against 9 on develop: S7-P044, S8-P012 and S8-P025. None is
+    lost.
+  - Keepers hold the same men at runner arrival in both trees. The same two
+    losses (S7-P018, S8-P049) occur on both.
+  - On S7-P044, the first changed command is RT's held preparation on DT_S at
+    0.75 s (sideways 1.41 → 1.14 yd/s). The consequential one is LG's release
+    to LB_W at 1.50 s. On develop it is rewritten by spacing into a backward
+    step (−0.64 yd/s at 1.60 s) and never arrives. On #284 it is a detour
+    around the bodies in its way: 3.9–4.4 yd/s, engaging LB_W at 2.25 s,
+    before the runner (2.55 s).
+  - S8-P036 is the strongest adverse case (4.8 → 2.7 yd). LT's held
+    preparation on DT_W keeps him on that man until 3.05 s instead of
+    2.55 s, the runner's path shifts and SS tackles at 3.25 s. Protection is
+    not lost.
+  - The remaining 24 backers are not worked:
+    - 16 releases come 1.2–2.2 s after the snap with the backer 4–6 yd away,
+      and the runner arrives about a second later;
+    - 4 doubles never release;
+    - 3 release after the runner arrives;
+    - 1 reaches the backer without engaging.
+
+    The next stage is release timing and access, not installation.
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
