@@ -1164,6 +1164,30 @@ run plays with the assignment layer (`--telemetry full`):
        physics; it pairs with Move 1's force-velocity work.
 
     Revisit a lead-aim and release-clock treatment only after both.
+
+  **NFL side measured (partial, 2026-10-26).** Source: BDB 2025 weeks 1–2,
+  1,394 runs, 693 of them zone. The operator is
+  `scripts/mechanics/climb_reference.py`, the same on the sim's common-format
+  export. The sim run on develop is not done yet.
+  - *Lineman starts:* pullers from the snap reach 2.3 yd/s at 0.5 s and
+    3.6 yd/s at 1.0 s, covering 2.2 yd in the first second (p50, n=598).
+    Our free-running 142 kg guard reaches 2.5 yd/s, then 4.2 yd/s, and covers
+    2.4 yd. So lineman burst is not the gap, and missing item 2 above is
+    probably not the cause. The same operator still has to run on the sim
+    export to confirm.
+  - *Combo climbers* (n=997):
+    - release at p50 2.1 s (p25–p75 1.6–2.6 s);
+    - the backer is only 2.45 yd away at release (p25–p75 1.55–3.54);
+    - they depart at 3.1 yd/s over the first 0.5 s;
+    - 58% touch their backer before the carrier reaches him, at p50 0.8 s
+      earlier.
+  - *Uncovered climbers* (n=287): the backer is 5.4 yd away at the snap, and
+    66% touch him first.
+  - *Reading:* NFL doubles hold until the backer is about 2.5 yd away; ours
+    release with him 4–6 yd away. The likely lever is the double staying on
+    until the backer comes to it, and the climber leaving fast. Release isn't
+    too late, and the body isn't too slow. Next: the same operator on a
+    develop export (`npm run mech:sim` writes the input).
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
