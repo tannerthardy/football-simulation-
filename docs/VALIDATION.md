@@ -153,7 +153,7 @@ cut spans several overlapping windows, so it is judged by its worst one.
   (`weird.*` metrics) that move like any other metric. Severity is duration,
   smallest distance, closing speed or, for slides, speed carried through the cut.
 - The full list is `<saved card>.weird-events.json` (or `--weird path`), written
-  next to `--out`/`--md`; CI uploads it with `out/`. It keeps the worst 25 events
+  next to `--out`/`--md`; retain it with local `out/` for review. It keeps the worst 25 events
   per detector per game; rate counts are never capped.
 - Scorecard ids look like `sc7/G2-P014` and belong to that run's own games, not the
   film room's. `npm run weird -- 7 --games 6` plays the film room's games (the same
@@ -163,6 +163,21 @@ cut spans several overlapping windows, so it is judged by its worst one.
 - "Needs trace" still applies: the detectors see paths, facing, engagement and
   requests, not hidden perception or applied force. Body facing is not gaze
   ([BEHAVIOR_REVIEW](BEHAVIOR_REVIEW.md)).
+
+### Pending detector definitions from F4
+
+These four candidate definitions were supplied by
+[#318 at `1046c946`](https://github.com/tannerthardy/football-simulation-/pull/318).
+Their implementation remains pending in that PR and is not part of this
+film-pack composition. The current detector table above describes the available
+operators; these rows document the proposed handoff, not additional emitted flags.
+
+| Detector (`id`) | Fires when | Constants | Logged beside the event |
+| --- | --- | --- | --- |
+| Free second-level OL requests stop (`frozen`, **candidate**) | Live designed run, OL job climb/lead, unengaged/up/out of tackle bond; request under 0.3 yd/s for at least 0.4 s of consecutive 20 Hz samples, including before handoff. | 0.3 yd/s and 0.4 s are chosen review thresholds, not NFL calibration. | Requested and achieved speeds and job. A stop may be lawful braking/traffic; not a failed-block verdict. |
+| QB down without nearby defender (`downalone`, **candidate**) | New QB down onset on a pass/scramble, with complete preceding 0.5 s of samples, no engagement/bond, and all defender centers over 2 yd away throughout the lookback and onset. | 2 yd and 0.5 s are chosen. Missing history/defenders mean unknown. | Smallest sampled defender distance and onset; positions do not establish valid/invalid reach or cause of fall. |
+| Trailing man body stays turned from ball (`blindball`, **candidate**) | At flight end, man marker stayed within 2 yd of the target and behind along flight direction, body over 120° from ball throughout recorded undeflected/non-throwaway flight, accumulating no more than 30° facing travel. Missing/partial flight is skipped. | 2 yd, 120°, 30° and the 20 Hz window are chosen. | Target, sampled offsets, facing travel and signed arrival angle/left-rear or right-rear shoulder side. Body facing is not gaze or proof of missed recognition. |
+| Runner departs static installed aim toward defender (`phantomlane`, **candidate**) | Before passing the installed aim on a designed run, achieved travel at least 0.3 yd/s departs its bearing by 30°+, with an upright defender 0–3 yd forward along that ray and within 1.5 yd perpendicular. | 30°, 0.3 yd/s, 3 yd and 1.5 yd are chosen geometry heuristics. | Achieved/requested travel headings, installed-aim bearing and defender offsets/engagement. Static aim is not a newly evaluated live-gap route, and a nearby defender does not establish a wrong cut. |
 
 ### Review saved scouts without more games (PERF-5 / VIEW-1)
 
