@@ -33,3 +33,23 @@ integration-owner verification and Git-tracked receipts. Read
   A readiness label is not permission to exceed the current task's scope.
   Historical baselines, repository defaults and destructive cleanup are
   separate decisions; no authority to change them is granted here.
+
+<a id="no-github-actions"></a>
+## No GitHub Actions
+
+Since 2026-10-26 (Tanner's decision), no CI runs on GitHub. The workflows
+in `.github/workflows/` run only when started by hand, and nobody starts them
+for routine work: they used up the month's Actions minutes in four days.
+Missing or "skipped" checks on a PR are expected, not a failure to chase.
+
+- **Authors** run the checks that apply to the change in their own
+  environment (`npm test`, `npm run test:integration`, `npm run typecheck`,
+  `npm run build`, `npm run test:data`). A change that touches plays also
+  needs a matched restage (at least 4 RNG-shifted replays when the RNG path
+  changes) or a local scorecard. Paste the commands and their pass/fail results, with the tested
+  commit SHA, in the PR body.
+- **The merger** re-runs the affected checks locally on the PR head after it
+  is updated with the latest `develop`, and merges only when they pass. This
+  applies to every PR, not just ChatGPT/Codex ones.
+- Do not re-enable automatic triggers, re-run workflows, or start one by hand
+  without Tanner's explicit OK.

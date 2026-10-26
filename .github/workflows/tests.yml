@@ -1,20 +1,9 @@
 name: tests
 
+# Manual only (Tanner, 2026-10-26): GitHub Actions minutes are not used for
+# routine checks. Agents run these checks locally and report them in the PR;
+# the merger re-runs them locally before merging (AGENTS.md, "No GitHub Actions").
 on:
-  pull_request:
-    paths:
-      - 'src/**'
-      - 'test/**'
-      - 'scripts/**'
-      - 'config/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'tsconfig.json'
-      - 'vitest.config.*'
-      - '.nvmrc'
-      - '.github/workflows/tests.yml'
-  push:
-    branches: [develop]
   workflow_dispatch:
 
 permissions:
