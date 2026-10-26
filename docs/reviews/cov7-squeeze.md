@@ -209,6 +209,9 @@ separation from Z.
 | Other passes: fired / changed | 0 of 174 (both seeds) / 0 | |
 | Plays changed without firing | 0 | 0 |
 
+Paired-play grid (`cov7-squeeze-matched.ts grid`: 7,896 ordinary non-PA
+passes, 47 coverages, 3 rosters, both arms): **fired 0, changed 0**.
+
 **Strongest adverse case: s7 P107**, Inside Zone Weak against 4-3 Even
 Palms (2-Read, match), 7.86 → 14.66 yd.
 - Both corners squeeze to about 7.5 yd off the line instead of bailing to 13.
