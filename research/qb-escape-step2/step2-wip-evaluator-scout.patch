@@ -1,0 +1,177 @@
+diff --git a/src/sim/behaviors/carrier.ts b/src/sim/behaviors/carrier.ts
+index 37c1cd7..5a3ad16 100644
+--- a/src/sim/behaviors/carrier.ts
++++ b/src/sim/behaviors/carrier.ts
+@@ -344,7 +344,18 @@ export class BallCarrier implements Behavior {
+     return { vel, cutSkill, squeeze };
+   }
+ 
+-  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean } | null {
++  /** The run he would make if he took off now, scored by the same
++   * evaluator that steers it: its heading, the yards he gains before any
++   * defender he sees can reach him, and whether that lane stays clean. A
++   * caller who is not yet a runner (a QB weighing a scramble) adds `lag`:
++   * how long a defender takes to start once the run shows. */
++  scout(a: Agent, sim: PlaySim, lag?: (d: Agent, seen: Perceived, heading: number) => number): { heading: number; gain: number; clean: boolean } | null {
++    const best = this.evaluate(a, sim, sim.attackDir(a.team), false, lag, true);
++    return best && { heading: best.heading, gain: best.gain, clean: best.clean };
++  }
++
++  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean,
++    lag?: (d: Agent, seen: Perceived, heading: number) => number, scouting = false): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean; gain: number; clean: boolean } | null {
+     const vision = a.r('vision');
+     const range = 7 + 22 * vision;
+     const p = a.pos;
+@@ -356,7 +367,7 @@ export class BallCarrier implements Behavior {
+ 
+     // Perceived defenders (vision-filtered), each from the runner's own
+     // pictures: where he sees him, and whether he sees a blocker on him.
+-    const threats: Array<{ pos: Vec2; vel: Vec2; d: Agent; extra: number }> = [];
++    const threats: Array<{ pos: Vec2; vel: Vec2; d: Agent; extra: number; seen: Perceived }> = [];
+     const blockers = sim.teammates(a).filter((b) => b !== a)
+       .map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }))
+       .filter((b) => b.pose !== 'down' && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12);
+@@ -378,7 +389,7 @@ export class BallCarrier implements Behavior {
+         const rx = p.x - seen.pos.x, ry = p.y - seen.pos.y;
+         extra += (seen.vel.x * rx + seen.vel.y * ry) / (Math.hypot(rx, ry) || 1) > 1 ? 0.25 : 0.7;
+       }
+-      threats.push({ pos: seen.pos, vel: seen.vel, d, extra });
++      threats.push({ pos: seen.pos, vel: seen.vel, d, extra, seen });
+     }
+ 
+     const cands: number[] = [];
+@@ -388,10 +399,12 @@ export class BallCarrier implements Behavior {
+     const aimHeading = this.opts.aim ? angleOfPoint(p, this.opts.aim) : base;
+     if (designed) cands.push(aimHeading);
+ 
+-    let best: { heading: number; score: number; blocked: boolean; exits: boolean } | null = null;
++    let best: { heading: number; score: number; blocked: boolean; exits: boolean; gain: number; clean: boolean } | null = null;
+     let curScore = -Infinity;
+     let curBlocked = false;
+     let curExits = false;
++    let curGain = 0;
++    let curClean = false;
+     let aimBlocked = false;
+     let aimScore = -Infinity;
+     const vmax = a.profile.vmax;
+@@ -438,7 +451,8 @@ export class BallCarrier implements Behavior {
+         let minMargin = Infinity;
+         for (const th of threats) {
+           // Respect the tackler's arms: his reach plus a lunge.
+-          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
++          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra
++            + (lag ? lag(th.d, th.seen, h) : 0);
+           const m = tt - arrival;
+           if (m < minMargin) {
+             minMargin = m;
+@@ -492,13 +506,15 @@ export class BallCarrier implements Behavior {
+         curScore = score;
+         curBlocked = blocked;
+         curExits = exits;
++        curGain = safeGain;
++        curClean = clean;
+       }
+-      if (!best || score > best.score) best = { heading: h, score, blocked, exits };
++      if (!best || score > best.score) best = { heading: h, score, blocked, exits, gain: safeGain, clean };
+     }
+     // Hysteresis: keep the current lane unless the new one is clearly better.
+-    if (best && best.heading !== cur && best.score - curScore < 0.4) best = { heading: cur, score: curScore, blocked: curBlocked, exits: curExits };
+-    if (best?.exits) a.tags.add('chose-sideline');
+-    return best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits } : null;
++    if (best && best.heading !== cur && best.score - curScore < 0.4) best = { heading: cur, score: curScore, blocked: curBlocked, exits: curExits, gain: curGain, clean: curClean };
++    if (best?.exits && !scouting) a.tags.add('chose-sideline');
++    return best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits, gain: best.gain, clean: best.clean } : null;
+   }
+ }
+ 
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index ff0bb99..2e63eaf 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -540,22 +540,16 @@ export class QBPass implements Behavior {
+     return stand();
+   }
+ 
+-  /** Running for yards: is there a full lane past the line? */
++  /** Is there an escape he can actually run? He asks the same evaluator
++   * that will steer the run, from his own pictures, as if he tucked it now:
++   * a heading on which no defender he sees can get to him in the next two
++   * seconds, with the same 0.35 s to spare the old lane check wanted. */
+   private shouldScramble(a: Agent, sim: PlaySim, panic: boolean): boolean {
+     const mobility = 0.5 * clamp((5.0 - a.player.measurables.forty) / 0.6, 0, 1) + 0.5 * a.r('elusiveness');
+     if (!panic && mobility < 0.18) return false;
+-    // Lane points a yard past the line, across the front of the pocket.
+-    const lanes = [-4, -2, 0, 2, 4].map((dy) => ({ x: Math.max(a.pos.x + 4, sim.los + 1), y: clamp(a.pos.y + dy, 1, FIELD_WIDTH - 1) }));
+-    const threats = this.laneThreats(a, sim), box = this.pocketBox(a, sim);
+-    const open = lanes.filter((q) => this.laneMargin(a, sim, q, threats, box) > 0.35).length;
+-    return open >= (panic ? 1 : 2) && (panic ? mobility > 0.2 || sim.rng.chance(0.3) : true);
+-  }
+-
+-  /** Each defender as he has him, not where he truly is: an unseen rusher
+-   * behind his shoulder is still where he last registered him. */
+-  private laneThreats(a: Agent, sim: PlaySim): { d: Agent; seen: Perceived; held: number }[] {
+-    return sim.defense.filter((d) => !d.isDown(sim.t))
+-      .map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d) }));
++    const box = this.pocketBox(a, sim);
++    const run = new BallCarrier({ qb: true }, a).scout(a, sim, (d, seen, h) => this.startLag(a, sim, box, d, seen, h) - 0.35);
++    return !!run?.clean && (panic ? mobility > 0.2 || sim.rng.chance(0.3) : true);
+   }
+ 
+   /** The pocket as he pictures it from his tackles: a defender off the
+@@ -568,38 +562,25 @@ export class QBPass implements Behavior {
+       lo: Math.min(l.y, r.y) - 1.5, hi: Math.max(l.y, r.y) + 1.5 };
+   }
+ 
+-  /** The worst margin, over the defenders, on his path to a lane point. His
+-   * run is timed from the velocity he has (a set QB starts from rest), the
+-   * same estimate as the defenders'. A defender counts where he can get onto
+-   * that path before the QB is past it, not just at its end: a rusher
+-   * beside the path closes it even if he can't beat him to the line. A
+-   * rusher, or one still in a block, comes now (held as long as his pocket
+-   * feel holds him). A defender downfield in coverage, not coming at him,
+-   * stays in his drop until he sees the QB leave the pocket as a runner, and
+-   * only then reacts and starts. */
+-  private laneMargin(a: Agent, sim: PlaySim, q: Vec2,
+-    threats: { d: Agent; seen: Perceived; held: number }[], box: { front: number; lo: number; hi: number }): number {
++  /** How long a defender takes to start after him on heading `h`. A rusher
++   * (at or behind the line, or closing on him) is already coming. A
++   * defender in coverage stays in his drop until he sees the QB leave the
++   * pocket as a runner, then reacts. */
++  private startLag(a: Agent, sim: PlaySim, box: { front: number; lo: number; hi: number },
++    d: Agent, seen: Perceived, h: number): number {
++    const rx = a.pos.x - seen.pos.x, ry = a.pos.y - seen.pos.y;
++    const closing = (seen.vel.x * rx + seen.vel.y * ry) / (Math.hypot(rx, ry) || 1);
++    if (closing > 1 || seen.pos.x <= sim.los) return 0;
++    // Where his run on this heading first shows: the pocket's front or its side.
++    if (a.pos.x >= box.front || a.pos.y < box.lo || a.pos.y > box.hi) return d.profile.reactionTime;
++    const hx = Math.cos(h), hy = Math.sin(h);
++    let k = Infinity;
++    if (hx > 1e-6) k = Math.min(k, (box.front - a.pos.x) / hx);
++    if (hy > 1e-6) k = Math.min(k, (box.hi - a.pos.y) / hy);
++    if (hy < -1e-6) k = Math.min(k, (box.lo - a.pos.y) / hy);
++    if (!Number.isFinite(k)) return 2 + d.profile.reactionTime;
+     const me = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
+-    const dx = q.x - a.pos.x, dy = q.y - a.pos.y;
+-    // When his run shows: the first point of the path at the pocket's front or outside it.
+-    const shows = (p: Vec2) => p.x >= box.front || p.y < box.lo || p.y > box.hi;
+-    let show = 1;
+-    for (let s = 0; s <= 1; s += 0.125) if (shows({ x: a.pos.x + dx * s, y: a.pos.y + dy * s })) { show = s; break; }
+-    const showT = timeToReach(me, { x: a.pos.x + dx * show, y: a.pos.y + dy * show });
+-    let margin = Infinity;
+-    for (const f of [0.1, 0.2, 0.35, 0.5, 0.75, 1]) {
+-      const p = { x: a.pos.x + dx * f, y: a.pos.y + dy * f };
+-      const myT = timeToReach(me, p);
+-      for (const { d, seen, held } of threats) {
+-        const rx = a.pos.x - seen.pos.x, ry = a.pos.y - seen.pos.y;
+-        const closing = (seen.vel.x * rx + seen.vel.y * ry) / (Math.hypot(rx, ry) || 1);
+-        const rushing = held > 0 || seen.pos.x <= sim.los || closing > 1;
+-        const start = rushing ? held : showT + d.profile.reactionTime;
+-        const tt = start + timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, p, 1);
+-        margin = Math.min(margin, tt - myT);
+-      }
+-    }
+-    return margin;
++    return timeToReach(me, { x: a.pos.x + hx * k, y: a.pos.y + hy * k }) + d.profile.reactionTime;
+   }
+ 
+   private scramble(a: Agent, sim: PlaySim): MoveCommand {
