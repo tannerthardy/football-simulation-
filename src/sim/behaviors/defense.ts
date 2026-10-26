@@ -37,6 +37,14 @@ import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, q
  * (3.7 -> 5.7 yd deep) and blocked 15% at 2.0 s; ours came to the run at the
  * stalk read, sat at 4 yd and were blocked 62% (dbtempo.py). */
 const passFirstOn = () => process.env.PASS_FIRST !== '0';
+/** On (STALK_SQUEEZE=0 for comparison): a pass-first man corner who reads run
+ * and sees his receiver stalk him plays through the block instead of either
+ * backpedalling on a blocker or leaving him for the alley. He closes the
+ * cushion downhill on the alley side of his man, within hand reach of him;
+ * an upright release returns him to man with the receiver still in front, and
+ * only an exchange he sees (the back carrying, the QB not) takes him off the
+ * receiver to his installed fit (COV-7, docs/reviews/cov7-support-choice.md). */
+const stalkSqueezeOn = () => process.env.STALK_SQUEEZE !== '0';
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -268,6 +276,10 @@ export class ManCoverage implements Behavior {
   private keyedFitRecorded = false;
   /** Shallow blocking evidence admitted this marker's current support duty. */
   private blockingRun = false;
+  /** Pass-first squeeze on a stalking receiver, admitted from the same pictures. */
+  private squeezing = false;
+  /** An exchange this marker saw while squeezing; he now owns his installed fit. */
+  private exchangeFit = false;
 
   /** The technique actually in use, without updating receiver observation. */
   recordedTechnique(): NonNullable<import('../types.js').ReplayAgentState['man']> {
@@ -300,7 +312,7 @@ export class ManCoverage implements Behavior {
       // The existing ball controller recognized flight, rather than invoking
       // the continuation. Retire support without another sighting or private
       // release-time gate.
-      if (!continuing) this.blockingRun = false;
+      if (!continuing) this.blockingRun = this.squeezing = this.exchangeFit = false;
       return command;
     }
     return this.coverMan(a, sim);
@@ -338,9 +350,9 @@ export class ManCoverage implements Behavior {
     const installedBackfield = !!back && !!sim.offAlign.spots[back.slot]?.backfield;
     // Do not extend this duty where its explicit information input is absent.
     // Empty/split-back formations keep their pre-existing shallow policy.
-    if (!installedBackfield) this.blockingRun = false;
+    if (!installedBackfield) this.blockingRun = this.squeezing = this.exchangeFit = false;
     const run = believesRun(sim, a);
-    const blockingLook = this.blockingRun
+    const blockingLook = this.blockingRun || this.squeezing
       ? observedBlocking(a, sim, R, receiverCue) : showsBlock(a, sim, R, receiverCue);
     // Once admitted, this informed duty owns its backfield interpretation.
     // A hidden holder change must not switch it through the legacy live-
@@ -355,6 +367,29 @@ export class ManCoverage implements Behavior {
       this.blockingRun = installedBackfield;
       return this.blockingSupport(a, sim, qbCue);
     }
+    if (passFirst && stalkSqueezeOn() && installedBackfield && run) {
+      const backCue = sim.see(a, back!);
+      // Confirmed exchange: his own pictures show the back with the ball and
+      // the QB without it. Never the holder, the handoff time or the call.
+      if (this.exchangeFit || (this.squeezing && backCue.carrying === true && qbCue.carrying !== true)) {
+        if (!this.exchangeFit && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'stalk-squeeze',
+          chose: 'installed-fit', options: [`squeeze:${R.slot}`, 'installed-fit'],
+          cue: `${back!.slot} carrying=true, QB carrying=${qbCue.carrying} in consumed pictures`,
+          detail: `Exchange seen while squeezing ${R.slot}; leave him for the installed ${a.runFit?.kind ?? 'fallback'} fit.` });
+        this.exchangeFit = true;
+        this.squeezing = false;
+        return this.blockingSupport(a, sim, qbCue);
+      }
+      if (blockingLook) {
+        if (!this.squeezing && sim.trace.data) sim.trace.decide({ t: sim.t, a: a.idx, kind: 'stalk-squeeze',
+          chose: `squeeze:${R.slot}`, options: [`man:${R.slot}`, `squeeze:${R.slot}`, 'installed-fit'],
+          cue: `run belief; ${R.slot} stance=${receiverCue.stance}, vx=${receiverCue.vel.x.toFixed(2)}; ${back!.slot} carrying=${backCue.carrying}, QB carrying=${qbCue.carrying}`,
+          detail: `Stalk look on his man with no exchange seen; play through him on the alley side. Picture age ${receiverCue.age === undefined ? 'unknown' : receiverCue.age.toFixed(2)} s.` });
+        this.squeezing = true;
+        return this.squeezeStalk(a, sim, receiverCue, qbCue, backCue);
+      }
+    } else this.exchangeFit = false;
+    this.squeezing = false;
 
     return this.trackReceiver(a, sim);
   }
@@ -367,6 +402,24 @@ export class ManCoverage implements Behavior {
     const read = back && sim.offAlign.spots[back.slot]?.backfield
       ? { backfield: { back, backCue: sim.see(a, back), qbCue } } : undefined;
     return runFit(a, sim, this.gap, this.gapSign, read);
+  }
+
+  /** Close the cushion on a stalking receiver from the alley side: through
+   * him, not around him. The lateral offset stays within his hands' reach of
+   * the receiver, so an upright release still finds him in front of the man.
+   * Eyes stay in the backfield. Contact is whatever the bodies make of it. */
+  private squeezeStalk(a: Agent, sim: PlaySim, cue: Perceived, qbCue: Perceived, backCue: Perceived): MoveCommand {
+    if (a.engagement) return stand();
+    const R = this.target;
+    // The flow he sees: the back he expects the ball to reach, else the QB.
+    const flow = backCue.age !== undefined ? backCue : qbCue;
+    const alley = Math.sign(flow.pos.y - cue.pos.y) || Math.sign(sim.ballY - cue.pos.y) || 1;
+    const reach = a.profile.radius + R.profile.radius + a.player.measurables.armIn / 36 * 0.55;
+    const ty = cue.pos.y + alley * Math.min(reach, Math.abs(flow.pos.y - cue.pos.y));
+    // On the defense's side of him at hand distance; never behind the line.
+    const tx = Math.max(sim.los + a.profile.radius, cue.pos.x + reach);
+    return withFacingTechnique(track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, cue.vel,
+      { speed: .8, gain: 2, facing: Math.PI }), { label: 'stalk-squeeze', key: cue.vel });
   }
 
   /** Release movement only; provisional zone readers retain their own

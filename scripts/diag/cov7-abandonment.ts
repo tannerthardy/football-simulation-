@@ -22,19 +22,29 @@ const actor = (a: Agent) => ({ playerId: a.player.id, team: a.team, slot: a.slot
 /** Explicit Z split prevents automatic route/run room from changing the
  * selected receiver's alignment. This is a declared installed scenario,
  * not an ordinary-game capture or the historical P029 checkpoint. */
-export function abandonmentSetup(kind: 'run' | 'deception', until = BLOCK_LOOK_UNTIL): PlaySetup {
+export const Z_SPLIT = 8 + 1 / 3;
+/** `vertical` is the PA Shot call with Z, already on a go after the look,
+ * moved to the front of the progression: the stalk-and-go cost arm. */
+export type Kind = 'run' | 'deception' | 'vertical';
+export function abandonmentSetup(kind: Kind, until = BLOCK_LOOK_UNTIL, split = Z_SPLIT): PlaySetup {
   const setup = nativeTraceSetup({ ...recipe, concept: kind === 'run' ? 'toss' : 'pa_shot' });
   setup.offCall.formation = { ...setup.offCall.formation, id: 'cov7_ace_fixed_z',
     name: 'Ace / COV-7 fixed Z', slots: { ...setup.offCall.formation.slots,
-      Z: { ...setup.offCall.formation.slots.Z!, split: 8 + 1 / 3 } } };
+      Z: { ...setup.offCall.formation.slots.Z!, split } } };
+  if (kind === 'vertical') setup.offCall.pass = { ...setup.offCall.pass!,
+    progression: ['S1', ...setup.offCall.pass!.progression.filter(r => r !== 'S1')] };
   setup.offCall.receiverBlockLook = { Z: { until } };
   return { ...setup, record: true, recordLevel: 'full' };
 }
 
-/** The role-local treatment opens only this actor's existing alley branch.
- * It is an experimental comparison, not a new default defensive policy.
+/** Arms for this actor only: `man` retains man (STALK_SQUEEZE=0, the
+ * pre-COV-7 default), `support` opens his existing alley branch
+ * (PASS_FIRST=0, the permissive diagnostic), and `squeeze` is today's
+ * default (the corner plays through the stalk). Everyone else runs defaults.
  * Private-method wrappers below only copy real entered calls/returned values. */
-export function runAbandonment(bytes: Buffer, support: boolean, observe: boolean) {
+export type Arm = 'man' | 'support' | 'squeeze';
+export function runAbandonment(bytes: Buffer, arm: Arm | boolean, observe: boolean) {
+  if (typeof arm === 'boolean') arm = arm ? 'support' : 'man';
   const sim = new PlaySim(restoreSetup(bytes));
   const a = sim.slot('CB_S')!, primary = sim.slot('Z')!;
   assert(a.behavior instanceof ManCoverage);
@@ -59,7 +69,7 @@ export function runAbandonment(bytes: Buffer, support: boolean, observe: boolean
       return cue;
     };
     const methods = man as any;
-    for (const name of ['blockingSupport', 'trackReceiver']) {
+    for (const name of ['blockingSupport', 'trackReceiver', 'squeezeStalk']) {
       const method = methods[name].bind(man);
       methods[name] = (...args: any[]) => { if (row) row.branch = name; return method(...args); };
     }
@@ -98,21 +108,22 @@ export function runAbandonment(bytes: Buffer, support: boolean, observe: boolean
         primaryContacts: sim.lastStep?.contacts.filter(c => c.i === primary.idx || c.j === primary.idx) ?? [] }));
     };
   }
-  if (observe || support) {
+  {
     const update = man.update.bind(man);
     man.update = (self, world) => {
       if (observe) row = { at: world.t, read: self.recog?.read, logOdds: self.recog?.logOdds,
         branch: 'other', observations: [], body: copySaved(self.body),
         primary: { body: copySaved(primary.body), stance: primary.stance, behavior: primary.behavior.kind },
         retainedPrimary: actor(man.target), fit: copySaved(self.runFit) };
-      const previous = process.env.PASS_FIRST;
+      const key = arm === 'support' ? 'PASS_FIRST' : arm === 'man' ? 'STALK_SQUEEZE' : null;
+      const previous = key ? process.env[key] : undefined;
       try {
-        if (support && self.runFit?.kind === 'alley') process.env.PASS_FIRST = '0';
+        if (key && (arm === 'man' || self.runFit?.kind === 'alley')) process.env[key] = '0';
         const command = update(self, world);
         if (row) { row.command = copySaved(command); rows.push(row); }
         return command;
       } finally {
-        if (previous === undefined) delete process.env.PASS_FIRST; else process.env.PASS_FIRST = previous;
+        if (key) { if (previous === undefined) delete process.env[key]; else process.env[key] = previous; }
         row = undefined;
       }
     };
@@ -168,13 +179,51 @@ function atRelease(run: ReturnType<typeof runAbandonment>) {
     zEvaluations: run.qbEvaluations.filter(e => e.at <= r.at && e.target.slot === 'Z' && e.evaluation).length };
 }
 
-export function compareAbandonment(kind: 'run' | 'deception', until = BLOCK_LOOK_UNTIL) {
-  const bytes = captureSetup(abandonmentSetup(kind, until));
+/** The corner's closest approach to the live carrier, and when. Diagnostic
+ * reality only. */
+function carrierApproach(run: ReturnType<typeof runAbandonment>) {
+  let best: { at: number; distance: number } | null = null;
+  for (const e of run.endpoints) {
+    if (!e.carrier || e.carrier.actor.team === 'D') continue;
+    const d = Math.hypot(e.corner.body.pos.x - e.carrier.body.pos.x, e.corner.body.pos.y - e.carrier.body.pos.y);
+    if (!best || d < best.distance) best = { at: e.end, distance: d };
+  }
+  return best;
+}
+
+/** The squeeze arm against retained man on the same bytes. */
+function squeezeSummary(run: ReturnType<typeof runAbandonment>, man: ReturnType<typeof runAbandonment>) {
+  const squeezeRows = run.rows.filter(r => r.branch === 'squeezeStalk');
+  const first = squeezeRows[0];
+  const same = first && man.rows.find(r => r.at === first.at);
+  const fit = run.rows.find(r => first && r.at > first.at && r.branch === 'blockingSupport');
+  const back = run.rows.find(r => first && r.at > first.at && r.branch === 'trackReceiver');
+  const contacts = (r: ReturnType<typeof runAbandonment>) => r.execution.result.events.filter(e =>
+    (e.a === r.installed.actor.index || e.b === r.installed.actor.index)
+    && ['carrier_contact', 'tackle_wrap', 'tackle', 'block_contact'].includes(e.type)).map(e => ({ t: e.t, type: e.type }));
+  return { firstSqueeze: first?.at ?? null, squeezeEntries: squeezeRows.length,
+    firstSqueezeEvidence: first ? { read: first.read, logOdds: first.logOdds, body: first.body,
+      command: first.command, manCommand: same?.command ?? null,
+      pictures: first.observations.slice(0, 4).map((o: any) => ({ target: o.target.slot, cue: o.cue })) } : null,
+    exchangeFit: fit?.at ?? null, returnedToMan: back?.at ?? null,
+    samples: [.65, 1, 1.4, 2, 2.4, 3].map(at => ({ at, man: geometry(man.rows.find(r => r.at === at)),
+      squeeze: geometry(run.rows.find(r => r.at === at)) })),
+    atRelease: atRelease(run),
+    carrierApproach: { man: carrierApproach(man), squeeze: carrierApproach(run) },
+    cornerEvents: { man: contacts(man), squeeze: contacts(run) },
+    result: { outcome: run.execution.result.outcome, yards: run.execution.result.yards } };
+}
+
+export function compareAbandonment(kind: Kind, until = BLOCK_LOOK_UNTIL, split = Z_SPLIT) {
+  const bytes = captureSetup(abandonmentSetup(kind, until, split));
   const plain = runAbandonment(bytes, false, false), baseline = runAbandonment(bytes, false, true);
   const alternative = runAbandonment(bytes, true, true), alternativePlain = runAbandonment(bytes, true, false);
+  const squeeze = runAbandonment(bytes, 'squeeze', true), squeezePlain = runAbandonment(bytes, 'squeeze', false);
   assert.deepEqual(baseline.execution, plain.execution, 'baseline observer changed execution');
   assert.deepEqual(alternative.execution, alternativePlain.execution, 'support observer changed execution');
+  assert.deepEqual(squeeze.execution, squeezePlain.execution, 'squeeze observer changed execution');
   assert.deepEqual(baseline.installed, alternative.installed);
+  assert.deepEqual(baseline.installed, squeeze.installed);
   const supportRows = alternative.rows.filter(r => r.branch === 'blockingSupport');
   const first = supportRows[0];
   assert(first, `${kind}: support did not activate`);
@@ -184,7 +233,7 @@ export function compareAbandonment(kind: 'run' | 'deception', until = BLOCK_LOOK
   assert(alternative.rows.every(r => r.retainedPrimary.playerId === baseline.installed.primary.playerId));
   const reacquired = alternative.rows.find(r => r.at > first.at && r.branch === 'trackReceiver');
   const reversed = reacquired && alternative.rows.find(r => r.at >= reacquired.at && r.body.vel.y <= 0);
-  const summary = { kind, until, setupSha256: bytesHash(bytes), installed: baseline.installed,
+  const summary = { kind, until, split, setupSha256: bytesHash(bytes), installed: baseline.installed,
     observerEquality: true, firstSupport: first.at, supportEntries: supportRows.length,
     firstSupportEvidence: first,
     acquiredUpright: alternative.rows.find(r => r.at > first.at && primaryCue(r)?.stance === 'high')?.at ?? null,
@@ -194,20 +243,26 @@ export function compareAbandonment(kind: 'run' | 'deception', until = BLOCK_LOOK
       man: geometry(baseline.rows.find(r => r.at === at)), support: geometry(alternative.rows.find(r => r.at === at)) })),
     atRelease: { man: atRelease(baseline), support: atRelease(alternative) },
     result: { man: { outcome: baseline.execution.result.outcome, yards: baseline.execution.result.yards },
-      support: { outcome: alternative.execution.result.outcome, yards: alternative.execution.result.yards } } };
-  return { bytes, summary, baseline, alternative };
+      support: { outcome: alternative.execution.result.outcome, yards: alternative.execution.result.yards } },
+    squeeze: squeezeSummary(squeeze, baseline) };
+  return { bytes, summary, baseline, alternative, squeeze };
 }
 
 function main() {
-  assert.equal(process.version, 'v22.23.3');
+  assert.equal(process.version.split('.')[0], 'v22');
   assert.notEqual(process.env.PASS_FIRST, '0', 'Use the accepted global PASS_FIRST default');
-  // Usage: cov7-abandonment.ts [out-dir] [--until seconds]  (release variation)
+  // Usage: cov7-abandonment.ts [out-dir] [--until seconds] [--split yd] [--vertical]
+  // --until: release variation; --split: Z's split; --vertical adds the Z-first stalk-and-go arm.
   const args = process.argv.slice(2), u = args.indexOf('--until');
   const until = u >= 0 ? Number(args.splice(u, 2)[1]) : BLOCK_LOOK_UNTIL;
   assert(until > 0, 'until must be a positive time');
+  const sp = args.indexOf('--split'), split = sp >= 0 ? Number(args.splice(sp, 2)[1]) : Z_SPLIT;
+  assert(split > 0, 'split must be positive');
+  const v = args.indexOf('--vertical'), vertical = v >= 0 && !!args.splice(v, 1);
   const out = args[0] ?? 'out/cov7-abandonment';
   mkdirSync(out, { recursive: true });
-  const identity = executionIdentity(), pair = (['run', 'deception'] as const).map(kind => compareAbandonment(kind, until));
+  const kinds: Kind[] = vertical ? ['run', 'deception', 'vertical'] : ['run', 'deception'];
+  const identity = executionIdentity(), pair = kinds.map(kind => compareAbandonment(kind, until, split));
   // Same primary picture and own body across calls at admission. QB/back
   // pictures may differ and are retained; do not call all cues identical.
   assert.deepEqual(primaryCue(pair[0].summary.firstSupportEvidence), primaryCue(pair[1].summary.firstSupportEvidence));
@@ -220,11 +275,12 @@ function main() {
   writeFileSync(`${out}/summary.json`, arrivalJson({ identity, recipe, pair: pair.map(p => p.summary) }));
   // Reuse the existing viewer/packing. Clock/score labels below are display
   // placeholders for declared scenarios, not a claim these came from a game.
-  const films: PlayLog[] = pair.flatMap((p, i) => [p.baseline, p.alternative].map((r, j) => {
+  const arms = ['retain man', 'installed alley', 'squeeze the stalk'];
+  const films: PlayLog[] = pair.flatMap((p, i) => [p.baseline, p.alternative, p.squeeze].map((r, j) => {
     const result = r.execution.result;
-    return { index: i * 2 + j, quarter: 1, clock: 900, offense: 'home', down: 1, distance: 10, yardline: 30,
-      call: `${p.summary.kind} / ${j ? 'installed alley' : 'retain man'}`, defense: 'Cover1 Off',
-      text: `Declared COV-7 scenario: ${p.summary.kind}, ${j ? 'support' : 'man'}.`, yards: result.yards,
+    return { index: i * 3 + j, quarter: 1, clock: 900, offense: 'home', down: 1, distance: 10, yardline: 30,
+      call: `${p.summary.kind} / ${arms[j]}`, defense: 'Cover1 Off',
+      text: `Declared COV-7 scenario: ${p.summary.kind}, ${arms[j]}.`, yards: result.yards,
       score: { home: 0, away: 0 }, kind: p.summary.kind === 'run' ? 'run' : 'pass', stats: result.stats,
       outcome: result.outcome, segments: result.segments,
       replay: { frames: result.frames!, players: r.installed.roster, los: 40, firstDownX: 50, flip: false,
@@ -242,7 +298,8 @@ function main() {
     + template.replace('/*__REPLAY_DATA__*/null', () => JSON.stringify(data).replace(/<\//g, '<\\/')) + '</body></html>');
   console.log(arrivalJson(pair.map(p => ({ kind: p.summary.kind, until, setupSha256: p.summary.setupSha256,
     firstSupport: p.summary.firstSupport, acquiredUpright: p.summary.acquiredUpright, returnedToMan: p.summary.returnedToMan,
-    inwardMomentumArrested: p.summary.inwardMomentumArrested, atRelease: p.summary.atRelease, result: p.summary.result }))));
+    inwardMomentumArrested: p.summary.inwardMomentumArrested, atRelease: p.summary.atRelease, result: p.summary.result,
+    squeeze: { ...p.summary.squeeze, firstSqueezeEvidence: undefined } }))));
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) main();
