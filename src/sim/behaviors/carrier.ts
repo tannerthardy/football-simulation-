@@ -354,22 +354,30 @@ export class BallCarrier implements Behavior {
     const goalX = dir > 0 ? OPP_GOAL_X : OWN_GOAL_X;
     const hurry = sim.hurry && a.team === 'O';
 
-    // Perceived defenders (vision-filtered).
+    // Perceived defenders (vision-filtered), each from the runner's own
+    // pictures: where he sees him, and whether he sees a blocker on him.
     const threats: Array<{ pos: Vec2; vel: Vec2; d: Agent; extra: number }> = [];
-    const blockers = sim.teammates(a).filter((b) => b !== a && !b.isDown(sim.t) && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12).map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }));
+    const blockers = sim.teammates(a).filter((b) => b !== a)
+      .map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }))
+      .filter((b) => b.pose !== 'down' && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12);
     for (const d of sim.opponents(a)) {
-      const dd = Math.hypot(d.pos.x - p.x, d.pos.y - p.y);
+      const seen = sim.see(a, d, 0.7);
+      const dd = Math.hypot(seen.pos.x - p.x, seen.pos.y - p.y);
       if (dd > range) continue;
       // Backside defenders behind the runner are easy to miss for poor-vision backs.
-      const behind = (d.pos.x - p.x) * dir < -1.5;
+      const behind = (seen.pos.x - p.x) * dir < -1.5;
       if (behind && a.mind.focus < 0.35 + 0.5 * (1 - vision)) continue;
-      const seen = sim.see(a, d, 0.7);
       // Explicit scenario parking keeps its scheduled absence. Physical falls
       // leave downUntil=-1; infer their allowance only from the delayed pose,
       // never hidden support state/since or an exact recovery deadline.
       let extra = d.downUntil > sim.t ? d.downUntil - sim.t + 0.2
         : observedRecoveryAllowance(seen, d.profile.getUp, sim.dt);
-      if (d.engagement) extra += d.engagement.win > 0.6 ? 0.25 : 0.7;
+      // A defender he sees a blocker on is held up; one he sees coming at
+      // him through it is getting off the block.
+      if (blockers.some((b) => Math.hypot(b.pos.x - seen.pos.x, b.pos.y - seen.pos.y) < b.radius + d.profile.radius + 0.35)) {
+        const rx = p.x - seen.pos.x, ry = p.y - seen.pos.y;
+        extra += (seen.vel.x * rx + seen.vel.y * ry) / (Math.hypot(rx, ry) || 1) > 1 ? 0.25 : 0.7;
+      }
       threats.push({ pos: seen.pos, vel: seen.vel, d, extra });
     }
 
