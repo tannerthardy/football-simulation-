@@ -96,8 +96,12 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   const seen = sim.see(a, target, delay);
   const sp = Math.hypot(seen.vel.x, seen.vel.y);
   const heading = sp > 0.1 ? norm(seen.vel) : { x: 0, y: 0 };
-  const older = sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
-  const acceleration = clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / 0.2,
+  // The speed trend comes from every picture he has seen over the last
+  // SPEED_TREND_WINDOW, not from one 0.2 s difference: a runner's stride-
+  // and cut-scale speed changes are not a burst to carry forward.
+  const trend = speedTrend(sim, a, target, delay, seen);
+  const older = trend.oldest;
+  const acceleration = clamp(trend.slope,
     -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau));
   // Recent acceleration is evidence for a short burst, not a promise of full
   // speed throughout the horizon. Reassess as new motion becomes visible.
@@ -138,6 +142,27 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
 }
 
 const angleBias = new WeakMap<Agent, number>();
+
+/** Seconds of already seen pictures behind a pursuit forecast's speed trend. */
+export const SPEED_TREND_WINDOW = 0.5;
+
+/** Least-squares slope of seen speed against time over the last
+ * SPEED_TREND_WINDOW of pictures, each acquired with the same delay as the
+ * newest. Only what he has already seen; nothing about the runner's intent. */
+function speedTrend(sim: PlaySim, a: Agent, target: Agent, delay: number,
+  seen: import('../perception.js').Perceived): { slope: number; oldest: import('../perception.js').Perceived } {
+  const scale = 1 / Math.max(0.1, a.profile.reactionTime);
+  const n = Math.round(SPEED_TREND_WINDOW / sim.dt);
+  let st = 0, ss = 0, stt = 0, sts = 0, oldest = seen;
+  for (let k = 0; k <= n; k++) {
+    const pic = k === 0 ? seen : sim.see(a, target, delay + k * sim.dt * scale);
+    const t = -k * sim.dt, s = Math.hypot(pic.vel.x, pic.vel.y);
+    st += t; ss += s; stt += t * t; sts += t * s;
+    oldest = pic;
+  }
+  const m = n + 1, den = m * stt - st * st;
+  return { slope: den > 1e-12 ? (m * sts - st * ss) / den : 0, oldest };
+}
 
 /** Signed lateral offset (toward the field's middle) a pursuer keeps on a carrier at `y`. */
 export function leverage(a: Agent, y: number): number {

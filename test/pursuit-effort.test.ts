@@ -5,7 +5,7 @@ import { newSupport } from '../src/physics/support.js';
 import { World } from '../src/physics/world.js';
 import { interceptPoint, requestedSprintTime, timeToReach, timeToReachRequested } from '../src/physics/reach.js';
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
-import { chase } from '../src/sim/behaviors/common.js';
+import { chase, SPEED_TREND_WINDOW } from '../src/sim/behaviors/common.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 const profile: PhysicalProfile = { vmax: 8, tau: 1, brake: 8, lateral: 6, turnRate: 8,
@@ -126,7 +126,8 @@ describe('interception uses the sprint request budget', () => {
     expect(Math.hypot(far.vel.x, far.vel.y)).toBeCloseTo(d.profile.vmax * expected, 12);
     expect(command.effort).toBe(expected);
     expect(p.steeringPointEstimate).toBe('not-evaluated');
-    expect(seen).toHaveBeenCalledTimes(3); // Existing chase, current forecast and older cue only.
+    // Existing chase, the current forecast and the older pictures behind its speed trend only.
+    expect(seen).toHaveBeenCalledTimes(2 + Math.round(SPEED_TREND_WINDOW / sim.dt));
     c.body.pos = { x: -100, y: 50 }; c.body.vel = { x: -8, y: 0 };
     expect(chase(sim, d, c)).toEqual(command); // Unacquired reality cannot move the effort boundary.
     expect(seen).toHaveBeenCalledTimes(6);
