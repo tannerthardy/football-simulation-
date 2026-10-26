@@ -1895,8 +1895,10 @@ From the issue register:
   downhill on him instead of backpedalling; an upright release returns him to
   man, a seen exchange to his fit. It fired on 9 ordinary passes until
   admission required low pads: a route stemming into his hands had passed
-  the contact-geometry block test. Seeds 7/8 matched: 51 of 84 runs, 0 of
-  192 passes. Run arm re-recorded on default switches.
+  the contact-geometry block test. Seeds 7/8 matched (`58ae15d7`): 71 of
+  102 runs, 0 of 171 passes; paired grid 0 of 7,896. Run arm re-recorded on
+  default switches. Open: the installed alley fit holds a corner ~5 yd off
+  a runner after a seen exchange (s7 P3).
 
 ## Ball and quarterback
 

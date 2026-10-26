@@ -137,10 +137,13 @@ with `STALK_SQUEEZE=0`, every scrimmage snap replayed in both arms.
   re-qualification below: those were releases read as blocks, now fixed.
 - The paired-play grid count (`grid` mode) didn't finish in this session.
 
-## Re-qualified on develop `a27ccd84` (after #293), with one fix
+## Re-qualified on develop `58ae15d7` (after #293 and FAT-2), with one fix
 
-Develop merged into the branch without conflicts (#293 had already landed).
-Every number below is on today's defaults, no pins.
+Develop merged into the branch twice: once at `a27ccd84` (after #293, no
+conflicts), then at `58ae15d7`, which brings the two-pool fatigue model.
+The dropback diagnosis and fix were made on `a27ccd84`; the fixtures and
+matched games below are re-run on `58ae15d7`. Every number is on today's
+defaults, no pins.
 
 ### Why it fired on dropbacks
 
@@ -169,71 +172,95 @@ only his picture of the receiver; the release clock and the call stay unread.
   three arms) are **frame-identical** with and without it: Z shows low pads
   throughout his look.
 
-### Fixtures, today's defaults
+### Fixtures, today's defaults (`58ae15d7`)
 
 Yards man → support → squeeze. PA at the release: depth / lateral gap /
 separation from Z.
 
 | Fixture | Toss | Closest to carrier, man → squeeze | PA Shot | PA at release, man → support → squeeze |
 | --- | --- | --- | --- | --- |
-| 8⅓ yd | 1.54 → 1.18 → 1.13 | 5.09 → 0.90 yd | inc → inc → inc | −0.08/0.85/0.85 → −1.10/2.40/2.64 → **−2.47/1.46/2.87** |
-| 10 yd | 2.13 → **70 (TD)** → 0.25 | 4.76 → 1.96 | inc → inc → inc | same as 8⅓ |
-| 11⅔ yd | **70 (TD)** → 2.40 (corner tackles) → 2.63 | 2.84 → 1.20 | inc → **28.9-yd catch** → inc | same as 8⅓ |
-| Vertical, 8⅓ | — | — | inc → inc → inc | identical to PA Shot |
-| Look 1.3 s | 1.06 → 5.60 → 2.10 (corner wraps 3.60 s) | 5.06 → 0.47 | 14.1 to H → inc → inc | squeeze −2.72/0.99/2.90 |
+| 8⅓ yd | **70 (TD)** → 0.49 → 5.22 (corner wraps 4.05 s) | 4.71 → 1.31 yd | inc → **70 (TD)** → inc | −0.08/0.85/0.86 → −1.10/2.40/2.64 → **−2.47/1.46/2.87** |
+| 10 yd | 1.48 → **70 (TD)** → 1.10 | | inc → **70 (TD)** → inc | same as 8⅓ |
+| 11⅔ yd | **70 (TD)** → 4.31 (corner tackles) → 2.65 | 3.14 → 1.17 | inc → **28.9-yd catch** → inc | same as 8⅓ |
+| Vertical, 8⅓ | — | — | inc → **70 (TD)** → inc | identical to PA Shot |
+| Look 1.3 s | 1.20 → 1.00 → 2.18 (corner wraps 3.60 s) | 3.33 → 0.47 | inc → inc → **19.3-yd catch** | squeeze −2.72/0.99/2.90 |
 
 - Admission: 0.65 s on every call, the same pictures as the support arm.
   The exchange is seen at 1.10 s on every Toss.
+- **Whole-play results on this fixture swing with every base change.**
+  Fatigue alone turned the 8⅓ man-arm Toss from 1.54 yd into a 70-yd
+  touchdown, and the permissive PA arm from incomplete into a touchdown.
+  The geometry is stable across both bases: admission, return to man at
+  1.4 / 1.7 s, the release geometry to 0.01 yd, and the approach to the carrier.
+  The tests pin the geometry, plus results only where an arm's ordering is
+  the claim.
 - **The run arm, re-recorded on defaults** (`test/cov7-abandonment.test.ts`, the
-  `EDGE_CONTAIN`/`SEAL_HOLD` pins removed):
-  - At 8⅓, the contained edge and LB_W finish the toss in every arm; the
-    playing corner gets within 0.9 yd, the retained man stays 5.1 yd away.
-  - At the declared 11⅔ split, retained man gives up a 70-yd toss. The
-    support corner makes the tackle at 2.4, and the squeeze stops it at
-    2.63 (LB_M, corner 1.2 yd away).
-  - At 11⅔ PA charges the permissive alley run 28.9 yd. Man and squeeze
-    are incomplete.
-- **The deep-route cost** (the vertical arm, now a test): Z is 2.47 yd past
-  the squeezing corner at the throw (man −0.08), with a 1.46 yd lateral gap
-  (support 2.40). The bite costs depth, not lateral abandonment.
-- The strongest adverse fixture result belongs to the permissive diagnostic,
-  not the squeeze: at 10 yd the alley arm gives up a 70-yd toss.
+  `EDGE_CONTAIN`/`SEAL_HOLD` pins removed): at 8⅓ the corner who plays the
+  run gets within 1.3 yd while the retained man stays 4.7 yd away. At the
+  declared 11⅔ split, retained man gives up a 70-yd toss, the support corner
+  tackles at 4.3, and the squeeze stops it at 2.65.
+- **PA cost.** The permissive alley run is the one PA beats (TD at 8⅓ and
+  10, 28.9 yd at 11⅔). The squeeze pays in depth: Z is 2.47 yd past him at
+  the throw (man −0.08), but he stays nearer Z's line than the alley corner
+  (1.46 vs 2.40 yd lateral). With the look sold to 1.3 s the squeeze itself
+  is beaten for 19.3 yd while man and support are incomplete. **The fooled
+  squeezing corner pays.**
+- **The deep-route cost** (the vertical arm) is a test: depth at the
+  release worse than −2 yd, man level, lateral gap below the alley arm's.
 
-### Ordinary games, matched (seeds 7 and 8, after the fix)
+### Ordinary games, matched (seeds 7 and 8, `58ae15d7`, after the fix)
 
 | | Seed 7 | Seed 8 |
 | --- | --- | --- |
-| Runs: fired / took the fit | 33 of 43 / 11 | 18 of 41 / 7 |
-| Runs where it fired, mean yards off → on | 7.92 → 5.96 | 2.97 → 2.30 |
-| PA: fired / changed | 0 of 18 (both seeds) / 0 | |
-| Other passes: fired / changed | 0 of 174 (both seeds) / 0 | |
+| Runs: fired / took the fit / changed | 45 of 55 / 17 / 26 | 26 of 47 / 10 / 19 |
+| Runs where it fired, mean yards off → on | 6.58 → 5.32 | 4.23 → 3.35 |
+| PA: fired / changed | 0 of 6 / 0 | 0 of 6 / 0 |
+| Other passes: fired / changed | 0 of 82 / 0 | 0 of 77 / 0 |
 | Plays changed without firing | 0 | 0 |
 
-Paired-play grid (`cov7-squeeze-matched.ts grid`: 7,896 ordinary non-PA
-passes, 47 coverages, 3 rosters, both arms): **fired 0, changed 0**.
+(Before the fix, on `a27ccd84`, the same count was 9 passes firing; after
+it, 0 there too.)
 
-**Strongest adverse case: s7 P107**, Inside Zone Weak against 4-3 Even
-Palms (2-Read, match), 7.86 → 14.66 yd.
-- Both corners squeeze to about 7.5 yd off the line instead of bailing to 13.
-- First divergence: CB_S at 0.70 s.
-- At 2.5 s, H gets a block on the NB. In the man arm, nobody blocked the NB
-  and he made the tackle at 3.45 s.
-- The run reaches the safeties. FS wraps at 3.75 s and the runner breaks it;
-  CB_W, a squeezing corner, makes the tackle at 4.90 s.
-- So the squeezing corners keep the receivers occupied nearer the box, and
-  that changed who H found to block.
+Paired-play grid (`cov7-squeeze-matched.ts grid`, run on `a27ccd84` with
+the fix: 7,896 ordinary non-PA passes, 47 coverages, 3 rosters, both arms):
+**fired 0, changed 0**. Fatigue doesn't touch admission, so it wasn't re-run.
+
+**Strongest adverse case: s7 P3**, Inside Zone Weak against 4-3 Over
+Cover 1 Lurk, 0.47 → 5.70 yd.
+- In the man arm, CB_S mirrors X's inside stalk down into the hole. He is
+  0.9 yd from the runner at 2.5 s, wraps at 2.45 s and tackles at 3.15 s.
+- With the squeeze, both corners see the exchange and take their installed
+  alley fit. That fit holds CB_S about 5 yd off the runner (6.4 yd at 2.0 s,
+  5.1 at 2.8). DT_S misses, and LB_W tackles at 3.6 s.
+- So the cost isn't in the squeeze admission. It's the installed alley fit
+  being deeper and slower than chasing a down-blocking stalker. That fit is
+  the same one the permissive diagnostic uses; its depth is logged as open.
+- On `a27ccd84` the strongest adverse run was s7 P107, Inside Zone Weak
+  vs 2-Read, 7.86 → 14.66. The squeezing corners kept the receivers busy
+  near the box, H blocked the NB who had made the man-arm tackle, and a
+  squeezing corner finished it at 14.7.
 
 ### Also in this update
 
 - `config/baseline.json` registers `STALK_SQUEEZE: "1"`.
-- `test/combo-strike-access.test.ts` (a recorded Duo climb scene) pins
-  `STALK_SQUEEZE=0`. CB_W squeezes from 0.70 s on that run and moves LB_M
-  0.2 yd by the recorded 2.15 s strike. The pin is noted for review-2
-  re-recording, like the scene's other pins.
+- Three history-dependent tests pin `STALK_SQUEEZE=0`, each noted for
+  review-2 re-recording like their other pins:
+  - `combo-strike-access` (a recorded Duo climb): CB_W squeezes from 0.70 s
+    and moves LB_M 0.2 yd by the recorded 2.15 s strike;
+  - `responsibility-ledger` (named cases recorded on `a5b024b9`): in
+    S9-P027, LB_M, CB_W and CB_S squeeze from 0.60 s, and C's second
+    reread at 2.65 s goes away;
+  - `saved-game-play` (seed 7's first catch after play 10): the squeeze
+    changes the earlier runs, and with them the captured catch's history.
+- The rule applies to any pass-first man marker whose man is detached, not
+  only corners: nickels, safeties and a linebacker on a bunch receiver
+  squeeze in the matched games when they see his low pads.
 
 ### Open
 
 - The overthrown open Z on the PA fixture (QB lead vs receiver arrival).
+- The installed alley fit's depth after a seen exchange (s7 P3): the fit
+  holds the corner ~5 yd off a runner that a mirroring corner tackled.
 - Whether the run read itself (log-odds −0.6 to −1.8 by 1 s on dropbacks)
   is too eager is a recognition question; with the stalk-look fix it no
   longer reaches this choice.

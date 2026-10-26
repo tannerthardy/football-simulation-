@@ -21,7 +21,9 @@ import { composeHooks } from '../scripts/scorecard/hooks.js';
 // back) the blocked edge and corners see no holder for the 0.25 s before their pictures show the
 // catch, where they were handed the true catcher; that run ends in a tackle, not a touchdown, and the
 // first catch from play 10 becomes G1-P012, whose corner is a matching wrapper.
-vi.hoisted(() => { process.env.GAP_MATCH = '0'; });
+// STALK_SQUEEZE (COV-7) changes seed 7's earlier runs, and with them the captured catch's history;
+// the captured CB_W entries are staged on the retain-man corner (re-record by review 2).
+vi.hoisted(() => { process.env.GAP_MATCH = '0'; process.env.STALK_SQUEEZE = '0'; });
 
 describe('ordinary-game constructor capture and independent replay', () => {
   let captured: ReturnType<typeof captureOrdinaryPlay>;

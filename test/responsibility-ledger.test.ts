@@ -4,6 +4,9 @@
  * purpose). It is a recorder: nothing here grades a block. */
 import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
+// The named cases were recorded on a5b024b9's corners; STALK_SQUEEZE (COV-7) changes S9-P027's
+// second-level timing (C's second reread at 2.65 s). Staged on the retain-man corner (re-record by review 2).
+vi.hoisted(() => { process.env.STALK_SQUEEZE = '0'; });
 import { Rng } from '../src/core/rng.js';
 import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
 import { PlaySim } from '../src/sim/playsim.js';
