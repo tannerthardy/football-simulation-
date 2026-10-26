@@ -69,7 +69,7 @@ describe('held reach work survives acquisition of contact', () => {
     old.sim.world.step(baseline, .05);
     expect(next.b.vel.y * side).toBeGreaterThan(old.b.vel.y * side);
     expect(Math.hypot(r.groundImpulse[next.b.idx].x, r.groundImpulse[next.b.idx].y))
-      .toBeLessThanOrEqual(supportParams(next.b.profile).traction * .05 + 1e-8);
+      .toBeLessThanOrEqual(r.groundImpulseLimit[next.b.idx] + 1e-8);
     expect(Math.abs(r.work.residual)).toBeLessThan(1e-8);
   });
 

@@ -91,7 +91,7 @@ function step(f: Fixture) {
     expect(report.armWork[i]).toBeLessThanOrEqual(report.armWorkLimit[i] + 1e-8);
     expect(report.supportMotorWork[i]).toBeLessThanOrEqual(report.supportMotorWorkLimit[i] + 1e-8);
     expect(Math.hypot(report.groundImpulse[i].x, report.groundImpulse[i].y))
-      .toBeLessThanOrEqual(supportParams(a.profile).traction * f.sim.dt + 1e-8);
+      .toBeLessThanOrEqual(report.groundImpulseLimit[i] + 1e-8);
   }
   f.sim.t += f.sim.dt;
   f.sim.perception.record(f.sim.agents);

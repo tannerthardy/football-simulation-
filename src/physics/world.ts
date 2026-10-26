@@ -216,6 +216,8 @@ export interface StepReport {
   groundImpulse: Vec2[];
   /** Work of those external forces on each body, kg·yd²/s². */
   groundWork: number[];
+  /** Friction the feet could supply this step, on each body's actual normal load (standing weight less any pad lift), as an impulse. */
+  groundImpulseLimit: number[];
   groundYawImpulse: number[];
   groundYawWork: number[];
   /** Positive final channel work plus real strike/reel effort, bounded per tick. */
@@ -656,7 +658,7 @@ export class World {
       }
     }
     const report: StepReport = { substeps: 1, groundImpulse: bs.map(reportVector),
-      groundWork: reportZeros(n), groundYawImpulse: reportZeros(n), groundYawWork: reportZeros(n),
+      groundWork: reportZeros(n), groundImpulseLimit: reportZeros(n), groundYawImpulse: reportZeros(n), groundYawWork: reportZeros(n),
       armWork: reportZeros(n), armWorkLimit: reportZeros(n), armImpulse: reportZeros(n), armImpulseLimit: reportZeros(n),
       work: {before: this.kineticEnergy(),after: 0,hands: 0,grasps: 0,strikes: 0,contacts: 0,residual: 0},
       contacts: [], strikes: [], falls: [], downs: [], rises: [], maxPenetration: 0,
@@ -1631,6 +1633,7 @@ export class World {
     const m = this.mass[i];
     // Friction on the actual normal load: standing weight less any contact lift.
     const traction = PAD_LEVERAGE ? sp.traction * clamp(1 - this.liftFelt[i] / (m * G), 0, 2) : sp.traction;
+    report.groundImpulseLimit[i] += traction * h;
     this.recovery[i] = 0;
     const spinBefore=b.spin??0;
     this.v0x[i] = b.vel.x; this.v0y[i] = b.vel.y;
@@ -1737,13 +1740,14 @@ export class World {
         const tfx = lx + leanX, tfy = ly + leanY;
         // Muscle force-velocity: legs pushing the way he already moves lose
         // force with speed (concentric); legs yielding against his motion
-        // keep the eccentric credit, up to 1.2x isometric, but never beyond
-        // his standing friction, the same ceiling pushForce has. Without it,
-        // a strength gap is a constant net force and a carry keeps building.
+        // keep the eccentric credit, up to 1.2x isometric. Friction on his
+        // actual normal load (pad lift or press included) bounds it once,
+        // below. Without the law, a strength gap is a constant net force and
+        // a carry keeps building.
         const tf = Math.hypot(tfx, tfy);
         const along = tf > 1e-9 ? directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) : 1;
         const fv = tf > 1e-9 ? clamp(1 - (b.vel.x * tfx + b.vel.y * tfy) / (tf * p.vmax), 0, ECCENTRIC_GAIN) : 1;
-        const strength = Math.min(sp.pushForce * fv, sp.traction) * along * a;
+        const strength = sp.pushForce * fv * along * a;
         const capacity = Math.min(Math.max(Math.hypot(lx, ly), strength), traction * a);
         // Availability already limits gait during recovery. Reserve actual
         // unused effort after ordinary translation and yaw, for every body.
