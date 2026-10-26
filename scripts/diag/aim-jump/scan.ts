@@ -32,8 +32,12 @@ for (const p of plays) {
     const truth = new Map<number, any>();
     const tick = sim.tick.bind(sim);
     sim.tick = () => { const t = sim.t, c = sim.carrier;
-      if (c && c.team === 'O' && sim.ball.kind === 'held' && c.slot !== 'QB')
-        truth.set(Math.round(t * 1000), { id: c.player.id, slot: c.slot, pos: v3(c.pos), vel: v3(c.vel) });
+      if (c && c.team === 'O' && sim.ball.kind === 'held' && c.slot !== 'QB') {
+        // The NFL operator's sample filter needs the nearest other offensive body to this defender.
+        const me = sim.defense.find((x: any) => x.slot === d.slot);
+        const nearO = Math.min(...sim.offense.filter((o: any) => o !== c).map((o: any) => Math.hypot(o.pos.x - me.pos.x, o.pos.y - me.pos.y)));
+        truth.set(Math.round(t * 1000), { id: c.player.id, slot: c.slot, pos: v3(c.pos), vel: v3(c.vel), nearO: r3(nearO) });
+      }
       tick(); };
     const res = sim.run();
     traced++;
@@ -50,7 +54,14 @@ for (const p of plays) {
       const row: any = { k: `${p.seed}:${p.game}:${p.index}`, slot: d.slot, t: r3(s.stepStart), c,
         pos: v3(body.position), vel: v3(body.velocity), planner: ch?.planner ?? null, dist: ch ? r3(ch.distance) : null,
         gather: ch ? r3(ch.gather) : null, horizon: ch?.requestedHorizon ?? null,
-        final: s.final ? v3(s.final.vel) : null, owner: s.decision?.owner?.controller ?? null };
+        final: s.final ? v3(s.final.vel) : null, owner: s.decision?.owner?.controller ?? null,
+        ownerKind: s.decision?.owner?.kind ?? null, evaluated: s.decision?.evaluated ?? null,
+        // Every stage's requested velocity, in pipeline order: the chase's own requests (when it ran),
+        // the controller's raw command, then each post-decision rewrite, then the final command.
+        stages: [...(ch?.requests ?? []).map((q: any) => [q.stage, v3(q.command.vel)]),
+          ...(s.decision ? [['raw', v3(s.decision.raw.vel)]] : []),
+          ...s.rewrites.map((q: any) => [q.stage, v3(q.command.vel)]),
+          ...(s.final ? [['final', v3(s.final.vel)]] : [])] };
       if (ip) {
         const e = ip.prediction.estimate, f = ip.forecast;
         Object.assign(row, { ipT: r3(ip.prediction.t), status: e.status === 'estimated-feasible' ? 'F' : 'B', radius: r3(e.radius),
