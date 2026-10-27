@@ -145,8 +145,11 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     // (ball 0.3 yd longer at 2.8 s; the receiver holds 8 yd/s instead of slowing to 5.4). Both arms then catch it and
     // the yardage after the catch is a different tackler's, so the outcome order is no longer a measure of the
     // abandonment cost. Pin the cost where the corner's own body decides it: how far he is at release.
-    expect(pass.summary.atRelease.support.distance).toBeGreaterThan(pass.summary.atRelease.man.distance + 1);
-    expect(pass.summary.atRelease.support.depthLeverage).toBeLessThan(pass.summary.atRelease.man.depthLeverage);
+    const released = pass.summary.atRelease;
+    expect(released.support).not.toBeNull();
+    expect(released.man).not.toBeNull();
+    expect(released.support!.distance).toBeGreaterThan(released.man!.distance + 1);
+    expect(released.support!.depthLeverage).toBeLessThan(released.man!.depthLeverage);
     // Under the two-pool fatigue model (FAT-2) the same throw to WR2 is now
     // caught: the corner who left his man is 3 yd off at 2.4 s and gives up a
     // 70-yard touchdown, while the corner who stayed still forces the
