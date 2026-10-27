@@ -8,7 +8,7 @@
  */
 
 export type DetectorId = 'presnap' | 'turned' | 'stuck' | 'backpedal' | 'slide'
-  | 'frozen' | 'downalone' | 'blindball' | 'phantomlane';
+  | 'frozen' | 'downalone' | 'blindball' | 'phantomlane' | 'pulldeep';
 
 /** One body on one tick. Angles are radians, 0 = +x (the offense attacks +x); speeds are yd/s. */
 export interface WAgent {
@@ -36,6 +36,12 @@ export interface WAgent {
   job: string;
   /** Installed man assignment, copied without asking the defender to observe. */
   manTarget?: number | null;
+  /** Installed pull role of an offensive blocker's run-block plan (kick-out, lead or trap), else null. */
+  pullRole?: 'kick' | 'lead' | 'trap' | null;
+  /** True on the one tick this body is first engaged in the play (the observer remembers earlier ticks). */
+  firstEngaged?: boolean;
+  /** Observer bookkeeping for `firstEngaged`; no rule reads it. */
+  everEngaged?: boolean;
 }
 
 /** Recorded ball state. Positions/velocity exist only for an actual flight. */
@@ -69,6 +75,8 @@ export interface WFrame {
   offense: boolean;
   /** Offensive ball carrier the turned-away and stuck-blocker rules apply to, else -1. */
   runner: number;
+  /** Whoever holds the ball, the QB before the handoff included; -1 when no one does. */
+  holder?: number;
   agents: WAgent[];
   /** Pre-snap frames carry the contacts of that physics step. */
   contacts?: WContact[];

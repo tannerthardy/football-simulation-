@@ -12,7 +12,7 @@ describe('run-play trace (scripts/diag/run-trace-watch.ts)', () => {
     const traced = new PlaySim(nativeTraceSetup(recipe));
     const get = watchRunPlay(traced);
     expect(finish(traced)).toBe(plain);
-    const rec = get() as { setup: { agents: unknown[]; concept?: string }; frames: Array<{ t: number; a: unknown[] }> };
+    const rec = get() as unknown as { setup: { agents: unknown[]; concept?: string }; frames: Array<{ t: number; a: unknown[] }> };
     expect(rec.setup.agents.length).toBe(22);
     expect(rec.frames.length).toBeGreaterThan(20);
     expect(rec.frames[0].a.length).toBe(22);

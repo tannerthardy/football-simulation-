@@ -133,3 +133,35 @@ describe('phantomlane: travel versus static installed-aim bearing', () => {
       expect(run('phantomlane', [{ ...scene(), ...patch }])).toEqual([]);
   });
 });
+
+describe('pulldeep: a puller\'s first engagement is a man deeper than the ball holder', () => {
+  // Offense attacks +x: smaller x is deeper in the backfield. Puller 0, defender 1, holder 2 (RB).
+  const scene = (t: number, i: number, patch: { puller?: Partial<WAgent>; defenderX?: number; holder?: Partial<WAgent> } = {}) => frame(t, [
+    agent(0, { team: 'O', slot: 'LG', x: -3, engaged: i >= 4, firstEngaged: i === 4, pullRole: 'kick', blocks: i >= 4 ? 1 : -1, ...patch.puller }),
+    agent(1, { team: 'D', slot: 'DE_S', x: patch.defenderX ?? -6, engaged: i >= 4 }),
+    agent(2, { team: 'O', slot: 'RB', x: -4, ...patch.holder }),
+  ], { runner: 2, holder: 2 });
+  it('flags the one tick of first engagement and says how much deeper the man was', () => {
+    const events = run('pulldeep', ticks(8, (t, i) => scene(t, i)));
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({ t0: .2, t1: .2, players: ['LG', 'DE_S', 'RB'], achieved: { defenderDepthBehindHolder: 2 } });
+    expect(events[0].candidate).toBeUndefined();
+  });
+  it('compares with the QB before the handoff (holder, not runner)', () => {
+    const early = (t: number, i: number) => ({ ...scene(t, i, { holder: { slot: 'QB', x: -5 }, defenderX: -6.5 }), runner: -1 });
+    expect(run('pulldeep', ticks(8, early))).toHaveLength(1);
+    expect(run('pulldeep', ticks(8, (t, i) => ({ ...early(t, i), holder: -1 })))).toEqual([]);
+  });
+  it('flags any depth behind the holder but not a man level with or past him, a later engagement, another role, or a pass', () => {
+    expect(run('pulldeep', ticks(8, (t, i) => scene(t, i, { defenderX: -4.1 })))).toHaveLength(1);
+    expect(run('pulldeep', ticks(8, (t, i) => scene(t, i, { defenderX: -4 })))).toEqual([]);
+    expect(run('pulldeep', ticks(8, (t, i) => scene(t, i, { defenderX: -1 })))).toEqual([]);
+    expect(run('pulldeep', ticks(8, (t, i) => scene(t, i, { puller: { firstEngaged: false } })))).toEqual([]);
+    expect(run('pulldeep', ticks(8, (t, i) => scene(t, i, { puller: { pullRole: 'trap' } })))).toEqual([]);
+    expect(run('pulldeep', ticks(8, (t, i) => scene(t, i, { puller: { pullRole: null } })))).toEqual([]);
+    expect(run('pulldeep', ticks(8, (t, i) => ({ ...scene(t, i), isPass: true })))).toEqual([]);
+  });
+  it('flags a lead puller too', () => {
+    expect(run('pulldeep', ticks(8, (t, i) => scene(t, i, { puller: { pullRole: 'lead' } })))).toHaveLength(1);
+  });
+});
