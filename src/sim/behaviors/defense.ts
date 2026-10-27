@@ -154,7 +154,7 @@ export class PassRusher implements Behavior {
     const gy = gapY(sim.offAlign, this.gap, this.gapSign);
     const edge = this.gap === 'C' || this.gap === 'D';
     const bend = 0.8 + 0.45 * traits(a).bend;
-    if (this.plan === 'power' || this.workedContact) {
+    if (this.plan === 'power' || (edge && this.workedContact)) {
       const p = pursuitPoint(sim, a, qb, 1.5);
       return runThrough(a, p, this.plan === 'power' ? { speed: 1 } : { speed: 1, cutSkill: bend });
     }

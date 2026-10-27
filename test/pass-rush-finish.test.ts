@@ -15,7 +15,7 @@ import { PlaySim } from '../src/sim/playsim.js';
 /** Constructed approach/control, not an ordinary-game film ID. Own contact is
  * created and ended through the existing engagement interface. Opponent
  * evidence is explicit and fixed; the World still executes finite movement. */
-function stage(side: number, worked: boolean, plan = 'speed') {
+function stage(side: number, worked: boolean, plan = 'speed', gap: 'D' | 'B' = 'D') {
   const sim = new PlaySim({
     offense: pickOffense(generateTeam(new Rng(19), 'O', 'OFF'), '11'),
     defense: pickDefense(generateTeam(new Rng(20), 'D', 'DEF'), 'nickel'),
@@ -25,7 +25,7 @@ function stage(side: number, worked: boolean, plan = 'speed') {
       pressure: null, label: 'rush finish control' }, los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 19,
   });
   const d = sim.slot('DE_S')!, b = sim.slot('RT')!;
-  const rush = new PassRusher(d, sim, 'D', side);
+  const rush = new PassRusher(d, sim, gap, side);
   // Installed speed-rush plan, independent of this fixture's random selection.
   Object.defineProperty(rush, 'plan', { value: plan });
   d.behavior = rush; sim.t = 2;
@@ -83,6 +83,14 @@ describe('finishing a pass rush after own contact', () => {
   it('preserves a power rusher\'s existing finish without adding a proximity slowdown', () => {
     const old = stage(1, false, 'power'), finish = stage(1, true, 'power');
     try {
+      expect(finish.rush.update(finish.d, finish.sim)).toEqual(old.rush.update(old.d, old.sim));
+    } finally { old.see.mockRestore(); finish.see.mockRestore(); }
+  });
+
+  it('preserves the interior rush family, whose opening was not the edge-arc witness', () => {
+    const old = stage(1, false, 'finesse', 'B'), finish = stage(1, true, 'finesse', 'B');
+    try {
+      for (const r of [old, finish]) r.d.body.pos.x = r.sim.los + .4;
       expect(finish.rush.update(finish.d, finish.sim)).toEqual(old.rush.update(old.d, old.sim));
     } finally { old.see.mockRestore(); finish.see.mockRestore(); }
   });
