@@ -52,13 +52,24 @@ export interface LinePicture {
 const cache = new WeakMap<Agent, { t: number; sim: PlaySim; picture: LinePicture }>();
 
 /** Has this body left the line? A puller steps back and across; a climber
- * leaves for the second level. Either no longer bounds a gap. */
-function departed(sim: PlaySim, b: SurfaceBody): boolean {
+ * leaves for the second level. Either no longer bounds a gap. A body pushed
+ * back and across while the observer sees him on a defender is still
+ * blocking on the surface. */
+function departed(sim: PlaySim, observer: Agent, b: SurfaceBody): boolean {
   const dir = sim.attackDir(b.agent.team);
   const home = sim.offAlign.spots[b.agent.slot]!.pos;
   const depth = (b.seen.pos.x - home.x) * dir;
   if (depth > 1.5 || depth < -1.5) return true;
-  return depth < -.5 && Math.abs(b.seen.pos.y - home.y) > 1 && !b.agent.engagement;
+  return depth < -.5 && Math.abs(b.seen.pos.y - home.y) > 1 && !seenOnDefender(sim, observer, b);
+}
+
+/** The observer's visible-block test: in his pictures, a defender within
+ * touching distance of this body (centres within radii + .35 yd). */
+function seenOnDefender(sim: PlaySim, observer: Agent, b: SurfaceBody): boolean {
+  return sim.opponents(b.agent).some((d) => {
+    const p = d === observer ? d.pos : sim.see(observer, d).pos;
+    return Math.hypot(p.x - b.seen.pos.x, p.y - b.seen.pos.y) < b.agent.profile.radius + d.profile.radius + .35;
+  });
 }
 
 /** The offensive surface as `observer` currently perceives it. */
@@ -71,7 +82,7 @@ export function linePicture(sim: PlaySim, observer: Agent): LinePicture {
     const spot = sim.offAlign.spots[o.slot];
     if (!spot || !(CORE.has(o.slot) || spot.inline)) continue;
     const b = { agent: o, seen: sim.see(observer, o), home: spot.pos.y };
-    if (departed(sim, b)) gone.push(b);
+    if (departed(sim, observer, b)) gone.push(b);
     else { surface.push(b); if (o.slot === 'C') centerBody = b; }
   }
   const center = centerBody ? centerBody.seen.pos.y : sim.ballY;
