@@ -17,8 +17,6 @@ export interface ClimbAccess {
   turn?: number;
 }
 const STEPS = 12; // A few steps, the existing local movement-preview horizon.
-/** How far past the tangent point a released climber's exit runs, yd (one stride). */
-const STRIDE = 1;
 
 function gap(a: Agent, path: ReturnType<typeof previewFreeMovement>, p: ClimbSurface): number {
   let px = a.pos.x-p.seen.pos.x, py = a.pos.y-p.seen.pos.y;
@@ -100,21 +98,10 @@ export function assessClimbAccess(a: Agent, backer: Perceived, surfaces: readonl
   const continued=gather&&previous?.obstacle===body.key?previous.turn:undefined;
   const signs=gather?[...new Set([continued,preferred,-preferred,0].filter((s):s is number=>s!==undefined))]:[preferred,-preferred];
   for (const sign of signs) {
-    let goal: Vec2;
-    if (gather && sign !== 0) {
-      // A released climber leaves off the man's shoulder: run the line that
-      // just skims his clearance circle (the tangent from where he stands),
-      // carried a stride past it, rather than stepping around him in arcs.
-      const clear = a.profile.radius+body.radius+.15, d = Math.max(distance,clear);
-      const alpha = sign*Math.acos(clear/d), ux = relative.x/distance, uy = relative.y/distance;
-      const nx = ux*Math.cos(alpha)-uy*Math.sin(alpha), ny = ux*Math.sin(alpha)+uy*Math.cos(alpha);
-      goal = { x:body.seen.pos.x+nx*clear-sign*ny*STRIDE, y:body.seen.pos.y+ny*clear+sign*nx*STRIDE };
-    } else {
-      // Same short foot-replacement arc as the existing run-block fit recovery.
-      const angle = sign*.35;
-      goal = { x:body.seen.pos.x+(relative.x*Math.cos(angle)-relative.y*Math.sin(angle))*radius/distance,
-        y:body.seen.pos.y+(relative.x*Math.sin(angle)+relative.y*Math.cos(angle))*radius/distance };
-    }
+    // Same short foot-replacement arc as the existing run-block fit recovery.
+    const angle = sign*.35;
+    const goal = { x:body.seen.pos.x+(relative.x*Math.cos(angle)-relative.y*Math.sin(angle))*radius/distance,
+      y:body.seen.pos.y+(relative.x*Math.sin(angle)+relative.y*Math.cos(angle))*radius/distance };
     const entry: ClimbAccessRecord['candidates'][number] | undefined = log && { sign, goal: { ...goal }, rejected: null };
     if (entry) log!.candidates.push(entry);
     if (goal.y<.5||goal.y>FIELD_WIDTH-.5) { if (entry) entry.rejected = 'field'; continue; }
