@@ -3,7 +3,9 @@
  * Phase II zone set (constructor inputs recorded at develop a5b024b9; re-record them when the source changes on
  * purpose). The M- cases are matched-restage captures of develop 55cc9e57, recorded when turning on the feet's
  * actual grip moved the S9-P027 and S7-P067 scenes; M25-P032, M13-P086 and M29-P036 are captures of develop 1ec115c7,
- * recorded when the start law (#336) moved M9-P000, M7-P051 and S10-P006. It is a recorder: nothing here grades a block. */
+ * recorded when the start law (#336) moved M9-P000, M7-P051 and S10-P006. R7-P095 and R13-P062 are run-only captures
+ * (seeds 7 and 13 of develop 1ec115c7), recorded when the climber stepping off the released man's hip (#345) moved
+ * M25-P032 and M13-P086. It is a recorder: nothing here grades a block. */
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
@@ -206,21 +208,25 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT')).toEqual([]);
   });
 
-  it('M25-P032: C is reread twice, each recorded with its resulting kind', () => {
+  it('R7-P095: C is reread twice, each recorded with its resulting kind', () => {
     // Re-recorded for the start law (#336): M9-P000's C is now reread once (1.8), so a matched-restage capture of
     // develop 1ec115c7 where he is reread twice carries the case.
-    const p = play('M25-P032');
+    // Re-recorded with the departing climber stepping off the released man's hip (#345): M25-P032's C is no longer
+    // reread; R7-P095, a run-only capture (seed 7, snap 95, wide zone vs wide-9), carries it.
+    const p = play('R7-P095');
     const threats = changeOf(p, 'C', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([1.8, 2.55]);
+    expect(threats.map(c => c.t)).toEqual([1.3, 2.35]);
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(2);
     expect(threats.every(c => c.after.kind === 'climb')).toBe(true);
   });
 
-  it('M13-P086: the first carrier contact keeps both defenders tied at 2.55', () => {
+  it('R13-P062: the first carrier contact keeps both defenders tied at 2.35', () => {
     // Re-recorded for the start law (#336): M7-P051's LB_M now reaches the carrier alone at 2.5, so a matched-restage
     // capture of develop 1ec115c7 where LB_M and LB_W arrive on the same tick carries the tie.
-    const p = play('M13-P086'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.55);
+    // Re-recorded with #345: M13-P086's LB_M now arrives alone; R13-P062, a run-only capture (seed 13, snap 62,
+    // outside zone weak vs over), has LB_M and LB_W on the same tick.
+    const p = play('R13-P062'), first = p.census[0].firstCarrierContact!;
+    expect(first.t).toBe(2.35);
     expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
   });
 
@@ -231,9 +237,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // still one defender, not a tie. The DT_W's wrap now comes with the contact (2.1; was 2.3 after the DE_W's contact).
     // Re-recorded for the start law (#336): the run gets further, and LB_W alone makes first contact at 2.6, wrapping
     // with it; still one defender, not a tie.
-    expect(first.t).toBe(2.6);
-    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.6 && p.slot(e.defender) === 'LB_W')).toBe(true);
+    // Re-recorded with #345: the run gets further still; CB_W alone makes first contact at 3.45, wrapping with it;
+    // still one defender, not a tie.
+    expect(first.t).toBe(3.45);
+    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
+    expect(p.d.play.carrierEvents.some(e => e.t === 3.45 && p.slot(e.defender) === 'CB_W')).toBe(true);
   });
 
   // Re-recorded for the start law (#336): S10-P006's exchange now completes and the RB carries; M29-P036, a
@@ -252,7 +260,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.census).toEqual([]);
   });
 
-  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
+  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'R7-P095', 'R13-P062', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
     const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
     const run = (record: boolean) => {
       const sim = new PlaySim(restoreSetup(setup));

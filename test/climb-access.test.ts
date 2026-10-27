@@ -85,7 +85,9 @@ describe('assigned climb clears acquired first-level traffic',()=>{
     }
     // Recorded scene: Y's climb is unchanged by turning on the feet's actual
     // grip, but LB_W arrives 2 cm off and the load starts one tick later.
-    expect(firstLoad).not.toBeNull();expect(firstLoad!).toBeLessThanOrEqual(1.65);
+    // With the start law and the departing climber stepping off the released
+    // man's hip (#345), the first load comes one more tick later (1.70).
+    expect(firstLoad).not.toBeNull();expect(firstLoad!).toBeLessThanOrEqual(1.7);
     expect(positiveNormal).toBe(true);
     expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(false);
   });
