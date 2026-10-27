@@ -302,13 +302,13 @@ problem), resolved.
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
 | [PRO-5](#pro-5) | No pass protection calls | G9 | high | open |
-| [COV-1](#cov-1) | Zone defenders barely close while the ball is in the air | G3 | high | open |
+| [COV-1](#cov-1) | Zone defenders barely close while the ball is in the air | G3 | high | paused (#324 diagnosis) |
 | [COV-2](#cov-2) | Too much yardage per attempt and after the catch | G3 | high | open |
 | [COV-3](#cov-3) | Coverage rules and calls not yet complete | G3 | medium | in work (#193) |
 | [COV-4](#cov-4) | Defenders react late to jet motion | G3 | low | on |
 | [COV-5](#cov-5) | Older coverage contracts that fail or are unproven | G3 | high | open (next for Coverage) |
 | [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | on (orientation technique); run-fit and ball-play turns open |
-| [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | in work (cost fixture #271; pilot #269) |
+| [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | paused; fixture breaks under #336 (first on resume) |
 | [COV-8](#cov-8) | Trailing man defenders can't find the ball | G3, G4 | high | open (logged with the throw-sight change) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
@@ -2378,6 +2378,28 @@ From the issue register:
   arms changes beyond 0.1 yd. The
   design for the leave-or-stay choice and the evidence its code PR owes are
   in the review; code waits for COV-6.
+- **Paused, first to resume (Tanner, Oct 27): the COV-7 fixture fails under
+  the gait start law (#336).** Coverage work is paused until the run game is
+  much better; this is priority 1 when other work resumes.
+  - On #336, `test/cov7-abandonment.test.ts` fails 2 of 9 (Toss / PA Shot,
+    seed 1). The combo C contacts DT_S early, so LB_W goes unblocked and the
+    corner never reaches the runner. Z's look settles sooner, so in man the
+    QB never throws to Z, and the bitten corner intercepts.
+  - With #295's re-recorded version (no `EDGE_CONTAIN`/`SEAL_HOLD` pins) it
+    fails 5 of 13: the man-arm corner also ends near the runner, the wider
+    split's results flip, and the vertical arm's depth check fails.
+  - Seeds 1–50 don't pass, and a lucky seed is ruled out
+    (`reviews/cov7-abandonment-cost.md`).
+  - **Plan on resume:** re-record once on #336 + #295. Claim the cost through
+    same-clock geometry (lateral gap, depth leverage, separation from Z), not
+    the QB's target or the outcome. Apply legality checks only when a throw to
+    Z happens. Never count an interception as a completion. Add the vertical
+    arm, declared before it runs (`reviews/cov7-support-choice.md`).
+  - #336's start law stays blocked on this unless Tanner decides otherwise;
+    Main Engine won't skip the test.
+  - Also waiting: #295 (squeeze; its seed 7/8 matched numbers predate the
+    random-stream split, #323, and need re-running) and #324 (COV-1
+    diagnosis; attempt 2 parked on `coverage/G3-cov1-throw-horizon`).
 
 ## Ball and quarterback
 
