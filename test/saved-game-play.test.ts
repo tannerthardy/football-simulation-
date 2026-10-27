@@ -1,7 +1,7 @@
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { serialize } from 'node:v8';
+import { deserialize, serialize } from 'node:v8';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import { Game } from '../src/game/game.js';
@@ -25,7 +25,17 @@ vi.hoisted(() => { process.env.GAP_MATCH = '0'; });
 
 describe('ordinary-game constructor capture and independent replay', () => {
   let captured: ReturnType<typeof captureOrdinaryPlay>;
-  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 10, maxSteps: 60 }); }, 30_000);
+  beforeAll(() => {
+    captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 10, maxSteps: 60,
+      // A catch can be this offense's first snap. Require actual recorded
+      // history for the rich-context assertions, without using restoreSetup
+      // (the function under test) to decide whether that history exists.
+      accept: saved => {
+        const cells = deserialize(saved.setup).scouting?.cells as Map<string, { n: number }> | undefined;
+        return [...(cells ?? [])].some(([key, cell]) => key.startsWith('s:') && cell.n > 0);
+      },
+    });
+  }, 30_000);
 
   it('preserves the whole normal game prefix compared with the observer absent', () => {
     const rng = new Rng(7);
