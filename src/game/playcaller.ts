@@ -272,6 +272,8 @@ export class OffensiveCoordinator {
   constructor(
     readonly team: Team,
     private readonly rng: Rng,
+    /** Evaluation harness: call only designed runs (the pass draw is still taken). */
+    private readonly runOnly = false,
   ) {}
 
   /** Feed back a play's success (0–1 success value from the game layer). */
@@ -319,7 +321,7 @@ export class OffensiveCoordinator {
     const rb = bestAt(this.team, 'RB');
     pass += (overallAt(qb) - overallAt(rb)) / 250;
     pass = Math.min(0.95, Math.max(0.08, pass));
-    const isPass = rng.chance(pass);
+    const isPass = rng.chance(pass) && !this.runOnly;
 
     const personnel = this.choosePersonnel(s, isPass);
     const formation = this.chooseFormation(personnel, isPass);
