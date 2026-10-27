@@ -322,6 +322,10 @@ const KNEE = 0.5;
 /** Peak hip-extension torque per kg of body mass, kg·yd²/s² per kg
  * (about 3.5 N·m/kg in sprinting and strength athletes; 1 N·m = 1.196). */
 const HIP_TORQUE_PER_KG = 3.5 * 1.196;
+/** Share of a grounded holder's weight his arms carry on a leg hold: a body
+ * resting on the ground at one end and held at the other carries half its
+ * weight at each end. */
+const HANG_SHARE = 0.5;
 /** Extra hold distance of a holder stretched along the ground, yd. */
 export const GROUND_STRETCH = 0.9;
 /** Gait response time to body acceleration, s. */
@@ -530,6 +534,8 @@ export class World {
   private readonly impY: Float64Array;
   /** Grip a hold on his legs puts against his stride (see the ground forces). */
   private readonly strideHolds: Float64Array;
+  /** Share of his hip torque the last substep's thigh brace used. */
+  private readonly hipUsed: Float64Array;
   private readonly tripX: Float64Array;
   /** Pitch from holds above the knee, which the hips can brace. */
   private readonly thighX: Float64Array;
@@ -602,7 +608,7 @@ export class World {
     this.mass = Float64Array.from(bodies, (b) => b.profile.massKg);
     this.inertia = Float64Array.from(this.sp, (s) => s.yawInertia);
     const f = () => new Float64Array(n);
-    this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f(); this.strideHolds = f(); this.thighX = f(); this.thighY = f();
+    this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f(); this.strideHolds = f(); this.hipUsed = f(); this.thighX = f(); this.thighY = f();
     this.travelVx = f(); this.travelVy = f();
     this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
@@ -1227,20 +1233,26 @@ export class World {
     }
     this.syncHeldSupport();
     this.allocateArms();
-    // Bound legs: a hold on his legs resists their stroke with its grip,
-    // anchored by the holder's own footing (or his body sliding on the
-    // ground). How much of the stride it binds is where the arms are on him
-    // (the legs share), not how tightly they couple a corrective step.
+    // Hanging weight: a holder off his feet who still holds the runner's legs
+    // rests on the ground at one end and on his arms at the other, so about
+    // half his weight hangs on the hold. To swing that leg through a stride
+    // the runner's hip must lift it: the share of his stride the weight binds
+    // is its moment about his hip (the hold sits 0.55·legs of his COM height
+    // below it) against his hip torque. A holder still on his feet carries
+    // his own weight and binds nothing this way.
     this.strideHolds.fill(0);
     for (const jt of this.joints) {
       if (jt.kind !== 'grasp') continue;
       jt.strideForce = 0;
-      if (jt.broken || jt.legs <= 0) continue;
-      const ia = this.indexOf(jt.a), hs = jt.a.support!;
-      const anchor = hs.state === 'up' ? this.sp[ia].traction
-        : (hs.state === 'falling' ? FALL_FRICTION : DOWN_FRICTION) * G * this.mass[ia];
-      jt.strideForce = clamp(jt.legs, 0, 1) * Math.min(this.gripCapacity(jt), anchor);
-      this.strideHolds[this.indexOf(jt.b)] += jt.strideForce;
+      if (jt.broken || jt.legs <= 0 || jt.a.support!.state === 'up') continue;
+      const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
+      const lever = 0.55 * clamp(jt.legs, 0, 1) * this.comHeight[ib];
+      // One hip budget: what bracing the hold's pull on his thighs used is
+      // not there to swing the leg.
+      const hip = HIP_TORQUE_PER_KG * this.mass[ib] * this.fat[ib] * Math.max(0, 1 - this.hipUsed[ib]);
+      const bound = hip > 1e-9 ? clamp(HANG_SHARE * this.mass[ia] * G * lever / hip, 0, 1) : 1;
+      jt.strideForce = bound;
+      this.strideHolds[ib] = 1 - (1 - this.strideHolds[ib]) * (1 - bound);
     }
     // A low hold affects support through its actual transmitted impulse and
     // contact-height moment below. Its existence alone cannot remove recovery
@@ -1777,21 +1789,23 @@ export class World {
         const px = allocation[2], py = allocation[3];
         actionX *= allocation[4]; actionY *= allocation[4];
         fx += lx + px; fy += ly + py;
-        // Bound legs: while he runs on (asks to keep moving his way), every
-        // stride cycles the held legs through their stroke against the hold.
-        // Whatever the drive, the hold's resistance opposes his travel
-        // through his feet, within traction, and never reverses him. A man
-        // standing or carried by the hold is not striding.
-        const resist = this.strideHolds[i], v = Math.hypot(b.vel.x, b.vel.y);
-        if (resist > 0 && v > 1e-6 && intent.vel.x * b.vel.x + intent.vel.y * b.vel.y > 0) {
-          const vx = b.vel.x / v, vy = b.vel.y / v, along = fx * vx + fy * vy, T = traction * a;
-          const room = Math.max(0, along * along - (fx * fx + fy * fy) + T * T);
-          const drag = Math.max(0, Math.min(resist, m * v / h + along, along + Math.sqrt(room)));
-          fx -= vx * drag; fy -= vy * drag;
-          // Each hold keeps its share of what was taken, for its causes.
-          for (const jt of this.joints) if (jt.kind === 'grasp' && jt.b === b && jt.strideForce)
-            jt.strideForce *= drag / resist;
-        } else for (const jt of this.joints) if (jt.kind === 'grasp' && jt.b === b) jt.strideForce = 0;
+        // Bound stride: of his drive along his travel, the share his held legs
+        // would deliver is lost while hanging weight keeps them from swinging
+        // through. An internal limit on his own propulsion: nothing external
+        // is added, and braking is untouched.
+        const bound = this.strideHolds[i], v = Math.hypot(b.vel.x, b.vel.y);
+        let removed = 0;
+        if (bound > 0 && v > 1e-6) {
+          const vx = b.vel.x / v, vy = b.vel.y / v, along = fx * vx + fy * vy;
+          if (along > 0) { removed = along * bound; fx -= vx * removed; fy -= vy * removed; }
+        }
+        // Each hold keeps its share of the drive taken, for its causes.
+        if (bound > 0) {
+          let sum = 0;
+          for (const jt of this.joints) if (jt.kind === 'grasp' && jt.b === b) sum += jt.strideForce ?? 0;
+          for (const jt of this.joints) if (jt.kind === 'grasp' && jt.b === b)
+            jt.strideForce = sum > 0 ? removed * (jt.strideForce ?? 0) / sum : 0;
+        }
         this.braceX[i] = px; this.braceY[i] = py;
         const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;
         this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
@@ -1947,9 +1961,12 @@ export class World {
     // Hips brace a thigh hold's moment up to their extension torque over
     // this substep; the excess pitches him like any trip.
     const thigh = Math.hypot(this.thighX[i], this.thighY[i]);
+    this.hipUsed[i] = 0;
     if (thigh > 0) {
       const c = this.comHeight[i], moment = thigh * sp.pitchRadiusSq * this.mass[i] / Math.max(c, 1e-6);
-      const excess = Math.max(0, 1 - HIP_TORQUE_PER_KG * this.mass[i] * fat * h / Math.max(moment, 1e-12));
+      const capacity = HIP_TORQUE_PER_KG * this.mass[i] * fat * h;
+      this.hipUsed[i] = Math.min(1, moment / Math.max(capacity, 1e-12));
+      const excess = Math.max(0, 1 - capacity / Math.max(moment, 1e-12));
       legX += this.thighX[i] * excess / w0; legY += this.thighY[i] * excess / w0;
     }
     dx += legX; dy += legY;

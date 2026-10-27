@@ -1,10 +1,10 @@
-/** Bound legs: a hold on a runner's legs resists his stride with its grip,
- * anchored by the holder's footing, scaled by how much of the legs the arms
- * cover. These checks pin that law in World; they do not calibrate tackles. */
+/** Bound legs: a holder off his feet who still holds a runner's legs hangs
+ * half his weight on the hold. Swinging that leg through a stride needs the
+ * runner's hip to lift it, from the same hip torque that braces the hold's
+ * pull on his thighs. These checks pin that law in World; they do not
+ * calibrate tackles. */
 import { describe, expect, it } from 'vitest';
-import { G } from '../src/core/units.js';
 import type { Body } from '../src/physics/kinematics.js';
-import { supportParams } from '../src/physics/support.js';
 import { World, type GraspJoint, type Intent } from '../src/physics/world.js';
 
 const TICK = 0.05;
@@ -17,51 +17,46 @@ function body(mass: number, x: number, vx: number): Body {
       power: mass, balance: 0.5, stepSpeed: 3.4, getUp: 0.9 } };
 }
 
-/** A holder behind a runner who keeps asking to run on at 6 yd/s. */
-function scene(legs: number | null, runner: Intent = { vel: { x: 6, y: 0 } }, holderDown = false) {
-  const holder = body(100, 0, 3), carrier = body(100, 0.75, 3);
+/** A runner asking to run on at 6 yd/s with a holder behind him on his legs;
+ * the holder either on his feet or already on the ground. */
+function run(legs: number | null, opts: { holderDown?: boolean; holderMass?: number; runner?: Intent; ticks?: number } = {}) {
+  const holder = body(opts.holderMass ?? 100, 0, 3), carrier = body(100, 0.75, 3);
   const world = new World([holder, carrier], { substeps: 6 });
-  if (holderDown) holder.support!.state = 'down';
+  if (opts.holderDown) { holder.support!.state = 'down'; holder.support!.since = -10; }
   const grip: GraspJoint | null = legs === null ? null : { kind: 'grasp', a: holder, b: carrier,
-    reach: 1.4, capacity: 600, legs, pull: 0, hold: 0.75 };
+    reach: 2.4, ground: 2.4, capacity: 3000, legs, pull: 0, hold: 0.75 };
   if (grip) world.joints.push(grip);
-  const report = world.step([{ vel: { x: 3, y: 0 } }, runner], TICK);
+  let report = world.step([{ vel: { x: 0, y: 0 } }, opts.runner ?? { vel: { x: 6, y: 0 } }], TICK);
+  for (let k = 1; k < (opts.ticks ?? 1); k++) report = world.step([{ vel: { x: 0, y: 0 } }, opts.runner ?? { vel: { x: 6, y: 0 } }], TICK);
   return { holder, carrier, grip, report };
 }
 
-describe('a hold on his legs binds his stride', () => {
-  it('takes no more than its grip times the legs it covers, within his traction', () => {
-    const { carrier, grip, report } = scene(0.6);
-    const limit = 0.6 * Math.min(600, supportParams(carrier.profile).traction);
-    expect(grip!.strideForce).toBeGreaterThan(0);
-    expect(grip!.strideForce!).toBeLessThanOrEqual(limit + 1e-9);
-    const gi = report.groundImpulse[1];
-    expect(Math.hypot(gi.x, gi.y)).toBeLessThanOrEqual(report.groundImpulseLimit[1] + 1e-9);
-    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
+describe('a holder hanging on his legs binds his stride', () => {
+  it('binds nothing while the holder is on his feet: he carries his own weight', () => {
+    expect(run(0.7).grip!.strideForce).toBe(0);
   });
 
-  it('leaves a free runner, and a held man who is not striding, unchanged', () => {
-    expect(scene(null).carrier.vel.x).toBeGreaterThan(scene(0.6).carrier.vel.x);
-    // Standing (or carried along by the hold) is not a stride.
-    expect(scene(0.6, { vel: { x: 0, y: 0 } }).grip!.strideForce).toBe(0);
-    // A hold at the waist does not bind the legs.
-    expect(scene(0).grip!.strideForce).toBe(0);
+  it('takes drive from a runner whose legs carry a grounded holder, never adding any', () => {
+    const free = run(null, { ticks: 4 }), held = run(0.7, { holderDown: true, ticks: 4 });
+    expect(held.grip!.strideForce!).toBeGreaterThan(0);
+    // Only his own propulsion is reduced: the ground impulse stays within
+    // what his feet can transmit, and energy is accounted for.
+    const gi = held.report.groundImpulse[1];
+    expect(Math.hypot(gi.x, gi.y)).toBeLessThanOrEqual(held.report.groundImpulseLimit[1] + 1e-9);
+    expect(Math.abs(held.report.work.residual)).toBeLessThan(1e-8);
+    expect(held.carrier.vel.x).toBeLessThan(free.carrier.vel.x);
   });
 
-  it('is only as firm as the holder\'s footing', () => {
-    const up = scene(0.6), down = scene(0.6, { vel: { x: 6, y: 0 } }, true);
-    expect(down.grip!.strideForce!).toBeLessThan(up.grip!.strideForce!);
-    expect(down.grip!.strideForce!).toBeLessThanOrEqual(0.6 * 0.75 * G * 100 + 1e-9);
+  it('binds more the lower the hold and the heavier the holder', () => {
+    const v = (legs: number, holderMass = 100) => run(legs, { holderDown: true, holderMass, ticks: 4 }).carrier.vel.x;
+    expect(v(0.9)).toBeLessThan(v(0.4));
+    expect(v(0.7, 130)).toBeLessThan(v(0.7, 80));
+    // A waist hold hangs nothing on the legs.
+    expect(run(0, { holderDown: true }).grip!.strideForce).toBe(0);
   });
 
-  it('slows him more the more of his legs it covers', () => {
-    const run = (legs: number) => {
-      const holder = body(100, 0, 3), carrier = body(100, 0.75, 3);
-      const world = new World([holder, carrier], { substeps: 6 });
-      world.joints.push({ kind: 'grasp', a: holder, b: carrier, reach: 1.4, capacity: 600, legs, pull: 0, hold: 0.75 });
-      for (let k = 0; k < 4; k++) world.step([{ vel: { x: 3, y: 0 } }, { vel: { x: 6, y: 0 } }], TICK);
-      return carrier.vel.x;
-    };
-    expect(run(0.8)).toBeLessThan(run(0.3));
+  it('leaves braking alone: a runner who stops is not striding', () => {
+    const held = run(0.7, { holderDown: true, runner: { vel: { x: 0, y: 0 } } });
+    expect(held.grip!.strideForce).toBe(0);
   });
 });
