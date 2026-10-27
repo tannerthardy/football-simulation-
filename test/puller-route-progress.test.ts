@@ -51,7 +51,7 @@ describe('a wrapper collects after its flat pull clears', () => {
     expect(a.engagement).toBeNull();
     expect(sim.world.joints).toHaveLength(0);
     if (!unavailable && !obstructed) expect(command).toEqual(goTo(a, controller.plan.pullPath![2], { speed: .95, through: 0 }));
-    return { command, target: controller.plan.target?.idx };
+    return { command, target: controller.plan.target?.idx, original: target.idx };
   }
   it.each([false, true])('preserves the installed flat-to-upfield track, mirror=%s', mirror => {
     expect(wrapper(false, false, mirror).command.facing).toBeUndefined();
@@ -59,8 +59,10 @@ describe('a wrapper collects after its flat pull clears', () => {
   it.each([false, true])('keeps the route behind an obstructed wall, mirror=%s', mirror => {
     expect(wrapper(true, false, mirror).command.facing).toBeUndefined();
   });
-  it.each([false, true])('waits on an acquired unavailable target without claiming contact, mirror=%s', mirror => {
-    expect(wrapper(false, false, mirror, true).command.vel).toEqual({ x: 0, y: 0 });
+  it.each([false, true])('leaves an acquired unavailable target for the next threat in the hole, without claiming contact, mirror=%s', mirror => {
+    // A lead blocks the first threat to show, not a man he sees on the ground.
+    const r = wrapper(false, false, mirror, true);
+    expect(r.target).not.toBe(r.original);
   });
   it('retains normal acquisition for an initially unassigned wrapper', () => {
     const sim = new PlaySim(structuredClone(inputs.rows.find((r: { id: string }) => r.id === 'K02').setup) as PlaySetup);
