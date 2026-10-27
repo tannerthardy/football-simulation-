@@ -292,7 +292,7 @@ problem), resolved.
 | [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
 | [RUN-12](#run-12) | Run blockers lost on their assignments (film, Oct 23) | G2 | high | in work |
 | [RUN-13](#run-13) | Box backers untouched: linemen do not climb free to the second level | G2 | high | in work |
-| [RUN-14](#run-14) | Backs leave the mesh too early and take the handoff almost standing | G2 | high | fix with the start law (#336) |
+| [RUN-15](#run-15) | Backs leave the mesh too early and take the handoff almost standing | G2 | high | fix with the start law (#336) |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -1969,8 +1969,8 @@ the carrier reaches him).
   - The braking stand-still has had two failed corrections already (#303); it
     waits on the start ramp.
 
-<a id="run-14"></a>
-### RUN-14: Backs leave the mesh too early and take the handoff almost standing
+<a id="run-15"></a>
+### RUN-15: Backs leave the mesh too early and take the handoff almost standing
 
 Measured 2026-10-27 on run-only film (#329): seeds 7/9/11/13, 456 snaps, each on
 its saved dice plus 4 shifted streams (#335's `matched-restage.ts`), against
