@@ -139,8 +139,10 @@ describe('film pack documents and command', () => {
   it('accepts the documented command and rejects missing, repeated and invalid inputs', () => {
     expect(filmPackOptions(['--seed', '101', '--games', '12', '--out', 'out/film-pack/review']))
       .toEqual({ seed: 101, games: 12, out: 'out/film-pack/review' });
+    expect(filmPackOptions(['--run-only', '--seed', '11', '--games', '2']))
+      .toEqual({ seed: 11, games: 2, out: 'out/film-pack/seed11-run', runOnly: true });
     for (const args of [['--seed'], ['--games', '0'], ['--games', '1.5'], ['--seed', '-1'],
-      ['--seed', '4294967295', '--games', '2'], ['--games', '1', '--games', '2'], ['--unknown', '1']]) {
+      ['--seed', '4294967295', '--games', '2'], ['--games', '1', '--games', '2'], ['--unknown', '1'], ['--run-only', '--run-only'], ['--run-only', 'yes']]) {
       expect(() => filmPackOptions(args)).toThrow();
     }
   });

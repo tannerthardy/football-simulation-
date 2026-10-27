@@ -30,6 +30,8 @@ export interface FilmPackManifest {
   selectionVersion: typeof FILM_PACK_VERSION;
   seed: number;
   gameCount: number;
+  /** Present (true) only for a --run-only pack; absent on every default pack. */
+  runOnly?: true;
   source: {
     developCommit: string;
     headCommit: string;

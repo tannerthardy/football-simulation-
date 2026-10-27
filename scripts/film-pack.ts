@@ -21,12 +21,14 @@ import { renderFilmPart, splitFilmParts, type FilmReplayContext, type ReplayClip
 import { FILM_PACK_VERSION, type FilmPackManifest } from './film-pack-types.js';
 
 export function filmPackOptions(args: string[]) {
-  let seed = 7, games = 12, out: string | undefined;
+  let seed = 7, games = 12, out: string | undefined, runOnly = false;
   const seen = new Set<string>();
   for (let i = 0; i < args.length; i++) {
     const flag = args[i];
-    if (!['--seed', '--games', '--out'].includes(flag) || seen.has(flag)) throw new Error(`Unknown/repeated film-pack argument: ${flag}`);
+    if (!['--seed', '--games', '--out', '--run-only'].includes(flag) || seen.has(flag)) throw new Error(`Unknown/repeated film-pack argument: ${flag}`);
     seen.add(flag);
+    // Every offensive scrimmage call is a designed run (GameOptions.runOnly); takes no value.
+    if (flag === '--run-only') { runOnly = true; continue; }
     const value = args[++i];
     if (!value || value.startsWith('--')) throw new Error(`${flag} requires a value`);
     if (flag === '--seed') seed = Number(value);
@@ -36,7 +38,7 @@ export function filmPackOptions(args: string[]) {
   if (!Number.isSafeInteger(seed) || seed < 0 || seed > 0xffffffff) throw new Error('--seed must be an integer from 0 to 4294967295');
   if (!Number.isInteger(games) || games < 1 || games > 50) throw new Error('--games must be an integer from 1 to 50');
   if (seed + games - 1 > 0xffffffff) throw new Error('Game seeds exceed 4294967295');
-  return { seed, games, out: out ?? `out/film-pack/seed${seed}` };
+  return { seed, games, out: out ?? `out/film-pack/seed${seed}${runOnly ? '-run' : ''}`, ...(runOnly ? { runOnly: true as const } : {}) };
 }
 
 const sha256 = (s: string) => createHash('sha256').update(s).digest('hex');
@@ -99,14 +101,15 @@ export function buildFilmPack(options: ReturnType<typeof filmPackOptions>, progr
     engineSha256: sourceVersion(), engineDirty: git('status', '--porcelain', '--', 'src') !== '',
     measurementSha256: measurementIdentity(), lockfileSha256: sha256(readFileSync('package-lock.json', 'utf8')),
     node: process.version, settings: engineSettings(process.env),
-    inputSha256: sha256(JSON.stringify({ seed: options.seed, games: options.games, home, away })),
+    // runOnly joins the hash only when set, so every default pack keeps its identity.
+    inputSha256: sha256(JSON.stringify({ seed: options.seed, games: options.games, ...(options.runOnly ? { runOnly: true } : {}), home, away })),
   };
   const population: SelectionPlay[] = [], events: WeirdEvent[] = [];
   const games: FilmReplayContext['games'] = [];
   for (let i = 0; i < options.games; i++) {
     const seed = options.seed + i;
     const obs = weirdObserver({ idPrefix: '', game: i + 1, cap: Infinity });
-    const game = simulateGame(home, away, { seed, record: true, recordLevel: 'light', hooks: obs.hooks });
+    const game = simulateGame(home, away, { seed, record: true, recordLevel: 'light', hooks: obs.hooks, ...(options.runOnly ? { runOnly: true } : {}) });
     events.push(...obs.finish(game).events);
     const quarters = [...game.quarterScores];
     const last = quarters.at(-1);
@@ -123,6 +126,7 @@ export function buildFilmPack(options: ReturnType<typeof filmPackOptions>, progr
   const selected = selectFilmPlays(population, events, options.seed);
   const manifest: FilmPackManifest = {
     schemaVersion: 1, selectionVersion: FILM_PACK_VERSION, seed: options.seed, gameCount: options.games,
+    ...(options.runOnly ? { runOnly: true as const } : {}),
     source, telemetry: 'light', selection: selected.selection,
     beforeAfter: { status: 'reserved-for-F2', targetPairs: 20, pairs: [],
       note: 'F2 supplies a separate source-qualified pair sidecar; these original selections remain unchanged.' },
@@ -158,8 +162,8 @@ export function buildFilmPack(options: ReturnType<typeof filmPackOptions>, progr
   const environment = [...settings.filter(([, value]) => value === null).map(([key]) => `-u ${key}`),
     ...settings.filter(([, value]) => value !== null)
       .map(([key, value]) => `${key}=${typeof value === 'boolean' ? Number(value) : value}`)];
-  const rebuild = `npm ci --no-audit --no-fund\nenv ${environment.join(' ')} npm run film-pack -- --seed ${options.seed} --games ${options.games} --out out/film-pack/seed${options.seed}`;
-  const index = ['# Film review pack', '', `Seed ${options.seed}; ${options.games} games; develop ${source.developCommit}.`, '',
+  const rebuild = `npm ci --no-audit --no-fund\nenv ${environment.join(' ')} npm run film-pack -- --seed ${options.seed} --games ${options.games}${options.runOnly ? ' --run-only' : ''} --out out/film-pack/seed${options.seed}${options.runOnly ? '-run' : ''}`;
+  const index = ['# Film review pack', '', `Seed ${options.seed}; ${options.games} games${options.runOnly ? ' (run-only: every offensive call a designed run)' : ''}; develop ${source.developCommit}.`, '',
     `Engine ${source.engineSha256}; tooling ${source.measurementSha256}; Node ${source.node}.`, '',
     'Watch ordinary, watch-first, then big plays; each part opens in that order. No play is in two groups.', '',
     ...manifest.parts.map(p => `- [${p.file}](${p.file}) — ${p.bytes} bytes: ${p.ids.join(', ')}`), '',

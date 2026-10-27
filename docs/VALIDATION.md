@@ -73,7 +73,12 @@ missing state only for the selected mechanism. Preserve unsuccessful examples.
 ```sh
 npm ci --no-audit --no-fund
 npm run film-pack -- --seed 101 --games 12 --out out/film-pack/review
+npm run film-pack -- --seed 11 --games 2 --run-only --out out/film-pack/run-s11   # run-game film
 ```
+
+`--run-only` plays the same games with every offensive scrimmage call a designed run
+(`GameOptions.runOnly`); the manifest records `runOnly: true` and its input hash, and a
+default pack is byte-for-byte what it was.
 
 Use Node 22.23.3 and a fresh ignored output directory. This plays the same
 Ironmen/Comets teams and consecutive game seeds as `npm run replay`. The
