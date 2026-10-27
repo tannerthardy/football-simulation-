@@ -49,7 +49,10 @@ describe('scenario pack: physical contracts and mirror symmetry', () => {
     const a = redirect({ side: 1 }), b = redirect({ side: -1 });
     expect(b.closest).toBeCloseTo(a.closest, 9);
     const s1 = squeeze({ side: 1 }), s2 = squeeze({ side: -1 });
-    expect(s2.inside).toBeCloseTo(s1.inside, 9);
+    // The leg force-velocity law (PHY-1) feeds the achieved speed back into the
+    // strength term, so last-digit mirror noise is carried into the contest:
+    // the two sides differ by 8e-9 yd here (develop: 2e-10), no mirror law.
+    expect(s2.inside).toBeCloseTo(s1.inside, 7);
   });
 
   it('a side hit gives nearly the same balance loss at coarse and fine physics steps', () => {

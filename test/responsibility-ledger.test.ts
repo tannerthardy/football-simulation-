@@ -161,18 +161,21 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(threats.every(c => c.after.kind === 'drive')).toBe(true);
   });
 
-  it('M7-P051: the first carrier contact keeps both defenders tied at 2.75', () => {
+  it('M7-P051: the first carrier contact keeps both defenders tied at 2.7', () => {
+    // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7); the tie is unchanged.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.75);
+    expect(first.t).toBe(2.7);
     expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
     const p = play('S8-P005');
     const first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.2);
-    expect(first.defenders.map(p.slot)).toEqual(['DE_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.3 && p.slot(e.defender) === 'DT_W')).toBe(true);
+    // Re-recorded for the leg force-velocity law (PHY-1): first contact moves 2.2 -> 2.1 and the DT_W reaches the carrier first;
+    // still one defender, not a tie. The DT_W's wrap now comes with the contact (2.1; was 2.3 after the DE_W's contact).
+    expect(first.t).toBe(2.1);
+    expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
+    expect(p.d.play.carrierEvents.some(e => e.t === 2.1 && p.slot(e.defender) === 'DT_W')).toBe(true);
   });
 
   it.each(['S8-P054', 'S10-P006'])('%s: the QB keeps it, so the carrier is the QB all play, not the scheduled RB', id => {
