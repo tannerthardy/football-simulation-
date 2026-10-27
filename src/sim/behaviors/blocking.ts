@@ -1134,6 +1134,9 @@ export class RunBlocker implements Behavior {
           delete plan.contactFit;
           this.pullRead = null;
           trace?.blockingChange(a, previousWork, 'pull: kick man behind the runner, turn up', sim);
+          // The new job owns its first action (#251 lifetime): register it
+          // before attacking, not on the next tick's availability read.
+          a.mind.setAimTarget('block-fit', target?.idx ?? null);
           return target ? this.withBase(a, sim, this.attack(a, sim, target)) : this.leadRunner(a, sim);
         }
         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);

@@ -72,6 +72,22 @@ describe('a puller acts only on the runner and men he sees', () => {
     expect(ledger.data.changes.length + 1).toBeGreaterThan(0);
   });
 
+  it('gives the turn-up target its first action and holds it through the next update', () => {
+    const f = stage(passed), mind = f.puller.mind;
+    const owner = () => (Reflect.get(mind, 'aimTargets') as Map<string, number | null>).get('block-fit');
+    const aim = () => (Reflect.get(mind, 'aims') as Map<string, { pos: { x: number; y: number }; until: number }>).get('block-fit');
+    f.behavior.update(f.puller, f.sim);
+    const lb = f.sim.slot('LB_W')!, first = aim();
+    expect(owner()).toBe(lb.idx);
+    expect(first).toBeDefined();
+    // Same job, next tick before the held action expires: the held aim stays.
+    f.sim.t += .05;
+    f.behavior.update(f.puller, f.sim);
+    expect(f.behavior.plan.target).toBe(lb);
+    expect(owner()).toBe(lb.idx);
+    expect(aim()).toBe(first);
+  });
+
   it('keeps the kick when the runner is still at the mesh or bending toward the end', () => {
     for (const runner of [{ pos: { x: LOS - .5, y: CENTER_Y + 3 }, vel: { x: .8, y: 0 } },
       { pos: { x: LOS - .5, y: CENTER_Y + 3 }, vel: { x: 2.2, y: 4 } }]) {
