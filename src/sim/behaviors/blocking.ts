@@ -1308,8 +1308,12 @@ export class RunBlocker implements Behavior {
         // A backer assignment does not remove the bodies between us. Read
         // first-level surfaces on the same beat; never inspect their private
         // assignments, engagement state or future controller requests.
-        const surfaces = sim.agents.filter(b=>b!==a&&b!==target&&(isOL(b)
-          || b===this.plan.departure?.defender || b===this.plan.departure?.keeper
+        // The man he just released is his keeper's: a departing climber steps
+        // off that man's hip, and World contact decides any rub. Every other
+        // body, his keeper included, is still a surface he must not run into.
+        const released = this.plan.departure?.defender;
+        const surfaces = sim.agents.filter(b=>b!==a&&b!==target&&b!==released&&(isOL(b)
+          || b===this.plan.departure?.keeper
           ||sim.offAlign.spots[b.slot]?.inline||['DE_W','DE_S','DT_W','DT_S','NT'].includes(b.slot)))
           .map(b=>({key:b.idx,radius:b.profile.radius,seen:sim.see(a,b)}))
           .filter(p=>Math.hypot(p.seen.pos.x-a.pos.x,p.seen.pos.y-a.pos.y)<6);
@@ -1324,7 +1328,7 @@ export class RunBlocker implements Behavior {
           this.departureAccess=assessClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact,true,control,previousAccess,
             trace&&(r=>trace.climbAccess(target,r,sim)));
           if (this.departureAccess.kind==='detour') this.climbAccess=this.departureAccess.plan;
-          const down=surfaces.find(s=>s.key===this.plan.departure!.defender.idx);
+          const dd=this.plan.departure!.defender, down={key:dd.idx,radius:dd.profile.radius,seen:sim.see(a,dd)};
           const keeper=surfaces.find(s=>s.key===this.plan.departure!.keeper.idx);
           const route=down&&keeper&&climbRoute(a,this.plan.departure.defender,down.seen,
             this.plan.departure.keeper,keeper.seen,seen,strike);
