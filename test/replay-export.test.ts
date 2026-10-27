@@ -13,9 +13,10 @@ const play = (overrides: Partial<PlayLog> = {}): PlayLog => ({
 describe('replay export', () => {
   it('keeps numeric flag values separate from the seed regardless of argument order', () => {
     expect(replayOptions(['--games', '6', '--out', 'out/film.html', '19', '--doc']))
-      .toEqual({ seed: 19, games: 6, out: 'out/film.html', document: true, telemetry: 'light' });
-    expect(replayOptions([])).toEqual({ seed: 7, games: 1, out: 'out/replay.html', document: false, telemetry: 'light' });
+      .toEqual({ seed: 19, games: 6, out: 'out/film.html', document: true, telemetry: 'light', runOnly: false });
+    expect(replayOptions([])).toEqual({ seed: 7, games: 1, out: 'out/replay.html', document: false, telemetry: 'light', runOnly: false });
     expect(replayOptions(['--telemetry', 'full']).telemetry).toBe('full');
+    expect(replayOptions(['11', '--games', '2', '--run-only']).runOnly).toBe(true);
   });
 
   it.each([['--games'], ['--out', '--doc'], ['--telemetry'], ['--telemetry', 'unknown'], ['--games', '0'], ['--games', '1.5'], ['--games', '51'], ['--games', 'NaN'], ['NaN'], ['-1'], ['4294967295', '--games', '2'], ['7', '8'], ['--unknown']])('rejects invalid replay arguments %j', (...args) => {

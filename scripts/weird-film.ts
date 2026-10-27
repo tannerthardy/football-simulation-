@@ -1,7 +1,7 @@
 /**
  * Film weirdness detectors on the film room's own games, so play ids match
  * `npm run replay` for the same seed.
- *   npm run weird -- [seed] [--games 1] [--out out/weird/film-seed7.json] [--top 3] [--all] [--expect truth.json] [--window 0.5]
+ *   npm run weird -- [seed] [--games 1] [--out out/weird/film-seed7.json] [--top 3] [--all] [--expect truth.json] [--window 0.5] [--run-only]
  * Games are built exactly as scripts/export-replay.ts builds them (one pair of
  * teams, game i on seed + i) and are played without recording, which the engine
  * guarantees does not change them. Ids are `G{game}-P{n}` with n the game-wide
@@ -34,6 +34,7 @@ const seed = Number(seedArg ?? 7);
 const games = Number(flag('games', '1'));
 const top = Number(flag('top', '3'));
 const window = Number(flag('window', '0.5'));
+const runOnly = args.includes('--run-only');
 const out = flag('out', `out/weird/film-seed${seed}.json`)!;
 if (!Number.isSafeInteger(seed) || seed < 0) throw new Error('Seed must be a non-negative integer');
 if (!Number.isInteger(games) || games < 1 || games > 50) throw new Error('--games must be an integer from 1 to 50');
@@ -45,7 +46,7 @@ const all: WeirdEvent[] = [];
 const counts: Record<string, number> = {};
 for (let i = 0; i < games; i++) {
   const obs = weirdObserver({ idPrefix: '', game: i + 1, cap: Infinity });
-  const g = simulateGame(home, away, { seed: seed + i, record: false, hooks: obs.hooks });
+  const g = simulateGame(home, away, { seed: seed + i, record: false, hooks: obs.hooks, runOnly });
   const { events, sums, ms } = obs.finish(g);
   all.push(...events);
   for (const [k, v] of Object.entries(sums)) counts[k] = (counts[k] ?? 0) + v;
