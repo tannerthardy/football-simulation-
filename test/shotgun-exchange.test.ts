@@ -5,6 +5,8 @@ import {RunnerToMesh} from '../src/sim/assign.js';
 import {goTo} from '../src/sim/behaviors/common.js';
 import {QBHandoff} from '../src/sim/behaviors/qb.js';
 import {PlaySim} from '../src/sim/playsim.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 describe('saved shotgun exchange coordination', () => {
   it('P038 transfers in real reach when its installed window opens', () => {

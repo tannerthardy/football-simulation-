@@ -5,6 +5,8 @@ import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { contactFixture } from '../scripts/diag/run-contact-technique.js';
 import type { CommandTraceSelection } from '../src/sim/command-trace.js';
 import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 const input = { coverage: 'cover3_buzz', concept: 'curl_flat', seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false };
 const selection: CommandTraceSelection = { actor: { team: 'D', slot: 'CB_W' }, from: 2, to: 3.65 };

@@ -99,7 +99,7 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
   const ball = sim.ball;
   if (ball.kind !== 'air') return;
   const R = o.a;
-  const rng = sim.rng;
+  const rng = sim.dice('catch', R);
   const bv = ball.flight.vel;
   const ballSpeed = Math.hypot(bv.x, bv.y, bv.z);
   const airTime = sim.t - ball.releaseT;
@@ -193,7 +193,7 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
   const ball = sim.ball;
   if (ball.kind !== 'air') return true;
   const D = o.a;
-  const rng = sim.rng;
+  const rng = sim.dice('ball-play', D);
   const bv = ball.flight.vel;
   const sees = facingBall(D, bv);
   const isBat = !!D.engagement || (tAir < 0.4 && D.pos.x < sim.los + 2);
@@ -244,13 +244,14 @@ function deflect(sim: PlaySim, keep: number, kind: 'drop' | 'tip' = 'tip', touch
   const ball = sim.ball;
   if (ball.kind !== 'air') return;
   const f = ball.flight;
-  const ang = sim.rng.range(-1.1, 1.1);
+  const dice = sim.dice('deflect');
+  const ang = dice.range(-1.1, 1.1);
   const c = Math.cos(ang);
   const s = Math.sin(ang);
   const vx = f.vel.x * keep;
   const vy = f.vel.y * keep;
   // Dropped balls fall; tipped balls pop up a little.
-  const vz = kind === 'drop' ? sim.rng.normal(0.3, 0.8) : sim.rng.range(0.3, 2.2);
+  const vz = kind === 'drop' ? dice.normal(0.3, 0.8) : dice.range(0.3, 2.2);
   f.vel = { x: vx * c - vy * s, y: vx * s + vy * c, z: vz };
   f.drag = DRAG_TUMBLE;
   ball.deflected = true;
