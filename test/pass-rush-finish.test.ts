@@ -150,7 +150,7 @@ describe('the finishing phase belongs to worked line protection', () => {
   it('preserves a newly acquired run read instead of continuing the finish', () => {
     const opening = stage(-1, false), worked = stage(-1, true);
     try {
-      for (const f of [opening, worked]) f.d.recog = { ...f.recognition, read: 'run' };
+      for (const f of [opening, worked]) { f.d.recog = f.recognition; f.d.recog.read = 'run'; }
       expect(worked.rush.update(worked.d, worked.sim)).toEqual(opening.rush.update(opening.d, opening.sim));
     } finally { opening.see.mockRestore(); worked.see.mockRestore(); }
   });
