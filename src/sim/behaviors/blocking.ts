@@ -2055,9 +2055,11 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   const touching = hands && distance <= workingReach && (distance <= hands.extension
     || Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0) > 1e-6);
   const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
-  const control = contactControl(e, keeper);
-  if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful || control === null
-    || control <= -.12 + .12 * (.5 - climber.mind.urgency)) return null;
+  // The keeper's hand-fight standing is his private state, not the climber's
+  // evidence. The climber reads his partner's chest on the man in his own
+  // picture (readJoinedSurface); the transfer still needs the keeper's hands.
+  if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful
+    || contactControl(e, keeper) === null) return null;
   return { climber, keeper, engagement: e, hands: hands!, phi };
 }
 
@@ -2273,7 +2275,7 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
     combo.checkSince = -1;
     return;
   }
-  const secure = e.control > -0.12 + 0.12 * (0.5 - observer.mind.urgency) && e.baseB > 0.60 && Math.abs(e.phi) < 0.55;
+  const secure = e.baseB > 0.60 && Math.abs(e.phi) < 0.55;
   if (!secure) {
     combo.checkSince = -1;
     observer.tags.add('combo-held');
