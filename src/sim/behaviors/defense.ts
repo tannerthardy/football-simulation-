@@ -107,9 +107,9 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
 export class PassRusher implements Behavior {
   readonly kind = 'rush';
   private readonly getOff: number;
-  /** Own contact history: once free of a block, finish on the QB instead of
-   * restarting the installed arc used to get around the protection. */
-  private workedContact = false;
+  /** Own contact with the line, not a chip from a back or receiver.
+   * Once past the opening lane and free, finish instead of restarting it. */
+  private workedLineBlock = false;
   /** Pre-snap rush plan from his tools. */
   readonly plan: 'power' | 'finesse' | 'speed';
   constructor(
@@ -131,7 +131,11 @@ export class PassRusher implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.t < this.getOff) return stand(Math.PI);
-    if (a.engagement) { this.workedContact = true; return stand(); }
+    if (a.engagement) {
+      const { blocker } = a.engagement;
+      if (['LT', 'LG', 'C', 'RG', 'RT'].includes(blocker.slot)) this.workedLineBlock = true;
+      return stand();
+    }
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Throw in the air: peel off toward the ball.
@@ -154,13 +158,16 @@ export class PassRusher implements Behavior {
     const gy = gapY(sim.offAlign, this.gap, this.gapSign);
     const edge = this.gap === 'C' || this.gap === 'D';
     const bend = 0.8 + 0.45 * traits(a).bend;
-    if (this.plan === 'power' || (edge && this.workedContact)) {
+    if (this.plan === 'power') {
       const p = pursuitPoint(sim, a, qb, 1.5);
-      return runThrough(a, p, this.plan === 'power' ? { speed: 1 } : { speed: 1, cutSkill: bend });
+      return runThrough(a, p, { speed: 1 });
     }
     if (a.pos.x > sim.los - 0.5) {
       const lane = edge ? { x: sim.los - 1.6, y: gy + this.gapSign * (this.plan === 'speed' ? 1.8 : 1.0) } : { x: sim.los - 0.6, y: gy };
       return runThrough(a, lane, { speed: 1, cutSkill: bend });
+    }
+    if (edge && this.workedLineBlock) {
+      return runThrough(a, pursuitPoint(sim, a, qb, 1.5), { speed: 1, cutSkill: bend });
     }
     if (edge && a.pos.x > qbSeen.x + 1.0) {
       const arc = { x: qbSeen.x - 1.0, y: qbSeen.y + this.gapSign * (this.plan === 'speed' ? 1.3 : 0.8) };

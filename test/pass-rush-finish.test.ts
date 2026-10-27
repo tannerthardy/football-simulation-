@@ -15,7 +15,7 @@ import { PlaySim } from '../src/sim/playsim.js';
 /** Constructed approach/control, not an ordinary-game film ID. Own contact is
  * created and ended through the existing engagement interface. Opponent
  * evidence is explicit and fixed; the World still executes finite movement. */
-function stage(side: number, worked: boolean, plan = 'speed', gap: 'D' | 'B' = 'D') {
+function stage(side: number, worked: boolean, plan = 'speed', gap: 'D' | 'B' = 'D', blockerSlot = 'RT') {
   const sim = new PlaySim({
     offense: pickOffense(generateTeam(new Rng(19), 'O', 'OFF'), '11'),
     defense: pickDefense(generateTeam(new Rng(20), 'D', 'DEF'), 'nickel'),
@@ -24,10 +24,11 @@ function stage(side: number, worked: boolean, plan = 'speed', gap: 'D' | 'B' = '
     defCall: { personnel: 'nickel', front: FRONT_BY_ID.wide9, coverage: COVERAGE_BY_ID.cover3,
       pressure: null, label: 'rush finish control' }, los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 19,
   });
-  const d = sim.slot('DE_S')!, b = sim.slot('RT')!;
+  const d = sim.slot('DE_S')!, b = sim.slot(blockerSlot)!;
   const rush = new PassRusher(d, sim, gap, side);
   // Installed speed-rush plan, independent of this fixture's random selection.
   Object.defineProperty(rush, 'plan', { value: plan });
+  const recognition = d.recog!;
   d.behavior = rush; sim.t = 2;
   d.recog = null; d.readAt = 0;
   if (worked) {
@@ -46,7 +47,7 @@ function stage(side: number, worked: boolean, plan = 'speed', gap: 'D' | 'B' = '
     ? structuredClone(cue)
     : { pos: { ...target.pos }, vel: { ...target.vel }, facing: target.body.facing,
       stance: null, pose: 'up', carrying: false, age: .15 });
-  return { sim, d, rush, cue, see };
+  return { sim, d, rush, cue, see, recognition };
 }
 
 describe('finishing a pass rush after own contact', () => {
@@ -117,5 +118,58 @@ describe('finishing a pass rush after own contact', () => {
       cue.pos = { x: 35, y: CENTER_Y + 1 };
       expect(rush.update(d, sim)).not.toEqual(first);
     } finally { see.mockRestore(); }
+  });
+});
+
+
+describe('the finishing phase belongs to worked line protection', () => {
+  it('keeps the installed approach after a TE chip, then finishes after the RT block', () => {
+    const opening = stage(-1, false), chip = stage(-1, true, 'speed', 'D', 'Y');
+    try {
+      // Equal bodies are already behind the line: a chip alone still does
+      // not announce that the remaining line protection has been beaten.
+      expect(chip.rush.update(chip.d, chip.sim)).toEqual(opening.rush.update(opening.d, opening.sim));
+      const rt = chip.sim.slot('RT')!;
+      rt.body.pos = { x: chip.d.pos.x, y: chip.d.pos.y + .7 };
+      const contact = chip.sim.engage(rt, chip.d, 'pass')!;
+      expect(contact).toBeTruthy();
+      expect(chip.rush.update(chip.d, chip.sim).vel).toEqual({ x: 0, y: 0 });
+      chip.sim.disengage(contact);
+      expect(chip.rush.update(chip.d, chip.sim)).not.toEqual(opening.rush.update(opening.d, opening.sim));
+    } finally { opening.see.mockRestore(); chip.see.mockRestore(); }
+  });
+
+  it('keeps the opening lane before the line even after own line contact', () => {
+    const opening = stage(-1, false), worked = stage(-1, true);
+    try {
+      for (const f of [opening, worked]) f.d.body.pos.x = f.sim.los + .4;
+      expect(worked.rush.update(worked.d, worked.sim)).toEqual(opening.rush.update(opening.d, opening.sim));
+    } finally { opening.see.mockRestore(); worked.see.mockRestore(); }
+  });
+
+  it('preserves a newly acquired run read instead of continuing the finish', () => {
+    const opening = stage(-1, false), worked = stage(-1, true);
+    try {
+      for (const f of [opening, worked]) f.d.recog = { ...f.recognition, read: 'run' };
+      expect(worked.rush.update(worked.d, worked.sim)).toEqual(opening.rush.update(opening.d, opening.sim));
+    } finally { opening.see.mockRestore(); worked.see.mockRestore(); }
+  });
+
+  it('preserves the qualified action through a controller-only plain-field round trip', () => {
+    const f = stage(-1, true);
+    try {
+      const resumed = Object.assign(Object.create(PassRusher.prototype), JSON.parse(JSON.stringify(f.rush))) as PassRusher;
+      expect(resumed.update(f.d, f.sim)).toEqual(f.rush.update(f.d, f.sim));
+    } finally { f.see.mockRestore(); }
+  });
+
+  it('does not promote an old unqualified history flag into knowledge of a line block', () => {
+    const opening = stage(-1, false), f = stage(-1, true);
+    try {
+      const saved = JSON.parse(JSON.stringify(f.rush));
+      delete saved.workedLineBlock; saved.workedContact = true;
+      const legacy = Object.assign(Object.create(PassRusher.prototype), saved) as PassRusher;
+      expect(legacy.update(f.d, f.sim)).toEqual(opening.rush.update(opening.d, opening.sim));
+    } finally { opening.see.mockRestore(); f.see.mockRestore(); }
   });
 });
