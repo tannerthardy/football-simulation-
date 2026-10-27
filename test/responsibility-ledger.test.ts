@@ -202,11 +202,13 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT')).toEqual([]);
   });
 
-  it('M9-P000: C is reread twice, each recorded with its resulting kind', () => {
+  it('M9-P000: C is reread, recorded with its resulting kind', () => {
     const p = play('M9-P000');
     const threats = changeOf(p, 'C', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([2.2, 2.6]);
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(2);
+    // Re-recorded when a draw double's uncovered man climbs once the rush comes across: RG's double releases at 1.1
+    // (was 2.45), so the 2.45 crossing exchange and C's second reread (2.6) no longer happen.
+    expect(threats.map(c => c.t)).toEqual([2.2]);
+    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(1);
     expect(threats.every(c => c.after.kind === 'drive')).toBe(true);
   });
 

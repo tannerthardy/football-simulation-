@@ -73,7 +73,9 @@ describe('earned departure ends at achievable first strike rather than the backe
   // because the recorded bodies are in slightly different places; the decision and its mirror are unchanged.
   // Re-staged at 2.35: the center's own double now releases on his picture of the keeper (0.85 s) rather than
   // on the keeper's hidden hand-fight value, so the bodies around the guard's departure differ; same decision.
-  decision(2.35,mirror,true);
+  // Re-staged at 2.15: the departing guard now steps off the released DT's hip (the DT is his keeper's) instead
+  // of detouring around him, so his strike lands at 2.20 (was 2.40); same decision and mirror.
+  decision(2.15,mirror,true);
  });
  it.each([false,true])('keeps the departure when the down body obstructs even first strike, reflected=%s',mirror=>{
   decision(1.3,mirror,false);
