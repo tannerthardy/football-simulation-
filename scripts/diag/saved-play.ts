@@ -114,8 +114,18 @@ export function firstDifference(expected: unknown, actual: unknown, path = '$', 
   if (Object.is(expected, actual)) return null;
   const difference = (e: unknown, a: unknown): ExecutionDifference => ({ path, time, timeBasis,
     expected: e === undefined ? '<undefined>' : e, actual: a === undefined ? '<undefined>' : a });
-  if (Array.isArray(expected) && Array.isArray(actual)) {
+  if (Array.isArray(expected) || Array.isArray(actual)) {
+    if (!Array.isArray(expected) || !Array.isArray(actual)) return difference(expected, actual);
     for (let i = 0; i < Math.min(expected.length, actual.length); i++) {
+      const e = Object.hasOwn(expected, i), a = Object.hasOwn(actual, i);
+      if (e !== a) {
+        const row = e ? expected[i] : actual[i];
+        return { path: `${path}[${i}]`, time: typeof row?.t === 'number' ? row.t : time,
+          timeBasis: typeof row?.t === 'number' ? 'recorded' : timeBasis,
+          expected: e ? expected[i] === undefined ? '<undefined>' : expected[i] : '<absent>',
+          actual: a ? actual[i] === undefined ? '<undefined>' : actual[i] : '<absent>' };
+      }
+      if (!e) continue; // Equal holes have no indexed value to compare.
       const d = firstDifference(expected[i], actual[i], `${path}[${i}]`, time, timeBasis);
       if (d) return d;
     }
@@ -127,6 +137,23 @@ export function firstDifference(expected: unknown, actual: unknown, path = '$', 
         actual: i >= actual.length ? '<absent>' : actual[i] === undefined ? '<undefined>' : actual[i] };
     }
     return null;
+  }
+  // These container kinds are also distinguished by film-pairs' existing
+  // lossless execution encoding. Preserve entry order rather than normalizing
+  // Maps/Sets, and recurse so nested values keep a useful path and clock.
+  if (expected instanceof Map || actual instanceof Map) {
+    if (!(expected instanceof Map) || !(actual instanceof Map)) return difference(expected, actual);
+    return firstDifference([...expected], [...actual], `${path}.entries`, time, timeBasis);
+  }
+  if (expected instanceof Set || actual instanceof Set) {
+    if (!(expected instanceof Set) || !(actual instanceof Set)) return difference(expected, actual);
+    return firstDifference([...expected], [...actual], `${path}.values`, time, timeBasis);
+  }
+  if (ArrayBuffer.isView(expected) || ArrayBuffer.isView(actual)) {
+    if (!ArrayBuffer.isView(expected) || !ArrayBuffer.isView(actual)
+      || expected.constructor.name !== actual.constructor.name) return difference(expected, actual);
+    return firstDifference(Array.from(expected as unknown as ArrayLike<unknown>),
+      Array.from(actual as unknown as ArrayLike<unknown>), `${path}.values`, time, timeBasis);
   }
   if (expected && actual && typeof expected === 'object' && typeof actual === 'object') {
     const e = expected as Record<string, unknown>, a = actual as Record<string, unknown>;
