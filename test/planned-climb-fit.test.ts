@@ -41,7 +41,9 @@ describe('planned climb acquires a useful near strike without running through th
   // reaches its near strike a beat earlier than on the original recording.
   // Feedback-consistent departure now reaches this fit earlier. Both
   // snapshots remain between reads; they exercise the same far/near contract.
-  for(const [at,near] of [[1.25,false],[1.3,true]] as const){
+  // Re-staged for the start law (#336) with develop 84af7d9e merged: the released RT now clears DE_S and
+  // gathers one tick earlier (near strike at 1.25, far forecast still at 1.20); same far/near contract.
+  for(const [at,near] of [[1.2,false],[1.25,true]] as const){
    const {sim,rt,controller}=stage(at),update=controller.update,see=sim.see.bind(sim),stop=new Error('observed decision');
    const planner=vi.spyOn(controller as unknown as {plannedClimb:(...args:unknown[])=>Intent},'plannedClimb');
    const hook=vi.spyOn(controller,'update').mockImplementation((a,s)=>{

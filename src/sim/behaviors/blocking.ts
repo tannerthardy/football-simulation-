@@ -300,7 +300,11 @@ export class PassProtector implements Behavior {
       // from now, on his inside shoulder; never take ground back toward the
       // line, never past the launch point. He has to come to the tackle.
       const ahead = { x: r.pos.x + r.vel.x * KICK_LOOK, y: r.pos.y + r.vel.y * KICK_LOOK };
-      const x = Math.max(qb.pos.x + 0.5, Math.min(a.pos.x, ahead.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
+      // Depth is kept on the rusher's present depth: leading his position a
+      // beat ahead as well would keep the tackle 2-3 yd in front of a fast
+      // rusher, retreating out of punching range all the way to the launch
+      // point (the old start law hid this by making the tackle lag his spot).
+      const x = Math.max(qb.pos.x + 0.5, Math.min(a.pos.x, r.pos.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
     }
     if (runLook(a, sim)) set = { x: Math.max(set.x, sim.los - 0.3), y: set.y };
@@ -332,9 +336,9 @@ export class PassProtector implements Behavior {
  * 0.8 yd shallower; the cutoff met him at the line (PRO-1). Ported from
  * claude/run-game-v3 (docs/PARKED.md). */
 const PASS_KICK = process.env.PASS_KICK !== '0';
-/** How far deeper than an upfield edge rusher the kick keeps the tackle (yd). */
+/** How far deeper than an upfield edge rusher's present depth the kick keeps the tackle (yd). */
 const KICK_LEAD = 0.8;
-/** How far ahead on his present velocity the kick reads the rusher (s). */
+/** How far ahead on his present velocity the kick reads the rusher's width (s). */
 const KICK_LOOK = 0.4;
 
 /**
@@ -454,6 +458,20 @@ export interface RunBlockPlan {
 
 function drawPresentation(plan: RunBlockPlan, t: number): boolean {
   return (plan.presentation === 'draw' || plan.kind === 'draw') && t < 1.0;
+}
+
+/** The uncovered man of a draw double sells pass only until the rush
+ * commits: once he sees the doubled man on his partner, the show has done
+ * its work and he goes to help and climb. His own delayed picture only. */
+function rushOnPartner(a: Agent, sim: PlaySim, combo: Combination): boolean {
+  const partner = combo.members.find((m) => m !== a);
+  if (!partner) return false;
+  const man = sim.see(a, combo.defender), mate = sim.see(a, partner);
+  const reach = partner.profile.radius + combo.defender.profile.radius + partner.player.measurables.armIn / 36;
+  // Lined up over his partner he is already within arm's length; the rush
+  // has committed once he has come across the line into the set.
+  const across = (sim.los - man.pos.x) * sim.attackDir(a.team) > 0;
+  return man.pose === 'up' && across && Math.hypot(man.pos.x - mate.pos.x, man.pos.y - mate.pos.y) <= reach;
 }
 
 function classify(sim: PlaySim): { dl: Agent[]; lb: Agent[]; db: Agent[] } {
@@ -936,6 +954,8 @@ export class RunBlocker implements Behavior {
     flow: Vec2; backer: Perceived } | null = null;
   /** A personally consumed near-gap emergency, held through the normal beat. */
   private presentationThreat: Agent | null = null;
+  /** The uncovered man of a draw double has seen the rush commit onto his partner. */
+  private showOver = false;
   /** Native technique read, retained between the player's ordinary decisions. */
   zoneRead: ZoneReachRead | null = null;
   private preparation: { combination: Combination; backer: Agent | null; at: number; until: number; exit: Vec2; flow: Vec2 } | null = null;
@@ -988,6 +1008,11 @@ export class RunBlocker implements Behavior {
     return this.plan.target;
   }
 
+  /** Still selling pass on a draw. */
+  presentingDraw(t: number): boolean {
+    return drawPresentation(this.plan, t) && !this.showOver;
+  }
+
   update(a: Agent, sim: PlaySim): Intent {
     const plan = this.plan;
     const t = sim.t;
@@ -1002,7 +1027,9 @@ export class RunBlocker implements Behavior {
     this.firstStep ??= {x:a.pos.x+.18,y:a.pos.y+plan.drive.y*.55};
     this.rememberSoloWork();
     // Draw blockers show pass first; everyone else fires out low.
-    const presentingDraw = drawPresentation(plan, t);
+    if (!this.showOver && plan.kind === 'combo' && plan.combination && drawPresentation(plan, t) && t >= a.mind.snapDelay)
+      this.showOver = rushOnPartner(a, sim, plan.combination);
+    const presentingDraw = this.presentingDraw(t);
     a.stance = presentingDraw ? 'high' : 'low';
     if (t < a.mind.snapDelay) return stand();
     if (!a.engagement && t >= this.nextRuleRead) {
@@ -1028,6 +1055,16 @@ export class RunBlocker implements Behavior {
         if (target && target === this.presentationThreat) {
           a.stance = 'low';
           return this.withBase(a, sim, this.attack(a, sim, target));
+        }
+      } else {
+        // A pass set still blocks the man who comes to it: once his rusher
+        // reaches his strike, as he sees him, the high-set lineman takes him
+        // on through the ordinary contact path instead of letting him by.
+        const target = this.availableTarget(a, sim);
+        if (target) {
+          const seen = sim.see(a, target);
+          const strike = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
+          if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) < strike) return this.attack(a, sim, target, seen);
         }
       }
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
@@ -1308,8 +1345,12 @@ export class RunBlocker implements Behavior {
         // A backer assignment does not remove the bodies between us. Read
         // first-level surfaces on the same beat; never inspect their private
         // assignments, engagement state or future controller requests.
-        const surfaces = sim.agents.filter(b=>b!==a&&b!==target&&(isOL(b)
-          || b===this.plan.departure?.defender || b===this.plan.departure?.keeper
+        // The man he just released is his keeper's: a departing climber steps
+        // off that man's hip, and World contact decides any rub. Every other
+        // body, his keeper included, is still a surface he must not run into.
+        const released = this.plan.departure?.defender;
+        const surfaces = sim.agents.filter(b=>b!==a&&b!==target&&b!==released&&(isOL(b)
+          || b===this.plan.departure?.keeper
           ||sim.offAlign.spots[b.slot]?.inline||['DE_W','DE_S','DT_W','DT_S','NT'].includes(b.slot)))
           .map(b=>({key:b.idx,radius:b.profile.radius,seen:sim.see(a,b)}))
           .filter(p=>Math.hypot(p.seen.pos.x-a.pos.x,p.seen.pos.y-a.pos.y)<6);
@@ -1324,7 +1365,7 @@ export class RunBlocker implements Behavior {
           this.departureAccess=assessClimbAccess(a,seen,surfaces,original,sim.t,a.mind.decisionInterval,sim.world.handContact,true,control,previousAccess,
             trace&&(r=>trace.climbAccess(target,r,sim)));
           if (this.departureAccess.kind==='detour') this.climbAccess=this.departureAccess.plan;
-          const down=surfaces.find(s=>s.key===this.plan.departure!.defender.idx);
+          const dd=this.plan.departure!.defender, down={key:dd.idx,radius:dd.profile.radius,seen:sim.see(a,dd)};
           const keeper=surfaces.find(s=>s.key===this.plan.departure!.keeper.idx);
           const route=down&&keeper&&climbRoute(a,this.plan.departure.defender,down.seen,
             this.plan.departure.keeper,keeper.seen,seen,strike);
@@ -1916,7 +1957,7 @@ export class RunBlocker implements Behavior {
     // Look–lean–climb: an uncovered lineman collects a penetrating body in
     // his gap before leaving for the backer. Reserved kick targets are only
     // collected after they have actually penetrated the surface.
-    if (p.kind !== 'climb' && p.kind !== 'combo' && !drawPresentation(p, sim.t)) return;
+    if (p.kind !== 'climb' && p.kind !== 'combo' && !this.presentingDraw(sim.t)) return;
     const threat = sim.defense.filter((d) => !d.engagement && !d.isDown(sim.t)).find((d) => {
       const s = sim.see(a,d);
       return s.pos.x < sim.los-.25 && s.pos.x > a.pos.x-1 && Math.abs(s.pos.y-(this.homeY ?? a.pos.y)) < .9;
@@ -2280,7 +2321,11 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
     observer.behavior.prepareCombination(observer,sim,combo,preparation,read.nextRead);
   }
   if (sim.t - read.secureSince < .15) return;
-  if (!filling && !arriving) return;
+  // A draw invites the rush; the backer who reads pass sits or drops instead
+  // of filling. Once the reader sees his partner carrying the man, the
+  // climber goes and gets him.
+  const draw = sim.offCall.run?.scheme === 'draw' || sim.offCall.run?.scheme === 'qbDraw';
+  if (!filling && !arriving && !draw) return;
   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
   if (!route) { observer.tags.add('combo-held'); return; }
   if (sim.offCall.run?.scheme === 'duo' && route.exit) {
@@ -2359,7 +2404,7 @@ export function readCombination(observer: Agent, sim: PlaySim, combo: Combinatio
   const index = combo.members.indexOf(observer);
   if (index < 0 || combo.released || !combo.backer || combo.backer.isDown(sim.t)
     || sim.t < observer.snapReadyAt
-    || (observer.behavior instanceof RunBlocker && drawPresentation(observer.behavior.plan, sim.t))) return;
+    || (observer.behavior instanceof RunBlocker && observer.behavior.presentingDraw(sim.t))) return;
   if (observer.isDown(sim.t) || !combo.members.every((a) => a.behavior instanceof RunBlocker
     && a.behavior.plan.combination === combo && a.behavior.plan.target === combo.defender)) {
     const read = combo.reads?.[index];

@@ -269,3 +269,64 @@ Blockers (controllers the law exposes; not edited here):
 Environment-only in this container: `baseline-runner` and `film-pairs` (the
 Node version), `saved-game-play` and `play-lab` (timeouts under load; they pass
 alone).
+
+## 8. Landing on develop `84af7d9e` (blockers cleared)
+
+**Merge.** develop `84af7d9e` merged, with Coverage's COV-7 repair (#354).
+- Two conflicting re-records: `combo-strike-access` and the
+  `responsibility-ledger` named cases.
+  - Both sides of the merge moved the same scenes.
+  - The combined staging is re-scanned. Two new captures, on this branch, carry
+    the ledger's "reread twice" and "tied first contact" features:
+    `M25-P021` and `M25-P029`.
+
+**Blocker 1, `planned-climb-fit`: cleared by the merge.**
+- Develop's climb-off-hip change (#345) lets the released RT clear DE_S.
+- He now occupies Mike before the runner arrives, so the execution test
+  passes with no edit.
+- The decision snapshots move one tick earlier: 1.20 far, 1.25 near.
+- `climb-access` restates its load bound to 1.70. Y's climb is identical;
+  LB_W sits 0.08 yd wider.
+
+**Blocker 2, `protection-panel`: repaired, plus one exposed problem.**
+- **The tackle's kick target ran away from the rusher.**
+  - It led the end by his position 0.4 s ahead, plus 0.8 yd deeper. Against a
+    fast end that is 2–3 yd in front of him.
+  - Under develop's start law the tackle lagged that target, so the end ran
+    into him. Under this law he holds it and never gets into punching range.
+- **Fix:** PASS_KICK's depth now keeps 0.8 yd deeper than the end's present
+  depth. Width still reads him a beat ahead.
+- **Results:**
+  - ace_12 panel: 17 → 20 of 24.
+  - 8 games (seed 301), `scripts/diag/edge-rep.py`: edge reps unchanged.
+    Engaged / free 71 / 19 → 70 / 20%; first contact 1.19 s (NFL 1.20).
+- **The other 4 ace_12 misses: H releasing head-up into DE_S.**
+  - The two push chest to chest to the end of the 3 s window.
+  - DE_S is held, not free, but no blocker engages him.
+  - This is KNOWN_PROBLEMS PRO-6. The ace_12 bar is 0.8 until it is fixed.
+- **Tried and rejected:** letting a line receiver bend around a rusher
+  (`clearLane`).
+  - The panel passed, but unblocked edge pressures went 4 → 14 in 8 games.
+  - Nobody picks up the end once H goes around (PRO-5).
+
+**Blocker 3, `cov7-abandonment`:** Coverage's stricter fixture (#354). It
+passes.
+
+**Checks** (head `f03a708e`; Node 22.22.0, `.nvmrc` pins 22.23.3):
+- `npm run typecheck`: exit 0. `npm run build`: exit 0.
+- `npm test`: 3,550 passed, 4 failed. All 4 are the Node-version tests:
+  `baseline-runner` ×3 and `film-pairs`.
+- `npm run test:integration`: 10 of 10.
+
+**Matched restage** (k = 1, default games, seeds 7-10, captured on develop
+`84af7d9e`, 557 snaps, every snap changes):
+- Run yards 5.92 → 6.27 per play.
+- Pass yards 9.46 → 10.07 per play.
+- Incompletions 123 → 108.
+- These are in line with §5's earlier restage (+0.38 / +0.55). Reported for
+  context, not as targets.
+- Two runs end in "timeout" with 0 yd. Both are pre-snap defensive fouls:
+  - An edge who anticipates the count was offside on develop, and the play
+    ran.
+  - Under the law his early start reaches the neutral-zone contact first, so
+    it is a dead-ball encroachment.
