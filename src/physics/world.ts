@@ -1744,8 +1744,10 @@ export class World {
         this.braceX[i] = px; this.braceY[i] = py;
         const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;
         this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
+        // Turning pays from the same grip as translation: friction on the
+        // actual normal load. A lifted body turns on less, a pressed one on more.
         const yaw: { impulse: number; work: number; peakTorque?: number } =
-          turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy));
+          turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy), traction * a);
         // Strength limits drive+correction; traction also pays for yaw at
         // the physical support radius. Difference-of-squares keeps the
         // near-saturation subtraction well conditioned. Passive compliance
