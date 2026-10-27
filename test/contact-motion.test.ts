@@ -62,7 +62,7 @@ describe('drive and acquired shoulder work have one contact-frame meaning', () =
       expect(report.armImpulse[a.idx]).toBeLessThanOrEqual(report.armImpulseLimit[a.idx] + 1e-8);
       expect(report.armWork[a.idx]).toBeLessThanOrEqual(report.armWorkLimit[a.idx] + 1e-8);
       expect(Math.hypot(report.groundImpulse[a.idx].x, report.groundImpulse[a.idx].y))
-        .toBeLessThanOrEqual(supportParams(a.profile).traction * f.sim.dt + 1e-8);
+        .toBeLessThanOrEqual(report.groundImpulseLimit[a.idx] + 1e-8);
     }
   });
 

@@ -1,4 +1,4 @@
-# Run game diagnosis on run-only film (develop 55cc9e5, 2026-10-27)
+# Run game diagnosis on run-only film (develop 55cc9e5, corrected on 5235708, 2026-10-27)
 
 Tanner's ask: the run game still looks bad and is now the only focus. His
 named complaints: pulling guards and any lineman who has to move to space and
@@ -39,6 +39,41 @@ Sample: seeds 7, 9, 11, 13, two games each, 894 run plays (37 nullified by
 holding, excluded). Mix: zone 60%, power 8%, counter 8%, trap 6%, draw 5%,
 toss 2%. Fronts: over 43%, even 19%, under 15%, wide-9 10%, bear/tite the rest.
 
+## Correction after review (2026-10-27)
+
+The first version of this review had two measurement faults:
+
+- `run-film-trace.ts` recorded frame k at t = 0.1k + 0.05 s, while
+  `run_film_reference.py` read it as 0.1k, so every sim timing below was
+  0.05 s flattering. The tracer now records a frame at the snap and every
+  0.1 s after, and the script refuses traces that are off that clock.
+- NFL pullers were picked by "3+ yd lateral by 1.5 s" and sim pullers by their
+  installed pull plan; only 4 of 135 sim pullers passed the NFL rule. Both
+  sides now use one rule: 3+ yd lateral within 2.5 s, no more than 0.5 yd past
+  the LOS until 2 yd lateral. It catches 97% of the sim's installed power
+  pullers, 84% counter and 64% trap (the script prints this as "sim plan").
+
+Re-run on develop `5235708` (after #297), same seeds, both fixes. Every
+direction in the findings survives; the sim side is slightly worse than first
+reported. Read the sections below for the mechanisms and this table for the
+numbers.
+
+| Measure | NFL | Sim, first version | Sim, corrected |
+| --- | --- | --- | --- |
+| Power puller distance at 0.5 / 1.0 / 1.5 s, yd | 0.49 / 1.77 / 3.31 | 0.26 / 0.9 / 2.1 | 0.22 / 0.83 / 2.13 |
+| Counter puller distance at 1.0 s, yd | 1.82 | 0.9 | 0.80 |
+| Power puller 3 yd lateral / first touch, s | 1.5 / 1.6 | 1.8-1.9 / 2.2 | 1.9 / 2.3 |
+| Puller touch before carrier crosses, power / counter / trap | 84% / 82% / 96% | 42-53% | 56% / 46% / 49% |
+| All OL distance at 0.3 / 0.5 / 1.0 s, yd | 0.19 / 0.46 / 1.44 | - / 0.33 / 0.91 | 0.08 / 0.27 / 0.86 |
+| Box backers touched before the carrier arrives | 85% | 56% | 54% |
+| Backside / playside wide end in on the play | 18% / 23% | 1% / 14% | 0% / 14% |
+| Never past LOS, power / counter / trap / draw | 12% / 15% / 3% / 10% | 35% / 35% / 53% / 58% | 38% / 45% / 46% / 68% |
+
+The claim in 1.1 that `GAIT_STEP=0.3 PULL_STEP=1` "fix this exactly" came
+from the offset traces and the old NFL puller rule. It does not hold; treat
+those flag probes as directional only until they are re-run on the corrected
+clock with a matched restage.
+
 ## Ranked findings
 
 Ranked by how often it happens times how bad it looks on film. Yards are
@@ -67,7 +102,8 @@ Three layers, in order:
    0.46 and 1.44). A puller's first waypoint drops him straight back 1.25 yd at
    his own width, square to the line (`blocking.ts` `pullPath`), which is the
    slowest thing a 140 kg body can do. Two default-off flags documented in
-   `docs/reviews/gait-step.md` fix this exactly: with `GAIT_STEP=0.3
+   `docs/reviews/gait-step.md` close much of this (measured on the offset
+   traces, see the correction above): with `GAIT_STEP=0.3
    PULL_STEP=1` puller distance at 0.5 / 1.0 / 1.5 s becomes 0.6 / 2.0 / 3.9
    and 3 yd lateral comes at 1.3-1.4 s, matching NFL. `PULL_STEP=1` alone moves
    1.0 s distance only 0.9 to 1.1; the ramp is the physics. `GAIT_STEP=0.3`

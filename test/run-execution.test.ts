@@ -147,7 +147,7 @@ function doubleTeam(insecure = false, slant = false) {
     for (const a of sim.agents) {
       expect(report.armImpulse[a.idx]).toBeLessThanOrEqual(report.armImpulseLimit[a.idx] + 1e-8);
       expect(Math.hypot(report.groundImpulse[a.idx].x, report.groundImpulse[a.idx].y))
-        .toBeLessThanOrEqual(supportParams(a.profile).traction * sim.dt + 1e-8);
+        .toBeLessThanOrEqual(report.groundImpulseLimit[a.idx] + 1e-8);
     }
     sim.t += sim.dt; sim.perception.record(sim.agents);
     return report;

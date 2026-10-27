@@ -40,6 +40,25 @@ describe('attained fixed-response ground yaw', () => {
     expect(r.work).toBeLessThan(0);
   });
 
+  it('turns on the grip the feet actually have, sharing it with the linear force', () => {
+    const sp = supportParams(body().profile), radius = baseRadiusAt(sp, body().support!.posture), h = .01;
+    const turn = (limit?: number) => {
+      const a = body();
+      a.facing = 1.5; a.spin = 0; // A big turn request, at the acceleration limit.
+      return { r: turnBodyResponse(a, 0, h, 8, 1, .5 * sp.traction, limit), spin: a.spin! };
+    };
+    const standing = turn(), same = turn(sp.traction);
+    expect(same).toStrictEqual(standing); // Standing grip passed explicitly changes nothing.
+    const lifted = turn(.6 * sp.traction), pressed = turn(1.3 * sp.traction);
+    expect(lifted.r.peakTorque).toBeLessThan(standing.r.peakTorque);
+    expect(Math.abs(lifted.spin)).toBeLessThan(Math.abs(standing.spin));
+    expect(pressed.r.peakTorque).toBeGreaterThanOrEqual(standing.r.peakTorque);
+    for (const [limit, t] of [[.6, lifted], [1, standing], [1.3, pressed]] as const)
+      expect(Math.hypot(.5 * sp.traction, t.r.peakTorque / radius)).toBeLessThanOrEqual(limit * sp.traction + 1e-9);
+    // No grip left after the linear force: no turning torque at all.
+    expect(turn(.5 * sp.traction).r.peakTorque).toBe(0);
+  });
+
   it.each([-1, 1])('the same physical cue produces the same response at either tick phase, side %s', side => {
     const run = (late: boolean) => {
       const a = body(), anchor = body(3);
