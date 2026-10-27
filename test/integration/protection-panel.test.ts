@@ -8,6 +8,10 @@ import { FORMATION_BY_ID } from '../../src/playbook/formations.js';
 import type { DefPersonnelId } from '../../src/playbook/types.js';
 import type { Agent } from '../../src/sim/agent.js';
 import { PlaySim } from '../../src/sim/playsim.js';
+// A fixed 12-seed panel recorded on the play's single random stream (see
+// PlaySim.dice). Its threshold sits at the true rate: at 96 plays, develop
+// engages 0.922/0.917/0.911 of edge rushes and the split dice 0.917/0.880/0.917.
+PlaySim.recordedSingleStream = true;
 
 const lr = new Rng(7).fork('league-0');
 const offenseTeam = generateTeam(lr.fork('Ironmen'), 'Ironmen', 'IRN', { strength: 0.6 });

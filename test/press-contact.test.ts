@@ -26,7 +26,7 @@ function setup({ side = 1, press = 70, release = 70, time = 0 } = {}) {
   const d = new Agent(1, 'D', 'CB_W', q, pd, { pos: { x: 40.9, y: 26 - side * 0.25 }, vel: { x: 0, y: 0 }, facing: side * Math.PI, energy: 1, profile: pd }, idle);
   const world = new World([r.body, d.body]);
   const rng = new Rng(5), events: string[] = [];
-  const sim = { t: time, dt: 0.05, los: 40, ballY: 26, world, rng, defense: [d], offense: [r], qb: d,
+  const sim = { t: time, dt: 0.05, los: 40, ballY: 26, world, rng, dice: () => rng, defense: [d], offense: [r], qb: d,
     ball: { kind: 'held', carrier: d }, scrambleDrill: false, agents: [r, d], engagements: [],
     teammates: (a: Agent) => a.team === 'O' ? [r] : [d], opponents: (a: Agent) => a.team === 'O' ? [d] : [r],
     defAlign: { coverage: { man: true }, spots: { CB_W: { press: true, manTarget: 'X' } } },

@@ -10,6 +10,8 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { contactControl, inBlockReach, promoteContact, syncJoints, updateEngagements } from '../src/sim/engagement.js';
 import { PlaySim } from '../src/sim/playsim.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 // A preserved legacy trace (commands, control and RNG) on the installed get-off.
 // ARM_PRESS puts a press through the hands at the bench max; this scene is staged on arm-force hands (KNOWN_PROBLEMS RUN-11, re-record by review 2).

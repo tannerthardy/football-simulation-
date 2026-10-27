@@ -14,6 +14,8 @@ import { PlaySim } from '../src/sim/playsim.js';
 import type { Agent } from '../src/sim/agent.js';
 import { inBlockReach, traits } from '../src/sim/engagement.js';
 import { afterStep as afterTackleStep, tryTackles, updateBond } from '../src/sim/tackle.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 function make(run=false) {
   return new PlaySim({offense:pickOffense(generateTeam(new Rng(11),'O','OFF'),'11'),
