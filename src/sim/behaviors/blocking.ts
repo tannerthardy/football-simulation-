@@ -1110,7 +1110,7 @@ export class RunBlocker implements Behavior {
         this.pullIdx++;
       }
       let wp = plan.pullPath[this.pullIdx];
-      if (wp) {
+      pathLeg: if (wp) {
         // Clear the wall with the feet before fitting the moving kick/trap
         // target. Reaching a waypoint's tolerance does not establish that
         // clearance, and a penetrator need not pass within an arbitrary
@@ -1176,6 +1176,9 @@ export class RunBlocker implements Behavior {
           if (this.pullCleared && fit)
             return this.attack(a, sim, read.target, read.seen);
           if (away) read = null;
+          // Passing the observed corner can finish a two-point path: he is
+          // then past his path and takes his work like any finished puller.
+          if (!wp) break pathLeg;
         }
         // Clear the line before turning up; approach the corner under control
         // so a heavy puller doesn't run through the waypoint and circle back.

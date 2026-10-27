@@ -20,6 +20,7 @@ type Body = { pos: Vec2; vel: Vec2 };
 interface Scene {
   puller: Body; role: 'kick' | 'lead'; pullIdx: number;
   runner: Body; end: Body; backers?: Array<Body & { slot: string; down?: boolean }>; mates?: Array<Body & { slot: string }>;
+  twoPoint?: boolean;
 }
 
 /** A pulling RG on counter, everyone else parked far away and idle. The
@@ -39,7 +40,7 @@ function stage(sc: Scene) {
   for (const b of sc.backers ?? []) place(sim.slot(b.slot)!, b);
   for (const m of sc.mates ?? []) place(sim.slot(m.slot)!, m);
   const hole = { x: LOS - .1, y: CENTER_Y + 4 };
-  const path = [{ x: LOS - 1.3, y: CENTER_Y + .9 }, { x: LOS - 1.2, y: CENTER_Y + 3.5 }, hole];
+  const path = [{ x: LOS - 1.3, y: CENTER_Y + .9 }, { x: LOS - 1.2, y: CENTER_Y + 3.5 }, ...sc.twoPoint ? [] : [hole]];
   const behavior = new RunBlocker({ kind: 'pull', pullRole: sc.role, target: sc.role === 'kick' ? end : null,
     drive: { x: .3, y: 1 }, pullPath: path });
   puller.behavior = behavior;
@@ -91,6 +92,10 @@ describe('a puller acts only on the runner and men he sees', () => {
     const chase = stage({ ...deeper, end: { pos: { x: LOS - 3, y: CENTER_Y + 4.5 }, vel: { x: 2, y: 0 } } });
     const chaseCommand = chase.behavior.update(chase.puller, chase.sim);
     expect(chaseCommand.vel.x).toBeLessThan(awayCommand.vel.x);
+    // A two-point (slice) path finished at the observed corner: he is past
+    // his path and takes his work, not a missing waypoint.
+    const slice = stage({ ...deeper, twoPoint: true }), sliceCommand = slice.behavior.update(slice.puller, slice.sim);
+    expect(Number.isFinite(sliceCommand.vel.x) && Number.isFinite(sliceCommand.vel.y)).toBe(true);
   });
 
   it('takes the free threat in the hole over a man he sees on a teammate, helps when that man is the only one, and leaves the called kick man to the kicker', () => {

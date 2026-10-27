@@ -476,24 +476,36 @@ problem), resolved.
   only within 1.2 yd, so a Mike stacked inside that path is missed.
 - **Open:** the puller should track his target, not a landmark.
   `PULL_EARLY` (#190) is the defense's side of the same play.
-- **Partly fixed (2026-10-27, `run/G2-pullers`).** Measured on run-only film
-  (#329): 922 runs, seeds 7/9/11/13, 4 dice shifts (measured with #335 `matched-restage.ts`).
+- **Partly fixed (2026-10-27, `run/G2-pullers`).** Measured with #335's
+  `matched-restage.ts` on develop `a58ebc2d` (yaw and leg force-velocity law):
+  run-only snaps from seeds 7/9/11/13 (456 snaps), each played on its saved
+  dice and 4 shifted streams, develop vs this branch. Tables use #340's
+  0.1k s trace clock. Rows are the shared puller rule (power/counter/trap).
   - The pull step opens to the play side (`PULL_STEP` removed). Kick and lead
     corners sit 0.45/0.35 yd behind the puller's own stance; the observed wall
-    takes more depth where its bodies need it. Deepest point, power/counter:
-    1.63/1.58 to 1.59/1.44 yd (NFL 1.27/1.43). First touch 2.3/2.2 to 2.0/2.0 s
-    (NFL 1.7/1.6).
-  - A lead puller blocks the first threat in the hole, read each beat from his
-    own pictures (`pull lead: first threat in the hole` in the ledger).
-    Counter lead engages anyone 5% to 36%.
+    takes more depth where its bodies need it. Moved at 0.5/1.0/1.5 s, power
+    0.21/0.82/2.13 to 0.26/1.15/2.53 yd, counter 0.21/0.81/1.93 to
+    0.28/1.14/2.50 (NFL 0.49/1.77/3.31 and 0.48/1.82/3.43). Deepest point
+    1.67/1.57 to 1.70/1.42 (NFL 1.31/1.45). First touch 2.4/2.3 to 2.1/2.0 s
+    (NFL 1.6/1.6).
   - A kick or trap man the runner has already passed is out of the play: the
     puller turns up (`pull: kick man behind the runner, turn up`), and does not
-    retreat after an end flying upfield. First blocks on a man deeper than the
-    runner: counter kicks 33 to 3, power kicks 62 to 4.
-  - Still open: speed off the ball (moved at 1.0 s 1.23-1.26 yd vs NFL 2.0;
-    Main Engine's acceleration ramp); trap is slower at 1.0 s with the open
-    step (1.30 to 1.08 yd); a turned-up kicker rarely reaches a backer (power
-    box backers touched 0.66, NFL 0.91). Two attempts to let a trapper fit a
+    retreat after an end going deeper behind the ball. Kickers whose first
+    block is on a man deeper than the carrier: counter 30 to 2, power 32 to 5,
+    trap 11 to 4.
+  - A lead puller (and a kicker who turned up) blocks the first threat in the
+    hole from his own pictures (`pull lead: first threat in the hole`). He
+    reads once he has cleared the wall, leaves a teammate's called kick man to
+    that puller, takes a free man before one he sees on a teammate, and
+    finishes a man he is closing on. Counter leads engage 7% to 35% (power
+    10% to 52%); first blocks on a man deeper than the carrier 2 of 13 to 5 of
+    62 engaged.
+  - Still open: box backers touched before the carrier reaches them do not
+    move (power 0.64 to 0.62, counter 0.60 to 0.57; NFL 0.91/0.86). A lead
+    loads a backer before the runner reaches him on only 4 of 178 counter
+    leads; pullers still reach the hole late (speed off the ball, Main
+    Engine's ramp). Trap is slower with the open step (moved at 1.0 s 1.20 to
+    0.98 yd, first touch 1.8 to 2.0 s). Two attempts to let a trapper fit a
     penetrator already through the wall without first clearing it failed
     (G1-P112), so the trap keeps its installed corners.
 
