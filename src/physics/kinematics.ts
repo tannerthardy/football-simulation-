@@ -166,7 +166,8 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   const p = body.profile;
   const squeeze = body.squeeze ?? 0;
   // A narrower profile costs burst/cutting control; it is not free agility.
-  const effort = clamp(cmd.effort ?? 1, 0, 1) * (1 - 0.08 * squeeze);
+  const narrow = 1 - 0.08 * squeeze;
+  const effort = clamp(cmd.effort ?? 1, 0, 1) * narrow;
   const cutSkill = (cmd.cutSkill ?? 1) * (1 - 0.12 * squeeze);
   const speed = len(body.vel);
 
@@ -191,8 +192,9 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   // speed by full / wanted; a full request is the sprint curve unchanged.
   // A lineman who wants 2.4 yd/s fires off as hard as one who wants top
   // speed and levels off sooner (gaitLag). Mass and leg force enter through
-  // the body's own curve (vmax / tau), not a shared constant.
-  const lift = (w: number) => w > 0 && w < full ? full / w : 1;
+  // the body's own curve (vmax / tau), not a shared constant. A shoulder
+  // squeeze still costs burst: it narrows the full force, not just the speed.
+  const lift = (w: number) => { const f = full * narrow; return w > 0 && w < f ? f / w : 1; };
 
   const dvx = desired.x - body.vel.x;
   const dvy = desired.y - body.vel.y;
