@@ -46,6 +46,30 @@ function local(flip = true) {
 }
 
 describe('Draw presentation belongs to the installed line, separately from its work', () => {
+  it.each([false, true])('a covered draw lineman takes on the rusher who reaches his set, and keeps the set until then, flip %s', flip => {
+    const stage = (reached: boolean) => {
+      const sim = setup(flip);
+      const blocker = sim.offense.find(a => a.behavior instanceof RunBlocker && a.behavior.plan.kind === 'draw' && a.behavior.plan.target)!;
+      const behavior = blocker.behavior as RunBlocker, rusher = behavior.plan.target!;
+      for (const a of sim.agents) if (a !== blocker && a !== rusher && a !== sim.qb) { a.body.pos = { x: 75 + a.idx * 3, y: 3 }; a.body.vel = { x: 0, y: 0 }; }
+      blocker.body.pos = { x: 38.8, y: CENTER_Y }; blocker.body.vel = { x: 0, y: 0 };
+      // The rusher at his strike (as he sees him), or still across the line.
+      rusher.body.pos = reached ? { x: 39.75, y: CENTER_Y } : { x: 41.5, y: CENTER_Y };
+      rusher.body.vel = { x: -2, y: 0 };
+      sim.t = .5; sim.world.time = .5;
+      observe(sim);
+      const command = behavior.update(blocker, sim);
+      return { sim, blocker, behavior, rusher, command };
+    };
+    const set = stage(false);
+    expect(set.blocker.engagement).toBeNull();
+    expect(set.command).toEqual(goTo(set.blocker, { x: set.sim.los - 1.2, y: set.blocker.pos.y }, { speed: 0.6, facing: 0 }));
+    const met = stage(true);
+    expect(met.blocker.engagement?.defender).toBe(met.rusher);
+    expect(met.blocker.stance).toBe('high');
+    expect(met.behavior.plan.kind).toBe('draw');
+  });
+
   it.each([false, true])('keeps the native helper/climber in pass presentation, flip %s', flip => {
     const sim = setup(flip);
     sim.t = .05;

@@ -292,6 +292,7 @@ problem), resolved.
 | [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
 | [RUN-12](#run-12) | Run blockers lost on their assignments (film, Oct 23) | G2 | high | in work |
 | [RUN-13](#run-13) | Box backers untouched: linemen do not climb free to the second level | G2 | high | in work |
+| [RUN-16](#run-16) | Draw: the line does not block the rush while it shows pass | G2 | high | in work |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -1967,6 +1968,31 @@ the carrier reaches him).
     makes doubles only at the snap.
   - The braking stand-still has had two failed corrections already (#303); it
     waits on the start ramp.
+
+<a id="run-16"></a>
+### RUN-16: Draw: the line does not block the rush while it shows pass
+
+Measured 2026-10-27 on run-only film (#329): seeds 7/9/11/13, 456 snaps, each on
+its saved dice plus 4 shifted streams (#335's `matched-restage.ts`), against
+BDB2025 weeks 1–2 with `run_film_reference.py`.
+
+- **Measure** (develop): the carrier never gets past the line on 62% of draws
+  (NFL 10%); first contact at 2.2 s and 3.7 yd behind the line (NFL 3.3 s,
+  1.5 yd past it); a DL makes first contact on 70% of draws. DL engaged with a
+  lineman: 0% at 0.5 s, 6% at 1.0 s; DL a median 1.8 yd deep at the handoff.
+- **Cause:** *confirmed.* For the first second a covered draw lineman walked to
+  a set spot 1.2 yd off the ball and engaged nobody; only climbers and combo
+  members reacted to penetration.
+- **Fix** (`run/G2-draw-set`): the high-set lineman takes on his rusher once
+  the rusher reaches his strike, as he sees him, through the ordinary contact
+  path; otherwise he keeps the set. DL engaged at 1.0 s 6% to 53%; DL depth at
+  the handoff 1.8 to 1.4 yd; DL first contact 70% to 56%; never past the line
+  62% to 45%; contact behind the line 72% to 57% (NFL 26%); first contact 2.2 to
+  2.7 s.
+- **Open:** box backers touched before the carrier stay at 0.16 (NFL 0.77): the
+  uncovered draw linemen hold the set for the whole presentation instead of
+  releasing to the backers dropping into coverage. Engagement at 0.5 s is still
+  0%, because the line gives ground to a set 1.2 yd deep before the rush meets it.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him

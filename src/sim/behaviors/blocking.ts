@@ -1029,6 +1029,16 @@ export class RunBlocker implements Behavior {
           a.stance = 'low';
           return this.withBase(a, sim, this.attack(a, sim, target));
         }
+      } else {
+        // A pass set still blocks the man who comes to it: once his rusher
+        // reaches his strike, as he sees him, the high-set lineman takes him
+        // on through the ordinary contact path instead of letting him by.
+        const target = this.availableTarget(a, sim);
+        if (target) {
+          const seen = sim.see(a, target);
+          const strike = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
+          if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) < strike) return this.attack(a, sim, target, seen);
+        }
       }
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
     }
