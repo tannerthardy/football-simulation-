@@ -224,3 +224,68 @@ Switch `CARRY_PACE` (on; `=0` is today's request) for the matched comparison.
 
 **Stop.** If 1 or 2 doesn't happen, or 20+ yd completions more than double on
 the matched snaps, stop and re-diagnose before a second attempt.
+
+### Attempt 1 result: not held, reverted
+
+Matched snaps, `CARRY_PACE=0` (byte-identical to develop) vs on:
+
+- Matching share at 2+ yd of cushion: wide 0.91 → 0.91 and 0.84 → 0.83, box
+  0.84 → 0.80 and 0.86 → 0.89. **Prediction 1 not held.**
+- The nearest defender's speed at the throw (target under him, 2–4 yd window)
+  2.0 → 2.0 yd/s. **Prediction 2 not held.**
+- Re-weighted closing 0.49 → 0.59, but 537 of 835 snaps changed, run snaps
+  included (prediction 5 not held). That's divergence, not the mechanism.
+
+### Re-diagnosis: the depth chooser makes every carry a race
+
+Instrumenting `DeepCoverage.choose` on the same snaps (`CARRY_PACE=0`), in the
+second before the throw, for carries with the receiver faster than 4 yd/s:
+
+| Cushion | Calls | Chooser overrides the technique | Request: own → chosen | Receiver | Roof |
+| --- | --- | --- | --- | --- | --- |
+| 1–2 yd | 774 | 0.89 | 7.9 → 9.2 yd/s | 7.1 | 1.9 |
+| 2–3 yd | 1,937 | 0.93 | 5.4 → 8.9 | 7.3 | 1.9 |
+| 3–5 yd | 4,832 | 0.97 | 2.7 → 8.1 | 6.8 | 1.8 |
+
+- With 3–5 yd of cushion over a 1.8 yd roof, the chooser still overrides the
+  technique 97% of the time and asks for more than the receiver's speed.
+  Attempt 1 changed only the request it overrides.
+- The reason is the recovery term at the end of its 0.8 s preview: the speed
+  deficit times (turn time + the body's acceleration constant, about 1.1 s).
+  That charges the full cost of catching up with a receiver who runs forever.
+  A pedalling defender 5 yd/s slower is charged about 7 yd, so no pace below
+  the receiver's is ever safe.
+- And when the technique's own request fails, the menu jumps straight to the
+  receiver's speed or a sprint; there is no slower safe option to pick.
+
+### Attempt 2, declared before running: safe against a throw made now
+
+**Rule** (`DeepCoverage.choose`, switch `THROW_HORIZON`, on; `=0` is today's):
+
+1. The recovery charge covers only the time a throw made now would take to
+   arrive: his reaction time plus the natural flight time from his picture of
+   the QB to his picture of the receiver (the 2023-tracking relation the QB
+   already uses, at an average arm). Within that window the receiver gains the
+   deficit during the turn, then `Δv·τ·(1 − e^(−t/τ))` while the defender
+   accelerates. Today's term is this charge with an endless window.
+2. When the technique's request isn't safe, he takes the slowest safe one: the
+   same facing at speeds stepping up toward the receiver's, before opening or
+   sprinting.
+
+No tuned constant: the flight relation, reaction time, turn rate and τ already
+exist. It applies wherever the chooser is used: deep zone and man/match with
+depth protection.
+
+**Predictions** (matched snaps, `THROW_HORIZON=0` vs on):
+
+1. Matching share at 2+ yd of cushion falls below 0.6 for wide pairs over
+   receivers 10+ yd deep, and pace falls as cushion grows.
+2. The nearest defender's downfield speed at the throw (target under him,
+   2–6 yd window) falls by at least 0.5 yd/s.
+3. Closing in flight re-weighted to the NFL separation mix rises by at least
+   0.1 yd.
+4. Completions with 20+ air yards rise, but less than double.
+5. Man coverage changes too; reported, no prediction.
+
+**Stop.** If 1 or 2 doesn't happen, or 4 is broken, this is the second failed
+attempt: stop, write down why, and re-diagnose.
