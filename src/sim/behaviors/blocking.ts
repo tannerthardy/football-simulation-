@@ -302,6 +302,11 @@ export class PassProtector implements Behavior {
       const ahead = { x: r.pos.x + r.vel.x * KICK_LOOK, y: r.pos.y + r.vel.y * KICK_LOOK };
       const x = Math.max(qb.pos.x + 0.5, Math.min(a.pos.x, ahead.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
+      // The kick wins position; it is not the rep. Once he is deeper than the
+      // rusher and on his inside shoulder, he stops kicking ahead of where the
+      // rusher will be and takes him on: his inside shoulder, at punching range.
+      if (a.pos.x < r.pos.x && (r.pos.y - a.pos.y) * out > 0)
+        set = { x: Math.max(qb.pos.x + 0.5, r.pos.x + toQB.x * contact), y: r.pos.y + toQB.y * contact + out * overset };
     }
     if (runLook(a, sim)) set = { x: Math.max(set.x, sim.los - 0.3), y: set.y };
     const dd = Math.hypot(r.pos.x - a.pos.x, r.pos.y - a.pos.y);
