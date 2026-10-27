@@ -115,6 +115,7 @@ const BALL_LENGTH = 0.31;
 export class PlaySim {
   readonly dt = DT;
   readonly rng: Rng;
+  private readonly streams = new Map<string, Rng>();
   t = 0;
   readonly agents: Agent[] = [];
   readonly offense: Agent[] = [];
@@ -526,6 +527,28 @@ export class PlaySim {
   get qb(): Agent {
     return this.bySlot.get('QB')!;
   }
+  /**
+   * Test seam for scenes recorded before the play's dice were split: every
+   * consumer draws from the play's one stream again, so a recorded scene
+   * replays with the random inputs it was recorded with. Games never set it.
+   */
+  static recordedSingleStream = false;
+
+  /**
+   * Independent random stream for one consumer: a purpose and the agents it
+   * concerns (an engagement pair, a tackler, a receiver, the passer). Each is
+   * a fork of this play's stream, so one consumer drawing more or fewer
+   * numbers never shifts another's dice: a changed hand fight in the trenches
+   * cannot re-roll a catch downfield. Same play, same consumer, same dice.
+   */
+  dice(kind: string, a?: Agent, b?: Agent): Rng {
+    if (PlaySim.recordedSingleStream) return this.rng;
+    const label = b ? `${kind}:${a!.team}:${a!.slot}>${b.team}:${b.slot}` : a ? `${kind}:${a.team}:${a.slot}` : kind;
+    let rng = this.streams.get(label);
+    if (!rng) this.streams.set(label, rng = this.rng.fork(`dice:${label}`));
+    return rng;
+  }
+
   get carrier(): Agent | null {
     return this.ball.kind === 'held' ? this.ball.carrier : null;
   }
@@ -869,11 +892,12 @@ export class PlaySim {
     if (this.ball.kind !== 'held') return;
     (this.stats.fumbles ??= []).push({ playerId: carrier.player.id, team: carrier.team, lost: false, t: this.t });
     const v = carrier.body.vel;
-    const ang = this.rng.range(0, Math.PI * 2);
-    const sp = this.rng.range(2, 6);
+    const loose = this.dice('loose-ball');
+    const ang = loose.range(0, Math.PI * 2);
+    const sp = loose.range(2, 6);
     const flight: BallFlight = {
       pos: { x: carrier.pos.x, y: carrier.pos.y, z: 1.0 },
-      vel: { x: v.x * 0.5 + Math.cos(ang) * sp, y: v.y * 0.5 + Math.sin(ang) * sp, z: this.rng.range(0.5, 3) },
+      vel: { x: v.x * 0.5 + Math.cos(ang) * sp, y: v.y * 0.5 + Math.sin(ang) * sp, z: loose.range(0.5, 3) },
       drag: DRAG_TUMBLE,
     };
     this.ball = { kind: 'loose', flight, since: this.t, lastTeam: carrier.team, fumbledBy: carrier,
@@ -1289,12 +1313,12 @@ export class PlaySim {
       const f = ball.flight;
       f.pos = { ...f.pos, z: 0 };
       // Prolate spheroid bounces are erratic.
-      const ang = this.rng.range(-1.2, 1.2);
+      const ang = this.dice('loose-ball').range(-1.2, 1.2);
       const vx = f.vel.x * 0.55;
       const vy = f.vel.y * 0.55;
       const c = Math.cos(ang);
       const s = Math.sin(ang);
-      f.vel = { x: vx * c - vy * s, y: vx * s + vy * c, z: Math.abs(f.vel.z) * this.rng.range(0.15, 0.45) };
+      f.vel = { x: vx * c - vy * s, y: vx * s + vy * c, z: Math.abs(f.vel.z) * this.dice('loose-ball').range(0.15, 0.45) };
       if (Math.hypot(f.vel.x, f.vel.y) < 0.5 && f.vel.z < 0.4) f.vel = { x: 0, y: 0, z: 0 };
     }
     if (this.t - ball.since < 0.15) return;
@@ -1309,7 +1333,7 @@ export class PlaySim {
         best = a;
       }
     }
-    if (best && this.rng.chance(cur.z < 0.3 ? 0.35 : 0.12)) {
+    if (best && this.dice('recover', best).chance(cur.z < 0.3 ? 0.35 : 0.12)) {
       if (best.pos.y <= 0 || best.pos.y >= FIELD_WIDTH || best.pos.x <= 0 || best.pos.x >= 120) {
         this.finishLooseOutOfBounds(ball, ball.boundaryExit ?? { x: cur.x, y: clamp(cur.y, 0, FIELD_WIDTH) });
         return;

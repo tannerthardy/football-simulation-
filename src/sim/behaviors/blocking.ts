@@ -263,7 +263,7 @@ export class PassProtector implements Behavior {
     const out = Math.sign(r.pos.y - sim.ballY) || 1;
     const edgeRusher = Math.abs(r.pos.y - sim.ballY) > 3;
     const fear = edgeRusher ? clamp((r.speed - 4) / 5, 0, 1) : 0.2;
-    if (this.oversetBias < 0) this.oversetBias = sim.rng.range(0.2, 1.4);
+    if (this.oversetBias < 0) this.oversetBias = sim.dice('set', a).range(0.2, 1.4);
     const overset = (1 - traits(a).feet) * 0.9 * fear * this.oversetBias;
     // Kick-slide: gain depth (tackles more than interior), staying on the
     // rusher's line to the QB at punching distance. Make the rusher come to you.

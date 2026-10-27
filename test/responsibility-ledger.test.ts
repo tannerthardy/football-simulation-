@@ -12,6 +12,10 @@ import { dutyTimeline, initialJobCensus } from '../src/sim/responsibility-views.
 import { LOAD_PRESENT } from '../src/sim/responsibility-ledger.js';
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { restoreSetup } from '../scripts/diag/saved-play.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 const input = { coverage: 'cover3_buzz', concept: 'curl_flat', seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false };
 

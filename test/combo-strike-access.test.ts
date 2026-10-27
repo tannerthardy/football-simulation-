@@ -6,6 +6,8 @@ import type {Body} from '../src/physics/kinematics.js';
 import type {Perceived} from '../src/sim/perception.js';
 import {PlaySim,type PlaySetup} from '../src/sim/playsim.js';
 import {RunBlocker} from '../src/sim/behaviors/blocking.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 // Recorded on the installed line; OL_SPLITS and OL_STAGGER stage a different play.
 // FRONT_ALIGN moves the front off its installed spots; this recorded scene is staged on them.
 // FRONT_MENU moves the backers off theirs (def-alignment, PR #194).
