@@ -1,6 +1,7 @@
 /**
  * Record games and bake a searchable concept library into the replay viewer.
- *   npm run replay -- [seed] [--games 6] [--out path] [--doc] [--telemetry standard|full]
+ *   npm run replay -- [seed] [--games 6] [--out path] [--doc] [--telemetry standard|full] [--run-only]
+ * --run-only makes every offensive scrimmage call a designed run (run-game film).
  * Teams are generated once; games use consecutive seeds and reset game state.
  * --doc produces a standalone HTML document for opening from disk.
  */
@@ -26,7 +27,7 @@ const plays: ReturnType<typeof packReplayPlay>[] = [];
 const games = [];
 for (let i = 0; i < options.games; i++) {
   const seed = options.seed + i;
-  const g = simulateGame(home, away, { seed, record: true, recordLevel: options.telemetry });
+  const g = simulateGame(home, away, { seed, record: true, recordLevel: options.telemetry, runOnly: options.runOnly });
   const quarters = [...g.quarterScores];
   const last = quarters[quarters.length - 1];
   if (!last || last.home !== g.score.home || last.away !== g.score.away) quarters.push({ ...g.score });

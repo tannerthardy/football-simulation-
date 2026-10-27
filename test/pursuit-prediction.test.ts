@@ -73,9 +73,8 @@ describe('approximate interception prediction contract', () => {
   });
 
   it('preserves a whole ordinary play and its prediction/read/draw/physics counts with selected diagnostics enabled', () => {
-    // Play 4: under the leg force-velocity law (PHY-1) play 2's catch is now an
-    // incompletion; play 4 has the SS forecasting an intercept on a caught RB.
-    const saved = captureOrdinaryPlay({ seed: 7, play: 4, minPlay: 1, maxSteps: 4 }).saved;
+    // The game's first caught ball, so the safety pursues a carrier whatever the earlier snaps did.
+    const saved = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 1, maxSteps: 20 }).saved;
     const original = Reach.interceptPoint;
     const execute = (record: boolean) => {
       let pathCalls = 0;
@@ -84,7 +83,7 @@ describe('approximate interception prediction contract', () => {
       const draws = vi.spyOn(Rng.prototype, 'nextU32');
       const sim = new PlaySim(restoreSetup(saved.setup)), initial = initialState(sim);
       const reads = vi.spyOn(sim.perception, 'perceive'), steps = vi.spyOn(sim.world, 'step');
-      const trace = record ? sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 3.9, to: 4.5 }) : undefined;
+      const trace = record ? sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 0, to: 30 }) : undefined;
       const result = sim.run();
       const execution = { initial, result, replay: replayState(sim, result, saved.context) };
       const counts = { planner: planner.mock.calls.length, paths: pathCalls, reads: reads.mock.calls.length,
