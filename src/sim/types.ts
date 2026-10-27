@@ -89,6 +89,7 @@ export type PlayEventType =
   | 'block_threat'
   | 'block_abandon'
   | 'block_log'
+  | 'pull_turn_up'
   | 'squeeze'
   | 'carrier_contact'
   | 'tackle_wrap'

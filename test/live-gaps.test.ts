@@ -74,6 +74,27 @@ describe('live gaps move with the offensive bodies that form them', () => {
     expect(liveGapY(sim, observer, 'A', side)).toBeCloseTo(gapY(sim.offAlign, 'A', side), 6);
   });
 
+  it('keeps a body he sees on a defender on the surface, whatever the engagement record says', () => {
+    // Back and across, short of a pull's depth: a guard driven off his spot
+    // or a puller on his first step. The same picture, with and without a
+    // hidden block record, gives the same line.
+    const pictured = (engaged: boolean, onDefender: boolean) => {
+      const { sim, observer, settle } = setup();
+      const lg = sim.slot('LG')!, side = Math.sign(lg.pos.y - CENTER_Y), dir = sim.attackDir(lg.team);
+      lg.body.pos = { x: lg.pos.x - dir * .8, y: lg.pos.y - side * 1.5 };
+      if (engaged) (lg as unknown as { engagement: unknown }).engagement = {};
+      const dt = sim.defense.find((d) => d.slot.startsWith('DT'))!;
+      dt.body.pos = onDefender ? { x: lg.pos.x + dir * .9, y: lg.pos.y } : { x: lg.pos.x + dir * 6, y: lg.pos.y + 8 };
+      settle();
+      const p = linePicture(sim, observer);
+      return { departed: p.departed.map((b) => b.agent.slot), a: liveGapY(sim, observer, 'A', side) };
+    };
+    expect(pictured(true, false)).toEqual(pictured(false, false));
+    expect(pictured(false, false).departed).toEqual(['LG']);
+    expect(pictured(true, true)).toEqual(pictured(false, true));
+    expect(pictured(false, true).departed).toEqual([]);
+  });
+
   it('uses the observer\'s delayed picture, not the live bodies', () => {
     const { sim, observer, settle } = setup();
     settle();

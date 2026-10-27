@@ -157,6 +157,9 @@ export interface GameOptions {
   /** Opt-in replay inspection detail; has no effect when record is false. */
   recordLevel?: import('../sim/types.js').ReplayLevel;
   rules?: Partial<GameRules>;
+  /** Evaluation harness: every offensive scrimmage call is a designed run (kicks,
+   * fourth-down and try decisions unchanged). Leave unset for normal games. */
+  runOnly?: boolean;
   /** Scenario-test seams; leave unset for normal games. */
   hooks?: GameHooks;
 }
@@ -283,7 +286,7 @@ export class Game {
     this.tempo = this.rng.fork('tempo');
     this.calls = this.rng.fork('calls');
     this.teams = { home, away };
-    this.oc = { home: new OffensiveCoordinator(home, this.rng.fork('oc-h')), away: new OffensiveCoordinator(away, this.rng.fork('oc-a')) };
+    this.oc = { home: new OffensiveCoordinator(home, this.rng.fork('oc-h'), opts.runOnly), away: new OffensiveCoordinator(away, this.rng.fork('oc-a'), opts.runOnly) };
     this.dc = { home: new DefensiveCoordinator(home, this.rng.fork('dc-h')), away: new DefensiveCoordinator(away, this.rng.fork('dc-a')) };
     const receiver: Side = this.coin.chance(0.5) ? 'home' : 'away';
     this.s = {
