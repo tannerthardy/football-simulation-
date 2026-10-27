@@ -73,13 +73,16 @@ describe('earned departure ends at achievable first strike rather than the backe
   // because the recorded bodies are in slightly different places; the decision and its mirror are unchanged.
   // Re-staged at 2.35: the center's own double now releases on his picture of the keeper (0.85 s) rather than
   // on the keeper's hidden hand-fight value, so the bodies around the guard's departure differ; same decision.
-  decision(2.35,mirror,true);
+  // Re-staged at 1.65 for the start law (#336): the guard's sub-top-speed climb now starts at full leg force,
+  // so he reaches the backer and clears the departure at 1.70 (was 2.40); same decision.
+  decision(1.65,mirror,true);
  });
  it.each([false,true])('keeps the departure when the down body obstructs even first strike, reflected=%s',mirror=>{
   decision(1.3,mirror,false);
  });
  it('develops real second-level load while the original keeper still protects the down surface',()=>{
-  const {sim,rg}=stage(2.15),rt=sim.slot('RT')!,down=sim.slot('DT_S')!,backer=sim.slot('LB_M')!;
+  // Staged at 1.65 (was 2.15) for the start law (#336): the departure now clears at 1.70, not 2.40.
+  const {sim,rg}=stage(1.65),rt=sim.slot('RT')!,down=sim.slot('DT_S')!,backer=sim.slot('LB_M')!;
   const hands=rt.engagement!.hands;
   // The down defender may be taken to the ground before runner arrival.
   // Require the real keeper joint until that defeat, not after a fallen
