@@ -139,7 +139,7 @@ describe('receiving-fumble official allocation', () => {
 
   it('computes fractional official gain from LOS without subtracting two rounded credits', () => {
     const c = reception();
-    const raw = { ...c.raw, offenseYards: 15,
+    const raw = { ...c.raw, offenseYards: 15, stats: { ...c.raw.stats, completedAirYards: 7.996 },
       segments: c.raw.segments.map(s => s.how === 'recovery' ? { ...s, startX: 62.005 } : s) };
     const ruling = deriveOfficialPlayStats({ result: raw, calls: [], los: 50.004, startDistance: 10 });
     expect(ruling.credit.yards).toBe(12);
