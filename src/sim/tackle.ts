@@ -468,15 +468,16 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // holder around his arms, rather than establish useful rear leverage.
       const plant = Math.max(0, c.vel.x * tx + c.vel.y * ty) * quality * clamp(next, 0, 1);
       let vel = { x: c.vel.x + tx * (close - plant), y: c.vel.y + ty * (close - plant) };
-      // Dragged on a secure hold of his legs, he drops his weight and hangs
-      // on: off his feet he can no longer chase, but half his weight then
-      // hangs on the runner's legs (the World decides what that binds). He
-      // reads it from his own arms: where they are on the man, how secure
-      // they are, and that the man is pulling away through them.
+      // Planted on a secure hold of his legs and still dragged, he drops his
+      // weight and hangs on: off his feet he can no longer chase, but half
+      // his weight then hangs on the runner's legs (the World decides what
+      // that binds). He reads it from his own body and arms: where they are
+      // on the man, how secure they are, and that after a plant he is still
+      // carried along faster than he asks to go.
       const secure = clamp(next, 0, 1) * quality;
-      const pulling = (c.vel.x - d.vel.x) * tx + (c.vel.y - d.vel.y) * ty > 0.3
-        || (joint.force ?? 0) > 0.5 * joint.capacity;
-      const drop = d.body.support?.state === 'up' && joint.legs >= 0.35 && secure >= 0.6 && pulling;
+      const dragged = (d.vel.x - vel.x) * tx + (d.vel.y - vel.y) * ty > 1;
+      const drop = d.body.support?.state === 'up' && joint.legs >= 0.35 && secure >= 0.6
+        && t - bond.start >= 0.4 && dragged;
       intents[d.idx] = { vel, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
         dive: drop ? { x: tx * 0.2, y: ty * 0.2 } : own?.dive, lunge: own?.lunge };
     }
