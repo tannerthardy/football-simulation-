@@ -1,7 +1,8 @@
 /** The responsibility ledger (src/sim/responsibility-ledger.ts): the all-blockers form of the command trace's
  * blocking-change hooks. Staged controls for the mechanism, plus recorded plays for the named cases from the
  * Phase II zone set (constructor inputs recorded at develop a5b024b9; re-record them when the source changes on
- * purpose). It is a recorder: nothing here grades a block. */
+ * purpose). The M- cases are matched-restage captures of develop 55cc9e57, recorded when turning on the feet's
+ * actual grip moved the S9-P027 and S7-P067 scenes. It is a recorder: nothing here grades a block. */
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
@@ -12,8 +13,6 @@ import { dutyTimeline, initialJobCensus } from '../src/sim/responsibility-views.
 import { LOAD_PRESENT } from '../src/sim/responsibility-ledger.js';
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { restoreSetup } from '../scripts/diag/saved-play.js';
-// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
-PlaySim.recordedSingleStream = true;
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
 PlaySim.recordedSingleStream = true;
 
@@ -203,26 +202,26 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT')).toEqual([]);
   });
 
-  it('S9-P027: C is reread twice, each recorded with its resulting kind', () => {
-    const p = play('S9-P027');
+  it('M9-P000: C is reread twice, each recorded with its resulting kind', () => {
+    const p = play('M9-P000');
     const threats = changeOf(p, 'C', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([1.4, 2.65]);
+    expect(threats.map(c => c.t)).toEqual([2.2, 2.6]);
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(2);
-    expect(threats.every(c => c.after.kind === 'reach')).toBe(true);
+    expect(threats.every(c => c.after.kind === 'drive')).toBe(true);
   });
 
-  it('S7-P067: the first carrier contact keeps both defenders tied at 2.5', () => {
-    const first = play('S7-P067').census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.5);
-    expect(first.defenders.map(play('S7-P067').slot).sort()).toEqual(['LB_M', 'LB_W']);
+  it('M7-P051: the first carrier contact keeps both defenders tied at 2.75', () => {
+    const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
+    expect(first.t).toBe(2.75);
+    expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
     const p = play('S8-P005');
     const first = p.census[0].firstCarrierContact!;
     expect(first.t).toBe(2.2);
-    expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.25 && p.slot(e.defender) === 'DE_W')).toBe(true);
+    expect(first.defenders.map(p.slot)).toEqual(['DE_W']);
+    expect(p.d.play.carrierEvents.some(e => e.t === 2.3 && p.slot(e.defender) === 'DT_W')).toBe(true);
   });
 
   it.each(['S8-P054', 'S10-P006'])('%s: the QB keeps it, so the carrier is the QB all play, not the scheduled RB', id => {
@@ -239,7 +238,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.census).toEqual([]);
   });
 
-  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
+  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
     const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
     const run = (record: boolean) => {
       const sim = new PlaySim(restoreSetup(setup));
