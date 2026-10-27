@@ -67,6 +67,13 @@ describe('decision-code information guard', () => {
     expect((carrier.match(RUNNER_HIDDEN) ?? []).length).toBeLessThanOrEqual(RUNNER_DEBT.reads);
   });
 
+  it('keeps live gaps off the engagement record and true support state', () => {
+    // Every run controller reads the line through live gaps, so it is built
+    // only from the observer's pictures.
+    const gaps = readFileSync(join(root, 'src/sim/live-gaps.ts'), 'utf8');
+    expect(gaps.match(RUNNER_HIDDEN) ?? []).toEqual([]);
+  });
+
   it('has no defensive decision reading the private scramble flag', () => {
     // The blocker converts pass pro to run blocking when his own QB runs.
     const blockMode = 'src/sim/engagement.ts';
