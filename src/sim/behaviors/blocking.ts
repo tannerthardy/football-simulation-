@@ -1652,11 +1652,17 @@ export class RunBlocker implements Behavior {
     if (plan.kind === 'pull' && plan.pullRole === 'lead' && (seen.pose === 'down' || seen.pose === 'rising')) return stand();
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
     const combinationFit = this.combinationFit(a, sim, target);
+    const contact = a.profile.radius + target.profile.radius + 0.1 + (a.player.measurables.armIn / 36) * 0.45;
     if ((plan.pullRole === 'kick' || plan.pullRole === 'trap') && !a.tags.has('block-log')) {
       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
       // If the end crosses the puller's inside shoulder, getting back inside
       // him would expose the runner. Fit his outside shoulder and wash inward.
-      if ((seen.pos.y-a.pos.y)*ps < -.25 && seen.pos.x < sim.los+.8) {
+      // A counter end who already ran behind the puller's strike envelope
+      // has not wrong-armed his entry shoulder. Keep the kick responsibility
+      // and its runner-side fit; do not signal a log from a distant rear cue.
+      const entrySide = sim.offCall.run!.scheme !== 'counter'
+        || (seen.pos.x-a.pos.x)*sim.attackDir(a.team) >= -contact;
+      if (entrySide && (seen.pos.y-a.pos.y)*ps < -.25 && seen.pos.x < sim.los+.8) {
         plan.drive = norm({x:.45,y:-ps});
         a.tags.add('block-log');
         sim.event('block_log',a,target,'kick target crossed inside shoulder');
@@ -1665,7 +1671,6 @@ export class RunBlocker implements Behavior {
     const dd = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
     // A run block starts with the strike, before torsos meet. Keep functional
     // extension shorter than a pass-pro punch; long arms can catch a slant.
-    const contact = a.profile.radius + target.profile.radius + 0.1 + (a.player.measurables.armIn / 36) * 0.45;
     const fitCandidate = onLine(a, sim) && (plan.kind === 'drive' || plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
       && (!plan.combination || plan.combination.released)
       && !sim.world.joints.some(j => j.a === a.body || j.b === a.body);
@@ -2191,9 +2196,11 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   const touching = hands && distance <= workingReach && (distance <= hands.extension
     || Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0) > 1e-6);
   const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
-  const control = contactControl(e, keeper);
-  if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful || control === null
-    || control <= -.12 + .12 * (.5 - climber.mind.urgency)) return null;
+  // The keeper's hand-fight standing is his private state, not the climber's
+  // evidence. The climber reads his partner's chest on the man in his own
+  // picture (readJoinedSurface); the transfer still needs the keeper's hands.
+  if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful
+    || contactControl(e, keeper) === null) return null;
   return { climber, keeper, engagement: e, hands: hands!, phi };
 }
 
@@ -2409,7 +2416,7 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
     combo.checkSince = -1;
     return;
   }
-  const secure = e.control > -0.12 + 0.12 * (0.5 - observer.mind.urgency) && e.baseB > 0.60 && Math.abs(e.phi) < 0.55;
+  const secure = e.baseB > 0.60 && Math.abs(e.phi) < 0.55;
   if (!secure) {
     combo.checkSince = -1;
     observer.tags.add('combo-held');

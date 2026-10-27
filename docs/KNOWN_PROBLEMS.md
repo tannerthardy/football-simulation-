@@ -291,6 +291,7 @@ problem), resolved.
 | [RUN-10](#run-10) | Older run-blocking and second-level issues | G2 | low–medium | open |
 | [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
 | [RUN-12](#run-12) | Run blockers lost on their assignments (film, Oct 23) | G2 | high | in work |
+| [RUN-13](#run-13) | Box backers untouched: linemen do not climb free to the second level | G2 | high | in work |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -1898,6 +1899,74 @@ run plays with the assignment layer (`--telemetry full`):
   (paired 90% -0.18 to +2.70; capped at 20 yd +0.02, -0.58 to +0.62): the
   mean moves with a few breakaways. The rest of the carry on P46 and P123 is
   the open push question in PHY-1.
+
+<a id="run-13"></a>
+### RUN-13: Box backers untouched: linemen do not climb free to the second level
+
+Measured 2026-10-27 on run-only film (#329), seeds 7/9/11/13 × 2 games, 922 runs,
+with the #338 pullers. The NFL comparison uses BDB2025 weeks 1–2 and the same
+definition as `run_film_reference.py` (box backer touched by an OL/TE/back before
+the carrier reaches him).
+
+- **Measure.** Box backers touched: 56% (NFL 85%); outside zone 48% (86%).
+- **Where the gap is.** Linemen touching a backer while still beside a down
+  lineman occur at the NFL rate (outside zone 29% vs 35%, inside zone 45% vs 49%).
+  Linemen who climbed free do not: outside zone 15% vs 45%, inside zone 18% vs 29%,
+  power 19% vs 36%, counter 13% vs 33%. Backers fill at the NFL pace (2.0–2.5 yd
+  downhill before the carrier reaches them).
+- **Why, for each untouched backer** (all families; nearest blocker whose
+  current target was him):
+
+  | Reason | Share of box backers |
+  |---|---|
+  | No blocker ever targets him. Outside zone's usual call (three reaches, a cutoff, one double) puts all five linemen on four down men. | 13% |
+  | His double never releases before the runner reaches him (draw 32%) | 8% |
+  | His released climber is free but still at or behind the line | 11% |
+  | His released climber is past the line but 3–4 yd short | 10% |
+  | His blocker is engaged on someone else | 3% |
+
+- **Released climbers' movement** (outside zone):
+  - Ticks by climb-access mode: detour 51%, braking stand-still 19%, direct 18%.
+  - Detouring climbers ask for 2.4 yd/s and move toward their backer at
+    0.23 yd/s.
+  - Even in direct mode, the body achieves about a third of the request
+    (5.7 asked, 1.8 achieved), with no contact or spacing rewrite on most
+    ticks. That is the start ramp Main Engine is fixing.
+  - Control: `GAIT_STEP=0.3` (start fixed, not proposed here) moves untouched
+    backers only modestly: outside zone 52% to 48%, power 34% to 27%, trap 40%
+    to 26%.
+- **Doubles that never release** (outside zone, 90 of 478 before the carrier
+  reaches +2):
+  - 44% never joined, so no release read ran.
+  - 26% are held by the keeper's hidden hand-fight `control` value, which the
+    climber cannot see.
+  - About 25% fail because the keeper's hands are not touching.
+- **Attempt 1, failed (reverted, `run/G2-backer-access`).** A released
+  climber's detour ran the tangent off the man's shoulder, carried one stride
+  past, instead of 20-degree arcs. Requests rose (2.4 to 3.5 yd/s), but achieved
+  motion barely moved (1.19 to 1.28 yd/s) and touched backers did not change
+  (outside zone 52% untouched either way).
+- **Keeper check without the hidden `control` value (2026-10-27,
+  `run/G2-keeper-picture`).** The climber reads his partner's chest on the man,
+  within reach and upright, in his own picture; the transfer still needs the
+  keeper's real hands. Matched restage on develop `a58ebc2d` (#335's tool,
+  456 run-only snaps from seeds 7/9/11/13, saved dice plus 4 shifted streams):
+  - Climb backer touched before the carrier, zone doubles: inside zone 0.389
+    to 0.430, outside zone 0.253 to 0.287. Box backers touched, all runs, 0.56
+    to 0.58 (inside zone 0.62 to 0.63, outside zone 0.54 to 0.57).
+  - Keepers are not beaten more: the doubled lineman makes first contact
+    0.158 to 0.164 (inside) and 0.102 to 0.098 (outside); more than 1 yd into
+    the backfield 0.154 to 0.160 and 0.089 to 0.091.
+  - Only 9 of 456 snaps change at every shift; yards 6.46 to 6.44 (the arm
+    moves a snap 0.66 yd on average, the dice alone 9.14).
+  - A small, honest step: the hidden value was holding releases without
+    protecting anything visible. The large buckets above remain.
+- **Next, untried.**
+  - Zone pairs that climb on the fly: a lineman whose man is overtaken by his
+    partner climbs to the backer. This is the NFL's second free climber; the sim
+    makes doubles only at the snap.
+  - The braking stand-still has had two failed corrections already (#303); it
+    waits on the start ramp.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
