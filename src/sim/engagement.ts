@@ -803,6 +803,23 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
   }
 }
 
+/** Hip leverage does not by itself detach a tackle's working outside hand.
+ * Retain only an already loaded compressive contact the blocker owns, inside
+ * its existing working span and in front of his actual torso. The ordinary
+ * solver still limits its force, work and the feet needed to keep up. */
+function canRidePassContact(e: Engagement, t: number): boolean {
+  const b = e.blocker, d = e.defender, hands = e.hands;
+  const outside = b.passSet?.outside;
+  if (!outside || !hands || e.holding || e.control <= 0 || hands.actor !== b.body
+    || !((hands.normalForce ?? 0) > 0)) return false;
+  // A landed finesse action has cleared the hands for this window. Do not
+  // turn the old solved load into evidence that a new hold exists.
+  if (t < e.moveUntil && e.moveOk && e.move !== 'bull' && e.move !== 'longarm') return false;
+  const dx = d.pos.x - b.pos.x, dy = d.pos.y - b.pos.y;
+  return dy * outside > 0 && Math.hypot(dx, dy) <= hands.extension
+    && dx * Math.cos(b.body.facing) + dy * Math.sin(b.body.facing) >= 0;
+}
+
 function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const t = sim.t;
   const dt = sim.dt;
@@ -816,7 +833,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // Leverage is where the bodies are, relative to the QB, every tick.
   e.phi = measurePhi(axis, d, b);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
-  if (Math.abs(e.phi) >= 1) {
+  if (Math.abs(e.phi) >= 1 && !canRidePassContact(e, t)) {
     if (tryHold(sim, e)) return;
     beat(sim, e, axis, lat, false, 'turned the corner');
     return;
