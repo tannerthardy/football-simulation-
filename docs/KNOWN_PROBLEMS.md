@@ -2395,8 +2395,10 @@ From the issue register:
     the QB's target or the outcome. Apply legality checks only when a throw to
     Z happens. Never count an interception as a completion. Add the vertical
     arm, declared before it runs (`reviews/cov7-support-choice.md`).
-  - #336's start law stays blocked on this unless Tanner decides otherwise;
-    Main Engine won't skip the test.
+  - For #336, Tanner approved a narrow repair in a separate thread, only if
+    it makes the check stricter: it must tell an interception from a
+    completion, and confirm the corner bit and the QB threw where he vacated.
+    The broader redesign above is still the resume task.
   - Also waiting: #295 (squeeze; its seed 7/8 matched numbers predate the
     random-stream split, #323, and need re-running) and #324 (COV-1
     diagnosis; attempt 2 parked on `coverage/G3-cov1-throw-horizon`).
