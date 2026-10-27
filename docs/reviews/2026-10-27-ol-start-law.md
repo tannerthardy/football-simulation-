@@ -196,3 +196,76 @@ only bodies with a shoulder squeeze (carriers through a crease).
    If the law lands, give them the wanted speed (blocking.ts is Run Game's).
 5. `run_film_reference.py` (#329) samples the sim 0.05 s late; fix before
    using its start or puller tables as a bar.
+
+## 6. Update, same day: the start limit for backs and climbers (item (b))
+
+Run Game measured that free climbers and backs reach about half their request.
+Tanner made it a Main Engine item. Same position-only operator on NFL and sim
+run film (`scripts/diag/accel_envelope.py`):
+- acceleration vs speed;
+- free running only: before the carrier's first contact, no opponent within
+  1.5 yd;
+- seeds 7/9, develop + #344 (back's mesh departure).
+
+| Backs, accel median / p90 (yd/s²) | NFL | develop | + this law |
+|---|---|---|---|
+| 1-2 yd/s | 4.34 / 6.06 | 2.58 / 4.26 | 4.19 / 5.62 |
+| 2-3 yd/s | 4.66 / 6.42 | 1.97 / 3.57 | 2.65 / 4.76 |
+| 3-4 yd/s | 4.01 / 5.75 | 2.43 / 3.68 | 2.67 / 3.78 |
+
+With the law, OL, LB, DB and WR are close to NFL at every speed. WR at
+1-2 / 2-3 / 3-4 yd/s, median: NFL 4.28 / 4.16 / 3.45, law 5.55 / 4.91 / 3.54.
+
+The per-tick probe (`scripts/diag/start-probe.ts`) explains the rest:
+- **Backs.** The body delivers the plan (planned = achieved), and planned
+  acceleration follows the law. Before the handoff, 39% of ticks at 2-4 yd/s
+  request under 4.5 yd/s: the mesh tempo (Run Game). At requests of 6-8 yd/s
+  the plan is 4.6 yd/s² at 2.6 yd/s, close to NFL's median.
+- **Free climbers.** Planned acceleration rises 3.2 → 3.6 yd/s², but speed stays
+  about 2.8 yd/s. The requested direction turns more than 1 rad/s on 41% of
+  ticks (90th percentile 9.4 rad/s): the climb aim re-targets every decision
+  (Run Game). A hip turned off the request is that redirect, not the body.
+
+So the body's share of item (b) is this law. The rest is controller requests.
+
+## 7. Landing: what the law moves (develop `1ec115c7` merged)
+
+Restated contracts:
+- **`pass-contact` anchor.** Cutting `power` weakens the end's brace, not his
+  gait. His bull request now drives at full start force: 0.20 yd given in
+  20 ticks (develop 0.05), against 0.51 for a clear drive advantage. The bar is
+  now held < 0.25 and driven > 2 × held. Bounding the gait by leg strength
+  instead was tried and rejected: it breaks the calibrated sprint integrator for
+  the 4% of players whose sprint-start demand exceeds `pushForce`.
+- **`world-physics` substep convergence.** The coarse 8/16 pair trades places
+  (0.023 / 0.025; develop 0.033 / 0.016). e32 must beat both by half, and e64
+  keeps improving.
+
+Planner following the law:
+- `motion.ts` `planMotion` used the old lag, so jets overran their snap point by
+  1.5-2.2 yd. It now uses τ · wanted / full.
+
+Re-recorded scenes:
+- Each one's first divergence is a below-cap request starting at full force, and
+  each contract was re-checked on the new play. Details are in the commit
+  messages.
+- Files: combo-strike-access, zone-helper-check, seal-hold, cutoff-surface,
+  run-hand-control, the spacing-forecast reference, cover3-cover2-rules,
+  coverage-rules, possession-awareness, command-trace, called-motion,
+  responsibility-ledger.
+
+Blockers (controllers the law exposes; not edited here):
+1. **`planned-climb-fit`.** A tackle released one tick earlier still overlaps
+   DE_S. Every detour fails the clearance check, so he brakes for a whole read
+   and never occupies Mike (`assessClimbAccess`, Run Game).
+2. **`protection-panel`.** On ace_12 vs Over the LT tracks his vertical-set
+   point, which is 0.4 s ahead of the end plus 0.8 yd deeper. That keeps him a
+   steady 2.2 yd away, never in punching range. Edges engaged drop 24/24 →
+   17/24. On develop the tackle lagged the point, so the end ran into him
+   (`blocking.ts` PassProtector).
+3. **`cov7-abandonment`.** Its fixture play lost the corner's run support and
+   the WR2 throw; the recipe is being re-recorded.
+
+Environment-only in this container: `baseline-runner` and `film-pairs` (the
+Node version), `saved-game-play` and `play-lab` (timeouts under load; they pass
+alone).
