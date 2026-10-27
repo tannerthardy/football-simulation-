@@ -300,7 +300,11 @@ export class PassProtector implements Behavior {
       // from now, on his inside shoulder; never take ground back toward the
       // line, never past the launch point. He has to come to the tackle.
       const ahead = { x: r.pos.x + r.vel.x * KICK_LOOK, y: r.pos.y + r.vel.y * KICK_LOOK };
-      const x = Math.max(qb.pos.x + 0.5, Math.min(a.pos.x, ahead.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
+      // Depth is kept on the rusher's present depth: leading his position a
+      // beat ahead as well would keep the tackle 2-3 yd in front of a fast
+      // rusher, retreating out of punching range all the way to the launch
+      // point (the old start law hid this by making the tackle lag his spot).
+      const x = Math.max(qb.pos.x + 0.5, Math.min(a.pos.x, r.pos.x - KICK_LEAD, sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth));
       set = { x, y: ahead.y - out * contact * 0.6 + out * overset };
     }
     if (runLook(a, sim)) set = { x: Math.max(set.x, sim.los - 0.3), y: set.y };
@@ -332,9 +336,9 @@ export class PassProtector implements Behavior {
  * 0.8 yd shallower; the cutoff met him at the line (PRO-1). Ported from
  * claude/run-game-v3 (docs/PARKED.md). */
 const PASS_KICK = process.env.PASS_KICK !== '0';
-/** How far deeper than an upfield edge rusher the kick keeps the tackle (yd). */
+/** How far deeper than an upfield edge rusher's present depth the kick keeps the tackle (yd). */
 const KICK_LEAD = 0.8;
-/** How far ahead on his present velocity the kick reads the rusher (s). */
+/** How far ahead on his present velocity the kick reads the rusher's width (s). */
 const KICK_LOOK = 0.4;
 
 /**

@@ -2216,6 +2216,28 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   0.2 yd; NFL 0.5 / 2.6 yd. Step-ups are similar: NFL 20%, sim 27%.
 - **Cause:** *likely* missing from the QB's pocket controller.
 
+<a id="pro-6"></a>
+### PRO-6: An inline TE releasing into a rushing end pushes chest to chest with him
+
+- **Measure** (#336, `test/integration/protection-panel.test.ts`, ace_12 vs
+  Over, seeds 1-12): on 4 of 24 edge rushes, H releases on his route straight
+  into DE_S head-up:
+  - H asks for about 6 yd/s into his route; DE_S asks for 8-9 yd/s at the QB.
+  - The two stay 0.54 yd apart, chest to chest, from 0.8 s to the end of the
+    3 s window. Neither paths around the other.
+  - DE_S never reaches the LT, so the panel counts him unengaged, although
+    he never gets free.
+  - On develop's start law, H settled at 1.8 s and DE_S came off him to the
+    LT at 2.8 s.
+- **Tried** (#336): letting a line receiver bend around a rusher coming at
+  the backfield (`clearLane`, as `ROUTE_CLEAR` does for backs). The panel
+  passes, but unblocked edge pressures rise from 4 to 14 in 8 games (seed
+  301; NFL about 0.5 a game). Once H goes around, nobody picks up the end.
+  That is PRO-5's missing protection call, so the change was not kept.
+- **Open:** whose job is the end when the TE releases (a protection call or a
+  chip, PRO-5), and how a release meets a rusher at the line. The panel's
+  ace_12 bar is 0.8 until then (was 0.9).
+
 <a id="pro-5"></a>
 ### PRO-5: No pass protection calls
 
