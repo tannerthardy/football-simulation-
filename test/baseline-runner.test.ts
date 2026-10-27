@@ -19,7 +19,7 @@ describe('shared baseline runs are explicit and cannot inherit experiments', () 
     expect(complete.commands).toHaveLength(2); expect(complete.skippedCommands).toEqual([]);
   });
   it('resets ambient experiments, ablations and counterfactual defenses', () => {
-    const result = info([], { LEG_BRACE: '1', HOLD_SUBSTEPS: '48', LEVER_FACING: '0', CF_FLOW: 'over' });
+    const result = info([], { TACKLE_TOUCH: '1', HOLD_SUBSTEPS: '48', LEVER_FACING: '0', CF_FLOW: 'over' });
     expect(result.flags).toEqual(profile.flags);
     expect(result.node).toBe(`v${profile.nodeVersion}`);
     expect(result.mode).toBe('candidate');
@@ -28,12 +28,12 @@ describe('shared baseline runs are explicit and cannot inherit experiments', () 
   });
 
   it('records only explicitly requested experimental settings', () => {
-    const result = info(['--flag', 'LEG_BRACE=1', '--flag', 'HOLD_SUBSTEPS=48']);
-    expect(result.flags).toEqual({ ...profile.flags, LEG_BRACE: '1', HOLD_SUBSTEPS: '48' });
+    const result = info(['--flag', 'TACKLE_TOUCH=1', '--flag', 'HOLD_SUBSTEPS=48']);
+    expect(result.flags).toEqual({ ...profile.flags, TACKLE_TOUCH: '1', HOLD_SUBSTEPS: '48' });
   });
 
   it('rejects unknown or malformed overrides before running a command', () => {
-    for (const value of ['UNKNOWN_RESEARCH=1', 'LEG_BRACE=maybe', 'HOLD_SUBSTEPS=1.5', 'GAIT_STEP=NaN']) {
+    for (const value of ['UNKNOWN_RESEARCH=1', 'TACKLE_TOUCH=maybe', 'HOLD_SUBSTEPS=1.5', 'GAIT_STEP=NaN']) {
       const result = spawnSync(process.execPath, [launcher, '--info', '--candidate', '--flag', value], { encoding: 'utf8' });
       expect(result.status).toBe(1);
       expect(result.stdout).toBe('');
