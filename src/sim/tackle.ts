@@ -26,7 +26,7 @@ import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import { supportParams, TURF_MU } from '../physics/support.js';
-import { GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
+import { CONTACT_SCALE, GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import { contactQuality, previewTackleWindow } from './tackle-window.js';
@@ -61,11 +61,6 @@ const STALL = 0.8;
 /** Force a hold of quality q can sustain, kg·yd/s². Locked arms around a
  * body hold by geometry (the hands must come apart), several times what
  * fingertips on a jersey can; technique finishes the wrap. */
-/** Experimental tight-wrap finish (TACKLE_ROLL=1, off by default); see updateBond. */
-const TACKLE_ROLL = process.env.TACKLE_ROLL === '1';
-/** Experimental secure lower-wrap coupling; all transmitted loads still use
- * World's existing grip, arm and recovery budgets. Default-off. */
-const WRAP_BIND = process.env.WRAP_BIND === '1';
 /** Experimental contact acquired at standing reach with finite arm bracing.
  * Approach requests and real torso collisions remain physical. Default-off. */
 const REACH_CONTACT = process.env.REACH_CONTACT === '1';
@@ -369,6 +364,12 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   sim.world.joints.push(joint);
 }
 
+/** The body-center distance a hold's arms amount to: at `CONTACT_SCALE`
+ * of the radii the World reads a full wrap; never farther than the centers. */
+function armDistance(joint: GraspJoint | undefined, centers: number, torso: number): number {
+  return Math.min(centers, (joint?.hold ?? centers) + (1 - CONTACT_SCALE) * torso);
+}
+
 /** Release every hold of the bond (fumble, whistle, carrier change). */
 export function releaseBond(sim: PlaySim): void {
   const bond = sim.bond;
@@ -418,10 +419,13 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     // a body wrap because time passed.
     const distance = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
     const torso = c.profile.radius + d.profile.radius;
+    // How tight the hold is, by the arms' own span: a wrap on a trailing
+    // leg is tight although the bodies' centers are a stride apart.
+    const near = armDistance(joint, distance, torso);
     // A holder on the ground is stretched out behind his arms; the arms
     // themselves are as close as they were.
     const stretched = d.body.support?.state !== 'up' ? GROUND_STRETCH : 0;
-    const quality = clamp(1 - (distance - stretched - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
+    const quality = clamp(1 - (near - stretched - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
     const available = clamp(0.25 + 0.85 * quality, 0.1, 1) * (execution.get(d) ?? 1);
     const rate = Math.min(1, dt * (1 + 2.5 * d.r('tackling')));
     const g = grip.get(d) ?? available;
@@ -433,7 +437,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     const held = clamp(k < available ? k + (available - k) * rate : available, 0.05, 1);
     control.set(d, held);
     joint.capacity = gripForce(d, clamp(next, 0.05, 1), Math.min(clamp(next, 0.05, 1), held));
-    if (WRAP_BIND && joint.legs > 0) {
+    if (joint.legs > 0) {
       // Use the same acquired grip and actual closing quality as the roll.
       // Height/pitch stay on `legs`; a tighter wrap increases only the
       // contact's coupling to attempted corrective placement. A slack or
@@ -442,7 +446,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       joint.recoveryCoupling = joint.legs + (1 - joint.legs) * secure;
     }
     const tx = (c.pos.x - d.pos.x) / (distance || 1), ty = (c.pos.y - d.pos.y) / (distance || 1);
-    const close = Math.min(1.5, Math.max(0, distance - torso) * 3);
+    const close = Math.min(1.5, Math.max(0, near - torso) * 3);
     const own = intents[d.idx];
     const cs = Math.hypot(c.vel.x, c.vel.y);
     // +1: the carrier is running into him; −1: he holds on from behind.
@@ -477,15 +481,15 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
         cutSkill: own.cutSkill, effort: own.effort };
     }
   }
-  // TACKLE_ROLL (experimental, off by default): a tight, secure wrap on an
-  // upright carrier finishes by rolling him, not by matching or out-pushing
-  // him. The holder sits his weight down against the carrier's travel and
-  // turns away across it, so the wrap pulls the carrier's hips sideways while
-  // his held legs limit the step that would catch him. Ground, grip and
-  // balance decide whether he goes down; a loose or extended hold is unchanged.
-  if (TACKLE_ROLL && c.body.support?.state === 'up') for (const d of bond.tacklers) {
-    const distance = Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y);
+  // A tight, secure wrap on an upright carrier finishes by rolling him, not
+  // by matching or out-pushing him. The holder sits his weight down against
+  // the carrier's travel and turns away across it, so the wrap pulls the
+  // carrier's hips sideways while his held legs limit the step that would
+  // catch him. Ground, grip and balance decide whether he goes down; a loose
+  // or extended hold is unchanged.
+  if (c.body.support?.state === 'up') for (const d of bond.tacklers) {
     const torso = c.profile.radius + d.profile.radius;
+    const distance = armDistance(holds.get(d), Math.hypot(d.pos.x - c.pos.x, d.pos.y - c.pos.y), torso);
     const quality = clamp(1 - (distance - torso - 0.25) / Math.max(0.2, d.profile.reach - 0.25), 0, 1);
     const secure = clamp(grip.get(d) ?? 0, 0, 1) * quality;
     if (d.body.support?.state !== 'up' || distance > torso + .15 || secure < .5) continue;
