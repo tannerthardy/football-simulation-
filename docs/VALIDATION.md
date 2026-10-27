@@ -77,8 +77,13 @@ npm run film-pack -- --seed 11 --games 2 --run-only --out out/film-pack/run-s11 
 ```
 
 `--run-only` plays the same games with every offensive scrimmage call a designed run
-(`GameOptions.runOnly`); the manifest records `runOnly: true` and its input hash, and a
-default pack is byte-for-byte what it was.
+(`GameOptions.runOnly`); enabled manifests record `runOnly: true` and its input
+hash. Omitting the switch preserves ordinary call selection.
+
+New packs also retain only their selected constructors in a private `inputs/`
+sidecar, checked against the original clips on the same source/settings. See
+[selected film inputs](FILM_PACK_INPUTS.md) for the bounded second pass, existing
+F2 saved-path selector, unavailable cases and legacy-pack limits.
 
 Use Node 22.23.3 and a fresh ignored output directory. This plays the same
 Ironmen/Comets teams and consecutive game seeds as `npm run replay`. The
