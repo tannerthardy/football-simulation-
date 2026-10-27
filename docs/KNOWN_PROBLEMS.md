@@ -477,7 +477,7 @@ problem), resolved.
 - **Open:** the puller should track his target, not a landmark.
   `PULL_EARLY` (#190) is the defense's side of the same play.
 - **Partly fixed (2026-10-27, `run/G2-pullers`).** Measured on run-only film
-  (#329): 922 runs, seeds 7/9/11/13, 4 dice shifts, `scripts/diag/run-restage.ts`.
+  (#329): 922 runs, seeds 7/9/11/13, 4 dice shifts (measured with #335 `matched-restage.ts`).
   - The pull step opens to the play side (`PULL_STEP` removed). Kick and lead
     corners sit 0.45/0.35 yd behind the puller's own stance; the observed wall
     takes more depth where its bodies need it. Deepest point, power/counter:

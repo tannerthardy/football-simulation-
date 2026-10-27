@@ -1120,14 +1120,17 @@ export class RunBlocker implements Behavior {
           const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
           sim.event('pull_turn_up', a, target, 'kick man is behind the runner');
           plan.pullRole = 'lead';
-          plan.target = target = this.findWork(a, sim, false);
+          // From his own pictures only: the first threat in the hole, else
+          // acquired work in his lane. Unavailability then uses pictures too.
+          plan.target = target = this.holeThreat(a, sim) ?? this.findWork(a, sim, true);
+          this.acquiredWork = { target };
           // The pull's path ends here: he leads the runner from where he is.
           this.pullIdx = plan.pullPath.length;
           a.tags.add('pull-turned-up');
           delete plan.contactFit;
           this.pullRead = null;
           trace?.blockingChange(a, previousWork, 'pull: kick man behind the runner, turn up', sim);
-          read = target ? this.readPull(a, sim, target) : null;
+          return target ? this.withBase(a, sim, this.attack(a, sim, target)) : this.leadRunner(a, sim);
         }
         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
         if (read) {
@@ -1212,7 +1215,7 @@ export class RunBlocker implements Behavior {
       const ref = this.workReference(a, sim);
       // A puller who turned up leads the runner: get in front of him and
       // keep looking for the first man to show.
-      if (a.tags.has('pull-turned-up')) return goTo(a, { x: Math.max(ref.x, a.pos.x) + 2.5, y: ref.y }, { speed: .95 });
+      if (a.tags.has('pull-turned-up')) return this.leadRunner(a, sim);
       return goTo(a, { x: ref.x + 3, y: a.pos.y }, { speed: 0.5 });
     }
     if (plan.kind === 'stalk') {
@@ -1411,11 +1414,14 @@ export class RunBlocker implements Behavior {
         if (threat && threat !== target) {
           const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
           plan.target = target = threat;
+          this.acquiredWork = { target };
           this.pullRead = null;
           trace?.blockingChange(a, previousWork, 'pull lead: first threat in the hole', sim);
         }
       }
       if (target) { a.mind.setAimTarget('block-fit', target.idx); return target; }
+      // No threat in his pictures: any replacement is found from pictures.
+      this.acquiredWork = { target: null };
     }
     // This job selected a personally acquired first threat. Do not undo
     // that responsibility using a remote live pose or somebody else's hands.
@@ -1525,22 +1531,26 @@ export class RunBlocker implements Behavior {
   }
 
   /** The first threat to the hole in his own pictures: an upright defender
-   * not already on a blocker (no other blocker's body seen on him), not passed
-   * by the runner, in front of him, near the hole's lane and closest to the
-   * hole a short beat ahead at the speed he sees. */
+   * in front of him, near the hole's lane, whom the runner he sees carrying
+   * has not already passed, closest to the hole a short beat ahead at the
+   * speed he sees. A man he sees in body contact with a teammate is a claim
+   * caution, not proof of a block: he ranks behind a free man by two yards
+   * and is still taken (help) when he is the only threat. */
   private holeThreat(a: Agent, sim: PlaySim, current: Agent | null = null): Agent | null {
     const hole = this.plan.pullPath?.at(-1);
     if (!hole) return null;
-    const dir = sim.attackDir(a.team), mates = sim.offense.filter(o => o !== a).map(o => sim.see(a, o).pos);
+    const dir = sim.attackDir(a.team), ball = this.workReference(a, sim), carrier = this.workPicture?.carrier;
+    const runner = carrier != null && carrier !== sim.qb.idx ? sim.agents[carrier] : null;
+    const mates = sim.offense.filter(o => o !== a && o !== runner).map(o => ({ pos: sim.see(a, o).pos, r: o.profile.radius }));
     const score = (d: Agent): number | null => {
       const seen = sim.see(a, d);
       if (seen.pose === 'down' || seen.pose === 'rising') return null;
       const depth = (seen.pos.x - sim.los) * dir;
       if (depth < -1.5 || depth > 7 || Math.abs(seen.pos.y - hole.y) > 4 || (seen.pos.x - a.pos.x) * dir < -.5) return null;
-      if (mates.some(m => Math.hypot(m.x - seen.pos.x, m.y - seen.pos.y) < 1.0)) return null;
-      if (this.behindRunner(a, sim, d, seen)) return null;
+      if (runner && (ball.x - seen.pos.x) * dir > runner.profile.radius + d.profile.radius) return null;
       const lead = .3, s = Math.hypot(seen.pos.x + seen.vel.x * lead - hole.x, seen.pos.y + seen.vel.y * lead - hole.y);
-      return s < 7 ? s : null;
+      const claimed = mates.some(m => Math.hypot(m.pos.x - seen.pos.x, m.pos.y - seen.pos.y) <= m.r + d.profile.radius + .1);
+      return s < 7 ? s + (claimed ? 2 : 0) : null;
     };
     let best: Agent | null = null, bestScore = Infinity;
     for (const d of sim.defense) {
@@ -1550,6 +1560,12 @@ export class RunBlocker implements Behavior {
     // Keep a man who is still a threat unless another is clearly more urgent.
     const kept = current ? score(current) : null;
     return kept !== null && bestScore > kept - 1.5 ? current : best;
+  }
+
+  /** No man yet: get in front of the runner he sees and keep looking. */
+  private leadRunner(a: Agent, sim: PlaySim): MoveCommand {
+    const ref = this.workReference(a, sim), dir = sim.attackDir(a.team);
+    return goTo(a, { x: dir > 0 ? Math.max(ref.x, a.pos.x) + 2.5 : Math.min(ref.x, a.pos.x) - 2.5, y: ref.y }, { speed: .95 });
   }
 
   /** The range from this man to the ball is opening at the speeds he sees:
