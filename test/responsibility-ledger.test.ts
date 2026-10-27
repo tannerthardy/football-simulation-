@@ -212,13 +212,19 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(threats.every(c => c.after.kind === 'drive')).toBe(true);
   });
 
-  it('M7-P051: a released climber stays off his keeper\'s man, LB_W reaches the carrier alone, and the ledger does not invent a tie', () => {
+  it('M7-P051: a released climber stays off his keeper\'s man, one defender reaches the carrier alone, and the ledger does not invent a tie', () => {
     // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7).
     // Re-recorded when a released climber stopped re-taking the man his keeper is on: LB_W now arrives alone at 2.9
     // (was tied with LB_M at 2.7); the tie check moved to R7-P083.
+    // With the off-hip climb (#345) as well: the releases and RG's single reread are unchanged, but LB_W's 2.75
+    // swipe no longer loads the carrier, so CB_S makes first contact alone at 3.3.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.9);
-    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
+    // The climber property itself: RG rereads once, to the backer, and never goes back to the down man
+    // (without this PR he returns to DT_S at 1.25).
+    expect(changeOf(p, 'RG', 'threat-reread').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
+      .toEqual([[1.45, 'NB', 'LB_M']]);
+    expect(first.t).toBe(3.3);
+    expect(first.defenders.map(p.slot)).toEqual(['CB_S']);
   });
 
   it('R7-P083: the first carrier contact keeps both defenders tied at 2.45', () => {
