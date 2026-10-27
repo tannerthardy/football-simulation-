@@ -2,7 +2,8 @@
  * Assignment of behaviors at the snap, and behavior transitions on play
  * events (handoff, throw, catch, interception, fumble, recovery).
  */
-import { gaitLag } from '../physics/kinematics.js';
+import { arriveVelocity, gaitLag } from '../physics/kinematics.js';
+import { previewFreeMovement } from '../physics/movement-preview.js';
 import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
@@ -18,6 +19,7 @@ import { QBHandoff, QBPass } from './behaviors/qb.js';
 import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.js';
 import type { PlaySim } from './playsim.js';
 import { buildRunFits } from './run-fits.js';
+import { handoffReach } from './ball-transfer.js';
 import { CoverageDefender } from './coverage/defender.js';
 import { installReceiverRoute, type InstalledReceiverRoute } from './receiver-forecast.js';
 import { installBlockLook } from './behaviors/block-look.js';
@@ -167,7 +169,7 @@ interface Mesh {
   ride: boolean;
 }
 
-/** Stretch mesh on the back's track (STRETCH_MESH=0: inside mesh, back stops). */
+/** Stretch mesh on the back's track (STRETCH_MESH=0: inside mesh, the stretch back stops). */
 const STRETCH_MESH = process.env.STRETCH_MESH !== '0';
 
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
@@ -224,7 +226,12 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     qb = { x: los - 5.0, y: by };
     rb = { x: los - 4.4, y: by + ps * 0.9 };
   }
-  return { qb, rb, aim, time, pitch, ride: STRETCH_MESH && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone') };
+  // Backs take the handoff on the move, running through the mesh at the
+  // exchange tempo (NFL backs 3.8-5.5 yd/s at the handoff). The draw back has
+  // shown pass set and takes it standing; STRETCH_MESH=0 restores the stretch
+  // back's old stop-at-the-landmark mesh.
+  const stretch = concept.scheme === 'outsideZone' || concept.scheme === 'wideZone';
+  return { qb, rb, aim, time, pitch, ride: concept.scheme !== 'draw' && (stretch ? STRETCH_MESH : true) };
 }
 
 /**
@@ -261,6 +268,8 @@ export class RunnerToMesh implements Behavior {
     readonly ride = false,
   ) {}
   private passed = false;
+  private departed = false;
+  private nextRead = 0;
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.ball.kind === 'pitch' && sim.ball.target === a) {
       return goTo(a, sim.ball.intended, { speed: 0.8, facing: Math.atan2(sim.qb.pos.y-a.pos.y, sim.qb.pos.x-a.pos.x) });
@@ -269,6 +278,16 @@ export class RunnerToMesh implements Behavior {
     // he cannot cut until he has the ball.
     const run = sim.offCall.run;
     if (RUN_READ && run && READ_SCHEMES.has(run.scheme)) runRead(a, sim, run.scheme, playSideSign(sim, run), this.aim, false);
+    // He leaves as late as his own start allows, and then goes: on his beat
+    // he previews his body going hard to the mesh and holds his stance while
+    // one more beat would still get him there for the exchange. A slow start
+    // means leaving on the snap; a quick one lets him stay patient.
+    if (!this.departed && sim.t >= this.nextRead) {
+      const interval = a.mind.decisionInterval;
+      this.nextRead = sim.t + interval;
+      this.departed = sim.t + interval + this.arrival(a, sim) >= this.meshTime;
+    }
+    if (!this.departed) return stand(Math.atan2(this.mesh.y - a.pos.y, this.mesh.x - a.pos.x));
     const dt = this.meshTime - sim.t;
     const d = Math.hypot(this.mesh.x - a.pos.x, this.mesh.y - a.pos.y);
     // Leave on the snap and get to the mesh on time: budget for the
@@ -283,11 +302,34 @@ export class RunnerToMesh implements Behavior {
       // installed exchange window. Gun backs can start almost on the mesh.
       // Keep approaching it until the QB can actually put the ball in, then
       // ride through at the existing tempo (possession still comes from him).
-      if (d < .7 && sim.t >= this.meshTime - .15) this.passed = true;
+      // He rides through only with the QB there to give it, as he sees him,
+      // and through the QB's pocket: his body at the QB's arm's length on the
+      // landmark's side, not at a landmark on the edge of the QB's reach.
+      // A back who outruns a late QB, or passes beyond his hands, is gone.
+      // Where he sees the QB getting to by the time he reaches the mesh.
+      const qb = sim.see(a, sim.qb), reach = handoffReach(sim.qb, a);
+      const lead = Math.min(.5, d / Math.max(1, Math.hypot(a.vel.x, a.vel.y)));
+      const qbAt = { x: qb.pos.x + qb.vel.x * lead, y: qb.pos.y + qb.vel.y * lead };
+      const ready = Math.hypot(qbAt.x - this.mesh.x, qbAt.y - this.mesh.y) <= reach;
+      const off = { x: this.mesh.x - qbAt.x, y: this.mesh.y - qbAt.y }, len = Math.hypot(off.x, off.y) || 1;
+      const arm = Math.min(len, sim.qb.profile.reach);
+      const pocket = ready ? { x: qbAt.x + off.x / len * arm, y: qbAt.y + off.y / len * arm } : this.mesh;
+      const inHands = Math.hypot(qb.pos.x - a.pos.x, qb.pos.y - a.pos.y) <= reach;
+      if (ready && inHands && sim.t >= this.meshTime - .15) this.passed = true;
       if (this.passed) return goTo(a, this.aim, { speed: .55, through: a.profile.vmax * .55 });
-      return goTo(a, this.mesh, { speed, through: a.profile.vmax * .55 });
+      return goTo(a, pocket, { speed, through: ready ? a.profile.vmax * .55 : 0 });
     }
     return goTo(a, this.mesh, { speed, through: 0 });
+  }
+
+  /** Seconds his own body takes to reach the mesh from where he stands, going
+   * hard and arriving at the exchange speed (free movement, no contact). */
+  private arrival(a: Agent, sim: PlaySim): number {
+    const through = this.ride ? a.profile.vmax * .55 : 0;
+    const path = previewFreeMovement(a.body, (body) => ({ vel: arriveVelocity(body as typeof a.body, this.mesh, a.profile.vmax, through) }),
+      sim.t, 60, sim.world.handContact);
+    const k = path.findIndex((s) => Math.hypot(this.mesh.x - s.pos.x, this.mesh.y - s.pos.y) < .5);
+    return k < 0 ? Infinity : path[k].t;
   }
 }
 

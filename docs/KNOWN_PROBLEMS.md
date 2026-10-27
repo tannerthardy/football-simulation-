@@ -292,6 +292,7 @@ problem), resolved.
 | [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
 | [RUN-12](#run-12) | Run blockers lost on their assignments (film, Oct 23) | G2 | high | in work |
 | [RUN-13](#run-13) | Box backers untouched: linemen do not climb free to the second level | G2 | high | in work |
+| [RUN-14](#run-14) | Backs leave the mesh too early and take the handoff almost standing | G2 | high | fix with the start law (#336) |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -1967,6 +1968,43 @@ the carrier reaches him).
     makes doubles only at the snap.
   - The braking stand-still has had two failed corrections already (#303); it
     waits on the start ramp.
+
+<a id="run-14"></a>
+### RUN-14: Backs leave the mesh too early and take the handoff almost standing
+
+Measured 2026-10-27 on run-only film (#329): seeds 7/9/11/13, 456 snaps, each on
+its saved dice plus 4 shifted streams (#335's `matched-restage.ts`), against
+BDB2025 weeks 1–2 with the same operator (carrier distance from his snap spot;
+the backfield set from the QB's depth at the snap).
+
+- **Measure** (develop): the back is 0.37–0.54 yd from his spot at 0.5 s (NFL
+  0.16–0.31) and reaches 0.5 yd/s at 0.15–0.25 s (NFL 0.35–0.45). He takes the
+  handoff at 1.9–2.4 yd/s on every look but outside zone from under center
+  (NFL 3.8–5.5).
+- **Cause:** *confirmed.* `RunnerToMesh` left on the snap at a speed budgeted
+  for the old slow start, and on every scheme but stretch braked to a stop at
+  the landmark. The start law (#336) makes it worse: backs leave faster still
+  and come out past NFL, which is why #336 was held.
+- **Fix** (`run/G2-mesh-departure`, on by default):
+  - On his beat the back previews his own body going hard to the mesh and
+    holds his stance while one more beat would still get him there for the
+    installed exchange. A slow start means leaving on the snap; a quick one
+    lets him wait.
+  - Every handoff but the draw is taken on the move, through the QB's pocket
+    (his body at the QB's arm's length, where he sees the QB getting to), and
+    only with the QB there: a back who outruns a late QB, or passes beyond his
+    hands, is gone past the exchange.
+  - With #336, gap runs leave at the NFL time (0.5 yd/s at 0.35 s; 0.00 / 0.01
+    / 0.08 / 0.21 / 0.60 / 1.40 yd at 0.2–1.0 s from the gun, NFL 0.02 / 0.04 /
+    0.09 / 0.16 / 0.45 / 1.15). Handoff speed rises (gap runs 1.9–2.2 to
+    2.8–3.3 yd/s, inside zone 2.0 to 2.6–3.4). Exchanges the QB keeps after the
+    back runs past: 0.6% to 0.0% (develop alone 0.8% to 0.1%). Handoffs at 1.6 s
+    or later: 3.2% (NFL 5.4%).
+- **Open:** zone backs still leave at 0.15 s: their installed exchange (1.15–1.2
+  s) and mesh depth leave no slack at full start, so the preview says go now.
+  Outside zone from under center takes the ball at 3.3 yd/s, slower than #336
+  alone (4.7; NFL 5.5), because the back now waits until he sees the QB will be
+  at the stretch mesh.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him

@@ -199,7 +199,9 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     const row = p.d.rows.find(r => r.actor === swap.actor && r.t === swap.t)!;
     expect(step.endpointTime).toBe(row.endpoint);
     expect(p.slot(row.plan!.target)).toBe('SS');
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT')).toEqual([]);
+    // Re-recorded when the back began leaving the mesh on his own start: LT
+    // later rereads a threat (1.95), after this swap; the swap itself is silent.
+    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT' && e.t <= swap.t)).toEqual([]);
   });
 
   it('M9-P000: C is reread twice, each recorded with its resulting kind', () => {
@@ -210,10 +212,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(threats.every(c => c.after.kind === 'drive')).toBe(true);
   });
 
-  it('M7-P051: the first carrier contact keeps both defenders tied at 2.7', () => {
+  it('M7-P051: the first carrier contact keeps both defenders tied at 2.85', () => {
     // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7); the tie is unchanged.
+    // Re-recorded when the back began leaving the mesh on his own start: contact 2.7 -> 2.85, still the same tie.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.7);
+    expect(first.t).toBe(2.85);
     expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
   });
 
@@ -222,14 +225,21 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     const first = p.census[0].firstCarrierContact!;
     // Re-recorded for the leg force-velocity law (PHY-1): first contact moves 2.2 -> 2.1 and the DT_W reaches the carrier first;
     // still one defender, not a tie. The DT_W's wrap now comes with the contact (2.1; was 2.3 after the DE_W's contact).
-    expect(first.t).toBe(2.1);
+    // Re-recorded when the back began leaving the mesh on his own start: 2.1 -> 1.95, still DT_W alone.
+    expect(first.t).toBe(1.95);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.1 && p.slot(e.defender) === 'DT_W')).toBe(true);
+    expect(p.d.play.carrierEvents.some(e => e.t === 1.95 && p.slot(e.defender) === 'DT_W')).toBe(true);
   });
 
-  it.each(['S8-P054', 'S10-P006'])('%s: the QB keeps it, so the carrier is the QB all play, not the scheduled RB', id => {
-    const p = play(id), qb = p.d.actors.findIndex(a => a.slot === 'QB');
-    expect(p.d.play.carrierByTick.filter(c => c.carrier !== null).every(c => c.carrier === qb)).toBe(true);
+  it.each(['S8-P054', 'S10-P006'])('%s: the carrier is the QB until the handoff, then the RB', id => {
+    // These were exchanges the QB kept after the back ran past outside his
+    // reach. The back now runs through the QB's pocket only with the QB there,
+    // so the give completes; the ledger follows the ball across it.
+    const p = play(id), qb = p.d.actors.findIndex(a => a.slot === 'QB'), rb = p.d.actors.findIndex(a => a.slot === 'RB');
+    const h = p.sim.handoffAt, carried = p.d.play.carrierByTick.filter(c => c.carrier !== null);
+    expect(h).toBeGreaterThan(0);
+    expect(carried.filter(c => c.t < h).every(c => c.carrier === qb)).toBe(true);
+    expect(carried.filter(c => c.t > h).every(c => c.carrier === rb)).toBe(true);
     expect(p.d.play.carrierEvents.length).toBeGreaterThan(0);
   });
 
