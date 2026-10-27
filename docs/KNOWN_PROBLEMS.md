@@ -1993,6 +1993,48 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   uncovered draw linemen hold the set for the whole presentation instead of
   releasing to the backers dropping into coverage. Engagement at 0.5 s is still
   0%, because the line gives ground to a set 1.2 yd deep before the rush meets it.
+- **Backers on the draw (`run/G2-draw-climb`, on `run/G2-draw-set`).**
+  - NFL draw linemen who block a backer stop giving ground by 0.5 s and are
+    moving up by 1.0 s: their depth goes -0.72 / -0.64 / -0.38 / +0.45 yd at
+    0.5 / 1.0 / 1.4 / 2.0 s. 72% bump a DL on the way, and they touch the
+    backer at 2.4 s.
+  - In the sim every draw lineman shows pass to a fixed 1.0 s. A double then
+    releases only when its backer comes within 4.2 yd or the runner arrives, and
+    a draw backer sits 4–5 yd deep reading pass. So first touchers crossed the
+    line at 2.4 s and touched at 2.9 s.
+  - Attempt 1: release a secured draw double without waiting for the backer to
+    fill. No change: the fixed 1.0 s show still held the climber.
+  - Change: the uncovered man of a draw double keeps the show only until he sees
+    his doubled man come across the line onto his partner, within the partner's
+    arm. Then he goes to help, and the secured double releases him to his backer
+    without waiting for a fill. Lined up over the partner, the man is already
+    within arm's length; the cue needs him across the line. The covered man's
+    set, and the climbers, are unchanged.
+  - The rest of the gap was the threat reread taking released climbers back to
+    the keeper's man (#349, all run families).
+  - Matched restage on draws, 456 run-only snaps, saved dice plus 4 shifts:
+
+    | | NFL | `run/G2-draw-set` | + this | with #349 | with #349 + this |
+    |---|---|---|---|---|---|
+    | box backers touched before the carrier | 0.79 | 0.12 | 0.16 | 0.14 | 0.25 |
+    | first toucher crosses LOS+0.5 | 1.4 s | 2.4 s | 1.9 s | 2.4 s | 2.1 s |
+    | released climber reaches his backer first | — | 0.17 | 0.16 | 0.19 | 0.32 |
+
+  - Blocks hold with #349:
+    - DL engaged at 1.0 s 0.53 to 0.54; DL depth at the handoff 1.43 to 1.42 yd.
+    - DL first contact on the carrier 55% to 51% of draws.
+    - Holding on the DL 11 to 11 per 145 draws. Four new holds come on
+      backers, from TEs and double members who now reach them: 3.4% of draw
+      backer engagements against 2.5% on other runs.
+    - Draw yards: median 1.94 to 3.06, carries for zero or less 0.46 to 0.42,
+      10+ unchanged at 0.19.
+  - Still open:
+    - Released draw climbers start 6 yd from the backer and move about
+      1.4 yd/s in the half second after release.
+    - The NFL's first touchers are half TEs and backs; the sim's are about
+      three-quarters linemen.
+    - Half of draw box backers are nobody's target when the carrier arrives;
+      a quarter never were.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
