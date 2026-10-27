@@ -184,9 +184,13 @@ describe('combination exchanges', () => {
   });
 
   it('keeps an insecure block even after the old fixed release time', () => {
-    const { sim, helper, combo, e } = doubleTeam(true);
+    const { sim, helper, primary, combo, e, observe } = doubleTeam(true);
     sim.t = 4;
     expect(e.control).toBeLessThan(-.12);
+    // Insecure as the climber sees it: the defender is across his partner's
+    // face (chest turned off the man). The hidden hand value alone is not a cue.
+    primary.body.facing = 1.3;
+    observe();
     readCombination(helper, sim, combo);
     sim.t = 5;
     readCombination(helper, sim, combo);
