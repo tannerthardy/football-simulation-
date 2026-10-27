@@ -259,6 +259,32 @@ observed in the old parallel full suite; the fast default remains parallel.
 The native game tests yield between synchronous games so worker reports can
 be delivered. Their simulation inputs, assertions and test timeout are unchanged.
 
+### Matched restage for run work (`scripts/diag/matched-restage.ts`)
+
+The same saved snaps replayed per arm, one process per arm (settings are read
+once at load). For run work:
+
+```sh
+T="node --import tsx scripts/diag/matched-restage.ts"
+$T capture 11 --run-only --games 2                       # every offensive call a designed run -> seed11-run.json
+FLAG=0 $T replay 11 arm --run-only --shifts 2 --trace    # saved stream + 2 shifted streams, run traces
+$T compare base arm 11 --run-only                        # per-snap change counts across the 3 matched pairs
+$T tables arm 11 --run-only                              # run_film_reference.py tables, NFL beside the arm
+```
+
+- `--shifts K` replays each snap on K more random streams (a deterministic fork
+  of the saved stream), so one snap gives K+1 matched base/arm pairs. A snap that
+  changes in every pair is the mechanism; one that changes in a single pair is a
+  different roll. `compare` also prints the noise floor: how far dice alone move
+  the base arm's yards (mean/median) next to how far the arm moves them.
+- `tables` prints the puller, box-backer, wide-edge, timeline and OL-start tables
+  (position-only, NFL and sim through the same code). It needs the NFL plays file:
+  `python3 -I scripts/data/fetch_nfl_data.py bdb2025-2022` then
+  `python3 -I scripts/mechanics/nfl_bdb2025.py --weeks 1 2 --plays-out out/mechanics/nfl-plays-w12.jsonl.gz --out out/mechanics/nfl-w12.json`;
+  without the file it prints the sim columns only. With shifts, each arm's tables pool all K+1 streams.
+- A tool change must change 0 plays: replay the same snaps with the old and the new
+  tool (and with `--trace` on and off) and `compare` must report `changed: 0`.
+
 Useful collectors; run only the layer affected, with unchanged source while
 collecting. These execute the current engine, unlike reading saved reports:
 

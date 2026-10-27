@@ -149,8 +149,9 @@ def measure(play, out):
 
 def main():
     out = {"timeline": [], "start": [], "pull": [], "backer": [], "edge": []}
-    for play in nfl(sys.argv[1]):
-        measure(play, out)
+    if sys.argv[1] != "-":  # "-" = no NFL reference, sim tables only
+        for play in nfl(sys.argv[1]):
+            measure(play, out)
     for play in sim(sys.argv[2:]):
         measure(play, out)
     print("Timeline: n, handoff, carrier past LOS, never past LOS, first contact, carrier x at contact, contact behind LOS")
