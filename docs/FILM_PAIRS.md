@@ -73,8 +73,14 @@ owner's authorized artifact channel; a local output path is not remote delivery.
 first differences. `noChange` means byte-identical complete recorded values in
 `film-pairs-lossless-values-v1`, not raw V8 allocation bytes. The deterministic
 encoding preserves absent versus undefined, array holes, negative zero,
-nonfinite values and Map/Set contents. Original constructor V8 bytes remain
-unchanged and checksum-verified. Before/after value digests are included.
+nonfinite values and Map/Set contents. Recorded reference values also retain
+ArrayBuffer bytes, DataView visible bytes and Date epoch milliseconds (including
+an invalid Date's NaN timestamp). A DataView's offset and bytes outside its range
+are backing allocation, not its recorded value, matching the existing typed-array
+value semantics. This does not extend the constructor's allowed PlaySetup types;
+its prototype whitelist is unchanged. Ordinary v1 encoding bytes are unchanged.
+Original constructor V8 bytes remain unchanged and checksum-verified.
+Before/after value digests are included.
 Artifacts under out/ are evidence, not committed fixtures or population claims.
 A completed batch cannot be overwritten; choose another output directory.
 Owned worktrees are removed normally after completion/failure, never forcibly.

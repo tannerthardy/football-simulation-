@@ -149,6 +149,22 @@ export function firstDifference(expected: unknown, actual: unknown, path = '$', 
     if (!(expected instanceof Set) || !(actual instanceof Set)) return difference(expected, actual);
     return firstDifference([...expected], [...actual], `${path}.values`, time, timeBasis);
   }
+  // Recorded V8 reference values, not additional allowed PlaySetup types.
+  // DataViews compare only visible bytes, just as typed arrays compare their
+  // elements rather than backing allocation/offset changed by serialization.
+  if (expected instanceof Date || actual instanceof Date) {
+    if (!(expected instanceof Date) || !(actual instanceof Date)) return difference(expected, actual);
+    return firstDifference(expected.getTime(), actual.getTime(), `${path}.timestamp`, time, timeBasis);
+  }
+  if (expected instanceof ArrayBuffer || actual instanceof ArrayBuffer) {
+    if (!(expected instanceof ArrayBuffer) || !(actual instanceof ArrayBuffer)) return difference(expected, actual);
+    return firstDifference([...new Uint8Array(expected)], [...new Uint8Array(actual)], `${path}.bytes`, time, timeBasis);
+  }
+  if (expected instanceof DataView || actual instanceof DataView) {
+    if (!(expected instanceof DataView) || !(actual instanceof DataView)) return difference(expected, actual);
+    return firstDifference([...new Uint8Array(expected.buffer, expected.byteOffset, expected.byteLength)],
+      [...new Uint8Array(actual.buffer, actual.byteOffset, actual.byteLength)], `${path}.bytes`, time, timeBasis);
+  }
   if (ArrayBuffer.isView(expected) || ArrayBuffer.isView(actual)) {
     if (!ArrayBuffer.isView(expected) || !ArrayBuffer.isView(actual)
       || expected.constructor.name !== actual.constructor.name) return difference(expected, actual);

@@ -90,6 +90,12 @@ export function executionBytes(value: unknown): Buffer {
     if (Array.isArray(v)) result = ['array', Array.from({ length: v.length }, (_, i) => Object.hasOwn(v, i) ? encode(v[i]) : ['hole'])];
     else if (v instanceof Map) result = ['map', [...v].map(([k, item]) => [encode(k), encode(item)])];
     else if (v instanceof Set) result = ['set', [...v].map(encode)];
+    // V8 preserves these reference values too. Keep ordinary v1 tags/bytes
+    // unchanged; a DataView's surrounding allocation is not its visible value.
+    else if (v instanceof Date) result = ['date', encode(v.getTime())];
+    else if (v instanceof ArrayBuffer) result = ['array-buffer', [...new Uint8Array(v)].map(encode)];
+    else if (v instanceof DataView) result = ['typed', v.constructor.name,
+      [...new Uint8Array(v.buffer, v.byteOffset, v.byteLength)].map(encode)];
     else if (ArrayBuffer.isView(v)) result = ['typed', v.constructor.name, Array.from(v as any).map(encode)];
     else result = ['object', Object.keys(v).sort().map(k => [k, encode(v[k])])];
     ancestors.delete(v); return result;
