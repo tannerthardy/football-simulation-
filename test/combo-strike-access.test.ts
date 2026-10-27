@@ -69,7 +69,9 @@ function decision(t:number,mirror:boolean,expectClear:boolean){
 
 describe('earned departure ends at achievable first strike rather than the backer center',()=>{
  it.each([false,true])('uses the clear near strike through the production hook, reflected=%s',mirror=>{
-  decision(2.15,mirror,true);
+  // Re-recorded for the leg force-velocity law (PHY-1): the guard's departure clears one tick later (staged at 2.2, was 2.15)
+  // because the recorded bodies are in slightly different places; the decision and its mirror are unchanged.
+  decision(2.2,mirror,true);
  });
  it.each([false,true])('keeps the departure when the down body obstructs even first strike, reflected=%s',mirror=>{
   decision(1.3,mirror,false);

@@ -67,7 +67,11 @@ describe('pass contact momentum and anchor', () => {
       return start - b.pos.x;
     };
     expect(run(0.3)).toBeLessThan(0.15);
-    expect(run(2)).toBeGreaterThan(0.5);
+    // Re-recorded for the leg force-velocity law (PHY-1): the driving end's
+    // force falls with his speed (1279 -> 1116 at 1.2 yd/s), so the same
+    // advantage moves the anchor 0.42 yd in 20 ticks, not 0.52. Still about
+    // eight times the held case's 0.05.
+    expect(run(2)).toBeGreaterThan(0.3);
   });
 
   it('keeps pass protection during the short follow-through after release', () => {
