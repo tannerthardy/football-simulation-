@@ -2,12 +2,33 @@
  * No route, future cut, ball outcome, extra observation or random draw.
  */
 import { END_LINE_X } from '../core/field.js';
-import { angleDiff, clamp } from '../core/vec.js';
+import { angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { arriveVelocity, commandFacing, fatigueFactor, turnRateOf, type MoveCommand } from '../physics/kinematics.js';
 import { previewFreeMovement } from '../physics/movement-preview.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { Agent } from './agent.js';
 import type { Perceived } from './perception.js';
+
+/** On (THROW_HORIZON=0 for comparison): a deep defender's safety is judged
+ * against a throw made now, not an endless race. The recovery he owes for
+ * being slower than the receiver counts only until such a ball would arrive,
+ * and when his technique's request is unsafe he takes the slowest safe pace
+ * before opening or sprinting (COV-1, docs/reviews/cov1-flight-closing.md). */
+const throwHorizonOn = () => process.env.THROW_HORIZON !== '0';
+
+/** His reaction plus the natural flight of a throw made now from his picture
+ * of the QB to his picture of the receiver: the 2023-tracking relation the QB
+ * uses (behaviors/qb.ts), at an average arm. */
+export function throwHorizon(a: Agent, qb: Vec2, receiver: Vec2): number {
+  const d = Math.hypot(receiver.x - qb.x, receiver.y - qb.y);
+  return a.profile.reactionTime + 0.38 + 0.022 * d + 0.00065 * d * d;
+}
+
+/** Yards a receiver gains on a defender who is `deficit` slower within
+ * `window` s: the whole deficit while he turns, then a first-order catch-up. */
+function lostWithin(deficit: number, turn: number, tau: number, window: number): number {
+  return deficit * Math.min(window, turn) + deficit * tau * (1 - Math.exp(-Math.max(0, window - turn) / tau));
+}
 
 export class DeepCoverage {
   private previous: { stamp: number; vx: number } | null = null;
@@ -15,7 +36,7 @@ export class DeepCoverage {
 
   choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: PhysicalProfile,
     cushion: number, original: MoveCommand, now: number,
-    model: Parameters<typeof previewFreeMovement>[4]): MoveCommand {
+    model: Parameters<typeof previewFreeMovement>[4], horizon?: number): MoveCommand {
     const stamp = now - (cue.age ?? 0), previous = this.previous;
     if (!previous || stamp > previous.stamp + 1e-9) {
       const dt = previous ? stamp - previous.stamp : 0;
@@ -58,7 +79,9 @@ export class DeepCoverage {
       }
       const end = path[path.length - 1];
       const turn = Math.abs(angleDiff(commandFacing(a.body, command), heading)) / turnRateOf(a.body);
-      const recovery = Math.max(0, targetV - end.vel.x) * (turn + tau);
+      const deficit = Math.max(0, targetV - end.vel.x);
+      const recovery = horizon === undefined || !throwHorizonOn() ? deficit * (turn + tau)
+        : lostWithin(deficit, turn, tau, Math.max(0, horizon - end.t));
       return Math.min(margin, end.pos.x - targetX(end.t) - base - recovery);
     };
     let choice = original, best = score(original);
@@ -72,7 +95,10 @@ export class DeepCoverage {
     };
     // Spend excess depth if safe; otherwise match the stem square, open with
     // it, or run with it. The chosen request is the one actually previewed.
-    const candidates = [request(targetV, original.facing)];
+    const candidates: MoveCommand[] = [];
+    if (horizon !== undefined && throwHorizonOn() && original.vel.x < targetV)
+      for (const k of [.25, .5, .75]) candidates.push(request(original.vel.x + (targetV - original.vel.x) * k, original.facing));
+    candidates.push(request(targetV, original.facing));
     if (original.facing !== undefined) candidates.push(request(targetV));
     candidates.push(request(a.profile.vmax));
     for (const command of candidates) {
