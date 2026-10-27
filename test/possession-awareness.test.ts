@@ -11,6 +11,7 @@ import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { World } from '../src/physics/world.js';
 import { handoffReach } from '../src/sim/ball-transfer.js';
+import { goTo } from '../src/sim/behaviors/common.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
 PlaySim.recordedSingleStream = true;
 
@@ -296,20 +297,78 @@ describe('an acquired trajectory supports anticipation, not certified possession
     expect(rememberedFlight(f.a, f.sim.t)![0].y).toBe(22);
   });
 
-  it('keeps rallying instead of reopening route coverage after the native mirror forecast ends', () => {
-    const sim = new PlaySim({ ...nativeTraceSetup({ ...input, flip: true }), record: true, recordLevel: 'full' });
-    const trace = sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 4.35, to: 4.6 });
-    const result = sim.run();
-    // Exact native input from the opposing control. The correction owns the
-    // request/response, not this play's yardage or the receiver's earned catch.
-    expect(result.events.find(e => e.type === 'catch')?.t).toBe(4.25);
-    for (const t of [4.4, 4.45, 4.5]) {
-      const s = trace.steps.find(s => s.stepStart === t)!;
-      expect(s.decision!.raw.vel.y).toBeGreaterThan(0);
-      expect(s.final!.vel.y).toBeGreaterThan(0);
-      expect(s.endpoint!.body.velocity.y).toBeGreaterThan(0);
-      expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === t && d.kind === 'ball-rally')).toBe(true);
+  it('keeps the expired acquired-flight responsibility through successive movement updates', () => {
+    // Explicit acquired-cue replay, not an ordinary-game claim. The historical
+    // mirror scene at 55cc9e needed this interval (4.40–4.50); corrected pass
+    // contact changes the later shared-stream catch before expiry instead.
+    const one = flight(), two = flight();
+    for (const f of [one, two]) {
+      playBall(f.a, f.sim, null);
+      for (const picture of f.pictures.values()) picture.carrying = null;
     }
-    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 4.55 && d.kind === 'possession-pursuit')).toBe(true);
+    one.sim.ball = { kind: 'held', carrier: one.x };
+    two.sim.ball = { kind: 'held', carrier: two.z };
+    for (const t of [2.55, 2.6, 2.65]) {
+      for (const f of [one, two]) f.sim.t = t;
+      const commands = [one.update(), two.update()];
+      expect(commands[1]).toEqual(commands[0]);
+      for (const [i, f] of [one, two].entries()) {
+        expect(rememberedFlight(f.a, t)).toBeNull();
+        expect(observedHolder(f.a, f.sim)).toBeNull();
+        expect(commands[i]).toEqual(goTo(f.a, { x: 56, y: 33 }));
+        expect(commands[i].vel.y).toBeGreaterThan(0);
+        const before = { ...f.a.pos };
+        const world = new World([f.a.body]); world.time = t;
+        world.step([commands[i]], .05);
+        expect(f.a.vel.y).toBeGreaterThan(0);
+        expect(f.a.pos.y).toBeGreaterThan(before.y);
+        expect(f.sim.trace.data!.decisions.some(d => d.a === f.a.idx && d.t === t && d.kind === 'ball-rally')).toBe(true);
+      }
+    }
+    // A newer personally acquired catch ends the unresolved rally on the
+    // ordinary next update; it must not need another recognition timer.
+    for (const f of [one, two]) {
+      f.sim.t = 2.7;
+      const picture = f.pictures.get(f.x)!;
+      picture.carrying = true; picture.age = .05;
+      expect(f.update()).toBeTruthy();
+      expect(observedHolder(f.a, f.sim)?.target).toBe(f.x);
+      expect(f.sim.trace.data!.decisions.some(d => d.a === f.a.idx && d.t === 2.7 && d.kind === 'possession-pursuit')).toBe(true);
+    }
+  });
+
+  it('responds to the native mirror catch from the consumed cue, independent of its catch clock', () => {
+    const sim = new PlaySim({ ...nativeTraceSetup({ ...input, flip: true }), record: true, recordLevel: 'full' });
+    const ss = sim.slot('SS')!;
+    const trace = sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 2.5, to: 6 });
+    const see = sim.see.bind(sim);
+    const caughtCues: Array<{ t: number; target: number }> = [];
+    vi.spyOn(sim, 'see').mockImplementation((a, b, delay) => {
+      const picture = see(a, b, delay);
+      // Observe only the reads normal execution already makes.
+      if (a === ss && b !== sim.qb && picture.carrying === true) caughtCues.push({ t: sim.t, target: b.idx });
+      return picture;
+    });
+    const result = sim.run();
+    const caught = result.events.find(e => e.type === 'catch');
+    expect(caught).toBeDefined();
+    const cue = caughtCues.find(c => c.t >= caught!.t)!;
+    expect(cue).toBeDefined();
+    const pursuit = result.telemetry!.decisions.filter(d => d.a === ss.idx && d.kind === 'possession-pursuit');
+    expect(pursuit[0].t).toBe(cue.t);
+    expect(pursuit[0].chose).toBe(sim.agents[cue.target].slot);
+    const response = trace.steps.find(s => s.stepStart === cue.t)!;
+    expect(response.decision!.evaluated).toBe(true);
+    expect(Math.hypot(response.decision!.raw.vel.x, response.decision!.raw.vel.y)).toBeGreaterThan(0);
+    expect(Math.hypot(response.endpoint!.body.velocity.x, response.endpoint!.body.velocity.y)).toBeGreaterThan(0);
+    // Any genuinely unresolved expired-flight interval in this native arm
+    // must retain ball responsibility as well. The explicit replay above
+    // guarantees the interval is exercised even if this catch is earlier.
+    const rallies = result.telemetry!.decisions.filter(d => d.a === ss.idx && d.kind === 'ball-rally');
+    for (const rally of rallies) {
+      expect(rally.t).toBeLessThan(cue.t);
+      const command = trace.steps.find(s => s.stepStart === rally.t)!.decision!.raw;
+      expect(Math.hypot(command.vel.x, command.vel.y)).toBeGreaterThan(0);
+    }
   });
 });
