@@ -16,7 +16,9 @@ beforeAll(() => {
   // depending on incidental outcomes (a catch that a changed dice phase or
   // body turns incomplete). Full constructor replay equality is checked
   // inside the capture. Each tried pass replays the game from the kickoff.
-  chosen = captureNativePursuit(7);
+  // Seed 8 since #355 + #356 (develop 12d12d5): seed 7's first 6 completions
+  // no longer hold a native pursuit case. All 6 contracts pass on seed 8.
+  chosen = captureNativePursuit(8);
 }, 60_000);
 beforeAll(() => {
   // These clocks nominate pursuit decisions, not an expected football ending.
