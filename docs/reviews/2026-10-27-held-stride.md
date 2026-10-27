@@ -122,3 +122,44 @@ used to break on long gains now hold.
      re-judgment when feet are taken in the same hold, is the rules owner's
      choice.
    - Left failing for that decision; nothing was skipped.
+
+## Physics-owner review and a second attempt (stop rule reached)
+
+Two objections to the law above:
+1. **No reaction on the holder.** The resistance is sized by the holder's
+   footing but taken off the runner's ground force without loading the
+   holder.
+2. **Slack holds bind as much as taut ones.**
+
+**Attempt 2, scratch (`STRIDE_V2`, not committed).** A taut hold limits the
+runner's own propulsion along his travel by legs share × tension share
+(last-step grip force over grip capacity). It is an internal limit; nothing
+external is added.
+
+Same seeds and operators:
+
+| | develop | this PR (attempt 1) | attempt 2 | NFL |
+|---|---|---|---|---|
+| Panel: difficult tackled | 0.82 | 0.77 | **0.50** | |
+| Panel: held, unfinished | 0 | 14 | **131** | |
+| Film: speed 0.5 s after contact | | 2.60 | 3.09 | 3.35 |
+| Film: yards after contact p25/50/75/90 | | 1.13 / 2.04 / 3.23 / 5.14 | 0.94 / 2.05 / 3.62 / 6.13 | 1.26 / 2.42 / 3.97 / 6.98 |
+| Film: live 0.8 / 1.0 s | | 0.68 / 0.53 | 0.66 / 0.47 | 0.76 / 0.65 |
+
+Film is seeds 7/9, `scripts/diag/after_contact.py`.
+
+- Attempt 2 keeps carriers closer to NFL speed.
+- It fails the finishing bar: lone tacklers from behind again cannot finish.
+- Attempt 1 finishes, but brakes held carriers too hard, and its force has no
+  holder-side reaction.
+
+**Stopped (two laws).** The missing mechanism is how a bound stride is resolved
+between the two bodies: how much of the runner's stroke the holder's arms
+absorb, and what that costs the holder. A real finish comes from his weight
+and the bound legs; in this 2D model the holder cannot hang weight on the
+runner.
+
+That needs a design decision before a third law:
+- (a) model the holder's weight on a leg hold as vertical load on the runner,
+  which cuts his traction (feet unloaded or overloaded); or
+- (b) accept attempt 1 with its two risks stated.
