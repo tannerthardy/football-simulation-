@@ -1992,6 +1992,27 @@ the carrier reaches him).
     time; the keeper is the next obstacle (23% of non-direct reads).
   - The braking stand-still has had two failed corrections already (#303); it
     waits on the start ramp.
+- **Released climbers taken back by the threat reread
+  (`run/G2-climber-stays-off`, 2026-10-27).**
+  - Found from draw film. A released climber whose backer is 4+ yd from the
+    runner re-reads for a nearer threat. The only guard against a man someone
+    else has was "a teammate nearer to him than I am, by half a yard". A keeper
+    at arm's length on the man the climber just left fails that guard, and the
+    released man is usually the nearest threat to the runner.
+  - On develop `1ec115c7` (456 run-only snaps, saved dice plus 4 shifts), 310
+    of about 2,000 double releases were taken back this way: wide zone 97,
+    outside zone 66, inside zone 48, duo 33, power 26, toss 19, trap 16, draw 8.
+  - Change: a man a teammate is seen in contact range of (his radius, the
+    man's, and his arm) is that teammate's. This uses positions only; no
+    engagement state.
+  - Result: pull-backs fall from 310 to 2. Box backers touched before the
+    carrier: counter 61% to 64%, inside zone 64% to 66%, outside zone 57% to
+    60%, power 65% to 67%, draw 17% to 18%.
+  - Blocks hold. The released man is still blocked at the cross
+    (gap / inside / outside 0.89 / 0.87 / 0.92 to 0.89 / 0.87 / 0.91), goes
+    1+ yd deep no more often, and makes first contact about as often (0.093 /
+    0.164 / 0.090 to 0.096 / 0.163 / 0.093).
+  - Mean run yards are unchanged (6.12 to 6.12).
 
 <a id="run-16"></a>
 ### RUN-16: Draw: the line does not block the rush while it shows pass
