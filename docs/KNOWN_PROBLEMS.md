@@ -2017,7 +2017,9 @@ the backfield set from the QB's depth at the snap).
   - Gun handoffs do not move (inside / outside zone 2.28 / 2.40 yd/s; NFL 3.92
     / 4.96). The gun back reaches the window as it opens, at 1.05 s (NFL 1.1–
     1.2 s), with no run-up, and slows on purpose while he sees the QB will not
-    yet reach the mesh. The body's start (#336) limits the rest.
+    yet reach the mesh. The rest is the body: asking 5.5–7 yd/s from rest he
+    accelerates about 3.4 yd/s², half the gait's own start (Main Engine's
+    item (b), with the climbers; not #336's start term).
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
