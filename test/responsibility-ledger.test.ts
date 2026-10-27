@@ -210,10 +210,19 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(threats.every(c => c.after.kind === 'drive')).toBe(true);
   });
 
-  it('M7-P051: the first carrier contact keeps both defenders tied at 2.7', () => {
-    // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7); the tie is unchanged.
+  it('M7-P051: on the engaged-flow law LB_W reaches the carrier alone, and the ledger does not invent a tie', () => {
+    // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7).
+    // Re-recorded for the engaged-flow law: LB_W now arrives alone at 2.75 (was tied with LB_M at 2.7);
+    // the tie check moved to R7-P083.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.7);
+    expect(first.t).toBe(2.75);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
+  });
+
+  it('R7-P083: the first carrier contact keeps both defenders tied at 2.45', () => {
+    // Gun Trips Open wide zone weak, a run-only capture: LB_M and LB_W reach the carrier on the same tick.
+    const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
+    expect(first.t).toBe(2.45);
     expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
   });
 
@@ -222,14 +231,26 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     const first = p.census[0].firstCarrierContact!;
     // Re-recorded for the leg force-velocity law (PHY-1): first contact moves 2.2 -> 2.1 and the DT_W reaches the carrier first;
     // still one defender, not a tie. The DT_W's wrap now comes with the contact (2.1; was 2.3 after the DE_W's contact).
-    expect(first.t).toBe(2.1);
+    // Re-recorded for the engaged-flow law: 2.1 -> 2.15, still DT_W alone.
+    expect(first.t).toBe(2.15);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.1 && p.slot(e.defender) === 'DT_W')).toBe(true);
+    expect(p.d.play.carrierEvents.some(e => e.t === 2.15 && p.slot(e.defender) === 'DT_W')).toBe(true);
   });
 
-  it.each(['S8-P054', 'S10-P006'])('%s: the QB keeps it, so the carrier is the QB all play, not the scheduled RB', id => {
+  it.each(['S8-P054'])('%s: the QB keeps it, so the carrier is the QB all play, not the scheduled RB', id => {
     const p = play(id), qb = p.d.actors.findIndex(a => a.slot === 'QB');
     expect(p.d.play.carrierByTick.filter(c => c.carrier !== null).every(c => c.carrier === qb)).toBe(true);
+    expect(p.d.play.carrierEvents.length).toBeGreaterThan(0);
+  });
+
+  it('S10-P006: the QB keeps it and fumbles; the ledger follows the ball to the recovery, never to the scheduled RB', () => {
+    // Re-recorded for the engaged-flow law: SS hits the QB at 4.15, the ball comes out and NB recovers.
+    const p = play('S10-P006'), qb = p.d.actors.findIndex(a => a.slot === 'QB'), rb = p.d.actors.findIndex(a => a.slot === 'RB');
+    const carried = p.d.play.carrierByTick.filter(c => c.carrier !== null);
+    expect(carried[0].carrier).toBe(qb);
+    expect(carried.some(c => c.carrier === rb)).toBe(false);
+    const firstOther = carried.find(c => c.carrier !== qb);
+    if (firstOther) expect(p.sim.events.some(e => e.type === 'fumble' && e.t <= firstOther.t)).toBe(true);
     expect(p.d.play.carrierEvents.length).toBeGreaterThan(0);
   });
 
@@ -241,7 +262,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.census).toEqual([]);
   });
 
-  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
+  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029', 'R7-P083'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
     const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
     const run = (record: boolean) => {
       const sim = new PlaySim(restoreSetup(setup));
