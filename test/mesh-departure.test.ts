@@ -67,4 +67,16 @@ describe('the back leaves the mesh as late as his own start allows', () => {
       if (!qbAtMesh) expect((c.vel.x * (f.mesh.x - f.rb.pos.x) + c.vel.y * (f.mesh.y - f.rb.pos.y))).toBeGreaterThanOrEqual(0);
     }
   });
+
+  it('carries his exchange tempo into the pocket with the QB there, not the on-time pace of a late clock', () => {
+    for (const qbAtMesh of [true, false]) {
+      // Half a yard short, a beat before the window, with little clock left.
+      const f = stage({ x: 35.5, y: 27.6 }, qbAtMesh);
+      f.sim.t = 1.1;
+      Reflect.set(f.behavior, 'departed', true);
+      const c = f.behavior.update(f.rb, f.sim), v = Math.hypot(c.vel.x, c.vel.y);
+      if (qbAtMesh) expect(v).toBeGreaterThanOrEqual(f.rb.profile.vmax * .5);
+      else expect(v).toBeLessThan(f.rb.profile.vmax * .5);
+    }
+  });
 });

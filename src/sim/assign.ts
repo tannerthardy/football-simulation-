@@ -317,7 +317,9 @@ export class RunnerToMesh implements Behavior {
       const inHands = Math.hypot(qb.pos.x - a.pos.x, qb.pos.y - a.pos.y) <= reach;
       if (ready && inHands && sim.t >= this.meshTime - .15) this.passed = true;
       if (this.passed) return goTo(a, this.aim, { speed: .55, through: a.profile.vmax * .55 });
-      return goTo(a, pocket, { speed, through: ready ? a.profile.vmax * .55 : 0 });
+      // The on-time pace only slows an early back; with the QB there he
+      // carries his exchange tempo into the pocket instead of braking to it.
+      return goTo(a, pocket, ready ? { speed: Math.max(speed, .55), through: a.profile.vmax * .55 } : { speed, through: 0 });
     }
     return goTo(a, this.mesh, { speed, through: 0 });
   }

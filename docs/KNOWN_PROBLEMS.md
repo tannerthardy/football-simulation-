@@ -2005,6 +2005,19 @@ the backfield set from the QB's depth at the snap).
   Outside zone from under center takes the ball at 3.3 yd/s, slower than #336
   alone (4.7; NFL 5.5), because the back now waits until he sees the QB will be
   at the stretch mesh.
+- **Exchange tempo (same branch).** With the QB there, the back's on-time pace
+  (distance over max(0.2 s, time left)) still capped his request as the clock
+  ran out, below the ride-through tempo. So he braked to about 3 yd/s in the
+  last half yard. Now the pace only slows an early back. With the QB there he
+  carries at least the exchange tempo (0.55 of his top speed) into the pocket.
+  - Matched restage on develop with this branch, 456 run-only snaps, saved
+    dice plus 4 shifts. Handoff speed from under center: inside zone 3.05 to
+    3.76 yd/s, outside zone 3.12 to 3.62, gap runs 3.00 to 3.62 (NFL 4.5–5.5).
+  - Fumbles 22 to 21 of 2,085 plays; QB keeps 2 to 2. Run yards 5.87 to 5.93.
+  - Gun handoffs do not move (inside / outside zone 2.28 / 2.40 yd/s; NFL 3.92
+    / 4.96). The gun back reaches the window as it opens, at 1.05 s (NFL 1.1–
+    1.2 s), with no run-up, and slows on purpose while he sees the QB will not
+    yet reach the mesh. The body's start (#336) limits the rest.
 
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
