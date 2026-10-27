@@ -7,6 +7,8 @@ import { PlaySim } from '../src/sim/playsim.js';
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { captureNativePursuit } from '../scripts/diag/pursuit-arrival.js';
 import { compareExecution, initialState, replayState, restoreSetup } from '../scripts/diag/saved-play.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 /** Four fixed capacities used only by this scalar estimator; not a World-body fixture.
  * Point/time/path-call references recorded on accepted 2f7ac93c, before this interface change. */

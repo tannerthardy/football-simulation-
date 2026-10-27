@@ -138,7 +138,7 @@ export class RouteRunner implements Behavior {
     // Option routes read the coverage once.
     if (!this.converted && sim.t >= this.readAt && this.route.end === 'sitVsZone') {
       this.converted = true;
-      const misread = sim.rng.chance(0.15 * (1 - a.r('awareness')));
+      const misread = sim.dice('route', a).chance(0.15 * (1 - a.r('awareness')));
       const isMan = sim.defAlign.coverage.man !== misread;
       if (isMan && this.route.vsMan) {
         this.path = this.buildPath(this.start, this.route.vsMan, true);
@@ -344,7 +344,8 @@ export class TrackBall implements Behavior {
   ) {
     const tr = a.r('ballTracking');
     this.reactAt = sim.t + 0.08 + 0.25 * (1 - tr);
-    this.err = { x: sim.rng.normal(0, 0.5 * (1 - tr)), y: sim.rng.normal(0, 0.5 * (1 - tr)) };
+    const dice = sim.dice('track', a);
+    this.err = { x: dice.normal(0, 0.5 * (1 - tr)), y: dice.normal(0, 0.5 * (1 - tr)) };
     a.tags.add('onBall');
   }
 

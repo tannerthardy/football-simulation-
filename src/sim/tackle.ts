@@ -204,7 +204,7 @@ export function tryTackles(sim: PlaySim): void {
       d.nextTackleAt = t + 1;
       sim.diveAt(d, { x: dx, y: dy });
       const p = 0.22 + 0.3 * d.r('tackling') - 0.15 * c.r('elusiveness') - 0.1 * c.r('balance');
-      if (sim.rng.chance(Math.max(0.05, p))) {
+      if (sim.dice('tackle', d).chance(Math.max(0.05, p))) {
         // He gets a hand on a foot: a weak hold, all of it on the legs.
         grasp(sim, d, c, 0.3, 1, dd, 1, true, 'dive');
         sim.event('hit', d, c, 'diving tackle');
@@ -237,7 +237,7 @@ function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
 
 function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean): void {
   const t = sim.t;
-  const rng = sim.rng;
+  const rng = sim.dice('tackle', d);
   // Arms reach and recoil: one attempt per beat, not per physics tick.
   d.nextTackleAt = t + 0.5;
   const dx = c.pos.x - d.pos.x;
@@ -282,7 +282,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
   const md = d.profile.massKg;
   const hit = clamp((Math.max(0, closing) / 7) * (md / 105) * (0.6 + 0.8 * d.r('hitPower')), 0, 2);
   const pFumble = (0.0035 + 0.016 * hit) * (1.25 - c.r('ballSecurity')) * (alreadyWrapped ? 1.6 : 1) * (c === sim.qb && sim.isPass && sim.throwAt < 0 ? 3.2 : 1);
-  if (rng.chance(pFumble)) {
+  if (sim.dice('fumble', c).chance(pFumble)) {
     sim.event('hit', d, c);
     sim.fumble(c, d);
     return;

@@ -6,6 +6,8 @@ import { RouteRunner } from '../src/sim/behaviors/receiver.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { ReceiverForecast } from '../src/sim/receiver-forecast.js';
 import type { Agent } from '../src/sim/agent.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 // EDGE_CONTAIN keeps the blocked edge home on the toss, so the corner never reaches the runner; this native run
 // benefit is staged on unbounded edge widening (re-record by review 2).
 // SEAL_HOLD changes how far the toss's blockers carry their men; the corner's run participation is staged without it.

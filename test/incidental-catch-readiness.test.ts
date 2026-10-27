@@ -9,6 +9,8 @@ import { resolveCatchOpportunities } from '../src/sim/catching.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { INCIDENTAL_FLIGHT_MAX_AGE } from '../src/sim/catch-readiness.js';
 import type { Player } from '../src/players/types.js';
+// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
+PlaySim.recordedSingleStream = true;
 
 const saved = JSON.parse(readFileSync(new URL('./fixtures/incidental-catch-windows.json', import.meta.url), 'utf8'));
 
