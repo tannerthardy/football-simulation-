@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 92 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 23 are off (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 91 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 22 are off (`PULL_STEP` landed as the default pull step and was removed, G2 2026-10-27) (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -11,8 +11,8 @@ There are 92 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `CLIMB_INTERCEPT` | on | default | run | `src/sim/behaviors/blocking.ts:856` | — |
 | `CLIMB_PLAN` | on | default | run | `src/sim/behaviors/blocking.ts:853` | — |
 | `DL_FLOW` | on | default | trenches | `src/sim/engagement.ts:683` | — |
-| `EDGE_CONTAIN` | on | default (G1/G2, 2026-10-25) | trenches | `src/sim/engagement.ts:715` | review 2: drop the off path. A blocked edge widens with a reach only as far as containing the back's observed track needs; already wider, he holds. Recorded scenes staged on unbounded widening (`planned-climb-fit`, `zone-helper-check`) pin it off until re-recorded |
-| `SEAL_HOLD` | on | default (G1/G2, 2026-10-25) | trenches | `src/sim/engagement.ts:720` | review 2: drop the off path. A run blocker whose own felt load says his hands are on keeps the leverage he caught the man with; he no longer runs to a new shoulder and carries the man along |
+| `EDGE_CONTAIN` | on | default (G1/G2, 2026-10-25) | trenches | `src/sim/engagement.ts:716` | review 2: drop the off path. A blocked edge widens with a reach only as far as containing the back's observed track needs; already wider, he holds. Recorded scenes staged on unbounded widening (`planned-climb-fit`, `zone-helper-check`) pin it off until re-recorded |
+| `SEAL_HOLD` | on | default (G1/G2, 2026-10-25) | trenches | `src/sim/engagement.ts:721` | review 2: drop the off path. A run blocker whose own felt load says his hands are on keeps the leverage he caught the man with; he no longer runs to a new shoulder and carries the man along |
 | `GAP_MATCH` | on | default (G1/G2, 2026-10-25) | defense | `src/sim/run-fits.ts:243` | review 2: drop the off path. Backers fill the front's open gaps as a set: the gap left open is one an underneath support player still covers, never an unsupported or A gap. Nearest-first left the nickel Under's gap between the weak tackle and a second tight end empty |
 | `FLOW_READ` | on | default | defense | `src/sim/run-fits.ts:189` | — |
 | `FLOW_RELEASE` | on | default | run | `src/sim/behaviors/blocking.ts:847` | — |
@@ -52,7 +52,6 @@ There are 92 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:696` | set at first review |
 | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:195` | set at first review |
 | `PULL_PLAN` | off | experimental | defense | `src/sim/run-fits.ts:186` | set at first review |
-| `PULL_STEP` | off | experimental | run | `src/sim/behaviors/blocking.ts:37` | set at first review |
 | `REACH_CONTACT` | off | experimental | defense | `src/sim/tackle.ts:71` | set at first review |
 | `READ_RISK_TRACE` | off | experimental | defense | `src/sim/run-read.ts:117` | set at first review |
 | `RUN_CONTACT_TRACK` | off | experimental | trenches | `src/sim/engagement.ts:678` | set at first review |

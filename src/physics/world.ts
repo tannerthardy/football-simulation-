@@ -216,6 +216,8 @@ export interface StepReport {
   groundImpulse: Vec2[];
   /** Work of those external forces on each body, kg·yd²/s². */
   groundWork: number[];
+  /** Friction the feet could supply this step, on each body's actual normal load (standing weight less any pad lift), as an impulse. */
+  groundImpulseLimit: number[];
   groundYawImpulse: number[];
   groundYawWork: number[];
   /** Positive final channel work plus real strike/reel effort, bounded per tick. */
@@ -311,6 +313,10 @@ const LEG_BRACE = process.env.LEG_BRACE === '1';
  * traction of his standing weight whatever the contact geometry: the low
  * man's advantage in football had no physical path. */
 const PAD_LEVERAGE = process.env.PAD_LEVERAGE !== '0';
+/** Leg force-velocity (PHY-1): ground drive scales as 1 - v/vmax along the
+ * force. Yielding legs, driven backward, keep up to this multiple of their
+ * isometric strength (multi-joint eccentric force is about 1.1-1.3x). */
+const ECCENTRIC_GAIN = 1.2;
 /** Steepest line of action credited, rise over run (about 30 degrees). */
 const LEVERAGE_SLOPE = .6;
 /** Knee height as a fraction of COM height (knee ~0.28, COM ~0.55 of stature). */
@@ -652,7 +658,7 @@ export class World {
       }
     }
     const report: StepReport = { substeps: 1, groundImpulse: bs.map(reportVector),
-      groundWork: reportZeros(n), groundYawImpulse: reportZeros(n), groundYawWork: reportZeros(n),
+      groundWork: reportZeros(n), groundImpulseLimit: reportZeros(n), groundYawImpulse: reportZeros(n), groundYawWork: reportZeros(n),
       armWork: reportZeros(n), armWorkLimit: reportZeros(n), armImpulse: reportZeros(n), armImpulseLimit: reportZeros(n),
       work: {before: this.kineticEnergy(),after: 0,hands: 0,grasps: 0,strikes: 0,contacts: 0,residual: 0},
       contacts: [], strikes: [], falls: [], downs: [], rises: [], maxPenetration: 0,
@@ -1627,6 +1633,7 @@ export class World {
     const m = this.mass[i];
     // Friction on the actual normal load: standing weight less any contact lift.
     const traction = PAD_LEVERAGE ? sp.traction * clamp(1 - this.liftFelt[i] / (m * G), 0, 2) : sp.traction;
+    report.groundImpulseLimit[i] += traction * h;
     this.recovery[i] = 0;
     const spinBefore=b.spin??0;
     this.v0x[i] = b.vel.x; this.v0y[i] = b.vel.y;
@@ -1686,7 +1693,7 @@ export class World {
             const vp = b.vel.x * ux + b.vel.y * uy;
             // Legs drive hardest straight ahead; sideways or backward far less.
             const dir = directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux)));
-            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, 1.2) * fat * a * push;
+            const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
             const mag = Math.min(capacity, L * (1 + PUSH_GROWTH), m * ex / h);
             tx = ux * mag; ty = uy * mag;
           }
@@ -1731,8 +1738,17 @@ export class World {
         // Leg drive is directional: full straight ahead, a shuffle's or a
         // backpedal's share sideways or backward. Traction caps all of it.
         const tfx = lx + leanX, tfy = ly + leanY;
-        const along = tfx * tfx + tfy * tfy > 1e-18 ? directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) : 1;
-        const capacity = Math.min(Math.max(Math.hypot(lx, ly), sp.pushForce * along * a), traction * a);
+        // Muscle force-velocity: legs pushing the way he already moves lose
+        // force with speed (concentric); legs yielding against his motion
+        // keep the eccentric credit, up to 1.2x isometric. Friction on his
+        // actual normal load (pad lift or press included) bounds it once,
+        // below. Without the law, a strength gap is a constant net force and
+        // a carry keeps building.
+        const tf = Math.hypot(tfx, tfy);
+        const along = tf > 1e-9 ? directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) : 1;
+        const fv = tf > 1e-9 ? clamp(1 - (b.vel.x * tfx + b.vel.y * tfy) / (tf * p.vmax), 0, ECCENTRIC_GAIN) : 1;
+        const strength = sp.pushForce * fv * along * a;
+        const capacity = Math.min(Math.max(Math.hypot(lx, ly), strength), traction * a);
         // Availability already limits gait during recovery. Reserve actual
         // unused effort after ordinary translation and yaw, for every body.
         const cap = capacity;
@@ -1744,8 +1760,10 @@ export class World {
         this.braceX[i] = px; this.braceY[i] = py;
         const leanWeight = this.impactTiming === 'local-sweep' ? h : 1;
         this.leanX[i] += px * leanWeight; this.leanY[i] += py * leanWeight;
+        // Turning pays from the same grip as translation: friction on the
+        // actual normal load. A lifted body turns on less, a pressed one on more.
         const yaw: { impulse: number; work: number; peakTorque?: number } =
-          turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy));
+          turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy), traction * a);
         // Strength limits drive+correction; traction also pays for yaw at
         // the physical support radius. Difference-of-squares keeps the
         // near-saturation subtraction well conditioned. Passive compliance

@@ -54,7 +54,7 @@ describe('edge fits use achievable gathering at an observed runner', () => {
     expect(one.a.vel.x).toBeGreaterThan(oldFit.a.vel.x);
     expect(one.a.vel.x).toBeLessThan(0); // A request cannot instantly reverse momentum.
     expect(Math.hypot(report.groundImpulse[0].x, report.groundImpulse[0].y))
-      .toBeLessThanOrEqual(supportParams(one.a.profile).traction * .05 + 1e-8);
+      .toBeLessThanOrEqual(report.groundImpulseLimit[0] + 1e-8);
     expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
   });
 

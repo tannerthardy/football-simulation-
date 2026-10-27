@@ -367,9 +367,22 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       gy = kick.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65);
       a.tags.add(job.edge === 'spill' ? 'fit-spill' : 'fit-box');
     } else gy = job.kind === 'force' ? job.side > 0 ? Math.max(surface+.5,seen.pos.y+.7) : Math.min(surface-.5,seen.pos.y-.7) : gy;
+    // Backside: his own picture shows the ball carried away from his side,
+    // already inside his landmark. He squeezes and trails it flat at its
+    // depth, keeping the lateral relation to the ball his fit had (the
+    // boot/reverse/cutback check), instead of holding a spot the play has
+    // left. Never wider than his fit; a ball coming back to him is the
+    // ordinary edge fit again.
+    const trail = job.kind === 'edge' && !kick && !premesh && seen.carrying === true
+      && job.side * seen.vel.y < -1 && job.side * (seen.pos.y - gy) < 0;
+    if (trail) {
+      const cushion = Math.abs(gy - sim.ballY);
+      gy = job.side > 0 ? Math.min(gy, seen.pos.y + cushion) : Math.max(gy, seen.pos.y - cushion);
+    }
     const homeDepth=sim.defAlign.spots[a.slot as DefSlot]!.pos.x-sim.los;
     const supportDepth=job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
-    const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
+    const fitX = Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
+    const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : trail ? Math.min(fitX, Math.max(seen.pos.x, sim.los-3)) : fitX;
     // The outside shoulder belongs to a moving runner/surface, not a series
     // of stationary landmarks. Use only the pictures acquired above and
     // retain point and motion together for the existing decision beat.
@@ -394,7 +407,11 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       desired.point.y += a.mind.placementError;
       const held = retainedForceTrack(a,desired,sim.t);
       aim = held.point; motion = held.velocity;
-    } else aim = a.mind.aim('edge-fit',{x,y:gy+a.mind.placementError},sim.t);
+    } else {
+      aim = a.mind.aim('edge-fit',{x,y:gy+a.mind.placementError},sim.t);
+      // Trailing, the point moves with the ball he sees: carry its lateral motion.
+      if (trail) motion = { x: 0, y: seen.vel.y };
+    }
     const fit = track(a,aim,motion,{speed:.9,gain:3,facing:Math.PI});
     // Open the hips for an acquired outward lateral run; a square shuffle
     // cannot execute this request. Near-contact gathering below still owns

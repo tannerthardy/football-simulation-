@@ -60,7 +60,8 @@ describe('kick phase follows a personally read end after the flat track',()=>{
   expect(next.facing).toBeDefined();expect(next.vel.x).toBeGreaterThan(0);expect(a.body).toEqual(before);expect(sim.world.joints).toHaveLength(0);
   Reflect.set(controller,'pullCleared',false);Reflect.set(controller,'pullIdx',0);
   const clearance=controller.update(a,sim);
-  expect(clearance.facing).toBe(0); // Square depth clearance, not an early strike.
+  // The open pull step faces the play side, not an early strike at the end.
+  expect(Math.abs(clearance.facing!)).toBeCloseTo(Math.PI/2);
   expect(a.body).toEqual(before);expect(sim.world.joints).toHaveLength(0);
  });
 });

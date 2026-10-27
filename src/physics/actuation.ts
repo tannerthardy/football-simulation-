@@ -41,12 +41,15 @@ export function turnBody(b: Body, target: number, remaining: number, dt: number,
 /** Fixed-response angular motor for the common-point model. The same angle,
  * spin and load request the same torque at every phase of a controller tick.
  * Critical damping uses the existing response time, not new strength or gain
- * ratings. Exact bounded flow avoids smearing a reached limit across dt. */
+ * ratings. Exact bounded flow avoids smearing a reached limit across dt.
+ * `tractionLimit` is the grip the feet actually have (friction on the actual
+ * normal load, times availability); without it, standing grip is assumed.
+ * Turning shares that one budget with the linear ground force. */
 export function turnBodyResponse(b: Body, target: number, dt: number,
-  turnRate: number, available: number, force: number): { impulse: number; work: number; peakTorque: number } {
+  turnRate: number, available: number, force: number, tractionLimit?: number): { impulse: number; work: number; peakTorque: number } {
   const sp = supportParams(b.profile);
   const radius = baseRadiusAt(sp, b.support?.posture ?? (.2-.2*(1-b.energy)));
-  const traction = sp.traction * available;
+  const traction = tractionLimit ?? sp.traction * available;
   const torque = Math.sqrt(Math.max(0, traction * traction - force * force)) * radius;
   const acceleration = Math.min(turnRate / YAW_RESPONSE * (.3 + .7 * available), torque / sp.yawInertia);
   const before = b.spin ?? 0;

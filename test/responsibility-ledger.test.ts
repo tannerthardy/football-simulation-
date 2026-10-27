@@ -1,17 +1,18 @@
 /** The responsibility ledger (src/sim/responsibility-ledger.ts): the all-blockers form of the command trace's
  * blocking-change hooks. Staged controls for the mechanism, plus recorded plays for the named cases from the
  * Phase II zone set (constructor inputs recorded at develop a5b024b9; re-record them when the source changes on
- * purpose). It is a recorder: nothing here grades a block. */
+ * purpose). The M- cases are matched-restage captures of develop 55cc9e57, recorded when turning on the feet's
+ * actual grip moved the S9-P027 and S7-P067 scenes. It is a recorder: nothing here grades a block. */
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { dutyTimeline, initialJobCensus } from '../src/sim/responsibility-views.js';
+import { LOAD_PRESENT } from '../src/sim/responsibility-ledger.js';
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { restoreSetup } from '../scripts/diag/saved-play.js';
-// Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
-PlaySim.recordedSingleStream = true;
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
 PlaySim.recordedSingleStream = true;
 
@@ -119,26 +120,54 @@ describe('responsibility ledger, staged controls', () => {
 
 interface Case { id: string; setup: string }
 const cases = JSON.parse(readFileSync(new URL('./fixtures/responsibility-ledger-cases.json', import.meta.url), 'utf8')) as { plays: Case[] };
-function play(id: string) {
-  const sim = new PlaySim(restoreSetup(Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64')));
-  const ledger = sim.recordResponsibility(), result = sim.run();
+function play(id: string, selected?: string) {
+  const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
+  const sim = new PlaySim(restoreSetup(setup));
+  const ledger = sim.recordResponsibility();
+  const trace = selected ? sim.recordCommands({ actor: { team: 'O', slot: selected }, from: 0, to: 15 }) : undefined;
+  const result = sim.run();
   const d = ledger.data, slot = (i: number | null) => i === null ? null : d.actors[i].slot;
-  return { sim, d, result, slot, census: initialJobCensus(d) };
+  return { sim, d, result, slot, trace, setupSha256: createHash('sha256').update(setup).digest('hex'), census: initialJobCensus(d) };
 }
 const changeOf = (p: ReturnType<typeof play>, actor: string, reason: string, t?: number) =>
   p.d.changes.filter(c => p.slot(c.actor) === actor && c.reason === reason && (t === undefined || c.t === t));
 
 describe('responsibility ledger, named cases from the Phase II zone set (a5b024b9)', () => {
   it('S9-P062: C releases to LB_W, rereads to LB_M, and loads LB_M and never LB_W', () => {
-    const p = play('S9-P062');
+    const p = play('S9-P062', 'C');
+    expect(p.setupSha256).toBe('fc7f58f199912f3255588696ab79ee4b5c57cef717b550601f349412119eba81');
     const release = changeOf(p, 'C', 'combination-release', 1.05)[0];
     expect(release.after).toMatchObject({ kind: 'climb' });
     expect(p.slot(release.before.target)).toBe('DT_S'); expect(p.slot(release.after.target)).toBe('LB_W');
     const reread = changeOf(p, 'C', 'threat-reread', 1.25)[0];
     expect(p.slot(reread.before.target)).toBe('LB_W'); expect(p.slot(reread.after.target)).toBe('LB_M');
     const c = p.d.actors.findIndex(a => a.slot === 'C');
-    const loads = (slot: string) => p.d.rows.filter(r => r.actor === c).filter(r => r.hands.some(h => p.slot(h.defender) === slot && h.loaded)).map(r => r.endpoint);
-    expect(loads('LB_M')[0]).toBe(2.2);
+    const loaded = (slot: string) => p.d.rows.filter(r => r.actor === c).filter(r => r.hands.some(h => p.slot(h.defender) === slot && h.loaded));
+    const loads = (slot: string) => loaded(slot).map(r => r.endpoint);
+    // #298 changed the fatigue law: the same a5b024b9 input first loads at
+    // 2.20 rather than 2.25. The ledger's contract is the actual endpoint and
+    // loaded target, not preservation of that older physical arrival time.
+    const first = loaded('LB_M')[0];
+    expect(first).toBeDefined();
+    expect(first.t).toBeGreaterThan(reread.t);
+    expect(p.slot(first.plan!.target)).toBe('LB_M');
+    const step = p.trace!.steps.find(s => {
+      const e = s.endpoint?.engagement;
+      return e?.defender.slot === 'LB_M' && e.hands
+        && typeof e.hands.normalForce === 'number' && typeof e.hands.tangentForce === 'number'
+        && Math.hypot(e.hands.normalForce, e.hands.tangentForce) > LOAD_PRESENT;
+    })!;
+    expect(step).toBeDefined();
+    expect(first.endpoint).toBe(step.endpointTime);
+    expect(step.stepStart).toBe(first.t);
+    expect(step.endpoint!.engagement!.defender.slot).toBe('LB_M');
+    const hands = step.endpoint!.engagement!.hands!;
+    expect(hands.normalForce).toBeTypeOf('number');
+    expect(hands.tangentForce).toBeTypeOf('number');
+    const load = first.hands.find(h => p.slot(h.defender) === 'LB_M')!;
+    expect(load.loaded).toBe(true);
+    expect(load.magnitude).toBeGreaterThan(LOAD_PRESENT);
+    expect(load.magnitude).toBe(Math.hypot(hands.normalForce!, hands.tangentForce!));
     expect(loads('LB_W')).toEqual([]);
     const job = p.census.find(j => p.slot(j.backer) === 'LB_W')!;
     // Graded against the initial job this is "no member load"; the ledger also says why.
@@ -148,32 +177,54 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
   });
 
   it('S10-P009: LT is given a different man with no block_threat event', () => {
-    const p = play('S10-P009');
-    const swap = changeOf(p, 'LT', 'available-target/find-work', 1.6)[0];
+    const p = play('S10-P009', 'LT');
+    expect(p.setupSha256).toBe('42de46aa33a84002163f945e51d8cb279d9d4c40f9703649282eb70edfb2b678');
+    // The real transition still exists after #298, one tick earlier. Locate
+    // its exact semantic identity, then require both observers and the actual
+    // pre/post behavior to agree on its native decision and endpoint clocks.
+    const swaps = changeOf(p, 'LT', 'available-target/find-work')
+      .filter(c => p.slot(c.before.target) === 'LB_M' && p.slot(c.after.target) === 'SS');
+    expect(swaps).toHaveLength(1);
+    const swap = swaps[0];
     expect(p.slot(swap.before.target)).toBe('LB_M'); expect(p.slot(swap.after.target)).toBe('SS');
+    const step = p.trace!.steps.find(s => s.blockingChanges?.some(c => c.reason === swap.reason && c.t === swap.t))!;
+    expect(step).toBeDefined();
+    expect(step.stepStart).toBe(swap.t);
+    const reported = step.blockingChanges!.filter(c => c.reason === swap.reason && c.t === swap.t);
+    expect(reported).toHaveLength(1);
+    expect(reported[0].previous.target!.slot).toBe('LB_M');
+    expect(reported[0].current.target!.slot).toBe('SS');
+    expect(step.start.behavior.target!.slot).toBe('LB_M');
+    expect(step.endpoint!.behavior.target!.slot).toBe('SS');
+    const row = p.d.rows.find(r => r.actor === swap.actor && r.t === swap.t)!;
+    expect(step.endpointTime).toBe(row.endpoint);
+    expect(p.slot(row.plan!.target)).toBe('SS');
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT')).toEqual([]);
   });
 
-  it('S9-P027: C is reread twice, each recorded with its resulting kind', () => {
-    const p = play('S9-P027');
+  it('M9-P000: C is reread twice, each recorded with its resulting kind', () => {
+    const p = play('M9-P000');
     const threats = changeOf(p, 'C', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([1.4, 2.65]);
+    expect(threats.map(c => c.t)).toEqual([2.2, 2.6]);
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(2);
-    expect(threats.every(c => c.after.kind === 'reach')).toBe(true);
+    expect(threats.every(c => c.after.kind === 'drive')).toBe(true);
   });
 
-  it('S7-P067: the first carrier contact keeps both defenders tied at 2.5', () => {
-    const first = play('S7-P067').census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.5);
-    expect(first.defenders.map(play('S7-P067').slot).sort()).toEqual(['LB_M', 'LB_W']);
+  it('M7-P051: the first carrier contact keeps both defenders tied at 2.7', () => {
+    // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7); the tie is unchanged.
+    const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
+    expect(first.t).toBe(2.7);
+    expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
     const p = play('S8-P005');
     const first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.2);
+    // Re-recorded for the leg force-velocity law (PHY-1): first contact moves 2.2 -> 2.1 and the DT_W reaches the carrier first;
+    // still one defender, not a tie. The DT_W's wrap now comes with the contact (2.1; was 2.3 after the DE_W's contact).
+    expect(first.t).toBe(2.1);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.25 && p.slot(e.defender) === 'DE_W')).toBe(true);
+    expect(p.d.play.carrierEvents.some(e => e.t === 2.1 && p.slot(e.defender) === 'DT_W')).toBe(true);
   });
 
   it.each(['S8-P054', 'S10-P006'])('%s: the QB keeps it, so the carrier is the QB all play, not the scheduled RB', id => {
@@ -190,7 +241,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.census).toEqual([]);
   });
 
-  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
+  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
     const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
     const run = (record: boolean) => {
       const sim = new PlaySim(restoreSetup(setup));

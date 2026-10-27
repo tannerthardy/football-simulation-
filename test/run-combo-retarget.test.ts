@@ -285,7 +285,7 @@ describe('combination responsibility after an ordinary work search', () => {
         expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
         expect(report.armImpulse).toEqual([0]);
         expect(Math.hypot(report.groundImpulse[0].x, report.groundImpulse[0].y))
-          .toBeLessThanOrEqual(supportParams(body.profile).traction * .05 + 1e-8);
+          .toBeLessThanOrEqual(report.groundImpulseLimit[0] + 1e-8);
       }
       expect(body.pos.x).toBeGreaterThan(before.x);
       expect(body.support!.state).toBe('up');

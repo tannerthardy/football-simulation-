@@ -147,7 +147,7 @@ function doubleTeam(insecure = false, slant = false) {
     for (const a of sim.agents) {
       expect(report.armImpulse[a.idx]).toBeLessThanOrEqual(report.armImpulseLimit[a.idx] + 1e-8);
       expect(Math.hypot(report.groundImpulse[a.idx].x, report.groundImpulse[a.idx].y))
-        .toBeLessThanOrEqual(supportParams(a.profile).traction * sim.dt + 1e-8);
+        .toBeLessThanOrEqual(report.groundImpulseLimit[a.idx] + 1e-8);
     }
     sim.t += sim.dt; sim.perception.record(sim.agents);
     return report;
@@ -184,9 +184,13 @@ describe('combination exchanges', () => {
   });
 
   it('keeps an insecure block even after the old fixed release time', () => {
-    const { sim, helper, combo, e } = doubleTeam(true);
+    const { sim, helper, primary, combo, e, observe } = doubleTeam(true);
     sim.t = 4;
     expect(e.control).toBeLessThan(-.12);
+    // Insecure as the climber sees it: the defender is across his partner's
+    // face (chest turned off the man). The hidden hand value alone is not a cue.
+    primary.body.facing = 1.3;
+    observe();
     readCombination(helper, sim, combo);
     sim.t = 5;
     readCombination(helper, sim, combo);
