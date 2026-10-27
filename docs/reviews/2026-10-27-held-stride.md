@@ -163,3 +163,56 @@ That needs a design decision before a third law:
 - (a) model the holder's weight on a leg hold as vertical load on the runner,
   which cuts his traction (feet unloaded or overloaded); or
 - (b) accept attempt 1 with its two risks stated.
+
+## Attempt 3, landing: hanging weight (Tanner chose to land it, 2026-10-27)
+
+Commits `93d4182`, `612a2c1` (Main Engine). This replaces attempt 1's law.
+§1–5 above describe attempt 1 and are kept as history.
+
+- A holder off his feet who still holds the runner's legs hangs half his
+  weight on the hold (`HANG_SHARE`).
+- To keep striding, the runner's hip has to swing that weight through. That
+  uses the same hip torque that braces a thigh hold, so the bound share of his
+  stride is lost from his own drive. No external force is added, and his
+  traction is unchanged.
+- A tackler drops his weight only after planting has failed: a secure leg
+  hold, held 0.4 s, and he is still being dragged.
+
+Main Engine's measurements, against develop and NFL:
+
+| | develop | attempt 3 | NFL |
+|---|---|---|---|
+| Speed 0.5 s after contact (seeds 7/9) | — | 3.29 | 3.35 |
+| Yards after contact p25/50/75/90 (4 seeds) | 0.58 / 1.34 / 2.56 / 4.28 | 0.94 / 1.91 / 3.62 / 6.52 | 1.26 / 2.42 / 3.97 / 6.98 |
+| Still up 0.8 / 1.0 s after contact | 0.39 / 0.18 | 0.72 / 0.53 | 0.76 / 0.65 |
+| 1v1 hard-angle / ordinary tackled (10 s) | 0.82 / 0.82 | 0.77 / 0.83 | — |
+
+Matched replays vs develop (1,080):
+- run yards +0.50 ± 0.34, pass yards +0.26 ± 0.15
+- broken tackles −0.017 ± 0.007, runs of 10+ yd +2.4 ± 1.1 points
+
+### Known problem: the holder's weight is counted twice
+
+The hanging holder still slides on the ground with his full weight
+(`DOWN_FRICTION · G · m`) while half of that weight hangs on the runner.
+
+A follow-up thread tested removing the double count. The patch and its
+numbers are in the project files under `held-stride/`. A grounded holder's
+friction then uses his weight less what hangs, and the hung weight is capped
+by grip capacity.
+
+1v1 panel, 576 reps:
+- difficult tackled 0.69 → 0.56
+- censored 51 → 129
+
+Matched restage, seeds 7 and 11, 274 snaps × 4 shifts:
+- run yards +0.37 ± 0.18
+- missed and broken tackles −0.009 ± 0.004
+
+The fix is correct, but on its own it lets runners drag holders further. In
+real tackles the finish also comes from the tip a low hung load causes: the
+legs are pinned and the body keeps going. Nothing models that yet.
+
+**Follow-up:** a tip law for hung leg loads, landed together with the holder
+unload. Until then the double count stays, as a known shortcut that errs
+toward finishing tackles.
