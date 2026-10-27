@@ -9,13 +9,16 @@ import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
 PlaySim.recordedSingleStream = true;
 
 const input = { coverage: 'cover3_buzz', concept: 'curl_flat', seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false };
+// Re-selected under the leg force-velocity law (PHY-1): seed 1 now ends incomplete.
+// Seed 8 is the same call with a caught ball against CB_W's man coverage of X.
+const caught = { ...input, seed: 8 };
 const selection: CommandTraceSelection = { actor: { team: 'D', slot: 'CB_W' }, from: 2, to: 3.65 };
 
 describe('selected command attribution in normal execution', () => {
   it('preserves the complete native play, reads, decisions, steps and RNG while attributing the catch command to coverage', () => {
     const execute = (record: boolean) => {
       const draws = vi.spyOn(Rng.prototype, 'nextU32');
-      const sim = new PlaySim({ ...nativeTraceSetup(input), record: true, recordLevel: 'full' });
+      const sim = new PlaySim({ ...nativeTraceSetup(caught), record: true, recordLevel: 'full' });
       const trace = record ? sim.recordCommands(selection) : undefined;
       const physics = vi.spyOn(sim.world, 'step'), reads = vi.spyOn(sim.perception, 'perceive');
       // Track the actual installed update entries, including the selected coverage wrapper.
