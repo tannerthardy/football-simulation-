@@ -909,6 +909,20 @@ Carried over from the issue register; each was measured on an older develop.
     0.4–0.6 s of seen pictures. Then, if needed, a commitment margin on the
     chosen time.
 
+- **Backside wide end** ([evidence](reviews/backside-edge.md), 2026-10-27,
+  on #329):
+  - *NFL:* he squeezes and trails without stopping, at 3–3.6 yd/s, keeping a
+    5 yd cushion on the carrier's backside and about 6 yd from him through
+    3 s. 18% are in on the play.
+  - *Ours:* he stopped at his edge landmark (free) or under `EDGE_CONTAIN`
+    (blocked).
+  - *Change (on):* he trails the ball when it's carried away behind the line.
+    Lateral speed went from 0.87 to 2.18 free (NFL 2.95) and from 0.10 to 1.05
+    blocked (NFL 1.10), with matched yards unchanged.
+  - *Open (stop rule):* in on the play is still 1%. He loses the ground after
+    the runner crosses, at the `preserveEdge` chase gate. **Next (proposed):**
+    gate 0 for a backside edge whose ball has gone away.
+
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
 
