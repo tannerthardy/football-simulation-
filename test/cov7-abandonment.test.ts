@@ -8,10 +8,9 @@ import type { ReceiverForecast } from '../src/sim/receiver-forecast.js';
 import type { Agent } from '../src/sim/agent.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
 PlaySim.recordedSingleStream = true;
-// EDGE_CONTAIN keeps the blocked edge home on the toss, so the corner never reaches the runner; this native run
-// benefit is staged on unbounded edge widening (re-record by review 2).
-// SEAL_HOLD changes how far the toss's blockers carry their men; the corner's run participation is staged without it.
-vi.hoisted(() => { process.env.EDGE_CONTAIN = '0'; process.env.SEAL_HOLD = '0'; });
+// Recorded on default switches. The run benefit was first staged with EDGE_CONTAIN=0 SEAL_HOLD=0
+// (unbounded edge widening); under the gait start law (#336) that staging leaves LB_W unblocked, and
+// the defaults are the game the corner actually plays in.
 
 describe('installed non-contact receiver block look', () => {
   it('keeps the release conditional in the QB prior and physically executes the called transition', () => {
@@ -107,11 +106,25 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     expect(sample.support!.facing).not.toBe(sample.support!.travelHeading);
   });
 
-  it('uses native QB evaluation and one legal behind-line release to the eligible primary, with no fake block', () => {
+  it('the QB throws where the corner vacated: Z when he bit, elsewhere when he stayed, read natively at the same clock', () => {
     for (const a of [pass.baseline, pass.alternative]) {
       expect(a.qbEvaluations.some(e => e.target.playerId === 'OFF-WR2' && e.evaluation)).toBe(true);
       expect(a.releases).toHaveLength(1);
     }
+    // The corner bit (support at the shared admission tick) and vacated Z's window...
+    expect(pass.summary.firstSupport).not.toBeNull();
+    expect(pass.alternative.releases[0].target?.playerId).toBe('OFF-WR2');
+    // ...while the corner who stayed took Z away, and the QB went elsewhere.
+    expect(pass.baseline.releases[0].target?.playerId).not.toBe('OFF-WR2');
+    // The QB's own evaluation of Z at the first clock both arms read him: open where the corner left.
+    const zAt = (a: typeof pass.baseline) => a.qbEvaluations.filter(e => e.target.playerId === 'OFF-WR2' && e.evaluation);
+    const first = Math.max(zAt(pass.baseline)[0].at, zAt(pass.alternative)[0].at);
+    const read = (a: typeof pass.baseline) => zAt(a).find(e => e.at >= first - 1e-9)!.evaluation!;
+    expect(read(pass.alternative).completion).toBeGreaterThan(read(pass.baseline).completion + 0.2);
+    expect(read(pass.alternative).interceptionRisk).toBeLessThan(read(pass.baseline).interceptionRisk);
+  });
+
+  it('every release is a legal behind-line forward pass with no fake block on Z', () => {
     for (const law of Object.values(pass.summary.legality)) {
       expect(law.snapPermitted).toBe(true);
       expect(law.snapFouls).toEqual([]);
@@ -128,34 +141,49 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
       expect(law.maxQBForwardEdgeBeforeRelease!).toBeLessThan(40);
       expect(law.nativeFouls).toEqual([]);
       expect(law.limitations).toEqual([]);
-      expect(law.releases[0]).toMatchObject({ target: { playerId: 'OFF-WR2' }, priorForwardThrows: 0 });
+      expect(law.releases[0]).toMatchObject({ priorForwardThrows: 0 });
       expect(law.releases[0].velocity.x).toBeGreaterThan(0);
     }
   });
 
-  it('shows real runner participation on the run, while the deceptive pass punishes abandonment', () => {
+  it('shows real runner participation on the run, and the deceptive pass opens the window the corner left', () => {
     expect(run.summary.legality.support.forwardPassRestrictionApplicable).toBe(false);
     expect(run.summary.legality.support.maxIneligibleForwardEdgeBeforeRelease).toBeNull();
-    expect(run.summary.legality.support.runCornerContacts.some(e => e.type === 'tackle_wrap')).toBe(true);
-    // With acquired possession (INFO-1) the corner's wrap is an assist and a
-    // teammate finishes the tackle; the support arm still ends the run.
+    // The corner who supports reaches the runner, and before the corner who stayed in man does.
+    const first = (contacts: Array<{ t: number }>) => Math.min(Infinity, ...contacts.map(e => e.t));
+    const support = run.summary.legality.support.runCornerContacts, man = run.summary.legality.man.runCornerContacts;
+    expect(support.some(e => e.type === 'tackle_wrap')).toBe(true);
+    expect(first(support)).toBeLessThan(first(man));
     expect(run.summary.result.support.outcome).toBe('tackle');
+    expect(run.summary.result.support.yards).toBeLessThan(run.summary.result.man.yards);
     // Re-recorded for the leg force-velocity law (PHY-1): the line contacts differ (a DT is no longer driven
     // down at 2.4 s), the passer's body at release differs, and the same 51-yard throw to WR2 now arrives in stride
     // (ball 0.3 yd longer at 2.8 s; the receiver holds 8 yd/s instead of slowing to 5.4). Both arms then catch it and
     // the yardage after the catch is a different tackler's, so the outcome order is no longer a measure of the
-    // abandonment cost. Pin the cost where the corner's own body decides it: how far he is at release.
+    // abandonment cost. Pin the cost where the corner's own body decides it: how far he is from Z when
+    // the QB throws to Z. Under the gait start law the man arm throws elsewhere, later, so both arms are
+    // read at that same clock rather than at each arm's own release.
     const released = pass.summary.atRelease;
     expect(released.support).not.toBeNull();
-    expect(released.man).not.toBeNull();
-    expect(released.support!.distance).toBeGreaterThan(released.man!.distance + 1);
-    expect(released.support!.depthLeverage).toBeLessThan(released.man!.depthLeverage);
-    // Under the two-pool fatigue model (FAT-2) the same throw to WR2 is now
-    // caught: the corner who left his man is 3 yd off at 2.4 s and gives up a
-    // 70-yard touchdown, while the corner who stayed still forces the
-    // incompletion. Before FAT-2 both arms were incomplete. The abandonment
-    // cost is the point, so pin that the support arm is no better for the
-    // defense, not the exact result.
-    expect(pass.summary.result.support.outcome).not.toBe('incomplete');
+    const tThrow = pass.alternative.releases[0].at;
+    const at = (a: typeof pass.baseline) => {
+      const row = a.rows.find(r => r.at >= tThrow - 1e-9)!;
+      const d = row.body.pos, z = row.primary.body.pos;
+      return { distance: Math.hypot(d.x - z.x, d.y - z.y), depthLeverage: d.x - z.x };
+    };
+    expect(at(pass.alternative).distance).toBeGreaterThan(at(pass.baseline).distance + 1);
+    expect(at(pass.alternative).depthLeverage).toBeLessThan(at(pass.baseline).depthLeverage);
+    // Name the result: a completion, an interception and an incompletion are different football, and
+    // "not incomplete" cannot tell the first two apart. Under the gait start law the corner who bit
+    // recovers and intercepts the throw into the window he vacated; the man arm's throw elsewhere falls
+    // incomplete. The cost of the bite is the window (the QB's read and the same-clock geometry above),
+    // not a punished result; being fooled is not forced to fail.
+    const kind = (arm: typeof pass.baseline) => {
+      const r = arm.execution.result;
+      return r.stats.interceptedBy ? 'interception' : r.stats.completed ? 'completion' : r.outcome;
+    };
+    expect(kind(pass.alternative)).toBe('interception');
+    expect(pass.alternative.execution.result.stats.interceptedBy).toBe('DEF-CB3');
+    expect(kind(pass.baseline)).toBe('incomplete');
   });
 });
