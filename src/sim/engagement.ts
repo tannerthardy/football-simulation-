@@ -681,8 +681,6 @@ const RUN_CONTACT_TRACK = process.env.RUN_CONTACT_TRACK === '1';
 /** Shoulder speed is a complete component; set 0 to reproduce the comparison baseline. */
 const RUN_CONTACT_COMPONENTS = process.env.RUN_CONTACT_COMPONENTS !== '0';
 
-/** Engaged run fits plan their flow with their own body (DL_FLOW=0: proportional follow). */
-const DL_FLOW = process.env.DL_FLOW !== '0';
 /** Default on (DL_CHASE=0 turns it off): an engaged interior lineman keys the guard
  * near him. When he sees him pull, his gap has left with him: he works across
  * his blocker's face toward the pull and follows it down the line, instead of
@@ -1473,10 +1471,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
       : -sim.attackDir(b.team) * 1.5;
   // Keep the shoulder where it will need to be: the held flow cue carries it
-  // forward over a short horizon, and the request is planned with his own
-  // acceleration (the law the zone blockers plan with), so a lineman who is
-  // being reached works laterally to keep his gap instead of lagging it.
-  // DL_FLOW=0 restores the proportional follow.
+  // forward over a short horizon, and he follows that point with the flow
+  // plus a proportional correction. A request his body can follow without
+  // reversing: planning to cover the gap within the horizon under his
+  // sprint lag over-commanded, and his much faster braking then reversed
+  // it at every small change of aim (docs/reviews/2026-10-27-engaged-stall.md).
   const held = read.declared ? 0 : read.flow ?? read.stack?.flow ?? 0, horizon = 2 * d.mind.decisionInterval;
   let target = read.aim.y + held * horizon;
   // Never widen past what containing the runner needs (EDGE_CONTAIN, read
@@ -1487,9 +1486,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // gone away from him, so containment does not hold him where he is.
   if (read.contain !== undefined && !read.trail && (target - read.contain) * side > 0)
     target = (d.pos.y - read.contain) * side > 0 ? d.pos.y : read.contain;
-  const flow = clamp(DL_FLOW
-    ? requestToCover(gaitLag(d.profile), target - d.pos.y, horizon, d.vel.y)
-    : held + (target - d.pos.y) * 3, -td.lateral, td.lateral);
+  const flow = clamp(held + (target - d.pos.y) * 3, -td.lateral, td.lateral);
   // DL_FIGHT (experimental, off): fight pressure with pressure. A defender
   // who feels himself driven sideways holds the point where the push began
   // and leans into it, instead of following the blocker's flow off his gap.
