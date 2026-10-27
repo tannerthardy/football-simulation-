@@ -42,8 +42,14 @@ describe('scenario pack: physical contracts and mirror symmetry', () => {
     for (const side of [1, -1] as const) {
       const rd = redirect({ side }), se = seal({ side }), sq = squeeze({ side });
       for (const r of [rd, se, sq]) physical(r);
-      // The tackle rides the speed rusher past the quarterback's depth.
-      expect(rd.carriedPast).toBeGreaterThan(0.5);
+      // This native rep proves loaded contact and a later legal release.
+      // carriedPast covers the entire window, including the freed rusher's
+      // route. It cannot certify how far the tackle physically rode him.
+      // pass-hip-ride separately compares hand/no-hand Worlds at equal bodies
+      // and intents; pass-rush-finish owns the post-release command/response.
+      expect(rd.peakNormal).toBeGreaterThan(0);
+      expect(rd.peakTangent).toBeGreaterThan(0);
+      expect(rd.cornerTurned).toBe(true);
       expect(se.sealedFor).toBeGreaterThan(1);
     }
     const a = redirect({ side: 1 }), b = redirect({ side: -1 });
