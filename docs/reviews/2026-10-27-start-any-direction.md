@@ -73,3 +73,46 @@ top of #336's own (see the PR). They are the same kind #336 re-records:
 `gait-facing-contract` pins the old start arithmetic; the rest are recorded
 scenes that move. Folding this change into #336 before its scenes are
 re-recorded avoids re-recording them twice. Not re-recorded here.
+
+## Where the DB/DL/LB overshoot comes from (requests, not the law)
+
+Asked before merge: are the defenders' accelerations past NFL caused by the law,
+or by their controllers' requests?
+
+Tools:
+- `scripts/diag/start-probe-defense.ts`: per tick, every DL/LB/DB on run-only
+  seeds 7/9, under this law.
+- `scripts/diag/start_attribution.py`.
+
+Method:
+- Each defender's probe speed is smoothed exactly as the film operator does
+  (accel over ±0.2 s).
+- Ticks are split by what he asked for: a **modest** request (no more than 1.25×
+  the speed NFL players in that group and speed bin actually reach 0.5 s later),
+  or a **larger** one.
+- On every tick the World delivers the gait's plan (achieved / planned 1.00),
+  and the plan is the law applied to the request.
+
+| Accel p50 / p90 (yd/s²) | NFL | sim, modest request | sim, larger request | larger share | NFL speed 0.5 s later | larger requests come from |
+|---|---|---|---|---|---|---|
+| DB 0-1 yd/s | 1.41 / 2.94 | 1.54 / 2.84 | 2.09 / 3.60 | 61% | 1.76 | man, zone drops |
+| DB 1-2 yd/s | 2.21 / 4.27 | 2.41 / 3.84 | 4.04 / 5.49 | 65% | 2.63 | man, zone drops |
+| DL 1-2 yd/s | 2.84 / 4.25 | 1.64 / 3.12 | 4.07 / 6.00 | 84% | 2.46 | rush |
+| DL 2-3 yd/s | 2.87 / 4.62 | 2.03 / 3.23 | 4.14 / 6.20 | 83% | 3.31 | rush |
+| LB 1-2 yd/s | 2.82 / 4.65 | 2.21 / 3.93 | 4.03 / 5.22 | 89% | 2.70 | zone, man, blitz |
+| LB 2-3 yd/s | 2.94 / 4.99 | 2.00 / 3.36 | 3.57 / 4.98 | 84% | 3.43 | zone, man, blitz |
+
+- Asked for what NFL players reach, the law gives NFL-like acceleration, at or
+  under NFL.
+- The overshoot is all in the larger requests, most ticks: the requests are
+  well beyond where an NFL player in the same state is 0.5 s later.
+- No controller uses `effort` to start more gently: under 3% of these ticks
+  have effort below 1.
+
+**Named follow-ups (controllers, not this PR):**
+1. **DL rush on runs** (plan `rush`, Defense). Requests about 7.5-8 yd/s at
+   1-3 yd/s, against NFL 2.5-3.3 yd/s 0.5 s later.
+2. **LB reads on runs** (plans `zone` / `man` / `blitz`, Defense, with
+   Coverage for the drops). Requests 5.5-6 yd/s, against NFL 2.7-3.4.
+3. **DB drops** (plans `man` / `zone`, Coverage, paused). Requests 3.5-5 yd/s,
+   against NFL 1.8-2.6. This was already #336's finding.
