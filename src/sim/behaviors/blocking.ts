@@ -33,8 +33,6 @@ import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } fro
 import { assessClimbAccess, type ClimbAccessResult, chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
 import { lineDepth, lineOffset } from '../../playbook/alignment.js';
 
-/** Experimental (PULL_STEP=1, off): open pull step toward the play side. */
-const PULL_STEP = process.env.PULL_STEP === '1';
 /** How far behind the line this player's installed stance stands. */
 const stanceDepth = (sim: PlaySim, a: Agent) => sim.los - (sim.offAlign.spots[a.slot]?.pos.x ?? sim.los - .55);
 const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
@@ -747,9 +745,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // End man on the line on the playside (kick-out target).
     const emlos = kickReserved ?? dl.filter((d) => !claimedDL.has(d) && rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null;
     const trapTarget = trapReserved;
-    // PULL_STEP (experimental, off): the pull step opens to the play side and
-    // gains depth on the way, rather than dropping straight back first.
-    const pullStep = PULL_STEP ? ps * 0.9 : 0;
+    // The pull step opens to the play side and gains depth on the way,
+    // rather than dropping straight back first (docs/reviews/gait-step.md).
+    const pullStep = ps * 0.9;
     const pullPath = (b: Agent): Vec2[] => [
       { x: sim.los - lineDepth(1.25), y: b.pos.y + pullStep },
       { x: sim.los - lineDepth(1.15), y: hole - ps * 0.5 },
@@ -1161,11 +1159,10 @@ export class RunBlocker implements Behavior {
         }
         const next = plan.pullPath[this.pullIdx+1];
         const through = next ? cornerSpeed(a.body, path, next, .65) : 0;
-        // The installed straight-back clearance is a square depth step, not
-        // a pivot toward our own end zone. The optional diagonal open step
-        // retains its authored playside pose; the flat/fit legs face normally.
+        // The open pull step keeps the hips toward the play side, never a
+        // pivot toward our own end zone; the flat/fit legs face normally.
         return goTo(a, path, { speed: 0.95, through,
-          facing: this.pullIdx === 0 ? (PULL_STEP ? Math.atan2(ps, 0) : 0) : undefined });
+          facing: this.pullIdx === 0 ? Math.atan2(ps, 0) : undefined });
       }
     }
     if (target && backTurned(a, sim, target)) {
