@@ -41,7 +41,9 @@ describe('planned climb acquires a useful near strike without running through th
   // reaches its near strike a beat earlier than on the original recording.
   // Feedback-consistent departure now reaches this fit earlier. Both
   // snapshots remain between reads; they exercise the same far/near contract.
-  for(const [at,near] of [[1.25,false],[1.3,true]] as const){
+  // With the start law and the climber stepping off the released man's hip
+  // (no braked read against him), the far/near reads come one tick earlier.
+  for(const [at,near] of [[1.2,false],[1.25,true]] as const){
    const {sim,rt,controller}=stage(at),update=controller.update,see=sim.see.bind(sim),stop=new Error('observed decision');
    const planner=vi.spyOn(controller as unknown as {plannedClimb:(...args:unknown[])=>Intent},'plannedClimb');
    const hook=vi.spyOn(controller,'update').mockImplementation((a,s)=>{

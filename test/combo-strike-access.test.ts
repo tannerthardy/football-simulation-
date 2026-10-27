@@ -75,7 +75,9 @@ describe('earned departure ends at achievable first strike rather than the backe
   // on the keeper's hidden hand-fight value, so the bodies around the guard's departure differ; same decision.
   // Re-staged at 1.65 for the start law (#336): the guard's sub-top-speed climb now starts at full leg force,
   // so he reaches the backer and clears the departure at 1.70 (was 2.40); same decision.
-  decision(1.65,mirror,true);
+  // Re-staged at 1.70 with the climber stepping off the released man's hip (#345): the clear read comes one tick
+  // later on this play; same decision and mirror.
+  decision(1.7,mirror,true);
  });
  it.each([false,true])('keeps the departure when the down body obstructs even first strike, reflected=%s',mirror=>{
   decision(1.3,mirror,false);
