@@ -1962,10 +1962,34 @@ the carrier reaches him).
     moves a snap 0.66 yd on average, the dice alone 9.14).
   - A small, honest step: the hidden value was holding releases without
     protecting anything visible. The large buckets above remain.
+- **Where released climbers stall (2026-10-27).** With the same position-only
+  operator on NFL and sim zone runs, a double gets a man 2 yd off its DL and
+  past the line by 2.5 s on 49% of NFL outside-zone doubles and 19% in the sim
+  (inside zone 27% vs 18%). The sim's release decision is on time (84-88% of
+  planned doubles release, at 1.2 s); only about one released climber in five
+  then clears his down man. The start law (#336) does not change that (0.22 to
+  0.24). In the departure's climb-access reads the obstacle is the climber's
+  own released down man on 59% of non-direct reads (keeper 23%): a step that
+  rubs past the man he just left is rejected, and the down man walks with him.
+- **Climber steps off the released man's hip (`run/G2-climb-off-hip`).** The
+  man he released is his keeper's; World contact decides any rub. His keeper and
+  every other body remain surfaces, and the strike corridor still reads the down
+  man. Matched restage, 456 run-only snaps, saved dice plus 4 shifts:
+  - develop: climb backer touched before the carrier, inside / outside zone
+    0.425 / 0.285 to 0.455 / 0.287; box backers touched 0.58 to 0.59.
+  - with #336 and #344: 0.373 / 0.267 to 0.443 / 0.337; box backers 0.60 to
+    0.63 (outside zone 0.58 to 0.62).
+  - Blocks hold: the released man is still blocked when the carrier crosses
+    (inside / outside / gap 0.87 / 0.92 / 0.89 to 0.88 / 0.92 / 0.88), goes 1+
+    yd deep after the release no more often, and makes first contact slightly
+    less often.
+  - Rejected first: choosing the climber by his walk around the down man
+    changed no play (the first member whose read clears proposes alone).
 - **Next, untried.**
-  - Zone pairs that climb on the fly: a lineman whose man is overtaken by his
-    partner climbs to the backer. This is the NFL's second free climber; the sim
-    makes doubles only at the snap.
+  - Zone pairs that climb on the fly: unplanned two-on-ones are only 1-3% of
+    untouched-backer moments, so this is small.
+  - Released climbers still reach the climb mark only about a quarter of the
+    time; the keeper is the next obstacle (23% of non-direct reads).
   - The braking stand-still has had two failed corrections already (#303); it
     waits on the start ramp.
 
