@@ -1518,11 +1518,17 @@ export class RunBlocker implements Behavior {
     if (plan.kind === 'pull' && plan.pullRole === 'lead' && (seen.pose === 'down' || seen.pose === 'rising')) return stand();
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
     const combinationFit = this.combinationFit(a, sim, target);
+    const contact = a.profile.radius + target.profile.radius + 0.1 + (a.player.measurables.armIn / 36) * 0.45;
     if ((plan.pullRole === 'kick' || plan.pullRole === 'trap') && !a.tags.has('block-log')) {
       const ps = playSideSign(sim,sim.offCall.run!)*(sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
       // If the end crosses the puller's inside shoulder, getting back inside
       // him would expose the runner. Fit his outside shoulder and wash inward.
-      if ((seen.pos.y-a.pos.y)*ps < -.25 && seen.pos.x < sim.los+.8) {
+      // A counter end who already ran behind the puller's strike envelope
+      // has not wrong-armed his entry shoulder. Keep the kick responsibility
+      // and its runner-side fit; do not signal a log from a distant rear cue.
+      const entrySide = sim.offCall.run!.scheme !== 'counter'
+        || (seen.pos.x-a.pos.x)*sim.attackDir(a.team) >= -contact;
+      if (entrySide && (seen.pos.y-a.pos.y)*ps < -.25 && seen.pos.x < sim.los+.8) {
         plan.drive = norm({x:.45,y:-ps});
         a.tags.add('block-log');
         sim.event('block_log',a,target,'kick target crossed inside shoulder');
@@ -1531,7 +1537,6 @@ export class RunBlocker implements Behavior {
     const dd = Math.hypot(target.pos.x - a.pos.x, target.pos.y - a.pos.y);
     // A run block starts with the strike, before torsos meet. Keep functional
     // extension shorter than a pass-pro punch; long arms can catch a slant.
-    const contact = a.profile.radius + target.profile.radius + 0.1 + (a.player.measurables.armIn / 36) * 0.45;
     const fitCandidate = onLine(a, sim) && (plan.kind === 'drive' || plan.kind === 'reach' || plan.kind === 'cutoff' || plan.kind === 'down')
       && (!plan.combination || plan.combination.released)
       && !sim.world.joints.some(j => j.a === a.body || j.b === a.body);
