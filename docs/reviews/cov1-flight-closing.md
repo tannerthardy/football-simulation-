@@ -289,3 +289,48 @@ depth protection.
 
 **Stop.** If 1 or 2 doesn't happen, or 4 is broken, this is the second failed
 attempt: stop, write down why, and re-diagnose.
+
+### Attempt 2 result: partly works, stop rule reached
+
+Matched snaps, `THROW_HORIZON=0` (byte-identical to develop) vs on. The code
+is parked on branch `coverage/G3-cov1-throw-horizon`, not in this PR.
+
+| Declared | Result | |
+| --- | --- | --- |
+| 1. Wide matching at 2+ yd of cushion below 0.6; pace falls with cushion | 2–3 yd: 0.91 → 0.35; 3–5 yd: 0.84 → 0.61 (54 frames: they now spend the cushion). Box 2–3 yd: 0.84 → 0.22, 3–5 yd: 0.86 → 0.12 | mostly held |
+| 2. Nearest defender's downfield speed at the throw falls ≥ 0.5 yd/s (target under him, 2–6 yd) | 2–4 yd: 2.0 → 1.75; 4–6 yd: 1.0 → 1.0 | **not held** |
+| 3. Re-weighted closing rises ≥ 0.1 yd | 0.49 → 0.58 | **not held** (+0.09) |
+| 4. 20+ air-yard catches rise, less than double | 13 → 17 | held |
+
+- **Deep defenders now pace like tracking.** Share faster than 4 yd/s at the
+  throw 0.42 → 0.23 (NFL 0.22); their median downfield speed at it 3.5 → 2.25
+  (NFL 2.5).
+- **Underneath defenders don't move** (0.33 → 0.33 faster than 4 yd/s, NFL 0.18).
+- **Cost:** pass yards per play 8.34 → 9.18 on the same 568 passes. The largest
+  changes are long YAC after short catches, for example a 4.3-yd catch going
+  9.3 → 81.0 yd. With deep defenders no longer racing, they arrive later to the
+  runner; that's where Stage 4's pursuit gap shows.
+
+**Why it doesn't fix COV-1.** The chooser governs deep-zone and depth-protecting
+carries. The nearest defender on our zone throws is mostly someone else: a
+pattern-match `man-open` on the target at 6.8 yd (73 of 205), or an underneath
+zone technique (`lane`, `lane-carry`, `carry-run-past`, `spot-settle`). Only
+about 11 of 205 were in a deep-zone technique at the release.
+
+### Re-diagnosis: the next stage to look at
+
+The nearest defender's case is a match defender in man technique over a
+receiver who throttles at 6–8 yd (curl, hitch, comeback):
+
+- At the start of the receiver's slow-down, ours is retreating at 2.75–3.0 yd/s
+  (NFL 2.0) and begins to slow a median 0.2 s after him (NFL 0.1; ours slows
+  first 9–14% of the time, NFL 31%).
+- His pace comes from `man-open`, which feeds his acquired picture of the
+  receiver's velocity forward. The picture is 0.2–0.4 s old, and nothing in
+  it anticipates a throttle: a tracked defender often slows before the
+  receiver does.
+
+So the open question is what a defender over a stem can see that a throttle
+is coming (the receiver's depth against the route's break depth, his pad level
+sinking, the QB at the top of his drop) and whether `man-open` uses it. That
+needs its own diagnosis before any third change.
