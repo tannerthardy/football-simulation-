@@ -33,10 +33,10 @@ function watch(sim: PlaySim): () => Rec {
   };
   const frames: unknown[] = [];
   const tick = sim.tick.bind(sim);
+  // Frames at t = 0, 0.1, 0.2, ... (the snap, then every second 20 Hz tick),
+  // so frame k is at 0.1k s, the same clock as the 10 Hz NFL tracking.
   let n = 0;
-  sim.tick = () => {
-    tick();
-    if (n++ % 2) return;
+  const record = () => {
     const c = sim.carrier;
     frames.push({ t: r2(sim.t), c: c ? c.idx : -1, ph: sim.phase,
       a: sim.agents.map((a) => {
@@ -48,6 +48,11 @@ function watch(sim: PlaySim): () => Rec {
           e ? (e.blocker === a || e.helpers.includes(a) ? e.defender.idx : e.blocker.idx) : -1, tg, a.isDown(sim.t) ? 1 : 0,
           a.team === 'O' ? (plan(a)?.kind ?? a.behavior.kind) : a.behavior.kind];
       }) });
+  };
+  sim.tick = () => {
+    if (n === 0) record();
+    tick();
+    if (++n % 2 === 0) record();
   };
   return () => ({ setup, frames, events: s.events.map((e) => ({ t: r2(e.t), type: e.type, a: e.a ?? null, b: e.b ?? null, note: e.note ?? null })) });
 }
