@@ -4,11 +4,13 @@
  * purpose). The M- cases are matched-restage captures of develop 55cc9e57, recorded when turning on the feet's
  * actual grip moved the S9-P027 and S7-P067 scenes. It is a recorder: nothing here grades a block. */
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import { RunBlocker, type Combination } from '../src/sim/behaviors/blocking.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import { dutyTimeline, initialJobCensus } from '../src/sim/responsibility-views.js';
+import { LOAD_PRESENT } from '../src/sim/responsibility-ledger.js';
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { restoreSetup } from '../scripts/diag/saved-play.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
@@ -118,26 +120,54 @@ describe('responsibility ledger, staged controls', () => {
 
 interface Case { id: string; setup: string }
 const cases = JSON.parse(readFileSync(new URL('./fixtures/responsibility-ledger-cases.json', import.meta.url), 'utf8')) as { plays: Case[] };
-function play(id: string) {
-  const sim = new PlaySim(restoreSetup(Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64')));
-  const ledger = sim.recordResponsibility(), result = sim.run();
+function play(id: string, selected?: string) {
+  const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
+  const sim = new PlaySim(restoreSetup(setup));
+  const ledger = sim.recordResponsibility();
+  const trace = selected ? sim.recordCommands({ actor: { team: 'O', slot: selected }, from: 0, to: 15 }) : undefined;
+  const result = sim.run();
   const d = ledger.data, slot = (i: number | null) => i === null ? null : d.actors[i].slot;
-  return { sim, d, result, slot, census: initialJobCensus(d) };
+  return { sim, d, result, slot, trace, setupSha256: createHash('sha256').update(setup).digest('hex'), census: initialJobCensus(d) };
 }
 const changeOf = (p: ReturnType<typeof play>, actor: string, reason: string, t?: number) =>
   p.d.changes.filter(c => p.slot(c.actor) === actor && c.reason === reason && (t === undefined || c.t === t));
 
 describe('responsibility ledger, named cases from the Phase II zone set (a5b024b9)', () => {
   it('S9-P062: C releases to LB_W, rereads to LB_M, and loads LB_M and never LB_W', () => {
-    const p = play('S9-P062');
+    const p = play('S9-P062', 'C');
+    expect(p.setupSha256).toBe('fc7f58f199912f3255588696ab79ee4b5c57cef717b550601f349412119eba81');
     const release = changeOf(p, 'C', 'combination-release', 1.05)[0];
     expect(release.after).toMatchObject({ kind: 'climb' });
     expect(p.slot(release.before.target)).toBe('DT_S'); expect(p.slot(release.after.target)).toBe('LB_W');
     const reread = changeOf(p, 'C', 'threat-reread', 1.25)[0];
     expect(p.slot(reread.before.target)).toBe('LB_W'); expect(p.slot(reread.after.target)).toBe('LB_M');
     const c = p.d.actors.findIndex(a => a.slot === 'C');
-    const loads = (slot: string) => p.d.rows.filter(r => r.actor === c).filter(r => r.hands.some(h => p.slot(h.defender) === slot && h.loaded)).map(r => r.endpoint);
-    expect(loads('LB_M')[0]).toBe(2.2);
+    const loaded = (slot: string) => p.d.rows.filter(r => r.actor === c).filter(r => r.hands.some(h => p.slot(h.defender) === slot && h.loaded));
+    const loads = (slot: string) => loaded(slot).map(r => r.endpoint);
+    // #298 changed the fatigue law: the same a5b024b9 input first loads at
+    // 2.20 rather than 2.25. The ledger's contract is the actual endpoint and
+    // loaded target, not preservation of that older physical arrival time.
+    const first = loaded('LB_M')[0];
+    expect(first).toBeDefined();
+    expect(first.t).toBeGreaterThan(reread.t);
+    expect(p.slot(first.plan!.target)).toBe('LB_M');
+    const step = p.trace!.steps.find(s => {
+      const e = s.endpoint?.engagement;
+      return e?.defender.slot === 'LB_M' && e.hands
+        && typeof e.hands.normalForce === 'number' && typeof e.hands.tangentForce === 'number'
+        && Math.hypot(e.hands.normalForce, e.hands.tangentForce) > LOAD_PRESENT;
+    })!;
+    expect(step).toBeDefined();
+    expect(first.endpoint).toBe(step.endpointTime);
+    expect(step.stepStart).toBe(first.t);
+    expect(step.endpoint!.engagement!.defender.slot).toBe('LB_M');
+    const hands = step.endpoint!.engagement!.hands!;
+    expect(hands.normalForce).toBeTypeOf('number');
+    expect(hands.tangentForce).toBeTypeOf('number');
+    const load = first.hands.find(h => p.slot(h.defender) === 'LB_M')!;
+    expect(load.loaded).toBe(true);
+    expect(load.magnitude).toBeGreaterThan(LOAD_PRESENT);
+    expect(load.magnitude).toBe(Math.hypot(hands.normalForce!, hands.tangentForce!));
     expect(loads('LB_W')).toEqual([]);
     const job = p.census.find(j => p.slot(j.backer) === 'LB_W')!;
     // Graded against the initial job this is "no member load"; the ledger also says why.
@@ -147,9 +177,28 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
   });
 
   it('S10-P009: LT is given a different man with no block_threat event', () => {
-    const p = play('S10-P009');
-    const swap = changeOf(p, 'LT', 'available-target/find-work', 1.6)[0];
+    const p = play('S10-P009', 'LT');
+    expect(p.setupSha256).toBe('42de46aa33a84002163f945e51d8cb279d9d4c40f9703649282eb70edfb2b678');
+    // The real transition still exists after #298, one tick earlier. Locate
+    // its exact semantic identity, then require both observers and the actual
+    // pre/post behavior to agree on its native decision and endpoint clocks.
+    const swaps = changeOf(p, 'LT', 'available-target/find-work')
+      .filter(c => p.slot(c.before.target) === 'LB_M' && p.slot(c.after.target) === 'SS');
+    expect(swaps).toHaveLength(1);
+    const swap = swaps[0];
     expect(p.slot(swap.before.target)).toBe('LB_M'); expect(p.slot(swap.after.target)).toBe('SS');
+    const step = p.trace!.steps.find(s => s.blockingChanges?.some(c => c.reason === swap.reason && c.t === swap.t))!;
+    expect(step).toBeDefined();
+    expect(step.stepStart).toBe(swap.t);
+    const reported = step.blockingChanges!.filter(c => c.reason === swap.reason && c.t === swap.t);
+    expect(reported).toHaveLength(1);
+    expect(reported[0].previous.target!.slot).toBe('LB_M');
+    expect(reported[0].current.target!.slot).toBe('SS');
+    expect(step.start.behavior.target!.slot).toBe('LB_M');
+    expect(step.endpoint!.behavior.target!.slot).toBe('SS');
+    const row = p.d.rows.find(r => r.actor === swap.actor && r.t === swap.t)!;
+    expect(step.endpointTime).toBe(row.endpoint);
+    expect(p.slot(row.plan!.target)).toBe('SS');
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT')).toEqual([]);
   });
 
