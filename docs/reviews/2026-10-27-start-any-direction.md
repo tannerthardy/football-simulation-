@@ -109,10 +109,69 @@ Method:
 - No controller uses `effort` to start more gently: under 3% of these ticks
   have effort below 1.
 
-**Named follow-ups (controllers, not this PR):**
-1. **DL rush on runs** (plan `rush`, Defense). Requests about 7.5-8 yd/s at
-   1-3 yd/s, against NFL 2.5-3.3 yd/s 0.5 s later.
+**Named follow-ups (controllers, not this PR).** The first item is revised below.
+1. **DL get-off on run plays** (Defense). See the next section. The 7.5-8 yd/s
+   rush request is a pass-rush get-off, and it matches NFL pass rushers. The
+   overshoot comes from a late start followed by a catch-up sprint, and NFL
+   linemen meet the DL sooner.
 2. **LB reads on runs** (plans `zone` / `man` / `blitz`, Defense, with
    Coverage for the drops). Requests 5.5-6 yd/s, against NFL 2.7-3.4.
 3. **DB drops** (plans `man` / `zone`, Coverage, paused). Requests 3.5-5 yd/s,
    against NFL 1.8-2.6. This was already #336's finding.
+4. **Engaged zone flow** (Defense for the DL's request, Run Game for the
+   blocker's). This is the largest run-game item. See the section after next.
+
+## DL on run plays: a pass-rush get-off, then a stall (trench geometry)
+
+`scripts/diag/trench_flow.py` uses the same operator on NFL tracking and on sim
+film traces from `scripts/diag/run-film-trace.ts`. Run-only seeds 7/9, this law.
+
+| DL, after the snap | 0.2 s | 0.3 s | 0.4 s | 0.5 s | 0.6 s | 0.8 s | 1.0 s | 1.2 s |
+|---|---|---|---|---|---|---|---|---|
+| Speed p50, NFL runs | 0.64 | 0.87 | 1.12 | 1.37 | 1.60 | 1.91 | 2.12 | 2.19 |
+| Speed p50, NFL passes | | 1.12 | 1.49 | 1.83 | 2.15 | 2.64 | 2.94 | |
+| Speed p50, sim runs | 0.29 | 0.85 | 1.40 | 1.74 | 1.67 | 1.12 | 1.28 | 1.37 |
+| Nearest opponent p50, NFL | 1.72 | 1.63 | 1.52 | 1.40 | 1.27 | 1.04 | 0.88 | 0.79 |
+| Nearest opponent p50, sim | 1.81 | 1.74 | 1.58 | 1.34 | 1.04 | 0.72 | 0.75 | 0.81 |
+
+- The snap geometry is the same: 1.83 vs 1.84 yd to the nearest opponent.
+- **A late start.** At 0.1 s only about 40% of sim DL ask to move. Once they
+  move, the sim DL's curve is the NFL pass rusher's: 1.74 at 0.5 s, against
+  1.83 in the NFL.
+- **The catch-up sprint is the overshoot.** On runs NFL DL are slower than
+  that, and NFL linemen close the space steadily.
+- **The stall.** After contact, sim DL slow to 1.1-1.4 yd/s while NFL DL keep
+  moving at 1.9-2.2.
+
+## Engaged zone flow: the physics carries it; the requests don't ask
+
+Same operator, 0.8-1.2 s, a body within 1.3 yd of an opponent, zone runs.
+
+|  | NFL | develop | this PR |
+|---|---|---|---|
+| OL lateral p50 (yd/s) | 2.30 | 0.70 | 0.95 |
+| DL lateral p50 (yd/s) | 2.00 | 0.55 | 0.70 |
+
+**Physics.** Two 135-140 kg linemen on a hand joint (extension 0.86, push 1000,
+steer 330) both ask for 2 yd/s sideways:
+- develop: 1.46 yd/s at 1 s;
+- this PR: 1.92 yd/s by 0.75 s and 1.98 at 1.5 s, with the hands loaded or not.
+
+In games (`scripts/diag/engaged-flow-probe.ts`, this law), engaged zone pairs
+both ask for at least 1 yd/s the same way on 30% of ticks:
+- requests median 1.8 (blocker) and 3.0 (defender);
+- each body plans 1.5 and 3.6 yd/s² sideways and achieves 2.2 and 2.4.
+
+The joint shares the pair's acceleration, and World delivers it.
+
+**Requests.** On the other 70% of zone ticks the defender asks for little,
+nothing, or the other way:
+- all zone ticks: defender request median 0.56 yd/s along the blocker's side;
+  blocker 1.14.
+- The blocker mirrors the defender (`stepRunRep`:
+  `seal = dLat + feedback + correction`), so the pair flows only as far as
+  the DL asks.
+- The DL's request is `requestToCover` toward his fit aim plus the held flow
+  cue, bounded by containment (`stepRunRep`, defender half).
+- Why it stays small or reverses when an NFL DL flows at 2 yd/s is the
+  follow-up.
