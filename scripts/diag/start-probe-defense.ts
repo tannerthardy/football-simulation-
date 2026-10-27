@@ -1,6 +1,6 @@
 /** Per-tick gait plan vs achieved for defenders (DL, LB, DB) on run plays, 0-2.5 s: request,
  * facing offset, directional factor, planned and achieved accel along the request, speed, plan
- * kind, player index and effort. Reads only; one JSON row per body per tick.
+ * kind, nearest opponent distance, player index and effort. Reads only; one JSON row per body per tick.
  *   node --import tsx scripts/diag/start-probe-defense.ts <seed> [games=1] | gzip > out/<arm>-s<seed>.jsonl.gz */
 import { Rng } from '../../src/core/rng.js';
 import { simulateGame } from '../../src/game/game.js';
@@ -42,7 +42,7 @@ function watch(sim: PlaySim, id: number) {
       const turn = ph === undefined ? 0 : Math.abs(angleDiff(ph, head)) / sim.dt;
       const speed = Math.hypot(a.vel.x, a.vel.y), vang = speed > .3 ? Math.abs(angleDiff(Math.atan2(a.vel.y, a.vel.x), head)) : 0;
       const plan = (a.behavior as any).plan?.kind ?? a.behavior.kind;
-      const dl = sim.agents.filter((o) => o.team !== a.team && /^(DE|DT|NT)/.test(o.slot)).reduce((m, o) => Math.min(m, Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y)), 99);
+      const dl = sim.agents.filter((o) => o.team !== a.team).reduce((m, o) => Math.min(m, Math.hypot(o.pos.x - a.pos.x, o.pos.y - a.pos.y)), 99);
       console.log(JSON.stringify([seed, id, grp, r3(t0), r3(req), r3(off), r3(dirf), r3(L.intent.effort ?? 1), r3(L.posture ?? 0), r3(L.squeeze),
         r3(vAlong), r3(planned), r3(achieved), r3(a.profile.vmax), r3(a.profile.tau), engaged ? 1 : 0, carrier ? 1 : 0, L.state, r3(turn), r3(speed), r3(vang), plan, r3(dl), r3((a.pos.x - sim.los) * sim.attackDir(a.team)), a.idx, r3(L.intent.effort ?? 1)]));
     }
