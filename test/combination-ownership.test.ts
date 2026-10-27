@@ -128,4 +128,23 @@ describe('shared combination ownership before either member climbs', () => {
     expect([owner, partner].filter(a => a.engagement === e)).toHaveLength(1);
     expect(e.defender).toBe(defender);
   });
+
+  it('reads the release from pictures and own contact, not the keeper\'s private hand-fight state', () => {
+    const release = (control: number) => {
+      const { sim, owner, partner, defender, combination, observe } = fixture();
+      const e = sim.engage(partner, defender, 'run', { x: 1, y: 0 })!;
+      owner.behavior.update(owner, sim);
+      e.control = control; e.baseB = .9; e.phi = 0;
+      const steps: boolean[] = [];
+      for (const t of [1.05, 1.2, 1.2 + owner.mind.decisionInterval + .16]) {
+        sim.t = t; observe();
+        readCombination(owner, sim, combination);
+        steps.push(combination.released);
+      }
+      return { steps, events: sim.events.map(x => x.type), keeper: [owner, partner].find(a => a.engagement === e)?.slot };
+    };
+    // Same bodies, contact and pictures; only the hidden hand standing differs.
+    expect(release(-.9)).toEqual(release(.8));
+    expect(release(-.9).steps.at(-1)).toBe(true);
+  });
 });

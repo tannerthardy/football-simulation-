@@ -93,7 +93,7 @@ function step(f: Fixture) {
     expect(report.armWork[i]).toBeLessThanOrEqual(report.armWorkLimit[i] + 1e-8);
     expect(report.supportMotorWork[i]).toBeLessThanOrEqual(report.supportMotorWorkLimit[i] + 1e-8);
     expect(Math.hypot(report.groundImpulse[i].x, report.groundImpulse[i].y))
-      .toBeLessThanOrEqual(supportParams(a.profile).traction * f.sim.dt + 1e-8);
+      .toBeLessThanOrEqual(report.groundImpulseLimit[i] + 1e-8);
   }
   f.sim.t += f.sim.dt;
   f.sim.perception.record(f.sim.agents);
@@ -301,6 +301,11 @@ describe('solo hand-fight execution retains its legacy policy with the selected 
     // load, so energies and fatigue factors move. With the old drain and curve
     // both hashes reproduce exactly. In the pass rep one command moves by at
     // most 4e-7 yd/s on ticks 3-6 (agent 3, vel.x); the run policy is unchanged.
+    // PHY-1 (leg force-velocity): a leaning body's strength term now falls with
+    // his speed along the force, and the ground limit is friction on his actual
+    // normal load. Commands, control and RNG are unchanged (the policy hashes
+    // above), only the achieved bodies move, so both physical hashes are
+    // re-recorded.
     const policy = { trace: policyTrace, nextRng };
     const policyHash = createHash('sha256').update(JSON.stringify(policy)).digest('hex');
     expect(policyHash).toBe(type === 'run'
@@ -308,8 +313,8 @@ describe('solo hand-fight execution retains its legacy policy with the selected 
       : '2375619cc4d9f0e29a8d6c004cfb5feeb5fea2a1df2e98904063918c02d1e036');
     const actual = createHash('sha256').update(JSON.stringify({ trace, nextRng })).digest('hex');
     const motor180 = type === 'run'
-      ? '8766748b6a1120025b8b980151dcaefca00342c27955d7b199e2633b7c5484cd'
-      : '3e4847ceadb889e50ffbd1f3bc3072c72344b64a97287786df9126e50a819088';
+      ? 'd6e042eb9648a719ad381e1f4e86b8a1d6cbc9ed5d8e133ac03688f24b23377b'
+      : '68bd69a20c8a1510aebe544d01f199395da4be56f9cdf09303cbe78e91865fb8';
     expect(actual).toBe(motor180);
   });
 });

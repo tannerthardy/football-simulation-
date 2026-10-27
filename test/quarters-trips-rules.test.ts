@@ -31,7 +31,12 @@ describe('Quarter Flat apex', () => {
     expect(away.sim.offAlign.spots.RB.pos.y - away.sim.ballY).not.toBe(0);
     expect(Math.sign(away.sim.offAlign.spots.RB.pos.y - away.sim.ballY)).toBe(-away.sim.offAlign.strongSign);
     const rb = away.sim.slot('RB')!;
-    expect(rb.pos.x - away.sim.los).toBeGreaterThan(-1);
+    // Re-recorded for the leg force-velocity law (PHY-1): the weak end's rush
+    // meets the back at 1.5 s, and a rusher at 3.4 yd/s now loses part of his
+    // drive with speed, so the contact runs longer. The back is checked at
+    // 2.8 s at -2.0 yd (develop: -0.3) and still going upfield at 3.7 yd/s.
+    expect(rb.pos.x - away.sim.los).toBeGreaterThan(-2.5);
+    expect(rb.vel.x).toBeGreaterThan(1);
     expect(Math.sign(rb.pos.y - away.sim.ballY)).toBe(-away.sim.offAlign.strongSign);
     expect(modeOf(away, 'NB')).toBe('two');
     expect(jobsOf(away, 'NB').at(-1)).toBe(`man:${away.numbering.S2}`);

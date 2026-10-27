@@ -917,7 +917,7 @@ interface RunStackRead {
   hold?: { y: number; until: number };
 }
 const runStacks = new WeakMap<Engagement, RunStackRead>();
-const runTargets = new WeakMap<Engagement, { aim: Vec2; runner: boolean; flow?: number }>();
+const runTargets = new WeakMap<Engagement, { aim: Vec2; runner: boolean; flow?: number; trail?: boolean }>();
 /** The runner's first clear lateral flow an edge saw in this contact. */
 const runFlows = new WeakMap<Engagement, number>();
 const CUTBACK_RANGE = 3.5; // yd: a cutback this close is his to play
@@ -1038,6 +1038,28 @@ function runContactRead(sim: PlaySim, e: Engagement) {
       flow = backSeen.vel.y;
     }
   }
+  let trail = false;
+  if (stack && edge && job!.kind === 'edge' && !advanced && !cutback && d.recog?.read === 'run' && back) {
+    // Backside: the back he sees has the ball and is flowing away from this
+    // edge behind the line. His contain is behind the play, not outside a
+    // blocker the play has left: work down the line behind the ball, keeping
+    // the lateral relation to the ball his fit had (the boot/reverse/cutback
+    // check), as the free edge fit does. Possession and motion come from his
+    // own backfield pictures, as for the interior trail above.
+    const qbSeen = sim.see(d, sim.qb), backSeen = sim.see(d, back);
+    const fresh = (age: number | undefined) => age !== undefined && Number.isFinite(age)
+      && age >= 0 && age <= d.profile.reactionTime + 2 * d.mind.decisionInterval;
+    const cushion = Math.abs(liveGapY(sim, d, job!.gap, job!.side) - sim.ballY);
+    const point = backSeen.pos.y + job!.side * cushion;
+    if (backSeen.carrying === true && qbSeen.carrying === false && fresh(backSeen.age) && fresh(qbSeen.age)
+      && job!.side * backSeen.vel.y < -1 && (backSeen.pos.x - sim.los) * sim.attackDir(back.team) <= 0
+      && (point - d.pos.y) * job!.side < 0) {
+      desired = { x: d.pos.x, y: point };
+      flow = backSeen.vel.y;
+      trail = true;
+      d.tags.add('edge-trail');
+    }
+  }
   if (flow === undefined && pullFlow !== undefined) flow = pullFlow;
   // EDGE_CONTAIN: an edge's outside shoulder is leverage on the ball, not on
   // the blocker. Widening with a reach only pays while the runner he sees
@@ -1060,7 +1082,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   // Support contacts hold the selected target mode too. A safety's acquired
   // runner aim must not keep being treated as an undeclared force landmark.
   if (runTargets.get(e)?.aim !== aim)
-    runTargets.set(e, { aim, runner: flow === undefined && declared && (!edge || advanced || cutback), flow });
+    runTargets.set(e, { aim, runner: flow === undefined && declared && (!edge || advanced || cutback), flow, trail });
   // A close observed back can threaten a penetrating lineman deep behind
   // the surface; shedding must not wait for the free-fit declaration depth.
   // A standing deep QB is still a mesh key, not a run target. An observed
@@ -1068,7 +1090,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   const threat = reading && carrierCue &&
     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
   return { aim, reading, threat, declared: runTargets.get(e)!.runner,
-    flow: runTargets.get(e)!.flow, stack, contain, acquiredHolder: !!held };
+    flow: runTargets.get(e)!.flow, stack, contain, trail: !!runTargets.get(e)!.trail, acquiredHolder: !!held };
 }
 
 /** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
@@ -1457,7 +1479,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // above). Already wider than that, he stops and holds his ground; this
   // bounds his widening only and never pulls him inside his shoulder.
   const side = d.runFit?.side ?? 0;
-  if (read.contain !== undefined && (target - read.contain) * side > 0)
+  // A trailing backside edge (above) has no outside to keep: the ball has
+  // gone away from him, so containment does not hold him where he is.
+  if (read.contain !== undefined && !read.trail && (target - read.contain) * side > 0)
     target = (d.pos.y - read.contain) * side > 0 ? d.pos.y : read.contain;
   const flow = clamp(DL_FLOW
     ? requestToCover(gaitLag(d.profile), target - d.pos.y, horizon, d.vel.y)

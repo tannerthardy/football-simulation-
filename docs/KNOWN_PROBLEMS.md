@@ -285,12 +285,14 @@ problem), resolved.
 | [RUN-4](#run-4) | Defensive linemen run upfield past reach blocks | G2 | medium | on |
 | [RUN-5](#run-5) | Pad level had no effect on a push | G2 | medium | on |
 | [RUN-6](#run-6) | Gap-scheme blockers took the wrong defenders | G2 | medium | resolved (#192) |
-| [RUN-7](#run-7) | The lead puller misses a Mike stacked inside his path | G2 | medium | open |
+| [RUN-7](#run-7) | The lead puller misses a Mike stacked inside his path | G2 | medium | partly fixed |
 | [RUN-8](#run-8) | Center covered on almost every snap | G2 | medium | on |
 | [RUN-9](#run-9) | Front and edge alignment unlike tracking | G2 | medium | on |
 | [RUN-10](#run-10) | Older run-blocking and second-level issues | G2 | low–medium | open |
 | [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
 | [RUN-12](#run-12) | Run blockers lost on their assignments (film, Oct 23) | G2 | high | in work |
+| [RUN-13](#run-13) | Box backers untouched: linemen do not climb free to the second level | G2 | high | in work |
+| [RUN-16](#run-16) | Draw: the line does not block the rush while it shows pass | G2 | high | in work |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -483,6 +485,38 @@ problem), resolved.
   only within 1.2 yd, so a Mike stacked inside that path is missed.
 - **Open:** the puller should track his target, not a landmark.
   `PULL_EARLY` (#190) is the defense's side of the same play.
+- **Partly fixed (2026-10-27, `run/G2-pullers`).** Measured with #335's
+  `matched-restage.ts` on develop `a58ebc2d` (yaw and leg force-velocity law):
+  run-only snaps from seeds 7/9/11/13 (456 snaps), each played on its saved
+  dice and 4 shifted streams, develop vs this branch. Tables use #340's
+  0.1k s trace clock. Rows are the shared puller rule (power/counter/trap).
+  - The pull step opens to the play side (`PULL_STEP` removed). Kick and lead
+    corners sit 0.45/0.35 yd behind the puller's own stance; the observed wall
+    takes more depth where its bodies need it. Moved at 0.5/1.0/1.5 s, power
+    0.21/0.82/2.13 to 0.26/1.15/2.53 yd, counter 0.21/0.81/1.93 to
+    0.28/1.14/2.50 (NFL 0.49/1.77/3.31 and 0.48/1.82/3.43). Deepest point
+    1.67/1.57 to 1.70/1.42 (NFL 1.31/1.45). First touch 2.4/2.3 to 2.1/2.0 s
+    (NFL 1.6/1.6).
+  - A kick or trap man the runner has already passed is out of the play: the
+    puller turns up (`pull: kick man behind the runner, turn up`), and does not
+    retreat after an end going deeper behind the ball. Kickers whose first
+    block is on a man deeper than the carrier: counter 30 to 2, power 32 to 5,
+    trap 11 to 4.
+  - A lead puller (and a kicker who turned up) blocks the first threat in the
+    hole from his own pictures (`pull lead: first threat in the hole`). He
+    reads once he has cleared the wall, leaves a teammate's called kick man to
+    that puller, takes a free man before one he sees on a teammate, and
+    finishes a man he is closing on. Counter leads engage 7% to 35% (power
+    10% to 52%); first blocks on a man deeper than the carrier 2 of 13 to 5 of
+    62 engaged.
+  - Still open: box backers touched before the carrier reaches them do not
+    move (power 0.64 to 0.62, counter 0.60 to 0.57; NFL 0.91/0.86). A lead
+    loads a backer before the runner reaches him on only 4 of 178 counter
+    leads; pullers still reach the hole late (speed off the ball, Main
+    Engine's ramp). Trap is slower with the open step (moved at 1.0 s 1.20 to
+    0.98 yd, first touch 1.8 to 2.0 s). Two attempts to let a trapper fit a
+    penetrator already through the wall without first clearing it failed
+    (G1-P112), so the trap keeps its installed corners.
 
 <a id="run-8"></a>
 ### RUN-8: Center covered on almost every snap
@@ -883,6 +917,20 @@ Carried over from the issue register; each was measured on an older develop.
   - **Next (proposed, not built):** estimate the speed trend from about
     0.4–0.6 s of seen pictures. Then, if needed, a commitment margin on the
     chosen time.
+
+- **Backside wide end** ([evidence](reviews/backside-edge.md), 2026-10-27,
+  on #329):
+  - *NFL:* he squeezes and trails without stopping, at 3–3.6 yd/s, keeping a
+    5 yd cushion on the carrier's backside and about 6 yd from him through
+    3 s. 18% are in on the play.
+  - *Ours:* he stopped at his edge landmark (free) or under `EDGE_CONTAIN`
+    (blocked).
+  - *Change (on):* he trails the ball when it's carried away behind the line.
+    Lateral speed went from 0.87 to 2.18 free (NFL 2.95) and from 0.10 to 1.05
+    blocked (NFL 1.10), with matched yards unchanged.
+  - *Open (stop rule):* in on the play is still 1%. He loses the ground after
+    the runner crosses, at the `preserveEdge` chase gate. **Next (proposed):**
+    gate 0 for a backside edge whose ball has gone away.
 
 <a id="tkl-3"></a>
 ### TKL-3: Fast receivers break catch tackles twice as often
@@ -1382,6 +1430,364 @@ run plays with the assignment layer (`--telemetry full`):
      down man. This is the NFL 2.45 yd release question already open above.
 
   Revisit the route search only after one of them.
+
+  **Why doubles release with the backer 4–6 yd away (2026-10-26).** This
+  traces every joined release in the three declared sets on develop
+  `a27ccd84`: which trigger fired, the backer's distance in the releasing
+  member's picture, and whether he was still moving into the down man. #300's
+  `blockingChanges` hook confirms the release time on 30 of 31 climbers in
+  games 7–8. The 31st, S8-P004, is now a pre-snap foul.
+
+  Dead-ball plays are excluded: S8-P004, plus S7-P029 and S9-P039 in the
+  Phase II set. `PlaySim.run` whistles them before the first tick, but the
+  collector ticked them by hand; it now reports them as dead balls.
+
+  A joined double releases once the keeper has been secure for 0.15 s and
+  any one of these fires, in the releasing member's own pictures:
+  - the backer is within 4.2 yd (`near`);
+  - he will be within 4.2 yd in 0.5 s (`ahead`, `FLOW_RELEASE`);
+  - he is flowing play side faster than 1.5 yd/s, at any distance (`flow`,
+    `FLOW_RELEASE`);
+  - the runner's picture is within 2.8 yd of the line (`arriving`), at any
+    backer distance.
+
+  Most releases leave the backer at least 4 yd away: 22 of 30 (games 7–8),
+  10 of 17 (games 9–10), 29 of 42 (Phase II). By the trigger that released
+  them, across the three sets:
+
+  | Trigger that released a late double | Releases | Backer worked before the runner |
+  |---|---|---|
+  | runner arriving only | 14 | **0** |
+  | flow only | 17 | 5 |
+  | backer coming (`ahead`, not yet `near`) | 23 | 11 |
+  | backer `near` | 7 | 3 |
+
+  - "Still moving into the down man" at release predicts little: 13/36
+    worked with the backer in reach, against 12/25 for a climber not moving
+    into him.
+  - Backer out of reach (neither `near` nor `ahead`): 5 of 32 worked, and
+    0 of 12 when the climber was also moving into the down man.
+
+  The first wrong stage is the release decision. The runner's arrival and
+  the backer's flow each release a climber to a backer he cannot reach.
+
+  The #307 responsibility ledger reproduces this on develop `4e6fed4e`
+  (after #306/#308). Its `combination-release` rows count 30, 17 and 42
+  climber releases; 21, 10 and 28 of them leave the backer at least 4 yd
+  away (p50 4.52, 4.15 and 4.24 yd).
+
+  **One fix tried, reverted.** Declared on #311 before running: a joined
+  double holds its climber until he is no longer moving into the down man
+  and the backer is within reach (`near` or `ahead`). The runner's arrival
+  and the flow speed no longer release on their own. Results on identical
+  snaps, develop `a27ccd84` → fix:
+
+  | Set | Backers worked | Keepers holding | Release p50 | Never released |
+  |---|---|---|---|---|
+  | games 7–8 | 11/35 → 8/35 | 27/30 → 28/30 | 4.43 → 3.48 yd | 3 → 12 |
+  | games 9–10 | 4/24 → 4/24 | 17/19 → 16/19 | 4.30 → 4.09 yd | 5 → 9 |
+  | Phase II set | 18/53 → 17/53 | 38/43 → 40/43 | 4.11 → 3.84 yd | 9 → 17 |
+
+  - Matched restage, seeds 7–8: 52 of 276 snaps change, all runs (run
+    yards 4.88 → 4.40; passes identical). Plain develop replayed twice
+    changes 0.
+  - Doubled linemen making first contact: 1 → 0, 2 → 2, 7 → 4.
+  - Over 20 release-contract scenes fail (`combo-transfer`,
+    `planned-climb-fit`, `combination-access-plan`). They fail through the
+    "moving into" hold, not through the removed triggers.
+
+  It fails the declared criteria: backer work falls and a keeper set falls.
+  The losses are well-timed releases, made at 1.15–1.55 s with the backer
+  3.1–4.8 yd away (S7-P041, S7-P043, S8-P012, S8-P025, S10-P009). The hold
+  delays each by 0.2–1.0 s, and the backer gets past. A climber leaving at
+  the right moment is usually still pressed into the down man; that is what
+  a double is. So "stopped moving into him" can't be a precondition to
+  leave.
+
+  Untested, the next single question: the runner-arriving-only release
+  (0 of 14 worked) on its own, with the `inward` test left out.
+
+  **Correction: the "4–6 yd vs NFL 2.45 yd" comparison used two different
+  measures.** The NFL figure comes from `climb_reference.py`:
+  - release is the climber's *last frame within 1.5 yd of a first-level
+    man*;
+  - only linemen who reach 2 yd past the line before the carrier count;
+  - the backer is whichever one the climber comes closest to.
+
+  Our 4–6 yd was the release *decision* against the *installed* backer.
+  The identical operator on 8 develop games (`sim-export.ts`, seeds
+  101–108, `4e6fed4e`, 147 zone runs):
+
+  | Combo climbers | Sim | NFL |
+  |---|---|---|
+  | release time p50 | 2.2 s | 2.1 s |
+  | backer distance at release p50 | **1.87 yd** | 2.45 yd |
+  | speed in the first 0.5 s | 2.19 yd/s | 3.1 yd/s |
+  | backer touched before the carrier | 74.5% | 58% |
+  | climbers per zone run (combo + uncovered) | **0.67** (98 + 1) | **1.85** (997 + 287) |
+
+  Climbers who do get off already "let the backer come to them". What is
+  missing is how many get off at all. In 76 of the 147 sim zone runs, no
+  lineman reaches 2 yd past the line before the carrier.
+
+  *Where they are lost.* There are 109 installed doubles in the three
+  declared sets:
+  - 17 never release;
+  - 30 release and reach 2 yd before the carrier;
+  - 62 release but don't. In 46 of these the climber is still within
+    1.5 yd of a first-level man about until the carrier arrives.
+
+  From the release decision to that last frame takes a median 1.0 s
+  (p25–p75 0.7–1.65 s).
+
+  The stuck climbers:
+  - are free: within 1.5 yd of their own down man on 79% of ticks, but
+    engaged with him on 3%, while the keeper holds him on 89%;
+  - request 3.57 yd/s, only 0.92 yd/s of it upfield (climbed: 4.34 and
+    2.34).
+
+  The backer's position at release is the same for both groups. The
+  difference is the down man: for the stuck climbers he stands between
+  both doubled blockers and the backer (backer stacked behind him) in 31 of
+  59. `climbRoute`'s `exit` flag shows it:
+  - releases with a clear route: 20 of 47 climb, 19 work the backer;
+  - releases that must go around the down man: 8 of 41 climb, 9 work.
+
+  *Coaching reading.* "Let the backer come to you" is about the backer
+  *declaring*: stepping off the stack to one side, which puts him in a
+  lane for the blocker on that side. It is not about his distance. Until
+  then the double keeps moving the down man to him. The release triggers
+  (`near`, `ahead`, `flow`, `arriving`) don't ask whether anyone has a lane.
+
+  **Second release fix tried, reverted; release changes stop here.**
+  Declared on #311 before running: no joined release while the member's
+  own route needs an exit around the down man, i.e. until the backer
+  declares to his side. On identical snaps, develop `4e6fed4e` → fix:
+
+  | Set | Backers worked | Keepers holding |
+  |---|---|---|
+  | games 7–8 | 11 → 10 | 27/30 → 28/31 |
+  | games 9–10 | 4 → 5 | 17/19 → 16/18 |
+  | Phase II | 18 → 16 | 38/43 → 34/41 |
+
+  - Doubles never released 17 → 34; climbers reaching 2 yd before the
+    carrier 30 → 28.
+  - Same-operator 8-game export: climbers per zone run 0.67 → 0.58, and
+    the backer touched first 74.5% → 60.7%.
+  - Matched restage: 37 of 285 snaps change, all runs.
+
+  A stacked backer usually doesn't declare in time, so the double just
+  stays and nobody climbs. That is two failed release holds (this one and
+  the `inward` hold), so release-rule changes stop.
+
+  *Re-diagnosis: the double doesn't move the down man.* Coaching's other
+  half is "push the down man to the backer". `trench/timeline.py` on the
+  8-game develop export, against the NFL values in
+  `docs/reviews/trench-timeline.md` (historical: the NFL tracking export
+  isn't in this workspace, so they need refreshing):
+
+  | | Sim | NFL (historical) |
+  |---|---|---|
+  | engaged OL sideways speed, outside zone | 0.75 yd/s | 3.0 |
+  | engaged OL sideways speed, inside zone | 0.50 yd/s | 1.25 |
+  | engaged DL depth at 3 s, outside zone | −0.15 | +1.0 |
+  | double duration, outside / inside zone | 1.7 / 1.7 s | 1.1 / 1.5 |
+
+  A down man the double doesn't carry stays between the climber and a
+  stacked backer, so no route leaves him. Next:
+  1. Re-measure the engaged-pair numbers against fresh NFL tracking.
+  2. Trace one stuck double's lateral request against what it achieves, to
+     separate the controller (what is asked, including SEAL_HOLD's kept
+     offset) from contact physics (PHY-1, #297).
+
+  *Traced: it is the request.* Both members of every declared double were
+  traced from 0.3 s to the release decision, over engaged ticks only.
+  Velocities are play-side sideways, in yd/s:
+
+  | Scheme | member-ticks | decision | after the engagement stage | achieved |
+  |---|---|---|---|---|
+  | outside zone | 1,111 | 0.04 | 0.88 | 0.68 |
+  | inside zone | 1,481 | 0.00 | 0.67 | 0.47 |
+  | wide zone | 1,524 | 0.01 | 0.78 | 0.64 |
+  | split zone | 377 | 0.03 | 1.46 | 0.49 |
+
+  - The engagement stage (`stepRunRep`, `engagement.ts`) rewrites about
+    98% of engaged ticks.
+  - The body achieves 75–85% of what is asked on outside, inside and wide
+    zone, so contact physics is not the main limit there.
+  - The double asks to carry the down man sideways at under 1 yd/s.
+
+  The lever is the engaged zone double's sideways drive request in
+  `stepRunRep`. That function holds the SEAL_HOLD and `runContactRead`
+  lines owned elsewhere, so the change needs routing to its owner before
+  anyone edits it.
+
+  **Tanner approved working in `engagement.ts`; two tests followed, both
+  declared on #311.**
+
+  *E1, reverted.* The owner of a live double stops being a stretch reach
+  (on a stretch rep he only mirrors the man) and drives at the drive-block
+  tempo.
+  - Owner sideways request on outside zone rose 0.88 → 1.22 yd/s, but
+    achieved speed only 0.68 → 0.73.
+  - Climbers reaching +2 stayed at 30; backers worked rose in all three
+    sets (11→12, 4→6, 18→20).
+  - It fails the declared climber criterion.
+
+  *Why the down man doesn't move.* The doubled DL is never driven back:
+  −0.06 to −0.16 yd/s on outside, inside and wide zone. The probes:
+  - turning off `DL_ANCHOR` or `PAD_LEVERAGE` changes nothing;
+  - removing his depth-hold request moves him (inside zone +0.54 yd/s),
+    so two blockers can move one man in this World;
+  - ground force along the attack direction is owner +677, **helper
+    +144**, DL −804;
+  - the helper's final request is 0.38 yd/s upfield, 1.21 sideways: his
+    hip-to-hip spot (`toSpot × 3`, set at the owner's depth) and the
+    `helperFit` foot replacement pull him back;
+  - his sideways force nets −98, toward the backside.
+
+  The double is one pusher plus a helper leaning on the man's flank.
+
+  *E2, a `HELPER_DRIVE` flag (off), not landed.* The helper drives along
+  the track, keeping only his width at the partner's hip, with no foot
+  replacement while his hands are loaded. Judged on sets not used to
+  choose it:
+
+  | | develop | E2 |
+  |---|---|---|
+  | holdout games 11–12 (`59827691…`): climbers reaching +2 / backers worked / keepers holding | 10 / 11 / 22 of 25 | 12 / 11 / 26 of 26 |
+  | 8-game export (seeds 101–108): climbers per zone run / backer touched first | 0.67 / 74.5% | **0.86** / 73.9% |
+  | matched restage, seeds 7–8: snaps changed / run yards | — / 8.09 | 77 / 6.92 |
+
+  - Of the 77 restage changes, one pass changes its event path but ends
+    with the same yards. Among the runs, #181 (64 yd → 17) is a downfield
+    tackle flip at 4.45 s after identical events; #180 (49 → 7.5) is a
+    keeper losing DT_S at 2.65 s after the release.
+  - On the earlier sets, which only report, keepers holding on games 7–8
+    fell 27/30 → 24/30.
+
+  *Correction: where E2's gain came from.* I wrote here that most of it
+  came from removing foot replacement. The split on the holdout says the
+  opposite. The width-only spot alone gives 12/35 backers and 26/26
+  keepers. No foot replacement while loaded, alone, gives 11/35 and 22/25,
+  the same as develop. Foot replacement is not what holds the helper back.
+  A loaded helper level with or past the man already carries zero
+  `helperSupport`, and recovery fires on 77–100% of those ticks.
+
+  *E3, the width-only spot alone (`HELPER_DRIVE`, removed before merge; the
+  code is kept on `run/G2-helper-hip-spot` and listed in PARKED.md).*
+  `helperFit` is unchanged, so helper-fit's wrong-side tests pass with the
+  flag on. Measured on develop 58ae15d7 (branch merged), flag off vs on:
+
+  | | off | on |
+  |---|---|---|
+  | holdout 11–12: climbers reaching +2 / backers worked / keepers holding | 10 / 10 of 35 / 22 of 25 | 10 / **12** of 35 / 23 of 24 |
+  | Move 4, 9–10, Phase II sets (109 doubles): climbers reaching +2 / stuck within 1.5 yd | 24 / 49 | **34 / 37** |
+  | Move 4 set keepers holding | 30 of 31 | 27 of 31 |
+  | 8-game export: climbers per zone run / backer touched first / departure speed | 0.60 / 65.8% / 2.27 | **0.67** / 66.3% / 2.37 |
+  | matched restage, seeds 7–8 (273 snaps): changed / run yards | 0 / 6.37 | 87 / 4.93 |
+
+  It fails two of the criteria declared on #311:
+  - holdout climbers do not rise (10 → 10);
+  - the Move 4 set loses 3 keepers (S7-P053 twice, S8-P055).
+
+  Both keeper-loss plays are short gains in both arms (1.46 → 0.56 and
+  1.51 → −0.11). In S8-P055 the first carrier contact (1.7 s) comes before
+  the runner reaches the down man (2.4 s). The keeper count is grading a
+  block that broke up after the play was decided.
+
+  The restage run-yard drop is a tail, not a mean shift. Of 85 changed
+  runs, 23 gain more than half a yard, 22 lose more, and 40 move less than
+  that. Four long runs cut short (−64.5, −60.6, −37.0, −33.4 yd) carry the
+  difference. Two passes change: #58 (−2.49 → −2.47) and #160 (same yards,
+  different path).
+
+  *Status.* This mechanism has now had five attempts (H, D, E1, E2, E3).
+  The stop rule applies.
+
+  What is established:
+  - the release decision is not the main loss;
+  - the double does not move the down man;
+  - the helper's spot at the owner's depth holds him back. Width-only
+    clearly frees climbers on the larger sets, without breaking a contract.
+
+  *What holds the stuck holdout climbers (develop 58ae15d7, default path).*
+  "Stuck" uses the fate definition: the double released, the climber never
+  got +2 before the carrier did, and he was still within 1.5 yd of a
+  first-level defender when the carrier got there. That is 15 climbers on
+  the default path (14 with the flag on).
+
+  Each climber's window runs from release to the carrier reaching +2 (else
+  first carrier contact). Sources:
+  - responsibility ledger (#307): his job, every change and its reason,
+    his engagement, loaded hands, torso contacts, and which stage owned
+    his command;
+  - command trace: raw request vs final;
+  - `climb-access-trace.ts` for the two stand-stills.
+
+  | play | climber → backer | what holds him |
+  |---|---|---|
+  | S12-P050 | C → LB_W | Not stuck: he blocks his backer for 62% of the window. The backer filled to him at the line. |
+  | S12-P061 | C → FS | Not stuck: he blocks his backer (the rotated safety) for 45%. |
+  | S12-P045 | C → LB_W | A threat reread at 2.20 sends him to SS, who is filling. He blocks SS for 30%. |
+  | S12-P007 | LG → LB_M | A threat reread at 1.95 returns him to helping on the down man (DT_S), helper for 80%. |
+  | S12-P045 | H → SS | find-work retargets him twice, SS → LB_M (2.50) → LB_W (2.80). Free, no contact. |
+  | S12-P056 | LG → LB_M | Not a hold: the double releases at 2.85, after first contact (2.35, DE_W). |
+  | S11-P021 | LT → LB_M | Late release: 0.55 s before the carrier arrives. Free, no contact, still accelerating (1.41 of 5.08 yd/s). |
+  | S12-P007 | RG → LB_W | Free all the way. Asks 4.56 yd/s upfield, gets 1.86. Reaches +1.92, just short. |
+  | S11-P012 | LG → NB | **Stand-still**: raw request zero for the whole 0.75 s. Access is unvalidated, every arc fails clearance against DE_W (a neighbouring defender, not his down man, already overlapped), and braking falls back to zero. |
+  | S11-P074 | RG → DB | **Stand-still**: raw request zero for 0.85 s. Same rejection, but the overlapped obstacle is his own keeper, RT. Only `spacing` moves him (0.46 yd/s sideways). |
+  | S11-P074 | C → LB_M | Asks mostly sideways: 3.02 yd/s, 0.29 of it upfield. |
+  | S12-P048 | RG → LB_W | `spacing` cuts his 3.34 yd/s upfield request to 1.16 on half the ticks. Achieves 0.25. |
+  | S11-P026 | C → LB_W | Asks 2.20 upfield, achieves 0.36. Beside DT_W, torso contact on 3 ticks. |
+  | S11-P030 | RT → NB | Asks 1.40 upfield, achieves 0.72. Torso contact with DE_S (53%) and LB_M. |
+  | S11-P019 | C → LB_W | Asks 5.56 yd/s, mostly sideways (2.07 upfield). Achieves 0.87. Torso contact with DT_W (32%). |
+
+  No stuck climber is held by hands on his down man. Only S12-P007 LG is
+  engaged with him again, and that came from a reread, not a hold. By
+  first cause:
+  - **3 are not failures.** Two block their own backer, who came to them.
+    One blocks a filling safety after a reread.
+  - **3 are timing.** One releases after the play is decided. Two release
+    with too little time left to reach +2.
+  - **2 are responsibility churn** (threat reread, find-work).
+  - **2 stand still** on the #303 access rejection. Both are overlapped
+    with a surface that is not their down man: a neighbouring defender,
+    or their own keeper.
+  - **5 ask too little or the wrong way.** That is a sideways or low raw
+    request, `spacing` cutting the request, or torso contact without hands.
+
+  So the hip-side spot cannot help these climbers: it changes the helper
+  before release, and none of these 15 is held by the double itself. That
+  is why the holdout climbers stay flat (10 → 10) under E3.
+
+  *Keepers re-scored at the runner's first carrier contact.* "Holding"
+  now means the down man is still engaged by a blocker at the first
+  carrier contact, and did not make it himself. Plays with no carrier
+  contact are excluded. Scored this way, E3's keeper loss disappears:
+
+  | set | at runner arrival, off → on | at first contact, off → on |
+  |---|---|---|
+  | Move 4 (7–8) | 30/31 → 27/31 | 20/34 → 18/34 |
+  | 9–10 | 18/20 → 18/19 | 15/23 → 18/23 |
+  | Phase II | 40/44 → 40/44 | 31/51 → 31/49 |
+  | holdout 11–12 | 22/25 → 23/24 | 21/30 → 21/30 |
+  | all | 110/120 → 108/118 | 87/138 → 88/136 |
+
+  The first-contact score has its own censoring. On long runs the first
+  contact is a defensive back at 3.5–5 s, and every keeper block has ended
+  by then (S7-P031, S8-P054). It is reported alongside, not substituted.
+
+  Next, in order of how many climbers it covers:
+  1. The low or sideways climb request, and `spacing` rewriting it
+     (5 climbers). Trace the raw climb request against the backer's seen
+     path.
+  2. The #303 overlap rejection where the overlapped surface is a
+     teammate or a neighbouring defender (2 climbers). #303's two
+     corrections both targeted the down man.
+  3. Reread and find-work churn after release (2 climbers): Competing
+     duty (S9-P062).
+
 - **Pullers whiff.** *Partly fixed (on by default).* A kick or trap puller
   tracked the end's shoulder with the end's own velocity fed forward. On P031
   the end penetrated 4 yd deep, so the guard matched his backward speed and
@@ -1502,6 +1908,165 @@ run plays with the assignment layer (`--telemetry full`):
   mean moves with a few breakaways. The rest of the carry on P46 and P123 is
   the open push question in PHY-1.
 
+<a id="run-13"></a>
+### RUN-13: Box backers untouched: linemen do not climb free to the second level
+
+Measured 2026-10-27 on run-only film (#329), seeds 7/9/11/13 × 2 games, 922 runs,
+with the #338 pullers. The NFL comparison uses BDB2025 weeks 1–2 and the same
+definition as `run_film_reference.py` (box backer touched by an OL/TE/back before
+the carrier reaches him).
+
+- **Measure.** Box backers touched: 56% (NFL 85%); outside zone 48% (86%).
+- **Where the gap is.** Linemen touching a backer while still beside a down
+  lineman occur at the NFL rate (outside zone 29% vs 35%, inside zone 45% vs 49%).
+  Linemen who climbed free do not: outside zone 15% vs 45%, inside zone 18% vs 29%,
+  power 19% vs 36%, counter 13% vs 33%. Backers fill at the NFL pace (2.0–2.5 yd
+  downhill before the carrier reaches them).
+- **Why, for each untouched backer** (all families; nearest blocker whose
+  current target was him):
+
+  | Reason | Share of box backers |
+  |---|---|
+  | No blocker ever targets him. Outside zone's usual call (three reaches, a cutoff, one double) puts all five linemen on four down men. | 13% |
+  | His double never releases before the runner reaches him (draw 32%) | 8% |
+  | His released climber is free but still at or behind the line | 11% |
+  | His released climber is past the line but 3–4 yd short | 10% |
+  | His blocker is engaged on someone else | 3% |
+
+- **Released climbers' movement** (outside zone):
+  - Ticks by climb-access mode: detour 51%, braking stand-still 19%, direct 18%.
+  - Detouring climbers ask for 2.4 yd/s and move toward their backer at
+    0.23 yd/s.
+  - Even in direct mode, the body achieves about a third of the request
+    (5.7 asked, 1.8 achieved), with no contact or spacing rewrite on most
+    ticks. That is the start ramp Main Engine is fixing.
+  - Control: `GAIT_STEP=0.3` (start fixed, not proposed here) moves untouched
+    backers only modestly: outside zone 52% to 48%, power 34% to 27%, trap 40%
+    to 26%.
+- **Doubles that never release** (outside zone, 90 of 478 before the carrier
+  reaches +2):
+  - 44% never joined, so no release read ran.
+  - 26% are held by the keeper's hidden hand-fight `control` value, which the
+    climber cannot see.
+  - About 25% fail because the keeper's hands are not touching.
+- **Attempt 1, failed (reverted, `run/G2-backer-access`).** A released
+  climber's detour ran the tangent off the man's shoulder, carried one stride
+  past, instead of 20-degree arcs. Requests rose (2.4 to 3.5 yd/s), but achieved
+  motion barely moved (1.19 to 1.28 yd/s) and touched backers did not change
+  (outside zone 52% untouched either way).
+- **Keeper check without the hidden `control` value (2026-10-27,
+  `run/G2-keeper-picture`).** The climber reads his partner's chest on the man,
+  within reach and upright, in his own picture; the transfer still needs the
+  keeper's real hands. Matched restage on develop `a58ebc2d` (#335's tool,
+  456 run-only snaps from seeds 7/9/11/13, saved dice plus 4 shifted streams):
+  - Climb backer touched before the carrier, zone doubles: inside zone 0.389
+    to 0.430, outside zone 0.253 to 0.287. Box backers touched, all runs, 0.56
+    to 0.58 (inside zone 0.62 to 0.63, outside zone 0.54 to 0.57).
+  - Keepers are not beaten more: the doubled lineman makes first contact
+    0.158 to 0.164 (inside) and 0.102 to 0.098 (outside); more than 1 yd into
+    the backfield 0.154 to 0.160 and 0.089 to 0.091.
+  - Only 9 of 456 snaps change at every shift; yards 6.46 to 6.44 (the arm
+    moves a snap 0.66 yd on average, the dice alone 9.14).
+  - A small, honest step: the hidden value was holding releases without
+    protecting anything visible. The large buckets above remain.
+- **Where released climbers stall (2026-10-27).** With the same position-only
+  operator on NFL and sim zone runs, a double gets a man 2 yd off its DL and
+  past the line by 2.5 s on 49% of NFL outside-zone doubles and 19% in the sim
+  (inside zone 27% vs 18%). The sim's release decision is on time (84-88% of
+  planned doubles release, at 1.2 s); only about one released climber in five
+  then clears his down man. The start law (#336) does not change that (0.22 to
+  0.24). In the departure's climb-access reads the obstacle is the climber's
+  own released down man on 59% of non-direct reads (keeper 23%): a step that
+  rubs past the man he just left is rejected, and the down man walks with him.
+- **Climber steps off the released man's hip (`run/G2-climb-off-hip`).** The
+  man he released is his keeper's; World contact decides any rub. His keeper and
+  every other body remain surfaces, and the strike corridor still reads the down
+  man. Matched restage, 456 run-only snaps, saved dice plus 4 shifts:
+  - develop: climb backer touched before the carrier, inside / outside zone
+    0.425 / 0.285 to 0.455 / 0.287; box backers touched 0.58 to 0.59.
+  - with #336 and #344: 0.373 / 0.267 to 0.443 / 0.337; box backers 0.60 to
+    0.63 (outside zone 0.58 to 0.62).
+  - Blocks hold: the released man is still blocked when the carrier crosses
+    (inside / outside / gap 0.87 / 0.92 / 0.89 to 0.88 / 0.92 / 0.88), goes 1+
+    yd deep after the release no more often, and makes first contact slightly
+    less often.
+  - Rejected first: choosing the climber by his walk around the down man
+    changed no play (the first member whose read clears proposes alone).
+- **Next, untried.**
+  - Zone pairs that climb on the fly: unplanned two-on-ones are only 1-3% of
+    untouched-backer moments, so this is small.
+  - Released climbers still reach the climb mark only about a quarter of the
+    time; the keeper is the next obstacle (23% of non-direct reads).
+  - The braking stand-still has had two failed corrections already (#303); it
+    waits on the start ramp.
+
+<a id="run-16"></a>
+### RUN-16: Draw: the line does not block the rush while it shows pass
+
+Measured 2026-10-27 on run-only film (#329): seeds 7/9/11/13, 456 snaps, each on
+its saved dice plus 4 shifted streams (#335's `matched-restage.ts`), against
+BDB2025 weeks 1–2 with `run_film_reference.py`.
+
+- **Measure** (develop): the carrier never gets past the line on 62% of draws
+  (NFL 10%); first contact at 2.2 s and 3.7 yd behind the line (NFL 3.3 s,
+  1.5 yd past it); a DL makes first contact on 70% of draws. DL engaged with a
+  lineman: 0% at 0.5 s, 6% at 1.0 s; DL a median 1.8 yd deep at the handoff.
+- **Cause:** *confirmed.* For the first second a covered draw lineman walked to
+  a set spot 1.2 yd off the ball and engaged nobody; only climbers and combo
+  members reacted to penetration.
+- **Fix** (`run/G2-draw-set`): the high-set lineman takes on his rusher once
+  the rusher reaches his strike, as he sees him, through the ordinary contact
+  path; otherwise he keeps the set. DL engaged at 1.0 s 6% to 53%; DL depth at
+  the handoff 1.8 to 1.4 yd; DL first contact 70% to 56%; never past the line
+  62% to 45%; contact behind the line 72% to 57% (NFL 26%); first contact 2.2 to
+  2.7 s.
+- **Open:** box backers touched before the carrier stay at 0.16 (NFL 0.77): the
+  uncovered draw linemen hold the set for the whole presentation instead of
+  releasing to the backers dropping into coverage. Engagement at 0.5 s is still
+  0%, because the line gives ground to a set 1.2 yd deep before the rush meets it.
+- **Backers on the draw (`run/G2-draw-climb`, on `run/G2-draw-set`).**
+  - NFL draw linemen who block a backer stop giving ground by 0.5 s and are
+    moving up by 1.0 s: their depth goes -0.72 / -0.64 / -0.38 / +0.45 yd at
+    0.5 / 1.0 / 1.4 / 2.0 s. 72% bump a DL on the way, and they touch the
+    backer at 2.4 s.
+  - In the sim every draw lineman shows pass to a fixed 1.0 s. A double then
+    releases only when its backer comes within 4.2 yd or the runner arrives, and
+    a draw backer sits 4–5 yd deep reading pass. So first touchers crossed the
+    line at 2.4 s and touched at 2.9 s.
+  - Attempt 1: release a secured draw double without waiting for the backer to
+    fill. No change: the fixed 1.0 s show still held the climber.
+  - Change: the uncovered man of a draw double keeps the show only until he sees
+    his doubled man come across the line onto his partner, within the partner's
+    arm. Then he goes to help, and the secured double releases him to his backer
+    without waiting for a fill. Lined up over the partner, the man is already
+    within arm's length; the cue needs him across the line. The covered man's
+    set, and the climbers, are unchanged.
+  - The rest of the gap was the threat reread taking released climbers back to
+    the keeper's man (#349, all run families).
+  - Matched restage on draws, 456 run-only snaps, saved dice plus 4 shifts:
+
+    | | NFL | `run/G2-draw-set` | + this | with #349 | with #349 + this |
+    |---|---|---|---|---|---|
+    | box backers touched before the carrier | 0.79 | 0.12 | 0.16 | 0.14 | 0.25 |
+    | first toucher crosses LOS+0.5 | 1.4 s | 2.4 s | 1.9 s | 2.4 s | 2.1 s |
+    | released climber reaches his backer first | — | 0.17 | 0.16 | 0.19 | 0.32 |
+
+  - Blocks hold with #349:
+    - DL engaged at 1.0 s 0.53 to 0.54; DL depth at the handoff 1.43 to 1.42 yd.
+    - DL first contact on the carrier 55% to 51% of draws.
+    - Holding on the DL 11 to 11 per 145 draws. Four new holds come on
+      backers, from TEs and double members who now reach them: 3.4% of draw
+      backer engagements against 2.5% on other runs.
+    - Draw yards: median 1.94 to 3.06, carries for zero or less 0.46 to 0.42,
+      10+ unchanged at 0.19.
+  - Still open:
+    - Released draw climbers start 6 yd from the backer and move about
+      1.4 yd/s in the half second after release.
+    - The NFL's first touchers are half TEs and backs; the sim's are about
+      three-quarters linemen.
+    - Half of draw box backers are nobody's target when the carrier arrives;
+      a quarter never were.
+
 <a id="pro-1"></a>
 ### PRO-1: Edge rushers meet the tackle at the line and walk through him
 
@@ -1529,6 +2094,21 @@ run plays with the assignment layer (`--telemetry full`):
   and timing, so they stay on; they show the tackles can't hold an edge.
   In the P019 pass-cutoff scene the tackle also loses edge contact with
   `PASS_FEEL` on (`test/pass-cutoff-approach.test.ts` is pinned).
+- **P019 hold duration** (2026-10-26, Main Engine). The pinned P019 scene
+  (`test/pass-cutoff-approach.test.ts`, cutoff approach with PASS_KICK and
+  five other settings off) now asserts only that both tackles get loaded
+  contact with their edge rusher, on their feet, before the throw. How long
+  they hold is this problem's measure, re-measured on defaults in Stage 1
+  step 5 (week 2):
+  - develop: the LT holds DE_W through the 3.15 s throw;
+  - turning on actual traction (Stage 1 step 2): the LT, lifted 0.11–0.23
+    of body weight by the lower-padded DE from 0.75 s, has less yaw grip;
+    DE_W rounds him from 2.0 s and he is free at 3.0 s, just before the
+    3.05 s throw;
+  - leg force-velocity (#297): DE_W turns the corner at 2.9 s and the throw
+    moves to 3.2 s;
+  - on defaults (pins off), develop already loses both edges (LT at
+    1.5–1.75 s, RT by 2.5 s) and the QB is sacked.
 - **G5** (2026-10-22, `trenches/G5-edge-hands`). Two mechanisms, each
   measured with `scripts/diag/edge-rep.py` on 8 games (seed 301) against
   tracking:

@@ -83,7 +83,7 @@ function advance(body: Agent['body'], command: Intent, ticks = 8) {
     expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
     expect(report.armImpulse).toEqual([0]);
     expect(Math.hypot(report.groundImpulse[0].x, report.groundImpulse[0].y))
-      .toBeLessThanOrEqual(supportParams(moved.profile).traction * .05 + 1e-8);
+      .toBeLessThanOrEqual(report.groundImpulseLimit[0] + 1e-8);
     expect(report.supportMotorWork[0]).toBeLessThanOrEqual(report.supportMotorWorkLimit[0] + 1e-8);
   }
   return moved;
@@ -361,7 +361,7 @@ describe('real zone contact retains its stable surface and ordinary force budget
       expect(report.armWork[a.idx]).toBeLessThanOrEqual(report.armWorkLimit[a.idx] + 1e-8);
       expect(report.supportMotorWork[a.idx]).toBeLessThanOrEqual(report.supportMotorWorkLimit[a.idx] + 1e-8);
       expect(Math.hypot(report.groundImpulse[a.idx].x, report.groundImpulse[a.idx].y))
-        .toBeLessThanOrEqual(supportParams(a.profile).traction * f.sim.dt + 1e-8);
+        .toBeLessThanOrEqual(report.groundImpulseLimit[a.idx] + 1e-8);
     }
     expect(f.blocker.engagement).toBe(e);
     expect(f.sim.world.joints).toContain(hands);
@@ -390,7 +390,7 @@ describe('real zone contact retains its stable surface and ordinary force budget
       expect(report.armWork[a.idx]).toBeLessThanOrEqual(report.armWorkLimit[a.idx] + 1e-8);
       expect(report.supportMotorWork[a.idx]).toBeLessThanOrEqual(report.supportMotorWorkLimit[a.idx] + 1e-8);
       expect(Math.hypot(report.groundImpulse[a.idx].x, report.groundImpulse[a.idx].y))
-        .toBeLessThanOrEqual(supportParams(a.profile).traction * f.sim.dt + 1e-8);
+        .toBeLessThanOrEqual(report.groundImpulseLimit[a.idx] + 1e-8);
     }
     const old = read(f.blocker)!;
     f.defender.body.vel = { x: 0, y: 6 };
@@ -450,7 +450,7 @@ describe('real zone contact retains its stable surface and ordinary force budget
       expect(report.armWork[a.idx]).toBeLessThanOrEqual(report.armWorkLimit[a.idx] + 1e-8);
       expect(report.supportMotorWork[a.idx]).toBeLessThanOrEqual(report.supportMotorWorkLimit[a.idx] + 1e-8);
       expect(Math.hypot(report.groundImpulse[a.idx].x, report.groundImpulse[a.idx].y))
-        .toBeLessThanOrEqual(supportParams(a.profile).traction * f.sim.dt + 1e-8);
+        .toBeLessThanOrEqual(report.groundImpulseLimit[a.idx] + 1e-8);
     }
     expect((e as typeof e & { surfaceAxis?: Vec2 }).surfaceAxis).toEqual({ x: -1, y: 0 });
   });

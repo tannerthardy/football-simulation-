@@ -10,9 +10,11 @@ export function replayOptions(args: string[]) {
   let out = 'out/replay.html';
   let document = false;
   let telemetry: ReplayLevel = 'light';
+  let runOnly = false;
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === '--doc') document = true;
+    else if (arg === '--run-only') runOnly = true;
     else if (arg === '--out' || arg === '--games' || arg === '--telemetry') {
       const value = args[++i];
       if (!value || value.startsWith('--')) throw new Error(`${arg} requires a value`);
@@ -30,7 +32,7 @@ export function replayOptions(args: string[]) {
   if (!Number.isSafeInteger(seed) || seed < 0 || seed > 0xffffffff) throw new Error('Seed must be an integer from 0 to 4294967295');
   if (!Number.isInteger(games) || games < 1 || games > 50) throw new Error('--games must be an integer from 1 to 50');
   if (seed + games - 1 > 0xffffffff) throw new Error('Game seeds exceed 4294967295');
-  return { seed, games, out, document, telemetry };
+  return { seed, games, out, document, telemetry, runOnly };
 }
 
 const KIND_LABEL: Record<PlayLog['kind'], string> = {
