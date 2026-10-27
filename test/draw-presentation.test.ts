@@ -46,6 +46,30 @@ function local(flip = true) {
 }
 
 describe('Draw presentation belongs to the installed line, separately from its work', () => {
+  it.each([false, true])('a covered draw lineman takes on the rusher who reaches his set, and keeps the set until then, flip %s', flip => {
+    const stage = (reached: boolean) => {
+      const sim = setup(flip);
+      const blocker = sim.offense.find(a => a.behavior instanceof RunBlocker && a.behavior.plan.kind === 'draw' && a.behavior.plan.target)!;
+      const behavior = blocker.behavior as RunBlocker, rusher = behavior.plan.target!;
+      for (const a of sim.agents) if (a !== blocker && a !== rusher && a !== sim.qb) { a.body.pos = { x: 75 + a.idx * 3, y: 3 }; a.body.vel = { x: 0, y: 0 }; }
+      blocker.body.pos = { x: 38.8, y: CENTER_Y }; blocker.body.vel = { x: 0, y: 0 };
+      // The rusher at his strike (as he sees him), or still across the line.
+      rusher.body.pos = reached ? { x: 39.75, y: CENTER_Y } : { x: 41.5, y: CENTER_Y };
+      rusher.body.vel = { x: -2, y: 0 };
+      sim.t = .5; sim.world.time = .5;
+      observe(sim);
+      const command = behavior.update(blocker, sim);
+      return { sim, blocker, behavior, rusher, command };
+    };
+    const set = stage(false);
+    expect(set.blocker.engagement).toBeNull();
+    expect(set.command).toEqual(goTo(set.blocker, { x: set.sim.los - 1.2, y: set.blocker.pos.y }, { speed: 0.6, facing: 0 }));
+    const met = stage(true);
+    expect(met.blocker.engagement?.defender).toBe(met.rusher);
+    expect(met.blocker.stance).toBe('high');
+    expect(met.behavior.plan.kind).toBe('draw');
+  });
+
   it.each([false, true])('keeps the native helper/climber in pass presentation, flip %s', flip => {
     const sim = setup(flip);
     sim.t = .05;
@@ -124,14 +148,17 @@ describe('Draw presentation belongs to the installed line, separately from its w
     expect(helper.engagement).toBeNull();
   });
 
-  it('keeps secured hands through the presentation instead of climbing early', () => {
+  it.each([false, true])('the uncovered man keeps the show until the rush comes across, then climbs off the secured double; across %s', across => {
     const sim = setup(false), owner = sim.slot('C')!, helper = sim.slot('LG')!;
     const combo = (helper.behavior as RunBlocker).plan.combination!;
+    // The same secured double either just across the line (the rush has come
+    // into the set) or still on its own side of it (lined up, not committed).
+    const dx = across ? 0 : .6;
     for (const a of sim.agents) a.body.pos = { x: 75 + a.idx * 3, y: 3 };
-    owner.body.pos = { x: 39.1, y: CENTER_Y - .25 };
-    helper.body.pos = { x: 39.1, y: CENTER_Y + .25 };
-    combo.defender.body.pos = { x: 39.7, y: CENTER_Y };
-    combo.backer!.body.pos = { x: 42, y: CENTER_Y + .25 };
+    owner.body.pos = { x: 39.1 + dx, y: CENTER_Y - .25 };
+    helper.body.pos = { x: 39.1 + dx, y: CENTER_Y + .25 };
+    combo.defender.body.pos = { x: 39.7 + dx, y: CENTER_Y };
+    combo.backer!.body.pos = { x: 42 + dx, y: CENTER_Y + .25 };
     sim.t = .4; observe(sim);
     const engagement = sim.engage(owner, combo.defender, 'run', { x: 1, y: 0 })!;
     expect(engagement).not.toBeNull();
@@ -140,15 +167,24 @@ describe('Draw presentation belongs to the installed line, separately from its w
     // engine to grant a physical win while testing the installed departure.
     engagement.control = .8; engagement.baseB = .9; engagement.phi = 0;
     const joints = [...sim.world.joints];
-    for (const t of [.4, .7, .95]) {
+    let released = -1;
+    for (const t of [.4, .5, .6, .7, .8, .95]) {
       sim.t = t; observe(sim); prepareJoinedCombinations(sim);
+      if (combo.released) { released = t; break; }
       helper.behavior.update(helper, sim);
-      expect(combo.released).toBe(false);
       expect(helper.engagement).toBe(engagement);
       expect(owner.engagement).toBe(engagement);
       expect(sim.world.joints).toEqual(joints);
-      expect(helper.tags.has('combo-climb')).toBe(false);
     }
+    if (across) {
+      // The keeper keeps his hands; only the helper leaves.
+      expect(released).toBeGreaterThan(.4);
+      expect(owner.engagement).toBe(engagement);
+      expect(sim.events.some(e => e.type === 'block_climb' && e.a === helper.idx)).toBe(true);
+      return;
+    }
+    expect(released).toBe(-1);
+    expect(helper.tags.has('combo-climb')).toBe(false);
     sim.t = 1; observe(sim); prepareJoinedCombinations(sim);
     sim.t = 1.25; observe(sim); prepareJoinedCombinations(sim);
     expect(combo.released).toBe(true);

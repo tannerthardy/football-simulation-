@@ -81,9 +81,15 @@ describe('planned climb acquires a useful near strike without running through th
   while(sim.phase==='live'&&sim.t<2.95){
    // Validate the loaded joint entering the consumed interval. A successful
    // tackle may detach it after World executes that same interval.
-   expect(y.engagement?.defender===end).toBe(true);expect(y.engagement!.hands).toBe(keeperHands);
-   expect(sim.world.joints).toContain(keeperHands);
-   expect(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)).toBeGreaterThan(0);
+   // The keeper owes the end until the runner is past him (with the off-hip
+   // climb and the back's own mesh start, Y lets him go at 2.80 with the
+   // runner already 1+ yd beyond the end).
+   const runner=sim.carrier;
+   if(!runner||runner===sim.qb||(runner.pos.x-end.pos.x)*sim.attackDir('O')<=1){
+    expect(y.engagement?.defender===end).toBe(true);expect(y.engagement!.hands).toBe(keeperHands);
+    expect(sim.world.joints).toContain(keeperHands);
+    expect(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)).toBeGreaterThan(0);
+   }
    sim.tick();const report=sim.lastStep!;
    expect(Math.abs(report.work.residual)).toBeLessThan(1e-8);
    for(const actor of [rt,y,mike])expect(report.armImpulse[actor.idx]).toBeLessThanOrEqual(report.armImpulseLimit[actor.idx]+1e-8);

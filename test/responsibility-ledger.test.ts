@@ -204,19 +204,22 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT' && e.t <= swap.t)).toEqual([]);
   });
 
-  it('M9-P000: C is reread twice, each recorded with its resulting kind', () => {
+  it('M9-P000: C is reread, recorded with its resulting kind', () => {
     const p = play('M9-P000');
     const threats = changeOf(p, 'C', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([2.2, 2.6]);
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(2);
+    // Re-recorded when a draw double's uncovered man climbs once the rush comes across: RG's double releases at 1.1
+    // (was 2.45), so the 2.45 crossing exchange and C's second reread (2.6) no longer happen.
+    expect(threats.map(c => c.t)).toEqual([2.2]);
+    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(1);
     expect(threats.every(c => c.after.kind === 'drive')).toBe(true);
   });
 
-  it('M7-P051: the first carrier contact keeps both defenders tied at 2.85', () => {
+  it('M7-P051: the first carrier contact keeps both defenders tied at 2.8', () => {
     // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7); the tie is unchanged.
     // Re-recorded when the back began leaving the mesh on his own start: contact 2.7 -> 2.85, still the same tie.
+    // With the off-hip climb (#345) as well: 2.85 -> 2.8, still the same tie.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.85);
+    expect(first.t).toBe(2.8);
     expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
   });
 
