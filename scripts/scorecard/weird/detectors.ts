@@ -142,10 +142,16 @@ const stuck: Detector = {
   score: (p, dur) => dur + p.sev * 0.001,
 };
 
-/** 4. An unengaged lineman moving backward while facing his own backfield. */
+/**
+ * 4. An unengaged lineman moving backward while facing his own backfield. A candidate: on 19 run-only film events
+ * (docs/reviews/2026-10-27-backpedal-detector-review.md) he faced within 45° of his travel in 18, so the facing clause
+ * only restates the velocity clause and this is a lineman running toward his own backfield, not a backpedal; and
+ * 1 yd/s for 0.25 s is ordinary (NFL linemen sustain it for a second on 46% of runs). Rule and id unchanged.
+ */
 const backpedal: Detector = {
   id: 'backpedal',
-  label: 'Lineman backpedaling while facing his own backfield',
+  label: 'Unengaged lineman running toward his own backfield',
+  candidate: true,
   minHold: HOLD,
   hit(f) {
     if (f.phase !== 'live' || !f.offense) return NONE;
