@@ -1044,7 +1044,7 @@ export class RunBlocker implements Behavior {
       this.nextThreatRead = t + a.mind.decisionInterval;
       this.rereadThreat(a, sim);
     }
-    const target = this.availableTarget(a, sim);
+    let target = this.availableTarget(a, sim);
     if (plan.departure && (plan.kind !== 'climb' || target !== plan.departure.backer)) {
       const sink = sim.blockingSink(a), previousWork = sink?.blockingState(a);
       delete plan.departure;
@@ -1106,8 +1106,21 @@ export class RunBlocker implements Behavior {
         // target. Reaching a waypoint's tolerance does not establish that
         // clearance, and a penetrator need not pass within an arbitrary
         // distance of the puller to become relevant work.
-        const read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'lead')
+        let read = this.pullIdx > 0 && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'lead')
           ? this.readPull(a, sim, target) : null;
+        // A kick or trap man the runner has already passed is out of the
+        // play: blocking him means turning back on a man behind the ball.
+        // Turn up through the hole and take the first man in front instead.
+        if (read && target && (plan.pullRole === 'kick' || plan.pullRole === 'trap') && this.behindRunner(a, sim, target, sim.see(a, target))) {
+          const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
+          sim.event('pull_turn_up', a, target, 'kick man is behind the runner');
+          plan.pullRole = 'lead';
+          plan.target = target = this.findWork(a, sim, false);
+          delete plan.contactFit;
+          this.pullRead = null;
+          trace?.blockingChange(a, previousWork, 'pull: kick man behind the runner, turn up', sim);
+          read = target ? this.readPull(a, sim, target) : null;
+        }
         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
         if (read) {
           const clearNow = read.clearanceX === null || a.pos.x + a.profile.radius <= read.clearanceX;
@@ -1456,6 +1469,19 @@ export class RunBlocker implements Behavior {
       sink?.blockingChange(a, previousWork, 'departure-end: engaged the backer', sim);
     }
     return command;
+  }
+
+  /** His own pictures: the runner he sees carrying (not the QB at the mesh)
+   * is going downhill (2 yd/s or more) and is downfield of this man by more
+   * than their two bodies plus what the man closes on him in a second. A man
+   * level with a runner still at the mesh is still in the play. */
+  private behindRunner(a: Agent, sim: PlaySim, man: Agent, seen: Perceived): boolean {
+    const ref = this.workReference(a, sim), picture = this.workPicture;
+    if (picture?.carrier == null || picture.carrier === sim.qb.idx) return false;
+    const dir = sim.attackDir(a.team), runner = sim.agents[picture.carrier];
+    if (picture.vel.x * dir < 2) return false;
+    const gap = (ref.x - seen.pos.x) * dir, closing = Math.max(0, (seen.vel.x - picture.vel.x) * dir);
+    return gap - closing * 1.0 > runner.profile.radius + man.profile.radius;
   }
 
   private readPull(a: Agent, sim: PlaySim, target: Agent): NonNullable<RunBlocker['pullRead']> {
@@ -1881,6 +1907,8 @@ export class RunBlocker implements Behavior {
       // to the ball anywhere on the field. Pullers/lead blockers own the exit.
       const laneY = this.plan.pullPath?.at(-1)?.y ?? (this.plan.kind === 'lead' ? ref.y : this.homeY ?? a.pos.y);
       if (Math.abs(seen.pos.y - laneY) > 3.0 || seen.pos.x < a.pos.x - 1.0) continue;
+      // A man the runner has already passed is nobody's work.
+      if (this.behindRunner(a, sim, d, seen)) continue;
       const toMe = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
       if (toMe > 6) continue;
       const toBall = Math.hypot(seen.pos.x - ref.x, seen.pos.y - ref.y);
