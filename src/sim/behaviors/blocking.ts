@@ -953,7 +953,11 @@ export class RunBlocker implements Behavior {
   private acquiredWork: { target: Agent | null } | null = null;
   /** The called track he is running this tick (known to teammates). */
   private track: Vec2 | null = null;
-  constructor(public plan: RunBlockPlan) {}
+  /** The kick or trap man the call gives this puller (known to teammates). */
+  readonly calledKick: Agent | null;
+  constructor(public plan: RunBlockPlan) {
+    this.calledKick = plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap') ? plan.target : null;
+  }
 
   calledMotion(): Vec2 | null { return this.track; }
 
@@ -1408,7 +1412,12 @@ export class RunBlocker implements Behavior {
       // A lead puller blocks the first threat to show in the hole, read from
       // his own pictures each beat, not a man named at the snap.
       // A surface wrapper reads on his surface beat and holds that picture.
-      if (!a.engagement && t >= this.retarget && !(plan.pullSurface && t < this.nextSurfaceRead)) {
+      // He reads the hole once he has cleared the wall or run his path (the
+      // man the call names until then, unless he sees that man on the ground),
+      // not men still at the line when he steps off.
+      const gone = () => { const pose = target && sim.see(a, target).pose; return pose === 'down' || pose === 'rising'; };
+      if (!a.engagement && t >= this.retarget && !(plan.pullSurface && t < this.nextSurfaceRead)
+        && (this.pullCleared || !target || this.pullIdx >= (plan.pullPath?.length ?? 0) || gone())) {
         this.retarget = t + a.mind.decisionInterval;
         const threat = this.holeThreat(a, sim, target);
         if (threat && threat !== target) {
@@ -1533,16 +1542,19 @@ export class RunBlocker implements Behavior {
   /** The first threat to the hole in his own pictures: an upright defender
    * in front of him, near the hole's lane, whom the runner he sees carrying
    * has not already passed, closest to the hole a short beat ahead at the
-   * speed he sees. A man he sees in body contact with a teammate is a claim
-   * caution, not proof of a block: he ranks behind a free man by two yards
-   * and is still taken (help) when he is the only threat. */
+   * speed he sees. The call gives a teammate puller's kick or trap man to
+   * that puller. A man he sees in body contact with a teammate is a claim,
+   * not proof of a block: any free threat comes first, and the claimed man
+   * is still taken (help) when no free man threatens the hole. */
   private holeThreat(a: Agent, sim: PlaySim, current: Agent | null = null): Agent | null {
     const hole = this.plan.pullPath?.at(-1);
     if (!hole) return null;
     const dir = sim.attackDir(a.team), ball = this.workReference(a, sim), carrier = this.workPicture?.carrier;
     const runner = carrier != null && carrier !== sim.qb.idx ? sim.agents[carrier] : null;
     const mates = sim.offense.filter(o => o !== a && o !== runner).map(o => ({ pos: sim.see(a, o).pos, r: o.profile.radius }));
+    const called = new Set(sim.offense.map(o => o !== a && o.behavior instanceof RunBlocker ? o.behavior.calledKick : null));
     const score = (d: Agent): number | null => {
+      if (called.has(d)) return null;
       const seen = sim.see(a, d);
       if (seen.pose === 'down' || seen.pose === 'rising') return null;
       const depth = (seen.pos.x - sim.los) * dir;
@@ -1550,16 +1562,18 @@ export class RunBlocker implements Behavior {
       if (runner && (ball.x - seen.pos.x) * dir > runner.profile.radius + d.profile.radius) return null;
       const lead = .3, s = Math.hypot(seen.pos.x + seen.vel.x * lead - hole.x, seen.pos.y + seen.vel.y * lead - hole.y);
       const claimed = mates.some(m => Math.hypot(m.pos.x - seen.pos.x, m.pos.y - seen.pos.y) <= m.r + d.profile.radius + .1);
-      return s < 7 ? s + (claimed ? 2 : 0) : null;
+      return s < 7 ? s + (claimed ? 100 : 0) : null;
     };
     let best: Agent | null = null, bestScore = Infinity;
     for (const d of sim.defense) {
       const s = score(d);
       if (s !== null && s < bestScore) { bestScore = s; best = d; }
     }
-    // Keep a man who is still a threat unless another is clearly more urgent.
+    // Keep a man who is still a threat unless another is clearly more urgent;
+    // once he is closing on him (2.5 yd in his picture) he finishes him.
     const kept = current ? score(current) : null;
-    return kept !== null && bestScore > kept - 1.5 ? current : best;
+    const closing = kept !== null && Math.hypot(sim.see(a, current!).pos.x - a.pos.x, sim.see(a, current!).pos.y - a.pos.y) < 2.5;
+    return kept !== null && (closing || bestScore > kept - 1.5) ? current : best;
   }
 
   /** No man yet: get in front of the runner he sees and keep looking. */

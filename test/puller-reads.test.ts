@@ -93,9 +93,11 @@ describe('a puller acts only on the runner and men he sees', () => {
     expect(chaseCommand.vel.x).toBeLessThan(awayCommand.vel.x);
   });
 
-  it('takes the free threat in the hole over a man he sees on a teammate, and helps when that man is the only one', () => {
-    const lead = (mates: Scene['mates'], backers: Scene['backers']) => {
+  it('takes the free threat in the hole over a man he sees on a teammate, helps when that man is the only one, and leaves the called kick man to the kicker', () => {
+    const lead = (mates: Scene['mates'], backers: Scene['backers'], kicks?: string) => {
       const f = stage({ ...passed, role: 'lead', pullIdx: 3, end: { pos: { x: 75, y: 3 }, vel: { x: 0, y: 0 } }, mates, backers });
+      // The call gives this man to a teammate puller's kick.
+      if (kicks) f.sim.slot('LG')!.behavior = new RunBlocker({ kind: 'pull', pullRole: 'kick', target: f.sim.slot(kicks)!, drive: { x: .3, y: 1 }, pullPath: [] });
       f.behavior.update(f.puller, f.sim);
       return f.behavior.plan.target?.slot ?? null;
     };
@@ -105,6 +107,7 @@ describe('a puller acts only on the runner and men he sees', () => {
     expect(lead([blocker], [claimed, free])).toBe('LB_W');
     expect(lead([blocker], [claimed])).toBe('LB_M');
     expect(lead([], [{ ...free, down: true }, { ...claimed, slot: 'LB_S' }])).toBe('LB_S');
+    expect(lead([blocker], [claimed, free], 'LB_W')).toBe('LB_M');
   });
 
   it('reaches the same consumed command when only hidden engagement and down state change', () => {
