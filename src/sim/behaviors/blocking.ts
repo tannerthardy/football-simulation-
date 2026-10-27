@@ -748,9 +748,13 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // The pull step opens to the play side and gains depth on the way,
     // rather than dropping straight back first (docs/reviews/gait-step.md).
     const pullStep = ps * 0.9;
+    // The flat leg runs tight behind the down wall: a short step back off his
+    // own stance (NFL pullers are deepest 1.3-1.4 yd off the ball). Where the
+    // wall's bodies he sees need more room, the run phase takes it from them.
+    const behind = (b: Agent, depth: number) => Math.min(b.pos.x - depth, sim.los - lineDepth(.55));
     const pullPath = (b: Agent): Vec2[] => [
-      { x: sim.los - lineDepth(1.25), y: b.pos.y + pullStep },
-      { x: sim.los - lineDepth(1.15), y: hole - ps * 0.5 },
+      { x: behind(b, .45), y: b.pos.y + pullStep },
+      { x: behind(b, .35), y: hole - ps * 0.5 },
       { x: sim.los + 0.5, y: hole },
     ];
     for (const p of pullers) {
@@ -761,8 +765,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : leadBacker ?? lbNear(hole);
       if (target && role !== 'lead') claimedDL.add(target);
       const path = target && role !== 'lead' ? [
-        { x: sim.los - lineDepth(role === 'trap' ? 1.05 : 1.25), y: p.pos.y + pullStep },
-        { x: sim.los - lineDepth(role === 'trap' ? 0.85 : 1.15), y: target.pos.y - ps * 0.65 },
+        { x: behind(p, .45), y: p.pos.y + pullStep },
+        { x: behind(p, role === 'trap' ? .25 : .35), y: target.pos.y - ps * 0.65 },
         { x: sim.los - 0.1, y: target.pos.y - ps * 0.45 },
       ] : pullPath(p);
       // An off-ball wrapper already has his entry depth. Do not make him
@@ -1149,10 +1153,13 @@ export class RunBlocker implements Behavior {
           // ball and not coming back downfield is running away from the hole,
           // not into it (a chaser coming downfield at the ball still is work). The puller does not retreat after him: he keeps his path
           // to the hole (and turns up once the runner is past the man).
-          const dir = sim.attackDir(a.team), ball = this.workReference(a, sim);
+          // Judged a decision beat ahead at the speeds he sees: an end flying
+          // upfield is behind the runner by the time a fit could land.
+          const dir = sim.attackDir(a.team), ball = this.workReference(a, sim), beat = a.mind.decisionInterval;
+          const ballVel = this.workPicture?.vel ?? { x: 0, y: 0 };
           const away = plan.pullRole !== 'lead' && ((plan.pullPath[1]?.x ?? wp.x) - read.seen.pos.x) * dir > 1.5
-            && (read.seen.pos.x - ball.x) * dir < 0 && read.seen.vel.x * dir < .5
-            && this.opening(ball, this.workPicture?.vel ?? { x: 0, y: 0 }, read.seen);
+            && read.seen.vel.x * dir < 0
+            && (read.seen.pos.x + read.seen.vel.x * beat - ball.x - ballVel.x * beat) * dir < 0;
           const fit = away ? distance < 1.2 && (read.seen.pos.x - a.pos.x) * dir > 0
             : plan.pullRole === 'lead' ? distance < 1.2
             : (plan.pullRole === 'kick' && this.pullIdx >= 2) || approachingDepth < sim.los || distance < 1.2;
