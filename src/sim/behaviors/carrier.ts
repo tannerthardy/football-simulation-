@@ -34,8 +34,6 @@ export interface CarrierOptions {
   aimUntil?: number;
   /** QB scramble: may slide. */
   qb?: boolean;
-  /** Known lead/pull responsibilities on a designed run. */
-  follow?: Agent[];
   run?: { scheme:RunScheme; side:number; readKey?:Agent; kick?:Agent };
   /** The designed aim as a gap on the line (with the play's offset from that
    * gap's landmark), so it moves with the bodies that form it. */
@@ -246,41 +244,10 @@ export class BallCarrier implements Behavior {
         sim.commandTraceFor?.(a)?.carrier({ kind: 'design-exit', t: sim.t, ...exit });
         if (exit.exit) this.opts.aimUntil = sim.t;
       }
-      // His lead blocker and the closing threats come from his own pictures:
-      // a teammate he sees off his feet or on a defender is not leading him;
-      // a defender he sees off his feet or on a teammate is not closing.
-      const leads = this.opts.follow?.map((b) => ({ b, seen: sim.see(a, b) }))
-        .filter(({ b, seen }) => !offFeet(seen) && !sim.opponents(a).some((d) => touching({ ...seen, radius: b.profile.radius }, sim.see(a, d, 0.7).pos, d.profile.radius)))
-        .sort((p, q) => Math.hypot(p.seen.pos.x - aim.x, p.seen.pos.y - aim.y) - Math.hypot(q.seen.pos.x - aim.x, q.seen.pos.y - aim.y));
-      if (leads?.length) {
-        const seen = leads[0].seen;
-        const dx = seen.pos.x - a.pos.x;
-        const dy = seen.pos.y - a.pos.y;
-        const ahead = dx * Math.cos(h) + dy * Math.sin(h);
-        const across = -dx * Math.sin(h) + dy * Math.cos(h);
-        const entering = seen.pos.x < sim.los && ahead > 0 && ahead < 2.5 && Math.abs(across) < 2.2;
-        // Patience ends when an unblocked defender can close before the next
-        // two reads. Waiting for a late puller must not become a mandatory stop.
-        const closing = entering && sim.opponents(a).some((d) => {
-          const threat = sim.see(a, d);
-          if (offFeet(threat) || sim.teammates(a).some((b) => {
-            if (b === a) return false;
-            const mate = sim.see(a, b);
-            return mate.pose !== 'down' && touching({ ...mate, radius: b.profile.radius }, threat.pos, d.profile.radius);
-          })) return false;
-          return timeToReach({ ...threat, profile: d.profile, speedScale: d.speedScale }, a.pos,
-            a.profile.radius + d.profile.radius + d.profile.reach * 0.75) < 2 * a.mind.decisionInterval;
-        });
-        if (entering && !closing && sim.t < this.opts.aimUntil!) {
-          // Pace the lead block instead of outrunning a guard who is still
-          // turning up through the hole. This only lasts through the read phase.
-          a.tags.add('paced-lead');
-          // Keep pressing the designed side. Following the guard's current
-          // lateral position while he is flat-pulling sends the back into
-          // the vacated backside gap.
-          return this.command(a, sim, h, a.profile.vmax * (0.28 + 0.12 * (1 - a.r('patience'))), cutSkill);
-        }
-      }
+      // A lead or kick puller ahead of him is a moving wall to run behind,
+      // not a man to wait for: tracked backs run 4.6-4.7 yd/s with a puller
+      // 1.4-1.6 yd ahead (power/counter/trap, 2022 all-22). Spacing keeps
+      // him off the puller's back; the press tempo below is his patience.
       // Press the hole under control (patient backs more so), then burst.
       const press = a.profile.vmax * (0.62 + 0.18 * (1 - a.r('patience')));
       return this.command(a, sim, h, press, cutSkill);
