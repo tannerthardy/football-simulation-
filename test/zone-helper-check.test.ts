@@ -404,13 +404,16 @@ describe('a native Split Zone Under rep earns a supported check and climb', () =
     // Start law (#336): on S3 the RG's sub-top-speed approach now starts at full
     // force and his hands join the double (1.05 s) before his check is stable,
     // so no check occurs; S8, same panel roster/front/side, is chosen after it.
+    // Re-staged for the direction-free start (#353): on S8 the backer is still 4.6 yd away in RG's
+    // picture at his 1.22 read and RG's hands join the double at 1.40, so S8 no longer checks; S17
+    // (same panel roster/front/side, which also checked before #353) earns the same check and climb.
     const formation = FORMATION_BY_ID.gun_wing_12;
     const sim = new PlaySim({
       offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'base43'),
       offCall: { formation, flip: false, kind: 'run', run: RUN_BY_ID.split_zone, label: 'Split Zone' },
       defCall: { personnel: 'base43', front: FRONT_BY_ID.under, coverage: COVERAGE_BY_ID.cover3,
         pressure: null, label: 'Under Cover 3' },
-      los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 8,
+      los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 17,
     });
     const helper = sim.slot('RG')!, behavior = helper.behavior as RunBlocker;
     const combo = behavior.plan.combination!;
@@ -465,7 +468,10 @@ describe('the native Split Zone Tite helper reads useful first-level work', () =
       offCall: { formation, flip: false, kind: 'run', run: RUN_BY_ID.split_zone, label: 'Split Zone' },
       defCall: { personnel: 'base34', front: FRONT_BY_ID.tite, coverage: COVERAGE_BY_ID.cover3,
         pressure: null, label: 'Tite Cover 3' },
-      los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3,
+      // Re-staged for the direction-free start (#353): on S3 RT's first stable read (0.96 s) already sees
+      // the backer filling (4.18 yd < 4.2), so there is no waiting read before his climb; S12 (same
+      // panel roster/front/side, which also passed before #353) waits, then earns the same climb.
+      los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 12,
     });
     const helper = sim.slot('RT')!, behavior = helper.behavior as RunBlocker;
     const combo = behavior.plan.combination!, owner = sim.slot('Y')!;

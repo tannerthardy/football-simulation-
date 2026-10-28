@@ -76,7 +76,13 @@ describe('Cover 2 match', () => {
   });
 
   it('the vertical curl matches #2 up and in, and walls a seam', () => {
-    const dig = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'lab_in9' }, weak: { 1: 'go', 2: 'seam' }, until: 3.4, seed: SEED });
+    // Re-staged for the direction-free start (#353): on seed 1 the rush now
+    // sacks the dig's QB at 2.85 s, before the 3.4 s read. The rush, not the
+    // rule: every seed 1-20 not sacked before the break (all but seed 2) shows
+    // the curl in 'in' on man:#2, and seed 3 is the
+    // first that holds the ball to 3.4 s (one missed tackle at 3.3 s). The
+    // behavior is the same.
+    const dig = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'lab_in9' }, weak: { 1: 'go', 2: 'seam' }, until: 3.4, seed: 3 });
     const curl = seat(dig, 'hook_s');
     // The dig breaks late: the rep must reach 3.4 s with the ball held (a
     // sack before the break is a staging failure, not a coverage one).

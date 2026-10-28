@@ -27,7 +27,13 @@ describe('Quarter Flat apex', () => {
   it('carries #2 shallow back across himself when #3 releases away, and delivers him otherwise', () => {
     // The back's flat release gets out past the aligned weak end; a swing
     // runs into him and stays behind the line, which reads as a block.
-    const away = filmScene({ formation: 'gun_spread_10', coverage: 'cover4', strong: { 1: 'go', 2: 'slant' }, weak: { 1: 'go', 2: 'seam' }, back: 'back_flat', until: 2.8 });
+    // Re-staged for the direction-free start (#353): on seed 5 the weak end
+    // now meets the back at 1.4 s with more speed and knocks him down 2.8 yd
+    // behind the line (fall at 1.45 s), so the scene no longer stages a
+    // released #3. Seed 1 releases him cleanly (0.9 yd past the line at 2.8 s,
+    // 2.8 yd/s upfield). The nickel's rule is the same: 'two' and man on #2
+    // on both seeds, and 'zoned' with the back in protection.
+    const away = filmScene({ formation: 'gun_spread_10', coverage: 'cover4', strong: { 1: 'go', 2: 'slant' }, weak: { 1: 'go', 2: 'seam' }, back: 'back_flat', until: 2.8, seed: 1 });
     expect(away.sim.offAlign.spots.RB.pos.y - away.sim.ballY).not.toBe(0);
     expect(Math.sign(away.sim.offAlign.spots.RB.pos.y - away.sim.ballY)).toBe(-away.sim.offAlign.strongSign);
     const rb = away.sim.slot('RB')!;
@@ -40,7 +46,7 @@ describe('Quarter Flat apex', () => {
     expect(Math.sign(rb.pos.y - away.sim.ballY)).toBe(-away.sim.offAlign.strongSign);
     expect(modeOf(away, 'NB')).toBe('two');
     expect(jobsOf(away, 'NB').at(-1)).toBe(`man:${away.numbering.S2}`);
-    const blocks = filmScene({ formation: 'gun_spread_10', coverage: 'cover4', strong: { 1: 'go', 2: 'slant' }, weak: { 1: 'go', 2: 'seam' }, until: 2.8 });
+    const blocks = filmScene({ formation: 'gun_spread_10', coverage: 'cover4', strong: { 1: 'go', 2: 'slant' }, weak: { 1: 'go', 2: 'seam' }, until: 2.8, seed: 1 });
     expect(modeOf(blocks, 'NB')).toBe('zoned');
   });
 });

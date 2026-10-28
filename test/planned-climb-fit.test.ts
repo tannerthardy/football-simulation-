@@ -77,7 +77,9 @@ describe('planned climb acquires a useful near strike without running through th
   // upright; a fall is not a blocking contract. The end can still win on the
   // runner's exposed side while Y carries load, so inspect through arrival,
   // rather than requiring a joint after that tackle drops the end.
-  const {sim,rt}=stage(1.3),y=sim.slot('Y')!,mike=sim.slot('LB_M')!,end=sim.slot('DE_S')!;
+  // Re-staged for the direction-free start (#353): RT's departure now clears on the 1.30 tick (was 1.05), so the
+  // post-departure climb is staged at 1.35 (was 1.30); same Mike load, keeper and arrival.
+  const {sim,rt}=stage(1.35),y=sim.slot('Y')!,mike=sim.slot('LB_M')!,end=sim.slot('DE_S')!;
   expect(y.engagement?.defender===end).toBe(true);const keeperHands=y.engagement!.hands;
   let loaded=false,arrived=false;
   while(sim.phase==='live'&&sim.t<2.95){

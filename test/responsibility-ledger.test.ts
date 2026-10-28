@@ -4,7 +4,9 @@
  * purpose). The M- cases are matched-restage captures of develop 55cc9e57, recorded when turning on the feet's
  * actual grip moved the S9-P027 and S7-P067 scenes; M25-P032, M13-P086 and M29-P036 are captures of develop 1ec115c7,
  * recorded when the start law (#336) moved M9-P000, M7-P051 and S10-P006; M25-P021 and M25-P029 are captures of #336
- * with develop 84af7d9e merged, recorded when that merge moved M25-P032 and M13-P086. It is a recorder: nothing here grades a block. */
+ * with develop 84af7d9e merged, recorded when that merge moved M25-P032 and M13-P086; M33-P083 and M25-P005 are captures of
+ * the direction-free start (#353), recorded when that law moved M25-P021 (C reread once) and M25-P029 (no tie), and no
+ * other fixture play showed a double reread or a tie. It is a recorder: nothing here grades a block. */
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
@@ -140,10 +142,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.setupSha256).toBe('fc7f58f199912f3255588696ab79ee4b5c57cef717b550601f349412119eba81');
     // Re-recorded for the start law (#336): the same input releases one tick earlier (1.05 -> 1.0) and rereads
     // later (1.25 -> 1.4); release target, reread target and the loads are unchanged.
-    const release = changeOf(p, 'C', 'combination-release', 1)[0];
+    // Re-recorded for the direction-free start (#353): first divergence at the first tick (the LT's below-cap
+    // start); the C releases a tick earlier again (1.0 -> 0.95) and rereads later (1.4 -> 1.55), same targets/loads.
+    const release = changeOf(p, 'C', 'combination-release', 0.95)[0];
     expect(release.after).toMatchObject({ kind: 'climb' });
     expect(p.slot(release.before.target)).toBe('DT_S'); expect(p.slot(release.after.target)).toBe('LB_W');
-    const reread = changeOf(p, 'C', 'threat-reread', 1.4)[0];
+    const reread = changeOf(p, 'C', 'threat-reread', 1.55)[0];
     expect(p.slot(reread.before.target)).toBe('LB_W'); expect(p.slot(reread.after.target)).toBe('LB_M');
     const c = p.d.actors.findIndex(a => a.slot === 'C');
     const loaded = (slot: string) => p.d.rows.filter(r => r.actor === c).filter(r => r.hands.some(h => p.slot(h.defender) === slot && h.loaded));
@@ -207,23 +211,31 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT')).toEqual([]);
   });
 
-  it('M25-P021: C is reread twice, each recorded with its resulting kind', () => {
+  it('M33-P083: C is reread twice, each recorded with its resulting kind', () => {
     // Re-recorded for the start law (#336): M9-P000's C is now reread once (1.8). M25-P032 carried the case on
     // develop 1ec115c7; with develop 84af7d9e merged (the draw double's uncovered man climbs, the departing guard
-    // steps off the DT's hip) its C is not reread at all, so M25-P021, a capture on this branch, carries it.
-    const p = play('M25-P021');
+    // steps off the DT's hip) its C is not reread at all, so M25-P021, a capture on this branch, carried it.
+    // Re-recorded for the direction-free start (#353): first divergence at the first live tick (QB, tackles and C
+    // starting below-cap backward requests at full force); M25-P021's C is now reread once (1.75, to climb) and no
+    // other fixture play rereads a C twice. M33-P083, a capture on this branch, does: LB_W -> LB_M to a climb at
+    // 2.25, then LB_M -> DT_S to a reach at 2.5, each with its own block_threat.
+    const p = play('M33-P083');
     const threats = changeOf(p, 'C', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([1.7, 2.65]);
+    expect(threats.map(c => c.t)).toEqual([2.25, 2.5]);
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(2);
-    expect(threats.every(c => c.after.kind === 'climb')).toBe(true);
+    expect(threats.map(c => c.after.kind)).toEqual(['climb', 'reach']);
+    expect(threats.map(c => [p.slot(c.before.target), p.slot(c.after.target)])).toEqual([['LB_W', 'LB_M'], ['LB_M', 'DT_S']]);
   });
 
-  it('M25-P029: the first carrier contact keeps both defenders tied at 2.45', () => {
+  it('M25-P005: the first carrier contact keeps both defenders tied at 2.6', () => {
     // Re-recorded for the start law (#336): M7-P051's DT_S now reaches the carrier first and alone (1.95). M13-P086
     // carried the tie on develop 1ec115c7; with develop 84af7d9e merged its LB_M arrives alone, so M25-P029, a
-    // capture on this branch where LB_M and LB_W arrive on the same tick, carries it.
-    const p = play('M25-P029'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.45);
+    // capture on this branch where LB_M and LB_W arrive on the same tick, carried it.
+    // Re-recorded for the direction-free start (#353): first divergence is pre-snap (the called-motion preview and
+    // a pre-snap adjustment, both below-cap requests); M25-P029's LB_W now arrives alone (2.35) and no other fixture
+    // play ties. M25-P005, a capture on this branch, ties LB_M and LB_W on the same tick.
+    const p = play('M25-P005'), first = p.census[0].firstCarrierContact!;
+    expect(first.t).toBe(2.6);
     expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
   });
 
@@ -235,9 +247,10 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // Re-recorded for the start law (#336): the run gets further, and LB_W alone makes first contact at 2.6, wrapping
     // with it; still one defender, not a tie. With develop 84af7d9e merged the run gets further still: CB_W alone
     // makes first contact at 3.45; still not a tie.
-    expect(first.t).toBe(3.45);
-    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 3.45 && p.slot(e.defender) === 'CB_W')).toBe(true);
+    // Re-recorded for the direction-free start (#353): LB_W alone makes first contact at 2.65; still not a tie.
+    expect(first.t).toBe(2.65);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
+    expect(p.d.play.carrierEvents.some(e => e.t === 2.65 && p.slot(e.defender) === 'LB_W')).toBe(true);
   });
 
   // Re-recorded for the start law (#336): S10-P006's exchange now completes and the RB carries; M29-P036, a
@@ -256,7 +269,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.census).toEqual([]);
   });
 
-  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
+  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'M33-P083', 'M25-P005', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
     const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
     const run = (record: boolean) => {
       const sim = new PlaySim(restoreSetup(setup));
