@@ -16,6 +16,9 @@ beforeAll(() => {
   // inside the capture. Each tried pass replays the game from the kickoff.
   // Seed 8 since #355 + #356 (develop 12d12d5): seed 7's first 6 completions
   // no longer hold a native pursuit case. All 6 contracts pass on seed 8.
+  // Seed 8: when backs carried their exchange tempo through the mesh, seed 7's
+  // game changed and its first 12 catches had no exact freeze (seed 8 finds
+  // FS on Y; the contracts below pass on both sources).
   chosen = captureNativePursuit(8);
 }, 60_000);
 beforeAll(() => {
