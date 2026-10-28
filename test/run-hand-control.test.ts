@@ -306,15 +306,19 @@ describe('solo hand-fight execution retains its legacy policy with the selected 
     // normal load. Commands, control and RNG are unchanged (the policy hashes
     // above), only the achieved bodies move, so both physical hashes are
     // re-recorded.
+    // Start law (#336): C's 2.4 (run) / 2.2 (pass) yd/s and DT_W's sub-top-speed
+    // requests now start at full leg force, so bodies move from tick 1 and C's
+    // seal/set commands follow them from tick 2; tick-1 commands, every control
+    // value and the RNG are unchanged. Policy and physical hashes re-recorded.
     const policy = { trace: policyTrace, nextRng };
     const policyHash = createHash('sha256').update(JSON.stringify(policy)).digest('hex');
     expect(policyHash).toBe(type === 'run'
-      ? '82b6a93e956e652f136d93444a82bb718f209ddebf98f3bce86d18da8f0b12dc'
-      : '2375619cc4d9f0e29a8d6c004cfb5feeb5fea2a1df2e98904063918c02d1e036');
+      ? '4794572c25cf7b338b366592d9cfc4e493e05b7a4f47a8744aeb0b0fc13be6ee'
+      : '99719839ddd4f7eef0e9f3be90b0be69415d38e8a3d70b9c3b41fe3679511860');
     const actual = createHash('sha256').update(JSON.stringify({ trace, nextRng })).digest('hex');
     const motor180 = type === 'run'
-      ? 'd6e042eb9648a719ad381e1f4e86b8a1d6cbc9ed5d8e133ac03688f24b23377b'
-      : '68bd69a20c8a1510aebe544d01f199395da4be56f9cdf09303cbe78e91865fb8';
+      ? '52d07250f06a2a16ad508bd878d2653e08a9c8019388e466b432d95587be9a2b'
+      : 'a528893580c2952ccde6896e62475f65b7326241acb9afa1bf3593ecb888a7a5';
     expect(actual).toBe(motor180);
   });
 });
