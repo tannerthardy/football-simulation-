@@ -79,27 +79,20 @@ Artifacts under out/ are evidence, not committed fixtures or population claims.
 A completed batch cannot be overwritten; choose another output directory.
 Owned worktrees are removed normally after completion/failure, never forcibly.
 
-## Shared-file handoff (pending)
+## Shared npm and validation integration
 
-The film-pack owner owns package.json and docs/VALIDATION.md during this work.
-The exact npm entry to integrate is:
+[#312](https://github.com/tannerthardy/football-simulation-/pull/312) integrated
+the `film-pairs` npm command in package.json and the
+[before/after pairs instructions](VALIDATION.md#beforeafter-pairs-from-one-saved-snap).
+Run the installed interface with:
 
-```json
-"film-pairs": "node --import tsx scripts/film-pairs.ts"
+```sh
+npm run film-pairs -- --base <ref> --head <ref> \
+  --plays out/selection.json --out out/film-pairs/name
 ```
 
-Suggested section next to the film-pack notes in docs/VALIDATION.md:
-
-> ### Before/after pairs from one saved snap
->
-> `npm run film-pairs -- --base <ref> --head <ref> --plays out/selection.json --out out/film-pairs/name`
-> captures once on the declared source and replays the identical constructor on
-> both pinned refs. Saved IDs resolve through exact paths/hashes; seed/game/play
-> triples use film-room numbering, not scorecard IDs. See [FILM_PAIRS](FILM_PAIRS.md)
-> for the versioned input, compatibility checks and measurement limits. Open the
-> standalone index.html for synced playback and first recorded differences.
-> Keep generated inputs/films in ignored out/ and deliver them through the film-pack
-> artifact channel. Same-ref pairs must say no change; whole-game comparisons do
-> not replace these paired snapshots.
-
-The npm command is not complete until that owning-lane integration is verified.
+Film packs also provide an `inputs/selection.json` saved-path selector through
+[#359](https://github.com/tannerthardy/football-simulation-/pull/359). See
+[selected film inputs](FILM_PACK_INPUTS.md) for its source checks and limits.
+Using those saved paths consumes the exact retained binaries; it does not run
+a game prefix to rediscover the selected snaps.
