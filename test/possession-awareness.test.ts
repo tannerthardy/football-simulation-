@@ -309,22 +309,26 @@ describe('an acquired trajectory supports anticipation, not certified possession
     // one second earlier: catch at 3.5 s, flight continuation at 3.55 s, rally
     // at 3.6-3.7 s, possession pursuit from 3.75 s. Its catch (y 37.9) lies to
     // +y of the SS (y 34.8), so the rally is +y. The behavior is the same.
-    const rallyInput = { ...input, seed: 2, roster: 3, flip: true };
+    // With the edge kick that stops matching the rusher's retreat once deeper than its lead, roster 3 seed 2
+    // flipped no longer completes. Roster 5 seed 10 (not flipped) has the sequence: catch at 3.4 s, flight
+    // continuation 3.45-3.6 s, rally at 3.65 s, possession pursuit from 3.7 s. Its catch (y 10.7) lies to
+    // -y of the SS (y 14.3), so the rally is -y.
+    const rallyInput = { ...input, seed: 10, roster: 5, flip: false };
     const sim = new PlaySim({ ...nativeTraceSetup(rallyInput), record: true, recordLevel: 'full' });
-    const toBall = 1;
-    const trace = sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 3.55, to: 3.85 });
+    const toBall = -1;
+    const trace = sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 3.45, to: 3.75 });
     const result = sim.run();
     // Exact native input from the opposing control. The correction owns the
     // request/response, not this play's yardage or the receiver's earned catch.
-    expect(result.events.find(e => e.type === 'catch')?.t).toBe(3.5);
-    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 3.55 && d.kind === 'flight-continuation')).toBe(true);
-    for (const t of [3.6, 3.65, 3.7]) {
+    expect(result.events.find(e => e.type === 'catch')?.t).toBe(3.4);
+    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 3.45 && d.kind === 'flight-continuation')).toBe(true);
+    for (const t of [3.65]) {
       const s = trace.steps.find(s => s.stepStart === t)!;
       expect(s.decision!.raw.vel.y * toBall).toBeGreaterThan(0);
       expect(s.final!.vel.y * toBall).toBeGreaterThan(0);
       expect(s.endpoint!.body.velocity.y * toBall).toBeGreaterThan(0);
       expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === t && d.kind === 'ball-rally')).toBe(true);
     }
-    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 3.8 && d.kind === 'possession-pursuit')).toBe(true);
+    expect(result.telemetry!.decisions.some(d => d.a === sim.slot('SS')!.idx && d.t === 3.7 && d.kind === 'possession-pursuit')).toBe(true);
   });
 });
