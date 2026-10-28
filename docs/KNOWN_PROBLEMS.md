@@ -295,6 +295,7 @@ problem), resolved.
 | [RUN-14](#run-14) | Engaged DL lose the backside shoulder; play-side DL drift away from the play | G2 | medium | open |
 | [RUN-16](#run-16) | Draw: the line does not block the rush while it shows pass | G2 | high | in work |
 | [RUN-17](#run-17) | Gap-scheme backside DL stop chasing once the squeeze reads only a seen carrier's lateral track | G2 | medium | open |
+| [RUN-18](#run-18) | An engaged edge past his containment bound keeps widening on his held flow | G2 | medium | open |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -611,6 +612,33 @@ Carried over from the issue register; each was measured on an older develop.
   flow and the pulling guard ("pull, follow the guard"), not the back.
 - **Next:** a line-flow / puller read for the squeeze and the backside
   chase, as its own PR (CEO, 2026-10-28).
+
+<a id="run-18"></a>
+### RUN-18: An engaged edge past his containment bound keeps widening on his held flow
+
+- **Symptom:** on seal-hold (I-jumbo duo, seed 1) the strong end travels
+  2.72 yd outward with the H's seal loaded. At 1.00 s he is at y 29.19,
+  outside his containment bound (26.39), and still asks +1.11 yd/s
+  outward (independent trace on #365).
+- **Cause:** *confirmed.* The engaged-flow law (#347) is
+  `flow = held + 3·(target − y)`. Containment sets `target` to his own y
+  once he is wider than it, but the held flow is still added, so he keeps
+  widening. The code comment says he "stops and holds his ground". The old
+  squeeze misread hid this by overriding the request inward.
+- **Measured fix** (not merged): drop an outward held flow while the bound
+  applies; keep an inward one. Patch with Defense. Matched restage r7/r11,
+  k = 4, on #365's head:
+  - Yards per run 5.36 → 4.86 (−0.50 ± 0.16); 504 of 900 runs differ.
+  - Almost all on outside and wide zone: 7.61 → 5.89 and 6.13 → 5.30;
+    wide-zone 10+ yd runs 18% → 10%. Gap schemes within ±0.3.
+  - Play-side zone DL toward the play, 1.0–2.0 s: +1.20 → +1.01 yd/s
+    (NFL +2.08). Backside zone +1.16 → +1.27 (NFL +2.96); gap backside
+    +0.10 → +0.20 (NFL +1.13).
+  - seal-hold travel 2.72 → 0.48 yd (SEAL_HOLD off: 1.33 yd, 25 pinned).
+- **Open question:** the play-side zone edge now stops further from NFL's
+  flow. Before landing the fix, check the contain point itself against
+  NFL edge positions on outside zone: whether the bound sits too tight, or
+  NFL edges widen with the reach past where the runner's path needs them.
 
 ## Tackling and pursuit
 

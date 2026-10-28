@@ -27,7 +27,8 @@ describe('a loaded run blocker keeps the leverage he caught the man with', () =>
     sim.run();
     // Off: 101 loaded steps, 19 at the top lateral request, end carried 3.70 yd (on develop 90daa454: 61 pinned
     // steps; with the squeeze read, 37). The end's net outward travel is no longer asserted: with the squeeze read
-    // the end widens on his own fit request (2.45 of 2.72 yd outward while he asks outward), and the 2-yd bar had
+    // the end widens on his own request (2.45 of 2.72 yd outward while he asks outward: past his containment bound
+    // the engaged-flow law still adds his held flow, KNOWN_PROBLEMS RUN-18), and the 2-yd bar had
     // passed on develop only because the old squeeze, reading the QB at the mesh, asked him 4.6 yd/s inward. Net
     // travel cannot tell his own widening from the runaway (with SEAL_HOLD off the carried end asks outward too);
     // the seal pinned at top speed while he moves outward can, and stays 0.

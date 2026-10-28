@@ -143,6 +143,21 @@ free misses are flat and broken tackles fall slightly. It's the same cause as
 TKL-6 asks the tackle owner for a miss chance from his reach, balance and the
 blocker's hold.
 
+## Seal-hold: the end's widening (KNOWN_PROBLEMS RUN-18)
+
+On seal-hold the strong end now travels 2.72 yd outward, so Run Game dropped
+the scene's net-travel bar and kept its loaded and no-pinned checks. An
+independent trace found the cause: the end is already wider than his
+containment bound, and the engaged-flow law still adds his held outward
+flow, so he doesn't stop as its comment says. The old squeeze misread hid
+this. It is not "his own fit": it is a defect in #347's law.
+
+A fix (drop the outward held flow while the bound applies) puts seal-hold
+back to 0.48 yd. It also moves the restage materially (−0.50 yd per run,
+mostly outside and wide zone), and play-side zone DL flow drops further
+below NFL's. So it isn't in this PR. RUN-18 logs it, with the question to
+answer first: is the contain point too tight?
+
 ## Limits
 
 - Engaged zone flow is still about 60% of NFL's. The rest of the gap:
