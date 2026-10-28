@@ -237,16 +237,18 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
     // A recorded tie moves with every behaviour change: R7-P083 tied at 2.45, then R7-P075 at 3.45, and each lost
     // it under a later read change. The census rule is what this case pins, so the tie is staged on a recorded
-    // play's own ledger: a second defender gets an event at the play's first carrier-event timestamp, and a third
-    // one 0.05 s later.
+    // play's actors and jobs with an explicit event list (no native events, so a future natural tie cannot leak
+    // in): two defenders at the first timestamp, a third 0.05 s later.
     const p = play('R7-P083'), d = structuredClone(p.d);
-    const first = d.play.carrierEvents.reduce((x, e) => e.t < x.t ? e : x);
-    const others = d.actors.filter(a => a.team === 'D' && a.idx !== first.defender).map(a => a.idx);
-    d.play.carrierEvents.push({ t: first.t, type: 'hit', defender: others[0], carrier: null },
-      { t: first.t + 0.05, type: 'tackle_wrap', defender: others[1], carrier: null });
+    const def = d.actors.filter(a => a.team === 'D').map(a => a.idx), t0 = 2;
+    d.play.carrierEvents = [
+      { t: t0 + 0.05, type: 'tackle_wrap', defender: def[2], carrier: null },
+      { t: t0, type: 'hit', defender: def[0], carrier: null },
+      { t: t0, type: 'hit', defender: def[1], carrier: null },
+    ];
     const tied = initialJobCensus(d)[0].firstCarrierContact!;
-    expect(tied.t).toBe(first.t);
-    expect(new Set(tied.defenders)).toEqual(new Set([first.defender, others[0]]));
+    expect(tied.t).toBe(t0);
+    expect(new Set(tied.defenders)).toEqual(new Set([def[0], def[1]]));
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
