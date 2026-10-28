@@ -218,6 +218,31 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(threats.every(c => c.after.kind === 'climb')).toBe(true);
   });
 
+  it('M7-P051: a released climber stays off his keeper\'s man, one defender reaches the carrier alone, and the ledger does not invent a tie', () => {
+    // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7).
+    // Re-recorded when a released climber stopped re-taking the man his keeper is on: LB_W now arrives alone at 2.9
+    // (was tied with LB_M at 2.7); the tie check moved to R7-P083.
+    // With the off-hip climb (#345) as well: the releases and RG's single reread are unchanged, but LB_W's 2.75
+    // swipe no longer loads the carrier, so CB_S makes first contact alone at 3.3.
+    // With the start law (#336) as well: DT_S penetrates and reaches the carrier alone at 1.95, before RG's climb
+    // matters (his combination is abandoned at 2.05), so the climber property moved to M10-P004 below; this play
+    // still checks that the ledger does not invent a tie.
+    const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
+    expect(first.t).toBe(1.95);
+    expect(first.defenders.map(p.slot)).toEqual(['DT_S']);
+  });
+
+  it('M10-P004: a released climber stays off the man his keeper is on', () => {
+    // A matched-restage capture of develop 84af7d9e (Gun Trips Open duo vs under), recorded for the start law (#336)
+    // when M7-P051's climb stopped mattering. C releases from DT_S to LB_W at 1.0 and never rereads back to DT_S;
+    // without #349's keeper-contact check he returns to DT_S at 1.8.
+    const p = play('M10-P004');
+    expect(changeOf(p, 'C', 'combination-release').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
+      .toEqual([[1, 'DT_S', 'LB_W']]);
+    expect(changeOf(p, 'C', 'threat-reread')).toEqual([]);
+    expect(p.d.changes.some(c => p.slot(c.actor) === 'C' && c.t > 1 && p.slot(c.after.target) === 'DT_S')).toBe(false);
+  });
+
   it('M25-P029: the first carrier contact keeps both defenders tied at 2.45', () => {
     // Re-recorded for the start law (#336): M7-P051's DT_S now reaches the carrier first and alone (1.95). M13-P086
     // carried the tie on develop 1ec115c7; with develop 84af7d9e merged its LB_M arrives alone, so M25-P029, a
@@ -225,6 +250,15 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     const p = play('M25-P029'), first = p.census[0].firstCarrierContact!;
     expect(first.t).toBe(2.45);
     expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
+  });
+
+  it('R7-P083: the same sample is not tied under the start law, and the ledger does not invent one', () => {
+    // Gun Trips Open wide zone weak, a run-only capture: LB_M and LB_W reached the carrier on the same tick (2.45) on
+    // develop. With the start law (#336) RG releases at 1.7 and his climb reaches LB_W at 2.45, so CB_W makes first
+    // contact alone at 2.5; the tie is carried by M25-P029.
+    const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
+    expect(first.t).toBe(2.5);
+    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
@@ -256,7 +290,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.census).toEqual([]);
   });
 
-  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
+  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'M10-P004', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029', 'R7-P083'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
     const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
     const run = (record: boolean) => {
       const sim = new PlaySim(restoreSetup(setup));

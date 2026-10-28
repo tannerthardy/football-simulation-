@@ -19,6 +19,7 @@ import type { WeirdEvent } from './scorecard/weird/types.js';
 import { selectFilmPlays, type SelectionPlay } from './film-pack-selection.js';
 import { renderFilmPart, splitFilmParts, type FilmReplayContext, type ReplayClip } from './film-pack-render.js';
 import { FILM_PACK_VERSION, type FilmPackManifest } from './film-pack-types.js';
+import { retainFilmInputs } from './film-pack-inputs.js';
 
 export function filmPackOptions(args: string[]) {
   let seed = 7, games = 12, out: string | undefined, runOnly = false;
@@ -73,7 +74,8 @@ function measurementIdentity() {
   const files = (dir: string): string[] => readdirSync(dir, { withFileTypes: true })
     .flatMap(e => e.isDirectory() ? files(join(dir, e.name)) : [join(dir, e.name)]).sort();
   const paths = ['scripts/film-pack.ts', 'scripts/film-pack-types.ts', 'scripts/film-pack-selection.ts',
-    'scripts/film-pack-render.ts', 'scripts/replay-data.ts', 'scripts/scorecard/provenance.ts',
+    'scripts/film-pack-render.ts', 'scripts/film-pack-inputs.ts', 'scripts/diag/saved-play.ts',
+    'scripts/replay-data.ts', 'scripts/scorecard/provenance.ts',
     'scripts/source-version.ts', 'viewer/replay.template.html', ...files('scripts/scorecard/weird')];
   const hash = createHash('sha256');
   for (const p of paths.sort()) hash.update(p).update('\0').update(readFileSync(p)).update('\0');
@@ -169,6 +171,8 @@ export function buildFilmPack(options: ReturnType<typeof filmPackOptions>, progr
     ...manifest.parts.map(p => `- [${p.file}](${p.file}) — ${p.bytes} bytes: ${p.ids.join(', ')}`), '',
     ...Object.entries(manifest.selection.counts).map(([g, n]) => `${g}: ${n} plays.`), '',
     'Before/after: 20 pair slots reserved for F2; empty in this pack.', '',
+    'Selected constructor inputs: [inputs/index.json](inputs/index.json). The F2 saved-path selector is inputs/selection.json.',
+    'Inputs are recaptured on this exact engine/settings, checked against the original clips, and kept private alongside the film.', '',
     ...manifest.selection.notes, '',
     'Rebuild with the recorded tooling HEAD (or a descendant with identical engine/tool hashes), Node and engine settings.',
     `HEAD: ${headCommit}. Engine working-tree edits: ${source.engineDirty}. Settings: ${JSON.stringify(source.settings)}.`,
@@ -176,6 +180,8 @@ export function buildFilmPack(options: ReturnType<typeof filmPackOptions>, progr
     '```sh', `git checkout ${headCommit}`, rebuild, '```', ''];
   writeFileSync(join(out, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
   writeFileSync(join(out, 'index.md'), index.join('\n'));
+  const inputs = retainFilmInputs(out);
+  progress(`${inputs.captured}/${inputs.requested} selected constructors retained in inputs/`);
   const elapsedSeconds = (performance.now() - started) / 1000;
   writeFileSync(join(out, 'build.json'), JSON.stringify({ elapsedSeconds }, null, 2) + '\n');
   progress(`${manifest.plays.length} selected; ${parts.length} HTML parts; ${elapsedSeconds.toFixed(2)} seconds -> ${out}`);
