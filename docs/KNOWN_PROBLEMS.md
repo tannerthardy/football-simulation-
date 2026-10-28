@@ -2191,7 +2191,16 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
     a tracked tackle rides him past the launch point.
     - In P019 under PASS_KICK, both ends are met at 1.25 s and lost at the
       hip at 1.9 s.
-    - `PASS_RIDE` (parked) is the candidate.
+    - **#328 redirect-contract limit (2026-10-28):** on accepted
+      `db6bc472` plus candidate `e1575023`, whole-rep `carriedPast` is
+      **0.2456 yd against the old 0.5 yd bar** (base 0.7362 yd). That
+      maximum includes the freed rusher's later pursuit. The replacement
+      tests require actual loaded hand forces, causal outward deflection
+      and added QB separation, then check free closing separately.
+      **A tackle riding the rusher past the QB's depth is not currently
+      asserted anywhere.** These phase checks do not establish that outcome.
+    - `PASS_RIDE` remains the parked candidate for that unresolved ride;
+      #328 does not implement it or claim that the hip problem is solved.
     - The pinned scenes are `pass-cutoff-approach`, `redirect-protection`
       and `qb-rusher-recording`.
   - **A back's release: `ROUTE_CLEAR`, on.** A back releasing from the
