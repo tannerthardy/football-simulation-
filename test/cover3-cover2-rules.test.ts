@@ -16,11 +16,17 @@ import { describe, expect, it, vi } from 'vitest';
 // and the flat defender passes him off. The route's path, not the rule
 // (KNOWN_PROBLEMS PRO-1).
 // ARM_PRESS puts a press through the hands at the bench max; this scene is staged on arm-force hands (KNOWN_PROBLEMS RUN-11, re-record by review 2).
-// GRIP_HOLD keeps the end's 2.4 s grab on the vertical curl's QB a beat
-// longer; he still breaks it, but goes down at 3.2 s, before the 3.4 s read:
-// the rush, not the rule (KNOWN_PROBLEMS TKL-1, re-record by review 2).
+// Historically GRIP_HOLD kept the end's 2.4 s grab a beat longer; the QB
+// went down at 3.2 s, before the original 3.4 s exposure. Keep that recorded
+// setting for a like-for-like coverage fixture (KNOWN_PROBLEMS TKL-1).
+// On the current source the up-and-in read occurs before a legitimate sack.
+// The late-dig case therefore checks its acquired cue and job BEFORE contact,
+// rather than requiring a held QB to survive after that read has succeeded.
 vi.hoisted(() => { process.env.AGAP_ALIGN = '0'; process.env.PASS_KICK = '0'; process.env.ARM_PRESS = '0'; process.env.GRIP_HOLD = '0'; });
 import { filmScene, jobsOf, modeOf, type SceneFilm } from '../src/lab/coverage-scene.js';
+import { CoverageDefender } from '../src/sim/coverage/defender.js';
+import { PlaySim } from '../src/sim/playsim.js';
+import { Rng } from '../src/core/rng.js';
 
 /** The defender whose installed landmark is `zone`. */
 const seat = (f: SceneFilm, zone: string): string =>
@@ -70,11 +76,60 @@ describe('Cover 2 match', () => {
   });
 
   it('the vertical curl matches #2 up and in, and walls a seam', () => {
-    const dig = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'lab_in9' }, weak: { 1: 'go', 2: 'seam' }, until: 3.4 });
+    const cueSamples: Array<{ t: number; liveHeld: boolean; rule: ReturnType<CoverageDefender['recordedRule']> }> = [];
+    const runDig = (observeCue: boolean) => {
+      const states: unknown[] = [];
+      const draws: number[] = [];
+      let endAt = 3.4;
+      const nativeDraw = Rng.prototype.nextU32;
+      const draw = vi.spyOn(Rng.prototype, 'nextU32').mockImplementation(function (this: Rng) {
+        const value = nativeDraw.call(this); draws.push(value); return value;
+      });
+      const nativeTick = PlaySim.prototype.tick;
+      const tick = vi.spyOn(PlaySim.prototype, 'tick').mockImplementation(function (this: PlaySim) {
+        const t = this.t, liveHeld = this.phase === 'live' && this.ball.kind === 'held';
+        nativeTick.call(this);
+        if (this.phase !== 'live') endAt = t;
+        if (observeCue) {
+          const curl = this.defense.find(a => a.behavior instanceof CoverageDefender
+            && a.behavior.history[0]?.job === 'zone:hook_s')?.behavior as CoverageDefender | undefined;
+          // Copies keys consumed by this tick, never calls see or draws dice.
+          if (curl) cueSamples.push({ t, liveHeld, rule: curl.recordedRule(t) });
+        }
+        // A common passive recorder proves that adding the cue observer does
+        // not change any native body/support, RNG, event or coverage sequence.
+        states.push(structuredClone({ bodies: this.agents.map(a => a.body), intents: this.intents,
+          minds: this.agents.map(a => a.mind), rng: this.rng,
+          events: this.events, phase: this.phase, ball: this.ball.kind }));
+      });
+      try {
+        return { film: filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match',
+          strong: { 1: 'go', 2: 'lab_in9' }, weak: { 1: 'go', 2: 'seam' }, until: 3.4 }), states, draws, endAt: () => endAt };
+      } finally { tick.mockRestore(); draw.mockRestore(); }
+    };
+    const plain = runDig(false), observed = runDig(true), dig = observed.film;
+    expect(observed.states).toEqual(plain.states);
+    expect(observed.draws).toEqual(plain.draws); // Main and named RNG draws, in order.
+    expect(dig.defenders).toEqual(plain.film.defenders);
     const curl = seat(dig, 'hook_s');
-    // The dig breaks late: the rep must reach 3.4 s with the ball held (a
-    // sack before the break is a staging failure, not a coverage one).
-    expect(dig.sim.phase === 'live' && dig.sim.ball.kind === 'held' && dig.sim.t >= 3.35).toBe(true);
+    // Require the actual acquired vertical-to-in cue and wall-to-man decision
+    // while live/held, before the first wrap or ending by at least one tick.
+    // A later sack is a legitimate finish, not a failed coverage opportunity.
+    const decisionAt = (records: string[], job: string) => Number(records.find(r => r.split('@')[0] === job)?.split('@')[1]);
+    const inAt = decisionAt(dig.defenders[curl].modes, 'in');
+    const manAt = decisionAt(dig.defenders[curl].jobs, `man:${dig.numbering.S2}`);
+    const wallAt = decisionAt(dig.defenders[curl].jobs, `wall:${dig.numbering.S2}`);
+    const cutoff = Math.min(observed.endAt(), dig.sim.events.find(e => e.type === 'tackle_wrap')?.t ?? 3.4);
+    expect(wallAt).toBeLessThan(inAt);
+    expect(inAt + dig.sim.dt).toBeLessThanOrEqual(cutoff);
+    expect(manAt + dig.sim.dt).toBeLessThanOrEqual(cutoff);
+    const sample = cueSamples.find(s => s.t === inAt);
+    expect(sample?.liveHeld).toBe(true);
+    const cue = sample?.rule.reads.find(r => r.slot === dig.numbering.S2);
+    expect(cue?.first).toBe('vertical');
+    expect(cue?.release).toBe('in');
+    expect(cue?.climbed).toBe(true);
+    expect(cue?.since).toBeLessThanOrEqual(manAt);
     expect(modeOf(dig, curl)).toBe('in');
     expect(jobsOf(dig, curl).at(-1)).toBe(`man:${dig.numbering.S2}`);
     const seam = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'seam' }, until: 3.0 });
