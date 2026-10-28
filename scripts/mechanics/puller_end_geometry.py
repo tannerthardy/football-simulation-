@@ -26,7 +26,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_film_reference as reference  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
-CONCEPTS = ('POWER', 'COUNTER', 'TRAP')
+CONCEPTS = tuple(c for c in reference.CONCEPTS if c in ('POWER', 'COUNTER', 'TRAP'))
 CLASSES = ('kick_like', 'log_like', 'turn_up_like', 'uncertain')
 
 
@@ -161,10 +161,15 @@ def classify(play, i, criteria=Criteria()):
         return uncertain('imputed_encounter_window')
     if ambiguous:
         return uncertain('multiple_snap_end_candidates')
-    other = next((f for f in eligible if any(separation(j, f) < criteria.arrival_radius for j in front[1:])), None)
+    # Competing front encounters belong to the same first-action window.
+    # A later lead block must not retrospectively erase an earlier turn-up;
+    # a same-frame competing arrival cannot identify which man was met first.
+    critical = turn+4 if turn_first else arrival if arrival is not None else min(last, 40)
+    other = next((f for f in eligible if f <= critical and any(
+        separation(j, f) < criteria.arrival_radius for j in front[1:])), None)
     row['other_front_arrival'] = None if other is None else round(other*.1, 2)
-    if other is not None and (arrival is None or other < arrival):
-        return uncertain('another_front_defender_encountered_first')
+    if other is not None:
+        return uncertain('competing_front_encounter_before_or_with_action')
     if turn_first:
         if separation(end, turn) >= criteria.coupled_radius and (xy[turn][i][1]-xy[turn][end][1])*direction <= -criteria.relation_margin:
             row.update({'class': 'turn_up_like', 'reason': 'upfield_segment_inside_end_before_end_arrival'})
@@ -227,11 +232,6 @@ def measure(plays):
     return rows, dict(counts)
 
 
-def median(values):
-    values = [v for v in values if v is not None]
-    return None if not values else round(statistics.median(values), 2)
-
-
 def spread(values):
     """Linear sample quantiles, descriptive only; rows within a play correlate."""
     if not values:
@@ -268,18 +268,21 @@ def tables(rows, counts):
             label = cls+' / '+('turn onset' if key == 'turn' else 'arrival')
             cells = [spread([p[k] for p in points]) for k in ('time', 'puller_depth', 'distance_to_end', 'end_depth')]
             lines.append(f"| {src} | {label} | {len(points)} | {sum(r['threshold_sensitive'] for r in group)} | "+' | '.join(cells)+' |')
-        bad_arrival = {'multiple_snap_end_candidates', 'another_front_defender_encountered_first',
+        bad_arrival = {'multiple_snap_end_candidates', 'competing_front_encounter_before_or_with_action',
                        'imputed_puller_detection_window', 'imputed_encounter_window'}
         group = [r for r in rows if r['source'] == src and r['arrival'] is not None and r['reason'] not in bad_arrival]
         cells = [spread([r['arrival'][k] for r in group]) for k in ('time', 'puller_depth', 'distance_to_end', 'end_depth')]
         lines.append(f"| {src} | all unique first-end arrivals, incl. unclassified | {len(group)} | — | "+' | '.join(cells)+' |')
-    reasons = collections.Counter(r['reason'] for r in rows if r['class'] == 'uncertain')
-    lines += ['', 'Uncertain reasons: '+', '.join(f'{k}={v}' for k, v in sorted(reasons.items())), '',
+    lines.append('')
+    for src in sorted({r['source'] for r in rows}):
+        reasons = collections.Counter(r['reason'] for r in rows if r['source'] == src and r['class'] == 'uncertain')
+        lines.append(f'{src} uncertain reasons: '+', '.join(f'{k}={v}' for k, v in sorted(reasons.items())))
+    lines += ['',
               f"No gap audit supplied for {sum(r['audit']=='not_available' for r in rows)} puller rows. "
               'Known filled encounter samples are not classified.',
               'Sensitivity changes one threshold at a time: arrival radius 1.0/1.4 yd or end displacement 0.3/0.7 yd.',
               'NFL BDB2025 coverage is 2022 weeks 1–9, not the entire season; actual input weeks appear in the JSON counts.',
-              'Concepts and pullers are the shared reference definitions. Duo is INSIDE ZONE, outside this gap subset.',
+              'Concepts and pullers are the shared reference definitions. Sim Duo maps to INSIDE ZONE; NFL keeps its supplied PFF primary label.',
               'The end is the widest snap-aligned DL/LB (x<1.8) on the pull side, not a proven blocking assignment. '
               'TRAP often targets an interior man. Multiple close-width candidates and earlier other-front encounters stay uncertain.',
               'Tracking proximity is not physical contact, holding, grip, gaze or intent. A turn-up can be a planned lead/climb.',
@@ -312,7 +315,7 @@ def main():
               'simStatus': 'supplied' if args.sim else 'not supplied; no current-sim measurement claimed'}
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2)+'\n')
-    table = tables(rows, counts)
+    table = tables(rows, counts)+'\nSim input status: '+result['simStatus']+'\n'
     args.out.with_suffix('.md').write_text(table)
     print(table)
     return 0
@@ -374,6 +377,13 @@ def self_test():
         def test_short_end_censors_followup(self):
             p = synthetic(); p['end'] = 1.8
             self.assertEqual(classify(p, 0)['reason'], 'post_arrival_window_censored')
+
+        def test_same_frame_competing_arrival_is_uncertain(self):
+            p = synthetic()
+            p['players'].append({'side': 'D', 'group': 'DL'})
+            for f, (frame, mask) in enumerate(zip(p['xy'], p['_observed'])):
+                frame.append((.6, 1.3+.2*f if f < 15 else 3.5)); mask.append(True)
+            self.assertEqual(classify(p, 0)['reason'], 'competing_front_encounter_before_or_with_action')
 
         def test_loader_mapping_clock_and_plan_audit(self):
             p = synthetic()
