@@ -320,7 +320,7 @@ function updateHoldCausality(sim: PlaySim, report: StepReport, h: HoldStart): bo
     || support?.cause === 'dive') c.contaminated = true;
   if (c.neutralOrigin && !c.contaminated && report.falls.includes(h.victim.idx)
     && (support?.cause === 'contact' || ownLegHold && support?.cause === 'legs')
-    && (h.joint.normalForce ?? 0) < -1e-6) c.tookFeet = true;
+    && ((h.joint.normalForce ?? 0) < -1e-6 || (h.joint.kind === 'grasp' && (h.joint.strideForce ?? 0) > 1e-6))) c.tookFeet = true;
   return c.tookFeet;
 }
 
