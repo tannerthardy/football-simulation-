@@ -217,7 +217,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
   it('M7-P051: a released climber stays off his keeper\'s man, one defender reaches the carrier alone, and the ledger does not invent a tie', () => {
     // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7).
     // Re-recorded when a released climber stopped re-taking the man his keeper is on: LB_W now arrives alone at 2.9
-    // (was tied with LB_M at 2.7); the tie check moved to R7-P083, and later to R7-P075.
+    // (was tied with LB_M at 2.7); the tie check moved to R7-P083, and is now staged on a recorded play's ledger.
     // With the off-hip climb (#345) as well: the releases and RG's single reread are unchanged, but LB_W's 2.75
     // swipe no longer loads the carrier, so CB_S makes first contact alone at 3.3.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
@@ -232,14 +232,19 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
-  it('R7-P075: the first carrier contact keeps both defenders tied at 3.45', () => {
-    // Gun Trips inside zone (H return motion), a run-only capture: CB_S and SS reach the carrier on the same tick.
-    // The tie case moved here from R7-P083, which no longer ties under the squeeze read (DL_SQUEEZE from a seen
-    // carrier's track) or the along-route crease read. This sample ties the same way on develop a21f0740, on the
-    // squeeze read and on the along-route crease read.
-    const p = play('R7-P075'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(3.45);
-    expect(first.defenders.map(p.slot).sort()).toEqual(['CB_S', 'SS']);
+  it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
+    // A recorded tie moves with every behaviour change: R7-P083 tied at 2.45, then R7-P075 at 3.45, and each lost
+    // it under a later read change. The census rule is what this case pins, so the tie is staged on a recorded
+    // play's own ledger: a second defender gets an event at the play's first carrier-event timestamp, and a third
+    // one 0.05 s later.
+    const p = play('R7-P083'), d = structuredClone(p.d);
+    const first = d.play.carrierEvents.reduce((x, e) => e.t < x.t ? e : x);
+    const others = d.actors.filter(a => a.team === 'D' && a.idx !== first.defender).map(a => a.idx);
+    d.play.carrierEvents.push({ t: first.t, type: 'hit', defender: others[0], carrier: null },
+      { t: first.t + 0.05, type: 'tackle_wrap', defender: others[1], carrier: null });
+    const tied = initialJobCensus(d)[0].firstCarrierContact!;
+    expect(tied.t).toBe(first.t);
+    expect(new Set(tied.defenders)).toEqual(new Set([first.defender, others[0]]));
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
