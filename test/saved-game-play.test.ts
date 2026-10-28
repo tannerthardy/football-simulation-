@@ -23,12 +23,18 @@ import { composeHooks } from '../scripts/scorecard/hooks.js';
 // first catch from play 10 becomes G1-P012, whose corner is a matching wrapper. With the gait start law
 // (#336) and the back's own mesh start (#344) together the history moves again: the first catch from play 10
 // is one the defense has not scouted (its scouting holds 0 plays), so the capture starts from play 11, whose
-// first catch has two scouted plays behind it.
+// first catch had two scouted plays behind it. Later controller changes can
+// put that first eligible catch on a fresh drive again. This fixture needs
+// genuinely acquired scouting: select the first warm catch in the same bounded
+// game, without changing its seed, calls or state. Restoration errors still fail.
 vi.hoisted(() => { process.env.GAP_MATCH = '0'; });
 
 describe('ordinary-game constructor capture and independent replay', () => {
   let captured: ReturnType<typeof captureOrdinaryPlay>;
-  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 11, maxSteps: 60 }); }, 30_000);
+  beforeAll(() => {
+    captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 11, maxSteps: 60,
+      accept: saved => restoreSetup(saved.setup).scouting!.plays() > 0 });
+  }, 30_000);
 
   it('preserves the whole normal game prefix compared with the observer absent', () => {
     const rng = new Rng(7);
