@@ -83,7 +83,9 @@ describe('approximate interception prediction contract', () => {
       const draws = vi.spyOn(Rng.prototype, 'nextU32');
       const sim = new PlaySim(restoreSetup(saved.setup)), initial = initialState(sim);
       const reads = vi.spyOn(sim.perception, 'perceive'), steps = vi.spyOn(sim.world, 'step');
-      const trace = record ? sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 0, to: 30 }) : undefined;
+      // The safety who pursues this catch: on the engaged-flow law (#347) the game's first catch is a different
+      // play, and its pursuing safety is FS (the SS never chases it).
+      const trace = record ? sim.recordCommands({ actor: { team: 'D', slot: 'FS' }, from: 0, to: 30 }) : undefined;
       const result = sim.run();
       const execution = { initial, result, replay: replayState(sim, result, saved.context) };
       const counts = { planner: planner.mock.calls.length, paths: pathCalls, reads: reads.mock.calls.length,
