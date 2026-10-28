@@ -20,7 +20,7 @@ import { describe, expect, it, vi } from 'vitest';
 // went down at 3.2 s, before the original 3.4 s exposure. Keep that recorded
 // setting for a like-for-like coverage fixture (KNOWN_PROBLEMS TKL-1).
 // On the current source the up-and-in read occurs before a legitimate sack.
-// The late-dig case therefore checks its acquired cue and job BEFORE contact,
+// The late-dig case therefore checks its acquired cue and job BEFORE the end,
 // rather than requiring a held QB to survive after that read has succeeded.
 vi.hoisted(() => { process.env.AGAP_ALIGN = '0'; process.env.PASS_KICK = '0'; process.env.ARM_PRESS = '0'; process.env.GRIP_HOLD = '0'; });
 import { filmScene, jobsOf, modeOf, type SceneFilm } from '../src/lab/coverage-scene.js';
@@ -83,10 +83,10 @@ describe('Cover 2 match', () => {
 
   it('the vertical curl matches #2 up and in, and walls a seam', () => {
     const cueSamples: Array<{ t: number; liveHeld: boolean; rule: ReturnType<CoverageDefender['recordedRule']> }> = [];
-    const runDig = (observeCue: boolean) => {
+    const runDig = (observeCue: boolean, until = 3.4) => {
       const states: unknown[] = [];
       const draws: number[] = [];
-      let endAt = 3.4;
+      let endAt = until;
       const nativeDraw = Rng.prototype.nextU32;
       const draw = vi.spyOn(Rng.prototype, 'nextU32').mockImplementation(function (this: Rng) {
         const value = nativeDraw.call(this); draws.push(value); return value;
@@ -95,7 +95,7 @@ describe('Cover 2 match', () => {
       const tick = vi.spyOn(PlaySim.prototype, 'tick').mockImplementation(function (this: PlaySim) {
         const t = this.t, liveHeld = this.phase === 'live' && this.ball.kind === 'held';
         nativeTick.call(this);
-        if (this.phase !== 'live') endAt = t;
+        if (this.phase !== 'live') endAt = Math.min(endAt, t);
         if (observeCue) {
           const curl = this.defense.find(a => a.behavior instanceof CoverageDefender
             && a.behavior.history[0]?.job === 'zone:hook_s')?.behavior as CoverageDefender | undefined;
@@ -110,7 +110,7 @@ describe('Cover 2 match', () => {
       });
       try {
         return { film: filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match',
-          strong: { 1: 'go', 2: 'lab_in9' }, weak: { 1: 'go', 2: 'seam' }, until: 3.4, seed: SEED }), states, draws, endAt: () => endAt };
+          strong: { 1: 'go', 2: 'lab_in9' }, weak: { 1: 'go', 2: 'seam' }, until, seed: SEED }), states, draws, endAt: () => endAt };
       } finally { tick.mockRestore(); draw.mockRestore(); }
     };
     const plain = runDig(false), observed = runDig(true), dig = observed.film;
@@ -119,13 +119,15 @@ describe('Cover 2 match', () => {
     expect(dig.defenders).toEqual(plain.film.defenders);
     const curl = seat(dig, 'hook_s');
     // Require the actual acquired vertical-to-in cue and wall-to-man decision
-    // while live/held, before the first wrap or ending by at least one tick.
-    // A later sack is a legitimate finish, not a failed coverage opportunity.
+    // while live/held, before the first non-live tick by at least one tick.
+    // A wrap is not the coverage boundary: the QB can remain up with the ball.
+    // Pending #336 c7d4d0e2 wraps at 2.75; with #328 at 2.80. Both read in at
+    // 2.85, before the composition's 3.05 sack. Coverage plays to the whistle.
     const decisionAt = (records: string[], job: string) => Number(records.find(r => r.split('@')[0] === job)?.split('@')[1]);
     const inAt = decisionAt(dig.defenders[curl].modes, 'in');
     const manAt = decisionAt(dig.defenders[curl].jobs, `man:${dig.numbering.S2}`);
     const wallAt = decisionAt(dig.defenders[curl].jobs, `wall:${dig.numbering.S2}`);
-    const cutoff = Math.min(observed.endAt(), dig.sim.events.find(e => e.type === 'tackle_wrap')?.t ?? 3.4);
+    const cutoff = observed.endAt();
     expect(wallAt).toBeLessThan(inAt);
     expect(inAt + dig.sim.dt).toBeLessThanOrEqual(cutoff);
     expect(manAt + dig.sim.dt).toBeLessThanOrEqual(cutoff);
@@ -138,6 +140,14 @@ describe('Cover 2 match', () => {
     expect(cue?.since).toBeLessThanOrEqual(manAt);
     expect(modeOf(dig, curl)).toBe('in');
     expect(jobsOf(dig, curl).at(-1)).toBe(`man:${dig.numbering.S2}`);
+    // The SAME native input, stopped during its vertical stem, must not earn
+    // the later in-match from installed route knowledge or the final outcome.
+    const early = runDig(false, 2), earlyCurl = seat(early.film, 'hook_s');
+    expect(early.states).toEqual(observed.states.slice(0, early.states.length));
+    expect(early.draws).toEqual(observed.draws.slice(0, early.draws.length));
+    expect(jobsOf(early.film, earlyCurl)).toContain(`wall:${early.film.numbering.S2}`);
+    expect(modeOf(early.film, earlyCurl)).not.toBe('in');
+    expect(jobsOf(early.film, earlyCurl)).not.toContain(`man:${early.film.numbering.S2}`);
     const seam = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'seam' }, until: 3.0, seed: SEED });
     expect(jobsOf(seam, seat(seam, 'hook_s'))).toContain(`wall:${seam.numbering.S2}`);
   });
