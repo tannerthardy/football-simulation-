@@ -227,7 +227,12 @@ export class BallCarrier implements Behavior {
       let aim = liveAim(a, sim, this.opts)!;
       // Press the installed track, reading its occupied approach on the same
       // finite beat as other carrier decisions. Speed and movement stay ordinary.
-      if (this.opts.run && (a.pos.x - sim.los) * dir > -4.5) {
+      // The hole is read from about two yards off the line, where who gets
+      // there first spans about half a second. From deep in the backfield every
+      // defender beats him to every hole before a block has landed, and the
+      // read cut him away from his own pullers (counter: 59% of crossers went
+      // backside, tracked backs 10%). designExit still abandons a closed aim.
+      if (this.opts.run && (a.pos.x - sim.los) * dir > -2) {
         if (sim.t >= this.pressReadAt) {
           this.pressReadAt = sim.t + a.mind.decisionInterval;
           this.pressEntry = runReadAim(a, sim, this.opts);
