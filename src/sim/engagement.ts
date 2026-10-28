@@ -950,28 +950,16 @@ function ballKey(sim: PlaySim, d: Agent): Agent | null {
 function runContactRead(sim: PlaySim, e: Engagement) {
   const d = e.defender, b = e.blocker, job = d.runFit;
   const back = sim.slot('RB');
-  let backPicture: ReturnType<PlaySim['see']> | null = null;
-  let acquired: { target: Agent; cue: ReturnType<PlaySim['see']> } | null = null;
-  if (job?.kind !== 'interior' && job?.kind !== 'edge') {
-    // Contact support looks into the installed backfield. A new work-off
-    // decision cannot learn a give/keep from the hidden live holder identity.
-    const qbPicture = sim.see(d, sim.qb);
-    backPicture = back ? sim.see(d, back) : null;
-    if (qbPicture.carrying === true && backPicture?.carrying !== true)
-      acquired = { target: sim.qb, cue: qbPicture };
-    else if (back && backPicture?.carrying === true && qbPicture.carrying !== true)
-      acquired = { target: back, cue: backPicture };
-  }
-  // The holder comes from his own pictures. First-level fits take whoever
-  // they see holding it; support contacts keep their backfield key, so a
-  // give or keep they have not seen leaves no runner rather than the truth.
-  const held = job?.kind === 'interior' || job?.kind === 'edge' ? observedHolder(d, sim, b) : acquired;
+  // Support must recognize an acquired receiver carrying the ball too.
+  // Use the same delayed, ambiguity-checked pictures as the release check;
+  // the live holder identity never selects whom this defender observes.
+  const held = observedHolder(d, sim, b);
   const enemy = held?.target ?? null;
   const carrierCue = held?.cue ?? null;
   // Read through the mesh instead of working toward a stationary QB. This
   // uses only the observed depth; a QB draw/scramble can declare at the surface.
   const runnerCue = enemy === sim.qb && carrierCue && carrierCue.pos.x < sim.los - 1.6 && back
-    ? backPicture ?? sim.see(d, back) : carrierCue;
+    ? sim.see(d, back) : carrierCue;
   const advanced = !!(enemy && carrierCue &&
     (carrierCue.pos.x - sim.los) * sim.attackDir(enemy.team) > 2);
   const reading = d.recog?.read === 'run' || advanced;
@@ -1052,7 +1040,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     // line with inside-out leverage instead of recentering on an obsolete
     // blocker shoulder. Possession comes from acquired backfield pictures;
     // the live holder, offensive call and private blocker work are not keys.
-    const qbSeen = sim.see(d, sim.qb), backSeen = backPicture ?? sim.see(d, back);
+    const qbSeen = sim.see(d, sim.qb), backSeen = sim.see(d, back);
     const horizon = 2 * d.mind.decisionInterval;
     const fresh = (age: number | undefined) => age !== undefined && Number.isFinite(age)
       && age >= 0 && age <= d.profile.reactionTime + horizon;
@@ -1075,7 +1063,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     // the lateral relation to the ball his fit had (the boot/reverse/cutback
     // check), as the free edge fit does. Possession and motion come from his
     // own backfield pictures, as for the interior trail above.
-    const qbSeen = sim.see(d, sim.qb), backSeen = backPicture ?? sim.see(d, back);
+    const qbSeen = sim.see(d, sim.qb), backSeen = sim.see(d, back);
     const fresh = (age: number | undefined) => age !== undefined && Number.isFinite(age)
       && age >= 0 && age <= d.profile.reactionTime + 2 * d.mind.decisionInterval;
     const cushion = Math.abs(liveGapY(sim, d, job!.gap, job!.side) - sim.ballY);
@@ -1119,7 +1107,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
   const threat = reading && carrierCue &&
     (enemy !== sim.qb || carrierCue.pos.x > sim.los - 1.6) ? carrierCue : null;
   return { aim, reading, threat, declared: runTargets.get(e)!.runner,
-    flow: runTargets.get(e)!.flow, stack, contain, trail: !!runTargets.get(e)!.trail, acquiredBackfield: !!acquired };
+    flow: runTargets.get(e)!.flow, stack, contain, trail: !!runTargets.get(e)!.trail, acquiredHolder: !!held };
 }
 
 /** RUN_HANDS (experimental, off; needs HAND_MOTOR=1 to act): a blocker who
@@ -1204,7 +1192,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const axis = axisOf(sim, e); // defender toward the intended contact surface
   const lat = latOf(axis);
   const read = runContactRead(sim, e);
-  const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredBackfield
+  const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredHolder
     && read.declared && read.threat?.carrying === true;
   e.phi = measurePhi(axis, d, b);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
@@ -1227,11 +1215,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // First-level stack/shoulder and uncertain possession retain the old gate.
     // Once that runner is past the line, any blocked defender works off
     // toward him at any range (SHED_PURSUE). It uses the declaration held
-    // between ordinary reads, and a support job needs #169's acquired
-    // backfield picture; a first-level fit's runner picture is his own line read.
+    // between ordinary reads, and a support job needs an acquired holder
+    // picture; a first-level fit's runner picture is his own line read.
     const firstLevel = d.runFit?.kind === 'interior' || d.runFit?.kind === 'edge';
     const pursue = SHED_PURSUE && read.declared && read.threat.carrying === true
-      && (firstLevel || read.acquiredBackfield)
+      && (firstLevel || read.acquiredHolder)
       && (read.threat.pos.x - sim.los) * sim.attackDir(b.team) > 0;
     // #169: acquiring hands does not restart already justified support.
     const ready = t >= e.nextMoveAt || (supportRunner && !runSheds.has(e));
