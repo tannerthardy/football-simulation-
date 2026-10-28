@@ -19,6 +19,8 @@ import importlib.util
 import json
 import math
 from pathlib import Path
+import random
+import re
 import sys
 import tempfile
 
@@ -247,6 +249,64 @@ def summary(rows, by_concept=False):
     return table
 
 
+def rate_uncertainty(rows, draws=2000, seed=20261028, by_concept=False):
+    """Percentile intervals for observed tag rates, never assignment accuracy.
+
+    Resample whole NFL games with replacement, keeping all OL and plays in
+    each game together. Use the pooled OL denominator, not a mean of game
+    rates. Refuse intervals when game identities are missing/ambiguous.
+    Radius-robust counts remain a separate sensitivity measure.
+    """
+    if not isinstance(draws, int) or draws < 2:
+        raise ValueError('draws must be an integer >= 2')
+    labels = (*LABELS, 'unknown')
+    groups = defaultdict(list)
+    for row in rows:
+        groups[row['src'], row['concept'] if by_concept else 'ALL'].append(row)
+    result = []
+    for (src, concept), rr in sorted(groups.items()):
+        games, identities, issues = {}, set(), set()
+        for row in rr:
+            match = re.fullmatch(r'(\d{10})-\d+', str(row.get('play_id', ''))) if src == 'nfl' else None
+            identity = (row.get('play_id'), row['actor'])
+            if not match:
+                issues.add('game_identity_unavailable')
+            if identity in identities:
+                issues.add('duplicate_play_actor_identity')
+            identities.add(identity)
+            if match:
+                vector = games.setdefault(match[1], [0] * (len(labels) + 1))
+                vector[0] += 1
+                for j, label in enumerate(labels, 1):
+                    vector[j] += bool(row['unknown']) if label == 'unknown' else label in row['labels']
+        reason = sorted(issues)[0] if issues else None
+        if reason is None and len(games) < 2:
+            reason = 'fewer_than_two_games'
+        estimates = [[] for _ in labels]
+        if reason is None:
+            vectors = [games[key] for key in sorted(games)]
+            rng = random.Random(seed)
+            for _ in range(draws):
+                sampled = rng.choices(vectors, k=len(vectors))
+                denominator = sum(v[0] for v in sampled)
+                for j, values in enumerate(estimates, 1):
+                    values.append(sum(v[j] for v in sampled) / denominator)
+        for j, label in enumerate(labels):
+            hits = sum(bool(row['unknown']) if label == 'unknown' else label in row['labels'] for row in rr)
+            values = sorted(estimates[j])
+            def quantile(p):
+                at = p * (len(values) - 1)
+                lo, hi = math.floor(at), math.ceil(at)
+                return values[lo] + (values[hi] - values[lo]) * (at - lo)
+            result.append({'src': src, 'concept': concept, 'label': label, 'n': hits,
+                'denominator': len(rr), 'share': hits / len(rr), 'games': len(games),
+                'ci95': [quantile(.025), quantile(.975)] if values else None,
+                'interval_unavailable': reason, 'draws': draws, 'seed': seed,
+                'method': 'whole-game cluster bootstrap, percentile95, pooled OL denominator',
+                'scope': 'observed candidate-tag frequency; not coaching-label accuracy, radius error or full-season prevalence'})
+    return result
+
+
 def examples(rows):
     chosen=[]
     for label in LABELS:
@@ -336,7 +396,24 @@ def self_test(combo):
         native['frames'][0]['t']=.05;b.write_text(json.dumps([native]))
         try:list(load_sim(b));raise AssertionError('offset clock accepted')
         except (SystemExit, ValueError):pass
-    return {'status':'passed','checks':['pull','post-whistle opposing','mirror','down','reach','opposite-side opposing','failed reach retained','cutoff','failed cutoff retained','retreat','climb','short climb retained','double','short-window','missing-sample rejection','six-OL retention','shared-loader equality','offset-clock rejection']}
+    # Two known games, unequal OL counts: use pooled counts, not mean rates.
+    rr = [{'src':'nfl','concept':'POWER','play_id':game,'actor':i,
+        'labels':{'down':{}} if hit else {},'unknown':[] if hit else ['unresolved']}
+        for game, count, hit in [('2022090800-1',2,True),('2022091100-2',6,False)]
+        for i in range(count)]
+    uncertainty = rate_uncertainty(rr)
+    down = next(r for r in uncertainty if r['label']=='down')
+    unknown = next(r for r in uncertainty if r['label']=='unknown')
+    assert down['share']==.25 and down['ci95']==[0,1] and down['games']==2
+    assert unknown['share']==.75 and unknown['ci95']==[0,1]
+    assert rate_uncertainty(list(reversed(rr)))==uncertainty, 'row order changed interval'
+    assert all(r['ci95'] is None and r['interval_unavailable']=='fewer_than_two_games'
+        for r in rate_uncertainty(rr[:2])), 'individual OL treated as independent games'
+    q=json.loads(json.dumps(rr));q[0]['play_id']='unidentified'
+    assert all(r['ci95'] is None for r in rate_uncertainty(q)), 'invented game identities'
+    assert all(r['ci95'] is None and r['interval_unavailable']=='duplicate_play_actor_identity'
+        for r in rate_uncertainty(rr+[rr[0]])), 'duplicate population certified'
+    return {'status':'passed','checks':['pull','post-whistle opposing','mirror','down','reach','opposite-side opposing','failed reach retained','cutoff','failed cutoff retained','retreat','climb','short climb retained','double','short-window','missing-sample rejection','six-OL retention','shared-loader equality','offset-clock rejection','pooled game-cluster rates','interval row-order invariance','single-game interval unavailable','missing-game interval unavailable','duplicate-identity interval unavailable']}
 
 
 def main():
@@ -365,12 +442,20 @@ def main():
         'combo_rules':vars(combo.Rules()),'inputs':[{'path':str(p),'sha256':digest(p)} for p in args.nfl+args.sim],
         'source_hashes':{'script':digest(Path(__file__)),'loader':digest(Path(ref.__file__)),'combo':digest(args.combo)},
         'counts':{**dict(counts),'ol_rows':len(rows),'overlapping_motion_rows':sum(r['overlapping_motion_geometry'] for r in rows)},'concepts':dict(Counter(r['concept'] for r in rows)),'unknown_reasons':dict(Counter(x for r in rows for x in r['unknown'])),
-        'validation_examples':examples(rows),'summary':summary(rows),'summary_by_concept':summary(rows,True),'rows':rows,'combo_episodes':episodes}
+        'validation_examples':examples(rows),'summary':summary(rows),'summary_by_concept':summary(rows,True),
+        'rate_uncertainty':rate_uncertainty(rows),
+        'rate_uncertainty_by_concept':rate_uncertainty(rows,by_concept=True),
+        'rows':rows,'combo_episodes':episodes}
     args.out.parent.mkdir(parents=True,exist_ok=True);args.out.write_text(json.dumps(report,indent=2)+'\n')
     print('| Source/week | Geometric tag | OL rows | Share | Radius-robust rows |')
     print('|---|---|---:|---:|---:|')
     for r in report['summary']:print(f"| {r['src']}/{r['week']} | {r['label']} | {r['n']}/{r['denominator']} | {100*r['share']:.1f}% | {r['radius_robust_n']} |")
     print('\nTags overlap; unknown includes drive/base or unresolved patterns. Robustness is not validated technique accuracy.')
+    print('\n| Source | Tag | OL rows | Game-cluster 95% interval |')
+    print('|---|---|---:|---|')
+    for r in report['rate_uncertainty']:
+        ci=r['ci95'];value=f'{100*ci[0]:.1f}%–{100*ci[1]:.1f}%' if ci else r['interval_unavailable']
+        print(f"| {r['src']} | {r['label']} | {r['n']}/{r['denominator']} | {value} |")
 
 
 if __name__ == '__main__':main()
