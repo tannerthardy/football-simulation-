@@ -76,7 +76,8 @@ describe('approximate interception prediction contract', () => {
     // The game's first caught ball, so the safety pursues a carrier whatever the earlier snaps did.
     // Seed 8: when an overtaken zone member began climbing, seed 7's earlier run snaps changed and its
     // first catch became one where SS makes no pursuit prediction. Seed 8's first catch is the same
-    // capture with and without that change (58 SS predictions, 29 intercept).
+    // capture with and without that change (58 SS predictions, 29 intercept). Same reasoning as
+    // pursuit-arrival's move to seed 8.
     const saved = captureOrdinaryPlay({ seed: 8, play: 'first-catch', minPlay: 1, maxSteps: 20 }).saved;
     const original = Reach.interceptPoint;
     const execute = (record: boolean) => {
