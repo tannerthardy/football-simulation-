@@ -222,17 +222,17 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT' && e.t <= swap.t)).toEqual([]);
   });
 
-  it('M25-P021: C is reread twice, each recorded with its resulting kind', () => {
+  it('M29-P036: LG is reread twice, each recorded with its resulting kind', () => {
     // Re-recorded for the start law (#336): M9-P000's C is now reread once (1.8). M25-P032 carried the case on
     // develop 1ec115c7; with develop 84af7d9e merged (the draw double's uncovered man climbs, the departing guard
-    // steps off the DT's hip) its C is not reread at all, so M25-P021, a capture on this branch, carries it.
-    const p = play('M25-P021');
-    const threats = changeOf(p, 'C', 'threat-reread');
-    // With the back leaving the mesh on his own start (#344) and the engaged-flow law (#347) as well: still
-    // 1.7 and 2.65.
-    expect(threats.map(c => c.t)).toEqual([1.7, 2.65]);
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(2);
-    expect(threats.every(c => c.after.kind === 'climb')).toBe(true);
+    // steps off the DT's hip) its C is not reread at all, so M25-P021 carried it (C at 1.7 and 2.65). On #336 + #344
+    // with the along-route crease read (#366) M25-P021's C is reread once (1.7), so M29-P036 carries it: LG, released
+    // from the DT_W double to climb, is reread to reach LB_W at 2.25 and, climbing again, to SS at 3.75.
+    const p = play('M29-P036');
+    const threats = changeOf(p, 'LG', 'threat-reread');
+    expect(threats.map(c => c.t)).toEqual([2.25, 3.75]);
+    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LG').map(e => e.t)).toEqual([2.25, 3.75]);
+    expect(threats.map(c => c.after.kind)).toEqual(['reach', 'climb']);
   });
 
   it('R9-P020: the first carrier contact keeps both defenders tied at 2.55', () => {
@@ -250,6 +250,23 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
     expect(first.t).toBe(2.85);
     expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
+  });
+
+  it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
+    // A recorded tie moves with every behaviour change: R7-P083 tied at 2.45, then R7-P075 at 3.45, and each lost
+    // it under a later read change. The census rule is what this case pins, so the tie is staged on a recorded
+    // play's actors and jobs with an explicit event list (no native events, so a future natural tie cannot leak
+    // in): two defenders at the first timestamp, a third 0.05 s later.
+    const p = play('R7-P083'), d = structuredClone(p.d);
+    const def = d.actors.filter(a => a.team === 'D').map(a => a.idx), t0 = 2;
+    d.play.carrierEvents = [
+      { t: t0 + 0.05, type: 'tackle_wrap', defender: def[2], carrier: null },
+      { t: t0, type: 'hit', defender: def[0], carrier: null },
+      { t: t0, type: 'hit', defender: def[1], carrier: null },
+    ];
+    const tied = initialJobCensus(d)[0].firstCarrierContact!;
+    expect(tied.t).toBe(t0);
+    expect(new Set(tied.defenders)).toEqual(new Set([def[0], def[1]]));
   });
 
   it('M10-P081: a released climber rereads to a backer and stays off the man his keeper is on', () => {
@@ -290,10 +307,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // Re-recorded for the start law (#336): the run gets further, and LB_W alone makes first contact at 2.6, wrapping
     // with it; still one defender, not a tie. With develop 84af7d9e merged the run gets further still: CB_W alone
     // makes first contact at 3.45; still not a tie. With the back's own mesh start (#344) and the engaged-flow law
-    // (#347) as well, LB_W alone at 2.95; still not a tie.
-    expect(first.t).toBe(2.95);
+    // (#347) as well, LB_W alone at 2.95; still not a tie. With the along-route crease read (#366) as well, LB_W
+    // alone at 3.1; still not a tie.
+    expect(first.t).toBe(3.1);
     expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.95 && p.slot(e.defender) === 'LB_W')).toBe(true);
+    expect(p.d.play.carrierEvents.some(e => e.t === 3.1 && p.slot(e.defender) === 'LB_W')).toBe(true);
   });
 
   // With the back leaving the mesh on his own start (#344), these former QB keeps (S8-P054 and S10-P006 on develop,
@@ -319,7 +337,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.census).toEqual([]);
   });
 
-  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'M10-P004', 'M10-P081', 'R9-P020', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029', 'R7-P083'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
+  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'M10-P004', 'M10-P081', 'R9-P020', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029', 'R7-P083', 'R7-P075'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
     const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
     const run = (record: boolean) => {
       const sim = new PlaySim(restoreSetup(setup));

@@ -69,6 +69,28 @@ describe('acquired crease route', () => {
     }
   });
 
+  it('charges an entry for a defender beside the path to it, not only near its end', () => {
+    for (const m of [1, -1] as const) {
+      // Same defender, same distance from entry (40.5, +2): once beside the
+      // straight path from the back (lateral 0), once on the far side (4).
+      const risk = (lateral: number) => {
+        const s = scene(m, 1);
+        s.back.body.vel = { x: 6, y: 0 };
+        s.put('DE_S', LOS - 3, lateral);
+        let r = NaN;
+        runReadObservers.set(s.sim, e => {
+          if (e.phase !== 'aim') return;
+          r = (e.candidates as Array<{entry: {x: number; y: number}; risk: number}>)
+            .find(c => Math.abs(c.entry.x - (LOS + .5)) < 1e-8 && Math.abs(lat(c.entry.y, m) - 2) < 1e-8)!.risk;
+        });
+        runReadAim(s.back, s.sim, opts(m, 2));
+        return r;
+      };
+      // Asserts an ordering of the two pictures, not a cut or an ending.
+      expect(risk(0)).toBeGreaterThan(risk(4) + .5);
+    }
+  });
+
   it('is mirror-symmetric', () => {
     const pick = (m: 1 | -1) => {
       const s = scene(m, 1.5);

@@ -22,6 +22,8 @@ beforeAll(() => {
   // Seed 4 on the combined start law + mesh departure with #347: seed 8's first
   // case is now DE_W on Y after a support change (since 7.50, not -Infinity), so
   // it no longer exercises a nonfinite starting history; seed 4 (DE_W on RB) does.
+  // With the along-route crease read (#366) as well, seed 4 still captures DE_W
+  // on RB (5.80/5.85, since -Infinity); all 6 contracts pass.
   chosen = captureNativePursuit(4);
 }, 60_000);
 beforeAll(() => {
