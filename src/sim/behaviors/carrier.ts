@@ -141,10 +141,17 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   for (const p of candidates) {
     // Two ways to the entry: straight, or flatten behind the line first and
     // then turn up (the cutback's dog-leg). Each has its own arrival time.
-    const routes: Array<{ obstruct: number; arrive: number; via: Vec2 }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p }];
+    // Each route also carries points along its legs with his arrival there,
+    // so the same who-is-there-first read covers the way to the entry.
+    const along = (from: Vec2, to: Vec2, start: number | null): Array<{ q: Vec2; t: number }> => [.25, .5, .75, 1].map((k) => {
+      const q = { x: from.x + (to.x - from.x) * k, y: from.y + (to.y - from.y) * k };
+      return { q, t: start === null ? timeToReach(me, q, 0) : start + Math.hypot(q.x - from.x, q.y - from.y) / cruise };
+    });
+    const routes: Array<{ obstruct: number; arrive: number; via: Vec2; path: Array<{ q: Vec2; t: number }> }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p, path: along(a.pos, p, null).slice(0, 3) }];
     if (depth(a.pos) < -1.6) {
-      const w = { x: sim.los - 1.2 * dir, y: p.y };
-      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: timeToReach(me, w, 0) + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w });
+      const w = { x: sim.los - 1.2 * dir, y: p.y }, atW = timeToReach(me, w, 0);
+      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: atW + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w,
+        path: [...along(a.pos, w, null), ...along(w, p, atW).slice(0, 3)] });
     }
     let risk = Infinity, via = p;
     const beyond = { x: p.x + 2 * dir, y: p.y };
@@ -157,6 +164,9 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
         if (team !== 'D' || Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
         m1 = Math.min(m1, threatTime(d, s, p) - arrive);
         m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
+        // A defender who reaches a point on the way there before he does
+        // closes the route as surely as one standing in the entry.
+        for (const { q, t } of route.path) m1 = Math.min(m1, threatTime(d, s, q) - t);
       }
       const r = route.obstruct + (m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0)
         + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0);
