@@ -1556,8 +1556,10 @@ export class RunBlocker implements Behavior {
     // walk the torso through the backer's center. The ordinary physical
     // strike still owns range, facing, budgets and whether hands exist.
     const near=Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)<=strike;
-    if (!this.departureStrikeClear && !near) return approach;
-    const command=this.attack(a,sim,target,seen,approach);
+    // Stepping off the released man's hip: a rub is allowed, shoving him along is not a climb.
+    const released=this.plan.departure.defender;
+    if (!this.departureStrikeClear && !near) return offReleasedHip(a,sim,released,approach);
+    const command=offReleasedHip(a,sim,released,this.attack(a,sim,target,seen,approach));
     if (a.engagement?.defender===target) {
       const sink = sim.blockingSink(a), previousWork = sink?.blockingState(a);
       delete this.plan.departure;
@@ -2160,6 +2162,22 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
 /** A short step off the observed surface. This is navigation, not a claim
  * that the whole climb or linebacker block will succeed. Check the DL and
  * partner through the next read; a moving or mistaken picture can still lose. */
+/** A departing climber in contact with the man he just released steps off
+ * his hip. The part of his request that drives into that man's center is
+ * dropped and the speed is kept along the man's surface. World contact still
+ * decides any rub; what he no longer does is push the man along with him on
+ * his way to the backer (in contact, 74% of inside-zone departure commands
+ * pointed into the released man and carried him at over 1 yd/s). */
+function offReleasedHip<T extends { vel: Vec2 } | null>(a: Agent, sim: PlaySim, released: Agent, command: T): T {
+  if (!command) return command;
+  const seen = sim.see(a, released), rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, r = Math.hypot(rx, ry);
+  if (r < 1e-9 || r > a.profile.radius + released.profile.radius + .15) return command;
+  const ux = rx / r, uy = ry / r, v = command.vel, into = v.x * ux + v.y * uy;
+  if (into <= 0) return command;
+  const tx = v.x - into * ux, ty = v.y - into * uy, tl = Math.hypot(tx, ty), speed = Math.hypot(v.x, v.y);
+  return { ...command, vel: tl > 1e-9 ? { x: tx / tl * speed, y: ty / tl * speed } : { x: 0, y: 0 } };
+}
+
 function climbRoute(a: Agent, defender: Agent, down: Perceived,
   partner: Agent, covered: Perceived, backer: Perceived, strike = 0): { exit: Vec2 | null; flow: Vec2 } | null {
   const bodies = [{ seen: down, radius: a.profile.radius + defender.profile.radius },

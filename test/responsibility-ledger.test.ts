@@ -202,14 +202,18 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT')).toEqual([]);
   });
 
-  it('M9-P000: C is reread, recorded with its resulting kind', () => {
+  it('M9-P000: a reread is recorded with its resulting kind', () => {
     const p = play('M9-P000');
-    const threats = changeOf(p, 'C', 'threat-reread');
     // Re-recorded when a draw double's uncovered man climbs once the rush comes across: RG's double releases at 1.1
     // (was 2.45), so the 2.45 crossing exchange and C's second reread (2.6) no longer happen.
-    expect(threats.map(c => c.t)).toEqual([2.2]);
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(1);
-    expect(threats.every(c => c.after.kind === 'drive')).toBe(true);
+    // Re-recorded when a departing climber stopped pushing the man he released along with him: RG reaches LB_W
+    // sooner, so C keeps LB_M and his 2.2 reread to LB_W no longer happens. RG's own reread (SS to LB_W at 1.9)
+    // is the recorded one; it results in a climb.
+    expect(changeOf(p, 'C', 'threat-reread')).toEqual([]);
+    const threats = changeOf(p, 'RG', 'threat-reread');
+    expect(threats.map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)])).toEqual([[1.9, 'SS', 'LB_W']]);
+    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'RG')).toHaveLength(1);
+    expect(threats.every(c => c.after.kind === 'climb')).toBe(true);
   });
 
   it('M7-P051: a released climber stays off his keeper\'s man, one defender reaches the carrier alone, and the ledger does not invent a tie', () => {
@@ -218,13 +222,15 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // (was tied with LB_M at 2.7); the tie check moved to R7-P083.
     // With the off-hip climb (#345) as well: the releases and RG's single reread are unchanged, but LB_W's 2.75
     // swipe no longer loads the carrier, so CB_S makes first contact alone at 3.3.
+    // Re-recorded when a departing climber stopped pushing the man he released along with him: the same
+    // releases and the same single RG reread; LB_W reaches the carrier alone at 2.9 again.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
     // The climber property itself: RG rereads once, to the backer, and never goes back to the down man
     // (without this PR he returns to DT_S at 1.25).
     expect(changeOf(p, 'RG', 'threat-reread').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
       .toEqual([[1.45, 'NB', 'LB_M']]);
-    expect(first.t).toBe(3.3);
-    expect(first.defenders.map(p.slot)).toEqual(['CB_S']);
+    expect(first.t).toBe(2.9);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
   it('R7-P083: the first carrier contact keeps both defenders tied at 2.45', () => {
