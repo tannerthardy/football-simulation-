@@ -171,7 +171,9 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(loads('LB_W')).toEqual([]);
     const job = p.census.find(j => p.slot(j.backer) === 'LB_W')!;
     // Graded against the initial job this is "no member load"; the ledger also says why.
-    expect(job.stratum).toBe('U');
+    // On the engaged-flow law (#347) LB_W no longer reaches the carrier on this play, so the grade is '?'
+    // (no load, no carrier contact) rather than 'U'; the reasons below are unchanged.
+    expect(job.stratum).toBe('?');
     expect(job.responsibility).toMatchObject({ threatRereadAfterRelease: true });
     expect(job.responsibility.otherClimbTargets.map(p.slot)).toEqual(['LB_M']);
   });
@@ -202,19 +204,28 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT')).toEqual([]);
   });
 
-  it('M9-P000: C is reread twice, each recorded with its resulting kind', () => {
+  it('M9-P000: C is reread, recorded with its resulting kind', () => {
     const p = play('M9-P000');
     const threats = changeOf(p, 'C', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([2.2, 2.6]);
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(2);
+    // Re-recorded when a draw double's uncovered man climbs once the rush comes across: RG's double releases at 1.1
+    // (was 2.45), so the 2.45 crossing exchange and C's second reread (2.6) no longer happen.
+    expect(threats.map(c => c.t)).toEqual([2.2]);
+    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(1);
     expect(threats.every(c => c.after.kind === 'drive')).toBe(true);
   });
 
-  it('M7-P051: on the engaged-flow law LB_W reaches the carrier alone, and the ledger does not invent a tie', () => {
+  it('M7-P051: a released climber stays off his keeper\'s man, one defender reaches the carrier alone, and the ledger does not invent a tie', () => {
     // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7).
-    // Re-recorded for the engaged-flow law: LB_W now arrives alone at 2.75 (was tied with LB_M at 2.7);
-    // the tie check moved to R7-P083.
+    // Re-recorded when a released climber stopped re-taking the man his keeper is on: LB_W now arrives alone at 2.9
+    // (was tied with LB_M at 2.7); the tie check moved to R7-P083.
+    // With the off-hip climb (#345) as well: the releases and RG's single reread are unchanged, but LB_W's 2.75
+    // swipe no longer loads the carrier, so CB_S makes first contact alone at 3.3.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
+    // The climber property itself: RG rereads once, to the backer, and never goes back to the down man
+    // (without this PR he returns to DT_S at 1.25).
+    expect(changeOf(p, 'RG', 'threat-reread').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
+      .toEqual([[1.45, 'NB', 'LB_M']]);
+    // On the engaged-flow law (#347) as well: RG's reread is unchanged, and LB_W reaches the carrier alone at 2.75.
     expect(first.t).toBe(2.75);
     expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
