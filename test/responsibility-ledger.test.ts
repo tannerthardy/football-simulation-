@@ -135,15 +135,28 @@ const changeOf = (p: ReturnType<typeof play>, actor: string, reason: string, t?:
   p.d.changes.filter(c => p.slot(c.actor) === actor && c.reason === reason && (t === undefined || c.t === t));
 
 describe('responsibility ledger, named cases from the Phase II zone set (a5b024b9)', () => {
-  it('S9-P062: C releases to LB_W, rereads to LB_M, and loads LB_M and never LB_W', () => {
+  it('S9-P062: C releases to LB_W and loads the man he released to', () => {
     const p = play('S9-P062', 'C');
     expect(p.setupSha256).toBe('fc7f58f199912f3255588696ab79ee4b5c57cef717b550601f349412119eba81');
-    // Re-recorded for the start law (#336): the same input releases one tick earlier (1.05 -> 1.0) and rereads
-    // later (1.25 -> 1.4); release target, reread target and the loads are unchanged.
+    // With the start law (#336), the back's own mesh start (#344) and the off-hip climb (#362), C releases at 1.0 and
+    // reaches LB_W without a reread. The release/reread/load contract this case carried is on M10-P081 below.
     const release = changeOf(p, 'C', 'combination-release', 1)[0];
     expect(release.after).toMatchObject({ kind: 'climb' });
     expect(p.slot(release.before.target)).toBe('DT_S'); expect(p.slot(release.after.target)).toBe('LB_W');
-    const reread = changeOf(p, 'C', 'threat-reread', 1.4)[0];
+    expect(changeOf(p, 'C', 'threat-reread')).toEqual([]);
+    const c = p.d.actors.findIndex(a => a.slot === 'C');
+    const first = p.d.rows.filter(r => r.actor === c).find(r => r.t > release.t && r.hands.some(h => h.loaded))!;
+    expect(first.hands.filter(h => h.loaded).map(h => p.slot(h.defender))).toEqual(['LB_W']);
+  });
+
+  it('M10-P081: C releases to LB_W, rereads to LB_M, and loads LB_M and never LB_W', () => {
+    // The release/reread/load contract S9-P062 carried until the off-hip climb (#362) on top of #336 + #344.
+    const p = play('M10-P081', 'C');
+    expect(p.setupSha256).toBe('d9fe5799b8485ffa6108a407a9335f3d4a62a3a98f1efc49fc2766ebedb61988');
+    const release = changeOf(p, 'C', 'combination-release', 1.45)[0];
+    expect(release.after).toMatchObject({ kind: 'climb' });
+    expect(p.slot(release.before.target)).toBe('DT_S'); expect(p.slot(release.after.target)).toBe('LB_W');
+    const reread = changeOf(p, 'C', 'threat-reread', 1.65)[0];
     expect(p.slot(reread.before.target)).toBe('LB_W'); expect(p.slot(reread.after.target)).toBe('LB_M');
     const c = p.d.actors.findIndex(a => a.slot === 'C');
     const loaded = (slot: string) => p.d.rows.filter(r => r.actor === c).filter(r => r.hands.some(h => p.slot(h.defender) === slot && h.loaded));
@@ -222,14 +235,21 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(threats.every(c => c.after.kind === 'climb')).toBe(true);
   });
 
-  it('M7-P051: the first carrier contact keeps both defenders tied at 2.45', () => {
-    // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7).
-    // On the engaged-flow law (#347) and the off-hip climb (#345) LB_W arrived alone; with the start law (#336),
-    // the back's own mesh start (#344) and the engaged-flow law together, LB_M and LB_W reach the carrier on the
-    // same tick again (2.45), so this play carries the tie. #349's climber property is on M10-P081 below.
-    const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.45);
+  it('R9-P020: the first carrier contact keeps both defenders tied at 2.55', () => {
+    // A run-only capture of develop db6bc472, recorded for #336 + #344 with develop 90daa454 (#362) merged, when
+    // M7-P051 stopped tying: LB_M and LB_W reach the carrier on the same tick.
+    const p = play('R9-P020'), first = p.census[0].firstCarrierContact!;
+    expect(first.t).toBe(2.55);
     expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
+  });
+
+  it('M7-P051: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
+    // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7).
+    // It carried the tie (LB_M + LB_W at 2.45) on #336 + #344 + #347; with the off-hip climb (#362) LB_W arrives
+    // alone at 2.85. The tie is on R9-P020. #349's climber property is on M10-P081 below.
+    const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
+    expect(first.t).toBe(2.85);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
   it('M10-P081: a released climber rereads to a backer and stays off the man his keeper is on', () => {
@@ -246,7 +266,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
 
   it('M25-P032: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
     // A capture of develop 1ec115c7 for the start law (#336). With #344 it carried the tie (LB_M + NB at 2.25); with
-    // the engaged-flow law (#347) as well NB arrives alone at 2.3, and the tie is back on M7-P051.
+    // the engaged-flow law (#347) as well NB arrives alone at 2.3. The tie is on R9-P020.
     const p = play('M25-P032'), first = p.census[0].firstCarrierContact!;
     expect(first.t).toBe(2.3);
     expect(first.defenders.map(p.slot)).toEqual(['NB']);
@@ -256,7 +276,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // Gun Trips Open wide zone weak, a run-only capture: LB_M and LB_W reached the carrier on the same tick (2.45) on
     // develop. With the start law (#336) RG releases at 1.7 and his climb reaches LB_W at 2.45, so CB_W makes first
     // contact alone at 2.5; with the back's own mesh start (#344) and the engaged-flow law (#347) as well, CB_W
-    // alone at 2.55. The tie is carried by M7-P051.
+    // alone at 2.55. The tie is carried by R9-P020.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
     expect(first.t).toBe(2.55);
     expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
@@ -299,7 +319,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.census).toEqual([]);
   });
 
-  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'M10-P004', 'M10-P081', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029', 'R7-P083'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
+  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'M10-P004', 'M10-P081', 'R9-P020', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029', 'R7-P083'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
     const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
     const run = (record: boolean) => {
       const sim = new PlaySim(restoreSetup(setup));
