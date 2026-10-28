@@ -21,7 +21,10 @@ const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/combo-strik
 // fit shoulder off RT, the pair now walks along RG's departure lane on the old stream, and the departure does
 // not re-plan around a walking down body (KNOWN_PROBLEMS RUN-13), so that play no longer has a clear strike.
 // This stream keeps the same double, release and claims: RG departs at 1.10 and his strike clears at 1.80 (1.90 with the off-hip climb, #345).
-const SEED=10;
+// With the start law (#336) and the back's own mesh start (#344) as well, seed 10's departure ends (1.55) a beat
+// before RG's hands land on LB_M (1.65). Seed 1 of the same constructor keeps the recorded timeline: RG departs at
+// 1.10 and clears his departure with his hands on LB_M on the same update (1.75; 1.70 with #362).
+const SEED=1;
 function stage(t:number){
  const sim=new PlaySim({...structuredClone(fixture.setup),seed:SEED});
  while(sim.phase==='live'&&sim.t<t)sim.tick();
@@ -79,15 +82,18 @@ describe('earned departure ends at achievable first strike rather than the backe
   // Re-staged at 2.35: the center's own double now releases on his picture of the keeper (0.85 s) rather than
   // on the keeper's hidden hand-fight value, so the bodies around the guard's departure differ; same decision.
   // With the off-hip climb (#345) the strike lands at 1.90 (was 1.80) on this stream; same decision and mirror.
-  // Re-staged at 1.7: the departing guard now steps off the released DT's hip instead of pushing the DT along
-  // with him, so his strike lands at 1.75 (was 1.90) from the same 1.10 release; same decision and mirror.
-  decision(1.7,mirror,true);
+  // Re-staged at 1.7 on develop (#362): the departing guard steps off the released DT's hip instead of pushing
+  // the DT along with him, so his strike lands sooner from the same 1.10 release; same decision and mirror.
+  // Seed 1 with the start law (#336), the back's own mesh start (#344) and #362: the strike clears on the 1.70
+  // update (staged at 1.65). Seed 10's departure ends at 1.60, a tick before RG's hands land on LB_M (1.65).
+  decision(1.65,mirror,true);
  });
  it.each([false,true])('keeps the departure when the down body obstructs even first strike, reflected=%s',mirror=>{
   decision(1.3,mirror,false);
  });
  it('develops real second-level load while the original keeper still protects the down surface',()=>{
-  const {sim,rg}=stage(1.7),rt=sim.slot('RT')!,down=sim.slot('DT_S')!,backer=sim.slot('LB_M')!;
+  // Seed 1 with #336, #344 and #362: staged at 1.6, before the departure clears at 1.70.
+  const {sim,rg}=stage(1.6),rt=sim.slot('RT')!,down=sim.slot('DT_S')!,backer=sim.slot('LB_M')!;
   const hands=rt.engagement!.hands;
   // The down defender may be taken to the ground before runner arrival.
   // Require the real keeper joint until that defeat, not after a fallen

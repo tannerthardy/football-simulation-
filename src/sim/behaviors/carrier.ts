@@ -34,8 +34,6 @@ export interface CarrierOptions {
   aimUntil?: number;
   /** QB scramble: may slide. */
   qb?: boolean;
-  /** Known lead/pull responsibilities on a designed run. */
-  follow?: Agent[];
   run?: { scheme:RunScheme; side:number; readKey?:Agent; kick?:Agent };
   /** The designed aim as a gap on the line (with the play's offset from that
    * gap's landmark), so it moves with the bodies that form it. */
@@ -141,10 +139,17 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   for (const p of candidates) {
     // Two ways to the entry: straight, or flatten behind the line first and
     // then turn up (the cutback's dog-leg). Each has its own arrival time.
-    const routes: Array<{ obstruct: number; arrive: number; via: Vec2 }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p }];
+    // Each route also carries points along its legs with his arrival there,
+    // so the same who-is-there-first read covers the way to the entry.
+    const along = (from: Vec2, to: Vec2, start: number | null): Array<{ q: Vec2; t: number }> => [.25, .5, .75, 1].map((k) => {
+      const q = { x: from.x + (to.x - from.x) * k, y: from.y + (to.y - from.y) * k };
+      return { q, t: start === null ? timeToReach(me, q, 0) : start + Math.hypot(q.x - from.x, q.y - from.y) / cruise };
+    });
+    const routes: Array<{ obstruct: number; arrive: number; via: Vec2; path: Array<{ q: Vec2; t: number }> }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p, path: along(a.pos, p, null).slice(0, 3) }];
     if (depth(a.pos) < -1.6) {
-      const w = { x: sim.los - 1.2 * dir, y: p.y };
-      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: timeToReach(me, w, 0) + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w });
+      const w = { x: sim.los - 1.2 * dir, y: p.y }, atW = timeToReach(me, w, 0);
+      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: atW + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w,
+        path: [...along(a.pos, w, null), ...along(w, p, atW).slice(0, 3)] });
     }
     let risk = Infinity, via = p;
     const beyond = { x: p.x + 2 * dir, y: p.y };
@@ -157,6 +162,9 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
         if (team !== 'D' || Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
         m1 = Math.min(m1, threatTime(d, s, p) - arrive);
         m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
+        // A defender who reaches a point on the way there before he does
+        // closes the route as surely as one standing in the entry.
+        for (const { q, t } of route.path) m1 = Math.min(m1, threatTime(d, s, q) - t);
       }
       const r = route.obstruct + (m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0)
         + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0);
@@ -236,41 +244,10 @@ export class BallCarrier implements Behavior {
         sim.commandTraceFor?.(a)?.carrier({ kind: 'design-exit', t: sim.t, ...exit });
         if (exit.exit) this.opts.aimUntil = sim.t;
       }
-      // His lead blocker and the closing threats come from his own pictures:
-      // a teammate he sees off his feet or on a defender is not leading him;
-      // a defender he sees off his feet or on a teammate is not closing.
-      const leads = this.opts.follow?.map((b) => ({ b, seen: sim.see(a, b) }))
-        .filter(({ b, seen }) => !offFeet(seen) && !sim.opponents(a).some((d) => touching({ ...seen, radius: b.profile.radius }, sim.see(a, d, 0.7).pos, d.profile.radius)))
-        .sort((p, q) => Math.hypot(p.seen.pos.x - aim.x, p.seen.pos.y - aim.y) - Math.hypot(q.seen.pos.x - aim.x, q.seen.pos.y - aim.y));
-      if (leads?.length) {
-        const seen = leads[0].seen;
-        const dx = seen.pos.x - a.pos.x;
-        const dy = seen.pos.y - a.pos.y;
-        const ahead = dx * Math.cos(h) + dy * Math.sin(h);
-        const across = -dx * Math.sin(h) + dy * Math.cos(h);
-        const entering = seen.pos.x < sim.los && ahead > 0 && ahead < 2.5 && Math.abs(across) < 2.2;
-        // Patience ends when an unblocked defender can close before the next
-        // two reads. Waiting for a late puller must not become a mandatory stop.
-        const closing = entering && sim.opponents(a).some((d) => {
-          const threat = sim.see(a, d);
-          if (offFeet(threat) || sim.teammates(a).some((b) => {
-            if (b === a) return false;
-            const mate = sim.see(a, b);
-            return mate.pose !== 'down' && touching({ ...mate, radius: b.profile.radius }, threat.pos, d.profile.radius);
-          })) return false;
-          return timeToReach({ ...threat, profile: d.profile, speedScale: d.speedScale }, a.pos,
-            a.profile.radius + d.profile.radius + d.profile.reach * 0.75) < 2 * a.mind.decisionInterval;
-        });
-        if (entering && !closing && sim.t < this.opts.aimUntil!) {
-          // Pace the lead block instead of outrunning a guard who is still
-          // turning up through the hole. This only lasts through the read phase.
-          a.tags.add('paced-lead');
-          // Keep pressing the designed side. Following the guard's current
-          // lateral position while he is flat-pulling sends the back into
-          // the vacated backside gap.
-          return this.command(a, sim, h, a.profile.vmax * (0.28 + 0.12 * (1 - a.r('patience'))), cutSkill);
-        }
-      }
+      // A lead or kick puller ahead of him is a moving wall to run behind,
+      // not a man to wait for: tracked backs run 4.6-4.7 yd/s with a puller
+      // 1.4-1.6 yd ahead (power/counter/trap, 2022 all-22). Spacing keeps
+      // him off the puller's back; the press tempo below is his patience.
       // Press the hole under control (patient backs more so), then burst.
       const press = a.profile.vmax * (0.62 + 0.18 * (1 - a.r('patience')));
       return this.command(a, sim, h, press, cutSkill);

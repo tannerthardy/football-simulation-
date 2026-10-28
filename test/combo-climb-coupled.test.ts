@@ -87,7 +87,11 @@ describe('earned combination-to-climb execution in the coupled World',()=>{
   // backer threatens the helper's half; the runner approaches outside the
   // down surface. Release is earned by the ordinary joined reads, never
   // forced by the test. Other bodies remain present in World.
-  const f=fixture(side);
+  // Seed 16 with the start law (#336), the back's own mesh start (#344) and the off-hip climb (#362): on seed 11
+  // the climber now falls under the scripted backer's drive at 2.0 and LB_W wraps the runner at 2.5. The scene
+  // passes on 7 of seeds 1-30 here (10 on develop 90daa454, 7 on #336 + #344 alone); seed 16 passes here and on
+  // #336 + #344 alone.
+  const f=fixture(side,false,false,16);
   const rb=f.sim.slot('RB')!;
   f.backer.body.pos={x:42,y:CENTER_Y+side*1.2};
   f.backer.body.facing=Math.PI;

@@ -12,7 +12,9 @@ const input = { coverage: 'cover3_buzz', concept: 'curl_flat', seed: 1, roster: 
 // Re-selected under the leg force-velocity law (PHY-1): seed 1 now ends incomplete.
 // Seed 8 is the same call with a caught ball against CB_W's man coverage of X.
 const caught = { ...input, seed: 8 };
-const selection: CommandTraceSelection = { actor: { team: 'D', slot: 'CB_W' }, from: 2, to: 3.65 };
+// Start law (#336): seed 8's throw leaves at 2.9 s (2.65 before) and is caught
+// at 4.2 s (3.5); the capture runs to 4.35 s to keep the catch and next step.
+const selection: CommandTraceSelection = { actor: { team: 'D', slot: 'CB_W' }, from: 2, to: 4.35 };
 
 describe('selected command attribution in normal execution', () => {
   it('preserves the complete native play, reads, decisions, steps and RNG while attributing the catch command to coverage', () => {
