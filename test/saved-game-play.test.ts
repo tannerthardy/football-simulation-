@@ -23,12 +23,14 @@ import { composeHooks } from '../scripts/scorecard/hooks.js';
 // first catch from play 10 becomes G1-P012, whose corner is a matching wrapper. With the gait start law
 // (#336) and the back's own mesh start (#344) together the history moves again: the first catch from play 10
 // is one the defense has not scouted (its scouting holds 0 plays), so the capture starts from play 11, whose
-// first catch has two scouted plays behind it.
+// first catch has two scouted plays behind it. With the direction-free start (#353) and the edge kick that stops
+// matching the rusher's retreat once deeper than its lead, the first catch from play 11 again has nothing scouted;
+// from play 14 the first catch has ten scouted plays behind it.
 vi.hoisted(() => { process.env.GAP_MATCH = '0'; });
 
 describe('ordinary-game constructor capture and independent replay', () => {
   let captured: ReturnType<typeof captureOrdinaryPlay>;
-  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 11, maxSteps: 60 }); }, 30_000);
+  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 14, maxSteps: 60 }); }, 30_000);
 
   it('preserves the whole normal game prefix compared with the observer absent', () => {
     const rng = new Rng(7);
