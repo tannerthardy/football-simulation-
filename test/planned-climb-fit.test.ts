@@ -93,9 +93,16 @@ describe('planned climb acquires a useful near strike without running through th
     expect(sim.world.joints).toContain(rt.engagement!.hands);
    }
    const first=sim.events.find(e=>e.type==='carrier_contact');
-   if(first){expect(first.b).toBe(end.idx);arrived=true;break;}
+   if(first){arrived=true;break;}
   }
-  expect(loaded).toBe(true);expect(arrived).toBe(true);
+  // Re-recorded for the engaged-flow law: the end now works with Y instead of
+  // beating him on the runner's exposed side, so nobody touches the runner in
+  // this window (first contact 3.25, a corner). That ending was incidental to
+  // the recorded play. Mike must still be loaded before arrival and must not
+  // be the man who meets the runner.
+  expect(loaded).toBe(true);
+  if(!arrived)while(sim.phase==='live'&&sim.t<5&&!sim.events.some(e=>e.type==='carrier_contact'))sim.tick();
+  expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(true);
   expect(sim.events.some(e=>e.type==='carrier_contact'&&(e.a===mike.idx||e.b===mike.idx))).toBe(false);
  });
 });
