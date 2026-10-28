@@ -171,7 +171,9 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(loads('LB_W')).toEqual([]);
     const job = p.census.find(j => p.slot(j.backer) === 'LB_W')!;
     // Graded against the initial job this is "no member load"; the ledger also says why.
-    expect(job.stratum).toBe('U');
+    // On the engaged-flow law (#347) LB_W no longer reaches the carrier on this play, so the grade is '?'
+    // (no load, no carrier contact) rather than 'U'; the reasons below are unchanged.
+    expect(job.stratum).toBe('?');
     expect(job.responsibility).toMatchObject({ threatRereadAfterRelease: true });
     expect(job.responsibility.otherClimbTargets.map(p.slot)).toEqual(['LB_M']);
   });
@@ -223,8 +225,9 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // (without this PR he returns to DT_S at 1.25).
     expect(changeOf(p, 'RG', 'threat-reread').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
       .toEqual([[1.45, 'NB', 'LB_M']]);
-    expect(first.t).toBe(3.3);
-    expect(first.defenders.map(p.slot)).toEqual(['CB_S']);
+    // On the engaged-flow law (#347) as well: RG's reread is unchanged, and LB_W reaches the carrier alone at 2.75.
+    expect(first.t).toBe(2.75);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
   it('R7-P083: the first carrier contact keeps both defenders tied at 2.45', () => {
@@ -239,14 +242,26 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     const first = p.census[0].firstCarrierContact!;
     // Re-recorded for the leg force-velocity law (PHY-1): first contact moves 2.2 -> 2.1 and the DT_W reaches the carrier first;
     // still one defender, not a tie. The DT_W's wrap now comes with the contact (2.1; was 2.3 after the DE_W's contact).
-    expect(first.t).toBe(2.1);
+    // Re-recorded for the engaged-flow law: 2.1 -> 2.15, still DT_W alone.
+    expect(first.t).toBe(2.15);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.1 && p.slot(e.defender) === 'DT_W')).toBe(true);
+    expect(p.d.play.carrierEvents.some(e => e.t === 2.15 && p.slot(e.defender) === 'DT_W')).toBe(true);
   });
 
-  it.each(['S8-P054', 'S10-P006'])('%s: the QB keeps it, so the carrier is the QB all play, not the scheduled RB', id => {
+  it.each(['S8-P054'])('%s: the QB keeps it, so the carrier is the QB all play, not the scheduled RB', id => {
     const p = play(id), qb = p.d.actors.findIndex(a => a.slot === 'QB');
     expect(p.d.play.carrierByTick.filter(c => c.carrier !== null).every(c => c.carrier === qb)).toBe(true);
+    expect(p.d.play.carrierEvents.length).toBeGreaterThan(0);
+  });
+
+  it('S10-P006: the QB keeps it and fumbles; the ledger follows the ball to the recovery, never to the scheduled RB', () => {
+    // Re-recorded for the engaged-flow law: SS hits the QB at 4.15, the ball comes out and NB recovers.
+    const p = play('S10-P006'), qb = p.d.actors.findIndex(a => a.slot === 'QB'), rb = p.d.actors.findIndex(a => a.slot === 'RB');
+    const carried = p.d.play.carrierByTick.filter(c => c.carrier !== null);
+    expect(carried[0].carrier).toBe(qb);
+    expect(carried.some(c => c.carrier === rb)).toBe(false);
+    const firstOther = carried.find(c => c.carrier !== qb);
+    if (firstOther) expect(p.sim.events.some(e => e.type === 'fumble' && e.t <= firstOther.t)).toBe(true);
     expect(p.d.play.carrierEvents.length).toBeGreaterThan(0);
   });
 
