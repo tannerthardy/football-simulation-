@@ -26,9 +26,15 @@ import { filmScene, jobsOf, modeOf, type SceneFilm } from '../src/lab/coverage-s
 const seat = (f: SceneFilm, zone: string): string =>
   Object.values(f.defenders).find(d => d.jobs[0]?.startsWith(`zone:${zone}@`))!.slot;
 
+// Start law (#336): on seed 5 the DE now beats the LT (down at 1.55 s) and
+// the blocking back slides out to him behind the line, which the weak
+// defenders read as a flat release; DE_S also sacks the dig's QB at 3.0 s.
+// The rush, not the rule: these scenes are re-staged on seed 1.
+const SEED = 1;
+
 describe('Cover 3 match: Push', () => {
   const scene = (back: string) => filmScene({ formation: 'gun_spread_10', coverage: 'cover3_match',
-    strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'seam' }, back, until: 2.6 });
+    strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'seam' }, back, until: 2.6, seed: SEED });
 
   it('a fast back to the flat is chased by the seam/flat player while the hook pushes to #2', () => {
     const f = scene('back_flat');
@@ -61,23 +67,23 @@ describe('Cover 3 match: Smash rule', () => {
 
 describe('Cover 2 match', () => {
   it('the squat corner converts to man under #1 with no flat threat, and stays in the flat when #2 goes there', () => {
-    const none = filmScene({ formation: 'gun_doubles_11', coverage: 'cover2_match', strong: { 1: 'go', 2: 'go' }, weak: { 1: 'lab_curl7', 2: 'hitch' }, until: 2.6 });
+    const none = filmScene({ formation: 'gun_doubles_11', coverage: 'cover2_match', strong: { 1: 'go', 2: 'go' }, weak: { 1: 'lab_curl7', 2: 'hitch' }, until: 2.6, seed: SEED });
     expect(modeOf(none, 'CB_W')).toBe('under');
     expect(jobsOf(none, 'CB_W')).toContain(`man:${none.numbering.W1}`);
-    const flat = filmScene({ formation: 'gun_doubles_11', coverage: 'cover2_match', strong: { 1: 'go', 2: 'go' }, weak: { 1: 'lab_curl7', 2: 'flat' }, until: 2.6 });
+    const flat = filmScene({ formation: 'gun_doubles_11', coverage: 'cover2_match', strong: { 1: 'go', 2: 'go' }, weak: { 1: 'lab_curl7', 2: 'flat' }, until: 2.6, seed: SEED });
     expect(modeOf(flat, 'CB_W')).toBe('flat');
     expect(jobsOf(flat, 'CB_W')).not.toContain(`man:${flat.numbering.W1}`);
   });
 
   it('the vertical curl matches #2 up and in, and walls a seam', () => {
-    const dig = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'lab_in9' }, weak: { 1: 'go', 2: 'seam' }, until: 3.4 });
+    const dig = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'lab_in9' }, weak: { 1: 'go', 2: 'seam' }, until: 3.4, seed: SEED });
     const curl = seat(dig, 'hook_s');
     // The dig breaks late: the rep must reach 3.4 s with the ball held (a
     // sack before the break is a staging failure, not a coverage one).
     expect(dig.sim.phase === 'live' && dig.sim.ball.kind === 'held' && dig.sim.t >= 3.35).toBe(true);
     expect(modeOf(dig, curl)).toBe('in');
     expect(jobsOf(dig, curl).at(-1)).toBe(`man:${dig.numbering.S2}`);
-    const seam = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'seam' }, until: 3.0 });
+    const seam = filmScene({ formation: 'gun_spread_10', coverage: 'cover2_match', strong: { 1: 'go', 2: 'seam' }, weak: { 1: 'go', 2: 'seam' }, until: 3.0, seed: SEED });
     expect(jobsOf(seam, seat(seam, 'hook_s'))).toContain(`wall:${seam.numbering.S2}`);
   });
 
