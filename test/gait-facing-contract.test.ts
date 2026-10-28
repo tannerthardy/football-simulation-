@@ -83,9 +83,14 @@ describe('held patch gait is planned from attained tick-entry facing', () => {
   it.each([-1, 1])('preserves the below-directional-cap held propulsion law, side %s', side => {
     const legacy = run('center', side, 12, false, .2, true), patch = run('patch', side, 12, false, .2, true);
     const expected = currentCommand(patch.records[0]);
-    expect(expected.y * side).toBeCloseTo((1.3 - 1) / 1.4, 12);
+    // Below the sideways cap (7.2 x .5 shuffle = 3.6) the legs push from full
+    // start force and level off at the wanted 1.3: the lag law scaled by 3.6 / 1.3.
+    expect(expected.y * side).toBeCloseTo((1.3 - 1) / 1.4 * (3.6 / 1.3), 12);
     expect(patch.records[0].plan.ax).toBe(legacy.records[0].plan.ax);
-    expect(patch.records[0].plan.ay).toBe(legacy.records[0].plan.ay);
+    expect(patch.records[0].plan.ay * side).toBeCloseTo(expected.y * side, 12);
+    // The start force follows the hips' direction to the push. Legacy center
+    // mode credits the prospective turn, so its sideways full force is higher.
+    expect(legacy.records[0].plan.ay * side).toBeGreaterThan(patch.records[0].plan.ay * side);
     for (const force of patch.forces) expect(force.y).toBeCloseTo(expected.y, 10);
   });
 
