@@ -224,9 +224,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // The climber property itself: RG rereads once, to the backer, and never goes back to the down man
     // (without this PR he returns to DT_S at 1.25).
     expect(changeOf(p, 'RG', 'threat-reread').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
-      .toEqual([[1.45, 'NB', 'LB_M']]);
+      .toEqual([[1.25, 'NB', 'LB_M']]);
     // On the engaged-flow law (#347) as well: RG's reread is unchanged, and LB_W reaches the carrier alone at 2.75.
-    expect(first.t).toBe(2.75);
+    // With the squeeze read (DL_SQUEEZE from a seen carrier's track): the same single reread comes at 1.25
+    // (was 1.45), and LB_W reaches the carrier alone at 2.70.
+    expect(first.t).toBe(2.7);
     expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
@@ -242,10 +244,10 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     const first = p.census[0].firstCarrierContact!;
     // Re-recorded for the leg force-velocity law (PHY-1): first contact moves 2.2 -> 2.1 and the DT_W reaches the carrier first;
     // still one defender, not a tie. The DT_W's wrap now comes with the contact (2.1; was 2.3 after the DE_W's contact).
-    // Re-recorded for the engaged-flow law: 2.1 -> 2.15, still DT_W alone.
-    expect(first.t).toBe(2.15);
+    // Re-recorded for the engaged-flow law: 2.1 -> 2.15, still DT_W alone. With the squeeze read: 2.45, still DT_W alone.
+    expect(first.t).toBe(2.45);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.15 && p.slot(e.defender) === 'DT_W')).toBe(true);
+    expect(p.d.play.carrierEvents.some(e => e.t === 2.45 && p.slot(e.defender) === 'DT_W')).toBe(true);
   });
 
   it.each(['S8-P054'])('%s: the QB keeps it, so the carrier is the QB all play, not the scheduled RB', id => {

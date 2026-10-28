@@ -294,11 +294,13 @@ problem), resolved.
 | [RUN-13](#run-13) | Box backers untouched: linemen do not climb free to the second level | G2 | high | in work |
 | [RUN-14](#run-14) | Engaged DL lose the backside shoulder; play-side DL drift away from the play | G2 | medium | open |
 | [RUN-16](#run-16) | Draw: the line does not block the rush while it shows pass | G2 | high | in work |
+| [RUN-17](#run-17) | Gap-scheme backside DL stop chasing once the squeeze reads only a seen carrier's lateral track | G2 | medium | open |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
 | [TKL-4](#tkl-4) | Defenders turn their backs on the ball carrier | G1 | medium | on |
 | [TKL-5](#tkl-5) | "Reach" means different things in each tackle branch | G1, G10 | high | in work (#264 needs rework) |
+| [TKL-6](#tkl-6) | An engaged tackler's miss is a flat bonus, not his reach, balance or the blocker's hold | G1 | medium | open |
 | [PRO-1](#pro-1) | Edge rushers meet the tackle at the line and walk through him | G5 | high | in work (G5, #215) |
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
@@ -590,6 +592,25 @@ Carried over from the issue register; each was measured on an older develop.
   61–69% of the time (NFL 30%). That's line-of-scrimmage displacement and
   mesh depth, Run Game's. The carrier's 0.2–0.3 yd after that contact (NFL
   1.45) is forward drive through contact, Main Engine's.
+
+<a id="run-17"></a>
+### RUN-17: Gap-scheme backside DL don't chase without a puller read
+
+- **Symptom** ([`dl_scheme.py`](../scripts/diag/dl_scheme.py), run-only r7/r11, k = 4):
+  - On power, counter, trap and duo, backside DL move toward the play at
+    +0.10 yd/s from 1.0 to 2.0 s after the snap (NFL +1.13; before the
+    squeeze read, +0.44).
+  - Gap runs gain 3.39 → 4.07 yd, 10+ yd 8.8% → 10.3%.
+- **Cause:** *confirmed.* DL_SQUEEZE now takes the play's direction only
+  from a carrier the DL has seen take the ball, running a lateral track
+  ([squeeze-read](reviews/squeeze-read.md)). That fixes zone, where it
+  misread the back's mesh path. But a gap back runs downhill, so the read
+  waits, and a backside DL facing a gap-scheme cut-off holds. The old
+  misread happened to send him toward the play.
+- **What should drive him:** what real DL key on gap schemes: the line's
+  flow and the pulling guard ("pull, follow the guard"), not the back.
+- **Next:** a line-flow / puller read for the squeeze and the backside
+  chase, as its own PR (CEO, 2026-10-28).
 
 ## Tackling and pursuit
 
@@ -1094,6 +1115,31 @@ Carried over from the issue register; each was measured on an older develop.
     and then slipped, a hold problem rather than a reach one.
   - *Next:* keep the standing fix and add the layout span back in the same
     change, with the grip and consumer radii, then re-run the matched probe.
+
+<a id="tkl-6"></a>
+### TKL-6: An engaged tackler's miss is a flat bonus
+
+- **Symptom:** a defender still engaged with a blocker who tries for the
+  carrier misses at a fixed higher rate. `attempt()` in `src/sim/tackle.ts`
+  adds +0.3 to his miss chance and takes 0.3 off his wrap quality and his
+  legs share, whatever the contact geometry.
+- **Where it shows:** engaged run defenders now reach the carrier more often
+  (#347's engaged-flow law, then the squeeze read). Each time, the extra
+  misses come from these tries. On the same snaps and dice, missed tackles
+  by an engaged tackler per run rose 0.143 → 0.169 (#347) and 0.169 → 0.204
+  (squeeze read). Free tacklers' misses and broken tackles didn't move
+  ([squeeze-read](reviews/squeeze-read.md), [engaged-flow](reviews/engaged-flow.md)).
+- **What it should be:** a blocked defender's chance comes from his body and
+  information:
+  - his actual free-arm reach to the carrier;
+  - his balance and support;
+  - how much the blocker's hands hold him, which way, and the load on them;
+  - whether a body is in between.
+
+  `BLOCKED_REACH` already gates the reach geometry, but the fixed penalty is
+  separate.
+- **Owner:** tackling (Main Engine for the contact side). Don't tune the run
+  fits around it.
 
 ## Pass protection
 
