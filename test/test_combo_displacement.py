@@ -1,10 +1,14 @@
 """Offline mechanics contract; synthetic points, no licensed tracking rows."""
 import importlib.util
+import argparse
 import gzip
 import json
 from pathlib import Path
 import sys
 import tempfile
+from contextlib import redirect_stderr, redirect_stdout
+import io
+from unittest.mock import patch
 import unittest
 
 PATH = Path(__file__).parents[1] / "scripts/mechanics/combo_displacement.py"
@@ -31,7 +35,95 @@ def fixture():
     return {"src": "nfl", "concept": "INSIDE ZONE", "players": players, "xy": xy, "carrier": 7, "end": 2.5}
 
 
+def cli_inputs(folder):
+    p = fixture()
+    np, sp = folder / "nfl.jsonl.gz", folder / "sim.json"
+    raw_nfl = {"kind": "run", "carrier": 7, "cell": {"concept": "INSIDE ZONE"},
+               "players": p["players"], "xy": [[v for pt in f for v in pt] for f in p["xy"]], "events": {"end": 2.5}}
+    with gzip.open(np, "wt") as handle:
+        handle.write(json.dumps(raw_nfl) + "\n")
+    raw_sim = {"nullified": False, "setup": {"concept": "iz_strong", "los": 40,
+               "agents": [{"team": q["side"], "slot": "RB" if i == 7 else str(i),
+                           "pos": "OT" if i < 5 else "DT" if i == 5 else "LB" if i == 6 else "RB", "plan": None}
+                          for i, q in enumerate(p["players"])]},
+               "frames": [{"t": f * .1, "c": 7, "a": [[x + 40, y] for x, y in frame]} for f, frame in enumerate(p["xy"])],
+               "events": [{"type": "tackle", "t": 2.5}]}
+    sp.write_text(json.dumps([raw_sim]))
+    return np, sp
+
+
+def run_cli(args):
+    with patch.object(sys, "argv", [str(PATH), *map(str, args)]), redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+        m.main()
+
+
 class ComboDisplacementTests(unittest.TestCase):
+    def test_cli_rejects_output_aliases_without_changing_inputs(self):
+        for alias in ("exact", "relative", "symlink", "hardlink"):
+            with self.subTest(alias=alias), tempfile.TemporaryDirectory() as tmp:
+                folder = Path(tmp)
+                np, sp = cli_inputs(folder)
+                original = np.read_bytes()
+                output = np
+                if alias == "relative":
+                    (folder / "sub").mkdir()
+                    output = folder / "sub" / ".." / np.name
+                elif alias == "symlink":
+                    output = folder / "linked.json"
+                    output.symlink_to(np)
+                elif alias == "hardlink":
+                    output = folder / "linked.json"
+                    output.hardlink_to(np)
+                with self.assertRaises(SystemExit) as error:
+                    run_cli(["--nfl", np, "--sim", sp, "--out", output])
+                self.assertEqual(error.exception.code, 2)
+                self.assertEqual(np.read_bytes(), original)
+
+    def test_cli_rejects_duplicate_inputs_before_replacing_existing_report(self):
+        for alias in ("exact", "relative", "symlink", "hardlink", "copy"):
+            with self.subTest(alias=alias), tempfile.TemporaryDirectory() as tmp:
+                folder = Path(tmp)
+                np, sp = cli_inputs(folder)
+                other = sp
+                if alias == "relative":
+                    (folder / "sub").mkdir()
+                    other = folder / "sub" / ".." / sp.name
+                elif alias != "exact":
+                    other = folder / "other.json"
+                    if alias == "symlink":
+                        other.symlink_to(sp)
+                    elif alias == "hardlink":
+                        other.hardlink_to(sp)
+                    else:
+                        other.write_bytes(sp.read_bytes())
+                output = folder / "report.json"
+                output.write_bytes(b"existing report must survive")
+                with self.assertRaises(SystemExit) as error:
+                    run_cli(["--nfl", np, "--sim", sp, other, "--out", output])
+                self.assertEqual(error.exception.code, 2)
+                self.assertEqual(output.read_bytes(), b"existing report must survive")
+
+    def test_preflight_protects_both_operator_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            np, sp = cli_inputs(Path(tmp))
+            for path in (PATH, PATH.with_name("run_film_reference.py")):
+                before = path.read_bytes()
+                with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as error:
+                    m.input_manifest(argparse.ArgumentParser(), [np, sp], path)
+                self.assertEqual(error.exception.code, 2)
+                self.assertEqual(path.read_bytes(), before)
+
+    def test_cli_accepts_distinct_inputs_and_preserves_sources(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            np, sp = cli_inputs(folder)
+            before = np.read_bytes(), sp.read_bytes()
+            output = folder / "new" / "report.json"
+            run_cli(["--nfl", np, "--sim", sp, "--out", output])
+            report = json.loads(output.read_text())
+            self.assertEqual(len(report["rows"]), 2)
+            self.assertEqual((np.read_bytes(), sp.read_bytes()), before)
+
     def test_detects_fixed_identity_pair_and_predeparture_speed(self):
         rows, _ = m.measure(fixture())
         self.assertEqual(len(rows), 1)

@@ -176,6 +176,23 @@ def digest(path):
     return h.hexdigest()
 
 
+def input_manifest(parser, inputs, output):
+    """Preflight before reading cohorts or writing anything; keep caches intact."""
+    protected = [*inputs, Path(__file__), Path(__file__).with_name("run_film_reference.py")]
+    resolved_output = output.resolve()
+    for path in protected:
+        if resolved_output == path.resolve() or (output.exists() and path.exists() and output.samefile(path)):
+            parser.error("--out must not overwrite an input or operator")
+    manifests, seen = [], set()
+    for path in inputs:
+        sha256 = digest(path)
+        if sha256 in seen:
+            parser.error("duplicate input digest; refusing to count a cohort twice")
+        seen.add(sha256)
+        manifests.append({"path": str(path), "sha256": sha256})
+    return manifests
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--nfl", type=Path, required=True)
@@ -187,7 +204,7 @@ def main():
         parser.error("near must be between 0.5 and the 1.65-yard separation envelope")
     rules = Rules(near=args.near)
     rows, counters = [], defaultdict(Counter)
-    inputs = [{"path": str(p), "sha256": digest(p)} for p in [args.nfl, *args.sim]]
+    inputs = input_manifest(parser, [args.nfl, *args.sim], args.out)
     streams = [(str(args.nfl), nfl(args.nfl))] + [(str(p), sim([p])) for p in args.sim]
     for label, stream in streams:
         for ordinal, play in enumerate(stream):
