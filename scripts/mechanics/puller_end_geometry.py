@@ -223,6 +223,7 @@ def measure(plays):
             row['threshold_sensitive'] = any(c != row['class'] for c in alternatives)
             rows.append(row)
         counts['gap_plays_without_ruled_puller'] += n == 0
+        counts[f"no_ruled_puller:{p['src']}:{p['concept']}"] += n == 0
     return rows, dict(counts)
 
 
@@ -231,28 +232,47 @@ def median(values):
     return None if not values else round(statistics.median(values), 2)
 
 
+def spread(values):
+    """Linear sample quantiles, descriptive only; rows within a play correlate."""
+    if not values:
+        return '—'
+    values = sorted(values)
+    def q(p):
+        x = (len(values)-1)*p
+        lo = int(x)
+        return values[lo]+(values[min(lo+1, len(values)-1)]-values[lo])*(x-lo)
+    return f'{q(.5):.2f} [{q(.25):.2f}, {q(.75):.2f}]'
+
+
 def tables(rows, counts):
     lines = ['# Puller/end geometry proxies', '',
              'Kick/log landmarks are first proximity arrivals; turn-up landmarks are segment onsets, not arrivals.',
              'Depth x is yards past the LOS (negative = backfield). Distances are yards; clocks are seconds from snap.', '',
-             '| Source | Concept | Plays | Pullers | Kick-like | Log-like | Turn-up-like | Uncertain | Threshold-sensitive |',
-             '|---|---|---:|---:|---:|---:|---:|---:|---:|']
+             '| Source | Concept | Plays | No ruled puller | Pullers | Kick-like | Log-like | Turn-up-like | Uncertain | Threshold-sensitive |',
+             '|---|---|---:|---:|---:|---:|---:|---:|---:|---:|']
     for src in sorted({r['source'] for r in rows}):
         for concept in CONCEPTS:
             group = [r for r in rows if r['source'] == src and r['concept'] == concept]
             by = collections.Counter(r['class'] for r in group)
-            lines.append(f"| {src} | {concept} | {counts.get(f'plays:{src}:{concept}', 0)} | {len(group)} | "
+            lines.append(f"| {src} | {concept} | {counts.get(f'plays:{src}:{concept}', 0)} | "
+                         f"{counts.get(f'no_ruled_puller:{src}:{concept}', 0)} | {len(group)} | "
                          + ' | '.join(str(by[k]) for k in CLASSES) + f" | {sum(r['threshold_sensitive'] for r in group)} |")
-    lines += ['', '| Source | Pattern / landmark | N | Time | Puller depth | Distance to end | End depth |',
-              '|---|---|---:|---:|---:|---:|---:|']
+    lines += ['', 'Geometry: median [p25, p75]. These are sample spreads, not confidence intervals.', '',
+              '| Source | Pattern / landmark | N | Sensitive N | Time | Puller depth | Distance to end | End depth |',
+              '|---|---|---:|---:|---:|---:|---:|---:|']
     for src in sorted({r['source'] for r in rows}):
         for cls in CLASSES[:-1]:
             group = [r for r in rows if r['source'] == src and r['class'] == cls]
             key = 'turn' if cls == 'turn_up_like' else 'arrival'
             points = [r[key] for r in group]
             label = cls+' / '+('turn onset' if key == 'turn' else 'arrival')
-            cells = [median([p[k] for p in points]) for k in ('time', 'puller_depth', 'distance_to_end', 'end_depth')]
-            lines.append(f"| {src} | {label} | {len(points)} | "+' | '.join('—' if v is None else str(v) for v in cells)+' |')
+            cells = [spread([p[k] for p in points]) for k in ('time', 'puller_depth', 'distance_to_end', 'end_depth')]
+            lines.append(f"| {src} | {label} | {len(points)} | {sum(r['threshold_sensitive'] for r in group)} | "+' | '.join(cells)+' |')
+        bad_arrival = {'multiple_snap_end_candidates', 'another_front_defender_encountered_first',
+                       'imputed_puller_detection_window', 'imputed_encounter_window'}
+        group = [r for r in rows if r['source'] == src and r['arrival'] is not None and r['reason'] not in bad_arrival]
+        cells = [spread([r['arrival'][k] for r in group]) for k in ('time', 'puller_depth', 'distance_to_end', 'end_depth')]
+        lines.append(f"| {src} | all unique first-end arrivals, incl. unclassified | {len(group)} | — | "+' | '.join(cells)+' |')
     reasons = collections.Counter(r['reason'] for r in rows if r['class'] == 'uncertain')
     lines += ['', 'Uncertain reasons: '+', '.join(f'{k}={v}' for k, v in sorted(reasons.items())), '',
               f"No gap audit supplied for {sum(r['audit']=='not_available' for r in rows)} puller rows. "
@@ -263,6 +283,7 @@ def tables(rows, counts):
               'The end is the widest snap-aligned DL/LB (x<1.8) on the pull side, not a proven blocking assignment. '
               'TRAP often targets an interior man. Multiple close-width candidates and earlier other-front encounters stay uncertain.',
               'Tracking proximity is not physical contact, holding, grip, gaze or intent. A turn-up can be a planned lead/climb.',
+              'Arrival separation is conditioned on the 1.2-yd admission rule; it is not a measured physical reach threshold.',
               'The 3-yard rule misses short pulls; two pullers from one play are correlated. This is a selected trajectory cohort.',
               'Only OL pullers are included; FB/TE kick-outs and short traps are not represented by this rule.',
               'Sim data, when supplied, must start at zero and remain aligned at 10 Hz; installed-only pullers are counted separately.', '']
