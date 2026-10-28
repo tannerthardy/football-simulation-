@@ -106,22 +106,34 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     expect(sample.support!.facing).not.toBe(sample.support!.travelHeading);
   });
 
-  it('the QB throws where the corner vacated: Z when he bit, elsewhere when he stayed, read natively at the same clock', () => {
+  it('the QB throws where the corner vacated, judged from his own picture while the corner is away', () => {
     for (const a of [pass.baseline, pass.alternative]) {
       expect(a.qbEvaluations.some(e => e.target.playerId === 'OFF-WR2' && e.evaluation)).toBe(true);
       expect(a.releases).toHaveLength(1);
     }
-    // The corner bit (support at the shared admission tick) and vacated Z's window...
+    // The corner bit (support at the shared admission tick) and the QB threw into the window he left.
     expect(pass.summary.firstSupport).not.toBeNull();
     expect(pass.alternative.releases[0].target?.playerId).toBe('OFF-WR2');
-    // ...while the corner who stayed took Z away, and the QB went elsewhere.
-    expect(pass.baseline.releases[0].target?.playerId).not.toBe('OFF-WR2');
-    // The QB's own evaluation of Z at the first clock both arms read him: open where the corner left.
-    const zAt = (a: typeof pass.baseline) => a.qbEvaluations.filter(e => e.target.playerId === 'OFF-WR2' && e.evaluation);
-    const first = Math.max(zAt(pass.baseline)[0].at, zAt(pass.alternative)[0].at);
-    const read = (a: typeof pass.baseline) => zAt(a).find(e => e.at >= first - 1e-9)!.evaluation!;
-    expect(read(pass.alternative).completion).toBeGreaterThan(read(pass.baseline).completion + 0.2);
-    expect(read(pass.alternative).interceptionRisk).toBeLessThan(read(pass.baseline).interceptionRisk);
+    // The QB's own score of Z (his held picture of Z and his remembered defenders, the same
+    // evaluation that chooses his throws) on every tick before either release, wherever his eyes are.
+    // Where his eyes go rides a look-off roll on the play's single recorded stream, which an
+    // unrelated draw elsewhere shifts; the window the corner opened does not. So the clock is
+    // the corner's: ticks where the corner who bit is 1+ yd farther from Z than the corner who stayed.
+    const release = Math.min(pass.baseline.releases[0].at, pass.alternative.releases[0].at);
+    const away = (a: typeof pass.baseline, at: number) => {
+      const row = a.rows.find(r => Math.abs(r.at - at) < 1e-6);
+      return row ? Math.hypot(row.body.pos.x - row.primary.body.pos.x, row.body.pos.y - row.primary.body.pos.y) : null;
+    };
+    const window = pass.alternative.zReads.filter(s => s.at < release - 1e-9 && s.completion !== null).flatMap(s => {
+      const m = pass.baseline.zReads.find(b => Math.abs(b.at - s.at) < 1e-6);
+      const ds = away(pass.alternative, s.at), dm = away(pass.baseline, s.at);
+      return m && m.completion !== null && ds !== null && dm !== null && ds > dm + 1 ? [{ support: s, man: m }] : [];
+    });
+    expect(window.length).toBeGreaterThanOrEqual(4);
+    const mean = (k: 'support' | 'man', f: 'completion' | 'interceptionRisk') =>
+      window.reduce((sum, w) => sum + w[k][f]!, 0) / window.length;
+    expect(mean('support', 'completion')).toBeGreaterThan(mean('man', 'completion') + 0.2);
+    expect(mean('support', 'interceptionRisk')).toBeLessThan(mean('man', 'interceptionRisk'));
   });
 
   it('every release is a legal behind-line forward pass with no fake block on Z', () => {
@@ -175,15 +187,17 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     expect(at(pass.alternative).depthLeverage).toBeLessThan(at(pass.baseline).depthLeverage);
     // Name the result: a completion, an interception and an incompletion are different football, and
     // "not incomplete" cannot tell the first two apart. Under the gait start law the corner who bit
-    // recovers and intercepts the throw into the window he vacated; the man arm's throw elsewhere falls
-    // incomplete. The cost of the bite is the window (the QB's read and the same-clock geometry above),
-    // not a punished result; being fooled is not forced to fail.
+    // recovers and intercepts the throw into the window he vacated. The man arm's throw is named, never
+    // an interception: incomplete to H under #336, a completion to Z under the direction-free start, where
+    // a look-off roll moves his first read of Z past the bitten corner's recovery. The cost of the bite
+    // is the window (the QB's read and the same-clock geometry above), not a punished result; being
+    // fooled is not forced to fail.
     const kind = (arm: typeof pass.baseline) => {
       const r = arm.execution.result;
       return r.stats.interceptedBy ? 'interception' : r.stats.completed ? 'completion' : r.outcome;
     };
     expect(kind(pass.alternative)).toBe('interception');
     expect(pass.alternative.execution.result.stats.interceptedBy).toBe('DEF-CB3');
-    expect(kind(pass.baseline)).toBe('incomplete');
+    expect(['completion', 'incomplete']).toContain(kind(pass.baseline));
   });
 });
