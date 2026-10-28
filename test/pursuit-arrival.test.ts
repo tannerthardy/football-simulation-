@@ -16,7 +16,10 @@ beforeAll(() => {
   // inside the capture. Each tried pass replays the game from the kickoff.
   // Seed 8 since #355 + #356 (develop 12d12d5): seed 7's first 6 completions
   // no longer hold a native pursuit case. All 6 contracts pass on seed 8.
-  chosen = captureNativePursuit(8);
+  // Seed 11 since the along-route crease read: seed 8's first 6 completions no
+  // longer hold one. Seed 11 captures the same case (DT_S on Z at 4.15/4.20)
+  // with and without that change.
+  chosen = captureNativePursuit(11);
 }, 60_000);
 beforeAll(() => {
   // These clocks nominate pursuit decisions, not an expected football ending.
