@@ -182,6 +182,23 @@ describe('production carrier entry commands', () => {
     expect(dt.pos.y).toBeCloseTo(CENTER_Y + 2.1);
   });
 
+  it('a counter or power back follows his pullers to two yards off the line before reading the hole', () => {
+    // Behind a kick-out and a lead puller the back presses the design and reads
+    // the kick block late; a zone back reads as he presses. Counts the crease
+    // reads the press makes, not where he ends up.
+    const reads = (scheme: 'counter' | 'power' | 'insideZone', depth: number) => {
+      const s = scene(1, 2.1, depth);
+      let n = 0;
+      runReadObservers.set(s.sim, e => { if (e.phase === 'aim') n++; });
+      new BallCarrier({ ...opts(1, 2.1), run: { scheme, side: 1 }, aimUntil: 10 }, s.back).update(s.back, s.sim);
+      return n;
+    };
+    expect(reads('counter', 3)).toBe(0);
+    expect(reads('power', 3)).toBe(0);
+    expect(reads('insideZone', 3)).toBe(1);
+    expect(reads('counter', 1.6)).toBe(1);
+  });
+
   it('keeps a visibly down defender in the future threat picture', () => {
     const s = scene(1, 2, 3.4), dt = s.put('DT_S', LOS + .5, 2);
     const original = s.sim.see;
