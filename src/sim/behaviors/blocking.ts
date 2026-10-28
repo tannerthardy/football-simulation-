@@ -1993,7 +1993,7 @@ export class RunBlocker implements Behavior {
     };
     const mine = danger(sim.see(a, target));
     if (mine.d < 4) return;
-    const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o.idx !== picture.carrier).map(o => sim.see(a, o).pos);
+    const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o.idx !== picture.carrier).map(o => ({ o, pos: sim.see(a, o).pos }));
     let best: { d: Agent; score: number } | null = null;
     for (const d of sim.defense) {
       if (d === target) continue;
@@ -2003,7 +2003,12 @@ export class RunBlocker implements Behavior {
       // Behind the runner he is pursuit, not a man to block in front of him.
       if ((seen.pos.x - ref.x) * dir < -1 || threat.score > mine.score - 2.5) continue;
       const reach = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
-      if (reach >= threat.d || mates.some(m => Math.hypot(m.x - seen.pos.x, m.y - seen.pos.y) < reach - .5)) continue;
+      // A teammate nearer the man, or one he sees in contact range of him
+      // (a keeper at arm's length on the man he just left), already has him.
+      if (reach >= threat.d || mates.some(({ o, pos }) => {
+        const gap = Math.hypot(pos.x - seen.pos.x, pos.y - seen.pos.y);
+        return gap < reach - .5 || gap <= o.profile.radius + d.profile.radius + o.player.measurables.armIn / 36;
+      })) continue;
       if (!best || threat.score < best.score) best = { d, score: threat.score };
     }
     if (!best) return;

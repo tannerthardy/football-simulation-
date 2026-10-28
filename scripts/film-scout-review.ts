@@ -243,6 +243,8 @@ export function report(q: Queue, outputDirectory: string): string {
       `Film ${e.source.engineSha256 ?? 'unknown'} / ${e.play} / seed ${e.source.seed} / t=${e.from.toFixed(2)}–${e.to.toFixed(2)}s / player=${e.actor.team ?? '?'}:${e.actor.slot} (${e.actor.playerId ?? 'roster ID unknown'})`, '',
       `Source commit: \`${e.source.commit}\`; arm ${md(e.source.arm)}; game ${e.source.game}; settings \`${e.source.settingsSha256 ?? 'unknown'}\`; input \`${e.source.inputSha256 ?? 'unknown'}\`.`, '',
       `Scout claim: ${e.kind === 'alert' ? md(e.event.text) : 'No stored event in this window for this detector; complete official event counts. This does not establish rule eligibility or correct football.'}`, '',
+      ...(e.kind === 'alert' && Number.isFinite(e.event.representativeT)
+        ? [`Representative detector tick: **${e.event.representativeT!.toFixed(2)} s**. Windowed rules may summarize earlier samples; this is not a recorded decision time.`, ''] : []),
       `Observed responsibility: ${md(e.context.responsibility && JSON.stringify(e.context.responsibility))}. Raw controller request: ${md(e.context.rawRequest && JSON.stringify(e.context.rawRequest))}.`,
       `Final recorded request (scout representative intent when no trace): ${md(e.context.finalRequest && JSON.stringify(e.context.finalRequest))}. Achieved summary: ${md(e.context.achieved && JSON.stringify(e.context.achieved))}.`,
       `Contact/support: ${md(e.context.contactSupport && JSON.stringify(e.context.contactSupport))}. Observed reads: ${md(e.context.observations && JSON.stringify(e.context.observations))}.`,
