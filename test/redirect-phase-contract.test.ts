@@ -9,7 +9,7 @@ type WorldOptions = NonNullable<ConstructorParameters<typeof World>[1]>;
 type Sample = {
   controllerT: number; endpointT: number; primaryActive: boolean;
   normal: number; tangent: number; outwardImpulse: number;
-  separation: number; request: { x: number; y: number };
+  separation: number; appliedRequest: { x: number; y: number };
   decisionInterval: number;
 };
 
@@ -49,7 +49,7 @@ function observeRedirect(side: 1 | -1) {
       normal: active ? primary!.normalForce ?? 0 : 0, tangent: active ? primary!.tangentForce ?? 0 : 0,
       outwardImpulse: outside * onDefender * forceY * dt,
       separation: Math.hypot(d.pos.x - qb.pos.x, d.pos.y - qb.pos.y),
-      request: { ...sim.cmds[d.idx].vel }, decisionInterval: d.mind.decisionInterval });
+      appliedRequest: { ...(intents[d.idx]?.vel ?? { x: 0, y: 0 }) }, decisionInterval: d.mind.decisionInterval });
     if (before) first = { ...before, after: structuredClone(this.bodies), report: structuredClone(report) };
     return report;
   });
@@ -104,9 +104,9 @@ describe('redirect: actual loaded protection and the later free rush are separat
     expect(release).toBeDefined();
     // Techniques remove the hand after that tick's controller has requested
     // stand. The next ordinary update, not an instantaneous second reaction,
-    // issues the free request. Its finite movement must close on the QB.
+    // supplies the free World request. Its finite movement must close on QB.
     const next = r.samples.find(s => s.controllerT > release!.controllerT)!;
-    expect(Math.hypot(next.request.x, next.request.y)).toBeGreaterThan(0);
+    expect(Math.hypot(next.appliedRequest.x, next.appliedRequest.y)).toBeGreaterThan(0);
     const end = r.samples.find(s => s.controllerT >= next.controllerT + next.decisionInterval)!;
     expect(end.separation).toBeLessThan(release!.separation);
     for (const s of r.samples.filter(s => s.controllerT >= next.controllerT && s.controllerT <= end.controllerT)) {
