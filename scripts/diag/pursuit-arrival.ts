@@ -13,7 +13,7 @@ import { newSupport, supportParams } from '../../src/physics/support.js';
 import { interceptPoint } from '../../src/physics/reach.js';
 import { World, type Intent } from '../../src/physics/world.js';
 import { PlaySim } from '../../src/sim/playsim.js';
-import type { CommandTraceStep } from '../../src/sim/command-trace.js';
+import { CommandTrace, type CommandTraceStep } from '../../src/sim/command-trace.js';
 import type { PursuitPredictionRecord } from '../../src/sim/pursuit-prediction.js';
 import { captureOrdinaryPlay } from './capture-game-play.js';
 import { bytesHash, compareExecution, copySaved, executionIdentity, firstDifference, initialState,
@@ -56,7 +56,7 @@ export function worldSourceSha256(): string {
   return hash.digest('hex');
 }
 
-/** Preserve nonfinite support clocks and explicit undefined in portable JSON.
+/** Preserve signed zero, nonfinite support clocks and explicit undefined in portable JSON.
  * The authoritative full Body is also V8 encoded, with its own checksum. */
 export function arrivalJson(value: unknown): string {
   return JSON.stringify(value, (_, v) => v === undefined ? { $arrivalValue: 'undefined' }
@@ -141,6 +141,63 @@ export function freezeNativeAll(saved: SavedPlay, actorSlot: string, targetSlot:
   });
 }
 
+/** One shared replay screens necessary conditions before per-actor tracing.
+ * It observes any helper phase (a superset of the required decision phase), so
+ * it can only rule out actors, never select a case. Exact tracing/freezing below
+ * still decides eligibility, ordering and independent one-body replay validity. */
+function screenNativePursuers(saved: SavedPlay, follow: number, settle: number, moving: number): Set<string> {
+  const sim = new PlaySim(restoreSetup(saved.setup)), initial = initialState(sim);
+  const result = saved.original.result, caught = result.events.find(e => e.type === 'catch')!.t;
+  const receiverId = result.stats.receiver;
+  const possible = new Set<string>(), intercepts = new Set<PlaySim['agents'][number]>();
+  const touched = sim.defense.map(() => -Infinity), previous = sim.defense.map(() => -Infinity);
+  let speeds: number[] = [];
+  // Reuse the existing passive observer interface. No private trace fields or
+  // extra prediction/controller calls; recordSamples is the same option used
+  // by the subsequent selected-actor replay.
+  const traces = new Map(sim.defense.map(a => {
+    const trace = new CommandTrace(a, { actor: { playerId: a.player.id }, from: caught - 1e-6, to: result.duration });
+    trace.pursuit = (target, record) => {
+      if (target.player.id !== receiverId || record.kind !== 'intercept') return;
+      const p = record.prediction;
+      if (p.t >= 2 * sim.dt && p.samples?.some(q => q.t > 0)
+        && sim.t + p.t + follow <= result.duration + 1e-7) intercepts.add(a);
+    };
+    return [a, trace] as const;
+  }));
+  sim.commandTraceFor = a => {
+    const trace = traces.get(a);
+    return trace?.isCollecting(a) ? trace : undefined;
+  };
+  const tick = sim.tick.bind(sim);
+  sim.tick = () => {
+    intercepts.clear();
+    speeds = sim.defense.map(a => Math.hypot(a.vel.x, a.vel.y));
+    for (const trace of traces.values()) trace.begin(sim);
+    tick();
+    for (const trace of traces.values()) trace.finish(sim);
+  };
+  const step = sim.world.step.bind(sim.world);
+  sim.world.step = (commands, h) => {
+    const start = sim.t;
+    for (const [i, a] of sim.defense.entries()) {
+      const eligible = intercepts.has(a) && (commands[a.idx]?.effort ?? 1) < 1 && speeds[i] >= moving
+        && start - touched[i] >= settle - 1e-7;
+      if (eligible && Math.abs(start - previous[i] - sim.dt) < 1e-7) possible.add(a.slot);
+      previous[i] = eligible ? start : -Infinity;
+    }
+    const report = step(commands, h);
+    for (const [i, a] of sim.defense.entries())
+      if (report.contacts.some(c => c.i === a.idx || c.j === a.idx)
+        || sim.world.joints.some(j => j.a === a.body || j.b === a.body)) touched[i] = start;
+    return report;
+  };
+  const actual = sim.run();
+  const difference = compareExecution(saved.original, { initial, result: actual, replay: replayState(sim, actual, saved.context) });
+  if (difference) throw new Error(`Native screen does not reproduce on this source: ${JSON.stringify(difference)}`);
+  return possible;
+}
+
 /**
  * Choose a native pursuit case from a saved completed pass instead of pinning
  * one actor and clock: the catcher is the target, and the first defender (in
@@ -155,7 +212,9 @@ export function findNativePursuit(saved: SavedPlay, follow = .1, settle = 1, mov
   const receiver = probe.offense.find(a => a.player.id === result.stats.receiver);
   const caught = result.events.find(e => e.type === 'catch')?.t;
   if (!result.stats.completed || !receiver || caught === undefined) throw new Error('Pursuit case needs a completed pass');
+  const possible = screenNativePursuers(saved, follow, settle, moving);
   for (const d of probe.defense) {
+    if (!possible.has(d.slot)) continue;
     // A plain traced replay finds his candidate decisions: a real chase of the
     // receiver, already moving (at least `moving` yd/s), below full effort (so the estimator-full-effort arm is a real
     // comparison), with the recorded point ahead of him (a positive sampled

@@ -1,8 +1,10 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { createHash } from 'node:crypto';
-import { arrivalJson, captureNativePursuit, compareBundle, forecast, freezeNative, frozenControls, necessaryBound, objectives,
+import { arrivalJson, captureNativePursuit, compareBundle, findNativePursuit, forecast, freezeNative, frozenControls, necessaryBound, objectives,
   parseArrivalJson, response, restoreBody, type ArrivalCase } from '../scripts/diag/pursuit-arrival.js';
 import { movementPanel } from '../scripts/diag/pursuit-arrival-export.js';
+import { PlaySim } from '../src/sim/playsim.js';
+import { copySaved } from '../scripts/diag/saved-play.js';
 
 let native: ArrivalCase[];
 let chosen: ReturnType<typeof captureNativePursuit>;
@@ -25,6 +27,23 @@ beforeAll(() => {
 }, 30_000);
 
 describe('frozen native pursuit arrival experiment', () => {
+  it('rejects impossible deadlines in one exact native replay without surveying every defender', () => {
+    // No decision can leave a follow window longer than the whole play.
+    // Screening must still execute and independently verify the real play.
+    const runs = vi.spyOn(PlaySim.prototype, 'run');
+    try {
+      const follow = chosen.saved.original.result.duration + 1;
+      expect(() => findNativePursuit(chosen.saved, follow)).toThrow('No native pursuit');
+      expect(runs).toHaveBeenCalledTimes(1);
+      runs.mockClear();
+      const corrupted = copySaved(chosen.saved);
+      // Only the saved reference changes, never the live constructor/commands.
+      corrupted.original.result.yards += 1;
+      expect(() => findNativePursuit(corrupted, follow)).toThrow('Native screen does not reproduce');
+      expect(runs).toHaveBeenCalledTimes(1);
+    } finally { runs.mockRestore(); }
+  });
+
   it('preserves complete starting body/motor history and JSON nonfinite/absent values', () => {
     const restored = parseArrivalJson(arrivalJson(native)) as ArrivalCase[];
     expect(restored).toStrictEqual(native);
