@@ -108,6 +108,11 @@ describe('planned climb acquires a useful near strike without running through th
   // the runner in this window (first contact 3.15, a corner). The end's win on
   // the exposed side was incidental to the recorded play. Mike must still be
   // loaded before arrival and must not be the man who meets the runner.
+  // Re-recorded for the engaged-flow law: the end now works with Y instead of
+  // beating him on the runner's exposed side, so nobody touches the runner in
+  // this window (first contact 3.25, a corner). That ending was incidental to
+  // the recorded play. Mike must still be loaded before arrival and must not
+  // be the man who meets the runner.
   expect(loaded).toBe(true);
   if(!arrived)while(sim.phase==='live'&&sim.t<5&&!sim.events.some(e=>e.type==='carrier_contact'))sim.tick();
   expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(true);

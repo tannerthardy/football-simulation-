@@ -215,54 +215,51 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // steps off the DT's hip) its C is not reread at all, so M25-P021, a capture on this branch, carries it.
     const p = play('M25-P021');
     const threats = changeOf(p, 'C', 'threat-reread');
-    // With the back leaving the mesh on his own start (#344) as well: the second reread moves 2.65 -> 2.85.
-    expect(threats.map(c => c.t)).toEqual([1.7, 2.85]);
+    // With the back leaving the mesh on his own start (#344) and the engaged-flow law (#347) as well: still
+    // 1.7 and 2.65.
+    expect(threats.map(c => c.t)).toEqual([1.7, 2.65]);
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'C')).toHaveLength(2);
     expect(threats.every(c => c.after.kind === 'climb')).toBe(true);
   });
 
-  it('M7-P051: a released climber stays off his keeper\'s man, one defender reaches the carrier alone, and the ledger does not invent a tie', () => {
+  it('M7-P051: the first carrier contact keeps both defenders tied at 2.45', () => {
     // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7).
-    // Re-recorded when a released climber stopped re-taking the man his keeper is on: LB_W now arrives alone at 2.9
-    // (was tied with LB_M at 2.7); the tie check moved to R7-P083.
-    // With the off-hip climb (#345) as well: the releases and RG's single reread are unchanged, but LB_W's 2.75
-    // swipe no longer loads the carrier, so CB_S makes first contact alone at 3.3.
-    // With the start law (#336) as well: DT_S penetrates and reaches the carrier alone at 1.95, before RG's climb
-    // matters (his combination is abandoned at 2.05), so the climber property moved to M10-P004 below; this play
-    // still checks that the ledger does not invent a tie.
+    // On the engaged-flow law (#347) and the off-hip climb (#345) LB_W arrived alone; with the start law (#336),
+    // the back's own mesh start (#344) and the engaged-flow law together, LB_M and LB_W reach the carrier on the
+    // same tick again (2.45), so this play carries the tie. #349's climber property is on M10-P081 below.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(1.95);
-    expect(first.defenders.map(p.slot)).toEqual(['DT_S']);
+    expect(first.t).toBe(2.45);
+    expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
   });
 
-  it('M10-P004: a released climber stays off the man his keeper is on', () => {
-    // A matched-restage capture of develop 84af7d9e (Gun Trips Open duo vs under), recorded for the start law (#336)
-    // when M7-P051's climb stopped mattering. C releases from DT_S to LB_W at 1.0 and never rereads back to DT_S;
-    // without #349's keeper-contact check he returns to DT_S at 1.8.
-    const p = play('M10-P004');
+  it('M10-P081: a released climber rereads to a backer and stays off the man his keeper is on', () => {
+    // A matched-restage capture of develop db6bc472 (Pistol Doubles outside zone vs wide 9), recorded for the start
+    // law (#336) with #344 and #347 merged, when M10-P004's double stopped releasing. C releases from DT_S to LB_W
+    // at 1.45 and rereads once, to LB_M, at 1.65; without #349's keeper-contact check that reread goes back to DT_S.
+    const p = play('M10-P081');
     expect(changeOf(p, 'C', 'combination-release').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
-      .toEqual([[1, 'DT_S', 'LB_W']]);
-    expect(changeOf(p, 'C', 'threat-reread')).toEqual([]);
-    expect(p.d.changes.some(c => p.slot(c.actor) === 'C' && c.t > 1 && p.slot(c.after.target) === 'DT_S')).toBe(false);
+      .toEqual([[1.45, 'DT_S', 'LB_W']]);
+    expect(changeOf(p, 'C', 'threat-reread').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
+      .toEqual([[1.65, 'LB_W', 'LB_M']]);
+    expect(p.d.changes.some(c => p.slot(c.actor) === 'C' && c.t > 1.45 && p.slot(c.after.target) === 'DT_S')).toBe(false);
   });
 
-  it('M25-P032: the first carrier contact keeps both defenders tied at 2.25', () => {
-    // Re-recorded for the start law (#336) and the back's own mesh start (#344) together. M25-P029 carried the tie
-    // for #336 alone; with #344 its LB_M arrives alone at 3.15, while M25-P032 (a capture of develop 1ec115c7) now
-    // has LB_M and NB on the carrier on the same tick.
+  it('M25-P032: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
+    // A capture of develop 1ec115c7 for the start law (#336). With #344 it carried the tie (LB_M + NB at 2.25); with
+    // the engaged-flow law (#347) as well NB arrives alone at 2.3, and the tie is back on M7-P051.
     const p = play('M25-P032'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.25);
-    expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'NB']);
+    expect(first.t).toBe(2.3);
+    expect(first.defenders.map(p.slot)).toEqual(['NB']);
   });
 
   it('R7-P083: the same sample is not tied under the start law, and the ledger does not invent one', () => {
     // Gun Trips Open wide zone weak, a run-only capture: LB_M and LB_W reached the carrier on the same tick (2.45) on
     // develop. With the start law (#336) RG releases at 1.7 and his climb reaches LB_W at 2.45, so CB_W makes first
-    // contact alone at 2.5; with the back's own mesh start (#344) as well, LB_M alone at 2.95. The tie is carried
-    // by M25-P032.
+    // contact alone at 2.5; with the back's own mesh start (#344) and the engaged-flow law (#347) as well, CB_W
+    // alone at 2.55. The tie is carried by M7-P051.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.95);
-    expect(first.defenders.map(p.slot)).toEqual(['LB_M']);
+    expect(first.t).toBe(2.55);
+    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
@@ -272,11 +269,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // still one defender, not a tie. The DT_W's wrap now comes with the contact (2.1; was 2.3 after the DE_W's contact).
     // Re-recorded for the start law (#336): the run gets further, and LB_W alone makes first contact at 2.6, wrapping
     // with it; still one defender, not a tie. With develop 84af7d9e merged the run gets further still: CB_W alone
-    // makes first contact at 3.45; still not a tie. With the back's own mesh start (#344) as well, DT_W alone at
-    // 2.4; still not a tie.
-    expect(first.t).toBe(2.4);
-    expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.4 && p.slot(e.defender) === 'DT_W')).toBe(true);
+    // makes first contact at 3.45; still not a tie. With the back's own mesh start (#344) and the engaged-flow law
+    // (#347) as well, LB_W alone at 2.95; still not a tie.
+    expect(first.t).toBe(2.95);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
+    expect(p.d.play.carrierEvents.some(e => e.t === 2.95 && p.slot(e.defender) === 'LB_W')).toBe(true);
   });
 
   // With the back leaving the mesh on his own start (#344), these former QB keeps (S8-P054 and S10-P006 on develop,
@@ -302,7 +299,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.census).toEqual([]);
   });
 
-  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'M10-P004', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029', 'R7-P083'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
+  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'M10-P004', 'M10-P081', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029', 'R7-P083'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
     const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
     const run = (record: boolean) => {
       const sim = new PlaySim(restoreSetup(setup));
