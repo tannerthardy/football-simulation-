@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 91 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 22 are off (`PULL_STEP` landed as the default pull step and was removed, G2 2026-10-27) (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 88 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 19 are off (`PULL_STEP` landed as the default pull step and was removed, G2 2026-10-27; `LEG_BRACE`, `WRAP_BIND` and `TACKLE_ROLL` landed with the held-stride law and were removed, Main Engine 2026-10-27) (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -10,7 +10,6 @@ There are 91 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `ARM_PRESS` | on | default (G5, 2026-10-22) | physics | `src/physics/support.ts:106` | review 2: drop the off path. Pushing through the hands uses the bench press (combine reps, Epley), counted in press units in the arm budget and its work and impulse ledgers; agreed with G2 for run reps. Staged scenes recorded on arm-force hands are pinned under RUN-11 until review 2 |
 | `CLIMB_INTERCEPT` | on | default | run | `src/sim/behaviors/blocking.ts:856` | — |
 | `CLIMB_PLAN` | on | default | run | `src/sim/behaviors/blocking.ts:853` | — |
-| `DL_FLOW` | on | default | trenches | `src/sim/engagement.ts:683` | — |
 | `EDGE_CONTAIN` | on | default (G1/G2, 2026-10-25) | trenches | `src/sim/engagement.ts:716` | review 2: drop the off path. A blocked edge widens with a reach only as far as containing the back's observed track needs; already wider, he holds. Recorded scenes staged on unbounded widening (`planned-climb-fit`, `zone-helper-check`) pin it off until re-recorded |
 | `SEAL_HOLD` | on | default (G1/G2, 2026-10-25) | trenches | `src/sim/engagement.ts:721` | review 2: drop the off path. A run blocker whose own felt load says his hands are on keeps the leverage he caught the man with; he no longer runs to a new shoulder and carries the man along |
 | `GAP_MATCH` | on | default (G1/G2, 2026-10-25) | defense | `src/sim/run-fits.ts:243` | review 2: drop the off path. Backers fill the front's open gaps as a set: the gap left open is one an underneath support player still covers, never an unsupported or A gap. Nearest-first left the nickel Under's gap between the weak tackle and a second tight end empty |
@@ -48,7 +47,6 @@ There are 91 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `HAND_MOTOR` | off | experimental | physics | `src/physics/world.ts:302` | set at first review |
 | `HOLD_SUBSTEPS` | off | experimental | physics | `src/physics/world.ts:300` | set at first review |
 | `IN_STRIDE_CATCH` | off | experimental | coverage | `src/sim/behaviors/receiver.ts:330` | set at first review |
-| `LEG_BRACE` | off | experimental | physics | `src/physics/world.ts:304` | set at first review |
 | `PASS_SINK` | off | experimental | trenches | `src/sim/engagement.ts:696` | set at first review |
 | `PULL_CUE` | off | experimental | defense | `src/sim/run-fits.ts:195` | set at first review |
 | `PULL_PLAN` | off | experimental | defense | `src/sim/run-fits.ts:186` | set at first review |
@@ -58,9 +56,7 @@ There are 91 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `RUN_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:692` | set at first review |
 | `RUN_READ` | off | experimental | defense | `src/sim/run-read.ts:35` | set at first review |
 | `RUN_READ_TURN` | off | experimental | defense | `src/sim/run-read.ts:39` | set at first review |
-| `TACKLE_ROLL` | off | experimental | defense | `src/sim/tackle.ts:65` | set at first review |
 | `TACKLE_TOUCH` | off | experimental | defense | `src/sim/tackle.ts:74` | set at first review |
-| `WRAP_BIND` | off | experimental | defense | `src/sim/tackle.ts:68` | set at first review |
 | `BLOCKED_REACH` | on | default (promoted 2026-10-22) | defense | `src/sim/tackle.ts:85` | review 2: drop the off path |
 | `GRIP_HOLD` | on | default (2026-10-22) | physics | `src/sim/tackle.ts:95` | review 2: drop the off path |
 | `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:236` | expires: review 2. Open: who supplies force in Cover 2 Man and which inside jobs trade; Defense, Run Game and Coverage to agree (#193, #190 comments) |

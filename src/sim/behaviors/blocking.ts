@@ -1560,8 +1560,10 @@ export class RunBlocker implements Behavior {
     // walk the torso through the backer's center. The ordinary physical
     // strike still owns range, facing, budgets and whether hands exist.
     const near=Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)<=strike;
-    if (!this.departureStrikeClear && !near) return approach;
-    const command=this.attack(a,sim,target,seen,approach);
+    // Stepping off the released man's hip: a rub is allowed, shoving him along is not a climb.
+    const released=this.plan.departure.defender;
+    if (!this.departureStrikeClear && !near) return offReleasedHip(a,sim,released,approach);
+    const command=offReleasedHip(a,sim,released,this.attack(a,sim,target,seen,approach));
     if (a.engagement?.defender===target) {
       const sink = sim.blockingSink(a), previousWork = sink?.blockingState(a);
       delete this.plan.departure;
@@ -1997,7 +1999,7 @@ export class RunBlocker implements Behavior {
     };
     const mine = danger(sim.see(a, target));
     if (mine.d < 4) return;
-    const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o.idx !== picture.carrier).map(o => sim.see(a, o).pos);
+    const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o.idx !== picture.carrier).map(o => ({ o, pos: sim.see(a, o).pos }));
     let best: { d: Agent; score: number } | null = null;
     for (const d of sim.defense) {
       if (d === target) continue;
@@ -2007,7 +2009,12 @@ export class RunBlocker implements Behavior {
       // Behind the runner he is pursuit, not a man to block in front of him.
       if ((seen.pos.x - ref.x) * dir < -1 || threat.score > mine.score - 2.5) continue;
       const reach = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
-      if (reach >= threat.d || mates.some(m => Math.hypot(m.x - seen.pos.x, m.y - seen.pos.y) < reach - .5)) continue;
+      // A teammate nearer the man, or one he sees in contact range of him
+      // (a keeper at arm's length on the man he just left), already has him.
+      if (reach >= threat.d || mates.some(({ o, pos }) => {
+        const gap = Math.hypot(pos.x - seen.pos.x, pos.y - seen.pos.y);
+        return gap < reach - .5 || gap <= o.profile.radius + d.profile.radius + o.player.measurables.armIn / 36;
+      })) continue;
       if (!best || threat.score < best.score) best = { d, score: threat.score };
     }
     if (!best) return;
@@ -2159,6 +2166,22 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
 /** A short step off the observed surface. This is navigation, not a claim
  * that the whole climb or linebacker block will succeed. Check the DL and
  * partner through the next read; a moving or mistaken picture can still lose. */
+/** A departing climber in contact with the man he just released steps off
+ * his hip. The part of his request that drives into that man's center is
+ * dropped and the speed is kept along the man's surface. World contact still
+ * decides any rub; what he no longer does is push the man along with him on
+ * his way to the backer (in contact, 74% of inside-zone departure commands
+ * pointed into the released man and carried him at over 1 yd/s). */
+function offReleasedHip<T extends { vel: Vec2 } | null>(a: Agent, sim: PlaySim, released: Agent, command: T): T {
+  if (!command) return command;
+  const seen = sim.see(a, released), rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, r = Math.hypot(rx, ry);
+  if (r < 1e-9 || r > a.profile.radius + released.profile.radius + .15) return command;
+  const ux = rx / r, uy = ry / r, v = command.vel, into = v.x * ux + v.y * uy;
+  if (into <= 0) return command;
+  const tx = v.x - into * ux, ty = v.y - into * uy, tl = Math.hypot(tx, ty), speed = Math.hypot(v.x, v.y);
+  return { ...command, vel: tl > 1e-9 ? { x: tx / tl * speed, y: ty / tl * speed } : { x: 0, y: 0 } };
+}
+
 function climbRoute(a: Agent, defender: Agent, down: Perceived,
   partner: Agent, covered: Perceived, backer: Perceived, strike = 0): { exit: Vec2 | null; flow: Vec2 } | null {
   const bodies = [{ seen: down, radius: a.profile.radius + defender.profile.radius },
@@ -2429,6 +2452,15 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
   if (combo.released || !combo.backer || combo.backer.isDown(sim.t)) return;
   const [owner, helper] = combo.members;
   const e = combo.defender.engagement;
+  // Overtaken: the partner has the man alone and this member is off him (he
+  // ran his track past the man, or lost him). He climbs on his own read.
+  // (The reverse, an owner holding him alone, is the helper's check below.)
+  if (e && e.type === 'run' && e.helpers.length === 0 && e.blocker === helper && observer === owner
+    && !observer.engagement && !observer.isDown(sim.t)
+    && !sim.world.joints.some((j) => j.a === observer.body || j.b === observer.body)) {
+    readOvertaken(observer, sim, combo, e);
+    return;
+  }
   const check = !!combo.helpPolicy && (!e || helper.engagement !== e);
   if (check) {
     // Preserve the ordinary double-team schedule while not yet joined. Its
@@ -2482,6 +2514,37 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
   if (candidate) applyCombinationRelease({ ...candidate, t: sim.t,
     cost: Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) + (observer === e.blocker ? .30 : 0) }, sim, combo, true);
 }
+
+/** The zone overtake: his partner carries the man they were to share, and
+ * he is off him. The joined double's own evidence decides it, read from this
+ * member's picture: his partner is a keeper on the man (keeperCandidate, the
+ * same hands, reach, torso and balance checks) and his partner's chest is on
+ * the man as he sees it, held 0.15 s; the backer fills or the runner arrives;
+ * a route to the backer exists. Before this, only an owner left alone could
+ * be checked off by his helper; a helper who took the man while the owner ran
+ * his track past him left the owner running the track with nobody to block
+ * (35% of outside-zone double time). */
+function readOvertaken(observer: Agent, sim: PlaySim, combo: Combination, e: Engagement): void {
+  const own = overtakeReads.get(combo) ?? { nextRead: 0, secureSince: -1 };
+  overtakeReads.set(combo, own);
+  if (sim.t < own.nextRead) return;
+  own.nextRead = sim.t + observer.mind.decisionInterval;
+  const candidate = keeperCandidate(observer, sim, combo, e);
+  const surface = candidate && readJoinedSurface(observer, sim, candidate.keeper, e);
+  if (!candidate || !surface) { own.secureSince = -1; return; }
+  if (own.secureSince < 0) own.secureSince = sim.t;
+  if (sim.t - own.secureSince < .15) return;
+  const backer = sim.see(observer, combo.backer!);
+  const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2
+    || (FLOW_RELEASE && backerShows(observer, sim, backer));
+  const runner = sim.slot('RB');
+  const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
+  if (!filling && !arriving) return;
+  if (!climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer)) return;
+  applyCombinationRelease({ ...candidate, t: sim.t,
+    cost: Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) }, sim, combo, true);
+}
+const overtakeReads = new WeakMap<Combination, { nextRead: number; secureSince: number }>();
 
 /** A release changes jobs/contact ownership, never a player's body or capacity. */
 function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, combo: Combination, check: boolean): void {

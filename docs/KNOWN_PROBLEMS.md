@@ -292,6 +292,8 @@ problem), resolved.
 | [RUN-11](#run-11) | Staged scenes recorded on arm-force hands or true-velocity mirroring | G2, G5 | low | pinned until review 2 |
 | [RUN-12](#run-12) | Run blockers lost on their assignments (film, Oct 23) | G2 | high | in work |
 | [RUN-13](#run-13) | Box backers untouched: linemen do not climb free to the second level | G2 | high | in work |
+| [RUN-14](#run-14) | Engaged DL lose the backside shoulder; play-side DL drift away from the play | G2 | medium | open |
+| [RUN-15](#run-15) | Backs leave the mesh too early and take the handoff almost standing | G2 | high | fix with the start law (#336) |
 | [RUN-16](#run-16) | Draw: the line does not block the rush while it shows pass | G2 | high | in work |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
@@ -408,6 +410,13 @@ problem), resolved.
   (on) of 40+ runs have no contact past 5 yd. The deep defender reaches the
   runner in 41–42% of them, and breaks are 34–36% either way. The tail is
   about arrivals.
+- **Related post-catch support seam:** historical film `eef43dcc` G6-P018
+  has an acquired H carrying picture, but the stalk-contact controller only
+  accepts QB/RB holders. Its release check already accepts any acquired
+  holder. The scoped repair uses that same ambiguity-checked observation
+  contract for contact support, retaining force leverage, decision cadence
+  and physical shedding. This is not a diagnosis of every long run or block:
+  sustained frontal contact and repeated reacquisition remain separate limits.
 
 <a id="run-3"></a>
 ### RUN-3: Double teams drive defenders back much too far
@@ -564,6 +573,24 @@ Carried over from the issue register; each was measured on an older develop.
 - **The stalk fit ignores the target's velocity** (RUN-004): parked.
 - **Mesh tempo and repeated re-grabs** (RUN-009): research on `rg3`, archived
   with #153.
+
+<a id="run-14"></a>
+### RUN-14: Engaged DL lose the backside shoulder; play-side DL drift away from the play
+
+- **Symptom** ([`dl_lag.py`](../scripts/diag/dl_lag.py), BDB weeks 1–2 vs the
+  engaged-flow matched restage, 0.3–1.0 s after the snap):
+  - Backside DL beside a blocker keep his backside shoulder (behind him at
+    1.0 s) 46–49% of the time; NFL 74%.
+  - Backside DL move toward the play at 0.57–0.61 yd/s; NFL 1.34.
+  - Play-side DL move *away* from the play at −0.27 yd/s; NFL +0.47.
+- **Cause:** not yet traced. Both develop and the engaged-flow change
+  ([review](reviews/engaged-flow.md)) show it. First question: whether the
+  play-side drift is the defender's own request or blockers driving him. If
+  it's the blockers, the pair ticks go to Main Engine for the contact side.
+- **Related, not this item:** DL first carrier contact happens behind the line
+  61–69% of the time (NFL 30%). That's line-of-scrimmage displacement and
+  mesh depth, Run Game's. The carrier's 0.2–0.3 yd after that contact (NFL
+  1.45) is forward drive through contact, Main Engine's.
 
 ## Tackling and pursuit
 
@@ -1992,7 +2019,79 @@ the carrier reaches him).
     time; the keeper is the next obstacle (23% of non-direct reads).
   - The braking stand-still has had two failed corrections already (#303); it
     waits on the start ramp.
+- **Released climbers taken back by the threat reread
+  (`run/G2-climber-stays-off`, 2026-10-27).**
+  - Found from draw film. A released climber whose backer is 4+ yd from the
+    runner re-reads for a nearer threat. The only guard against a man someone
+    else has was "a teammate nearer to him than I am, by half a yard". A keeper
+    at arm's length on the man the climber just left fails that guard, and the
+    released man is usually the nearest threat to the runner.
+  - On develop `1ec115c7` (456 run-only snaps, saved dice plus 4 shifts), 310
+    of about 2,000 double releases were taken back this way: wide zone 97,
+    outside zone 66, inside zone 48, duo 33, power 26, toss 19, trap 16, draw 8.
+  - Change: a man a teammate is seen in contact range of (his radius, the
+    man's, and his arm) is that teammate's. This uses positions only; no
+    engagement state.
+  - Result: pull-backs fall from 310 to 2. Box backers touched before the
+    carrier: counter 61% to 64%, inside zone 64% to 66%, outside zone 57% to
+    60%, power 65% to 67%, draw 17% to 18%.
+  - Blocks hold. The released man is still blocked at the cross
+    (gap / inside / outside 0.89 / 0.87 / 0.92 to 0.89 / 0.87 / 0.91), goes
+    1+ yd deep no more often, and makes first contact about as often (0.093 /
+    0.164 / 0.090 to 0.096 / 0.163 / 0.093).
+  - Mean run yards are unchanged (6.12 to 6.12).
 
+<a id="run-15"></a>
+### RUN-15: Backs leave the mesh too early and take the handoff almost standing
+
+Measured 2026-10-27 on run-only film (#329): seeds 7/9/11/13, 456 snaps, each on
+its saved dice plus 4 shifted streams (#335's `matched-restage.ts`), against
+BDB2025 weeks 1–2 with the same operator (carrier distance from his snap spot;
+the backfield set from the QB's depth at the snap).
+
+- **Measure** (develop): the back is 0.37–0.54 yd from his spot at 0.5 s (NFL
+  0.16–0.31) and reaches 0.5 yd/s at 0.15–0.25 s (NFL 0.35–0.45). He takes the
+  handoff at 1.9–2.4 yd/s on every look but outside zone from under center
+  (NFL 3.8–5.5).
+- **Cause:** *confirmed.* `RunnerToMesh` left on the snap at a speed budgeted
+  for the old slow start, and on every scheme but stretch braked to a stop at
+  the landmark. The start law (#336) makes it worse: backs leave faster still
+  and come out past NFL, which is why #336 was held.
+- **Fix** (`run/G2-mesh-departure`, on by default):
+  - On his beat the back previews his own body going hard to the mesh and
+    holds his stance while one more beat would still get him there for the
+    installed exchange. A slow start means leaving on the snap; a quick one
+    lets him wait.
+  - Every handoff but the draw is taken on the move, through the QB's pocket
+    (his body at the QB's arm's length, where he sees the QB getting to), and
+    only with the QB there: a back who outruns a late QB, or passes beyond his
+    hands, is gone past the exchange.
+  - With #336, gap runs leave at the NFL time (0.5 yd/s at 0.35 s; 0.00 / 0.01
+    / 0.08 / 0.21 / 0.60 / 1.40 yd at 0.2–1.0 s from the gun, NFL 0.02 / 0.04 /
+    0.09 / 0.16 / 0.45 / 1.15). Handoff speed rises (gap runs 1.9–2.2 to
+    2.8–3.3 yd/s, inside zone 2.0 to 2.6–3.4). Exchanges the QB keeps after the
+    back runs past: 0.6% to 0.0% (develop alone 0.8% to 0.1%). Handoffs at 1.6 s
+    or later: 3.2% (NFL 5.4%).
+- **Open:** zone backs still leave at 0.15 s: their installed exchange (1.15–1.2
+  s) and mesh depth leave no slack at full start, so the preview says go now.
+  Outside zone from under center takes the ball at 3.3 yd/s, slower than #336
+  alone (4.7; NFL 5.5), because the back now waits until he sees the QB will be
+  at the stretch mesh.
+- **Exchange tempo (same branch).** With the QB there, the back's on-time pace
+  (distance over max(0.2 s, time left)) still capped his request as the clock
+  ran out, below the ride-through tempo. So he braked to about 3 yd/s in the
+  last half yard. Now the pace only slows an early back. With the QB there he
+  carries at least the exchange tempo (0.55 of his top speed) into the pocket.
+  - Matched restage on develop with this branch, 456 run-only snaps, saved
+    dice plus 4 shifts. Handoff speed from under center: inside zone 3.05 to
+    3.76 yd/s, outside zone 3.12 to 3.62, gap runs 3.00 to 3.62 (NFL 4.5–5.5).
+  - Fumbles 22 to 21 of 2,085 plays; QB keeps 2 to 2. Run yards 5.87 to 5.93.
+  - Gun handoffs do not move (inside / outside zone 2.28 / 2.40 yd/s; NFL 3.92
+    / 4.96). The gun back reaches the window as it opens, at 1.05 s (NFL 1.1–
+    1.2 s), with no run-up, and slows on purpose while he sees the QB will not
+    yet reach the mesh. The rest is the body: asking 5.5–7 yd/s from rest he
+    accelerates about 3.4 yd/s², half the gait's own start (Main Engine's
+    item (b), with the climbers; not #336's start term).
 <a id="run-16"></a>
 ### RUN-16: Draw: the line does not block the rush while it shows pass
 

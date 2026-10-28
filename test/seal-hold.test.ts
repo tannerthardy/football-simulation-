@@ -20,7 +20,12 @@ describe('a loaded run blocker keeps the leverage he caught the man with', () =>
       const felt = e.blocker.body.support?.felt;
       if (!felt || Math.hypot(felt.x, felt.y) <= 0.1 * e.blocker.profile.massKg * G) return;
       loaded++;
-      if (Math.abs(m.seal) >= m.mirror - 1e-9) pinned++;
+      // The runaway this pins is the H carrying the end outward with his
+      // seal at top speed. A seal at top speed while the end crosses inside
+      // his face (engaged-flow law: the end leads the pair inside, carried
+      // partly by hands and contact, and outruns H near 3.3 s) is a lost
+      // race, not that runaway.
+      if (Math.abs(m.seal) >= m.mirror - 1e-9 && end.vel.y * end.runFit!.side > 0) pinned++;
     });
     sim.run();
     // Off: 95 loaded steps, 47 at the top lateral request, end carried 7.24 yd.
