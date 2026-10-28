@@ -409,6 +409,13 @@ problem), resolved.
   (on) of 40+ runs have no contact past 5 yd. The deep defender reaches the
   runner in 41–42% of them, and breaks are 34–36% either way. The tail is
   about arrivals.
+- **Related post-catch support seam:** historical film `eef43dcc` G6-P018
+  has an acquired H carrying picture, but the stalk-contact controller only
+  accepts QB/RB holders. Its release check already accepts any acquired
+  holder. The scoped repair uses that same ambiguity-checked observation
+  contract for contact support, retaining force leverage, decision cadence
+  and physical shedding. This is not a diagnosis of every long run or block:
+  sustained frontal contact and repeated reacquisition remain separate limits.
 
 <a id="run-3"></a>
 ### RUN-3: Double teams drive defenders back much too far
