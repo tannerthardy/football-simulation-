@@ -125,7 +125,9 @@ describe('cutoff installation distinguishes outside walls from inside collection
   it.each([false, true])('keeps an ordinary Split/Tite inside-shade cutoff in its previous contact frame, flip %s', flip => {
     // Start law (#336): on S3 flipped, the RT now reaches DT_W at 0.60 s (was 0.70) and
     // the DT's arms win the hands (the RT's arm impulse stays 0); panel seed S11 loads both mirrors.
-    const sim = natural('split_zone', 'tite', flip, 11), blocker = sim.slot(flip ? 'RT' : 'LT')!;
+    // With #347's engaged flow on the combined start law + mesh departure, S11 unflipped no longer
+    // loads the LT's arms on DT_W within 2 s; S1 loads both mirrors (seeds 1-40: 33 load both).
+    const sim = natural('split_zone', 'tite', flip, 1), blocker = sim.slot(flip ? 'RT' : 'LT')!;
     const plan = (blocker.behavior as RunBlocker).plan as FitPlan;
     expect(plan.kind).toBe('cutoff'); expect(plan.target!.slot).toBe('DT_W');
     expect(plan.contactFit).toBeUndefined();

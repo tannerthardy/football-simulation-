@@ -19,7 +19,10 @@ beforeAll(() => {
   // Seed 8: when backs carried their exchange tempo through the mesh, seed 7's
   // game changed and its first 12 catches had no exact freeze (seed 8 finds
   // FS on Y; the contracts below pass on both sources).
-  chosen = captureNativePursuit(8);
+  // Seed 4 on the combined start law + mesh departure with #347: seed 8's first
+  // case is now DE_W on Y after a support change (since 7.50, not -Infinity), so
+  // it no longer exercises a nonfinite starting history; seed 4 (DE_W on RB) does.
+  chosen = captureNativePursuit(4);
 }, 60_000);
 beforeAll(() => {
   // These clocks nominate pursuit decisions, not an expected football ending.
