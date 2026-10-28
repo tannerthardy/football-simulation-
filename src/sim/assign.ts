@@ -352,10 +352,8 @@ export function onHandoff(sim: PlaySim, _from: Agent, to: Agent): void {
   const aim = to.behavior instanceof RunnerToMesh ? to.behavior.aim : { x: sim.los + 1, y: to.pos.y };
   const patience = to.r('patience');
   // A split-zone slice travels against the runner's flow. It is a backside
-  // cutoff, not a lead block for the runner to wait behind or follow.
+  // cutoff, not a pull that lengthens the runner's designed track.
   const pullers = sim.offense.filter((a) => a.behavior instanceof RunBlocker && a.behavior.plan.kind === 'pull' && sim.offCall.run?.scheme!=='splitZone');
-  const leads = pullers.filter((a) => (a.behavior as RunBlocker).plan.pullRole === 'lead');
-  const follow = leads.length ? leads : pullers;
   const key=sim.defense.filter((d)=>d.pos.x>sim.los+2 && d.pos.x<sim.los+7 && Math.abs(d.pos.y-sim.ballY)<4)
     .sort((p,q)=>Math.abs(p.pos.y-sim.ballY)-Math.abs(q.pos.y-sim.ballY))[0];
   const run = sim.offCall.run, meshAim = to.behavior instanceof RunnerToMesh;
@@ -363,7 +361,7 @@ export function onHandoff(sim: PlaySim, _from: Agent, to: Agent): void {
     const side = playSideSign(sim, run), gap: Gap = run.aim === 'edge' ? 'D' : run.aim;
     return { gap, side, offset: aim.y - gapY(sim.offAlign, gap, side) };
   })() : undefined;
-  to.behavior = new BallCarrier({ aim, aimGap, aimUntil: sim.t + (follow.length ? 0.65 + 0.75 * patience : 0.3 + 0.5 * patience), follow,
+  to.behavior = new BallCarrier({ aim, aimGap, aimUntil: sim.t + (pullers.length ? 0.65 + 0.75 * patience : 0.3 + 0.5 * patience),
     run:sim.offCall.run ? {scheme:sim.offCall.run.scheme,side:playSideSign(sim,sim.offCall.run),readKey:key,
       kick:sim.offCall.run.scheme==='splitZone' ? undefined : sim.offense.find((b)=>b.behavior instanceof RunBlocker && (b.behavior.plan.pullRole==='kick'||b.behavior.plan.pullRole==='trap'))} : undefined }, to);
 }
