@@ -310,15 +310,23 @@ describe('solo hand-fight execution retains its legacy policy with the selected 
     // requests now start at full leg force, so bodies move from tick 1 and C's
     // seal/set commands follow them from tick 2; tick-1 commands, every control
     // value and the RNG are unchanged. Policy and physical hashes re-recorded.
+    // Direction-free start (#353): a below-cap request starts at the body's full
+    // start force whatever his facing. The first divergence is the tick-1 bodies
+    // of exactly the agents with such a request off their facing: run C (2.4 yd/s,
+    // 6-17 deg off) and DT_W (1.5 yd/s, 11 deg off); pass C (2.2 yd/s set, 180
+    // deg off). Tick-1 commands, every control value and the next RNG draw are
+    // unchanged; C's later commands follow his body (run <= 0.008, pass <= 0.09
+    // yd/s by tick 6). With the old start force both hashes reproduce exactly.
+    // Policy and physical hashes re-recorded.
     const policy = { trace: policyTrace, nextRng };
     const policyHash = createHash('sha256').update(JSON.stringify(policy)).digest('hex');
     expect(policyHash).toBe(type === 'run'
-      ? '4794572c25cf7b338b366592d9cfc4e493e05b7a4f47a8744aeb0b0fc13be6ee'
-      : '99719839ddd4f7eef0e9f3be90b0be69415d38e8a3d70b9c3b41fe3679511860');
+      ? '04f3e3b09f78e10495d63d73ed66e0cabbc68bd11d8caba06a4eb3facef9fd93'
+      : 'c880366aa2b2fc9662b93c1734521f1c4b1700f4730144558a36686df172e6c5');
     const actual = createHash('sha256').update(JSON.stringify({ trace, nextRng })).digest('hex');
     const motor180 = type === 'run'
-      ? '52d07250f06a2a16ad508bd878d2653e08a9c8019388e466b432d95587be9a2b'
-      : 'a528893580c2952ccde6896e62475f65b7326241acb9afa1bf3593ecb888a7a5';
+      ? 'f054f02f10718e96e18c041fc1191a240da26a2c5215e0099d2099061f4d380b'
+      : '4c9f557fe7ae66d00860fadb146fadca5e1972320053ce2505407612d77f23d5';
     expect(actual).toBe(motor180);
   });
 });

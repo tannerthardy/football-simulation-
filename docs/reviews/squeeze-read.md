@@ -143,20 +143,20 @@ free misses are flat and broken tackles fall slightly. It's the same cause as
 TKL-6 asks the tackle owner for a miss chance from his reach, balance and the
 blocker's hold.
 
-## Seal-hold: the end's widening (KNOWN_PROBLEMS RUN-18)
+## Seal-hold: the end's widening (KNOWN_PROBLEMS RUN-18, resolved by #377)
 
-On seal-hold the strong end now travels 2.72 yd outward, so Run Game dropped
-the scene's net-travel bar and kept its loaded and no-pinned checks. An
-independent trace found the cause: the end is already wider than his
-containment bound, and the engaged-flow law still adds his held outward
-flow, so he doesn't stop as its comment says. The old squeeze misread hid
-this. It is not "his own fit": it is a defect in #347's law.
+With the squeeze read alone, the strong end on seal-hold travelled 2.0–2.7 yd
+outward under a loaded seal. An independent trace found the cause, a defect
+in #347's law, not "his own fit". The end was already wider than his
+containment bound, and the engaged-flow law still added his held outward
+flow, so he didn't stop as its comment says. The old squeeze misread had
+hidden this by asking him inward.
 
-A fix (drop the outward held flow while the bound applies) puts seal-hold
-back to 0.48 yd. It also moves the restage materially (−0.50 yd per run,
-mostly outside and wide zone), and play-side zone DL flow drops further
-below NFL's. So it isn't in this PR. RUN-18 logs it, with the question to
-answer first: is the contain point too tight?
+#377 fixed it first, as its own change
+([contain-flow](contain-flow.md)): while the bound applies, an outward held
+flow is dropped. On this branch, merged onto it, seal-hold keeps its original
+bar. The end travels 0.66 yd outward with 32 loaded steps and 0 pinned
+(SEAL_HOLD off: 2.29 yd and 48 pinned, failing both checks).
 
 ## Limits
 

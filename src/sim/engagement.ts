@@ -1504,9 +1504,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const side = d.runFit?.side ?? 0;
   // A trailing backside edge (above) has no outside to keep: the ball has
   // gone away from him, so containment does not hold him where he is.
-  if (read.contain !== undefined && !read.trail && (target - read.contain) * side > 0)
+  // Bounded there, the flow he read no longer carries him outward either.
+  let carry = held;
+  if (read.contain !== undefined && !read.trail && (target - read.contain) * side > 0) {
     target = (d.pos.y - read.contain) * side > 0 ? d.pos.y : read.contain;
-  const flow = clamp(held + (target - d.pos.y) * 3, -td.lateral, td.lateral);
+    if (carry * side > 0) carry = 0;
+  }
+  const flow = clamp(carry + (target - d.pos.y) * 3, -td.lateral, td.lateral);
   // DL_FIGHT (experimental, off): fight pressure with pressure. A defender
   // who feels himself driven sideways holds the point where the push began
   // and leans into it, instead of following the blocker's flow off his gap.
@@ -1566,7 +1570,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   };
   runContactObservers.get(sim)?.(e, 'defender-movement', { reading: read.reading,
     declared: read.declared, supportRunner, defensiveAim: read.aim,
-    exitAim, workOff, workAxis, workSide, command: intents[d.idx] });
+    exitAim, workOff, workAxis, workSide, command: intents[d.idx], contain: read.contain, trail: read.trail, squeeze });
   helperIntents(sim, e, intents, axis);
 }
 

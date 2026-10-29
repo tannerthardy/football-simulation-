@@ -178,9 +178,12 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   let desired = dv0;
   // His wanted speed, and the full speed his legs allow in that direction.
   let wanted = 0, full = 0;
+  // The force of a full start: legs push off in any direction from the body's
+  // own curve (vmax / tau). Facing limits the speed he can hold that way.
+  const start = p.vmax * fat * enduranceFactor(body);
   if (dmag > 1e-6) {
     const heading = angleOf(dv0);
-    full = p.vmax * fat * enduranceFactor(body) * directionalSpeedFactor(p, angleDiff(body.facing, heading));
+    full = start * directionalSpeedFactor(p, angleDiff(body.facing, heading));
     const cap = full * effort;
     if (dmag > cap) desired = { x: (dv0.x / dmag) * cap, y: (dv0.y / dmag) * cap };
     wanted = Math.min(dmag, cap);
@@ -189,12 +192,18 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   // they push with the force of a full start whatever speed he wants, and
   // that force falls to zero at his wanted speed instead of at top speed.
   // On the sprint curve's terms this scales the propulsion toward a wanted
-  // speed by full / wanted; a full request is the sprint curve unchanged.
+  // speed by start / wanted. Only a request whose cap is the full forward
+  // speed (moving the way he faces) keeps the sprint curve unchanged; a full
+  // request capped by facing (sideways, backward) also starts with the full
+  // force and levels off at its lower cap.
   // A lineman who wants 2.4 yd/s fires off as hard as one who wants top
   // speed and levels off sooner (gaitLag). Mass and leg force enter through
-  // the body's own curve (vmax / tau), not a shared constant. A shoulder
-  // squeeze still costs burst: it narrows the full force, not just the speed.
-  const lift = (w: number) => { const f = full * narrow; return w > 0 && w < f ? f / w : 1; };
+  // the body's own curve (vmax / tau), not a shared constant. The start force
+  // does not depend on his facing: tracked NFL pullers reach 0.5 yd/s
+  // sideways at 0.1 s with their shoulders opened 10 degrees by 0.3 s. Facing
+  // limits only the speed at which that force runs out (full, above). A
+  // shoulder squeeze still costs burst: it narrows the start force.
+  const lift = (w: number) => { const f = start * narrow; return w > 0 && w < f ? f / w : 1; };
 
   const dvx = desired.x - body.vel.x;
   const dvy = desired.y - body.vel.y;
