@@ -311,7 +311,7 @@ problem), resolved.
 | [COV-4](#cov-4) | Defenders react late to jet motion | G3 | low | on |
 | [COV-5](#cov-5) | Older coverage contracts that fail or are unproven | G3 | high | open (next for Coverage) |
 | [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | on (orientation technique); run-fit and ball-play turns open |
-| [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | paused; fixture breaks under #336 (first on resume) |
+| [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | paused; broader cost-fixture requalification first on resume |
 | [COV-8](#cov-8) | Trailing man defenders can't find the ball | G3, G4 | high | open (logged with the throw-sight change) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
@@ -2600,17 +2600,18 @@ From the issue register:
   arms changes beyond 0.1 yd. The
   design for the leave-or-stay choice and the evidence its code PR owes are
   in the review; code waits for COV-6.
-- **Paused, first to resume (Tanner, Oct 27): the COV-7 fixture fails under
-  the gait start law (#336).** Coverage work is paused until the run game is
-  much better; this is priority 1 when other work resumes.
-  - On #336, `test/cov7-abandonment.test.ts` fails 2 of 9 (Toss / PA Shot,
+- **Paused, first to resume (Tanner, Oct 27).** Coverage work is paused until
+  the run game is much better; this is priority 1 when other work resumes.
+  The following failures describe the historical Oct 27 checkpoint against
+  the then-pending gait start law, not current-develop test results.
+  - On that #336 candidate, `test/cov7-abandonment.test.ts` failed 2 of 9 (Toss / PA Shot,
     seed 1). The combo C contacts DT_S early, so LB_W goes unblocked and the
     corner never reaches the runner. Z's look settles sooner, so in man the
     QB never throws to Z, and the bitten corner intercepts.
   - With #295's re-recorded version (no `EDGE_CONTAIN`/`SEAL_HOLD` pins) it
-    fails 5 of 13: the man-arm corner also ends near the runner, the wider
+    it failed 5 of 13: the man-arm corner also ends near the runner, the wider
     split's results flip, and the vertical arm's depth check fails.
-  - Seeds 1–50 don't pass, and a lucky seed is ruled out
+  - Seeds 1–50 did not pass, and a lucky seed was ruled out
     (`reviews/cov7-abandonment-cost.md`).
   - **Plan on resume:** re-record once on #336 + #295. Claim the cost through
     same-clock geometry (lateral gap, depth leverage, separation from Z), not
@@ -2621,6 +2622,12 @@ From the issue register:
     it makes the check stricter: it must tell an interception from a
     completion, and confirm the corner bit and the QB threw where he vacated.
     The broader redesign above is still the resume task.
+  - **Subsequent accepted source:** the narrow fixture correction
+    `600dc9d161f594f05bda1cf113fa4e85a4cc4ea0` landed with #336 at
+    `df9b0b61a8ad66bf72ce6698f7819107d6a9456d`. It distinguishes the
+    interception from a completion and checks the vacated window. The
+    historical failures above are not an outstanding block on the accepted
+    start law; they do not certify the broader cost-fixture redesign either.
   - Also waiting: #295 (squeeze; its seed 7/8 matched numbers predate the
     random-stream split, #323, and need re-running) and #324 (COV-1
     diagnosis; attempt 2 parked on `coverage/G3-cov1-throw-horizon`).
