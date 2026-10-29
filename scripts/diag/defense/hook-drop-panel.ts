@@ -3,6 +3,10 @@
  * receiver/side opposing control; the QB holds exactly as in the panel.
  * Usage: node --import tsx scripts/diag/defense/hook-drop-panel.ts
  *   [seed=4] [match|spot] [actor=LB_M] [concept=four_verts] [none|hold-stem]
+ *   [homeRoster=21] [awayRoster=22] [formation=gun_doubles_11] [shift=0]
+ * Shifts1+ use the existing matched-restage RNG convention fork('shift:j').
+ * Constructor bytes are saved/restored through saved-play.ts; the QB-hold
+ * override remains the declared panel intervention, not an ordinary-game capture.
  * hold-stem is an isolated actor-local counterfactual: retain depth in the
  * already-computed lane objective while its consumed key advances. It has a
  * known hitch cost; it is NOT proposed for production. It does not cap speed,
@@ -32,24 +36,28 @@ const {ZoneCoverage}=await import('../../../src/sim/behaviors/defense.js');
 const {PlaySim}=await import('../../../src/sim/playsim.js');
 const {effectiveVmax,commandFacing}=await import('../../../src/physics/kinematics.js');
 const {engineSettings,provenance}=await import('../../scorecard/provenance.js');
+const {captureSetup,restoreSetup,bytesHash}=await import('../saved-play.js');
 const {commandSnapshot,identity}=await import('../../../src/sim/command-trace.js');
 const j=(x:any)=>JSON.parse(JSON.stringify(x));
 const digest=(x:any)=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const seed=Number(process.argv[2]??4),style=process.argv[3]??'match',slot=process.argv[4]??'LB_M',concept=process.argv[5]??'four_verts',treatment=process.argv[6]??'none';
 if(!Number.isInteger(seed)||!['match','spot'].includes(style)||!PASS_BY_ID[concept]||!['none','hold-stem'].includes(treatment))throw new Error('Invalid seed/style/concept/treatment');
+const homeSeed=Number(process.argv[7]??21),awaySeed=Number(process.argv[8]??22),formationId=process.argv[9]??'gun_doubles_11',shift=Number(process.argv[10]??0);
+if(!Number.isInteger(homeSeed)||!Number.isInteger(awaySeed)||!FORMATION_BY_ID[formationId]||!Number.isInteger(shift)||shift<0)throw new Error('Invalid roster/formation/shift');
 const started=performance.now();
 fs.mkdirSync('out/353-coverage',{recursive:true});
-const home=generateTeam(new Rng(21),'Home','HOM',{strength:.6}),away=generateTeam(new Rng(22),'Away','AWY',{strength:.6});
-const formation=FORMATION_BY_ID.gun_doubles_11,offense=pickOffense(home,formation.personnel),defense=pickDefense(away,'nickel');
+const home=generateTeam(new Rng(homeSeed),'Home','HOM',{strength:.6}),away=generateTeam(new Rng(awaySeed),'Away','AWY',{strength:.6});
+const formation=FORMATION_BY_ID[formationId],offense=pickOffense(home,formation.personnel),defense=pickDefense(away,'nickel');
 const setup:any={offense,defense,offCall:{formation,flip:false,kind:'pass',pass:PASS_BY_ID[concept],label:concept},
  defCall:{personnel:'nickel',front:FRONT_BY_ID.over,coverage:COVERAGE_BY_ID.cover3,pressure:null,zoneStyle:style,label:'cover3'},
- los:35,ballY:HASH_LEFT_Y,firstDownX:45,seed,record:true};
+ los:35,ballY:HASH_LEFT_Y,firstDownX:45,seed:shift===0?seed:new Rng(seed).fork(`shift:${shift}`),record:true};
+const setupBytes=captureSetup(setup);
 const state=(a:any)=>({id:identity(a),pos:j(a.pos),vel:j(a.vel),facing:a.facing,spin:a.body.spin,support:j(a.body.support),energy:a.body.energy,
  behavior:{kind:a.behavior.kind,zone:a.behavior.zone,target:a.behavior.target?identity(a.behavior.target):null},
  engagement:a.engagement?{type:a.engagement.type,blocker:identity(a.engagement.blocker),defender:identity(a.engagement.defender)}:null,
  recog:a.recog?{read:a.recog.read,logOdds:a.recog.logOdds}:null});
 function run(observe:boolean){
- const sim=new PlaySim(setup), spot={x:28,y:HASH_LEFT_Y};
+ const sim=new PlaySim(restoreSetup(setupBytes)), spot={x:28,y:HASH_LEFT_Y};
  sim.qb.behavior={kind:'qb-hold',update:(a:any)=>goTo(a,spot,{facing:0,speed:.5})};
  const selected=sim.slot(slot)!;if(!selected)throw new Error('No actor in slot '+slot);const ids=[selected,...['LB_M','LB_W','Y','H'].map(s=>sim.slot(s)!)].filter((a,i,all)=>all.indexOf(a)===i);
  const snapshots:any[]=[],cues:any[]=[],interventions:any[]=[];
@@ -89,7 +97,7 @@ function run(observe:boolean){
   actors:sim.agents.map(a=>({id:identity(a),position:a.player.position,profile:a.profile,ratings:a.player.ratings}))};
 }
 const a=run(false),b=run(true);assert.deepStrictEqual(a.execution,b.execution);
-const output={operatorSha256:createHash('sha256').update(fs.readFileSync(new URL(import.meta.url))).digest('hex'),elapsedSeconds:(performance.now()-started)/1000,source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),runtime:process.version,settings:engineSettings(process.env),provenance:provenance(),setupDigest:digest(setup),seed,style,slot,concept,treatment,observerEquality:true,
+const output={operatorSha256:createHash('sha256').update(fs.readFileSync(new URL(import.meta.url))).digest('hex'),elapsedSeconds:(performance.now()-started)/1000,source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),runtime:process.version,settings:engineSettings(process.env),provenance:provenance(),setupDigest:digest(setup),setupSha256:bytesHash(setupBytes),homeSeed,awaySeed,formationId,shift,seed,style,slot,concept,treatment,observerEquality:true,
  executionDigest:digest(b.execution),counts:{seeCalls:b.execution.seeCalls,worldSteps:b.execution.worldSteps,ticks:b.execution.ticks},...b};
-const name=`out/353-coverage/${concept}-${style}-${seed}-${slot}-${treatment}`;fs.writeFileSync(name+'.json',JSON.stringify(output));
+const name=`out/353-coverage/${concept}-${style}-${seed}-${slot}-${treatment}-r${homeSeed}_${awaySeed}-${formationId}-shift${shift}`;fs.writeFileSync(name+'.setup.bin',setupBytes);fs.writeFileSync(name+'.json',JSON.stringify(output));
 console.log(JSON.stringify({name,source:output.source,observerEquality:true,counts:output.counts,elapsedSeconds:output.elapsedSeconds,metric:b.metric,result:{yards:b.execution.result.yards,outcome:b.execution.result.outcome,duration:b.execution.result.duration},falls:b.snapshots.filter(x=>x.falls.length).map(x=>({t:x.t,falls:x.falls}))},null,2));
