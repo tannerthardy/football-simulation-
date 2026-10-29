@@ -28,6 +28,43 @@ trigger it on PRs; every develop push also runs it. Core/integration and
 scorecard triggers are unchanged, so a reference-only PR does not schedule
 extra simulated games.
 
+## Support forecast timing — F2, 2026-10-29
+
+Manual comparison of develop `510f7a6a450b22b81cef1adcdee8f1585f2e1d3c`
+and runtime candidate `69f3da2ef54647f1f183792b8f8a9971d6cdd0b6`, using
+Node 22.23.3, Linux x64 and a four-CPU container quota. Source-declared
+environment overrides were unset before both arms; tests still set their own
+flags. Each measurement includes npm/Vitest startup and the same default/JSON
+reporters, with no competing benchmark process.
+
+| Existing command | Base wall | Candidate wall | Base CPU | Candidate CPU |
+| --- | ---: | ---: | ---: | ---: |
+| `npm test` | 168.352 s | 161.995 s | 640.442 s | 610.455 s |
+| `npm run test:all` | 411.123 s | 394.542 s | 1,130.136 s | 1,096.069 s |
+
+These are **one paired measurement per command**: about 4% less wall time,
+with ordinary machine variability still relevant. They do not establish a
+general per-game speedup. The complete suite preserves all 364 files and 3,890
+test identities/statuses: 3,888 pass, two fail, no skips. Both failures already
+occur on the base in `test/research/continued-recovery-world.test.ts`, in the
+two ordinary-frontal `physical fall` assertions. Core passes all 3,655 tests.
+
+The change copies ordinary flat support records without native serialization,
+retaining `structuredClone` for nested, shared or specialized state. It reuses
+identical clock-only support-filter coefficients in a bounded single-entry
+cache and avoids allocating an empty held-support map when there are no joints
+or previously held bodies. The physics equations and operation order remain
+the same. Seven matched saved plays preserve complete World states/reports,
+controller commands/events/minds, RNG draws and results exactly; focused
+ownership/reset checks also pass.
+
+Test files, fixtures, discovery, timeouts, isolation, worker settings and package
+commands are unchanged. A scheduling-only trial on the same base took 421.282 s
+with identical test results; a more parallel setting exceeded an existing setup
+deadline. The original runner is retained. Raw output stays in ignored
+`out/perf/`; manual verification and exact publication identity are summarized
+in the PR.
+
 ## Core and integration timing — F2, 2026-10-23
 
 Measured against develop `c5667bc4f7d4aa0411599ac5db25127f285bf4bf` with
