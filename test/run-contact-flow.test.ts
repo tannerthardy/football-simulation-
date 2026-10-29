@@ -229,10 +229,16 @@ describe('engaged run fits follow acquired contact flow through bounded movement
     for (const f of [lag, unsure, box, spill]) f.pictures.get(f.blocker)!.vel.y = side;
     for (const f of [box, spill]) Object.assign(f.defender.runFit!, { gap: 'C', kind: 'edge' });
     spill.defender.runFit!.edge = 'spill';
-    expect(command(lag).vel.y * side).toBeLessThan(0);
-    expect(command(unsure).vel.y * side).toBeGreaterThan(0);
-    expect(command(box).vel.y * side).toBeGreaterThan(0);
-    expect(command(spill).vel.y * side).toBeLessThan(0);
+    // The blocker is seen flowing at 1 yd/s. Lagging is relative to him: NFL
+    // backside DL flow with the play in the first second (80% faster than
+    // 0.5 yd/s toward it, 6% against it) while keeping their blocker's
+    // backside shoulder (74% behind him at 1.0 s; scripts/diag/dl_lag.py).
+    // Lag and spill work to the trailing shoulder, slower than the flow they
+    // read; an unsure fit and a box edge go with it.
+    const lagV = command(lag).vel.y * side, unsureV = command(unsure).vel.y * side;
+    const boxV = command(box).vel.y * side, spillV = command(spill).vel.y * side;
+    expect(lagV).toBeLessThan(1); expect(unsureV).toBeGreaterThan(1); expect(lagV).toBeLessThan(unsureV);
+    expect(spillV).toBeLessThan(1); expect(boxV).toBeGreaterThan(1); expect(spillV).toBeLessThan(boxV);
     expect(box.engagement.side).toBe(-side); expect(spill.engagement.side).toBe(side);
   });
 

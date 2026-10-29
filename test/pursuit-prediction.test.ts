@@ -74,7 +74,11 @@ describe('approximate interception prediction contract', () => {
 
   it('preserves a whole ordinary play and its prediction/read/draw/physics counts with selected diagnostics enabled', () => {
     // The game's first caught ball, so the safety pursues a carrier whatever the earlier snaps did.
-    const saved = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 1, maxSteps: 20 }).saved;
+    // Seed 8: when an overtaken zone member began climbing, seed 7's earlier run snaps changed and its
+    // first catch became one where SS makes no pursuit prediction. Seed 8's first catch is the same
+    // capture with and without that change (58 SS predictions, 29 intercept). Same reasoning as
+    // pursuit-arrival's move to seed 8.
+    const saved = captureOrdinaryPlay({ seed: 8, play: 'first-catch', minPlay: 1, maxSteps: 20 }).saved;
     const original = Reach.interceptPoint;
     const execute = (record: boolean) => {
       let pathCalls = 0;
@@ -83,7 +87,9 @@ describe('approximate interception prediction contract', () => {
       const draws = vi.spyOn(Rng.prototype, 'nextU32');
       const sim = new PlaySim(restoreSetup(saved.setup)), initial = initialState(sim);
       const reads = vi.spyOn(sim.perception, 'perceive'), steps = vi.spyOn(sim.world, 'step');
-      const trace = record ? sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 0, to: 30 }) : undefined;
+      // The safety who pursues this catch: on the engaged-flow law (#347) the game's first catch is a different
+      // play, and its pursuing safety is FS (the SS never chases it).
+      const trace = record ? sim.recordCommands({ actor: { team: 'D', slot: 'FS' }, from: 0, to: 30 }) : undefined;
       const result = sim.run();
       const execution = { initial, result, replay: replayState(sim, result, saved.context) };
       const counts = { planner: planner.mock.calls.length, paths: pathCalls, reads: reads.mock.calls.length,

@@ -43,7 +43,23 @@ const physicalConversion = (r: PlayResult, distance: number): boolean =>
     && Math.round(r.yards * 10) / 10 >= distance - 1e-6);
 
 function credited(treatment: OfficialStatsTreatment, result: PlayResult,
-  downAttempt: boolean, converted: boolean): OfficialStatRuling {
+  downAttempt: boolean, converted: boolean, los: number): OfficialStatRuling {
+  // GSIS 2025 pp32–33: on a reception followed by an opponent recovery,
+  // passing/receiving credit includes any loose-ball loss to that recovery,
+  // but no forward loose-ball gain. The return's END is not the recovery.
+  // Bound this repair to a direct receiver -> opponent chain; own recoveries,
+  // missing recovery locations and multi-carrier allocation retain their view.
+  const caughtAt = result.segments.findIndex(s => s.team === 'O' && s.how === 'catch');
+  const caught = result.segments[caughtAt], recovery = result.segments[caughtAt + 1];
+  if (result.kind === 'pass' && result.stats.completed && result.turnover
+    && caught?.end === 'fumble' && caught.carrier === result.stats.receiver
+    && recovery?.team === 'D' && recovery.how === 'recovery'
+    && result.segments.length === caughtAt + 2 && Number.isFinite(recovery.startX)
+    && recovery.startX < caught.endX) {
+    const offenseYards = Math.round((recovery.startX - los) * 100) / 100;
+    result = { ...result, offenseYards, stats: { ...result.stats,
+      yac: recovery.startX - caught.startX } };
+  }
   // NFL YAC = receiving yards - completed air yards; air is measured from
   // LOS to the catch, not from the QB. For an end-zone reception, statistical
   // catch depth ends at the goal line, just as receiving yardage does. Keep
@@ -149,7 +165,7 @@ function beforePossessionFoul(c: OfficialStatContext): OfficialStatRuling {
   if (calls.some(p => p.kind === 'illegal_forward_pass') && raw.statsBeforeIllegalPass && raw.segmentsBeforeIllegalPass)
     return credited('before_change_of_possession', { ...raw, score: null, possession: option.possession,
       turnover: option.possession === 'D', segments: raw.segmentsBeforeIllegalPass,
-      stats: raw.statsBeforeIllegalPass }, true, false);
+      stats: raw.statsBeforeIllegalPass }, true, false, c.los);
 
   const call = calls[0], phase = retainedAcquisitionPhase(c, call);
   const snapshot = raw.possessionSnapshots?.find(s => s.changes === phase);
@@ -198,7 +214,7 @@ function beforePossessionFoul(c: OfficialStatContext): OfficialStatRuling {
     ? Math.round((offensiveEnding.endX - c.los) * 100) / 100 : 0;
   const ruling = credited('before_change_of_possession', { ...raw, score: null,
     possession: option.possession, turnover: option.possession === 'D',
-    offenseYards, segments, stats }, true, false);
+    offenseYards, segments, stats }, true, false, c.los);
   if (raw.stats.missedTackles > (snapshot?.stats.missedTackles ?? 0))
     ruling.credit.limitations = ['Return-foul counters retain the acquisition checkpoint; later return-phase misses lack a foul-time checkpoint and are not credited.'];
   return ruling;
@@ -207,26 +223,26 @@ function beforePossessionFoul(c: OfficialStatContext): OfficialStatRuling {
 export function deriveOfficialPlayStats(c: OfficialStatContext): OfficialStatRuling {
   const { result: raw, selected: option } = c;
   if (!option || option.kind === 'decline' || option.preservesPlay)
-    return credited('physical', raw, true, physicalConversion(raw, c.startDistance));
+    return credited('physical', raw, true, physicalConversion(raw, c.startDistance), c.los);
   if (option.preserveBeforeChangeOfPossession) return beforePossessionFoul(c);
   if (option.kind === 'offset') return none();
   const calls = option.callIndices.map(i => c.calls[i]).filter((p): p is PenaltyCall => !!p);
   if (option.lossDown) {
     const incomplete = calls.find(p => p.kind === 'intentional_grounding'
       || p.kind === 'illegal_touching' && (p.reason === 'returned_from_out_of_bounds' || p.reason === 'eligible_out_of_bounds'));
-    if (incomplete) return credited('loss_of_down', incompleteAttempt(c, incomplete), true, false);
+    if (incomplete) return credited('loss_of_down', incompleteAttempt(c, incomplete), true, false, c.los);
     const pass = calls.find(p => p.kind === 'illegal_forward_pass' && p.reason === 'beyond_line');
     if (pass) {
       const prefix = releasePrefix(c, pass);
       if (prefix) return credited('loss_of_down', prefix, true,
-        option.possession === 'O' && option.nextDown === 1 && prefix.offenseYards >= c.startDistance);
+        option.possession === 'O' && option.nextDown === 1 && prefix.offenseYards >= c.startDistance, c.los);
     }
     const backward = calls.find(p => p.kind === 'illegal_backward_pass');
     if (backward) {
       // pp11,17: missed backward exchange stays in the originating rushing
       // category, to the actual ending, with its statistical fumble retained.
       const prefix = runPrefix(c, raw.endX, raw.stats.rusher ?? backward.playerId, true);
-      if (prefix) return credited('loss_of_down', prefix, true, false);
+      if (prefix) return credited('loss_of_down', prefix, true, false, c.los);
     }
     return none(true, ['Official allocation of this loss-of-down action is not represented; the consumed down remains charged.']);
   }
@@ -240,7 +256,7 @@ export function deriveOfficialPlayStats(c: OfficialStatContext): OfficialStatRul
         const downAttempt = !(call.against === 'O' && option.replayDown);
         const converted = downAttempt && option.possession === 'O'
           && option.nextDown === 1 && prefix.offenseYards >= c.startDistance;
-        return credited('to_enforcement_spot', prefix, downAttempt, converted);
+        return credited('to_enforcement_spot', prefix, downAttempt, converted, c.los);
       }
     }
   }

@@ -102,10 +102,13 @@ export function enduranceFactor(body: Body): number {
  * levels off at a wanted speed below his top speed. */
 const GAIT_STEP = Number(process.env.GAIT_STEP ?? 0);
 
-/** The lag a controller should expect when it asks for a speed below his
- * top speed: the sprint time constant, or the leveling time under GAIT_STEP. */
-export function gaitLag(profile: PhysicalProfile): number {
-  return GAIT_STEP || profile.tau;
+/** The lag a controller should expect when it asks for `wanted` speed: the
+ * legs start at full force whatever he wants and level off at his wanted
+ * speed, so the approach time constant is tau scaled by wanted / top speed
+ * (the full sprint time constant for a full request, or with no wanted
+ * speed given). Under GAIT_STEP, the leveling time. */
+export function gaitLag(profile: PhysicalProfile, wanted = profile.vmax): number {
+  return GAIT_STEP || profile.tau * clamp(wanted / profile.vmax, 0, 1);
 }
 
 /** Propulsive acceleration available at speed `speed` toward a cap `cap`. */
@@ -163,7 +166,8 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   const p = body.profile;
   const squeeze = body.squeeze ?? 0;
   // A narrower profile costs burst/cutting control; it is not free agility.
-  const effort = clamp(cmd.effort ?? 1, 0, 1) * (1 - 0.08 * squeeze);
+  const narrow = 1 - 0.08 * squeeze;
+  const effort = clamp(cmd.effort ?? 1, 0, 1) * narrow;
   const cutSkill = (cmd.cutSkill ?? 1) * (1 - 0.12 * squeeze);
   const speed = len(body.vel);
 
@@ -172,11 +176,25 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   const dmag = len(dv0);
   const fat = fatigueFactor(body.energy);
   let desired = dv0;
+  // His wanted speed, and the full speed his legs allow in that direction.
+  let wanted = 0, full = 0;
   if (dmag > 1e-6) {
     const heading = angleOf(dv0);
-    const cap = p.vmax * fat * enduranceFactor(body) * directionalSpeedFactor(p, angleDiff(body.facing, heading)) * effort;
+    full = p.vmax * fat * enduranceFactor(body) * directionalSpeedFactor(p, angleDiff(body.facing, heading));
+    const cap = full * effort;
     if (dmag > cap) desired = { x: (dv0.x / dmag) * cap, y: (dv0.y / dmag) * cap };
+    wanted = Math.min(dmag, cap);
   }
+  // Starting is the low-speed end of the legs' force-velocity curve: at rest
+  // they push with the force of a full start whatever speed he wants, and
+  // that force falls to zero at his wanted speed instead of at top speed.
+  // On the sprint curve's terms this scales the propulsion toward a wanted
+  // speed by full / wanted; a full request is the sprint curve unchanged.
+  // A lineman who wants 2.4 yd/s fires off as hard as one who wants top
+  // speed and levels off sooner (gaitLag). Mass and leg force enter through
+  // the body's own curve (vmax / tau), not a shared constant. A shoulder
+  // squeeze still costs burst: it narrows the full force, not just the speed.
+  const lift = (w: number) => { const f = full * narrow; return w > 0 && w < f ? f / w : 1; };
 
   const dvx = desired.x - body.vel.x;
   const dvy = desired.y - body.vel.y;
@@ -186,7 +204,8 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   if (speed < 0.35) {
     // Near standstill: isotropic, limited by initial drive.
     const cap = len(desired);
-    const amax = Math.max(driveAccel(p, speed, GAIT_STEP ? p.vmax * fat : Math.max(cap, 0.5)) * fat, p.brake * 0.5) * capacity;
+    const amax = Math.max(GAIT_STEP ? driveAccel(p, speed, p.vmax * fat) * fat
+      : driveAccel(p, speed, Math.max(cap, 0.5)) * fat * lift(Math.max(wanted, 0.5)), p.brake * 0.5) * capacity;
     ax = dvx / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
     ay = dvy / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
     const a = Math.hypot(ax, ay);
@@ -214,15 +233,14 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
       at *= s;
       an *= s;
     }
-    // Speeding up follows the sprint curve toward the wanted speed: a
-    // player who wants three-quarter speed pushes with about three-quarter
-    // effort. The share of the envelope that leaves free goes to the cut.
-    // GAIT_STEP (experimental, off by default): he pushes as hard as the
-    // force-velocity curve allows and levels off over about two steps,
-    // instead of approaching every wanted speed on the sprint time constant.
+    // Speeding up toward the wanted speed starts at full force and falls
+    // linearly to zero there (lift, above). It never exceeds the
+    // force-velocity envelope At. The share of the envelope that leaves free
+    // goes to the cut. GAIT_STEP (experimental, off by default): the full
+    // force-velocity curve, leveling off over a fixed time instead.
     const ease = GAIT_STEP
       ? Math.min(driveAccel(p, speed, p.vmax * fat) * fat, Math.max(0, cap - speed) / GAIT_STEP) * capacity
-      : driveAccel(p, speed, Math.max(cap, speed)) * fat * capacity;
+      : driveAccel(p, speed, Math.max(cap, speed)) * fat * lift(wanted) * capacity;
     if (at > ease) {
       at = ease;
       const room = An * Math.sqrt(Math.max(0, 1 - (at / Math.max(At, 1e-9)) ** 2));
