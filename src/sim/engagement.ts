@@ -928,6 +928,8 @@ interface RunStackRead {
   nextRead: number;
   flow: number;
   contacted: boolean;
+  /** The lateral direction of the blocker's first step as he saw it (his first clear flow), 0 until seen. */
+  firstStep: number;
   /** DL_FIGHT: the lateral point he holds while driven sideways, and until when. */
   hold?: { y: number; until: number };
 }
@@ -981,7 +983,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
       stack = { owner: b, fit, depth: stack?.depth ?? d.pos.x,
         shoulder: edge ? job.side * (job.edge === 'spill' ? -.45 : .65)
           : clamp(liveGapY(sim, d, job.gap, job.side) - local.y, -sep * .65, sep * .65),
-        nextRead: -Infinity, flow: 0, contacted: stack?.contacted ?? false };
+        nextRead: -Infinity, flow: 0, contacted: stack?.contacted ?? false, firstStep: 0 };
       runStacks.set(e, stack);
     }
     // Reaching is not touching. Only the first transmitted hand load installs
@@ -994,6 +996,7 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     // Touch supplies local position/load, never the OL's private drive.
     if (sim.t >= stack.nextRead) {
       stack.flow = picture.vel.y;
+      if (!stack.firstStep && Math.abs(stack.flow) > .5) stack.firstStep = Math.sign(stack.flow);
       if (!edge && job.technique === 'lag' && reading && Math.abs(stack.flow) > .8)
         stack.shoulder = -Math.sign(stack.flow) * (b.profile.radius + d.profile.radius) * .65;
       stack.nextRead = sim.t + d.mind.decisionInterval;
@@ -1461,20 +1464,24 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const beaten = !!blockerSeen && (d.pos.x - blockerSeen.pos.x) * sim.attackDir(b.team) < d.profile.radius;
   const zoneStep = !!blockerSeen && !(DL_FLATTEN_WON && beaten) && Math.abs(blockerSeen.vel.y) > 1
     && Math.abs(blockerSeen.vel.y) > Math.abs(blockerSeen.vel.x);
-  // DL_SQUEEZE: the play's direction is the back's lateral flow (where he
-  // is going), or where he is when he comes straight downhill. A blocker
-  // moving against it is a down block or a wash; one moving with it, a reach.
+  // DL_SQUEEZE: a blocker whose first step went against the play is a down
+  // block or a wash; one whose first step went with it, a reach. The play's
+  // direction is the lateral track of the back he has seen take the ball.
+  // Before he sees a carrier running a track there is no squeeze: reading the
+  // back's early mesh path, or where he stood, took zone reaches for down
+  // blocks (docs/reviews/squeeze-read.md).
   let squeeze = 0;
   // The squeeze is a decision: made at a read, held for its beat.
   const lastSqueeze = squeezes.get(e);
   if (lastSqueeze && sim.t < lastSqueeze.until) squeeze = lastSqueeze.side;
-  else if (DL_SQUEEZE && read.stack && !read.declared && Math.abs(read.stack.flow) > .5) {
+  else if (DL_SQUEEZE && read.stack && !read.declared && read.stack.firstStep) {
     // He reads the back, as the fit does; a pitch or another carrier is the ball.
     const ball = ballKey(sim, d);
     const cue = ball ? sim.see(d, ball) : null;
-    const play = !cue ? 0 : Math.abs(cue.vel.y) > 1 ? Math.sign(cue.vel.y)
-      : Math.abs(cue.pos.y - d.pos.y) > .5 ? Math.sign(cue.pos.y - d.pos.y) : 0;
-    if (play && read.stack.flow * play < 0) { squeeze = play; d.tags.add('squeeze'); }
+    // His track: the lateral run of the carrier he sees (a zone back's read).
+    // A downhill gap back shows none until he bends; see squeeze-read.md.
+    const play = cue?.carrying === true && Math.abs(cue.vel.y) > 1 ? Math.sign(cue.vel.y) : 0;
+    if (play && read.stack.firstStep * play < 0) { squeeze = play; d.tags.add('squeeze'); }
   }
   if (DL_SQUEEZE && !(lastSqueeze && sim.t < lastSqueeze.until)) squeezes.set(e, { side: squeeze, until: sim.t + d.mind.decisionInterval });
   // Squeezing a down block is on the line: he flattens at his contact depth
