@@ -21,6 +21,7 @@ import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
 import { executeRunFit, type RunFitRead } from '../run-fits.js';
+import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
@@ -104,6 +105,25 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
 
 // ------------------------------------------------------------- pass rush
 
+/** A blocker's lateral step a lineman can see (yd/s): its direction shows long before its speed builds. */
+const STEP_SEEN = 0.3;
+
+/** How much sooner a lineman reads the man in front of him than the rest of
+ * the field: his key, an arm's length away and straight ahead of him (as a
+ * rusher keys the quarterback). */
+const KEY_DELAY = 0.5;
+
+/** The blocker on the surface in front of a rusher, as he sees the line: the
+ * nearest one laterally, within a yard and a half, read as his key. */
+function manInFront(sim: PlaySim, a: Agent): Perceived | null {
+  let best: Agent | null = null, bd = Infinity;
+  for (const b of linePicture(sim, a).surface) {
+    const dy = Math.abs(b.seen.pos.y - a.pos.y);
+    if (dy <= 1.5 && dy < bd) { best = b.agent; bd = dy; }
+  }
+  return best ? sim.see(a, best, KEY_DELAY) : null;
+}
+
 export class PassRusher implements Behavior {
   readonly kind = 'rush';
   private readonly getOff: number;
@@ -149,7 +169,22 @@ export class PassRusher implements Behavior {
     const holder = observedHolder(a, sim);
     if (holder && (holder.target !== sim.qb || qbRunning(a, sim))) return runFit(a, sim, this.gap, this.gapSign);
     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
-
+    // Key the man in front: a lineman steps with his first step. A blocker
+    // coming off the ball across him, pads low (a zone step, a reach, a down
+    // block), is not setting up to pass protect; the rusher plays him, square,
+    // moving with him, instead of sprinting past him at the quarterback. A pass
+    // set stands up and gives ground and leaves the rush as it is. His own picture of the blocker; what
+    // the blocker means to do is not his to know, so a play-action line fools him.
+    const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a) : null;
+    if (man && man.stance !== 'high' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > STEP_SEEN) {
+      // The answer to a lateral first step is a flat step of his own at full
+      // effort, square to the man, not a match of the speed seen so far.
+      const side = Math.sign(man.vel.y), step = a.profile.vmax * a.profile.shuffle;
+      const h = a.mind.decisionInterval;
+      const at = { x: man.pos.x + man.vel.x * h, y: man.pos.y + side * step * h };
+      a.tags.add('key-step');
+      return track(a, at, { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
+    }
     // Rush lane by plan: power rushers go through the blocker's chest at the
     // QB; finesse rushers attack a shoulder through their gap; speed rushers
     // take a wide arc and bend to a point behind the QB.

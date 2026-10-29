@@ -1542,13 +1542,16 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     target = (d.pos.y - read.contain) * side > 0 ? d.pos.y : read.contain;
     if (carry * side > 0) carry = 0;
   }
-  const flow = clamp(carry + (target - d.pos.y) * 3, -td.lateral, td.lateral);
+  // Flowing down the line square to his man, his body (facing, gait, the
+  // blocker's hands) bounds how fast he goes; the request is not trimmed below it.
+  const square = d.profile.vmax * d.profile.shuffle;
+  const flow = clamp(carry + (target - d.pos.y) * 3, -square, square);
   // DL_FIGHT (experimental, off): fight pressure with pressure. A defender
   // who feels himself driven sideways holds the point where the push began
   // and leans into it, instead of following the blocker's flow off his gap.
   // The lateral twin of the blocker's lost-depth anchor; the decision is held
   // for a decision beat, then renewed while the push lasts.
-  let lateralFlow = squeeze ? squeeze * td.lateral : flow;
+  let lateralFlow = squeeze ? squeeze * square : flow;
   // A blocker whose first step went with the play the line shows is reaching
   // him or cutting him off. The answer is a technique, not a pursuit of the
   // speed seen so far: an interior man works across his face with the play at
@@ -1557,7 +1560,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const st = read.stack;
   if (!squeeze && st && !read.declared && d.runFit?.kind === 'interior' && st.firstStep
     && Math.sign(st.flow) === st.firstStep && st.firstStep === lineRead(sim, d)) {
-    lateralFlow = st.firstStep * td.lateral;
+    lateralFlow = st.firstStep * square;
     d.tags.add('work-across');
   }
   if (DL_FIGHT && read.stack && !read.declared) {
