@@ -46,7 +46,7 @@ interface PeerPicture {
   touch: number;
 }
 
-interface ClosingLimit { nx:number; ny:number; speed:number }
+interface ClosingLimit { key:number; nx:number; ny:number; speed:number }
 
 /** Later radial corrections must not undo earlier teammate headway. Choose
  * the closest requested velocity satisfying the already admitted limits and
@@ -320,7 +320,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       // speed. Do not assume the blocker, grounded helper or occupied tackler
       // will take half the correction. The world still limits the braking.
       const allowed=Math.sqrt((decel*CLOSE_HORIZON)**2+2*decel*Math.max(0,gap))-decel*CLOSE_HORIZON;
-      limits.push({nx,ny,speed:allowed+seen.vel.x*nx+seen.vel.y*ny});
+      limits.push({key:b.idx,nx,ny,speed:allowed+seen.vel.x*nx+seen.vel.y*ny});
       if (closing > allowed) {
         const cut = closing - allowed;
         vx -= nx * cut; vy -= ny * cut;
@@ -357,6 +357,32 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       &&(ia.squeeze??0)<=1e-6&&(a.body.squeeze??0)<=1e-6&&(ia.push??0)<=1e-6
       &&!!s&&s.state==='up'&&!s.foot&&!s.strike
       &&Math.hypot(s.lean.x,s.lean.y)<=1e-6&&Math.hypot(s.load.x,s.load.y)<=1e-6;
-    intents[i]=localTrafficRoute(a,ia,ordinary,peers,forecast,free,ordinary===gathered);
+    // Radial headway uses the requested straight line. A free carrier's
+    // current momentum can instead carry the same request safely around a
+    // teammate. Retain that football decision only when its actual own-body
+    // preview clears EVERY acquired peer; unknown or loaded pictures keep
+    // the ordinary response. No peer's future choice is predicted here.
+    let selected=ordinary;
+    if(free&&a.behavior.kind==='carrier'
+      &&(ordinary.vel.x!==ia.vel.x||ordinary.vel.y!==ia.vel.y)
+      &&peers.every(p=>Number.isFinite(p.age)&&p.age!>=0
+        &&[p.pos.x,p.pos.y,p.vel.x,p.vel.y,p.touch].every(Number.isFinite))){
+      const path=forecast(ia),end=path[path.length-1];
+      // A clear prefix cannot cancel braking for a still-approaching peer
+      // beyond the preview. Restore only a pass that has completed within
+      // this same model: both achieved and requested relative motion must
+      // be separating from each peer whose headway restricted raw.
+      const passed=limits.every(limit=>{
+        if(ia.vel.x*limit.nx+ia.vel.y*limit.ny<=limit.speed)return true;
+        const peer=peers.find(p=>p.key===limit.key)!;
+        const dx=end.pos.x-peer.pos.x-peer.vel.x*end.t;
+        const dy=end.pos.y-peer.pos.y-peer.vel.y*end.t;
+        return dx*(end.vel.x-peer.vel.x)+dy*(end.vel.y-peer.vel.y)>=0
+          &&dx*(ia.vel.x-peer.vel.x)+dy*(ia.vel.y-peer.vel.y)>=0;
+      });
+      if(passed&&path.every(sample=>sample.support==='up')
+        &&peers.every(peer=>sweptClearance(a,path,peer)>=0))selected=ia;
+    }
+    intents[i]=localTrafficRoute(a,ia,selected,peers,forecast,free,selected===gathered);
   }
 }

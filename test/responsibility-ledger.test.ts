@@ -247,16 +247,17 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(first.defenders.map(p.slot).sort()).toEqual(['DT_W', 'LB_M']);
   });
 
-  it('M7-P051: the first carrier contact keeps both defenders tied at 3.4', () => {
+  it('M7-P051: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
     // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7).
-    // It carried the tie (LB_M + LB_W at 2.45) on #336 + #344 + #347; with the off-hip climb (#362) LB_W arrived
-    // alone at 2.85 (still on develop 510f7a6a); with the direction-free start (#353), DE_S alone at 2.65. With the
-    // containment bound holding an engaged edge's read flow (RUN-18) as well, LB_W misses at 2.9 and LB_W and CB_S
-    // reach the carrier on the same tick: a natural tie again. The single-defender case is carried by R7-P083 and
-    // S8-P005. #349's climber property is on M10-P081 below.
+    // It carried the tie (LB_M + LB_W at 2.45) on #336 + #344 + #347; with the off-hip climb (#362) LB_W arrives
+    // alone at 2.85 (still on develop 510f7a6a); with the direction-free start (#353), DE_S alone at 2.65.
+    // With achievable carrier clearance (#381), the RB passes the RT instead of braking at 1.95. The native
+    // DE_S contact no longer occurs; CB_S is alone at 3.25. With the containment bound holding an engaged edge's
+    // read flow (RUN-18) as well, LB_W makes first contact alone at 2.85 (CB_S wraps later, at 3.35). The recorded
+    // input and single-defender contract stay. The tie is on R9-P020. #349's climber property is on M10-P081 below.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(3.4);
-    expect(first.defenders.map(p.slot).sort()).toEqual(['CB_S', 'LB_W']);
+    expect(first.t).toBe(2.85);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
@@ -307,10 +308,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // Gun Trips Open wide zone weak, a run-only capture: LB_M and LB_W reached the carrier on the same tick (2.45) on
     // develop. With the start law (#336) RG releases at 1.7 and his climb reaches LB_W at 2.45, so CB_W makes first
     // contact alone at 2.5; with the back's own mesh start (#344) and the engaged-flow law (#347) as well, CB_W
-    // alone at 2.55; with the direction-free start (#353), CB_W alone at 2.85. The tie is carried by R9-P020.
+    // alone at 2.55; with the direction-free start (#353), CB_W alone at 2.85. With achievable carrier clearance
+    // (#381), the RB passes the LT at 1.5 and LB_W is alone at 3.0. The later RB-Z collision under a tackle bond
+    // remains an adverse physical outcome, not a contact-free guarantee. The tie is carried by R9-P020.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.85);
-    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
+    expect(first.t).toBe(3);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
@@ -340,16 +343,9 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // so the give completes; the ledger follows the ball across it.
     const p = play(id), qb = p.d.actors.findIndex(a => a.slot === 'QB'), rb = p.d.actors.findIndex(a => a.slot === 'RB');
     const h = p.sim.handoffAt, carried = p.d.play.carrierByTick.filter(c => c.carrier !== null);
-    // With the containment bound (RUN-18), S8-P054's back fumbles at 4.35 and DE_S recovers: the ledger follows
-    // the ball to him too.
-    const fumble = p.sim.events.find(e => e.type === 'fumble')?.t ?? Infinity;
     expect(h).toBeGreaterThan(0);
     expect(carried.filter(c => c.t < h).every(c => c.carrier === qb)).toBe(true);
-    expect(carried.filter(c => c.t > h && c.t <= fumble).every(c => c.carrier === rb)).toBe(true);
-    if (id === 'S8-P054') {
-      expect(fumble).toBe(4.35);
-      expect(new Set(carried.filter(c => c.t > fumble).map(c => p.slot(c.carrier)))).toEqual(new Set(['DE_S']));
-    } else expect(fumble).toBe(Infinity);
+    expect(carried.filter(c => c.t > h).every(c => c.carrier === rb)).toBe(true);
     expect(p.d.play.carrierEvents.length).toBeGreaterThan(0);
   });
 
