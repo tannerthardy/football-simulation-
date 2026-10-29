@@ -2344,11 +2344,19 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
     observer.behavior.prepareCombination(observer,sim,combo,preparation,read.nextRead);
   }
   if (sim.t - read.secureSince < .15) return;
-  // A draw invites the rush; the backer who reads pass sits or drops instead
-  // of filling. Once the reader sees his partner carrying the man, the
-  // climber goes and gets him.
-  const draw = sim.offCall.run?.scheme === 'draw' || sim.offCall.run?.scheme === 'qbDraw';
-  if (!filling && !arriving && !draw) return;
+  // An inside double keeps four hands on the man until its backer commits
+  // (fills, flows, or the back is at the line). A stretch double works on the
+  // move: once he sees his partner carrying the man, the climber goes and
+  // gets his backer. Waiting on the backer left outside-zone climbers 0.4 s
+  // later off the double than tracked climbers (1.4 vs 1.0 s), half as many
+  // climbing by 2.5 s (0.27 vs 0.52), the backer already 1.4 yd away when
+  // they came off (tracked 1.9). The stretch keeper alone holds the man as
+  // tracked keepers do. A draw invites the rush; the backer who reads pass
+  // sits or drops instead of filling, so its climber does not wait either.
+  const scheme = sim.offCall.run?.scheme;
+  const onTheMove = scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'toss'
+    || scheme === 'draw' || scheme === 'qbDraw';
+  if (!filling && !arriving && !onTheMove) return;
   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
   if (!route) { observer.tags.add('combo-held'); return; }
   if (sim.offCall.run?.scheme === 'duo' && route.exit) {

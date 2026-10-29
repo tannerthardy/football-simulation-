@@ -386,6 +386,21 @@ describe('a combo responds to the filling backer that the observer actually saw'
   });
 });
 
+describe('a stretch double climbs once its keeper carries the man; an inside double waits for its backer', () => {
+  it.each([-1, 1])('the same secured surface and a backer still 8 yd off release only the outside zone climber, side %s', side => {
+    const released = (run: typeof RUN_BY_ID.iz_strong) => {
+      const f = fixture(side, false, false, 11, undefined, run);
+      // Not filling, not flowing, the back not yet at the line: only the double's own picture can send him.
+      f.backer.body.pos = { x: 48, y: CENTER_Y - side * 1.2 }; f.observe();
+      const r = ready(f, 'helper');
+      readCombination(r.helper, r.sim, r.combination);
+      return r.combination.released;
+    };
+    expect(released(RUN_BY_ID.iz_strong)).toBe(false);
+    expect(released(RUN_BY_ID.oz_strong)).toBe(true);
+  });
+});
+
 describe('Duo keeps the surface while its acquired backer belongs to the other half', () => {
   it.each([-1, 1])('retains the double instead of sending a climber across its covered half, side %s', side => {
     const f = ready(fixture(side, false, false, 11, undefined, RUN_BY_ID.duo), 'helper');

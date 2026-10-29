@@ -151,12 +151,14 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
 
   it('M10-P081: C releases to LB_W, rereads to LB_M, and loads LB_M and never LB_W', () => {
     // The release/reread/load contract S9-P062 carried until the off-hip climb (#362) on top of #336 + #344.
+    // With the stretch double climbing once its keeper carries the man, C leaves at 1.05 (was 1.45) and rereads
+    // at 1.25 (was 1.65); the same release, reread and loads.
     const p = play('M10-P081', 'C');
     expect(p.setupSha256).toBe('d9fe5799b8485ffa6108a407a9335f3d4a62a3a98f1efc49fc2766ebedb61988');
-    const release = changeOf(p, 'C', 'combination-release', 1.45)[0];
+    const release = changeOf(p, 'C', 'combination-release', 1.05)[0];
     expect(release.after).toMatchObject({ kind: 'climb' });
     expect(p.slot(release.before.target)).toBe('DT_S'); expect(p.slot(release.after.target)).toBe('LB_W');
-    const reread = changeOf(p, 'C', 'threat-reread', 1.65)[0];
+    const reread = changeOf(p, 'C', 'threat-reread', 1.25)[0];
     expect(p.slot(reread.before.target)).toBe('LB_W'); expect(p.slot(reread.after.target)).toBe('LB_M');
     const c = p.d.actors.findIndex(a => a.slot === 'C');
     const loaded = (slot: string) => p.d.rows.filter(r => r.actor === c).filter(r => r.hands.some(h => p.slot(h.defender) === slot && h.loaded));
@@ -248,7 +250,9 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // It carried the tie (LB_M + LB_W at 2.45) on #336 + #344 + #347; with the off-hip climb (#362) LB_W arrives
     // alone at 2.85. The tie is on R9-P020. #349's climber property is on M10-P081 below.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.85);
+    // With the stretch double climbing once its keeper carries the man (RT off DE_S at 1.15, was Y at 1.85), LB_W
+    // alone at 2.9; still not a tie.
+    expect(first.t).toBe(2.9);
     expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
@@ -273,12 +277,13 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // A matched-restage capture of develop db6bc472 (Pistol Doubles outside zone vs wide 9), recorded for the start
     // law (#336) with #344 and #347 merged, when M10-P004's double stopped releasing. C releases from DT_S to LB_W
     // at 1.45 and rereads once, to LB_M, at 1.65; without #349's keeper-contact check that reread goes back to DT_S.
+    // With the stretch double climbing once its keeper carries the man: the same release at 1.05 and reread at 1.25.
     const p = play('M10-P081');
     expect(changeOf(p, 'C', 'combination-release').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
-      .toEqual([[1.45, 'DT_S', 'LB_W']]);
+      .toEqual([[1.05, 'DT_S', 'LB_W']]);
     expect(changeOf(p, 'C', 'threat-reread').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
-      .toEqual([[1.65, 'LB_W', 'LB_M']]);
-    expect(p.d.changes.some(c => p.slot(c.actor) === 'C' && c.t > 1.45 && p.slot(c.after.target) === 'DT_S')).toBe(false);
+      .toEqual([[1.25, 'LB_W', 'LB_M']]);
+    expect(p.d.changes.some(c => p.slot(c.actor) === 'C' && c.t > 1.05 && p.slot(c.after.target) === 'DT_S')).toBe(false);
   });
 
   it('M25-P032: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
@@ -293,10 +298,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // Gun Trips Open wide zone weak, a run-only capture: LB_M and LB_W reached the carrier on the same tick (2.45) on
     // develop. With the start law (#336) RG releases at 1.7 and his climb reaches LB_W at 2.45, so CB_W makes first
     // contact alone at 2.5; with the back's own mesh start (#344) and the engaged-flow law (#347) as well, CB_W
-    // alone at 2.55. The tie is carried by R9-P020.
+    // alone at 2.55. With the stretch double climbing once its keeper carries the man, C leaves DT_S at 1.0 (was
+    // 1.75) and loads LB_W; the run gets further and FS alone makes first contact at 3.75. The tie is carried by
+    // R9-P020.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.55);
-    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
+    expect(first.t).toBe(3.75);
+    expect(first.defenders.map(p.slot)).toEqual(['FS']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
