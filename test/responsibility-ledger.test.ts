@@ -252,11 +252,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // It carried the tie (LB_M + LB_W at 2.45) on #336 + #344 + #347; with the off-hip climb (#362) LB_W arrives
     // alone at 2.85 (still on develop 510f7a6a); with the direction-free start (#353), DE_S alone at 2.65.
     // With achievable carrier clearance (#381), the RB passes the RT instead of braking at 1.95. The native
-    // DE_S contact no longer occurs; CB_S is alone at 3.25. The recorded input and single-defender contract stay.
-    // The tie is on R9-P020. #349's climber property is on M10-P081 below.
+    // DE_S contact no longer occurs; CB_S is alone at 3.25. With the containment bound holding an engaged edge's
+    // read flow (RUN-18) as well, LB_W makes first contact alone at 2.85 (CB_S wraps later, at 3.35). The recorded
+    // input and single-defender contract stay. The tie is on R9-P020. #349's climber property is on M10-P081 below.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(3.25);
-    expect(first.defenders.map(p.slot)).toEqual(['CB_S']);
+    expect(first.t).toBe(2.85);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
