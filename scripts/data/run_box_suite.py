@@ -50,16 +50,19 @@ def valid_frame(frame, n):
     return len(frame) == n and all(len(q) == 2 and all(type(v) in (int, float) and math.isfinite(v) for v in q) for q in frame)
 
 
-def observe(play, op, live=True):
-    """Reuse published counts; only restrict touch admission to the live window."""
+def observe(play, op, live=True, correct_carrier=True, clock_valid=True, source_reasons=()):
+    """Audit published counts without editing its historical operator."""
     p, xy, players = dict(play), play["xy"], play["players"]
     reasons = []
+    if source_reasons:
+        return {"status": "unknown", "reasons": list(source_reasons)}
     if not xy or not valid_frame(xy[0], len(players)):
         return {"status": "unknown", "reasons": ["missing_or_invalid_snap_positions"]}
     if len([q for q in players if q["group"] == "OL"]) < 5:
         return {"status": "excluded", "reasons": ["fewer_than_five_listed_ol"]}
     ids = [q.get("id") for q in players]
-    if all(i is not None for i in ids) and len(set(ids)) != len(ids):
+    present_ids = [i for i in ids if i is not None]
+    if len(set(present_ids)) != len(present_ids):
         return {"status": "unknown", "reasons": ["duplicate_player_ids"]}
     if len(players) != 22 or Counter(q.get("side") for q in players) != {"O": 11, "D": 11}:
         return {"status": "unknown", "reasons": ["incomplete_or_ambiguous_roster"]}
@@ -77,6 +80,9 @@ def observe(play, op, live=True):
             p["xy"] = xy[:1]
         else:
             p["xy"] = xy[:max(1, math.floor((end + 1e-8) / .1) + 1)]
+    if not clock_valid:
+        reasons.append("touch_clock_unaligned")
+        p["xy"] = xy[:1]
     if any(not valid_frame(f, len(players)) for f in p["xy"]):
         # Preserve the valid initial count even when the later metric is unknown.
         reasons.append("touch_live_positions_missing")
@@ -86,11 +92,22 @@ def observe(play, op, live=True):
     c = out["concept"][(p["src"], "ALL")]
     if not c["n"]:
         raise ValueError("validated input was not admitted by the pinned operator")
-    b = op.bucket(c["surplus"])
-    t = out["touch"][(p["src"], "ALL", b)]
+    historical_bucket = op.bucket(c["surplus"])
+    t = out["touch"][(p["src"], "ALL", historical_bucket)]
+    # Published backs exclude the runner, but its OL and TE lists do not.
+    # Remove only that self-credit; retain listed personnel and OL mean anchor.
+    car = p["carrier"]
+    group = players[car]["group"]
+    cy = statistics.mean(xy[0][i][1] for i, q in enumerate(players) if q["group"] == "OL")
+    self_credit = group == "OL" or (group == "TE" and abs(xy[0][car][1] - cy) < 6.5)
+    removed = int(correct_carrier and self_credit)
+    blockers, surplus = c["blk"] - removed, c["surplus"] + removed
+    b = op.bucket(surplus)
     touch_unknown = bool(reasons)
     groups = Counter(q["group"] for q in players if q["side"] == "O")
-    return {"status": "observed", "reasons": reasons, "box": c["box"], "blockers": c["blk"], "surplus": c["surplus"], "bucket": b,
+    return {"status": "observed", "reasons": reasons, "box": c["box"], "blockers": blockers, "surplus": surplus, "bucket": b,
+            "carrier_blocker_credit_removed": bool(removed),
+            "published_counts": {"box": c["box"], "blockers": c["blk"], "surplus": c["surplus"], "bucket": historical_bucket},
             "personnel_proxy": next(iter(out["personnel"]))[1], "listed_composition": dict(groups),
             "carrier_group": players[p["carrier"]]["group"], "backers": None if touch_unknown else t["n"],
             "touched": None if touch_unknown else t["touched"], "touch_status": "unknown" if touch_unknown else "observed",
@@ -148,7 +165,27 @@ def streams(path, src, op, counts):
             raise ValueError("metadata/loader concept or carrier mismatch")
         ident = raw.get("id")
         cluster = ident.split("-")[0] if src == "nfl" and re.fullmatch(r"\d{10}-\d+", str(ident)) else None
+        source_reasons = []
+        native_players = raw["players"] if src == "nfl" else raw["setup"]["agents"]
+        for field in ("id", "playerId", "nflId", *(["i"] if src == "sim" else [])):
+            known_ids = [a[field] for a in native_players if a.get(field) is not None]
+            if len(set(known_ids)) != len(known_ids):
+                source_reasons.append("duplicate_actor_indices" if field == "i" else "duplicate_player_ids")
+        if src == "sim":
+            times = [f.get("t") for f in raw["frames"]]
+            aligned = lambda t, k: type(t) in (int, float) and math.isfinite(t) and abs(t - .1 * k) <= .011
+            full_clock_valid = bool(times) and all(aligned(t, k) for k, t in enumerate(times))
+            end = p.get("end")
+            last = math.floor((end + 1e-8) / .1) if type(end) in (int, float) and math.isfinite(end) and end >= 0 else len(times) - 1
+            clock_valid = bool(times) and all(aligned(t, k) for k, t in enumerate(times[:last + 1]))
+            if last >= len(times):
+                clock_valid = False  # explicit end exceeds the observed tape
+            if not times or not aligned(times[0], 0):
+                source_reasons.append("snapshot_clock_unaligned")
+        else:
+            clock_valid = full_clock_valid = raw.get("dt", .1) == .1
         yield p, {"play_id": ident, "filtered_run_ordinal": ordinal, "cluster": cluster, "raw_concept": concept,
+                  "clock_valid": clock_valid, "full_clock_valid": full_clock_valid, "source_reasons": sorted(set(source_reasons)),
                   "formation_unmatched": raw.get("setup", {}).get("formation") if src == "sim" else raw.get("cell", {}).get("formation")}
 
 
@@ -282,8 +319,8 @@ def main():
                     tally["repeated_sim_logical_id_execution_unverified"] += 1
                     meta["logical_id_repeated"] = True
                 identities.add(key)
-            row = observe(play, op)
-            historical = observe(play, op, live=False)
+            row = observe(play, op, clock_valid=meta["clock_valid"], source_reasons=meta["source_reasons"])
+            historical = observe(play, op, live=False, correct_carrier=False, source_reasons=meta["source_reasons"])
             changed = (row.get("backers"), row.get("touched")) != (historical.get("backers"), historical.get("touched"))
             changes += changed
             row.update(meta, source=src, concept=play["concept"], input_sha256=manifest["sha256"],
@@ -296,6 +333,7 @@ def main():
               "nfl_label": args.nfl_label, "sim_source": args.sim_source, "sim_settings_sha256": sha(args.sim_settings) if args.sim_settings else None,
               "inputs": inputs, "counts": counts, "live_admission_changed_runs": changes,
               "bootstrap": {"draws": args.bootstrap, "seed": args.seed, "unit": "NFL game or supplied sim parent-seed cluster; no invented IID play uncertainty"},
+              "admission_version": "live-window-carrier-clock-v2", "carrier_credit_corrected_runs": sum(r.get("carrier_blocker_credit_removed", False) for r in rows),
               "tables": tables(rows, args.bootstrap, args.seed), "common_support": common_support(rows), "rows": rows,
               "limits": ["SNAP-only composition proxy; strict pre-snap instant is unavailable in the shared loaders.",
                          "Backer proximity is not useful protection, load, an assignment, or missed attainable work.",

@@ -57,6 +57,14 @@ observation; do not relabel this output to fill that gap.
 - Surplus is D−B: light <0, even 0, defense +1, defense +2 or more. Keep
   B and D themselves: 5v5, 6v6 and 8v8 are all "even" but different pictures.
 
+The audited wrapper excludes **every carrier from his own blocker count**.
+The supplied source already excludes an RB carrier but accidentally includes
+an OL or in-window TE carrier. `published_counts` preserves its original B,D
+and stratum; `carrier_blocker_credit_removed` identifies the correction.
+Listed personnel and the OL-mean anchor remain unchanged. An already
+split-out TE outside the envelope gets no additional subtraction. This is
+`live-window-carrier-clock-v2`, not a silent revision of the original table.
+
 The claim that this is the QB's identical count is too strong. `qbmind.ts`
 uses the same hard window dimensions in its pre-snap branch, but anchors to
 ball y and adds position noise. Another branch uses smooth logistic counts.
@@ -81,6 +89,17 @@ before the existing loader's end. It does not change the count geometry.
 End can itself be a last-recorded fallback, which remains a source limit.
 Unknown end or missing live positions keeps the valid count but marks touch
 unknown. Missing post-end coordinates cannot invalidate a live measurement.
+The complete sim clock is now audited beyond the shared loader's initial
+30-sample check. In-window misalignment or a tape ending before its declared
+end makes touch unknown while keeping a valid initial count. Clock drift
+only after the live end is flagged in `full_clock_valid` without discarding
+the valid earlier metric. A bad snap clock or duplicated native actor/player
+identity makes the count unknown. Missing IDs cannot be certified; partial
+known IDs are still checked for duplicates before the loader discards them.
+NaN positions are unknown, never an omitted defender that lightens the box.
+Alignment retains the shared 0.011s tolerance. Early shifted clocks still
+fail the shared loader; nonfinite snap times that escape its legacy check
+are marked unknown by this wrapper instead of being certified as snap data.
 
 No-arrival and short-live-window plays remain visible; do not select only
 runs that cross or backers who were reached. A false touch result can mean
@@ -150,3 +169,8 @@ not certify exact scheme identity. Equal-box stratification reduces one
 composition confound; it does not establish a causal OL defect or a corrected
 football engine. The preliminary .88/.72 requires its exact source receipt,
 window, denominator and uncertainty before independent endorsement.
+
+That sim figure and production adoption remain **held** until the exact
+producing tape, source, settings, overlay and parent-seed provenance have
+been independently checked. Synthetic controls do not close that dependency
+or authorize resuming the held blocking diagnosis.

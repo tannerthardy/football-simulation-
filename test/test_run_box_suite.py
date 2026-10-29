@@ -40,6 +40,76 @@ def raw_sim(p):
 
 
 class RunBoxSuiteTests(unittest.TestCase):
+    def test_te_and_ol_carrier_cannot_count_as_own_blocker(self):
+        for index in (7, 2):
+            p = play()
+            p["carrier"] = index
+            out = m.sink()
+            OP.measure(p, out)
+            literal = out["concept"][("nfl", "ALL")]
+            row = m.observe(p, OP)
+            self.assertEqual(row["blockers"], literal["blk"] - 1)
+            self.assertEqual(row["listed_composition"], m.observe(play(), OP)["listed_composition"])
+        p = play()
+        p["carrier"] = 7
+        p["xy"][0][7] = (-.5, 6.5)
+        row = m.observe(p, OP)
+        self.assertFalse(row["carrier_blocker_credit_removed"])  # split-out TE never got the credit
+
+    def test_nan_defender_omission_is_unknown_not_a_lighter_box(self):
+        p = play()
+        p["xy"][0][15] = (float("nan"), 0)
+        out = m.sink()
+        OP.measure(p, out)
+        self.assertEqual(out["concept"][("nfl", "ALL")]["box"], 6)
+        self.assertEqual(m.observe(p, OP)["status"], "unknown")
+
+    def test_partial_duplicate_player_ids_are_not_certified(self):
+        p = play()
+        p["players"][0]["id"] = "same-player"
+        p["players"][1]["id"] = "same-player"
+        self.assertEqual(m.observe(p, OP)["status"], "unknown")
+        p["players"][1]["id"] = "different-player"
+        self.assertEqual(m.observe(p, OP)["status"], "observed")
+
+    def test_postend_clock_drift_does_not_erase_valid_live_metric(self):
+        p = play()
+        p["end"] = .8
+        with tempfile.TemporaryDirectory() as folder:
+            s = Path(folder) / "sim.json"
+            native = raw_sim(p)
+            native["frames"][30]["t"] = 3.2
+            s.write_text(json.dumps([native]))
+            from collections import Counter
+            measured, meta = next(m.streams(s, "sim", OP, Counter()))
+            self.assertFalse(meta["full_clock_valid"])
+            self.assertTrue(meta["clock_valid"])
+            self.assertEqual(m.observe(measured, OP, clock_valid=meta["clock_valid"])["touch_status"], "observed")
+
+    def test_full_sim_clock_and_actor_indices_survive_loader_audit(self):
+        for defect in ("late-clock", "duplicate-actor"):
+            with self.subTest(defect=defect), tempfile.TemporaryDirectory() as folder:
+                n, s, out = [Path(folder) / name for name in ("nfl.jsonl.gz", "sim.json", "report.json")]
+                with gzip.open(n, "wt") as f:
+                    f.write(json.dumps(raw_nfl(play())) + "\n")
+                native = raw_sim(play())
+                if defect == "late-clock":
+                    native["frames"][30]["t"] = 3.2  # shared loader checks only frames0..29
+                else:
+                    for i, a in enumerate(native["setup"]["agents"]):
+                        a["i"] = i
+                    native["setup"]["agents"][1]["i"] = 0
+                s.write_text(json.dumps([native]))
+                args = [str(PATH), "--nfl", str(n), "--nfl-label", "synthetic", "--sim", str(s), "--sim-source", "a" * 40, "--out", str(out), "--bootstrap", "20"]
+                with patch.object(sys, "argv", args), contextlib.redirect_stdout(io.StringIO()):
+                    m.main()
+                row = next(r for r in json.loads(out.read_text())["rows"] if r["source"] == "sim")
+                if defect == "late-clock":
+                    self.assertEqual(row["touch_status"], "unknown")
+                    self.assertEqual(row["status"], "observed")  # initial count still valid
+                else:
+                    self.assertEqual(row["status"], "unknown")
+
     def test_literal_even_counts_and_all_six_ol(self):
         p = play()
         self.assertEqual((m.observe(p, OP)["box"], m.observe(p, OP)["blockers"]), (7, 7))
