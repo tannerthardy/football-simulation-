@@ -17,7 +17,7 @@ This branch carries existing files only. Nothing here was re-simulated or recons
 
 | File | What it is |
 |---|---|
-| `report3.json.gz` | Exact `report3.json` bytes, gzipped. Original SHA256 `e01f9450…5a5da`. |
+| `report3.json.gz` | Exact `report3.json` bytes, gzipped. Original SHA256 `e01f94503dbe9ce0ef2c583823f46a54794faaa5ec171a740c771f63a794a5da`. |
 | `trace-seed{7,9,11,13}-run-DEV542.json.gz` | The four sim tapes report3 read, in that order. |
 | `seed{7,9,11,13}-run.json.gz` | The 456 saved snap constructors the tapes were replayed from. |
 | `run-17932196063*.json` | The four `baseline:run --candidate` launcher receipts. Each has resolved flags, world defaults, commit, Node, command, exit code and timestamps. |
@@ -28,7 +28,7 @@ This branch carries existing files only. Nothing here was re-simulated or recons
 
 ## Not included
 
-NFL tracking: the all-play cache SHA256 is `9aa1b087…0726`. It is licensed and identified by hash only.
+NFL tracking: the all-play cache SHA256 is `9aa1b0873bbd049fab2f0f04a12c503d1115241df8c0b490e2eaaf13bc8f0726`. It is licensed and identified by hash only.
 
 ## Never saved, stated rather than reconstructed
 
