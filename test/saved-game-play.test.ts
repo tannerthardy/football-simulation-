@@ -23,14 +23,18 @@ import { composeHooks } from '../scripts/scorecard/hooks.js';
 // first catch from play 10 becomes G1-P012, whose corner is a matching wrapper. With the gait start law
 // (#336) and the back's own mesh start (#344) together the history moves again: the first catch from play 10
 // is one the defense has not scouted (its scouting holds 0 plays), so the capture starts from play 11, whose
-// first catch has two scouted plays behind it. With the direction-free start (#353) and the edge kick that stops
-// matching the rusher's retreat once deeper than its lead, the first catch from play 11 again has nothing scouted;
-// from play 14 the first catch has ten scouted plays behind it.
+// first catch had two scouted plays behind it. Later controller changes can
+// put that first eligible catch on a fresh drive again. This fixture needs
+// genuinely acquired scouting: select the first warm catch in the same bounded
+// game, without changing its seed, calls or state. Restoration errors still fail.
 vi.hoisted(() => { process.env.GAP_MATCH = '0'; });
 
 describe('ordinary-game constructor capture and independent replay', () => {
   let captured: ReturnType<typeof captureOrdinaryPlay>;
-  beforeAll(() => { captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 14, maxSteps: 60 }); }, 30_000);
+  beforeAll(() => {
+    captured = captureOrdinaryPlay({ seed: 7, play: 'first-catch', minPlay: 11, maxSteps: 60,
+      accept: saved => restoreSetup(saved.setup).scouting!.plays() > 0 });
+  }, 30_000);
 
   it('preserves the whole normal game prefix compared with the observer absent', () => {
     const rng = new Rng(7);
@@ -153,9 +157,12 @@ describe('ordinary-game constructor capture and independent replay', () => {
     // Clock-order unit fixture, not a restorable simulator checkpoint. Ordinary
     // plays need not contain pre-snap motion or a negative fifth frame.
     const expected = copySaved(captured.saved.original);
-    const shift = time - expected.result.frames![5].t;
-    for (const frame of expected.result.frames!) frame.t += shift;
-    for (const event of expected.result.events) event.t += shift;
+    const anchor = expected.result.frames![5].t;
+    // Build the declared clock around its anchor. Adding a computed shift to
+    // the anchor can leave -0.49999999999999994 instead of exactly -0.5.
+    for (const frame of expected.result.frames!) frame.t = time + (frame.t - anchor);
+    for (const event of expected.result.events) event.t = time + (event.t - anchor);
+    expect(expected.result.frames![5].t).toBe(time);
     const altered = copySaved(expected);
     altered.result.frames![5].agents[0] += .01;
     altered.initial.actors[0].energy -= .01;
