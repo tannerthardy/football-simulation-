@@ -333,6 +333,17 @@ const GAIT_LAG = 0.04;
 /** Reaction latency of the first recovery step, s. */
 const STEP_LATENCY = 0.12;
 
+// Every body in an interval uses these same clock-only filter coefficients.
+// Keep one entry: local impact splits can supply arbitrarily many different h.
+let lastSupportInterval: { h: number; gait: number; mean: number; decay: number } | undefined;
+function supportInterval(h: number) {
+  if (!lastSupportInterval || lastSupportInterval.h !== h) {
+    const gait = 1 - Math.exp(-h / GAIT_LAG);
+    lastSupportInterval = { h, gait, mean: GAIT_LAG / h * gait, decay: Math.exp(-h / .3) };
+  }
+  return lastSupportInterval;
+}
+
 const STAND: Intent = { vel: { x: 0, y: 0 } };
 const RIGID = { biasRate: 0, massScale: 1, impulseScale: 0 };
 
@@ -944,6 +955,7 @@ export class World {
    * displacement accumulated during another holder's earlier recovery. */
   private syncHeldSupport(): void {
     if (this.supportModel !== 'legacy' && this.handContact !== 'patch') return;
+    if (!this.joints.length && !this.heldBodies.size) return;
     const byBody = new Map<Body, GraspJoint[]>();
     for (const jt of this.joints) {
       if (jt.kind !== 'grasp') continue;
@@ -1631,7 +1643,7 @@ export class World {
       else {
         // Perception of motion continues while down. Freezing these filters
         // would deliver the old hit again when he eventually gets up.
-        const sup = bs[i].support!, k = 1 - Math.exp(-h / GAIT_LAG);
+        const sup = bs[i].support!, interval = supportInterval(h), k = interval.gait;
         const acc = sup.accel ?? { x: 0, y: 0 }, tip = sup.tipAccel ?? { x: 0, y: 0 };
         sup.accel = { x: acc.x + ((bs[i].vel.x - this.v0x[i]) / h - acc.x) * k,
           y: acc.y + ((bs[i].vel.y - this.v0y[i]) / h - acc.y) * k };
@@ -1640,7 +1652,7 @@ export class World {
         // Preserve its existing memory instead of freezing an old trip until
         // the next unrelated fall after he gets up.
         if (sup.causes) {
-          const decay = Math.exp(-h / .3);
+          const decay = interval.decay;
           sup.causes.contact *= decay; sup.causes.legs *= decay; sup.causes.overspeed *= decay;
         }
       }
@@ -1922,12 +1934,12 @@ export class World {
     // the gait responds to the body's acceleration over ~40 ms. The filter
     // is integrated exactly over the substep (the step's acceleration is
     // constant within it), so the response does not depend on the step.
-    const kg = 1 - Math.exp(-h / GAIT_LAG);
+    const interval = supportInterval(h), kg = interval.gait;
     const acc = sup.accel ?? { x: 0, y: 0 };
     const ux = (b.vel.x - this.v0x[i]) / h, uy = (b.vel.y - this.v0y[i]) / h;
     const ax = acc.x + (ux - acc.x) * kg, ay = acc.y + (uy - acc.y) * kg;
     sup.accel = { x: ax, y: ay };
-    const mean = GAIT_LAG / h * kg;
+    const mean = interval.mean;
     const mx = ux + (acc.x - ux) * mean, my = uy + (acc.y - uy) * mean;
     // Accelerations the feet can follow are planned; the rest displaces support.
     const followCapacity = Math.max(this.alpha[i], 0.1) * FOLLOW_MARGIN;
@@ -1971,7 +1983,7 @@ export class World {
     }
     dx += legX; dy += legY;
     // Remember what has been displacing him (decays over ~0.3 s).
-    const decay = Math.exp(-h / 0.3);
+    const decay = interval.decay;
     causes.contact = causes.contact * decay + Math.hypot(mx - f.x + tmx, my - f.y + tmy) * h / w0;
     causes.legs = causes.legs * decay + Math.hypot(legX, legY);
     causes.overspeed *= decay;

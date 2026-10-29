@@ -5,7 +5,7 @@
  */
 import type { Vec2 } from '../core/vec.js';
 import type { Body } from './kinematics.js';
-import { newSupport, type SupportStateKind } from './support.js';
+import { newSupport, type Support, type SupportStateKind } from './support.js';
 import { World, type Intent } from './world.js';
 
 export interface MovementSample {
@@ -19,6 +19,31 @@ type MovementModel = World['handContact'];
 /** Feedback sees only the actor's scratch body and elapsed forecast time. */
 export type MovementRequest = Intent | ((body: Readonly<Body>, elapsed: number) => Intent);
 const previews = new WeakMap<Body, Partial<Record<MovementModel, { body: Body; world: World }>>>();
+
+/** Ordinary support contains scalars and flat vectors. Avoid the native
+ * serializer for that common case, retaining every optional property. More
+ * complex state (including experimental feet or shared vectors) still takes
+ * structuredClone's complete graph-copy path.
+ */
+function copySupport(source: Support | undefined): Support | undefined {
+  if (!source) return undefined;
+  if (source.foot || Object.getOwnPropertySymbols(source).length) return structuredClone(source);
+  const copy = { ...source }, seen = new Set<object>();
+  for (const key of Object.keys(copy) as (keyof Support)[]) {
+    const value = copy[key];
+    if (value && typeof value === 'object') {
+      if (seen.has(value) || Object.getPrototypeOf(value) !== Object.prototype
+        || Object.getOwnPropertySymbols(value).length
+        || Object.values(value).some(v => (v !== null && typeof v === 'object')
+          || typeof v === 'function' || typeof v === 'symbol')) return structuredClone(source);
+      seen.add(value);
+      // The checks above establish a flat data record. Indexing the typed
+      // union otherwise asks TypeScript for an intersection of every field.
+      (copy as unknown as Record<string, unknown>)[key] = { ...value };
+    } else if (typeof value === 'function' || typeof value === 'symbol') return structuredClone(source);
+  }
+  return copy;
+}
 
 /** No mutation of the real body, observations or RNG. Each candidate starts
  * from the complete same body/support state; scratch World storage is reused.
@@ -44,7 +69,7 @@ export function previewFreeMovement(source: Body, intent: MovementRequest, now: 
   let preview = models[handContact];
   if (!preview) {
     const body: Body = { ...source, pos: { ...source.pos }, vel: { ...source.vel },
-      support: source.support ? structuredClone(source.support) : undefined };
+      support: copySupport(source.support) };
     preview = { body, world: new World([body], { handContact }) };
     models[handContact] = preview;
   }
@@ -53,7 +78,7 @@ export function previewFreeMovement(source: Body, intent: MovementRequest, now: 
   Object.assign(body, { ...source, pos: { ...source.pos }, vel: { ...source.vel },
     spin: source.spin, sprintLoad: source.sprintLoad, squeeze: source.squeeze,
     squeezeHeading: source.squeezeHeading,
-    support: source.support ? structuredClone(source.support) : undefined });
+    support: copySupport(source.support) });
   // World normally owns support from construction. A support-less diagnostic
   // source still needs the same ordinary initial support on every prediction.
   body.support ??= newSupport();
