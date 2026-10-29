@@ -105,3 +105,8 @@ do not fabricate provenance with a fresh capture. No new games/downloads
 are requested. Snap-only is not verified pre-snap. Equal surplus does not
 match B,D/personnel/formation/front/quality or call/check selection, and
 geometric proximity is not protection or causal blocking quality.
+Position taxonomy also matters: the NFL adapter groups OLB as LB while the
+sim adapter groups EDGE as DL. The box count includes both, but the later
+backer denominator selects LB only. Its depth window reduces, not proves
+removal of, that role-composition mismatch. Inspect the supplied population
+alongside its source labels before attributing a proximity-rate gap to OL work.
