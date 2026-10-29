@@ -738,7 +738,7 @@ const SHED_PURSUE = process.env.SHED_PURSUE !== '0';
  * the surface frame (the ball side when he decided). */
 /** SEAL_HOLD: the lateral offset a loaded run blocker keeps (see stepRunRep). */
 const sealHolds = new WeakMap<Engagement, number>();
-const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?: boolean }>();
+const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?: boolean; contactSide?: number }>();
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
@@ -1192,6 +1192,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const read = runContactRead(sim, e);
   const supportRunner = SHED_PHYSICAL && !read.stack && read.acquiredHolder
     && read.declared && read.threat?.carrying === true;
+  // A declared support player works across the man actually on him, not
+  // the original offensive drive line. Loaded hands supply his local body;
+  // reaching without load supplies only the defender's acquired picture.
+  const localBlocker = supportRunner ? (e.hands?.normalForce || e.hands?.tangentForce)
+    ? b.pos : sim.see(d, b).pos : null;
+  const contactAxis = localBlocker ? norm(sub(localBlocker, d.pos)) : axis;
+  const contactLat = latOf(contactAxis);
   e.phi = measurePhi(axis, d, b);
   e.win = Math.max(Math.abs(e.phi), 1 - e.baseB);
 
@@ -1235,13 +1242,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
         // Loaded hands supply the local body position; an extended, unloaded
         // reach supplies only this observer's acquired blocker picture.
         let runner = false;
-        if (supportRunner) {
-          const loaded = Math.hypot(e.hands?.normalForce ?? 0, e.hands?.tangentForce ?? 0) > 0;
-          const blocker = loaded ? b.pos : sim.see(d, b).pos;
-          if ((blocker.x - d.pos.x) * toAim.x + (blocker.y - d.pos.y) * toAim.y < 0)
+        if (localBlocker) {
+          if ((localBlocker.x - d.pos.x) * toAim.x + (localBlocker.y - d.pos.y) * toAim.y < 0)
             runner = true;
         }
-        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side, runner });
+        const contactSide = localBlocker
+          ? Math.sign(toAim.x * contactLat.x + toAim.y * contactLat.y)
+            || runSheds.get(e)?.contactSide || ballSide || e.side : undefined;
+        runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side, runner, contactSide });
         e.nextMoveAt = t + d.mind.decisionInterval * 2;
         d.tags.add('shed-attempt');
       } else {
@@ -1526,9 +1534,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // lost/contradictory acquisition retains the ordinary across-face response.
   const exitAim = shedding && shed!.runner && supportRunner ? read.aim : undefined;
   const exit = exitAim ? norm(sub(exitAim, d.pos)) : null;
+  const acrossFace = supportRunner && shed?.contactSide !== undefined;
+  const workAxis = acrossFace ? contactAxis : axis, workLat = acrossFace ? contactLat : lat;
+  const workSide = acrossFace ? shed!.contactSide! : shed?.side ?? e.side;
   const workOff = shedding ? exit
     ? { x: exit.x * Math.hypot(td.lateral, .6), y: exit.y * Math.hypot(td.lateral, .6) }
-    : { x: lat.x * shed!.side * td.lateral + axis.x * .6, y: lat.y * shed!.side * td.lateral + axis.y * .6 } : null;
+    : { x: workLat.x * workSide * td.lateral + workAxis.x * .6,
+      y: workLat.y * workSide * td.lateral + workAxis.y * .6 } : null;
   // Diagnostic counterfactual defenses (docs/reviews/counterfactual-defense.md).
   let cf: Vec2 | null = null;
   if (CF_FLOW && !read.declared) {
@@ -1547,7 +1559,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   };
   runContactObservers.get(sim)?.(e, 'defender-movement', { reading: read.reading,
     declared: read.declared, supportRunner, defensiveAim: read.aim,
-    exitAim, workOff, command: intents[d.idx] });
+    exitAim, workOff, workAxis, workSide, command: intents[d.idx] });
   helperIntents(sim, e, intents, axis);
 }
 
