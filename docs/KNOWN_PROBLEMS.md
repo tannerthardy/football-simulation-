@@ -2604,12 +2604,12 @@ From the issue register:
   the run game is much better; this is priority 1 when other work resumes.
   The following failures describe the historical Oct 27 checkpoint against
   the then-pending gait start law, not current-develop test results.
-  - On that #336 candidate, `test/cov7-abandonment.test.ts` failed 2 of 9 (Toss / PA Shot,
-    seed 1). The combo C contacts DT_S early, so LB_W goes unblocked and the
+  - On that #336 candidate, `test/cov7-abandonment.test.ts` failed 2 of 9
+    (Toss / PA Shot, seed 1). The combo C contacts DT_S early, so LB_W goes unblocked and the
     corner never reaches the runner. Z's look settles sooner, so in man the
     QB never throws to Z, and the bitten corner intercepts.
   - With #295's re-recorded version (no `EDGE_CONTAIN`/`SEAL_HOLD` pins) it
-    it failed 5 of 13: the man-arm corner also ends near the runner, the wider
+    failed 5 of 13: the man-arm corner also ends near the runner, the wider
     split's results flip, and the vertical arm's depth check fails.
   - Seeds 1–50 did not pass, and a lucky seed was ruled out
     (`reviews/cov7-abandonment-cost.md`).
