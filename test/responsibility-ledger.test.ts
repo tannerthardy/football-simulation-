@@ -308,10 +308,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // with it; still one defender, not a tie. With develop 84af7d9e merged the run gets further still: CB_W alone
     // makes first contact at 3.45; still not a tie. With the back's own mesh start (#344) and the engaged-flow law
     // (#347) as well, LB_W alone at 2.95; still not a tie. With the along-route crease read (#366) as well, LB_W
-    // alone at 3.1; still not a tie.
-    expect(first.t).toBe(3.1);
+    // alone at 3.1; still not a tie. With the support contact face (#363) as well, LB_M works off RG's climb across
+    // RG's face from 2.2, carrying RG ~0.1 yd off the line LB_W rubbed him on at 2.55; LB_W clears RG, keeps his
+    // pursuit angle and alone makes first contact at 2.9 (the back's path is unchanged until then); still not a tie.
+    expect(first.t).toBe(2.9);
     expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 3.1 && p.slot(e.defender) === 'LB_W')).toBe(true);
+    expect(p.d.play.carrierEvents.some(e => e.t === 2.9 && p.slot(e.defender) === 'LB_W')).toBe(true);
   });
 
   // With the back leaving the mesh on his own start (#344), these former QB keeps (S8-P054 and S10-P006 on develop,
