@@ -222,17 +222,18 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT' && e.t <= swap.t)).toEqual([]);
   });
 
-  it('M29-P036: LG is reread twice, each recorded with its resulting kind', () => {
+  it('M29-P036: a reread is recorded with its resulting kind', () => {
     // Re-recorded for the start law (#336): M9-P000's C is now reread once (1.8). M25-P032 carried the case on
     // develop 1ec115c7; with develop 84af7d9e merged (the draw double's uncovered man climbs, the departing guard
     // steps off the DT's hip) its C is not reread at all, so M25-P021 carried it (C at 1.7 and 2.65). On #336 + #344
     // with the along-route crease read (#366) M25-P021's C is reread once (1.7), so M29-P036 carries it: LG, released
-    // from the DT_W double to climb, is reread to reach LB_W at 2.25 and, climbing again, to SS at 3.75.
+    // from the DT_W double to climb, is reread to reach LB_W at 2.25 and, climbing again, to SS at 3.75. With the
+    // containment bound holding an engaged edge's read flow (RUN-18) his second reread no longer comes: one reread,
+    // recorded with the kind it results in.
     const p = play('M29-P036');
     const threats = changeOf(p, 'LG', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([2.25, 3.75]);
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LG').map(e => e.t)).toEqual([2.25, 3.75]);
-    expect(threats.map(c => c.after.kind)).toEqual(['reach', 'climb']);
+    expect(threats.map(c => [c.t, p.slot(c.after.target), c.after.kind])).toEqual([[2.25, 'LB_W', 'reach']]);
+    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LG').map(e => e.t)).toEqual([2.25]);
   });
 
   it('R9-P020: the first carrier contact keeps both defenders tied at 2.55', () => {
@@ -246,9 +247,10 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
   it('M7-P051: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
     // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7).
     // It carried the tie (LB_M + LB_W at 2.45) on #336 + #344 + #347; with the off-hip climb (#362) LB_W arrives
-    // alone at 2.85. The tie is on R9-P020. #349's climber property is on M10-P081 below.
+    // alone at 2.85. The tie is on R9-P020. #349's climber property is on M10-P081 below. With the containment bound
+    // holding an engaged edge's read flow (RUN-18), LB_W alone a tick sooner, at 2.8.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.85);
+    expect(first.t).toBe(2.8);
     expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
