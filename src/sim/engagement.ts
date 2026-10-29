@@ -947,6 +947,36 @@ function ballKey(sim: PlaySim, d: Agent): Agent | null {
   return back && (held.target === sim.qb || held.target === back) ? back : held.target;
 }
 
+/** A zone step: the line moving across faster than this (yd/s), four of the five together. */
+const LINE_STEP = 0.7;
+/** RUN-17: the play's direction a lineman reads from the line, held between his reads. */
+const lineReads = new WeakMap<Agent, { side: number; next: number }>();
+
+/** The play's direction as a lineman reads it from the line in front of him,
+ * before the back declares: a puller crossing behind the line leads the play;
+ * otherwise the whole line stepping one way (four of the five across faster
+ * than LINE_STEP, none of them setting back in pass protection) is a zone step.
+ * 0 while the line says neither. His own delayed pictures, read once per
+ * decision beat and kept until the line shows the other way; no offensive call
+ * or assignment. A play-action line shows run and fools him, as it should. */
+export function lineRead(sim: PlaySim, d: Agent): number {
+  const held = lineReads.get(d);
+  if (held && sim.t < held.next) return held.side;
+  let side = 0;
+  const pull = pullers(sim, d).reduce<{ vel: Vec2 } | null>((m, p) => !m || Math.abs(p.vel.y) > Math.abs(m.vel.y) ? p : m, null);
+  if (pull) side = Math.sign(pull.vel.y);
+  else {
+    const line = linePicture(sim, d).surface.filter(b => ['LT', 'LG', 'C', 'RG', 'RT'].includes(b.agent.slot));
+    const dir = sim.attackDir(sim.offense[0].team);
+    const setting = line.some(b => b.seen.vel.x * dir < -1);
+    const across = (s: number) => line.filter(b => b.seen.vel.y * s > LINE_STEP).length;
+    if (!setting && line.length === 5) side = across(1) >= 4 ? 1 : across(-1) >= 4 ? -1 : 0;
+  }
+  side = side || held?.side || 0;
+  lineReads.set(d, { side, next: sim.t + d.mind.decisionInterval });
+  return side;
+}
+
 function runContactRead(sim: PlaySim, e: Engagement) {
   const d = e.defender, b = e.blocker, job = d.runFit;
   const back = sim.slot('RB');
@@ -1480,7 +1510,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const cue = ball ? sim.see(d, ball) : null;
     // His track: the lateral run of the carrier he sees (a zone back's read).
     // A downhill gap back shows none until he bends; see squeeze-read.md.
-    const play = cue?.carrying === true && Math.abs(cue.vel.y) > 1 ? Math.sign(cue.vel.y) : 0;
+    const track = cue?.carrying === true && Math.abs(cue.vel.y) > 1 ? Math.sign(cue.vel.y) : 0;
+    // The line tells him first (a pull, a zone step); the back's track when it shows nothing.
+    const play = lineRead(sim, d) || track;
     if (play && read.stack.firstStep * play < 0) { squeeze = play; d.tags.add('squeeze'); }
   }
   if (DL_SQUEEZE && !(lastSqueeze && sim.t < lastSqueeze.until)) squeezes.set(e, { side: squeeze, until: sim.t + d.mind.decisionInterval });
@@ -1517,6 +1549,17 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // The lateral twin of the blocker's lost-depth anchor; the decision is held
   // for a decision beat, then renewed while the push lasts.
   let lateralFlow = squeeze ? squeeze * td.lateral : flow;
+  // A blocker whose first step went with the play the line shows is reaching
+  // him or cutting him off. The answer is a technique, not a pursuit of the
+  // speed seen so far: an interior man works across his face with the play at
+  // full lateral effort while the blocker keeps stepping that way. His body and
+  // the blocker's hands decide how far he gets.
+  const st = read.stack;
+  if (!squeeze && st && !read.declared && d.runFit?.kind === 'interior' && st.firstStep
+    && Math.sign(st.flow) === st.firstStep && st.firstStep === lineRead(sim, d)) {
+    lateralFlow = st.firstStep * td.lateral;
+    d.tags.add('work-across');
+  }
   if (DL_FIGHT && read.stack && !read.declared) {
     const st = read.stack, push = d.body.support?.felt?.y ?? 0;
     // A push toward where he sees the ball heading (a reach running him

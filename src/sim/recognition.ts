@@ -139,6 +139,9 @@ function t0(sim: PlaySim, a: Agent): boolean {
   return sim.t >= 0.1 + a.profile.reactionTime * 0.5;
 }
 
+/** A zone step: a lineman moving across faster than this (yd/s); four of the five together read run. */
+const ZONE_STEP = 0.7;
+
 export type Read = 'unsure' | 'run' | 'pass';
 type Group = 'DL' | 'LB' | 'S' | 'CB';
 
@@ -290,6 +293,7 @@ export class Recognition {
     let hat = 0;
     let n = 0;
     let pull = 0;
+    const across = { '1': 0, '-1': 0 };
     const seenAfter = t0(sim, a);
     for (const slot of OL_SLOTS) {
       const o = sim.slot(slot);
@@ -298,10 +302,14 @@ export class Recognition {
       back += (sim.snapX[o.idx] - s.pos.x) * 1.1 - s.vel.x * 0.3;
       if (seenAfter && s.stance) hat += s.stance === 'high' ? 1 : -1;
       if (Math.abs(s.vel.y) > 3 && s.pos.x < sim.los - 0.2 && s.vel.x < 1.5) pull++;
+      if (Math.abs(s.vel.y) > ZONE_STEP) across[s.vel.y > 0 ? '1' : '-1']++;
       n++;
     }
     if (n) add(clamp((0.8 * hat) / n + 0.6 * clamp(back / n, -1.5, 1.5), -1.5, 1.5), w.ol * a.mind.keyAttention(sim.t));
     if (pull) add(-1.2, w.pull * a.mind.keyAttention(sim.t));
+    // A zone step: the whole line moving across together, not setting back. A
+    // slide protection gives ground as it goes, which the depth term above reads.
+    if (n === 5 && Math.max(across['1'], across['-1']) >= 4 && back / n < 0.3) add(-1, w.ol * a.mind.keyAttention(sim.t));
 
     // A lineman feels the block in front of him: a blocker firing out low
     // (run, or play action's run look) or one sitting back in a pass set.
