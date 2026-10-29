@@ -1,0 +1,109 @@
+{
+ "schema": "run-like-box-candidate-provenance-v1",
+ "candidate_commit": "4684e96c3df0562ea0c6431fd1c71f256fa508d3",
+ "base": "3779a4ed71eadbdc24dc9b023f67b7b80b95a505",
+ "source_identity": "launcher receipts record sourceSha256 d19b5529da351e0b2f6848fa262d3484aa1c9c637c352abea23d6dfdc7665ca5; scripts/source-version.ts sourceVersion() on the committed 4684e96c tree (clean src) returns the same value. The tapes were written 00:23-00:26Z before the commit (00:44Z); the commit added only tests after the tapes.",
+ "producer": {
+  "worktree": "/home/user/fs-fg",
+  "node": "v22.23.3",
+  "launcher": "npm run -s baseline:run -- --candidate -- node --import tsx scripts/diag/matched-restage.ts replay <seed> FG2 --run-only --shifts 4 --trace (arms3.sh)",
+  "receipts": [
+   {
+    "file": "run-1793233381519-1328.json",
+    "sha256": "29966e1292b531fdc8b5fb1101f28745bcf1357def41e895ae219bb01eb8484b"
+   },
+   {
+    "file": "run-1793233381520-1336.json",
+    "sha256": "9df25ac7a069a0a3fcf83d9708e2ba73e65b2774c23452af54142c28efcc971e"
+   },
+   {
+    "file": "run-1793233381532-1329.json",
+    "sha256": "3c5698347a158cfeb3822e2a6aff1eeab94360c08a7ac1e802c65292a4fe89d9"
+   },
+   {
+    "file": "run-1793233381540-1320.json",
+    "sha256": "821174aae8da0c0a9371e3e6087897467ee5a7b15f1879d2e1e8ba5e365e698e"
+   }
+  ]
+ },
+ "overlay": "byte-identical to the baseline bundle overlay (same four file SHA256s, see ../MANIFEST.json)",
+ "constructors": "the same 456 seed{7,9,11,13}-run.json constructors as the baseline bundle (same SHA256s)",
+ "tapes_in_selection_order": [
+  {
+   "seed": 7,
+   "sha256": "005738ff0dead7b2bb668be914e1dc680969e32444ad3a96f45a8bc0dc43b2d9",
+   "bytes": 30345522,
+   "gz_sha256": "96497cae64f4fe463c27c93c9db9edb82bdc95987f6c435a68accac0f2b404ee"
+  },
+  {
+   "seed": 9,
+   "sha256": "34d6890916f52b3b38ff9be8270e427592bd9fc42886d89daa697bcc2662a620",
+   "bytes": 28286463,
+   "gz_sha256": "33f1be3ea39cd64c38eb8135fde36b5ff01e27319379484c805b69c294ce37f9"
+  },
+  {
+   "seed": 11,
+   "sha256": "c4c2e0100cff8888107c5874d4eb392d434cda60b77bd36ed770fd4bdbe06fd9",
+   "bytes": 28478934,
+   "gz_sha256": "ef3fac1e626e7bce97743805be7430756f9c90c40de8b6ff7255d0eee7991bbd"
+  },
+  {
+   "seed": 13,
+   "sha256": "b2d8b651fa17652c27a92cfce28e22128971f9388912ad6f2cbac3570175f5fe",
+   "bytes": 25734846,
+   "gz_sha256": "b0a20756c57f14b2eb23574ec16327d607933af86be7eb11a4a553ed9c1e3405"
+  }
+ ],
+ "report": {
+  "file": "report-fg2.json.gz",
+  "sha256": "bd37cd8ed5a2d480c81683ebc0a692876b2b80aa1d36549e28f7cdaf3c0e37d5",
+  "operator": "b9e99966 run_box_suite.py (same as report3)",
+  "counts": {
+   "/home/user/football-simulation-/out/mechanics/nfl-plays.jsonl.gz": {
+    "input_records": 15936,
+    "loaded_runs": 6223,
+    "loader_excluded_nonrun_or_no_carrier": 9713
+   },
+   "/home/user/fs-dnow/out/matched-restage/trace-seed7-run-FG2.json": {
+    "input_records": 585,
+    "loaded_runs": 543,
+    "loader_excluded_nullified": 30,
+    "loader_excluded_no_nonqb_carrier": 12
+   },
+   "/home/user/fs-dnow/out/matched-restage/trace-seed9-run-FG2.json": {
+    "input_records": 575,
+    "loaded_runs": 519,
+    "published_excluded_no_run_concept": 1,
+    "loader_excluded_nullified": 46,
+    "loader_excluded_no_nonqb_carrier": 9
+   },
+   "/home/user/fs-dnow/out/matched-restage/trace-seed11-run-FG2.json": {
+    "input_records": 575,
+    "loaded_runs": 503,
+    "loader_excluded_no_nonqb_carrier": 12,
+    "loader_excluded_nullified": 56,
+    "published_excluded_no_run_concept": 4
+   },
+   "/home/user/fs-dnow/out/matched-restage/trace-seed13-run-FG2.json": {
+    "input_records": 530,
+    "loader_excluded_nullified": 39,
+    "loaded_runs": 479,
+    "published_excluded_no_run_concept": 5,
+    "loader_excluded_no_nonqb_carrier": 7
+   }
+  },
+  "command": "python3 -I scripts/data/run_box_suite.py --nfl /home/user/football-simulation-/out/mechanics/nfl-plays.jsonl.gz --nfl-label 'BDB2025 2022 weeks 1-9' --sim <FG2 tapes 7,9,11,13> --sim-source 4684e96c3df0562ea0c6431fd1c71f256fa508d3 --sim-settings box-settings.json --sim-clusters box-clusters-fg2.json --out out/box-suite/report-fg2.json"
+ },
+ "cluster_map": {
+  "file": "box-clusters-fg2.json",
+  "sha256": "1c0d7c0bcba6c618be3ef573902e8780ee3adf2768415c88534826dc27c4f8d4"
+ },
+ "stage_accounting": {
+  "file": "stage-accounting.json",
+  "sha256": "b0282117bb385ad4ba47d83a4d21dc002ba1f61268fb0dc0de61e815c395b0ce"
+ },
+ "missing": [
+  "Same three gaps as the baseline bundle (constructor capture receipt, with/without --trace control, game identities).",
+  "The --sim-settings file is the same hand-written summary as baseline (ceeafe55...); the receipts are the resolved record."
+ ]
+}
