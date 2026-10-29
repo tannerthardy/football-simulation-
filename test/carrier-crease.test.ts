@@ -241,6 +241,38 @@ describe('production carrier entry commands', () => {
     expect(press('nominal')).toBe(0);
   });
 
+  it.each([1, -1] as const)('reads the kick block from where the man on the puller stands, mirror %s', m => {
+    // The kick puller has arrived at the line with the end on his hands. An
+    // end outside him is kicked out: cut up inside the puller. One inside
+    // him has squeezed under or crossed his face: bounce outside the puller.
+    // Only the runner's picture of the two bodies decides it.
+    const read = (endOffset: number) => {
+      const s = scene(m, 2.1, 3);
+      const kick = s.put('LG', LOS - .3, 3.6);
+      s.put('DT_W', LOS + .1, -1.4); // the backside down block's man fills the puller's vacated spot
+      s.put('DE_S', LOS - .3 + .2, 3.6 + endOffset);
+      const aim = runReadAim(s.back, s.sim, { ...opts(m, 2.1), run: { scheme: 'counter', side: m, kick } })!;
+      return (aim.y - kick.pos.y) * m;
+    };
+    expect(read(.9)).toBeLessThan(0);
+    expect(read(-.9)).toBeGreaterThan(0);
+  });
+
+  it.each([1, -1] as const)('a landed kick block ends a counter back\'s follow before two yards, mirror %s', m => {
+    const press = (landed: boolean) => {
+      const s = scene(m, 2.1, 3);
+      const kick = s.put('LG', landed ? LOS - .3 : LOS - 2.5, 3.6);
+      s.put('DT_W', LOS + .1, -1.4);
+      s.put('DE_S', LOS - .1, 3.6 + .9);
+      let n = 0;
+      runReadObservers.set(s.sim, e => { if (e.phase === 'aim') n++; });
+      new BallCarrier({ ...opts(m, 2.1), run: { scheme: 'counter', side: m, kick }, aimUntil: 10 }, s.back).update(s.back, s.sim);
+      return n;
+    };
+    expect(press(false)).toBe(0);
+    expect(press(true)).toBe(1);
+  });
+
   it('keeps a visibly down defender in the future threat picture', () => {
     const s = scene(1, 2, 3.4), dt = s.put('DT_S', LOS + .5, 2);
     const original = s.sim.see;

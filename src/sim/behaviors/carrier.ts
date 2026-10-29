@@ -73,10 +73,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
     if (key.pos.x < sim.los + 2.5 && Math.abs(key.vel.y) > .7) preferred = sim.ballY - Math.sign(key.vel.y) * .8;
   }
   const kick = run.kick;
-  if (kick) {
-    const s = sim.see(a, kick);
-    if (s.pos.x > sim.los - 1.5) preferred = s.pos.y + (kick.tags.has('block-log') ? run.side * .85 : -run.side * .85);
-  }
+  const kickSeen = kick ? sim.see(a, kick) : null;
   // Everything below is the runner's own picture: perceived positions, motion
   // and pose, and public body size and reach. Neither the engagement record
   // nor a nearby teammate promises protection. Keep off-feet defenders in
@@ -86,6 +83,15 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
     if (o === a || o === sim.qb) continue;
     const seen = sim.see(a, o);
     pictures.push({ agent: o, seen, team: o.team === a.team ? 'O' : 'D' });
+  }
+  if (kick && kickSeen && kickSeen.pos.x > sim.los - 1.5) {
+    // Read the kick block as he sees it: the man on the puller's hands
+    // outside him is kicked out (cut up inside the puller); one inside him
+    // is logged or has crossed his face (bounce outside the puller). No man
+    // on him yet: the design, inside the kick.
+    const on = kickBlockMan(kick, kickSeen, pictures.filter((q) => q.team === 'D').map((q) => ({ agent: q.agent, seen: q.seen })));
+    const logged = !!on && (on.y - kickSeen.pos.y) * run.side < 0;
+    preferred = kickSeen.pos.y + (logged ? run.side * .85 : -run.side * .85);
   }
   const bodies: LineBody[] = [];
   for (const { agent: o, seen: s, team } of pictures) {
@@ -192,7 +198,7 @@ export class BallCarrier implements Behavior {
   private readDone = false;
   private pressEntry: Vec2 | null = null;
   private pressReadAt = 0;
-  private trackBlocked = false;
+  private followEnded = false;
 
   constructor(
     private readonly opts: CarrierOptions = {},
@@ -235,11 +241,13 @@ export class BallCarrier implements Behavior {
       // pullers (counter: 54% crossed backside, tracked backs 10%). Zone, duo
       // and trap backs read as they press. designExit still abandons a
       // closed aim.
-      // A free defender standing in the track itself ends the follow: from
-      // that beat the back reads like any other, rather than running into
-      // him. A race to a hole he may lose is not a body in his way.
+      // Two things he can see end the follow before then: the kick block
+      // landing (he reads it as it happens, kicked out or logged, rather than
+      // from a yard mark), or a free defender standing in the track itself.
+      // From that beat he reads like any other back. A race to a hole he may
+      // lose is not a body in his way.
       const follow = this.opts.run?.scheme === 'counter' || this.opts.run?.scheme === 'power';
-      if (this.opts.run && ((a.pos.x - sim.los) * dir > (follow ? -2 : -4.5) || this.trackBlocked)) {
+      if (this.opts.run && ((a.pos.x - sim.los) * dir > (follow ? -2 : -4.5) || this.followEnded)) {
         if (sim.t >= this.pressReadAt) {
           this.pressReadAt = sim.t + a.mind.decisionInterval;
           this.pressEntry = runReadAim(a, sim, this.opts);
@@ -255,8 +263,8 @@ export class BallCarrier implements Behavior {
         const exit = designExit(best, a.r('patience'));
         sim.commandTraceFor?.(a)?.carrier({ kind: 'design-exit', t: sim.t, ...exit });
         if (exit.exit) this.opts.aimUntil = sim.t;
-        if (follow && this.opts.run && best?.trackBody && !this.trackBlocked) {
-          this.trackBlocked = true;
+        if (follow && this.opts.run && (best?.trackBody || best?.kickLanded) && !this.followEnded) {
+          this.followEnded = true;
           this.pressReadAt = sim.t + a.mind.decisionInterval;
           this.pressEntry = runReadAim(a, sim, this.opts);
           if (this.pressEntry) { aim = this.pressEntry; h = angleOf({ x: aim.x - a.pos.x, y: aim.y - a.pos.y }); this.heading = h; }
@@ -349,7 +357,7 @@ export class BallCarrier implements Behavior {
     return { vel, cutSkill, squeeze };
   }
 
-  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean, track?: Vec2): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean; trackBody: boolean } | null {
+  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean, track?: Vec2): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean; trackBody: boolean; kickLanded: boolean } | null {
     const vision = a.r('vision');
     const range = 7 + 22 * vision;
     const p = a.pos;
@@ -497,7 +505,14 @@ export class BallCarrier implements Behavior {
         return along > 0 && along < reach && Math.abs(rx * uy - ry * ux) < a.profile.radius + th.d.profile.radius + .25;
       });
     }
-    const result = best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits, trackBody } : null;
+    // His kick puller, as he sees him, has reached the line and is on a man
+    // who is still up: the kick block has landed and can be read, kicked out
+    // or logged.
+    const kick = designed ? this.opts.run?.kick : undefined;
+    const kickSeen = kick && blockers.find((b) => b.agent === kick);
+    const kickLanded = !!kick && !!kickSeen && (kickSeen.pos.x - sim.los) * dir > -1.5
+      && !!kickBlockMan(kick, kickSeen, threats.map((th) => ({ agent: th.d, seen: th.seen })));
+    const result = best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits, trackBody, kickLanded } : null;
     trace?.carrier({ kind: 'evaluate', t: sim.t, designed, arrival: threats.map(arrivalRecord), routes: routes!,
       selected: result && { heading: result.heading, score: result.score, blocked: result.blocked, exits: result.exits, keptCurrent: kept },
       aim: designed ? { heading: aimHeading, score: aimScore, blocked: aimBlocked } : null });
@@ -527,7 +542,7 @@ export interface ArrivalEvidence {
 function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vision: number) {
   const p = a.pos;
   const blockers = sim.teammates(a).filter((b) => b !== a)
-    .map((b) => ({ ...sim.see(a, b), radius: b.profile.radius }))
+    .map((b) => ({ ...sim.see(a, b), radius: b.profile.radius, agent: b }))
     .filter((b) => b.pose !== 'down' && Math.hypot(b.pos.x - p.x, b.pos.y - p.y) < 12);
   const threats: ArrivalEvidence[] = [];
   for (const d of sim.opponents(a)) {
@@ -554,6 +569,19 @@ function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vis
     threats.push({ d, pos: seen.pos, vel: seen.vel, seen, parking, recovery, blockerBonus, extra });
   }
   return { blockers, threats };
+}
+
+/** The upright defender a seen kick puller has his hands on, as the runner
+ * sees both: the nearest within the two bodies and the puller's arm. */
+function kickBlockMan(kick: Agent, seen: { pos: Vec2 }, defenders: Array<{ agent: Agent; seen: Perceived }>): Vec2 | null {
+  const arm = kick.player.measurables.armIn / 36;
+  let best: Vec2 | null = null, bd = Infinity;
+  for (const { agent: d, seen: s } of defenders) {
+    if (s.pose === 'down') continue;
+    const dd = Math.hypot(s.pos.x - seen.pos.x, s.pos.y - seen.pos.y);
+    if (dd < kick.profile.radius + d.profile.radius + arm && dd < bd) { bd = dd; best = s.pos; }
+  }
+  return best;
 }
 
 /** The runner's visible-block test: a perceived teammate within touching
