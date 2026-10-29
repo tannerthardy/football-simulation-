@@ -251,10 +251,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // Re-recorded for the leg force-velocity law (PHY-1): the recorded play's contacts move by one tick (2.75 -> 2.7).
     // It carried the tie (LB_M + LB_W at 2.45) on #336 + #344 + #347; with the off-hip climb (#362) LB_W arrives
     // alone at 2.85 (still on develop 510f7a6a); with the direction-free start (#353), DE_S alone at 2.65.
+    // With achievable carrier clearance (#381), the RB passes the RT instead of braking at 1.95. The native
+    // DE_S contact no longer occurs; CB_S is alone at 3.25. The recorded input and single-defender contract stay.
     // The tie is on R9-P020. #349's climber property is on M10-P081 below.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.65);
-    expect(first.defenders.map(p.slot)).toEqual(['DE_S']);
+    expect(first.t).toBe(3.25);
+    expect(first.defenders.map(p.slot)).toEqual(['CB_S']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
@@ -305,10 +307,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // Gun Trips Open wide zone weak, a run-only capture: LB_M and LB_W reached the carrier on the same tick (2.45) on
     // develop. With the start law (#336) RG releases at 1.7 and his climb reaches LB_W at 2.45, so CB_W makes first
     // contact alone at 2.5; with the back's own mesh start (#344) and the engaged-flow law (#347) as well, CB_W
-    // alone at 2.55; with the direction-free start (#353), CB_W alone at 2.85. The tie is carried by R9-P020.
+    // alone at 2.55; with the direction-free start (#353), CB_W alone at 2.85. With achievable carrier clearance
+    // (#381), the RB passes the LT at 1.5 and LB_W is alone at 3.0. The later RB-Z collision under a tackle bond
+    // remains an adverse physical outcome, not a contact-free guarantee. The tie is carried by R9-P020.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.85);
-    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
+    expect(first.t).toBe(3);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
