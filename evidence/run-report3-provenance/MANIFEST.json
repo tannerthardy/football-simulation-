@@ -1,0 +1,133 @@
+{
+ "schema": "run-like-box-report3-provenance-v1",
+ "report3": {
+  "path": "/home/user/fs-suite/out/box-suite/report3.json",
+  "sha256": "e01f94503dbe9ce0ef2c583823f46a54794faaa5ec171a740c771f63a794a5da",
+  "bytes": 10605363,
+  "operator_checkout": "b9e99966b9bf5aea11332f059afc1796217f7a20 (run/G2-box-matched-run-suite) at /home/user/fs-suite",
+  "command": "python3 -I scripts/data/run_box_suite.py --nfl /home/user/football-simulation-/out/mechanics/nfl-plays.jsonl.gz --nfl-label 'BDB2025 2022 weeks 1-9' --sim <tape7> <tape9> <tape11> <tape13> --sim-source 542d938d3b4eeec315abc55105a2f317210e09ae --sim-settings box-settings.json --sim-clusters box-clusters.json --out out/box-suite/report3.json",
+  "note": "report.json, report2.json and report3.json are three runs of the same command; all three have this SHA."
+ },
+ "nfl_input": {
+  "path": "/home/user/football-simulation-/out/mechanics/nfl-plays.jsonl.gz",
+  "sha256": "9aa1b0873bbd049fab2f0f04a12c503d1115241df8c0b490e2eaaf13bc8f0726",
+  "note": "all-play 9aa1 cache (weeks 1-9, converter a964af05 per earlier session notes); not Tools run-only 07d8 file. Not included in this bundle (licensed tracking)."
+ },
+ "tapes_in_selection_order": [
+  {
+   "seed": 7,
+   "path": "/home/user/fs-dnow/out/matched-restage/trace-seed7-run-DEV542.json",
+   "sha256": "4b96719441fc2689f63281b0b935b1bb44383be36e9423e962141bbd655d1adb",
+   "bytes": 30721987,
+   "gz_sha256": "13cc549084cda9ef15285e0d5fd1f4ec3ba1697d390998da59afdc92298a110b"
+  },
+  {
+   "seed": 9,
+   "path": "/home/user/fs-dnow/out/matched-restage/trace-seed9-run-DEV542.json",
+   "sha256": "bde7e2e9309df2c36836128fff7f3828cf03edf8253e21b255b9f74297fd3a4f",
+   "bytes": 28154673,
+   "gz_sha256": "677c5b9fd4cf5531e06fe1c2f0ba781c4a69b53ce583537cc46eaf4f4303b83a"
+  },
+  {
+   "seed": 11,
+   "path": "/home/user/fs-dnow/out/matched-restage/trace-seed11-run-DEV542.json",
+   "sha256": "2a642bca0c5fec211928b4ce2395ba96533f938691921fd8b7c784ca7bc86c1d",
+   "bytes": 28319427,
+   "gz_sha256": "0ef5427ffa95b0371997019ca3546b7ba84c24bb5e9556834afcda293d564e59"
+  },
+  {
+   "seed": 13,
+   "path": "/home/user/fs-dnow/out/matched-restage/trace-seed13-run-DEV542.json",
+   "sha256": "7fa8b4cfb05ec74001832027bfcab66f2f181df2627721f5f11158009b44e71b",
+   "bytes": 25780019,
+   "gz_sha256": "e235fdb18acc55890ca31dda84387b60b43fa3890a24392e8ae6d868dbd98ef3"
+  }
+ ],
+ "constructors": [
+  {
+   "seed": 7,
+   "path": "/home/user/fs-dnow/out/matched-restage/seed7-run.json",
+   "sha256": "36f916cc8cc8198909a1c2d72b6214e9066f1fe53f2cb55b2a9ae2fbb65422e7",
+   "bytes": 4391723,
+   "gz_sha256": "53d615bed9bd6659a602b9b98c63c365168f6950205b65916ac15d6bd4bca2fe"
+  },
+  {
+   "seed": 9,
+   "path": "/home/user/fs-dnow/out/matched-restage/seed9-run.json",
+   "sha256": "471dc3468a93793376448de1fbf17ad2459ba515267eae3589b9c54fa6c2386d",
+   "bytes": 4301102,
+   "gz_sha256": "0210c4e9fa476efdfc1d93d5ec11945f73f265c6bca82187761b83cadee18235"
+  },
+  {
+   "seed": 11,
+   "path": "/home/user/fs-dnow/out/matched-restage/seed11-run.json",
+   "sha256": "97943aac5107ba666d56c03f49e8644bf6c441ef421b6667debd6a3834d43b3a",
+   "bytes": 4309410,
+   "gz_sha256": "c06856d9a119d62630cece6d88c4b00ad2635c794dd84c1540dea643d3bb6a84"
+  },
+  {
+   "seed": 13,
+   "path": "/home/user/fs-dnow/out/matched-restage/seed13-run.json",
+   "sha256": "94f1839b2582e01bf1ad259f86049132140215764d018ca3a3206a5cc0207fa5",
+   "bytes": 4088290,
+   "gz_sha256": "d3c734ae045015f02f66d9025fe7ebefeb16719a2f6ce9a03b43aedc23ae30d3"
+  }
+ ],
+ "producer": {
+  "commit": "542d938d3b4eeec315abc55105a2f317210e09ae",
+  "worktree": "/home/user/fs-dnow (detached)",
+  "node": "v22.23.3",
+  "launcher": "npm run -s baseline:run -- --candidate -- node --import tsx scripts/diag/matched-restage.ts replay <seed> DEV542 --run-only --shifts 4 --trace (via arms3.sh, 4 seeds in parallel)",
+  "receipts": [
+   {
+    "file": "run-1793219606355-306.json",
+    "sha256": "df96ba12b20abb0a25a6ddace16fb9cdf3be53c950bd5d83e1966775a0b05784"
+   },
+   {
+    "file": "run-1793219606355-308.json",
+    "sha256": "e21d442c25a094457ecc29bb0a9f52084df34a04f36c82b033722f0892be0826"
+   },
+   {
+    "file": "run-1793219606358-309.json",
+    "sha256": "1a8f302a4eb02ec7e150f477001c987bcf0029e0fd84d0ab97289e79d2a29717"
+   },
+   {
+    "file": "run-1793219606365-307.json",
+    "sha256": "db2d20a23353367dc9c20440b277aacccf39987438023f15aeb6aaf8b1172e37"
+   }
+  ],
+  "receipt_source_sha256": "7829f2f6bce53d7655fb5c54a4659d32da01a269b86fe9747a75c69942fccf01",
+  "rng_stream_mode": "shift 0 = the saved stream of each captured snap; shifts 1-4 = deterministic forks of that stream (matched-restage.ts shifted()); 5 executions per constructor; shifts are not independent games",
+  "src_state": "no src/ modification in /home/user/fs-dnow at production (20:33-20:38Z); temporary hooks were added there later (after 23:00Z) and removed; current git diff touches only the overlay scripts"
+ },
+ "overlay": {
+  "patch": "overlay.patch (git diff 542d938d of the three tracked overlay files)",
+  "patch_sha256": "91fb76b3c4b92db33b9915ca60c3597f7df09d765d8112615a8cc0d145c6af88",
+  "files": {
+   "scripts/diag/matched-restage.ts": "05fc033ae031ea338805379ecf519a2b0a5dee8449b16a450427103b8f619c3a",
+   "scripts/diag/run-film-trace.ts": "318b5565f48b8128c4ba8f464171aaf883c9cdeeff5167cc731c74eb701f768a",
+   "scripts/mechanics/run_film_reference.py": "e610057cecd5e68363055a9bda3599ef51ed7f2affd1fbeef1b60a36ceec447c",
+   "scripts/diag/run-trace-watch.ts": "305aa029f328a30c62626c5060e8902f2c650805c7398cacf2e846d02918c304"
+  },
+  "files_mtime": "2026-10-28T20:33:10Z (unchanged since; before the tapes were written 20:37-20:38Z)",
+  "untracked": "scripts/diag/run-trace-watch.ts is a new untracked file; the launcher receipts list only the three modified tracked files",
+  "passive_recording": "NOT verified for this run. The tool docstring states tracing only reads state and replay with/without --trace must change 0 plays; no with/without --trace pair was run for these tapes."
+ },
+ "settings_file_note": "box-settings.json passed to the suite is a hand-written summary (engine, runner, producer string, config/baseline.json copy), not a resolved-settings record. The resolved flags and world defaults are in the four launcher receipts.",
+ "cluster_map": {
+  "file": "box-clusters.json",
+  "sha256": "e890b5a905af62ad54e8826b563042fc093d0f043af18c418e1bcf14b4eb90e5",
+  "definition": "tape SHA256 -> restage seed (one file = one capture seed, all 5 shifts)"
+ },
+ "stage_accounting": {
+  "file": "stage-accounting.json",
+  "sha256": "00095196c431d6e3a01296d9ab1e95857250669c08ea7fb48db8e475f7161b41",
+  "chain": "456 constructors (117/115/115/109); 3 pass-flagged (seed13, untraced) -> 2280 executions, 2265 tape records (2280 - 3x5); excluded: no run concept 10, nullified 170, no non-QB carrier 40 -> 2045 loaded/counted runs; per-file counts match report3 counts",
+  "touch_observed": "per-row touch admission is in report3 rows (live-window v1; 55 runs changed by admission)"
+ },
+ "missing": [
+  "Capture receipt for seed7/9/11/13-run.json: the source commit and capture command that produced the 456 constructors are not recorded in the files and no receipt was found in remaining worktrees (earliest copy 2026-10-27T04:48Z in /home/user/fs-bk; the original may have been in a worktree removed on 2026-10-28). Unverified.",
+  "No with/without --trace control for these tapes (passive-recording claim untested here).",
+  "Parent roster/game identities: the constructor files carry no game field; only the capture seed is known."
+ ]
+}
