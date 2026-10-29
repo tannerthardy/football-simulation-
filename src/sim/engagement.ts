@@ -1544,7 +1544,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   // Flowing down the line square to his man, his body (facing, gait, the
   // blocker's hands) bounds how fast he goes; the request is not trimmed below it.
-  const square = d.profile.vmax * d.profile.shuffle;
+  const square = d.runFit?.kind === 'interior' ? d.profile.vmax * d.profile.shuffle : td.lateral;
   const flow = clamp(carry + (target - d.pos.y) * 3, -square, square);
   // DL_FIGHT (experimental, off): fight pressure with pressure. A defender
   // who feels himself driven sideways holds the point where the push began

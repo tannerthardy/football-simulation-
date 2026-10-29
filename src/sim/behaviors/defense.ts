@@ -175,7 +175,8 @@ export class PassRusher implements Behavior {
     // moving with him, instead of sprinting past him at the quarterback. A pass
     // set stands up and gives ground and leaves the rush as it is. His own picture of the blocker; what
     // the blocker means to do is not his to know, so a play-action line fools him.
-    const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a) : null;
+    // An edge keeps his outside; the interior man keys the blocker over him.
+    const man = a.pos.x > sim.los - 0.5 && this.gap !== 'C' && this.gap !== 'D' ? manInFront(sim, a) : null;
     if (man && man.stance !== 'high' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > STEP_SEEN) {
       // The answer to a lateral first step is a flat step of his own at full
       // effort, square to the man, not a match of the speed seen so far.
