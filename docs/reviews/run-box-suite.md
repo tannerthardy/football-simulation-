@@ -205,7 +205,9 @@ The policy is identical for NFL and sim:
 Version `live-window-carrier-clock-reviewed-v3` preserves prior v1/v2 results.
 The audit is source-qualified, not an ID-specific football exception. The
 absence of a review is not proof of integrity or a self-awarded readiness
-decision. The full23-hit review remains a separate explicit dependency.
+decision. Tools' nominated23-hit review has now been received with one case
+still pending. See the [source-qualified handoff and remaining sim dependency](run-box-suite-handoff.md).
+It replaces the earlier missing-list blocker, not the comparative hold.
 
 If sim has more defense+1/+2 boxes, part of an aggregate access gap can come
 from the calls it chooses to run. Recompare within concept, listed personnel,
