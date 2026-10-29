@@ -9,7 +9,7 @@ import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Perceived } from '../src/sim/perception.js';
-import { BallCarrier, runReadAim } from '../src/sim/behaviors/carrier.js';
+import { BallCarrier, liveAim, runReadAim } from '../src/sim/behaviors/carrier.js';
 import { runReadObservers } from '../src/sim/run-read-observer.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
@@ -218,6 +218,27 @@ describe('production carrier entry commands', () => {
     expect(inTrack.n).toBe(1);
     // He no longer runs straight down the line into the man.
     expect(Math.abs(inTrack.command.vel.y)).toBeGreaterThan(.5);
+  });
+
+  it.each([1, -1] as const)('the track is the one his press command runs, not the nominal aiming point, mirror %s', m => {
+    // The installed point sits wide; the live B gap he actually presses has
+    // moved inside it. A man two yards up the pressed line ends the follow; the
+    // same man two yards up the nominal line, off the pressed one, does not.
+    const press = (on: 'live' | 'nominal') => {
+      const s = scene(m, 2.1, 3);
+      const o = { aim: { x: LOS + .6, y: CENTER_Y + m * 5.5 }, aimGap: { gap: 'B' as const, side: m, offset: 0 },
+        run: { scheme: 'counter' as const, side: m }, aimUntil: 10 };
+      const live = liveAim(s.back, s.sim, o)!;
+      expect(Math.abs(live.y - o.aim.y)).toBeGreaterThan(2.5);
+      const to = on === 'live' ? live : o.aim, d = Math.hypot(to.x - s.back.pos.x, to.y - s.back.pos.y);
+      s.put('DE_S', s.back.pos.x + 1.5 * (to.x - s.back.pos.x) / d, m * (s.back.pos.y - CENTER_Y) + 1.5 * m * (to.y - s.back.pos.y) / d);
+      let n = 0;
+      runReadObservers.set(s.sim, e => { if (e.phase === 'aim') n++; });
+      new BallCarrier(o, s.back).update(s.back, s.sim);
+      return n;
+    };
+    expect(press('live')).toBe(1);
+    expect(press('nominal')).toBe(0);
   });
 
   it('keeps a visibly down defender in the future threat picture', () => {

@@ -251,7 +251,7 @@ export class BallCarrier implements Behavior {
       // Only abandon the design early if the aiming point is clearly closed.
       if (sim.t >= this.nextEval) {
         this.nextEval = sim.t + a.mind.decisionInterval;
-        const best = this.evaluate(a, sim, dir, true);
+        const best = this.evaluate(a, sim, dir, true, aim);
         const exit = designExit(best, a.r('patience'));
         sim.commandTraceFor?.(a)?.carrier({ kind: 'design-exit', t: sim.t, ...exit });
         if (exit.exit) this.opts.aimUntil = sim.t;
@@ -349,7 +349,7 @@ export class BallCarrier implements Behavior {
     return { vel, cutSkill, squeeze };
   }
 
-  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean; trackBody: boolean } | null {
+  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean, track?: Vec2): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean; trackBody: boolean } | null {
     const vision = a.r('vision');
     const range = 7 + 22 * vision;
     const p = a.pos;
@@ -483,13 +483,14 @@ export class BallCarrier implements Behavior {
     const kept = !!best && best.heading !== cur && best.score - curScore < 0.4;
     if (best && kept) best = { heading: cur, score: curScore, blocked: curBlocked, exits: curExits };
     if (best?.exits) a.tags.add('chose-sideline');
-    // A defender he sees standing in the designed track itself: up, no blocker
-    // on him, ahead of him on the line to the aiming point within a stride or
-    // two. Not a race to a hole; a body in the way.
+    // A defender he sees standing in the track he is pressing (the point his
+    // press command aims at, not the nominal aiming point the routes are
+    // scored against): up, no blocker on him, ahead of him on that line within
+    // a stride or two. Not a race to a hole; a body in the way.
     let trackBody = false;
-    if (designed && this.opts.aim) {
-      const ux = Math.cos(aimHeading), uy = Math.sin(aimHeading);
-      const reach = Math.min(Math.hypot(this.opts.aim.x - p.x, this.opts.aim.y - p.y), 2.5);
+    if (designed && track) {
+      const th0 = angleOfPoint(p, track), ux = Math.cos(th0), uy = Math.sin(th0);
+      const reach = Math.min(Math.hypot(track.x - p.x, track.y - p.y), 2.5);
       trackBody = threats.some((th) => {
         if (th.seen.pose === 'down' || th.parking !== null || th.recovery > 0 || th.blockerBonus > 0) return false;
         const rx = th.pos.x - p.x, ry = th.pos.y - p.y, along = rx * ux + ry * uy;
