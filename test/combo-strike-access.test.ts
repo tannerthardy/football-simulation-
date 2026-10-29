@@ -24,7 +24,9 @@ const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/combo-strik
 // With the start law (#336) and the back's own mesh start (#344) as well, seed 10's departure ends (1.55) a beat
 // before RG's hands land on LB_M (1.65). Seed 1 of the same constructor keeps the recorded timeline: RG departs at
 // 1.10 and clears his departure with his hands on LB_M on the same update (1.75; 1.70 with #362).
-const SEED=1;
+// With the direction-free start (#353) seed 1's departure ends at 1.60, a tick before the hands land (1.65), and
+// seed 10 keeps the timeline again: RG departs at 1.10 and clears with his hands on LB_M on the 1.60 update.
+const SEED=10;
 function stage(t:number){
  const sim=new PlaySim({...structuredClone(fixture.setup),seed:SEED});
  while(sim.phase==='live'&&sim.t<t)sim.tick();
@@ -86,14 +88,16 @@ describe('earned departure ends at achievable first strike rather than the backe
   // the DT along with him, so his strike lands sooner from the same 1.10 release; same decision and mirror.
   // Seed 1 with the start law (#336), the back's own mesh start (#344) and #362: the strike clears on the 1.70
   // update (staged at 1.65). Seed 10's departure ends at 1.60, a tick before RG's hands land on LB_M (1.65).
-  decision(1.65,mirror,true);
+  // Seed 10 with #353 as well: the strike clears on the 1.60 update (staged at 1.55).
+  decision(1.55,mirror,true);
  });
  it.each([false,true])('keeps the departure when the down body obstructs even first strike, reflected=%s',mirror=>{
   decision(1.3,mirror,false);
  });
  it('develops real second-level load while the original keeper still protects the down surface',()=>{
   // Seed 1 with #336, #344 and #362: staged at 1.6, before the departure clears at 1.70.
-  const {sim,rg}=stage(1.6),rt=sim.slot('RT')!,down=sim.slot('DT_S')!,backer=sim.slot('LB_M')!;
+  // Seed 10 with #353: staged at 1.5, before the departure clears at 1.60.
+  const {sim,rg}=stage(1.5),rt=sim.slot('RT')!,down=sim.slot('DT_S')!,backer=sim.slot('LB_M')!;
   const hands=rt.engagement!.hands;
   // The down defender may be taken to the ground before runner arrival.
   // Require the real keeper joint until that defeat, not after a fallen

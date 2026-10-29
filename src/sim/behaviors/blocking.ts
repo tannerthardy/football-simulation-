@@ -317,7 +317,10 @@ export class PassProtector implements Behavior {
     const facing = Math.atan2(r.pos.y - a.pos.y, r.pos.x - a.pos.x);
     const quick = 0.85 + 0.3 * traits(a).feet;
     if (ride) return track(a, set, r.vel, { cutSkill: quick, gain: 3 });
-    if (PASS_KICK && edgeRusher && isOL(a)) return track(a, set, { x: Math.min(0, r.vel.x), y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
+    // Kick with the rusher only while short of the lead. Deeper than that,
+    // matching his retreat keeps whatever extra depth the start produced
+    // and he never comes into range; hold and let him come.
+    if (PASS_KICK && edgeRusher && isOL(a)) return track(a, set, { x: a.pos.x < r.pos.x - KICK_LEAD ? 0 : Math.min(0, r.vel.x), y: r.vel.y }, { facing, cutSkill: quick, gain: 2.5 });
     // The cutoff is an interception, not a point on which to match the
     // rusher's present velocity. Approach through it at the kick-slide speed
     // already assumed by the forecast; physical movement and contact still
