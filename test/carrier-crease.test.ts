@@ -199,6 +199,27 @@ describe('production carrier entry commands', () => {
     expect(reads('counter', 1.6)).toBe(1);
   });
 
+  it.each([1, -1] as const)('a free defender standing in a counter back\'s track ends the follow, mirror %s', m => {
+    // The same press as above, three yards off the line. A defender up and
+    // unblocked a stride ahead on the line to the aiming point is a body in
+    // the way, not a race to the hole: the back reads now. The same man a
+    // body's width off that line leaves the follow alone.
+    const press = (offset: number | null) => {
+      const s = scene(m, 2.1, 3);
+      if (offset !== null) s.put('DE_S', s.back.pos.x + 1.1, 2.1 + offset);
+      let n = 0;
+      runReadObservers.set(s.sim, e => { if (e.phase === 'aim') n++; });
+      const command = new BallCarrier({ ...opts(m, 2.1), run: { scheme: 'counter', side: m }, aimUntil: 10 }, s.back).update(s.back, s.sim);
+      return { n, command };
+    };
+    const clear = press(null), inTrack = press(0), beside = press(1.6);
+    expect(clear.n).toBe(0);
+    expect(beside.n).toBe(0);
+    expect(inTrack.n).toBe(1);
+    // He no longer runs straight down the line into the man.
+    expect(Math.abs(inTrack.command.vel.y)).toBeGreaterThan(.5);
+  });
+
   it('keeps a visibly down defender in the future threat picture', () => {
     const s = scene(1, 2, 3.4), dt = s.put('DT_S', LOS + .5, 2);
     const original = s.sim.see;
