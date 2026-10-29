@@ -39,8 +39,14 @@ NFL tracking says players don't do that:
 The start force is the body's own full start, `vmax · fatigue · endurance`
 (times the squeeze narrowing), in any direction. It still falls to zero at the
 speed his facing allows that way (`full`, with the directional factor).
-- Full requests are bit-identical.
-- So is any request whose cap is the forward one.
+- Only requests whose cap is the forward one (moving the way he faces) are
+  bit-identical. A full request capped by facing changes too: at rest, for
+  vmax 7.2 / tau 1.4 / shuffle 0.5 / backpedal 0.55, sideways goes 2.75 ->
+  5.14 yd/s^2 and backward 2.83 -> 5.14; at 0.5 yd/s, sideways 2.21 -> 4.43
+  (independent probe on #353). Forward is identical. (Corrected: an earlier
+  version said all full requests were bit-identical.)
+- Tracking percentiles support the direction-free start; they do not prove a
+  universal isotropic force law.
 - One guard in his stance asked to pull (World, one body) reaches 0.5 yd/s at
   0.09 s instead of 0.18 s, and 2.07 yd/s at 0.5 s instead of 1.82.
 
