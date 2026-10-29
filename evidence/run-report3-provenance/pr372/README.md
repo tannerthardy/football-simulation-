@@ -62,3 +62,22 @@ in the back's picture, not from the puller's private `block-log` tag. Same 456 c
 
 RB6 → RB7: 52 snaps changed at shift 0, 90 at any shift, 10 at every shift. Mean abs yd moved by the arm 0.62 (dice
 alone 8.91). NFL pull side: counter 0.90, power 0.89, trap 0.78.
+
+## RB8 (added): head `74bddd4d`, source digest 8e38d81a…
+
+Receipt HEAD `58da9718` (uncommitted tree); the digest equals commit `74bddd4d`. It is RB7 with the kick cue narrowed.
+The man counts only in front of the puller's seen chest, and both the puller and the man must be seen upright
+(rising or unknown pose is not a block). Same 456 constructors × 5 stream pairs.
+
+| | RB7 | RB8 | DEV542 |
+|---|---|---|---|
+| run yd (shift 0) | 7.29 | 7.27 | 7.39 |
+| counter pull side / no crossing | 0.65 / 50 | 0.64 / 54 | 0.46 / 43 |
+| power pull side / no crossing | 0.89 / 58 | 0.89 / 59 | 0.85 / 57 |
+| trap pull side / no crossing | 0.80 / 38 | 0.79 / 38 | 0.79 / 37 |
+| counter mean yd / loss share | 5.86 / 0.26 | 5.64 / 0.28 | 6.44 / 0.23 |
+| power mean yd / loss share | 6.64 / 0.21 | 6.31 / 0.22 | 6.78 / 0.21 |
+| trap mean yd / loss share | 5.88 / 0.23 | 6.09 / 0.22 | 6.10 / 0.22 |
+
+RB7 → RB8: 9 changed at shift 0, 34 at any shift, 0 at every shift, mean abs 0.12 yd. Integration's trap witness, seed7
+#6 (Singleback Twin TE Trap), shift 4: RB7 11.58 tackle → RB8 63.86 TD, the same as DEV542/RB6 on all 5 shifts.
