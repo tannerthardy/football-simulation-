@@ -31,7 +31,7 @@
  * Units are kg, yards and seconds; forces are kg·yd/s².
  */
 import { G } from '../core/units.js';
-import { angleDiff, clamp, type Vec2 } from '../core/vec.js';
+import { hypot2, angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
 import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
 import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
@@ -460,14 +460,15 @@ function reportVector(): Vec2 { return { x: 0, y: 0 }; }
  * Each call still reads the current support and availability after a release. */
 function unsupportedLean(b: Body, plan: Plan, leanX: number, leanY: number,
   capacity: number, mass: number): number {
-  const mag = Math.hypot(leanX, leanY);
+  if (leanX === 0 && leanY === 0) return 0;
+  const mag = hypot2(leanX, leanY);
   if (mag <= 1e-6) return 0;
   const hx = leanX / mag, hy = leanY / mag;
   const balanced = Math.max(0, -(b.support!.felt.x * hx + b.support!.felt.y * hy));
   const unsupported = mag - balanced * (1 + PUSH_GROWTH);
   if (unsupported <= 0) return 0;
   const env = followAccel(b, { x: hx * 1e3, y: hy * 1e3 }, plan.cut, capacity);
-  const absorb = Math.max(0, Math.hypot(env.x, env.y) - Math.max(0, plan.ax * hx + plan.ay * hy)) * mass;
+  const absorb = Math.max(0, hypot2(env.x, env.y) - Math.max(0, plan.ax * hx + plan.ay * hy)) * mass;
   return Math.min(mag, Math.max(0, unsupported - absorb));
 }
 
@@ -485,11 +486,11 @@ export function allocateGroundForce(out: Float64Array, lx: number, ly: number,
     const scale = qa > 1e-12 ? clamp((-qb + Math.sqrt(Math.max(0, qb * qb - qa * qc))) / qa, 0, 1) : 0;
     px *= scale; py *= scale;
     if (qc > 0) {
-      r = cap / Math.max(1e-9, Math.hypot(lx, ly));
+      r = cap / Math.max(1e-9, hypot2(lx, ly));
       lx *= r; ly *= r;
     }
     // Recheck the attained net after clipping gait separately from lean.
-    const attained = Math.hypot(lx + px, ly + py);
+    const attained = hypot2(lx + px, ly + py);
     if (attained > cap + 1e-9) {
       const k = cap / attained;
       lx *= k; ly *= k; px *= k; py *= k; r *= k;
@@ -655,7 +656,7 @@ export class World {
     let e = 0;
     for (let i = 0; i < bs.length; i++) for (let j = i + 1; j < bs.length; j++) {
       const a = bs[i], b = bs[j];
-      const dx = b.pos.x - a.pos.x, dy = b.pos.y - a.pos.y, d = Math.hypot(dx, dy);
+      const dx = b.pos.x - a.pos.x, dy = b.pos.y - a.pos.y, d = hypot2(dx, dy);
       const nx = d > 1e-8 ? dx / d : 1, ny = d > 1e-8 ? dy / d : 0;
       const s = d - CONTACT_SCALE * (bodyRadius(a, nx, ny) + bodyRadius(b, nx, ny));
       if (s < 0) e += 0.5 * k / (1 / a.profile.massKg + 1 / b.profile.massKg) * s * s;
@@ -721,7 +722,7 @@ export class World {
     for (let i = 0; i < n; i++) this.plan(bs[i], i, intents[i] ?? STAND, dt);
     for (let i = 0; i < n; i++) {
       const l = intents[i]?.lunge, sup = bs[i].support!;
-      if (l && sup.state === 'up' && Math.hypot(l.x, l.y) > 1e-6) sup.strike = { x: l.x, y: l.y };
+      if (l && sup.state === 'up' && hypot2(l.x, l.y) > 1e-6) sup.strike = { x: l.x, y: l.y };
     }
 
     // Islands: who can touch whom within this tick, or is held, or struck.
@@ -747,7 +748,7 @@ export class World {
     island.length = 0; alone.length = 0;
     for (let i = 0; i < n; i++) (near[i] ? island : alone).push(i);
     const pairs = this.pairs;
-    pairs.clear();
+    if (pairs.size) pairs.clear();
     const t0 = this.time;
     if (alone.length) this.substep(alone, intents, plans, dt, dt, report, pairs, false);
     if (island.length) {
@@ -773,7 +774,7 @@ export class World {
       const divisor = this.impactTiming === 'local-sweep' ? activeTime : plan.activeSteps;
       const lx = this.leanX[i] / divisor, ly = this.leanY[i] / divisor;
       const velocity = plan.hadPassive ? { x: plan.effortVx, y: plan.effortVy } : b.vel;
-      spendEnergy(b, { x: plan.ax + lx / this.mass[i], y: plan.ay + ly / this.mass[i] }, Math.hypot(lx, ly) / Math.max(1, this.sp[i].pushForce), activeTime, plan.actionWork, velocity);
+      spendEnergy(b, { x: plan.ax + lx / this.mass[i], y: plan.ay + ly / this.mass[i] }, hypot2(lx, ly) / Math.max(1, this.sp[i].pushForce), activeTime, plan.actionWork, velocity);
     }
     report.contacts = [...pairs.values()];
     this.pending = [];
@@ -808,7 +809,7 @@ export class World {
   }
 
   private canStrike(a: Body,b: Body): boolean {
-    return a.support!.state==='up' && Math.hypot(a.pos.x-b.pos.x,a.pos.y-b.pos.y)<=a.profile.reach+b.profile.radius;
+    return a.support!.state==='up' && hypot2(a.pos.x-b.pos.x,a.pos.y-b.pos.y)<=a.profile.reach+b.profile.radius;
   }
 
   /** Requested actions share one scalar arm capacity, so duplicate joints
@@ -829,7 +830,7 @@ export class World {
         // A press is counted in press units: a full press uses the whole arm
         // budget, as a full grip does (ARM_PRESS; the ratio is 1 when off).
         const units=this.pressUnits(actor),press=units===1?Math.max(0,jt.push):Math.max(0,jt.push)*units;
-        this.active[actor]+=Math.hypot(Math.max(press,actor===holder?jt.hold:0),Math.max(0,jt.steer));
+        this.active[actor]+=hypot2(Math.max(press,actor===holder?jt.hold:0),Math.max(0,jt.steer));
         if(actor!==holder)this.active[holder]+=Math.max(0,jt.hold);
       }
       else if (!jt.broken) {
@@ -838,7 +839,7 @@ export class World {
         else if (jt.pull! > 0) this.active[holder] += this.armCap[holder];
       }
     }
-    for (const p of this.pending) if(this.canStrike(p.a,p.b)) this.active[this.indexOf(p.a)]+=Math.hypot(p.x,p.y)/this.tickDt;
+    for (const p of this.pending) if(this.canStrike(p.a,p.b)) this.active[this.indexOf(p.a)]+=hypot2(p.x,p.y)/this.tickDt;
     for(let i=0;i<this.n;i++) this.armScale[i]=this.active[i]>0?Math.min(1,this.armCap[i]/this.active[i]):1;
   }
 
@@ -973,7 +974,7 @@ export class World {
       this.heldBodies.add(b);
       const foot = b.support!.foot ??= newVirtualFoot(b.pos);
       const reach = supportParams(b.profile).comHeight;
-      const excursion = Math.hypot(foot.offset.x, foot.offset.y);
+      const excursion = hypot2(foot.offset.x, foot.offset.y);
       this.report.maxHeldRecoveryExcursion = Math.max(this.report.maxHeldRecoveryExcursion, excursion);
       for (const jt of holds) {
         const share = recoveryShare(jt), old = this.attachments.get(jt);
@@ -1010,7 +1011,7 @@ export class World {
         const point = this.graspPoint(jt);
         // Only actual held geometry can invalidate a grip, not how far the
         // common correction chart has accumulated under a small leg share.
-        if (!this.attachments.get(jt)!.bounded && Math.hypot(point.x - b.pos.x, point.y - b.pos.y) > reach) {
+        if (!this.attachments.get(jt)!.bounded && hypot2(point.x - b.pos.x, point.y - b.pos.y) > reach) {
           jt.broken = true; this.report.lowerHoldReleases++;
         }
       }
@@ -1097,7 +1098,7 @@ export class World {
     const mobility = sp.pushForce > 0 ? sp.stepSpeed / sp.pushForce : 0;
     const speed = Math.min(sp.stepSpeed * this.fat[i], mobility * capacity);
     if (!foot) return speed;
-    const e = Math.hypot(sup.xi.x, sup.xi.y), rb = baseRadiusAt(sp, sup.posture);
+    const e = hypot2(sup.xi.x, sup.xi.y), rb = baseRadiusAt(sp, sup.posture);
     foot.capacity = capacity;
     foot.mobility = mobility;
     foot.state = e > rb ? 'placing' : 'supported';
@@ -1129,8 +1130,8 @@ export class World {
     plan.activeTime = 0; plan.activeSteps = 0; plan.hadPassive = false;
     plan.actionWork = 0; plan.activeNow = false; plan.effortVx = 0; plan.effortVy = 0;
     if (sup.state !== 'up' || intent.free) return plan;
-    if (intent.dive && Math.hypot(intent.dive.x, intent.dive.y) > 1e-9) {
-      const l = Math.hypot(intent.dive.x, intent.dive.y);
+    if (intent.dive && hypot2(intent.dive.x, intent.dive.y) > 1e-9) {
+      const l = hypot2(intent.dive.x, intent.dive.y);
       plan.dive = { x: intent.dive.x / l, y: intent.dive.y / l };
       plan.launch = Math.min(1, l);
       return plan;
@@ -1138,7 +1139,8 @@ export class World {
     const a = availability(sup, this.sp[i], this.fat[i]);
     updateSqueeze(b, intent, dt);
     const tr = turnRateOf(b);
-    const facing = b.facing + clamp(this.facingDelta(b.facing, commandFacing(b, intent)), -tr * dt, tr * dt);
+    const requestedFacing = commandFacing(b, intent);
+    const facing = b.facing + clamp(this.facingDelta(b.facing, requestedFacing), -tr * dt, tr * dt);
     // Pad level costs a little speed when he plays low.
     const low = 1 - 0.12 * Math.max(0, sup.posture - 0.3);
     const cmd = low < 1 ? { ...intent, effort: (intent.effort ?? 1) * low } : intent;
@@ -1152,7 +1154,7 @@ export class World {
     // rate-clipped pose above is only the existing gait estimate; making it
     // a new stopping target each tick turns a smooth rotation into a chase.
     plan.ax = acc.x; plan.ay = acc.y;
-    plan.facing = this.handContact === 'center' ? commandFacing(b, intent) : facing;
+    plan.facing = this.handContact === 'center' ? requestedFacing : facing;
     plan.cut = intent.cutSkill ?? 1;
     return plan;
   }
@@ -1195,7 +1197,7 @@ export class World {
     let first = h;
     for (let ii = 0; ii < ids.length; ii++) for (let jj = ii+1; jj < ids.length; jj++) {
       const i=ids[ii],j=ids[jj],a=this.bodies[i],b=this.bodies[j];
-      const dx=b.pos.x-a.pos.x,dy=b.pos.y-a.pos.y,d=Math.hypot(dx,dy);
+      const dx=b.pos.x-a.pos.x,dy=b.pos.y-a.pos.y,d=hypot2(dx,dy);
       if (d < 1e-9) continue;
       const R=CONTACT_SCALE*(bodyRadius(a,dx/d,dy/d)+bodyRadius(b,dx/d,dy/d));
       if (d-R <= 1e-7) continue;
@@ -1216,7 +1218,7 @@ export class World {
     report: StepReport, pairs: Map<number, ContactRecord>, contact: boolean, swept = true): void {
     const bs = this.bodies;
     this.syncHeldSupport();
-    this.reels.clear();
+    if (this.reels.size) this.reels.clear();
     for (const i of ids) {
       this.impX[i] = 0; this.impY[i] = 0; this.tripX[i] = 0; this.tripY[i] = 0; this.thighX[i] = 0; this.thighY[i] = 0; this.liftImp[i] = 0;
       this.tipX[i] = 0; this.tipY[i] = 0; this.braceX[i] = 0; this.braceY[i] = 0;
@@ -1240,7 +1242,7 @@ export class World {
       const reach = jt.a.support!.state === 'up' ? jt.reach
         : Math.max(jt.reach, jt.ground ?? jt.reach + GROUND_STRETCH);
       const point = this.graspPoint(jt);
-      const d = Math.hypot(point.x - jt.a.pos.x, point.y - jt.a.pos.y);
+      const d = hypot2(point.x - jt.a.pos.x, point.y - jt.a.pos.y);
       if (this.gripCapacity(jt) <= 0 || d > reach || (jt.hold ?? d) > reach) jt.broken = true;
     }
     this.syncHeldSupport();
@@ -1289,7 +1291,7 @@ export class World {
         let observed: ContactSnapshot | undefined;
         if (!p.delivered) {
           const dx = p.b.pos.x - p.a.pos.x, dy = p.b.pos.y - p.a.pos.y;
-          const length = Math.hypot(dx, dy) || 1;
+          const length = hypot2(dx, dy) || 1;
           observed = { time: this.time, intervalEnd: this.time + h,
             normal: { x: dx / length, y: dy / length },
             positionI: { ...p.a.pos }, positionJ: { ...p.b.pos },
@@ -1308,7 +1310,7 @@ export class World {
         this.travelAdjustY[ia] += .5 * y * delivered / this.mass[ia];
         this.travelAdjustX[ib] -= .5 * x * delivered / this.mass[ib];
         this.travelAdjustY[ib] -= .5 * y * delivered / this.mass[ib];
-        if (delivered > 0 && Math.hypot(x, y) > 0) {
+        if (delivered > 0 && hypot2(x, y) > 0) {
           if (!p.delivered) {
             p.delivered = { i: ia, j: ib, impulse: { x: 0, y: 0 }, work: 0, height: p.height,
               requestedAt: p.requestedAt, contactAnatomy: p.contactAnatomy,
@@ -1320,7 +1322,7 @@ export class World {
           record.impulse.y += y * delivered;
           record.work += report.work.strikes - workBefore;
         }
-        report.armImpulse[ia] += Math.hypot(x,y)*delivered;
+        report.armImpulse[ia] += hypot2(x,y)*delivered;
         this.addLoad(ia, ib, 1, 0, x*delivered, y*delivered, p.height);
       }
     }
@@ -1333,7 +1335,7 @@ export class World {
       if (this.handContact === 'patch') continue;
       const i=this.indexOf(jt.a), j=this.indexOf(jt.b);
       const point=this.graspPoint(jt);
-      const dx=point.x-jt.a.pos.x,dy=point.y-jt.a.pos.y,d=Math.hypot(dx,dy);
+      const dx=point.x-jt.a.pos.x,dy=point.y-jt.a.pos.y,d=hypot2(dx,dy);
       const touch=CONTACT_SCALE*(jt.a.profile.radius+jt.b.profile.radius);
       if (d <= touch || d>jt.reach || jt.a.support!.state!=='up') continue;
       const nx=dx/d,ny=dy/d;
@@ -1411,10 +1413,10 @@ export class World {
         const height = jt.height ?? (jt.kind === 'grasp'
           ? this.comHeight[r.j] * (1 - 0.55 * clamp(jt.legs, 0, 1))
           : undefined);
-        if (Math.hypot(r.ln, r.lt) > 0) jt.achievedContactHeight = clamp(
+        if (hypot2(r.ln, r.lt) > 0) jt.achievedContactHeight = clamp(
           height ?? Math.min(this.padHeight[r.i], this.padHeight[r.j]), 0,
           Math.min(bs[r.i].profile.heightYd, bs[r.j].profile.heightYd));
-        if (Math.hypot(r.ln, r.lt) > 0) jt.firstApplied ??= r.observed;
+        if (hypot2(r.ln, r.lt) > 0) jt.firstApplied ??= r.observed;
         this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
         // Hands and patch grips are bounded forces acting across h. Use one
         // timing rule for their attained impulse AND spin, including the reel.
@@ -1439,7 +1441,7 @@ export class World {
         if (jt.kind === 'hands') {
           // A press is counted in press units, as allocateArms budgets it.
           const ln = r.mode > 0 ? r.ln * this.pressUnits(r.actor) : r.ln;
-          if(r.actor===r.steerActor) report.armImpulse[r.actor] += Math.hypot(ln,r.lt);
+          if(r.actor===r.steerActor) report.armImpulse[r.actor] += hypot2(ln,r.lt);
           else { report.armImpulse[r.actor]+=Math.abs(ln);report.armImpulse[r.steerActor]+=Math.abs(r.lt); }
           if (!r.handMembers) {
             jt.normalForce = (jt.normalForce ?? 0) + r.ln;
@@ -1458,7 +1460,7 @@ export class World {
             member.normalForce = (member.normalForce ?? 0) + r.ln * normalShare;
             member.tangentForce = (member.tangentForce ?? 0) + r.lt * tangentShare;
             const ln = r.ln * normalShare, lt = r.lt * tangentShare;
-            if (Math.hypot(ln, lt) > 0) {
+            if (hypot2(ln, lt) > 0) {
               member.firstApplied ??= r.observed;
               member.achievedContactHeight = r.observed.height;
             }
@@ -1470,7 +1472,7 @@ export class World {
             member.momentOnB = (member.momentOnB ?? 0) + (r.nj ?? 0) * ln - (r.rj ?? 0) * lt;
           }
         } else {
-          const used = Math.hypot(r.ln-r.reel, r.lt);
+          const used = hypot2(r.ln-r.reel, r.lt);
           const compression = jt.brace !== undefined && r.mode > 0;
           // Passive cloth/arm restraint keeps the existing structural grip
           // allowance; only muscular compression consumes the arm request.
@@ -1519,7 +1521,7 @@ export class World {
         foot.achieved = supportVelocity(foot, foot.force);
         foot.offset.x += foot.achieved.x * h; foot.offset.y += foot.achieved.y * h;
         foot.anchor = { x: b.pos.x + foot.offset.x, y: b.pos.y + foot.offset.y };
-        const desired = Math.hypot(foot.desired.x, foot.desired.y);
+        const desired = hypot2(foot.desired.x, foot.desired.y);
         b.support!.feetLock = desired > 1e-9 ? clamp(1 - (foot.achieved.x * foot.desired.x
           + foot.achieved.y * foot.desired.y) / (desired * desired), 0, 1) : 0;
         b.support!.feetVel = { x: this.travelVx[i] + foot.achieved.x, y: this.travelVy[i] + foot.achieved.y };
@@ -1554,7 +1556,7 @@ export class World {
           // A pair the correction left apart may still close that gap within
           // a substep (speculative), never more.
           const a = bs[c.i], b = bs[c.j];
-          const gap = Math.hypot(b.pos.x - a.pos.x, b.pos.y - a.pos.y) - c.R;
+          const gap = hypot2(b.pos.x - a.pos.x, b.pos.y - a.pos.y) - c.R;
           c.bias = gap > 0 ? gap / h : 0;
           this.solveContact(c, RIGID, true);
         }
@@ -1583,7 +1585,7 @@ export class World {
       // Its moment budget is weight × base radius, not an unlimited torque
       // cancellation just because ground force cancels the COM acceleration.
       const hc = this.comHeight[i];
-      const feltMoment = Math.hypot(oldTip.x, oldTip.y) * this.mass[i] * this.sp[i].pitchRadiusSq / hc;
+      const feltMoment = hypot2(oldTip.x, oldTip.y) * this.mass[i] * this.sp[i].pitchRadiusSq / hc;
       const ankleMoment = plans[i].free || sup.state !== 'up' ? 0
         : this.mass[i] * G * baseRadiusAt(this.sp[i], sup.posture) * this.alpha[i];
       const ankleBrace = feltMoment > 1e-9 ? Math.min(1, ankleMoment / feltMoment) : 0;
@@ -1612,7 +1614,7 @@ export class World {
     if (contact) for (const j of this.joints) {
       if (j.kind !== 'grasp' || j.broken) continue;
       const point = this.graspPoint(j);
-      const d = Math.hypot(point.x - j.a.pos.x, point.y - j.a.pos.y);
+      const d = hypot2(point.x - j.a.pos.x, point.y - j.a.pos.y);
       const touch = CONTACT_SCALE * (j.a.profile.radius + j.b.profile.radius);
       // A secure grip reels in: the arms shorten toward a wrap at their own
       // rate; the tension that does it is bounded by the same grip budget.
@@ -1693,7 +1695,7 @@ export class World {
       } else if (plan.dive) {
         // Finite launch force over the controller tick, independent of the
         // contact subdivision. He leaves his feet at the end of that plant.
-        const launch = Math.min(traction, Math.min(1.5, Math.max(0, p.vmax - Math.hypot(b.vel.x, b.vel.y))) * plan.launch * m / this.tickDt);
+        const launch = Math.min(traction, Math.min(1.5, Math.max(0, p.vmax - hypot2(b.vel.x, b.vel.y))) * plan.launch * m / this.tickDt);
         fx += plan.dive.x * launch; fy += plan.dive.y * launch;
         actionX = fx; actionY = fy;
         // Launch supplies translation, not a torque that arrests acquired spin.
@@ -1715,7 +1717,7 @@ export class World {
         // traction allows, until the extra velocity is delivered.
         const st = sup.strike;
         if (st) {
-          const need = Math.hypot(st.x, st.y);
+          const need = hypot2(st.x, st.y);
           const ux = st.x / need, uy = st.y / need;
           const capT = traction * a;
           const lu = lx * ux + ly * uy;
@@ -1729,7 +1731,7 @@ export class World {
         // Lean: leg drive into a felt load, along that load's axis.
         const push = clamp(intent.push ?? 0, 0, 1);
         let tx = 0, ty = 0;
-        const L = Math.hypot(sup.felt.x, sup.felt.y);
+        const L = hypot2(sup.felt.x, sup.felt.y);
         if (push > 0 && L > 1e-6) {
           const ux = -sup.felt.x / L, uy = -sup.felt.y / L;
           const ex = (intent.vel.x - (b.vel.x + plan.ax * h)) * ux + (intent.vel.y - (b.vel.y + plan.ay * h)) * uy;
@@ -1756,7 +1758,7 @@ export class World {
           // local projection settles the existing reduced-model feedback;
           // it does not add solver steps, muscles or a new force constant.
           while (conv > 1e-9 && iterations < 64) {
-            const mag = Math.hypot(leanX, leanY), hx = leanX / mag, hy = leanY / mag;
+            const mag = hypot2(leanX, leanY), hx = leanX / mag, hy = leanY / mag;
             const dx = hx * conv / (m * w0 * w0), dy = hy * conv / (m * w0 * w0);
             sup.xi = { x: sup.xi.x + dx, y: sup.xi.y + dy };
             report.leanRelease[i].x += dx; report.leanRelease[i].y += dy;
@@ -1788,11 +1790,11 @@ export class World {
         // actual normal load (pad lift or press included) bounds it once,
         // below. Without the law, a strength gap is a constant net force and
         // a carry keeps building.
-        const tf = Math.hypot(tfx, tfy);
+        const tf = hypot2(tfx, tfy);
         const along = tf > 1e-9 ? directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) : 1;
         const fv = tf > 1e-9 ? clamp(1 - (b.vel.x * tfx + b.vel.y * tfy) / (tf * p.vmax), 0, ECCENTRIC_GAIN) : 1;
         const strength = sp.pushForce * fv * along * a;
-        const capacity = Math.min(Math.max(Math.hypot(lx, ly), strength), traction * a);
+        const capacity = Math.min(Math.max(hypot2(lx, ly), strength), traction * a);
         // Availability already limits gait during recovery. Reserve actual
         // unused effort after ordinary translation and yaw, for every body.
         const cap = capacity;
@@ -1805,7 +1807,7 @@ export class World {
         // would deliver is lost while hanging weight keeps them from swinging
         // through. An internal limit on his own propulsion: nothing external
         // is added, and braking is untouched.
-        const bound = this.strideHolds[i], v = Math.hypot(b.vel.x, b.vel.y);
+        const bound = this.strideHolds[i], v = hypot2(b.vel.x, b.vel.y);
         let removed = 0;
         if (bound > 0 && v > 1e-6) {
           const vx = b.vel.x / v, vy = b.vel.y / v, along = fx * vx + fy * vy;
@@ -1824,7 +1826,7 @@ export class World {
         // Turning pays from the same grip as translation: friction on the
         // actual normal load. A lifted body turns on less, a pressed one on more.
         const yaw: { impulse: number; work: number; peakTorque?: number } =
-          turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, Math.hypot(fx, fy), traction * a);
+          turnBodyResponse(b, plan.facing, h, turnRateOf(b), a, hypot2(fx, fy), traction * a);
         // Strength limits drive+correction; traction also pays for yaw at
         // the physical support radius. Difference-of-squares keeps the
         // near-saturation subtraction well conditioned. Passive compliance
@@ -1833,13 +1835,13 @@ export class World {
         // an arbitrarily small residual gait request. The existing gait law
         // can demand more than pushForce; that leaves zero corrective effort
         // rather than expanding strength to fund another simultaneous action.
-        const total = sp.pushForce, force = Math.hypot(fx, fy);
+        const total = sp.pushForce, force = hypot2(fx, fy);
         // A variable motor torque may reverse inside the interval. Its net
         // impulse cannot prove how much traction was left for recovery.
         const yawForce = yaw.peakTorque === undefined
           ? yaw.impulse / (h * baseRadiusAt(sp, sup.posture))
           : yaw.peakTorque / baseRadiusAt(sp, sup.posture);
-        const groundDemand = Math.hypot(force, yawForce);
+        const groundDemand = hypot2(force, yawForce);
         const reserve = Math.sqrt(Math.max(0, Math.min((total - force) * (total + force),
           (traction - groundDemand) * (traction + groundDemand))));
         this.recovery[i] = this.prepareRecovery(i, h, reserve);
@@ -1900,7 +1902,7 @@ export class World {
     const t = this.time;
     if (sup.state === 'falling' && t - sup.since >= fallTime(sp, sup.posture)) {
       sup.state = 'down'; sup.since = t; report.downs.push(i);
-    } else if (sup.state === 'down' && Math.hypot(b.vel.x, b.vel.y) < 0.3 && t - sup.since >= 0.3) {
+    } else if (sup.state === 'down' && hypot2(b.vel.x, b.vel.y) < 0.3 && t - sup.since >= 0.3) {
       sup.state = 'rising'; sup.since = t;
     } else if (sup.state === 'rising' && t - sup.since >= sp.getUp) {
       sup.state = 'up'; sup.since = t; sup.xi = { x: 0, y: 0 }; sup.lean = { x: 0, y: 0 };
@@ -1972,7 +1974,7 @@ export class World {
     let legY = this.tripY[i] / w0;
     // Hips brace a thigh hold's moment up to their extension torque over
     // this substep; the excess pitches him like any trip.
-    const thigh = Math.hypot(this.thighX[i], this.thighY[i]);
+    const thigh = hypot2(this.thighX[i], this.thighY[i]);
     this.hipUsed[i] = 0;
     if (thigh > 0) {
       const c = this.comHeight[i], moment = thigh * sp.pitchRadiusSq * this.mass[i] / Math.max(c, 1e-6);
@@ -1984,11 +1986,11 @@ export class World {
     dx += legX; dy += legY;
     // Remember what has been displacing him (decays over ~0.3 s).
     const decay = interval.decay;
-    causes.contact = causes.contact * decay + Math.hypot(mx - f.x + tmx, my - f.y + tmy) * h / w0;
-    causes.legs = causes.legs * decay + Math.hypot(legX, legY);
+    causes.contact = causes.contact * decay + hypot2(mx - f.x + tmx, my - f.y + tmy) * h / w0;
+    causes.legs = causes.legs * decay + hypot2(legX, legY);
     causes.overspeed *= decay;
     // Carried faster than his legs can run.
-    const speed = Math.hypot(b.vel.x, b.vel.y);
+    const speed = hypot2(b.vel.x, b.vel.y);
     const vcap = b.profile.vmax * fat * 1.05;
     if (speed > vcap) {
       dx += b.vel.x / speed * (speed - vcap) * h; dy += b.vel.y / speed * (speed - vcap) * h;
@@ -1997,7 +1999,7 @@ export class World {
     // What displaced him arrived through the substep: on average it has half
     // the substep to grow or be recovered.
     let xx = sup.xi.x + 0.5 * dx, xy = sup.xi.y + 0.5 * dy;
-    let e = Math.hypot(xx, xy);
+    let e = hypot2(xx, xy);
     const rb = baseRadiusAt(sp, sup.posture);
     const rec = recoverySpeed(sp, 0, fat);
     // Recovery step speed ramps over the response latency while gravity acts
@@ -2026,11 +2028,11 @@ export class World {
       else { xx = nx * recovery.next; xy = ny * recovery.next; }
       xx -= (deficit.x - radial * nx) * recovery.weight;
       xy -= (deficit.y - radial * ny) * recovery.weight;
-      if (foot) causes.legs += Math.hypot(deficit.x, deficit.y) * h;
-      sup.out = Math.hypot(xx, xy) > rb ? outsideBefore + h : 0;
+      if (foot) causes.legs += hypot2(deficit.x, deficit.y) * h;
+      sup.out = hypot2(xx, xy) > rb ? outsideBefore + h : 0;
     }
     xx += 0.5 * dx; xy += 0.5 * dy;
-    e = Math.hypot(xx, xy);
+    e = hypot2(xx, xy);
     sup.xi = { x: xx, y: xy };
     const crit = rb + rec / w0;
     sup.peak = Math.max(sup.peak, e / Math.max(1e-6, crit));
@@ -2048,7 +2050,7 @@ export class World {
     const bs = this.bodies;
     if (PAD_LEVERAGE) {
       // Compression only: a push from pads to pads. A pull has no such wedge.
-      const dx = bs[j].pos.x - bs[i].pos.x, dy = bs[j].pos.y - bs[i].pos.y, d = Math.hypot(dx, dy);
+      const dx = bs[j].pos.x - bs[i].pos.x, dy = bs[j].pos.y - bs[i].pos.y, d = hypot2(dx, dy);
       const press = d > 1e-6 ? (fx * dx + fy * dy) / d : 0;
       if (press > 0) {
         const rise = clamp((this.padHeight[j] - this.padHeight[i]) / Math.max(d, .3), -LEVERAGE_SLOPE, LEVERAGE_SLOPE);
@@ -2114,7 +2116,7 @@ export class World {
           const toi = (-qb - Math.sqrt(disc)) / qa;
           if (toi > h) continue;
           const cx = dx + rvx * toi, cy = dy + rvy * toi;
-          const cl = Math.hypot(cx, cy) || 1;
+          const cl = hypot2(cx, cy) || 1;
           nx = cx / cl; ny = cy / cl;
           R = CONTACT_SCALE * (bodyRadius(a, nx, ny) + bodyRadius(b, nx, ny));
           s = dx * nx + dy * ny - R;
@@ -2222,7 +2224,7 @@ export class World {
         const target = jt.contact.on === 'a' ? a : b;
         const local = jt.contact.local;
         if (!Number.isFinite(local.x) || !Number.isFinite(local.y)
-          || Math.hypot(local.x, local.y) > target.profile.radius + 1e-10)
+          || hypot2(local.x, local.y) > target.profile.radius + 1e-10)
           throw new RangeError('Hand contact must be a finite point within the target torso');
         // The point remains on the body. Its force-midpoint orientation is a
         // second-order approximation; it is not teleported by the controller.
@@ -2232,7 +2234,7 @@ export class World {
         const sign = jt.contact.on === 'b' ? 1 : -1;
         dx += sign * px; dy += sign * py;
       }
-      const dist = Math.hypot(dx, dy);
+      const dist = hypot2(dx, dy);
       const nx = dist > 1e-8 ? dx / dist : 1, ny = dist > 1e-8 ? dy / dist : 0;
       const appliedHeight = jt.height ?? (jt.kind === 'grasp'
         ? this.comHeight[j] * (1 - .55 * clamp(jt.legs, 0, 1)) : Math.min(this.padHeight[i], this.padHeight[j]));
@@ -2329,7 +2331,7 @@ export class World {
               && old.legs === jt.legs && recoveryShare(old) === recoveryShare(jt) && old.height === jt.height && old.reach === jt.reach
               && old.brace === jt.brace
               && old.ground === jt.ground && old.hold === jt.hold && old.pull === jt.pull
-              && Math.hypot(this.graspPoint(old).x - point.x, this.graspPoint(old).y - point.y) < 1e-10
+              && hypot2(this.graspPoint(old).x - point.x, this.graspPoint(old).y - point.y) < 1e-10
               && (!this.boundedAttachment || this.sameAttachmentJacobian(old,jt));
           });
           if (same) {
@@ -2371,7 +2373,7 @@ export class World {
     const jt = r.joint as GraspJoint;
     if (jt.brace !== undefined || !(jt.pull! > 0) || jt.a.support!.state !== 'up') return;
     const point = this.graspPoint(jt);
-    const distance = Math.hypot(point.x - jt.a.pos.x, point.y - jt.a.pos.y);
+    const distance = hypot2(point.x - jt.a.pos.x, point.y - jt.a.pos.y);
     if (distance <= CONTACT_SCALE * (jt.a.profile.radius + jt.b.profile.radius) || distance > jt.reach) return;
     const rv = this.graspVelocity(jt);
     const vn = rv.x*r.nx + rv.y*r.ny
