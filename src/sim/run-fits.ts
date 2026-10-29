@@ -242,6 +242,8 @@ const DEEP_NO_FORCE = process.env.DEEP_NO_FORCE === '1';
  * the Mike weak and give the strong side's open gap to that safety. */
 const GAP_MATCH = process.env.GAP_MATCH !== '0';
 const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
+/** Where a threatened stack backer fills to: a yard off the ball, meeting the runner in the hole. */
+const FILL_DEPTH = 1;
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */
@@ -490,7 +492,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // line within reach of it (not merely where he stands now); he has
   // declared it when he is also at the surface. A back pressing wide still
   // threatens to bend back, so a disciplined fit holds until he commits.
-  let declared: boolean;
+  let declared: boolean, threatened = false;
   if (THREAT_READ && !premesh) {
     const dirX = sim.attackDir(c.team), toLos = Math.max(0, (sim.los - seen.pos.x) * dirX);
     const reachLos = clamp(toLos / Math.max(.5, seen.vel.x * dirX), 0, 1);
@@ -498,10 +500,12 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const half = Number.isFinite(gap.width) ? Math.max(.6, gap.width / 2) : 1.2;
     const threat = Math.abs(crossing - gy) < half + 1;
     declared = threat && seen.pos.x > sim.los - 1.6;
-    if (threat && !declared) a.tags.add('fit-threat-read');
+    if (threat && !declared) { a.tags.add('fit-threat-read'); threatened = true; }
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
-  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? STACK_LANDMARK : .5;
+  // A stack backer whose gap the runner's path threatens fills downhill to meet
+  // him at the line, instead of waiting at his landmark until he declares.
+  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? threatened ? FILL_DEPTH : STACK_LANDMARK : .5;
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
   let pace = .78+.15*a.mind.urgency;
   const fit = track(a,aim,{x:0,y:0},{speed:pace,gain:3,facing:Math.PI});
