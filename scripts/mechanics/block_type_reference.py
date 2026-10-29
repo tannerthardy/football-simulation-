@@ -429,7 +429,9 @@ def main():
     if args.self_test:print(json.dumps(self_test(combo)));return
     if not args.out or not (args.nfl or args.sim):parser.error('provide --out and at least one input')
     protected=[*args.nfl,*args.sim,args.combo,Path(ref.__file__),Path(__file__)]
-    if args.out.resolve() in {p.resolve() for p in protected}:parser.error('--out must not overwrite an input or operator')
+    if any(args.out.resolve() == p.resolve() or
+           (args.out.exists() and p.exists() and args.out.samefile(p)) for p in protected):
+        parser.error('--out must not overwrite an input or operator')
     hashes=[(str(p),digest(p)) for p in args.nfl+args.sim]
     if len({h for _,h in hashes}) != len(hashes):parser.error('duplicate input digest; refusing to count a cohort twice')
     rows, episodes, counts=[],[],Counter()
