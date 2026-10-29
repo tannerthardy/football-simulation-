@@ -95,7 +95,11 @@ describe('recording the actual rushing player', () => {
     try {
       // Re-selected under the leg force-velocity law (PHY-1): the pocket plays out
       // differently, so seed 0's QB throws. Seeds 23 and 35 are the scrambles in seeds 0-59.
-      const recorded = fixture(23), unrecorded = fixture(23);
+      // Re-staged for the direction-free start (#353): seed 23's QB now
+      // throws; seeds 0-59 hold no pass-call scramble (0, 4, 23, 24, 35, 41
+      // and 47 did before). Seed 76 is the first scramble after them (76, 140,
+      // 250, 263 in 60-299). The bookkeeping witness is the same.
+      const recorded = fixture(76), unrecorded = fixture(76);
       Object.defineProperty(unrecorded.stats, 'rusher', {
         configurable: true, enumerable: true, get: () => undefined, set: () => {},
       });
