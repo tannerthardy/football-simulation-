@@ -4,10 +4,11 @@ import { PlaySim } from '../src/sim/playsim.js';
 import { restoreSetup } from '../scripts/diag/saved-play.js';
 
 // A wide-zone double (RG with C on DT_W, LB_W the backer) where C takes the man alone and RG is off him:
-// the outside-zone overtake. One saved run-only snap (matched-restage seed 7, snap 82). Re-picked from snap 0,
-// where under the squeeze read (DL_SQUEEZE from a seen carrier's track) LG gets hands on DT_W as C's helper
-// and leaves by the ordinary joined release, so that snap no longer holds an overtake. Snap 82 holds one on
-// develop, on the squeeze read, and with #364 and #366.
+// the outside-zone overtake. One saved run-only snap (a run-only capture of develop 6949f645, seed 7, snap 89).
+// Re-picked from matched-restage seed 7 snap 82, where with the squeeze read (DL_SQUEEZE from a seen
+// carrier's track) DT_W flows with the play, makes the tackle behind the line at 2.25 and sheds C, so that
+// snap no longer holds a keeper. Snap 89 holds the whole property on develop and with the squeeze read; with
+// the overtake read disabled RG leaves 0.05 s before C is alone and never loads LB_W.
 const fixture = JSON.parse(readFileSync(new URL('./fixtures/overtake-climb.json', import.meta.url), 'utf8')) as { setup: string };
 
 function play() {

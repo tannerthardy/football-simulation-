@@ -135,12 +135,13 @@ const changeOf = (p: ReturnType<typeof play>, actor: string, reason: string, t?:
   p.d.changes.filter(c => p.slot(c.actor) === actor && c.reason === reason && (t === undefined || c.t === t));
 
 describe('responsibility ledger, named cases from the Phase II zone set (a5b024b9)', () => {
-  it('S9-P062: C releases to LB_W and loads the man he released to', () => {
-    const p = play('S9-P062', 'C');
-    expect(p.setupSha256).toBe('fc7f58f199912f3255588696ab79ee4b5c57cef717b550601f349412119eba81');
-    // With the start law (#336), the back's own mesh start (#344) and the off-hip climb (#362), C releases at 1.0 and
-    // reaches LB_W without a reread. The release/reread/load contract this case carried is on M10-P081 below.
-    const release = changeOf(p, 'C', 'combination-release', 1)[0];
+  it('M13-P086: C releases to LB_W and loads the man he released to', () => {
+    // S9-P062 carried this until the squeeze read (DL_SQUEEZE from a seen carrier's track): there C now rereads to
+    // LB_M at 1.25, the contract M10-P081 below carries. Here C releases from DT_S at 1.05 and first loads LB_W at
+    // 2.2, without a reread.
+    const p = play('M13-P086', 'C');
+    expect(p.setupSha256).toBe('618567a6b684d375084dbee5ddc8dac58339e3d6489e5f768f80072a71d6d1f2');
+    const release = changeOf(p, 'C', 'combination-release', 1.05)[0];
     expect(release.after).toMatchObject({ kind: 'climb' });
     expect(p.slot(release.before.target)).toBe('DT_S'); expect(p.slot(release.after.target)).toBe('LB_W');
     expect(changeOf(p, 'C', 'threat-reread')).toEqual([]);
@@ -150,13 +151,14 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
   });
 
   it('M10-P081: C releases to LB_W, rereads to LB_M, and loads LB_M and never LB_W', () => {
-    // The release/reread/load contract S9-P062 carried until the off-hip climb (#362) on top of #336 + #344.
+    // The release/reread/load contract S9-P062 carried until the off-hip climb (#362) on top of #336 + #344. With the
+    // squeeze read (DL_SQUEEZE from a seen carrier's track) the release and reread each come a tick later (1.5, 1.7).
     const p = play('M10-P081', 'C');
     expect(p.setupSha256).toBe('d9fe5799b8485ffa6108a407a9335f3d4a62a3a98f1efc49fc2766ebedb61988');
-    const release = changeOf(p, 'C', 'combination-release', 1.45)[0];
+    const release = changeOf(p, 'C', 'combination-release', 1.5)[0];
     expect(release.after).toMatchObject({ kind: 'climb' });
     expect(p.slot(release.before.target)).toBe('DT_S'); expect(p.slot(release.after.target)).toBe('LB_W');
-    const reread = changeOf(p, 'C', 'threat-reread', 1.65)[0];
+    const reread = changeOf(p, 'C', 'threat-reread', 1.7)[0];
     expect(p.slot(reread.before.target)).toBe('LB_W'); expect(p.slot(reread.after.target)).toBe('LB_M');
     const c = p.d.actors.findIndex(a => a.slot === 'C');
     const loaded = (slot: string) => p.d.rows.filter(r => r.actor === c).filter(r => r.hands.some(h => p.slot(h.defender) === slot && h.loaded));
@@ -222,24 +224,28 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT' && e.t <= swap.t)).toEqual([]);
   });
 
-  it('M29-P036: LG is reread twice, each recorded with its resulting kind', () => {
+  it('M29-P036: each reread is recorded with its resulting kind', () => {
     // Re-recorded for the start law (#336): M9-P000's C is now reread once (1.8). M25-P032 carried the case on
     // develop 1ec115c7; with develop 84af7d9e merged (the draw double's uncovered man climbs, the departing guard
     // steps off the DT's hip) its C is not reread at all, so M25-P021 carried it (C at 1.7 and 2.65). On #336 + #344
-    // with the along-route crease read (#366) M25-P021's C is reread once (1.7), so M29-P036 carries it: LG, released
-    // from the DT_W double to climb, is reread to reach LB_W at 2.25 and, climbing again, to SS at 3.75.
+    // with the along-route crease read (#366) M25-P021's C is reread once (1.7), so M29-P036 carried it: LG reread to
+    // reach LB_W at 2.25 and, climbing again, to SS at 3.75. With the squeeze read (DL_SQUEEZE from a seen carrier's
+    // track) LG's second reread no longer comes; RG, released from the DT_S double at 3.1, is reread to climb to CB_S
+    // at 3.9. Two rereads, each recorded with the kind it results in.
     const p = play('M29-P036');
-    const threats = changeOf(p, 'LG', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([2.25, 3.75]);
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LG').map(e => e.t)).toEqual([2.25, 3.75]);
-    expect(threats.map(c => c.after.kind)).toEqual(['reach', 'climb']);
+    const threats = [...changeOf(p, 'LG', 'threat-reread'), ...changeOf(p, 'RG', 'threat-reread')];
+    expect(threats.map(c => [p.slot(c.actor), c.t, p.slot(c.after.target), c.after.kind]))
+      .toEqual([['LG', 2.25, 'LB_W', 'reach'], ['RG', 3.9, 'CB_S', 'climb']]);
+    for (const c of threats) expect(p.sim.events.filter(e => e.type === 'block_threat' && e.a === c.actor).map(e => e.t)).toEqual([c.t]);
   });
 
-  it('R9-P020: the first carrier contact keeps both defenders tied at 2.55', () => {
-    // A run-only capture of develop db6bc472, recorded for #336 + #344 with develop 90daa454 (#362) merged, when
-    // M7-P051 stopped tying: LB_M and LB_W reach the carrier on the same tick.
-    const p = play('R9-P020'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.55);
+  it('D7-P028: the first carrier contact keeps both defenders tied at 2.65', () => {
+    // R9-P020 (a run-only capture of develop db6bc472) carried the natural tie from #336 + #344 with develop 90daa454
+    // (#362) merged; with the squeeze read (DL_SQUEEZE from a seen carrier's track) CB_S reaches its carrier alone at
+    // 3.25. D7-P028, a run-only capture of develop 6949f645 (Outside Zone Weak vs the 4-3 Over), carries it: LB_M and
+    // LB_W reach the carrier on the same tick.
+    const p = play('D7-P028'), first = p.census[0].firstCarrierContact!;
+    expect(first.t).toBe(2.65);
     expect(first.defenders.map(p.slot).sort()).toEqual(['LB_M', 'LB_W']);
   });
 
@@ -273,12 +279,13 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // A matched-restage capture of develop db6bc472 (Pistol Doubles outside zone vs wide 9), recorded for the start
     // law (#336) with #344 and #347 merged, when M10-P004's double stopped releasing. C releases from DT_S to LB_W
     // at 1.45 and rereads once, to LB_M, at 1.65; without #349's keeper-contact check that reread goes back to DT_S.
+    // With the squeeze read (DL_SQUEEZE from a seen carrier's track) each comes a tick later (1.5, 1.7).
     const p = play('M10-P081');
     expect(changeOf(p, 'C', 'combination-release').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
-      .toEqual([[1.45, 'DT_S', 'LB_W']]);
+      .toEqual([[1.5, 'DT_S', 'LB_W']]);
     expect(changeOf(p, 'C', 'threat-reread').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
-      .toEqual([[1.65, 'LB_W', 'LB_M']]);
-    expect(p.d.changes.some(c => p.slot(c.actor) === 'C' && c.t > 1.45 && p.slot(c.after.target) === 'DT_S')).toBe(false);
+      .toEqual([[1.7, 'LB_W', 'LB_M']]);
+    expect(p.d.changes.some(c => p.slot(c.actor) === 'C' && c.t > 1.5 && p.slot(c.after.target) === 'DT_S')).toBe(false);
   });
 
   it('M25-P032: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
@@ -293,15 +300,16 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // Gun Trips Open wide zone weak, a run-only capture: LB_M and LB_W reached the carrier on the same tick (2.45) on
     // develop. With the start law (#336) RG releases at 1.7 and his climb reaches LB_W at 2.45, so CB_W makes first
     // contact alone at 2.5; with the back's own mesh start (#344) and the engaged-flow law (#347) as well, CB_W
-    // alone at 2.55. The tie is carried by R9-P020.
+    // alone at 2.55. With the squeeze read (DL_SQUEEZE from a seen carrier's track) as well, SS alone at 3.4. The tie
+    // is carried by D7-P028.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.55);
-    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
+    expect(first.t).toBe(3.4);
+    expect(first.defenders.map(p.slot)).toEqual(['SS']);
   });
 
-  it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
+  it('S8-P005: the same sample is not tied on this source, and the ledger does not invent a contact', () => {
     const p = play('S8-P005');
-    const first = p.census[0].firstCarrierContact!;
+    const first = p.census[0].firstCarrierContact;
     // Re-recorded for the leg force-velocity law (PHY-1): first contact moves 2.2 -> 2.1 and the DT_W reaches the carrier first;
     // still one defender, not a tie. The DT_W's wrap now comes with the contact (2.1; was 2.3 after the DE_W's contact).
     // Re-recorded for the start law (#336): the run gets further, and LB_W alone makes first contact at 2.6, wrapping
@@ -311,9 +319,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // alone at 3.1; still not a tie. With the support contact face (#363) as well, LB_M works off RG's climb across
     // RG's face from 2.2, carrying RG ~0.1 yd off the line LB_W rubbed him on at 2.55; LB_W clears RG, keeps his
     // pursuit angle and alone makes first contact at 2.9 (the back's path is unchanged until then); still not a tie.
-    expect(first.t).toBe(2.9);
-    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.9 && p.slot(e.defender) === 'LB_W')).toBe(true);
+    // With the squeeze read (DL_SQUEEZE from a seen carrier's track) as well, LB_W's try at 4.05 misses and the run
+    // scores untouched: no carrier event, so the census records no first contact rather than inventing one.
+    expect(p.result.outcome).toBe('touchdown');
+    expect(p.d.play.carrierEvents).toEqual([]);
+    expect(first).toBeNull();
   });
 
   // With the back leaving the mesh on his own start (#344), these former QB keeps (S8-P054 and S10-P006 on develop,
@@ -339,7 +349,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.census).toEqual([]);
   });
 
-  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'M10-P004', 'M10-P081', 'R9-P020', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029', 'R7-P083', 'R7-P075'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
+  it.each(['S9-P062', 'S10-P009', 'S9-P027', 'S7-P067', 'M9-P000', 'M7-P051', 'M25-P032', 'M13-P086', 'M29-P036', 'M25-P021', 'M25-P029', 'M10-P004', 'M10-P081', 'R9-P020', 'D7-P028', 'S8-P005', 'S8-P054', 'S10-P006', 'S7-P029', 'R7-P083', 'R7-P075'])('%s: recording changes nothing and no plan change goes unclaimed', id => {
     const setup = Buffer.from(cases.plays.find(p => p.id === id)!.setup, 'base64');
     const run = (record: boolean) => {
       const sim = new PlaySim(restoreSetup(setup));
