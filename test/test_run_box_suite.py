@@ -40,6 +40,57 @@ def raw_sim(p):
 
 
 class RunBoxSuiteTests(unittest.TestCase):
+    def test_last_observed_live_sample_is_admitted_without_padding(self):
+        for end in (.5, .55):
+            p = play()
+            p["end"] = end
+            p["xy"][5][2] = (4, 0)
+            before = copy.deepcopy(p)
+            historical = m.observe(p, OP, live=False, correct_carrier=False)
+            current = m.observe(p, OP)
+            self.assertEqual(historical["touched"], 1)
+            self.assertEqual(current["touched"], 1)
+            self.assertEqual(p, before)
+
+    def test_terminal_admission_keeps_early_live_and_postend_controls(self):
+        for frame, expected in ((4, 1), (8, 0)):
+            p = play()
+            p["end"] = .5
+            p["xy"][frame][2] = (4, 0)
+            self.assertEqual(m.observe(p, OP)["touched"], expected)
+        p = play()
+        p["end"] = .55
+        p["xy"][5][2] = (4, 0)
+        p["xy"][5][6] = (3, 0)  # reaches LB's depth-1 on that same sample
+        self.assertEqual(m.observe(p, OP)["touched"], 0)
+
+    def test_truncated_horizon_is_unknown_on_generic_nfl_and_sim(self):
+        for source in ("nfl", "sim"):
+            p = play()
+            p["src"] = source
+            p["xy"] = p["xy"][:16]
+            row = m.observe(p, OP)
+            self.assertEqual(row["status"], "observed")
+            self.assertEqual(row["blockers"], 7)
+            self.assertEqual(row["touch_status"], "unknown")
+            self.assertIsNone(row["touched"])
+            self.assertIn("touch_horizon_truncated", row["reasons"])
+
+    def test_real_loaders_preserve_generic_and_native_truncation_censoring(self):
+        p = play()
+        p["xy"] = p["xy"][:16]
+        with tempfile.TemporaryDirectory() as folder:
+            n, s = Path(folder) / "nfl.jsonl.gz", Path(folder) / "sim.json"
+            with gzip.open(n, "wt") as f:
+                f.write(json.dumps(raw_nfl(p)) + "\n")
+            s.write_text(json.dumps([raw_sim(p)]))
+            from collections import Counter
+            for path, source in ((n, "nfl"), (s, "sim")):
+                measured, meta = next(m.streams(path, source, OP, Counter()))
+                self.assertTrue(meta["clock_valid"])  # truncation is not clock drift
+                row = m.apply_snap_review(measured, OP, meta, None)
+                self.assertEqual(row["touch_status"], "unknown")
+                self.assertIn("touch_horizon_truncated", row["reasons"])
     def test_anchor_integrity_policy_is_symmetric_and_extremes_are_not_filtered(self):
         review = {"status": "confirmed_invalid", "reason": "raw coordinate/time anchor contradicted by independent evidence"}
         for source in ("nfl", "sim"):

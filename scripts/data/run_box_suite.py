@@ -50,6 +50,26 @@ def valid_frame(frame, n):
     return len(frame) == n and all(len(q) == 2 and all(type(v) in (int, float) and math.isfinite(v) for v in q) for q in frame)
 
 
+def admitted_touch(play):
+    """Published proximity definition with an exclusive arrival/end index.
+
+    Input contains only actual admitted live samples. If arrival is absent,
+    the stop index is len(xy), so its last real sample remains eligible.
+    No copied/padded positions or invented arrival are added to the tape.
+    """
+    xy, players, car = play["xy"], play["players"], play["carrier"]
+    cy = statistics.mean(xy[0][i][1] for i, q in enumerate(players) if q["group"] == "OL")
+    blockers = [i for i, q in enumerate(players) if q["group"] in ("OL", "TE", "RB") and i != car]
+    result = Counter()
+    for j, q in enumerate(players):
+        if q["group"] != "LB" or not (2.5 <= xy[0][j][0] <= 8 and abs(xy[0][j][1] - cy) < 6):
+            continue
+        stop = next((k for k in range(len(xy)) if xy[k][car][0] >= xy[k][j][0] - 1), len(xy))
+        result["n"] += 1
+        result["touched"] += any(math.dist(xy[k][b], xy[k][j]) < 1.5 and xy[k][b][0] > -.5 for k in range(3, stop) for b in blockers)
+    return result
+
+
 def observe(play, op, live=True, correct_carrier=True, clock_valid=True, source_reasons=()):
     """Audit published counts without editing its historical operator."""
     p, xy, players = dict(play), play["xy"], play["players"]
@@ -79,7 +99,12 @@ def observe(play, op, live=True, correct_carrier=True, clock_valid=True, source_
             reasons.append("touch_end_unknown")
             p["xy"] = xy[:1]
         else:
-            p["xy"] = xy[:max(1, math.floor((end + 1e-8) / .1) + 1)]
+            last = math.floor((end + 1e-8) / .1)
+            if last >= len(xy):
+                reasons.append("touch_horizon_truncated")
+                p["xy"] = xy[:1]
+            else:
+                p["xy"] = xy[:last + 1]
     if not clock_valid:
         reasons.append("touch_clock_unaligned")
         p["xy"] = xy[:1]
@@ -88,12 +113,20 @@ def observe(play, op, live=True, correct_carrier=True, clock_valid=True, source_
         reasons.append("touch_live_positions_missing")
         p["xy"] = xy[:1]
     out = sink()
-    op.measure(p, out)
+    # Published counts and LB eligibility depend only on the real snapshot.
+    # Avoid calculating its known-bad terminal touch range on the live path;
+    # historical mode still evaluates that exact original tape/operator.
+    op.measure(dict(p, xy=p["xy"][:1]) if live else p, out)
     c = out["concept"][(p["src"], "ALL")]
     if not c["n"]:
         raise ValueError("validated input was not admitted by the pinned operator")
     historical_bucket = op.bucket(c["surplus"])
     t = out["touch"][(p["src"], "ALL", historical_bucket)]
+    if live and not reasons:
+        measured_touch = admitted_touch(p)
+        if measured_touch["n"] != t["n"]:
+            raise ValueError("audited touch eligibility diverged from the published definition")
+        t = measured_touch
     # Published backs exclude the runner, but its OL and TE lists do not.
     # Remove only that self-credit; retain listed personnel and OL mean anchor.
     car = p["carrier"]
@@ -178,8 +211,6 @@ def streams(path, src, op, counts):
             end = p.get("end")
             last = math.floor((end + 1e-8) / .1) if type(end) in (int, float) and math.isfinite(end) and end >= 0 else len(times) - 1
             clock_valid = bool(times) and all(aligned(t, k) for k, t in enumerate(times[:last + 1]))
-            if last >= len(times):
-                clock_valid = False  # explicit end exceeds the observed tape
             if not times or not aligned(times[0], 0):
                 source_reasons.append("snapshot_clock_unaligned")
         else:
@@ -382,7 +413,7 @@ def main():
               "nfl_label": args.nfl_label, "sim_source": args.sim_source, "sim_settings_sha256": sha(args.sim_settings) if args.sim_settings else None,
               "inputs": inputs, "counts": counts, "live_admission_changed_runs": changes,
               "bootstrap": {"draws": args.bootstrap, "seed": args.seed, "unit": "NFL game or supplied sim parent-seed cluster; no invented IID play uncertainty"},
-              "admission_version": "live-window-carrier-clock-reviewed-v3", "carrier_credit_corrected_runs": sum(r.get("carrier_blocker_credit_removed", False) for r in rows),
+              "admission_version": "live-window-carrier-clock-reviewed-v4", "carrier_credit_corrected_runs": sum(r.get("carrier_blocker_credit_removed", False) for r in rows),
               "snap_review_sha256": sha(args.snap_reviews) if args.snap_reviews else None,
               "snap_review_status_counts": dict(Counter(r["snap_review"]["status"] for r in rows)),
               "confirmed_invalid_snap_runs": sum(r["snap_review"]["status"] == "confirmed_invalid" for r in rows),

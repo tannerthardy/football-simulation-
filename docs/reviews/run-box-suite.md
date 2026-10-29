@@ -107,6 +107,27 @@ the play ended before a climb had any opportunity. It is not proof of bad
 blocking. The ratio is **sum touched backers / sum eligible backers**,
 not a mean of per-play fractions or a fraction of runs.
 
+### Terminal-sample and incomplete-horizon repair
+
+`live-window-carrier-clock-reviewed-v4` corrects the published never-arrives
+fallback. The original uses `len(xy)-1` as an exclusive stop, accidentally
+discarding the last **valid live** sample after clipping. The audited path
+uses `len(admitted_xy)` when arrival is unobserved: all real samples from0.3s
+through the last sample at/before end are eligible. An observed arrival
+sample remains excluded. No position is copied, padded or interpolated to
+force this result. The immutable historical source remains available; the
+audited proximity predicates are the same, with a runtime check that its
+eligible-LB count agrees with the published source.
+
+The same horizon-completeness check applies to generic/NFL and sim inputs.
+End3.0 with positions only through1.5 makes touch **unknown** while preserving
+the valid snap count. End0.55 with valid samples through0.50 is a complete
+10Hz observation window: the next sample would be after the ending. This
+does not certify unobserved subframe motion. At this first scope truncation
+censors the play's touch measure conservatively rather than reporting a
+complete negative from a partial tape. Historical versions remain qualified
+by their old admission rules; no receipt is silently retagged.
+
 ## Use
 
 ```sh
