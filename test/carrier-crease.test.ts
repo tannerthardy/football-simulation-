@@ -273,6 +273,27 @@ describe('production carrier entry commands', () => {
     expect(press(true)).toBe(1);
   });
 
+  it.each([1, -1] as const)('a man beside or behind the kick puller, or not seen upright, is not a landed kick, mirror %s', m => {
+    // Same landed scene as above. Only the runner's picture of the end
+    // changes: behind the puller's facing plane, or a pose he cannot confirm.
+    const press = (end: { dx: number; pose?: 'up' | 'rising' | null }) => {
+      const s = scene(m, 2.1, 3);
+      const kick = s.put('LG', LOS - .3, 3.6);
+      s.put('DT_W', LOS + .1, -1.4);
+      const de = s.put('DE_S', LOS - .3 + end.dx, 3.6 + .9);
+      const see = s.sim.see;
+      s.sim.see = (o, t) => { const p = see(o, t); return t === de ? { ...p, pose: end.pose === undefined ? 'up' : end.pose } : p; };
+      let n = 0;
+      runReadObservers.set(s.sim, e => { if (e.phase === 'aim') n++; });
+      new BallCarrier({ ...opts(m, 2.1), run: { scheme: 'counter', side: m, kick }, aimUntil: 10 }, s.back).update(s.back, s.sim);
+      return n;
+    };
+    expect(press({ dx: .2 })).toBe(1);
+    expect(press({ dx: -.6 })).toBe(0);
+    expect(press({ dx: .2, pose: 'rising' })).toBe(0);
+    expect(press({ dx: .2, pose: null })).toBe(0);
+  });
+
   it('keeps a visibly down defender in the future threat picture', () => {
     const s = scene(1, 2, 3.4), dt = s.put('DT_S', LOS + .5, 2);
     const original = s.sim.see;

@@ -505,9 +505,9 @@ export class BallCarrier implements Behavior {
         return along > 0 && along < reach && Math.abs(rx * uy - ry * ux) < a.profile.radius + th.d.profile.radius + .25;
       });
     }
-    // His kick puller, as he sees him, has reached the line and is on a man
-    // who is still up: the kick block has landed and can be read, kicked out
-    // or logged.
+    // His kick puller, as he sees him, has reached the line with a man in
+    // front of his chest and in his hands' range: the kick block is landing
+    // and can be read, kicked out or logged.
     const kick = designed ? this.opts.run?.kick : undefined;
     const kickSeen = kick && blockers.find((b) => b.agent === kick);
     const kickLanded = !!kick && !!kickSeen && (kickSeen.pos.x - sim.los) * dir > -1.5
@@ -571,14 +571,20 @@ function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vis
   return { blockers, threats };
 }
 
-/** The upright defender a seen kick puller has his hands on, as the runner
- * sees both: the nearest within the two bodies and the puller's arm. */
-function kickBlockMan(kick: Agent, seen: { pos: Vec2 }, defenders: Array<{ agent: Agent; seen: Perceived }>): Vec2 | null {
-  const arm = kick.player.measurables.armIn / 36;
+/** The man a seen kick puller has in his hands' range, as the runner sees
+ * both: the nearest defender seen upright, in front of the puller's seen
+ * chest (the half-plane he faces) and within the two bodies and the puller's
+ * arm. This is the block landing or about to land, a tick or two before the
+ * bodies meet; a body beside or behind the puller is not on his hands. An
+ * unknown or rising pose, of either man, is not a confirmed block. */
+function kickBlockMan(kick: Agent, seen: Perceived, defenders: Array<{ agent: Agent; seen: Perceived }>): Vec2 | null {
+  if (seen.pose !== 'up') return null;
+  const arm = kick.player.measurables.armIn / 36, fx = Math.cos(seen.facing), fy = Math.sin(seen.facing);
   let best: Vec2 | null = null, bd = Infinity;
   for (const { agent: d, seen: s } of defenders) {
-    if (s.pose === 'down') continue;
-    const dd = Math.hypot(s.pos.x - seen.pos.x, s.pos.y - seen.pos.y);
+    if (s.pose !== 'up') continue;
+    const rx = s.pos.x - seen.pos.x, ry = s.pos.y - seen.pos.y, dd = Math.hypot(rx, ry);
+    if (rx * fx + ry * fy <= 0) continue;
     if (dd < kick.profile.radius + d.profile.radius + arm && dd < bd) { bd = dd; best = s.pos; }
   }
   return best;
