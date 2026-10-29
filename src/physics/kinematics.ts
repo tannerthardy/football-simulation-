@@ -192,7 +192,10 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
   // they push with the force of a full start whatever speed he wants, and
   // that force falls to zero at his wanted speed instead of at top speed.
   // On the sprint curve's terms this scales the propulsion toward a wanted
-  // speed by full / wanted; a full request is the sprint curve unchanged.
+  // speed by start / wanted. Only a request whose cap is the full forward
+  // speed (moving the way he faces) keeps the sprint curve unchanged; a full
+  // request capped by facing (sideways, backward) also starts with the full
+  // force and levels off at its lower cap.
   // A lineman who wants 2.4 yd/s fires off as hard as one who wants top
   // speed and levels off sooner (gaitLag). Mass and leg force enter through
   // the body's own curve (vmax / tau), not a shared constant. The start force
