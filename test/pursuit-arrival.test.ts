@@ -24,7 +24,10 @@ beforeAll(() => {
   // it no longer exercises a nonfinite starting history; seed 4 (DE_W on RB) does.
   // With the along-route crease read (#366) as well, seed 4 still captures DE_W
   // on RB (5.80/5.85, since -Infinity); all 6 contracts pass.
-  chosen = captureNativePursuit(4);
+  // Seed 6 with the containment bound holding an engaged edge's read flow (RUN-18): seed 4's first 6 completions no
+  // longer hold a native pursuit case. Seed 6 passes all 6 contracts on develop 510f7a6a, with the bound, and on the
+  // squeeze read (#365) with and without it.
+  chosen = captureNativePursuit(6);
 }, 60_000);
 beforeAll(() => {
   // These clocks nominate pursuit decisions, not an expected football ending.
