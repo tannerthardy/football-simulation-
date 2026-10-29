@@ -79,37 +79,152 @@ The run result/declined penalty does not determine eligibility. A non-carrier
 back can be the direct-snap/read player, not a guaranteed blocker: equal
 counts do not certify equivalent responsibilities.
 
-## Required sim producing chain
+## Independently reproduced archived sim chain
 
-The external [report3 cross-check](https://github.com/tannerthardy/football-simulation-/pull/373#issuecomment-6484144260)
-used **b9e99966**, not v4. Even0.717/1,120 backers and2,045 continuations remain
-unverified. Its declared report SHA is
+This section supersedes the earlier missing-artifact status. The
+[author's delivery](https://github.com/tannerthardy/football-simulation-/pull/373#issuecomment-6502679076)
+is on evidence-only branch `evidence/run-report3-provenance`, bundle
+`52ec63308c483c7d6b987237790d61adedf2d627`, README correction
+`e0e03dac8b118658256b43bc09063c829c9449eb`. Run fetched and materialized only
+its evidence directory into ignored `out/`; nothing was merged. All supplied
+compressed/uncompressed file sizes and hashes match the manifest,
+`9eb668ddb375b9720074f19229d8639900de3f8f89f74c96553bbf9bd019c014`.
+The exact original report3 is
 `e01f94503dbe9ce0ef2c583823f46a54794faaa5ec171a740c771f63a794a5da`.
-Run requested the existing exact tapes/full hashes, actual producer
-`542d938d3b4eeec315abc55105a2f317210e09ae`, resolved settings/runtime,
-restage/recording patch and hashes, constructor/shift/exclusion stage counts,
-and input-to-parent-seed map.456×5=2280 is arithmetic, not a verified chain
-to2045. Shifts are not independent games.
 
-Run independently checked that producer's config and launcher bytes:
-`ca06e2841a586945dea8518ddaa4cf1101b301505bc4f5e91b21c26c100deaf4` and
-`a6f29ea2e69c8005319572d1f3ec9749929518a9dadbe42a5acafcb4da9bbe23`.
-`--candidate` bypasses pinned source equality but **still applies the profile**
-and overrides. These static facts do not certify an uncommitted-overlay
-execution. A settings hash/`--sim-source` declaration alone is insufficient.
+| Tape seed | Tape SHA256 | Bytes | Loaded runs |
+|---|---|---:|---:|
+|7|`4b96719441fc2689f63281b0b935b1bb44383be36e9423e962141bbd655d1adb`|30721987|541|
+|9|`bde7e2e9309df2c36836128fff7f3828cf03edf8253e21b255b9f74297fd3a4f`|28154673|520|
+|11|`2a642bca0c5fec211928b4ce2395ba96533f938691921fd8b7c784ca7bc86c1d`|28319427|503|
+|13|`7fa8b4cfb05ec74001832027bfcab66f2f181df2627721f5f11158009b44e71b`|25780019|481|
 
-Use the current operator on the **same verified cached producing tapes**,
-with a review ledger pinned to their actual NFL input, before endorsing the
-paired numbers. Preserve missing-artifact declarations and old reports;
-do not fabricate provenance with a fresh capture. No new games/downloads
-are requested. Snap-only is not verified pre-snap. Equal surplus does not
-match B,D/personnel/formation/front/quality or call/check selection, and
-geometric proximity is not protection or causal blocking quality.
-Position taxonomy also matters: the NFL adapter groups OLB as LB while the
-sim adapter groups EDGE as DL. The box count includes both, but the later
-backer denominator selects LB only. Its depth window reduces, not proves
-removal of, that role-composition mismatch. Inspect the supplied population
-alongside its source labels before attributing a proximity-rate gap to OL work.
+### Source, settings and selection verified
+
+Producer is `542d938d3b4eeec315abc55105a2f317210e09ae`, Node22.23.3.
+Run independently reconstructed the source digest
+`7829f2f6bce53d7655fb5c54a4659d32da01a269b86fe9747a75c69942fccf01`
+and full validation digest
+`e5355fa28cff247d5e2b9416d1402fb6a812d50a749c1e02ee1950dad6c53264`
+from that commit plus the supplied three-file patch and untracked recorder.
+Both equal all four actual launcher receipts. All87 flags and world-default
+metadata match its committed profile; decoded constructors have no explicit
+physics/alignment overrides. Source `src/` is byte-identical to3779a4ed.
+These are historical sources, not a claim about current develop.
+
+The four receipts bind `replay N DEV542 --run-only --shifts 4 --trace`,
+exit0, inputs-unchanged and the actual overlay. `--candidate` bypasses the
+profile's source pin, but still applies its flags. The old `box-settings.json`
+was a handwritten summary, not a resolved receipt. V4 recomputation instead
+hashes receipt `run-1793219606355-306.json`,
+`df96ba12b20abb0a25a6ddace16fb9cdf3be53c950bd5d83e1966775a0b05784`.
+All four resolved flag/default records agree. This changes metadata, not play
+execution. The provided Python overlay is not the loader used in report3:
+its recorded common-loader hash is the committed `c78ed2da…` used here.
+
+Run independently decoded and hashed every saved constructor, verified the
+accounting lists, and matched every taped execution ID in order:
+
+| Selection stage | Count |
+|---|---:|
+|Saved constructors,117/115/115/109 by seed|456|
+|Five replay streams per constructor|2280|
+|Pass-flagged constructors not taped,3×5|15|
+|Actual tape records|2265|
+|No run concept|10|
+|Overlay holding-flag exclusion|170|
+|No non-QB carrier|40|
+|Loaded/countable rows|2045|
+
+The15 omissions follow the **saved pass flag**, not independent proof of the
+replayed call. The170 `nullified` flags are set when the PlaySim result has
+any offensive holding call; this is not verification of game-layer accepted
+penalty/nullification. Non-QB-carrier selection also excludes failed exchanges.
+These restrictions are part of this archive's population, not interchangeable
+with an ordinary-game or NFL selection. Four tape hashes map to four supplied
+parent-seed clusters; the saved RNG plus four deterministic forks are repeated
+executions, not2,045 independent games.
+
+### Historical reproduction and current-operator results
+
+Run executed the historical b9e99966 operator and unchanged v4 script on these
+same four tapes in7/9/11/13 order. **All2,045 historical sim rows and every sim
+summary table match report3 exactly**, including its seed-cluster intervals.
+Only the sim component was reproduced: an explicitly empty offline NFL fixture
+satisfied the CLI's required NFL argument. No NFL observations or full-report
+comparison are implied by that placeholder.
+
+| SNAP surplus | Runs | Eligible backers | Historical positive | V4 positive | V4 fraction | Four-seed bootstrap95% interval |
+|---|---:|---:|---:|---:|---:|---|
+|ALL|2045|3720|2434|2455|65.99%|61.23–70.16%|
+|Light|135|189|122|122|64.55%|42.97–75.73%|
+|Even|643|1120|803|810|72.32%|64.04–76.89%|
+|Defense+1|883|1646|1021|1032|62.70%|57.83–67.50%|
+|Defense+2plus|384|765|488|491|64.18%|60.06–68.80%|
+
+All2,045 have observed v4 touch horizons; all snap counts are unchanged.
+Against b9,21 rows each gain one proximity-positive backer under the repaired
+terminal-sample rule; admitted-frame counts are unchanged. These are
+measurement corrections on identical tapes, not additional blocking work.
+No carrier-credit correction is active here. Even-zone subsets are
+IZ162/210=77.14% over133 runs and OZ415/543=76.43% over303 runs; this concept
+mapping pools Duo/split-zone into IZ and wide-zone/toss into OZ.
+
+The supplied Tools NFL-only v4 even fraction87.76% remains above this archive's
+72.32%, but this is a **descriptive, separately selected cohort contrast**,
+not proof of a release defect or an OL performance target. NFL source/review
+bytes differ from report3's all-play cache. The exact Tools current-v4 report
+is needed to join raw B,D/personnel/concept common-support cells; its published
+aggregate table alone cannot establish that match. Four sim clusters are few,
+and these intervals do not model tracking, taxonomy or selection error.
+
+Raw local output hashes (not committed): historical sim-only report
+`29710c00ceb0e1084ee119cdafeaf365389912ade4e098005aa57d1c699c32df`;
+v4 sim-only report
+`f8cea6f00f9a4b0d053fb4379d82c5876ec3e8897c72f45840f079374fb10ad2`.
+To reproduce, materialize the bundle outside Git and run the CLI with its
+four `--sim` inputs, full producer `--sim-source`, actual receipt
+`--sim-settings`, and `--sim-clusters box-clusters.json`. Use the pinned b9
+script/common loader for the historical comparison, current script SHA
+`273e45b7…` for v4, and an explicitly labelled empty NFL fixture only for
+sim-component verification. Retain a real source-pinned NFL input/review
+ledger for any actual NFL query; do not transplant review ordinals to another
+cache. Bootstrap400, seed20221009, same tape order.
+
+### Manual verification and current-source distinction
+
+Fetched develop is `6949f6454af3a88ff0d0bb41ca424f4ff4174b0d`; this is a
+report-only follow-up from working HEAD39fd09e7, not a replay of that newer
+engine. The unchanged v4 operator was tested on379d9031 and its script hash
+is verified here. Python3.12.14; Node22.23.3 used only to deserialize saved
+constructors, not run football. Manual owner controls:
+`python3 -m unittest discover -s test -p 'test_run_box_suite.py' -q`:
+**28/28 pass,0.084s, no skips**. `git diff --check` passes. Prior unchanged
+276-test offline receipt and Tools' independent14 controls remain applicable;
+no core/build/game campaign was repeated for this documentation-only update.
+Both cached-data recomputations finished successfully; their wall times were
+not recorded. Launcher249–281s times belong to the historical producer, not
+today's measurement work. No Actions.
+
+### Remaining historical limitations and disposition
+
+The constructor capture source/command and original game/roster provenance
+were never saved. All456 constructor records lack game IDs. Current metadata
+and constructor bytes cannot retrospectively recover that chain or prove the
+sample represents ordinary observed game selection.
+
+Run inspected the recorder and its transitive getters at the exact producer:
+position/velocity/facing, down state, held carrier and run target are pure
+reads there. No RNG draw, acquire/see call or movement command was found.
+This supports a passive-recorder interpretation, but no saved with/without
+trace execution exists; dynamic noninterference is **not established**.
+No replacement games/captures were run to manufacture missing history.
+
+**Accept the exact archived sim arithmetic/provenance reproduction, with
+these limits. Hold causal NFL calibration, candidate#375 claims and the
+climber diagnosis.** Request the existing Tools v4 report for compatible-cell
+assessment and the existing pending-anchor packet; do not download tracking,
+rerun games or silently promote this historical source to current production.
 
 ## Candidate #375 does not close the evidence hold
 
@@ -125,13 +240,12 @@ Its description treats the old even-box0.717sim/0.876NFL as established and
 reports gains such as0.717→0.736 overall and0.762→0.800 outside zone. These
 remain author-reported candidate measurements under an uncommitted overlay,
 not independently verified current-v4 comparisons. The reviewed NFL-only
-reference is0.8776=4121/4696 on its own pinned input/review cohort. That
-reference does not validate the old sim numerator/denominator, identical
-cohort bytes or any candidate improvement.
+reference is0.8776=4121/4696 on its own pinned input/review cohort. The old baseline sim numerator/denominator now reproduces, as documented
+above. That does not establish identical NFL cohorts or any candidate improvement.
 
 The producer/source bridge must also be explicit: old report3 declares
-542d938d; #375 declares baseline3779a4ed and candidate4684e96c. Identical
-printed cells do not prove identical execution. Its release/closing/keeper
+542d938d; #375 declares baseline3779a4ed and candidate4684e96c. Run verified that542d938d and3779a4ed have byte-identical `src/`; this
+source bridge does not supply the missing candidate tapes or capture receipt. Its release/closing/keeper
 metrics need the exact analysis scripts/definitions alongside the producing
 tapes and overlay. The claim that the release read is the cause remains an
 author hypothesis for later review, not an accepted finding from #373.
@@ -143,7 +257,7 @@ or an instruction to restore old yardage. The author-reported focused/core
 and integration checks do not certify an NFL comparison or this mechanism.
 
 The [hold/provenance reconciliation](https://github.com/tannerthardy/football-simulation-/pull/375#issuecomment-6501542511)
-asks the existing data host to fulfill the already-open artifact request,
-including any scratch metric scripts, rather than generate replacement
-tapes or another game campaign. #375 and the climber/behavior diagnosis stay
+now has the original report3 artifact request fulfilled as qualified above.
+Any candidate comparison still needs its separately existing tapes and metric
+scripts; no replacement tapes or game campaign are requested. #375 and the climber/behavior diagnosis stay
 held. No behavior review, experiment, Actions or merge was started here.
