@@ -46,8 +46,13 @@ describe('scenario pack: physical contracts and mirror symmetry', () => {
     for (const side of [1, -1] as const) {
       const rd = redirect({ side }), se = seal({ side }), sq = squeeze({ side });
       for (const r of [rd, se, sq]) physical(r);
-      // The tackle rides the speed rusher past the quarterback's depth.
-      expect(rd.carriedPast).toBeGreaterThan(0.5);
+      // Loaded protection is checked causally in redirect-phase-contract:
+      // the actual hand must move the rusher outside and protect QB space
+      // against an otherwise identical no-hand World. Whole-rep carriedPast
+      // also includes free pursuit after release; it remains a report value.
+      expect(rd.peakNormal).toBeGreaterThan(0);
+      expect(rd.peakTangent).toBeGreaterThan(0);
+      expect(rd.cornerTurned).toBe(true);
       expect(se.sealedFor).toBeGreaterThan(1);
     }
     const a = redirect({ side: 1 }), b = redirect({ side: -1 });

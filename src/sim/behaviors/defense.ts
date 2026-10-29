@@ -107,6 +107,9 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
 export class PassRusher implements Behavior {
   readonly kind = 'rush';
   private readonly getOff: number;
+  /** Own contact with the line, not a chip from a back or receiver.
+   * Once past the opening lane and free, finish instead of restarting it. */
+  private workedLineBlock = false;
   /** Pre-snap rush plan from his tools. */
   readonly plan: 'power' | 'finesse' | 'speed';
   constructor(
@@ -128,7 +131,11 @@ export class PassRusher implements Behavior {
 
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.t < this.getOff) return stand(Math.PI);
-    if (a.engagement) return stand();
+    if (a.engagement) {
+      const { blocker } = a.engagement;
+      if (['LT', 'LG', 'C', 'RG', 'RT'].includes(blocker.slot)) this.workedLineBlock = true;
+      return stand();
+    }
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Throw in the air: peel off toward the ball.
@@ -158,6 +165,9 @@ export class PassRusher implements Behavior {
     if (a.pos.x > sim.los - 0.5) {
       const lane = edge ? { x: sim.los - 1.6, y: gy + this.gapSign * (this.plan === 'speed' ? 1.8 : 1.0) } : { x: sim.los - 0.6, y: gy };
       return runThrough(a, lane, { speed: 1, cutSkill: bend });
+    }
+    if (edge && this.workedLineBlock) {
+      return runThrough(a, pursuitPoint(sim, a, qb, 1.5), { speed: 1, cutSkill: bend });
     }
     if (edge && a.pos.x > qbSeen.x + 1.0) {
       const arc = { x: qbSeen.x - 1.0, y: qbSeen.y + this.gapSign * (this.plan === 'speed' ? 1.3 : 0.8) };
