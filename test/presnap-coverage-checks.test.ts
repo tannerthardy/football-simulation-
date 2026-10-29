@@ -90,8 +90,18 @@ describe('Cover 3 Clue vs bunch', () => {
     expect(jobsOf(lock, 'CB_S').at(-1)).toBe(`man:${lock.numbering.S1}`);
     const squeeze = clue('slant', 'go');
     expect(jobsOf(squeeze, 'CB_S').at(-1)).toBe(`man:${squeeze.numbering.S2}`);
+    // Re-staged for the direction-free start (#353): the SS and nickel now
+    // reach their drops sooner and sit 2.6-2.8 yd off #2's line at 1.8 s
+    // (2.1-2.6 before), outside the visible-cap width, so the deep-third
+    // judgment protects #2's vertical over the top for a few tenths
+    // (protect-vertical:Y, 1.8-2.2 s) before returning to the third. Before
+    // #353 that same help already fired on seeds 3, 4, 8, 9 and 10; now on
+    // seeds 1-10. The Clue rule is the same: it never keys one receiver
+    // (mode stays unset), never locks #1, and he finishes in the third.
     const both = clue('go', 'go');
-    expect(jobsOf(both, 'CB_S')).toEqual(['zone:deep_third_s']);
+    expect(both.defenders.CB_S.modes).toEqual(['-@0.00']);
+    expect(jobsOf(both, 'CB_S')).not.toContain(`man:${both.numbering.S1}`);
+    expect(jobsOf(both, 'CB_S').at(-1)).toBe('zone:deep_third_s');
     // The bunch-side underneath players zone off instead of matching.
     expect(lock.defenders.NB.rule).toBeNull();
   });

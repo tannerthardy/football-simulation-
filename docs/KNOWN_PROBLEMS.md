@@ -295,6 +295,7 @@ problem), resolved.
 | [RUN-14](#run-14) | Engaged DL lose the backside shoulder; play-side DL drift away from the play | G2 | medium | open |
 | [RUN-15](#run-15) | Backs leave the mesh too early and take the handoff almost standing | G2 | high | fix with the start law (#336) |
 | [RUN-16](#run-16) | Draw: the line does not block the rush while it shows pass | G2 | high | in work |
+| [RUN-18](#run-18) | An engaged edge past his containment bound kept widening on his held flow | G2 | medium | resolved |
 | [TKL-1](#tkl-1) | Too many missed and broken tackles | G1 | high | in work |
 | [TKL-2](#tkl-2) | Pursuit angles and speed unlike tracking | G1 | high | in work (#259, #263, #267 landed; aim jump named) |
 | [TKL-3](#tkl-3) | Fast receivers break catch tackles twice as often | G1, G3 | medium | open |
@@ -591,6 +592,23 @@ Carried over from the issue register; each was measured on an older develop.
   61–69% of the time (NFL 30%). That's line-of-scrimmage displacement and
   mesh depth, Run Game's. The carrier's 0.2–0.3 yd after that contact (NFL
   1.45) is forward drive through contact, Main Engine's.
+
+<a id="run-18"></a>
+### RUN-18: An engaged edge past his containment bound kept widening on his held flow
+
+- **Symptom:** on seal-hold (I-jumbo duo, seed 1) with the squeeze read
+  (#365), the strong end travels 2.0–2.7 yd outward under a loaded seal.
+  At 1.00 s he is outside his containment bound and still asks +1.11 yd/s
+  outward (independent trace on #365).
+- **Cause:** *confirmed.* The engaged-flow law (#347),
+  `flow = held + 3·(target − y)`, set `target` to his own y once he was
+  wider than containment needs, but still added the held flow. The old
+  squeeze misread hid it by overriding the request inward.
+- **Resolved:** while the bound applies, an outward held flow is dropped
+  ([contain-flow](reviews/contain-flow.md)). The bound is not too tight:
+  with #365 the edge moves toward NFL's position against the last blocker
+  (1.5 s: +0.18 → +0.07 yd outside him; NFL −0.03). Develop restage:
+  −0.36 ± 0.22 yd per run, on wide zone, toss and trap.
 
 ## Tackling and pursuit
 
@@ -2439,6 +2457,15 @@ From #193's open list:
   hook on Y trails 4 yd underneath the same way. Same failure as deep man
   (G3): the carrier lets the stem eat his cushion without counting the time
   his body needs to turn and reach the receiver's speed.
+  - The direction-free start composition (#353) exposes the same hook
+    handoff in the legacy-alignment panel: the lane drive reverses downhill
+    before the carry admits the advancing stem, leading to a harder torso
+    collision. The repair gathers depth while squeezing that unresolved
+    stem's lane, without depth feedforward. An already acquired plant, stop
+    or crossing release restores the lane drive; normal vertical carry,
+    spot drops and the physical start remain separate. An earlier treatment
+    which retained positive depth feedforward opened the opposing hitch and
+    was rejected. This does not repair the wider-slot band omission above.
 - with `PASS_KICK` on (#215), the Quarter Flat #3-away scene loses its
   released #3 again: the back's flat release is walled behind the weak
   tackle's vertical kick and is 3.7 yd behind the line at 2.8 s
