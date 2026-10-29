@@ -78,7 +78,8 @@ describe('selected film constructor sidecar', () => {
         inputSha256: bytesHash(Buffer.from(JSON.stringify({ seed, games: number, home, away }))) },
       selection: selection.selection, plays: selection.plays, parts: [],
       beforeAfter: { status: 'reserved-for-F2', targetPairs: 20, pairs: [], note: 'test fixture' } };
-  });
+  // Two six-step game prefixes: about 8 s alone, past Vitest's default 10 s hook limit under a full parallel run.
+  }, 60_000);
 
   function pack(test: (dir: string) => void, changeManifest?: (m: FilmPackManifest) => void,
     changeClips?: (clips: ReturnType<typeof packReplayPlay>[]) => void) {
