@@ -153,6 +153,39 @@ error, new seasons/rosters and coaching intent.
 
 ## Football interpretation and remaining mismatch
 
+### Snapshot integrity review, applied symmetrically
+
+`--snap-reviews` accepts a `box-snap-reviews-v1` JSON with `reviews` records:
+`input_sha256`, `filtered_run_ordinal`, optional verifying `play_id`, `status`
+(`confirmed_invalid`, `valid`, `pending`), `reason`, and `evidence_sha256` for
+confirmed/valid decisions. The evidence pin must be independently checked;
+formatted metadata is not proof of a sound finding. Wrong input hashes,
+conflicting/duplicate row identities, play-ID mismatches and unobserved
+review rows fail instead of silently applying a different exclusion set.
+Raw review/evidence packets stay outside Git.
+
+The policy is identical for NFL and sim:
+
+- Independently demonstrated invalid time/coordinate/reference anchor makes
+  count and related touch **unknown**. Keep the row in all-input accounting,
+  omit it from valid-count means/shares, and retain untrusted original counts
+  only in a labelled diagnostic field. Do not turn it into a light box or
+  impute zero backers. This matters to box incidence even if its old backer
+  denominator was zero.
+- Internally coherent extreme alignments remain valid. Box surplus, rushing
+  gain or a surprising football ending is not an integrity criterion. Do not
+  automatically reconstruct a new LOS from the OL just to obtain a useful
+  result; a source repair needs an independently trusted reference.
+- Screening hits are not confirmed corruption. Pending hits remain flagged
+  in the provisional primary rows; a separate pending-excluded sensitivity
+  is exported. Neither is a finalized comparison until the nominated screen
+  set has been reviewed. No threshold is chosen to improve NFL/sim agreement.
+
+Version `live-window-carrier-clock-reviewed-v3` preserves prior v1/v2 results.
+The audit is source-qualified, not an ID-specific football exception. The
+absence of a review is not proof of integrity or a self-awarded readiness
+decision. The full23-hit review remains a separate explicit dependency.
+
 If sim has more defense+1/+2 boxes, part of an aggregate access gap can come
 from the calls it chooses to run. Recompare within concept, listed personnel,
 carrier group and exact B,D before attributing that difference to blocking.

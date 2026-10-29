@@ -198,6 +198,39 @@ def quantile(v, q):
     return s[lo] + (s[math.ceil(x)] - s[lo]) * (x - lo)
 
 
+def snap_reviews(path, inputs):
+    """Source-pinned quality reviews, not an outcome-based alignment filter."""
+    if path is None:
+        return {}
+    doc = json.loads(path.read_text())
+    if doc.get("schema") != "box-snap-reviews-v1":
+        raise ValueError("expected box-snap-reviews-v1")
+    reviews, hashes = {}, {r["sha256"] for r in inputs}
+    for r in doc["reviews"]:
+        key = r["input_sha256"], r["filtered_run_ordinal"]
+        if key[0] not in hashes or type(key[1]) is not int or key[1] < 0 or key in reviews:
+            raise ValueError("snap review has unmatched input, invalid ordinal or duplicate identity")
+        if r.get("status") not in ("confirmed_invalid", "valid", "pending") or not r.get("reason"):
+            raise ValueError("snap review needs explicit status and reason")
+        if r["status"] != "pending" and not re.fullmatch(r"[0-9a-f]{64}", r.get("evidence_sha256", "")):
+            raise ValueError("confirmed/valid snap review needs a pinned evidence file")
+        reviews[key] = r
+    return reviews
+
+
+def apply_snap_review(play, op, meta, review):
+    """Apply identical integrity policy to both sources; retain uncertain hits."""
+    reasons = list(meta["source_reasons"])
+    if review is not None:
+        if review.get("play_id") is not None and review["play_id"] != meta["play_id"]:
+            raise ValueError("snap review play identity disagrees with input/ordinal")
+        if review["status"] == "confirmed_invalid":
+            reasons.append("confirmed_invalid_snap_anchor")
+    row = observe(play, op, clock_valid=meta["clock_valid"], source_reasons=reasons)
+    row["snap_review"] = review or {"status": "not_reviewed", "reason": "no source-pinned review supplied"}
+    return row
+
+
 def summary(rows, draws, seed):
     observed = [r for r in rows if r["status"] == "observed"]
     measured = [r for r in observed if r["backers"] is not None]
@@ -289,19 +322,25 @@ def main():
     p.add_argument("--sim-source")
     p.add_argument("--sim-settings", type=Path)
     p.add_argument("--sim-clusters", type=Path, help="JSON object: exact input SHA256 -> parent seed/roster cluster, never an individual RNG shift")
+    p.add_argument("--snap-reviews", type=Path, help="source-pinned independent integrity reviews; pending screens are not exclusions")
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--bootstrap", type=int, default=400)
     p.add_argument("--seed", type=int, default=20221009)
     args = p.parse_args()
     if args.bootstrap < 1 or (args.sim and not re.fullmatch(r"[0-9a-f]{40}", args.sim_source or "")):
         p.error("positive bootstrap / full sim producer commit required")
-    protected = [args.nfl, *args.sim, OPERATOR, OPERATOR.with_name("run_film_reference.py"), Path(__file__), *[q for q in (args.sim_settings, args.sim_clusters) if q]]
+    protected = [args.nfl, *args.sim, OPERATOR, OPERATOR.with_name("run_film_reference.py"), Path(__file__), *[q for q in (args.sim_settings, args.sim_clusters, args.snap_reviews) if q]]
     for path in protected:
         if args.out.resolve() == path.resolve() or (args.out.exists() and path.exists() and args.out.samefile(path)):
             p.error("output must not overwrite input/operator/provenance")
     inputs = [{"path": str(q), "sha256": sha(q)} for q in [args.nfl, *args.sim]]
     if len({q["sha256"] for q in inputs}) != len(inputs):
         p.error("duplicate input digest")
+    try:
+        reviews = snap_reviews(args.snap_reviews, inputs)
+    except (ValueError, KeyError, TypeError) as error:
+        p.error(str(error))
+    used_reviews = set()
     clusters = json.loads(args.sim_clusters.read_text()) if args.sim_clusters else {}
     op, rows, counts, changes = operator(), [], {}, 0
     identities = set()
@@ -319,21 +358,36 @@ def main():
                     tally["repeated_sim_logical_id_execution_unverified"] += 1
                     meta["logical_id_repeated"] = True
                 identities.add(key)
-            row = observe(play, op, clock_valid=meta["clock_valid"], source_reasons=meta["source_reasons"])
+            review_key = manifest["sha256"], meta["filtered_run_ordinal"]
+            review = reviews.get(review_key)
+            try:
+                row = apply_snap_review(play, op, meta, review)
+            except ValueError as error:
+                p.error(str(error))
+            if review is not None:
+                used_reviews.add(review_key)
             historical = observe(play, op, live=False, correct_carrier=False, source_reasons=meta["source_reasons"])
             changed = (row.get("backers"), row.get("touched")) != (historical.get("backers"), historical.get("touched"))
             changes += changed
             row.update(meta, source=src, concept=play["concept"], input_sha256=manifest["sha256"],
+                       untrusted_published_counts=historical.get("published_counts") if review and review["status"] == "confirmed_invalid" else None,
                        historical_touch={k: historical.get(k) for k in ("backers", "touched")}, live_admission_changed=changed)
             if src == "sim":
                 row["cluster"] = clusters.get(manifest["sha256"])
             rows.append(row)
+    if used_reviews != set(reviews):
+        p.error("snap reviews include an unobserved row; refusing a silently partial review set")
     result = {"schema": "run-box-suite-v1", "operator_commit": "f7251869ed0f9c9f59242a9a799523c31f685fcb", "operator_sha256": sha(OPERATOR),
               "loader_sha256": sha(OPERATOR.with_name("run_film_reference.py")), "script_sha256": sha(Path(__file__)),
               "nfl_label": args.nfl_label, "sim_source": args.sim_source, "sim_settings_sha256": sha(args.sim_settings) if args.sim_settings else None,
               "inputs": inputs, "counts": counts, "live_admission_changed_runs": changes,
               "bootstrap": {"draws": args.bootstrap, "seed": args.seed, "unit": "NFL game or supplied sim parent-seed cluster; no invented IID play uncertainty"},
-              "admission_version": "live-window-carrier-clock-v2", "carrier_credit_corrected_runs": sum(r.get("carrier_blocker_credit_removed", False) for r in rows),
+              "admission_version": "live-window-carrier-clock-reviewed-v3", "carrier_credit_corrected_runs": sum(r.get("carrier_blocker_credit_removed", False) for r in rows),
+              "snap_review_sha256": sha(args.snap_reviews) if args.snap_reviews else None,
+              "snap_review_status_counts": dict(Counter(r["snap_review"]["status"] for r in rows)),
+              "confirmed_invalid_snap_runs": sum(r["snap_review"]["status"] == "confirmed_invalid" for r in rows),
+              "pending_snap_review_runs": sum(r["snap_review"]["status"] == "pending" for r in rows),
+              "pending_review_excluded_sensitivity": tables([r for r in rows if r["snap_review"]["status"] != "pending"], args.bootstrap, args.seed),
               "tables": tables(rows, args.bootstrap, args.seed), "common_support": common_support(rows), "rows": rows,
               "limits": ["SNAP-only composition proxy; strict pre-snap instant is unavailable in the shared loaders.",
                          "Backer proximity is not useful protection, load, an assignment, or missed attainable work.",
@@ -347,7 +401,7 @@ def main():
     for t in result["tables"]:
         if len(t["dimensions"]) <= 2:
             print(t["source"], t["cell"] or "ALL", t["counted_runs"], t["backers"], t["touched"], t["backer_touch_fraction"], t["ci95_touch"] or t["ci_unavailable"], sep=" | ")
-    print("Live-window admission changed", changes, "runs; all historical values retained in JSON.")
+    print("Recorded touch values differ in", changes, "runs (includes admission to unknown); historical values retained in JSON.")
 
 
 if __name__ == "__main__":

@@ -40,6 +40,60 @@ def raw_sim(p):
 
 
 class RunBoxSuiteTests(unittest.TestCase):
+    def test_anchor_integrity_policy_is_symmetric_and_extremes_are_not_filtered(self):
+        review = {"status": "confirmed_invalid", "reason": "raw coordinate/time anchor contradicted by independent evidence"}
+        for source in ("nfl", "sim"):
+            p = play()
+            p["src"] = source
+            meta = {"play_id": "case", "clock_valid": True, "source_reasons": []}
+            self.assertEqual(m.apply_snap_review(p, OP, meta, review)["status"], "unknown")
+            self.assertEqual(m.apply_snap_review(p, OP, meta, dict(review, status="valid"))["status"], "observed")
+            self.assertEqual(m.apply_snap_review(p, OP, meta, dict(review, status="pending"))["status"], "observed")
+            # An extreme but finite position is not itself a corruption rule.
+            p["xy"][0][15] = (-100, 0)
+            self.assertEqual(m.apply_snap_review(p, OP, meta, None)["status"], "observed")
+            meta["source_reasons"] = ["duplicate_actor_indices"]
+            self.assertEqual(m.apply_snap_review(p, OP, meta, dict(review, status="valid"))["status"], "unknown")
+
+    def test_review_manifest_is_pinned_and_rejects_conflicts(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "review.json"
+            r = {"input_sha256": "a" * 64, "filtered_run_ordinal": 0, "status": "confirmed_invalid", "reason": "anchor", "evidence_sha256": "b" * 64}
+            path.write_text(json.dumps({"schema": "box-snap-reviews-v1", "reviews": [r]}))
+            self.assertEqual(len(m.snap_reviews(path, [{"sha256": "a" * 64}])), 1)
+            with self.assertRaises(ValueError):
+                m.snap_reviews(path, [{"sha256": "c" * 64}])
+            path.write_text(json.dumps({"schema": "box-snap-reviews-v1", "reviews": [r, r]}))
+            with self.assertRaises(ValueError):
+                m.snap_reviews(path, [{"sha256": "a" * 64}])
+            with self.assertRaises(ValueError):
+                m.apply_snap_review(play(), OP, {"play_id": "actual", "source_reasons": [], "clock_valid": True}, dict(r, play_id="wrong"))
+
+    def test_cli_review_retains_unknowns_and_pending_in_primary(self):
+        with tempfile.TemporaryDirectory() as folder:
+            n, reviews, out = [Path(folder) / name for name in ("nfl.jsonl.gz", "reviews.json", "report.json")]
+            with gzip.open(n, "wt") as f:
+                for i in range(3):
+                    raw = raw_nfl(play())
+                    raw["id"] = f"2022091100-{i}"
+                    f.write(json.dumps(raw) + "\n")
+            inputs = [{"input_sha256": m.sha(n), "filtered_run_ordinal": i, "play_id": f"2022091100-{i}", "status": status,
+                       "reason": "synthetic independent review", "evidence_sha256": "b" * 64} for i, status in enumerate(("confirmed_invalid", "pending", "valid"))]
+            reviews.write_text(json.dumps({"schema": "box-snap-reviews-v1", "reviews": inputs}))
+            args = [str(PATH), "--nfl", str(n), "--nfl-label", "synthetic", "--snap-reviews", str(reviews), "--out", str(out), "--bootstrap", "20"]
+            with patch.object(sys, "argv", args), contextlib.redirect_stdout(io.StringIO()):
+                m.main()
+            r = json.loads(out.read_text())
+            overall = next(t for t in r["tables"] if not t["dimensions"])
+            sensitivity = next(t for t in r["pending_review_excluded_sensitivity"] if not t["dimensions"])
+            self.assertEqual((overall["runs"], overall["counted_runs"]), (3, 2))
+            self.assertEqual((sensitivity["runs"], sensitivity["counted_runs"]), (2, 1))
+            self.assertEqual(r["pending_snap_review_runs"], 1)
+            bad = r["rows"][0]
+            self.assertEqual(bad["status"], "unknown")
+            self.assertNotIn("box", bad)
+            self.assertEqual(bad["untrusted_published_counts"]["box"], 7)
+
     def test_te_and_ol_carrier_cannot_count_as_own_blocker(self):
         for index in (7, 2):
             p = play()
