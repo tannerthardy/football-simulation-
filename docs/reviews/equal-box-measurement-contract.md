@@ -61,6 +61,18 @@ Carrier groups are RB 5,511 / QB 467 / WR 229 / TE 16. A **separately labeled** 
 
 That change alone moves even-box NFL from 0.8796 to 0.8946. Freeze the requested population before reading outcomes; do not silently compare a forced RB suite with all NFL rushing types. NFL MAN stays distinct; sim Duo maps into IZ, so those concept labels are not interchangeable coaching assignments.
 
+### Observed roster-personnel composition (not a declared coaching chart)
+
+| RB/TE proxy | Runs | Share of recorded runs | Mean D / B | Defense +2 or more |
+|---|---:|---:|---|---:|
+| 11 | 3,048 | 48.98% | 6.44 / 6.04 | 322/3048 |
+| 12 | 1,567 | 25.18% | 6.91 / 7.07 | 64/1567 |
+| 21 | 762 | 12.24% | 6.98 / 6.90 | 36/762 |
+| 13 | 395 | 6.35% | 7.41 / 7.68 | 20/395 |
+| 22 | 334 | 5.37% | 7.66 / 7.85 | 20/334 |
+
+The remaining 117 runs span smaller proxy cells (00/01/02/03/10/20/23/30/31). The operator suppresses some small printed cells at n < 30; they are not zero incidence. Without the sim tape, no NFL-versus-sim personnel difference is certified. A forced heavy-package suite must not be compared to this empirical mixture without explicit strata/weights.
+
 ## Touch timing and concrete failures
 
 Touch begins at frame 3 (0.3 s), independent of handoff. It ends before the first frame where carrier x reaches **the same backer’s moving x minus one yard**, or at the last recorded frame if it never does. It is not a frozen snap-depth crossing or first physical contact. Fixed target identities are preserved; there is no nearest-defender substitution. Wide runner paths and retreating backers change the observation window. Contact, safe access, legal block, continuous restraint and assignments are not measured.
