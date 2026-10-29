@@ -10,7 +10,7 @@ Tools [accepted the window repairs and completed the nominated anchor audit](htt
 on `379d9031ded6aa364a3f05276b2729d14de749d8`, script SHA
 `273e45b751fb9c54bb6556aed1c4c4d14e4def640a1ede37a507d032ef497e03`.
 Its independent owner28/28 and portable14/14 controls pass. The immutable
-[review and controls](https://github.com/tannerthardy/football-simulation-/blob/ec72de3a933dd04eae8be21f6ad237fce02f084d/docs/reviews/box373-repair-recheck.md)
+[review and controls](https://github.com/tannerthardy/football-simulation-/blob/35e06f8479d39cfcc611e884ae772f248bd88655/docs/reviews/box373-repair-recheck.md)
 do not approve a sim/NFL comparison or gameplay. Run verified the unchanged
 script hash, portable manifest bytes,25 parsed review entries and rejection
 against the unrelated Week1 input; no nine-week/raw query was repeated here.
@@ -110,3 +110,40 @@ sim adapter groups EDGE as DL. The box count includes both, but the later
 backer denominator selects LB only. Its depth window reduces, not proves
 removal of, that role-composition mismatch. Inspect the supplied population
 alongside its source labels before attributing a proximity-rate gap to OL work.
+
+## Candidate #375 does not close the evidence hold
+
+Draft [#375](https://github.com/tannerthardy/football-simulation-/pull/375),
+`run/G2-climb-on-secure`, is preserved at
+`4684e96c3df0562ea0c6431fd1c71f256fa508d3` and marked **hold**. No candidate
+code, historical experiment or adverse result was removed. The coordinator
+reports publication after Tanner's hold; GitHub records creation at
+2026-10-29T00:47:22Z. **When development occurred is not established by
+publication timing.** This is not a claim of development after the hold.
+
+Its description treats the old even-box0.717sim/0.876NFL as established and
+reports gains such as0.717→0.736 overall and0.762→0.800 outside zone. These
+remain author-reported candidate measurements under an uncommitted overlay,
+not independently verified current-v4 comparisons. The reviewed NFL-only
+reference is0.8776=4121/4696 on its own pinned input/review cohort. That
+reference does not validate the old sim numerator/denominator, identical
+cohort bytes or any candidate improvement.
+
+The producer/source bridge must also be explicit: old report3 declares
+542d938d; #375 declares baseline3779a4ed and candidate4684e96c. Identical
+printed cells do not prove identical execution. Its release/closing/keeper
+metrics need the exact analysis scripts/definitions alongside the producing
+tapes and overlay. The claim that the release read is the cause remains an
+author hypothesis for later review, not an accepted finding from #373.
+
+Keep the rejected all-double-release treatment, and the reported outside-zone
+41new/21removed DL backfield-first-hit cases (32attributed to later keeper
+loss), visible at their actual source. They are not an automatic rejection
+or an instruction to restore old yardage. The author-reported focused/core
+and integration checks do not certify an NFL comparison or this mechanism.
+
+The [hold/provenance reconciliation](https://github.com/tannerthardy/football-simulation-/pull/375#issuecomment-6501542511)
+asks the existing data host to fulfill the already-open artifact request,
+including any scratch metric scripts, rather than generate replacement
+tapes or another game campaign. #375 and the climber/behavior diagnosis stay
+held. No behavior review, experiment, Actions or merge was started here.
