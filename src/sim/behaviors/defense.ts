@@ -768,9 +768,18 @@ export class ZoneCoverage implements Behavior {
     // QB. Treating gaze as hip orientation forced him to shuffle at ~60% of
     // top speed forever, even after accepting the route into his zone.
     const carryingAcross = Math.abs(best.vel.y) > 3 && Math.abs(best.vel.y) > Math.abs(best.vel.x);
-    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
+    // An advancing stem underneath the hook has not declared a short route.
+    // Squeeze its lane without driving down through it before carry admission.
+    // Holding depth means no depth feedforward: following half the receiver's
+    // speed here would keep retreating from a hitch. A plant already read by
+    // RouteObservation, a stop or a crossing release restores the lane drive.
+    const stemRead = this.zone.startsWith('hook') && best.pos.x < a.pos.x
+      && best.vel.x > 0.5 && best.vel.x > Math.abs(best.vel.y)
+      && Math.hypot(best.vel.x, best.vel.y) + 1e-6 >= Math.hypot(best.cue.vel.x, best.cue.vel.y);
+    if (stemRead) tgt = { ...tgt, x: a.pos.x };
+    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead ? 0 : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
       facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 }),
-      { label: carryingAcross ? 'lane-carry' : 'lane', key: best.vel });
+      { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : 'lane', key: best.vel });
   }
 
   /**
