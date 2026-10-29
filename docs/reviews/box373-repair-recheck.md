@@ -1,5 +1,7 @@
 # Independent #373 repair and provenance recheck
 
+**Latest verdict:** the [v4 retest below](#v4-independent-retest-and-completed-nominated-anchor-review) closes both window witnesses on `379d9031`. Owner 28/28 and independent 14/14 checks pass. The nominated raw review is complete with one explicitly pending case. The sim/NFL comparative conclusion remains held for missing producing inputs and provenance. Earlier sections preserve the historical findings at their actual versions.
+
 Review scope: immutable `72e2ae0edb21ac626075591950f8e8ccf1cb5e3f`, script SHA256 `c1720847afc4d10cff9b6742fba000273b4978ce234cffb60db3527872164d5f`. Run owns implementation; Tools owns these independent controls. Blocking diagnosis remains held. No owner code, shared loader, physics or runtime setting was changed.
 
 ## Decision
@@ -76,7 +78,7 @@ The reported producing engine is `542d938d3b4eeec315abc55105a2f317210e09ae`, Nod
 
 These checks do not certify the execution. Need actual resolved receipt/settings bytes, runtime/roster/seed identities, baseline command/config, exact overlay patch/files and hashes, tape hashes and parent-cluster manifest. The wrapper's `--sim-source` and settings hash are declarations, not proof that those settings produced the tape. With only four supplied parent-seed clusters, nonoverlapping conditional bootstrap intervals do not remove selection/scheme/personnel/front or measurement-window differences. Keep unstratified comparisons, exact B,D and common-support strata; do not treat 2,045 continuations as independent games or forced sampling as NFL incidence.
 
-## Existing anchor-screen handoff
+## Historical anchor-screen handoff (before raw review)
 
 [`snap_anchor_screen.py`](../../scripts/mechanics/snap_anchor_screen.py) materializes the original inline screen for reproducibility; it is **not an eligibility rule or another box operator**. It checks ball-y outside [0,160/3] or mean(all listed OL snap x) outside the deliberately broad −5…+2 screen. Its exact output was checked against the original saved 23-hit list, without reading raw CSVs again.
 
@@ -84,6 +86,89 @@ The transferable packet pins full input SHA `07d8afc85706184f6214a9271b7a913def6
 
 The packet may not be applied to the other host's differently hashed Week1/full cache without a new source-qualified join/review. Pending hits remain included with flags, not auto-excluded. No alternative LOS was fabricated, no result was selected by yards and no new raw-data pipeline or physics work was started.
 
-## Next owner decisions
+## Historical next owner decisions (72e review)
 
 Run fixes/adjudicates the two bounded sample-window witnesses, retaining the old failures and live opposing controls. The original external receipt remains historical b9 evidence; a repaired report needs its own version/source/settings and actual denominators. Tools can verify exact inputs/receipts once transferred. No sim/NFL conclusion is approved, no held blocking diagnosis resumed, and no Actions or merge occurred.
+
+## V4 independent retest and completed nominated-anchor review
+
+**ACCEPT the bounded window repairs on `379d9031ded6aa364a3f05276b2729d14de749d8`; HOLD the sim/NFL comparative conclusion.** The historical 72e/a545 findings above are retained at their actual pins. V4 script SHA256 is `273e45b751fb9c54bb6556aed1c4c4d14e4def640a1ede37a507d032ef497e03`. No Run implementation, common loader, historical counter, engine or settings was edited in this review.
+
+Manual Python 3.12.14 evidence: the owner's 28 tests independently pass (0.152s); the portable independent runner passes **14/14**, exit 0. It closes both saved failures: proximity at .50 with ending .55 is retained, and a generic/NFL tape stopping at 1.5 before declared end 4.0 yields unknown touch while preserving valid initial counts. The owner's declared-end-3.0 variant also passes. Early-live, post-end-only, observed-arrival exclusion, no-padding, native truncation, mirror/boundary and the five earlier defect controls are retained. No broad suite, games or Actions ran.
+
+```sh
+python3 -I -m unittest discover -s test -p test_run_box_suite.py -v
+python3 -I /path/to/review/scripts/mechanics/box_suite_recheck_controls.py \
+  --suite /path/to/379d9031/scripts/data/run_box_suite.py
+```
+
+The raw review is now complete **for the 23 nominated screen hits**, with two predeclared controls; it does not certify all 6,223 snapshots. One targeted pass over the seven relevant cached tracking weeks (1,3,4,5,6,7,9) took 135.503s and pinned each file's bytes/hash. It retained SNAP−2…SNAP+2 for the exact IDs, joined the actual listed OL identities and official LOS, and checked the pre/snap/post sequence. No new download, conversion, inferred LOS repair or gain-based selection occurred.
+
+Of the **22 previously outstanding nominations**, 21 show a converted-reference inconsistency: the recorded football is already behind every listed OL before SNAP, remains displaced from the official line across adjacent samples, and becomes the converter's fixed longitudinal origin. This identifies an unsuitable reference for the snap-relative counting geometry; it does **not** declare the NFL movement/formation itself impossible or diagnose whether the underlying cause is ball tracking or event timing. Together with the previously confirmed out-of-field case, 22 nominated anchors are marked invalid/unknown. The screen threshold itself was not used as an automatic exclusion rule.
+
+**One stays pending:** `2022101606-1288`. Oriented ball offsets at S−1/S/S+1 are −2.20/−2.82/−3.33 yd; the SNAP OL range is −1.57…−.19 relative to official LOS. Unlike the clearer cases, fast ball motion near the snap leaves an unresolved timing/reference interpretation. The primary table includes it with the pending flag; a separately labelled sensitivity excludes it. The missing observation is a verified common pre-snap ball/player instant (or equivalent authoritative snap-time adjudication), not another arbitrary offset cutoff.
+
+**Controls retained:** extreme D1 `2022091105-1913` and ordinary outside zone `2022091200-64`. These are coherent against the gross-reference screen; they are not gold-standard exact pre-snap spot calibration. The ordinary control itself has some ball/event-time offset. A small box is not an exclusion reason.
+
+The following values are yards oriented toward offensive advance, relative to the official LOS. They are evidence summaries, not new thresholds. Ordinals address the exact run-only input hash below.
+
+| Filtered ordinal | Play | Review | Ball offset S−1 / S / S+1 | Listed OL range at S |
+|---:|---|---|---:|---:|
+| 613 | 2022091101-2980 | confirmed_invalid | -3.94 / -4.05 / -4.06 | -1.68…-0.49 |
+| 616 | 2022091101-3125 | confirmed_invalid | -3.43 / -3.57 / -3.64 | -1.24…-0.18 |
+| 526 | 2022091102-322 | confirmed_invalid | -3.11 / -3.22 / -3.31 | -1.51…-0.60 |
+| 579 | 2022091102-3981 | confirmed_invalid | -2.55 / -2.65 / -2.76 | -0.82…-0.04 |
+| 580 | 2022091102-4019 | confirmed_invalid | -2.50 / -2.33 / -2.18 | -0.62…+0.12 |
+| 528 | 2022091102-467 | confirmed_invalid | -7.65 / -7.65 / -7.64 | -1.40…-0.62 |
+| 388 | 2022091105-1913 | valid | +0.12 / +0.12 / +0.12 | -1.35…-0.51 |
+| 113 | 2022091108-2724 | confirmed_invalid | -3.42 / -3.32 / -3.39 | -1.27…-0.56 |
+| 276 | 2022091109-3116 | confirmed_invalid | -3.32 / -3.15 / -3.04 | -0.63…-0.10 |
+| 0 | 2022091200-64 | valid | -1.11 / -1.47 / -1.84 | -1.53…-0.83 |
+| 1786 | 2022092505-1347 | confirmed_invalid | -3.19 / -3.19 / -3.24 | -1.20…-0.30 |
+| 2832 | 2022092900-904 | confirmed_invalid | -3.20 / -3.30 / -3.37 | -1.29…-0.49 |
+| 2664 | 2022100204-3385 | confirmed_invalid | -3.83 / -3.90 / -3.93 | -1.60…-0.88 |
+| 2355 | 2022100210-1018 | confirmed_invalid | -3.64 / -4.01 / -4.28 | -1.45…-0.50 |
+| 2389 | 2022100210-4013 | confirmed_invalid | -2.91 / -3.16 / -3.36 | -0.88…+0.86 |
+| 2346 | 2022100210-488 | confirmed_invalid | -2.62 / -2.90 / -3.23 | -0.67…+0.59 |
+| 3253 | 2022100906-1522 | confirmed_invalid | -2.60 / -2.69 / -2.79 | -0.68…-0.04 |
+| 2917 | 2022100913-761 | confirmed_invalid | -3.79 / -3.66 / -3.71 | -1.36…-0.49 |
+| 4221 | 2022101300-2202 | confirmed_invalid | -3.47 / -3.46 / -3.55 | -1.43…-0.43 |
+| 4048 | 2022101603-4087 | confirmed_invalid | +21.26 / +21.26 / +21.31 | -1.37…-0.75 |
+| 3893 | 2022101606-1017 | confirmed_invalid | -3.99 / -4.15 / -4.38 | -1.27…-0.43 |
+| 3895 | 2022101606-1288 | pending | -2.20 / -2.82 / -3.33 | -1.57…-0.19 |
+| 4593 | 2022102305-2058 | confirmed_invalid | -3.72 / -4.24 / -4.60 | -1.82…-0.73 |
+| 5821 | 2022110607-3454 | confirmed_invalid | -3.30 / -3.72 / -4.07 | -1.71…-0.81 |
+| 5655 | 2022110700-3195 | confirmed_invalid | -2.82 / -3.48 / -4.08 | -1.62…-0.90 |
+
+## Source-pinned nine-week NFL-only result
+
+A single cached query on v4 took **22.016s**, exit 0. The exact input is 6,223 run-only records / 136 games / 2022 weeks 1–9, SHA256 `07d8afc85706184f6214a9271b7a913def6188f95f4521b2e652d83639433cde`. This is not the other host's differently hashed all-play file. All-input accounting retains **6,223 rows: 6,196 counted, 27 unknown** (22 reviewed anchors plus five listed-position/side ambiguities). All 6,196 counted rows have observed touch horizons here; none of this supplies a native sim tape.
+
+| Snap surplus | Counted runs | Proximity-positive / eligible backers | Fraction | Game-cluster 95% interval |
+|---|---:|---:|---:|---:|
+| ALL | 6,196 | 9,716/11,264 | 86.26% | 85.45%–87.02% |
+| +1 | 1,714 | 2,595/3,082 | 84.20% | 82.80%–85.59% |
+| +2 or more | 480 | 663/776 | 85.44% | 82.72%–88.32% |
+| even | 2,485 | 4,121/4,696 | 87.76% | 86.60%–88.79% |
+| light | 1,517 | 2,337/2,710 | 86.24% | 84.70%–87.81% |
+
+400 game-cluster bootstrap draws, seed 20221009, 136 games. The endpoint is the existing geometric backer-proximity proxy, not actual contact, shedding, load, protection or coaching assignment. Equal surplus is not equal raw B,D, personnel, concept, formation or selection. Unstratified results are retained.
+
+Excluding the one pending run gives **6,195 counted; 9,715/11,262 = 86.2635%** (95% 85.4614–87.0308%); even remains **4,121/4,696 = 87.7555%**. The primary includes pending: **9,716/11,264 = 86.2571%**. Review status is 22 invalid, one pending, two valid controls, 6,198 not reviewed by this nominated-case ledger. Unreviewed does not mean certified valid.
+
+The five additional count-unknown IDs are `2022091809-795`, `2022092502-1594`, `2022101609-1174`, `2022103010-1943`, `2022110608-1003` (`listed_position_side_ambiguous`). This establishes the local 6,223→6,218 pre-anchor count chain; it does not independently prove that the external receipt's 6,218 used those exact bytes/exclusions.
+
+Exact hashes (full raw files and individual case evidence are in the transferable PR review manifest; raw tracking is outside Git):
+
+- Raw extractor: `2501fce6c0e87fbf77e7157eb93067725a0d9714d4ad670e8e9fcf313605a9b4`; screen: `3cb0ebe7c5f6e66a289d901d3a1065f4ac35590431307fa7002b12154f8cdb68`.
+- Raw private evidence receipt: `1718e269e5250cd61137278b3fb9a400abcac5de647bc9b1f78a0928833212bb`.
+- Full review manifest: `577125b03efa5b6b7ac0397b28d9d378caa6bb8cf3ffa01e69b6ecf59550ebd7`.
+- NFL-only v4 report: `b5acc9646229826ae32bcb511b3fadffb2fe7c2f2103a3547640af0804c47f9e`.
+
+Portable manifest SHA256: `dd6bf93c2dba5eba7ba24c28977340001cda73221af475bd602952a1e74e2308`. A portable manifest strips only the duplicated embedded evidence documents, keeping all 25 source/ordinal/ID/status/reason/evidence-hash records and raw/source manifests. The v4 loader returns **exactly equal 25-entry review maps** from full and portable files (manual check, no new query); each of the 25 evidence-document hashes was verified. The portable file has its own hash, not the full manifest's hash. A rerun using it should match numeric results but must report its actual review-manifest hash. The query recorded no sim source/settings/inputs; zero common-support cells here means no supplied sim, not failed matching.
+
+## Remaining owner decision
+
+The two window holds are closed on exact v4. The nominated raw screen now has explicit decisions with one unresolved timing case visibly pending. **Keep numerical comparison/adoption and blocking diagnosis held** until the exact sim producing files, resolved profile/overrides, recording/restage overlay, constructor/execution/exclusion counts and parent-seed identities are transferred and verified. Old b9 results cannot be silently retagged v4. No new gameplay work, Actions or merge is authorized by this review.
+
+At handoff, fetched `origin/develop` was `5235708c6db09838e65692350a7f31510fa352aa`; the independent review branch remains based on `3779a4ed71eadbdc24dc9b023f67b7b80b95a505`. No current-develop gameplay result is inferred from these pinned measurement checks.
