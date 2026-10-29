@@ -60,6 +60,14 @@ describe('match hook reads an advancing stem before driving underneath it', () =
     expect(f.a.body.support!.state).toBe('up');
   });
 
+  it('returns an already over-deep hook toward his installed landmark', () => {
+    const f = stage(), landmark = f.b.recordedLandmark();
+    f.a.body.pos.x = landmark.x + 3;
+    const command = f.b.update(f.a, f.sim);
+    expect(command.vel.x).toBeLessThan(0);
+    expect(movementObjective(command)!.point.x).toBeLessThanOrEqual(landmark.x);
+  });
+
   it('does not use a hidden plant, changed live location or private route to leave the read', () => {
     const f = stage(), first = f.b.update(f.a, f.sim), rng = structuredClone(f.sim.rng);
     f.r.body.pos = { x: 75, y: 45 };

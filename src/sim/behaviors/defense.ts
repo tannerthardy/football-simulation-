@@ -776,7 +776,8 @@ export class ZoneCoverage implements Behavior {
     const stemRead = this.zone.startsWith('hook') && best.pos.x < a.pos.x
       && best.vel.x > 0.5 && best.vel.x > Math.abs(best.vel.y)
       && Math.hypot(best.vel.x, best.vel.y) + 1e-6 >= Math.hypot(best.cue.vel.x, best.cue.vel.y);
-    if (stemRead) tgt = { ...tgt, x: a.pos.x };
+    // A read step must not retain depth already outside his installed drop.
+    if (stemRead) tgt = { ...tgt, x: Math.min(a.pos.x, lm.x) };
     return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead ? 0 : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
       facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 }),
       { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : 'lane', key: best.vel });
