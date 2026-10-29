@@ -41,3 +41,24 @@ Matched comparisons (`compare.txt`; matched-restage.ts compare, `--run-only`, 5 
 RB5 → RB6 changes only counter/power snaps; every zone, trap and other snap is identical in all 5 pairs. Pull-side
 crossing (same operator as NFL, weeks 1–9): counter 0.68 → 0.68, power 0.91 → 0.91, trap 0.79 → 0.79 (NFL counter
 0.90). Yards are reported, not the objective.
+
+## RB7 (added): head `58da9718`, source digest 918b24d6…
+
+Receipt HEAD `1d401d2d` (uncommitted tree); the digest equals commit `58da9718` rebuilt. Contents: `1d401d2d` (track
+check against the pressed point) plus the kick read. The counter/power follow also ends when the back sees his kick
+puller at the line with an upright man on his hands. The read decides kicked-out vs logged from where that man stands
+in the back's picture, not from the puller's private `block-log` tag. Same 456 constructors × 5 stream pairs.
+
+| | DEV542 | RB6 | RB7 |
+|---|---|---|---|
+| run yd (shift 0) | 7.39 | 7.15 | 7.29 |
+| counter pull side / no crossing | 0.46 / 43 | 0.68 / 50 | 0.65 / 50 |
+| power pull side / no crossing | 0.85 / 57 | 0.91 / 63 | 0.89 / 58 |
+| trap pull side / no crossing | 0.79 / 37 | 0.79 / 37 | 0.80 / 38 |
+| counter mean yd / loss share (all 5 pairs) | 6.44 / 0.23 | 5.18 / 0.26 | 5.86 / 0.26 |
+| power mean yd / loss share | 6.78 / 0.21 | 4.42 / 0.25 | 6.64 / 0.21 |
+| trap mean yd / loss share | 6.10 / 0.22 | 6.10 / 0.22 | 5.88 / 0.23 |
+| all other runs | 7.19 | 7.19 | 7.19 (identical) |
+
+RB6 → RB7: 52 snaps changed at shift 0, 90 at any shift, 10 at every shift. Mean abs yd moved by the arm 0.62 (dice
+alone 8.91). NFL pull side: counter 0.90, power 0.89, trap 0.78.
