@@ -157,9 +157,12 @@ describe('ordinary-game constructor capture and independent replay', () => {
     // Clock-order unit fixture, not a restorable simulator checkpoint. Ordinary
     // plays need not contain pre-snap motion or a negative fifth frame.
     const expected = copySaved(captured.saved.original);
-    const shift = time - expected.result.frames![5].t;
-    for (const frame of expected.result.frames!) frame.t += shift;
-    for (const event of expected.result.events) event.t += shift;
+    const anchor = expected.result.frames![5].t;
+    // Build the declared clock around its anchor. Adding a computed shift to
+    // the anchor can leave -0.49999999999999994 instead of exactly -0.5.
+    for (const frame of expected.result.frames!) frame.t = time + (frame.t - anchor);
+    for (const event of expected.result.events) event.t = time + (event.t - anchor);
+    expect(expected.result.frames![5].t).toBe(time);
     const altered = copySaved(expected);
     altered.result.frames![5].agents[0] += .01;
     altered.initial.actors[0].energy -= .01;
