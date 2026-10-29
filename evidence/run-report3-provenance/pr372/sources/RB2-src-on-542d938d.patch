@@ -1,0 +1,13 @@
+diff --git a/src/sim/behaviors/carrier.ts b/src/sim/behaviors/carrier.ts
+index b4087038..31e8d218 100644
+--- a/src/sim/behaviors/carrier.ts
++++ b/src/sim/behaviors/carrier.ts
+@@ -227,7 +227,7 @@ export class BallCarrier implements Behavior {
+       let aim = liveAim(a, sim, this.opts)!;
+       // Press the installed track, reading its occupied approach on the same
+       // finite beat as other carrier decisions. Speed and movement stay ordinary.
+-      if (this.opts.run && (a.pos.x - sim.los) * dir > -4.5) {
++      if (this.opts.run && (a.pos.x - sim.los) * dir > -2) {
+         if (sim.t >= this.pressReadAt) {
+           this.pressReadAt = sim.t + a.mind.decisionInterval;
+           this.pressEntry = runReadAim(a, sim, this.opts);

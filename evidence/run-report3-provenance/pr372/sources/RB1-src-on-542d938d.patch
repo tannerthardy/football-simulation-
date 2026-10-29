@@ -1,0 +1,71 @@
+diff --git a/src/sim/behaviors/carrier.ts b/src/sim/behaviors/carrier.ts
+index b4087038..a45d60d6 100644
+--- a/src/sim/behaviors/carrier.ts
++++ b/src/sim/behaviors/carrier.ts
+@@ -115,9 +115,49 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
+   // Acquired motion already contains a block's observed slowdown. Nearby
+   // bodies do not promise retention or a future pursuit delay. In particular,
+   // a defender occupying the entry remains a threat, on either side of a block.
+-  const threatTime = (d: Agent, s: Perceived, p: Vec2): number =>
+-    timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + d.profile.reach * .75)
+-      + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
++  // But he reaches it around the bodies in his way, not through them: a
++  // blocker's torso between him and the point (as the runner sees both) is
++  // ground he must go around, arms included. And a free teammate who gets to
++  // a point on his way first meets him there: contact stops him and he
++  // restarts from a stand. Neither assumes a block holds; whether he sheds or
++  // slips the man is still read from his own motion on the next beat.
++  const screens = pictures.filter((p) => p.team === 'O' && p.seen.pose !== 'down')
++    .map((p) => ({ pos: p.seen.pos, radius: p.agent.profile.radius }));
++  const seenD = pictures.filter((p) => p.team === 'D');
++  // Teammates already in contact with a defender (as seen) are occupied.
++  const interceptors = pictures.filter((p) => p.team === 'O' && p.seen.pose === 'up'
++    && !seenD.some((q) => Math.hypot(q.seen.pos.x - p.seen.pos.x, q.seen.pos.y - p.seen.pos.y)
++      < p.agent.profile.radius + q.agent.profile.radius + .15))
++    .map((p) => ({ mover: { ...p.seen, profile: p.agent.profile }, radius: p.agent.profile.radius }));
++  const threatTime = (d: Agent, s: Perceived, p: Vec2): number => {
++    const reach = d.profile.radius + a.profile.radius + d.profile.reach * .75;
++    const mover = { ...s, profile: d.profile };
++    let t = timeToReach(mover, p, reach);
++    const sx = p.x - s.pos.x, sy = p.y - s.pos.y, length = Math.hypot(sx, sy);
++    if (length > reach) {
++      const ux = sx / length, uy = sy / length;
++      for (const b of screens) {
++        const bx = b.pos.x - s.pos.x, by = b.pos.y - s.pos.y, along = bx * ux + by * uy;
++        if (along <= 0 || along >= length) continue;
++        const off = by * ux - bx * uy, clear = b.radius + d.profile.radius;
++        if (Math.abs(off) >= clear) continue;
++        // Around the near side of that body, then on to the point.
++        const side = off >= 0 ? 1 : -1;
++        const w = { x: b.pos.x + uy * side * clear, y: b.pos.y - ux * side * clear };
++        t = Math.max(t, timeToReach(mover, w, 0)
++          + Math.max(0, Math.hypot(p.x - w.x, p.y - w.y) - reach) / Math.max(1, d.profile.vmax));
++      }
++      intercept: for (const k of [.25, .5, .75]) {
++        const x = { x: s.pos.x + sx * k, y: s.pos.y + sy * k }, there = timeToReach(mover, x, 0);
++        for (const o of interceptors) {
++          if (timeToReach(o.mover, x, o.radius + d.profile.radius) >= there) continue;
++          t = Math.max(t, there + timeToReach({ pos: x, vel: { x: 0, y: 0 }, profile: d.profile }, p, reach));
++          break intercept;
++        }
++      }
++    }
++    return t + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
++  };
+   let best: Vec2 | null = null, cost = Infinity;
+   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
+   // Bodies on a segment block the run along it.
+@@ -227,7 +267,12 @@ export class BallCarrier implements Behavior {
+       let aim = liveAim(a, sim, this.opts)!;
+       // Press the installed track, reading its occupied approach on the same
+       // finite beat as other carrier decisions. Speed and movement stay ordinary.
+-      if (this.opts.run && (a.pos.x - sim.los) * dir > -4.5) {
++      // The hole is read from about two yards off the line, where who gets
++      // there first spans half a second. From deep in the backfield every
++      // defender beats him to every hole before a block has landed, and the
++      // read cut him away from his own pullers (counter: 59% of crossers
++      // went backside vs 10% tracked). designExit still abandons a closed aim.
++      if (this.opts.run && (a.pos.x - sim.los) * dir > -2) {
+         if (sim.t >= this.pressReadAt) {
+           this.pressReadAt = sim.t + a.mind.decisionInterval;
+           this.pressEntry = runReadAim(a, sim, this.opts);

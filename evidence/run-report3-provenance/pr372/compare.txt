@@ -1,0 +1,46 @@
+== DEV542 vs RB1
+{"base":"DEV542","arm":"RB1","snaps":456,"changed":423,"DEV542":{"runYd":7.39,"passYd":20.66,"incomplete":0},"RB1":{"runYd":5.92,"passYd":20.66,"incomplete":0},"shifts":4,"pairsPerSnap":5,"snapsChangedAtAnyShift":454,"snapsChangedAtEveryShift":356,"changeCountHistogram":{"0":2,"1":7,"2":11,"3":16,"4":64,"5":356},"runSnapsChangedAtAnyShift":452,"runSnaps":453,"snapsYardsOrOutcomeChangedAtEveryShift":324,"baseArmYardsOrOutcomeMoveWithDiceAlone":456,"medianAbsYdMovedByDiceAlone":3.42,"medianAbsYdMovedByArm":1.38,"meanAbsYdMovedByDiceAlone":9.1,"meanAbsYdMovedByArm":5.41}
+== DEV542 vs RB3
+{"base":"DEV542","arm":"RB3","snaps":456,"changed":422,"DEV542":{"runYd":7.39,"passYd":20.66,"incomplete":0},"RB3":{"runYd":5.78,"passYd":20.66,"incomplete":0},"shifts":4,"pairsPerSnap":5,"snapsChangedAtAnyShift":454,"snapsChangedAtEveryShift":349,"changeCountHistogram":{"0":2,"1":7,"2":12,"3":17,"4":69,"5":349},"runSnapsChangedAtAnyShift":452,"runSnaps":453,"snapsYardsOrOutcomeChangedAtEveryShift":316,"baseArmYardsOrOutcomeMoveWithDiceAlone":456,"medianAbsYdMovedByDiceAlone":3.42,"medianAbsYdMovedByArm":1.33,"meanAbsYdMovedByDiceAlone":9.1,"meanAbsYdMovedByArm":5.28}
+== DEV542 vs RB4
+{"base":"DEV542","arm":"RB4","snaps":456,"changed":409,"DEV542":{"runYd":7.39,"passYd":20.66,"incomplete":0},"RB4":{"runYd":5.81,"passYd":20.66,"incomplete":0},"shifts":4,"pairsPerSnap":5,"snapsChangedAtAnyShift":443,"snapsChangedAtEveryShift":324,"changeCountHistogram":{"0":13,"1":8,"2":14,"3":22,"4":75,"5":324},"runSnapsChangedAtAnyShift":441,"runSnaps":453,"snapsYardsOrOutcomeChangedAtEveryShift":285,"baseArmYardsOrOutcomeMoveWithDiceAlone":456,"medianAbsYdMovedByDiceAlone":3.42,"medianAbsYdMovedByArm":1.24,"meanAbsYdMovedByDiceAlone":9.1,"meanAbsYdMovedByArm":5.06}
+== DEV542 vs RB5
+{"base":"DEV542","arm":"RB5","snaps":456,"changed":83,"DEV542":{"runYd":7.39,"passYd":20.66,"incomplete":0},"RB5":{"runYd":7.15,"passYd":20.66,"incomplete":0},"shifts":4,"pairsPerSnap":5,"snapsChangedAtAnyShift":98,"snapsChangedAtEveryShift":48,"changeCountHistogram":{"0":358,"1":1,"2":5,"3":13,"4":31,"5":48},"runSnapsChangedAtAnyShift":98,"runSnaps":453,"snapsYardsOrOutcomeChangedAtEveryShift":44,"baseArmYardsOrOutcomeMoveWithDiceAlone":456,"medianAbsYdMovedByDiceAlone":3.42,"medianAbsYdMovedByArm":0,"meanAbsYdMovedByDiceAlone":9.1,"meanAbsYdMovedByArm":1.23}
+== DEV542 vs RB6
+{"base":"DEV542","arm":"RB6","snaps":456,"changed":82,"DEV542":{"runYd":7.39,"passYd":20.66,"incomplete":0},"RB6":{"runYd":7.15,"passYd":20.66,"incomplete":0},"shifts":4,"pairsPerSnap":5,"snapsChangedAtAnyShift":98,"snapsChangedAtEveryShift":48,"changeCountHistogram":{"0":358,"1":1,"2":5,"3":13,"4":31,"5":48},"runSnapsChangedAtAnyShift":98,"runSnaps":453,"snapsYardsOrOutcomeChangedAtEveryShift":44,"baseArmYardsOrOutcomeMoveWithDiceAlone":456,"medianAbsYdMovedByDiceAlone":3.42,"medianAbsYdMovedByArm":0,"meanAbsYdMovedByDiceAlone":9.1,"meanAbsYdMovedByArm":1.23}
+== RB5 vs RB6
+{"base":"RB5","arm":"RB6","snaps":456,"changed":9,"RB5":{"runYd":7.15,"passYd":20.66,"incomplete":0},"RB6":{"runYd":7.15,"passYd":20.66,"incomplete":0},"shifts":4,"pairsPerSnap":5,"snapsChangedAtAnyShift":34,"snapsChangedAtEveryShift":0,"changeCountHistogram":{"0":422,"1":25,"2":8,"3":1},"runSnapsChangedAtAnyShift":34,"runSnaps":453,"snapsYardsOrOutcomeChangedAtEveryShift":0,"baseArmYardsOrOutcomeMoveWithDiceAlone":456,"medianAbsYdMovedByDiceAlone":3.23,"medianAbsYdMovedByArm":0,"meanAbsYdMovedByDiceAlone":8.9,"meanAbsYdMovedByArm":0.01}
+  #14 run  Gun Wing — Power (Z across motion): 0.17 tackle -> 0.17 tackle  [1/5 shifts, base moves with dice]
+  #18 run  Singleback Twin TE — Power: 0.61 tackle -> 0.61 tackle  [2/5 shifts, base moves with dice]
+  #22 run  Singleback Ace — Counter (Z across m: 7.28 tackle -> 7.28 tackle  [1/5 shifts, base moves with dice]
+  #44 run  Singleback Twin TE — Counter (Z retu: 0.63 tackle -> 0.68 tackle  [1/5 shifts, base moves with dice]
+  #58 run  Singleback Trips — Power (Z across m: -2.61 tackle -> -2.61 tackle  [1/5 shifts, base moves with dice]
+  #107 run  Gun Bunch — Counter (H return motion: 0 timeout -> 0 timeout  [1/5 shifts, base moves with dice]
+  #113 run  Gun Trips — Counter (H return motion: -1.31 tackle -> -1.31 tackle  [1/5 shifts, base moves with dice]
+  #124 run  Gun Trips — Counter (Y across motion: 1.61 tackle -> 1.61 tackle  [1/5 shifts, base moves with dice]
+  #133 run  Singleback Trips — Power (H across m: -3.12 tackle -> -3.09 tackle  [1/5 shifts, base moves with dice]
+  #136 run  Pistol Twin TE — Power: 1.15 tackle -> 1.15 tackle  [2/5 shifts, base moves with dice]
+  #140 run  Gun Trips Open — Counter: -1.47 tackle -> -1.62 tackle  [1/5 shifts, base moves with dice]
+  #184 run  Gun Trey (TE attached) — Power: 2.07 tackle -> 2.07 tackle  [2/5 shifts, base moves with dice]
+  #190 run  Gun Doubles — Power (H across motion: 0.89 tackle -> 0.89 tackle  [1/5 shifts, base moves with dice]
+  #198 run  Singleback Ace — Power (H across mot: 0.55 tackle -> 0.51 tackle  [1/5 shifts, base moves with dice]
+  #235 run  Pistol Doubles — Power: 2.14 tackle -> 2.14 tackle  [1/5 shifts, base moves with dice]
+  #248 run  Gun Wing — Counter (Z jet motion): 7.56 tackle -> 7.56 tackle  [2/5 shifts, base moves with dice]
+  #254 run  Singleback Ace — Power (H across mot: -3.59 tackle -> -3.68 tackle  [1/5 shifts, base moves with dice]
+  #262 run  I-Form Jumbo — Counter (X across mot: 6.59 tackle -> 6.59 tackle  [1/5 shifts, base moves with dice]
+  #264 run  Gun Trips Open — Power (Y across mot: 2 tackle -> 1.63 tackle  [1/5 shifts, base moves with dice]
+  #273 run  Singleback Ace — Power (Z across mot: 0.65 tackle -> 0.65 tackle  [1/5 shifts, base moves with dice]
+  #280 run  Singleback Ace — Power (H across mot: -0.63 tackle -> -0.63 tackle  [2/5 shifts, base moves with dice]
+  #281 run  Singleback Trips — Power: -2.9 tackle -> -2.9 tackle  [2/5 shifts, base moves with dice]
+  #299 run  Gun Empty — Counter (Y across motion: -2.94 tackle -> -2.98 tackle  [2/5 shifts, base moves with dice]
+  #309 run  Singleback Ace — Power (H return mot: 9.76 tackle -> 9.76 tackle  [2/5 shifts, base moves with dice]
+  #321 run  Gun Wing — Counter (Z across motion): -0.04 tackle -> -0.04 tackle  [1/5 shifts, base moves with dice]
+  #333 run  Gun Doubles — Counter (H return moti: 0.54 tackle -> 0.54 tackle  [1/5 shifts, base moves with dice]
+  #334 run  Gun Doubles — Power: 0.27 tackle -> 0.27 tackle  [1/5 shifts, base moves with dice]
+  #335 run  Gun Trips — Power: 1.65 tackle -> 1.48 tackle  [1/5 shifts, base moves with dice]
+  #337 run  Gun Doubles — Power (H jet motion): -0.78 tackle -> -0.81 tackle  [1/5 shifts, base moves with dice]
+  #345 run  Gun Bunch — Counter (H across motion: 0.07 tackle -> 0.07 tackle  [1/5 shifts, base moves with dice]
+  #354 run  Pistol Doubles — Counter (H across m: -1.19 tackle -> -1.19 tackle  [1/5 shifts, base moves with dice]
+  #384 run  Gun Bunch — Counter (Z across motion: -0.46 tackle -> -0.46 tackle  [1/5 shifts, base moves with dice]
+  #389 run  Singleback Twin TE — Power: -0.33 tackle -> -0.33 tackle  [3/5 shifts, base moves with dice]
+  #446 run  Singleback Trips — Counter (Z across: 4.22 tackle -> 4.22 tackle  [1/5 shifts, base moves with dice]
