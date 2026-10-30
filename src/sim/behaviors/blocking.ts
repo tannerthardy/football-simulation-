@@ -970,7 +970,7 @@ export class RunBlocker implements Behavior {
   private soloKind: RunBlockKind | null = null;
   private soloDrive: Vec2 | null = null;
   /** The puller's last ordinary read, not the defender's current position. */
-  private pullRead: { target: Agent; seen: Perceived; clearanceX: number | null; nextRead: number; at: number } | null = null;
+  private pullRead: { target: Agent; seen: Perceived; clearanceX: number | null; nextRead: number; at: number; braking: Vec2 } | null = null;
   private pullCleared = false;
   private nextSurfaceRead = 0;
   private wrapOutside = false;
@@ -1674,6 +1674,22 @@ export class RunBlocker implements Behavior {
   private readPull(a: Agent, sim: PlaySim, target: Agent): NonNullable<RunBlocker['pullRead']> {
     if (!this.pullRead || this.pullRead.target !== target || sim.t >= this.pullRead.nextRead) {
       const seen = sim.see(a, target);
+      // Compare distinct sampled pictures, not their dead-reckoned positions
+      // or repeated uses of a held read. A slowing man may stop; it is
+      // not evidence of a future reversal or of a new burst of acceleration.
+      const previous = this.pullRead;
+      const elapsed = previous?.target === target
+        ? sim.t - (seen.age ?? 0) - (previous.at - (previous.seen.age ?? 0)) : 0;
+      const braking = elapsed <= 1e-6 && previous?.target === target
+        ? { ...previous.braking } : { x: 0, y: 0 };
+      if (elapsed > 1e-6 && previous) {
+        const speed = Math.hypot(seen.vel.x, seen.vel.y);
+        const rate = (speed - Math.hypot(previous.seen.vel.x, previous.seen.vel.y)) / elapsed;
+        if (speed > 0 && rate < 0) {
+          braking.x = seen.vel.x / speed * rate;
+          braking.y = seen.vel.y / speed * rate;
+        }
+      }
       const exitY = this.plan.pullPath?.at(-1)?.y ?? a.pos.y;
       const fromY = this.homeY ?? a.pos.y;
       // The installed crossing corridor identifies teammates to check. Their
@@ -1710,20 +1726,36 @@ export class RunBlocker implements Behavior {
       const clearanceX = surfaces.length ? Math.min(...surfaces.map(({b,seen}) => seen.pos.x-b.profile.radius))
         : this.plan.pullSurface ? this.plan.pullPath?.[0]?.x ?? a.pos.x+a.profile.radius : null;
       this.pullRead = { target, seen: { ...seen, pos: { ...seen.pos }, vel: { ...seen.vel } },
-        clearanceX, nextRead: sim.t + a.mind.decisionInterval, at: sim.t };
+        clearanceX, nextRead: sim.t + a.mind.decisionInterval, at: sim.t, braking };
     }
     return this.pullRead;
+  }
+
+  /** Forecast from the acquired sample, undoing PerceptionBuffer's linear
+   * age prediction first. Braking ends at rest, never at an invented reversal. */
+  private kickPicture(sim: PlaySim, ahead = 0): Perceived {
+    const read = this.pullRead!, seen = read.seen;
+    const age = seen.age ?? 0, elapsed = age + sim.t - read.at + ahead;
+    const pos = { ...seen.pos }, vel = { ...seen.vel };
+    for (const axis of ['x', 'y'] as const) {
+      const v = seen.vel[axis], brake = read.braking[axis];
+      const dt = brake ? Math.min(elapsed, -v / brake) : elapsed;
+      pos[axis] += v * (dt - age) + .5 * brake * dt * dt;
+      vel[axis] = v + brake * dt;
+    }
+    return { ...seen, pos, vel };
   }
 
   private attack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived, preparedClimb?: Intent | null): MoveCommand {
     const plan = this.plan;
     let seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
       ? this.readPull(a, sim, target).seen : sim.see(a,target));
-    // The held pull read is already dead-reckoned to its acquisition; carry
-    // it only through the time held since then.
+    // Ordinary held reads need only time since acquisition. The kick forecast
+    // replaces the original age prediction as well when braking was observed.
     if (plan.kind === 'pull' && this.pullRead && seen === this.pullRead.seen) {
       const dt = sim.t - this.pullRead.at;
-      seen = { ...seen, pos: { x: seen.pos.x + seen.vel.x * dt, y: seen.pos.y + seen.vel.y * dt } };
+      seen = plan.pullRole === 'kick' ? this.kickPicture(sim)
+        : { ...seen, pos: { x: seen.pos.x + seen.vel.x * dt, y: seen.pos.y + seen.vel.y * dt } };
     }
     if (plan.kind === 'pull' && plan.pullRole === 'lead' && (seen.pose === 'down' || seen.pose === 'rising')) return stand();
     const zone = this.zoneEligible(a, sim) ? this.readZone(a, sim, target, seen) : null;
@@ -1856,7 +1888,7 @@ export class RunBlocker implements Behavior {
       // end squeezing along the line crossed in front of a puller who fit
       // his seen spot and passed under him.
       const at = plan.pullRole === 'kick' ? interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
-        (tt) => ({ x: seen.pos.x + seen.vel.x * tt, y: seen.pos.y + seen.vel.y * tt }),
+        (tt) => this.kickPicture(sim, tt).pos,
         { horizon: .6, step: .05, radius: a.profile.radius + target.profile.radius }).point : seen.pos;
       const ref = this.workReference(a, sim), dx = ref.x - at.x, dy = ref.y - at.y, n = Math.hypot(dx, dy);
       const sep = a.profile.radius + target.profile.radius + .15;
