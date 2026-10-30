@@ -1746,6 +1746,18 @@ export class RunBlocker implements Behavior {
     return { ...seen, pos, vel };
   }
 
+  private kickFitPoint(a: Agent, sim: PlaySim, target: Agent, seen: Perceived): Vec2 {
+    const intercept = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
+      (tt) => this.kickPicture(sim, tt).pos,
+      { horizon: .6, step: .05, radius: a.profile.radius + target.profile.radius });
+    // The least-late fallback is not an interception: aiming beyond an end
+    // we cannot yet reach can take us below his shoulder before he turns.
+    // Close on the current acquired picture until a meet is estimated feasible.
+    // Even then it is a forecast, refreshed by the ordinary read, not a promise
+    // that the end will keep moving along that path.
+    return intercept.estimate.status === 'estimated-feasible' ? intercept.point : seen.pos;
+  }
+
   private attack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived, preparedClimb?: Intent | null): MoveCommand {
     const plan = this.plan;
     let seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
@@ -1887,9 +1899,7 @@ export class RunBlocker implements Behavior {
       // Where he will be when this body gets there, a short beat ahead: an
       // end squeezing along the line crossed in front of a puller who fit
       // his seen spot and passed under him.
-      const at = plan.pullRole === 'kick' ? interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
-        (tt) => this.kickPicture(sim, tt).pos,
-        { horizon: .6, step: .05, radius: a.profile.radius + target.profile.radius }).point : seen.pos;
+      const at = plan.pullRole === 'kick' ? this.kickFitPoint(a, sim, target, seen) : seen.pos;
       const ref = this.workReference(a, sim), dx = ref.x - at.x, dy = ref.y - at.y, n = Math.hypot(dx, dy);
       const sep = a.profile.radius + target.profile.radius + .15;
       const shoulder = n > sep ? { x: at.x + dx / n * sep, y: clamp(at.y + dy / n * sep + placementError, .5, FIELD_WIDTH - .5) }
