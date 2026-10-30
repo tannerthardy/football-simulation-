@@ -22,6 +22,23 @@ def fixture(times, orientation=0, direction=0, speed=2):
 
 
 class OrientationMeasurementTests(unittest.TestCase):
+    def test_timestamp_storage_units_preserve_elapsed_seconds_and_motion(self):
+        # Integer timestamps carry the Series' unit, not necessarily ns. The
+        # same six instants must retain one complete 10 Hz motion exposure.
+        seconds = [0., .1, .2, .3, .4, .5]
+        for unit in ['ns', 'us', 'ms']:
+            with self.subTest(unit=unit):
+                path = fixture(seconds, 355, 15)
+                path['time'] = pd.to_datetime(path.time, format='ISO8601', utc=True).dt.as_unit(unit)
+                clean, failure, duplicates = audit.clean_trajectory(path)
+                self.assertIsNone(failure)
+                self.assertEqual(duplicates, 0)
+                self.assertEqual(clean.seconds.tolist(), seconds)
+                measured = audit.measure_window(clean)
+                self.assertEqual(measured['non10HzSteps'], 0)
+                self.assertEqual(measured['sustainedMotionFrames'], 6)
+                self.assertEqual(measured['speedBins']['[2,4)']['angles'], [20.] * 6)
+
     def test_circular_wrap_and_common_field_rotation_preserve_distribution(self):
         # A right/left attack rotation must not change a 20-degree difference.
         outputs = []
