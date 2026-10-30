@@ -402,18 +402,20 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     // Squeeze, don't chase: the man on the inside of his gap blocking down
     // takes the gap inside with him, but the edge owns the spot he left. He
     // closes to it, his body just outside it, and no further, where a
-    // kick-out or a lead has to come get him.
+    // kick-out or a lead has to come get him: he replaces the spot, at the
+    // depth the blocker stood, not on the line beside him.
     // Play side only: the line shows the play coming his way (a puller, or a
     // zone step toward him). A backside edge follows the line down instead.
+    let replace: number | undefined;
     if (job.kind === 'edge' && !kick && (job.gap === 'C' || job.gap === 'D') && lineRead(sim, a) === job.side) {
       const mid = sim.offAlign.spots.C?.pos.y ?? sim.ballY;
       const out = sim.offense.filter((o) => ['LT','LG','RG','RT'].includes(o.slot) || sim.offAlign.spots[o.slot]?.inline)
-        .map((o) => sim.offAlign.spots[o.slot]!.pos.y).filter((y) => (y - mid) * job.side > 0)
-        .sort((p, q) => (p - q) * job.side);
+        .map((o) => sim.offAlign.spots[o.slot]!.pos).filter((q) => (q.y - mid) * job.side > 0)
+        .sort((p, q) => (p.y - q.y) * job.side);
       const inner = job.gap === 'D' ? out.at(-1) : out[1];
       if (inner !== undefined) {
-        const spot = inner + job.side * a.profile.radius;
-        if ((gy - spot) * job.side < 0) gy = spot;
+        const spot = inner.y + job.side * a.profile.radius;
+        if ((gy - spot) * job.side < 0) { gy = spot; replace = inner.x; }
       }
     }
     // Backside: his own picture shows the ball carried away from his side,
@@ -431,7 +433,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const homeDepth=sim.defAlign.spots[a.slot as DefSlot]!.pos.x-sim.los;
     const supportDepth=job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
     const fitX = Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
-    const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : trail ? Math.min(fitX, Math.max(seen.pos.x, sim.los-3)) : fitX;
+    const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : trail ? Math.min(fitX, Math.max(seen.pos.x, sim.los-3)) : replace ?? fitX;
     // The outside shoulder belongs to a moving runner/surface, not a series
     // of stationary landmarks. Use only the pictures acquired above and
     // retain point and motion together for the existing decision beat.
