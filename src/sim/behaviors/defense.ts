@@ -116,18 +116,21 @@ const KEY_DELAY = 0.5;
 const EDGE_KEY = 3;
 /** How far outside the down blocker's body an edge keeps his own body as he closes (yd). */
 const HIP_GAP = 0.35;
+/** How far into the backfield a squeezed edge sets up to meet a kick-out (yd); tracked play-side ends are 0.3-0.5 yd deep by 1.5-2.0 s. */
+const SET_DEPTH = 0.4;
 
 /** The blocker on the surface in front of a rusher, as he sees the line: the
  * nearest one laterally, read as his key. An interior man keys the blocker
  * within a yard and a half; an edge keys the end of the line inside him,
  * often wider away than that. */
-function manInFront(sim: PlaySim, a: Agent, reach = 1.5): Perceived | null {
+function manInFront(sim: PlaySim, a: Agent, reach = 1.5): (Perceived & { home: Vec2 }) | null {
   let best: Agent | null = null, bd = Infinity;
   for (const b of linePicture(sim, a).surface) {
     const dy = Math.abs(b.seen.pos.y - a.pos.y);
     if (dy <= reach && dy < bd) { best = b.agent; bd = dy; }
   }
-  return best ? sim.see(a, best, KEY_DELAY) : null;
+  // Where he lined up is the pre-snap picture every defender has.
+  return best ? { ...sim.see(a, best, KEY_DELAY), home: sim.offAlign.spots[best.slot]!.pos } : null;
 }
 
 export class PassRusher implements Behavior {
@@ -189,14 +192,22 @@ export class PassRusher implements Behavior {
     // lead: he closes flat along the line behind the down block and sets the
     // edge there, where the puller has to come and get him, instead of rushing
     // upfield past the play.
-    // He closes hip to hip on the down blocker: on his outside hip, at his
-    // depth, moving with him, so the gap the blocker left stays shut and a
-    // kicking puller meets him there.
+    // He closes hip to hip on the down blocker, but only as far as the spot
+    // the blocker left: that is the gap to shut. Squeeze, don't chase. Once
+    // there he stops sliding and steps into the backfield to meet whoever
+    // comes to kick him out, rather than riding the down block inside.
     if (onEdge && runStep && Math.sign(man!.vel.y) === Math.sign(sim.ballY - man!.pos.y)) {
       const side = Math.sign(man!.vel.y), h = a.mind.decisionInterval;
       const hip = man!.pos.y - side * (a.profile.radius + HIP_GAP);
+      const shut = man!.home.y - side * a.profile.radius;
       a.tags.add('key-squeeze');
-      return track(a, { x: man!.pos.x + man!.vel.x * h, y: hip + man!.vel.y * h }, { x: man!.vel.x, y: man!.vel.y },
+      if ((a.pos.y - shut) * side >= -0.1) {
+        a.tags.add('squeeze-set');
+        return track(a, { x: sim.los - SET_DEPTH, y: shut }, { x: 0, y: 0 }, { speed: 1, gain: 3, facing: Math.PI });
+      }
+      const ahead = hip + man!.vel.y * h, clamped = (ahead - shut) * side > 0;
+      // Moving with the blocker only until the spot: past it his slide is the blocker's, not his.
+      return track(a, { x: man!.pos.x + man!.vel.x * h, y: clamped ? shut : ahead }, { x: man!.vel.x, y: clamped ? 0 : man!.vel.y },
         { speed: 1, gain: 3, facing: Math.PI });
     }
     // The interior man keys the blocker over him.
