@@ -242,6 +242,8 @@ const DEEP_NO_FORCE = process.env.DEEP_NO_FORCE === '1';
  * the Mike weak and give the strong side's open gap to that safety. */
 const GAP_MATCH = process.env.GAP_MATCH !== '0';
 const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
+/** Where a threatened stack backer fills to: a yard off the ball, meeting the runner in the hole. */
+const FILL_DEPTH = 1;
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */
@@ -255,6 +257,36 @@ export function pullers(sim: PlaySim, a: Agent): Perceived[] {
   }) : picture.departed;
   return candidates.map((b) => b.seen)
     .filter((s) => (sim.los - s.pos.x) * sim.attackDir(sim.offense[0].team) > .3 && Math.abs(s.vel.y) > 1.5);
+}
+
+/** A zone step: the line moving across faster than this (yd/s), four of the five together. */
+const LINE_STEP = 0.7;
+/** RUN-17: the play's direction a lineman reads from the line, held between his reads. */
+const lineReads = new WeakMap<Agent, { side: number; next: number }>();
+
+/** The play's direction as a lineman reads it from the line in front of him,
+ * before the back declares: a puller crossing behind the line leads the play;
+ * otherwise the whole line stepping one way (four of the five across faster
+ * than LINE_STEP, none of them setting back in pass protection) is a zone step.
+ * 0 while the line says neither. His own delayed pictures, read once per
+ * decision beat and kept until the line shows the other way; no offensive call
+ * or assignment. A play-action line shows run and fools him, as it should. */
+export function lineRead(sim: PlaySim, d: Agent): number {
+  const held = lineReads.get(d);
+  if (held && sim.t < held.next) return held.side;
+  let side = 0;
+  const pull = pullers(sim, d).reduce<{ vel: Vec2 } | null>((m, p) => !m || Math.abs(p.vel.y) > Math.abs(m.vel.y) ? p : m, null);
+  if (pull) side = Math.sign(pull.vel.y);
+  else {
+    const line = linePicture(sim, d).surface.filter(b => ['LT', 'LG', 'C', 'RG', 'RT'].includes(b.agent.slot));
+    const dir = sim.attackDir(sim.offense[0].team);
+    const setting = line.some(b => b.seen.vel.x * dir < -1);
+    const across = (s: number) => line.filter(b => b.seen.vel.y * s > LINE_STEP).length;
+    if (!setting && line.length === 5) side = across(1) >= 4 ? 1 : across(-1) >= 4 ? -1 : 0;
+  }
+  side = side || held?.side || 0;
+  lineReads.set(d, { side, next: sim.t + d.mind.decisionInterval });
+  return side;
 }
 
 /** Only visible pull/slice motion changes a fit; no offensive scheme lookup. */
@@ -367,6 +399,25 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       gy = kick.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65);
       a.tags.add(job.edge === 'spill' ? 'fit-spill' : 'fit-box');
     } else gy = job.kind === 'force' ? job.side > 0 ? Math.max(surface+.5,seen.pos.y+.7) : Math.min(surface-.5,seen.pos.y-.7) : gy;
+    // Squeeze, don't chase: the man on the inside of his gap blocking down
+    // takes the gap inside with him, but the edge owns the spot he left. He
+    // closes to it, his body just outside it, and no further, where a
+    // kick-out or a lead has to come get him: he replaces the spot, at the
+    // depth the blocker stood, not on the line beside him.
+    // Play side only: the line shows the play coming his way (a puller, or a
+    // zone step toward him). A backside edge follows the line down instead.
+    let replace: number | undefined;
+    if (job.kind === 'edge' && !kick && (job.gap === 'C' || job.gap === 'D') && lineRead(sim, a) === job.side) {
+      const mid = sim.offAlign.spots.C?.pos.y ?? sim.ballY;
+      const out = sim.offense.filter((o) => ['LT','LG','RG','RT'].includes(o.slot) || sim.offAlign.spots[o.slot]?.inline)
+        .map((o) => sim.offAlign.spots[o.slot]!.pos).filter((q) => (q.y - mid) * job.side > 0)
+        .sort((p, q) => (p.y - q.y) * job.side);
+      const inner = job.gap === 'D' ? out.at(-1) : out[1];
+      if (inner !== undefined) {
+        const spot = inner.y + job.side * a.profile.radius;
+        if ((gy - spot) * job.side < 0) { gy = spot; replace = inner.x; a.tags.add('fit-replace'); }
+      }
+    }
     // Backside: his own picture shows the ball carried away from his side,
     // already inside his landmark. He squeezes and trails it flat at its
     // depth, keeping the lateral relation to the ball his fit had (the
@@ -382,7 +433,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const homeDepth=sim.defAlign.spots[a.slot as DefSlot]!.pos.x-sim.los;
     const supportDepth=job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
     const fitX = Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
-    const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : trail ? Math.min(fitX, Math.max(seen.pos.x, sim.los-3)) : fitX;
+    const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : trail ? Math.min(fitX, Math.max(seen.pos.x, sim.los-3)) : replace ?? fitX;
     // The outside shoulder belongs to a moving runner/surface, not a series
     // of stationary landmarks. Use only the pictures acquired above and
     // retain point and motion together for the existing decision beat.
@@ -490,7 +541,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // line within reach of it (not merely where he stands now); he has
   // declared it when he is also at the surface. A back pressing wide still
   // threatens to bend back, so a disciplined fit holds until he commits.
-  let declared: boolean;
+  let declared: boolean, threatened = false;
   if (THREAT_READ && !premesh) {
     const dirX = sim.attackDir(c.team), toLos = Math.max(0, (sim.los - seen.pos.x) * dirX);
     const reachLos = clamp(toLos / Math.max(.5, seen.vel.x * dirX), 0, 1);
@@ -498,10 +549,12 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const half = Number.isFinite(gap.width) ? Math.max(.6, gap.width / 2) : 1.2;
     const threat = Math.abs(crossing - gy) < half + 1;
     declared = threat && seen.pos.x > sim.los - 1.6;
-    if (threat && !declared) a.tags.add('fit-threat-read');
+    if (threat && !declared) { a.tags.add('fit-threat-read'); threatened = true; }
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
-  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? STACK_LANDMARK : .5;
+  // A stack backer whose gap the runner's path threatens fills downhill to meet
+  // him at the line, instead of waiting at his landmark until he declares.
+  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? threatened ? FILL_DEPTH : STACK_LANDMARK : .5;
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
   let pace = .78+.15*a.mind.urgency;
   const fit = track(a,aim,{x:0,y:0},{speed:pace,gain:3,facing:Math.PI});
