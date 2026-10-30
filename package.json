@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit --incremental --tsBuildInfoFile out/typescript/typecheck.tsbuildinfo",
     "test": "vitest run --project core",
     "test:integration": "vitest run --project integration --maxWorkers=1",
     "test:research": "vitest run --project research",
