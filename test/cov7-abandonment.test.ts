@@ -209,7 +209,7 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     expect(run.summary.result.support.yards).toBeLessThan(run.summary.result.man.yards);
   });
 
-  it('preserves same-clock abandonment geometry and names both native PA completions to Z', () => {
+  it('preserves same-clock abandonment geometry and names each arm's native PA result to Z', () => {
     // Exact combined58f6c038, recorded single stream: both arms throw to Z at2.95,
     // both complete at4.50. Keep these named outcomes; do not restore #336's
     // interception by changing policy, seeds, bodies, or the throw. The cost is
