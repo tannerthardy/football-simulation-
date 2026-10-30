@@ -178,6 +178,12 @@ and inputsUnchanged. "+ #385" means a local merge of `run/G2-counter-blocking`.
    - he blocks nobody 85% of the time (NFL 4%);
    - `--as-gh` eligibility accepted slot WRs; only `gun_wing_12` has a TE H-back.
 
+**Defense update (04:43Z):** `defense/G2-edge-key` at `e3586afa` (stacked on #384 `3ce7dd4e`, no PR yet). An edge now
+keys the end of the line inside him at any width and keeps reading that same man. Without #385, kick blocks nobody
+went 16.4% → 12.5% and targets more than 3 yd deep 21 → 7. The remaining no-blocks are mostly ends at the line or
+corners as kick targets, which is kick geometry (Run's side). The next card should use `e3586afa` + #385 with the
+corrected kick fit.
+
 **Defense's lane (sent with data):**
 - End depth at kick contact (DEP: −0.63 on their arm).
 - Backer read and fill (done).
