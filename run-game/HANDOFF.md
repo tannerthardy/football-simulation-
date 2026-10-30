@@ -191,6 +191,13 @@ Priority order. Each item has a measure and a stopping rule.
 
 1. **Land #385.** Answer Integration and reconcile with develop or #384 as they merge. If Defense's branches
    merge first, rerun the F0 card on develop + #385 and post it on the PR.
+   **Owed to Integration on #385 (their comment 6514806090):** a matched **power** check on the full combination,
+   `aed85477` vs `aed85477` + #385, `--concept power`, scored with `kicknone.py` and `kicklog.py` using kicker
+   role filters. On their constructed native power case (ace_11, cover3_buzz, seed 9, roster 7) the original-end
+   load disappears in the combination, and the kicker stays deep and later abandons the man. Existing power
+   evidence (PTK0→PTK1) is on Defense `bba64013` only.
+   The kick-fit test was clarified in `5a275fc2`: S19-P025's 3.9 s was measured with the back-block fit, not on
+   develop, so the snap guards the combination.
 2. **Climber stall: wait for Main Engine.** When a physics change lands, rerun `climbspd.mts` and `ctrdbl.py`.
    - Success: speed 0.3–0.5 s after leave ≈ 2.1–2.4 yd/s; play-side backers untouched → ~13%.
    - Keep any controller technique change out of this until physics answers.
