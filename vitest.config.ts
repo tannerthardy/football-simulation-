@@ -46,6 +46,8 @@ export default defineConfig({
         test: {
           name: 'integration',
           include: integrationTests,
+          pool: 'threads',
+          isolate: true,
           testTimeout: 60000,
         },
       },
@@ -53,6 +55,8 @@ export default defineConfig({
         test: {
           name: 'research',
           include: ['test/research/**/*.test.ts'],
+          pool: 'threads',
+          isolate: true,
           testTimeout: 60000,
         },
       },

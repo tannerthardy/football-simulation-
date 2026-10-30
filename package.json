@@ -14,7 +14,7 @@
     "test:workflows": "vitest run --project workflows --maxWorkers=1",
     "test:integration": "vitest run --project integration --maxWorkers=2",
     "test:research": "vitest run --project research",
-    "test:all": "vitest run --maxWorkers=2 --poolOptions.threads.maxThreads=1",
+    "test:all": "vitest run --maxWorkers=3",
     "baseline:info": "node scripts/baseline.mjs --info",
     "baseline:run": "node scripts/baseline.mjs",
     "baseline:verify": "node scripts/baseline.mjs --verify",
