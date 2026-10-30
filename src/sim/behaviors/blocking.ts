@@ -855,17 +855,23 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   const lateral = (d: Agent, group: Agent[]) => Math.min(...group.map((o) => Math.abs(o.pos.y - d.pos.y)));
   const front = (d: Agent) => dl.includes(d) && lateral(d, line) < lateral(d, stalkers);
   const stalkPool = [...db, ...lb, ...dl.filter(d => !reserved.has(d))];
-  const eligible = (a: Agent, d: Agent) => db.includes(d) || (inReach(a, d) && (!front(d) || inCore(a)));
+  // Gap runs keep the crack: a receiver on his side of the ball takes a box
+  // defender nobody owns (a safety walked down into an eight-man box) at any
+  // distance, and lands it (a loaded Z crack on the trap/odd walked-down SS,
+  // who otherwise helps make the tackle).
+  const gapCrack = scheme === 'power' || scheme === 'counter' || scheme === 'trap';
+  const crack = (a: Agent, d: Agent) => lb.includes(d) && (d.pos.y - by) * (a.pos.y - by) > 0 && (gapCrack || inReach(a, d));
+  const eligible = (a: Agent, d: Agent) => db.includes(d) || crack(a, d) || (inReach(a, d) && (!front(d) || inCore(a)));
   const stalkTargets = new Map<Agent, Agent | null>();
   if (STALK_CLAIM) {
     // Receivers share one ledger: closest unclaimed pairs first, skipping
     // backers a lineman or lead already owns. Only a receiver left with
     // nobody unclaimed helps on the nearest man.
     const open = stalkPool.filter(d => !reserved.has(d));
-    // A box defender nobody owns (a safety walked down into an eight-man
-    // box) is claimed before the secondary, by a receiver on his side of the
-    // ball who can reach him: the crack. Then the closest pairs.
-    const box = (a: Agent, d: Agent) => lb.includes(d) && inReach(a, d) && (d.pos.y - by) * (a.pos.y - by) > 0 ? 0 : 1;
+    // A box defender nobody owns is claimed before the secondary, by a
+    // receiver on his side of the ball: the crack (on a zone run, only one
+    // who can reach him). Then the closest pairs.
+    const box = (a: Agent, d: Agent) => crack(a, d) ? 0 : 1;
     const pairs = stalkers.flatMap((a) => open.filter((d) => eligible(a, d)).map((d) => ({ a, d, dist: near(a, d), tier: box(a, d) })))
       .sort((p, q) => p.tier - q.tier || p.dist - q.dist);
     const taken = new Set<Agent>();
