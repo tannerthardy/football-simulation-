@@ -246,9 +246,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // A run-only capture of develop db6bc472, recorded for #336 + #344 with develop 90daa454 (#362) merged, when
     // M7-P051 stopped tying: LB_M and LB_W reached the carrier on the same tick (2.55). With the direction-free
     // start (#353), DT_W and LB_M tied at 2.45. With the squeeze read (DL_SQUEEZE from a seen carrier's track) the run
-    // goes further and CB_S alone makes first contact at 5.05, wrapping with it. The natural tie is on M25-P032; the
-    // census rule itself is pinned on the staged case below. With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step)
-    // as well, DT_W alone makes first contact at 3.1, wrapping with it.
+    // goes further and CB_S alone makes first contact at 5.05, wrapping with it. With receivers blocking the man in
+    // reach of them, Z stalks CB_S pressed over him instead of crossing 4.7 yd inside to SS; CB_S is still alone
+    // first, at 6.35, wrapping. The natural tie is on M25-P032; the census rule itself is pinned on the staged case below.
+    // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as
+    // well, DT_W alone makes first contact at 3.1, wrapping with it.
     const p = play('R9-P020'), first = p.census[0].firstCarrierContact!;
     expect(first.t).toBe(3.1);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
@@ -260,13 +262,15 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // alone at 2.85 (still on develop 510f7a6a); with the direction-free start (#353), DE_S alone at 2.65.
     // With achievable carrier clearance (#381), the RB passes the RT instead of braking at 1.95. The native
     // DE_S contact no longer occurs; CB_S is alone at 3.25. With the containment bound holding an engaged edge's
-    // read flow (RUN-18) as well, LB_W makes first contact alone at 2.85 (CB_S wraps later, at 3.35). The recorded
-    // input and single-defender contract stay. The tie is on R9-P020. #349's climber property is on M10-P081 below.
-    // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as well,
-    // LB_M alone at 2.65, wrapping with it.
+    // read flow (RUN-18) as well, LB_W makes first contact alone at 2.85 (CB_S wraps later, at 3.35). With
+    // receivers blocking the man in reach of them, X (10.4 yd out) stalks CB_W over him instead of crossing 8.4 yd
+    // to LB_M, and LB_W is alone at 2.9. The recorded input and single-defender contract stay. The tie is on R9-P020.
+    // #349's climber property is on M10-P081 below.
+    // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as
+    // well, LB_W is still alone at 2.9.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.65);
-    expect(first.defenders.map(p.slot)).toEqual(['LB_M']);
+    expect(first.t).toBe(2.9);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
