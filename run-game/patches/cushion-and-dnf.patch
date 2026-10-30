@@ -1,0 +1,73 @@
+diff --git a/src/sim/run-fits.ts b/src/sim/run-fits.ts
+index 7c6fe87..5d66369 100644
+--- a/src/sim/run-fits.ts
++++ b/src/sim/run-fits.ts
+@@ -6,7 +6,7 @@ import type { DefSlot, Gap } from '../playbook/types.js';
+ import type { Agent } from './agent.js';
+ import type { Perceived } from './perception.js';
+ import type { PlaySim } from './playsim.js';
+-import { blendApproach, chase, gatheringApproach, goTo, stand, track } from './behaviors/common.js';
++import { blendApproach, chase, gatheringApproach, goTo, leverage, stand, track } from './behaviors/common.js';
+ import { chooseApproach } from './approach-control.js';
+ import { CF_FLOW } from './counterfactual.js';
+ import { lineFlow, linePicture, liveGap, liveGapY } from './live-gaps.js';
+@@ -67,6 +67,7 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
+   const exchange = sim.defCall.gapExchange;
+   const exchangeBacker = exchange && sim.slot(exchange.edge) ? sim.slot(exchange.backer) : undefined;
+   const available = (d: Agent) => !first.has(d) && d !== exchangeBacker && jobs.get(d)!.kind !== 'force';
++  const deepZone = (d: Agent) => { const role = sim.defAlign.spots[d.slot as DefSlot]!.role; return role.kind === 'zone' && isDeepZone(role.zone); };
+   const outsideSide = (d: Agent): number | null => {
+     const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
+     if (role.kind !== 'zone') return null;
+@@ -81,7 +82,7 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
+   for (const side of [-1, 1]) {
+     const designated = sim.defense.filter(d => available(d) && outsideSide(d) === side);
+     const candidates = designated.length ? designated : sim.defense.filter(d => available(d)
+-      && outsideSide(d) === null && (d.pos.y - sim.ballY) * side > 2);
++      && outsideSide(d) === null && (d.pos.y - sim.ballY) * side > 2 && !(DEEP_NO_FORCE && deepZone(d)));
+     const priority = (d: Agent) => {
+       const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
+       return role.kind === 'zone' ? role.zone.startsWith('flat') ? 0 : role.zone.startsWith('curl_flat') ? 1 : isDeepZone(role.zone) ? 6 : 3 : 7;
+@@ -196,6 +197,19 @@ const LB_LANDMARK = process.env.LB_LANDMARK === '1';
+  * it is 5.3 yd behind the back at 10 yd where the NFL's is 3.1 ahead
+  * (scripts/diag/long-run.py). Off: the installed 65% of alignment depth. */
+ const SAFETY_TEMPO = process.env.SAFETY_TEMPO === '1';
++/** DEEP_NO_FORCE (off): a deep-zone defender is never the side's force
++ * player. Without a flat seat (man and quarters calls) the fallback could
++ * pick the post or half safety at 10-12 yd, who then sprints to the line
++ * outside the back; the back runs inside him with no one behind. Off: any
++ * available defender outside the ball. With no candidate the edge boxes. */
++/** SAFETY_CUSHION (off): after the back declares, an alley defender aligned
++ * 8+ yd deep stays the last level: he mirrors the runner at his own depth
++ * with inside-out leverage until the runner reaches his gather range, then
++ * chases. Tracked deep support holds depth when the back is 5 yd past the
++ * line (downhill -0.25 yd/s, 6.1 yd deeper on runs reaching 20); ours keeps
++ * coming (+1.0, 0.4 yd; depth/alleypath.py). Off: chase at declaration. */
++const SAFETY_CUSHION = process.env.SAFETY_CUSHION === '1';
++const DEEP_NO_FORCE = process.env.DEEP_NO_FORCE === '1';
+ const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
+ 
+ /** Linemen this player sees pulling: off the surface, behind the line, moving
+@@ -270,8 +284,21 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
+     // The remaining secondary support is the cap on the fit. Bringing every
+     // safety to linebacker depth before the back declares removes the final
+     // level and turns ordinary creases into breakaways.
+-    if (!premesh && seen.pos.x>sim.los-2.5) return chase(sim,a,c,3.5);
+     const home=sim.defAlign.spots[a.slot as DefSlot]!.pos;
++    if (!premesh && seen.pos.x>sim.los-2.5) {
++      if (SAFETY_CUSHION && (home.x-sim.los)*sim.attackDir(c.team)>=8) {
++        // SAFETY_CUSHION: the last level keeps the ball in front and inside.
++        // He mirrors the runner with inside-out leverage at his own depth and
++        // lets the runner come to him; the ordinary chase and its gather take
++        // over once the runner is inside his gather range or level with him.
++        const contact=a.profile.radius+c.profile.radius+a.profile.reach*.65;
++        const over=(a.pos.x-seen.pos.x)*sim.attackDir(c.team);
++        if (over>contact && gatheringApproach(a,seen,contact,0).gather<=0)
++          return track(a,{x:a.pos.x,y:seen.pos.y+leverage(a,seen.pos.y)},{x:0,y:seen.vel.y},
++            {gain:2,facing:Math.atan2(seen.pos.y-a.pos.y,seen.pos.x-a.pos.x)});
++      }
++      return chase(sim,a,c,3.5);
++    }
+     // SAFETY_TEMPO: until the back declares, the alley player eases down
+     // from his alignment and stays the last level over the ball.
+     const depth=SAFETY_TEMPO ? Math.max(5,home.x-sim.los-1) : clamp((home.x-sim.los)*.65,5,8);

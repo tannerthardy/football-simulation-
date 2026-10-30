@@ -1,0 +1,32 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -690,6 +692,11 @@
+     const leadBacker = scheme === 'power' && fbIsBack && pullers.size
+       ? lb.filter((l) => !claimedLB.has(l) && rel(l) > -0.5).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
+     if (leadBacker) claimedLB.add(leadBacker);
++    // Counter GT's wrapping tackle takes the backer at the hole, counted
++    // before the doubles as GH counts the H's: claimed after them, the wrap
++    // was left a backside backer his path never reaches (135 of 568 restaged
++    // GT counters), and the doubles climbed to the playside backers instead.
++    const wrapBacker = scheme === 'counter' && !concept.pullers.includes('H') && bst && pullers.has(bst) ? lbNear(hole) : null;
+ 
+     // Reserve precisely the intentionally unblocked trap/kick defender.
+     // The old trap rule left every playside lineman for one trapper. Trap is
+@@ -760,7 +767,7 @@
+       if (partner && target && Math.abs(target.pos.y - b.pos.y) < 2.5) {
+         // With the playside backer counted for the puller, the double works
+         // to the backside box backer; with none left it stays a double.
+-        combo(b, partner, target, leadBacker ? lbNear(by - ps, true, 3.0) : lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
++        combo(b, partner, target, leadBacker || wrapBacker ? lbNear(by - ps, true, 3.0) : lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
+       } else plans.set(b, { kind: 'climb', target: lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) });
+     }
+     // End man on the line on the playside (kick-out target).
+@@ -783,7 +790,7 @@
+       if (scheme === 'trap') role = 'trap';
+       else if (scheme === 'counter') role = p === bsg ? 'kick' : 'lead';
+       else role = fbIsBack ? 'lead' : 'kick';
+-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : leadBacker ?? lbNear(hole);
++      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : leadBacker ?? (p === bst ? wrapBacker : null) ?? lbNear(hole);
+       if (target && role !== 'lead') claimedDL.add(target);
+       const path = target && role !== 'lead' ? [
+         // A trapper already runs at NFL depth off his installed corners.

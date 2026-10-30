@@ -1,0 +1,94 @@
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -448,6 +448,8 @@
+   pullRole?: 'kick' | 'lead' | 'trap';
+   /** Explicit GH installation: first guard/end relationship known at the snap. */
+   pullSurface?: { blocker: Agent; defender: Agent };
++  /** Counter's wrap reads the kick on this pair from his own picture, as GH reads its surface. */
++  logRead?: { blocker: Agent; defender: Agent };
+   /** This exact installed perimeter defender uses a moving near-surface stalk. */
+   perimeterStalk?: Agent;
+   /** This exact installed inside defender needs an attainable ordinary strike. */
+@@ -690,6 +692,11 @@
+     const leadBacker = scheme === 'power' && fbIsBack && pullers.size
+       ? lb.filter((l) => !claimedLB.has(l) && rel(l) > -0.5).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
+     if (leadBacker) claimedLB.add(leadBacker);
++    // Counter GT's wrapping tackle takes the backer at the hole, counted
++    // before the doubles as GH counts the H's: claimed after them, the wrap
++    // was left a backside backer his path never reaches (135 of 568 restaged
++    // GT counters), and the doubles climbed to the playside backers instead.
++    const wrapBacker = scheme === 'counter' && !concept.pullers.includes('H') && bst && pullers.has(bst) ? lbNear(hole) : null;
+ 
+     // Reserve precisely the intentionally unblocked trap/kick defender.
+     // The old trap rule left every playside lineman for one trapper. Trap is
+@@ -760,7 +767,7 @@
+       if (partner && target && Math.abs(target.pos.y - b.pos.y) < 2.5) {
+         // With the playside backer counted for the puller, the double works
+         // to the backside box backer; with none left it stays a double.
+-        combo(b, partner, target, leadBacker ? lbNear(by - ps, true, 3.0) : lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
++        combo(b, partner, target, leadBacker || wrapBacker ? lbNear(by - ps, true, 3.0) : lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
+       } else plans.set(b, { kind: 'climb', target: lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) });
+     }
+     // End man on the line on the playside (kick-out target).
+@@ -783,7 +790,7 @@
+       if (scheme === 'trap') role = 'trap';
+       else if (scheme === 'counter') role = p === bsg ? 'kick' : 'lead';
+       else role = fbIsBack ? 'lead' : 'kick';
+-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : leadBacker ?? lbNear(hole);
++      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : leadBacker ?? (p === bst ? wrapBacker : null) ?? lbNear(hole);
+       if (target && role !== 'lead') claimedDL.add(target);
+       const path = target && role !== 'lead' ? [
+         // A trapper already runs at NFL depth off his installed corners.
+@@ -799,6 +806,7 @@
+       }
+       plans.set(p, { kind: 'pull', pullRole: role, target, drive: role === 'kick' ? norm({ x: 0.3, y: ps }) : role === 'trap' ? norm({ x: 0.4, y: ps }) : up(0), pullPath: path });
+       if (p === h && concept.pullers.includes('H') && bsg && emlos) plans.get(p)!.pullSurface = { blocker: bsg, defender: emlos };
++      else if (scheme === 'counter' && role === 'lead' && bsg && emlos) plans.get(p)!.logRead = { blocker: bsg, defender: emlos };
+     }
+     if (fb && fbIsBack && concept.scheme === 'power' && emlos && !claimedDL.has(emlos)) {
+       plans.set(fb, { kind: 'lead', pullRole:'kick', target: emlos, drive: norm({ x: 0.3, y: ps }) });
+@@ -972,6 +980,7 @@
+   private nextSurfaceRead = 0;
+   private wrapOutside = false;
+   private wrapCorner: Vec2 | null = null;
++  private wrapAround: (Vec2 & { kickY: number }) | null = null;
+   private wrapTraffic: {pos: Vec2; vel: Vec2}[] = [];
+   private wrapTrafficAt = 0;
+   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
+@@ -1153,6 +1162,36 @@
+             plan.pullPath[plan.pullPath.length-1] = {...this.wrapCorner};
+             a.tags.add('wrap-log');
+           }
++        } else if (plan.logRead) {
++          // GT's wrap reads the kick as GH and the back do, from what he
++          // sees: the kicker on his man and outside him has logged the end,
++          // so the wrap goes around. The kicker's own log call is not
++          // something the wrap can see; an end who squeezed under the
++          // kicker's path is logged whether or not the kicker declared it.
++          if (t >= this.nextSurfaceRead) {
++            this.nextSurfaceRead = t + a.mind.decisionInterval;
++            const kick = plan.logRead.blocker, end = plan.logRead.defender;
++            const g = sim.see(a, kick), d = sim.see(a, end), side = playSideSign(sim, sim.offCall.run!);
++            const reach = kick.profile.radius + end.profile.radius + .1 + kick.player.measurables.armIn / 36 * .45;
++            const joined = Math.hypot(g.pos.x-d.pos.x,g.pos.y-d.pos.y) <= reach;
++            this.wrapOutside ||= joined && (g.pos.y-d.pos.y)*side > .25;
++            if (this.wrapOutside && joined) {
++              this.wrapCorner = { x:Math.max(sim.los+.5,g.pos.x+.6),y:g.pos.y+side*1.1 };
++              // The logged end is inside the kicker and the kicker's back is
++              // to the wrap: the way around is behind the kicker, not through
++              // the end. Until he is outside the kicker, aim there first.
++              const clear = kick.profile.radius + a.profile.radius + .2, dir = sim.attackDir(a.team);
++              this.wrapAround = { x:g.pos.x-dir*clear, y:g.pos.y+side*clear, kickY:g.pos.y };
++            }
++          }
++          if (this.wrapCorner) {
++            const side = playSideSign(sim, sim.offCall.run!);
++            // Around until his body is outside the kicker's (the around point
++            // is a body width beyond it, so the path cannot finish there).
++            const around = this.wrapAround && (a.pos.y-this.wrapAround.kickY)*side <= 0 ? this.wrapAround : null;
++            plan.pullPath[plan.pullPath.length-1] = around ? { x:around.x, y:around.y } : {...this.wrapCorner};
++            a.tags.add('wrap-log');
++          }
+         } else {
+           const kick=sim.offense.find((b)=>b.tags.has('block-log') && b.behavior instanceof RunBlocker);
+           if(kick) {

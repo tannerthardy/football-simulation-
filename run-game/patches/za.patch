@@ -1,0 +1,40 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 5996e0c..87fd217 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -69,6 +69,7 @@
+     "DL_FLATTEN": "0",
+     "DL_FLATTEN_WON": "0",
+     "LB_LANDMARK": "0",
++    "ZONE_ARM": "0",
+     "DEF_GETOFF": "1"
+   },
+   "worldDefaults": {
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 3b8b07b..54ac982 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -829,6 +829,14 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
+ 
+ /** Ball in the air: break on it after reacting; intercept the path or contest the catch. */
+ /** Has this defender seen the throw yet? (Eyes on the QB see it sooner.) */
++/** ZONE_ARM (off): every zone defender whose eyes are on the quarterback
++ * reads his arm and shoulders, not only spot droppers. Match defenders also
++ * break on the throwing motion rather than on the released ball (2022
++ * tracking: the nearest zone defender is speeding up from the release, ours
++ * slow until +0.4 s; scripts/diag/depth/breakcurve.py). Off: match defenders
++ * react to the released ball. */
++const ZONE_ARM = process.env.ZONE_ARM === '1';
++
+ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+   const ball = sim.ball;
+   if (ball.kind !== 'air') return false;
+@@ -844,7 +852,7 @@ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+   // Spot droppers key the quarterback: his arm and body action give the
+   // throw away before the ball is out, so their reaction starts there.
+   const style = a.behavior instanceof ZoneCoverage ? a.behavior.style : (a.behavior as { style?: ZoneStyle }).style;
+-  const keysQB = facingQB && sim.windupAt >= 0 && zoneEyes && style === 'spot';
++  const keysQB = facingQB && sim.windupAt >= 0 && zoneEyes && (style === 'spot' || ZONE_ARM);
+   if (keysQB && sim.t - sim.windupAt >= react) {
+     a.tags.add('readArm');
+     return true;

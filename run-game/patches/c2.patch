@@ -1,0 +1,85 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 32a3bf9b..82a60375 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -456,6 +456,17 @@ function drawPresentation(plan: RunBlockPlan, t: number): boolean {
+   return (plan.presentation === 'draw' || plan.kind === 'draw') && t < 1.0;
+ }
+ 
++/** The uncovered man of a draw double sells pass only until the rush
++ * commits: once he sees the doubled man on his partner, the show has done
++ * its work and he goes to help and climb. His own delayed picture only. */
++function rushOnPartner(a: Agent, sim: PlaySim, combo: Combination): boolean {
++  const partner = combo.members.find((m) => m !== a);
++  if (!partner) return false;
++  const man = sim.see(a, combo.defender), mate = sim.see(a, partner);
++  const reach = partner.profile.radius + combo.defender.profile.radius + partner.player.measurables.armIn / 36;
++  return man.pose === 'up' && Math.hypot(man.pos.x - mate.pos.x, man.pos.y - mate.pos.y) <= reach;
++}
++
+ function classify(sim: PlaySim): { dl: Agent[]; lb: Agent[]; db: Agent[] } {
+   const dl: Agent[] = [];
+   const lb: Agent[] = [];
+@@ -936,6 +947,8 @@ export class RunBlocker implements Behavior {
+     flow: Vec2; backer: Perceived } | null = null;
+   /** A personally consumed near-gap emergency, held through the normal beat. */
+   private presentationThreat: Agent | null = null;
++  /** The uncovered man of a draw double has seen the rush commit onto his partner. */
++  private showOver = false;
+   /** Native technique read, retained between the player's ordinary decisions. */
+   zoneRead: ZoneReachRead | null = null;
+   private preparation: { combination: Combination; backer: Agent | null; at: number; until: number; exit: Vec2; flow: Vec2 } | null = null;
+@@ -988,6 +1001,11 @@ export class RunBlocker implements Behavior {
+     return this.plan.target;
+   }
+ 
++  /** Still selling pass on a draw. */
++  presentingDraw(t: number): boolean {
++    return drawPresentation(this.plan, t) && !this.showOver;
++  }
++
+   update(a: Agent, sim: PlaySim): Intent {
+     const plan = this.plan;
+     const t = sim.t;
+@@ -1002,7 +1020,9 @@ export class RunBlocker implements Behavior {
+     this.firstStep ??= {x:a.pos.x+.18,y:a.pos.y+plan.drive.y*.55};
+     this.rememberSoloWork();
+     // Draw blockers show pass first; everyone else fires out low.
+-    const presentingDraw = drawPresentation(plan, t);
++    if (!this.showOver && plan.kind === 'combo' && plan.combination && drawPresentation(plan, t) && t >= a.mind.snapDelay)
++      this.showOver = rushOnPartner(a, sim, plan.combination);
++    const presentingDraw = this.presentingDraw(t);
+     a.stance = presentingDraw ? 'high' : 'low';
+     if (t < a.mind.snapDelay) return stand();
+     if (!a.engagement && t >= this.nextRuleRead) {
+@@ -1926,7 +1946,7 @@ export class RunBlocker implements Behavior {
+     // Look–lean–climb: an uncovered lineman collects a penetrating body in
+     // his gap before leaving for the backer. Reserved kick targets are only
+     // collected after they have actually penetrated the surface.
+-    if (p.kind !== 'climb' && p.kind !== 'combo' && !drawPresentation(p, sim.t)) return;
++    if (p.kind !== 'climb' && p.kind !== 'combo' && !this.presentingDraw(sim.t)) return;
+     const threat = sim.defense.filter((d) => !d.engagement && !d.isDown(sim.t)).find((d) => {
+       const s = sim.see(a,d);
+       return s.pos.x < sim.los-.25 && s.pos.x > a.pos.x-1 && Math.abs(s.pos.y-(this.homeY ?? a.pos.y)) < .9;
+@@ -2290,7 +2310,11 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
+     observer.behavior.prepareCombination(observer,sim,combo,preparation,read.nextRead);
+   }
+   if (sim.t - read.secureSince < .15) return;
+-  if (!filling && !arriving) return;
++  // A draw invites the rush; the backer who reads pass sits or drops instead
++  // of filling. Once the reader sees his partner carrying the man, the
++  // climber goes and gets him.
++  const draw = sim.offCall.run?.scheme === 'draw' || sim.offCall.run?.scheme === 'qbDraw';
++  if (!filling && !arriving && !draw) return;
+   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
+   if (!route) { observer.tags.add('combo-held'); return; }
+   if (sim.offCall.run?.scheme === 'duo' && route.exit) {
+@@ -2369,7 +2393,7 @@ export function readCombination(observer: Agent, sim: PlaySim, combo: Combinatio
+   const index = combo.members.indexOf(observer);
+   if (index < 0 || combo.released || !combo.backer || combo.backer.isDown(sim.t)
+     || sim.t < observer.snapReadyAt
+-    || (observer.behavior instanceof RunBlocker && drawPresentation(observer.behavior.plan, sim.t))) return;
++    || (observer.behavior instanceof RunBlocker && observer.behavior.presentingDraw(sim.t))) return;
+   if (observer.isDown(sim.t) || !combo.members.every((a) => a.behavior instanceof RunBlocker
+     && a.behavior.plan.combination === combo && a.behavior.plan.target === combo.defender)) {
+     const read = combo.reads?.[index];

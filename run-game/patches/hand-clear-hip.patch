@@ -1,0 +1,54 @@
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index dea498da..ad90f4db 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -593,9 +593,21 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
+     default:
+       skill = 0.5;
+   }
+-  const p = logistic(-2.1 + 3.4 * (skill - counter) + bonus + e.control * -0.6);
+-  const ok = rng.chance(p);
+-  e.moveUntil = t + 0.3;
++  let ok: boolean;
++  if (HAND_CLEAR && CLEARS.has(e.move) && e.hands) {
++    // The swat moves the blocker's hand off if it beats what keeps it on:
++    // friction under his push plus any grip. A rusher already in control
++    // has no hand of his to clear.
++    const keep = e.control >= 0 ? 0.6 * e.hands.push + e.hands.hold : 0;
++    const swat = armForce(d) * skill * Math.max(0, 1 + rng.normal(0, 0.15));
++    ok = swat > keep;
++    // Hands off until he re-fits: his reaction plus the arm's travel.
++    e.moveUntil = t + b.profile.reactionTime * (1.2 - 0.4 * tb.read) + 0.1;
++  } else {
++    const p = logistic(-2.1 + 3.4 * (skill - counter) + bonus + e.control * -0.6);
++    ok = rng.chance(p);
++    e.moveUntil = t + 0.3;
++  }
+   e.moveOk = ok;
+   const lat = latOf(axis);
+   const mb = b.profile.massKg, md = d.profile.massKg;
+@@ -700,6 +712,13 @@ const ANCHOR = process.env.RUN_ANCHOR !== '0';
+  * position. */
+ const PASS_FEEL = process.env.PASS_FEEL === '1';
+ 
++/** Experimental (HAND_CLEAR=1, off): whether a finesse move clears the
++ * blocker's hands is his swat (arm force times technique) against what
++ * keeps the hand on (friction under its push plus grip), not a rated roll;
++ * the hands stay off until the blocker re-fits. */
++const HAND_CLEAR = process.env.HAND_CLEAR === '1';
++const CLEARS: ReadonlySet<RushMove> = new Set(['swim', 'club', 'rip', 'snatch']);
++
+ /** Test hook: a fixed move sequence for a rep (identical across arms). */
+ export const rushScripts = new WeakMap<Engagement, RushMove[]>();
+ 
+@@ -791,7 +810,9 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   const rush = d.profile.vmax * (power ? 0.55 : 0.8 + 0.15 * td.bend) * (stalled ? 0.6 : 1);
+   intents[d.idx] = {
+     vel: { x: toAim.x * rush, y: toAim.y * rush },
+-    facing: Math.atan2(qb.y - d.pos.y, qb.x - d.pos.x),
++    // HAND_CLEAR: with the hands cleared he turns his hips to where he is
++    // going; squared to the quarterback his legs drive sideways far less.
++    facing: HAND_CLEAR && inMove && CLEARS.has(e.move) ? Math.atan2(toAim.y, toAim.x) : Math.atan2(qb.y - d.pos.y, qb.x - d.pos.x),
+     push: power ? 1 : inMove ? 0.35 : 0.75,
+     posture: bend ? 0.95 : 0.75,
+     cutSkill: 0.8 + 0.5 * td.bend,

@@ -1,0 +1,63 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 5996e0c..746ed70 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -69,6 +69,7 @@
+     "DL_FLATTEN": "0",
+     "DL_FLATTEN_WON": "0",
+     "LB_LANDMARK": "0",
++    "DEEP_SIT": "0",
+     "DEF_GETOFF": "1"
+   },
+   "worldDefaults": {
+diff --git a/src/sim/behaviors/defense.ts b/src/sim/behaviors/defense.ts
+index 3b8b07b..ccd1f41 100644
+--- a/src/sim/behaviors/defense.ts
++++ b/src/sim/behaviors/defense.ts
+@@ -409,11 +409,14 @@ export class ManCoverage implements Behavior {
+       tx = Math.min(tx, END_LINE_X - a.profile.radius);
+     }
+     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
+-    const tgt = { x: tx, y: ty };
++    // DEEP_SIT: a deep carry with more cushion than the turn needs sits and reads.
++    const sit = DEEP_SIT && !!o.protectDepth && a.pos.x - seen.pos.x > cushion + closing * flipTime + 1;
++    const tgt = { x: sit ? Math.min(tx, a.pos.x) : tx, y: ty };
+     const cs = 0.85 + 0.35 * a.r('manCoverage');
++    const lead = sit ? { x: 0, y: seen.vel.y } : seen.vel;
+     const command = this.hipsOpen
+-      ? track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') })
+-      : track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
++      ? track(a, tgt, lead, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') })
++      : track(a, tgt, { x: sit ? 0 : Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 });
+     if (!o.protectDepth) return command;
+     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
+       : vx > 3 && deep > 3 ? cushion * .5 : cushion;
+@@ -583,9 +586,10 @@ export class ZoneCoverage implements Behavior {
+       if (deepest.vel.x > a.profile.vmax * a.profile.backpedal && a.pos.x - deepest.pos.x < cushion + closing * flipTime)
+         this.turnedWith = deepest.r;
+       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
+-      const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
++      const sit = DEEP_SIT && !turnRun && a.pos.x - deepest.pos.x > cushion + closing * flipTime + 1;
++      const tv = { x: sit ? 0 : Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
+       this.target = deepest.r;
+-      const command = track(a, { x: tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
++      const command = track(a, { x: sit ? Math.min(tx, a.pos.x) : tx, y: clamp(ty, 0.5, FIELD_WIDTH - 0.5) }, tv, {
+         facing: turnRun ? undefined : facingQB,
+         speed: turnRun ? 1 : zs * 1.05,
+         gain: 1.8,
+@@ -829,6 +833,15 @@ function zoneBand(zone: ZoneId, sim: PlaySim): [number, number] {
+ 
+ /** Ball in the air: break on it after reacting; intercept the path or contest the catch. */
+ /** Has this defender seen the throw yet? (Eyes on the QB see it sooner.) */
++/** DEEP_SIT (off): a deep defender over a receiver well beneath him sits on
++ * his depth and reads while his cushion exceeds what he needs to turn and
++ * run (cushion + closing x hip-flip time), instead of retreating at the
++ * receiver's own speed; the depth guard (DeepCoverage) still bails him when
++ * the stem threatens. Tracked deep DBs over a receiver under 6 yd deep at
++ * the throw retreat 0.5 yd/s, ours 2.75 (scripts/diag/depth/breakpoint.py
++ * --by-job): they sit and break on the route. Off: he carries the stem. */
++const DEEP_SIT = process.env.DEEP_SIT === '1';
++
+ export function sawThrow(a: Agent, sim: PlaySim, man: Agent | null): boolean {
+   const ball = sim.ball;
+   if (ball.kind !== 'air') return false;

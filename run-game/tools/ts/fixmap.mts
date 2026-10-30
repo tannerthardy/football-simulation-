@@ -1,0 +1,12 @@
+import { readFileSync } from 'node:fs'; import { gunzipSync } from 'node:zlib';
+process.env.OL_SPLITS = '0'; process.env.OL_STAGGER = '0'; process.env.FRONT_ALIGN = '0';
+const root = process.cwd();
+const { PlaySim } = await import(root + '/src/sim/playsim.ts');
+const { RunBlocker, playSideSign } = await import(root + '/src/sim/behaviors/blocking.ts');
+const fx = JSON.parse(gunzipSync(readFileSync(root + '/test/fixtures/' + process.argv[2])).toString());
+const sim = new PlaySim(fx.setup); sim.tick();
+const ps = playSideSign(sim, sim.offCall.run), rel = (y: number) => ((y - sim.ballY) * ps).toFixed(1);
+console.log(sim.offCall.run?.id, sim.defCall.front?.id);
+const line = sim.offense.filter((o: any) => o.behavior instanceof RunBlocker).sort((p: any, q: any) => (p.pos.y - q.pos.y) * ps);
+console.log(line.map((o: any) => { const p = o.behavior.plan; return `${o.slot}@${rel(o.pos.y)} ${p.kind}→${p.target?.slot ?? '-'}${p.climbTo ? '^' + p.climbTo.slot : ''}`; }).join(' | '));
+console.log('LBs', sim.defense.filter((d: any) => (d.pos.x - sim.los) * sim.attackDir('O') >= 2 && (d.pos.x - sim.los) * sim.attackDir('O') < 7.5).map((d: any) => `${d.slot}@${rel(d.pos.y)}`).join(' '));

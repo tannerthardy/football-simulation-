@@ -1,0 +1,14 @@
+import { readFileSync } from 'node:fs';
+import { gunzipSync } from 'node:zlib';
+import { pathToFileURL } from 'node:url';
+const root = process.cwd();
+const { PlaySim } = await import(pathToFileURL(`${root}/src/sim/playsim.ts`).href);
+const inputs = JSON.parse(gunzipSync(readFileSync(`${root}/test/fixtures/puller-access-inputs.json.gz`)).toString());
+const [id, flip, who] = [process.argv[2], process.argv[3] === '1', process.argv[4]];
+const setup = structuredClone(inputs.rows.find((r: any) => r.id === id).setup); setup.offCall.flip = flip;
+const sim = new PlaySim(setup);
+const tick = sim.tick.bind(sim); let n = 0;
+const p = (s: string) => { const a = sim.slot(s); return a ? `${s} ${(a.pos.x - sim.los).toFixed(1)},${(a.pos.y - sim.ballY).toFixed(1)}` : ''; };
+sim.tick = () => { tick(); if (++n % 5 === 0) { const a = sim.slot(who)!, b = a.behavior as any;
+  console.log(sim.t.toFixed(2), p(who), `idx${b.pullIdx} clr${b.pullCleared ? 1 : 0} v${Math.hypot(a.body.vel.x, a.body.vel.y).toFixed(1)}`, 'tgt', b.plan.target?.slot, b.plan.target ? p(b.plan.target.slot) : '', '|', p(sim.carrier?.slot ?? 'RB')); } };
+sim.run();

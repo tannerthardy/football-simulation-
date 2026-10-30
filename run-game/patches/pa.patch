@@ -1,0 +1,38 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 5996e0c..e9db2c2 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -69,6 +69,7 @@
+     "DL_FLATTEN": "0",
+     "DL_FLATTEN_WON": "0",
+     "LB_LANDMARK": "0",
++    "PURSUIT_ACCEL": "0",
+     "DEF_GETOFF": "1"
+   },
+   "worldDefaults": {
+diff --git a/src/sim/behaviors/common.ts b/src/sim/behaviors/common.ts
+index 2ba1cda..ad431fa 100644
+--- a/src/sim/behaviors/common.ts
++++ b/src/sim/behaviors/common.ts
+@@ -10,6 +10,7 @@ import { withMovementObjective } from '../movement-objective.js';
+ import type { PlaySim } from '../playsim.js';
+ 
+ export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
++const PURSUIT_ACCEL = process.env.PURSUIT_ACCEL === '1';
+ 
+ export function stand(facing?: number): MoveCommand {
+   return { vel: { x: 0, y: 0 }, facing };
+@@ -100,8 +101,11 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3)
+     -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau));
+   // Recent acceleration is evidence for a short burst, not a promise of full
+   // speed throughout the horizon. Reassess as new motion becomes visible.
+-  const tau = 0.3 + 0.3 * a.r('anticipation');
+-  const V = clamp(sp + acceleration * tau, 0, target.profile.vmax);
++  // PURSUIT_ACCEL: a runner seen speeding up is taken to keep running up to
++  // his top speed, the angle that he cannot outrun; slowing or steady is as off.
++  const sprint = PURSUIT_ACCEL && acceleration > 0.5;
++  const tau = sprint ? target.profile.tau : 0.3 + 0.3 * a.r('anticipation');
++  const V = sprint ? target.profile.vmax : clamp(sp + acceleration * tau, 0, target.profile.vmax);
+   const path = (t: number): Vec2 => {
+     const d = V * t - (V - sp) * tau * (1 - Math.exp(-t / tau));
+     return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };

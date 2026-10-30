@@ -1,0 +1,91 @@
+diff --git a/src/sim/behaviors/carrier.ts b/src/sim/behaviors/carrier.ts
+index e73b7d50..76145d11 100644
+--- a/src/sim/behaviors/carrier.ts
++++ b/src/sim/behaviors/carrier.ts
+@@ -85,12 +85,15 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
+     pictures.push({ agent: o, seen, team: o.team === a.team ? 'O' : 'D' });
+   }
+   if (kick && kickSeen && kickSeen.pos.x > sim.los - 1.5) {
+-    // Read the kick block as he sees it: the man on the puller's hands
+-    // outside him is kicked out (cut up inside the puller); one inside him
+-    // is logged or has crossed his face (bounce outside the puller). No man
+-    // on him yet: the design, inside the kick.
++    // Read the kick block as he sees it, by the man's hip: one on the
++    // puller's hands who is being driven out, or who stands outside him, is
++    // kicked out (cut up inside the puller). One inside him who is not being
++    // driven out (squeezing down, or held where he is) is logged or has
++    // crossed his face (bounce outside the puller). Two engaged bodies a few
++    // tenths of a yard apart do not say which by position alone. No man on
++    // him yet: the design, inside the kick.
+     const on = kickBlockMan(kick, kickSeen, pictures.filter((q) => q.team === 'D').map((q) => ({ agent: q.agent, seen: q.seen })));
+-    const logged = !!on && (on.y - kickSeen.pos.y) * run.side < 0;
++    const logged = !!on && kickLogged(kickSeen, on, run.side);
+     preferred = kickSeen.pos.y + (logged ? run.side * .85 : -run.side * .85);
+   }
+   const bodies: LineBody[] = [];
+@@ -571,21 +574,30 @@ function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vis
+   return { blockers, threats };
+ }
+ 
++/** The kick block read by the man's hip, in the runner's pictures of the
++ * puller and the man on him: logged (bounce outside the puller) when the man
++ * stands inside the puller and is not being driven out; otherwise kicked out.
++ * Two engaged bodies a few tenths of a yard apart do not say which by
++ * position alone; the man's motion does. */
++export function kickLogged(puller: Pick<Perceived, 'pos'>, man: Pick<Perceived, 'pos' | 'vel'>, side: number): boolean {
++  return (man.pos.y - puller.pos.y) * side < 0 && man.vel.y * side <= 0;
++}
++
+ /** The man a seen kick puller has in his hands' range, as the runner sees
+  * both: the nearest defender seen upright, in front of the puller's seen
+  * chest (the half-plane he faces) and within the two bodies and the puller's
+  * arm. This is the block landing or about to land, a tick or two before the
+  * bodies meet; a body beside or behind the puller is not on his hands. An
+  * unknown or rising pose, of either man, is not a confirmed block. */
+-function kickBlockMan(kick: Agent, seen: Perceived, defenders: Array<{ agent: Agent; seen: Perceived }>): Vec2 | null {
++function kickBlockMan(kick: Agent, seen: Perceived, defenders: Array<{ agent: Agent; seen: Perceived }>): Perceived | null {
+   if (seen.pose !== 'up') return null;
+   const arm = kick.player.measurables.armIn / 36, fx = Math.cos(seen.facing), fy = Math.sin(seen.facing);
+-  let best: Vec2 | null = null, bd = Infinity;
++  let best: Perceived | null = null, bd = Infinity;
+   for (const { agent: d, seen: s } of defenders) {
+     if (s.pose !== 'up') continue;
+     const rx = s.pos.x - seen.pos.x, ry = s.pos.y - seen.pos.y, dd = Math.hypot(rx, ry);
+     if (rx * fx + ry * fy <= 0) continue;
+-    if (dd < kick.profile.radius + d.profile.radius + arm && dd < bd) { bd = dd; best = s.pos; }
++    if (dd < kick.profile.radius + d.profile.radius + arm && dd < bd) { bd = dd; best = s; }
+   }
+   return best;
+ }
+diff --git a/test/carrier-crease.test.ts b/test/carrier-crease.test.ts
+index f88185c5..dd57207d 100644
+--- a/test/carrier-crease.test.ts
++++ b/test/carrier-crease.test.ts
+@@ -9,7 +9,7 @@ import { RUN_BY_ID } from '../src/playbook/concepts.js';
+ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
+ import { FORMATION_BY_ID } from '../src/playbook/formations.js';
+ import type { Perceived } from '../src/sim/perception.js';
+-import { BallCarrier, liveAim, runReadAim } from '../src/sim/behaviors/carrier.js';
++import { BallCarrier, kickLogged, liveAim, runReadAim } from '../src/sim/behaviors/carrier.js';
+ import { runReadObservers } from '../src/sim/run-read-observer.js';
+ import { PlaySim } from '../src/sim/playsim.js';
+ 
+@@ -258,6 +258,18 @@ describe('production carrier entry commands', () => {
+     expect(read(-.9)).toBeGreaterThan(0);
+   });
+ 
++  it.each([1, -1] as const)('reads the kick by the man\'s hip, not a few tenths of a yard, mirror %s', m => {
++    // Engaged bodies a few tenths of a yard apart: a man inside the puller who
++    // is being driven out is kicked out; the same man squeezing down, or held
++    // where he is, is logged. Outside the puller he is kicked out either way.
++    const puller = { pos: { x: LOS - .3, y: CENTER_Y + m * 3.6 } };
++    const man = (dy: number, vy: number) => ({ pos: { x: LOS - .1, y: CENTER_Y + m * (3.6 + dy) }, vel: { x: 0, y: m * vy } });
++    expect(kickLogged(puller, man(-.3, 1.5), m)).toBe(false);
++    expect(kickLogged(puller, man(-.3, -1.5), m)).toBe(true);
++    expect(kickLogged(puller, man(-.3, 0), m)).toBe(true);
++    expect(kickLogged(puller, man(.3, -1.5), m)).toBe(false);
++  });
++
+   it.each([1, -1] as const)('a landed kick block ends a counter back\'s follow before two yards, mirror %s', m => {
+     const press = (landed: boolean) => {
+       const s = scene(m, 2.1, 3);

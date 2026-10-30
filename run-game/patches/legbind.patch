@@ -1,0 +1,116 @@
+diff --git a/src/sim/tackle.ts b/src/sim/tackle.ts
+index 6dcda9f..86a012b 100644
+--- a/src/sim/tackle.ts
++++ b/src/sim/tackle.ts
+@@ -76,6 +76,18 @@ const HOLD_POINT = process.env.HOLD_POINT === '1';
+  * who plants drops behind and swings into rear leverage; the grip, his
+  * traction and the runner's legs decide what that achieves. */
+ const PLANT_TRAVEL = process.env.PLANT_TRAVEL === '1';
++/** Experimental (LEG_BIND=1, off): arms wrapped round a runner's legs take
++ * his stride. Each hold at or below his thighs, times its grip, is the share
++ * of his stride that is bound (a locked thigh wrap: all of it; a fingertip on
++ * an ankle: a little; a hold higher on his body, proportionally less), and
++ * limits the speed his gait can hold. Only holds beside or behind him count;
++ * a tackler in front is driven back as the runner falls forward over him.
++ * His gait, balance and the holds' loads decide how fast he slows or falls. Letting bound legs coast
++ * instead (no drive, no plant) left 6-8 yd/s runners carrying a lone holder:
++ * the hold's load alone does not stop them. */
++const LEG_BIND = process.env.LEG_BIND === '1';
++/** Legs share of a hold at thigh height (`attempt`: a sure form tackler's wrap). */
++const LEG_BIND_THIGH = 0.5;
+ 
+ export function gripForce(d: Agent, quality: number): number {
+   const q = clamp(quality, 0, 1);
+@@ -460,6 +472,21 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
+   // The carrier keeps his legs driving where his vision takes him.
+   const own = intents[c.idx];
+   intents[c.idx] = { ...own, push: 1, posture: Math.max(own.posture ?? 0, 0.5) };
++  if (LEG_BIND) {
++    // The stride comes from the hips and thighs: a wrap at thigh height
++    // (legs share 0.5, a form tackler's hold) or lower binds all of it.
++    // A tackler in front is driven back as the runner falls forward over him
++    // (the existing drive-through); only holds beside or behind him pull his
++    // legs back against his travel.
++    const cs = Math.hypot(c.vel.x, c.vel.y);
++    const pulling = (d: Agent) => cs <= .5 || (c.vel.x * (c.pos.x - d.pos.x) + c.vel.y * (c.pos.y - d.pos.y))
++      / (cs * (Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y) || 1)) >= -.3;
++    const bound = clamp(bond.tacklers.reduce((sum, d) => sum + (pulling(d)
++      ? clamp(holds.get(d)!.legs / LEG_BIND_THIGH, 0, 1) * clamp(grip.get(d) ?? 0, 0, 1) : 0), 0), 0, 1);
++    // Bound legs take short, choppy steps: the speed his gait can hold falls
++    // with the bound share, so he slows or goes down within a few steps.
++    intents[c.idx].effort = (own.effort ?? 1) * (1 - bound);
++  }
+ 
+   // In the grasp: a quarterback held firmly behind the line before he throws
+   // is ruled down at once (the rule protects him).
+diff --git a/test/leg-bind.test.ts b/test/leg-bind.test.ts
+new file mode 100644
+index 0000000..35dc0b3
+--- /dev/null
++++ b/test/leg-bind.test.ts
+@@ -0,0 +1,65 @@
++/** LEG_BIND (experimental, off): arms wrapped round a runner's legs take his
++ * stride. A tackler holds a running back from behind; a hold at or below his
++ * thighs, times its grip, limits the speed the carrier's gait may hold. A hold
++ * on his upper body, or a tackler in front of him, leaves his stride alone. */
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import { CENTER_Y } from '../src/core/field.js';
++
++afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
++
++async function held(flag: string, legs: number, inFront = false) {
++  vi.stubEnv('LEG_BIND', flag);
++  vi.resetModules();
++  const { Rng } = await import('../src/core/rng.js');
++  const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
++  const { RUN_BY_ID } = await import('../src/playbook/concepts.js');
++  const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
++  const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
++  const { updateBond } = await import('../src/sim/tackle.js');
++  const { PlaySim } = await import('../src/sim/playsim.js');
++  type Intent = Parameters<typeof updateBond>[2][number];
++  const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(61), 'O', 'BO'), '11'),
++    defense: pickDefense(generateTeam(new Rng(62), 'D', 'BD'), 'base43'),
++    offCall: { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.iz_strong, label: 'bind' },
++    defCall: { personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'bind' },
++    los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3 });
++  const c = sim.slot('RB')!, d = sim.defense.find(a => a.slot.startsWith('LB'))!;
++  sim.ball = { kind: 'held', carrier: c } as never;
++  c.body.pos = { x: 50, y: CENTER_Y }; c.body.vel = { x: 6, y: 0 }; c.body.facing = 0;
++  d.body.pos = { x: inFront ? 50.7 : 49.3, y: CENTER_Y }; d.body.vel = { x: inFront ? -1 : 6, y: 0 }; d.body.facing = inFront ? Math.PI : 0;
++  const joint = { kind: 'grasp' as const, a: d.body, b: c.body, reach: 1.6, capacity: 1500, legs, pull: 1.5, hold: .7 };
++  sim.world.joints.push(joint);
++  sim.bond = { carrier: c, tacklers: [d], start: sim.t, progressX: c.pos.x, down: false, stalled: 0,
++    grip: new Map([[d, .8]]), holds: new Map([[d, joint]]), execution: new Map([[d, 1]]) };
++  const intents: Intent[] = sim.agents.map(a => ({ vel: { x: a === c ? 8 : 0, y: 0 }, facing: 0 }));
++  updateBond(sim, sim.bond, intents);
++  return { effort: intents[c.idx].effort, grip: sim.bond?.grip?.get(d) ?? NaN };
++}
++
++describe('LEG_BIND', () => {
++  it('off: a held runner still asks for his full stride', async () => {
++    const f = await held('0', .8);
++    expect(f.effort ?? 1).toBe(1);
++  });
++
++  it('on: a hold at or below his thighs limits his stride by its grip', async () => {
++    const f = await held('1', .8);
++    expect(f.grip).toBeGreaterThan(0);
++    expect(f.effort).toBeCloseTo(1 - f.grip, 6);
++  });
++
++  it('on: a hold at his hips binds proportionally less', async () => {
++    const f = await held('1', .25);
++    expect(f.effort).toBeCloseTo(1 - .5 * f.grip, 6);
++  });
++
++  it('on: a tackler in front who wraps his thighs is driven back, not a bind', async () => {
++    const f = await held('1', .8, true);
++    expect(f.effort ?? 1).toBe(1);
++  });
++
++  it('on: a hold on his upper body leaves the stride alone', async () => {
++    const f = await held('1', 0);
++    expect(f.effort ?? 1).toBe(1);
++  });
++});

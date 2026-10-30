@@ -1,0 +1,55 @@
+diff --git a/src/sim/climb-access.ts b/src/sim/climb-access.ts
+index 807f831b..e0719134 100644
+--- a/src/sim/climb-access.ts
++++ b/src/sim/climb-access.ts
+@@ -17,6 +17,7 @@ export interface ClimbAccess {
+   turn?: number;
+ }
+ const STEPS = 12; // A few steps, the existing local movement-preview horizon.
++const WIDER = [0, .5, 1];
+ 
+ function gap(a: Agent, path: ReturnType<typeof previewFreeMovement>, p: ClimbSurface): number {
+   let px = a.pos.x-p.seen.pos.x, py = a.pos.y-p.seen.pos.y;
+@@ -95,18 +96,21 @@ export function assessClimbAccess(a: Agent, backer: Perceived, surfaces: readonl
+   const preferred = Math.sign(relative.x*ray.y-relative.y*ray.x)||1;
+   const radius = Math.max(a.profile.radius+body.radius+.15,distance);
+   let best: ClimbAccess | null = null, bestScore = Infinity;
++  let kept: ClimbAccess | null = null, keptScore = Infinity;
+   const continued=gather&&previous?.obstacle===body.key?previous.turn:undefined;
+   const signs=gather?[...new Set([continued,preferred,-preferred,0].filter((s):s is number=>s!==undefined))]:[preferred,-preferred];
+-  for (const sign of signs) {
+-    // Same short foot-replacement arc as the existing run-block fit recovery.
+-    const angle = sign*.35;
+-    const goal = { x:body.seen.pos.x+(relative.x*Math.cos(angle)-relative.y*Math.sin(angle))*radius/distance,
+-      y:body.seen.pos.y+(relative.x*Math.sin(angle)+relative.y*Math.cos(angle))*radius/distance };
++  for (const sign of signs) for (const wide of sign===0?[0]:WIDER) {
++    // Same short foot-replacement arc as the existing run-block fit recovery,
++    // tight to the surface or wider: a wider arc corners faster for a longer
++    // way round, and the same short preview of his own body scores both.
++    const angle = sign*.35, r = radius+wide;
++    const goal = { x:body.seen.pos.x+(relative.x*Math.cos(angle)-relative.y*Math.sin(angle))*r/distance,
++      y:body.seen.pos.y+(relative.x*Math.sin(angle)+relative.y*Math.cos(angle))*r/distance };
+     const entry: ClimbAccessRecord['candidates'][number] | undefined = log && { sign, goal: { ...goal }, rejected: null };
+     if (entry) log!.candidates.push(entry);
+     if (goal.y<.5||goal.y>FIELD_WIDTH-.5) { if (entry) entry.rejected = 'field'; continue; }
+     const read: ClimbAccess = { at:now, goal, flow:{...body.seen.vel},
+-      through:sign===0?0:cornerSpeed(a.body,goal,backer.pos,radius), backer:structuredClone(backer), obstacle:body.key, ...(gather?{turn:sign}:{}) };
++      through:sign===0?0:cornerSpeed(a.body,goal,backer.pos,r), backer:structuredClone(backer), obstacle:body.key, ...(gather?{turn:sign}:{}) };
+     const command: MovementRequest=gather
+       ? (body,dt)=>accessCommand(body,read,now+dt)
+       : climbAccessCommand(a,read,now);
+@@ -131,9 +135,13 @@ export function assessClimbAccess(a: Agent, backer: Perceived, surfaces: readonl
+     if (entry) entry.score = score;
+     // Continue a still-executable shoulder rather than reversing the route
+     // merely because a fresh short step ends slightly nearer the backer.
+-    if (continued!==undefined&&sign===continued&&sign!==0) return done({kind:'detour',plan:read});
++    if (continued!==undefined&&sign===continued&&sign!==0) {
++      if (score<keptScore) { kept=read; keptScore=score; }
++      continue;
++    }
+     if (score<bestScore) { best=read; bestScore=score; }
+   }
++  if (kept) return done({kind:'detour',plan:kept});
+   if (best) return done({ kind: 'detour', plan: best });
+   // Braking is an explicit unvalidated fallback, not a claim that standing
+   // clears a moving surface. Compare its swept incursion to the original.

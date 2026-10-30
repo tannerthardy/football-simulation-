@@ -1,0 +1,102 @@
+# arm KW1 (fs-cand)
+
+## ctrfirst.py
+nfl: counters 334, first contact behind LOS 0.41
+   all    : box ps 0.18 line bs 0.17 DB/out 0.16 line ps 0.15 box bs 0.13 end ps 0.10 box mid 0.10
+   behind : line bs 0.12 line ps 0.07 box ps 0.07 end ps 0.06 box bs 0.05 box mid 0.03 DB/out 0.01
+sim: counters 587, first contact behind LOS 0.42
+   all    : line bs 0.20 end ps 0.19 box bs 0.17 DB/out 0.14 box ps 0.13 line ps 0.13 box mid 0.04
+   behind : end ps 0.17 line bs 0.14 line ps 0.08 box ps 0.02 box bs 0.01 DB/out 0.01 box mid 0.00
+sim behind-LOS first contact by end ps: assigned pull/kick:never held 54; assigned pull/kick:held 44
+sim ANY first contact by end ps: assigned pull/kick:never held 59; assigned pull/kick:held 50; assigned stalk:never held 1
+sim behind-LOS first contact by line ps: assigned combo:held,down:held 27; assigned pull/kick:held 7; assigned down:held,combo:held 4; assigned down:held 4; unassigned 2; assigned pull/kick:never held 1
+sim ANY first contact by line ps: assigned combo:held,down:held 47; assigned pull/kick:held 7; assigned down:held,combo:held 7; assigned down:held 6; unassigned 4; assigned down:never held 3
+sim behind-LOS first contact by line bs: assigned down:held 33; unassigned 26; assigned stalk:held 14; assigned cutoff:held 7; assigned down:never held 3; assigned stalk:never held 1
+sim ANY first contact by line bs: assigned down:held 55; unassigned 32; assigned stalk:held 14; assigned cutoff:held 9; assigned cutoff:never held 3; assigned stalk:never held 3
+sim behind-LOS first contact by box ps: assigned pull/lead:never held 9; assigned stalk:held 2; assigned pull/lead:held 1
+sim ANY first contact by box ps: assigned pull/lead:never held 60; assigned stalk:held 6; assigned climb:held 5; unassigned 3; assigned climb:never held 1; assigned stalk:never held 1
+sim behind-LOS first contact by box mid: assigned climb:never held 1; assigned pull/lead:never held 1
+sim ANY first contact by box mid: assigned pull/lead:never held 14; assigned climb:never held 4; assigned climb:held 3; assigned pull/lead:held 2; assigned down:never held 1; assigned stalk:never held 1
+sim behind-LOS first contact by box bs: assigned climb:never held 4; assigned climb:held 1
+sim ANY first contact by box bs: assigned climb:never held 42; assigned stalk:never held 18; assigned stalk:held 18; assigned climb:held 10; assigned pull/lead:never held 5; assigned lead:never held 2
+sim behind-LOS first contact by DB/out: unassigned 1; assigned stalk:held 1; assigned stalk:never held 1
+sim ANY first contact by DB/out: unassigned 60; assigned stalk:held 18; assigned stalk:never held 4
+
+## kicklog.py
+nfl {'plays': 135, 'kick line man': 110, 'log (kicker outside > .25)': 30, 'kick-out (kicker inside < -.25)': 55, 'kick first blocks off-line man': 22, 'kick nobody': 3}
+sim {'plays': 431, 'kick line man': 335, 'log (kicker outside > .25)': 214, 'kick-out (kicker inside < -.25)': 48, 'kick nobody': 85, 'kick first blocks off-line man': 11}
+carrier lat rel man @cross               nfl -2.27/-0.43/+1.79    sim -3.38/-2.48/-0.76
+carrier lat rel man @cross [log]         nfl +0.38/+2.85/+5.27    sim -3.00/-2.16/-0.07
+carrier lat rel man @cross [mid]         nfl -1.34/+0.74/+1.38    sim -4.13/-3.01/-1.70
+carrier lat rel man @cross [out]         nfl -2.89/-1.90/-0.13    sim -4.17/-3.13/-2.60
+kicker lat rel man @onset+.3             nfl -0.51/-0.25/+0.31    sim +0.02/+0.49/+0.76
+man lat from snap PST @onset+.3          nfl -0.55/+0.46/+1.30    sim -0.75/-0.24/+0.21
+man snap lat from snap PST               nfl +1.56/+2.25/+3.05    sim +2.06/+2.41/+2.77
+man x @onset+.3                          nfl -1.71/-0.77/-0.00    sim -0.30/-0.09/+0.13
+onset t                                  nfl +1.40/+1.60/+1.80    sim +1.70/+1.80/+2.00
+wrap lat rel man @cross                  nfl -1.90/-0.31/+2.29    sim -0.93/-0.28/+0.63
+wrap lat rel man @cross [log]            nfl +0.77/+3.11/+5.48    sim -0.40/+0.22/+0.91
+wrap lat rel man @cross [mid]            nfl -0.93/+0.48/+3.47    sim -1.01/-0.58/-0.20
+wrap lat rel man @cross [out]            nfl -3.06/-1.53/-0.28    sim -1.78/-1.31/-1.07
+wrap x - man x @cross                    nfl -0.69/+0.99/+2.30    sim -0.60/-0.37/+0.36
+wrap x @cross [log]                      nfl -1.25/+0.14/+0.76    sim -0.53/-0.24/+0.12
+wrap x @cross [mid]                      nfl -0.88/+0.33/+1.19    sim -0.53/-0.28/-0.06
+wrap x @cross [out]                      nfl -0.55/+0.69/+1.81    sim -0.52/-0.32/+0.08
+
+## ctrcard.py
+nfl {'plays': 364, '2 OL pullers': 160, 'scored': 301, 'carrier crosses pull side': 270, '1 OL pullers': 159, '3 OL pullers': 24, '0 OL pullers': 12, '4 OL pullers': 8, '5 OL pullers': 1}
+sim {'plays': 590, '2 OL pullers': 496, 'scored': 510, 'carrier crosses pull side': 341, '3 OL pullers': 77, '1 OL pullers': 13, '4 OL pullers': 3, '5 OL pullers': 1}
+PST        nfl n  268 flow lat/x @.5/1/1.5/2: -0.3/-0.6 -1.0/-0.0 -1.4/+0.7 -1.4/+1.3 | first block: nobody 0.01 line ps 0.04 line over 0.49 line bs 0.25 box ps 0.01 box over 0.07 box bs 0.13 out 0.00 | t 0.9
+PST        sim n  468 flow lat/x @.5/1/1.5/2: -0.4/-0.7 -1.1/+0.0 -1.6/+0.5 -1.8/+1.1 | first block: nobody 0.00 line ps 0.03 line over 0.43 line bs 0.54 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.8
+PST+pull   nfl n   33 flow lat/x @.5/1/1.5/2: -0.3/-0.9 -1.2/-0.6 -2.4/-0.2 -3.3/-0.0 | first block: nobody 0.03 line ps 0.15 line over 0.48 line bs 0.30 box ps 0.00 box over 0.00 box bs 0.03 out 0.00 | t 0.8
+PST+pull   sim n   42 flow lat/x @.5/1/1.5/2: -0.4/-0.7 -1.3/+0.1 -2.4/+0.5 -2.9/+0.9 | first block: nobody 0.00 line ps 0.00 line over 0.05 line bs 0.93 box ps 0.00 box over 0.00 box bs 0.02 out 0.00 | t 1.2
+PSG        nfl n  283 flow lat/x @.5/1/1.5/2: -0.2/-0.5 -0.7/-0.1 -0.9/+0.3 -0.9/+0.6 | first block: nobody 0.00 line ps 0.05 line over 0.60 line bs 0.25 box ps 0.00 box over 0.07 box bs 0.03 out 0.00 | t 0.7
+PSG        sim n  504 flow lat/x @.5/1/1.5/2: -0.3/-0.6 -0.8/-0.2 -1.2/+0.1 -1.4/+0.7 | first block: nobody 0.00 line ps 0.00 line over 0.97 line bs 0.02 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.6
+PSG+pull   nfl n   18 flow lat/x @.5/1/1.5/2: -0.5/-1.0 -1.6/-0.9 -2.7/-0.9 -3.4/-1.1 | first block: nobody 0.00 line ps 0.06 line over 0.28 line bs 0.61 box ps 0.00 box over 0.06 box bs 0.00 out 0.00 | t 1.0
+PSG+pull   sim n    6 flow lat/x @.5/1/1.5/2: -0.3/-0.6 -1.0/-0.3 -1.7/-0.0 -2.6/+0.7 | first block: nobody 0.00 line ps 0.00 line over 0.83 line bs 0.17 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.6
+C          nfl n  275 flow lat/x @.5/1/1.5/2: -0.3/-0.2 -0.6/-0.2 -0.6/-0.2 -0.3/-0.0 | first block: nobody 0.00 line ps 0.04 line over 0.47 line bs 0.41 box ps 0.00 box over 0.05 box bs 0.02 out 0.00 | t 0.5
+C          sim n  486 flow lat/x @.5/1/1.5/2: -0.4/-0.2 -1.1/-0.0 -1.4/+0.3 -1.4/+0.6 | first block: nobody 0.00 line ps 0.01 line over 0.19 line bs 0.80 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.6
+C+pull     nfl n   26 flow lat/x @.5/1/1.5/2: +0.3/-0.4 +1.4/-0.7 +2.5/-1.1 +3.3/-1.0 | first block: nobody 0.04 line ps 0.54 line over 0.15 line bs 0.12 box ps 0.12 box over 0.04 box bs 0.00 out 0.00 | t 1.3
+C+pull     sim n   24 flow lat/x @.5/1/1.5/2: -0.4/-0.3 -1.4/-0.0 -2.1/-0.1 -2.8/-0.2 | first block: nobody 0.00 line ps 0.00 line over 0.08 line bs 0.92 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.7
+BSG        nfl n   25 flow lat/x @.5/1/1.5/2: +0.1/-0.6 +0.4/-0.2 +0.7/-0.0 +1.0/+0.1 | first block: nobody 0.00 line ps 0.12 line over 0.48 line bs 0.16 box ps 0.08 box over 0.08 box bs 0.08 out 0.00 | t 0.7
+BSG        sim n    5 flow lat/x @.5/1/1.5/2: +0.4/-1.0 +1.3/-1.2 +1.7/-1.3 +2.7/-1.0 | first block: nobody 0.00 line ps 0.60 line over 0.40 line bs 0.00 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 2.0
+BSG+pull   nfl n  276 flow lat/x @.5/1/1.5/2: +0.5/-1.1 +1.9/-1.2 +3.6/-1.2 +4.8/-0.9 | first block: nobody 0.02 line ps 0.78 line over 0.05 line bs 0.00 box ps 0.14 box over 0.01 box bs 0.00 out 0.01 | t 1.6
+BSG+pull   sim n  505 flow lat/x @.5/1/1.5/2: +0.4/-1.0 +1.7/-1.3 +3.4/-1.3 +4.4/-0.9 | first block: nobody 0.20 line ps 0.77 line over 0.01 line bs 0.00 box ps 0.02 box over 0.00 box bs 0.00 out 0.01 | t 1.8
+BST        nfl n  147 flow lat/x @.5/1/1.5/2: +0.3/-0.8 +0.8/-0.7 +1.1/-0.8 +1.2/-0.6 | first block: nobody 0.06 line ps 0.10 line over 0.33 line bs 0.41 box ps 0.02 box over 0.04 box bs 0.03 out 0.00 | t 1.1
+BST        sim n   10 flow lat/x @.5/1/1.5/2: +0.4/-1.2 +1.7/-1.3 +2.2/-1.3 +2.2/-1.3 | first block: nobody 0.10 line ps 0.20 line over 0.60 line bs 0.10 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.8
+BST+pull   nfl n  154 flow lat/x @.5/1/1.5/2: +0.4/-1.1 +1.6/-1.3 +3.3/-1.3 +5.0/-0.7 | first block: nobody 0.08 line ps 0.25 line over 0.18 line bs 0.10 box ps 0.36 box over 0.01 box bs 0.01 out 0.01 | t 1.8
+BST+pull   sim n  500 flow lat/x @.5/1/1.5/2: +0.4/-1.2 +1.7/-1.3 +3.4/-1.3 +4.8/-1.1 | first block: nobody 0.17 line ps 0.74 line over 0.05 line bs 0.00 box ps 0.02 box over 0.00 box bs 0.00 out 0.00 | t 2.1
+TE ps      nfl n  167 flow lat/x @.5/1/1.5/2: -0.2/-0.8 -0.9/-0.1 -1.6/+0.7 -1.6/+1.4 | first block: nobody 0.05 line ps 0.10 line over 0.28 line bs 0.21 box ps 0.06 box over 0.05 box bs 0.22 out 0.03 | t 1.1
+TE ps      sim n  126 flow lat/x @.5/1/1.5/2: -0.1/-0.7 -0.8/+0.4 -1.0/+2.0 -1.7/+3.0 | first block: nobody 0.07 line ps 0.28 line over 0.22 line bs 0.13 box ps 0.00 box over 0.10 box bs 0.19 out 0.01 | t 1.2
+TE bs      nfl n  181 flow lat/x @.5/1/1.5/2: +0.3/-1.6 +1.7/-1.5 +3.6/-1.2 +5.5/-0.6 | first block: nobody 0.07 line ps 0.26 line over 0.20 line bs 0.13 box ps 0.27 box over 0.03 box bs 0.01 out 0.03 | t 1.7
+TE bs      sim n  312 flow lat/x @.5/1/1.5/2: -0.3/-0.7 -0.3/+0.1 +0.1/+0.0 +0.6/-0.0 | first block: nobody 0.02 line ps 0.00 line over 0.39 line bs 0.57 box ps 0.01 box over 0.01 box bs 0.00 out 0.00 | t 0.6
+back2      nfl n  125 flow lat/x @.5/1/1.5/2: -0.0/-3.9 +0.4/-3.1 +1.7/-2.2 +2.9/-1.1 | first block: nobody 0.33 line ps 0.22 line over 0.02 line bs 0.06 box ps 0.28 box over 0.03 box bs 0.05 out 0.02 | t 2.1
+back2      sim n   43 flow lat/x @.5/1/1.5/2: -0.3/-3.8 -0.8/-2.7 -1.1/-1.7 -0.9/-0.5 | first block: nobody 0.14 line ps 0.16 line over 0.28 line bs 0.30 box ps 0.00 box over 0.00 box bs 0.12 out 0.00 | t 1.9
+
+## wrapmeet.py
+nfl: n 189 | wrap within 1.2 of a box backer 0.39 at p50 2.4s
+   t 1.0: dist to nearest backer 5.30 | backer x +3.74 lat vs wrap +0.46 | wrap x -1.26 lat +1.60
+   t 1.5: dist to nearest backer 4.39 | backer x +2.75 lat vs wrap +0.71 | wrap x -1.32 lat +3.25
+   t 2.0: dist to nearest backer 3.17 | backer x +1.81 lat vs wrap +0.64 | wrap x -0.81 lat +4.84
+   t 2.5: dist to nearest backer 2.50 | backer x +1.46 lat vs wrap +0.18 | wrap x -0.32 lat +5.91
+sim: n 576 | wrap within 1.2 of a box backer 0.17 at p50 3.0s
+   t 1.0: dist to nearest backer 5.84 | backer x +4.34 lat vs wrap -0.09 | wrap x -1.29 lat +1.67
+   t 1.5: dist to nearest backer 4.85 | backer x +3.33 lat vs wrap -0.15 | wrap x -1.31 lat +3.37
+   t 2.0: dist to nearest backer 3.96 | backer x +2.72 lat vs wrap -0.14 | wrap x -1.12 lat +4.78
+   t 2.5: dist to nearest backer 3.18 | backer x +2.36 lat vs wrap +0.04 | wrap x -0.40 lat +5.50
+
+## ctrdbl.py
+nfl plays 301
+sim plays 510
+PLAY nfl: doubles 87 climb 0.31 meet-before-carrier+1 0.16
+   spd +0.3 +2.10/+2.42/+3.10 | spd +0.5 +2.09/+2.43/+3.28 | spd +1.0 +1.66/+2.52/+3.34 | vx +0.5 +1.20/+2.00/+2.60 | clb-LB +0.5 +0.86/+1.33/+2.83 | clb-LB +1.0 +1.24/+2.43/+3.65 | start t +0.60/+0.70/+0.80 | leave t +1.20/+1.40/+1.90 | meet t +1.70/+2.30/+2.40 | cross t +2.50/+2.70/+3.00 | leave-cross -2.00/-1.30/-0.90 | carrier x at leave -5.62/-4.13/-3.57 | DL x at leave -0.01/+0.26/+0.93 | LB x at leave +0.44/+1.91/+2.81 | climber-LB at leave +1.17/+1.96/+2.51
+PLAY sim: doubles 261 climb 0.20 meet-before-carrier+1 0.09
+   spd +0.3 +1.77/+2.45/+3.03 | spd +0.5 +1.61/+2.22/+2.75 | spd +1.0 +1.22/+2.02/+2.90 | vx +0.5 +1.10/+1.80/+2.30 | clb-LB +0.5 +1.12/+1.88/+2.47 | clb-LB +1.0 +1.07/+2.00/+2.64 | start t +0.60/+0.70/+0.70 | leave t +1.50/+1.80/+2.00 | meet t +2.20/+2.50/+2.80 | cross t +2.50/+2.60/+2.80 | leave-cross -1.20/-1.00/-0.70 | carrier x at leave -4.41/-3.49/-2.64 | DL x at leave +0.63/+0.87/+1.10 | LB x at leave +2.30/+3.01/+3.78 | climber-LB at leave +1.34/+2.12/+3.08
+MID  nfl: doubles 43 climb 0.21 meet-before-carrier+1 0.07
+   spd +0.3 +1.12/+2.02/+2.70 | spd +0.5 +1.17/+1.94/+2.33 | spd +1.0 +0.81/+1.20/+1.70 | vx +0.5 +0.60/+1.60/+2.20 | clb-LB +0.5 +2.02/+2.37/+3.37 | clb-LB +1.0 +2.29/+2.70/+4.01 | start t +0.60/+0.70/+0.80 | leave t +1.10/+1.20/+1.40 | meet t +2.30/+2.80/+4.70 | cross t +2.50/+2.70/+3.00 | leave-cross -1.90/-1.70/-1.20 | carrier x at leave -5.22/-4.67/-4.43 | DL x at leave -0.22/+0.11/+0.71 | LB x at leave +1.30/+3.42/+3.52 | climber-LB at leave +1.98/+2.93/+3.50
+MID  sim: doubles 23 climb 0.26 meet-before-carrier+1 0.04
+   spd +0.3 +1.52/+1.71/+2.42 | spd +0.5 +1.99/+2.12/+3.00 | spd +1.0 +1.14/+1.80/+2.81 | vx +0.5 +0.60/+1.50/+3.00 | clb-LB +0.5 +1.51/+2.62/+3.58 | clb-LB +1.0 +2.71/+3.28/+3.77 | start t +0.70/+0.70/+0.80 | leave t +1.40/+1.60/+1.70 | meet t +2.70/+2.90/+2.90 | cross t +2.60/+2.70/+3.10 | leave-cross -1.40/-1.10/-1.00 | carrier x at leave -5.05/-4.51/-4.22 | DL x at leave +0.23/+1.02/+1.28 | LB x at leave +0.61/+1.56/+1.78 | climber-LB at leave +1.70/+3.78/+4.05
+BACK nfl: doubles 21 climb 0.14 meet-before-carrier+1 0.05
+   spd +0.3 +0.81/+3.01/+3.09 | spd +0.5 +1.00/+2.70/+3.05 | spd +1.0 +0.89/+1.68/+3.54 | vx +0.5 +1.00/+2.60/+2.70 | clb-LB +0.5 +0.75/+2.85/+6.35 | clb-LB +1.0 +1.16/+3.21/+7.89 | start t +0.60/+0.70/+0.80 | leave t +1.00/+1.00/+1.50 | meet t +1.90/+1.90/+1.90 | cross t +2.50/+2.60/+2.90 | leave-cross -1.90/-1.70/-0.90 | carrier x at leave -6.82/-5.00/-4.11 | DL x at leave -0.95/-0.01/+1.23 | LB x at leave -1.75/+2.11/+3.50 | climber-LB at leave +1.64/+3.33/+3.72
+BACK sim: doubles 8 climb 0.00 meet-before-carrier+1 0.00
+   start t +0.70/+0.70/+0.70 | cross t +2.60/+2.60/+2.70

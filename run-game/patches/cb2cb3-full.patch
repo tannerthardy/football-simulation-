@@ -1,0 +1,57 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 249fece1..7c5d5687 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -690,6 +690,11 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+     const leadBacker = scheme === 'power' && fbIsBack && pullers.size
+       ? lb.filter((l) => !claimedLB.has(l) && rel(l) > -0.5).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
+     if (leadBacker) claimedLB.add(leadBacker);
++    // Counter GT's wrapping tackle takes the backer at the hole, counted
++    // before the doubles as GH counts the H's: claimed after them, the wrap
++    // was left a backside backer his path never reaches (135 of 568 restaged
++    // GT counters), and the doubles climbed to the playside backers instead.
++    const wrapBacker = scheme === 'counter' && !concept.pullers.includes('H') && bst && pullers.has(bst) ? lbNear(hole) : null;
+ 
+     // Reserve precisely the intentionally unblocked trap/kick defender.
+     // The old trap rule left every playside lineman for one trapper. Trap is
+@@ -760,7 +765,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+       if (partner && target && Math.abs(target.pos.y - b.pos.y) < 2.5) {
+         // With the playside backer counted for the puller, the double works
+         // to the backside box backer; with none left it stays a double.
+-        combo(b, partner, target, leadBacker ? lbNear(by - ps, true, 3.0) : lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
++        combo(b, partner, target, leadBacker || wrapBacker ? lbNear(by - ps, true, 3.0) : lbNear(b.pos.y - ps * 0.5, true), plans.get(partner)!.drive);
+       } else plans.set(b, { kind: 'climb', target: lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) });
+     }
+     // End man on the line on the playside (kick-out target).
+@@ -783,7 +788,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
+       if (scheme === 'trap') role = 'trap';
+       else if (scheme === 'counter') role = p === bsg ? 'kick' : 'lead';
+       else role = fbIsBack ? 'lead' : 'kick';
+-      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : leadBacker ?? lbNear(hole);
++      const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : leadBacker ?? (p === bst ? wrapBacker : null) ?? lbNear(hole);
+       if (target && role !== 'lead') claimedDL.add(target);
+       const path = target && role !== 'lead' ? [
+         // A trapper already runs at NFL depth off his installed corners.
+@@ -1794,7 +1799,21 @@ export class RunBlocker implements Behavior {
+       aim = { x: seen.pos.x - 0.35, y: seen.pos.y + side * 0.55 };
+     } else if (a.tags.has('block-log')) aim = {x:seen.pos.x-.3,y:seen.pos.y-plan.drive.y*.65};
+     else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
+-    else if (plan.kind === 'down') aim = { x: seen.pos.x - 0.2, y: seen.pos.y - plan.drive.y * 0.4 };
++    else if (plan.kind === 'down') {
++      // A down or back block fits the shoulder the man would run through to
++      // the ball, where he will be when this body gets there, as the kick
++      // fits the end: between him and the ball he sees. Aimed at his spot, a
++      // center blocking back on a tackle firing into the pulled guard's
++      // vacated spot met him beside his track, upfield of the line, and the
++      // tackle ran past his hip into the backfield. Tracked centers stay
++      // flat, half a yard in front of him and on his play-side hip.
++      const at = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
++        (tt) => ({ x: seen.pos.x + seen.vel.x * tt, y: seen.pos.y + seen.vel.y * tt }),
++        { horizon: 1.0, step: .05, radius: a.profile.radius + target.profile.radius }).point;
++      const ref = this.workReference(a, sim), dx = ref.x - at.x, dy = ref.y - at.y, n = Math.hypot(dx, dy);
++      const sep = a.profile.radius + target.profile.radius;
++      aim = n > sep ? { x: at.x + dx / n * sep, y: at.y + dy / n * sep } : { x: at.x - 0.2, y: at.y - plan.drive.y * 0.4 };
++    }
+     else if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
+       // Climbs and leads intercept: aim where the backer will be when this
+       // body can get there (his seen motion carried forward, our own reach

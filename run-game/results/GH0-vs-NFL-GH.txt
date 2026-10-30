@@ -1,0 +1,66 @@
+# arm GH0 vs NFL GH counters (NFLV=gh: one OL puller + off-ball TE/RB wrapper from the backside); then the same snaps as GT (D0 subset) vs NFL GT
+
+## GH0 ctrcard.py (NFLV=gh)
+nfl {'plays': 364, '2 OL pullers': 160, '1 OL pullers': 159, 'scored': 98, 'carrier crosses pull side': 96, '3 OL pullers': 24, '0 OL pullers': 12, '4 OL pullers': 8, '5 OL pullers': 1}
+sim {'plays': 289, '1 OL pullers': 242, 'scored': 257, 'carrier crosses pull side': 149, '3 OL pullers': 6, '2 OL pullers': 38, '4 OL pullers': 1, '0 OL pullers': 2}
+PST        nfl n   98 flow lat/x @.5/1/1.5/2: -0.4/-0.6 -1.1/+0.1 -1.6/+0.9 -1.6/+1.5 | first block: nobody 0.00 line ps 0.04 line over 0.41 line bs 0.27 box ps 0.03 box over 0.08 box bs 0.17 out 0.00 | t 0.9
+PST        sim n  247 flow lat/x @.5/1/1.5/2: -0.3/-0.7 -1.1/+0.0 -1.6/+0.6 -1.6/+1.0 | first block: nobody 0.02 line ps 0.06 line over 0.40 line bs 0.51 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.8
+PST+pull   sim n   10 flow lat/x @.5/1/1.5/2: -0.4/-0.7 -1.4/+0.0 -2.3/+0.4 -3.0/+0.9 | first block: nobody 0.00 line ps 0.00 line over 0.00 line bs 1.00 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 1.2
+PSG        nfl n   98 flow lat/x @.5/1/1.5/2: -0.3/-0.4 -0.8/-0.0 -1.1/+0.3 -1.1/+0.6 | first block: nobody 0.00 line ps 0.05 line over 0.63 line bs 0.20 box ps 0.00 box over 0.08 box bs 0.03 out 0.00 | t 0.7
+PSG        sim n  249 flow lat/x @.5/1/1.5/2: -0.3/-0.6 -0.8/-0.3 -1.2/+0.0 -1.2/+0.6 | first block: nobody 0.00 line ps 0.00 line over 0.99 line bs 0.01 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.6
+PSG+pull   sim n    8 flow lat/x @.5/1/1.5/2: -0.4/-1.0 -1.6/-1.3 -3.4/-1.3 -4.0/-0.9 | first block: nobody 0.00 line ps 0.00 line over 0.00 line bs 1.00 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 2.0
+C          nfl n   98 flow lat/x @.5/1/1.5/2: -0.4/-0.2 -0.6/-0.1 -0.7/-0.1 -0.4/+0.2 | first block: nobody 0.00 line ps 0.04 line over 0.43 line bs 0.47 box ps 0.01 box over 0.05 box bs 0.00 out 0.00 | t 0.6
+C          sim n  239 flow lat/x @.5/1/1.5/2: -0.4/-0.2 -1.1/-0.0 -1.4/+0.2 -1.4/+0.6 | first block: nobody 0.00 line ps 0.01 line over 0.18 line bs 0.81 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.6
+C+pull     sim n   18 flow lat/x @.5/1/1.5/2: -0.4/-0.2 -1.1/-0.0 -2.0/-0.0 -2.8/-0.1 | first block: nobody 0.00 line ps 0.28 line over 0.06 line bs 0.67 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.7
+BSG+pull   nfl n   96 flow lat/x @.5/1/1.5/2: +0.6/-1.1 +1.9/-1.2 +3.6/-1.2 +4.7/-1.0 | first block: nobody 0.01 line ps 0.86 line over 0.01 line bs 0.00 box ps 0.10 box over 0.01 box bs 0.00 out 0.00 | t 1.7
+BSG+pull   sim n  253 flow lat/x @.5/1/1.5/2: +0.4/-1.0 +1.7/-1.3 +3.4/-1.3 +4.3/-0.9 | first block: nobody 0.11 line ps 0.85 line over 0.02 line bs 0.00 box ps 0.00 box over 0.00 box bs 0.00 out 0.01 | t 1.8
+BST        nfl n   96 flow lat/x @.5/1/1.5/2: +0.3/-0.8 +0.8/-0.7 +1.1/-0.7 +1.3/-0.6 | first block: nobody 0.05 line ps 0.04 line over 0.41 line bs 0.44 box ps 0.00 box over 0.03 box bs 0.03 out 0.00 | t 1.0
+BST        sim n  238 flow lat/x @.5/1/1.5/2: +0.2/-0.7 -0.4/-0.3 -0.6/-0.1 -0.2/+0.2 | first block: nobody 0.11 line ps 0.05 line over 0.14 line bs 0.58 box ps 0.00 box over 0.06 box bs 0.05 out 0.01 | t 1.0
+BST+pull   sim n   19 flow lat/x @.5/1/1.5/2: +0.3/-0.8 +1.0/-0.3 +1.7/-0.1 +2.5/-0.3 | first block: nobody 0.00 line ps 0.26 line over 0.26 line bs 0.47 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 1.8
+TE ps      nfl n   40 flow lat/x @.5/1/1.5/2: -0.2/-0.7 -0.9/-0.1 -1.6/+1.0 -1.4/+1.9 | first block: nobody 0.03 line ps 0.10 line over 0.28 line bs 0.20 box ps 0.07 box over 0.10 box bs 0.20 out 0.03 | t 1.0
+TE ps      sim n   42 flow lat/x @.5/1/1.5/2: -0.1/-0.7 -0.5/+0.4 -0.8/+1.9 -1.3/+2.5 | first block: nobody 0.10 line ps 0.36 line over 0.17 line bs 0.14 box ps 0.00 box over 0.05 box bs 0.19 out 0.00 | t 1.4
+TE bs      nfl n   81 flow lat/x @.5/1/1.5/2: +0.4/-1.8 +1.9/-1.8 +4.1/-1.4 +6.0/-0.6 | first block: nobody 0.04 line ps 0.31 line over 0.16 line bs 0.11 box ps 0.33 box over 0.02 box bs 0.00 out 0.02 | t 2.0
+TE bs      sim n  121 flow lat/x @.5/1/1.5/2: -0.3/-0.7 -0.5/-0.2 -0.1/-0.2 +0.1/-0.1 | first block: nobody 0.08 line ps 0.15 line over 0.25 line bs 0.50 box ps 0.01 box over 0.02 box bs 0.00 out 0.00 | t 0.7
+back2      nfl n   40 flow lat/x @.5/1/1.5/2: +0.4/-3.0 +1.8/-2.6 +3.8/-1.8 +5.6/-0.6 | first block: nobody 0.10 line ps 0.33 line over 0.00 line bs 0.00 box ps 0.47 box over 0.07 box bs 0.00 out 0.03 | t 2.1
+
+## same snaps as GT (D0 subset) ctrcard.py (NFLV=gt)
+nfl {'plays': 364, '2 OL pullers': 160, 'scored': 79, 'carrier crosses pull side': 70, '1 OL pullers': 159, '3 OL pullers': 24, '0 OL pullers': 12, '4 OL pullers': 8, '5 OL pullers': 1}
+sim {'plays': 286, '2 OL pullers': 237, 'scored': 252, 'carrier crosses pull side': 133, '3 OL pullers': 28, '4 OL pullers': 3, '1 OL pullers': 16, '0 OL pullers': 2}
+PST        nfl n   77 flow lat/x @.5/1/1.5/2: -0.3/-0.6 -0.9/-0.1 -1.3/+0.7 -1.4/+1.2 | first block: nobody 0.00 line ps 0.05 line over 0.49 line bs 0.31 box ps 0.00 box over 0.06 box bs 0.08 out 0.00 | t 0.9
+PST        sim n  236 flow lat/x @.5/1/1.5/2: -0.3/-0.7 -1.1/+0.0 -1.5/+0.5 -1.5/+1.1 | first block: nobody 0.00 line ps 0.04 line over 0.44 line bs 0.51 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.8
+PST+pull   sim n   16 flow lat/x @.5/1/1.5/2: -0.4/-0.7 -1.4/+0.1 -2.3/+0.5 -2.8/+0.8 | first block: nobody 0.00 line ps 0.00 line over 0.06 line bs 0.94 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 1.2
+PSG        nfl n   76 flow lat/x @.5/1/1.5/2: -0.2/-0.5 -0.5/-0.1 -0.8/+0.3 -0.5/+0.6 | first block: nobody 0.00 line ps 0.05 line over 0.62 line bs 0.24 box ps 0.00 box over 0.08 box bs 0.01 out 0.00 | t 0.7
+PSG        sim n  251 flow lat/x @.5/1/1.5/2: -0.3/-0.6 -0.8/-0.3 -1.1/+0.1 -1.2/+0.7 | first block: nobody 0.00 line ps 0.00 line over 0.98 line bs 0.02 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.6
+C          nfl n   72 flow lat/x @.5/1/1.5/2: -0.3/-0.2 -0.6/-0.2 -0.5/-0.2 -0.2/-0.0 | first block: nobody 0.00 line ps 0.03 line over 0.47 line bs 0.43 box ps 0.00 box over 0.04 box bs 0.03 out 0.00 | t 0.5
+C          sim n  238 flow lat/x @.5/1/1.5/2: -0.4/-0.2 -1.1/-0.0 -1.4/+0.2 -1.4/+0.6 | first block: nobody 0.01 line ps 0.00 line over 0.18 line bs 0.81 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.6
+C+pull     nfl n    7 flow lat/x @.5/1/1.5/2: +0.3/-0.7 +1.4/-1.1 +2.8/-1.2 +3.8/-1.3 | first block: nobody 0.00 line ps 0.86 line over 0.00 line bs 0.00 box ps 0.14 box over 0.00 box bs 0.00 out 0.00 | t 1.7
+C+pull     sim n   14 flow lat/x @.5/1/1.5/2: -0.4/-0.3 -1.4/-0.0 -2.1/-0.1 -2.8/-0.2 | first block: nobody 0.00 line ps 0.00 line over 0.00 line bs 1.00 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.7
+BSG        nfl n   10 flow lat/x @.5/1/1.5/2: +0.1/-0.7 +0.4/-0.4 +0.9/-0.1 +1.2/+0.1 | first block: nobody 0.00 line ps 0.10 line over 0.80 line bs 0.10 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.8
+BSG        sim n    5 flow lat/x @.5/1/1.5/2: +0.4/-1.0 +1.3/-1.3 +1.8/-1.2 +2.2/-1.0 | first block: nobody 0.20 line ps 0.60 line over 0.20 line bs 0.00 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 2.9
+BSG+pull   nfl n   69 flow lat/x @.5/1/1.5/2: +0.5/-1.1 +1.9/-1.3 +3.6/-1.3 +5.0/-1.1 | first block: nobody 0.00 line ps 0.78 line over 0.01 line bs 0.00 box ps 0.17 box over 0.00 box bs 0.00 out 0.03 | t 1.7
+BSG+pull   sim n  247 flow lat/x @.5/1/1.5/2: +0.4/-1.0 +1.7/-1.3 +3.4/-1.3 +4.4/-0.8 | first block: nobody 0.11 line ps 0.88 line over 0.00 line bs 0.00 box ps 0.00 box over 0.00 box bs 0.00 out 0.01 | t 1.8
+BST        sim n   10 flow lat/x @.5/1/1.5/2: +0.4/-1.2 +1.7/-1.3 +2.2/-1.3 +2.2/-1.1 | first block: nobody 0.10 line ps 0.30 line over 0.50 line bs 0.10 box ps 0.00 box over 0.00 box bs 0.00 out 0.00 | t 0.8
+BST+pull   nfl n   77 flow lat/x @.5/1/1.5/2: +0.4/-1.2 +1.7/-1.5 +3.6/-1.5 +5.4/-0.8 | first block: nobody 0.09 line ps 0.34 line over 0.06 line bs 0.01 box ps 0.47 box over 0.01 box bs 0.00 out 0.01 | t 2.2
+BST+pull   sim n  242 flow lat/x @.5/1/1.5/2: +0.4/-1.2 +1.7/-1.3 +3.4/-1.3 +4.8/-1.1 | first block: nobody 0.22 line ps 0.66 line over 0.07 line bs 0.00 box ps 0.03 box over 0.02 box bs 0.00 out 0.00 | t 2.2
+TE ps      nfl n   53 flow lat/x @.5/1/1.5/2: -0.1/-0.7 -0.9/-0.1 -1.4/+0.6 -1.4/+1.4 | first block: nobody 0.06 line ps 0.09 line over 0.32 line bs 0.17 box ps 0.06 box over 0.02 box bs 0.23 out 0.06 | t 1.1
+TE ps      sim n   35 flow lat/x @.5/1/1.5/2: +0.0/-0.6 -0.4/+1.0 -0.5/+3.4 -0.3/+4.5 | first block: nobody 0.17 line ps 0.31 line over 0.14 line bs 0.06 box ps 0.00 box over 0.06 box bs 0.26 out 0.00 | t 0.7
+TE bs      nfl n   27 flow lat/x @.5/1/1.5/2: -0.0/-1.2 +0.1/-0.9 +0.7/-0.8 +1.6/-0.4 | first block: nobody 0.15 line ps 0.04 line over 0.26 line bs 0.19 box ps 0.07 box over 0.11 box bs 0.04 out 0.15 | t 1.3
+TE bs      sim n  115 flow lat/x @.5/1/1.5/2: -0.1/-0.7 -0.1/+0.1 +0.1/+0.2 +0.5/+0.2 | first block: nobody 0.03 line ps 0.00 line over 0.55 line bs 0.42 box ps 0.00 box over 0.01 box bs 0.00 out 0.00 | t 0.6
+back2      nfl n   33 flow lat/x @.5/1/1.5/2: -0.3/-4.4 -1.6/-4.1 -4.2/-3.8 -6.7/-3.2 | first block: nobody 0.79 line ps 0.09 line over 0.00 line bs 0.09 box ps 0.00 box over 0.00 box bs 0.03 out 0.00 | t 1.4
+
+## NFL counter variants (ctrvariant.py)
+NFL counters 364
+  90 0.25 BSG | H off-ball TE
+  69 0.19 BSG+BST | -
+  22 0.06 BSG+BST | H off-ball TE
+  20 0.05 BSG | -
+  12 0.03 BSG+PST | H off-ball TE
+  12 0.03 BSG | Y inline TE
+  12 0.03 BSG | H off-ball RB
+  11 0.03 BSG+BST | H off-ball RB
+  10 0.03 BSG+BST | Y inline TE
+   8 0.02 BSG | H off-ball TE+Y inline TE
+   8 0.02 BST+C | -
+   8 0.02 BSG+BST+PST | -
+   5 0.01 BSG+BST | H off-ball TE+Y inline TE
+   4 0.01 BST | -

@@ -1,0 +1,21 @@
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index acf914ca..58447877 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -1305,7 +1305,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   // the defender is heading in a beat.
+   const lead = 0.15 + 0.15 * tb.read;
+   const offset = (b.pos.x - d.pos.x - dv.x * lead) * lat.x + (b.pos.y - d.pos.y - dv.y * lead) * lat.y;
+-  const wantOffset = -Math.sin(e.sealTarget * Math.PI / 2) * sep;
++  let wantOffset = -Math.sin(e.sealTarget * Math.PI / 2) * sep;
++  // A down (or back) block keeps its man off the play side: the blocker's
++  // side is fixed on the field, between the man and the hole. Re-expressed in
++  // the contact frame each tick, it no longer turns with a defender working
++  // underneath him across to the ball (counter: the DT over the pulling
++  // guard's spot crossed the center's face while his frame said "sealed").
++  const playY = sim.offCall.run && (b.behavior as { plan?: { kind?: string } }).plan?.kind === 'down'
++    ? (sim.offCall.run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign) * lat.y : 0;
++  if (Math.abs(playY) > .2) wantOffset = Math.sign(playY) * Math.abs(wantOffset);
+   const mirror = tb.lateral * (0.75 + 0.35 * tb.feet) * (e.helpers.length ? 1.3 : 1);
+   const feltCue = felt(e, lat), feedback = feltCue * (0.6 + 0.6 * tb.feet);
+   let correction = (wantOffset - offset) * (3 + 3 * tb.feet);

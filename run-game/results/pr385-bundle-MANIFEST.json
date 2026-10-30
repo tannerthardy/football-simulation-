@@ -1,0 +1,189 @@
+{
+ "arms": {
+  "CB0": {
+   "worktree": "fs-ctr2",
+   "rows": 12,
+   "receipts": 12,
+   "pins": [
+    [
+     "143e554ed56cdda73bd1e586120f36fa25448ddd",
+     "ebf4f7d448b30ea994238deb9b974b76dc951705d7314ec57e6e51350b442151",
+     "51009f00716450f1f42aa3deb849ee199dbe9bf2e877e1f71f12ec9e1a71bca7",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  },
+  "CB2": {
+   "worktree": "fs-ctr2",
+   "rows": 12,
+   "receipts": 12,
+   "pins": [
+    [
+     "143e554ed56cdda73bd1e586120f36fa25448ddd",
+     "eef2ab0e716d25a1525223f0106f460c8a049354813a38941c5ccc174faa20b7",
+     "51009f00716450f1f42aa3deb849ee199dbe9bf2e877e1f71f12ec9e1a71bca7",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  },
+  "CB5": {
+   "worktree": "fs-ctr2",
+   "rows": 12,
+   "receipts": 12,
+   "pins": [
+    [
+     "5e69fa82863eb06f8f9df15acf1069519d3eb5a2",
+     "d97f816c6e63856a7b5211b1790363610573a8aa84873897b7a35d79e9af9c43",
+     "b8393ff36910180183ad98bdd921d6f53c511a27149be04155a9ad417fe161c5",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  },
+  "PT0": {
+   "worktree": "fs-ctr2",
+   "rows": 12,
+   "receipts": 8,
+   "pins": [
+    [
+     "143e554ed56cdda73bd1e586120f36fa25448ddd",
+     "ebf4f7d448b30ea994238deb9b974b76dc951705d7314ec57e6e51350b442151",
+     "62db4f454c987cf3b16ce2ca8d598493972006820724e818d3493c86d4e36f2d",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  },
+  "PT2": {
+   "worktree": "fs-ctr2",
+   "rows": 12,
+   "receipts": 12,
+   "pins": [
+    [
+     "143e554ed56cdda73bd1e586120f36fa25448ddd",
+     "eef2ab0e716d25a1525223f0106f460c8a049354813a38941c5ccc174faa20b7",
+     "62db4f454c987cf3b16ce2ca8d598493972006820724e818d3493c86d4e36f2d",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  },
+  "KQ0": {
+   "worktree": "fs-cand",
+   "rows": 12,
+   "receipts": 12,
+   "pins": [
+    [
+     "eba81d0524ff13f8a04479ca3f57c35232727524",
+     "fb65641ad8cd541a3572c96d73ae6e6d18bb2b9fffc03a086453dd44ad8b2177",
+     "9833559323a087298c559476f29d85c419b1269e4002528273298323d757466d",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  },
+  "KQ1": {
+   "worktree": "fs-cand",
+   "rows": 12,
+   "receipts": 12,
+   "pins": [
+    [
+     "eba81d0524ff13f8a04479ca3f57c35232727524",
+     "a9624f2a5a78d39f5e7658d634091459be72645cc2f7e59b5edae1fae91c6d1f",
+     "9833559323a087298c559476f29d85c419b1269e4002528273298323d757466d",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  },
+  "PTK0": {
+   "worktree": "fs-cand",
+   "rows": 12,
+   "receipts": 12,
+   "pins": [
+    [
+     "88678421b4f8a2c8074fb75f0ae73e2a61587d2b",
+     "2a5b622b37f5f0b9846a7f14a8a78425139157c9174a4bd22e66e1f771453e41",
+     "b8393ff36910180183ad98bdd921d6f53c511a27149be04155a9ad417fe161c5",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  },
+  "PTK1": {
+   "worktree": "fs-cand",
+   "rows": 12,
+   "receipts": 12,
+   "pins": [
+    [
+     "88678421b4f8a2c8074fb75f0ae73e2a61587d2b",
+     "bebf8c76b9973db2a9979ea8b9409b5cc4a435a9d48f6f796502c8952c3d46d4",
+     "b8393ff36910180183ad98bdd921d6f53c511a27149be04155a9ad417fe161c5",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  },
+  "D0": {
+   "worktree": "fs-d384",
+   "rows": 12,
+   "receipts": 12,
+   "pins": [
+    [
+     "fc289d2af50e4db9c7bc0e366ca0508ff649694f",
+     "c12fc5e552b19533d1c3721b0fbf0372cafb136db9f29b2189af362d4409b956",
+     "f32c95007c3590d65c119ef47fa26e96e3a1640f6d04e76884d964242f51ad02",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  },
+  "E0": {
+   "worktree": "fs-dep",
+   "rows": 12,
+   "receipts": 12,
+   "pins": [
+    [
+     "34ae9bb02f61df2878fb25ffaf5f01235af1873c",
+     "dbac2df1805ee27ebd8191407da50f27bcda978149209d47013b3180487f1ac5",
+     "cea5ecb60d5a054fc164f822a71972552b444ca65bad5b5ff46cdf2eb6314433",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  },
+  "F0": {
+   "worktree": "fs-blr",
+   "rows": 12,
+   "receipts": 12,
+   "pins": [
+    [
+     "6c2c947343594947c53647d3d22e097ef3cf4266",
+     "f97c2ae8314e969dc78658d1304095588a6ca42b37a6bbd3cb10c9fe54491e2d",
+     "da74610da74c7a0058c94ec2ad77ec6fe6e34bf7a9d37c6465689b6de0017685",
+     "v22.23.3",
+     "True"
+    ]
+   ]
+  }
+ },
+ "overlay": {
+  "fs-ctr2:scripts/diag/matched-restage.ts": "278dded674aa65b2de8881269ea3c003813fca1e9c56fd3595eb06e3b3a1f58d",
+  "fs-ctr2:scripts/diag/run-trace-watch.ts": "305aa029f328a30c62626c5060e8902f2c650805c7398cacf2e846d02918c304",
+  "fs-ctr2:scripts/mechanics/run_film_reference.py": "e610057cecd5e68363055a9bda3599ef51ed7f2affd1fbeef1b60a36ceec447c",
+  "fs-cand:scripts/diag/matched-restage.ts": "278dded674aa65b2de8881269ea3c003813fca1e9c56fd3595eb06e3b3a1f58d",
+  "fs-cand:scripts/diag/run-trace-watch.ts": "305aa029f328a30c62626c5060e8902f2c650805c7398cacf2e846d02918c304",
+  "fs-cand:scripts/mechanics/run_film_reference.py": "e610057cecd5e68363055a9bda3599ef51ed7f2affd1fbeef1b60a36ceec447c",
+  "fs-d384:scripts/diag/matched-restage.ts": "27b45ac4e700648a09a03e69383b1a80a72231df3c938d921d94c800e98c9b0d",
+  "fs-d384:scripts/diag/run-trace-watch.ts": "305aa029f328a30c62626c5060e8902f2c650805c7398cacf2e846d02918c304",
+  "fs-d384:scripts/mechanics/run_film_reference.py": "f5873c0b9510d79fe18cf7f31cc41d6148e2f7fd98e6ceb99dd98bae74d58d85",
+  "fs-dep:scripts/diag/matched-restage.ts": "278dded674aa65b2de8881269ea3c003813fca1e9c56fd3595eb06e3b3a1f58d",
+  "fs-dep:scripts/diag/run-trace-watch.ts": "305aa029f328a30c62626c5060e8902f2c650805c7398cacf2e846d02918c304",
+  "fs-dep:scripts/mechanics/run_film_reference.py": "e610057cecd5e68363055a9bda3599ef51ed7f2affd1fbeef1b60a36ceec447c",
+  "fs-blr:scripts/diag/matched-restage.ts": "278dded674aa65b2de8881269ea3c003813fca1e9c56fd3595eb06e3b3a1f58d",
+  "fs-blr:scripts/diag/run-trace-watch.ts": "305aa029f328a30c62626c5060e8902f2c650805c7398cacf2e846d02918c304",
+  "fs-blr:scripts/mechanics/run_film_reference.py": "e610057cecd5e68363055a9bda3599ef51ed7f2affd1fbeef1b60a36ceec447c"
+ }
+}

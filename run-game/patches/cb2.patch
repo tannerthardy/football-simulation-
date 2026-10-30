@@ -1,0 +1,27 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 249fece1..2e45c9c9 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1794,7 +1794,21 @@ export class RunBlocker implements Behavior {
+       aim = { x: seen.pos.x - 0.35, y: seen.pos.y + side * 0.55 };
+     } else if (a.tags.has('block-log')) aim = {x:seen.pos.x-.3,y:seen.pos.y-plan.drive.y*.65};
+     else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
+-    else if (plan.kind === 'down') aim = { x: seen.pos.x - 0.2, y: seen.pos.y - plan.drive.y * 0.4 };
++    else if (plan.kind === 'down') {
++      // A down or back block fits the shoulder the man would run through to
++      // the ball, where he will be when this body gets there, as the kick
++      // fits the end: between him and the ball he sees. Aimed at his spot, a
++      // center blocking back on a tackle firing into the pulled guard's
++      // vacated spot met him beside his track, upfield of the line, and the
++      // tackle ran past his hip into the backfield. Tracked centers stay
++      // flat, half a yard in front of him and on his play-side hip.
++      const at = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
++        (tt) => ({ x: seen.pos.x + seen.vel.x * tt, y: seen.pos.y + seen.vel.y * tt }),
++        { horizon: 1.0, step: .05, radius: a.profile.radius + target.profile.radius }).point;
++      const ref = this.workReference(a, sim), dx = ref.x - at.x, dy = ref.y - at.y, n = Math.hypot(dx, dy);
++      const sep = a.profile.radius + target.profile.radius;
++      aim = n > sep ? { x: at.x + dx / n * sep, y: at.y + dy / n * sep } : { x: at.x - 0.2, y: at.y - plan.drive.y * 0.4 };
++    }
+     else if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
+       // Climbs and leads intercept: aim where the backer will be when this
+       // body can get there (his seen motion carried forward, our own reach

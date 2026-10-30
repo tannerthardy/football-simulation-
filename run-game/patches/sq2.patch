@@ -1,0 +1,55 @@
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index 1dabc30..9c01313 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -88,6 +88,16 @@ const DL_ANCHOR = process.env.DL_ANCHOR === '1';
+  * him: ours finish 1.61 yd upfield on single-blocked outside zone at 2.5 s,
+  * tracked linemen 0.62. A vertical drive block keeps the attack. */
+ const DL_FLATTEN = process.env.DL_FLATTEN === '1';
++/** DL_SQUEEZE (off): an engaged first-level man who sees the man on him move
++ * away from the ball (a down block, a double driving him off) fights back
++ * across toward it ("fight pressure with pressure", "squeeze the down
++ * block"), instead of keeping his shoulder on a blocker who is washing him
++ * out of the hole. A blocker moving toward the ball (a reach) he still flows
++ * with. Tracked linemen close on the back as he reaches the line (lateral
++ * move since the snap -0.3 to -0.5 yd, crease 2.4-2.5 yd); ours drift
++ * 0.5-1.1 yd away (crease 4.2-4.8; scripts/diag/depth/crease.py). Off: he
++ * follows his blocker's flow. */
++const DL_SQUEEZE = process.env.DL_SQUEEZE === '1';
+ /** DL_FLATTEN_WON (with DL_FLATTEN, off): the flatten applies only while he is
+  * being reached; one already beside or past the man on him keeps attacking
+  * ("if you beat the reach, penetrate and make the play"). */
+@@ -1272,7 +1282,23 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   const beaten = !!blockerSeen && (d.pos.x - blockerSeen.pos.x) * sim.attackDir(b.team) < d.profile.radius;
+   const zoneStep = !!blockerSeen && !(DL_FLATTEN_WON && beaten) && Math.abs(blockerSeen.vel.y) > 1
+     && Math.abs(blockerSeen.vel.y) > Math.abs(blockerSeen.vel.x);
+-  const recover = d.runFit?.technique !== 'attack' || zoneStep;
++  // DL_SQUEEZE: the play's direction is the back's lateral flow (where he
++  // is going), or where he is when he comes straight downhill. A blocker
++  // moving against it is a down block or a wash; one moving with it, a reach.
++  let squeeze = 0;
++  if (DL_SQUEEZE && read.stack && !read.declared && Math.abs(read.stack.flow) > .5) {
++    // He reads the back, as the fit does; a pitch or another carrier is the ball.
++    const carrier = sim.carrier && sim.carrier.team !== d.team ? sim.carrier : null;
++    const back = sim.slot('RB');
++    const ball = back && (carrier === sim.qb || carrier === back) ? back : carrier;
++    const cue = ball ? sim.see(d, ball) : null;
++    const play = !cue ? 0 : Math.abs(cue.vel.y) > 1 ? Math.sign(cue.vel.y)
++      : Math.abs(cue.pos.y - d.pos.y) > .5 ? Math.sign(cue.pos.y - d.pos.y) : 0;
++    if (play && read.stack.flow * play < 0) { squeeze = play; d.tags.add('squeeze'); }
++  }
++  // Squeezing a down block is on the line: he flattens at his contact depth
++  // and works across, pressing the blocker into the hole, not upfield past him.
++  const recover = d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0;
+   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
+     : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
+       : -sim.attackDir(b.team) * 1.5;
+@@ -1290,7 +1316,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   // and leans into it, instead of following the blocker's flow off his gap.
+   // The lateral twin of the blocker's lost-depth anchor; the decision is held
+   // for a decision beat, then renewed while the push lasts.
+-  let lateralFlow = flow;
++  let lateralFlow = squeeze ? squeeze * td.lateral : flow;
+   if (DL_FIGHT && read.stack && !read.declared) {
+     const st = read.stack, push = d.body.support?.felt?.y ?? 0;
+     // A push toward where he sees the ball heading (a reach running him

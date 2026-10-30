@@ -1,0 +1,77 @@
+diff --git a/src/sim/behaviors/carrier.ts b/src/sim/behaviors/carrier.ts
+index 07c8feac..334f43a6 100644
+--- a/src/sim/behaviors/carrier.ts
++++ b/src/sim/behaviors/carrier.ts
+@@ -192,6 +192,7 @@ export class BallCarrier implements Behavior {
+   private readDone = false;
+   private pressEntry: Vec2 | null = null;
+   private pressReadAt = 0;
++  private trackBlocked = false;
+ 
+   constructor(
+     private readonly opts: CarrierOptions = {},
+@@ -234,15 +235,18 @@ export class BallCarrier implements Behavior {
+       // pullers (counter: 54% crossed backside, tracked backs 10%). Zone, duo
+       // and trap backs read as they press. designExit still abandons a
+       // closed aim.
++      // A free defender standing in the track itself ends the follow: from
++      // that beat the back reads like any other, rather than running into
++      // him. A race to a hole he may lose is not a body in his way.
+       const follow = this.opts.run?.scheme === 'counter' || this.opts.run?.scheme === 'power';
+-      if (this.opts.run && (a.pos.x - sim.los) * dir > (follow ? -2 : -4.5)) {
++      if (this.opts.run && ((a.pos.x - sim.los) * dir > (follow ? -2 : -4.5) || this.trackBlocked)) {
+         if (sim.t >= this.pressReadAt) {
+           this.pressReadAt = sim.t + a.mind.decisionInterval;
+           this.pressEntry = runReadAim(a, sim, this.opts);
+         }
+         if (this.pressEntry) aim = this.pressEntry;
+       }
+-      const h = angleOf({ x: aim.x - a.pos.x, y: aim.y - a.pos.y });
++      let h = angleOf({ x: aim.x - a.pos.x, y: aim.y - a.pos.y });
+       this.heading = h;
+       // Only abandon the design early if the aiming point is clearly closed.
+       if (sim.t >= this.nextEval) {
+@@ -251,6 +255,12 @@ export class BallCarrier implements Behavior {
+         const exit = designExit(best, a.r('patience'));
+         sim.commandTraceFor?.(a)?.carrier({ kind: 'design-exit', t: sim.t, ...exit });
+         if (exit.exit) this.opts.aimUntil = sim.t;
++        if (follow && this.opts.run && best?.trackBody && !this.trackBlocked) {
++          this.trackBlocked = true;
++          this.pressReadAt = sim.t + a.mind.decisionInterval;
++          this.pressEntry = runReadAim(a, sim, this.opts);
++          if (this.pressEntry) { aim = this.pressEntry; h = angleOf({ x: aim.x - a.pos.x, y: aim.y - a.pos.y }); this.heading = h; }
++        }
+       }
+       // A lead or kick puller ahead of him is a moving wall to run behind,
+       // not a man to wait for: tracked backs run 4.6-4.7 yd/s with a puller
+@@ -339,7 +349,7 @@ export class BallCarrier implements Behavior {
+     return { vel, cutSkill, squeeze };
+   }
+ 
+-  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean } | null {
++  private evaluate(a: Agent, sim: PlaySim, dir: number, designed: boolean): { heading: number; score: number; blocked: boolean; aimBlocked: boolean; aimScore: number; exits: boolean; trackBody: boolean } | null {
+     const vision = a.r('vision');
+     const range = 7 + 22 * vision;
+     const p = a.pos;
+@@ -473,7 +483,20 @@ export class BallCarrier implements Behavior {
+     const kept = !!best && best.heading !== cur && best.score - curScore < 0.4;
+     if (best && kept) best = { heading: cur, score: curScore, blocked: curBlocked, exits: curExits };
+     if (best?.exits) a.tags.add('chose-sideline');
+-    const result = best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits } : null;
++    // A defender he sees standing in the designed track itself: up, no blocker
++    // on him, ahead of him on the line to the aiming point within a stride or
++    // two. Not a race to a hole; a body in the way.
++    let trackBody = false;
++    if (designed && this.opts.aim) {
++      const ux = Math.cos(aimHeading), uy = Math.sin(aimHeading);
++      const reach = Math.min(Math.hypot(this.opts.aim.x - p.x, this.opts.aim.y - p.y), 2.5);
++      trackBody = threats.some((th) => {
++        if (th.seen.pose === 'down' || th.parking !== null || th.recovery > 0 || th.blockerBonus > 0) return false;
++        const rx = th.pos.x - p.x, ry = th.pos.y - p.y, along = rx * ux + ry * uy;
++        return along > 0 && along < reach && Math.abs(rx * uy - ry * ux) < a.profile.radius + th.d.profile.radius + .25;
++      });
++    }
++    const result = best ? { heading: clampHeading(best.heading, dir), score: best.score, blocked: best.blocked, aimBlocked, aimScore, exits: best.exits, trackBody } : null;
+     trace?.carrier({ kind: 'evaluate', t: sim.t, designed, arrival: threats.map(arrivalRecord), routes: routes!,
+       selected: result && { heading: result.heading, score: result.score, blocked: result.blocked, exits: result.exits, keptCurrent: kept },
+       aim: designed ? { heading: aimHeading, score: aimScore, blocked: aimBlocked } : null });

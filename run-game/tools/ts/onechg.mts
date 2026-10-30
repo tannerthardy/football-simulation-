@@ -1,0 +1,11 @@
+import { readFileSync } from 'node:fs';
+const root = process.cwd();
+const { PlaySim } = await import(root + '/src/sim/playsim.ts');
+const { restoreSetup } = await import(root + '/scripts/diag/saved-play.ts');
+const [seed, snap, idx, t1] = process.argv.slice(2).map(Number);
+const plays = JSON.parse(readFileSync(`out/matched-restage/seed${seed}-run.json`, 'utf8')) as any[];
+const sim: any = new PlaySim(restoreSetup(Buffer.from(plays[snap].setup, 'base64')));
+const ledger = sim.recordResponsibility();
+while (sim.phase === 'live' && sim.t < t1) sim.tick();
+for (const c of ledger.data.changes) if (c.actor === idx || JSON.stringify(c).includes(`"actor":${idx}`)) console.log(JSON.stringify(c).slice(0, 400));
+for (const e of sim.events) if ((e.a === idx || e.b === idx) && e.type !== 'read') console.log('event', JSON.stringify(e));

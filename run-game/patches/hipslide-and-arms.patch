@@ -1,0 +1,158 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 5e104987..ebdde8ea 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -34,6 +34,9 @@ import { assessClimbAccess, type ClimbAccessResult, chooseClimbAccess, climbAcce
+ import { lineDepth, lineOffset } from '../../playbook/alignment.js';
+ 
+ /** How far behind the line this player's installed stance stands. */
++const HALF_AIM = true;
++const DEPART_EXIT = false;
++const OFF_HIP_SLIDE = true;
+ const stanceDepth = (sim: PlaySim, a: Agent) => sim.los - (sim.offAlign.spots[a.slot]?.pos.x ?? sim.los - .55);
+ const OL = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+ export const isOL = (a: Agent): boolean => OL.has(a.slot);
+@@ -960,6 +963,7 @@ export class RunBlocker implements Behavior {
+   private climbAccess: ClimbAccess | null = null;
+   private departureAccess: ClimbAccessResult | null = null;
+   private departureStrikeClear = false;
++  private departureExit: { at: number; exit: Vec2; flow: Vec2 } | null = null;
+   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
+   private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
+   private workPicture: BlockerWorkPicture | null = null;
+@@ -1366,6 +1370,10 @@ export class RunBlocker implements Behavior {
+           const route=down&&keeper&&climbRoute(a,this.plan.departure.defender,down.seen,
+             this.plan.departure.keeper,keeper.seen,seen,strike);
+           this.departureStrikeClear=!!route&&!route.exit;
++          // DEPART_EXIT: the line to the backer runs through the man he just
++          // released; step off his near shoulder first (climbRoute's short arc).
++          this.departureExit=DEPART_EXIT&&route&&route.exit&&this.departureAccess.kind!=='detour'
++            ?{at:sim.t,exit:{...route.exit},flow:{...route.flow}}:null;
+           if (this.departureStrikeClear && this.departureAccess.kind==='direct') {
+             const sink = sim.blockingSink(a), previousWork = sink?.blockingState(a);
+             delete this.plan.departure;
+@@ -1541,6 +1549,7 @@ export class RunBlocker implements Behavior {
+     this.climbAccess=null;
+     this.departureAccess=null;
+     this.departureStrikeClear=false;
++    this.departureExit=DEPART_EXIT&&picture.exit?{at:sim.t,exit:{...picture.exit},flow:{...picture.flow}}:null;
+   }
+ 
+   private leaveCombination(a: Agent, sim: PlaySim): MoveCommand | null {
+@@ -1556,8 +1565,9 @@ export class RunBlocker implements Behavior {
+     // walk the torso through the backer's center. The ordinary physical
+     // strike still owns range, facing, budgets and whether hands exist.
+     const near=Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)<=strike;
+-    if (!this.departureStrikeClear && !near) return approach;
+-    const command=this.attack(a,sim,target,seen,approach);
++    const released=this.plan.departure.defender;
++    if (!this.departureStrikeClear && !near) return offReleased(a,sim,released,approach);
++    const command=offReleased(a,sim,released,this.attack(a,sim,target,seen,approach));
+     if (a.engagement?.defender===target) {
+       const sink = sim.blockingSink(a), previousWork = sink?.blockingState(a);
+       delete this.plan.departure;
+@@ -1767,7 +1777,13 @@ export class RunBlocker implements Behavior {
+     } else if (plan.kind === 'combo' && plan.combination) {
+       const partner = plan.combination.members.find((b) => b !== a)!;
+       const side = Math.sign(a.pos.y - partner.pos.y) || 1;
+-      aim = { x: seen.pos.x - 0.35, y: seen.pos.y + side * 0.55 };
++      // HALF_AIM: his half of the man's front, hip to hip with the partner on
++      // the other half, at body contact (each member one own radius off the
++      // man's center), rather than the man's flank.
++      const lat = a.profile.radius, deep = Math.sqrt(Math.max(0, (a.profile.radius + target.profile.radius) ** 2 - lat * lat));
++      // Lead the man's seen motion over the time to get there, as a climb does.
++      const lead = HALF_AIM ? clamp(dd / Math.max(1, a.profile.vmax * .6), 0, .6) : 0;
++      aim = HALF_AIM ? { x: seen.pos.x + seen.vel.x * lead - deep, y: seen.pos.y + seen.vel.y * lead + side * lat } : { x: seen.pos.x - 0.35, y: seen.pos.y + side * 0.55 };
+     } else if (a.tags.has('block-log')) aim = {x:seen.pos.x-.3,y:seen.pos.y-plan.drive.y*.65};
+     else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
+     else if (plan.kind === 'down') aim = { x: seen.pos.x - 0.2, y: seen.pos.y - plan.drive.y * 0.4 };
+@@ -2160,6 +2176,22 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
+ /** A short step off the observed surface. This is navigation, not a claim
+  * that the whole climb or linebacker block will succeed. Check the DL and
+  * partner through the next read; a moving or mistaken picture can still lose. */
++/** OFF_HIP_SLIDE: a departing climber in contact with the man he released
++ * steps off his hip: the part of his request that drives into that man's
++ * center is dropped and the speed is kept along the man's surface. A rub is
++ * still allowed (World contact decides it); shoving him along is not a climb. */
++function offReleased<T extends { vel: Vec2 } | null>(a: Agent, sim: PlaySim, released: Agent, command: T): T {
++  if (!OFF_HIP_SLIDE || !command) return command;
++  const seen = sim.see(a, released), rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, r = Math.hypot(rx, ry);
++  const touch = a.profile.radius + released.profile.radius + .15;
++  if (r < 1e-9 || r > touch) return command;
++  const ux = rx / r, uy = ry / r, v = command.vel, into = v.x * ux + v.y * uy;
++  if (into <= 0) return command;
++  const tx = v.x - into * ux, ty = v.y - into * uy, tl = Math.hypot(tx, ty), speed = Math.hypot(v.x, v.y);
++  const vel = tl > 1e-9 ? { x: tx / tl * speed, y: ty / tl * speed } : { x: 0, y: 0 };
++  return { ...command, vel };
++}
++
+ function climbRoute(a: Agent, defender: Agent, down: Perceived,
+   partner: Agent, covered: Perceived, backer: Perceived, strike = 0): { exit: Vec2 | null; flow: Vec2 } | null {
+   const bodies = [{ seen: down, radius: a.profile.radius + defender.profile.radius },
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index f39e1507..a9b37600 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -409,6 +409,9 @@ function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoi
+     helperTouches.set(h, { rep: e, at: sim.t, pos: { ...d.pos } });
+   }
+   setContactHands(joint, h, e.defender, 'run', state.control, false);
++  // HELPER_FIT (diagnostic): the double's helper fits shoulder to his half
++  // with bent arms instead of holding the man off at locked-out arm's length.
++  if (HELPER_FIT) joint.extension = Math.min(joint.extension, h.profile.radius + e.defender.profile.radius + .05);
+ }
+ 
+ function advanceRunHelperHands(sim: PlaySim, e: Engagement): void {
+@@ -720,6 +723,8 @@ const EDGE_CONTAIN = process.env.EDGE_CONTAIN !== '0';
+  * with instead of running to a new shoulder and carrying him along
+  * (SEAL_HOLD=0 restores the unbounded seal correction). */
+ const SEAL_HOLD = process.env.SEAL_HOLD !== '0';
++const HELPER_LINE = false;
++const HELPER_FIT = false;
+ 
+ /** Run release measured against the blocker's torso (LEVER_FACING=0: fixed frame). */
+ const LEVER_FACING = process.env.LEVER_FACING !== '0';
+@@ -1632,13 +1637,32 @@ function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec
+   const sep = b.profile.radius + d.profile.radius;
+   for (const h of e.helpers) {
+     const recovery = e.type === 'run' ? helperFit(sim,e,h,axis) : null;
+-    if (recovery) { intents[h.idx] = recovery; continue; }
++    if (recovery) { intents[h.idx] = recovery; (globalThis as any).__HB?.(h, 'recovery', null, null); continue; }
+     const hs = Math.sign((h.pos.x - b.pos.x) * lat.x + (h.pos.y - b.pos.y) * lat.y) || e.side;
+-    const spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
++    const half = h.profile.radius, deep = Math.sqrt(Math.max(0, (h.profile.radius + d.profile.radius) ** 2 - half * half));
++    const spot = HELPER_LINE && e.type === 'run' ? { x: d.pos.x + axis.x * deep + lat.x * half * hs, y: d.pos.y + axis.y * deep + lat.y * half * hs }
++      : { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
+     const toSpot = sub(spot, h.pos);
+     const preparation=e.type==='run'?h.behavior.contactMotion?.(h,'prepare'):null;
+     const direction = e.drive ?? { x: -axis.x, y: -axis.y };
+-    const drive = e.type === 'run' ? { x: direction.x * 2.2, y: direction.y * 2.2 } : { x: -axis.x * 0.5, y: -axis.y * 0.5 };
++    // A helper presses only while the man is on his own drive line. When that
++    // line runs past the man's flank, full drive carries him up the flank
++    // (0.73 yd past his spot at this gain) instead of into the man; then he
++    // carries the man's motion along it and the spot keeps his half.
++    const toMan = sub(d.pos, h.pos);
++    const ahead = toMan.x * direction.x + toMan.y * direction.y;
++    const miss = Math.abs(toMan.x * direction.y - toMan.y * direction.x);
++    // HELPER_PRESS: on his half (within ~50 deg of the man's front), he drives
++    // through the man's center as the owner does, closing inside his arms;
++    // on the flank he carries the man's motion and the spot works him around.
++    const fx = h.pos.x - d.pos.x, fy = h.pos.y - d.pos.y, fr = Math.hypot(fx, fy) || 1e-9;
++    const onHalf = (fx * axis.x + fy * axis.y) / fr;
++    const wp = HELPER_LINE && e.type === 'run' ? clamp((onHalf - 0.55) / 0.15, 0, 1) : 1;
++    const carry = clamp(d.vel.x * direction.x + d.vel.y * direction.y, -1, 2.2);
++    const drive = e.type !== 'run' ? { x: -axis.x * 0.5, y: -axis.y * 0.5 }
++      : !HELPER_LINE ? { x: direction.x * 2.2, y: direction.y * 2.2 }
++      : { x: -fx / fr * 2.2 * wp + direction.x * carry * (1 - wp), y: -fy / fr * 2.2 * wp + direction.y * carry * (1 - wp) };
++    void ahead; void miss;
+     const feet={x:drive.x+toSpot.x*3,y:drive.y+toSpot.y*3};
+     if (preparation) {
+       const change=(preparation.x-feet.x)*lat.x+(preparation.y-feet.y)*lat.y;
+@@ -1650,6 +1674,7 @@ function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec
+       push: 1,
+       posture: 0.75,
+     };
++    (globalThis as any).__HB?.(h, preparation ? 'prepare' : 'spot', spot, feet);
+   }
+ }
+ 

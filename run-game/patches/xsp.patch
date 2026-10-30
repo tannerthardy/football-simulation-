@@ -1,0 +1,57 @@
+diff --git a/src/sim/agent.ts b/src/sim/agent.ts
+index 53e54bbe..b43e38f9 100644
+--- a/src/sim/agent.ts
++++ b/src/sim/agent.ts
+@@ -35,6 +35,9 @@ export interface Behavior {
+   /** Motion his teammates know from the call itself (a rehearsed track on the
+    * snap count), not his private live decision; null when there is none. */
+   calledMotion?(): Vec2 | null;
++  /** The teammate he meets for the installed ball exchange (the mesh), known
++   * from the call itself; null when he has no exchange to make now. */
++  exchangePartner?(): Agent | null;
+   /** Current held contact technique's movement intention, separate from the
+    * free track advertised to teammates. No achieved motion is implied. */
+   contactMotion?(a: Agent, work?: 'reach' | 'runoff' | 'prepare'): Vec2 | null;
+diff --git a/src/sim/assign.ts b/src/sim/assign.ts
+index 4e1f0e0d..2fcc482a 100644
+--- a/src/sim/assign.ts
++++ b/src/sim/assign.ts
+@@ -270,7 +270,10 @@ export class RunnerToMesh implements Behavior {
+   private passed = false;
+   private departed = false;
+   private nextRead = 0;
++  private qb: Agent | null = null;
++  exchangePartner(): Agent | null { return this.ride && this.departed ? this.qb : null; }
+   update(a: Agent, sim: PlaySim): MoveCommand {
++    this.qb = sim.qb;
+     if (sim.ball.kind === 'pitch' && sim.ball.target === a) {
+       return goTo(a, sim.ball.intended, { speed: 0.8, facing: Math.atan2(sim.qb.pos.y-a.pos.y, sim.qb.pos.x-a.pos.x) });
+     }
+diff --git a/src/sim/behaviors/qb.ts b/src/sim/behaviors/qb.ts
+index 8ea9c334..86a1a6c7 100644
+--- a/src/sim/behaviors/qb.ts
++++ b/src/sim/behaviors/qb.ts
+@@ -633,6 +633,8 @@ export class QBHandoff implements Behavior {
+     private readonly keeper = false,
+   ) {}
+ 
++  exchangePartner(): Agent | null { return this.handed || this.keeper ? null : this.rb; }
++
+   update(a: Agent, sim: PlaySim): MoveCommand {
+     if (this.handed || sim.carrier !== a) {
+       if (this.handed) sim.pretendCarry(a);
+diff --git a/src/sim/spacing.ts b/src/sim/spacing.ts
+index 7b2814c8..18c86088 100644
+--- a/src/sim/spacing.ts
++++ b/src/sim/spacing.ts
+@@ -294,6 +294,10 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
+       if (j === i) continue;
+       const b = agents[j];
+       if (b.team !== a.team) continue;
++      // The installed exchange brings the back through the QB's pocket at
++      // arm's length on purpose; that meeting is not traffic to steer around.
++      // Their bodies still meet only through the World.
++      if (a.behavior.exchangePartner?.() === b) continue;
+       const seen=observe(a,b);
+       const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y;
+       const d = Math.hypot(dx, dy);

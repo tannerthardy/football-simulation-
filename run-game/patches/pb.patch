@@ -1,0 +1,60 @@
+diff --git a/config/baseline.json b/config/baseline.json
+index 5996e0c..a7a4499 100644
+--- a/config/baseline.json
++++ b/config/baseline.json
+@@ -69,6 +69,7 @@
+     "DL_FLATTEN": "0",
+     "DL_FLATTEN_WON": "0",
+     "LB_LANDMARK": "0",
++    "PURSUIT_BODY": "0",
+     "DEF_GETOFF": "1"
+   },
+   "worldDefaults": {
+diff --git a/src/sim/behaviors/common.ts b/src/sim/behaviors/common.ts
+index 2ba1cda..6b1a465 100644
+--- a/src/sim/behaviors/common.ts
++++ b/src/sim/behaviors/common.ts
+@@ -10,6 +10,7 @@ import { withMovementObjective } from '../movement-objective.js';
+ import type { PlaySim } from '../playsim.js';
+ 
+ export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
++const PURSUIT_BODY = process.env.PURSUIT_BODY === '1';
+ 
+ export function stand(facing?: number): MoveCommand {
+   return { vel: { x: 0, y: 0 }, facing };
+@@ -90,7 +91,7 @@ export function angleTo(from: Vec2, to: Vec2): number {
+  *    perceived intercept. Lower pursuit ratings widen that error; they do
+  *    not require every poorer pursuer to take a flat, trailing angle.
+  */
+-export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3): Vec2 {
++export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3, body = false): Vec2 {
+   const delay = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
+   const seen = sim.see(a, target, delay);
+   const sp = Math.hypot(seen.vel.x, seen.vel.y);
+@@ -107,7 +108,16 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3)
+     return { x: seen.pos.x + heading.x * d, y: clamp(seen.pos.y + heading.y * d, 0, FIELD_WIDTH) };
+   };
+   const reach = a.profile.radius + target.profile.radius + a.profile.reach * 0.75;
+-  const ip = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, path, { horizon, step: 0.1, radius: reach });
++  const me = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
++  let ip = interceptPoint(me, path, { horizon, step: 0.1, radius: reach });
++  if (body) {
++    // PURSUIT_BODY: a tackler who can get his body into the runner's path
++    // aims there, to tackle through him; arm's length is the fallback when
++    // the runner is out of that race.
++    const close = a.profile.radius + target.profile.radius + 0.25;
++    const ib = interceptPoint(me, path, { horizon, step: 0.1, radius: close });
++    if (timeToReach(me, ib.point, close) <= ib.t + 1e-9) ip = ib;
++  }
+   let bias = angleBias.get(a);
+   if (bias === undefined) {
+     // The intercept already forecasts from acquired motion. Delayed cues
+@@ -228,7 +238,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
+       y: clamp(seen.pos.y + offset, .3, FIELD_WIDTH - .3) }, velocity: seen.vel });
+   const { near, gather } = gatheringApproach(a, seen, contact, offset);
+   if (gather >= 1 && !sim.bond?.tacklers.includes(a)) return ownApproach(near!);
+-  const p = pursuitPoint(sim, a, target, horizon);
++  const p = pursuitPoint(sim, a, target, horizon, PURSUIT_BODY);
+   // Away from the ball, pursuit runs below top speed (more so for low motors).
+   const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
+   const original = { ...runThrough(a, p, { speed: effort }), effort };
