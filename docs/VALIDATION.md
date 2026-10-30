@@ -314,6 +314,7 @@ Focused checks during iteration precede shared checks on the combined candidate.
 
 ```sh
 npm test
+npm run test:workflows
 npm run test:integration
 npm run test:research
 npm run typecheck
@@ -321,15 +322,27 @@ npm run build
 npm run test:data
 ```
 
-`npm test` covers the production contracts. Integration keeps the existing slow
-game/ensemble checks; research keeps the paused anatomical/sole experiments.
+`npm test` covers engine/controller contracts. `test:workflows` selects native
+capture/replay, film/CLI and lab contracts for focused work. The integration
+command includes those workflows plus the existing slow game/ensemble checks,
+so the required core-plus-integration path retains every former production
+check exactly once. Do not also run the complete workflow tier when that
+integration command is the chosen gate. Research keeps the paused
+anatomical/sole experiments.
 At integration, one designated owner runs `npm run test:all` on the exact combined
 engine candidate, without omitting any preserved assertion, alongside the other
 required full checks. Local agents supply focused receipts and link the shared
 result rather than each launching the suite. Reuse only compatible tested code,
 inputs and settings. Docs-only work needs no new games.
-Complete and integration runs use one worker to avoid the worker RPC timeout
-observed in the old parallel full suite; the fast default remains parallel.
+Complete verification uses one shared isolated thread pool, capped at three
+workers; the combined workflow/game integration command caps it at two.
+Standalone workflow selection uses one worker. Every test file retains module
+and environment isolation. On a constrained host use
+`npm exec -- vitest run --maxWorkers=1` for all projects, or
+`npm exec -- vitest run --project workflows --project integration --maxWorkers=1`
+for integration. Appending a duplicate worker option to the npm scripts is an
+error, not an override. Preserve and report any timeout or worker failure;
+lower concurrency does not authorize changing a deadline or assertion.
 The native game tests yield between synchronous games so worker reports can
 be delivered. Their simulation inputs, assertions and test timeout are unchanged.
 
