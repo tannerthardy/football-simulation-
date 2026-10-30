@@ -553,8 +553,11 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
   // A stack backer whose gap the runner's path threatens fills downhill to meet
-  // him at the line, instead of waiting at his landmark until he declares.
-  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? threatened ? FILL_DEPTH : STACK_LANDMARK : .5;
+  // him at the line, instead of waiting at his landmark until he declares. A
+  // guard pulling into his fit is the same threat seen sooner: the puller leads
+  // the ball to the hole, and the backer fills to meet him there.
+  const fill = threatened || pullSide !== 0;
+  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? fill ? FILL_DEPTH : STACK_LANDMARK : .5;
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
   let pace = .78+.15*a.mind.urgency;
   const fit = track(a,aim,{x:0,y:0},{speed:pace,gain:3,facing:Math.PI});
