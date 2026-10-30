@@ -16,17 +16,24 @@ manual/local. The tiers separate workloads; they do not remove assertions.
 | Command | Workload | Use |
 | --- | --- | --- |
 | `npm test -- test/<file>.test.ts` | Selected engine/controller contracts | Local mechanism and opposing control |
-| `npm test` | Core: 3,662 checks in 338 files | Broader engine/controller checkpoint |
+| `npm test` | Core: 3,698 checks in 339 files | Broader engine/controller checkpoint |
 | `npm run test:workflows` | Capture, restoration, film/CLI and lab workflows: 32 checks in four files | Changes to `PlaySetup`, game hooks, replay, provenance or the affected tools |
-| `npm run test:integration` | Native panels and full-game contracts: 10 checks in six files | Affected football interactions, official records and game reproducibility |
+| `npm run test:integration` | Workflows plus native panels/full-game contracts: 42 checks in ten files | Required final integration gate, alongside core and static checks |
 | `npm run test:research` | Paused physics experiments: 225 checks in 20 files | Work on those experimental mechanisms |
-| `npm run test:all` | All four TypeScript tiers: 3,929 checks in 368 files | Complete combined-candidate verification |
+| `npm run test:all` | All four TypeScript tiers: 3,965 checks in 369 files | Complete combined-candidate verification |
 | `npm run test:data -- --verbose` | Offline Python measurement checks | Affected data/extraction changes |
 
-Counts describe the qualified source below; new tests join their matching tier.
+Counts describe develop `2a8b5de7a8892f77746b7dfbc1f642619e7738e9`
+with this tier change; the historical timing source below has earlier counts.
+New tests join their matching tier.
 Append a file to workflow/integration commands to select the affected check,
 for example `npm run test:workflows -- test/film-pairs.test.ts`. Workflow files
 are excluded from `npm test`; use their named command when selecting them.
+
+The required `npm test` plus `npm run test:integration` path retains all 3,740
+production/workflow checks exactly once. The integration command selects both
+the workflows and integration projects; do not run the whole workflow tier
+again immediately beforehand. Research remains its own explicit scope.
 
 `test:all` already includes core, workflows, integration and research. Running
 every tier immediately before it repeats the same work, including six full-game
@@ -73,7 +80,18 @@ isolated thread pool. Complete verification caps it at three workers; standalone
 integration caps it at two and workflows at one. File isolation, every timeout,
 independent game executions and every assertion stay intact. Full-suite CPU
 work is similar, while average CPU use rises from 2.76 to 3.72 cores. On a
-constrained host, `npm run test:all -- --maxWorkers=1` lowers concurrency.
+constrained host, `npm exec -- vitest run --maxWorkers=1` lowers concurrency
+while selecting all four projects. For the workflow/game integration scope use
+`npm exec -- vitest run --project workflows --project integration --maxWorkers=1`.
+Do not append another `--maxWorkers` to a script that already specifies it:
+Vitest rejects duplicate scalar options rather than using the last one.
+
+The final integration-gate repair includes workflows in `test:integration`.
+The timings in this dated review used the earlier command map and source;
+they do not measure the expanded 42-check integration command or develop
+after #382. The core selection and complete
+shared-pool implementation are retained; current-head verification must state
+its own source and results.
 
 All 3,929 test identities/statuses match across all 368 files: 3,927 pass,
 the same two ordinary-frontal research assertions fail, and none are skipped.
