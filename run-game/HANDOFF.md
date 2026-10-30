@@ -201,6 +201,9 @@ Priority order. Each item has a measure and a stopping rule.
    the vacated spot's depth), it aims 1–1.5 yd past his stop. Example: seen vx −2.2 → −1.0 over 1.5–1.7 s,
    shoulder x 37.3–37.7 vs his stop at 38.9. The fit gate (distance < 1.2 or inFront) then opens only after the
    runner passes, and the kicker turns up.
+   **Status 04:17Z:** Integration put #385 on HOLD (comment 6514852891) and assigned the bounded kick-fit correction
+   to an independent worker. Run Game is paused, so do not duplicate it; merge needs the corrected head, the combined power
+   opposing control and exact-source requalification.
    Fix in `blocking.ts`'s kick fit, not the end: do not project past where the seen deceleration stops him, or
    shorten or anchor the horizon while he slows. Then rerun the power check above and the counter card (E0/F0
    bases), and add the native power case as a recorded test.
