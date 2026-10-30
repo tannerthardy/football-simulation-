@@ -69,7 +69,7 @@ describe('receiver run candidates follow actual installed ownership', () => {
   const looks = [['gun_spread_10', 'iz_strong', 'wide9', 'nickel', 'cover3'], ['ace_11', 'oz_strong', 'over', 'base43', 'cover3'],
     ['pistol_11', 'power', 'under', 'base43', 'cover1'], ['gun_trips_11', 'counter', 'over', 'base43', 'cover3'],
     ['gun_wing_12', 'power', 'over', 'base43', 'cover3'], ['heavy_13', 'trap', 'wide9', 'nickel', 'cover3']] as const;
-  it.each(looks.flatMap((c) => [[...c, false], [...c, true]]))('%s %s vs %s %s %s: receivers block men in reach (gap runs also crack), front men only from the core (flip=%s)',
+  it.each(looks.flatMap((c) => [[...c, false], [...c, true]]))('%s %s vs %s %s %s: receivers block men in reach (gap runs keep their ledger), front men only from the core (flip=%s)',
     (formation, run, front, personnel, coverage, flip) => {
       const sim = look(formation, run, front, personnel, coverage, flip as boolean);
       const core = Math.max(Math.abs(sim.offAlign.coreEdge.S - CENTER_Y), Math.abs(sim.offAlign.coreEdge.W - CENTER_Y)) + 2;
@@ -80,9 +80,10 @@ describe('receiver run candidates follow actual installed ownership', () => {
         const d = (a.behavior as RunBlocker).plan.target!;
         // The deep secondary is anyone's: the ledger pairs it by distance.
         if (d.pos.x - sim.los >= 7.5 || Math.abs(d.pos.y - CENTER_Y) >= 8) continue;
-        // Gap runs keep the crack on an off-ball box defender on his side.
+        // Gap runs keep their receiver ledger (the crack and closest pairs)
+        // for every man off the front; only front men stay the core's.
         const gap = ['power', 'counter', 'trap'].includes(RUN_BY_ID[run].scheme);
-        if (gap && d.pos.x - sim.los >= 2 && (d.pos.y - CENTER_Y) * (a.pos.y - CENTER_Y) > 0) continue;
+        if (gap && !(d.pos.x - sim.los < 2 && lateral(d, line) < lateral(d, stalkers))) continue;
         expect(Math.abs(d.pos.y - a.pos.y), `${a.slot} -> ${d.slot}`).toBeLessThanOrEqual(4.5);
         if (d.pos.x - sim.los < 2 && lateral(d, line) < lateral(d, stalkers))
           expect(Math.abs(a.pos.y - CENTER_Y), `${a.slot} -> ${d.slot} on the surface`).toBeLessThanOrEqual(core);
