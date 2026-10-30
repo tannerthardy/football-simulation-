@@ -36,14 +36,14 @@ describe('receiver run candidates follow actual installed ownership', () => {
     expect(plans.get(sim.slot('LG')!)?.climbTo).toBe(sim.slot('LB_M'));
   });
 
-  it('does not let receivers steal a real inline down threat or an installed combo backer', () => {
-    const sim = fixture(), plans = planRunBlocking(sim, RUN_BY_ID.oz_strong);
+  it.each([false, true])('does not let receivers steal a real inline down threat or an installed combo backer (mirror=%s)', mirror => {
+    const sim = fixture(mirror), plans = planRunBlocking(sim, RUN_BY_ID.oz_strong);
     const targets = [...plans.values()].filter(p => p.kind === 'stalk').map(p => p.target);
     for (const slot of ['DE_S', 'DE_W', 'DT_S', 'DT_W', 'LB_M']) expect(targets).not.toContain(sim.slot(slot));
   });
 
-  it.each(['counter', 'trap', 'power'])('keeps the %s reserved pull/kick targets out of receiver work', run => {
-    const sim = fixture(), plans = planRunBlocking(sim, RUN_BY_ID[run]);
+  it.each(['counter', 'trap', 'power'].flatMap((run) => [[run, false], [run, true]]))('keeps the %s reserved pull/kick targets out of receiver work (mirror=%s)', (run, mirror) => {
+    const sim = fixture(mirror as boolean), plans = planRunBlocking(sim, RUN_BY_ID[run as string]);
     const core = [...plans.values()].filter(p => p.kind !== 'stalk');
     const reserved = new Set(core.flatMap(p => [p.target, p.climbTo, p.combination?.backer]).filter(Boolean));
     const stalks = [...plans.values()].filter(p => p.kind === 'stalk');
@@ -97,5 +97,34 @@ describe('receiver run candidates follow actual installed ownership', () => {
     d.body.pos = { x: sim.los + depth, y: y.pos.y + .5 };
     const plans = planRunBlocking(sim, RUN_BY_ID.iz_strong);
     expect(plans.get(y)?.target).toBe(d);
+  });
+
+  // Competing receiver jobs: trips to one side and a safety walked into the box
+  // on that side (gap-assignment's 4.4 yd deep, 6.1 yd outside the ball).
+  function walkedDown(run: string, flip: boolean) {
+    const sim = look('gun_trips_11', run, 'over', 'base43', 'cover3', flip);
+    const receivers = sim.offense.filter((a) => a.player.position === 'WR' || a.player.position === 'TE');
+    const side = Math.sign(receivers.reduce((t, a) => t + Math.sign(a.pos.y - CENTER_Y), 0));
+    const ss = sim.slot('SS')!;
+    ss.body.pos = { x: sim.los + 4.4, y: CENTER_Y + side * 6.1 };
+    const plans = planRunBlocking(sim, RUN_BY_ID[run]);
+    const owners = [...plans].filter(([, p]) => p.target === ss || p.climbTo === ss || p.combination?.backer === ss);
+    const stalkers = owners.filter(([, p]) => p.kind === 'stalk').map(([a]) => a);
+    const stalkTargets = [...plans.values()].filter((p) => p.kind === 'stalk').map((p) => p.target);
+    return { sim, ss, owners, stalkers, stalkTargets };
+  }
+  it.each(['counter', 'power', 'trap'].flatMap((run) => [[run, false], [run, true]]))('%s: the walked-down safety on the trips side has one owner, a receiver cracks him only when no lineman or puller has him (flip=%s)', (run, flip) => {
+    const { ss, owners, stalkers, stalkTargets } = walkedDown(run as string, flip as boolean);
+    expect(owners.length).toBeGreaterThan(0);
+    expect(stalkers.length).toBeLessThanOrEqual(1);
+    if (stalkers.length) expect(owners.length).toBe(1);
+    expect(new Set(stalkTargets).size).toBe(stalkTargets.length);
+    expect(stalkTargets.filter((d) => d === ss).length).toBe(stalkers.length);
+  });
+  it.each(['oz_strong', 'iz_strong'].flatMap((run) => [[run, false], [run, true]]))('%s: the walked-down safety goes only to a receiver in reach of him, never two (flip=%s)', (run, flip) => {
+    const { ss, stalkers, stalkTargets } = walkedDown(run as string, flip as boolean);
+    expect(stalkers.length).toBeLessThanOrEqual(1);
+    for (const a of stalkers) expect(Math.abs(a.pos.y - ss.pos.y)).toBeLessThanOrEqual(4.5);
+    expect(new Set(stalkTargets).size).toBe(stalkTargets.length);
   });
 });
