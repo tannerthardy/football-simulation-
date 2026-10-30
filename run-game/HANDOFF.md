@@ -215,6 +215,10 @@ Priority order. Each item has a measure and a stopping rule.
    `new PlaySim(nativeTraceSetup({coverage:'cover3_buzz',concept:'power',seed:9,roster:7,formation:'ace_11',flip:false}))`,
    LG (kick target DE_S), recorded with `sim.recordCommands({actor:{team:'O',slot:'LG'},from:0,to:4.5})` and
    `sim.recordResponsibility()`. Report joint load by physical endpoint and command-stage time.
+   **Correction delivered (04:48Z):** `run/G2-kick-observed-interception` at `702250b0` (tree `aa40f839`), on develop
+   `c306f10a`, from the independent worker. Integration reproduced focused 35/35 and the native power hand-load
+   check, and is preparing the final qualification. One adverse combined shift (5.88 → 0.35 yd despite sustained
+   load) is under their adjudication. Run Game work after un-pause starts from this branch.
    Fix in `blocking.ts`'s kick fit, not the end: do not project past where the seen deceleration stops him, or
    shorten or anchor the horizon while he slows. Then rerun the power check above and the counter card (E0/F0
    bases), and add the native power case as a recorded test.
