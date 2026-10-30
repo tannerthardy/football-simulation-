@@ -608,6 +608,13 @@ export class ZoneCoverage implements Behavior {
     // fits retain depth through the mesh; certainty about the hidden call is
     // not required, and a mistaken read can still expose play action.
     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
+    // A box backer reads before he moves: square, at his alignment, eyes on
+    // the quarterback as he sees him. He drops only once he has read pass
+    // (tracked box backers, 2.5-8 yd deep and within 6 yd of the ball, hold
+    // their depth through 0.8 s on passes and runs alike). An apex or
+    // overhang backer keeps his eased drop to the flat.
+    if (!this.deep && a.recog?.read === 'unsure' && boxBacker(a, sim))
+      return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
     const spot = this.style === 'spot';
 
     const qb = sim.qb;
@@ -906,6 +913,15 @@ export class ZoneCoverage implements Behavior {
     return withFacingTechnique(goTo(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { facing: facingQB, speed: 0.7 + 0.15 * a.r('zoneCoverage') }),
       { label: 'spot-settle' });
   }
+}
+
+/** A linebacker installed in the box: 2.5-8 yd off the ball and within 6 yd
+ * of it laterally, from his own alignment spot (no live picture needed). */
+function boxBacker(a: Agent, sim: PlaySim): boolean {
+  const spot = sim.defAlign.spots[a.slot as keyof typeof sim.defAlign.spots]?.pos;
+  if (!a.slot.startsWith('LB') || !spot) return false;
+  const depth = Math.abs(spot.x - sim.los);
+  return depth >= 2.5 && depth <= 8 && Math.abs(spot.y - sim.ballY) < 6;
 }
 
 /** Speed factor for a defender who hasn't read run or pass yet. */
