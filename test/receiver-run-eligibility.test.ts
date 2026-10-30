@@ -1,11 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
 import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
-import { planRunBlocking } from '../src/sim/behaviors/blocking.js';
+import { RunBlocker, planRunBlocking } from '../src/sim/behaviors/blocking.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
@@ -48,5 +49,50 @@ describe('receiver run candidates follow actual installed ownership', () => {
     const stalks = [...plans.values()].filter(p => p.kind === 'stalk');
     expect(core.some(p => p.kind === 'pull')).toBe(true);
     for (const p of stalks) expect(reserved.has(p.target)).toBe(false);
+  });
+
+  it.each([false, true])('a receiver split wide stalks the corner over him, not a backer across the formation (mirror=%s)', mirror => {
+    // Develop's ledger sent X, 18 yd outside, to LB_W 16 yd inside him while
+    // CB_W pressed one yard in front of him went unblocked.
+    const sim = fixture(mirror), plans = planRunBlocking(sim, RUN_BY_ID.oz_strong);
+    expect(plans.get(sim.slot('X')!)?.target).toBe(sim.slot('CB_W'));
+  });
+
+  function look(formation: string, run: string, front: string, personnel: string, coverage: string, flip: boolean) {
+    const f = FORMATION_BY_ID[formation];
+    return new PlaySim({ offense: pickOffense(offense, f.personnel), defense: pickDefense(defense, personnel as never),
+      offCall: { formation: f, flip, kind: 'run', run: RUN_BY_ID[run], label: run },
+      defCall: { personnel: personnel as never, front: FRONT_BY_ID[front], coverage: COVERAGE_BY_ID[coverage], pressure: null, label: front },
+      los: 40, ballY: CENTER_Y, firstDownX: 50, seed: 3 });
+  }
+
+  const looks = [['gun_spread_10', 'iz_strong', 'wide9', 'nickel', 'cover3'], ['ace_11', 'oz_strong', 'over', 'base43', 'cover3'],
+    ['pistol_11', 'power', 'under', 'base43', 'cover1'], ['gun_trips_11', 'counter', 'over', 'base43', 'cover3'],
+    ['gun_wing_12', 'power', 'over', 'base43', 'cover3'], ['heavy_13', 'trap', 'wide9', 'nickel', 'cover3']] as const;
+  it.each(looks.flatMap((c) => [[...c, false], [...c, true]]))('%s %s vs %s %s %s: receivers block men in reach, front men only from the core (flip=%s)',
+    (formation, run, front, personnel, coverage, flip) => {
+      const sim = look(formation, run, front, personnel, coverage, flip as boolean);
+      const core = Math.max(Math.abs(sim.offAlign.coreEdge.S - CENTER_Y), Math.abs(sim.offAlign.coreEdge.W - CENTER_Y)) + 2;
+      const stalkers = sim.offense.filter((a) => a.behavior instanceof RunBlocker && a.behavior.plan.kind === 'stalk');
+      const line = sim.offense.filter((a) => ['LT', 'LG', 'C', 'RG', 'RT'].includes(a.slot) || sim.offAlign.spots[a.slot]?.inline);
+      const lateral = (d: { pos: { y: number } }, group: typeof line) => Math.min(...group.map((o) => Math.abs(o.pos.y - d.pos.y)));
+      for (const a of stalkers) {
+        const d = (a.behavior as RunBlocker).plan.target!;
+        // The deep secondary is anyone's: the ledger pairs it by distance.
+        if (d.pos.x - sim.los >= 7.5 || Math.abs(d.pos.y - CENTER_Y) >= 8) continue;
+        expect(Math.abs(d.pos.y - a.pos.y), `${a.slot} -> ${d.slot}`).toBeLessThanOrEqual(4.5);
+        if (d.pos.x - sim.los < 2 && lateral(d, line) < lateral(d, stalkers))
+          expect(Math.abs(a.pos.y - CENTER_Y), `${a.slot} -> ${d.slot} on the surface`).toBeLessThanOrEqual(core);
+      }
+    });
+
+  // Positions move: what a receiver blocks is decided by where a defender
+  // stands relative to him, not the defender's label.
+  it.each([['LB_W', 4.5], ['DE_W', .9]] as const)('four wide vs a 4-3: %s aligned over the slot (depth %s) is the slot\'s man', (slot, depth) => {
+    const sim = look('gun_spread_10', 'iz_strong', 'over', 'base43', 'cover3', false);
+    const y = sim.slot('Y')!, d = sim.slot(slot)!;
+    d.body.pos = { x: sim.los + depth, y: y.pos.y + .5 };
+    const plans = planRunBlocking(sim, RUN_BY_ID.iz_strong);
+    expect(plans.get(y)?.target).toBe(d);
   });
 });

@@ -79,7 +79,12 @@ describe('fullback lead with every backer owned', () => {
       expect(f.kind).toBe('lead');
       expect(f.target).toBe(sim.slot(edge));
       expect(rel(f.target!)).toBeLessThan(0);
-      for (const x of box) expect(owners(x).length).toBeGreaterThan(0);
+      // Every box defender on the line or inside the surface has an owner. An off-ball man outside the end
+      // (a safety walked down over a split receiver) is the defense's alley player: NFL receivers split
+      // 11+ yd first-block a box defender on 1-2% of gap runs (wrfirst, same operator on sim film).
+      const surface = Math.max(Math.abs(sim.offAlign.coreEdge.S - sim.ballY), Math.abs(sim.offAlign.coreEdge.W - sim.ballY)) + 1;
+      for (const x of box) if (x.pos.x - sim.los < 2 || Math.abs(x.pos.y - sim.ballY) <= surface)
+        expect(owners(x).length, x.slot).toBeGreaterThan(0);
     });
   it.each(mirrors)('control: a free backer is still the first choice, flip=$flip y=$ballY', ({ flip, ballY }) => {
     const { by, sim } = plan('counter', 'over', flip, ballY);
