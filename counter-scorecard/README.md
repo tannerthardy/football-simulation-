@@ -11,6 +11,14 @@ pullers' mean lateral at 1.5 s. Usage: `python3 -I <script> scripts/mechanics/ru
 - `ctrfirst.py`: first-contact defender's snap class; behind-LOS share; sim adds his snap assignment and whether held.
 - `kicknone.py`, `wrapdiag.py` (sim only): kick pullers with no contact; wrap pullers' first contact by snap job.
 - `wrfirst.py`: receivers' first contact by split, NFL vs sim (PR #382).
+- `kicklog.py`: two-OL-puller counters; kick man = kicker's first sustained block on a line defender. At onset + 0.3 s:
+  kicked out (kicker inside him by > .25) / logged (outside by > .25), the man's depth and lateral from the snap PST;
+  at the carrier's crossing, carrier and wrap lateral relative to the man, split log / mid / out.
+- `ctrdbl.py`: dblside's doubles operator on counter (pull side from rule pullers): start, leave, climb share, meet,
+  climber speed after leave. `ctrdblwho.py`-style breakdown by snap plan is in `ctrasg.py` / `wrapwho.py` (sim only).
+- `wrapwho.py`, `wrapeng.py`, `logcheck.py`, `logfilm.py`, `ctrasg.py` (sim only): pullers' first block by slot vs
+  planned target; the wrap's first engagement and his spot when he sits near the kicked end; kicker-outside-end cases
+  and whether a log was declared; text film of log cases where the carrier goes inside; snap assignment collisions.
 
 Sim traces: run-only matched restage replays (`scripts/diag/matched-restage.ts replay <seed> <arm> --run-only
 --shifts 4 --trace`), with the local replay filter in `matched-restage-concept-filter.patch` (`--concept counter` replays
