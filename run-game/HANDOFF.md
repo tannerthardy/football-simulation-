@@ -204,6 +204,11 @@ Priority order. Each item has a measure and a stopping rule.
    **Status 04:17Z:** Integration put #385 on HOLD (comment 6514852891) and assigned the bounded kick-fit correction
    to an independent worker. Run Game is paused, so do not duplicate it; merge needs the corrected head, the combined power
    opposing control and exact-source requalification.
+   Reproducer (Integration, comment 6514868764): branch `tools/integration-384-385` at `d1cad65d` (tree `6dd08154`).
+   Its parents are develop `96b013c2`, Defense `3ce7dd4e` and Run `5a275fc2`; it is not trunk. Witness:
+   `new PlaySim(nativeTraceSetup({coverage:'cover3_buzz',concept:'power',seed:9,roster:7,formation:'ace_11',flip:false}))`,
+   LG (kick target DE_S), recorded with `sim.recordCommands({actor:{team:'O',slot:'LG'},from:0,to:4.5})` and
+   `sim.recordResponsibility()`. Report joint load by physical endpoint and command-stage time.
    Fix in `blocking.ts`'s kick fit, not the end: do not project past where the seen deceleration stops him, or
    shorten or anchor the horizon while he slows. Then rerun the power check above and the counter card (E0/F0
    bases), and add the native power case as a recorded test.
