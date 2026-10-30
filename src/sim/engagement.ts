@@ -38,7 +38,7 @@ import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
-import { pullers } from './run-fits.js';
+import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import type { HandJoint, Intent } from '../physics/world.js';
@@ -945,36 +945,6 @@ function ballKey(sim: PlaySim, d: Agent): Agent | null {
   const held = observedHolder(d, sim), back = sim.slot('RB');
   if (!held) return null;
   return back && (held.target === sim.qb || held.target === back) ? back : held.target;
-}
-
-/** A zone step: the line moving across faster than this (yd/s), four of the five together. */
-const LINE_STEP = 0.7;
-/** RUN-17: the play's direction a lineman reads from the line, held between his reads. */
-const lineReads = new WeakMap<Agent, { side: number; next: number }>();
-
-/** The play's direction as a lineman reads it from the line in front of him,
- * before the back declares: a puller crossing behind the line leads the play;
- * otherwise the whole line stepping one way (four of the five across faster
- * than LINE_STEP, none of them setting back in pass protection) is a zone step.
- * 0 while the line says neither. His own delayed pictures, read once per
- * decision beat and kept until the line shows the other way; no offensive call
- * or assignment. A play-action line shows run and fools him, as it should. */
-export function lineRead(sim: PlaySim, d: Agent): number {
-  const held = lineReads.get(d);
-  if (held && sim.t < held.next) return held.side;
-  let side = 0;
-  const pull = pullers(sim, d).reduce<{ vel: Vec2 } | null>((m, p) => !m || Math.abs(p.vel.y) > Math.abs(m.vel.y) ? p : m, null);
-  if (pull) side = Math.sign(pull.vel.y);
-  else {
-    const line = linePicture(sim, d).surface.filter(b => ['LT', 'LG', 'C', 'RG', 'RT'].includes(b.agent.slot));
-    const dir = sim.attackDir(sim.offense[0].team);
-    const setting = line.some(b => b.seen.vel.x * dir < -1);
-    const across = (s: number) => line.filter(b => b.seen.vel.y * s > LINE_STEP).length;
-    if (!setting && line.length === 5) side = across(1) >= 4 ? 1 : across(-1) >= 4 ? -1 : 0;
-  }
-  side = side || held?.side || 0;
-  lineReads.set(d, { side, next: sim.t + d.mind.decisionInterval });
-  return side;
 }
 
 function runContactRead(sim: PlaySim, e: Engagement) {

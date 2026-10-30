@@ -259,6 +259,36 @@ export function pullers(sim: PlaySim, a: Agent): Perceived[] {
     .filter((s) => (sim.los - s.pos.x) * sim.attackDir(sim.offense[0].team) > .3 && Math.abs(s.vel.y) > 1.5);
 }
 
+/** A zone step: the line moving across faster than this (yd/s), four of the five together. */
+const LINE_STEP = 0.7;
+/** RUN-17: the play's direction a lineman reads from the line, held between his reads. */
+const lineReads = new WeakMap<Agent, { side: number; next: number }>();
+
+/** The play's direction as a lineman reads it from the line in front of him,
+ * before the back declares: a puller crossing behind the line leads the play;
+ * otherwise the whole line stepping one way (four of the five across faster
+ * than LINE_STEP, none of them setting back in pass protection) is a zone step.
+ * 0 while the line says neither. His own delayed pictures, read once per
+ * decision beat and kept until the line shows the other way; no offensive call
+ * or assignment. A play-action line shows run and fools him, as it should. */
+export function lineRead(sim: PlaySim, d: Agent): number {
+  const held = lineReads.get(d);
+  if (held && sim.t < held.next) return held.side;
+  let side = 0;
+  const pull = pullers(sim, d).reduce<{ vel: Vec2 } | null>((m, p) => !m || Math.abs(p.vel.y) > Math.abs(m.vel.y) ? p : m, null);
+  if (pull) side = Math.sign(pull.vel.y);
+  else {
+    const line = linePicture(sim, d).surface.filter(b => ['LT', 'LG', 'C', 'RG', 'RT'].includes(b.agent.slot));
+    const dir = sim.attackDir(sim.offense[0].team);
+    const setting = line.some(b => b.seen.vel.x * dir < -1);
+    const across = (s: number) => line.filter(b => b.seen.vel.y * s > LINE_STEP).length;
+    if (!setting && line.length === 5) side = across(1) >= 4 ? 1 : across(-1) >= 4 ? -1 : 0;
+  }
+  side = side || held?.side || 0;
+  lineReads.set(d, { side, next: sim.t + d.mind.decisionInterval });
+  return side;
+}
+
 /** Only visible pull/slice motion changes a fit; no offensive scheme lookup. */
 export function blockingIndicator(a: Agent, sim: PlaySim): { side: number; kind: 'pull' | 'slice'; pos: Vec2 } | null {
   for (const o of sim.offense) {
@@ -369,6 +399,23 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       gy = kick.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65);
       a.tags.add(job.edge === 'spill' ? 'fit-spill' : 'fit-box');
     } else gy = job.kind === 'force' ? job.side > 0 ? Math.max(surface+.5,seen.pos.y+.7) : Math.min(surface-.5,seen.pos.y-.7) : gy;
+    // Squeeze, don't chase: the man on the inside of his gap blocking down
+    // takes the gap inside with him, but the edge owns the spot he left. He
+    // closes to it, his body just outside it, and no further, where a
+    // kick-out or a lead has to come get him.
+    // Play side only: the line shows the play coming his way (a puller, or a
+    // zone step toward him). A backside edge follows the line down instead.
+    if (job.kind === 'edge' && !kick && (job.gap === 'C' || job.gap === 'D') && lineRead(sim, a) === job.side) {
+      const mid = sim.offAlign.spots.C?.pos.y ?? sim.ballY;
+      const out = sim.offense.filter((o) => ['LT','LG','RG','RT'].includes(o.slot) || sim.offAlign.spots[o.slot]?.inline)
+        .map((o) => sim.offAlign.spots[o.slot]!.pos.y).filter((y) => (y - mid) * job.side > 0)
+        .sort((p, q) => (p - q) * job.side);
+      const inner = job.gap === 'D' ? out.at(-1) : out[1];
+      if (inner !== undefined) {
+        const spot = inner + job.side * a.profile.radius;
+        if ((gy - spot) * job.side < 0) gy = spot;
+      }
+    }
     // Backside: his own picture shows the ball carried away from his side,
     // already inside his landmark. He squeezes and trails it flat at its
     // depth, keeping the lateral relation to the ball his fit had (the
