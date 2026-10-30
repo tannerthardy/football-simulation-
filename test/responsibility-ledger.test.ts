@@ -236,7 +236,9 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // with the along-route crease read (#366) M25-P021's C is reread once (1.7), so M29-P036 carries it: LG, released
     // from the DT_W double to climb, is reread to reach LB_W at 2.25 and, climbing again, to SS at 3.75. With the
     // direction-free start (#353) LG releases from DT_W at 1.45 to climb to SS and is reread once, to reach LB_W, at 2.05.
-    // With the box backer reading before he moves and filling to a pull he sees, M29-P036's LG is no longer reread; S8-P005 carries the case: RT, climbing to SS, is
+    // With the box backer reading before he moves and filling to a pull he sees, M29-P036's LG is no longer reread
+    // (its SS->LB_W reach at 2.05 disappears; that play's ending moves -0.09 -> 12.89 yd, first contact 3.15 -> 5.20,
+    // kept as an adverse outcome, not attributed). S8-P005 carries the case: RT, climbing to SS, is
     // reread to LB_M at 2.15 (still a climb) and to LB_W at 2.65, where the resulting kind is a drive.
     const p = play('S8-P005');
     const threats = changeOf(p, 'RT', 'threat-reread');
