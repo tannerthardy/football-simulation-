@@ -27,3 +27,7 @@ Captures were taken on develop e70cc2ab (`capture <seed> --run-only`).
 
 Results so far (Run Game session, 2026-10-30): CB0 = develop e70cc2ab + #382; CB2 = + down/back block fits the man's
 path to the ball at his intercept. See the session's report on PR #382 / the counter PR for the tables.
+
+- `climbspd.mts` (sim only, `npx tsx climbspd.mts <worktree> 7,9,11`): counter combos after release: the climber's
+  requested speed (his MoveCommand) vs achieved speed, gap to the released DL, joints, facing vs requested direction.
+- `ctrvariant.py` (NFL): counter variants by OL rule pullers and non-OL wrappers (GT / GH / GY ...).
