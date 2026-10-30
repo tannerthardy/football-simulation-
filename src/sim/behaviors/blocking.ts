@@ -841,18 +841,41 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     if (p.climbTo) reserved.add(p.climbTo);
     if (p.combination?.backer) reserved.add(p.combination.backer);
   }
+  // Who a receiver can block follows where the defender stands relative to
+  // him and to the line, not the defender's position label. He stalks the
+  // deep secondary, or any man in front of him within a backer's reach: a
+  // pressed corner, an apex nickel, a walked-down safety, or a backer split
+  // out over him. A man on the line aligned on the surface rather than on a
+  // receiver is the front's, and only a receiver aligned in the core (no
+  // more than two yards outside the surface: a wing, a nub or a tight
+  // bunch) walls him, in reach. A man across the formation is not his to
+  // reach, and taking him leaves the defender over him free.
+  const inCore = (a: Agent) => Math.abs(a.pos.y - by) <= surface + 2;
+  const inReach = (a: Agent, d: Agent) => Math.abs(d.pos.y - a.pos.y) <= ZONE_BACKER_REACH;
+  const lateral = (d: Agent, group: Agent[]) => Math.min(...group.map((o) => Math.abs(o.pos.y - d.pos.y)));
+  const front = (d: Agent) => dl.includes(d) && lateral(d, line) < lateral(d, stalkers);
   const stalkPool = [...db, ...lb, ...dl.filter(d => !reserved.has(d))];
+  // Gap runs keep their receiver ledger: the crack on a box defender nobody
+  // owns on his side of the ball, at any distance (a loaded Z crack on the
+  // trap/odd walked-down SS, who otherwise helps make the tackle), and any
+  // off-ball man by closest pairs (a jet-motion Z already moving to the
+  // unowned backer across the ball lands him). Only a front man stays the
+  // core's. Zone runs take a non-secondary man only in reach.
+  const gapCrack = scheme === 'power' || scheme === 'counter' || scheme === 'trap';
+  const crack = (a: Agent, d: Agent) => lb.includes(d) && (d.pos.y - by) * (a.pos.y - by) > 0 && (gapCrack || inReach(a, d));
+  const eligible = (a: Agent, d: Agent) => gapCrack ? !front(d) || (inCore(a) && inReach(a, d))
+    : db.includes(d) || crack(a, d) || (inReach(a, d) && (!front(d) || inCore(a)));
   const stalkTargets = new Map<Agent, Agent | null>();
   if (STALK_CLAIM) {
     // Receivers share one ledger: closest unclaimed pairs first, skipping
     // backers a lineman or lead already owns. Only a receiver left with
     // nobody unclaimed helps on the nearest man.
     const open = stalkPool.filter(d => !reserved.has(d));
-    // A box defender nobody owns (a safety walked down into an eight-man
-    // box) is claimed before the secondary, by a receiver on his side of the
-    // ball: the crack. Then the closest pairs.
-    const box = (a: Agent, d: Agent) => lb.includes(d) && (d.pos.y - by) * (a.pos.y - by) > 0 ? 0 : 1;
-    const pairs = stalkers.flatMap((a) => open.map((d) => ({ a, d, dist: near(a, d), tier: box(a, d) })))
+    // A box defender nobody owns is claimed before the secondary, by a
+    // receiver on his side of the ball: the crack (on a zone run, only one
+    // who can reach him). Then the closest pairs.
+    const box = (a: Agent, d: Agent) => crack(a, d) ? 0 : 1;
+    const pairs = stalkers.flatMap((a) => open.filter((d) => eligible(a, d)).map((d) => ({ a, d, dist: near(a, d), tier: box(a, d) })))
       .sort((p, q) => p.tier - q.tier || p.dist - q.dist);
     const taken = new Set<Agent>();
     for (const { a, d } of pairs) if (!stalkTargets.has(a) && !taken.has(d)) { stalkTargets.set(a, d); taken.add(d); }
@@ -863,6 +886,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     if (!best) {
       let bd = Infinity;
       for (const d of stalkPool) {
+        if (!eligible(a, d)) continue;
         const dd = near(a, d);
         if (dd < bd) {
           bd = dd;
