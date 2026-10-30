@@ -605,6 +605,11 @@ export class ZoneCoverage implements Behavior {
     // fits retain depth through the mesh; certainty about the hidden call is
     // not required, and a mistaken read can still expose play action.
     if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
+    // A box backer reads before he moves: square, at his alignment, eyes in
+    // the backfield. He drops only once he has read pass (tracked box
+    // backers hold their depth through 0.8 s on passes and runs alike).
+    if (!this.deep && a.slot.startsWith('LB') && a.recog?.read === 'unsure')
+      return withFacingTechnique(stand(angleTo(a.pos, sim.qb.pos)), { label: 'read-step' });
     const spot = this.style === 'spot';
 
     const qb = sim.qb;

@@ -109,6 +109,8 @@ describe('observations and dynamic recovery', () => {
     }
     for (let i = 0; i < 20; i++) s.perception.record(s.agents);
     s.t = 1;
+    // He has read pass and is in his drop: an undecided box backer stands and reads instead.
+    d.recog!.read = 'pass';
     d.mind.focus = 0.25;
     coverage.update(d, s);
     expect(d.tags.has('match-hesitation')).toBe(true);
