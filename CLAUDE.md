@@ -81,6 +81,7 @@ the PR ([No GitHub Actions](AGENTS.md#no-github-actions)).
 
 ```sh
 npm test                 # production contracts; select relevant tests locally
+npm run test:workflows   # native capture/replay, film/CLI and lab contracts
 npm run test:integration # existing game/ensemble checks
 npm run test:research    # paused anatomical/sole checks
 npm run test:all         # all preserved TypeScript assertions
