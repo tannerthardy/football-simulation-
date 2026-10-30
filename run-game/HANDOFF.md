@@ -196,6 +196,14 @@ Priority order. Each item has a measure and a stopping rule.
    role filters. On their constructed native power case (ace_11, cover3_buzz, seed 9, roster 7) the original-end
    load disappears in the combination, and the kicker stays deep and later abandons the man. Existing power
    evidence (PTK0→PTK1) is on Defense `bba64013` only.
+   **Known #385 defect (blocker, diagnosed by Defense, accepted):** the kick fit's 0.6 s `interceptPoint` projects
+   the end's delayed seen velocity at constant speed. Against an end who decelerates and sets (#384's end stops at
+   the vacated spot's depth), it aims 1–1.5 yd past his stop. Example: seen vx −2.2 → −1.0 over 1.5–1.7 s,
+   shoulder x 37.3–37.7 vs his stop at 38.9. The fit gate (distance < 1.2 or inFront) then opens only after the
+   runner passes, and the kicker turns up.
+   Fix in `blocking.ts`'s kick fit, not the end: do not project past where the seen deceleration stops him, or
+   shorten or anchor the horizon while he slows. Then rerun the power check above and the counter card (E0/F0
+   bases), and add the native power case as a recorded test.
    The kick-fit test was clarified in `5a275fc2`: S19-P025's 3.9 s was measured with the back-block fit, not on
    develop, so the snap guards the combination.
 2. **Climber stall: wait for Main Engine.** When a physics change lands, rerun `climbspd.mts` and `ctrdbl.py`.
