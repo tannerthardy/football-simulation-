@@ -112,14 +112,18 @@ const STEP_SEEN = 0.3;
  * the field: his key, an arm's length away and straight ahead of him (as a
  * rusher keys the quarterback). */
 const KEY_DELAY = 0.5;
+/** How wide of an edge rusher the end of the line can be and still be his key (yd). */
+const EDGE_KEY = 3;
 
 /** The blocker on the surface in front of a rusher, as he sees the line: the
- * nearest one laterally, within a yard and a half, read as his key. */
-function manInFront(sim: PlaySim, a: Agent): Perceived | null {
+ * nearest one laterally, read as his key. An interior man keys the blocker
+ * within a yard and a half; an edge keys the end of the line inside him,
+ * often wider away than that. */
+function manInFront(sim: PlaySim, a: Agent, reach = 1.5): Perceived | null {
   let best: Agent | null = null, bd = Infinity;
   for (const b of linePicture(sim, a).surface) {
     const dy = Math.abs(b.seen.pos.y - a.pos.y);
-    if (dy <= 1.5 && dy < bd) { best = b.agent; bd = dy; }
+    if (dy <= reach && dy < bd) { best = b.agent; bd = dy; }
   }
   return best ? sim.see(a, best, KEY_DELAY) : null;
 }
@@ -175,14 +179,26 @@ export class PassRusher implements Behavior {
     // moving with him, instead of sprinting past him at the quarterback. A pass
     // set stands up and gives ground and leaves the rush as it is. His own picture of the blocker; what
     // the blocker means to do is not his to know, so a play-action line fools him.
-    // An edge keeps his outside; the interior man keys the blocker over him.
-    const man = a.pos.x > sim.los - 0.5 && this.gap !== 'C' && this.gap !== 'D' ? manInFront(sim, a) : null;
-    if (man && man.stance !== 'high' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > STEP_SEEN) {
+    const onEdge = this.gap === 'C' || this.gap === 'D';
+    const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? EDGE_KEY : 1.5) : null;
+    const runStep = !!man && man.stance !== 'high' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > STEP_SEEN;
+    // An edge keeps his outside against a reach. A man in front blocking down,
+    // stepping inside away from him, opens his gap to a kick-out or a pulling
+    // lead: he closes flat along the line behind the down block and sets the
+    // edge there, where the puller has to come and get him, instead of rushing
+    // upfield past the play.
+    if (onEdge && runStep && Math.sign(man!.vel.y) === Math.sign(sim.ballY - man!.pos.y)) {
+      const side = Math.sign(man!.vel.y), step = a.profile.vmax * a.profile.shuffle, h = a.mind.decisionInterval;
+      a.tags.add('key-squeeze');
+      return track(a, { x: sim.los + 0.3, y: a.pos.y + side * step * h }, { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
+    }
+    // The interior man keys the blocker over him.
+    if (!onEdge && runStep) {
       // The answer to a lateral first step is a flat step of his own at full
       // effort, square to the man, not a match of the speed seen so far.
-      const side = Math.sign(man.vel.y), step = a.profile.vmax * a.profile.shuffle;
+      const side = Math.sign(man!.vel.y), step = a.profile.vmax * a.profile.shuffle;
       const h = a.mind.decisionInterval;
-      const at = { x: man.pos.x + man.vel.x * h, y: man.pos.y + side * step * h };
+      const at = { x: man!.pos.x + man!.vel.x * h, y: man!.pos.y + side * step * h };
       a.tags.add('key-step');
       return track(a, at, { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
     }
