@@ -1,0 +1,457 @@
+seed,index,call,pass,constructor_sha256
+7,0,Pistol Twin TE — Wide Zone Weak,False,9d7c04bb4beceb29865bd8e192188e20c4b66da3203c4ff370be2ac98b7843b0
+7,1,Gun Trips — Outside Zone Weak (H across motion),False,94ddb596773801c419c39294eeba32a76969219fb3d868d79c8b32d272275fba
+7,2,Pistol Twin TE — Outside Zone (X jet motion),False,b8bbe00c9ef693c2527147dbc961b92a7860ac6abfa15d3e38f608c08b686595
+7,3,Singleback Twin TE — Wide Zone Weak,False,4f485433fd1c4e63f4ffa8a837f28f2afc935a8e524272e7892d197501998975
+7,4,I-Form Twins — Inside Zone Weak,False,5cd145f0d05e700503b8e29691d073859c75b954d17ad077075b99920ff0d485
+7,5,I-Form Jumbo — Trap (X across motion) (flipped),False,dfe351c150e829d72e86e25ac57dd4e596fb72aee0b49d8efad5b07f519f9ab0
+7,6,Singleback Twin TE — Trap (Z across motion),False,ac92ff4d0eafdb681d0a89d5c4e7f980a1e2d4ae3e62e8bddf0bd24caeef1c26
+7,7,Gun Bunch — Duo,False,0247816bd9816cbb34c4b8c55c08c33c49cd278626a0012c2a9f8f211bfc09b7
+7,8,Pistol Twin TE — Wide Zone Weak (Z across motion),False,8d855e11240d17858bc87b87be53374d931da9a4c2df5abd932d88adc94d2ebc
+7,9,Singleback Trips — Outside Zone Weak (H across motion) (flipped),False,1ac6db633cb89aad39b57af9d50bc1dcc19956171b677805f8c664ff112789be
+7,10,Gun Bunch — Draw,False,1b4788f90e19604f50ba0d4b879950448745536652c13cd20856da4b3d3c31df
+7,11,Gun Bunch — Duo,False,06862bb24bbb9986d57427a95cc3c6bf90f1a1314137d885d680e9167d2b2bb4
+7,12,Pistol Doubles — Inside Zone,False,c26dec0fb4589dd91490c09f715a7484a35c9be9d1f948cd78502955397b5520
+7,13,I-Form Pro — Trap,False,a562ba681bc449568a4c63ff7563ff05645c9eb82b67427545f7b97ccd6fa75c
+7,14,Gun Wing — Power (Z across motion),False,40473f6f47ba037978b10e02d0c7993506f191953e1358d7fdc6db123ab5f417
+7,15,Pistol Doubles — Outside Zone (Z across motion),False,679010ab32f53caba906a11d7f68551e641feb79e6bafe1822710436f8c615d9
+7,16,I-Form Pro — Inside Zone Weak,False,88856805d675a938f80d02f39da0da0a06bde8abad7deed10ed7093258047bf1
+7,17,Singleback Ace — Outside Zone Weak,False,5b1616f86cb87212599ae9cc9f9259b402f55f5f67e151312df0477af3f8b69f
+7,18,Singleback Twin TE — Power,False,363f0823c1d3a976cf52f54899e60798045526a0fbac097a983214186201d2a1
+7,19,Singleback Trips — Trap,False,d240eb5bafbea9a2d2a9a8c55ddd9032b7120e2e73abc5d1992650dcc03e3e31
+7,20,Strong Offset I — Toss (Z across motion) (flipped),False,fa6e787819bca49dc96057c2c88baf524a3d31230868a9edc26236c8845eb561
+7,21,Gun Trips — Outside Zone,False,5e501bb4e11df811af9d8fe94a70c42afa1fc3a6763957ed066654529a113f61
+7,22,Singleback Ace — Counter (Z across motion),False,d6e850a1ab5cdbc6c226255ec88e6d44692fdf23a1c01afa884b0f2d654ef0b8
+7,23,Gun Bunch — Wide Zone Weak (Z return motion),False,06a22acf503fe8bc4e7d60421e26ae1068383eb240728e474bbcf6b631bf1364
+7,24,Gun Trey (TE attached) — Outside Zone,False,8af6d9fd4b92f833b124ac1af96722a10b9e4abd62a492772768eb0fdf06e07b
+7,25,Gun Trey (TE attached) — Outside Zone Weak (Z jet motion),False,479d551418a54bb7819d0e1c0408207b6ebaa5f10bdccd9e6093ffcf769541b2
+7,26,Gun Doubles — Wide Zone Weak,False,8f23170d36eae8c4623243827c23fa213052bb73e6ca18205e11bc9911ad5118
+7,27,Singleback Trips — Inside Zone Weak (H across motion) (flipped),False,22fa2b7d3d04199ca68ba8bee8768f9f200d9391211ee781e493571ce5f4286d
+7,28,Gun Wing — Wide Zone,False,443233b877cc4d2e23499d2be3f55699a8b28889f9f83a555e27671f3f1c0ca6
+7,29,Singleback Trips — Inside Zone,False,aea8cf68490a37b7a91d5e534cbe4725ee941ccc9824625cee2381f48630b04e
+7,30,Singleback Twin TE — Outside Zone (Z across motion),False,168329124d8b3190fd9f64c5621a9260d29e59bae4f9705990a8a61d7a7784e8
+7,31,Singleback Trips — Outside Zone Weak (Z return motion),False,5c9a0eaf5d71f0b9a74067373885256f027171882c76a82307fad6925e7c460a
+7,32,Pistol Doubles — Inside Zone (Z jet motion),False,7d9b6a9cfa5d459998cd759acfeb6791e929d379257b2ce3df54f9b848b4785f
+7,33,Gun Trips Open — Counter,False,85a0d82975a90055aa25ac23fc07a6ae64ce2c5729864122a45bc187d4c1fc0a
+7,34,Gun Wing — Wide Zone,False,433dab3390182fa8ca75767c647f5fef6577b1a44f3f9ddf7915d25492687b7a
+7,35,Gun Doubles — Power,False,6e5b8eebf987a03ab2df0583c6aee47a442608e629bce848bf28f2a597aaf51b
+7,36,Singleback Ace — Inside Zone,False,2f64cfb4b16c21420632f44ffb880716f0cd30101a9de1b84bfb82f6eac2425e
+7,37,Gun Wing — Wide Zone Weak (Z across motion),False,3e7dec20a4e3d7f25c5addbeeaab2fb191030ab2b2cb9ce98834bcc7391cea56
+7,38,Gun Wing — Trap (H across motion),False,898cc2ba06bc1ef07477efeb64c0a69707a2e887bd87f91edf96b622d11a203f
+7,39,I-Form Pro — Trap,False,6afb1a34081094540483638400dc7cb9525b199a531d025fae8b679165cd529e
+7,40,Pistol Doubles — Inside Zone,False,fcaa804704eab45739f9fd422bdb2ef057a7c7982af96b5a80dbc6ab0592ec61
+7,41,Gun Trips — Inside Zone Weak (H across motion),False,83a414d193f127ddffd50eb1181b2032636bc93056abd9bbbd12e6c47a4597c3
+7,42,Pistol Doubles — Duo,False,85904d1d1a2fa7313e98fae00b4a5b38524165441384adf00c6375a7d41f52d6
+7,43,Singleback Twin TE — Wide Zone Weak,False,9b2c1604ad552e13ade7d4bf025f1cc24c6724d5367d21102110d6b8915ab272
+7,44,Singleback Twin TE — Counter (Z return motion),False,c6ae5491224f11ec5921aa3f8b791d756aa749ceb3105a1a94cf8f3d537a9e59
+7,45,Gun Trips — Draw,False,31ba286e34b0f366d136bc28b7660f0ced7d8503fc63828100f8c592bfe85f0e
+7,46,I-Form Pro — Power,False,a12ebd46530a33fdd20894cb1d668d3dda230d89f0e997e45c9b02e297a34f06
+7,47,Pistol Twin TE — Counter,False,8b9a8cce7c59227cee594767151820f675ee04cd95bd26ba61a25aad7e665780
+7,48,Singleback Ace — Power,False,3ad11c24f64c7e6552f3e8d257212fa9a980966dce0ee29742b29e73a216ee38
+7,49,Singleback Ace — Inside Zone (H across motion),False,a02396e05234e9a66eef4fe5d4896d5f0f9ccbf231cd280b132e45d156b7bafb
+7,50,Gun Trey (TE attached) — Outside Zone Weak,False,1c8de634b3e558d9a8ed7879eb8e72045e33d622cad350119b7d19fd7ebfbb3c
+7,51,Singleback Ace — Wide Zone,False,136dff7caff3ad18440219a0636bfbb889415c87c9357e1dd5a01f36a730f08e
+7,52,Singleback Trips — Outside Zone (H across motion),False,709f5d50b212549d93daed6787acb6b11407f8a723d087a37f05777bbe550a2d
+7,53,Gun Trips — Inside Zone,False,7b683a3798db3b1d19fded0e7a5c299c0920cf4f7ad242423d10cbe7ae344dff
+7,54,Singleback Trips — Inside Zone,False,e661b71abf9d22e0124a9e33bd6d0182e4ae044143b98de10478e803a51825d9
+7,55,Gun Bunch — Wide Zone Weak,False,2d2a08feb4c1cc5f6ee1f7fe0b17623cf0ae1c501dcd8d68ba281b756108a498
+7,56,Gun Bunch — Draw (Z across motion),False,39db10fb3947a1b1376faa2e483652c09b3cb1340136b599acf9bffca745f6e5
+7,57,Gun Doubles — Duo,False,e5268206b18a4bf77570426234253f6f3524fee47759b3e49ee681c6678481ca
+7,58,Singleback Trips — Power (Z across motion),False,dabacb0c56cace16cc886fc6fac731a9dfc15ab877b0ecee0410ee5aede6fb1e
+7,59,Gun Trey (TE attached) — Inside Zone,False,cf8d591953365bdc641082a2e52874c64c66a964d29c71ff221b9bb4c3b90c98
+7,60,I-Form Jumbo — Counter (flipped),False,b888e997c0a624eb2f2aac0af26ba6eae7b0896d44d3330bd7e9140fb9fc1230
+7,61,Gun Wing — Outside Zone Weak,False,4d6eb7df9c9871c612e47f7d945ce6d236fcd8db09b669484f64524217e6bac6
+7,62,Singleback Trips — Wide Zone Weak,False,0d40b4c401a7c356a0cdd02094f6f1c4efb9509aef9d95ffc112970d0b0eed7b
+7,63,Gun Wing — Wide Zone Weak,False,b3c9a4b47ffd87223e5aa6862396d2d507770c8892c9d8d66023d72b108a8b0b
+7,64,Singleback Ace — Toss,False,5b8eae11c37bf5cfa5165d9643e8f3b39f152f86648bd23ae511f131a00454db
+7,65,Gun Doubles — Wide Zone,False,51a932bf8e49ba40b44e9b31ada53dc986b56bdc2fe01c99fff8fff7cf6770d9
+7,66,Gun Wing — Trap,False,a6f7bc18df6584720f392a1d217b522514d496b8911aaff40bcf5e9231ac81fa
+7,67,Pistol Doubles — Inside Zone Weak,False,84c73132716c80eaa43b032b4cd8d460325a64cd49000477b9345a7e7a2e75a6
+7,68,Pistol Doubles — Outside Zone Weak,False,7f4c3e0605598cd84e44bc631da96b618b23ff1b4b76a110edbf2b6c14b0a78f
+7,69,Gun Wing — Wide Zone (H across motion),False,512fc85af925bb96bc19e9428595bed5a4545f49fbf4f8fa0433fb51d8c92b04
+7,70,Gun Trey (TE attached) — Wide Zone,False,ce087c31672d9e35270120d01cbf0fdcd0acfe8ce57ae142807e9f344975517c
+7,71,Pistol Twin TE — Wide Zone,False,cbaa48561943d4fad773f3636f286ed6f8558e546fb6bcef604778e7f079a404
+7,72,Singleback Trips — Toss,False,afa2404a0489f1a3e6455250517d13513f13cee9cbbba1ff0d6493b92afae8d5
+7,73,Pistol Twin TE — Wide Zone Weak (flipped),False,58f6421f3422f547ad72828a51b176224a7c3b918cb88ee8b1180ef183f27c29
+7,74,Strong Offset I — Wide Zone Weak,False,9c431b146f6fee51df3a1695a6f36ee613f709131842afb793793924795d9fa4
+7,75,Gun Trips — Inside Zone (H return motion),False,2d9478e0decccf5fa1f57ab5561cf8dc060a2eb126e46d4dd493511bd6024810
+7,76,Gun Trey (TE attached) — Outside Zone Weak,False,45f9b509fb6d15bb2acc44c3786ebf0c920d59b1fb5e411077c03855a66398db
+7,77,Gun Bunch — Wide Zone Weak,False,ef55d16ee95b5c7daf297ebc4754b31d436ba95b8e767eeab0346b042cc665be
+7,78,Heavy Wing — Outside Zone Weak,False,a4091a6bada859eaeefdd185e1eedb815af0dfea17bcb2e8fbadd5170f65dbec
+7,79,Singleback Trips — Wide Zone Weak,False,5b5e7f1832533ab8d6d30060bc58a914551a06513d2fbc57db28aef6e8526c53
+7,80,Strong Offset I — Outside Zone (Z across motion),False,cef56baa3a82951fa474448b20a7e8ba7e515f5e58fb43ed444324765b2314ab
+7,81,I-Form Pro — Split Zone,False,e0a41b14847bd33849a08512313cc801dfa818df7ac007c279a0b4041e430066
+7,82,Singleback Ace — Wide Zone (Z across motion),False,380806f9c9a24aa0f2ab0ecfc4844f378438ea1529b7fa454ce11a4acaaad053
+7,83,Gun Trips Open — Wide Zone Weak,False,65efd720338d83df5cf04208078fe63bec9290bce5575b12e7df56242a392a1f
+7,84,Gun Spread — Wide Zone (H jet motion),False,535562fcba26b69bd7116c6e21ffbaa9055e9147ba06da889484a32aeedbcc45
+7,85,Singleback Ace — Outside Zone (H across motion),False,976908bed2f76810238cabccf3c164295add5573e239ca4c5d99453e483fcd85
+7,86,I-Form Pro — Wide Zone,False,adddd7caa301d4942a859876f55a9b7536098c83ba8eb28eb48eba0974997a9c
+7,87,Pistol Twin TE — Inside Zone,False,6fc8eb6676648908e8036a3310adf1b94bbc618f7898318b9962bcc9e2a7475c
+7,88,Singleback Trips — Outside Zone Weak (Z return motion),False,fd2621b229aa431e0525c7db14d185392131b0757ac997b90f9e5c324b2579cf
+7,89,Gun Doubles — Power,False,37704b1f47787debd40a0ceea117a533bde72d150e2cc88db298b0f26503b172
+7,90,Singleback Trips — Inside Zone Weak,False,25cb66362d7a44c72debf8fa5dfbb08e7cb7287cd3b7f03654d77035cf927210
+7,91,Gun Wing — Split Zone (H across motion),False,01e6e4bbc81a680c8e177d9fb8e279bfbec68bbf7ef7a20778d545fd85c13907
+7,92,Gun Bunch — Outside Zone,False,bbb811f02ad1efa3970b5b33877021baf0da77808d46924e6fcb014b5cf92229
+7,93,Singleback Ace — Wide Zone Weak,False,7f03473375f7d1776adfa4451ed8d1200731a69fcd42857dba25877158646ddf
+7,94,Gun Trips Open — Inside Zone (Y across motion),False,f20b2cd0c645e750afd06ce87b27f0a3fd5c3a68327a71de6c46ba3b31224419
+7,95,Pistol Doubles — Wide Zone,False,9d1d922447a9df79a680178baa32bb4b48fab0d3b8a8d8d86cda067cc99923f5
+7,96,Gun Spread — Duo,False,00617066f22d1df24a5691e4dcc311fc24148e93525ff68f3be60c7473cebe82
+7,97,Gun Doubles — Wide Zone (H jet motion),False,6527d0e199929c799dd943afc73628aa172c2e23aecfe5d7931236a9ee1d2801
+7,98,Gun Bunch — Wide Zone Weak,False,763d80459022d883daa3421b6875c77f982115456f20187b247f312f32962986
+7,99,I-Form Pro — Outside Zone Weak,False,c9288adea9946c18f7c20d3ea978454a10ef5f3b8b79b0e2b8b0d0829d5a69e0
+7,100,I-Form Pro — Outside Zone Weak (Z across motion) (flipped),False,95d034025ac58c08f6380b3dcc3ef634658b90c53c4384479d5214595059ca9d
+7,101,Singleback Trips — Outside Zone,False,4adfdae289cf1196c66ad2dc84a2b22b680e3cc5a27b7cd0f3bdf5e25ca5d9ce
+7,102,Singleback Ace — Inside Zone,False,ec563dde3ae1c066a1ee2a435c9d07abb68d4091971c9af6985182bf32afc921
+7,103,Singleback Trips — Wide Zone Weak (Z across motion),False,b7161988cf6a9d2220b470d332dc00b8961774cff8e93e68f1e8f5629019529a
+7,104,Gun Trips — Power,False,28d0ee6ea2350d652bba466ce691844b15b0f39c5fbbe130e590aedfbb88d8df
+7,105,Gun Trips — Wide Zone Weak,False,9ac235620dbca14f14d91cb1756c600df51c89ca2a0adccb3f57c42c05edd0ae
+7,106,Singleback Ace — Trap,False,6b11eb66a592416de62fea3a605c0b357093b98d24906370432d28123866a97e
+7,107,Gun Bunch — Counter (H return motion),False,22b5d484c3dd37afe302bf9ff26c39ffe9c5c5d0d04cbf5143772ba02be30613
+7,108,I-Form Pro — Power (Z across motion),False,68a5c7287819eec420ab89700663fb62f54e1c3d0e50efe8ca22cfac3b9002f2
+7,109,Gun Trey (TE attached) — Power (Z across motion),False,76a8a27399f525ba119d1d3bb3261441501c0a9562e7a964be806763e6f41200
+7,110,Gun Trey (TE attached) — Counter,False,54aa50ab6922ca98017a2860f8055f7f5599d5a5d00d7f570993879b60190f6c
+7,111,Gun Doubles — Draw (H jet motion),False,1362c61e5a68e558ea55e9385653ce29caf087342a366257dd23c312bb5e6aa7
+7,112,Pistol Doubles — Trap,False,7a772a4de0d927ce9a86cd8740a663fb14cbdfa5fcda3b57bafb0a6986b0957e
+7,113,Gun Trips — Counter (H return motion),False,47347499a6d8f0b481191c86db6f1c7dd68f2ba93d84a06239afdcda5866144e
+7,114,Singleback Trips — Trap,False,22604829ac6d42728eac57584949f941ae141da241b28d3f9154f9fb7e0fb252
+7,115,Singleback Trips — Inside Zone Weak,False,b16cd02278c5602f01aa98bcd378ad66b6a046c21b807506e3a7d60092848502
+7,116,Gun Trips Open — Draw (H jet motion),False,7b2c101cb56945c83edf8a6479cf853a2e57e5caded7e188f2e07ff80bc69c05
+9,0,Gun Wing — Draw,False,63da473da189852f9f35d89bb15686e4b3aee0b1b807d69e680b20b0ea46a2f6
+9,1,Gun Bunch — Power (Z across motion),False,106159a15044b2b515a839d4683077902252f7db65a021ff5ee4094eaa33a031
+9,2,Gun Trips — Draw,False,22800c78b4fc64bfb50e5f64d4c8b57692dd8cd3ed3e8fe5bb9d96959b3fe2bc
+9,3,Gun Trips — Duo,False,18647d135060726c6db111abd175cd2d2659fd4be23743f182f4df4215dc0158
+9,4,Gun Trips — Trap (H jet motion),False,09522bc5b64f2aedd43103b16ed486cdd2bdbd3a8ed852f80b45277309d91891
+9,5,Gun Trips — Outside Zone Weak,False,3eba3982677870498414dfb3b8126b3f33d8d948a12467a4f16a0d56b564a5b5
+9,6,Gun Trey (TE attached) — Trap,False,03b6a1b8ab2b96d804583c3fc1ff205836852b03e6e5d1d584f48a14cd50f4fb
+9,7,Gun Trips — Counter (Y across motion),False,b990853d9e0d3041e9967235afa06d65f88ae76b508ad8fa98b84f57db7f0c18
+9,8,Pistol Doubles — Inside Zone Weak,False,81fdb7b14fa8f19b40e87a18e696faa386e6a7768a460f28993b82eada65246b
+9,9,Gun Spread — Inside Zone,False,0d0357bd7c38f36d481ec260d882ddb17ed129015af52bf1f1eaf2e5bccfb70d
+9,10,Gun Trips — Wide Zone (H across motion),False,3753b701ecaef7d2a9b79000f2c361bdd80d5c12a2c4a6ea3a902c33de315cad
+9,11,Singleback Trips — Inside Zone (H across motion),False,a4554d1549596afa34271ab3e5145b4510fa127f34809021599ea359a50845a1
+9,12,Gun Bunch — Draw,False,6d1ad98100946fa6c062d7dcffa95e3dbf517ec23579fbb085f9a31a0abf6c3a
+9,13,Gun Bunch — Wide Zone Weak (H across motion) (flipped),False,06a3e4c7237867b3e10b6def8ceadea0bf0c1f69146e1b24f6e65a9c47a5d017
+9,14,Gun Trey (TE attached) — Wide Zone,False,1dc401e037363289b86ce1260652fa4d87c65814aa179ff236757263841d0034
+9,15,Gun Trips Open — Inside Zone,False,886c2bbc07b33f97178d1ab843b1d8fbef65acb5515416ed45521c0b5abfdf0c
+9,16,Singleback Trips — Power (H across motion),False,661dc3847d9df7ee46d0a420c85c046cec68016ef72803f07f0425735f6040cf
+9,17,Gun Bunch — Wide Zone,False,aab0ef273a292276f2e2da3d94bf970de3a89800a102ff832f52cc592b00c6f6
+9,18,Gun Empty — Wide Zone,False,b3c46a6cc969a627db25876704cf929dc0d260f6dc1c97f781ed762e2425def7
+9,19,Pistol Twin TE — Power,False,29c32d00558ac114741192705b33c4b9f16452456176c88b2b9b232687319ffe
+9,20,Gun Wing — Wide Zone Weak (Z jet motion),False,1d5267bf5671d0be71ce73bb8a95c5a3c9780ffe38581bca799ed7de0f27fc7d
+9,21,Gun Trey (TE attached) — Wide Zone Weak,False,2fbfe451fd2d19d30fbd5df68b2d7cfe10c3aa75d62ad20bbf10c1bcae15465e
+9,22,Gun Trips — Draw,False,529f1c2c6df064e376401ea84e79206f71092661966699e48fc87f327e7f4007
+9,23,Gun Trips Open — Counter,False,eeacf5c4e4b12b8828e40e0fc49d28a7fa8d1100a5a4de9753b133fabfe3cf49
+9,24,Gun Bunch — Counter (H across motion),False,631c6f439fd7d69ad70fdab111cfeaa664c64a794494db11fa46e145810b58df
+9,25,Gun Doubles — Outside Zone,False,1fb27c92f4869c265474807ac1b120d4b95e332b9c8d8da51f3b86eef7c1739a
+9,26,Singleback Twin TE — Toss (Z across motion),False,34804c969106259b2d61ea0706a7fb083e93743482c200ba3ca1966112b7d786
+9,27,Gun Doubles — Counter (Z jet motion),False,8187c4868d609f969b9c2c8bc0ae97582949619967f4a57002526b0818e0114c
+9,28,Gun Doubles — Outside Zone (H return motion),False,bb17e7475860020b8141d81ab0aad40702f63a86b64df04d2012cc933cc0c1de
+9,29,Singleback Ace — Duo (H across motion) (flipped),False,238135fe14e543f937c395a789050ea7a73f69141af616c52d446fc8b935e797
+9,30,Gun Trey (TE attached) — Wide Zone Weak (Z across motion),False,e242fb42f693d9920b57c850957b859b2437b41aeb55d43199358cfcf06a8ff8
+9,31,Gun Bunch — Duo,False,83a12985069b23711620cf3a958cd29f5ffd987308a8cccfeba443f82a050046
+9,32,Gun Doubles — Wide Zone,False,abcd6e2f0c7e3a8a84840da3728812e9fd7061692732ebf974b08a48202c30f4
+9,33,Gun Trips Open — Trap (flipped),False,fd8c13ff85f3dc9908871f39d243a3d84caea0235554f7cccc023dd0257aa9f7
+9,34,Singleback Ace — Wide Zone Weak (H return motion),False,fae83b76fe416fa7643fb4d565abbe7c505f2a9b5e7b9c87fa5d15537bd5dbe2
+9,35,Gun Bunch — Inside Zone Weak,False,85001d13047d59291a1612cf52c5e7363f42896a064da94bfe37ab4fbfeba6a5
+9,36,Gun Trips — Outside Zone Weak (Y return motion),False,33690731977fc54e75e3489ed7752b4138109694a03ec0325d5cf6b81370e5c2
+9,37,Gun Doubles — Wide Zone,False,b5547811982eb32d827d9e32ad3390656cf237757e0ebee58174ab05fbf9e9e7
+9,38,Gun Bunch — Trap (Z across motion) (flipped),False,8c4843dc7d3644730f4ef2497c24e008d999a2a361a3ee29d2feb63cb610e78d
+9,39,Gun Bunch — Inside Zone Weak,False,89bba72046363cd46898a5483f836e092d148429eb33f7c76294fe805cc7c9cc
+9,40,Singleback Trips — Inside Zone,False,3c743118399e829faedb613b2cf671deae31a9f94fdc870016cb10bfc944d0d7
+9,41,Singleback Twin TE — Inside Zone Weak (Z across motion),False,a9b88ee8e7aae4609fc94d81954c3f6173552d2231df268e8c18f77ea259f4e0
+9,42,Gun Trey (TE attached) — Trap (Z across motion),False,8a1ab3523a9b54277ae5564b1626290995a3e58ca52cd2aa22abb0963b8923ba
+9,43,Pistol Twin TE — Wide Zone Weak,False,c09f5025561799e4b55f189e15f2b963d3205ba5861a25e17ce19e761df92c7e
+9,44,Gun Bunch — Inside Zone (H return motion),False,0bdb112a06884942e8010716aec7ddfa70264253274dbb4c794d2b854ab5c00d
+9,45,Gun Doubles — Inside Zone Weak,False,f9f5318811f1dea30f89c0e7800a8346ba3b677a64074aa897e57f76a3ea3d5a
+9,46,Gun Trips Open — Trap,False,c20e4b34f22d20e89b62ddce24e3bd634d1bf15ade52f2e5f932643f35a211e7
+9,47,Gun Spread — Power (Y jet motion),False,e551d1de878d09642eac420ce10c5755f494776a3fb8068b59b0b1dc932b31b0
+9,48,Heavy Wing — Inside Zone,False,6844906b9f390ee7edad81b351251a8d01673821ef88947ac57cb682c0c1dbdb
+9,49,Gun Spread — Power,False,31e61c23dbcf687f39db2b1108e73cdaa534d8dd9b3f59c7790fbcc9cb066007
+9,50,Gun Doubles — Inside Zone (Z jet motion),False,be103de982e663c825101f255db79145940f1621a9c2425a7d80779fc2eb6d95
+9,51,Gun Trey (TE attached) — Outside Zone,False,1d9a392bbf65d4c15fa59e997a99fbc7aac632567a5fc5ce0451d30b3114f78d
+9,52,Gun Spread — Draw,False,02c0e9833ef6bb9e1ed3c6e76b96c1a30b56e38cfce8db83a8abc8c338e90aff
+9,53,Gun Spread — Trap,False,c745f84a8f96c79f3578537d01597d12c8c50c3e12a3b0270eb93e70e9bbd7ed
+9,54,Singleback Ace — Inside Zone,False,8dab661612a58011e565aa7ed15fc0ea54ff5f0a180d0151a289bb67812b540e
+9,55,Gun Trips Open — Draw,False,d0143dd0344b4e74f5100177258ce1c36bfc52fcc701ce339dfebcaf5e71b431
+9,56,Gun Wing — Trap (Z jet motion),False,b034dc008954b01d43db2606103dde3f63072db904aaed07345cf1460139291e
+9,57,Gun Trips — Wide Zone (Y across motion),False,c7527a0cbdf3d7d658325d5456ea9f1c8afbc6b6b9a433b3c2a34dc3a94f926f
+9,58,Gun Trips — Outside Zone,False,f1b902f6bf10f24b90bad0e54b4458f0229b4e666bf38f897f18c9ca0997c32d
+9,59,Gun Trips — Outside Zone,False,ce79605f17e688e8584ec0376740ad9f9616713e5f11c1e087e689b3dea8151f
+9,60,Gun Wing — Outside Zone,False,91a0318ad8dacb7c479e5ce70650521d9baf5ab5524fce400d298a070d6de8fd
+9,61,Singleback Ace — Draw (H across motion),False,7827d244647634293323428ab91a2370b8d8bd6889f1c5bdaf0149cd502acb1b
+9,62,Gun Spread — Duo,False,4126bb0baf292f9500191a9d6dbb18aee9914534b1f5e22dfc445e68d479be73
+9,63,Gun Bunch — Duo,False,da4f843175a58e6924e7ec625218cb69267daa2b2c3e3ae0f0181fdff87f4549
+9,64,Gun Bunch — Power (H across motion),False,c5d13f3c0e904ee68398f21ee65060df358f0ed973a18d4684c9e419c44b951d
+9,65,Strong Offset I — Power (flipped),False,eef6b05ed45d6066d02f774c1e6deb6064d8823d54864f412e714268da4bcb2c
+9,66,Gun Wing — Outside Zone,False,6b228afb4a7f1bb5ae709197650ff1436924a633c226fb27179398f80dc6612b
+9,67,Gun Trey (TE attached) — Power,False,9497aca3e399cc461689664ab13c26cbb1e9805b681d024bbdade3bfe8f7afcd
+9,68,Singleback Trips — Counter (Z across motion),False,43c1dc16cc23b45b2301da5e6c14bb37f393929da4774c16c35d728b9efac57b
+9,69,Pistol Doubles — Inside Zone Weak,False,d1b004f233434b640313dc01761bc93ebebb16e883670dc3b0d95953eb99654a
+9,70,I-Form Pro — Split Zone (Z across motion),False,a18ebcf9b3393e5a661308ec18be49dbbae05d5123a72174907a90410692dcaa
+9,71,Pistol Twin TE — Wide Zone (X across motion),False,8cde6641053749e64d46d9785a932a07324c9a58bf9e76b909dfd2c2ac7431e2
+9,72,Singleback Trips — Toss,False,772c9b3b2c3065e94bbd5c89292318b278bb49c7287e22aaf09cd1b77d9cc1e8
+9,73,Gun Doubles — Power (H across motion),False,a8381644d0e8fbae6a00b2e4a6ba14517e8689900af8565802422617bec6234d
+9,74,Pistol Twin TE — Trap (X across motion) (flipped),False,4c2bf5a99ad881f1dd720eb2abd253abda6d877428b6e8214b795efc8d45145a
+9,75,Gun Trips — Inside Zone Weak,False,4d6c8051fe47238c9f36f46143c7bde0568d98456007839c5c0e394308feeb11
+9,76,Gun Bunch — Counter,False,d83d67c0172a40802644001d0cfff4e9b1c7871d46c05ee7159b18497b1a2939
+9,77,Pistol Twin TE — Inside Zone,False,71aa9dda0a99cf28a6bdd3b886582ac86e137d59791b346ad6b9c2f432962265
+9,78,Heavy Wing — Inside Zone Weak (F across motion),False,e14386a456f49434afa99656aeb6d51e9545f18469d99d670f17634bf0b768eb
+9,79,Gun Trips — Inside Zone (Y return motion),False,f8167ba4cdb914b55eadcc1ddd490e467164403604073ef65d3322352a0898db
+9,80,Gun Bunch — Inside Zone Weak (H return motion),False,e3c568e6544ae94736f63084c2da4e05dba6a1ce69f4a43a64ed16195dfcdeab
+9,81,Singleback Ace — Power (H across motion) (flipped),False,d1e0759f34ffb520496911edad31182f452f3d4956a12ab5db02e42efd994b8f
+9,82,Gun Bunch — Counter (H across motion),False,042e6e58cba91f12d664e6a73c9ac26806da317d0f2305481558863f63431175
+9,83,Gun Bunch — Outside Zone Weak,False,fdf70e4883fcbd6e05fc2be9cdd40b460d04c8d5d283fa6dac7d62d82ae42a0b
+9,84,Gun Doubles — Counter (flipped),False,3fae419161cab3a199b309d043b7c1f00fccd0f60ba3ca064cde3ed867ab4c2a
+9,85,Singleback Trips — Inside Zone,False,6331af94bc9c806c3b68dc868a7798a67e12f144de54de799c6c48723b367deb
+9,86,Gun Trey (TE attached) — Duo (Z across motion),False,eeca69a88a6429736da3a86d2de93a766d5b4a10d70ecebb43fdfac15882b3ed
+9,87,Pistol Doubles — Toss (H across motion),False,36b37b8662fc4dd4a0e287540ec25a8154d12474492480d517f841207e753ce6
+9,88,Gun Doubles — Inside Zone (H return motion),False,6d572c171ec5c23227f48791861204334014c35671b6701daead4fcef75c0507
+9,89,Singleback Trips — Wide Zone,False,73d5c9c4c01c4b509842b7723e7161ad19491315095a208ff583950eb5eb85a5
+9,90,Gun Bunch — Outside Zone,False,4a14fccd0cc1853dc7b5e8ff30cf5e48a7f2334687bda3d81e0f190160c711a7
+9,91,Pistol Twin TE — Toss (Z across motion),False,dc6b0dde3a38b91c670d5fec8d0694b578aea2e49c7923e340a7e437fb3f60a9
+9,92,Gun Wing — Trap,False,637a88daf8d2556c85148801d45c762d3a1e49c6f1f3739e6996fe221dc81760
+9,93,Gun Doubles — Inside Zone,False,5dab5555ed13cc416d5bd2571a6ebc43b042836c09b5da7b55f12044d9fd9dde
+9,94,Gun Trey (TE attached) — Draw,False,cf307284d06a02ca28258d05360c5ca4d0ffa85bc994868588278a1f85a33e47
+9,95,Gun Wing — Draw,False,67d6a9a384c3a7eeb84bdef71f8788bb65901b6cde8ff501bfcb99ec2d1461a6
+9,96,Singleback Twin TE — Wide Zone (Z return motion),False,5065c3afdd1b8fe91632c5d37d05b6df7f45c6618026f162e740a0d7fec60d62
+9,97,Singleback Trips — Outside Zone,False,fd77dd4a5f83599ebf127350254b7b4f272c69a7553073af770f3ecb63af23a4
+9,98,Gun Wing — Outside Zone,False,e9d2a9e0bd3dfc35be3a0856a1586af40b2263f378e9641029839bc191956ac1
+9,99,I-Form Twins — Wide Zone,False,d534aeac2c67f9f75666235b0c7a8d431002cb309676b6d9120b64b5b14f8ab8
+9,100,Gun Trey (TE attached) — Wide Zone,False,d002a2cf7515d6dddea579d10ca994b2dbd4e92c7a86af2f57f839cf2f9bf227
+9,101,Gun Trips Open — Duo (H return motion),False,cde2236d905d7987a370d4aa9b3538d3959075215df272c39f26643413b6daf6
+9,102,Gun Doubles — Counter (Z jet motion),False,ef5b6c1ba3559a8252da68c8f293444350d4470ac17637e26306861aaa49f4fb
+9,103,Gun Spread — Power (H across motion),False,2a1e3562bdb8d73dcf41931123bff00931574afca6e99546360da34a55e1715d
+9,104,Gun Trips Open — Trap,False,b76d93330f7ab070861ed238b216eee119df2b3dfb64856e8a8f6d7a6da890c7
+9,105,Gun Doubles — Inside Zone (H across motion),False,ea56b38e06cdba709c8a737e099cbdbfb431f82ea09bb2611cfcc6af5710f2ec
+9,106,Gun Trey (TE attached) — Counter,False,987848c4dcc5b2094ce4526264c4e3342f7dd519c50a22c606ee1735c8f8e998
+9,107,Gun Trips — Outside Zone Weak,False,1901e7220689e4e51563ac8ed85c74b19c479e5d7c559ae086c9afcbfdf4cd4b
+9,108,Gun Trips — Power,False,19573a9a1d3a0e1b67cb4871e8bbeb2d050cdf87f75998397ca42af3a007aeef
+9,109,Gun Bunch — Draw,False,98166507dc84ea6d35e114688184e10ef3b59f858ea9b7ba0a85845dce1f1148
+9,110,Gun Trey (TE attached) — Power,False,ab968746f1b880e6ba0c63a79fa47f04b01b8512c06c7fa0fb4b3c4006d881f8
+9,111,Gun Bunch — Outside Zone Weak,False,72834078221a41be60520b075d26892fe5fe1310147b04d7ba4cd29621ea538f
+9,112,Gun Trips — Draw,False,12a7d54408b6a4c537de77461383bcd51f1cf6148b614e34ff78b87bda30146b
+9,113,Singleback Trips — Wide Zone,False,a7992451543f36b81a15370d9d47f8c76b1b5dfac72265a52982ec2b2c8bb78b
+9,114,Gun Bunch — Inside Zone Weak,False,e4009796ded1bf5e69a33cf142faf68feb5e6eb8d5835b2ea131df8bf5337d80
+11,0,Gun Doubles — Outside Zone (H across motion),False,ee15fdbda26961185087a74255a29043a83105389713fe046f370ac86b57e48b
+11,1,Gun Doubles — Trap,False,57019cb62476670542dd30e4f304430fdddb32181c40d392bd888d9e1f0e1959
+11,2,Gun Wing — Inside Zone,False,5432a0a7a7e33965bbb39164fecb8975d0d26288b164a82ec76156e361dac70c
+11,3,Pistol Doubles — Power,False,874f3dab6dfb389d96d1d9f5aefd49a688535421a9313b07fb914cd008a3949a
+11,4,Pistol Twin TE — Draw,False,67ae8176eae06a095731f45912273ab863dd111dc8e25e06a7b60db6ac85716c
+11,5,Gun Trips Open — Draw,False,d327897b81d5d8944e8fd2cca156b155ebe309a607baf896157c092e0d95988c
+11,6,Singleback Ace — Trap (H across motion),False,73ef2ef49979aec34101f9b25603ea5ee7e6eda51d3cccb0075da0505e5e8769
+11,7,Gun Doubles — Power (Z jet motion),False,2966a3c3e0e2c63d831a660c7a2385289253ae2661101dc19a9411bdff5da27d
+11,8,Gun Bunch — Duo (Z across motion),False,b94bfcee632d8c84326003c360f1be00e86d8d83382a79f782f5ba52f1e275ab
+11,9,Singleback Trips — Inside Zone Weak,False,ee873809767de2e8fe089d3469969823f1f2c1f70f96005c58ff18b7b1b92238
+11,10,Gun Trips — Draw,False,c606262cce96b7359a43c820eb7be1fce8249453001da08c6bd6f003795ef6eb
+11,11,Gun Doubles — Wide Zone Weak (H across motion),False,0c9e64cd4041c99b76c6b235b62f6cf3d2bc59fe02e87d1fb81896edc838b664
+11,12,Gun Trips — Duo (H jet motion),False,8d7f6eb367102154c069ce0a29e857a5ac59669ef70544258ce93ff0d10d546a
+11,13,Gun Doubles — Outside Zone Weak,False,39a65011180447b1ff6f048d1b716d1fead75a8aa39b84a07512e8c1e37f7ec4
+11,14,Singleback Twin TE — Power (Z across motion),False,3e5e44feecbffe7d6f334ebbd5671a186edec2ba6eeec6e6fda0bb9eeeff57a0
+11,15,Gun Doubles — Inside Zone,False,88c38afc4bf836bfcc8a4840ab773dd673bf44b18dc611b8384cfb946531eb2d
+11,16,Gun Wing — Counter (Z jet motion),False,8b80873e60912c168d0f62ec0b7623f612fae3a6495f160a5a4b03ebba91c878
+11,17,Gun Trips Open — Wide Zone,False,e11488118706e43919e5f8b45a7ca4ebe6761fc422e04c35e21f7c12068e4870
+11,18,Gun Bunch — Wide Zone Weak,False,de8d7bcf70a4d884745a9b06522c7e5c596ae8758d2bd82d7ef6cc8b6b840d8f
+11,19,Singleback Trips — Power (H across motion),False,ce86b6e60e96717d1e61577f09105e9671696fd26cb37fc043f989101e7a124e
+11,20,Pistol Doubles — Duo,False,1fc8f34484ff9d9d0465d25ca9f95826062a2ac8a4bf96a7ac62cff61fa90779
+11,21,Singleback Twin TE — Toss,False,f87dd4bc8c5361406781ef82759713e2a7730f26b5353c262c4782e727dfa4fc
+11,22,Singleback Ace — Power (H across motion),False,c8fa538815f47b3ed20d9066422b05752dcbbc083e979635cd76a84d5280d305
+11,23,Gun Trey (TE attached) — Draw,False,fd8b9f40a085e1509e97067f7653b4c626197596a60b00eaa53a03f4124caffb
+11,24,Gun Trips — Counter,False,07238ff217fed310bff3509704dcd5c50639db57261d58654e06ea20aa967e38
+11,25,Gun Bunch — Duo (Z across motion),False,9f042379dc616be887e7eeefb34f4ad796c4b6c2594942c3325ace8f1d71ac8f
+11,26,Singleback Twin TE — Inside Zone Weak (Z across motion),False,d8eeb9aa7109b569b9a0d3f077c4eadbccbe7d8d76e64d98cacd071b11a21a5c
+11,27,Gun Doubles — Wide Zone,False,845e86b4852d116bf3ae495b218c9c0ca49fb3becf4f7b5e3863ecbbd2a04f24
+11,28,Gun Doubles — Trap (H jet motion),False,36d25e9431e5b364d521d3356b1c5cad544834f57d360fe84c90ea6736697ab7
+11,29,I-Form Jumbo — Counter,False,559a023c1ad5e472d921e14e79857d0c88c278f2d417da9e9ee6caa4e036181b
+11,30,I-Form Jumbo — Counter (X across motion),False,335178e21ea4151794977d2506efeae0cc4745710ff444dae72a587e3f590824
+11,31,Gun Trey (TE attached) — Counter (H return motion),False,996d07fbb5e6b03ce01d75d528e213ed808a2be8620f9569bffab0a464c3a5ea
+11,32,Gun Trips Open — Power (Y across motion) (flipped),False,c4d013ba544ef9b533f79bd6d75fd27440f117f4a4d7929742eb750453f4e15a
+11,33,Gun Trips Open — Wide Zone Weak,False,c5f6594f22dfa2a1717b59c1aa43b494f953313f699917cc487b5ade43c87a8f
+11,34,Gun Bunch — Duo (Z across motion),False,ad18bbaba8edc98982945b7444db055e7ec5c3c6e066f19aea4f79065638e42e
+11,35,I-Form Jumbo — Counter (X across motion) (flipped),False,06a8180e612fcdcde84d6be24a56b20c61485be3b0b608af2fa04f9a05edddd5
+11,36,Gun Spread — Inside Zone,False,3c6a3d4beaed9931cb830dff6cde1f010c92a28a790c71b865ff84885c63c9aa
+11,37,Gun Bunch — Draw,False,7e4902586783a28fd394e4f23d1c3873983d5083a6f3f533def050f3b6948f5d
+11,38,Singleback Ace — Trap (H across motion),False,59d8ae24a388080596425f2cb3bd66fd832ec23df11a1242da838e88aba31b4f
+11,39,Gun Doubles — Draw,False,cd4edd5f561a0222849f4663dc5d4878ce8a56e53bd543ee9be6e5d74dc2f004
+11,40,Gun Wing — Outside Zone Weak (H across motion),False,12d840bd75124741fb70b81640bda90d3ad072784b303ba02e3650554c4303f4
+11,41,Singleback Ace — Power (Z across motion) (flipped),False,3acfff2276a06d970f7440c310fdf33e55a2bddb3eea4581f116f44717e587ff
+11,42,I-Form Jumbo — Power,False,83b1a55f6a31ea14373a06be076b20183f2ad8e00c3502572d43dfc8e527bba2
+11,43,Gun Trips Open — Outside Zone Weak (H return motion),False,e67f322866983161b6ea87436377535e3a7a97288e5697fa3731957fea30e397
+11,44,Gun Trey (TE attached) — Wide Zone Weak (Z jet motion),False,e9683436014526a125422f5fc948fa0ed47a85f3e67a63c33c2d078d9ad19e01
+11,45,Singleback Twin TE — Wide Zone Weak,False,3ac7d16c0caa15a402d904f9c275794b8a483718886714b353d95e4e587cefe7
+11,46,Pistol Doubles — Inside Zone Weak,False,0574941f15453fcb544784615890e1354ca0d8ba14c33d40eb9fbc71d5a6823e
+11,47,Gun Wing — Inside Zone (H across motion),False,5fa1e4997df1ebb4ce1193dae23e033051a03a182f393eb927f5f7d874e7d6d3
+11,48,Singleback Ace — Power (H across motion),False,4776aa4c80357b4dbd93c0165c857e390fcd109f6f66f71d0123716495001bf7
+11,49,Singleback Trips — Power,False,6a8bce29b0f1a0ecbee52b115e457cdf5fac9ee202174e9751960891e984673c
+11,50,Gun Trey (TE attached) — Wide Zone Weak (Z jet motion),False,b4f6bb44d71b35f7287b446fcdcdf2e6da332a5f22a944f1151f5ea32af4ac03
+11,51,Gun Bunch — Trap,False,2799a84160c6616315254af1de95819a7d3ea56d5ce8de1f5d46eec55e284365
+11,52,Gun Empty — Trap (Y jet motion),False,c0a6a512550755598f7d92e19eab7c29f71bc3b52326794ff238a00a4f0ebe47
+11,53,Gun Spread — Power (H return motion),False,d9230c1e2815ced5f80ebc967907381a189d941d3bdcff864d2b8c69e455c289
+11,54,Singleback Twin TE — Trap (X return motion),False,97d74e29e8dcfdd3ecac252007ed183e1b9cd3980893ffa9d1f540d2b262f209
+11,55,Gun Doubles — Counter,False,95fbc8b00b359c69dd0a80ac0075a9634d0bd2149d8ab133b08362dd9d326c61
+11,56,Gun Bunch — Inside Zone Weak (Z across motion),False,aedaeba4239d21a202f8d632fb753caa3349a1b66e73ccbc77767f533c135810
+11,57,Gun Trips Open — Wide Zone (H across motion),False,30c48266190f1524fe3fc209ee73e194d7d0f8d2b542827cadb283dabb6bb081
+11,58,Gun Trips — Trap (H jet motion),False,aa59248e8e5e73f8547c31eb493c39766f8587334e6db0a55d092f6f080f9fcd
+11,59,Gun Bunch — Power (Z across motion),False,db70386eeb937b5abd9f411aeda44cf968d7608b3d3f4a5d85b90f28449ada42
+11,60,Gun Bunch — Draw,False,97d5f630b4a88841c8e7880133d61ea20d18eeb7ddc322c547bf741dfb5e854d
+11,61,Singleback Trips — Power (H across motion),False,a166cfa0afafac4170505e03b9e1641874fcbf95ceb8d2098b11fc4d19c5a084
+11,62,Singleback Ace — Trap,False,a21853e6613659d27e957250cc28d21729a60117929d4134961acffa26c9f352
+11,63,Gun Bunch — Power,False,b1b32ffb8e598158274a73cfe27c5b416a76a78df27e01a2a9d455f534cf1f72
+11,64,Gun Doubles — Wide Zone,False,56b2abfec8ee9ee16aa90553e73a4703feff2e28d6188f0044f71a30f3855f6a
+11,65,Gun Trips Open — Inside Zone,False,b008b116cc91412e9c38e2f4910acdc2969b60543de4f09738148d50610ac6e8
+11,66,Gun Doubles — Trap,False,bb65d11a570961c7975d9cb9dd7dae6fc2c72dc35a35034231445a09f183fb32
+11,67,Gun Empty — Counter (Y across motion),False,f15c287e364dd8177d06706c9ce0623ec662009ce1899a9507a612ac43a00ede
+11,68,Gun Spread — Outside Zone Weak (Y return motion),False,84e93a01469d996401a4de54fedef0d62e99e3332234fa16c84f5973718574b9
+11,69,Pistol Twin TE — Power,False,3e67134c3d7501a63f1b8314fead1b6d5af8186420b3fa2bee868cf712ede43c
+11,70,Gun Doubles — Counter (H jet motion),False,88e803545c9cd077bc80f630db02bc603b0865254c796ad025f707c2b5de0f18
+11,71,Gun Bunch — Trap (Z across motion),False,ed8d0301c5c05fbd146f9d10e381585bac14e906110c8324b29e687f826914fd
+11,72,Singleback Ace — Inside Zone (H across motion),False,16ad1bdd5a3c1e54b6391e074fe66cfe78a19499351a518bbde06e7c9bf41baf
+11,73,Gun Wing — Counter (H return motion),False,fa524786b0f9416501917a70f886ad00243abc1fdfe7a8954d5e80827cf00502
+11,74,I-Form Jumbo — Power (X across motion),False,c3bc41b30c1692069fba9cd055cf3a6552056f378227c54f210212342130f3aa
+11,75,Gun Wing — Split Zone,False,fdc38a4216f6e7dd24f8c4d1481051b4195d3216bc4249e86655e7f951132ff5
+11,76,Gun Bunch — Outside Zone,False,4588c639fb7130ecbe1f5b91f7f53a66801a352feb3a7d16aa1ae7c6e11b38d0
+11,77,Singleback Ace — Power (H return motion),False,fa84c989aef0fc281b2746e76e8fd7d64779e12daeb20a446327811fcdba26c5
+11,78,Gun Spread — Wide Zone Weak,False,e325faeddfe26be7e1ff234755f908b5bcc67066eacf6487ab801aadf1edf2bb
+11,79,Singleback Ace — Wide Zone (Z across motion),False,073cf61f4fe3894515933d5e152b8a2e124fc7b038e50b2c07077a9c91dff3a4
+11,80,Gun Doubles — Inside Zone Weak,False,56336a4a89855af114644ab4bd99a7e0d7182c248bbd558fcec84d5da1a42719
+11,81,Gun Trey (TE attached) — Counter,False,8a7bf6916cdb2f5eea8684465627b9caae5d9afef2b027d3c1faaabc30b105ba
+11,82,Gun Trips — Counter,False,0df5ba2585852e0129cb724406aa0d6f74db53d32563a4bff6cc4d1b985fbe79
+11,83,Gun Trips — Inside Zone,False,a9436b66e2a4193219fac09f0f7f50dd458fc2224d86b4f812d027aedeb8f1c6
+11,84,Gun Trey (TE attached) — Outside Zone Weak (H jet motion),False,358163ce95102916cf77597105ea4fdcae039442db56d278fe1cc9f206f6c08f
+11,85,Gun Spread — Outside Zone,False,8e0628ae5af027178eb8ae564d26a5a2d8e73284ef07bf3339b8e587f33d1bfe
+11,86,Gun Trey (TE attached) — Duo (Z across motion),False,9b3c70443f89dd5db9de0e45cb5f4643d1461be1ddb557fdb2e836d449259a67
+11,87,Gun Doubles — Outside Zone (H return motion),False,b8027ec73a152fbef4bcf081a6b07e85088583e69917ab933752572bcbc400d1
+11,88,Gun Trips — Counter (Y across motion),False,d9048a3366b34bf4eb6c5ee8535d5410ac974b4998d386b47f92dda8fc7ba332
+11,89,Gun Wing — Counter (Z across motion),False,fb2cd07ca2f93ea7961bffd7fd1079fcbabc5045692af5716216c333a4762400
+11,90,Pistol Twin TE — Wide Zone,False,e45779984156ddf5fe903c4802389ba10050ae37d74b821f3031912b5e7a7b29
+11,91,Singleback Ace — Wide Zone,False,dd89a490216119c9647ff693b7942955f74b1e54f726526dc1c350ad2482692d
+11,92,Singleback Twin TE — Trap (X across motion),False,b98988b57304aaa723c2e7d3707be39be0b356c4d007b31c0dad7ba04c20aabf
+11,93,Gun Doubles — Duo,False,9d1e48b263287ae33fde3a358fb382b3558e54397f72d73ed278f4846919b19d
+11,94,Gun Wing — Split Zone,False,f720d04e37d74ff254035616ea8ffef5734880451416dd72f504e7216e718462
+11,95,Pistol Doubles — Power,False,8dfe4415c8eac50f111ca7f667038ef980f6fcc81d50d193e2d95baeeab6107e
+11,96,Gun Trips Open — Duo,False,c1a0394812e0cb1625d6f49649d5aabb82600c1870ac60713d15da677928ae2d
+11,97,Gun Trey (TE attached) — Draw,False,439731c66af417464855cfeb64778b532ae4adea91eb5af7e7281b53016472dd
+11,98,Gun Spread — Wide Zone,False,0c134c5a7998bcc153970b4203f8c2f7db81ecad89fe295af4b640a9a026f468
+11,99,Gun Trey (TE attached) — Power,False,4e32c936950381b42fab2bd115a6347f3c7c926cb2b227d0a6ff6dbf4fd712e2
+11,100,Gun Bunch — Counter,False,d7e993039924e79c21283c79ae45e795fd0986713c24908c337164e2c7ff994b
+11,101,Gun Doubles — Counter (H return motion),False,b2577bfc68ad17d6077198c24248a53cd6ea4c316678ae553e2b7f360932528b
+11,102,Gun Doubles — Power,False,569721361e64177b94a45019ee87f4fd0686928d45dba2ebef3cf98a6b483848
+11,103,Gun Trips — Power,False,046067065bb90a37f2941c831b1eadb361f6e14324ec7a6a282d0dfd7beaa192
+11,104,Gun Spread — Outside Zone Weak,False,f646a0190060283fa3d92678c1a9c3996fa8182ee70c17f2a2506d2109612d33
+11,105,Gun Doubles — Power (H jet motion),False,1cda694180949bc979776e8743db76aae5bebe9b4d3bd209ae645b9e9ce171e1
+11,106,Gun Bunch — Inside Zone Weak (Z across motion),False,5985e765142cd8465a6def93361b86fa095b9b24333513b082e80aad568c991d
+11,107,Gun Spread — Inside Zone (H return motion),False,0430ffe036651b042ecb6d0afdae3d2e6fe71a85427a5bb252767a3a74480ec1
+11,108,Gun Trey (TE attached) — Outside Zone (Z across motion),False,f4625fb3668f48433bb773238bb53d52925bc0442bd8fd0bcc687d5b526bb763
+11,109,Gun Trey (TE attached) — Inside Zone (H across motion),False,845213618fb68542d1a06e5fe569190ddbd9bb576f4b481cd3839fa942c26e1c
+11,110,Singleback Trips — Trap,False,b1872436721a2e7404052fe92985f40af2de636dd0dc1058ac5e7840487b1ae5
+11,111,Gun Bunch — Inside Zone,False,96fd53612a2a636accb860bd6228332c31e66f4a16bbd15e13801ef0af9650ba
+11,112,Gun Trips Open — Trap (Y across motion),False,406273da4cecd8254b97f91f8fa4e29c6d1fbf9524fbe3e48173b5fca377115a
+11,113,Gun Bunch — Counter (H across motion),False,12e69cf9701f5d47d5b771ae9eed8d5e8de2d9a713c62165a87f24357c2f7dde
+11,114,Gun Spread — Wide Zone,False,f5bbd728b42fcab48bbcb175487956887144ae574f87ef9e1363847c47533a58
+13,0,Singleback Twin TE — Duo,False,4b3a429269839b055ea0970984bc2cdd91bcbc9299a815f675c61bf8599affef
+13,1,I-Form Twins — Power,False,e7d377000c4c0729d521730fd55620da6936697319ffc7ecad13ea0ef3707c66
+13,2,Pistol Doubles — Outside Zone Weak (Z across motion),False,79fcf318d2618e77d84535b37d8f8aadea9bbb27602d5fa0f1bcac16c16f0013
+13,3,Singleback Ace — Power (Z across motion),False,809a548b0fa288ab729d074fa0ad5ef4e6b0a48947dc76ab6991a89d06762683
+13,4,Singleback Twin TE — Outside Zone Weak,False,becd98bf659f5edc32aed23f7a443c8b14cb2b1421fda9e6dde7980e5f549b81
+13,5,Singleback Trips — Outside Zone Weak (Z across motion) (flipped),False,f839463f6e0a30076fe6b9de574cbadfa6256736b4b9ada14c9744d051511aaf
+13,6,Pistol Twin TE — Outside Zone (Z across motion),False,c3839122286307c1be85ac0d37308eb6e330a49e5cdf95b8ff503917064648a4
+13,7,Pistol Doubles — Counter (H across motion),False,8ccfa90fee6c537f84fb7c1de8eaa845079cf8102ecac61274979306d9f170a2
+13,8,Gun Trey (TE attached) — Counter (flipped),False,256362ce8e6dc94f8841c92a155067fead500cf6cff60ab8c291bdfcafff1f58
+13,9,Singleback Twin TE — Trap (X across motion),False,b17306330f59857e78da9efb45abdb54936b4cf9f8b34180f557abe26bf6afe6
+13,10,Gun Trey (TE attached) — Trap (Z across motion),False,2e2674ef580c24a7a8121455a843aead83e2e08b40fe95fc9fb44e479522a383
+13,11,Pistol Twin TE — Power,False,ed7d1a71a61dd74fc5ce4f5f21b6a86c0c99d6da6c52cfa819255e87f1f75c03
+13,12,I-Form Twins — Outside Zone Weak (Z across motion),False,c28e27bd3baa7cb9fb32a3baad2fb2b9c0028c27a34441be4c5207ca006f31ce
+13,13,Gun Wing — Wide Zone,False,4f02c65227c81e33cb3609045a2ee0ed3ed72a4d75dde3294d8d6d51ef3d613f
+13,14,Singleback Ace — Outside Zone Weak,False,c207eab2f09842f5acf41c9dc9f98b54511a4d08dc9e829fc6951f597768afb0
+13,15,Gun Trips — Counter (H across motion),False,78873d19d539554c07dff2218cddb0c57dada2e28b47a6b676b5cf03a55d2cc3
+13,16,Singleback Ace — Outside Zone,False,fb590f3241995e8d63afc01f1290b7f7ee6a6415763771239f45762ad45b2a75
+13,17,Singleback Trips — Outside Zone Weak,False,cb24fcd29f8bc0ce92280e5653a286df913cbccca86c0bb6c98e25637703cff4
+13,18,Pistol Twin TE — Inside Zone (X across motion),False,5054f2027460a85f9a5e2869b0d990a5d45c90c3fd19efdad8e10610cabeb0bc
+13,19,Singleback Trips — Wide Zone Weak,False,16cdfc84cedd48c61975efaf90fcaafad17a6cebd52deb9b031d6d42e6eefb66
+13,20,I-Form Twins — Duo (flipped),False,470c176a26974555acd412a1966abca87340d5d021c51de1725af9c9d137d60c
+13,21,Strong Offset I — Inside Zone Weak (Z return motion),False,9e632edd104cdcde1164735ff34bcf9813e6ee4b76bf750dac63cae4fb5d4dd4
+13,22,Heavy Wing — Inside Zone,False,b8c25e7ca9aa1f626585c28741eb3b2ec75e553e4eca64780216e515d87e6ead
+13,23,Gun Trips — Inside Zone Weak (Y across motion),False,b776021383aad47df8a72890a4341028be722056ab5478ae732128d708cef847
+13,24,Singleback Twin TE — Trap (X return motion),False,3b9652016dc53b44ec16abd15fde578de25b19163080e06b8874fd89d2c3bdee
+13,25,Pistol Twin TE — Inside Zone Weak,False,ce28d43f22c590a62405ecd8344c8f02cd3a684087c8e2e95029b9bd1ad6b965
+13,26,Gun Wing — Outside Zone Weak (H across motion),False,8b58e14a21775b094193a1937a7d1003d544eaf875c288a1e48424d41965cb10
+13,27,Pistol Twin TE — Outside Zone Weak,False,14431192c4b94baf89ca166f456fc7072da4a712b2455c42f479000f4d4254d3
+13,28,Singleback Twin TE — Outside Zone (flipped),False,3abb81463eef611f2567758738921cc2645cf6f391cd33b00799a93cd336b14e
+13,29,Gun Doubles — Trap,False,465b842d9141150c6eebb9b55da0f9ab502da2a215d4396597b2d9fbaef1c629
+13,30,I-Form Twins — Power (Z across motion),False,507f59deaff0890e1720eb968bffcba8686768ce1a50f676790906e3700850dd
+13,31,Pistol Doubles — Inside Zone,False,2ff93fddc4122b2264e16c03f6467bfd643b55f4ad72ab479a788a0a2dab8e04
+13,32,Gun Wing — Inside Zone Weak,False,05ba436a9b13af941a2be8e3c9256a372cb1b6e1a1978c44dc39058153011476
+13,33,Gun Doubles — Wide Zone Weak (H across motion) (flipped),False,c45933eb02d6bbefd7075bf4815c9a27475d6bd22fefc2309261e1af2ec14e11
+13,34,Singleback Twin TE — Power,False,f6bb9e974dffe404cf9da535e61fe4883d1812a972ceee839ba23520bae22d76
+13,35,Gun Wing — Outside Zone Weak (H across motion),False,e54c4e4a2422c0f0b16cb07e51a85fa8b6f32686b9e7fd96c915e2e124eee60f
+13,36,Singleback Ace — Outside Zone Weak (flipped),False,32335f2cb6bdf3a59f16fc1059169be3f5d505eafee6da93544c2eec30192cb2
+13,37,Gun Bunch — Counter (Z across motion),False,49f774d3c1eed28b3d977719b7f9d358673e3315716f7aa0a598be5c12eae75d
+13,38,Singleback Trips — Duo,False,5182094226d5897ff14ebf89ac74843656c31d90d7ebd824d1d711ded52243cf
+13,39,Pistol Doubles — Toss (Z across motion),False,13cc60be9044213951b3e115bf1509259d8366e48ee06ee26a9e345a6a017f69
+13,40,Heavy Wing — Trap (F across motion),False,0b3d529817e0e69f14ed6e9d0f84b96f6065a5b3b22e7bb08df17294daca5a71
+13,41,Singleback Twin TE — Trap,False,c70dab9bf8c540c191d276b6ea818af2771183a67e65293b566b4ce7ed1ec3f6
+13,42,Singleback Twin TE — Power,False,b0d5cda4f11870bba87c0b317c66401a04e81442435f2490992aaef66e4fb42a
+13,43,Singleback Ace — Wide Zone Weak (Z across motion),False,32ad51801b0005a0a596649542ab67e48897f93f2189e89c495b853310fbeec9
+13,44,Singleback Trips — Trap (Z across motion),False,5216cfb293c1b146dc125689b11d5814316ed83ace5ae179260359fcf397e2c2
+13,45,Pistol Doubles — Trap,False,f5f94cad472a1c39907e9ae6dfdbf067ec31f18400a213f45dc5015e18d63a7e
+13,46,Gun Bunch — Draw,False,d314edb17bdac07f53759a70a8b65006134b1757e80bde821072af64dd4d9499
+13,47,Gun Trips — Wide Zone,False,0124dee213547b693c7d13d13ca5b0b7bce7ec2f91595f10f543b7f47949f0b9
+13,48,Gun Doubles — Trap,False,6ee2caf50ee0b4838da1739c708a38c9fcee12dc0703577c7ba94119d605f1cd
+13,49,Pistol Twin TE — Power (X return motion),False,a7eea7f3527c62b04b4b27f6c722dd95c5437f6d12e5e2689e4992628dac5c4e
+13,50,Gun Trey (TE attached) — Wide Zone Weak (H across motion),False,ac658681689ad40db0a1c9d861c66e8c36f95e580e35f0125430bc0bdcaa36ca
+13,51,Gun Doubles — Wide Zone Weak (H across motion),False,991459430383f7bc05d94a8c668d90b752566516c5a409a640dfc15f39414771
+13,52,Gun Bunch — Outside Zone Weak (H across motion),False,5924a8a63f0d6164d814114790ae2101fc1d92d721dbfedd4cfc486b64d299a9
+13,53,Gun Trips — Wide Zone Weak,False,fde6e6971f7a496113a723cda9c75e729d3718f02821a514c584e0f8656712a1
+13,54,Pistol Doubles — Toss,False,aec8fd0c0bf0a8b3e427552592c6e0d5564086b3b5b1123e410e472ae4b5fc0a
+13,55,Gun Trips Open — Draw,False,586f10739612e488a31f4ac440be1fb8bd5207ea651cd7bee0d9cdbab3431eb7
+13,56,Singleback Ace — Duo,False,115a7ef88d577756862e4a5523e00d26ed13781bf5c85df2a7ab1573c77cfd92
+13,57,Pistol Doubles — Draw,False,53663b1890752f776722130ad7c5c724e1761bba85c4970c997593bae47777d6
+13,58,Singleback Ace — Inside Zone Weak,False,e6e1b5ab6d2a040b0746ddc207483ea55fb0c15f8a4bdf55bb7d960a718d4d09
+13,59,Gun Trips — Inside Zone Weak,False,1f7b6d28bb9a4cbe2640a40c189d95bf7a64bec20772bffebbe25d41ca4edcdc
+13,60,Singleback Twin TE — Inside Zone (Z across motion),False,7abfb43a84432a9470d975ff90f4abd196bd4d26fca497b3cc4e58ca6eb27e8f
+13,61,Gun Bunch — Wide Zone,False,f853883618d69c81398f57735adb106184eaac5f2abdab9bc9ed65fd6222a1e4
+13,62,Singleback Ace — Outside Zone Weak,False,061b4da7c09a9916be1e3272842d6cbcfbc92d35d52e9ab46530921dc2c19557
+13,63,Pistol Doubles — Wide Zone,False,e10c2daa4c63ffafa1457c0db99e860b3c34b511f90050c7a63e2e160fe74784
+13,64,Gun Trips Open — Draw (H across motion),False,5b43654f88a21dd26701afeb4f3c0abdad1a9566ac88e6453e5845c74d17691e
+13,65,Pistol Twin TE — Power,False,408e498b9abb522210d5c29e46799b701aa8b021031c4cf8c1612026702b963b
+13,66,I-Form Pro — Inside Zone,False,e60341012953d48b633b71dbb0b534a156754a296d24c6cacc037d3249199df1
+13,67,Pistol Twin TE — Counter,False,ce72ccc980224327e48d53aa4a9ac387fb278bf183e148eae3253a2e12b5b91f
+13,68,Gun Trey (TE attached) — Outside Zone,False,226fc3ec8dd4fc2c22e24d818e149f5c25159e1c98524d7368a828530f174491
+13,69,Gun Wing — Draw,False,2d2e41ce2ac9160c81b96ec8d710a1ad0acdb06af5568e4ebf7f9f7f129c6ede
+13,70,Gun Wing — Inside Zone (Z across motion),False,0dc3abb52331242227653bdd753fab6fe5593eaa371033561a706b07493a9cfb
+13,71,Gun Bunch — Duo,False,a56606bdce9bf69ffb9abbcf7714e16da80250a0595a753fe74cd6eac3d93dd8
+13,72,Pistol Twin TE — Trap (Z across motion) (flipped),False,128f317a2f6b512ebf4f2b8ee00169a7ff790e2c92508a4ebc51791fc92991cc
+13,73,Singleback Twin TE — Inside Zone (X return motion),False,d4947424e714cc36cc1b4f44a24883d02f7b73a9babdfdcab36987434376c483
+13,74,Gun Doubles — Trap,False,5f8e2a1096242dd77239baf2cef06f47fe7faa3b1e991c0bca6ed247e78987e2
+13,75,Gun Trey (TE attached) — Outside Zone,False,fa23bef554aaaa08bd0aa56cb84424502d6b0a9b1bfe9d911e5c7f0c848f68c6
+13,76,Singleback Twin TE — Duo,False,6e154f4a8ed38c5b836bbd00ae6279fa17388b1fe175c246820778c94b0c648d
+13,77,Singleback Ace — Speed Outs (audible),True,14d32c983aa7712da6b81385724b26cecc540ce026ea6b36b4c75e71e0b28df6
+13,78,Gun Trips — Outside Zone Weak (H across motion),False,699801665636a19365425efd40894ffad3fddcb0c039f7412b60bd0143f62850
+13,79,Singleback Ace — Inside Zone Weak,False,dafdec72cdcfed7aedd3db6695301530fb3bc1fa4445c4d87fee3ce1575ac725
+13,80,Singleback Trips — Inside Zone Weak (flipped),False,c1f3b972ed70dfc84f410d1244b38169122db6b0b75e21229c07b8638118e652
+13,81,Singleback Ace — Outside Zone (Z return motion),False,f11c0dd832522d78157f3bccc389e810fc3b7c0937b51cb5ef2e1b35d553f274
+13,82,Gun Doubles — Counter,False,5483f65c0b993aaccff584f912ad4595515fe05fbcb4d4d6cbf6251d366d2e70
+13,83,Gun Bunch — All Hitch (audible),True,4407e6680806d56ce5222c1f26aa094aef579e8f15680b08e5092399d7b53b34
+13,84,Gun Trey (TE attached) — Outside Zone,False,a7887647509af47cb93234f376a51b80cdf128581a0db5cd25ae6a6eac4c5f53
+13,85,Strong Offset I — Wide Zone,False,3c0e1bf368aac528dc8572afccdfa8dd43bb2bf830ac1c34983f9ba967113e35
+13,86,Gun Doubles — Wide Zone,False,bbd016d023725745598cc22a3de2d730fc13361a82924111036857bd98af3194
+13,87,Pistol Twin TE — Outside Zone,False,41d5ee3e8cad2894254669bba12a5ecaef7feea4bf68673174a818a6c2551531
+13,88,Pistol Doubles — Wide Zone (H across motion),False,f154e51fc11d6c3251dff87a6bbe351f90010fed656cb73c3976708853adb2cc
+13,89,Gun Wing — Outside Zone (Z return motion),False,f775bf2686947dfed580b5ad6e116f9a40e7035fb03efd7867a49f9fb4522e82
+13,90,Pistol Twin TE — Inside Zone (Z across motion),False,fcf7876729f78de081b99523937586a9c4fd5909c1b47f6c79e07433c0934e80
+13,91,Pistol Twin TE — Wide Zone (X across motion),False,054a7731184c6deedb81d187afacb1b958b244040a81670f14d9980a077f8fd2
+13,92,Pistol Twin TE — Toss (flipped),False,fec23e793aa06c53a43118f30e77871dffded88b811de62ff013fc9d47ce6e3f
+13,93,I-Form Twins — Outside Zone Weak,False,f5f2653bf1128323db23ecdbc9dbd06a017bd64a3b2873ef554578ae681a0566
+13,94,Singleback Trips — Counter,False,862099c7497f9e856a27b714956a731b4f3dfbe529e7edd2f827fde4e1d5ef37
+13,95,I-Form Twins — Slant-Flat (audible),True,407c8cd871ef709b4c1cb191e36bf0e1a051ae17bd332c8689459c0b051f2630
+13,96,Strong Offset I — Outside Zone,False,6e671500c63ccdbb6314c07faf33b491ff39f972745ed6aa4f488031e44f1e19
+13,97,Gun Doubles — Outside Zone Weak (flipped),False,3b2110c23ad6b51dc48a49eabdce9781a29b87145905e37d02c86251f008ef7c
+13,98,Strong Offset I — Duo,False,3ebfacc4815a5dc8e0d73b7b60e7fbbeae186129afecc47f235ff8d49314bd93
+13,99,Singleback Trips — Counter (Z across motion),False,46fc29753732757dce6cf096cee13aaaf6dc86921217cd0fb541f9f99238e45c
+13,100,Gun Trey (TE attached) — Inside Zone Weak,False,ecad972443087424315a529c9e057db5e731c01f2a7bb98e6f6797c0372592ae
+13,101,Singleback Trips — Inside Zone,False,cd057b7bd1f82f2589b112b32639f026f22ce3b7e79af1779e3fb8764aab2123
+13,102,Singleback Trips — Duo,False,b2624c6f2f347bf5181ec0cb819d3ce5365a086bb1a656fed5be155e37f3f761
+13,103,Singleback Ace — Trap (Z across motion),False,92cc50daa81a7a12355f6a7d6b368401710a8f2496a65409b17c84139031c754
+13,104,Gun Spread — Outside Zone Weak (H jet motion),False,90d4d13f0960d149ce92234ef201d656234b65222be896a0bedd3c3334e65248
+13,105,Gun Spread — Inside Zone Weak (H jet motion),False,1f6eb84134d630f2d1386939039ac1121b61d7713c8f1d5fe4579153ce4dfc14
+13,106,Singleback Trips — Wide Zone Weak,False,83629c901a167fe8c07a0b31e987cb158679eac00aa4e0948122245e560dd85f
+13,107,Gun Doubles — Counter,False,e1c4e787dd1740c3905163d9d4bc6e9c1b3f02440867b54e262c716ed6f82f3f
+13,108,Singleback Trips — Power (Z across motion),False,0c237ac5918b698abd42cf0bd4d3bfc87bff6be2331175de64111218836aff4f

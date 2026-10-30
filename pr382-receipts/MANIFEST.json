@@ -1,0 +1,284 @@
+{
+ "pr": 382,
+ "head": "5f06af56b84906392973d85d391358729d60966d",
+ "arms": {
+  "D9A": {
+   "commit": "9acefb012b5e98880337ba2a9d51aa0ef104f55a",
+   "tree": "dafc87c238bd328a9de7c3d8dc16b72559d8e3a5",
+   "node": "v22.23.3",
+   "sourceSha256": "4693e480afa694b474898b5783939c77d59b9ee338b9b157ca49b6efffac8d4c",
+   "validationSha256": "8fcc1d77d8ef9800afec4b2b93649ea9742553c498a11a2b930df47f2e10cd67",
+   "flagsSha256": "0d711a1166644bcef56be49b49a51ce096c1e0d81fb52ff5bb544e17635f80a3",
+   "receipts": 4,
+   "exitCodes": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "inputsUnchanged": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "trackedChanges": [
+    "scripts/diag/matched-restage.ts",
+    "scripts/diag/run-film-trace.ts",
+    "scripts/mechanics/run_film_reference.py"
+   ],
+   "commands": [
+    [
+     {
+      "command": [
+       "node",
+       "--import",
+       "tsx",
+       "scripts/diag/matched-restage.ts",
+       "replay",
+       "9",
+       "D9A",
+       "--run-only",
+       "--shifts",
+       "3"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 221.21271376699997
+     }
+    ],
+    [
+     {
+      "command": [
+       "node",
+       "--import",
+       "tsx",
+       "scripts/diag/matched-restage.ts",
+       "replay",
+       "11",
+       "D9A",
+       "--run-only",
+       "--shifts",
+       "3"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 222.176362322
+     }
+    ],
+    [
+     {
+      "command": [
+       "node",
+       "--import",
+       "tsx",
+       "scripts/diag/matched-restage.ts",
+       "replay",
+       "13",
+       "D9A",
+       "--run-only",
+       "--shifts",
+       "3"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 218.613188136
+     }
+    ],
+    [
+     {
+      "command": [
+       "node",
+       "--import",
+       "tsx",
+       "scripts/diag/matched-restage.ts",
+       "replay",
+       "7",
+       "D9A",
+       "--run-only",
+       "--shifts",
+       "3"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 227.02456629899999
+     }
+    ]
+   ]
+  },
+  "M382": {
+   "commit": "68bf1e0d (local merge of 5f06af56 into 9acefb01)",
+   "tree": "aeb80e85f55ad368de329da342d5e365956ad595",
+   "node": "v22.23.3",
+   "sourceSha256": "801caca91be9cefa4d5150577ca9bf85169d34b53bd9a0c0d74df45222c7be0f",
+   "validationSha256": "a106b3f8ae7044e9d3dc95736e5adf6d2fe677bf028ae6cfc0410f019ec5eee2",
+   "flagsSha256": "0d711a1166644bcef56be49b49a51ce096c1e0d81fb52ff5bb544e17635f80a3",
+   "receipts": 4,
+   "exitCodes": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "inputsUnchanged": [
+    true,
+    true,
+    true,
+    true
+   ],
+   "trackedChanges": [
+    "scripts/diag/matched-restage.ts",
+    "scripts/diag/run-film-trace.ts",
+    "scripts/mechanics/run_film_reference.py"
+   ],
+   "commands": [
+    [
+     {
+      "command": [
+       "node",
+       "--import",
+       "tsx",
+       "scripts/diag/matched-restage.ts",
+       "replay",
+       "11",
+       "M382",
+       "--run-only",
+       "--shifts",
+       "3"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 201.45416743500002
+     }
+    ],
+    [
+     {
+      "command": [
+       "node",
+       "--import",
+       "tsx",
+       "scripts/diag/matched-restage.ts",
+       "replay",
+       "13",
+       "M382",
+       "--run-only",
+       "--shifts",
+       "3"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 190.40076532400002
+     }
+    ],
+    [
+     {
+      "command": [
+       "node",
+       "--import",
+       "tsx",
+       "scripts/diag/matched-restage.ts",
+       "replay",
+       "9",
+       "M382",
+       "--run-only",
+       "--shifts",
+       "3"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 187.246680316
+     }
+    ],
+    [
+     {
+      "command": [
+       "node",
+       "--import",
+       "tsx",
+       "scripts/diag/matched-restage.ts",
+       "replay",
+       "7",
+       "M382",
+       "--run-only",
+       "--shifts",
+       "3"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 204.54987525
+     }
+    ]
+   ]
+  }
+ },
+ "inputs": {
+  "seed7-run.json": {
+   "sha256": "36f916cc8cc8198909a1c2d72b6214e9066f1fe53f2cb55b2a9ae2fbb65422e7",
+   "mtime": 1793317766.796185,
+   "snaps": 117
+  },
+  "seed9-run.json": {
+   "sha256": "471dc3468a93793376448de1fbf17ad2459ba515267eae3589b9c54fa6c2386d",
+   "mtime": 1793317766.7996547,
+   "snaps": 115
+  },
+  "seed11-run.json": {
+   "sha256": "97943aac5107ba666d56c03f49e8644bf6c441ef421b6667debd6a3834d43b3a",
+   "mtime": 1793317766.8026884,
+   "snaps": 115
+  },
+  "seed13-run.json": {
+   "sha256": "94f1839b2582e01bf1ad259f86049132140215764d018ca3a3206a5cc0207fa5",
+   "mtime": 1793317766.8066885,
+   "snaps": 109
+  }
+ },
+ "overlay": {
+  "matched-restage.ts": "05fc033ae031ea338805379ecf519a2b0a5dee8449b16a450427103b8f619c3a",
+  "run-film-trace.ts": "318b5565f48b8128c4ba8f464171aaf883c9cdeeff5167cc731c74eb701f768a",
+  "run-trace-watch.ts": "305aa029f328a30c62626c5060e8902f2c650805c7398cacf2e846d02918c304",
+  "run_film_reference.py": "e610057cecd5e68363055a9bda3599ef51ed7f2affd1fbeef1b60a36ceec447c"
+ },
+ "files": {},
+ "rows": {
+  "total": 456,
+  "stream_counts": [
+   [
+    4,
+    4
+   ]
+  ],
+  "changed_any": 181,
+  "changed_all4": 119
+ },
+ "selected_adverse_gap": {
+  "file": "constructors/adverse_gap-seed9-56.bin",
+  "seed": 9,
+  "index": 56,
+  "call": "Gun Wing \u2014 Trap (Z jet motion)",
+  "constructor_sha256": "b034dc008954b01d43db2606103dde3f63072db904aaed07345cf1460139291e",
+  "yards_D9A": "-0.65 2.75 0.75 0.98",
+  "yards_M382": "-2.55 0.16 -0.88 -0.58",
+  "mean_delta": -1.92,
+  "snap": "Gun Wing trap, Z in jet motion at +4.9 yd; develop Z->LB_W at -1.1 (across the ball, a closest-pair fallback, not a same-side crack); 5f06af56 Z->CB_S at +10.8. Mean -1.92 yd over 4 streams, all changed."
+ },
+ "selected_zone_locality": {
+  "file": "constructors/zone_locality-seed7-1.bin",
+  "seed": 7,
+  "index": 1,
+  "call": "Gun Trips \u2014 Outside Zone Weak (H across motion)",
+  "constructor_sha256": "94ddb596773801c419c39294eeba32a76969219fb3d868d79c8b32d272275fba",
+  "yards_D9A": "12.47 -3.07 -0.09 -0.35",
+  "yards_M382": "18.14 -2.89 -0.09 -0.35",
+  "changed_streams": "0 1 2 3",
+  "snap": "Z split 18.8 yd (-0.6 deep); develop Z->LB_W (4.5 deep, 17.0 yd inside); 5f06af56 Z->CB_S (8.0 deep, 0.8 yd over him)"
+ },
+ "streams": "Reconstructed from the overlay source, not recorded per row: replay runs stream 0 = the saved setup seed, and stream s>0 = new Rng(setup.seed).fork('shift:'+s) (matched-restage.ts shifted()); --shifts 3 gives streams 0..3 (4 total) per row in both arms. PlaySim.recordedSingleStream is not set by replay (default root mode). No trace/observer was attached (no --trace), so observer on/off equivalence was not exercised in this receipt.",
+ "not_captured": [
+  "per-row constructor hash in the replay rows (linkage is by row index into the capture files, whose sha256 and mtime are given; both arms read the same files)",
+  "per-row stream seed values (derived from source, above)",
+  "engine settings beyond the receipt's flags/worldDefaults",
+  "observer-on/off equivalence for this run"
+ ],
+ "other_noted": {
+  "seed13-61": "Gun Bunch WZ, X LB_M->CB_W; D9A 5.16 8.27 0.27 -2.78 vs M382 83.63 83.63 0.31 -2.82 (large-swing outlier, kept in rows.csv, not selected)"
+ },
+ "planned_targets": {
+  "file": "planned_targets.csv",
+  "rows": 180,
+  "differ": 156,
+  "method": "planRunBlocking stalk targets at the snap from each changed run row constructor, under develop e70cc2ab blocking.ts vs 5f06af56 blocking.ts (other source 5f06af56/e70cc2ab; blocking.ts is unchanged between e70cc2ab and 9acefb01)"
+ }
+}

@@ -1,0 +1,181 @@
+seed,index,family,receiver_targets_develop_blocking,receiver_targets_5f06af56,differs
+7,0,zone/other,X>CB_W Z>NB,X>CB_W Z>CB_S,True
+7,1,zone/other,H>FS X>CB_W Y>NB Z>LB_W,H>FS X>CB_W Y>NB Z>CB_S,True
+7,13,gap,X>DE_W Z>CB_S,X>CB_W Z>CB_S,True
+7,14,gap,H>LB_M X>CB_W Z>FS,H>LB_M X>CB_W Z>FS,False
+7,15,zone/other,H>NB X>CB_W Z>CB_S,H>NB X>CB_W Z>FS,True
+7,17,zone/other,H>FS X>CB_S Z>NB,H>FS X>CB_S Z>CB_W,True
+7,20,zone/other,X>FS Z>LB_W,X>FS Z>LB_W,False
+7,23,zone/other,H>DB X>LB_M Y>NB Z>CB_S,H>DB X>CB_W Y>NB Z>CB_S,True
+7,24,zone/other,H>NB X>LB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+7,28,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+7,29,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+7,30,zone/other,X>SS Z>FS,X>CB_S Z>FS,True
+7,34,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+7,36,zone/other,H>NB X>CB_W Z>CB_S,H>NB X>CB_W Z>CB_S,False
+7,37,zone/other,H>CB_S X>CB_W Z>LB_W,H>CB_S X>CB_W Z>LB_W,False
+7,45,draw,H>NB X>LB_W Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+7,49,zone/other,H>SS X>NB Z>CB_S,H>SS X>CB_W Z>CB_S,True
+7,52,zone/other,H>LB_W X>LB_M Z>CB_S,H>LB_W X>CB_W Z>CB_S,True
+7,59,zone/other,H>NB X>LB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+7,61,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+7,63,zone/other,H>LB_M X>CB_W Z>CB_S,H>LB_M X>CB_W Z>CB_S,False
+7,73,zone/other,X>SS Z>CB_S,X>SS Z>CB_S,False
+7,77,zone/other,H>NB X>LB_M Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+7,79,zone/other,H>SS X>CB_S Z>CB_W,H>NB X>CB_S Z>CB_W,True
+7,81,zone/other,X>CB_W Z>SS,X>CB_W Z>SS,False
+7,85,zone/other,H>SS X>NB Z>CB_S,H>SS X>CB_W Z>CB_S,True
+7,86,zone/other,X>CB_W Z>NB,X>CB_W Z>CB_S,True
+7,89,gap,H>DE_W X>CB_W Z>CB_S,H>FS X>CB_W Z>CB_S,True
+7,92,zone/other,H>SS X>LB_W Y>NB Z>CB_S,H>SS X>CB_W Y>NB Z>CB_S,True
+7,93,zone/other,H>FS X>CB_S Z>NB,H>FS X>CB_S Z>CB_W,True
+7,94,zone/other,H>SS X>CB_W Y>LB_M Z>NB,H>FS X>CB_W Y>LB_M Z>CB_S,True
+7,100,zone/other,X>CB_S Z>LB_M,X>CB_S Z>FS,True
+7,103,zone/other,H>SS X>CB_W Z>LB_W,H>CB_S X>CB_W Z>LB_W,True
+7,104,gap,H>NB X>CB_W Y>LB_W Z>CB_S,H>NB X>CB_W Y>LB_W Z>CB_S,False
+7,107,gap,H>DE_S X>LB_M Y>SS Z>NB,H>DE_S X>FS Y>SS Z>NB,True
+7,108,gap,X>CB_W Z>CB_S,X>CB_W Z>FS,True
+7,111,draw,H>DB X>CB_W Z>SS,H>DB X>CB_W Z>CB_S,True
+7,115,zone/other,H>SS X>DB Z>CB_S,H>SS X>CB_W Z>CB_S,True
+7,116,draw,H>NB X>LB_W Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+9,0,draw,H>NB X>LB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+9,4,gap,H>SS X>CB_W Y>LB_W Z>CB_S,H>SS X>CB_W Y>LB_W Z>CB_S,False
+9,7,gap,H>LB_M X>DE_S Y>DE_W Z>CB_S,H>LB_M X>FS Y>DE_W Z>CB_S,True
+9,12,draw,H>LB_M X>CB_W Y>NB Z>CB_S,H>SS X>CB_W Y>NB Z>CB_S,True
+9,15,zone/other,H>NB X>LB_W Y>CB_S Z>SS,H>NB X>CB_W Y>CB_S Z>SS,True
+9,16,gap,H>LB_M X>DE_W Z>CB_S,H>LB_M X>CB_W Z>CB_S,True
+9,17,zone/other,H>SS X>LB_W Y>NB Z>CB_S,H>SS X>CB_W Y>NB Z>CB_S,True
+9,18,zone/other,H>LB_M X>CB_W Y>LB_W Z>CB_S,H>LB_M X>CB_W Y>NB Z>CB_S,True
+9,24,gap,H>DE_S X>CB_W Y>NB Z>SS,H>FS X>CB_W Y>NB Z>SS,True
+9,25,zone/other,H>NB X>LB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+9,27,gap,H>NB X>CB_W Z>CB_S,H>NB X>CB_W Z>CB_S,False
+9,28,zone/other,H>LB_W X>CB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+9,29,zone/other,H>LB_M X>CB_W Z>NB,H>LB_M X>CB_W Z>CB_S,True
+9,31,zone/other,H>LB_M X>LB_W Y>SS Z>CB_S,H>LB_M X>CB_W Y>SS Z>CB_S,True
+9,36,zone/other,H>LB_M X>CB_W Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+9,40,zone/other,H>SS X>CB_W Z>NB,H>SS X>CB_W Z>CB_S,True
+9,44,zone/other,H>SS X>LB_M Y>NB Z>CB_S,H>SS X>CB_W Y>NB Z>CB_S,True
+9,45,zone/other,H>LB_M X>CB_W Z>SS,H>LB_M X>CB_W Z>CB_S,True
+9,50,zone/other,H>LB_W X>CB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+9,54,zone/other,H>CB_S X>CB_W Z>SS,H>CB_S X>CB_W Z>LB_M,True
+9,55,draw,H>NB X>LB_W Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+9,56,gap,H>SS X>CB_W Z>LB_W,H>SS X>CB_W Z>CB_S,True
+9,57,zone/other,H>NB X>LB_W Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+9,58,zone/other,H>NB X>DB Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+9,59,zone/other,H>NB X>DB Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+9,60,zone/other,H>LB_M X>LB_W Z>CB_S,H>FS X>CB_W Z>CB_S,True
+9,61,draw,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+9,63,zone/other,H>SS X>CB_W Y>NB Z>LB_W,H>SS X>CB_W Y>NB Z>CB_S,True
+9,65,gap,X>NT Z>SS,X>FS Z>SS,True
+9,66,zone/other,H>LB_M X>LB_W Z>CB_S,H>LB_M X>CB_W Z>CB_S,True
+9,72,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+9,73,gap,H>SS X>LB_W Z>CB_S,H>SS X>LB_W Z>CB_S,False
+9,77,zone/other,X>CB_W Z>SS,X>CB_W Z>CB_S,True
+9,78,zone/other,F>LB_M X>SS,F>LB_M X>CB_W,True
+9,79,zone/other,H>NB X>LB_M Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+9,80,zone/other,H>SS X>LB_M Y>LB_W Z>CB_S,H>SS X>CB_W Y>LB_W Z>CB_S,True
+9,84,gap,H>DE_W X>CB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+9,85,zone/other,H>SS X>CB_W Z>CB_S,H>SS X>CB_W Z>CB_S,False
+9,87,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+9,89,zone/other,H>NB X>LB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+9,90,zone/other,H>NB X>LB_M Y>FS Z>CB_S,H>NB X>CB_W Y>FS Z>CB_S,True
+9,91,zone/other,X>CB_W Z>CB_S,X>CB_W Z>FS,True
+9,93,zone/other,H>CB_S X>CB_W Z>SS,H>CB_S X>CB_W Z>DB,True
+9,95,draw,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+9,97,zone/other,H>LB_M X>CB_S Z>CB_W,H>NB X>CB_S Z>CB_W,True
+9,98,zone/other,H>NB X>LB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+9,100,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+9,103,gap,H>LB_W X>CB_S Y>DE_W Z>SS,H>LB_W X>FS Y>DE_W Z>SS,True
+9,105,zone/other,H>LB_W X>CB_W Z>CB_S,H>LB_W X>CB_W Z>CB_S,False
+9,109,draw,H>CB_S X>LB_M Y>NB Z>SS,H>CB_S X>CB_W Y>NB Z>SS,True
+9,111,zone/other,H>CB_S X>LB_M Y>NB Z>SS,H>CB_S X>CB_W Y>NB Z>SS,True
+9,113,zone/other,H>LB_M X>CB_W Z>NB,H>NB X>CB_W Z>CB_S,True
+9,114,zone/other,H>SS X>CB_W Y>NB Z>LB_M,H>SS X>CB_W Y>NB Z>CB_S,True
+11,0,zone/other,H>DE_S X>LB_W Z>CB_S,H>DE_S X>CB_W Z>CB_S,True
+11,3,gap,H>DE_W X>CB_W Z>CB_S,H>FS X>CB_W Z>CB_S,True
+11,5,draw,H>NB X>LB_M Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+11,8,zone/other,H>LB_M X>CB_W Y>NB Z>SS,H>LB_M X>CB_W Y>NB Z>CB_S,True
+11,9,zone/other,H>SS X>CB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+11,10,draw,H>NB X>FS Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+11,13,zone/other,H>NB X>LB_M Z>CB_W,H>NB X>CB_S Z>CB_W,True
+11,15,zone/other,H>NB X>CB_W Z>SS,H>NB X>CB_W Z>CB_S,True
+11,20,zone/other,H>LB_W X>CB_W Z>LB_M,H>LB_W X>CB_W Z>CB_S,True
+11,23,draw,H>NB X>CB_W Z>CB_S,H>NB X>CB_W Z>LB_W,True
+11,25,zone/other,H>LB_W X>FS Y>SS Z>LB_M,H>LB_W X>CB_S Y>SS Z>LB_M,True
+11,30,gap,X>LB_M,X>LB_M,False
+11,32,gap,H>DE_S X>CB_W Y>LB_M Z>CB_S,H>SS X>CB_W Y>LB_M Z>CB_S,True
+11,34,zone/other,H>DB X>CB_W Y>CB_S Z>LB_M,H>DB X>FS Y>CB_S Z>LB_M,True
+11,35,gap,X>CB_W,X>CB_W,False
+11,36,zone/other,H>LB_W X>CB_W Y>LB_S Z>CB_S,H>LB_W X>CB_W Y>FS Z>CB_S,True
+11,37,draw,H>SS X>LB_W Y>NB Z>CB_S,H>SS X>CB_W Y>NB Z>CB_S,True
+11,40,zone/other,H>FS X>CB_W Z>LB_S,H>FS X>CB_W Z>CB_S,True
+11,45,zone/other,X>CB_W Z>SS,X>CB_W Z>CB_S,True
+11,46,zone/other,H>NB X>CB_W Z>SS,H>NB X>CB_W Z>CB_S,True
+11,50,zone/other,H>CB_S X>DB Z>SS,H>CB_S X>CB_W Z>SS,True
+11,56,zone/other,H>LB_M X>CB_S Y>SS Z>LB_W,H>LB_M X>CB_S Y>SS Z>LB_W,False
+11,60,draw,H>CB_S X>LB_M Y>SS Z>NB,H>CB_S X>CB_W Y>SS Z>NB,True
+11,65,zone/other,H>NB X>LB_M Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+11,74,gap,X>LB_M,X>LB_M,False
+11,75,zone/other,X>CB_S Z>SS,X>CB_S Z>CB_W,True
+11,76,zone/other,H>SS X>LB_M Y>NB Z>CB_S,H>SS X>CB_W Y>NB Z>CB_S,True
+11,78,zone/other,H>SS X>CB_W Y>NB Z>LB_W,H>SS X>CB_W Y>NB Z>CB_S,True
+11,80,zone/other,H>LB_W X>CB_W Z>LB_M,H>SS X>CB_W Z>CB_S,True
+11,81,gap,H>SS X>CB_W Z>CB_S,H>SS X>CB_W Z>CB_S,False
+11,82,gap,H>DE_W X>CB_W Y>SS Z>CB_S,H>DE_W X>CB_W Y>SS Z>CB_S,False
+11,83,zone/other,H>NB X>LB_M Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+11,85,zone/other,H>NB X>LB_W Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+11,87,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+11,89,gap,H>CB_S X>CB_W Z>LB_S,H>CB_S X>CB_W Z>FS,True
+11,90,zone/other,X>CB_S Z>SS,X>CB_S Z>CB_W,True
+11,91,zone/other,H>LB_W X>CB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+11,94,zone/other,X>CB_W Z>SS,X>CB_W Z>CB_S,True
+11,97,draw,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+11,104,zone/other,H>NB X>CB_W Y>LB_M Z>SS,H>NB X>CB_W Y>CB_S Z>SS,True
+11,106,zone/other,H>CB_S X>LB_W Y>SS Z>LB_M,H>CB_S X>CB_W Y>SS Z>LB_M,True
+11,108,zone/other,H>CB_S X>LB_M Z>LB_W,H>CB_S X>CB_W Z>LB_W,True
+11,111,zone/other,H>SS X>LB_M Y>NB Z>CB_S,H>SS X>CB_W Y>NB Z>CB_S,True
+11,113,gap,H>LB_W X>CB_W Y>CB_S Z>DE_S,H>LB_W X>CB_W Y>CB_S Z>SS,True
+13,1,gap,X>CB_S Z>DE_W,X>CB_S Z>DE_W,False
+13,2,zone/other,H>SS X>CB_W Z>LB_W,H>NB X>CB_W Z>FS,True
+13,13,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+13,14,zone/other,H>NB X>LB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+13,15,gap,H>LB_M X>DE_S Y>SS Z>CB_S,H>LB_M X>CB_W Y>SS Z>CB_S,True
+13,16,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+13,17,zone/other,H>SS X>CB_W Z>LB_M,H>NB X>CB_W Z>CB_S,True
+13,19,zone/other,H>SS X>FS Z>CB_S,H>NB X>CB_W Z>CB_S,True
+13,21,zone/other,X>CB_W Z>LB_M,X>CB_W Z>CB_S,True
+13,22,zone/other,F>SS X>DE_S,F>SS X>CB_W,True
+13,23,zone/other,H>DE_S X>CB_W Y>LB_M Z>CB_S,H>SS X>CB_W Y>LB_M Z>CB_S,True
+13,25,zone/other,X>CB_W Z>SS,X>CB_W Z>CB_S,True
+13,28,zone/other,X>CB_W Z>SS,X>CB_W Z>CB_S,True
+13,31,zone/other,H>LB_W X>CB_W Z>SS,H>LB_W X>CB_W Z>CB_S,True
+13,32,zone/other,H>SS X>CB_W Z>LB_M,H>SS X>CB_W Z>CB_S,True
+13,33,zone/other,H>SS X>LB_M Z>CB_S,H>SS X>CB_W Z>CB_S,True
+13,35,zone/other,H>FS X>CB_W Z>LB_M,H>FS X>CB_W Z>CB_S,True
+13,37,gap,H>DE_W X>CB_W Y>NB Z>CB_S,H>DE_W X>CB_W Y>NB Z>FS,True
+13,38,zone/other,H>SS X>CB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+13,45,gap,H>DE_W X>CB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+13,46,draw,H>SS X>LB_M Y>NB Z>CB_S,H>SS X>CB_W Y>NB Z>CB_S,True
+13,47,zone/other,H>NB X>LB_M Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+13,52,zone/other,H>LB_W X>CB_W Y>NB Z>CB_S,H>LB_W X>CB_W Y>CB_S Z>SS,True
+13,55,draw,H>NB X>LB_M Y>SS Z>CB_S,H>NB X>CB_W Y>SS Z>CB_S,True
+13,56,zone/other,H>FS X>CB_W Z>NB,H>FS X>CB_W Z>CB_S,True
+13,58,zone/other,H>LB_W X>CB_W Z>CB_S,H>NB X>CB_W Z>CB_S,True
+13,60,zone/other,X>CB_W Z>CB_S,X>CB_W Z>FS,True
+13,61,zone/other,H>DB X>LB_M Y>NB Z>CB_S,H>DB X>CB_W Y>NB Z>CB_S,True
+13,66,zone/other,X>CB_W Z>SS,X>CB_W Z>CB_S,True
+13,68,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+13,69,draw,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+13,70,zone/other,,,False
+13,73,zone/other,X>CB_W Z>LB_M,X>CB_W Z>CB_S,True
+13,74,gap,H>NB X>CB_W Z>CB_S,H>NB X>CB_W Z>CB_S,False
+13,76,zone/other,X>LB_M Z>CB_S,X>CB_W Z>CB_S,True
+13,78,zone/other,H>LB_W X>LB_M Y>SS Z>CB_S,H>LB_W X>CB_W Y>SS Z>CB_S,True
+13,80,zone/other,H>SS X>LB_W Z>CB_S,H>SS X>CB_W Z>CB_S,True
+13,88,zone/other,H>SS X>NB Z>CB_S,H>SS X>CB_W Z>CB_S,True
+13,96,zone/other,X>LB_W Z>CB_S,X>CB_W Z>CB_S,True
+13,98,zone/other,X>LB_W Z>SS,X>CB_W Z>SS,True
+13,100,zone/other,H>SS X>DB Z>CB_S,H>SS X>CB_W Z>CB_S,True
+13,101,zone/other,H>SS X>CB_W Z>CB_S,H>SS X>CB_W Z>CB_S,False
+13,103,gap,H>NB X>CB_W Z>LB_M,H>NB X>CB_W Z>FS,True
+13,108,gap,H>LB_M X>CB_W Z>DE_W,H>LB_M X>CB_W Z>DE_W,False
