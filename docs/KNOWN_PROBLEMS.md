@@ -2503,6 +2503,15 @@ From #193's open list:
   hook on Y trails 4 yd underneath the same way. Same failure as deep man
   (G3): the carrier lets the stem eat his cushion without counting the time
   his body needs to turn and reach the receiver's speed.
+  - The direction-free start composition (#353) exposes the same hook
+    handoff in the legacy-alignment panel: the lane drive reverses downhill
+    before the carry admits the advancing stem, leading to a harder torso
+    collision. The repair gathers depth while squeezing that unresolved
+    stem's lane, without depth feedforward. An already acquired plant, stop
+    or crossing release restores the lane drive; normal vertical carry,
+    spot drops and the physical start remain separate. An earlier treatment
+    which retained positive depth feedforward opened the opposing hitch and
+    was rejected. This does not repair the wider-slot band omission above.
 - with `PASS_KICK` on (#215), the Quarter Flat #3-away scene loses its
   released #3 again: the back's flat release is walled behind the weak
   tackle's vertical kick and is 3.7 yd behind the line at 2.8 s

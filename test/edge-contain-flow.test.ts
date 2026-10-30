@@ -20,8 +20,30 @@ describe('an engaged edge past his containment bound', () => {
       if (m.command.vel.y * side > 1e-6) wider++;
     });
     sim.run();
-    // Without the bound holding the read flow, 45 of 98 (flip false) and 56 of 67 (flip true) such ticks ask wider.
+    // Without the bound holding the read flow, 27 of 63 (flip false) and 54 of 65 (flip true) such ticks ask wider (develop 0ab4bf39).
     expect(past).toBeGreaterThan(0);
     expect(wider).toBe(0);
+  });
+
+  it('wide zone weak (ace, seed 2): widens freely inside his bound, stops at it, and still works back inward', () => {
+    const sim = new PlaySim(nativeTraceSetup({ coverage: 'cover3_buzz', concept: 'wz_weak', seed: 2, roster: 7, formation: 'ace_11', flip: true }));
+    const n = { inside: 0, insideWider: 0, past: 0, pastWider: 0, pastInward: 0 };
+    runContactObservers.set(sim, (e, kind, x) => {
+      if (kind !== 'defender-movement') return;
+      const d = e.defender, side = d.runFit?.side ?? 0;
+      const m = x as { contain?: number; trail?: boolean; workOff?: boolean; squeeze: number; command: { vel: { y: number } } };
+      if (m.contain === undefined || m.trail || m.workOff || m.squeeze || !side) return;
+      const v = m.command.vel.y * side;
+      if ((d.pos.y - m.contain) * side <= 0) { n.inside++; if (v > 1e-6) n.insideWider++; }
+      else { n.past++; if (v > 1e-6) n.pastWider++; if (v < -1e-6) n.pastInward++; }
+    });
+    sim.run();
+    // The ordinary request is untouched inside the bound, and an inward one is kept past it: only the outward
+    // held flow past the bound is dropped. With the bound: 22 / 22 inside ask wider; 0 of 42 past it, 12 inward.
+    expect(n.inside).toBeGreaterThan(0);
+    expect(n.insideWider).toBe(n.inside);
+    expect(n.past).toBeGreaterThan(0);
+    expect(n.pastWider).toBe(0);
+    expect(n.pastInward).toBeGreaterThan(0);
   });
 });

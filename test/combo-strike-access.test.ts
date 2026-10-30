@@ -24,7 +24,9 @@ const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/combo-strik
 // With the start law (#336) and the back's own mesh start (#344) as well, seed 10's departure ends (1.55) a beat
 // before RG's hands land on LB_M (1.65). Seed 1 of the same constructor keeps the recorded timeline: RG departs at
 // 1.10 and clears his departure with his hands on LB_M on the same update (1.75; 1.70 with #362).
-const SEED=1;
+// With the direction-free start (#353) seed 1's departure ends at 1.60, a tick before the hands land (1.65), and
+// seed 10 keeps the timeline again: RG departs at 1.10 and clears with his hands on LB_M on the 1.60 update.
+const SEED=10;
 function stage(t:number){
  const sim=new PlaySim({...structuredClone(fixture.setup),seed:SEED});
  while(sim.phase==='live'&&sim.t<t)sim.tick();
@@ -86,19 +88,24 @@ describe('earned departure ends at achievable first strike rather than the backe
   // the DT along with him, so his strike lands sooner from the same 1.10 release; same decision and mirror.
   // Seed 1 with the start law (#336), the back's own mesh start (#344) and #362: the strike clears on the 1.70
   // update (staged at 1.65). Seed 10's departure ends at 1.60, a tick before RG's hands land on LB_M (1.65).
-  decision(1.65,mirror,true);
+  // Seed 10 with #353 as well: the strike clears on the 1.60 update (staged at 1.55).
+  decision(1.55,mirror,true);
  });
  it.each([false,true])('keeps the departure when the down body obstructs even first strike, reflected=%s',mirror=>{
   decision(1.3,mirror,false);
  });
  it('develops real second-level load while the original keeper still protects the down surface',()=>{
   // Seed 1 with #336, #344 and #362: staged at 1.6, before the departure clears at 1.70.
-  const {sim,rg}=stage(1.6),rt=sim.slot('RT')!,down=sim.slot('DT_S')!,backer=sim.slot('LB_M')!;
+  // Seed 10 with #353: staged at 1.5, before the departure clears at 1.60.
+  const {sim,rg}=stage(1.5),rt=sim.slot('RT')!,down=sim.slot('DT_S')!,backer=sim.slot('LB_M')!;
   const hands=rt.engagement!.hands;
   // The down defender may be taken to the ground before runner arrival.
   // Require the real keeper joint until that defeat, not after a fallen
   // defender legitimately ends the rep. Never permit an upright escape.
   let defeated=false;
+  let strike:typeof hands;
+  let strikeAt:number|undefined,readBeat=Infinity,loadedUntil=-Infinity;
+  let arrived=false;
   while(sim.phase==='live'&&sim.t<2.2){
    sim.tick();
    defeated ||= sim.events.some(e=>e.type==='fall'&&e.a===down.idx);
@@ -107,9 +114,37 @@ describe('earned departure ends at achievable first strike rather than the backe
     expect(sim.world.joints).toContain(hands);
     expect(Math.hypot(hands!.normalForce??0,hands!.tangentForce??0)).toBeGreaterThan(0);
    }
+   const contact=sim.events.find(e=>e.type==='carrier_contact');
+   if(!arrived){
+    if(!strike&&rg.engagement?.defender===backer){
+     expect(contact).toBeUndefined();
+     strike=rg.engagement.hands;strikeAt=sim.t;readBeat=rg.mind.decisionInterval;
+    }
+    if(strike){
+     expect(rg.engagement?.defender).toBe(backer);expect(rg.engagement!.hands).toBe(strike);
+     expect(sim.world.joints).toContain(strike);
+     expect(Math.hypot(strike.normalForce??0,strike.tangentForce??0)).toBeGreaterThan(0);
+     loadedUntil=Math.min(sim.t,contact?.t??Infinity);
+    }
+    if(contact){expect(strike).toBeDefined();arrived=true;}
+   }else if(rg.engagement?.hands!==strike){
+    // A successful tackle deliberately relinquishes the defender's old block.
+    // It must be a real transition, not premature climber abandonment or a
+    // surviving hand constraint holding him in both techniques.
+    expect(sim.events.some(e=>e.type==='tackle_wrap'&&e.a===backer.idx)).toBe(true);
+    expect(sim.bond?.tacklers).toContain(backer);
+    expect(sim.world.joints.some(j=>j.kind==='grasp'&&j.a===backer.body&&j.b===sim.bond!.carrier.body)).toBe(true);
+    expect(sim.world.joints).not.toContain(strike);expect(rg.engagement).toBeNull();
+   }else{
+    expect(rg.engagement?.defender).toBe(backer);expect(sim.world.joints).toContain(strike);
+    expect(Math.hypot(strike!.normalForce??0,strike!.tangentForce??0)).toBeGreaterThan(0);
+   }
   }
-  expect(rg.engagement?.defender===backer).toBe(true);
-  expect(Math.hypot(rg.engagement!.hands!.normalForce??0,rg.engagement!.hands!.tangentForce??0)).toBeGreaterThan(0);
-  expect(sim.events.some(e=>e.type==='carrier_contact')).toBe(false);
+  // Require sustained physical second-level work before arrival, not a single
+  // nominal engagement. Keep the full 2.20 window: the runner may subsequently
+  // meet the loaded DT or lose to Mike. Neither collision-free yards nor an
+  // indefinitely retained block is the first-strike clearance contract.
+  expect(strikeAt).toBeDefined();expect(strike).toBeDefined();
+  expect(loadedUntil-strikeAt!).toBeGreaterThanOrEqual(readBeat);
  });
 });

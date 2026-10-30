@@ -28,7 +28,7 @@ function prefix(hooks?: GameHooks, runOnly?: true) {
   const game = new Game(home, away, { seed: gameSeed, record: true, recordLevel: 'light', hooks, ...(runOnly ? { runOnly } : {}) });
   game.kickoffToStart();
   const steps = new Map<number, number>();
-  for (let step = 1; step <= 4; step++) {
+  for (let step = 1; step <= 6; step++) {
     game.step();
     for (const p of game.result().log) if (!steps.has(p.index)) steps.set(p.index, step);
   }
@@ -48,7 +48,8 @@ describe('selected film constructor sidecar', () => {
     reference = prefix(scout.hooks);
     const native = reference.result.log.filter(p => p.replay && !p.nullified && ['run', 'pass'].includes(p.kind));
     expect(native.length).toBeGreaterThanOrEqual(3);
-    // Frozen before the capture arm: two endpoints of a four-step prefix,
+    // Frozen before the capture arm: two endpoints of a six-step prefix (five until the squeeze read,
+    // which with the containment bound left two native plays in five steps),
     // leaving a native play unselected. This tests identity, not football merit.
     films = [native[0], native.at(-1)!];
     const capture = selectedInputCapture(new Set(films.map(p => p.index)));
@@ -73,11 +74,12 @@ describe('selected film constructor sidecar', () => {
     const { home, away } = teams();
     manifest = { schemaVersion: 1, selectionVersion: 'film-pack-v1', seed, gameCount: number,
       telemetry: 'light', source: { ...identity, developCommit: identity.commit, headCommit: identity.commit,
-        engineDirty: false, measurementSha256: 'declared-four-step-test-fixture',
+        engineDirty: false, measurementSha256: 'declared-six-step-test-fixture',
         inputSha256: bytesHash(Buffer.from(JSON.stringify({ seed, games: number, home, away }))) },
       selection: selection.selection, plays: selection.plays, parts: [],
       beforeAfter: { status: 'reserved-for-F2', targetPairs: 20, pairs: [], note: 'test fixture' } };
-  });
+  // Two six-step game prefixes: about 8 s alone, past Vitest's default 10 s hook limit under a full parallel run.
+  }, 60_000);
 
   function pack(test: (dir: string) => void, changeManifest?: (m: FilmPackManifest) => void,
     changeClips?: (clips: ReturnType<typeof packReplayPlay>[]) => void) {
@@ -141,7 +143,7 @@ describe('selected film constructor sidecar', () => {
   });
 
   it('automatically writes the selected sidecar without changing deterministic film selection in a bounded builder fixture', () => {
-    // Exercise the real builder/renderer/capture wiring on declared four-step
+    // Exercise the real builder/renderer/capture wiring on declared six-step
     // native prefixes. This is not the existing full-game CLI acceptance test.
     const play = vi.spyOn(Game.prototype, 'play').mockImplementation(function (this: Game) {
       this.kickoffToStart();
