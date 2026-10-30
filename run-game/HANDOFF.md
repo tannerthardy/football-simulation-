@@ -223,6 +223,11 @@ Priority order. Each item has a measure and a stopping rule.
    `a97cbc0e`) = worker fix `702250b0` + Coverage wording cleanup on develop `1645abf1`. Never merge `5a275fc2`
    alone onto #384. The adverse power shift (5.88 → 0.35) is a loaded block (LG on DE_S, 2.10–2.60) followed by an
    existing-model engaged tackle, not a kick defect. Publication waits on Tanner's explicit permission to open the PR.
+   **Update (2026-10-30 15:42Z, comment 6526858036):** #388 (Defense's in-box pre-read and observed-puller fill) is
+   merged at develop `f473b65a`; it excludes all #385 and correction code. #385 is still HOLD. The corrected
+   composition (`7d5d2233` / `702250b0`) was accepted only on `1645abf1`, so it must be re-composed and requalified
+   on `f473b65a`, reusing its positive and adverse controls. Publishing the correction PR still needs Tanner's own
+   permission.
    Fix in `blocking.ts`'s kick fit, not the end: do not project past where the seen deceleration stops him, or
    shorten or anchor the horizon while he slows. Then rerun the power check above and the counter card (E0/F0
    bases), and add the native power case as a recorded test.
