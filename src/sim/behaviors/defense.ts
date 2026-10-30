@@ -112,8 +112,6 @@ const STEP_SEEN = 0.3;
  * the field: his key, an arm's length away and straight ahead of him (as a
  * rusher keys the quarterback). */
 const KEY_DELAY = 0.5;
-/** How wide of an edge rusher the end of the line can be and still be his key (yd). */
-const EDGE_KEY = 3;
 /** How far outside the down blocker's body an edge keeps his own body as he closes (yd). */
 const HIP_GAP = 0.35;
 /** How far into the backfield a squeezed edge sets up to meet a kick-out (yd); tracked play-side ends are 0.3-0.5 yd deep by 1.5-2.0 s. */
@@ -122,15 +120,15 @@ const SET_DEPTH = 0.4;
 /** The blocker on the surface in front of a rusher, as he sees the line: the
  * nearest one laterally, read as his key. An interior man keys the blocker
  * within a yard and a half; an edge keys the end of the line inside him,
- * often wider away than that. */
-function manInFront(sim: PlaySim, a: Agent, reach = 1.5): (Perceived & { home: Vec2 }) | null {
-  let best: Agent | null = null, bd = Infinity;
-  for (const b of linePicture(sim, a).surface) {
+ * however wide he aligns (a wide 9 still reads his tackle). */
+function manInFront(sim: PlaySim, a: Agent, reach = 1.5, held: Agent | null = null): (Perceived & { home: Vec2; agent: Agent }) | null {
+  let best: Agent | null = held, bd = Infinity;
+  if (!best) for (const b of linePicture(sim, a).surface) {
     const dy = Math.abs(b.seen.pos.y - a.pos.y);
     if (dy <= reach && dy < bd) { best = b.agent; bd = dy; }
   }
   // Where he lined up is the pre-snap picture every defender has.
-  return best ? { ...sim.see(a, best, KEY_DELAY), home: sim.offAlign.spots[best.slot]!.pos } : null;
+  return best ? { ...sim.see(a, best, KEY_DELAY), home: sim.offAlign.spots[best.slot]!.pos, agent: best } : null;
 }
 
 export class PassRusher implements Behavior {
@@ -139,6 +137,10 @@ export class PassRusher implements Behavior {
   /** Own contact with the line, not a chip from a back or receiver.
    * Once past the opening lane and free, finish instead of restarting it. */
   private workedLineBlock = false;
+  /** The end of the line an edge keyed: he keeps reading that man. A down
+   * block steps away from him, and that step is the cue, not a reason to
+   * lose his key. */
+  private keyed: Agent | null = null;
   /** Pre-snap rush plan from his tools. */
   readonly plan: 'power' | 'finesse' | 'speed';
   constructor(
@@ -185,7 +187,8 @@ export class PassRusher implements Behavior {
     // set stands up and gives ground and leaves the rush as it is. His own picture of the blocker; what
     // the blocker means to do is not his to know, so a play-action line fools him.
     const onEdge = this.gap === 'C' || this.gap === 'D';
-    const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? EDGE_KEY : 1.5) : null;
+    const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? Infinity : 1.5, onEdge ? this.keyed : null) : null;
+    if (onEdge && man) this.keyed = man.agent;
     const runStep = !!man && man.stance === 'low' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > STEP_SEEN;
     // An edge keeps his outside against a reach. A man in front blocking down,
     // stepping inside away from him, opens his gap to a kick-out or a pulling
