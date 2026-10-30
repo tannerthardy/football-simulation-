@@ -1237,9 +1237,15 @@ export class RunBlocker implements Behavior {
               return carrier != null && carrier !== sim.qb.idx
                 && (read!.seen.pos.x + read!.seen.vel.x * beat - ball.x - ballVel.x * beat) * dir < 0;
             })();
+          // A kick man closing along the line is fit once he is in front of
+          // the puller, a beat ahead at the speed he sees, not after the
+          // puller reaches his flat-leg corner beneath him.
+          const contact = a.profile.radius + read.target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
+          const inFront = plan.pullRole === 'kick'
+            && Math.abs(read.seen.pos.y + read.seen.vel.y * lead - a.pos.y) < contact + .5;
           const fit = away ? distance < 1.2 && (read.seen.pos.x - a.pos.x) * dir > 0
             : plan.pullRole === 'lead' ? distance < 1.2
-            : (plan.pullRole === 'kick' && this.pullIdx >= 2) || approachingDepth < sim.los || distance < 1.2;
+            : (plan.pullRole === 'kick' && this.pullIdx >= 2) || inFront || approachingDepth < sim.los || distance < 1.2;
           if (this.pullCleared && fit)
             return this.attack(a, sim, read.target, read.seen);
           if (away) read = null;
@@ -1803,7 +1809,21 @@ export class RunBlocker implements Behavior {
       aim = { x: seen.pos.x - 0.35, y: seen.pos.y + side * 0.55 };
     } else if (a.tags.has('block-log')) aim = {x:seen.pos.x-.3,y:seen.pos.y-plan.drive.y*.65};
     else if (plan.kind === 'reach' || plan.kind === 'cutoff') aim = { x: seen.pos.x - 0.3, y: seen.pos.y + plan.drive.y * 0.6 };
-    else if (plan.kind === 'down') aim = { x: seen.pos.x - 0.2, y: seen.pos.y - plan.drive.y * 0.4 };
+    else if (plan.kind === 'down') {
+      // A down or back block fits the shoulder the man would run through to
+      // the ball, where he will be when this body gets there, as the kick
+      // fits the end: between him and the ball he sees. Aimed at his spot, a
+      // center blocking back on a tackle firing into the pulled guard's
+      // vacated spot met him beside his track, upfield of the line, and the
+      // tackle ran past his hip into the backfield. Tracked centers stay
+      // flat, half a yard in front of him and on his play-side hip.
+      const at = interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
+        (tt) => ({ x: seen.pos.x + seen.vel.x * tt, y: seen.pos.y + seen.vel.y * tt }),
+        { horizon: 1.0, step: .05, radius: a.profile.radius + target.profile.radius }).point;
+      const ref = this.workReference(a, sim), dx = ref.x - at.x, dy = ref.y - at.y, n = Math.hypot(dx, dy);
+      const sep = a.profile.radius + target.profile.radius;
+      aim = n > sep ? { x: at.x + dx / n * sep, y: at.y + dy / n * sep } : { x: at.x - 0.2, y: at.y - plan.drive.y * 0.4 };
+    }
     else if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
       // Climbs and leads intercept: aim where the backer will be when this
       // body can get there (his seen motion carried forward, our own reach
@@ -1832,9 +1852,15 @@ export class RunBlocker implements Behavior {
       // the end's own velocity let a penetrating end drag the puller 6 yd
       // deep while still 3-5 yd away laterally, never touching him (G1 P031).
       // Going for his path to the runner meets him wherever he comes from.
-      const ref = this.workReference(a, sim), dx = ref.x - seen.pos.x, dy = ref.y - seen.pos.y, n = Math.hypot(dx, dy);
+      // Where he will be when this body gets there, a short beat ahead: an
+      // end squeezing along the line crossed in front of a puller who fit
+      // his seen spot and passed under him.
+      const at = plan.pullRole === 'kick' ? interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
+        (tt) => ({ x: seen.pos.x + seen.vel.x * tt, y: seen.pos.y + seen.vel.y * tt }),
+        { horizon: .6, step: .05, radius: a.profile.radius + target.profile.radius }).point : seen.pos;
+      const ref = this.workReference(a, sim), dx = ref.x - at.x, dy = ref.y - at.y, n = Math.hypot(dx, dy);
       const sep = a.profile.radius + target.profile.radius + .15;
-      const shoulder = n > sep ? { x: seen.pos.x + dx / n * sep, y: clamp(seen.pos.y + dy / n * sep + placementError, .5, FIELD_WIDTH - .5) }
+      const shoulder = n > sep ? { x: at.x + dx / n * sep, y: clamp(at.y + dy / n * sep + placementError, .5, FIELD_WIDTH - .5) }
         : { x: aim.x-.25, y: aim.y-(Math.sign(plan.drive.y) || 1)*.45 };
       return track(a, shoulder, { x: 0, y: 0 }, { speed: .95, gain: 3, facing });
     }
