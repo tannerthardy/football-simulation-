@@ -120,7 +120,10 @@ describe('earned departure ends at achievable first strike rather than the backe
      expect(contact).toBeUndefined();
      strike=rg.engagement.hands;strikeAt=sim.t;readBeat=rg.mind.decisionInterval;
     }
-    if(strike){
+    // On the arrival tick itself the backer may already have come off the climber to
+    // wrap the runner (seed 10 with the backer fill: carrier contact and LB_M's wrap
+    // at 2.00); the tackle transition below verifies that, from the next tick.
+    if(strike&&!(contact&&rg.engagement?.hands!==strike)){
      expect(rg.engagement?.defender).toBe(backer);expect(rg.engagement!.hands).toBe(strike);
      expect(sim.world.joints).toContain(strike);
      expect(Math.hypot(strike.normalForce??0,strike.tangentForce??0)).toBeGreaterThan(0);

@@ -25,8 +25,8 @@ describe('an engaged edge past his containment bound', () => {
     expect(wider).toBe(0);
   });
 
-  it('wide zone weak (ace, seed 2): widens freely inside his bound, stops at it, and still works back inward', () => {
-    const sim = new PlaySim(nativeTraceSetup({ coverage: 'cover3_buzz', concept: 'wz_weak', seed: 2, roster: 7, formation: 'ace_11', flip: true }));
+  it('wide zone strong (ace, seed 2): widens freely inside his bound, stops at it, and still works back inward', () => {
+    const sim = new PlaySim(nativeTraceSetup({ coverage: 'cover3_buzz', concept: 'wz_strong', seed: 2, roster: 7, formation: 'ace_11', flip: false }));
     const n = { inside: 0, insideWider: 0, past: 0, pastWider: 0, pastInward: 0 };
     runContactObservers.set(sim, (e, kind, x) => {
       if (kind !== 'defender-movement') return;
@@ -39,7 +39,8 @@ describe('an engaged edge past his containment bound', () => {
     });
     sim.run();
     // The ordinary request is untouched inside the bound, and an inward one is kept past it: only the outward
-    // held flow past the bound is dropped. With the bound: 22 / 22 inside ask wider; 0 of 42 past it, 12 inward.
+    // held flow past the bound is dropped. With the bound: 37 / 37 inside ask wider; 0 of 9 past it, 7 inward.
+    // (Wide zone weak, flip, seed 2 was this case until the line read squeezed its backside end from 0.75 s.)
     expect(n.inside).toBeGreaterThan(0);
     expect(n.insideWider).toBe(n.inside);
     expect(n.past).toBeGreaterThan(0);

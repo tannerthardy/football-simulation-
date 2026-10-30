@@ -2,7 +2,9 @@
  * sees the guard beside him pull works across his blocker's face toward the
  * pull and follows it, instead of holding a shoulder that slides with the
  * block. A lineman stepping across at his own depth is not a pull, and a
- * declared runner still owns the aim. Off: the installed shoulder. */
+ * declared runner still owns the aim. Off: the installed shoulder. The squeeze
+ * reads a pull too (lineRead); it is held off here so the two arms isolate the
+ * chase, and has its own tests. */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import type { Agent } from '../src/sim/agent.js';
@@ -15,6 +17,7 @@ afterEach(() => { vi.restoreAllMocks(); vi.unstubAllEnvs(); vi.resetModules(); }
  * the center's cutoff drives the tackle the other way. */
 async function read(enabled: boolean, pull: number, back = .4) {
   vi.stubEnv('DL_CHASE', enabled ? '1' : '0'); vi.stubEnv('PULL_EARLY', '1'); vi.stubEnv('PULL_CUE', '0');
+  vi.stubEnv('DL_SQUEEZE', '0');
   vi.resetModules();
   const { contactCommands, contactFixture } = await import('../scripts/diag/run-contact-technique.js');
   const { runContactObservers } = await import('../src/sim/run-contact-observer.js');
