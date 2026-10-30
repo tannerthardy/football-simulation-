@@ -116,7 +116,7 @@ describe('earned combination-to-climb execution in the coupled World',()=>{
    expect(Math.hypot(keeperHands!.normalForce??0,keeperHands!.tangentForce??0)).toBeGreaterThan(1);
    expect(f.sim.events.some(e=>e.type==='tackle_wrap')).toBe(false);
    expect(rb.body.support!.state).toBe('up');
-   if(rb.pos.x>f.defender.pos.x){passed=true;break;}
+   if(rb.pos.x>f.sim.los){passed=true;break;}
   }
   // The climber has the backer loaded while the runner is still well short
   // of him, and the keeper holds the down man until the runner reaches the
@@ -124,9 +124,13 @@ describe('earned combination-to-climb execution in the coupled World',()=>{
   // scraping backer with and takes him where he is going; this scripted
   // runner holds a fixed line into that scrape rather than cutting off the
   // block, so the scene ends at the first level, not past the backer.
+  // The first level is the line of scrimmage, not the down man's current
+  // depth: a keeper who drives the down man back (or a down man squeezing
+  // across him) must not lengthen the scene into the backer's scrape spot.
   expect(loaded).toBe(true);
   expect(loadedAhead).toBeGreaterThan(4);
   expect(passed).toBe(true);
+  expect(f.helper.engagement?.defender).toBe(f.backer);
   expect(f.helper.engagement?.defender===f.backer).toBe(true);
  });
 });

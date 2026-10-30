@@ -140,11 +140,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.setupSha256).toBe('fc7f58f199912f3255588696ab79ee4b5c57cef717b550601f349412119eba81');
     // With the start law (#336), the back's own mesh start (#344) and the off-hip climb (#362), C released at 1.0 and
     // reached LB_W without a reread. With the direction-free start (#353) as well he releases at 0.95 and rereads at
-    // 1.35 again; the release/reread/load contract is also on M10-P081 below.
-    const release = changeOf(p, 'C', 'combination-release', 0.95)[0];
+    // 1.35 again; the release/reread/load contract is also on M10-P081 below. With the squeeze read (DL_SQUEEZE from
+    // a seen carrier's track) as well, the release comes at 1.05 and the reread at 1.25; C still loads LB_M first.
+    const release = changeOf(p, 'C', 'combination-release', 1.05)[0];
     expect(release.after).toMatchObject({ kind: 'climb' });
     expect(p.slot(release.before.target)).toBe('DT_S'); expect(p.slot(release.after.target)).toBe('LB_W');
-    const reread = changeOf(p, 'C', 'threat-reread', 1.35)[0];
+    const reread = changeOf(p, 'C', 'threat-reread', 1.25)[0];
     expect(p.slot(reread.before.target)).toBe('LB_W'); expect(p.slot(reread.after.target)).toBe('LB_M');
     const c = p.d.actors.findIndex(a => a.slot === 'C');
     const loaded = p.d.rows.filter(r => r.actor === c && r.t > release.t).flatMap(r => r.hands.filter(h => h.loaded).map(h => p.slot(h.defender)));
@@ -238,13 +239,15 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(threats.map(c => [p.slot(c.before.target), p.slot(c.after.target), c.after.kind])).toEqual([['SS', 'LB_W', 'reach']]);
   });
 
-  it('R9-P020: the first carrier contact keeps both defenders tied', () => {
+  it('R9-P020: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
     // A run-only capture of develop db6bc472, recorded for #336 + #344 with develop 90daa454 (#362) merged, when
-    // M7-P051 stopped tying: LB_M and LB_W reach the carrier on the same tick (2.55). With the direction-free
-    // start (#353), DT_W and LB_M tie at 2.45.
+    // M7-P051 stopped tying: LB_M and LB_W reached the carrier on the same tick (2.55). With the direction-free
+    // start (#353), DT_W and LB_M tied at 2.45. With the squeeze read (DL_SQUEEZE from a seen carrier's track) the run
+    // goes further and CB_S alone makes first contact at 5.05, wrapping with it. The natural tie is on M25-P032; the
+    // census rule itself is pinned on the staged case below.
     const p = play('R9-P020'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.45);
-    expect(first.defenders.map(p.slot).sort()).toEqual(['DT_W', 'LB_M']);
+    expect(first.t).toBe(5.05);
+    expect(first.defenders.map(p.slot)).toEqual(['CB_S']);
   });
 
   it('M7-P051: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
@@ -329,9 +332,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // RG's face from 2.2, carrying RG ~0.1 yd off the line LB_W rubbed him on at 2.55; LB_W clears RG, keeps his
     // pursuit angle and alone makes first contact at 2.9 (the back's path is unchanged until then); still not a tie.
     // With the direction-free start (#353) as well, DT_W alone at 2.15, wrapping with the contact; still not a tie.
-    expect(first.t).toBe(2.15);
-    expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.some(e => e.t === 2.15 && e.type === 'tackle_wrap' && p.slot(e.defender) === 'DT_W')).toBe(true);
+    // With the squeeze read (DL_SQUEEZE from a seen carrier's track) as well, the run scores and FS alone makes first
+    // contact at 3.85, wrapping with it; still not a tie.
+    expect(first.t).toBe(3.85);
+    expect(first.defenders.map(p.slot)).toEqual(['FS']);
+    expect(p.d.play.carrierEvents.some(e => e.t === 3.85 && e.type === 'tackle_wrap' && p.slot(e.defender) === 'FS')).toBe(true);
   });
 
   // With the back leaving the mesh on his own start (#344), these former QB keeps (S8-P054 and S10-P006 on develop,
