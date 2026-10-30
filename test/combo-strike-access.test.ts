@@ -26,13 +26,17 @@ const fixture=JSON.parse(gunzipSync(readFileSync(new URL('./fixtures/combo-strik
 // 1.10 and clears his departure with his hands on LB_M on the same update (1.75; 1.70 with #362).
 // With the direction-free start (#353) seed 1's departure ends at 1.60, a tick before the hands land (1.65), and
 // seed 10 keeps the timeline again: RG departs at 1.10 and clears with his hands on LB_M on the 1.60 update.
-const SEED=10;
+// With the box backer reading square before he moves and filling to the pull he sees, LB_M is ~0.18 yd shallower
+// at 1.55 and seed 10's departure clears at 1.60 a tick before the hands land (1.65). Seed 29 keeps the recorded
+// timeline: RG departs at 1.10 and clears with his hands on LB_M on the 1.60 update, so the stage times stay.
+// Agents are compared by slot so a failure reports the slot rather than diffing two whole agents.
+const SEED=29;
 function stage(t:number){
  const sim=new PlaySim({...structuredClone(fixture.setup),seed:SEED});
  while(sim.phase==='live'&&sim.t<t)sim.tick();
  const rg=sim.slot('RG')!,controller=rg.behavior as RunBlocker;
  expect(controller.plan.kind).toBe('climb');expect(controller.plan.departure).toBeDefined();
- expect(rg.engagement).toBeNull();expect(controller.target).toBe(sim.slot('LB_M'));
+ expect(rg.engagement).toBeNull();expect(controller.target?.slot).toBe('LB_M');
  return {sim,rg,controller};
 }
 function reflected(body:Body):Body{
@@ -65,9 +69,9 @@ function decision(t:number,mirror:boolean,expectClear:boolean){
   }
   update.call(controller,a,s);
   expect(controller.plan.departure===undefined).toBe(expectClear);
-  expect(controller.target).toBe(s.slot('LB_M'));
+  expect(controller.target?.slot).toBe('LB_M');
   if(expectClear){
-   expect(rg.engagement?.defender).toBe(s.slot('LB_M'));
+   expect(rg.engagement?.defender.slot).toBe('LB_M');
    expect(s.world.joints).toContain(rg.engagement!.hands);
   }else expect(rg.engagement).toBeNull();
   throw stop;
@@ -124,7 +128,7 @@ describe('earned departure ends at achievable first strike rather than the backe
     // wrap the runner (seed 10 with the backer fill: carrier contact and LB_M's wrap
     // at 2.00); the tackle transition below verifies that, from the next tick.
     if(strike&&!(contact&&rg.engagement?.hands!==strike)){
-     expect(rg.engagement?.defender).toBe(backer);expect(rg.engagement!.hands).toBe(strike);
+     expect(rg.engagement?.defender.slot).toBe(backer.slot);expect(rg.engagement!.hands).toBe(strike);
      expect(sim.world.joints).toContain(strike);
      expect(Math.hypot(strike.normalForce??0,strike.tangentForce??0)).toBeGreaterThan(0);
      loadedUntil=Math.min(sim.t,contact?.t??Infinity);
@@ -139,7 +143,7 @@ describe('earned departure ends at achievable first strike rather than the backe
     expect(sim.world.joints.some(j=>j.kind==='grasp'&&j.a===backer.body&&j.b===sim.bond!.carrier.body)).toBe(true);
     expect(sim.world.joints).not.toContain(strike);expect(rg.engagement).toBeNull();
    }else{
-    expect(rg.engagement?.defender).toBe(backer);expect(sim.world.joints).toContain(strike);
+    expect(rg.engagement?.defender.slot).toBe(backer.slot);expect(sim.world.joints).toContain(strike);
     expect(Math.hypot(strike!.normalForce??0,strike!.tangentForce??0)).toBeGreaterThan(0);
    }
   }
