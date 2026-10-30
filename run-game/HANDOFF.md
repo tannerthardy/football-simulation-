@@ -219,6 +219,10 @@ Priority order. Each item has a measure and a stopping rule.
    `c306f10a`, from the independent worker. Integration reproduced focused 35/35 and the native power hand-load
    check, and is preparing the final qualification. One adverse combined shift (5.88 → 0.35 yd despite sustained
    load) is under their adjudication. Run Game work after un-pause starts from this branch.
+   **Integration decision (05:35Z, comment 6515816782):** ACCEPT the corrected composition, local `7d5d2233` (tree
+   `a97cbc0e`) = worker fix `702250b0` + Coverage wording cleanup on develop `1645abf1`. Never merge `5a275fc2`
+   alone onto #384. The adverse power shift (5.88 → 0.35) is a loaded block (LG on DE_S, 2.10–2.60) followed by an
+   existing-model engaged tackle, not a kick defect. Publication waits on Tanner's explicit permission to open the PR.
    Fix in `blocking.ts`'s kick fit, not the end: do not project past where the seen deceleration stops him, or
    shorten or anchor the horizon while he slows. Then rerun the power check above and the counter card (E0/F0
    bases), and add the native power case as a recorded test.
