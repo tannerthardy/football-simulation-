@@ -22,7 +22,7 @@
  * spinning out of one grasp into another.
  */
 import { G } from '../core/units.js';
-import { clamp, type Vec2 } from '../core/vec.js';
+import { hypot2, clamp, type Vec2 } from '../core/vec.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { VirtualFoot } from './virtual-foot.js';
 
@@ -212,7 +212,7 @@ export function criticalDeviation(s: SupportParams, posture: number, feetLock: n
  */
 export function availability(sup: Support, s: SupportParams, fatigue: number): number {
   if (sup.state !== 'up') return 0;
-  const e = Math.hypot(sup.xi.x, sup.xi.y);
+  const e = hypot2(sup.xi.x, sup.xi.y);
   const rb = baseRadiusAt(s, sup.posture);
   if (e <= rb) return 1;
   const crit = criticalDeviation(s, sup.posture, sup.foot ? 0 : sup.feetLock, fatigue);
@@ -223,7 +223,7 @@ export function availability(sup: Support, s: SupportParams, fatigue: number): n
 /** Fraction of the fall threshold a deviation has reached (0 balanced, 1 falling). */
 export function deviationFraction(sup: Support, s: SupportParams, fatigue: number): number {
   if (sup.state !== 'up') return 1;
-  const e = Math.hypot(sup.xi.x, sup.xi.y);
+  const e = hypot2(sup.xi.x, sup.xi.y);
   const crit = criticalDeviation(s, sup.posture, sup.foot ? 0 : sup.feetLock, fatigue);
   return clamp(e / Math.max(1e-6, crit), 0, 1);
 }

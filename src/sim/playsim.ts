@@ -8,7 +8,7 @@
 import { FIELD_WIDTH, OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { Rng } from '../core/rng.js';
 import { DT } from '../core/units.js';
-import { clamp, dist, len, type Vec2, type Vec3 } from '../core/vec.js';
+import { hypot2, clamp, dist, len, type Vec2, type Vec3 } from '../core/vec.js';
 import { DRAG_SPIRAL, DRAG_TUMBLE, solveLaunch, stepFlight, type BallFlight } from '../physics/ball.js';
 import { handoffReach } from './ball-transfer.js';
 import { assessForwardPass, fumbleRecovery, fumbleOutOfBounds, looseBallBoundaryStep, momentumDeadBallSpot,
@@ -415,7 +415,7 @@ export class PlaySim {
       const intents: Intent[] = this.agents.map((a) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
       for (const [d,target] of targets) {
         const active = d === mug ? this.t>=-creep!.secondsBeforeSnap-1e-8 : !!stem && this.t>=-stem.secondsBeforeSnap-1e-8;
-        const dx=target.x-d.pos.x,dy=target.y-d.pos.y,length=Math.hypot(dx,dy);
+        const dx=target.x-d.pos.x,dy=target.y-d.pos.y,length=hypot2(dx,dy);
         const speed=active ? Math.min(d.profile.vmax*.45,length*3) : 0;
         intents[d.idx] = {vel:{x:length ? dx/length*speed : 0,y:length ? dy/length*speed : 0},facing:Math.PI};
       }
@@ -502,7 +502,7 @@ export class PlaySim {
       // neutral zone (the ball's length) into the man set across from him.
       const set = this.snapSetFront.get(d);
       const across = set !== undefined && set - (d.pos.x - d.profile.radius) > BALL_LENGTH;
-      for (const o of this.offense) if (Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y) < o.profile.radius + d.profile.radius
+      for (const o of this.offense) if (hypot2(o.pos.x - d.pos.x, o.pos.y - d.pos.y) < o.profile.radius + d.profile.radius
         || (across && this.los - o.pos.x < 1.6 && Math.abs(o.pos.y - d.pos.y) < 0.75)) {
         acts.incidents.push({ playerId: d.player.id, enteredNeutralZone: true, contactedOpponentOrBall: true });
         acts.cause = this.snapCount!.hard ? 'hard count' : 'own timing';
@@ -1030,7 +1030,7 @@ export class PlaySim {
       let nearby = 0;
       for (const other of this.opponents(a)) {
         const seen = this.perception.perceive(other.idx, a.profile.reactionTime);
-        if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) < 3) nearby++;
+        if (hypot2(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) < 3) nearby++;
       }
       a.mind.update(t, this.dt, a.body.energy, a.engagement ? 0.65 : Math.min(1, nearby / 4));
     }
@@ -1168,7 +1168,7 @@ export class PlaySim {
     for (const e of this.engagements) {
       if (e.contactReported) continue;
       const j = e.hands;
-      const loaded = Math.hypot(j?.normalForce ?? 0, j?.tangentForce ?? 0) > 1e-6
+      const loaded = hypot2(j?.normalForce ?? 0, j?.tangentForce ?? 0) > 1e-6
         || report.contacts.some(c => (c.i === e.blocker.idx && c.j === e.defender.idx)
           || (c.j === e.blocker.idx && c.i === e.defender.idx));
       if (loaded) {
@@ -1222,7 +1222,7 @@ export class PlaySim {
           const s = clamp(((a.pos.x - prev.x) * dx + (a.pos.y - prev.y) * dy) / Math.max(1e-9, d2), 0, 1);
           const z = prev.z + (cur.z - prev.z) * s;
           return { a, s, valid: z > 0.1 && z <= a.profile.reactReach
-            && Math.hypot(a.pos.x - prev.x - dx * s, a.pos.y - prev.y - dy * s) <= a.profile.reach };
+            && hypot2(a.pos.x - prev.x - dx * s, a.pos.y - prev.y - dy * s) <= a.profile.reach };
         }).filter(c => c.valid).sort((a, b) => a.s - b.s);
       if (this.t - ball.releaseT >= 0.1 && candidates.length) {
         const { a: to, s: touchFraction } = candidates[0];
@@ -1319,7 +1319,7 @@ export class PlaySim {
       const c = Math.cos(ang);
       const s = Math.sin(ang);
       f.vel = { x: vx * c - vy * s, y: vx * s + vy * c, z: Math.abs(f.vel.z) * this.dice('loose-ball').range(0.15, 0.45) };
-      if (Math.hypot(f.vel.x, f.vel.y) < 0.5 && f.vel.z < 0.4) f.vel = { x: 0, y: 0, z: 0 };
+      if (hypot2(f.vel.x, f.vel.y) < 0.5 && f.vel.z < 0.4) f.vel = { x: 0, y: 0, z: 0 };
     }
     if (this.t - ball.since < 0.15) return;
     // Nearest players scramble for it; possession chance rises when on the ground.
@@ -1327,7 +1327,7 @@ export class PlaySim {
     let bestD = 1.0;
     for (const a of this.agents) {
       if (a.isDown(this.t)) continue;
-      const d = Math.hypot(a.pos.x - cur.x, a.pos.y - cur.y);
+      const d = hypot2(a.pos.x - cur.x, a.pos.y - cur.y);
       if (d < bestD && cur.z < 1.2) {
         bestD = d;
         best = a;
