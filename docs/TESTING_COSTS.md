@@ -28,6 +28,68 @@ trigger it on PRs; every develop push also runs it. Core/integration and
 scorecard triggers are unchanged, so a reference-only PR does not schedule
 extra simulated games.
 
+## Engine and typecheck timing — F2, 2026-10-30
+
+Manual comparison of develop `7a56d7904ba340b05998dccc3a1dbaf8f5207a73`
+and runtime candidate `cd565ceb8acdf3ab877b457c73857d21caed2568`, using
+Node 22.23.3, Linux x64 and a four-CPU container quota. Source-declared
+environment overrides were unset in both arms; tests still set their own
+flags. Each measurement includes npm/Vitest startup and identical default/JSON
+reporters, with no competing benchmark process.
+
+| Existing command | Base wall | Candidate wall | Base CPU | Candidate CPU |
+| --- | ---: | ---: | ---: | ---: |
+| `npm test` | 162.705 s | 159.774 s | 613.757 s | 602.265 s |
+| `npm run test:all` | 367.846 s | 358.443 s | 1,041.899 s | 985.840 s |
+
+These are **one paired measurement per command**: about 1.8% and 2.6% less
+wall time, respectively. Machine variability and test scheduling still matter.
+Within the complete suite, the two longest game-test files improve from
+147.020 to 129.417 s and from 142.231 to 127.193 s (about 11–12%). These file
+timings are concurrent observations, not independent benchmark repetitions.
+
+The new two-component norm avoids the pinned runtime's general `Math.hypot`
+temporary argument array, retaining its scaled arithmetic and argument order.
+Higher-arity norms keep the built-in. Numeric edge checks and 2,750,324 manual
+comparisons match exactly. Requalify exactness when upgrading Node. The earlier
+support optimizations also remain: direct copies for ordinary flat records,
+`structuredClone` for complex/shared state, a bounded cache of clock-only
+coefficients, and skips for empty held-support work. Redundant facing and
+zero-acceleration work is avoided without changing football parameters.
+
+Seven frozen replays, two warmup groups and 12 measured groups per arm isolate
+the additional norm/shortcut change from the first-pass support optimization
+on the same develop composition. Base-then-candidate takes 19.820 → 16.985 s;
+the reverse-order repeat takes 20.155 → 17.514 s. That is an additional 13–14%
+for this warmed replay panel, not the entire test suite or a universal game rate.
+
+Only no-emit typechecking adopts TypeScript's incremental cache, in ignored
+`out/typescript/typecheck.tsbuildinfo`. On publication source
+`423e797f2c5fcae4153a7ac600feefd9277c0ab1`, a fresh typecheck takes 15.144 s
+and a warm check 3.083 s, versus 15.352 s for the original command. Warm checks
+still fail on new and repeated errors, detect changed bytes with unchanged
+size/mtime, and pass after errors are fixed or their source is deleted. They
+emit no build output. The cache is disposable; a cold check remains valid.
+Build stays unchanged: an incremental-build trial returned success without
+recreating a missing JavaScript output. A Node bytecode-cache trial saved only
+2.4% on one core run (159.774 → 155.980 s); it is not enabled automatically.
+
+All 3,923 pre-existing test identities/statuses match the base. Two new numeric
+checks pass: core has 3,690 passes in 342 files; the complete suite has 3,923
+passes and the same two research failures in 368 files, with no skips. Both
+complete-suite commands exit 1 at the ordinary-frontal `physical fall`
+assertions in `test/research/continued-recovery-world.test.ts`. Focused checks
+(81), Python checks (297), typecheck and build pass. Seven saved plays preserve
+90,031 World-step states/reports, 797 controller ticks, 4,155 random draws and
+complete results exactly.
+
+Every pre-existing test/fixture, discovery rule, timeout, isolation setting,
+worker setting and test command is unchanged. Raw output stays in ignored
+`out/perf/`; exact identities and manual verification are summarized in the PR.
+Develop advanced to `e70cc2abe8650b02a2ad6eac84839208a6d074a0` during these
+measurements. Its separate squeeze repair is outside this pinned comparison;
+the merger still verifies the updated combined head locally.
+
 ## Core and integration timing — F2, 2026-10-23
 
 Measured against develop `c5667bc4f7d4aa0411599ac5db25127f285bf4bf` with

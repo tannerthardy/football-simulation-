@@ -11,7 +11,7 @@
  *     relative to facing (shuffle, backpedal),
  *   • fatigue.
  */
-import { angleDiff, angleOf, clamp, dot, len, type Vec2 } from '../core/vec.js';
+import { hypot2, angleDiff, angleOf, clamp, dot, len, type Vec2 } from '../core/vec.js';
 import type { PhysicalProfile } from '../players/physical.js';
 import type { Support } from './support.js';
 import { supportParams } from './support.js';
@@ -121,7 +121,7 @@ export function updateSqueeze(body: Body, cmd: MoveCommand, dt: number): void {
   const p = body.profile;
   const desiredSqueeze = clamp(cmd.squeeze ?? 0, 0, 1);
   body.squeeze = clamp((body.squeeze ?? 0) + clamp(desiredSqueeze - (body.squeeze ?? 0), -3 * dt, 4 * dt), 0, 1);
-  if (Math.hypot(cmd.vel.x, cmd.vel.y) > 0.4) {
+  if (hypot2(cmd.vel.x, cmd.vel.y) > 0.4) {
     const h = angleOf(cmd.vel);
     const previous = body.squeezeHeading ?? h;
     body.squeezeHeading = previous + clamp(angleDiff(previous, h), -p.turnRate * dt, p.turnRate * dt);
@@ -131,8 +131,8 @@ export function updateSqueeze(body: Body, cmd: MoveCommand, dt: number): void {
 /** Facing a command asks for: explicit, else direction of travel (bounded by
  * his actual path while he carries speed). */
 export function commandFacing(body: Body, cmd: MoveCommand): number {
-  const speed = len(body.vel);
   if (cmd.facing !== undefined) return cmd.facing;
+  const speed = len(body.vel);
   if (len(cmd.vel) <= 0.4) return speed > 0.6 ? angleOf(body.vel) : body.facing;
   const wanted = angleOf(cmd.vel);
   if (speed <= PLANT_SPEED) return wanted;
@@ -217,7 +217,7 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
       : driveAccel(p, speed, Math.max(cap, 0.5)) * fat * lift(Math.max(wanted, 0.5)), p.brake * 0.5) * capacity;
     ax = dvx / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
     ay = dvy / (GAIT_STEP ? Math.max(dt, GAIT_STEP) : dt);
-    const a = Math.hypot(ax, ay);
+    const a = hypot2(ax, ay);
     if (a > amax) {
       ax *= amax / a;
       ay *= amax / a;
@@ -268,11 +268,11 @@ export function locomotionAccel(body: Body, cmd: MoveCommand, dt: number, capaci
  * lateral ellipse). The remainder displaces the body's support.
  */
 export function followAccel(body: Body, a: Vec2, cutSkill = 1, capacity = 1): Vec2 {
+  const amag = hypot2(a.x, a.y);
+  if (amag < 1e-12) return { x: 0, y: 0 };
   const p = body.profile;
   const speed = len(body.vel);
   const fat = fatigueFactor(body.energy);
-  const amag = Math.hypot(a.x, a.y);
-  if (amag < 1e-12) return { x: 0, y: 0 };
   if (speed < 0.35) {
     const amax = Math.max(driveAccel(p, speed, p.vmax * fat) * fat, p.brake * 0.5) * capacity;
     return amag > amax ? { x: a.x * amax / amag, y: a.y * amax / amag } : { x: a.x, y: a.y };
@@ -299,7 +299,7 @@ export const FAST_DRAIN = 3;
  * The charge comes out of the fast pool. */
 export function spendEnergy(body: Body, accel: Vec2, isometric: number, dt: number, additionalWork = 0, velocity = body.vel): void {
   const p = body.profile;
-  const nspeed = Math.hypot(velocity.x, velocity.y);
+  const nspeed = hypot2(velocity.x, velocity.y);
   const frac = nspeed / p.vmax;
   body.sprintLoad = Math.max(0, (body.sprintLoad ?? 0) + (frac > 0.85 ? dt : frac < 0.7 ? -0.5 * dt : 0));
   const work = Math.max(0, accel.x * velocity.x + accel.y * velocity.y) / (p.vmax * (p.vmax / p.tau));
@@ -320,7 +320,7 @@ export function stepBody(body: Body, cmd: MoveCommand, dt: number): void {
   const a = locomotionAccel(body, cmd, dt);
   body.facing = beforeFacing;
   const traction = supportParams(body.profile).traction;
-  const force = Math.hypot(a.x,a.y) * body.profile.massKg;
+  const force = hypot2(a.x,a.y) * body.profile.massKg;
   if (force > traction) { a.x *= traction / force; a.y *= traction / force; }
   // Preview the same bounded motor used by World, toward the actual requested
   // facing. `target` above remains the existing gait estimate for this step.
@@ -347,7 +347,7 @@ export function pushBody(body: Body, push: Vec2, dt: number): void {
 export function arriveVelocity(body: Body, target: Vec2, maxSpeed: number, throughSpeed = 0): Vec2 {
   const dx = target.x - body.pos.x;
   const dy = target.y - body.pos.y;
-  const d = Math.hypot(dx, dy);
+  const d = hypot2(dx, dy);
   if (d < 1e-3) return { x: 0, y: 0 };
   const brake = body.profile.brake * 0.8;
   const allowed = Math.sqrt(throughSpeed * throughSpeed + 2 * brake * Math.max(0, d - 0.15));
@@ -363,9 +363,9 @@ export function arriveVelocity(body: Body, target: Vec2, maxSpeed: number, throu
  */
 export function movingArrivalVelocity(body: Body, target: Vec2, targetVelocity: Vec2,
   maxSpeed: number, radius: number, throughSpeed: number, cutSkill=1, capacity=1): Vec2 {
-  const dx=target.x-body.pos.x,dy=target.y-body.pos.y,d=Math.hypot(dx,dy);
+  const dx=target.x-body.pos.x,dy=target.y-body.pos.y,d=hypot2(dx,dy);
   if(d<1e-9){
-    const speed=Math.hypot(targetVelocity.x,targetVelocity.y),scale=Math.min(1,maxSpeed/Math.max(1e-9,speed));
+    const speed=hypot2(targetVelocity.x,targetVelocity.y),scale=Math.min(1,maxSpeed/Math.max(1e-9,speed));
     return {x:targetVelocity.x*scale,y:targetVelocity.y*scale};
   }
   const ux=dx/d,uy=dy/d,nx=-uy,ny=ux;
@@ -384,7 +384,7 @@ export function movingArrivalVelocity(body: Body, target: Vec2, targetVelocity: 
 export function cornerSpeed(body: Body, corner: Vec2, next: Vec2, radius: number): number {
   const ix = corner.x-body.pos.x, iy = corner.y-body.pos.y;
   const ox = next.x-corner.x, oy = next.y-corner.y;
-  const inLen = Math.hypot(ix,iy), outLen = Math.hypot(ox,oy);
+  const inLen = hypot2(ix,iy), outLen = hypot2(ox,oy);
   if (inLen < 1e-6 || outLen < 1e-6) return 0;
   const cosine = clamp((ix*ox+iy*oy)/(inLen*outLen),-1,1);
   if (cosine > 1-1e-6) return body.profile.vmax;
@@ -397,7 +397,7 @@ export function cornerSpeed(body: Body, corner: Vec2, next: Vec2, radius: number
 export function seekVelocity(body: Body, target: Vec2, speed: number): Vec2 {
   const dx = target.x - body.pos.x;
   const dy = target.y - body.pos.y;
-  const d = Math.hypot(dx, dy);
+  const d = hypot2(dx, dy);
   if (d < 1e-3) return { x: 0, y: 0 };
   return { x: (dx / d) * speed, y: (dy / d) * speed };
 }
