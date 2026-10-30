@@ -415,7 +415,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       const inner = job.gap === 'D' ? out.at(-1) : out[1];
       if (inner !== undefined) {
         const spot = inner.y + job.side * a.profile.radius;
-        if ((gy - spot) * job.side < 0) { gy = spot; replace = inner.x; }
+        if ((gy - spot) * job.side < 0) { gy = spot; replace = inner.x; a.tags.add('fit-replace'); }
       }
     }
     // Backside: his own picture shows the ball carried away from his side,

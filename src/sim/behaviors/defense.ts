@@ -186,7 +186,7 @@ export class PassRusher implements Behavior {
     // the blocker means to do is not his to know, so a play-action line fools him.
     const onEdge = this.gap === 'C' || this.gap === 'D';
     const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? EDGE_KEY : 1.5) : null;
-    const runStep = !!man && man.stance !== 'high' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > STEP_SEEN;
+    const runStep = !!man && man.stance === 'low' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > STEP_SEEN;
     // An edge keeps his outside against a reach. A man in front blocking down,
     // stepping inside away from him, opens his gap to a kick-out or a pulling
     // lead: he closes flat along the line behind the down block and sets the
