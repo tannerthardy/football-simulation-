@@ -38,7 +38,7 @@ import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
 import { requestToCover } from './motion-plan.js';
-import { pullers } from './run-fits.js';
+import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
 import type { HandJoint, Intent } from '../physics/world.js';
@@ -1480,7 +1480,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const cue = ball ? sim.see(d, ball) : null;
     // His track: the lateral run of the carrier he sees (a zone back's read).
     // A downhill gap back shows none until he bends; see squeeze-read.md.
-    const play = cue?.carrying === true && Math.abs(cue.vel.y) > 1 ? Math.sign(cue.vel.y) : 0;
+    const track = cue?.carrying === true && Math.abs(cue.vel.y) > 1 ? Math.sign(cue.vel.y) : 0;
+    // The line tells him first (a pull, a zone step); the back's track when it shows nothing.
+    const play = lineRead(sim, d) || track;
     if (play && read.stack.firstStep * play < 0) { squeeze = play; d.tags.add('squeeze'); }
   }
   if (DL_SQUEEZE && !(lastSqueeze && sim.t < lastSqueeze.until)) squeezes.set(e, { side: squeeze, until: sim.t + d.mind.decisionInterval });
@@ -1517,6 +1519,17 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // The lateral twin of the blocker's lost-depth anchor; the decision is held
   // for a decision beat, then renewed while the push lasts.
   let lateralFlow = squeeze ? squeeze * td.lateral : flow;
+  // A blocker whose first step went with the play the line shows is reaching
+  // him or cutting him off. The answer is a technique, not a pursuit of the
+  // speed seen so far: an interior man works across his face with the play at
+  // full lateral effort while the blocker keeps stepping that way. His body and
+  // the blocker's hands decide how far he gets.
+  const st = read.stack;
+  if (!squeeze && st && !read.declared && d.runFit?.kind === 'interior' && st.firstStep
+    && Math.sign(st.flow) === st.firstStep && st.firstStep === lineRead(sim, d)) {
+    lateralFlow = st.firstStep * td.lateral;
+    d.tags.add('work-across');
+  }
   if (DL_FIGHT && read.stack && !read.declared) {
     const st = read.stack, push = d.body.support?.felt?.y ?? 0;
     // A push toward where he sees the ball heading (a reach running him

@@ -3,13 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { PlaySim } from '../src/sim/playsim.js';
 import { restoreSetup } from '../scripts/diag/saved-play.js';
 
-// A wide-zone double (LG with C on DT_W, LB_W the backer) where C takes the man alone and LG is off him:
-// the outside-zone overtake. One saved run-only snap (matched-restage seed 7, snap 0).
+// A wide-zone double (LG with C on DT_S, LB_W the backer) where C takes the man alone and LG is off him:
+// the outside-zone overtake. One saved run-only snap (matched-restage seed 7, snap 17). Snap 0 was this
+// scene until its DT key-stepped into LG with the zone step: a joined double, not this overtake.
 const fixture = JSON.parse(readFileSync(new URL('./fixtures/overtake-climb.json', import.meta.url), 'utf8')) as { setup: string };
 
 function play() {
   const sim = new PlaySim(restoreSetup(Buffer.from(fixture.setup, 'base64')));
-  const lg = sim.slot('LG')!, c = sim.slot('C')!, down = sim.slot('DT_W')!, backer = sim.slot('LB_W')!;
+  const lg = sim.slot('LG')!, c = sim.slot('C')!, down = sim.slot('DT_S')!, backer = sim.slot('LB_W')!;
   const combo = (lg.behavior as any).plan.combination;
   return { sim, lg, c, down, backer, combo };
 }
@@ -42,7 +43,7 @@ describe('an overtaken zone member climbs on his own read', () => {
       const hands = lg.engagement?.defender === backer ? lg.engagement.hands : null;
       if (loaded < 0 && hands && Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0) > 0) loaded = sim.t;
     }
-    // His own evidence first: C carries DT_W alone, LG off him, for at least the 0.15 s hold before LG goes.
+    // His own evidence first: C carries DT_S alone, LG off him, for at least the 0.15 s hold before LG goes.
     expect(release).toBeGreaterThan(0);
     expect(alone).toBeGreaterThan(0);
     expect(release - alone).toBeGreaterThanOrEqual(.15 - 1e-9);
