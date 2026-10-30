@@ -114,6 +114,8 @@ const STEP_SEEN = 0.3;
 const KEY_DELAY = 0.5;
 /** How wide of an edge rusher the end of the line can be and still be his key (yd). */
 const EDGE_KEY = 3;
+/** How far outside the down blocker's body an edge keeps his own body as he closes (yd). */
+const HIP_GAP = 0.35;
 
 /** The blocker on the surface in front of a rusher, as he sees the line: the
  * nearest one laterally, read as his key. An interior man keys the blocker
@@ -187,10 +189,15 @@ export class PassRusher implements Behavior {
     // lead: he closes flat along the line behind the down block and sets the
     // edge there, where the puller has to come and get him, instead of rushing
     // upfield past the play.
+    // He closes hip to hip on the down blocker: on his outside hip, at his
+    // depth, moving with him, so the gap the blocker left stays shut and a
+    // kicking puller meets him there.
     if (onEdge && runStep && Math.sign(man!.vel.y) === Math.sign(sim.ballY - man!.pos.y)) {
-      const side = Math.sign(man!.vel.y), step = a.profile.vmax * a.profile.shuffle, h = a.mind.decisionInterval;
+      const side = Math.sign(man!.vel.y), h = a.mind.decisionInterval;
+      const hip = man!.pos.y - side * (a.profile.radius + HIP_GAP);
       a.tags.add('key-squeeze');
-      return track(a, { x: sim.los + 0.3, y: a.pos.y + side * step * h }, { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
+      return track(a, { x: man!.pos.x + man!.vel.x * h, y: hip + man!.vel.y * h }, { x: man!.vel.x, y: man!.vel.y },
+        { speed: 1, gain: 3, facing: Math.PI });
     }
     // The interior man keys the blocker over him.
     if (!onEdge && runStep) {
