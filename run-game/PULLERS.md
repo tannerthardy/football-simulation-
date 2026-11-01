@@ -60,3 +60,37 @@ picture of his man (wrap: the backer/threat he sees; kick: the end, as now), re-
 the fit on time-to-intercept rather than 1.2 yd proximity. Measure with `pullshape.py` (turn-point spread and r,
 heading rate, dip, block-before-turn) plus the counter card (wrap near box backer, behind-LOS first contact) and
 power/trap controls.
+
+## Fix: run/G2-puller-path 452b8acf (2026-11-01)
+
+Corners rounded on the radius his speed and lateral grip hold; the route's end point is passed, not circled
+back to; the lead runs through the hole, fits a man he can reach within 0.8 s past his corner, keeps a man he
+can reach, ignores men behind his flow (a beat ahead), and leads the runner when no threat is left.
+Matched (develop f476187d vs fix, 12 seeds, counter+power, 5 streams; NFL same operator):
+
+| | develop | fix | NFL |
+|---|---|---|---|
+| Counter wrap speed at 2.0 s | 2.64 | 3.16 | 3.30 |
+| Counter wrap heading at first block | 36 deg | 22 | 21 |
+| Wrap first block before his 45-deg turn | 0.1 s | 0.5 | 0.8 |
+| r(turn lateral, his man) | 0.39 | 0.57 | 0.78 |
+| Wrap target switches >= 2 before engaging | 79% | 66% | - |
+| Behind-LOS first contact | 38% | 41% | 41% |
+| Wrap within 1.2 yd of a box backer | 26% | 21% | 39% |
+| Play-side backers untouched | 32% | 34% | 13% |
+
+Scope (all concepts, stream 0): only power, trap, counter and 5 split-zone snaps change. Not addressed: power
+puller meets his man flat (11 vs 39 deg); counter wrap late into a crowded hole (behind the LOS at the carrier's
+crossing on 2/3 of no-block plays, two bodies within 1.3 yd).
+
+## Where else (pivots.py, develop, all concepts stream 0, brake-and-pivot share per player-play)
+
+| | NFL | sim |
+|---|---|---|
+| Power TE (Y climbing, re-targeted to a new man mid-climb) | 0% | 11% |
+| Draw TE / OL (pass set, then a hard flip to run block ~2.0-2.3 s) | 3% / 0% | 11% / 5% |
+| Power back (FB lead) | 0% | 8% |
+| Inside zone non-carrier back | 1% | 7% |
+
+Peak heading rate is ~2x NFL for every role in sim, but NFL tracking is filtered and sim is not, so that
+number needs both smoothed the same way before it is evidence.

@@ -72,6 +72,9 @@ def measure(p):
             V[key + ("his man lat rel puller at turn",)].append(rel)
             P[key].append(((xy[turn][i][1] - xy[0][i][1]) * ps, (xy[turn][j][1] - xy[0][i][1]) * ps))
             V[key + ("first block t - turn t",)].append((f - turn) / 10)
+            V[key + ("speed at block",)].append(sp[f]); V[key + ("speed 0.3 s before block",)].append(sp[max(1, f - 3)])
+            cl = lambda k: -((xy[k][j][0]-xy[k][i][0])*(xy[k][j][0]-xy[k-1][j][0]-(xy[k][i][0]-xy[k-1][i][0])) + (xy[k][j][1]-xy[k][i][1])*(xy[k][j][1]-xy[k-1][j][1]-(xy[k][i][1]-xy[k-1][i][1]))) / max(1e-6, math.dist(xy[k][i], xy[k][j])) * 10
+            V[key + ("closing speed at block",)].append(cl(f))
             if f < n and hd[f] is not None:
                 V[key + ("heading at block",)].append(hd[f])
 for p in rfr.nfl(sys.argv[2]): measure(p)
@@ -79,7 +82,7 @@ for p in rfr.sim(sys.argv[3:]): measure(p)
 keys = sorted({k[:3] for k in N if len(k) == 3})
 fields = ["speed 0.5", "speed 1.0", "speed 1.5", "speed 2.0", "peak before turn", "turn t", "turn depth x", "turn lateral (from snap)",
           "speed at turn", "min speed around turn", "dip", "turn 20->70 s", "peak heading rate deg/s", "his man lat rel puller at turn",
-          "first block t - turn t", "heading at block"]
+          "first block t - turn t", "heading at block", "speed at block", "speed 0.3 s before block", "closing speed at block"]
 for c in sorted(CONS):
     for r in ("P1", "P2"):
         rows = [(s, (s, c, r)) for s in ("nfl", "sim") if N[(s, c, r)]]
