@@ -1,0 +1,72 @@
+== COUNTER P1: nfl n301 noturn 141 stopgo 105  sim n508 noturn 152 stopgo 244
+   speed 0.5                       nfl +1.39/+1.84/+2.19 n301      sim +1.66/+1.70/+1.88 n508    
+   speed 1.0                       nfl +2.84/+3.26/+3.55 n301      sim +3.10/+3.26/+3.51 n508    
+   speed 1.5                       nfl +2.52/+3.16/+3.81 n301      sim +2.50/+2.97/+3.57 n508    
+   speed 2.0                       nfl +1.52/+2.15/+3.04 n301      sim +1.30/+1.81/+2.38 n508    
+   peak before turn                nfl +2.73/+3.42/+3.90 n160      sim +3.35/+3.70/+4.00 n356    
+   turn t                          nfl +1.70/+2.30/+2.80 n160      sim +1.90/+2.40/+2.70 n356    
+   turn depth x                    nfl -1.17/-0.67/+0.13 n160      sim -1.18/-0.74/-0.49 n356    
+   turn lateral (from snap)        nfl -0.13/+4.48/+5.54 n160      sim +4.05/+4.78/+5.37 n356    
+   speed at turn                   nfl +1.03/+1.65/+2.22 n160      sim +1.21/+1.66/+2.24 n356    
+   min speed around turn           nfl +0.63/+1.30/+1.92 n160      sim +0.71/+0.98/+1.58 n356    
+   dip                             nfl +0.74/+1.88/+2.69 n160      sim +1.69/+2.38/+3.04 n356    
+   turn 20->70 s                   nfl +0.00/+0.20/+0.50 n122      sim +0.10/+0.50/+0.90 n264    
+   peak heading rate deg/s         nfl +60.52/+99.93/+167.18 n160  sim +106.63/+173.76/+252.78 n356
+   his man lat rel puller at turn  nfl -0.88/-0.31/+0.17 n158      sim -0.85/-0.45/+0.09 n325    
+   first block t - turn t          nfl -1.20/-0.60/-0.20 n158      sim -0.90/-0.60/+0.10 n325    
+   heading at block                nfl -1.51/+14.35/+39.47 n157    sim +3.58/+32.01/+59.35 n323  
+   r(turn lateral, his man lateral)  nfl +0.94  sim +0.96
+== COUNTER P2: nfl n166 noturn 67 stopgo 66  sim n489 noturn 50 stopgo 177
+   speed 0.5                       nfl +1.20/+1.63/+1.93 n166      sim +1.66/+1.75/+1.88 n489    
+   speed 1.0                       nfl +2.44/+3.10/+3.40 n166      sim +2.80/+3.00/+3.10 n489    
+   speed 1.5                       nfl +2.64/+3.62/+4.13 n166      sim +3.40/+3.60/+3.70 n489    
+   speed 2.0                       nfl +2.08/+3.30/+4.44 n166      sim +2.44/+2.64/+2.75 n489    
+   peak before turn                nfl +3.00/+3.70/+4.67 n99       sim +3.54/+3.70/+3.80 n439    
+   turn t                          nfl +2.30/+2.60/+2.90 n99       sim +2.20/+2.30/+2.40 n439    
+   turn depth x                    nfl -0.85/+0.03/+0.83 n99       sim -0.72/-0.63/-0.55 n439    
+   turn lateral (from snap)        nfl +3.98/+5.57/+7.03 n99       sim +5.17/+5.32/+5.45 n439    
+   speed at turn                   nfl +1.08/+2.20/+3.82 n99       sim +1.72/+2.33/+2.56 n439    
+   min speed around turn           nfl +0.92/+1.70/+3.45 n99       sim +1.22/+1.88/+2.31 n439    
+   dip                             nfl +0.76/+1.41/+2.42 n99       sim +1.34/+1.78/+2.34 n439    
+   turn 20->70 s                   nfl +0.40/+0.90/+1.10 n57       sim +0.40/+0.50/+0.60 n384    
+   peak heading rate deg/s         nfl +60.64/+89.73/+140.36 n99   sim +118.14/+140.22/+201.57 n439
+   his man lat rel puller at turn  nfl -1.30/-0.23/+0.59 n94       sim -0.71/+0.29/+0.61 n356    
+   first block t - turn t          nfl -1.60/-0.80/-0.40 n94       sim -0.40/-0.10/+0.20 n356    
+   heading at block                nfl +3.61/+20.56/+35.71 n94     sim +14.80/+36.25/+61.86 n356 
+   r(turn lateral, his man lateral)  nfl +0.78  sim +0.39
+== POWER P1: nfl n449 noturn 139 stopgo 172  sim n606 noturn 205 stopgo 282
+   speed 0.5                       nfl +1.35/+1.71/+2.06 n449      sim +1.58/+1.70/+1.79 n606    
+   speed 1.0                       nfl +2.75/+3.20/+3.51 n449      sim +3.11/+3.30/+3.47 n606    
+   speed 1.5                       nfl +2.83/+3.47/+3.96 n449      sim +2.81/+3.62/+4.02 n606    
+   speed 2.0                       nfl +1.98/+2.72/+3.69 n449      sim +1.50/+2.06/+2.69 n606    
+   peak before turn                nfl +2.98/+3.64/+4.08 n310      sim +3.49/+3.82/+4.10 n401    
+   turn t                          nfl +1.70/+2.00/+2.40 n310      sim +2.10/+2.50/+2.80 n401    
+   turn depth x                    nfl -0.62/-0.02/+0.60 n310      sim -1.25/-0.80/-0.56 n401    
+   turn lateral (from snap)        nfl +2.95/+4.52/+5.70 n310      sim +4.17/+5.26/+6.10 n401    
+   speed at turn                   nfl +1.58/+2.33/+3.26 n310      sim +1.17/+1.66/+2.16 n401    
+   min speed around turn           nfl +1.20/+2.06/+2.84 n310      sim +0.76/+1.02/+1.58 n401    
+   dip                             nfl +0.55/+1.13/+2.06 n310      sim +1.86/+2.56/+3.19 n401    
+   turn 20->70 s                   nfl +0.00/+0.60/+0.90 n213      sim +0.10/+0.40/+0.70 n278    
+   peak heading rate deg/s         nfl +61.35/+92.07/+126.58 n310  sim +123.01/+176.17/+248.70 n401
+   his man lat rel puller at turn  nfl -0.84/-0.18/+0.43 n300      sim -0.83/-0.22/+0.33 n358    
+   first block t - turn t          nfl -0.70/-0.20/+0.20 n300      sim -0.90/-0.60/+0.00 n358    
+   heading at block                nfl +14.04/+38.66/+63.43 n298   sim -7.82/+9.87/+46.85 n357   
+   r(turn lateral, his man lateral)  nfl +0.89  sim +0.94
+== POWER P2: nfl n140 noturn 59 stopgo 62  sim n62 noturn 18 stopgo 31
+   speed 0.5                       nfl +1.17/+1.53/+1.94 n140      sim +1.57/+1.66/+1.79 n62     
+   speed 1.0                       nfl +1.93/+2.66/+3.23 n140      sim +2.02/+3.11/+3.31 n62     
+   speed 1.5                       nfl +2.10/+2.83/+3.40 n140      sim +2.45/+3.10/+3.80 n62     
+   speed 2.0                       nfl +1.70/+2.25/+3.12 n140      sim +1.28/+1.90/+2.42 n62     
+   peak before turn                nfl +2.42/+3.19/+3.83 n81       sim +2.81/+3.55/+3.91 n44     
+   turn t                          nfl +2.00/+2.30/+2.70 n81       sim +1.90/+2.40/+2.70 n44     
+   turn depth x                    nfl -0.89/-0.32/+0.28 n81       sim -0.89/-0.65/-0.22 n44     
+   turn lateral (from snap)        nfl +3.34/+4.09/+4.94 n81       sim +3.17/+3.99/+5.28 n44     
+   speed at turn                   nfl +1.28/+1.66/+2.84 n81       sim +1.14/+1.78/+2.13 n44     
+   min speed around turn           nfl +0.92/+1.39/+2.40 n81       sim +0.67/+1.12/+1.70 n44     
+   dip                             nfl +0.78/+1.28/+2.23 n81       sim +1.56/+2.22/+2.94 n44     
+   turn 20->70 s                   nfl +0.40/+0.80/+1.90 n53       sim +0.30/+0.50/+1.20 n33     
+   peak heading rate deg/s         nfl +76.96/+104.99/+156.71 n81  sim +137.61/+175.71/+356.32 n44
+   his man lat rel puller at turn  nfl -1.28/-0.38/+0.46 n77       sim -0.91/-0.11/+0.37 n42     
+   first block t - turn t          nfl -1.70/-1.20/-0.50 n77       sim -1.00/-0.70/+0.10 n42     
+   heading at block                nfl -2.79/+10.22/+23.53 n76     sim +10.20/+30.96/+53.97 n42  
+   r(turn lateral, his man lateral)  nfl +0.59  sim +0.91
