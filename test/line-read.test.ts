@@ -37,12 +37,17 @@ describe('a lineman reads the play from the line', () => {
     for (const s of snaps('mesh', 'gun_doubles_11')) expect(tagged(edges(s.sim), 'key-squeeze')).toBe(0);
   });
 
-  it('a play-side edge replaces the vacated spot on counter; a backside edge on wide zone never does', () => {
+  it('a play-side edge replaces the vacated spot on counter or plays the kick-out he sees; a backside edge on wide zone never replaces', () => {
+    // Once he sees the kick-out arriving (a non-line blocker in front of him and in range is seen on the
+    // ordinary delay under a run read), he plays it instead of squeezing to the spot: on one of the six
+    // snaps he boxes the kick-out throughout. Only the play-side edge ever replaces.
     for (const s of snaps('counter', 'i_jumbo_22')) {
-      const replaced = edges(s.sim).filter(a => a.tags.has('fit-replace'));
-      expect(replaced.length).toBe(1);
-      expect(replaced[0].runFit!.side).toBe(s.ballSide);
+      const playSide = edges(s.sim).filter(a => a.tags.has('fit-replace') || a.tags.has('fit-box') || a.tags.has('fit-spill'));
+      expect(playSide.length).toBe(1);
+      expect(playSide[0].runFit!.side).toBe(s.ballSide);
+      expect(edges(s.sim).filter(a => a.tags.has('fit-replace') && a !== playSide[0])).toEqual([]);
     }
+    expect(snaps('counter', 'i_jumbo_22').filter(s => edges(s.sim).some(a => a.tags.has('fit-replace'))).length).toBeGreaterThanOrEqual(5);
     for (const s of snaps('wz_weak', 'ace_11')) expect(tagged(edges(s.sim), 'fit-replace')).toBe(0);
   });
 });

@@ -25,7 +25,7 @@ import { bodyRadius } from '../physics/bodyshape.js';
 import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
 import { coverageOrientation } from './coverage/orientation.js';
-import { ThrowSight } from './throw-sight.js';
+import { ThrowSight, viewCone } from './throw-sight.js';
 import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
@@ -575,9 +575,13 @@ export class PlaySim {
       return seen;
     }
     let delay = observer.mind.observationDelay(observer.profile.reactionTime * delayScale);
-    // Attention follows the observer's belief, regardless of the hidden call.
+    // Attention follows the observer's belief, regardless of the hidden call:
+    // reading run, his eyes go to the backfield and the blockers, so a man
+    // releasing away from him is seen late. A blocker in front of him and in
+    // range is one of the blockers he is watching, whatever his position.
     const line = ['LT', 'LG', 'C', 'RG', 'RT'];
-    if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)) delay += 0.15;
+    if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)
+      && !inBlockingView(observer, target)) delay += 0.15;
     // Eyes on keys: everything else is peripheral.
     if (observer.eyes && !observer.eyes.keys.includes(target)) delay += observer.eyes.peripheral;
     const seen = this.perception.perceive(target.idx, delay);
@@ -1574,4 +1578,16 @@ export function distance(a: Agent, b: Agent): number {
 
 export function speedOf(a: Agent): number {
   return len(a.vel);
+}
+
+/** A blocker in view this close can be on him in well under a second at
+ * running speed, so he is one of the threats a run-reading defender watches. */
+const BLOCKING_RANGE = 5;
+
+/** Whether `target` is in front of `observer`, inside his field of view and
+ * close enough to block him. */
+function inBlockingView(observer: Agent, target: Agent): boolean {
+  const dx = target.pos.x - observer.pos.x, dy = target.pos.y - observer.pos.y, d = Math.hypot(dx, dy);
+  if (d > BLOCKING_RANGE) return false;
+  return d < 1e-6 || (Math.cos(observer.facing) * dx + Math.sin(observer.facing) * dy) / d > viewCone(observer);
 }

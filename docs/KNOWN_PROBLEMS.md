@@ -3132,6 +3132,23 @@ From the outside audit (`audit`):
   perfect: no fakes and no occlusion. Next: add the scramble cue in the same
   PR; recompose with #256, which still falls back to
   `acquired?.target ?? sim.carrier`.
+- **Player sight has no field of view** (*confirmed*, 2026-11-02 audit, seeds
+  1–2, two games, about 15 million opponent lookups). `PlaySim.see` gives
+  every opponent on the observer's reaction delay, projected forward along
+  the target's velocity, wherever the observer faces: about 2.9 million
+  lookups per two games were of men more than 120° behind his body, at no
+  cost. Only the ball (`throw-sight.ts`), the QB's eyes and a carrier's run
+  keys model where a player looks. Proposed next: a player keeps his last
+  in-view sighting of a man outside his view cone (the throw-sight cones) and
+  projects it forward, instead of a fresh reaction-delayed picture. Large
+  behavioral reach (man defenders trailing, pursuit from behind); needs its
+  own matched restage and a design call.
+  *Landed with it, the opposite case:* a defender who had read run saw every
+  non-line, non-QB, non-back opponent 0.15 s later, including the tight end,
+  fullback or receiver blocking him from in front (4.5% of close in-front
+  lookups). A blocker in front of him (inside the throw-sight view cone) and
+  within 5 yd is now seen on the ordinary delay; men releasing away from him
+  are still seen late.
 - **#256 (#225 rebuilt), engaged work-off toward the runner** (held): coherent,
   with no matched gain on runs; its scorecard moved yards per carry
   5.52 → 6.92. Waiting on Defense's native lab rerun and recomposition with

@@ -194,8 +194,10 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(load.magnitude).toBe(Math.hypot(hands.normalForce!, hands.tangentForce!));
     expect(loads('LB_W')).toEqual([]);
     const job = p.census.find(j => p.slot(j.backer) === 'LB_W')!;
-    // Graded against the initial job this is "no member load"; the ledger also says why.
-    expect(job.stratum).toBe('U');
+    // Graded against the initial job there is no member load; the ledger also says why. With run-read
+    // attention (a defender who has read run sees a blocker in front of him and in range on the ordinary
+    // delay), DT_S tackles at 3.1 and LB_W never contacts the carrier, so the job is '?' rather than 'U'.
+    expect(job.stratum).toBe('?');
     expect(job.responsibility).toMatchObject({ threatRereadAfterRelease: true });
     expect(job.responsibility.otherClimbTargets.map(p.slot)).toEqual(['LB_M']);
   });
@@ -274,9 +276,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // #349's climber property is on M10-P081 below.
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as
     // well, LB_W is still alone at 2.9. With the box backer reading before he moves and filling to a pull he sees, LB_W alone at 3.0.
+    // With run-read attention (a blocker in front of a run-reading defender and in range is seen on the ordinary
+    // delay), DE_S alone at 2.85.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(3);
-    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
+    expect(first.t).toBe(2.85);
+    expect(first.defenders.map(p.slot)).toEqual(['DE_S']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
@@ -334,10 +338,10 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // (#381), the RB passes the LT at 1.5 and LB_W is alone at 3.0. The later RB-Z collision under a tackle bond
     // remains an adverse physical outcome, not a contact-free guarantee. The tie is carried by R9-P020.
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as well,
-    // CB_W alone at 3.25.
+    // CB_W alone at 3.25. With run-read attention as well, DE_W alone at 2.95.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(3.25);
-    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
+    expect(first.t).toBe(2.95);
+    expect(first.defenders.map(p.slot)).toEqual(['DE_W']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
