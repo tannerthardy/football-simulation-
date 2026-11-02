@@ -27,7 +27,9 @@ beforeAll(() => {
   // Seed 6 with the containment bound holding an engaged edge's read flow (RUN-18): seed 4's first 6 completions no
   // longer hold a native pursuit case. Seed 6 passes all 6 contracts on develop 510f7a6a, with the bound, and on the
   // squeeze read (#365) with and without it.
-  chosen = captureNativePursuit(6);
+  // Seed 4 again with the force fallback from the end man outward: seed 6's first 6 completions no longer hold a
+  // native pursuit case. Seed 4 passes all 6 contracts (as do 7 and 9; 8 and 11 have no case, 5 fails one).
+  chosen = captureNativePursuit(4);
 }, 60_000);
 beforeAll(() => {
   // These clocks nominate pursuit decisions, not an expected football ending.

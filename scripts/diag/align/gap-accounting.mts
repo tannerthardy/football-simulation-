@@ -57,14 +57,21 @@ outer: for (const f of FORMATIONS) for (const personnel of Object.keys(DEF_PERSO
       const isOwner = OWN.has(j.kind) && !(j.kind === 'force' && deep);
       if (isOwner || (j.kind === 'alley' && !deep && Math.abs(d.pos.x - sim.los) < 8 && Math.abs(d.pos.y - ball) < 7)) committed++;
       if (!isOwner) continue;
-      const sideName = j.side === s ? 'S' : 'W', sideSign = j.side === s ? 1 : -1;
-      if (j.kind === 'force') { force[sideName].push(d.slot); continue; }
-      // The gap containing his assigned gap's centre (gapY), on the surfaces actually there.
-      const mine = gaps.filter(g => g.side === sideName);
-      const l = (gapY(off, j.gap, j.side) - ball) * sideSign * s;
-      const g = mine.find(x => l >= x.lo - 1e-6 && l < x.hi) ?? (l < mine[0].lo ? mine[0] : mine[mine.length - 1]);
-      const key = g.side + g.name;
-      owners.set(key, [...(owners.get(key) ?? []), `${d.slot}:${j.kind}`]);
+      const sideName = j.side === s ? 'S' : 'W';
+      // The gap containing a fit's centre (gapY), on the surfaces actually there.
+      const own = (gap: string, sideOf: number, kind: string) => {
+        const sn = sideOf === s ? 'S' : 'W', mine = gaps.filter(g => g.side === sn);
+        const l = (gapY(off, gap, sideOf) - ball) * (sideOf === s ? 1 : -1) * s;
+        const g = mine.find(x => l >= x.lo - 1e-6 && l < x.hi) ?? (l < mine[0].lo ? mine[0] : mine[mine.length - 1]);
+        owners.set(g.side + g.name, [...(owners.get(g.side + g.name) ?? []), `${d.slot}:${kind}`]);
+      };
+      if (j.kind === 'force') {
+        force[sideName].push(d.slot);
+        // A box curl-flat force backer keeps his inside bubble on inside flow.
+        if (j.inside) own(j.inside.gap, j.inside.side, 'force-inside');
+        continue;
+      }
+      own(j.gap, j.side, j.kind);
     }
     // The force player fits the outermost gap on his side when nobody else
     // owns it (the down safety or nickel outside an attached end).

@@ -109,15 +109,25 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   // without that seat retain their geometric fallback. Do not steal the other
   // side's installed support while filling a missing seat.
   for (const side of [-1, 1]) {
+    // Without an installed seat, force comes from a player head-up on or
+    // outside the end man on the line (an attached end, else the tackle): a
+    // box backer inside him keeps his gap.
+    const edgeY = side === sim.offAlign.strongSign ? sim.offAlign.coreEdge.S : sim.offAlign.coreEdge.W;
     const designated = sim.defense.filter(d => available(d) && outsideSide(d) === side);
     const candidates = designated.length ? designated : sim.defense.filter(d => available(d)
-      && outsideSide(d) === null && (d.pos.y - sim.ballY) * side > 2 && !(DEEP_NO_FORCE && deepZone(d)));
+      && outsideSide(d) === null && (d.pos.y - edgeY) * side > -.5 && !(DEEP_NO_FORCE && deepZone(d)));
     const priority = (d: Agent) => {
       const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
       return role.kind === 'zone' ? role.zone.startsWith('flat') ? 0 : role.zone.startsWith('curl_flat') ? 1 : isDeepZone(role.zone) ? 6 : 3 : 7;
     };
+    // A man defender on a detached receiver covers him: he forces only when
+    // no free player is outside.
+    const onReceiver = (d: Agent) => {
+      const spot = sim.defAlign.spots[d.slot as DefSlot]!, t = spot.manTarget && sim.offAlign.spots[spot.manTarget];
+      return spot.role.kind === 'man' && !!t && !t.backfield && !t.inline;
+    };
     const cost = (d: Agent) => {
-      return priority(d) * 4 + Math.abs(Math.abs(d.pos.y - sim.ballY) - 5.5);
+      return (onReceiver(d) ? 100 : 0) + priority(d) * 4 + Math.abs(Math.abs(d.pos.y - sim.ballY) - 5.5);
     };
     candidates.sort((a,b) => (designated.length ? priority(a)-priority(b) : 0) || cost(a)-cost(b));
     const force = candidates[0];
