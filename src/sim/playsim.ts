@@ -156,8 +156,8 @@ export class PlaySim {
   readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
   /** When each defender first had the current pass in view. */
   readonly throwSight = new ThrowSight();
-  /** Per observer→opponent pair, the tick his latest picture sampled (run-read attention holds it). */
-  private sightSamples?: Map<number, number>;
+  /** Per observer→opponent query (and its delay scale), the tick his latest picture sampled (run-read attention holds it). */
+  private sightSamples?: Map<string, number>;
   readonly trace: ReplayTrace;
   private commandTrace?: CommandTrace;
   /** Optional passive recorder of every offensive blocker's responsibility (docs/COMMAND_TRACE.md). Off unless asked for. */
@@ -587,8 +587,10 @@ export class PlaySim {
     // Looking away from a man he was watching holds the picture he has of him;
     // it ages from there and does not rewind to an older moment.
     const line = ['LT', 'LG', 'C', 'RG', 'RT'];
-    const now = Math.round(this.t / this.dt), key = observer.idx * 64 + target.idx;
-    const sampled = (this.sightSamples ??= new Map<number, number>()).get(key);
+    // Held per query: a caller asking for an older picture on purpose
+    // (pursuit compares two samples for acceleration) keeps its own history.
+    const now = Math.round(this.t / this.dt), key = `${observer.idx}>${target.idx}@${delayScale}`;
+    const sampled = (this.sightSamples ??= new Map<string, number>()).get(key);
     if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)
       && !inBlockingView(observer, this.perception.perceive(target.idx, delay).pos)) {
       const attended = delay;

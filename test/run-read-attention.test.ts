@@ -80,4 +80,16 @@ describe('run-read attention', () => {
     // Long out of range, the full delay has caught up.
     expect(sim.see(d, z).age!).toBeCloseTo(ageOfZ({ x: -12, y: 0 }, 'run'), 6);
   });
+
+  it('a caller that asks for an older picture on purpose still gets it (pursuit compares two samples)', () => {
+    // Pursuit asks for its ordinary picture and one 0.2 s older, through a larger delay scale. The held
+    // picture is kept per query, so the older query is not pulled forward to the newer one.
+    const { sim, d, z } = stage({ x: -12, y: 0 }, 'run');
+    const rt = Math.max(0.1, d.profile.reactionTime), scale = 0.2 / rt;
+    for (let i = 0; i < 6; i++) {
+      sim.t += sim.dt; sim.perception.record(sim.agents);
+      const near = sim.see(d, z, scale).age!, far = sim.see(d, z, scale + 0.2 / rt).age!;
+      expect(far - near).toBeCloseTo(0.2, 6);
+    }
+  });
 });
