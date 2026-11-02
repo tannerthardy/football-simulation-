@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 89 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 20 are off (`PULL_STEP` landed as the default pull step and was removed, G2 2026-10-27; `LEG_BRACE`, `WRAP_BIND` and `TACKLE_ROLL` landed with the held-stride law and were removed, Main Engine 2026-10-27) (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 90 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 21 are off (`PULL_STEP` landed as the default pull step and was removed, G2 2026-10-27; `LEG_BRACE`, `WRAP_BIND` and `TACKLE_ROLL` landed with the held-stride law and were removed, Main Engine 2026-10-27) (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -63,6 +63,7 @@ There are 89 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `DEF_ALIGN` | on | default (promoted 2026-10-22) | coverage | `src/playbook/alignment.ts:71` | review 2: drop the off path |
 | `DEF_GETOFF` | 1 (identity scale) | diagnostic | trenches | `src/sim/agent.ts:25` | expires: review 2 |
 | `PRESNAP_TELL` | off | experimental | defense | `src/sim/agent.ts:29` | OL show their first step's side in the set; interior DL read it (Tanner approved via Run Game, 2026-11-02). Disguise cost not modeled yet. Expires: review 2 |
+| `ACCEL_CUE` | off | experimental | defense | `src/sim/perception.ts:14` | Pictures carry achieved body acceleration (support.accel) with position latency; interior DL key a blocker's first-step push-off. Agreed with Main Engine (achieved only, same visual path, never in pos prediction). Expires: review 2 |
 | `DL_ANCHOR` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:80` | review 2: drop the off path |
 | `DL_CHASE` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:690` | review 2: drop the off path |
 | `DL_FLATTEN` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:90` | review 2: drop the off path |

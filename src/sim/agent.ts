@@ -170,6 +170,11 @@ export class Agent {
   get pos(): Vec2 {
     return this.body.pos;
   }
+
+  /** Achieved body acceleration, as the gait feels it (filtered); zero when unknown. */
+  get accel(): Vec2 {
+    return this.body.support?.accel ?? { x: 0, y: 0 };
+  }
   get vel(): Vec2 {
     return this.body.vel;
   }

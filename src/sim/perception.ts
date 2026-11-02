@@ -8,7 +8,10 @@
 import type { Vec2 } from '../core/vec.js';
 
 const HISTORY = 24;
-const STRIDE = 8;
+const STRIDE = 10;
+/** ACCEL_CUE (off): pictures carry the body's achieved acceleration, and an
+ * interior defender keys his blocker's first step from its onset. */
+export const ACCEL_CUE = process.env.ACCEL_CUE === '1';
 
 /** Coarse visible body pose, separate from pad-level technique or capability. */
 export type VisiblePose = 'up' | 'down' | 'rising';
@@ -25,6 +28,10 @@ export interface Perceived {
   carrying?: boolean | null;
   /** Age of the sampled visual state before constant-velocity prediction. */
   age?: number;
+  /** Achieved body acceleration (yd/s²) with the same latency as position: the
+   * onset of ground force that the hands, helmet and step foot show before the
+   * body is moving. A cue only; it never enters the prediction of `pos`. */
+  accel?: Vec2;
 }
 
 export class PerceptionBuffer {
@@ -43,7 +50,7 @@ export class PerceptionBuffer {
 
   /** Omitted possession is unknown. Null records a known unheld ball; an
    * index records that holder and known non-possession for the other bodies. */
-  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number; pose?: VisiblePose | null }>, heldCarrierIndex?: number | null): void {
+  record(states: ReadonlyArray<{ pos: Vec2; vel: Vec2; stance?: 'high' | 'low' | null; facing?: number; pose?: VisiblePose | null; accel?: Vec2 }>, heldCarrierIndex?: number | null): void {
     this.head = (this.head + 1) % HISTORY;
     this.count = Math.min(HISTORY, this.count + 1);
     const base = this.head * this.n * STRIDE;
@@ -58,6 +65,8 @@ export class PerceptionBuffer {
       this.data[o + 5] = s.facing ?? 0;
       this.data[o + 6] = s.pose === 'up' ? 1 : s.pose === 'down' ? -1 : s.pose === 'rising' ? 2 : 0;
       this.data[o + 7] = heldCarrierIndex === undefined ? 0 : heldCarrierIndex === i ? 1 : -1;
+      this.data[o + 8] = s.accel?.x ?? 0;
+      this.data[o + 9] = s.accel?.y ?? 0;
     }
   }
 
@@ -78,7 +87,8 @@ export class PerceptionBuffer {
     return { pos: { x: x + vx * lag, y: y + vy * lag }, vel: { x: vx, y: vy },
       stance: stance > 0 ? 'high' : stance < 0 ? 'low' : null, facing: this.data[o + 5], age: lag,
       pose: pose === 1 ? 'up' : pose === -1 ? 'down' : pose === 2 ? 'rising' : null,
-      carrying: carrying > 0 ? true : carrying < 0 ? false : null };
+      carrying: carrying > 0 ? true : carrying < 0 ? false : null,
+      ...(ACCEL_CUE ? { accel: { x: this.data[o + 8], y: this.data[o + 9] } } : {}) };
   }
 
   /** Where agent `i` was and which way he faced `delay` seconds ago, as

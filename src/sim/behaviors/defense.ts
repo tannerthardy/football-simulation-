@@ -14,6 +14,7 @@ import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/al
 import type { Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import { PRESNAP_TELL } from '../agent.js';
+import { ACCEL_CUE } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
@@ -108,6 +109,8 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
 
 /** A blocker's lateral step a lineman can see (yd/s): its direction shows long before its speed builds. */
 const STEP_SEEN = 0.3;
+/** ACCEL_CUE: the push-off a lineman can see before the step's speed builds (yd/s²). */
+const STEP_PUSH = 1.5;
 
 /** How much sooner a lineman reads the man in front of him than the rest of
  * the field: his key, an arm's length away and straight ahead of him (as a
@@ -200,7 +203,11 @@ export class PassRusher implements Behavior {
     const onEdge = this.gap === 'C' || this.gap === 'D';
     const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? Infinity : 1.5, onEdge ? this.keyed : null) : null;
     if (onEdge && man) this.keyed = man.agent;
-    const runStep = !!man && man.stance === 'low' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > STEP_SEEN;
+    // ACCEL_CUE: an interior man also sees the step begin, his blocker's
+    // push-off across, before its speed shows.
+    const pushing = ACCEL_CUE && !onEdge && !!man?.accel && Math.abs(man.accel.y) > STEP_PUSH;
+    const runStep = !!man && man.stance === 'low' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5
+      && (Math.abs(man.vel.y) > STEP_SEEN || pushing);
     // An edge keeps his outside against a reach. A man in front blocking down,
     // stepping inside away from him, opens his gap to a kick-out or a pulling
     // lead: he closes flat along the line behind the down block and sets the
@@ -235,7 +242,7 @@ export class PassRusher implements Behavior {
     if (!onEdge && runStep) {
       // The answer to a lateral first step is a flat step of his own at full
       // effort, square to the man, not a match of the speed seen so far.
-      const side = Math.sign(man!.vel.y), step = a.profile.vmax * a.profile.shuffle;
+      const side = Math.sign(Math.abs(man!.vel.y) > STEP_SEEN ? man!.vel.y : man!.accel!.y), step = a.profile.vmax * a.profile.shuffle;
       const h = a.mind.decisionInterval;
       const at = { x: man!.pos.x + man!.vel.x * h, y: man!.pos.y + side * step * h };
       a.tags.add('key-step');
