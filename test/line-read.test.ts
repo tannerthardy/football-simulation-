@@ -74,13 +74,13 @@ describe('a lineman reads the play from the line', () => {
     // snaps he boxes the kick-out throughout. Only the play-side edge ever replaces, and his response
     // opens the play. A backside edge may later box a blocker arriving at him (run-fits' local kick-out
     // response, a different duty): with flat pullers off the line picture (#393) that late box no longer
-    // occurs on these six, so two counter snaps where it does (seed 4 flipped, seed 7) join the backside
-    // checks. That response is protected by its acquired cue below, not counted as a replacement.
+    // occurs on these six, so two native counter snaps where it does (I-pro, seed 7, both flips) join the
+    // backside checks. That response is protected by its acquired cue below, not counted as a replacement.
     const first = (s: ReturnType<typeof play>, a: Agent) =>
       Math.min(...['fit-replace', 'fit-box', 'fit-spill'].map(tag => s.firstFit.get(`${a.slot}:${tag}`) ?? Infinity));
     const counter = snaps('counter', 'i_jumbo_22');
-    const lateBox = [counter, [{ seed: 4, flip: true }, { seed: 7, flip: false }]
-      .map(({ seed, flip }) => ({ seed, flip, ...play('counter', 'i_jumbo_22', seed, flip) }))].flat();
+    const lateBox = [counter, [{ formation: 'i_pro_21', seed: 7, flip: false }, { formation: 'i_pro_21', seed: 7, flip: true }]
+      .map(({ formation, seed, flip }) => ({ seed, flip, ...play('counter', formation, seed, flip) }))].flat();
     for (const s of lateBox) {
       const playSide = edges(s.sim).filter(a => a.runFit!.side === s.ballSide);
       const backside = edges(s.sim).filter(a => a.runFit!.side !== s.ballSide);
