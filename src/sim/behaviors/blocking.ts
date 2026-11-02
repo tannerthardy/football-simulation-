@@ -2135,7 +2135,7 @@ export class RunBlocker implements Behavior {
       || (p.combination && !p.combination.released) || p.departure) return;
     const ref = this.workReference(a, sim), picture = this.workPicture!;
     if (picture.source !== 'acquired' || picture.carrier === sim.qb.idx) return;
-    const dir = sim.attackDir(a.team);
+    const dir = sim.attackDir(a.team), beat = a.mind.decisionInterval;
     // Distance to the runner, less what his closing speed takes off it over
     // one second: a man running at the runner counts as nearer than he is.
     const danger = (seen: Perceived) => {
@@ -2154,6 +2154,9 @@ export class RunBlocker implements Behavior {
       const threat = danger(seen);
       // Behind the runner he is pursuit, not a man to block in front of him.
       if ((seen.pos.x - ref.x) * dir < -1 || threat.score > mine.score - 2.5) continue;
+      // A man he has already climbed past, judged a beat ahead, is behind his
+      // back: turning around to chase him is pursuit too, not a block.
+      if ((seen.pos.x + seen.vel.x * beat - a.pos.x - a.vel.x * beat) * dir < -1) continue;
       const reach = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
       // A teammate nearer the man, or one he sees in contact range of him
       // (a keeper at arm's length on the man he just left), already has him.

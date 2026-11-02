@@ -239,12 +239,14 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // With the box backer reading before he moves and filling to a pull he sees, M29-P036's LG is no longer reread
     // (its SS->LB_W reach at 2.05 disappears; that play's ending moves -0.09 -> 12.89 yd, first contact 3.15 -> 5.20,
     // kept as an adverse outcome, not attributed). S8-P005 carries the case: RT, climbing to SS, is
-    // reread to LB_M at 2.15 (still a climb) and to LB_W at 2.65, where the resulting kind is a drive.
+    // reread to LB_M at 2.15 (still a climb) and to LB_W at 2.65, where the resulting kind is a drive. With the
+    // climber never rereading onto a man he has climbed past (judged a beat ahead), the 2.65 reread is gone: LB_W
+    // was at the runner, a yard and more behind the climbing RT. The 2.15 reread and its recorded kind remain.
     const p = play('S8-P005');
     const threats = changeOf(p, 'RT', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([2.15, 2.65]);
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'RT').map(e => e.t)).toEqual([2.15, 2.65]);
-    expect(threats.map(c => [p.slot(c.before.target), p.slot(c.after.target), c.after.kind])).toEqual([['SS', 'LB_M', 'climb'], ['SS', 'LB_W', 'drive']]);
+    expect(threats.map(c => c.t)).toEqual([2.15]);
+    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'RT').map(e => e.t)).toEqual([2.15]);
+    expect(threats.map(c => [p.slot(c.before.target), p.slot(c.after.target), c.after.kind])).toEqual([['SS', 'LB_M', 'climb']]);
   });
 
   it('R9-P020: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
@@ -357,10 +359,13 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // contact at 3.85, wrapping with it; still not a tie. With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step)
     // as well, LB_W alone at 3.0, wrapping with it (5.4 yd, not a score); still not a tie. With the box backer reading before he moves and filling to a pull he sees
     // as well, DT_W alone makes first contact at 2.75, a hit without a wrap; SS wraps first, at 4.25; still not a tie.
+    // With the climber never rereading onto a man he has climbed past, RT keeps climbing instead of turning back at
+    // 2.65 and is not there for the RB's fumble on DT_W's 2.75 hit (he had recovered it): the defense recovers, and
+    // the first wrap is LG's on the recovering DT_S at 4.7. DT_W alone at 2.75 is unchanged; still not a tie.
     expect(first.t).toBe(2.75);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 4.25 });
-    expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('SS');
+    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 4.7 });
+    expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('LG');
   });
 
   // With the back leaving the mesh on his own start (#344), these former QB keeps (S8-P054 and S10-P006 on develop,
