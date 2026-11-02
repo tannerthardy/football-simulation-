@@ -13,9 +13,12 @@ const LOS = 30, BALL = 26.65;
 function scene(guard: { dx: number; dy: number }, onDefender = false) {
   const offAlign = alignOffense(FORMATION_BY_ID.ace_11, false, LOS, BALL);
   const slots = ['LT', 'LG', 'C', 'RG', 'RT', 'Y'].filter(s => offAlign.spots[s as keyof typeof offAlign.spots]);
-  const offense = slots.map(slot => ({ slot, team: 'O', profile: { radius: .35 }, pos: { ...offAlign.spots[slot as keyof typeof offAlign.spots]!.pos } })) as unknown as Agent[];
+  const offense = slots.map(slot => {
+    const home = offAlign.spots[slot as keyof typeof offAlign.spots]!.pos;
+    const pos = slot === 'LG' ? { x: home.x - guard.dx, y: home.y + guard.dy } : { ...home };
+    return { slot, team: 'O', profile: { radius: .35 }, pos };
+  }) as unknown as Agent[];
   const lg = offense.find(a => a.slot === 'LG')!;
-  lg.pos = { x: lg.pos.x - guard.dx, y: lg.pos.y + guard.dy };
   const backer = { slot: 'LB_M', team: 'D', profile: { radius: .35 }, pos: { x: LOS + 4.5, y: BALL } } as unknown as Agent;
   const blocked = { slot: 'DT_W', team: 'D', profile: { radius: .35 }, pos: { x: lg.pos.x + .6, y: lg.pos.y } } as unknown as Agent;
   const defense = onDefender ? [backer, blocked] : [backer];
