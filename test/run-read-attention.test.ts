@@ -64,4 +64,20 @@ describe('run-read attention', () => {
     expect(picture(atCos(.1001))).toEqual(picture(atCos(.0999)));
   });
 
+  it('a blocker leaving his range holds the picture he had instead of rewinding to an older one', () => {
+    // Z recorded 4 yd in front (watched), then running away: once his picture is beyond 5 yd the run
+    // read's 0.15 s applies, but the picture ages from the one he held, one tick at a time.
+    const { sim, d, z } = stage({ x: -4, y: 0 }, 'run');
+    z.body.vel = { x: -8, y: 0 };
+    let last = sim.t - sim.see(d, z).age!;
+    for (let i = 0; i < 12; i++) {
+      z.body.pos = { x: z.body.pos.x + z.body.vel.x * sim.dt, y: z.body.pos.y };
+      sim.t += sim.dt; sim.perception.record(sim.agents);
+      const sampledAt = sim.t - sim.see(d, z).age!;
+      expect(sampledAt).toBeGreaterThanOrEqual(last - 1e-9);
+      last = sampledAt;
+    }
+    // Long out of range, the full delay has caught up.
+    expect(sim.see(d, z).age!).toBeCloseTo(ageOfZ({ x: -12, y: 0 }, 'run'), 6);
+  });
 });
