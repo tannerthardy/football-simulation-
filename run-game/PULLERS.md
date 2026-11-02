@@ -94,3 +94,42 @@ crossing on 2/3 of no-block plays, two bodies within 1.3 yd).
 
 Peak heading rate is ~2x NFL for every role in sim, but NFL tracking is filtered and sim is not, so that
 number needs both smoothed the same way before it is evidence.
+
+## Task: counter wrap "late into a crowded hole" (2026-11-02)
+
+The wrap is not late. Base: `run/G2-puller-path` 452b8acf (PP6 traces); counter, 12 run-only seeds, 5 streams.
+Same operator for both sides: `tools/py/wrapcar.py`, `tools/py/carlat.py` and `kicklog.py` (`KCON=COUNTER KPULLS=2`).
+
+| At the carrier's LOS crossing | NFL counter | sim counter | NFL power | sim power |
+|---|---|---|---|---|
+| Carrier lateral from OL centre | +3.12 | +0.83 | +3.02 | +3.00 |
+| Carrier lateral from snap PST | +0.36 | −1.99 | +0.00 | +0.15 |
+| Carrier lateral at 2.0 s | +1.29 | +0.42 | +1.83 | +1.74 |
+| Wrap lateral from OL centre | +3.87 | +3.35 | — | — |
+| Wrap outside carrier by > 1 yd | 41% | 81% | — | — |
+| Wrap deeper than carrier | 53% | 30% | — | — |
+| Carrier vs kicked man (kicklog) | −0.43 | −2.80 | — | — |
+| Carrier vs kicked man, logged ends | +2.85 | −2.56 | — | — |
+
+- The wrap's path and speed match NFL (`wrapmeet.py`: distance to nearest box backer 3.3/2.5 yd at 2.0/2.5 s, both sides).
+- NFL counter backs hit the same off-tackle point as power. The sim counter back hits the B gap, so the wrap ends up 2.5 yd outside him.
+- The sim back never bounces outside a logged end.
+
+Three mechanisms, found by `tools/ts/backagg.mts`, `tools/ts/backaim.mts` and `_pic` (live line picture):
+
+1. **Counter installs `aim: 'B'`** (`src/playbook/concepts.ts`); power installs `'C'`. Captures serialize the concept, so a replay must re-read it; the local overlay's `installed()` does that.
+   - Aim C alone: crossing +0.83 → +1.49.
+   - But the pullers' hole (`blocking.ts` hole = 3.6 for C) also widens, so the wrap gets ahead of the back less often: 30% → 12%.
+   - Not shipped. The hole for the back and the hole for the pullers need separating first.
+2. **Flat pullers count as line bodies** in `linePicture` (`live-gaps.ts departed()` needs depth < −0.5 from his stance). Counter pullers run 0.2–0.4 yd behind their stance, so at 1.5 s the back's live C gap is computed between the two crossing pullers.
+   - Fix: `patches/linepic-departed.patch` counts a body as departed when it is more than a split across, behind its stance, and has no defender on it.
+   - Scope, all concepts stream 0: power 98/155 snaps change, trap 88/153, counter 127/138, zone 7–32%.
+   - Power's carrier track is unchanged (+2.81 vs +2.89), so the change is in defensive gap fits and line-flow reads, which use the same picture. Handed to Defense; not shipped here.
+3. **The open-lane race after the kick lands.** `followEnded` fires on `kickLanded` at 1.6–1.9 s, about 4 yd deep. `runReadAim` then prices the preferred spot (median +0.7 from PST, which is right) at risk about 13, against about 4 for the seam 2 yd inside.
+   - m1 < 0 on 115/124 snaps. The earliest arrival is the kicked end (about 35%), a free backer (the wrap's man, about 30%) or the down-blocked DT (about 25%).
+   - Tried: the defender must go around a touching blocker's body (`screenedDetour`). No change. The end stands over the kicker at the line, so the entry point is genuinely within his reach.
+   - Open: the race treats the lead puller's future body as nothing, but NFL backs run off the wrap's hip into a contested hole. This needs a design decision before more code. Candidates:
+     - keep pressing the read point (kick read sets the side) until −2 yd;
+     - forecast teammates' bodies along their seen motion in `blockedBy` and `threatTime`.
+
+Arms: PP6 (base); AC1 (aim C, replay re-reads the install); AC2 (aim C + departure); ALLD (departure only, all concepts).
