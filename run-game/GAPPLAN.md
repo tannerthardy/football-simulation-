@@ -91,3 +91,26 @@ Notes:
 5. **Draw shed**, with Defense (section 4).
 6. **Pin-and-pull is not installed.** It's a new call candidate once 1 and 3 are sound.
 7. **Static engagements** (dDx): physics, Main Engine.
+
+## Climber stall decomposition (#164 with Main Engine, 2026-11-02)
+
+`tools/ts/climbbatch.mts <worktree> [schemes]`: native captured snaps, saved stream, 12 seeds, #390 code. Covers every `block_climb` release, over the first 0.6 s.
+
+| | power (136) | counter (113) | trap (85) | IZ (273) |
+|---|---|---|---|---|
+| Requested speed | 4.8 | 4.8 | 4.9 | 5.1 |
+| Achieved speed | 1.65 | 1.59 | 1.36 | 2.15 |
+| Request turn from pre-release motion | 62° | 58° | 75° | 56° |
+| Pre-release speed | 1.50 | 1.55 | 1.71 | 1.95 |
+| Hands joint / engagement with the released DL at 0.2 s | 0% | 0–1% | 0% | 0% |
+| Body contact with that DL at 0.2 s | 57% | 62% | 55% | 40% |
+| Distance to DL, release → 0.3 s | 0.74 → 0.68 | 0.73 → 0.68 | 0.73 → 0.68 | 0.89 → 0.91 |
+| 1.5 yd off the DL within 0.6 s | 20% | 15% | 19% | 41% |
+
+- The released DL moves away from the climber at about 0.6 yd/s, yet the gap shrinks: the climber drifts with him.
+- About a third of requests point into the DL (cos > 0.2): power 40%, counter 34%, trap 20%.
+- Those climbers do **not** do worse than the ones whose request points around him: around/away achieves 1.35–1.48 with contact 54–69%, into-DL 1.67–2.00 with contact 38–59%.
+
+**Reading.** The request is not the limiter. With no hands joint and no engagement, a body in contact with the released DL achieves about 30% of a 5 yd/s request in any direction for about 0.3–0.5 s. That is contact or traction physics → Main Engine #164.
+
+On my side: re-run the acceptance measures (`doublerelg.py`, `climbtrip.py`, `firsthit.py`) on their candidate.
