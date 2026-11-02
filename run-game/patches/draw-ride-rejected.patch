@@ -1,0 +1,37 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 64ac58c0..d0175d29 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1082,6 +1082,7 @@ export class RunBlocker implements Behavior {
+     a.mind.setAimTarget('block-fit', plan.target?.idx ?? null);
+     if (a.engagement) {
+       if (this.zoneEligible(a, sim)) this.readZone(a, sim, a.engagement.defender);
++      else if (plan.presentation === 'draw') this.rideDraw(a, sim);
+       return stand();
+     }
+     // Sell pass until just before the handoff.
+@@ -1719,6 +1720,24 @@ export class RunBlocker implements Behavior {
+     return ahead && closing && gap <= strike + 1;
+   }
+ 
++  /** A draw lineman rides his rusher where he is going: away from the
++   * runner's lane he sees and on along the rusher's own upfield track, rather
++   * than driving him back into it. Tracked draw linemen keep giving ground
++   * and stay between the rusher and the back (OL 1.52 deep at 2.0 s with the
++   * DL at 1.37); driving back, ours let the DL by to 1.77 behind the line,
++   * where he sheds onto the back (drawdl.py). Seen pictures only. */
++  private rideDraw(a: Agent, sim: PlaySim): void {
++    const e = a.engagement;
++    if (!e || e.type !== 'run' || e.blocker !== a || e.helpers.length) return;
++    const dir = sim.attackDir(a.team), seen = sim.see(a, e.defender);
++    const carrier = sim.carrier && sim.carrier !== sim.qb ? sim.see(a, sim.carrier).pos : null;
++    const laneY = carrier ? carrier.y : sim.ballY;
++    const away = Math.sign(seen.pos.y - laneY) || Math.sign(seen.pos.y - a.pos.y) || 1;
++    // Past the line the runner has his crease; the ride has done its work.
++    if (carrier && (carrier.x - sim.los) * dir > 0) return;
++    e.drive = norm({ x: -dir * .5, y: away });
++  }
++
+   private holeThreat(a: Agent, sim: PlaySim, current: Agent | null = null): Agent | null {
+     const hole = this.plan.pullPath?.at(-1);
+     if (!hole) return null;
