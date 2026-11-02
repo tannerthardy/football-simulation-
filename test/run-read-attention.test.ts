@@ -11,6 +11,7 @@ import { RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { pursuitPoint } from '../src/sim/behaviors/common.js';
 
 const formation = FORMATION_BY_ID.ace_11;
 const offense = generateTeam(new Rng(31), 'O', 'O', { strength: .55 });
@@ -90,6 +91,32 @@ describe('run-read attention', () => {
       sim.t += sim.dt; sim.perception.record(sim.agents);
       const near = sim.see(d, z, scale).age!, far = sim.see(d, z, scale + 0.2 / rt).age!;
       expect(far - near).toBeCloseTo(0.2, 6);
+    }
+  });
+
+  it('pursuit, the actual consumer, measures the same acceleration from its two samples under a run read', () => {
+    // Z 12 yd in front, out of range, accelerating at 2 yd/s^2 along +y. pursuitPoint asks for its
+    // ordinary picture and one 0.2 s older; the speed difference over 0.2 s is the acceleration it uses.
+    // Opposing control: the same history under a pass read, where no hold applies.
+    const run = (read: 'run' | 'pass') => {
+      const { sim, d, z } = stage({ x: -12, y: 0 }, read);
+      const rows: Array<{ t: number; ages: number[]; accel: number }> = [];
+      const see = sim.see.bind(sim);
+      for (let i = 1; i <= 30; i++) {
+        z.body.vel = { x: 0, y: 2 * i * sim.dt };
+        z.body.pos = { x: z.body.pos.x, y: z.body.pos.y + z.body.vel.y * sim.dt };
+        sim.t += sim.dt; sim.perception.record(sim.agents);
+        const asked: Array<{ age: number; speed: number }> = [];
+        sim.see = (o, tg, scale) => { const r = see(o, tg, scale); if (tg === z) asked.push({ age: r.age!, speed: Math.hypot(r.vel.x, r.vel.y) }); return r; };
+        pursuitPoint(sim, d, z);
+        sim.see = see;
+        if (i > 12) rows.push({ t: sim.t, ages: asked.map(q => q.age), accel: (asked[0].speed - asked[1].speed) / 0.2 });
+      }
+      return rows;
+    };
+    for (const read of ['run', 'pass'] as const) for (const r of run(read)) {
+      expect(r.ages[1] - r.ages[0]).toBeCloseTo(0.2, 6);
+      expect(r.accel).toBeCloseTo(2, 6);
     }
   });
 });
