@@ -119,4 +119,30 @@ describe('run-read attention', () => {
       expect(r.accel).toBeCloseTo(2, 6);
     }
   });
+
+  it('pursuit infers acceleration over the actual interval between its two pictures when they straddle the 5 yd line', () => {
+    // Z runs straight away from the corner accelerating at 2 yd/s^2 and crosses 5 yd mid-scene, so pursuit's
+    // two queries can take different attention delays and sit more than 0.2 s apart. The acceleration pursuit
+    // records is read from its own trace; opposing control: the pass read, where both share one delay.
+    const run = (read: 'run' | 'pass') => {
+      const { sim, d, z } = stage({ x: -3, y: 0 }, read);
+      const start = sim.t, x0 = z.body.pos.x, out: Array<{ gap: number; accel: number }> = [];
+      const see = sim.see.bind(sim);
+      for (let i = 1; i <= 40; i++) {
+        const t = i * sim.dt;
+        z.body.vel = { x: -2 * t, y: 0 }; z.body.pos = { x: x0 - t * t, y: z.body.pos.y };
+        sim.t = start + t; sim.perception.record(sim.agents);
+        const ages: number[] = [], recorded: number[] = [];
+        sim.see = (o, tg, scale) => { const r = see(o, tg, scale); if (tg === z) ages.push(r.age!); return r; };
+        (sim as any).commandTraceFor = () => ({ pursuit: (_: unknown, data: any) => recorded.push(data.forecast.acceleration) });
+        pursuitPoint(sim, d, z);
+        sim.see = see; delete (sim as any).commandTraceFor;
+        if (i > 12 && recorded.length) out.push({ gap: ages[1] - ages[0], accel: recorded[0] });
+      }
+      return out;
+    };
+    const runRows = run('run'), passRows = run('pass');
+    expect(runRows.some(r => Math.abs(r.gap - 0.2) > 0.01)).toBe(true);   // the straddle is exercised
+    for (const r of [...runRows, ...passRows]) expect(r.accel).toBeCloseTo(2, 6);
+  });
 });
