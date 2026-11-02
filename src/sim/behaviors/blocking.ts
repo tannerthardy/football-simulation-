@@ -1686,17 +1686,21 @@ export class RunBlocker implements Behavior {
 
   /** A man behind his own flow (judged a beat ahead) is an obsolete chaser,
    * not work, unless he is still live work: already inside this blocker's
-   * strike reach, or a filler ahead of the runner he sees, closing on him,
-   * within a step of the blocker. Turning back for a chaser leaves the hole;
-   * letting a reachable filler go leaves the runner. */
-  private liveBehind(a: Agent, sim: PlaySim, d: Agent, seen: Perceived, ball: Vec2, runner: Agent | null): boolean {
+   * strike reach, or a filler ahead of the runner he sees, the two closing on
+   * each other, within a step of the blocker. Closing is their relative
+   * motion in his pictures: a planted man is still live when the runner is
+   * coming at him. Without an acquired runner picture there is no closing
+   * evidence. Turning back for a chaser leaves the hole; letting a reachable
+   * filler go leaves the runner. */
+  private liveBehind(a: Agent, sim: PlaySim, d: Agent, seen: Perceived, ball: Vec2): boolean {
     const gap = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
     const strike = a.profile.radius + d.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
     if (gap <= strike) return true;
-    if (!runner) return false;
+    const picture = this.workPicture;
+    if (picture?.source !== 'acquired' || picture.carrier == null || picture.carrier === sim.qb.idx) return false;
     const dir = sim.attackDir(a.team), rx = ball.x - seen.pos.x, ry = ball.y - seen.pos.y, rl = Math.hypot(rx, ry) || 1;
     const ahead = (seen.pos.x - ball.x) * dir > 0;
-    const closing = (seen.vel.x * rx + seen.vel.y * ry) / rl > .5;
+    const closing = ((seen.vel.x - picture.vel.x) * rx + (seen.vel.y - picture.vel.y) * ry) / rl > .5;
     return ahead && closing && gap <= strike + 1;
   }
 
@@ -1727,7 +1731,7 @@ export class RunBlocker implements Behavior {
       // reversing out of the hole the runner needs.
       const beat = a.mind.decisionInterval;
       if ((seen.pos.y + seen.vel.y * beat - a.pos.y - a.vel.y * beat) * side < -1
-        && !this.liveBehind(a, sim, d, seen, ball, runner)) return null;
+        && !this.liveBehind(a, sim, d, seen, ball)) return null;
       if (runner && (ball.x - seen.pos.x) * dir > runner.profile.radius + d.profile.radius) return null;
       const lead = .3, s = Math.hypot(seen.pos.x + seen.vel.x * lead - hole.x, seen.pos.y + seen.vel.y * lead - hole.y);
       const claimed = mates.some(m => Math.hypot(m.pos.x - seen.pos.x, m.pos.y - seen.pos.y) <= m.r + d.profile.radius + .1);
@@ -2190,7 +2194,7 @@ export class RunBlocker implements Behavior {
       // A man he has already climbed past, judged a beat ahead, is behind his
       // back: turning around to chase him is pursuit too, not a block.
       if ((seen.pos.x + seen.vel.x * beat - a.pos.x - a.vel.x * beat) * dir < -1
-        && !this.liveBehind(a, sim, d, seen, ref, picture.carrier != null && picture.carrier !== sim.qb.idx ? sim.agents[picture.carrier] : null)) continue;
+        && !this.liveBehind(a, sim, d, seen, ref)) continue;
       const reach = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
       // A teammate nearer the man, or one he sees in contact range of him
       // (a keeper at arm's length on the man he just left), already has him.
