@@ -25,7 +25,7 @@ import { bodyRadius } from '../physics/bodyshape.js';
 import type { Body, MoveCommand } from '../physics/kinematics.js';
 import { World, type Intent, type StepReport } from '../physics/world.js';
 import { coverageOrientation } from './coverage/orientation.js';
-import { ThrowSight } from './throw-sight.js';
+import { ThrowSight, viewCone } from './throw-sight.js';
 import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
@@ -156,6 +156,8 @@ export class PlaySim {
   readonly incidentalCatchReadiness = new IncidentalCatchReadiness();
   /** When each defender first had the current pass in view. */
   readonly throwSight = new ThrowSight();
+  /** Per observer→opponent query (and its delay scale), the tick his latest picture sampled (run-read attention holds it). */
+  private sightSamples?: Map<string, number>;
   readonly trace: ReplayTrace;
   private commandTrace?: CommandTrace;
   /** Optional passive recorder of every offensive blocker's responsibility (docs/COMMAND_TRACE.md). Off unless asked for. */
@@ -575,12 +577,28 @@ export class PlaySim {
       return seen;
     }
     let delay = observer.mind.observationDelay(observer.profile.reactionTime * delayScale);
-    // Attention follows the observer's belief, regardless of the hidden call.
-    const line = ['LT', 'LG', 'C', 'RG', 'RT'];
-    if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)) delay += 0.15;
     // Eyes on keys: everything else is peripheral.
     if (observer.eyes && !observer.eyes.keys.includes(target)) delay += observer.eyes.peripheral;
+    // Attention follows the observer's belief, regardless of the hidden call:
+    // reading run, his eyes go to the backfield and the blockers, so a man
+    // releasing away from him is seen late. A blocker his own picture shows in
+    // front of him and in range is one of the blockers he is watching,
+    // whatever his position; where the blocker really is now does not decide it.
+    // Looking away from a man he was watching holds the picture he has of him;
+    // it ages from there and does not rewind to an older moment.
+    const line = ['LT', 'LG', 'C', 'RG', 'RT'];
+    // Held per query: a caller asking for an older picture on purpose
+    // (pursuit compares two samples for acceleration) keeps its own history.
+    const now = Math.round(this.t / this.dt), key = `${observer.idx}>${target.idx}@${delayScale}`;
+    const sampled = (this.sightSamples ??= new Map<string, number>()).get(key);
+    if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)
+      && !inBlockingView(observer, this.perception.perceive(target.idx, delay).pos)) {
+      const attended = delay;
+      delay += 0.15;
+      if (sampled !== undefined && sampled <= now) delay = Math.max(attended, Math.min(delay, (now - sampled) * this.dt));
+    }
     const seen = this.perception.perceive(target.idx, delay);
+    this.sightSamples.set(key, now - Math.round((seen.age ?? delay) / this.dt));
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
@@ -1574,4 +1592,16 @@ export function distance(a: Agent, b: Agent): number {
 
 export function speedOf(a: Agent): number {
   return len(a.vel);
+}
+
+/** A blocker in view this close can be on him in well under a second at
+ * running speed, so he is one of the threats a run-reading defender watches. */
+const BLOCKING_RANGE = 5;
+
+/** Whether a man at `at` (the observer's picture of him) is in front of
+ * `observer`, inside his field of view and close enough to block him. */
+function inBlockingView(observer: Agent, at: Vec2): boolean {
+  const dx = at.x - observer.pos.x, dy = at.y - observer.pos.y, d = Math.hypot(dx, dy);
+  if (d > BLOCKING_RANGE) return false;
+  return d < 1e-6 || (Math.cos(observer.facing) * dx + Math.sin(observer.facing) * dy) / d > viewCone(observer);
 }

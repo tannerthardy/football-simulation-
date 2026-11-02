@@ -7,7 +7,7 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import { World } from '../src/physics/world.js';
 import { cornerSpeed } from '../src/physics/kinematics.js';
-import { RunBlocker } from '../src/sim/behaviors/blocking.js';
+import { RunBlocker, pullTurnRadius } from '../src/sim/behaviors/blocking.js';
 import { goTo } from '../src/sim/behaviors/common.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
@@ -67,7 +67,7 @@ describe('a puller reads the moving target after clearing the wall', () => {
     const f = stage(); f.blocker.body.pos = { x: 40, y: CENTER_Y };
     const see = vi.spyOn(f.sim, 'see');
     const expected = goTo(f.blocker, f.path[0], { speed: .95,
-      through: cornerSpeed(f.blocker.body, f.path[0], f.path[1], .65) });
+      through: cornerSpeed(f.blocker.body, f.path[0], f.path[1], pullTurnRadius(f.blocker)) });
     const command = f.behavior.update(f.blocker, f.sim);
     expect(see.mock.calls.some(([a, b]) => a === f.blocker && b === f.target)).toBe(false);
     expect(command.vel.x).toBe(expected.vel.x);
@@ -79,7 +79,7 @@ describe('a puller reads the moving target after clearing the wall', () => {
     const f = stage(); f.behavior.plan.pullRole = 'lead';
     const see = vi.spyOn(f.sim, 'see');
     const expected = goTo(f.blocker, f.path[1], { speed: .95,
-      through: cornerSpeed(f.blocker.body, f.path[1], f.path[2], .65) });
+      through: cornerSpeed(f.blocker.body, f.path[1], f.path[2], pullTurnRadius(f.blocker)) });
     expect(f.behavior.update(f.blocker, f.sim)).toEqual(expected);
     expect(see.mock.calls.some(([a, b]) => a === f.blocker && b === f.target)).toBe(true);
     expect(f.behavior.plan.pullRole).toBe('lead');
@@ -112,7 +112,7 @@ describe('a puller reads the moving target after clearing the wall', () => {
     f.target.body.vel = { x: 0, y: 0 };
     for (let k = 0; k < 24; k++) f.sim.perception.record(f.sim.agents);
     const expected = goTo(f.blocker, f.path[1], { speed: .95,
-      through: cornerSpeed(f.blocker.body, f.path[1], f.path[2], .65) });
+      through: cornerSpeed(f.blocker.body, f.path[1], f.path[2], pullTurnRadius(f.blocker)) });
     const before = structuredClone(f.blocker.body), command = f.behavior.update(f.blocker, f.sim);
     expect(command.vel.x).toBeCloseTo(expected.vel.x, 12);
     expect(command.vel.y).toBeCloseTo(expected.vel.y, 12);
