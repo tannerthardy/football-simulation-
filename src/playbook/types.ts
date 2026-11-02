@@ -116,6 +116,10 @@ export interface RunConcept {
   /** Gap pulls: BSG kicks/leads, BST wraps; explicit Counter H tag uses an off-ball H. */
   pullers: Array<'BSG' | 'BST' | 'H'>;
   beats: string[];
+  /** Who takes the play-side end man on the line: the puller kicks him out
+   * (default), or 'base': the line's play-side end man (inline TE, else the
+   * tackle) blocks him and the puller leads up to the first backer. */
+  endBlock?: 'kick' | 'base';
 }
 
 /** Pre-snap motion kinds (src/sim/motion.ts). */

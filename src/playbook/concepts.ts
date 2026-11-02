@@ -118,6 +118,16 @@ export const RUN_CONCEPTS: RunConcept[] = [
 export const PASS_BY_ID: Record<string, PassConcept> = Object.fromEntries(PASS_CONCEPTS.map((c) => [c.id, c]));
 export const RUN_BY_ID: Record<string, RunConcept> = Object.fromEntries(RUN_CONCEPTS.map((c) => [c.id, c]));
 
+/** Explicit Power installations. Base: the play-side TE (else the tackle)
+ * blocks the end man and the pulling guard leads up for the first backer;
+ * tracked power kickers leave an end already on a teammate for a backer on
+ * most such plays (run-game/PULLERS.md, #93). Kept outside automatic calling
+ * until its response coverage is reviewed. */
+export const POWER_VARIANTS: Record<'kick' | 'base', RunConcept> = {
+  kick: RUN_BY_ID.power,
+  base: { ...RUN_BY_ID.power, id: 'power_base', name: 'Power Base', endBlock: 'base' },
+};
+
 /** Explicit Counter installations; GH requires an off-ball H.
  * Kept outside automatic calling until its formation/response coverage is reviewed. */
 export const COUNTER_VARIANTS: Record<'gt' | 'gh', RunConcept> = {
