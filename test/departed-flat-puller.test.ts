@@ -52,6 +52,11 @@ describe('a flat puller has left his place in the line', () => {
   it('a defender seen on him keeps him on the surface: he is blocking there', () => {
     expect(scene(guard(.3, 3), true).gone()).toEqual([]);
   });
+  it('a tackle setting back outside his tight end has not crossed him: both stay on the line', () => {
+    // COV-7's play-action edge: the tackle kicks back 1.32 yd and out 0.73 yd while the tight end steps in
+    // 0.8 yd, so the two meet side by side at the edge (0.01 yd apart across), a yard apart in depth.
+    expect(scene({ RT: { dx: 1.32, dy: -.73 }, Y: { dx: .1, dy: .8 } }).gone()).toEqual([]);
+  });
   it('a nearly still guard is not taken off the line because the other guard pulled across behind him', () => {
     // Integration's acquired-picture control (#393), staged by stance: the guard at y 25.11 moves 0.10 yd
     // across and 0.30 yd back; the guard from y 28.19 pulls past him to (27.17, 24.85), departed by depth.
