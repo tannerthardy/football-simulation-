@@ -1159,6 +1159,21 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   // ("Dubs" 9; HonestNFL HNFL-129), whatever he covers after the snap.
   if (SHORT_PACKAGE && call.front.id === 'bear' && spots.LB_S && teAt(fs))
     spots.LB_S.pos = { x: los + (frontSlots.DE_S?.depth ?? .9), y: off.ballY + fs * techniqueOffset('9', true, off.line) };
+  // Off the ball, two players do not stand on one spot: whoever is inside
+  // 0.9 yd of a teammate already there steps outward, away from the ball.
+  // The several placement rules above each pick their own spot; this keeps
+  // their landmarks and gives the later one the next patch of grass.
+  const settled: DefSlot[] = [];
+  for (const slot of [...present].sort((a, b) => Math.abs(spots[a]!.pos.y - off.ballY) - Math.abs(spots[b]!.pos.y - off.ballY))) {
+    const p = spots[slot]!.pos;
+    if (p.x - los > 2) for (let k = 0; k < 4; k++) {
+      const near = settled.find((o) => Math.hypot(spots[o]!.pos.x - p.x, spots[o]!.pos.y - p.y) < .9);
+      if (!near) break;
+      const q = spots[near]!.pos, out = Math.sign(p.y - off.ballY) || Math.sign(p.y - q.y) || s;
+      p.y = clamp(q.y + out * Math.sqrt(Math.max(0, .81 - (p.x - q.x) ** 2)) + out * .01, 1, FIELD_WIDTH - 1);
+    }
+    settled.push(slot);
+  }
   // Box count: defenders within the tackle box area at snap.
   let box = 0;
   for (const slot of present) {
