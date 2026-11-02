@@ -687,21 +687,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // Power's lead puller wraps for the first linebacker to show playside,
     // read inside-out; the PST/PSG combo works to the backside backer
     // (spread playbook p. 66). Count his backer before combos and climbs do.
-    const baseEnd = scheme === 'power' && concept.endBlock === 'base';
-    const leadBacker = scheme === 'power' && (fbIsBack || baseEnd) && pullers.size
+    const leadBacker = scheme === 'power' && fbIsBack && pullers.size
       ? lb.filter((l) => !claimedLB.has(l) && rel(l) > -0.5).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
     if (leadBacker) claimedLB.add(leadBacker);
-    // Power Base: the line's play-side end man (inline TE, else the tackle)
-    // takes the end man on the line, driving him out of the hole; the puller
-    // then has no kick and leads up for the first backer.
-    if (baseEnd) {
-      const edge = line.filter((b) => !pullers.has(b) && rel(b) > 0).sort((p, q) => rel(q) - rel(p))[0];
-      const end = edge && dl.filter((d) => !claimedDL.has(d) && rel(d) > rel(edge) - 0.6).sort((p, q) => rel(q) - rel(p))[0];
-      if (edge && end) {
-        claimedDL.add(end);
-        plans.set(edge, { kind: 'drive', target: end, drive: up(ps * 0.6) });
-      }
-    }
 
     // Reserve precisely the intentionally unblocked trap/kick defender.
     // The old trap rule left every playside lineman for one trapper. Trap is
@@ -712,14 +700,14 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // playside guard is the A-gap 1-technique; on or outside him, trapped.
     const psg = line.filter((b) => isOL(b) && rel(b) > 0).sort((p, q) => rel(p) - rel(q))[0];
     const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= (psg ? rel(psg) : 1.05)).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
-    const kickReserved = scheme !== 'trap' && !baseEnd && pullers.size ? dl.filter((d) => rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null : null;
+    const kickReserved = scheme !== 'trap' && pullers.size ? dl.filter((d) => rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null : null;
 
     // Account for immediate inside threats first. Outside-in assignment can
     // send the tackle across a guard's covered man and expose the mesh.
     const gapLine = line.filter((b) => !pullers.has(b)).sort((a, b) => Math.abs(rel(a)) - Math.abs(rel(b)));
     const gapPending: Agent[] = [];
     for (const b of gapLine) {
-      if (pullers.has(b) || plans.has(b)) continue;
+      if (pullers.has(b)) continue;
       const r = rel(b);
       if (r >= -0.2) {
         const coverPull = b.slot === 'C' && bsg && pullers.has(bsg)
@@ -794,7 +782,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       let role: 'kick' | 'lead' | 'trap';
       if (scheme === 'trap') role = 'trap';
       else if (scheme === 'counter') role = p === bsg ? 'kick' : 'lead';
-      else role = fbIsBack || baseEnd ? 'lead' : 'kick';
+      else role = fbIsBack ? 'lead' : 'kick';
       const target = role === 'trap' ? trapTarget : role === 'kick' ? emlos : p === h && concept.pullers.includes('H') ? hBacker : leadBacker ?? lbNear(hole);
       if (target && role !== 'lead') claimedDL.add(target);
       const path = target && role !== 'lead' ? [
