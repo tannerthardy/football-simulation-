@@ -316,6 +316,7 @@ problem), resolved.
 | [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | on (orientation technique); run-fit and ball-play turns open |
 | [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | paused; broader cost-fixture requalification first on resume |
 | [COV-8](#cov-8) | Trailing man defenders can't find the ball | G3, G4 | high | open (logged with the throw-sight change) |
+| [COV-9](#cov-9) | A man defender overruns a turning receiver once nothing slows his pedal | G3 | medium | open (logged with #394; Coverage paused) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
@@ -2745,6 +2746,42 @@ From the issue register:
   throws. Don't cap deep completions. Stop rule: two attempts, then
   re-diagnose.
 
+<a id="cov-9"></a>
+### COV-9: A man defender overruns a turning receiver once nothing slows his pedal
+
+- **What:** with #394's off-ball spacing a crowded man defender stacks a step
+  deeper rather than starting 0.64 yd from a teammate. Against a bunch his
+  man pedal is then no longer throttled by the controller's teammate-spacing
+  cap, and he overruns the receiver's turn.
+- **Witness** (Integration, PR #394 comment 6589782072, `ed899306` vs
+  develop `c4fc33d5` + #392): `nativeTraceSetup({ coverage: 'cover1_off',
+  concept: 'curl_flat', seed: 9, roster: 7, formation: 'gun_bunch_11', flip:
+  false })`, defense replaced by dime (`pickDefense(generateTeam(new
+  Rng(7).fork('defense'), 'Defense', 'DEF', { strength: .6 }), 'dime')`),
+  seed `new Rng(9).fork('integration394:3')`; capture-before-fork SHA256
+  `01cbd22c…568244`. NB on Y (inside shoulder).
+  - Only the NB's start depth differs: 6.00 → 6.66 yd (Y and his shoulder
+    unchanged). Baseline: 0.637 yd from the SS (radius sum 0.565), and at
+    0.20 s the spacing cap cuts his man pedal from (−0.32, 1.03) to (−0.11,
+    0.38). Candidate: uncapped; he closes to 1.21 yd of Y at 3.10 s (baseline
+    3.50) and is 3.72 yd away at 4.30 as Y turns on the curl.
+  - Baseline: throw to X 3.15, PBU CB_W 4.20. Candidate: throw to Y 3.10,
+    caught 4.30, 52.4 yd. Four of five bunch curl_flat passes in that panel
+    gain more.
+- **Cause:** *likely* two coverage mechanisms the old crowding hid, not the
+  alignment (Coverage, 2026-11-02): (1) the man break reaction against a
+  turning receiver (COV-6 family: big, fast turns) lets him run past the
+  turn; (2) the teammate-spacing cap throttles a man defender's pedal from a
+  merely crowded start. Does a spacing cap belong on a man pedal at 0.2 s?
+- **Decision:** keep the stack-deeper spacing (Coverage chose it over
+  resolving only physical contact or dropping spacing): two DBs 0.64 yd
+  apart off the ball is not football, and restoring it would tune alignment
+  toward this ending. Fix the coverage mechanisms instead; Coverage is
+  paused, so this records the witness.
+- **Next:** for whoever holds coverage. Judge on this witness and its
+  opposing gun_doubles_11 control: the defender keeps his cushion through
+  the turn without a pedal cap or a fixed timer.
+
 <a id="ball-1"></a>
 ### BALL-1: Too many interceptions
 
@@ -3132,6 +3169,41 @@ From the outside audit (`audit`):
   perfect: no fakes and no occlusion. Next: add the scramble cue in the same
   PR; recompose with #256, which still falls back to
   `acquired?.target ?? sim.carrier`.
+- **Player sight has no field of view** (*confirmed*, 2026-11-02 audit, seeds
+  1–2, two games, about 15 million opponent lookups). `PlaySim.see` gives
+  every opponent on the observer's reaction delay, projected forward along
+  the target's velocity, wherever the observer faces: about 2.9 million
+  lookups per two games were of men more than 120° behind his body, at no
+  cost. Only the ball (`throw-sight.ts`), the QB's eyes and a carrier's run
+  keys model where a player looks. Proposed next: a player keeps his last
+  in-view sighting of a man outside his view cone (the throw-sight cones) and
+  projects it forward, instead of a fresh reaction-delayed picture. Large
+  behavioral reach (man defenders trailing, pursuit from behind); needs its
+  own matched restage and a design call.
+  *Landed with it, the opposite case:* a defender who had read run saw every
+  non-line, non-QB, non-back opponent 0.15 s later, including the tight end,
+  fullback or receiver blocking him from in front (4.5% of close in-front
+  lookups). A blocker in front of him (inside the throw-sight view cone) and
+  within 5 yd is now seen on the ordinary delay; men releasing away from him
+  are still seen late. The exemption is judged from his own delayed picture
+  of the blocker, never the blocker's live position (integration review on
+  #391: live position reselected an already-buffered picture).
+  When the run read's 0.15 s starts to apply to a man (his picture leaves
+  the exemption, or the defender's read flips to run), the picture he had is
+  held and ages, instead of rewinding 0.15 s (a rewound picture of a man
+  running away shows synthetic braking; Coverage review on #391).
+  *Still open:* other lengthenings of the delay (a man leaving a carrier's
+  keys) still take a picture back to an older moment. The same hold applied to every sight changes about 20 recorded
+  scenes (blocker rereads, QB memory, command traces) and needs its own
+  restage.
+  *Tried and stopped:* a field of view with memory (out of the view cone, the
+  last sighting projected forward), alone and with a check over the shoulder
+  every 1-2 s. Matched restage against #391 (seeds 7/11 x 4 RNG shifts):
+  passes +1.26 +/- 0.43 and +0.52 +/- 0.40 yd per play, 20+ yd completions
+  106 -> 136 and 124, mostly after the catch, from defenders still running
+  coverage who never see the carrier behind them. Body facing is too crude a
+  gaze; this needs a head and attention model with cues (the catch, "ball!")
+  first. The attempt itself was not kept.
 - **#256 (#225 rebuilt), engaged work-off toward the runner** (held): coherent,
   with no matched gain on runs; its scorecard moved yards per carry
   5.52 → 6.92. Waiting on Defense's native lab rerun and recomposition with
