@@ -1092,6 +1092,22 @@ export class RunBlocker implements Behavior {
           const seen = sim.see(a, target);
           const strike = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
           if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) < strike) return this.attack(a, sim, target, seen);
+          // Against an edge rusher selling pass is a short vertical set: the
+          // pass protector's kick (on his inside shoulder a beat ahead, a kick
+          // lead deeper than he is) with no launch-point depth to protect;
+          // never taking ground back toward the line, never behind the mesh.
+          // Standing on a yard mark let a wide end run by untouched and left
+          // the tackle chasing him from behind. Inside, the man comes to the set.
+          if (seen.pose === 'up' && Math.abs(seen.pos.y - sim.ballY) > 3) {
+            const qb = sim.see(a, sim.qb).pos, dir = sim.attackDir(a.team);
+            const out = Math.sign(seen.pos.y - sim.ballY) || 1;
+            const depth = (x: number) => (x - sim.los) * dir;
+            const d = Math.max(depth(qb.x) + .5, Math.min(depth(a.pos.x), depth(seen.pos.x) - KICK_LEAD));
+            const set = { x: sim.los + d * dir, y: seen.pos.y + seen.vel.y * KICK_LOOK - out * strike * .6 };
+            const back = Math.min(0, seen.vel.x * dir);
+            return track(a, set, { x: depth(a.pos.x) < depth(seen.pos.x) - KICK_LEAD ? 0 : back * dir, y: seen.vel.y },
+              { facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x), gain: 2.5 });
+          }
         }
       }
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });
@@ -1167,7 +1183,26 @@ export class RunBlocker implements Behavior {
       }
       const observedCorner = !plan.pullSurface && target &&
         (plan.pullRole === 'kick' || plan.pullRole === 'trap' || plan.pullRole === 'lead');
-      while (this.pullIdx < plan.pullPath.length && Math.hypot(plan.pullPath[this.pullIdx].x-a.pos.x,plan.pullPath[this.pullIdx].y-a.pos.y)<.65) {
+      // A puller rounds his corners on the arc his own speed and lateral grip
+      // can hold, rather than braking to a pivot at each landmark: tracked
+      // pullers turn at ~90-100 deg/s and keep ~2 yd/s through the turn
+      // (pullshape.py, 2022 counter/power), where a 0.65 yd pivot had them at
+      // 140-176 deg/s and ~1 yd/s. The same radius decides when a corner is
+      // reached and where he starts bending onto the next leg.
+      const turn = pullTurnRadius(a);
+      // A corner with a next leg is rounded within his turn radius. The
+      // route's end point is reached at the ordinary tolerance or once he has
+      // run past it along his leg: he never circles back to a point he passed.
+      const reached = (): boolean => {
+        const path = plan.pullPath!, wp = path[this.pullIdx], d = Math.hypot(wp.x-a.pos.x, wp.y-a.pos.y);
+        if (this.pullIdx < path.length - 1) return d < turn;
+        if (d < .65) return true;
+        const from = path[this.pullIdx - 1];
+        if (!from) return false;
+        const lx = wp.x - from.x, ly = wp.y - from.y, l = Math.hypot(lx, ly);
+        return l > 1e-6 && ((a.pos.x - wp.x) * lx + (a.pos.y - wp.y) * ly) / l > 0;
+      };
+      while (this.pullIdx < plan.pullPath.length && reached()) {
         // Resolve the flat leg against its acquired rear surface below, not
         // against a snap x coordinate that may now lie inside the down wall.
         if (this.pullIdx === 1 && observedCorner) break;
@@ -1214,7 +1249,7 @@ export class RunBlocker implements Behavior {
           const stationY = this.pullCleared && plan.pullRole !== 'lead'
             ? read.seen.pos.y - ps * .65 : wp.y;
           if (observedCorner && this.pullIdx === 1 &&
-              clearNow && (stationY-a.pos.y)*ps < .65) {
+              clearNow && (stationY-a.pos.y)*ps < Math.min(turn, 1)) {
             this.pullIdx++;
             wp = plan.pullPath[this.pullIdx];
           }
@@ -1243,8 +1278,17 @@ export class RunBlocker implements Behavior {
           const contact = a.profile.radius + read.target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
           const inFront = plan.pullRole === 'kick'
             && Math.abs(read.seen.pos.y + read.seen.vel.y * lead - a.pos.y) < contact + .5;
+          // Past his corner, he takes his man once he can reach him within a
+          // beat or two, on the way, rather than finishing the route to a
+          // point and only then fitting within 1.2 yd (tracked wraps block
+          // ~0.8 s before reaching 45 deg upfield; ours 0.1 s).
+          const reachable = plan.pullRole === 'lead' && this.pullIdx >= plan.pullPath.length - 1
+            && (read.seen.pos.x - a.pos.x) * dir > -contact
+            && interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
+              (tt) => ({ x: read!.seen.pos.x + read!.seen.vel.x * tt, y: read!.seen.pos.y + read!.seen.vel.y * tt }),
+              { horizon: .8, step: .05, radius: contact }).estimate.status === 'estimated-feasible';
           const fit = away ? distance < 1.2 && (read.seen.pos.x - a.pos.x) * dir > 0
-            : plan.pullRole === 'lead' ? distance < 1.2
+            : plan.pullRole === 'lead' ? distance < 1.2 || reachable
             : (plan.pullRole === 'kick' && this.pullIdx >= 2) || inFront || approachingDepth < sim.los || distance < 1.2;
           if (this.pullCleared && fit)
             return this.attack(a, sim, read.target, read.seen);
@@ -1277,10 +1321,21 @@ export class RunBlocker implements Behavior {
           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
         }
         const next = plan.pullPath[this.pullIdx+1];
-        const through = next ? cornerSpeed(a.body, path, next, .65) : 0;
+        // A corner held for the wall (flat leg, not yet clear) is not rounded.
+        const held = this.pullIdx === 1 && observedCorner;
+        const through = next ? cornerSpeed(a.body, path, next, turn)
+          : plan.pullRole === 'lead' ? a.profile.vmax * .8 : 0;
+        let aim = path;
+        const toCorner = Math.hypot(path.x - a.pos.x, path.y - a.pos.y);
+        if (next && !held && toCorner < turn) {
+          // Inside the turn radius he steers onto the next leg, the way a
+          // runner rounds a cone: the arc, not the cone, is his path.
+          const ox = next.x - path.x, oy = next.y - path.y, ol = Math.hypot(ox, oy);
+          if (ol > 1e-6) { const k = Math.min(ol, turn - toCorner); aim = { x: path.x + ox / ol * k, y: path.y + oy / ol * k }; }
+        }
         // The open pull step keeps the hips toward the play side, never a
         // pivot toward our own end zone; the flat/fit legs face normally.
-        return goTo(a, path, { speed: 0.95, through,
+        return goTo(a, aim, { speed: 0.95, through,
           facing: this.pullIdx === 0 ? Math.atan2(ps, 0) : undefined });
       }
     }
@@ -1500,7 +1555,15 @@ export class RunBlocker implements Behavior {
         && (this.pullCleared || !target || this.pullIdx >= (plan.pullPath?.length ?? 0) || gone())) {
         this.retarget = t + a.mind.decisionInterval;
         const threat = this.holeThreat(a, sim, target);
-        if (threat && threat !== target) {
+        // Nobody threatens the hole in his pictures, his own man included
+        // (on the ground, or behind his flow now): he leads the runner rather
+        // than standing over, or turning back for, the man he lost.
+        if (!threat && target) {
+          const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
+          plan.target = target = null;
+          this.pullRead = null;
+          trace?.blockingChange(a, previousWork, 'pull lead: his man is down, lead the runner', sim);
+        } else if (threat && threat !== target) {
           const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
           plan.target = target = threat;
           this.acquiredWork = { target };
@@ -1621,6 +1684,26 @@ export class RunBlocker implements Behavior {
     return gap - closing * 1.0 > runner.profile.radius + man.profile.radius;
   }
 
+  /** A man behind his own flow (judged a beat ahead) is an obsolete chaser,
+   * not work, unless he is still live work: already inside this blocker's
+   * strike reach, or a filler ahead of the runner he sees, the two closing on
+   * each other, within a step of the blocker. Closing is their relative
+   * motion in his pictures: a planted man is still live when the runner is
+   * coming at him. Without an acquired runner picture there is no closing
+   * evidence. Turning back for a chaser leaves the hole; letting a reachable
+   * filler go leaves the runner. */
+  private liveBehind(a: Agent, sim: PlaySim, d: Agent, seen: Perceived, ball: Vec2): boolean {
+    const gap = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
+    const strike = a.profile.radius + d.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
+    if (gap <= strike) return true;
+    const picture = this.workPicture;
+    if (picture?.source !== 'acquired' || picture.carrier == null || picture.carrier === sim.qb.idx) return false;
+    const dir = sim.attackDir(a.team), rx = ball.x - seen.pos.x, ry = ball.y - seen.pos.y, rl = Math.hypot(rx, ry) || 1;
+    const ahead = (seen.pos.x - ball.x) * dir > 0;
+    const closing = ((seen.vel.x - picture.vel.x) * rx + (seen.vel.y - picture.vel.y) * ry) / rl > .5;
+    return ahead && closing && gap <= strike + 1;
+  }
+
   /** The first threat to the hole in his own pictures: an upright defender
    * in front of him, near the hole's lane, whom the runner he sees carrying
    * has not already passed, closest to the hole a short beat ahead at the
@@ -1632,6 +1715,7 @@ export class RunBlocker implements Behavior {
     const hole = this.plan.pullPath?.at(-1);
     if (!hole) return null;
     const dir = sim.attackDir(a.team), ball = this.workReference(a, sim), carrier = this.workPicture?.carrier;
+    const side = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
     const runner = carrier != null && carrier !== sim.qb.idx ? sim.agents[carrier] : null;
     const mates = sim.offense.filter(o => o !== a && o !== runner).map(o => ({ pos: sim.see(a, o).pos, r: o.profile.radius }));
     const called = new Set(sim.offense.map(o => o !== a && o.behavior instanceof RunBlocker ? o.behavior.calledKick : null));
@@ -1641,6 +1725,13 @@ export class RunBlocker implements Behavior {
       if (seen.pose === 'down' || seen.pose === 'rising') return null;
       const depth = (seen.pos.x - sim.los) * dir;
       if (depth < -1.5 || depth > 7 || Math.abs(seen.pos.y - hole.y) > 4 || (seen.pos.x - a.pos.x) * dir < -.5) return null;
+      // A man he has already passed on his way across (a backside chaser
+      // behind his own flow), judged a beat ahead at the speeds he sees, is
+      // not his: turning back against the grain for him left the wrapper
+      // reversing out of the hole the runner needs.
+      const beat = a.mind.decisionInterval;
+      if ((seen.pos.y + seen.vel.y * beat - a.pos.y - a.vel.y * beat) * side < -1
+        && !this.liveBehind(a, sim, d, seen, ball)) return null;
       if (runner && (ball.x - seen.pos.x) * dir > runner.profile.radius + d.profile.radius) return null;
       const lead = .3, s = Math.hypot(seen.pos.x + seen.vel.x * lead - hole.x, seen.pos.y + seen.vel.y * lead - hole.y);
       const claimed = mates.some(m => Math.hypot(m.pos.x - seen.pos.x, m.pos.y - seen.pos.y) <= m.r + d.profile.radius + .1);
@@ -1652,10 +1743,17 @@ export class RunBlocker implements Behavior {
       if (s !== null && s < bestScore) { bestScore = s; best = d; }
     }
     // Keep a man who is still a threat unless another is clearly more urgent;
-    // once he is closing on him (2.5 yd in his picture) he finishes him.
+    // once he is closing on him (2.5 yd in his picture), or can already reach
+    // him within a second at the speeds he sees, he finishes him. Re-picking
+    // whoever is nearest the hole point each beat had counter's wrap change
+    // men a median 3 times before blocking anyone (79% twice or more).
     const kept = current ? score(current) : null;
-    const closing = kept !== null && Math.hypot(sim.see(a, current!).pos.x - a.pos.x, sim.see(a, current!).pos.y - a.pos.y) < 2.5;
-    return kept !== null && (closing || bestScore > kept - 1.5) ? current : best;
+    const seenCurrent = current ? sim.see(a, current) : null;
+    const closing = kept !== null && Math.hypot(seenCurrent!.pos.x - a.pos.x, seenCurrent!.pos.y - a.pos.y) < 2.5;
+    const reachable = kept !== null && !closing && interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
+      (tt) => ({ x: seenCurrent!.pos.x + seenCurrent!.vel.x * tt, y: seenCurrent!.pos.y + seenCurrent!.vel.y * tt }),
+      { horizon: 1, step: .1, radius: a.profile.radius + current!.profile.radius }).estimate.status === 'estimated-feasible';
+    return kept !== null && (closing || reachable || bestScore > kept - 1.5) ? current : best;
   }
 
   /** No man yet: get in front of the runner he sees and keep looking. */
@@ -2074,7 +2172,7 @@ export class RunBlocker implements Behavior {
       || (p.combination && !p.combination.released) || p.departure) return;
     const ref = this.workReference(a, sim), picture = this.workPicture!;
     if (picture.source !== 'acquired' || picture.carrier === sim.qb.idx) return;
-    const dir = sim.attackDir(a.team);
+    const dir = sim.attackDir(a.team), beat = a.mind.decisionInterval;
     // Distance to the runner, less what his closing speed takes off it over
     // one second: a man running at the runner counts as nearer than he is.
     const danger = (seen: Perceived) => {
@@ -2093,6 +2191,10 @@ export class RunBlocker implements Behavior {
       const threat = danger(seen);
       // Behind the runner he is pursuit, not a man to block in front of him.
       if ((seen.pos.x - ref.x) * dir < -1 || threat.score > mine.score - 2.5) continue;
+      // A man he has already climbed past, judged a beat ahead, is behind his
+      // back: turning around to chase him is pursuit too, not a block.
+      if ((seen.pos.x + seen.vel.x * beat - a.pos.x - a.vel.x * beat) * dir < -1
+        && !this.liveBehind(a, sim, d, seen, ref)) continue;
       const reach = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
       // A teammate nearer the man, or one he sees in contact range of him
       // (a keeper at arm's length on the man he just left), already has him.
@@ -2257,6 +2359,14 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
  * decides any rub; what he no longer does is push the man along with him on
  * his way to the backer (in contact, 74% of inside-zone departure commands
  * pointed into the released man and carried him at over 1 yd/s). */
+/** The arc a puller can round at his current speed with his lateral grip
+ * (the same high-speed envelope cornerSpeed uses), within a stride and a
+ * half: never tighter than the old 0.65 yd pivot. */
+export function pullTurnRadius(a: Agent): number {
+  const v = Math.hypot(a.vel.x, a.vel.y);
+  return clamp(v * v / Math.max(1e-6, a.profile.lateral * .8), .65, 1.8);
+}
+
 function offReleasedHip<T extends { vel: Vec2 } | null>(a: Agent, sim: PlaySim, released: Agent, command: T): T {
   if (!command) return command;
   const seen = sim.see(a, released), rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, r = Math.hypot(rx, ry);

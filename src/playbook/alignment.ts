@@ -41,9 +41,10 @@ const BASE_LINE: LineSplits = OL_SPLITS ? { cg: 1.54, gt: 1.56, tte: 1.52 } : { 
 const SHORT_LINE: LineSplits = { cg: 1.45, gt: 1.47, tte: 1.43 };
 const tackleOf = (l: LineSplits) => OL_SPLITS ? l.cg + l.gt : 2.6;
 const inlineOf = (l: LineSplits) => OL_SPLITS ? tackleOf(l) + l.tte : 3.9;
-// A wing stands 1.32 yd outside the attached end (2022 tracking, weeks 1-6:
-// 682 off-ball players within 2.5 yd outside an attached TE, p25 1.0, p75
-// 1.75; scripts/diag/align/nfl_wing.py).
+// A wing stands 1.32 yd outside the attached end: the median lateral offset
+// of the 682 off-line players within 2.5 yd outside a single attached TE with a
+// defender on the line beside them (2022 tracking, weeks 1-6, SNAP frames;
+// scripts/diag/align/nfl_wing.py, its "true wings" cohort).
 const wingOf = (l: LineSplits) => OL_SPLITS ? inlineOf(l) + 1.32 : 4.8;
 const FLAT_DEPTH = .55;
 type LineSlot = 'LT' | 'LG' | 'C' | 'RG' | 'RT';
@@ -1131,20 +1132,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const offset = DEF_ALIGN && isCorner && !off.spots[t].backfield
       ? (room < 9 ? inside * 0.2 : press ? -inside * 0.15 : shade * (mr.lev === 'outside' ? 0.5 : 0.2))
       : shade * 0.7;
-    spots[d]!.press = press && isCorner && !off.spots[t].backfield;
-    if (off.spots[t].backfield) {
-      // A front player with a back keeps his front spot and keys him from
-      // there; he does not walk to the back (two backs stacked in an I would
-      // put two defenders on one spot).
-      if (FRONT_PLAYERS.has(d)) continue;
-      // A defensive back over a back, outside any teammate already there.
-      const out = Math.sign(tp.y - off.ballY) || -s;
-      let y = tp.y + offset;
-      for (let k = 0; k < 4 && present.some((o) => o !== d && spots[o] && Math.hypot(spots[o]!.pos.x - (los + 6), spots[o]!.pos.y - y) < 1.2); k++) y += out * 1.2;
-      spots[d]!.pos = { x: los + 6, y: clamp(y, 1, FIELD_WIDTH - 1) };
-      continue;
-    }
     spots[d]!.pos = { x: los + depth, y: clamp(tp.y + offset, 1, FIELD_WIDTH - 1) };
+    spots[d]!.press = press && isCorner && !off.spots[t].backfield;
   }
 
   // Calls that set a pre-snap depth for a seat (a rotating safety cheated
@@ -1174,17 +1163,30 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   if (SHORT_PACKAGE && call.front.id === 'bear' && spots.LB_S && teAt(fs))
     spots.LB_S.pos = { x: los + (frontSlots.DE_S?.depth ?? .9), y: off.ballY + fs * techniqueOffset('9', true, off.line) };
   // Off the ball, two players do not stand on one spot: whoever is inside
-  // 0.9 yd of a teammate already there steps outward, away from the ball.
-  // The several placement rules above each pick their own spot; this keeps
-  // their landmarks and gives the later one the next patch of grass.
+  // 0.9 yd of a teammate already there steps aside. The several placement
+  // rules above each pick their own spot; this keeps their landmarks and gives
+  // the later one the next patch of grass: outward, away from the ball, unless
+  // that would carry a man defender across his man (his called leverage, the
+  // side of the receiver he aligned on), at any step. Then he keeps his
+  // landmark and stacks a step deeper, as man defenders do over a bunch or
+  // stack.
   const settled: DefSlot[] = [];
   for (const slot of [...present].sort((a, b) => Math.abs(spots[a]!.pos.y - off.ballY) - Math.abs(spots[b]!.pos.y - off.ballY))) {
-    const p = spots[slot]!.pos;
+    const p = spots[slot]!.pos, t = spots[slot]!.manTarget && !off.spots[spots[slot]!.manTarget!].backfield
+      ? off.spots[spots[slot]!.manTarget!].pos : null;
+    const lev = t ? Math.sign(p.y - t.y) : 0;
+    const keeps = (y: number) => !lev || Math.sign(y - t!.y) === lev;
+    let dir = 0;
     if (p.x - los > 2) for (let k = 0; k < 4; k++) {
       const near = settled.find((o) => Math.hypot(spots[o]!.pos.x - p.x, spots[o]!.pos.y - p.y) < .9);
       if (!near) break;
       const q = spots[near]!.pos, out = Math.sign(p.y - off.ballY) || Math.sign(p.y - q.y) || s;
-      p.y = clamp(q.y + out * Math.sqrt(Math.max(0, .81 - (p.x - q.x) ** 2)) + out * .01, 1, FIELD_WIDTH - 1);
+      const aside = (d: number) => clamp(q.y + d * Math.sqrt(Math.max(0, .81 - (p.x - q.x) ** 2)) + d * .01, 1, FIELD_WIDTH - 1);
+      // Each step re-checks the leverage: a second teammate further out can
+      // make the next outward step cross the man even when the first did not.
+      if (dir !== 2) dir = keeps(aside(dir || out)) ? dir || out : 2;
+      if (dir === 2) p.x = q.x + Math.sqrt(Math.max(0, .81 - (p.y - q.y) ** 2)) + .01;
+      else p.y = aside(dir);
     }
     settled.push(slot);
   }
