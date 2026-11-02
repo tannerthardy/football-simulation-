@@ -334,10 +334,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // (#381), the RB passes the LT at 1.5 and LB_W is alone at 3.0. The later RB-Z collision under a tackle bond
     // remains an adverse physical outcome, not a contact-free guarantee. The tie is carried by R9-P020.
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as well,
-    // CB_W alone at 3.25.
+    // CB_W alone at 3.25. With backers keeping their front spot against a back they have in man (the call shows
+    // 2-Man, so LB_W no longer walks 3.6 yd out to the gun back before the snap), LB_M alone at 3.85.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(3.25);
-    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
+    expect(first.t).toBe(3.85);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_M']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {

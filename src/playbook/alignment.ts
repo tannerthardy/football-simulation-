@@ -882,12 +882,16 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     } else {
       const fs = DEF_ALIGN ? { x: los + (cov.man ? 14.7 : 14.5) + (style.safetyDepth ?? 0), y: CENTER_Y + (cov.man ? 0.34 : 0) * (off.ballY - CENTER_Y) }
         : { x: los + 13, y: clamp(off.ballY, 18, FIELD_WIDTH - 18) };
-      if (has('FS')) spots.FS = { slot: 'FS', pos: fs, role: { kind: 'rush' }, gap: 'A', gapSign: -s };
+      // The post is whichever safety the call makes the deep player (the
+      // Lurk's SS); the other is the down safety.
+      const deepRole = (slot: DefSlot) => { const r = cov.roles[slot]; return r?.kind === 'zone' && isDeepZone(r.zone); };
+      const [post, low]: DefSlot[] = deepRole('SS') && !deepRole('FS') ? ['SS', 'FS'] : ['FS', 'SS'];
+      if (has(post)) spots[post] = { slot: post, pos: fs, role: { kind: 'rush' }, gap: 'A', gapSign: -s };
       // BOX_ALIGN: the down safety at his tracked spot outside the strong
       // side's end of the line (an attached end or the tackle).
       const uc = (off.spots.QB?.pos.x ?? los - 5) > los - 2.5, te = off.hasTE.S;
       const down = BOX_ALIGN ? { depth: te ? (uc ? 4.4 : 5.2) : (uc ? 5.1 : 5.8), out: te ? 1.5 : uc ? 2.7 : 3.9 } : { depth: 7.5, out: 3 };
-      if (has('SS')) spots.SS = { slot: 'SS', pos: { x: los + down.depth, y: off.coreEdge.S + s * down.out }, role: { kind: 'rush' }, gap: 'D', gapSign: s };
+      if (has(low)) spots[low] = { slot: low, pos: { x: los + down.depth, y: off.coreEdge.S + s * down.out }, role: { kind: 'rush' }, gap: 'D', gapSign: s };
     }
   }
 
@@ -1113,8 +1117,20 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const offset = DEF_ALIGN && isCorner && !off.spots[t].backfield
       ? (room < 9 ? inside * 0.2 : press ? -inside * 0.15 : shade * (mr.lev === 'outside' ? 0.5 : 0.2))
       : shade * 0.7;
-    spots[d]!.pos = { x: los + depth, y: clamp(tp.y + offset, 1, FIELD_WIDTH - 1) };
     spots[d]!.press = press && isCorner && !off.spots[t].backfield;
+    if (off.spots[t].backfield) {
+      // A front player with a back keeps his front spot and keys him from
+      // there; he does not walk to the back (two backs stacked in an I would
+      // put two defenders on one spot).
+      if (FRONT_PLAYERS.has(d)) continue;
+      // A defensive back over a back, outside any teammate already there.
+      const out = Math.sign(tp.y - off.ballY) || -s;
+      let y = tp.y + offset;
+      for (let k = 0; k < 4 && present.some((o) => o !== d && spots[o] && Math.hypot(spots[o]!.pos.x - (los + 6), spots[o]!.pos.y - y) < 1.2); k++) y += out * 1.2;
+      spots[d]!.pos = { x: los + 6, y: clamp(y, 1, FIELD_WIDTH - 1) };
+      continue;
+    }
+    spots[d]!.pos = { x: los + depth, y: clamp(tp.y + offset, 1, FIELD_WIDTH - 1) };
   }
 
   // Calls that set a pre-snap depth for a seat (a rotating safety cheated
