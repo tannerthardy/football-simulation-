@@ -66,7 +66,13 @@ describe('a lineman reads the play from the line', () => {
     // That response is protected by its acquired cue below, not counted as a replacement.
     const first = (s: ReturnType<typeof play>, a: Agent) =>
       Math.min(...['fit-replace', 'fit-box', 'fit-spill'].map(tag => s.firstFit.get(`${a.slot}:${tag}`) ?? Infinity));
-    for (const s of snaps('counter', 'i_jumbo_22')) {
+    // The late backside box needs native witnesses beyond the six: with #396's end head-up on an attached TE
+    // fitting C, seed 1 unflipped's DE_S no longer meets the FB arriving at him. The first native counter
+    // i_jumbo_22 snaps (seeds 4-20, both flips) where a backside edge boxes are seed 6 and seed 7 flipped (Defense, one
+    // shared list with #393). They run the same checks; the cue checks are unchanged.
+    const lateBox = [...snaps('counter', 'i_jumbo_22'),
+      ...([[6, true], [7, true]] as const).map(([seed, flip]) => ({ seed, flip, ...play('counter', 'i_jumbo_22', seed, flip) }))];
+    for (const s of lateBox) {
       const playSide = edges(s.sim).filter(a => a.runFit!.side === s.ballSide);
       const backside = edges(s.sim).filter(a => a.runFit!.side !== s.ballSide);
       expect(playSide).toHaveLength(1);
@@ -94,7 +100,7 @@ describe('a lineman reads the play from the line', () => {
     }
     expect(snaps('counter', 'i_jumbo_22').filter(s => edges(s.sim).some(a => a.tags.has('fit-replace'))).length).toBeGreaterThanOrEqual(5);
     // The late backside response is exercised, so its cue check above is not vacuous.
-    expect(snaps('counter', 'i_jumbo_22').some(s => edges(s.sim).some(a => a.runFit!.side !== s.ballSide
+    expect(lateBox.some(s => edges(s.sim).some(a => a.runFit!.side !== s.ballSide
       && (a.tags.has('fit-box') || a.tags.has('fit-spill'))))).toBe(true);
     for (const s of snaps('wz_weak', 'ace_11')) expect(tagged(edges(s.sim), 'fit-replace')).toBe(0);
   });
