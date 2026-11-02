@@ -336,14 +336,31 @@ until then.
 | Validator, labeling, audit, cross-owner coordination of this plan | Main Engine (proposed) |
 | Film-editor menus (`lab-app`) | Play Lab owner |
 
-## 9. Decisions for Tanner
+## 9. Decisions (Tanner, 2026-11-02)
 
-1. Approve the four refinements in section 2: two-layer front, an adjustment
-   rule layer, a joint front × coverage check, personnel as counts.
-2. Should the phase 0 alignment fixes go first, ahead of new formations? They
-   change existing pre-snap spots, so they need their owners.
-3. Should new formations stay lab-only until phase 5, or enter games earlier?
-4. Who drives phases 1–4: Main Engine as coordinator, with owners per file?
+1. **The section 2 refinements are approved,** with these additions:
+   - **Run-fit spacing.**
+     - 7-, 8- and 9-man spacing is how many defenders are committed to run
+       gaps.
+     - A light box is out-gapped unless it cancels a gap: twists or stunts,
+       gap exchanges, two-gapping, or a safety fit.
+     - Whether a front, coverage and alignment are sound together depends on
+       this. The simulated coordinators must weigh it.
+     - Stunts are a later, separate body of work.
+   - **How defensive coordinators really call plays.** Research what a call
+     contains, who decides what, and what's realistic, before designing the
+     coordinator.
+   - **DB alignment and leverage for every coverage.**
+     - Press or off, technique, depth.
+     - Leverage toward help: in Cover 1 a slot corner with a robber or rat
+       inside plays outside leverage to funnel the receiver to that help.
+   - **Adjustment and disguise differ by defense.** Each defense has its own
+     profile, so motion doesn't give the coverage away.
+2. **The phase 0 alignment fixes go first.** Main Engine does them.
+3. **New formations stay out of games** until they pass the screen.
+4. **Main Engine drives most of this.** The other agents stay on their
+   current work. Start small and do the easy things first. Film-editor menus
+   come at the very end.
 
 ## Sources
 
