@@ -277,9 +277,10 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as
     // well, LB_W is still alone at 2.9. With the box backer reading before he moves and filling to a pull he sees, LB_W alone at 3.0.
     // With run-read attention (a blocker in front of a run-reading defender and in range is seen on the ordinary
-    // delay), DE_S alone at 2.85.
+    // delay), DE_S alone at 2.85; with his picture judged from what he saw and held rather than rewound when the
+    // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.85);
+    expect(first.t).toBe(2.65);
     expect(first.defenders.map(p.slot)).toEqual(['DE_S']);
   });
 
@@ -338,9 +339,10 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // (#381), the RB passes the LT at 1.5 and LB_W is alone at 3.0. The later RB-Z collision under a tackle bond
     // remains an adverse physical outcome, not a contact-free guarantee. The tie is carried by R9-P020.
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as well,
-    // CB_W alone at 3.25. With run-read attention as well, DE_W alone at 2.95.
+    // CB_W alone at 3.25. With run-read attention as well, DE_W alone at 2.95; judged from his held picture and with
+    // #389's edge key, DE_W alone at 2.9.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.95);
+    expect(first.t).toBe(2.9);
     expect(first.defenders.map(p.slot)).toEqual(['DE_W']);
   });
 

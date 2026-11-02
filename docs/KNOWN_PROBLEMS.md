@@ -3151,12 +3151,14 @@ From the outside audit (`audit`):
   are still seen late. The exemption is judged from his own delayed picture
   of the blocker, never the blocker's live position (integration review on
   #391: live position reselected an already-buffered picture).
-  *Still open:* any lengthening of the delay (a read flipping to run, a man
-  leaving a carrier's keys, a picture crossing the 5 yd range) takes his
-  picture back to an older moment instead of holding it. A rule that a
-  picture never moves back in time fixes it, but applied to every sight it
-  changes about 20 recorded scenes (blocker rereads, QB memory, command
-  traces) and needs its own restage.
+  Leaving the exemption holds the picture he had and ages it, instead of
+  rewinding it 0.15 s (a rewound picture of a man running away shows
+  synthetic braking; Coverage review on #391).
+  *Still open:* other lengthenings of the delay (a read flipping to run, a
+  man leaving a carrier's keys) still take a picture back to an older
+  moment. The same hold applied to every sight changes about 20 recorded
+  scenes (blocker rereads, QB memory, command traces) and needs its own
+  restage.
   *Tried and stopped:* a field of view with memory (out of the view cone, the
   last sighting projected forward), alone and with a check over the shoulder
   every 1-2 s. Matched restage against #391 (seeds 7/11 x 4 RNG shifts):
