@@ -1092,6 +1092,22 @@ export class RunBlocker implements Behavior {
           const seen = sim.see(a, target);
           const strike = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
           if (Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y) < strike) return this.attack(a, sim, target, seen);
+          // Against an edge rusher selling pass is a short vertical set: the
+          // pass protector's kick (on his inside shoulder a beat ahead, a kick
+          // lead deeper than he is) with no launch-point depth to protect;
+          // never taking ground back toward the line, never behind the mesh.
+          // Standing on a yard mark let a wide end run by untouched and left
+          // the tackle chasing him from behind. Inside, the man comes to the set.
+          if (seen.pose === 'up' && Math.abs(seen.pos.y - sim.ballY) > 3) {
+            const qb = sim.see(a, sim.qb).pos, dir = sim.attackDir(a.team);
+            const out = Math.sign(seen.pos.y - sim.ballY) || 1;
+            const depth = (x: number) => (x - sim.los) * dir;
+            const d = Math.max(depth(qb.x) + .5, Math.min(depth(a.pos.x), depth(seen.pos.x) - KICK_LEAD));
+            const set = { x: sim.los + d * dir, y: seen.pos.y + seen.vel.y * KICK_LOOK - out * strike * .6 };
+            const back = Math.min(0, seen.vel.x * dir);
+            return track(a, set, { x: depth(a.pos.x) < depth(seen.pos.x) - KICK_LEAD ? 0 : back * dir, y: seen.vel.y },
+              { facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x), gain: 2.5 });
+          }
         }
       }
       return goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: 0.6, facing: 0 });

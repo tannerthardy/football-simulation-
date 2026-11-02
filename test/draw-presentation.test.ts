@@ -112,11 +112,22 @@ describe('Draw presentation belongs to the installed line, separately from its w
       const sim = setup(flip); sim.t = t;
       const owners = sim.offense.filter(a => a.behavior instanceof RunBlocker && a.behavior.plan.kind === 'draw');
       expect(owners.length).toBeGreaterThan(0);
+      // Against an edge rusher the owner sells pass with a short vertical set
+      // on him (draw-edge-set.test.ts); inside, the man comes to the set.
+      let edge = 0, inside = 0;
       for (const a of owners) {
-        const expected = goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: .6, facing: 0 });
-        expect(a.behavior.update(a, sim)).toEqual(expected);
+        const target = (a.behavior as RunBlocker).target, dir = sim.attackDir(a.team);
+        const command = a.behavior.update(a, sim);
         expect(a.stance).toBe('high');
+        if (target && Math.abs(sim.see(a, target).pos.y - sim.ballY) > 3) {
+          edge++;
+          expect(command.vel.x * dir).toBeLessThanOrEqual(1e-9);
+        } else {
+          inside++;
+          expect(command).toEqual(goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: .6, facing: 0 }));
+        }
       }
+      expect(inside).toBeGreaterThan(0);
     });
 
   it.each(['iz_strong', 'oz_strong', 'wz_strong', 'duo', 'power', 'counter', 'trap', 'split_zone'])(
