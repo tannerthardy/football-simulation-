@@ -62,4 +62,10 @@ describe('a flat puller has left his place in the line', () => {
     // across and 0.30 yd back; the guard from y 28.19 pulls past him to (27.17, 24.85), departed by depth.
     expect(scene({ RG: { dx: .30, dy: .10 }, LG: { dx: 2.0, dy: -3.34 } }).gone()).toEqual(['LG']);
   });
+  it('a guard who has not reached his neighbour\'s stance has crossed no one, even past the neighbour\'s current spot', () => {
+    // Integration's second control (#393): the guard at y 25.11 moves 0.80 yd across and 0.30 yd back, short of the
+    // center's stance (26.65); the other guard pulls from y 28.19 to (27.17, 25.16), just beyond his home.
+    // The still guard is clear past that body's current position, but its stance lies beyond where he is now.
+    expect(scene({ RG: { dx: .3, dy: .8 }, LG: { dx: 2, dy: -3.03 } }).gone()).toEqual(['LG']);
+  });
 });

@@ -70,18 +70,21 @@ function departed(sim: PlaySim, observer: Agent, b: SurfaceBody): boolean {
 }
 
 /** In the observer's pictures, this body has crossed a line body whose stance
- * lay beside his on the way: that teammate is now seen on the path between
- * this body's stance and where this body is now, and this body is clear past
- * him, the two bodies' widths apart. A teammate who himself left and crossed
- * the other way is not on that path, so a nearly still body is never taken off
- * the line by someone else's pull; two blockers who meet at the edge (a tackle
- * setting back outside his tight end) have not crossed each other. */
+ * lay beside his on the way: that teammate's stance lies between this body's
+ * stance and where this body is now, the teammate is still seen on that path,
+ * and this body is clear past him, the two bodies' widths apart. A teammate
+ * who himself left and crossed the other way is not on that path, and a body
+ * that has not reached a teammate's stance has passed no one, so a nearly
+ * still body is never taken off the line by someone else's pull; two blockers
+ * who meet at the edge (a tackle setting back outside his tight end) have not
+ * crossed each other. */
 function crossedBehind(sim: PlaySim, observer: Agent, b: SurfaceBody): boolean {
   const s = Math.sign(b.seen.pos.y - b.home);
   if (!s) return false;
   return sim.offense.some((o) => {
     const spot = sim.offAlign.spots[o.slot];
-    if (o === b.agent || !spot || !(CORE.has(o.slot) || spot.inline) || (spot.pos.y - b.home) * s <= 0) return false;
+    if (o === b.agent || !spot || !(CORE.has(o.slot) || spot.inline) || (spot.pos.y - b.home) * s <= 0
+      || (b.seen.pos.y - spot.pos.y) * s <= 0) return false;
     const y = sim.see(observer, o).pos.y;
     return (y - b.home) * s > 0 && (b.seen.pos.y - y) * s > b.agent.profile.radius + o.profile.radius;
   });
