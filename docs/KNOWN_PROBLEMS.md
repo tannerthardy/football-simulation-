@@ -316,6 +316,7 @@ problem), resolved.
 | [COV-6](#cov-6) | Coverage defenders snap through big turns far too often | G3 | high | on (orientation technique); run-fit and ball-play turns open |
 | [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | paused; broader cost-fixture requalification first on resume |
 | [COV-8](#cov-8) | Trailing man defenders can't find the ball | G3, G4 | high | open (logged with the throw-sight change) |
+| [COV-9](#cov-9) | A man defender overruns a turning receiver once nothing slows his pedal | G3 | medium | open (logged with #394; Coverage paused) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
@@ -2744,6 +2745,42 @@ From the issue register:
   check separation at the catch, PBU and INT on contested go and fade
   throws. Don't cap deep completions. Stop rule: two attempts, then
   re-diagnose.
+
+<a id="cov-9"></a>
+### COV-9: A man defender overruns a turning receiver once nothing slows his pedal
+
+- **What:** with #394's off-ball spacing a crowded man defender stacks a step
+  deeper rather than starting 0.64 yd from a teammate. Against a bunch his
+  man pedal is then no longer throttled by the controller's teammate-spacing
+  cap, and he overruns the receiver's turn.
+- **Witness** (Integration, PR #394 comment 6589782072, `ed899306` vs
+  develop `c4fc33d5` + #392): `nativeTraceSetup({ coverage: 'cover1_off',
+  concept: 'curl_flat', seed: 9, roster: 7, formation: 'gun_bunch_11', flip:
+  false })`, defense replaced by dime (`pickDefense(generateTeam(new
+  Rng(7).fork('defense'), 'Defense', 'DEF', { strength: .6 }), 'dime')`),
+  seed `new Rng(9).fork('integration394:3')`; capture-before-fork SHA256
+  `01cbd22c…568244`. NB on Y (inside shoulder).
+  - Only the NB's start depth differs: 6.00 → 6.66 yd (Y and his shoulder
+    unchanged). Baseline: 0.637 yd from the SS (radius sum 0.565), and at
+    0.20 s the spacing cap cuts his man pedal from (−0.32, 1.03) to (−0.11,
+    0.38). Candidate: uncapped; he closes to 1.21 yd of Y at 3.10 s (baseline
+    3.50) and is 3.72 yd away at 4.30 as Y turns on the curl.
+  - Baseline: throw to X 3.15, PBU CB_W 4.20. Candidate: throw to Y 3.10,
+    caught 4.30, 52.4 yd. Four of five bunch curl_flat passes in that panel
+    gain more.
+- **Cause:** *likely* two coverage mechanisms the old crowding hid, not the
+  alignment (Coverage, 2026-11-02): (1) the man break reaction against a
+  turning receiver (COV-6 family: big, fast turns) lets him run past the
+  turn; (2) the teammate-spacing cap throttles a man defender's pedal from a
+  merely crowded start. Does a spacing cap belong on a man pedal at 0.2 s?
+- **Decision:** keep the stack-deeper spacing (Coverage chose it over
+  resolving only physical contact or dropping spacing): two DBs 0.64 yd
+  apart off the ball is not football, and restoring it would tune alignment
+  toward this ending. Fix the coverage mechanisms instead; Coverage is
+  paused, so this records the witness.
+- **Next:** for whoever holds coverage. Judge on this witness and its
+  opposing gun_doubles_11 control: the defender keeps his cushion through
+  the turn without a pedal cap or a fixed timer.
 
 <a id="ball-1"></a>
 ### BALL-1: Too many interceptions
