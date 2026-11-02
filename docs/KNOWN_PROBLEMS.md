@@ -3151,12 +3151,12 @@ From the outside audit (`audit`):
   are still seen late. The exemption is judged from his own delayed picture
   of the blocker, never the blocker's live position (integration review on
   #391: live position reselected an already-buffered picture).
-  Leaving the exemption holds the picture he had and ages it, instead of
-  rewinding it 0.15 s (a rewound picture of a man running away shows
-  synthetic braking; Coverage review on #391).
-  *Still open:* other lengthenings of the delay (a read flipping to run, a
-  man leaving a carrier's keys) still take a picture back to an older
-  moment. The same hold applied to every sight changes about 20 recorded
+  When the run read's 0.15 s starts to apply to a man (his picture leaves
+  the exemption, or the defender's read flips to run), the picture he had is
+  held and ages, instead of rewinding 0.15 s (a rewound picture of a man
+  running away shows synthetic braking; Coverage review on #391).
+  *Still open:* other lengthenings of the delay (a man leaving a carrier's
+  keys) still take a picture back to an older moment. The same hold applied to every sight changes about 20 recorded
   scenes (blocker rereads, QB memory, command traces) and needs its own
   restage.
   *Tried and stopped:* a field of view with memory (out of the view cone, the
