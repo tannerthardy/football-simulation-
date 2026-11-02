@@ -50,7 +50,9 @@ describe('a wrapper collects after its flat pull clears', () => {
     expect(JSON.stringify(sim.rng)).toBe(rng);
     expect(a.engagement).toBeNull();
     expect(sim.world.joints).toHaveLength(0);
-    if (!unavailable && !obstructed) expect(command).toEqual(goTo(a, controller.plan.pullPath![2], { speed: .95, through: 0 }));
+    // Past the corner the wrapper runs through the hole toward his work (he is
+    // not asked to stop on the hole point): the same installed track, at speed.
+    if (!unavailable && !obstructed) expect(command).toEqual(goTo(a, controller.plan.pullPath![2], { speed: .95, through: a.profile.vmax * .8 }));
     const picked = controller.plan.target, hole = controller.plan.pullPath!.at(-1)!, seen = picked && sim.see(a, picked);
     // The replacement as he sees it: an upright defender in front of him and
     // inside the hole's lane, not merely a different name.

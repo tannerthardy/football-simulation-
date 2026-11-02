@@ -67,19 +67,27 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
     if (line || spot.role.kind === 'blitz' || dropper) claimed.add(`${side}:${gap}`);
     if (dropper && kind === 'edge') jobs.get(d)!.inside = { gap, side, kind: 'edge' };
   }
-  // A called blitzer takes his gap; a lineman whose gap he takes slides to the
-  // nearest open one (an end outside a safety blitzing C plays D; a nose under
-  // a Mike blitzing strong A plays weak A).
+  // A called blitzer takes his gap; the lineman whose gap he takes moves at most
+  // one gap, to the nearest open neighbour (a nose under a Mike blitzing strong
+  // A plays weak A; an end outside a safety blitzing C plays D). With neither
+  // neighbour open (double A over a nose) he does not travel: he stays in his
+  // gap behind the blitzers as a two-gap player (technique 'control'),
+  // squeezing his blocker into them. Defense's decision on #396 (2026-11-02);
+  // his pass-rush lane is the same gap, as on a called slant.
   const blitzed = new Set(sim.defense.filter(d => sim.defAlign.spots[d.slot as DefSlot]!.role.kind === 'blitz')
     .map(d => { const j = jobs.get(d)!; return `${j.side}:${j.gap}`; }));
+  // Gaps across the line, weak D to strong D; neighbours differ by one.
+  const order = (['D', 'C', 'B', 'A'] as Gap[]).map(gap => ({ side: -1, gap })).concat((['A', 'B', 'C', 'D'] as Gap[]).map(gap => ({ side: 1, gap })));
+  const at = (side: number, gap: Gap) => order.findIndex(o => o.side === side && o.gap === gap);
   for (const d of first) {
     const j = jobs.get(d)!;
     if (sim.defAlign.spots[d.slot as DefSlot]!.role.kind === 'blitz' || !blitzed.has(`${j.side}:${j.gap}`)) continue;
-    const open = [-1, 1].flatMap(side => (['A', 'B', 'C', 'D'] as Gap[]).map(gap => ({ side, gap })))
-      .filter(o => !blitzed.has(`${o.side}:${o.gap}`) && !claimed.has(`${o.side}:${o.gap}`));
+    const i = at(j.side, j.gap);
+    const open = [order[i - 1], order[i + 1]].filter((o): o is typeof order[number] => !!o
+      && !blitzed.has(`${o.side}:${o.gap}`) && !claimed.has(`${o.side}:${o.gap}`));
     const dist = (o: { side: number; gap: Gap }) => Math.abs(gapY(sim.offAlign, o.gap, o.side) - d.pos.y);
     const to = open.sort((a, b) => dist(a) - dist(b))[0];
-    if (!to) continue;
+    if (!to) { j.technique = 'control'; continue; }
     claimed.add(`${to.side}:${to.gap}`);
     j.gap = to.gap; j.side = to.side;
     j.kind = to.gap === 'C' || to.gap === 'D' ? 'edge' : 'interior';
@@ -135,9 +143,11 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   // A box curl-flat backer still has his bubble on inside flow. An outside
   // support title does not spend a second body or erase that obligation. A
   // force player aligned in the box (a nickel or safety on the end man) has the
-  // same dual job: an inside bubble left open on his side is his on inside flow.
+  // same dual job: an inside bubble left open on his side is his on inside flow,
+  // unless he already has an inside duty (a pressure's dropping end keeps the
+  // front's run gap he was installed with).
   const backers = sim.defense.filter((d) => (d.slot.startsWith('LB') ? jobs.get(d)!.kind !== 'force' || outsideSide(d) !== null
-    : jobs.get(d)!.kind === 'force') && !first.has(d)
+    : jobs.get(d)!.kind === 'force' && !jobs.get(d)!.inside) && !first.has(d)
     && Math.abs(sim.defAlign.spots[d.slot as DefSlot]!.pos.y - sim.ballY) < 5.5)
     // Primary insertion spends a body first. Conditional outside support can
     // use a remaining bubble, but cannot take an insert's only gap and leave

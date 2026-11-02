@@ -12,9 +12,29 @@ function play(concept: string, formation: string, seed: number, flip: boolean) {
   // The play side, from the offense's own plan: the way its pullers go (none on zone).
   const pullers = sim.offense.filter(a => (a.behavior as { plan?: { kind?: string } }).plan?.kind === 'pull');
   const home = new Map(pullers.map(a => [a, a.pos.y]));
+  // When each edge first took each fit response (tags accumulate over the whole play), and what each edge's
+  // own picture showed of every offensive man he looked at, by tick.
+  const firstFit = new Map<string, number>();
+  const fitFrame = new Map<string, { job: string | undefined; carrierPast: number | null }>();
+  const sights: Array<{ t: number; slot: string; target: number; pos: { x: number; y: number }; vel: { x: number; y: number }; me: { x: number; y: number } }> = [];
+  const see = sim.see.bind(sim);
+  sim.see = (o, tg, scale) => {
+    const r = see(o, tg, scale);
+    if (o.slot.startsWith('DE') && tg.team === 'O') sights.push({ t: sim.t, slot: o.slot, target: tg.idx, pos: r.pos, vel: r.vel, me: { ...o.pos } });
+    return r;
+  };
+  const tick = sim.tick.bind(sim);
+  sim.tick = () => {
+    tick();
+    for (const a of sim.defense) for (const tag of ['fit-replace', 'fit-box', 'fit-spill'])
+      if (a.tags.has(tag) && !firstFit.has(`${a.slot}:${tag}`)) {
+        firstFit.set(`${a.slot}:${tag}`, sim.t);
+        fitFrame.set(`${a.slot}:${tag}`, { job: a.runFit?.kind, carrierPast: sim.carrier ? sim.carrier.pos.x - sim.los : null });
+      }
+  };
   sim.run();
   const ballSide = Math.sign(pullers.reduce((s, a) => s + a.pos.y - home.get(a)!, 0));
-  return { sim, ballSide };
+  return { sim, ballSide, firstFit, fitFrame, sights };
 }
 const dl = (sim: PlaySim) => sim.defense.filter(a => /^(DE|DT|NT)/.test(a.slot));
 const interior = (sim: PlaySim) => dl(sim).filter(a => !a.slot.startsWith('DE'));
@@ -37,12 +57,51 @@ describe('a lineman reads the play from the line', () => {
     for (const s of snaps('mesh', 'gun_doubles_11')) expect(tagged(edges(s.sim), 'key-squeeze')).toBe(0);
   });
 
-  it('a play-side edge replaces the vacated spot on counter; a backside edge on wide zone never does', () => {
-    for (const s of snaps('counter', 'i_jumbo_22')) {
-      const replaced = edges(s.sim).filter(a => a.tags.has('fit-replace'));
-      expect(replaced.length).toBe(1);
-      expect(replaced[0].runFit!.side).toBe(s.ballSide);
+  it('a play-side edge replaces the vacated spot on counter or plays the kick-out he sees; a backside edge never replaces', () => {
+    // Once he sees the kick-out arriving (a non-line blocker in front of him and in range is seen on the
+    // ordinary delay under a run read), he plays it instead of squeezing to the spot: on one of the six
+    // snaps he boxes the kick-out throughout. Only the play-side edge ever replaces, and his response
+    // opens the play. A backside edge may later box a blocker arriving at him (run-fits' local kick-out
+    // response, a different duty): seed 1 unflipped, DE_S boxes F at 4.15 once #390 keeps the play alive.
+    // That response is protected by its acquired cue below, not counted as a replacement.
+    const first = (s: ReturnType<typeof play>, a: Agent) =>
+      Math.min(...['fit-replace', 'fit-box', 'fit-spill'].map(tag => s.firstFit.get(`${a.slot}:${tag}`) ?? Infinity));
+    // The late backside box needs native witnesses beyond the six: with #396's end head-up on an attached TE
+    // fitting C, seed 1 unflipped's DE_S no longer meets the FB arriving at him. The first native counter
+    // i_jumbo_22 snaps (seeds 4-20, both flips) where a backside edge boxes are seed 6 and seed 7 flipped (Defense, one
+    // shared list with #393). They run the same checks; the cue checks are unchanged.
+    const lateBox = [...snaps('counter', 'i_jumbo_22'),
+      ...([[6, true], [7, true]] as const).map(([seed, flip]) => ({ seed, flip, ...play('counter', 'i_jumbo_22', seed, flip) }))];
+    for (const s of lateBox) {
+      const playSide = edges(s.sim).filter(a => a.runFit!.side === s.ballSide);
+      const backside = edges(s.sim).filter(a => a.runFit!.side !== s.ballSide);
+      expect(playSide).toHaveLength(1);
+      expect(first(s, playSide[0])).toBeLessThan(Infinity);
+      for (const b of backside) {
+        expect(b.tags.has('fit-replace')).toBe(false);
+        expect(first(s, b)).toBeGreaterThan(first(s, playSide[0]));
+        // A backside box is a response to a blocker his own picture shows arriving at him on that tick:
+        // ahead of him, within 2.5 yd laterally, moving outward faster than 1.3 yd/s (run-fits' kick-out cue).
+        const tag = s.firstFit.has(`${b.slot}:fit-box`) ? 'fit-box' : 'fit-spill';
+        const boxed = s.firstFit.get(`${b.slot}:${tag}`);
+        if (boxed !== undefined) {
+          const side = b.runFit!.side, frame = s.fitFrame.get(`${b.slot}:${tag}`)!;
+          // Still on his installed edge job (an edge keeps it until the carrier is 2+ yd past the LOS: Defense).
+          expect(frame.job).toBe('edge');
+          expect(frame.carrierPast).not.toBeNull();
+          expect(frame.carrierPast!).toBeLessThanOrEqual(2);
+          // The box is recorded at the step's endpoint, so the picture that produced it is the controller's on
+          // the step before; a kick-out candidate is never the QB or the back.
+          expect(s.sights.some(v => v.slot === b.slot && Math.abs(v.t - (boxed - s.sim.dt)) < 1e-9
+            && v.target !== s.sim.qb.idx && v.target !== s.sim.slot('RB')?.idx
+            && v.pos.x < v.me.x + .5 && Math.abs(v.pos.y - v.me.y) < 2.5 && v.vel.y * side > 1.3)).toBe(true);
+        }
+      }
     }
+    expect(snaps('counter', 'i_jumbo_22').filter(s => edges(s.sim).some(a => a.tags.has('fit-replace'))).length).toBeGreaterThanOrEqual(5);
+    // The late backside response is exercised, so its cue check above is not vacuous.
+    expect(lateBox.some(s => edges(s.sim).some(a => a.runFit!.side !== s.ballSide
+      && (a.tags.has('fit-box') || a.tags.has('fit-spill'))))).toBe(true);
     for (const s of snaps('wz_weak', 'ace_11')) expect(tagged(edges(s.sim), 'fit-replace')).toBe(0);
   });
 });

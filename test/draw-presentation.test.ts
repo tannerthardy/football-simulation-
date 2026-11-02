@@ -112,11 +112,31 @@ describe('Draw presentation belongs to the installed line, separately from its w
       const sim = setup(flip); sim.t = t;
       const owners = sim.offense.filter(a => a.behavior instanceof RunBlocker && a.behavior.plan.kind === 'draw');
       expect(owners.length).toBeGreaterThan(0);
+      // Against an edge rusher the owner sells pass with a short vertical set
+      // on him (draw-edge-set.test.ts); inside, the man comes to the set.
+      let edge = 0, inside = 0;
       for (const a of owners) {
-        const expected = goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: .6, facing: 0 });
-        expect(a.behavior.update(a, sim)).toEqual(expected);
+        const target = (a.behavior as RunBlocker).target, dir = sim.attackDir(a.team);
+        const command = a.behavior.update(a, sim);
         expect(a.stance).toBe('high');
+        if (target && Math.abs(sim.see(a, target).pos.y - sim.ballY) > 3) {
+          edge++;
+          // He kicks to his rusher's inside shoulder a beat ahead (never toward
+          // the line, never a stationary set): he moves toward that point.
+          const seen = sim.see(a, target), out = Math.sign(seen.pos.y - sim.ballY) || 1;
+          const strike = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
+          const insideY = seen.pos.y + seen.vel.y * .4 - out * strike * .6;
+          expect(command.vel.x * dir).toBeLessThanOrEqual(1e-9);
+          expect(command).not.toEqual(goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: .6, facing: 0 }));
+          if (Math.abs(insideY - a.pos.y) > .05) expect(command.vel.y * Math.sign(insideY - a.pos.y)).toBeGreaterThan(.3);
+          else expect(Math.abs(command.vel.y)).toBeLessThan(.5);
+        } else {
+          inside++;
+          expect(command).toEqual(goTo(a, { x: sim.los - 1.2, y: a.pos.y }, { speed: .6, facing: 0 }));
+        }
       }
+      expect(inside).toBeGreaterThan(0);
+      expect(edge).toBeGreaterThan(0);
     });
 
   it.each(['iz_strong', 'oz_strong', 'wz_strong', 'duo', 'power', 'counter', 'trap', 'split_zone'])(

@@ -97,8 +97,12 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   const sp = Math.hypot(seen.vel.x, seen.vel.y);
   const heading = sp > 0.1 ? norm(seen.vel) : { x: 0, y: 0 };
   const older = sim.see(a, target, delay + 0.2 / Math.max(0.1, a.profile.reactionTime));
-  const acceleration = clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / 0.2,
-    -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau));
+  // Over the time actually between the two pictures he holds, which attention
+  // can stretch past the 0.2 s asked for; two pictures of the same moment show
+  // no acceleration.
+  const interval = (older.age ?? 0) - (seen.age ?? 0);
+  const acceleration = interval > 1e-9 ? clamp((sp - Math.hypot(older.vel.x, older.vel.y)) / interval,
+    -target.profile.brake, Math.max(0, (target.profile.vmax - sp) / target.profile.tau)) : 0;
   // Recent acceleration is evidence for a short burst, not a promise of full
   // speed throughout the horizon. Reassess as new motion becomes visible.
   const tau = 0.3 + 0.3 * a.r('anticipation');

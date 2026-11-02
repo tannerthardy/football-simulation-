@@ -14,8 +14,12 @@ import type { Formation, PersonnelId, QBAlignment, SkillSlot, SlotAlignment, Spl
 /** On the line / off it, yards behind the ball (formations.ts conventions). */
 export const ON = 0.6;
 export const OFF = 1.2;
-// A wing is 0.7 yd deeper than the attached end beside him (2022 tracking:
-// end 1.02, wing 1.73 behind the ball at the snap; the inline end is 1.19 here).
+// A wing is 0.7 yd deeper than the attached end beside him: median depths
+// behind the ball at the snap, end 1.02 and wing 1.73, for the 1,001 off-line
+// players 0.3-4.0 yd outside a single attached TE (2022 tracking, weeks 1-6;
+// nfl_wing.py's wide cohort, which also holds flexed players at 3-4 yd; the
+// lateral width uses the narrower cohort, see wingOf in alignment.ts). The
+// inline end is 1.19 here, so the wing is 1.9.
 export const WING = 1.9;
 // Representative offset-gun run alignment: 2.3 yd beside the 5 yd-deep QB
 // and 0.5 yd behind him. Empty and pistol use their own placements.
