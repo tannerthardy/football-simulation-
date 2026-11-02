@@ -160,3 +160,40 @@ Base `run/G2-puller-path` 452b8acf. Tools: `tools/py/tepivot.py` lists pivots wi
 - On the current branch: power 1/26, IZ 3/41, trap 1/19.
 - The lead-FB cases (S13 #66 IZ, S13 #30 power, S17 #8 trap) are traffic. He asks for 5–9 yd/s on a sensible heading, gets 1–1.7 yd/s at LOS −1 behind his own linemen, and slides sideways.
 - Not changed: 3 cases. A lead path that reads the line's bodies (like the climber departure access) is the candidate.
+
+## Task #93: power kicker vs the end (2026-11-02)
+
+Defense's film: 64/189 NFL power kicks hit an inside-aligned man; 50 of them are the kicker taking the first DL past the down blocks.
+
+Same-operator check, power with one OL puller (`tools/py/kickwho.py`, `tools/py/pstdl.py`):
+
+| Kicker's first block | NFL (348) | sim (607) |
+|---|---|---|
+| The end | 39% | 84% |
+| A man on the line inside | 17% | 5% |
+| A backer | 34% | 0–1% |
+| Nobody | 3% | 11% |
+
+**End behaviour is the same in both.** Lateral from the PST at 1.3/1.6 s: NFL +1.48/+1.03, sim +1.43/+0.94. Wide at 1.6 s: NFL 35%, sim 41%.
+
+**The difference is who has the end when the kicker arrives.** End on a teammate 0.3 s before the kicker's first block:
+
+| Who has the end | NFL | sim |
+|---|---|---|
+| Anyone | about 60% | about 15% |
+| TE | 113 | 42 |
+| OL | 48 | 21 |
+| RB | 18 | 7 |
+
+- In NFL, when someone has the end, the kicker goes elsewhere: backer 46/113 when it's the TE, 31/48 when it's an OL.
+- In the sim, the TE and PST are installed to block down, so the end is free and the kicker correctly kicks him.
+
+**Three read attempts, none adopted** (`patches/kick-read-attempts.patch`):
+
+| Attempt | What it did | Result |
+|---|---|---|
+| KT1 | Take the first unblocked man in his lane to the end | Fired on 6–9% of plays, no change |
+| KT2 | Turn up when the end is seen on a teammate | Fired at about 0.8 s on a snap-time TE touch, then re-picked the same end |
+| KT3 | Same, decided within 3 yd, with the end excluded | Almost never fired, because the end is rarely held at arrival |
+
+**Next: an install decision, not a read.** Power's blocking rules (the TE or PST base-blocks the end, the kicker leads to the backer) vs the current down-down-kick. A PST/TE variant needs Tanner's call.

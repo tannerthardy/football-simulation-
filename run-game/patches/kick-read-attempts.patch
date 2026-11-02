@@ -1,0 +1,120 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 2021cc9a..2979527e 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -973,6 +973,9 @@ export class RunBlocker implements Behavior {
+   private pullRead: { target: Agent; seen: Perceived; clearanceX: number | null; nextRead: number; at: number; braking: Vec2 } | null = null;
+   private pullCleared = false;
+   private nextSurfaceRead = 0;
++  private nextPathRead = 0;
++  /** The kick man he left on a teammate's hands; not his to come back for. */
++  private leftKick: Agent | null = null;
+   private wrapOutside = false;
+   private wrapCorner: Vec2 | null = null;
+   private wrapTraffic: {pos: Vec2; vel: Vec2}[] = [];
+@@ -1239,6 +1242,51 @@ export class RunBlocker implements Behavior {
+           return target ? this.withBase(a, sim, this.attack(a, sim, target)) : this.leadRunner(a, sim);
+         }
+         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
++        // The kick man is the end he was given; the man he must block is the
++        // first one standing in his path to him. Past the wall, an unblocked
++        // defender in his lane, between him and his kick man at the line,
++        // cannot be run through: he takes him (tracked power kickers first
++        // block the end on 42% of plays with a man on the tackle, the man on
++        // the tackle or another box defender on 56%; ours 78% and 10%).
++        if (read && target && plan.pullRole === 'kick' && this.pullCleared && t >= this.nextPathRead) {
++          this.nextPathRead = t + a.mind.decisionInterval;
++          // His end already on a teammate's hands (seen in contact, short of
++          // his own fit) needs no second blocker: he turns up through the hole
++          // for the first threat there. Tracked power kickers do so on 63% of
++          // plays where another blocker has the end before them; ours 7%.
++          const contact = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
++          const apart = Math.hypot(read.seen.pos.x - a.pos.x, read.seen.pos.y - a.pos.y);
++          const held = apart > contact + .5 && apart < 3
++            && sim.offense.some(o => o !== a && o !== sim.qb && o !== sim.carrier
++              && !(o.behavior instanceof RunBlocker && o.behavior.plan.kind === 'pull') && Math.hypot(sim.see(a, o).pos.x - read!.seen.pos.x, sim.see(a, o).pos.y - read!.seen.pos.y)
++              < o.profile.radius + target!.profile.radius + .35);
++          if (held) {
++            const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
++            sim.event('pull_turn_up', a, target, 'kick man already blocked');
++            plan.pullRole = 'lead';
++            this.leftKick = target;
++            plan.target = target = this.holeThreat(a, sim, null, this.leftKick);
++            this.acquiredWork = { target };
++            this.pullIdx = plan.pullPath.length;
++            a.tags.add('pull-turned-up');
++            delete plan.contactFit;
++            this.pullRead = null;
++            trace?.blockingChange(a, previousWork, 'pull: kick man already blocked, turn up', sim);
++            a.mind.setAimTarget('block-fit', target?.idx ?? null);
++            return target ? this.withBase(a, sim, this.attack(a, sim, target)) : this.leadRunner(a, sim);
++          }
++          const first = this.pathThreat(a, sim, target, read.seen, ps);
++          if (first) {
++            const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
++            plan.target = target = first;
++            delete plan.contactFit;
++            this.pullRead = null;
++            read = this.readPull(a, sim, target);
++            trace?.blockingChange(a, previousWork, 'pull kick: first man in his path', sim);
++            sim.event('block_threat', a, first, 'kick puller: first man in his path');
++            a.mind.setAimTarget('block-fit', target.idx);
++          }
++        }
+         if (read) {
+           const clearNow = read.clearanceX === null || a.pos.x + a.profile.radius <= read.clearanceX;
+           this.pullCleared ||= clearNow;
+@@ -1554,7 +1602,7 @@ export class RunBlocker implements Behavior {
+       if (!a.engagement && t >= this.retarget && !(plan.pullSurface && t < this.nextSurfaceRead)
+         && (this.pullCleared || !target || this.pullIdx >= (plan.pullPath?.length ?? 0) || gone())) {
+         this.retarget = t + a.mind.decisionInterval;
+-        const threat = this.holeThreat(a, sim, target);
++        const threat = this.holeThreat(a, sim, target, this.leftKick);
+         // Nobody threatens the hole in his pictures, his own man included
+         // (on the ground, or behind his flow now): he leads the runner rather
+         // than standing over, or turning back for, the man he lost.
+@@ -1691,7 +1739,34 @@ export class RunBlocker implements Behavior {
+    * that puller. A man he sees in body contact with a teammate is a claim,
+    * not proof of a block: any free threat comes first, and the claimed man
+    * is still taken (help) when no free man threatens the hole. */
+-  private holeThreat(a: Agent, sim: PlaySim, current: Agent | null = null): Agent | null {
++  /** The first unblocked defender, as he sees them, standing in his lane to
++   * his kick man a beat from now: between them along the pull, near the
++   * line, close enough to the line of his run that he would meet him first. */
++  private pathThreat(a: Agent, sim: PlaySim, target: Agent, kickSeen: Perceived, ps: number): Agent | null {
++    const dir = sim.attackDir(a.team), beat = a.mind.decisionInterval;
++    const ahead = (kickSeen.pos.y - a.pos.y) * ps;
++    if (ahead < 1) return null;
++    const ex = kickSeen.pos.x - a.pos.x, ey = kickSeen.pos.y - a.pos.y, el = Math.hypot(ex, ey) || 1;
++    const mates = sim.offense.filter(o => o !== a && o !== sim.qb).map(o => ({ pos: sim.see(a, o).pos, r: o.profile.radius }));
++    let best: Agent | null = null, bestAlong = Infinity;
++    for (const d of sim.defense) {
++      if (d === target) continue;
++      const seen = sim.see(a, d);
++      if (seen.pose !== 'up') continue;
++      if (mates.some(m => Math.hypot(m.pos.x - seen.pos.x, m.pos.y - seen.pos.y) < m.r + d.profile.radius + .35)) continue;
++      const fx = seen.pos.x + seen.vel.x * beat, fy = seen.pos.y + seen.vel.y * beat;
++      if ((fx - sim.los) * dir > 1.5) continue;
++      const along = (fy - a.pos.y) * ps;
++      if (along < -.25 || along > ahead - .5) continue;
++      const contact = a.profile.radius + d.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
++      const off = Math.abs((fx - a.pos.x) * ey - (fy - a.pos.y) * ex) / el;
++      if (off > contact + .5) continue;
++      if (along < bestAlong) { bestAlong = along; best = d; }
++    }
++    return best;
++  }
++
++  private holeThreat(a: Agent, sim: PlaySim, current: Agent | null = null, exclude: Agent | null = null): Agent | null {
+     const hole = this.plan.pullPath?.at(-1);
+     if (!hole) return null;
+     const dir = sim.attackDir(a.team), ball = this.workReference(a, sim), carrier = this.workPicture?.carrier;
+@@ -1700,7 +1775,7 @@ export class RunBlocker implements Behavior {
+     const mates = sim.offense.filter(o => o !== a && o !== runner).map(o => ({ pos: sim.see(a, o).pos, r: o.profile.radius }));
+     const called = new Set(sim.offense.map(o => o !== a && o.behavior instanceof RunBlocker ? o.behavior.calledKick : null));
+     const score = (d: Agent): number | null => {
+-      if (called.has(d)) return null;
++      if (called.has(d) || d === exclude) return null;
+       const seen = sim.see(a, d);
+       if (seen.pose === 'down' || seen.pose === 'rising') return null;
+       const depth = (seen.pos.x - sim.los) * dir;
