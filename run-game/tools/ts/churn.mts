@@ -1,46 +1,52 @@
-/** Free climbers (plan climb with a target, not engaged, carrier not yet at the backer) on run-only captures:
- * request heading turn rate per tick and what changed when it turned > 1 rad/s. */
+// Blocker job churn on native captured snaps (seeds 7..29 odd, saved stream): for every OL/TE/back RunBlocker,
+// every blocking change (reason, from target/kind -> to target/kind, t) before carrier cross + 0.6 s. Counts per
+// scheme: changes per blocker, reversals (back to a target held within the previous 0.6 s), and by reason.
+// argv: worktree [schemes]
 import { readFileSync } from 'node:fs';
-const root = process.cwd();
-const { PlaySim } = await import(root + '/src/sim/playsim.ts');
-const { restoreSetup } = await import(root + '/scripts/diag/saved-play.ts');
-const { RunBlocker } = await import(root + '/src/sim/behaviors/blocking.ts');
-const fam = process.argv[2], seeds = process.argv.slice(3);
-const cause: Record<string, number> = {}; let ticks = 0, fast = 0; const rates: number[] = [];
-const modeOf = (b: any) => b.plan.departure ? 'dep:' + (b.departureAccess?.kind ?? 'none') : b.climbAccess ? 'climb:detour' : 'climb:direct';
-for (const seed of seeds) for (const p of JSON.parse(readFileSync(`out/matched-restage/seed${seed}-run.json`, 'utf8')) as any[]) {
-  if (p.pass) continue;
-  const sim: any = new PlaySim(restoreSetup(Buffer.from(p.setup, 'base64')));
-  const sch = sim.offCall.run?.scheme ?? '';
-  if (fam === 'OZ' ? !/outsideZone|wideZone/.test(sch) : fam === 'IZ' ? !/insideZone|splitZone/.test(sch) : !/power|counter|trap/.test(sch)) continue;
-  if (sim.snapAssessment && !sim.snapAssessment.snapPermitted) continue;
-  const dir = sim.attackDir('O'); const prev = new Map<any, any>(); const ledger = sim.recordResponsibility();
-  while (sim.phase === 'live' && sim.t < 4) {
-    sim.tick();
-    const c = sim.carrier;
-    for (const o of sim.offense) {
-      const b: any = o.behavior;
-      if (!(b instanceof RunBlocker) || b.plan.kind !== 'climb' || o.engagement || !b.plan.target) { prev.delete(o); continue; }
-      if (c && c !== sim.qb && (c.pos.x - b.plan.target.pos.x) * dir > -1) { prev.delete(o); continue; }
-      const iv = sim.intents[o.idx].vel, sp = Math.hypot(iv.x, iv.y);
-      const row = [...ledger.data.rows].reverse().find((q: any) => q.actor === o.idx);
-      const cur = { h: Math.atan2(iv.y, iv.x), sp, target: b.plan.target, mode: modeOf(b), read: b.climbAccess ?? b.climbRead,
-        turn: b.climbAccess?.turn, obstacle: b.climbAccess?.obstacle, rw: (row?.command?.rewrittenBy ?? []).join('>'),
-        goal: b.climbAccess?.goal ?? b.climbRead?.meet, pos: { ...o.pos } };
-      const q = prev.get(o); prev.set(o, cur);
-      if (!q || sp < 1 || q.sp < 1) continue;
-      ticks++;
-      const dh = Math.abs(Math.atan2(Math.sin(cur.h - q.h), Math.cos(cur.h - q.h))), rate = dh / .05; rates.push(rate);
-      if (rate <= 1) continue;
-      fast++;
-      const gd = cur.goal ? Math.hypot(cur.goal.x - o.pos.x, cur.goal.y - o.pos.y) : 99;
-      const k = cur.target !== q.target ? 'target changed' : cur.mode !== q.mode ? `mode ${q.mode} -> ${cur.mode}`
-        : cur.read !== q.read ? (cur.mode.endsWith('detour') ? (cur.obstacle !== q.obstacle ? 'new detour, other obstacle' : cur.turn !== q.turn ? 'new detour, side flipped' : 'new detour read, same side') : 'new meet read')
-        : cur.rw !== q.rw ? 'spacing rewrite on/off: ' + (cur.rw || q.rw) : gd < 1 ? 'same read, goal < 1 yd away' : 'same read, steering';
-      cause[k] = (cause[k] ?? 0) + 1;
+const W = process.argv[2], SCH = new Set((process.argv[3] ?? 'insideZone,outsideZone,wideZone,splitZone,duo,power,counter,trap').split(','));
+const { PlaySim } = await import(`${W}/src/sim/playsim.ts`);
+const { restoreSetup } = await import(`${W}/scripts/diag/saved-play.ts`);
+const { RunBlocker } = await import(`${W}/src/sim/behaviors/blocking.ts`);
+const out: any = {};
+for (let seed = 7; seed <= 29; seed += 2) {
+  let snaps: any[]; try { snaps = JSON.parse(readFileSync(`${W}/out/matched-restage/seed${seed}-run.json`, 'utf8')); } catch { continue; }
+  snaps.forEach((p: any, idx: number) => {
+    if (p.pass) return; const st: any = restoreSetup(Buffer.from(p.setup, 'base64'));
+    const sc = st.offCall?.run?.scheme; if (!SCH.has(sc)) return;
+    const sim: any = new PlaySim(st);
+    const rec: any[] = []; let crossT = Infinity;
+    const blockers = sim.offense.filter((a: any) => a.behavior instanceof RunBlocker);
+    const hist = new Map<any, Array<{ t: number; tgt: any }>>();
+    for (const a of blockers) hist.set(a, [{ t: 0, tgt: a.behavior.plan.target }]);
+    const bs = sim.blockingSink.bind(sim);
+    sim.blockingSink = (ag: any) => { const real = bs(ag); if (!blockers.includes(ag)) return real;
+      return { blockingState: (x: any) => real?.blockingState(x) ?? null,
+        blockingChange: (x: any, prev: any, reason: string, s2: any) => { real?.blockingChange(x, prev, reason, s2);
+          const plan = x.behavior.plan; rec.push({ a: x, t: sim.t, reason: reason.split(':')[0], from: (prev?.target?.slot ?? prev?.plan?.target?.slot) ?? null, to: plan.target?.slot ?? null, kind: plan.kind }); } }; };
+    const tick = sim.tick.bind(sim);
+    sim.tick = () => { tick(); const c = sim.carrier; if (crossT === Infinity && c && c !== sim.qb && (c.pos.x - sim.los) * sim.attackDir('O') >= 0) crossT = sim.t;
+      for (const a of blockers) { const h = hist.get(a)!; const tg = a.behavior.plan?.target ?? null; if (h.at(-1)!.tgt !== tg) h.push({ t: sim.t, tgt: tg }); } };
+    try { sim.run(); } catch { return; }
+    const o = out[sc] ??= { plays: 0, blockers: 0, changes: 0, reversals: 0, reasons: {}, revReasons: {}, ex: [] };
+    o.plays++; o.blockers += blockers.length;
+    for (const a of blockers) {
+      const h = hist.get(a)!.filter(e => e.t <= crossT + 0.6);
+      o.changes += h.length - 1;
+      for (let i = 2; i < h.length; i++) {
+        const back = h.slice(0, i - 1).some(e => e.tgt === h[i].tgt && h[i].t - e.t < 1.2 && h[i].tgt);
+        if (back && h[i].t - h[i-1].t < 0.6) { o.reversals++;
+          const r = rec.filter(x => x.a === a && Math.abs(x.t - h[i].t) < 1e-6).map(x => x.reason).join('+') || 'unattributed';
+          const r0 = rec.filter(x => x.a === a && Math.abs(x.t - h[i-1].t) < 1e-6).map(x => x.reason).join('+') || 'unattributed';
+          const k = `${r0} -> ${r}`; o.revReasons[k] = (o.revReasons[k] ?? 0) + 1;
+          if (o.ex.length < 4) o.ex.push(`s${seed}#${idx} ${a.slot} ${h[i-2]?.tgt?.slot}->${h[i-1].tgt?.slot}@${h[i-1].t.toFixed(2)}->${h[i].tgt?.slot}@${h[i].t.toFixed(2)} (${k})`); }
+      }
     }
-  }
+    for (const x of rec) if (x.t <= crossT + 0.6) o.reasons[x.reason] = (o.reasons[x.reason] ?? 0) + 1;
+  });
 }
-rates.sort((a, b) => a - b); const qn = (f: number) => rates[Math.floor(f * (rates.length - 1))]?.toFixed(2);
-console.log(`${fam}: moving climber ticks ${ticks}, turn > 1 rad/s ${(100 * fast / ticks).toFixed(0)}%; rate quartiles ${qn(.25)} / ${qn(.5)} / ${qn(.75)}, p90 ${qn(.9)} rad/s`);
-for (const [k, v] of Object.entries(cause).sort((a, b) => b[1] - a[1])) console.log(`  ${(100 * v / fast).toFixed(0)}%  ${k}`);
+for (const [sc, o] of Object.entries<any>(out)) {
+  console.log(`\n${sc}: plays ${o.plays} blockers ${o.blockers} | target changes/blocker ${(o.changes / o.blockers).toFixed(2)} | quick reversals (back to a man held <1.2 s ago, within 0.6 s) ${o.reversals} (${(o.reversals / o.plays * 100).toFixed(0)} per 100 plays)`);
+  console.log('  reasons: ' + Object.entries<any>(o.reasons).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, v]) => `${k} ${v}`).join(' | '));
+  console.log('  reversal pairs: ' + Object.entries<any>(o.revReasons).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, v]) => `${k} ${v}`).join(' | '));
+  for (const e of o.ex) console.log('   ex ' + e);
+}

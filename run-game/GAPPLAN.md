@@ -161,3 +161,38 @@ On my side: re-run the acceptance measures (`doublerelg.py`, `climbtrip.py`, `fi
 | At 3.0 s | +0.78 | −0.91 |
 
 Next on our side: draw mesh path (#69) and post-handoff tempo. Defense informed.
+
+## Main-scheme blocking pass (2026-11-02, branch run/G2-climb-hip)
+
+1. **Job churn** (`tools/ts/churn.mts`, native snaps, develop + hip fix):
+
+   | Scheme | Target changes per blocker | Quick reversals per 100 plays |
+   |---|---|---|
+   | IZ | 0.29 | 0 |
+   | OZ | 0.30 | 2 |
+   | WZ | 0.35 | 1 |
+   | Duo | 0.27 | 0 |
+   | Trap | 0.36 | 2 |
+   | Power | 0.41 | 3 |
+   | Counter | 0.60 | 14 |
+
+   Counter is the wrap's lead reads, which #390 addresses. Churn is not the main-scheme stall.
+2. **Stretch flow** (`tools/py/ozflow.py`, `tools/py/pairflow.py`). The whole sim line flows at about half NFL speed, and the DL barely moves laterally at 0.3 s.
+
+   OZ at 1.0 s:
+
+   | | sim | NFL |
+   |---|---|---|
+   | Center lateral | 1.45 | 3.00 |
+   | DL lateral | 1.45 | 2.50 |
+   | DL lateral at 0.3 s | 0.05 | 0.65 |
+   | Engaged pair lateral | 1.45 | 2.63 |
+   | OL minus DL | −0.05 | +0.35 |
+   | OL offset | −0.12 | +0.08 |
+
+   `RUN_CONTACT_TRACK=1` (via `--flag`) raised pair speed only to 1.55 and made OZ worse:
+   - contact −0.02 vs +0.19;
+   - behind LOS 50% vs 45%;
+   - line shed 57% vs 51%.
+
+   That repeats #74: blockers outrunning a DL who doesn't flow leads to sheds. The DL lateral key goes to Defense; re-arm the track if their DL flows.
