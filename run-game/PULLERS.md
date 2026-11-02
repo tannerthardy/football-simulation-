@@ -237,3 +237,23 @@ This gives each call its own feel without forking the engine. It also gives a na
 Next on this layer: TE base technique by start spot. NFL ends slide inside with the TE riding them; ours hold their spot.
 
 Shared open item: leads that block nobody (counter wrap 66%, Power Base 52%).
+
+## #94: leads that block nobody, re-measured with the same operator (2026-11-02)
+
+The 66% / 52% "engage nobody" figures came from sim engagement records. They are not comparable with NFL.
+
+With the proximity operator on both sides (`tools/py/wrapany.py`: any defender within 1.2 yd for 3 frames before carrier cross + 0.6 s), counter wrap, branch YP1:
+
+| | NFL (166) | sim (480) |
+|---|---|---|
+| Blocks nobody | 7% | 14% |
+| Blocks a man on the line | 61% | 81% |
+| Blocks a backer | 24% | 5% |
+| First block | 1.6 s | 2.0 s |
+
+**Reading.** The wrap almost always touches someone. The gap is backers.
+- At 2.5 s sim box backers are 0.5 yd inside the wrap; NFL backers are 0.2 yd outside (`wrapmeet.py`).
+- The sim back crosses 2 yd inside NFL, and backers fit to the back.
+- So the backer gap likely follows from the counter carrier's track, which is the open design decision (aim B, and the lane race after the kick lands), not from the wrap.
+
+Do that first, then re-measure here.
