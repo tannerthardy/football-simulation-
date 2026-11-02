@@ -3132,6 +3132,41 @@ From the outside audit (`audit`):
   perfect: no fakes and no occlusion. Next: add the scramble cue in the same
   PR; recompose with #256, which still falls back to
   `acquired?.target ?? sim.carrier`.
+- **Player sight has no field of view** (*confirmed*, 2026-11-02 audit, seeds
+  1–2, two games, about 15 million opponent lookups). `PlaySim.see` gives
+  every opponent on the observer's reaction delay, projected forward along
+  the target's velocity, wherever the observer faces: about 2.9 million
+  lookups per two games were of men more than 120° behind his body, at no
+  cost. Only the ball (`throw-sight.ts`), the QB's eyes and a carrier's run
+  keys model where a player looks. Proposed next: a player keeps his last
+  in-view sighting of a man outside his view cone (the throw-sight cones) and
+  projects it forward, instead of a fresh reaction-delayed picture. Large
+  behavioral reach (man defenders trailing, pursuit from behind); needs its
+  own matched restage and a design call.
+  *Landed with it, the opposite case:* a defender who had read run saw every
+  non-line, non-QB, non-back opponent 0.15 s later, including the tight end,
+  fullback or receiver blocking him from in front (4.5% of close in-front
+  lookups). A blocker in front of him (inside the throw-sight view cone) and
+  within 5 yd is now seen on the ordinary delay; men releasing away from him
+  are still seen late. The exemption is judged from his own delayed picture
+  of the blocker, never the blocker's live position (integration review on
+  #391: live position reselected an already-buffered picture).
+  When the run read's 0.15 s starts to apply to a man (his picture leaves
+  the exemption, or the defender's read flips to run), the picture he had is
+  held and ages, instead of rewinding 0.15 s (a rewound picture of a man
+  running away shows synthetic braking; Coverage review on #391).
+  *Still open:* other lengthenings of the delay (a man leaving a carrier's
+  keys) still take a picture back to an older moment. The same hold applied to every sight changes about 20 recorded
+  scenes (blocker rereads, QB memory, command traces) and needs its own
+  restage.
+  *Tried and stopped:* a field of view with memory (out of the view cone, the
+  last sighting projected forward), alone and with a check over the shoulder
+  every 1-2 s. Matched restage against #391 (seeds 7/11 x 4 RNG shifts):
+  passes +1.26 +/- 0.43 and +0.52 +/- 0.40 yd per play, 20+ yd completions
+  106 -> 136 and 124, mostly after the catch, from defenders still running
+  coverage who never see the carrier behind them. Body facing is too crude a
+  gaze; this needs a head and attention model with cues (the catch, "ball!")
+  first. The attempt itself was not kept.
 - **#256 (#225 rebuilt), engaged work-off toward the runner** (held): coherent,
   with no matched gain on runs; its scorecard moved yards per carry
   5.52 → 6.92. Waiting on Defense's native lab rerun and recomposition with
