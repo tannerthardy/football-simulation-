@@ -6,6 +6,9 @@ import type { Formation } from './types.js';
 
 const ON = 0.6;
 const OFF = 1.2;
+// A wing is 0.7 yd deeper than the attached end beside him (2022 tracking:
+// end 1.02, wing 1.73 behind the ball at the snap; the inline end is 1.19 here).
+const WING = 1.9;
 // Representative offset-gun run alignment: 2.3 yd beside the 5 yd-deep QB
 // and 0.5 yd behind him. Empty and pistol use their own placements.
 const GUN_RB_SPLIT = 2.3;
@@ -132,7 +135,7 @@ export const FORMATIONS: Formation[] = [
     slots: {
       X: { side: 'L', split: 'wide', depth: ON },
       Y: { side: 'R', split: 'inline', depth: ON },
-      H: { side: 'R', split: 'wing', depth: 1.4 },
+      H: { side: 'R', split: 'wing', depth: WING },
       Z: { side: 'R', split: 'wide', depth: OFF },
       RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
     },
@@ -195,7 +198,7 @@ export const FORMATIONS: Formation[] = [
       X: { side: 'L', split: 9, depth: OFF },
       H: { side: 'L', split: 'inline', depth: ON },
       Y: { side: 'R', split: 'inline', depth: ON },
-      F: { side: 'R', split: 'wing', depth: 1.4 },
+      F: { side: 'R', split: 'wing', depth: WING },
       RB: { side: 'C', split: 0, depth: 6.8 },
     },
   },

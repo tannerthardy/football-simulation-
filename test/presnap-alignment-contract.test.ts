@@ -49,9 +49,8 @@ describe('pre-snap alignment contract', () => {
     expect(close.slice(0, 5)).toEqual([]);
     // At the line, a ratchet: a DB pressing an attached end or wing beside the
     // end man (man calls; fitPressStances fits his stance when the play is
-    // staged), and the Over Sam head-up on a wing beside the end's 9 (2017
-    // Colts install). Each fix lowers this ceiling.
-    expect(lineClose).toBeLessThanOrEqual(1986);
+    // staged). Each fix lowers this ceiling (1,986 before the tracked wing width).
+    expect(lineClose).toBeLessThanOrEqual(897);
   });
 
   it('a backer with a back in man keeps his front spot; the two I backs get two defenders', () => {

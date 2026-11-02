@@ -41,7 +41,10 @@ const BASE_LINE: LineSplits = OL_SPLITS ? { cg: 1.54, gt: 1.56, tte: 1.52 } : { 
 const SHORT_LINE: LineSplits = { cg: 1.45, gt: 1.47, tte: 1.43 };
 const tackleOf = (l: LineSplits) => OL_SPLITS ? l.cg + l.gt : 2.6;
 const inlineOf = (l: LineSplits) => OL_SPLITS ? tackleOf(l) + l.tte : 3.9;
-const wingOf = (l: LineSplits) => OL_SPLITS ? inlineOf(l) + .9 : 4.8;
+// A wing stands 1.32 yd outside the attached end (2022 tracking, weeks 1-6:
+// 682 off-ball players within 2.5 yd outside an attached TE, p25 1.0, p75
+// 1.75; scripts/diag/align/nfl_wing.py).
+const wingOf = (l: LineSplits) => OL_SPLITS ? inlineOf(l) + 1.32 : 4.8;
 const FLAT_DEPTH = .55;
 type LineSlot = 'LT' | 'LG' | 'C' | 'RG' | 'RT';
 /** OL_STAGGER: guards and tackles stand deeper on a dropback (tracked tackles
