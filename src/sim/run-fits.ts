@@ -67,20 +67,22 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
     if (line || spot.role.kind === 'blitz' || dropper) claimed.add(`${side}:${gap}`);
     if (dropper && kind === 'edge') jobs.get(d)!.inside = { gap, side, kind: 'edge' };
   }
-  // A called blitzer takes his gap; a lineman whose gap he takes slides out
-  // to the next one (an end outside a safety blitzing C plays D).
+  // A called blitzer takes his gap; a lineman whose gap he takes slides to the
+  // nearest open one (an end outside a safety blitzing C plays D; a nose under
+  // a Mike blitzing strong A plays weak A).
   const blitzed = new Set(sim.defense.filter(d => sim.defAlign.spots[d.slot as DefSlot]!.role.kind === 'blitz')
     .map(d => { const j = jobs.get(d)!; return `${j.side}:${j.gap}`; }));
-  const outward: Record<Gap, Gap | null> = { A: 'B', B: 'C', C: 'D', D: null };
   for (const d of first) {
     const j = jobs.get(d)!;
     if (sim.defAlign.spots[d.slot as DefSlot]!.role.kind === 'blitz' || !blitzed.has(`${j.side}:${j.gap}`)) continue;
-    let g: Gap | null = j.gap;
-    while (g && (blitzed.has(`${j.side}:${g}`) || (g !== j.gap && claimed.has(`${j.side}:${g}`)))) g = outward[g];
-    if (!g) continue;
-    claimed.add(`${j.side}:${g}`);
-    j.gap = g;
-    if (j.kind === 'interior' && (g === 'C' || g === 'D')) j.kind = 'edge';
+    const open = [-1, 1].flatMap(side => (['A', 'B', 'C', 'D'] as Gap[]).map(gap => ({ side, gap })))
+      .filter(o => !blitzed.has(`${o.side}:${o.gap}`) && !claimed.has(`${o.side}:${o.gap}`));
+    const dist = (o: { side: number; gap: Gap }) => Math.abs(gapY(sim.offAlign, o.gap, o.side) - d.pos.y);
+    const to = open.sort((a, b) => dist(a) - dist(b))[0];
+    if (!to) continue;
+    claimed.add(`${to.side}:${to.gap}`);
+    j.gap = to.gap; j.side = to.side;
+    j.kind = to.gap === 'C' || to.gap === 'D' ? 'edge' : 'interior';
   }
   // An explicit exchange already spends its backer on the vacated edge.
   const exchange = sim.defCall.gapExchange;
@@ -131,9 +133,11 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
     }
   }
   // A box curl-flat backer still has his bubble on inside flow. An outside
-  // support title does not spend a second body or erase that obligation.
-  const backers = sim.defense.filter((d) => d.slot.startsWith('LB') && !first.has(d)
-    && (jobs.get(d)!.kind !== 'force' || outsideSide(d) !== null)
+  // support title does not spend a second body or erase that obligation. A
+  // force player aligned in the box (a nickel or safety on the end man) has the
+  // same dual job: an inside bubble left open on his side is his on inside flow.
+  const backers = sim.defense.filter((d) => (d.slot.startsWith('LB') ? jobs.get(d)!.kind !== 'force' || outsideSide(d) !== null
+    : jobs.get(d)!.kind === 'force') && !first.has(d)
     && Math.abs(sim.defAlign.spots[d.slot as DefSlot]!.pos.y - sim.ballY) < 5.5)
     // Primary insertion spends a body first. Conditional outside support can
     // use a remaining bubble, but cannot take an insert's only gap and leave
