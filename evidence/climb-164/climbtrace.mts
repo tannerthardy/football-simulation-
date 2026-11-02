@@ -24,6 +24,12 @@ for (let idx = 0; idx < snaps.length && done < maxSnaps; idx++) {
   const idxOf = (a: any) => ags.indexOf(a);
   const prev = new Map<any, string>();
   const releases: Array<{ a: any; t: number; from: string; to: string; ticks: any[] }> = [];
+  const NODRIVE = process.env.CF_NODRIVE === '1';
+  if (NODRIVE) { const wstep = sim.world.step.bind(sim.world); sim.world.step = (intents: any[], dt: number) => {
+    for (const r of releases) { if (sim.t - r.t > 0.6) continue; const dl = sim.defense.find((x: any) => x.slot === r.from); if (!dl) continue;
+      const k = idxOf(dl), it = intents[k]; if (!it) continue; const nx0 = r.a.pos.x - dl.pos.x, ny0 = r.a.pos.y - dl.pos.y, L = Math.hypot(nx0, ny0); if (L > 1.2) continue;
+      const nx = nx0 / L, ny = ny0 / L, into = it.vel.x * nx + it.vel.y * ny; if (into > 0) intents[k] = { ...it, vel: { x: it.vel.x - into * nx, y: it.vel.y - into * ny }, push: 0 }; }
+    return wstep(intents, dt); }; }
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
     tick();

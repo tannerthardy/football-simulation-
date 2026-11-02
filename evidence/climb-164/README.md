@@ -61,6 +61,42 @@ Develop seed 7 (114 releases): steady clear 2.14 / 2.49 / 2.58; flips 30%
    - In 15 of 37, the climber's own request also keeps more than 0.5 yd/s
      into the DL.
 
+## Force budget and counterfactuals (added after Run Game's 12-seed batch)
+
+**Force budget.** `forces.mts`, #390 seeds 7+9: 212 releases, 383 ticks in
+contact with the released DL. Medians in yd/s², along the climber's request:
+
+| Force | Median |
+|---|---|
+| Legs | +4.2 |
+| Contact normal push | ≈0 (the request is tangential) |
+| Size of that normal push | 3.9 |
+| Torso friction (residual) | −0.9 to −1.2, at about its Coulomb bound (`CONTACT_FRICTION` 0.35 × normal) |
+| Net | +2.5 to +2.9 |
+
+**Matched counterfactuals** (diagnostic only, not proposals). Same snaps, the
+group in contact at baseline, speed at +0.1 / +0.3 / +0.5 s:
+
+| Arm | Contact group | All releases |
+|---|---|---|
+| Baseline | 1.59 / 1.76 / 2.18 | 1.76 / 1.99 / 2.06 |
+| Torso friction 0 | 1.76 / 2.26 / 2.53 | 1.84 / 2.13 / 2.20 |
+| Released DL's drive toward the climber removed | 1.58 / 1.86 / 2.29 | 1.75 / 2.00 / 2.06 |
+
+**Correction to item 2 above.** The DL's continued drive costs only about
+0.1 yd/s. Most of the normal load is the climber's own down-block momentum
+into the DL: about 1.3 yd/s along the normal at release, decaying over
+0.3 s. He sheds it against the DL and slides on him under Coulomb friction.
+
+That is coherent physics. A coefficient of 0.35 for jersey on pads is
+plausible, and setting it to 0 would be tuning. What is missing is technique:
+nothing asks the arms to shove off the released man and unload that contact.
+A separating hand shove already exists in the hand physics, so this is a
+controller decision.
+
+Across all releases, the larger loss is still the request oscillation
+(item 1).
+
 ## Tools
 Each script takes `<worktree> <seed> ...` and needs the capture in
 `<worktree>/out/matched-restage/seed<N>-run.json`.
