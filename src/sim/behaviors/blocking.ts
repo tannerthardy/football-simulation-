@@ -973,6 +973,8 @@ export class RunBlocker implements Behavior {
   private pullRead: { target: Agent; seen: Perceived; clearanceX: number | null; nextRead: number; at: number; braking: Vec2 } | null = null;
   private pullCleared = false;
   private nextSurfaceRead = 0;
+  /** The side of the released man's hip this departure steps off (0: not chosen yet). */
+  private hipHold = { side: 0 };
   private wrapOutside = false;
   private wrapCorner: Vec2 | null = null;
   private wrapTraffic: {pos: Vec2; vel: Vec2}[] = [];
@@ -1571,6 +1573,7 @@ export class RunBlocker implements Behavior {
   startDeparture(a: Agent, sim: PlaySim, defender: Agent, keeper: Agent, backer: Agent,
     picture: NonNullable<CombinationProposal['departure']>): void {
     this.preparation=null;
+    this.hipHold={side:0};
     this.plan.departure = { defender, keeper, backer };
     this.departureRead = { at: sim.t, nextRead: sim.t + a.mind.decisionInterval,
       exit: picture.exit?{ ...picture.exit }:null, flow: { ...picture.flow }, backer: structuredClone(picture.backer) };
@@ -1595,8 +1598,8 @@ export class RunBlocker implements Behavior {
     const near=Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)<=strike;
     // Stepping off the released man's hip: a rub is allowed, shoving him along is not a climb.
     const released=this.plan.departure.defender;
-    if (!this.departureStrikeClear && !near) return offReleasedHip(a,sim,released,approach);
-    const command=offReleasedHip(a,sim,released,this.attack(a,sim,target,seen,approach));
+    if (!this.departureStrikeClear && !near) return offReleasedHip(a,sim,released,approach,this.hipHold);
+    const command=offReleasedHip(a,sim,released,this.attack(a,sim,target,seen,approach),this.hipHold);
     if (a.engagement?.defender===target) {
       const sink = sim.blockingSink(a), previousWork = sink?.blockingState(a);
       delete this.plan.departure;
@@ -2257,14 +2260,24 @@ function checkBackerCorridor(helper: Agent, defender: Agent, down: Perceived, ba
  * decides any rub; what he no longer does is push the man along with him on
  * his way to the backer (in contact, 74% of inside-zone departure commands
  * pointed into the released man and carried him at over 1 yd/s). */
-function offReleasedHip<T extends { vel: Vec2 } | null>(a: Agent, sim: PlaySim, released: Agent, command: T): T {
+/** Stepping off the released man's hip: the into-him part of the request is
+ * dropped and he slides along the hip at the requested speed. The side he
+ * slides is chosen once per departure (the side his request favors, else the
+ * way he is already moving) and kept: when the request points nearly straight
+ * at the man, what is left of it is tiny and its side flipped tick to tick,
+ * swinging the request through 180 deg at full speed (#164, 34-40% of
+ * releases flipped > 60 deg between ticks). */
+function offReleasedHip<T extends { vel: Vec2 } | null>(a: Agent, sim: PlaySim, released: Agent, command: T, hold: { side: number }): T {
   if (!command) return command;
   const seen = sim.see(a, released), rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, r = Math.hypot(rx, ry);
   if (r < 1e-9 || r > a.profile.radius + released.profile.radius + .15) return command;
   const ux = rx / r, uy = ry / r, v = command.vel, into = v.x * ux + v.y * uy;
   if (into <= 0) return command;
   const tx = v.x - into * ux, ty = v.y - into * uy, tl = Math.hypot(tx, ty), speed = Math.hypot(v.x, v.y);
-  return { ...command, vel: tl > 1e-9 ? { x: tx / tl * speed, y: ty / tl * speed } : { x: 0, y: 0 } };
+  const sideOf = (x: number, y: number) => Math.sign(ux * y - uy * x);
+  if (!hold.side) hold.side = (tl > speed * .25 ? sideOf(tx, ty) : 0) || sideOf(a.vel.x, a.vel.y) || sideOf(tx, ty) || 1;
+  if (tl > speed * .25 && sideOf(tx, ty) === hold.side) return { ...command, vel: { x: tx / tl * speed, y: ty / tl * speed } };
+  return { ...command, vel: { x: -uy * hold.side * speed, y: ux * hold.side * speed } };
 }
 
 function climbRoute(a: Agent, defender: Agent, down: Perceived,
