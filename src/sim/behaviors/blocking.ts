@@ -1696,13 +1696,6 @@ export class RunBlocker implements Behavior {
     return gap - closing * 1.0 > runner.profile.radius + man.profile.radius;
   }
 
-  /** The first threat to the hole in his own pictures: an upright defender
-   * in front of him, near the hole's lane, whom the runner he sees carrying
-   * has not already passed, closest to the hole a short beat ahead at the
-   * speed he sees. The call gives a teammate puller's kick or trap man to
-   * that puller. A man he sees in body contact with a teammate is a claim,
-   * not proof of a block: any free threat comes first, and the claimed man
-   * is still taken (help) when no free man threatens the hole. */
   /** A man behind his own flow (judged a beat ahead) is an obsolete chaser,
    * not work, unless he is still live work: already inside this blocker's
    * strike reach, or a filler ahead of the runner he sees, closing on him,
@@ -1719,6 +1712,13 @@ export class RunBlocker implements Behavior {
     return ahead && closing && gap <= strike + 1;
   }
 
+  /** The first threat to the hole in his own pictures: an upright defender
+   * in front of him, near the hole's lane, whom the runner he sees carrying
+   * has not already passed, closest to the hole a short beat ahead at the
+   * speed he sees. The call gives a teammate puller's kick or trap man to
+   * that puller. A man he sees in body contact with a teammate is a claim,
+   * not proof of a block: any free threat comes first, and the claimed man
+   * is still taken (help) when no free man threatens the hole. */
   private holeThreat(a: Agent, sim: PlaySim, current: Agent | null = null): Agent | null {
     const hole = this.plan.pullPath?.at(-1);
     if (!hole) return null;
