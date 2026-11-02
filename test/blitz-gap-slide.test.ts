@@ -7,7 +7,7 @@ import { PASS_BY_ID, RUN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { DefSlot } from '../src/playbook/types.js';
-import { PassRusher } from '../src/sim/behaviors/defense.js';
+import { Blitzer, PassRusher } from '../src/sim/behaviors/defense.js';
 import { PlaySim } from '../src/sim/playsim.js';
 
 // A called blitzer takes his gap; the lineman in it moves at most one gap to the
@@ -61,6 +61,10 @@ describe('called blitzer and the lineman in his gap', () => {
         if (kind === 'pass') {
           expect(m.lane('NT')).toEqual({ gap: 'A', side: 'W' });
           for (const slot of ['DE_S', 'DE_W']) expect(m.lane(slot)).toEqual(m.installed(slot));
+          // The blitzer has the nose's old lane (Defense review).
+          const mike = m.sim.slot('LB_M')!.behavior as unknown as { gap: string; gapSign: number };
+          expect(mike).toBeInstanceOf(Blitzer);
+          expect({ gap: mike.gap, side: mike.gapSign === m.sim.offAlign.strongSign ? 'S' : 'W' }).toEqual({ gap: 'A', side: 'S' });
         }
       }
     });
@@ -73,6 +77,8 @@ describe('called blitzer and the lineman in his gap', () => {
         expect(m.job('LB_M')).toMatchObject({ gap: 'A', side: 'S' });
         expect(m.job('LB_W')).toMatchObject({ gap: 'A', side: 'W' });
         for (const slot of ['DT_S', 'DT_W', 'DE_W']) expect(m.job(slot)).toMatchObject({ ...m.installed(slot), technique: 'attack' });
+        // DE_S is out of this line check: Double A's Cover 0 drops him into man coverage, so he is no rusher here.
+        expect(m.sim.defAlign.spots.DE_S!.role.kind).toBe('man');
         if (kind === 'pass') {
           expect(m.lane('NT')).toEqual(m.installed('NT'));
           expect(m.lane('DE_W')).toEqual(m.installed('DE_W'));
