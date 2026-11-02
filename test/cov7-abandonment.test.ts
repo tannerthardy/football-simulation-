@@ -233,8 +233,13 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     // With the line read (DL flow with a run-looking line, so a play-action line fools the DL), the arms no
     // longer throw on the same clock: the baseline throws to Z at 2.85 and CB3 breaks it up; the support arm
     // throws to Z at 2.75 and completes. The geometry above is still read at the support arm's throw.
-    // With the end head-up on Y fitting C against the run (his rush lane unchanged), both arms throw to Z on
-    // the same clock again (2.95) and both complete: the baseline +23.9, the support arm +28.4.
+    // With run-read attention (a run-reading defender sees a blocker in front of him and in range on the ordinary
+    // delay, so the man corner sees Z's blocking look on time), the results swap: the baseline throws to Z at 2.9
+    // and completes; the support arm's throw to Z at 2.75 falls incomplete with no defender credited. The geometry
+    // and the QB's own read of Z above carry the cost of the bite; results are named, not judged (develop c4fc33d5,
+    // and #395 4d202468 on accepted #394: baseline to Z at 2.9 complete 29.45, support at 2.75 incomplete). With #396's
+    // end head-up on Y fitting C against the run (his rush lane unchanged), both arms throw to Z on the same clock
+    // again (2.95) and both complete: baseline 23.72, support 28.30 (recorded single stream, #396 merged with #395).
     expect(kind(pass.baseline)).toBe('completion');
     expect(pass.baseline.execution.result.stats.target).toBe('OFF-WR2');
     expect(pass.baseline.execution.result.stats.receiver).toBe('OFF-WR2');

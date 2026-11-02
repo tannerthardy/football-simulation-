@@ -83,9 +83,8 @@ describe('defensive alignment', () => {
     const d=alignDefense(actual,off,slotsFor('nickel'),{overrides:{CB_S:'X'}});
     expect(d.spots.CB_S!.manTarget).toBe('X');
     expect(d.spots.CB_W!.manTarget).toBe('Z');
-    // Receivers only: a backer with the back keys him from his front spot.
     for(const spot of Object.values(d.spots)){
-      if(spot!.role.kind!=='man'||!spot!.manTarget||off.spots[spot!.manTarget].backfield)continue;
+      if(spot!.role.kind!=='man'||!spot!.manTarget)continue;
       expect(Math.abs(spot!.pos.y-off.spots[spot!.manTarget].pos.y)).toBeLessThan(1);
     }
   });
