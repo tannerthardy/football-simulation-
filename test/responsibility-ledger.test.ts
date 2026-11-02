@@ -274,9 +274,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // #349's climber property is on M10-P081 below.
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as
     // well, LB_W is still alone at 2.9. With the box backer reading before he moves and filling to a pull he sees, LB_W alone at 3.0.
+    // With the wing at its tracked width (1.32 yd outside the end, 0.42 wider), the back's track drifts weak by 0.2 yd
+    // by 2.0 s and he meets DT_S, engaged with RG and sliding weak, 1.16 yd behind the line: DT_S alone at 1.85.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(3);
-    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
+    expect(first.t).toBe(1.85);
+    expect(first.defenders.map(p.slot)).toEqual(['DT_S']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
