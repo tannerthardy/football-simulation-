@@ -55,9 +55,6 @@ Per role, first sustained contact (1.2 yd × 3 frames before cross + 0.6 s). LB1
 | Gap | sim | NFL | Owner |
 |---|---|---|---|
 | Kick puller blocks nobody | 10–13% | 2–3% | run game |
-| Counter BS-OL leverage | −0.40 | +0.25 | run game |
-| Counter BS-OL contact | 2.0 s | 1.1 s | run game |
-| Counter BS-OL blocks nobody | 14% | 6% | run game |
 | Engaged defender displacement in 0.5 s (dDx) | ~0 | −0.1 to −0.35 | physics (Main Engine) |
 | Interior OL approach angle | 16–27° | 42–72° | run game |
 | Interior OL speed at contact | 1.6–2.5 | 0.7–1.2 | run game |
@@ -67,6 +64,7 @@ Per role, first sustained contact (1.2 yd × 3 frames before cross + 0.6 s). LB1
 | BS-TE / back first contact | 0.7 s | 1.9 s | run game |
 
 Notes:
+- **Counter BS-OL rows dropped: an artefact.** Sim counter always pulls BSG + BST (112/112 snaps), so its 'BS-OL' (n = 86) are pulling tackles the rule-puller operator missed. NFL counter mixes GT and GH (tackle stays home), so the rows are not comparable.
 - **Kicker blocks nobody:** most cases are turn-ups ("kick man behind the runner", counter 40 of 76). The end has gone deeper than the runner's track: end depth (Defense) plus the counter back cutting inside.
 - **Static engagements:** NFL engaged defenders keep moving, penetrating and sliding; ours freeze.
 - **Interior approach:** NFL interior linemen step laterally and let the man come; ours run straight in fast.
@@ -88,7 +86,7 @@ Notes:
    - the climb path after the DL's momentum: aim leaving off his hip, lead the backer;
    - OZ doubles climb half as often as NFL.
 2. **Counter carrier track.** Pending Tanner's decision (aim B, the lane race after the kick lands). It should move backers outside to the wrap (wrap backer 5% vs 24%).
-3. **Interior OL technique.** Approach angle and speed (C, BS-OL), counter backside cutoff leverage and timing. This is the technique layer of the run-call design (`PULLERS.md`).
+3. **Interior OL technique.** Approach angle and speed (C, BS-OL). Consequence not yet shown: sim leak rates are at or below NFL. This is the technique layer of the run-call design (`PULLERS.md`).
 4. **Kicker blocks nobody (turn-ups).** End depth is with Defense; re-measure once item 2 lands.
 5. **Draw shed**, with Defense (section 4).
 6. **Pin-and-pull is not installed.** It's a new call candidate once 1 and 3 are sound.
