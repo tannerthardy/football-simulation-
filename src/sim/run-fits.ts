@@ -135,9 +135,11 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   // A box curl-flat backer still has his bubble on inside flow. An outside
   // support title does not spend a second body or erase that obligation. A
   // force player aligned in the box (a nickel or safety on the end man) has the
-  // same dual job: an inside bubble left open on his side is his on inside flow.
+  // same dual job: an inside bubble left open on his side is his on inside flow,
+  // unless he already has an inside duty (a pressure's dropping end keeps the
+  // front's run gap he was installed with).
   const backers = sim.defense.filter((d) => (d.slot.startsWith('LB') ? jobs.get(d)!.kind !== 'force' || outsideSide(d) !== null
-    : jobs.get(d)!.kind === 'force') && !first.has(d)
+    : jobs.get(d)!.kind === 'force' && !jobs.get(d)!.inside) && !first.has(d)
     && Math.abs(sim.defAlign.spots[d.slot as DefSlot]!.pos.y - sim.ballY) < 5.5)
     // Primary insertion spends a body first. Conditional outside support can
     // use a remaining bubble, but cannot take an insert's only gap and leave
