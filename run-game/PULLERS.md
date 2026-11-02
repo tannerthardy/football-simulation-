@@ -133,3 +133,30 @@ Three mechanisms, found by `tools/ts/backagg.mts`, `tools/ts/backaim.mts` and `_
      - forecast teammates' bodies along their seen motion in `blockedBy` and `threatTime`.
 
 Arms: PP6 (base); AC1 (aim C, replay re-reads the install); AC2 (aim C + departure); ALLD (departure only, all concepts).
+
+## Where-else fixes (2026-11-02, PR #390)
+
+Base `run/G2-puller-path` 452b8acf. Tools: `tools/py/tepivot.py` lists pivots with plan and target context; `tools/ts/slotreq.mts` traces one slot's request vs achieved motion and logs blocking changes.
+
+**Power Y climb retarget, dec477ad.**
+- Cause: `rereadThreat` switched a climber onto a man he had climbed past. Film S11-P007: the Y turned back 126° for the DE in the backfield.
+- Fix: a passed man, judged a beat ahead (same rule as the wrap), is pursuit, not a block.
+- Power, 5 streams: Y pivots 36 → 29 (reread-driven 14 → 2); OL pivots 20 → 13. 90/697 snaps changed, mean +0.33 yd.
+- Test: `climb-reread-passed`. S8-P005 ledger pins re-recorded.
+- Remaining Y pivots: climbers overrunning a backer who fills under them.
+
+**Draw flip, fc838b0c.**
+- Cause: the pass show ran each covered owner to a yard mark (LOS − 1.2, his own y), so a draw tackle stood still for 1 s while a wide end ran by (S11-P037). The "flip" was him trailing that end.
+- Fix: the pass protector's kick without the launch-point depth floor. NFL draw tackles sit 0.9 yd deeper than their rusher at 1.0 s, about `KICK_LEAD`. Edge rushers only; interior owners already matched NFL depth.
+- Draw:
+  - OL pivots 5% → 0% (NFL 0%); TE 11% → 2% (NFL 3%); peak heading rate 80 → 35 °/s (NFL 43).
+  - Plays at or behind the LOS 34 → 25 of 77.
+  - Tackle depth at 1.0 s is still −1.04 vs NFL −1.63 (`tools/py/drawwide.py`).
+- Iterations tried and rejected:
+  - chord set: tackles slid +1.2 yd wide;
+  - full pass-pro floor: tackles 2.4 deep, guards 2.2 deep.
+
+**Lead and zone back pivots (develop: power 8%, IZ 7%).**
+- On the current branch: power 1/26, IZ 3/41, trap 1/19.
+- The lead-FB cases (S13 #66 IZ, S13 #30 power, S17 #8 trap) are traffic. He asks for 5–9 yd/s on a sensible heading, gets 1–1.7 yd/s at LOS −1 behind his own linemen, and slides sideways.
+- Not changed: 3 cases. A lead path that reads the line's bodies (like the climber departure access) is the candidate.
