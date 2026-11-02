@@ -47,7 +47,7 @@ export function assignBehaviors(sim: PlaySim): void {
     const role = spot.role;
     switch (role.kind) {
       case 'rush':
-        d.behavior = new PassRusher(d, sim, d.runFit!.gap, d.runFit!.side);
+        d.behavior = new PassRusher(d, sim, d.runFit!.gap, d.runFit!.side, spot.rushGap);
         break;
       case 'blitz':
         d.behavior = new Blitzer(d, sim, role.gap, spot.gapSign);

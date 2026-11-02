@@ -66,6 +66,12 @@ outer: for (const f of FORMATIONS) for (const personnel of Object.keys(DEF_PERSO
       const key = g.side + g.name;
       owners.set(key, [...(owners.get(key) ?? []), `${d.slot}:${j.kind}`]);
     }
+    // The force player fits the outermost gap on his side when nobody else
+    // owns it (the down safety or nickel outside an attached end).
+    for (const side of ['S', 'W']) {
+      const outer = gaps.filter(g => g.side === side).at(-1)!, key = side + outer.name;
+      if (!owners.has(key) && force[side].length) owners.set(key, [`${force[side][0]}:force`]);
+    }
     const holes = gaps.map(g => g.side + g.name).filter(k => !owners.has(k));
     const dups = [...owners.entries()].filter(([, v]) => v.length > 1).map(([k, v]) => `${k}=${v.join('+')}`);
     rows.push({ f: f.id, personnel, front: front.id, cov: cov.id, family: cov.family ?? cov.id, shell: cov.look ?? cov.shell, gaps: gaps.length, gapNames: gaps.map(g => g.side + g.name), committed, holes, dups, forceS: force.S, forceW: force.W });

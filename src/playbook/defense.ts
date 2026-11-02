@@ -10,6 +10,9 @@ const LB = 4.6;
 export const FRONTS: Front[] = [
   {
     id: 'over', name: '4-3 Over', personnel: ['base43', 'nickel', 'dime'],
+    // The end head-up on the TE plays C; the Sam outside him (a "90", 2017
+    // Colts p. 77) has D.
+    fits: { LB_S: { gap: 'D', side: 'S' } },
     slots: {
       DE_S: { tech: '6', side: 'S', depth: DL },
       DT_S: { tech: '3', side: 'S', depth: DL },
