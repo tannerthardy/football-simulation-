@@ -54,14 +54,37 @@ describe('pre-snap alignment contract', () => {
     expect(lineClose).toBeLessThanOrEqual(1986);
   });
 
-  it('a backer with a back in man keeps his front spot; the two I backs get two defenders', () => {
-    const off = alignOffense(FORMATION_BY_ID.i_pro_21, false, LOS, 26.67);
-    const d = alignDefense({ personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover1, pressure: null, label: '' }, off, present('base43'));
-    const onBacks = (Object.values(d.spots)).filter((s) => s!.manTarget && off.spots[s!.manTarget].backfield);
-    expect(onBacks.length).toBe(2);
-    const [a, b] = onBacks;
-    expect(Math.hypot(a!.pos.x - b!.pos.x, a!.pos.y - b!.pos.y)).toBeGreaterThan(1);
-    for (const s of onBacks) expect(s!.slot.startsWith('LB')).toBe(true);
+  it('two I backs in man get two defenders, each over his own back and not on one spot', () => {
+    for (const flip of [false, true]) for (const ball of BALL) {
+      const off = alignOffense(FORMATION_BY_ID.i_pro_21, flip, LOS, ball);
+      const d = alignDefense({ personnel: 'base43', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover1, pressure: null, label: '' }, off, present('base43'));
+      const onBacks = (Object.values(d.spots)).filter((s) => s!.manTarget && off.spots[s!.manTarget].backfield);
+      expect(onBacks.length).toBe(2);
+      const [a, b] = onBacks;
+      expect(Math.hypot(a!.pos.x - b!.pos.x, a!.pos.y - b!.pos.y)).toBeGreaterThanOrEqual(.9);
+      // Each still aligns over his own back (develop's rule); the spacing pass
+      // gives the later one the next patch of grass beside the stacked backs.
+      for (const s of onBacks) expect(Math.abs(s!.pos.y - off.spots[s!.manTarget!].pos.y)).toBeLessThan(2);
+    }
+  });
+
+  it('spacing keeps a man defender on his called side of his receiver (bunch), mirrored; an uncrowded call is untouched', () => {
+    const NB = (f: string, flip: boolean) => {
+      const off = alignOffense(FORMATION_BY_ID[f], flip, LOS, 160 / 6);
+      const d = alignDefense({ personnel: 'dime', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover1_off, pressure: null, label: '' }, off, present('dime'));
+      const nb = d.spots.NB!, y = off.spots[nb.manTarget!].pos;
+      return { inside: (nb.pos.y - y.y) * Math.sign(off.ballY - y.y), depth: nb.pos.x - LOS, man: nb.manTarget };
+    };
+    for (const flip of [false, true]) {
+      // Integration's counterexample (PR #394): NB on Y with inside leverage, crowded by the DB and SS over the bunch.
+      const bunch = NB('gun_bunch_11', flip);
+      expect(bunch.man).toBe('Y');
+      expect(bunch.inside).toBeCloseTo(.2, 6);
+      expect(bunch.depth).toBeGreaterThan(6); // stacked a step deeper instead of crossing Y
+      const doubles = NB('gun_doubles_11', flip);
+      expect(doubles.inside).toBeCloseTo(.2, 6);
+      expect(doubles.depth).toBe(6);
+    }
   });
 
   it('Cover 1 Lurk shows its post safety deep before the snap', () => {
