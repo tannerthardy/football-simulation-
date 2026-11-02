@@ -882,12 +882,16 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     } else {
       const fs = DEF_ALIGN ? { x: los + (cov.man ? 14.7 : 14.5) + (style.safetyDepth ?? 0), y: CENTER_Y + (cov.man ? 0.34 : 0) * (off.ballY - CENTER_Y) }
         : { x: los + 13, y: clamp(off.ballY, 18, FIELD_WIDTH - 18) };
-      if (has('FS')) spots.FS = { slot: 'FS', pos: fs, role: { kind: 'rush' }, gap: 'A', gapSign: -s };
+      // The post is whichever safety the call makes the deep player (the
+      // Lurk's SS); the other is the down safety.
+      const deepRole = (slot: DefSlot) => { const r = cov.roles[slot]; return r?.kind === 'zone' && isDeepZone(r.zone); };
+      const [post, low]: DefSlot[] = deepRole('SS') && !deepRole('FS') ? ['SS', 'FS'] : ['FS', 'SS'];
+      if (has(post)) spots[post] = { slot: post, pos: fs, role: { kind: 'rush' }, gap: 'A', gapSign: -s };
       // BOX_ALIGN: the down safety at his tracked spot outside the strong
       // side's end of the line (an attached end or the tackle).
       const uc = (off.spots.QB?.pos.x ?? los - 5) > los - 2.5, te = off.hasTE.S;
       const down = BOX_ALIGN ? { depth: te ? (uc ? 4.4 : 5.2) : (uc ? 5.1 : 5.8), out: te ? 1.5 : uc ? 2.7 : 3.9 } : { depth: 7.5, out: 3 };
-      if (has('SS')) spots.SS = { slot: 'SS', pos: { x: los + down.depth, y: off.coreEdge.S + s * down.out }, role: { kind: 'rush' }, gap: 'D', gapSign: s };
+      if (has(low)) spots[low] = { slot: low, pos: { x: los + down.depth, y: off.coreEdge.S + s * down.out }, role: { kind: 'rush' }, gap: 'D', gapSign: s };
     }
   }
 
@@ -1143,6 +1147,34 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   // ("Dubs" 9; HonestNFL HNFL-129), whatever he covers after the snap.
   if (SHORT_PACKAGE && call.front.id === 'bear' && spots.LB_S && teAt(fs))
     spots.LB_S.pos = { x: los + (frontSlots.DE_S?.depth ?? .9), y: off.ballY + fs * techniqueOffset('9', true, off.line) };
+  // Off the ball, two players do not stand on one spot: whoever is inside
+  // 0.9 yd of a teammate already there steps aside. The several placement
+  // rules above each pick their own spot; this keeps their landmarks and gives
+  // the later one the next patch of grass: outward, away from the ball, unless
+  // that would carry a man defender across his man (his called leverage, the
+  // side of the receiver he aligned on), at any step. Then he keeps his
+  // landmark and stacks a step deeper, as man defenders do over a bunch or
+  // stack.
+  const settled: DefSlot[] = [];
+  for (const slot of [...present].sort((a, b) => Math.abs(spots[a]!.pos.y - off.ballY) - Math.abs(spots[b]!.pos.y - off.ballY))) {
+    const p = spots[slot]!.pos, t = spots[slot]!.manTarget && !off.spots[spots[slot]!.manTarget!].backfield
+      ? off.spots[spots[slot]!.manTarget!].pos : null;
+    const lev = t ? Math.sign(p.y - t.y) : 0;
+    const keeps = (y: number) => !lev || Math.sign(y - t!.y) === lev;
+    let dir = 0;
+    if (p.x - los > 2) for (let k = 0; k < 4; k++) {
+      const near = settled.find((o) => Math.hypot(spots[o]!.pos.x - p.x, spots[o]!.pos.y - p.y) < .9);
+      if (!near) break;
+      const q = spots[near]!.pos, out = Math.sign(p.y - off.ballY) || Math.sign(p.y - q.y) || s;
+      const aside = (d: number) => clamp(q.y + d * Math.sqrt(Math.max(0, .81 - (p.x - q.x) ** 2)) + d * .01, 1, FIELD_WIDTH - 1);
+      // Each step re-checks the leverage: a second teammate further out can
+      // make the next outward step cross the man even when the first did not.
+      if (dir !== 2) dir = keeps(aside(dir || out)) ? dir || out : 2;
+      if (dir === 2) p.x = q.x + Math.sqrt(Math.max(0, .81 - (p.y - q.y) ** 2)) + .01;
+      else p.y = aside(dir);
+    }
+    settled.push(slot);
+  }
   // Box count: defenders within the tackle box area at snap.
   let box = 0;
   for (const slot of present) {
