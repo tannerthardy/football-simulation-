@@ -114,3 +114,32 @@ Notes:
 **Reading.** The request is not the limiter. With no hands joint and no engagement, a body in contact with the released DL achieves about 30% of a 5 yd/s request in any direction for about 0.3–0.5 s. That is contact or traction physics → Main Engine #164.
 
 On my side: re-run the acceptance measures (`doublerelg.py`, `climbtrip.py`, `firsthit.py`) on their candidate.
+
+## #164 follow-up with Main Engine (2026-11-02)
+
+- **Main Engine's diagnosis** (`evidence/climb-164` 4f6703b8): no physics limit. The causes are the climb request flipping and contact friction sliding on the released DL.
+- **Hip-side hold**: `run/G2-climb-hip` c8588cf5 (off develop).
+  - Hip-flip releases 9% → 5% (power 26% → 13%).
+  - Power climbs by 2.5 s: 27% → 30%.
+  - Test: `climb-hip-side`.
+- **Two technique attempts, both rejected:**
+
+  | Attempt | Contact group, +0.3 s speed | Contact ticks | Result |
+  |---|---|---|---|
+  | Baseline (hip fix only) | 1.65 | 0.88 | — |
+  | A: push-off impulse at release | 1.72 | 0.88 | no gain |
+  | B: step-off (35% away from the DL) | 1.66 | 0.75 | no gain |
+
+  Main Engine's zero-friction reference reaches 2.26.
+- **Pressed vs clear** (`doublerelg.py` PRESSED section): no pressed penalty in NFL. Sim climbers are pressed on the DL 2–3× as often in the last 0.3 s of the double:
+
+  | | sim | NFL |
+  |---|---|---|
+  | IZ | 32% | 10% |
+  | OZ | 24% | 12% |
+  | Power | 38% | 16% |
+
+  That's a double-spacing / technique item for us.
+- **Next:**
+  1. Stretch-zone job churn: crossing exchange then reread; a release to a snap backer who has flowed away.
+  2. Double spacing.

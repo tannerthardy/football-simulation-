@@ -53,6 +53,21 @@ for p in plays():
                     if lb:
                         nl = min(lb, key=lambda l: d(k, m, l)); k2 = min(k + 5, len(xy) - 1)
                         row["close"] = (d(k, m, nl) - d(k2, m, nl)) / ((k2 - k) * 0.1 or 1)
+                    k0 = max(start, kl - 3); latv = (xy[kl][m][1] - xy[k0][m][1]) / max(0.1, (kl - k0) * 0.1)
+                    row["latv"] = latv
+                    r0 = max(start, kl - 3); ks = list(range(r0, kl + 1))
+                    row["pressed"] = sum(d(kk, m, t) for kk in ks) / len(ks) < 0.9
+                    row["pd"] = sum(d(kk, m, t) for kk in ks) / len(ks)
+                    sp2 = lambda kk: math.dist(xy[min(kk+1,len(xy)-1)][m], xy[max(0,kk-1)][m]) / 0.2
+                    row["s3"] = sp2(min(r0 + 3, len(xy) - 2)); row["s5"] = sp2(min(r0 + 5, len(xy) - 2))
+                    ux, uy = (xy[r0][m][0]-xy[r0][t][0]), (xy[r0][m][1]-xy[r0][t][1]); ul = math.hypot(ux, uy) or 1
+                    k3 = min(r0 + 3, len(xy) - 1)
+                    row["dldrift"] = ((xy[k3][t][0]-xy[r0][t][0])*ux + (xy[k3][t][1]-xy[r0][t][1])*uy) / ul / 0.3
+                    # the backer he ends nearest 0.5 s after the climb mark: lateral offset at his leave
+                    if lb:
+                        k3 = min(k + 5, len(xy) - 1); tgt = min(lb, key=lambda l: d(k3, m, l))
+                        row["toLat"] = xy[kl][tgt][1] - xy[kl][m][1]
+                        row["against"] = abs(latv) > 0.7 and abs(row["toLat"]) > 1.5 and latv * row["toLat"] < 0
                     if lb:
                         near = min(lb, key=lambda l: d(k, m, l)); row["dist"] = d(k, m, near)
                         hit = False
@@ -76,3 +91,14 @@ for (c, src), r in sorted(out.items()):
     print(f"  {c:12s} {src}: {len(r):5d} {len(cl)/len(r):.2f} {med([x['t'] for x in cl])} {med([x['dist'] for x in cl if 'dist' in x])} "
           f"{med([x['cross'] for x in r if x['cross'] is not None])} {sum(x.get('hit', False) for x in cl)/max(1,len(cl)):.2f} "
           f"{med([x['v0'] for x in cl])} / {med([x['v5'] for x in cl])} {med([x['close'] for x in cl if 'close' in x])}")
+
+print("AGAINST FLOW: share of climbs whose final backer (nearest 0.5 s after the mark) lay > 1.5 yd laterally opposite to the climber's lateral motion (> 0.7 yd/s) as he left the DL")
+for (c, src), r in sorted(out.items()):
+    cl = [x for x in r if x["climb"] and "against" in x]
+    print(f"  {c:12s} {src}: climbs {len(cl)} | against flow {sum(x['against'] for x in cl)/max(1,len(cl)):.2f} | |lat v| at leave {med([abs(x['latv']) for x in cl])}")
+
+print("PRESSED vs CLEAR (mean centre distance to the DL over the last 0.3 s on the double < 0.9 yd), from that window start: climber speed at leave+0.3 / +0.5 s, DL drift toward the climber over 0.3 s")
+for (c, src), r in sorted(out.items()):
+    cl = [x for x in r if x["climb"] and "pressed" in x]
+    pr = [x for x in cl if x["pressed"]]; cr = [x for x in cl if not x["pressed"]]
+    print(f"  {c:12s} {src}: centre dist p50 {med([x['pd'] for x in cl])} | pressed {len(pr)} ({len(pr)/max(1,len(cl)):.0%}) {med([x['s3'] for x in pr])} / {med([x['s5'] for x in pr])} drift {med([x['dldrift'] for x in pr])} | clear {len(cr)} {med([x['s3'] for x in cr])} / {med([x['s5'] for x in cr])}")
