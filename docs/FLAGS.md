@@ -62,7 +62,7 @@ There are 90 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:236` | expires: review 2. Open: who supplies force in Cover 2 Man and which inside jobs trade; Defense, Run Game and Coverage to agree (#193, #190 comments) |
 | `DEF_ALIGN` | on | default (promoted 2026-10-22) | coverage | `src/playbook/alignment.ts:71` | review 2: drop the off path |
 | `DEF_GETOFF` | 1 (identity scale) | diagnostic | trenches | `src/sim/agent.ts:25` | expires: review 2 |
-| `PRESNAP_TELL` | off | experimental | defense | `src/sim/agent.ts:29` | OL show their first step's side in the set; interior DL read it (Tanner approved via Run Game, 2026-11-02). Disguise cost not modeled yet. Expires: review 2 |
+| `PRESNAP_TELL` | off | experimental | defense | `src/sim/agent.ts:29` | A lineman's leaning habit (per player, reduced by discipline) shows his first step's side in the set; interior DL read it with probability playRecognition (Tanner approved, 2026-11-02). OL splits as a tell not modeled. Expires: review 2 |
 | `ACCEL_CUE` | off | experimental | defense | `src/sim/perception.ts:14` | Pictures carry achieved body acceleration (support.accel) with position latency; interior DL key a blocker's first-step push-off. Agreed with Main Engine (achieved only, same visual path, never in pos prediction). Expires: review 2 |
 | `DL_ANCHOR` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:80` | review 2: drop the off path |
 | `DL_CHASE` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:690` | review 2: drop the off path |
