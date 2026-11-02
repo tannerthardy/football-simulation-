@@ -67,20 +67,30 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
     if (line || spot.role.kind === 'blitz' || dropper) claimed.add(`${side}:${gap}`);
     if (dropper && kind === 'edge') jobs.get(d)!.inside = { gap, side, kind: 'edge' };
   }
-  // A called blitzer takes his gap; a lineman whose gap he takes slides out
-  // to the next one (an end outside a safety blitzing C plays D).
+  // A called blitzer takes his gap; the lineman whose gap he takes moves at most
+  // one gap, to the nearest open neighbour (a nose under a Mike blitzing strong
+  // A plays weak A; an end outside a safety blitzing C plays D). With neither
+  // neighbour open (double A over a nose) he does not travel: he stays in his
+  // gap behind the blitzers as a two-gap player (technique 'control'),
+  // squeezing his blocker into them. Defense's decision on #396 (2026-11-02);
+  // his pass-rush lane is the same gap, as on a called slant.
   const blitzed = new Set(sim.defense.filter(d => sim.defAlign.spots[d.slot as DefSlot]!.role.kind === 'blitz')
     .map(d => { const j = jobs.get(d)!; return `${j.side}:${j.gap}`; }));
-  const outward: Record<Gap, Gap | null> = { A: 'B', B: 'C', C: 'D', D: null };
+  // Gaps across the line, weak D to strong D; neighbours differ by one.
+  const order = (['D', 'C', 'B', 'A'] as Gap[]).map(gap => ({ side: -1, gap })).concat((['A', 'B', 'C', 'D'] as Gap[]).map(gap => ({ side: 1, gap })));
+  const at = (side: number, gap: Gap) => order.findIndex(o => o.side === side && o.gap === gap);
   for (const d of first) {
     const j = jobs.get(d)!;
     if (sim.defAlign.spots[d.slot as DefSlot]!.role.kind === 'blitz' || !blitzed.has(`${j.side}:${j.gap}`)) continue;
-    let g: Gap | null = j.gap;
-    while (g && (blitzed.has(`${j.side}:${g}`) || (g !== j.gap && claimed.has(`${j.side}:${g}`)))) g = outward[g];
-    if (!g) continue;
-    claimed.add(`${j.side}:${g}`);
-    j.gap = g;
-    if (j.kind === 'interior' && (g === 'C' || g === 'D')) j.kind = 'edge';
+    const i = at(j.side, j.gap);
+    const open = [order[i - 1], order[i + 1]].filter((o): o is typeof order[number] => !!o
+      && !blitzed.has(`${o.side}:${o.gap}`) && !claimed.has(`${o.side}:${o.gap}`));
+    const dist = (o: { side: number; gap: Gap }) => Math.abs(gapY(sim.offAlign, o.gap, o.side) - d.pos.y);
+    const to = open.sort((a, b) => dist(a) - dist(b))[0];
+    if (!to) { j.technique = 'control'; continue; }
+    claimed.add(`${to.side}:${to.gap}`);
+    j.gap = to.gap; j.side = to.side;
+    j.kind = to.gap === 'C' || to.gap === 'D' ? 'edge' : 'interior';
   }
   // An explicit exchange already spends its backer on the vacated edge.
   const exchange = sim.defCall.gapExchange;
