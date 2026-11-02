@@ -575,15 +575,16 @@ export class PlaySim {
       return seen;
     }
     let delay = observer.mind.observationDelay(observer.profile.reactionTime * delayScale);
-    // Attention follows the observer's belief, regardless of the hidden call:
-    // reading run, his eyes go to the backfield and the blockers, so a man
-    // releasing away from him is seen late. A blocker in front of him and in
-    // range is one of the blockers he is watching, whatever his position.
-    const line = ['LT', 'LG', 'C', 'RG', 'RT'];
-    if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)
-      && !inBlockingView(observer, target)) delay += 0.15;
     // Eyes on keys: everything else is peripheral.
     if (observer.eyes && !observer.eyes.keys.includes(target)) delay += observer.eyes.peripheral;
+    // Attention follows the observer's belief, regardless of the hidden call:
+    // reading run, his eyes go to the backfield and the blockers, so a man
+    // releasing away from him is seen late. A blocker his own picture shows in
+    // front of him and in range is one of the blockers he is watching,
+    // whatever his position; where the blocker really is now does not decide it.
+    const line = ['LT', 'LG', 'C', 'RG', 'RT'];
+    if (observer.recog?.read === 'run' && target !== this.qb && target.slot !== 'RB' && !line.includes(target.slot)
+      && !inBlockingView(observer, this.perception.perceive(target.idx, delay).pos)) delay += 0.15;
     const seen = this.perception.perceive(target.idx, delay);
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
@@ -1584,10 +1585,10 @@ export function speedOf(a: Agent): number {
  * running speed, so he is one of the threats a run-reading defender watches. */
 const BLOCKING_RANGE = 5;
 
-/** Whether `target` is in front of `observer`, inside his field of view and
- * close enough to block him. */
-function inBlockingView(observer: Agent, target: Agent): boolean {
-  const dx = target.pos.x - observer.pos.x, dy = target.pos.y - observer.pos.y, d = Math.hypot(dx, dy);
+/** Whether a man at `at` (the observer's picture of him) is in front of
+ * `observer`, inside his field of view and close enough to block him. */
+function inBlockingView(observer: Agent, at: Vec2): boolean {
+  const dx = at.x - observer.pos.x, dy = at.y - observer.pos.y, d = Math.hypot(dx, dy);
   if (d > BLOCKING_RANGE) return false;
   return d < 1e-6 || (Math.cos(observer.facing) * dx + Math.sin(observer.facing) * dy) / d > viewCone(observer);
 }

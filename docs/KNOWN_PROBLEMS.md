@@ -3148,7 +3148,23 @@ From the outside audit (`audit`):
   fullback or receiver blocking him from in front (4.5% of close in-front
   lookups). A blocker in front of him (inside the throw-sight view cone) and
   within 5 yd is now seen on the ordinary delay; men releasing away from him
-  are still seen late.
+  are still seen late. The exemption is judged from his own delayed picture
+  of the blocker, never the blocker's live position (integration review on
+  #391: live position reselected an already-buffered picture).
+  *Still open:* any lengthening of the delay (a read flipping to run, a man
+  leaving a carrier's keys, a picture crossing the 5 yd range) takes his
+  picture back to an older moment instead of holding it. A rule that a
+  picture never moves back in time fixes it, but applied to every sight it
+  changes about 20 recorded scenes (blocker rereads, QB memory, command
+  traces) and needs its own restage.
+  *Tried and stopped:* a field of view with memory (out of the view cone, the
+  last sighting projected forward), alone and with a check over the shoulder
+  every 1-2 s. Matched restage against #391 (seeds 7/11 x 4 RNG shifts):
+  passes +1.26 +/- 0.43 and +0.52 +/- 0.40 yd per play, 20+ yd completions
+  106 -> 136 and 124, mostly after the catch, from defenders still running
+  coverage who never see the carrier behind them. Body facing is too crude a
+  gaze; this needs a head and attention model with cues (the catch, "ball!")
+  first. The attempt itself was not kept.
 - **#256 (#225 rebuilt), engaged work-off toward the runner** (held): coherent,
   with no matched gain on runs; its scorecard moved yards per carry
   5.52 → 6.92. Waiting on Defense's native lab rerun and recomposition with
