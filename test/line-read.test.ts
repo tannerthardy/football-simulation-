@@ -16,11 +16,11 @@ function play(concept: string, formation: string, seed: number, flip: boolean) {
   // own picture showed of every offensive man he looked at, by tick.
   const firstFit = new Map<string, number>();
   const fitFrame = new Map<string, { job: string | undefined; carrierPast: number | null }>();
-  const sights: Array<{ t: number; slot: string; pos: { x: number; y: number }; vel: { x: number; y: number }; me: { x: number; y: number } }> = [];
+  const sights: Array<{ t: number; slot: string; target: number; pos: { x: number; y: number }; vel: { x: number; y: number }; me: { x: number; y: number } }> = [];
   const see = sim.see.bind(sim);
   sim.see = (o, tg, scale) => {
     const r = see(o, tg, scale);
-    if (o.slot.startsWith('DE') && tg.team === 'O') sights.push({ t: sim.t, slot: o.slot, pos: r.pos, vel: r.vel, me: { ...o.pos } });
+    if (o.slot.startsWith('DE') && tg.team === 'O') sights.push({ t: sim.t, slot: o.slot, target: tg.idx, pos: r.pos, vel: r.vel, me: { ...o.pos } });
     return r;
   };
   const tick = sim.tick.bind(sim);
@@ -84,7 +84,10 @@ describe('a lineman reads the play from the line', () => {
           expect(frame.job).toBe('edge');
           expect(frame.carrierPast).not.toBeNull();
           expect(frame.carrierPast!).toBeLessThanOrEqual(2);
-          expect(s.sights.some(v => v.slot === b.slot && Math.abs(v.t - boxed) < s.sim.dt + 1e-9
+          // The box is recorded at the step's endpoint, so the picture that produced it is the controller's on
+          // the step before; a kick-out candidate is never the QB or the back.
+          expect(s.sights.some(v => v.slot === b.slot && Math.abs(v.t - (boxed - s.sim.dt)) < 1e-9
+            && v.target !== s.sim.qb.idx && v.target !== s.sim.slot('RB')?.idx
             && v.pos.x < v.me.x + .5 && Math.abs(v.pos.y - v.me.y) < 2.5 && v.vel.y * side > 1.3)).toBe(true);
         }
       }
