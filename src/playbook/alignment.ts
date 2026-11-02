@@ -517,7 +517,7 @@ function techniqueOffset(tech: Technique, hasTE: boolean, line: LineSplits = BAS
   }
 }
 
-export function techniqueGap(tech: Technique): Gap {
+export function techniqueGap(tech: Technique, hasTE = false): Gap {
   switch (tech) {
     case '0':
     case '1':
@@ -530,6 +530,12 @@ export function techniqueGap(tech: Technique): Gap {
     case '4':
     case '5':
       return 'C';
+    // Head-up on or inside an attached end, his gap is inside him (Browns OL
+    // manual p. 11: 6 head-up, 7 inside shade); outside him is the 9's. With
+    // no end there it is the edge outside the tackle.
+    case '6':
+    case '7':
+      return hasTE ? 'C' : 'D';
     default:
       return 'D';
   }
@@ -787,7 +793,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const y = off.ballY + sign * lateral;
     const fit = call.front.fits?.[slot];
     spots[slot] = { slot, pos: { x: los + fa.depth, y }, role: { kind: 'rush' },
-      gap: fit?.gap ?? techniqueGap(fa.tech), gapSign: fit ? sideSign(fit.side) : sign };
+      gap: fit?.gap ?? techniqueGap(fa.tech, hasTE), gapSign: fit ? sideSign(fit.side) : sign };
   }
 
   // FRONT_MENU: off-ball backers by the front's family and their number.
