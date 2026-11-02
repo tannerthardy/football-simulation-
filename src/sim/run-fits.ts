@@ -67,6 +67,21 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
     if (line || spot.role.kind === 'blitz' || dropper) claimed.add(`${side}:${gap}`);
     if (dropper && kind === 'edge') jobs.get(d)!.inside = { gap, side, kind: 'edge' };
   }
+  // A called blitzer takes his gap; a lineman whose gap he takes slides out
+  // to the next one (an end outside a safety blitzing C plays D).
+  const blitzed = new Set(sim.defense.filter(d => sim.defAlign.spots[d.slot as DefSlot]!.role.kind === 'blitz')
+    .map(d => { const j = jobs.get(d)!; return `${j.side}:${j.gap}`; }));
+  const outward: Record<Gap, Gap | null> = { A: 'B', B: 'C', C: 'D', D: null };
+  for (const d of first) {
+    const j = jobs.get(d)!;
+    if (sim.defAlign.spots[d.slot as DefSlot]!.role.kind === 'blitz' || !blitzed.has(`${j.side}:${j.gap}`)) continue;
+    let g: Gap | null = j.gap;
+    while (g && (blitzed.has(`${j.side}:${g}`) || (g !== j.gap && claimed.has(`${j.side}:${g}`)))) g = outward[g];
+    if (!g) continue;
+    claimed.add(`${j.side}:${g}`);
+    j.gap = g;
+    if (j.kind === 'interior' && (g === 'C' || g === 'D')) j.kind = 'edge';
+  }
   // An explicit exchange already spends its backer on the vacated edge.
   const exchange = sim.defCall.gapExchange;
   const exchangeBacker = exchange && sim.slot(exchange.edge) ? sim.slot(exchange.backer) : undefined;

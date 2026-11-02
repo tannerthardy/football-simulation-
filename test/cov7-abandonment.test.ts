@@ -233,9 +233,12 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     // With the line read (DL flow with a run-looking line, so a play-action line fools the DL), the arms no
     // longer throw on the same clock: the baseline throws to Z at 2.85 and CB3 breaks it up; the support arm
     // throws to Z at 2.75 and completes. The geometry above is still read at the support arm's throw.
-    expect(kind(pass.baseline)).toBe('incomplete');
+    // With the end head-up on Y fitting C against the run (his rush lane unchanged), both arms throw to Z on
+    // the same clock again (2.95) and both complete: the baseline +23.9, the support arm +28.4.
+    expect(kind(pass.baseline)).toBe('completion');
     expect(pass.baseline.execution.result.stats.target).toBe('OFF-WR2');
-    expect(pass.baseline.execution.result.stats.passDefendedBy).toBe('DEF-CB3');
+    expect(pass.baseline.execution.result.stats.receiver).toBe('OFF-WR2');
+    expect(pass.alternative.releases[0].at).toBe(pass.baseline.releases[0].at);
     expect(kind(pass.alternative)).toBe('completion');
     expect(pass.alternative.execution.result.stats.receiver).toBe('OFF-WR2');
     for (const arm of [pass.baseline, pass.alternative]) expect(arm.execution.result.stats.interceptedBy).toBeUndefined();

@@ -572,6 +572,9 @@ export interface DefSpot {
   /** Run-fit gap and side sign (+1 = +y). */
   gap: Gap;
   gapSign: number;
+  /** A front player's pass-rush lane when it differs from his run gap: a 6 or
+   * 7 on an attached end fits C against the run but rushes outside him. */
+  rushGap?: Gap;
   /** For man defenders: the offensive slot they cover. */
   manTarget?: SkillSlot;
   /** For zone defenders: landmark. */
@@ -794,6 +797,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const fit = call.front.fits?.[slot];
     spots[slot] = { slot, pos: { x: los + fa.depth, y }, role: { kind: 'rush' },
       gap: fit?.gap ?? techniqueGap(fa.tech, hasTE), gapSign: fit ? sideSign(fit.side) : sign };
+    const rushGap = fit?.gap ?? techniqueGap(fa.tech);
+    if (rushGap !== spots[slot]!.gap) spots[slot]!.rushGap = rushGap;
   }
 
   // FRONT_MENU: off-ball backers by the front's family and their number.
