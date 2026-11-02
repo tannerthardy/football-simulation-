@@ -1152,8 +1152,9 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   // rules above each pick their own spot; this keeps their landmarks and gives
   // the later one the next patch of grass: outward, away from the ball, unless
   // that would carry a man defender across his man (his called leverage, the
-  // side of the receiver he aligned on). Then he keeps his landmark and stacks
-  // a step deeper, as man defenders do over a bunch or stack.
+  // side of the receiver he aligned on), at any step. Then he keeps his
+  // landmark and stacks a step deeper, as man defenders do over a bunch or
+  // stack.
   const settled: DefSlot[] = [];
   for (const slot of [...present].sort((a, b) => Math.abs(spots[a]!.pos.y - off.ballY) - Math.abs(spots[b]!.pos.y - off.ballY))) {
     const p = spots[slot]!.pos, t = spots[slot]!.manTarget && !off.spots[spots[slot]!.manTarget!].backfield
@@ -1166,7 +1167,9 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
       if (!near) break;
       const q = spots[near]!.pos, out = Math.sign(p.y - off.ballY) || Math.sign(p.y - q.y) || s;
       const aside = (d: number) => clamp(q.y + d * Math.sqrt(Math.max(0, .81 - (p.x - q.x) ** 2)) + d * .01, 1, FIELD_WIDTH - 1);
-      if (!dir) dir = keeps(aside(out)) ? out : 2;
+      // Each step re-checks the leverage: a second teammate further out can
+      // make the next outward step cross the man even when the first did not.
+      if (dir !== 2) dir = keeps(aside(dir || out)) ? dir || out : 2;
       if (dir === 2) p.x = q.x + Math.sqrt(Math.max(0, .81 - (p.y - q.y) ** 2)) + .01;
       else p.y = aside(dir);
     }

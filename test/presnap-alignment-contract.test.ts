@@ -54,6 +54,28 @@ describe('pre-snap alignment contract', () => {
     expect(lineClose).toBeLessThanOrEqual(1986);
   });
 
+  it('every man defender on a detached receiver ends on the side of him his placement rule chose (spacing never crosses him)', () => {
+    // The placement rule (alignDefense, DEF_ALIGN on): a corner, nickel or dime
+    // presses slightly outside, takes the inside near the sideline, else plays
+    // the called shoulder; others play the called shoulder. Head-up is free.
+    // Off the ball only: the spacing pass moves nobody on the line (the Bear's
+    // Sam on the line outside the end, SHORT_PACKAGE, keeps his 9 over his man).
+    const crossed: string[] = [];
+    let checked = 0;
+    for (const { off, d, tag } of everyAlignment()) for (const sp of Object.values(d.spots)) {
+      if (sp!.role.kind !== 'man' || !sp!.manTarget || off.spots[sp!.manTarget].backfield || sp!.role.overTop || sp!.pos.x - LOS <= 2) continue;
+      const t = off.spots[sp!.manTarget].pos, inside = Math.sign(off.ballY - t.y) || 1;
+      const corner = ['CB_S', 'CB_W', 'NB', 'DB'].includes(sp!.slot), room = Math.min(t.y, 53.33 - t.y), lev = sp!.role.lev;
+      const shade = lev === 'outside' ? -inside : lev === 'head' ? 0 : inside;
+      const want = corner ? (room < 9 ? inside : sp!.press ? -inside : shade) : shade;
+      if (!want) continue;
+      checked++;
+      if (Math.sign(sp!.pos.y - t.y) !== want) crossed.push(`${tag}: ${sp!.slot} on ${sp!.manTarget} ${(sp!.pos.y - t.y).toFixed(2)}`);
+    }
+    expect(checked).toBeGreaterThan(30000);
+    expect(crossed.slice(0, 5)).toEqual([]);
+  });
+
   it('two I backs in man get two defenders, each over his own back and not on one spot', () => {
     for (const flip of [false, true]) for (const ball of BALL) {
       const off = alignOffense(FORMATION_BY_ID.i_pro_21, flip, LOS, ball);
