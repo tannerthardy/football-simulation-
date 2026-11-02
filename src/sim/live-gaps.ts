@@ -58,9 +58,25 @@ const cache = new WeakMap<Agent, { t: number; sim: PlaySim; picture: LinePicture
 function departed(sim: PlaySim, observer: Agent, b: SurfaceBody): boolean {
   const dir = sim.attackDir(b.agent.team);
   const home = sim.offAlign.spots[b.agent.slot]!.pos;
-  const depth = (b.seen.pos.x - home.x) * dir;
+  const depth = (b.seen.pos.x - home.x) * dir, across = Math.abs(b.seen.pos.y - home.y);
   if (depth > 1.5 || depth < -1.5) return true;
-  return depth < -.5 && Math.abs(b.seen.pos.y - home.y) > 1 && !seenOnDefender(sim, observer, b);
+  // Pullers run flat: a body seen more than a split along the line from his
+  // stance and still behind it, with no defender on him, has left his place
+  // in the line (crossing pullers otherwise bound the gaps they run behind).
+  // A zone step gains ground; it does not count here.
+  if ((depth < 0 && across > splitOf(sim, b.agent.slot) || depth < -.5 && across > 1) && !seenOnDefender(sim, observer, b)) return true;
+  return false;
+}
+
+/** The distance from this body's stance to the nearest other line stance. */
+function splitOf(sim: PlaySim, slot: string): number {
+  const home = sim.offAlign.spots[slot]!.pos.y;
+  let s = Infinity;
+  for (const [k, spot] of Object.entries(sim.offAlign.spots)) {
+    if (k === slot || !spot || !(CORE.has(k) || spot.inline)) continue;
+    s = Math.min(s, Math.abs(spot.pos.y - home));
+  }
+  return Number.isFinite(s) ? s : 1.5;
 }
 
 /** The observer's visible-block test: in his pictures, a defender within
