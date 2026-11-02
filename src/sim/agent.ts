@@ -23,6 +23,10 @@ import type { VisiblePose } from './perception.js';
  * tracking has box defenders and offensive linemen first moving at the same
  * median time; 0.5 makes ours equal (scripts/diag/runblock/startup.py). */
 const DEF_GETOFF = Number(process.env.DEF_GETOFF ?? 1);
+/** PRESNAP_TELL (off): offensive linemen show their first step's side in
+ * their set, and an interior defender who reads the man in front steps with
+ * it at his get-off instead of waiting to see the step. */
+export const PRESNAP_TELL = process.env.PRESNAP_TELL === '1';
 
 export type TeamSide = 'O' | 'D';
 
@@ -133,6 +137,12 @@ export class Agent {
    * out on a run block. Defenders read it.
    */
   stance: 'high' | 'low' | null = null;
+  /** PRESNAP_TELL: the side an offensive lineman's set leans before the snap
+   * (-1/0/+1 across the field), from his own first step; 0 shows nothing. */
+  presnapLean = 0;
+  /** PRESNAP_TELL: a leaned set's head start on the first step (s, <= 0): the
+   * time his body would take to move its weight onto the step foot after the snap. */
+  presnapDelay = 0;
   /** True once the agent has made a tackle attempt that missed this play. */
   missedTackles = 0;
   /** Free-form per-play annotations used by stats / replay. */

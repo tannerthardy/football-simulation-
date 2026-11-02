@@ -80,6 +80,7 @@
     "PASS_FEEL": "1",
     "DL_SQUEEZE": "1",
     "DEF_GETOFF": "1",
+    "PRESNAP_TELL": "0",
     "FRONT_STRENGTH": "1",
     "FRONT_MENU": "1",
     "BOX_ALIGN": "1",

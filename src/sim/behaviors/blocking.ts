@@ -1058,7 +1058,7 @@ export class RunBlocker implements Behavior {
       this.showOver = rushOnPartner(a, sim, plan.combination);
     const presentingDraw = this.presentingDraw(t);
     a.stance = presentingDraw ? 'high' : 'low';
-    if (t < a.mind.snapDelay) return stand();
+    if (t < a.mind.snapDelay + a.presnapDelay) return stand();
     if (!a.engagement && t >= this.nextRuleRead) {
       this.nextRuleRead = t + a.mind.decisionInterval;
       this.readRules(a,sim);
@@ -1122,7 +1122,7 @@ export class RunBlocker implements Behavior {
       const flow = this.zoneFlow(a, sim);
       if (flow) return this.withBase(a, sim, flow);
     }
-    if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay) {
+    if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay+a.presnapDelay) {
       // Establish the first foot and pad angle before running through a
       // target. Zone gains lateral ground; Duo stays vertical. These are
       // technique landmarks, still subject to acceleration and collisions.
@@ -1500,7 +1500,7 @@ export class RunBlocker implements Behavior {
     const d = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
     // Within reach the ordinary fit/engage owns contact, except during the
     // first step, which never strikes: it is where the lateral start is won.
-    const firstStep = sim.t < .24 + a.mind.snapDelay;
+    const firstStep = sim.t < .24 + a.mind.snapDelay + a.presnapDelay;
     if (d < contact + .25 && !firstStep) return null;
     const press = run.scheme === 'insideZone' || run.scheme === 'splitZone' ? .55 : 1;
     // Lateral intent: what it takes to be on his playside shoulder when we

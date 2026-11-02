@@ -13,6 +13,7 @@ import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import type { Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
+import { PRESNAP_TELL } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
@@ -141,6 +142,9 @@ export class PassRusher implements Behavior {
    * block steps away from him, and that step is the cue, not a reason to
    * lose his key. */
   private keyed: Agent | null = null;
+  /** PRESNAP_TELL: the side the man in front leaned in his set, if this
+   * defender read it before the snap (null until read, 0 if nothing read). */
+  private tellSide: number | null = null;
   /** Pre-snap rush plan from his tools. */
   readonly plan: 'power' | 'finesse' | 'speed';
   constructor(
@@ -161,6 +165,13 @@ export class PassRusher implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    // The set in front of him is in view for seconds before the snap: an
+    // interior man reads its lean once, with his own recognition.
+    if (PRESNAP_TELL && this.tellSide === null) {
+      const inside = this.gap !== 'C' && this.gap !== 'D';
+      const man = inside ? manInFront(sim, a, 1.5) : null;
+      this.tellSide = man && man.agent.presnapLean && sim.dice('tell', a).chance(a.r('playRecognition')) ? man.agent.presnapLean : 0;
+    }
     if (sim.t < this.getOff) return stand(Math.PI);
     if (a.engagement) {
       const { blocker } = a.engagement;
@@ -212,6 +223,13 @@ export class PassRusher implements Behavior {
       // Moving with the blocker only until the spot: past it his slide is the blocker's, not his.
       return track(a, { x: man!.pos.x + man!.vel.x * h, y: clamped ? shut : ahead }, { x: man!.vel.x, y: clamped ? 0 : man!.vel.y },
         { speed: 1, gain: 3, facing: Math.PI });
+    }
+    // A lean read before the snap: he steps with it at his get-off, square to
+    // the man, until the man's own step shows (above) or his set shows pass.
+    if (PRESNAP_TELL && !onEdge && !runStep && this.tellSide && man && man.stance !== 'high') {
+      const side = this.tellSide, step = a.profile.vmax * a.profile.shuffle, h = a.mind.decisionInterval;
+      a.tags.add('tell-step');
+      return track(a, { x: man.pos.x + man.vel.x * h, y: a.pos.y + side * step * h }, { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
     }
     // The interior man keys the blocker over him.
     if (!onEdge && runStep) {

@@ -11,6 +11,8 @@ import { gapY, lineOffset } from '../playbook/alignment.js';
 import { getRoute } from '../playbook/routes.js';
 import type { Gap, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
+import { PRESNAP_TELL } from './agent.js';
+import { Rng } from '../core/rng.js';
 import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
 import { goTo, stand } from './behaviors/common.js';
@@ -141,6 +143,19 @@ export function assignBehaviors(sim: PlaySim): void {
   const concept = call.run!;
   const plans = planRunBlocking(sim, concept);
   for (const [a, plan] of plans) a.behavior = new RunBlocker(plan);
+  // PRESNAP_TELL: a lineman who leans in his set has his weight already over
+  // the step foot: his first step comes sooner, and his set shows its side.
+  // Leaning is his own habit (a puller leans toward his pull), which coaching
+  // takes out: a balanced set shows nothing and keeps the ordinary start.
+  if (PRESNAP_TELL) for (const [a, plan] of plans) {
+    if (!isOL(a)) continue;
+    const first = plan.kind === 'pull' && plan.pullPath?.length ? plan.pullPath[0].y - a.pos.y : plan.drive.y;
+    if (Math.abs(first) < .3) continue;
+    const habit = new Rng(`lean:${a.player.id}`).next() * (1 - a.r('discipline'));
+    if (!sim.dice('stance', a).chance(habit)) continue;
+    a.presnapLean = Math.sign(first);
+    a.presnapDelay = -Math.min(a.mind.snapDelay, Math.sqrt(2 * LEAN_SHOWN / a.profile.lateral));
+  }
   const rb = sim.slot('RB') ?? null;
   const mesh = meshFor(sim, concept);
   if (concept.scheme === 'qbDraw') {
@@ -171,6 +186,9 @@ interface Mesh {
 
 /** Stretch mesh on the back's track (STRETCH_MESH=0: inside mesh, the stretch back stops). */
 const STRETCH_MESH = process.env.STRETCH_MESH !== '0';
+/** The weight shift a leaned set shows (yd): about an inch, the least a defender can see. */
+const LEAN_SHOWN = 0.03;
+
 
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const ps = playSideSign(sim, concept);
