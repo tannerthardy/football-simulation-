@@ -143,3 +143,21 @@ On my side: re-run the acceptance measures (`doublerelg.py`, `climbtrip.py`, `fi
 - **Next:**
   1. Stretch-zone job churn: crossing exchange then reread; a release to a snap backer who has flowed away.
   2. Double spacing.
+
+## Draw: the carrier, not the shed (2026-11-02)
+
+`tools/py/drawshed.py` (positions only, same operator on both sides; sim = develop + hip fix, D0/H1).
+- The shed matches NFL: leave → hit 0.1 s on both sides, and the carrier is 1.25 yd from the DL at leave on both sides.
+- Carrier depth at leave: sim −3.36 vs NFL −1.84. At the hit: −3.00 vs −0.80.
+
+`tools/py/drawback.py`, carrier depth by time:
+
+| | NFL | sim |
+|---|---|---|
+| At the snap | −5.05 | −5.50 |
+| At 1.0 s | 1.45 yd/s, +0.6 upfield | 3.2 yd/s lateral, +0.1 upfield |
+| At 1.5 s | −4.52 | −5.27 |
+| Upfield speed after the handoff | about 4.0 | 3.4 |
+| At 3.0 s | +0.78 | −0.91 |
+
+Next on our side: draw mesh path (#69) and post-handoff tempo. Defense informed.
