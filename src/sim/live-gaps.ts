@@ -60,23 +60,25 @@ function departed(sim: PlaySim, observer: Agent, b: SurfaceBody): boolean {
   const home = sim.offAlign.spots[b.agent.slot]!.pos;
   const depth = (b.seen.pos.x - home.x) * dir, across = Math.abs(b.seen.pos.y - home.y);
   if (depth > 1.5 || depth < -1.5) return true;
-  // Pullers run flat: a body seen more than a split along the line from his
-  // stance and still behind it, with no defender on him, has left his place
-  // in the line (crossing pullers otherwise bound the gaps they run behind).
-  // A zone step gains ground; it does not count here.
-  if ((depth < 0 && across > splitOf(sim, b.agent.slot) || depth < -.5 && across > 1) && !seenOnDefender(sim, observer, b)) return true;
+  // Pullers run flat, inside the half-yard depth above, and cross behind the
+  // line: a body still behind his stance who is now seen past a teammate he
+  // lined up beside, with no defender on him, has left his place in the line.
+  // A zone line moves together and keeps its order, so a reach or cutoff
+  // running flat across stays on the surface.
+  if ((depth < 0 && crossedBehind(sim, observer, b) || depth < -.5 && across > 1) && !seenOnDefender(sim, observer, b)) return true;
   return false;
 }
 
-/** The distance from this body's stance to the nearest other line stance. */
-function splitOf(sim: PlaySim, slot: string): number {
-  const home = sim.offAlign.spots[slot]!.pos.y;
-  let s = Infinity;
-  for (const [k, spot] of Object.entries(sim.offAlign.spots)) {
-    if (k === slot || !spot || !(CORE.has(k) || spot.inline)) continue;
-    s = Math.min(s, Math.abs(spot.pos.y - home));
-  }
-  return Number.isFinite(s) ? s : 1.5;
+/** In the observer's pictures, this body is past the current position of a
+ * line body whose stance lay between his own and where he is now. */
+function crossedBehind(sim: PlaySim, observer: Agent, b: SurfaceBody): boolean {
+  const s = Math.sign(b.seen.pos.y - b.home);
+  if (!s) return false;
+  return sim.offense.some((o) => {
+    const spot = sim.offAlign.spots[o.slot];
+    if (o === b.agent || !spot || !(CORE.has(o.slot) || spot.inline) || (spot.pos.y - b.home) * s <= 0) return false;
+    return (b.seen.pos.y - sim.see(observer, o).pos.y) * s > 0;
+  });
 }
 
 /** The observer's visible-block test: in his pictures, a defender within
