@@ -362,6 +362,8 @@ until then.
    current work. Start small and do the easy things first. Film-editor menus
    come at the very end.
 
+Research for these additions: [defensive calls, spacing, leverage and disguise](references/defensive-calls-and-leverage.md).
+
 ## Sources
 
 - **NFL rule references:** NFL video rulebook, illegal formation (Rule 7-5-1,
