@@ -197,3 +197,43 @@ Same-operator check, power with one OL puller (`tools/py/kickwho.py`, `tools/py/
 | KT3 | Same, decided within 3 yd, with the end excluded | Almost never fired, because the end is rarely held at arrival |
 
 **Next: an install decision, not a read.** Power's blocking rules (the TE or PST base-blocks the end, the kicker leads to the backer) vs the current down-down-kick. A PST/TE variant needs Tanner's call.
+
+## Power Base call (2026-11-02, #390 70885efd)
+
+`POWER_VARIANTS.base` (`power_base`, `RunConcept.endBlock: 'base'`). Tanner asked for it as a separate call, kept outside automatic calling.
+- The line's play-side end man (inline TE, else the PST) drives the end man on the line.
+- The pulling guard leads up to the first play-side backer.
+- Power is unchanged: 775/775 matched snaps are frame-identical.
+
+| | power | Power Base | NFL (mixed) |
+|---|---|---|---|
+| End on a teammate before the puller's block | 56% | 96% | 70% |
+| End wide at 1.6 s | 41% | 88% | 35% |
+| End in the backfield at 1.6 s, TE on the end (`tools/py/teend.py`) | — | 27% | 30% |
+| End's lateral move, TE on the end | — | +0.1 | −2.1 (slides inside, TE rides him) |
+| Puller engages nobody before cross + 0.6 s | — | 52% | — |
+| Puller engages the end (he beat the base inside) | — | 30% | — |
+| Puller engages a backer | — | 7% | — |
+| Mean yards (not a criterion) | 5.2 | 3.5 | — |
+
+Replay overlay (never committed): `--variant power_base`. `run_film_reference.py` overlay maps `power_base` → POWER.
+
+## Design note: one run call = assignment table + technique per job + shared execution
+
+Tanner raised whether each run call needs to become its own large module, given that technique depends on alignment (off-ball Y vs sniffer vs inline) and on the front. The proposed structure:
+
+1. **Assignment rules per call, as data.**
+   - Who takes the end man, who kicks, who leads to which backer, which doubles exist.
+   - Calls differ here (power vs Power Base vs counter GT/GH), not in the engine.
+   - `RunConcept.endBlock` is the first such field.
+2. **Technique per job, keyed by start alignment and the defender's alignment.**
+   - First step, aiming point, path, leverage side for a given job (base, down, kick, wrap, lead, climb, arc, sift) from a given spot.
+   - Example: an off-ball Y base-blocking the end takes a different first step and path from an inline Y with the same job.
+   - Measure each (job × start spot × defender technique) cell against NFL tracking with the same operator.
+3. **Shared execution**: physics, contact, perception and reads (passed-man, held-man, first threat), the same for every call.
+
+This gives each call its own feel without forking the engine. It also gives a natural test grid: job × start spot × defender spot.
+
+Next on this layer: TE base technique by start spot. NFL ends slide inside with the TE riding them; ours hold their spot.
+
+Shared open item: leads that block nobody (counter wrap 66%, Power Base 52%).
