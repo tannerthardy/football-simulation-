@@ -69,15 +69,19 @@ function departed(sim: PlaySim, observer: Agent, b: SurfaceBody): boolean {
   return false;
 }
 
-/** In the observer's pictures, this body is past the current position of a
- * line body whose stance lay between his own and where he is now. */
+/** In the observer's pictures, this body has crossed a line body whose stance
+ * lay beside his on the way: that teammate is now seen on the path between
+ * this body's stance and where this body is now. A teammate who himself left
+ * and crossed the other way is not on that path, so a nearly still body is
+ * never taken off the line by someone else's pull. */
 function crossedBehind(sim: PlaySim, observer: Agent, b: SurfaceBody): boolean {
   const s = Math.sign(b.seen.pos.y - b.home);
   if (!s) return false;
   return sim.offense.some((o) => {
     const spot = sim.offAlign.spots[o.slot];
     if (o === b.agent || !spot || !(CORE.has(o.slot) || spot.inline) || (spot.pos.y - b.home) * s <= 0) return false;
-    return (b.seen.pos.y - sim.see(observer, o).pos.y) * s > 0;
+    const y = sim.see(observer, o).pos.y;
+    return (y - b.home) * s > 0 && (b.seen.pos.y - y) * s > 0;
   });
 }
 
