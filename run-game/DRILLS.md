@@ -104,3 +104,62 @@ Still open from the engine map:
 - The legacy box-LB branch ignores the ball.
 
 Those are structural choices for Defense and Main Engine.
+
+## Rebuild stage 1 (committed, default off): `run/G2-engaged-technique` 1c58f213
+
+- `ENGAGED_TECHNIQUE`: the engaged blocker's goal comes from his controller:
+  - drive, at his own pace (0.4 vmax);
+  - wall, from the ball-side shoulder;
+  - run-with, for a backer flowing hard across with the runner behind his flow.
+
+  The 2.4 yd/s forward drive dated from the pre-physics rep law (fa084410), where it was the scripted drive speed.
+- `ENGAGED_DEFENDER`: a neutral hook for Defense. An engaged non-stack defender keeps his own controller's request.
+
+**Restage** (stream 0, `ENGAGED_TECHNIQUE=1` vs off), first contact:
+
+| | off | on |
+|---|---|---|
+| IZ | +0.65 | +0.40 |
+| OZ | +0.21 | +0.22 |
+| Power | +0.57 | +0.24 |
+| Counter | +1.10 | +0.91 |
+| Draw | −1.77 | −1.12 |
+
+Not ready to turn on: the drive pace still needs checking.
+
+## Football 101: "why doesn't our run game punish slow linebackers?" (`_punish`, `_dlwin`, `ozpath.py`)
+
+**Punish test** (416 OZ/WZ matched snaps): box LBs normal, frozen at the snap, or removed.
+
+| | Mean | Median | 10+ yd | ≤0 yd | First contact x | DL first hitter |
+|---|---|---|---|---|---|---|
+| Normal | 4.4 | 2.0 | 9% | 17% | +0.3 | 52% |
+| LBs frozen | 9.7 | 4.4 | 27% | 12% | +0.8 | 53% |
+| LBs removed | 10.5 | 4.1 | 31% | 12% | +0.7 | 54% |
+
+With no linebackers at all, the median OZ run is still 4 yd and the play still meets a DL at the line. Football says it should be into the secondary.
+
+**DL first hitters, no-LB arm** (218 of 416):
+
+| How he got there | Count |
+|---|---|
+| Grabbed the runner from inside his block (grasp releases the block: `tackle.ts`, `BLOCKED_REACH`) | 97 |
+| Hit while still engaged | 40 |
+| Never blocked | 44 |
+| Body down / separation | 36 |
+| A real shed | 1 |
+
+The block holds a median 1.85 s. At the hit the carrier is a median 5.2 yd wide, at the line.
+
+**The back's path** (`ozpath.py`, NFL vs sim, after the handoff):
+
+| | NFL | Sim |
+|---|---|---|
+| OZ lateral at +0.5 s | 2.2 | 1.1 |
+| OZ depth at +1.0 s | −1.5 | −2.1 |
+| OZ heading at +1.5 / +2.0 s | 38 / 41° | 49 / 53° |
+| OZ handoff → LOS | 1.5 s | 2.0 s |
+| IZ lateral at +2.0 s | 2.5 | 4.6 |
+| IZ heading at +2.0 s | 38° | 44° |
+
+Our zone backs are slow to the edge, deeper, and stay horizontal longer. That keeps them in arm's reach of blocked linemen along the line. **The offense fails to punish because the carrier's path never stresses the defense.** This is carrier work: the run-game lane.
