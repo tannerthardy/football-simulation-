@@ -398,3 +398,10 @@ Climber–LB pairs (`_lbcohort`):
 First contact and "backer shed" are unchanged.
 
 **Conclusion.** Once the C stops tracking, the Mike slides across his face: the across-face work gains more on a stationary blocker than NFL. The pair motion alone does not change outcomes. The open item is how much a set, walled blocker holds a man working across him (engagement physics), so it goes to Main Engine via Defense. W1–W3 are parked.
+
+**Main Engine's set-blocker scene** (`claude/engaged-lateral-diag` c064ec1d, `set-blocker-traction-scene.mts`):
+- Forward drive does not cost a set blocker his lateral hold: 0.01–0.02 at any drive.
+- Hands slow a man crossing but do not stop him. Against a blocker who never moves his feet, the LB still crosses about 1.3 yd in 1 s, which is coherent.
+- Physics is cleared.
+
+**Next (my lane, W4).** A climber shuffle that keeps his body in front of the backer without following him past the wall leverage. That is a lateral request in blocking technique, not a capacity change. W3 removed every step toward the ball, so LBs cross a set climber at about 1.3 yd/s.
