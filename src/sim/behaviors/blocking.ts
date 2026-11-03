@@ -32,6 +32,7 @@ import {collectionCommand,readCollectionApproach,type CollectionApproach} from '
 import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
 import { assessClimbAccess, type ClimbAccessResult, chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
 import { lineDepth, lineOffset } from '../../playbook/alignment.js';
+import type { EngagedGoal } from '../engaged-technique.js';
 
 /** How far behind the line this player's installed stance stands. */
 const stanceDepth = (sim: PlaySim, a: Agent) => sim.los - (sim.offAlign.spots[a.slot]?.pos.x ?? sim.los - .55);
@@ -1867,6 +1868,26 @@ export class RunBlocker implements Behavior {
       vel[axis] = v + brake * dt;
     }
     return { ...seen, pos, vel };
+  }
+
+  /** ENGAGED_TECHNIQUE: a climber on his backer with the runner in his
+   * pictures walls him off from the ball; every other engaged job drives. */
+  engagedGoal(a: Agent, sim: PlaySim, e: Engagement): EngagedGoal | null {
+    if (e.blocker !== a || e.helpers.length) return null;
+    const plan = this.plan;
+    if (plan.kind === 'climb' && plan.target === e.defender) {
+      const picture = this.workPicture;
+      if (picture?.source === 'acquired' && picture.carrier != null && picture.carrier !== sim.qb.idx) {
+        const ref = this.workReference(a, sim), seen = sim.see(a, e.defender), dy = seen.pos.y - ref.y;
+        // A backer flowing hard across with the runner behind his flow is run
+        // past the hole (take him where he is going; the back cuts behind).
+        // One working back toward the runner's lane is walled off from it.
+        const flow = Math.abs(seen.vel.y) > 1.5 ? Math.sign(seen.vel.y) : 0;
+        if (flow && flow * Math.sign(dy) > 0) return { kind: 'runWith', flow };
+        if (Math.abs(dy) >= .3) return { kind: 'wall', away: Math.sign(dy) };
+      }
+    }
+    return { kind: 'drive' };
   }
 
   private attack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived, preparedClimb?: Intent | null): MoveCommand {

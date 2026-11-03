@@ -41,6 +41,7 @@ import { requestToCover } from './motion-plan.js';
 import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
+import { ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, drivePace, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -1347,19 +1348,31 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const along = (v: Vec2) => v.x * drive.x + v.y * drive.y;
   const closingDirection = RUN_CONTACT_COMPONENTS ? contactMotion(drive, lat, 1, 0) : drive;
   const gap = connectionGap({ x: d.pos.x - b.pos.x, y: d.pos.y - b.pos.y }, sep, closingDirection);
-  let forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : 2.4;
+  // ENGAGED_TECHNIQUE: the blocker's controller names his engaged goal; his
+  // drive pace is his own (a share of his top speed), not one constant.
+  const goal: EngagedGoal | null = ENGAGED_TECHNIQUE && !stretch ? b.behavior.engagedGoal?.(b, sim, e) ?? null : null;
+  const pace = goal ? drivePace(b.profile.vmax) : 2.4;
+  let forward = stretch ? clamp(along(d.vel) + gap * 3, -1, 2.4) : pace;
   if (!stretch) {
     // Full drive assumes the man is ahead on the installed drive line.
     // Once level or past, carry the existing connection instead of running
     // away from it. Seal work, anchoring and World still govern the rep.
     const ahead = (d.pos.x - b.pos.x) * drive.x + (d.pos.y - b.pos.y) * drive.y;
     const w = clamp(ahead / (0.5 * sep), 0, 1);
-    forward = w * 2.4 + (1 - w) * clamp(along(d.vel) + gap * 3, -1, 2.4);
+    forward = w * pace + (1 - w) * clamp(along(d.vel) + gap * 3, -1, pace);
   }
   // A stretch never fights the flow: ahead of the man, he does not step back
   // to a fixed seal offset; he at least matches the defender's play-side
   // speed (beat him to the shoulder, or run him past the hole).
   let lateral = seal;
+  if (goal?.kind === 'wall') {
+    const feet = wallFeet({ lat, drive, rel: { x: b.pos.x - d.pos.x, y: b.pos.y - d.pos.y }, dv, sep, seal,
+      lateral: tb.lateral, away: goal.away, gap, pace });
+    lateral = feet.lateral; forward = feet.forward;
+  } else if (goal?.kind === 'runWith') {
+    const feet = runWithFeet(lat, goal.flow, dv, seal, tb.lateral, along(dv), gap, pace);
+    lateral = feet.lateral; forward = feet.forward;
+  }
   const contactTrack = RUN_CONTACT_TRACK && stretch ? b.behavior.contactMotion?.(b) : null;
   const runoffWork = RUN_CONTACT_COMPONENTS && stretch ? b.behavior.contactMotion?.(b, 'runoff') : null;
   if (stretch && run) {
@@ -1393,7 +1406,12 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const normal = clamp(defenderNormal + driveNormal * gap * 3,
       Math.min(-driveNormal, 2.4 * driveNormal), Math.max(-driveNormal, 2.4 * driveNormal));
     blockVel = { x: -axis.x * normal + lat.x * lateral, y: -axis.y * normal + lat.y * lateral };
-  } else blockVel = { x: drive.x * forward + lat.x * lateral, y: drive.y * forward + lat.y * lateral };
+  } else {
+    // A wall's forward work only keeps him connected upfield; where he takes
+    // the man is the lateral work, not the installed diagonal.
+    const fwd = goal?.kind === 'wall' || goal?.kind === 'runWith' ? { x: sim.attackDir(b.team), y: 0 } : drive;
+    blockVel = { x: fwd.x * forward + lat.x * lateral, y: fwd.y * forward + lat.y * lateral };
+  }
   const preAnchor = blockVel;
   let anchored = false;
   // Anchor against the normal threat only (lost depth), and keep the
@@ -1573,6 +1591,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const y = CF_FLOW === 'over' && dir ? dir * td.lateral
       : clamp(requestToCover(gaitLag(d.profile), home - d.pos.y, horizon, d.vel.y), -td.lateral, td.lateral);
     cf = { x: depth, y };
+  }
+  if (ENGAGED_DEFENDER && !read.stack && !cf) {
+    // His own request stands; only his facing stays on the man he is fighting.
+    intents[d.idx] = { ...intents[d.idx], push: 1 };
+    runContactObservers.get(sim)?.(e, 'defender-movement', { reading: read.reading,
+      declared: read.declared, supportRunner, defensiveAim: read.aim, exitAim, workOff: null, workAxis, workSide,
+      command: intents[d.idx], contain: read.contain, trail: read.trail, squeeze, own: true });
+    helperIntents(sim, e, intents, axis);
+    return;
   }
   intents[d.idx] = {
     vel: workOff ?? cf ?? (read.stack ? { x: depth, y: lateralFlow } : legacy),

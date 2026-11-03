@@ -38,6 +38,8 @@ export interface Behavior {
   /** Current held contact technique's movement intention, separate from the
    * free track advertised to teammates. No achieved motion is implied. */
   contactMotion?(a: Agent, work?: 'reach' | 'runoff' | 'prepare'): Vec2 | null;
+  /** ENGAGED_TECHNIQUE: the engaged run blocker's goal for this rep (engaged-technique.ts). */
+  engagedGoal?(a: Agent, sim: import('./playsim.js').PlaySim, e: Engagement): import('./engaged-technique.js').EngagedGoal | null;
 }
 
 export type RushMove = 'bull' | 'longarm' | 'speed' | 'dip' | 'rip' | 'swim' | 'club' | 'spin' | 'snatch' | 'shed';

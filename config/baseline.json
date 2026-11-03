@@ -92,7 +92,9 @@
     "ROUTE_CLEAR": "1",
     "GROUNDING_FACTS": "1",
     "HOLD_LEVERAGE": "1",
-    "RUN_FEEL": "1"
+    "RUN_FEEL": "1",
+    "ENGAGED_TECHNIQUE": "0",
+    "ENGAGED_DEFENDER": "0"
   },
   "worldDefaults": {
     "handContact": "center",

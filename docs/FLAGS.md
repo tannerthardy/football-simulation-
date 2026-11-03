@@ -29,6 +29,8 @@ There are 88 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `RUN_ANCHOR` | on | default | trenches | `src/sim/engagement.ts:744` | — |
 | `RUN_CONTACT_COMPONENTS` | on | default | trenches | `src/sim/engagement.ts:680` | — |
 | `RUN_FEEL` | on | default (G1, 2026-10-23) | trenches | `src/sim/engagement.ts:703` | review 2: drop the off path. A run blocker mirrors the defender's motion as he has it (PASS_FEEL's touch/sight delays), not his true velocity; decided by DL release in the G1 lab |
+| `ENGAGED_TECHNIQUE` | off | experimental (run game, 2026-11-03) | trenches | `src/sim/engaged-technique.ts:24` | the engaged run blocker's feet follow the goal his controller names (drive at his own pace, or a climber walls his backer off from the runner from the ball-side shoulder) instead of the fixed 2.4 yd/s rep-law drive along the contact-time line; contact law unchanged. Evidence: run-game/DRILLS.md on evidence/counter-scorecard |
+| `ENGAGED_DEFENDER` | off | experimental hook (run game for Defense, 2026-11-03) | trenches | `src/sim/engaged-technique.ts:30` | an engaged defender off the first-level stack read (box backers, unassigned men) keeps his own controller's request; contact decides how far he gets. Neutral hook: the defender behaviour is Defense's |
 | `SCRAPE` | on | default | defense | `src/sim/run-fits.ts:180` | — |
 | `SHED_PHYSICAL` | on | default | trenches | `src/sim/engagement.ts:726` | — |
 | `SHED_PURSUE` | on | default | defense | `src/sim/engagement.ts:735` | — |
