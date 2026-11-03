@@ -64,6 +64,7 @@ for (const concept of SCREEN_CONCEPTS) {
     const tick0 = sim.tick.bind(sim);
     record();
     sim.tick = () => { tick0(); const k = Math.round(sim.t / 0.1); if (Math.abs(sim.t - k * 0.1) < 1e-6 && k === xy.length) record(); };
+    const screenBlockers = sim.offense.filter((a: any) => a.behavior?.kind === 'screen-block').map((a: any) => a.idx);
     const res = sim.run();
     const ev = sim.events as { t: number; type: string; a?: number; b?: number }[];
     const thr = ev.find(e => e.type === 'throw'), cat = ev.find(e => e.type === 'catch');
@@ -77,7 +78,7 @@ for (const concept of SCREEN_CONCEPTS) {
       players: sim.agents.map((a: any) => ({ side: a.team, group: GROUP[a.player.position] ?? 'OTHER' })),
       dt: 0.1, xy, ball_y: r2(sim.ballY), events, target: thr?.b ?? null, carrier: cat?.a ?? null,
       screen: { receiver: r, group: r !== null ? GROUP[sim.agents[r].player.position] : null, type: concept.id,
-        passResult: cat ? 'C' : 'I', defense: def.label, outcome: res.outcome },
+        passResult: cat ? 'C' : 'I', defense: def.label, outcome: res.outcome, blockers: screenBlockers },
     };
     lines.push(JSON.stringify(play));
     const s = summary[`${concept.id} vs ${def.label}`] ??= { n: 0, caught: 0, yards: [], ttt: [] };
