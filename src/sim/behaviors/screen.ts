@@ -82,7 +82,7 @@ export class ScreenBlocker implements Behavior {
     // man who bails.
     if (!this.lineman && !thrown && dist > 2) {
       const lev = { x: seen.pos.x + toRef.x * Math.min(2.5, dist - 0.5), y: seen.pos.y + toRef.y * Math.min(2.5, dist - 0.5) };
-      lev.x = dir > 0 ? Math.min(lev.x, this.home.x + 1.5) : Math.max(lev.x, this.home.x - 1.5);
+      lev.x = dir > 0 ? Math.min(lev.x, this.home.x + 0.5) : Math.max(lev.x, this.home.x - 0.5);
       const far = Math.hypot(lev.x - a.pos.x, lev.y - a.pos.y);
       return runThrough(a, lev, { speed: far > 0.4 ? 0.45 : 0, cutSkill: 1, facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) });
     }
