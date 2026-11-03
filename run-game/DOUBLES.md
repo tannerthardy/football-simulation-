@@ -129,4 +129,64 @@ Pistol, under-centre IZ and counter are close.
 
 The underlying item is the far-side mesh landmark: NFL backs take the ball as they pass in front of the QB. It is a concept-install geometry change, to be weighed against gap-scheme timing.
 
+**`M3-faceside-mesh`** (cross the QB's face at body clearance; committed on `run/G2-mesh-emlos` 4cfada58, develop 85952c95):
+
+| Offset-far handoff (yd/s) | develop | M3 | NFL |
+|---|---|---|---|
+| IZ | 2.42 | 3.58 | 3.86 |
+| OZ | 2.48 | 3.62 | 4.61 |
+| Power | 2.50 | 4.02 | 3.75 |
+
+- Early patience is unchanged: 0.1 yd/s at 0.3 s (NFL 0.2–0.4).
+- First contact, stream 0: IZ +0.62/+0.65 and OZ +0.20/+0.21, unchanged.
+- First contact, power, 5 streams (n≈675): +0.52 → +0.46 (NFL +0.47).
+- **Risk:** on power, unblocked linemen as the first hitter rise 5 → 7% (NFL 3%). The faster back reaches the line before a lost block is cleaned up. One pinned case, M7-P051, was re-recorded for this: DT_S hits at 1.9 s.
+
+## Power pullers (2026-11-03, `powertime.py`, `powerhit.py`, `powerkick.py`, `_pulltrace`/`_pull2b`/`_pullfirst`/`_emlos`)
+
+**The power puller's lateral race is NFL-like; his depth is not.**
+
+| | NFL | sim |
+|---|---|---|
+| Lateral moved @1.0 / 1.5 / 2.0 s | 1.77 / 3.40 / 4.66 | 1.74 / 3.50 / 4.50 |
+| Turn-up time | 2.4 s | 2.4 s |
+| Depth @1.5 / 2.0 s | −0.97 / −0.31 | −1.33 / −1.13 |
+
+NFL pullers start gaining ground from 1.0 s; ours stay flat behind the wall.
+
+**Tight to the wall's tail (`P1`): no effect.** The observed rear surface of the down wall stays at about −0.75. Our down blockers do not move it forward, so tracking it changes nothing.
+
+**Kick-outs on the end man are NFL-like (11 personnel).**
+
+| At contact | NFL | sim |
+|---|---|---|
+| Time | 1.8 s | 1.9 s |
+| Puller depth / lat | −1.13 / 2.71 | −1.26 / 3.23 |
+| End depth | −0.65 | −0.75 |
+| End moved in | −2.2 | −2.05 |
+
+**The gap is who the guard blocks.**
+
+| Guard's first contact | 11 personnel | 2 backs | 12+ |
+|---|---|---|---|
+| NFL: end man | 36% | 27% | 15% |
+| NFL: LB | 33% | 40% | 39% |
+| sim: end man | 74% | 69% | 74% |
+| sim: LB | ~0 | ~0 | ~0 |
+
+In NFL power, someone else (TE, H or FB) often has the end, and the guard wraps to a backer. Our install has the guard kick unless a fullback is in the backfield: 130 of 155 power snaps. That is a play-mix and install question, not a mechanism.
+
+**Fixed: the kick man was sometimes a press DB.** The end man was the widest defender within 2 yd and 9 yd of the ball. In about 35 of 300 power and counter snaps, that was a corner or nickel pressed on a split receiver 8–9 yd out. Fixed on `run/G2-mesh-emlos`, regression test `test/kick-end-man.test.ts`:
+- A defender standing off the ball (more than 1.1 yd) over a receiver split more than 3 yd outside the core is not the end man.
+- A down end beside a flexed wing still is (`edge-key-hold` #76).
+
+**Fixed, no measured effect: the FB's kick man is now a called kick,** so the lead guard's first-threat read does not double him.
+
+**Open: lead guards on FB power block nobody.** 15 of 25 lead guards are not engaged by 3.5 s. Traces:
+- The snap target is often a DB (FS, SS, CB).
+- The first-threat read re-picks by distance to the hole each beat.
+- The guard swings wide of the hole at −1.0…−1.5 depth instead of turning up.
+
+Next: the lead guard's turn-up geometry and threat choice, measured against the NFL "guard's first contact = LB 33–40%" target.
+
 **`dbl-C6-intercept-cost`** (release proposals costed to the backer's intercept point): neutral. Not kept.
