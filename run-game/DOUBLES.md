@@ -366,3 +366,35 @@ The rest is one or more of:
 - the backer's own engaged request.
 
 Not changed.
+
+**What the centre requests** (`_creq`, OZ, the C's command trace while engaged with a backer; lateral toward the carrier, p50):
+
+| | Final request | Engagement stage | Achieved |
+|---|---|---|---|
+| develop | +2.15 | +2.27 | +1.72 |
+| W1 | +1.44 | | +1.41 |
+| W3 | +0.46 | | +0.80 |
+
+The raw controller requests 0 throughout. The ball-ward request comes from the blocker's engaged seal: the mirror plus the offset correction that keeps him square on a man working across his face.
+
+**W3** (`patches/W3-climb-wall-hold.patch`) is W2 with the walled seal never stepping toward the ball.
+
+Climber–LB pairs (`_lbcohort`):
+
+| | Blocker | LB |
+|---|---|---|
+| C, W3 | +0.60 | +1.72 |
+| G, W3 | +0.04 | 0.50 |
+| T, W3 | −0.46 | 0.38 |
+
+`lbfit3`, all blocked OZ box LBs:
+
+| | develop | W3 | NFL |
+|---|---|---|---|
+| Blocker | +1.20 | +0.61 | −0.45 |
+| LB | | +1.35 | |
+| LB − blocker | | 0.45 | 0.33 |
+
+First contact and "backer shed" are unchanged.
+
+**Conclusion.** Once the C stops tracking, the Mike slides across his face: the across-face work gains more on a stationary blocker than NFL. The pair motion alone does not change outcomes. The open item is how much a set, walled blocker holds a man working across him (engagement physics), so it goes to Main Engine via Defense. W1–W3 are parked.
