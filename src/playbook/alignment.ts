@@ -13,6 +13,7 @@ import { CENTER_Y, END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../core/field.js'
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { Coverage, CoverageRole, DefSlot, DefensivePlayCall, Formation, Gap, OffSlot, PassConcept, ReceiverRef, Side, SkillSlot, Technique, ZoneId, UnderSeat, FormationKey } from './types.js';
 import { sideSign } from './types.js';
+import { GUN_QB_DEPTH, PISTOL_QB_DEPTH, UNDER_TAILBACK_EXTRA } from './formations.js';
 
 /** Default on (OL_SPLITS=0 turns it off): the line splits as tracked. 2022
  * tracking at the snap (body centres, scripts/diag/align/snap.py): 1.54 yd
@@ -246,7 +247,16 @@ export interface AlignContext {
   /** Yards to the line to gain. */
   distance?: number;
   style?: AlignStyle;
+  /** The run called, when one is (STRETCH_OFFSET). */
+  run?: { scheme: string; direction: 'strong' | 'weak' };
 }
+
+/** STRETCH_OFFSET (default off): on a stretch call (outside/wide zone) from
+ * the gun, the offset back aligns away from the play side, so the mesh path
+ * across the QB's face carries him toward it. Tracked 2022 gun outside zone:
+ * 219 snaps away, 22 on the play side; a back on the play side takes the ball
+ * running away from the play and has to reverse. */
+export const STRETCH_OFFSET = process.env.STRETCH_OFFSET === '1';
 
 /** WR_ALIGN: the #1's room to his sideline (yd) by his route, [alone on his
  * side, with other receivers]: tracked 2022 medians, which follow the
@@ -287,7 +297,7 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     spots[slot] = { slot: slot as OffSlot, pos: { x: los - depthOf[slot as LineSlot], y: ballY + off }, side: off > 0 ? 'L' : off < 0 ? 'R' : 'C', backfield: false, inline: false };
   }
   // Under center the QB's body is ~1.7 yd behind the line (NFL tracking at the snap): the center is in between.
-  const qbDepth = formation.qb === 'under' ? 1.6 : formation.qb === 'pistol' ? 4.0 : 5.0;
+  const qbDepth = formation.qb === 'under' ? 1.6 : formation.qb === 'pistol' ? PISTOL_QB_DEPTH : GUN_QB_DEPTH;
   spots.QB = { slot: 'QB', pos: { x: los - qbDepth, y: ballY }, side: 'C', backfield: true, inline: false };
 
   // First pass: wide/inline/wing/fixed; second pass: slots (need #1 position).
@@ -344,7 +354,7 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     const backfield = a.depth >= 3 && Math.abs(off) < 3.5;
     spots[slot] = {
       slot,
-      pos: { x: los - (OL_STAGGER && a.split === 'inline' ? INLINE_DEPTH : a.depth), y: clamp(ballY + off, 1, FIELD_WIDTH - 1) },
+      pos: { x: los - (OL_STAGGER && a.split === 'inline' ? INLINE_DEPTH : a.depth + (!backfield ? 0 : formation.qb === 'gun' ? GUN_QB_DEPTH - 5.0 : formation.qb === 'under' && a.depth >= 6 ? UNDER_TAILBACK_EXTRA : 0)), y: clamp(ballY + off, 1, FIELD_WIDTH - 1) },
       side,
       backfield,
       inline: a.split === 'inline',
@@ -394,6 +404,11 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
   }
 
   const strongSign = sideSign(strong);
+  if (STRETCH_OFFSET && formation.qb === 'gun' && ctx.run && (ctx.run.scheme === 'outsideZone' || ctx.run.scheme === 'wideZone')) {
+    const play = ctx.run.direction === 'strong' ? strongSign : -strongSign;
+    for (const sp of Object.values(spots)) if (sp.backfield && sp.slot !== 'QB' && (sp.pos.y - ballY) * play > 1)
+      sp.pos = { x: sp.pos.x, y: clamp(2 * ballY - sp.pos.y, 1, FIELD_WIDTH - 1) };
+  }
   const coreEdge = {
     S: ballY + strongSign * (teSide(strong) ? inlineOf(line) : T),
     W: ballY - strongSign * (teSide(weak) ? inlineOf(line) : T),

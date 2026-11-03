@@ -94,7 +94,10 @@
     "HOLD_LEVERAGE": "1",
     "RUN_FEEL": "1",
     "ENGAGED_TECHNIQUE": "0",
-    "ENGAGED_DEFENDER": "0"
+    "ENGAGED_DEFENDER": "0",
+    "BACKFIELD_DEPTH": "0",
+    "STRETCH_OFFSET": "0",
+    "MESH_TEMPO": "0"
   },
   "worldDefaults": {
     "handContact": "center",

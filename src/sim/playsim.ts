@@ -268,7 +268,7 @@ export class PlaySim {
     this.trace = new ReplayTrace(setup.recordLevel ?? 'light', this.recordEvery, this.record);
 
     this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY,
-      { kind: setup.offCall.kind, pass: setup.offCall.pass, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
+      { kind: setup.offCall.kind, pass: setup.offCall.pass, run: setup.offCall.run, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
     // The secondary checks its call to the receiver distribution it sees.
     this.defCall = installCoverage(setup.defCall, this.offAlign);
     const defSlots = defense.map(([slot]) => slot);

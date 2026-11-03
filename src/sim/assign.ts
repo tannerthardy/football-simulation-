@@ -8,6 +8,7 @@ import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import { gapY, lineOffset } from '../playbook/alignment.js';
+import { GUN_QB_DEPTH } from '../playbook/formations.js';
 import { getRoute } from '../playbook/routes.js';
 import type { Gap, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
@@ -223,8 +224,8 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     qb = { x: los - 4.4, y: by + ps * 0.3 };
     rb = { x: los - 4.9, y: by + ps * 0.95 };
   } else {
-    qb = { x: los - 5.0, y: by };
-    rb = { x: los - 4.4, y: by + ps * 0.9 };
+    qb = { x: los - GUN_QB_DEPTH, y: by };
+    rb = { x: qb.x + 0.6, y: by + ps * 0.9 };
     // An offset back aligned away from the play crosses the QB's face: he
     // takes the ball as he passes in front of him, at the two bodies'
     // clearance, not on the far hip a yard beyond (that landmark put his line
@@ -268,6 +269,17 @@ export class PlayActionFake implements Behavior {
   }
 }
 
+/** MESH_TEMPO (default off): a riding back times his run to the mesh instead
+ * of braking into it. On each beat he previews his own body and takes the
+ * steadiest tempo that still reaches the mesh by the installed exchange time,
+ * carries it through (no stop at the landmark while the QB is still opening),
+ * and leaves his stance by that same tempo. With the QB there he carries at
+ * least the exchange tempo, 0.85 of top speed (installed 0.55). Tracked 2022
+ * backs are still accelerating at the handoff (outside zone under center 5.25
+ * yd/s, gun 4.4); the installed back braked to the landmark and met the ball
+ * at 3.6 and 3.3. */
+export const MESH_TEMPO = process.env.MESH_TEMPO === '1';
+const MT = (): number => MESH_TEMPO ? .85 : .55;
 /** Running back before the handoff: time the arrival at the mesh. */
 export class RunnerToMesh implements Behavior {
   readonly kind = 'mesh';
@@ -326,19 +338,44 @@ export class RunnerToMesh implements Behavior {
       const pocket = ready ? { x: qbAt.x + off.x / len * arm, y: qbAt.y + off.y / len * arm } : this.mesh;
       const inHands = Math.hypot(qb.pos.x - a.pos.x, qb.pos.y - a.pos.y) <= reach;
       if (ready && inHands && sim.t >= this.meshTime - .15) this.passed = true;
-      if (this.passed) return goTo(a, this.aim, { speed: .55, through: a.profile.vmax * .55 });
+      if (this.passed) return goTo(a, this.aim, { speed: MT(), through: a.profile.vmax * MT() });
       // The on-time pace only slows an early back; with the QB there he
       // carries his exchange tempo into the pocket instead of braking to it.
-      return goTo(a, pocket, ready ? { speed: Math.max(speed, .55), through: a.profile.vmax * .55 } : { speed, through: 0 });
+      if (MESH_TEMPO) {
+        if (sim.t >= this.nextTempo) { this.nextTempo = sim.t + a.mind.decisionInterval; this.tempo = this.onTimeTempo(a, sim); }
+        // A QB still well short of the mesh at the landmark: do not run past him.
+        const qbFar = Math.hypot(qbAt.x - this.mesh.x, qbAt.y - this.mesh.y) - reach;
+        const w = ready ? Math.max(this.tempo, MT()) : this.tempo;
+        return goTo(a, pocket, !ready && d < .8 && qbFar > .5 ? { speed: w, through: 0 } : { speed: w, through: a.profile.vmax * w });
+      }
+      return goTo(a, pocket, ready ? { speed: Math.max(speed, MT()), through: a.profile.vmax * MT() } : { speed, through: 0 });
     }
     return goTo(a, this.mesh, { speed, through: 0 });
+  }
+
+  private tempo = 1;
+  private nextTempo = 0;
+  /** MESH_TEMPO: the steadiest tempo (share of top speed) at which his own body,
+   * previewed running through the mesh without braking, gets there by the
+   * installed exchange time; full speed if none does. */
+  private onTimeTempo(a: Agent, sim: PlaySim): number {
+    const left = this.meshTime - sim.t;
+    const reachBy = (w: number) => { const v = a.profile.vmax * w;
+      const path = previewFreeMovement(a.body, (body) => ({ vel: arriveVelocity(body as typeof a.body, this.mesh, v, v) }), sim.t, 60, sim.world.handContact);
+      const k = path.findIndex((q) => Math.hypot(this.mesh.x - q.pos.x, this.mesh.y - q.pos.y) < .5);
+      return k < 0 ? Infinity : path[k].t; };
+    if (reachBy(1) >= left) return 1;
+    let lo = .3, hi = 1;
+    if (reachBy(lo) <= left) return lo;
+    for (let i = 0; i < 6; i++) { const mid = (lo + hi) / 2; if (reachBy(mid) <= left) hi = mid; else lo = mid; }
+    return hi;
   }
 
   /** Seconds his own body takes to reach the mesh from where he stands, going
    * hard and arriving at the exchange speed (free movement, no contact). */
   private arrival(a: Agent, sim: PlaySim): number {
-    const through = this.ride ? a.profile.vmax * .55 : 0;
-    const path = previewFreeMovement(a.body, (body) => ({ vel: arriveVelocity(body as typeof a.body, this.mesh, a.profile.vmax, through) }),
+    const through = this.ride ? a.profile.vmax * MT() : 0;
+    const path = previewFreeMovement(a.body, (body) => ({ vel: arriveVelocity(body as typeof a.body, this.mesh, this.ride && MESH_TEMPO ? through : a.profile.vmax, through) }),
       sim.t, 60, sim.world.handContact);
     const k = path.findIndex((s) => Math.hypot(this.mesh.x - s.pos.x, this.mesh.y - s.pos.y) < .5);
     return k < 0 ? Infinity : path[k].t;
