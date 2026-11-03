@@ -526,6 +526,13 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Ag
   return best?.targets ?? new Map();
 }
 
+/** BACKSIDE_COMBO (default off): on zone runs the backside end outside the
+ * backside tackle is left alone; the tackle doubles the backside guard's man
+ * and the guard climbs to the backside backer nobody else has. The installed
+ * plan cut off that end and left the guard solo: covered backside guards got
+ * within 1.5 yd of a backer by 2.5 s on 9-14% of snaps (tracked 47-48%). */
+export const BACKSIDE_COMBO = process.env.BACKSIDE_COMBO === '1';
+
 /** A zone climber does not take a backer more than three gaps (4.5 yd)
  * from him across the formation. */
 const ZONE_BACKER_REACH = 4.5;
@@ -639,6 +646,26 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     for (const l of counted) if (l) claimedLB.add(l);
     for (const { b, neighbor, np } of doubles) combo(b, neighbor, np.target!, backerOf.get(b) ?? null, np.drive);
     for (const b of climbers) plans.set(b, { kind: 'climb', target: backerOf.get(b) ?? null, drive: up(ps * 0.4) });
+    // BACKSIDE_COMBO: the backside end outside the tackle is left alone; the
+    // tackle doubles the backside guard's man with him and the guard climbs
+    // to the backside backer nobody has.
+    if (BACKSIDE_COMBO && scheme !== 'draw' && scheme !== 'qbDraw' && scheme !== 'toss') {
+      const ol = line.filter((b) => isOL(b));
+      const bt = ol[ol.length - 1], bg = ol[ol.length - 2];
+      const tp = bt && plans.get(bt), gp = bg && plans.get(bg);
+      const end = tp?.target, man = gp?.target;
+      if (tp && gp && end && man && !tp.combination && !gp.combination
+        && (tp.kind === 'drive' || tp.kind === 'reach') && (gp.kind === 'drive' || gp.kind === 'reach')
+        && rel(end) < rel(bt) - .5 && dl.includes(man)) {
+        const backer = lb.filter((l) => !claimedLB.has(l) && rel(l) < rel(bg) + 1.5 && Math.abs(l.pos.y - bg.pos.y) <= ZONE_BACKER_REACH)
+          .sort((p, q) => Math.abs(p.pos.y - bg.pos.y) - Math.abs(q.pos.y - bg.pos.y))[0];
+        if (backer) {
+          claimedLB.add(backer); claimedDL.delete(end);
+          plans.set(bt, { kind: gp.kind, target: man, drive: gp.drive });
+          combo(bg, bt, man, backer, gp.drive);
+        }
+      }
+    }
     // Backside end of the line walls off (cutoff).
     const last = line[line.length - 1];
     const lp = plans.get(last);
