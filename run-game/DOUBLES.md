@@ -266,3 +266,14 @@ The wrapper's "first block" on the kicker's man (28% vs NFL 4%) is mostly the wr
 **Box LB lateral movement toward the play is zero for the first full second in every concept** (`lbtempo`):
 - IZ: NFL 0.20 / 1.05 yd/s at 0.5 / 1.0 s.
 - Counter: NFL 0.15 / 0.95 yd/s.
+
+**The trapped lineman: what he asks for vs what his body does** (`_trapdl`, command trace, 153 trap plays, p50 upfield yd/s):
+
+| t (s) | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 |
+|---|---|---|---|---|---|---|
+| Requested | 6.54 | 2.65 | 1.57 | 0.80 | 0.27 | 0.05 |
+| Achieved | 1.10 | 1.35 | 1.27 | 1.05 | 0.72 | 0.44 |
+
+- His `PassRusher` controller steers to a nearby point objective and stops there.
+- After 0.6 s his body is braking down to the request, not falling short of it.
+- So this is a controller issue (Defense), not physics.
