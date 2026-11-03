@@ -99,6 +99,34 @@ export interface PassConcept {
   minReceivers?: number;
   /** Play-action fake attached. */
   fake?: string;
+  /** A screen: who catches it and who releases to block for him. */
+  screen?: ScreenSpec;
+}
+
+/**
+ * Blocking jobs for a screen (docs/football-handbook/screens.md). Released
+ * linemen work "out, up, in": the first takes the outermost threat to the
+ * catch, the next the alley, the next anyone chasing from inside. Perimeter
+ * receivers take the defender over them (stalk) or the next one inside
+ * (crack). Targets are chosen live from what each blocker sees.
+ */
+export type ScreenJob = 'out' | 'up' | 'in' | 'stalk' | 'crack';
+
+export interface ScreenBlock {
+  /** 'T' | 'G' | 'C' (the screen side's tackle/guard, or the center), or a receiver number. */
+  who: 'T' | 'G' | 'C' | ReceiverRef;
+  job: ScreenJob;
+}
+
+export interface ScreenSpec {
+  /** The screen receiver. */
+  receiver: ReceiverRef;
+  /** Slow screens are sold as a pass first; quick screens are thrown at once. */
+  tempo: 'quick' | 'slow';
+  /** Called count, seconds after the snap, at which released linemen leave
+   * their pass set (each lineman counts with his own rhythm). */
+  count: number;
+  blocks: ScreenBlock[];
 }
 
 export type RunScheme = 'insideZone' | 'outsideZone' | 'wideZone' | 'splitZone' | 'power' | 'counter' | 'duo' | 'trap' | 'draw' | 'toss' | 'qbDraw';

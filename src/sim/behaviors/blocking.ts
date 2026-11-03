@@ -214,6 +214,9 @@ export class PassProtector implements Behavior {
     /** For backs/TEs: release into a route after this time if nobody comes. */
     private readonly releaseTo: (() => Behavior) | null = null,
     private readonly releaseAfter = 1.1,
+    /** A called release (a screen): leave the set on the count even with a man,
+     * releasing the hands; a back or end with a free blitzer still stays in. */
+    private readonly calledRelease = false,
   ) {}
 
   /** Inspect existing protection state without running the coordinator. */
@@ -228,6 +231,16 @@ export class PassProtector implements Behavior {
     const outside = a.slot === 'LT' || a.slot === 'RT' ? Math.sign(home - sim.ballY) : 0;
     a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside };
     if (sim.t < a.mind.snapDelay) return stand(0);
+    // A called release: a lineman or attached end leaves his man on the count;
+    // a back stays in while a free rusher is coming at him (a blitz kills the screen).
+    const freeRusher = (): boolean => { const r = this.coord.assigned.get(a); return !!r && !r.engagement; };
+    if (this.calledRelease && this.releaseTo && sim.t > this.releaseAfter && sim.carrier === sim.qb
+      && (isOL(a) || !sim.offAlign.spots[a.slot]?.backfield || !freeRusher())) {
+      if (a.engagement) sim.disengage(a.engagement);
+      this.released = true;
+      a.behavior = this.releaseTo();
+      return a.behavior.update(a, sim);
+    }
     if (a.engagement) return stand();
     if (sim.carrier !== sim.qb || !sim.isPass) {
       return stand();

@@ -47,6 +47,19 @@ export const ROUTES: Record<string, RouteDef> = {
   checkdown: { id: 'checkdown', family: 'back', depth: 4, end: 'settle', points: [{ d: 0.5, l: 1, s: 0.8 }, { d: 4.5, l: -1, s: 0 }] },
   angle: { id: 'angle', family: 'back', depth: 4, end: 'continue', points: [{ d: 1.5, l: 3.5, s: 0.45 }, { d: 5, l: -6 }] },
   back_flat: { id: 'back_flat', family: 'back', depth: 1, end: 'continue', points: [{ d: 0, l: 4, s: 0.9 }, { d: 2, l: 12 }] },
+  // Screens (docs/football-handbook/screens.md). Caught behind the line.
+  // Slip: the back gets lost in the line, then slides out to settle behind
+  // the screen-side tackle, 2-3 yd behind the line.
+  slip_screen: { id: 'slip_screen', family: 'back', depth: -3, end: 'settle', points: [{ d: -3.5, l: 2.5, s: 0.6 }, { d: -2.5, l: 4.5, s: 0 }] },
+  // TE screen: release flat behind the line after his block, settle outside.
+  te_screen: { id: 'te_screen', family: 'back', depth: -2, end: 'settle', points: [{ d: -1.5, l: 1.5, s: 0.6 }, { d: -2.5, l: 3.5, s: 0 }] },
+  // Bubble: gain a little depth, turn the head back, and be going downhill by
+  // the third step; caught in stride facing upfield.
+  bubble: { id: 'bubble', family: 'flat', depth: -1, end: 'continue', points: [{ d: -1.5, l: 2, s: 0.9 }, { d: -1, l: 4.5, s: 0.9 }, { d: 2, l: 7 }] },
+  // Now screen: one step upfield, then back to the ball behind the line.
+  now_screen: { id: 'now_screen', family: 'flat', depth: -1, end: 'settle', points: [{ d: 1, l: 0, s: 0.3 }, { d: -1, l: -0.5, s: 0 }] },
+  // Tunnel: the outside receiver comes back inside behind the line.
+  tunnel: { id: 'tunnel', family: 'flat', depth: -1, end: 'continue', points: [{ d: 1, l: 0, s: 0.4 }, { d: -1, l: -3.5, s: 0.9 }, { d: 1, l: -6 }] },
   wheel: { id: 'wheel', family: 'back', depth: 18, end: 'continue', points: [{ d: 0, l: 5, s: 0.85 }, { d: 4, l: 10, s: 0.75 }, { d: 40, l: 11.5 }] },
 };
 

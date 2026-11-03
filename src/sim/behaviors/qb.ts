@@ -122,8 +122,9 @@ export class QBPass implements Behavior {
         seen.add(r);
       }
     }
-    // Anyone else running a route is a late option.
-    for (const o of sim.offense) {
+    // Anyone else running a route is a late option (not on a screen: the
+    // other routes clear coverage).
+    if (this.concept.family !== 'screen') for (const o of sim.offense) {
       if (!seen.has(o) && o.behavior instanceof RouteRunner) {
         this.reads.push(o);
         seen.add(o);
@@ -337,6 +338,11 @@ export class QBPass implements Behavior {
   private ready(r: Agent, sim: PlaySim): boolean {
     const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     if (!rr) return r.behavior.kind === 'route';
+    // A slow screen is thrown once the receiver has settled behind his blockers.
+    if (this.concept.family === 'screen' && rr.route.end === 'settle' && this.concept.screen?.tempo === 'slow') {
+      const last = rr.path[rr.path.length - 1]?.p;
+      return rr.settled || (!!last && Math.hypot(r.pos.x - last.x, r.pos.y - last.y) < 1.5);
+    }
     const antic = sim.qb.r('anticipation');
     return sim.t >= rr.breakTime - 0.3 * antic;
   }

@@ -115,6 +115,49 @@ export const RUN_CONCEPTS: RunConcept[] = [
   { id: 'toss', name: 'Toss', scheme: 'toss', direction: 'strong', aim: 'edge', meshTime: 0.5, pullers: [], beats: ['heavy-box', 'slow-edge'] },
 ];
 
+/**
+ * Screens. Not in the play caller's pool yet: they are called from the screen
+ * lab (scripts/diag/screen-lab.mts) until their blocking is reviewed.
+ */
+export const SCREEN_CONCEPTS: PassConcept[] = [
+  {
+    // Slow RB screen to the back's side: line sells the pass, screen-side T/G/C release.
+    id: 'rb_slip_screen', name: 'RB Slip Screen', family: 'screen', drop: 'gun5',
+    strong: { 1: 'go', 2: 'go', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'slip_screen',
+    progression: ['B'], beats: ['pass-rush', 'blitz'],
+    screen: { receiver: 'B', tempo: 'slow', count: 1.0, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
+  },
+  {
+    // TE screen: the inline TE blocks, then slides out behind the line.
+    id: 'te_screen', name: 'TE Screen', family: 'screen', drop: 'gun5',
+    strong: { 1: 'go', 2: 'go', 3: 'te_screen' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
+    progression: ['S3', 'S2'], beats: ['pass-rush'],
+    screen: { receiver: 'S3', tempo: 'slow', count: 1.0, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
+  },
+  {
+    // Bubble to the trips slot: #1 stalks, #3 blocks inside-out on the next man.
+    id: 'bubble_screen', name: 'Trips Bubble', family: 'screen', drop: 'quick',
+    strong: { 1: 'go', 2: 'bubble', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
+    progression: ['S2'], beats: ['off-coverage', 'light-box'],
+    screen: { receiver: 'S2', tempo: 'quick', count: 0, blocks: [{ who: 'S1', job: 'stalk' }, { who: 'S3', job: 'crack' }] },
+  },
+  {
+    // Bunch now screen to the point man... caught by #1 coming back; #2/#3 block.
+    id: 'bunch_now_screen', name: 'Bunch Now Screen', family: 'screen', drop: 'quick',
+    strong: { 1: 'now_screen', 2: 'go', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
+    progression: ['S1'], beats: ['off-coverage'],
+    screen: { receiver: 'S1', tempo: 'quick', count: 0, blocks: [{ who: 'S2', job: 'stalk' }, { who: 'S3', job: 'crack' }] },
+  },
+  {
+    // Tunnel: #1 comes back inside; #2 cracks, screen-side T and G release at once.
+    id: 'tunnel_screen', name: 'Tunnel Screen', family: 'screen', drop: 'quick',
+    strong: { 1: 'tunnel', 2: 'go', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
+    progression: ['S1'], beats: ['off-coverage', 'pass-rush'],
+    screen: { receiver: 'S1', tempo: 'quick', count: 0.4, blocks: [{ who: 'S2', job: 'stalk' }, { who: 'T', job: 'out' }, { who: 'G', job: 'up' }] },
+  },
+];
+export const SCREEN_BY_ID: Record<string, PassConcept> = Object.fromEntries(SCREEN_CONCEPTS.map((c) => [c.id, c]));
+
 export const PASS_BY_ID: Record<string, PassConcept> = Object.fromEntries(PASS_CONCEPTS.map((c) => [c.id, c]));
 export const RUN_BY_ID: Record<string, RunConcept> = Object.fromEntries(RUN_CONCEPTS.map((c) => [c.id, c]));
 
