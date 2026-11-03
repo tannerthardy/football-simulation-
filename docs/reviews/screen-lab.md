@@ -47,6 +47,10 @@ Mechanics (`src/sim/behaviors/screen.ts`, `ScreenBlocker`):
 - **Receiver release.** A back stays in while his blocking assignment is a free
   rusher, because a blitz kills the screen. An attached end always releases
   on the count.
+- **Short set.** A lineman with a called release sets no deeper than 0.7 yd
+  (NFL released linemen stay about 0.7 yd off the line through the set). He
+  punches and lets the rusher by near the line instead of kicking back to the
+  QB's depth, and he skips the edge cut-off kick.
 - **Letting the rusher by.** A released lineman leaves on the count once his man
   is past his hip toward the QB, or 0.3 s after the count at the latest.
   Before the throw he steps around any defender directly upfield of him (gets
@@ -57,8 +61,8 @@ Mechanics (`src/sim/behaviors/screen.ts`, `ScreenBlocker`):
 - **The QB** reads only the screen. On a slow screen he throws on
   anticipation once the receiver is within 3.5 yd of his spot. NFL slow
   screens leave the hand with the receiver still 2.3–2.9 yd from where he
-  catches it. He may also loft the ball over the rush; his usual throw-window
-  evaluation decides whether to.
+  catches it. A lofted "touch" option was tried and removed: the throw-window
+  evaluation never chose it.
 
 ## How to run it
 
@@ -207,6 +211,37 @@ Values are p50s.
 
    Still open: linemen remain about 3 yd deep at the throw, and the slip
    screen completes 11 of 32.
+
+8. **Lineman depth and slip completions.**
+   - **Depth over time** (`screen_ol_reference.py`), released linemen on caught
+     RB/TE screens, depth behind the line at 0.5 / 1.0 / 1.5 / 2.0 s:
+
+     | | 0.5 s | 1.0 s | 1.5 s | 2.0 s |
+     |---|---|---|---|---|
+     | NFL | 0.7 | 0.7 | 0.8 | 0.6 |
+     | sim before | 1.3 | 2.2 | 3.1 | 4.0 |
+     | sim with the short set | 1.2 | 1.7 | 2.4 | 3.0 |
+
+     They are still driven back after the set.
+   - **Slip screen with the short set:**
+     - throw p50 2.25 s on three of the four calls (NFL 2.20);
+     - 2 OL ahead of the catcher (NFL 2);
+     - QB hit before the throw on 5 of 32 snaps (14 without the short set).
+   - **TE screen with the short set:** 11/32 caught (16 without).
+   - **Why slip snaps fail** (`scripts/diag/screen-outcomes.mts`, 32 snaps):
+
+     | | slip | TE |
+     |---|---|---|
+     | caught | 12 | 11 |
+     | thrown, missed | 11 | 7 |
+     | QB hit before the throw (sack, scramble, hurried drop) | 5 | 7 |
+     | other (throwaway, breakup, drop, batted) | 4 | 7 |
+
+     The misses are not blocking. The QB's throw arrives at its planned time
+     about 1.1–1.4 yd from the back: either short of its point (seed 1), or
+     at its point while the back has drifted past it tracking the ball
+     (seed 6). These are the shared receiver-forecast and ball-tracking
+     systems on a receiver decelerating into his settle point.
 
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens

@@ -24,6 +24,10 @@ if (process.env.TRACE_QB) { const qb: any = sim.qb, b: any = qb.behavior; const 
   b.evaluate = (a: any, s2: any, r: any, u: number) => { const e = ev0(a, s2, r, u); if (s2.t > 1.6) console.log(`  QB eval t ${s2.t.toFixed(2)} ${r.slot} u ${u.toFixed(2)} -> ${e ? `P ${e.P.toFixed(2)} int ${e.intRisk.toFixed(3)} T ${e.T.toFixed(2)}` : 'null'}`); return e; };
   b.ready = (r: any, s2: any) => { const x = rd0(r, s2); if (s2.t > 1.6 && Math.abs(s2.t * 10 - Math.round(s2.t * 10)) < 1e-6) console.log(`  QB ready t ${s2.t.toFixed(2)} ${r.slot} ${x}`); return x; }; }
 (globalThis as any).__QBDBG = !!process.env.TRACE_QB;
+if (process.env.TRACE_BALL) { const tb = sim.throwBall.bind(sim); sim.throwBall = (q: any, tgt: any, v0: any, intended: any, arr: number, ...rest: any[]) => {
+  console.log(`  THROW t ${sim.t.toFixed(2)} to ${tgt?.slot} intended (${(intended.x - sim.los).toFixed(1)},${intended.y.toFixed(1)},${intended.z.toFixed(1)}) arrive ${arr.toFixed(2)} | target now (${tgt ? (tgt.pos.x - sim.los).toFixed(1) + ',' + tgt.pos.y.toFixed(1) : ''}) vel (${tgt ? tgt.vel.x.toFixed(1) + ',' + tgt.vel.y.toFixed(1) : ''}) behavior ${tgt?.behavior?.kind}`);
+  (globalThis as any).__MISS = { tgt, arr }; return tb(q, tgt, v0, intended, arr, ...rest); };
+  const t1 = sim.tick.bind(sim); sim.tick = () => { t1(); const m = (globalThis as any).__MISS; if (m && Math.abs(sim.t - m.arr) < 0.026) { const b: any = sim.ball; console.log(`  ARRIVE t ${sim.t.toFixed(2)} ball ${b.kind} ${b.flight ? '(' + (b.flight.pos.x - sim.los).toFixed(1) + ',' + b.flight.pos.y.toFixed(1) + ',' + b.flight.pos.z.toFixed(1) + ') vz ' + b.flight.vel.z.toFixed(1) : ''} target (${(m.tgt.pos.x - sim.los).toFixed(1)},${m.tgt.pos.y.toFixed(1)}) behavior ${m.tgt.behavior.kind}`); } }; }
 const res = sim.run();
 if (rbSlot) for (const st of (globalThis as any).__tr.steps) { if (Math.abs(st.stepStart * 10 - Math.round(st.stepStart * 10)) > 1e-6) continue;
   const raw = st.decision?.raw?.vel, fin = st.final?.vel, v = st.endpoint?.body?.velocity ?? st.endpoint?.velocity;

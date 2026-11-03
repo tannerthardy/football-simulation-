@@ -43,10 +43,12 @@ for path in sys.argv[1:]:
             cross = next((f for f in range(up + 1) if P(f, j)[0] > 0), up)
             ox, oy = P(k(tc), j); tx, ty = P(k(tt), j)
             ahead = ox - rx
-            rows.append({"cross_rel_throw": cross * dt - tt, "x_throw": tx, "lat_ball_throw": abs(ty - p.get("ball_y", 26.65)),
+            rows.append({"depth_t": [P(k(t), j)[0] for t in (0.5, 1.0, 1.5, 2.0)], "cross_rel_throw": cross * dt - tt, "x_throw": tx, "lat_ball_throw": abs(ty - p.get("ball_y", 26.65)),
                          "ahead": ahead, "lat_catcher": abs(oy - ry),
                          "convoy": ahead > -0.5 and abs(oy - ry) <= 6 and math.hypot(ox - rx, oy - ry) <= 10})
     print(f"\n{path}: {len(rows)} released OL on caught RB/TE screens")
+    for i, t in enumerate((0.5, 1.0, 1.5, 2.0)):
+        print(f"  depth at {t:.1f} s after the snap {q([r['depth_t'][i] for r in rows])} yd")
     print(f"  crosses the LOS rel. throw {q([r['cross_rel_throw'] for r in rows])} s")
     print(f"  at the throw: depth {q([r['x_throw'] for r in rows])} yd, lateral from ball {q([r['lat_ball_throw'] for r in rows])} yd")
     print(f"  at the catch: ahead of catcher {q([r['ahead'] for r in rows])} yd, lateral from catcher {q([r['lat_catcher'] for r in rows])} yd, in convoy {sum(r['convoy'] for r in rows)/max(1,len(rows)):.0%}")

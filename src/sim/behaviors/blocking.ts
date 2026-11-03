@@ -219,6 +219,15 @@ export class PassProtector implements Behavior {
     private readonly calledRelease = false,
   ) {}
 
+  /** A lineman with a called release takes a short set: he punches and lets
+   * the rusher by near the line rather than kicking back to the QB's depth
+   * (NFL released linemen on RB/TE screens stay ~0.7 yd off the line through
+   * the set, screen_ol_reference.py). */
+  private setDepth(sim: PlaySim, a: Agent): number {
+    const depth = passSetDepth(sim, a);
+    return this.calledRelease && isOL(a) ? Math.min(depth, 0.7) : depth;
+  }
+
   /** Inspect existing protection state without running the coordinator. */
   recordedTarget(a: Agent): number | null {
     return a.engagement?.defender.idx ?? this.coord.assigned.get(a)?.idx ?? null;
@@ -264,7 +273,7 @@ export class PassProtector implements Behavior {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';
       const out = Math.sign(home - sim.ballY);
-      const depth = isOL(a) ? passSetDepth(sim, a) : 0;
+      const depth = isOL(a) ? this.setDepth(sim, a) : 0;
       // A back steps up beside the QB's launch point, not toward the line:
       // from under center the QB starts at the line and drops away.
       let set = isOL(a) ? { x: sim.los - lineDepth(0.6, stanceDepth(sim, a)) - depth, y: home + (isT ? out * 0.8 : 0) } : { x: Math.min(qb.pos.x + 1.2, sim.snapX[a.idx] + 1.5), y: qb.pos.y + Math.sign(home - qb.pos.y || 1) * 1.4 };
@@ -286,7 +295,7 @@ export class PassProtector implements Behavior {
     // Kick-slide: gain depth (tackles more than interior), staying on the
     // rusher's line to the QB at punching distance. Make the rusher come to you.
     const isT = a.slot === 'LT' || a.slot === 'RT';
-    const setDepth = passSetDepth(sim, a);
+    const setDepth = this.setDepth(sim, a);
     // Anticipate the rusher's path a beat ahead (better feet read it sooner).
     const lead = 0.15 + 0.2 * traits(a).feet;
     const rp = { x: r.pos.x + r.vel.x * lead, y: r.pos.y + r.vel.y * lead };
@@ -301,7 +310,7 @@ export class PassProtector implements Behavior {
     // shoulder — and let the hands decide the rep.
     let ride = false;
     let cuttingOff = false;
-    if (edgeRusher && isOL(a)) {
+    if (edgeRusher && isOL(a) && !this.calledRelease) {
       const meet = PASS_KICK ? null : cutOffPoint(a, r, qb.pos, contact);
       if (meet) {
         set = { x: meet.x, y: meet.y + out * overset };
