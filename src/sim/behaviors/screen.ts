@@ -74,6 +74,18 @@ export class ScreenBlocker implements Behavior {
     // Run, then buzz the feet: inside a few yards he breaks down to the man's
     // speed and closes under control ("make him go through you"), rather than
     // running through him and whiffing or flattening a moving defender.
+    // A receiver's stalk or crack does not release like a route: he works to
+    // leverage, between his man and the catch point near his own depth, and
+    // lets the man come to him; he attacks once the ball is out. NFL screen
+    // blockers on DBs move 0.5 yd downfield and 0.7 yd across by 0.9 s while
+    // the DB comes downhill to them (stalk_reference.py); he does not chase a
+    // man who bails.
+    if (!this.lineman && !thrown && dist > 2) {
+      const lev = { x: seen.pos.x + toRef.x * Math.min(2.5, dist - 0.5), y: seen.pos.y + toRef.y * Math.min(2.5, dist - 0.5) };
+      lev.x = dir > 0 ? Math.min(lev.x, this.home.x + 1.5) : Math.max(lev.x, this.home.x - 1.5);
+      const far = Math.hypot(lev.x - a.pos.x, lev.y - a.pos.y);
+      return runThrough(a, lev, { speed: far > 0.4 ? 0.45 : 0, cutSkill: 1, facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) });
+    }
     if (dist > 4) return runThrough(a, fit, { speed: 0.95, cutSkill: 1 });
     return track(a, fit, seen.vel, { gain: 2, cutSkill: 1 });
   }

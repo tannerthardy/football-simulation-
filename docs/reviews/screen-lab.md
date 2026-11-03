@@ -36,9 +36,12 @@ Mechanics (`src/sim/behaviors/screen.ts`, `ScreenBlocker`):
   perception, re-read every 0.3 s. A man already claimed by a teammate is
   skipped. Except on the in job, a perimeter or alley block never takes a man
   aligned on the ball near the tackles, because that man is the rush.
-- **Approach and block.** A blocker runs to his man, then breaks down inside
-  4 yd: he matches the man's speed and closes under control (`track`), the
-  "buzz the feet" technique. The block itself is the ordinary run engagement,
+- **Approach and block.** Before the throw, a receiver's stalk or crack works
+  to leverage between his man and the catch point. He stays near his own
+  depth (at most 1.5 yd deeper), lets the man come, and does not chase a man
+  who bails. Once the ball is out, he attacks: he runs to the man, then breaks
+  down inside 4 yd and closes under control (`track`), the "buzz the feet"
+  technique. The block itself is the ordinary run engagement,
   with the hands and bodies in physical contact. Screen blockers keep their jobs through the
   catch. Everyone else becomes the existing `DownfieldBlocker`.
 - **Receiver release.** A back stays in while his blocking assignment is a free
@@ -151,6 +154,34 @@ Values are p50s.
      catch (was 0.1; NFL WR screens 3.2), and 19% are slow at the catch (NFL
      3%). The first defender still arrives 2.6 s after the catch.
    - **What remains** is closing at the catch, which is Defense's item 2.
+
+6. **The stalk released like a route: re-diagnosed and fixed.** A first try
+   that held a cushion on the man was reverted, because it followed bailing
+   DBs.
+   - **NFL vs sim.** `release_pace.py` and `stalk_reference.py` measure NFL
+     screen blockers and the DBs they block with the same code as the sim:
+
+     | p50 | NFL | sim before | sim now |
+     |---|---|---|---|
+     | blocker speed at 0.9 s, yd/s | 1.9 | 4.4–4.7 | 2.2–2.6 |
+     | blocker downfield / lateral at the catch, yd | 1.7 / 3.1 | 5.2 / 0.8 | 2.5 / 1.3 |
+     | the DB's movement toward the line at the catch, yd | 1.9 toward | 2.5 away | 0.9 away (p25 3.1 toward) |
+
+     NFL screen blockers barely release; they work across while the DB comes
+     downhill to them. Ours released like route runners, the DB bailed as if
+     covering a route, and the blocker chased him.
+   - **Bunch now after the fix** (all vs NFL WR screens):
+     - closing at the catch 1.6 yd/s (was 0.9; NFL 3.2);
+     - slow at the catch 7% (was 19%; NFL 3%);
+     - first defender at the carrier 1.6 s (was 2.6; NFL 0.9);
+     - median gain 8.5 yd (was 11.4; NFL 5).
+   - **Bubble:** median gain 17.7 yd. Its run tail is still long.
+   - **Knockdowns:** stalk knockdowns after the throw, as the blocker attacks,
+     are 6 of 32 bubbles.
+   - **Remaining divergences:**
+     - our blockers still drift 1.8–2.0 yd/s downfield at 0.9 s (NFL 0.6);
+     - most DBs still bail rather than come downhill. That is Defense's read of
+       the screen.
 
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
