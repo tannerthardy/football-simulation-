@@ -16,6 +16,7 @@
     "GAP_MATCH": "1",
     "SEAL_HOLD": "1",
     "DL_HANDS": "0",
+    "ATTACK_LANDMARK": "1",
     "FLOW_READ": "1",
     "FLOW_RELEASE": "1",
     "GAIT_STEP": "0",

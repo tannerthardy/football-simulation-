@@ -237,10 +237,12 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     // delay, so the man corner sees Z's blocking look on time), the results swap: the baseline throws to Z at 2.9
     // and completes; the support arm's throw to Z at 2.75 falls incomplete with no defender credited. The geometry
     // and the QB's own read of Z above carry the cost of the bite; results are named, not judged.
+    // With an attacking interior lineman penetrating to the offensive line's stance line on his run read, the
+    // throws keep their clocks (Z at 2.9 and at 2.75) and the support arm's throw is now caught too, at 3.75.
     expect(kind(pass.baseline)).toBe('completion');
     expect(pass.baseline.execution.result.stats.receiver).toBe('OFF-WR2');
-    expect(kind(pass.alternative)).toBe('incomplete');
-    expect(pass.alternative.execution.result.stats.target).toBe('OFF-WR2');
+    expect(kind(pass.alternative)).toBe('completion');
+    expect(pass.alternative.execution.result.stats.receiver).toBe('OFF-WR2');
     expect(pass.alternative.execution.result.stats.passDefendedBy).toBeUndefined();
     for (const arm of [pass.baseline, pass.alternative]) expect(arm.execution.result.stats.interceptedBy).toBeUndefined();
   });

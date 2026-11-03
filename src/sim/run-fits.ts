@@ -187,6 +187,8 @@ const PULL_PLAN = process.env.PULL_PLAN === '1';
 
 /** Backers flow inside-out on a declared track (FLOW_READ=0 off); yards inside the ball. */
 const FLOW_READ = process.env.FLOW_READ !== '0', FLOW_INSIDE = 1;
+/** An attacking interior lineman's fit landmark is the offensive line's stance line (ATTACK_LANDMARK=0: the old .25 hold). */
+const ATTACK_LANDMARK = process.env.ATTACK_LANDMARK !== '0';
 
 /** Pull reads (PULL_READ=0 restores the single nearest-shift read, for A/B). */
 const PULL_READ = process.env.PULL_READ !== '0';
@@ -557,7 +559,12 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // guard pulling into his fit is the same threat seen sooner: the puller leads
   // the ball to the hole, and the backer fills to meet him there.
   const fill = threatened || pullSide !== 0;
-  const depth = job.kind === 'interior' ? .25 : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? fill ? FILL_DEPTH : STACK_LANDMARK : .5;
+  // An attacking interior lineman penetrates his gap: his landmark is the
+  // offensive line's stance line, in the backfield, where he resets the line
+  // and meets a trapper or puller. A two-gap (control) or lagging lineman holds
+  // just past the line, where he can still play either side of his blocker.
+  const fitDepth = ATTACK_LANDMARK && job.technique === 'attack' ? (sim.offAlign.spots.C?.pos.x ?? sim.los - 1) - sim.los : .25;
+  const depth = job.kind === 'interior' ? fitDepth : job.kind === 'cutback' ? 1.4 : job.pace === 'stack' ? fill ? FILL_DEPTH : STACK_LANDMARK : .5;
   const aim = a.mind.aim('run-fit',{x:sim.los+depth,y:gy+flow+a.mind.placementError},sim.t);
   let pace = .78+.15*a.mind.urgency;
   const fit = track(a,aim,{x:0,y:0},{speed:pace,gain:3,facing:Math.PI});

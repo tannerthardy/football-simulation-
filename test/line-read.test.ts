@@ -66,7 +66,13 @@ describe('a lineman reads the play from the line', () => {
     // That response is protected by its acquired cue below, not counted as a replacement.
     const first = (s: ReturnType<typeof play>, a: Agent) =>
       Math.min(...['fit-replace', 'fit-box', 'fit-spill'].map(tag => s.firstFit.get(`${a.slot}:${tag}`) ?? Infinity));
-    for (const s of snaps('counter', 'i_jumbo_22')) {
+    // With an attacking tackle penetrating to the offensive line's stance line, the late backside box no longer
+    // occurs on these six; a native snap of the same counter where it does (seed 31 flipped, the only one of
+    // seeds 1-40 x both flips in I-jumbo and I-pro whose backside box follows the play side's response) joins the
+    // backside checks.
+    const counter = snaps('counter', 'i_jumbo_22');
+    const lateBox = [...counter, { seed: 31, flip: true, ...play('counter', 'i_jumbo_22', 31, true) }];
+    for (const s of lateBox) {
       const playSide = edges(s.sim).filter(a => a.runFit!.side === s.ballSide);
       const backside = edges(s.sim).filter(a => a.runFit!.side !== s.ballSide);
       expect(playSide).toHaveLength(1);
@@ -92,9 +98,9 @@ describe('a lineman reads the play from the line', () => {
         }
       }
     }
-    expect(snaps('counter', 'i_jumbo_22').filter(s => edges(s.sim).some(a => a.tags.has('fit-replace'))).length).toBeGreaterThanOrEqual(5);
+    expect(counter.filter(s => edges(s.sim).some(a => a.tags.has('fit-replace'))).length).toBeGreaterThanOrEqual(5);
     // The late backside response is exercised, so its cue check above is not vacuous.
-    expect(snaps('counter', 'i_jumbo_22').some(s => edges(s.sim).some(a => a.runFit!.side !== s.ballSide
+    expect(lateBox.some(s => edges(s.sim).some(a => a.runFit!.side !== s.ballSide
       && (a.tags.has('fit-box') || a.tags.has('fit-spill'))))).toBe(true);
     for (const s of snaps('wz_weak', 'ace_11')) expect(tagged(edges(s.sim), 'fit-replace')).toBe(0);
   });

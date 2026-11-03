@@ -258,10 +258,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // first, at 6.35, wrapping. The natural tie is on M25-P032; the census rule itself is pinned on the staged case below.
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as
     // well, DT_W alone makes first contact at 3.1, wrapping with it. With the box backer reading before he moves and filling to a pull he sees,
-    // SS alone at 3.45, wrapping with it.
+    // SS alone at 3.45, wrapping with it. With an attacking interior lineman penetrating to the offensive line's
+    // stance line instead of holding just past the line, DT_W alone at 3.35.
     const p = play('R9-P020'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(3.45);
-    expect(first.defenders.map(p.slot)).toEqual(['SS']);
+    expect(first.t).toBe(3.35);
+    expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
   });
 
   it('M7-P051: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
@@ -278,10 +279,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // well, LB_W is still alone at 2.9. With the box backer reading before he moves and filling to a pull he sees, LB_W alone at 3.0.
     // With run-read attention (a blocker in front of a run-reading defender and in range is seen on the ordinary
     // delay), DE_S alone at 2.85; with his picture judged from what he saw and held rather than rewound when the
-    // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65.
+    // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65. With an
+    // attacking interior lineman penetrating to the offensive line's stance line, LB_W alone at 3.0.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.65);
-    expect(first.defenders.map(p.slot)).toEqual(['DE_S']);
+    expect(first.t).toBe(3);
+    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
