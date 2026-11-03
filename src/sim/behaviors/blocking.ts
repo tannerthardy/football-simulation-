@@ -1870,6 +1870,13 @@ export class RunBlocker implements Behavior {
     return { ...seen, pos, vel };
   }
 
+  /** REACH_TECHNIQUE: a zone reach on his own man races for the play-side shoulder. */
+  reachGoal(a: Agent, sim: PlaySim, e: Engagement): EngagedGoal | null {
+    if (e.blocker !== a || e.helpers.length || this.plan.kind !== 'reach' || this.plan.target !== e.defender) return null;
+    const run = sim.offCall.run;
+    return run ? { kind: 'reach', side: playSideSign(sim, run) } : null;
+  }
+
   /** ENGAGED_TECHNIQUE: a climber on his backer with the runner in his
    * pictures walls him off from the ball; every other engaged job drives. */
   engagedGoal(a: Agent, sim: PlaySim, e: Engagement): EngagedGoal | null {

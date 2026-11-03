@@ -41,7 +41,7 @@ import { requestToCover } from './motion-plan.js';
 import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
-import { ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, drivePace, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
+import { ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -1393,6 +1393,25 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
         lateral = Math.max(lateral * side, Math.min(mirror, work * side)) * side;
       }
     }
+  }
+  // REACH_TECHNIQUE: the reach's own footwork replaces the mirror (and the
+  // stretch co-flow floor above): race for the play-side shoulder.
+  const reach = REACH_TECHNIQUE ? b.behavior.reachGoal?.(b, sim, e) ?? null : null;
+  if (reach?.kind === 'reach') {
+    const feet = reachFeet(lat, reach.side, { x: b.pos.x - d.pos.x, y: b.pos.y - d.pos.y }, dv, sep, seal, tb.lateral, along(dv), gap);
+    lateral = feet.lateral;
+    if (!stretch) forward = feet.forward;
+    // Hands his: steer across the man's face toward his play-side shoulder
+    // (arm work through HAND_MOTOR, within the arm and grip budgets).
+    const j = e.hands;
+    if (j && e.control >= 0 && j.actor === b.body && !feet.onShoulder) {
+      const other = j.b === d.body ? d : b, self = other === d ? b : d;
+      const dx = other.pos.x - self.pos.x, dy = other.pos.y - self.pos.y, L = Math.hypot(dx, dy) || 1;
+      const tx = -dy / L, ty = dx / L;
+      // Wanted relative motion of the blocker past the man toward the play side.
+      const bPastD = (other === d ? -1 : 1) * (tx * 0 + ty * reach.side);
+      j.drive = Math.sign(bPastD) * Math.min(2, tb.lateral);
+    } else if (j && j.actor === b.body) j.drive = 0;
   }
   let blockVel: Vec2;
   if (RUN_CONTACT_COMPONENTS && stretch) {

@@ -95,6 +95,7 @@
     "RUN_FEEL": "1",
     "ENGAGED_TECHNIQUE": "0",
     "ENGAGED_DEFENDER": "0",
+    "REACH_TECHNIQUE": "0",
     "BACKFIELD_DEPTH": "0",
     "STRETCH_OFFSET": "0",
     "MESH_TEMPO": "0"

@@ -29,13 +29,23 @@ export const ENGAGED_TECHNIQUE = process.env.ENGAGED_TECHNIQUE === '1';
  * rep law no longer authors his feet. Defender behaviour is Defense's: this
  * is the neutral hook. */
 export const ENGAGED_DEFENDER = process.env.ENGAGED_DEFENDER === '1';
+/** REACH_TECHNIQUE (default off): a zone reach blocker races for his man's
+ * play-side shoulder from contact at his own lateral speed, never mirroring
+ * away from the play; on the shoulder he holds it and goes at least with the
+ * man's flow. With the hands his (control) he steers across the man's face
+ * (acts through HAND_MOTOR's arm work). Without it a reach blocker only
+ * mirrored his man: a lineman who held still was never reached (outside zone:
+ * blocker lateral 0.02 yd from 0.4 to 1.2 s, across his face 9-23%). */
+export const REACH_TECHNIQUE = process.env.REACH_TECHNIQUE === '1';
 
 export type EngagedGoal =
   | { kind: 'drive' }
   /** away: field lateral sign to take the man (away from the ball). */
   | { kind: 'wall'; away: number }
   /** flow: field lateral sign the man is running; take him where he is going. */
-  | { kind: 'runWith'; flow: number };
+  | { kind: 'runWith'; flow: number }
+  /** side: field lateral sign of the play side, the shoulder he races for. */
+  | { kind: 'reach'; side: number };
 
 /** Run-with footwork: a backer flowing hard across, with the runner behind
  * his flow, is run past the hole. The blocker keeps his body on the man and
@@ -95,4 +105,18 @@ export function wallFeet(w: WallInputs): { lateral: number; forward: number } {
   }
   // On the shoulder: drive him off the ball, the man's own work against him.
   return { lateral: awayLat * Math.min(w.lateral, .5 * w.lateral + 1), forward };
+}
+
+/** Reach footwork in the engagement's lateral frame: not yet on the man's
+ * play-side shoulder, work for it at his own shuffle speed; on it, hold it and
+ * go at least with the man's flow. Forward work only keeps him connected. */
+export function reachFeet(lat: Vec2, side: number, rel: Vec2, dv: Vec2, sep: number, seal: number, lateral: number, along: number, gap: number):
+  { lateral: number; forward: number; onShoulder: boolean } {
+  const playLat = Math.sign(lat.y * side) || 0;
+  const across = (rel.x * lat.x + rel.y * lat.y) * playLat;
+  const onShoulder = across >= .3 * sep;
+  const manLat = (dv.x * lat.x + dv.y * lat.y) * playLat;
+  const forward = Math.max(-1, Math.min(2.4, along + gap * 3));
+  const want = onShoulder ? Math.max(0, manLat, seal * playLat) : lateral;
+  return { lateral: playLat * want, forward, onShoulder };
 }
