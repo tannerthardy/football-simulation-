@@ -61,3 +61,46 @@ The earlier "drift toward the carrier" (`lbfit3`, W1–W4, Defense's relay) was 
 1. **Lateral race.** Climber and LB both moving playside at 3 yd/s at contact. What pair speed does the engagement allow? Expected: about 3, like NFL.
 2. **Engaged LB with a real read and assignment** (stack-read path vs legacy).
 3. **Rip/dip** off a squeezing DL hip (pressed release).
+
+## Rungs 4–6 (same day)
+
+**D4. Lateral race** (both start at 3 yd/s playside, ball 10 yd playside and running). The drill LB requests (−1.50, −1.73): it pushes back and works *away* from the ball, whatever his read. The pair goes from 3 to 0 yd/s in 1 s.
+
+The drill LB's read pipeline is not live, so I moved to cut-outs.
+
+**Cut-out drills** (`_cutout.mts`). Run a real OZ snap to the first C-on-box-LB engagement with the runner holding the ball. Then either continue it, or move every other body 60 yd away and continue with only C, LB, QB and runner. 40 engagements, playside lateral over 1 s, p50:
+
+| | C | LB | Carrier | LB engaged request | C request |
+|---|---|---|---|---|---|
+| full | 1.68 | 1.71 | 2.96 | 1.17 | 2.25 |
+| alone | 1.79 | 1.96 | 3.39 | 1.06 | 2.26 |
+
+The pair's flow is a two-man property; traffic is not the cause.
+
+**Which branch writes the engaged LB's intent** (observer, 544 steps): `legacy` 251 and `shed: across face` 293. Neither branch is "run where the ball is going". Across-face work is in the contact frame.
+
+**Experiments**, temporary hooks reverted, on the "alone" condition:
+
+| Change | LB request | Pair (C / LB) |
+|---|---|---|
+| none ("alone" baseline) | 1.06 | 1.79 / 1.96 |
+| Legacy `work` coefficient ×(0.35…1.0) | — | does not raise the pair |
+| LB intent from his own controller (engagement does not write it) | 1.72 | 1.83 / 2.00 |
+| Own LB + blocker lateral cap raised to 0.6–0.8 vmax (C request 3.0) | 2.08 | 2.03 / 2.21 |
+
+**D5. Raw physics, joined bodies moving sideways together** (both ask 3 yd/s, starting at 3):
+
+| Case | Lateral speed over 1 s |
+|---|---|
+| Joined, facing each other or facing the run, or apart | 3.0 throughout |
+| Joined, with the blocker also driving forward at 2.4 | 2.63 at 1 s |
+
+Physics does not cap an engaged pair.
+
+**Conclusion.** An OZ engaged pair moves at the LB's own chosen flow speed, about 2 yd/s. Free OZ LBs flow at a similar fraction of NFL (`lbtempo`: 1.2–1.55 vs 2.65 at 1 s). The binding constraint is **defensive flow tempo**, not blocker footwork or physics.
+
+Still open from the engine map:
+- The engagement layer authors both players' engaged motion every tick.
+- The legacy box-LB branch ignores the ball.
+
+Those are structural choices for Defense and Main Engine.
