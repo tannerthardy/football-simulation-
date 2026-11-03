@@ -92,11 +92,24 @@ export class ScreenBlocker implements Behavior {
 
   /** Lineman before the throw: slide along the line toward his landmark beside the catch. */
   private slide(a: Agent, sim: PlaySim, dir: number): MoveCommand {
-    const lane = this.job === 'out' ? 2.5 : this.job === 'up' ? 0.5 : -1.5;
-    // Flat to the landmark a yard behind the line: he let his rusher go upfield
-    // past him, so he works across behind the rush, not back up through it.
-    const to = { x: sim.los - 1.0 * dir, y: clamp(this.spot.y + this.side * lane, 1, FIELD_WIDTH - 1) };
-    return runThrough(a, to, { speed: Math.hypot(to.x - a.pos.x, to.y - a.pos.y) > 1 ? 0.8 : 0.2, facing: dir > 0 ? 0 : Math.PI });
+    // Once his rusher is by, he steps back up to the line near his own lane and
+    // leads from there when the ball is out. NFL released linemen on RB/TE
+    // screens are 0.6 yd behind the line and 2.6 yd from the ball at the throw,
+    // then 3.2 yd ahead of the catcher at the catch (screen_ol_reference.py);
+    // they do not slide wide behind the rush.
+    const across = clamp((this.spot.y - this.home.y) * this.side, 0, 2) * this.side;
+    const to = { x: sim.los - 0.5 * dir, y: clamp(this.home.y + across, 1, FIELD_WIDTH - 1) };
+    // Get off the rusher: a defender he sees right in front of him (upfield,
+    // within 2 yd, less than a body width across) is the man coming past; he
+    // steps around him toward the screen before going up, not into him.
+    for (const d of sim.opponents(a)) {
+      if (d.isDown(sim.t)) continue;
+      const s = sim.see(a, d);
+      const ahead = (s.pos.x - a.pos.x) * dir, off = (s.pos.y - a.pos.y) * this.side;
+      if (ahead > -0.3 && ahead < 2 && Math.abs(off) < a.profile.radius + d.profile.radius + 0.3)
+        return runThrough(a, { x: a.pos.x, y: clamp(s.pos.y + this.side * 1.6, 1, FIELD_WIDTH - 1) }, { speed: 0.8, facing: dir > 0 ? 0 : Math.PI });
+    }
+    return runThrough(a, to, { speed: Math.hypot(to.x - a.pos.x, to.y - a.pos.y) > 0.6 ? 0.8 : 0.1, facing: dir > 0 ? 0 : Math.PI });
   }
 
   /** Where he drives the man: outside for the out block, upfield for up, inside for in. */

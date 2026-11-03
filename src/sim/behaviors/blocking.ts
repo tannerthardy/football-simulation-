@@ -235,14 +235,14 @@ export class PassProtector implements Behavior {
     // a back stays in while a free rusher is coming at him (a blitz kills the screen).
     const freeRusher = (): boolean => { const r = this.coord.assigned.get(a); return !!r && !r.engagement; };
     // A lineman lets his rusher by: he leaves once the man he is on is past
-    // his hip toward the quarterback (or has left him), and on the count plus
-    // a beat at the latest, so a rusher who stops does not sit in the screen.
+    // his hip toward the quarterback (or has left him), and a beat (0.3 s) after
+    // the count at the latest, so a rusher who stops does not sit in the screen.
     const pastHip = (): boolean => {
       const d = a.engagement?.defender ?? this.coord.assigned.get(a);
       return !d || (a.pos.x - d.pos.x) * sim.attackDir(a.team) > 0.3;
     };
     if (this.calledRelease && this.releaseTo && sim.t > this.releaseAfter && sim.carrier === sim.qb
-      && (isOL(a) ? pastHip() || sim.t > this.releaseAfter + 0.7 : !sim.offAlign.spots[a.slot]?.backfield || !freeRusher())) {
+      && (isOL(a) ? pastHip() || sim.t > this.releaseAfter + 0.3 : !sim.offAlign.spots[a.slot]?.backfield || !freeRusher())) {
       if (a.engagement) sim.disengage(a.engagement);
       this.released = true;
       a.behavior = this.releaseTo();

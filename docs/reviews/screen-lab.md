@@ -48,7 +48,10 @@ Mechanics (`src/sim/behaviors/screen.ts`, `ScreenBlocker`):
   rusher, because a blitz kills the screen. An attached end always releases
   on the count.
 - **Letting the rusher by.** A released lineman leaves on the count once his man
-  is past his hip toward the QB, or 0.7 s after the count at the latest. That
+  is past his hip toward the QB, or 0.3 s after the count at the latest.
+  Before the throw he steps around any defender directly upfield of him (gets
+  off the rusher), then back up to half a yard behind the line, no more than
+  2 yd across toward the screen. That
   way a rusher who stops is not left sitting in the screen. Before the throw,
   he may block a defender who is still behind the line.
 - **The QB** reads only the screen. On a slow screen he throws on
@@ -184,6 +187,26 @@ Values are p50s.
      - our blockers move 1.3 yd laterally by the catch (NFL 3.1);
      - the DB's trigger on the screen is Defense's read: Coverage's pace or
        downfield cue now has a matching sim signal.
+
+7. **Released linemen get in front of slow screens: partly fixed.**
+   `screen_ol_reference.py` measures released linemen on caught RB/TE screens
+   with the same code for NFL and sim. NFL linemen let the rusher by, step
+   back up to the line near their own lane (0.6 yd behind it, 2.6 yd from
+   the ball at the throw), and lead: they are 3.2 yd ahead of the catcher at
+   the catch. Ours stayed at pass-set depth and slid wide behind the rush,
+   then were driven backward stepping straight into the man they had
+   released.
+
+   | p50 | NFL | sim before | sim now |
+   |---|---|---|---|
+   | depth / distance from the ball at the throw, yd | −0.6 / 2.6 | −3.8 / 5.6 | −3.0 / 5.2 |
+   | crosses the LOS rel. throw, s | +0.5 | +1.2 | +0.9 |
+   | ahead of catcher at the catch, yd | 3.2 | −0.4 | 1.6 |
+   | OL ahead at the catch: slip / TE | 2 / 2 | 0 / 1 | 1 / 2 |
+   | yards p50: slip / TE | 6 / 7 | 5.5 / 7.4 | 7.5 / 6.1 |
+
+   Still open: linemen remain about 3 yd deep at the throw, and the slip
+   screen completes 11 of 32.
 
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
