@@ -48,9 +48,12 @@ export const ROUTES: Record<string, RouteDef> = {
   angle: { id: 'angle', family: 'back', depth: 4, end: 'continue', points: [{ d: 1.5, l: 3.5, s: 0.45 }, { d: 5, l: -6 }] },
   back_flat: { id: 'back_flat', family: 'back', depth: 1, end: 'continue', points: [{ d: 0, l: 4, s: 0.9 }, { d: 2, l: 12 }] },
   // Screens (docs/football-handbook/screens.md). Caught behind the line.
-  // Slip: the back gets lost in the line, then slides out to settle behind
-  // the screen-side tackle, 2-3 yd behind the line.
-  slip_screen: { id: 'slip_screen', family: 'back', depth: -3, end: 'settle', points: [{ d: -3.5, l: 2.5, s: 0.6 }, { d: -2.5, l: 4.5, s: 0 }] },
+  // Slip: after selling his block the back drifts wide behind the traffic and
+  // settles outside the screen-side tackle, ~3.5 yd behind the line. NFL slip
+  // backs stay 3.5-4.5 yd deep and are ~6.7 yd from the ball at the throw,
+  // ~3 yd from the nearest body (screen_back_reference.py); climbing toward
+  // the line puts him in the rush.
+  slip_screen: { id: 'slip_screen', family: 'back', depth: -3.5, end: 'settle', points: [{ d: -4.5, l: 2.5, s: 0.7 }, { d: -3.5, l: 6, s: 0 }] },
   // TE screen: release flat behind the line after his block, settle outside.
   te_screen: { id: 'te_screen', family: 'back', depth: -2, end: 'settle', points: [{ d: -1.5, l: 1.5, s: 0.6 }, { d: -2.5, l: 3.5, s: 0 }] },
   // Bubble: gain a little depth, turn the head back, and be going downhill by

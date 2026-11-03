@@ -14,7 +14,7 @@ byte-identical to develop `85952c95`. They are called only from the lab.
 
 | Screen | Formation | Receiver | Who blocks |
 |---|---|---|---|
-| `rb_slip_screen` | gun doubles | RB, sells pass pro, releases on the count | screen-side T (out), G (up), C (in) |
+| `rb_slip_screen` | gun doubles | RB, sells pass pro, slips out at 0.6 s and drifts wide behind the traffic | screen-side T (out), G (up), C (in) |
 | `te_screen` | gun trey | attached TE, blocks, releases on the count | T (out), G (up), C (in) |
 | `bubble_screen` | gun trips | #2 bubble | #1 stalk, #3 crack |
 | `bunch_now_screen` | gun bunch | #1 comes back | #2 stalk, #3 crack |
@@ -268,6 +268,35 @@ Values are p50s.
      back's release spot and time changed no slip outcomes.
    - **The lever is the back's path out of the backfield through the traffic.**
      That is screen work; the shared QB and catch code stay as they are.
+
+10. **The slip back's path: fixed.** `screen_back_reference.py` measures the
+    back on caught RB screens, with the same code for NFL and sim.
+    - **What NFL backs do.** They are 1 yd wide of their start by 1.1 s and
+      drift wide behind the traffic. At the throw they are 3.5 yd deep and
+      6.7 yd from the ball, with the nearest body 3.1 yd away.
+    - **What ours did.** He left 0.1 s after the linemen's count, stepped
+      inside during the set, and climbed toward the line (route settle 2.5
+      yd deep, 4.5 yd across). His lateral release came at 2.5 s, he was
+      3.6 yd from the ball at the throw, and the nearest body was 1.3 yd.
+    - **Fix, part 1: the route.** It now settles 3.5 yd deep and 6 yd across,
+      on a deeper, wider path. Alone this made things worse (6/32 caught): he
+      arrived later and the rush got home first.
+    - **Fix, part 2: release time.** The screen gets a separate receiver
+      release time, 0.6 s for the slip back; the linemen keep their 1.0 s
+      count.
+
+    | RB slip, p50 | NFL | before | now |
+    |---|---|---|---|
+    | lateral release, s | 1.1 | 2.5 | 1.5 |
+    | at the throw: depth / from the ball / nearest body, yd | −3.5 / 6.7 / 3.1 | −3.6 / 3.6 / 1.3 | −4.5 / 5.4 / 3.6 |
+    | throw, s | 2.20 | 2.80 | 2.20 |
+    | OL ahead of the catcher | 2 | 1 | 2 |
+    | yards | 6 | 7.5 | 6.8 |
+
+    **Outcomes (32 snaps):** 13 caught (12 before), missed throws 1 (11
+    before), drops 7, QB hit before the throw 11 (8 of them on Cover 1 Mike
+    A, the blitz that kills screens). Still open: the drops, and catch depth
+    −4.1 yd and width 7.7 yd (NFL −3.0 / 9.9).
 
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens

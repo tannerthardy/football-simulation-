@@ -442,7 +442,7 @@ function installScreen(sim: PlaySim, concept: NonNullable<PlaySim['offCall']['pa
   const jitter = (a: Agent) => sim.dice('screen', a).normal(0, 0.12);
   if (spec.tempo === 'slow' && (off.spots[receiver.slot]?.backfield || off.spots[receiver.slot]?.inline)) {
     coord.add(receiver);
-    receiver.behavior = new PassProtector(coord, mkScreenRoute(receiver, routeId), spec.count + 0.1 + jitter(receiver), true);
+    receiver.behavior = new PassProtector(coord, mkScreenRoute(receiver, routeId), (spec.receiverRelease ?? spec.count + 0.1) + jitter(receiver), true);
   }
   const line = sim.offense.filter(isOL).sort((a, b) => (b.pos.y - a.pos.y) * side);
   for (const blk of spec.blocks) {

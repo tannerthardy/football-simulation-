@@ -126,6 +126,9 @@ export interface ScreenSpec {
   /** Called count, seconds after the snap, at which released linemen leave
    * their pass set (each lineman counts with his own rhythm). */
   count: number;
+  /** When a screen receiver who sells a block (a back or attached end) leaves
+   * for his route; defaults to just after the linemen's count. */
+  receiverRelease?: number;
   blocks: ScreenBlock[];
 }
 

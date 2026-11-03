@@ -125,7 +125,9 @@ export const SCREEN_CONCEPTS: PassConcept[] = [
     id: 'rb_slip_screen', name: 'RB Slip Screen', family: 'screen', drop: 'gun5',
     strong: { 1: 'go', 2: 'go', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'slip_screen',
     progression: ['B'], beats: ['pass-rush', 'blitz'],
-    screen: { receiver: 'B', tempo: 'slow', count: 1.0, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
+    // The back gets lost in the line and drifts out before the linemen release:
+    // NFL slip backs are 1 yd wide of their start by 1.1 s (screen_back_reference.py).
+    screen: { receiver: 'B', tempo: 'slow', count: 1.0, receiverRelease: 0.6, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
   },
   {
     // TE screen: the inline TE blocks, then slides out behind the line.
