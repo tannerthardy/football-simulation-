@@ -1251,6 +1251,14 @@ export class RunBlocker implements Behavior {
           return target ? this.withBase(a, sim, this.attack(a, sim, target)) : this.leadRunner(a, sim);
         }
         const ps = playSideSign(sim, sim.offCall.run!) * (sim.offCall.run!.scheme === 'splitZone' ? -1 : 1);
+        // He runs to where the man will be when he gets there, not where the
+        // man was: an end squeezing down the line at 2 yd/s moved the corner
+        // a yard toward him while he crossed, and he arrived at full speed
+        // with no room to turn and ran past underneath him.
+        const meetY = (r: NonNullable<RunBlocker['pullRead']>) => {
+          const across = Math.abs(r.seen.pos.y - a.pos.y), closing = Math.max(1, (a.vel.y - r.seen.vel.y) * ps);
+          return r.seen.pos.y + r.seen.vel.y * Math.min(1, across / closing);
+        };
         if (read) {
           const clearNow = read.clearanceX === null || a.pos.x + a.profile.radius <= read.clearanceX;
           this.pullCleared ||= clearNow;
@@ -1259,7 +1267,7 @@ export class RunBlocker implements Behavior {
           // waypoint, or add another retreat solely for being near a teammate.
           // An actually obstructed rear surface still requires gaining depth.
           const stationY = this.pullCleared && plan.pullRole !== 'lead'
-            ? read.seen.pos.y - ps * .65 : wp.y;
+            ? meetY(read) - ps * .65 : wp.y;
           if (observedCorner && this.pullIdx === 1 &&
               clearNow && (stationY-a.pos.y)*ps < Math.min(turn, 1)) {
             this.pullIdx++;
@@ -1311,7 +1319,7 @@ export class RunBlocker implements Behavior {
         }
         // Clear the line before turning up; approach the corner under control
         // so a heavy puller doesn't run through the waypoint and circle back.
-        let path = read && this.pullCleared && plan.pullRole !== 'lead' ? { ...wp, y: read.seen.pos.y - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
+        let path = read && this.pullCleared && plan.pullRole !== 'lead' ? { ...wp, y: meetY(read) - ps * (this.pullIdx === 1 ? .65 : .45) } : wp;
         // Progress is measured against the same observed landmark requested
         // by the feet, rather than a different old snap-coordinate waypoint.
         if (read && this.pullCleared && plan.pullRole !== 'lead') plan.pullPath[this.pullIdx] = path;
@@ -1332,7 +1340,12 @@ export class RunBlocker implements Behavior {
         } else if (this.pullIdx === 1 && nearWall) {
           path = { x: Math.min(wp.x, a.pos.x - 0.35), y: wp.y };
         }
-        const next = plan.pullPath[this.pullIdx+1];
+        // The leg after the corner ends at the same observed man, not at the
+        // snap landmark: a stale end point made a square turn up onto a moving
+        // end look like no turn at all, so he never slowed for it.
+        const nextWp = plan.pullPath[this.pullIdx+1];
+        const next = nextWp && read && this.pullCleared && plan.pullRole !== 'lead'
+          ? { ...nextWp, y: meetY(read) - ps * .45 } : nextWp;
         // A corner held for the wall (flat leg, not yet clear) is not rounded.
         const held = this.pullIdx === 1 && observedCorner;
         const through = next ? cornerSpeed(a.body, path, next, turn)
