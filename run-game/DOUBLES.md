@@ -83,3 +83,21 @@ At first DL contact, by role, across IZ/OZ/power/counter/trap:
 - **Defender motion:** NFL DL keep coming forward (−0.3…−0.6 over 0.5 s); ours do not.
 
 `G1-zone-step` changes nothing. The tracking "first contact" is our engage moment, after which the engagement drive (2.4 yd/s forward into a static DL) governs.
+
+## C5 under counterfactual flow (2026-11-03)
+
+`DEF_GETOFF` is already 0.5 (NFL-matched) in the candidate profile, so develop includes it.
+
+With `CF_FLOW=over` (counterfactual DL flow with the line), develop vs `dbl-C5`:
+
+| | develop | `dbl-C5` |
+|---|---|---|
+| OZ climbs by 2.5 s | 25% | 16% |
+| IZ climbs by 2.5 s | 40% | 25% |
+| Box LBs blocked (OZ) | 42% | 33% |
+| Box LBs blocked (IZ) | 44% | 32% |
+| IZ first contact | +1.26 | +1.02 |
+
+C5's doubles hold too long. It is **rejected**, not parked.
+
+The overtake decision alone (release by flow) needs a version that does not delay the climb.
