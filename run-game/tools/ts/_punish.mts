@@ -6,7 +6,7 @@ const { restoreSetup } = await import(`${W}/scripts/diag/saved-play.ts`);
 const out: Record<string, { y: number[]; fc: number[]; who: Record<string, number> }> = {};
 for (let seed = 7; seed <= 29; seed += 2) for (const p of JSON.parse(readFileSync(`${W}/out/matched-restage/seed${seed}-run.json`, 'utf8'))) {
   if (p.pass) continue; const probe: any = restoreSetup(Buffer.from(p.setup, 'base64')); if (!CONS.includes(probe.offCall?.run?.scheme)) continue;
-  for (const arm of ['A normal', 'B LBs frozen', 'C LBs removed']) {
+  for (const arm of (process.env.ARMS ?? 'A normal|B LBs frozen|C LBs removed').split('|')) {
     const sim: any = new PlaySim(restoreSetup(Buffer.from(p.setup, 'base64')));
     const dir = sim.attackDir('O');
     const box = sim.defense.filter((d: any) => { const dep = (d.pos.x - sim.los) * dir; return dep >= 2.5 && dep <= 8 && Math.abs(d.pos.y - sim.ballY) < 6; });

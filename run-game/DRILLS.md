@@ -163,3 +163,31 @@ The block holds a median 1.85 s. At the hit the carrier is a median 5.2 yd wide,
 | IZ heading at +2.0 s | 38° | 44° |
 
 Our zone backs are slow to the edge, deeper, and stay horizontal longer. That keeps them in arm's reach of blocked linemen along the line. **The offense fails to punish because the carrier's path never stresses the defense.** This is carrier work: the run-game lane.
+
+## Zone back tempo (`ozpath.py` speeds, `meshspeed.py`, `_rbspd`)
+
+**Carrier speed after the handoff** (yd/s, trace operator):
+
+| | At handoff | +0.5 s | +1.0 s | +1.5 s | +2.0 s |
+|---|---|---|---|---|---|
+| OZ, NFL | 5.13 | 5.85 | 5.65 | 4.97 | 3.89 |
+| OZ, sim | 3.21 | 3.94 | 4.46 | 5.11 | 4.61 |
+| IZ, NFL | 3.83 | 4.60 | 4.59 | | |
+| IZ, sim | 3.49 | 4.66 | 5.40 | | |
+
+IZ is roughly NFL pace.
+
+**OZ offset-far in detail:**
+
+| | NFL | sim |
+|---|---|---|
+| Alignment depth | −4.76 | −5.50 |
+| Mesh depth | −4.13 | −4.73 |
+| Speed at 0.9 / 1.1 s | 3.72 / 4.57 | 3.35 / 3.89 |
+| Speed at the handoff | 4.61 | 3.62 |
+
+Our OZ backs line up deeper, take the ball deeper and slower, and reach full speed only when NFL backs are already slowing to cut.
+
+**`STRETCH_TEMPO` probe** (stretch mesh and press at 0.8 vmax instead of 0.55): +0.25 yd/s at the handoff, punish-test yards unchanged. Dropped. The deficit is mostly alignment and mesh depth, not the tempo cap.
+
+Next: OZ back alignment and mesh landmark depth (offensive alignment and `meshFor`, both run-game owned).
