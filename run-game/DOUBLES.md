@@ -190,3 +190,79 @@ In NFL power, someone else (TE, H or FB) often has the end, and the guard wraps 
 Next: the lead guard's turn-up geometry and threat choice, measured against the NFL "guard's first contact = LB 33–40%" target.
 
 **`dbl-C6-intercept-cost`** (release proposals costed to the backer's intercept point): neutral. Not kept.
+
+## Covered tight end on power (`powerte.py`, `_teplan`, `_kickdbl`)
+
+**Setup:** power plays with a playside inline TE. Buckets are the end man's alignment over the TE.
+
+**How often the TE stays within 1.2 yd of the end man for at least 1.0 s:**
+
+| End man's alignment | NFL | sim |
+|---|---|---|
+| Head-up | 68% | 14% |
+| Outside | 28% | 8% |
+
+**Why:** in our install the TE climbs to a backer in 62 of 83 such snaps. The guard kicks the end first in 103 of 130 power snaps, and nobody else engages the end first in all but 8.
+
+**What the NFL guard hits first when the TE touches the end first** (NFL n=99, sim n=27):
+
+| Guard's first contact | NFL | sim |
+|---|---|---|
+| The end man | 31% | 70% |
+| A linebacker | 34% | 0% |
+| Another lineman | 31% | 22% |
+
+This is the "covered TE blocks his man, puller turns up" rule. It is parked for two reasons:
+- It covers only about 10% of power snaps.
+- The NFL guard still meets the end first 45% of the time even when the end is head-up on the TE, so the rule is ambiguous.
+
+## Trap (`powerhit.py`, `CON=TRAP`)
+
+First contact on trap is +1.52 vs NFL +0.43; behind the line 24% vs 46%.
+
+**The trapped lineman does not charge.**
+
+| Trapped lineman | NFL | sim |
+|---|---|---|
+| Depth at contact | −0.36…−0.46 | +0.24 |
+| Movement in the 0.5 s before contact | 0.7–0.8 yd upfield | ~0.1 yd |
+| Contact time | 1.1 s | 1.2–1.4 s |
+
+This is the same DL get-off item that was sent to Defense.
+
+## Counter wrap re-tests on `run/G2-mesh-emlos` (5 streams)
+
+**Spacing at the kick:**
+
+| | NFL | sim |
+|---|---|---|
+| Wrapper's lateral offset from the kicker | −1.70 | −1.13 |
+| Wrapper–kicker distance | 1.94 | 1.32 |
+
+The wrapper's "first block" on the kicker's man (28% vs NFL 4%) is mostly the wrapper passing within 1.2 yd behind the kicker. It is not a target choice.
+
+**Patches re-tested:**
+- `wrap-race-v1`: worse. Kicker's man 28 → 32%; blocks a line man 45 → 56%.
+- Strike-reach "claimed" mates in `holeThreat`: no change.
+- Both reverted.
+
+## Defense's DL tempo flags (`PRESNAP_TELL=1 ACCEL_CUE=1`, merged locally with 85952c95, stream 0)
+
+**OZ DL lateral velocity toward the play**, yd/s:
+
+| | 0.3 s | 0.6 s | 1.0 s | 1.5 s |
+|---|---|---|---|---|
+| NFL | 0.65 | 1.50 | 2.50 | 3.20 |
+| develop | 0.05 | 0.65 | 1.50 | 2.00 |
+| both flags | 0.15 | 0.75 | 1.50 | 2.00 |
+
+**OZ doubles:**
+
+| | develop | both flags | NFL |
+|---|---|---|---|
+| DL flows to the helper | 10% | 18% | 32% |
+| First release time | 2.31 s | 2.10 s | 1.29–1.81 s |
+
+**Box LB lateral movement toward the play is zero for the first full second in every concept** (`lbtempo`):
+- IZ: NFL 0.20 / 1.05 yd/s at 0.5 / 1.0 s.
+- Counter: NFL 0.15 / 0.95 yd/s.
