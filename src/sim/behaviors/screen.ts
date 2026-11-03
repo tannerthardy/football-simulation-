@@ -21,7 +21,7 @@ import type { ScreenJob } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
-import { runThrough, stand } from './common.js';
+import { runThrough, stand, track } from './common.js';
 
 /** A blocker's decision beat: how often he re-reads whom to take. */
 const RETARGET = 0.3;
@@ -71,8 +71,11 @@ export class ScreenBlocker implements Behavior {
     if (dist < a.profile.radius + d.profile.radius + 0.25) {
       if (sim.engage(a, d, 'run', this.drive(dir))) return stand();
     }
-    // Run, then buzz the feet under control in the last couple of yards.
-    return runThrough(a, fit, { speed: dist > 3 ? 0.95 : 0.6, cutSkill: 1 });
+    // Run, then buzz the feet: inside a few yards he breaks down to the man's
+    // speed and closes under control ("make him go through you"), rather than
+    // running through him and whiffing or flattening a moving defender.
+    if (dist > 4) return runThrough(a, fit, { speed: 0.95, cutSkill: 1 });
+    return track(a, fit, seen.vel, { gain: 2, cutSkill: 1 });
   }
 
   /** Lineman before the throw: slide along the line toward his landmark beside the catch. */

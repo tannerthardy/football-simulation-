@@ -36,8 +36,10 @@ Mechanics (`src/sim/behaviors/screen.ts`, `ScreenBlocker`):
   perception, re-read every 0.3 s. A man already claimed by a teammate is
   skipped. Except on the in job, a perimeter or alley block never takes a man
   aligned on the ball near the tackles, because that man is the rush.
-- **The block itself** is the ordinary run engagement, with the hands and
-  bodies in physical contact. Screen blockers keep their jobs through the
+- **Approach and block.** A blocker runs to his man, then breaks down inside
+  4 yd: he matches the man's speed and closes under control (`track`), the
+  "buzz the feet" technique. The block itself is the ordinary run engagement,
+  with the hands and bodies in physical contact. Screen blockers keep their jobs through the
   catch. Everyone else becomes the existing `DownfieldBlocker`.
 - **Receiver release.** A back stays in while his blocking assignment is a free
   rusher, because a blitz kills the screen. An attached end always releases
@@ -137,6 +139,18 @@ Values are p50s.
    screens. On slip and TE screens the NFL first crossing is 1.9 s and 1.4 s,
    against 3.6 s in the sim. The sim holds linemen behind the line until the
    throw, and the slow screens throw late.
+
+5. **Knockdowns from perimeter blocks: fixed.** Stalk and crack blockers first
+   ran through their man at 0.6 vmax. `scripts/diag/screen-falls.mts` found
+   the strong safety put down by the inline end's crack on 18 of 32 bubbles,
+   and the corner or safety put down by his stalk on 14 of 32 bunch now
+   screens. Breaking down inside 4 yd cut stalk/crack knockdowns to 1 (bubble)
+   and 2 (bunch now).
+   - **Nearby defenders on the bunch now screen** (DB/LB within 12 yd of the
+     catch; same operator on both sides). They now close at 0.9 yd/s at the
+     catch (was 0.1; NFL WR screens 3.2), and 19% are slow at the catch (NFL
+     3%). The first defender still arrives 2.6 s after the catch.
+   - **What remains** is closing at the catch, which is Defense's item 2.
 
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens

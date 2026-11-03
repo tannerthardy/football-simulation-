@@ -30,6 +30,10 @@ Definitions (all from positions, 0.1 s frames):
   moment, i.e. he got off a block; else "unblocked". Time after catch and
   the carrier's gain (x - catch x) at that moment.
 - YAC (positional): carrier x at the end minus catch x. Yards: the play's yards.
+- nearby coverage defenders (DB/LB within 12 yd of the catch point at the
+  catch): distance to the catch point at the throw; velocity toward the
+  catcher at the catch and 0.5 s later (central difference over +/-0.2 s);
+  "slow" = under 1 yd/s at the catch (standing, turning, or on the ground).
 Prints tables; --json writes per-play rows.
 """
 import argparse
@@ -142,6 +146,28 @@ def measure(play):
                      "was_blocked": d in blocked_at and blocked_at[d] < f}
             break
     row.update(first=first, yac=round(pos(play, k1, r)[0] - rx, 2))
+    # Nearby coverage defenders: distance at the throw, closing speed at the catch and +0.5 s.
+    def vel(f, j):
+        a, b = pos(play, max(0, f - 2), j), pos(play, min(nfr - 1, f + 2), j)
+        span = (min(nfr - 1, f + 2) - max(0, f - 2)) * dt or dt
+        return (b[0] - a[0]) / span, (b[1] - a[1]) / span
+    near = []
+    kt = k(t_throw) if t_throw is not None else kc
+    for d in de:
+        if players[d]["group"] not in ("DB", "LB"):
+            continue
+        dx, dy = pos(play, kc, d)
+        if math.hypot(dx - rx, dy - ry) > 12:
+            continue
+        def closing(f):
+            cx, cy = pos(play, f, r); px, py = pos(play, f, d); vx, vy = vel(f, d)
+            n = math.hypot(cx - px, cy - py) or 1
+            return (vx * (cx - px) + vy * (cy - py)) / n
+        tx, ty = pos(play, kt, d)
+        near.append({"group": players[d]["group"], "dist_throw": round(math.hypot(tx - rx, ty - ry), 2),
+                     "close_catch": round(closing(kc), 2), "close_05": round(closing(min(k1, kc + 5)), 2),
+                     "speed_catch": round(math.hypot(*vel(kc, d)), 2)})
+    row.update(near=near)
     return row
 
 
@@ -169,6 +195,9 @@ def table(rows, key):
         sb = [b for x in C for b in x['blocks']]
         print(f"  blocks in space per play {q([x['space_blocks'] for x in C])} | by blocker {dict(collections.Counter(b['blocker'] for b in sb).most_common())}")
         print(f"  block first contact rel. catch {q([b['t_rel'] for b in sb])} s | defender's distance to carrier then {q([b['to_carrier'] for b in sb])} yd")
+        N = [n for x in C for n in x.get('near', [])]
+        if N:
+            print(f"  nearby DB/LB (<=12 yd of catch): {len(N)} | dist at throw {q([n['dist_throw'] for n in N])} | closing at catch {q([n['close_catch'] for n in N])}, +0.5 s {q([n['close_05'] for n in N])} | slow (<1 yd/s) at catch {sum(n['speed_catch'] < 1 for n in N)/len(N):.0%}")
         F = [x['first'] for x in C if x['first']]
         if F:
             print(f"  first defender to carrier: after {q([f['t_after'] for f in F])} s, carrier gain then {q([f['gain'] for f in F])} | unblocked {sum(not f['was_blocked'] for f in F)/len(F):.0%} | by group {dict(collections.Counter(f['group'] for f in F).most_common())}")
