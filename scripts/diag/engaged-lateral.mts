@@ -3,7 +3,7 @@
  *   raw       the controller's request (CoverageDefender etc.)
  *   final     the intent after the engagement/spacing rewrites (what the legs are asked for)
  *   achieved  the body's endpoint velocity
- *   blocker   the engaging blocker's achieved velocity at the same step
+ *   blocker final / blocker achieved   the engaging blocker's final intent and achieved velocity
  * Also counts which rewrite stages change the lateral by > 0.3 yd/s.
  * HOLD=1: counterfactual that zeroes the engaged LB's final lateral request just before world.step
  * (depth and push kept), separating what the legs are asked for from what contact carries.
@@ -38,7 +38,7 @@ for (const file of files) for (const p of JSON.parse(readFileSync(file, 'utf8'))
     while (sim.phase === 'live' && sim.t < 4) {
       const t0 = sim.t; sim.tick();
       const b = sim.ball; const car = b.kind === 'held' ? b.carrier : null; const e = me.engagement;
-      rows.set(Math.round(t0 * 1e6), { eng: !!e, side: car ? Math.sign(car.pos.y - me.pos.y) : 0, bl: e?.blocker, blv: e?.blocker ? { ...e.blocker.vel } : null, push: sim.intents[me.idx]?.push ?? 0 });
+      rows.set(Math.round(t0 * 1e6), { eng: !!e, side: car ? Math.sign(car.pos.y - me.pos.y) : 0, bl: e?.blocker, blv: e?.blocker ? { ...e.blocker.vel } : null, bfin: e?.blocker ? sim.intents[e.blocker.idx]?.vel : null, push: sim.intents[me.idx]?.push ?? 0 });
     }
     n++;
     for (const s of trace.steps) {
@@ -49,8 +49,15 @@ for (const file of files) for (const p of JSON.parse(readFileSync(file, 'utf8'))
       for (const w of s.rewrites ?? []) if (raw?.vel && Math.abs(w.command.vel.y - raw.vel.y) > .3) stages[w.stage] = (stages[w.stage] ?? 0) + 1;
       if (fin?.vel) put(`${fam} 2 final`, fin.vel.y * r.side);
       if (av) put(`${fam} 3 achieved`, av.y * r.side);
-      if (r.blv) put(`${fam} 4 blocker achieved`, r.blv.y * r.side);
+      if (r.bfin) put(`${fam} 4a blocker final`, r.bfin.y * r.side);
+      if (r.blv) put(`${fam} 4b blocker achieved`, r.blv.y * r.side);
       put(`${fam} 5 push`, fin?.push ?? 0);
+      // Opposed requests: LB asks toward the carrier, his blocker asks away (> 0.5 yd/s each).
+      if (fin?.vel && r.bfin && av && r.blv && fin.vel.y * r.side > .5 && r.bfin.y * r.side < -.5) {
+        put(`${fam} 6 opposed: LB final`, fin.vel.y * r.side); put(`${fam} 6 opposed: blocker final`, r.bfin.y * r.side);
+        put(`${fam} 6 opposed: LB achieved`, av.y * r.side); put(`${fam} 6 opposed: blocker achieved`, r.blv.y * r.side);
+        put(`${fam} 6 opposed: LB-blocker mass ratio`, me.profile.massKg / r.bl.profile.massKg);
+      }
     }
   }
 }
