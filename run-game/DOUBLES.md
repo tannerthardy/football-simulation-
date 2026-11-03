@@ -405,3 +405,14 @@ First contact and "backer shed" are unchanged.
 - Physics is cleared.
 
 **Next (my lane, W4).** A climber shuffle that keeps his body in front of the backer without following him past the wall leverage. That is a lateral request in blocking technique, not a capacity change. W3 removed every step toward the ball, so LBs cross a set climber at about 1.3 yd/s.
+
+**Pressed releases (#400, Defense + Main Engine).**
+- When a climber is pressed while releasing, the DL is engaged with the post man throughout.
+- His engaged command points at the climber on 111 of 155 steps. Two sources:
+  - squeeze, working across the down block toward the side the double came from;
+  - stack shoulder or flow relative to the post man.
+- This is coached fight-pressure, and it stays.
+
+The fix belongs to blocking technique on my side: the climber gets off a squeezing DL hip with a rip or dip. First release is 2.10–2.31 s vs NFL 1.29–1.81 s.
+
+Cohort: Main Engine's `pressed-release-native.mts`, seeds 7/8, 26 rows.
