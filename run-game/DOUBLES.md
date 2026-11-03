@@ -344,3 +344,25 @@ On OZ, the controller requests the right direction but the flowing backer carrie
 - Coverage is small. Of 123 climber wall attempts (2 seeds of OZ), only 25 start an engagement with the wall drive; the rest join or meet an existing engagement. About 80 walled pairs vs about 580 "blocked" box LBs by the proximity operator.
 
 **Parked.** The OZ blocked-backer drift is mostly not climber walls.
+
+**OZ blocked-backer cohort by blocker** (`_lbcohort`, develop + branch, stream 0; first offensive body within 1.2 yd of a box LB after the handoff; "ENG" = engaged with that blocker within 0.3 s). Lateral toward the carrier over 1 s:
+
+| Cohort | n | Blocker | LB |
+|---|---|---|---|
+| ENG, C climbing | 56 | +1.73 | +1.97 |
+| ENG, G climbing | 38 | +0.49 | +0.53 |
+| ENG, T climbing | 22 | +0.06 | +0.38 |
+| Passing contacts, not engaged | ~120 | | |
+
+Passing contacts are mostly a climber or reach blocker brushing a man who is not his (C 29, G 12, reach 37).
+
+**The drift is the centre's engaged pair** on the flowing Mike.
+
+**No-mirror experiment** (climber `dLat` = 0): C pair +1.30 / +1.64, G +0.21, T −0.13. The mirror is a minor part.
+
+The rest is one or more of:
+- the installed zone climb drive `up(ps*.4)`, toward the play;
+- arrival momentum;
+- the backer's own engaged request.
+
+Not changed.
