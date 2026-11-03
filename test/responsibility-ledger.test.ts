@@ -160,10 +160,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.setupSha256).toBe('d9fe5799b8485ffa6108a407a9335f3d4a62a3a98f1efc49fc2766ebedb61988');
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step): release 1.3, reread 1.5.
     // With the box backer reading before he moves and filling to a pull he sees: release 1.5, reread 1.7.
-    const release = changeOf(p, 'C', 'combination-release', 1.5)[0];
+    // With an unsure box backer shuffling with the flow he sees (LB_FLOW_STEP): release 1.3, reread 1.5.
+    const release = changeOf(p, 'C', 'combination-release', 1.3)[0];
     expect(release.after).toMatchObject({ kind: 'climb' });
     expect(p.slot(release.before.target)).toBe('DT_S'); expect(p.slot(release.after.target)).toBe('LB_W');
-    const reread = changeOf(p, 'C', 'threat-reread', 1.7)[0];
+    const reread = changeOf(p, 'C', 'threat-reread', 1.5)[0];
     expect(p.slot(reread.before.target)).toBe('LB_W'); expect(p.slot(reread.after.target)).toBe('LB_M');
     const c = p.d.actors.findIndex(a => a.slot === 'C');
     const loaded = (slot: string) => p.d.rows.filter(r => r.actor === c).filter(r => r.hands.some(h => p.slot(h.defender) === slot && h.loaded));
@@ -231,7 +232,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT' && e.t <= swap.t)).toEqual([]);
   });
 
-  it('S8-P005: RT is reread, and each reread is recorded with its resulting kind', () => {
+  it('M9-P000: a climber is reread, and each reread is recorded with its resulting kind', () => {
     // Re-recorded for the start law (#336): M9-P000's C is now reread once (1.8). M25-P032 carried the case on
     // develop 1ec115c7; with develop 84af7d9e merged (the draw double's uncovered man climbs, the departing guard
     // steps off the DT's hip) its C is not reread at all, so M25-P021 carried it (C at 1.7 and 2.65). On #336 + #344
@@ -242,11 +243,15 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // (its SS->LB_W reach at 2.05 disappears; that play's ending moves -0.09 -> 12.89 yd, first contact 3.15 -> 5.20,
     // kept as an adverse outcome, not attributed). S8-P005 carries the case: RT, climbing to SS, is
     // reread to LB_M at 2.15 (still a climb) and to LB_W at 2.65, where the resulting kind is a drive.
-    const p = play('S8-P005');
-    const threats = changeOf(p, 'RT', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([2.15, 2.65]);
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'RT').map(e => e.t)).toEqual([2.15, 2.65]);
-    expect(threats.map(c => [p.slot(c.before.target), p.slot(c.after.target), c.after.kind])).toEqual([['SS', 'LB_M', 'climb'], ['SS', 'LB_W', 'drive']]);
+    // With an unsure box backer shuffling with the flow he sees (LB_FLOW_STEP), S8-P005's RT is no longer reread and
+    // no play in the set rereads one blocker twice. M9-P000 carries the case: RG, climbing to SS, is reread to LB_W
+    // at 1.7 and C, climbing to LB_M, is reread to LB_W at 1.8, each still a climb. No reread in the set now
+    // results in a drive; the recorded kind is what this case pins, whichever kind it is.
+    const p = play('M9-P000');
+    const threats = p.d.changes.filter(c => c.reason === 'threat-reread');
+    expect(threats.map(c => [c.t, p.slot(c.actor)])).toEqual([[1.7, 'RG'], [1.8, 'C']]);
+    expect(p.sim.events.filter(e => e.type === 'block_threat').map(e => [e.t, p.slot(e.a ?? null)])).toEqual([[1.7, 'RG'], [1.8, 'C']]);
+    expect(threats.map(c => [p.slot(c.before.target), p.slot(c.after.target), c.after.kind])).toEqual([['SS', 'LB_W', 'climb'], ['LB_M', 'LB_W', 'climb']]);
   });
 
   it('R9-P020: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
@@ -307,17 +312,18 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // at 1.45 and rereads once, to LB_M, at 1.65; without #349's keeper-contact check that reread goes back to DT_S.
     const p = play('M10-P081');
     expect(changeOf(p, 'C', 'combination-release').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
-      .toEqual([[1.5, 'DT_S', 'LB_W']]);
+      .toEqual([[1.3, 'DT_S', 'LB_W']]);
     expect(changeOf(p, 'C', 'threat-reread').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
-      .toEqual([[1.7, 'LB_W', 'LB_M']]);
+      .toEqual([[1.5, 'LB_W', 'LB_M']]);
     // With the direction-free start (#353), after first carrier contact (3.05) C and his keeper RG exchange crossing
     // men at 3.2: RG climbs to LB_M and C takes DT_S, which RG has just left. That is the keeper handing DT_S over,
     // not a reread back onto the man his keeper is on; every other change keeps C off DT_S.
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step):
     // C releases at 1.3 and rereads at 1.5; his only later change is a crossing exchange onto DT_W at 2.95, and
     // no change ever puts him back on DT_S. With the box backer reading before he moves and filling to a pull he sees, C releases at 1.5 and rereads at 1.7, and
-    // still no change puts him back on DT_S.
-    expect(p.d.changes.filter(c => p.slot(c.actor) === 'C' && c.t > 1.5 && p.slot(c.after.target) === 'DT_S')
+    // still no change puts him back on DT_S. With an unsure box backer shuffling with the flow he sees, C releases
+    // at 1.3 and rereads at 1.5; his only later change is finding no work at 3.45, never DT_S.
+    expect(p.d.changes.filter(c => p.slot(c.actor) === 'C' && c.t > 1.3 && p.slot(c.after.target) === 'DT_S')
       .map(c => [c.t, c.reason])).toEqual([]);
   });
 
@@ -363,9 +369,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // contact at 3.85, wrapping with it; still not a tie. With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step)
     // as well, LB_W alone at 3.0, wrapping with it (5.4 yd, not a score); still not a tie. With the box backer reading before he moves and filling to a pull he sees
     // as well, DT_W alone makes first contact at 2.75, a hit without a wrap; SS wraps first, at 4.25; still not a tie.
-    expect(first.t).toBe(2.75);
-    expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 4.25 });
+    // With an unsure box backer shuffling with the flow he sees (LB_FLOW_STEP), SS alone at 3.05, wrapping with the
+    // contact; still not a tie.
+    expect(first.t).toBe(3.05);
+    expect(first.defenders.map(p.slot)).toEqual(['SS']);
+    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 3.05 });
     expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('SS');
   });
 

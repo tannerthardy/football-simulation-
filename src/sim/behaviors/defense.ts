@@ -21,7 +21,7 @@ import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
 import { executeRunFit, type RunFitRead } from '../run-fits.js';
-import { linePicture } from '../live-gaps.js';
+import { lineFlow, linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
@@ -107,6 +107,20 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
 
 /** A blocker's lateral step a lineman can see (yd/s): its direction shows long before its speed builds. */
 const STEP_SEEN = 0.3;
+/** A box backer who has not read run or pass shuffles with the flow he sees (LB_FLOW_STEP=0 off). */
+export const LB_FLOW_STEP = process.env.LB_FLOW_STEP !== '0';
+
+/** The flow a box backer keys before he has read run or pass, from his own
+ * pictures: the back's lateral movement once he sees the back moving, or else
+ * the offensive line's mean lateral movement. */
+function seenFlow(a: Agent, sim: PlaySim): number {
+  const back = sim.slot('RB');
+  if (back && sim.offAlign.spots[back.slot]?.backfield) {
+    const seen = sim.see(a, back);
+    if (Math.abs(seen.vel.y) > 1) return seen.vel.y;
+  }
+  return lineFlow(linePicture(sim, a));
+}
 
 /** How much sooner a lineman reads the man in front of him than the rest of
  * the field: his key, an arm's length away and straight ahead of him (as a
@@ -613,8 +627,15 @@ export class ZoneCoverage implements Behavior {
     // (tracked box backers, 2.5-8 yd deep and within 6 yd of the ball, hold
     // their depth through 0.8 s on passes and runs alike). An apex or
     // overhang backer keeps his eased drop to the flat.
-    if (!this.deep && a.recog?.read === 'unsure' && boxBacker(a, sim))
-      return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
+    // Unsure is not still: he shuffles square with the flow he sees (the back,
+    // or else the line), holding his depth until the read commits him.
+    if (!this.deep && a.recog?.read === 'unsure' && boxBacker(a, sim)) {
+      const facing = angleTo(a.pos, sim.see(a, sim.qb).pos);
+      const flow = LB_FLOW_STEP ? seenFlow(a, sim) : 0;
+      if (Math.abs(flow) > STEP_SEEN)
+        return withFacingTechnique({ vel: { x: 0, y: clamp(flow, -a.profile.vmax, a.profile.vmax) }, facing }, { label: 'flow-step' });
+      return withFacingTechnique(stand(facing), { label: 'read-step' });
+    }
     const spot = this.style === 'spot';
 
     const qb = sim.qb;
