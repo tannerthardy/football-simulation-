@@ -30,6 +30,20 @@ Definitions (all from positions, 0.1 s frames):
   moment, i.e. he got off a block; else "unblocked". Time after catch and
   the carrier's gain (x - catch x) at that moment.
 - YAC (positional): carrier x at the end minus catch x. Yards: the play's yards.
+- nearest defender at the catch: distance from the carrier to the closest
+  defender at t_catch (is the ball thrown into a covered man?).
+- threat ranking (target selection, independent of what the blocking did):
+  defenders ranked by distance to the carrier at t_catch, excluding any
+  already in a block in space at that moment. "Near-3 blocked": the share of
+  the three nearest that a block in space reaches before the end (or before
+  he reaches the carrier, whichever is first). "Rank of blocked men": each
+  block's defender's rank at the catch (1 = nearest); blocks on men ranked
+  past 5 are spent on players far from the ball. The first defender to the
+  carrier gets his rank too, and if he was blocked, how long he was within
+  NEAR of a blocker before he arrived.
+- block duration (blocks starting from t_catch - 0.3 s on): first contact
+  until blocker and defender are apart (> NEAR) for 0.2 s, or the end;
+  "still on at the whistle" when they never separate.
 - nearby coverage defenders (DB/LB within 12 yd of the catch point at the
   catch): distance to the catch point at the throw; velocity toward the
   catcher at the catch and 0.5 s later (central difference over +/-0.2 s);
@@ -128,8 +142,15 @@ def measure(play):
                         cx, cy = (bx + dx) / 2, (by + dy) / 2
                         if cx > 1.0 or abs(cy - ball_y) > 5:
                             carx, cary = pos(play, f0, r)
+                            # Duration: from first contact until they are apart (> NEAR) for 0.2 s, or the end.
+                            g, apart = f0, 0
+                            while g <= k1 and apart < 2:
+                                ex, ey = pos(play, g, b); fx, fy = pos(play, g, d)
+                                apart = apart + 1 if math.hypot(ex - fx, ey - fy) > NEAR else 0
+                                g += 1
                             blocks.append({"blocker": players[b]["group"], "t_rel": round(f0 * dt - t_catch, 2),
-                                           "to_carrier": round(math.hypot(dx - carx, dy - cary), 2)})
+                                           "to_carrier": round(math.hypot(dx - carx, dy - cary), 2),
+                                           "dur": round((g - f0 - apart) * dt, 2), "to_end": g > k1})
                             blocked_at[d] = min(blocked_at.get(d, f0), f0)
                         break
                 else:
@@ -146,6 +167,29 @@ def measure(play):
                      "was_blocked": d in blocked_at and blocked_at[d] < f}
             break
     row.update(first=first, yac=round(pos(play, k1, r)[0] - rx, 2))
+    # Threat ranking at the catch.
+    engaged_at_catch = {d for d, f0 in blocked_at.items() if f0 <= kc}
+    ranked = sorted((d for d in de if d not in engaged_at_catch),
+                    key=lambda d: math.hypot(pos(play, kc, d)[0] - rx, pos(play, kc, d)[1] - ry))
+    rank = {d: i + 1 for i, d in enumerate(ranked)}
+    row.update(nearest_d=round(min(math.hypot(pos(play, kc, d)[0] - rx, pos(play, kc, d)[1] - ry) for d in de), 2) if de else None)
+    def arrives(d):
+        for f in range(kc, k1 + 1):
+            cx, cy = pos(play, f, r)
+            if math.hypot(pos(play, f, d)[0] - cx, pos(play, f, d)[1] - cy) <= FIRST:
+                return f
+        return k1 + 1
+    near3 = ranked[:3]
+    if first is not None:
+        fd = next((d for d in de if math.hypot(pos(play, kc + int(round(first['t_after'] / dt)), d)[0] - pos(play, kc + int(round(first['t_after'] / dt)), r)[0],
+                                                pos(play, kc + int(round(first['t_after'] / dt)), d)[1] - pos(play, kc + int(round(first['t_after'] / dt)), r)[1]) <= FIRST), None)
+        first['rank'] = rank.get(fd, 0)
+        # Block held how long before he came off it (frames within NEAR of any blocker, from first contact).
+        if fd in blocked_at:
+            first['block_s'] = round(sum(1 for f in range(blocked_at[fd], kc + int(round(first['t_after'] / dt)))
+                                         if any(math.hypot(pos(play, f, b)[0] - pos(play, f, fd)[0], pos(play, f, b)[1] - pos(play, f, fd)[1]) <= NEAR for b in off if b != r)) * dt, 2)
+    row.update(near3_blocked=sum(1 for d in near3 if d in blocked_at and blocked_at[d] < arrives(d)), near3=len(near3),
+               blocked_ranks=sorted(rank[d] for d in blocked_at if d in rank))
     # Nearby coverage defenders: distance at the throw, closing speed at the catch and +0.5 s.
     def vel(f, j):
         a, b = pos(play, max(0, f - 2), j), pos(play, min(nfr - 1, f + 2), j)
@@ -194,12 +238,23 @@ def table(rows, key):
         print(f"  convoy at catch: blockers {q([x['convoy_blockers'] for x in C])}, OL among them {q([x['convoy_ol'] for x in C])}, threats {q([x['convoy_threats'] for x in C])}, margin {q([x['convoy_margin'] for x in C])}")
         sb = [b for x in C for b in x['blocks']]
         print(f"  blocks in space per play {q([x['space_blocks'] for x in C])} | by blocker {dict(collections.Counter(b['blocker'] for b in sb).most_common())}")
+        after = [b for b in sb if b['t_rel'] >= -0.3]
+        if after:
+            print(f"  blocks in space from the catch on: duration {q([b['dur'] for b in after])} s | still on at the whistle {sum(b['to_end'] for b in after)/len(after):.0%}")
         print(f"  block first contact rel. catch {q([b['t_rel'] for b in sb])} s | defender's distance to carrier then {q([b['to_carrier'] for b in sb])} yd")
         N = [n for x in C for n in x.get('near', [])]
         if N:
             print(f"  nearby DB/LB (<=12 yd of catch): {len(N)} | dist at throw {q([n['dist_throw'] for n in N])} | closing at catch {q([n['close_catch'] for n in N])}, +0.5 s {q([n['close_05'] for n in N])} | slow (<1 yd/s) at catch {sum(n['speed_catch'] < 1 for n in N)/len(N):.0%}")
+        nd = [x['nearest_d'] for x in C if x.get('nearest_d') is not None]
+        if nd:
+            print(f"  nearest defender at catch {q(nd)} yd | within 2 yd {sum(v < 2 for v in nd)/len(nd):.0%}")
+        n3 = sum(x['near3'] for x in C)
+        br = [k for x in C for k in x['blocked_ranks']]
+        if n3:
+            print(f"  near-3 at catch blocked before reaching carrier {sum(x['near3_blocked'] for x in C)/n3:.0%} | rank of blocked men {q(br)}, ranked past 5 {sum(k > 5 for k in br)/max(1, len(br)):.0%}")
         F = [x['first'] for x in C if x['first']]
         if F:
+            print(f"  first defender's rank at catch {q([f.get('rank', 0) for f in F])} | rank 1-2 {sum(1 <= f.get('rank', 0) <= 2 for f in F)/len(F):.0%} | blocked ones: time in block before arriving {q([f['block_s'] for f in F if 'block_s' in f])} s")
             print(f"  first defender to carrier: after {q([f['t_after'] for f in F])} s, carrier gain then {q([f['gain'] for f in F])} | unblocked {sum(not f['was_blocked'] for f in F)/len(F):.0%} | by group {dict(collections.Counter(f['group'] for f in F).most_common())}")
 
 

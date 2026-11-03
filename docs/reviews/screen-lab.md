@@ -326,6 +326,53 @@ Values are p50s.
       The net is about even. Still open: quick screens fly 0.4–0.5 s (NFL
       about 0.8), and catches at the edge of reach.
 
+12. **Target selection: not the main gap; tested and not kept.** The
+    question was whether screen blockers take the wrong men. The NFL's first
+    tackler had been blocked 40–47% of the time; ours 0–39% (71–100% unblocked).
+    - **Plan tried** (preserved on branch `claude/screens-threat-blocking`):
+      a shared "blocking in space" module that forecasts the carrier's lane,
+      treats a defender as a threat only if he can reach that lane, finds where
+      each blocker can get onto the threat's track, and matches threats to
+      blockers most-urgent-first. Every blocker solves the match from his own
+      picture; job rules (out/up/in/stalk/crack) are tie-breakers. It added
+      commitment after the throw and a fit on the defender's line to the
+      carrier. Three rounds moved the first-tackler share a little, raised
+      target switches up to 15×, and moved tunnel yards a lot (median 11.8 →
+      2.3) without a clear mechanism. Not kept.
+    - **Re-diagnosis.** New position-only measures in
+      `screen_reference.py`, same code for NFL and sim:
+
+      | | NFL WR / RB / TE | Sim slip / TE / bunch now | Sim bubble / tunnel |
+      |---|---|---|---|
+      | Of the 3 defenders nearest the catch, share blocked before reaching the carrier | 35% / 24% / 20% | 13% / 38% / 61% | 23% / 29% |
+      | Blocks on men ranked past 5th nearest | 29–49% | 31–60% | 29–34% |
+      | First tackler's rank by distance at the catch (median) | 1 | 6 / 6 / 7 | 1 |
+      | Blocks in space from the catch on: duration (median) | 0.7–0.8 s | 0.5–0.6 s | 0.6–0.9 s |
+      | Nearest defender at the catch (median; share within 2 yd) | 4.0–4.4 yd; 11–16% | 7.3 / 4.6 / 3.7 yd; 0–18% | 3.0 / 1.9 yd; 36% / 62% |
+
+      Our blockers already take near men at NFL rates or above, and our
+      blocks don't last longer. The difference is what the defense does. In
+      the NFL the first tackler is one of the two nearest men (52–58%), and
+      when blocked he gets off after about 0.5 s. In our slow screens the
+      nearest men never come to the ball: the tackle comes from a far man 2–3 s
+      later, which is the long-gain tail. That is the screen read and rally
+      already with Defense. On bubble and tunnel the ball arrives with a
+      defender on the catcher (62% of tunnel catches within 2 yd vs NFL
+      11–16%). No blocker can fix that: it is the throw timing, the receiver's
+      path and the defender's cushion.
+    - **Kept:** screen blockers start a block on body contact (actual
+      distance), as every other blocker does, not on a perceived position up
+      to 2 yd stale at screen closing speeds. The effect is small (the bunch
+      now first-tackler-unblocked share falls from 61% to 52%; other screens
+      unchanged within sample noise).
+    - **Side findings:** on the bubble, the stalk blocker caught 4 of 32
+      throws meant for #2 (ball through him). On the tunnel, a released
+      lineman caught 2 of 32 (illegal touching is ruled). Both belong to
+      shared catch code (who goes for a ball not thrown to him), not
+      blocking.
+    - `scripts/diag/screen-threats.mts` classifies each first tackler (shed,
+      chosen but never reached, unchosen, rusher) and counts target switches.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
@@ -341,6 +388,13 @@ that do, blocks in space per play run at the NFL rate (3–7).
 
 ## Next decisions
 
+- **Quick screens thrown into a covered man** (tunnel, bubble): the catcher's
+  path and the throw timing against the defender over him (item 12). Is it
+  the receiver's release, the QB not reading the man over the screen, or our
+  DBs' cushion? Measure the defender's depth and leverage at the snap vs NFL
+  first.
+- **Revisit target selection** (branch `claude/screens-threat-blocking`)
+  once defenders rally to screens; it matters only when near men come.
 - **Blocking in space:** the released linemen's path from letting their man by
   to leading the screen (arrival at the convoy).
 - **Handed to Defense** (Tanner, 2026-11-03): screen recognition and rally.

@@ -68,7 +68,9 @@ export class ScreenBlocker implements Behavior {
     const toRef = norm(sub(ref, seen.pos));
     const fit = { x: seen.pos.x + toRef.x * 0.8, y: seen.pos.y + toRef.y * 0.8 };
     const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
-    if (dist < a.profile.radius + d.profile.radius + 0.25) {
+    // Contact is felt, not seen: the block starts when the bodies meet,
+    // however stale his picture of the man is (as for every other blocker).
+    if (Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y) < a.profile.radius + d.profile.radius + 0.3) {
       if (sim.engage(a, d, 'run', this.drive(dir))) return stand();
     }
     // Run, then buzz the feet: inside a few yards he breaks down to the man's
