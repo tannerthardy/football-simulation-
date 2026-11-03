@@ -2205,7 +2205,20 @@ export class RunBlocker implements Behavior {
       const closing = d > 1e-9 ? ((seen.vel.x - picture.vel.x) * dx + (seen.vel.y - picture.vel.y) * dy) / d : 0;
       return { d, score: d - Math.max(0, closing) };
     };
-    const mine = danger(sim.see(a, target));
+    // His own man is judged as any other: one who has run under him and is
+    // behind his back a beat ahead (a backer flowing with the play beneath a
+    // climber) is pursuit now, not a block in front of him. He takes the
+    // next threat in front of him instead of turning back for that man.
+    const seenMine = sim.see(a, target);
+    // A live filler behind him stays his only while he can still meet him:
+    // a backer running under a climber at speed is past him whatever his
+    // course to the ball.
+    const strike = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
+    const passed = !a.engagement && (seenMine.pos.x + seenMine.vel.x * beat - a.pos.x - a.vel.x * beat) * dir < -1
+      && !(this.liveBehind(a, sim, target, seenMine, ref) && interceptPoint({ pos: a.pos, vel: a.vel, profile: a.profile },
+        (tt) => ({ x: seenMine.pos.x + seenMine.vel.x * tt, y: seenMine.pos.y + seenMine.vel.y * tt }),
+        { horizon: beat, step: .05, radius: strike }).estimate.status === 'estimated-feasible');
+    const mine = passed ? { d: Infinity, score: Infinity } : danger(seenMine);
     if (mine.d < 4) return;
     const mates = sim.offense.filter(o => o !== a && o !== sim.qb && o.idx !== picture.carrier).map(o => ({ o, pos: sim.see(a, o).pos }));
     let best: { d: Agent; score: number } | null = null;
