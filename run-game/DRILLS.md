@@ -191,3 +191,9 @@ Our OZ backs line up deeper, take the ball deeper and slower, and reach full spe
 **`STRETCH_TEMPO` probe** (stretch mesh and press at 0.8 vmax instead of 0.55): +0.25 yd/s at the handoff, punish-test yards unchanged. Dropped. The deficit is mostly alignment and mesh depth, not the tempo cap.
 
 Next: OZ back alignment and mesh landmark depth (offensive alignment and `meshFor`, both run-game owned).
+
+**Back alignment-depth probe.** Gun offset RB depth 5.5 → 5.0 / 4.75, set on the captured formation before construction. Handoff speed is unchanged (3.99 / 3.92 / 3.89), and punish-test yards are unchanged.
+
+Neither alignment depth nor the mesh tempo cap (`STRETCH_TEMPO`) explains the zone back's tempo or the no-linebacker non-result.
+
+What is left is the back's **decision**: he stays flat and wide along the line for 2.0 s after the handoff (NFL 1.5) and turns upfield late. That keeps him in the reach of blocked linemen. Next: the zone read's turn-up decision (`pressAndRead` / `runRead`, `carrier.ts`), in the football-101 scenario drill.
