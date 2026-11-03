@@ -117,6 +117,12 @@ export function reachFeet(lat: Vec2, side: number, rel: Vec2, dv: Vec2, sep: num
   const onShoulder = across >= .3 * sep;
   const manLat = (dv.x * lat.x + dv.y * lat.y) * playLat;
   const forward = Math.max(-1, Math.min(2.4, along + gap * 3));
-  const want = onShoulder ? Math.max(0, manLat, seal * playLat) : lateral;
-  return { lateral: playLat * want, forward, onShoulder };
+  // On the shoulder he seals: square on the man, between him and the
+  // sideline. He goes where the man goes, back inside too, and holds the
+  // shoulder (running on past it frees the man behind him).
+  if (onShoulder) {
+    const hold = (.45 * sep - across) * 3;
+    return { lateral: playLat * Math.max(-lateral, Math.min(lateral, manLat + hold)), forward, onShoulder };
+  }
+  return { lateral: playLat * lateral, forward, onShoulder };
 }
