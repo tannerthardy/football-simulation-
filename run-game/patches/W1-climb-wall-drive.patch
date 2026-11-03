@@ -1,0 +1,35 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 344a8a47..35eba31c 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1869,6 +1869,20 @@ export class RunBlocker implements Behavior {
+     return { ...seen, pos, vel };
+   }
+ 
++  /** A climber who meets his backer with the runner in his pictures walls him
++   * off: he drives upfield and away from the runner, the side the backer is
++   * on, rather than along an installed vector that ignores where the ball
++   * went. Tracked climbers move a blocked backer away from the carrier after
++   * contact (IZ -0.24, OZ -0.45, counter -0.70 yd in 1 s); ours went with the
++   * flow (OZ +1.2) and carried the fit into the play. */
++  private wallDrive(a: Agent, sim: PlaySim, seen: Perceived): Vec2 | null {
++    const picture = this.workPicture;
++    if (picture?.source !== 'acquired' || picture.carrier == null || picture.carrier === sim.qb.idx) return null;
++    const ref = this.workReference(a, sim), dy = seen.pos.y - ref.y;
++    if (Math.abs(dy) < .3) return null;
++    return norm({ x: sim.attackDir(a.team), y: Math.sign(dy) * .6 });
++  }
++
+   private attack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived, preparedClimb?: Intent | null): MoveCommand {
+     const plan = this.plan;
+     let seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
+@@ -1923,7 +1937,8 @@ export class RunBlocker implements Behavior {
+     // not lose useful screening position. Do not recover to its opposite side.
+     const fit = fitCandidate && (plan.kind !== 'drive' || lost) && (!runnerFit || !installedLost);
+     if (!lost && dd < contact) {
+-      const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? combinationFit?.surface);
++      const e = sim.engage(a, target, 'run', plan.kind === 'climb' ? this.wallDrive(a, sim, seen) ?? plan.drive : plan.drive,
++        contactFit ?? combinationFit?.surface);
+       if (e) {
+         if (zone && e.blocker === a && !e.helpers.length) this.applyZoneContact(a, sim, true);
+         return stand();

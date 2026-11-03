@@ -300,3 +300,32 @@ The wrapper's "first block" on the kicker's man (28% vs NFL 4%) is mostly the wr
 | Counter: first contact | +1.01 | +1.13 | +0.31 |
 
 Test: `test/kick-squeeze-turn.test.ts`. The kicker asks for 4.4 yd/s with the fix and 6.4 without it.
+
+## Blocked backer drifts toward the carrier (`lbfit3.py`, `_lbpair`; parked `patches/W1-climb-wall-drive.patch`)
+
+**Defense's finding, reproduced.** After contact, NFL climbers move a blocked backer *away* from the carrier. Ours move with him toward it. Lateral displacement in the 1 s after contact:
+
+| | Blocker (NFL) | Blocker (sim) | LB (NFL) | LB (sim) |
+|---|---|---|---|---|
+| IZ | −0.24 | +0.46 | 0.28 | 0.80 |
+| OZ | −0.45 | +1.20 | 0.40 | 1.53 |
+| Counter | −0.70 | +0.12 | −0.45 | 0.02 |
+
+**Why.** An engaged run blocker stands. The engagement pushes along `e.drive`, which is fixed at contact from the installed plan, and mirrors the defender toward the seal offset. A climber's drive is the installed `up(±ps…)` or straight upfield after a release. It never uses where the runner is.
+
+**W1 (wall drive).** At contact, with the runner acquired, the climber drives upfield and away from the runner on the side the backer is on. A sideways drive also seals the ball-side shoulder.
+
+Climber–LB pairs by drive at contact (`_lbpair`):
+
+| Pair | n | Blocker | LB |
+|---|---|---|---|
+| IZ, wall drive | 73 | −0.20 | 0.01 |
+| IZ, straight-up drive | 24 | +0.23 | 0.56 |
+| OZ, wall drive | 78 | +1.00 | 1.53 |
+| OZ, straight-up drive | 34 | +0.83 | 0.78 |
+
+The IZ walled pairs now match NFL (−0.24).
+
+On OZ, the controller requests the right direction but the flowing backer carries the pair. That is engagement physics, so it goes to Main Engine.
+
+**Outcomes.** Blocked LB reaches the carrier: IZ 27 → 30%, OZ 25%, unchanged. Three ledger pins move. Parked until Main Engine's engaged-lateral work lands.
