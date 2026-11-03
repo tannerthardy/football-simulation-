@@ -1,0 +1,25 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 6cb638cc..cdcc1a95 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -2513,9 +2513,17 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
+     return;
+   }
+   if (read.secureSince < 0) read.secureSince = sim.t;
+-  const backer = sim.see(observer, combo.backer!);
+-  const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2
+-    || (FLOW_RELEASE && backerShows(observer, sim, backer));
++  // Where the backer will be when this member can get to him, as the climb
++  // itself aims (intercept), not where he stands: a backer flowing over the
++  // top runs into the member in front of the flow, who would otherwise find
++  // no route back across his partner to the backer's old spot and cost more.
++  const backerNow = sim.see(observer, combo.backer!);
++  const meet = interceptPoint({ pos: observer.pos, vel: observer.vel, profile: observer.profile },
++    (tt) => ({ x: backerNow.pos.x + backerNow.vel.x * tt, y: backerNow.pos.y + backerNow.vel.y * tt }),
++    { horizon: 1.0, step: .05, radius: observer.profile.radius + combo.backer!.profile.radius }).point;
++  const backer = { ...backerNow, pos: meet };
++  const filling = Math.hypot(backerNow.pos.x - observer.pos.x, backerNow.pos.y - observer.pos.y) < 4.2
++    || (FLOW_RELEASE && backerShows(observer, sim, backerNow));
+   const runner = sim.slot('RB');
+   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
+   const prepareRoute=climbRoute(observer,combo.defender,surface.down,candidate.keeper,surface.covered,backer);

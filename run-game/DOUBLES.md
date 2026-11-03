@@ -101,3 +101,32 @@ With `CF_FLOW=over` (counterfactual DL flow with the line), develop vs `dbl-C5`:
 C5's doubles hold too long. It is **rejected**, not parked.
 
 The overtake decision alone (release by flow) needs a version that does not delay the climb.
+
+## Mesh speed (2026-11-03, `meshspeed.py`, `_meshside`/`_meshtrace`)
+
+**Compare within alignment families** (under centre / pistol / offset gun). Our play-call mix differs from NFL: NFL OZ is mostly under centre. Medians across families mislead.
+
+**The gap is in the offset gun.**
+
+| Handoff speed (yd/s), offset gun | sim | NFL |
+|---|---|---|
+| IZ | 2.48 | 3.70 |
+| OZ | 2.62 | 4.55 |
+| Power | 2.50 | 3.64 |
+
+Pistol, under-centre IZ and counter are close.
+
+**Far-side meshes cause most of it** (55% of offset runs).
+- The mesh landmark sits 0.9 yd past the QB and 0.6 yd in front, 3.4 yd from the back.
+- His straight line runs through the QB, about 0.15 yd from centre, so spacing brakes him.
+- He reaches the ball at 2.7–2.8 yd/s; near-side meshes give 3.2–3.4.
+
+**`M2-mesh-cross-in-front`** (cross in front of the QB at his own pace):
+- Far-side handoff rises to 4.7 yd/s.
+- Offset IZ 4.43 and power 4.61 now overshoot NFL.
+- Power first contact +0.56 → +0.27; trap 1.33 → 1.01.
+- **Not kept.**
+
+The underlying item is the far-side mesh landmark: NFL backs take the ball as they pass in front of the QB. It is a concept-install geometry change, to be weighed against gap-scheme timing.
+
+**`dbl-C6-intercept-cost`** (release proposals costed to the backer's intercept point): neutral. Not kept.

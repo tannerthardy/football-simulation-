@@ -1,0 +1,27 @@
+diff --git a/src/sim/assign.ts b/src/sim/assign.ts
+index 80e0434d..13dbec8a 100644
+--- a/src/sim/assign.ts
++++ b/src/sim/assign.ts
+@@ -294,6 +294,22 @@ export class RunnerToMesh implements Behavior {
+     // acceleration it takes to get going, not just the distance.
+     const tAcc = gaitLag(a.profile) * 0.9;
+     const speed = clamp(d / Math.max(0.2, dt - tAcc) / a.profile.vmax, 0.3, 1);
++    // A mesh on the far side of the QB: his straight line to it runs through
++    // the QB as he sees him. He crosses in front of the QB, clear of both
++    // bodies, carrying his own on-time pace through that point rather than
++    // braking into the QB (offset backs to a far-side mesh met the ball at
++    // 2.7-2.8 yd/s; tracked offset backs 3.6-4.6).
++    if (!this.passed && this.ride) {
++      const qb = sim.see(a, sim.qb), dir = sim.attackDir(a.team);
++      const clear = sim.qb.profile.radius + a.profile.radius + .15;
++      const sx = this.mesh.x - a.pos.x, sy = this.mesh.y - a.pos.y, l2 = sx * sx + sy * sy;
++      const u = l2 > 1e-9 ? clamp(((qb.pos.x - a.pos.x) * sx + (qb.pos.y - a.pos.y) * sy) / l2, 0, 1) : 0;
++      const across = (qb.pos.y - a.pos.y) * (this.mesh.y - qb.pos.y) > 0;
++      if (across && u > 0 && u < 1 && Math.hypot(a.pos.x + u * sx - qb.pos.x, a.pos.y + u * sy - qb.pos.y) < clear) {
++        const front = { x: qb.pos.x + dir * clear, y: qb.pos.y };
++        return goTo(a, front, { speed, through: a.profile.vmax * speed });
++      }
++    }
+     // The deadline is a cadence cue, not possession. Brake into the mesh
+     // until the QB actually gives him the ball; onHandoff installs the run.
+     // Running through an expired landmark used to strand him yards away.
