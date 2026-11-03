@@ -243,6 +243,32 @@ Values are p50s.
      (seed 6). These are the shared receiver-forecast and ball-tracking
      systems on a receiver decelerating into his settle point.
 
+9. **QB aim and ball tracking: not a general problem; the slip misses are
+   the back's path.**
+   - **Regular passes match the NFL.** 4 sim games (seeds 201–204, 329
+     thrown passes, throwaways excluded) against 2022 NFL plays by air yards:
+
+     | air yards | sim comp | NFL comp | sim miss + drop (no defender) | NFL incomplete, no PD |
+     |---|---|---|---|---|
+     | ≤ 0 | 67% (n 12) | 75% | 25% | 16% |
+     | 1–5 | 73% | 73% | 21% | 18% |
+     | 6–10 | 54% | 62% | 28% | 24% |
+     | 11–20 | 65% | 56% | 21% | 29% |
+
+   - **The slip misses, traced** (`screen-one.mts` with `TRACE_FC`,
+     `TRACE_CATCH`, `TRACE_SLOT`). At release the QB's receiver forecast
+     cannot place the back on his installed route (`progress: null`), so it
+     extrapolates a 0.25 s old picture in a straight line. The back is not
+     following his route: he asks for 6.8 yd/s and achieves about 3.3,
+     slowed by the bodies at the line, and he turns while doing it. With the
+     stale picture, the aim lands 1.2 yd behind where he arrives (seed 6).
+     The ball tracking then cannot reverse his upfield momentum during a
+     0.5 s flight.
+   - **A tried change, reverted.** Re-anchoring the QB's forecast on the
+     back's release spot and time changed no slip outcomes.
+   - **The lever is the back's path out of the backfield through the traffic.**
+     That is screen work; the shared QB and catch code stay as they are.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
