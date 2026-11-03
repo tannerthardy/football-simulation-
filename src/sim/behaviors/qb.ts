@@ -418,7 +418,20 @@ export class QBPass implements Behavior {
     // Options: the natural ball, a fastball into a tight window, and touch over the top.
     const options: number[] = [T];
     if (range > 15) options.push(T * 1.2);
-    const fastball = Tmin < T * 0.85 ? Math.max(Tmin, T * 0.75) : null;
+    let fastball = Tmin < T * 0.85 ? Math.max(Tmin, T * 0.75) : null;
+    // A slow screen is thrown with a chosen touch, not evaluated like a route
+    // window: he floats it over a rusher in his lane, or to a back still
+    // drifting under it, and puts it on him firm when a defender is closing
+    // on the catch point. NFL screens fly ~0.8 s over 6-10 yd (p25 0.6, p75
+    // 0.9) against ~0.55 s for this natural ball (throw_flight_reference.py).
+    // Quick screens to a receiver on the move keep the natural ball: floated
+    // to a bubble running away, the forecast over the longer flight misses
+    // (lab: bubble 24 -> 13 caught).
+    if (this.concept.family === 'screen' && this.concept.screen?.tempo === 'slow') {
+      options.length = 0;
+      options.push(this.screenTouch(a, sim, r, pt, T) === 'float' ? Math.max(T * 1.5, T + 0.25) : T);
+      fastball = null;
+    }
 
     let best: ThrowEval | null = null;
     const consider = (Topt: number) => {
@@ -431,6 +444,29 @@ export class QBPass implements Behavior {
     // The fastball only comes out when the natural throw isn't there.
     if (fastball && (!best || (best as ThrowEval).P < 0.6)) consider(fastball);
     return best;
+  }
+
+  /** Float or firm, from what he sees: a rusher in the near half of his
+   * throwing lane (he has to go over him) or a receiver still drifting into
+   * his spot says float; a defender who would reach the catch point within a
+   * beat of a firm ball says firm. */
+  private screenTouch(a: Agent, sim: PlaySim, r: Agent, pt: Vec2, T: number): 'float' | 'firm' {
+    const dx = pt.x - a.pos.x, dy = pt.y - a.pos.y, len = Math.hypot(dx, dy) || 1;
+    let inLane = false, closing = false;
+    for (const d of sim.defense) {
+      if (d.isDown(sim.t)) continue;
+      const seen = this.mind.estimate(d);
+      const along = ((seen.pos.x - a.pos.x) * dx + (seen.pos.y - a.pos.y) * dy) / len;
+      const off = Math.abs((seen.pos.x - a.pos.x) * dy - (seen.pos.y - a.pos.y) * dx) / len;
+      if (along > 0 && along < Math.min(4, 0.45 * len) && off < 1.5) inLane = true;
+      const mover = { pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
+      if (timeToReach(mover, pt, d.profile.reach) + (d.engagement ? 0.5 : 0) < T + 0.35) closing = true;
+    }
+    const seenR = this.mind.estimate(r);
+    const away = (seenR.vel.x * dx + seenR.vel.y * dy) / len;
+    if (inLane) return 'float';
+    if (closing) return 'firm';
+    return away > 1.5 ? 'float' : 'firm';
   }
 
   private window(a: Agent, sim: PlaySim, r: Agent, from: Vec3, point: Vec3, T: number, wind: number, urgency: number): ThrowEval {

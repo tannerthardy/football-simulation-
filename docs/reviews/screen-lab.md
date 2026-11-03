@@ -58,6 +58,11 @@ Mechanics (`src/sim/behaviors/screen.ts`, `ScreenBlocker`):
   2 yd across toward the screen. That
   way a rusher who stops is not left sitting in the screen. Before the throw,
   he may block a defender who is still behind the line.
+- **Throw touch on slow screens.** The QB chooses float or firm from what he
+  sees. He floats it (flight max(1.5×, +0.25 s) of his natural ball) over a
+  rusher in the near half of his lane, or to a back still drifting into his
+  spot. He throws it firm when a defender would reach the catch point within
+  a beat. Quick screens keep the natural ball.
 - **The QB** reads only the screen. On a slow screen he throws on
   anticipation once the receiver is within 3.5 yd of his spot. NFL slow
   screens leave the hand with the receiver still 2.3–2.9 yd from where he
@@ -297,6 +302,29 @@ Values are p50s.
     before), drops 7, QB hit before the throw 11 (8 of them on Cover 1 Mike
     A, the blitz that kills screens). Still open: the drops, and catch depth
     −4.1 yd and width 7.7 yd (NFL −3.0 / 9.9).
+
+11. **Slip drops and screen throw touch.**
+    - **Why the drops happen.** A temporary catch trace showed slip catches
+      tried at the edge of reach: ball 1.04 yd from the body (stretch 0.68),
+      arriving from behind (fromBehind ≈ 0.95) while the back drifted wide.
+      That gives pCatch ≈ 0.82, against ≈ 0.94 for a ball into the body.
+    - **NFL screens are floated** (`throw_flight_reference.py`, same code).
+      Flight over 6–10 yd: RB and TE 0.8 s (p25 0.6, p75 0.9); WR 0.8 s at
+      10–14 yd. The sim's natural ball was about 0.5 s on every screen.
+      Regular short passes are also faster in the sim (6–10 yd: 0.45 vs
+      0.70 s), but part of that is sim catches happening early, at the edge
+      of reach, rather than the throw itself.
+    - **The float rule** is in the mechanics list above.
+    - **Floating quick screens too was tried and reverted:** the bubble went
+      from 24 to 13 caught (19 misses), because the forecast over the longer
+      flight misses a receiver running away.
+    - **Result, slow screens with the float** (32 snaps each):
+      - slip: flight 0.75 s (NFL 0.8); 10 caught (13 before); drops 5 (7);
+        3 batted;
+      - TE: 14 caught (11 before).
+
+      The net is about even. Still open: quick screens fly 0.4–0.5 s (NFL
+      about 0.8), and catches at the edge of reach.
 
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
