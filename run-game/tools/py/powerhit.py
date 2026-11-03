@@ -39,7 +39,8 @@ def go(p, con):
         V[s, kind, key].append(v)
     if kind.startswith("line"):
         V[s, kind, "def depth -0.5s"].append(xy[max(0,f-5)][j][0]); V[s, kind, "def lat moved"].append(((xy[f][j][1]-xy[0][j][1]))*ps)
-for con in ("POWER",):
+import os
+for con in (os.environ.get("CON", "POWER"),):
     for p in rfr.nfl(sys.argv[2]): go(p, con)
     for p in rfr.sim(sys.argv[3:]): go(p, con)
 for s in C:
