@@ -17,6 +17,7 @@
     "SEAL_HOLD": "1",
     "DL_HANDS": "0",
     "FLOW_READ": "1",
+    "FLOW_INTERCEPT": "1",
     "FLOW_RELEASE": "1",
     "GAIT_STEP": "0",
     "HAND_FIGHT": "0",

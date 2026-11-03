@@ -187,6 +187,19 @@ const PULL_PLAN = process.env.PULL_PLAN === '1';
 
 /** Backers flow inside-out on a declared track (FLOW_READ=0 off); yards inside the ball. */
 const FLOW_READ = process.env.FLOW_READ !== '0', FLOW_INSIDE = 1;
+/** A backer leads the back by how soon he could reach the backer's depth
+ * (FLOW_INTERCEPT=0: a fixed two reads). */
+const FLOW_INTERCEPT = process.env.FLOW_INTERCEPT !== '0';
+
+/** How far ahead (s) a flowing backer projects the back he keeps leverage on.
+ * A back still crossing behind the line can turn up at any moment, so the
+ * lead is the soonest he could reach the backer's depth at his current speed,
+ * never less than the backer's two reads. `toDepth` is the backer's depth
+ * past the back along the offense's direction. */
+export function flowLead(toDepth: number, vel: { x: number; y: number }, reads: number): number {
+  if (!FLOW_INTERCEPT || toDepth <= 0) return reads;
+  return Math.max(reads, toDepth / Math.max(1, Math.hypot(vel.x, vel.y)));
+}
 
 /** Pull reads (PULL_READ=0 restores the single nearest-shift read, for A/B). */
 const PULL_READ = process.env.PULL_READ !== '0';
@@ -503,7 +516,8 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     : shallowRunner ? Math.sign(seen.pos.y - gy) : 0;
   if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && flowSide) {
     const f = flowSide;
-    const onBall = seen.pos.y + seen.vel.y * 2 * a.mind.decisionInterval - f * FLOW_INSIDE;
+    const lead = flowLead((a.pos.x - seen.pos.x) * sim.attackDir(c.team), seen.vel, 2 * a.mind.decisionInterval);
+    const onBall = seen.pos.y + seen.vel.y * lead - f * FLOW_INSIDE;
     if ((onBall - gy) * f > 0) { gy = onBall; flowing = true; a.tags.add('fit-flow-read'); }
   }
   // Scrape with the gap: carry the landmark forward at the speed of the
