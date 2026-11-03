@@ -329,3 +329,18 @@ The IZ walled pairs now match NFL (−0.24).
 On OZ, the controller requests the right direction but the flowing backer carries the pair. That is engagement physics, so it goes to Main Engine.
 
 **Outcomes.** Blocked LB reaches the carrier: IZ 27 → 30%, OZ 25%, unchanged. Three ledger pins move. Parked until Main Engine's engaged-lateral work lands.
+
+**W2** (`patches/W2-climb-wall-nomirror.patch`) is W1 plus an engagement `wall` flag. A walled climber's feet stop mirroring the man's step toward the ball, judged in field terms. The engagement's lateral axis is perpendicular to the drive, so the wall's away part sits in "forward".
+
+**Results:**
+
+| Walled pairs | Blocker | LB |
+|---|---|---|
+| OZ, W1 | +1.00 | 1.53 |
+| OZ, W2 | +0.74 | 1.40 |
+| IZ | −0.22 | 0.02 |
+
+- First contact is unchanged on every concept.
+- Coverage is small. Of 123 climber wall attempts (2 seeds of OZ), only 25 start an engagement with the wall drive; the rest join or meet an existing engagement. About 80 walled pairs vs about 580 "blocked" box LBs by the proximity operator.
+
+**Parked.** The OZ blocked-backer drift is mostly not climber walls.

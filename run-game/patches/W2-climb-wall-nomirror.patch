@@ -1,0 +1,69 @@
+diff --git a/src/sim/agent.ts b/src/sim/agent.ts
+index 53e54bbe..b82ca6d7 100644
+--- a/src/sim/agent.ts
++++ b/src/sim/agent.ts
+@@ -97,6 +97,9 @@ export interface Engagement {
+   surfaceAxis?: Vec2;
+   /** Desired signed lateral surface angle on runs, in quarter turns. */
+   sealTarget: number;
++  /** A climber walling a backer off from the runner: his feet do not step
++   * with the man toward the side he is walling; he takes him on instead. */
++  wall?: boolean;
+   /** Per-rep variance (positive favors the blocker). */
+   repEdge: number;
+   holding: boolean;
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 344a8a47..27945790 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1869,6 +1869,20 @@ export class RunBlocker implements Behavior {
+     return { ...seen, pos, vel };
+   }
+ 
++  /** A climber who meets his backer with the runner in his pictures walls him
++   * off: he drives upfield and away from the runner, the side the backer is
++   * on, rather than along an installed vector that ignores where the ball
++   * went. Tracked climbers move a blocked backer away from the carrier after
++   * contact (IZ -0.24, OZ -0.45, counter -0.70 yd in 1 s); ours went with the
++   * flow (OZ +1.2) and carried the fit into the play. */
++  private wallDrive(a: Agent, sim: PlaySim, seen: Perceived): Vec2 | null {
++    const picture = this.workPicture;
++    if (picture?.source !== 'acquired' || picture.carrier == null || picture.carrier === sim.qb.idx) return null;
++    const ref = this.workReference(a, sim), dy = seen.pos.y - ref.y;
++    if (Math.abs(dy) < .3) return null;
++    return norm({ x: sim.attackDir(a.team), y: Math.sign(dy) * .6 });
++  }
++
+   private attack(a: Agent, sim: PlaySim, target: Agent, picture?: Perceived, preparedClimb?: Intent | null): MoveCommand {
+     const plan = this.plan;
+     let seen = picture ?? (plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap')
+@@ -1923,7 +1937,9 @@ export class RunBlocker implements Behavior {
+     // not lose useful screening position. Do not recover to its opposite side.
+     const fit = fitCandidate && (plan.kind !== 'drive' || lost) && (!runnerFit || !installedLost);
+     if (!lost && dd < contact) {
+-      const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? combinationFit?.surface);
++      const wall = plan.kind === 'climb' ? this.wallDrive(a, sim, seen) : null;
++      const e = sim.engage(a, target, 'run', wall ?? plan.drive, contactFit ?? combinationFit?.surface);
++      if (e && wall && e.blocker === a && e.drive === wall) e.wall = true;
+       if (e) {
+         if (zone && e.blocker === a && !e.helpers.length) this.applyZoneContact(a, sim, true);
+         return stand();
+diff --git a/src/sim/engagement.ts b/src/sim/engagement.ts
+index e51aa221..d09a2b68 100644
+--- a/src/sim/engagement.ts
++++ b/src/sim/engagement.ts
+@@ -1311,7 +1311,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+   const runSeen = RUN_FEEL ? sim.see(b, d, ((e.hands?.normalForce || e.hands?.tangentForce)
+     ? 0.06 : 0.12 + 0.12 * (1 - tb.read)) / Math.max(0.1, b.profile.reactionTime)) : d;
+   const dv = runSeen.vel;
+-  const dLat = dv.x * lat.x + dv.y * lat.y;
++  // A wall does not give ground to the man's flow toward the side it walls:
++  // the blocker takes him on with his body rather than shuffling with him
++  // (tracked climbers move a blocked backer away from the carrier).
++  // The wall side is across the field (the drive's own sideways part); the
++  // mirror works across the drive, so judge the man's step in field terms.
++  const rawLat = dv.x * lat.x + dv.y * lat.y;
++  const dLat = e.wall && rawLat * lat.y * drive.y < 0 ? 0 : rawLat;
+   // Seal target as a lateral offset of the blocker from the defender, where
+   // the defender is heading in a beat.
+   const lead = 0.15 + 0.15 * tb.read;
