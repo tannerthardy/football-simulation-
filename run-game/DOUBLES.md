@@ -277,3 +277,26 @@ The wrapper's "first block" on the kicker's man (28% vs NFL 4%) is mostly the wr
 - His `PassRusher` controller steers to a nearby point objective and stops there.
 - After 0.6 s his body is braking down to the request, not falling short of it.
 - So this is a controller issue (Defense), not physics.
+
+## Kicker runs past a squeezing end (`lineunb.py`, `_kickmiss`, `_kickone`; fixed on `run/G2-mesh-emlos` 55ce8ba5)
+
+**Who the unblocked linemen are.** Almost every unblocked lineman who makes the first hit on power is the playside end man (snap lat +5…+6.6). He squeezes flat down the line, 1.5–2 yd upfield of the kicker's flat leg, and the kicker runs past underneath him.
+
+**What the command trace shows** (seed 7 #48):
+- At 1.4 s the kicker requests 7.3 yd/s across and achieves 4.4.
+- His corner already followed the end he saw. The leg after it still ended at the snap landmark, so a square turn up onto a moving end looked like no turn. The corner speed it allowed was 6–7.8 yd/s.
+
+**Fix.** The corner and the leg after it both use where the end will be when the kicker arrives: the end's seen motion over the kicker's own closing time, capped at 1 s. The corner speed for the real turn drops to about 2.4 yd/s.
+
+**Results** (5 streams, counter + power):
+
+| | before | after | NFL |
+|---|---|---|---|
+| Counter: kick never lands | 5.9% | 4.1% | |
+| Power, 11 personnel: kick never lands | 22 | 17 | |
+| Kick spot, yd from the ball | 2.44 | 2.36 | 2.50 |
+| Power: unblocked lineman first hitter | 7% | 6% | 3% |
+| Power: first contact | +0.46 | +0.52 | +0.47 |
+| Counter: first contact | +1.01 | +1.13 | +0.31 |
+
+Test: `test/kick-squeeze-turn.test.ts`. The kicker asks for 4.4 yd/s with the fix and 6.4 without it.
