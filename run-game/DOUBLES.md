@@ -416,3 +416,17 @@ First contact and "backer shed" are unchanged.
 The fix belongs to blocking technique on my side: the climber gets off a squeezing DL hip with a rip or dip. First release is 2.10–2.31 s vs NFL 1.29–1.81 s.
 
 Cohort: Main Engine's `pressed-release-native.mts`, seeds 7/8, 26 rows.
+
+**W4** (`patches/W4-climb-wall-shuffle.patch`) is W3, except the walled climber may step toward the ball once the man is getting across his ball-side shoulder.
+
+`_lbcohort` results:
+
+| Engaged climber | Blocker | LB |
+|---|---|---|
+| OZ C | +1.03 | 1.72 |
+| OZ G | +0.06 | 0.52 |
+| OZ T | −0.31 | 0.38 |
+| IZ C | −0.13 | 0.09 |
+| IZ T | +0.77 | 0.85 |
+
+The OZ Mike still crosses at 1.7 whatever the climber's footwork. Parked. This was the fourth controller iteration on this item.
