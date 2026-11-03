@@ -42,8 +42,15 @@ Mechanics (`src/sim/behaviors/screen.ts`, `ScreenBlocker`):
 - **Receiver release.** A back stays in while his blocking assignment is a free
   rusher, because a blitz kills the screen. An attached end always releases
   on the count.
-- **The QB** reads only the screen. On a slow screen he throws once the
-  receiver is within 1.5 yd of his spot.
+- **Letting the rusher by.** A released lineman leaves on the count once his man
+  is past his hip toward the QB, or 0.7 s after the count at the latest. That
+  way a rusher who stops is not left sitting in the screen. Before the throw,
+  he may block a defender who is still behind the line.
+- **The QB** reads only the screen. On a slow screen he throws on
+  anticipation once the receiver is within 3.5 yd of his spot. NFL slow
+  screens leave the hand with the receiver still 2.3–2.9 yd from where he
+  catches it. He may also loft the ball over the rush; his usual throw-window
+  evaluation decides whether to.
 
 ## How to run it
 
@@ -77,31 +84,42 @@ Values are p50s.
 
 | | NFL RB | sim slip | NFL TE | sim TE | NFL WR | sim bubble | sim bunch now | sim tunnel |
 |---|---|---|---|---|---|---|---|---|
-| caught / thrown | 232/271 | **2/32** | 124/140 | 10/32 | 366/409 | 21/32 | 32/32 | 20/32 |
-| time to throw, s | 2.20 | 2.50 | 2.40 | 2.45 | 1.40 | 1.40 | 1.25 | 1.50 |
-| catch depth, yd | −3.0 | −2.2 | −2.6 | −2.5 | −1.6 | **+3.5** | −0.9 | −1.0 |
-| first OL past the LOS, s | 1.9 | 3.6 | 1.4 | 3.6 | 1.0 | – (no OL release) | – | 3.1 |
-| blockers / threats ahead at the catch | 2/2 | 2/2 | 2/2 | 2/1 | 2/2 | 1/1 | 2/3 | 1/1 |
-| first defender reaches carrier, s after catch | 1.0 | 2.1 | 1.1 | 1.5 | 0.9 | **0.1** | **2.7** | 0.3 |
-| …and he was unblocked | 57% | 100% | 60% | 60% | 53% | 100% | 88% | 67% |
-| yards (all plays) p50 / mean | 6 / 6.9 | 0 / −1.5 | 7 / 7.6 | 0 / 2.7 | 5 / 5.6 | 22 / 39.6 | 11 / 12.5 | 15 / 25.9 |
+| caught / thrown | 232/271 | 14/32 (was 2) | 124/140 | 14/32 (was 10) | 366/409 | 21/32 | 32/32 | 26/32 |
+| time to throw, s | 2.20 | 2.95 | 2.40 | 2.65 | 1.40 | 1.40 | 1.25 | 1.40 |
+| catch depth, yd | −3.0 | −2.7 | −2.6 | −2.9 | −1.6 | **+3.5** | −0.9 | −1.0 |
+| first OL past the LOS, s | 1.9 | **4.0** | 1.4 | 3.7 | 1.0 | – (no OL release) | – | 3.8 |
+| blockers / threats ahead at the catch | 2/2 (2 OL) | **0/1** | 2/2 | 1/1 | 2/2 | 1/1 | 2/3 | 1/1 |
+| first defender reaches carrier, s after catch | 1.0 | 1.6 | 1.1 | 1.0 | 0.9 | **0.1** | **2.7** | 0.1 |
+| …and he was unblocked | 57% | 86% | 60% | 92% | 53% | 100% | 88% | 92% |
+| yards (caught plays) p50 / mean | 6 / 6.9 | 3 / 3.3 | 7 / 7.6 | 1 / 7.2 | 5 / 5.6 | 22 / 39.6 | 11 / 12.5 | 0 / 8.3 |
 
 ## What the lab shows (ranked by frequency × consequence)
 
-1. **The RB slip screen fails: 2 of 32 completed.** On the traced snaps
-   (seeds 1, 2, 3 and 5 vs Cover 3), the weak-side DT comes free up the middle
-   when the center releases. He reaches the QB 2.3–2.5 s after the snap, so
-   the QB is sacked, throws it away, or throws while wrapped. His wobbly ball
-   on seed 1 was caught by the released LT, ruled illegal touching. The QB
-   sits at his 5-step depth instead of drifting and throwing over the rush,
-   and the back reaches his spot about 0.3–0.5 s later than NFL backs.
-   Candidate mechanisms:
-   - QB drift and launch timing on slow screens;
-   - the center's job (the research has the playside G, C and backside G
-     release, plus a "rat killer" who stays home);
-   - the back's cue (release when he sees the guard go, not on a count).
+1. **Slow screens: the QB now gets the ball out, but the linemen arrive too
+   late to lead.**
+   - **First pass.** RB slip completed 2/32. The screen-side end the tackle
+     released stopped rushing and sat at the back's catch point, so the QB
+     correctly read the throw as covered. Separately, a free DT reached him
+     at 2.3–2.5 s.
+   - **The fixes (approved):**
+     - QB anticipation timing, with a touch option over the rush, screen
+       calls only;
+     - linemen let their man by, then release;
+     - linemen block the screen area behind the line before the throw.
+   - **Result.** RB slip 14/32 and TE screen 14/32 complete.
+   - **What remains.** The throw comes at 2.95 s (NFL 2.20), and the back
+     catches with a median of **0 blockers** ahead of him (NFL 2, both
+     linemen). The first released lineman crosses the line at 4.0 s (NFL 1.9).
+     On the remaining failures the rush reaches the QB just before the throw
+     (seeds 5–6), and there is one drop (seed 8).
+   - **Next question: how linemen get from letting their man by to the front
+     of the screen.** They slide flat behind the line and do not turn
+     upfield until the ball is out. NFL linemen are past the line about
+     0.3 s before the throw.
 
-   The TE screen shares the timing problem (10 of 32 completed).
+   Coverage call barely matters on the slip screen: Cover 3, 1 and 2 give
+   identical events with the same front. The pressure call does change them.
+
 2. **Defenders are slow to rally to quick screens.** On the bunch now screen,
    the first defender reaches the catcher 2.7 s after the catch, versus about
    0.9 s on NFL WR screens. The catcher gains 11 yd at the median, versus 5 in
@@ -135,9 +153,8 @@ that do, blocks in space per play run at the NFL rate (3–7).
 
 ## Next decisions
 
-- Make the slip screen a valid test, starting with QB drift/timing and the
-  center's job. This needs a decision: on screens, the QB is a shared
-  controller.
-- Hand item 2 (screen recognition and rally) to Defense.
+- **Blocking in space:** the released linemen's path from letting their man by
+  to leading the screen (arrival at the convoy).
+- **Handed to Defense** (Tanner, 2026-11-03): screen recognition and rally.
 - After that, use the lab to judge blocking in space itself: arrival margin,
   sheds, and whiffs.

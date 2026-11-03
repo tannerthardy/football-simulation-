@@ -58,8 +58,10 @@ export class ScreenBlocker implements Behavior {
     }
     // The point he blocks for: the ball carrier once he has it, else the catch point.
     const ref = thrown && sim.carrier && sim.carrier.team === a.team && sim.carrier !== sim.qb ? sim.carrier.pos : this.spot;
-    if (this.lineman && !thrown) return this.slide(a, sim, dir);
     const d = this.target;
+    // Before the throw a lineman may block only behind the line (an
+    // ineligible man downfield); a defender sitting in the screen there is his.
+    if (this.lineman && !thrown && (!d || (d.pos.x - sim.los) * dir > 0.8)) return this.slide(a, sim, dir);
     if (!d) return runThrough(a, { x: ref.x + 3 * dir, y: ref.y + this.side * (this.job === 'out' ? 2 : 0) }, { speed: 0.75 });
     const seen = sim.see(a, d);
     // Fit on his path to the ball, between him and it, then strike through him.

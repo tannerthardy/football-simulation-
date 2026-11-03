@@ -340,8 +340,11 @@ export class QBPass implements Behavior {
     if (!rr) return r.behavior.kind === 'route';
     // A slow screen is thrown once the receiver has settled behind his blockers.
     if (this.concept.family === 'screen' && rr.route.end === 'settle' && this.concept.screen?.tempo === 'slow') {
+      // Thrown on anticipation as he turns for the ball: NFL slow screens leave
+      // the hand with the receiver still ~2.3-2.9 yd from where he catches it
+      // (BDB 2025, screen_reference), lofted over the rush he let through.
       const last = rr.path[rr.path.length - 1]?.p;
-      return rr.settled || (!!last && Math.hypot(r.pos.x - last.x, r.pos.y - last.y) < 1.5);
+      return rr.settled || (!!last && Math.hypot(r.pos.x - last.x, r.pos.y - last.y) < 3.5);
     }
     const antic = sim.qb.r('anticipation');
     return sim.t >= rr.breakTime - 0.3 * antic;
@@ -415,6 +418,9 @@ export class QBPass implements Behavior {
     // Options: the natural ball, a fastball into a tight window, and touch over the top.
     const options: number[] = [T];
     if (range > 15) options.push(T * 1.2);
+    // On a screen, touch over the rush he let through is an option; the
+    // window's batted-ball risk decides whether he takes it.
+    else if (depth < 1 && this.concept.family === 'screen') options.push(T * 1.4);
     const fastball = Tmin < T * 0.85 ? Math.max(Tmin, T * 0.75) : null;
 
     let best: ThrowEval | null = null;
