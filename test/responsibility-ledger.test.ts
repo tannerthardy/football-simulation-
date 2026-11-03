@@ -370,7 +370,9 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // as well, LB_W alone at 3.0, wrapping with it (5.4 yd, not a score); still not a tie. With the box backer reading before he moves and filling to a pull he sees
     // as well, DT_W alone makes first contact at 2.75, a hit without a wrap; SS wraps first, at 4.25; still not a tie.
     // With an unsure box backer shuffling with the flow he sees (LB_FLOW_STEP), SS alone at 3.05, wrapping with the
-    // contact; still not a tie.
+    // contact; still not a tie. With a climber releasing a held backer who has run under him and he can no longer
+    // meet (Run Game, alone on develop: C leaves LB_W for FS at 2.35, SS wraps at 4.0), together with the flow step:
+    // unchanged, SS alone at 3.05, wrapping.
     expect(first.t).toBe(3.05);
     expect(first.defenders.map(p.slot)).toEqual(['SS']);
     expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 3.05 });
