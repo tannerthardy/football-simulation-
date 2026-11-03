@@ -1,0 +1,39 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 6cb638cc..c7aa826a 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -2001,7 +2001,7 @@ export class RunBlocker implements Behavior {
+         // Interception supplies the approach, not permission to run through
+         // the man. Use the same acquired near-strike fit as other climbs.
+         if (!this.climbAccess && Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
+-          return secondLevelBlockApproach(a, seen, plan.drive, this.climbRead!.meet,
++          return secondLevelBlockApproach(a, seen, plan.drive, this.ballSideFit(a, sim, seen),
+             placementError, contact, bodyContact, fit, sim.t);
+         return fit;
+       }
+@@ -2009,7 +2009,7 @@ export class RunBlocker implements Behavior {
+     if (plan.kind === 'climb' || plan.kind === 'lead' || (plan.kind === 'pull' && plan.pullRole === 'lead')) {
+       const command = track(a, aim, seen.vel, { speed: 1, gain: 3,
+         facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) });
+-      return secondLevelBlockApproach(a, seen, plan.drive, nominalAim, placementError,
++      return secondLevelBlockApproach(a, seen, plan.drive, this.ballSideFit(a, sim, seen), placementError,
+         contact, a.profile.radius + target.profile.radius, command, sim.t);
+     }
+     const original = runThrough(a, aim, { speed: 1 });
+@@ -2024,6 +2024,16 @@ export class RunBlocker implements Behavior {
+   /** Neighboring zone halves share a depth normal, not the diagonal drive
+    * direction. The first member's own installed half is the desired angle.
+    * Pass this only at acquisition: existing hands retain their actual frame. */
++  /** A second-level fit takes the backer's path to the ball away: the
++   * shoulder on the side of the runner this blocker sees (or the play side
++   * before he sees one), rather than the man's centre. The fit law bounds how
++   * far around the man that is. */
++  private ballSideFit(a: Agent, sim: PlaySim, seen: Perceived): Vec2 {
++    const ref = this.workReference(a, sim);
++    const side = Math.sign(ref.y - seen.pos.y) || playSideSign(sim, sim.offCall.run!);
++    return { x: seen.pos.x, y: seen.pos.y + side };
++  }
++
+   private combinationFit(a: Agent, sim: PlaySim, target: Agent):
+     { offset: Vec2; surface: RunContactSurface } | null {
+     const combo = this.plan.combination, scheme = sim.offCall.run?.scheme;

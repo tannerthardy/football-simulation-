@@ -1,0 +1,24 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 6cb638cc..8dd86bf8 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1965,6 +1965,19 @@ export class RunBlocker implements Behavior {
+         : { x: seen.pos.x + seen.vel.x * 0.25, y: seen.pos.y + seen.vel.y * 0.25 };
+       aim = a.mind.aim('block-fit', lead, sim.t);
+     }
++    // Zone first-level footwork: step across to the aiming point on the
++    // line and let the man come, rather than sprinting through his old spot.
++    // Tracked linemen meet their first man at 40-80 deg of approach with
++    // 0.1-0.9 yd/s upfield; ours ran straight at him (15-35 deg, 0.6-1.6).
++    // Before he is within strike reach the landmark's depth is held to a
++    // short step past his own; once in reach the ordinary fit and strike run.
++    const run0 = sim.offCall.run, zoneFirst = !!run0 && (run0.scheme === 'insideZone' || run0.scheme === 'outsideZone'
++      || run0.scheme === 'wideZone' || run0.scheme === 'splitZone') && (plan.kind === 'drive' || plan.kind === 'reach' || plan.kind === 'cutoff')
++      && !plan.combination?.released && onLine(a, sim);
++    if (zoneFirst && dd > contact) {
++      const dirZ = sim.attackDir(a.team), cap = a.pos.x + dirZ * .4;
++      aim = { x: dirZ > 0 ? Math.min(aim.x, cap) : Math.max(aim.x, cap), y: aim.y };
++    }
+     const nominalAim = aim;
+     const placementError = a.mind.placementError * (1 - 0.5 * a.r('runBlock'));
+     aim = { x: aim.x, y: clamp(aim.y + placementError, 0.5, FIELD_WIDTH - 0.5) };

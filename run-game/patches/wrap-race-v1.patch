@@ -1,0 +1,79 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 6cb638cc..e75660e9 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1737,6 +1737,13 @@ export class RunBlocker implements Behavior {
+       const claimed = mates.some(m => Math.hypot(m.pos.x - seen.pos.x, m.pos.y - seen.pos.y) <= m.r + d.profile.radius + .1);
+       return s < 7 ? s + (claimed ? 100 : 0) : null;
+     };
++    // With the runner in his pictures he blocks by the race, inside-out:
++    // each man's time to the runner he sees against his own time to that man.
++    // A man he can meet before the man meets the runner is his to take, the
++    // most urgent first; one who beats him there, or one the runner has run
++    // past, is somebody else's. Hole landmarks only stand in before he sees
++    // the ball carried.
++    if (runner && this.workPicture?.source === 'acquired') return this.raceThreat(a, sim, current, runner, called, mates);
+     let best: Agent | null = null, bestScore = Infinity;
+     for (const d of sim.defense) {
+       const s = score(d);
+@@ -1756,6 +1763,60 @@ export class RunBlocker implements Behavior {
+     return kept !== null && (closing || reachable || bestScore > kept - 1.5) ? current : best;
+   }
+ 
++  /** The race for a lead blocker, from his own pictures: the runner's acquired
++   * track, each defender's seen motion and public body, and his own body. */
++  private raceThreat(a: Agent, sim: PlaySim, current: Agent | null, runner: Agent,
++    called: Set<Agent | null>, mates: Array<{ pos: Vec2; r: number }>): Agent | null {
++    const dir = sim.attackDir(a.team), ball = this.workReference(a, sim), rv = this.workPicture!.vel;
++    const horizon = 1.5;
++    // Where the runner goes: his seen line for a decision beat, then north at
++    // the speed he sees. A back bending across the field is going to turn up;
++    // running his lateral speed out for a second and a half would have every
++    // man flowing with him lose the race on paper while he makes the tackle.
++    const beat = a.mind.decisionInterval, speed = Math.hypot(rv.x, rv.y);
++    const track = (t: number) => {
++      const lat = Math.min(t, beat), up = Math.max(0, t - beat);
++      return { x: ball.x + rv.x * lat + dir * speed * up, y: ball.y + rv.y * lat };
++    };
++    const me = { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
++    const race = (d: Agent): { urgency: number; claimed: boolean } | null => {
++      if (called.has(d)) return null;
++      const seen = sim.see(a, d);
++      if (seen.pose === 'down' || seen.pose === 'rising') return null;
++      const depth = (seen.pos.x - sim.los) * dir;
++      if (depth < -1.5 || depth > 7) return null;
++      // Pursuit from behind the runner is not a lead block: a man the runner
++      // has run past is chasing him, whoever wins that race.
++      if ((ball.x - seen.pos.x) * dir > .25) return null;
++      const his = interceptPoint({ pos: seen.pos, vel: seen.vel, profile: d.profile }, track,
++        { horizon, step: .1, radius: d.profile.radius + runner.profile.radius });
++      if (his.estimate.status !== 'estimated-feasible') return null;
++      const strike = a.profile.radius + d.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
++      // He need not beat the man to the runner, only onto the man's way
++      // there: any point of that run he reaches before the man passes it, or
++      // the man on the runner within a beat of the collision, which he can
++      // still take off the ball.
++      const meet = his.t > 1e-6 ? his.t : .1, mx = (his.point.x - seen.pos.x) / meet, my = (his.point.y - seen.pos.y) / meet;
++      const mine = interceptPoint(me, (t) => t <= meet ? { x: seen.pos.x + mx * t, y: seen.pos.y + my * t } : track(t),
++        { horizon: meet + beat, step: .05, radius: strike });
++      if (mine.estimate.status !== 'estimated-feasible') return null;
++      const claimed = mates.some(m => Math.hypot(m.pos.x - seen.pos.x, m.pos.y - seen.pos.y) <= m.r + d.profile.radius + .1);
++      return { urgency: his.t, claimed };
++    };
++    let best: Agent | null = null, bestScore = Infinity;
++    for (const d of sim.defense) {
++      const r = race(d);
++      if (!r) continue;
++      const score = r.urgency + (r.claimed ? 100 : 0);
++      if (score < bestScore) { bestScore = score; best = d; }
++    }
++    // He keeps a man he is still winning the race to unless another is
++    // clearly more urgent: re-picking each beat is churn, not reading.
++    const kept = current ? race(current) : null;
++    if (kept && current !== best && kept.urgency + (kept.claimed ? 100 : 0) < bestScore + .5) return current;
++    return best;
++  }
++
+   /** No man yet: get in front of the runner he sees and keep looking. */
+   private leadRunner(a: Agent, sim: PlaySim): MoveCommand {
+     const ref = this.workReference(a, sim), dir = sim.attackDir(a.team);

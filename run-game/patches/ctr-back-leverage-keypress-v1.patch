@@ -1,0 +1,134 @@
+diff --git a/src/sim/behaviors/carrier.ts b/src/sim/behaviors/carrier.ts
+index e73b7d50..6f13754a 100644
+--- a/src/sim/behaviors/carrier.ts
++++ b/src/sim/behaviors/carrier.ts
+@@ -63,7 +63,9 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
+  * block is neither an empty lane nor guaranteed future protection. */
+ interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D' }
+ 
+-export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
++/** keyOnly: the entry his key gives him (the design, or the kick block's
++ * side), without the who-is-there-first read of the whole line. */
++export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions, keyOnly = false): Vec2 | null {
+   if (!opts.run || !opts.aim) return null;
+   const dir = sim.attackDir(a.team), run = opts.run;
+   const depth = (p: Vec2) => (p.x - sim.los) * dir;
+@@ -93,6 +95,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
+     const logged = !!on && (on.y - kickSeen.pos.y) * run.side < 0;
+     preferred = kickSeen.pos.y + (logged ? run.side * .85 : -run.side * .85);
+   }
++  if (keyOnly) return { x: sim.los + .5 * dir, y: preferred };
+   const bodies: LineBody[] = [];
+   for (const { agent: o, seen: s, team } of pictures) {
+     if (s.pose === 'down') continue;
+@@ -121,11 +124,37 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
+   // Acquired motion already contains a block's observed slowdown. Nearby
+   // bodies do not promise retention or a future pursuit delay. In particular,
+   // a defender occupying the entry remains a threat, on either side of a block.
++  // The block tells him where to go: a defender he sees on a blocker (within
++  // that blocker's arm's length of him, hands on) holds one side of that
++  // blocker, the side he is on.
++  // An entry across the blocker from him is the blocker's, not his, until he
++  // is seen crossing the blocker's face or squared up on him. Read from the
++  // pictures on every beat; a man who wins shows as soon as it can be seen.
++  const blockers = pictures.filter((q) => q.team === 'O' && q.seen.pose !== 'down' && q.agent !== a);
++  const onBlockers = new Map<Agent, Array<{ pos: Vec2; vel: Vec2 }>>();
++  const blockedFrom = (d: Agent, s: Perceived, p: Vec2): boolean => {
++    if (Math.hypot(s.pos.x - p.x, s.pos.y - p.y) <= d.profile.radius + a.profile.radius) return false;
++    let on = onBlockers.get(d);
++    if (!on) {
++      on = blockers.filter((q) => Math.hypot(q.seen.pos.x - s.pos.x, q.seen.pos.y - s.pos.y)
++        <= q.agent.profile.radius + d.profile.radius + .1 + q.agent.player.measurables.armIn / 36 * .45)
++        .map((q) => ({ pos: q.seen.pos, vel: q.seen.vel }));
++      onBlockers.set(d, on);
++    }
++    return on.some((b) => {
++      const off = s.pos.y - b.pos.y, side = Math.sign(p.y - b.pos.y);
++      if (Math.abs(off) < .25 || Math.sign(off) === side) return false;
++      // Crossing the blocker's face toward the entry's side.
++      const across = (s.vel.y - b.vel.y) * side;
++      return !(Math.abs(off) < .5 && across > .5);
++    });
++  };
+   const threatTime = (d: Agent, s: Perceived, p: Vec2): number =>
+-    timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + d.profile.reach * .75)
+-      + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
++    blockedFrom(d, s, p) ? Infinity
++      : timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + d.profile.reach * .75)
++        + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
+   let best: Vec2 | null = null, cost = Infinity;
+-  const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
++  const measurements: Array<{ entry: Vec2; risk: number; score: number; parts?: { obstruct: number; m1: number; m2: number; who?: string } }> = [];
+   // Bodies on a segment block the run along it.
+   const blockedBy = (from: Vec2, to: Vec2): number => {
+     const sx = to.x - from.x, sy = to.y - from.y, l2 = sx * sx + sy * sy || 1;
+@@ -157,27 +186,27 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
+       routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: atW + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w,
+         path: [...along(a.pos, w, null), ...along(w, p, atW).slice(0, 3)] });
+     }
+-    let risk = Infinity, via = p;
++    let risk = Infinity, via = p, parts: { obstruct: number; m1: number; m2: number; who?: string } = { obstruct: 0, m1: 0, m2: 0 };
+     const beyond = { x: p.x + 2 * dir, y: p.y };
+     for (const route of routes) {
+       const arrive = route.arrive, arrive2 = arrive + 2 / cruise;
+       // Who is there first, at the entry and two yards beyond it: the
+       // earliest defender decides, as in the open-field read.
+-      let m1 = Infinity, m2 = Infinity;
++      let m1 = Infinity, m2 = Infinity, who = '';
+       for (const { agent: d, seen: s, team } of pictures) {
+         if (team !== 'D' || Math.hypot(s.pos.x - p.x, s.pos.y - p.y) > 8) continue;
+-        m1 = Math.min(m1, threatTime(d, s, p) - arrive);
++        const mm = threatTime(d, s, p) - arrive; if (mm < m1) { m1 = mm; who = d.slot + (d.engagement ? '*' : '') + '@entry'; }
+         m2 = Math.min(m2, threatTime(d, s, beyond) - arrive2);
+         // A defender who reaches a point on the way there before he does
+         // closes the route as surely as one standing in the entry.
+-        for (const { q, t } of route.path) m1 = Math.min(m1, threatTime(d, s, q) - t);
++        for (const { q, t } of route.path) { const mm = threatTime(d, s, q) - t; if (mm < m1) { m1 = mm; who = d.slot + (d.engagement ? '*' : '') + '@path'; } }
+       }
+       const r = route.obstruct + (m1 < 0 ? 4 + 4 * Math.min(1, -m1) : m1 < .3 ? (.3 - m1) * 6 : 0)
+         + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0);
+-      if (r < risk) { risk = r; via = route.via; }
++      if (r < risk) { risk = r; via = route.via; parts = { obstruct: route.obstruct, m1, m2, who }; }
+     }
+     const score = Math.abs(p.y - preferred) * .45 + Math.abs(p.y - a.pos.y) * .12 + risk;
+-    if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score });
++    if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score, parts });
+     // Run the chosen route: its first leg is where he heads now.
+     if (score < cost) { cost = score; best = via; }
+   }
+@@ -199,6 +228,7 @@ export class BallCarrier implements Behavior {
+   private pressEntry: Vec2 | null = null;
+   private pressReadAt = 0;
+   private followEnded = false;
++  private followTrackBody = false;
+ 
+   constructor(
+     private readonly opts: CarrierOptions = {},
+@@ -247,10 +277,15 @@ export class BallCarrier implements Behavior {
+       // From that beat he reads like any other back. A race to a hole he may
+       // lose is not a body in his way.
+       const follow = this.opts.run?.scheme === 'counter' || this.opts.run?.scheme === 'power';
++      // A landed kick block tells him which side of it to press; the
++      // whole-line read waits for the line, as in the follow (from three
++      // yards deep the play has not formed). A free man standing in his
++      // track is read at once.
++      const keyOnly = () => follow && this.followEnded && !this.followTrackBody && (a.pos.x - sim.los) * dir <= -2;
+       if (this.opts.run && ((a.pos.x - sim.los) * dir > (follow ? -2 : -4.5) || this.followEnded)) {
+         if (sim.t >= this.pressReadAt) {
+           this.pressReadAt = sim.t + a.mind.decisionInterval;
+-          this.pressEntry = runReadAim(a, sim, this.opts);
++          this.pressEntry = runReadAim(a, sim, this.opts, keyOnly());
+         }
+         if (this.pressEntry) aim = this.pressEntry;
+       }
+@@ -265,8 +300,9 @@ export class BallCarrier implements Behavior {
+         if (exit.exit) this.opts.aimUntil = sim.t;
+         if (follow && this.opts.run && (best?.trackBody || best?.kickLanded) && !this.followEnded) {
+           this.followEnded = true;
++          this.followTrackBody = !!best?.trackBody;
+           this.pressReadAt = sim.t + a.mind.decisionInterval;
+-          this.pressEntry = runReadAim(a, sim, this.opts);
++          this.pressEntry = runReadAim(a, sim, this.opts, keyOnly());
+           if (this.pressEntry) { aim = this.pressEntry; h = angleOf({ x: aim.x - a.pos.x, y: aim.y - a.pos.y }); this.heading = h; }
+         }
+       }

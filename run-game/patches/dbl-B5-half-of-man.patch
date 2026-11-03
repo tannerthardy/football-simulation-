@@ -1,0 +1,86 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 6cb638cc..15c29598 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -1897,6 +1897,11 @@ export class RunBlocker implements Behavior {
+     // Once the carrying back is acquired, crossing the old drive normal need
+     // not lose useful screening position. Do not recover to its opposite side.
+     const fit = fitCandidate && (plan.kind !== 'drive' || lost) && (!runnerFit || !installedLost);
++    // The second man into a double steps flat to his partner's hip (at the
++    // partner's depth) from his first step, and works there with him, rather than running at the
++    // man's near shoulder and up beside him (tracked doubles sit half a man
++    // each side, 0.6-0.7 yd in front of the man; ours 0.3-0.4 and wider).
++    const hip = this.comboHip(a, sim, target, seen);
+     if (!lost && dd < contact) {
+       const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? combinationFit?.surface);
+       if (e) {
+@@ -1925,7 +1930,9 @@ export class RunBlocker implements Behavior {
+     }else this.collectionRead=null;
+     // Aiming point: reach blocks work to the playside shoulder.
+     let aim = seen.pos;
+-    if (contactFit) {
++    if (hip) {
++      aim = hip.spot;
++    } else if (contactFit) {
+       const sep = a.profile.radius + target.profile.radius + .15;
+       aim = { x: seen.pos.x + contactFit.axis.x * sep, y: seen.pos.y + contactFit.axis.y * sep };
+     } else if (zone) {
+@@ -2012,6 +2019,14 @@ export class RunBlocker implements Behavior {
+       return secondLevelBlockApproach(a, seen, plan.drive, nominalAim, placementError,
+         contact, a.profile.radius + target.profile.radius, command, sim.t);
+     }
++    // The hip moves with the partner and the man: follow it with the
++    // partner's seen motion, as a kick follows a moving shoulder.
++    if (hip) {
++      const partner = this.plan.combination!.members.find(m => m !== a)!;
++      void partner;
++      return track(a, aim, seen.vel, { speed: 1, gain: 3,
++        facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x) });
++    }
+     const original = runThrough(a, aim, { speed: 1 });
+     if (runnerFit?.lost) return chooseRunBlockFit(a, seen,
+       { x: -runnerFit.axis.x, y: -runnerFit.axis.y }, runnerFit.aim, placementError,
+@@ -2024,6 +2039,43 @@ export class RunBlocker implements Behavior {
+   /** Neighboring zone halves share a depth normal, not the diagonal drive
+    * direction. The first member's own installed half is the desired angle.
+    * Pass this only at acquisition: existing hands retain their actual frame. */
++  /** His partner's hip, from his own pictures, from his first step of an
++   * unreleased double: beside the partner, square
++   * to the partner's line to the man, by both blockers' widths, on his own
++   * side. Null when he is not the second man in. */
++  private comboHip(a: Agent, sim: PlaySim, target: Agent, seen: Perceived): { spot: Vec2 } | null {
++    const c = this.plan.combination;
++    if (!c || c.released || c.defender !== target || !c.members.includes(a)) return null;
++    if (sim.world.joints.some(j => j.a === a.body || j.b === a.body)) return null;
++    const partner = c.members.find(m => m !== a)!, p = sim.see(a, partner);
++    const dx = seen.pos.x - p.pos.x, dy = seen.pos.y - p.pos.y, l = Math.hypot(dx, dy);
++    if (l < 1e-6) return null;
++    const reach = partner.profile.radius + target.profile.radius + .1 + partner.player.measurables.armIn / 36 * .45;
++    if (l > reach) {
++      // Before his partner is on the man, only a zone helper with nothing in
++      // his own gap goes for the hip (check, then help): any other man near
++      // the line by his lane, not visibly on one of our blockers, is his first.
++      if (!c.helpPolicy) return null;
++      const dir = sim.attackDir(a.team), home = c.helpPolicy.homeY;
++      const free = sim.defense.some(d => {
++        if (d === target || d === c.backer || d.isDown(sim.t)) return false;
++        const s = sim.see(a, d);
++        if ((s.pos.x - sim.los) * dir > 1.5 || Math.min(Math.abs(s.pos.y - home), Math.abs(s.pos.y - a.pos.y)) > 1.2) return false;
++        return !sim.offense.some(o => o !== a && Math.hypot(sim.see(a, o).pos.x - s.pos.x, sim.see(a, o).pos.y - s.pos.y)
++          <= o.profile.radius + d.profile.radius + .1 + o.player.measurables.armIn / 36 * .45);
++      });
++      if (free) return null;
++    }
++    // His half of the man: half the pair's width off the man's centre on his
++    // own side, at contact depth in front of him. With the man square this is
++    // his partner's hip; with the man slanting to him it is where he meets
++    // him (a hip relative to the partner alone left a slanting man free).
++    const dir = sim.attackDir(a.team);
++    const side = Math.sign(a.pos.y - p.pos.y) || 1, w = (a.profile.radius + partner.profile.radius) / 2;
++    const r = a.profile.radius + target.profile.radius, depth = Math.sqrt(Math.max(0, r * r - w * w));
++    return { spot: { x: seen.pos.x - dir * depth, y: seen.pos.y + side * w } };
++  }
++
+   private combinationFit(a: Agent, sim: PlaySim, target: Agent):
+     { offset: Vec2; surface: RunContactSurface } | null {
+     const combo = this.plan.combination, scheme = sim.offCall.run?.scheme;

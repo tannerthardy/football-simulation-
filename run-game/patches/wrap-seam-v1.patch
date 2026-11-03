@@ -1,0 +1,78 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 6cb638cc..58c0918a 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -975,6 +975,7 @@ export class RunBlocker implements Behavior {
+   private nextSurfaceRead = 0;
+   private wrapOutside = false;
+   private wrapCorner: Vec2 | null = null;
++  private seamRead: { at: number; y: number | null } | null = null;
+   private wrapTraffic: {pos: Vec2; vel: Vec2}[] = [];
+   private wrapTrafficAt = 0;
+   private departureRead: { at: number; nextRead: number; exit: Vec2 | null;
+@@ -1178,6 +1179,20 @@ export class RunBlocker implements Behavior {
+             const s=sim.see(a,kick),side=playSideSign(sim,sim.offCall.run!);
+             plan.pullPath[plan.pullPath.length-1]={x:Math.max(sim.los+.5,s.pos.x+.6),y:s.pos.y+side*1.1};
+             a.tags.add('wrap-log');
++          } else if (this.pullIdx >= 1) {
++            // Eyes inside: crossing behind the down blocks he turns up in the
++            // first seam he sees open, inside-out, rather than running his
++            // installed landmark onto the kick block's hip (tracked wraps
++            // spread 2+ yd off their kicker; ours rode 1 yd behind him).
++            const seam = this.readSeam(a, sim);
++            if (seam !== null) {
++              const last = plan.pullPath.length - 1, end = plan.pullPath[last];
++              plan.pullPath[last] = { x: end.x, y: seam };
++              if (this.pullIdx < last && last >= 2) {
++                const ps = playSideSign(sim, sim.offCall.run!);
++                plan.pullPath[last - 1] = { ...plan.pullPath[last - 1], y: seam - ps * .5 };
++              }
++            }
+           }
+         }
+       }
+@@ -1756,6 +1771,44 @@ export class RunBlocker implements Behavior {
+     return kept !== null && (closing || reachable || bestScore > kept - 1.5) ? current : best;
+   }
+ 
++  /** The first seam a wrapper sees open across the line, inside-out: the
++   * middle of the first gap between line bodies (either team, upright, within
++   * a yard and a half of the line) wide enough for his body, ahead of his own
++   * flow and inside the kick puller. Read on his decision beat; a seam he
++   * chose stays his while he still sees it open. Null: none open, keep the
++   * installed turn-up. */
++  private readSeam(a: Agent, sim: PlaySim): number | null {
++    const t = sim.t;
++    if (this.seamRead && t < this.seamRead.at + a.mind.decisionInterval) return this.seamRead.y;
++    const ps = playSideSign(sim, sim.offCall.run!), dir = sim.attackDir(a.team);
++    const lat = (y: number) => (y - sim.ballY) * ps;
++    const kicker = sim.offense.find(o => o !== a && o.behavior instanceof RunBlocker && o.behavior.plan.pullRole === 'kick');
++    const carrier = this.workPicture?.carrier;
++    const outer = kicker ? lat(sim.see(a, kicker).pos.y) : Infinity;
++    const mine = lat(a.pos.y);
++    const bodies: Array<{ l: number; r: number }> = [];
++    for (const o of [...sim.offense, ...sim.defense]) {
++      if (o === a || o === sim.qb || o.idx === carrier || o === kicker) continue;
++      const seen = sim.see(a, o);
++      if (seen.pose === 'down') continue;
++      if (Math.abs((seen.pos.x - sim.los) * dir) > 1.5) continue;
++      bodies.push({ l: lat(seen.pos.y), r: o.profile.radius });
++    }
++    bodies.sort((p, q) => p.l - q.l);
++    const need = 2 * a.profile.radius + .2, open: number[] = [];
++    for (let i = 1; i < bodies.length; i++) {
++      const lo = bodies[i - 1].l + bodies[i - 1].r, hi = bodies[i].l - bodies[i].r;
++      if (hi - lo < need) continue;
++      const mid = (lo + hi) / 2;
++      if (mid >= mine + .3 && mid >= 0 && mid < outer) open.push(mid);
++    }
++    const prev = this.seamRead?.y;
++    const kept = prev != null ? open.find(m => Math.abs(m - prev) < .6) : undefined;
++    const pick = kept ?? open[0] ?? null;
++    this.seamRead = { at: t, y: pick === null ? null : sim.ballY + ps * pick };
++    return this.seamRead.y;
++  }
++
+   /** No man yet: get in front of the runner he sees and keep looking. */
+   private leadRunner(a: Agent, sim: PlaySim): MoveCommand {
+     const ref = this.workReference(a, sim), dir = sim.attackDir(a.team);
