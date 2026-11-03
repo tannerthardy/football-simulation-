@@ -279,9 +279,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // With run-read attention (a blocker in front of a run-reading defender and in range is seen on the ordinary
     // delay), DE_S alone at 2.85; with his picture judged from what he saw and held rather than rewound when the
     // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65.
+    // With the offset back aligned away from the play taking the ball as he crosses the QB's face (wide zone strong,
+    // back 2.3 yd weak), he arrives 0.6-0.8 yd further downhill at 1.6-1.8 s, where DT_S has driven C a yard into the
+    // backfield: DT_S alone at 1.9 (a body collision after his missed tackle at 1.75), where on develop he missed at 1.9.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.65);
-    expect(first.defenders.map(p.slot)).toEqual(['DE_S']);
+    expect(first.t).toBe(1.9);
+    expect(first.defenders.map(p.slot)).toEqual(['DT_S']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {

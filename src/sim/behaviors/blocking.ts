@@ -700,7 +700,16 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // playside guard is the A-gap 1-technique; on or outside him, trapped.
     const psg = line.filter((b) => isOL(b) && rel(b) > 0).sort((p, q) => rel(p) - rel(q))[0];
     const trapReserved = scheme === 'trap' ? dl.filter((d) => rel(d) >= (psg ? rel(psg) : 1.05)).sort((p, q) => rel(p) - rel(q))[0] ?? null : null;
-    const kickReserved = scheme !== 'trap' && pullers.size ? dl.filter((d) => rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null : null;
+    // The end man on the line is the widest defender on it: a corner or
+    // nickel standing off the ball over a split receiver is the receiver's
+    // man, not the kick (the call names who kicks before the snap, from the
+    // alignment the blockers see, not from where the snap left them).
+    const edgeY = ps === sim.offAlign.strongSign ? sim.offAlign.coreEdge.S : sim.offAlign.coreEdge.W;
+    const split = sim.offense.filter((o) => !isOL(o) && !(sim.offAlign.spots[o.slot]?.inline ?? false)
+      && Math.abs(o.pos.x - sim.los) < 2 && rel(o) > Math.abs(edgeY - by) + 3).map(rel);
+    // Down linemen are on the ball; a press defender stands off it (1.3 yd).
+    const inCore = (d: Agent) => (d.pos.x - sim.los) * sim.attackDir('O') <= 1.1 || split.every((r) => rel(d) < r - 1);
+    const kickReserved = scheme !== 'trap' && pullers.size ? dl.filter((d) => rel(d) > 0 && inCore(d)).sort((p, q) => rel(q) - rel(p))[0] ?? null : null;
 
     // Account for immediate inside threats first. Outside-in assignment can
     // send the tackle across a guard's covered man and expose the mesh.
@@ -764,7 +773,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       } else plans.set(b, { kind: 'climb', target: lbNear(b.pos.y - ps * 1.0, true), drive: up(-ps * 0.5) });
     }
     // End man on the line on the playside (kick-out target).
-    const emlos = kickReserved ?? dl.filter((d) => !claimedDL.has(d) && rel(d) > 0).sort((p, q) => rel(q) - rel(p))[0] ?? null;
+    const emlos = kickReserved ?? dl.filter((d) => !claimedDL.has(d) && rel(d) > 0 && inCore(d)).sort((p, q) => rel(q) - rel(p))[0] ?? null;
     const trapTarget = trapReserved;
     // The pull step opens to the play side and gains depth on the way,
     // rather than dropping straight back first (docs/reviews/gait-step.md).
@@ -1003,7 +1012,10 @@ export class RunBlocker implements Behavior {
   /** The kick or trap man the call gives this puller (known to teammates). */
   readonly calledKick: Agent | null;
   constructor(public plan: RunBlockPlan) {
-    this.calledKick = plan.kind === 'pull' && (plan.pullRole === 'kick' || plan.pullRole === 'trap') ? plan.target : null;
+    // The installed call names who kicks: a pulling kicker or trapper, or a
+    // lead back told to kick the end. Teammates know the call, not the
+    // state of the block.
+    this.calledKick = (plan.kind === 'pull' || plan.kind === 'lead') && (plan.pullRole === 'kick' || plan.pullRole === 'trap') ? plan.target : null;
   }
 
   calledMotion(): Vec2 | null { return this.track; }

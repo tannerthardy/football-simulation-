@@ -225,6 +225,16 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   } else {
     qb = { x: los - 5.0, y: by };
     rb = { x: los - 4.4, y: by + ps * 0.9 };
+    // An offset back aligned away from the play crosses the QB's face: he
+    // takes the ball as he passes in front of him, at the two bodies'
+    // clearance, not on the far hip a yard beyond (that landmark put his line
+    // through the QB and three and a half yards away; he left on the snap and
+    // braked into the QB, meeting the ball at 2.4-2.5 yd/s, tracked 3.8-4.6).
+    const back = sim.slot('RB');
+    if (back && (back.pos.y - by) * ps < -1) {
+      const clear = sim.qb.profile.radius + back.profile.radius + .15;
+      rb = { x: qb.x + sim.attackDir('O') * clear, y: by };
+    }
   }
   // Backs take the handoff on the move, running through the mesh at the
   // exchange tempo (NFL backs 3.8-5.5 yd/s at the handoff). The draw back has
