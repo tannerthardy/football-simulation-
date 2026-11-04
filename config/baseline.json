@@ -99,6 +99,13 @@
     "BACKSIDE_COMBO": "0",
     "DOUBLE_HANDOFF": "0",
     "CLIMB_PREP": "0",
+    "CLIMB_SQUARE": "0",
+    "RELEASE_QUICK": "0",
+    "RB_STEER": "0",
+    "ZONE_PAIR": "0",
+    "NO_CROSS": "0",
+    "FB_PLAYSIDE": "0",
+    "DOUBLE_FLOW": "0",
     "BACKFIELD_DEPTH": "0",
     "STRETCH_OFFSET": "0",
     "MESH_TEMPO": "0"

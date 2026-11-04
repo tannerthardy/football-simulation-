@@ -802,7 +802,7 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
   }
 }
 
-/** CLIMB_PREP (default off): on a zone double whose backer this climber sees
+/** CLIMB_PREP (default off): on a zone double whose backer either member sees
  * showing (arriving within reach shortly, or flowing to the play side), his
  * feet go with the man's lateral flow and half a yard a second more and start
  * gaining ground upfield while his hands stay on: eyes on the backer, feet
@@ -811,6 +811,11 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
  * and started their climb from there. Contact and World decide what the feet
  * achieve; the release read is unchanged. */
 export const CLIMB_PREP = process.env.CLIMB_PREP === '1';
+/** CLIMB_SQUARE (default off; acts with CLIMB_PREP): the same climber squares
+ * his shoulders upfield while his hands stay on. At release climbers faced
+ * ~45 deg in toward the down man with the climb path ~35 deg the other way
+ * (80-90 deg off), and spent 0.3 s turning before they could accelerate. */
+export const CLIMB_SQUARE = process.env.CLIMB_SQUARE === '1';
 interface ClimbPrepPlan { kind: string; climbTo?: Agent | null;
   combination?: { released: boolean; backer: Agent | null; defender: Agent; members: Agent[] } }
 function prepareClimberFeet(sim: PlaySim, e: Engagement, intents: Intent[]): void {
@@ -819,7 +824,7 @@ function prepareClimberFeet(sim: PlaySim, e: Engagement, intents: Intent[]): voi
   const d = e.defender, ps = run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
   for (const m of [e.blocker, ...e.helpers]) {
     const plan = (m.behavior as { plan?: ClimbPrepPlan }).plan, combo = plan?.combination;
-    if (!plan || plan.kind !== 'combo' || !combo || combo.released || !combo.backer || combo.defender !== d || !intents[m.idx]) continue;
+    if (!plan || !combo || combo.released || !combo.backer || combo.defender !== d || !combo.members.includes(m) || !intents[m.idx]) continue;
     const backer = sim.see(m, combo.backer);
     const ahead = { x: backer.pos.x + backer.vel.x * .5, y: backer.pos.y + backer.vel.y * .5 };
     const shows = Math.hypot(ahead.x - m.pos.x, ahead.y - m.pos.y) < 4.2 || backer.vel.y * ps > 1.5;
@@ -828,7 +833,9 @@ function prepareClimberFeet(sim: PlaySim, e: Engagement, intents: Intent[]): voi
     const v = intents[m.idx].vel, flow = Math.max(0, seenD.vel.y * ps);
     const lateral = Math.max(v.y * ps, flow + .5) * ps;
     const forward = Math.max(v.x * up, 1) * up;
-    intents[m.idx] = { ...intents[m.idx], vel: { x: forward, y: lateral } };
+    // Hip to hip with the keeper, shoulders square upfield (not turned in on
+    // the man): he can come off without turning his body around first.
+    intents[m.idx] = { ...intents[m.idx], vel: { x: forward, y: lateral }, facing: CLIMB_SQUARE ? (up > 0 ? 0 : Math.PI) : intents[m.idx].facing };
   }
 }
 

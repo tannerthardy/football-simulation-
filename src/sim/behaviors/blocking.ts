@@ -540,6 +540,39 @@ export const BACKSIDE_COMBO = process.env.BACKSIDE_COMBO === '1';
  * the 0.15 s secure dwell: outside-zone doubles left at 1.50 s (tracked 1.00)
  * and 23% climbed (tracked 52%). */
 export const DOUBLE_HANDOFF = process.env.DOUBLE_HANDOFF === '1';
+/** RELEASE_QUICK (default off): with his backer showing (filling or flowing
+ * in his own picture), a double member's release read does not wait out the
+ * 0.15 s keeper-secure dwell. Outside zone: backer shows at 0.80 s, release
+ * 1.35 s, climber off the down man 1.50 s (tracked 1.00 s) from the same
+ * spot on the man as tracked climbers. */
+export const RELEASE_QUICK = process.env.RELEASE_QUICK === '1';
+
+/** ZONE_PAIR (default off): an uncovered zone lineman doubles the covered
+ * neighbor whose man is nearest him (within 1.8 yd), play side first, else
+ * climbs. The installed rule always took the play-side neighbor: vs a wide 9
+ * on the tight end and a 3-technique on the guard the tackle ran 3.4 yd out
+ * to help the end and left the 3-technique (and the Mike) to the guard alone,
+ * where coaches put the tackle and guard together on the 3-technique. */
+export const ZONE_PAIR = process.env.ZONE_PAIR === '1';
+/** NO_CROSS (default off): two solo blockers outside the line (tight end,
+ * wing, receiver) never cross their assignments: the inside man takes the
+ * inside defender. The backside end dropped by BACKSIDE_COMBO went to the
+ * wing outside the tight end while the tight end took the man outside him. */
+export const NO_CROSS = process.env.NO_CROSS === '1';
+/** FB_PLAYSIDE (default off): on stretch runs the lead fullback takes the
+ * first free play-side defender in the core, or none (he reads his lane),
+ * never a free man across the formation (he led to the backside corner). */
+export const FB_PLAYSIDE = process.env.FB_PLAYSIDE === '1';
+
+/** DOUBLE_FLOW (default off): a double member does not hand the down man
+ * to his partner while, in his own picture, the man is moving away from the
+ * partner toward the climber's side (over 0.5 yd/s laterally): the partner
+ * would be chasing him from behind (felt through the climber's hands on the
+ * man in a joined double). The man's flow decides who climbs: he
+ * works play side, the play-side man keeps him and the backside man climbs.
+ * The installed check read only the keeper's chest and hands: the guard left
+ * a 3-technique flowing play side to the centre behind him. */
+export const DOUBLE_FLOW = process.env.DOUBLE_FLOW === '1';
 
 /** A zone climber does not take a backer more than three gaps (4.5 yd)
  * from him across the formation. */
@@ -613,6 +646,17 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const doubles: Array<{ b: Agent; neighbor: Agent; np: RunBlockPlan }> = [];
     const climbers: Agent[] = [];
     for (const b of pending) {
+      if (ZONE_PAIR) {
+        const opts = [line[line.indexOf(b) - 1], line[line.indexOf(b) + 1]].map((n) => {
+          const np = n ? plans.get(n) : undefined;
+          return n && np?.target && (np.kind === 'drive' || np.kind === 'reach') && !doubles.some((d) => d.neighbor === n)
+            ? { neighbor: n, np, d: Math.abs(np.target.pos.y - b.pos.y) } : null;
+        });
+        const [pside, bside] = opts;
+        const pick = pside && pside.d <= 1.8 && (!bside || pside.d <= bside.d + .3) ? pside : bside && bside.d <= 1.8 ? bside : null;
+        if (pick) doubles.push({ b, neighbor: pick.neighbor, np: pick.np }); else climbers.push(b);
+        continue;
+      }
       const neighbor = line[line.indexOf(b) - 1];
       const np = neighbor ? plans.get(neighbor) : undefined;
       if (np?.target && (np.kind === 'drive' || np.kind === 'reach') && !doubles.some((d) => d.neighbor === neighbor))
@@ -868,7 +912,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
     const backsideFirst = scheme === 'counter' || scheme === 'trap';
     const fromMesh = (d: Agent) => Math.hypot(d.pos.x - sim.los, rel(d));
-    const free = [...dl, ...lb].filter((d) => !owned.has(d))
+    const stretch = scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'toss';
+    const coreW = Math.max(...line.map(rel)) + 3;
+    const free = [...dl, ...lb].filter((d) => !owned.has(d) && !(FB_PLAYSIDE && stretch && (rel(d) < -.5 || rel(d) > coreW)))
       .sort((p, q) => (backsideFirst ? Number(rel(p) >= 0) - Number(rel(q) >= 0) : 0) || fromMesh(p) - fromMesh(q));
     const surface = line.map(rel), inside = (d: Agent) => rel(d) >= Math.min(...surface) - .5 && rel(d) <= Math.max(...surface) + .5;
     const backer = lbNear(by + ps * 1.5);
@@ -942,6 +988,22 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     plans.set(a, { kind: 'stalk', target: best, drive: norm(sub(best?.pos ?? a.pos, { x: a.pos.x - 1, y: a.pos.y })),
       perimeterStalk: best && db.includes(best) ? best : undefined,
       insideStalk: best && lb.includes(best) ? best : undefined });
+  }
+  if (NO_CROSS) {
+    // Solo blocks outside the line keep inside/outside order with each other.
+    const solo = [...plans.entries()].filter(([b, p]) => !isOL(b) && p.target && !p.combination
+      && (p.kind === 'cutoff' || p.kind === 'stalk' || p.kind === 'reach' || p.kind === 'drive'));
+    for (let i = 0; i < solo.length; i++) for (let j = i + 1; j < solo.length; j++) {
+      const [a, pa] = solo[i], [b, pb] = solo[j], ta = pa.target!, tb = pb.target!;
+      if ((rel(a) - rel(b)) * (rel(ta) - rel(tb)) >= 0 || Math.abs(rel(a) - rel(b)) > 2.5) continue;
+      if (Math.abs(tb.pos.y - a.pos.y) > 2.5 || Math.abs(ta.pos.y - b.pos.y) > 2.5) continue;
+      pa.target = tb; pb.target = ta;
+      for (const [o, p] of [[a, pa], [b, pb]] as const) {
+        p.perimeterStalk = p.kind === 'stalk' && db.includes(p.target!) ? p.target! : undefined;
+        p.insideStalk = p.kind === 'stalk' && lb.includes(p.target!) ? p.target! : undefined;
+        if (p.kind === 'stalk') p.drive = norm(sub(p.target!.pos, { x: o.pos.x - 1, y: o.pos.y }));
+      }
+    }
   }
   // Save the finalized installation, including backside cutoff and Draw's
   // pass-influence conversion, rather than an intermediate owner label.
@@ -2563,6 +2625,12 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   // The keeper's hand-fight standing is his private state, not the climber's
   // evidence. The climber reads his partner's chest on the man in his own
   // picture (readJoinedSurface); the transfer still needs the keeper's hands.
+  if (DOUBLE_FLOW) {
+    // His hands are on the man (a joined double): he feels the man's motion
+    // through them; it is not a delayed visual picture.
+    const side = Math.sign(climber.pos.y - keeper.pos.y);
+    if (side !== 0 && combo.defender.vel.y * side > .5) return null;
+  }
   if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful
     || contactControl(e, keeper) === null) return null;
   return { climber, keeper, engagement: e, hands: hands!, phi };
@@ -2643,7 +2711,9 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
     const preparation=prepareRoute?.exit?prepareRoute:{exit:{...observer.pos},flow:{...surface.down.vel}};
     observer.behavior.prepareCombination(observer,sim,combo,preparation,read.nextRead);
   }
-  if (sim.t - read.secureSince < .15) return;
+  // RELEASE_QUICK: a backer he sees showing does not wait out the keeper's
+  // secure dwell; the read cadence itself still paces the decision.
+  if (sim.t - read.secureSince < .15 && !(RELEASE_QUICK && filling)) return;
   // A draw invites the rush; the backer who reads pass sits or drops instead
   // of filling. Once the reader sees his partner carrying the man, the
   // climber goes and gets him.

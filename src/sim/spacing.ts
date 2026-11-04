@@ -19,6 +19,10 @@ import { movementObjective } from './movement-objective.js';
 import { containCoverage } from './coverage-space.js';
 import { localTrafficRoute } from './traffic-route.js';
 
+/** RB_STEER (default off): a ball carrier whose held request runs into a
+ * teammate first tries bending the same request around him at speed; only
+ * when no bend clears does he slow down or gather. */
+export const RB_STEER = process.env.RB_STEER === '1';
 /** Time a player gives himself to close the gap to a teammate, s. */
 const CLOSE_HORIZON = 0.3;
 /** Gap at which a teammate starts to shape movement, yd. */
@@ -160,6 +164,16 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
   const worst=Math.min(...clearances);
   if(worst>=0)return original;
+  if(RB_STEER&&a.behavior.kind==='carrier'){
+    // Bend around the teammate at the requested pace: the smallest bend
+    // that clears every peer and still makes progress along the request.
+    const sp=hypot2(original.vel.x,original.vel.y),h0=Math.atan2(original.vel.y,original.vel.x);
+    for(const off of [.2,-.2,.4,-.4,.6,-.6,.8,-.8]){
+      const h=h0+off,bent:Intent={...original,vel:{x:Math.cos(h)*sp,y:Math.sin(h)*sp}};
+      const path=forecast(bent);
+      if(path.every(sample=>sample.support==='up')&&peers.every(peer=>sweptClearance(a,path,peer)>=0))return bent;
+    }
+  }
   // Yield speed while continuing the turn when that already clears traffic.
   // Maximizing clearance alone favors a full stop even when a moving gather
   // safely follows the same observed peers. Keep posture/facing/skill and let
