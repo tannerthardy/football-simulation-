@@ -721,13 +721,40 @@ that do, blocks in space per play run at the NFL rate (3–7).
 ## Next decisions
 
 - **RB/TE screens fail before the catch** (item 18): too many sacks and
-  misses. Diagnose in this order:
-  1. How NFL released linemen delay the rush without being driven back.
-     Measure the first OL–DL contact and its duration on slip and TE
-     screens, NFL vs sim.
-  2. The back's path relative to the rushers' lanes.
-  3. Where the catch resolves relative to the receiver's reach. Catching is
-     the Catching owner's: report it, don't change it.
+  misses.
+  - **Diagnosed (2026-11-04).** Same operator on DL paths, NFL 411 vs sim
+    160 RB/TE screens:
+
+    | | NFL | Sim |
+    |---|---|---|
+    | DL depth at 2.0 s | −2.5 yd | −5.1 yd |
+    | DL closing on the QB at 2.0 s | −0.3 yd/s | +3.9 yd/s |
+    | DL time within 1.1 yd of an OL, first 2 s | 0.8 s | 0.4 s |
+    | QB depth at the throw | −7.8 | −7.9 |
+
+    - The QB isn't the difference: NFL QBs backpedal through 2 s but reach
+      the same depth.
+    - NFL rushers ease off once they're let through. Ours sprint to the QB.
+  - **Main Engine:** the sell. A released lineman should keep about 0.8 s of
+    contact without being driven back 2.5 yd. This is a new mechanism to
+    try, not a third variant of the set depth.
+  - **Defense** (screen recognition, theirs since 2026-11-03; numbers sent
+    2026-11-04): a rusher who is let go free, while the line releases and
+    the back leaks out, eases off and retraces to the ball. All of that is
+    observable to him.
+  - Then the back's path against the rushers' lanes.
+  - Catch resolution at the edge of reach goes to the Catching owner.
+- **Bubble post-catch** (Defense, 2026-11-04):
+  - Defense ruled out the defenders' bodies and their pursuit requests.
+    Their RALLY_CATCHER prototype was dropped after two attempts.
+  - Linebackers never reach the bubble. Cover 3 against trips sends both to
+    the weak side; Defense handed that to Coverage.
+  - The tackle bond is Main Engine's. Wraps break in 0.2–0.65 s; the
+    fixture is TE Cover 1 seed 3, a 2.2 yd/s carrier breaking a wrap at 79°.
+  - Carrier tempo is Main Engine's:
+    - With a defender 2–4 yd away, the carrier runs 1.3–1.5 yd/s faster
+      than NFL (`carspeed.py`-style banding).
+    - All WR screens are slow off the catch: 2.3 vs 4.0 yd/s at +0.5 s.
 
 - **Quick screens thrown into a covered man** (item 13):
   - **Defense** (handed over 2026-11-04):
