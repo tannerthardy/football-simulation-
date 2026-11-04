@@ -574,7 +574,9 @@ export const FB_PLAYSIDE = process.env.FB_PLAYSIDE === '1';
  * man in a joined double). The man's flow decides who climbs: he
  * works play side, the play-side man keeps him and the backside man climbs.
  * The installed check read only the keeper's chest and hands: the guard left
- * a 3-technique flowing play side to the centre behind him. */
+ * a 3-technique flowing play side to the centre behind him. On stretch runs
+ * the man may be handed to a keeper level with him (the backside overtake):
+ * only a keeper trailing his flow by more than 0.45 yd blocks the release. */
 export const DOUBLE_FLOW = process.env.DOUBLE_FLOW === '1';
 
 /** CLIMB_RIP (default off): a climber leaving a double rips past the down
@@ -2684,8 +2686,17 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   if (DOUBLE_FLOW) {
     // His hands are on the man (a joined double): he feels the man's motion
     // through them; it is not a delayed visual picture.
-    const side = Math.sign(climber.pos.y - keeper.pos.y);
-    if (side !== 0 && combo.defender.vel.y * side > .5) return null;
+    const side = Math.sign(climber.pos.y - keeper.pos.y), run = sim.offCall.run;
+    const stretch = run?.scheme === 'outsideZone' || run?.scheme === 'wideZone';
+    if (stretch) {
+      // On stretch runs the backside man overtakes a man flowing into the
+      // play-side man (tracked outside-zone climbers are the play-side
+      // member 66% of the time, the down man flowing 2.4 yd/s): the handoff
+      // is valid once the keeper is level with the man, not trailing his
+      // flow by more than half a yard (s7-63: the centre behind and inside a
+      // 3-technique getting upfield could not take him over).
+      if (side !== 0 && combo.defender.vel.y * side > .5 && (combo.defender.pos.y - keeper.pos.y) * side > .45) return null;
+    } else if (side !== 0 && combo.defender.vel.y * side > .5) return null;
   }
   if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful
     || contactControl(e, keeper) === null) return null;
