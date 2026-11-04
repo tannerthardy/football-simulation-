@@ -577,6 +577,16 @@ export const FB_PLAYSIDE = process.env.FB_PLAYSIDE === '1';
  * a 3-technique flowing play side to the centre behind him. */
 export const DOUBLE_FLOW = process.env.DOUBLE_FLOW === '1';
 
+/** CLIMB_RIP (default off): a climber leaving a double rips past the down
+ * man's hip on his own side (the side away from his keeper): upfield along
+ * the man until he is past his front, then the ordinary climb. The installed
+ * departure kept only the sideways part of a request that ran through the
+ * released man, rescaled to full speed; with the backer straight past the
+ * man its sign flipped tick to tick and the climber stood beside him (s11-45
+ * guards ~0.5 yd/s for 0.8 s after the climb), or a detour around the
+ * bodies took him backward (s9-88 LG). */
+export const CLIMB_RIP = process.env.CLIMB_RIP === '1';
+
 /** A zone climber does not take a backer more than three gaps (4.5 yd)
  * from him across the formation. */
 const ZONE_BACKER_REACH = 4.5;
@@ -1109,6 +1119,8 @@ export class RunBlocker implements Behavior {
   private climbAccess: ClimbAccess | null = null;
   private departureAccess: ClimbAccessResult | null = null;
   private departureStrikeClear = false;
+  /** CLIMB_RIP: the side of the released man he rips past, chosen once. */
+  private ripSide: number | null = null;
   private climbRead: { target: Agent; nextRead: number; meet: Vec2; through: number; attainable: boolean; seenVel: Vec2 } | null = null;
   private collectionRead: {target:Agent;partner:Agent;at:number;nextRead:number;down:Perceived;choice:CollectionApproach|null}|null=null;
   private workPicture: BlockerWorkPicture | null = null;
@@ -1812,6 +1824,16 @@ export class RunBlocker implements Behavior {
     const near=Math.hypot(seen.pos.x-a.pos.x,seen.pos.y-a.pos.y)<=strike;
     // Stepping off the released man's hip: a rub is allowed, shoving him along is not a climb.
     const released=this.plan.departure.defender;
+    if (CLIMB_RIP && !near) {
+      const dirR = sim.attackDir(a.team), man = sim.see(a, released), keeper = sim.see(a, this.plan.departure.keeper);
+      const reach = a.profile.radius + released.profile.radius;
+      const past = (a.pos.x - man.pos.x) * dirR > .35;
+      if (!past && Math.hypot(a.pos.x - man.pos.x, a.pos.y - man.pos.y) < reach + .7) {
+        this.ripSide ??= Math.sign(man.pos.y - keeper.pos.y) || Math.sign(a.pos.y - man.pos.y) || 1;
+        const spot = { x: man.pos.x + dirR * .9, y: man.pos.y + this.ripSide * (reach + .1) };
+        return { ...runThrough(a, spot), facing: dirR > 0 ? 0 : Math.PI };
+      }
+    }
     if (!this.departureStrikeClear && !near) return offReleasedHip(a,sim,released,approach);
     const command=offReleasedHip(a,sim,released,this.attack(a,sim,target,seen,approach));
     if (a.engagement?.defender===target) {

@@ -798,7 +798,7 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
     e.baseB = baseOf(b);
     e.baseD = baseOf(d);
     if (e.type === 'pass') stepPassRep(sim, e, intents);
-    else { stepRunRep(sim, e, intents); if (CLIMB_PREP) prepareClimberFeet(sim, e, intents); }
+    else { stepRunRep(sim, e, intents); if (CLIMB_PREP) prepareClimberFeet(sim, e, intents); if (CLIMB_BASE) easeClimberPush(sim, e, intents); }
   }
 }
 
@@ -818,6 +818,28 @@ export const CLIMB_PREP = process.env.CLIMB_PREP === '1';
 export const CLIMB_SQUARE = process.env.CLIMB_SQUARE === '1';
 interface ClimbPrepPlan { kind: string; climbTo?: Agent | null;
   combination?: { released: boolean; backer: Agent | null; defender: Agent; members: Agent[] } }
+/** CLIMB_BASE (default off): a zone double member whose backer shows (in
+ * his own picture: arriving within reach in half a second, or flowing play
+ * side) keeps his hands on the man but eases his drive (push at most 0.35),
+ * so his weight stays over his own feet. Driving full force into the man up
+ * to the release left the climber leaning ~1,300 N into him; with the man
+ * gone the lean collapsed his posture (0.77 to 0.12) and he spent 0.8 s
+ * recovering at ~1 yd/s beside the man (s11-45 RG). */
+export const CLIMB_BASE = process.env.CLIMB_BASE === '1';
+function easeClimberPush(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+  const run = sim.offCall.run;
+  if (!run || !['insideZone', 'outsideZone', 'wideZone', 'splitZone'].includes(run.scheme)) return;
+  const d = e.defender, ps = run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
+  for (const m of [e.blocker, ...e.helpers]) {
+    const plan = (m.behavior as { plan?: ClimbPrepPlan }).plan, combo = plan?.combination, it = intents[m.idx];
+    if (!plan || !combo || combo.released || !combo.backer || combo.defender !== d || !combo.members.includes(m) || !it) continue;
+    const backer = sim.see(m, combo.backer);
+    const ahead = { x: backer.pos.x + backer.vel.x * .5, y: backer.pos.y + backer.vel.y * .5 };
+    if (!(Math.hypot(ahead.x - m.pos.x, ahead.y - m.pos.y) < 4.2 || backer.vel.y * ps > 1.5)) continue;
+    intents[m.idx] = { ...it, push: Math.min(it.push ?? 1, .35) };
+  }
+}
+
 function prepareClimberFeet(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const run = sim.offCall.run;
   if (!run || !['insideZone', 'outsideZone', 'wideZone', 'splitZone'].includes(run.scheme)) return;
