@@ -38,7 +38,17 @@ export interface CarrierOptions {
   /** The designed aim as a gap on the line (with the play's offset from that
    * gap's landmark), so it moves with the bodies that form it. */
   aimGap?: { gap: Gap; side: number; offset: number };
+  /** RB_COMMIT: the entry (lateral) he chose on his last line read. */
+  lastEntryY?: number;
 }
+
+/** RB_COMMIT (default off): at the line the back's entry choice counts what
+ * his momentum costs him (the turn from his current velocity to each route,
+ * scaled by his speed: a cut at speed spends traction and time) and holds
+ * the lane he chose unless another is clearly better. He flipped from the
+ * outside lane to the inside one 1.5 yd from the line while running 3.6 yd/s
+ * laterally and ran into the end he was bending around. */
+export const RB_COMMIT = process.env.RB_COMMIT === '1';
 
 /** The designed aiming point as this runner sees the line now (LIVE_AIM=0: snap point). */
 export function liveAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | undefined {
@@ -124,7 +134,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   const threatTime = (d: Agent, s: Perceived, p: Vec2): number =>
     timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + d.profile.reach * .75)
       + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
-  let best: Vec2 | null = null, cost = Infinity;
+  let best: Vec2 | null = null, cost = Infinity, bestY: number | undefined;
   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
   // Bodies on a segment block the run along it.
   const blockedBy = (from: Vec2, to: Vec2): number => {
@@ -176,11 +186,21 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
         + (m2 < 0 ? 1.5 + 2 * Math.min(1, -m2) : 0);
       if (r < risk) { risk = r; via = route.via; }
     }
-    const score = Math.abs(p.y - preferred) * .45 + Math.abs(p.y - a.pos.y) * .12 + risk;
+    let commit = 0;
+    if (RB_COMMIT) {
+      const sp = Math.hypot(a.vel.x, a.vel.y);
+      if (sp > 1) {
+        const turn = Math.abs(angleDiff(angleOf(a.vel), angleOf({ x: via.x - a.pos.x, y: via.y - a.pos.y })));
+        commit += turn * sp * .35;
+      }
+      if (opts.lastEntryY !== undefined && Math.abs(p.y - opts.lastEntryY) < .75) commit -= 1;
+    }
+    const score = Math.abs(p.y - preferred) * .45 + Math.abs(p.y - a.pos.y) * .12 + risk + commit;
     if (runReadObservers.has(sim)) measurements.push({ entry: p, risk, score });
     // Run the chosen route: its first leg is where he heads now.
-    if (score < cost) { cost = score; best = via; }
+    if (score < cost) { cost = score; best = via; bestY = p.y; }
   }
+  if (RB_COMMIT && bestY !== undefined) opts.lastEntryY = bestY;
   if (runReadObservers.has(sim)) observeRunRead(sim, a, 'aim', { preferred, selected: best, candidates: measurements, surface: bodies.map((b) => b.pos) });
   return best;
 }

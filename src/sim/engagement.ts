@@ -825,6 +825,9 @@ function prepareClimberFeet(sim: PlaySim, e: Engagement, intents: Intent[]): voi
   for (const m of [e.blocker, ...e.helpers]) {
     const plan = (m.behavior as { plan?: ClimbPrepPlan }).plan, combo = plan?.combination;
     if (!plan || !combo || combo.released || !combo.backer || combo.defender !== d || !combo.members.includes(m) || !intents[m.idx]) continue;
+    // Only the member behind the man's flow goes with it; the one on his
+    // play side running at flow speed would leave the man.
+    if ((m.pos.y - d.pos.y) * ps > 0) continue;
     const backer = sim.see(m, combo.backer);
     const ahead = { x: backer.pos.x + backer.vel.x * .5, y: backer.pos.y + backer.vel.y * .5 };
     const shows = Math.hypot(ahead.x - m.pos.x, ahead.y - m.pos.y) < 4.2 || backer.vel.y * ps > 1.5;

@@ -456,6 +456,9 @@ export interface RunBlockPlan {
   combination?: Combination;
   /** A solo cutoff's installed shoulder belongs to this exact down threat. */
   contactFit?: RunContactSurface & { target: Agent };
+  /** FB_PLAYSIDE: a stretch lead's landmark (outside the end of the line):
+   * he runs the track to it and takes the first man to show in that lane. */
+  leadLane?: Vec2;
   /** The old surface must be cleared before the new linebacker approach. */
   departure?: { defender: Agent; keeper: Agent; backer: Agent };
 }
@@ -918,6 +921,14 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       .sort((p, q) => (backsideFirst ? Number(rel(p) >= 0) - Number(rel(q) >= 0) : 0) || fromMesh(p) - fromMesh(q));
     const surface = line.map(rel), inside = (d: Agent) => rel(d) >= Math.min(...surface) - .5 && rel(d) <= Math.max(...surface) + .5;
     const backer = lbNear(by + ps * 1.5);
+    if (FB_PLAYSIDE && stretch) {
+      // Lead the stretch: run the play-side track just ahead of the back to
+      // the landmark outside the end of the line, and block the first threat
+      // to show there (the lead-puller read), not a man named at the snap.
+      if (backer) claimedLB.delete(backer);
+      const edge = by + ps * (Math.max(...line.map(rel)) + 1.0);
+      plans.set(fb, { kind: 'lead', target: null, drive: up(0), leadLane: { x: sim.los + 0.5 * sim.attackDir('O'), y: edge } });
+    } else
     plans.set(fb, { kind: 'lead', target: (backer && inside(backer) ? backer : null) ?? free[0] ?? null, drive: up(0) });
   }
   const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'
@@ -1474,6 +1485,16 @@ export class RunBlocker implements Behavior {
       // A puller who turned up leads the runner: get in front of him and
       // keep looking for the first man to show.
       if (a.tags.has('pull-turned-up')) return this.leadRunner(a, sim);
+      const lane = plan.leadLane;
+      if (lane) {
+        // Run the play-side track to the landmark, then on up that lane.
+        // First upfield, in front of the quarterback's drop (out of the
+        // mesh), then along the line to the landmark, then on up that lane.
+        const dirL = sim.attackDir(a.team), there = (a.pos.x - lane.x) * dirL > -.6 && Math.abs(a.pos.y - lane.y) < 1;
+        const inFront = (a.pos.x - sim.los) * dirL > -1.9;
+        const step = { x: sim.los - 1.5 * dirL, y: this.homeY! + (lane.y - this.homeY!) * .25 };
+        return goTo(a, there ? { x: a.pos.x + 3 * dirL, y: lane.y } : inFront ? lane : step, { speed: .95 });
+      }
       return goTo(a, { x: ref.x + 3, y: a.pos.y }, { speed: 0.5 });
     }
     if (plan.kind === 'stalk') {
@@ -1648,7 +1669,12 @@ export class RunBlocker implements Behavior {
     // law (speed approaches the wanted speed with time constant tau): an
     // early, short distance needs an explosive first step, not a jog.
     const needed = requestToCover(gaitLag(a.profile), Math.max(0, (shoulder - a.pos.y) * ps), meet, a.vel.y * ps);
-    const lateral = ps * Math.min(a.profile.vmax, Math.max(a.profile.vmax * .45 * press, needed));
+    // ZONE_PAIR: a double member already play side of his half of the man
+    // (the outside man of a guard-tackle pair on a 3-technique) goes with the
+    // man; the track tempo would carry him away from the man he shares.
+    const pastHalf = ZONE_PAIR && !!partner && half * ps > 0 && (a.pos.y - shoulder) * ps >= 0;
+    const lateral = pastHalf ? ps * Math.min(a.profile.vmax, Math.max(0, seen.vel.y * ps))
+      : ps * Math.min(a.profile.vmax, Math.max(a.profile.vmax * .45 * press, needed));
     // The call's track tempo is what his teammates expect from him.
     this.track = { x: 0, y: ps * a.profile.vmax * .45 * press };
     // Depth: close to the defender's near surface without overrunning it.
@@ -2419,8 +2445,11 @@ export class RunBlocker implements Behavior {
       if (acquiredEligibility && (seen.pose === 'down' || seen.pose === 'rising')) continue;
       // Find work within this responsibility, not the omniscient nearest man
       // to the ball anywhere on the field. Pullers/lead blockers own the exit.
-      const laneY = this.plan.pullPath?.at(-1)?.y ?? (this.plan.kind === 'lead' ? ref.y : this.homeY ?? a.pos.y);
+      const laneY = this.plan.pullPath?.at(-1)?.y ?? this.plan.leadLane?.y ?? (this.plan.kind === 'lead' ? ref.y : this.homeY ?? a.pos.y);
       if (Math.abs(seen.pos.y - laneY) > 3.0 || seen.pos.x < a.pos.x - 1.0) continue;
+      // FB_PLAYSIDE: the stretch lead takes the first man nobody's call has
+      // (the call is known to every teammate; block states are not).
+      if (this.plan.leadLane && sim.offense.some((o) => o !== a && o.behavior instanceof RunBlocker && o.behavior.plan.target === d)) continue;
       // A man the runner has already passed is nobody's work.
       if (this.behindRunner(a, sim, d, seen)) continue;
       const toMe = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);

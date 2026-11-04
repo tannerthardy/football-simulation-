@@ -19,8 +19,8 @@ import { movementObjective } from './movement-objective.js';
 import { containCoverage } from './coverage-space.js';
 import { localTrafficRoute } from './traffic-route.js';
 
-/** RB_STEER (default off): a ball carrier whose held request runs into a
- * teammate first tries bending the same request around him at speed; only
+/** RB_STEER (default off): a ball carrier (or a lead back) whose held
+ * request runs into a teammate first tries bending the same request around him at speed; only
  * when no bend clears does he slow down or gather. */
 export const RB_STEER = process.env.RB_STEER === '1';
 /** Time a player gives himself to close the gap to a teammate, s. */
@@ -164,7 +164,7 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
   const worst=Math.min(...clearances);
   if(worst>=0)return original;
-  if(RB_STEER&&a.behavior.kind==='carrier'){
+  if(RB_STEER&&(a.behavior.kind==='carrier'||(a.behavior as {plan?:{kind?:string}}).plan?.kind==='lead')){
     // Bend around the teammate at the requested pace: the smallest bend
     // that clears every peer and still makes progress along the request.
     const sp=hypot2(original.vel.x,original.vel.y),h0=Math.atan2(original.vel.y,original.vel.x);
