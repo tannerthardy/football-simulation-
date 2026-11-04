@@ -49,6 +49,14 @@ export interface CarrierOptions {
  * outside lane to the inside one 1.5 yd from the line while running 3.6 yd/s
  * laterally and ran into the end he was bending around. */
 export const RB_COMMIT = process.env.RB_COMMIT === '1';
+/** RB_HELD (default off): the back's read at the line gives a defender he
+ * sees a blocker on the same held-up time as his open-field read does (0.7 s,
+ * 0.25 s if the man is visibly coming at him through the block). The line
+ * read treated every engaged lineman as free to run to any entry at full
+ * speed, so with the line locked up every lane read closed and he took the
+ * one nearest the call (s11-79: into the end; an early cut inside him gained
+ * 4.7 yd on the same snap). */
+export const RB_HELD = process.env.RB_HELD === '1';
 
 /** The designed aiming point as this runner sees the line now (LIVE_AIM=0: snap point). */
 export function liveAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | undefined {
@@ -131,9 +139,16 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   // Acquired motion already contains a block's observed slowdown. Nearby
   // bodies do not promise retention or a future pursuit delay. In particular,
   // a defender occupying the entry remains a threat, on either side of a block.
+  const held = new Map<Agent, number>();
+  if (RB_HELD) for (const { agent: d, seen: s, team } of pictures) {
+    if (team !== 'D') continue;
+    if (!pictures.some((q) => q.team === 'O' && q.seen.pose !== 'down' && touching({ pos: q.seen.pos, radius: q.agent.profile.radius }, s.pos, d.profile.radius))) continue;
+    const rx = a.pos.x - s.pos.x, ry = a.pos.y - s.pos.y;
+    held.set(d, (s.vel.x * rx + s.vel.y * ry) / (Math.hypot(rx, ry) || 1) > 1 ? .25 : .7);
+  }
   const threatTime = (d: Agent, s: Perceived, p: Vec2): number =>
     timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + d.profile.reach * .75)
-      + observedRecoveryAllowance(s, d.profile.getUp, sim.dt);
+      + observedRecoveryAllowance(s, d.profile.getUp, sim.dt) + (held.get(d) ?? 0);
   let best: Vec2 | null = null, cost = Infinity, bestY: number | undefined;
   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
   // Bodies on a segment block the run along it.

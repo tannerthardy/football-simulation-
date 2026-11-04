@@ -926,7 +926,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       // the landmark outside the end of the line, and block the first threat
       // to show there (the lead-puller read), not a man named at the snap.
       if (backer) claimedLB.delete(backer);
-      const edge = by + ps * (Math.max(...line.map(rel)) + 1.0);
+      const edge = by + ps * (Math.max(...line.map(rel)) + 2.5); // tracked leads are 5 yd wide at 1.5 s, 7 at 2.0
       plans.set(fb, { kind: 'lead', target: null, drive: up(0), leadLane: { x: sim.los + 0.5 * sim.attackDir('O'), y: edge } });
     } else
     plans.set(fb, { kind: 'lead', target: (backer && inside(backer) ? backer : null) ?? free[0] ?? null, drive: up(0) });
@@ -1488,12 +1488,17 @@ export class RunBlocker implements Behavior {
       const lane = plan.leadLane;
       if (lane) {
         // Run the play-side track to the landmark, then on up that lane.
-        // First upfield, in front of the quarterback's drop (out of the
-        // mesh), then along the line to the landmark, then on up that lane.
-        const dirL = sim.attackDir(a.team), there = (a.pos.x - lane.x) * dirL > -.6 && Math.abs(a.pos.y - lane.y) < 1;
-        const inFront = (a.pos.x - sim.los) * dirL > -1.9;
-        const step = { x: sim.los - 1.5 * dirL, y: this.homeY! + (lane.y - this.homeY!) * .25 };
-        return goTo(a, there ? { x: a.pos.x + 3 * dirL, y: lane.y } : inFront ? lane : step, { speed: .95 });
+        // Tracked I-formation leads (2022, 218 outside-zone snaps) go flat to
+        // the play side at the snap, behind the quarterback before he drops
+        // (crossing his line at 0.2 s, 3 yd deeper), gain depth only once
+        // 2 yd outside him (-4.3 yd at 0.6 s, -3.2 at 1.2 s, -2.4 yd and
+        // 5 yd wide at 1.5 s), then turn up the lane. The quarterback drops
+        // into the space he left.
+        const dirL = sim.attackDir(a.team), side = Math.sign(lane.y - this.homeY!) || 1;
+        const wide = (a.pos.y - this.homeY!) * side, there = (a.pos.x - lane.x) * dirL > -.6 && Math.abs(a.pos.y - lane.y) < 1;
+        const flat = { x: a.pos.x + .6 * dirL, y: this.homeY! + side * 6 };
+        const bend = { x: sim.los - 2.2 * dirL, y: lane.y };
+        return runThrough(a, there ? { x: a.pos.x + 3 * dirL, y: lane.y } : wide < 2.2 ? flat : (a.pos.x - bend.x) * dirL < -.3 ? bend : lane);
       }
       return goTo(a, { x: ref.x + 3, y: a.pos.y }, { speed: 0.5 });
     }
