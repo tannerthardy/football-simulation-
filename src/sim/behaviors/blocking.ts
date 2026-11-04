@@ -532,6 +532,14 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Ag
  * plan cut off that end and left the guard solo: covered backside guards got
  * within 1.5 yd of a backer by 2.5 s on 9-14% of snaps (tracked 47-48%). */
 export const BACKSIDE_COMBO = process.env.BACKSIDE_COMBO === '1';
+/** DOUBLE_HANDOFF (default off): a double-team keeper whose hands are on the
+ * man within working reach plus 0.35 yd counts as able to take him over,
+ * loaded or not, and as the man's keeper whether or not he is the engagement's
+ * primary blocker. On moving (stretch) doubles the installed check flickered
+ * (keeper hands 'not touching' on 22% of release reads 0.8-1.5 s), resetting
+ * the 0.15 s secure dwell: outside-zone doubles left at 1.50 s (tracked 1.00)
+ * and 23% climbed (tracked 52%). */
+export const DOUBLE_HANDOFF = process.env.DOUBLE_HANDOFF === '1';
 
 /** A zone climber does not take a backer more than three gaps (4.5 yd)
  * from him across the formation. */
@@ -2545,9 +2553,13 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   // A remembered hand position or old force cannot certify a distant arm.
   // Balanced hands need not carry load, but an extended contact must actually
   // have carried force and remain within the same hand law's attainable reach.
-  const touching = hands && distance <= workingReach && (distance <= hands.extension
-    || Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0) > 1e-6);
-  const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25;
+  const touching = hands && ((distance <= workingReach && (distance <= hands.extension
+    || Math.hypot(hands.normalForce ?? 0, hands.tangentForce ?? 0) > 1e-6))
+    // DOUBLE_HANDOFF: on a moving double his hands on the man within working
+    // reach (plus the drift of a moving pair) are a takeover; four hands on
+    // the down man, and the keeper overtakes when the partner leaves.
+    || (DOUBLE_HANDOFF && distance <= workingReach + .35));
+  const useful = keeper === e.blocker || helperSupport(sim, e, keeper) >= .25 || DOUBLE_HANDOFF;
   // The keeper's hand-fight standing is his private state, not the climber's
   // evidence. The climber reads his partner's chest on the man in his own
   // picture (readJoinedSurface); the transfer still needs the keeper's hands.

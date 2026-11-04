@@ -798,7 +798,37 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
     e.baseB = baseOf(b);
     e.baseD = baseOf(d);
     if (e.type === 'pass') stepPassRep(sim, e, intents);
-    else stepRunRep(sim, e, intents);
+    else { stepRunRep(sim, e, intents); if (CLIMB_PREP) prepareClimberFeet(sim, e, intents); }
+  }
+}
+
+/** CLIMB_PREP (default off): on a zone double whose backer this climber sees
+ * showing (arriving within reach shortly, or flowing to the play side), his
+ * feet go with the man's lateral flow and half a yard a second more and start
+ * gaining ground upfield while his hands stay on: eyes on the backer, feet
+ * already going. Tracked climbers accelerate into the release (outside zone
+ * 2.1 -> 3.5 yd/s over the 0.6 s before leaving); ours held at 2.1-2.5 yd/s
+ * and started their climb from there. Contact and World decide what the feet
+ * achieve; the release read is unchanged. */
+export const CLIMB_PREP = process.env.CLIMB_PREP === '1';
+interface ClimbPrepPlan { kind: string; climbTo?: Agent | null;
+  combination?: { released: boolean; backer: Agent | null; defender: Agent; members: Agent[] } }
+function prepareClimberFeet(sim: PlaySim, e: Engagement, intents: Intent[]): void {
+  const run = sim.offCall.run;
+  if (!run || !['insideZone', 'outsideZone', 'wideZone', 'splitZone'].includes(run.scheme)) return;
+  const d = e.defender, ps = run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
+  for (const m of [e.blocker, ...e.helpers]) {
+    const plan = (m.behavior as { plan?: ClimbPrepPlan }).plan, combo = plan?.combination;
+    if (!plan || plan.kind !== 'combo' || !combo || combo.released || !combo.backer || combo.defender !== d || !intents[m.idx]) continue;
+    const backer = sim.see(m, combo.backer);
+    const ahead = { x: backer.pos.x + backer.vel.x * .5, y: backer.pos.y + backer.vel.y * .5 };
+    const shows = Math.hypot(ahead.x - m.pos.x, ahead.y - m.pos.y) < 4.2 || backer.vel.y * ps > 1.5;
+    if (!shows) continue;
+    const up = sim.attackDir(m.team), seenD = sim.see(m, d);
+    const v = intents[m.idx].vel, flow = Math.max(0, seenD.vel.y * ps);
+    const lateral = Math.max(v.y * ps, flow + .5) * ps;
+    const forward = Math.max(v.x * up, 1) * up;
+    intents[m.idx] = { ...intents[m.idx], vel: { x: forward, y: lateral } };
   }
 }
 

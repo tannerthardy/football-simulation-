@@ -97,6 +97,8 @@
     "ENGAGED_DEFENDER": "0",
     "REACH_TECHNIQUE": "0",
     "BACKSIDE_COMBO": "0",
+    "DOUBLE_HANDOFF": "0",
+    "CLIMB_PREP": "0",
     "BACKFIELD_DEPTH": "0",
     "STRETCH_OFFSET": "0",
     "MESH_TEMPO": "0"
