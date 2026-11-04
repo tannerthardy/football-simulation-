@@ -245,16 +245,26 @@ describe('native pass-law hooks', () => {
     finishPassLegality(delayed, second, { x: 35, y: CENTER_Y, z: 0 });
     expect(delayed.penalties).toContainEqual(expect.objectContaining({ kind: 'intentional_grounding', reason: 'delayed_spike' }));
   });
-  it('flushes an achieved unblocked ineligible advance only when a legal pass is released', () => {
-    const sim = nativeSim(), lineman = sim.slot('RG')!;
-    lineman.body.pos = { x: 43, y: CENTER_Y + 6 };
-    const starts = sim.agents.map(a => ({ ...a.pos }));
-    const report = sim.world.step(sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing })), sim.dt);
-    observePassLegality(sim, report, sim.t, starts);
+  it('flushes an achieved unblocked ineligible advance only when a legal pass crosses the line', () => {
+    const advanced = () => {
+      const sim = nativeSim(), lineman = sim.slot('RG')!;
+      lineman.body.pos = { x: 43, y: CENTER_Y + 6 };
+      const starts = sim.agents.map(a => ({ ...a.pos }));
+      const report = sim.world.step(sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing })), sim.dt);
+      observePassLegality(sim, report, sim.t, starts);
+      return { sim, lineman };
+    };
+    const { sim, lineman } = advanced();
     expect(sim.penalties.some(p => p.kind === 'ineligible_downfield')).toBe(false);
-    release(sim);
+    const air = release(sim);
+    expect(sim.penalties.some(p => p.kind === 'ineligible_downfield')).toBe(false);
+    finishPassLegality(sim, air, { x: 46, y: CENTER_Y, z: 0 });
     expect(sim.penalties).toContainEqual(expect.objectContaining({ kind: 'ineligible_downfield', playerId: lineman.player.id,
       rule: '8-3-1', phase: 'live' }));
+    // A screen: the same advance, the pass first touched behind the line.
+    const screen = advanced(), short = release(screen.sim);
+    finishPassLegality(screen.sim, short, { x: 38, y: CENTER_Y + 8, z: 1 }, screen.sim.slot('RB')!);
+    expect(screen.sim.penalties.some(p => p.kind === 'ineligible_downfield')).toBe(false);
     const run = nativeSim(), runner = run.slot('RG')!;
     runner.body.pos = { x: 43, y: CENTER_Y + 6 };
     const runReport = run.world.step(run.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing })), run.dt);

@@ -81,7 +81,8 @@ for (const concept of SCREEN_CONCEPTS) {
       players: sim.agents.map((a: any) => ({ side: a.team, group: GROUP[a.player.position] ?? 'OTHER' })),
       dt: 0.1, xy, ball_y: r2(sim.ballY), events, target: thr?.b ?? null, carrier: cat?.a ?? null,
       screen: { receiver: r, group: r !== null ? GROUP[sim.agents[r].player.position] : null, type: concept.id,
-        passResult: cat ? 'C' : 'I', defense: def.label, outcome: res.outcome, blockers: screenBlockers },
+        passResult: cat ? 'C' : 'I', defense: def.label, outcome: res.outcome, blockers: screenBlockers,
+        penalties: sim.penalties.map((p: any) => p.kind) },
     };
     lines.push(JSON.stringify(play));
     const s = summary[`${concept.id} vs ${def.label}`] ??= { n: 0, caught: 0, yards: [], ttt: [] };
