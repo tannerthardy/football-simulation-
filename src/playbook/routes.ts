@@ -58,11 +58,20 @@ export const ROUTES: Record<string, RouteDef> = {
   te_screen: { id: 'te_screen', family: 'back', depth: -2, end: 'settle', points: [{ d: -1.5, l: 1.5, s: 0.6 }, { d: -2.5, l: 3.5, s: 0 }] },
   // Bubble: gain a little depth, turn the head back, and be going downhill by
   // the third step; caught in stride facing upfield.
-  bubble: { id: 'bubble', family: 'flat', depth: -1, end: 'continue', points: [{ d: -1.5, l: 2, s: 0.9 }, { d: -1, l: 4.5, s: 0.9 }, { d: 2, l: 7 }] },
+  // Bubble: drift back and out behind the line, caught ~4 yd outside his
+  // alignment ~2 yd behind the line, then turn upfield. NFL out-breaking WR
+  // screens: 0.8 yd back and 1.5 yd out at the throw, caught 4.1 yd out
+  // (screen_wr_path_reference.py, quick_screen_reference.py).
+  bubble: { id: 'bubble', family: 'flat', depth: -2, end: 'continue', points: [{ d: -2, l: 1.5, s: 0.35 }, { d: -2, l: 4, s: 0.6 }, { d: 0, l: 6 }] },
   // Now screen: one step upfield, then back to the ball behind the line.
   now_screen: { id: 'now_screen', family: 'flat', depth: -1, end: 'settle', points: [{ d: 1, l: 0, s: 0.3 }, { d: -1, l: -0.5, s: 0 }] },
-  // Tunnel: the outside receiver comes back inside behind the line.
-  tunnel: { id: 'tunnel', family: 'flat', depth: -1, end: 'continue', points: [{ d: 1, l: 0, s: 0.4 }, { d: -1, l: -3.5, s: 0.9 }, { d: 1, l: -6 }] },
+  // Tunnel: after his stalk sell (ScreenSpec.receiverSell) the outside
+  // receiver retraces back inside, caught ~3 yd inside his alignment just
+  // behind the line, still moving, with his released linemen in front.
+  // NFL in-breaking WR screens: turn inside at 1.8 s, caught 3.1 yd inside
+  // and 0.6 yd behind the line (screen_wr_path_reference.py,
+  // quick_screen_reference.py).
+  tunnel: { id: 'tunnel', family: 'flat', depth: -0.7, end: 'continue', points: [{ d: -0.3, l: -1.5, s: 0.5 }, { d: -0.7, l: -3, s: 0.45 }, { d: 0, l: -5 }] },
   wheel: { id: 'wheel', family: 'back', depth: 18, end: 'continue', points: [{ d: 0, l: 5, s: 0.85 }, { d: 4, l: 10, s: 0.75 }, { d: 40, l: 11.5 }] },
 };
 

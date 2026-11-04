@@ -419,6 +419,51 @@ Values are p50s.
       ball side of the receiver on screens. It did not change his estimate,
       because the undercut along the flight drives it.
 
+14. **Tunnel and bubble paths from NFL tracking; the tunnel thrown to its
+    spot.** `screen_wr_path_reference.py` measures the screen receiver's path
+    from his alignment over time (same code for NFL and sim).
+    - **NFL tunnel ("in" WR screens).** A slow vertical sell to +0.8 yd by
+      1.2 s, a turn inside at 1.8 s, and the catch 3.1 yd inside, 0.6 yd
+      behind the line. The ball is thrown at 1.6 s, before the turn, and flies
+      about 1 s.
+    - **NFL bubble ("out").** Drifts back and out at 1–3 yd/s, 1.5 yd out at
+      the throw (1.5 s), and is caught 4.1 yd out, about 2 yd behind the line.
+    - **Changes:**
+      - The tunnel receiver first sells a stalk block on the corner (the
+        existing receiver block look, `ScreenSpec.receiverSell` 1.1 s). He
+        then retraces inside to a spot 3 yd inside, 0.7 yd behind the line.
+      - Its line release moves from 0.4 to 1.0 s.
+      - The bubble drifts to 2 yd behind the line, then out to 4 yd before
+        turning up.
+      - On a screen with a sell, the QB throws to the designed spot
+        (`screen-spot.ts`, shared with the blockers). He leads the receiver
+        to it, as the sell hides the route from a forecast built on what he
+        sees. Throwing to the spot on the bubble made it worse (later throws
+        against our press man), so it is gated to sell screens.
+    - **Results** (16 seeds × 4 calls; share of catches with a defender
+      within 2 yd):
+
+      | | NFL | Before | After |
+      |---|---|---|---|
+      | Tunnel: turn inside | 1.8 s | 0.9 s | 1.5 s |
+      | Tunnel: catch (depth, lateral) | −0.6, −3.1 | −1.0, −5.4 | −0.6, −3.8 |
+      | Tunnel: within 2 yd, man / zone | 24% / 32% | 35% / 79% | 5% / 15% |
+      | Tunnel: first defender to the carrier | 0.9 s | 0.2 s | 0.6 s |
+      | Tunnel: caught / yards p50 | — / 5 | 39 of 64 / 9.6 | 35 of 64 / 3.1 |
+      | Bubble: catch depth (from the line) | −2.1 | +1.6 / +3.9 | −1.0 |
+      | Bubble: within 2 yd, man / zone | 10% / 9% | 64% / 0% | 33% / 12% |
+      | Bubble: caught | — | 44 of 64 | 50 of 64 |
+
+    - **Still open:**
+      - The tunnel vs Cover 3 is caught 3 of 16: the curl-flat safety drives
+        onto the spot and the QB rightly holds to 2.7 s. That is item 13's
+        pre-throw trigger, handed to Defense.
+      - The bubble receiver still runs faster than the NFL drift (4.5 vs
+        2.8 yd/s at the throw) and is caught wider (5.8–7.0 vs 4.1 yd).
+      - The tunnel's linemen are behind the line at the catch (no convoy):
+        they may not cross before the throw.
+      - Slip, TE and bunch now are byte-identical to before.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
@@ -435,12 +480,12 @@ that do, blocks in space per play run at the NFL rate (3–7).
 ## Next decisions
 
 - **Quick screens thrown into a covered man** (item 13):
-  - **Defense:** zone flat defenders' pre-throw drive on a receiver behind
-    the line (gain 4–5 yd vs NFL 0–1), and the man cushion (2.5 vs 4.2–4.9 yd).
-  - **Main Engine:**
-    - tunnel and bubble paths from NFL tracking (catch point, travel by the
-      throw), as done for the slip back;
-    - then QB timing on quick screens.
+  - **Defense** (handed over 2026-11-04): zone flat defenders' pre-throw
+    drive on a receiver behind the line (gain 4–5 yd vs NFL 0–1), and the
+    man cushion (2.5 vs 4.2–4.9 yd).
+  - **Main Engine:** tunnel and bubble paths and the tunnel's QB timing
+    are done (item 14). Left: the bubble's drift speed, and the tunnel
+    linemen's place at the catch.
 - **Revisit target selection** (branch `claude/screens-threat-blocking`)
   once defenders rally to screens; it matters only when near men come.
 - **Blocking in space:** the released linemen's path from letting their man by

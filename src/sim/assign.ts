@@ -23,7 +23,8 @@ import { buildRunFits } from './run-fits.js';
 import { handoffReach } from './ball-transfer.js';
 import { CoverageDefender } from './coverage/defender.js';
 import { installReceiverRoute, type InstalledReceiverRoute } from './receiver-forecast.js';
-import { installBlockLook } from './behaviors/block-look.js';
+import { installBlockLook, ReceiverBlockLook } from './behaviors/block-look.js';
+import { screenSpot } from './screen-spot.js';
 
 const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.25, CB: 0.5, NB: 0.4, DB: 0.45, FS: 0.45, SS: 0.38 };
 
@@ -429,20 +430,27 @@ function installScreen(sim: PlaySim, concept: NonNullable<PlaySim['offCall']['pa
   const spec = concept.screen!;
   const off = sim.offAlign;
   const slotOf = (ref: string) => off.numbering[ref as keyof typeof off.numbering];
-  const receiver = sim.slot(slotOf(spec.receiver) ?? (spec.receiver === 'B' ? 'RB' : ''));
-  if (!receiver) throw new Error(`Screen receiver ${spec.receiver} is not in the formation`);
-  const side = Math.sign(receiver.pos.y - sim.ballY) || off.strongSign;
   // The catch point: the receiver's screen route landmark.
-  const ref = spec.receiver;
-  const routeId = ref === 'B' || ref === 'B2' ? concept.back
-    : (ref[0] === 'S' ? concept.strong : concept.weak)[Number(ref[1]) as 1 | 2 | 3 | 4] ?? 'go';
+  const designed = screenSpot(sim, concept);
+  if (!designed) throw new Error(`Screen receiver ${spec.receiver} is not in the formation`);
+  const { receiver, routeId, side, spot } = designed;
   const route = getRoute(routeId);
-  const land = route.points.find(p => p.s === 0) ?? route.points[Math.min(1, route.points.length - 1)];
-  const spot = { x: sim.los + land.d, y: receiver.pos.y + land.l * side };
   const jitter = (a: Agent) => sim.dice('screen', a).normal(0, 0.12);
   if (spec.tempo === 'slow' && (off.spots[receiver.slot]?.backfield || off.spots[receiver.slot]?.inline)) {
     coord.add(receiver);
     receiver.behavior = new PassProtector(coord, mkScreenRoute(receiver, routeId), (spec.receiverRelease ?? spec.count + 0.1) + jitter(receiver), true);
+  }
+  // A detached receiver who sells a stalk block first: the ordinary block
+  // look on the corner over him, then his route from where the sell left him.
+  if (spec.receiverSell && !off.spots[receiver.slot]?.backfield && !off.spots[receiver.slot]?.inline) {
+    const corners = sim.defense.filter(d => d.player.position === 'CB');
+    if (corners.length) {
+      const target = corners.reduce((b, d) => Math.hypot(d.pos.x - receiver.pos.x, d.pos.y - receiver.pos.y)
+        < Math.hypot(b.pos.x - receiver.pos.x, b.pos.y - receiver.pos.y) ? d : b);
+      mkScreenRoute(receiver, routeId);
+      receiver.behavior = new ReceiverBlockLook(target, spec.receiverSell + jitter(receiver), true,
+        () => new RouteRunner(receiver, sim, route, side, sim.t));
+    }
   }
   const line = sim.offense.filter(isOL).sort((a, b) => (b.pos.y - a.pos.y) * side);
   for (const blk of spec.blocks) {

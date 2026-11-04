@@ -151,11 +151,13 @@ export const SCREEN_CONCEPTS: PassConcept[] = [
     screen: { receiver: 'S1', tempo: 'quick', count: 0, blocks: [{ who: 'S2', job: 'stalk' }, { who: 'S3', job: 'crack' }] },
   },
   {
-    // Tunnel: #1 comes back inside; #2 cracks, screen-side T and G release at once.
+    // Tunnel: #1 sells a stalk block, then comes back inside; #2 stalks,
+    // screen-side T and G release early. NFL tunnel receivers are +0.8 yd
+    // upfield at 1.2 s and turn inside at 1.8 s (screen_wr_path_reference.py).
     id: 'tunnel_screen', name: 'Tunnel Screen', family: 'screen', drop: 'quick',
     strong: { 1: 'tunnel', 2: 'go', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
     progression: ['S1'], beats: ['off-coverage', 'pass-rush'],
-    screen: { receiver: 'S1', tempo: 'quick', count: 0.4, blocks: [{ who: 'S2', job: 'stalk' }, { who: 'T', job: 'out' }, { who: 'G', job: 'up' }] },
+    screen: { receiver: 'S1', tempo: 'quick', count: 1.0, receiverSell: 1.1, blocks: [{ who: 'S2', job: 'stalk' }, { who: 'T', job: 'out' }, { who: 'G', job: 'up' }] },
   },
 ];
 export const SCREEN_BY_ID: Record<string, PassConcept> = Object.fromEntries(SCREEN_CONCEPTS.map((c) => [c.id, c]));

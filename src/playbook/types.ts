@@ -129,6 +129,9 @@ export interface ScreenSpec {
   /** When a screen receiver who sells a block (a back or attached end) leaves
    * for his route; defaults to just after the linemen's count. */
   receiverRelease?: number;
+  /** A detached screen receiver who first sells a stalk block (the tunnel's
+   * vertical sell) leaves for his route this many seconds after the snap. */
+  receiverSell?: number;
   blocks: ScreenBlock[];
 }
 

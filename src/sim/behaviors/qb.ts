@@ -30,6 +30,7 @@ import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
 import type { ReplayTelemetryFrame } from '../types.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
+import { screenSpot, type ScreenSpot } from '../screen-spot.js';
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -346,8 +347,45 @@ export class QBPass implements Behavior {
       const last = rr.path[rr.path.length - 1]?.p;
       return rr.settled || (!!last && Math.hypot(r.pos.x - last.x, r.pos.y - last.y) < 3.5);
     }
+    // A quick screen after a sell is thrown to its spot: once the ball,
+    // floated if need be, can get there with the receiver.
+    const to = this.toSpot(sim.qb, sim, r);
+    if (to) return to.lead <= to.float;
     const antic = sim.qb.r('anticipation');
     return sim.t >= rr.breakTime - 0.3 * antic;
+  }
+
+  private spotCache: ScreenSpot | null | undefined;
+  private spotDone = false;
+  /**
+   * Throwing a quick screen to the spot. The QB knows where the call is
+   * caught; he releases so the ball and the receiver get there together, as
+   * NFL quick screens are thrown before the receiver turns to it (tunnel:
+   * thrown at 1.6 s, turn at 1.8 s; flights 0.9-1.1 s,
+   * screen_wr_path_reference.py). The receiver's arrival is his own picture
+   * of his teammate. Only for a receiver who sells first: his early motion
+   * hides the route, so a forecast from what the QB sees points the wrong
+   * way, while a receiver already on his route (bubble) is read from his
+   * motion. Once the receiver reaches the spot, the forecast throw takes over.
+   */
+  private toSpot(a: Agent, sim: PlaySim, r: Agent): { spot: Vec2; lead: number; natural: number; float: number } | null {
+    if (this.concept.family !== 'screen' || this.concept.screen?.tempo !== 'quick' || !this.concept.screen.receiverSell || this.spotDone) return null;
+    if (this.spotCache === undefined) this.spotCache = screenSpot(sim, this.concept);
+    const sp = this.spotCache;
+    if (!sp || sp.receiver !== r) return null;
+    const seen = sim.see(a, r);
+    if (Math.hypot(seen.pos.x - sp.spot.x, seen.pos.y - sp.spot.y) < 1.5) { this.spotDone = true; return null; }
+    const tR = timeToReach({ pos: seen.pos, vel: seen.vel, profile: r.profile, speedScale: r.speedScale }, sp.spot, 0.5);
+    const natural = this.naturalFlight(Math.hypot(sp.spot.x - a.pos.x, sp.spot.y - a.pos.y));
+    return { spot: sp.spot, lead: tR - this.windup(a), natural, float: 1.8 * natural };
+  }
+
+  /** The flight time real QBs use at this distance (2023 tracking: ~0.6 s
+   * under 10 yd, 0.8 s at 15, 1.2 s at 25, 1.8 s at 35, 2.5 s at 45), never
+   * faster than his arm allows. Stronger arms get there a little sooner. */
+  private naturalFlight(d: number): number {
+    const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
+    return (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
   }
 
   private outsidePocket(a: Agent, sim: PlaySim): boolean {
@@ -427,6 +465,14 @@ export class QBPass implements Behavior {
     // Quick screens to a receiver on the move keep the natural ball: floated
     // to a bubble running away, the forecast over the longer flight misses
     // (lab: bubble 24 -> 13 caught).
+    const to = this.toSpot(a, sim, r);
+    if (to) {
+      pt = { ...to.spot };
+      const tm = minFlightTime(from, { x: pt.x, y: pt.y, z: CATCH_Z }, this.armSpeed) * 1.05;
+      options.length = 0;
+      options.push(clamp(to.lead, Math.max(tm, to.natural), to.float));
+      fastball = null;
+    }
     if (this.concept.family === 'screen' && this.concept.screen?.tempo === 'slow') {
       options.length = 0;
       options.push(this.screenTouch(a, sim, r, pt, T) === 'float' ? Math.max(T * 1.5, T + 0.25) : T);
