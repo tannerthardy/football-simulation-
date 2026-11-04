@@ -736,12 +736,34 @@ that do, blocks in space per play run at the NFL rate (3–7).
       the same depth.
     - NFL rushers ease off once they're let through. Ours sprint to the QB.
   - **Main Engine:** the sell. A released lineman should keep about 0.8 s of
-    contact without being driven back 2.5 yd. This is a new mechanism to
-    try, not a third variant of the set depth.
-  - **Defense** (screen recognition, theirs since 2026-11-03; numbers sent
-    2026-11-04): a rusher who is let go free, while the line releases and
-    the back leaks out, eases off and retraces to the ball. All of that is
-    observable to him.
+    contact without being driven back 2.5 yd.
+    - **Tried (third variant, parked):** a normal punch-and-set at stance
+      depth until the count.
+
+      | | Gate | Punch at stance | NFL |
+      |---|---|---|---|
+      | DL contact with an OL, first 2 s | 0.4 s | 0.8 s | 0.8 s |
+      | DL depth at 2.0 s | −5.1 | −3.6 | −2.5 |
+      | OL depth at 1.5 s | ~−1.6 | −1.8 | −0.8 |
+      | Free interior rushers (Defense's cut) | 152 / 160 plays | 5 / 160 | 107 / 411 |
+      | They reach the QB within 1 s | 82% | 40% | 11% |
+      | Slip caught (of 80) | 31 | 37 | |
+      | TE caught (of 80) | 39 | 32 | |
+
+      - Paired TE outcomes churn both ways, with no single mechanism.
+    - Never thrown is still 26–28 of 80 per screen.
+      - Slip: the weak DT gets to the QB at 2.5–3.0 s, after the NFL throw
+        time (p50 2.2 s). The QB is holding the ball.
+      - TE: the ends get there at 2.0–2.5 s, once the TE releases his man.
+    - Next, before landing the sell: why the QB holds slow screens past
+      2.3 s (`ready()` on the settle point vs the back's or TE's arrival).
+      The sell is right by mechanism; the throw timing decides whether it
+      shows up as completions.
+    - Defense checked (2026-11-04) that this is not a missing rusher read.
+      NFL has no "let go, then eases off" population (10 of 416 DL on
+      screens). On dropbacks our OL never leave an interior rusher free; our
+      only free rushers are wide edges, which is Defense's edge-arc item.
+  - **Defense:** no screen-recognition read needed; see above.
   - Then the back's path against the rushers' lanes.
   - Catch resolution at the edge of reach goes to the Catching owner.
 - **Bubble post-catch** (Defense, 2026-11-04):
