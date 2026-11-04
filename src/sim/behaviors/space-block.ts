@@ -72,6 +72,23 @@ export function forecastScreenFlight(sample: AcquiredCatchFlight, wind: Vec2): S
   return { sampledAt: sample.sampledAt, path };
 }
 
+/** The still-possible throw corridor from a copied flight picture. The
+ * installed spot identifies the intended screen area, not a hidden target.
+ * Use the forecast's nearest remaining passage there, including a miss. */
+export function screenThrowLane(flight: ScreenFlight | null, now: number, spot: Vec2): { from: Vec2; to: Vec2 } | null {
+  const path = flight?.path;
+  if (!path?.length || now < path[0].t || now >= path[path.length - 1].t) return null;
+  const next = path.findIndex(p => p.t >= now);
+  if (next < 0) return null;
+  const b = path[next], a = path[Math.max(0, next - 1)];
+  const k = b.t > a.t ? (now - a.t) / (b.t - a.t) : 0;
+  const from = { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k };
+  if (a.z + (b.z - a.z) * k <= 0) return null;
+  const to = path.slice(next).reduce<Vec2>((best, p) => Math.hypot(p.x - spot.x, p.y - spot.y)
+    < Math.hypot(best.x - spot.x, best.y - spot.y) ? p : best, from);
+  return { from, to: { x: to.x, y: to.y } };
+}
+
 /**
  * A lane that starts at `from` once the carrier is there (`delay` s from now),
  * then runs along `heading` at a carrier's running speed, accelerating from
@@ -96,7 +113,7 @@ export function laneFrom(from: Vec2, heading: Vec2, delay: number, speed0: numbe
  */
 export function carrierLane(sim: PlaySim, observer: Agent, spot: Vec2,
   picture: BlockerWorkPicture = readBlockerWorkPicture(observer, sim),
-  flightPicture: ScreenFlight | null = null): Lane {
+  flightPicture: ScreenFlight | null = null, knownRelease = false): Lane {
   const dir = sim.attackDir(observer.team);
   if (picture.source === 'acquired' && picture.carrier !== null && picture.carrier !== sim.qb.idx) {
     const sp = Math.hypot(picture.vel.x, picture.vel.y);
@@ -112,7 +129,7 @@ export function carrierLane(sim: PlaySim, observer: Agent, spot: Vec2,
     : rememberedFlight(observer, sim.t);
   const near = path?.reduce((best, p) => Math.hypot(p.x - spot.x, p.y - spot.y)
     < Math.hypot(best.x - spot.x, best.y - spot.y) ? p : best);
-  const delay = near ? Math.max(0, near.t - sim.t) : hasObservedFlight(observer) || flightPicture ? 0 : 0.6;
+  const delay = near ? Math.max(0, near.t - sim.t) : knownRelease || hasObservedFlight(observer) || flightPicture ? 0 : 0.6;
   return laneFrom(spot, { x: dir, y: 0 }, delay, 0);
 }
 

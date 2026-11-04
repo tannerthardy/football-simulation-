@@ -139,7 +139,7 @@ describe('screen space matching consumes each blocker\'s acquired picture', () =
 
 function flight(side = 1) {
   const f = stage(side); f.pictures.get(f.back)!.carrying = false; f.pictures.get(f.sim.qb)!.carrying = false;
-  f.sim.ball = { kind: 'air', flight: { pos: { x: 32, y: 26, z: 2 }, vel: { x: 4, y: side, z: 8 }, drag: .003027 }, arrivalT: 2.8 } as typeof f.sim.ball;
+  f.sim.ball = { kind: 'air', flight: { pos: { x: 32, y: 26, z: 2 }, vel: { x: 4, y: side, z: 8 }, drag: .003027 }, intended: { ...f.spot }, arrivalT: 2.8 } as typeof f.sim.ball;
   f.sim.ballPath = [{ x: 31, y: 26, z: 2, t: 2 }, { x: 33, y: 26, z: 1.3, t: 2.8 }, { x: 35, y: 26, z: 0, t: 3.2 }];
   return f;
 }
@@ -184,7 +184,7 @@ function deliver(f: Scene) {
   return sample!;
 }
 function picturedLane(f: Scene, ahead: number) {
-  return carrierLane(f.sim, f.a, f.spot, undefined, Reflect.get(f.work, 'flightPicture'))(ahead);
+  return carrierLane(f.sim, f.a, f.spot, undefined, Reflect.get(f.work, 'flightPicture'), Reflect.get(f.work, 'sawRelease'))(ahead);
 }
 
 describe('screen blockers retain delivered incidental flight without hidden refresh', () => {
@@ -289,5 +289,164 @@ describe('screen blockers retain delivered incidental flight without hidden refr
     f.sim.t = f.sim.world.time = 5.1;
     expect(picturedLane(f, 1)).toEqual(laneFrom(f.spot, { x: 1, y: 0 }, 0, 0)(1));
     expect(picturedLane(f, 0)).toEqual(f.spot);
+  });
+});
+
+function countedScreen(side = 1, count = 2.5) {
+  const f = stage(side);
+  f.pictures.get(f.back)!.carrying = false;
+  const qb = f.pictures.get(f.sim.qb)!; qb.carrying = true; qb.pos = { x: 25, y: 26 };
+  f.work = new ScreenBlocker(f.a, 'up', side, f.spot, false, count); f.a.behavior = f.work;
+  return f;
+}
+function clearScene(side = 1, lineman = false) {
+  const f = flight(side);
+  f.spot.x = 43; f.a.body.pos = { x: 36, y: 26 + side * .5 };
+  f.work = new ScreenBlocker(f.a, 'up', side, f.spot, lineman); f.a.behavior = f.work;
+  f.sim.ball = { kind: 'air', flight: { pos: { x: 30, y: 26, z: 2 }, vel: { x: 20, y: 0, z: 3 }, drag: .003027 },
+    intended: { ...f.spot }, arrivalT: 2.65 } as typeof f.sim.ball;
+  f.sim.ballPath = [{ x: 30, y: 26, z: 2, t: 2 }, { x: 40, y: 26, z: 1.5, t: 2.5 }, { x: 43, y: 26, z: 1, t: 2.65 }, { x: 46, y: 26, z: 0, t: 3 }];
+  return f;
+}
+const releaseKnown = (f: Scene) => Reflect.get(f.work, 'sawRelease') as boolean;
+const clearCommand = (f: Scene) => Reflect.get(f.work, 'clearLane').call(f.work, f.a, f.sim);
+
+describe('screen release count uses acquired QB transitions', () => {
+  for (const side of [-1, 1]) {
+    it('remembers true-to-false before the count but waits to open work, side ' + side, () => {
+      const f = countedScreen(side); decision(f);
+      f.sim.t = f.sim.world.time = 2.2; f.pictures.get(f.sim.qb)!.carrying = false;
+      decision(f); expect(releaseKnown(f)).toBe(false);
+      const waitingLane = picturedLane(f, 1);
+      // Later unavailability does not erase knowledge already delivered.
+      f.pictures.get(f.sim.qb)!.carrying = undefined; f.pictures.get(f.sim.qb)!.age = undefined;
+      f.sim.t = f.sim.world.time = 2.5;
+      decision(f); expect(releaseKnown(f)).toBe(true);
+      expect(picturedLane(f, 1)).not.toEqual(waitingLane);
+      expect(picturedLane(f, 1)).toEqual(laneFrom(f.spot, { x: 1, y: 0 }, 0, 0)(1));
+      expect(picturedLane(f, 0)).toEqual(f.spot);
+      expect(Reflect.get(f.work, 'flightPicture')).toBeNull();
+    });
+
+    it('does not promote count, false-first, unknown or stale contradiction to release, side ' + side, () => {
+      for (const kind of ['count', 'false-first', 'unknown', 'stale', 'unknown-age'] as const) {
+        const f = countedScreen(side);
+        if (kind === 'false-first') f.pictures.get(f.sim.qb)!.carrying = false;
+        decision(f); f.sim.t = f.sim.world.time = 3;
+        const qb = f.pictures.get(f.sim.qb)!;
+        if (kind === 'unknown') qb.carrying = undefined;
+        if (kind === 'stale') { qb.carrying = false; qb.age = 1; }
+        if (kind === 'unknown-age') { qb.carrying = false; qb.age = undefined; }
+        decision(f); expect(releaseKnown(f), kind).toBe(false);
+        expect(clearCommand(f), kind).toBeNull();
+      }
+    });
+
+    it('a newer still-held cue refutes a pre-count empty picture, side ' + side, () => {
+      const f = countedScreen(side); decision(f);
+      f.sim.t = f.sim.world.time = 2.2; f.pictures.get(f.sim.qb)!.carrying = false; decision(f);
+      f.sim.t = f.sim.world.time = 2.4; f.pictures.get(f.sim.qb)!.carrying = true; decision(f);
+      f.sim.t = f.sim.world.time = 2.5; decision(f);
+      expect(releaseKnown(f)).toBe(false);
+      f.sim.t = f.sim.world.time = 2.6; f.pictures.get(f.sim.qb)!.carrying = false;
+      const command = decision(f).command;
+      expect(releaseKnown(f)).toBe(true);
+      const waiting = countedScreen(side); waiting.sim.t = waiting.sim.world.time = f.sim.t;
+      expect(command).not.toEqual(decision(waiting).command);
+    });
+  }
+});
+
+describe('screen throw clearance preserves acquired geometry', () => {
+  for (const side of [-1, 1]) {
+    it('cannot clear from hidden ball or intended target, then clears a recognized flight, side ' + side, () => {
+      const hidden = clearScene(side), held = clearScene(side);
+      held.sim.ball = { kind: 'held', carrier: held.sim.qb };
+      expect(decision(hidden)).toEqual(decision(held));
+      expect(clearCommand(hidden)).toBeNull();
+      const seen = clearScene(side); vi.spyOn(seen.sim.throwSight, 'seenAt').mockReturnValue(0);
+      const expected = decision(seen);
+      expect(expected.command.vel.x).toBeCloseTo(0, 10);
+      expect(expected.command.vel.y * side).toBeGreaterThan(0);
+      if (seen.sim.ball.kind === 'air') {
+        seen.sim.ball.flight.pos = { x: 80, y: 2, z: 40 };
+        seen.sim.ball.intended = { x: 0, y: 50, z: 1 }; seen.sim.ball.arrivalT = 20;
+      }
+      seen.sim.ballPath = [{ x: 80, y: 2, z: 40, t: 20 }];
+      expect(decision(seen)).toEqual(expected);
+      seen.sim.ball = { kind: 'held', carrier: seen.other };
+      expect(decision(seen)).toEqual(expected);
+    });
+
+    it('clears the copied planned QB line after release without inventing flight, side ' + side, () => {
+      const f = countedScreen(side, 2); f.spot.x = 43; f.a.body.pos.y = 26 + side * .5;
+      decision(f); f.sim.t = f.sim.world.time = 2.1; f.pictures.get(f.sim.qb)!.carrying = false;
+      const expected = decision(f);
+      expect(expected.command.vel.x).toBeCloseTo(0, 10);
+      expect(expected.command.vel.y * side).toBeGreaterThan(0);
+      expect(Reflect.get(f.work, 'flightPicture')).toBeNull();
+      f.sim.qb.body.pos = { x: 80, y: 2 }; f.sim.ball = { kind: 'held', carrier: f.other };
+      expect(decision(f)).toEqual(expected);
+      f.pictures.get(f.sim.qb)!.pos = { x: 25, y: 35 }; f.sim.t = f.sim.world.time = 2.2;
+      decision(f); expect(clearCommand(f)).toBeNull();
+    });
+
+    it('keeps the eligible catch-area exemption and stops behind the forecast ball, side ' + side, () => {
+      const eligible = clearScene(side), lineman = clearScene(side, true);
+      for (const f of [eligible, lineman]) {
+        f.a.body.pos.x = 42; vi.spyOn(f.sim.throwSight, 'seenAt').mockReturnValue(0); decision(f);
+      }
+      expect(clearCommand(eligible)).toBeNull();
+      expect(clearCommand(lineman)).not.toBeNull();
+      lineman.a.body.pos.x = 29; expect(clearCommand(lineman)).toBeNull();
+      lineman.a.body.pos.x = 36; lineman.sim.t = lineman.sim.world.time = 2.4;
+      expect(clearCommand(lineman)).toBeNull(); // forecast now beyond him
+    });
+
+    it('retires an inferred corridor when a newer acquired QB picture holds the ball again, side ' + side, () => {
+      const f = countedScreen(side, 2); f.spot.x = 43; f.a.body.pos.y = 26 + side * .5;
+      decision(f); f.sim.t = f.sim.world.time = 2.1; f.pictures.get(f.sim.qb)!.carrying = false; decision(f);
+      expect(clearCommand(f)).not.toBeNull();
+      f.sim.t = f.sim.world.time = 2.2; f.pictures.get(f.sim.qb)!.carrying = true; decision(f);
+      expect(releaseKnown(f)).toBe(true); // prior ball-out evidence is not erased
+      expect(clearCommand(f)).toBeNull(); // the old inferred line is obsolete
+    });
+
+    it('clears from an actually delivered incidental sample without full recognition, side ' + side, () => {
+      const f = clearScene(side); f.a.body.pos.x = 39; f.a.body.facing = Math.PI;
+      if (f.sim.ball.kind === 'air') f.sim.ball.flight.vel.z = 12;
+      f.sim.incidentalCatchReadiness.sense(f.sim);
+      expect(clearCommand(f)).toBeNull();
+      deliver(f); expect(f.sim.throwSight.seenAt(f.a)).toBeUndefined();
+      decision(f); expect(clearCommand(f)).not.toBeNull();
+      expect(Reflect.get(f.work, 'flightPicture').sampledAt).toBe(2);
+    });
+  }
+
+  it('does not revive the planned QB line after acquired flight expires or possession is acquired', () => {
+    const f = countedScreen(1, 2); f.spot.x = 43; f.a.body.pos.y = 26.5; decision(f);
+    f.sim.t = f.sim.world.time = 2.1; f.pictures.get(f.sim.qb)!.carrying = false; decision(f);
+    expect(clearCommand(f)).not.toBeNull();
+    f.sim.ball = { kind: 'air', flight: { pos: { x: 30, y: 26, z: 2 }, vel: { x: 20, y: 0, z: 3 }, drag: .003027 },
+      intended: { ...f.spot }, arrivalT: 2.4 } as typeof f.sim.ball;
+    f.sim.ballPath = [{ x: 30, y: 26, z: 2, t: 2.1 }, { x: 43, y: 26, z: 0, t: 2.5 }];
+    vi.spyOn(f.sim.throwSight, 'seenAt').mockReturnValue(0); decision(f);
+    expect(Reflect.get(f.work, 'flightPicture')).not.toBeNull();
+    f.sim.t = f.sim.world.time = 2.6; expect(clearCommand(f)).toBeNull();
+    const caught = clearScene(); vi.spyOn(caught.sim.throwSight, 'seenAt').mockReturnValue(0); decision(caught);
+    caught.pictures.get(caught.back)!.carrying = true;
+    caught.sim.t = caught.sim.world.time = 2.4;
+    const clear = vi.spyOn(caught.work as unknown as { clearLane: () => unknown }, 'clearLane');
+    decision(caught); expect(clear).not.toHaveBeenCalled();
+    expect(picturedLane(caught, 0)).toEqual(caught.pictures.get(caught.back)!.pos);
+  });
+
+  it('does not invent a current ball position before the first copied forecast point', () => {
+    const f = clearScene();
+    f.sim.ballPath = [{ x: 31, y: 26, z: 2, t: 2.05 }, { x: 43, y: 26, z: 1, t: 2.65 }, { x: 46, y: 26, z: 0, t: 3 }];
+    vi.spyOn(f.sim.throwSight, 'seenAt').mockReturnValue(0); decision(f);
+    expect(clearCommand(f)).toBeNull();
+    f.sim.t = f.sim.world.time = 2.05;
+    expect(clearCommand(f)).not.toBeNull();
   });
 });

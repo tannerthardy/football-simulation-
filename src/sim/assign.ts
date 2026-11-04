@@ -457,9 +457,10 @@ function installScreen(sim: PlaySim, concept: NonNullable<PlaySim['offCall']['pa
     const a = blk.who === 'T' ? line[0] : blk.who === 'G' ? line[1] : blk.who === 'C' ? sim.slot('C') : sim.slot(slotOf(blk.who) ?? '');
     if (!a || a === receiver) continue;
     if (isOL(a)) {
-      a.behavior = new PassProtector(coord, () => new ScreenBlocker(a, blk.job, side, spot, true), Math.max(0, spec.count + jitter(a)), true);
+      const releaseAfter = Math.max(0, spec.count + jitter(a));
+      a.behavior = new PassProtector(coord, () => new ScreenBlocker(a, blk.job, side, spot, true, releaseAfter), releaseAfter, true);
     } else {
-      a.behavior = new ScreenBlocker(a, blk.job, side, spot, false);
+      a.behavior = new ScreenBlocker(a, blk.job, side, spot, false, spec.count);
     }
   }
 }

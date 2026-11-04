@@ -26,7 +26,7 @@ import { observedContact } from '../coverage-cues.js';
 import { acquireFlight, hasObservedFlight, observedHolder } from '../possession-read.js';
 import { goTo, runThrough, stand, track } from './common.js';
 import { sawThrow } from './defense.js';
-import { LATE, carrierLane, forecastScreenFlight, fitOn, meetOnTrack, matchThreats, threatOf, type Candidate, type Lane, type ScreenFlight, type Threat } from './space-block.js';
+import { LATE, carrierLane, forecastScreenFlight, screenThrowLane, fitOn, meetOnTrack, matchThreats, threatOf, type Candidate, type Lane, type ScreenFlight, type Threat } from './space-block.js';
 
 /** A blocker's decision beat: how often he re-reads whom to take. */
 const RETARGET = 0.3;
@@ -42,6 +42,8 @@ export class ScreenBlocker implements Behavior {
   private workPicture: BlockerWorkPicture | null = null;
   private sawRelease = false;
   private flightPicture: ScreenFlight | null = null;
+  private qbHeldAt: number | null = null;
+  private qbEmpty: { at: number; pos: Vec2 } | null = null;
   readonly home: Vec2;
 
   constructor(
@@ -53,11 +55,25 @@ export class ScreenBlocker implements Behavior {
     readonly spot: Vec2,
     /** Ineligible lineman: stay at the line until the ball is thrown. */
     private readonly lineman: boolean,
+    /** This blocker's installed count, including his own release jitter. */
+    private readonly releaseAfter = 0,
   ) {
     this.home = { ...a.pos };
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    // A known-held QB becoming visibly empty after this blocker's count is
+    // ball-out evidence. It says nothing about a catcher or the ball's flight.
+    // Knowledge may arrive before the count; only the action waits for it.
+    const qb = sim.see(a, sim.qb);
+    if (qb.age !== undefined && Number.isFinite(qb.age) && qb.age >= 0) {
+      const at = sim.t - qb.age;
+      if (qb.carrying === true && (this.qbHeldAt === null || at > this.qbHeldAt)) this.qbHeldAt = at;
+      if (qb.carrying === false && this.qbHeldAt !== null && at > this.qbHeldAt
+        && (!this.qbEmpty || at > this.qbEmpty.at)) this.qbEmpty = { at, pos: { ...qb.pos } };
+    }
+    if (sim.t >= this.releaseAfter && this.qbEmpty && this.qbHeldAt !== null
+      && this.qbEmpty.at > this.qbHeldAt) this.sawRelease = true;
     // An incidental receiver can already have acquired an over-shoulder
     // flight that the narrower throw sensor has not recognized. Use that
     // delivered picture too, without upgrading it to the live trajectory.
@@ -77,7 +93,7 @@ export class ScreenBlocker implements Behavior {
     }
     const thrown = this.sawRelease || carrying;
     if (observedHolder(a, sim)) return stand();
-    const lane = carrierLane(sim, a, this.spot, this.workPicture, this.flightPicture);
+    const lane = carrierLane(sim, a, this.spot, this.workPicture, this.flightPicture, this.sawRelease);
     const held = this.target ? sim.see(a, this.target) : null;
     if (sim.t >= this.retargetAt || !held || held.pose === 'down' || held.pose === 'rising'
       || this.claimed(a, sim, this.target!, held)) {
@@ -89,7 +105,7 @@ export class ScreenBlocker implements Behavior {
     // not stand in its path (a stalk blocker drifting inside to his man's
     // track under a floated bubble caught it himself; a released tackle got
     // hands on a tunnel throw).
-    const clear = this.clearLane(a, sim);
+    const clear = carrying ? null : this.clearLane(a, sim);
     if (clear) return clear;
     const seen = d ? sim.see(a, d) : null;
     // Before the throw a lineman may block only behind the line (an
@@ -176,8 +192,15 @@ export class ScreenBlocker implements Behavior {
    * that line. An eligible receiver may stay near the catch point (the last
    * 2 yd) to block there; an ineligible lineman keeps off it altogether. */
   private clearLane(a: Agent, sim: PlaySim): MoveCommand | null {
-    if (sim.ball.kind !== 'air') return null;
-    const b = sim.ballPos(), to = sim.ball.intended;
+    // Before acquiring flight, a known release permits clearing the planned
+    // QB-to-spot line. Once flight is known, its expiry cannot revive that
+    // plan or a hidden current ball. Neither picture announces a catch.
+    const line = screenThrowLane(this.flightPicture, sim.t, this.spot)
+      ?? (!this.flightPicture && !hasObservedFlight(a) && this.sawRelease && this.qbEmpty
+        && this.qbHeldAt !== null && this.qbEmpty.at > this.qbHeldAt
+        ? { from: this.qbEmpty.pos, to: this.spot } : null);
+    if (!line) return null;
+    const { from: b, to } = line;
     const vx = to.x - b.x, vy = to.y - b.y, L = Math.hypot(vx, vy);
     if (L < 2.5) return null;
     const ux = vx / L, uy = vy / L;
