@@ -9,10 +9,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 async function load(enabled: boolean) {
   vi.stubEnv('FLOW_INTERCEPT', enabled ? '1' : '0');
   vi.resetModules();
-  const { flowLead } = await import('../src/sim/run-fits.js');
+  const { flowLead, pullCueReads } = await import('../src/sim/run-fits.js');
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
-  return { flowLead, PlaySim, nativeTraceSetup };
+  return { flowLead, pullCueReads, PlaySim, nativeTraceSetup };
 }
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
@@ -33,6 +33,33 @@ describe('flowLead', () => {
   it('off: always the two reads', async () => {
     const { flowLead } = await load(false);
     expect(flowLead(6, { x: .3, y: 6 }, .3)).toBe(.3);
+  });
+});
+
+/** The pull read compares the puller's arrival with the backer's landmark,
+ * after the runner projection has moved it. A projection that has already
+ * carried the landmark past the puller's arrival must not hide the pull: the
+ * landmark before the projection still reads it (and the backer fills). A
+ * pull read against the projected landmark is kept, and so is one against
+ * neither (no read). Native power and counter snaps (48, 3 formations, 4
+ * seeds, both flips) read the pull on the same ticks with and without this. */
+describe('a flowing backer still reads the pull', () => {
+  it('on: a pull within reach of the landmark before the projection reads', async () => {
+    const { pullCueReads } = await load(true);
+    // Puller arriving at y=3 moving +y; the projection has carried the landmark to 4.
+    expect(pullCueReads(3, 1, 4, 1)).toBe(true);
+    // Within reach of the projected landmark: as before.
+    expect(pullCueReads(5, 1, 4, 1)).toBe(true);
+    // Toward neither landmark, or out of reach: no read.
+    expect(pullCueReads(0, 1, 4, 1)).toBe(false);
+    expect(pullCueReads(12, 1, 4, 1)).toBe(false);
+    // Mirrored.
+    expect(pullCueReads(-3, -1, -4, -1)).toBe(true);
+  });
+  it('off: only the projected landmark counts', async () => {
+    const { pullCueReads } = await load(false);
+    expect(pullCueReads(3, 1, 4, 1)).toBe(false);
+    expect(pullCueReads(5, 1, 4, 1)).toBe(true);
   });
 });
 

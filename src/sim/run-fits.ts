@@ -191,6 +191,16 @@ const FLOW_READ = process.env.FLOW_READ !== '0', FLOW_INSIDE = 1;
  * (FLOW_INTERCEPT=0: a fixed two reads). */
 const FLOW_INTERCEPT = process.env.FLOW_INTERCEPT !== '0';
 
+/** Does a puller arriving at `target` (moving `dir`) read as a pull for a
+ * backer whose landmark is `gy`? Within reach toward the pull. With
+ * FLOW_INTERCEPT the landmark before the runner projection (`gapY`) also
+ * counts, so a projection that already carried `gy` past the puller's
+ * arrival does not hide the pull. */
+export function pullCueReads(target: number, dir: number, gy: number, gapY: number): boolean {
+  const reads = (from: number) => (target - from) * dir > 0 && (target - from) * dir < PULL_REACH;
+  return reads(gy) || (FLOW_INTERCEPT && reads(gapY));
+}
+
 /** How far ahead (s) a flowing backer projects the back he keeps leverage on.
  * A back still crossing behind the line can turn up at any moment, so the
  * lead is the soonest he could reach the backer's depth at his current speed,
@@ -514,6 +524,9 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     && seen.pos.x > sim.los - 1.6 && (seen.pos.y - sim.ballY) * job.side > 0;
   const flowSide = Math.abs(seen.vel.y) > 1.5 ? Math.sign(seen.vel.y)
     : shallowRunner ? Math.sign(seen.pos.y - gy) : 0;
+  // The landmark before the runner projection: a pull cue is judged against
+  // it, so the back's projected track never hides the puller from the read.
+  const gapY = gy;
   if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && flowSide) {
     const f = flowSide;
     const lead = flowLead((a.pos.x - seen.pos.x) * sim.attackDir(c.team), seen.vel, 2 * a.mind.decisionInterval);
@@ -541,8 +554,13 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       const dir = Math.sign(p.vel.y), arrive = p.pos.y + p.vel.y * PULL_LOOK;
       if (dir !== Math.sign(lead!.vel.y)) continue;
       const target = arrive + dir * (job.edge === 'spill' ? -PULL_SHOULDER : PULL_SHOULDER);
-      if ((target - gy) * dir > 0 && (target - gy) * dir < PULL_REACH) {
-        gy = target; pullSide = dir; a.tags.add('fit-pull-read');
+      // FLOW_INTERCEPT: a runner projection that has already carried the
+      // landmark past the puller's arrival does not hide the pull. Within
+      // reach of the landmark before that projection the cue still reads
+      // (and the backer fills); he never moves back against his own flow.
+      if (pullCueReads(target, dir, gy, gapY)) {
+        if ((target - gy) * dir > 0) gy = target;
+        pullSide = dir; a.tags.add('fit-pull-read');
       }
     }
   } else if (indicator?.kind === 'pull' && job.kind !== 'interior') {
