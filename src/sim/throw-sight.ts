@@ -40,7 +40,11 @@ export class ThrowSight {
       this.handsSeen.clear();
     }
     const { x, y } = ball.flight.pos;
-    for (const a of sim.defense) {
+    // Released screen blockers also need to see the ball leave before
+    // attacking downfield. Reuse the same sensor and view cone; the called
+    // count alone never announces a throw. Other offensive roles are unchanged.
+    const observers = [...sim.defense, ...sim.offense.filter(a => a.behavior.kind === 'screen-block')];
+    for (const a of observers) {
       if (this.firstSeen.has(a.idx) || a.isDown(sim.t)) continue;
       const dx = x - a.pos.x, dy = y - a.pos.y, d = Math.hypot(dx, dy);
       const cos = d < 1e-6 ? 1 : (Math.cos(a.facing) * dx + Math.sin(a.facing) * dy) / d;

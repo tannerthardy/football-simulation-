@@ -20,7 +20,12 @@ import type { MoveCommand } from '../../physics/kinematics.js';
 import type { ScreenJob } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
+import type { Perceived } from '../perception.js';
+import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
+import { observedContact } from '../coverage-cues.js';
+import { acquireFlight, observedHolder } from '../possession-read.js';
 import { goTo, runThrough, stand, track } from './common.js';
+import { sawThrow } from './defense.js';
 import { LATE, carrierLane, fitOn, meetOnTrack, matchThreats, threatOf, type Candidate, type Lane, type Threat } from './space-block.js';
 
 /** A blocker's decision beat: how often he re-reads whom to take. */
@@ -34,6 +39,8 @@ export class ScreenBlocker implements Behavior {
   readonly keepAfterCatch = true;
   target: Agent | null = null;
   private retargetAt = -1;
+  private workPicture: BlockerWorkPicture | null = null;
+  private sawRelease = false;
   readonly home: Vec2;
 
   constructor(
@@ -52,10 +59,19 @@ export class ScreenBlocker implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (a.engagement) return stand();
     const dir = sim.attackDir(a.team);
-    const thrown = sim.ball.kind === 'air' || (sim.carrier !== null && sim.carrier !== sim.qb);
-    if (sim.carrier && sim.carrier.team !== a.team) return stand();
-    const lane = carrierLane(sim, a, this.spot);
-    if (sim.t >= this.retargetAt || !this.target || this.target.engagement || this.target.isDown(sim.t)) {
+    if (!this.workPicture || sim.t >= this.workPicture.nextRead) this.workPicture = readBlockerWorkPicture(a, sim);
+    const carrying = this.workPicture.source === 'acquired' && this.workPicture.carrier !== null
+      && this.workPicture.carrier !== sim.qb.idx;
+    if (!this.sawRelease && sawThrow(a, sim, null)) {
+      this.sawRelease = true;
+      acquireFlight(a, sim);
+    }
+    const thrown = this.sawRelease || carrying;
+    if (observedHolder(a, sim)) return stand();
+    const lane = carrierLane(sim, a, this.spot, this.workPicture);
+    const held = this.target ? sim.see(a, this.target) : null;
+    if (sim.t >= this.retargetAt || !held || held.pose === 'down' || held.pose === 'rising'
+      || this.claimed(a, sim, this.target!, held)) {
       this.retargetAt = sim.t + RETARGET;
       this.target = this.pick(a, sim, dir, thrown, lane);
     }
@@ -66,11 +82,11 @@ export class ScreenBlocker implements Behavior {
     // hands on a tunnel throw).
     const clear = this.clearLane(a, sim);
     if (clear) return clear;
+    const seen = d ? sim.see(a, d) : null;
     // Before the throw a lineman may block only behind the line (an
     // ineligible man downfield); a defender sitting in the screen there is his.
-    if (this.lineman && !thrown && (!d || (d.pos.x - sim.los) * dir > 0.8)) return this.slide(a, sim, dir);
-    if (!d) return this.lead(a, sim, dir, lane);
-    const seen = sim.see(a, d);
+    if (this.lineman && !thrown && (!seen || (seen.pos.x - sim.los) * dir > 0.8)) return this.slide(a, sim, dir);
+    if (!d || !seen) return this.lead(a, sim, dir, lane);
     // Contact is felt, not seen: the block starts when the bodies meet,
     // however stale his picture of the man is.
     const touch = Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
@@ -83,11 +99,10 @@ export class ScreenBlocker implements Behavior {
     // (or straight at the lane's start if he cannot reach it in time). Once
     // the man is close to the carrier he is running at the carrier himself,
     // not at a forecast: the fit is on his line to the carrier, a beat ahead.
-    const c = sim.carrier && sim.carrier.team === a.team && sim.carrier !== sim.qb ? sim.carrier : null;
     let goal = th ? th.at : lane(0);
-    if (c) {
-      const cs = sim.see(a, c);
-      const near = { x: cs.pos.x + cs.vel.x * 0.3, y: cs.pos.y + cs.vel.y * 0.3 };
+    if (carrying) {
+      const p = blockerWorkPoint(this.workPicture, sim.t), v = this.workPicture.vel;
+      const near = { x: p.x + v.x * 0.3, y: p.y + v.y * 0.3 };
       if (Math.hypot(seen.pos.x - near.x, seen.pos.y - near.y) < 6) goal = near;
     }
     const toGoal = norm(sub(goal, seen.pos));
@@ -179,8 +194,8 @@ export class ScreenBlocker implements Behavior {
     // within 2 yd, less than a body width across) is the man coming past; he
     // steps around him toward the screen before going up, not into him.
     for (const d of sim.opponents(a)) {
-      if (d.isDown(sim.t)) continue;
       const s = sim.see(a, d);
+      if (s.pose === 'down' || s.pose === 'rising') continue;
       const ahead = (s.pos.x - a.pos.x) * dir, off = (s.pos.y - a.pos.y) * this.side;
       if (ahead > -0.3 && ahead < 2 && Math.abs(off) < a.profile.radius + d.profile.radius + 0.3)
         return runThrough(a, { x: a.pos.x, y: clamp(s.pos.y + this.side * 1.6, 1, FIELD_WIDTH - 1) }, { speed: 0.8, facing: dir > 0 ? 0 : Math.PI });
@@ -208,15 +223,19 @@ export class ScreenBlocker implements Behavior {
    * next man inside him. A clearly more urgent or more reachable man wins.
    */
   bias(th: Threat, sim: PlaySim, ref: Vec2): number {
+    return this.jobBias(this.job, this.home, th, sim, ref);
+  }
+
+  private jobBias(job: ScreenJob, home: Vec2, th: Threat, sim: PlaySim, ref: Vec2): number {
     const dir = sim.attackDir('O');
     const p = th.seen.pos;
     const out = (p.y - ref.y) * this.side, down = (p.x - ref.x) * dir;
-    switch (this.job) {
+    switch (job) {
       case 'out': return out > -1.5 ? 0 : 0.4;
       case 'in': return out < 1 ? 0 : 0.4;
       case 'up': return down > 1 && Math.abs(out) < 6 ? 0 : 0.25;
-      case 'stalk': return Math.min(0.5, 0.05 * Math.hypot(p.x - this.home.x, p.y - this.home.y));
-      case 'crack': return (p.y - this.home.y) * this.side < 1 ? 0 : 0.4;
+      case 'stalk': return Math.min(0.5, 0.05 * Math.hypot(p.x - home.x, p.y - home.y));
+      case 'crack': return (p.y - home.y) * this.side < 1 ? 0 : 0.4;
     }
   }
 
@@ -224,7 +243,9 @@ export class ScreenBlocker implements Behavior {
   private downLineman(sim: PlaySim, d: Agent): boolean {
     const p = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots]?.pos;
     if (!p) return false;
-    const ol = sim.offense.filter(o => /^(LT|LG|C|RG|RT)$/.test(o.slot)).map(o => sim.offAlign.spots[o.slot]?.pos.y ?? o.pos.y);
+    const ol = sim.offense.filter(o => /^(LT|LG|C|RG|RT)$/.test(o.slot))
+      .flatMap(o => sim.offAlign.spots[o.slot] ? [sim.offAlign.spots[o.slot].pos.y] : []);
+    if (!ol.length) return false;
     return Math.abs(p.x - sim.los) < 1.6 && p.y > Math.min(...ol) - 4 && p.y < Math.max(...ol) + 4;
   }
 
@@ -237,45 +258,52 @@ export class ScreenBlocker implements Behavior {
    */
   private pick(a: Agent, sim: PlaySim, dir: number, thrown: boolean, lane: Lane): Agent | null {
     const mates = sim.teammates(a);
-    // Men a teammate is already blocking are taken: that is visible.
-    const taken = new Set<Agent>();
-    for (const o of mates) if (o.engagement) taken.add(o.engagement.defender);
-    const ref = thrown && sim.carrier && sim.carrier.team === a.team && sim.carrier !== sim.qb ? sim.carrier.pos : this.spot;
+    const ref = lane(0);
     const threats: Threat[] = [];
     for (const d of sim.opponents(a)) {
-      if (d.engagement || d.isDown(sim.t) || taken.has(d)) continue;
+      const seen = sim.see(a, d);
+      if (seen.pose === 'down' || seen.pose === 'rising' || this.claimed(a, sim, d, seen)) continue;
       if (!thrown && this.downLineman(sim, d)) continue;
-      const th = threatOf(sim, a, d, lane);
+      const th = threatOf(sim, a, d, lane, seen);
       if (th) threats.push(th);
     }
     if (!threats.length) return null;
     // The man over a stalk blocker before the throw.
-    const stalkMan = (b: ScreenBlocker): Agent | null => {
+    const stalkMan = (home: Vec2): Agent | null => {
       let best: Threat | null = null, bd = Infinity;
       for (const th of threats) {
-        const dd = Math.hypot(th.seen.pos.x - b.home.x, th.seen.pos.y - b.home.y);
+        const dd = Math.hypot(th.seen.pos.x - home.x, th.seen.pos.y - home.y);
         if (dd < bd) { bd = dd; best = th; }
       }
       return best?.d ?? null;
     };
+    const roles = this.installedRoles(a, sim);
     const cands: Candidate[] = [];
     for (const o of mates) {
-      if (!(o.behavior instanceof ScreenBlocker) || o.engagement || o.isDown(sim.t)) continue;
-      const b = o.behavior;
+      const role = roles.get(o);
+      if (!role) continue;
+      const cue = sim.see(a, o);
+      if (o !== a && (cue.pose === 'down' || cue.pose === 'rising' || sim.opponents(a).some(d => {
+        const seen = sim.see(a, d);
+        return cue.pose === 'up' && seen.pose === 'up' && observedContact(o, cue, d, seen);
+      }))) continue;
       let on: Agent | null = null;
       if (o === a) {
         // He knows whom he is on.
         const t = this.target;
-        if (t && !t.engagement && !t.isDown(sim.t)) {
-          const s = sim.see(a, t);
+        const s = t && threats.find(th => th.d === t)?.seen;
+        if (t && s) {
           if (Math.hypot(s.pos.x - a.pos.x, s.pos.y - a.pos.y) < ON_MAN) on = t;
         }
       } else {
         // A teammate right on a man is on him.
-        for (const th of threats) if (Math.hypot(th.seen.pos.x - o.pos.x, th.seen.pos.y - o.pos.y) < 2) { on = th.d; break; }
+        for (const th of threats) if (Math.hypot(th.seen.pos.x - cue.pos.x, th.seen.pos.y - cue.pos.y) < 2) { on = th.d; break; }
       }
-      if (!thrown && b.job === 'stalk') on = stalkMan(b);
-      cands.push({ b: o, on, bias: th => b.bias(th, sim, ref) });
+      if (!thrown && role.job === 'stalk') on = stalkMan(role.home);
+      cands.push({ b: o, on, mover: o === a
+        ? { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }
+        : { pos: cue.pos, vel: cue.vel, profile: o.profile },
+      bias: th => this.jobBias(role.job, role.home, th, sim, ref) });
     }
     const mine = matchThreats(threats, cands).get(a);
     // Once the ball is out he commits: "see it, hit it". He keeps his man
@@ -292,5 +320,33 @@ export class ScreenBlocker implements Behavior {
       if (!mateOn && reachable && !urgent) return cur.d;
     }
     return mine?.th.d ?? null;
+  }
+
+  /** Teammates know the called jobs, not another controller's current phase.
+   * A free lineman's future screen work can be anticipated from his acquired
+   * movement; visible contact/pose and the ordinary reach fit constrain it. */
+  private installedRoles(a: Agent, sim: PlaySim): Map<Agent, { job: ScreenJob; home: Vec2 }> {
+    const roles = new Map<Agent, { job: ScreenJob; home: Vec2 }>();
+    const off = sim.offAlign;
+    const line = sim.offense.filter(o => /^(LT|LG|C|RG|RT)$/.test(o.slot) && off.spots[o.slot])
+      .sort((p, q) => (off.spots[q.slot].pos.y - off.spots[p.slot].pos.y) * this.side);
+    for (const block of sim.offCall.pass?.screen?.blocks ?? []) {
+      const slot = off.numbering[block.who as keyof typeof off.numbering];
+      const mate = block.who === 'T' ? line[0] : block.who === 'G' ? line[1]
+        : sim.slot(block.who === 'C' ? 'C' : slot ?? '');
+      const home = mate && off.spots[mate.slot]?.pos;
+      if (mate && home) roles.set(mate, { job: block.job, home });
+    }
+    roles.set(a, { job: this.job, home: this.home });
+    return roles;
+  }
+
+  private claimed(a: Agent, sim: PlaySim, d: Agent, seen: Perceived): boolean {
+    if (seen.pose !== 'up') return false;
+    return sim.teammates(a).some(o => {
+      if (o === a) return false;
+      const cue = sim.see(a, o);
+      return cue.pose === 'up' && observedContact(o, cue, d, seen);
+    });
   }
 }

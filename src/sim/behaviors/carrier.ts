@@ -335,7 +335,12 @@ export class BallCarrier implements Behavior {
   }
 
   private command(a: Agent, sim: PlaySim, h: number, speed: number, cutSkill: number): MoveCommand {
-    const bodies = sim.agents.filter((o) => o !== a && !o.isDown(sim.t)).map((o) => ({ pos: sim.see(a, o).pos, radius: o.profile.radius }));
+    const bodies = this.opts.screenCatch
+      ? sim.agents.filter(o => o !== a).flatMap(o => {
+        const seen = sim.see(a, o);
+        return seen.pose === 'down' || seen.pose === 'rising' ? [] : [{ pos: seen.pos, radius: o.profile.radius }];
+      })
+      : sim.agents.filter((o) => o !== a && !o.isDown(sim.t)).map((o) => ({ pos: sim.see(a, o).pos, radius: o.profile.radius }));
     const squeeze = sim.bond ? 0 : squeezeForGap(a.pos, h, a.profile.radius, bodies) * (0.65 + 0.35 * a.r('elusiveness'));
     if (squeeze > 0.3 && !a.tags.has('squeezed')) {
       a.tags.add('squeezed');
@@ -376,7 +381,7 @@ export class BallCarrier implements Behavior {
     const goalX = dir > 0 ? OPP_GOAL_X : OWN_GOAL_X;
     const hurry = sim.hurry && a.team === 'O';
 
-    const { blockers, threats } = arrivalEvidence(a, sim, dir, range, vision);
+    const { blockers, threats } = arrivalEvidence(a, sim, dir, range, vision, !!this.opts.screenCatch);
     // After a screen catch he reads his blocks by leverage: a block slows a man only
     // on the side the blocker's body covers. Toward a point the blocker is
     // not between them, the man is free (a flat allowance for being touched
@@ -387,7 +392,9 @@ export class BallCarrier implements Behavior {
       const vx = q.x - th.pos.x, vy = q.y - th.pos.y, L = Math.hypot(vx, vy);
       if (L < 0.5) return 0;
       const ux = vx / L, uy = vy / L;
-      const man = { pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale };
+      // His observed movement already reflects any slowing. The runner can
+      // forecast public capacity, not the defender's private energy budget.
+      const man = { pos: th.pos, vel: th.vel, profile: th.d.profile };
       for (const b of blockers) {
         if (b.pose === 'down') continue;
         // What he sees: a blocker touching this man is on him; one touching
@@ -404,7 +411,7 @@ export class BallCarrier implements Behavior {
         }
         // Free blocker: he cuts the man off if he can get onto the man's run
         // to the point before the man gets there.
-        const mover = { pos: b.pos, vel: b.vel, profile: b.agent.profile, speedScale: b.agent.speedScale };
+        const mover = { pos: b.pos, vel: b.vel, profile: b.agent.profile };
         for (let k = 1; k <= 5; k++) {
           const m = { x: th.pos.x + ux * L * k / 6, y: th.pos.y + uy * L * k / 6 };
           if (timeToReach(mover, m, b.radius + th.d.profile.radius) + 0.1 < timeToReach(man, m)) return 0.7;
@@ -479,7 +486,8 @@ export class BallCarrier implements Behavior {
         let limiter: string | undefined;
         for (const th of threats) {
           // Respect the tackler's arms: his reach plus a lunge.
-          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75)
+          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile,
+            speedScale: leverage ? undefined : th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75)
             + (leverage ? th.extra - th.blockerBonus + credit(th, q) : th.extra);
           const m = tt - arrival;
           if (m < minMargin) {
@@ -592,7 +600,7 @@ export interface ArrivalEvidence {
 
 /** Perceived teammates near the runner, and defenders he can see within his
  * vision range, each from his own pictures. */
-function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vision: number) {
+function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vision: number, screenCatch = false) {
   const p = a.pos;
   const blockers = sim.teammates(a).filter((b) => b !== a)
     .map((b) => ({ ...sim.see(a, b), radius: b.profile.radius, agent: b }))
@@ -608,7 +616,9 @@ function arrivalEvidence(a: Agent, sim: PlaySim, dir: number, range: number, vis
     // Explicit scenario parking keeps its scheduled absence. Physical falls
     // leave downUntil=-1; infer their allowance only from the delayed pose,
     // never hidden support state/since or an exact recovery deadline.
-    const parking = d.downUntil > sim.t ? d.downUntil - sim.t + 0.2 : null;
+    // Called screens use acquired pose even in staged scenes. Keep the
+    // existing parking convention for other carrier work.
+    const parking = !screenCatch && d.downUntil > sim.t ? d.downUntil - sim.t + 0.2 : null;
     const recovery = parking === null ? observedRecoveryAllowance(seen, d.profile.getUp, sim.dt) : 0;
     let extra = parking ?? recovery;
     // A defender he sees a blocker on is held up; one he sees coming at

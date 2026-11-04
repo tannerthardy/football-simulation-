@@ -4,6 +4,7 @@ import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physic
 import type { PhysicalProfile } from '../players/physical.js';
 import type { RouteDef, RouteEnd } from '../playbook/types.js';
 import { routeEffort, routePath, steerRoute, type PathPoint } from './route-motion.js';
+import type { VisiblePose } from './perception.js';
 
 export interface InstalledReceiverRoute {
   readonly start: Readonly<Vec2>;
@@ -31,6 +32,7 @@ export interface ReceiverPicture {
   readonly pos: Readonly<Vec2>;
   readonly vel: Readonly<Vec2>;
   readonly facing: number;
+  readonly pose?: VisiblePose | null;
   readonly sampledAt: number;
   readonly acquiredAt: number;
 }
@@ -57,6 +59,7 @@ export class ReceiverForecast {
   }
 
   get estimate(): ReceiverEstimate | null { return this.build()?.estimate ?? null; }
+  get observedPose(): VisiblePose | null { return this.picture?.pose ?? null; }
 
   /** Forecast at absolute time. A held picture ages; it never refreshes itself. */
   predict(now: number, ahead: number): Vec2 | null {

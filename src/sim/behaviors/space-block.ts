@@ -31,6 +31,8 @@ import { interceptPoint, type Mover } from '../../physics/reach.js';
 import type { Agent } from '../agent.js';
 import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
+import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
+import { hasObservedFlight, rememberedFlight } from '../possession-read.js';
 
 /** How far ahead the blocker forecasts (s). */
 const HORIZON = 3;
@@ -69,17 +71,20 @@ export function laneFrom(from: Vec2, heading: Vec2, delay: number, speed0: numbe
  * reached when the ball arrives, then upfield. After it: from where he sees
  * the carrier, along his motion bent upfield.
  */
-export function carrierLane(sim: PlaySim, observer: Agent, spot: Vec2): Lane {
+export function carrierLane(sim: PlaySim, observer: Agent, spot: Vec2,
+  picture: BlockerWorkPicture = readBlockerWorkPicture(observer, sim)): Lane {
   const dir = sim.attackDir(observer.team);
-  const c = sim.carrier;
-  if (c && c.team === observer.team && c !== sim.qb) {
-    const s = sim.see(observer, c);
-    const sp = Math.hypot(s.vel.x, s.vel.y);
-    return laneFrom(s.pos, { x: s.vel.x + dir * 3, y: s.vel.y }, 0, sp);
+  if (picture.source === 'acquired' && picture.carrier !== null && picture.carrier !== sim.qb.idx) {
+    const sp = Math.hypot(picture.vel.x, picture.vel.y);
+    return laneFrom(blockerWorkPoint(picture, sim.t), { x: picture.vel.x + dir * 3, y: picture.vel.y }, 0, sp);
   }
-  // The ball's remaining flight (he sees it in the air), or a nominal throw
-  // and flight before it is out.
-  const delay = sim.ball.kind === 'air' ? Math.max(0, sim.ball.arrivalT - sim.t) : 0.6;
+  // A recognized flight supplies its acquired trajectory, not the thrower's
+  // private arrival clock. Its nearest passage to the installed catch point
+  // is a forecast of arrival, not evidence that anyone caught it.
+  const path = rememberedFlight(observer, sim.t);
+  const near = path?.reduce((best, p) => Math.hypot(p.x - spot.x, p.y - spot.y)
+    < Math.hypot(best.x - spot.x, best.y - spot.y) ? p : best);
+  const delay = near ? Math.max(0, near.t - sim.t) : hasObservedFlight(observer) ? 0 : 0.6;
   return laneFrom(spot, { x: dir, y: 0 }, delay, 0);
 }
 
@@ -93,7 +98,8 @@ export interface Threat {
 }
 
 const moverOf = (a: Agent, s?: Perceived): Mover =>
-  ({ pos: s ? s.pos : a.pos, vel: s ? s.vel : a.vel, profile: a.profile, speedScale: a.speedScale });
+  s ? { pos: s.pos, vel: s.vel, profile: a.profile }
+    : { pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale };
 
 /** When and where `d`, as `observer` sees him, can reach the lane; null if not before the horizon. */
 export function threatOf(sim: PlaySim, observer: Agent, d: Agent, lane: Lane, seen = sim.see(observer, d)): Threat | null {
@@ -116,7 +122,7 @@ export interface Fit {
  * the track and the last moment before the defender gets to the lane: early
  * enough to set, late enough not to run past the ball to block a man far away.
  */
-export function fitOn(b: Agent, th: Threat): Fit {
+export function fitOn(b: Agent, th: Threat, mover: Mover = moverOf(b)): Fit {
   const from = th.seen.pos, to = th.at, T = Math.max(0.1, th.t);
   const track = (s: number): Vec2 => {
     const k = Math.min(1, s / T);
@@ -124,7 +130,7 @@ export function fitOn(b: Agent, th: Threat): Fit {
   };
   const latest = Math.max(0, T - AHEAD);
   const contact = b.profile.radius + th.d.profile.radius;
-  const ip = interceptPoint(moverOf(b), track, { horizon: latest, step: 0.05, radius: contact });
+  const ip = interceptPoint(mover, track, { horizon: latest, step: 0.05, radius: contact });
   if (ip.estimate.status !== 'estimated-feasible') {
     // He cannot beat the defender to the lane; the best he can do is late.
     return { point: track(latest), slack: -(ip.estimate.arrivalTime ?? Infinity) + latest };
@@ -136,6 +142,8 @@ export function fitOn(b: Agent, th: Threat): Fit {
 export interface Candidate {
   /** A blocker who can still take a man: not engaged, on his feet. */
   b: Agent;
+  /** The observer's picture and known capacity; only his own body is exact. */
+  mover: Mover;
   /** Seconds of slack he gives up to take a man outside his job's area (by threat). */
   bias: (th: Threat) => number;
   /** He is already on this man (within a few yards and closing): keep him. */
@@ -155,7 +163,7 @@ export function matchThreats(threats: Threat[], blockers: Candidate[]): Map<Agen
   for (const c of blockers) {
     const th = c.on && left.find(x => x.d === c.on);
     if (!th) continue;
-    out.set(c.b, { th, fit: fitOn(c.b, th) });
+    out.set(c.b, { th, fit: fitOn(c.b, th, c.mover) });
     free.delete(c);
     left.splice(left.indexOf(th), 1);
   }
@@ -163,7 +171,7 @@ export function matchThreats(threats: Threat[], blockers: Candidate[]): Map<Agen
     if (!free.size) break;
     let best: { c: Candidate; fit: Fit; score: number } | null = null;
     for (const c of free) {
-      const fit = fitOn(c.b, th);
+      const fit = fitOn(c.b, th, c.mover);
       if (fit.slack <= -LATE) continue;
       const score = fit.slack - c.bias(th);
       if (!best || score > best.score) best = { c, fit, score };

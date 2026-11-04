@@ -32,6 +32,7 @@ import {collectionCommand,readCollectionApproach,type CollectionApproach} from '
 import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
 import { assessClimbAccess, type ClimbAccessResult, chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
 import { lineDepth, lineOffset } from '../../playbook/alignment.js';
+import { observedContact } from '../coverage-cues.js';
 
 /** How far behind the line this player's installed stance stands. */
 const stanceDepth = (sim: PlaySim, a: Agent) => sim.los - (sim.offAlign.spots[a.slot]?.pos.x ?? sim.los - .55);
@@ -242,15 +243,27 @@ export class PassProtector implements Behavior {
     if (sim.t < a.mind.snapDelay) return stand(0);
     // A called release: a lineman or attached end leaves his man on the count;
     // a back stays in while a free rusher is coming at him (a blitz kills the screen).
-    const freeRusher = (): boolean => { const r = this.coord.assigned.get(a); return !!r && !r.engagement; };
+    const freeRusher = (): boolean => {
+      const r = this.coord.assigned.get(a);
+      if (!r || a.engagement?.defender === r) return false;
+      const seen = sim.see(a, r);
+      if (seen.pose === 'down' || seen.pose === 'rising') return false;
+      return !sim.teammates(a).some(o => {
+        if (o === a) return false;
+        const cue = sim.see(a, o);
+        return cue.pose !== 'down' && cue.pose !== 'rising' && observedContact(o, cue, r, seen);
+      });
+    };
     // A lineman lets his rusher by: he leaves once the man he is on is past
     // his hip toward the quarterback (or has left him), and a beat (0.3 s) after
     // the count at the latest, so a rusher who stops does not sit in the screen.
     const pastHip = (): boolean => {
       const d = a.engagement?.defender ?? this.coord.assigned.get(a);
-      return !d || (a.pos.x - d.pos.x) * sim.attackDir(a.team) > 0.3;
+      // Own loaded hands are felt. Without them, the assigned rusher's
+      // acquired position must show that he has passed the hip.
+      return !d || (a.pos.x - (a.engagement ? d.pos : sim.see(a, d).pos).x) * sim.attackDir(a.team) > 0.3;
     };
-    if (this.calledRelease && this.releaseTo && sim.t > this.releaseAfter && sim.carrier === sim.qb
+    if (this.calledRelease && this.releaseTo && sim.t > this.releaseAfter && sim.see(a, sim.qb).carrying === true
       && (isOL(a) ? pastHip() || sim.t > this.releaseAfter + 0.3 : !sim.offAlign.spots[a.slot]?.backfield || !freeRusher())) {
       if (a.engagement) sim.disengage(a.engagement);
       this.released = true;
@@ -258,7 +271,7 @@ export class PassProtector implements Behavior {
       return a.behavior.update(a, sim);
     }
     if (a.engagement) return stand();
-    if (sim.carrier !== sim.qb || !sim.isPass) {
+    if ((this.calledRelease ? sim.see(a, sim.qb).carrying === false : sim.carrier !== sim.qb) || !sim.isPass) {
       return stand();
     }
     this.coord.update(sim);
@@ -311,9 +324,12 @@ export class PassProtector implements Behavior {
       // Set on the line, he is bull-rushed back instead: 2-3 yd deep by
       // 2.0 s, where NFL screen linemen are 0.6-0.7 yd off the ball
       // (screen_ol_reference.py). He does not strike; bodies still collide.
-      const side = Math.sign(a.pos.y - rp.y) || Math.sign(home - sim.ballY) || 1;
-      const gate = { x: sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth, y: rp.y + side * (contact + 0.2) };
-      return goTo(a, gate, { speed: 0.8, facing: Math.atan2(r.pos.y - a.pos.y, r.pos.x - a.pos.x), cutSkill: 0.85 + 0.3 * traits(a).feet });
+      // His acquired rusher picture owns both the lane and where he faces;
+      // the normal pass-set branch below keeps its existing policy.
+      const seen = sim.see(a, r), projectedY = seen.pos.y + seen.vel.y * lead;
+      const side = Math.sign(a.pos.y - projectedY) || Math.sign(home - sim.ballY) || 1;
+      const gate = { x: sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth, y: projectedY + side * (contact + 0.2) };
+      return goTo(a, gate, { speed: 0.8, facing: Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x), cutSkill: 0.85 + 0.3 * traits(a).feet });
     }
     // An edge rusher runs an arc, not the straight line to the QB: a tackle
     // who sets on that line sits on the chord, a couple of yards inside him,

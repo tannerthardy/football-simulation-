@@ -40,6 +40,7 @@ import type { Coverage, DefSlot, DefensivePlayCall, OffensivePlayCall, PassConce
 import { r01 } from '../players/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import type { VisiblePose } from './perception.js';
 
 /**
  * The coverages a quarterback distinguishes: one canonical picture per family
@@ -127,6 +128,7 @@ interface Memory {
   vel: Vec2;
   facing: number;
   t: number;
+  pose?: VisiblePose | null;
 }
 
 type Features = number[];
@@ -185,7 +187,7 @@ export class QBMind {
       this.canon.set(c.id, alignDefense({ ...sim.defCall, coverage: c, pressure: ok ? pressure : null, shown: undefined }, sim.offAlign, slots));
     }
     // Everyone is visible before the snap.
-    for (const d of sim.defense) this.memory.set(d, { pos: { ...d.pos }, vel: { x: 0, y: 0 }, facing: d.body.facing, t: 0 });
+    for (const d of sim.defense) this.memory.set(d, { pos: { ...d.pos }, vel: { x: 0, y: 0 }, facing: d.body.facing, t: 0, pose: d.pose });
     this.preSnapRead();
     for (const [d, m] of this.memory) this.classifiedAt.set(d, m.t);
     this.report = {
@@ -392,10 +394,10 @@ export class QBMind {
       const ang = Math.abs(angleDiff(Math.atan2(dy, dx), dir));
       // Bodies right around him are felt, not seen; pocket presence handles them.
       if (ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) || dist < 3) {
-        this.memory.set(d, { pos: clear.pos, vel: clear.vel, facing: clear.facing, t: sim.t });
+        this.memory.set(d, { pos: clear.pos, vel: clear.vel, facing: clear.facing, t: sim.t, pose: clear.pose });
       } else if (ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus)) {
         const s = sim.see(qb, d, 1.7);
-        this.memory.set(d, { pos: s.pos, vel: s.vel, facing: s.facing, t: sim.t - 0.1 });
+        this.memory.set(d, { pos: s.pos, vel: s.vel, facing: s.facing, t: sim.t - 0.1, pose: s.pose });
       }
     }
     // Existing recognition milestones summarize this acquired look and its
@@ -424,8 +426,12 @@ export class QBMind {
     sim.trace.observe(qb, target, seen, sim.t);
     const age = seen.age ?? 0;
     return { pos: { x: seen.pos.x - seen.vel.x * age, y: seen.pos.y - seen.vel.y * age },
-      vel: { ...seen.vel }, facing: seen.facing, sampledAt: sim.t - age, acquiredAt: sim.t };
+      vel: { ...seen.vel }, facing: seen.facing, pose: seen.pose, sampledAt: sim.t - age, acquiredAt: sim.t };
   }
+
+  /** Last acquired pose, with the same gaze and latency as defender memory.
+   * Unknown or an off-screen change never refreshes this channel. */
+  observedPose(d: Agent): VisiblePose | null { return this.memory.get(d)?.pose ?? null; }
 
   /** Where the QB thinks a defender is (and how he's moving). */
   estimate(d: Agent): { pos: Vec2; vel: Vec2; facing: number } {

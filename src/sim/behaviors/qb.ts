@@ -31,6 +31,7 @@ import type { QBMind } from '../qbmind.js';
 import type { ReplayTelemetryFrame } from '../types.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
 import { screenSpot, type ScreenSpot } from '../screen-spot.js';
+import { observedContact } from '../coverage-cues.js';
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -43,6 +44,8 @@ interface ThrowEval {
   intRisk: number;
   value: number;
   depth: number;
+  /** A selected called catch spot owns the aim through windup and release. */
+  fixedScreenSpot?: Vec3;
 }
 
 function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
@@ -343,20 +346,30 @@ export class QBPass implements Behavior {
   }
 
   private ready(r: Agent, sim: PlaySim): boolean {
-    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
-    if (!rr) return r.behavior.kind === 'route';
     // A slow screen is thrown once the receiver has settled behind his blockers.
-    if (this.concept.family === 'screen' && rr.route.end === 'settle' && this.concept.screen?.tempo === 'slow') {
+    const forecast = this.receiverForecasts.get(r);
+    if (this.concept.family === 'screen' && this.concept.screen?.tempo === 'slow' && forecast?.prior.end === 'settle') {
       // Thrown on anticipation as he turns for the ball: NFL slow screens leave
       // the hand with the receiver still ~2.3-2.9 yd from where he catches it
       // (BDB 2025, screen_reference), lofted over the rush he let through.
-      const last = rr.path[rr.path.length - 1]?.p;
-      return rr.settled || (!!last && Math.hypot(r.pos.x - last.x, r.pos.y - last.y) < 3.5);
+      const current = forecast.predict(sim.t, 0);
+      const prior = forecast?.prior, last = prior?.path.at(-1)?.p;
+      // A called protection release is not known from the receiver's private
+      // controller. A departure in the QB's existing receiver look supplies it.
+      return !!current && !!prior && !!last && forecast?.estimate?.source === 'acquired'
+        && forecast.observedPose !== 'down' && forecast.observedPose !== 'rising'
+        && (prior.startDelay !== null || Math.hypot(current.x - prior.start.x, current.y - prior.start.y) > prior.profile.radius)
+        && Math.hypot(current.x - last.x, current.y - last.y) < 3.5;
     }
-    // A quick screen after a sell is thrown to its spot: once the ball,
-    // floated if need be, can get there with the receiver.
-    const to = this.toSpot(sim.qb, sim, r);
-    if (to) return to.lead <= to.float;
+    // A quick sell screen stays on the acquired departure/arrival picture,
+    // including after its spot is reached. The private route switch and break
+    // time cannot reveal the receiver's release to the QB.
+    if (this.sellScreenSpot(sim, r)) {
+      const to = this.toSpot(sim.qb, sim, r);
+      return to ? to.lead <= to.float : this.spotDone && !!this.quickScreenPicture(sim, r);
+    }
+    const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
+    if (!rr) return r.behavior.kind === 'route';
     const antic = sim.qb.r('anticipation');
     return sim.t >= rr.breakTime - 0.3 * antic;
   }
@@ -375,15 +388,35 @@ export class QBPass implements Behavior {
    * motion. Once the receiver reaches the spot, the forecast throw takes over.
    */
   private toSpot(a: Agent, sim: PlaySim, r: Agent): { spot: Vec2; lead: number; natural: number; float: number } | null {
-    if (this.concept.family !== 'screen' || this.concept.screen?.tempo !== 'quick' || !this.concept.screen.receiverSell || this.spotDone) return null;
-    if (this.spotCache === undefined) this.spotCache = screenSpot(sim, this.concept);
-    const sp = this.spotCache;
-    if (!sp || sp.receiver !== r) return null;
-    const seen = sim.see(a, r);
+    const sp = this.sellScreenSpot(sim, r);
+    if (!sp || this.spotDone) return null;
+    const seen = this.quickScreenPicture(sim, r);
+    if (!seen) return null;
     if (Math.hypot(seen.pos.x - sp.spot.x, seen.pos.y - sp.spot.y) < 1.5) { this.spotDone = true; return null; }
-    const tR = timeToReach({ pos: seen.pos, vel: seen.vel, profile: r.profile, speedScale: r.speedScale }, sp.spot, 0.5);
+    const tR = timeToReach(seen, sp.spot, 0.5);
     const natural = this.naturalFlight(Math.hypot(sp.spot.x - a.pos.x, sp.spot.y - a.pos.y));
     return { spot: sp.spot, lead: tR - this.windup(a), natural, float: 1.8 * natural };
+  }
+
+  private sellScreenSpot(sim: PlaySim, r: Agent): ScreenSpot | null {
+    if (this.concept.family !== 'screen' || this.concept.screen?.tempo !== 'quick' || !this.concept.screen.receiverSell) return null;
+    if (this.spotCache === undefined) this.spotCache = screenSpot(sim, this.concept);
+    return this.spotCache?.receiver === r ? this.spotCache : null;
+  }
+
+  private quickScreenPicture(sim: PlaySim, r: Agent) {
+    const forecast = this.receiverForecasts.get(r);
+    if (!forecast || forecast.estimate?.source !== 'acquired'
+      || forecast.observedPose === 'down' || forecast.observedPose === 'rising') return null;
+    const pos = forecast.predict(sim.t, 0), next = forecast.predict(sim.t, sim.dt);
+    if (!pos || !next) return null;
+    // The existing conditional-route cue: departure outside the installed
+    // start radius. Do not require inferred route progress or a completed turn;
+    // a pre-turn picture can still support the call's anticipation throw.
+    if (Math.hypot(pos.x - forecast.prior.start.x, pos.y - forecast.prior.start.y) <= forecast.prior.profile.radius) return null;
+    // The held QB look ages through his forecast. Nominal capacity is known;
+    // live receiver fatigue and the ordinary teammate channel are not a look.
+    return { pos, vel: { x: (next.x - pos.x) / sim.dt, y: (next.y - pos.y) / sim.dt }, profile: forecast.prior.profile };
   }
 
   /** The flight time real QBs use at this distance (2023 tracking: ~0.6 s
@@ -458,7 +491,7 @@ export class QBPass implements Behavior {
       pt = predict(wind + T);
     }
     pt = { x: pt.x, y: clamp(pt.y, 2, FIELD_WIDTH - 2) };
-    const depth = pt.x - sim.los;
+    let depth = pt.x - sim.los;
     // Options: the natural ball, a fastball into a tight window, and touch over the top.
     const options: number[] = [T];
     if (range > 15) options.push(T * 1.2);
@@ -474,6 +507,7 @@ export class QBPass implements Behavior {
     const to = this.toSpot(a, sim, r);
     if (to) {
       pt = { ...to.spot };
+      depth = pt.x - sim.los;
       const tm = minFlightTime(from, { x: pt.x, y: pt.y, z: CATCH_Z }, this.armSpeed) * 1.05;
       options.length = 0;
       options.push(clamp(to.lead, Math.max(tm, to.natural), to.float));
@@ -487,9 +521,12 @@ export class QBPass implements Behavior {
 
     let best: ThrowEval | null = null;
     const consider = (Topt: number) => {
-      const p2 = Topt === T ? pt : predict(wind + Topt);
+      // A called spot is fixed while its flight is selected; only ordinary
+      // forecast throws move their catch point with the flight horizon.
+      const p2 = to || Topt === T ? pt : predict(wind + Topt);
       const point: Vec3 = { x: p2.x, y: clamp(p2.y, 2, FIELD_WIDTH - 2), z: depth > 20 ? 1.6 : CATCH_Z };
       const ev = this.window(a, sim, r, from, point, Topt, wind, urgency);
+      if (to) ev.fixedScreenSpot = { ...point };
       if (!best || ev.value > best.value) best = ev;
     };
     for (const Topt of options) consider(Topt);
@@ -505,17 +542,31 @@ export class QBPass implements Behavior {
   private screenTouch(a: Agent, sim: PlaySim, r: Agent, pt: Vec2, T: number): 'float' | 'firm' {
     const dx = pt.x - a.pos.x, dy = pt.y - a.pos.y, len = Math.hypot(dx, dy) || 1;
     let inLane = false, closing = false;
+    // Teammate contact must be in this same QB look. estimate(receiver) would
+    // fall back to the ordinary teammate channel and bypass receiver vision.
+    const gaze = this.gazePoint(sim);
+    const blockers = sim.offense.filter(o => o !== a).flatMap(o => {
+      const p = this.mind.receiverLook(o, gaze);
+      if (!p || p.pose === 'down' || p.pose === 'rising') return [];
+      const age = sim.t - p.sampledAt;
+      return [{ o, cue: { pos: { x: p.pos.x + p.vel.x * age, y: p.pos.y + p.vel.y * age },
+        vel: p.vel, facing: p.facing, stance: null } satisfies Perceived }];
+    });
     for (const d of sim.defense) {
-      if (d.isDown(sim.t)) continue;
+      const pose = this.mind.observedPose(d);
+      if (pose === 'down' || pose === 'rising') continue;
       const seen = this.mind.estimate(d);
       const along = ((seen.pos.x - a.pos.x) * dx + (seen.pos.y - a.pos.y) * dy) / len;
       const off = Math.abs((seen.pos.x - a.pos.x) * dy - (seen.pos.y - a.pos.y) * dx) / len;
       if (along > 0 && along < Math.min(4, 0.45 * len) && off < 1.5) inLane = true;
-      const mover = { pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
-      if (timeToReach(mover, pt, d.profile.reach) + (d.engagement ? 0.5 : 0) < T + 0.35) closing = true;
+      // Nominal capacity is the prior; unseen fatigue and engagement state
+      // cannot choose the throw. Visible contact retains the held-rusher cue.
+      const mover = { pos: seen.pos, vel: seen.vel, profile: d.profile };
+      const blocked = blockers.some(({ o, cue }) => observedContact(o, cue, d, seen));
+      if (timeToReach(mover, pt, d.profile.reach) + (blocked ? 0.5 : 0) < T + 0.35) closing = true;
     }
-    const seenR = this.mind.estimate(r);
-    const away = (seenR.vel.x * dx + seenR.vel.y * dy) / len;
+    const forecast = this.receiverForecasts.get(r), current = forecast?.predict(sim.t, 0), next = forecast?.predict(sim.t, sim.dt);
+    const away = current && next ? ((next.x - current.x) * dx + (next.y - current.y) * dy) / (len * sim.dt) : 0;
     if (inLane) return 'float';
     if (closing) return 'firm';
     return away > 1.5 ? 'float' : 'firm';
@@ -604,10 +655,11 @@ export class QBPass implements Behavior {
 
   private release(a: Agent, sim: PlaySim, ev: ThrowEval): void {
     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
-    // Re-aim at release with the latest prediction.
+    // Ordinary throws refresh the forecast. A selected screen spot keeps its
+    // aim through release; later arrival cannot silently change that policy.
     const r = ev.target;
-    let point = ev.point;
-    const p = this.receiverForecasts.get(r)?.predict(sim.t, ev.T);
+    let point = ev.fixedScreenSpot ?? ev.point;
+    const p = ev.fixedScreenSpot ? null : this.receiverForecasts.get(r)?.predict(sim.t, ev.T);
     if (p) {
       point = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
     }
