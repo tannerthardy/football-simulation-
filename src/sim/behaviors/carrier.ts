@@ -38,6 +38,10 @@ export interface CarrierOptions {
   /** The designed aim as a gap on the line (with the play's offset from that
    * gap's landmark), so it moves with the bodies that form it. */
   aimGap?: { gap: Gap; side: number; offset: number };
+  /** He caught a called screen (his own play call): he reads the open field
+   * and his screen blockers, not the run game's crease. Other catches keep
+   * the existing carrier until whole-game evidence supports extending it. */
+  screenCatch?: boolean;
 }
 
 /** The designed aiming point as this runner sees the line now (LIVE_AIM=0: snap point). */
@@ -295,10 +299,10 @@ export class BallCarrier implements Behavior {
       // real contact and boundary recovery still execute on every native tick.
       this.nextEval = sim.t + a.mind.decisionInterval;
       // The crease read is the run game's (gaps in the line on a handoff). A
-      // man who caught a pass behind the line (a screen) reads the open field
-      // and his blockers instead: the crease read ran slip backs along the
-      // line to the sideline, away from linemen leading up the field.
-      const caught = sim.isPass && sim.catchAt >= 0;
+      // man who caught a screen behind the line reads the open field and his
+      // blockers instead: the crease read ran slip backs along the line to
+      // the sideline, away from linemen leading up the field.
+      const caught = !!this.opts.screenCatch;
       const entry = !caught && a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? runReadAim(a,sim,this.opts) : null;
       const best = entry ? null : this.evaluate(a, sim, dir, false);
       if(entry) { this.heading=angleOf({x:entry.x-a.pos.x,y:entry.y-a.pos.y}); a.tags.add('run-crease-read'); }
@@ -373,12 +377,12 @@ export class BallCarrier implements Behavior {
     const hurry = sim.hurry && a.team === 'O';
 
     const { blockers, threats } = arrivalEvidence(a, sim, dir, range, vision);
-    // After a catch he reads his blocks by leverage: a block slows a man only
+    // After a screen catch he reads his blocks by leverage: a block slows a man only
     // on the side the blocker's body covers. Toward a point the blocker is
     // not between them, the man is free (a flat allowance for being touched
     // sends the runner into the defender's free side). A blocker squarely in
     // a free man's path to the point is a block about to happen.
-    const leverage = sim.isPass && sim.catchAt >= 0;
+    const leverage = !!this.opts.screenCatch;
     const credit = (th: ArrivalEvidence, q: Vec2): number => {
       const vx = q.x - th.pos.x, vy = q.y - th.pos.y, L = Math.hypot(vx, vy);
       if (L < 0.5) return 0;
@@ -386,9 +390,11 @@ export class BallCarrier implements Behavior {
       const man = { pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale };
       for (const b of blockers) {
         if (b.pose === 'down') continue;
-        const on = b.agent.engagement?.defender;
-        if (on && on !== th.d) continue;
-        if (on === th.d) {
+        // What he sees: a blocker touching this man is on him; one touching
+        // another man is busy.
+        const onHim = touching(b, th.pos, th.d.profile.radius);
+        if (!onHim && threats.some(o => o !== th && touching(b, o.pos, o.d.profile.radius))) continue;
+        if (onHim) {
           // Already on him: it slows him only if the blocker's body is
           // between him and the point.
           const rx = b.pos.x - th.pos.x, ry = b.pos.y - th.pos.y;
@@ -455,10 +461,10 @@ export class BallCarrier implements Behavior {
         const segment = { x: q.x - lastQ.x, y: q.y - lastQ.y };
         const segment2 = segment.x * segment.x + segment.y * segment.y;
         const obstructed = blockers.some((b) => {
-          // After a catch, a teammate running away up this lane ahead of him
+          // After a screen catch, a teammate running away up this lane ahead of him
           // is a lead blocker to follow, not a wall: he will be on someone or
           // out of the way by the time the runner gets there.
-          if (leverage && !b.agent.engagement && b.vel.x * hx + b.vel.y * hy > 2) return false;
+          if (leverage && !threats.some(o => touching(b, o.pos, o.d.profile.radius)) && b.vel.x * hx + b.vel.y * hy > 2) return false;
           const horizon = Math.min(arrival, 0.6);
           const bx = b.pos.x + b.vel.x * horizon;
           const by = b.pos.y + b.vel.y * horizon;

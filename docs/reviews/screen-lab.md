@@ -568,8 +568,18 @@ Values are p50s.
       - A teammate running away up the lane ahead of him is a lead blocker
         to follow, not a wall.
 
-      These apply to carriers after a catch only. One full game is
-      byte-identical to develop.
+      These apply to a carrier who caught a called screen (his own play
+      call). He decides from what he sees: a blocker touching a defender is
+      on him, never the engagement record (the decision-information guard).
+      Extending this to every catch changes ordinary games: the
+      pursuit-arrival fixture's first six catches changed. So it waits for
+      whole-game evidence.
+    - **Checks.**
+      - `npm test`: 3732 pass. The 3 failures are `baseline-runner`, which
+        needs Node 22.23.3; this container has 22.22.
+      - The screen blocker files join the guard's offense allowlist, beside
+        `blocking.ts`.
+      - One full game is byte-identical to develop.
     - **Results** (lab, 5 calls x 16 seeds; share of first defenders to the
       carrier who were unblocked; yards p50 / mean):
 
