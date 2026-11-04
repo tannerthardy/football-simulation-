@@ -23,10 +23,10 @@ import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
 import { observedContact } from '../coverage-cues.js';
-import { acquireFlight, observedHolder } from '../possession-read.js';
+import { acquireFlight, hasObservedFlight, observedHolder } from '../possession-read.js';
 import { goTo, runThrough, stand, track } from './common.js';
 import { sawThrow } from './defense.js';
-import { LATE, carrierLane, fitOn, meetOnTrack, matchThreats, threatOf, type Candidate, type Lane, type Threat } from './space-block.js';
+import { LATE, carrierLane, forecastScreenFlight, fitOn, meetOnTrack, matchThreats, threatOf, type Candidate, type Lane, type ScreenFlight, type Threat } from './space-block.js';
 
 /** A blocker's decision beat: how often he re-reads whom to take. */
 const RETARGET = 0.3;
@@ -41,6 +41,7 @@ export class ScreenBlocker implements Behavior {
   private retargetAt = -1;
   private workPicture: BlockerWorkPicture | null = null;
   private sawRelease = false;
+  private flightPicture: ScreenFlight | null = null;
   readonly home: Vec2;
 
   constructor(
@@ -57,18 +58,26 @@ export class ScreenBlocker implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    // An incidental receiver can already have acquired an over-shoulder
+    // flight that the narrower throw sensor has not recognized. Use that
+    // delivered picture too, without upgrading it to the live trajectory.
+    // Retain it even while his own contact keeps his feet on the block.
+    const incidental = sim.incidentalCatchReadiness.query(a, sim.t);
+    if (incidental && (!this.flightPicture || incidental.sampledAt > this.flightPicture.sampledAt))
+      this.flightPicture = forecastScreenFlight(incidental, sim.wind);
+    if (incidental) this.sawRelease = true;
     if (a.engagement) return stand();
     const dir = sim.attackDir(a.team);
     if (!this.workPicture || sim.t >= this.workPicture.nextRead) this.workPicture = readBlockerWorkPicture(a, sim);
     const carrying = this.workPicture.source === 'acquired' && this.workPicture.carrier !== null
       && this.workPicture.carrier !== sim.qb.idx;
-    if (!this.sawRelease && sawThrow(a, sim, null)) {
+    if (!hasObservedFlight(a) && sawThrow(a, sim, null)) {
       this.sawRelease = true;
-      acquireFlight(a, sim);
+      this.flightPicture = { sampledAt: sim.t, path: acquireFlight(a, sim) };
     }
     const thrown = this.sawRelease || carrying;
     if (observedHolder(a, sim)) return stand();
-    const lane = carrierLane(sim, a, this.spot, this.workPicture);
+    const lane = carrierLane(sim, a, this.spot, this.workPicture, this.flightPicture);
     const held = this.target ? sim.see(a, this.target) : null;
     if (sim.t >= this.retargetAt || !held || held.pose === 'down' || held.pose === 'rising'
       || this.claimed(a, sim, this.target!, held)) {

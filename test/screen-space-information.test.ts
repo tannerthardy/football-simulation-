@@ -137,9 +137,9 @@ describe('screen space matching consumes each blocker\'s acquired picture', () =
   });
 });
 
-function flight() {
-  const f = stage(); f.pictures.get(f.back)!.carrying = false; f.pictures.get(f.sim.qb)!.carrying = false;
-  f.sim.ball = { kind: 'air', flight: { pos: { x: 32, y: 26, z: 2 } }, arrivalT: 2.8 } as typeof f.sim.ball;
+function flight(side = 1) {
+  const f = stage(side); f.pictures.get(f.back)!.carrying = false; f.pictures.get(f.sim.qb)!.carrying = false;
+  f.sim.ball = { kind: 'air', flight: { pos: { x: 32, y: 26, z: 2 }, vel: { x: 4, y: side, z: 8 }, drag: .003027 }, arrivalT: 2.8 } as typeof f.sim.ball;
   f.sim.ballPath = [{ x: 31, y: 26, z: 2, t: 2 }, { x: 33, y: 26, z: 1.3, t: 2.8 }, { x: 35, y: 26, z: 0, t: 3.2 }];
   return f;
 }
@@ -163,5 +163,131 @@ describe('screen lane forecasts require acquired flight evidence', () => {
     known.work.update(known.a, known.sim);
     expect(carrierLane(known.sim, known.a, known.spot)(1)).toEqual(lane);
     expect(carrierLane(known.sim, known.a, known.spot)(0)).toEqual(known.spot);
+  });
+});
+
+// Exercise the real incidental sensor. The ball is just over the shoulder
+// (cosine -.2), inside its -.35 cone; ThrowSight has not recognized a throw.
+function peripheralFlight(side = 1) {
+  const f = flight(side);
+  f.a.body.pos = { x: 33, y: 26 };
+  f.a.body.facing = Math.acos(.2) * side;
+  f.sim.incidentalCatchReadiness.sense(f.sim);
+  return f;
+}
+function deliver(f: Scene) {
+  f.sim.t = f.sim.world.time = 2.4;
+  f.sim.incidentalCatchReadiness.sense(f.sim);
+  const sample = f.sim.incidentalCatchReadiness.query(f.a, f.sim.t);
+  expect(sample?.sampledAt).toBe(2);
+  expect(sample!.availableAt).toBeLessThanOrEqual(f.sim.t);
+  return sample!;
+}
+function picturedLane(f: Scene, ahead: number) {
+  return carrierLane(f.sim, f.a, f.spot, undefined, Reflect.get(f.work, 'flightPicture'))(ahead);
+}
+
+describe('screen blockers retain delivered incidental flight without hidden refresh', () => {
+  for (const side of [-1, 1]) {
+    it('waits for sensor availability, then acts on the peripheral cue, side ' + side, () => {
+      const waiting = peripheralFlight(side), unseen = flight(side);
+      unseen.a.body.pos = { ...waiting.a.pos }; unseen.a.body.facing = waiting.a.facing;
+      expect(waiting.sim.incidentalCatchReadiness.query(waiting.a, waiting.sim.t)).toBeNull();
+      expect(decision(waiting)).toEqual(decision(unseen));
+      deliver(waiting); unseen.sim.t = unseen.sim.world.time = waiting.sim.t;
+      expect(waiting.sim.throwSight.seenAt(waiting.a)).toBeUndefined();
+      expect(decision(waiting).command).not.toEqual(decision(unseen).command);
+      expect(picturedLane(waiting, 1)).not.toEqual(picturedLane(unseen, 1));
+      expect(picturedLane(waiting, 0)).toEqual(waiting.spot); // no invented catcher
+    });
+
+    it('cannot acquire an out-of-view or expired sample, side ' + side, () => {
+      const stale = peripheralFlight(side); deliver(stale);
+      stale.sim.t = stale.sim.world.time = 2.6;
+      expect(stale.sim.incidentalCatchReadiness.query(stale.a, stale.sim.t)).toBeNull();
+      const unseen = flight(side); unseen.a.body.pos = { ...stale.a.pos }; unseen.a.body.facing = stale.a.facing;
+      unseen.sim.t = unseen.sim.world.time = stale.sim.t;
+      expect(decision(stale)).toEqual(decision(unseen));
+      const away = flight(side); away.a.body.pos = { ...stale.a.pos }; away.a.body.facing = 0;
+      away.sim.incidentalCatchReadiness.sense(away.sim);
+      away.sim.t = away.sim.world.time = 2.4; away.sim.incidentalCatchReadiness.sense(away.sim);
+      expect(away.sim.incidentalCatchReadiness.query(away.a, away.sim.t)).toBeNull();
+    });
+
+    it('ignores hidden path, clock, velocity and holder changes behind a delivered sample, side ' + side, () => {
+      const original = peripheralFlight(side), hidden = peripheralFlight(side);
+      deliver(original); deliver(hidden);
+      if (hidden.sim.ball.kind === 'air') {
+        hidden.sim.ball.arrivalT = 12;
+        hidden.sim.ball.flight.pos = { x: 75, y: 4, z: 30 };
+        hidden.sim.ball.flight.vel = { x: -20, y: 30, z: 40 };
+      }
+      hidden.sim.ballPath = [{ x: 75, y: 4, z: 30, t: 12 }];
+      expect(decision(hidden)).toEqual(decision(original));
+      expect(picturedLane(hidden, 1)).toEqual(picturedLane(original, 1));
+      hidden.sim.ball = { kind: 'held', carrier: hidden.other };
+      expect(decision(hidden)).toEqual(decision(original));
+      expect(picturedLane(hidden, 0)).toEqual(hidden.spot);
+    });
+
+    it('retains a sample acquired during own contact, without changing the held command, side ' + side, () => {
+      const held = peripheralFlight(side), unseen = flight(side);
+      unseen.a.body.pos = { ...held.a.pos }; unseen.a.body.facing = held.a.facing;
+      const contact = (f: Scene) => { f.a.engagement = { blocker: f.a, defender: f.d } as Engagement; };
+      contact(held); contact(unseen); deliver(held);
+      unseen.sim.t = unseen.sim.world.time = held.sim.t;
+      expect(decision(held)).toEqual(decision(unseen));
+      expect(held.work.target).toBeNull();
+      held.a.engagement = unseen.a.engagement = null;
+      held.sim.t = held.sim.world.time = unseen.sim.t = unseen.sim.world.time = 2.6;
+      expect(held.sim.incidentalCatchReadiness.query(held.a, held.sim.t)).toBeNull();
+      expect(decision(held).command).not.toEqual(decision(unseen).command);
+      expect(picturedLane(held, 1)).not.toEqual(picturedLane(unseen, 1));
+      held.sim.t = held.sim.world.time = 6;
+      expect(picturedLane(held, 1)).toEqual(laneFrom(held.spot, { x: 1, y: 0 }, 0, 0)(1));
+      expect(picturedLane(held, 0)).toEqual(held.spot);
+    });
+  }
+
+  it('allows later full recognition, then a newer delivered sample without reviving the old flight', () => {
+    const f = peripheralFlight(); deliver(f); decision(f);
+    const incidentalLane = picturedLane(f, 1);
+    f.sim.t = f.sim.world.time = 2.45;
+    f.sim.ballPath = [{ x: 31, y: 26, z: 2, t: 2.45 }, { x: 33, y: 26, z: 1, t: 9 }, { x: 35, y: 26, z: 0, t: 10 }];
+    vi.spyOn(f.sim.throwSight, 'seenAt').mockReturnValue(0);
+    decision(f);
+    expect(picturedLane(f, 1)).not.toEqual(incidentalLane);
+    // A later, actually sensed flight picture supersedes that first copied
+    // trajectory. Its own expiry cannot resurrect the nine-second arrival.
+    f.sim.t = f.sim.world.time = 2.5;
+    f.sim.incidentalCatchReadiness.sense(f.sim);
+    f.sim.t = f.sim.world.time = 2.9;
+    f.sim.incidentalCatchReadiness.sense(f.sim);
+    expect(f.sim.incidentalCatchReadiness.query(f.a, f.sim.t)?.sampledAt).toBe(2.5);
+    decision(f);
+    expect(picturedLane(f, 1)).not.toEqual(laneFrom(f.spot, { x: 1, y: 0 }, 6.1, 0)(1));
+    f.sim.t = f.sim.world.time = 6;
+    expect(picturedLane(f, 1)).toEqual(laneFrom(f.spot, { x: 1, y: 0 }, 0, 0)(1));
+    expect(picturedLane(f, 0)).toEqual(f.spot);
+  });
+
+  it('treats an empty recognized path as known release without a hidden fallback', () => {
+    const f = flight(); f.sim.ballPath = [];
+    vi.spyOn(f.sim.throwSight, 'seenAt').mockReturnValue(0);
+    expect(() => decision(f)).not.toThrow();
+    expect(picturedLane(f, 1)).toEqual(laneFrom(f.spot, { x: 1, y: 0 }, 0, 0)(1));
+  });
+
+  it('bounds a high nominal flight by the existing three-second forecast horizon', () => {
+    const f = flight(); f.a.body.pos = { x: 33, y: 26 }; f.a.body.facing = Math.acos(.2);
+    if (f.sim.ball.kind === 'air') f.sim.ball.flight.vel.z = 80;
+    f.sim.incidentalCatchReadiness.sense(f.sim); deliver(f); decision(f);
+    const path = Reflect.get(f.work, 'flightPicture')?.path;
+    expect(path).toBeDefined();
+    expect(path.at(-1).t).toBeCloseTo(5, 10);
+    expect(path.at(-1).z).toBeGreaterThan(0); // prediction ends, no ground/catch claim
+    f.sim.t = f.sim.world.time = 5.1;
+    expect(picturedLane(f, 1)).toEqual(laneFrom(f.spot, { x: 1, y: 0 }, 0, 0)(1));
+    expect(picturedLane(f, 0)).toEqual(f.spot);
   });
 });

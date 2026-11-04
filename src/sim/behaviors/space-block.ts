@@ -28,7 +28,9 @@
 import { clamp, norm, type Vec2 } from '../../core/vec.js';
 import { FIELD_WIDTH } from '../../core/field.js';
 import { interceptPoint, type Mover } from '../../physics/reach.js';
+import { DRAG_SPIRAL, stepFlight } from '../../physics/ball.js';
 import type { Agent } from '../agent.js';
+import type { AcquiredCatchFlight } from '../catch-readiness.js';
 import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
 import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } from '../blocker-work-picture.js';
@@ -48,6 +50,27 @@ export const LATE = 0.25;
 
 /** The carrier's expected path from now: position at time t (s from now). */
 export type Lane = (t: number) => Vec2;
+
+export interface ScreenFlight {
+  sampledAt: number;
+  path: Array<{ t: number; x: number; y: number; z: number }>;
+}
+
+/** A nominal spiral forecast from a delivered offensive flight sample. Its
+ * sensor owns availability/age; this copy never refreshes from the live ball.
+ * Remember only to predicted ground or this blocker's three-second forecast
+ * horizon, without inferring a catch. Exhaustion still means a known release. */
+export function forecastScreenFlight(sample: AcquiredCatchFlight, wind: Vec2): ScreenFlight {
+  const flight = { pos: { ...sample.pos }, vel: { ...sample.vel }, drag: DRAG_SPIRAL };
+  const path = [{ t: sample.sampledAt, ...flight.pos }];
+  for (let elapsed = 0; elapsed < HORIZON - 1e-9 && flight.pos.z > 0;) {
+    const dt = Math.min(0.05, HORIZON - elapsed);
+    stepFlight(flight, dt, wind);
+    elapsed += dt;
+    path.push({ t: sample.sampledAt + elapsed, ...flight.pos });
+  }
+  return { sampledAt: sample.sampledAt, path };
+}
 
 /**
  * A lane that starts at `from` once the carrier is there (`delay` s from now),
@@ -72,7 +95,8 @@ export function laneFrom(from: Vec2, heading: Vec2, delay: number, speed0: numbe
  * the carrier, along his motion bent upfield.
  */
 export function carrierLane(sim: PlaySim, observer: Agent, spot: Vec2,
-  picture: BlockerWorkPicture = readBlockerWorkPicture(observer, sim)): Lane {
+  picture: BlockerWorkPicture = readBlockerWorkPicture(observer, sim),
+  flightPicture: ScreenFlight | null = null): Lane {
   const dir = sim.attackDir(observer.team);
   if (picture.source === 'acquired' && picture.carrier !== null && picture.carrier !== sim.qb.idx) {
     const sp = Math.hypot(picture.vel.x, picture.vel.y);
@@ -81,10 +105,14 @@ export function carrierLane(sim: PlaySim, observer: Agent, spot: Vec2,
   // A recognized flight supplies its acquired trajectory, not the thrower's
   // private arrival clock. Its nearest passage to the installed catch point
   // is a forecast of arrival, not evidence that anyone caught it.
-  const path = rememberedFlight(observer, sim.t);
+  // The local picture can contain a newer delivered sample than the first
+  // recognized throw. Its expiry must not resurrect that older trajectory.
+  const path = flightPicture
+    ? (flightPicture.path.length && sim.t <= flightPicture.path[flightPicture.path.length - 1].t ? flightPicture.path : null)
+    : rememberedFlight(observer, sim.t);
   const near = path?.reduce((best, p) => Math.hypot(p.x - spot.x, p.y - spot.y)
     < Math.hypot(best.x - spot.x, best.y - spot.y) ? p : best);
-  const delay = near ? Math.max(0, near.t - sim.t) : hasObservedFlight(observer) ? 0 : 0.6;
+  const delay = near ? Math.max(0, near.t - sim.t) : hasObservedFlight(observer) || flightPicture ? 0 : 0.6;
   return laneFrom(spot, { x: dir, y: 0 }, delay, 0);
 }
 
