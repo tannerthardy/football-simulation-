@@ -63,8 +63,12 @@ export const ROUTES: Record<string, RouteDef> = {
   // screens: 0.8 yd back and 1.5 yd out at the throw, caught 4.1 yd out
   // (screen_wr_path_reference.py, quick_screen_reference.py).
   bubble: { id: 'bubble', family: 'flat', depth: -2, end: 'continue', points: [{ d: -2, l: 1.5, s: 0.35 }, { d: -2, l: 4, s: 0.6 }, { d: 0, l: 6 }] },
-  // Now screen: one step upfield, then back to the ball behind the line.
-  now_screen: { id: 'now_screen', family: 'flat', depth: -1, end: 'settle', points: [{ d: 1, l: 0, s: 0.3 }, { d: -1, l: -0.5, s: 0 }] },
+  // Now screen: a step back and a little outside, turned to the ball at once,
+  // so his blockers release upfield past him rather than into him. NFL now
+  // screens are caught 0.4 yd outside his alignment, 1.8 yd behind the line
+  // (zone), the receiver having moved 0.8 yd by the throw
+  // (screen_wr_path_reference.py, quick_screen_reference.py).
+  now_screen: { id: 'now_screen', family: 'flat', depth: -2, end: 'settle', points: [{ d: -2, l: 0.7, s: 0 }] },
   // Tunnel: after his stalk sell (ScreenSpec.receiverSell) the outside
   // receiver retraces back inside, caught ~3 yd inside his alignment just
   // behind the line, still moving, with his released linemen in front.

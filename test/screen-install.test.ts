@@ -40,7 +40,7 @@ describe('screen install (docs/football-handbook/screens.md)', () => {
     expect(past).toBe(false);
   });
 
-  it('perimeter blockers take men off the ball, not the rush, and keep their job through the catch', () => {
+  it('perimeter blockers leave the rush alone before the throw and keep their job through the catch', () => {
     // The first completed snap among a few seeds (completion itself is not the contract).
     let caughtSnaps = 0;
     for (let seed = 1; seed <= 4 && caughtSnaps === 0; seed++) {
@@ -50,7 +50,10 @@ describe('screen install (docs/football-handbook/screens.md)', () => {
       expect(blockers.length).toBe(2);
       let dlTarget = false, caught = false;
       runTo(sim, 3, () => {
-        for (const a of blockers) if (a.behavior instanceof ScreenBlocker && isDL(a.behavior.target)) dlTarget = true;
+        // The rush is the pass rush until the ball is out; a lineman who then
+        // turns to chase the screen is a man to block like any other.
+        if (sim.ball.kind === 'held' && sim.carrier === sim.qb)
+          for (const a of blockers) if (a.behavior instanceof ScreenBlocker && isDL(a.behavior.target)) dlTarget = true;
         if (!caught && sim.events.some(e => e.type === 'catch')) {
           caught = true;
           expect(blockers.every(a => a.behavior instanceof ScreenBlocker)).toBe(true);

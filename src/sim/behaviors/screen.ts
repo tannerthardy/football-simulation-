@@ -60,6 +60,12 @@ export class ScreenBlocker implements Behavior {
       this.target = this.pick(a, sim, dir, thrown, lane);
     }
     const d = this.target;
+    // He knows where the screen is thrown: while it is in the air he does
+    // not stand in its path (a stalk blocker drifting inside to his man's
+    // track under a floated bubble caught it himself; a released tackle got
+    // hands on a tunnel throw).
+    const clear = this.clearLane(a, sim);
+    if (clear) return clear;
     // Before the throw a lineman may block only behind the line (an
     // ineligible man downfield); a defender sitting in the screen there is his.
     if (this.lineman && !thrown && (!d || (d.pos.x - sim.los) * dir > 0.8)) return this.slide(a, sim, dir);
@@ -139,6 +145,25 @@ export class ScreenBlocker implements Behavior {
     const x = ahead > 6 ? a.pos.x + dir : Math.max(ref.x * dir + 5, a.pos.x * dir + 2) * dir;
     const y = clamp(this.spot.y + this.side * offset, 1, FIELD_WIDTH - 1);
     return runThrough(a, { x, y }, { speed: ahead > 6 ? 0.6 : 0.9, cutSkill: 1 });
+  }
+
+  /** Out of the ball's path while it is in the air: within 1.5 yd of its
+   * line from where it is now to where it is going, he steps straight off
+   * that line. An eligible receiver may stay near the catch point (the last
+   * 2 yd) to block there; an ineligible lineman keeps off it altogether. */
+  private clearLane(a: Agent, sim: PlaySim): MoveCommand | null {
+    if (sim.ball.kind !== 'air') return null;
+    const b = sim.ballPos(), to = sim.ball.intended;
+    const vx = to.x - b.x, vy = to.y - b.y, L = Math.hypot(vx, vy);
+    if (L < 2.5) return null;
+    const ux = vx / L, uy = vy / L;
+    const rx = a.pos.x - b.x, ry = a.pos.y - b.y;
+    const along = rx * ux + ry * uy, across = rx * uy - ry * ux;
+    if (along < 0 || along > (this.lineman ? L + 1 : L - 2) || Math.abs(across) > 1.5) return null;
+    const s = Math.sign(across) || 1;
+    // Eyes stay upfield on the defense while he gets out of the way.
+    const up = sim.attackDir(a.team) > 0 ? 0 : Math.PI;
+    return runThrough(a, { x: a.pos.x + uy * s * 2, y: a.pos.y - ux * s * 2 }, { speed: 0.8, cutSkill: 1, facing: up });
   }
 
   /** Lineman before the throw: slide along the line toward his landmark beside the catch. */

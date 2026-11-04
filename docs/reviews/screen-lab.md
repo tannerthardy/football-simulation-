@@ -600,6 +600,40 @@ Values are p50s.
         rep 1, LB_W).
       - The tunnel's first tackler is still unblocked 74% of the time.
 
+17. **Quick-screen film review (Tanner): wrong catchers, a QB who held the
+    now screen, and a receiver stuck in his blockers.**
+    - **Bubble: the stalk blocker caught it.** The QB floats the bubble about
+      1.15 s to a point ahead of #2. The flight passed over #1, who had
+      drifted inside under it to cut off his man, and he caught it. On the
+      tunnel, a released tackle stood in the lane and got hands on the ball.
+      - Now, while the ball is in the air, a screen blocker who is not
+        engaged steps off its line, eyes up the field. An eligible receiver
+        may stay near the catch point to block there; an ineligible lineman
+        keeps off it altogether.
+      - Film set (15 plays per screen): bubble catches by the stalk blocker
+        2 → 0; tunnel catches or drops by the tackle 2 → 0.
+    - **Bunch now: the QB held it** (thrown at 2.2–3.7 s on several reps), and
+      the receiver stepped upfield into his blockers' release lane.
+      - A called quick screen is decided before the snap. The QB throws it
+        when ready unless it is dead (completion under 20% or real pick
+        risk).
+      - The now screen is a step back and slightly outside, turned to the
+        ball, caught 2 yd behind the line (NFL 1.8).
+      - Bunch now: thrown at 1.2 s; caught 70 of 80; nearest defender at the
+        catch 3.8 yd (NFL 4.5); first defender unblocked 57% (NFL 53).
+    - **Tried and not kept:** floating the now screen (NFL flights are
+      0.9 s). Our zone defenders, already driving before the throw, closed on
+      it: 37 of 80 caught, 46% of zone catches with a defender within 2 yd.
+    - **Still open:**
+      - Bunch now gains: median 0.7 yd vs NFL 5. The first defender arrives
+        0.7 s after the catch (NFL 0.9), after 2.3 yd (NFL 6.8). This is the
+        catcher's first move off his blocks and the blocks' depth; next to
+        diagnose.
+      - Bubble long runs (Defense pursuit).
+      - The tunnel vs Cover 3 (the zone flat defender, Defense).
+    - `test/screen-install.test.ts` now states the rush contract as "before
+      the throw". After it, a lineman chasing the screen is a man to block.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
