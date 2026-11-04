@@ -420,8 +420,12 @@ Values are p50s.
       | Bubble vs press | 0% (6.6), n 9 | 33% (2.4) |
 
       The one gap left is the bubble vs press, on 9 NFL plays. There the NFL
-      press defender aligns 2.8 yd inside the slot (leverage −2.8); ours is
-      head-up (+0.1), so ours runs with the bubble.
+      press defender aligns 2.8 yd inside the slot; ours is head-up (+0.1).
+      Defense checked all 2022 man snaps. NFL press on #2 is median 0.2 yd
+      outside (IQR 0.77 outside to 0.03 inside, n 325), and ours is in that
+      band. So the screen rows reflect which looks screens are called into,
+      not alignment. Parked: 9 plays can't separate selection from press
+      technique after the snap.
     - **Our routes add to it:**
       - The tunnel comes 5.4 yd inside its alignment (NFL 3.0), into the
         flat defender's area. The receiver has run 5 yd by the throw
@@ -501,8 +505,8 @@ that do, blocks in space per play run at the NFL rate (3–7).
     - Zone flat defenders' pre-throw drive on a receiver behind the line
       (gain 4–5 yd vs NFL 0–1). Defense traced it to `ZoneCoverage`'s lane
       branch and asked Tanner who owns the fix.
-    - Press leverage on a slot vs the bubble. The cushion itself was the call
-      mix.
+    - The cushion and slot press leverage are NFL-like; the screen rows were
+      call mix and selection (parked).
   - **Main Engine:** tunnel and bubble paths and the tunnel's QB timing
     are done (item 14). Left: the bubble's drift speed, and the tunnel
     linemen's place at the catch.
