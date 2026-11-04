@@ -23,23 +23,21 @@ const runTo = (sim: PlaySim, t: number, each?: () => void) => { while (sim.phase
 const isDL = (d: Agent | null) => !!d && /^(DE|DT|NT)/.test(d.slot);
 
 describe('screen install (docs/football-handbook/screens.md)', () => {
-  it('released linemen sell the pass until the count, let their man by, then block the screen from the line', () => {
+  it('released linemen sell the pass until the count, then go block; a screen caught behind the line draws no 8-3-1 flag', () => {
     const sim = screen('rb_slip_screen', 'gun_doubles_11');
     sim.event('snap', sim.slot('C'));
     runTo(sim, 0.7);
     const line = sim.offense.filter(a => /^(LT|LG|C|RG|RT)$/.test(a.slot));
     expect(line.every(a => a.behavior.kind === 'pass-pro')).toBe(true);
-    let past = false;
-    runTo(sim, 2.1, () => {
-      // Ineligible: no released lineman more than a yard past the line before the throw.
-      if (sim.ball.kind === 'held' && sim.carrier === sim.qb)
-        for (const a of line) if (a.behavior instanceof ScreenBlocker && a.pos.x > sim.los + 1) past = true;
-    });
+    runTo(sim, 2.1);
     const released = line.filter(a => a.behavior instanceof ScreenBlocker);
     expect(released.map(a => (a.behavior as ScreenBlocker).job).sort()).toEqual(['in', 'out', 'up']);
-    expect(past).toBe(false);
+    runTo(sim, 8);
+    // This rep is caught behind the line with released linemen already climbing.
+    expect(sim.events.some(e => e.type === 'catch')).toBe(true);
+    expect(sim.catchX).toBeLessThanOrEqual(sim.los);
+    expect(sim.penalties.some(p => p.kind === 'ineligible_downfield')).toBe(false);
   });
-
   it('perimeter blockers leave the rush alone before the throw and keep their job through the catch', () => {
     // The first completed snap among a few seeds (completion itself is not the contract).
     let caughtSnaps = 0;

@@ -634,6 +634,76 @@ Values are p50s.
     - `test/screen-install.test.ts` now states the rush contract as "before
       the throw". After it, a lineman chasing the screen is a man to block.
 
+18. **Released linemen go block after the count (Tanner); the downfield rule
+    needs a pass that crosses the line.**
+    - **The call.** On the TE screen the released linemen waited at the line
+      for the throw. Tanner: the ball is caught behind the line, so sell the
+      pass for a beat and go block. The ScreenBlocker no longer holds a
+      released lineman within a yard of the line before the throw.
+    - **The rule.** The rules engine flagged ineligible-downfield on every
+      legal forward pass. 8-3-1 applies to a pass that crosses the line. The
+      advance is now recorded at the release and called only if the pass is
+      first touched or lands beyond the line.
+      - NFL support: a quarter of released OL on RB/TE screens are past the
+        line before the throw (`screen_ol_reference.py`, crossing p25 0.7 s
+        before the throw). Those plays carry no flag.
+      - `test/pass-legality.test.ts` covers both sides: the same advance is
+        flagged on a pass ending beyond the line and not on one caught behind
+        it.
+    - **Lab** (16 seeds × 5 calls, `--off-man`):
+
+      | | Before | After | NFL |
+      |---|---|---|---|
+      | RB/TE released OL cross the line, rel. throw | +0.7 s | +0.4 s | +0.5 s |
+      | Their depth at the throw | −1.0 yd | −0.8 yd | −0.6 yd |
+      | TE screens caught (of 80) | 37 | 39 | |
+      | TE screen yards p50 | 6.3 | 10.2 | 7 |
+
+      - Slip, bubble and bunch are unchanged.
+      - Tunnel structure is unchanged (convoy 38 → 43%, same first-defender
+        timing); its yards dip within seed noise.
+      - Four late TE throws (3.3–3.6 s), caught at or past the line, now
+        draw the foul. That is correct; the late throw is the problem.
+    - **Correction: ordinary games changed earlier, not here.** Commits
+      9eb230ef–7bfe7e5e said one full game was byte-identical to develop. It
+      is not: develop `85952c95` hashes `48e857c3`, those heads hash
+      `5bbe9d9a`. The earlier hashes ran under the wrong Node, where the
+      wrapper exits and the stale file was re-read.
+      - The cause is item 16's engagement read: a blocked defender who sees a
+        completed pass fights to the carrier. It applies to every completion,
+        not only screens. Reverting it restores `48e857c3`. This commit's
+        rules change leaves `5bbe9d9a` as is.
+      - First divergence (game 1, play 3, a completed flood): same yards and
+        events. Only the engaged pair moves differently after the catch, with
+        the OL up to 2.4 yd off their old path as they follow the pursuing
+        DL. Later plays diverge through fatigue and position.
+      - 4 games each, with and without the read: YAC p50 4.6 → 4.9 yd,
+        completion 62 → 64%. Runs, which the read cannot touch, move 7.3 →
+        8.5 ypc. So these totals are game noise, and no material effect is
+        shown. The read is kept: it is real football on every completion.
+    - **Found while measuring: RB/TE screens fail before the catch.**
+      - Only 31 of 80 slip and 37 of 80 TE screens are caught (NFL 86% and
+        89% of targets).
+      - 30 slips and 24 TE screens are never thrown: sacks and throwaways.
+        The same six slip seeds fail against every coverage.
+      - Released linemen never touch their rusher ("open the gate", item
+        15). At 2.0 s the nearest rusher is 2.3 yd from the QB (NFL 3.9).
+        From 1.0 to 2.0 s rushers close on him at about 3.5 yd/s (NFL 1).
+      - The back is in the rushers' path. At 1.5 s the nearest rusher is
+        1.6 yd from him (NFL 3.2), and he is knocked down on half the
+        failed slips.
+      - A third of thrown balls fall incomplete. The ball arrives near the
+        receiver, but the catch resolves at the edge of his reach: a TE
+        still walking to the spot, or a back running away from a lead throw.
+      - **Tried, not kept (two attempts):**
+        - A normal punch-and-set before the count. Rush timing matches NFL
+          (3.6 yd at 2.0 s), and 60 of 80 are thrown instead of 50. But the
+          linemen are driven 2.5 yd deep (NFL 0.6), and completions barely
+          move.
+        - A gate half a man off the rusher's line. Still 2.6 yd at 2.0 s.
+      - Per the stopping rule this goes back to diagnosis. See Next
+        decisions.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
@@ -642,12 +712,22 @@ that do, blocks in space per play run at the NFL rate (3–7).
 
 `test/screen-install.test.ts` covers two contracts:
 
-1. Released linemen sell the pass until the count, release as out/up/in, and
-   are never more than 1 yd past the line before the throw.
+1. Released linemen sell the pass until the count, release as out/up/in,
+   then go block. A slip caught behind the line draws no ineligible-downfield
+   flag.
 2. Perimeter blockers never target the pass rush, and keep their jobs through
    the catch.
 
 ## Next decisions
+
+- **RB/TE screens fail before the catch** (item 18): too many sacks and
+  misses. Diagnose in this order:
+  1. How NFL released linemen delay the rush without being driven back.
+     Measure the first OL–DL contact and its duration on slip and TE
+     screens, NFL vs sim.
+  2. The back's path relative to the rushers' lanes.
+  3. Where the catch resolves relative to the receiver's reach. Catching is
+     the Catching owner's: report it, don't change it.
 
 - **Quick screens thrown into a covered man** (item 13):
   - **Defense** (handed over 2026-11-04):
