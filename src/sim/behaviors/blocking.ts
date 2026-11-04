@@ -303,6 +303,18 @@ export class PassProtector implements Behavior {
     let along = contact * 0.85;
     if (toQBp.x < -0.2) along = Math.max(along, (sim.los - setDepth - rp.x) / toQBp.x);
     let set = { x: rp.x + toQBp.x * along, y: rp.y + toQBp.y * along + out * overset };
+    if (this.calledRelease && isOL(a)) {
+      // A screen's released lineman opens the gate: he sets beside his
+      // rusher's line to the quarterback, on the side he is already on, at
+      // his short-set depth, and gives the rusher the lane rather than
+      // standing in it. The rusher runs by, past his hip, and he releases.
+      // Set on the line, he is bull-rushed back instead: 2-3 yd deep by
+      // 2.0 s, where NFL screen linemen are 0.6-0.7 yd off the ball
+      // (screen_ol_reference.py). He does not strike; bodies still collide.
+      const side = Math.sign(a.pos.y - rp.y) || Math.sign(home - sim.ballY) || 1;
+      const gate = { x: sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth, y: rp.y + side * (contact + 0.2) };
+      return goTo(a, gate, { speed: 0.8, facing: Math.atan2(r.pos.y - a.pos.y, r.pos.x - a.pos.x), cutSkill: 0.85 + 0.3 * traits(a).feet });
+    }
     // An edge rusher runs an arc, not the straight line to the QB: a tackle
     // who sets on that line sits on the chord, a couple of yards inside him,
     // all the way back. Kick to cut the arc off instead — meet him at the

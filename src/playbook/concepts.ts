@@ -157,7 +157,7 @@ export const SCREEN_CONCEPTS: PassConcept[] = [
     id: 'tunnel_screen', name: 'Tunnel Screen', family: 'screen', drop: 'quick',
     strong: { 1: 'tunnel', 2: 'go', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
     progression: ['S1'], beats: ['off-coverage', 'pass-rush'],
-    screen: { receiver: 'S1', tempo: 'quick', count: 1.0, receiverSell: 1.1, blocks: [{ who: 'S2', job: 'stalk' }, { who: 'T', job: 'out' }, { who: 'G', job: 'up' }] },
+    screen: { receiver: 'S1', tempo: 'quick', count: 1.0, receiverSell: 1.1, blocks: [{ who: 'S2', job: 'stalk' }, { who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
   },
 ];
 export const SCREEN_BY_ID: Record<string, PassConcept> = Object.fromEntries(SCREEN_CONCEPTS.map((c) => [c.id, c]));

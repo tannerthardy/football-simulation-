@@ -485,6 +485,48 @@ Values are p50s.
         they may not cross before the throw.
       - Slip, TE and bunch now are byte-identical to before.
 
+15. **Released linemen open the gate.** `screen_ol_reference.py --wr in`
+    measures released linemen on WR screens (same code for NFL and sim).
+    - **NFL in-breaking WR screens.** Usually 3–5 linemen release. They stay
+      at their stance depth (−0.8 / −0.7 / −0.2 yd at 0.5 / 1.0 / 1.5 s), cross
+      the line with the throw (+0.1 s), and at the catch are 2.1 yd ahead of
+      the catcher and 8 yd inside him: they climb to the inside pursuit.
+    - **Ours.** The tunnel released 0–1. Its linemen were driven to −2.9 yd
+      by 2.0 s, crossed 1.3 s after the throw, and at the catch were behind
+      the catcher (−1.3 yd) beside him.
+    - **First divergence (traced).** A released lineman still set on his
+      rusher's line to the QB, as in ordinary protection. The rusher
+      bull-rushed through him. The count's time-out then released him with
+      the rusher still in front, and the rusher carried him back.
+    - **Tried and reverted:** setting at the line (set depth 0) on quick
+      screens. Depth did not change (−1.4 at 1.0 s): the push, not the set
+      point, was driving it.
+    - **Kept.**
+      - **"Open the gate."** A lineman with a called release sets beside his
+        rusher's line to the QB, on the side he is already on, at his
+        short-set depth, and does not strike. The rusher takes the lane, runs
+        past his hip, and he releases. Bodies still collide physically.
+      - **The tunnel also releases the center ("in").**
+
+      | | NFL | Before | After |
+      |---|---|---|---|
+      | Tunnel: linemen released (all plays) | 3–5 per play | 14 in total | 63 in total |
+      | Tunnel: lineman depth at 2.0 s | +0.4 | −2.9 | −1.2 |
+      | Tunnel: released linemen in the convoy at the catch | 31% | 7% | 48% |
+      | Tunnel: caught of 64; yards p50 | — ; 5 | 35; 3.1 | 41; 6.2 |
+      | Slip/TE: released lineman depth at 2.0 s | −0.6 | −2.9 | −1.3 |
+      | Slip/TE: caught of 64 | — | 29 / 29 | 25 / 32 |
+      | Slip/TE: yards p50 | 6 / 7 | 5.5 / 10.2 | 4.7 / 7.3 |
+      | Slip/TE: first defender to the carrier is DL | 14% / 16% | 0% / 3% | 26% / 23% |
+
+    - **The cost.** The rusher who is let through now sometimes chases down
+      the screen: DL go from almost never first to the carrier to a little
+      over the NFL rate. The QB on slow screens also throws earlier (slip
+      1.95 vs 2.25 s, NFL 2.2), with the rusher coming free sooner.
+    - **Still open:**
+      - Tunnel linemen cross the line 0.8 s after the throw (NFL 0.1).
+      - Tunnel vs Cover 3 (the flat defender, Defense).
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
@@ -507,9 +549,11 @@ that do, blocks in space per play run at the NFL rate (3–7).
       branch and asked Tanner who owns the fix.
     - The cushion and slot press leverage are NFL-like; the screen rows were
       call mix and selection (parked).
-  - **Main Engine:** tunnel and bubble paths and the tunnel's QB timing
-    are done (item 14). Left: the bubble's drift speed, and the tunnel
-    linemen's place at the catch.
+  - **Main Engine:**
+    - Done: tunnel and bubble paths, the tunnel's QB timing (item 14), and
+      released linemen (item 15).
+    - Left: the bubble's drift speed (after the press check), and tunnel
+      linemen crossing with the throw.
 - **Revisit target selection** (branch `claude/screens-threat-blocking`)
   once defenders rally to screens; it matters only when near men come.
 - **Blocking in space:** the released linemen's path from letting their man by
