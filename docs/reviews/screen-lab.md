@@ -459,7 +459,11 @@ Values are p50s.
         onto the spot and the QB rightly holds to 2.7 s. That is item 13's
         pre-throw trigger, handed to Defense.
       - The bubble receiver still runs faster than the NFL drift (4.5 vs
-        2.8 yd/s at the throw) and is caught wider (5.8–7.0 vs 4.1 yd).
+        2.8 yd/s at the throw) and is caught wider (5.8–7.0 vs 4.1 yd). A
+        slower drift (through-speeds 0.2/0.4) matched the NFL catch spot
+        (−1.7 to −2.0 yd, 4.6–5.0 out). But the press man reached him sooner:
+        within 2 yd went to 45% man / 23% zone, and the first defender came
+        at 0.3 s. Not kept, until the man cushion (Defense) is NFL-like.
       - The tunnel's linemen are behind the line at the catch (no convoy):
         they may not cross before the throw.
       - Slip, TE and bunch now are byte-identical to before.
