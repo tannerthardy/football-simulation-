@@ -962,8 +962,12 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     ? sim.see(d, back) : carrierCue;
   const advanced = !!(enemy && carrierCue &&
     (carrierCue.pos.x - sim.los) * sim.attackDir(enemy.team) > 2);
-  const reading = d.recog?.read === 'run' || advanced;
-  const declared = !!(reading && runnerCue && runnerCue.pos.x > sim.los - 1.6);
+  // A completed pass: a man other than the quarterback he sees holding the
+  // ball is the ball, wherever he caught it (a screen is caught behind the
+  // line). A blocked defender fights to get to him, as on a run he has read.
+  const caught = !!(sim.isPass && enemy && enemy !== sim.qb && carrierCue?.carrying === true);
+  const reading = d.recog?.read === 'run' || advanced || caught;
+  const declared = !!(reading && runnerCue && (runnerCue.pos.x > sim.los - 1.6 || caught));
   const edge = job?.kind === 'edge' || job?.kind === 'force';
   const fit = job ? `${job.kind}:${job.gap}:${job.side}:${job.edge}:${job.technique}` : 'unassigned';
   let stack: RunStackRead | undefined;

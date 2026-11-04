@@ -527,6 +527,69 @@ Values are p50s.
       - Tunnel linemen cross the line 0.8 s after the throw (NFL 0.1).
       - Tunnel vs Cover 3 (the flat defender, Defense).
 
+16. **Blocking in space: from film notes to four mechanisms.** Tanner's film
+    notes (slip vs Cover 3 rep 2, Cover 1, Cover 1 Off reps 1-2) named four
+    things: no jostling at the point of the block, linemen parking at the
+    line, blockers who never get leverage, and a back who runs wide away
+    from his blockers. Each was traced to a first divergence.
+    - **Engaged defenders did not fight to the ball.** A defender in a run
+      engagement aims at the ball only after reading run or once the carrier
+      is 2 yd past the line. On a screen his read is pass and the catch is
+      behind the line, so he stood still in the block (TE screen: reading on
+      2% of contact ticks). Now a blocked defender who sees a completed pass
+      (a non-QB holding the ball) reads and declares that carrier
+      (`engagement.ts` `runContactRead`). Reading is now 91-99% after the catch.
+    - **Linemen parked at the line.**
+      - Threats were measured from the fixed catch point; with off coverage
+        every man was 16+ yd from it, so blockers had "no target".
+      - With no target, they ran to a point 3 yd ahead of the catch spot or
+        carrier and stopped there, in the back's path.
+      - Now threats are measured from the ball. A blocker with no man leads
+        upfield 4-6 yd ahead of the carrier, in the screen's lane, a little
+        to his job's side, and never parks.
+    - **Cut-off blocking.** The threat-based blocker (item 12, branch
+      `claude/screens-threat-blocking`) is restored now that defenders come
+      to the ball. Each blocker matches the threats to the carrier's lane
+      from his own view and commits after the throw. Close in, he aims at
+      the earliest point on his man's run to the ball that he can beat him
+      to (`meetOnTrack`), re-read every step, as a pursuer aims at an
+      intercept. Aiming just in front of where the man was arrived a beat
+      late, behind him as he ran by.
+    - **The back read his blocks wrong, three ways.**
+      - Between 4 yd behind the line and the line, every carrier used the
+        run game's crease read (gaps on a handoff); a slip back ran along
+        the line to the sideline. A man who caught a pass now reads the open
+        field instead.
+      - A block credited the defender a flat 0.7 s toward every point,
+        including his free side. Now a block slows him only toward points
+        whose path the blocker covers. That is an engaged blocker between
+        them, or a free blocker who can get onto the defender's run to the
+        point before the defender gets there.
+      - A teammate running away up the lane ahead of him is a lead blocker
+        to follow, not a wall.
+
+      These apply to carriers after a catch only. One full game is
+      byte-identical to develop.
+    - **Results** (lab, 5 calls x 16 seeds; share of first defenders to the
+      carrier who were unblocked; yards p50 / mean):
+
+      | | NFL | Before | After |
+      |---|---|---|---|
+      | Slip | 57%; 6 / 6.9 | 75%; 5.0 / 10.8 | 55%; 8.7 / 12.9 |
+      | TE | 60%; 7 / 7.6 | 89%; 6.4 / 12.6 | 67%; 6.9 / 13.1 |
+      | Bubble | 53%; 5 / 5.6 | 92%; 18.4 / 32.5 | 42%; 47 / 42.9 |
+      | Bunch now | 53%; 5 / 5.6 | 54%; 8.5 / 10.7 | 29%; 4.4 / 9.4 |
+      | Tunnel | 53%; 5 / 5.6 | 75%; 8.2 / 15.9 | 74%; 7.3 / 14.3 |
+
+    - **Still open.**
+      - The bubble's long runs. Traced: half a second after the catch, four
+        DBs are within 2-6 yd of the carrier and he runs past all of them.
+        That is pursuit and tackling (Defense), not blocking; it was already
+        a 33-yd mean before.
+      - Defenders standing unblocked who never pursue (slip vs Cover 1 Off
+        rep 1, LB_W).
+      - The tunnel's first tackler is still unblocked 74% of the time.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
