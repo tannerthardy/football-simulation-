@@ -406,9 +406,22 @@ Values are p50s.
       the throw; ours gain 4–5. He is often in the throwing lane, so the QB
       rightly holds the ball (traced: completion estimate 0.1, from the
       undercut along the flight). The throw then comes late.
-    - **Man (tunnel, bubble): the press cushion.** Our man defender aligns
-      at 2.5 yd (NFL 4.2–4.9) and stays within 2 yd of the receiver to the
-      catch (NFL 4–6).
+    - **Man (tunnel, bubble): mostly the lab's call mix, not the cushion.**
+      The lab's man calls were all press. Defense's check: NFL man coverage
+      is 51% press, and our press depth (1.3 yd) is the tracked one. The lab
+      now has `--off-man` (adds Cover 1 Off), and the operator splits press
+      (the man over him is a DB within 2 yd of the line) from off.
+
+      | Man coverage, within 2 yd at the catch (receiver to his man) | NFL | Sim |
+      |---|---|---|
+      | Tunnel vs press | 18% (3.6), n 11 | 5% (2.9) |
+      | Tunnel vs off | 29% (5.0), n 14 | 0% (6.2) |
+      | Bubble vs off | 13% (6.4), n 30 | 0% (8.7) |
+      | Bubble vs press | 0% (6.6), n 9 | 33% (2.4) |
+
+      The one gap left is the bubble vs press, on 9 NFL plays. There the NFL
+      press defender aligns 2.8 yd inside the slot (leverage −2.8); ours is
+      head-up (+0.1), so ours runs with the bubble.
     - **Our routes add to it:**
       - The tunnel comes 5.4 yd inside its alignment (NFL 3.0), into the
         flat defender's area. The receiver has run 5 yd by the throw
@@ -484,9 +497,12 @@ that do, blocks in space per play run at the NFL rate (3–7).
 ## Next decisions
 
 - **Quick screens thrown into a covered man** (item 13):
-  - **Defense** (handed over 2026-11-04): zone flat defenders' pre-throw
-    drive on a receiver behind the line (gain 4–5 yd vs NFL 0–1), and the
-    man cushion (2.5 vs 4.2–4.9 yd).
+  - **Defense** (handed over 2026-11-04):
+    - Zone flat defenders' pre-throw drive on a receiver behind the line
+      (gain 4–5 yd vs NFL 0–1). Defense traced it to `ZoneCoverage`'s lane
+      branch and asked Tanner who owns the fix.
+    - Press leverage on a slot vs the bubble. The cushion itself was the call
+      mix.
   - **Main Engine:** tunnel and bubble paths and the tunnel's QB timing
     are done (item 14). Left: the bubble's drift speed, and the tunnel
     linemen's place at the catch.

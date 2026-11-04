@@ -4,7 +4,7 @@
  * common play format so scripts/mechanics/screen_reference.py measures the sim
  * with the same code it uses on NFL tracking.
  *
- *   tsx scripts/diag/screen-lab.mts [--seeds 8] [--only rb_slip_screen,te_screen] [--out out/screens/sim-screens.jsonl.gz]
+ *   tsx scripts/diag/screen-lab.mts [--seeds 8] [--only rb_slip_screen,te_screen] [--off-man] [--out out/screens/sim-screens.jsonl.gz]
  *   python3 -I scripts/mechanics/screen_reference.py out/screens/sim-screens.jsonl.gz --by type
  *
  * Teams are fixed (seeded) and equal strength. Each snap alternates the
@@ -26,6 +26,8 @@ const arg = (name: string, d: string) => { const i = process.argv.indexOf(name);
 const SEEDS = Number(arg('--seeds', '8'));
 const ONLY = arg('--only', '').split(',').filter(Boolean);
 const OUT = arg('--out', 'out/screens/sim-screens.jsonl.gz');
+/** --off-man adds Nickel Over Cover 1 Off (off-man corners) to the four calls. */
+const OFF_MAN = process.argv.includes('--off-man');
 
 /** The formation each screen is drawn from. */
 const FORMATION: Record<string, string> = {
@@ -38,6 +40,7 @@ const DEFENSES = [
   { label: 'Nickel Over Cover 1', front: 'over', coverage: 'cover1', pressure: null },
   { label: 'Nickel Over Cover 2', front: 'over', coverage: 'cover2', pressure: null },
   { label: 'Nickel Over Cover 1 Mike A', front: 'over', coverage: 'cover1', pressure: 'mike_a' },
+  ...(OFF_MAN ? [{ label: 'Nickel Over Cover 1 Off', front: 'over', coverage: 'cover1_off', pressure: null }] : []),
 ];
 const GROUP: Record<string, string> = { QB: 'QB', RB: 'RB', FB: 'RB', WR: 'WR', TE: 'TE', OT: 'OL', OG: 'OL', C: 'OL', EDGE: 'DL', DT: 'DL', LB: 'LB', CB: 'DB', S: 'DB' };
 const END = new Set(['tackle', 'out_of_bounds', 'touchdown', 'sack', 'incomplete', 'interception', 'safety', 'slide']);

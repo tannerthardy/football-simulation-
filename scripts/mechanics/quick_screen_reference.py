@@ -14,7 +14,9 @@ Kind (NFL and sim alike, from the receiver's motion snap -> catch):
   out   lateral move away from the ball > 1.5 yd   (bubble, swing-like)
   in    lateral move toward the ball > 1.5 yd      (tunnel, slip-like)
   now   neither                                    (now / quick / hitch screens)
-Coverage: man (Cover-0, Cover-1, 2-Man, sim "Cover 1") or zone.
+Coverage: man (Cover-0, Cover-1, 2-Man, sim "Cover 1") or zone. Man rows
+split into press (the man over him is a DB within 2 yd of the line at the
+snap) and off.
 
 The man over him, M: the defender (DB/LB) nearest the receiver at the snap.
 At the snap: M's depth (x), cushion (distance), and leverage (lateral offset
@@ -108,7 +110,8 @@ def main():
     rows = [m for m in (measure(p) for p in load(a.plays)) if m]
     groups = collections.defaultdict(list)
     for x in rows:
-        groups[(x[a.by], "man" if x["man"] else "zone")].append(x)
+        cov = ("man press" if x["m_group"] == "DB" and x["m_depth0"] <= 2.0 else "man off") if x["man"] else "zone"
+        groups[(x[a.by], cov)].append(x)
     print(f"{len(rows)} detached WR/TE screens (p25/p50/p75)")
     for (g, c), R in sorted(groups.items()):
         print(f"\n== {g} / {c}: n {len(R)}, caught {sum(x['caught'] for x in R)}, M is LB {sum(x['m_group'] == 'LB' for x in R)/len(R):.0%}")
