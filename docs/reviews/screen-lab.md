@@ -373,6 +373,52 @@ Values are p50s.
     - `scripts/diag/screen-threats.mts` classifies each first tackler (shed,
       chosen but never reached, unchosen, rusher) and counts target switches.
 
+13. **Quick screens thrown into a covered man: mostly the defense's early
+    trigger, plus our routes.** `quick_screen_reference.py` follows, on NFL
+    WR screens and on the lab (16 seeds), two defenders from the snap to the
+    catch:
+    - the man over the receiver (nearest DB/LB at the snap);
+    - the "closer" (the defender within 10 yd who gains most on the receiver
+      before the throw).
+
+    NFL screens are classed by the receiver's motion: in (tunnel-like), out
+    (bubble-like) and now.
+
+    | Medians | NFL in / now / out (zone) | Sim tunnel / bunch now / bubble (zone) |
+    |---|---|---|
+    | Closer's depth, snap → throw | 5.5→4.9 / 4.8→4.2 / 3.7→3.3 yd | 4.0→−0.3 / 5.8→0.1 / 4.5→2.2 yd |
+    | Yards the closer gains on the receiver before the throw | 1.0 / 0.2 / −0.3 | 4.7 / 4.4 / 0.6 |
+    | Receiver's travel by the throw | 1.2 / 0.8 / 2.2 yd | 5.2 / 0.9 / 3.6 yd |
+    | Throw time | 1.6 / 1.3 / 1.5 s | 2.0 / 1.8 (p75 3.0) / 1.2 s |
+    | Catch point vs alignment (depth, lateral) | −0.6, −3.0 / −1.8, +0.5 / −2.1, +4.1 | −1.0, −5.4 / −0.9, −0.5 / +1.6, +7.1 |
+    | Nearest defender at the catch; within 2 yd | 3.0; 32% / 4.5; 10% / 4.7; 9% | 1.1; 79% / 2.1; 46% / 4.2; 0% |
+
+    | Medians | NFL in / out (man) | Sim tunnel / bubble (man) |
+    |---|---|---|
+    | Man over him at the snap: depth, cushion | 2.2, 4.2 / 1.2, 4.9 yd | 1.3, 2.5 / 1.3, 2.5 yd |
+    | Man over him to the receiver at the catch | 4.1 / 6.4 yd | 2.1 / 1.9 yd |
+
+    - **Zone (tunnel, bunch now): the flat defender drives before the
+      throw.** Traced on tunnel vs Cover 3: the curl-flat SS reads pass at
+      0.35 s. He then pattern-matches the receiver coming underneath and
+      drives downhill at 4–5 yd/s, reaching the line by 1.4 s. NFL zone
+      defenders over a quick screen gain about 0–1 yd on the receiver before
+      the throw; ours gain 4–5. He is often in the throwing lane, so the QB
+      rightly holds the ball (traced: completion estimate 0.1, from the
+      undercut along the flight). The throw then comes late.
+    - **Man (tunnel, bubble): the press cushion.** Our man defender aligns
+      at 2.5 yd (NFL 4.2–4.9) and stays within 2 yd of the receiver to the
+      catch (NFL 4–6).
+    - **Our routes add to it:**
+      - The tunnel comes 5.4 yd inside its alignment (NFL 3.0), into the
+        flat defender's area. The receiver has run 5 yd by the throw
+        (NFL 1.2).
+      - The bubble runs 3.6–6.4 yd before the throw and is caught 1.6–3.9 yd
+        past the line (NFL 2.1 yd behind it).
+    - **Tried and reverted:** measuring the QB's catch-point contest to the
+      ball side of the receiver on screens. It did not change his estimate,
+      because the undercut along the flight drives it.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
@@ -388,11 +434,13 @@ that do, blocks in space per play run at the NFL rate (3–7).
 
 ## Next decisions
 
-- **Quick screens thrown into a covered man** (tunnel, bubble): the catcher's
-  path and the throw timing against the defender over him (item 12). Is it
-  the receiver's release, the QB not reading the man over the screen, or our
-  DBs' cushion? Measure the defender's depth and leverage at the snap vs NFL
-  first.
+- **Quick screens thrown into a covered man** (item 13):
+  - **Defense:** zone flat defenders' pre-throw drive on a receiver behind
+    the line (gain 4–5 yd vs NFL 0–1), and the man cushion (2.5 vs 4.2–4.9 yd).
+  - **Main Engine:**
+    - tunnel and bubble paths from NFL tracking (catch point, travel by the
+      throw), as done for the slip back;
+    - then QB timing on quick screens.
 - **Revisit target selection** (branch `claude/screens-threat-blocking`)
   once defenders rally to screens; it matters only when near men come.
 - **Blocking in space:** the released linemen's path from letting their man by
