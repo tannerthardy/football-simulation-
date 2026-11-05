@@ -863,8 +863,11 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         if (WING_WORK && !next) {
           // Nobody worth an arc: the pair doubles the man and one comes off
           // to the nearest box backer (claimed or not) by the release reads.
-          const backer = lb.filter((l) => depthOf(l) < 6 && Math.abs(l.pos.y - wing.pos.y) < 6)
-            .sort((p, q) => Math.hypot(p.pos.x - wing.pos.x, p.pos.y - wing.pos.y) - Math.hypot(q.pos.x - wing.pos.x, q.pos.y - wing.pos.y))[0] ?? null;
+          const near = (p: Agent, q: Agent) => Math.hypot(p.pos.x - wing.pos.x, p.pos.y - wing.pos.y) - Math.hypot(q.pos.x - wing.pos.x, q.pos.y - wing.pos.y);
+          // The pair's second-level man is one nobody else has (teammates'
+          // calls are known); a claimed backer only when nobody else is near.
+          const backer = [...lb, ...db].filter((l) => !owned.has(l) && depthOf(l) > 1.1 && depthOf(l) < 8 && Math.abs(l.pos.y - wing.pos.y) < 6).sort(near)[0]
+            ?? lb.filter((l) => depthOf(l) < 6 && Math.abs(l.pos.y - wing.pos.y) < 6).sort(near)[0] ?? null;
           combo(wing, end, man, backer, ep.drive);
         } else if (u < pEnd || !next) {
           // The end takes him; the wing arcs to the next man.
