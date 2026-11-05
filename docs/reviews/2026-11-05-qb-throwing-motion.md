@@ -120,3 +120,67 @@ Consequences to build in, not tune:
 Judge it on: the shoulder and weight-transfer table above (sim vs NFL), snap-to-release
 time, and then the defenders' lean toward the target before the release (NFL +0.16
 yd/s at −0.3 s, +0.79 at the release).
+
+## Built (qb/G3-throwing-motion) and what it showed
+
+What changed, each a mechanism rather than a number to hit:
+
+- **Load and delivery.** `load = 0.15 + 0.15 × (1 − release)`, `delivery = 0.17 + 0.04 ×
+  (1 − release)`: 0.32-0.51 s of visible motion. `sim.windupAt` marks the load (what
+  defenders can read); `sim.deliveryAt` marks the plant.
+- **Weight transfer.** His velocity toward the target ramps from zero at the load to
+  0.45 yd/s at the plant (NFL +0.41 at release).
+- **Flick.** He plans his load from the hit he feels coming: if a full motion would
+  not finish first, he cuts the load (to 0.05 s at least; the delivery does not
+  shorten). The ball pays: miss sigma × (1 + 0.8 × flick), arm speed × (1 − 0.2 × flick) [D].
+- **Rhythm.** In the last load-length of his drop he can start the throw to his first
+  read (same evaluation and thresholds as when set).
+- **Readiness judged at the release.** A route is ready when a throw started now would
+  come out no earlier than `break − 0.3 × anticipation`; previously the *start* of the
+  motion was gated, so a longer motion released later by its own length.
+- **In-grasp ruling respects the delivery.** A passer whose arm is already coming
+  forward gets the pass off (wobbling, via the existing grasp penalty to accuracy)
+  rather than being ruled down mid-throw.
+- **The QB's window model.** A defender facing him sees the motion start; one who is
+  not, and is not already on the target, keeps his course until the ball is out.
+
+Seed 7/11 saved dropbacks (183), develop `9a19ced9` vs this branch:
+
+| | Develop | Branch | NFL |
+| --- | --- | --- | --- |
+| Visible motion p50 | 0.15 s | 0.40 s | 0.4-0.5 s |
+| Speed toward target at −0.2 / −0.1 s | 0 / 0 | 0.35 / 0.44 | 0.37 / 0.41 |
+| Time to throw p50 | 2.40 | 2.75 | 2.50 |
+| Completion | 63.9% | 53.1% | |
+| Sacks | 12 | 18 | |
+| Throws released while held | 12 | 38 | |
+| Yards per dropback | 11.1 | 8.2 | |
+
+Why the passing game got worse (diagnostics on the same snaps):
+- Ablation: the old 0.15 s motion with everything else new gives develop's numbers
+  back (64.5%, 12 sacks). The motion's length is the whole effect.
+- Defenders reading the earlier `windupAt` is not it: stamping the cue at the old time
+  changes no outcome. Hiding the QB's eyes during the motion changes none either.
+- Same snap, same target, clean in both arms (103 throws): 61 vs 66 completions, 11
+  vs 7 breakups. Decisions come at the same moments; the ball is out 0.25 s later.
+- Twelve develop "sacks during the windup" were in-grasp rulings 0.3 s after a grab;
+  most are now throws made while held, completing about 30%.
+- The QB's predicted completion matches the result on clean throws (5-15 yd: 0.69
+  predicted, 0.65 actual), so the window model is honest; it is the timing.
+
+**The gap this exposes.** The sim quarterback decides when he did with a 0.15 s motion,
+so a real 0.4 s motion makes every release later and lets rushers and defenders close.
+NFL quarterbacks begin the motion about 0.4 s before the release (decision near 2.1 s),
+throwing on rhythm as the drop ends and the route breaks. The sim QB is set at 1.5 s
+and starts his motion 0.7 s later (p50), mostly because the first read is not yet open
+when his drop ends (first-read P p50 0.11 in the rhythm window). The next stage is the
+quarterback's timing: how a drop and a route's break line up, and when he commits to a
+throw he expects to be open at the release.
+
+Not built yet: the shoulders loaded sideways before the motion (NFL about 55° off the
+target until −0.5 s; the sim's facing is the throwing line), pump fakes, and zone
+defenders breaking toward the shoulder line before release.
+
+Three play-pinned fixtures (command-trace, cov7-abandonment, possession-awareness) assert
+one native play's outcome, which the throw timing changes; they need re-recording once
+the timing stage settles.

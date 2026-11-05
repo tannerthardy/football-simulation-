@@ -521,7 +521,9 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   // In the grasp: a quarterback held firmly behind the line before he throws
   // is ruled down at once (the rule protects him).
   const held = t - bond.start;
-  const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled;
+  // A passer whose arm is already coming forward gets the pass off.
+  const delivering = sim.deliveryAt >= 0 && t >= sim.deliveryAt;
+  const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled && !delivering;
   const inGrasp = pocketQB && held >= 0.25 && bond.tacklers.some((d) => (control.get(d) ?? grip.get(d) ?? 0) >= 0.6);
   // A running carrier is not down merely because the arms held for seconds.
   // Upright tackles require stopped progress; physical falls are checked below.

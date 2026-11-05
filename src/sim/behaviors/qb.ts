@@ -64,6 +64,10 @@ function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): 
   void qbStartX;
 }
 
+
+/** A quarterback's weight going toward the target in his stride (NFL tracking: about 0.4 yd/s at the release). */
+const STRIDE_SPEED = 0.45;
+
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
   private phase: 'snap' | 'drop' | 'set' | 'windup' = 'snap';
@@ -76,6 +80,12 @@ export class QBPass implements Behavior {
   private setAt = -1;
   private pending: ThrowEval | null = null;
   private releaseAt = 0;
+  /** The load he would use now: shortened (a flick) when he feels a hit coming
+   * before a full motion could finish. */
+  private plannedLoad = -1;
+  /** How much of the load the throw in progress gave up (0 full motion, 1 none). */
+  private flick = 0;
+  private motionAt = -1;
   private underPressure = 0;
   private readonly clock: number;
   private readonly armSpeed: number;
@@ -174,8 +184,29 @@ export class QBPass implements Behavior {
     return sim.slot(slot) ?? null;
   }
 
+  /** Load: front hand off the ball, front shoulder to the target, the ball
+   * drawn back (0.15-0.30 s, quicker with a better release). Delivery: the
+   * stride, plant and arm to the release; front-foot plant to release is the
+   * best-measured part of a throw (0.17-0.21 s). The visible motion is both,
+   * about 0.4-0.5 s in NFL tracking (docs/reviews/2026-11-05-qb-throwing-motion.md). */
+  private load(a: Agent): number {
+    return 0.15 + 0.15 * (1 - a.r('release'));
+  }
+
+  private delivery(a: Agent): number {
+    return 0.17 + 0.04 * (1 - a.r('release'));
+  }
+
   private windup(a: Agent): number {
-    return 0.1 + 0.18 * (1 - a.r('release'));
+    return (this.plannedLoad >= 0 ? this.plannedLoad : this.load(a)) + this.delivery(a);
+  }
+
+  /** Under a hit he cuts the load short to get the ball out before it lands:
+   * no full coil or step, so less on the ball and less control of it. The
+   * delivery itself (plant to release) does not shorten. */
+  private loadFor(a: Agent, hitIn: number): number {
+    const full = this.load(a);
+    return clamp(hitIn - 0.05 - this.delivery(a), Math.min(full, 0.05), full);
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
@@ -206,10 +237,19 @@ export class QBPass implements Behavior {
         this.pending = null;
         return stand();
       }
-      return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: this.pending ? angleTo(a.pos, this.pending.point) : facingDown };
+      const facing = this.pending ? angleTo(a.pos, this.pending.point) : facingDown;
+      // Weight transfer: his weight starts toward the target with the load and
+      // reaches stride speed as the front foot plants for the delivery.
+      if (this.pending) {
+        const loadTime = this.releaseAt - this.delivery(a) - this.motionAt;
+        const s = STRIDE_SPEED * (1 - this.flick) * clamp((t - this.motionAt) / Math.max(loadTime, sim.dt), 0, 1);
+        return { vel: { x: Math.cos(facing) * s, y: Math.sin(facing) * s }, facing };
+      }
+      return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing };
     }
 
     const pressure = this.pressure(a, sim);
+    this.plannedLoad = this.loadFor(a, pressure.time);
     if (pressure.time < 0.7 && pressure.agent) {
       if (!sim.stats.pressured && pressure.dist < 2.5) {
         sim.stats.pressured = true;
@@ -233,6 +273,19 @@ export class QBPass implements Behavior {
         this.setAt = t;
         this.readStart = t;
       } else {
+        // Rhythm: on the last step of his drop he can already start his load,
+        // so a timing throw comes out as he hits his set point rather than
+        // after it. Same evaluation and thresholds as when set.
+        const first = this.reads[0];
+        if (first && t >= this.snapAt + this.drop.time - this.load(a) && this.ready(first, sim)) {
+          const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
+          const ev = this.evaluate(a, sim, first, 0);
+          if (ev && ev.P >= 0.6 - 0.12 * aggression && ev.intRisk <= 0.025 + 0.05 * aggression) {
+            sim.qbEyes = first;
+            this.setAt = t;
+            return this.startThrow(a, sim, ev);
+          }
+        }
         // QBs who lock onto their first read give it away during the drop.
         if (a.r('decisionMaking') < 0.45) sim.qbEyes = this.reads[0] ?? null;
         const gun = sim.offCall.formation.qb !== 'under';
@@ -337,8 +390,10 @@ export class QBPass implements Behavior {
   private ready(r: Agent, sim: PlaySim): boolean {
     const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     if (!rr) return r.behavior.kind === 'route';
+    // He times his release, not the start of his motion, to the break: a
+    // throw started now comes out one windup later.
     const antic = sim.qb.r('anticipation');
-    return sim.t >= rr.breakTime - 0.3 * antic;
+    return sim.t + this.windup(sim.qb) >= rr.breakTime - 0.3 * antic;
   }
 
   private outsidePocket(a: Agent, sim: PlaySim): boolean {
@@ -431,14 +486,20 @@ export class QBPass implements Behavior {
     let intRisk = 0;
     let pClear = 1;
     const v0 = dragFreeLaunch(from, point, T);
+    const target = this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? r.pos;
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
       // Not where the defender is: where the QB thinks he is.
       const seen = this.mind.estimate(d);
-      const mover = { pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
       const facingQB = Math.cos(seen.facing - Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x)) > 0.2;
+      // A defender facing him sees the motion start. One who is not keeps
+      // playing his coverage on his current course until the ball is out,
+      // unless he is on the target already: then his coverage takes him there.
+      const onTarget = Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 3;
+      const blind = facingQB || onTarget ? 0 : wind;
+      const mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
-      const tt = timeToReach(mover, point, d.profile.reach + 0.3) + react;
+      const tt = blind + timeToReach(mover, point, d.profile.reach + 0.3) + react;
       const estimateError = a.mind.judgment(`reach:${d.slot}`) * noise;
       const m = tt - total + estimateError;
       const contest = 1 - logistic((m - 0.05) / 0.13);
@@ -453,7 +514,7 @@ export class QBPass implements Behavior {
         const tau = T * f;
         const b = arcPoint(from, v0, tau);
         if (b.z > leap + 0.1) continue;
-        const tb = timeToReach(mover, b, d.profile.reach) + react;
+        const tb = blind + timeToReach(mover, b, d.profile.reach) + react;
         const mb = tb - (wind + tau) + estimateError;
         touch = Math.max(touch, logistic(-(mb - 0.05) / 0.1));
       }
@@ -500,8 +561,12 @@ export class QBPass implements Behavior {
     this.phase = 'windup';
     this.pending = ev;
     this.releaseAt = sim.t + this.windup(a);
-    // Shoulders and arm give the throw away to defenders reading him.
+    this.motionAt = sim.t;
+    this.flick = 1 - (this.releaseAt - sim.t - this.delivery(a)) / this.load(a);
+    // The load gives the throw away to defenders reading him: front hand off
+    // the ball, front shoulder to the target.
     sim.windupAt = sim.t;
+    sim.deliveryAt = this.releaseAt - this.delivery(a);
     return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: angleTo(a.pos, ev.point) };
   }
 
@@ -518,6 +583,8 @@ export class QBPass implements Behavior {
     const pressure = this.pressure(a, sim);
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1);
     let sigma = this.missSigma(a, sim, dist, urgency);
+    // A flick: thrown with the arm alone, without the full coil and step [D].
+    sigma *= 1 + 0.8 * this.flick;
     const dice = sim.dice('throw', a);
     sigma *= Math.exp(dice.normal(0, 0.2 * (1 - a.r('consistency'))));
     const miss: Vec3 = {
@@ -525,7 +592,8 @@ export class QBPass implements Behavior {
       y: point.y + dice.normal(0, sigma),
       z: Math.max(0.4, point.z + dice.normal(0, sigma * 0.45)),
     };
-    const T = ev.T * (1 + dice.normal(0, 0.03));
+    // Without the legs and trunk, less on the ball [D].
+    const T = Math.max(ev.T * (1 + dice.normal(0, 0.03)), minFlightTime(from, miss, this.armSpeed * (1 - 0.2 * this.flick)));
     const v0 = solveLaunch(from, miss, T, DRAG_SPIRAL, sim.wind);
     sim.throwBall(a, r, v0, point, sim.t + T);
   }
