@@ -854,6 +854,35 @@ Values are p50s.
       - The TE's sell needs a different measurement (contact time with his
         man) before any change.
 
+22. **Coverage #406 (flat defender holds depth before the throw) on quick
+    screens; a screen blocker clearing the throw backs into the bubble.**
+    - Coverage asked for the quick-screen depth/gain table on #406 merged
+      with this branch. Lab: 16 seeds, bubble / bunch now / tunnel, zone rows
+      from `quick_screen_reference.py`.
+    - **#406 does what it should:**
+      - Bunch now: the closer's gain on the receiver by the throw goes
+        2.3 → −0.2 yd (NFL 0.1).
+      - Bunch now: a defender within 2 yd at the catch goes 47% → 21%
+        (NFL 4%).
+      - Tunnel: the closer's gain goes 3.0 → 2.1 (NFL 1.3).
+      - Bubble: the closer's gain goes 3.7 → 2.4 (NFL −0.3).
+    - **It exposed a Main Engine fault:** bubble vs Cover 3 caught 10 → 2
+      of 16, with no defender touching the ball.
+      - The Cover 3 corner bails, so the stalk blocker Z retargets to the
+        nickel, who now holds depth.
+      - While the ball is in the air, `clearLane` stepped Z off the throw
+        line on the side he stood. That was backward, at 2 yd/s, into the
+        bubble's path.
+      - The catcher arrived 3.3 yd short of the throw (1.3 on this branch).
+    - **Fix:** a screen blocker clears the throw line on its upfield side,
+      toward the defense and away from the catcher, who comes from behind
+      the line.
+      - Catcher-to-throw distance at arrival: 1.25 yd on #406, 1.27 here.
+      - On #406: bubble caught 50 → 60 of 80 (Cover 3: 2 → 12).
+      - On this branch: only the slip moves (37 → 35, linemen near the
+        throw line; within seed noise). Every other screen is identical.
+      - The full game hash is unchanged (`5bbe9d9a`); npm test 3735/3735.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).

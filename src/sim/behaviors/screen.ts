@@ -148,8 +148,13 @@ export class ScreenBlocker implements Behavior {
 
   /** Out of the ball's path while it is in the air: within 1.5 yd of its
    * line from where it is now to where it is going, he steps straight off
-   * that line. An eligible receiver may stay near the catch point (the last
-   * 2 yd) to block there; an ineligible lineman keeps off it altogether. */
+   * that line, on its upfield side: toward the defense, and away from the
+   * catcher, who comes to a screen from behind the line. Stepping off on
+   * whichever side he stood backed a stalk blocker into the bubble's path
+   * (Cover 3 with the flat defender holding depth: the catcher arrived 3.3
+   * yd short of the throw, 14 of 16 incomplete). An eligible receiver may
+   * stay near the catch point (the last 2 yd) to block there; an ineligible
+   * lineman keeps off it altogether. */
   private clearLane(a: Agent, sim: PlaySim): MoveCommand | null {
     if (sim.ball.kind !== 'air') return null;
     const b = sim.ballPos(), to = sim.ball.intended;
@@ -159,9 +164,12 @@ export class ScreenBlocker implements Behavior {
     const rx = a.pos.x - b.x, ry = a.pos.y - b.y;
     const along = rx * ux + ry * uy, across = rx * uy - ry * ux;
     if (along < 0 || along > (this.lineman ? L + 1 : L - 2) || Math.abs(across) > 1.5) return null;
-    const s = Math.sign(across) || 1;
+    const dir = sim.attackDir(a.team);
+    // The side of the line whose step points upfield; on a line that runs
+    // straight upfield, the side he is already on.
+    const s = Math.abs(uy) > 0.2 ? Math.sign(uy * dir) : Math.sign(across) || 1;
     // Eyes stay upfield on the defense while he gets out of the way.
-    const up = sim.attackDir(a.team) > 0 ? 0 : Math.PI;
+    const up = dir > 0 ? 0 : Math.PI;
     return runThrough(a, { x: a.pos.x + uy * s * 2, y: a.pos.y - ux * s * 2 }, { speed: 0.8, cutSkill: 1, facing: up });
   }
 
