@@ -614,6 +614,17 @@ export const WING_CALL = process.env.WING_CALL === '1';
  * (s7-8: the H arced 12 yd wide to a corner 8 yd deep while both backers
  * belonged to interior climbers who never reached them). */
 export const WING_WORK = process.env.WING_WORK === '1';
+/** LEVEL2_TIME (default off): the zone's second-level assignment goes by who
+ * gets there first, and wings beside the end of the line take part. Each
+ * worker's cost to a backer is his start (a double's climber leaves at about
+ * 0.9 s, the tracked leave; a lone climber or a wing at once) plus his run to
+ * the backer at three quarters of his top speed; the assignment still never
+ * crosses and leaves as few backers as it can. The wing call then plays its
+ * technique toward the wing's backer. Tracked outside zone toward a wing with
+ * a man over him (same operator): the wing blocks nobody 4% (ours 34%) and
+ * the play-side backer goes unblocked 25% (ours 54%); the wing and the end
+ * take him 37% (ours 21%). */
+export const LEVEL2_TIME = process.env.LEVEL2_TIME === '1';
 function snapHash(...parts: (string | number)[]): number {
   let h = 2166136261;
   for (const c of parts.join('|')) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
@@ -757,10 +768,21 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // climber aims 1.5 yd play side of himself (inside zone and split zone
     // keep their backside preference), a lone climber 1 yd.
     const insideFirst = scheme === 'insideZone' || scheme === 'splitZone';
+    // LEVEL2_TIME: wings set beside either end of the line take part.
+    const lineEnds = [line[0], line[line.length - 1]];
+    const wingWorkers = LEVEL2_TIME && WING_CALL && scheme !== 'draw' && scheme !== 'qbDraw' ? sim.offense.filter((o) => !plans.has(o) && !zl.includes(o)
+      && !isOL(o) && o !== sim.qb && o.slot !== 'RB' && !(sim.offAlign.spots[o.slot]?.backfield)
+      && lineEnds.some((e) => { const out = Math.sign(e.pos.y - by) || 1;
+        return depthO(o) > depthO(e) - 1.5 && (o.pos.y - e.pos.y) * out > 0 && Math.abs(o.pos.y - e.pos.y) <= 2.2; })) : [];
     const workers = [...doubles.map((d) => ({ b: d.b, double: d, lead: 1.5, inside: insideFirst })),
-      ...climbers.map((b) => ({ b, double: null, lead: 1.0, inside: false }))].sort((p, q) => p.b.pos.y - q.b.pos.y);
+      ...climbers.map((b) => ({ b, double: null, lead: 1.0, inside: false })),
+      ...wingWorkers.map((b) => ({ b, double: null, lead: 1.0, inside: false }))].sort((p, q) => p.b.pos.y - q.b.pos.y);
     const cost = (w: (typeof workers)[number], l: Agent) => {
       const track = w.b.pos.y + ps * w.lead;
+      if (LEVEL2_TIME) {
+        const start = w.double ? .9 : .3, run = Math.hypot(l.pos.x - w.b.pos.x, l.pos.y - w.b.pos.y) / (.75 * w.b.profile.vmax);
+        return start + run + (w.inside && (l.pos.y - track) * ps > 0 ? .3 : 0);
+      }
       return Math.abs(l.pos.y - track) + (w.inside && (l.pos.y - track) * ps > 0 ? 1.5 : 0);
     };
     const open = lb.filter((l) => !claimedLB.has(l)).sort((p, q) => p.pos.y - q.pos.y);
@@ -786,6 +808,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const counted = assign(0, 0).picks;
     const backerOf = new Map(workers.map((w, k) => [w.b, counted[k]]));
     for (const l of counted) if (l) claimedLB.add(l);
+    const wingBacker = new Map(wingWorkers.map((w) => [w, backerOf.get(w) ?? null]));
     for (const { b, neighbor, np } of doubles) combo(b, neighbor, np.target!, backerOf.get(b) ?? null, np.drive);
     for (const b of climbers) plans.set(b, { kind: 'climb', target: backerOf.get(b) ?? null, drive: up(ps * 0.4) });
     // BACKSIDE_COMBO: the backside end outside the tackle is left alone; the
@@ -837,7 +860,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
           if (!man || !wing) continue;
           const te = wing.player.position === 'TE' || wing.player.position === 'FB';
           const u = snapHash(wing.player.id, man.player.id, end.player.id, sim.los.toFixed(2), sim.ballY.toFixed(2));
-          const next = nextFor(wing);
+          const next = wingBacker.get(wing) ?? nextFor(wing);
           if (u < (te ? .5 : .48) || !next) {
             plans.set(wing, { kind: 'cutoff', target: man, drive: up(ps * 0.4) }); claimedDL.add(man);
             // The end he relieved climbs to the backside backer.
@@ -852,7 +875,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         const man = ep.target;
         const wing = wingOf(man);
         if (!wing) continue;
-        const next = nextFor(wing);
+        const next = wingBacker.get(wing) ?? nextFor(wing);
         const te = wing.player.position === 'TE' || wing.player.position === 'FB';
         const u = snapHash(wing.player.id, man.player.id, end.player.id, sim.los.toFixed(2), sim.ballY.toFixed(2));
         // Play side (tracked, same operator): the end on him and the wing
