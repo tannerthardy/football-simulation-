@@ -43,7 +43,7 @@ import { PerceptionBuffer, type Perceived } from './perception.js';
 import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
 import { L2_BREAKDOWN, breakdownForContact } from './breakdown.js';
-import { predictCalledMotion } from './called-motion.js';
+import { calledVelocityAhead, predictCalledMotion } from './called-motion.js';
 import { MotionRuntime, motionEnabled, planMotion } from './motion.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
@@ -1120,7 +1120,8 @@ export class PlaySim {
     spaceTeammates(this.agents, this.intents, (a,b)=>{
       const seen = this.see(a,b), called = a.team === b.team ? b.behavior.calledMotion?.() : null;
       return predictCalledMotion(seen, called, b.profile);
-    },{now:t,constrained});
+    },{now:t,constrained,calledAhead:(a,b,h)=>a.team===b.team
+      ?calledVelocityAhead(this.see(a,b),b.behavior.calledMotion?.(),b.profile,h):null});
     commandTrace?.stage('spacing', this.intents);
     ledger?.stageAll('spacing', this.intents);
     // Contact/spacing controllers cannot wake leg drive before the snap cue.

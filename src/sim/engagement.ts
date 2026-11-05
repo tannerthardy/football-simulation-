@@ -31,7 +31,7 @@
  */
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
-import { gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
+import { directionalSpeedFactor, gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
 import { availability, baseRadiusAt, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
@@ -41,7 +41,7 @@ import { requestToCover } from './motion-plan.js';
 import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
-import { ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
+import { ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -1472,9 +1472,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // REACH_TECHNIQUE: the reach's own footwork replaces the mirror (and the
   // stretch co-flow floor above): race for the play-side shoulder.
   const reach = REACH_TECHNIQUE ? b.behavior.reachGoal?.(b, sim, e) ?? null : null;
+  let racingSide = 0;
   if (reach?.kind === 'reach') {
-    const feet = reachFeet(lat, reach.side, { x: b.pos.x - d.pos.x, y: b.pos.y - d.pos.y }, dv, sep, seal, tb.lateral, along(dv), gap);
+    // REACH_RACE: his race pace is what his legs give running with the hips
+    // opened toward the play (lateral at 45 degrees off his facing).
+    const race = REACH_RACE ? b.profile.vmax * fatigueFactor(b.body.energy)
+      * directionalSpeedFactor(b.profile, Math.PI / 2 - REACH_RACE_OPEN) : 0;
+    const feet = reachFeet(lat, reach.side, { x: b.pos.x - d.pos.x, y: b.pos.y - d.pos.y }, dv, sep, seal, tb.lateral, along(dv), gap, race);
     lateral = feet.lateral;
+    if (REACH_RACE && !feet.onShoulder) racingSide = Math.sign(reach.side);
     if (!stretch) forward = feet.forward;
     // Hands his: steer across the man's face toward his play-side shoulder
     // (arm work through HAND_MOTOR, within the arm and grip budgets).
@@ -1554,7 +1560,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   intents[b.idx] = {
     vel: blockVel,
-    facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
+    facing: racingSide ? openToward(Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), racingSide, REACH_RACE_OPEN)
+      : Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
     push: 1,
     posture: 0.85,
     cutSkill: 0.8 + 0.3 * tb.feet,
@@ -1868,4 +1875,10 @@ function beat(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, run = false, w
   }
   d.tags.add('shed');
   sim.event('shed', d, b, `${run ? 'run' : 'pass'}: ${why}`);
+}
+
+/** Turn a facing toward the field side `sideY` (sign of y) by up to `open` rad. */
+function openToward(facing: number, sideY: number, open: number): number {
+  const toward = Math.atan2(sideY, 0), d = Math.atan2(Math.sin(toward - facing), Math.cos(toward - facing));
+  return facing + Math.sign(d) * Math.min(Math.abs(d), open);
 }

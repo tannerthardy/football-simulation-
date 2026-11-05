@@ -38,6 +38,16 @@ export const ENGAGED_DEFENDER = process.env.ENGAGED_DEFENDER === '1';
  * mirrored his man: a lineman who held still was never reached (outside zone:
  * blocker lateral 0.02 yd from 0.4 to 1.2 s, across his face 9-23%). */
 export const REACH_TECHNIQUE = process.env.REACH_TECHNIQUE === '1';
+/** REACH_RACE (off): the reach is a race for the man's play-side shoulder, not
+ * a mirror of him. Behind the shoulder the blocker opens his hips toward the
+ * play (up to 45 degrees off the man) and runs; his lateral request is his
+ * open-hip running speed, not his square shuffle. On the shoulder he squares,
+ * holds it and goes at least as fast as the man. Physics (facing-dependent
+ * speed, traction, the man on his hands, directional leg drive) decides what
+ * he achieves and what the open hips cost him. */
+export const REACH_RACE = process.env.REACH_RACE === '1';
+/** How far the racing reach blocker opens his hips off the man (rad). */
+export const REACH_RACE_OPEN = Math.PI / 4;
 
 export type EngagedGoal =
   | { kind: 'drive' }
@@ -111,7 +121,7 @@ export function wallFeet(w: WallInputs): { lateral: number; forward: number } {
 /** Reach footwork in the engagement's lateral frame: not yet on the man's
  * play-side shoulder, work for it at his own shuffle speed; on it, hold it and
  * go at least with the man's flow. Forward work only keeps him connected. */
-export function reachFeet(lat: Vec2, side: number, rel: Vec2, dv: Vec2, sep: number, seal: number, lateral: number, along: number, gap: number):
+export function reachFeet(lat: Vec2, side: number, rel: Vec2, dv: Vec2, sep: number, seal: number, lateral: number, along: number, gap: number, race = 0):
   { lateral: number; forward: number; onShoulder: boolean } {
   const playLat = Math.sign(lat.y * side) || 0;
   const across = (rel.x * lat.x + rel.y * lat.y) * playLat;
@@ -123,7 +133,8 @@ export function reachFeet(lat: Vec2, side: number, rel: Vec2, dv: Vec2, sep: num
   // shoulder (running on past it frees the man behind him).
   if (onShoulder) {
     const hold = (.45 * sep - across) * 3;
+    if (race) return { lateral: playLat * Math.max(-lateral, Math.min(race, Math.max(manLat, 0) + hold)), forward, onShoulder };
     return { lateral: playLat * Math.max(-lateral, Math.min(lateral, manLat + hold)), forward, onShoulder };
   }
-  return { lateral: playLat * lateral, forward, onShoulder };
+  return { lateral: playLat * Math.max(lateral, race), forward, onShoulder };
 }

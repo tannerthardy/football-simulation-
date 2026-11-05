@@ -29,3 +29,18 @@ export function predictCalledMotion(seen: Perceived, called: Vec2 | null | undef
     pos: { x: seen.pos.x + .5 * ax * age * age, y: seen.pos.y + .5 * ay * age * age },
     vel: { x: seen.vel.x + ax * age, y: seen.vel.y + ay * age } };
 }
+
+/** LINE_STEP: the velocity a teammate on an announced step (the zone track)
+ * will have `horizon` seconds on, accelerating toward his call under his own
+ * traction-bounded acceleration. A fresh-body estimate from the shared call,
+ * used only to budget headway against him; the World resolves real contact. */
+export function calledVelocityAhead(seen: Perceived, called: Vec2 | null | undefined, profile: PhysicalProfile, horizon: number): Vec2 | null {
+  if (!called || seen.pose !== 'up' || !Number.isFinite(seen.facing)
+    || ![seen.vel.x, seen.vel.y, called.x, called.y, horizon].every(Number.isFinite)) return null;
+  const body: Body = { pos: { ...seen.pos }, vel: { ...seen.vel }, facing: seen.facing!, energy: 1, profile };
+  const a = locomotionAccel(body, { vel: called, facing: seen.facing }, ORDINARY_TICK);
+  const limit = Math.min(Math.hypot(a.x, a.y), supportParams(profile).traction / profile.massKg) * horizon;
+  const dx = called.x - seen.vel.x, dy = called.y - seen.vel.y, d = Math.hypot(dx, dy);
+  const k = d > limit ? limit / d : 1;
+  return { x: seen.vel.x + dx * k, y: seen.vel.y + dy * k };
+}
