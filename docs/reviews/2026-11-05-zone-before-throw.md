@@ -79,6 +79,25 @@ throw−0.3 / throw / throw+0.3 / catch.
      dropper to settle where he is when the QB sets, not to sprint to a 10 yd
      spot; that QB-coupled stop comes first, then `confirmed` as the default.
 
+## Measured: box backers in zone are 2.5-3.5 yd too deep at the throw
+
+Box backers (2.5-8 yd deep and within 6 yd of the ball at the snap) in zone
+coverages, depth at the throw by time to throw. NFL from the common-format BDB
+plays in `out/mechanics/nfl-plays.jsonl.gz` (coverage label not man/Cover 0/1);
+sim from the saved seed 7/11 snaps on this branch's defaults (zone calls).
+
+| Time to throw | NFL n | NFL gain p50 | NFL depth p50 | Sim n | Sim gain p50 | Sim depth p50 |
+| --- | --- | --- | --- | --- | --- | --- |
+| under 2.0 s | 1,672 | 0.0 | 4.9 | 44 | +1.7 | 6.5 |
+| 2.0-2.5 s | 2,288 | +1.3 | 6.2 | 68 | +4.1 | 8.6 |
+| 2.5-3.0 s | 2,292 | +1.9 | 6.8 | 54 | +5.5 | 10.4 |
+| over 3.0 s | 3,640 | +2.9 | 7.7 | 45 | +5.9 | 10.4 |
+
+NFL backers almost never reach a 10 yd landmark by the throw; ours do. Both
+stages are wrong in the same direction: the drop starts early (above) and runs
+to a fixed landmark instead of settling on the QB's set. That is the next change:
+the QB-coupled stop, then `confirmed` as the default, judged on this table.
+
 ## Planned next (not in this change)
 
 Each is a decision on observed evidence, set per call, tag, role or game plan;
