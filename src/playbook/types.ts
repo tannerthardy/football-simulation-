@@ -366,6 +366,14 @@ export interface DefensivePlayCall {
   /** Zone technique for zone defenders (default `match`). */
   zoneStyle?: ZoneStyle;
   /**
+   * What an underneath zone defender does before the throw about a receiver
+   * still behind the line in front of him (a back, a swing or a screen):
+   * `hold` (default) keeps his depth and leverage, squeezes the lane from
+   * there and breaks on the throw ("ball brings you back down"); `trap` is the
+   * coach's tag to drive down on it before the ball is out.
+   */
+  flatThreat?: 'hold' | 'trap';
+  /**
    * Disguise: the coverage the secondary *shows* pre-snap. DBs align in this
    * look and rotate to the real coverage at the snap (absent = no disguise).
    */

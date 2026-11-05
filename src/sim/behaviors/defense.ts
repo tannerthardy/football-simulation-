@@ -858,9 +858,15 @@ export class ZoneCoverage implements Behavior {
       && Math.hypot(best.vel.x, best.vel.y) + 1e-6 >= Math.hypot(best.cue.vel.x, best.cue.vel.y);
     // A read step must not retain depth already outside his installed drop.
     if (stemRead) tgt = { ...tgt, x: Math.min(a.pos.x, lm.x) };
-    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead ? 0 : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
+    // A receiver still behind the line in front of him (a back, a swing, a
+    // screen) is no lane to drive down to before the ball is out: he holds
+    // his depth and leverage, squeezes it from there and breaks on the throw,
+    // unless the call tags him to trap it.
+    const holdFlat = best.pos.x < sim.los && (sim.defCall.flatThreat ?? 'hold') === 'hold';
+    if (holdFlat) tgt = { ...tgt, x: Math.max(tgt.x, Math.min(a.pos.x, lm.x)) };
+    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead || holdFlat ? 0 : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
       facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 }),
-      { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : 'lane', key: best.vel });
+      { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : holdFlat ? 'lane-hold' : 'lane', key: best.vel });
   }
 
   /**

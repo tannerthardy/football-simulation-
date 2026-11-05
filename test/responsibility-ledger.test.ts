@@ -341,9 +341,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as well,
     // CB_W alone at 3.25. With run-read attention as well, DE_W alone at 2.95; judged from his held picture and with
     // #389's edge key, DE_W alone at 2.9.
+    // With underneath zone defenders holding depth over a back still behind the line before the throw
+    // (flatThreat 'hold'), DE_W misses at 2.9 and CB_W is alone at 3.35.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.9);
-    expect(first.defenders.map(p.slot)).toEqual(['DE_W']);
+    expect(first.t).toBe(3.35);
+    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {

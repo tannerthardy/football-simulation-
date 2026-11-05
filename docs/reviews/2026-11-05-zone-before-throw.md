@@ -1,0 +1,80 @@
+# Underneath zone defenders before the throw
+
+Coverage lane, G3. Tanner asked for coach-adjustable behavior rather than one
+hard-coded answer: "a lot of the ways a coverage call may handle these sorts of
+things may be varied". This note records what coaches teach, what this change
+does, and the settings planned next. Sources: the project's references
+(`docs/references/Coverage_Operating_System_Manuscript.md`, the coverage
+mechanics textbook §3.3/§12.5, `honest-nfl` HNFL-027/227/283) plus clinic
+material (Bowen; Saban via Brophy; USA Football; Ravens "3 Lock"). Clinic detail
+was often paywalled; no source gives timings in seconds, so the NFL tracking
+numbers below stay the quantitative anchor.
+
+## What coaches teach
+
+- **No source teaches an underneath zone defender to drive on a receiver behind
+  the line before the throw.** The default is "hold curl, push flat": keep depth
+  and outside leverage, play top-down, break on the QB's throw ("ball brings you
+  back down"). Driving on a bubble or flat before the ball is out is a called
+  role: a trap or cloud corner, or a Patty/trap tag on a backer.
+- **The drop waits for evidence.** An unconfirmed play gets read steps and square
+  leverage; the drop to landmark depth follows a confirmed pass (linemen high
+  and behind the line, the QB's drop, no mesh), and stops when the QB sets or
+  opens to throw.
+- **Screens are confirmed, not guessed:** linemen leaking downfield, a receiver's
+  blocking posture, a QB catch-and-throw. Over-triggering is punished by
+  screen-and-go and crack-and-go, which is the cost, not something to ban.
+- **Cover 3 vs 3x1:** the Mike relates to and walls #3; the nickel or apex owns #2
+  and the strong flat; a strong hook sits between them. With the backside corner
+  in man (Mable), the Will plays the weak hook and the back; with a zone corner
+  backside, a weak curl-flat stays defensible.
+
+NFL tracking (BDB 2025, measured on `claude/screens` with the same code on both
+sides): zone defenders over a quick screen gain 0-1 yd on the receiver before
+the throw and their depth barely moves (5.5 → 4.9 yd); box linebackers start a
+pass drop about 1.3 s after the snap (+0.44 yd by 1.2 s); a linebacker's velocity
+toward a bubble catch point is about +0.1 / +0.5 / +1.3 / +3.2 yd/s at
+throw−0.3 / throw / throw+0.3 / catch.
+
+## Where coaches differ, and who sets it
+
+| Dimension | Range | Set by |
+| --- | --- | --- |
+| Drop start | read step until pass is confirmed ↔ open at the snap | role, down and distance |
+| Drop style | vision and break (square, eyes on QB) ↔ match (hips to the key) | call |
+| Depth | fixed landmark ↔ stop on the QB's set | call, tag (sticks) |
+| A receiver behind the line before the throw | hold ↔ squeeze top-down ↔ trap | role, tag, game plan |
+| Screen trigger | the throw ↔ observed evidence ↔ game-plan alert | role, game plan |
+| Who forces a WR screen | cloud/press corner ↔ rotated safety/apex ↔ crack-replace | call |
+
+## This change
+
+1. **`flatThreat` on the defensive call: `hold` (default) or `trap`.** Before he
+   has seen a throw, an underneath zone defender whose nearest threat is still
+   behind the line squeezes its lane from his current depth instead of driving
+   down to it. `trap` keeps the old drive-down as a called technique. The
+   decision uses only his own picture of the receiver.
+   - Develop drove the weak curl-flat nickel from 4.5 to 1.9 yd deep by 1.6 s
+     over a back who was only pass-blocking (`gun_doubles_11`, Cover 3).
+     With `hold` he stays at 3.5-4.5 yd.
+2. **Cover 3 (Sky) vs 3x1 checks to `cover3_trips`:** Mike to the middle hook,
+   SS strong hook, nickel strong curl-flat, Will weak curl-flat; same spot-zone
+   technique. Before, both backers went to the weak side.
+
+## Planned next (not in this change)
+
+Each is a decision on observed evidence, set per call, tag, role or game plan;
+none changes an outcome directly.
+
+- **Drop start by evidence** (`early` / `confirmed` / `late`): read steps until
+  the defender's own picture confirms pass, held through a play-action mesh.
+  Calibrate so an ordinary dropback starts the drop about 1.2-1.3 s after the snap.
+- **Drop style** (vision and break ↔ match) and **a QB-coupled stop** on the
+  drop (plant when the observed QB sets or opens to throw).
+- **`squeeze`** as a third `flatThreat` option (top-down once the release
+  declares flat with no vertical left in the zone).
+- **Screen trigger** (`throw` / `evidence` / `alert`) with the combined-evidence
+  rule from COV-10, once route releases are NFL-shaped.
+- **Screen fits per call:** force, alley, over-the-top, and crack-replace on an
+  observed crack.
+- **A Mable-style trips check** (backside corner in man; Will as weak hook/#4).
