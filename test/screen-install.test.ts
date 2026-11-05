@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../src/league/team.js';
-import { SCREEN_BY_ID } from '../src/playbook/concepts.js';
+import { RUN_BY_ID, SCREEN_BY_ID } from '../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID } from '../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../src/playbook/formations.js';
 import type { Agent } from '../src/sim/agent.js';
@@ -23,7 +23,38 @@ function screen(id: string, form: string, seed = 1, coverage = 'cover3', audible
 const runTo = (sim: PlaySim, t: number, each?: () => void) => { while (sim.phase === 'live' && sim.t < t - 1e-9) { sim.tick(); each?.(); } };
 const isDL = (d: Agent | null) => !!d && /^(DE|DT|NT)/.test(d.slot);
 
+function rpo(coverage: string, seed: number) {
+  const formation = FORMATION_BY_ID.gun_doubles_11;
+  return new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'nickel'),
+    offCall: { formation, flip: seed % 2 === 0, kind: 'run', run: RUN_BY_ID.iz_strong, rpo: SCREEN_BY_ID.wide_now_screen, label: 'iz_now_rpo' },
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[coverage], pressure: null, label: coverage },
+    los: 35, ballY: CENTER_Y, firstDownX: 45, seed: 1000 * seed + 7 });
+}
+
 describe('screen install (docs/football-handbook/screens.md)', () => {
+  it('a run-pass option hands off against press and throws two-on-two off coverage, the line run-blocking within a yard until the throw', () => {
+    for (const seed of [1, 2]) expect(rpo('cover1', seed).offCall.kind).toBe('run');
+    const thrown = rpo('cover3', 2);
+    expect(thrown.offCall.kind).toBe('pass');
+    expect(thrown.offCall.pass?.id).toBe('wide_now_screen');
+    expect(thrown.offense.filter(a => /^(LT|LG|C|RG|RT)$/.test(a.slot)).every(a => a.behavior.kind === 'run-block')).toBe(true);
+    // Cover 2 seed 12: the center climbs 1.9 yd past the line before the
+    // throw if nothing holds him within a yard (RpoRunBlocker).
+    for (const [coverage, seed] of [['cover3', 2], ['cover2', 12]] as const) {
+      const rep = rpo(coverage, seed);
+      expect(rep.offCall.kind).toBe('pass');
+      const ol = rep.offense.filter(a => /^(LT|LG|C|RG|RT)$/.test(a.slot));
+      rep.event('snap', rep.slot('C'));
+      let past = false;
+      runTo(rep, 6, () => {
+        if (rep.ball.kind === 'held' && rep.carrier === rep.qb)
+          for (const a of ol) if (!a.engagement && a.pos.x - bodyRadius(a.body, 1, 0) > rep.los + 1) past = true;
+      });
+      expect(past).toBe(false);
+      expect(rep.penalties.some(p => p.kind === 'ineligible_downfield')).toBe(false);
+    }
+  });
+
   it('a now screen with a press kill is checked out of against press, and run against off coverage', () => {
     for (const seed of [1, 2]) {
       expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover1', true).offCall.pass?.id).not.toBe('wide_now_screen');

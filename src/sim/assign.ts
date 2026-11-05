@@ -11,7 +11,7 @@ import { gapY, lineOffset } from '../playbook/alignment.js';
 import { getRoute } from '../playbook/routes.js';
 import type { Gap, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
-import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RunBlocker } from './behaviors/blocking.js';
+import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
 import { goTo, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
@@ -83,7 +83,11 @@ export function assignBehaviors(sim: PlaySim): void {
     const concept = call.pass;
     const coord = new ProtectionCoordinator();
     const receiverPriors = new Map<Agent, InstalledReceiverRoute>();
+    // A thrown run-pass option: the line blocks the run (call.run).
+    const lineRun = call.run ? planRunBlocking(sim, call.run) : null;
     for (const a of sim.offense) if (isOL(a)) {
+      const plan = lineRun?.get(a);
+      if (plan) { a.behavior = new RpoRunBlocker(plan); continue; }
       coord.add(a);
       a.behavior = new PassProtector(coord);
     }
@@ -137,7 +141,7 @@ export function assignBehaviors(sim: PlaySim): void {
     if (concept.screen) installScreen(sim, concept, coord, mkScreenRoute);
     // Play action: the back sells the run through the mesh first.
     const back = sim.slot('RB');
-    if (concept.fake && back && back.behavior.kind !== 'idle') {
+    if ((concept.fake || lineRun) && back && back.behavior.kind !== 'idle') {
       const side = Math.sign(back.pos.y - qb.pos.y) || 1;
       back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: (qb.pos.y + back.pos.y) / 2 + side * 0.4 }, 0.7);
     }

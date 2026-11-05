@@ -2817,3 +2817,20 @@ function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, comb
   keeperTrace?.blockingChange(keeper, previousKeeper, 'combination-release', sim);
   sim.event('block_climb', climber, combo.backer, `${check ? 'check' : 'secured'} ${combo.defender.slot}; ${keeper.slot} stays`);
 }
+
+/**
+ * A run block on a thrown run-pass option. He blocks the run, but until the
+ * ball is out an unengaged lineman keeps within a yard of the line (NFL
+ * 8-3-1): he asks for no more forward speed than brings him to 0.7 yd past
+ * it. Contact begun there may be driven on; once the ball is out he is free.
+ */
+export class RpoRunBlocker extends RunBlocker {
+  override update(a: Agent, sim: PlaySim): MoveCommand {
+    const cmd = super.update(a, sim);
+    const thrown = sim.ball.kind === 'air' || (sim.carrier !== null && sim.carrier !== sim.qb);
+    if (thrown || a.engagement) return cmd;
+    const dir = sim.attackDir(a.team);
+    const cap = Math.max(0, 3 * (0.7 - (a.pos.x - sim.los) * dir));
+    return cmd.vel.x * dir > cap ? { ...cmd, vel: { x: cap * dir, y: cmd.vel.y } } : cmd;
+  }
+}

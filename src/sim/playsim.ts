@@ -322,10 +322,11 @@ export class PlaySim {
     if (this.motion) ({ offAlign: this.offAlign, defCall: this.defCall, defAlign: this.defAlign } = this.motion.finish(this));
     this.snapX = this.agents.map((a) => a.pos.x);
     this.qbMind = new QBMind(this, qb);
+    this.offCall = this.qbMind.installedChecks(this.offCall);
     if (setup.audibles) {
       this.offCall = this.qbMind.preSnapCheck(this.offCall, { hurry: this.hurry, down: setup.down ?? 1, distance: this.firstDownX - this.los });
-      this.isPass = this.offCall.kind === 'pass';
     }
+    this.isPass = this.offCall.kind === 'pass';
     this.stats.qbRead = this.qbMind.report;
     // What the defense expects, from the formation it sees and the situation.
     const f = this.offCall.formation;

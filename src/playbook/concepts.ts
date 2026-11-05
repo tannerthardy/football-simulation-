@@ -184,3 +184,14 @@ export const COUNTER_VARIANTS: Record<'gt' | 'gh', RunConcept> = {
   gt: RUN_BY_ID.counter,
   gh: { ...RUN_BY_ID.counter, id: 'counter_gh', name: 'Counter GH', pullers: ['BSG', 'H'] },
 };
+
+/**
+ * Run-pass options: a run called with a quick-screen tag. Before the snap the
+ * QB counts the screen side: press over the screen receiver, or more
+ * defenders outside than receivers to block them, means the run; otherwise
+ * the screen, with the line still blocking the run (QBMind.rpoRead).
+ */
+export const RPO_CONCEPTS: { id: string; name: string; run: string; screen: string; formation: string }[] = [
+  // Inside zone to the strength, now screen to the single-width side.
+  { id: 'iz_now_rpo', name: 'Inside Zone / Now', run: 'iz_strong', screen: 'wide_now_screen', formation: 'gun_doubles_11' },
+];

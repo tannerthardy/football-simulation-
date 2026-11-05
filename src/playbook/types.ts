@@ -170,7 +170,11 @@ export interface OffensivePlayCall {
   flip: boolean;
   kind: 'pass' | 'run';
   pass?: PassConcept;
+  /** The run. On a run-pass option thrown, the run the line still blocks. */
   run?: RunConcept;
+  /** Run-pass option: a run call tagged with this quick screen. The QB picks
+   * one at the line from the look outside (QBMind.rpoRead). */
+  rpo?: PassConcept;
   /** Installed non-contact stalk presentation before the player's normal
    * route/blocking job. Seconds from the snap, not a defender belief timer. */
   receiverBlockLook?: Partial<Record<SkillSlot, { until: number }>>;

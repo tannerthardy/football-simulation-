@@ -1045,6 +1045,56 @@ Values are p50s.
         is slower at +0.5 s against Cover 3 (median about 1.6). The
         defender is already on him; that is not a flat-footed catch.
 
+27. **The now screen as a run-pass option** (`iz_now_rpo`, Tanner,
+    2026-11-05).
+    - **The call:** inside zone strong, tagged with the now screen to the
+      single-width side (`RPO_CONCEPTS`; `OffensivePlayCall.rpo`).
+    - **The read** (`QBMind.rpoRead`, an installed check made by every QB,
+      before his discretionary audibles):
+      - Hand off if the screen receiver is pressed, or if the screen side
+        has more defenders than receivers.
+      - Defenders count when they are off the line, more than 5 yd outside
+        the ball and short of 9 yd. A man on the line is a box player.
+      - Each defender is seen with the QB's alignment noise.
+    - **Thrown, the line still blocks the run** (`call.run` stays on the
+      pass call; the back fakes the mesh):
+      - `RpoRunBlocker` is the run block, except that before the throw an
+        unengaged lineman asks for no more forward speed than brings him to
+        0.7 yd past the line (8-3-1).
+      - Contact begun there may be driven on.
+      - Without the cap, the center climbs 1.9 yd before the throw on
+        Cover 2 seed 12. With it, no unengaged lineman gets past 0.53 yd.
+    - **Lab, 16 seeds × 5 calls:**
+      - Press (Cover 1, Cover 1 Mike A): handed off 32 of 32.
+      - Off coverage: thrown 45 of 48.
+      - Thrown, caught 13 of 15 against Cover 3 (median 19 yd), 13 of 15
+        against Cover 1 Off (0.5 yd), and 10 of 15 against Cover 2 (−1.6).
+      - No flags.
+      - The handed-off runs gain about 1 yd in this lab. That is the
+        inside-zone run itself, not the read.
+    - **Scorecard (WR-now), thrown RPOs vs the called now screen (item 25):**
+
+      | | NFL p50 | RPO | Called now |
+      |---|---|---|---|
+      | OL depth at throw | −0.21 (IQR −0.75 to 0.37) | 0.26 | −1.89 !! |
+      | First OL past LOS − throw | −0.10 | −0.40 | 1.90 !! |
+      | Thrown → caught | 94% | 80% ! | 69% !! |
+      | Nearest defender at catch | 5.6 | 3.4 ! | 3.5 ! |
+      | First defender after catch | 1.6 s | 0.7 ! | 0.8 ! |
+      | Yards (caught) | 5 | 0.5 ! | 0.7 ! |
+
+      - The line rows move into range: the NFL now screen's line is the run
+        block at the line.
+      - The space at the catch does not change. The defender over the
+        catcher is still about 2 yd closer than in the NFL; see item 26
+        (the nickel's pre-throw trigger in Cover 3, two men on one blocker
+        in Cover 1 Off).
+    - **Cover 2** (a squat corner at 4 yd, two on two) passes the count and
+      loses yards. A hard-corner leverage read is Tanner's call (item 26).
+    - Test: `screen-install.test.ts`. The QB hands off against press and
+      throws against Cover 3. The line run-blocks and stays legal, and the
+      test fails without the cap.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).

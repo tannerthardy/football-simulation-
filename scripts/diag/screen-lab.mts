@@ -17,7 +17,7 @@ import { gzipSync } from 'node:zlib';
 import { CENTER_Y } from '../../src/core/field.js';
 import { Rng } from '../../src/core/rng.js';
 import { generateTeam, pickDefense, pickOffense } from '../../src/league/team.js';
-import { SCREEN_CONCEPTS } from '../../src/playbook/concepts.js';
+import { RPO_CONCEPTS, RUN_BY_ID, SCREEN_BY_ID, SCREEN_CONCEPTS } from '../../src/playbook/concepts.js';
 import { COVERAGE_BY_ID, FRONT_BY_ID, PRESSURE_BY_ID } from '../../src/playbook/defense.js';
 import { FORMATION_BY_ID } from '../../src/playbook/formations.js';
 import { PlaySim } from '../../src/sim/playsim.js';
@@ -28,8 +28,10 @@ const ONLY = arg('--only', '').split(',').filter(Boolean);
 const OUT = arg('--out', 'out/screens/sim-screens.jsonl.gz');
 /** --off-man adds Nickel Over Cover 1 Off (off-man corners) to the four calls. */
 const OFF_MAN = process.argv.includes('--off-man');
-/** --audibles lets the QB make pre-snap checks (a screen's installed kill).
- * A killed screen is not written as a screen; its check-out is summarized. */
+/** --audibles lets the QB make his discretionary pre-snap checks. Installed
+ * checks (a screen's kill, an option's read) are always made. A killed screen
+ * or a handed-off option is not written as a screen; it is summarized
+ * ("killed": the call went the other way). */
 const AUDIBLES = process.argv.includes('--audibles');
 
 /** The formation each screen is drawn from. */
@@ -54,18 +56,28 @@ const lines: string[] = [];
 const r2 = (v: number) => Math.round(v * 100) / 100;
 const summary: Record<string, { n: number; caught: number; yards: number[]; ttt: number[]; killed: number; killYards: number[] }> = {};
 
-for (const concept of SCREEN_CONCEPTS) {
-  if (ONLY.length && !ONLY.includes(concept.id)) continue;
-  const formation = FORMATION_BY_ID[FORMATION[concept.id]];
+// Each screen, then each run-pass option (a run tagged with a screen; the QB
+// reads it before the snap). A thrown option is written as its screen, typed
+// by the option's id; a handed-off one is summarized only.
+const CALLS = [
+  ...SCREEN_CONCEPTS.map(c => ({ id: c.id, concept: c, run: undefined as any, formation: FORMATION[c.id] })),
+  ...RPO_CONCEPTS.map(r => ({ id: r.id, concept: SCREEN_BY_ID[r.screen], run: RUN_BY_ID[r.run], formation: r.formation })),
+];
+for (const call of CALLS) {
+  if (ONLY.length && !ONLY.includes(call.id)) continue;
+  const concept = call.concept;
+  const formation = FORMATION_BY_ID[call.formation];
   for (const def of DEFENSES) for (let seed = 1; seed <= SEEDS; seed++) {
     const sim: any = new PlaySim({
       offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'nickel'),
-      offCall: { formation, flip: seed % 2 === 0, kind: 'pass', pass: concept, label: concept.name },
+      offCall: call.run
+        ? { formation, flip: seed % 2 === 0, kind: 'run', run: call.run, rpo: concept, label: call.id }
+        : { formation, flip: seed % 2 === 0, kind: 'pass', pass: concept, label: concept.name },
       defCall: { personnel: 'nickel', front: FRONT_BY_ID[def.front], coverage: COVERAGE_BY_ID[def.coverage],
         pressure: def.pressure ? PRESSURE_BY_ID[def.pressure] : null, label: def.label },
       los: 35, ballY: CENTER_Y, firstDownX: 45, seed: 1000 * seed + 7, audibles: AUDIBLES,
     });
-    const s = summary[`${concept.id} vs ${def.label}`] ??= { n: 0, caught: 0, yards: [], ttt: [], killed: 0, killYards: [] };
+    const s = summary[`${call.id} vs ${def.label}`] ??= { n: 0, caught: 0, yards: [], ttt: [], killed: 0, killYards: [] };
     if (sim.offCall.pass?.id !== concept.id) {
       s.killed++; s.killYards.push(sim.run().yards);
       continue;
@@ -85,10 +97,10 @@ for (const concept of SCREEN_CONCEPTS) {
     const receiverAgent = sim.agents.find((a: any) => a.slot === sim.offAlign.numbering[concept.screen!.receiver]) ?? (concept.screen!.receiver === 'B' ? sim.slot('RB') : null);
     const r = receiverAgent?.idx ?? thr?.b ?? null;
     const play = {
-      id: `${concept.id}|${def.label}|${seed}`, source: 'sim-screen-lab', kind: 'pass', yards: r2(res.yards),
+      id: `${call.id}|${def.label}|${seed}`, source: 'sim-screen-lab', kind: 'pass', yards: r2(res.yards),
       players: sim.agents.map((a: any) => ({ side: a.team, group: GROUP[a.player.position] ?? 'OTHER', slot: a.slot })),
       dt: 0.1, xy, ball_y: r2(sim.ballY), events, target: thr?.b ?? null, carrier: cat?.a ?? null,
-      screen: { receiver: r, group: r !== null ? GROUP[sim.agents[r].player.position] : null, type: concept.id,
+      screen: { receiver: r, group: r !== null ? GROUP[sim.agents[r].player.position] : null, type: concept.id, rpo: call.run ? call.id : undefined,
         passResult: cat ? 'C' : 'I', defense: def.label, outcome: res.outcome, blockers: screenBlockers,
         penalties: sim.penalties.map((p: any) => p.kind) },
     };
