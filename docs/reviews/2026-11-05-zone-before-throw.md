@@ -61,14 +61,27 @@ throw−0.3 / throw / throw+0.3 / catch.
    SS strong hook, nickel strong curl-flat, Will weak curl-flat; same spot-zone
    technique. Before, both backers went to the weak side.
 
+3. **`dropStart` on the defensive call: `early` | `confirmed` (default) | `late`.**
+   A box backer in zone leaves his read step for his drop only when his own pass
+   belief reaches the call's level: `early` is the belief at which he reads pass
+   at all (the previous behavior), `confirmed` 0.95, `late` 0.98. Once he drops
+   he does not return to the read step.
+   - Box backers in zone on pass plays (seeds 7/11): they read pass at a median
+     0.40 s (belief 0.95 at a median 0.95 s; run plays reach 0.95 by 2.5 s in 1%).
+   - Drop onset (0.5 yd deeper), median: early 0.90 s, confirmed 1.40 s, NFL
+     about 1.3 s. Depth gain at 0.8 / 1.2 / 1.6 s: early +0.36 / +1.09 / +1.90,
+     confirmed 0 / +0.16 / +0.79, NFL +0.09 / +0.44 / +1.10. The NFL curve was a
+     check, not the target; confirmed now runs slightly late, likely because
+     his read step is fully stationary where coaches teach small square read
+     steps. That is a separate mechanism, noted rather than tuned.
+
 ## Planned next (not in this change)
 
 Each is a decision on observed evidence, set per call, tag, role or game plan;
 none changes an outcome directly.
 
-- **Drop start by evidence** (`early` / `confirmed` / `late`): read steps until
-  the defender's own picture confirms pass, held through a play-action mesh.
-  Calibrate so an ordinary dropback starts the drop about 1.2-1.3 s after the snap.
+- **Read steps while unconfirmed:** small square steps instead of standing still
+  (the likely reason `confirmed` starts slightly late).
 - **Drop style** (vision and break ↔ match) and **a QB-coupled stop** on the
   drop (plant when the observed QB sets or opens to throw).
 - **`squeeze`** as a third `flatThreat` option (top-down once the release

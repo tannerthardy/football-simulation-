@@ -569,6 +569,8 @@ export class ZoneCoverage implements Behavior {
   private readonly observations = new Map<Agent, RouteObservation>();
   private readonly depthReads = new Map<Agent, DeepCoverage>();
   private flatExpansionRecorded = false;
+  /** A box backer has left his read step for his drop. */
+  private dropping = false;
 
   constructor(
     a: Agent,
@@ -613,8 +615,14 @@ export class ZoneCoverage implements Behavior {
     // (tracked box backers, 2.5-8 yd deep and within 6 yd of the ball, hold
     // their depth through 0.8 s on passes and runs alike). An apex or
     // overhang backer keeps his eased drop to the flat.
-    if (!this.deep && a.recog?.read === 'unsure' && boxBacker(a, sim))
-      return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
+    // How sure he must be before he drops is the call's (dropStart): coaches
+    // teach the drop on a confirmed pass; once he drops he doesn't step back.
+    if (!this.deep && !this.dropping && boxBacker(a, sim)) {
+      const read = a.recog?.read;
+      if (read === 'unsure' || (read === 'pass' && a.recog!.pPass() < DROP_START[sim.defCall.dropStart ?? 'confirmed']))
+        return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
+      if (read === 'pass') this.dropping = true;
+    }
     const spot = this.style === 'spot';
 
     const qb = sim.qb;
@@ -929,6 +937,10 @@ function boxBacker(a: Agent, sim: PlaySim): boolean {
   const depth = Math.abs(spot.x - sim.los);
   return depth >= 2.5 && depth <= 8 && Math.abs(spot.y - sim.ballY) < 6;
 }
+
+/** The pass belief a box backer needs before he drops, by the call's dropStart:
+ * `early` is the belief at which he reads pass at all. */
+const DROP_START = { early: 0, confirmed: 0.95, late: 0.98 } as const;
 
 /** Speed factor for a defender who hasn't read run or pass yet. */
 export function unsureFactor(a: Agent): number {

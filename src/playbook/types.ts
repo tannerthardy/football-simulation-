@@ -374,6 +374,13 @@ export interface DefensivePlayCall {
    */
   flatThreat?: 'hold' | 'trap';
   /**
+   * How sure a box backer in zone must be that it is a pass before he leaves
+   * his read step for his drop, in his own pass belief: `early` drops as soon
+   * as he reads pass (third and long), `confirmed` (default) on a confirmed
+   * pass, `late` only when he is all but certain (run downs, RPO-heavy teams).
+   */
+  dropStart?: 'early' | 'confirmed' | 'late';
+  /**
    * Disguise: the coverage the secondary *shows* pre-snap. DBs align in this
    * look and rotate to the real coverage at the snap (absent = no disguise).
    */
