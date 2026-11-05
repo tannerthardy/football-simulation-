@@ -947,6 +947,22 @@ function ballKey(sim: PlaySim, d: Agent): Agent | null {
   return back && (held.target === sim.qb || held.target === back) ? back : held.target;
 }
 
+/** BALL_HIPS (experimental, off): a blocked defender who reads a carrier
+ * within reach range turns his hips toward him while he works the block: his
+ * requested facing rotates from square on the blocker toward the carrier, at
+ * most BALL_HIPS_MAX, so the ball-side arm is the free one. Off: square on the
+ * blocker. A request only; the body and the blocker decide what he achieves. */
+const BALL_HIPS = process.env.BALL_HIPS === '1', BALL_HIPS_RANGE = 3, BALL_HIPS_MAX = Math.PI / 4;
+function ballHips(d: Agent, b: Agent, read: { reading?: boolean; threat?: { pos: Vec2 } | null }): number {
+  const square = Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x);
+  const r = read.threat?.pos;
+  if (!BALL_HIPS || !read.reading || !r || Math.hypot(r.x - d.pos.x, r.y - d.pos.y) > BALL_HIPS_RANGE) return square;
+  let diff = Math.atan2(r.y - d.pos.y, r.x - d.pos.x) - square;
+  while (diff > Math.PI) diff -= 2 * Math.PI; while (diff < -Math.PI) diff += 2 * Math.PI;
+  d.tags.add('ball-hips');
+  return square + Math.max(-BALL_HIPS_MAX, Math.min(BALL_HIPS_MAX, diff));
+}
+
 function runContactRead(sim: PlaySim, e: Engagement) {
   const d = e.defender, b = e.blocker, job = d.runFit;
   const back = sim.slot('RB');
@@ -1576,7 +1592,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   intents[d.idx] = {
     vel: workOff ?? cf ?? (read.stack ? { x: depth, y: lateralFlow } : legacy),
-    facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
+    facing: ballHips(d, b, read),
     push: 1,
     posture: DL_ANCHOR && (e.helpers.length > 0 || drivenBack(d)) ? 1 : 0.85,
     cutSkill: 0.8 + 0.4 * td.bend,
