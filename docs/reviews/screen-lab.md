@@ -635,7 +635,9 @@ Values are p50s.
       the throw". After it, a lineman chasing the screen is a man to block.
 
 18. **Released linemen go block after the count (Tanner); the downfield rule
-    needs a pass that crosses the line.**
+    needs a pass that crosses the line.** **Withdrawn (item 24): that is the
+    NCAA rule, not the NFL's. The rules change and the removed pre-throw limit
+    are restored.**
     - **The call.** On the TE screen the released linemen waited at the line
       for the throw. Tanner: the ball is caught behind the line, so sell the
       pass for a beat and go block. The ScreenBlocker no longer holds a
@@ -936,6 +938,42 @@ Values are p50s.
          alignment. Keep the bunch variant as the rare case.
       2. The quick-game line set: at the line, with an NFL-like anchor.
       3. The release on the throw, from the line.
+
+24. **Correction: NFL 8-3-1 applies whatever the pass's destination.**
+    - Item 18 changed the rules engine to call ineligible-downfield only when
+      the pass crosses the line. That is the NCAA rule (3 yd, a pass that
+      crosses the neutral zone).
+    - The NFL rule (2025/2026 rulebooks, Rule 8, Section 3, Article 1): on
+      any scrimmage play with a legal forward pass, it is a foul if an
+      ineligible player's entire body is more than one yard beyond the line
+      before the pass is thrown. Exceptions:
+      - contact begun within a yard and continued;
+      - after breaking contact past a yard, he stays put, moves laterally or
+        moves back until the throw.
+    - The NFL tracking used as support measured the tracked center crossing,
+      not the whole body more than a yard past.
+    - Item 18's change rested on an unverified forum claim. Tanner's "go
+      block anyway" decision was made on that advice.
+    - **Restored:**
+      - `src/sim/pass-legality.ts` and `test/pass-legality.test.ts` are
+        identical to develop `85952c95`. The test adds the screen case: the
+        advance is still a foul when the pass is touched behind the line.
+      - The ScreenBlocker's pre-throw gate: a released lineman slides along
+        the line toward his landmark and takes only a man within 0.8 yd of
+        it; he attacks once the ball is out. Contact he starts there and
+        keeps is the rule's exception, decided by the engagement.
+      - `test/screen-install.test.ts` checks the whole body (rearmost point
+        ≤ LOS + 1) of every released, unengaged lineman before the throw, and
+        no flag. It runs 3 slip reps plus TE vs Cover 3 seeds 5, 9, 10 and 14.
+        With the gate disabled it fails; those reps drew 11 TE flags.
+    - **Lab** (16 seeds × 5 calls), gate restored vs removed:
+      - Flags: 0 vs 13 (TE 11, tunnel 2).
+      - Caught: slip 30 vs 35, TE 43 vs 38, tunnel 53 vs 51.
+      - Full-game hash unchanged (`5bbe9d9a`); npm test 3735/3735.
+    - After the throw, on a screen caught behind the line, linemen block
+      freely. As we read it, the restriction on blocking downfield before the
+      ball is touched is offensive pass interference, which needs a pass
+      beyond the line. To confirm against the rulebook text.
 
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens

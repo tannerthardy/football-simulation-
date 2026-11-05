@@ -245,26 +245,26 @@ describe('native pass-law hooks', () => {
     finishPassLegality(delayed, second, { x: 35, y: CENTER_Y, z: 0 });
     expect(delayed.penalties).toContainEqual(expect.objectContaining({ kind: 'intentional_grounding', reason: 'delayed_spike' }));
   });
-  it('flushes an achieved unblocked ineligible advance only when a legal pass crosses the line', () => {
-    const advanced = () => {
-      const sim = nativeSim(), lineman = sim.slot('RG')!;
-      lineman.body.pos = { x: 43, y: CENTER_Y + 6 };
-      const starts = sim.agents.map(a => ({ ...a.pos }));
-      const report = sim.world.step(sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing })), sim.dt);
-      observePassLegality(sim, report, sim.t, starts);
-      return { sim, lineman };
-    };
-    const { sim, lineman } = advanced();
+  it('flushes an achieved unblocked ineligible advance only when a legal pass is released', () => {
+    const sim = nativeSim(), lineman = sim.slot('RG')!;
+    lineman.body.pos = { x: 43, y: CENTER_Y + 6 };
+    const starts = sim.agents.map(a => ({ ...a.pos }));
+    const report = sim.world.step(sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing })), sim.dt);
+    observePassLegality(sim, report, sim.t, starts);
     expect(sim.penalties.some(p => p.kind === 'ineligible_downfield')).toBe(false);
-    const air = release(sim);
-    expect(sim.penalties.some(p => p.kind === 'ineligible_downfield')).toBe(false);
-    finishPassLegality(sim, air, { x: 46, y: CENTER_Y, z: 0 });
+    release(sim);
     expect(sim.penalties).toContainEqual(expect.objectContaining({ kind: 'ineligible_downfield', playerId: lineman.player.id,
       rule: '8-3-1', phase: 'live' }));
-    // A screen: the same advance, the pass first touched behind the line.
-    const screen = advanced(), short = release(screen.sim);
-    finishPassLegality(screen.sim, short, { x: 38, y: CENTER_Y + 8, z: 1 }, screen.sim.slot('RB')!);
-    expect(screen.sim.penalties.some(p => p.kind === 'ineligible_downfield')).toBe(false);
+    // NFL 8-3-1 has no exception for a pass caught behind the line (a screen):
+    // the advance stands as a foul when the pass is touched behind it.
+    const screenSim = nativeSim(), screenLineman = screenSim.slot('RG')!;
+    screenLineman.body.pos = { x: 43, y: CENTER_Y + 6 };
+    const screenStarts = screenSim.agents.map(a => ({ ...a.pos }));
+    const screenReport = screenSim.world.step(screenSim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing })), screenSim.dt);
+    observePassLegality(screenSim, screenReport, screenSim.t, screenStarts);
+    const short = release(screenSim);
+    finishPassLegality(screenSim, short, { x: 38, y: CENTER_Y + 8, z: 1 }, screenSim.slot('RB')!);
+    expect(screenSim.penalties).toContainEqual(expect.objectContaining({ kind: 'ineligible_downfield', playerId: screenLineman.player.id }));
     const run = nativeSim(), runner = run.slot('RG')!;
     runner.body.pos = { x: 43, y: CENTER_Y + 6 };
     const runReport = run.world.step(run.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing })), run.dt);

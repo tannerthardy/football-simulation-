@@ -9,12 +9,13 @@
  * the block itself is the ordinary run engagement: the hands and bodies decide
  * it. Nothing here wins a block or awards a result.
  *
- * A released lineman sells the pass for his count, then goes to block like
- * everyone else: a screen is caught behind the line, so going downfield
- * before the throw is legal (8-3-1 needs a pass that crosses the line). NFL
- * released linemen cross the line about 0.5 s after the throw on RB/TE
- * screens; a quarter of them are past it before the ball is out
- * (screen_ol_reference.py).
+ * Before the ball is thrown a released lineman keeps his whole body within a
+ * yard of the line (NFL 8-3-1: on any play with a legal forward pass, an
+ * ineligible player more than a yard downfield before the throw is a foul,
+ * wherever the pass is caught; contact begun within a yard and kept is the
+ * exception). He slides toward his landmark beside the catch point and takes
+ * a man sitting there; once the ball is out he attacks his man. A receiver
+ * blocks from the snap: he is eligible.
  */
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
 import { FIELD_WIDTH } from '../../core/field.js';
@@ -68,6 +69,9 @@ export class ScreenBlocker implements Behavior {
     // hands on a tunnel throw).
     const clear = this.clearLane(a, sim);
     if (clear) return clear;
+    // Before the throw a lineman may block only near the line (8-3-1); a
+    // defender sitting in the screen there is his.
+    if (this.lineman && !thrown && (!d || (d.pos.x - sim.los) * dir > 0.8)) return this.slide(a, sim, dir);
     if (!d) return this.lead(a, sim, dir, lane);
     const seen = sim.see(a, d);
     // Contact is felt, not seen: the block starts when the bodies meet,
@@ -171,6 +175,28 @@ export class ScreenBlocker implements Behavior {
     // Eyes stay upfield on the defense while he gets out of the way.
     const up = dir > 0 ? 0 : Math.PI;
     return runThrough(a, { x: a.pos.x + uy * s * 2, y: a.pos.y - ux * s * 2 }, { speed: 0.8, cutSkill: 1, facing: up });
+  }
+
+  /** Lineman before the throw: slide along the line toward his landmark beside the catch. */
+  private slide(a: Agent, sim: PlaySim, dir: number): MoveCommand {
+    // Once his rusher is by, he steps back up to the line near his own lane and
+    // leads from there when the ball is out. NFL released linemen on RB/TE
+    // screens are 0.6 yd behind the line and 2.6 yd from the ball at the throw,
+    // then 3.2 yd ahead of the catcher at the catch (screen_ol_reference.py);
+    // they do not slide wide behind the rush.
+    const across = clamp((this.spot.y - this.home.y) * this.side, 0, 2) * this.side;
+    const to = { x: sim.los - 0.5 * dir, y: clamp(this.home.y + across, 1, FIELD_WIDTH - 1) };
+    // Get off the rusher: a defender he sees right in front of him (upfield,
+    // within 2 yd, less than a body width across) is the man coming past; he
+    // steps around him toward the screen before going up, not into him.
+    for (const d of sim.opponents(a)) {
+      if (d.isDown(sim.t)) continue;
+      const s = sim.see(a, d);
+      const ahead = (s.pos.x - a.pos.x) * dir, off = (s.pos.y - a.pos.y) * this.side;
+      if (ahead > -0.3 && ahead < 2 && Math.abs(off) < a.profile.radius + d.profile.radius + 0.3)
+        return runThrough(a, { x: a.pos.x, y: clamp(s.pos.y + this.side * 1.6, 1, FIELD_WIDTH - 1) }, { speed: 0.8, facing: dir > 0 ? 0 : Math.PI });
+    }
+    return runThrough(a, to, { speed: Math.hypot(to.x - a.pos.x, to.y - a.pos.y) > 0.6 ? 0.8 : 0.1, facing: dir > 0 ? 0 : Math.PI });
   }
 
   /** Where he drives the man: away from the carrier's lane, else by his job (outside, upfield, inside). */

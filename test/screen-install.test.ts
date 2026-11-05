@@ -1,3 +1,4 @@
+import { bodyRadius } from '../src/physics/bodyshape.js';
 import { describe, expect, it } from 'vitest';
 import { CENTER_Y } from '../src/core/field.js';
 import { Rng } from '../src/core/rng.js';
@@ -23,7 +24,7 @@ const runTo = (sim: PlaySim, t: number, each?: () => void) => { while (sim.phase
 const isDL = (d: Agent | null) => !!d && /^(DE|DT|NT)/.test(d.slot);
 
 describe('screen install (docs/football-handbook/screens.md)', () => {
-  it('released linemen sell the pass until the count, then go block; a screen caught behind the line draws no 8-3-1 flag', () => {
+  it('released linemen sell the pass, stay within a yard of the line until the throw (8-3-1), then block the screen', () => {
     const sim = screen('rb_slip_screen', 'gun_doubles_11');
     sim.event('snap', sim.slot('C'));
     runTo(sim, 0.7);
@@ -32,18 +33,26 @@ describe('screen install (docs/football-handbook/screens.md)', () => {
     runTo(sim, 2.1);
     const released = line.filter(a => a.behavior instanceof ScreenBlocker);
     expect(released.map(a => (a.behavior as ScreenBlocker).job).sort()).toEqual(['in', 'out', 'up']);
-    // The rule, over several reps: a screen caught behind the line draws no
-    // ineligible-downfield flag, however far the released linemen have gone.
-    let behind = 0;
-    for (let seed = 1; seed <= 6; seed++) {
-      const rep = screen('rb_slip_screen', 'gun_doubles_11', seed);
+    // The rule, over several reps: before the throw no released lineman's
+    // whole body is more than a yard past the line (his rearmost point past
+    // LOS + 1), and no rep draws the ineligible-downfield flag.
+    // Slip reps, and TE screens vs Cover 3 whose linemen went downfield early
+    // (flagged) when nothing held them within a yard before the throw.
+    const reps: [string, string, number][] = [1, 2, 3].map(sd => ['rb_slip_screen', 'gun_doubles_11', sd]);
+    for (const sd of [5, 9, 10, 14]) reps.push(['te_screen', 'gun_trey_11', sd]);
+    for (const [id, form, seed] of reps) {
+      const rep = screen(id, form, seed);
       rep.event('snap', rep.slot('C'));
-      runTo(rep, 8);
-      if (!rep.events.some(e => e.type === 'catch') || rep.catchX > rep.los) continue;
-      behind++;
+      const ol = rep.offense.filter(a => /^(LT|LG|C|RG|RT)$/.test(a.slot));
+      let past = false;
+      runTo(rep, 8, () => {
+        if (rep.ball.kind === 'held' && rep.carrier === rep.qb)
+          for (const a of ol) if (a.behavior instanceof ScreenBlocker && !a.engagement
+            && a.pos.x - bodyRadius(a.body, 1, 0) > rep.los + 1) past = true;
+      });
+      expect(past).toBe(false);
       expect(rep.penalties.some(p => p.kind === 'ineligible_downfield')).toBe(false);
     }
-    expect(behind).toBeGreaterThan(0);
   });
 
   it('perimeter blockers leave the rush alone before the throw and keep their job through the catch', () => {

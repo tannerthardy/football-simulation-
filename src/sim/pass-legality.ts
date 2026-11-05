@@ -174,10 +174,6 @@ interface PassTrace {
   receiversAtRelease: Array<{ a: Agent; pos: Vec2; vel: Vec2 }>;
   contactAltered: boolean;
   spike?: 'immediate' | 'delayed';
-  /** Ineligible advances achieved before this pass was released. They are a
-   * foul only if the pass crosses the line (8-3-1): a screen caught behind it
-   * lets the line release downfield. Judged where the pass ends. */
-  downfield: { id: string; x: number; t: number }[];
   finished: boolean;
 }
 interface NativeHistory {
@@ -311,11 +307,15 @@ export function capturePassLegality(sim: PlaySim, passer: Agent, release: Vec3, 
     originalDirectionEligible: towardEligible, vicinity: false,
     receiversAtRelease: ahead.map(a => ({ a, pos: { ...a.pos }, vel: { ...a.vel } })),
     contactAltered: options.contactAlteredPass ?? (GROUNDING_FACTS && heldAtRelease(sim, passer)),
-    spike: options.spike, downfield: [], finished: false };
+    spike: options.spike, finished: false };
   h.touched = false;
   const legalPass = sim.penalties.every(p => p.kind !== 'illegal_forward_pass' || p.t !== sim.t);
   if (legalPass && passer.team === 'O' && h.pass.fromBehindLine) {
-    for (const [id, state] of h.charges) if (state.violation) h.pass.downfield.push({ id, ...state.violation });
+    for (const [id, state] of h.charges) if (state.violation) {
+      sim.recordFoul({ kind: 'ineligible_downfield', against: 'O', playerId: id, yards: 5, autoFirst: false,
+        spotX: state.violation.x, t: state.violation.t, rule: '8-3-1', enforcement: 'previous', phase: 'live' },
+      { source: 'native', rule: '8-3-1', action: 'ineligible_advance_before_pass', facts: { bodyBeyondOneYard: true } });
+    }
   }
 }
 
@@ -326,12 +326,6 @@ export function finishPassLegality(sim: PlaySim, ball: Extract<BallState, { kind
   firstTouchAgent?: Agent): void {
   const h = history(sim), p = h.pass;
   if (!p || p.finished || p.t !== ball.releaseT || p.passer !== ball.thrower) return;
-  // 8-3-1 applies to a pass that crosses the line: first touched or landing beyond it.
-  if (terminal.x > sim.los) for (const v of p.downfield) {
-    sim.recordFoul({ kind: 'ineligible_downfield', against: 'O', playerId: v.id, yards: 5, autoFirst: false,
-      spotX: v.x, t: v.t, rule: '8-3-1', enforcement: 'previous', phase: 'live' },
-    { source: 'native', rule: '8-3-1', action: 'ineligible_advance_before_pass', facts: { bodyBeyondOneYard: true, passCrossedLine: true, terminalX: terminal.x } });
-  }
   if (firstTouchAgent?.team === 'O' && eligible(sim, firstTouchAgent) === true) p.vicinity = true;
   // The measured receiver location is at the same native endpoint as the ball.
   p.vicinity ||= sim.offense.some(a => eligible(sim, a) === true &&
