@@ -334,7 +334,12 @@ export class QBPass implements Behavior {
     if (read && this.ready(read, sim)) {
       const ev = this.evaluate(a, sim, read, u);
       if (ev && ev.P >= thr && ev.intRisk <= maxInt) return this.startThrow(a, sim, ev);
-      if (t - this.readStart > dwell) {
+      // A read that has made his break and is plainly covered is done: he
+      // moves on after a glance rather than waiting out the read.
+      const forecast = this.receiverForecasts.get(read);
+      const broken = !!forecast?.hasBreak && forecast.estimate?.motion === 'installed-route' && forecast.breakAt() === null;
+      const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking'));
+      if (t - this.readStart > dwell || (broken && (!ev || ev.P < 0.5 * thr) && t - this.readStart > glance)) {
         this.readIdx++;
         this.readStart = t;
       }
@@ -390,10 +395,14 @@ export class QBPass implements Behavior {
   private ready(r: Agent, sim: PlaySim): boolean {
     const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     if (!rr) return r.behavior.kind === 'route';
-    // He times his release, not the start of his motion, to the break: a
-    // throw started now comes out one windup later.
+    // He times his release, not the start of his motion, to the break he
+    // expects from the route he installed: a throw started now comes out one
+    // windup later. Once the break is behind the receiver he is ready.
     const antic = sim.qb.r('anticipation');
-    return sim.t + this.windup(sim.qb) >= rr.breakTime - 0.3 * antic;
+    const forecast = this.receiverForecasts.get(r);
+    const brk = forecast ? forecast.breakAt() : null;
+    if (forecast && brk === null && forecast.estimate?.motion === 'installed-route' && forecast.hasBreak) return true;
+    return sim.t + this.windup(sim.qb) >= (brk ?? rr.breakTime) - 0.3 * antic;
   }
 
   private outsidePocket(a: Agent, sim: PlaySim): boolean {
@@ -486,17 +495,22 @@ export class QBPass implements Behavior {
     let intRisk = 0;
     let pClear = 1;
     const v0 = dragFreeLaunch(from, point, T);
-    const target = this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? r.pos;
+    const forecast = this.receiverForecasts.get(r);
+    const target = forecast?.predict(sim.t, 0) ?? r.pos;
+    // The man on the target runs the stem with him and learns the break only
+    // when it comes: the separation a timing throw is thrown into.
+    const breakAt = forecast?.breakAt() ?? null;
+    const untilBreak = breakAt === null ? 0 : Math.max(0, breakAt - sim.t);
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
       // Not where the defender is: where the QB thinks he is.
       const seen = this.mind.estimate(d);
       const facingQB = Math.cos(seen.facing - Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x)) > 0.2;
-      // A defender facing him sees the motion start. One who is not keeps
-      // playing his coverage on his current course until the ball is out,
-      // unless he is on the target already: then his coverage takes him there.
+      // What each defender knows, and when: one facing him sees the motion
+      // start; one on the target follows the stem until the break; anyone
+      // else keeps his course until the ball is out.
       const onTarget = Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 3;
-      const blind = facingQB || onTarget ? 0 : wind;
+      const blind = facingQB ? 0 : onTarget ? Math.min(untilBreak, wind) : wind;
       const mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
       const tt = blind + timeToReach(mover, point, d.profile.reach + 0.3) + react;

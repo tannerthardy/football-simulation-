@@ -184,3 +184,79 @@ defenders breaking toward the shoulder line before release.
 Three play-pinned fixtures (command-trace, cov7-abandonment, possession-awareness) assert
 one native play's outcome, which the throw timing changes; they need re-recording once
 the timing stage settles.
+
+## Decision timing: throwing with anticipation
+
+Tanner: really good quarterbacks throw before the receiver breaks, because they
+know he will be open when he does.
+
+**NFL tracking (BDB 2025, traditional dropbacks, targeted receiver).** Stem end is
+when the receiver's downfield speed falls below 30% of its peak, once 3+ yd deep
+(checked by hand on sample plays).
+
+| Route | n | Depth at stem end | Stem end after snap | Release − stem end p25/p50/p75 | Motion start − stem end |
+| --- | --- | --- | --- | --- | --- |
+| All | 1,307 | 8.2 yd | 3.0 s | −0.7 / −0.4 / 0.0 | −0.6 |
+| Hitch | 390 | 7.9 | 2.6 | −0.4 / −0.2 / 0.0 | −0.4 |
+| Out | 359 | 7.5 | 2.8 | −0.6 / −0.3 / −0.1 | −0.6 |
+| In | 159 | 12.3 | 3.2 | −0.7 / −0.3 / +0.2 | −0.5 |
+
+NFL quarterbacks start the motion about 0.5 s before the stem ends, and the ball is
+out about 0.3 s before the cut.
+
+**The sim before this stage.** The QB released 0.8 s (develop) to 1.0 s (with the
+motion) *after* the break. The forecast already carried the installed route, cut
+included, so he knew where the receiver would go. What held him was the defenders
+in his window model. Each was assumed to head for the catch point from the moment
+the QB decided, as if he knew the route. So nothing looked open until the
+separation had already happened.
+
+**What changed (information timing, not thresholds):**
+- **Where the break is.** `routeBreak(route)`: the waypoint the route slows him most
+  for (first on ties), not a final settle spot. The QB's own forecast gives when he
+  expects it (`ReceiverForecast.breakAt()`), from the route he installed and the
+  picture he holds. Readiness now uses that rather than the route runner's private
+  `breakTime`. That estimate assumes 85% of top speed from the snap with no
+  acceleration, runs about 0.4 s early, and for an out it times the end of the cut.
+- **What each defender knows, and when.** One facing the QB reacts to the start of
+  the motion. One on the target (within 3 yd) runs the stem with him until the
+  break, then reacts. Anyone else keeps his course until the ball is out.
+- **Leaving a covered read.** Once a read has made his break and is plainly covered
+  (P below half the threshold), the QB moves on after a glance of 0.15-0.35 s by
+  `decisionMaking`, instead of serving out the full dwell.
+
+**Result.** Four RNG shifts of the seed 7/11 saved dropbacks (732), develop
+`9a19ced9` vs this branch:
+
+| | Develop | Branch | NFL |
+| --- | --- | --- | --- |
+| Visible motion p50 | 0.15 s | 0.40 s | 0.4-0.5 s |
+| Time to throw p50 | 2.45 | 2.70 | 2.50 |
+| Completion | 64.1% | 61.4% | |
+| Sacks | 6.0% | 7.5% | |
+| Interceptions | 28 | 36 | |
+| Yards per dropback | 9.20 | 9.58 | |
+
+Release minus the receiver's break, by route (branch, seed 7/11):
+- comeback +0.15 s
+- out +0.35 s
+- dig +0.6 s
+- post +0.55 s
+
+Hitches are still about 1 s late (n 10). Traced plays show those hitches are mostly
+later reads in a progression (7#67: open from 1.3 to 1.8 s while the QB was on his
+first read).
+
+**Gaps left, each its own stage:**
+- **Interceptions.** The QB's interception estimate is about 4× below the result on
+  both arms (develop 2.8 predicted vs 10 actual; branch 3.2 vs 13). That predates
+  this branch, and the higher count is likely its echo.
+- **Progression order and timing** in quick game, so that a timing route is on his
+  eyes as it breaks.
+- **Sacks** about 1.5 points above develop. The QB's set (1.5 s) is earlier than the
+  NFL's deepest drop point (2.3 s), and he waits in a pocket that is collapsing.
+
+The three play-pinned fixtures were re-staged on native plays with the same sequences:
+- possession-awareness: roster 10 seed 18 flipped
+- command-trace: four_verts seed 13
+- cov7-abandonment: both arms now complete to Z
