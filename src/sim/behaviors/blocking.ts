@@ -225,10 +225,13 @@ export class PassProtector implements Behavior {
    * with a rusher for ~0.8 s in the first 2 s (screen_ol_reference.py,
    * rushpath.py in screen-lab.md item 18); letting the rusher by untouched
    * gave 0.4 s, and free interior rushers reached the QB within 1 s 82% of
-   * the time (NFL 11%). */
+   * the time (NFL 11%). An attached end with a called release (TE screen)
+   * sets the same way: from a tackle's kick set he drifted 3 yd into the
+   * backfield before his release and was carried to 6-7 yd by the end he let
+   * go, where the QB's forecast of his drift floated the ball behind him. */
   private setDepth(sim: PlaySim, a: Agent): number {
     const depth = passSetDepth(sim, a);
-    return this.calledRelease && isOL(a) ? 0 : depth;
+    return this.calledRelease && (isOL(a) || !sim.offAlign.spots[a.slot]?.backfield) ? 0 : depth;
   }
 
   /** Inspect existing protection state without running the coordinator. */

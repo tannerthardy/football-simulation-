@@ -279,14 +279,20 @@ export class QBPass implements Behavior {
     const thr = 0.6 - 0.12 * aggression - 0.32 * u;
     const maxInt = 0.025 + 0.05 * aggression + 0.08 * u;
 
-    // A called screen is decided before the snap: he throws it as soon as it
-    // is there unless it is dead (a man sitting on it or jumping it).
-    // Waiting for an ordinary open window let the defense come to it (bunch
-    // now thrown at 2.2-3.7 s; NFL quick screens leave at 1.1-1.5 s). Slow
-    // screens too: with the ordinary risk gate the QB held slip and TE
-    // screens past 2.5 s into the rush (NFL throws at 2.2 and 2.4 s).
+    // A called screen is decided before the snap, so it is not held for an
+    // ordinary low-risk window: with that gate the QB held slip and TE screens
+    // past 2.5 s into the rush (NFL throws at 2.2 and 2.4 s).
+    // - A quick screen is thrown as soon as it is there unless it is dead (a
+    //   man sitting on it or jumping it). Waiting let the defense come to it
+    //   (bunch now thrown at 2.2-3.7 s; NFL quick screens leave at 1.1-1.5 s).
+    // - A slow screen is built to develop: he waits for a good window and takes
+    //   a worse one as the rush closes (the ordinary completion bar, which
+    //   falls with urgency). Taking any 20% window threw TE screens at 1.45 s
+    //   with the end he had just released beside him (TE 1.6 yd from the
+    //   nearest DL at the throw, NFL 5.7; 5 picks, 19 bats in 80 reps).
     const called = this.concept.family === 'screen';
-    const need = called ? Math.min(thr, 0.2) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
+    const quick = called && this.concept.screen?.tempo === 'quick';
+    const need = quick ? Math.min(thr, 0.2) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
     // Current read.
     if (read && this.ready(read, sim)) {
       const ev = this.evaluate(a, sim, read, u);

@@ -755,6 +755,50 @@ Values are p50s.
     - `test/screen-install.test.ts`'s rule test now covers six reps: every
       slip caught behind the line draws no 8-3-1 flag.
 
+20. **TE screen floats (Tanner: "fix the TE floats").**
+    - **Why the QB floated behind the TE.** Traced on TE Cover 3 seeds 6, 9
+      and 10.
+      - As an attached end in protection, the TE took a tackle's kick set.
+        He drifted 3 yd into the backfield before his release.
+      - The end he let go then carried him back to 6–7 yd deep.
+      - At the throw the TE was moving backward. Off his installed path, the
+        QB's forecast extrapolates observed motion, so it floated the ball 3
+        yd behind him. The TE then turned upfield for his −2.5 yd landmark.
+    - **Fix 1: the attached end sells from stance depth,** like the
+      released linemen (item 19).
+      - Floats missing by 1.5–2.5 yd: 10 → 1.
+      - Never thrown: 20 → 6.
+      - But that exposed the QB's rule. He took any 20% window and threw at
+        1.45 s with the end beside the TE: 5 picks and 19 bats in 80 reps.
+        At the throw the TE was 1.6 yd from the nearest DL (NFL 5.7).
+    - **Tried, no effect:** treating a defender blocked by the target
+      himself as not held up. At throw time the TE has already released, so
+      nothing changed.
+    - **Fix 2: a slow screen waits for a good window.**
+      - It uses the ordinary completion bar, which falls with urgency as the
+        rush closes, with the called-screen risk tolerance.
+      - Quick screens keep the 20% "unless dead" rule.
+      - The QB's window model rated those early throws about right (P
+        0.42–0.62). The fault was taking them.
+    - **TE screen** (16 seeds × 5 calls), against `bbc1bcda`:
+
+      | | Before | After | NFL |
+      |---|---|---|---|
+      | Caught (of 80) | 31 | 38 | |
+      | Thrown incomplete | 29 | 28 | |
+      | Never thrown | 20 | 14 | |
+      | Interceptions | 0 | 0 (5 with fix 1 only) | |
+      | Batted by DL | | 11 (19 with fix 1 only) | |
+      | TE to nearest DL at the throw | 3.5 yd | 6.4 yd | 5.7 yd |
+      | TE depth at the throw | −3.5 | −2.8 | −3.2 |
+      | Throw p50 | 2.40 s | 2.65 s | 2.40 s |
+
+      - The remaining TE incompletions: 11 bats, 10 balls within 1 yd not
+        caught, 5 PBUs and 2 drops. The within-1-yd ones go to the Catching
+        owner.
+      - Slip, bubble, bunch and tunnel are unchanged.
+      - The full game hash is unchanged (`5bbe9d9a`).
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
