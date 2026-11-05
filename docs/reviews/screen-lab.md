@@ -1095,6 +1095,38 @@ Values are p50s.
       throws against Cover 3. The line run-blocks and stays legal, and the
       test fails without the cap.
 
+28. **Does a squat (hard) corner kill the now screen?** (Tanner asked for
+    research, 2026-11-05.) No: keep the kill to press.
+    - **Coaching sources disagree on the depth.** They read cushion and
+      leverage plus numbers, with no common cutoff:
+      - one counts numbers below a ~7 yd "flood line";
+      - a youth guide wants the defender deeper than 7 yd;
+      - another takes a soft 7–8 yd corner as the green light and throws
+        the fade when he tightens.
+      - Search summaries only: footballstudyhall and matchquarters are
+        blocked by this session's network policy.
+    - **NFL tracking: thrown WR-now screens by the depth of the defender
+      over the receiver at the snap** (BDB 2025, same classifier):
+
+      | Depth at snap | n | Caught | Yards p25/50/75 | ≤ 0 yd |
+      |---|---|---|---|---|
+      | < 2.5 yd (press) | 29 | 83% | 0 / 3 / 7 | 45% |
+      | 2.5–5 yd (squat) | 36 | 94% | 1 / 4 / 8 | 19% |
+      | 5–7.5 yd | 58 | 95% | 2 / 5 / 9 | 17% |
+      | 7.5+ yd or none | 43 | 100% | 2 / 5 / 9 | 14% |
+
+      - By coverage: Cover 2 had 29 plays (90%, median 4); Cover 3 had 68
+        (97%, median 6).
+      - Throwing into a squat corner works nearly as well as against off
+        coverage.
+      - Press is where the play degrades (45% gain nothing). NFL teams
+        still threw it 29 times; those are selected plays (press-bail,
+        post-snap options).
+    - **The sim's Cover 2 failure is execution, not the call.** In the NFL
+      squat look, the nearest defender is 4.8 yd away when the ball arrives
+      (p25/p75 3.6/6.3). In the sim's Cover 2 it is 1.2 yd (1.1/1.4).
+      Diagnose the corner's and catcher's movement, not the kill rule.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
