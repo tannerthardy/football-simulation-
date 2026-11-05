@@ -112,6 +112,10 @@ const STEP_SEEN = 0.3;
  * the field: his key, an arm's length away and straight ahead of him (as a
  * rusher keys the quarterback). */
 const KEY_DELAY = 0.5;
+/** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
+ * read lean leads his step before the key's own movement must confirm it (s). */
+const STANCE_TELL = process.env.STANCE_TELL === '1';
+const TELL_WINDOW = 0.3;
 /** How far outside the down blocker's body an edge keeps his own body as he closes (yd). */
 const HIP_GAP = 0.35;
 /** How far into the backfield a squeezed edge sets up to meet a kick-out (yd); tracked play-side ends are 0.3-0.5 yd deep by 1.5-2.0 s. */
@@ -134,6 +138,8 @@ function manInFront(sim: PlaySim, a: Agent, reach = 1.5, held: Agent | null = nu
 export class PassRusher implements Behavior {
   readonly kind = 'rush';
   private readonly getOff: number;
+  /** STANCE_TELL: he picked up his key's pre-snap lean (his recognition). */
+  private readonly readsTell: boolean;
   /** Own contact with the line, not a chip from a back or receiver.
    * Once past the opening lane and free, finish instead of restarting it. */
   private workedLineBlock = false;
@@ -153,6 +159,7 @@ export class PassRusher implements Behavior {
     // SNAP_REACT plans every start from the count itself.
     const scatter = sim.dice('rush', a).normal(0, 0.03);
     this.getOff = a.snapReadyAt = SNAP_REACT ? a.snapReadyAt : clamp(a.snapReadyAt + scatter, 0.02, 0.4);
+    this.readsTell = STANCE_TELL && sim.rng.fork(`tell-read:${a.slot}`).next() < 0.2 + 0.6 * a.r('playRecognition');
     const edge = gap === 'C' || gap === 'D';
     const pw = 0.3 + a.r('passRushPower') + (a.profile.massKg - 120) / 60;
     const fi = 0.3 + a.r('passRushFinesse');
@@ -212,6 +219,17 @@ export class PassRusher implements Behavior {
       // Moving with the blocker only until the spot: past it his slide is the blocker's, not his.
       return track(a, { x: man!.pos.x + man!.vel.x * h, y: clamped ? shut : ahead }, { x: man!.vel.x, y: clamped ? 0 : man!.vel.y },
         { speed: 1, gain: 3, facing: Math.PI });
+    }
+    // STANCE_TELL: before the key's step is visible, a lineman who read his
+    // key's weight lean pre-snap steps with it off the ball. The step is the
+    // same flat step as the read below; the first real movement he sees
+    // replaces it either way (a lean that lied costs him that step).
+    if (STANCE_TELL && !onEdge && man && !runStep && this.readsTell && man.agent.stanceLean
+      && sim.t < this.getOff + TELL_WINDOW && Math.abs(man.vel.y) < STEP_SEEN) {
+      const side = man.agent.stanceLean, step = a.profile.vmax * a.profile.shuffle;
+      a.tags.add('tell-step');
+      return track(a, { x: man.home.x + man.vel.x * a.mind.decisionInterval, y: a.pos.y + side * step * a.mind.decisionInterval },
+        { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
     }
     // The interior man keys the blocker over him.
     if (!onEdge && runStep) {

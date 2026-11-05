@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 88 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 19 are off (`PULL_STEP` landed as the default pull step and was removed, G2 2026-10-27; `LEG_BRACE`, `WRAP_BIND` and `TACKLE_ROLL` landed with the held-stride law and were removed, Main Engine 2026-10-27) (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 90 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 21 are off (`STANCE_TELL` and `ZONE_RUN` added by Defense, 2026-11-05) (`PULL_STEP` landed as the default pull step and was removed, G2 2026-10-27; `LEG_BRACE`, `WRAP_BIND` and `TACKLE_ROLL` landed with the held-stride law and were removed, Main Engine 2026-10-27) (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -40,6 +40,8 @@ There are 88 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `THREAT_READ` | on | default | defense | `src/sim/run-fits.ts:180` | — |
 | `ZONE_FLOW` | on | default | run | `src/sim/behaviors/blocking.ts:859` | — |
 | `CF_FLOW` | off | experimental | tools | `src/sim/counterfactual.ts:5` | set at first review |
+| `STANCE_TELL` | off | experimental | defense | `src/sim/assign.ts:34`, `src/sim/behaviors/defense.ts:117` | set at first review. Offensive linemen can tip their first step's lateral direction pre-snap (less often when disciplined; habit leans on any snap); a DL who reads his key's lean steps with it off the ball until the key's real movement shows. Offense half for Run Game review |
+| `ZONE_RUN` | off | experimental | defense | `src/sim/engagement.ts:676` | set at first review. An engaged interior DL carrying a line flow past his shuffle speed opens his hips and runs it (lateral cap min(0.75 vmax, flow + 0.5)) |
 | `DL_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:712` | set at first review |
 | `DL_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:694` | set at first review |
 | `GAIT_STEP` | off | experimental | physics | `src/physics/kinematics.ts:94` | set at first review |
