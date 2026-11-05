@@ -2,7 +2,8 @@
  * Ordinary (non-screen) pass releases in the sim: every PASS_CONCEPT from four
  * formations vs four calls, positions every 0.1 s to 1.4 s, each detached
  * WR/TE labelled with the route he ran. Same common format as screen-lab. */
-import { writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { CENTER_Y } from '../../src/core/field.js';
 import { Rng } from '../../src/core/rng.js';
@@ -47,5 +48,7 @@ for (const fid of FORMS) for (const concept of PASS_CONCEPTS) for (const def of 
   lines.push(JSON.stringify({ id: `${fid}|${concept.id}|${def.label}|${seed}`, kind: 'pass', dt: 0.1, xy, ball_y: r2(sim.ballY), throw: thrown,
     players: sim.agents.map((a: any) => ({ side: a.team, group: GROUP[a.player.position] ?? 'OTHER' })), routes }));
 }
-writeFileSync(process.argv[3] ?? 'out/screens/sim-releases.jsonl.gz', gzipSync(lines.join('\n') + '\n'));
+const OUT = process.argv[3] ?? 'out/screens/sim-releases.jsonl.gz';
+mkdirSync(dirname(OUT), { recursive: true });
+writeFileSync(OUT, gzipSync(lines.join('\n') + '\n'));
 console.log(`wrote ${lines.length} plays`);
