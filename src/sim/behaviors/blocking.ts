@@ -503,7 +503,7 @@ export function playSideSign(sim: PlaySim, concept: RunConcept): number {
  * At most seven inline blockers: a small mask search avoids a greedy tackle
  * stealing a shaded guard's man and leaving the wide end without an owner.
  */
-function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Agent, Agent> {
+function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, extra?: (b: Agent, d: Agent) => number, ends?: Set<Agent>): Map<Agent, Agent> {
   type Choice = { missed: number; distance: number; targets: Map<Agent, Agent> };
   let choices = new Map<number, Choice>([[0, { missed: 0, distance: 0, targets: new Map() }]]);
   const better = (a: Choice, b?: Choice) => !b || a.missed < b.missed || (a.missed === b.missed && a.distance < b.distance);
@@ -516,10 +516,10 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number): Map<Ag
         if (mask & (1 << i)) continue;
         const b = line[i];
         const distance = Math.abs(d.pos.y - b.pos.y);
-        if (distance >= (reachLimit ?? (i === 0 || i === line.length - 1 ? 4.5 : 2.2))) continue;
+        if (distance >= (reachLimit ?? ((ends ? ends.has(b) : i === 0 || i === line.length - 1) ? 4.5 : 2.2))) continue;
         const targets = new Map(choice.targets);
         targets.set(b, d);
-        keep(mask | (1 << i), { missed: choice.missed, distance: choice.distance + distance, targets });
+        keep(mask | (1 << i), { missed: choice.missed, distance: choice.distance + distance + (extra?.(b, d) ?? 0), targets });
       }
     }
     choices = next;
@@ -574,22 +574,23 @@ export const ZONE_ONBALL = process.env.ZONE_ONBALL === '1';
  * play side; on a cutback the play-side fit walled the backer into the
  * runner's new lane and the climber ran past him (s29-38 centre). */
 export const CLIMB_RUNNER_SIDE = process.env.CLIMB_RUNNER_SIDE === '1';
-/** TE_WING_COMBO (default off): the end of the line (an inline tight end,
- * or the tackle when no end is attached) with a wing within 2 yd outside him and an unowned overhang standing outside them (1.1-6 yd off
- * the ball) works the end and the overhang two-on-two: both on the end,
- * one comes off to the overhang by the same release reads as any double.
- * Installed: the end alone on the end and the wing on the overhang (or
- * cracking inside past him). */
-export const TE_WING_COMBO = process.env.TE_WING_COMBO === '1';
-/** WING_OWNS (default off): the end of the line's down man lined up more
- * over a wing beside him (by over 0.3 yd) is the wing's man, with the same
- * technique; the uncovered end climbs to the nearest unowned man off the
- * ball on his side. A wing under 85% of the man's mass (a receiver) does not
- * take him: he chips him with the end and comes off to that next man, and
- * the end keeps him. The tight end had to reach an end lined up on the wing
- * while the wing ran up between them (s29-38); a receiver was left on a
- * wide end (s19-0). */
-export const WING_OWNS = process.env.WING_OWNS === '1';
+/** ZONE_WINGS (default off): a wing at the end of the line (off it, within
+ * 2 yd outside the last man and no more than 1 yd deeper) is a line member
+ * for zone covered/uncovered ownership, and ownership weighs the physical
+ * matchup as well as alignment (a man much heavier than his blocker costs
+ * as if he stood farther away: 8 yd per unit of mass ratio over 1). The
+ * ordinary rules then decide the rest: a covered wing blocks the end over
+ * him and the uncovered tight end helps and climbs; a receiver too light for
+ * the end is uncovered, chips the end with the tackle and comes off, and the
+ * release reads never leave him as the keeper. Replaces two special cases. */
+export const ZONE_WINGS = process.env.ZONE_WINGS === '1';
+/** BLOCKER_NEXT (default off): a climber or lead whose man is gone (down,
+ * or blocked by a teammate) looks for the next threat in the runner's lane
+ * once the runner has the ball, not his own pre-snap lane, and with no work
+ * in sight leads that lane upfield instead of stepping back to a spot 3 yd
+ * in front of the runner (s19-105: the centre stood over a fallen backer,
+ * then walked back toward the line). */
+export const BLOCKER_NEXT = process.env.BLOCKER_NEXT === '1';
 /** FB_PLAYSIDE (default off): on stretch runs the lead fullback takes the
  * first free play-side defender in the core, or none (he reads his lane),
  * never a free man across the formation (he led to the backside corner). */
@@ -673,12 +674,21 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // Covered/uncovered ownership includes either shade and accounts for the
     // whole front before an uncovered blocker is available to help or climb.
     const onBall = (d: Agent) => !ZONE_ONBALL || (d.pos.x - sim.los) * sim.attackDir('O') <= 1.1;
-    for (const [b, d] of zoneOwnership(line, dl.filter((d) => d !== sliceEnd && onBall(d)))) {
+    // ZONE_WINGS: wings at the ends of the line count for ownership.
+    const depthO = (o: Agent) => (o.pos.x - sim.los) * sim.attackDir('O');
+    const wings = !ZONE_WINGS ? [] : sim.offense.filter((o) => !line.includes(o) && !isOL(o) && o !== sim.qb && o.slot !== 'RB'
+      && !(sim.offAlign.spots[o.slot]?.backfield) && depthO(o) > depthO(line[0]) - 1
+      && [line[0], line[line.length - 1]].some((e) => Math.sign(o.pos.y - by) === Math.sign(e.pos.y - by)
+        && Math.abs(o.pos.y - by) > Math.abs(e.pos.y - by) && Math.abs(o.pos.y - e.pos.y) <= 2.0));
+    const zl = [...line, ...wings].sort((p, q) => rel(q) - rel(p));
+    const mismatch = (b: Agent, d: Agent) => ZONE_WINGS ? 8 * Math.max(0, d.profile.massKg / b.profile.massKg - 1) : 0;
+    for (const [b, d] of zoneOwnership(zl, dl.filter((d) => d !== sliceEnd && onBall(d)), undefined, mismatch,
+      new Set([line[0], line[line.length - 1], ...wings]))) {
       claimedDL.add(d);
       const reach = scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'toss';
       plans.set(b, { kind: reach ? 'reach' : 'drive', target: d, drive: up(ps * (scheme === 'wideZone' ? 1.8 : reach ? 1.1 : 0.6)) });
     }
-    const pending = line.filter((b) => !plans.has(b));
+    const pending = zl.filter((b) => !plans.has(b));
     // An uncovered man doubles with the covered man on his play side; the
     // rest climb. The uncovered men count the backers across the front in
     // order: every backer one of them can reach is someone's, the assignments
@@ -691,14 +701,14 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const climbers: Agent[] = [];
     for (const b of pending) {
       if (ZONE_PAIR) {
-        const opts = [line[line.indexOf(b) - 1], line[line.indexOf(b) + 1]].map((n) => {
+        const opts = [zl[zl.indexOf(b) - 1], zl[zl.indexOf(b) + 1]].map((n) => {
           const np = n ? plans.get(n) : undefined;
           return n && np?.target && (np.kind === 'drive' || np.kind === 'reach') && !doubles.some((d) => d.neighbor === n)
             ? { neighbor: n, np, d: Math.abs(np.target.pos.y - b.pos.y) } : null;
         });
         const [pside, bside] = opts;
         const pick = pside && pside.d <= 1.8 && (!bside || pside.d <= bside.d + .3) ? pside : bside && bside.d <= 1.8 ? bside : null;
-        if (pick) doubles.push({ b, neighbor: pick.neighbor, np: pick.np }); else climbers.push(b);
+        if (pick) doubles.push({ b, neighbor: pick.neighbor, np: pick.np }); else if (!wings.includes(b)) climbers.push(b);
         continue;
       }
       const neighbor = line[line.indexOf(b) - 1];
@@ -766,55 +776,6 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const last = line[line.length - 1];
     const lp = plans.get(last);
     if (lp && (lp.kind === 'drive' || lp.kind === 'reach')) lp.kind = 'cutoff';
-    // WING_OWNS: the end's man lined up over a wing beside him is the wing's;
-    // the uncovered end climbs to the nearest unowned man off the ball.
-    if (WING_OWNS && scheme !== 'draw' && scheme !== 'qbDraw') {
-      const dirO = sim.attackDir('O'), depthOf = (o: Agent) => (o.pos.x - sim.los) * dirO;
-      for (const end of [line[0], line[line.length - 1]]) {
-        const ep = plans.get(end);
-        if (!end || !ep?.target || ep.combination || !dl.includes(ep.target)) continue;
-        const man = ep.target, out = Math.sign(end.pos.y - by) || 1;
-        const wing = sim.offense.find((o) => o !== end && !plans.has(o) && !isOL(o) && o !== sim.qb && o.slot !== 'RB'
-          && !(sim.offAlign.spots[o.slot]?.backfield) && depthOf(o) > -2 && (o.pos.y - end.pos.y) * out > 0 && Math.abs(o.pos.y - end.pos.y) <= 2.0
-          && Math.abs(o.pos.y - man.pos.y) < Math.abs(end.pos.y - man.pos.y) - .3);
-        if (!wing) continue;
-        const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
-        const next = [...dl, ...lb].filter((d) => !owned.has(d) && depthOf(d) > 1.1 && depthOf(d) < 7 && (d.pos.y - by) * out > 0)
-          .sort((p, q) => Math.hypot(p.pos.x - end.pos.x, p.pos.y - end.pos.y) - Math.hypot(q.pos.x - end.pos.x, q.pos.y - end.pos.y))[0] ?? null;
-        if (next) claimedLB.add(next);
-        if (wing.profile.massKg >= .85 * man.profile.massKg) {
-          // A wing who can hold him takes the man over him; the end climbs.
-          plans.set(wing, { kind: ep.kind, target: man, drive: ep.drive });
-          plans.set(end, { kind: 'climb', target: next, drive: up(ps * 0.4) });
-        } else if (next) {
-          // Too light to hold him: he chips the man with the end and comes
-          // off to the next man; the end keeps him (the release reads' size
-          // check never leaves the wing on him).
-          combo(wing, end, man, next, ep.drive);
-        }
-      }
-    }
-    // TE_WING_COMBO: an inline end with a wing beside him and an overhang
-    // standing outside them (off the ball, nobody's) works it two-on-two:
-    // both on the end, the one the overhang's path favours comes off to him.
-    if (TE_WING_COMBO && scheme !== 'draw' && scheme !== 'qbDraw') {
-      const dirO = sim.attackDir('O'), depthOf = (o: Agent) => (o.pos.x - sim.los) * dirO;
-      const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
-      for (const end of [line[0], line[line.length - 1]]) {
-        const ep = plans.get(end);
-        if (!end || !ep?.target || ep.combination || !dl.includes(ep.target) || depthOf(ep.target) > 1.1) continue;
-        const out = Math.sign(end.pos.y - by) || 1;
-        const wing = sim.offense.find((o) => o !== end && !plans.has(o) && !isOL(o) && o !== sim.qb && o.slot !== 'RB'
-          && !(sim.offAlign.spots[o.slot]?.backfield) && depthOf(o) > -2 && (o.pos.y - end.pos.y) * out > 0 && Math.abs(o.pos.y - end.pos.y) <= 2.0);
-        if (!wing) continue;
-        const over = [...dl, ...lb].filter((d) => !owned.has(d) && d !== ep.target && depthOf(d) > 1.1 && depthOf(d) < 6
-          && (d.pos.y - end.pos.y) * out > -1 && Math.abs(d.pos.y - wing.pos.y) < 3)
-          .sort((p, q) => Math.abs(p.pos.y - wing.pos.y) - Math.abs(q.pos.y - wing.pos.y))[0];
-        if (!over) continue;
-        combo(wing, end, ep.target, over, ep.drive);
-        owned.add(over); claimedLB.add(over);
-      }
-    }
     if (scheme === 'draw' || scheme === 'qbDraw') for (const p of plans.values()) {
       p.presentation = 'draw';
       p.kind = p.kind === 'combo' || p.kind === 'climb' ? p.kind : 'draw';
@@ -1596,6 +1557,11 @@ export class RunBlocker implements Behavior {
         const flat = { x: a.pos.x + .6 * dirL, y: this.homeY! + side * 6 };
         const bend = { x: sim.los - 2.2 * dirL, y: lane.y };
         return runThrough(a, there ? { x: a.pos.x + 3 * dirL, y: lane.y } : wide < 2.2 ? flat : (a.pos.x - bend.x) * dirL < -.3 ? bend : lane);
+      }
+      if (BLOCKER_NEXT && (plan.kind === 'climb' || plan.kind === 'lead')) {
+        // No work in sight: lead the runner's lane, never back toward him.
+        const dirN = sim.attackDir(a.team), x = dirN > 0 ? Math.max(ref.x + 3, a.pos.x + 1.5) : Math.min(ref.x - 3, a.pos.x - 1.5);
+        return goTo(a, { x, y: a.pos.y + clamp(ref.y - a.pos.y, -2, 2) * .5 }, { speed: .8 });
       }
       return goTo(a, { x: ref.x + 3, y: a.pos.y }, { speed: 0.5 });
     }
@@ -2564,7 +2530,9 @@ export class RunBlocker implements Behavior {
       if (acquiredEligibility && (seen.pose === 'down' || seen.pose === 'rising')) continue;
       // Find work within this responsibility, not the omniscient nearest man
       // to the ball anywhere on the field. Pullers/lead blockers own the exit.
-      const laneY = this.plan.pullPath?.at(-1)?.y ?? this.plan.leadLane?.y ?? (this.plan.kind === 'lead' ? ref.y : this.homeY ?? a.pos.y);
+      const runnerLane = BLOCKER_NEXT && (this.plan.kind === 'climb' || this.plan.kind === 'lead') && this.workPicture?.source === 'acquired'
+        && this.workPicture.carrier !== sim.qb.idx;
+      const laneY = runnerLane ? ref.y : this.plan.pullPath?.at(-1)?.y ?? this.plan.leadLane?.y ?? (this.plan.kind === 'lead' ? ref.y : this.homeY ?? a.pos.y);
       if (Math.abs(seen.pos.y - laneY) > 3.0 || seen.pos.x < a.pos.x - 1.0) continue;
       // FB_PLAYSIDE: the stretch lead takes the first man nobody's call has
       // (the call is known to every teammate; block states are not).
@@ -2773,10 +2741,10 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   // The keeper's hand-fight standing is his private state, not the climber's
   // evidence. The climber reads his partner's chest on the man in his own
   // picture (readJoinedSurface); the transfer still needs the keeper's hands.
-  // TE_WING_COMBO: the man he would leave behind must be holdable by his
+  // ZONE_WINGS: the man he would leave behind must be holdable by his
   // partner as he sees them (a receiver left on a defensive end is not a
   // keeper; the bigger blocker stays and the wing comes off).
-  if ((TE_WING_COMBO || WING_OWNS) && keeper.profile.massKg < .85 * combo.defender.profile.massKg) return null;
+  if (ZONE_WINGS && keeper.profile.massKg < .85 * combo.defender.profile.massKg) return null;
   if (DOUBLE_FLOW) {
     // His hands are on the man (a joined double): he feels the man's motion
     // through them; it is not a delayed visual picture.
