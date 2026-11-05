@@ -111,6 +111,9 @@
     "CLIMB_RIP": "0",
     "CLIMB_BASE": "0",
     "L2_BREAKDOWN": "0",
+    "ZONE_ONBALL": "0",
+    "CLIMB_RUNNER_SIDE": "0",
+    "TE_WING_COMBO": "0",
     "BACKFIELD_DEPTH": "0",
     "STRETCH_OFFSET": "0",
     "MESH_TEMPO": "0"

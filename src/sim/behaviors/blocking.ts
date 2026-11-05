@@ -562,6 +562,25 @@ export const ZONE_PAIR = process.env.ZONE_PAIR === '1';
  * inside defender. The backside end dropped by BACKSIDE_COMBO went to the
  * wing outside the tight end while the tight end took the man outside him. */
 export const NO_CROSS = process.env.NO_CROSS === '1';
+/** ZONE_ONBALL (default off): zone ownership counts only men on the ball
+ * (no more than 1.1 yd deep, the same line the gap call uses for a press
+ * defender) as down threats. A nickel standing on the line 1.4 yd off the
+ * ball over a wing was counted as a fifth down lineman: to account for him
+ * the tight end took him and the tackle took the end 2.2 yd outside, whom
+ * the backside double then dropped, leaving the end unblocked (s29-38). */
+export const ZONE_ONBALL = process.env.ZONE_ONBALL === '1';
+/** CLIMB_RUNNER_SIDE (default off): a climber fits his backer on the side
+ * between the backer and the runner as he sees him, not always the called
+ * play side; on a cutback the play-side fit walled the backer into the
+ * runner's new lane and the climber ran past him (s29-38 centre). */
+export const CLIMB_RUNNER_SIDE = process.env.CLIMB_RUNNER_SIDE === '1';
+/** TE_WING_COMBO (default off): the end of the line (an inline tight end,
+ * or the tackle when no end is attached) with a wing within 2 yd outside him and an unowned overhang standing outside them (1.1-6 yd off
+ * the ball) works the end and the overhang two-on-two: both on the end,
+ * one comes off to the overhang by the same release reads as any double.
+ * Installed: the end alone on the end and the wing on the overhang (or
+ * cracking inside past him). */
+export const TE_WING_COMBO = process.env.TE_WING_COMBO === '1';
 /** FB_PLAYSIDE (default off): on stretch runs the lead fullback takes the
  * first free play-side defender in the core, or none (he reads his lane),
  * never a free man across the formation (he led to the backside corner). */
@@ -644,7 +663,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   if (zoneLike) {
     // Covered/uncovered ownership includes either shade and accounts for the
     // whole front before an uncovered blocker is available to help or climb.
-    for (const [b, d] of zoneOwnership(line, dl.filter((d) => d !== sliceEnd))) {
+    const onBall = (d: Agent) => !ZONE_ONBALL || (d.pos.x - sim.los) * sim.attackDir('O') <= 1.1;
+    for (const [b, d] of zoneOwnership(line, dl.filter((d) => d !== sliceEnd && onBall(d)))) {
       claimedDL.add(d);
       const reach = scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'toss';
       plans.set(b, { kind: reach ? 'reach' : 'drive', target: d, drive: up(ps * (scheme === 'wideZone' ? 1.8 : reach ? 1.1 : 0.6)) });
@@ -737,6 +757,27 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const last = line[line.length - 1];
     const lp = plans.get(last);
     if (lp && (lp.kind === 'drive' || lp.kind === 'reach')) lp.kind = 'cutoff';
+    // TE_WING_COMBO: an inline end with a wing beside him and an overhang
+    // standing outside them (off the ball, nobody's) works it two-on-two:
+    // both on the end, the one the overhang's path favours comes off to him.
+    if (TE_WING_COMBO && scheme !== 'draw' && scheme !== 'qbDraw') {
+      const dirO = sim.attackDir('O'), depthOf = (o: Agent) => (o.pos.x - sim.los) * dirO;
+      const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
+      for (const end of [line[0], line[line.length - 1]]) {
+        const ep = plans.get(end);
+        if (!end || !ep?.target || ep.combination || !dl.includes(ep.target) || depthOf(ep.target) > 1.1) continue;
+        const out = Math.sign(end.pos.y - by) || 1;
+        const wing = sim.offense.find((o) => o !== end && !plans.has(o) && !isOL(o) && o !== sim.qb && o.slot !== 'RB'
+          && !(sim.offAlign.spots[o.slot]?.backfield) && depthOf(o) > -2 && (o.pos.y - end.pos.y) * out > 0 && Math.abs(o.pos.y - end.pos.y) <= 2.0);
+        if (!wing) continue;
+        const over = [...dl, ...lb].filter((d) => !owned.has(d) && d !== ep.target && depthOf(d) > 1.1 && depthOf(d) < 6
+          && (d.pos.y - end.pos.y) * out > -1 && Math.abs(d.pos.y - wing.pos.y) < 3)
+          .sort((p, q) => Math.abs(p.pos.y - wing.pos.y) - Math.abs(q.pos.y - wing.pos.y))[0];
+        if (!over) continue;
+        combo(wing, end, ep.target, over, ep.drive);
+        owned.add(over); claimedLB.add(over);
+      }
+    }
     if (scheme === 'draw' || scheme === 'qbDraw') for (const p of plans.values()) {
       p.presentation = 'draw';
       p.kind = p.kind === 'combo' || p.kind === 'climb' ? p.kind : 'draw';
@@ -988,7 +1029,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     // A box defender nobody owns is claimed before the secondary, by a
     // receiver on his side of the ball: the crack (on a zone run, only one
     // who can reach him). Then the closest pairs.
-    const box = (a: Agent, d: Agent) => crack(a, d) ? 0 : 1;
+    // ZONE_ONBALL: an unowned man standing on the line (an overhang the
+    // line's ownership left to the perimeter) is first priority too.
+    const box = (a: Agent, d: Agent) => crack(a, d) || (ZONE_ONBALL && dl.includes(d) && !reserved.has(d)) ? 0 : 1;
     const pairs = stalkers.flatMap((a) => open.filter((d) => eligible(a, d)).map((d) => ({ a, d, dist: near(a, d), tier: box(a, d) })))
       .sort((p, q) => p.tier - q.tier || p.dist - q.dist);
     const taken = new Set<Agent>();
@@ -1019,6 +1062,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     for (let i = 0; i < solo.length; i++) for (let j = i + 1; j < solo.length; j++) {
       const [a, pa] = solo[i], [b, pb] = solo[j], ta = pa.target!, tb = pb.target!;
       if ((rel(a) - rel(b)) * (rel(ta) - rel(tb)) >= 0 || Math.abs(rel(a) - rel(b)) > 2.5) continue;
+      // A man on the line is never traded for a man off it (first level first).
+      const lvl = (d: Agent) => (d.pos.x - sim.los) * sim.attackDir('O') <= 1.6;
+      if (lvl(ta) !== lvl(tb)) continue;
       if (Math.abs(tb.pos.y - a.pos.y) > 2.5 || Math.abs(ta.pos.y - b.pos.y) > 2.5) continue;
       pa.target = tb; pb.target = ta;
       for (const [o, p] of [[a, pa], [b, pb]] as const) {
@@ -1565,7 +1611,14 @@ export class RunBlocker implements Behavior {
     const read = this.climbRead;
     if (!read || read.target !== target || sim.t >= read.nextRead) {
       const seen = sim.see(a, target), run = sim.offCall.run!;
-      const side = playSideSign(sim, run) * .5;
+      let side = playSideSign(sim, run) * .5;
+      // CLIMB_RUNNER_SIDE: once he has the runner in his own picture (not the
+      // QB at the mesh), fit the backer's shoulder between him and the runner.
+      if (CLIMB_RUNNER_SIDE) {
+        const ref = this.workReference(a, sim), pic = this.workPicture;
+        if (pic && pic.source === 'acquired' && pic.carrier !== sim.qb.idx && Math.abs(ref.y - seen.pos.y) > .5)
+          side = Math.sign(ref.y - seen.pos.y) * .5;
+      }
       const capacity = a.body.support
         ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
       const previousAccess=this.climbAccess;
@@ -2683,6 +2736,10 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   // The keeper's hand-fight standing is his private state, not the climber's
   // evidence. The climber reads his partner's chest on the man in his own
   // picture (readJoinedSurface); the transfer still needs the keeper's hands.
+  // TE_WING_COMBO: the man he would leave behind must be holdable by his
+  // partner as he sees them (a receiver left on a defensive end is not a
+  // keeper; the bigger blocker stays and the wing comes off).
+  if (TE_WING_COMBO && keeper.profile.massKg < .85 * combo.defender.profile.massKg) return null;
   if (DOUBLE_FLOW) {
     // His hands are on the man (a joined double): he feels the man's motion
     // through them; it is not a delayed visual picture.
