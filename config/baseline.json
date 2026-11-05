@@ -114,6 +114,7 @@
     "ZONE_ONBALL": "0",
     "CLIMB_RUNNER_SIDE": "0",
     "TE_WING_COMBO": "0",
+    "WING_OWNS": "0",
     "BACKFIELD_DEPTH": "0",
     "STRETCH_OFFSET": "0",
     "MESH_TEMPO": "0"

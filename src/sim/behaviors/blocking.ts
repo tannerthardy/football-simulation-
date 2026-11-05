@@ -581,6 +581,15 @@ export const CLIMB_RUNNER_SIDE = process.env.CLIMB_RUNNER_SIDE === '1';
  * Installed: the end alone on the end and the wing on the overhang (or
  * cracking inside past him). */
 export const TE_WING_COMBO = process.env.TE_WING_COMBO === '1';
+/** WING_OWNS (default off): the end of the line's down man lined up more
+ * over a wing beside him (by over 0.3 yd) is the wing's man, with the same
+ * technique; the uncovered end climbs to the nearest unowned man off the
+ * ball on his side. A wing under 85% of the man's mass (a receiver) does not
+ * take him: he chips him with the end and comes off to that next man, and
+ * the end keeps him. The tight end had to reach an end lined up on the wing
+ * while the wing ran up between them (s29-38); a receiver was left on a
+ * wide end (s19-0). */
+export const WING_OWNS = process.env.WING_OWNS === '1';
 /** FB_PLAYSIDE (default off): on stretch runs the lead fullback takes the
  * first free play-side defender in the core, or none (he reads his lane),
  * never a free man across the formation (he led to the backside corner). */
@@ -757,6 +766,34 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const last = line[line.length - 1];
     const lp = plans.get(last);
     if (lp && (lp.kind === 'drive' || lp.kind === 'reach')) lp.kind = 'cutoff';
+    // WING_OWNS: the end's man lined up over a wing beside him is the wing's;
+    // the uncovered end climbs to the nearest unowned man off the ball.
+    if (WING_OWNS && scheme !== 'draw' && scheme !== 'qbDraw') {
+      const dirO = sim.attackDir('O'), depthOf = (o: Agent) => (o.pos.x - sim.los) * dirO;
+      for (const end of [line[0], line[line.length - 1]]) {
+        const ep = plans.get(end);
+        if (!end || !ep?.target || ep.combination || !dl.includes(ep.target)) continue;
+        const man = ep.target, out = Math.sign(end.pos.y - by) || 1;
+        const wing = sim.offense.find((o) => o !== end && !plans.has(o) && !isOL(o) && o !== sim.qb && o.slot !== 'RB'
+          && !(sim.offAlign.spots[o.slot]?.backfield) && depthOf(o) > -2 && (o.pos.y - end.pos.y) * out > 0 && Math.abs(o.pos.y - end.pos.y) <= 2.0
+          && Math.abs(o.pos.y - man.pos.y) < Math.abs(end.pos.y - man.pos.y) - .3);
+        if (!wing) continue;
+        const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
+        const next = [...dl, ...lb].filter((d) => !owned.has(d) && depthOf(d) > 1.1 && depthOf(d) < 7 && (d.pos.y - by) * out > 0)
+          .sort((p, q) => Math.hypot(p.pos.x - end.pos.x, p.pos.y - end.pos.y) - Math.hypot(q.pos.x - end.pos.x, q.pos.y - end.pos.y))[0] ?? null;
+        if (next) claimedLB.add(next);
+        if (wing.profile.massKg >= .85 * man.profile.massKg) {
+          // A wing who can hold him takes the man over him; the end climbs.
+          plans.set(wing, { kind: ep.kind, target: man, drive: ep.drive });
+          plans.set(end, { kind: 'climb', target: next, drive: up(ps * 0.4) });
+        } else if (next) {
+          // Too light to hold him: he chips the man with the end and comes
+          // off to the next man; the end keeps him (the release reads' size
+          // check never leaves the wing on him).
+          combo(wing, end, man, next, ep.drive);
+        }
+      }
+    }
     // TE_WING_COMBO: an inline end with a wing beside him and an overhang
     // standing outside them (off the ball, nobody's) works it two-on-two:
     // both on the end, the one the overhang's path favours comes off to him.
@@ -2739,7 +2776,7 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   // TE_WING_COMBO: the man he would leave behind must be holdable by his
   // partner as he sees them (a receiver left on a defensive end is not a
   // keeper; the bigger blocker stays and the wing comes off).
-  if (TE_WING_COMBO && keeper.profile.massKg < .85 * combo.defender.profile.massKg) return null;
+  if ((TE_WING_COMBO || WING_OWNS) && keeper.profile.massKg < .85 * combo.defender.profile.massKg) return null;
   if (DOUBLE_FLOW) {
     // His hands are on the man (a joined double): he feels the man's motion
     // through them; it is not a delayed visual picture.
