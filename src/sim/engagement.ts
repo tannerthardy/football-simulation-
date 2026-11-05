@@ -826,6 +826,19 @@ interface ClimbPrepPlan { kind: string; climbTo?: Agent | null;
  * gone the lean collapsed his posture (0.77 to 0.12) and he spent 0.8 s
  * recovering at ~1 yd/s beside the man (s11-45 RG). */
 export const CLIMB_BASE = process.env.CLIMB_BASE === '1';
+/** DOUBLE_OVERTAKE (default off): zone doubles hand the man to the member
+ * who can hold him and release the other, as tracked: on stretch runs the
+ * backside member overtakes a man flowing play side (races for his play-side
+ * half as the engaged blocker, approaches where he is going) and does not
+ * take the climb while he is gaining on him, so the play-side member climbs;
+ * a man he cannot gain on stays his partner's. A man flowing toward the
+ * climber is handed only to a keeper who has replaced the hip (within a
+ * quarter yard of level, keeping pace). A climber's cut to his backer counts
+ * the way around the man he leaves. Tracked 2022 zone doubles, same
+ * operator, play-side member's share of climbs (NFL / before / with): outside
+ * zone, man in the gap 92 / 24 / 67%, over the backside man 89 / 58 / 85%,
+ * over the play-side man 46 / 16 / 51%. Read in blocking.ts; defined here. */
+export const DOUBLE_OVERTAKE = process.env.DOUBLE_OVERTAKE === '1';
 function easeClimberPush(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const run = sim.offCall.run;
   if (!run || !['insideZone', 'outsideZone', 'wideZone', 'splitZone'].includes(run.scheme)) return;

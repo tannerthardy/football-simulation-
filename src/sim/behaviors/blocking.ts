@@ -23,7 +23,7 @@ import type { RunConcept } from '../../playbook/types.js';
 import type { Agent, Behavior, Engagement, RunContactSurface } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
-import { axisOf, contactControl, helperSupport, passSetDepth, promoteContact, traits } from '../engagement.js';
+import { DOUBLE_OVERTAKE, axisOf, contactControl, helperSupport, passSetDepth, promoteContact, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
 import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
@@ -2157,8 +2157,15 @@ export class RunBlocker implements Behavior {
 
   /** REACH_TECHNIQUE: a zone reach on his own man races for the play-side shoulder. */
   reachGoal(a: Agent, sim: PlaySim, e: Engagement): EngagedGoal | null {
-    if (e.blocker !== a || e.helpers.length || this.plan.kind !== 'reach' || this.plan.target !== e.defender) return null;
     const run = sim.offCall.run;
+    // DOUBLE_OVERTAKE: the backside man of a stretch double races for the
+    // man's play-side half with his partner on him (the overtake).
+    if (DOUBLE_OVERTAKE && run && e.blocker === a && e.helpers.length && this.plan.target === e.defender
+      && (run.scheme === 'outsideZone' || run.scheme === 'wideZone') && this.plan.combination) {
+      const ps = playSideSign(sim, run), partner = this.plan.combination.members.find((m) => m !== a);
+      if (partner && (partner.pos.y - a.pos.y) * ps > 0) return { kind: 'reach', side: ps };
+    }
+    if (e.blocker !== a || e.helpers.length || this.plan.kind !== 'reach' || this.plan.target !== e.defender) return null;
     return run ? { kind: 'reach', side: playSideSign(sim, run) } : null;
   }
 
@@ -2263,7 +2270,15 @@ export class RunBlocker implements Behavior {
     }else this.collectionRead=null;
     // Aiming point: reach blocks work to the playside shoulder.
     let aim = seen.pos;
-    if (contactFit) {
+    // DOUBLE_OVERTAKE: the backside man of a stretch double on a man flowing
+    // play side runs to where the man is going, level with him.
+    const overtakePartner = DOUBLE_OVERTAKE && plan.combination && !plan.combination.released && plan.combination.defender === target
+      && sim.offCall.run && (sim.offCall.run.scheme === 'outsideZone' || sim.offCall.run.scheme === 'wideZone')
+      ? plan.combination.members.find((b) => b !== a) : undefined;
+    const overtakeSide = overtakePartner && sim.offCall.run ? playSideSign(sim, sim.offCall.run) : 0;
+    if (overtakePartner && (overtakePartner.pos.y - a.pos.y) * overtakeSide > 0 && seen.vel.y * overtakeSide > 0)
+      aim = { x: seen.pos.x - 0.35, y: seen.pos.y + seen.vel.y * .35 };
+    else if (contactFit) {
       const sep = a.profile.radius + target.profile.radius + .15;
       aim = { x: seen.pos.x + contactFit.axis.x * sep, y: seen.pos.y + contactFit.axis.y * sep };
     } else if (zone) {
@@ -2830,11 +2845,32 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   // partner as he sees them (a receiver left on a defensive end is not a
   // keeper; the bigger blocker stays and the wing comes off).
   if ((ZONE_WINGS || WING_CALL) && keeper.profile.massKg < .85 * combo.defender.profile.massKg) return null;
+  // DOUBLE_OVERTAKE: on a stretch the backside member of a double on a man
+  // flowing play side is the overtaker: he stays, and his partner climbs once
+  // he has the man (the checks below). He leaves only a man not flowing.
+  const stretchRun = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
+  if (DOUBLE_OVERTAKE && stretchRun && sim.offCall.run) {
+    const ps = playSideSign(sim, sim.offCall.run);
+    const man = sim.see(climber, combo.defender);
+    // He stays while the overtake is on: the man flowing play side within
+    // his working reach and not pulling away from him. A man he cannot gain
+    // on stays his partner's, and he checks to the backer.
+    const ahead = (man.pos.y - climber.pos.y) * ps, gaining = (climber.vel.y - man.vel.y) * ps > -.3;
+    if ((keeper.pos.y - climber.pos.y) * ps > 0 && man.vel.y * ps > .3
+      && ahead <= climber.profile.radius + combo.defender.profile.radius + .2 && gaining) return null;
+  }
   if (DOUBLE_FLOW) {
     // His hands are on the man (a joined double): he feels the man's motion
     // through them; it is not a delayed visual picture.
     const side = Math.sign(climber.pos.y - keeper.pos.y), run = sim.offCall.run;
     const stretch = run?.scheme === 'outsideZone' || run?.scheme === 'wideZone';
+    // DOUBLE_OVERTAKE: the man flowing toward the climber can be handed to a
+    // keeper who has replaced the hip (within a quarter yard of level with the
+    // man's middle, hands on, keeping pace); otherwise the man escapes into
+    // the gap the climber leaves (tracked: 2-3% escapes with the hip
+    // replaced, about half without).
+    const trail = (combo.defender.pos.y - keeper.pos.y) * side;
+    const holding = DOUBLE_OVERTAKE && trail <= .25 && (keeper.vel.y - combo.defender.vel.y) * side > -.3;
     if (stretch) {
       // On stretch runs the backside man overtakes a man flowing into the
       // play-side man (tracked outside-zone climbers are the play-side
@@ -2842,8 +2878,8 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
       // is valid once the keeper is level with the man, not trailing his
       // flow by more than half a yard (s7-63: the centre behind and inside a
       // 3-technique getting upfield could not take him over).
-      if (side !== 0 && combo.defender.vel.y * side > .5 && (combo.defender.pos.y - keeper.pos.y) * side > .45) return null;
-    } else if (side !== 0 && combo.defender.vel.y * side > .5) return null;
+      if (side !== 0 && combo.defender.vel.y * side > .5 && trail > .45 && !holding) return null;
+    } else if (side !== 0 && combo.defender.vel.y * side > .5 && !holding) return null;
   }
   if ((KEEPER_TORSO ? off : Math.abs(phi)) >= .65 || base <= .60 || !contact || !touching || !useful
     || contactControl(e, keeper) === null) return null;
@@ -2861,13 +2897,27 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
  * nearer member left for a backer still sitting (s27-13 centre) and his
  * partner, the man the backer then scraped to, never got a read. */
 export const RELEASE_INTERCEPT = process.env.RELEASE_INTERCEPT === '1';
-function releaseTiming(observer: Agent, sim: PlaySim, backer: Perceived, d: Agent): { go: boolean; cut: number } {
+function releaseTiming(observer: Agent, sim: PlaySim, backer: Perceived, d: Agent, d0?: Agent): { go: boolean; cut: number } {
   const dir = sim.attackDir(observer.team), me = { pos: observer.pos, vel: observer.vel, profile: observer.profile };
   const reach = observer.profile.radius + d.profile.radius + .2;
+  // DOUBLE_OVERTAKE: the man he is leaving (and his partner on him) stand
+  // between some climbers and the backer; the way there goes around them.
+  const block = DOUBLE_OVERTAKE ? [sim.see(observer, d0 ?? observer)].filter(() => !!d0) : [];
+  const around = (p: Vec2): number => {
+    let extra = 0;
+    for (const b of block) {
+      const r = observer.profile.radius + (d0!.profile.radius) + .45;
+      const ax = p.x - observer.pos.x, ay = p.y - observer.pos.y, L2 = ax * ax + ay * ay || 1;
+      const u = clamp(((b.pos.x - observer.pos.x) * ax + (b.pos.y - observer.pos.y) * ay) / L2, 0, 1);
+      const miss = Math.hypot(observer.pos.x + u * ax - b.pos.x, observer.pos.y + u * ay - b.pos.y);
+      if (u > 0 && u < 1 && miss < r) extra += 2 * (r - miss);
+    }
+    return extra / Math.max(1, observer.profile.vmax * .8);
+  };
   let cut = Infinity;
   for (let t = .1; t <= 2.5; t += .05) {
     const p = { x: backer.pos.x + backer.vel.x * t, y: backer.pos.y + backer.vel.y * t };
-    if (timeToReach(me, p, reach) <= t) { cut = t; break; }
+    if (timeToReach(me, p, reach) + around(p) <= t) { cut = t; break; }
   }
   const fill = timeToReach({ pos: backer.pos, vel: backer.vel, profile: d.profile },
     { x: sim.los + .6 * dir, y: backer.pos.y + backer.vel.y * .4 }, 0);
@@ -2960,7 +3010,7 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   // of filling. Once the reader sees his partner carrying the man, the
   // climber goes and gets him.
   const draw = sim.offCall.run?.scheme === 'draw' || sim.offCall.run?.scheme === 'qbDraw';
-  const timing = RELEASE_INTERCEPT ? releaseTiming(observer, sim, backer, combo.backer!) : null;
+  const timing = RELEASE_INTERCEPT ? releaseTiming(observer, sim, backer, combo.backer!, combo.defender) : null;
   if (timing ? !timing.go && !draw : (!filling && !arriving && !draw)) return;
   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
   if (!route) { observer.tags.add('combo-held'); return; }
@@ -3120,7 +3170,7 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
   const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2;
   const runner = sim.slot('RB');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
-  if (RELEASE_INTERCEPT ? !releaseTiming(observer, sim, backer, combo.backer).go : (!filling && !arriving)) return;
+  if (RELEASE_INTERCEPT ? !releaseTiming(observer, sim, backer, combo.backer, combo.defender).go : (!filling && !arriving)) return;
   if (!checkBackerCorridor(observer, combo.defender, surface, backer)) return;
 
   const candidate = keeperCandidate(observer, sim, combo, e);
@@ -3152,7 +3202,7 @@ function readOvertaken(observer: Agent, sim: PlaySim, combo: Combination, e: Eng
     || (FLOW_RELEASE && backerShows(observer, sim, backer));
   const runner = sim.slot('RB');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
-  if (RELEASE_INTERCEPT ? !releaseTiming(observer, sim, backer, combo.backer!).go : (!filling && !arriving)) return;
+  if (RELEASE_INTERCEPT ? !releaseTiming(observer, sim, backer, combo.backer!, combo.defender).go : (!filling && !arriving)) return;
   if (!climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer)) return;
   applyCombinationRelease({ ...candidate, t: sim.t,
     cost: Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) }, sim, combo, true);
