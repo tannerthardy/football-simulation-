@@ -595,11 +595,13 @@ export const ZONE_WINGS = process.env.ZONE_WINGS === '1';
 export const BLOCKER_NEXT = process.env.BLOCKER_NEXT === '1';
 /** WING_CALL (default off): when a down man lines up over a wing beside the
  * end of the line (laterally nearer the wing by 0.3 yd or more), the call
- * names the wing's technique for that snap, in the tracked mix (2022 zone
- * runs, same operator, wingnfl.py): the end takes him and the wing arcs to
- * the next man (TE wing 43%, receiver 54%), the wing takes him and the end
- * climbs (31% / 28%), or both double him and one comes off by the ordinary
- * release reads (26% / 19%). An arcing wing releases flat and wide (about
+ * names the wing's technique for that snap, in the tracked mix by side
+ * (2022 zone runs, same operator, wingnfl.py). Play side: the end takes him
+ * and the wing arcs to the next man (TE wing 55%, receiver 70%), the wing
+ * takes him and the end climbs (15% / 8%), or both double him and one comes
+ * off by the ordinary release reads (the rest). Backside, where the end has
+ * his own inside man: the wing cuts the man over him off (50% / 48%) or
+ * leaves him and climbs to the backside backer. An arcing wing releases flat and wide (about
  * 1.5 yd off the man) before he climbs. The pick is a hash of the players and the
  * ball spot, not a draw from the play's stream. A keeper under 85% of the
  * man's mass never stays on him in the double. Our wings ended on the man
@@ -799,18 +801,48 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       const dirO = sim.attackDir('O'), depthOf = (o: Agent) => (o.pos.x - sim.los) * dirO;
       for (const end of [line[0], line[line.length - 1]]) {
         const ep = plans.get(end);
-        if (!end || !ep?.target || ep.combination || !dl.includes(ep.target)) continue;
-        const man = ep.target, out = Math.sign(end.pos.y - by) || 1;
-        const wing = sim.offense.find((o) => o !== end && !plans.has(o) && !isOL(o) && o !== sim.qb && o.slot !== 'RB'
+        if (!end || !ep) continue;
+        const out = Math.sign(end.pos.y - by) || 1, playSide = rel(end) > 0;
+        const wingOf = (man: Agent) => sim.offense.find((o) => o !== end && !plans.has(o) && !isOL(o) && o !== sim.qb && o.slot !== 'RB'
           && !(sim.offAlign.spots[o.slot]?.backfield) && depthOf(o) > depthOf(end) - 1.5 && (o.pos.y - end.pos.y) * out > 0
           && Math.abs(o.pos.y - end.pos.y) <= 2.2 && Math.abs(o.pos.y - man.pos.y) < Math.abs(end.pos.y - man.pos.y) - .3);
-        if (!wing) continue;
         const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
-        const next = [...dl, ...lb, ...db].filter((d) => !owned.has(d) && depthOf(d) > 1.1 && depthOf(d) < 8 && (d.pos.y - end.pos.y) * out > -1)
+        const nextFor = (wing: Agent) => [...dl, ...lb, ...db].filter((d) => !owned.has(d) && depthOf(d) > 1.1 && depthOf(d) < 8 && (d.pos.y - end.pos.y) * out > -1)
           .sort((p, q) => Math.hypot(p.pos.x - wing.pos.x, p.pos.y - wing.pos.y) - Math.hypot(q.pos.x - wing.pos.x, q.pos.y - wing.pos.y))[0] ?? null;
+        if (!playSide) {
+          // Backside: the end has his own (inside) man; the man over the wing
+          // is the wing's to cut off, or the call leaves him (the wing climbs
+          // to the backside backer). Tracked backside wings: the wing on him
+          // 50% (TE) / 48% (receiver), off him the rest.
+          const endHas = !!ep.target && dl.includes(ep.target) && !ep.combination && !!wingOf(ep.target);
+          const man = endHas ? ep.target! : dl.filter((d) => !owned.has(d) && depthOf(d) <= 1.1 && (d.pos.y - end.pos.y) * out > -.3)
+            .sort((p, q) => Math.abs(p.pos.y - end.pos.y) - Math.abs(q.pos.y - end.pos.y))[0];
+          const wing = man && wingOf(man);
+          if (!man || !wing) continue;
+          const te = wing.player.position === 'TE' || wing.player.position === 'FB';
+          const u = snapHash(wing.player.id, man.player.id, end.player.id, sim.los.toFixed(2), sim.ballY.toFixed(2));
+          const next = nextFor(wing);
+          if (u < (te ? .5 : .48) || !next) {
+            plans.set(wing, { kind: 'cutoff', target: man, drive: up(ps * 0.4) }); claimedDL.add(man);
+            // The end he relieved climbs to the backside backer.
+            if (endHas && next) { plans.set(end, { kind: 'climb', target: next, drive: up(ps * 0.4) }); claimedLB.add(next); }
+          } else {
+            // He leaves the man (to the end, or unblocked): around him, then up.
+            plans.set(wing, { kind: 'climb', target: next, drive: up(ps * 0.4), arcAround: man }); claimedLB.add(next);
+          }
+          continue;
+        }
+        if (!ep.target || ep.combination || !dl.includes(ep.target)) continue;
+        const man = ep.target;
+        const wing = wingOf(man);
+        if (!wing) continue;
+        const next = nextFor(wing);
         const te = wing.player.position === 'TE' || wing.player.position === 'FB';
         const u = snapHash(wing.player.id, man.player.id, end.player.id, sim.los.toFixed(2), sim.ballY.toFixed(2));
-        const pEnd = te ? .43 : .54, pWing = te ? .31 : .28;
+        // Play side (tracked, same operator): the end on him and the wing
+        // elsewhere 51% (TE) / 62% (receiver), the pair on him 26/17%, the
+        // wing alone 13/4%.
+        const pEnd = te ? .55 : .7, pWing = te ? .15 : .08;
         if (next) claimedLB.add(next);
         if (u < pEnd || !next) {
           // The end takes him; the wing arcs to the next man.

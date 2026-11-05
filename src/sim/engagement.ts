@@ -32,7 +32,7 @@
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
 import { gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
-import { availability, supportParams } from '../physics/support.js';
+import { availability, baseRadiusAt, supportParams } from '../physics/support.js';
 import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
@@ -1466,7 +1466,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     // Hands his: steer across the man's face toward his play-side shoulder
     // (arm work through HAND_MOTOR, within the arm and grip budgets).
     const j = e.hands;
-    if (j && e.control >= 0 && j.actor === b.body && !feet.onShoulder) {
+    // He steers only a man still on his hands with his own feet under him:
+    // steering a man who is coming off the block pulls the blocker after him
+    // (s9-99: the tackle leaned on 1,500 N of arm force, the end slid out of
+    // reach and he pitched forward).
+    const off = { x: d.pos.x - b.pos.x, y: d.pos.y - b.pos.y }, offL = Math.hypot(off.x, off.y) || 1;
+    const leaving = ((d.vel.x - b.vel.x) * off.x + (d.vel.y - b.vel.y) * off.y) / offL > .3;
+    const su = b.body.support;
+    const footed = !su || (su.state === 'up' && Math.hypot(su.xi.x, su.xi.y) < .5 * baseRadiusAt(supportParams(b.profile), su.posture));
+    if (j && e.control >= 0 && j.actor === b.body && !feet.onShoulder && !leaving && footed) {
       const other = j.b === d.body ? d : b, self = other === d ? b : d;
       const dx = other.pos.x - self.pos.x, dy = other.pos.y - self.pos.y, L = Math.hypot(dx, dy) || 1;
       const tx = -dy / L, ty = dx / L;

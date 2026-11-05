@@ -257,6 +257,20 @@ export interface AlignContext {
  * 219 snaps away, 22 on the play side; a back on the play side takes the ball
  * running away from the play and has to reverse. */
 export const STRETCH_OFFSET = process.env.STRETCH_OFFSET === '1';
+/** TE_OFF (default off): on a zone run call an attached end sometimes sets
+ * off the ball beside the tackle (a wing), with the wide receiver on his side
+ * moving up onto the line so seven stay on it. Tracked 2022 zone runs: 0.43
+ * tight ends a snap stand 0.75 yd or more behind the line beside the tackle
+ * (mostly 1.0-1.25 yd behind it, 1-2 yd outside the tackle) against 0.83
+ * attached; installed formations set none. The pick is a hash of the slot and
+ * the ball spot, not a draw from the play's stream. */
+export const TE_OFF = process.env.TE_OFF === '1';
+const TE_OFF_SHARE = .58, TE_OFF_DEPTH = 1.1;
+function spotHash(...parts: (string | number)[]): number {
+  let h = 2166136261;
+  for (const c of parts.join('|')) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
+  return ((h >>> 0) % 100000) / 100000;
+}
 
 /** WR_ALIGN: the #1's room to his sideline (yd) by his route, [alone on his
  * side, with other receivers]: tracked 2022 medians, which follow the
@@ -348,16 +362,30 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     const slotOff = Math.max(5.5, widest * 0.45 + 0.5);
     offsets[slot] = (a.split === 'slot2' ? Math.max(4.6, slotOff * 0.62) : slotOff) * sign;
   }
+  // TE_OFF: which attached ends set off the ball, and the wide receiver who
+  // comes up onto the line outside each of them.
+  const offEnd = new Set<SkillSlot>(), upWide = new Set<SkillSlot>();
+  if (TE_OFF && ctx.run && ['insideZone', 'outsideZone', 'wideZone'].includes(ctx.run.scheme)) for (const [slot, a] of entries) {
+    if (a.split !== 'inline') continue;
+    const side = fside(a.side);
+    if (entries.some(([s2, e]) => s2 !== slot && e.split === 'inline' && fside(e.side) === side)) continue;
+    const wide = entries.find(([, e]) => e.split === 'wide' && fside(e.side) === side);
+    if (!wide || spotHash(slot, los.toFixed(2), ballY.toFixed(2)) >= TE_OFF_SHARE) continue;
+    offEnd.add(slot); upWide.add(wide[0]);
+  }
+  const olMean = (Object.values(depthOf) as number[]).reduce((t, v) => t + v, 0) / 5;
   for (const [slot, a] of entries) {
     const off = offsets[slot] ?? 0;
     const side = fside(a.side);
     const backfield = a.depth >= 3 && Math.abs(off) < 3.5;
+    const depth = offEnd.has(slot) ? olMean + TE_OFF_DEPTH : upWide.has(slot) ? Math.min(a.depth, 0.6)
+      : OL_STAGGER && a.split === 'inline' ? INLINE_DEPTH : a.depth + (!backfield ? 0 : formation.qb === 'gun' ? GUN_QB_DEPTH - 5.0 : formation.qb === 'under' && a.depth >= 6 ? UNDER_TAILBACK_EXTRA : 0);
     spots[slot] = {
       slot,
-      pos: { x: los - (OL_STAGGER && a.split === 'inline' ? INLINE_DEPTH : a.depth + (!backfield ? 0 : formation.qb === 'gun' ? GUN_QB_DEPTH - 5.0 : formation.qb === 'under' && a.depth >= 6 ? UNDER_TAILBACK_EXTRA : 0)), y: clamp(ballY + off, 1, FIELD_WIDTH - 1) },
+      pos: { x: los - depth, y: clamp(ballY + off, 1, FIELD_WIDTH - 1) },
       side,
       backfield,
-      inline: a.split === 'inline',
+      inline: a.split === 'inline' && !offEnd.has(slot),
     };
   }
 

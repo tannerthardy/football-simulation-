@@ -33,7 +33,8 @@ export const ENGAGED_DEFENDER = process.env.ENGAGED_DEFENDER === '1';
  * play-side shoulder from contact at his own lateral speed, never mirroring
  * away from the play; on the shoulder he holds it and goes at least with the
  * man's flow. With the hands his (control) he steers across the man's face
- * (acts through HAND_MOTOR's arm work). Without it a reach blocker only
+ * (acts through HAND_MOTOR's arm work) while the man is still on his hands
+ * and his own feet are under him. Without it a reach blocker only
  * mirrored his man: a lineman who held still was never reached (outside zone:
  * blocker lateral 0.02 yd from 0.4 to 1.2 s, across his face 9-23%). */
 export const REACH_TECHNIQUE = process.env.REACH_TECHNIQUE === '1';

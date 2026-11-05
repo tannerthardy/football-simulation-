@@ -119,6 +119,7 @@
     "RELEASE_INTERCEPT": "0",
     "BACKFIELD_DEPTH": "0",
     "STRETCH_OFFSET": "0",
+    "TE_OFF": "0",
     "MESH_TEMPO": "0"
   },
   "worldDefaults": {
