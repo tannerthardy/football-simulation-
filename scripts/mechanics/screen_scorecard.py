@@ -86,13 +86,13 @@ def measure(p):
         # Sim only: a called screen never thrown. Classify by the receiver group,
         # and WRs by their called type, since there is no catch to classify by.
         g = p["players"][r]["group"]
-        t = {"bubble_screen": "WR-out", "tunnel_screen": "WR-in", "bunch_now_screen": "WR-now"}.get(sc.get("type"), g)
+        t = {"bubble_screen": "WR-out", "tunnel_screen": "WR-in", "bunch_now_screen": "WR-now", "wide_now_screen": "WR-now"}.get(sc.get("type"), g)
         return {"type": t, "never": 1}
     t = classify(p, r)
     if t is None:
         # A sim WR screen thrown and not caught has no catch to classify by:
         # use its called type. (NFL incompletions classify by pass_arrived.)
-        t = {"bubble_screen": "WR-out", "tunnel_screen": "WR-in", "bunch_now_screen": "WR-now"}.get(sc.get("type"))
+        t = {"bubble_screen": "WR-out", "tunnel_screen": "WR-in", "bunch_now_screen": "WR-now", "wide_now_screen": "WR-now"}.get(sc.get("type"))
     if t is None:
         return None
     xy, dt, by = p["xy"], p.get("dt", 0.1), p.get("ball_y", 26.65)

@@ -151,6 +151,17 @@ export const SCREEN_CONCEPTS: PassConcept[] = [
     screen: { receiver: 'S1', tempo: 'quick', count: 0, blocks: [{ who: 'S2', job: 'stalk' }, { who: 'S3', job: 'crack' }] },
   },
   {
+    // Now (smoke) screen to a wide receiver from 2x2: #1 steps back and
+    // turns to the ball, thrown at once; #2 blocks the man over him. The
+    // NFL-typical now screen: 169 of 174 are to receivers aligned 12-15 yd
+    // from the ball (screen_scorecard.py WR-now); the bunch version is the
+    // rare tight variant.
+    id: 'wide_now_screen', name: 'Now Screen', family: 'screen', drop: 'quick',
+    strong: { 1: 'go', 2: 'go', 3: 'go' }, weak: { 1: 'now_screen', 2: 'go' }, back: 'block',
+    progression: ['W1'], beats: ['off-coverage'],
+    screen: { receiver: 'W1', tempo: 'quick', count: 0, blocks: [{ who: 'W2', job: 'stalk' }] },
+  },
+  {
     // Tunnel: #1 sells a stalk block, then comes back inside; #2 stalks,
     // screen-side T and G release early. NFL tunnel receivers are +0.8 yd
     // upfield at 1.2 s and turn inside at 1.8 s (screen_wr_path_reference.py).

@@ -975,6 +975,41 @@ Values are p50s.
       ball is touched is offensive pass interference, which needs a pass
       beyond the line. To confirm against the rulebook text.
 
+25. **A 2×2 now screen at NFL width** (`wide_now_screen`, Gun Doubles).
+    - W1 (X, wide) runs the now route; W2 (H, slot) stalks the man over
+      him; the throw is quick; no linemen release.
+    - Bunch now stays as the rare tight variant: 5 of 174 NFL now screens
+      come from alignments within 10 yd.
+    - **Scorecard (WR-now), 16 seeds × 5 calls:**
+
+      | | Sim | NFL |
+      |---|---|---|
+      | Catch width | 15.3 yd | 13.9 |
+      | Nearest DL at the throw | 11.9 yd | 11.0 |
+      | Catch depth | −2.1 | −2.1 |
+      | Throw time | 1.20 s | 1.30 |
+
+      All four are in range. The bunch version was 9.4 yd and 4.2 yd.
+    - **By call** (caught of 16):
+      - Off coverage: Cover 3 14, Cover 1 Off 14.
+      - Press: Cover 1 3, Cover 1 Mike A 3, Cover 2 5. Most are never
+        thrown: the QB sees the screen is dead (32% never thrown overall).
+      - A now screen beats off coverage (`beats: off-coverage`). Real
+        offenses check out of it against press before the snap. The lab
+        calls it into every coverage, so its pooled rates are a mix of good
+        and bad calls.
+    - **Still out of range:** yards after the catch (median −0.1, NFL 5);
+      first defender at 0.7 s after the catch (NFL 1.6).
+      - These come with the line flags (OL −1.9 yd at the throw vs NFL −0.2,
+        the dropback set) and the catcher settling flat-footed at his spot.
+    - **Next:**
+      - A pre-snap leverage check for called quick screens (press over the
+        receiver → check), from what the QB sees at the line.
+      - The quick-game line set at the line, now that the catch is away
+        from the DL.
+      - The now receiver carrying motion through the catch.
+    - The scorecard maps `wide_now_screen` incompletions to WR-now.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).

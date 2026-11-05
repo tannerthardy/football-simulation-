@@ -32,7 +32,7 @@ const OFF_MAN = process.argv.includes('--off-man');
 /** The formation each screen is drawn from. */
 const FORMATION: Record<string, string> = {
   rb_slip_screen: 'gun_doubles_11', te_screen: 'gun_trey_11', bubble_screen: 'gun_trips_11',
-  bunch_now_screen: 'gun_bunch_11', tunnel_screen: 'gun_doubles_11',
+  bunch_now_screen: 'gun_bunch_11', tunnel_screen: 'gun_doubles_11', wide_now_screen: 'gun_doubles_11',
 };
 /** Defensive calls: zone, man (press), two-high, and a pressure. */
 const DEFENSES = [
