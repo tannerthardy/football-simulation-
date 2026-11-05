@@ -115,6 +115,7 @@
     "CLIMB_RUNNER_SIDE": "0",
     "ZONE_WINGS": "0",
     "BLOCKER_NEXT": "0",
+    "WING_CALL": "0",
     "RELEASE_INTERCEPT": "0",
     "BACKFIELD_DEPTH": "0",
     "STRETCH_OFFSET": "0",

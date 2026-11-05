@@ -459,6 +459,8 @@ export interface RunBlockPlan {
   /** FB_PLAYSIDE: a stretch lead's landmark (outside the end of the line):
    * he runs the track to it and takes the first man to show in that lane. */
   leadLane?: Vec2;
+  /** WING_CALL arc: the man over him he releases around (outside) first. */
+  arcAround?: Agent;
   /** The old surface must be cleared before the new linebacker approach. */
   departure?: { defender: Agent; keeper: Agent; backer: Agent };
 }
@@ -591,6 +593,23 @@ export const ZONE_WINGS = process.env.ZONE_WINGS === '1';
  * in front of the runner (s19-105: the centre stood over a fallen backer,
  * then walked back toward the line). */
 export const BLOCKER_NEXT = process.env.BLOCKER_NEXT === '1';
+/** WING_CALL (default off): when a down man lines up over a wing beside the
+ * end of the line (laterally nearer the wing by 0.3 yd or more), the call
+ * names the wing's technique for that snap, in the tracked mix (2022 zone
+ * runs, same operator, wingnfl.py): the end takes him and the wing arcs to
+ * the next man (TE wing 43%, receiver 54%), the wing takes him and the end
+ * climbs (31% / 28%), or both double him and one comes off by the ordinary
+ * release reads (26% / 19%). An arcing wing releases flat outside the man
+ * over him before he climbs. The pick is a hash of the players and the
+ * ball spot, not a draw from the play's stream. A keeper under 85% of the
+ * man's mass never stays on him in the double. Our wings ended on the man
+ * 84% of the time (tracked receiver wings 37%). */
+export const WING_CALL = process.env.WING_CALL === '1';
+function snapHash(...parts: (string | number)[]): number {
+  let h = 2166136261;
+  for (const c of parts.join('|')) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
+  return ((h >>> 0) % 100000) / 100000;
+}
 /** FB_PLAYSIDE (default off): on stretch runs the lead fullback takes the
  * first free play-side defender in the core, or none (he reads his lane),
  * never a free man across the formation (he led to the backside corner). */
@@ -776,6 +795,32 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const last = line[line.length - 1];
     const lp = plans.get(last);
     if (lp && (lp.kind === 'drive' || lp.kind === 'reach')) lp.kind = 'cutoff';
+    if (WING_CALL && scheme !== 'draw' && scheme !== 'qbDraw') {
+      const dirO = sim.attackDir('O'), depthOf = (o: Agent) => (o.pos.x - sim.los) * dirO;
+      for (const end of [line[0], line[line.length - 1]]) {
+        const ep = plans.get(end);
+        if (!end || !ep?.target || ep.combination || !dl.includes(ep.target)) continue;
+        const man = ep.target, out = Math.sign(end.pos.y - by) || 1;
+        const wing = sim.offense.find((o) => o !== end && !plans.has(o) && !isOL(o) && o !== sim.qb && o.slot !== 'RB'
+          && !(sim.offAlign.spots[o.slot]?.backfield) && depthOf(o) > depthOf(end) - 1.5 && (o.pos.y - end.pos.y) * out > 0
+          && Math.abs(o.pos.y - end.pos.y) <= 2.2 && Math.abs(o.pos.y - man.pos.y) < Math.abs(end.pos.y - man.pos.y) - .3);
+        if (!wing) continue;
+        const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
+        const next = [...dl, ...lb, ...db].filter((d) => !owned.has(d) && depthOf(d) > 1.1 && depthOf(d) < 8 && (d.pos.y - end.pos.y) * out > -1)
+          .sort((p, q) => Math.hypot(p.pos.x - wing.pos.x, p.pos.y - wing.pos.y) - Math.hypot(q.pos.x - wing.pos.x, q.pos.y - wing.pos.y))[0] ?? null;
+        const te = wing.player.position === 'TE' || wing.player.position === 'FB';
+        const u = snapHash(wing.player.id, man.player.id, end.player.id, sim.los.toFixed(2), sim.ballY.toFixed(2));
+        const pEnd = te ? .43 : .54, pWing = te ? .31 : .28;
+        if (next) claimedLB.add(next);
+        if (u < pEnd || !next) {
+          // The end takes him; the wing arcs to the next man.
+          if (next) plans.set(wing, { kind: 'climb', target: next, drive: up(ps * 0.4), arcAround: man });
+        } else if (u < pEnd + pWing) {
+          plans.set(wing, { kind: ep.kind, target: man, drive: ep.drive });
+          plans.set(end, { kind: 'climb', target: next, drive: up(ps * 0.4) });
+        } else combo(wing, end, man, next, ep.drive);
+      }
+    }
     if (scheme === 'draw' || scheme === 'qbDraw') for (const p of plans.values()) {
       p.presentation = 'draw';
       p.kind = p.kind === 'combo' || p.kind === 'climb' ? p.kind : 'draw';
@@ -2255,6 +2300,13 @@ export class RunBlocker implements Behavior {
         : { x: aim.x-.25, y: aim.y-(Math.sign(plan.drive.y) || 1)*.45 };
       return track(a, shoulder, { x: 0, y: 0 }, { speed: .95, gain: 3, facing });
     }
+    if (plan.arcAround && plan.kind === 'climb') {
+      // WING_CALL arc: flat outside the man over him at the line, then up.
+      const dirA = sim.attackDir(a.team), man = sim.see(a, plan.arcAround), out = Math.sign(a.pos.y - sim.ballY) || 1;
+      const clear = a.profile.radius + plan.arcAround.profile.radius + .5;
+      if ((a.pos.x - man.pos.x) * dirA < .3 && (a.pos.y - man.pos.y) * out < clear - .2)
+        return runThrough(a, { x: man.pos.x - .4 * dirA, y: man.pos.y + out * clear });
+    }
     if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
       const fit = preparedClimb ?? this.plannedClimb(a, sim, target, contact);
       if (fit) {
@@ -2744,7 +2796,7 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   // ZONE_WINGS: the man he would leave behind must be holdable by his
   // partner as he sees them (a receiver left on a defensive end is not a
   // keeper; the bigger blocker stays and the wing comes off).
-  if (ZONE_WINGS && keeper.profile.massKg < .85 * combo.defender.profile.massKg) return null;
+  if ((ZONE_WINGS || WING_CALL) && keeper.profile.massKg < .85 * combo.defender.profile.massKg) return null;
   if (DOUBLE_FLOW) {
     // His hands are on the man (a joined double): he feels the man's motion
     // through them; it is not a delayed visual picture.
