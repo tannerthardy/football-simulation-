@@ -93,10 +93,51 @@ sim from the saved seed 7/11 snaps on this branch's defaults (zone calls).
 | 2.5-3.0 s | 2,292 | +1.9 | 6.8 | 54 | +5.5 | 10.4 |
 | over 3.0 s | 3,640 | +2.9 | 7.7 | 45 | +5.9 | 10.4 |
 
-NFL backers almost never reach a 10 yd landmark by the throw; ours do. Both
-stages are wrong in the same direction: the drop starts early (above) and runs
-to a fixed landmark instead of settling on the QB's set. That is the next change:
-the QB-coupled stop, then `confirmed` as the default, judged on this table.
+NFL backers almost never reach a 10 yd landmark by the throw; ours do.
+
+### Settle on the QB's set, or anticipation? (Tanner's question)
+
+Two separate claims, measured on the same box backers in zone coverages, NFL
+(BDB, common format) vs sim (seed 7/11 snaps). QB set: the first moment after he
+has dropped 1 yd that his speed stays under 1 yd/s for two samples, before the
+throw. Toward target: velocity toward the eventual catch point; the control is
+velocity toward a random non-targeted receiver's spot at the same moment.
+
+| | NFL | Sim |
+| --- | --- | --- |
+| QB set, median | 2.1 s (n 2,595) | 1.6 s (n 103) |
+| Depth-gain rate snap → set | +0.79 yd/s | +1.71 |
+| Depth-gain rate set → set + 0.4 s | +1.88 | +3.19 |
+| Depth-gain rate set + 0.4 s → throw | +1.35 | +2.48 |
+| Toward target vs decoy at throw − 0.6 s | −0.14 vs −0.02 | −0.36 vs −0.51 |
+| Toward target vs decoy at throw − 0.3 s | **+0.16 vs −0.18** | −0.35 vs −0.18 |
+| Toward target vs decoy at the throw | **+0.79 vs −0.37** | +0.12 vs −0.34 |
+| Toward target vs decoy at throw + 0.3 s | +1.73 vs −0.69 | +1.07 vs −0.76 |
+
+- **NFL backers do not stop at the QB's set.** They keep gaining depth after it,
+  at a moderate rate. A hard "settle on the set" rule would be wrong.
+- **Our drop is about twice as fast in every window,** on top of starting early.
+  That, not the landmark itself, is why we are 2.5-3.5 yd too deep at the throw.
+  Coaches teach the drop with eyes on the QB (shuffle or backpedal); ours runs
+  turned to the spot (`spot-drop-run`) whenever he is more than 4 yd from it.
+- **NFL backers anticipate.** From 0.3 s before the release they already drift
+  toward where the ball will go and away from the decoy: reading the QB's eyes,
+  shoulders and wind-up. Ours show no lean toward the target before the release
+  and close more slowly after it: they react to the ball, not the QB.
+
+Revised plan (each a decision on the backer's own picture; coach-adjustable):
+1. **Drop with eyes on the QB at a controlled pace** (vision-and-break), turning
+   to run only on a vertical threat in his zone; a match/turn-and-run style
+   stays a call option. Judge on the depth-rate rows and the depth table above.
+2. **Anticipation from the QB:** a backer whose own delayed picture shows the QB
+   locked on a receiver near his zone, or starting his wind-up, leans toward
+   that window before the release. Its cost is real: look-offs (the QB already
+   has a look-off) and pump fakes punish it. Judge on the toward-target rows;
+   the anticipation rating sets how early and how far.
+3. Then `dropStart: 'confirmed'` as the default.
+
+Side finding, not coverage: the sim QB sets about 0.5 s earlier than NFL QBs
+(1.6 vs 2.1 s median). Passed to the QB/offense owner.
 
 ## Planned next (not in this change)
 
