@@ -134,24 +134,19 @@ export function gameSense(p: Player): number {
 
 // ------------------------------------------------------------ cues
 
-/** Has `a` had time to see the first movement after the snap? */
-/** DRAW_READ: a high hat says the line is not run blocking; the ground it
- * gives says dropback. A pass set has to give ground to protect a drop, so
- * high hats that sit on the line are the draw/screen/quick look, not a pass
- * read by themselves ("high hat, no retreat"). The hat's pass weight scales
- * with the ground the line has given, against what a dropback set has given
- * by the moment of that picture: NFL 2022 OL mean retreat from the snap on
- * throws at 1.8-2.5 s is 0.20/0.42/0.71/1.07 yd at 0.4/0.6/0.8/1.0 s; on
- * draws 0.06/0.11/0.21/0.33. DRAW_READ=0 restores the hat alone. */
-const DRAW_READ = process.env.DRAW_READ === '1';
-export function passSetGround(t: number): number {
-  return 1.4 * Math.max(0, t - 0.2) ** 1.2;
-}
-export function hatPassWeight(ground: number, t: number): number {
-  if (!DRAW_READ) return 1;
-  return clamp(ground / Math.max(0.15, passSetGround(t)), 0, 1);
+/** DRAW_READ: the expectation commits a defender early; what he then sees
+ * decides. A line that showed pass and turns to run blocking (the draw, a
+ * delayed handoff) defeats a committed pass read on the same visual evidence
+ * that would commit run from unsure, without the situation's prior holding
+ * him in his drop. NFL box linebackers are coming downhill at the draw
+ * handoff (+1.1 yd/s); a pass read held until the give kept ours dropping.
+ * DRAW_READ=0 restores the posterior-only change of mind. */
+const DRAW_READ = process.env.DRAW_READ !== '0';
+export function drawReadEnabled(): boolean {
+  return DRAW_READ;
 }
 
+/** Has `a` had time to see the first movement after the snap? */
 function t0(sim: PlaySim, a: Agent): boolean {
   return sim.t >= 0.1 + a.profile.reactionTime * 0.5;
 }
@@ -266,10 +261,7 @@ export class Recognition {
       this.changedMind = true;
     } else if (this.read === 'pass' && (p < 0.16 || (DRAW_READ && cue < -0.1
       && sigmoid(this.gain * (0.8 + 0.2 * a.mind.focus) * this.evidence + this.bias) < 0.3 + 0.10 * urgency))) {
-      // DRAW_READ: the expectation committed him early; what he now sees
-      // decides. A line that showed pass and turns to run blocking defeats a
-      // pass read on the same evidence that would commit run from unsure,
-      // without the situation's prior holding him in his drop.
+      // DRAW_READ (above): what he now sees decides, not the expectation.
       commit('run');
       this.changedMind = true;
     }
@@ -312,22 +304,17 @@ export class Recognition {
     let hat = 0;
     let n = 0;
     let pull = 0;
-    let ground = 0;
-    let seenAt = sim.t;
     const seenAfter = t0(sim, a);
     for (const slot of OL_SLOTS) {
       const o = sim.slot(slot);
       if (!o) continue;
       const s = sim.see(a, o);
       back += (sim.snapX[o.idx] - s.pos.x) * 1.1 - s.vel.x * 0.3;
-      ground += sim.snapX[o.idx] - s.pos.x;
-      seenAt = Math.min(seenAt, sim.t - (s.age ?? 0));
       if (seenAfter && s.stance) hat += s.stance === 'high' ? 1 : -1;
       if (Math.abs(s.vel.y) > 3 && s.pos.x < sim.los - 0.2 && s.vel.x < 1.5) pull++;
       n++;
     }
-    const hatWeight = n && hat > 0 ? hatPassWeight(ground / n, seenAt) : 1;
-    if (n) add(clamp((0.8 * hat * hatWeight) / n + 0.6 * clamp(back / n, -1.5, 1.5), -1.5, 1.5), w.ol * a.mind.keyAttention(sim.t));
+    if (n) add(clamp((0.8 * hat) / n + 0.6 * clamp(back / n, -1.5, 1.5), -1.5, 1.5), w.ol * a.mind.keyAttention(sim.t));
     if (pull) add(-1.2, w.pull * a.mind.keyAttention(sim.t));
 
     // A lineman feels the block in front of him: a blocker firing out low

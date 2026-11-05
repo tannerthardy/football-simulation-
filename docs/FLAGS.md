@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 89 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 20 are off (`DRAW_READ` added by Defense, 2026-11-05) (`PULL_STEP` landed as the default pull step and was removed, G2 2026-10-27; `LEG_BRACE`, `WRAP_BIND` and `TACKLE_ROLL` landed with the held-stride law and were removed, Main Engine 2026-10-27) (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 89 flags: 69 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 19 are off (`DRAW_READ` added on by Defense, 2026-11-05) (`PULL_STEP` landed as the default pull step and was removed, G2 2026-10-27; `LEG_BRACE`, `WRAP_BIND` and `TACKLE_ROLL` landed with the held-stride law and were removed, Main Engine 2026-10-27) (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -40,7 +40,7 @@ There are 89 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `THREAT_READ` | on | default | defense | `src/sim/run-fits.ts:180` | — |
 | `ZONE_FLOW` | on | default | run | `src/sim/behaviors/blocking.ts:859` | — |
 | `CF_FLOW` | off | experimental | tools | `src/sim/counterfactual.ts:5` | set at first review |
-| `DRAW_READ` | off | experimental | defense | `src/sim/recognition.ts:146` | set at first review. High hats count as pass in proportion to the ground the line has given (NFL dropback retreat profile), and a committed pass read yields to visual run evidence without the situation prior. Off: COV-7 play-action pins (Coverage) move with it on |
+| `DRAW_READ` | on | default (Defense, 2026-11-05) | defense | `src/sim/recognition.ts:144` | review 2: drop the off path. A committed pass read yields when the visual evidence alone meets the unsure-to-run rule, so the situation prior no longer holds a backer in his drop once the line turns to run blocking |
 | `DL_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:712` | set at first review |
 | `DL_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:694` | set at first review |
 | `GAIT_STEP` | off | experimental | physics | `src/physics/kinematics.ts:94` | set at first review |
