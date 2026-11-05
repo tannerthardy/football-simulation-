@@ -2,7 +2,7 @@
 
 Every engine switch read from the environment, recounted from `src` at `57f50fc3` on 2026-10-22. This includes #210's promotion and #205's two additional default-on switches. Flags that are not on develop (parked, removed from a PR, or only on a side branch) are kept in [PARKED.md](PARKED.md) so the ideas are not lost. Registration rules are in [PLAN.md](PLAN.md): at most 10 experimental flags, and each expires two reviews after it lands.
 
-There are 88 flags: 68 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 19 are off (`PULL_STEP` landed as the default pull step and was removed, G2 2026-10-27; `LEG_BRACE`, `WRAP_BIND` and `TACKLE_ROLL` landed with the held-stride law and were removed, Main Engine 2026-10-27) (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
+There are 89 flags: 69 are on by default, 1 is a diagnostic scale at identity (`DEF_GETOFF`), and 19 are off (`PULL_STEP` landed as the default pull step and was removed, G2 2026-10-27; `LEG_BRACE`, `WRAP_BIND` and `TACKLE_ROLL` landed with the held-stride law and were removed, Main Engine 2026-10-27) (#215 adds `ARM_PRESS`, `PASS_KICK` and `ROUTE_CLEAR`, all on; #217 adds `GRIP_HOLD`, on). On 2026-10-22, 31 realistic flags from this week's integration were turned on in the code (rows marked "promoted"); each keeps a `=0` switch until review 2, when its off path is dropped. `PASS_FIRST`, `STALK_CUSHION` and `BACK_BLOCK` (G2) landed on the same terms. At the first review, set an expiry for each off flag and bring the experimental count to 10.
 
 | Flag | Default | Status | Lane | Read in | Expires |
 | --- | --- | --- | --- | --- | --- |
@@ -32,6 +32,7 @@ There are 88 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `SCRAPE` | on | default | defense | `src/sim/run-fits.ts:180` | — |
 | `SHED_PHYSICAL` | on | default | trenches | `src/sim/engagement.ts:726` | — |
 | `SHED_PURSUE` | on | default | defense | `src/sim/engagement.ts:735` | — |
+| `RELEASE_REDECIDE` | on | default (release physics, 2026-11-05) | physics | `src/sim/playsim.ts` | review 2: drop the off path. A player whose block ends in the engagement update decides again in that step instead of carrying his engaged standstill through it; 50% of OL and 61% of DL releases had a zero request for a step (scripts/diag/_olrelease.mts, _relthrash.mts). |
 | `STALK_CLAIM` | on | default | run | `src/sim/behaviors/blocking.ts:844` | — |
 | `STALK_CUSHION` | on | default (G2) | run | `src/sim/behaviors/blocking.ts:820` | review 2: drop the off path |
 | `BACK_BLOCK` | on | default (G2) | run | `src/sim/behaviors/blocking.ts:831` | review 2: drop the off path |

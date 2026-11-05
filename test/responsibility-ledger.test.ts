@@ -363,9 +363,10 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // contact at 3.85, wrapping with it; still not a tie. With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step)
     // as well, LB_W alone at 3.0, wrapping with it (5.4 yd, not a score); still not a tie. With the box backer reading before he moves and filling to a pull he sees
     // as well, DT_W alone makes first contact at 2.75, a hit without a wrap; SS wraps first, at 4.25; still not a tie.
+    // With a released player deciding again in the step his block ends (RELEASE_REDECIDE), SS wraps at 4.15.
     expect(first.t).toBe(2.75);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 4.25 });
+    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 4.15 });
     expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('SS');
   });
 
