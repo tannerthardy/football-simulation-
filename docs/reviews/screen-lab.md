@@ -883,6 +883,60 @@ Values are p50s.
         throw line; within seed noise). Every other screen is identical.
       - The full game hash is unchanged (`5bbe9d9a`); npm test 3735/3735.
 
+23. **OL on WR screens (Tanner: "start with the OL releases"). Diagnosed;
+    nothing kept yet.**
+    - **NFL** (`screen_ol_reference.py --wr`, and the line-depth operator
+      below). On WR screens about 3 linemen per play (median) end up past
+      the line, but they don't release the way RB/TE screen linemen do:
+      - They hold near the line (−0.5 to −0.9 yd at 1.0 s) and cross it
+        around the throw (−0.4 to +0.3 s).
+      - They are only about 0.6 yd past it at 2.0 s.
+      - They stay 2–3 yd from the ball and 10–14 yd from the catcher; 15%
+        are in the convoy.
+      - The DL are held at the line: −0.3 / +0.2 yd at 1.0 s; bubble DL
+        −0.1 at 2.0 s. 56–62% are in contact with an OL at 1.0 s.
+      - That is an aggressive quick-game set at the line carrying forward,
+        not a release to the screen.
+    - **Sim (committed):** the line takes the dropback set keyed to the QB's
+      depth.
+      - OL −1.9 yd at 1.0 s and −3.3 at 2.0 s; DL −0.8 and −3.6.
+      - Contact 16% at 1.0 s.
+    - **Tried, not kept (5 release variants and 1 set variant):**
+      1. T/G/C released on a 1.0 s count. The end, left free before the
+         1.2 s throw, broke up or picked bunch now 8 times (caught 70 →
+         40).
+      2. Release on the throw (`lineRelease: 'throw'`).
+         - An uncovered center left at the snap through the no-rusher
+           branch.
+         - The others released, then backed up: `lead()` sends them to the
+           screen's spot 9–15 yd wide, across the rushers they had just let
+           go.
+      3. A climbing lineman ignores men behind him, and climbs in his own
+         lane. Still −1.1 yd at the throw and −1.5 at 1.5 s; bunch now
+         52/80.
+      4. Every lineman sets at stance depth on a called quick screen.
+         - Contact at 1.0 s rises to 84% (NFL 56–62%).
+         - But the OL are still driven back (−1.2 at 1.0 s, −3.0 at 2.0 s).
+         - Bunch now drops 70 → 41: DE_S, held at the line, is 4.5 yd from
+           the bunch catch point and plays the ball 0.4 s after the throw.
+    - **What blocks it:**
+      - Our only now screen is from a tight bunch: the point man at 9 yd,
+        caught at 9.4.
+      - NFL now screens are thrown to receivers aligned 12–15 yd out (169
+        of 174). Only 5 come from alignments of 10 yd or less, and even on
+        those the nearest DL is 8.9 yd from the receiver at arrival (ours:
+        4.5).
+      - A line that holds the rush at the line is right. It only works
+        once the screen is caught where the DL aren't.
+      - The OL being driven back after engaging at the line is a separate,
+        physical question: anchor against a bull rush from a stance-depth
+        set. It is the same drive-back seen on slow screens (item 19).
+    - **Next, in order:**
+      1. A now screen to a wide receiver from a 2×2 set, the NFL-typical
+         alignment. Keep the bunch variant as the rare case.
+      2. The quick-game line set: at the line, with an NFL-like anchor.
+      3. The release on the throw, from the line.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
