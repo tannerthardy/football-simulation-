@@ -23,11 +23,19 @@ after a block ends.
 | `_reltrace.mts` | One body, tick by tick |
 | `_edgeflip.mts` | The edge-fit picture around a flip |
 
-- **It is mostly the request.** 49 released DL were still under 2 yd/s at
-  +0.5 s. Of those, 48 had a request that flipped direction or dropped to
-  zero. One asked steadily. A request read at a single tick (+0.3 s) hides
-  this.
-- **Flip sources** (released DL):
+- **The request, and mostly one step of it.** 49 released DL were still
+  under 2 yd/s at +0.5 s, and 48 of them had a request that flipped
+  direction or dropped to zero.
+  - That count includes defenders already in a tackle, whose request the
+    bond rewrites. Defense's command trace on seeds 7–13 found half of all
+    flips are bond rewrites.
+  - Excluding anyone in a tackle bond or within 1 yd of the carrier leaves
+    26 slow defenders. 24 of them had the release-step zero request, 8
+    flipped, and 1 asked steadily.
+  - With `RELEASE_REDECIDE` on, 22 are slow: 17 ask steadily, 5 flip, none
+    stops. What is left is the state they leave the block in, not the
+    request (see below and Defense's engaged-speed finding).
+- **Flip sources** (released DL, tacklers included, seeds 7–8):
 
   | Source | Flips |
   |---|---|
@@ -50,6 +58,15 @@ after a block ends.
   and has to reverse first.
 - **Contact after release.** 55% of OL releases stay in contact with a
   defender for more than half of the next 0.5 s. Not yet diagnosed.
+
+- **Defense's follow-up** (2026-11-05, seeds 7–13, NFL vs sim with the same
+  code):
+  - Once free, sim defenders reach the carrier as often as NFL ones (DL 41%
+    vs 40%, LB 44% vs 45%).
+  - The gap is getting free: off every blocker within 1.0 s, DL 16% vs NFL
+    25%, LB 31% vs 36%, DB 32% vs 46%.
+  - Engaged DL move too little: 1.6–2.2 yd/s within 1.2 yd of a blocker
+    before freeing, NFL 2.5–2.8. That low speed carries into the release.
 
 ## Changed here: `RELEASE_REDECIDE` (default on)
 
@@ -101,6 +118,9 @@ SE:
 
 ## Next
 
-- Post-release contact: is the player moving away while contact holds him,
-  or asking to go through the man he left?
+- Getting free (Main Engine): the release from a held block
+  (`SHED_PHYSICAL`), and post-release contact. Is the player moving away
+  while contact holds him, or asking to go through the man he left?
+- Engaged DL speed: Defense compares the engaged request with what the body
+  achieves under the block.
 - Re-measure on more seeds once Defense's request work lands.
