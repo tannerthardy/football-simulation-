@@ -42,6 +42,7 @@ import { createEngagement, releaseJoints, updateEngagements } from './engagement
 import { PerceptionBuffer, type Perceived } from './perception.js';
 import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
+import { L2_BREAKDOWN, breakdownForContact } from './breakdown.js';
 import { predictCalledMotion } from './called-motion.js';
 import { MotionRuntime, motionEnabled, planMotion } from './motion.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
@@ -1079,6 +1080,7 @@ export class PlaySim {
       }
       commandTrace?.at('open-to-ball');
       this.cmds[i] = openToBall(a, this, contained);
+      if (L2_BREAKDOWN && t >= a.snapReadyAt) this.cmds[i] = breakdownForContact(a, this, this.cmds[i]);
       commandTrace?.command(a, 'open-to-ball', this.cmds[i]);
       ledger?.stage('open-to-ball', a, this.cmds[i]);
     }
