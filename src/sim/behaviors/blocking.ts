@@ -599,8 +599,8 @@ export const BLOCKER_NEXT = process.env.BLOCKER_NEXT === '1';
  * runs, same operator, wingnfl.py): the end takes him and the wing arcs to
  * the next man (TE wing 43%, receiver 54%), the wing takes him and the end
  * climbs (31% / 28%), or both double him and one comes off by the ordinary
- * release reads (26% / 19%). An arcing wing releases flat outside the man
- * over him before he climbs. The pick is a hash of the players and the
+ * release reads (26% / 19%). An arcing wing releases flat and wide (about
+ * 1.5 yd off the man) before he climbs. The pick is a hash of the players and the
  * ball spot, not a draw from the play's stream. A keeper under 85% of the
  * man's mass never stays on him in the double. Our wings ended on the man
  * 84% of the time (tracked receiver wings 37%). */
@@ -2303,9 +2303,10 @@ export class RunBlocker implements Behavior {
     if (plan.arcAround && plan.kind === 'climb') {
       // WING_CALL arc: flat outside the man over him at the line, then up.
       const dirA = sim.attackDir(a.team), man = sim.see(a, plan.arcAround), out = Math.sign(a.pos.y - sim.ballY) || 1;
-      const clear = a.profile.radius + plan.arcAround.profile.radius + .5;
+      // A flat, wide first release: stay about 1.5 yd off the man until past him.
+      const clear = 1.6;
       if ((a.pos.x - man.pos.x) * dirA < .3 && (a.pos.y - man.pos.y) * out < clear - .2)
-        return runThrough(a, { x: man.pos.x - .4 * dirA, y: man.pos.y + out * clear });
+        return runThrough(a, { x: Math.min(a.pos.x * dirA + .3, man.pos.x * dirA - .6) * dirA, y: man.pos.y + out * (clear + .3) });
     }
     if (CLIMB_PLAN && plan.kind === 'climb' && sim.offCall.run) {
       const fit = preparedClimb ?? this.plannedClimb(a, sim, target, contact);
