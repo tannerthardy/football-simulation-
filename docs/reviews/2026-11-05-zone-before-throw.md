@@ -139,6 +139,35 @@ Revised plan (each a decision on the backer's own picture; coach-adjustable):
 Side finding, not coverage: the sim QB sets about 0.5 s earlier than NFL QBs
 (1.6 vs 2.1 s median). Passed to the QB/offense owner.
 
+### Where the excess depth comes from
+
+With `dropStart: 'confirmed'` forced, the phase before the QB's set matches
+(depth-gain rate 1.03 yd/s vs NFL 0.79; it was 1.71), but once dropping our
+backers still gain 3.1 / 2.8 yd/s against NFL 1.9 / 1.35. Depth gained between
+1.4 s and the throw, by the backer's command:
+
+| Command | Share of depth | Rate |
+| --- | --- | --- |
+| carry-run-past (running with a vertical) | 34% | 2.9 yd/s |
+| wall | 22% | 3.5 |
+| zone-landmark (drop with no threat) | 21% | 2.6 |
+| wall-open | 10% | 4.1 |
+| man-pedal, lane, read-step, stem read, spot | 13% | 0.9-4.0 |
+
+About two-thirds of the excess is route-driven: carrying or walling a vertical
+release. COV-10 (Defense) found sim releases far too fast and vertical
+(4.4-4.8 yd/s downfield by 0.9 s on routes that are much slower in the NFL), so
+many releases look like seams and the backers carry them. Slowing the carry to
+hit the NFL depth table now would fit the defense to a wrong offense. Order:
+
+1. **Anticipation from the QB** (coverage's own; independent of the routes):
+   lean toward the window the QB's visible facing and set point to, before the
+   release; look-offs and pump fakes are its cost.
+2. **The empty-landmark drop at a controlled pace** (21% of the excess).
+3. **`dropStart: 'confirmed'` as the default**, once the spot drop no longer
+   sprints to a far spot (the panel failure above).
+4. **Re-measure the depth tables after COV-10**, before touching carry or wall.
+
 ## Planned next (not in this change)
 
 Each is a decision on observed evidence, set per call, tag, role or game plan;
