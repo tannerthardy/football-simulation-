@@ -49,6 +49,15 @@ export interface CarrierOptions {
  * outside lane to the inside one 1.5 yd from the line while running 3.6 yd/s
  * laterally and ran into the end he was bending around. */
 export const RB_COMMIT = process.env.RB_COMMIT === '1';
+/** OZ_HIP_READ (default off): on outside and wide zone the back reads the
+ * play-side end man (the first defender on the line outside his play-side
+ * tackle, as he sees them) against the blocker nearest him. With his blocker
+ * inside him (outside leverage: the edge is his) the back aims inside him;
+ * reached or square, he favours neither side of him; an unblocked end leaves
+ * the designed aim. The lane read still decides. Tracked 2022 outside zone,
+ * same operator: with the end's blocker inside him the back crossed inside
+ * him 78-81% (ours 40-48%), reached 60% (ours 43%), square 73-86%. */
+export const OZ_HIP_READ = process.env.OZ_HIP_READ === '1';
 /** RB_HELD (default off): the back's read at the line gives a defender he
  * sees a blocker on the same held-up time as his open-field read does (0.7 s,
  * 0.25 s if the man is visibly coming at him through the block). The line
@@ -57,6 +66,13 @@ export const RB_COMMIT = process.env.RB_COMMIT === '1';
  * one nearest the call (s11-79: into the end; an early cut inside him gained
  * 4.7 yd on the same snap). */
 export const RB_HELD = process.env.RB_HELD === '1';
+/** HELD_SIDE (default off; with RB_HELD): the held-up time counts only for
+ * an entry his blocker stands between him and: a blocker on the man's inside
+ * does not slow him to an entry outside him. The line read gave an end with
+ * outside leverage on his blocker the full hold to the edge, so the edge read
+ * open and the back bounced into him (tracked outside zone: backs crossed
+ * inside such an end 78-81%, ours 41-56%). */
+export const HELD_SIDE = process.env.HELD_SIDE === '1';
 
 /** The designed aiming point as this runner sees the line now (LIVE_AIM=0: snap point). */
 export function liveAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | undefined {
@@ -111,6 +127,24 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
     const logged = !!on && (on.y - kickSeen.pos.y) * run.side < 0;
     preferred = kickSeen.pos.y + (logged ? run.side * .85 : -run.side * .85);
   }
+  if (OZ_HIP_READ && (run.scheme === 'outsideZone' || run.scheme === 'wideZone')) {
+    // The play-side tackle (his own line, as he sees it) and the first man on
+    // the line outside him; then the blocker nearest that man.
+    const tackle = pictures.filter((q) => q.team === 'O' && (q.agent.slot === 'LT' || q.agent.slot === 'RT')
+      && (q.seen.pos.y - sim.ballY) * run.side > 0)[0];
+    const onLine = (q: { seen: Perceived }) => depth(q.seen.pos) <= 1.6 && depth(q.seen.pos) >= -1 && q.seen.pose !== 'down';
+    const key = tackle && pictures.filter((q) => q.team === 'D' && onLine(q) && (q.seen.pos.y - tackle.seen.pos.y) * run.side > -.6)
+      .sort((p, q) => (p.seen.pos.y - q.seen.pos.y) * run.side)[0];
+    if (key) {
+      const blocker = pictures.filter((q) => q.team === 'O' && q.agent !== a && q.seen.pose !== 'down')
+        .sort((p, q) => Math.hypot(p.seen.pos.x - key.seen.pos.x, p.seen.pos.y - key.seen.pos.y) - Math.hypot(q.seen.pos.x - key.seen.pos.x, q.seen.pos.y - key.seen.pos.y))[0];
+      const near = blocker && Math.hypot(blocker.seen.pos.x - key.seen.pos.x, blocker.seen.pos.y - key.seen.pos.y) <= 1.5;
+      if (near) preferred = (blocker.seen.pos.y - key.seen.pos.y) * run.side < -.25
+        ? key.seen.pos.y - run.side * (key.agent.profile.radius + a.profile.radius + .3)
+        // Reached or square: either side of him may be the lane.
+        : key.seen.pos.y;
+    }
+  }
   const bodies: LineBody[] = [];
   for (const { agent: o, seen: s, team } of pictures) {
     if (s.pose === 'down') continue;
@@ -139,16 +173,22 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   // Acquired motion already contains a block's observed slowdown. Nearby
   // bodies do not promise retention or a future pursuit delay. In particular,
   // a defender occupying the entry remains a threat, on either side of a block.
-  const held = new Map<Agent, number>();
+  const held = new Map<Agent, number>(), heldBy = new Map<Agent, Vec2[]>();
   if (RB_HELD) for (const { agent: d, seen: s, team } of pictures) {
     if (team !== 'D') continue;
-    if (!pictures.some((q) => q.team === 'O' && q.seen.pose !== 'down' && touching({ pos: q.seen.pos, radius: q.agent.profile.radius }, s.pos, d.profile.radius))) continue;
+    const on = pictures.filter((q) => q.team === 'O' && q.seen.pose !== 'down' && touching({ pos: q.seen.pos, radius: q.agent.profile.radius }, s.pos, d.profile.radius));
+    if (!on.length) continue;
     const rx = a.pos.x - s.pos.x, ry = a.pos.y - s.pos.y;
     held.set(d, (s.vel.x * rx + s.vel.y * ry) / (Math.hypot(rx, ry) || 1) > 1 ? .25 : .7);
+    heldBy.set(d, on.map((q) => q.seen.pos));
   }
+  // HELD_SIDE: a blocker holds him up only toward entries the blocker is on
+  // the way to (in the half-plane facing the entry from the man).
+  const holdsToward = (d: Agent, s: Perceived, p: Vec2): boolean => !HELD_SIDE
+    || (heldBy.get(d) ?? []).some((b) => (b.x - s.pos.x) * (p.x - s.pos.x) + (b.y - s.pos.y) * (p.y - s.pos.y) > 0);
   const threatTime = (d: Agent, s: Perceived, p: Vec2): number =>
     timeToReach({ ...s, profile: d.profile }, p, d.profile.radius + a.profile.radius + d.profile.reach * .75)
-      + observedRecoveryAllowance(s, d.profile.getUp, sim.dt) + (held.get(d) ?? 0);
+      + observedRecoveryAllowance(s, d.profile.getUp, sim.dt) + (holdsToward(d, s, p) ? held.get(d) ?? 0 : 0);
   let best: Vec2 | null = null, cost = Infinity, bestY: number | undefined;
   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
   // Bodies on a segment block the run along it.
