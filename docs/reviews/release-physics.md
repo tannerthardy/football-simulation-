@@ -34,7 +34,7 @@ after a block ends.
     flipped, and 1 asked steadily.
   - With `RELEASE_REDECIDE` on, 22 are slow: 17 ask steadily, 5 flip, none
     stops. What is left is the state they leave the block in, not the
-    request (see below and Defense's engaged-speed finding).
+    request (see below).
 - **Flip sources** (released DL, tacklers included, seeds 7–8):
 
   | Source | Flips |
@@ -65,8 +65,13 @@ after a block ends.
     vs 40%, LB 44% vs 45%).
   - The gap is getting free: off every blocker within 1.0 s, DL 16% vs NFL
     25%, LB 31% vs 36%, DB 32% vs 46%.
-  - Engaged DL move too little: 1.6–2.2 yd/s within 1.2 yd of a blocker
-    before freeing, NFL 2.5–2.8. That low speed carries into the release.
+  - Engaged DL speed matches the NFL. Across all blocked DL (within 1.2 yd
+    of an OL, carrier within 6 yd), p25/50/75 is 1.1/1.7/2.4 in the sim vs
+    1.0/1.7/2.7 in the NFL.
+    - An earlier "too still" reading (1.6–2.2 vs 2.5–2.8) came from the
+      freed subset only, a selection effect, and is withdrawn.
+    - The one difference: NFL DL gain 0.4 yd/s upfield while blocked, ours
+      0.0.
 
 ## Changed here: `RELEASE_REDECIDE` (default on)
 
@@ -121,6 +126,6 @@ SE:
 - Getting free (Main Engine): the release from a held block
   (`SHED_PHYSICAL`), and post-release contact. Is the player moving away
   while contact holds him, or asking to go through the man he left?
-- Engaged DL speed: Defense compares the engaged request with what the body
-  achieves under the block.
+- Upfield knock-back while blocked (NFL 0.4 yd/s, sim 0.0): Defense checks
+  whether the engaged DL requests upfield before it is called push physics.
 - Re-measure on more seeds once Defense's request work lands.
