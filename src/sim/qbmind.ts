@@ -40,6 +40,7 @@ import type { Coverage, DefSlot, DefensivePlayCall, OffensivePlayCall, PassConce
 import { r01 } from '../players/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { screenSpot } from './screen-spot.js';
 
 /**
  * The coverages a quarterback distinguishes: one canonical picture per family
@@ -493,6 +494,9 @@ export class QBMind {
   preSnapCheck(call: OffensivePlayCall, opts: { hurry: boolean; down: number; distance: number }): OffensivePlayCall {
     const sim = this.sim;
     const p = this.qb.player;
+    // An installed kill is part of the call, not the QB's freedom to change it.
+    const killed = this.screenKill(call);
+    if (killed) return killed;
     // How much freedom the staff gives him: veterans with good awareness get the keys.
     const authority = clamp(0.1 + 0.5 * this.vision + 0.035 * p.experience, 0, 0.85);
     if (opts.hurry || !sim.dice('qb-mind').chance(authority)) return call;
@@ -558,6 +562,32 @@ export class QBMind {
       }
     }
     return call;
+  }
+
+  /**
+   * A called quick screen with a press kill: if he sees a defender pressed
+   * over the screen receiver (within ~2 yd of the line and over his
+   * alignment), check to the quick game. Seen with the same alignment noise
+   * as the box count.
+   */
+  private screenKill(call: OffensivePlayCall): OffensivePlayCall | null {
+    const sim = this.sim;
+    const spec = call.kind === 'pass' ? call.pass?.screen : undefined;
+    if (!spec || spec.kill !== 'press') return null;
+    const designed = screenSpot(sim, call.pass!);
+    if (!designed) return null;
+    const r = designed.receiver.pos;
+    const sig = 0.3 + 1.0 * (1 - this.rec);
+    const pressed = sim.defense.some((d) => {
+      const x = d.pos.x + sim.dice('qb-mind').normal(0, sig) - sim.los;
+      const y = d.pos.y + sim.dice('qb-mind').normal(0, sig * 0.7);
+      return x < 2.2 && Math.abs(y - r.y) < 1.5;
+    });
+    if (!pressed) return null;
+    const quick = this.quickCheck();
+    if (!quick) return null;
+    this.report.audible = `kill to ${quick.name}`;
+    return { ...call, pass: quick, label: `${call.formation.name} — ${quick.name} (kill)` };
   }
 
   /** Quick-game answer to the look: hitches vs. off corners, slants vs. press. */

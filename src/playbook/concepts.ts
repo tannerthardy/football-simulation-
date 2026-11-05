@@ -159,7 +159,9 @@ export const SCREEN_CONCEPTS: PassConcept[] = [
     id: 'wide_now_screen', name: 'Now Screen', family: 'screen', drop: 'quick',
     strong: { 1: 'go', 2: 'go', 3: 'go' }, weak: { 1: 'now_screen', 2: 'go' }, back: 'block',
     progression: ['W1'], beats: ['off-coverage'],
-    screen: { receiver: 'W1', tempo: 'quick', count: 0, blocks: [{ who: 'W2', job: 'stalk' }] },
+    // Without a run built in, the call carries a kill: press over #1 takes
+    // away the cushion the screen needs, so the QB checks out of it.
+    screen: { receiver: 'W1', tempo: 'quick', count: 0, kill: 'press', blocks: [{ who: 'W2', job: 'stalk' }] },
   },
   {
     // Tunnel: #1 sells a stalk block, then comes back inside; #2 stalks,

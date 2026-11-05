@@ -1010,6 +1010,41 @@ Values are p50s.
       - The now receiver carrying motion through the catch.
     - The scorecard maps `wide_now_screen` incompletions to WR-now.
 
+26. **Press kill on the now screen** (Tanner, 2026-11-05).
+    - Today's now screen is usually an RPO tag on a run. A screen called on
+      its own, without a run built in, gets killed against press.
+    - `ScreenSpec.kill: 'press'` is part of the call (`wide_now_screen`).
+      - `QBMind.preSnapCheck` runs it before the QB's discretionary
+        audibles: an installed rule, not his freedom to change the play.
+      - The check is whether a defender is within 2.2 yd of the line and
+        within 1.5 yd of the screen receiver's alignment. The QB sees it
+        through the same alignment noise as his box count.
+      - On a kill he checks to the quick game (`quickCheck`: slant/flat
+        against press).
+    - Lab (`--audibles`, 16 seeds × 5 calls):
+      - Killed 32 of 32 against press (Cover 1, Cover 1 Mike A); the
+        check-outs gained a median 9 yd.
+      - Killed 0 of 48 against off coverage (Cover 3, Cover 1 Off,
+        Cover 2).
+      - Test: `screen-install.test.ts`, kill against press, none against
+        Cover 1 Off or Cover 3.
+    - **What the plays that were not killed show** (first look, no fix yet):
+      - **Cover 2 (corner squatting at 4 yd):** 5 of 16 caught, nearest
+        defender 1.1–1.5 yd at the catch. Not press, so no kill. Whether a
+        hard corner should also kill the call is Tanner's to decide.
+      - **Cover 1 Off:** caught 14 of 16, median about 0 yd. CB_W (man on
+        W1) and SS (man on H, the stalker) both reach the catcher; H can
+        block one. That is a numbers count (2 defenders, 1 blocker), the
+        read an RPO tag makes before the throw.
+      - **Cover 3:** H gets between the nickel and the catcher, but the
+        nickel triggers from 4.5 yd to the line before the throw. Nearest
+        defender at the catch is 3.1–3.9 yd (NFL p50 5.6). Bimodal: 7 TDs,
+        5 gains of ≤ 1.5 yd.
+      - Carrier speed after the catch: NFL p50 is 1.5 / 3.1 / 4.4 yd/s at
+        the catch / +0.5 / +1.0 s. The sim catches faster (about 2.8) but
+        is slower at +0.5 s against Cover 3 (median about 1.6). The
+        defender is already on him; that is not a flat-footed catch.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).

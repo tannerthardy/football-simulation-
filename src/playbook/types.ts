@@ -132,6 +132,10 @@ export interface ScreenSpec {
   /** A detached screen receiver who first sells a stalk block (the tunnel's
    * vertical sell) leaves for his route this many seconds after the snap. */
   receiverSell?: number;
+  /** Installed kill: the QB checks out of the screen at the line when he sees
+   * this look on the screen receiver ('press': a defender pressed over him,
+   * so there is no cushion to catch and turn in). */
+  kill?: 'press';
   blocks: ScreenBlock[];
 }
 

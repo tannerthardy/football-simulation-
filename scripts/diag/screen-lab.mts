@@ -28,6 +28,9 @@ const ONLY = arg('--only', '').split(',').filter(Boolean);
 const OUT = arg('--out', 'out/screens/sim-screens.jsonl.gz');
 /** --off-man adds Nickel Over Cover 1 Off (off-man corners) to the four calls. */
 const OFF_MAN = process.argv.includes('--off-man');
+/** --audibles lets the QB make pre-snap checks (a screen's installed kill).
+ * A killed screen is not written as a screen; its check-out is summarized. */
+const AUDIBLES = process.argv.includes('--audibles');
 
 /** The formation each screen is drawn from. */
 const FORMATION: Record<string, string> = {
@@ -49,7 +52,7 @@ const offense = generateTeam(new Rng(41), 'O', 'O', { strength: .55 });
 const defense = generateTeam(new Rng(42), 'D', 'D', { strength: .55 });
 const lines: string[] = [];
 const r2 = (v: number) => Math.round(v * 100) / 100;
-const summary: Record<string, { n: number; caught: number; yards: number[]; ttt: number[] }> = {};
+const summary: Record<string, { n: number; caught: number; yards: number[]; ttt: number[]; killed: number; killYards: number[] }> = {};
 
 for (const concept of SCREEN_CONCEPTS) {
   if (ONLY.length && !ONLY.includes(concept.id)) continue;
@@ -60,8 +63,13 @@ for (const concept of SCREEN_CONCEPTS) {
       offCall: { formation, flip: seed % 2 === 0, kind: 'pass', pass: concept, label: concept.name },
       defCall: { personnel: 'nickel', front: FRONT_BY_ID[def.front], coverage: COVERAGE_BY_ID[def.coverage],
         pressure: def.pressure ? PRESSURE_BY_ID[def.pressure] : null, label: def.label },
-      los: 35, ballY: CENTER_Y, firstDownX: 45, seed: 1000 * seed + 7,
+      los: 35, ballY: CENTER_Y, firstDownX: 45, seed: 1000 * seed + 7, audibles: AUDIBLES,
     });
+    const s = summary[`${concept.id} vs ${def.label}`] ??= { n: 0, caught: 0, yards: [], ttt: [], killed: 0, killYards: [] };
+    if (sim.offCall.pass?.id !== concept.id) {
+      s.killed++; s.killYards.push(sim.run().yards);
+      continue;
+    }
     const xy: number[][] = [];
     const record = () => { const row: number[] = []; for (const a of sim.agents) row.push(r2(a.pos.x - sim.los), r2(a.pos.y)); xy.push(row); };
     const tick0 = sim.tick.bind(sim);
@@ -78,19 +86,18 @@ for (const concept of SCREEN_CONCEPTS) {
     const r = receiverAgent?.idx ?? thr?.b ?? null;
     const play = {
       id: `${concept.id}|${def.label}|${seed}`, source: 'sim-screen-lab', kind: 'pass', yards: r2(res.yards),
-      players: sim.agents.map((a: any) => ({ side: a.team, group: GROUP[a.player.position] ?? 'OTHER' })),
+      players: sim.agents.map((a: any) => ({ side: a.team, group: GROUP[a.player.position] ?? 'OTHER', slot: a.slot })),
       dt: 0.1, xy, ball_y: r2(sim.ballY), events, target: thr?.b ?? null, carrier: cat?.a ?? null,
       screen: { receiver: r, group: r !== null ? GROUP[sim.agents[r].player.position] : null, type: concept.id,
         passResult: cat ? 'C' : 'I', defense: def.label, outcome: res.outcome, blockers: screenBlockers,
         penalties: sim.penalties.map((p: any) => p.kind) },
     };
     lines.push(JSON.stringify(play));
-    const s = summary[`${concept.id} vs ${def.label}`] ??= { n: 0, caught: 0, yards: [], ttt: [] };
     s.n++; if (cat) s.caught++; s.yards.push(res.yards); if (thr) s.ttt.push(thr.t);
   }
 }
 mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, gzipSync(lines.join('\n') + '\n'));
 const med = (v: number[]) => { const s = [...v].sort((a, b) => a - b); return s.length ? s[s.length >> 1] : NaN; };
-for (const [k, s] of Object.entries(summary)) console.log(`${k.padEnd(52)} n ${s.n} caught ${s.caught} yards p50 ${med(s.yards).toFixed(1)} mean ${(s.yards.reduce((a, b) => a + b, 0) / s.n).toFixed(1)} | throw p50 ${med(s.ttt).toFixed(2)} s`);
+for (const [k, s] of Object.entries(summary)) console.log(`${k.padEnd(52)} n ${s.n} caught ${s.caught} yards p50 ${med(s.yards).toFixed(1)} mean ${(s.yards.reduce((a, b) => a + b, 0) / s.n).toFixed(1)} | throw p50 ${med(s.ttt).toFixed(2)} s${s.killed ? ` | killed ${s.killed}, check-out yards p50 ${med(s.killYards).toFixed(1)}` : ''}`);
 console.log(`wrote ${lines.length} plays -> ${OUT}`);

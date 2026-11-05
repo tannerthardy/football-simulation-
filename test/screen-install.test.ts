@@ -13,17 +13,25 @@ import { PlaySim } from '../src/sim/playsim.js';
 const offense = generateTeam(new Rng(41), 'O', 'O', { strength: .55 });
 const defense = generateTeam(new Rng(42), 'D', 'D', { strength: .55 });
 
-function screen(id: string, form: string, seed = 1) {
+function screen(id: string, form: string, seed = 1, coverage = 'cover3', audibles = false) {
   const formation = FORMATION_BY_ID[form];
   return new PlaySim({ offense: pickOffense(offense, formation.personnel), defense: pickDefense(defense, 'nickel'),
     offCall: { formation, flip: false, kind: 'pass', pass: SCREEN_BY_ID[id], label: id },
-    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: 'Over 3' },
-    los: 35, ballY: CENTER_Y, firstDownX: 45, seed: 1000 * seed + 7 });
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID[coverage], pressure: null, label: coverage },
+    los: 35, ballY: CENTER_Y, firstDownX: 45, seed: 1000 * seed + 7, audibles });
 }
 const runTo = (sim: PlaySim, t: number, each?: () => void) => { while (sim.phase === 'live' && sim.t < t - 1e-9) { sim.tick(); each?.(); } };
 const isDL = (d: Agent | null) => !!d && /^(DE|DT|NT)/.test(d.slot);
 
 describe('screen install (docs/football-handbook/screens.md)', () => {
+  it('a now screen with a press kill is checked out of against press, and run against off coverage', () => {
+    for (const seed of [1, 2]) {
+      expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover1', true).offCall.pass?.id).not.toBe('wide_now_screen');
+      expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover1_off', true).offCall.pass?.id).toBe('wide_now_screen');
+      expect(screen('wide_now_screen', 'gun_doubles_11', seed, 'cover3', true).offCall.pass?.id).toBe('wide_now_screen');
+    }
+  });
+
   it('released linemen sell the pass, stay within a yard of the line until the throw (8-3-1), then block the screen', () => {
     const sim = screen('rb_slip_screen', 'gun_doubles_11');
     sim.event('snap', sim.slot('C'));
