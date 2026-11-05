@@ -250,12 +250,12 @@ export const COVERAGES: Coverage[] = [
   },
   {
     id: 'cover3_trips', name: 'Cover 3 (vs trips)', family: 'cover3', shell: 'one-high', man: false, press: false,
-    note: 'Vs 3x1 the Mike pushes to the trips side and walls #3; the weak curl-flat stays home, so the backside hook goes unfilled.',
+    note: 'Vs 3x1 the Mike pushes to the middle hook toward the trips side and walls a vertical #3 from it; the weak curl-flat stays home, so the backside hook goes unfilled. Same spot-zone technique as Sky.',
     roles: {
       CB_S: z('deep_third_s'),
       CB_W: z('deep_third_w'),
       FS: z('deep_mid'),
-      LB_M: z('hook_mid', 'mike_3'),
+      LB_M: z('hook_mid'),
     },
     underneath: ['curl_flat_s', 'hook_s', 'curl_flat_w', 'hook_w'],
   },
