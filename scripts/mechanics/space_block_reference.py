@@ -32,7 +32,7 @@ def measure(p):
     sc = p.get("screen") or {}
     r = sc.get("receiver", p.get("target"))
     ev = p.get("events", {})
-    tc = ev.get("catch")
+    tc = ev.get("pass_arrived", ev.get("catch")) if "catch" in ev else None
     if r is None or tc is None:
         return None
     xy, dt = p["xy"], p.get("dt", 0.1)

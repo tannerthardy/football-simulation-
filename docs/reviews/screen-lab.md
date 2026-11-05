@@ -799,6 +799,61 @@ Values are p50s.
       - Slip, bubble, bunch and tunnel are unchanged.
       - The full game hash is unchanged (`5bbe9d9a`).
 
+21. **Scorecard against the NFL range (Tanner: "get most of these errors
+    close to the reasonable error range for real NFL plays"; check sell
+    timing, where screens are caught, and how many OL are in front).**
+    - `scripts/mechanics/screen_scorecard.py NFL SIM`: one table per screen
+      type, with the same code and the same type classifier on both sides.
+      The flags are a place to look, not a target:
+      - Each row shows NFL p25/p50/p75 and the sim median.
+      - `!` means outside the NFL IQR; `!!` means outside p10–p90.
+    - **Correction to every NFL "at the catch" number in this review.**
+      - The extract's `catch` is `pass_outcome_caught`, the official
+        annotation. It lands 0.3 s after `pass_arrived` (p25–p75 0.2–0.4,
+        n 692).
+      - The sim's catch is the moment of possession, which matches
+        `pass_arrived`.
+      - Checked on the raw BDB 2025 ball track, weeks 1–2:
+        - RB/TE/WR flight `pass_forward → pass_arrived` is 0.6–0.7 s.
+        - The ball itself stops at the receiver within 0.1 s of
+          `pass_arrived`.
+        - The extract's `catch` read 0.9–1.0 s.
+      - Seven operators now use `pass_arrived` when present: screen_back,
+        screen_ol, screen, screen_wr_path, quick_screen, space_block and the
+        scorecard.
+      - Earlier NFL rows measured "at the catch" were 0.2–0.4 s late:
+        catch depth, nearest defender, first defender after the catch, YAC
+        and flight.
+      - With the fix, sim flight (0.5–0.7 s) is NFL-like. The "our screen
+        throws are faster" question (Defense, 2026-11-04) was this offset.
+    - **At `42725dcc`** (16 seeds × 5 calls), the rows that stay out of the
+      NFL range, grouped by mechanism:
+
+      | | Sim | NFL | Owner |
+      |---|---|---|---|
+      | Thrown screens caught | 58–75% | 85–95% | Catching (drops, edge of reach) plus bats |
+      | OL released on WR screens | 0–1 | 3 | Main Engine: install |
+      | First OL past the line vs the throw, WR-in/now | +0.8/+1.8 s | −0.4/−0.1 s | Main Engine |
+      | First OL past the line vs the throw, RB | +0.85 s | 0.0 s | Main Engine |
+      | Catch width, tunnel / bunch now | 9.6 / 9.4 yd | 15.7 / 13.9 yd | Main Engine: alignment |
+      | Nearest DL to the WR at the throw | 4–8 yd | 11–14 yd | follows the two rows above |
+      | Bubble yards | 71 | 5 | Defense / Coverage (traced) |
+
+      - In range on every type: throw time, receiver depth at the throw, and
+        OL and blockers in front at the catch.
+      - In range for RB/TE/bubble/now: catch depth. For RB/TE/bubble: catch
+        width.
+      - Every row is in range for TE except the completion rate and
+        receiver release (see below).
+    - **Tried, not kept:** the TE's release moved from 1.1 to 1.9 s to
+      match NFL "receiver release" (2.0 s).
+      - Half the TE screens went unthrown (51%), with the TE 4.5 yd deep at
+        the throw.
+      - The row is confounded for the TE: his 1-yd lateral move at 0.8 s is
+        his pass-set slide with the end, not his release.
+      - The TE's sell needs a different measurement (contact time with his
+        man) before any change.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).

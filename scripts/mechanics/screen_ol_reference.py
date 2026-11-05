@@ -38,7 +38,7 @@ for path in A.plays:
         r = sc.get("receiver")
         if A.type and sc.get("type") != A.type:
             continue
-        ev = p["events"]; tc = ev.get("catch"); tt = ev.get("pass_forward")
+        ev = p["events"]; tc = ev.get("pass_arrived", ev.get("catch")) if "catch" in ev else None; tt = ev.get("pass_forward")
         if r is None or tc is None or tt is None:
             continue
         xy, dt = p["xy"], p.get("dt", 0.1); n = len(xy)

@@ -32,7 +32,7 @@ for path in sys.argv[1:]:
         P = lambda k, j: (xy[min(k, n - 1)][2 * j], xy[min(k, n - 1)][2 * j + 1])
         k = lambda t: int(round(t / dt))
         by = p.get("ball_y", 26.65)
-        cx, cy = P(k(ev["catch"]), r)
+        cx, cy = P(k(ev.get("pass_arrived", ev["catch"])), r)
         side = 1 if cy >= by else -1
         def at(t):
             f = k(t); x, y = P(f, r)

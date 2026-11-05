@@ -38,11 +38,11 @@ def measure(p):
     def spd(f):
         a, b = max(0, f - 1), min(n - 1, f + 1)
         return math.hypot(P(b)[0] - P(a)[0], P(b)[1] - P(a)[1]) / max(dt, (b - a) * dt)
-    kc, kt = k(ev["catch"]), k(ev["pass_forward"])
+    kc, kt = k(ev.get("pass_arrived", ev["catch"])), k(ev["pass_forward"])
     lat_c = rel(kc)[1]
     kind = "out" if lat_c > 1.5 else "in" if lat_c < -1.5 else "now"
     turn = next((f * dt for f in range(kc + 1) if abs(rel(f)[1]) > 1.0), None)
-    row = {"kind": kind, "type": sc.get("type") or kind, "turn": turn, "t_throw": ev["pass_forward"], "t_catch": ev["catch"]}
+    row = {"kind": kind, "type": sc.get("type") or kind, "turn": turn, "t_throw": ev["pass_forward"], "t_catch": ev.get("pass_arrived", ev["catch"])}
     for t in TS:
         f = k(t)
         row[t] = (rel(f), spd(f)) if f <= kc else None

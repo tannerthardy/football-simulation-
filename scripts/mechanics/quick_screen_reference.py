@@ -53,7 +53,7 @@ def measure(p):
     sc = p.get("screen") or {}
     r = sc.get("receiver", p.get("target"))
     ev = p.get("events", {})
-    t_throw, t_catch = ev.get("pass_forward"), ev.get("catch", ev.get("pass_arrived"))
+    t_throw, t_catch = ev.get("pass_forward"), ev.get("pass_arrived", ev.get("catch"))
     if r is None or t_throw is None or t_catch is None:
         return None
     players = p["players"]

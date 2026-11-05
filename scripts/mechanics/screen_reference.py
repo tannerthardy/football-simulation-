@@ -12,7 +12,9 @@ optionally screen.receiver / screen.group / screen.type.
 Definitions (all from positions, 0.1 s frames):
 - screen receiver r: screen.receiver, else target. Group: his position group
   (WR/TE/RB); "type" uses screen.type when the source labels one.
-- t_throw = pass_forward; t_catch = catch, else pass_arrived (completions only).
+- t_throw = pass_forward; t_catch = pass_arrived, else catch (completions only).
+  NFL `catch` is pass_outcome_caught, ~0.3 s after the ball arrives; the
+  sim's catch is the moment of possession, which matches pass_arrived.
 - catch point: r's position at t_catch; depth = x, width = |y - ball_y|.
 - released OL: an OL whose x first exceeds +1.0 yd within t_catch + 1.5 s;
   release time = first time his x > 0 (crossing the LOS). Released OL count.
@@ -87,7 +89,7 @@ def measure(play):
     r = sc.get("receiver", play.get("target"))
     if r is None:
         return None
-    t_catch = ev.get("catch", ev.get("pass_arrived"))
+    t_catch = ev.get("pass_arrived", ev.get("catch"))
     t_throw = ev.get("pass_forward")
     caught = "catch" in ev or sc.get("passResult") == "C" or play.get("carrier") == r
     players = play["players"]
