@@ -25,7 +25,7 @@ import type { PlaySim } from '../playsim.js';
 import { chooseRunBlockFit, observedBlockLeverage, secondLevelBlockApproach } from '../run-block-fit.js';
 import { axisOf, contactControl, helperSupport, passSetDepth, promoteContact, traits } from '../engagement.js';
 import { readZoneReach, type ZoneReachRead } from '../zone-reach.js';
-import { interceptPoint } from '../../physics/reach.js';
+import { interceptPoint, timeToReach } from '../../physics/reach.js';
 import type { Perceived } from '../perception.js';
 import { goTo, runThrough, stand, track } from './common.js';
 import {collectionCommand,readCollectionApproach,type CollectionApproach} from '../collection-approach.js';
@@ -2797,6 +2797,34 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
   return { climber, keeper, engagement: e, hands: hands!, phi };
 }
 
+/** RELEASE_INTERCEPT (default off): a double member leaves for his backer
+ * when waiting one more read would make him late, not at a fixed radius.
+ * From his own picture: his time to cut the backer off (his own sprint law
+ * onto the backer's seen path) against the backer's time to the line in
+ * front of him (or the runner's, whichever is sooner). A backer sitting deep
+ * gives the double time to keep working the man; a triggering backer pulls
+ * the member who can still cut him off. The installed reads released at a
+ * fixed 4.2 yd radius or when the back came within 2.8 yd of the line: the
+ * nearer member left for a backer still sitting (s27-13 centre) and his
+ * partner, the man the backer then scraped to, never got a read. */
+export const RELEASE_INTERCEPT = process.env.RELEASE_INTERCEPT === '1';
+function releaseTiming(observer: Agent, sim: PlaySim, backer: Perceived, d: Agent): { go: boolean; cut: number } {
+  const dir = sim.attackDir(observer.team), me = { pos: observer.pos, vel: observer.vel, profile: observer.profile };
+  const reach = observer.profile.radius + d.profile.radius + .2;
+  let cut = Infinity;
+  for (let t = .1; t <= 2.5; t += .05) {
+    const p = { x: backer.pos.x + backer.vel.x * t, y: backer.pos.y + backer.vel.y * t };
+    if (timeToReach(me, p, reach) <= t) { cut = t; break; }
+  }
+  const fill = timeToReach({ pos: backer.pos, vel: backer.vel, profile: d.profile },
+    { x: sim.los + .6 * dir, y: backer.pos.y + backer.vel.y * .4 }, 0);
+  const runner = sim.slot('RB');
+  const r = runner ? sim.see(observer, runner) : null;
+  const runnerAt = r && runner ? timeToReach({ pos: r.pos, vel: r.vel, profile: runner.profile }, { x: sim.los, y: r.pos.y }, 0) : Infinity;
+  const due = Math.min(fill, runnerAt + .3);
+  return { go: Number.isFinite(cut) && cut + observer.mind.decisionInterval + .1 >= due, cut };
+}
+
 /** A backer "shows" when this player's own picture has him arriving within
  * reach shortly (his seen motion carried half a second) or flowing toward
  * the play side, where he must be cut off before he outruns the climb. */
@@ -2879,7 +2907,8 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
   // of filling. Once the reader sees his partner carrying the man, the
   // climber goes and gets him.
   const draw = sim.offCall.run?.scheme === 'draw' || sim.offCall.run?.scheme === 'qbDraw';
-  if (!filling && !arriving && !draw) return;
+  const timing = RELEASE_INTERCEPT ? releaseTiming(observer, sim, backer, combo.backer!) : null;
+  if (timing ? !timing.go && !draw : (!filling && !arriving && !draw)) return;
   const route = climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer);
   if (!route) { observer.tags.add('combo-held'); return; }
   if (sim.offCall.run?.scheme === 'duo' && route.exit) {
@@ -2903,7 +2932,7 @@ function readJoinedCombination(observer: Agent, sim: PlaySim, combo: Combination
     + Math.hypot(backer.pos.x-route.exit.x,backer.pos.y-route.exit.y)
     : Math.hypot(backer.pos.x-observer.pos.x,backer.pos.y-observer.pos.y);
   read.proposal = { ...candidate, t: sim.t, departure: { ...route, backer },
-    cost: cost + (observer === e.blocker ? .30 : 0) };
+    cost: timing ? timing.cut * 5 : cost + (observer === e.blocker ? .30 : 0) };
   if (!defer) {
     const valid = revalidateJoinedProposal(read.proposal, sim, combo);
     if (valid) applyCombinationRelease(valid, sim, combo, false);
@@ -3038,7 +3067,7 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
   const filling = Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) < 4.2;
   const runner = sim.slot('RB');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
-  if (!filling && !arriving) return;
+  if (RELEASE_INTERCEPT ? !releaseTiming(observer, sim, backer, combo.backer).go : (!filling && !arriving)) return;
   if (!checkBackerCorridor(observer, combo.defender, surface, backer)) return;
 
   const candidate = keeperCandidate(observer, sim, combo, e);
@@ -3070,7 +3099,7 @@ function readOvertaken(observer: Agent, sim: PlaySim, combo: Combination, e: Eng
     || (FLOW_RELEASE && backerShows(observer, sim, backer));
   const runner = sim.slot('RB');
   const arriving = runner && sim.see(observer, runner).pos.x > sim.los - 2.8;
-  if (!filling && !arriving) return;
+  if (RELEASE_INTERCEPT ? !releaseTiming(observer, sim, backer, combo.backer!).go : (!filling && !arriving)) return;
   if (!climbRoute(observer, combo.defender, surface.down, candidate.keeper, surface.covered, backer)) return;
   applyCombinationRelease({ ...candidate, t: sim.t,
     cost: Math.hypot(backer.pos.x - observer.pos.x, backer.pos.y - observer.pos.y) }, sim, combo, true);
