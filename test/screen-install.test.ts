@@ -32,12 +32,20 @@ describe('screen install (docs/football-handbook/screens.md)', () => {
     runTo(sim, 2.1);
     const released = line.filter(a => a.behavior instanceof ScreenBlocker);
     expect(released.map(a => (a.behavior as ScreenBlocker).job).sort()).toEqual(['in', 'out', 'up']);
-    runTo(sim, 8);
-    // This rep is caught behind the line with released linemen already climbing.
-    expect(sim.events.some(e => e.type === 'catch')).toBe(true);
-    expect(sim.catchX).toBeLessThanOrEqual(sim.los);
-    expect(sim.penalties.some(p => p.kind === 'ineligible_downfield')).toBe(false);
+    // The rule, over several reps: a screen caught behind the line draws no
+    // ineligible-downfield flag, however far the released linemen have gone.
+    let behind = 0;
+    for (let seed = 1; seed <= 6; seed++) {
+      const rep = screen('rb_slip_screen', 'gun_doubles_11', seed);
+      rep.event('snap', rep.slot('C'));
+      runTo(rep, 8);
+      if (!rep.events.some(e => e.type === 'catch') || rep.catchX > rep.los) continue;
+      behind++;
+      expect(rep.penalties.some(p => p.kind === 'ineligible_downfield')).toBe(false);
+    }
+    expect(behind).toBeGreaterThan(0);
   });
+
   it('perimeter blockers leave the rush alone before the throw and keep their job through the catch', () => {
     // The first completed snap among a few seeds (completion itself is not the contract).
     let caughtSnaps = 0;

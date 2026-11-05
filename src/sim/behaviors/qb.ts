@@ -279,11 +279,13 @@ export class QBPass implements Behavior {
     const thr = 0.6 - 0.12 * aggression - 0.32 * u;
     const maxInt = 0.025 + 0.05 * aggression + 0.08 * u;
 
-    // A called quick screen is decided before the snap: he throws it as soon
-    // as it is there unless it is dead (a man sitting on it or jumping it).
+    // A called screen is decided before the snap: he throws it as soon as it
+    // is there unless it is dead (a man sitting on it or jumping it).
     // Waiting for an ordinary open window let the defense come to it (bunch
-    // now thrown at 2.2-3.7 s; NFL quick screens leave at 1.1-1.5 s).
-    const called = this.concept.family === 'screen' && this.concept.screen?.tempo === 'quick';
+    // now thrown at 2.2-3.7 s; NFL quick screens leave at 1.1-1.5 s). Slow
+    // screens too: with the ordinary risk gate the QB held slip and TE
+    // screens past 2.5 s into the rush (NFL throws at 2.2 and 2.4 s).
+    const called = this.concept.family === 'screen';
     const need = called ? Math.min(thr, 0.2) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
     // Current read.
     if (read && this.ready(read, sim)) {

@@ -219,13 +219,16 @@ export class PassProtector implements Behavior {
     private readonly calledRelease = false,
   ) {}
 
-  /** A lineman with a called release takes a short set: he punches and lets
-   * the rusher by near the line rather than kicking back to the QB's depth
-   * (NFL released linemen on RB/TE screens stay ~0.7 yd off the line through
-   * the set, screen_ol_reference.py). */
+  /** A lineman with a called release sets at his stance depth and blocks his
+   * man like any pass set until the count, then lets him go. NFL released
+   * linemen on RB/TE screens stay ~0.7 yd off the ball and are in contact
+   * with a rusher for ~0.8 s in the first 2 s (screen_ol_reference.py,
+   * rushpath.py in screen-lab.md item 18); letting the rusher by untouched
+   * gave 0.4 s, and free interior rushers reached the QB within 1 s 82% of
+   * the time (NFL 11%). */
   private setDepth(sim: PlaySim, a: Agent): number {
     const depth = passSetDepth(sim, a);
-    return this.calledRelease && isOL(a) ? Math.min(depth, 0.7) : depth;
+    return this.calledRelease && isOL(a) ? 0 : depth;
   }
 
   /** Inspect existing protection state without running the coordinator. */
@@ -303,18 +306,6 @@ export class PassProtector implements Behavior {
     let along = contact * 0.85;
     if (toQBp.x < -0.2) along = Math.max(along, (sim.los - setDepth - rp.x) / toQBp.x);
     let set = { x: rp.x + toQBp.x * along, y: rp.y + toQBp.y * along + out * overset };
-    if (this.calledRelease && isOL(a)) {
-      // A screen's released lineman opens the gate: he sets beside his
-      // rusher's line to the quarterback, on the side he is already on, at
-      // his short-set depth, and gives the rusher the lane rather than
-      // standing in it. The rusher runs by, past his hip, and he releases.
-      // Set on the line, he is bull-rushed back instead: 2-3 yd deep by
-      // 2.0 s, where NFL screen linemen are 0.6-0.7 yd off the ball
-      // (screen_ol_reference.py). He does not strike; bodies still collide.
-      const side = Math.sign(a.pos.y - rp.y) || Math.sign(home - sim.ballY) || 1;
-      const gate = { x: sim.los - lineDepth(0.6, stanceDepth(sim, a)) - setDepth, y: rp.y + side * (contact + 0.2) };
-      return goTo(a, gate, { speed: 0.8, facing: Math.atan2(r.pos.y - a.pos.y, r.pos.x - a.pos.x), cutSkill: 0.85 + 0.3 * traits(a).feet });
-    }
     // An edge rusher runs an arc, not the straight line to the QB: a tackle
     // who sets on that line sits on the chord, a couple of yards inside him,
     // all the way back. Kick to cut the arc off instead — meet him at the

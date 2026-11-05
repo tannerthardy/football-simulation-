@@ -704,6 +704,57 @@ Values are p50s.
       - Per the stopping rule this goes back to diagnosis. See Next
         decisions.
 
+19. **Slow screens: the sell and the QB's timing (Tanner: "fix the QB
+    timing on slow screens").**
+    - **The QB held slow screens into the rush.** Every late or never-thrown
+      slip and TE rep (16 seeds × 5 calls) was classified by the gate that
+      held the ball:
+      - Slip: 22 never reached `ready()`, 12 of them because the back was
+        knocked down in the rush. 13 were ready but failed the ordinary
+        completion/risk gate.
+      - TE: about 40 were ready but held. Early windows at 1.4–1.5 s
+        (completion 0.42–0.58) failed the ordinary interception gate
+        (0.04–0.06) at risk 0.06–0.09. The good windows came at about 2.5 s.
+    - **Change 1: the QB throws a called screen when it's there unless it is
+      dead.** This was already the rule for quick screens. A slow screen is
+      just as decided before the snap.
+    - **Change 2: the sell** (item 18's parked variant). A released lineman
+      sets at stance depth and blocks his man until the count. The "open the
+      gate" set (item 15) is removed.
+    - **Lab** (16 seeds × 5 calls, `--off-man`), caught / thrown incomplete
+      / never thrown:
+
+      | | Before | After |
+      |---|---|---|
+      | Slip | 31 / 19 / 30 | 37 / 22 / 21 |
+      | TE | 39 / 16 / 25 | 31 / 29 / 20 |
+      | Tunnel | 44 / 23 / 13 | 51 / 22 / 7 |
+      | Bubble, bunch now | unchanged | unchanged |
+      | All five screens | 244 caught, 68 never thrown | 249 caught, 48 never thrown |
+
+      - Throw p50: slip 2.20 s (NFL 2.2), TE 2.40 s (NFL 2.4).
+      - DL contact with an OL in the first 2 s: 0.8 s (NFL 0.8).
+      - Free interior rushers: 5 per 160 plays (were 152; NFL about 1 in 4).
+      - The full game hash is unchanged (`5bbe9d9a`): both changes apply to
+        called screens only.
+    - **What the extra throws became.** Thrown incompletions on slip and TE
+      screens:
+      - Drops: slip 9, TE 4.
+      - Balls within 1 yd and not caught: 5 and 7.
+      - Batted at the line: 5 and 2.
+      - TE throws that miss him by 1.5–2.5 yd: 10. These are broken plays,
+        such as a pressured QB floating behind the TE (TE Cover 3 seed 9) or
+        a 3.45 s scramble-drill float 2.4 yd over his head (seed 6).
+      - Drops and edge-of-reach catches are the Catching owner's. The TE
+        floats on broken plays are Main Engine's next item.
+    - **Open:** TE catches went down 39 → 31.
+      - The paired reps churn both ways (item 18).
+      - The extra TE throws are incompletions for the reasons above, not a
+        rush or timing fault.
+      - Slip and tunnel gained; TE needs the float and broken-play work.
+    - `test/screen-install.test.ts`'s rule test now covers six reps: every
+      slip caught behind the line draws no 8-3-1 flag.
+
 What is **not** shown here: whether blocks in space are won or lost on
 physics. Too few slow screens reach the catch to judge that. On the screens
 that do, blocks in space per play run at the NFL rate (3–7).
