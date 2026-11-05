@@ -615,11 +615,11 @@ export class ZoneCoverage implements Behavior {
     // (tracked box backers, 2.5-8 yd deep and within 6 yd of the ball, hold
     // their depth through 0.8 s on passes and runs alike). An apex or
     // overhang backer keeps his eased drop to the flat.
-    // How sure he must be before he drops is the call's (dropStart): coaches
-    // teach the drop on a confirmed pass; once he drops he doesn't step back.
+    // How sure he must be before he drops is the call's (dropStart; default
+    // early, on the read itself). Once he drops he doesn't step back.
     if (!this.deep && !this.dropping && boxBacker(a, sim)) {
       const read = a.recog?.read;
-      if (read === 'unsure' || (read === 'pass' && a.recog!.pPass() < DROP_START[sim.defCall.dropStart ?? 'confirmed']))
+      if (read === 'unsure' || (read === 'pass' && a.recog!.pPass() < DROP_START[sim.defCall.dropStart ?? 'early']))
         return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
       if (read === 'pass') this.dropping = true;
     }

@@ -376,8 +376,10 @@ export interface DefensivePlayCall {
   /**
    * How sure a box backer in zone must be that it is a pass before he leaves
    * his read step for his drop, in his own pass belief: `early` drops as soon
-   * as he reads pass (third and long), `confirmed` (default) on a confirmed
-   * pass, `late` only when he is all but certain (run downs, RPO-heavy teams).
+   * as he reads pass (default; third and long), `confirmed` on a confirmed
+   * pass as coaches teach it, `late` only when he is all but certain (run
+   * downs, RPO-heavy teams). `confirmed` becomes the default once a late
+   * dropper settles on the quarterback's set instead of sprinting to his spot.
    */
   dropStart?: 'early' | 'confirmed' | 'late';
   /**

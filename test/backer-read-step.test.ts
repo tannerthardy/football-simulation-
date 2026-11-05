@@ -48,25 +48,25 @@ describe('a box backer reads before he moves', () => {
   });
 
   it('drops once his pass read is confirmed (dropStart), and keeps reading while it is not', () => {
-    // A first read of pass is not yet a confirmed pass (coached: drop on a confirmed pass): his own belief
-    // must reach the call's level. `early` drops on the read itself.
-    const unconfirmed = stage();
+    // A first read of pass is not yet a confirmed pass (coached: drop on a confirmed pass): under
+    // dropStart 'confirmed' his own belief must reach that level. `early` (the default) drops on the read.
+    const unconfirmed = stage('confirmed');
     unconfirmed.backer.recog!.read = 'pass';
     unconfirmed.backer.recog!.logOdds = Math.log(0.8 / 0.2);
     expect(unconfirmed.backer.recog!.pPass()).toBeLessThan(0.95);
     expect(unconfirmed.label(unconfirmed.backer)).toBe('read-step');
-    const confirmed = stage();
+    const confirmed = stage('confirmed');
     confirmed.backer.recog!.read = 'pass';
     confirmed.backer.recog!.logOdds = Math.log(0.97 / 0.03);
     expect(confirmed.label(confirmed.backer)).not.toBe('read-step');
-    const early = stage('early');
+    const early = stage();
     early.backer.recog!.read = 'pass';
     early.backer.recog!.logOdds = Math.log(0.8 / 0.2);
     expect(early.label(early.backer)).not.toBe('read-step');
   });
 
   it('once he drops, a dip in his belief does not send him back to his read step', () => {
-    const f = stage();
+    const f = stage('confirmed');
     f.backer.recog!.read = 'pass';
     f.backer.recog!.logOdds = Math.log(0.97 / 0.03);
     expect(f.label(f.backer)).not.toBe('read-step');

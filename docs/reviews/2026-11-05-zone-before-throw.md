@@ -61,29 +61,34 @@ throw−0.3 / throw / throw+0.3 / catch.
    SS strong hook, nickel strong curl-flat, Will weak curl-flat; same spot-zone
    technique. Before, both backers went to the weak side.
 
-3. **`dropStart` on the defensive call: `early` | `confirmed` (default) | `late`.**
+3. **`dropStart` on the defensive call: `early` (default) | `confirmed` | `late`.**
    A box backer in zone leaves his read step for his drop only when his own pass
    belief reaches the call's level: `early` is the belief at which he reads pass
-   at all (the previous behavior), `confirmed` 0.95, `late` 0.98. Once he drops
-   he does not return to the read step.
+   at all (develop's behavior, unchanged), `confirmed` 0.95, `late` 0.98. Once
+   he drops he does not return to the read step.
    - Box backers in zone on pass plays (seeds 7/11): they read pass at a median
      0.40 s (belief 0.95 at a median 0.95 s; run plays reach 0.95 by 2.5 s in 1%).
    - Drop onset (0.5 yd deeper), median: early 0.90 s, confirmed 1.40 s, NFL
      about 1.3 s. Depth gain at 0.8 / 1.2 / 1.6 s: early +0.36 / +1.09 / +1.90,
-     confirmed 0 / +0.16 / +0.79, NFL +0.09 / +0.44 / +1.10. The NFL curve was a
-     check, not the target; confirmed now runs slightly late, likely because
-     his read step is fully stationary where coaches teach small square read
-     steps. That is a separate mechanism, noted rather than tuned.
+     confirmed 0 / +0.16 / +0.79, NFL +0.09 / +0.44 / +1.10.
+   - **Why `confirmed` is not yet the default.** As a default it moved passes
+     −0.37 ± 0.22 yd per snap and broke two integration panels: a late spot
+     dropper more than 4 yd from his spot turns and sprints to it (spot droppers
+     facing the QB after 1.6 s: 0.71 vs the panel's 0.8), and protection's edge
+     engagement fell to 0.875 on `gun_doubles_11` (bar 0.9). Coaches teach a late
+     dropper to settle where he is when the QB sets, not to sprint to a 10 yd
+     spot; that QB-coupled stop comes first, then `confirmed` as the default.
 
 ## Planned next (not in this change)
 
 Each is a decision on observed evidence, set per call, tag, role or game plan;
 none changes an outcome directly.
 
-- **Read steps while unconfirmed:** small square steps instead of standing still
-  (the likely reason `confirmed` starts slightly late).
-- **Drop style** (vision and break ↔ match) and **a QB-coupled stop** on the
-  drop (plant when the observed QB sets or opens to throw).
+- **A QB-coupled stop on the drop:** a dropper plants when the observed QB sets
+  or opens to throw, instead of sprinting to his landmark. Then `dropStart`
+  defaults to `confirmed`.
+- **Read steps while unconfirmed:** small square steps instead of standing still.
+- **Drop style** (vision and break ↔ match).
 - **`squeeze`** as a third `flatThreat` option (top-down once the release
   declares flat with no vertical left in the zone).
 - **Screen trigger** (`throw` / `evidence` / `alert`) with the combined-evidence
