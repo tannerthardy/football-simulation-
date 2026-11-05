@@ -671,6 +671,9 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
 
 // ------------------------------------------------------------ update
 
+/** ZONE_RUN (experimental, off): an interior defender working across a running
+ * reach opens his hips and runs with him instead of shuffling square. */
+const ZONE_RUN = process.env.ZONE_RUN === '1', ZONE_RUN_PACE = 0.75, ZONE_RUN_STEP = 0.5, ZONE_RUN_OPEN = Math.PI / 4;
 /** Anchor braces along the drive line and keeps lateral work (ANCHOR_SPLIT=0 off). */
 const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
 
@@ -1512,7 +1515,12 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     target = (d.pos.y - read.contain) * side > 0 ? d.pos.y : read.contain;
     if (carry * side > 0) carry = 0;
   }
-  const flow = clamp(carry + (target - d.pos.y) * 3, -td.lateral, td.lateral);
+  // ZONE_RUN: carrying a line flow faster than a square shuffle, he opens and runs it.
+  const runPace = ZONE_RUN && Math.abs(carry) > 0.6 * td.lateral
+    ? Math.min(d.profile.vmax * ZONE_RUN_PACE, Math.max(td.lateral, Math.abs(carry) + ZONE_RUN_STEP)) : td.lateral;
+  const flow = clamp(carry + (target - d.pos.y) * 3, -runPace, runPace);
+  let zoneRun = runPace > td.lateral && Math.abs(flow) > td.lateral ? Math.sign(flow) : 0;
+  if (zoneRun) d.tags.add('zone-run');
   // DL_FIGHT (experimental, off): fight pressure with pressure. A defender
   // who feels himself driven sideways holds the point where the push began
   // and leans into it, instead of following the blocker's flow off his gap.
@@ -1529,6 +1537,18 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     && Math.sign(st.flow) === st.firstStep && st.firstStep === lineRead(sim, d)) {
     lateralFlow = st.firstStep * td.lateral;
     d.tags.add('work-across');
+    // ZONE_RUN (experimental, off): a blocker running the line (his flow, as
+    // seen, past what a square shuffle can match) is not stayed with by
+    // shuffling. The defender opens his hips and runs with him to stay on his
+    // play-side half, requesting the blocker's seen pace plus a step; the hands
+    // and the blocker's body decide what he gets. NFL DL flow 2.3 yd/s by 0.9 s
+    // and 3.2 by 1.5 s on outside zone; the shuffle request capped ours at 2.6.
+    if (ZONE_RUN && Math.abs(st.flow) > 0.6 * td.lateral) {
+      const pace = Math.min(d.profile.vmax * ZONE_RUN_PACE, Math.max(td.lateral, Math.abs(st.flow) + ZONE_RUN_STEP));
+      lateralFlow = st.firstStep * pace;
+      zoneRun = st.firstStep;
+      d.tags.add('zone-run');
+    }
   }
   if (DL_FIGHT && read.stack && !read.declared) {
     const st = read.stack, push = d.body.support?.felt?.y ?? 0;
@@ -1576,7 +1596,12 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   }
   intents[d.idx] = {
     vel: workOff ?? cf ?? (read.stack ? { x: depth, y: lateralFlow } : legacy),
-    facing: Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
+    // Running the line he opens his hips halfway toward it, off square.
+    facing: zoneRun && !workOff && !cf ? (() => {
+      const sq = Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x), run = Math.atan2(zoneRun, 0);
+      const turn = ((run - sq + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
+      return sq + Math.sign(turn) * Math.min(Math.abs(turn), ZONE_RUN_OPEN);
+    })() : Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x),
     push: 1,
     posture: DL_ANCHOR && (e.helpers.length > 0 || drivenBack(d)) ? 1 : 0.85,
     cutSkill: 0.8 + 0.4 * td.bend,
