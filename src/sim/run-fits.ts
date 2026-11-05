@@ -45,6 +45,27 @@ export interface BackfieldRunFit {
 export interface AcquiredRunFit { possession: PossessionRead }
 export type RunFitRead = KeyedRunFit | BackfieldRunFit | AcquiredRunFit;
 
+const GAP_RANK: Record<Gap, number> = { A: 1, B: 2, C: 3, D: 4 };
+const RANK_GAP: Gap[] = ['A', 'A', 'B', 'C', 'D'];
+/** DL_GAMES run-down movement: the gap a called angle, slant or pinch moves
+ * this lineman to, one gap along the line (crossing the centre from A to A).
+ * Null when the call does not move him. Twists are pass-rush paths, not gaps. */
+function gameGap(sim: PlaySim, d: Agent, gap: Gap, side: number): { gap: Gap; side: number } | null {
+  const game = sim.defCall.dlGame;
+  if (!game || game.kind === 'twist') return null;
+  const interior = ['DT_S', 'DT_W', 'NT'].includes(d.slot), end = d.slot === 'DE_S' || d.slot === 'DE_W';
+  const strong = sim.offAlign.strongSign, toward = game.dir === 'S' ? strong : -strong;
+  let step = 0;
+  if (game.kind === 'angle' && interior) step = toward;
+  else if (game.kind === 'slant' && (interior || end)) step = toward;
+  else if (game.kind === 'pinch' && end) step = -Math.sign(side || 1);
+  if (!step) return null;
+  const u = Math.sign(side || 1) * GAP_RANK[gap];
+  let v = u + step; if (v === 0) v = step;
+  v = Math.max(-4, Math.min(4, v));
+  return { gap: RANK_GAP[Math.abs(v)], side: Math.sign(v) };
+}
+
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const jobs = new Map<Agent, RunFitJob>();
   const policy = sim.defCall.runPolicy ?? { edge: 'box', linebacker: 'stack' };
@@ -60,11 +81,17 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
     const line = (frontSlot && !dropper) || (spot.pos.x < sim.los + 2 && spot.role.kind === 'rush');
     const gap = spot.role.kind === 'blitz' ? spot.role.gap : spot.gap;
     const side = spot.role.kind === 'blitz' ? (spot.role.side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign) : spot.gapSign;
-    const kind = line || dropper ? (gap === 'C' || gap === 'D' ? 'edge' : 'interior') : d.slot.startsWith('LB') ? 'insert' : 'alley';
-    jobs.set(d, { gap, side, kind, technique: override?.technique ?? 'attack', edge: policy.edge, pace: policy.linebacker });
+    let kind: RunFitJob['kind'] = line || dropper ? (gap === 'C' || gap === 'D' ? 'edge' : 'interior') : d.slot.startsWith('LB') ? 'insert' : 'alley';
+    // A called line game moves this lineman into his new gap from the snap.
+    const moved = line && !dropper && spot.role.kind !== 'blitz' ? gameGap(sim, d, gap, side) : null;
+    const g = moved?.gap ?? gap, sd = moved?.side ?? side;
+    if (moved) kind = g === 'C' || g === 'D' ? 'edge' : 'interior';
+    jobs.set(d, { gap: g, side: sd, kind, technique: moved ? 'attack' : override?.technique ?? 'attack', edge: policy.edge, pace: policy.linebacker });
+    if (moved) { if (sim.trace.data) sim.trace.decide({ t: sim.t, a: d.idx, kind: 'dl-game', chose: `${g}${sd > 0 ? '+' : '-'}`,
+      cue: `called ${sim.defCall.dlGame!.kind} ${sim.defCall.dlGame!.dir}`, detail: `from ${gap}${side > 0 ? '+' : '-'}` }); }
     if (line || spot.role.kind === 'blitz') first.add(d);
     // Dropping on passes changes support eligibility, not the front's run gap.
-    if (line || spot.role.kind === 'blitz' || dropper) claimed.add(`${side}:${gap}`);
+    if (line || spot.role.kind === 'blitz' || dropper) claimed.add(`${sd}:${g}`);
     if (dropper && kind === 'edge') jobs.get(d)!.inside = { gap, side, kind: 'edge' };
   }
   // An explicit exchange already spends its backer on the vacated edge.

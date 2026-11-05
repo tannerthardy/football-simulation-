@@ -11,7 +11,7 @@ import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js'
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
-import type { Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
+import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
@@ -131,6 +131,27 @@ function manInFront(sim: PlaySim, a: Agent, reach = 1.5, held: Agent | null = nu
   return best ? { ...sim.see(a, best, KEY_DELAY), home: sim.offAlign.spots[best.slot]!.pos, agent: best } : null;
 }
 
+/** DL_GAMES: how long a moving lineman executes his called step before he
+ * plays from the new gap (s after his get-off): about two steps. */
+const GAME_STEP = 0.45;
+
+/** DL_GAMES twist timing (s after get-off): the crasher penetrates the partner's
+ * gap, the looper jabs his own man, then loops behind into the crasher's gap. */
+const TWIST_CRASH = 0.8, TWIST_HOLD = 0.15, TWIST_LOOP = 1.6;
+function twistRole(a: Agent, sim: PlaySim): { role: 'crash' | 'loop'; y: number } | null {
+  const game = sim.defCall.dlGame;
+  if (!game || game.kind !== 'twist') return null;
+  const s = game.dir === 'S' ? 'S' : 'W', o = s === 'S' ? 'W' : 'S';
+  const pair = game.pair ?? 'TE';
+  const [crash, loop] = pair === 'TE' ? [`DT_${s}`, `DE_${s}`] : pair === 'ET' ? [`DE_${s}`, `DT_${s}`] : [`DT_${s}`, `DT_${o}`];
+  const c = sim.slot(crash as DefSlot), l = sim.slot(loop as DefSlot);
+  if (!c || !l || (a !== c && a !== l)) return null;
+  // Each attacks where the other was: the gap's y at the line from the alignment.
+  const spot = (d: Agent) => sim.defAlign.spots[d.slot as DefSlot]!;
+  const target = a === c ? spot(l) : spot(c);
+  return { role: a === c ? 'crash' : 'loop', y: gapY(sim.offAlign, target.gap, target.gapSign) };
+}
+
 export class PassRusher implements Behavior {
   readonly kind = 'rush';
   private readonly getOff: number;
@@ -143,6 +164,12 @@ export class PassRusher implements Behavior {
   private keyed: Agent | null = null;
   /** Pre-snap rush plan from his tools. */
   readonly plan: 'power' | 'finesse' | 'speed';
+  /** DL_GAMES: a called angle/slant/pinch moved his gap; until this clock he
+   * executes the movement into it (the call, not a read), then plays from there. */
+  private readonly gameUntil: number;
+  /** DL_GAMES twist: the crasher attacks the partner's gap; the looper waits a
+   * beat, then loops behind him into the gap the crasher vacated. */
+  private readonly twist: { role: 'crash' | 'loop'; y: number } | null;
   constructor(
     a: Agent,
     sim: PlaySim,
@@ -158,6 +185,11 @@ export class PassRusher implements Behavior {
     const fi = 0.3 + a.r('passRushFinesse');
     const sp = edge ? 0.2 + burst * 1.2 + traits(a).bend * 0.5 : 0;
     this.plan = sim.dice('rush', a).weighted(['power', 'finesse', 'speed'] as const, [pw, fi, sp]);
+    const spot = sim.defAlign.spots[a.slot as DefSlot];
+    const movedGap = !!sim.defCall.dlGame && sim.defCall.dlGame.kind !== 'twist' && !!spot
+      && (spot.gap !== gap || Math.sign(spot.gapSign) !== Math.sign(gapSign));
+    this.gameUntil = movedGap ? this.getOff + GAME_STEP : -1;
+    this.twist = twistRole(a, sim);
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
@@ -173,6 +205,25 @@ export class PassRusher implements Behavior {
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) {
       const path = acquireFlight(a, sim), spot = catchSpot(a, { t: sim.t, ballPath: path });
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
+    }
+    // A called movement goes on the snap: across the blocker's face into his
+    // new gap at the line, whatever the man in front of him does.
+    if (this.twist && !believesRun(sim, a)) {
+      const t = sim.t - this.getOff, x = (d: number) => sim.los - d * sim.attackDir(sim.offense[0].team);
+      if (this.twist.role === 'crash' && t < TWIST_CRASH) {
+        a.tags.add('twist-crash');
+        return runThrough(a, { x: x(0.6), y: this.twist.y }, { speed: 1 });
+      }
+      if (this.twist.role === 'loop' && t < TWIST_LOOP) {
+        a.tags.add('twist-loop');
+        // A jab at his own man first (the hold that sells the rush), then the loop behind the crash.
+        if (t < TWIST_HOLD) return runThrough(a, { x: x(0.2), y: a.pos.y }, { speed: 0.6 });
+        return runThrough(a, { x: x(0.2), y: this.twist.y }, { speed: 1 });
+      }
+    }
+    if (sim.t < this.gameUntil) {
+      a.tags.add('dl-game-step');
+      return runThrough(a, { x: sim.los - 0.3 * sim.attackDir(sim.offense[0].team), y: gapY(sim.offAlign, this.gap, this.gapSign) }, { speed: 1 });
     }
     // The ball is handed off or the QB takes off: play the run. Up close a
     // lineman sees the exchange; a rusher who has read run plays it too

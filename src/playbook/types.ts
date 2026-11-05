@@ -383,6 +383,14 @@ export interface DefensivePlayCall {
   /** FRONT_MENU: backers walked up into the open A gaps (one or both), each
    * still playing his called job from there. */
   mug?: 1 | 2;
+  /** DL_GAMES: a called defensive-line game. Run-down movement (`angle`: the
+   * interior linemen, `slant`: every lineman, one gap toward `dir`; `pinch`:
+   * both end men one gap inside) changes each mover's gap from the snap and the
+   * backers re-fit the gaps it vacates. `twist`: a pass-rush exchange between
+   * two adjacent rushers on `dir`'s side (`pair` names them by position:
+   * `TE` tackle crashes and end loops, `ET` end crashes and tackle loops,
+   * `TT` the two interior linemen). `dir` is the strength side (S) or weak (W). */
+  dlGame?: { kind: 'angle' | 'slant' | 'pinch' | 'twist'; dir: 'S' | 'W'; pair?: 'TE' | 'ET' | 'TT' };
   /** Called end spike / linebacker scrape exchanges both responsibilities. */
   gapExchange?: { edge: 'DE_S' | 'DE_W'; backer: 'LB_S' | 'LB_M' | 'LB_W' };
   /** Show another compatible front, then move at a finite rate before snap. */

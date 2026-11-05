@@ -124,6 +124,9 @@ const COVER_CALL = process.env.COVER_CALL !== '0';
  * whatever the coverage, and a two-high call without an installable
  * pressure rushes four (3% with five or more, 24% behind one high). */
 const PRESSURE_CALL = process.env.PRESSURE_CALL !== '0';
+/** DL_GAMES (experimental, off): the coordinator calls defensive-line games
+ * (angles, slants, pinches; twists on passing downs). Off: no line game is called. */
+const DL_GAMES = process.env.DL_GAMES === '1';
 const PRESSURE_BY_SHELL: Record<string, number> = { 'one-high': 1.48, 'two-high': .43 };
 export const CB_NORM = 79.3;
 export const WR_NORM: Partial<Record<PersonnelId, number>> = { '10': 69.6, '11': 71.3, '12': 72.0, '21': 72.0, '13': 76.6, '22': 76.6 };
@@ -711,11 +714,25 @@ export class DefensiveCoordinator {
     const mugDraw = own.fork('mug').next();
     const mug: DefensivePlayCall['mug'] = FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
       ? mugDraw < .05 ? 2 : mugDraw < .17 ? 1 : undefined : undefined;
+    // DL_GAMES: a called line game. Passing downs bring twists; run downs an
+    // occasional angle, slant or pinch (more in short yardage). Rates from 2022
+    // tracking: twists on about 6-10% of dropbacks, movement led by the line on
+    // a few percent of runs (most early DL lateral movement is a read).
+    let dlGame: DefensivePlayCall['dlGame'];
+    if (DL_GAMES && !pressure?.droppers) {
+      const g = own.fork('dlgame'), u = g.next(), dir = g.chance(.5) ? 'S' as const : 'W' as const;
+      const short = s.distance <= 2;
+      if (passingDown) { if (u < .12) dlGame = { kind: 'twist', dir, pair: g.weighted(['TE', 'ET', 'TT'] as const, [.4, .35, .25]) }; }
+      else if (short) { if (u < .04) dlGame = { kind: 'pinch', dir }; else if (u < .07) dlGame = { kind: 'slant', dir }; else if (u < .11) dlGame = { kind: 'angle', dir }; }
+      else if (u < .04) dlGame = { kind: 'angle', dir }; else if (u < .055) dlGame = { kind: 'slant', dir };
+      else if (u < .06) dlGame = { kind: 'pinch', dir }; else if (u < .09) dlGame = { kind: 'twist', dir, pair: g.weighted(['TE', 'ET', 'TT'] as const, [.4, .35, .25]) };
+    }
+    const gameTag = dlGame ? ` [${dlGame.kind}${dlGame.pair ? ' ' + dlGame.pair : ''} ${dlGame.dir}]` : '';
     return {
       call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick,
-        checkPrefer: this.checkPrefer(passingDown, system), zeus, strength, mug,
+        checkPrefer: this.checkPrefer(passingDown, system), zeus, strength, mug, ...(dlGame ? { dlGame } : {}),
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
-        label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
+        label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}${gameTag}` },
       prefs,
     };
   }
