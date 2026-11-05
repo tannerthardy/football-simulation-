@@ -11,6 +11,7 @@
     "CF_FLOW": null,
     "CLIMB_INTERCEPT": "1",
     "CLIMB_PLAN": "1",
+    "DRAW_READ": "0",
     "DL_FIGHT": "0",
     "EDGE_CONTAIN": "1",
     "GAP_MATCH": "1",
