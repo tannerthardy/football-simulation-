@@ -110,6 +110,8 @@
     "OZ_HIP_READ": "0",
     "HELD_SIDE": "0",
     "DOUBLE_OVERTAKE": "0",
+    "CLIMB_SLIDE": "0",
+    "WING_WORK": "0",
     "RB_HELD": "0",
     "CLIMB_RIP": "0",
     "CLIMB_BASE": "0",

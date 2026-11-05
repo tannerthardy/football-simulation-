@@ -607,6 +607,13 @@ export const BLOCKER_NEXT = process.env.BLOCKER_NEXT === '1';
  * man's mass never stays on him in the double. Our wings ended on the man
  * 84% of the time (tracked receiver wings 37%). */
 export const WING_CALL = process.env.WING_CALL === '1';
+/** WING_WORK (default off; with WING_CALL): a play-side wing's arc goes to a
+ * box or alley defender (within 6 yd of the line), not a deep corner or
+ * safety. With none unclaimed he doubles the man with the end instead, and
+ * the pair's release reads send one of them on to the nearest box backer
+ * (s7-8: the H arced 12 yd wide to a corner 8 yd deep while both backers
+ * belonged to interior climbers who never reached them). */
+export const WING_WORK = process.env.WING_WORK === '1';
 function snapHash(...parts: (string | number)[]): number {
   let h = 2166136261;
   for (const c of parts.join('|')) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
@@ -638,6 +645,14 @@ export const DOUBLE_FLOW = process.env.DOUBLE_FLOW === '1';
  * guards ~0.5 yd/s for 0.8 s after the climb), or a detour around the
  * bodies took him backward (s9-88 LG). */
 export const CLIMB_RIP = process.env.CLIMB_RIP === '1';
+/** CLIMB_SLIDE (default off): a climber still touching the man he left slides
+ * along him: his request loses only what points into the man relative to the
+ * man's own motion, at the same speed. The rip took him straight at a spot past
+ * a man flowing beside him at his own speed (s9-113 RT: 1.5-2.4 s glued
+ * 0.64 yd from the 3-technique, both running 2.5 yd/s laterally); a body
+ * cannot be walked through. Tracked play-side climbers are 1.4 yd from the
+ * man 0.5 s into the climb; ours 0.75. */
+export const CLIMB_SLIDE = process.env.CLIMB_SLIDE === '1';
 
 /** A zone climber does not take a backer more than three gaps (4.5 yd)
  * from him across the formation. */
@@ -807,7 +822,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
           && !(sim.offAlign.spots[o.slot]?.backfield) && depthOf(o) > depthOf(end) - 1.5 && (o.pos.y - end.pos.y) * out > 0
           && Math.abs(o.pos.y - end.pos.y) <= 2.2 && Math.abs(o.pos.y - man.pos.y) < Math.abs(end.pos.y - man.pos.y) - .3);
         const owned = new Set([...plans.values()].flatMap((p) => [p.target, p.climbTo, p.combination?.backer]));
-        const nextFor = (wing: Agent) => [...dl, ...lb, ...db].filter((d) => !owned.has(d) && depthOf(d) > 1.1 && depthOf(d) < 8 && (d.pos.y - end.pos.y) * out > -1)
+        const deepest = WING_WORK ? 6 : 8;
+        const nextFor = (wing: Agent) => [...dl, ...lb, ...db].filter((d) => !owned.has(d) && depthOf(d) > 1.1 && depthOf(d) < deepest && (d.pos.y - end.pos.y) * out > -1)
           .sort((p, q) => Math.hypot(p.pos.x - wing.pos.x, p.pos.y - wing.pos.y) - Math.hypot(q.pos.x - wing.pos.x, q.pos.y - wing.pos.y))[0] ?? null;
         if (!playSide) {
           // Backside: the end has his own (inside) man; the man over the wing
@@ -844,7 +860,13 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         // wing alone 13/4%.
         const pEnd = te ? .55 : .7, pWing = te ? .15 : .08;
         if (next) claimedLB.add(next);
-        if (u < pEnd || !next) {
+        if (WING_WORK && !next) {
+          // Nobody worth an arc: the pair doubles the man and one comes off
+          // to the nearest box backer (claimed or not) by the release reads.
+          const backer = lb.filter((l) => depthOf(l) < 6 && Math.abs(l.pos.y - wing.pos.y) < 6)
+            .sort((p, q) => Math.hypot(p.pos.x - wing.pos.x, p.pos.y - wing.pos.y) - Math.hypot(q.pos.x - wing.pos.x, q.pos.y - wing.pos.y))[0] ?? null;
+          combo(wing, end, man, backer, ep.drive);
+        } else if (u < pEnd || !next) {
           // The end takes him; the wing arcs to the next man.
           if (next) plans.set(wing, { kind: 'climb', target: next, drive: up(ps * 0.4), arcAround: man });
         } else if (u < pEnd + pWing) {
@@ -1966,7 +1988,8 @@ export class RunBlocker implements Behavior {
       if (!past && Math.hypot(a.pos.x - man.pos.x, a.pos.y - man.pos.y) < reach + .7) {
         this.ripSide ??= Math.sign(man.pos.y - keeper.pos.y) || Math.sign(a.pos.y - man.pos.y) || 1;
         const spot = { x: man.pos.x + dirR * .9, y: man.pos.y + this.ripSide * (reach + .1) };
-        return { ...runThrough(a, spot), facing: dirR > 0 ? 0 : Math.PI };
+        const rip = { ...runThrough(a, spot), facing: dirR > 0 ? 0 : Math.PI };
+        return CLIMB_SLIDE ? slidePast(a, sim, released, rip) : rip;
       }
     }
     if (!this.departureStrikeClear && !near) return offReleasedHip(a,sim,released,approach);
@@ -2748,12 +2771,30 @@ export function pullTurnRadius(a: Agent): number {
 
 function offReleasedHip<T extends { vel: Vec2 } | null>(a: Agent, sim: PlaySim, released: Agent, command: T): T {
   if (!command) return command;
+  if (CLIMB_SLIDE) return slidePast(a, sim, released, command as { vel: Vec2 }) as T;
   const seen = sim.see(a, released), rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, r = Math.hypot(rx, ry);
   if (r < 1e-9 || r > a.profile.radius + released.profile.radius + .15) return command;
   const ux = rx / r, uy = ry / r, v = command.vel, into = v.x * ux + v.y * uy;
   if (into <= 0) return command;
   const tx = v.x - into * ux, ty = v.y - into * uy, tl = Math.hypot(tx, ty), speed = Math.hypot(v.x, v.y);
   return { ...command, vel: tl > 1e-9 ? { x: tx / tl * speed, y: ty / tl * speed } : { x: 0, y: 0 } };
+}
+
+/** CLIMB_SLIDE: the part of the request into the man he is touching, taken
+ * relative to the man's own seen motion, is removed; the rest keeps the
+ * requested speed. */
+function slidePast<T extends { vel: Vec2 }>(a: Agent, sim: PlaySim, man: Agent, command: T): T {
+  const seen = sim.see(a, man), rx = seen.pos.x - a.pos.x, ry = seen.pos.y - a.pos.y, r = Math.hypot(rx, ry);
+  if (r < 1e-9 || r > a.profile.radius + man.profile.radius + .15) return command;
+  const ux = rx / r, uy = ry / r, v = command.vel;
+  const relx = v.x - seen.vel.x, rely = v.y - seen.vel.y, into = relx * ux + rely * uy;
+  // Bodies still pressed together: the rip makes space first (about 1 yd/s
+  // off him relative to his motion), or friction carries him with the man.
+  const pressed = r < a.profile.radius + man.profile.radius;
+  if (into <= 0 && !pressed) return command;
+  const speed = Math.hypot(v.x, v.y), off = pressed ? 1 : 0;
+  const nx = v.x - (Math.max(0, into) + off) * ux, ny = v.y - (Math.max(0, into) + off) * uy, nl = Math.hypot(nx, ny);
+  return { ...command, vel: nl > 1e-9 ? { x: nx / nl * speed, y: ny / nl * speed } : { x: 0, y: 0 } };
 }
 
 function climbRoute(a: Agent, defender: Agent, down: Perceived,
@@ -3085,8 +3126,29 @@ export function prepareJoinedCombinations(sim: PlaySim): void {
   }
 }
 
+/** WING_WORK: a double's backer already met by a teammate (in this member's
+ * picture: a teammate's body against him) is no longer the pair's work; the
+ * nearest second-level man he sees with nobody on him, within 6 yd of the
+ * line and 5 yd across of the pair, is. */
+function retargetTakenBacker(observer: Agent, sim: PlaySim, combo: Combination): void {
+  const dir = sim.attackDir(observer.team), mates = sim.offense.filter((o) => !combo.members.includes(o));
+  const taken = (d: Agent) => { const s = sim.see(observer, d);
+    return mates.some((m) => { const ms = sim.see(observer, m); return Math.hypot(ms.pos.x - s.pos.x, ms.pos.y - s.pos.y) < m.profile.radius + d.profile.radius + .25; }); };
+  if (!taken(combo.backer!)) return;
+  const here = combo.defender.pos;
+  const next = sim.defense.filter((d) => d !== combo.defender && !d.isDown(sim.t)).map((d) => ({ d, s: sim.see(observer, d) }))
+    .filter(({ s }) => (s.pos.x - sim.los) * dir > 1.1 && (s.pos.x - sim.los) * dir < 6 && Math.abs(s.pos.y - here.y) < 5)
+    .filter(({ d }) => !taken(d))
+    .sort((p, q) => Math.hypot(p.s.pos.x - observer.pos.x, p.s.pos.y - observer.pos.y) - Math.hypot(q.s.pos.x - observer.pos.x, q.s.pos.y - observer.pos.y))[0];
+  if (next) {
+    combo.backer = next.d;
+    for (const m of combo.members) if (m.behavior instanceof RunBlocker && m.behavior.plan.combination === combo && m.behavior.plan.climbTo) m.behavior.plan.climbTo = next.d;
+  }
+}
+
 /** A player may propose only his own departure from the double team. */
 export function readCombination(observer: Agent, sim: PlaySim, combo: Combination, deferJoined = false): void {
+  if (WING_WORK && combo.backer && !combo.released) retargetTakenBacker(observer, sim, combo);
   const index = combo.members.indexOf(observer);
   if (index < 0 || combo.released || !combo.backer || combo.backer.isDown(sim.t)
     || sim.t < observer.snapReadyAt
