@@ -531,8 +531,11 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // 0.6 s on outside zone; ours stood on their landmark until the back's
   // lateral run or the gap's own slow motion moved them.
   let lineFlow = 0;
-  if (LB_LINE_FLOW && !flowSide && job.kind === 'insert' && job.technique !== 'lag') {
+  // The back's track agreeing with the guards keeps the lead: dropping it
+  // when the back confirms the flow reversed him onto his old landmark.
+  if (LB_LINE_FLOW && job.kind === 'insert' && job.technique !== 'lag') {
     lineFlow = guardRead(sim, a);
+    if (lineFlow && flowSide && flowSide !== lineFlow) lineFlow = 0;
     if (lineFlow) { gy += lineFlow * LINE_FLOW_LEAD; flowing = true; a.tags.add('fit-line-flow'); }
   }
   if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && flowSide) {
