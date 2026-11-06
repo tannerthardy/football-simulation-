@@ -113,6 +113,29 @@ const SHOW_CHECK = { under: { oneHigh: .37, twoHigh: 1.6 }, empty: { oneHigh: 1.
  *   ratio to the whole (Cover 1 0.82, Cover 0 0.75, 2-man 0.5, Cover 3
  *   1.12, quarters 1.07, Cover 6 1.1). */
 const COVER_CALL = process.env.COVER_CALL !== '0';
+/** RUN_FORM_PAIR (default off): the run concept is called for the formation
+ * the quarterback is in. Tracked 2022 runs (BDB, scripts' concept labels),
+ * by quarterback alignment at the snap (under centre <= 2 yd, pistol with the
+ * back directly behind, gun with the back beside him), as a ratio of the
+ * concept's share in that alignment to its share of all runs (under 58.5%,
+ * pistol 5.9%, gun 34.7%): outside zone is 77% under centre and 15% gun,
+ * inside zone 35% and 62%, draw 19% and 75%. The installed call drew the
+ * concept independently of the formation, so half our outside zone came from
+ * the gun and half our inside zone from under centre, which changes where the
+ * back takes the ball (tracked outside-zone backs 2.6 yd play side and running,
+ * ours level with the ball). Duo uses the tracked man/duo label. Run
+ * formations themselves follow the tracked alignment shares of all runs
+ * (ours were about 49% gun, 39% under centre). */
+const RUN_FORM_PAIR = process.env.RUN_FORM_PAIR === '1';
+/** RUN_FORM_PAIR: tracked quarterback alignment shares of all 2022 runs. */
+const RUN_QB_SHARE = { under: 0.585, pistol: 0.059, gun: 0.347 };
+const RUN_FORM_RATIO: Partial<Record<RunConcept['scheme'], Record<'under' | 'pistol' | 'gun', number>>> = {
+  outsideZone: { under: 1.32, pistol: 1.31, gun: 0.42 }, wideZone: { under: 1.32, pistol: 1.31, gun: 0.42 },
+  insideZone: { under: 0.59, pistol: 0.37, gun: 1.78 }, splitZone: { under: 0.59, pistol: 0.37, gun: 1.78 },
+  duo: { under: 1.27, pistol: 1.5, gun: 0.48 }, power: { under: 0.74, pistol: 1.12, gun: 1.4 },
+  counter: { under: 0.75, pistol: 1.64, gun: 1.32 }, trap: { under: 0.7, pistol: 0.47, gun: 1.58 },
+  draw: { under: 0.33, pistol: 0.71, gun: 2.16 },
+};
 /** PRESSURE_CALL (on; =0 turns it off): how often the coordinator brings
  * pressure depends on the shell behind it. 2022 tracking, dropbacks (initial
  * pass rushers against PFF's coverage, scripts/diag/align): five or more
@@ -379,6 +402,14 @@ export class OffensiveCoordinator {
     const scheme = this.team.offScheme;
     const forms = FORMATIONS.filter((f) => f.personnel === personnel);
     const gunPref = scheme === 'air-raid' || scheme === 'spread' ? 2.5 : scheme === 'west-coast' ? 1.4 : 0.8;
+    if (RUN_FORM_PAIR && !isPass) {
+      // Runs: the tracked quarterback alignment shares of all runs, spread
+      // over this personnel's formations of each alignment, with the
+      // scheme's gun preference kept as a tilt (1 for a pro-style offense).
+      const count = (qb: string) => forms.filter((f) => f.qb === qb && !f.tags.includes('empty')).length || 1;
+      return pickWeighted(this.rng, forms.map((f): [Formation, number] => [f, f.tags.includes('empty') ? 0.002
+        : (f.qb === 'gun' ? RUN_QB_SHARE.gun * gunPref / 0.8 : f.qb === 'pistol' ? RUN_QB_SHARE.pistol : RUN_QB_SHARE.under) / count(f.qb)]));
+    }
     return pickWeighted(
       this.rng,
       forms.map((f): [Formation, number] => [f, (f.qb === 'gun' ? gunPref * (isPass ? 1.3 : 0.8) : f.qb === 'pistol' ? 1 : isPass ? 0.8 : 1.4) * (f.tags.includes('empty') && !isPass ? 0.05 : 1)]),
@@ -437,7 +468,9 @@ export class OffensiveCoordinator {
       if (gap) w *= scheme === 'power' ? 2.0 : 0.9;
       w *= Math.exp(((zone ? zoneFit : gap ? gapFit : (zoneFit + gapFit) / 2) - 55) / 25);
       if (c.scheme === 'power' && hasFB) w *= 1.5;
-      if (c.scheme === 'draw') w *= gun ? 1.2 : 0.5;
+      if (c.scheme === 'draw' && !RUN_FORM_PAIR) w *= gun ? 1.2 : 0.5;
+      const pair = RUN_FORM_PAIR ? RUN_FORM_RATIO[c.scheme]?.[f.qb as 'under' | 'pistol' | 'gun'] : undefined;
+      if (pair !== undefined) w *= pair;
       if (c.scheme === 'toss') w *= gun ? 0.1 : 0.8;
       if (c.scheme === 'qbDraw') w *= gun && mobile ? 0.6 : 0;
       if (s.distance <= 2 && (c.scheme === 'outsideZone' || c.scheme === 'wideZone' || c.scheme === 'toss' || c.scheme === 'draw')) w *= 0.4;
