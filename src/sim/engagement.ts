@@ -733,6 +733,13 @@ const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
  * re-latch him at once (the shed window); bodies still collide.
  * SHED_PURSUE=0 restores the close-range gate for comparison. */
 const SHED_PURSUE = process.env.SHED_PURSUE !== '0';
+/** Experimental (RUN_HAND_MOVE=1, off): a defender who decides to work off
+ * a run block attacks the blocker's hands first (see the shed decision). */
+const RUN_HAND_MOVE = process.env.RUN_HAND_MOVE === '1';
+/** Experimental (SHED_PAST=1, off): a defender working off a run block is
+ * off it once the blocker is no longer between him and the runner he sees
+ * (see the leverage check in stepRunRep). */
+const SHED_PAST = process.env.SHED_PAST === '1';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
@@ -1255,6 +1262,24 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
         runSheds.set(e, { until: t + d.mind.decisionInterval * 2, side: ballSide || e.side, runner, contactSide });
         e.nextMoveAt = t + d.mind.decisionInterval * 2;
         d.tags.add('shed-attempt');
+        // RUN_HAND_MOVE: working off starts with his hands on the blocker's
+        // (a rip or swipe at the arms), the same exchange a pass rusher's
+        // finesse move makes against the punch. Landed, the blocker's hands
+        // are off for the move's window (setHands); missed, the blocker
+        // re-fits tighter. Whether he then gets free is still his feet, the
+        // blocker's feet and the bodies.
+        if (RUN_HAND_MOVE && !(t < e.moveUntil && e.moveOk)) {
+          const swipe = td.hands + 0.15 * td.bend + rng.normal(0, 0.18);
+          const keep = tb.hands + 0.3 * Math.max(0, e.control) + e.repEdge + rng.normal(0, 0.18);
+          if (swipe - keep > 0.18) {
+            e.move = 'rip'; e.moveOk = true; e.moveUntil = t + 0.3;
+            e.control = Math.min(e.control, -0.4);
+            d.tags.add('shed-hands');
+          } else {
+            e.moveOk = false;
+            e.control = Math.min(1, e.control + 0.2);
+          }
+        }
       } else {
         const sealed = -e.phi * ballSide; // >0: blocker is between you and the ball laterally
         const skill = 0.6 * d.r('blockShedding') + 0.4 * d.r('strength');
@@ -1286,6 +1311,20 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     if (!tryHold(sim, e)) beat(sim, e, axis, lat, true, b.body.support?.state !== 'up' ? 'blocker off his feet' : 'leverage');
     return;
   }
+  // SHED_PAST: turning his chest to follow the man keeps the hands on, but a
+  // block is the body between the defender and where he is going. Once a
+  // defender working off has got past the blocker's shoulder toward the
+  // runner he sees, the blocker is no longer in his way; he can only hold
+  // him (tryHold, a foul risk) or let him go.
+  if (SHED_PAST && shedding && read.threat) {
+    const u = norm(sub(read.threat.pos, d.pos)), rb = sub(b.pos, d.pos);
+    const sep = b.profile.radius + d.profile.radius;
+    const ahead = rb.x * u.x + rb.y * u.y, across = Math.abs(rb.x * u.y - rb.y * u.x);
+    if (ahead < 0.25 * sep || across > sep) {
+      if (!tryHold(sim, e)) beat(sim, e, axis, lat, true, 'past him');
+      return;
+    }
+  }
   setHands(sim, e);
   if (e.hands && (RUN_HANDS || DL_HANDS)) e.hands.drive = 0;
   if (RUN_HANDS) runHandDrive(sim, e);
@@ -1308,7 +1347,10 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // RUN_FEEL: the blocker mirrors the defender's motion as he has it, by
   // touch while his hands are on (0.06 s) or by sight (0.12-0.24 s), the
   // pass rep's PASS_FEEL law, not the defender's true current velocity.
-  const runSeen = RUN_FEEL ? sim.see(b, d, ((e.hands?.normalForce || e.hands?.tangentForce)
+  // A landed hand move has his hands off the man for its window (setHands):
+  // he follows him by sight, as a pass blocker does after a landed move.
+  const handsOff = RUN_HAND_MOVE && t < e.moveUntil && e.moveOk;
+  const runSeen = RUN_FEEL ? sim.see(b, d, ((e.hands?.normalForce || e.hands?.tangentForce) && !handsOff
     ? 0.06 : 0.12 + 0.12 * (1 - tb.read)) / Math.max(0.1, b.profile.reactionTime)) : d;
   const dv = runSeen.vel;
   const dLat = dv.x * lat.x + dv.y * lat.y;
