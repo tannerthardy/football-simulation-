@@ -181,7 +181,7 @@ const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ
 
 /** Free fits plan lateral work with their own body (LB_PLAN=0 off). */
 const LB_PLAN = process.env.LB_PLAN !== '0';
-const LB_LINE_FLOW = process.env.LB_LINE_FLOW === '1', LINE_FLOW_LEAD = 1.5;
+const LB_LINE_FLOW = process.env.LB_LINE_FLOW === '1', LINE_FLOW_LEAD = 1.5, GUARD_KEY_DELAY = 0.5, GUARD_STEP = 0.5;
 /** Experimental activation of the same planner for an observed pull-adjusted
  * insertion. Default off while matched containment/misdirection controls run. */
 const PULL_PLAN = process.env.PULL_PLAN === '1';
@@ -272,6 +272,27 @@ const lineReads = new WeakMap<Agent, { side: number; next: number }>();
  * 0 while the line says neither. His own delayed pictures, read once per
  * decision beat and kept until the line shows the other way; no offensive call
  * or assignment. A play-action line shows run and fools him, as it should. */
+/** LB_LINE_FLOW: a backer's keys are the guards ("guards to backs"), read as
+ * keys the way a lineman reads the man in front of him: half his ordinary
+ * observation delay. Both guards stepping the same way (a zone step), and
+ * neither setting back in a pass set, is the flow; a puller is read by the
+ * pull read, not here. Held for a decision beat. */
+const guardReads = new WeakMap<Agent, { side: number; next: number }>();
+export function guardRead(sim: PlaySim, a: Agent): number {
+  const held = guardReads.get(a);
+  if (held && sim.t < held.next) return held.side;
+  const dir = sim.attackDir(sim.offense[0].team);
+  const guards = ['LG', 'RG'].map(s => sim.slot(s)).filter((g): g is Agent => !!g).map(g => sim.see(a, g, GUARD_KEY_DELAY));
+  let side = 0;
+  if (guards.length === 2 && !guards.some(g => g.vel.x * dir < -1)) {
+    const s0 = Math.sign(guards[0].vel.y);
+    if (s0 && guards.every(g => g.vel.y * s0 > GUARD_STEP)) side = s0;
+  }
+  side = side || held?.side || 0;
+  guardReads.set(a, { side, next: sim.t + a.mind.decisionInterval });
+  return side;
+}
+
 export function lineRead(sim: PlaySim, d: Agent): number {
   const held = lineReads.get(d);
   if (held && sim.t < held.next) return held.side;
@@ -511,7 +532,7 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   // lateral run or the gap's own slow motion moved them.
   let lineFlow = 0;
   if (LB_LINE_FLOW && !flowSide && job.kind === 'insert' && job.technique !== 'lag') {
-    lineFlow = lineRead(sim, a);
+    lineFlow = guardRead(sim, a);
     if (lineFlow) { gy += lineFlow * LINE_FLOW_LEAD; flowing = true; a.tags.add('fit-line-flow'); }
   }
   if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && flowSide) {
