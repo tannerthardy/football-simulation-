@@ -1,111 +1,95 @@
-# Tackling: a held runner needs an achieved finish
+# Tackle finish after line-level contact
 
-The tackle controller now uses a secured side/rear hold to request a plant
-along that hold. Ground traction, grip force and balance still decide whether
-the defender slows the runner, slips or gets dragged. No physical capability,
-grip strength, mass, inertia or solver resolution increased. This is a controller
-repair exercised through shared physics, not a new grasp law.
+Main Engine, 2026-11-06. Measured on #412's head (`22cfc71b`, develop
+`9a19ced9` + `ONE_ARM_HOLD`), matched-restage captures for seeds 7–8, restage
+environment `54199f26`. No engine change is proposed here.
 
-The user's [tackling reference](../references/tackling_mechanics_and_physics.md)
-is preserved for collaborators. It usefully separates approach, contact, wrap
-and finish. Its equations and non-NFL studies do not calibrate NFL contact forces.
+## Question
 
-## Repeated mechanism and repair
+At line-level contact, sim carriers stop faster than NFL carriers, and the
+play ends sooner. Is that the tackle bond (the front tackler's drive-through,
+the plant brake), the contact physics, or how the back arrives?
 
-The existing panel repeatedly showed a secure rear hold transmitting almost no
-load while the carrier walked another twelve yards. `updateBond` kept requesting
-the carrier's speed plus a closing step even after the arms had closed. There
-was no attempted plant for the World to execute. More grip strength cannot
-correct a controller that asks for almost no restraining load.
+## Same operator on both
 
-An extended reach still follows and closes. With actual body proximity and the
-existing grip quality, the holder reduces following **along the hold**, retaining
-the carrier's perpendicular motion. A side hold must close and earn rear leverage
-before trying to brake forward motion. Existing front-on drive, committed dives,
-bounded strikes and staying with a falling carrier remain.
+- First contact is the first frame a defender's centre is within 1.0 yd of
+  the carrier, with the carrier within 2 yd of the LOS (`gang.py`'s event).
+- Speeds are from 0.1 s central differences.
+- Sim: `scripts/diag/_finish.mts`. NFL 2022: `scripts/mechanics/finish_reference.py`
+  through `run_film_reference.py`.
 
-A four-second hold no longer whistles a moving runner down. Physical falls,
-stopped forward progress and the protected pocket QB's in-the-grasp rule still
-end plays. Some experimental reps now remain unfinished at the inspection limit;
-they were previously reported as tackles without a physical stop.
+| | NFL (4328) | Sim (78) |
+|---|---|---|
+| Carrier speed at contact | 4.31 | 5.00 |
+| +0.1 / +0.3 / +0.5 s | 4.06 / 3.55 / 3.07 | 3.87 / 3.15 / 2.48 |
+| Time to the end, p50 | 1.90 s | 1.05 s |
+| How square the contact is (cos of carrier velocity vs direction to the toucher), p50 | 0.38 | 0.64 |
+| Square (cos > 0.8) | 22% | 36% |
 
-## Matched evidence
+- NFL tracking ends after the whistle, so the time-to-end gap is partly how
+  each source ends a play. The speed columns are the cleaner comparison.
 
-Baseline: `505842e`, source `621ad9364e`. Repair source: `f14d849a51`.
-The same panel operator, generated rosters 61/62, three seeds, 24 cells and both
-mirrors give 144 reps per physics model. Its new finish labels distinguish a
-fall, stopped progress and another whistle. First observed grasp is separate
-from the old first-attempt marker, which includes misses. Neither advance measure
-is a calibrated NFL yards-after-contact measurement.
+**By how square the contact is:**
 
-| Adaptive panel, 144 reps | Before | After |
-| --- | --- | --- |
-| Production: physical falls | 106 | 122 |
-| Production: escapes / unfinished | 20 / 4 | 20 / 2 |
-| Production: other whistles | 14 | 0 |
-| Angular patch: physical falls | 62 | 92 |
-| Angular patch: escapes / unfinished | 42 / 6 | 36 / 16 |
-| Angular patch: other whistles | 34 | 0 |
+| | NFL: speed at contact → +0.3 s | NFL loss | Sim: speed at contact → +0.3 s | Sim loss |
+|---|---|---|---|---|
+| Glancing (cos < 0.3) | 4.71 → 4.07 | 0.61 | 4.12 → 4.31 | −0.10 |
+| Angled (0.3–0.8) | 4.20 → 3.43 | 0.72 | 5.18 → 3.32 | 1.17 |
+| Square (> 0.8) | 3.71 → 2.90 | 0.81 | 5.37 → 2.11 | 2.55 |
 
-In the predeclared slow rear witness (180 degrees, 3 yd/s, seed 3000), production
-advance after observed grasp drops from 12.22 to 3.00 yd. Peak actual grip load
-rises from 102 to 1,128 kg·yd/s² within unchanged capacities; the ending changes
-from an upright timed whistle to a physical fall. Patch also produces a physical
-fall at 3.13 yd. Fast difficult escapes remain. These are controlled generated
-players, not estimates of NFL tackle rates.
+- NFL backs arrive slower the more square the contact: 4.71, 4.20, 3.71.
+  They slow down for a man in front of them and keep speed past a man
+  beside them.
+- Sim backs do the opposite (4.12, 5.18, 5.37). They hit square contacts at
+  full speed.
 
-The permanent acquired-wrap controls compare planting with the old co-moving
-request using identical bodies and holds. They verify actual transmitted load,
-carrier slowing, shared arm/recovery work, mirrors and 12/48-step refinement.
-Weak extended reaches, grounded holders and the other finish situations remain.
-Five of the final twenty assertions fail on baseline, including the two physical
-load comparisons and the false-whistle control. The final stage passes all twenty.
+## What stops him
 
-## Rejected attempts and remaining physics
+- **Body impact, not the wrap.** Over the first 0.2 s, along his travel
+  (means, yd/s):
+  - change −1.36;
+  - his legs +0.51;
+  - grasp joints −0.48;
+  - torso and hand contacts −1.39.
+- **The front tackler's drive-through request does not matter.** With the
+  in-front branch's `−2.5` yd/s drive request set to 0, the in-front speed at
+  +0.3 s is 3.09 vs 2.98, and time to the end is 0.90 vs 0.85 s.
+- **The square hit is a plastic collision, which is what it should be.**
+  - Square contacts: carrier 98 kg, toucher 117 kg (p50).
+  - Common velocity of a perfectly plastic collision with the toucher alone:
+    2.34 yd/s p50. Achieved: 3.04 at +0.1 s and 2.11 at +0.3 s.
+  - 39% end below the plastic bound by +0.3 s. That is the toucher's own
+    legs, or a blocker still on him, adding to the stop.
+  - The World is not braking him beyond momentum.
 
-The first fast 45-degree reach starts with a 1.15-yard holder lever arm and
-substantial existing spin. Acquiring the carrier's near surface instead of COM
-in a local experiment did not repair it: shorter radius required faster holder
-rotation, and the escape worsened. The experiment was reverted. A plausible
-contact location alone does not prove a good wrap or support response.
+Run Game's 12-seed sample (Run Game session, 2026-11-06, 235 OZ/WZ
+contacts) agrees:
+- one tackler in front is the dominant case (105 runs: +0.3 s speed 2.55,
+  play over 0.75 s after contact);
+- several of the most abrupt cases start slow with a large lateral request,
+  which is Run Game's carrier control.
 
-A first finish request braked every component of carrier motion. It improved
-rear holds but lost the ordinary side approach under patch: one grip slipped
-and the runner stayed upright. Projecting braking along the hold restores that
-unchanged side control in both mirrors, through a physical fall. We retained
-the failed trial's evidence rather than increasing grip force or weakening the
-control. Final patch promotion returns to its prior **42/50**, still not ready.
+## Conclusion
 
-Full trajectories are not universally converged. The controlled acquired rear
-plant agrees at 12/48 steps, but some native panel finishes differ, especially
-under patch. Both final models have two mirrored finish disagreements out of
-144 reps at 12 versus 48 steps (the baseline has four in each model). This is
-a limited panel result, not universal convergence. The next physics work should
-trace the first divergence in those
-loaded angled holds: actual point motion, delivered normal/tangent moments,
-attained yaw, grip slip and support recovery. A bounded distributed wrap may
-eventually be needed; these trials do not establish that it is the next fix.
-Initial approach/braking and jump/landing remain separate unfinished mechanisms.
+The fast finish is mostly the back's decision, which belongs to the carrier
+controller (Run Game).
+- He arrives at square contacts at full speed, where NFL backs gather.
+- Momentum then does what it should.
 
-## Checks and reproduction
+This is not a reason to soften contacts or the bond: that would make a
+full-speed head-on hit cheaper than it is.
 
-Run Node 22. Current full checks and compact receipts are recorded in
-[the evidence receipt](../../data/reviews/current/tackle-finish.json).
-Two matched generated games at seeds 101/102 are a smoke check only. Both stages
-retain 12/12 existing mechanism guards. Later calls and RNG diverge; games are
-not paired snaps, a blind NFL holdout or proof of general football improvement.
+Open for Main Engine:
+- Run Game's full-speed falls within 0.3 s (s7-40, s23-72, s19-37, s13-58 on
+  their recapture) are the balance side. Each needs one look at whether the
+  fall follows from the hit and his base, before any change.
+- NFL centre tracking cannot tell a torso hit from an arm tackle at 1.0 yd.
+  So "NFL square contacts lose 0.81" may include contacts that are not body
+  on body yet. That is a limit of the operator, not a target.
+
+## Reproduce
 
 ```sh
-npm test -- test/tackle-support-choice.test.ts
-node --import tsx scripts/diag/tackle/panel.ts --seeds 3 --out out/tackle/center.json
-node --import tsx scripts/diag/tackle/panel.ts --seeds 3 --common-patch --out out/tackle/patch.json
-# Repeat either arm with --substeps 12 and --substeps 48.
-node --import tsx docs/archive/research/contact-mechanics/grasp-law.ts out/tackle/law.json . --stress-lower --assert-law
+env $(cat restage-env.txt) node --import tsx scripts/diag/_finish.mts <cap> 7 8
+python3 -I scripts/mechanics/finish_reference.py scripts/mechanics/run_film_reference.py out/mechanics/nfl-plays.jsonl.gz
 ```
-
-For baseline, extract `git archive 505842e src scripts` into an ignored snapshot,
-copy the current panel into its same path, and run there with access to existing
-Node dependencies. The panel checks source identity before/after and records
-its operator hash. Large traces stay in ignored `out/`; the compact receipt
-keeps source/input pins, adverse cases and artifact hashes. No history rewrite
-or experimental angular-patch promotion is part of this change.
