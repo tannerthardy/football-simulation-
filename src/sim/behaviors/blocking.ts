@@ -664,6 +664,14 @@ export const CLIMB_RIP = process.env.CLIMB_RIP === '1';
  * cannot be walked through. Tracked play-side climbers are 1.4 yd from the
  * man 0.5 s into the climb; ours 0.75. */
 export const CLIMB_SLIDE = process.env.CLIMB_SLIDE === '1';
+/** CUTOFF_RACE (default off): on a stretch call a solo cutoff is the backside
+ * reach: the engaged reach footwork (REACH_TECHNIQUE, REACH_RACE) races for
+ * the man's play-side shoulder instead of mirroring him. Tracked 2022 outside
+ * zone backside guards/tackles are 2.0 / 3.7 yd play side of their snap spot
+ * at 1.0 / 1.5 s; ours 0.6 / 1.2 (1.9 with the racing line), so the backside
+ * man's vacated spot never opened (backside DL >= 1 yd in the backfield at
+ * 1.5 s: tracked 17%, ours 1%). */
+export const CUTOFF_RACE = process.env.CUTOFF_RACE === '1';
 
 /** A zone climber does not take a backer more than three gaps (4.5 yd)
  * from him across the formation. */
@@ -2214,7 +2222,8 @@ export class RunBlocker implements Behavior {
       const ps = playSideSign(sim, run), partner = this.plan.combination.members.find((m) => m !== a);
       if (partner && (partner.pos.y - a.pos.y) * ps > 0) return { kind: 'reach', side: ps };
     }
-    if (e.blocker !== a || e.helpers.length || this.plan.kind !== 'reach' || this.plan.target !== e.defender) return null;
+    const cutoffReach = CUTOFF_RACE && this.plan.kind === 'cutoff' && !!run && (run.scheme === 'outsideZone' || run.scheme === 'wideZone');
+    if (e.blocker !== a || e.helpers.length || (this.plan.kind !== 'reach' && !cutoffReach) || this.plan.target !== e.defender) return null;
     return run ? { kind: 'reach', side: playSideSign(sim, run) } : null;
   }
 
