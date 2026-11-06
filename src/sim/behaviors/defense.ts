@@ -6,6 +6,7 @@
  * reads the play, he executes his pre-snap job; play action can fool him into
  * believing run for longer.
  */
+import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
@@ -105,22 +106,10 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
 
 // ------------------------------------------------------------- pass rush
 
-/** A blocker's lateral step a lineman can see (yd/s): its direction shows long before its speed builds. */
-const STEP_SEEN = 0.3;
-
 /** How much sooner a lineman reads the man in front of him than the rest of
- * the field: his key, an arm's length away and straight ahead of him (as a
- * rusher keys the quarterback). */
-const KEY_DELAY = 0.5;
-/** KEY_REACT (experimental, off): the key is one man an arm's length straight
- * ahead, watched from the stance on purpose, so the lineman reacts to the first
- * movement of his feet and hands rather than waiting for the body's speed to
- * build (the sim has no feet to watch; a step that has begun moving the body
- * stands in for them). His sight of it is a primed visual reaction, faster than
- * an ordinary read but never under the ~0.1 s a body needs to see and start to
- * answer. Better recognition still reads it sooner. */
-const KEY_REACT = process.env.KEY_REACT === '1', KEY_FLOOR = 0.1, KEY_REACT_SCALE = 0.35, KEY_STEP_SEEN = 0.15;
-const keyScale = (a: Agent) => KEY_REACT ? Math.max(KEY_FLOOR / a.profile.reactionTime, KEY_REACT_SCALE) : KEY_DELAY;
+ * the field (his key, an arm's length away and straight ahead of him, as a
+ * rusher keys the quarterback), and the step speed at which he sees it: see
+ * key-read.ts. */
 const stepSeen = KEY_REACT ? KEY_STEP_SEEN : STEP_SEEN;
 /** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
  * read lean leads his step before the key's own movement must confirm it (s). */
@@ -284,6 +273,7 @@ export class PassRusher implements Behavior {
       const h = a.mind.decisionInterval;
       const at = { x: man!.pos.x + man!.vel.x * h, y: man!.pos.y + side * step * h };
       a.tags.add('key-step');
+      if (KEY_REACT) a.keyStep = { from: man!.agent, side };
       return track(a, at, { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
     }
     // Rush lane by plan: power rushers go through the blocker's chest at the

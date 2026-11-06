@@ -29,6 +29,7 @@
  * off balance, hands cleared for a moment so the rusher's own feet carry him
  * past — never a jump in leverage or a prescribed speed.
  */
+import { KEY_REACT, keyScale } from './key-read.js';
 import { clamp, logistic, norm, sub, type Vec2 } from '../core/vec.js';
 import { G } from '../core/units.js';
 import { gaitLag, fatigueFactor, movingArrivalVelocity } from '../physics/kinematics.js';
@@ -987,7 +988,8 @@ function runContactRead(sim: PlaySim, e: Engagement) {
       stack = { owner: b, fit, depth: stack?.depth ?? d.pos.x,
         shoulder: edge ? job.side * (job.edge === 'spill' ? -.45 : .65)
           : clamp(liveGapY(sim, d, job.gap, job.side) - local.y, -sep * .65, sep * .65),
-        nextRead: -Infinity, flow: 0, contacted: stack?.contacted ?? false, firstStep: 0 };
+        nextRead: -Infinity, flow: 0, contacted: stack?.contacted ?? false,
+        firstStep: KEY_REACT && d.keyStep?.from === b ? d.keyStep.side : 0 };
       runStacks.set(e, stack);
     }
     // Reaching is not touching. Only the first transmitted hand load installs
@@ -998,6 +1000,12 @@ function runContactRead(sim: PlaySim, e: Engagement) {
     }
     // Motion is a personally acquired cue held for an ordinary decision beat.
     // Touch supplies local position/load, never the OL's private drive.
+    // KEY_REACT: his first step is his key's, read on the key's own sight
+    // whenever it shows, not held for the next decision beat.
+    if (KEY_REACT && !stack.firstStep && !edge) {
+      const key = sim.see(d, b, keyScale(d)).vel.y;
+      if (Math.abs(key) > .5) stack.firstStep = Math.sign(key);
+    }
     if (sim.t >= stack.nextRead) {
       stack.flow = picture.vel.y;
       if (!stack.firstStep && Math.abs(stack.flow) > .5) stack.firstStep = Math.sign(stack.flow);
