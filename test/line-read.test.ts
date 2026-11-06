@@ -79,7 +79,7 @@ describe('a lineman reads the play from the line', () => {
     const first = (s: ReturnType<typeof play>, a: Agent) =>
       Math.min(...['fit-replace', 'fit-box', 'fit-spill'].map(tag => s.firstFit.get(`${a.slot}:${tag}`) ?? Infinity));
     const counter = snaps('counter', 'i_jumbo_22');
-    const lateBox = [counter, [{ formation: 'i_pro_21', seed: 7, flip: false }, { formation: 'i_pro_21', seed: 7, flip: true }]
+    const lateBox = [counter, [{ formation: 'i_pro_21', seed: 7, flip: false }, { formation: 'i_pro_21', seed: 7, flip: true }, { formation: 'i_pro_21', seed: 8, flip: false }]
       .map(({ formation, seed, flip }) => ({ seed, flip, ...play('counter', formation, seed, flip) }))].flat();
     for (const s of lateBox) {
       const playSide = edges(s.sim).filter(a => a.runFit!.side === s.ballSide);
