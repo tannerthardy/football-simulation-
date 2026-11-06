@@ -134,6 +134,9 @@ export function gameSense(p: Player): number {
 
 // ------------------------------------------------------------ cues
 
+/** DEF_STANCE: how much later a hand-down lineman sees the backfield (delay scale; see assign.ts). */
+const DOWN_BACKFIELD_DELAY = 1.6;
+
 /** Has `a` had time to see the first movement after the snap? */
 function t0(sim: PlaySim, a: Agent): boolean {
   return sim.t >= 0.1 + a.profile.reactionTime * 0.5;
@@ -312,11 +315,14 @@ export class Recognition {
 
     // The quarterback: dropping past the mesh depth is a pass; riding a mesh
     // with the back is a run look. Standing at the snap says nothing.
-    const qb = sim.see(a, sim.qb);
+    // DEF_STANCE: a hand-down lineman's eyes are on the man in front; the
+    // backfield reaches him later than a man standing up.
+    const bf = a.setStance === 'down' ? DOWN_BACKFIELD_DELAY : 1;
+    const qb = sim.see(a, sim.qb, bf);
     const meshDepth = sim.offCall.formation.qb === 'under' ? 3.6 : sim.offCall.formation.qb === 'pistol' ? 4.6 : 5.2;
     const depth = sim.los - qb.pos.x;
     const rbAgent = sim.slot('RB');
-    const rb = rbAgent ? sim.see(a, rbAgent) : null;
+    const rb = rbAgent ? sim.see(a, rbAgent, bf) : null;
     let qbCue = depth > meshDepth + 0.4 ? clamp((depth - meshDepth - 0.4) / 1.0, 0, 1.2) : 0;
     // Bailing straight back from under center is a dropback.
     if (qb.vel.x < -1.5 && Math.abs(qb.vel.y) < 0.6 * -qb.vel.x) qbCue = Math.max(qbCue, 0.6);

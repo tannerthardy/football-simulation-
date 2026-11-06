@@ -37,6 +37,30 @@ function stanceLeak(a: Agent): number {
   return clamp(0.15 + 0.45 * (1 - a.r('discipline')), 0.1, 0.6);
 }
 
+/** DEF_STANCE (experimental, off): a front defender lines up hand(s) down or
+ * standing up, and the stance is a tradeoff the body carries:
+ *  - hand down: low pads at the snap (posture 0.7, the existing pad-level
+ *    and leverage physics), primed to fire forward, eyes on the man in
+ *    front, so the backfield is seen later;
+ *  - standing up: high pads (0.3), a later forward start, and the backfield
+ *    in view at the ordinary delay; the stance a dropping end uses.
+ * Interior men are down; an end stands when he is dropping, when he is a
+ * linebacker playing the end, and as the odd (3-4) front's outside man.
+ * Pad level then moves at its usual finite rate toward what he asks for.
+ * The get-off cost and the vision cost are assumptions, not fitted values. */
+const DEF_STANCE = process.env.DEF_STANCE === '1';
+const STAND_GETOFF = 0.04;
+function setFrontStance(sim: PlaySim, d: Agent, role: string): void {
+  const k = d.slot.split('_')[0];
+  if (k !== 'DT' && k !== 'NT' && k !== 'DE') return;
+  let stance: 'down' | 'up' = 'down';
+  if (k === 'DE' && (role === 'zone' || role === 'man' || role === 'spy' || d.player.position === 'LB'
+    || sim.defCall.personnel === 'base34')) stance = 'up';
+  d.setStance = stance;
+  d.body.support!.posture = stance === 'down' ? 0.7 : 0.3;
+  if (stance === 'up') d.snapReadyAt += STAND_GETOFF;
+}
+
 export function assignBehaviors(sim: PlaySim): void {
   if (STANCE_TELL) for (const a of sim.offense) {
     if (!isOL(a)) continue;
@@ -61,6 +85,7 @@ export function assignBehaviors(sim: PlaySim): void {
     const base = READ_BASE[key] ?? 0.3;
     d.readAt = d.profile.reactionTime + base * (1.35 - d.r('playRecognition')) + Math.abs(sim.dice('read', d).normal(0, 0.08));
     const role = spot.role;
+    if (DEF_STANCE) setFrontStance(sim, d, role.kind);
     switch (role.kind) {
       case 'rush':
         d.behavior = new PassRusher(d, sim, d.runFit!.gap, d.runFit!.side);

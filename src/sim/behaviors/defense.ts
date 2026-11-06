@@ -117,6 +117,8 @@ const KEY_DELAY = 0.5;
 const STANCE_TELL = process.env.STANCE_TELL === '1';
 /** BACKSIDE_SHOOT (experimental, off): see the key-step read below; how far behind the line he aims (yd). */
 const BACKSIDE_SHOOT = process.env.BACKSIDE_SHOOT === '1', SHOOT_DEPTH = 1.5;
+/** DEF_STANCE: pad level a hand-down lineman keeps coming off the ball, and for how long (s). */
+const DOWN_POSTURE = 0.7, DOWN_LOW_FOR = 0.8;
 const TELL_WINDOW = 0.3;
 /** How far outside the down blocker's body an edge keeps his own body as he closes (yd). */
 const HIP_GAP = 0.35;
@@ -170,6 +172,15 @@ export class PassRusher implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    const cmd = this.decide(a, sim);
+    // DEF_STANCE: out of a hand-down stance he fires out low and stays low into
+    // his first contact; standing up, he comes off at ordinary pad level.
+    if (a.setStance === 'down' && !a.engagement && (cmd as { posture?: number }).posture === undefined && sim.t < this.getOff + DOWN_LOW_FOR)
+      return { ...cmd, posture: DOWN_POSTURE } as MoveCommand;
+    return cmd;
+  }
+
+  private decide(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.t < this.getOff) return stand(Math.PI);
     if (a.engagement) {
       const { blocker } = a.engagement;
