@@ -112,6 +112,16 @@ const STEP_SEEN = 0.3;
  * the field: his key, an arm's length away and straight ahead of him (as a
  * rusher keys the quarterback). */
 const KEY_DELAY = 0.5;
+/** KEY_REACT (experimental, off): the key is one man an arm's length straight
+ * ahead, watched from the stance on purpose, so the lineman reacts to the first
+ * movement of his feet and hands rather than waiting for the body's speed to
+ * build (the sim has no feet to watch; a step that has begun moving the body
+ * stands in for them). His sight of it is a primed visual reaction, faster than
+ * an ordinary read but never under the ~0.1 s a body needs to see and start to
+ * answer. Better recognition still reads it sooner. */
+const KEY_REACT = process.env.KEY_REACT === '1', KEY_FLOOR = 0.1, KEY_REACT_SCALE = 0.35, KEY_STEP_SEEN = 0.15;
+const keyScale = (a: Agent) => KEY_REACT ? Math.max(KEY_FLOOR / a.profile.reactionTime, KEY_REACT_SCALE) : KEY_DELAY;
+const stepSeen = KEY_REACT ? KEY_STEP_SEEN : STEP_SEEN;
 /** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
  * read lean leads his step before the key's own movement must confirm it (s). */
 const STANCE_TELL = process.env.STANCE_TELL === '1';
@@ -137,7 +147,7 @@ function manInFront(sim: PlaySim, a: Agent, reach = 1.5, held: Agent | null = nu
     if (dy <= reach && dy < bd) { best = b.agent; bd = dy; }
   }
   // Where he lined up is the pre-snap picture every defender has.
-  return best ? { ...sim.see(a, best, KEY_DELAY), home: sim.offAlign.spots[best.slot]!.pos, agent: best } : null;
+  return best ? { ...sim.see(a, best, keyScale(a)), home: sim.offAlign.spots[best.slot]!.pos, agent: best } : null;
 }
 
 export class PassRusher implements Behavior {
@@ -164,7 +174,7 @@ export class PassRusher implements Behavior {
     // SNAP_REACT plans every start from the count itself.
     const scatter = sim.dice('rush', a).normal(0, 0.03);
     this.getOff = a.snapReadyAt = SNAP_REACT ? a.snapReadyAt : clamp(a.snapReadyAt + scatter, 0.02, 0.4);
-    this.readsTell = STANCE_TELL && sim.rng.fork(`tell-read:${a.slot}`).next() < 0.2 + 0.6 * a.r('playRecognition');
+    this.readsTell = STANCE_TELL && sim.rng.fork(`tell-read:${a.slot}`).next() < 0.6 + 0.6 * a.r('playRecognition');
     const edge = gap === 'C' || gap === 'D';
     const pw = 0.3 + a.r('passRushPower') + (a.profile.massKg - 120) / 60;
     const fi = 0.3 + a.r('passRushFinesse');
@@ -210,7 +220,7 @@ export class PassRusher implements Behavior {
     const onEdge = this.gap === 'C' || this.gap === 'D';
     const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? Infinity : 1.5, onEdge ? this.keyed : null) : null;
     if (onEdge && man) this.keyed = man.agent;
-    const runStep = !!man && man.stance === 'low' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > STEP_SEEN;
+    const runStep = !!man && man.stance === 'low' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > stepSeen;
     // An edge keeps his outside against a reach. A man in front blocking down,
     // stepping inside away from him, opens his gap to a kick-out or a pulling
     // lead: he closes flat along the line behind the down block and sets the
@@ -239,7 +249,7 @@ export class PassRusher implements Behavior {
     // same flat step as the read below; the first real movement he sees
     // replaces it either way (a lean that lied costs him that step).
     if (STANCE_TELL && !onEdge && man && !runStep && this.readsTell && man.agent.stanceLean
-      && sim.t < this.getOff + TELL_WINDOW && Math.abs(man.vel.y) < STEP_SEEN) {
+      && sim.t < this.getOff + TELL_WINDOW && Math.abs(man.vel.y) < stepSeen) {
       const side = man.agent.stanceLean, step = a.profile.vmax * a.profile.shuffle;
       a.tags.add('tell-step');
       return track(a, { x: man.home.x + man.vel.x * a.mind.decisionInterval, y: a.pos.y + side * step * a.mind.decisionInterval },

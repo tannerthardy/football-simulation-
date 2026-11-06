@@ -30,11 +30,17 @@ const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.
  * step pre-snap through his stance (weight on the play-side hand or foot, a
  * cheated stagger). Disciplined linemen hide it more often. A habit lean, a
  * lean that has nothing to do with the play, shows on any snap, pass or run,
- * so a lean alone never says run. */
+ * so a lean alone never says run.
+ * Calibrated (with the DL read rate in defense.ts and KEY_REACT on): NFL zone
+ * DL move laterally before or with their key's first step on 43-50% of snaps
+ * and almost never the wrong way (2-4%); a leak rate of 0.5-0.9 and a read
+ * rate of 0.6-1 give 44-46% of DL a tell step, wrong-way first moves 0-2%,
+ * and DL lateral speed relative to their own line's matching the NFL by
+ * 0.3 s. The rates stand in for pre-snap tips the sim has no body for. */
 const STANCE_TELL = process.env.STANCE_TELL === '1';
 const STANCE_HABIT = 0.1;
 function stanceLeak(a: Agent): number {
-  return clamp(0.15 + 0.45 * (1 - a.r('discipline')), 0.1, 0.6);
+  return clamp(0.5 + 0.45 * (1 - a.r('discipline')), 0.1, 0.9);
 }
 
 /** DEF_STANCE (experimental, off): a front defender lines up hand(s) down or
