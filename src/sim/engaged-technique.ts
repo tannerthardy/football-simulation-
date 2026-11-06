@@ -46,6 +46,15 @@ export const REACH_TECHNIQUE = process.env.REACH_TECHNIQUE === '1';
  * speed, traction, the man on his hands, directional leg drive) decides what
  * he achieves and what the open hips cost him. */
 export const REACH_RACE = process.env.REACH_RACE === '1';
+/** DOUBLE_TRACK (off): on a stretch call both members of a double keep
+ * stepping the zone track with their hands on the man (the play's track
+ * tempo, toward the play), instead of mirroring him and holding a spot beside
+ * each other. The partner on the man's backside half covers the inside, so
+ * the pair can keep stepping without running past him; the man is carried or
+ * has to fight it, and the World decides which. */
+export const DOUBLE_TRACK = process.env.DOUBLE_TRACK === '1';
+/** Track tempo as a share of vmax (the call's track, blocking.ts zoneFlow). */
+export const TRACK_TEMPO = 0.45;
 /** How far the racing reach blocker opens his hips off the man (rad). */
 export const REACH_RACE_OPEN = Math.PI / 4;
 
@@ -121,20 +130,31 @@ export function wallFeet(w: WallInputs): { lateral: number; forward: number } {
 /** Reach footwork in the engagement's lateral frame: not yet on the man's
  * play-side shoulder, work for it at his own shuffle speed; on it, hold it and
  * go at least with the man's flow. Forward work only keeps him connected. */
-export function reachFeet(lat: Vec2, side: number, rel: Vec2, dv: Vec2, sep: number, seal: number, lateral: number, along: number, gap: number, race = 0):
+export function reachFeet(lat: Vec2, side: number, rel: Vec2, dv: Vec2, sep: number, seal: number, lateral: number, along: number, gap: number, race = 0, brake = 0):
   { lateral: number; forward: number; onShoulder: boolean } {
   const playLat = Math.sign(lat.y * side) || 0;
   const across = (rel.x * lat.x + rel.y * lat.y) * playLat;
   const onShoulder = across >= .3 * sep;
   const manLat = (dv.x * lat.x + dv.y * lat.y) * playLat;
   const forward = Math.max(-1, Math.min(2.4, along + gap * 3));
+  // REACH_RACE: his pace is the man's own lateral speed plus what still
+  // closes the distance to the shoulder (.45 sep across) so that he arrives
+  // there level with the man, under a braking budget he can actually use
+  // (`brake`, his own braking with a man on his hands):
+  // far behind he runs flat out; near it he is going no faster than the man;
+  // past it he comes back. A flat full-speed race ran straight through the
+  // shoulder and off the man (separations with the blocker outside 19 -> 64).
+  if (race) {
+    const deficit = .45 * sep - across;
+    const close = Math.sign(deficit) * Math.sqrt(2 * brake * Math.abs(deficit));
+    return { lateral: playLat * Math.max(-race, Math.min(race, manLat + close)), forward, onShoulder };
+  }
   // On the shoulder he seals: square on the man, between him and the
   // sideline. He goes where the man goes, back inside too, and holds the
   // shoulder (running on past it frees the man behind him).
   if (onShoulder) {
     const hold = (.45 * sep - across) * 3;
-    if (race) return { lateral: playLat * Math.max(-lateral, Math.min(race, Math.max(manLat, 0) + hold)), forward, onShoulder };
     return { lateral: playLat * Math.max(-lateral, Math.min(lateral, manLat + hold)), forward, onShoulder };
   }
-  return { lateral: playLat * Math.max(lateral, race), forward, onShoulder };
+  return { lateral: playLat * lateral, forward, onShoulder };
 }

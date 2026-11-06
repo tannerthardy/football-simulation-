@@ -41,7 +41,7 @@ import { requestToCover } from './motion-plan.js';
 import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
 import { runContactObservers } from './run-contact-observer.js';
-import { ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
+import { DOUBLE_TRACK, ENGAGED_DEFENDER, ENGAGED_TECHNIQUE, REACH_RACE, TRACK_TEMPO, REACH_RACE_OPEN, REACH_TECHNIQUE, drivePace, reachFeet, runWithFeet, wallFeet, type EngagedGoal } from './engaged-technique.js';
 import type { HandJoint, Intent } from '../physics/world.js';
 import type { Agent, Engagement, RunContactSurface, RushMove } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -1475,10 +1475,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   let racingSide = 0;
   if (reach?.kind === 'reach') {
     // REACH_RACE: his race pace is what his legs give running with the hips
-    // opened toward the play (lateral at 45 degrees off his facing).
+    // opened toward the play (lateral at 45 degrees off his facing); he
+    // brakes onto the shoulder with half his free braking (a man on his hands).
     const race = REACH_RACE ? b.profile.vmax * fatigueFactor(b.body.energy)
       * directionalSpeedFactor(b.profile, Math.PI / 2 - REACH_RACE_OPEN) : 0;
-    const feet = reachFeet(lat, reach.side, { x: b.pos.x - d.pos.x, y: b.pos.y - d.pos.y }, dv, sep, seal, tb.lateral, along(dv), gap, race);
+    const feet = reachFeet(lat, reach.side, { x: b.pos.x - d.pos.x, y: b.pos.y - d.pos.y }, dv, sep, seal, tb.lateral, along(dv), gap, race, .5 * b.profile.brake);
     lateral = feet.lateral;
     if (REACH_RACE && !feet.onShoulder) racingSide = Math.sign(reach.side);
     if (!stretch) forward = feet.forward;
@@ -1558,6 +1559,9 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const change=(preparation.x-blockVel.x)*lat.x+(preparation.y-blockVel.y)*lat.y;
     blockVel={x:blockVel.x+lat.x*change,y:blockVel.y+lat.y*change};
   }
+  // DOUBLE_TRACK: a double on a stretch call keeps stepping the track.
+  const trackSide = DOUBLE_TRACK && !anchored && e.helpers.length ? stretchTrackSide(sim) : 0;
+  if (trackSide) blockVel = { x: blockVel.x, y: trackSide * Math.max(blockVel.y * trackSide, TRACK_TEMPO * b.profile.vmax) };
   intents[b.idx] = {
     vel: blockVel,
     facing: racingSide ? openToward(Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), racingSide, REACH_RACE_OPEN)
@@ -1818,6 +1822,9 @@ function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec
       const change=(preparation.x-feet.x)*lat.x+(preparation.y-feet.y)*lat.y;
       feet.x+=lat.x*change;feet.y+=lat.y*change;
     }
+    // DOUBLE_TRACK: the partner keeps stepping the track with his hands on.
+    const trackSide = DOUBLE_TRACK && e.type === 'run' ? stretchTrackSide(sim) : 0;
+    if (trackSide) feet.y = trackSide * Math.max(feet.y * trackSide, TRACK_TEMPO * h.profile.vmax);
     intents[h.idx] = {
       vel: feet,
       facing: Math.atan2(d.pos.y - h.pos.y, d.pos.x - h.pos.x),
@@ -1881,4 +1888,11 @@ function beat(sim: PlaySim, e: Engagement, axis: Vec2, lat: Vec2, run = false, w
 function openToward(facing: number, sideY: number, open: number): number {
   const toward = Math.atan2(sideY, 0), d = Math.atan2(Math.sin(toward - facing), Math.cos(toward - facing));
   return facing + Math.sign(d) * Math.min(Math.abs(d), open);
+}
+
+/** DOUBLE_TRACK: the play-side direction (sign of y) on a stretch call, else 0. */
+function stretchTrackSide(sim: PlaySim): number {
+  const run = sim.offCall.run;
+  if (!run || (run.scheme !== 'outsideZone' && run.scheme !== 'wideZone')) return 0;
+  return run.direction === 'strong' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
 }
