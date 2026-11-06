@@ -115,6 +115,8 @@ const KEY_DELAY = 0.5;
 /** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
  * read lean leads his step before the key's own movement must confirm it (s). */
 const STANCE_TELL = process.env.STANCE_TELL === '1';
+/** BACKSIDE_SHOOT (experimental, off): see the key-step read below; how far behind the line he aims (yd). */
+const BACKSIDE_SHOOT = process.env.BACKSIDE_SHOOT === '1', SHOOT_DEPTH = 1.5;
 const TELL_WINDOW = 0.3;
 /** How far outside the down blocker's body an edge keeps his own body as he closes (yd). */
 const HIP_GAP = 0.35;
@@ -230,6 +232,17 @@ export class PassRusher implements Behavior {
       a.tags.add('tell-step');
       return track(a, { x: man.home.x + man.vel.x * a.mind.decisionInterval, y: a.pos.y + side * step * a.mind.decisionInterval },
         { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
+    }
+    // BACKSIDE_SHOOT (experimental, off): the man in front stepping away from
+    // him (a zone step to the other side) vacates the spot he stood in. The
+    // lineman behind that step shoots it, upfield through the vacated spot to
+    // the stepping man's hip, rather than stepping flat with him; whoever is
+    // coming to cut him off has to get there first. NFL backside DL on outside
+    // zone: 17% are a yard into the backfield by 1.5 s; ours 1%.
+    if (BACKSIDE_SHOOT && !onEdge && runStep && Math.sign(man!.vel.y) === Math.sign(man!.pos.y - a.pos.y)) {
+      const dir = sim.attackDir(sim.offense[0].team), side = Math.sign(man!.vel.y);
+      a.tags.add('shoot-gap');
+      return runThrough(a, { x: man!.home.x - dir * SHOOT_DEPTH, y: man!.pos.y - side * a.profile.radius }, { speed: 1 });
     }
     // The interior man keys the blocker over him.
     if (!onEdge && runStep) {

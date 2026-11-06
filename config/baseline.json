@@ -8,6 +8,7 @@
   "flags": {
     "ANCHOR_SPLIT": "1",
     "ARM_PRESS": "1",
+    "BACKSIDE_SHOOT": "0",
     "CF_FLOW": null,
     "CLIMB_INTERCEPT": "1",
     "CLIMB_PLAN": "1",

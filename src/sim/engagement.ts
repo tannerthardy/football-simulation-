@@ -673,6 +673,7 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
 
 /** ZONE_RUN (experimental, off): an interior defender keyed on his man's
  * reach/bucket step races him for the play-side shoulder with open hips. */
+const BACKSIDE_SHOOT = process.env.BACKSIDE_SHOOT === '1';
 const ZONE_RUN = process.env.ZONE_RUN === '1', ZONE_RUN_PACE = 0.75, ZONE_RUN_STEP = 0.5, ZONE_RUN_OPEN = Math.PI / 4;
 /** Anchor braces along the drive line and keeps lateral work (ANCHOR_SPLIT=0 off). */
 const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
@@ -1491,7 +1492,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   if (DL_SQUEEZE && !(lastSqueeze && sim.t < lastSqueeze.until)) squeezes.set(e, { side: squeeze, until: sim.t + d.mind.decisionInterval });
   // Squeezing a down block is on the line: he flattens at his contact depth
   // and works across, pressing the blocker into the hole, not upfield past him.
-  const recover = d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0;
+  // BACKSIDE_SHOOT (experimental, off): behind a blocker whose first step went
+  // away from him (a backside cutoff stepping to the play), there is no depth
+  // to recover; he presses upfield through the hip the blocker is leaving.
+  const behindCutoff = BACKSIDE_SHOOT && !read.declared && !!read.stack?.firstStep
+    && Math.sign(d.pos.y - b.pos.y) === -read.stack.firstStep && Math.sign(b.vel.y) === read.stack.firstStep;
+  if (behindCutoff) d.tags.add('shoot-cutoff');
+  const recover = !behindCutoff && (d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0);
   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
     : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
       : -sim.attackDir(b.team) * 1.5;
