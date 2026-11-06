@@ -181,6 +181,7 @@ const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ
 
 /** Free fits plan lateral work with their own body (LB_PLAN=0 off). */
 const LB_PLAN = process.env.LB_PLAN !== '0';
+const LB_LINE_FLOW = process.env.LB_LINE_FLOW === '1', LINE_FLOW_LEAD = 1.5;
 /** Experimental activation of the same planner for an observed pull-adjusted
  * insertion. Default off while matched containment/misdirection controls run. */
 const PULL_PLAN = process.env.PULL_PLAN === '1';
@@ -501,6 +502,18 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     && seen.pos.x > sim.los - 1.6 && (seen.pos.y - sim.ballY) * job.side > 0;
   const flowSide = Math.abs(seen.vel.y) > 1.5 ? Math.sign(seen.vel.y)
     : shallowRunner ? Math.sign(seen.pos.y - gy) : 0;
+  // LB_LINE_FLOW (experimental, off): the line tells him first. A backer who
+  // has read run and sees the line step one way together (the zone step; the
+  // same read lineRead gives the DL) flows over the top that way before the
+  // back's track shows it, a gap's width ahead of his landmark, with his hips
+  // open (LB_PLAN below). NFL box backers flow 1.35 yd/s toward the play by
+  // 0.6 s on outside zone; ours stood on their landmark until the back's
+  // lateral run or the gap's own slow motion moved them.
+  let lineFlow = 0;
+  if (LB_LINE_FLOW && !flowSide && job.kind === 'insert' && job.technique !== 'lag') {
+    lineFlow = lineRead(sim, a);
+    if (lineFlow) { gy += lineFlow * LINE_FLOW_LEAD; flowing = true; a.tags.add('fit-line-flow'); }
+  }
   if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && flowSide) {
     const f = flowSide;
     const onBall = seen.pos.y + seen.vel.y * 2 * a.mind.decisionInterval - f * FLOW_INSIDE;
