@@ -943,6 +943,8 @@ interface RunStackRead {
   firstStep: number;
   /** ZONE_RUN: he is racing this man for the shoulder. */
   race?: boolean;
+  /** ZONE_RUN: he lost the race to this man (reached), or the ball went past him. */
+  raceOver?: boolean;
   /** DL_FIGHT: the lateral point he holds while driven sideways, and until when. */
   hold?: { y: number; until: number };
 }
@@ -1570,8 +1572,19 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // the man keeps running; a man driving at him (inside zone) he plays square,
   // holding his gap: NFL inside-zone DL go about two-thirds as far sideways as
   // their blockers by 1.5 s.
+  // The race ends, for this man, when he sees he has lost it: the blocker's
+  // body across his face to the play side (reached; he feels it in contact),
+  // or the ball already past him downfield. Then he stops pressing and plays
+  // the ordinary engaged read. NFL outside-zone DL stop gaining depth by
+  // about 1.5 s; a race with no end pressed on, and kept the blocker running.
   const reachSpeed = st ? Math.abs(b.vel.y) : 0;
-  if (st) st.race = ZONE_RUN && !!st.firstStep && reachSpeed >= (st.race ? ZONE_RUN_REACH / 2 : ZONE_RUN_REACH);
+  if (ZONE_RUN && st?.race && !st.raceOver) {
+    const s1 = st.firstStep, across = (b.pos.y - d.pos.y) * s1 > (b.profile.radius + d.profile.radius) * .5;
+    const ball = ballKey(sim, d), cue = ball ? sim.see(d, ball) : null;
+    const past = !!cue && (cue.pos.x - d.pos.x) * sim.attackDir(b.team) > 0;
+    if (across || past) { st.raceOver = true; d.tags.add(across ? 'reached' : 'ball-past'); }
+  }
+  if (st) st.race = ZONE_RUN && !st.raceOver && !!st.firstStep && reachSpeed >= (st.race ? ZONE_RUN_REACH / 2 : ZONE_RUN_REACH);
   if (ZONE_RUN && !squeeze && st?.race && !read.declared && d.runFit?.kind === 'interior' && st.firstStep
     && st.flow * st.firstStep >= 0) {
     const s1 = st.firstStep, shoulder = b.pos.y + s1 * (b.profile.radius + d.profile.radius) * .5;
