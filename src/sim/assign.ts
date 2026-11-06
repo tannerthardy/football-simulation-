@@ -172,6 +172,14 @@ interface Mesh {
 
 /** Stretch mesh on the back's track (STRETCH_MESH=0: inside mesh, the stretch back stops). */
 const STRETCH_MESH = process.env.STRETCH_MESH !== '0';
+/** IZ_GUN_A (default off): inside zone from the gun with the back offset to
+ * the backside aims at the play-side A gap (the centre's play-side hip), not
+ * the B gap. He crosses the quarterback's face and the B gap was over 4 yd of
+ * lateral travel: tracked backs from that alignment slow their drift (2.5 ->
+ * 1.6 yd/s after the handoff) and 73% cross behind the moved centre; ours
+ * held 3.3 yd/s across the formation and 6% did. Under centre the B-gap
+ * landmark stays (tracked backs cross +1.0 yd play side of the line). */
+export const IZ_GUN_A = process.env.IZ_GUN_A === '1';
 
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const ps = playSideSign(sim, concept);
@@ -180,7 +188,10 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const qbType = sim.offCall.formation.qb;
   const teOnPlayside = ps === sim.offAlign.strongSign ? sim.offAlign.hasTE.S : sim.offAlign.hasTE.W;
   let aimY: number;
-  switch (concept.aim) {
+  const rbSeen = sim.slot('RB');
+  const gunBackside = IZ_GUN_A && concept.scheme === 'insideZone' && qbType === 'gun' && concept.aim === 'B'
+    && !!rbSeen && (rbSeen.pos.y - by) * ps < -1;
+  switch (gunBackside ? 'A' : concept.aim) {
     case 'A':
       aimY = gapY(sim.offAlign, 'A', ps);
       break;
