@@ -1515,14 +1515,21 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // BACKSIDE_SHOOT (experimental, off): behind a blocker whose first step went
   // away from him (a backside cutoff stepping to the play), there is no depth
   // to recover; he presses upfield through the hip the blocker is leaving.
+  // Where he lined up against the man tells a cutoff from a reach: shaded to
+  // the man's backside at the snap, a man stepping away is cutting him off;
+  // lined up on or outside his play-side shoulder, a man who gets across him
+  // has reached him (ZONE_RUN, below).
+  const dHome = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots]?.pos, bHome = sim.offAlign.spots[b.slot as keyof typeof sim.offAlign.spots]?.pos;
+  const shadeSide = dHome && bHome ? Math.sign(dHome.y - bHome.y) : 0;
   const behindCutoff = BACKSIDE_SHOOT && !read.declared && !!read.stack?.firstStep
-    && Math.sign(d.pos.y - b.pos.y) === -read.stack.firstStep && Math.sign(b.vel.y) === read.stack.firstStep;
+    && Math.sign(d.pos.y - b.pos.y) === -read.stack.firstStep && Math.sign(b.vel.y) === read.stack.firstStep
+    && (!ZONE_RUN || shadeSide === -read.stack.firstStep);
   if (behindCutoff) d.tags.add('shoot-cutoff');
   // ZONE_RUN: reached, he flattens: pressing upfield past a man who has his
   // play-side shoulder runs him out of the play and opens the cutback, so he
   // holds his depth and works down the line.
   const reachedFlat = ZONE_RUN && !!read.stack?.reached;
-  const recover = !behindCutoff && (d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0 || reachedFlat);
+  const recover = reachedFlat || (!behindCutoff && (d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0));
   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
     : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
       : -sim.attackDir(b.team) * 1.5;
@@ -1585,7 +1592,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // about 1.5 s; a race with no end pressed on, and kept the blocker running.
   const reachSpeed = st ? Math.abs(b.vel.y) : 0;
   if (ZONE_RUN && st?.race && !st.raceOver) {
-    const s1 = st.firstStep, across = (b.pos.y - d.pos.y) * s1 > (b.profile.radius + d.profile.radius) * .5;
+    const s1 = st.firstStep, across = shadeSide !== -s1 && (b.pos.y - d.pos.y) * s1 > (b.profile.radius + d.profile.radius) * .5;
     const ball = ballKey(sim, d), cue = ball ? sim.see(d, ball) : null;
     const past = !!cue && (cue.pos.x - d.pos.x) * sim.attackDir(b.team) > 0;
     if (across || past) { st.raceOver = true; st.reached = across; d.tags.add(across ? 'reached' : 'ball-past'); }
