@@ -82,6 +82,20 @@ export const HELD_SIDE = process.env.HELD_SIDE === '1';
  * zone). Each body he sees is carried along its seen velocity to when he
  * would pass it (at most 1 s ahead). */
 export const RB_FLOW = process.env.RB_FLOW === '1';
+/** RB_TEMPO (default off): through traffic the back runs at the speed from
+ * which he can still cut away from the nearest free defender in front of him,
+ * not flat out. A side step of his body plus the man's reach (w) takes
+ * sqrt(2w/a) at his lateral acceleration a (his cut skill on his lateral
+ * capability); with that man d yards away (within 45 degrees of his path) he
+ * keeps v <= d sqrt(a/2w); a
+ * defender he sees with a teammate's body on him counts 1.5 yd farther (he
+ * has to come off the block).
+ * Nobody in front within 8 yd: full speed. Tracked 2022 zone backs before
+ * first contact run 4.9 / 6.2 yd/s at 0-3 / 3-6 yd past the line (inside
+ * zone; outside 5.9 / 6.8); ours 6.7 / 7.8 (6.9 / 7.7), at the tracked p90,
+ * and the open-field DB attempts we lose are against 7.5-7.7 yd/s backs (6.1
+ * on the tackles that hold). */
+export const RB_TEMPO = process.env.RB_TEMPO === '1';
 
 /** The designed aiming point as this runner sees the line now (LIVE_AIM=0: snap point). */
 export function liveAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | undefined {
@@ -392,8 +406,33 @@ export class BallCarrier implements Behavior {
       else if (this.heading === null) this.heading = dir > 0 ? 0 : Math.PI;
     }
     const h = this.heading!;
-    return this.command(a, sim, h, a.profile.vmax, cutSkill);
+    return this.command(a, sim, h, RB_TEMPO ? this.trafficTempo(a, sim, dir, cutSkill) : a.profile.vmax, cutSkill);
   }
+
+  /** RB_TEMPO: the speed he can still cut from, given the nearest free
+   * defender in front of him in his own picture. */
+  private trafficTempo(a: Agent, sim: PlaySim, dir: number, cutSkill: number): number {
+    // The speed from which he can still sidestep the free man in front of
+    // him before they meet: a side step of his body plus the man's reach (w)
+    // takes sqrt(2w/a) at his lateral acceleration a; he has d/v.
+    const h = this.heading ?? (dir > 0 ? 0 : Math.PI), hx = Math.cos(h), hy = Math.sin(h);
+    const acc = a.profile.lateral * cutSkill;
+    let cap = a.profile.vmax;
+    for (const d of sim.opponents(a)) {
+      const s = sim.see(a, d);
+      if (s.pose === 'down') continue;
+      const rx = s.pos.x - a.pos.x, ry = s.pos.y - a.pos.y, dist = Math.hypot(rx, ry);
+      // In front of his path: within 45 degrees of his heading, 8 yd.
+      if (dist > 8 || rx * hx + ry * hy < dist * Math.SQRT1_2) continue;
+      const blocked = sim.offense.some((o) => { if (o === a) return false; const q = sim.see(a, o).pos;
+        return Math.hypot(q.x - s.pos.x, q.y - s.pos.y) < o.profile.radius + d.profile.radius + .25; });
+      const w = a.profile.radius + d.profile.radius + d.profile.reach * .5;
+      const gap = Math.max(0.5, dist + (blocked ? 1.5 : 0) - w);
+      cap = Math.min(cap, gap * Math.sqrt(acc / (2 * w)));
+    }
+    return clamp(cap, 0.5 * a.profile.vmax, a.profile.vmax);
+  }
+
 
   /** Press the live track until the read commits, then attack the entry. */
   private pressAndRead(a: Agent, sim: PlaySim, dir: number, cutSkill: number): MoveCommand | null {
