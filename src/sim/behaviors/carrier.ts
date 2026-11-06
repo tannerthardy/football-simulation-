@@ -97,6 +97,14 @@ export const RB_FLOW = process.env.RB_FLOW === '1';
  * and the open-field DB attempts we lose are against 7.5-7.7 yd/s backs (6.1
  * on the tackles that hold). */
 export const RB_TEMPO = process.env.RB_TEMPO === '1';
+/** RB_GATHER (default off, with RB_TEMPO): a free man he can no longer
+ * sidestep at half speed still slows him to that half speed: he gathers his
+ * feet to keep a cut (or to take the hit balanced) rather than run flat out
+ * into a squared tackler. A man he sees blocked still does not slow him.
+ * Tracked 2022 zone backs ease off as the nearest free man in front closes
+ * from 5 to 1 yd (inside 4.8 -> 4.0 yd/s, outside 5.5 -> 4.6); ours held
+ * 5.1-5.4 and braked only inside 2.5 yd. */
+export const RB_GATHER = process.env.RB_GATHER === '1';
 
 /** The designed aiming point as this runner sees the line now (LIVE_AIM=0: snap point). */
 export function liveAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | undefined {
@@ -437,6 +445,7 @@ export class BallCarrier implements Behavior {
       // A man he cannot sidestep even at half speed is not one to slow for:
       // he finishes through him.
       if (v >= 0.5 * a.profile.vmax) cap = Math.min(cap, v);
+      else if (RB_GATHER && !blocked) cap = Math.min(cap, 0.5 * a.profile.vmax);
     }
     return clamp(cap, 0.5 * a.profile.vmax, a.profile.vmax);
   }
