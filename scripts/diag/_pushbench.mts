@@ -7,7 +7,7 @@
 import { contactFixture } from './run-contact-technique.js';
 import { derivePhysical } from '../../src/players/physical.js';
 const CENTER_Y = 26.65;
-type Case = { name: string; v?: number; lat?: number; postureB?: number; postureD?: number; strongB?: number; double?: boolean; dReq?: number };
+type Case = { name: string; off?: number; v?: number; lat?: number; postureB?: number; postureD?: number; strongB?: number; double?: boolean; dReq?: number };
 function run(c: Case) {
   const f = contactFixture({ type: 'run', runBlock: 60, passBlock: 60, side: 1 });
   const { sim, blocker: b, defender: d, engagement: e } = f;
@@ -15,7 +15,7 @@ function run(c: Case) {
   Object.assign(d.profile, structuredClone(b.profile));
   if (c.strongB) { const p = derivePhysical({ ...b.player, ratings: { ...b.player.ratings, strength: c.strongB } } as any); Object.assign(b.profile, p); }
   b.body.pos = { x: 40, y: CENTER_Y }; b.body.vel = { x: 0, y: 0 }; b.body.facing = 0;
-  d.body.pos = { x: 40 + b.profile.radius + d.profile.radius + 0.1, y: CENTER_Y }; d.body.vel = { x: 0, y: 0 }; d.body.facing = Math.PI;
+  { const R = b.profile.radius + d.profile.radius + 0.1, o = c.off ?? 0; d.body.pos = { x: 40 + Math.sqrt(R * R - o * o), y: CENTER_Y + o }; } d.body.vel = { x: 0, y: 0 }; d.body.facing = Math.PI;
   const j = e.hands!;
   // Neutral hands (control 0): same law as setContactHands at c = 0, frozen for the bench.
   e.control = 0;
@@ -29,7 +29,8 @@ function run(c: Case) {
   const v = c.v ?? 1;
   for (let k = 0; k < Math.round(1.0 / sim.dt); k++) {
     const intents: any[] = sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
-    intents[b.idx] = { vel: { x: v, y: c.lat ?? 0 }, facing: 0, push: 1, posture: c.postureB ?? 0.85 };
+    const nb = c.off ? (() => { const dx = d.pos.x - b.pos.x, dy = d.pos.y - b.pos.y, L = Math.hypot(dx, dy); return { x: dx / L * v, y: dy / L * v }; })() : { x: v, y: c.lat ?? 0 };
+    intents[b.idx] = { vel: nb, facing: 0, push: 1, posture: c.postureB ?? 0.85 };
     intents[d.idx] = { vel: { x: -(c.dReq ?? v), y: 0 }, facing: Math.PI, push: 1, posture: c.postureD ?? 0.85 };
     if (helper) intents[helper.idx] = { vel: { x: v, y: 0.6 }, facing: 0.6, push: 1, posture: c.postureB ?? 0.85 };
     sim.world.step(intents, sim.dt); sim.t += sim.dt;
@@ -49,6 +50,9 @@ for (const c of [
   { name: 'blocker strength 40 (matched is 97)', strongB: 40 },
   { name: 'blocker strength 40, defender requests 0 (anchors)', strongB: 40, dReq: 0 },
   { name: 'matched, defender requests 0 (anchors)', dReq: 0 },
+  { name: 'blocker on the shoulder (0.4 yd), drives along the normal', off: 0.4 },
+  { name: 'shoulder, defender presses 1.5 yd/s', off: 0.4, dReq: 1.5 },
+  { name: 'head-up, defender presses 1.5 yd/s', dReq: 1.5 },
   { name: 'double team: second blocker on his hip', double: true },
   { name: 'double team, blocker lateral 3.0', double: true, lat: 3.0 },
 ] as Case[]) run(c);

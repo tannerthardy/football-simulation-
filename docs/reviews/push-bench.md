@@ -36,6 +36,9 @@ displace a DL who presses into it, or whether the gap is in the requests.
 | Blocker strength 40 | −0.11 | 0.28 | −0.20 |
 | Blocker strength 40, defender anchors (asks 0) | 0.33 | −0.16 | +0.24 |
 | Matched, defender anchors | 0.45 | −0.28 | +0.36 |
+| Blocker on the shoulder (0.4 yd offset), driving 1 yd/s along the contact normal | 0.04 | 0.15 | −0.06 |
+| Shoulder, defender presses 1.5 yd/s | 0.05 | 0.19 | −0.07 |
+| Head-up, defender presses 1.5 yd/s | 0.08 | 0.09 | 0.00 |
 | Double team, second blocker on his hip | 0.44 | −0.33 | +0.38 |
 | Double team, first blocker asks 3.0 sideways | 0.37 | 0.16 | +0.10 |
 
@@ -49,6 +52,14 @@ Yards in 1.0 s. The first 0.09 is closing the 0.1 yd start gap.
   strength, a defender who sits rather than presses, and a square double
   team. At 0.38 yd/s, a sustained double team moves a matched DL past 0.5
   yd in about 1.3 s. That is the NFL's "driven back" event.
+- **A matched pair never produces a push-back.** That holds even with the
+  blocker on the shoulder and driving: pushing along the contact normal from
+  the shoulder spends part of the push sideways. A defender driven back needs
+  a mismatch (pads, strength, a sitting defender) or a double team.
+  - Run Game tried a shoulder-holding reach blocker driving at pace in game.
+    OZ went −0.92 yd and DL depth was unchanged, which matches this.
+  - Whether our OL/DL strength, pad and mass spread per snap is as wide as
+    the NFL's has not been checked.
 - **Lateral demand costs vertical.** Legs that push sideways do not also
   push forward, so a reach blocker asking 3–4 yd/s across loses 0.2–0.3
   yd/s of vertical to a pressing DL.
