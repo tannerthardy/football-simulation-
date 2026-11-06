@@ -1260,6 +1260,50 @@ const KEEPER_TORSO = process.env.KEEPER_TORSO !== '0';
 /** Climbs planned with previewed own movement (CLIMB_PLAN=0 off). */
 const CLIMB_PLAN = process.env.CLIMB_PLAN !== '0';
 
+/** CLIMB_PATH (default off): a free climber steers one continuous path to
+ * his backer's play-side shoulder by holding the bearing to it constant, the
+ * way a runner closes on a moving man: he matches the shoulder's motion
+ * across his line of sight and puts the rest of his speed into closing it.
+ * The command follows the backer's acquired motion smoothly; it does not jump
+ * when a read picks a new meeting point, and the near fit is the same path
+ * (contact and hands are still the engagement's). Re-aiming at a fresh
+ * meeting point each read, with separate near-fit and arc waypoints, swung
+ * his request (decision-stage churn p50 35 deg/s, p75 188: re-reads 32%,
+ * branch seams 19%, near-fit 15%); his path turned 45 deg/s and he levelled
+ * at 3.2 yd/s. Tracked 2022 outside zone climbers turn 14 deg/s and reach
+ * 4.0 yd/s by 1.4 s. He closes only as fast as his feet can still stop
+ * from by the strike (half his braking over the room left, plus 1 yd/s over
+ * the backer's own motion away), so he arrives on the backer's speed.
+ * Access detours around bodies are unchanged. */
+export const CLIMB_PATH = process.env.CLIMB_PATH === '1';
+/** CLIMB_PATH: closing speed (yd/s) over the backer's own he keeps into the
+ * strike. Tracked 2022 climbers touch backers at about their speed (inside
+ * zone 2.1 vs 2.0, outside 3.5 vs 3.6) and stay on 90% for 0.5 s. */
+const CLIMB_PATH_STRIKE = 1;
+
+/** CLIMB_PATH: constant-bearing interception of the backer's play-side
+ * shoulder at full effort, from the climber's current acquired picture. */
+function climbPath(a: Agent, sim: PlaySim, target: Agent): Intent {
+  const seen = sim.see(a, target), run = sim.offCall.run;
+  const side = run ? playSideSign(sim, run) * .5 : 0;
+  const fx = seen.pos.x - a.pos.x, fy = clamp(seen.pos.y + side, .5, FIELD_WIDTH - .5) - a.pos.y;
+  const d = Math.max(1e-6, Math.hypot(fx, fy)), ux = fx / d, uy = fy / d;
+  // His motion across the line of sight is matched; what is left of this
+  // body's top speed closes the distance along it.
+  const along = seen.vel.x * ux + seen.vel.y * uy;
+  let px = seen.vel.x - along * ux, py = seen.vel.y - along * uy;
+  const V = a.profile.vmax, perp = Math.hypot(px, py), keep = Math.min(1, .95 * V / Math.max(1e-6, perp));
+  px *= keep; py *= keep;
+  // Closing on him is what his feet can still stop from by the strike: a
+  // fit arrives near the backer's own speed, it does not run through him.
+  const strike = a.profile.radius + target.profile.radius + .1 + a.player.measurables.armIn / 36 * .45;
+  const room = Math.max(0, d - strike);
+  const close = Math.min(Math.sqrt(Math.max(0, V * V - px * px - py * py)),
+    Math.max(0, along) + Math.sqrt(2 * .5 * a.profile.brake * room) + CLIMB_PATH_STRIKE);
+  const vel = { x: px + ux * close, y: py + uy * close };
+  const toMan = Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x);
+  return d > 2 ? { vel, facing: Math.atan2(vel.y, vel.x) } : { vel, facing: toMan, posture: .7 };
+}
 /** Climbs and leads intercept flowing backers (CLIMB_INTERCEPT=0: short lead). */
 const CLIMB_INTERCEPT = process.env.CLIMB_INTERCEPT !== '0';
 
@@ -1826,6 +1870,7 @@ export class RunBlocker implements Behavior {
     }
     if (this.plan.departure && this.departureAccess?.kind==='unvalidated') return this.departureAccess.command;
     if (this.climbAccess) return climbAccessCommand(a,this.climbAccess,sim.t);
+    if (CLIMB_PATH) return climbPath(a, sim, target);
     const r = this.climbRead!;
     const capacity = a.body.support
       ? availability(a.body.support, supportParams(a.profile), fatigueFactor(a.body.energy)) : 1;
@@ -2419,7 +2464,7 @@ export class RunBlocker implements Behavior {
         const bodyContact = a.profile.radius + target.profile.radius;
         // Interception supplies the approach, not permission to run through
         // the man. Use the same acquired near-strike fit as other climbs.
-        if (!this.climbAccess && Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
+        if (!CLIMB_PATH && !this.climbAccess && Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y) <= contact + bodyContact)
           return secondLevelBlockApproach(a, seen, plan.drive, this.climbRead!.meet,
             placementError, contact, bodyContact, fit, sim.t);
         return fit;
