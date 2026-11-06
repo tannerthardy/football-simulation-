@@ -1299,6 +1299,12 @@ const CLIMB_PLAN = process.env.CLIMB_PLAN !== '0';
  * tracked 2022 OZ linemen step flat (0.59 / 0.13) and their hands meet the
  * man while they keep running the track. */
 export const ZONE_ARMS = process.env.ZONE_ARMS === '1';
+/** REACH_FLAT (off): on a stretch, a zone lineman still short of his man's
+ * play-side shoulder gains width before depth; he closes depth as the lateral
+ * deficit shrinks, and presses depth only after two lateral steps. Tracked
+ * stretch linemen are 0.1-0.2 yd upfield at 0.6 s (sim 0.36-0.48) and the
+ * man comes to them; he keeps the track until his hands reach the man. */
+export const REACH_FLAT = process.env.REACH_FLAT === '1';
 
 /** CLIMB_PATH (default off): a free climber steers one continuous path to
  * his backer's play-side shoulder by holding the bearing to it constant, the
@@ -1938,7 +1944,12 @@ export class RunBlocker implements Behavior {
     // Within reach the ordinary fit/engage owns contact, except during the
     // first step, which never strikes: it is where the lateral start is won.
     const firstStep = sim.t < .24 + a.mind.snapDelay;
-    if (d < contact + .25 && !firstStep && !this.scoopsPast(a, sim, seen)) return null;
+    // REACH_FLAT: a stretch reach still short of the shoulder keeps running
+    // the track until his hands reach the man (arm's length), rather than
+    // handing the last quarter yard to a fit that strikes upfield.
+    const stretchFlat = REACH_FLAT && run.scheme !== 'insideZone' && run.scheme !== 'splitZone'
+      && (seen.pos.y + (this.plan.combination && !this.plan.combination.released ? 0 : ps * .6) - a.pos.y) * ps > 0;
+    if (d < contact + (stretchFlat ? 0 : .25) && !firstStep && !this.scoopsPast(a, sim, seen)) return null;
     const press = run.scheme === 'insideZone' || run.scheme === 'splitZone' ? .55 : 1;
     // Lateral intent: what it takes to be on his playside shoulder when we
     // meet, from his seen motion over our time to contact; never less than
@@ -1978,7 +1989,14 @@ export class RunBlocker implements Behavior {
     // ZONE_ARMS: close only to arm's length (his strike range); hands meet
     // the man there and he keeps running the track.
     const fitX = seen.pos.x - dir * (ZONE_ARMS ? contact : bodyContact);
-    const forward = clamp((fitX - a.pos.x) * 2.5, -1, 2.5);
+    let forward = clamp((fitX - a.pos.x) * 2.5, -1, 2.5);
+    // REACH_FLAT: a stretch reach behind his man's play-side shoulder runs
+    // flat; each yard closed toward depth is width the man keeps.
+    // Stretch footwork is two lateral steps (bucket, crossover) before he
+    // presses depth; the man's own charge closes the gap meanwhile.
+    if (REACH_FLAT && press === 1 && !scooping && forward * dir > 0)
+      forward *= Math.min(clamp(1 - (shoulder - a.pos.y) * ps / .6, 0, 1),
+        clamp((sim.t - a.mind.snapDelay - .24) / .36, 0, 1));
     // Open the hips toward the track (a bucket step) while the eyes stay on
     // the target: halfway between travel and the target's bearing.
     const travel = Math.atan2(lateral, forward), bearing = Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x);
