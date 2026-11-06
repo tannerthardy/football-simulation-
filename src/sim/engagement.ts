@@ -945,6 +945,8 @@ interface RunStackRead {
   race?: boolean;
   /** ZONE_RUN: he lost the race to this man (reached), or the ball went past him. */
   raceOver?: boolean;
+  /** ZONE_RUN: this man reached him (his body across the DL's face to the play side). */
+  reached?: boolean;
   /** DL_FIGHT: the lateral point he holds while driven sideways, and until when. */
   hold?: { y: number; until: number };
 }
@@ -1516,7 +1518,11 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const behindCutoff = BACKSIDE_SHOOT && !read.declared && !!read.stack?.firstStep
     && Math.sign(d.pos.y - b.pos.y) === -read.stack.firstStep && Math.sign(b.vel.y) === read.stack.firstStep;
   if (behindCutoff) d.tags.add('shoot-cutoff');
-  const recover = !behindCutoff && (d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0);
+  // ZONE_RUN: reached, he flattens: pressing upfield past a man who has his
+  // play-side shoulder runs him out of the play and opens the cutback, so he
+  // holds his depth and works down the line.
+  const reachedFlat = ZONE_RUN && !!read.stack?.reached;
+  const recover = !behindCutoff && (d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0 || reachedFlat);
   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
     : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
       : -sim.attackDir(b.team) * 1.5;
@@ -1582,7 +1588,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     const s1 = st.firstStep, across = (b.pos.y - d.pos.y) * s1 > (b.profile.radius + d.profile.radius) * .5;
     const ball = ballKey(sim, d), cue = ball ? sim.see(d, ball) : null;
     const past = !!cue && (cue.pos.x - d.pos.x) * sim.attackDir(b.team) > 0;
-    if (across || past) { st.raceOver = true; d.tags.add(across ? 'reached' : 'ball-past'); }
+    if (across || past) { st.raceOver = true; st.reached = across; d.tags.add(across ? 'reached' : 'ball-past'); }
   }
   if (st) st.race = ZONE_RUN && !st.raceOver && !!st.firstStep && reachSpeed >= (st.race ? ZONE_RUN_REACH / 2 : ZONE_RUN_REACH);
   if (ZONE_RUN && !squeeze && st?.race && !read.declared && d.runFit?.kind === 'interior' && st.firstStep
