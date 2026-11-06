@@ -189,6 +189,14 @@ export const IZ_GUN_A = process.env.IZ_GUN_A === '1';
  * and 2.0 downhill, and kept drifting play side after the handoff. The mesh
  * point stays at the two bodies' clearance in front of the QB. */
 export const MESH_GUN_SIDE = process.env.MESH_GUN_SIDE === '1';
+/** MESH_NFL (default off): mesh landmarks from 2022 tracking at the handoff.
+ * Under-center inside zone: QB 4.4 yd deep and 0.9 play side, back 5.0 deep
+ * and 1.7 play side (the installed 3.5 / 4.0 deep put the exchange a yard
+ * shallow: ours QB 3.36, back 4.08). Gun outside zone (with MESH_GUN_SIDE):
+ * the exchange is level with the QB as the back passes in front of him, not
+ * 0.25 yd on his backside (ours handed off with the back still 0.6 yd
+ * backside of the QB's start, 0.45 yd shallower, 0.1 s earlier). */
+export const MESH_NFL = process.env.MESH_NFL === '1';
 
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const ps = playSideSign(sim, concept);
@@ -236,6 +244,11 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     // already running wide (STRETCH_MESH=0 restores the inside mesh).
     qb = { x: los - 4.4, y: by + ps * 2.1 };
     rb = { x: los - 5.0, y: by + ps * 2.8 };
+  } else if (qbType === 'under' && MESH_NFL && (concept.scheme === 'insideZone' || concept.scheme === 'splitZone')) {
+    // MESH_NFL: tracked 2022 under-center inside zone hands off with the QB
+    // 4.4 yd deep and 0.9 yd play side, the back 5.0 deep, 1.7 play side.
+    qb = { x: los - 4.4, y: by + ps * 0.9 };
+    rb = { x: los - 5.0, y: by + ps * 1.7 };
   } else if (qbType === 'under') {
     // Reverse pivot and a couple of steps back: the mesh is ~3.5–4 yd deep.
     qb = { x: los - 3.5, y: by + ps * 0.5 };
@@ -256,7 +269,9 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
       const clear = sim.qb.profile.radius + back.profile.radius + .15;
       rb = { x: qb.x + sim.attackDir('O') * clear, y: by };
       if (MESH_GUN_SIDE) {
-        const side = concept.scheme === 'outsideZone' || concept.scheme === 'wideZone' ? .25 : .7;
+        // MESH_NFL: on outside zone he takes it level with the QB as he passes
+        // in front of him (tracked gun OZ back 0.06 yd play side of the QB).
+        const side = concept.scheme === 'outsideZone' || concept.scheme === 'wideZone' ? (MESH_NFL ? 0 : .25) : .7;
         const lat = Math.min(side, clear);
         rb = { x: qb.x + sim.attackDir('O') * Math.sqrt(clear * clear - lat * lat), y: qb.y - ps * lat };
       }
