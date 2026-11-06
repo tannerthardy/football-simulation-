@@ -434,6 +434,9 @@ export interface Combination {
   checkSince?: number;
   /** The helper's optional look cannot retime the joined double team's read. */
   checkNextRead?: number;
+  /** ZONE_SCOOP: the helper runs his play-side track past the man and takes
+   * him only if the man comes across his face. */
+  scoop?: boolean;
 }
 
 export interface RunBlockPlan {
@@ -505,7 +508,7 @@ export function playSideSign(sim: PlaySim, concept: RunConcept): number {
  * At most seven inline blockers: a small mask search avoids a greedy tackle
  * stealing a shaded guard's man and leaving the wide end without an owner.
  */
-function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, extra?: (b: Agent, d: Agent) => number, ends?: Set<Agent>): Map<Agent, Agent> {
+function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, extra?: (b: Agent, d: Agent) => number, ends?: Set<Agent>, gapSide = 0): Map<Agent, Agent> {
   type Choice = { missed: number; distance: number; targets: Map<Agent, Agent> };
   let choices = new Map<number, Choice>([[0, { missed: 0, distance: 0, targets: new Map() }]]);
   const better = (a: Choice, b?: Choice) => !b || a.missed < b.missed || (a.missed === b.missed && a.distance < b.distance);
@@ -521,7 +524,11 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, extra?:
         if (distance >= (reachLimit ?? ((ends ? ends.has(b) : i === 0 || i === line.length - 1) ? 4.5 : 2.2))) continue;
         const targets = new Map(choice.targets);
         targets.set(b, d);
-        keep(mask | (1 << i), { missed: choice.missed, distance: choice.distance + distance + (extra?.(b, d) ?? 0), targets });
+        // ZONE_GAP: his responsibility is his play-side gap, half a split
+        // play side of him; a man on his backside shoulder is in the gap of
+        // the teammate on that side.
+        const owed = gapSide ? Math.abs(d.pos.y - (b.pos.y + gapSide * ZONE_GAP_SHIFT)) : distance;
+        keep(mask | (1 << i), { missed: choice.missed, distance: choice.distance + owed + (extra?.(b, d) ?? 0), targets });
       }
     }
     choices = next;
@@ -551,6 +558,26 @@ export const DOUBLE_HANDOFF = process.env.DOUBLE_HANDOFF === '1';
  * 1.35 s, climber off the down man 1.50 s (tracked 1.00 s) from the same
  * spot on the man as tracked climbers. */
 export const RELEASE_QUICK = process.env.RELEASE_QUICK === '1';
+
+/** ZONE_GAP (default off): zone ownership charges each lineman his distance
+ * from his play-side gap (half a split, 0.75 yd, play side of him), not from
+ * his body, so a down man on his backside shoulder is his backside teammate's
+ * (the man is in that teammate's play-side gap) and he works play side or
+ * climbs. Tracked 2022 outside zone: with the nearest down man shaded to his
+ * backside the centre leaves him 71% of snaps, the backside guard 57%, the
+ * backside tackle 53% (each 1.7-3.1 yd upfield by 2.5 s); shaded play side or
+ * head-up they block him about 90%. Ours left a backside-shaded man 5-22%. */
+export const ZONE_GAP = process.env.ZONE_GAP === '1';
+const ZONE_GAP_SHIFT = .75;
+
+/** ZONE_SCOOP (default off): on outside/wide zone a double whose helper is
+ * play side of the shared man (the man shaded to the helper's backside, the
+ * backside teammate's to reach) gives the helper the check policy inside zone
+ * uses: he steps through his play-side gap and climbs unless the man comes
+ * across his face. Installed, he engaged that man on 90% of snaps; tracked
+ * 2022 backside guards never come within 1 yd of a backside-shaded man on
+ * 57% (centres 71%) and are 2-3 yd upfield by 2.5 s. */
+export const ZONE_SCOOP = process.env.ZONE_SCOOP === '1';
 
 /** ZONE_PAIR (default off): an uncovered zone lineman doubles the covered
  * neighbor whose man is nearest him (within 1.8 yd), play side first, else
@@ -716,8 +743,13 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   const combo = (b: Agent, partner: Agent, target: Agent, backer: Agent | null, drive: Vec2) => {
     const combination: Combination = { members: [partner, b], defender: target, backer, released: false, secureSince: -1, nextRead: 0,
       soloKind: plans.get(partner)!.kind };
-    if (concept.scheme === 'insideZone' || concept.scheme === 'splitZone')
+    // ZONE_SCOOP: on a stretch call the helper play side of the shared man
+    // (a man shaded to his backside, his backside teammate's to reach) only
+    // checks him on the way to his backer: he stays if the man crosses his face.
+    const scoop = ZONE_SCOOP && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone') && (b.pos.y - target.pos.y) * ps > 0;
+    if (concept.scheme === 'insideZone' || concept.scheme === 'splitZone' || scoop)
       combination.helpPolicy = { kind: 'check', homeY: b.pos.y, side: Math.sign(b.pos.y - partner.pos.y) };
+    if (scoop) combination.scoop = true;
     plans.get(partner)!.combination = combination;
     plans.set(b, { kind: 'combo', target, climbTo: backer, drive, combination });
   };
@@ -738,7 +770,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const zl = [...line, ...wings].sort((p, q) => rel(q) - rel(p));
     const mismatch = (b: Agent, d: Agent) => ZONE_WINGS ? 8 * Math.max(0, d.profile.massKg / b.profile.massKg - 1) : 0;
     for (const [b, d] of zoneOwnership(zl, dl.filter((d) => d !== sliceEnd && onBall(d)), undefined, mismatch,
-      new Set([line[0], line[line.length - 1], ...wings]))) {
+      new Set([line[0], line[line.length - 1], ...wings]), ZONE_GAP && scheme !== 'draw' && scheme !== 'qbDraw' ? ps : 0)) {
       claimedDL.add(d);
       const reach = scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'toss';
       plans.set(b, { kind: reach ? 'reach' : 'drive', target: d, drive: up(ps * (scheme === 'wideZone' ? 1.8 : reach ? 1.1 : 0.6)) });
@@ -1259,6 +1291,14 @@ const KEEPER_TORSO = process.env.KEEPER_TORSO !== '0';
 
 /** Climbs planned with previewed own movement (CLIMB_PLAN=0 off). */
 const CLIMB_PLAN = process.env.CLIMB_PLAN !== '0';
+
+/** ZONE_ARMS (default off): a zone lineman's first-phase track closes depth
+ * only to arm's length from the man (his strike range: bodies plus a
+ * hand's reach), not to body contact. Closing to the body, OZ linemen took a
+ * diagonal first step (at 0.5 s 0.38 yd play side, 0.28 upfield) where
+ * tracked 2022 OZ linemen step flat (0.59 / 0.13) and their hands meet the
+ * man while they keep running the track. */
+export const ZONE_ARMS = process.env.ZONE_ARMS === '1';
 
 /** CLIMB_PATH (default off): a free climber steers one continuous path to
  * his backer's play-side shoulder by holding the bearing to it constant, the
@@ -1898,7 +1938,7 @@ export class RunBlocker implements Behavior {
     // Within reach the ordinary fit/engage owns contact, except during the
     // first step, which never strikes: it is where the lateral start is won.
     const firstStep = sim.t < .24 + a.mind.snapDelay;
-    if (d < contact + .25 && !firstStep) return null;
+    if (d < contact + .25 && !firstStep && !this.scoopsPast(a, sim, seen)) return null;
     const press = run.scheme === 'insideZone' || run.scheme === 'splitZone' ? .55 : 1;
     // Lateral intent: what it takes to be on his playside shoulder when we
     // meet, from his seen motion over our time to contact; never less than
@@ -1910,7 +1950,11 @@ export class RunBlocker implements Behavior {
     // same split as their combo aim; a solo reach takes the playside number.
     const combo = this.plan.combination && !this.plan.combination.released ? this.plan.combination : null;
     const partner = combo?.members.find((b) => b !== a);
-    const half = partner ? (Math.sign(a.pos.y - partner.pos.y) || ps) * .55 : ps * .6;
+    const scooping = this.scoopsPast(a, sim, seen);
+    // Past the man he scoops, his work is his backer: he climbs to him now.
+    const scoopBacker = scooping ? this.plan.combination?.backer : null;
+    if (scoopBacker && !scoopBacker.isDown(sim.t) && sim.t >= .24 + a.mind.snapDelay) return climbPath(a, sim, scoopBacker);
+    const half = scooping ? ps * (bodyContact + .3) : partner ? (Math.sign(a.pos.y - partner.pos.y) || ps) * .55 : ps * .6;
     const shoulder = seen.pos.y + seen.vel.y * meet + half;
     // The track races a man in front of him to the playside. Once that man
     // is already backside of the aim point and has run upfield past his
@@ -1931,13 +1975,23 @@ export class RunBlocker implements Behavior {
     // The call's track tempo is what his teammates expect from him.
     this.track = { x: 0, y: ps * a.profile.vmax * .45 * press };
     // Depth: close to the defender's near surface without overrunning it.
-    const fitX = seen.pos.x - dir * bodyContact;
+    // ZONE_ARMS: close only to arm's length (his strike range); hands meet
+    // the man there and he keeps running the track.
+    const fitX = seen.pos.x - dir * (ZONE_ARMS ? contact : bodyContact);
     const forward = clamp((fitX - a.pos.x) * 2.5, -1, 2.5);
     // Open the hips toward the track (a bucket step) while the eyes stay on
     // the target: halfway between travel and the target's bearing.
     const travel = Math.atan2(lateral, forward), bearing = Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x);
     const facing = bearing + Math.atan2(Math.sin(travel - bearing), Math.cos(travel - bearing)) / 2;
     return { vel: { x: forward, y: lateral }, facing, cutSkill: .8 + .3 * a.r('runBlock') };
+  }
+
+  /** ZONE_SCOOP: an unjoined scoop helper whose man has not come across his
+   * face (still on the helper's backside half, in his own picture) passes him. */
+  private scoopsPast(a: Agent, sim: PlaySim, seen: Perceived): boolean {
+    const combo = this.plan.combination, run = sim.offCall.run;
+    if (!ZONE_SCOOP || !combo?.scoop || combo.released || combo.members[1] !== a || !run || a.engagement) return false;
+    return (seen.pos.y - a.pos.y) * playSideSign(sim, run) < -.15;
   }
 
   private availableTarget(a: Agent, sim: PlaySim): Agent | null {
@@ -2345,7 +2399,7 @@ export class RunBlocker implements Behavior {
     // Once the carrying back is acquired, crossing the old drive normal need
     // not lose useful screening position. Do not recover to its opposite side.
     const fit = fitCandidate && (plan.kind !== 'drive' || lost) && (!runnerFit || !installedLost);
-    if (!lost && dd < contact) {
+    if (!lost && dd < contact && !this.scoopsPast(a, sim, seen)) {
       const e = sim.engage(a, target, 'run', plan.drive, contactFit ?? combinationFit?.surface);
       if (e) {
         if (zone && e.blocker === a && !e.helpers.length) this.applyZoneContact(a, sim, true);
