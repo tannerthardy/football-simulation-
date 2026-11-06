@@ -10,12 +10,13 @@ const [dir, minY, ...seeds] = process.argv.slice(2); const K = new Map<string, n
 for (const seed of seeds) (JSON.parse(readFileSync(`${dir}/seed${seed}-run.json`, 'utf8')) as any[]).forEach((p, idx) => {
   if (p.pass) return;
   const sim: any = new PlaySim(restoreSetup(Buffer.from(p.setup, 'base64')) as PlaySetup);
-  const d2 = sim.attackDir(sim.offense[0].team); const best = new Map<any, any>(); const ev = new Map<any, Set<string>>(); const brk: string[] = [];
+  const d2 = sim.attackDir(sim.offense[0].team); const best = new Map<any, any>(); const ev = new Map<any, Set<string>>(); const brk: string[] = []; const grip = new Map<any, any>(); const C2: Record<string, number> = (globalThis as any).__C2 ??= {};
   const e0 = sim.event.bind(sim); sim.event = (type: string, a: any, b: any, note?: string) => {
-    if (/tackle/.test(type)) for (const x of [a, b]) if (x && x.team !== sim.offense[0].team) { (ev.get(x) ?? ev.set(x, new Set()).get(x)!).add(type); if (type === 'broken_tackle' && /CB|FS|SS|NB/.test(x.slot)) brk.push(`${x.slot}@${sim.t.toFixed(2)}s carrier+${((sim.carrier?.pos.x - sim.los) * d2).toFixed(1)}yd "${note ?? ''}"`); }
+    if (/tackle/.test(type)) for (const x of [a, b]) if (x && x.team !== sim.offense[0].team) { (ev.get(x) ?? ev.set(x, new Set()).get(x)!).add(type); if (type === 'broken_tackle' && /CB|FS|SS|NB/.test(x.slot)) { const g = grip.get(x); const o = g?.origin || '?'; C2[o] = (C2[o] ?? 0) + 1; brk.push(`${x.slot}@${sim.t.toFixed(2)}s +${((sim.carrier?.pos.x - sim.los) * d2).toFixed(1)}yd origin=${o} hold0=${g?.hold0?.toFixed(2)} reach=${g?.reach?.toFixed(2)} legs=${g?.legs?.toFixed(2)} wrapAt=${g?.t?.toFixed(2)}`); } }
     return e0(type, a, b, note); };
   const t0 = sim.tick.bind(sim);
-  sim.tick = () => { t0(); const c = sim.carrier; if (!c || c === sim.qb || c.team !== sim.offense[0].team) return;
+  sim.tick = () => { t0(); for (const j of sim.world.joints ?? []) if (j.kind === 'grasp' && !j.broken) { const ag = sim.defense.find((x: any) => x.body === j.a); if (ag && (!grip.has(ag) || grip.get(ag).j !== j)) grip.set(ag, { j, origin: j.origin, hold0: j.hold, reach: j.reach, legs: j.legs, t: sim.t }); }
+    const c = sim.carrier; if (!c || c === sim.qb || c.team !== sim.offense[0].team) return;
     if ((c.pos.x - sim.los) * d2 < 2) return;
     for (const d of sim.defense) { const dx = d.pos.x - c.pos.x, dy = d.pos.y - c.pos.y, dist = Math.hypot(dx, dy); if (dist > 3) continue;
       const b = best.get(d); if (b && b.dist <= dist) continue;
@@ -34,4 +35,4 @@ for (const seed of seeds) (JSON.parse(readFileSync(`${dir}/seed${seed}-run.json`
   if (brk.length) console.log(`BREAK s${seed}-${idx} ${y.toFixed(1)} yd: ${brk.join('; ')}`);
   console.log(`s${seed}-${idx} ${y.toFixed(1)} yd ${p.call.slice(0, 40)} | ${parts.join(' | ') || 'nobody within 3 yd'}`);
 });
-console.log(`runs ${runs}`); for (const [k, v] of [...K].sort((a, b) => b[1] - a[1])) console.log(`  ${k}: ${v}`);
+console.log(`runs ${runs}`); console.log('DB break origins:', JSON.stringify((globalThis as any).__C2 ?? {})); for (const [k, v] of [...K].sort((a, b) => b[1] - a[1])) console.log(`  ${k}: ${v}`);
