@@ -1812,7 +1812,17 @@ function helperIntents(sim: PlaySim, e: Engagement, intents: Intent[], axis: Vec
     const recovery = e.type === 'run' ? helperFit(sim,e,h,axis) : null;
     if (recovery) { intents[h.idx] = recovery; continue; }
     const hs = Math.sign((h.pos.x - b.pos.x) * lat.x + (h.pos.y - b.pos.y) * lat.y) || e.side;
-    const spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
+    let spot = { x: b.pos.x + lat.x * sep * 0.95 * hs, y: b.pos.y + lat.y * sep * 0.95 * hs };
+    // DOUBLE_TRACK: the backside member of a stepping stretch double works to
+    // replace the hip: his feet go to the man's middle (just backside of it),
+    // not a spot on his partner's hip, so the man can be handed over and the
+    // play-side member can climb (DOUBLE_FLOW's takeover needs the keeper
+    // level with the man). His partner's body and the man's resist him there.
+    const overtakeSide = DOUBLE_TRACK && e.type === 'run' ? stretchTrackSide(sim) : 0;
+    if (overtakeSide && (h.pos.y - b.pos.y) * overtakeSide < 0) {
+      const hsep = h.profile.radius + d.profile.radius;
+      spot = { x: d.pos.x + axis.x * hsep - lat.x * .25 * Math.sign(lat.y * overtakeSide), y: d.pos.y + axis.y * hsep - lat.y * .25 * Math.sign(lat.y * overtakeSide) };
+    }
     const toSpot = sub(spot, h.pos);
     const preparation=e.type==='run'?h.behavior.contactMotion?.(h,'prepare'):null;
     const direction = e.drive ?? { x: -axis.x, y: -axis.y };
