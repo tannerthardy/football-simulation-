@@ -671,8 +671,8 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
 
 // ------------------------------------------------------------ update
 
-/** ZONE_RUN (experimental, off): an interior defender working across a running
- * reach opens his hips and runs with him instead of shuffling square. */
+/** ZONE_RUN (experimental, off): an interior defender keyed on his man's
+ * reach/bucket step races him for the play-side shoulder with open hips. */
 const ZONE_RUN = process.env.ZONE_RUN === '1', ZONE_RUN_PACE = 0.75, ZONE_RUN_STEP = 0.5, ZONE_RUN_OPEN = Math.PI / 4;
 /** Anchor braces along the drive line and keeps lateral work (ANCHOR_SPLIT=0 off). */
 const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
@@ -1515,12 +1515,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     target = (d.pos.y - read.contain) * side > 0 ? d.pos.y : read.contain;
     if (carry * side > 0) carry = 0;
   }
-  // ZONE_RUN: carrying a line flow faster than a square shuffle, he opens and runs it.
-  const runPace = ZONE_RUN && Math.abs(carry) > 0.6 * td.lateral
-    ? Math.min(d.profile.vmax * ZONE_RUN_PACE, Math.max(td.lateral, Math.abs(carry) + ZONE_RUN_STEP)) : td.lateral;
-  const flow = clamp(carry + (target - d.pos.y) * 3, -runPace, runPace);
-  let zoneRun = runPace > td.lateral && Math.abs(flow) > td.lateral ? Math.sign(flow) : 0;
-  if (zoneRun) d.tags.add('zone-run');
+  const flow = clamp(carry + (target - d.pos.y) * 3, -td.lateral, td.lateral);
+  let zoneRun = 0;
   // DL_FIGHT (experimental, off): fight pressure with pressure. A defender
   // who feels himself driven sideways holds the point where the push began
   // and leans into it, instead of following the blocker's flow off his gap.
@@ -1537,18 +1533,25 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     && Math.sign(st.flow) === st.firstStep && st.firstStep === lineRead(sim, d)) {
     lateralFlow = st.firstStep * td.lateral;
     d.tags.add('work-across');
-    // ZONE_RUN (experimental, off): a blocker running the line (his flow, as
-    // seen, past what a square shuffle can match) is not stayed with by
-    // shuffling. The defender opens his hips and runs with him to stay on his
-    // play-side half, requesting the blocker's seen pace plus a step; the hands
-    // and the blocker's body decide what he gets. NFL DL flow 2.3 yd/s by 0.9 s
-    // and 3.2 by 1.5 s on outside zone; the shuffle request capped ours at 2.6.
-    if (ZONE_RUN && Math.abs(st.flow) > 0.6 * td.lateral) {
-      const pace = Math.min(d.profile.vmax * ZONE_RUN_PACE, Math.max(td.lateral, Math.abs(st.flow) + ZONE_RUN_STEP));
-      lateralFlow = st.firstStep * pace;
-      zoneRun = st.firstStep;
-      d.tags.add('zone-run');
-    }
+  }
+  // ZONE_RUN (experimental, off): the race for the play-side shoulder. Keyed
+  // on the man in front alone, not on the rest of the line: when his own
+  // first step goes to one side (a reach or bucket step) and he keeps going
+  // that way, an interior man opens his hips and races him for that
+  // shoulder. Not yet outside it, he runs at his open-hip speed; outside it,
+  // he keeps the man's pace plus a step. The bodies and hands decide who
+  // gets there. NFL DL flow 2.3 yd/s by 0.9 s and 2.9 by 1.2 s on outside
+  // zone; a square shuffle capped ours at 2.6 and the old line-flow gate
+  // kept the race from starting.
+  if (ZONE_RUN && !squeeze && st && !read.declared && d.runFit?.kind === 'interior' && st.firstStep
+    && st.flow * st.firstStep >= 0) {
+    const s1 = st.firstStep, shoulder = b.pos.y + s1 * (b.profile.radius + d.profile.radius) * .5;
+    const behind = (shoulder - d.pos.y) * s1 > 0;
+    const open = d.profile.vmax * ZONE_RUN_PACE;
+    const pace = behind ? open : Math.min(open, Math.max(td.lateral, Math.abs(b.vel.y) + ZONE_RUN_STEP));
+    lateralFlow = s1 * pace;
+    zoneRun = s1;
+    d.tags.add('zone-run');
   }
   if (DL_FIGHT && read.stack && !read.declared) {
     const st = read.stack, push = d.body.support?.felt?.y ?? 0;

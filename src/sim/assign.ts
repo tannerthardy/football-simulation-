@@ -159,8 +159,13 @@ export function assignBehaviors(sim: PlaySim): void {
   for (const [a, plan] of plans) a.behavior = new RunBlocker(plan);
   if (STANCE_TELL) for (const [a, plan] of plans) {
     if (!isOL(a)) continue;
-    // His first step's lateral direction is what his weight shows if it leaks.
-    const first = plan.kind === 'pull' && plan.pullPath?.length ? plan.pullPath[0].y - a.pos.y : plan.drive.y;
+    // His first step's lateral direction is what his weight shows if it leaks:
+    // on zone every lineman's first step is the play-side track; a gap down
+    // block steps along its drive; a puller (weight back, light hand) opens
+    // along his path.
+    const zone = ['insideZone', 'outsideZone', 'wideZone', 'splitZone', 'toss', 'duo'].includes(concept.scheme);
+    const first = plan.kind === 'pull' && plan.pullPath?.length ? plan.pullPath[0].y - a.pos.y
+      : zone ? playSideSign(sim, concept) : plan.drive.y;
     const dir = Math.abs(first) > 0.3 ? Math.sign(first) : 0;
     if (dir && sim.rng.fork(`stance:${a.slot}`).next() < stanceLeak(a)) a.stanceLean = dir;
   }

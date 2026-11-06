@@ -41,7 +41,7 @@ There are 90 flags: 68 are on by default, 1 is a diagnostic scale at identity (`
 | `ZONE_FLOW` | on | default | run | `src/sim/behaviors/blocking.ts:859` | — |
 | `CF_FLOW` | off | experimental | tools | `src/sim/counterfactual.ts:5` | set at first review |
 | `STANCE_TELL` | off | experimental | defense | `src/sim/assign.ts:34`, `src/sim/behaviors/defense.ts:117` | set at first review. Offensive linemen can tip their first step's lateral direction pre-snap (less often when disciplined; habit leans on any snap); a DL who reads his key's lean steps with it off the ball until the key's real movement shows. Offense half for Run Game review |
-| `ZONE_RUN` | off | experimental | defense | `src/sim/engagement.ts:676` | set at first review. An engaged interior DL carrying a line flow past his shuffle speed opens his hips and runs it (lateral cap min(0.75 vmax, flow + 0.5)) |
+| `ZONE_RUN` | off | experimental | defense | `src/sim/engagement.ts:676` | set at first review. Keyed on the man in front's own first step (reach/bucket), an engaged interior DL opens his hips and races him for the play-side shoulder: open-hip speed (0.75 vmax) until outside it, then the man's pace plus a step. No line-flow gate |
 | `DL_FIGHT` | off | experimental | trenches | `src/sim/engagement.ts:712` | set at first review |
 | `DL_HANDS` | off | experimental | trenches | `src/sim/engagement.ts:694` | set at first review |
 | `GAIT_STEP` | off | experimental | physics | `src/physics/kinematics.ts:94` | set at first review |
