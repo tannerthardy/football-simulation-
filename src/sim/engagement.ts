@@ -676,6 +676,12 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
  * reach/bucket step races him for the play-side shoulder with open hips. */
 const BACKSIDE_SHOOT = process.env.BACKSIDE_SHOOT === '1';
 const ZONE_RUN = process.env.ZONE_RUN === '1', ZONE_RUN_PACE = 0.75, ZONE_RUN_STEP = 0.5, ZONE_RUN_OPEN = Math.PI / 4;
+/** ZONE_RUN: a blocker seen running sideways at least this fast (yd/s) is
+ * racing for the shoulder (a reach); slower, he is driving (inside zone) and
+ * the DL plays his pace. Racing, the DL presses upfield as he crosses
+ * (yd/s, the attack technique's press); his body and the blocker decide how
+ * much ground he gains. */
+const ZONE_RUN_REACH = 1.5, ZONE_RUN_PRESS = 1.5;
 /** Anchor braces along the drive line and keeps lateral work (ANCHOR_SPLIT=0 off). */
 const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
 
@@ -935,6 +941,8 @@ interface RunStackRead {
   contacted: boolean;
   /** The lateral direction of the blocker's first step as he saw it (his first clear flow), 0 until seen. */
   firstStep: number;
+  /** ZONE_RUN: he is racing this man for the shoulder. */
+  race?: boolean;
   /** DL_FIGHT: the lateral point he holds while driven sideways, and until when. */
   hold?: { y: number; until: number };
 }
@@ -1558,7 +1566,13 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // gets there. NFL DL flow 2.3 yd/s by 0.9 s and 2.9 by 1.2 s on outside
   // zone; a square shuffle capped ours at 2.6 and the old line-flow gate
   // kept the race from starting.
-  if (ZONE_RUN && !squeeze && st && !read.declared && d.runFit?.kind === 'interior' && st.firstStep
+  // He races a man running for the shoulder (a reach), and keeps racing while
+  // the man keeps running; a man driving at him (inside zone) he plays square,
+  // holding his gap: NFL inside-zone DL go about two-thirds as far sideways as
+  // their blockers by 1.5 s.
+  const reachSpeed = st ? Math.abs(b.vel.y) : 0;
+  if (st) st.race = ZONE_RUN && !!st.firstStep && reachSpeed >= (st.race ? ZONE_RUN_REACH / 2 : ZONE_RUN_REACH);
+  if (ZONE_RUN && !squeeze && st?.race && !read.declared && d.runFit?.kind === 'interior' && st.firstStep
     && st.flow * st.firstStep >= 0) {
     const s1 = st.firstStep, shoulder = b.pos.y + s1 * (b.profile.radius + d.profile.radius) * .5;
     const behind = (shoulder - d.pos.y) * s1 > 0;
@@ -1613,7 +1627,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     cf = { x: depth, y };
   }
   intents[d.idx] = {
-    vel: workOff ?? cf ?? (read.stack ? { x: depth, y: lateralFlow } : legacy),
+    vel: workOff ?? cf ?? (read.stack ? { x: zoneRun ? -sim.attackDir(b.team) * ZONE_RUN_PRESS : depth, y: lateralFlow } : legacy),
     // Running the line he opens his hips halfway toward it, off square.
     facing: zoneRun && !workOff && !cf ? (() => {
       const sq = Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x), run = Math.atan2(zoneRun, 0);
