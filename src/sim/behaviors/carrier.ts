@@ -87,7 +87,8 @@ export const RB_FLOW = process.env.RB_FLOW === '1';
  * not flat out. A side step of his body plus the man's reach (w) takes
  * sqrt(2w/a) at his lateral acceleration a (his cut skill on his lateral
  * capability); with that man d yards away (within 45 degrees of his path) he
- * keeps v <= d sqrt(a/2w); a
+ * keeps v <= d sqrt(a/2w) - c, c the man's seen speed toward him (a man he
+ * could not sidestep even at half speed does not slow him: he finishes); a
  * defender he sees with a teammate's body on him counts 1.5 yd farther (he
  * has to come off the block).
  * Nobody in front within 8 yd: full speed. Tracked 2022 zone backs before
@@ -428,7 +429,14 @@ export class BallCarrier implements Behavior {
         return Math.hypot(q.x - s.pos.x, q.y - s.pos.y) < o.profile.radius + d.profile.radius + .25; });
       const w = a.profile.radius + d.profile.radius + d.profile.reach * .5;
       const gap = Math.max(0.5, dist + (blocked ? 1.5 : 0) - w);
-      cap = Math.min(cap, gap * Math.sqrt(acc / (2 * w)));
+      // The time he has is the gap over how fast it closes: his own speed
+      // plus the man's speed toward him (running with him or away gives
+      // him time; coming at him takes it).
+      const toward = blocked ? 0 : -(s.vel.x * rx + s.vel.y * ry) / dist;
+      const v = gap * Math.sqrt(acc / (2 * w)) - toward;
+      // A man he cannot sidestep even at half speed is not one to slow for:
+      // he finishes through him.
+      if (v >= 0.5 * a.profile.vmax) cap = Math.min(cap, v);
     }
     return clamp(cap, 0.5 * a.profile.vmax, a.profile.vmax);
   }
