@@ -73,6 +73,15 @@ export const RB_HELD = process.env.RB_HELD === '1';
  * open and the back bounced into him (tracked outside zone: backs crossed
  * inside such an end 78-81%, ours 41-56%). */
 export const HELD_SIDE = process.env.HELD_SIDE === '1';
+/** RB_FLOW (default off): the back reads a moving line where it will be.
+ * Bodies blocking a route were taken where they stand now, so on a flowing
+ * zone line the straight lane behind blockers already stepping play side
+ * looked shut and the read flattened him along the line (dog-leg on 39% of
+ * inside-zone and 47% of outside-zone reads; his lateral speed rose after the
+ * handoff where tracked backs' falls, 2.4 -> 2.8 vs 2.0 -> 1.5 yd/s on inside
+ * zone). Each body he sees is carried along its seen velocity to when he
+ * would pass it (at most 1 s ahead). */
+export const RB_FLOW = process.env.RB_FLOW === '1';
 
 /** The designed aiming point as this runner sees the line now (LIVE_AIM=0: snap point). */
 export function liveAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | undefined {
@@ -95,7 +104,7 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
 
 /** Read entries and routes from acquired bodies on both teams. A nominal
  * block is neither an empty lane nor guaranteed future protection. */
-interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D' }
+interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D'; vel?: Vec2 }
 
 export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | null {
   if (!opts.run || !opts.aim) return null;
@@ -149,7 +158,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
   for (const { agent: o, seen: s, team } of pictures) {
     if (s.pose === 'down') continue;
     if (depth(s.pos) < -1.6 || depth(s.pos) > 1.6 || Math.abs(s.pos.y - a.pos.y) > 12) continue;
-    bodies.push({ pos: s.pos, radius: o.profile.radius, team });
+    bodies.push({ pos: s.pos, radius: o.profile.radius, team, ...(RB_FLOW ? { vel: s.vel } : {}) });
   }
   if (bodies.filter((b) => b.team === 'O').length < 3) return null;
   bodies.sort((p, q) => p.pos.y - q.pos.y);
@@ -191,11 +200,19 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
       + observedRecoveryAllowance(s, d.profile.getUp, sim.dt) + (holdsToward(d, s, p) ? held.get(d) ?? 0 : 0);
   let best: Vec2 | null = null, cost = Infinity, bestY: number | undefined;
   const measurements: Array<{ entry: Vec2; risk: number; score: number }> = [];
+  const cruise = Math.max(4, a.profile.vmax * .8), cruiseFor = () => cruise;
   // Bodies on a segment block the run along it.
-  const blockedBy = (from: Vec2, to: Vec2): number => {
+  const blockedBy = (from: Vec2, to: Vec2, start = 0): number => {
     const sx = to.x - from.x, sy = to.y - from.y, l2 = sx * sx + sy * sy || 1;
     let r = 0;
-    for (const b of bodies) {
+    for (const b0 of bodies) {
+      // RB_FLOW: where this body will be when he gets level with it.
+      let b = b0;
+      if (b0.vel) {
+        const u0 = clamp(((b0.pos.x - from.x) * sx + (b0.pos.y - from.y) * sy) / l2, 0, 1);
+        const tt = Math.min(1, start + u0 * Math.sqrt(l2) / Math.max(1, cruiseFor()));
+        b = { ...b0, pos: { x: b0.pos.x + b0.vel.x * tt, y: b0.pos.y + b0.vel.y * tt } };
+      }
       const u = clamp(((b.pos.x - from.x) * sx + (b.pos.y - from.y) * sy) / l2, 0, 1);
       // Include the endpoint: a route ending in a defender is still occupied.
       // At the start, only charge a body when the route approaches it; an
@@ -206,7 +223,6 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
     }
     return r;
   };
-  const cruise = Math.max(4, a.profile.vmax * .8);
   for (const p of candidates) {
     // Two ways to the entry: straight, or flatten behind the line first and
     // then turn up (the cutback's dog-leg). Each has its own arrival time.
@@ -219,7 +235,7 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
     const routes: Array<{ obstruct: number; arrive: number; via: Vec2; path: Array<{ q: Vec2; t: number }> }> = [{ obstruct: blockedBy(a.pos, p), arrive: timeToReach(me, p, 0), via: p, path: along(a.pos, p, null).slice(0, 3) }];
     if (depth(a.pos) < -1.6) {
       const w = { x: sim.los - 1.2 * dir, y: p.y }, atW = timeToReach(me, w, 0);
-      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p), arrive: atW + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w,
+      routes.push({ obstruct: blockedBy(a.pos, w) + blockedBy(w, p, atW), arrive: atW + Math.hypot(p.x - w.x, p.y - w.y) / cruise, via: w,
         path: [...along(a.pos, w, null), ...along(w, p, atW).slice(0, 3)] });
     }
     let risk = Infinity, via = p;
