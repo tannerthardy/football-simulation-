@@ -181,6 +181,8 @@ const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ
 
 /** Free fits plan lateral work with their own body (LB_PLAN=0 off). */
 const LB_PLAN = process.env.LB_PLAN !== '0';
+const LB_RUN_THROUGH = process.env.LB_RUN_THROUGH === '1', RUN_THROUGH_REACH = 7, RUN_THROUGH_MARGIN = 0.15;
+const d_runRead = (a: Agent): boolean => a.recog ? a.recog.read === 'run' : true;
 const LB_LINE_FLOW = process.env.LB_LINE_FLOW === '1', LINE_FLOW_LEAD = 1.5, GUARD_KEY_DELAY = 0.5, GUARD_STEP = 0.5;
 /** Experimental activation of the same planner for an observed pull-adjusted
  * insertion. Default off while matched containment/misdirection controls run. */
@@ -588,6 +590,28 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     declared = threat && seen.pos.x > sim.los - 1.6;
     if (threat && !declared) { a.tags.add('fit-threat-read'); threatened = true; }
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
+  // LB_RUN_THROUGH (experimental, off): a crease open all the way to the back
+  // is a lane to shoot, not a landmark to hold. While the back he sees is
+  // still behind the line and close enough to reach, a backer who has read
+  // run and sees no offensive body in the lane between them attacks him
+  // there. A blocker stepping into that lane closes it on the next read.
+  // NFL box backers are at or behind the line on 14% / 7% (play / back side)
+  // of outside-zone snaps by 2.0 s, and make 7.2% / 3.1% of the backfield
+  // hits inside the tackles; ours were at 1% and 0%.
+  if (LB_RUN_THROUGH && job.kind === 'insert' && d_runRead(a) && !declared) {
+    const dir = sim.attackDir(c.team), behind = (sim.los - seen.pos.x) * dir;
+    const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y, L = Math.hypot(dx, dy);
+    if (behind > 0 && L < RUN_THROUGH_REACH) {
+      const lane = a.profile.radius + RUN_THROUGH_MARGIN;
+      const blocked = sim.offense.some((o) => {
+        if (o === c || o === sim.qb) return false;
+        const s0 = sim.see(a, o), px = s0.pos.x - a.pos.x, py = s0.pos.y - a.pos.y;
+        const u = clamp((px * dx + py * dy) / (L * L), 0, 1);
+        return Math.hypot(px - u * dx, py - u * dy) < lane + o.profile.radius;
+      });
+      if (!blocked) { a.tags.add('run-through'); return chase(sim,a,c,2); }
+    }
+  }
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
   // A stack backer whose gap the runner's path threatens fills downhill to meet
   // him at the line, instead of waiting at his landmark until he declares. A
