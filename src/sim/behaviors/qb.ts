@@ -86,6 +86,8 @@ export class QBPass implements Behavior {
   /** How much of the load the throw in progress gave up (0 full motion, 1 none). */
   private flick = 0;
   private motionAt = -1;
+  /** Whether the throw in progress has had its last look at the plant. */
+  private rechecked = false;
   private underPressure = 0;
   private readonly clock: number;
   private readonly armSpeed: number;
@@ -232,6 +234,22 @@ export class QBPass implements Behavior {
     }
 
     if (this.phase === 'windup') {
+      // Last look at the plant, before the arm is committed: the throw as it
+      // would now come out, re-aimed on the picture he has gained during the
+      // load. If it has gone bad he pulls it down (a pump), paying the time;
+      // a defender who broke on the load has already committed.
+      if (this.pending && !this.rechecked && t >= this.releaseAt - this.delivery(a) - 1e-9) {
+        this.rechecked = true;
+        if (this.pullDown(a, sim, this.pending)) {
+          this.phase = 'set';
+          this.pending = null;
+          this.readStart = t;
+          sim.windupAt = -1;
+          sim.deliveryAt = -1;
+          sim.event('pump', a);
+          return stand();
+        }
+      }
       if (t >= this.releaseAt && this.pending) {
         this.release(a, sim, this.pending);
         this.pending = null;
@@ -491,18 +509,13 @@ export class QBPass implements Behavior {
   private window(a: Agent, sim: PlaySim, r: Agent, from: Vec3, point: Vec3, T: number, wind: number, urgency: number): ThrowEval {
     const noise = 0.22 * (1 - a.r('decisionMaking')) + 0.05;
     const total = wind + T;
-    let pOpen = 1;
-    let intRisk = 0;
-    let pClear = 1;
-    const v0 = dragFreeLaunch(from, point, T);
     const forecast = this.receiverForecasts.get(r);
     const target = forecast?.predict(sim.t, 0) ?? r.pos;
     // The man on the target runs the stem with him and learns the break only
     // when it comes: the separation a timing throw is thrown into.
     const breakAt = forecast?.breakAt() ?? null;
     const untilBreak = breakAt === null ? 0 : Math.max(0, breakAt - sim.t);
-    for (const d of sim.defense) {
-      if (d.isDown(sim.t)) continue;
+    const defenders = sim.defense.filter((d) => !d.isDown(sim.t)).map((d) => {
       // Not where the defender is: where the QB thinks he is.
       const seen = this.mind.estimate(d);
       const facingQB = Math.cos(seen.facing - Math.atan2(a.pos.y - seen.pos.y, a.pos.x - seen.pos.x)) > 0.2;
@@ -513,33 +526,53 @@ export class QBPass implements Behavior {
       const blind = facingQB ? 0 : onTarget ? Math.min(untilBreak, wind) : wind;
       const mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
-      const tt = blind + timeToReach(mover, point, d.profile.reach + 0.3) + react;
-      const estimateError = a.mind.judgment(`reach:${d.slot}`) * noise;
-      const m = tt - total + estimateError;
-      const contest = 1 - logistic((m - 0.05) / 0.13);
-      // A defender who gets there well before the ball is sitting on the route.
-      const first = 1 - logistic((m + 0.3) / 0.13);
-      pOpen *= 1 - contest * (0.55 + 0.3 * d.r('ballSkills'));
-      // Undercut risk along the flight path: a hand on the ball kills the
-      // completion, and some of those become picks.
       const leap = d.profile.reactReach + 0.5 * (d.profile.maxCatchHeight - d.profile.reactReach);
-      let touch = 0;
-      for (const f of [0.3, 0.45, 0.6, 0.75, 0.88]) {
-        const tau = T * f;
-        const b = arcPoint(from, v0, tau);
-        if (b.z > leap + 0.1) continue;
-        const tb = blind + timeToReach(mover, b, d.profile.reach) + react;
-        const mb = tb - (wind + tau) + estimateError;
-        touch = Math.max(touch, logistic(-(mb - 0.05) / 0.1));
+      return { d, blind, mover, react, leap, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
+    });
+    // A ball that arrives at `pt`: who contests it at the catch, who can get a
+    // hand on it on the way, and how many of those become picks.
+    const at = (pt: Vec3) => {
+      let pOpen = 1, pClear = 1, intRisk = 0;
+      const v0 = dragFreeLaunch(from, pt, T);
+      for (const { d, blind, mover, react, leap, estimateError } of defenders) {
+        const tt = blind + timeToReach(mover, pt, d.profile.reach + 0.3) + react;
+        const m = tt - total + estimateError;
+        const contest = 1 - logistic((m - 0.05) / 0.13);
+        // A defender who gets there well before the ball is sitting on the route.
+        const first = 1 - logistic((m + 0.3) / 0.13);
+        pOpen *= 1 - contest * (0.55 + 0.3 * d.r('ballSkills'));
+        // Undercut risk along the flight path: a hand on the ball kills the
+        // completion, and some of those become picks.
+        let touch = 0;
+        for (const f of [0.3, 0.45, 0.6, 0.75, 0.88]) {
+          const tau = T * f;
+          const b = arcPoint(from, v0, tau);
+          if (b.z > leap + 0.1) continue;
+          const tb = blind + timeToReach(mover, b, d.profile.reach) + react;
+          const mb = tb - (wind + tau) + estimateError;
+          touch = Math.max(touch, logistic(-(mb - 0.05) / 0.1));
+        }
+        pClear *= 1 - touch * 0.75;
+        intRisk += touch * (0.08 + 0.3 * d.r('ballSkills'));
+        // At the catch point: jumped routes are picks; contested balls sometimes.
+        intRisk += first * (0.15 + 0.35 * d.r('ballSkills')) + Math.max(0, contest - first) * 0.08 * d.r('ballSkills');
       }
-      pClear *= 1 - touch * 0.75;
-      intRisk += touch * (0.08 + 0.3 * d.r('ballSkills'));
-      // At the catch point: jumped routes are picks; contested balls sometimes.
-      intRisk += first * (0.15 + 0.35 * d.r('ballSkills')) + Math.max(0, contest - first) * 0.08 * d.r('ballSkills');
-    }
+      return { pOpen, pClear, intRisk };
+    };
+    const aimed = at(point);
+    const { pOpen, pClear } = aimed;
     const dist = Math.hypot(point.x - from.x, point.y - from.y);
     const sigma = this.missSigma(a, sim, dist, urgency);
     const pAcc = Math.exp(-(sigma * sigma) / (2 * 1.35 * 1.35));
+    // He knows his own accuracy: the ball can land anywhere in his miss, and an
+    // errant ball is the one a defender can pick. Its risk is averaged over the
+    // miss (four sigma points of his release error: 0.8σ along the throw's
+    // depth, σ across it), so for an accurate thrower it is the aimed risk.
+    const k = Math.SQRT2 * sigma;
+    let intRisk = 0;
+    for (const [dx, dy] of [[0.8 * k, 0], [-0.8 * k, 0], [0, k], [0, -k]]) {
+      intRisk += 0.25 * at({ x: point.x + dx, y: clamp(point.y + dy, 0, FIELD_WIDTH), z: point.z }).intRisk;
+    }
     const P = pOpen * pClear * pAcc * (0.88 + 0.1 * r.r('hands'));
     const depth = point.x - sim.los;
     const gain = depth + 1.5 + 3.5 * pOpen;
@@ -576,12 +609,26 @@ export class QBPass implements Behavior {
     this.pending = ev;
     this.releaseAt = sim.t + this.windup(a);
     this.motionAt = sim.t;
+    this.rechecked = false;
     this.flick = 1 - (this.releaseAt - sim.t - this.delivery(a)) / this.load(a);
     // The load gives the throw away to defenders reading him: front hand off
     // the ball, front shoulder to the target.
     sim.windupAt = sim.t;
     sim.deliveryAt = this.releaseAt - this.delivery(a);
     return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: angleTo(a.pos, ev.point) };
+  }
+
+  /** Whether the committed throw, re-aimed as it would now leave his hand, is
+   * worth less than keeping the ball. Held or about to be hit, he cannot. */
+  private pullDown(a: Agent, sim: PlaySim, ev: ThrowEval): boolean {
+    const left = this.releaseAt - sim.t;
+    const pressure = this.pressure(a, sim);
+    if (heldBy(a, sim) > 0 || pressure.time < left + 0.3) return false;
+    const p = this.receiverForecasts.get(ev.target)?.predict(sim.t, left + ev.T);
+    if (!p) return false;
+    const point: Vec3 = { x: p.x, y: clamp(p.y, 2, FIELD_WIDTH - 2), z: ev.point.z };
+    const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1) * (0.5 + 0.5 * a.r('pocketPresence'));
+    return this.window(a, sim, ev.target, { x: a.pos.x, y: a.pos.y, z: RELEASE_Z }, point, ev.T, left, urgency).value < 0;
   }
 
   private release(a: Agent, sim: PlaySim, ev: ThrowEval): void {

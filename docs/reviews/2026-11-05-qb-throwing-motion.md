@@ -260,3 +260,56 @@ The three play-pinned fixtures were re-staged on native plays with the same sequ
 - possession-awareness: roster 10 seed 18 flipped
 - command-trace: four_verts seed 13
 - cov7-abandonment: both arms now complete to Z
+
+## The interception estimate
+
+The QB's own interception estimate ran about 4× below the result on develop as
+well as on this branch (four RNG shifts: develop 11.3 predicted vs 28 actual).
+
+**Diagnosis on four RNG shifts (648 attempts, 36 picks):**
+- **Not the tight windows.** Throws where the closest defender was predicted 0.4-0.7 s
+  late were picked 8.6% of the time against 1.5% predicted (develop 5.1% vs 1.1%).
+- **The QB's picture of the picker was right** (error 0.1-0.5 yd).
+- **Most of those picks were errant balls.** They land 2.5-13 yd from the aim,
+  after the planned arrival. Some were thrown while held, where the grasp raises
+  the miss spread from about 1 yd to 4.8 yd. The release also re-aims at the
+  receiver's latest forecast: the median shift was 2.2 yd for picks vs 1.6 yd for
+  other throws (90th percentile 8.9 vs 4.2), and nobody checked the risk at the new spot.
+- **15 of 36 came off a touched ball.** A first touch became a pick at these rates:
+  breakup 5%, batted at the line 7%, drop 24% (7 of 29).
+
+**What changed:**
+- **He prices interceptions over his own miss.** The per-defender risk (contest at
+  the catch, hands on the ball in flight) is averaged over four sigma points of his
+  release error: 0.8σ along the throw's depth, σ across it. For an accurate passer
+  that is the aimed risk; for a wild one, a defender beside the window becomes a
+  real risk. `test/qb-interception-estimate.test.ts` holds this; it fails on the
+  code before the change, where both throwers get the same 0.035.
+- **A last look at the plant, before the arm is committed.** With the picture he
+  gained during the load, he re-evaluates the throw as it would now leave his hand,
+  re-aimed. If it is worth less than keeping the ball (his own value function
+  below zero), he pulls it down: a pump, logged as a `pump` event. He can't when
+  held, or when a hit lands before the release plus 0.3 s. The cost is the time;
+  a defender who broke on the load has committed (defenders do not yet break on
+  the load, so for now the pump fools no one).
+
+**Result** (four RNG shifts, 732 dropbacks):
+
+| | Develop | Before this stage | After |
+| --- | --- | --- | --- |
+| Interceptions (tipped) | 28 (8) | 36 (15) | 29 (12) |
+| Predicted interceptions | 11.3 | 14.1 | 17.5 |
+| Direct (untouched) picks | 20 | 21 | 17 |
+| Completion | 64.1% | 61.4% | 61.4% |
+| Sacks | 6.0% | 7.5% | 8.7% |
+| Yards per dropback | 9.20 | 9.58 | 9.41 |
+
+Pumps: 21 on 17 of 183 dropbacks (seed 7/11, unshifted).
+
+**Gaps left:**
+- **Drops become picks 24% of the time.** That's the ball coming off the
+  receiver's hands (physics), not the QB's estimate. It is most of the remaining
+  tipped picks, so the QB is not taught to expect it.
+- **Throws the QB rates safest** (predicted under 1%) still see 3.5% direct picks.
+- **Sacks are up 1.2 points.** A pump costs time, and 20% of attempts are thrown
+  while held.
