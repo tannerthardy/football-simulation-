@@ -743,6 +743,28 @@ const runSheds = new WeakMap<Engagement, { until: number; side: number; runner?:
 
 /** Run-blocker anchoring against a felt drive (RUN_ANCHOR=0 disables, for A/B). */
 const ANCHOR = process.env.RUN_ANCHOR !== '0';
+/** ANCHOR_GRADE (default off): an engaged run blocker braces in proportion
+ * to how hard he is being driven back (felt load toward his backfield,
+ * 0.15-0.35 of body weight, and backward speed, 0.05-0.25 yd/s), blending his
+ * request toward the brace, instead of switching his whole request to the
+ * brace when both cross a line (0.25 g, 0.15 yd/s). The switch flickered
+ * tick to tick: its toggles were 58% of outside zone solo blockers' request
+ * heading churn (70% on doubles, 49% inside zone solo), each a 60-90 deg jump. */
+const ANCHOR_GRADE = process.env.ANCHOR_GRADE === '1';
+/** ANCHOR_GRADE: the time (s) over which a blocker's feel of being driven
+ * settles (a reaction time), and that feel per blocker. */
+const ANCHOR_FEEL = .15;
+/** FEET_SETTLE (default off): an engaged run blocker's foot request follows
+ * his controller's wish with a motor lag (FEET_SETTLE_TAU) instead of
+ * changing every tick. The wish moves tick to tick with the man's perceived
+ * lateral motion in the hand fight, the switch between touch and sight delay
+ * when hand force blinks, the SEAL_HOLD load threshold and the raw felt-force
+ * feedback (together the lateral-jump share of engaged OZ/IZ request heading
+ * churn, about equal parts). Feet re-plan at step cadence. */
+const FEET_SETTLE = process.env.FEET_SETTLE === '1';
+const FEET_SETTLE_TAU = .1;
+const feetSettle = new WeakMap<Agent, { e: Engagement; vel: Vec2; t: number }>();
+const anchorFeel = new WeakMap<Agent, { load: number; back: number; t: number }>();
 
 /** Default on (PASS_FEEL=0 turns it off): the pass blocker mirrors the rusher on
  * acquired information: the one he feels through his hands (a 0.06 s
@@ -1537,10 +1559,26 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
       // Flowing across him without lost depth is lateral co-flow.
       const up = sim.attackDir(b.team);
       const backLoad = -feltLoad.x * up, drivenBack = -b.vel.x * up;
-      if (backLoad > 0.25 * b.profile.massKg * G && drivenBack > 0.15) {
+      const shoulderWork = lateral * (stretch ? 1 : 0.3);
+      const brace = { x: up * 2.4 + lat.x * shoulderWork, y: lat.y * shoulderWork };
+      if (ANCHOR_GRADE) {
+        // He braces as hard as he is being driven: the share of his request
+        // given to the brace grows with the load toward his backfield and
+        // with how fast it is moving him, instead of switching at a line.
+        // What he feels of being driven settles over a reaction time; he
+        // does not re-brace on each instant's push.
+        const prev = anchorFeel.get(b), k = prev ? 1 - Math.exp(-Math.max(0, sim.t - prev.t) / ANCHOR_FEEL) : 1;
+        const feel = prev ? { load: prev.load + (backLoad - prev.load) * k, back: prev.back + (drivenBack - prev.back) * k, t: sim.t }
+          : { load: backLoad, back: drivenBack, t: sim.t };
+        anchorFeel.set(b, feel);
+        const w = clamp((feel.load / (b.profile.massKg * G) - .15) / .2, 0, 1) * clamp((feel.back - .05) / .2, 0, 1);
+        if (w > 0) {
+          anchored = w >= .5;
+          blockVel = { x: blockVel.x + (brace.x - blockVel.x) * w, y: blockVel.y + (brace.y - blockVel.y) * w };
+        }
+      } else if (backLoad > 0.25 * b.profile.massKg * G && drivenBack > 0.15) {
         anchored = true;
-        const shoulderWork = lateral * (stretch ? 1 : 0.3);
-        blockVel = { x: up * 2.4 + lat.x * shoulderWork, y: lat.y * shoulderWork };
+        blockVel = brace;
       }
     } else {
       const driven = load > 1e-6 ? (b.vel.x * feltLoad.x + b.vel.y * feltLoad.y) / load : 0;
@@ -1562,6 +1600,16 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // DOUBLE_TRACK: a double on a stretch call keeps stepping the track.
   const trackSide = DOUBLE_TRACK && !anchored && e.helpers.length ? stretchTrackSide(sim) : 0;
   if (trackSide) blockVel = { x: blockVel.x, y: trackSide * Math.max(blockVel.y * trackSide, TRACK_TEMPO * b.profile.vmax) };
+  if (FEET_SETTLE) {
+    // His feet follow what his controller wants over a step, not each tick:
+    // per-tick jitter in the man's felt and seen motion does not reach them.
+    const prev = feetSettle.get(b);
+    if (prev && prev.e === e && sim.t - prev.t < .2) {
+      const k = 1 - Math.exp(-Math.max(0, sim.t - prev.t) / FEET_SETTLE_TAU);
+      blockVel = { x: prev.vel.x + (blockVel.x - prev.vel.x) * k, y: prev.vel.y + (blockVel.y - prev.vel.y) * k };
+    }
+    feetSettle.set(b, { e, vel: { ...blockVel }, t: sim.t });
+  }
   intents[b.idx] = {
     vel: blockVel,
     facing: racingSide ? openToward(Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), racingSide, REACH_RACE_OPEN)

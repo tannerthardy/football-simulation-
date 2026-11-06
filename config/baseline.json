@@ -122,6 +122,8 @@
     "CUTOFF_RACE": "0",
     "RB_TEMPO": "0",
     "RB_GATHER": "0",
+    "FEET_SETTLE": "0",
+    "ANCHOR_GRADE": "0",
     "CLIMB_PATH": "0",
     "RUN_FORM_PAIR": "0",
     "RB_HELD": "0",
