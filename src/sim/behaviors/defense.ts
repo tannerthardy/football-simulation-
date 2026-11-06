@@ -39,6 +39,9 @@ import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, q
  * (3.7 -> 5.7 yd deep) and blocked 15% at 2.0 s; ours came to the run at the
  * stalk read, sat at 4 yd and were blocked 62% (dbtempo.py). */
 const passFirstOn = () => process.env.PASS_FIRST !== '0';
+/** DB_SLOWPLAY (experimental, off): see ManCoverage.slowPlay. Fraction of the receiver's tempo he gives
+ * (NFL off corners on runs, 0.9 of 3 yd/s), cushion he keeps (yd), receiver speed that is a release (of his vmax). */
+const DB_SLOWPLAY = process.env.DB_SLOWPLAY === '1', SLOW_GIVE = 0.3, SLOW_MIN = 1.5, SLOW_SPRINT = 0.75, SLOW_WIDTH = 8;
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -501,8 +504,36 @@ export class ManCoverage implements Behavior {
       this.blockingRun = installedBackfield;
       return this.blockingSupport(a, sim, qbCue);
     }
+    if (DB_SLOWPLAY && run && !this.hipsOpen) {
+      const slow = this.slowPlay(a, sim);
+      if (slow) return slow;
+    }
 
     return this.trackReceiver(a, sim);
+  }
+
+  /** DB_SLOWPLAY (experimental, off): a man defender who has read run stays on
+   * his receiver (pass first) but slow-plays him: he gives ground at a
+   * fraction of the receiver's tempo and lets an approach close his cushion,
+   * keeping his leverage, instead of retreating at the receiver's speed. A
+   * receiver sprinting off the ball (a real release) or a cushion already
+   * down to SLOW_MIN returns him to ordinary man tracking, so play action
+   * that sells the run still beats him with a vertical. NFL off corners on
+   * runs give ground at about 0.9 yd/s while their receiver comes at about
+   * 3 (0.3 of his tempo); ours matched him at 2.6-3. Wide receivers only
+   * (aligned SLOW_WIDTH yd or more from the ball). */
+  private slowPlay(a: Agent, sim: PlaySim): MoveCommand | null {
+    const R = this.target, cue = sim.see(a, R), speed = Math.hypot(cue.vel.x, cue.vel.y);
+    // Wide receivers only: a man on a slot is an inside run supporter, who triggers.
+    const spot = sim.offAlign.spots[R.slot]?.pos;
+    if (!spot || Math.abs(spot.y - sim.ballY) < SLOW_WIDTH) return null;
+    if (speed > SLOW_SPRINT * R.profile.vmax) return null;
+    if (a.pos.x - cue.pos.x <= SLOW_MIN) return null;
+    const inside = Math.sign(sim.ballY - cue.pos.y) || 1, o = this.opts;
+    const lev = (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
+    a.tags.add('slow-play');
+    return withFacingTechnique(track(a, { x: a.pos.x, y: clamp(cue.pos.y + lev, 0.5, FIELD_WIDTH - 0.5) },
+      { x: SLOW_GIVE * Math.max(0, cue.vel.x), y: cue.vel.y }, { facing: Math.PI, gain: 1.6 }), { label: 'man-slowplay', key: cue.vel });
   }
 
   private blockingSupport(a: Agent, sim: PlaySim, qbCue: Perceived): MoveCommand {
