@@ -180,6 +180,15 @@ const STRETCH_MESH = process.env.STRETCH_MESH !== '0';
  * held 3.3 yd/s across the formation and 6% did. Under centre the B-gap
  * landmark stays (tracked backs cross +1.0 yd play side of the line). */
 export const IZ_GUN_A = process.env.IZ_GUN_A === '1';
+/** MESH_GUN_SIDE (default off): an offset back crossing the gun QB's face takes
+ * the ball still on the QB's backside half, not squarely in front of him.
+ * Tracked 2022 gun runs with the back offset backside: at the handoff he is
+ * 0.70 yd (inside zone) / 0.25 yd (outside zone) backside of the QB and about
+ * half a yard in front of him, still going downhill as fast as across (2.7 and
+ * 2.7 yd/s); ours took it level with the QB, 0.9 yd in front, at 3.2 across
+ * and 2.0 downhill, and kept drifting play side after the handoff. The mesh
+ * point stays at the two bodies' clearance in front of the QB. */
+export const MESH_GUN_SIDE = process.env.MESH_GUN_SIDE === '1';
 
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const ps = playSideSign(sim, concept);
@@ -246,6 +255,11 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     if (back && (back.pos.y - by) * ps < -1) {
       const clear = sim.qb.profile.radius + back.profile.radius + .15;
       rb = { x: qb.x + sim.attackDir('O') * clear, y: by };
+      if (MESH_GUN_SIDE) {
+        const side = concept.scheme === 'outsideZone' || concept.scheme === 'wideZone' ? .25 : .7;
+        const lat = Math.min(side, clear);
+        rb = { x: qb.x + sim.attackDir('O') * Math.sqrt(clear * clear - lat * lat), y: qb.y - ps * lat };
+      }
     }
   }
   // Backs take the handoff on the move, running through the mesh at the
