@@ -1314,9 +1314,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // SHED_PAST: turning his chest to follow the man keeps the hands on, but a
   // block is the body between the defender and where he is going. Once a
   // defender working off has got past the blocker's shoulder toward the
-  // runner he sees, the blocker is no longer in his way; he can only hold
-  // him (tryHold, a foul risk) or let him go.
-  if (SHED_PAST && shedding && read.threat) {
+  // runner he sees, and has the blocker's hands off him, the blocker is no
+  // longer in his way; he can only hold him (tryHold, a foul risk) or let
+  // him go.
+  // Past him is not free of him while his hands are still on: a landed hand
+  // move has cleared them, or there is no load in them. Until then he stays
+  // engaged, and a passing runner meets only his free arm (ENGAGED_REACH).
+  const handsClear = (t < e.moveUntil && e.moveOk) || !(e.hands?.normalForce || e.hands?.tangentForce);
+  if (SHED_PAST && shedding && read.threat && handsClear) {
     const u = norm(sub(read.threat.pos, d.pos)), rb = sub(b.pos, d.pos);
     const sep = b.profile.radius + d.profile.radius;
     const ahead = rb.x * u.x + rb.y * u.y, across = Math.abs(rb.x * u.y - rb.y * u.x);

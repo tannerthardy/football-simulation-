@@ -151,6 +151,36 @@ side is running into him.
     a flag is set in the environment.
 - Promotion needs those reviewed with their owners (Defense, Run Game).
 
+## Correction (2026-11-06, Run Game's operator)
+
+The carrier-read reading above was wrong. Run Game's operator (NFL and sim
+alike) classes each first contact by the hitter: still blocked, just shed, or
+free.
+- With the flags off, both the share of each class and the yards per class
+  were already NFL-like.
+- With both flags on (511624a7), blocked-at-contact hits on OZ went from 3.36
+  to 0.97 yd at an NFL-like share (NFL 3.39).
+- The release fired as the runner went by at arm's length, with the blocker's
+  hands still on, so a man still being blocked made a free two-arm tackle.
+- Giving the back the mirrored read changed nothing (+0.05).
+
+**Change:** being past the blocker frees the defender only when the blocker's
+hands are off, either through a landed hand move or because the hand joint
+carries no load. While they are on, he stays engaged, and a passing runner
+meets only his free arm (ENGAGED_REACH).
+
+Restage k = 5, same arms:
+
+| | Off | On (hands clear) | Paired d |
+|---|---|---|---|
+| Runs | 5.10 | 3.88 | −1.22 ± 0.35 |
+| Passes | 9.59 | 9.51 | −0.08 ± 0.06 |
+
+- Off every blocker within 1 s: DL 21%, LB 23%, DB 62% (NFL 25%, 36%, 48%).
+- The LB rate is now below the 35% with flags off, so this is still not the
+  release law. It is the current state, pending Run Game's blocked/shed/free
+  split.
+
 ## Next
 
 - **Run Game:** the carrier reads the engaged defender's leverage (which side
