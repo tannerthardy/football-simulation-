@@ -111,6 +111,8 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
  * rusher keys the quarterback), and the step speed at which he sees it: see
  * key-read.ts. */
 const stepSeen = KEY_REACT ? KEY_STEP_SEEN : STEP_SEEN;
+/** KEY_PACE (experimental, off): how much faster than the key's own step he answers it (yd/s). */
+const KEY_PACE = process.env.KEY_PACE === '1', KEY_STEP_LEAD = 0.5;
 /** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
  * read lean leads his step before the key's own movement must confirm it (s). */
 const STANCE_TELL = process.env.STANCE_TELL === '1';
@@ -269,7 +271,15 @@ export class PassRusher implements Behavior {
     if (!onEdge && runStep) {
       // The answer to a lateral first step is a flat step of his own at full
       // effort, square to the man, not a match of the speed seen so far.
-      const side = Math.sign(man!.vel.y), step = a.profile.vmax * a.profile.shuffle;
+      // KEY_PACE (experimental, off): he answers the step he sees at its pace
+      // plus a step of his own: a reach running for his shoulder gets a
+      // sprint, an inside-zone drive step a matching step that keeps his gap.
+      // NFL inside-zone DL go about 0.8 as far sideways as their blockers; a
+      // full flat sprint on every key step took ours as far as the blocker or
+      // further. Judge with the offense's reach pace (Run Game's REACH_FLAT):
+      // matched to a slow, upfield reach, the outside-zone DL is slow too.
+      const side = Math.sign(man!.vel.y), full = a.profile.vmax * a.profile.shuffle;
+      const step = KEY_PACE ? Math.min(full, Math.abs(man!.vel.y) + KEY_STEP_LEAD) : full;
       const h = a.mind.decisionInterval;
       const at = { x: man!.pos.x + man!.vel.x * h, y: man!.pos.y + side * step * h };
       a.tags.add('key-step');
