@@ -278,10 +278,13 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // well, LB_W is still alone at 2.9. With the box backer reading before he moves and filling to a pull he sees, LB_W alone at 3.0.
     // With run-read attention (a blocker in front of a run-reading defender and in range is seen on the ordinary
     // delay), DE_S alone at 2.85; with his picture judged from what he saw and held rather than rewound when the
-    // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65.
+    // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65 (develop
+    // c4fc33d5 and #394 309a9799). With the wing at its tracked width (#395: 1.32 yd outside the end, 0.42 wider), the
+    // back meets DT_S, engaged with RG and sliding weak, behind the line: DT_S alone at 1.85 (ledger scan on #395
+    // merged with #394 309a9799, recorded single stream).
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.65);
-    expect(first.defenders.map(p.slot)).toEqual(['DE_S']);
+    expect(first.t).toBe(1.85);
+    expect(first.defenders.map(p.slot)).toEqual(['DT_S']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
