@@ -112,6 +112,18 @@ improvement.
   - `baseline-runner` (3) and `scorecard-provenance` fail only because a
     flag is set in the environment.
 
+## Defense's combined stack (2026-11-07)
+
+Run Game's and Defense's flags, without `ONE_ARM_HOLD`; 1,315 matched runs,
+paired.
+- 20+ yd runs: 3.5% → 2.9%. 40+ yd runs: 1.6% → 1.3%.
+- Run yards capped at 20: −0.51 (SE 0.04). The median falls from 2.5 to 2.2;
+  OZ −0.47, IZ −0.48.
+
+It cuts breakaways modestly but shortens every run, the median included. That
+makes the NFL yards-after-first-contact check below the gate before
+promotion.
+
 ## Open
 
 - Defense owns the commit-distance decision: grabbing at arm's length or
