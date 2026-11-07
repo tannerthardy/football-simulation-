@@ -149,7 +149,7 @@ export function assignBehaviors(sim: PlaySim): void {
     if (rb) rb.behavior = new RunBlocker({ kind: 'climb', target: null, drive: { x: 1, y: 0 } });
   } else {
     qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch);
-    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride);
+    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride, mesh.through ?? 0);
   }
   for (const a of sim.offense) {
     if (a.behavior.kind === 'idle') a.behavior = new DownfieldBlocker();
@@ -168,6 +168,8 @@ interface Mesh {
   pitch: number;
   /** A stretch back takes the ball on the move, riding his track. */
   ride: boolean;
+  /** DRAW_NFL: the speed at which a non-riding back arrives at the mesh (0: stop there). */
+  through?: number;
 }
 
 /** Stretch mesh on the back's track (STRETCH_MESH=0: inside mesh, the stretch back stops). */
@@ -197,6 +199,15 @@ export const MESH_GUN_SIDE = process.env.MESH_GUN_SIDE === '1';
  * 0.25 yd on his backside (ours handed off with the back still 0.6 yd
  * backside of the QB's start, 0.45 yd shallower, 0.1 s earlier). */
 export const MESH_NFL = process.env.MESH_NFL === '1';
+/** DRAW_NFL (default off): the gun draw exchange from 2022 tracking. The QB
+ * gives ground only half a yard (tracked 5.09 yd deep at the handoff, ours
+ * 5.90), the back takes it beside him (1.07 yd off his line, 0.6 yd in front)
+ * already moving upfield at 1.9 yd/s (ours standing at the landmark), at 1.50
+ * s on the sim clock (ours 1.30; under center tracked 1.60); the installed
+ * exchange time is kept, since the back now leaves later on his own. Ours took it
+ * deep and still, crossed the line 0.3 s late and met the first defender at
+ * +0.2 yd (tracked +1.25). */
+export const DRAW_NFL = process.env.DRAW_NFL === '1';
 
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const ps = playSideSign(sim, concept);
@@ -235,6 +246,11 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     rb = { x: los - 5.5, y: by + ps * 4.0 };
     pitch = 5;
     time = 0.45;
+  } else if (concept.scheme === 'draw' && DRAW_NFL) {
+    const dir = sim.attackDir('O'), back = sim.slot('RB');
+    const side = back ? Math.sign(back.pos.y - by) || ps : ps;
+    qb = { x: qbType === 'under' ? los - 4.8 * dir : los - (GUN_QB_DEPTH + .55) * dir, y: by };
+    rb = { x: qb.x + 0.6 * dir, y: by + side * 1.07 };
   } else if (concept.scheme === 'draw') {
     qb = { x: qbType === 'under' ? los - 5.5 : los - 6, y: by };
     rb = { x: qb.x + 0.6, y: by + ps * 0.8 };
@@ -282,7 +298,8 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   // shown pass set and takes it standing; STRETCH_MESH=0 restores the stretch
   // back's old stop-at-the-landmark mesh.
   const stretch = concept.scheme === 'outsideZone' || concept.scheme === 'wideZone';
-  return { qb, rb, aim, time, pitch, ride: concept.scheme !== 'draw' && (stretch ? STRETCH_MESH : true) };
+  return { qb, rb, aim, time, pitch, ride: concept.scheme !== 'draw' && (stretch ? STRETCH_MESH : true),
+    through: DRAW_NFL && concept.scheme === 'draw' ? 1.9 : 0 };
 }
 
 /**
@@ -328,6 +345,7 @@ export class RunnerToMesh implements Behavior {
     readonly meshTime: number,
     readonly aim: Vec2,
     readonly ride = false,
+    readonly arriveAt = 0,
   ) {}
   private passed = false;
   private departed = false;
@@ -390,7 +408,7 @@ export class RunnerToMesh implements Behavior {
       }
       return goTo(a, pocket, ready ? { speed: Math.max(speed, MT()), through: a.profile.vmax * MT() } : { speed, through: 0 });
     }
-    return goTo(a, this.mesh, { speed, through: 0 });
+    return goTo(a, this.mesh, { speed, through: this.arriveAt });
   }
 
   private tempo = 1;
