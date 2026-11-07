@@ -40,3 +40,65 @@ describe('DRAW_READ: a committed pass read yields to a line that turns to run bl
     expect(on.beforeGive).toBeGreaterThan(on.linebackers / 3);
   }, 120_000);
 });
+
+// The two directions of a commitment change stay coherent once what he saw has
+// defeated the situation's prior: the prior alone does not bring the pass back
+// (which reversed real commands run -> pass -> run on 3rd and 12), while a pass
+// set or the throw he sees still does.
+async function reads(concept: string, opts: { coverages?: string[]; seeds?: number; down?: number; toGo?: number } = {}) {
+  vi.resetModules();
+  vi.stubEnv('DRAW_READ', '1');
+  const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+  const { PlaySim } = await import('../src/sim/playsim.js');
+  const out: { slot: string; seq: string[]; sawPass: boolean; afterPass: string | null; window: string[] }[] = [];
+  for (const coverage of opts.coverages ?? ['cover3', 'cover2', 'cover1']) for (let seed = 1; seed <= (opts.seeds ?? 6); seed++) for (const flip of [false, true]) {
+    const setup: any = nativeTraceSetup({ coverage, concept, seed, roster: 7, formation: 'gun_doubles_11', flip });
+    setup.down = opts.down ?? 3; setup.firstDownX = setup.los + (opts.toGo ?? 12);
+    const sim = new PlaySim(setup);
+    const lbs = sim.defense.filter(d => d.slot.startsWith('LB'));
+    const rec = new Map(lbs.map(l => [l, { slot: l.slot, seq: [] as string[], sawPass: false, afterPass: null as string | null, window: [] as string[] }]));
+    const step = sim.tick.bind(sim);
+    (sim as any).tick = () => {
+      const at = sim.t; step();
+      for (const l of lbs) {
+        const r = l.recog!.read, o = rec.get(l)!;
+        if (o.seq[o.seq.length - 1] !== r) o.seq.push(r);
+        if ((l.recog as any).sawPass) { o.sawPass = true; o.afterPass = r; }
+        if (at >= 1.2 - 1e-9 && at <= 1.8 + 1e-9) o.window.push(r);
+      }
+    };
+    sim.run();
+    out.push(...rec.values());
+  }
+  return out;
+}
+const reversals = (seq: string[]) => seq.join('>').split('run>pass>run').length - 1;
+
+describe('DRAW_READ: coherent change of mind once the picture defeats the prior', () => {
+  it('3rd and 12 draw (cover3, seed 1, both mirrors): LB_W changes to run once and stays', async () => {
+    for (const r of (await reads('draw', { coverages: ['cover3'], seeds: 1 })).filter(r => r.slot === 'LB_W')) {
+      const changes = r.window.filter((x, i) => i > 0 && x !== r.window[i - 1]).length;
+      expect(changes).toBeLessThanOrEqual(1);
+      expect(r.window[r.window.length - 1]).toBe('run');
+    }
+  }, 120_000);
+
+  it('native draws on 3rd and 12: no backer reverses run -> pass -> run, and the draw is still read', async () => {
+    const all = await reads('draw');
+    expect(all.reduce((n, r) => n + reversals(r.seq), 0)).toBe(0);
+    expect(all.filter(r => r.seq.join('>').includes('pass>run')).length).toBeGreaterThan(all.length / 2);
+  }, 240_000);
+
+  it('opposing control, strong pass prior on a real dropback: no backer commits run', async () => {
+    for (const concept of ['dagger', 'four_verts']) {
+      const all = await reads(concept);
+      expect(all.filter(r => r.seq.includes('run')).length).toBe(0);
+    }
+  }, 240_000);
+
+  it('play action: a backer who bit on the fake and then sees the throw reads pass again', async () => {
+    const bit = (await reads('pa_post_dig')).filter(r => r.seq.includes('run') && r.sawPass);
+    expect(bit.length).toBeGreaterThan(0);
+    for (const r of bit) expect(r.afterPass).toBe('pass');
+  }, 240_000);
+});

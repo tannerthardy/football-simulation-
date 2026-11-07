@@ -190,6 +190,9 @@ export class Recognition {
   private sawPass = false;
   /** He has seen the ball given to a runner; held unless a throw follows. */
   private sawGive = false;
+  /** DRAW_READ: his run read came from what he saw against the situation's
+   * expectation; changing back to pass then needs the same picture to show it. */
+  private priorDefeated = false;
   private evidence = 0;
   private readonly prior: number;
   private readonly gain: number;
@@ -249,6 +252,8 @@ export class Recognition {
     // unless the situation is overwhelming.
     const cue = this.evidence + ball;
     const urgency = a.mind.urgency - 0.5;
+    // DRAW_READ: his picture alone, without the situation's prior.
+    const seen = sigmoid(this.gain * (0.8 + 0.2 * a.mind.focus) * this.evidence + this.bias + ball);
     const commit = (r: Read) => {
       this.commit(r, t);
       sim.event('read', a, null, `${r}; pPass=${p.toFixed(2)} focus=${a.mind.focus.toFixed(2)} urgency=${a.mind.urgency.toFixed(2)}`);
@@ -256,12 +261,16 @@ export class Recognition {
     if (this.read === 'unsure') {
       if (p < 0.3 + 0.10 * urgency && (cue < -0.1 || p < 0.1)) commit('run');
       else if (p > 0.72 - 0.08 * urgency && (cue > 0.1 || p > 0.92)) commit('pass');
-    } else if (this.read === 'run' && p > 0.8 + 0.06 * urgency) {
+    } else if (this.read === 'run' && (this.priorDefeated ? seen : p) > 0.8 + 0.06 * urgency) {
+      // Once what he saw has defeated the expectation, the expectation does
+      // not bring the pass back on its own: the same picture, without the
+      // prior, must show pass again (a pass set, or the throw he sees).
       commit('pass');
       this.changedMind = true;
-    } else if (this.read === 'pass' && (p < 0.16 || (DRAW_READ && cue < -0.1
-      && sigmoid(this.gain * (0.8 + 0.2 * a.mind.focus) * this.evidence + this.bias) < 0.3 + 0.10 * urgency))) {
+      this.priorDefeated = false;
+    } else if (this.read === 'pass' && (p < 0.16 || (DRAW_READ && cue < -0.1 && seen < 0.3 + 0.10 * urgency))) {
       // DRAW_READ (above): what he now sees decides, not the expectation.
+      if (p >= 0.16) this.priorDefeated = true;
       commit('run');
       this.changedMind = true;
     }
