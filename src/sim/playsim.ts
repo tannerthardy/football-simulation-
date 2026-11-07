@@ -1112,8 +1112,17 @@ export class PlaySim {
     if (engagedBefore) for (let i = 0; i < this.agents.length; i++) {
       const a = this.agents[i];
       if (!engagedBefore[i] || a.engagement || t < a.snapReadyAt) continue;
+      // Technique requests this decision makes (a dive, a lunge) belong to
+      // this step's intent, as an ordinary decision's do, and must not wait in
+      // the maps for the next step. Requests already there came from the
+      // engagement update and keep their ordinary timing.
+      const priorDive = this.dives.get(a), priorLunge = this.lunges.get(a);
       this.decide(i, t);
-      this.intents[i] = { ...this.cmds[i] };
+      const dive = this.dives.get(a), lunge = this.lunges.get(a);
+      const newDive = dive !== priorDive ? dive : undefined, newLunge = lunge !== priorLunge ? lunge : undefined;
+      if (newDive) { if (priorDive) this.dives.set(a, priorDive); else this.dives.delete(a); }
+      if (newLunge) { if (priorLunge) this.lunges.set(a, priorLunge); else this.lunges.delete(a); }
+      this.intents[i] = newDive || newLunge ? { ...this.cmds[i], dive: newDive, lunge: newLunge } : { ...this.cmds[i] };
     }
     commandTrace?.stage('engagement', this.intents);
     ledger?.stageAll('engagement', this.intents);
