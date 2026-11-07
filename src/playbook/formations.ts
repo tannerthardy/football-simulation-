@@ -6,6 +6,13 @@ import type { Formation } from './types.js';
 
 const ON = 0.6;
 const OFF = 1.2;
+// A wing is 0.7 yd deeper than the attached end beside him: median depths
+// behind the ball at the snap, end 1.02 and wing 1.73, for the 1,001 off-line
+// players 0.3-4.0 yd outside a single attached TE (2022 tracking, weeks 1-6;
+// nfl_wing.py's wide cohort, which also holds flexed players at 3-4 yd; the
+// lateral width uses the narrower cohort, see wingOf). The inline end is 1.19
+// here, so the wing is 1.9.
+const WING = 1.9;
 // Representative offset-gun run alignment: 2.3 yd beside the 5 yd-deep QB
 // and 0.5 yd behind him. Empty and pistol use their own placements.
 const GUN_RB_SPLIT = 2.3;
@@ -132,7 +139,7 @@ export const FORMATIONS: Formation[] = [
     slots: {
       X: { side: 'L', split: 'wide', depth: ON },
       Y: { side: 'R', split: 'inline', depth: ON },
-      H: { side: 'R', split: 'wing', depth: 1.4 },
+      H: { side: 'R', split: 'wing', depth: WING },
       Z: { side: 'R', split: 'wide', depth: OFF },
       RB: { side: 'L', split: GUN_RB_SPLIT, depth: GUN_RB_DEPTH },
     },
@@ -195,7 +202,7 @@ export const FORMATIONS: Formation[] = [
       X: { side: 'L', split: 9, depth: OFF },
       H: { side: 'L', split: 'inline', depth: ON },
       Y: { side: 'R', split: 'inline', depth: ON },
-      F: { side: 'R', split: 'wing', depth: 1.4 },
+      F: { side: 'R', split: 'wing', depth: WING },
       RB: { side: 'C', split: 0, depth: 6.8 },
     },
   },
