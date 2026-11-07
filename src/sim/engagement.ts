@@ -708,6 +708,9 @@ const RUN_FEEL = process.env.RUN_FEEL !== '0';
 const PASS_KICK = process.env.PASS_KICK !== '0';
 /** How far deeper than the rusher the kick in the rep aims (yd). */
 const RIDE_LEAD = 0.3;
+/** Experimental (PASS_HOLD_DEPTH=1, off): a pass blocker at his set depth
+ * gives no more ground; he mirrors across only (see stepPassRep). */
+const PASS_HOLD_DEPTH = process.env.PASS_HOLD_DEPTH === '1';
 /** Experimental (DL_FIGHT=1, off): a defender driven sideways fights pressure. */
 const DL_FIGHT = process.env.DL_FIGHT === '1';
 /** An edge widens with a reach only as far as containing the runner needs
@@ -904,8 +907,27 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // the gait's cost of a lower pad level.
   const feltLoad = b.body.support?.felt;
   const heavy = !!feltLoad && Math.hypot(feltLoad.x, feltLoad.y) > 0.3 * b.profile.massKg * G;
+  let vx = lat.x * vLat - kick;
+  // PASS_HOLD_DEPTH: at his set depth he stops giving ground. The mirror step
+  // runs along the rusher's arc, and once the rusher runs deeper that step has
+  // a depth part, so the pair chased each other past the QB. He keeps
+  // mirroring across and asks for no more depth than he can stop by his set
+  // depth; whether he holds is the push and his anchor.
+  // He plans to stop there: he gives ground no faster than he can still brake
+  // from before reaching it. His braking is his own (profile), less the push
+  // he feels driving him back (his felt load).
+  if (PASS_HOLD_DEPTH) {
+    const back = -vx;
+    if (back > 0) {
+      const felt = b.body.support?.felt;
+      const pushedBack = felt ? Math.max(0, -felt.x) / b.profile.massKg : 0;
+      const brake = Math.max(0.5, b.profile.brake - pushedBack);
+      const room = Math.max(0, setDepth - depth);
+      vx = -Math.min(back, Math.sqrt(2 * brake * room));
+    }
+  }
   intents[b.idx] = {
-    vel: { x: lat.x * vLat - kick, y: lat.y * vLat },
+    vel: { x: vx, y: lat.y * vLat },
     facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
     push: 1,
     posture: PASS_SINK && heavy ? 0.95 : 0.6,
