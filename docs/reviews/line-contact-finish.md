@@ -1,8 +1,9 @@
 # Tackle finish after line-level contact
 
-Main Engine, 2026-11-06. Measured on #412's head (`22cfc71b`, develop
-`9a19ced9` + `ONE_ARM_HOLD`), matched-restage captures for seeds 7–8, restage
-environment `54199f26`. No engine change is proposed here.
+Main Engine, 2026-11-06; operator corrected 2026-11-07. Measured on #412's
+head (`22cfc71b`, develop `9a19ced9` + `ONE_ARM_HOLD`) and on develop
+`9a19ced9`. Matched-restage captures for seeds 7–8, restage environment
+`54199f26`. No engine change is proposed here.
 
 ## Question
 
@@ -10,7 +11,92 @@ At line-level contact, sim carriers stop faster than NFL carriers, and the
 play ends sooner. Is that the tackle bond (the front tackler's drive-through,
 the plant brake), the contact physics, or how the back arrives?
 
-## Same operator on both
+## Same operator on both (corrected 2026-11-07)
+
+The first version of this review did not use the same operator on both
+sides. The sim side (`_finish.mts`) read instantaneous body velocity and the
+first near defender in array order. The NFL side used central differences of
+positions over ±0.1 s and the nearest defender. Those rows are kept below as
+legacy output.
+
+Now one Python operator, `scripts/mechanics/finish_reference.py`, reads both
+sources:
+- NFL 2022 tracking, through `run_film_reference.py`;
+- sim dumps from `scripts/diag/_finishdump.mts`, at the same 0.1 s frames.
+
+In both:
+- first contact is the first frame a defender's centre is within 1.0 yd of
+  the carrier, with the carrier within 2 yd of the LOS;
+- speeds are central differences over ±0.1 s;
+- the toucher is the nearest defender.
+
+| | NFL (4328) | Sim, #412 `22cfc71b` (77) | Sim, develop `9a19ced9` (78) |
+|---|---|---|---|
+| Carrier speed at contact | 4.31 | 4.73 | 4.38 |
+| +0.1 / +0.3 / +0.5 s | 4.06 / 3.55 / 3.07 | 3.85 / 3.04 / 2.42 | 3.60 / 2.58 / 2.17 |
+| Squareness of the contact, p50 | 0.38 | 0.60 | 0.59 |
+| Square (cos > 0.8) | 22% | 27% | 26% |
+
+By squareness, #412 stack:
+
+| | NFL: contact → +0.3 s | NFL loss | Sim: contact → +0.3 s | Sim loss | Sim n |
+|---|---|---|---|---|---|
+| Glancing (cos < 0.3) | 4.71 → 4.07 | 0.61 | 4.23 → 3.50 | 0.20 | 26 |
+| Angled (0.3–0.8) | 4.20 → 3.43 | 0.72 | 4.77 → 3.57 | 1.18 | 30 |
+| Square (> 0.8) | 3.71 → 2.90 | 0.81 | 4.41 → 1.94 | 2.16 | 21 |
+
+- **Square contacts cost sim backs much more speed** than NFL backs:
+  2.16 vs 0.81 yd/s by +0.3 s.
+- **NFL backs arrive slower the squarer the contact.** Sim backs don't show
+  that pattern. With the corrected operator, they do not speed up into square
+  contacts (4.41 vs 4.23 glancing). The old "5.37 at square contacts" row is
+  withdrawn.
+- **Samples are small:** 20–31 sim contacts per bin, seeds 7–8 only.
+- **Time to the end isn't comparable:** NFL tracking runs past the whistle.
+
+## Force split (corrected window)
+
+The first version added the contact tick's own impulses on top of a velocity
+taken after that tick. That made five impulse steps against four velocity
+steps. Now the velocity v0 is taken after the contact tick, and only the four
+following steps (+0.05…+0.20 s) are added, against v(+0.20) − v0.
+
+Means along his travel, yd/s, `_finish.mts`:
+
+| | Change | His legs | Grasp joints | Rest (all other contact) | n |
+|---|---|---|---|---|---|
+| #412 stack | −1.36 | +0.42 | −0.44 | −1.34 | 78 |
+| Develop | −1.58 | +0.43 | −0.66 | −1.35 | 79 |
+
+"Rest" is everything not attributed to ground or grasp joints. That includes:
+- torso contacts with the toucher;
+- other bodies, such as a blocker still engaged with the toucher;
+- blockers' hand joints.
+
+So it cannot isolate body impact from the toucher. It shows only that more
+of the braking comes from non-grasp contact than from wraps.
+
+The drive-through counterfactual stands as measured. With the in-front
+tackler's −2.5 yd/s request set to 0, the in-front branch's speed at +0.3 s
+was 2.98 vs 3.09 (old operator). It is a within-sim comparison.
+
+## Reading (limits)
+
+- Square contacts cost the sim back more speed than in the NFL. Sim backs do
+  not slow for square contacts the way NFL backs do. Both are measured with
+  one operator.
+- **Candidates, not shown as causes:** how the back arrives (Run Game), and
+  how much a square body contact transfers.
+  - The force split cannot tell those apart.
+  - The plastic-collision comparison used the toucher alone and is not a
+    bound on everything in contact.
+- No physics change follows from this review.
+- The sim rows depend on pending #412 (`22cfc71b`) for the main table. The
+  develop column is the accepted base.
+
+## Legacy (first version, 2026-11-06)
+
+### Legacy rows (superseded operator, kept as output)
 
 - First contact is the first frame a defender's centre is within 1.0 yd of
   the carrier, with the carrier within 2 yd of the LOS (`gang.py`'s event).
@@ -43,7 +129,7 @@ the plant brake), the contact physics, or how the back arrives?
 - Sim backs do the opposite (4.12, 5.18, 5.37). They hit square contacts at
   full speed.
 
-## What stops him
+### Legacy force split
 
 - **Body impact, not the wrap.** Over the first 0.2 s, along his travel
   (means, yd/s):
@@ -69,7 +155,7 @@ contacts) agrees:
 - several of the most abrupt cases start slow with a large lateral request,
   which is Run Game's carrier control.
 
-## Conclusion
+### Legacy conclusion (withdrawn)
 
 The fast finish is mostly the back's decision, which belongs to the carrier
 controller (Run Game).
@@ -109,6 +195,7 @@ name. Node 22.23.3.
 
 
 ```sh
-env $(cat restage-env.txt) node --import tsx scripts/diag/_finish.mts <cap> 7 8
-python3 -I scripts/mechanics/finish_reference.py scripts/mechanics/run_film_reference.py out/mechanics/nfl-plays.jsonl.gz
+env $(cat restage-env.txt) node --import tsx scripts/diag/_finishdump.mts <cap> 7 8 > finish-sim.jsonl
+python3 -I scripts/mechanics/finish_reference.py scripts/mechanics/run_film_reference.py out/mechanics/nfl-plays.jsonl.gz finish-sim.jsonl
+env $(cat restage-env.txt) node --import tsx scripts/diag/_finish.mts <cap> 7 8   # force split
 ```
