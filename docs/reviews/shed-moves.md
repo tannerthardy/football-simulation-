@@ -96,6 +96,25 @@ The open design question is how the move lands without a rolled award.
 
 ## Reproduce
 
+`restage-env.txt` is built from committed files, not taken from a private
+path. Its contents are the `flags` of `config/baseline.json` at develop
+`9a19ced9`, in file order, nulls dropped (`CF_FLOW`), joined as `K=V` with
+spaces and a trailing newline. That gives sha256
+`54199f265835db49668516501399b59dd4c29ce3b4d43ac28e2bde09d7ae9d6c`:
+
+```sh
+git show 9a19ced9:config/baseline.json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const f=JSON.parse(s).flags;process.stdout.write(Object.entries(f).filter(([k,v])=>v!==null).map(([k,v])=>k+"="+v).join(" ")+"\n")})' > restage-env.txt
+```
+
+The seed 7–8 captures (`seed7.json` sha256
+`b5cf5276ba1f3efe616994e3fc3af02da78899308f4b6616a4acddbf3525a7ba`,
+`seed8.json` `87ebf3d8ddd1d93b8a32f3dadf24bbf52121a8269ec5b9ae17dd84234b76c27f`)
+regenerate byte for byte. Use develop `15d7e8a0` with no flags, run
+`node --import tsx scripts/diag/matched-restage.ts capture 7` (and `8`), and
+copy or link `seedN.json` as `seedN-run.json` for the tools that read that
+name. Node 22.23.3.
+
+
 ```sh
 # from a develop 9a19ced9 checkout, captures in <cap> as seed7-run.json, seed8-run.json
 env $(cat restage-env.txt) node --import tsx scripts/diag/_shedhold.mts <cap> 7 8

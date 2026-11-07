@@ -44,51 +44,67 @@ displace a DL who presses into it, or whether the gap is in the requests.
 
 Yards in 1.0 s. The first 0.09 is closing the 0.1 yd start gap.
 
-## What the law says
+## What these scenes show
 
-- **A matched pair both driving is a stalemate.** Asking for more speed
-  changes nothing, because with `push: 1` both are at their leg limit.
-- **The things that should win, win, at 0.2–0.4 yd/s:** lower pads,
-  strength, a defender who sits rather than presses, and a square double
-  team. At 0.38 yd/s, a sustained double team moves a matched DL past 0.5
-  yd in about 1.3 s. That is the NFL's "driven back" event.
-- **A matched pair never produces a push-back.** That holds even with the
-  blocker on the shoulder and driving: pushing along the contact normal from
-  the shoulder spends part of the push sideways. A defender driven back needs
-  a mismatch (pads, strength, a sitting defender) or a double team.
+These are 14 constructed scenes. Each has fixed requests, hands frozen at
+control 0, and lasts 1.0 s. They test whether the push law behaves
+consistently in those scenes. They do not isolate the cause of the NFL–sim
+gap, and they do not rule out differences in contact, capacity or model.
+
+- **In these scenes, a matched pair both driving is a stalemate.** Asking for
+  more speed changes nothing, because with `push: 1` both are at their leg
+  limit.
+- **What should win, wins.** Lower pads, strength, a defender who sits rather
+  than presses, and a square double team each move the pair 0.2–0.4 yd in the
+  1.0 s scene.
+  - Any rate beyond 1.0 s is an extrapolation and is not measured. That
+    includes whether a double team keeps its push long enough to make the
+    NFL's "driven back 0.5 yd" event.
+- **In these scenes, a matched pair is never pushed back.** That holds with
+  the blocker on the shoulder and driving too: pushing along the contact
+  normal from the shoulder spends part of the push sideways. In these scenes,
+  pushing a defender back took a mismatch (pads, strength, a sitting
+  defender) or a double team.
   - Run Game tried a shoulder-holding reach blocker driving at pace in game.
-    OZ went −0.92 yd and DL depth was unchanged, which matches this.
+    OZ went −0.92 yd and DL depth was unchanged, which is consistent with this.
   - Whether our OL/DL strength, pad and mass spread per snap is as wide as
     the NFL's has not been checked.
-- **Lateral demand costs vertical.** Legs that push sideways do not also
-  push forward, so a reach blocker asking 3–4 yd/s across loses 0.2–0.3
-  yd/s of vertical to a pressing DL.
-  - It also takes most of a double team's drive: +0.38 falls to +0.10.
+- **Lateral demand costs vertical.** Legs that push sideways do not also push
+  forward. A blocker asking 3–4 yd/s across loses 0.2–0.3 yd of vertical to a
+  pressing DL in the 1.0 s scene.
+  - It also takes most of a double team's drive: +0.38 falls to +0.10 yd.
 
 Run Game measured engaged OZ solo pairs with the OL asking 3.0–4.2 yd/s
 across and both asking about 1 yd/s into each other. In those, the DL keeps
-gaining 0.3–0.6 yd/s. That is what this law predicts for those requests.
+gaining 0.3–0.6 yd/s, which is consistent with these scenes.
 
-## Conclusion
+## Reading (limits)
 
-The push law is coherent: what should win does, and the costs are
-physical. The gap with the NFL is in the requests.
-- **OL (Run Game).** The NFL OZ DL depth plateaus after 1.5 s; ours keeps
-  growing.
+In these scenes, the push law behaves consistently: what should win does, and
+the costs follow from the leg budget. That makes **request selection a
+supported candidate for investigation**. It is not shown to be the only cause
+of the NFL gap.
+
+- **OL request (Run Game).** The NFL OZ DL depth plateaus after 1.5 s; ours
+  keeps growing.
   - One candidate: the reach blocker still asks about 3 yd/s sideways once
     level with his man (Run Game's measurement).
-  - A blocker who has reached the shoulder and keeps running sideways
-    spends the legs he needs to stop the press. The NFL plateau is what
-    turning back upfield would look like. That is his controller's
-    decision.
-- **DL (Defense).** A DL who keeps pressing into a set double team is
-  displaced at about 0.38 yd/s. One who sits down is displaced at a similar
-  rate in a solo rep.
-  - So the IZ shortfall is more likely how often a square double team
-    happens than the law itself.
+  - In these scenes, lateral demand costs vertical.
+- **DL and double teams (Defense).** A square double team displaced a
+  pressing matched DL by 0.38 yd in 1.0 s.
+  - How often a square double team happens in games may matter more than the
+    law. That is a hypothesis, not tested here.
+- **Not excluded:** contact geometry beyond these fixed scenes, live hand
+  fighting, capacity spread, and model differences.
 
 ## Reproduce
 
+The bench reads no captures. Its settings are the `flags` of
+`config/baseline.json` at develop `9a19ced9`, nulls dropped. Their sha256 is
+`54199f265835db49668516501399b59dd4c29ce3b4d43ac28e2bde09d7ae9d6c`, the same
+as the settings file used in the other reviews.
+
 ```sh
+git show 9a19ced9:config/baseline.json | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const f=JSON.parse(s).flags;process.stdout.write(Object.entries(f).filter(([k,v])=>v!==null).map(([k,v])=>k+"="+v).join(" ")+"\n")})' > restage-env.txt
 env $(cat restage-env.txt) node --import tsx scripts/diag/_pushbench.mts
 ```
