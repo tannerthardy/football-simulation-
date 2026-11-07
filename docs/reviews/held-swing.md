@@ -124,6 +124,12 @@ It cuts breakaways modestly but shortens every run, the median included. That
 makes the NFL yards-after-first-contact check below the gate before
 promotion.
 
+**Break origins, same stack** (`_bigrun.mts` fd60fdaf, HELD_SWING 0 → 1):
+- DB breaks 82 → 76; plays with a DB break 25 → 22.
+- **Lunge breaks** (leg holds) fall 39 → 31, about a fifth.
+- **Reach breaks** stay at 33 → 33. These are arm's-length grabs at 1.1–1.5 yd, mostly on the upper body (legs ≤ 0.3), which this law does not touch. They are now the largest bucket.
+- How well an extended upper-body grip holds a 6–7 yd/s back is a separate open question.
+
 ## Open
 
 - Defense owns the commit-distance decision: grabbing at arm's length or
