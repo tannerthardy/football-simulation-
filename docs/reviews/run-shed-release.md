@@ -181,6 +181,34 @@ Restage k = 5, same arms:
   release law. It is the current state, pending Run Game's blocked/shed/free
   split.
 
+## Test classification (Defense, 2026-11-07, core suite on 299c6e38)
+
+Failing tests: `RUN_HAND_MOVE` alone 7, `SHED_PAST` alone 20, both 24. The
+rest of the earlier 42 were integration tests or failed only because a flag
+was set in the environment.
+
+1. **Replay pins (7). Re-pin on promotion; they are not football contracts.**
+   - `responsibility-ledger` M10-P081, M7-P051, R7-P083, R9-P020, S8-P005
+     (×2).
+   - `line-read` "play-side edge replaces the vacated spot on counter".
+   - The hand move changes these exact trajectories.
+2. **Support controller contracts (about 16). The football holds; the
+   fixtures encode the old release.**
+   - `support-work-off` (9), `support-receiver-holder` (4),
+     `support-escape-objective` (3), `support-contact-frame` (1).
+   - The `contactFixture` hand joint carries no load, and it puts the
+     defender 0.8 yd past his blocker. Under `SHED_PAST` he is free on the
+     first work-off tick, which is correct.
+   - Fix the fixtures (load the hand joint, or put the blocker in the path),
+     not the assertions.
+   - The deliberate "no tactile load" escape cases need Tanner's sign-off:
+     either keep the blocker in the path, or state the contract as "an
+     unloaded, out-of-path block releases".
+3. **`shed-pursue` (1, Defense's).** Only the "on" case's
+   `engagement` assertion assumes the old release. The decision contract
+   holds. Defense's patch: accept `engagement` or a `shed` event on the
+   attempt tick.
+
 ## Next
 
 - **Run Game:** the carrier reads the engaged defender's leverage (which side
