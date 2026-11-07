@@ -16,7 +16,7 @@ for (const seed of seeds) (JSON.parse(readFileSync(`out/matched-restage/seed${se
     sim.tick = () => { t0(); if (end !== null || hit !== null) return;
       if (sim.throwAt >= 0 || sim.carrier !== sim.qb || sim.phase !== 'live' || sim.t >= 6) { end = sim.t; return; }
       if (sim.defense.some((d: any) => Math.hypot(d.pos.x - sim.qb.pos.x, d.pos.y - sim.qb.pos.y) <= 2)) hit = sim.t; };
-    const r = sim.run(); n++; if (r.outcome === 'sack') sacks++;
+    const r = sim.run(); n++; if (sim.stats?.sacked) sacks++;
     obs.push(hit !== null ? [hit, true] : [end ?? sim.t, false]);
   }
 });
