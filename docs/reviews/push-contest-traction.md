@@ -62,6 +62,24 @@ Reading:
    - Most of the game's loss is the momentum lost at the contact instant.
    - The steady push contest accounts for less.
 
+## Defense's follow-up: pads at contact are not the general lever
+
+Defense built `SINK_LEAD` (experimental, off), b49aebe3 on
+`defense/G2-stance-tell`.
+- **Rule:** an unengaged front lineman starts sinking when gap ÷ closing speed
+  falls below his slew time to engaged pad level, or when any blocker is within
+  1 yd.
+- **s9-39:** posture at contact goes 0.42 → 0.79, and depth at 1.65 s goes
+  0.93 → 0.74 yd. The one-tick knock-back at contact is unchanged.
+- **Defense's matched restage, 878 runs:** posture at contact goes 0.30 → 0.63.
+  - Engaged DL depth at 1.5 s is unchanged (median −0.38 both ways).
+  - Driven back more than 0.5 yd: 41% → 40%.
+  - Paired yards −0.34 (SE 0.31).
+- **Their conclusion:** posture reaches its target within about 0.15 s anyway,
+  so the general drive-back is the post-contact push contest. That is item 3
+  (matched pairs stalemate while lopsided pairs drive back), and candidate (b)
+  below is still the open lead there.
+
 ## Candidate (a), static friction for yielding feet: dropped
 
 The proposal was that a planted, yielding man gets a static coefficient μs
