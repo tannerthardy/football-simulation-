@@ -1321,8 +1321,9 @@ export const ZONE_ARMS = process.env.ZONE_ARMS === '1';
  * stretch linemen are 0.1-0.2 yd upfield at 0.6 s (sim 0.36-0.48) and the
  * man comes to them; he keeps the track until his hands reach the man. */
 export const REACH_FLAT = process.env.REACH_FLAT === '1';
-/** IZ_FLAT (off): the REACH_FLAT rule on inside/split zone too: a lineman
- * still short of his man's play-side shoulder gains width before depth. */
+/** IZ_FLAT (off): the REACH_FLAT rule on inside/split zone against a man
+ * aligned more than 1 yd outside the blocker (a wide edge): he gains width
+ * before depth. Covered interior linemen still press. */
 export const IZ_FLAT = process.env.IZ_FLAT === '1';
 
 /** CLIMB_PATH (default off): a free climber steers one continuous path to
@@ -2013,7 +2014,9 @@ export class RunBlocker implements Behavior {
     // flat; each yard closed toward depth is width the man keeps.
     // Stretch footwork is two lateral steps (bucket, crossover) before he
     // presses depth; the man's own charge closes the gap meanwhile.
-    if ((press === 1 ? REACH_FLAT : IZ_FLAT) && !scooping && forward * dir > 0)
+    // IZ_FLAT: on a press scheme only a man aligned well outside him (a wide
+    // edge) is worth gaining width on; a covered lineman still presses.
+    if ((press === 1 ? REACH_FLAT : IZ_FLAT && (seen.pos.y - a.pos.y) * ps > 1.0) && !scooping && forward * dir > 0)
       forward *= Math.min(clamp(1 - (shoulder - a.pos.y) * ps / .6, 0, 1),
         clamp((sim.t - a.mind.snapDelay - .24) / .36, 0, 1));
     // Open the hips toward the track (a bucket step) while the eyes stay on
