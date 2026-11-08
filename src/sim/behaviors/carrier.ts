@@ -130,6 +130,10 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
  * the line from 2 yd off it, or once at its width, instead of 4-4.5 yd. */
 export const STRETCH_TRACK = process.env.STRETCH_TRACK === '1';
 
+/** CARRIER_BRACE (off): the carrier lowers his pads for a tackler he sees closing
+ * head-on, and drives his body through the contact in the last stride. */
+export const CARRIER_BRACE = process.env.CARRIER_BRACE === '1';
+
 /** Read entries and routes from acquired bodies on both teams. A nominal
  * block is neither an empty lane nor guaranteed future protection. */
 interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D'; vel?: Vec2 }
@@ -520,6 +524,24 @@ export class BallCarrier implements Behavior {
       }
     }
     if (runReadObservers.has(sim)) observeRunRead(sim, a, 'command', { heading: h, speed, vel, cutSkill, squeeze });
+    // CARRIER_BRACE: a man he sees closing on him head-on (within 45 deg of
+    // his path) gets lowered pads in time (the same slew law a lineman sinks
+    // by), and in the last stride the body is driven ahead of the feet. A
+    // lunge that meets nothing leaves him overextended (World's own cost).
+    if (CARRIER_BRACE && !sim.bond) {
+      const ux = Math.cos(h), uy = Math.sin(h), posture = a.body.support?.posture ?? 0.3;
+      let brace = false, strike = false;
+      for (const d of sim.opponents(a)) {
+        if (d.isDown(sim.t)) continue;
+        const sd = sim.see(a, d), rx = sd.pos.x - a.pos.x, ry = sd.pos.y - a.pos.y, dist = Math.hypot(rx, ry);
+        if (dist > 3 || dist < 1e-6 || (rx * ux + ry * uy) / dist < Math.SQRT1_2) continue;
+        const closing = ((a.vel.x - sd.vel.x) * rx + (a.vel.y - sd.vel.y) * ry) / dist;
+        const gap = dist - a.profile.radius - d.profile.radius;
+        if (closing > 0.5 && gap / closing < Math.max(0, 0.75 - posture) / 2.5 + 0.1) brace = true;
+        if (gap < 0.35) strike = true;
+      }
+      if (brace || strike) return { vel, cutSkill, squeeze, posture: 0.75, ...(strike ? { lunge: { x: ux * 0.8, y: uy * 0.8 } } : {}) } as MoveCommand;
+    }
     return { vel, cutSkill, squeeze };
   }
 
