@@ -187,3 +187,68 @@ force scales closer to mass^(2/3), or with fat-free mass, than linearly with
 total mass. Among near-equals, leverage, pad level and hand placement then
 decide. This is a World physics law and needs Primary's and Tanner's decision
 before any implementation.
+
+### Updates and the proposal's controls (2026-11-08, later)
+
+**Routing is closed too.** Defense's `SHED_ROUTE` (a307348b on
+`defense/G2-stance-tell`) builds the work-off frame from the man actually on
+him, not the blocker's original drive line.
+- DL requests into the blocker's body: 38% → 19%.
+- DL achieved speed toward the carrier: −0.08 → −0.08 yd/s.
+- Paired yards: −0.04 (SE 0.37).
+
+**The carrier's lean is not the fall-forward lever.** Run Game's
+`CARRIER_BRACE` v2 (65fa5306) times the sink and a last-stride lunge to the
+tackler's arms. On 232 front-on contacts at −1..+3:
+- posture at contact 0.23 → 0.63;
+- lunging 0 → 57%;
+- capture point along travel +0.01 → +0.18 yd.
+
+Forward falls stay at 17 → 18%. Its extra front-on gain (to 2.29 / 1.50 / 1.51)
+comes from momentum carried into contact. The fall direction is set by the
+front-on load's height relative to his COM: World's `tip` term and the
+tackler's contact height.
+
+#### Controls an allometric leg-force law must pass
+
+1. **Push bench.**
+   - Matched pairs should no longer be a permanent stalemate; leverage and pad
+     level should decide them.
+   - The lopsided s9-39 pair should still favor the heavier, stronger man.
+2. **Pass protection:** a bull rush against a set tackle, with and without the
+   tackle anchoring. Bench cases already exist.
+3. **The three converging traces:**
+   - s9-39 DE drive-back;
+   - matched-pair push-back share (NFL 13% of DL driven back 0.5 yd by 2.0 s;
+     ours 1–2%);
+   - the engaged rally stall (engaged DL/LB closing on a passing carrier, NFL
+     about 1.2 yd/s).
+4. **Carry and tackle contacts:** the same leg force drives a carrier through a
+   pile and a tackler's plant. The checks are Run Game's `stuffbin` and
+   `hitterback` (contact → end, gain, flat share) and `pile.py` (speed by pile
+   size, already NFL-like and not to regress).
+5. **Unchanged where traction binds:** sprint acceleration and cut capacity.
+   The law changes leg force, not traction.
+
+#### Sourcing the exponent
+
+- **Literature:** strength normalization for body size reports exponents near
+  2/3 for whole-body and multi-joint strength, with fat-free mass a better
+  linear predictor than total mass (e.g. Jaric 2002, *Sports Medicine*, on
+  normalizing strength for body size; to verify against the full text). That
+  supports either model:
+  - `force ∝ m^b` with b about 0.67;
+  - `force ∝ FFM`, which needs a body-composition estimate per position.
+- **Football-specific check from data we hold:** Big Data Bowl 2027 combine
+  rows (about 510 prospects with weight; 192 with bench reps; vertical and
+  broad jumps). Estimate b by regressing log 1RM against log mass:
+  - 1RM from 225 lb bench reps via Epley, which `ARM_PRESS` already uses;
+  - leg power from vertical jump and mass (Sayers);
+  - within position groups, to separate mass from training selection.
+  - This is a raw-data job (Kaggle `KAGGLE_API_TOKEN` is set in this
+    environment), output to ignored `out/`, with only the fitted exponent and
+    its interval committed.
+- **No NFL output tuning:** the exponent comes from strength data, then the
+  controls above are read.
+
+**Decision:** Tanner and Primary. Nothing is built.
