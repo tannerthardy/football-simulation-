@@ -125,9 +125,9 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
   return clamp((seen.pose === 'down' ? recovery : recovery / 2) - age, tick, recovery);
 }
 
-/** STRETCH_TRACK (off): an outside/wide zone back presses his landmark flat (the
- * mesh aim sits 1.5 yd behind the line, assign.ts) and reads the line from 2 yd
- * off it instead of 4-4.5 yd. */
+/** STRETCH_TRACK (off): an outside/wide zone back presses his landmark flat (he
+ * steers for its width 1.5 yd behind the line while deeper than 2 yd) and reads
+ * the line from 2 yd off it, or once at its width, instead of 4-4.5 yd. */
 export const STRETCH_TRACK = process.env.STRETCH_TRACK === '1';
 
 /** Read entries and routes from acquired bodies on both teams. A nominal
@@ -374,6 +374,10 @@ export class BallCarrier implements Behavior {
       // center back meets the ball there) or two yards off the line.
       const stretchTrack = STRETCH_TRACK && (this.opts.run?.scheme === 'outsideZone' || this.opts.run?.scheme === 'wideZone')
         && !!this.opts.aim && (this.opts.aim.y - a.pos.y) * this.opts.run!.side > 1;
+      // While deeper than two yards he steers for the landmark's width 1.5 yd
+      // behind the line (press it flat); the play's aim and its scoring are
+      // unchanged.
+      if (stretchTrack && (a.pos.x - sim.los) * dir < -2) aim = { x: sim.los - 1.5 * dir, y: aim.y };
       if (this.opts.run && ((a.pos.x - sim.los) * dir > (follow || stretchTrack ? -2 : -4.5) || this.followEnded)) {
         if (sim.t >= this.pressReadAt) {
           this.pressReadAt = sim.t + a.mind.decisionInterval;
