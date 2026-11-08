@@ -269,3 +269,46 @@ A variant without the shed's throw-aside impulse on the blocker changed nothing
   the man. That is the next thing to look at.
 - These are single runs with no paired standard errors. Run Game's paired
   tables on its own stack are the evidence to use.
+
+### Paired tables and negative results (Flex, 2026-11-08)
+
+**Run Game's paired tables** on its 546-play set. Stack: `run/G3` @ b1075e57,
+Defense 205c6add, `ONE_ARM_HOLD`, #416, this branch, `END_CHASE=1`.
+
+| | Off | RUN_HAND_MOVE + SHED_PAST | + SHED_PAST_GATE | NFL |
+|---|---|---|---|---|
+| hitblk blocked, OZ / IZ | 3.07 / 3.97 | 2.24 / 2.83 | 2.55 / 3.07 | 3.41 / 3.68 |
+| Deep contacts: blocked hitter ends ≤ 0 | 25% | 46% | 39% | 43% |
+| Runs < 20 mean, OZ / IZ | 3.49 / 4.50 | 2.80 / 3.57 | 3.11 / 3.76 | 3.50 / 3.73 |
+| Paired yd vs off, OZ / IZ (SE) | — | −0.82 (0.20) / −0.97 (0.23) | −0.51 (0.18) / −0.71 (0.23) | |
+
+**Ruled out as causes of OZ's remaining blocked-class cost.** Base: Run Game's
+branch with `ONE_ARM_HOLD` and all three flags. Each side effect of a landed
+hand move was switched off in turn (scratch hooks, not committed):
+
+- Keeping the blocker's steer (no 10% cut): OZ blocked 2.27 (gate 2.23).
+- No control drop: 2.33.
+- Blocker keeps his touch mirror: 2.32.
+- All three off: 2.27.
+- Without the hand move at all, SHED_PAST + GATE give 2.42 (flags off 2.46).
+
+So the cost comes from the releases a landed move enables, not from its side
+effects.
+
+**Release rates do not overshoot.** Main Engine's offblock operator:
+
+| | Off | Gate | NFL |
+|---|---|---|---|
+| DL off every blocker within 1.0 s | 17% | 18% | 25% |
+| LB off every blocker within 1.0 s | 38% | 36% | 36% |
+
+**No time-to-arrival gate.**
+- OZ releases that become the first hitter mostly happen 2–4 yd and 0.35–0.56 s
+  before contact. Those plays end at 0.9–1.4 yd.
+- That is a legitimate shed-and-tackle with time to square up, so a longer gate
+  would only tune to output.
+- Remaining suspects are outside this law:
+  - the OZ carrier's answer to a play-side defender who comes free 0.5 s ahead
+    (Run Game);
+  - the hand move's landing rate on a lateral stretch reach, which needs an
+    NFL operator for OZ releases.
