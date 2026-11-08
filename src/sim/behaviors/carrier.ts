@@ -529,15 +529,17 @@ export class BallCarrier implements Behavior {
     // by), and in the last stride the body is driven ahead of the feet. A
     // lunge that meets nothing leaves him overextended (World's own cost).
     if (CARRIER_BRACE && !sim.bond) {
-      const ux = Math.cos(h), uy = Math.sin(h), posture = a.body.support?.posture ?? 0.3;
+      // Slew from a running posture (0.3) to 0.75 at 2.5/s, plus a beat.
+      const ux = Math.cos(h), uy = Math.sin(h), slew = (0.75 - 0.3) / 2.5 + 0.1;
       let brace = false, strike = false;
       for (const d of sim.opponents(a)) {
-        if (d.isDown(sim.t)) continue;
-        const sd = sim.see(a, d), rx = sd.pos.x - a.pos.x, ry = sd.pos.y - a.pos.y, dist = Math.hypot(rx, ry);
+        const sd = sim.see(a, d);
+        if (sd.pose === 'down') continue;
+        const rx = sd.pos.x - a.pos.x, ry = sd.pos.y - a.pos.y, dist = Math.hypot(rx, ry);
         if (dist > 3 || dist < 1e-6 || (rx * ux + ry * uy) / dist < Math.SQRT1_2) continue;
         const closing = ((a.vel.x - sd.vel.x) * rx + (a.vel.y - sd.vel.y) * ry) / dist;
         const gap = dist - a.profile.radius - d.profile.radius;
-        if (closing > 0.5 && gap / closing < Math.max(0, 0.75 - posture) / 2.5 + 0.1) brace = true;
+        if (closing > 0.5 && gap / closing < slew) brace = true;
         if (gap < 0.35) strike = true;
       }
       if (brace || strike) return { vel, cutSkill, squeeze, posture: 0.75, ...(strike ? { lunge: { x: ux * 0.8, y: uy * 0.8 } } : {}) } as MoveCommand;
