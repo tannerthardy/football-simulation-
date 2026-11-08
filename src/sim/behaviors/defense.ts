@@ -38,6 +38,8 @@ import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, q
  * (3.7 -> 5.7 yd deep) and blocked 15% at 2.0 s; ours came to the run at the
  * stalk read, sat at 4 yd and were blocked 62% (dbtempo.py). */
 const passFirstOn = () => process.env.PASS_FIRST !== '0';
+/** LB_READ_STEP (experimental, off): see ZoneCoverage's box-backer read step; how far downhill it goes (yd). */
+const LB_READ_STEP = process.env.LB_READ_STEP === '1', READ_STEP = 0.3;
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -613,8 +615,21 @@ export class ZoneCoverage implements Behavior {
     // (tracked box backers, 2.5-8 yd deep and within 6 yd of the ball, hold
     // their depth through 0.8 s on passes and runs alike). An apex or
     // overhang backer keeps his eased drop to the flat.
-    if (!this.deep && a.recog?.read === 'unsure' && boxBacker(a, sim))
+    if (!this.deep && a.recog?.read === 'unsure' && boxBacker(a, sim)) {
+      // LB_READ_STEP (experimental, off): his read step is a step. Off the
+      // snap he presses a short step downhill from his alignment, square,
+      // eyes on the quarterback, and reads from there: a run read keeps him
+      // coming, a pass read starts his drop from it. NFL box backers gain
+      // 0.1-0.15 yd downhill by 0.5 s on runs and dropbacks alike, then 40%
+      // stop or drop on passes; ours stood still until the read.
+      if (LB_READ_STEP) {
+        const home = sim.defAlign.spots[a.slot as keyof typeof sim.defAlign.spots]?.pos ?? a.pos, dir = sim.attackDir(sim.offense[0].team);
+        a.tags.add('lb-read-step');
+        return withFacingTechnique(track(a, { x: home.x - dir * READ_STEP, y: home.y }, { x: 0, y: 0 },
+          { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 0.5 }), { label: 'read-step' });
+      }
       return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
+    }
     const spot = this.style === 'spot';
 
     const qb = sim.qb;
