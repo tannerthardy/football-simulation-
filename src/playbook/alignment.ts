@@ -153,6 +153,8 @@ const FRONT_MENU = process.env.FRONT_MENU !== '0';
 const BOX_ALIGN = process.env.BOX_ALIGN !== '0';
 /** BLITZ_CREEP (experimental, off): see alignDefense; tracked depth of a rushing backer at the snap (yd). */
 const BLITZ_CREEP = process.env.BLITZ_CREEP === '1', CREEP_DEPTH = 2.4;
+/** SAM_ON_TE (experimental, off): see alignDefense; a Sam on the line stands as the Under's 9 does (yd). */
+const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_DEPTH = 1.0;
 /** SHELL_SHOW (on; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
 const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
@@ -791,7 +793,15 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
 
   // FRONT_MENU: off-ball backers by the front's family and their number.
   const backerSpots = FRONT_MENU ? BACKERS[FAMILY[call.front.id] ?? ''] : undefined;
-  const offBall = (['LB_W', 'LB_M', 'LB_S'] as DefSlot[]).filter(slot => spots[slot] && frontSlots[slot]!.depth > 2);
+  // SAM_ON_TE (experimental, off): a "Sam on" call walks the Over/Even Sam
+  // onto the line on an attached tight end's outside shoulder, a front man
+  // like the Under's 9; the Mike and Will are then the two off-ball backers.
+  // Not against a wing (handled below) or a detached #2 (the apex).
+  const s2 = off.numbering.S2;
+  const samOnTE = SAM_ON_TE && !!call.samOn && FRONT_ALIGN && (call.front.id === 'over' || call.front.id === 'even')
+    && !!spots.LB_S && !!frontSlots.LB_S && frontSlots.LB_S.depth > 2 && teAt(fs) && !wingOn('S')
+    && !(!has('NB') && !flipFront && off.counts.S >= 2 && !!s2 && !off.spots[s2].inline);
+  const offBall = (['LB_W', 'LB_M', 'LB_S'] as DefSlot[]).filter(slot => spots[slot] && frontSlots[slot]!.depth > 2 && !(samOnTE && slot === 'LB_S'));
   const table = backerSpots?.[offBall.length as 1 | 2 | 3];
   if (table) {
     const G = OL_SPLITS ? off.line.cg : 1.3, T = tackleOf(off.line);
@@ -920,6 +930,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     // Lateral only: his depth is the front's (or FRONT_MENU's tracked) backer depth.
     else if (!apex) sam.pos = { x: sam.pos.x, y: off.ballY + fs * (inlineOf(off.line) + SHOULDER) };
   }
+  if (samOnTE) spots.LB_S!.pos = { x: los + SAM_ON_DEPTH, y: off.ballY + fs * (inlineOf(off.line) + SHOULDER) };
 
   // BOX_ALIGN: answer every detached inside receiver in a zone call.
   if (BOX_ALIGN && !cov.man) {

@@ -383,6 +383,8 @@ export interface DefensivePlayCall {
   /** FRONT_MENU: backers walked up into the open A gaps (one or both), each
    * still playing his called job from there. */
   mug?: 1 | 2;
+  /** SAM_ON_TE: the Sam walks onto the line on an attached TE in an Over or Even front (a "Sam on" call). */
+  samOn?: boolean;
   /** Called end spike / linebacker scrape exchanges both responsibilities. */
   gapExchange?: { edge: 'DE_S' | 'DE_W'; backer: 'LB_S' | 'LB_M' | 'LB_W' };
   /** Show another compatible front, then move at a finite rate before snap. */

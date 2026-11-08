@@ -32,6 +32,8 @@ import { motionEnabled } from '../sim/motion.js';
  * Under is the base front and Over a secondary call; nickel lines up in the
  * Over family; its pass-down front is a wide "Rush". One draw either way. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN !== '0';
+/** SAM_ON_TE (experimental, off): see the defensive call; share of Over/Even calls with the Sam on the TE. */
+const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_RATE = 0.5;
 /** SHORT_PACKAGE (on; =0 turns it off): a short-yardage package answers the
  * offense's heavy package anywhere on the field, not only at the goal line:
  * goal-line personnel and the Bear at 2 yd or less to go vs 13, 21 or 22
@@ -711,9 +713,15 @@ export class DefensiveCoordinator {
     const mugDraw = own.fork('mug').next();
     const mug: DefensivePlayCall['mug'] = FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
       ? mugDraw < .05 ? 2 : mugDraw < .17 ? 1 : undefined : undefined;
+    // SAM_ON_TE (experimental, off): in an Over or Even front the Sam is
+    // called on the line on the tight end ("Sam on") or kept off the ball
+    // as the front's stack backer. NFL backers over an attached TE stand on
+    // the line on 56% of snaps (30% at backer depth); Under calls already
+    // put ours on, so about half the Over/Even calls do.
+    const samOn = SAM_ON_TE && (front.id === 'over' || front.id === 'even') && 'LB_S' in DEF_PERSONNEL[personnel] && own.fork('sam-on').next() < SAM_ON_RATE ? true : undefined;
     return {
       call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick,
-        checkPrefer: this.checkPrefer(passingDown, system), zeus, strength, mug,
+        checkPrefer: this.checkPrefer(passingDown, system), zeus, strength, mug, samOn,
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
         label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
       prefs,
