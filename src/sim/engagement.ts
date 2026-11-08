@@ -106,6 +106,9 @@ const squeezes = new WeakMap<Engagement, { side: number; until: number }>();
  * being reached; one already beside or past the man on him keeps attacking
  * ("if you beat the reach, penetrate and make the play"). */
 const DL_FLATTEN_WON = process.env.DL_FLATTEN_WON !== '0';
+/** SHED_ROUTE (experimental, off): see the work-off; a first-level man works around the
+ * blocker's actual ball-side shoulder, not the frame of the blocker's original drive. */
+const SHED_ROUTE = process.env.SHED_ROUTE === '1';
 /** TOUCH_READ (experimental, off): see the flatten read; a hand-fighting lineman
  * reads the man's motion by touch, not by a delayed picture. */
 const TOUCH_READ = process.env.TOUCH_READ === '1';
@@ -1646,8 +1649,16 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const exitAim = shedding && shed!.runner && supportRunner ? read.aim : undefined;
   const exit = exitAim ? norm(sub(exitAim, d.pos)) : null;
   const acrossFace = supportRunner && shed?.contactSide !== undefined;
-  const workAxis = acrossFace ? contactAxis : axis, workLat = acrossFace ? contactLat : lat;
-  const workSide = acrossFace ? shed!.contactSide! : shed?.side ?? e.side;
+  // SHED_ROUTE (experimental, off): a first-level man working off goes around
+  // the shoulder of the man actually on him (by touch with loaded hands, else
+  // his picture), to the side the ball is on now, not across the blocker's
+  // original drive line, which once the blocker has moved can point into his chest.
+  const routeBody = SHED_ROUTE && shedding && !acrossFace && read.threat
+    ? (e.hands?.normalForce || e.hands?.tangentForce) ? b.pos : sim.see(d, b).pos : null;
+  const routeAxis = routeBody ? norm(sub(routeBody, d.pos)) : null, routeLat = routeAxis ? latOf(routeAxis) : null;
+  const routeSide = routeLat && read.threat ? Math.sign((read.threat.pos.x - d.pos.x) * routeLat.x + (read.threat.pos.y - d.pos.y) * routeLat.y) : 0;
+  const workAxis = acrossFace ? contactAxis : routeAxis ?? axis, workLat = acrossFace ? contactLat : routeLat ?? lat;
+  const workSide = acrossFace ? shed!.contactSide! : (routeSide || (shed?.side ?? e.side));
   const workOff = shedding ? exit
     ? { x: exit.x * Math.hypot(td.lateral, .6), y: exit.y * Math.hypot(td.lateral, .6) }
     : { x: workLat.x * workSide * td.lateral + workAxis.x * .6,
