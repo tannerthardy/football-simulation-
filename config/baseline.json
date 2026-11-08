@@ -21,6 +21,7 @@
     "KEY_REACT": "0",
     "KEY_PACE": "0",
     "DB_SLOWPLAY": "0",
+    "BLITZ_CREEP": "0",
     "DL_FIGHT": "0",
     "EDGE_CONTAIN": "1",
     "GAP_MATCH": "1",

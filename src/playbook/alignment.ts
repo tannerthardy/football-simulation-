@@ -151,6 +151,8 @@ const FRONT_MENU = process.env.FRONT_MENU !== '0';
  * installed spot, 3 yd outside and 7.5 deep, left him out of the box against
  * an attached end on every snap (tracked: within 2 yd of the end on 70%). */
 const BOX_ALIGN = process.env.BOX_ALIGN !== '0';
+/** BLITZ_CREEP (experimental, off): see alignDefense; tracked depth of a rushing backer at the snap (yd). */
+const BLITZ_CREEP = process.env.BLITZ_CREEP === '1', CREEP_DEPTH = 2.4;
 /** SHELL_SHOW (on; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
 const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
@@ -1182,6 +1184,16 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     if (p.x - los < 7.5 && Math.abs(p.y - off.ballY) < 6) box++;
   }
   const rushers = present.filter((p) => spots[p]!.role.kind === 'rush' || spots[p]!.role.kind === 'blitz');
+  // BLITZ_CREEP (experimental, off): a backer with a blitz assignment stands
+  // where tracked rushers stand, walked up to time the snap, instead of at
+  // the front's backer depth. It shows the pressure: the offense sees him up.
+  // NFL box backers who rush stand a median 2.26 yd deep on passes and 2.47
+  // on runs at the snap frame (p75 3.3; non-rushers 4.45-4.62); ours blitzed
+  // from 4.6 and never stood shallower than 4.0.
+  if (BLITZ_CREEP) for (const slot of blitzers) {
+    const sp = spots[slot];
+    if (sp && slot.startsWith('LB') && sp.pos.x - los > CREEP_DEPTH) sp.pos = { x: los + CREEP_DEPTH, y: sp.pos.y };
+  }
   return { spots, rushers, coverage: cov, boxCount: box };
 }
 
