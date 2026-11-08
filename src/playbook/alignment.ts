@@ -264,6 +264,12 @@ export const STRETCH_OFFSET = process.env.STRETCH_OFFSET === '1';
  * of gun IZ calls, and on 56 of 75 of those the back's mesh path (built for a
  * backside offset) carried him against the call after the handoff. */
 export const IZ_OFFSET = process.env.IZ_OFFSET === '1';
+/** COUNTER_OFFSET (default off): IZ_OFFSET for gun counter. Tracked 2022 gun
+ * counter: the offset back aligns backside on 119 of 153 snaps and takes the
+ * ball 0.9 yd backside already running to the hole (+3.05 yd/s); ours aligned
+ * play side on 64 of 76, met the ball running away from the hole (-2.85 yd/s)
+ * and crossed the LOS on the pull side 70% of the time (NFL 92%). */
+export const COUNTER_OFFSET = process.env.COUNTER_OFFSET === '1';
 /** TE_OFF (default off): on a zone run call an attached end sometimes sets
  * off the ball beside the tackle (a wing), with the wide receiver on his side
  * moving up onto the line so seven stay on it. Tracked 2022 zone runs: 0.43
@@ -440,7 +446,8 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
 
   const strongSign = sideSign(strong);
   if (formation.qb === 'gun' && ctx.run && ((STRETCH_OFFSET && (ctx.run.scheme === 'outsideZone' || ctx.run.scheme === 'wideZone'))
-    || (IZ_OFFSET && (ctx.run.scheme === 'insideZone' || ctx.run.scheme === 'splitZone')))) {
+    || (IZ_OFFSET && (ctx.run.scheme === 'insideZone' || ctx.run.scheme === 'splitZone'))
+    || (COUNTER_OFFSET && ctx.run.scheme === 'counter'))) {
     const play = ctx.run.direction === 'strong' ? strongSign : -strongSign;
     for (const sp of Object.values(spots)) if (sp.backfield && sp.slot !== 'QB' && (sp.pos.y - ballY) * play > 1)
       sp.pos = { x: sp.pos.x, y: clamp(2 * ballY - sp.pos.y, 1, FIELD_WIDTH - 1) };
