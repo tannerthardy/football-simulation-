@@ -598,6 +598,13 @@ export const NO_CROSS = process.env.NO_CROSS === '1';
  * the tight end took him and the tackle took the end 2.2 yd outside, whom
  * the backside double then dropped, leaving the end unblocked (s29-38). */
 export const ZONE_ONBALL = process.env.ZONE_ONBALL === '1';
+/** ZONE_MUG (default off): a box backer walked up within 3 yd of the ball,
+ * inside the surface, is part of the front for zone ownership: the man whose
+ * gap he stands in blocks him at the line rather than leaving him to a
+ * climber. Tracked uncovered linemen facing a backer under 3.5 yd touch him
+ * 72% (inside zone) / 62% (outside) by 1.5 s; with walked-up backers in the
+ * sim, 64% of them were untouched by anyone by 1.5 s. */
+export const ZONE_MUG = process.env.ZONE_MUG === '1';
 /** CLIMB_RUNNER_SIDE (default off): a climber fits his backer on the side
  * between the backer and the runner as he sees him, not always the called
  * play side; on a cutback the play-side fit walled the backer into the
@@ -769,9 +776,12 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         && Math.abs(o.pos.y - by) > Math.abs(e.pos.y - by) && Math.abs(o.pos.y - e.pos.y) <= 2.0));
     const zl = [...line, ...wings].sort((p, q) => rel(q) - rel(p));
     const mismatch = (b: Agent, d: Agent) => ZONE_WINGS ? 8 * Math.max(0, d.profile.massKg / b.profile.massKg - 1) : 0;
-    for (const [b, d] of zoneOwnership(zl, dl.filter((d) => d !== sliceEnd && onBall(d)), undefined, mismatch,
+    const surfaceY = Math.max(...zl.map((o) => Math.abs(o.pos.y - by)));
+    const mugs = ZONE_MUG ? lb.filter((d) => (d.pos.x - sim.los) * sim.attackDir('O') <= 3.0 && Math.abs(d.pos.y - by) <= surfaceY) : [];
+    for (const [b, d] of zoneOwnership(zl, [...dl.filter((d) => d !== sliceEnd && onBall(d)), ...mugs], undefined, mismatch,
       new Set([line[0], line[line.length - 1], ...wings]), ZONE_GAP && scheme !== 'draw' && scheme !== 'qbDraw' ? ps : 0)) {
       claimedDL.add(d);
+      if (mugs.includes(d)) claimedLB.add(d);
       const reach = scheme === 'outsideZone' || scheme === 'wideZone' || scheme === 'toss';
       plans.set(b, { kind: reach ? 'reach' : 'drive', target: d, drive: up(ps * (scheme === 'wideZone' ? 1.8 : reach ? 1.1 : 0.6)) });
     }
