@@ -102,3 +102,57 @@ use.
   Game's paired run.
 - **The front tackler's −2.5 yd/s drive toward his own goal** is about 0.3 yd at
   the line. It is parked until the pile question is answered.
+
+## Paired tables and controls: do not promote (2026-11-08)
+
+**Run Game's paired run.** 546 zone plays. Stack: `run/G3` @ c67e4abf, Defense
+205c6add, `ONE_ARM_HOLD`, #416, a1b3986d, `END_CHASE=1`. Arms: `WRAP_FOOT`
+0 → 1.
+
+| Contact at | Contact → end (NFL) | After-contact median (NFL) | End ≤ 0 (NFL) |
+|---|---|---|---|
+| < −1 | 1.7 → 2.1 s (1.6) | 2.50 → 2.99 (2.26) | 26 → 20% (53%) |
+| −1..0 | 1.1 → 1.4 (1.4) | 1.72 → 2.13 (2.38) | 16 → 14% (16%) |
+| 0..1 | 1.0 → 1.1 (1.5) | 1.64 → 1.62 (2.53) | 1 → 2% (3%) |
+| 1..3 | 0.9 → 1.1 (1.3) | 1.91 → 2.01 (2.68) | 0 → 0% (1%) |
+
+**Other measures:**
+- Flat at end (contact −1..+3): 48 → 59%, against NFL about 38%.
+- Paired yards: OZ +0.41 (SE 0.08), IZ +0.79 (SE 0.15).
+- 10+ runs: OZ 11 → 13% (NFL 11%); IZ 13 → 17% (NFL 9%).
+
+**Controls.** Eight-game `sim-export` (seed 101). The arms are not paired:
+games diverge after the first changed play.
+- Yards after the catch: mean 9.44 → 10.72, p50 4.55 → 5.25. G3 already has
+  these too high.
+- Sack-like dropbacks (negative yards, no throw): 4.4 → 3.7%.
+
+**NFL pile reference** (Run Game's `pile.py`). Carrier forward speed by the
+number of defenders within 1 yd is NFL-like (NFL / sim off):
+
+| Defenders within 1 yd | 1 | 2 | 3+ |
+|---|---|---|---|
+| Median speed (yd/s) | 2.75 / 2.53 | 1.50 / 1.17 | 0.50 / 0.74 |
+
+But piles form less often and later:
+
+| | NFL | Sim off |
+|---|---|---|
+| Second defender arrives | 80% at 0.3 s | 68% at 0.4 s |
+| Third defender arrives | 43% at 0.7 s | 28% at 1.1 s |
+
+The pile brake is not too hard; rally timing (Defense) is late.
+
+**Reading.**
+- `WRAP_FOOT` lengthens finishes at the line, but it does so by making every
+  secure leg wrap easier to step out of.
+- Backfield wraps, after-catch tackles and sacks all move the wrong way, and the
+  0..1 bin, which has the largest gap, does not move.
+- The default coupling over-constrains some wraps, but `legs·secure` is not the
+  missing law: it loosens all of them.
+- What separates a contact at the line that ends falling forward from a
+  backfield or open-field wrap that holds is still open. Candidates:
+  - the front tackler's −2.5 yd/s drive (+0.3 yd at the line on the ablation);
+  - the carrier's momentum into a front-on tackler.
+
+Kept off; recorded as adverse.
