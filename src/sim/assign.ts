@@ -212,6 +212,8 @@ export const DRAW_NFL = process.env.DRAW_NFL === '1';
 /** COUNTER_C (off): counter's mesh aim is the C gap (the play-side tackle's
  * outside hip) instead of B. */
 export const COUNTER_C = process.env.COUNTER_C === '1';
+/** GUN_STRETCH_T (off): gun outside/wide zone mesh time +0.2 s (tracked handoff 1.2 s, ours 1.0). */
+export const GUN_STRETCH_T = process.env.GUN_STRETCH_T === '1';
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const ps = playSideSign(sim, concept);
   const los = sim.los;
@@ -243,7 +245,9 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const aim = { x: los + 0.6, y: aimY };
   let qb: Vec2;
   let rb: Vec2;
-  let time = concept.meshTime;
+  // GUN_STRETCH_T: tracked gun outside zone hands off at 1.2 s (median; ours
+  // 1.0, the exchange window opening 0.15 s before the 1.15 s install).
+  let time = concept.meshTime + (GUN_STRETCH_T && qbType === 'gun' && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone') ? .2 : 0);
   let pitch = 0;
   if (concept.scheme === 'toss') {
     qb = { x: los - 1.8, y: by + ps * 0.6 };
