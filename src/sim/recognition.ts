@@ -142,6 +142,18 @@ export function gameSense(p: Player): number {
  * handoff (+1.1 yd/s); a pass read held until the give kept ours dropping.
  * DRAW_READ=0 restores the posterior-only change of mind. */
 const DRAW_READ = process.env.DRAW_READ !== '0';
+/** RUN_CONFIRM (experimental, off; needs DRAW_READ's coherent change of mind):
+ * an unsure defender commits run on what he sees, with the situation's pass
+ * expectation raising how clear the run picture must be rather than holding
+ * the commit until the ball shows. NFL box backers on runs trigger downhill
+ * at a median 0.4 s on every down (3rd and 7+: +0.50 yd by 1.0 s vs +0.61 on
+ * 1st, BDB 2025 with plays.csv downs); ours read run at 1.05 s on 3rd down.
+ * RUN_CONFIRM_PRIOR scales the required run cue per unit of pass prior: at 0.1
+ * a 3rd-down backer reads run at a median 0.50 s against 0.45 on 1st (0 gave
+ * no situation effect; 0.2 held 3rd down to 0.60 and a strong pass prior to
+ * 0.70; NFL 3rd and 7+ trails 1st down by about 0.1 yd at 1.0 s). */
+const RUN_CONFIRM = process.env.RUN_CONFIRM === '1';
+const RUN_CONFIRM_PRIOR = 0.1;
 export function drawReadEnabled(): boolean {
   return DRAW_READ;
 }
@@ -260,7 +272,12 @@ export class Recognition {
     };
     if (this.read === 'unsure') {
       if (p < 0.3 + 0.10 * urgency && (cue < -0.1 || p < 0.1)) commit('run');
-      else if (p > 0.72 - 0.08 * urgency && (cue > 0.1 || p > 0.92)) commit('pass');
+      else if (RUN_CONFIRM && cue < -0.1 - RUN_CONFIRM_PRIOR * Math.max(0, this.prior) && seen < 0.3 + 0.10 * urgency) {
+        // RUN_CONFIRM (below): the expectation asks for a clearer run picture;
+        // it does not hold his feet. A commit against it is the picture's.
+        this.priorDefeated = true;
+        commit('run');
+      } else if (p > 0.72 - 0.08 * urgency && (cue > 0.1 || p > 0.92)) commit('pass');
     } else if (this.read === 'run' && (this.priorDefeated ? seen : p) > 0.8 + 0.06 * urgency) {
       // Once what he saw has defeated the expectation, the expectation does
       // not bring the pass back on its own: the same picture, without the

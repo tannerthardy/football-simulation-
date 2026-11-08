@@ -12,6 +12,8 @@
     "CLIMB_INTERCEPT": "1",
     "CLIMB_PLAN": "1",
     "DRAW_READ": "1",
+    "RUN_CONFIRM": "0",
+    "LB_READ_STEP": "0",
     "DL_FIGHT": "0",
     "EDGE_CONTAIN": "1",
     "GAP_MATCH": "1",
