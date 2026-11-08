@@ -24,6 +24,7 @@
     "RUN_HAND_MOVE": "0",
     "SHED_PAST": "0",
     "SHED_PAST_GATE": "0",
+    "WRAP_FOOT": "0",
     "HOLD_SUBSTEPS": "0",
     "IN_STRIDE_CATCH": "0",
     "KEEPER_TORSO": "1",
