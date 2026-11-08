@@ -12,8 +12,8 @@ for (const seed of seeds) for (const p of JSON.parse(readFileSync(`${dir}/seed${
   const sim: any = new PlaySim(setup as PlaySetup); const d2 = sim.attackDir(sim.offense[0].team), los = sim.los;
   const OL = ['LT', 'LG', 'C', 'RG', 'RT'].map(s => sim.slot(s)); const cy = OL.reduce((s: number, o: any) => s + o.pos.y, 0) / 5;
   const LB = sim.defense.filter((d: any) => { const x = (d.pos.x - los) * d2; return /LB/.test(d.slot) && x >= 1.6 && x <= 7 && Math.abs(d.pos.y - cy) <= 6; });
-  const x0 = new Map(LB.map((l: any) => [l, (l.pos.x - los) * d2])), at: Record<number, Map<any, number>> = {}; const t0 = sim.tick.bind(sim);
-  const tr = new Map(LB.map((l: any) => [l, [(l.pos.x - los) * d2]])); let k = 1;
+  const x0 = new Map<any, number>(LB.map((l: any) => [l, (l.pos.x - los) * d2])), at: Record<number, Map<any, number>> = {}; const t0 = sim.tick.bind(sim);
+  const tr = new Map<any, number[]>(LB.map((l: any) => [l, [(l.pos.x - los) * d2]])); let k = 1;
   sim.tick = () => { t0(); if (k <= 21 && sim.t >= 0.1 * k - 1e-6) { for (const [l, v] of tr) v.push((l.pos.x - los) * d2); k++; } for (const T of [0.4, 0.9]) if (!at[T] && sim.t >= T - 1e-6) at[T] = new Map(LB.map((l: any) => [l, (l.pos.x - los) * d2])); };
   sim.run(); if (!at[0.9]) continue;
   for (const l of LB) { (R[kind] ??= []).push([x0.get(l)!, x0.get(l)! - at[0.4].get(l)!, x0.get(l)! - at[0.9].get(l)!]);

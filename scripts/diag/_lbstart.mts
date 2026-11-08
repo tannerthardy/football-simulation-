@@ -11,7 +11,7 @@ for (const seed of seeds) for (const p of JSON.parse(readFileSync(`${dir}/seed${
   const sim: any = new PlaySim(restoreSetup(Buffer.from(p.setup, 'base64')) as PlaySetup); const d2 = sim.attackDir(sim.offense[0].team), los = sim.los;
   const OL = ['LT', 'LG', 'C', 'RG', 'RT'].map(s => sim.slot(s)); const cy = OL.reduce((s: number, o: any) => s + o.pos.y, 0) / 5;
   const LB = sim.defense.filter((d: any) => { const x = (d.pos.x - los) * d2; return /LB/.test(d.slot) && x >= 1.6 && x <= 7 && Math.abs(d.pos.y - cy) <= 6; });
-  const rows = new Map(LB.map((l: any) => [l, { depth: (l.pos.x - los) * d2, ready: 0, at: [] as any[] }])); let k = 0; const t0 = sim.tick.bind(sim);
+  const rows = new Map<any, any>(LB.map((l: any) => [l, { depth: (l.pos.x - los) * d2, ready: 0, at: [] as any[] }])); let k = 0; const t0 = sim.tick.bind(sim);
   sim.tick = () => { t0(); for (const [l, r] of rows) r.ready = l.snapReadyAt;
     if (k < T.length && sim.t >= T[k] - 1e-6) { for (const [l, r] of rows) { const q = sim.intents[l.idx]?.vel ?? { x: 0, y: 0 };
       r.at.push({ read: l.recog?.read ?? '-', beh: l.behavior?.kind, q: -q.x * d2, a: -l.vel.x * d2, tags: [...l.tags].slice(-2).join('+') }); } k++; } };
