@@ -145,3 +145,45 @@ this rep does not depend on it.
 2. **Tanner / Physics:** obtain the cleat-traction numbers before any `TURF_MU`
    change. No World law change is proposed.
 3. `TURF_MU_SCALE` stays diagnostic. It expires at review 2.
+
+## Three items converge on the engaged push contest (Flex, 2026-11-08)
+
+Defense's rally measures (`rally.py`) show that blocked defenders do not close on
+a carrier who goes past them. With the blocker between them and the ball:
+- DL ask 2.11 yd/s and get 0.32.
+- LB ask 1.95 and get 0.39.
+- NFL engaged men close at about 1.2 yd/s.
+
+**Trace on Run Game's branch + `ONE_ARM_HOLD`.** Zone runs, engaged DL/LB with
+the carrier 1–6 yd away and the blocker between, ticks where the defender is
+working off:
+
+| | Around the blocker req → ach | Toward the blocker req → ach | Blocker driving into him req → ach |
+|---|---|---|---|
+| LB (n ≈ 2.7k) | 3.83 → 0.83 | 0.59 → −0.86 | 1.67 → 0.87 |
+| LB, work-off press raised to 2.4 (scratch) | 3.92 → 0.80 | 2.26 → −0.78 | 1.79 → 0.81 |
+| DL (n ≈ 15k) | 1.24 → 0.29 | 1.78 → 0.29 | 0.73 → −0.28 |
+
+**Ruled out for the LB stall** (all scratch, none committed):
+- #415's flags with `SHED_PAST_GATE`: no change.
+- Bounding the hands' tangent force by μ·normal + grip: LB −0.25 → −0.15.
+- Following by sight once the hands unload (`MIRROR_UNLOAD`): −0.28 → −0.36.
+- A harder work-off press: the LB is still driven back at about 0.8 yd/s.
+
+The DL row is a routing problem: half of the DL work-off requests aim into the
+blocker. That is Defense's.
+
+**What remains is the engaged push contest itself.** It is the same mechanism
+as:
+- item 4: the engaged DE driven back on s9-39;
+- item 3: matched pairs never move while lopsided pairs drive back steadily.
+
+Leg power (`m·(0.55 + 0.75·strength)`) and traction (`1.1·m·g`) both scale
+linearly with mass. So in a mutual press the heavier man wins at any rating,
+and equals never move.
+
+**Candidate for Primary and Tanner (not built):** allometric leg force. Muscle
+force scales closer to mass^(2/3), or with fat-free mass, than linearly with
+total mass. Among near-equals, leverage, pad level and hand placement then
+decide. This is a World physics law and needs Primary's and Tanner's decision
+before any implementation.
