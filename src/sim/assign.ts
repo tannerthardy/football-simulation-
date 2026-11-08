@@ -209,6 +209,9 @@ export const MESH_NFL = process.env.MESH_NFL === '1';
  * +0.2 yd (tracked +1.25). */
 export const DRAW_NFL = process.env.DRAW_NFL === '1';
 
+/** COUNTER_C (off): counter's mesh aim is the C gap (the play-side tackle's
+ * outside hip) instead of B. */
+export const COUNTER_C = process.env.COUNTER_C === '1';
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const ps = playSideSign(sim, concept);
   const los = sim.los;
@@ -219,7 +222,8 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const rbSeen = sim.slot('RB');
   const gunBackside = IZ_GUN_A && concept.scheme === 'insideZone' && qbType === 'gun' && concept.aim === 'B'
     && !!rbSeen && (rbSeen.pos.y - by) * ps < -1;
-  switch (gunBackside ? 'A' : concept.aim) {
+  // COUNTER_C: GT counter aims at the play-side tackle's outside hip (C).
+  switch (gunBackside ? 'A' : COUNTER_C && concept.scheme === 'counter' ? 'C' : concept.aim) {
     case 'A':
       aimY = gapY(sim.offAlign, 'A', ps);
       break;
