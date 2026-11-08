@@ -538,7 +538,8 @@ export class BallCarrier implements Behavior {
         const rx = sd.pos.x - a.pos.x, ry = sd.pos.y - a.pos.y, dist = Math.hypot(rx, ry);
         if (dist > 3 || dist < 1e-6 || (rx * ux + ry * uy) / dist < Math.SQRT1_2) continue;
         const closing = ((a.vel.x - sd.vel.x) * rx + (a.vel.y - sd.vel.y) * ry) / dist;
-        const gap = dist - a.profile.radius - d.profile.radius;
+        // Timed to the tackler's arms, not his body: the grasp forms at reach.
+        const gap = dist - a.profile.radius - d.profile.radius - d.profile.reach;
         if (closing > 0.5 && gap / closing < slew) brace = true;
         if (gap < 0.35) strike = true;
       }
