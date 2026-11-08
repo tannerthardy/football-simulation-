@@ -21,7 +21,7 @@ for (let seed = 7; seed <= 29; seed += 2) for (const p of JSON.parse(readFileSyn
     if (sim.bond?.down && end === null) { end = sim.t; why = c?.body.support?.state === 'down' ? 'carrier down' : 'stall'; }
   };
   const r = sim.run(); if (end === null) { end = sim.t; why = r.outcome; }
-  if (hit) R.push({ x: hit.x, dt: end - hit.t, toBond: bondAt !== null ? bondAt - hit.t : null, why, maxTack, yac: Math.min(r.yards, 20) - hit.x, fall: downAt !== null ? downAt - hit.t : null });
+  if (hit) R.push({ x: hit.x, dt: (end ?? sim.t) - hit.t, toBond: bondAt !== null ? bondAt - hit.t : null, why, maxTack, yac: Math.min(r.yards, 20) - hit.x, fall: downAt !== null ? downAt - hit.t : null });
 }
 const med = (a: number[]) => { const s = [...a].sort((p, q) => p - q); return s.length ? s[Math.floor(s.length / 2)].toFixed(2) : '—'; };
 for (const [lo, hi] of [[-1, 0], [0, 1], [1, 3]]) { const b = R.filter(r => r.x >= lo && r.x < hi);
