@@ -106,6 +106,9 @@ const squeezes = new WeakMap<Engagement, { side: number; until: number }>();
  * being reached; one already beside or past the man on him keeps attacking
  * ("if you beat the reach, penetrate and make the play"). */
 const DL_FLATTEN_WON = process.env.DL_FLATTEN_WON !== '0';
+/** TOUCH_READ (experimental, off): see the flatten read; a hand-fighting lineman
+ * reads the man's motion by touch, not by a delayed picture. */
+const TOUCH_READ = process.env.TOUCH_READ === '1';
 function drivenBack(d: Agent): boolean {
   const felt = d.body.support?.felt; if (!felt) return false;
   const load = Math.hypot(felt.x, felt.y);
@@ -1486,8 +1489,14 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // A lineman who has already beaten the reach (beside or past the man on
   // him toward the backfield) keeps attacking: penetrate and make the play.
   const beaten = !!blockerSeen && (d.pos.x - blockerSeen.pos.x) * sim.attackDir(b.team) < d.profile.radius;
-  const zoneStep = !!blockerSeen && !(DL_FLATTEN_WON && beaten) && Math.abs(blockerSeen.vel.y) > 1
-    && Math.abs(blockerSeen.vel.y) > Math.abs(blockerSeen.vel.x);
+  // TOUCH_READ (experimental, off): with his hands on the man he feels how
+  // the man moves, as he already has his position by touch (the stack read);
+  // a reach that turns into a vertical drive is a drive to press, not a
+  // picture of a step across that is a reaction time old.
+  const touching = TOUCH_READ && !!(e.hands?.normalForce || e.hands?.tangentForce);
+  const across = blockerSeen ? Math.abs((touching ? b.vel : blockerSeen.vel).y) : 0;
+  const atHim = blockerSeen ? Math.abs((touching ? b.vel : blockerSeen.vel).x) : 0;
+  const zoneStep = !!blockerSeen && !(DL_FLATTEN_WON && beaten) && across > 1 && across > atHim;
   // DL_SQUEEZE: a blocker whose first step went against the play is a down
   // block or a wash; one whose first step went with it, a reach. The play's
   // direction is the lateral track of the back he has seen take the ball.
