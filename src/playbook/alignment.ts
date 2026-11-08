@@ -1186,13 +1186,17 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   const rushers = present.filter((p) => spots[p]!.role.kind === 'rush' || spots[p]!.role.kind === 'blitz');
   // BLITZ_CREEP (experimental, off): a backer with a blitz assignment stands
   // where tracked rushers stand, walked up to time the snap, instead of at
-  // the front's backer depth. It shows the pressure: the offense sees him up.
+  // the front's backer depth, walked toward the gap he will shoot: an A or B
+  // gap blitzer over the gap, a C or D gap blitzer outside the tackle. It
+  // shows the pressure: the offense sees him up. Tracked shallow backers on
+  // zone runs stand outside the tackles (42%), over an uncovered lineman
+  // (32%) or in a gap (17%), rarely stacked behind a down lineman (9%).
   // NFL box backers who rush stand a median 2.26 yd deep on passes and 2.47
   // on runs at the snap frame (p75 3.3; non-rushers 4.45-4.62); ours blitzed
   // from 4.6 and never stood shallower than 4.0.
   if (BLITZ_CREEP) for (const slot of blitzers) {
     const sp = spots[slot];
-    if (sp && slot.startsWith('LB') && sp.pos.x - los > CREEP_DEPTH) sp.pos = { x: los + CREEP_DEPTH, y: sp.pos.y };
+    if (sp && slot.startsWith('LB') && sp.pos.x - los > CREEP_DEPTH) sp.pos = { x: los + CREEP_DEPTH, y: gapY(off, sp.gap, sp.gapSign) };
   }
   return { spots, rushers, coverage: cov, boxCount: box };
 }
