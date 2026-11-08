@@ -13,7 +13,7 @@ import { getRoute } from '../playbook/routes.js';
 import type { Gap, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
 import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RunBlocker } from './behaviors/blocking.js';
-import { BallCarrier } from './behaviors/carrier.js';
+import { BallCarrier, STRETCH_TRACK } from './behaviors/carrier.js';
 import { goTo, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
 import { QBHandoff, QBPass } from './behaviors/qb.js';
@@ -240,7 +240,10 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
       aimY = by + ps * lineOffset(8, teOnPlayside, sim.offAlign.line);
       break;
   }
-  const aim = { x: los + 0.6, y: aimY };
+  // STRETCH_TRACK: the stretch aim is the landmark's width 1.5 yd behind the
+  // line (press it flat; the back reads the line from 2 yd off it).
+  const flatTrack = STRETCH_TRACK && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone');
+  const aim = { x: los + (flatTrack ? -1.5 : 0.6), y: aimY };
   let qb: Vec2;
   let rb: Vec2;
   let time = concept.meshTime;

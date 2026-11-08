@@ -125,6 +125,11 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
   return clamp((seen.pose === 'down' ? recovery : recovery / 2) - age, tick, recovery);
 }
 
+/** STRETCH_TRACK (off): an outside/wide zone back presses his landmark flat (the
+ * mesh aim sits 1.5 yd behind the line, assign.ts) and reads the line from 2 yd
+ * off it instead of 4-4.5 yd. */
+export const STRETCH_TRACK = process.env.STRETCH_TRACK === '1';
+
 /** Read entries and routes from acquired bodies on both teams. A nominal
  * block is neither an empty lane nor guaranteed future protection. */
 interface LineBody { pos: Vec2; radius: number; team: 'O' | 'D'; vel?: Vec2 }
@@ -361,7 +366,15 @@ export class BallCarrier implements Behavior {
       // From that beat he reads like any other back. A race to a hole he may
       // lose is not a body in his way.
       const follow = this.opts.run?.scheme === 'counter' || this.opts.run?.scheme === 'power';
-      if (this.opts.run && ((a.pos.x - sim.los) * dir > (follow ? -2 : -4.5) || this.followEnded)) {
+      // STRETCH_TRACK: a stretch back presses his landmark flat and reads the
+      // line from two yards off it (tracked gun outside zone leaves the mesh
+      // ~68 deg off vertical and is 4.9 yd wide 3 yd off the line; ours 45 deg
+      // and 0.8 yd, aiming at the read's entry from 4.25 yd deep).
+      // He reads once he is within a yard of the landmark's width (an under-
+      // center back meets the ball there) or two yards off the line.
+      const stretchTrack = STRETCH_TRACK && (this.opts.run?.scheme === 'outsideZone' || this.opts.run?.scheme === 'wideZone')
+        && !!this.opts.aim && (this.opts.aim.y - a.pos.y) * this.opts.run!.side > 1;
+      if (this.opts.run && ((a.pos.x - sim.los) * dir > (follow || stretchTrack ? -2 : -4.5) || this.followEnded)) {
         if (sim.t >= this.pressReadAt) {
           this.pressReadAt = sim.t + a.mind.decisionInterval;
           this.pressEntry = runReadAim(a, sim, this.opts);
@@ -408,7 +421,9 @@ export class BallCarrier implements Behavior {
       // This holds a chosen action through one processing interval; movement,
       // real contact and boundary recovery still execute on every native tick.
       this.nextEval = sim.t + a.mind.decisionInterval;
-      const entry = a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? runReadAim(a,sim,this.opts) : null;
+      const readFrom = STRETCH_TRACK && (this.opts.run?.scheme === 'outsideZone' || this.opts.run?.scheme === 'wideZone')
+        && !!this.opts.aim && (this.opts.aim.y - a.pos.y) * this.opts.run!.side > 1 ? 2 : 4;
+      const entry = a.pos.x < sim.los+.3 && a.pos.x > sim.los-readFrom ? runReadAim(a,sim,this.opts) : null;
       const best = entry ? null : this.evaluate(a, sim, dir, false);
       if(entry) { this.heading=angleOf({x:entry.x-a.pos.x,y:entry.y-a.pos.y}); a.tags.add('run-crease-read'); }
       else if (best) { this.heading = best.heading; this.plannedExit = best.exits; }
