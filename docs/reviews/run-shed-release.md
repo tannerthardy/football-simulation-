@@ -217,3 +217,55 @@ was set in the environment.
   evaluated here.
   - With both flags on, DL still held 18% → 15% and freed 73% → 71%.
   - Defense owns that code; the patch is in #413's doc.
+
+## Release timing (Flex, 2026-11-08)
+
+Taking over Main Engine's queue, item 1. Base: `run/G3-oz-backfield` @ 86f044d9
+with Run Game's flags (`LIVE_AIM=0`, `REACH_FLAT`, `ZONE_MUG` and its run-game
+set) plus #412's `ONE_ARM_HOLD=1`, and this branch's `engagement.ts` changes applied
+on top. Not Run Game's full stack: the Defense layers are absent. Zone runs from a
+fresh `scripts/diag/edge/capture-runs.ts` restage, seeds 7–29 odd (587 zone
+runs). Operators: Run Game's `scripts/diag/run-operators/` (`hitblk.py`,
+`deephit.py`, on `run/G3-oz-backfield` @ 38440eb1), the same code as on NFL 2022.
+
+**Where the lost yards come from.** The class `blocked` means an offensive player
+was within 1.2 yd of the hitter when the defender first came within 1.0 yd of
+the carrier. It mixes men still engaged with men just released. Split by the
+hitter's engagement state at that tick:
+
+| Zone, hitblk `blocked` class | Flags off | Both on |
+|---|---|---|
+| Still engaged: share, mean yd (OZ / IZ) | 83% 3.05 / 86% 3.49 | 63% 2.47 / 58% 2.72 |
+| Released < 0.5 s before (OZ / IZ) | 1% / 5% | 19% 1.67 / 23% 0.81 |
+
+Nearly all of those releases are `past him`. `SHED_PAST` fires when the runner
+reaches the defender. A man who slips his blocker with the runner already on him
+then makes a free, full-reach tackle on the spot.
+
+Without `ONE_ARM_HOLD`, engaged grabs end the block (`grasp` disengages him) and
+stop the runner at about 1.5 yd. The flags-off base falls to 1.81 / 2.82, so
+#415 must be judged with #412 on.
+
+**Change (`SHED_PAST_GATE`, off; needs `SHED_PAST`).** Getting past frees him
+only while the runner he sees is still more than 2 yd off. Closer than that, he
+stays engaged and reaches with his free arm under the one-arm hold. It uses only
+the defender's own runner picture (`read.threat`).
+
+A variant without the shed's throw-aside impulse on the blocker changed nothing
+(2.19 / 3.00) and was dropped.
+
+| Zone | Flags off | Both on | Both + gate | NFL |
+|---|---|---|---|---|
+| hitblk blocked mean yd, OZ / IZ | 2.46 / 4.02 | 2.13 / 2.97 | 2.23 / 3.52 | 3.41 / 3.68 |
+| Deep contacts (> 1 yd behind LOS): shed share | 13% | 18% | 19% | 24% |
+| Deep contacts by a blocked hitter ending ≤ 0 | 49% | 44% | 40% | 43% |
+| Mean yd (capped 20), OZ / IZ | 3.70 / 4.86 | 3.06 / 3.83 | 3.25 / 4.24 | — |
+
+- The gate recovers most of IZ's loss and keeps the deep-backfield gains.
+- OZ still loses 0.2 yd against flags off. Its base is already 1 yd below NFL
+  here, so the OZ comparison waits on Run Game's full stack.
+- The engaged class also falls with both flags (3.05 → 2.47 OZ). A landed hand
+  move cuts the blocker's steer to 10%, which is how a stretch reach carries
+  the man. That is the next thing to look at.
+- These are single runs with no paired standard errors. Run Game's paired
+  tables on its own stack are the evidence to use.

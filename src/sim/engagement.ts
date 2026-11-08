@@ -740,6 +740,11 @@ const RUN_HAND_MOVE = process.env.RUN_HAND_MOVE === '1';
  * off it once the blocker is no longer between him and the runner he sees
  * (see the leverage check in stepRunRep). */
 const SHED_PAST = process.env.SHED_PAST === '1';
+/** Experimental (SHED_PAST_GATE=1, with SHED_PAST; off): getting past frees
+ * him only while the runner he sees is still more than 2 yd off. Slipping the
+ * blocker with the runner already on him leaves him in the block, reaching
+ * with his free arm (docs/reviews/run-shed-release.md, "Release timing"). */
+const SHED_PAST_GATE = process.env.SHED_PAST_GATE === '1';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
@@ -1321,7 +1326,8 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // move has cleared them, or there is no load in them. Until then he stays
   // engaged, and a passing runner meets only his free arm (ENGAGED_REACH).
   const handsClear = (t < e.moveUntil && e.moveOk) || !(e.hands?.normalForce || e.hands?.tangentForce);
-  if (SHED_PAST && shedding && read.threat && handsClear) {
+  if (SHED_PAST && shedding && read.threat && handsClear
+    && (!SHED_PAST_GATE || Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y) > 2)) {
     const u = norm(sub(read.threat.pos, d.pos)), rb = sub(b.pos, d.pos);
     const sep = b.profile.radius + d.profile.radius;
     const ahead = rb.x * u.x + rb.y * u.y, across = Math.abs(rb.x * u.y - rb.y * u.x);
