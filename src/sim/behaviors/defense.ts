@@ -6,6 +6,7 @@
  * reads the play, he executes his pre-snap job; play action can fool him into
  * believing run for longer.
  */
+import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
@@ -126,6 +127,13 @@ const STANCE_TELL = process.env.STANCE_TELL === '1';
 const BACKSIDE_SHOOT = process.env.BACKSIDE_SHOOT === '1', SHOOT_DEPTH = 1.5;
 /** DEF_STANCE: pad level a hand-down lineman keeps coming off the ball, and for how long (s). */
 const DOWN_POSTURE = 0.7, DOWN_LOW_FOR = 0.8;
+/** SINK_LEAD (experimental, off): see PassRusher.sink. Target pad levels are the
+ * engaged requests (run fit 0.85, pass rush 0.6, engagement.ts); the rate is the
+ * world's posture slew (POSTURE_RATE); margin covers one decision beat (s). */
+const SINK_LEAD = process.env.SINK_LEAD === '1', SINK_RUN = 0.85, SINK_PASS = 0.6, SINK_RATE = 2.5, SINK_MARGIN = 0.1;
+/** SINK_LEAD: a blocker within this gap (yd, about an arm and a step) is on him
+ * whatever the closing speed, so a lineman in his stance stays low. */
+const SINK_NEAR = 1.0;
 const EDGE_WIDTH = process.env.EDGE_WIDTH === '1';
 const TELL_WINDOW = 0.3;
 /** How far outside the down blocker's body an edge keeps his own body as he closes (yd). */
@@ -184,7 +192,29 @@ export class PassRusher implements Behavior {
     // DEF_STANCE: out of a hand-down stance he fires out low and stays low into
     // his first contact; standing up, he comes off at ordinary pad level.
     if (a.setStance === 'down' && !a.engagement && (cmd as { posture?: number }).posture === undefined && sim.t < this.getOff + DOWN_LOW_FOR)
-      return { ...cmd, posture: DOWN_POSTURE } as MoveCommand;
+      return SINK_LEAD ? this.sink(a, sim, { ...cmd, posture: DOWN_POSTURE } as MoveCommand) : { ...cmd, posture: DOWN_POSTURE } as MoveCommand;
+    return SINK_LEAD ? this.sink(a, sim, cmd) : cmd;
+  }
+
+  /** SINK_LEAD: a lineman who sees a blocker closing on him lowers his pads in
+   * time to meet him at the pad level he plays blocks with ("low man wins"),
+   * from his own picture of the gap and closing speed; in his stance, with a
+ * blocker an arm and a step away, he stays down rather than rising to wait. Pad level slews at a
+   * finite rate and costs speed (world.ts), so he starts no earlier than the
+   * slew needs. */
+  private sink(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+    if (a.engagement) return cmd;
+    const want = believesRun(sim, a) ? SINK_RUN : SINK_PASS;
+    const have = a.body.support?.posture ?? 0, asked = (cmd as { posture?: number }).posture ?? 0;
+    if (asked >= want) return cmd;
+    const lead = Math.max(0, want - have) / SINK_RATE + SINK_MARGIN;
+    for (const o of sim.offense) {
+      if (!isOL(o)) continue;
+      const p = sim.see(a, o); const dx = p.pos.x - a.pos.x, dy = p.pos.y - a.pos.y, dist = Math.hypot(dx, dy);
+      const gap = dist - a.profile.radius - o.profile.radius; if (gap > 3) continue;
+      const closing = -(dx * (p.vel.x - a.vel.x) + dy * (p.vel.y - a.vel.y)) / Math.max(dist, 1e-6);
+      if (gap <= SINK_NEAR || (closing > 0.3 && gap / closing < lead)) return { ...cmd, posture: want } as MoveCommand;
+    }
     return cmd;
   }
 
