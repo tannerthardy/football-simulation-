@@ -32,3 +32,30 @@ describe('BLITZ_CREEP: a blitzing backer stands where tracked rushers stand', ()
     for (const s of Object.keys(on.def.spots) as DefSlot[]) if (!on.blitzers.includes(s)) expect(on.def.spots[s]!.pos).toEqual(off.def.spots[s]!.pos);
   });
 });
+
+describe('RUN_BLITZ: a called blitz still goes on a run', () => {
+  async function blitzers(flag: string) {
+    vi.stubEnv('RUN_BLITZ', flag); vi.stubEnv('BLITZ_CREEP', '1'); vi.resetModules();
+    const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const { PRESSURE_BY_ID } = await import('../src/playbook/defense.js');
+    let through = 0, n = 0, tagged = 0;
+    for (let seed = 1; seed <= 6; seed++) for (const flip of [false, true]) {
+      const setup: any = nativeTraceSetup({ coverage: 'cover3', concept: 'iz_strong', seed, roster: 7, formation: 'gun_doubles_11', flip });
+      setup.defCall = { ...setup.defCall, pressure: PRESSURE_BY_ID.will_b };
+      const sim: any = new PlaySim(setup); const dir = sim.attackDir(sim.offense[0].team);
+      const bl = sim.defense.filter((d: any) => d.slot.startsWith('LB') && d.behavior?.kind === 'blitz');
+      let best = new Map<any, number>(bl.map((b: any) => [b, Infinity]));
+      while (sim.phase === 'live' && sim.t < 1.5) { sim.tick(); for (const b of bl) { best.set(b, Math.min(best.get(b)!, (b.pos.x - sim.los) * dir)); if (b.tags.has('run-blitz')) tagged++; } }
+      for (const b of bl) { n++; if (best.get(b)! < 0) through++; }
+    }
+    return { through, n, tagged };
+  }
+  it('blitzing backers on inside zone get past the line more often with the flag, and only it tags the attack', async () => {
+    const on = await blitzers('1'), off = await blitzers('0');
+    expect(on.n).toBeGreaterThan(0);
+    expect(on.through).toBeGreaterThan(off.through);
+    expect(off.tagged).toBe(0);
+    expect(on.tagged).toBeGreaterThan(0);
+  }, 120_000);
+});

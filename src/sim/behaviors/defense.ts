@@ -41,6 +41,7 @@ import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, q
 const passFirstOn = () => process.env.PASS_FIRST !== '0';
 /** DB_SLOWPLAY (experimental, off): see ManCoverage.slowPlay. Fraction of the receiver's tempo he gives
  * (NFL off corners on runs, 0.9 of 3 yd/s), cushion he keeps (yd), receiver speed that is a release (of his vmax). */
+const RUN_BLITZ = process.env.RUN_BLITZ === '1';
 const DB_SLOWPLAY = process.env.DB_SLOWPLAY === '1', SLOW_GIVE = 0.3, SLOW_MIN = 1.5, SLOW_SPRINT = 0.75, SLOW_WIDTH = 8;
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
@@ -336,7 +337,18 @@ export class Blitzer implements Behavior {
     if (a.engagement) return stand();
     const live = pursueIfLive(sim, a);
     if (live) return live;
-    if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
+    // RUN_BLITZ (experimental, off): a called blitz still goes on a run. Short
+    // of the line he keeps attacking through his gap to the same point behind
+    // it; through it, he plays the run from the backfield. A blocker who meets
+    // him engages him as ever. NFL box backers who stand within 2.5 yd get
+    // past the line on 29% of runs; ours fitted the gap at the line (3%).
+    if (believesRun(sim, a)) {
+      if (RUN_BLITZ && a.pos.x > sim.los - 0.3) {
+        a.tags.add('run-blitz');
+        return runThrough(a, { x: sim.los - 0.8, y: gapY(sim.offAlign, this.gap, this.gapSign) }, { speed: 1 });
+      }
+      return runFit(a, sim, this.gap, this.gapSign);
+    }
     if (sim.ball.kind === 'air') {
       const spot = catchSpot(a, sim);
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
