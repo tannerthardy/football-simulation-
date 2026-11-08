@@ -603,7 +603,9 @@ export const ZONE_ONBALL = process.env.ZONE_ONBALL === '1';
  * gap he stands in blocks him at the line rather than leaving him to a
  * climber. Tracked uncovered linemen facing a backer under 3.5 yd touch him
  * 72% (inside zone) / 62% (outside) by 1.5 s; with walked-up backers in the
- * sim, 64% of them were untouched by anyone by 1.5 s. */
+ * sim, 64% of them were untouched by anyone by 1.5 s. A backer stacked behind
+ * a down man (within 1 yd of him laterally) stays a second-level man: tracked
+ * blockers take those first only 28-33% of the time, gap mugs 77-87%. */
 export const ZONE_MUG = process.env.ZONE_MUG === '1';
 /** CLIMB_RUNNER_SIDE (default off): a climber fits his backer on the side
  * between the backer and the runner as he sees him, not always the called
@@ -777,7 +779,11 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const zl = [...line, ...wings].sort((p, q) => rel(q) - rel(p));
     const mismatch = (b: Agent, d: Agent) => ZONE_WINGS ? 8 * Math.max(0, d.profile.massKg / b.profile.massKg - 1) : 0;
     const surfaceY = Math.max(...zl.map((o) => Math.abs(o.pos.y - by)));
-    const mugs = ZONE_MUG ? lb.filter((d) => (d.pos.x - sim.los) * sim.attackDir('O') <= 3.0 && Math.abs(d.pos.y - by) <= surfaceY) : [];
+    // A backer stacked behind a down man is that man's to cover, not a front
+    // threat of his own (tracked: blocked first 28-33% vs 77-87% in a gap).
+    const front = dl.filter((d) => d !== sliceEnd && onBall(d));
+    const mugs = ZONE_MUG ? lb.filter((d) => (d.pos.x - sim.los) * sim.attackDir('O') <= 3.0 && Math.abs(d.pos.y - by) <= surfaceY
+      && !front.some((f) => Math.abs(f.pos.y - d.pos.y) <= 1.0)) : [];
     for (const [b, d] of zoneOwnership(zl, [...dl.filter((d) => d !== sliceEnd && onBall(d)), ...mugs], undefined, mismatch,
       new Set([line[0], line[line.length - 1], ...wings]), ZONE_GAP && scheme !== 'draw' && scheme !== 'qbDraw' ? ps : 0)) {
       claimedDL.add(d);
