@@ -21,7 +21,7 @@ import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track 
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
-import { executeRunFit, type RunFitRead } from '../run-fits.js';
+import { executeRunFit, lineRead, pullers, type RunFitRead } from '../run-fits.js';
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
@@ -42,6 +42,8 @@ const passFirstOn = () => process.env.PASS_FIRST !== '0';
 /** DB_SLOWPLAY (experimental, off): see ManCoverage.slowPlay. Fraction of the receiver's tempo he gives
  * (NFL off corners on runs, 0.9 of 3 yd/s), cushion he keeps (yd), receiver speed that is a release (of his vmax). */
 const RUN_BLITZ = process.env.RUN_BLITZ === '1';
+/** END_CHASE (experimental, off): see the edge squeeze; how far into the backfield the chase aims (yd). */
+const END_CHASE = process.env.END_CHASE === '1', CHASE_DEPTH = 1.0;
 const DB_SLOWPLAY = process.env.DB_SLOWPLAY === '1', SLOW_GIVE = 0.3, SLOW_MIN = 1.5, SLOW_SPRINT = 0.75, SLOW_WIDTH = 8;
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
@@ -227,6 +229,19 @@ export class PassRusher implements Behavior {
     // comes to kick him out, rather than riding the down block inside.
     if (onEdge && runStep && Math.sign(man!.vel.y) === Math.sign(sim.ballY - man!.pos.y)) {
       const side = Math.sign(man!.vel.y), h = a.mind.decisionInterval;
+      // END_CHASE (experimental, off): the whole line stepping away with his
+      // man and no puller crossing is a zone step, not a down block: no
+      // kick-out is coming to the spot he would set. He squeezes inside and
+      // upfield behind his man's hip, chasing the play from the backside
+      // (cutback, bootleg, the back's heels). NFL unblocked backside ends on
+      // zone runs cross the line on 68-80% of snaps and are 0.6-0.7 yd in the
+      // backfield by 1.5 s; ours squeezed flat and sat on the line.
+      if (END_CHASE && pullers(sim, a).length === 0 && lineRead(sim, a) === side) {
+        const dir = sim.attackDir(sim.offense[0].team);
+        a.tags.add('end-chase');
+        return track(a, { x: sim.los - dir * CHASE_DEPTH, y: man!.pos.y - side * (a.profile.radius + HIP_GAP) + man!.vel.y * h },
+          { x: 0, y: man!.vel.y }, { speed: 1, gain: 3, facing: Math.PI });
+      }
       const hip = man!.pos.y - side * (a.profile.radius + HIP_GAP);
       const shut = man!.home.y - side * a.profile.radius;
       a.tags.add('key-squeeze');

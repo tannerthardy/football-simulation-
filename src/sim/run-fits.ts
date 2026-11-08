@@ -248,6 +248,8 @@ const GAP_MATCH = process.env.GAP_MATCH !== '0';
 const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
 /** Where a threatened stack backer fills to: a yard off the ball, meeting the runner in the hole. */
 const FILL_DEPTH = 1;
+/** END_CHASE (experimental, off): see the edge fit; how far into the backfield a backside edge chases (yd). */
+const END_CHASE = process.env.END_CHASE === '1', END_CHASE_DEPTH = 1.0;
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */
@@ -473,7 +475,17 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     const homeDepth=sim.defAlign.spots[a.slot as DefSlot]!.pos.x-sim.los;
     const supportDepth=job.kind==='force' && (premesh||seen.pos.x<sim.los-1.6) ? clamp(homeDepth*.55,1.5,6) : .3;
     const fitX = Math.max(sim.los+supportDepth,Math.min(sim.los+2.5,seen.pos.x+1.5));
-    const x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : trail ? Math.min(fitX, Math.max(seen.pos.x, sim.los-3)) : replace ?? fitX;
+    let x = kick ? Math.max(sim.los-.6,kick.pos.x+.5) : trail ? Math.min(fitX, Math.max(seen.pos.x, sim.los-3)) : replace ?? fitX;
+    // END_CHASE (experimental, off; with the edge squeeze in defense.ts): a
+    // backside edge whose line flows away with no puller (no kick-out coming)
+    // squeezes upfield behind it into the backfield, the boot/reverse/cutback
+    // player chasing from the back, rather than at his side of the line.
+    // NFL unblocked backside ends on zone runs are 0.6-0.7 yd in the
+    // backfield by 1.5 s (68-80% cross the line); ours sat at +0.2.
+    if (END_CHASE && job.kind === 'edge' && !kick && replace === undefined && lineRead(sim, a) === -job.side) {
+      x = Math.min(x, sim.los - END_CHASE_DEPTH);
+      a.tags.add('end-chase');
+    }
     // The outside shoulder belongs to a moving runner/surface, not a series
     // of stationary landmarks. Use only the pictures acquired above and
     // retain point and motion together for the existing decision beat.
