@@ -2462,6 +2462,13 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   The tagged seam read is tested as an explicit native install, not added to
   ordinary play-calling frequencies. Existing stick/hook calls use their
   acquired read by default. Changes are a candidate until reviewed.
+- **Recorded test installations:** P019's cutoff protection and the native
+  mirror possession-rally control save route IDs, not route geometry. Their
+  constructor setup now explicitly preserves the historical flat points;
+  throw/catch/rally assertions and deadlines remain unchanged. The new flat
+  has separate current-source native controls. At the next receiver review,
+  prefer fixtures carrying their installed route definitions rather than
+  repeatedly selecting a different play to recover an old clock.
 - **Remaining:** COV-10's other early release shapes; pre-contact release technique
   and concept-specific mandatory releases; private scramble/targeted-flight
   shortcuts; and offensive failed opportunities becoming deflections without
