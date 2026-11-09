@@ -324,3 +324,65 @@ Primary's.
   decides those on the bench (0.22 yd/s for the lower man), so the item 3
   matched-pair gap is a pad-level and leverage question in play.
 - Paired restage tables (Run Game) and whole-game measures are still to come.
+
+#### Integration readiness: `LEG_ALLOMETRY` (2026-11-09)
+
+Tanner, via Run Game: "someone should run all of the tests and make it fully
+ready for integration".
+
+**Candidate.**
+- Branch `claude/quirky-franklin-9lbwbp` @ 3af0a53d (PR #417, stacked on
+  #415).
+- Flag list for this candidate: `LEG_ALLOMETRY=1`. Every other setting is at
+  its default, and every other new flag on this branch (`SHED_PAST_GATE`,
+  `WRAP_FOOT`, `TURF_MU_SCALE`) is at its default.
+- Code: `src/physics/support.ts` `legDrive()` feeds `supportParams.pushForce`,
+  plus one call site in `src/physics/world.ts` (the `TURF_MU_SCALE` path).
+
+**Suites.** Node v22.23.3 (`.nvmrc`), installed from nodejs.org and checked
+against its published SHA-256.
+
+| Suite | Flag off | `LEG_ALLOMETRY=1` |
+|---|---|---|
+| `npm run typecheck` | clean | clean (no runtime dependence) |
+| `npm run build` | exit 0 | exit 0 |
+| `npm test` | 3741 / 3741 | 3731 / 3741 (10 classified below) |
+| `npm run test:integration` | 42 / 42 | 42 / 42 |
+| `baseline:run --candidate` (`sim-play oz_strong cover3 1 7`) | exit 0, receipt mode `candidate`, `LEG_ALLOMETRY "0"` | exit 0, receipt mode `candidate`, `LEG_ALLOMETRY "1"` |
+
+Receipts are in ignored `out/baseline/run-1794191952067-24813.json` (off) and
+`run-1794191953239-24865.json` (on), both at commit 3af0a53d.
+
+**Flag-on failures, classified.** No tests were skipped or loosened.
+
+| Test | n | Class | Why |
+|---|---|---|---|
+| `responsibility-ledger` (M25-P032, M7-P051, R7-P083, S8-P005 ×2) | 5 | stale pin | Named-replay cases that pin exact trajectories from a saved zone set. Any leg-force change moves them. Re-pin on promotion. |
+| `run-hand-control` (pass and run traces) | 2 | stale pin | SHA-256 of a reviewed motor-specific physical trace. |
+| `directional-brace` "preserves the saved accepted collinear execution exactly" | 1 | stale pin | Exact saved execution. |
+| `line-read` "play-side edge replaces … on counter" | 1 | stale pin (sample) | The failing assertion is the non-vacuity guard: the staged counter set must still include a late backside box. Its football contracts above it hold. |
+| `combo-climb-coupled` "collects the backer … side 1" | 1 | law consequence | On side 1 the scraping LB_W (lighter, now relatively stronger) wraps the RB at 2.75 s, 0.08 yd short of the LOS, before the climber collects him. The mirrored side −1 passes. The scene's earned outcome sits near a threshold. It needs the run owner's review on promotion (restage or re-earn), not a code change. |
+
+None is a break in the new mechanism. The mechanism is one multiplicative
+factor on leg drive, so no other behavior can change by construction.
+
+**Controls.**
+
+| Control | Off | On | Source |
+|---|---|---|---|
+| Bench: lopsided s9-39 pair (pair moves toward DE, yd/s), DE pressing / passive | 0.32 / 0.51 | 0.25 / 0.41 | `out/flex/pushbench.mts` |
+| Bench: matched, matched lower pads, bull rush anchored / giving | 0.00 / 0.22 / −0.09 / −0.51 | unchanged | same (equal-mass bodies) |
+| s9-39 DE depth at 1.5 s | 0.75 | 0.67 | `replay-defender.mts` |
+| Engaged LB between + shedding: driven back | 0.86 | 0.81 | `engaged-chase` probe |
+| Eight games, seed 101 (unpaired): YAC mean / p50 | 9.44 / 4.55 | 9.99 / 4.95 | `sim-export` + `measure.py` |
+| Same: pressure ≤ 2 yd before the throw | 0.32 | 0.29 | same |
+| Same: sack-like dropbacks | 4.4% | 4.3% | same |
+| Same: run mean (capped 20) | 4.72 | 4.50 | same |
+
+**Still with Run Game** (its operators and 546-play set):
+- the matched push-back share by 2.0 s against NFL 13%;
+- `stuffbin`, `hitterback`, `pile`, `hitblk`, `deephit`;
+- paired yards, alone and with #415 plus the gate.
+
+**Not yet done:** the full scorecard tier. It is the integration owner's
+verification of the exact combined candidate.
