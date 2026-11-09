@@ -4,6 +4,7 @@
   "flags": {
     "ALIGN_HABIT": "on",
     "ANCHOR_GRADE": "on",
+    "BACKER_TAKEON": "off",
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SHOOT": "off",
@@ -45,6 +46,7 @@
     "HAND_FIGHT": "off",
     "HAND_MOTOR": "off",
     "HELD_SIDE": "on",
+    "HELD_SWING": "off",
     "IN_STRIDE_CATCH": "off",
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
@@ -64,6 +66,7 @@
     "MESH_NFL": "off",
     "MESH_TEMPO": "on",
     "MUG_CALLS": "on",
+    "MUG_PRESSURES": "off",
     "NICKEL_FRONTS": "on",
     "NO_CROSS": "on",
     "OZ_HIP_READ": "on",

@@ -59,6 +59,7 @@
     "WRAP_FOOT": "0",
     "LEG_ALLOMETRY": "0",
     "GAZE": "0",
+    "HELD_SWING": "0",
     "HOLD_SUBSTEPS": "0",
     "IN_STRIDE_CATCH": "0",
     "KEEPER_TORSO": "1",
