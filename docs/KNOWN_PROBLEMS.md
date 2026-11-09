@@ -307,7 +307,7 @@ problem), resolved.
 | [PRO-2](#pro-2) | Pressure arrives too early and from the wrong places | G5 | high | open |
 | [PRO-3](#pro-3) | Interior pairs move as one block | G5 | medium | open |
 | [PRO-4](#pro-4) | The QB doesn't slide away from an edge | G5 | medium | open |
-| [PRO-5](#pro-5) | No pass protection calls | G9 | high | open |
+| [PRO-5](#pro-5) | No pass protection calls | G9 | high | open (rusher read from sight: `PRO_READ`, on) |
 | [COV-1](#cov-1) | Zone defenders barely close while the ball is in the air | G3 | high | paused (#324 diagnosis) |
 | [COV-2](#cov-2) | Too much yardage per attempt and after the catch | G3 | high | open |
 | [COV-3](#cov-3) | Coverage rules and calls not yet complete | G3 | medium | in work (#193) |
@@ -2484,6 +2484,28 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   behavior (`rush` or `blitz`, with a short recognition delay for blitzers)
   instead of what the blockers can see. That breaks the model rule that
   players act on acquired information.
+  - **Fixed by `PRO_READ` (on, 2026-11-09).** The line declares on the men
+    aligned on it, which is visible. After the snap, a man is a rusher once the
+    blocker in his area sees him (`sim.see`) attacking the line, and a man on
+    the line who is seen dropping is let go.
+    - **Contract:** `test/protection.test.ts`. On Sting, the line declares on
+      the end who drops, lets him go, and picks up the A-gap Mike only once
+      he is seen coming. The test fails with `PRO_READ=0`.
+  - **Effect on pressure looks** (704 pass snaps, every pressure call plus a
+    no-pressure control, same seeds):
+    - **Sacks:** 17 → 12.
+    - **A defender within 2 yd of the QB by 2.0 s:** 6 → 0.
+    - **Yards:** +0.56 ± 0.30 yd per play.
+    - **The no-pressure control:** identical.
+  - **Why protection got better rather than worse:** the old read sent the
+    center or a back to a blitzing backer while he was still 2.4–3.5 yd off
+    the ball, because it knew his call. That pulled the center off his help on
+    a tackle, who beat the guard alone by 1.3–1.7 s. Now the center helps
+    until the backer is seen coming.
+  - **Ordinary games** (matched restage, seed 7/11 × 4 shifts):
+    - **Passes:** 233 of 732 changed; +0.61 ± 0.27 yd; sacks 44 → 33;
+      completions 428 → 439; interceptions 29 → 33; time to throw unchanged.
+    - **Runs:** unchanged.
 - **Measure** (#191, `rg3`): on unblocked edge pressures, the same-side tackle
   blocked nobody 86% of the time; NFL 39%. Unblocked edges added about 4
   pressures per 100 dropbacks (PRO-2).
