@@ -258,11 +258,10 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // first, at 6.35, wrapping. The natural tie is on M25-P032; the census rule itself is pinned on the staged case below.
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as
     // well, DT_W alone makes first contact at 3.1, wrapping with it. With the box backer reading before he moves and filling to a pull he sees,
-    // SS alone at 3.45, wrapping with it. With an attacking interior lineman penetrating to the offensive line's
-    // stance line instead of holding just past the line, DT_W alone at 3.35.
+    // SS alone at 3.45, wrapping with it.
     const p = play('R9-P020'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(3.35);
-    expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
+    expect(first.t).toBe(3.45);
+    expect(first.defenders.map(p.slot)).toEqual(['SS']);
   });
 
   it('M7-P051: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
@@ -279,11 +278,15 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // well, LB_W is still alone at 2.9. With the box backer reading before he moves and filling to a pull he sees, LB_W alone at 3.0.
     // With run-read attention (a blocker in front of a run-reading defender and in range is seen on the ordinary
     // delay), DE_S alone at 2.85; with his picture judged from what he saw and held rather than rewound when the
-    // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65. With an
-    // attacking interior lineman penetrating to the offensive line's stance line, LB_W alone at 3.0.
+    // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65.
+    // With the offset back aligned away from the play taking the ball as he crosses the QB's face (wide zone strong,
+    // back 2.3 yd weak), he arrives 0.6-0.8 yd further downhill at 1.6-1.8 s, where DT_S has driven C a yard into the
+    // backfield: DT_S alone at 1.9 (a body collision after his missed tackle at 1.75), where on develop he missed at 1.9.
+    // Merged with develop's wing at its tracked width (#395), DT_S alone at 1.85. With #406 (a box backer drops only
+    // when sure enough of pass; underneath zone holds over a back behind the line), DE_S alone at 2.55.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(3);
-    expect(first.defenders.map(p.slot)).toEqual(['LB_W']);
+    expect(first.t).toBe(2.55);
+    expect(first.defenders.map(p.slot)).toEqual(['DE_S']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
@@ -343,9 +346,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as well,
     // CB_W alone at 3.25. With run-read attention as well, DE_W alone at 2.95; judged from his held picture and with
     // #389's edge key, DE_W alone at 2.9.
+    // With underneath zone defenders holding depth over a back still behind the line before the throw
+    // (flatThreat 'hold'), DE_W misses at 2.9 and CB_W is alone at 3.35.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.9);
-    expect(first.defenders.map(p.slot)).toEqual(['DE_W']);
+    expect(first.t).toBe(3.35);
+    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
@@ -365,9 +370,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // contact at 3.85, wrapping with it; still not a tie. With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step)
     // as well, LB_W alone at 3.0, wrapping with it (5.4 yd, not a score); still not a tie. With the box backer reading before he moves and filling to a pull he sees
     // as well, DT_W alone makes first contact at 2.75, a hit without a wrap; SS wraps first, at 4.25; still not a tie.
+    // With a climber releasing a held backer who has run under him and he can no longer meet (C leaves LB_W for FS at
+    // 2.35), first contact is unchanged and SS wraps first at 4.0 (3.95 yd, was 2.4).
     expect(first.t).toBe(2.75);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 4.25 });
+    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 4 });
     expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('SS');
   });
 

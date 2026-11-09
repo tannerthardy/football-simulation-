@@ -49,9 +49,11 @@ describe('pre-snap alignment contract', () => {
     expect(close.slice(0, 5)).toEqual([]);
     // At the line, a ratchet: a DB pressing an attached end or wing beside the
     // end man (man calls; fitPressStances fits his stance when the play is
-    // staged), and the Over Sam head-up on a wing beside the end's 9 (2017
-    // Colts install). Each fix lowers this ceiling.
-    expect(lineClose).toBeLessThanOrEqual(1986);
+    // staged). Each fix lowers this ceiling (1,986 before the tracked wing width).
+    // The split-back gun sets added 1,446 of the same case (888 before): Gun
+    // Split, Gun Split Close and Gun Split Pro 378 each (DE_S-NB, as Strong
+    // Offset I), Gun Split Twins 312 (DE_S-CB_W).
+    expect(lineClose).toBeLessThanOrEqual(2334);
   });
 
   it('every man defender on a detached receiver ends on the side of him his placement rule chose (spacing never crosses him)', () => {

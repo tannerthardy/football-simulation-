@@ -38,6 +38,9 @@ export interface Behavior {
   /** Current held contact technique's movement intention, separate from the
    * free track advertised to teammates. No achieved motion is implied. */
   contactMotion?(a: Agent, work?: 'reach' | 'runoff' | 'prepare'): Vec2 | null;
+  /** ENGAGED_TECHNIQUE: the engaged run blocker's goal for this rep (engaged-technique.ts). */
+  engagedGoal?(a: Agent, sim: import('./playsim.js').PlaySim, e: Engagement): import('./engaged-technique.js').EngagedGoal | null;
+  reachGoal?(a: Agent, sim: import('./playsim.js').PlaySim, e: Engagement): import('./engaged-technique.js').EngagedGoal | null;
 }
 
 export type RushMove = 'bull' | 'longarm' | 'speed' | 'dip' | 'rip' | 'swim' | 'club' | 'spin' | 'snatch' | 'shed';
@@ -133,6 +136,13 @@ export class Agent {
    * out on a run block. Defenders read it.
    */
   stance: 'high' | 'low' | null = null;
+  /** STANCE_TELL: pre-snap weight lean a lineman shows in his stance, as a
+   * lateral sign (-1, 0, +1). Visible before the snap like his alignment. */
+  stanceLean = 0;
+  /** KEY_REACT: the key's lateral step this lineman saw before contact, and whose. */
+  keyStep: { from: Agent; side: number } | null = null;
+  /** DEF_STANCE: a front defender's pre-snap stance, hand(s) down or standing up. */
+  setStance: 'down' | 'up' | null = null;
   /** True once the agent has made a tackle attempt that missed this play. */
   missedTackles = 0;
   /** Free-form per-play annotations used by stats / replay. */

@@ -24,12 +24,13 @@ import type { Agent, Behavior } from '../agent.js';
 import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
 import { BallCarrier } from './carrier.js';
-import { handoffReach } from '../ball-transfer.js';
+import { GUN_SNAP, handoffReach, snapSecured } from '../ball-transfer.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
 import type { ReplayTelemetryFrame } from '../types.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
+import { screenSpot, type ScreenSpot } from '../screen-spot.js';
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -101,7 +102,8 @@ export class QBPass implements Behavior {
     receiverPriors: ReadonlyMap<Agent, InstalledReceiverRoute>,
   ) {
     const gun = sim.offCall.formation.qb !== 'under';
-    this.snapAt = gun ? 0.3 : 0.1;
+    // GUN_SNAP: his drop starts when the snap is secured in his hands.
+    this.snapAt = gun ? (GUN_SNAP ? snapSecured(a.pos, { x: sim.los, y: sim.ballY }) : 0.3) : 0.1;
     this.drop = dropSpec(concept.drop, a.pos.x, sim.los, gun);
     this.dropY = a.pos.y;
     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.dice('qb', a).normal(0, 0.25);
@@ -122,8 +124,9 @@ export class QBPass implements Behavior {
         seen.add(r);
       }
     }
-    // Anyone else running a route is a late option.
-    for (const o of sim.offense) {
+    // Anyone else running a route is a late option (not on a screen: the
+    // other routes clear coverage).
+    if (this.concept.family !== 'screen') for (const o of sim.offense) {
       if (!seen.has(o) && o.behavior instanceof RouteRunner) {
         this.reads.push(o);
         seen.add(o);
@@ -189,9 +192,11 @@ export class QBPass implements Behavior {
     // Eyes: what he looks at is what he sees; everything else is memory and belief.
     const gaze = this.gazePoint(sim);
     this.mind.observe(gaze);
+    const routeKeys = this.mind.routeKeyPictures();
     for (const [r, forecast] of this.receiverForecasts) {
       const picture = this.mind.receiverLook(r, gaze);
       if (picture) forecast.acquire(picture);
+      if (forecast.prior.read) forecast.readKeys(routeKeys);
     }
     if (this.mind.justIdentified && this.readIdx === 0) this.reads = this.orderReads(sim, this.reads);
 
@@ -277,10 +282,24 @@ export class QBPass implements Behavior {
     const thr = 0.6 - 0.12 * aggression - 0.32 * u;
     const maxInt = 0.025 + 0.05 * aggression + 0.08 * u;
 
+    // A called screen is decided before the snap, so it is not held for an
+    // ordinary low-risk window: with that gate the QB held slip and TE screens
+    // past 2.5 s into the rush (NFL throws at 2.2 and 2.4 s).
+    // - A quick screen is thrown as soon as it is there unless it is dead (a
+    //   man sitting on it or jumping it). Waiting let the defense come to it
+    //   (bunch now thrown at 2.2-3.7 s; NFL quick screens leave at 1.1-1.5 s).
+    // - A slow screen is built to develop: he waits for a good window and takes
+    //   a worse one as the rush closes (the ordinary completion bar, which
+    //   falls with urgency). Taking any 20% window threw TE screens at 1.45 s
+    //   with the end he had just released beside him (TE 1.6 yd from the
+    //   nearest DL at the throw, NFL 5.7; 5 picks, 19 bats in 80 reps).
+    const called = this.concept.family === 'screen';
+    const quick = called && this.concept.screen?.tempo === 'quick';
+    const need = quick ? Math.min(thr, 0.2) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
     // Current read.
     if (read && this.ready(read, sim)) {
       const ev = this.evaluate(a, sim, read, u);
-      if (ev && ev.P >= thr && ev.intRisk <= maxInt) return this.startThrow(a, sim, ev);
+      if (ev && ev.P >= need && ev.intRisk <= risk) return this.startThrow(a, sim, ev);
       if (t - this.readStart > dwell) {
         this.readIdx++;
         this.readStart = t;
@@ -337,8 +356,53 @@ export class QBPass implements Behavior {
   private ready(r: Agent, sim: PlaySim): boolean {
     const rr = r.behavior instanceof RouteRunner ? r.behavior : null;
     if (!rr) return r.behavior.kind === 'route';
+    // A slow screen is thrown once the receiver has settled behind his blockers.
+    if (this.concept.family === 'screen' && rr.route.end === 'settle' && this.concept.screen?.tempo === 'slow') {
+      // Thrown on anticipation as he turns for the ball: NFL slow screens leave
+      // the hand with the receiver still ~2.3-2.9 yd from where he catches it
+      // (BDB 2025, screen_reference), lofted over the rush he let through.
+      const last = rr.path[rr.path.length - 1]?.p;
+      return rr.settled || (!!last && Math.hypot(r.pos.x - last.x, r.pos.y - last.y) < 3.5);
+    }
+    // A quick screen after a sell is thrown to its spot: once the ball,
+    // floated if need be, can get there with the receiver.
+    const to = this.toSpot(sim.qb, sim, r);
+    if (to) return to.lead <= to.float;
     const antic = sim.qb.r('anticipation');
     return sim.t >= rr.breakTime - 0.3 * antic;
+  }
+
+  private spotCache: ScreenSpot | null | undefined;
+  private spotDone = false;
+  /**
+   * Throwing a quick screen to the spot. The QB knows where the call is
+   * caught; he releases so the ball and the receiver get there together, as
+   * NFL quick screens are thrown before the receiver turns to it (tunnel:
+   * thrown at 1.6 s, turn at 1.8 s; flights 0.9-1.1 s,
+   * screen_wr_path_reference.py). The receiver's arrival is his own picture
+   * of his teammate. Only for a receiver who sells first: his early motion
+   * hides the route, so a forecast from what the QB sees points the wrong
+   * way, while a receiver already on his route (bubble) is read from his
+   * motion. Once the receiver reaches the spot, the forecast throw takes over.
+   */
+  private toSpot(a: Agent, sim: PlaySim, r: Agent): { spot: Vec2; lead: number; natural: number; float: number } | null {
+    if (this.concept.family !== 'screen' || this.concept.screen?.tempo !== 'quick' || !this.concept.screen.receiverSell || this.spotDone) return null;
+    if (this.spotCache === undefined) this.spotCache = screenSpot(sim, this.concept);
+    const sp = this.spotCache;
+    if (!sp || sp.receiver !== r) return null;
+    const seen = sim.see(a, r);
+    if (Math.hypot(seen.pos.x - sp.spot.x, seen.pos.y - sp.spot.y) < 1.5) { this.spotDone = true; return null; }
+    const tR = timeToReach({ pos: seen.pos, vel: seen.vel, profile: r.profile, speedScale: r.speedScale }, sp.spot, 0.5);
+    const natural = this.naturalFlight(Math.hypot(sp.spot.x - a.pos.x, sp.spot.y - a.pos.y));
+    return { spot: sp.spot, lead: tR - this.windup(a), natural, float: 1.8 * natural };
+  }
+
+  /** The flight time real QBs use at this distance (2023 tracking: ~0.6 s
+   * under 10 yd, 0.8 s at 15, 1.2 s at 25, 1.8 s at 35, 2.5 s at 45), never
+   * faster than his arm allows. Stronger arms get there a little sooner. */
+  private naturalFlight(d: number): number {
+    const armEdge = clamp((this.armSpeed - 26) / 8, -0.5, 0.5);
+    return (0.38 + 0.022 * d + 0.00065 * d * d) * (1 - 0.12 * armEdge);
   }
 
   private outsidePocket(a: Agent, sim: PlaySim): boolean {
@@ -409,7 +473,28 @@ export class QBPass implements Behavior {
     // Options: the natural ball, a fastball into a tight window, and touch over the top.
     const options: number[] = [T];
     if (range > 15) options.push(T * 1.2);
-    const fastball = Tmin < T * 0.85 ? Math.max(Tmin, T * 0.75) : null;
+    let fastball = Tmin < T * 0.85 ? Math.max(Tmin, T * 0.75) : null;
+    // A slow screen is thrown with a chosen touch, not evaluated like a route
+    // window: he floats it over a rusher in his lane, or to a back still
+    // drifting under it, and puts it on him firm when a defender is closing
+    // on the catch point. NFL screens fly ~0.8 s over 6-10 yd (p25 0.6, p75
+    // 0.9) against ~0.55 s for this natural ball (throw_flight_reference.py).
+    // Quick screens to a receiver on the move keep the natural ball: floated
+    // to a bubble running away, the forecast over the longer flight misses
+    // (lab: bubble 24 -> 13 caught).
+    const to = this.toSpot(a, sim, r);
+    if (to) {
+      pt = { ...to.spot };
+      const tm = minFlightTime(from, { x: pt.x, y: pt.y, z: CATCH_Z }, this.armSpeed) * 1.05;
+      options.length = 0;
+      options.push(clamp(to.lead, Math.max(tm, to.natural), to.float));
+      fastball = null;
+    }
+    if (this.concept.family === 'screen' && this.concept.screen?.tempo === 'slow') {
+      options.length = 0;
+      options.push(this.screenTouch(a, sim, r, pt, T) === 'float' ? Math.max(T * 1.5, T + 0.25) : T);
+      fastball = null;
+    }
 
     let best: ThrowEval | null = null;
     const consider = (Topt: number) => {
@@ -422,6 +507,29 @@ export class QBPass implements Behavior {
     // The fastball only comes out when the natural throw isn't there.
     if (fastball && (!best || (best as ThrowEval).P < 0.6)) consider(fastball);
     return best;
+  }
+
+  /** Float or firm, from what he sees: a rusher in the near half of his
+   * throwing lane (he has to go over him) or a receiver still drifting into
+   * his spot says float; a defender who would reach the catch point within a
+   * beat of a firm ball says firm. */
+  private screenTouch(a: Agent, sim: PlaySim, r: Agent, pt: Vec2, T: number): 'float' | 'firm' {
+    const dx = pt.x - a.pos.x, dy = pt.y - a.pos.y, len = Math.hypot(dx, dy) || 1;
+    let inLane = false, closing = false;
+    for (const d of sim.defense) {
+      if (d.isDown(sim.t)) continue;
+      const seen = this.mind.estimate(d);
+      const along = ((seen.pos.x - a.pos.x) * dx + (seen.pos.y - a.pos.y) * dy) / len;
+      const off = Math.abs((seen.pos.x - a.pos.x) * dy - (seen.pos.y - a.pos.y) * dx) / len;
+      if (along > 0 && along < Math.min(4, 0.45 * len) && off < 1.5) inLane = true;
+      const mover = { pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
+      if (timeToReach(mover, pt, d.profile.reach) + (d.engagement ? 0.5 : 0) < T + 0.35) closing = true;
+    }
+    const seenR = this.mind.estimate(r);
+    const away = (seenR.vel.x * dx + seenR.vel.y * dy) / len;
+    if (inLane) return 'float';
+    if (closing) return 'firm';
+    return away > 1.5 ? 'float' : 'firm';
   }
 
   private window(a: Agent, sim: PlaySim, r: Agent, from: Vec3, point: Vec3, T: number, wind: number, urgency: number): ThrowEval {
@@ -631,6 +739,10 @@ export class QBHandoff implements Behavior {
     private readonly rb: Agent | null,
     private readonly pitchRange = 1.3,
     private readonly keeper = false,
+    /** GUN_MESH: the point on the back's track where the ball goes in. */
+    private readonly ballPoint?: Vec2,
+    /** GUN_SNAP: when he can first give it (snap secured + his handoff action); no installed window. */
+    private readonly secured?: number,
   ) {}
 
   update(a: Agent, sim: PlaySim): MoveCommand {
@@ -649,13 +761,17 @@ export class QBHandoff implements Behavior {
       return a.behavior.update(a, sim);
     }
     const rb = this.rb;
-    if (rb && sim.t >= this.meshTime - 0.15) {
+    if (rb && sim.t >= (this.secured !== undefined ? this.secured : this.meshTime - 0.15)) {
       const d = Math.hypot(rb.pos.x - a.pos.x, rb.pos.y - a.pos.y);
       if (this.pitchRange > handoffReach(a, rb) && d <= this.pitchRange) {
         this.handed = sim.pitchBall(a, rb);
         return stand();
       }
-      if (d <= handoffReach(a, rb)) {
+      // GUN_MESH: the ball goes into his pocket where his track meets it, not
+      // at the first moment he comes within reach on his way there.
+      const bp = this.ballPoint, v = Math.hypot(rb.vel.x, rb.vel.y);
+      const atPoint = !bp || v < .5 || ((rb.pos.x - bp.x) * rb.vel.x + (rb.pos.y - bp.y) * rb.vel.y) / v >= -.25;
+      if (d <= handoffReach(a, rb) && atPoint) {
         this.handed = sim.handoff(a, rb);
         return stand();
       }

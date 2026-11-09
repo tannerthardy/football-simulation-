@@ -14,11 +14,21 @@ import {fatigueFactor,followAccel,type Body} from '../physics/kinematics.js';
 import {previewFreeMovement,type MovementSample} from '../physics/movement-preview.js';
 import {availability,supportParams} from '../physics/support.js';
 import type { Agent } from './agent.js';
+import type { Vec2 } from '../core/vec.js';
 import type {Perceived} from './perception.js';
 import { movementObjective } from './movement-objective.js';
 import { containCoverage } from './coverage-space.js';
 import { localTrafficRoute } from './traffic-route.js';
 
+/** RB_STEER (default off): a ball carrier (or a lead back) whose held
+ * request runs into a teammate first tries bending the same request around him at speed; only
+ * when no bend clears does he slow down or gather. */
+export const RB_STEER = process.env.RB_STEER === '1';
+/** LINE_STEP (default off): headway against a teammate on an announced step
+ * (linemen stepping together on a zone track) is budgeted against where his
+ * step takes him over the closing horizon, not his current speed: the inside
+ * man of a pair steps with his partner instead of waiting on his first step. */
+export const LINE_STEP = process.env.LINE_STEP === '1';
 /** Time a player gives himself to close the gap to a teammate, s. */
 const CLOSE_HORIZON = 0.3;
 /** Gap at which a teammate starts to shape movement, yd. */
@@ -35,6 +45,8 @@ export interface SpacingContext {
   now: number;
   /** Own tactile constraint state, never a teammate's unobserved intention. */
   constrained?: ReadonlySet<Body>;
+  /** LINE_STEP: a teammate's velocity at the closing horizon from his announced step, if any. */
+  calledAhead?: (a: Agent, b: Agent, horizon: number) => Vec2 | null;
 }
 
 type MotionForecast = (command: Intent) => MovementSample[];
@@ -160,6 +172,16 @@ function gatherForMotion(a:Agent, original:Intent, peers:readonly PeerPicture[],
   const clearances=near.map(peer=>sweptClearance(a,samples,peer));
   const worst=Math.min(...clearances);
   if(worst>=0)return original;
+  if(RB_STEER&&(a.behavior.kind==='carrier'||(a.behavior as {plan?:{kind?:string}}).plan?.kind==='lead')){
+    // Bend around the teammate at the requested pace: the smallest bend
+    // that clears every peer and still makes progress along the request.
+    const sp=hypot2(original.vel.x,original.vel.y),h0=Math.atan2(original.vel.y,original.vel.x);
+    for(const off of [.2,-.2,.4,-.4,.6,-.6,.8,-.8]){
+      const h=h0+off,bent:Intent={...original,vel:{x:Math.cos(h)*sp,y:Math.sin(h)*sp}};
+      const path=forecast(bent);
+      if(path.every(sample=>sample.support==='up')&&peers.every(peer=>sweptClearance(a,path,peer)>=0))return bent;
+    }
+  }
   // Yield speed while continuing the turn when that already clears traffic.
   // Maximizing clearance alone favors a full stop even when a moving gather
   // safely follows the same observed peers. Keep posture/facing/skill and let
@@ -308,8 +330,10 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       const current=Math.max(0,(a.vel.x-seen.vel.x)*nx+(a.vel.y-seen.vel.y)*ny);
       const stopping=current*CLOSE_HORIZON+current*current/(2*decel);
       if(gap>Math.max(AWARE_GAP,stopping))continue;
-      // Closing he plans, relative to where the teammate is going now.
-      const rx=vx-seen.vel.x,ry=vy-seen.vel.y;
+      // Closing he plans, relative to where the teammate is going now
+      // (LINE_STEP: where the teammate's announced step takes him).
+      const goes=(LINE_STEP?context?.calledAhead?.(a,b,CLOSE_HORIZON):null)??seen.vel;
+      const rx=vx-goes.x,ry=vy-goes.y;
       const closing=rx*nx+ry*ny;
       // A nearby teammate beside a clean crossing lane is not an obstacle.
       // Check the swept approach before restricting closure; this keeps a
@@ -321,7 +345,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       // speed. Do not assume the blocker, grounded helper or occupied tackler
       // will take half the correction. The world still limits the braking.
       const allowed=Math.sqrt((decel*CLOSE_HORIZON)**2+2*decel*Math.max(0,gap))-decel*CLOSE_HORIZON;
-      limits.push({key:b.idx,nx,ny,speed:allowed+seen.vel.x*nx+seen.vel.y*ny});
+      limits.push({key:b.idx,nx,ny,speed:allowed+goes.x*nx+goes.y*ny});
       if (closing > allowed) {
         const cut = closing - allowed;
         vx -= nx * cut; vy -= ny * cut;
