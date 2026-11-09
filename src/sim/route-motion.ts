@@ -20,10 +20,13 @@ export function routePath(start: Vec2, los: number, outside: number, pts: readon
     let k = 40;
     if (d.y < -1e-6) k = Math.min(k, (last.y - lo) / -d.y);
     if (d.y > 1e-6) k = Math.min(k, (hi - last.y) / d.y);
+    // The called route may already end outside this continuation margin.
+    // Turn up from there; a negative extension retraces the completed route.
+    k = Math.max(0, k);
     const edge = { x: Math.min(endX, last.x + d.x * k), y: last.y + d.y * k };
     if (k < 39) {
       const up = family === 'flat' ? 5 : 40;
-      out.push({ p: edge, s: 0.75 });
+      if (k > 0) out.push({ p: edge, s: 0.75 });
       out.push({ p: { x: Math.min(endX, edge.x + up), y: edge.y }, s: family === 'flat' ? 0.6 : 1 });
     } else out.push({ p: edge, s: 1 });
   }

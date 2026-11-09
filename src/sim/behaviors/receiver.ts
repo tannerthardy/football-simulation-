@@ -9,12 +9,13 @@ import { arriveVelocity, fatigueFactor, type Body, type MoveCommand } from '../.
 import { timeToReach } from '../../physics/reach.js';
 import { availability, supportParams } from '../../physics/support.js';
 import type { HandJoint } from '../../physics/world.js';
-import type { RouteDef, RoutePoint } from '../../playbook/types.js';
+import type { RouteDef, RouteEnd, RoutePoint } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
 
 import { routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
+import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
 
 /** A palm contact, not an outcome of a once-per-snap skill contest. The
  * torso is still a compact body: the small hand slide below is the part of
@@ -83,7 +84,10 @@ export class RouteRunner implements Behavior {
   private pressContact: PressContact | null = null;
   private readonly releasedCorners = new Set<Agent>();
   private converted = false;
-  private readAt: number;
+  private readonly keyMemory = new Map<string, { at: number; picture: RouteKeyPicture }>();
+  private routeEnd: RouteEnd;
+  /** Passive diagnostic state; never shared with the quarterback's forecast. */
+  routeDecision: { at: number; choice: RouteChoice; pictures: readonly RouteKeyPicture[] } | null = null;
   private readonly start: Vec2;
   /** Released from the backfield (2+ yd behind the line), not the line. */
   private readonly fromBackfield: boolean;
@@ -103,8 +107,8 @@ export class RouteRunner implements Behavior {
     this.start = { ...a.pos };
     this.fromBackfield = sim.los - a.pos.x > 2;
     this.effort = routeEffort(route.family, a.r('routeRunning'));
+    this.routeEnd = route.end;
     this.path = this.buildPath(a.pos, route.points, route.end === 'continue');
-    this.readAt = 0.55 + 0.6 * (1 - a.r('awareness'));
     // Break time ≈ distance to the last speed-controlled point at ~85% speed.
     let dist = 0;
     let prev = a.pos;
@@ -119,7 +123,7 @@ export class RouteRunner implements Behavior {
     this.breakTime = startDelay + 0.25 + breakDist / (0.85 * this.effort * a.profile.vmax);
   }
 
-  private buildPath(start: Vec2, pts: RoutePoint[], extend: boolean): PathPoint[] {
+  private buildPath(start: Vec2, pts: readonly RoutePoint[], extend: boolean): PathPoint[] {
     return routePath(start, this.sim.los, this.outside, pts, extend, this.route.family);
   }
 
@@ -135,13 +139,20 @@ export class RouteRunner implements Behavior {
     // does not tell this receiver that his responsibility has ended; the
     // existing catch/assignment transition owns the change to blocking.
 
-    // Option routes read the coverage once.
-    if (!this.converted && sim.t >= this.readAt && this.route.end === 'sitVsZone') {
+    // The installed landmark permits a read, not knowledge of the defensive
+    // call. Awareness already affects the acquired picture's processing lag.
+    const read = installedRead(this.route);
+    const routePictures = !this.converted && read ? this.readKeys(a, sim) : [];
+    if (!this.converted && read && a.pos.x >= sim.los + read.depth) {
       this.converted = true;
-      const misread = sim.dice('route', a).chance(0.15 * (1 - a.r('awareness')));
-      const isMan = sim.defAlign.coverage.man !== misread;
-      if (isMan && this.route.vsMan) {
-        this.path = this.buildPath(this.start, this.route.vsMan, true);
+      const pictures = routePictures;
+      const choice = readRoute(read, { start: this.start, pos: a.pos, los: sim.los,
+        middleY: FIELD_WIDTH / 2, outside: this.outside }, pictures);
+      this.routeDecision = { at: sim.t, choice, pictures };
+      const answer = read.answers.find(p => p.id === choice.answer);
+      if (answer) {
+        this.routeEnd = answer.end;
+        this.path = this.buildPath(this.start, answer.points, answer.end === 'continue');
         this.idx = 0;
         this.skipPassed(a);
       }
@@ -160,7 +171,7 @@ export class RouteRunner implements Behavior {
     const cmd = this.steer(a.body, st, rr, cutSkill);
     this.idx = st.idx;
     if (!cmd) {
-      this.settled = this.route.end !== 'continue';
+      this.settled = this.routeEnd !== 'continue';
       return this.settle(a, sim);
     }
     return ROUTE_CLEAR && this.fromBackfield ? clearLane(a, sim, cmd) : cmd;
@@ -168,7 +179,28 @@ export class RouteRunner implements Behavior {
 
   /** The same waypoint controller is used by the explicitly seeded QB forecast. */
   private steer(body: Body, st: { idx: number }, rr: number, cutSkill: number): MoveCommand | null {
-    return steerRoute(body, st, this.path, this.route.end, this.effort, rr, cutSkill);
+    return steerRoute(body, st, this.path, this.routeEnd, this.effort, rr, cutSkill);
+  }
+
+  /** A route-key look down the stem and across nearby underneath leverage.
+   * This models attention, not head anatomy. Sector membership uses the same
+   * delayed picture as the read, never the target's hidden current position. */
+  private readKeys(a: Agent, sim: PlaySim): RouteKeyPicture[] {
+    for (const d of sim.defense) {
+      const p = sim.see(a, d), dx = p.pos.x - a.pos.x, dy = p.pos.y - a.pos.y;
+      const near = Math.hypot(dx, dy) <= 3;
+      if (!near && (dx <= 0 || Math.abs(dy) > dx * 2)) continue;
+      this.keyMemory.set(d.player.id, { at: sim.t,
+        picture: { id: d.player.id, pos: { ...p.pos }, vel: { ...p.vel }, age: p.age ?? 0 } });
+    }
+    const pictures: RouteKeyPicture[] = [];
+    for (const [id, { at, picture }] of this.keyMemory) {
+      const elapsed = Math.max(0, sim.t - at), age = picture.age + elapsed;
+      if (age > .5) { this.keyMemory.delete(id); continue; }
+      pictures.push({ ...picture, age, pos: { x: picture.pos.x + picture.vel.x * elapsed,
+        y: picture.pos.y + picture.vel.y * elapsed } });
+    }
+    return pictures;
   }
 
   private drill: { at: number; spot: Vec2 } | null = null;
@@ -207,16 +239,16 @@ export class RouteRunner implements Behavior {
 
   private settle(a: Agent, sim: PlaySim): MoveCommand {
     const last = this.path[this.path.length - 1]?.p ?? a.pos;
-    if (this.route.end === 'continue') {
+    if (this.routeEnd === 'continue') {
       // Ran off the end of the route: keep working toward open grass near the sideline.
       return goTo(a, { x: a.pos.x + 3, y: a.pos.y }, { speed: 0.5 });
     }
     // Sit in the window: drift away from the nearest underneath defender.
     let spot = last;
-    if (this.route.end === 'sitVsZone') {
-      let best: Agent | null = null;
+    if (this.routeEnd === 'sitVsZone') {
+      let best: RouteKeyPicture | null = null;
       let bd = Infinity;
-      for (const d of sim.defense) {
+      for (const d of this.readKeys(a, sim).filter(p => p.age <= .5)) {
         const dd = Math.hypot(d.pos.x - last.x, d.pos.y - last.y);
         if (dd < bd) {
           bd = dd;
@@ -225,7 +257,7 @@ export class RouteRunner implements Behavior {
       }
       if (best && bd < 4) spot = { x: last.x, y: clamp(last.y + Math.sign(last.y - best.pos.y || 1) * (4 - bd) * 0.5, 1.5, FIELD_WIDTH - 1.5) };
     }
-    return goTo(a, spot, { speed: 0.6, facing: angleTo(a.pos, sim.qb.pos) });
+    return goTo(a, spot, { speed: 0.6, facing: angleTo(a.pos, sim.see(a, sim.qb).pos) });
   }
 
   /** Remove this technique's constraint before a ball event replaces its

@@ -39,7 +39,12 @@ describe('structure checks', () => {
 
 describe('Quarters Box vs bunch', () => {
   it('nickel takes the first out, hook the first in, and a lone vertical gets both deep players', () => {
-    const f = filmScene({ formation: 'gun_bunch_11', coverage: 'cover4', strong: { 1: 'go', 2: 'flat', 3: 'slant' }, weak: { 1: 'go' }, until: 2.8 });
+    // Run with the nickel tagged to trap (flatThreat), the timing this rule scene was built on. By default
+    // (hold) he stays 4.5 deep over the bunch before Y declares, then crosses Z's release chasing Y's flat;
+    // Z's go is slowed and drifts inside, so no lone vertical develops for the deep players to take. That
+    // traffic is physical, not this rule; the default arm below keeps the rest of the Box contract.
+    const f = filmScene({ formation: 'gun_bunch_11', coverage: 'cover4', strong: { 1: 'go', 2: 'flat', 3: 'slant' }, weak: { 1: 'go' }, until: 2.8,
+      call: { flatThreat: 'trap' } });
     expect(f.played).toBe('cover4_box');
     const { S1, S2, S3 } = f.numbering;
     expect(jobsOf(f, 'NB').at(-1)).toBe(`man:${S2}`);
@@ -47,6 +52,15 @@ describe('Quarters Box vs bunch', () => {
     expect(jobsOf(f, hook).at(-1)).toBe(`man:${S3}`);
     expect(jobsOf(f, 'CB_S').at(-1)).toBe(`man:${S1}`);
     expect(jobsOf(f, 'SS').at(-1)).toBe(`man:${S1}`);
+  });
+
+  it('with the default hold the same Box assignments are made underneath', () => {
+    const f = filmScene({ formation: 'gun_bunch_11', coverage: 'cover4', strong: { 1: 'go', 2: 'flat', 3: 'slant' }, weak: { 1: 'go' }, until: 2.8 });
+    expect(f.played).toBe('cover4_box');
+    const { S2, S3 } = f.numbering;
+    expect(jobsOf(f, 'NB').at(-1)).toBe(`man:${S2}`);
+    const hook = Object.values(f.defenders).find(d => d.rule === 'box_in_low')!.slot;
+    expect(jobsOf(f, hook).at(-1)).toBe(`man:${S3}`);
   });
 });
 

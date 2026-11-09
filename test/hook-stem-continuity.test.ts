@@ -19,8 +19,9 @@ function stage(style: 'match' | 'spot' = 'match') {
     offense: pickOffense(generateTeam(new Rng(21), 'O', 'HOM', { strength: .6 }), '11'),
     defense: pickDefense(generateTeam(new Rng(22), 'D', 'AWY', { strength: .6 }), 'nickel'),
     offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
+    // dropStart 'early': these scenes stage a pass read and test the drop's technique, not when it starts.
     defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3,
-      pressure: null, zoneStyle: style, label: '' }, los: 35, ballY: 24, firstDownX: 45, seed: 4,
+      pressure: null, zoneStyle: style, dropStart: 'early', label: '' }, los: 35, ballY: 24, firstDownX: 45, seed: 4,
   });
   const a = sim.slot('LB_M')!, r = sim.slot('Y')!, b = a.behavior as ZoneCoverage;
   expect(b).toBeInstanceOf(ZoneCoverage);

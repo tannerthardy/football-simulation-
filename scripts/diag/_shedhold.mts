@@ -21,6 +21,7 @@ for (const seed of seeds) for (const p of JSON.parse(readFileSync(`${dir}/seed${
       if (w && !w.done) { if (!e) { w.freed = sim.t - w.t0; w.done = true; } else if (sim.t - w.t0 > 1.0) w.done = true; }
       if (!e || !d.tags.has('shed-attempt')) continue;
       if (!w) win.set(d, { t0: sim.t, slot: d.slot, done: false });
+      { const ww = win.get(d); if (ww && !ww.done && d.tags.has('shed-hands')) ww.landed = true; if (ww && !ww.done && sim.t < e.moveUntil && e.moveOk) ww.inWin = (ww.inWin ?? 0) + 1; }
       const b = e.blocker, j = sim.world.joints.find((j: any) => j.kind === 'hands' && ((j.a === b.body && j.b === d.body) || (j.a === d.body && j.b === b.body)));
       const iv = sim.intents[d.idx]?.vel ?? { x: 0, y: 0 };
       const rel = { x: d.vel.x - b.vel.x, y: d.vel.y - b.vel.y }, relReq = { x: iv.x - b.vel.x, y: iv.y - b.vel.y };
@@ -62,4 +63,5 @@ for (const [lab, f] of [['stuck (<50%)', (s: any) => s.dAlong < .5 * s.reqAbs], 
   console.log(`  ${lab}: request into the blocker cos p25/50/75 ${q(z.map(s => s.into), .25).toFixed(2)}/${q(z.map(s => s.into)).toFixed(2)}/${q(z.map(s => s.into), .75).toFixed(2)} | cos>0.5 ${(100 * z.filter(s => s.into > .5).length / z.length).toFixed(0)}%, cos<0 ${(100 * z.filter(s => s.into < 0).length / z.length).toFixed(0)}% | up ${(100 * z.filter(s => s.dSup === 'up').length / z.length).toFixed(0)}%`); }
 const freed = W.filter(w => w.freed !== undefined);
 console.log(`shed-attempt windows ${W.length}: freed within 1 s ${freed.length} (${(100 * freed.length / Math.max(1, W.length)).toFixed(0)}%), p50 ${q(freed.map(w => w.freed)).toFixed(2)} s`);
+const L = W.filter(w => w.landed); console.log(`hand move landed in ${L.length}/${W.length} windows; freed within 1 s: landed ${L.filter(w => w.freed !== undefined).length}/${L.length}, not landed ${W.filter(w => !w.landed && w.freed !== undefined).length}/${W.length - L.length}`);
 console.log(`holding fouls called ${holdFouls}, holding records ${holdRecords} on ${plays} run plays`);

@@ -1,0 +1,153 @@
+{
+ "source": {
+  "url": "https://github.com/nflverse/nflverse-data/releases/download/combine/combine.csv",
+  "sha256": "5648886b1bb9de8a0c42b05ee7b1d9cbe58897676caaa2f6a4a3d3c9228235bb",
+  "rows": 8968,
+  "downloadedUtc": "2026-11-09",
+  "raw": "data/raw/nflverse-combine/combine.csv (ignored)"
+ },
+ "fits": [
+  {
+   "estimate": "bench 1RM (Epley from 225 lb reps)",
+   "n": 5333,
+   "pooled_b": 0.457,
+   "pooled_ci95": [
+    0.443,
+    0.472
+   ],
+   "within_group_b": 0.438,
+   "within_group_ci95": [
+    0.398,
+    0.481
+   ],
+   "by_group": {
+    "OL": {
+     "n": 980,
+     "b": 0.208
+    },
+    "DL": {
+     "n": 996,
+     "b": 0.432
+    },
+    "LB": {
+     "n": 675,
+     "b": 0.342
+    },
+    "TE": {
+     "n": 354,
+     "b": 0.338
+    },
+    "RB": {
+     "n": 629,
+     "b": 0.462
+    },
+    "WR": {
+     "n": 552,
+     "b": 0.422
+    },
+    "DB": {
+     "n": 1127,
+     "b": 0.611
+    }
+   }
+  },
+  {
+   "estimate": "vertical push-off force m g (1 + h / 0.25 height)",
+   "n": 6745,
+   "pooled_b": 0.628,
+   "pooled_ci95": [
+    0.619,
+    0.636
+   ],
+   "within_group_b": 0.69,
+   "within_group_ci95": [
+    0.667,
+    0.714
+   ],
+   "by_group": {
+    "OL": {
+     "n": 1151,
+     "b": 0.597
+    },
+    "DL": {
+     "n": 1095,
+     "b": 0.528
+    },
+    "LB": {
+     "n": 735,
+     "b": 0.789
+    },
+    "TE": {
+     "n": 388,
+     "b": 0.548
+    },
+    "RB": {
+     "n": 733,
+     "b": 0.744
+    },
+    "WR": {
+     "n": 1006,
+     "b": 0.819
+    },
+    "DB": {
+     "n": 1275,
+     "b": 0.835
+    },
+    "QB": {
+     "n": 362,
+     "b": 0.713
+    }
+   }
+  },
+  {
+   "estimate": "Sayers peak power (reference only)",
+   "n": 6745,
+   "pooled_b": 0.363,
+   "pooled_ci95": [
+    0.355,
+    0.371
+   ],
+   "within_group_b": 0.426,
+   "within_group_ci95": [
+    0.404,
+    0.45
+   ],
+   "by_group": {
+    "OL": {
+     "n": 1151,
+     "b": 0.465
+    },
+    "DL": {
+     "n": 1095,
+     "b": 0.246
+    },
+    "LB": {
+     "n": 735,
+     "b": 0.541
+    },
+    "TE": {
+     "n": 388,
+     "b": 0.295
+    },
+    "RB": {
+     "n": 733,
+     "b": 0.482
+    },
+    "WR": {
+     "n": 1006,
+     "b": 0.563
+    },
+    "DB": {
+     "n": 1275,
+     "b": 0.509
+    },
+    "QB": {
+     "n": 362,
+     "b": 0.506
+    }
+   }
+  }
+ ],
+ "script": "scripts/mechanics/leg_force_allometry.py",
+ "engine_assumption": "src/players/physical.ts power = massKg * (0.55 + 0.75 * strength): b = 1 at a fixed rating"
+}

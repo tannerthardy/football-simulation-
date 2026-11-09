@@ -247,9 +247,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // to SS, is reread to LB_M at 1.7 (still a climb) and to LB_W at 2.1, where the resulting kind is a draw.
     const p = play('M9-P000');
     const threats = changeOf(p, 'RG', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([1.7, 2.1]);
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'RG').map(e => e.t)).toEqual([1.7, 2.1]);
-    expect(threats.map(c => [p.slot(c.before.target), p.slot(c.after.target), c.after.kind])).toEqual([['SS', 'LB_M', 'climb'], ['LB_M', 'LB_W', 'draw']]);
+    // With develop 8696d32a merged (the backer read step and line flow, a climber releasing a held backer), RG is
+    // reread to LB_W at 1.7 and, climbing again, to SS at 2.7; both resulting kinds are climbs.
+    expect(threats.map(c => c.t)).toEqual([1.7, 2.7]);
+    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'RG').map(e => e.t)).toEqual([1.7, 2.7]);
+    expect(threats.map(c => [p.slot(c.before.target), p.slot(c.after.target), c.after.kind])).toEqual([['SS', 'LB_W', 'climb'], ['LB_M', 'SS', 'climb']]);
   });
 
   it('R9-P020: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
@@ -281,13 +283,15 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // well, LB_W is still alone at 2.9. With the box backer reading before he moves and filling to a pull he sees, LB_W alone at 3.0.
     // With run-read attention (a blocker in front of a run-reading defender and in range is seen on the ordinary
     // delay), DE_S alone at 2.85; with his picture judged from what he saw and held rather than rewound when the
-    // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65 (develop
-    // c4fc33d5 and #394 309a9799). With the wing at its tracked width (#395: 1.32 yd outside the end, 0.42 wider), the
-    // back meets DT_S, engaged with RG and sliding weak, behind the line: DT_S alone at 1.85 (ledger scan on #395
-    // merged with #394 309a9799, recorded single stream).
+    // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65.
+    // With the offset back aligned away from the play taking the ball as he crosses the QB's face (wide zone strong,
+    // back 2.3 yd weak), he arrives 0.6-0.8 yd further downhill at 1.6-1.8 s, where DT_S has driven C a yard into the
+    // backfield: DT_S alone at 1.9 (a body collision after his missed tackle at 1.75), where on develop he missed at 1.9.
+    // Merged with develop's wing at its tracked width (#395), DT_S alone at 1.85. With #406 (a box backer drops only
+    // when sure enough of pass; underneath zone holds over a back behind the line), DE_S alone at 2.55.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(1.85);
-    expect(first.defenders.map(p.slot)).toEqual(['DT_S']);
+    expect(first.t).toBe(2.55);
+    expect(first.defenders.map(p.slot)).toEqual(['DE_S']);
   });
 
   it('first carrier contact: every defender at the earliest timestamp, and only those', () => {
@@ -347,9 +351,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step) as well,
     // CB_W alone at 3.25. With run-read attention as well, DE_W alone at 2.95; judged from his held picture and with
     // #389's edge key, DE_W alone at 2.9.
+    // With underneath zone defenders holding depth over a back still behind the line before the throw
+    // (flatThreat 'hold'), DE_W misses at 2.9 and CB_W is alone at 3.35.
     const p = play('R7-P083'), first = p.census[0].firstCarrierContact!;
-    expect(first.t).toBe(2.9);
-    expect(first.defenders.map(p.slot)).toEqual(['DE_W']);
+    expect(first.t).toBe(3.35);
+    expect(first.defenders.map(p.slot)).toEqual(['CB_W']);
   });
 
   it('S8-P005: the same sample is not tied on this source, and the ledger does not invent one', () => {
@@ -369,10 +375,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // contact at 3.85, wrapping with it; still not a tie. With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step)
     // as well, LB_W alone at 3.0, wrapping with it (5.4 yd, not a score); still not a tie. With the box backer reading before he moves and filling to a pull he sees
     // as well, DT_W alone makes first contact at 2.75, a hit without a wrap; SS wraps first, at 4.25; still not a tie.
-    // With the Cover 3 hook seats no longer crossed (Mike middle, Will weak), DT_W alone at 2.75 and wraps with
-    // the contact; still not a tie.
+    // With a climber releasing a held backer who has run under him and he can no longer meet (C leaves LB_W for FS at
+    // 2.35), first contact is unchanged and SS wraps first at 4.0 (3.95 yd, was 2.4).
     expect(first.t).toBe(2.75);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
+    // With the Cover 3 hook seats no longer crossed (Mike middle, Will weak), DT_W alone at 2.75 and wraps with
+    // the contact; still not a tie.
     expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 2.75 });
     expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('DT_W');
   });

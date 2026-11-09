@@ -40,9 +40,11 @@ import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, 
 import { resolveCatchOpportunities } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
+import { ANTICIPATION_PRIOR } from './anticipation-prior.js';
 import { IncidentalCatchReadiness } from './catch-readiness.js';
 import { spaceTeammates } from './spacing.js';
-import { predictCalledMotion } from './called-motion.js';
+import { L2_BREAKDOWN, breakdownForContact } from './breakdown.js';
+import { calledVelocityAhead, predictCalledMotion } from './called-motion.js';
 import { MotionRuntime, motionEnabled, planMotion } from './motion.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
@@ -54,6 +56,8 @@ import { ResponsibilityLedger } from './responsibility-ledger.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
+/** ALIGN_HABIT (experimental, off): see alignDefense. */
+const ALIGN_HABIT = process.env.ALIGN_HABIT === '1';
 export interface PlaySetup {
   offense: Partial<Record<OffSlot, Player>>;
   /** The defense's scouting of this offense (run/pass tendencies so far). */
@@ -112,6 +116,30 @@ interface SnapEvent { t: number; o: Agent; d?: Agent }
 /** Length of the ball: the neutral zone's depth (yd). */
 const BALL_LENGTH = 0.31;
 
+/** Experimental (GAZE=1, off): a player who names what he is watching
+ * (`lookAt`) sees opponents only inside his gaze cone or in contact with him.
+ * Others he knows from his last in-view sighting, projected forward for as
+ * long as his read skill lets him anticipate. Stage 1: chasing defenders only
+ * (docs/reviews/field-of-view-proposal.md). Model assumptions: head turn rate,
+ * neck range and cone half-angle below. */
+const GAZE = process.env.GAZE === '1';
+const GAZE_HEAD_RATE = 6; // rad/s, about 340 deg/s
+const GAZE_NECK = Math.PI / 2; // head within +-90 deg of body facing
+const GAZE_CONE = Math.PI / 2; // seen within +-90 deg of gaze
+/** Anticipation from motion alone helps to about 1.0 s on NFL tracking. */
+const ANTICIPATION_HORIZON = 1.0;
+const ANTICIPATION_MAX_SPEED = 10;
+/** Position group, as the tracking exports name it, for the anticipation prior. */
+const PRIOR_GROUP: Record<string, string> = { QB: 'QB', RB: 'RB', FB: 'RB', WR: 'WR', TE: 'TE', OT: 'OL', OG: 'OL', C: 'OL',
+  EDGE: 'DL', DT: 'DL', LB: 'LB', CB: 'DB', S: 'DB' };
+/** Default responsibilities by observer group, when his controller declares none (`assignedTo`). */
+const DEFAULT_ASSIGNED: Record<string, string[]> = { DB: ['WR', 'TE', 'RB'], LB: ['RB', 'TE', 'QB'], DL: ['OL', 'RB', 'QB'],
+  OL: ['DL', 'LB'], RB: ['LB', 'DL'], TE: ['LB', 'DB', 'DL'], WR: ['DB'], QB: ['DL', 'LB', 'DB'] };
+const PRIOR_HORIZONS = [0.3, 0.6, 1.0, 1.5];
+/** Picture age (s) where experience starts to replace motion, and where it has fully replaced it. */
+const PRIOR_HANDOVER = [0.8, 1.5];
+const angDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+
 export class PlaySim {
   readonly dt = DT;
   readonly rng: Rng;
@@ -158,6 +186,12 @@ export class PlaySim {
   readonly throwSight = new ThrowSight();
   /** Per observer→opponent query (and its delay scale), the tick his latest picture sampled (run-read attention holds it). */
   private sightSamples?: Map<string, number>;
+  /** GAZE: head direction and what each opted-in player is watching. */
+  private gaze = new Map<Agent, { dir: number; t: number; target: Agent; set: number; since: number }>();
+  /** GAZE: last in-view picture per observer>target, with when it was taken. */
+  private sightMemory = new Map<string, { seen: Perceived; at: number; acc?: Vec2; snapT?: number }>();
+  /** GAZE: opponents an observer's own assignment makes his responsibility this play. */
+  private assigned = new Map<Agent, Set<Agent>>();
   readonly trace: ReplayTrace;
   private commandTrace?: CommandTrace;
   /** Optional passive recorder of every offensive blocker's responsibility (docs/COMMAND_TRACE.md). Off unless asked for. */
@@ -268,13 +302,20 @@ export class PlaySim {
     this.trace = new ReplayTrace(setup.recordLevel ?? 'light', this.recordEvery, this.record);
 
     this.offAlign = alignOffense(setup.offCall.formation, setup.offCall.flip, this.los, this.ballY,
-      { kind: setup.offCall.kind, pass: setup.offCall.pass, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
+      { kind: setup.offCall.kind, pass: setup.offCall.pass, run: setup.offCall.run, down: setup.down, distance: Math.abs(setup.firstDownX - setup.los), style: setup.offStyle });
     // The secondary checks its call to the receiver distribution it sees.
     this.defCall = installCoverage(setup.defCall, this.offAlign);
     const defSlots = defense.map(([slot]) => slot);
     // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
     const mass = Object.fromEntries(defense.map(([slot, player]) => [slot, derivePhysical(player).massKg]));
-    this.defStyle = { ...setup.defStyle, mass, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los, personnel: setup.offCall.formation.personnel } };
+    // ALIGN_HABIT (experimental, off): each off-ball defender's personal depth
+    // habit (his own seed) and this snap's placement scatter (the play's).
+    const scatter = ALIGN_HABIT ? Object.fromEntries(defense.map(([slot, player]) => {
+      const snap = this.rng.fork(`align-scatter:${slot}`);
+      const habit = new Rng(`align-habit:${player.id}`).normalClamped(0, .4, -.8, .8);
+      return [slot, { x: habit + snap.normalClamped(0, .6, -1.2, 1.2), y: snap.normalClamped(0, .4, -.8, .8) }];
+    })) : undefined;
+    this.defStyle = { ...setup.defStyle, mass, scatter, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los, personnel: setup.offCall.formation.personnel } };
     this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
 
     const idle: Behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };
@@ -322,10 +363,11 @@ export class PlaySim {
     if (this.motion) ({ offAlign: this.offAlign, defCall: this.defCall, defAlign: this.defAlign } = this.motion.finish(this));
     this.snapX = this.agents.map((a) => a.pos.x);
     this.qbMind = new QBMind(this, qb);
+    this.offCall = this.qbMind.installedChecks(this.offCall);
     if (setup.audibles) {
       this.offCall = this.qbMind.preSnapCheck(this.offCall, { hurry: this.hurry, down: setup.down ?? 1, distance: this.firstDownX - this.los });
-      this.isPass = this.offCall.kind === 'pass';
     }
+    this.isPass = this.offCall.kind === 'pass';
     this.stats.qbRead = this.qbMind.report;
     // What the defense expects, from the formation it sees and the situation.
     const f = this.offCall.formation;
@@ -568,6 +610,132 @@ export class PlaySim {
     return this.bySlot.get(name);
   }
 
+  /** GAZE: `a` is watching `target` this tick (stage 1: a chaser watches his man). */
+  lookAt(a: Agent, target: Agent): void {
+    if (!GAZE) return;
+    const g = this.gaze.get(a);
+    // A lapsed watch starts over: head from body facing, no memories from before.
+    if (g && g.set >= this.t - this.dt - 1e-9) { g.target = target; g.set = this.t; }
+    else this.gaze.set(a, { dir: a.facing, t: this.t, target, set: this.t, since: this.t });
+  }
+
+  /** GAZE: `observer`'s assignment makes these opponents his responsibility (his man, his zone's
+   * receivers, the backs and pullers his fit reads). Replaces the role default for this play. */
+  assignedTo(observer: Agent, targets: Agent[]): void {
+    if (!GAZE) return;
+    this.assigned.set(observer, new Set(targets));
+  }
+
+  private isAssigned(observer: Agent, target: Agent): boolean {
+    const set = this.assigned.get(observer);
+    if (set) return set.has(target);
+    const og = PRIOR_GROUP[observer.player.position], tg = PRIOR_GROUP[target.player.position];
+    return !!og && !!tg && (DEFAULT_ASSIGNED[og] ?? []).includes(tg);
+  }
+
+  /** The prior's context for a remembered picture: the same observables, bins and frame as
+   * scripts/diag/anticipation-bound.py (offense attacks +x, LOS at 0, mirrored to his own sideline). */
+  private priorContext(target: Agent, seen: Perceived, tSeen: number) {
+    const g = PRIOR_GROUP[target.player.position]; if (!g) return null;
+    const up = this.attackDir('O'), vx = seen.vel.x * up, vy = seen.vel.y, sp = Math.hypot(vx, vy);
+    const depth = (seen.pos.x - this.los) * up, wide = seen.pos.y - this.ballY, side = wide >= 0 ? 1 : -1;
+    const hd = sp > 0.3 ? Math.atan2(vy * side, vx) : 0;
+    const key = [g, Math.min(4, Math.floor(sp / 1.5)), Math.floor(((hd + Math.PI) / (2 * Math.PI)) * 8) % 8,
+      depth < 0 ? 0 : depth < 5 ? 1 : depth < 12 ? 2 : 3, Math.abs(wide) < 5 ? 0 : Math.abs(wide) < 13 ? 1 : 2,
+      tSeen < 1 ? 0 : tSeen < 2 ? 1 : 2].join('|');
+    return { key, up, side, ux: sp > 0.3 ? vx / sp : 1, uy: sp > 0.3 ? vy / sp : 0 };
+  }
+
+  /** What `observer` believes the play is: the offense knows its own call; a defender has his own
+   * run/pass read, which play action and draws can make wrong; unsure (or no read) uses no belief. */
+  private believedKind(observer: Agent): 'run' | 'pass' | null {
+    if (observer.team === 'O') return this.isPass ? 'pass' : 'run';
+    const read = observer.recog?.read;
+    return read === 'run' || read === 'pass' ? read : null;
+  }
+
+  /** Experience: the prior's displacement for a picture like this one, interpolated over horizons.
+   * Conditioned on what the observer believes the play is, when he has a belief and the cell exists. */
+  private priorDisplacement(target: Agent, seen: Perceived, tSeen: number, s: number, observer?: Agent): Vec2 | null {
+    const c0 = this.priorContext(target, seen, tSeen); if (!c0) return null;
+    const { key, up, side, ux, uy } = c0;
+    const pooled = key.slice(0, key.lastIndexOf('|')) + '|*', kind = observer ? this.believedKind(observer) : null;
+    const cell = (kind && (ANTICIPATION_PRIOR[`${kind}|${key}`] ?? ANTICIPATION_PRIOR[`${kind}|${pooled}`]))
+      ?? ANTICIPATION_PRIOR[key] ?? ANTICIPATION_PRIOR[pooled];
+    if (!cell) return null;
+    const pts = PRIOR_HORIZONS.map(h => [h, cell[String(h)]] as const).filter(([, v]) => !!v) as [number, [number, number, number]][];
+    if (!pts.length) return null;
+    const lerp = (h: number): [number, number] => {
+      if (h <= pts[0][0]) return [pts[0][1][0] * h / pts[0][0], pts[0][1][1] * h / pts[0][0]];
+      for (let k = 1; k < pts.length; k++) if (h <= pts[k][0]) { const [h0, a] = pts[k - 1], [h1, b] = pts[k], w = (h - h0) / (h1 - h0);
+        return [a[0] + (b[0] - a[0]) * w, a[1] + (b[1] - a[1]) * w]; }
+      const last = pts[pts.length - 1][1]; return [last[0], last[1]];
+    };
+    const [along, across] = lerp(s), c = across * side;
+    return { x: (along * ux - c * uy) * up, y: along * uy + c * ux };
+  }
+
+  /** GAZE: is `target` in `observer`'s view or contact, given his delayed picture of it? */
+  private inView(observer: Agent, target: Agent, picture: Perceived, delay: number): boolean {
+    const g = this.gaze.get(observer)!;
+    if (target === g.target) return true;
+    const e = observer.engagement;
+    if (e && (e.blocker === target || e.defender === target || e.helpers.includes(target))) return true;
+    if (target.engagement && (target.engagement.blocker === observer || target.engagement.defender === observer)) return true;
+    if (this.bond && this.bond.carrier === target && this.bond.tacklers.includes(observer)) return true;
+    if (this.lastStep?.contacts.some(c => (c.i === observer.idx && c.j === target.idx) || (c.j === observer.idx && c.i === target.idx))) return true;
+    if (g.t < this.t) {
+      // The head turns toward the watched man's delayed picture, within the neck range.
+      const w = this.perception.perceive(g.target.idx, delay);
+      const want = Math.atan2(w.pos.y - observer.pos.y, w.pos.x - observer.pos.x);
+      const clamped = observer.facing + clamp(angDiff(want, observer.facing), -GAZE_NECK, GAZE_NECK);
+      const step = GAZE_HEAD_RATE * (this.t - g.t);
+      g.dir = g.dir + clamp(angDiff(clamped, g.dir), -step, step);
+      g.dir = observer.facing + clamp(angDiff(g.dir, observer.facing), -GAZE_NECK, GAZE_NECK);
+      g.t = this.t;
+    }
+    const brg = Math.atan2(picture.pos.y - observer.pos.y, picture.pos.x - observer.pos.x);
+    return Math.abs(angDiff(brg, g.dir)) <= GAZE_CONE;
+  }
+
+  /** GAZE: out of view, his last in-view picture projected for his anticipation horizon. */
+  private remembered(observer: Agent, target: Agent, seen: Perceived): Perceived {
+    const key = `${observer.idx}>${target.idx}`;
+    let m = this.sightMemory.get(key);
+    if (!m || m.at < this.gaze.get(observer)!.since) { m = { seen, at: this.t }; this.sightMemory.set(key, m); }
+    const since = this.t - m.at;
+    // Anticipation bounds measured on NFL tracking with the same operator
+    // (scripts/diag/anticipation-bound.py): from motion alone, constant
+    // acceleration is the best single predictor to about 1.0 s, beyond which
+    // motion stops helping. Skill is the mean of play recognition and awareness.
+    const skill = clamp(0.5 * observer.r('playRecognition') + 0.5 * observer.r('awareness'), 0, 1);
+    const s = Math.min(since, ANTICIPATION_HORIZON), a = m.acc ?? { x: 0, y: 0 };
+    let dx = m.seen.vel.x * s + 0.5 * a.x * s * s, dy = m.seen.vel.y * s + 0.5 * a.y * s * s;
+    const vx = m.seen.vel.x + a.x * s, vy = m.seen.vel.y + a.y * s, sp = Math.hypot(vx, vy);
+    if (sp > ANTICIPATION_MAX_SPEED) { dx = m.seen.vel.x * s; dy = m.seen.vel.y * s; }
+    const moving = since < ANTICIPATION_HORIZON;
+    // The ladder (measured on tracking): frozen picture -> motion projection -> experience prior.
+    // Following motion is basic perception: it saturates at read skill 0.5 (generated players run
+    // 0.3-1.0, so only a hypothetical zero-rated player is frozen). Above 0.5, his experience
+    // (the tracking prior) takes over, but only for opponents his own assignment makes his.
+    const wm = Math.min(1, 2 * skill), hp = PRIOR_HORIZONS[PRIOR_HORIZONS.length - 1], sp2 = Math.min(since, hp);
+    const tSeen = m.at - (m.seen.age ?? 0);
+    const prior = this.isAssigned(observer, target) ? this.priorDisplacement(target, m.seen, tSeen, sp2, observer) : null;
+    // On NFL tracking constant acceleration is the better predictor to about 0.8 s and the context prior
+    // by 1.5 s (Run Game, held out), so experience takes over as the picture ages.
+    const handover = clamp((since - PRIOR_HANDOVER[0]) / (PRIOR_HANDOVER[1] - PRIOR_HANDOVER[0]), 0, 1);
+    const wp = prior ? Math.max(0, 2 * skill - 1) * handover : 0;
+    let pvx = 0, pvy = 0;
+    if (prior && wp > 0 && since < hp) {
+      const ahead = this.priorDisplacement(target, m.seen, tSeen, Math.min(hp, sp2 + 0.1), observer)!;
+      pvx = (ahead.x - prior.x) / 0.1; pvy = (ahead.y - prior.y) / 0.1;
+    }
+    const px = (1 - wp) * wm * dx + (prior ? wp * prior.x : 0), py = (1 - wp) * wm * dy + (prior ? wp * prior.y : 0);
+    const mv = moving ? 1 : 0;
+    return { ...m.seen, pos: { x: m.seen.pos.x + px, y: m.seen.pos.y + py },
+      vel: { x: (1 - wp) * wm * vx * mv + wp * pvx, y: (1 - wp) * wm * vy * mv + wp * pvy }, age: (m.seen.age ?? 0) + since };
+  }
+
   /** What `observer` perceives of `target` (delayed for opponents). */
   see(observer: Agent, target: Agent, delayScale = 1): Perceived {
     if (observer.team === target.team) {
@@ -597,8 +765,19 @@ export class PlaySim {
       delay += 0.15;
       if (sampled !== undefined && sampled <= now) delay = Math.max(attended, Math.min(delay, (now - sampled) * this.dt));
     }
-    const seen = this.perception.perceive(target.idx, delay);
+    let seen = this.perception.perceive(target.idx, delay);
     this.sightSamples.set(key, now - Math.round((seen.age ?? delay) / this.dt));
+    const g = GAZE ? this.gaze.get(observer) : undefined;
+    if (g && g.set >= this.t - this.dt - 1e-9) {
+      if (this.inView(observer, target, seen, delay)) {
+        // Acceleration from two in-view pictures close together, for anticipation.
+        const k = `${observer.idx}>${target.idx}`, prev = this.sightMemory.get(k), dt = prev ? this.t - prev.at : 0;
+        const acc = prev && dt > 1e-6 && dt <= 0.3 + 1e-9
+          ? { x: (seen.vel.x - prev.seen.vel.x) / dt, y: (seen.vel.y - prev.seen.vel.y) / dt } : prev?.acc;
+        this.sightMemory.set(k, { seen, at: this.t, acc });
+      }
+      else seen = this.remembered(observer, target, seen);
+    }
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;
@@ -1079,6 +1258,7 @@ export class PlaySim {
       }
       commandTrace?.at('open-to-ball');
       this.cmds[i] = openToBall(a, this, contained);
+      if (L2_BREAKDOWN && t >= a.snapReadyAt) this.cmds[i] = breakdownForContact(a, this, this.cmds[i]);
       commandTrace?.command(a, 'open-to-ball', this.cmds[i]);
       ledger?.stage('open-to-ball', a, this.cmds[i]);
     }
@@ -1118,7 +1298,8 @@ export class PlaySim {
     spaceTeammates(this.agents, this.intents, (a,b)=>{
       const seen = this.see(a,b), called = a.team === b.team ? b.behavior.calledMotion?.() : null;
       return predictCalledMotion(seen, called, b.profile);
-    },{now:t,constrained});
+    },{now:t,constrained,calledAhead:(a,b,h)=>a.team===b.team
+      ?calledVelocityAhead(this.see(a,b),b.behavior.calledMotion?.(),b.profile,h):null});
     commandTrace?.stage('spacing', this.intents);
     ledger?.stageAll('spacing', this.intents);
     // Contact/spacing controllers cannot wake leg drive before the snap cue.
