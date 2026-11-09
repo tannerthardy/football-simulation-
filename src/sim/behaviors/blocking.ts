@@ -215,7 +215,25 @@ export class PassProtector implements Behavior {
     /** For backs/TEs: release into a route after this time if nobody comes. */
     private readonly releaseTo: (() => Behavior) | null = null,
     private readonly releaseAfter = 1.1,
+    /** A called release (a screen): leave the set on the count even with a man,
+     * releasing the hands; a back or end with a free blitzer still stays in. */
+    private readonly calledRelease = false,
   ) {}
+
+  /** A lineman with a called release sets at his stance depth and blocks his
+   * man like any pass set until the count, then lets him go. NFL released
+   * linemen on RB/TE screens stay ~0.7 yd off the ball and are in contact
+   * with a rusher for ~0.8 s in the first 2 s (screen_ol_reference.py,
+   * rushpath.py in screen-lab.md item 18); letting the rusher by untouched
+   * gave 0.4 s, and free interior rushers reached the QB within 1 s 82% of
+   * the time (NFL 11%). An attached end with a called release (TE screen)
+   * sets the same way: from a tackle's kick set he drifted 3 yd into the
+   * backfield before his release and was carried to 6-7 yd by the end he let
+   * go, where the QB's forecast of his drift floated the ball behind him. */
+  private setDepth(sim: PlaySim, a: Agent): number {
+    const depth = passSetDepth(sim, a);
+    return this.calledRelease && (isOL(a) || !sim.offAlign.spots[a.slot]?.backfield) ? 0 : depth;
+  }
 
   /** Inspect existing protection state without running the coordinator. */
   recordedTarget(a: Agent): number | null {
@@ -229,6 +247,23 @@ export class PassProtector implements Behavior {
     const outside = a.slot === 'LT' || a.slot === 'RT' ? Math.sign(home - sim.ballY) : 0;
     a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside };
     if (sim.t < a.mind.snapDelay) return stand(0);
+    // A called release: a lineman or attached end leaves his man on the count;
+    // a back stays in while a free rusher is coming at him (a blitz kills the screen).
+    const freeRusher = (): boolean => { const r = this.coord.assigned.get(a); return !!r && !r.engagement; };
+    // A lineman lets his rusher by: he leaves once the man he is on is past
+    // his hip toward the quarterback (or has left him), and a beat (0.3 s) after
+    // the count at the latest, so a rusher who stops does not sit in the screen.
+    const pastHip = (): boolean => {
+      const d = a.engagement?.defender ?? this.coord.assigned.get(a);
+      return !d || (a.pos.x - d.pos.x) * sim.attackDir(a.team) > 0.3;
+    };
+    if (this.calledRelease && this.releaseTo && sim.t > this.releaseAfter && sim.carrier === sim.qb
+      && (isOL(a) ? pastHip() || sim.t > this.releaseAfter + 0.3 : !sim.offAlign.spots[a.slot]?.backfield || !freeRusher())) {
+      if (a.engagement) sim.disengage(a.engagement);
+      this.released = true;
+      a.behavior = this.releaseTo();
+      return a.behavior.update(a, sim);
+    }
     if (a.engagement) return stand();
     if (sim.carrier !== sim.qb || !sim.isPass) {
       return stand();
@@ -245,7 +280,7 @@ export class PassProtector implements Behavior {
       // Set: tackles kick, interior sets short; backs hold near the QB.
       const isT = a.slot === 'LT' || a.slot === 'RT';
       const out = Math.sign(home - sim.ballY);
-      const depth = isOL(a) ? passSetDepth(sim, a) : 0;
+      const depth = isOL(a) ? this.setDepth(sim, a) : 0;
       // A back steps up beside the QB's launch point, not toward the line:
       // from under center the QB starts at the line and drops away.
       let set = isOL(a) ? { x: sim.los - lineDepth(0.6, stanceDepth(sim, a)) - depth, y: home + (isT ? out * 0.8 : 0) } : { x: Math.min(qb.pos.x + 1.2, sim.snapX[a.idx] + 1.5), y: qb.pos.y + Math.sign(home - qb.pos.y || 1) * 1.4 };
@@ -267,7 +302,7 @@ export class PassProtector implements Behavior {
     // Kick-slide: gain depth (tackles more than interior), staying on the
     // rusher's line to the QB at punching distance. Make the rusher come to you.
     const isT = a.slot === 'LT' || a.slot === 'RT';
-    const setDepth = passSetDepth(sim, a);
+    const setDepth = this.setDepth(sim, a);
     // Anticipate the rusher's path a beat ahead (better feet read it sooner).
     const lead = 0.15 + 0.2 * traits(a).feet;
     const rp = { x: r.pos.x + r.vel.x * lead, y: r.pos.y + r.vel.y * lead };
@@ -282,7 +317,7 @@ export class PassProtector implements Behavior {
     // shoulder — and let the hands decide the rep.
     let ride = false;
     let cuttingOff = false;
-    if (edgeRusher && isOL(a)) {
+    if (edgeRusher && isOL(a) && !this.calledRelease) {
       const meet = PASS_KICK ? null : cutOffPoint(a, r, qb.pos, contact);
       if (meet) {
         set = { x: meet.x, y: meet.y + out * overset };
@@ -3491,4 +3526,21 @@ function applyCombinationRelease(choice: CombinationProposal, sim: PlaySim, comb
   climberTrace?.blockingChange(climber, previousClimber, 'combination-release', sim);
   keeperTrace?.blockingChange(keeper, previousKeeper, 'combination-release', sim);
   sim.event('block_climb', climber, combo.backer, `${check ? 'check' : 'secured'} ${combo.defender.slot}; ${keeper.slot} stays`);
+}
+
+/**
+ * A run block on a thrown run-pass option. He blocks the run, but until the
+ * ball is out an unengaged lineman keeps within a yard of the line (NFL
+ * 8-3-1): he asks for no more forward speed than brings him to 0.7 yd past
+ * it. Contact begun there may be driven on; once the ball is out he is free.
+ */
+export class RpoRunBlocker extends RunBlocker {
+  override update(a: Agent, sim: PlaySim): MoveCommand {
+    const cmd = super.update(a, sim);
+    const thrown = sim.ball.kind === 'air' || (sim.carrier !== null && sim.carrier !== sim.qb);
+    if (thrown || a.engagement) return cmd;
+    const dir = sim.attackDir(a.team);
+    const cap = Math.max(0, 3 * (0.7 - (a.pos.x - sim.los) * dir));
+    return cmd.vel.x * dir > cap ? { ...cmd, vel: { x: cap * dir, y: cmd.vel.y } } : cmd;
+  }
 }

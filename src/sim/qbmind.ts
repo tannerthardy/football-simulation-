@@ -41,6 +41,8 @@ import type { Coverage, DefSlot, DefensivePlayCall, OffensivePlayCall, PassConce
 import { r01 } from '../players/types.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
+import { screenSpot } from './screen-spot.js';
+import { isOL } from './behaviors/blocking.js';
 
 /**
  * The coverages a quarterback distinguishes: one canonical picture per family
@@ -573,6 +575,66 @@ export class QBMind {
       }
     }
     return call;
+  }
+
+  /**
+   * Checks built into the call, made by every QB whatever his freedom to
+   * change plays: a screen's kill and a run-pass option's pre-snap read.
+   */
+  installedChecks(call: OffensivePlayCall): OffensivePlayCall {
+    return this.rpoRead(call) ?? this.screenKill(call) ?? call;
+  }
+
+  /** What the QB sees outside on a screen: press over the receiver, and the
+   * defenders and receivers outside the box to that side (defenders off the
+   * line and within 9 yd of it), each defender seen with his alignment noise. */
+  private screenLook(concept: PassConcept): { press: boolean; defenders: number; receivers: number } | null {
+    const sim = this.sim;
+    const designed = screenSpot(sim, concept);
+    if (!designed) return null;
+    const r = designed.receiver.pos, side = designed.side, by = sim.ballY;
+    const sig = 0.3 + 1.0 * (1 - this.rec);
+    let press = false, defenders = 0;
+    for (const d of sim.defense) {
+      const x = d.pos.x + sim.dice('qb-mind').normal(0, sig) - sim.los;
+      const y = d.pos.y + sim.dice('qb-mind').normal(0, sig * 0.7);
+      if (x < 2.2 && Math.abs(y - r.y) < 1.5) press = true;
+      // Off the line (a man on the line is a box player), outside the box, short of the deep shell.
+      if ((y - by) * side > 5 && x >= 1.5 && x < 9) defenders++;
+    }
+    const receivers = sim.offense.filter((o) => o !== sim.qb && !isOL(o) && !sim.offAlign.spots[o.slot]?.backfield
+      && (o.pos.y - by) * side > 5).length;
+    return { press, defenders, receivers };
+  }
+
+  /**
+   * Run-pass option, read before the snap: throw the tagged screen unless the
+   * receiver is pressed or the defense has more men outside than receivers
+   * there; otherwise hand off. Thrown, the line still blocks the run.
+   */
+  private rpoRead(call: OffensivePlayCall): OffensivePlayCall | null {
+    if (call.kind !== 'run' || !call.rpo || !call.run) return null;
+    const look = this.screenLook(call.rpo);
+    const throwIt = !!look && !look.press && look.defenders <= look.receivers;
+    this.report.audible = throwIt ? `rpo: ${call.rpo.name}` : `rpo: ${call.run.name}`;
+    if (!throwIt) return { ...call, rpo: undefined };
+    return { ...call, kind: 'pass', pass: call.rpo, rpo: undefined, label: `${call.formation.name} — ${call.run.name} / ${call.rpo.name} (thrown)` };
+  }
+
+  /**
+   * A called quick screen with a press kill: if he sees a defender pressed
+   * over the screen receiver (within ~2 yd of the line and over his
+   * alignment), check to the quick game. Seen with the same alignment noise
+   * as the box count.
+   */
+  private screenKill(call: OffensivePlayCall): OffensivePlayCall | null {
+    const spec = call.kind === 'pass' && !call.run ? call.pass?.screen : undefined;
+    if (!spec || spec.kill !== 'press') return null;
+    if (!this.screenLook(call.pass!)?.press) return null;
+    const quick = this.quickCheck();
+    if (!quick) return null;
+    this.report.audible = `kill to ${quick.name}`;
+    return { ...call, pass: quick, label: `${call.formation.name} — ${quick.name} (kill)` };
   }
 
   /** Quick-game answer to the look: hitches vs. off corners, slants vs. press. */

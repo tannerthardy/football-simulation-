@@ -108,6 +108,44 @@ export interface PassConcept {
   minReceivers?: number;
   /** Play-action fake attached. */
   fake?: string;
+  /** A screen: who catches it and who releases to block for him. */
+  screen?: ScreenSpec;
+}
+
+/**
+ * Blocking jobs for a screen (docs/football-handbook/screens.md). Released
+ * linemen work "out, up, in": the first takes the outermost threat to the
+ * catch, the next the alley, the next anyone chasing from inside. Perimeter
+ * receivers take the defender over them (stalk) or the next one inside
+ * (crack). Targets are chosen live from what each blocker sees.
+ */
+export type ScreenJob = 'out' | 'up' | 'in' | 'stalk' | 'crack';
+
+export interface ScreenBlock {
+  /** 'T' | 'G' | 'C' (the screen side's tackle/guard, or the center), or a receiver number. */
+  who: 'T' | 'G' | 'C' | ReceiverRef;
+  job: ScreenJob;
+}
+
+export interface ScreenSpec {
+  /** The screen receiver. */
+  receiver: ReceiverRef;
+  /** Slow screens are sold as a pass first; quick screens are thrown at once. */
+  tempo: 'quick' | 'slow';
+  /** Called count, seconds after the snap, at which released linemen leave
+   * their pass set (each lineman counts with his own rhythm). */
+  count: number;
+  /** When a screen receiver who sells a block (a back or attached end) leaves
+   * for his route; defaults to just after the linemen's count. */
+  receiverRelease?: number;
+  /** A detached screen receiver who first sells a stalk block (the tunnel's
+   * vertical sell) leaves for his route this many seconds after the snap. */
+  receiverSell?: number;
+  /** Installed kill: the QB checks out of the screen at the line when he sees
+   * this look on the screen receiver ('press': a defender pressed over him,
+   * so there is no cushion to catch and turn in). */
+  kill?: 'press';
+  blocks: ScreenBlock[];
 }
 
 export type RunScheme = 'insideZone' | 'outsideZone' | 'wideZone' | 'splitZone' | 'power' | 'counter' | 'duo' | 'trap' | 'draw' | 'toss' | 'qbDraw';
@@ -141,7 +179,11 @@ export interface OffensivePlayCall {
   flip: boolean;
   kind: 'pass' | 'run';
   pass?: PassConcept;
+  /** The run. On a run-pass option thrown, the run the line still blocks. */
   run?: RunConcept;
+  /** Run-pass option: a run call tagged with this quick screen. The QB picks
+   * one at the line from the look outside (QBMind.rpoRead). */
+  rpo?: PassConcept;
   /** Installed non-contact stalk presentation before the player's normal
    * route/blocking job. Seconds from the snap, not a defender belief timer. */
   receiverBlockLook?: Partial<Record<SkillSlot, { until: number }>>;
