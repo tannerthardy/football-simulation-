@@ -83,6 +83,7 @@
     "RB_STEER": "on",
     "RB_TEMPO": "on",
     "REACH_CARRY": "on",
+    "REACH_CLOSE": "off",
     "REACH_CONTACT": "off",
     "REACH_FLAT": "on",
     "REACH_RACE": "on",
