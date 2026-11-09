@@ -252,3 +252,42 @@ tackler's contact height.
   controls above are read.
 
 **Decision:** Tanner and Primary. Nothing is built.
+
+#### Exponent fit (2026-11-09)
+
+Tanner approved the combine fit. Kaggle authentication was unavailable in this
+session, so it uses nflverse's public combine table instead:
+- 8,968 rows, 2000 onward; sha256 `5648886b…235bb`;
+- raw file ignored under `data/raw/nflverse-combine/`;
+- script `scripts/mechanics/leg_force_allometry.py`;
+- aggregate `data/reviews/mechanics/leg-force-allometry.json`.
+
+Fit: OLS of log(estimate) on log(mass), with bootstrap 95% intervals.
+"Within groups" pools the slope inside position groups, which separates body
+size from position selection; neither removes training selection.
+
+| Estimate of force ∝ mass^b | n | b, pooled | b, within position groups |
+|---|---|---|---|
+| Leg push-off force, m·g·(1 + h/d), d = 0.25·height | 6,745 | 0.63 (0.62–0.64) | 0.69 (0.67–0.71) |
+| Bench 1RM, Epley from 225 lb reps | 5,333 | 0.46 (0.44–0.47) | 0.44 (0.40–0.48) |
+| Sayers peak power (reference only) | 6,745 | 0.36 (0.36–0.37) | 0.43 (0.40–0.45) |
+
+**Reading.**
+- Leg push-off force scales close to mass^(2/3) among NFL prospects, consistent
+  with the strength-normalization literature. The engine's
+  `power = m·(0.55 + 0.75·strength)` assumes b = 1 at a fixed rating.
+- At b ≈ 0.69, a 143 kg lineman against a 111 kg one has a leg-force ratio of
+  about 1.19, not 1.29.
+- The bench index scales even more weakly. Reps at a fixed 225 lb mix strength
+  with endurance, so it is a lower bound for press strength, not a value to
+  adopt.
+
+**Limits.**
+- The push-off depth d is an assumption (0.25 × height).
+- Jump height already reflects each athlete's actual force-to-mass ratio, so
+  the estimate inherits whatever selection makes heavy prospects jump less.
+- Combine athletes are not a random sample of body sizes.
+
+**Proposal.** Leg force ∝ m^0.69 at a fixed strength rating, normalised so a
+reference-mass player keeps today's force. Traction stays ∝ m. Before any
+promotion, run the controls listed above. Decision: Tanner and Primary.
