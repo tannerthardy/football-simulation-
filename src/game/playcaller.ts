@@ -34,6 +34,14 @@ import { motionEnabled } from '../sim/motion.js';
 const FRONT_ALIGN = process.env.FRONT_ALIGN !== '0';
 /** SAM_ON_TE (experimental, off): see the defensive call; share of Over/Even calls with the Sam on the TE. */
 const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_RATE = 0.5;
+/** MUG_CALLS (experimental, off): mug rates [>=1, 2] by package and situation
+ * (1 = 1st, 2 = 2nd, 3 = 3rd/4th and short (< 4), 4 = 3rd/4th and long). NFL 2022
+ * snap frames: a non-lineman 0-1.6 yd off the ball inside the guards. */
+const MUG_CALLS = process.env.MUG_CALLS === '1';
+const MUG_RATES: Record<'nickel' | 'dime', Record<number, [number, number]>> = {
+  nickel: { 1: [.013, .001], 2: [.026, .008], 3: [.072, .023], 4: [.19, .068] },
+  dime: { 1: [.062, .003], 2: [.062, .007], 3: [.105, .011], 4: [.113, .016] },
+};
 /** SHORT_PACKAGE (on; =0 turns it off): a short-yardage package answers the
  * offense's heavy package anywhere on the field, not only at the goal line:
  * goal-line personnel and the Bear at 2 yd or less to go vs 13, 21 or 22
@@ -711,8 +719,15 @@ export class DefensiveCoordinator {
     const strength: DefensivePlayCall['strength'] = !FRONT_STRENGTH ? undefined
       : own.fork('strength').chance(alignStyle(this.team).passingStrength ?? .6) ? 'passing' : 'opposite';
     const mugDraw = own.fork('mug').next();
-    const mug: DefensivePlayCall['mug'] = FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
-      ? mugDraw < .05 ? 2 : mugDraw < .17 ? 1 : undefined : undefined;
+    // MUG_CALLS (experimental, off): nickel and dime mug on every down at the
+    // league's rates by package and situation (rates[0] one or more backers in
+    // an A gap at the snap, rates[1] two; 2022 tracking, rgtools/mugwalk.py).
+    // Whether a mugged backer rushes or bails stays with the pressure call.
+    const mugRates = MUG_CALLS && (personnel === 'nickel' || personnel === 'dime') ? MUG_RATES[personnel][s.down <= 2 ? s.down : s.distance < 4 ? 3 : 4] : null;
+    const mug: DefensivePlayCall['mug'] = mugRates
+      ? mugDraw < mugRates[1] ? 2 : mugDraw < mugRates[0] ? 1 : undefined
+      : FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
+        ? mugDraw < .05 ? 2 : mugDraw < .17 ? 1 : undefined : undefined;
     // SAM_ON_TE (experimental, off): in an Over or Even front the Sam is
     // called on the line on the tight end ("Sam on") or kept off the ball
     // as the front's stack backer. NFL backers over an attached TE stand on
