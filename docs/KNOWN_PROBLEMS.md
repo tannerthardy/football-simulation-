@@ -1138,6 +1138,37 @@ Carried over from the issue register; each was measured on an older develop.
     change, with the grip and consumer radii, then re-run the matched probe.
 
 <a id="tkl-6"></a>
+### TKL-7: A free tackler's whiff is a rating roll, not contact physics
+
+- **Symptom:** before any contact, `attempt()` in `src/sim/tackle.ts` draws a
+  miss with probability `pMiss`. That comes from tackling against
+  elusiveness (scaled by open field), approach quality `q`, an overrun term,
+  carrier speed and a pocket-escape bonus. A body that is there and closing
+  can whiff because a rating gap made the dice say so. This is contrary to
+  the model rule that ratings shape capability and never award the result.
+  The wrap-quality draw (`execution`) after it is the same kind of draw.
+- **Evidence** (Coverage, 2026-11-09, #419 `efe11322`, baseline flags; 300
+  runs per coverage, 6 formations × 7 concepts × 2 fronts × flip × 2 rosters):
+  - Misses are 24–25% of attempts in every coverage. That is 0.31–0.35 misses
+    per run and 0.13–0.15 broken tackles per wrap.
+  - Most 10+ yd runs include a miss or a break. Cover 3: 24 of 26.
+  - On 22 Cover 1 / 2-Man leaks, the fit put an unblocked defender within
+    1.3–3 yd of the carrier at the line; 17 of the 22 then missed or broke.
+  - Example: 2-Man / gun_doubles_11 / power / over / team 0 / seed 1696 /
+    LOS 35 / ballY 23.6. That is a 75-yd TD after LB_W was free at 2.1 yd.
+- **What it should be:** the whiff comes from the bodies:
+  - the carrier's actual cut against the tackler's reach and his ability to
+    redirect in time (speed, balance, traction, the reaction delay of his
+    picture);
+  - the arms' actual reach;
+  - overrun as momentum he cannot shed.
+
+  Ratings enter only through those capacities and the perception delay. TKL-5
+  (reach geometry, #273) is the nearest existing piece.
+- **Not a calibration target:** the PFF band (TKL-1) is secondary and its
+  charting rules are unknown. The BDB 2024 tackling set had a missed-tackle
+  column; that is the place to look for a same-operator reference.
+
 ### TKL-6: An engaged tackler's miss is a flat bonus
 
 - **Symptom:** a defender still engaged with a blocker who tries for the
