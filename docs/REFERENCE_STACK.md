@@ -6,6 +6,33 @@ One combination of experimental flags that Run Game, Defense, Flex and Coverage 
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Code defaults are unchanged.** `on` here means "on in the reference", not "default in the engine". The combined stack is not ready to become the default: together the flags take run yards below the NFL (see Results).
 
+## Current state (run-ref-4 @ develop 0e09c4dc, 2026-11-09)
+
+From `npm run ref:report`; full output in [reviews/run-ref-4-report.md](reviews/run-ref-4-report.md). 1,321 fixed runs, yards capped at 20.
+
+| | Code defaults (all flags off) | Reference | NFL 2022 |
+|---|---|---|---|
+| All runs, yd | 5.19 | 3.56 | |
+| Outside zone yd; runs <= 0 | 4.69; 11% | 2.73; 23% | 3.50; 19% |
+| Inside zone yd; runs <= 0 | 4.40; 15% | 4.46; 14% | 3.73; 14% |
+| Gap runs yd | 5.42 | 3.74 | 4.08 (counter) |
+| 10+ yd runs | 16.7% | 7.8% | 9% |
+| Broken / missed tackles a run | 0.30 / 0.27 | 0.17 / 0.23 | |
+| OZ first contact by a blocked DL | 46% | 53% | 33% |
+| OZ yards when the first hitter is blocked | 3.98 | 1.86 | 3.39 |
+| IZ yards when the first hitter is blocked | 2.82 | 4.16 | 3.58 |
+| Carrier gain after a front-on hit at -1..0 / 0..1 / 1..3 yd | 0.71 / 1.02 / 1.17 | 0.92 / 0.92 / 0.78 | 2.16 / 2.51 / 2.59 |
+| Second / third defender arrives | 66% / 34% | 70% / 41% | 80% / 43% |
+| DL depth at 2.0 s | +0.43 | +0.73 | +0.70 |
+| IZ / OZ line stepping one way by 0.6 s | 82% / 100% | 94% / 97% | 78% / 97% |
+| OZ OL lateral speed at 0.5 s (yd/s) | 1.60 | 1.85 | 2.25 |
+| Backside end depth at 1.5 s, OZ | +0.09 | -0.47 | -0.70 |
+| Gun handoff time, by concept (s) | 0.9-1.4 | 1.10 all | 1.0-1.1 |
+
+Two things this table says:
+- **The code defaults are now the outlier.** With every experimental flag off the engine runs for 5.19 yd a carry with 16.7% of runs going 10+; the reference is at 3.56 and 7.8%. Games, the scorecard and the test suites all run on the defaults. Promoting the stack to default (item 8 below) has become the largest single correction available.
+- **Outside zone's missing yard has a signature.** A blocked defensive lineman makes first contact on 53% of outside-zone runs (NFL 33%), and those runs gain 1.86 yd (NFL 3.39). The back is running into engaged linemen on a line that does not move its men (Run Game's flat line and missing climbs).
+
 ## Use it
 
 ```sh
@@ -17,16 +44,19 @@ npm run ref -- --list
 
 `ref` sets every listed flag explicitly, so nothing leaks in from the shell. Report a measurement as "run-ref-1 @ commit" plus any `--flag` changes. A new flag must be added to the stack file (as `off`) in the commit that adds it.
 
-The matched run set and paired comparison:
+The standard report, which every lane should quote:
 
 ```sh
-for s in 7 9 11 13 15 17 19 21 23 25 27 29; do node --import tsx scripts/diag/edge/capture-runs.ts $s --label $s-run; done   # 1,321 runs, code defaults
-npm run -s ref -- --off -- node --import tsx scripts/diag/ref-replay.mts off
-npm run -s ref -- node --import tsx scripts/diag/ref-replay.mts ref
-python3 -I scripts/diag/ref-compare.py off ref
+npm run ref:report                                   # all flags off vs the reference: yards, tackles, eight operators with the NFL beside them
+npm run ref:report -- --flag GAP_CLIMB=0             # adds a "candidate" arm (the stack with that change), paired against the reference
+npm run ref:report -- --skip-operators               # yards and tackles only
 ```
 
-One arm takes about 5 CPU-minutes. Operators: [`scripts/diag/run-operators/README.md`](../scripts/diag/run-operators/README.md), with `npm run -s ref --` in place of `baseline:run`.
+It takes about 7 minutes (4 with `--skip-operators`) and writes `out/ref/report.md`. The play set is fixed: `runSet` in the stack file names the commit that captured it (1b5415de) and a digest of its play list; if `out/matched-restage` does not hold that set, the command rebuilds it from that commit in a temporary worktree. NFL numbers come from `scripts/diag/run-operators/nfl-2022.txt`, so no raw data is needed. Quote the first line of the report (stack id and commit) with any number.
+
+A capture's bytes are not its identity: the same game can save a setup to different bytes on another run (shared references in the serialized stream; 1 in 16 under load for seed 13) while restoring to an equal setup that replays identically. Compare play ids and calls, never file hashes.
+
+Operators one at a time: [`scripts/diag/run-operators/README.md`](../scripts/diag/run-operators/README.md), with `npm run -s ref --` in place of `baseline:run`.
 
 ## Decisions
 
@@ -169,6 +199,31 @@ What to take from it:
 - Outside zone's reach pace: Flex's lone-body bench shows the body can make the NFL's 2.25 yd/s at 0.5 s; the remaining 0.2 yd is at the centre and backside in the snap / first-step stage, which is Run Game's. A burst request was tried and dropped (OZ -0.38).
 
 On `run-ref-4` at this commit (1,321 runs): all 3.56 yd under 20, runs <= 0 15.6%, 10+ runs 7.8% (NFL 9%); OZ 2.73 with 23% <= 0 (NFL 3.50, 19%); IZ 4.46 with 14% <= 0 (NFL 3.73, 14%); gap 3.74 (NFL counter 4.08).
+
+## Pass panel, the broken-tackle rise explained, #405 (2026-11-09)
+
+**Coverage's pass panel** (`run-ref-1` at develop 8696d32a, 732 dropbacks an arm, same snaps; before #408, #424 and #428). No flag needs to come out of the stack on pass evidence.
+
+| Arm | yd / play | Completions | Sacks | INT | Time to throw | Reference minus arm (yd) |
+|---|---|---|---|---|---|---|
+| reference | 9.46 | 406 | 40 | 35 | 2.63 | |
+| all off | 9.54 | 420 | 53 | 21 | 2.50 | -0.08 ± 0.61 |
+| minus `GUN_SNAP` | 9.99 | 426 | 43 | 34 | 2.59 | -0.53 ± 0.48 |
+| minus `TIGHT_OFF` | 9.19 | 400 | 40 | 37 | 2.62 | +0.27 ± 0.17 |
+| minus `SLOT_LEV` | 9.40 | 405 | 40 | 36 | 2.63 | +0.06 ± 0.08 |
+| minus `ALIGN_HABIT` | 9.33 | 408 | 38 | 38 | 2.62 | +0.13 ± 0.40 |
+| minus `RUN_CONFIRM` | 9.35 | 404 | 39 | 35 | 2.63 | +0.10 ± 0.09 |
+| minus `LB_READ_STEP` | 9.65 | 409 | 39 | 34 | 2.63 | -0.20 ± 0.16 |
+| minus Defense's 22 | 9.56 | 411 | 45 | 32 | 2.61 | -0.11 ± 0.46 |
+| minus Run Game's 60 | 10.10 | 420 | 46 | 26 | 2.52 | -0.65 ± 0.59 |
+
+The stack as a whole is neutral on pass yards and lowers sacks (53 -> 40). **Interceptions rise with the stack** (21 -> 35 on 732, about 2 SE): not the six named flags, mostly not Defense's set, and it returns to 26 without Run Game's set. Logged for G4; Coverage will narrow it within Run Game's flags after measuring #408 with #424.
+
+**The broken-tackle rise from `ONE_ARM_HOLD` is the mechanism working, not a bug** (Flex, `run-ref-3` at 6c0bd5c0, 1,328 runs; `docs/reviews/contact-to-whistle.md`, probe `scripts/diag/tackle-finish/one-arm-grabs.mts`). Broken tackles a run 0.063 -> 0.166; misses unchanged (0.242 -> 0.247). The rise is block-origin breaks, 9 -> 134, every one a one-armed grab and 124 of them by a man still engaged with his blocker. Of 663 one-armed grabs, 359 hold to the tackle, 170 become a two-arm wrap once off the block, and 134 (20%) break when the peak load reaches the grip's capacity (no dice). Before #412 the same grab became a two-arm wrap from inside a block and ended the run. Two consequences: the sim's "broken tackle" count now includes arm grabs that NFL charting would call a miss or not chart, so missed + broken a run is not comparable with G1's band until the counter separates engaged grabs; and the open question is whether 20% is the right breaking share, which needs a tracking reference (yards after a blocked defender's first contact), not a capacity change.
+
+**#405 `FLOW_INTERCEPT`** (Defense) is merged, off, and off in the stack: on `run-ref-3` paired -0.02 yd (SE 0.09), OZ box-defender lateral at 1.5 s 2.16 -> 2.28 (NFL 3.40). Kept as a parked mechanism.
+
+**PHY-3** (Flex, #432): the gait law ignores hip facing, so a square shuffle is as fast as an open-hip run; lateral starts are too easy, not too slow. In `docs/KNOWN_PROBLEMS.md`, bench `scripts/diag/lateral-start-bench.mts`.
 
 ## What to do next
 

@@ -97,3 +97,38 @@ npm run -s ref -- --flag ZONE_PAIR=0 [--flag HELD_SWING=1] -- node --import tsx 
 python3 -I scripts/diag/run-operators/hitterback.py <arm>.zone.jsonl   # also pile.py; stuffbin.py and deephit.py take "OUTSIDE ZONE,INSIDE ZONE" first
 python3 -I scripts/diag/ref-compare.py off <arm>
 ```
+
+## After the merge: the broken-tackle rise is one-armed grabs from inside a block
+
+Integration's check on run-ref-3 (#431) found broken tackles per run
+0.067 → 0.154 with this merge, and `ONE_ARM_HOLD=0` reverses it. Every
+broken tackle and every one-armed grab on the same 1,328 matched runs
+(run-ref-3 @ develop 6c0bd5c0; `scripts/diag/tackle-finish/one-arm-grabs.mts`):
+
+- **All of the rise is one kind of hold.** Broken tackles per run are 0.063
+  with `ONE_ARM_HOLD=0` and 0.166 with it on.
+  - Block-origin breaks go 9 → 134, all one-armed at the break, 124 of them
+    still engaged with their blocker.
+  - Breaks of reaches, lunges, dives and form tackles barely move: 75 → 87.
+  - Misses do not move (0.242 → 0.247).
+- **What one-armed grabs achieve:** there are 663 grabs.
+  - 359 hold one-armed until the play ends in a tackle.
+  - 170 become a two-arm wrap once the tackler is off his block (median after
+    0.55 s).
+  - 134 (20%) break.
+  - The carrier slows from a median 4.04 to 2.29 yd/s within 0.3 s, and half
+    lose more than 1 yd/s.
+- **The breaks are physical.** Peak load reaches the grip's capacity (median
+  load/capacity 1.00). The runner pulls through, and no dice are involved.
+- **Before the merge, the same grab ended the run.** The two-arm wrap formed
+  from inside a block, which one arm cannot do. On the 125 plays with a broken
+  one-arm grab, paired yards are +3.55.
+
+**Reading:** this is the stated risk of #412, not a bug in it. An arm grab from
+inside a block either drags the runner down or he runs through it. The sim
+calls the second case a broken tackle. NFL charting (PFF) would often call it a
+missed tackle or not chart it, so missed + broken per run is not comparable to
+that band until the counter separates engaged grabs. The open question is
+whether 20% is the right breaking share. That needs a reference, such as
+yards after a blocked defender's first contact on tracking, not a capacity
+change.

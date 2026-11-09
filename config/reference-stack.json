@@ -1,6 +1,25 @@
 {
   "schemaVersion": 1,
   "id": "run-ref-4",
+  "runSet": {
+    "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
+    "seeds": [
+      7,
+      9,
+      11,
+      13,
+      15,
+      17,
+      19,
+      21,
+      23,
+      25,
+      27,
+      29
+    ],
+    "plays": 1321,
+    "digest": "f0a8e75b862048301cd3c1f9a63211f441da573f2108146230a75d8ef82377a4"
+  },
   "flags": {
     "ALIGN_HABIT": "on",
     "ANCHOR_GRADE": "on",
@@ -39,6 +58,7 @@
     "FB_PLAYSIDE": "on",
     "FEET_SETTLE": "on",
     "FLAT_PRESS": "on",
+    "FLOW_INTERCEPT": "off",
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "GUN_MESH": "on",
