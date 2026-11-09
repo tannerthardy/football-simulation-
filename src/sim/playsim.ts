@@ -139,6 +139,9 @@ const PRIOR_HORIZONS = [0.3, 0.6, 1.0, 1.5];
 /** Picture age (s) where experience starts to replace motion, and where it has fully replaced it. */
 const PRIOR_HANDOVER = [0.8, 1.5];
 const angDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+/** Default on (RELEASE_REDECIDE=0 for comparison): a player whose block ends
+ * during the engagement update decides again in the same step (PlaySim.tick). */
+const RELEASE_REDECIDE = process.env.RELEASE_REDECIDE !== '0';
 
 export class PlaySim {
   readonly dt = DT;
@@ -1216,6 +1219,33 @@ export class PlaySim {
     return this.commandTrace?.isCollecting(a) ? this.commandTrace : undefined;
   }
 
+  /** One player's decision for this step, through containment, coverage
+   * orientation and opening to the ball, into this.cmds. */
+  private decide(i: number, t: number): void {
+    const a = this.agents[i];
+    const commandTrace = this.commandTrace, ledger = this.responsibility;
+    commandTrace?.at('decision');
+    const owner = a.behavior, before = commandTrace?.decisionStart(a, this);
+    // Reaction delays control, not collisions: he can still be pushed.
+    const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
+    commandTrace?.decisionEnd(a, owner, before, command, t >= a.snapReadyAt, this);
+    ledger?.decision(a, owner, command, t >= a.snapReadyAt);
+    const coverage = a.behavior.kind === 'man' || a.behavior.kind === 'zone';
+    let contained = coverage ? containCoverage(a, command) : command;
+    commandTrace?.command(a, 'containment', contained);
+    ledger?.stage('containment', a, contained);
+    if (coverage) {
+      contained = coverageOrientation(a).steer(a, t, this.dt, contained);
+      commandTrace?.command(a, 'coverage-orientation', contained);
+      ledger?.stage('coverage-orientation', a, contained);
+    }
+    commandTrace?.at('open-to-ball');
+    this.cmds[i] = openToBall(a, this, contained);
+    if (L2_BREAKDOWN && t >= a.snapReadyAt) this.cmds[i] = breakdownForContact(a, this, this.cmds[i]);
+    commandTrace?.command(a, 'open-to-ball', this.cmds[i]);
+    ledger?.stage('open-to-ball', a, this.cmds[i]);
+  }
+
   tick(): void {
     const t = this.t;
     const commandTrace = this.commandTrace;
@@ -1239,29 +1269,7 @@ export class PlaySim {
 
     // Decide.
     this.presentedFakeRunners.clear();
-    for (let i = 0; i < this.agents.length; i++) {
-      const a = this.agents[i];
-      commandTrace?.at('decision');
-      const owner = a.behavior, before = commandTrace?.decisionStart(a, this);
-      // Reaction delays control, not collisions: he can still be pushed.
-      const command = t < a.snapReadyAt ? { vel: { x: 0, y: 0 }, facing: a.facing } : a.behavior.update(a, this);
-      commandTrace?.decisionEnd(a, owner, before, command, t >= a.snapReadyAt, this);
-      ledger?.decision(a, owner, command, t >= a.snapReadyAt);
-      const coverage = a.behavior.kind === 'man' || a.behavior.kind === 'zone';
-      let contained = coverage ? containCoverage(a, command) : command;
-      commandTrace?.command(a, 'containment', contained);
-      ledger?.stage('containment', a, contained);
-      if (coverage) {
-        contained = coverageOrientation(a).steer(a, t, this.dt, contained);
-        commandTrace?.command(a, 'coverage-orientation', contained);
-        ledger?.stage('coverage-orientation', a, contained);
-      }
-      commandTrace?.at('open-to-ball');
-      this.cmds[i] = openToBall(a, this, contained);
-      if (L2_BREAKDOWN && t >= a.snapReadyAt) this.cmds[i] = breakdownForContact(a, this, this.cmds[i]);
-      commandTrace?.command(a, 'open-to-ball', this.cmds[i]);
-      ledger?.stage('open-to-ball', a, this.cmds[i]);
-    }
+    for (let i = 0; i < this.agents.length; i++) this.decide(i, t);
 
     // Intents: the decisions, refined by the techniques that own contact.
     for (let i = 0; i < this.agents.length; i++) {
@@ -1274,7 +1282,27 @@ export class PlaySim {
     commandTrace?.stage('technique-intents', this.intents);
     ledger?.stageAll('technique-intents', this.intents);
     commandTrace?.at('engagement');
+    const engagedBefore = RELEASE_REDECIDE ? this.agents.map((a) => !!a.engagement) : null;
     updateEngagements(this, this.intents);
+    // A player whose block ended in this update (he shed it, or it was given
+    // up) knows he is free: he decides again now, rather than carrying the
+    // command he gave while engaged (usually a standstill) through the rest
+    // of the step. Half of all block releases otherwise stood still for a step.
+    if (engagedBefore) for (let i = 0; i < this.agents.length; i++) {
+      const a = this.agents[i];
+      if (!engagedBefore[i] || a.engagement || t < a.snapReadyAt) continue;
+      // Technique requests this decision makes (a dive, a lunge) belong to
+      // this step's intent, as an ordinary decision's do, and must not wait in
+      // the maps for the next step. Requests already there came from the
+      // engagement update and keep their ordinary timing.
+      const priorDive = this.dives.get(a), priorLunge = this.lunges.get(a);
+      this.decide(i, t);
+      const dive = this.dives.get(a), lunge = this.lunges.get(a);
+      const newDive = dive !== priorDive ? dive : undefined, newLunge = lunge !== priorLunge ? lunge : undefined;
+      if (newDive) { if (priorDive) this.dives.set(a, priorDive); else this.dives.delete(a); }
+      if (newLunge) { if (priorLunge) this.lunges.set(a, priorLunge); else this.lunges.delete(a); }
+      this.intents[i] = newDive || newLunge ? { ...this.cmds[i], dive: newDive, lunge: newLunge } : { ...this.cmds[i] };
+    }
     commandTrace?.stage('engagement', this.intents);
     ledger?.stageAll('engagement', this.intents);
     commandTrace?.at('tackle-bond');
