@@ -17,6 +17,14 @@ const WING = 1.9;
 // and 0.5 yd behind him. Empty and pistol use their own placements.
 const GUN_RB_SPLIT = 2.3;
 const GUN_RB_DEPTH = 5.5;
+// Split-back gun: a back on each side of the QB, about level with him. In
+// 2022 tracking (weeks 1-9, 291 shotgun snaps with one back on each side of
+// the QB), backs set a median 2.45 yd beside the QB and 0.16 yd deeper than
+// him; a TE back sets 0.95 yd shallower than an RB back (3.9 against 4.9 yd
+// off the ball). Depths here hang off the sim's 5.0 yd gun QB.
+const SPLIT_BACK = 2.45;
+const SPLIT_DEPTH = 5.2;
+const SPLIT_TE_DEPTH = SPLIT_DEPTH - 0.95;
 
 export const FORMATIONS: Formation[] = [
   // ---------------------------------------------------------------- 11
@@ -68,6 +76,28 @@ export const FORMATIONS: Formation[] = [
       Z: { side: 'R', split: 'wide', depth: ON },
       Y: { side: 'R', split: 'slot', depth: OFF },
       RB: { side: 'R', split: 'slot2', depth: OFF },
+    },
+  },
+  // Split backs, 11: the second back is the slot receiver (the most common
+  // 2022 split-back gun look) or the tight end (Y-off).
+  {
+    id: 'gun_split_11', name: 'Gun Split', personnel: '11', qb: 'gun', tags: ['split-backs'],
+    slots: {
+      X: { side: 'L', split: 'wide', depth: ON },
+      Y: { side: 'R', split: 'inline', depth: ON },
+      Z: { side: 'R', split: 'wide', depth: OFF },
+      RB: { side: 'L', split: SPLIT_BACK, depth: SPLIT_DEPTH },
+      H: { side: 'R', split: SPLIT_BACK, depth: SPLIT_DEPTH },
+    },
+  },
+  {
+    id: 'gun_split_yoff_11', name: 'Gun Split Y-Off', personnel: '11', qb: 'gun', tags: ['split-backs'],
+    slots: {
+      X: { side: 'L', split: 'wide', depth: ON },
+      H: { side: 'L', split: 'slot', depth: OFF },
+      Z: { side: 'R', split: 'wide', depth: ON },
+      RB: { side: 'L', split: SPLIT_BACK, depth: SPLIT_DEPTH },
+      Y: { side: 'R', split: SPLIT_BACK, depth: SPLIT_TE_DEPTH },
     },
   },
   {
@@ -145,6 +175,16 @@ export const FORMATIONS: Formation[] = [
     },
   },
   {
+    id: 'gun_split_12', name: 'Gun Split Close', personnel: '12', qb: 'gun', tags: ['split-backs', 'heavy'],
+    slots: {
+      X: { side: 'L', split: 'wide', depth: ON },
+      Y: { side: 'R', split: 'inline', depth: ON },
+      Z: { side: 'R', split: 'wide', depth: OFF },
+      RB: { side: 'L', split: SPLIT_BACK, depth: SPLIT_DEPTH },
+      H: { side: 'R', split: SPLIT_BACK, depth: SPLIT_TE_DEPTH },
+    },
+  },
+  {
     id: 'pistol_12', name: 'Pistol Twin TE', personnel: '12', qb: 'pistol', tags: ['pistol', 'heavy'],
     slots: {
       X: { side: 'L', split: 'wide', depth: OFF },
@@ -183,6 +223,37 @@ export const FORMATIONS: Formation[] = [
       Z: { side: 'R', split: 'wide', depth: OFF },
       F: { side: 'R', split: 1.5, depth: 4.2 },
       RB: { side: 'C', split: 0, depth: 7.0 },
+    },
+  },
+  {
+    id: 'gun_split_21', name: 'Gun Split Pro', personnel: '21', qb: 'gun', tags: ['split-backs', 'pro'],
+    slots: {
+      X: { side: 'L', split: 'wide', depth: ON },
+      Y: { side: 'R', split: 'inline', depth: ON },
+      Z: { side: 'R', split: 'wide', depth: OFF },
+      RB: { side: 'L', split: SPLIT_BACK, depth: SPLIT_DEPTH },
+      F: { side: 'R', split: SPLIT_BACK, depth: SPLIT_DEPTH },
+    },
+  },
+  {
+    id: 'gun_split_twins_21', name: 'Gun Split Twins', personnel: '21', qb: 'gun', tags: ['split-backs'],
+    slots: {
+      X: { side: 'L', split: 'wide', depth: ON },
+      Z: { side: 'L', split: 'slot', depth: OFF },
+      Y: { side: 'R', split: 'inline', depth: ON },
+      RB: { side: 'L', split: SPLIT_BACK, depth: SPLIT_DEPTH },
+      F: { side: 'R', split: SPLIT_BACK, depth: SPLIT_DEPTH },
+    },
+  },
+  // ---------------------------------------------------------------- 20
+  {
+    id: 'gun_split_20', name: 'Gun Split Backs', personnel: '20', qb: 'gun', tags: ['split-backs', 'spread'],
+    slots: {
+      X: { side: 'L', split: 'wide', depth: ON },
+      H: { side: 'L', split: 'slot', depth: OFF },
+      Z: { side: 'R', split: 'wide', depth: ON },
+      RB: { side: 'L', split: SPLIT_BACK, depth: SPLIT_DEPTH },
+      F: { side: 'R', split: SPLIT_BACK, depth: SPLIT_DEPTH },
     },
   },
   // ---------------------------------------------------------------- 22 / 13
