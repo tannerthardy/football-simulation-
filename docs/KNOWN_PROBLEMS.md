@@ -1168,6 +1168,8 @@ Carried over from the issue register; each was measured on an older develop.
 - **Not a calibration target:** the PFF band (TKL-1) is secondary and its
   charting rules are unknown. The BDB 2024 tackling set had a missed-tackle
   column; that is the place to look for a same-operator reference.
+- **Panel:** `data/reviews/tackle/input-manifest-tkl7.json` (Coverage's 22 leaks, with
+  s1924 as the untouched fit-failure control).
 
 ### TKL-6: An engaged tackler's miss is a flat bonus
 
