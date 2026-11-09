@@ -155,6 +155,10 @@ const BOX_ALIGN = process.env.BOX_ALIGN !== '0';
 const BLITZ_CREEP = process.env.BLITZ_CREEP === '1', CREEP_DEPTH = 2.4;
 /** SAM_ON_TE (experimental, off): see alignDefense; a Sam on the line stands as the Under's 9 does (yd). */
 const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_DEPTH = 1.0;
+/** TIGHT_OFF (experimental, off): see alignDefense; a tight #2 is within this of his tackle (yd); off depth (yd). */
+/** SLOT_LEV (experimental, off): see alignDefense. */
+const SLOT_LEV = process.env.SLOT_LEV === '1';
+const TIGHT_OFF = process.env.TIGHT_OFF === '1', TIGHT_SPLIT = 3.5, TIGHT_OFF_DEPTH = 4.5;
 /** SHELL_SHOW (on; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
 const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
@@ -237,6 +241,8 @@ export interface AlignStyle { olWidth?: number; wrRoom?: number; cbDepth?: numbe
   /** The defense's own picture of the snap: down, yards to gain and to the
    * goal line. Never the offense's call. */
   situation?: DefSituation;
+  /** ALIGN_HABIT: each slot's alignment offset this snap (habit + scatter, yd; x deeper, y across). */
+  scatter?: Partial<Record<DefSlot, Vec2>>;
 }
 
 export interface DefSituation { down: number; distance: number; toGoal: number }
@@ -1156,6 +1162,37 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     }
   }
 
+  // SLOT_LEV (experimental, off): a slot defender's zone spot comes from the
+  // seat he is finally given. Placed before roles were assigned, he took the
+  // no-role default (hook: 4.5 yd, 0.5 inside) even as a curl-flat or flat
+  // player; NFL zone DBs over a slot stand +0.2 outside in Cover 3, -0.1 in
+  // Cover 2 and Quarters (scripts/diag/align/overtwo.py).
+  if (SLOT_LEV && DEF_ALIGN) for (const slot of ['NB', 'DB'] as DefSlot[]) {
+    const sp = spots[slot], r = roles[slot];
+    if (!sp || r?.kind !== 'zone' || r.depth !== undefined) continue;
+    const near = (['S2', 'W2', 'S3', 'W3'] as ReceiverRef[]).map(ref => off.numbering[ref]).filter((t): t is NonNullable<typeof t> => !!t)
+      .map(t => off.spots[t]).filter(o => o && !o.inline && !o.backfield && Math.abs(o.pos.y - sp.pos.y) <= 1.5)
+      .sort((a, b) => Math.abs(a.pos.y - sp.pos.y) - Math.abs(b.pos.y - sp.pos.y))[0];
+    if (!near) continue;
+    const out = Math.sign(near.pos.y - off.ballY) || 1, z = zoneSpot(r.zone, true);
+    sp.pos = { x: los + coverageDepth(los, z.depth), y: clamp(near.pos.y + out * z.shade, 1, FIELD_WIDTH - 1) };
+  }
+  // TIGHT_OFF (experimental, off): a defensive back over a tight #2 (an
+  // inline end or a man within 3.5 yd of his tackle) plays off him, not in
+  // press: with the line and the formation's traffic inside, the reduced
+  // split leaves no room to jam and plays through him as the run's force.
+  // NFL DBs over a tight #2 stand 3.2 / 4.5 / 6.5 yd deep (p25/50/75), 10%
+  // pressed; ours pressed 39% (scripts/diag/align/overtwo.py). A blitzer keeps his spot.
+  if (TIGHT_OFF) {
+    const tackles = (['LT', 'RT'] as const).map(t => off.spots[t]?.pos.y).filter((y): y is number => y !== undefined);
+    const tight = (['S2', 'W2'] as ReceiverRef[]).map(ref => off.numbering[ref]).filter((t): t is NonNullable<typeof t> => !!t)
+      .map(t => off.spots[t]).filter(sp => sp && !sp.backfield && (sp.inline || Math.min(...tackles.map(y => Math.abs(sp.pos.y - y))) < TIGHT_SPLIT));
+    for (const slot of present) {
+      const sp = spots[slot];
+      if (!sp || !/^(CB|NB|DB|SS|FS)/.test(slot) || sp.role.kind === 'blitz' || sp.pos.x - los >= 2) continue;
+      if (tight.some(r => Math.abs(r.pos.y - sp.pos.y) <= 1.5)) { sp.pos = { x: los + TIGHT_OFF_DEPTH, y: sp.pos.y }; sp.press = false; }
+    }
+  }
   // SHORT_PACKAGE: the Bear's Sam is on the line outside the attached end
   // ("Dubs" 9; HonestNFL HNFL-129), whatever he covers after the snap.
   if (SHORT_PACKAGE && call.front.id === 'bear' && spots.LB_S && teAt(fs))
@@ -1208,6 +1245,17 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   if (BLITZ_CREEP) for (const slot of blitzers) {
     const sp = spots[slot];
     if (sp && slot.startsWith('LB') && sp.pos.x - los > CREEP_DEPTH) sp.pos = { x: los + CREEP_DEPTH, y: gapY(off, sp.gap, sp.gapSign) };
+  }
+  // ALIGN_HABIT (experimental, off): an off-ball defender stands where his
+  // own habit and this snap put him, not on the exact landmark: a personal
+  // depth habit plus per-snap placement scatter (PlaySim draws both). NFL
+  // off-ball backers: depth sd 0.91, between players 0.41, within a player 0.78
+  // (scripts/diag/align); ours stood on one spot (4.6 / 4.6 / 5.0 at p25/50/75).
+  // Front men, pressed backs and blitzers keep their spots.
+  if (style.scatter) for (const slot of present) {
+    const sp = spots[slot], j = style.scatter[slot];
+    if (!sp || !j || sp.press || sp.role.kind === 'blitz' || sp.pos.x - los <= 2) continue;
+    sp.pos = { x: los + Math.max(2.2, sp.pos.x - los + j.x), y: clamp(sp.pos.y + j.y, 1, FIELD_WIDTH - 1) };
   }
   return { spots, rushers, coverage: cov, boxCount: box };
 }
