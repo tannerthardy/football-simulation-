@@ -278,10 +278,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // well, LB_W is still alone at 2.9. With the box backer reading before he moves and filling to a pull he sees, LB_W alone at 3.0.
     // With run-read attention (a blocker in front of a run-reading defender and in range is seen on the ordinary
     // delay), DE_S alone at 2.85; with his picture judged from what he saw and held rather than rewound when the
-    // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65 (develop
-    // c4fc33d5 and #394 309a9799). With the wing at its tracked width (#395: 1.32 yd outside the end, 0.42 wider), the
-    // back meets DT_S, engaged with RG and sliding weak, behind the line: DT_S alone at 1.85 (ledger scan on #395
-    // merged with #394 309a9799, recorded single stream).
+    // blocker leaves his range, and the edge key held across a down step (#389), DE_S alone at 2.65.
+    // With the offset back aligned away from the play taking the ball as he crosses the QB's face (wide zone strong,
+    // back 2.3 yd weak), he arrives 0.6-0.8 yd further downhill at 1.6-1.8 s, where DT_S has driven C a yard into the
+    // backfield: DT_S alone at 1.9 (a body collision after his missed tackle at 1.75), where on develop he missed at 1.9.
+    // Merged with develop's wing at its tracked width (#395), DT_S alone at 1.85.
     const p = play('M7-P051'), first = p.census[0].firstCarrierContact!;
     expect(first.t).toBe(1.85);
     expect(first.defenders.map(p.slot)).toEqual(['DT_S']);
@@ -366,9 +367,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // contact at 3.85, wrapping with it; still not a tie. With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step)
     // as well, LB_W alone at 3.0, wrapping with it (5.4 yd, not a score); still not a tie. With the box backer reading before he moves and filling to a pull he sees
     // as well, DT_W alone makes first contact at 2.75, a hit without a wrap; SS wraps first, at 4.25; still not a tie.
+    // With a climber releasing a held backer who has run under him and he can no longer meet (C leaves LB_W for FS at
+    // 2.35), first contact is unchanged and SS wraps first at 4.0 (3.95 yd, was 2.4).
     expect(first.t).toBe(2.75);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 4.25 });
+    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 4 });
     expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('SS');
   });
 

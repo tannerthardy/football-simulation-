@@ -8,6 +8,7 @@ import { READ_SCHEMES, RUN_READ, runRead } from './run-read.js';
 import { clamp, type Vec2 } from '../core/vec.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 import { gapY, lineOffset } from '../playbook/alignment.js';
+import { GUN_QB_DEPTH } from '../playbook/formations.js';
 import { getRoute } from '../playbook/routes.js';
 import type { Gap, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
@@ -16,6 +17,7 @@ import { BallCarrier } from './behaviors/carrier.js';
 import { goTo, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
 import { QBHandoff, QBPass } from './behaviors/qb.js';
+import { GUN_SNAP, QB_EXTEND, snapSecured } from './ball-transfer.js';
 import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.js';
 import type { PlaySim } from './playsim.js';
 import { buildRunFits } from './run-fits.js';
@@ -26,7 +28,53 @@ import { installBlockLook } from './behaviors/block-look.js';
 
 const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.25, CB: 0.5, NB: 0.4, DB: 0.45, FS: 0.45, SS: 0.38 };
 
+/** STANCE_TELL (experimental, off): an offensive lineman can tip his first
+ * step pre-snap through his stance (weight on the play-side hand or foot, a
+ * cheated stagger). Disciplined linemen hide it more often. A habit lean, a
+ * lean that has nothing to do with the play, shows on any snap, pass or run,
+ * so a lean alone never says run.
+ * Calibrated (with the DL read rate in defense.ts and KEY_REACT on): NFL zone
+ * DL move laterally before or with their key's first step on 43-50% of snaps
+ * and almost never the wrong way (2-4%); a leak rate of 0.5-0.9 and a read
+ * rate of 0.6-1 give 44-46% of DL a tell step, wrong-way first moves 0-2%,
+ * and DL lateral speed relative to their own line's matching the NFL by
+ * 0.3 s. The rates stand in for pre-snap tips the sim has no body for. */
+const STANCE_TELL = process.env.STANCE_TELL === '1';
+const STANCE_HABIT = 0.1;
+function stanceLeak(a: Agent): number {
+  return clamp(0.5 + 0.45 * (1 - a.r('discipline')), 0.1, 0.9);
+}
+
+/** DEF_STANCE (experimental, off): a front defender lines up hand(s) down or
+ * standing up, and the stance is a tradeoff the body carries:
+ *  - hand down: low pads at the snap (posture 0.7, the existing pad-level
+ *    and leverage physics), primed to fire forward, eyes on the man in
+ *    front, so the backfield is seen later;
+ *  - standing up: high pads (0.3), a later forward start, and the backfield
+ *    in view at the ordinary delay; the stance a dropping end uses.
+ * Interior men are down; an end stands when he is dropping, when he is a
+ * linebacker playing the end, and as the odd (3-4) front's outside man.
+ * Pad level then moves at its usual finite rate toward what he asks for.
+ * The get-off cost and the vision cost are assumptions, not fitted values. */
+const DEF_STANCE = process.env.DEF_STANCE === '1';
+const STAND_GETOFF = 0.04;
+function setFrontStance(sim: PlaySim, d: Agent, role: string): void {
+  const k = d.slot.split('_')[0];
+  if (k !== 'DT' && k !== 'NT' && k !== 'DE') return;
+  let stance: 'down' | 'up' = 'down';
+  if (k === 'DE' && (role === 'zone' || role === 'man' || role === 'spy' || d.player.position === 'LB'
+    || sim.defCall.personnel === 'base34')) stance = 'up';
+  d.setStance = stance;
+  d.body.support!.posture = stance === 'down' ? 0.7 : 0.3;
+  if (stance === 'up') d.snapReadyAt += STAND_GETOFF;
+}
+
 export function assignBehaviors(sim: PlaySim): void {
+  if (STANCE_TELL) for (const a of sim.offense) {
+    if (!isOL(a)) continue;
+    const r = sim.rng.fork(`stance-habit:${a.slot}`);
+    a.stanceLean = r.next() < STANCE_HABIT ? (r.next() < 0.5 ? -1 : 1) : 0;
+  }
   const off = sim.offAlign;
   const call = sim.offCall;
   for (const [slot, look] of Object.entries(call.receiverBlockLook ?? {})) {
@@ -45,6 +93,7 @@ export function assignBehaviors(sim: PlaySim): void {
     const base = READ_BASE[key] ?? 0.3;
     d.readAt = d.profile.reactionTime + base * (1.35 - d.r('playRecognition')) + Math.abs(sim.dice('read', d).normal(0, 0.08));
     const role = spot.role;
+    if (DEF_STANCE) setFrontStance(sim, d, role.kind);
     switch (role.kind) {
       case 'rush':
         d.behavior = new PassRusher(d, sim, d.runFit!.gap, d.runFit!.side);
@@ -141,14 +190,27 @@ export function assignBehaviors(sim: PlaySim): void {
   const concept = call.run!;
   const plans = planRunBlocking(sim, concept);
   for (const [a, plan] of plans) a.behavior = new RunBlocker(plan);
+  if (STANCE_TELL) for (const [a, plan] of plans) {
+    if (!isOL(a)) continue;
+    // His first step's lateral direction is what his weight shows if it leaks:
+    // on zone every lineman's first step is the play-side track; a gap down
+    // block steps along its drive; a puller (weight back, light hand) opens
+    // along his path.
+    const zone = ['insideZone', 'outsideZone', 'wideZone', 'splitZone', 'toss', 'duo'].includes(concept.scheme);
+    const first = plan.kind === 'pull' && plan.pullPath?.length ? plan.pullPath[0].y - a.pos.y
+      : zone ? playSideSign(sim, concept) : plan.drive.y;
+    const dir = Math.abs(first) > 0.3 ? Math.sign(first) : 0;
+    if (dir && sim.rng.fork(`stance:${a.slot}`).next() < stanceLeak(a)) a.stanceLean = dir;
+  }
   const rb = sim.slot('RB') ?? null;
   const mesh = meshFor(sim, concept);
   if (concept.scheme === 'qbDraw') {
     qb.behavior = new QBHandoff(mesh.qb, 1.0, null, 0, true);
     if (rb) rb.behavior = new RunBlocker({ kind: 'climb', target: null, drive: { x: 1, y: 0 } });
   } else {
-    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch);
-    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride);
+    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.ballPoint,
+      GUN_SNAP && GUN_MESH && sim.offCall.formation.qb === 'gun' ? snapSecured(qb.pos, { x: sim.los, y: sim.ballY }) + QB_EXTEND : undefined);
+    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride, mesh.through ?? 0, GUN_MESH_GO && !!mesh.ballPoint);
   }
   for (const a of sim.offense) {
     if (a.behavior.kind === 'idle') a.behavior = new DownfieldBlocker();
@@ -167,11 +229,69 @@ interface Mesh {
   pitch: number;
   /** A stretch back takes the ball on the move, riding his track. */
   ride: boolean;
+  /** DRAW_NFL: the speed at which a non-riding back arrives at the mesh (0: stop there). */
+  through?: number;
+  /** GUN_MESH: where the ball goes into the back's pocket; the QB gives it when he reaches it. */
+  ballPoint?: Vec2;
 }
 
 /** Stretch mesh on the back's track (STRETCH_MESH=0: inside mesh, the stretch back stops). */
 const STRETCH_MESH = process.env.STRETCH_MESH !== '0';
+/** IZ_GUN_A (default off): inside zone from the gun with the back offset to
+ * the backside aims at the play-side A gap (the centre's play-side hip), not
+ * the B gap. He crosses the quarterback's face and the B gap was over 4 yd of
+ * lateral travel: tracked backs from that alignment slow their drift (2.5 ->
+ * 1.6 yd/s after the handoff) and 73% cross behind the moved centre; ours
+ * held 3.3 yd/s across the formation and 6% did. Under centre the B-gap
+ * landmark stays (tracked backs cross +1.0 yd play side of the line). */
+export const IZ_GUN_A = process.env.IZ_GUN_A === '1';
+/** MESH_GUN_SIDE (default off): an offset back crossing the gun QB's face takes
+ * the ball still on the QB's backside half, not squarely in front of him.
+ * Tracked 2022 gun runs with the back offset backside: at the handoff he is
+ * 0.70 yd (inside zone) / 0.25 yd (outside zone) backside of the QB and about
+ * half a yard in front of him, still going downhill as fast as across (2.7 and
+ * 2.7 yd/s); ours took it level with the QB, 0.9 yd in front, at 3.2 across
+ * and 2.0 downhill, and kept drifting play side after the handoff. The mesh
+ * point stays at the two bodies' clearance in front of the QB. */
+export const MESH_GUN_SIDE = process.env.MESH_GUN_SIDE === '1';
+/** MESH_NFL (default off): mesh landmarks from 2022 tracking at the handoff.
+ * Under-center inside zone: QB 4.4 yd deep and 0.9 play side, back 5.0 deep
+ * and 1.7 play side (the installed 3.5 / 4.0 deep put the exchange a yard
+ * shallow: ours QB 3.36, back 4.08). Gun outside zone (with MESH_GUN_SIDE):
+ * the exchange is level with the QB as the back passes in front of him, not
+ * 0.25 yd on his backside (ours handed off with the back still 0.6 yd
+ * backside of the QB's start, 0.45 yd shallower, 0.1 s earlier). */
+export const MESH_NFL = process.env.MESH_NFL === '1';
+/** GUN_MESH (experimental, off): a gun back aligned away from the play crosses
+ * in front of the QB and takes the ball there, on his own track: the exchange
+ * point is half a yard in front of the QB (toward the line) and just short of
+ * his face (tracked 2022 gun handoffs, back relative to the QB: stretch -0.16
+ * lateral / +0.53 depth; inside zone, power, counter, trap -0.5 to -0.8 / +0.5),
+ * and the QB gives it when the back reaches that point, not when he first comes
+ * within reach (ours took it a yard short of the QB's face, level with him, at
+ * full reach, braking: IZ 2.2 yd/s at the exchange vs NFL 3.8). */
+export const GUN_MESH = process.env.GUN_MESH === '1';
+/** GUN_MESH_GO (experimental, off; with GUN_MESH): the gun back leaves on the
+ * snap and builds speed to the exchange (slow to fast) rather than standing
+ * until a full-speed run would just make it. Tracked 2022 gun backs are moving
+ * 1.8 yd/s laterally at 0.5 s and 3.5-4.7 at the handoff; ours stood, then ran
+ * (1.06 at 0.5 s). His pace is the steadiest on-time tempo (MESH_TEMPO). */
+export const GUN_MESH_GO = process.env.GUN_MESH_GO === '1';
+/** DRAW_NFL (default off): the gun draw exchange from 2022 tracking. The QB
+ * gives ground only half a yard (tracked 5.09 yd deep at the handoff, ours
+ * 5.90), the back takes it beside him (1.07 yd off his line, 0.6 yd in front)
+ * already moving upfield at 1.9 yd/s (ours standing at the landmark), at 1.50
+ * s on the sim clock (ours 1.30; under center tracked 1.60); the installed
+ * exchange time is kept, since the back now leaves later on his own. Ours took it
+ * deep and still, crossed the line 0.3 s late and met the first defender at
+ * +0.2 yd (tracked +1.25). */
+export const DRAW_NFL = process.env.DRAW_NFL === '1';
 
+/** COUNTER_C (off): counter's mesh aim is the C gap (the play-side tackle's
+ * outside hip) instead of B. */
+export const COUNTER_C = process.env.COUNTER_C === '1';
+/** GUN_STRETCH_T (off): gun outside/wide zone mesh time +0.2 s (tracked handoff 1.2 s, ours 1.0). */
+export const GUN_STRETCH_T = process.env.GUN_STRETCH_T === '1';
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const ps = playSideSign(sim, concept);
   const los = sim.los;
@@ -179,7 +299,11 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const qbType = sim.offCall.formation.qb;
   const teOnPlayside = ps === sim.offAlign.strongSign ? sim.offAlign.hasTE.S : sim.offAlign.hasTE.W;
   let aimY: number;
-  switch (concept.aim) {
+  const rbSeen = sim.slot('RB');
+  const gunBackside = IZ_GUN_A && concept.scheme === 'insideZone' && qbType === 'gun' && concept.aim === 'B'
+    && !!rbSeen && (rbSeen.pos.y - by) * ps < -1;
+  // COUNTER_C: GT counter aims at the play-side tackle's outside hip (C).
+  switch (gunBackside ? 'A' : COUNTER_C && concept.scheme === 'counter' ? 'C' : concept.aim) {
     case 'A':
       aimY = gapY(sim.offAlign, 'A', ps);
       break;
@@ -199,13 +323,25 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   const aim = { x: los + 0.6, y: aimY };
   let qb: Vec2;
   let rb: Vec2;
-  let time = concept.meshTime;
+  // GUN_STRETCH_T: tracked gun outside zone hands off at 1.2 s (median; ours
+  // 1.0, the exchange window opening 0.15 s before the 1.15 s install).
+  let time = concept.meshTime + (GUN_STRETCH_T && qbType === 'gun' && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone') ? .2 : 0);
   let pitch = 0;
+  let ballPoint: Vec2 | undefined;
+  // GUN_SNAP: the gun back paces to the QB's readiness he can foresee: the snap
+  // secured in the QB's hands plus his own handoff action (QB_EXTEND), not an
+  // installed per-concept mesh time.
+  if (GUN_SNAP && GUN_MESH && qbType === 'gun') time = snapSecured(sim.qb.pos, { x: los, y: by }) + QB_EXTEND;
   if (concept.scheme === 'toss') {
     qb = { x: los - 1.8, y: by + ps * 0.6 };
     rb = { x: los - 5.5, y: by + ps * 4.0 };
     pitch = 5;
     time = 0.45;
+  } else if (concept.scheme === 'draw' && DRAW_NFL) {
+    const dir = sim.attackDir('O'), back = sim.slot('RB');
+    const side = back ? Math.sign(back.pos.y - by) || ps : ps;
+    qb = { x: qbType === 'under' ? los - 4.8 * dir : los - (GUN_QB_DEPTH + .55) * dir, y: by };
+    rb = { x: qb.x + 0.6 * dir, y: by + side * 1.07 };
   } else if (concept.scheme === 'draw') {
     qb = { x: qbType === 'under' ? los - 5.5 : los - 6, y: by };
     rb = { x: qb.x + 0.6, y: by + ps * 0.8 };
@@ -215,6 +351,11 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     // already running wide (STRETCH_MESH=0 restores the inside mesh).
     qb = { x: los - 4.4, y: by + ps * 2.1 };
     rb = { x: los - 5.0, y: by + ps * 2.8 };
+  } else if (qbType === 'under' && MESH_NFL && (concept.scheme === 'insideZone' || concept.scheme === 'splitZone')) {
+    // MESH_NFL: tracked 2022 under-center inside zone hands off with the QB
+    // 4.4 yd deep and 0.9 yd play side, the back 5.0 deep, 1.7 play side.
+    qb = { x: los - 4.4, y: by + ps * 0.9 };
+    rb = { x: los - 5.0, y: by + ps * 1.7 };
   } else if (qbType === 'under') {
     // Reverse pivot and a couple of steps back: the mesh is ~3.5–4 yd deep.
     qb = { x: los - 3.5, y: by + ps * 0.5 };
@@ -223,15 +364,38 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
     qb = { x: los - 4.4, y: by + ps * 0.3 };
     rb = { x: los - 4.9, y: by + ps * 0.95 };
   } else {
-    qb = { x: los - 5.0, y: by };
-    rb = { x: los - 4.4, y: by + ps * 0.9 };
+    qb = { x: los - GUN_QB_DEPTH, y: by };
+    rb = { x: qb.x + 0.6, y: by + ps * 0.9 };
+    // An offset back aligned away from the play crosses the QB's face: he
+    // takes the ball as he passes in front of him, at the two bodies'
+    // clearance, not on the far hip a yard beyond (that landmark put his line
+    // through the QB and three and a half yards away; he left on the snap and
+    // braked into the QB, meeting the ball at 2.4-2.5 yd/s, tracked 3.8-4.6).
+    const back = sim.slot('RB');
+    if (back && (back.pos.y - by) * ps < -1) {
+      const clear = sim.qb.profile.radius + back.profile.radius + .15;
+      rb = { x: qb.x + sim.attackDir('O') * clear, y: by };
+      if (MESH_GUN_SIDE) {
+        // MESH_NFL: on outside zone he takes it level with the QB as he passes
+        // in front of him (tracked gun OZ back 0.06 yd play side of the QB).
+        const side = concept.scheme === 'outsideZone' || concept.scheme === 'wideZone' ? (MESH_NFL ? 0 : .25) : .7;
+        const lat = Math.min(side, clear);
+        rb = { x: qb.x + sim.attackDir('O') * Math.sqrt(clear * clear - lat * lat), y: qb.y - ps * lat };
+      }
+      if (GUN_MESH) {
+        const stretchy = concept.scheme === 'outsideZone' || concept.scheme === 'wideZone';
+        rb = { x: qb.x + sim.attackDir('O') * .5, y: qb.y - ps * (stretchy ? .16 : .65) };
+        ballPoint = rb;
+      }
+    }
   }
   // Backs take the handoff on the move, running through the mesh at the
   // exchange tempo (NFL backs 3.8-5.5 yd/s at the handoff). The draw back has
   // shown pass set and takes it standing; STRETCH_MESH=0 restores the stretch
   // back's old stop-at-the-landmark mesh.
   const stretch = concept.scheme === 'outsideZone' || concept.scheme === 'wideZone';
-  return { qb, rb, aim, time, pitch, ride: concept.scheme !== 'draw' && (stretch ? STRETCH_MESH : true) };
+  return { qb, rb, aim, time, pitch, ride: concept.scheme !== 'draw' && (stretch ? STRETCH_MESH : true),
+    through: DRAW_NFL && concept.scheme === 'draw' ? 1.9 : 0, ballPoint };
 }
 
 /**
@@ -258,6 +422,17 @@ export class PlayActionFake implements Behavior {
   }
 }
 
+/** MESH_TEMPO (default off): a riding back times his run to the mesh instead
+ * of braking into it. On each beat he previews his own body and takes the
+ * steadiest tempo that still reaches the mesh by the installed exchange time,
+ * carries it through (no stop at the landmark while the QB is still opening),
+ * and leaves his stance by that same tempo. With the QB there he carries at
+ * least the exchange tempo, 0.85 of top speed (installed 0.55). Tracked 2022
+ * backs are still accelerating at the handoff (outside zone under center 5.25
+ * yd/s, gun 4.4); the installed back braked to the landmark and met the ball
+ * at 3.6 and 3.3. */
+export const MESH_TEMPO = process.env.MESH_TEMPO === '1';
+const MT = (): number => MESH_TEMPO ? .85 : .55;
 /** Running back before the handoff: time the arrival at the mesh. */
 export class RunnerToMesh implements Behavior {
   readonly kind = 'mesh';
@@ -266,6 +441,9 @@ export class RunnerToMesh implements Behavior {
     readonly meshTime: number,
     readonly aim: Vec2,
     readonly ride = false,
+    readonly arriveAt = 0,
+    /** GUN_MESH_GO: leave on the snap. */
+    readonly goOnSnap = false,
   ) {}
   private passed = false;
   private departed = false;
@@ -282,7 +460,8 @@ export class RunnerToMesh implements Behavior {
     // he previews his body going hard to the mesh and holds his stance while
     // one more beat would still get him there for the exchange. A slow start
     // means leaving on the snap; a quick one lets him stay patient.
-    if (!this.departed && sim.t >= this.nextRead) {
+    if (this.goOnSnap) this.departed = true;
+    if (!this.goOnSnap && !this.departed && sim.t >= this.nextRead) {
       const interval = a.mind.decisionInterval;
       this.nextRead = sim.t + interval;
       this.departed = sim.t + interval + this.arrival(a, sim) >= this.meshTime;
@@ -316,19 +495,44 @@ export class RunnerToMesh implements Behavior {
       const pocket = ready ? { x: qbAt.x + off.x / len * arm, y: qbAt.y + off.y / len * arm } : this.mesh;
       const inHands = Math.hypot(qb.pos.x - a.pos.x, qb.pos.y - a.pos.y) <= reach;
       if (ready && inHands && sim.t >= this.meshTime - .15) this.passed = true;
-      if (this.passed) return goTo(a, this.aim, { speed: .55, through: a.profile.vmax * .55 });
+      if (this.passed) return goTo(a, this.aim, { speed: MT(), through: a.profile.vmax * MT() });
       // The on-time pace only slows an early back; with the QB there he
       // carries his exchange tempo into the pocket instead of braking to it.
-      return goTo(a, pocket, ready ? { speed: Math.max(speed, .55), through: a.profile.vmax * .55 } : { speed, through: 0 });
+      if (MESH_TEMPO) {
+        if (sim.t >= this.nextTempo) { this.nextTempo = sim.t + a.mind.decisionInterval; this.tempo = this.onTimeTempo(a, sim); }
+        // A QB still well short of the mesh at the landmark: do not run past him.
+        const qbFar = Math.hypot(qbAt.x - this.mesh.x, qbAt.y - this.mesh.y) - reach;
+        const w = ready ? Math.max(this.tempo, MT()) : this.tempo;
+        return goTo(a, pocket, !ready && d < .8 && qbFar > .5 ? { speed: w, through: 0 } : { speed: w, through: a.profile.vmax * w });
+      }
+      return goTo(a, pocket, ready ? { speed: Math.max(speed, MT()), through: a.profile.vmax * MT() } : { speed, through: 0 });
     }
-    return goTo(a, this.mesh, { speed, through: 0 });
+    return goTo(a, this.mesh, { speed, through: this.arriveAt });
+  }
+
+  private tempo = 1;
+  private nextTempo = 0;
+  /** MESH_TEMPO: the steadiest tempo (share of top speed) at which his own body,
+   * previewed running through the mesh without braking, gets there by the
+   * installed exchange time; full speed if none does. */
+  private onTimeTempo(a: Agent, sim: PlaySim): number {
+    const left = this.meshTime - sim.t;
+    const reachBy = (w: number) => { const v = a.profile.vmax * w;
+      const path = previewFreeMovement(a.body, (body) => ({ vel: arriveVelocity(body as typeof a.body, this.mesh, v, v) }), sim.t, 60, sim.world.handContact);
+      const k = path.findIndex((q) => Math.hypot(this.mesh.x - q.pos.x, this.mesh.y - q.pos.y) < .5);
+      return k < 0 ? Infinity : path[k].t; };
+    if (reachBy(1) >= left) return 1;
+    let lo = .3, hi = 1;
+    if (reachBy(lo) <= left) return lo;
+    for (let i = 0; i < 6; i++) { const mid = (lo + hi) / 2; if (reachBy(mid) <= left) hi = mid; else lo = mid; }
+    return hi;
   }
 
   /** Seconds his own body takes to reach the mesh from where he stands, going
    * hard and arriving at the exchange speed (free movement, no contact). */
   private arrival(a: Agent, sim: PlaySim): number {
-    const through = this.ride ? a.profile.vmax * .55 : 0;
-    const path = previewFreeMovement(a.body, (body) => ({ vel: arriveVelocity(body as typeof a.body, this.mesh, a.profile.vmax, through) }),
+    const through = this.ride ? a.profile.vmax * MT() : 0;
+    const path = previewFreeMovement(a.body, (body) => ({ vel: arriveVelocity(body as typeof a.body, this.mesh, this.ride && MESH_TEMPO ? through : a.profile.vmax, through) }),
       sim.t, 60, sim.world.handContact);
     const k = path.findIndex((s) => Math.hypot(this.mesh.x - s.pos.x, this.mesh.y - s.pos.y) < .5);
     return k < 0 ? Infinity : path[k].t;
