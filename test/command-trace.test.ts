@@ -24,7 +24,10 @@ const input = { coverage: 'cover3_buzz', concept: 'curl_flat', seed: 1, roster: 
 // With the edge kick that stops matching the rusher's retreat once deeper than its lead, seed 8's four_verts
 // ends incomplete; seed 6 (the lowest four_verts seed that completes and keeps every property here) is caught
 // at 4.05 s with CB_W in man on X, inside the same window.
-const caught = { ...input, concept: 'four_verts', seed: 6 };
+// The QB's throwing motion (load and delivery, ~0.4 s) moves seed 6's release and it no longer completes;
+// seed 13 (the lowest four_verts seed that completes and keeps every property here) is caught at 4.25 s
+// with CB_W in man on X, inside the same window.
+const caught = { ...input, concept: 'four_verts', seed: 13 };
 const selection: CommandTraceSelection = { actor: { team: 'D', slot: 'CB_W' }, from: 2, to: 4.35 };
 
 describe('selected command attribution in normal execution', () => {

@@ -14,6 +14,8 @@ export interface InstalledReceiverRoute {
   readonly profile: Readonly<PhysicalProfile>;
   readonly routeRunning: number;
   readonly effort: number;
+  /** The route's break (see routeBreak; null when the route does not break). */
+  readonly breakIdx?: number | null;
 }
 
 /** Called at installation from the call and snap alignment, never RouteRunner. */
@@ -23,7 +25,21 @@ export function installReceiverRoute(start: Vec2, los: number, outside: number, 
   return Object.freeze({ start: Object.freeze({ ...start }),
     path: Object.freeze(path.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s }))),
     end: route.end, startDelay, profile: Object.freeze({ ...profile }), routeRunning,
-    effort: routeEffort(route.family, routeRunning) });
+    effort: routeEffort(route.family, routeRunning),
+    breakIdx: routeBreak(route) });
+}
+
+/** Where the receiver cuts: the waypoint the route slows him most for (first on
+ * ties), not counting a final settle spot. Null for a route with no slowed
+ * waypoint (a go or seam). */
+export function routeBreak(route: RouteDef): number | null {
+  let b: number | null = null;
+  const last = route.end === 'settle' ? route.points.length - 1 : route.points.length;
+  for (let i = 0; i < last; i++) {
+    const s = route.points[i].s;
+    if (s !== undefined && (b === null || s < route.points[b].s!)) b = i;
+  }
+  return b;
 }
 
 export interface ReceiverPicture {
@@ -47,7 +63,8 @@ export interface ReceiverEstimate {
 /** Each instance belongs to one observer/receiver pair. No shared tick cache. */
 export class ReceiverForecast {
   private picture: ReceiverPicture | null = null;
-  private cache: { observer: object; picture: ReceiverPicture | null; pts: Vec2[]; estimate: ReceiverEstimate } | null = null;
+  private cache: { observer: object; picture: ReceiverPicture | null; pts: Vec2[]; estimate: ReceiverEstimate;
+    breakStep: number | null } | null = null;
 
   constructor(readonly observer: object, readonly prior: InstalledReceiverRoute, private readonly dt: number) {}
 
@@ -57,6 +74,20 @@ export class ReceiverForecast {
   }
 
   get estimate(): ReceiverEstimate | null { return this.build()?.estimate ?? null; }
+
+  /** Whether the installed route has a break. */
+  get hasBreak(): boolean { return this.prior.breakIdx != null; }
+
+  /** When he expects the receiver to make his break, from the installed
+   * route run from the picture he holds; null once it is past, for a route
+   * without a break, or when his progress cannot be identified. */
+  breakAt(): number | null {
+    const c = this.build();
+    if (!c || this.prior.breakIdx == null || c.estimate.motion !== 'installed-route') return null;
+    if ((c.estimate.progress ?? 0) > this.prior.breakIdx) return null;
+    this.extend(c, Math.ceil(8 / this.dt)); // far enough to reach any installed break
+    return c.breakStep === null ? null : c.estimate.sampledAt + c.breakStep * this.dt;
+  }
 
   /** Forecast at absolute time. A held picture ages; it never refreshes itself. */
   predict(now: number, ahead: number): Vec2 | null {
@@ -77,7 +108,7 @@ export class ReceiverForecast {
     const estimate: ReceiverEstimate = Object.freeze({ source: p ? 'acquired' : 'installed',
       sampledAt: p?.sampledAt ?? 0, acquiredAt: p?.acquiredAt ?? null, progress,
       motion: !p || progress !== null ? 'installed-route' : 'observed-motion' });
-    this.cache = { observer: this.observer, picture: p, pts: [], estimate };
+    this.cache = { observer: this.observer, picture: p, pts: [], estimate, breakStep: null };
     return this.cache;
   }
 
@@ -91,6 +122,7 @@ export class ReceiverForecast {
     const cutSkill = 0.8 + 0.4 * prior.routeRunning;
     const pts: Vec2[] = [{ ...body.pos }];
     let done = false;
+    c.breakStep = null;
     // Rebuild only when a longer horizon is requested, preserving exact prefixes.
     for (let i = 0; i < Math.max(70, steps + 1); i++) {
       let cmd: MoveCommand | null;
@@ -105,6 +137,7 @@ export class ReceiverForecast {
       }
       stepBody(body, cmd, this.dt);
       pts.push({ ...body.pos });
+      if (c.breakStep === null && this.prior.breakIdx != null && st.idx > this.prior.breakIdx) c.breakStep = i + 1;
     }
     c.pts = pts;
   }
