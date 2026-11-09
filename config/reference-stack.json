@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-3",
+  "id": "run-ref-4",
   "flags": {
     "ALIGN_HABIT": "on",
     "ANCHOR_GRADE": "on",
@@ -39,7 +39,7 @@
     "FB_PLAYSIDE": "on",
     "FEET_SETTLE": "on",
     "FLAT_PRESS": "on",
-    "GAP_CLIMB": "off",
+    "GAP_CLIMB": "on",
     "GAZE": "off",
     "GUN_MESH": "on",
     "GUN_MESH_GO": "on",
