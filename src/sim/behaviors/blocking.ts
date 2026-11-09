@@ -1416,6 +1416,15 @@ export const IZ_FLAT = process.env.IZ_FLAT === '1';
  * 0.17-0.26 yd/s upfield damped to 0.0; tracked OZ linemen +0.9 to +1.1 yd
  * upfield by 2.0 s). */
 export const REACH_CLOSE = process.env.REACH_CLOSE === '1';
+/** OWNER_KEEPS (off): in a double with no check installation, when the owner
+ * carries the man alone and the helper is off him (not joined), the helper
+ * climbs on the zone overtake read (readOvertaken), the mirror of the
+ * overtaken owner. Before, an unjoined double without a check policy had no
+ * release: only a joined pair or a check helper could leave, so on stretch
+ * plays, where the helper runs the track and seldom joins, he ran beside the
+ * play (run-ref-4 OZ restage at 1.0 s: owner alone and secure on the man in
+ * 114 of ~230 live doubles; 76 of 239 doubles never released). */
+export const OWNER_KEEPS = process.env.OWNER_KEEPS === '1';
 /** GAP_CLIMB (off): a free zone lineman (drive, reach, cutoff; not in a live
  * double) whose man is beaten to his backside - more than 1 yd backside of
  * his body across the field and not gaining on him - has nobody in his
@@ -3511,6 +3520,16 @@ function readUnjoinedCombination(observer: Agent, sim: PlaySim, combo: Combinati
   // (The reverse, an owner holding him alone, is the helper's check below.)
   if (e && e.type === 'run' && e.helpers.length === 0 && e.blocker === helper && observer === owner
     && !observer.engagement && !observer.isDown(sim.t)
+    && !sim.world.joints.some((j) => j.a === observer.body || j.b === observer.body)) {
+    readOvertaken(observer, sim, combo, e);
+    return;
+  }
+  // OWNER_KEEPS: the mirror case of a double with no check installation: the
+  // owner carries the man alone and the helper is off him. The helper climbs
+  // on the same overtake read (keeper on the man in his own picture, held,
+  // backer fills or runner arrives, a route exists).
+  if (OWNER_KEEPS && !combo.helpPolicy && e && e.type === 'run' && e.helpers.length === 0 && e.blocker === owner
+    && observer === helper && !observer.engagement && !observer.isDown(sim.t)
     && !sim.world.joints.some((j) => j.a === observer.body || j.b === observer.body)) {
     readOvertaken(observer, sim, combo, e);
     return;
