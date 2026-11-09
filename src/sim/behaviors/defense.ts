@@ -18,7 +18,7 @@ import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
-import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track } from './common.js';
+import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track, watch } from './common.js';
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
@@ -251,6 +251,7 @@ export class PassRusher implements Behavior {
     const onEdge = this.gap === 'C' || this.gap === 'D';
     const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? Infinity : 1.5, onEdge ? this.keyed : null) : null;
     if (onEdge && man) this.keyed = man.agent;
+    watch(sim, a, man?.agent);
     const runStep = !!man && man.stance === 'low' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > stepSeen;
     // An edge keeps his outside against a reach. A man in front blocking down,
     // stepping inside away from him, opens his gap to a kick-out or a pulling
@@ -427,6 +428,7 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
     // selection inside the fit fallback. Reuse the installed mesh picture,
     // including unknown/negative carrying, rather than inventing a handoff.
     const holder = observedHolder(a, sim), back = sim.slot('RB');
+    if (!/^(DE|DT|NT)/.test(a.slot)) watch(sim, a, holder?.target ?? back);
     // A QB seen running is the runner himself, not a mesh still to resolve.
     if (holder && (holder.target !== sim.qb || hasObservedFlight(a) || qbRunning(a, sim))) read = { possession: holder };
     else if (back && sim.offAlign.spots[back.slot]?.backfield) {
@@ -775,6 +777,7 @@ export class ZoneCoverage implements Behavior {
     // their depth through 0.8 s on passes and runs alike). An apex or
     // overhang backer keeps his eased drop to the flat.
     if (!this.deep && a.recog?.read === 'unsure' && boxBacker(a, sim)) {
+      watch(sim, a, sim.qb);
       // LB_GUARD_STEP (experimental, off): "guards to backs". Still unsure of
       // run or pass, a box backer whose guards both step the same way (no
       // pass set; guardStep, read at first movement) steps with them, at their pace plus a step of
@@ -797,6 +800,7 @@ export class ZoneCoverage implements Behavior {
     const lm = this.landmark;
     const [ylo, yhi] = this.band;
     const facingQB = angleTo(a.pos, qb.pos);
+    watch(sim, a, qb);
     // Zone drops are run under control, eyes on the QB.
     // Until he's read pass, an underneath defender only eases into his drop
     // (read step): how far he commits depends on how sure he is.
@@ -1049,6 +1053,7 @@ export class ZoneCoverage implements Behavior {
     const qb = sim.qb;
     const lm = this.landmark;
     const facingQB = angleTo(a.pos, qb.pos);
+    watch(sim, a, qb);
     const toSpot = Math.hypot(lm.x - a.pos.x, lm.y - a.pos.y);
     if (toSpot > 2.5 && !a.tags.has('settled')) {
       // Until he has read pass he is in his read step: eyes and chest stay
