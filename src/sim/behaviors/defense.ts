@@ -46,6 +46,8 @@ const RUN_BLITZ = process.env.RUN_BLITZ === '1';
 /** END_CHASE (experimental, off): see the edge squeeze; how far into the backfield the chase aims (yd). */
 const END_CHASE = process.env.END_CHASE === '1', CHASE_DEPTH = 1.0;
 const DB_SLOWPLAY = process.env.DB_SLOWPLAY === '1', SLOW_GIVE = 0.3, SLOW_MIN = 1.5, SLOW_SPRINT = 0.75, SLOW_WIDTH = 8;
+/** LB_READ_STEP (experimental, off): see ZoneCoverage's box-backer read step; how far downhill it goes (yd). */
+const LB_READ_STEP = process.env.LB_READ_STEP === '1', READ_STEP = 0.3;
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -791,6 +793,18 @@ export class ZoneCoverage implements Behavior {
         a.tags.add('lb-guard-step');
         return withFacingTechnique(track(a, { x: a.pos.x, y: a.pos.y + side * pace * h }, { x: 0, y: side * pace },
           { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 1 }), { label: 'read-step' });
+      }
+      // LB_READ_STEP (experimental, off): his read step is a step. Off the
+      // snap he presses a short step downhill from his alignment, square,
+      // eyes on the quarterback, and reads from there: a run read keeps him
+      // coming, a pass read starts his drop from it. NFL box backers gain
+      // 0.1-0.15 yd downhill by 0.5 s on runs and dropbacks alike, then 40%
+      // stop or drop on passes; ours stood still until the read.
+      if (LB_READ_STEP) {
+        const home = sim.defAlign.spots[a.slot as keyof typeof sim.defAlign.spots]?.pos ?? a.pos, dir = sim.attackDir(sim.offense[0].team);
+        a.tags.add('lb-read-step');
+        return withFacingTechnique(track(a, { x: home.x - dir * READ_STEP, y: home.y }, { x: 0, y: 0 },
+          { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 0.5 }), { label: 'read-step' });
       }
       return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
     }

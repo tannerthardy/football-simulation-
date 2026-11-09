@@ -7,7 +7,7 @@ for line in gzip.open(sys.argv[1], "rt"):
     p = json.loads(line); pl = p["players"]; n = len(pl)
     xy = [[(r[2 * i], r[2 * i + 1]) for i in range(n)] for r in p["xy"]]
     if len(xy) < 12: continue
-    kind = "pass" if p["kind"] != "run" else {"INSIDE ZONE": "zone", "OUTSIDE ZONE": "zone", "POWER": "gap", "COUNTER": "gap", "TRAP": "gap"}.get(p["cell"]["concept"])
+    kind = ("pa" if p["cell"].get("concept") in ("OUTSIDE ZONE", "INSIDE ZONE", "POWER", "COUNTER", "MAN", "PULL LEAD", "TRAP") else "pass") if p["kind"] != "run" else {"INSIDE ZONE": "zone", "OUTSIDE ZONE": "zone", "POWER": "gap", "COUNTER": "gap", "TRAP": "gap"}.get(p["cell"]["concept"])
     if not kind: continue
     ol = [i for i, q in enumerate(pl) if q["side"] == "O" and q["group"] == "OL"]
     if len(ol) != 5: continue
@@ -31,7 +31,7 @@ for line in gzip.open(sys.argv[1], "rt"):
     p = json.loads(line); pl = p["players"]; n = len(pl)
     xy = [[(r[2 * i], r[2 * i + 1]) for i in range(n)] for r in p["xy"]]
     if len(xy) < 22: continue
-    kind = "pass" if p["kind"] != "run" else {"INSIDE ZONE": "zone", "OUTSIDE ZONE": "zone", "POWER": "gap", "COUNTER": "gap", "TRAP": "gap"}.get(p["cell"]["concept"])
+    kind = ("pa" if p["cell"].get("concept") in ("OUTSIDE ZONE", "INSIDE ZONE", "POWER", "COUNTER", "MAN", "PULL LEAD", "TRAP") else "pass") if p["kind"] != "run" else {"INSIDE ZONE": "zone", "OUTSIDE ZONE": "zone", "POWER": "gap", "COUNTER": "gap", "TRAP": "gap"}.get(p["cell"]["concept"])
     if not kind: continue
     ol = [i for i, q in enumerate(pl) if q["side"] == "O" and q["group"] == "OL"]
     if len(ol) != 5: continue
