@@ -40,6 +40,7 @@
     "FB_PLAYSIDE": "on",
     "FEET_SETTLE": "on",
     "FLAT_PRESS": "on",
+    "GAP_CLIMB": "off",
     "GAZE": "off",
     "GUN_MESH": "on",
     "GUN_MESH_GO": "on",
