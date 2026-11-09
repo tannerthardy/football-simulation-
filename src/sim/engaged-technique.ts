@@ -23,6 +23,11 @@
 import type { Vec2 } from '../core/vec.js';
 
 export const ENGAGED_TECHNIQUE = process.env.ENGAGED_TECHNIQUE === '1';
+/** REACH_CARRY (experimental, off): a racing reach who has the man's play-side
+ * shoulder keeps running at his own race pace and carries the man on his
+ * hands, rather than shadowing the man's own lateral speed. Not past the
+ * shoulder: a blocker already well across still comes back to it. */
+export const REACH_CARRY = process.env.REACH_CARRY === '1';
 /** ENGAGED_DEFENDER (default off): an engaged defender off the first-level
  * stack read (box backers, unassigned men) moves on his own controller's
  * request; the contact (hands, bodies, World) decides how far he gets. The
@@ -147,7 +152,8 @@ export function reachFeet(lat: Vec2, side: number, rel: Vec2, dv: Vec2, sep: num
   if (race) {
     const deficit = .45 * sep - across;
     const close = Math.sign(deficit) * Math.sqrt(2 * brake * Math.abs(deficit));
-    return { lateral: playLat * Math.max(-race, Math.min(race, manLat + close)), forward, onShoulder };
+    const pace = REACH_CARRY && onShoulder && deficit > -.3 * sep ? Math.max(manLat + close, race) : manLat + close;
+    return { lateral: playLat * Math.max(-race, Math.min(race, pace)), forward, onShoulder };
   }
   // On the shoulder he seals: square on the man, between him and the
   // sideline. He goes where the man goes, back inside too, and holds the
