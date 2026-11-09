@@ -386,3 +386,38 @@ factor on leg drive, so no other behavior can change by construction.
 
 **Not yet done:** the full scorecard tier. It is the integration owner's
 verification of the exact combined candidate.
+
+#### Paired tables and scope (2026-11-09)
+
+Run Game's paired run.
+- **Set:** 546 zone plays.
+- **Stack:** `run/G3` @ 2f30be74, Defense 205c6add, `ONE_ARM_HOLD`, #416,
+  3af0a53d, `END_CHASE=1`.
+- **Operators:** `run-operators/`, the same code on NFL.
+
+| | Off | LEG | LEG + #415 + gate | NFL |
+|---|---|---|---|---|
+| hitblk blocked, OZ / IZ | 3.07 / 3.97 | 2.80 / 4.20 | 2.57 / 3.29 | 3.41 / 3.68 |
+| Deep contacts: blocked hitter ends ≤ 0 | 25% | 31% | 45% | 43% |
+| Deep contacts: shed share | 11% | 11% | 16% | 24% |
+| DL driven back ≥ 0.5 yd by 2.0 s, OZ / IZ | 1 / 7% | 1 / 8% | 1 / 8% | 13 / 15% |
+| Play-side edge depth at 1.5 s, IZ / OZ | −0.01 / −0.07 | −0.02 / −0.07 | −0.02 / −0.07 | −0.92 / −1.11 |
+| 3rd defender arrives | 28%, 1.1 s | 27%, 0.9 s | 26%, 0.9 s | 43%, 0.7 s |
+| Contact → end at 0..1 | 1.0 s | 0.9 | 0.8 | 1.5 |
+| Runs < 20, OZ / IZ | 3.49 / 4.50 | 3.37 / 4.15 | 3.17 / 3.82 | 3.50 / 3.73 |
+| ≤ 0, OZ / IZ | 8 / 7% | 9 / 8% | 13 / 11% | 19 / 14% |
+| 10+, OZ / IZ | 11 / 13% | 9 / 14% | 9 / 11% | 11 / 9% |
+| Paired vs off (SE), OZ / IZ | — | −0.26 (0.19) / +0.04 (0.28) | −0.36 (0.22) / −0.51 (0.31) | |
+
+**Scope of the claim.** `LEG_ALLOMETRY` is a sourced correction that removes the
+linear mass bias in leg drive. Alone, it is neutral on the run game within
+noise. It does **not** close:
+- the push-back share (1–8% against NFL 13–15% in every arm);
+- the play-side edge depth;
+- the rally.
+
+Those need their own diagnosis. Combined with #415 and the gate, deep-contact
+stops (45% vs 43%) and IZ runs < 20 (3.82 vs 3.73) reach NFL. OZ stays too
+costly, and contact → end shortens further (0.8 s vs NFL 1.5).
+
+It is carried as a default-off candidate. Promotion: Tanner and Primary.
