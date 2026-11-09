@@ -28,7 +28,53 @@ import { installBlockLook } from './behaviors/block-look.js';
 
 const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.25, CB: 0.5, NB: 0.4, DB: 0.45, FS: 0.45, SS: 0.38 };
 
+/** STANCE_TELL (experimental, off): an offensive lineman can tip his first
+ * step pre-snap through his stance (weight on the play-side hand or foot, a
+ * cheated stagger). Disciplined linemen hide it more often. A habit lean, a
+ * lean that has nothing to do with the play, shows on any snap, pass or run,
+ * so a lean alone never says run.
+ * Calibrated (with the DL read rate in defense.ts and KEY_REACT on): NFL zone
+ * DL move laterally before or with their key's first step on 43-50% of snaps
+ * and almost never the wrong way (2-4%); a leak rate of 0.5-0.9 and a read
+ * rate of 0.6-1 give 44-46% of DL a tell step, wrong-way first moves 0-2%,
+ * and DL lateral speed relative to their own line's matching the NFL by
+ * 0.3 s. The rates stand in for pre-snap tips the sim has no body for. */
+const STANCE_TELL = process.env.STANCE_TELL === '1';
+const STANCE_HABIT = 0.1;
+function stanceLeak(a: Agent): number {
+  return clamp(0.5 + 0.45 * (1 - a.r('discipline')), 0.1, 0.9);
+}
+
+/** DEF_STANCE (experimental, off): a front defender lines up hand(s) down or
+ * standing up, and the stance is a tradeoff the body carries:
+ *  - hand down: low pads at the snap (posture 0.7, the existing pad-level
+ *    and leverage physics), primed to fire forward, eyes on the man in
+ *    front, so the backfield is seen later;
+ *  - standing up: high pads (0.3), a later forward start, and the backfield
+ *    in view at the ordinary delay; the stance a dropping end uses.
+ * Interior men are down; an end stands when he is dropping, when he is a
+ * linebacker playing the end, and as the odd (3-4) front's outside man.
+ * Pad level then moves at its usual finite rate toward what he asks for.
+ * The get-off cost and the vision cost are assumptions, not fitted values. */
+const DEF_STANCE = process.env.DEF_STANCE === '1';
+const STAND_GETOFF = 0.04;
+function setFrontStance(sim: PlaySim, d: Agent, role: string): void {
+  const k = d.slot.split('_')[0];
+  if (k !== 'DT' && k !== 'NT' && k !== 'DE') return;
+  let stance: 'down' | 'up' = 'down';
+  if (k === 'DE' && (role === 'zone' || role === 'man' || role === 'spy' || d.player.position === 'LB'
+    || sim.defCall.personnel === 'base34')) stance = 'up';
+  d.setStance = stance;
+  d.body.support!.posture = stance === 'down' ? 0.7 : 0.3;
+  if (stance === 'up') d.snapReadyAt += STAND_GETOFF;
+}
+
 export function assignBehaviors(sim: PlaySim): void {
+  if (STANCE_TELL) for (const a of sim.offense) {
+    if (!isOL(a)) continue;
+    const r = sim.rng.fork(`stance-habit:${a.slot}`);
+    a.stanceLean = r.next() < STANCE_HABIT ? (r.next() < 0.5 ? -1 : 1) : 0;
+  }
   const off = sim.offAlign;
   const call = sim.offCall;
   for (const [slot, look] of Object.entries(call.receiverBlockLook ?? {})) {
@@ -47,6 +93,7 @@ export function assignBehaviors(sim: PlaySim): void {
     const base = READ_BASE[key] ?? 0.3;
     d.readAt = d.profile.reactionTime + base * (1.35 - d.r('playRecognition')) + Math.abs(sim.dice('read', d).normal(0, 0.08));
     const role = spot.role;
+    if (DEF_STANCE) setFrontStance(sim, d, role.kind);
     switch (role.kind) {
       case 'rush':
         d.behavior = new PassRusher(d, sim, d.runFit!.gap, d.runFit!.side);
@@ -143,6 +190,18 @@ export function assignBehaviors(sim: PlaySim): void {
   const concept = call.run!;
   const plans = planRunBlocking(sim, concept);
   for (const [a, plan] of plans) a.behavior = new RunBlocker(plan);
+  if (STANCE_TELL) for (const [a, plan] of plans) {
+    if (!isOL(a)) continue;
+    // His first step's lateral direction is what his weight shows if it leaks:
+    // on zone every lineman's first step is the play-side track; a gap down
+    // block steps along its drive; a puller (weight back, light hand) opens
+    // along his path.
+    const zone = ['insideZone', 'outsideZone', 'wideZone', 'splitZone', 'toss', 'duo'].includes(concept.scheme);
+    const first = plan.kind === 'pull' && plan.pullPath?.length ? plan.pullPath[0].y - a.pos.y
+      : zone ? playSideSign(sim, concept) : plan.drive.y;
+    const dir = Math.abs(first) > 0.3 ? Math.sign(first) : 0;
+    if (dir && sim.rng.fork(`stance:${a.slot}`).next() < stanceLeak(a)) a.stanceLean = dir;
+  }
   const rb = sim.slot('RB') ?? null;
   const mesh = meshFor(sim, concept);
   if (concept.scheme === 'qbDraw') {

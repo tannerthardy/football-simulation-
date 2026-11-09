@@ -7,7 +7,7 @@ import type { Coverage, Front, Pressure } from './types.js';
 const DL = 0.9; // DL depth off the ball
 const LB = 4.6;
 
-export const FRONTS: Front[] = [
+const ALL_FRONTS: Front[] = [
   {
     id: 'over', name: '4-3 Over', personnel: ['base43', 'nickel', 'dime'],
     slots: {
@@ -119,6 +119,81 @@ export const FRONTS: Front[] = [
       LB_W: { tech: '2', side: 'W', depth: LB },
     },
   },
+  // NICKEL_FRONTS (experimental, off): sub-package fronts. Shares come from
+  // 2022 snap frames classified by interior shape (scripts/diag/align/nfronts.py).
+  {
+    // Penny (5-1): the Tite interior (4i, 0, 4i) with both edges on the line,
+    // the Will walked up as the weak edge (he rushes on zone calls), the Mike
+    // the lone backer. Staley/Fangio tree; NFL nickel 5-1 4-6% of snaps.
+    id: 'penny', name: 'Penny (5-1, Tite)', personnel: ['nickel'],
+    fits: { DT_S: { gap: 'B', side: 'S', technique: 'control' }, DE_W: { gap: 'B', side: 'W', technique: 'control' }, DT_W: { gap: 'A', side: 'W', technique: 'lag' } },
+    slots: {
+      DE_S: { tech: '9', side: 'S', depth: DL },
+      DT_S: { tech: '4i', side: 'S', depth: DL },
+      DT_W: { tech: '0', side: 'S', depth: DL },
+      DE_W: { tech: '4i', side: 'W', depth: DL },
+      LB_W: { tech: 'w9', side: 'W', depth: 1.0 },
+      LB_M: { tech: '1', side: 'W', depth: LB },
+    },
+  },
+  {
+    // Penny Bear (5-1): the bear interior (3, 0, 3: centre and both guards
+    // covered) with both edges on the line. NFL nickel bear 6% early, 12% in
+    // short yardage; the modern mug fronts grew out of it.
+    id: 'penny_bear', name: 'Penny Bear (5-1, 3-0-3)', personnel: ['nickel'],
+    slots: {
+      DE_S: { tech: '9', side: 'S', depth: DL },
+      DT_S: { tech: '3', side: 'S', depth: DL },
+      DT_W: { tech: '0', side: 'S', depth: DL },
+      DE_W: { tech: '3', side: 'W', depth: DL },
+      LB_W: { tech: 'w9', side: 'W', depth: 1.0 },
+      LB_M: { tech: '1', side: 'S', depth: LB },
+    },
+  },
+  {
+    // Mint: the Tite interior (4i, 0, 4i) with one edge, to the strength, and
+    // two off-ball backers; the weak C gap is the bubble a backer fills.
+    id: 'mint', name: 'Mint (4i-0-4i, two backers)', personnel: ['nickel'],
+    fits: { DT_S: { gap: 'B', side: 'S', technique: 'control' }, DE_W: { gap: 'B', side: 'W', technique: 'control' }, DT_W: { gap: 'A', side: 'W', technique: 'lag' } },
+    slots: {
+      DE_S: { tech: '9', side: 'S', depth: DL },
+      DT_S: { tech: '4i', side: 'S', depth: DL },
+      DT_W: { tech: '0', side: 'S', depth: DL },
+      DE_W: { tech: '4i', side: 'W', depth: DL },
+      LB_M: { tech: '2', side: 'S', depth: LB },
+      LB_W: { tech: '5', side: 'W', depth: LB },
+    },
+  },
+  {
+    // Okie (5-0-5) three down: a nose and two 5 techniques on the ball, the
+    // fourth lineman a stand-up rover over the weak B gap who drops on 3rd and
+    // long (a three-man rush) and rushes otherwise. NFL nose-only three-down
+    // fronts: dime 11% early, 21% on 3rd and long; nickel 5%.
+    id: 'okie', name: 'Okie 3-Down (5-0-5, rover)', personnel: ['nickel', 'dime'],
+    slots: {
+      DE_S: { tech: '5', side: 'S', depth: DL },
+      DT_S: { tech: '0', side: 'S', depth: DL },
+      DE_W: { tech: '5', side: 'W', depth: DL },
+      DT_W: { tech: '3', side: 'W', depth: 2.6, rover: true },
+      LB_M: { tech: '2', side: 'S', depth: LB + 0.3 },
+      LB_W: { tech: '2', side: 'W', depth: LB },
+    },
+  },
+  {
+    // 3-3 Stack (3-3-5): a nose and two 5 techniques, the three backers stacked
+    // straight behind them at 4.5 yd (the Sam behind the strong end, the Mike
+    // behind the nose, the Will behind the weak end). College staple; rare in
+    // the NFL, so it is a small share of nickel calls.
+    id: 'stack33', name: '3-3 Stack', personnel: ['stack335'],
+    slots: {
+      DE_S: { tech: '5', side: 'S', depth: DL },
+      NT: { tech: '0', side: 'S', depth: DL },
+      DE_W: { tech: '5', side: 'W', depth: DL },
+      LB_S: { tech: '5', side: 'S', depth: 4.5 },
+      LB_M: { tech: '0', side: 'S', depth: 4.5 },
+      LB_W: { tech: '5', side: 'W', depth: 4.5 },
+    },
+  },
   {
     id: 'bear', name: 'Bear (goal line)', personnel: ['goalline', 'heavy'],
     slots: {
@@ -133,6 +208,9 @@ export const FRONTS: Front[] = [
     },
   },
 ];
+/** NICKEL_FRONTS (experimental, off): the sub-package three- and five-man fronts join the catalog only under the flag. */
+const NICKEL_FRONTS = process.env.NICKEL_FRONTS === '1';
+export const FRONTS: Front[] = ALL_FRONTS.filter((f) => NICKEL_FRONTS || !['penny', 'penny_bear', 'mint', 'okie', 'stack33'].includes(f.id));
 
 export { COVERAGES, COVERAGE_BY_ID } from './coverages.js';
 
@@ -203,4 +281,6 @@ export const PRESSURES: Pressure[] = [
 export const FRONT_BY_ID: Record<string, Front> = Object.fromEntries(FRONTS.map((f) => [f.id, f]));
 /** Fronts the caller uses only under FRONT_MENU (game/playcaller.ts). */
 export const MENU_FRONTS: ReadonlySet<string> = new Set(['even', 'bear34', 'under34']);
+/** NICKEL_FRONTS: the three- and five-man sub-package fronts, called only under that flag. */
+export const NICKEL_FRONT_IDS: ReadonlySet<string> = new Set(['penny', 'penny_bear', 'mint', 'okie', 'stack33']);
 export const PRESSURE_BY_ID: Record<string, Pressure> = Object.fromEntries(PRESSURES.map((p) => [p.id, p]));

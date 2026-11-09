@@ -20,7 +20,7 @@ import { r01, type Player } from '../players/types.js';
 import type { ManPreference } from '../playbook/alignment.js';
 import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/call-integrity.js';
 import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
-import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, PRESSURES } from '../playbook/defense.js';
+import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, NICKEL_FRONT_IDS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, MotionCall, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
@@ -32,6 +32,31 @@ import { motionEnabled } from '../sim/motion.js';
  * Under is the base front and Over a secondary call; nickel lines up in the
  * Over family; its pass-down front is a wide "Rush". One draw either way. */
 const FRONT_ALIGN = process.env.FRONT_ALIGN !== '0';
+/** SAM_ON_TE (experimental, off): see the defensive call; share of Over/Even calls with the Sam on the TE. */
+const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_RATE = 0.5;
+/** MUG_CALLS (experimental, off): mug rates [>=1, 2] by package and situation
+ * (1 = 1st, 2 = 2nd, 3 = 3rd/4th and short (< 4), 4 = 3rd/4th and long). NFL 2022
+ * snap frames: a non-lineman 0-1.6 yd off the ball inside the guards. */
+const MUG_CALLS = process.env.MUG_CALLS === '1';
+/** NICKEL_FRONTS (experimental, off): shares of nickel's five-man front and of the three-man front, by moment. */
+const NICKEL_FRONTS = process.env.NICKEL_FRONTS === '1';
+const SUB_SHARE: Record<'nickel' | 'dime', Record<Moment, Record<string, number>>> = {
+  nickel: {
+    early: { penny: .02, penny_bear: .05, mint: .03, okie: .01 },
+    third: { penny: .01, penny_bear: .03, mint: .01, okie: .05 },
+    short: { penny: .03, penny_bear: .10, mint: .03 },
+  },
+  dime: { early: { okie: .11 }, third: { okie: .18 }, short: { okie: .12 } },
+};
+/** SHORT_BASE (experimental, off): share of short-yardage snaps vs heavy personnel played from the heavy package. */
+const SHORT_BASE = process.env.SHORT_BASE === '1', SHORT_HEAVY_RATE = .15;
+/** NICKEL_FRONTS: share of nickel calls played from 3-3-5 personnel (the 3-3 Stack). */
+const STACK_RATE = .03;
+const FRONT_BY_ID_SUB = Object.fromEntries(FRONTS.filter(f => NICKEL_FRONT_IDS.has(f.id)).map(f => [f.id, f]));
+const MUG_RATES: Record<'nickel' | 'dime', Record<number, [number, number]>> = {
+  nickel: { 1: [.013, .001], 2: [.026, .008], 3: [.072, .023], 4: [.19, .068] },
+  dime: { 1: [.062, .003], 2: [.062, .007], 3: [.105, .011], 4: [.113, .016] },
+};
 /** SHORT_PACKAGE (on; =0 turns it off): a short-yardage package answers the
  * offense's heavy package anywhere on the field, not only at the goal line:
  * goal-line personnel and the Bear at 2 yd or less to go vs 13, 21 or 22
@@ -576,16 +601,39 @@ export class DefensiveCoordinator {
     let heavy = false;
     if (goalLine && (offPersonnel === '22' || offPersonnel === '13' || offPersonnel === '21')) personnel = 'goalline';
     else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance) && 100 - s.yardline <= 5) personnel = 'goalline';
-    else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance)) { personnel = 'heavy'; heavy = true; }
+    // SHORT_BASE (experimental, off): short yardage against heavy personnel
+    // goes to the heavy package (its bear) on 15% of snaps, the league's
+    // 4+-interior "heavy" share there; otherwise base personnel and its
+    // short-yardage menu, whose 3-4 bear supplies the rest of the bear (NFL vs
+    // 3+ backs and ends at 2 yards or less, 2022 snap frames: over/under 33%,
+    // bear 24%, heavy 13%, tite 8%, even 6%; scripts/diag/align/nfronts.py).
+    // Ours played the bear on 88% of those snaps.
+    else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance) && (!SHORT_BASE || own.fork('short-heavy').next() < SHORT_HEAVY_RATE)) { personnel = 'heavy'; heavy = true; }
+    else if (SHORT_BASE && SHORT_PACKAGE && shortPackage(offPersonnel, s.distance)) personnel = scheme === '3-4' ? 'base34' : 'base43';
     else if (DEF_PACKAGE) personnel = defPackage(own.fork('package'), offPersonnel, s, scheme);
     else if (offPersonnel === '10') personnel = rng.chance(passingDown ? 0.7 : 0.35) ? 'dime' : 'nickel';
     else if (offPersonnel === '11') personnel = passingDown && rng.chance(0.4) ? 'dime' : scheme === 'nickel-heavy' || rng.chance(0.85) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
     else if (offPersonnel === '12') personnel = rng.chance(scheme === 'nickel-heavy' ? 0.6 : 0.4) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
     else personnel = scheme === '3-4' ? 'base34' : 'base43';
 
-    const fronts = FRONTS.filter((f) => f.personnel.includes(personnel) && (FRONT_MENU || !MENU_FRONTS.has(f.id)));
+    if (NICKEL_FRONTS && personnel === 'nickel' && own.fork('stack335').next() < STACK_RATE) personnel = 'stack335';
+    const fronts = FRONTS.filter((f) => f.personnel.includes(personnel) && (FRONT_MENU || !MENU_FRONTS.has(f.id)) && !NICKEL_FRONT_IDS.has(f.id));
     const moment: Moment = s.distance <= 2 ? 'short' : s.down >= 3 ? 'third' : 'early';
-    const front = pickWeighted(
+    // NICKEL_FRONTS (experimental, off): sub packages also play the Penny,
+    // Penny Bear, Mint, Okie and (in 3-3-5 personnel) the 3-3 Stack, at shares
+    // from 2022 snap frames classified by interior shape
+    // (scripts/diag/align/nfronts.py), less what mugs and walk-ups add.
+    const subDraw = own.fork('sub-front').next();
+    let sub: typeof fronts[number] | undefined;
+    if (NICKEL_FRONTS && (personnel === 'nickel' || personnel === 'dime')) {
+      let acc = 0;
+      for (const [id, share] of Object.entries(SUB_SHARE[personnel][moment])) {
+        acc += share;
+        if (subDraw < acc) { sub = FRONT_BY_ID_SUB[id]; break; }
+      }
+    }
+    if (NICKEL_FRONTS && personnel === 'stack335') sub = FRONT_BY_ID_SUB.stack33;
+    const front = sub ?? pickWeighted(
       rng,
       fronts.map((f) => [f, FRONT_MENU ? menuWeight(f.id, personnel, scheme, moment)
         : FRONT_ALIGN ? installWeight(f.id, personnel, passingDown, scheme)
@@ -742,11 +790,24 @@ export class DefensiveCoordinator {
     const strength: DefensivePlayCall['strength'] = !FRONT_STRENGTH ? undefined
       : own.fork('strength').chance(alignStyle(this.team).passingStrength ?? .6) ? 'passing' : 'opposite';
     const mugDraw = own.fork('mug').next();
-    const mug: DefensivePlayCall['mug'] = FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
-      ? mugDraw < .05 ? 2 : mugDraw < .17 ? 1 : undefined : undefined;
+    // MUG_CALLS (experimental, off): nickel and dime mug on every down at the
+    // league's rates by package and situation (rates[0] one or more backers in
+    // an A gap at the snap, rates[1] two; 2022 tracking, rgtools/mugwalk.py).
+    // Whether a mugged backer rushes or bails stays with the pressure call.
+    const mugRates = MUG_CALLS && (personnel === 'nickel' || personnel === 'dime') ? MUG_RATES[personnel][s.down <= 2 ? s.down : s.distance < 4 ? 3 : 4] : null;
+    const mug: DefensivePlayCall['mug'] = mugRates
+      ? mugDraw < mugRates[1] ? 2 : mugDraw < mugRates[0] ? 1 : undefined
+      : FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
+        ? mugDraw < .05 ? 2 : mugDraw < .17 ? 1 : undefined : undefined;
+    // SAM_ON_TE (experimental, off): in an Over or Even front the Sam is
+    // called on the line on the tight end ("Sam on") or kept off the ball
+    // as the front's stack backer. NFL backers over an attached TE stand on
+    // the line on 56% of snaps (30% at backer depth); Under calls already
+    // put ours on, so about half the Over/Even calls do.
+    const samOn = SAM_ON_TE && (front.id === 'over' || front.id === 'even') && 'LB_S' in DEF_PERSONNEL[personnel] && own.fork('sam-on').next() < SAM_ON_RATE ? true : undefined;
     return {
       call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick,
-        checkPrefer: this.checkPrefer(passingDown, system), zeus, strength, mug,
+        checkPrefer: this.checkPrefer(passingDown, system), zeus, strength, mug, samOn,
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
         label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },
       prefs,

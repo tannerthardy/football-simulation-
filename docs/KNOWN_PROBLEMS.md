@@ -317,6 +317,7 @@ problem), resolved.
 | [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | paused; broader cost-fixture requalification first on resume |
 | [COV-8](#cov-8) | Trailing man defenders can't find the ball | G3, G4 | high | open (logged with the throw-sight change) |
 | [COV-9](#cov-9) | A man defender overruns a turning receiver once nothing slows his pedal | G3 | medium | open (logged with #394; Coverage paused) |
+| [COV-10](#cov-10) | Sim route releases are too fast and too vertical, so release-keyed reads get no hard negatives | G3 | medium | open (needs an owner: offense route runner) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
 | [QB-1](#qb-1) | Throws come out early and deep | G3, G7 | medium | open |
@@ -2781,6 +2782,62 @@ From the issue register:
 - **Next:** for whoever holds coverage. Judge on this witness and its
   opposing gun_doubles_11 control: the defender keeps his cushion through
   the turn without a pedal cap or a fixed timer.
+
+<a id="cov-10"></a>
+### COV-10: Sim route releases are too fast and too vertical
+
+- **Symptom:** in the first second every sim route looks the same: a fast
+  vertical stem. NFL releases vary. Flats and crosses work flat early, run-play
+  receivers stalk, and chip and block receivers barely move downfield. Any
+  defender read keyed on release pace or direction (a screen look, route
+  recognition, match rules) then sees no realistic hard negatives.
+- **Measure** (Defense, 2026-11-03; sim on `claude/screens` 245bda1a,
+  reproduced for ordinary routes on develop 85952c95; NFL = BDB 2025
+  `routeRan`, detached WR/TE).
+  Downfield velocity at 0.9 s, p50 (yd/s):
+
+  | Route | NFL | sim |
+  | --- | --- | --- |
+  | flat | 0.8 | 3.4 |
+  | cross | 2.6 | 4.2 |
+  | hitch | 3.3 | 4.4 |
+  | slant | 2.9 | 4.2 |
+  | go | 3.4 | 4.8 |
+  | screen blocker | 0.6 (n = 160; 95% bootstrap 0.28–0.70) | bunch 0.6, bubble 0.5 |
+
+  The share of each route that a "slow release" rule would flag (downfield
+  velocity below 1.0 / 1.5 / 2.0 yd/s at both 0.6 and 0.9 s):
+
+  | Route | NFL | sim |
+  | --- | --- | --- |
+  | flat | 55 / 70 / 84% | 0 / 0 / 0% |
+  | cross | 20 / 24 / 33% | 0% |
+  | slant | 4 / 9 / 19% | 0% |
+  | hitch | 4 / 7 / 12% | 0% |
+  | run-play WR | 31 / 44 / 57% | not measured |
+  | no route (block or chip) | 52 / 56 / 60% | pass-pro 100% |
+  | screen blocker | 67 / 82 / 93% | bunch 59 / 75 / 88%, bubble 75 / 75 / 81% |
+
+  Sim negatives: 1,088 ordinary pass plays, 17 concepts × 4 formations × 4
+  coverage calls × 4 seeds (`scripts/diag/route-releases.mts`). Operator:
+  `scripts/mechanics/release_falsetrip.py`, with the same kinematics as #403's
+  `release_pace.py` (central difference over ±0.2 s).
+- **Cause:** *likely* the route runner. Stems start at full pace straight
+  downfield. The route tree has no detached chip, option, rub or whip release.
+  Not isolated further.
+- **Consequence:** the screen look for #46 (screen rally) is blocked.
+  Coverage and Defense agreed (2026-11-03) not to build a release read on
+  these releases, and not to stand in synthetic NFL-shaped negatives in a
+  scenario test: that would certify a read the game never challenges.
+- **Design note for the screen look:** in the NFL a slow release alone is a
+  weak screen cue, since flats and run-play stalks trip it at 31–84%. The
+  coached read combines graded evidence: the receiver's release, what the
+  defender sees at the QB and line (a quick set, linemen releasing or not
+  pass-setting), and the throw.
+- **Next:** for the offense's route runner, which needs an owner. Match the
+  release shape by route first, then re-run the false-trip table
+  (`scripts/mechanics/release_falsetrip.py`) before any release-keyed read is
+  built.
 
 <a id="ball-1"></a>
 ### BALL-1: Too many interceptions

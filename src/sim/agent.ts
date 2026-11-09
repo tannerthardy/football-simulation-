@@ -136,6 +136,13 @@ export class Agent {
    * out on a run block. Defenders read it.
    */
   stance: 'high' | 'low' | null = null;
+  /** STANCE_TELL: pre-snap weight lean a lineman shows in his stance, as a
+   * lateral sign (-1, 0, +1). Visible before the snap like his alignment. */
+  stanceLean = 0;
+  /** KEY_REACT: the key's lateral step this lineman saw before contact, and whose. */
+  keyStep: { from: Agent; side: number } | null = null;
+  /** DEF_STANCE: a front defender's pre-snap stance, hand(s) down or standing up. */
+  setStance: 'down' | 'up' | null = null;
   /** True once the agent has made a tackle attempt that missed this play. */
   missedTackles = 0;
   /** Free-form per-play annotations used by stats / replay. */

@@ -152,6 +152,16 @@ const FRONT_MENU = process.env.FRONT_MENU !== '0';
  * installed spot, 3 yd outside and 7.5 deep, left him out of the box against
  * an attached end on every snap (tracked: within 2 yd of the end on 70%). */
 const BOX_ALIGN = process.env.BOX_ALIGN !== '0';
+/** BLITZ_CREEP (experimental, off): see alignDefense; tracked depth of a rushing backer at the snap (yd). */
+const BLITZ_CREEP = process.env.BLITZ_CREEP === '1', CREEP_DEPTH = 2.4;
+/** SAM_ON_TE (experimental, off): see alignDefense; a Sam on the line stands as the Under's 9 does (yd). */
+const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_DEPTH = 1.0;
+/** TIGHT_OFF (experimental, off): see alignDefense; a tight #2 is within this of his tackle (yd); off depth (yd). */
+/** NICKEL_FRONTS (experimental, off): see the end-man rule in alignDefense. */
+const NICKEL_FRONTS_ALIGN = process.env.NICKEL_FRONTS === '1';
+/** SLOT_LEV (experimental, off): see alignDefense. */
+const SLOT_LEV = process.env.SLOT_LEV === '1';
+const TIGHT_OFF = process.env.TIGHT_OFF === '1', TIGHT_SPLIT = 3.5, TIGHT_OFF_DEPTH = 4.5;
 /** SHELL_SHOW (on; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
 const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
@@ -176,8 +186,10 @@ const BACKERS: Record<string, Partial<Record<1 | 2 | 3, BackerSpot[]>>> = {
   even: { 1: [[.05, 4.7]], 2: [[-1.5, 4.8], [1.9, 4.8]], 3: [[-1.9, 4.5], [.5, 4.8], [2.7, 4.5]] },
   bear: { 2: [[-.8, 4.6], [2, 4.4]] },
   tite: { 2: [[-.8, 4.6], [1.85, 4.5]] },
+  // NICKEL_FRONTS: the Mint's Will sits over the weak C-gap bubble the front leaves open.
+  mint: { 2: [[-2.5, 4.3], [.6, 4.6]] },
 };
-const FAMILY: Record<string, string> = { over: 'over', wide9: 'over', under: 'under', under34: 'under', even: 'even', bear34: 'bear', tite: 'tite' };
+const FAMILY: Record<string, string> = { over: 'over', wide9: 'over', under: 'under', under34: 'under', even: 'even', bear34: 'bear', tite: 'tite', penny: 'over', penny_bear: 'over', mint: 'mint', okie: 'even' };
 const FRONT_PLAYERS = new Set<DefSlot>(['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT', 'LB_S', 'LB_M', 'LB_W']);
 /** The front's strong side (+1 = +y). */
 export function frontSign(call: DefensivePlayCall, off: OffenseAlignment): number {
@@ -234,6 +246,8 @@ export interface AlignStyle { olWidth?: number; wrRoom?: number; cbDepth?: numbe
   /** The defense's own picture of the snap: down, yards to gain and to the
    * goal line. Never the offense's call. */
   situation?: DefSituation;
+  /** ALIGN_HABIT: each slot's alignment offset this snap (habit + scatter, yd; x deeper, y across). */
+  scatter?: Partial<Record<DefSlot, Vec2>>;
 }
 
 export interface DefSituation { down: number; distance: number; toGoal: number }
@@ -811,6 +825,10 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const hasTE = teAt(sideSign(side));
     const end = onLine.sort((a, b) => techniqueOffset(frontSlots[b]!.tech, hasTE, off.line) - techniqueOffset(frontSlots[a]!.tech, hasTE, off.line))[0];
     if (!end) continue;
+    // NICKEL_FRONTS: a side whose widest man on the line is an inside
+    // technique has no edge by design (the Mint's weak C-gap bubble, filled
+    // by a backer): he keeps his technique rather than becoming the end.
+    if (NICKEL_FRONTS_ALIGN && ['0', '1', '2i', '2', '3', '4i'].includes(frontSlots[end]!.tech)) continue;
     let tech = frontSlots[end]!.tech;
     if (call.edge) tech = hasTE ? EDGE_CALL_TE[call.edge] : call.edge === 'tight' ? '9' : 'w9';
     // With no end there a 6 or 7 is a ghost: he stands where the end would.
@@ -847,7 +865,15 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
 
   // FRONT_MENU: off-ball backers by the front's family and their number.
   const backerSpots = FRONT_MENU ? BACKERS[FAMILY[call.front.id] ?? ''] : undefined;
-  const offBall = (['LB_W', 'LB_M', 'LB_S'] as DefSlot[]).filter(slot => spots[slot] && frontSlots[slot]!.depth > 2);
+  // SAM_ON_TE (experimental, off): a "Sam on" call walks the Over/Even Sam
+  // onto the line on an attached tight end's outside shoulder, a front man
+  // like the Under's 9; the Mike and Will are then the two off-ball backers.
+  // Not against a wing (handled below) or a detached #2 (the apex).
+  const s2 = off.numbering.S2;
+  const samOnTE = SAM_ON_TE && !!call.samOn && FRONT_ALIGN && (call.front.id === 'over' || call.front.id === 'even')
+    && !!spots.LB_S && !!frontSlots.LB_S && frontSlots.LB_S.depth > 2 && teAt(fs) && !wingOn('S')
+    && !(!has('NB') && !flipFront && off.counts.S >= 2 && !!s2 && !off.spots[s2].inline);
+  const offBall = (['LB_W', 'LB_M', 'LB_S'] as DefSlot[]).filter(slot => spots[slot] && frontSlots[slot]!.depth > 2 && !(samOnTE && slot === 'LB_S'));
   const table = backerSpots?.[offBall.length as 1 | 2 | 3];
   if (table) {
     const G = OL_SPLITS ? off.line.cg : 1.3, T = tackleOf(off.line);
@@ -976,6 +1002,7 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     // Lateral only: his depth is the front's (or FRONT_MENU's tracked) backer depth.
     else if (!apex) sam.pos = { x: sam.pos.x, y: off.ballY + fs * (inlineOf(off.line) + SHOULDER) };
   }
+  if (samOnTE) spots.LB_S!.pos = { x: los + SAM_ON_DEPTH, y: off.ballY + fs * (inlineOf(off.line) + SHOULDER) };
 
   // BOX_ALIGN: answer every detached inside receiver in a zone call.
   if (BOX_ALIGN && !cov.man) {
@@ -1038,6 +1065,13 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   for (const slot of dlSlots) if (has(slot) && !roles[slot]) roles[slot] = { kind: 'rush' };
   // 3-4 OLB on the line in a Sam position rushes too.
   if (has('LB_S') && frontSlots.LB_S && frontSlots.LB_S.depth < 2 && !roles.LB_S && !cov.man) roles.LB_S = { kind: 'rush' };
+  // NICKEL_FRONTS: so does a Will or Mike walked up onto the line as an edge
+  // (Penny); a rover off the ball drops on 3rd and long (a three-man rush with
+  // eight in coverage) and rushes otherwise.
+  for (const lb of ['LB_W', 'LB_M'] as DefSlot[])
+    if (has(lb) && frontSlots[lb] && frontSlots[lb]!.depth < 2 && !roles[lb] && !cov.man) roles[lb] = { kind: 'rush' };
+  for (const slot of dlSlots) if (has(slot) && frontSlots[slot]?.rover && roles[slot]?.kind === 'rush' && !cov.man
+    && style.situation && style.situation.down >= 3 && style.situation.distance >= 7) roles[slot] = { kind: 'zone', zone: 'hook_mid' };
 
   for (const slot of present) {
     if (roles[slot]) continue;
@@ -1201,6 +1235,37 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     }
   }
 
+  // SLOT_LEV (experimental, off): a slot defender's zone spot comes from the
+  // seat he is finally given. Placed before roles were assigned, he took the
+  // no-role default (hook: 4.5 yd, 0.5 inside) even as a curl-flat or flat
+  // player; NFL zone DBs over a slot stand +0.2 outside in Cover 3, -0.1 in
+  // Cover 2 and Quarters (scripts/diag/align/overtwo.py).
+  if (SLOT_LEV && DEF_ALIGN) for (const slot of ['NB', 'DB'] as DefSlot[]) {
+    const sp = spots[slot], r = roles[slot];
+    if (!sp || r?.kind !== 'zone' || r.depth !== undefined) continue;
+    const near = (['S2', 'W2', 'S3', 'W3'] as ReceiverRef[]).map(ref => off.numbering[ref]).filter((t): t is NonNullable<typeof t> => !!t)
+      .map(t => off.spots[t]).filter(o => o && !o.inline && !o.backfield && Math.abs(o.pos.y - sp.pos.y) <= 1.5)
+      .sort((a, b) => Math.abs(a.pos.y - sp.pos.y) - Math.abs(b.pos.y - sp.pos.y))[0];
+    if (!near) continue;
+    const out = Math.sign(near.pos.y - off.ballY) || 1, z = zoneSpot(r.zone, true);
+    sp.pos = { x: los + coverageDepth(los, z.depth), y: clamp(near.pos.y + out * z.shade, 1, FIELD_WIDTH - 1) };
+  }
+  // TIGHT_OFF (experimental, off): a defensive back over a tight #2 (an
+  // inline end or a man within 3.5 yd of his tackle) plays off him, not in
+  // press: with the line and the formation's traffic inside, the reduced
+  // split leaves no room to jam and plays through him as the run's force.
+  // NFL DBs over a tight #2 stand 3.2 / 4.5 / 6.5 yd deep (p25/50/75), 10%
+  // pressed; ours pressed 39% (scripts/diag/align/overtwo.py). A blitzer keeps his spot.
+  if (TIGHT_OFF) {
+    const tackles = (['LT', 'RT'] as const).map(t => off.spots[t]?.pos.y).filter((y): y is number => y !== undefined);
+    const tight = (['S2', 'W2'] as ReceiverRef[]).map(ref => off.numbering[ref]).filter((t): t is NonNullable<typeof t> => !!t)
+      .map(t => off.spots[t]).filter(sp => sp && !sp.backfield && (sp.inline || Math.min(...tackles.map(y => Math.abs(sp.pos.y - y))) < TIGHT_SPLIT));
+    for (const slot of present) {
+      const sp = spots[slot];
+      if (!sp || !/^(CB|NB|DB|SS|FS)/.test(slot) || sp.role.kind === 'blitz' || sp.pos.x - los >= 2) continue;
+      if (tight.some(r => Math.abs(r.pos.y - sp.pos.y) <= 1.5)) { sp.pos = { x: los + TIGHT_OFF_DEPTH, y: sp.pos.y }; sp.press = false; }
+    }
+  }
   // SHORT_PACKAGE: the Bear's Sam is on the line outside the attached end
   // ("Dubs" 9; HonestNFL HNFL-129), whatever he covers after the snap.
   if (SHORT_PACKAGE && call.front.id === 'bear' && spots.LB_S && teAt(fs))
@@ -1240,6 +1305,31 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     if (p.x - los < 7.5 && Math.abs(p.y - off.ballY) < 6) box++;
   }
   const rushers = present.filter((p) => spots[p]!.role.kind === 'rush' || spots[p]!.role.kind === 'blitz');
+  // BLITZ_CREEP (experimental, off): a backer with a blitz assignment stands
+  // where tracked rushers stand, walked up to time the snap, instead of at
+  // the front's backer depth, walked toward the gap he will shoot: an A or B
+  // gap blitzer over the gap, a C or D gap blitzer outside the tackle. It
+  // shows the pressure: the offense sees him up. Tracked shallow backers on
+  // zone runs stand outside the tackles (42%), over an uncovered lineman
+  // (32%) or in a gap (17%), rarely stacked behind a down lineman (9%).
+  // NFL box backers who rush stand a median 2.26 yd deep on passes and 2.47
+  // on runs at the snap frame (p75 3.3; non-rushers 4.45-4.62); ours blitzed
+  // from 4.6 and never stood shallower than 4.0.
+  if (BLITZ_CREEP) for (const slot of blitzers) {
+    const sp = spots[slot];
+    if (sp && slot.startsWith('LB') && sp.pos.x - los > CREEP_DEPTH) sp.pos = { x: los + CREEP_DEPTH, y: gapY(off, sp.gap, sp.gapSign) };
+  }
+  // ALIGN_HABIT (experimental, off): an off-ball defender stands where his
+  // own habit and this snap put him, not on the exact landmark: a personal
+  // depth habit plus per-snap placement scatter (PlaySim draws both). NFL
+  // off-ball backers: depth sd 0.91, between players 0.41, within a player 0.78
+  // (scripts/diag/align); ours stood on one spot (4.6 / 4.6 / 5.0 at p25/50/75).
+  // Front men, pressed backs and blitzers keep their spots.
+  if (style.scatter) for (const slot of present) {
+    const sp = spots[slot], j = style.scatter[slot];
+    if (!sp || !j || sp.press || sp.role.kind === 'blitz' || sp.pos.x - los <= 2) continue;
+    sp.pos = { x: los + Math.max(2.2, sp.pos.x - los + j.x), y: clamp(sp.pos.y + j.y, 1, FIELD_WIDTH - 1) };
+  }
   return { spots, rushers, coverage: cov, boxCount: box };
 }
 

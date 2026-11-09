@@ -335,3 +335,10 @@ export function nearest(list: Agent[], p: Vec2, filter?: (a: Agent) => boolean):
   }
   return best;
 }
+
+/** GAZE (Flex's field-of-view model, #417): name what this player watches this
+ * tick. Optional so it is a no-op on builds without the model; where the model
+ * is present it is itself a no-op with GAZE off. */
+export function watch(sim: PlaySim, a: Agent, target: Agent | null | undefined): void {
+  if (target) (sim as unknown as { lookAt?: (who: Agent, what: Agent) => void }).lookAt?.(a, target);
+}

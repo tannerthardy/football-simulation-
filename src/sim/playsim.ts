@@ -55,6 +55,8 @@ import { ResponsibilityLedger } from './responsibility-ledger.js';
 import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from './tackle.js';
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
+/** ALIGN_HABIT (experimental, off): see alignDefense. */
+const ALIGN_HABIT = process.env.ALIGN_HABIT === '1';
 export interface PlaySetup {
   offense: Partial<Record<OffSlot, Player>>;
   /** The defense's scouting of this offense (run/pass tendencies so far). */
@@ -275,7 +277,14 @@ export class PlaySim {
     const defSlots = defense.map(([slot]) => slot);
     // The front's end men align by build (FRONT_ALIGN); the installed spots ignore it.
     const mass = Object.fromEntries(defense.map(([slot, player]) => [slot, derivePhysical(player).massKg]));
-    this.defStyle = { ...setup.defStyle, mass, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los } };
+    // ALIGN_HABIT (experimental, off): each off-ball defender's personal depth
+    // habit (his own seed) and this snap's placement scatter (the play's).
+    const scatter = ALIGN_HABIT ? Object.fromEntries(defense.map(([slot, player]) => {
+      const snap = this.rng.fork(`align-scatter:${slot}`);
+      const habit = new Rng(`align-habit:${player.id}`).normalClamped(0, .4, -.8, .8);
+      return [slot, { x: habit + snap.normalClamped(0, .6, -1.2, 1.2), y: snap.normalClamped(0, .4, -.8, .8) }];
+    })) : undefined;
+    this.defStyle = { ...setup.defStyle, mass, scatter, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los } };
     this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
 
     const idle: Behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };
