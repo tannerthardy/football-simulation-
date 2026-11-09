@@ -318,7 +318,11 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     const p = play('M10-P081');
     expect(changeOf(p, 'C', 'combination-release').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
       .toEqual([[1.5, 'DT_S', 'LB_W']]);
-    expect(changeOf(p, 'C', 'threat-reread').map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
+    // The contract is the release-reread before the ball arrives. With a one-armed grab from inside a block
+    // (ONE_ARM_HOLD, #412) DT_S's hold at 3.1 is broken at 3.75 and the run goes on to 5.55 (3.39 yd, was -0.55);
+    // C rereads again at 4.7 (LB_M -> LB_W), after first carrier contact, which this contract does not cover.
+    const contact = p.census[0].firstCarrierContact!.t;
+    expect(changeOf(p, 'C', 'threat-reread').filter(c => c.t < contact).map(c => [c.t, p.slot(c.before.target), p.slot(c.after.target)]))
       .toEqual([[1.7, 'LB_W', 'LB_M']]);
     // With the direction-free start (#353), after first carrier contact (3.05) C and his keeper RG exchange crossing
     // men at 3.2: RG climbs to LB_M and C takes DT_S, which RG has just left. That is the keeper handing DT_S over,
@@ -327,8 +331,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // C releases at 1.3 and rereads at 1.5; his only later change is a crossing exchange onto DT_W at 2.95, and
     // no change ever puts him back on DT_S. With the box backer reading before he moves and filling to a pull he sees, C releases at 1.5 and rereads at 1.7, and
     // still no change puts him back on DT_S.
-    expect(p.d.changes.filter(c => p.slot(c.actor) === 'C' && c.t > 1.5 && p.slot(c.after.target) === 'DT_S')
-      .map(c => [c.t, c.reason])).toEqual([]);
+    // With a one-armed grab from inside a block (ONE_ARM_HOLD, #412) the run goes on to 5.55, and after the broken
+    // tackle C and his keeper exchange crossing men at 4.9-5.4; at 4.95 the exchange hands him DT_S, which the keeper
+    // has left. As above, a crossing exchange is the keeper handing his man over, so the contract is that no other
+    // change (a release or a reread) ever puts C back on DT_S.
+    expect(p.d.changes.filter(c => p.slot(c.actor) === 'C' && c.t > 1.5 && p.slot(c.after.target) === 'DT_S'
+      && c.reason !== 'crossing-exchange').map(c => [c.t, c.reason])).toEqual([]);
   });
 
   it('M25-P032: the first carrier contact records every defender at that tick', () => {
@@ -377,11 +385,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // as well, DT_W alone makes first contact at 2.75, a hit without a wrap; SS wraps first, at 4.25; still not a tie.
     // With a climber releasing a held backer who has run under him and he can no longer meet (C leaves LB_W for FS at
     // 2.35), first contact is unchanged and SS wraps first at 4.0 (3.95 yd, was 2.4).
-    expect(first.t).toBe(2.75);
-    expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
     // With the Cover 3 hook seats no longer crossed (Mike middle, Will weak), DT_W alone at 2.75 and wraps with
-    // the contact; still not a tie.
-    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 2.75 });
+    // the contact; still not a tie. With a released player deciding again in the step his block ends
+    // (RELEASE_REDECIDE, #410), one tick later: DT_W alone at 2.8, wrapping with it (RELEASE_REDECIDE=0: 2.75).
+    expect(first.t).toBe(2.8);
+    expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
+    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 2.8 });
     expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('DT_W');
   });
 

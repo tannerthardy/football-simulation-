@@ -74,8 +74,10 @@ describe('Cover 6 half side: vertical curl (HNFL-097)', () => {
     expect(ran(seam, 2.6)).toBe(true);
     expect(released(seam, 'W2').up).toBeGreaterThan(8);
     expect(jobsOf(seam, curl)).toContain(`wall:${seam.numbering.W2}`);
-    const dig = filmScene({ formation: 'gun_spread_10', coverage: 'cover6', weak: { 1: 'go', 2: 'lab_in9' }, until: 3.4 });
-    expect(ran(dig, 3.4)).toBe(true);
+    // Observed through 3.3 s: a rusher who keeps moving the step he sheds his
+    // block (RELEASE_REDECIDE) gets home at 3.35 s on this snap.
+    const dig = filmScene({ formation: 'gun_spread_10', coverage: 'cover6', weak: { 1: 'go', 2: 'lab_in9' }, until: 3.3 });
+    expect(ran(dig, 3.3)).toBe(true);
     expect(released(dig, 'W2').up).toBeGreaterThan(7);
     expect(released(dig, 'W2').out).toBeLessThan(-1);
     expect(jobsOf(dig, curl)).toContain(`man:${dig.numbering.W2}`);
