@@ -18,7 +18,8 @@ for (const seed of seeds) {
       const sim: any = new PlaySim(st), r = sim.run();
       const ho = sim.events.find((e: any) => e.type === 'handoff' || e.type === 'pitch');
       row = { ...row, yards: +r.yards.toFixed(2), outcome: r.outcome, handoff: ho?.t ?? null, fumble: sim.events.some((e: any) => e.type === 'fumble'),
-        broken: sim.events.filter((e: any) => e.type === 'broken_tackle').length, missed: sim.events.filter((e: any) => e.type === 'missed_tackle').length };
+        broken: sim.events.filter((e: any) => e.type === 'broken_tackle').length,
+        brokenGrab: sim.events.filter((e: any) => e.type === 'broken_tackle' && e.note === 'engaged grab slipped').length, missed: sim.events.filter((e: any) => e.type === 'missed_tackle').length };
     } catch (e: any) { row.error = String(e?.message ?? e).slice(0, 200); }
     rows.push(JSON.stringify(row));
   }
