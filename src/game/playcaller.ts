@@ -183,7 +183,12 @@ const PRESSURE_CALL = process.env.PRESSURE_CALL !== '0';
 const DL_GAMES = process.env.DL_GAMES === '1';
 const PRESSURE_BY_SHELL: Record<string, number> = { 'one-high': 1.48, 'two-high': .43 };
 export const CB_NORM = 79.3;
-export const WR_NORM: Partial<Record<PersonnelId, number>> = { '10': 69.6, '11': 71.3, '12': 72.0, '21': 72.0, '13': 76.6, '22': 76.6 };
+// 20 personnel fields the same three receivers as 11.
+/** Split-back shotgun's share of each personnel group's snaps (2022 weeks
+ * 1-9, one back on each side of a shotgun QB): 11 128 of 10,114, 12 33 of
+ * 2,945, 21 102 of 1,379. 20 personnel has no other installed set. */
+const SPLIT_BACK_SHARE: Partial<Record<PersonnelId, number>> = { '11': .013, '12': .011, '21': .074 };
+export const WR_NORM: Partial<Record<PersonnelId, number>> = { '10': 69.6, '11': 71.3, '12': 72.0, '20': 71.3, '21': 72.0, '13': 76.6, '22': 76.6 };
 const EARLY_DOWN: Record<string, number> = { cover1: .82, cover0: .75, cover2man: .5, cover3: 1.12, cover4: 1.07, cover6: 1.1 };
 const CALL_CHECK: Record<'under' | 'empty', Record<string, number>> = {
   under: { cover3: 1.38, cover4: .8, cover6: .6, cover2: .75, tampa2: .75, cover0: 1.3 },
@@ -194,7 +199,9 @@ function defPackage(rng: Rng, off: PersonnelId, s: Situation, scheme: string): D
   const short = s.distance <= 2;
   const w: [number, number, number] = off === '10' || off === '11'
     ? short ? [9, 83, 8] : !third ? [6, 85, 8] : s.distance <= 6 ? [1, 70, 29] : [0, 57, 43]
-    : off === '12' ? short ? [58, 42, 0] : third ? [20, 50, 30] : [56, 43, 1]
+    // 20 personnel is met like 12 (2022 weeks 1-9, early downs: base 45%,
+    // nickel 53% of 86 snaps; 12 is 58/41, 21 is 56/43).
+    : off === '12' || off === '20' ? short ? [58, 42, 0] : third ? [20, 50, 30] : [56, 43, 1]
     : short ? [75, 25, 0] : third ? [30, 60, 10] : [65, 34, 1];
   if (scheme === 'nickel-heavy') w[0] /= 3;
   const base: DefPersonnelId = scheme === '3-4' ? 'base34' : 'base43';
@@ -422,12 +429,14 @@ export class OffensiveCoordinator {
     const shortYd = s.distance <= 2 || 100 - s.yardline <= 3;
     if (shortYd && !isPass) return pickWeighted(this.rng, [['12', 3], ['21', 3], ['22', 2], ['13', 1.5], ['11', 1]]);
     if (s.hurry || (s.down >= 3 && s.distance >= 7)) return pickWeighted(this.rng, [['11', 7], ['10', scheme === 'air-raid' || scheme === 'spread' ? 3.5 : 1.5], ['12', 0.5]]);
+    // 20 personnel was 0.6% of 2022 snaps (weeks 1-9): a weight of 0.06 in
+    // tables that sum to about 10.
     const table: Record<string, Array<[PersonnelId, number]>> = {
-      'air-raid': [['10', 3], ['11', 6], ['12', 1]],
-      spread: [['11', 6.5], ['10', 1.5], ['12', 2]],
-      'west-coast': [['11', 5.5], ['12', 2.5], ['21', 1.5], ['10', 0.5]],
-      'wide-zone': [['11', 5.5], ['12', 2.5], ['21', 1.5], ['13', 0.5]],
-      power: [['11', 4], ['12', 3], ['21', 2], ['22', 1]],
+      'air-raid': [['10', 3], ['11', 6], ['12', 1], ['20', 0.06]],
+      spread: [['11', 6.5], ['10', 1.5], ['12', 2], ['20', 0.06]],
+      'west-coast': [['11', 5.5], ['12', 2.5], ['21', 1.5], ['10', 0.5], ['20', 0.06]],
+      'wide-zone': [['11', 5.5], ['12', 2.5], ['21', 1.5], ['13', 0.5], ['20', 0.06]],
+      power: [['11', 4], ['12', 3], ['21', 2], ['22', 1], ['20', 0.06]],
     };
     return pickWeighted(this.rng, table[scheme]);
   }
@@ -444,10 +453,16 @@ export class OffensiveCoordinator {
       return pickWeighted(this.rng, forms.map((f): [Formation, number] => [f, f.tags.includes('empty') ? 0.002
         : (f.qb === 'gun' ? RUN_QB_SHARE.gun * gunPref / 0.8 : f.qb === 'pistol' ? RUN_QB_SHARE.pistol : RUN_QB_SHARE.under) / count(f.qb)]));
     }
-    return pickWeighted(
-      this.rng,
-      forms.map((f): [Formation, number] => [f, (f.qb === 'gun' ? gunPref * (isPass ? 1.3 : 0.8) : f.qb === 'pistol' ? 1 : isPass ? 0.8 : 1.4) * (f.tags.includes('empty') && !isPass ? 0.05 : 1)]),
-    );
+    const weights = forms.map((f): [Formation, number] => [f, (f.qb === 'gun' ? gunPref * (isPass ? 1.3 : 0.8) : f.qb === 'pistol' ? 1 : isPass ? 0.8 : 1.4) * (f.tags.includes('empty') && !isPass ? 0.05 : 1)]);
+    // Split-back gun takes its 2022 share of its personnel group's snaps.
+    const share = SPLIT_BACK_SHARE[personnel];
+    const splitW = weights.filter(([f]) => f.tags.includes('split-backs')).reduce((t, [, w]) => t + w, 0);
+    const otherW = weights.reduce((t, [, w]) => t + w, 0) - splitW;
+    if (share !== undefined && splitW > 0 && otherW > 0) {
+      const k = share / (1 - share) * otherW / splitW;
+      for (const entry of weights) if (entry[0].tags.includes('split-backs')) entry[1] *= k;
+    }
+    return pickWeighted(this.rng, weights);
   }
 
   private choosePass(s: Situation, f: Formation, defense: Team): PassConcept {
@@ -496,8 +511,11 @@ export class OffensiveCoordinator {
       const gap = c.scheme === 'power' || c.scheme === 'counter' || c.scheme === 'trap' || c.scheme === 'duo';
       if (zone) w *= scheme === 'wide-zone' ? 2.4 : 1.2;
       if (c.scheme === 'outsideZone' || c.scheme === 'wideZone') w *= scheme === 'wide-zone' ? 1.6 : 0.8;
+      // Split zone needs a slicer: a fullback, an off-ball tight end, or a
+      // second back set beside the QB.
       if (c.scheme === 'splitZone' && !Object.entries(f.slots).some(([slot,p]) =>
-        (slot === 'F' || ((slot === 'H' || slot === 'Y') && (f.personnel === '12' || f.personnel === '22')))
+        (slot === 'F' || ((slot === 'H' || slot === 'Y') && (f.personnel === '12' || f.personnel === '22'))
+          || (slot !== 'RB' && !!p && p.depth >= 3))
         && p && p.depth > .9 && (p.split === 'core' || p.split === 'wing' || (typeof p.split === 'number' && p.split < 6)))) w = 0;
       if (gap) w *= scheme === 'power' ? 2.0 : 0.9;
       w *= Math.exp(((zone ? zoneFit : gap ? gapFit : (zoneFit + gapFit) / 2) - 55) / 25);
@@ -622,7 +640,7 @@ export class DefensiveCoordinator {
     else if (DEF_PACKAGE) personnel = defPackage(own.fork('package'), offPersonnel, s, scheme);
     else if (offPersonnel === '10') personnel = rng.chance(passingDown ? 0.7 : 0.35) ? 'dime' : 'nickel';
     else if (offPersonnel === '11') personnel = passingDown && rng.chance(0.4) ? 'dime' : scheme === 'nickel-heavy' || rng.chance(0.85) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
-    else if (offPersonnel === '12') personnel = rng.chance(scheme === 'nickel-heavy' ? 0.6 : 0.4) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
+    else if (offPersonnel === '12' || offPersonnel === '20') personnel = rng.chance(scheme === 'nickel-heavy' ? 0.6 : 0.4) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
     else personnel = scheme === '3-4' ? 'base34' : 'base43';
 
     if (NICKEL_FRONTS && personnel === 'nickel' && own.fork('stack335').next() < STACK_RATE) personnel = 'stack335';

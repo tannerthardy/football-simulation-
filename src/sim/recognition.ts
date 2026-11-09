@@ -60,8 +60,10 @@ export function situationBucket(c: Pick<SnapContext, 'down' | 'distance' | 'yard
   return c.down === 2 ? `2nd-${len}` : `late-${len}`;
 }
 
-/** League knowledge of personnel and alignment, in log-odds of a pass. */
-const PERSONNEL_SHIFT: Record<PersonnelId, number> = { '10': 0.9, '11': 0.3, '12': -0.25, '13': -0.9, '21': -0.45, '22': -1.0 };
+/** League knowledge of personnel and alignment, in log-odds of a pass. 20
+ * personnel is passed as often as 21 (2022 weeks 1-9: 45.5% of 99 snaps
+ * against 44.8% of 1,379), so it carries 21's shift. */
+const PERSONNEL_SHIFT: Record<PersonnelId, number> = { '10': 0.9, '11': 0.3, '12': -0.25, '13': -0.9, '20': -0.45, '21': -0.45, '22': -1.0 };
 const QB_SHIFT: Record<QBAlignment, number> = { gun: 0.3, pistol: -0.1, under: -0.6 };
 
 const logit = (p: number) => Math.log(p / (1 - p));

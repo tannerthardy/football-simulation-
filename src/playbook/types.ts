@@ -13,7 +13,7 @@ export type OffSlot = 'QB' | SkillSlot | OLSlot;
 export const OL_SLOTS: readonly OLSlot[] = ['LT', 'LG', 'C', 'RG', 'RT'];
 export const SKILL_SLOTS: readonly SkillSlot[] = ['X', 'Z', 'Y', 'H', 'F', 'RB'];
 
-export type PersonnelId = '10' | '11' | '12' | '13' | '21' | '22';
+export type PersonnelId = '10' | '11' | '12' | '13' | '20' | '21' | '22';
 
 export type Side = 'L' | 'R';
 export const sideSign = (s: Side): number => (s === 'L' ? 1 : -1);
@@ -455,6 +455,7 @@ export const OFF_PERSONNEL: Record<PersonnelId, Partial<Record<SkillSlot, Positi
   '11': { RB: 'RB', X: 'WR', Z: 'WR', H: 'WR', Y: 'TE' },
   '12': { RB: 'RB', X: 'WR', Z: 'WR', Y: 'TE', H: 'TE' },
   '13': { RB: 'RB', X: 'WR', Y: 'TE', H: 'TE', F: 'TE' },
+  '20': { RB: 'RB', X: 'WR', Z: 'WR', H: 'WR', F: 'RB' },
   '21': { RB: 'RB', X: 'WR', Z: 'WR', Y: 'TE', F: 'FB' },
   '22': { RB: 'RB', X: 'WR', Y: 'TE', H: 'TE', F: 'FB' },
 };

@@ -713,6 +713,13 @@ export const CUTOFF_RACE = process.env.CUTOFF_RACE === '1';
  * from him across the formation. */
 const ZONE_BACKER_REACH = 4.5;
 
+/** The second back: the back lined up in the backfield beside the RB (a
+ * fullback, or in split-back sets a tight end, receiver or second RB). */
+function secondBack(sim: PlaySim): Agent | undefined {
+  const slot = sim.offAlign.numbering.B2;
+  return slot ? sim.slot(slot) : undefined;
+}
+
 export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, RunBlockPlan> {
   if (concept.pullers.includes('H') && concept.scheme !== 'counter')
     throw new Error('The off-ball H pull tag is installed only for Counter GH');
@@ -725,9 +732,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
   // missed a wing set outside an inline end at the wider line splits (5.9 yd,
   // 6.2 after an across motion), which the play caller installs.
   const surface = Math.max(Math.abs(sim.offAlign.coreEdge.S - by), Math.abs(sim.offAlign.coreEdge.W - by));
-  const slicer = concept.scheme === 'splitZone' ? sim.offense.find((a) => (a.player.position === 'TE' || a.player.position === 'FB')
+  const slicer = concept.scheme === 'splitZone' ? sim.offense.find((a) => (a.player.position === 'TE' || a.player.position === 'FB' || a === secondBack(sim))
     && !sim.offAlign.spots[a.slot]?.inline && Math.abs(a.pos.y-by) < Math.max(6, surface + 2) && a.pos.x < sim.los-.9) : null;
-  if (concept.scheme === 'splitZone' && !slicer) throw new Error('Split zone requires a core off-ball TE or FB');
+  if (concept.scheme === 'splitZone' && !slicer) throw new Error('Split zone requires a core off-ball TE or FB, or a second back');
   const sliceEnd = slicer ? dl.filter((d) => rel(d)<0).sort((a,b) => rel(a)-rel(b))[0] : null;
   const line = sim.offense.filter((a) => a !== slicer && (isOL(a) || (sim.offAlign.spots[a.slot]?.inline ?? false)));
   line.sort((p, q) => rel(q) - rel(p));
@@ -997,8 +1004,8 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const hBacker = concept.pullers.includes('H') ? lbNear(hole) : null;
     if (concept.pullers.includes('H') && !hBacker)
       throw new Error('Counter GH requires an installed second-level backer; all-walked-up accounting is not installed');
-    const fb = sim.slot('F');
-    const fbIsBack = fb && sim.offAlign.spots.F?.backfield;
+    const fb = secondBack(sim);
+    const fbIsBack = !!fb;
     // Power's lead puller wraps for the first linebacker to show playside,
     // read inside-out; the PST/PSG combo works to the backside backer
     // (spread playbook p. 66). Count his backer before combos and climbs do.
@@ -1135,9 +1142,9 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       pullPath:[{x:sim.los-1.4,y:slicer.pos.y},{x:sim.los-1.3,y:sliceEnd.pos.y+ps*.65}]});
   }
 
-  // Fullback lead (zone/iso) and receivers stalking.
-  const fb = sim.slot('F');
-  if (fb && sim.offAlign.spots.F?.backfield && !plans.has(fb)) {
+  // The second back's lead (zone/iso) and receivers stalking.
+  const fb = secondBack(sim);
+  if (fb && !plans.has(fb)) {
     // With every backer owned, the lead takes the most dangerous free box
     // defender, nearest the mesh; on counter and trap, the backside one the
     // pullers vacated first.
@@ -1163,8 +1170,7 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     } else
     plans.set(fb, { kind: 'lead', target: (backer && inside(backer) ? backer : null) ?? free[0] ?? null, drive: up(0) });
   }
-  const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB'
-    && !(a.slot === 'F' && sim.offAlign.spots.F?.backfield));
+  const stalkers = sim.offense.filter((a) => !plans.has(a) && a !== sim.qb && a.slot !== 'RB' && a !== fb);
   const near = (a: Agent, d: Agent) => Math.hypot(d.pos.x - a.pos.x, d.pos.y - a.pos.y);
   // Alignment class is not ownership: shallow press/apex bodies can be in dl
   // without an inline job. Keep actual current/future assignments reserved,
