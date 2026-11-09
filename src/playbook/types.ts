@@ -377,6 +377,23 @@ export interface DefensivePlayCall {
   /** Zone technique for zone defenders (default `match`). */
   zoneStyle?: ZoneStyle;
   /**
+   * What an underneath zone defender does before the throw about a receiver
+   * still behind the line in front of him (a back, a swing or a screen):
+   * `hold` (default) keeps his depth and leverage, squeezes the lane from
+   * there and breaks on the throw ("ball brings you back down"); `trap` is the
+   * coach's tag to drive down on it before the ball is out.
+   */
+  flatThreat?: 'hold' | 'trap';
+  /**
+   * How sure a box backer in zone must be that it is a pass before he leaves
+   * his read step for his drop, in his own pass belief: `early` drops as soon
+   * as he reads pass (default; third and long), `confirmed` on a confirmed
+   * pass as coaches teach it, `late` only when he is all but certain (run
+   * downs, RPO-heavy teams). `confirmed` becomes the default once a late
+   * dropper settles on the quarterback's set instead of sprinting to his spot.
+   */
+  dropStart?: 'early' | 'confirmed' | 'late';
+  /**
    * Disguise: the coverage the secondary *shows* pre-snap. DBs align in this
    * look and rotate to the real coverage at the snap (absent = no disguise).
    */

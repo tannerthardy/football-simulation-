@@ -839,6 +839,8 @@ export class ZoneCoverage implements Behavior {
   private readonly observations = new Map<Agent, RouteObservation>();
   private readonly depthReads = new Map<Agent, DeepCoverage>();
   private flatExpansionRecorded = false;
+  /** A box backer has left his read step for his drop. */
+  private dropping = false;
 
   constructor(
     a: Agent,
@@ -883,35 +885,41 @@ export class ZoneCoverage implements Behavior {
     // (tracked box backers, 2.5-8 yd deep and within 6 yd of the ball, hold
     // their depth through 0.8 s on passes and runs alike). An apex or
     // overhang backer keeps his eased drop to the flat.
-    if (!this.deep && a.recog?.read === 'unsure' && boxBacker(a, sim)) {
-      watch(sim, a, sim.qb);
-      // LB_GUARD_STEP (experimental, off): "guards to backs". Still unsure of
-      // run or pass, a box backer whose guards both step the same way (no
-      // pass set; guardStep, read at first movement) steps with them, at their pace plus a step of
-      // his own, eyes still on the quarterback. A pass read stops him there;
-      // a run read finds him already flowing. NFL OZ box backers move +0.37 to
-      // +0.54 yd/s toward the play by 0.2 s; ours stood until the run read
-      // committed (median 0.60 s).
-      const g = LB_GUARD_STEP ? guardStep(sim, a) : { side: 0, pace: 0 }, side = g.side;
-      if (side) {
-        const pace = Math.min(a.profile.vmax * a.profile.shuffle, g.pace + KEY_STEP_LEAD), h = a.mind.decisionInterval;
-        a.tags.add('lb-guard-step');
-        return withFacingTechnique(track(a, { x: a.pos.x, y: a.pos.y + side * pace * h }, { x: 0, y: side * pace },
-          { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 1 }), { label: 'read-step' });
+    // How sure he must be before he drops is the call's (dropStart; default
+    // early, on the read itself). Once he drops he doesn't step back.
+    if (!this.deep && !this.dropping && boxBacker(a, sim)) {
+      const read = a.recog?.read;
+      if (read === 'unsure' || (read === 'pass' && a.recog!.pPass() < DROP_START[sim.defCall.dropStart ?? 'early'])) {
+        if (read === 'unsure') watch(sim, a, sim.qb);
+        // LB_GUARD_STEP (experimental, off): "guards to backs". Still unsure of
+        // run or pass, a box backer whose guards both step the same way (no
+        // pass set; guardStep, read at first movement) steps with them, at their pace plus a step of
+        // his own, eyes still on the quarterback. A pass read stops him there;
+        // a run read finds him already flowing. NFL OZ box backers move +0.37 to
+        // +0.54 yd/s toward the play by 0.2 s; ours stood until the run read
+        // committed (median 0.60 s).
+        const g = LB_GUARD_STEP ? guardStep(sim, a) : { side: 0, pace: 0 }, side = g.side;
+        if (side) {
+          const pace = Math.min(a.profile.vmax * a.profile.shuffle, g.pace + KEY_STEP_LEAD), h = a.mind.decisionInterval;
+          a.tags.add('lb-guard-step');
+          return withFacingTechnique(track(a, { x: a.pos.x, y: a.pos.y + side * pace * h }, { x: 0, y: side * pace },
+            { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 1 }), { label: 'read-step' });
+        }
+        // LB_READ_STEP (experimental, off): his read step is a step. Off the
+        // snap he presses a short step downhill from his alignment, square,
+        // eyes on the quarterback, and reads from there: a run read keeps him
+        // coming, a pass read starts his drop from it. NFL box backers gain
+        // 0.1-0.15 yd downhill by 0.5 s on runs and dropbacks alike, then 40%
+        // stop or drop on passes; ours stood still until the read.
+        if (LB_READ_STEP) {
+          const home = sim.defAlign.spots[a.slot as keyof typeof sim.defAlign.spots]?.pos ?? a.pos, dir = sim.attackDir(sim.offense[0].team);
+          a.tags.add('lb-read-step');
+          return withFacingTechnique(track(a, { x: home.x - dir * READ_STEP, y: home.y }, { x: 0, y: 0 },
+            { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 0.5 }), { label: 'read-step' });
+        }
+        return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
       }
-      // LB_READ_STEP (experimental, off): his read step is a step. Off the
-      // snap he presses a short step downhill from his alignment, square,
-      // eyes on the quarterback, and reads from there: a run read keeps him
-      // coming, a pass read starts his drop from it. NFL box backers gain
-      // 0.1-0.15 yd downhill by 0.5 s on runs and dropbacks alike, then 40%
-      // stop or drop on passes; ours stood still until the read.
-      if (LB_READ_STEP) {
-        const home = sim.defAlign.spots[a.slot as keyof typeof sim.defAlign.spots]?.pos ?? a.pos, dir = sim.attackDir(sim.offense[0].team);
-        a.tags.add('lb-read-step');
-        return withFacingTechnique(track(a, { x: home.x - dir * READ_STEP, y: home.y }, { x: 0, y: 0 },
-          { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 0.5 }), { label: 'read-step' });
-      }
-      return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
+      if (read === 'pass') this.dropping = true;
     }
     const spot = this.style === 'spot';
 
@@ -1157,9 +1165,15 @@ export class ZoneCoverage implements Behavior {
       && Math.hypot(best.vel.x, best.vel.y) + 1e-6 >= Math.hypot(best.cue.vel.x, best.cue.vel.y);
     // A read step must not retain depth already outside his installed drop.
     if (stemRead) tgt = { ...tgt, x: Math.min(a.pos.x, lm.x) };
-    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead ? 0 : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
+    // A receiver still behind the line in front of him (a back, a swing, a
+    // screen) is no lane to drive down to before the ball is out: he holds
+    // his depth and leverage, squeezes it from there and breaks on the throw,
+    // unless the call tags him to trap it.
+    const holdFlat = best.pos.x < sim.los && (sim.defCall.flatThreat ?? 'hold') === 'hold';
+    if (holdFlat) tgt = { ...tgt, x: Math.max(tgt.x, Math.min(a.pos.x, lm.x)) };
+    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead || holdFlat ? 0 : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
       facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 }),
-      { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : 'lane', key: best.vel });
+      { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : holdFlat ? 'lane-hold' : 'lane', key: best.vel });
   }
 
   /**
@@ -1223,6 +1237,10 @@ function boxBacker(a: Agent, sim: PlaySim): boolean {
   const depth = Math.abs(spot.x - sim.los);
   return depth >= 2.5 && depth <= 8 && Math.abs(spot.y - sim.ballY) < 6;
 }
+
+/** The pass belief a box backer needs before he drops, by the call's dropStart:
+ * `early` is the belief at which he reads pass at all. */
+const DROP_START = { early: 0, confirmed: 0.95, late: 0.98 } as const;
 
 /** Speed factor for a defender who hasn't read run or pass yet. */
 export function unsureFactor(a: Agent): number {
