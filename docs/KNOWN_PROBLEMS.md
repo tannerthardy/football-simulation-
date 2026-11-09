@@ -2346,6 +2346,25 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   develop (`c22fba2`, quick tier, seed 7, paired), both changes give 7.3%
   of dropbacks, inside the NFL's 6–7.5%; `GRIP_HOLD=0` gives 5.9%.
 
+- **Re-measured 2026-11-09 (Flex):** `scripts/diag/edge-rep.py` on an 8-game
+  `sim-export` (seed 101) from `claude/quirky-franklin-9lbwbp` @ 3af0a53d
+  (#415 tip, all experimental flags off, Node 22.23.3). 791 edge reps engaged
+  first by an OL. NFL values are this entry's tracking references.
+
+  | | Sim | NFL |
+  |---|---|---|
+  | Engaged at the end | 85% | 79% |
+  | Free | 6% | 5% |
+  | First contact after line start | 1.25 s | 1.20 s |
+  | Free reps through the tackle | 26% | 29% |
+  | Sack-like dropbacks | 4.4% | 4.6–9.4% |
+
+  The tackle's retreat at contact is 3.5 yd (NFL about 2.75–2.8).
+  G5's "fixed when" (about 1.1 s of contact before release) is met on this
+  base. The GAPS row's 0.4 s predates `PASS_KICK` and `ARM_PRESS`.
+  **Proposed for the next review:** close G5. That would open G9 (protection
+  calls), which waits on G5's physics.
+
 <a id="pro-2"></a>
 ### PRO-2: Pressure arrives too early and from the wrong places
 
@@ -3226,6 +3245,16 @@ From the outside audit (`audit`):
   perfect: no fakes and no occlusion. Next: add the scramble cue in the same
   PR; recompose with #256, which still falls back to
   `acquired?.target ?? sim.carrier`.
+  *Status 2026-11-09 (Flex):*
+  - #260 merged on 2026-10-25 with the scramble cue: 39fe5d09, `qbRunning`
+    in `src/sim/possession-read.ts`.
+  - #256 was closed unmerged.
+  - The `executeRunFit` fallback to `sim.carrier` now applies only to direct
+    callers that pass no interpretation (`undefined`). `defense.runFit` always
+    supplies one.
+  - One true-state seam remains in `engagement.ts`: a pass rep converts to
+    run on the true carrier or `sim.scrambled`. It fired once in 144 snaps of
+    a whole game (seed 9), so it is left as is.
 - **Player sight has no field of view** (*confirmed*, 2026-11-02 audit, seeds
   1–2, two games, about 15 million opponent lookups). `PlaySim.see` gives
   every opponent on the observer's reaction delay, projected forward along
