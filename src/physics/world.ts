@@ -1418,25 +1418,24 @@ export class World {
           Math.min(bs[r.i].profile.heightYd, bs[r.j].profile.heightYd));
         if (hypot2(r.ln, r.lt) > 0) jt.firstApplied ??= r.observed;
         this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
-        // Hands and patch grips are bounded forces acting across h. Use one
-        // timing rule for their attained impulse AND spin, including the reel.
-        // Unbraced center-mode grasps retain the historical transport rule.
+        // Every joint here delivers a bounded force across h, including a
+        // passive grasp. Center its achieved travel; torso impacts retain
+        // their separate interval-start timing. Center-mode reels were
+        // already centered above, while patch reels share this frozen row.
         const gripPatch = jt.kind === 'grasp' && this.handContact === 'patch';
-        if (jt.kind === 'hands' || gripPatch || (jt.kind === 'grasp' && jt.brace !== undefined)) {
-          const normal = r.ln - (gripPatch ? r.reel : 0);
-          if (this.handContact === 'patch') {
-            const yawTime = (this.handIntegration === 'centered' ? .5 : 1) * h;
-            this.bodies[r.i].facing += yawTime * ((r.ni ?? 0) * normal - (r.ri ?? 0) * r.lt) / this.inertia[r.i];
-            this.bodies[r.j].facing += yawTime * ((r.nj ?? 0) * normal - (r.rj ?? 0) * r.lt) / this.inertia[r.j];
-          }
-          if (this.handIntegration === 'centered') {
-            const x = r.nx * normal - r.ny * r.lt;
-            const y = r.ny * normal + r.nx * r.lt;
-            this.travelAdjustX[r.i] += .5 * x / this.mass[r.i];
-            this.travelAdjustY[r.i] += .5 * y / this.mass[r.i];
-            this.travelAdjustX[r.j] -= .5 * x / this.mass[r.j];
-            this.travelAdjustY[r.j] -= .5 * y / this.mass[r.j];
-          }
+        const normal = r.ln - (gripPatch ? r.reel : 0);
+        if (this.handContact === 'patch') {
+          const yawTime = (this.handIntegration === 'centered' ? .5 : 1) * h;
+          this.bodies[r.i].facing += yawTime * ((r.ni ?? 0) * normal - (r.ri ?? 0) * r.lt) / this.inertia[r.i];
+          this.bodies[r.j].facing += yawTime * ((r.nj ?? 0) * normal - (r.rj ?? 0) * r.lt) / this.inertia[r.j];
+        }
+        if (this.handIntegration === 'centered') {
+          const x = r.nx * normal - r.ny * r.lt;
+          const y = r.ny * normal + r.nx * r.lt;
+          this.travelAdjustX[r.i] += .5 * x / this.mass[r.i];
+          this.travelAdjustY[r.i] += .5 * y / this.mass[r.i];
+          this.travelAdjustX[r.j] -= .5 * x / this.mass[r.j];
+          this.travelAdjustY[r.j] -= .5 * y / this.mass[r.j];
         }
         if (jt.kind === 'hands') {
           // A press is counted in press units, as allocateArms budgets it.
