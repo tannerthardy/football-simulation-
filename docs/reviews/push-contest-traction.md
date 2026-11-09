@@ -487,3 +487,41 @@ window's length):
 - This replaces this document's earlier item 3 statement that matched pairs
   never move. That came from the push bench and the from-snap operator, not
   from engaged reps.
+
+#### Where the extra DL depth is won: before contact (2026-11-09)
+
+**Run Game's NFL timing** (same operator):
+- Median first time within 1.2 yd of the nearest OL centre: NFL 0.70 s, sim
+  0.60 s.
+- Centre distance at 0.5 s: NFL 1.42 yd, sim 1.30.
+
+**Engagement creation.** The first-level run engage (`blocking.ts` `contact`)
+and `inBlockReach` both use radii + 0.1 + arm × 0.45 (about 1.2 yd). It fires
+about 0.05 s after the pair first comes within 1.2 yd, so there is no gap
+between body proximity and hands.
+
+**DL depth from the snap, zone** (Run Game's branch + `ONE_ARM_HOLD`;
+`out/flex/dl-depth.mts`):
+
+| | 0.3 s | 0.5 s | 1.0 s | 2.0 s | Driven back ≥ 0.5 yd from snap |
+|---|---|---|---|---|---|
+| Base: depth / centre-to-OL | 0.05 / 1.66 | 0.26 / 1.32 | 0.57 / 0.80 | 0.47 / 0.79 | 8% |
+| Run strike reach at the pass factor (arm × 0.85), scratch | identical | identical | identical | identical | 8% |
+| + lockout strength curve (push ×1.8 at full extension, scratch) | 0.05 / 1.66 | 0.26 / 1.32 | 0.56 / 0.82 | 0.41 / 0.85 | 9% |
+
+NFL (`trench2`): depth +0.07 at 0.3 s, +0.17–0.19 at 0.5 s; driven back from
+the snap 14%.
+
+**Reading.**
+- In the 0.3–0.5 s window where the DL gains his extra 0.1 yd, the centres are
+  still 1.3–1.7 yd apart in both. That is beyond hand reach in both, so no
+  engagement exists yet.
+- The extra depth is won **before contact**: our DL moves 0.21 yd in that
+  window against NFL's 0.11. NFL DL plausibly gather to strike; ours keep
+  accelerating.
+- That is the DL's pre-contact charge (Defense's controller), not engagement
+  or the contact law.
+- The lockout strength curve does reduce compression once engaged (inside
+  lockout 40% → 26%, touching 24% → 18%). It is a plausible later law, but its
+  1.8× gain and 0.15 yd bend are model assumptions, not sourced. Neither
+  scratch change is committed.
