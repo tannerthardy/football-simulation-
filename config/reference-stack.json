@@ -114,7 +114,7 @@
     "ZONE_GAP": "on",
     "ZONE_MUG": "on",
     "ZONE_ONBALL": "on",
-    "ZONE_PAIR": "on",
+    "ZONE_PAIR": "off",
     "ZONE_RUN": "on",
     "ZONE_SCOOP": "on",
     "ZONE_WINGS": "on"
