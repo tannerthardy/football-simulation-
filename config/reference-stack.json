@@ -4,6 +4,7 @@
   "flags": {
     "ALIGN_HABIT": "on",
     "ANCHOR_GRADE": "on",
+    "ATTACK_LANDMARK": "off",
     "BACKER_TAKEON": "off",
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
