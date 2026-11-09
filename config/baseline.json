@@ -126,6 +126,7 @@
     "PRESSURE_CALL": "1",
     "AGAP_ALIGN": "1",
     "PASS_KICK": "1",
+    "PRO_READ": "1",
     "ROUTE_CLEAR": "1",
     "GROUNDING_FACTS": "1",
     "HOLD_LEVERAGE": "1",
