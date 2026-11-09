@@ -120,6 +120,8 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
 const stepSeen = KEY_REACT ? KEY_STEP_SEEN : STEP_SEEN;
 /** KEY_PACE (experimental, off): how much faster than the key's own step he answers it (yd/s). */
 const KEY_PACE = process.env.KEY_PACE === '1', KEY_STEP_LEAD = 0.5;
+/** KEY_DEPTH (experimental, off): see the key step; his upfield step is his own read step. */
+const KEY_DEPTH = process.env.KEY_DEPTH === '1';
 /** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
  * read lean leads his step before the key's own movement must confirm it (s). */
 const STANCE_TELL = process.env.STANCE_TELL === '1';
@@ -330,10 +332,16 @@ export class PassRusher implements Behavior {
       const side = Math.sign(man!.vel.y), full = a.profile.vmax * a.profile.shuffle;
       const step = KEY_PACE ? Math.min(full, Math.abs(man!.vel.y) + KEY_STEP_LEAD) : full;
       const h = a.mind.decisionInterval;
-      const at = { x: man!.pos.x + man!.vel.x * h, y: man!.pos.y + side * step * h };
+      // KEY_DEPTH (experimental, off): upfield it is a read step too, his own
+      // step (the same lead as KEY_PACE's), meeting the man where he comes,
+      // not a run at the man's spot: closing on it at tracking gain asked for
+      // a sprint (5-7 yd/s) into the block. NFL interior DL not yet near an OL
+      // move 0.5-0.74 yd/s upfield through 1.0 s; ours ramped to 1.1 by 0.5 s.
+      const up = -sim.attackDir(sim.offense[0].team) * KEY_STEP_LEAD;
+      const at = KEY_DEPTH ? { x: a.pos.x + up * h, y: man!.pos.y + side * step * h } : { x: man!.pos.x + man!.vel.x * h, y: man!.pos.y + side * step * h };
       a.tags.add('key-step');
       if (KEY_REACT) a.keyStep = { from: man!.agent, side };
-      return track(a, at, { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
+      return track(a, at, { x: KEY_DEPTH ? up : 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
     }
     // Rush lane by plan: power rushers go through the blocker's chest at the
     // QB; finesse rushers attack a shoulder through their gap; speed rushers
