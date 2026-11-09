@@ -38,6 +38,15 @@ const MIDDLE_CASES = [
   { id: 'middle-read-cover2', concept: 'four_verts', coverage: 'cover2', roster: 7, flip: false, actor: 'Y' },
   { id: 'middle-read-cover3', concept: 'four_verts', coverage: 'cover3', roster: 7, flip: false, actor: 'Y' },
 ] as const;
+// Separate, preselected release panel: same installed flat in two formations,
+// a fresh mirrored Curl-Flat, and an off-man opposing control. These do not
+// alter the original constructor panel or the custom middle-read install.
+const FLAT_CASES = [
+  { id: 'flat-slant-gun', concept: 'slant_flat', coverage: 'cover3', roster: 7, flip: false, actor: 'Y', formation: 'gun_doubles_11' },
+  { id: 'flat-slant-ace', concept: 'slant_flat', coverage: 'cover3', roster: 7, flip: false, actor: 'Y', formation: 'ace_11' },
+  { id: 'flat-curl-fresh-mirror', concept: 'curl_flat', coverage: 'cover3', roster: 11, flip: true, actor: 'Y', formation: 'gun_doubles_11' },
+  { id: 'flat-slant-offman', concept: 'slant_flat', coverage: 'cover1_off', roster: 7, flip: false, actor: 'Y', formation: 'gun_doubles_11' },
+] as const;
 // Frozen install in both arms. Trunk executes its base seam but does not yet
 // implement the extra read metadata. This is a custom installed native call,
 // not an ordinary-game play or a player fed simulated future information.
@@ -47,10 +56,11 @@ const MIDDLE_ROUTE = { id: 'seam_read', family: 'deep', depth: 22, end: 'continu
     { id: 'post', end: 'continue', points: [{ d: 10, l: -.4, s: .75 }, { d: 35, l: -14 }] },
     { id: 'under', end: 'continue', points: [{ d: 10, l: -.4, s: .4 }, { d: 10.5, l: -16 }] },
   ] } } as const;
-type Case = typeof CASES[number] | typeof MIDDLE_CASES[number];
+interface Case { id: string; concept: string; coverage: string; roster: number; flip: boolean; actor: string; formation?: string }
 interface Fixture { id: string; case: Case; shift: number; file: string; sha256: string; seed: unknown }
 interface Manifest { format: 'receiver-route-panel-v1'; source: ReturnType<typeof executionIdentity>; fixtures: Fixture[];
-  middleRead?: { label: 'custom installed native call'; route: typeof MIDDLE_ROUTE; routeSha256: string } }
+  middleRead?: { label: 'custom installed native call'; route: typeof MIDDLE_ROUTE; routeSha256: string };
+  flatRelease?: { label: 'installed native flat release panel' } }
 
 /** Private legacy conversion state is recorded as state, not interpreted as
  * an acquired read. New routeDecision holds the actual consumed evidence. */
@@ -110,11 +120,14 @@ function hashes(execution: ReturnType<typeof execute>['execution']) {
 }
 
 function main() {
-  const { values: args } = parseArgs({ options: { capture: { type: 'boolean' }, 'middle-read': { type: 'boolean' },
+  const { values: args } = parseArgs({ options: { capture: { type: 'boolean' }, 'middle-read': { type: 'boolean' }, 'flat-release': { type: 'boolean' },
     inputs: { type: 'string' }, out: { type: 'string' }, cases: { type: 'string' }, actor: { type: 'string' } } });
   const middle = args['middle-read'] ?? false;
-  const inputs = resolve(args.inputs ?? `out/receiver-study/${middle ? 'middle-' : ''}inputs`);
-  const out = resolve(args.out ?? `out/receiver-study/${middle ? 'middle-' : ''}head`), manifestPath = join(inputs, 'manifest.json');
+  const flat = args['flat-release'] ?? false;
+  if (middle && flat) throw new Error('Select only one separate panel mode');
+  const prefix = middle ? 'middle-' : flat ? 'flat-' : '';
+  const inputs = resolve(args.inputs ?? `out/receiver-study/${prefix}inputs`);
+  const out = resolve(args.out ?? `out/receiver-study/${prefix}head`), manifestPath = join(inputs, 'manifest.json');
   mkdirSync(inputs, { recursive: true }); mkdirSync(out, { recursive: true });
   const source = executionIdentity();
   let manifest: Manifest;
@@ -122,9 +135,11 @@ function main() {
     if (existsSync(manifestPath)) throw new Error(`Refusing to replace captured constructors: ${manifestPath}`);
     manifest = { format: 'receiver-route-panel-v1', source, fixtures: [], ...(middle ? {
       middleRead: { label: 'custom installed native call' as const, route: copySaved(MIDDLE_ROUTE),
-        routeSha256: bytesHash(Buffer.from(JSON.stringify(MIDDLE_ROUTE))) } } : {}) };
-    for (const c of middle ? MIDDLE_CASES : CASES) for (let shift = 0; shift <= 4; shift++) {
-      const id = `${c.id}-s${shift}`, setup = nativeTraceSetup({ ...c, seed: 7, formation: 'gun_doubles_11' });
+        routeSha256: bytesHash(Buffer.from(JSON.stringify(MIDDLE_ROUTE))) } } : {}),
+      ...(flat ? { flatRelease: { label: 'installed native flat release panel' as const } } : {}) };
+    const cases: readonly Case[] = middle ? MIDDLE_CASES : flat ? FLAT_CASES : CASES;
+    for (const c of cases) for (let shift = 0; shift <= 4; shift++) {
+      const id = `${c.id}-s${shift}`, setup = nativeTraceSetup({ ...c, seed: 7, formation: c.formation ?? 'gun_doubles_11' });
       if (middle) setup.offCall = { ...setup.offCall, label: 'Receiver middle-read lab', pass: { ...setup.offCall.pass!,
         id: 'receiver_middle_read', name: 'Receiver middle-read lab',
         strong: { 1: 'go', 2: 'seam_read', 3: 'flat' }, weak: { 1: 'go', 2: 'flat' }, back: 'block',
@@ -139,6 +154,7 @@ function main() {
   } else manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as Manifest;
   if (manifest.format !== 'receiver-route-panel-v1') throw new Error('Unknown input format');
   if (!!manifest.middleRead !== middle) throw new Error('--middle-read must match the separate captured panel');
+  if (!!manifest.flatRelease !== flat) throw new Error('--flat-release must match the separate captured panel');
   if (manifest.middleRead) {
     if (bytesHash(Buffer.from(JSON.stringify(manifest.middleRead.route))) !== manifest.middleRead.routeSha256)
       throw new Error('Installed middle-read definition checksum differs');

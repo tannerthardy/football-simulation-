@@ -2462,7 +2462,7 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   The tagged seam read is tested as an explicit native install, not added to
   ordinary play-calling frequencies. Existing stick/hook calls use their
   acquired read by default. Changes are a candidate until reviewed.
-- **Remaining:** COV-10's early release shapes; pre-contact release technique
+- **Remaining:** COV-10's other early release shapes; pre-contact release technique
   and concept-specific mandatory releases; private scramble/targeted-flight
   shortcuts; and offensive failed opportunities becoming deflections without
   an independent touch test. Do not claim the receiver subsystem is complete.
@@ -2811,6 +2811,16 @@ From the issue register:
 
 <a id="cov-10"></a>
 ### COV-10: Sim route releases are too fast and too vertical
+
+- **Bounded receiver follow-up (2026-11-09):** reproduced the ordinary flat
+  on accepted `6676dfc2c4de6b07dbf666465248799b8bbc4e43`. Its LOS-relative
+  first landmark makes an off-line receiver gain 2.7 yards downfield for
+  two yards of width. The initial diagonal request survives every movement
+  modifier and produces the vertical stem without contact. Candidate:
+  move only that first flat landmark to the line, retaining the final outlet
+  and physical capacities. See [receiver rules](football-handbook/receiver-route-reads.md).
+  This does not resolve every route family or qualify a new coverage cue.
+  The historical NFL table below has not been re-measured in this workspace.
 
 - **Symptom:** in the first second every sim route looks the same: a fast
   vertical stem. NFL releases vary. Flats and crosses work flat early, run-play

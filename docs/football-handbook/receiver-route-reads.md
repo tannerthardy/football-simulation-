@@ -83,6 +83,14 @@ does not import the pending throwing-motion/readiness policy from PR #408.
 
 ## Releases, screens and catches
 
+The ordinary flat now gains width near the line before rolling to its same
+3.5-yard-deep, 12-yard-wide outlet. Its first landmark is at the line, rather
+than 1.5 yards beyond it. For an off-line receiver, the old absolute landmark
+required a 2.7-yard downfield stem before the first width turn. Native command
+traces isolate that installed geometry from contact, spacing and execution.
+This is a flat-specific installation change; arrows, swings, shallow crosses,
+vertical stems and physical speed limits retain their separate meanings.
+
 Preserve the existing physical press technique: reachable hands apply bounded
 push and steer, the receiver can move/swipe past the hand, and no tensile jam
 hold follows him after escape. This work does not award a clean release or
@@ -131,10 +139,38 @@ middle-read mode explicitly installs the new route definition in both arms;
 the unchanged baseline ignores the new read metadata. That is a custom native
 concept comparison, not an ordinary-game recording.
 
+Use `--capture --inputs <directory> --out <directory>` on the accepted base,
+then replay with `--inputs <same directory> --out <new directory>` on the
+candidate. Copy this diagnostic operator to the base checkout before capture;
+do not copy candidate engine files. Add `--middle-read` for the separate
+explicit seam install or `--flat-release` for the flat panel. Each recipe has
+the original RNG input and four named shifts. `--cases <id>` and `--actor H`
+permit a bounded actual-target follow-up without replacing the manifest.
+Compare deserialized execution values across sources: V8 encodings can differ
+for equivalent values and are not by themselves evidence of changed football.
+
 Inspect the first changed request and achieved movement. An unused changed
 waypoint is inactive evidence. A different completion or touchdown is neither
 proof of improved route craft nor automatic failure. Preserve adverse cuts,
 late throws, legitimate defensive wins and QB/receiver disagreements.
+
+## Smallest next work
+
+1. Separate acquired flight, a reachable opportunity and actual hand touch in
+   catching. Start with the preserved untouched miss and high-catch/PBU
+   controls; do not raise catch probability to hide a tracking miss.
+2. Trace a settling option receiver's changing catch target and finite turn
+   cost. Retain the QB's independent expectation and the adverse native
+   incompletions; agreement on the branch is not a guarantee of an accurate
+   throw or attainable catch.
+3. Continue release-shape work by concept, with actual jam and traffic
+   controls. The flat repair does not establish that every cross should be
+   flat or every release slower. Re-run the NFL release comparison when the
+   verified tracking host is available before building coverage cues on it.
+4. Compose separately with screens/RPOs (#403) and QB readiness (#408). The
+   latter's break prediction must follow the QB's expected branch, not a
+   private receiver choice or permanently the base route. The former still
+   owns screen blocking and legal lineman release.
 
 ## Sources
 
