@@ -421,3 +421,31 @@ stops (45% vs 43%) and IZ runs < 20 (3.82 vs 3.73) reach NFL. OZ stays too
 costly, and contact → end shortens further (0.8 s vs NFL 1.5).
 
 It is carried as a default-off candidate. Promotion: Tanner and Primary.
+
+**Owner review of the law-consequence failure.** Run Game reviewed
+`combo-climb-coupled` side 1 as the scene's owner.
+- **Seed sweep:** seeds 1–30 × both sides on its stack with this diff. Passes:
+  off 34/60, on 28/60. Every flip fails at the same assertion, a
+  `tackle_wrap` before the runner crosses the LOS.
+- **Trace, seed 16 side 1:** the block is unchanged by the law. The climber
+  loads the backer at 1.6 s with the same force, and the backer stays within
+  0.02 yd of the off run through 2.6 s.
+- **What differs:** the scripted runner's fixed line runs through the engaged
+  backer's spot. Brushing past him, the runner covers 0.88 yd instead of 1.04
+  yd from 2.4 to 2.6 s and is wrapped at −0.08.
+- **Verdict:** reviewed by owner: scene geometry, law-neutral for the block. It
+  does not block promotion. Repair: script the runner on a line outside the
+  backer's scrape, not a seed re-pick. Run Game will make that change if the
+  law is promoted.
+
+**hitterback** (first hitter driven back / carrier gain, medians):
+
+| Contact bin, class | Off | LEG | LEG + #415 + gate | NFL |
+|---|---|---|---|---|
+| −1..0 front | 0.50 / 0.95 | 0.60 / 1.19 | 0.43 / 0.81 | 0.57 / 2.16 |
+| 0..1 front | 0.63 / 1.12 | 0.51 / 1.03 | 0.52 / 0.96 | 0.73 / 2.51 |
+| 1..3 front | 0.80 / 1.08 | 0.80 / 1.28 | 0.77 / 1.21 | 0.94 / 2.59 |
+| 0..1 side/rear | 1.08 / 1.88 | 0.98 / 2.01 | 1.17 / 1.85 | 1.17 / 2.67 |
+
+The front-on gain gap is untouched by the law, consistent with the load-height
+finding.
