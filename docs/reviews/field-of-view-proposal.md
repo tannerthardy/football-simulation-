@@ -136,3 +136,48 @@ experience-based anticipation is later work.
 - **Anticipation:** richer, experience-based anticipation (route and concept
   priors from scouting reports, sharper with play recognition) replaces the
   dead-reckoned horizon there.
+
+## Anticipation from NFL tracking (2026-11-09)
+
+`scripts/diag/anticipation-bound.py`, the same operator on NFL 2022 (Run Game,
+1.93 M samples) and sim. It predicts an unwatched player's position from his
+own past motion only. Median error in yd, all players:
+
+| Horizon | Freeze, NFL / sim | Constant acceleration, NFL | Best of the honest predictors, NFL / sim |
+|---|---|---|---|
+| 0.3 s | 0.79 / 0.83 | 0.10 | 0.09 / 0.12 |
+| 0.6 s | 1.64 / 1.68 | 0.34 | 0.28 / 0.33 |
+| 1.0 s | 2.77 / 2.77 | 1.04 | 0.75 / 0.83 |
+| 1.5 s | 4.06 / 3.95 | 2.53 | 1.59 / 1.73 |
+
+- **The sim's motion predictability matches NFL.**
+- **Constant acceleration is the best single honest predictor to about
+  1.0 s.** Beyond that, motion alone gains little (about 2.5 yd vs freeze 4.1
+  at 1.5 s).
+- **Hardest to predict:** WR, RB and TE. **Easiest:** OL.
+
+**The law now in `remembered()`, replacing the placeholder:**
+- The projected displacement is skill × (constant-acceleration displacement
+  from the last in-view picture), up to `ANTICIPATION_HORIZON` = 1.0 s, then
+  held. Speed is capped at 10 yd/s.
+- Skill is the mean of play recognition and awareness, 0–1.
+- Skill 0 is the no-anticipation bound (frozen picture). Skill 1 is the
+  measured best single predictor.
+- Acceleration comes from two in-view pictures within 0.3 s.
+- Tests cover skill 0 / skill 1 / the horizon hold.
+- Suites: 3,743 / 3,743 with `GAZE` off and on.
+
+**Still to do:** role, route and concept priors, the headroom between
+constant acceleration and the "best" oracle (about 0.3 yd at 1.0 s, about
+0.9 yd at 1.5 s). That is where an experienced player's anticipation beyond
+motion would come from, from scouting and formation knowledge, never from
+the live assignment.
+
+**Stage 3 hooks** that Defense already names (they will wire them behind
+`GAZE`):
+- unsure box backers → QB;
+- interior DL key → the man in front;
+- run-fit backers → the carrier they track;
+- zone droppers → QB.
+
+The API is `sim.lookAt(player, target)` each tick.

@@ -39,3 +39,25 @@ describe('GAZE stage 1: a chaser knows unwatched opponents behind him only from 
     expect(Math.abs(on.watchedSeen.x - on.watchedTrue.x)).toBeLessThan(0.6);
   });
 });
+
+describe('GAZE anticipation: read skill sets how far toward the measured best projection', () => {
+  it('a poor reader keeps the frozen picture; an elite one projects by constant acceleration, up to 1.0 s', async () => {
+    vi.stubEnv('GAZE', '1'); vi.resetModules();
+    const { contactFixture } = await import('../scripts/diag/run-contact-technique.js');
+    const { sim, defender: d } = contactFixture({ type: 'run', runBlock: 60, passBlock: 60, side: 1 });
+    const target = sim.slot('LT')!; const s: any = sim;
+    const picture = { pos: { x: 40, y: 20 }, vel: { x: 0, y: 2 }, stance: null, facing: 0, age: 0 };
+    const at = (skill: number, since: number) => {
+      d.player.ratings.playRecognition = skill * 100; d.player.ratings.awareness = skill * 100;
+      s.gaze.set(d, { dir: 0, t: sim.t, target: d, set: sim.t, since: sim.t - since - 1 });
+      s.sightMemory.set(`${d.idx}>${target.idx}`, { seen: picture, at: sim.t - since, acc: { x: 0, y: 1 } });
+      return s.remembered(d, target, picture).pos;
+    };
+    const r = (k: string) => d.r(k as any);
+    const p0 = at(0, 0.5);
+    expect(p0.y).toBeCloseTo(20, 6);
+    const p1 = at(1, 0.5), k1 = 0.5 * r('playRecognition') + 0.5 * r('awareness');
+    expect(p1.y).toBeCloseTo(20 + k1 * (2 * 0.5 + 0.5 * 1 * 0.25), 6);
+    expect(at(1, 2).y).toBeCloseTo(at(1, 1).y, 6);
+  });
+});

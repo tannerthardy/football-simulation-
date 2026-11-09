@@ -122,6 +122,9 @@ const GAZE = process.env.GAZE === '1';
 const GAZE_HEAD_RATE = 6; // rad/s, about 340 deg/s
 const GAZE_NECK = Math.PI / 2; // head within +-90 deg of body facing
 const GAZE_CONE = Math.PI / 2; // seen within +-90 deg of gaze
+/** Anticipation from motion alone helps to about 1.0 s on NFL tracking. */
+const ANTICIPATION_HORIZON = 1.0;
+const ANTICIPATION_MAX_SPEED = 10;
 const angDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
 
 export class PlaySim {
@@ -173,7 +176,7 @@ export class PlaySim {
   /** GAZE: head direction and what each opted-in player is watching. */
   private gaze = new Map<Agent, { dir: number; t: number; target: Agent; set: number; since: number }>();
   /** GAZE: last in-view picture per observer>target, with when it was taken. */
-  private sightMemory = new Map<string, { seen: Perceived; at: number }>();
+  private sightMemory = new Map<string, { seen: Perceived; at: number; acc?: Vec2 }>();
   readonly trace: ReplayTrace;
   private commandTrace?: CommandTrace;
   /** Optional passive recorder of every offensive blocker's responsibility (docs/COMMAND_TRACE.md). Off unless asked for. */
@@ -622,10 +625,19 @@ export class PlaySim {
     let m = this.sightMemory.get(key);
     if (!m || m.at < this.gaze.get(observer)!.since) { m = { seen, at: this.t }; this.sightMemory.set(key, m); }
     const since = this.t - m.at;
+    // Anticipation bounds measured on NFL tracking with the same operator
+    // (scripts/diag/anticipation-bound.py): from motion alone, constant
+    // acceleration is the best single predictor to about 1.0 s, beyond which
+    // motion stops helping. A reader's skill sets how far toward that best
+    // projection he is, from the frozen last picture (0) to it (1).
     const skill = clamp(0.5 * observer.r('playRecognition') + 0.5 * observer.r('awareness'), 0, 1);
-    const horizon = 0.2 + 0.8 * skill, run = Math.min(since, horizon);
-    return { ...m.seen, pos: { x: m.seen.pos.x + m.seen.vel.x * run, y: m.seen.pos.y + m.seen.vel.y * run },
-      vel: since < horizon ? m.seen.vel : { x: 0, y: 0 }, age: (m.seen.age ?? 0) + since };
+    const s = Math.min(since, ANTICIPATION_HORIZON), a = m.acc ?? { x: 0, y: 0 };
+    let dx = m.seen.vel.x * s + 0.5 * a.x * s * s, dy = m.seen.vel.y * s + 0.5 * a.y * s * s;
+    const vx = m.seen.vel.x + a.x * s, vy = m.seen.vel.y + a.y * s, sp = Math.hypot(vx, vy);
+    if (sp > ANTICIPATION_MAX_SPEED) { dx = m.seen.vel.x * s; dy = m.seen.vel.y * s; }
+    const moving = since < ANTICIPATION_HORIZON;
+    return { ...m.seen, pos: { x: m.seen.pos.x + skill * dx, y: m.seen.pos.y + skill * dy },
+      vel: moving ? { x: skill * vx, y: skill * vy } : { x: 0, y: 0 }, age: (m.seen.age ?? 0) + since };
   }
 
   /** What `observer` perceives of `target` (delayed for opponents). */
@@ -661,7 +673,13 @@ export class PlaySim {
     this.sightSamples.set(key, now - Math.round((seen.age ?? delay) / this.dt));
     const g = GAZE ? this.gaze.get(observer) : undefined;
     if (g && g.set >= this.t - this.dt - 1e-9) {
-      if (this.inView(observer, target, seen, delay)) this.sightMemory.set(`${observer.idx}>${target.idx}`, { seen, at: this.t });
+      if (this.inView(observer, target, seen, delay)) {
+        // Acceleration from two in-view pictures close together, for anticipation.
+        const k = `${observer.idx}>${target.idx}`, prev = this.sightMemory.get(k), dt = prev ? this.t - prev.at : 0;
+        const acc = prev && dt > 1e-6 && dt <= 0.3 + 1e-9
+          ? { x: (seen.vel.x - prev.seen.vel.x) / dt, y: (seen.vel.y - prev.seen.vel.y) / dt } : prev?.acc;
+        this.sightMemory.set(k, { seen, at: this.t, acc });
+      }
       else seen = this.remembered(observer, target, seen);
     }
     this.trace.observe(observer, target, seen, this.t);
