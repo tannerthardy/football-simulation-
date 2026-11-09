@@ -16,13 +16,18 @@ Predictors (observable motion only; no route, assignment or ball knowledge):
   speed, heading relative to downfield, depth from the LOS, which side of the ball and how wide, and time
   since the snap. Displacement is learned in the player's own travel frame, mirrored so + is toward his
   sideline. That makes it "keeps going / breaks in / breaks out". No route, assignment or concept is used.
+- read: context, also conditioned on the play's kind (run or pass), falling back to context. This is a
+  correct run/pass read: the ceiling of what a defender's read of the play adds. In the engine it is
+  gated by the defender's own read, which can be wrong (play action, draws).
+- misread: the same, conditioned on the wrong kind. The cost of being fooled.
 
 The freeze curve is the no-anticipation bound. The best of the honest predictors (cv, damped or ca) is
 what an observer can achieve from motion alone. Role, route and concept priors could do better; that is
 the headroom for experienced players.
 
 usage: python3 -I scripts/diag/anticipation-bound.py <nfl.jsonl.gz | sim.jsonl.gz> [more] [--export prior.json]
---export writes the context prior (trained on all plays) as an aggregate table: key -> horizon -> [along, across, n]."""
+--export writes the context prior (trained on all plays) as an aggregate table: key -> horizon -> [along, across, n].
+Keys prefixed 'run|' or 'pass|' are conditioned on the play's kind. Keys ending in '*' pool all time bins; the engine falls back to them when the timed cell is too thin."""
 import sys, json, gzip, math, statistics as st, collections, zlib
 
 H = (3, 6, 10, 15)          # horizons in frames (0.1 s)
@@ -90,7 +95,8 @@ def train(paths):
                     for h in H:
                         tx, ty = pos(X, t0 + h, i)
                         a, c = to_frame(tx - x0, ty - y0, ux, uy, side)
-                        cell = acc[(key, h)]; cell[0] += a; cell[1] += c; cell[2] += 1
+                        for k in (key, (p.get("kind"),) + key):
+                            cell = acc[(k, h)]; cell[0] += a; cell[1] += c; cell[2] += 1
     return {k: (v[0] / v[2], v[1] / v[2]) for k, v in acc.items() if v[2] >= 20}
 
 EXPORT = sys.argv[sys.argv.index("--export") + 1] if "--export" in sys.argv else None
@@ -110,12 +116,14 @@ if EXPORT:
                     for h in H:
                         tx, ty = pos(X, t0 + h, i)
                         a, c = to_frame(tx - x0, ty - y0, ux, uy, side)
-                        cell = full[(key, h)]; cell[0] += a; cell[1] += c; cell[2] += 1
+                        kind = p.get("kind") if p.get("kind") in ("run", "pass") else None
+                        for k in (key, key[:-1] + ("*",)) + (((kind,) + key, (kind,) + key[:-1] + ("*",)) if kind else ()):
+                            cell = full[(k, h)]; cell[0] += a; cell[1] += c; cell[2] += 1
     out = {}
     for (key, h), (a, c, n) in full.items():
         if n >= 20:
             out.setdefault("|".join(map(str, key)), {})[str(h / 10)] = [round(a / n, 3), round(c / n, 3), n]
-    json.dump({"source": [f.split("/")[-1] for f in FILES], "key": "group|speedBin(1.5 yd/s)|heading8(mirrored to own sideline)|depthBin(<0,0-5,5-12,12+)|wideBin(<5,5-13,13+ yd from ball)|tBin(<1,1-2,2+ s)",
+    json.dump({"source": [f.split("/")[-1] for f in FILES], "key": "group|speedBin(1.5 yd/s)|heading8(mirrored to own sideline)|depthBin(<0,0-5,5-12,12+)|wideBin(<5,5-13,13+ yd from ball)|tBin(<1,1-2,2+ s, * = pooled)",
                "frame": "along travel, across toward own sideline (yd)", "cells": out}, open(EXPORT, "w"))
     print("exported", len(out), "context keys ->", EXPORT)
 
@@ -157,7 +165,14 @@ for path in FILES:
                     if pr:
                         dx, dy = from_frame(pr[0], pr[1], ux, uy, side)
                         errs["context"] = math.hypot(tx - (x0 + dx), ty - (y0 + dy))
-                    errs["best"] = min(v for k, v in errs.items() if k != "context")
+                        pk = PRIOR.get(((p.get("kind"),) + key, h)) or pr
+                        dx, dy = from_frame(pk[0], pk[1], ux, uy, side)
+                        errs["read"] = math.hypot(tx - (x0 + dx), ty - (y0 + dy))
+                        other = {"run": "pass", "pass": "run"}.get(p.get("kind"))
+                        pm = PRIOR.get(((other,) + key, h)) or pr
+                        dx, dy = from_frame(pm[0], pm[1], ux, uy, side)
+                        errs["misread"] = math.hypot(tx - (x0 + dx), ty - (y0 + dy))
+                    errs["best"] = min(v for k, v in errs.items() if k not in ("context", "read", "misread"))
                     for k, v in errs.items():
                         E[(g, h, k)].append(v)
                         E[("all", h, k)].append(v)
@@ -168,7 +183,7 @@ for path in FILES:
         for h in H:
             cell = " ".join(
                 f"{k} {st.median(E[(g, h, k)]):.2f}[{sorted(E[(g, h, k)])[int(.9 * (len(E[(g, h, k)]) - 1))]:.2f}]"
-                for k in ("freeze", "cv", "damped", "ca", "context", "best") if E[(g, h, k)])
+                for k in ("freeze", "cv", "damped", "ca", "context", "read", "misread", "best") if E[(g, h, k)])
             rows.append(f"    {h / 10:.1f}s: {cell}")
         n = len(E[(g, H[0], "freeze")])
         if n:

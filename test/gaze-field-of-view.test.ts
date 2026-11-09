@@ -41,7 +41,7 @@ describe('GAZE stage 1: a chaser knows unwatched opponents behind him only from 
 });
 
 describe('GAZE anticipation: read skill sets how far toward the measured best projection', () => {
-  it('a poor reader keeps the frozen picture; an elite one projects by constant acceleration, up to 1.0 s', async () => {
+  it('a zero reader keeps the frozen picture; motion projection saturates at skill 0.5, up to 1.0 s', async () => {
     vi.stubEnv('GAZE', '1'); vi.resetModules();
     const { contactFixture } = await import('../scripts/diag/run-contact-technique.js');
     const { sim, defender: d } = contactFixture({ type: 'run', runBlock: 60, passBlock: 60, side: 1 });
@@ -56,8 +56,74 @@ describe('GAZE anticipation: read skill sets how far toward the measured best pr
     const r = (k: string) => d.r(k as any);
     const p0 = at(0, 0.5);
     expect(p0.y).toBeCloseTo(20, 6);
-    const p1 = at(1, 0.5), k1 = 0.5 * r('playRecognition') + 0.5 * r('awareness');
-    expect(p1.y).toBeCloseTo(20 + k1 * (2 * 0.5 + 0.5 * 1 * 0.25), 6);
+    const ca = 2 * 0.5 + 0.5 * 1 * 0.25;
+    const pq = at(0.15, 0.5), kq = 0.5 * r('playRecognition') + 0.5 * r('awareness');
+    expect(pq.y).toBeCloseTo(20 + Math.min(1, 2 * kq) * ca, 6);
+    expect(at(1, 0.5).y).toBeCloseTo(20 + ca, 6);
     expect(at(1, 2).y).toBeCloseTo(at(1, 1).y, 6);
+  });
+});
+
+describe('GAZE anticipation by assignment: experience applies to the opponents his assignment makes his', () => {
+  async function setup() {
+    vi.stubEnv('GAZE', '1'); vi.resetModules();
+    const { contactFixture } = await import('../scripts/diag/run-contact-technique.js');
+    const { ANTICIPATION_PRIOR } = await import('../src/sim/anticipation-prior.js');
+    const { sim, defender: d } = contactFixture({ type: 'run', runBlock: 60, passBlock: 60, side: 1 });
+    const s: any = sim, up = sim.attackDir('O');
+    const target = sim.slot('LT')!;
+    const picture = { pos: { x: sim.los + 2 * up, y: sim.ballY + 3 }, vel: { x: 0, y: 2 }, stance: null, facing: 0, age: 0 };
+    const ctx = s.priorContext(target, picture, sim.t - 0.6);   // the picture is 0.6 s old when recalled
+    // A made-up cell: players like this one break 1 yd back toward the ball per 0.6 s instead of continuing.
+    ANTICIPATION_PRIOR[ctx.key] = { '0.3': [0.2, -0.5, 99], '0.6': [0.3, -1, 99], '1': [0.3, -1.6, 99], '1.5': [0.3, -2.4, 99] };
+    const at = (skill: number, since: number) => {
+      d.player.ratings.playRecognition = skill * 100; d.player.ratings.awareness = skill * 100;
+      s.gaze.set(d, { dir: 0, t: sim.t, target: d, set: sim.t, since: sim.t - since - 1 });
+      s.sightMemory.set(`${d.idx}>${target.idx}`, { seen: picture, at: sim.t - since, acc: { x: 0, y: 0 } });
+      return s.remembered(d, target, picture);
+    };
+    return { sim, d, target, at, ctx, ANTICIPATION_PRIOR, cleanup: () => { for (const k of ['', 'run|', 'pass|']) delete ANTICIPATION_PRIOR[k + ctx.key]; } };
+  }
+
+  it('an elite reader projects his assigned man by the prior; average by motion; unassigned by motion only', async () => {
+    const { sim, d, target, at, cleanup } = await setup();
+    try {
+      // Picture moving +y at 2 yd/s on the ball's +y side: "along" is +y, "across toward his sideline" is -x.
+      const elite = at(1, 0.6), avg = at(0.5, 0.6);
+      expect(avg.pos.y - (sim.ballY + 3)).toBeCloseTo(2 * 0.6, 6);       // pure motion
+      expect(elite.pos.y - (sim.ballY + 3)).toBeCloseTo(0.3, 6);          // prior "along"
+      expect(elite.vel.y).toBeLessThan(2);                                // velocity from the prior curve
+      sim.assignedTo(d, []);                                              // his assignment excludes him
+      const unassigned = at(1, 0.6);
+      expect(unassigned.pos.y - (sim.ballY + 3)).toBeCloseTo(2 * 0.6, 6);
+      sim.assignedTo(d, [target]);
+      expect(at(1, 0.6).pos.y - (sim.ballY + 3)).toBeCloseTo(0.3, 6);
+    } finally { cleanup(); }
+  });
+});
+
+describe('GAZE anticipation by read: a defender projects by what he believes the play is, right or wrong', () => {
+  it('the same picture is projected as a run blocker after a run read and a route after a pass read', async () => {
+    vi.stubEnv('GAZE', '1'); vi.resetModules();
+    const { contactFixture } = await import('../scripts/diag/run-contact-technique.js');
+    const { ANTICIPATION_PRIOR } = await import('../src/sim/anticipation-prior.js');
+    const { sim, defender: d } = contactFixture({ type: 'run', runBlock: 60, passBlock: 60, side: 1 });
+    const s: any = sim, target = sim.slot('LT')!;
+    const picture = { pos: { x: sim.los + 2 * sim.attackDir('O'), y: sim.ballY + 3 }, vel: { x: 0, y: 2 }, stance: null, facing: 0, age: 0 };
+    const key = s.priorContext(target, picture, sim.t - 0.6).key;
+    ANTICIPATION_PRIOR[`run|${key}`] = { '0.6': [0.2, 0, 99], '1': [0.3, 0, 99] };
+    ANTICIPATION_PRIOR[`pass|${key}`] = { '0.6': [1.5, 0, 99], '1': [2.5, 0, 99] };
+    try {
+      d.player.ratings.playRecognition = 99; d.player.ratings.awareness = 99;
+      const recall = (read: string | null) => {
+        d.recog = read === null ? null : ({ read } as any);
+        s.gaze.set(d, { dir: 0, t: sim.t, target: d, set: sim.t, since: sim.t - 2 });
+        s.sightMemory.set(`${d.idx}>${target.idx}`, { seen: picture, at: sim.t - 0.6, acc: { x: 0, y: 0 } });
+        return s.remembered(d, target, picture).pos.y - picture.pos.y;
+      };
+      expect(recall('run')).toBeCloseTo(0.2, 6);
+      expect(recall('pass')).toBeCloseTo(1.5, 6);
+      expect(recall('unsure')).toBeCloseTo(2 * 0.6, 6);   // no belief, no cell: motion
+    } finally { delete ANTICIPATION_PRIOR[`run|${key}`]; delete ANTICIPATION_PRIOR[`pass|${key}`]; }
   });
 });

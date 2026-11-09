@@ -181,3 +181,69 @@ the live assignment.
 - zone droppers → QB.
 
 The API is `sim.lookAt(player, target)` each tick.
+
+## Anticipation by assignment (2026-11-09)
+
+Tanner asked for anticipation that depends on each player's assignment on the
+snap, and noted that the frozen-picture worst case is worse than almost any NFL
+player. Both change the law in `remembered()` (still behind `GAZE`, off).
+
+**The ladder.** Read skill is the mean of play recognition and awareness:
+1. **Motion is basic perception.** The constant-acceleration projection now
+   saturates at skill 0.5 (weight `min(1, 2·skill)`). Generated players run
+   0.29–1.0 (median about 0.6), so the frozen picture is only a hypothetical
+   zero-rated player. The weakest real players keep about 60% of the motion
+   projection; the median player keeps all of it. The 0.5 knee is a model
+   assumption to tune.
+2. **Experience is for his own responsibilities.** Above 0.5, the tracking
+   prior (`src/sim/anticipation-prior.ts`) takes over with weight
+   `2·skill − 1`, but only for opponents his assignment makes his.
+   - `sim.assignedTo(observer, targets)` lets a controller declare them: his
+     man, his zone's receivers, the back his fit reads, the puller he keys.
+   - Without a declaration, role defaults apply:
+
+     | Observer | Default responsibilities |
+     |---|---|
+     | DB | WR, TE, RB |
+     | LB | RB, TE, QB |
+     | DL | OL, RB, QB |
+     | OL | DL, LB |
+     | RB | LB, DL |
+     | TE | LB, DB, DL |
+     | WR | DB |
+     | QB | DL, LB, DB |
+
+   - Everyone else gets motion only, whatever his skill.
+3. **What he believes the play is.** The prior is conditioned on the
+   observer's belief:
+   - the offense knows its own call;
+   - a defender uses his own `Recognition.read` (run, pass or unsure), which
+     play action and draws can make wrong;
+   - unsure uses the unconditioned prior.
+
+   An expert who has been fooled projects his man the wrong way.
+
+**What the prior is.** It is the mean future displacement of players who
+looked the same at that moment: group, speed, heading, depth, width and time
+since the snap. It is learned from tracking by the same operator
+(`anticipation-bound.py --export`) and written by
+`scripts/diag/write-anticipation-prior.py`. No route, assignment or concept of
+the opponent is used; the conditioning is only the observer's own belief. The
+committed table is empty until Run Game runs the NFL export, so anticipation
+tops out at motion until then.
+
+**What a read is worth.** Sim export, held-out half, median error in yd at 1.0
+/ 1.5 s:
+
+| Predictor | 1.0 s | 1.5 s |
+|---|---|---|
+| Constant acceleration | 1.64 | 3.58 |
+| Context prior | 1.10 | 1.94 |
+| With a correct read | 1.04 | 1.82 |
+| With a wrong read | 1.25 | 2.22 |
+
+- **Being fooled costs about three times what a right read gains.**
+- A fooled elite reader projects a WR worse than motion at 1.0 s (1.39 vs
+  1.25).
+- The TE is where the read matters most: 1.37 context, 1.21 right, 1.57 wrong.
+  He blocks on runs and releases on passes.
