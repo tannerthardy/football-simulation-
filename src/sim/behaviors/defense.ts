@@ -449,6 +449,8 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
  * comes first. Pads at the engaged run-fit level (0.85, engagement.ts);
  * the window is the time his brakes need plus one decision beat. */
 const BACKER_TAKEON = process.env.BACKER_TAKEON === '1', TAKEON_PADS = 0.85, TAKEON_PACE = 0.5, TAKEON_REACH = 2.5, TAKEON_CLOSING = 2;
+/** BACKER_TAKEON diagnostics: plays (by sim) on which the break-down fired. */
+export const takeOnFired = new WeakSet<PlaySim>();
 function takeOn(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   if (a.engagement || a.isDown(sim.t)) return cmd;
   let best: { ux: number; uy: number; gap: number } | null = null, carrierGap = Infinity;
@@ -468,9 +470,10 @@ function takeOn(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
     if (!best || gap < best.gap) best = { ux, uy, gap };
   }
   if (!best || carrierGap <= best.gap) return cmd;
+  takeOnFired.add(sim);
   const along = cmd.vel.x * best.ux + cmd.vel.y * best.uy;
   const vel = along > TAKEON_PACE ? { x: cmd.vel.x - (along - TAKEON_PACE) * best.ux, y: cmd.vel.y - (along - TAKEON_PACE) * best.uy } : cmd.vel;
-  return { ...cmd, vel, facing: Math.atan2(best.uy, best.ux), posture: Math.max((cmd as { posture?: number }).posture ?? 0, TAKEON_PADS) } as MoveCommand;
+  return { ...cmd, vel, posture: Math.max((cmd as { posture?: number }).posture ?? 0, TAKEON_PADS) } as MoveCommand;
 }
 
 export class RunDefender implements Behavior {
