@@ -67,6 +67,9 @@ const REACH_CONTACT = process.env.REACH_CONTACT === '1';
 /** Experimental early hand acquisition with coherent approach footwork through
  * a committed strike. Ordinary grip and strike; default-off. */
 const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
+/** Experimental (WRAP_FOOT=1, off): a hold's coupling to the carrier's
+ * corrective step is its secure leg share only (see updateBond). */
+const WRAP_FOOT = process.env.WRAP_FOOT === '1';
 /** Default on (BLOCKED_REACH=0 turns it off): a blocked defender reaches for a
  * passing carrier with the arm his blocker does not control, rather than only
  * once he is beating the block. One free arm reaches 0.7 of his reach; a
@@ -443,7 +446,11 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // contact's coupling to attempted corrective placement. A slack or
       // weak grip must actually transmit force to impede that placement.
       const secure = clamp(next, 0, 1) * quality;
-      joint.recoveryCoupling = joint.legs + (1 - joint.legs) * secure;
+      // WRAP_FOOT (experimental, off): only the share of the hold actually on
+      // his legs constrains where he can put a corrective foot, as far as the
+      // grip on it is secure. Tightening a hold does not move it down his
+      // legs; the default lets a secure half-leg wrap pin the step entirely.
+      joint.recoveryCoupling = WRAP_FOOT ? joint.legs * secure : joint.legs + (1 - joint.legs) * secure;
     }
     const tx = (c.pos.x - d.pos.x) / (distance || 1), ty = (c.pos.y - d.pos.y) / (distance || 1);
     const close = Math.min(1.5, Math.max(0, near - torso) * 3);

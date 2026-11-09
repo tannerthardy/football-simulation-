@@ -209,7 +209,7 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     expect(run.summary.result.support.yards).toBeLessThan(run.summary.result.man.yards);
   });
 
-  it('preserves same-clock abandonment geometry and names both native PA completions to Z', () => {
+  it('preserves same-clock abandonment geometry and names both native PA results on Z', () => {
     // Exact combined58f6c038, recorded single stream: both arms throw to Z at2.95,
     // both complete at4.50. Keep these named outcomes; do not restore #336's
     // interception by changing policy, seeds, bodies, or the throw. The cost is
@@ -239,10 +239,13 @@ describe('COV-7 active run benefit and legal abandonment cost', () => {
     // and the QB's own read of Z above carry the cost of the bite; results are named, not judged.
     // With the QB's throwing motion (load and delivery, ~0.4 s) and his timing read of the break, the baseline
     // throws to Z at 3.15 and the support arm at 2.85; both complete.
+    // With the receivers' route reads and flat release (#420) as well, the baseline still throws to Z at 3.15 and
+    // completes (caught at 4.75); the support arm throws to Z at 2.35, with the corner away, and it falls
+    // incomplete at 3.2 with no defender credited (#420's open catch-opportunity boundary).
     expect(kind(pass.baseline)).toBe('completion');
     expect(pass.baseline.execution.result.stats.receiver).toBe('OFF-WR2');
-    expect(kind(pass.alternative)).toBe('completion');
-    expect(pass.alternative.execution.result.stats.receiver).toBe('OFF-WR2');
+    expect(kind(pass.alternative)).toBe('incomplete');
+    expect(pass.alternative.execution.result.stats.target).toBe('OFF-WR2');
     expect(pass.alternative.execution.result.stats.passDefendedBy).toBeUndefined();
     for (const arm of [pass.baseline, pass.alternative]) expect(arm.execution.result.stats.interceptedBy).toBeUndefined();
   });
