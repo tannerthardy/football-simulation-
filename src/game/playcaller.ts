@@ -40,8 +40,18 @@ const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_RATE = 0.5;
 const MUG_CALLS = process.env.MUG_CALLS === '1';
 /** NICKEL_FRONTS (experimental, off): shares of nickel's five-man front and of the three-man front, by moment. */
 const NICKEL_FRONTS = process.env.NICKEL_FRONTS === '1';
-const SUB_FIVE: Record<Moment, number> = { early: .12, third: .10, short: .20 };
-const SUB_THREE: Record<'nickel' | 'dime', Record<Moment, number>> = { nickel: { early: .05, third: .08, short: .03 }, dime: { early: .15, third: .15, short: .15 } };
+const SUB_SHARE: Record<'nickel' | 'dime', Record<Moment, Record<string, number>>> = {
+  nickel: {
+    early: { penny: .02, penny_bear: .05, mint: .03, okie: .01 },
+    third: { penny: .01, penny_bear: .03, mint: .01, okie: .05 },
+    short: { penny: .03, penny_bear: .10, mint: .03 },
+  },
+  dime: { early: { okie: .11 }, third: { okie: .18 }, short: { okie: .12 } },
+};
+/** SHORT_BASE (experimental, off): share of short-yardage snaps vs heavy personnel played from the heavy package. */
+const SHORT_BASE = process.env.SHORT_BASE === '1', SHORT_HEAVY_RATE = .15;
+/** NICKEL_FRONTS: share of nickel calls played from 3-3-5 personnel (the 3-3 Stack). */
+const STACK_RATE = .03;
 const FRONT_BY_ID_SUB = Object.fromEntries(FRONTS.filter(f => NICKEL_FRONT_IDS.has(f.id)).map(f => [f.id, f]));
 const MUG_RATES: Record<'nickel' | 'dime', Record<number, [number, number]>> = {
   nickel: { 1: [.013, .001], 2: [.026, .008], 3: [.072, .023], 4: [.19, .068] },
@@ -558,24 +568,38 @@ export class DefensiveCoordinator {
     let heavy = false;
     if (goalLine && (offPersonnel === '22' || offPersonnel === '13' || offPersonnel === '21')) personnel = 'goalline';
     else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance) && 100 - s.yardline <= 5) personnel = 'goalline';
-    else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance)) { personnel = 'heavy'; heavy = true; }
+    // SHORT_BASE (experimental, off): short yardage against heavy personnel
+    // goes to the heavy package (its bear) on 15% of snaps, the league's
+    // 4+-interior "heavy" share there; otherwise base personnel and its
+    // short-yardage menu, whose 3-4 bear supplies the rest of the bear (NFL vs
+    // 3+ backs and ends at 2 yards or less, 2022 snap frames: over/under 33%,
+    // bear 24%, heavy 13%, tite 8%, even 6%; scripts/diag/align/nfronts.py).
+    // Ours played the bear on 88% of those snaps.
+    else if (SHORT_PACKAGE && shortPackage(offPersonnel, s.distance) && (!SHORT_BASE || own.fork('short-heavy').next() < SHORT_HEAVY_RATE)) { personnel = 'heavy'; heavy = true; }
+    else if (SHORT_BASE && SHORT_PACKAGE && shortPackage(offPersonnel, s.distance)) personnel = scheme === '3-4' ? 'base34' : 'base43';
     else if (DEF_PACKAGE) personnel = defPackage(own.fork('package'), offPersonnel, s, scheme);
     else if (offPersonnel === '10') personnel = rng.chance(passingDown ? 0.7 : 0.35) ? 'dime' : 'nickel';
     else if (offPersonnel === '11') personnel = passingDown && rng.chance(0.4) ? 'dime' : scheme === 'nickel-heavy' || rng.chance(0.85) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
     else if (offPersonnel === '12') personnel = rng.chance(scheme === 'nickel-heavy' ? 0.6 : 0.4) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
     else personnel = scheme === '3-4' ? 'base34' : 'base43';
 
+    if (NICKEL_FRONTS && personnel === 'nickel' && own.fork('stack335').next() < STACK_RATE) personnel = 'stack335';
     const fronts = FRONTS.filter((f) => f.personnel.includes(personnel) && (FRONT_MENU || !MENU_FRONTS.has(f.id)) && !NICKEL_FRONT_IDS.has(f.id));
     const moment: Moment = s.distance <= 2 ? 'short' : s.down >= 3 ? 'third' : 'early';
-    // NICKEL_FRONTS (experimental, off): sub packages also play five- and
-    // three-man fronts at the league's shares (2022 snap frames, defenders
-    // within 2 yd of the ball: nickel 5 on the line 17% early / 30% short /
-    // 17% third, 3 on 6% / 4% / 9%; dime 3 on 15%), less what mugs and walk-ups
-    // already put on the line.
+    // NICKEL_FRONTS (experimental, off): sub packages also play the Penny,
+    // Penny Bear, Mint, Okie and (in 3-3-5 personnel) the 3-3 Stack, at shares
+    // from 2022 snap frames classified by interior shape
+    // (scripts/diag/align/nfronts.py), less what mugs and walk-ups add.
     const subDraw = own.fork('sub-front').next();
-    const sub = NICKEL_FRONTS && (personnel === 'nickel' || personnel === 'dime')
-      ? (personnel === 'nickel' && subDraw < SUB_FIVE[moment] ? FRONT_BY_ID_SUB.tite_n
-        : subDraw < (personnel === 'nickel' ? SUB_FIVE[moment] : 0) + SUB_THREE[personnel][moment] ? FRONT_BY_ID_SUB.mint3 : undefined) : undefined;
+    let sub: typeof fronts[number] | undefined;
+    if (NICKEL_FRONTS && (personnel === 'nickel' || personnel === 'dime')) {
+      let acc = 0;
+      for (const [id, share] of Object.entries(SUB_SHARE[personnel][moment])) {
+        acc += share;
+        if (subDraw < acc) { sub = FRONT_BY_ID_SUB[id]; break; }
+      }
+    }
+    if (NICKEL_FRONTS && personnel === 'stack335') sub = FRONT_BY_ID_SUB.stack33;
     const front = sub ?? pickWeighted(
       rng,
       fronts.map((f) => [f, FRONT_MENU ? menuWeight(f.id, personnel, scheme, moment)

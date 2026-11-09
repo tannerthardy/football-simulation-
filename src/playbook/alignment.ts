@@ -156,6 +156,8 @@ const BLITZ_CREEP = process.env.BLITZ_CREEP === '1', CREEP_DEPTH = 2.4;
 /** SAM_ON_TE (experimental, off): see alignDefense; a Sam on the line stands as the Under's 9 does (yd). */
 const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_DEPTH = 1.0;
 /** TIGHT_OFF (experimental, off): see alignDefense; a tight #2 is within this of his tackle (yd); off depth (yd). */
+/** NICKEL_FRONTS (experimental, off): see the end-man rule in alignDefense. */
+const NICKEL_FRONTS_ALIGN = process.env.NICKEL_FRONTS === '1';
 /** SLOT_LEV (experimental, off): see alignDefense. */
 const SLOT_LEV = process.env.SLOT_LEV === '1';
 const TIGHT_OFF = process.env.TIGHT_OFF === '1', TIGHT_SPLIT = 3.5, TIGHT_OFF_DEPTH = 4.5;
@@ -183,8 +185,10 @@ const BACKERS: Record<string, Partial<Record<1 | 2 | 3, BackerSpot[]>>> = {
   even: { 1: [[.05, 4.7]], 2: [[-1.5, 4.8], [1.9, 4.8]], 3: [[-1.9, 4.5], [.5, 4.8], [2.7, 4.5]] },
   bear: { 2: [[-.8, 4.6], [2, 4.4]] },
   tite: { 2: [[-.8, 4.6], [1.85, 4.5]] },
+  // NICKEL_FRONTS: the Mint's Will sits over the weak C-gap bubble the front leaves open.
+  mint: { 2: [[-2.5, 4.3], [.6, 4.6]] },
 };
-const FAMILY: Record<string, string> = { over: 'over', wide9: 'over', under: 'under', under34: 'under', even: 'even', bear34: 'bear', tite: 'tite', mint3: 'even' };
+const FAMILY: Record<string, string> = { over: 'over', wide9: 'over', under: 'under', under34: 'under', even: 'even', bear34: 'bear', tite: 'tite', penny: 'over', penny_bear: 'over', mint: 'mint', okie: 'even' };
 const FRONT_PLAYERS = new Set<DefSlot>(['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT', 'LB_S', 'LB_M', 'LB_W']);
 /** The front's strong side (+1 = +y). */
 export function frontSign(call: DefensivePlayCall, off: OffenseAlignment): number {
@@ -763,6 +767,10 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     const hasTE = teAt(sideSign(side));
     const end = onLine.sort((a, b) => techniqueOffset(frontSlots[b]!.tech, hasTE, off.line) - techniqueOffset(frontSlots[a]!.tech, hasTE, off.line))[0];
     if (!end) continue;
+    // NICKEL_FRONTS: a side whose widest man on the line is an inside
+    // technique has no edge by design (the Mint's weak C-gap bubble, filled
+    // by a backer): he keeps his technique rather than becoming the end.
+    if (NICKEL_FRONTS_ALIGN && ['0', '1', '2i', '2', '3', '4i'].includes(frontSlots[end]!.tech)) continue;
     let tech = frontSlots[end]!.tech;
     if (call.edge) tech = hasTE ? EDGE_CALL_TE[call.edge] : call.edge === 'tight' ? '9' : 'w9';
     // With no end there a 6 or 7 is a ghost: he stands where the end would.
@@ -999,6 +1007,13 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   for (const slot of dlSlots) if (has(slot) && !roles[slot]) roles[slot] = { kind: 'rush' };
   // 3-4 OLB on the line in a Sam position rushes too.
   if (has('LB_S') && frontSlots.LB_S && frontSlots.LB_S.depth < 2 && !roles.LB_S && !cov.man) roles.LB_S = { kind: 'rush' };
+  // NICKEL_FRONTS: so does a Will or Mike walked up onto the line as an edge
+  // (Penny); a rover off the ball drops on 3rd and long (a three-man rush with
+  // eight in coverage) and rushes otherwise.
+  for (const lb of ['LB_W', 'LB_M'] as DefSlot[])
+    if (has(lb) && frontSlots[lb] && frontSlots[lb]!.depth < 2 && !roles[lb] && !cov.man) roles[lb] = { kind: 'rush' };
+  for (const slot of dlSlots) if (has(slot) && frontSlots[slot]?.rover && roles[slot]?.kind === 'rush' && !cov.man
+    && style.situation && style.situation.down >= 3 && style.situation.distance >= 7) roles[slot] = { kind: 'zone', zone: 'hook_mid' };
 
   for (const slot of present) {
     if (roles[slot]) continue;

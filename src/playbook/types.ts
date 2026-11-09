@@ -160,7 +160,7 @@ export type DefSlot =
   | 'FS'
   | 'SS';
 
-export type DefPersonnelId = 'base43' | 'base34' | 'nickel' | 'dime' | 'goalline' | 'heavy';
+export type DefPersonnelId = 'base43' | 'base34' | 'nickel' | 'dime' | 'goalline' | 'heavy' | 'stack335';
 
 export type Technique = '0' | '1' | '2i' | '2' | '3' | '4i' | '4' | '5' | '6' | '7' | '9' | 'w9';
 
@@ -170,6 +170,8 @@ export interface FrontAlignment {
   side: 'S' | 'W';
   /** Yards beyond the LOS. */
   depth: number;
+  /** NICKEL_FRONTS: a stand-up rover off the ball who drops on 3rd and long, rushes otherwise. */
+  rover?: boolean;
 }
 
 export interface Front {
@@ -410,6 +412,8 @@ export const DEF_PERSONNEL: Record<DefPersonnelId, Partial<Record<DefSlot, Posit
   goalline: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', NT: 'DT', LB_S: 'LB', LB_M: 'LB', LB_W: 'LB', CB_S: 'CB', CB_W: 'CB', SS: 'S' },
   // Short yardage away from the goal line (SHORT_PACKAGE): five down, two backers, a safety deep.
   heavy: { DE_S: 'EDGE', DE_W: 'EDGE', DT_S: 'DT', DT_W: 'DT', NT: 'DT', LB_S: 'LB', LB_M: 'LB', CB_S: 'CB', CB_W: 'CB', FS: 'S', SS: 'S' },
+  // NICKEL_FRONTS: the 3-3-5 (three down, three stacked backers, five backs).
+  stack335: { DE_S: 'EDGE', DE_W: 'EDGE', NT: 'DT', LB_S: 'LB', LB_M: 'LB', LB_W: 'LB', CB_S: 'CB', CB_W: 'CB', NB: 'CB', FS: 'S', SS: 'S' },
 };
 
 export const OFF_PERSONNEL: Record<PersonnelId, Partial<Record<SkillSlot, Position>>> = {
