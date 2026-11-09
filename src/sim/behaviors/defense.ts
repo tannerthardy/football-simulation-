@@ -6,21 +6,23 @@
  * reads the play, he executes his pre-snap job; play action can fool him into
  * believing run for longer.
  */
+import { isOL } from './blocking.js';
+import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
-import type { Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
+import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
-import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track } from './common.js';
+import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track, watch } from './common.js';
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
-import { executeRunFit, type RunFitRead } from '../run-fits.js';
+import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '../run-fits.js';
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
@@ -38,12 +40,26 @@ import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, q
  * (3.7 -> 5.7 yd deep) and blocked 15% at 2.0 s; ours came to the run at the
  * stalk read, sat at 4 yd and were blocked 62% (dbtempo.py). */
 const passFirstOn = () => process.env.PASS_FIRST !== '0';
+/** DB_SLOWPLAY (experimental, off): see ManCoverage.slowPlay. Fraction of the receiver's tempo he gives
+ * (NFL off corners on runs, 0.9 of 3 yd/s), cushion he keeps (yd), receiver speed that is a release (of his vmax). */
+const RUN_BLITZ = process.env.RUN_BLITZ === '1';
+/** END_CHASE (experimental, off): see the edge squeeze; how far into the backfield the chase aims (yd). */
+const END_CHASE = process.env.END_CHASE === '1', CHASE_DEPTH = 1.0;
+const DB_SLOWPLAY = process.env.DB_SLOWPLAY === '1', SLOW_GIVE = 0.3, SLOW_MIN = 1.5, SLOW_SPRINT = 0.75, SLOW_WIDTH = 8;
+/** LB_READ_STEP (experimental, off): see ZoneCoverage's box-backer read step; how far downhill it goes (yd). */
+const LB_READ_STEP = process.env.LB_READ_STEP === '1', READ_STEP = 0.3;
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
   if (a.recog) return a.recog.read === 'run';
   return !sim.isPass && sim.t >= a.readAt;
 }
+/** ZONE_SETTLE (default on; ZONE_SETTLE=0 turns it off): underneath zone
+ * droppers stop gaining depth once they see the QB set ("drop until his back
+ * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
+ * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
+const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
+
 export function knowsPass(sim: PlaySim, a: Agent): boolean {
   if (a.recog) return a.recog.read === 'pass';
   return sim.isPass && sim.t >= a.readAt;
@@ -105,13 +121,33 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
 
 // ------------------------------------------------------------- pass rush
 
-/** A blocker's lateral step a lineman can see (yd/s): its direction shows long before its speed builds. */
-const STEP_SEEN = 0.3;
-
 /** How much sooner a lineman reads the man in front of him than the rest of
- * the field: his key, an arm's length away and straight ahead of him (as a
- * rusher keys the quarterback). */
-const KEY_DELAY = 0.5;
+ * the field (his key, an arm's length away and straight ahead of him, as a
+ * rusher keys the quarterback), and the step speed at which he sees it: see
+ * key-read.ts. */
+const stepSeen = KEY_REACT ? KEY_STEP_SEEN : STEP_SEEN;
+/** KEY_PACE (experimental, off): how much faster than the key's own step he answers it (yd/s). */
+const KEY_PACE = process.env.KEY_PACE === '1', KEY_STEP_LEAD = 0.5;
+/** KEY_DEPTH (experimental, off): see the key step; his upfield step is his own read step. */
+const KEY_DEPTH = process.env.KEY_DEPTH === '1';
+/** LB_GUARD_STEP (experimental, off): see ZoneCoverage's unsure box backer. */
+const LB_GUARD_STEP = process.env.LB_GUARD_STEP === '1';
+/** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
+ * read lean leads his step before the key's own movement must confirm it (s). */
+const STANCE_TELL = process.env.STANCE_TELL === '1';
+/** BACKSIDE_SHOOT (experimental, off): see the key-step read below; how far behind the line he aims (yd). */
+const BACKSIDE_SHOOT = process.env.BACKSIDE_SHOOT === '1', SHOOT_DEPTH = 1.5;
+/** DEF_STANCE: pad level a hand-down lineman keeps coming off the ball, and for how long (s). */
+const DOWN_POSTURE = 0.7, DOWN_LOW_FOR = 0.8;
+/** SINK_LEAD (experimental, off): see PassRusher.sink. Target pad levels are the
+ * engaged requests (run fit 0.85, pass rush 0.6, engagement.ts); the rate is the
+ * world's posture slew (POSTURE_RATE); margin covers one decision beat (s). */
+const SINK_LEAD = process.env.SINK_LEAD === '1', SINK_RUN = 0.85, SINK_PASS = 0.6, SINK_RATE = 2.5, SINK_MARGIN = 0.1;
+/** SINK_LEAD: a blocker within this gap (yd, about an arm and a step) is on him
+ * whatever the closing speed, so a lineman in his stance stays low. */
+const SINK_NEAR = 1.0;
+const EDGE_WIDTH = process.env.EDGE_WIDTH === '1';
+const TELL_WINDOW = 0.3;
 /** How far outside the down blocker's body an edge keeps his own body as he closes (yd). */
 const HIP_GAP = 0.35;
 /** How far into the backfield a squeezed edge sets up to meet a kick-out (yd); tracked play-side ends are 0.3-0.5 yd deep by 1.5-2.0 s. */
@@ -128,12 +164,35 @@ function manInFront(sim: PlaySim, a: Agent, reach = 1.5, held: Agent | null = nu
     if (dy <= reach && dy < bd) { best = b.agent; bd = dy; }
   }
   // Where he lined up is the pre-snap picture every defender has.
-  return best ? { ...sim.see(a, best, KEY_DELAY), home: sim.offAlign.spots[best.slot]!.pos, agent: best } : null;
+  return best ? { ...sim.see(a, best, keyScale(a)), home: sim.offAlign.spots[best.slot]!.pos, agent: best } : null;
+}
+
+/** DL_GAMES: how long a moving lineman executes his called step before he
+ * plays from the new gap (s after his get-off): about two steps. */
+const GAME_STEP = 0.45;
+
+/** DL_GAMES twist timing (s after get-off): the crasher penetrates the partner's
+ * gap, the looper jabs his own man, then loops behind into the crasher's gap. */
+const TWIST_CRASH = 0.8, TWIST_HOLD = 0.15, TWIST_LOOP = 1.6;
+function twistRole(a: Agent, sim: PlaySim): { role: 'crash' | 'loop'; y: number } | null {
+  const game = sim.defCall.dlGame;
+  if (!game || game.kind !== 'twist') return null;
+  const s = game.dir === 'S' ? 'S' : 'W', o = s === 'S' ? 'W' : 'S';
+  const pair = game.pair ?? 'TE';
+  const [crash, loop] = pair === 'TE' ? [`DT_${s}`, `DE_${s}`] : pair === 'ET' ? [`DE_${s}`, `DT_${s}`] : [`DT_${s}`, `DT_${o}`];
+  const c = sim.slot(crash as DefSlot), l = sim.slot(loop as DefSlot);
+  if (!c || !l || (a !== c && a !== l)) return null;
+  // Each attacks where the other was: the gap's y at the line from the alignment.
+  const spot = (d: Agent) => sim.defAlign.spots[d.slot as DefSlot]!;
+  const target = a === c ? spot(l) : spot(c);
+  return { role: a === c ? 'crash' : 'loop', y: gapY(sim.offAlign, target.gap, target.gapSign) };
 }
 
 export class PassRusher implements Behavior {
   readonly kind = 'rush';
   private readonly getOff: number;
+  /** STANCE_TELL: he picked up his key's pre-snap lean (his recognition). */
+  private readonly readsTell: boolean;
   /** Own contact with the line, not a chip from a back or receiver.
    * Once past the opening lane and free, finish instead of restarting it. */
   private workedLineBlock = false;
@@ -143,6 +202,12 @@ export class PassRusher implements Behavior {
   private keyed: Agent | null = null;
   /** Pre-snap rush plan from his tools. */
   readonly plan: 'power' | 'finesse' | 'speed';
+  /** DL_GAMES: a called angle/slant/pinch moved his gap; until this clock he
+   * executes the movement into it (the call, not a read), then plays from there. */
+  private readonly gameUntil: number;
+  /** DL_GAMES twist: the crasher attacks the partner's gap; the looper waits a
+   * beat, then loops behind him into the gap the crasher vacated. */
+  private readonly twist: { role: 'crash' | 'loop'; y: number } | null;
   constructor(
     a: Agent,
     sim: PlaySim,
@@ -153,14 +218,51 @@ export class PassRusher implements Behavior {
     // SNAP_REACT plans every start from the count itself.
     const scatter = sim.dice('rush', a).normal(0, 0.03);
     this.getOff = a.snapReadyAt = SNAP_REACT ? a.snapReadyAt : clamp(a.snapReadyAt + scatter, 0.02, 0.4);
+    this.readsTell = STANCE_TELL && sim.rng.fork(`tell-read:${a.slot}`).next() < 0.6 + 0.6 * a.r('playRecognition');
     const edge = gap === 'C' || gap === 'D';
     const pw = 0.3 + a.r('passRushPower') + (a.profile.massKg - 120) / 60;
     const fi = 0.3 + a.r('passRushFinesse');
     const sp = edge ? 0.2 + burst * 1.2 + traits(a).bend * 0.5 : 0;
     this.plan = sim.dice('rush', a).weighted(['power', 'finesse', 'speed'] as const, [pw, fi, sp]);
+    const spot = sim.defAlign.spots[a.slot as DefSlot];
+    const movedGap = !!sim.defCall.dlGame && sim.defCall.dlGame.kind !== 'twist' && !!spot
+      && (spot.gap !== gap || Math.sign(spot.gapSign) !== Math.sign(gapSign));
+    this.gameUntil = movedGap ? this.getOff + GAME_STEP : -1;
+    this.twist = twistRole(a, sim);
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    const cmd = this.decide(a, sim);
+    // DEF_STANCE: out of a hand-down stance he fires out low and stays low into
+    // his first contact; standing up, he comes off at ordinary pad level.
+    if (a.setStance === 'down' && !a.engagement && (cmd as { posture?: number }).posture === undefined && sim.t < this.getOff + DOWN_LOW_FOR)
+      return SINK_LEAD ? this.sink(a, sim, { ...cmd, posture: DOWN_POSTURE } as MoveCommand) : { ...cmd, posture: DOWN_POSTURE } as MoveCommand;
+    return SINK_LEAD ? this.sink(a, sim, cmd) : cmd;
+  }
+
+  /** SINK_LEAD: a lineman who sees a blocker closing on him lowers his pads in
+   * time to meet him at the pad level he plays blocks with ("low man wins"),
+   * from his own picture of the gap and closing speed; in his stance, with a
+ * blocker an arm and a step away, he stays down rather than rising to wait. Pad level slews at a
+   * finite rate and costs speed (world.ts), so he starts no earlier than the
+   * slew needs. */
+  private sink(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+    if (a.engagement) return cmd;
+    const want = believesRun(sim, a) ? SINK_RUN : SINK_PASS;
+    const have = a.body.support?.posture ?? 0, asked = (cmd as { posture?: number }).posture ?? 0;
+    if (asked >= want) return cmd;
+    const lead = Math.max(0, want - have) / SINK_RATE + SINK_MARGIN;
+    for (const o of sim.offense) {
+      if (!isOL(o)) continue;
+      const p = sim.see(a, o); const dx = p.pos.x - a.pos.x, dy = p.pos.y - a.pos.y, dist = Math.hypot(dx, dy);
+      const gap = dist - a.profile.radius - o.profile.radius; if (gap > 3) continue;
+      const closing = -(dx * (p.vel.x - a.vel.x) + dy * (p.vel.y - a.vel.y)) / Math.max(dist, 1e-6);
+      if (gap <= SINK_NEAR || (closing > 0.3 && gap / closing < lead)) return { ...cmd, posture: want } as MoveCommand;
+    }
+    return cmd;
+  }
+
+  private decide(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.t < this.getOff) return stand(Math.PI);
     if (a.engagement) {
       const { blocker } = a.engagement;
@@ -173,6 +275,25 @@ export class PassRusher implements Behavior {
     if (sim.ball.kind === 'air' && sawThrow(a, sim, null)) {
       const path = acquireFlight(a, sim), spot = catchSpot(a, { t: sim.t, ballPath: path });
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
+    }
+    // A called movement goes on the snap: across the blocker's face into his
+    // new gap at the line, whatever the man in front of him does.
+    if (this.twist && !believesRun(sim, a)) {
+      const t = sim.t - this.getOff, x = (d: number) => sim.los - d * sim.attackDir(sim.offense[0].team);
+      if (this.twist.role === 'crash' && t < TWIST_CRASH) {
+        a.tags.add('twist-crash');
+        return runThrough(a, { x: x(0.6), y: this.twist.y }, { speed: 1 });
+      }
+      if (this.twist.role === 'loop' && t < TWIST_LOOP) {
+        a.tags.add('twist-loop');
+        // A jab at his own man first (the hold that sells the rush), then the loop behind the crash.
+        if (t < TWIST_HOLD) return runThrough(a, { x: x(0.2), y: a.pos.y }, { speed: 0.6 });
+        return runThrough(a, { x: x(0.2), y: this.twist.y }, { speed: 1 });
+      }
+    }
+    if (sim.t < this.gameUntil) {
+      a.tags.add('dl-game-step');
+      return runThrough(a, { x: sim.los - 0.3 * sim.attackDir(sim.offense[0].team), y: gapY(sim.offAlign, this.gap, this.gapSign) }, { speed: 1 });
     }
     // The ball is handed off or the QB takes off: play the run. Up close a
     // lineman sees the exchange; a rusher who has read run plays it too
@@ -189,7 +310,8 @@ export class PassRusher implements Behavior {
     const onEdge = this.gap === 'C' || this.gap === 'D';
     const man = a.pos.x > sim.los - 0.5 ? manInFront(sim, a, onEdge ? Infinity : 1.5, onEdge ? this.keyed : null) : null;
     if (onEdge && man) this.keyed = man.agent;
-    const runStep = !!man && man.stance === 'low' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > STEP_SEEN;
+    watch(sim, a, man?.agent);
+    const runStep = !!man && man.stance === 'low' && man.vel.x * sim.attackDir(sim.offense[0].team) > -0.5 && Math.abs(man.vel.y) > stepSeen;
     // An edge keeps his outside against a reach. A man in front blocking down,
     // stepping inside away from him, opens his gap to a kick-out or a pulling
     // lead: he closes flat along the line behind the down block and sets the
@@ -201,6 +323,19 @@ export class PassRusher implements Behavior {
     // comes to kick him out, rather than riding the down block inside.
     if (onEdge && runStep && Math.sign(man!.vel.y) === Math.sign(sim.ballY - man!.pos.y)) {
       const side = Math.sign(man!.vel.y), h = a.mind.decisionInterval;
+      // END_CHASE (experimental, off): the whole line stepping away with his
+      // man and no puller crossing is a zone step, not a down block: no
+      // kick-out is coming to the spot he would set. He squeezes inside and
+      // upfield behind his man's hip, chasing the play from the backside
+      // (cutback, bootleg, the back's heels). NFL unblocked backside ends on
+      // zone runs cross the line on 68-80% of snaps and are 0.6-0.7 yd in the
+      // backfield by 1.5 s; ours squeezed flat and sat on the line.
+      if (END_CHASE && pullers(sim, a).length === 0 && lineRead(sim, a) === side) {
+        const dir = sim.attackDir(sim.offense[0].team);
+        a.tags.add('end-chase');
+        return track(a, { x: sim.los - dir * CHASE_DEPTH, y: man!.pos.y - side * (a.profile.radius + HIP_GAP) + man!.vel.y * h },
+          { x: 0, y: man!.vel.y }, { speed: 1, gain: 3, facing: Math.PI });
+      }
       const hip = man!.pos.y - side * (a.profile.radius + HIP_GAP);
       const shut = man!.home.y - side * a.profile.radius;
       a.tags.add('key-squeeze');
@@ -213,15 +348,62 @@ export class PassRusher implements Behavior {
       return track(a, { x: man!.pos.x + man!.vel.x * h, y: clamped ? shut : ahead }, { x: man!.vel.x, y: clamped ? 0 : man!.vel.y },
         { speed: 1, gain: 3, facing: Math.PI });
     }
+    // STANCE_TELL: before the key's step is visible, a lineman who read his
+    // key's weight lean pre-snap steps with it off the ball. The step is the
+    // same flat step as the read below; the first real movement he sees
+    // replaces it either way (a lean that lied costs him that step).
+    if (STANCE_TELL && !onEdge && man && !runStep && this.readsTell && man.agent.stanceLean
+      && sim.t < this.getOff + TELL_WINDOW && Math.abs(man.vel.y) < stepSeen) {
+      const side = man.agent.stanceLean, step = a.profile.vmax * a.profile.shuffle;
+      a.tags.add('tell-step');
+      return track(a, { x: man.home.x + man.vel.x * a.mind.decisionInterval, y: a.pos.y + side * step * a.mind.decisionInterval },
+        { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
+    }
+    // EDGE_WIDTH (experimental, off): the man he keys reaching out toward him
+    // (a stretch or reach step, away from the ball) is trying to get to his
+    // outside shoulder. He widens with him and keeps it, upfield, the mirror of
+    // the squeeze above; the reach decides how far he has to go.
+    if (EDGE_WIDTH && onEdge && runStep && Math.sign(man!.vel.y) === -Math.sign(sim.ballY - man!.pos.y)) {
+      const side = Math.sign(man!.vel.y), h = a.mind.decisionInterval;
+      const keep = man!.pos.y + man!.vel.y * h + side * (a.profile.radius + 0.6);
+      a.tags.add('key-widen');
+      return track(a, { x: sim.los - 0.3 * sim.attackDir(sim.offense[0].team), y: keep }, { x: 0, y: man!.vel.y }, { speed: 1, gain: 3, facing: Math.PI });
+    }
+    // BACKSIDE_SHOOT (experimental, off): the man in front stepping away from
+    // him (a zone step to the other side) vacates the spot he stood in. The
+    // lineman behind that step shoots it, upfield through the vacated spot to
+    // the stepping man's hip, rather than stepping flat with him; whoever is
+    // coming to cut him off has to get there first. NFL backside DL on outside
+    // zone: 17% are a yard into the backfield by 1.5 s; ours 1%.
+    if (BACKSIDE_SHOOT && !onEdge && runStep && Math.sign(man!.vel.y) === Math.sign(man!.pos.y - a.pos.y)) {
+      const dir = sim.attackDir(sim.offense[0].team), side = Math.sign(man!.vel.y);
+      a.tags.add('shoot-gap');
+      return runThrough(a, { x: man!.home.x - dir * SHOOT_DEPTH, y: man!.pos.y - side * a.profile.radius }, { speed: 1 });
+    }
     // The interior man keys the blocker over him.
     if (!onEdge && runStep) {
       // The answer to a lateral first step is a flat step of his own at full
       // effort, square to the man, not a match of the speed seen so far.
-      const side = Math.sign(man!.vel.y), step = a.profile.vmax * a.profile.shuffle;
+      // KEY_PACE (experimental, off): he answers the step he sees at its pace
+      // plus a step of his own: a reach running for his shoulder gets a
+      // sprint, an inside-zone drive step a matching step that keeps his gap.
+      // NFL inside-zone DL go about 0.8 as far sideways as their blockers; a
+      // full flat sprint on every key step took ours as far as the blocker or
+      // further. Judge with the offense's reach pace (Run Game's REACH_FLAT):
+      // matched to a slow, upfield reach, the outside-zone DL is slow too.
+      const side = Math.sign(man!.vel.y), full = a.profile.vmax * a.profile.shuffle;
+      const step = KEY_PACE ? Math.min(full, Math.abs(man!.vel.y) + KEY_STEP_LEAD) : full;
       const h = a.mind.decisionInterval;
-      const at = { x: man!.pos.x + man!.vel.x * h, y: man!.pos.y + side * step * h };
+      // KEY_DEPTH (experimental, off): upfield it is a read step too, his own
+      // step (the same lead as KEY_PACE's), meeting the man where he comes,
+      // not a run at the man's spot: closing on it at tracking gain asked for
+      // a sprint (5-7 yd/s) into the block. NFL interior DL not yet near an OL
+      // move 0.5-0.74 yd/s upfield through 1.0 s; ours ramped to 1.1 by 0.5 s.
+      const up = -sim.attackDir(sim.offense[0].team) * KEY_STEP_LEAD;
+      const at = KEY_DEPTH ? { x: a.pos.x + up * h, y: man!.pos.y + side * step * h } : { x: man!.pos.x + man!.vel.x * h, y: man!.pos.y + side * step * h };
       a.tags.add('key-step');
-      return track(a, at, { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
+      if (KEY_REACT) a.keyStep = { from: man!.agent, side };
+      return track(a, at, { x: KEY_DEPTH ? up : 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
     }
     // Rush lane by plan: power rushers go through the blocker's chest at the
     // QB; finesse rushers attack a shoulder through their gap; speed rushers
@@ -270,7 +452,18 @@ export class Blitzer implements Behavior {
     if (a.engagement) return stand();
     const live = pursueIfLive(sim, a);
     if (live) return live;
-    if (believesRun(sim, a)) return runFit(a, sim, this.gap, this.gapSign);
+    // RUN_BLITZ (experimental, off): a called blitz still goes on a run. Short
+    // of the line he keeps attacking through his gap to the same point behind
+    // it; through it, he plays the run from the backfield. A blocker who meets
+    // him engages him as ever. NFL box backers who stand within 2.5 yd get
+    // past the line on 29% of runs; ours fitted the gap at the line (3%).
+    if (believesRun(sim, a)) {
+      if (RUN_BLITZ && a.pos.x > sim.los - 0.3) {
+        a.tags.add('run-blitz');
+        return runThrough(a, { x: sim.los - 0.8, y: gapY(sim.offAlign, this.gap, this.gapSign) }, { speed: 1 });
+      }
+      return runFit(a, sim, this.gap, this.gapSign);
+    }
     if (sim.ball.kind === 'air') {
       const spot = catchSpot(a, sim);
       if (spot) return runThrough(a, spot.p, { speed: 0.9 });
@@ -294,13 +487,68 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
     // selection inside the fit fallback. Reuse the installed mesh picture,
     // including unknown/negative carrying, rather than inventing a handoff.
     const holder = observedHolder(a, sim), back = sim.slot('RB');
+    if (!/^(DE|DT|NT)/.test(a.slot)) watch(sim, a, holder?.target ?? back);
     // A QB seen running is the runner himself, not a mesh still to resolve.
     if (holder && (holder.target !== sim.qb || hasObservedFlight(a) || qbRunning(a, sim))) read = { possession: holder };
     else if (back && sim.offAlign.spots[back.slot]?.backfield) {
       read = { backfield: { back, backCue: sim.see(a, back), qbCue: sim.see(a, sim.qb) } };
     } else read = holder ? { possession: holder } : null;
   }
-  return executeRunFit(a, sim, gap, gapSign, read);
+  const cmd = executeRunFit(a, sim, gap, gapSign, read);
+  return BACKER_TAKEON && /^LB/.test(a.slot) ? takeOn(a, sim, cmd) : cmd;
+}
+
+/** BACKER_TAKEON (experimental, off): an unblocked backer who sees a blocker
+ * climbing at him breaks down before contact ("shock and shed"): he brakes his
+ * speed into the blocker to a fitting pace, squares to him and sinks his pads,
+ * so the collision carries the closing speed of a settled backer, not of one
+ * running into it. Everything comes from his own picture of the blocker; the
+ * cost is real (a slower fit, time stopped while the blocker arrives). He does
+ * not break down for a blocker when the carrier he sees is closer: a tackle
+ * comes first. Pads at the engaged run-fit level (0.85, engagement.ts);
+ * the window is the time his brakes need plus one decision beat. */
+const BACKER_TAKEON = process.env.BACKER_TAKEON === '1', TAKEON_PADS = 0.85, TAKEON_PACE = 0.5, TAKEON_REACH = 2.5, TAKEON_CLOSING = 2;
+/** BACKER_TAKEON: a blocker's working reach beyond the two bodies (yd; the run-block reach, engagement.ts inBlockReach). */
+const TAKEON_ARM = 0.45;
+/** BACKER_TAKEON: the blocker's own speed at him that makes him a climber (yd/s; a jog). */
+const TAKEON_CLIMB = 1.5;
+/** BACKER_TAKEON diagnostics: plays (by sim) on which the break-down fired. */
+export const takeOnFired = new WeakSet<PlaySim>();
+/** BACKER_TAKEON diagnostics: when set, each tick a backer brakes is pushed here. */
+export const takeOnTrace: { rows: Array<{ sim: PlaySim; a: Agent; o: Agent; t: number }> | null } = { rows: null };
+function takeOn(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  if (a.engagement || a.isDown(sim.t)) return cmd;
+  let best: { ux: number; uy: number; gap: number; o: Agent } | null = null, carrierGap = Infinity;
+  for (const o of sim.offense) {
+    if (o === sim.qb) continue;
+    const p = sim.see(a, o); const dx = p.pos.x - a.pos.x, dy = p.pos.y - a.pos.y, dist = Math.hypot(dx, dy);
+    const gap = dist - a.profile.radius - o.profile.radius;
+    if (p.carrying === true) { carrierGap = Math.min(carrierGap, gap); continue; }
+    if (gap > TAKEON_REACH) continue;
+    // A climber: a blocker off his block and moving at him himself. A
+    // blocker locked on a lineman is not coming, however fast the backer
+    // runs toward him.
+    if (o.engagement) continue;
+    const ux = dx / Math.max(dist, 1e-6), uy = dy / Math.max(dist, 1e-6);
+    const closing = (a.vel.x - p.vel.x) * ux + (a.vel.y - p.vel.y) * uy;
+    if (closing < TAKEON_CLOSING || p.vel.x * -ux + p.vel.y * -uy < TAKEON_CLIMB) continue;
+    // Brakes needed to shed his own speed into the blocker, plus one beat.
+    const own = Math.max(0, a.vel.x * ux + a.vel.y * uy);
+    const window = Math.max(0, own - TAKEON_PACE) / a.profile.brake + 0.05;
+    if (gap / closing > window + 0.15) continue;
+    // Only a blocker whose path is aimed at him: on the relative motion he
+    // sees, their closest approach comes inside the blocker's arms.
+    const wx = p.vel.x - a.vel.x, wy = p.vel.y - a.vel.y, w2 = wx * wx + wy * wy;
+    const tc = w2 > 1e-6 ? -(dx * wx + dy * wy) / w2 : 0;
+    if (Math.hypot(dx + wx * tc, dy + wy * tc) > a.profile.radius + o.profile.radius + TAKEON_ARM) continue;
+    if (!best || gap < best.gap) best = { ux, uy, gap, o };
+  }
+  if (!best || carrierGap <= best.gap) return cmd;
+  takeOnFired.add(sim);
+  takeOnTrace.rows?.push({ sim, a, o: best.o, t: sim.t });
+  const along = cmd.vel.x * best.ux + cmd.vel.y * best.uy;
+  const vel = along > TAKEON_PACE ? { x: cmd.vel.x - (along - TAKEON_PACE) * best.ux, y: cmd.vel.y - (along - TAKEON_PACE) * best.uy } : cmd.vel;
+  return { ...cmd, vel, posture: Math.max((cmd as { posture?: number }).posture ?? 0, TAKEON_PADS) } as MoveCommand;
 }
 
 export class RunDefender implements Behavior {
@@ -438,8 +686,36 @@ export class ManCoverage implements Behavior {
       this.blockingRun = installedBackfield;
       return this.blockingSupport(a, sim, qbCue);
     }
+    if (DB_SLOWPLAY && run && !this.hipsOpen) {
+      const slow = this.slowPlay(a, sim);
+      if (slow) return slow;
+    }
 
     return this.trackReceiver(a, sim);
+  }
+
+  /** DB_SLOWPLAY (experimental, off): a man defender who has read run stays on
+   * his receiver (pass first) but slow-plays him: he gives ground at a
+   * fraction of the receiver's tempo and lets an approach close his cushion,
+   * keeping his leverage, instead of retreating at the receiver's speed. A
+   * receiver sprinting off the ball (a real release) or a cushion already
+   * down to SLOW_MIN returns him to ordinary man tracking, so play action
+   * that sells the run still beats him with a vertical. NFL off corners on
+   * runs give ground at about 0.9 yd/s while their receiver comes at about
+   * 3 (0.3 of his tempo); ours matched him at 2.6-3. Wide receivers only
+   * (aligned SLOW_WIDTH yd or more from the ball). */
+  private slowPlay(a: Agent, sim: PlaySim): MoveCommand | null {
+    const R = this.target, cue = sim.see(a, R), speed = Math.hypot(cue.vel.x, cue.vel.y);
+    // Wide receivers only: a man on a slot is an inside run supporter, who triggers.
+    const spot = sim.offAlign.spots[R.slot]?.pos;
+    if (!spot || Math.abs(spot.y - sim.ballY) < SLOW_WIDTH) return null;
+    if (speed > SLOW_SPRINT * R.profile.vmax) return null;
+    if (a.pos.x - cue.pos.x <= SLOW_MIN) return null;
+    const inside = Math.sign(sim.ballY - cue.pos.y) || 1, o = this.opts;
+    const lev = (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
+    a.tags.add('slow-play');
+    return withFacingTechnique(track(a, { x: a.pos.x, y: clamp(cue.pos.y + lev, 0.5, FIELD_WIDTH - 0.5) },
+      { x: SLOW_GIVE * Math.max(0, cue.vel.x), y: cue.vel.y }, { facing: Math.PI, gain: 1.6 }), { label: 'man-slowplay', key: cue.vel });
   }
 
   private blockingSupport(a: Agent, sim: PlaySim, qbCue: Perceived): MoveCommand {
@@ -569,6 +845,12 @@ export class ZoneCoverage implements Behavior {
   private readonly observations = new Map<Agent, RouteObservation>();
   private readonly depthReads = new Map<Agent, DeepCoverage>();
   private flatExpansionRecorded = false;
+  /** ZONE_SETTLE: when this underneath dropper saw the QB set (-1 not yet). */
+  private settledAt = -1;
+  /** ZONE_SETTLE: the deepest the QB has been in this defender's picture. */
+  private qbDeepest = Infinity;
+  /** A box backer has left his read step for his drop. */
+  private dropping = false;
 
   constructor(
     a: Agent,
@@ -613,14 +895,49 @@ export class ZoneCoverage implements Behavior {
     // (tracked box backers, 2.5-8 yd deep and within 6 yd of the ball, hold
     // their depth through 0.8 s on passes and runs alike). An apex or
     // overhang backer keeps his eased drop to the flat.
-    if (!this.deep && a.recog?.read === 'unsure' && boxBacker(a, sim))
-      return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
+    // How sure he must be before he drops is the call's (dropStart; default
+    // early, on the read itself). Once he drops he doesn't step back.
+    if (!this.deep && !this.dropping && boxBacker(a, sim)) {
+      const read = a.recog?.read;
+      if (read === 'unsure' || (read === 'pass' && a.recog!.pPass() < DROP_START[sim.defCall.dropStart ?? 'early'])) {
+        if (read === 'unsure') watch(sim, a, sim.qb);
+        // LB_GUARD_STEP (experimental, off): "guards to backs". Still unsure of
+        // run or pass, a box backer whose guards both step the same way (no
+        // pass set; guardStep, read at first movement) steps with them, at their pace plus a step of
+        // his own, eyes still on the quarterback. A pass read stops him there;
+        // a run read finds him already flowing. NFL OZ box backers move +0.37 to
+        // +0.54 yd/s toward the play by 0.2 s; ours stood until the run read
+        // committed (median 0.60 s).
+        const g = LB_GUARD_STEP ? guardStep(sim, a) : { side: 0, pace: 0 }, side = g.side;
+        if (side) {
+          const pace = Math.min(a.profile.vmax * a.profile.shuffle, g.pace + KEY_STEP_LEAD), h = a.mind.decisionInterval;
+          a.tags.add('lb-guard-step');
+          return withFacingTechnique(track(a, { x: a.pos.x, y: a.pos.y + side * pace * h }, { x: 0, y: side * pace },
+            { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 1 }), { label: 'read-step' });
+        }
+        // LB_READ_STEP (experimental, off): his read step is a step. Off the
+        // snap he presses a short step downhill from his alignment, square,
+        // eyes on the quarterback, and reads from there: a run read keeps him
+        // coming, a pass read starts his drop from it. NFL box backers gain
+        // 0.1-0.15 yd downhill by 0.5 s on runs and dropbacks alike, then 40%
+        // stop or drop on passes; ours stood still until the read.
+        if (LB_READ_STEP) {
+          const home = sim.defAlign.spots[a.slot as keyof typeof sim.defAlign.spots]?.pos ?? a.pos, dir = sim.attackDir(sim.offense[0].team);
+          a.tags.add('lb-read-step');
+          return withFacingTechnique(track(a, { x: home.x - dir * READ_STEP, y: home.y }, { x: 0, y: 0 },
+            { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 0.5 }), { label: 'read-step' });
+        }
+        return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
+      }
+      if (read === 'pass') this.dropping = true;
+    }
     const spot = this.style === 'spot';
 
     const qb = sim.qb;
     const lm = this.landmark;
     const [ylo, yhi] = this.band;
     const facingQB = angleTo(a.pos, qb.pos);
+    watch(sim, a, qb);
     // Zone drops are run under control, eyes on the QB.
     // Until he's read pass, an underneath defender only eases into his drop
     // (read step): how far he commits depends on how sure he is.
@@ -641,6 +958,20 @@ export class ZoneCoverage implements Behavior {
       if (fut.y < ylo || fut.y > yhi) continue;
       threats.push({ r, pos: seen.pos, vel: seen.vel, fut, cue });
     }
+
+    // ZONE_SETTLE: an underneath dropper gains depth until he sees the
+    // quarterback finish his drop (set behind the line, all but still in his
+    // own delayed picture), then plants: from there he plays the QB and the
+    // routes at the depth he has, carrying a vertical only when it comes.
+    if (ZONE_SETTLE && !this.deep && this.settledAt < 0) {
+      // The set is the end of a drop he has seen: the QB first gives ground
+      // (a yard or more deeper than where he took the snap), then stops.
+      const q = sim.see(a, qb);
+      this.qbDeepest = Math.min(this.qbDeepest, q.pos.x);
+      const dropped = (sim.offAlign.spots.QB?.pos.x ?? q.pos.x) - this.qbDeepest >= 1;
+      if (dropped && knowsPass(sim, a) && Math.hypot(q.vel.x, q.vel.y) < 1.2) this.settledAt = sim.t;
+    }
+    const settle = (t: Vec2): Vec2 => this.settledAt >= 0 ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
 
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
@@ -837,7 +1168,7 @@ export class ZoneCoverage implements Behavior {
     if (!best) {
       let tgt = lm;
       if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.25 * a.r('anticipation'));
-      return withFacingTechnique(goTo(a, tgt, { facing: facingQB, speed: zs }), { label: 'zone-landmark' });
+      return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: this.settledAt >= 0 ? 'zone-settle' : 'zone-landmark' });
     }
     const lane = lerp(qb.pos, best.pos, 0.82);
     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
@@ -858,9 +1189,17 @@ export class ZoneCoverage implements Behavior {
       && Math.hypot(best.vel.x, best.vel.y) + 1e-6 >= Math.hypot(best.cue.vel.x, best.cue.vel.y);
     // A read step must not retain depth already outside his installed drop.
     if (stemRead) tgt = { ...tgt, x: Math.min(a.pos.x, lm.x) };
-    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead ? 0 : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
+    // A receiver still behind the line in front of him (a back, a swing, a
+    // screen) is no lane to drive down to before the ball is out: he holds
+    // his depth and leverage, squeezes it from there and breaks on the throw,
+    // unless the call tags him to trap it.
+    const holdFlat = best.pos.x < sim.los && (sim.defCall.flatThreat ?? 'hold') === 'hold';
+    if (holdFlat) tgt = { ...tgt, x: Math.max(tgt.x, Math.min(a.pos.x, lm.x)) };
+    const settledLane = this.settledAt >= 0 && !carryingAcross;
+    if (settledLane) tgt = settle(tgt);
+    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead || holdFlat ? 0 : settledLane ? Math.min(0, best.vel.x * 0.5) : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
       facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 }),
-      { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : 'lane', key: best.vel });
+      { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : holdFlat ? 'lane-hold' : 'lane', key: best.vel });
   }
 
   /**
@@ -873,8 +1212,9 @@ export class ZoneCoverage implements Behavior {
     const qb = sim.qb;
     const lm = this.landmark;
     const facingQB = angleTo(a.pos, qb.pos);
+    watch(sim, a, qb);
     const toSpot = Math.hypot(lm.x - a.pos.x, lm.y - a.pos.y);
-    if (toSpot > 2.5 && !a.tags.has('settled')) {
+    if (toSpot > 2.5 && !a.tags.has('settled') && this.settledAt < 0) {
       // Until he has read pass he is in his read step: eyes and chest stay
       // on the backfield. Turning to run before the read turned his back on
       // a run, and on a quick throw he could not yet have keyed.
@@ -906,7 +1246,9 @@ export class ZoneCoverage implements Behavior {
       }
     }
     // Hold the spot's depth until the ball is thrown; stay within the zone.
+    // Planted short of the spot on the QB's set, he holds where he planted.
     tgt = { x: Math.max(tgt.x, lm.x - 2), y: tgt.y };
+    if (this.settledAt >= 0) tgt = { x: Math.min(tgt.x, Math.max(a.pos.x, sim.los + 3)), y: tgt.y };
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
@@ -923,6 +1265,10 @@ function boxBacker(a: Agent, sim: PlaySim): boolean {
   const depth = Math.abs(spot.x - sim.los);
   return depth >= 2.5 && depth <= 8 && Math.abs(spot.y - sim.ballY) < 6;
 }
+
+/** The pass belief a box backer needs before he drops, by the call's dropStart:
+ * `early` is the belief at which he reads pass at all. */
+const DROP_START = { early: 0, confirmed: 0.95, late: 0.98 } as const;
 
 /** Speed factor for a defender who hasn't read run or pass yet. */
 export function unsureFactor(a: Agent): number {

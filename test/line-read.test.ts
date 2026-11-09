@@ -23,9 +23,20 @@ function play(concept: string, formation: string, seed: number, flip: boolean) {
     if (o.slot.startsWith('DE') && tg.team === 'O') sights.push({ t: sim.t, slot: o.slot, target: tg.idx, pos: r.pos, vel: r.vel, me: { ...o.pos } });
     return r;
   };
+  // How far inside the spot his gap's inside man left each free edge ever gets (+ = outside it).
+  const inside = new Map<string, number>();
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
     tick();
+    for (const e of sim.defense) {
+      const job = e.runFit;
+      if (!e.slot.startsWith('DE') || e.engagement || job?.kind !== 'edge' || (job.gap !== 'C' && job.gap !== 'D')) continue;
+      const mid = sim.offAlign.spots.C?.pos.y ?? sim.ballY;
+      const out = sim.offense.filter(o => ['LT', 'LG', 'RG', 'RT'].includes(o.slot) || sim.offAlign.spots[o.slot]?.inline)
+        .map(o => sim.offAlign.spots[o.slot]!.pos).filter(q => (q.y - mid) * job.side > 0).sort((p, q) => (p.y - q.y) * job.side);
+      const inner = job.gap === 'D' ? out.at(-1) : out[1];
+      if (inner) inside.set(e.slot, Math.min(inside.get(e.slot) ?? Infinity, (e.pos.y - inner.y - job.side * e.profile.radius) * job.side));
+    }
     for (const a of sim.defense) for (const tag of ['fit-replace', 'fit-box', 'fit-spill'])
       if (a.tags.has(tag) && !firstFit.has(`${a.slot}:${tag}`)) {
         firstFit.set(`${a.slot}:${tag}`, sim.t);
@@ -34,7 +45,7 @@ function play(concept: string, formation: string, seed: number, flip: boolean) {
   };
   sim.run();
   const ballSide = Math.sign(pullers.reduce((s, a) => s + a.pos.y - home.get(a)!, 0));
-  return { sim, ballSide, firstFit, fitFrame, sights };
+  return { sim, ballSide, firstFit, fitFrame, sights, inside };
 }
 const dl = (sim: PlaySim) => sim.defense.filter(a => /^(DE|DT|NT)/.test(a.slot));
 const interior = (sim: PlaySim) => dl(sim).filter(a => !a.slot.startsWith('DE'));
@@ -62,11 +73,18 @@ describe('a lineman reads the play from the line', () => {
     // ordinary delay under a run read), he plays it instead of squeezing to the spot: on one of the six
     // snaps he boxes the kick-out throughout. Only the play-side edge ever replaces, and his response
     // opens the play. A backside edge may later box a blocker arriving at him (run-fits' local kick-out
-    // response, a different duty): seed 1 unflipped, DE_S boxes F at 4.15 once #390 keeps the play alive.
-    // That response is protected by its acquired cue below, not counted as a replacement.
+    // response, a different duty): with flat pullers off the line picture (#393) that late box no longer
+    // occurs on these six, so two native counter snaps where it does (I-pro, seed 7, both flips) join the
+    // backside checks. That response is protected by its acquired cue below, not counted as a replacement.
     const first = (s: ReturnType<typeof play>, a: Agent) =>
       Math.min(...['fit-replace', 'fit-box', 'fit-spill'].map(tag => s.firstFit.get(`${a.slot}:${tag}`) ?? Infinity));
-    for (const s of snaps('counter', 'i_jumbo_22')) {
+    const counter = snaps('counter', 'i_jumbo_22');
+    // On the combined reference (Run Game + Defense + Flex merged) the I-pro pair no longer shows it either;
+    // I twins, seed 7, both flips do, so they join.
+    const lateBox = [counter, [{ formation: 'i_pro_21', seed: 7, flip: false }, { formation: 'i_pro_21', seed: 7, flip: true },
+      { formation: 'i_twins_21', seed: 7, flip: false }, { formation: 'i_twins_21', seed: 7, flip: true }]
+      .map(({ formation, seed, flip }) => ({ seed, flip, ...play('counter', formation, seed, flip) }))].flat();
+    for (const s of lateBox) {
       const playSide = edges(s.sim).filter(a => a.runFit!.side === s.ballSide);
       const backside = edges(s.sim).filter(a => a.runFit!.side !== s.ballSide);
       expect(playSide).toHaveLength(1);
@@ -92,9 +110,16 @@ describe('a lineman reads the play from the line', () => {
         }
       }
     }
-    expect(snaps('counter', 'i_jumbo_22').filter(s => edges(s.sim).some(a => a.tags.has('fit-replace'))).length).toBeGreaterThanOrEqual(5);
+    // Squeeze, don't chase, on every snap: the play-side edge replaces the spot, or his live gap never takes
+    // him inside it. A flat puller who has crossed behind the line no longer drags that gap in, so on two
+    // snaps (seed 1, both flips) he stays 0.4+ yd outside the spot and the bound is never needed.
+    for (const s of counter) {
+      const playSide = edges(s.sim).find(a => a.runFit!.side === s.ballSide)!;
+      if (!playSide.tags.has('fit-replace')) expect(s.inside.get(playSide.slot)).toBeGreaterThanOrEqual(0);
+    }
+    expect(counter.filter(s => edges(s.sim).some(a => a.tags.has('fit-replace'))).length).toBeGreaterThanOrEqual(4);
     // The late backside response is exercised, so its cue check above is not vacuous.
-    expect(snaps('counter', 'i_jumbo_22').some(s => edges(s.sim).some(a => a.runFit!.side !== s.ballSide
+    expect(lateBox.some(s => edges(s.sim).some(a => a.runFit!.side !== s.ballSide
       && (a.tags.has('fit-box') || a.tags.has('fit-spill'))))).toBe(true);
     for (const s of snaps('wz_weak', 'ace_11')) expect(tagged(edges(s.sim), 'fit-replace')).toBe(0);
   });

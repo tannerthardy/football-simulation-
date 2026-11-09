@@ -99,7 +99,9 @@ describe('recording the actual rushing player', () => {
       // throws; seeds 0-59 hold no pass-call scramble (0, 4, 23, 24, 35, 41
       // and 47 did before). Seed 76 is the first scramble after them (76, 140,
       // 250, 263 in 60-299). The bookkeeping witness is the same.
-      const recorded = fixture(76), unrecorded = fixture(76);
+      // Re-staged for zone droppers settling once the QB has set (ZONE_SETTLE):
+      // seed 76's QB now throws; 172 and 263 are the scrambles in 0-299.
+      const recorded = fixture(172), unrecorded = fixture(172);
       Object.defineProperty(unrecorded.stats, 'rusher', {
         configurable: true, enumerable: true, get: () => undefined, set: () => {},
       });

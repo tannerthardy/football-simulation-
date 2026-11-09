@@ -1,9 +1,13 @@
 /** QB-local receiver estimate. Installed expectation is not measured progress. */
 import { clamp, type Vec2 } from '../core/vec.js';
+import { FIELD_WIDTH } from '../core/field.js';
 import { arriveVelocity, stepBody, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { PhysicalProfile } from '../players/physical.js';
-import type { RouteDef, RouteEnd } from '../playbook/types.js';
+import type { RouteDef, RouteEnd, RouteRead } from '../playbook/types.js';
 import { routeEffort, routePath, steerRoute, type PathPoint } from './route-motion.js';
+import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from './route-read.js';
+
+interface InstalledAnswer { readonly id: RouteChoice['answer']; readonly path: readonly PathPoint[]; readonly end: RouteEnd }
 
 export interface InstalledReceiverRoute {
   readonly start: Readonly<Vec2>;
@@ -14,16 +18,26 @@ export interface InstalledReceiverRoute {
   readonly profile: Readonly<PhysicalProfile>;
   readonly routeRunning: number;
   readonly effort: number;
+  readonly read?: RouteRead;
+  readonly readContext?: { readonly los: number; readonly outside: number };
+  readonly answers?: readonly InstalledAnswer[];
 }
 
 /** Called at installation from the call and snap alignment, never RouteRunner. */
 export function installReceiverRoute(start: Vec2, los: number, outside: number, route: RouteDef,
   startDelay: number | null, profile: PhysicalProfile, routeRunning: number): InstalledReceiverRoute {
   const path = routePath(start, los, outside, route.points, route.end === 'continue', route.family);
+  const read = installedRead(route);
+  const freezePath = (p: readonly PathPoint[]) => Object.freeze(p.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s })));
+  const copiedRead = read ? Object.freeze({ ...read, answers: Object.freeze(read.answers.map(a => Object.freeze({ ...a,
+    points: Object.freeze(a.points.map(p => Object.freeze({ ...p }))) }))) }) : undefined;
   return Object.freeze({ start: Object.freeze({ ...start }),
-    path: Object.freeze(path.map(p => Object.freeze({ p: Object.freeze({ ...p.p }), s: p.s }))),
+    path: freezePath(path),
     end: route.end, startDelay, profile: Object.freeze({ ...profile }), routeRunning,
-    effort: routeEffort(route.family, routeRunning) });
+    effort: routeEffort(route.family, routeRunning),
+    ...(copiedRead ? { read: copiedRead, readContext: Object.freeze({ los, outside }),
+      answers: Object.freeze(copiedRead.answers.map(a => Object.freeze({ id: a.id, end: a.end,
+        path: freezePath(routePath(start, los, outside, a.points, a.end === 'continue', route.family)) }))) } : {}) });
 }
 
 export interface ReceiverPicture {
@@ -42,18 +56,41 @@ export interface ReceiverEstimate {
   /** Inferred target waypoint; null means progress cannot be identified. */
   readonly progress: number | null;
   readonly motion: 'installed-route' | 'observed-motion';
+  readonly routeAnswer?: RouteChoice['answer'];
+  readonly answerSource?: 'own-key-picture' | 'receiver-motion' | 'installed-default';
 }
 
 /** Each instance belongs to one observer/receiver pair. No shared tick cache. */
 export class ReceiverForecast {
   private picture: ReceiverPicture | null = null;
-  private cache: { observer: object; picture: ReceiverPicture | null; pts: Vec2[]; estimate: ReceiverEstimate } | null = null;
+  private choice: RouteChoice | null = null;
+  private inferredCommitment = false;
+  private cache: { observer: object; picture: ReceiverPicture | null; pts: Vec2[]; estimate: ReceiverEstimate;
+    route: InstalledAnswer } | null = null;
 
   constructor(readonly observer: object, readonly prior: InstalledReceiverRoute, private readonly dt: number) {}
 
   acquire(p: ReceiverPicture): void {
     if (this.picture && p.sampledAt < this.picture.sampledAt) return;
     this.picture = Object.freeze({ ...p, pos: Object.freeze({ ...p.pos }), vel: Object.freeze({ ...p.vel }) });
+  }
+
+  /** Reuse the quarterback's already acquired defensive memory. Never ask a
+   * receiver for his chosen answer. A rotation can fool these two observers
+   * differently, and observed receiver motion can later correct this prior. */
+  readKeys(pictures: readonly RouteKeyPicture[]): void {
+    const prior = this.prior;
+    if (!prior.read || !prior.readContext || this.inferredCommitment) return;
+    const choice = readRoute(prior.read, { ...prior.readContext, start: prior.start,
+      pos: this.picture?.pos ?? prior.start, middleY: FIELD_WIDTH / 2 }, pictures);
+    // Losing a look does not mean the receiver changed his route. Keep the
+    // installed expectation; only a new relevant key can revise it before the
+    // read, and only observed route motion can correct it after commitment.
+    if (choice.reason !== 'no-fresh-key' || !this.choice) {
+      if (choice.answer !== this.choice?.answer) this.cache = null;
+      this.choice = choice;
+    }
+    this.inferredCommitment = !!this.picture && this.picture.pos.x >= prior.readContext.los + prior.read.depth;
   }
 
   get estimate(): ReceiverEstimate | null { return this.build()?.estimate ?? null; }
@@ -73,11 +110,22 @@ export class ReceiverForecast {
     if (this.cache?.observer === this.observer && this.cache.picture === this.picture) return this.cache;
     const p = this.picture, prior = this.prior;
     if (!p && prior.startDelay === null) return null; // Unknown release is not stationary motion.
-    const progress = p ? inferProgress(p, prior) : null;
+    const routes: InstalledAnswer[] = [{ id: 'base', path: prior.path, end: prior.end }, ...(prior.answers ?? [])];
+    const matches = p ? routes.map(route => ({ route, progress: inferProgress(p, { ...prior, ...route }) }))
+      .filter(m => m.progress !== null) : [];
+    // First-stem geometry alone cannot reveal a later option. Require visible
+    // motion on a uniquely matching post-break segment before overriding the
+    // quarterback's independently inferred answer.
+    const observed = prior.read && matches.length === 1 && matches[0].progress! > 0 ? matches[0] : null;
+    const route = observed?.route ?? routes.find(r => r.id === this.choice?.answer) ?? routes[0];
+    const beforeRead = prior.read && prior.readContext && p && p.pos.x < prior.readContext.los + prior.read.depth;
+    const progress = p ? inferProgress(p, beforeRead ? prior : { ...prior, ...route }) : null;
     const estimate: ReceiverEstimate = Object.freeze({ source: p ? 'acquired' : 'installed',
       sampledAt: p?.sampledAt ?? 0, acquiredAt: p?.acquiredAt ?? null, progress,
-      motion: !p || progress !== null ? 'installed-route' : 'observed-motion' });
-    this.cache = { observer: this.observer, picture: p, pts: [], estimate };
+      motion: !p || progress !== null ? 'installed-route' : 'observed-motion',
+      ...(prior.read ? { routeAnswer: route.id, answerSource: observed ? 'receiver-motion' as const
+        : this.choice ? 'own-key-picture' as const : 'installed-default' as const } : {}) });
+    this.cache = { observer: this.observer, picture: p, pts: [], estimate, route };
     return this.cache;
   }
 
@@ -91,17 +139,25 @@ export class ReceiverForecast {
     const cutSkill = 0.8 + 0.4 * prior.routeRunning;
     const pts: Vec2[] = [{ ...body.pos }];
     let done = false;
+    let selected = !prior.read || !prior.readContext || body.pos.x >= prior.readContext.los + prior.read.depth;
     // Rebuild only when a longer horizon is requested, preserving exact prefixes.
     for (let i = 0; i < Math.max(70, steps + 1); i++) {
+      // Anticipation selects a future answer, not permission to execute its
+      // easier/faster stem before the receiver's installed decision landmark.
+      if (!selected && body.pos.x >= prior.readContext!.los + prior.read!.depth) {
+        selected = true; st.idx = 0;
+        while (st.idx < c.route.path.length - 1 && c.route.path[st.idx].p.x < body.pos.x - .5) st.idx++;
+      }
+      const active = selected ? c.route : prior;
       let cmd: MoveCommand | null;
       if (c.estimate.motion === 'observed-motion') cmd = { vel: { ...p!.vel }, cutSkill };
       else if (c.estimate.sampledAt + i * this.dt < (prior.startDelay ?? 0)
         && (!p || (Math.hypot(p.vel.x, p.vel.y) < 1e-6 && st.idx === 0))) cmd = { vel: { x: 0, y: 0 } };
-      else if (done) cmd = prior.end === 'continue' ? { vel: body.vel }
-        : { vel: arriveVelocity(body, prior.path[prior.path.length - 1]?.p ?? body.pos, body.profile.vmax * 0.6, 0) };
+      else if (done) cmd = active.end === 'continue' ? { vel: body.vel }
+        : { vel: arriveVelocity(body, active.path[active.path.length - 1]?.p ?? body.pos, body.profile.vmax * 0.6, 0) };
       else {
-        cmd = steerRoute(body, st, prior.path, prior.end, prior.effort, prior.routeRunning, cutSkill);
-        if (!cmd) { done = true; cmd = { vel: prior.end === 'continue' ? body.vel : { x: 0, y: 0 } }; }
+        cmd = steerRoute(body, st, active.path, active.end, prior.effort, prior.routeRunning, cutSkill);
+        if (!cmd) { done = true; cmd = { vel: active.end === 'continue' ? body.vel : { x: 0, y: 0 } }; }
       }
       stepBody(body, cmd, this.dt);
       pts.push({ ...body.pos });

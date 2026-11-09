@@ -9,6 +9,7 @@ import { observedHolder, acquireFlight, anticipatedCatcher, rememberedFlight, un
 import { movementObjective } from '../src/sim/movement-objective.js';
 import type { Perceived } from '../src/sim/perception.js';
 import { PlaySim } from '../src/sim/playsim.js';
+import { ROUTES } from '../src/playbook/routes.js';
 import { World } from '../src/physics/world.js';
 import { handoffReach } from '../src/sim/ball-transfer.js';
 // Scenes recorded, and dice forced, on the play's single random stream (see PlaySim.dice).
@@ -314,7 +315,16 @@ describe('an acquired trajectory supports anticipation, not certified possession
     // continuation 3.45-3.6 s, rally at 3.65 s, possession pursuit from 3.7 s. Its catch (y 10.7) lies to
     // -y of the SS (y 14.3), so the rally is -y.
     const rallyInput = { ...input, seed: 10, roster: 5, flip: false };
-    const sim = new PlaySim({ ...nativeTraceSetup(rallyInput), record: true, recordLevel: 'full' });
+    // This exact catch/rally clock was recorded with the old flat install.
+    // The constructor names that route but does not freeze its points.
+    // Preserve the recorded installation, not a new expected catch time or
+    // weaker rally assertion. REC-1/COV-10's new flat is tested separately.
+    const flat = ROUTES.flat;
+    let sim: PlaySim;
+    try {
+      ROUTES.flat = { ...flat, points: [{ d: 1.5, l: 2, s: .9 }, { d: 3.5, l: 12 }] };
+      sim = new PlaySim({ ...nativeTraceSetup(rallyInput), record: true, recordLevel: 'full' });
+    } finally { ROUTES.flat = flat; }
     const toBall = -1;
     const trace = sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 3.45, to: 3.75 });
     const result = sim.run();

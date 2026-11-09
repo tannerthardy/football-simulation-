@@ -232,13 +232,16 @@ function dualStage(flip = false, location: 'inside' | 'outside' = 'inside', carr
   const sim = make('cover3_buzz', flip, { personnel: 'base43' }), a = sim.slot('LB_W')!, r = sim.slot('RB')!, side = -sim.offAlign.strongSign;
   expect(seat(sim, 'curl_flat_w').slot).toBe(a.slot);
   expect(a.runFit).toMatchObject({ kind: 'force', side, gap: 'D', inside: { gap: 'B', side } });
+  // Mirror each same-profile opponent, rather than merely flipping the call:
+  // native LT/RT have different radii and do not exchange bodies on a flip.
+  // Their stances are mirrored with their pictures, so each body is seen at home.
+  const nominal = alignOffense(FORMATION_BY_ID.ace_11, false, sim.los, sim.ballY);
+  if (flip) for (const [slot, spot] of Object.entries(nominal.spots)) { const own = sim.offAlign.spots[slot as keyof typeof nominal.spots];
+    if (own && spot) own.pos = { x: spot.pos.x, y: 2 * sim.ballY - spot.pos.y }; }
   const gy = gapY(sim.offAlign, 'B', side);
   a.body.pos = { x: sim.los + 4, y: gy + side }; a.body.vel = { x: -1.5, y: side * .2 }; a.body.facing = Math.PI;
   Object.defineProperty(a.mind, 'placementError', { get: () => 0 });
   sim.t = 1.3; sim.handoffAt = 1; sim.ball = { kind: 'held', carrier: r };
-  // Mirror each same-profile opponent, rather than merely flipping the call:
-  // native LT/RT have different radii and do not exchange bodies on a flip.
-  const nominal = alignOffense(FORMATION_BY_ID.ace_11, false, sim.los, sim.ballY);
   const pictures = new Map<Agent, Perceived>(sim.offense.map(o => [o, { pos: { x: nominal.spots[o.slot].pos.x,
     y: flip ? 2 * sim.ballY - nominal.spots[o.slot].pos.y : nominal.spots[o.slot].pos.y }, vel: { x: 0, y: 0 },
     stance: o.stance, facing: o.facing, pose: 'up', carrying: o === r, age: .2 }]));

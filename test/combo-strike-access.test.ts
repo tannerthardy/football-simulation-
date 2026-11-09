@@ -94,10 +94,7 @@ describe('earned departure ends at achievable first strike rather than the backe
   // Seed 1 with the start law (#336), the back's own mesh start (#344) and #362: the strike clears on the 1.70
   // update (staged at 1.65). Seed 10's departure ends at 1.60, a tick before RG's hands land on LB_M (1.65).
   // Seed 10 with #353 as well: the strike clears on the 1.60 update (staged at 1.55).
-  // With FLOW_INTERCEPT the Mike leads the back crossing behind the line by how soon he could reach his
-  // depth and fills 0.07 yd further downhill by 1.50 (36.858 vs 36.923), so the same strike clears on the
-  // 1.55 update (staged at 1.5); same release at 1.10, decision and mirror.
-  decision(1.5,mirror,true);
+  decision(1.55,mirror,true);
  });
  it.each([false,true])('keeps the departure when the down body obstructs even first strike, reflected=%s',mirror=>{
   decision(1.3,mirror,false);

@@ -34,7 +34,7 @@ import { G } from '../core/units.js';
 import { hypot2, angleDiff, clamp, type Vec2 } from '../core/vec.js';
 import { bodyRadius } from './bodyshape.js';
 import { commandFacing, directionalSpeedFactor, fatigueFactor, followAccel, locomotionAccel, spendEnergy, turnRateOf, updateSqueeze, type Body, type MoveCommand } from './kinematics.js';
-import { advanceRecovery, availability, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
+import { advanceRecovery, availability, legDrive, baseRadiusAt, comHeightAt, fallTime, newSupport, omega0, padHeightAt, recoverySpeed, supportParams, type Support, type SupportParams } from './support.js';
 import { ARM_SPEED, turnBodyResponse, workFraction } from './actuation.js';
 import { newVirtualFoot, recoveryRamp, supportInverseMass, supportVelocity, supportWorkChange } from './virtual-foot.js';
 import { boundedAttachment, inverseBoundedAttachment, type BoundedAttachment } from './bounded-attachment.js';
@@ -315,6 +315,12 @@ const PAD_LEVERAGE = process.env.PAD_LEVERAGE !== '0';
  * force. Yielding legs, driven backward, keep up to this multiple of their
  * isometric strength (multi-joint eccentric force is about 1.1-1.3x). */
 const ECCENTRIC_GAIN = 1.2;
+/** Diagnostic scale (TURF_MU_SCALE, identity 1; not a law): multiplies the
+ * turf traction cap, and the traction-capped leg drive, of a body held in a
+ * hands joint (an engaged block). It measures how much of the engaged push
+ * contest the unsourced TURF_MU = 1.1 carries
+ * (docs/reviews/push-contest-traction.md). Never a promotion candidate. */
+const TURF_MU_SCALE = Number(process.env.TURF_MU_SCALE ?? 1);
 /** Steepest line of action credited, rise over run (about 30 degrees). */
 const LEVERAGE_SLOPE = .6;
 /** Knee height as a fraction of COM height (knee ~0.28, COM ~0.55 of stature). */
@@ -326,6 +332,11 @@ const HIP_TORQUE_PER_KG = 3.5 * 1.196;
  * resting on the ground at one end and held at the other carries half its
  * weight at each end. */
 const HANG_SHARE = 0.5;
+/** Experimental (HELD_SWING=1, off): a leg hold resists the leg's swing by
+ * its grip whether or not the holder is on his feet, and the strides it binds
+ * leave the runner's base behind his body (see the stride holds and
+ * updateSupport). */
+const HELD_SWING = process.env.HELD_SWING === '1';
 /** Extra hold distance of a holder stretched along the ground, yd. */
 export const GROUND_STRETCH = 0.9;
 /** Gait response time to body acceleration, s. */
@@ -1255,7 +1266,8 @@ export class World {
     // below it) against his hip torque. A holder still on his feet carries
     // his own weight and binds nothing this way.
     this.strideHolds.fill(0);
-    for (const jt of this.joints) {
+    if (HELD_SWING) this.heldSwing();
+    else for (const jt of this.joints) {
       if (jt.kind !== 'grasp') continue;
       jt.strideForce = 0;
       if (jt.broken || jt.legs <= 0 || jt.a.support!.state === 'up') continue;
@@ -1678,7 +1690,9 @@ export class World {
     const sp = this.sp[i];
     const m = this.mass[i];
     // Friction on the actual normal load: standing weight less any contact lift.
-    const traction = PAD_LEVERAGE ? sp.traction * clamp(1 - this.liftFelt[i] / (m * G), 0, 2) : sp.traction;
+    const muScale = TURF_MU_SCALE !== 1 && this.joints.some(j => j.kind === 'hands' && (j.a === b || j.b === b)) ? TURF_MU_SCALE : 1;
+    const traction = muScale * (PAD_LEVERAGE ? sp.traction * clamp(1 - this.liftFelt[i] / (m * G), 0, 2) : sp.traction);
+    const pushForce = muScale === 1 ? sp.pushForce : Math.min(legDrive(p), sp.traction * muScale);
     report.groundImpulseLimit[i] += traction * h;
     this.recovery[i] = 0;
     const spinBefore=b.spin??0;
@@ -1793,7 +1807,7 @@ export class World {
         const tf = hypot2(tfx, tfy);
         const along = tf > 1e-9 ? directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(tfy, tfx))) : 1;
         const fv = tf > 1e-9 ? clamp(1 - (b.vel.x * tfx + b.vel.y * tfy) / (tf * p.vmax), 0, ECCENTRIC_GAIN) : 1;
-        const strength = sp.pushForce * fv * along * a;
+        const strength = pushForce * fv * along * a;
         const capacity = Math.min(Math.max(hypot2(lx, ly), strength), traction * a);
         // Availability already limits gait during recovery. Reserve actual
         // unused effort after ordinary translation and yaw, for every body.
@@ -1835,7 +1849,7 @@ export class World {
         // an arbitrarily small residual gait request. The existing gait law
         // can demand more than pushForce; that leaves zero corrective effort
         // rather than expanding strength to fund another simultaneous action.
-        const total = sp.pushForce, force = hypot2(fx, fy);
+        const total = pushForce, force = hypot2(fx, fy);
         // A variable motor torque may reverse inside the interval. Its net
         // impulse cannot prove how much traction was left for recovery.
         const yawForce = yaw.peakTorque === undefined
@@ -1925,6 +1939,42 @@ export class World {
     report.falls.push(i);
   }
 
+  /** HELD_SWING: arms around his legs resist the leg swinging through them,
+   * up to the grip they hold on the legs, whether the holder is on his feet
+   * or hanging his weight on them (the larger of the two). One holder has one
+   * pair of arms: his largest hold on a runner counts, however many joint
+   * copies represent it. Different holders' moments about the runner's hip
+   * add, against one hip budget. */
+  private heldSwing(): void {
+    const moments = new Map<number, Map<number, { m: number; hang: number; grip: number; joints: GraspJoint[] }>>();
+    for (const jt of this.joints) {
+      if (jt.kind !== 'grasp') continue;
+      jt.strideForce = 0;
+      if (jt.broken || jt.legs <= 0) continue;
+      const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
+      const lever = 0.55 * clamp(jt.legs, 0, 1) * this.comHeight[ib];
+      const hang = jt.a.support!.state === 'up' ? 0 : HANG_SHARE * this.mass[ia] * G * lever;
+      // Copies of one hold share his grip (gripCapacity), so their grip
+      // moments add up to one hold's; his hanging weight hangs once.
+      const grip = this.gripCapacity(jt) * clamp(jt.legs, 0, 1) * lever;
+      const byHolder = moments.get(ib) ?? moments.set(ib, new Map()).get(ib)!;
+      const cur = byHolder.get(ia);
+      if (!cur) byHolder.set(ia, { m: 0, hang, grip, joints: [jt] });
+      else { cur.hang = Math.max(cur.hang, hang); cur.grip += grip; cur.joints.push(jt); }
+    }
+    for (const [ib, byHolder] of moments) {
+      const hip = HIP_TORQUE_PER_KG * this.mass[ib] * this.fat[ib] * Math.max(0, 1 - this.hipUsed[ib]);
+      let total = 0;
+      for (const h of byHolder.values()) { h.m = Math.max(h.hang, h.grip); total += h.m; }
+      const bound = hip > 1e-9 ? clamp(total / hip, 0, 1) : 1;
+      this.strideHolds[ib] = bound;
+      // Each holder's share of the bound, split over his copies, for the
+      // drive accounting below.
+      for (const h of byHolder.values()) for (const jt of h.joints)
+        jt.strideForce = total > 0 ? bound * h.m / total / h.joints.length : 0;
+    }
+  }
+
   private updateSupport(i: number, h: number, report: StepReport): void {
     const b = this.bodies[i];
     const sup = b.support!;
@@ -1982,6 +2032,12 @@ export class World {
       this.hipUsed[i] = Math.min(1, moment / Math.max(capacity, 1e-12));
       const excess = Math.max(0, 1 - capacity / Math.max(moment, 1e-12));
       legX += this.thighX[i] * excess / w0; legY += this.thighY[i] * excess / w0;
+    }
+    // HELD_SWING: the strides his held legs cannot bring through are steps
+    // his base does not take. While he keeps travelling, the base falls
+    // behind him by that share of his travel, and balance decides the rest.
+    if (HELD_SWING && this.strideHolds[i] > 0) {
+      legX += this.strideHolds[i] * b.vel.x * h; legY += this.strideHolds[i] * b.vel.y * h;
     }
     dx += legX; dy += legY;
     // Remember what has been displacing him (decays over ~0.3 s).

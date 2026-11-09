@@ -230,6 +230,7 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
 }
 
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
+  sim.lookAt(a, target);
   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
   const seen = sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
@@ -334,4 +335,11 @@ export function nearest(list: Agent[], p: Vec2, filter?: (a: Agent) => boolean):
     }
   }
   return best;
+}
+
+/** GAZE (Flex's field-of-view model, #417): name what this player watches this
+ * tick. Optional so it is a no-op on builds without the model; where the model
+ * is present it is itself a no-op with GAZE off. */
+export function watch(sim: PlaySim, a: Agent, target: Agent | null | undefined): void {
+  if (target) (sim as unknown as { lookAt?: (who: Agent, what: Agent) => void }).lookAt?.(a, target);
 }

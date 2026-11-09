@@ -100,6 +100,7 @@ its launcher and verifier remain tools, not current operating requirements.
 ## Reference material
 
 - [Plan](docs/PLAN.md), [gaps](docs/GAPS.md) and [known problems](docs/KNOWN_PROBLEMS.md): current direction and diagnosis.
+- [Run-game reference stack](docs/REFERENCE_STACK.md): the one flag combination every agent measures against (`npm run ref -- <command>`), with the decision for each flag.
 - [Flags](docs/FLAGS.md) and [parked ideas](docs/PARKED.md): switches and unresolved alternatives.
 - [Validation](docs/VALIDATION.md), [testing costs](docs/TESTING_COSTS.md) and [behavior review](docs/BEHAVIOR_REVIEW.md): diagnostic references; PLAN supersedes old process requirements.
 - [NFL data](docs/NFL_DATA.md) and [data guide](data/README.md): inputs, evidence retrieval and film access.
