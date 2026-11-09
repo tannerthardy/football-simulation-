@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-2`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-3`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Code defaults are unchanged.** `on` here means "on in the reference", not "default in the engine". The combined stack is not ready to become the default: together the flags take run yards below the NFL (see Results).
 
@@ -40,7 +40,7 @@ Rule used: a flag is **on** when its own row in [FLAGS.md](FLAGS.md) (or its PR)
 | **Off: held by the author** | `ZONE_PAIR` `STRETCH_TRACK` `CARRIER_BRACE` `MESH_NFL` `RACE_LEAN` `BACKSIDE_SHOOT` `SINK_LEAD` `SAM_ON_TE` `DEF_STANCE` | `ZONE_PAIR` (run-ref-1 had it on; Run Game, 2026-11-09): it caused the reference's slow inside-zone line step. An uncovered lineman paired with whichever covered neighbor's man was nearer, often the backside one, so he stepped away from the play. Full stack with `ZONE_PAIR=0` (546 matched zone runs, linestep.py): IZ line stepping one way by 0.6 s 56 -> 93% (NFL 78%), OL lateral at 0.5 s 1.20 -> 1.35 yd/s (NFL 1.30); OZ 84 -> 95% (NFL 97%), 1.65 -> 1.85 (NFL 2.25); paired yards OZ +0.10 (SE 0.26), IZ +0.24 (0.36); IZ runs <= 0 7 -> 17% (NFL 14%). The installed rule (pair with the play-side neighbor) keeps every zone lineman's first step to the play. `STRETCH_TRACK`: "not for promotion", under-center cost unexplained. `CARRIER_BRACE`: moves whole runs further above the NFL. `MESH_NFL`: superseded for the gun by `GUN_MESH`; its under-center half belongs to mesh-model step 2. `RACE_LEAN`: trades DL depth for drive-backs, "no single press gives both". `BACKSIDE_SHOOT`: waits on the push contest. `SINK_LEAD`: "not the lever". `SAM_ON_TE`: a call option, not an NFL correction. `DEF_STANCE`: assumed costs, not fitted |
 | **Off: no measurement in the row** | `LB_RUN_THROUGH` `EDGE_WIDTH` | Neither row has a number. In the stack `LB_RUN_THROUGH` costs 0.20 yd a run (SE 0.04) with nothing to say it is right. Measure against the NFL first |
 | **Retired** | `GUN_STRETCH_T` `WRAP_FOOT` | `GUN_STRETCH_T`: built on a mixed reference, "do not enable". `WRAP_FOOT`: adverse result recorded (backfield stops 26 -> 20% vs NFL 53%) |
-| **Off: not reviewed here** | `DEEP_NO_FORCE` `DL_FIGHT` `DL_HANDS` `GAZE` `HAND_FIGHT` `HAND_MOTOR` `IN_STRIDE_CATCH` `PASS_SINK` `PULL_CUE` `PULL_PLAN` `REACH_CONTACT` `READ_RISK_TRACE` `RUN_CONTACT_TRACK` `RUN_HANDS` `RUN_READ` `RUN_READ_TURN` `TACKLE_TOUCH` | Older or other-lane flags with no evidence in FLAGS.md. Note: `REACH_TECHNIQUE`'s hand steering and `RUN_HANDS` act only with `HAND_MOTOR`, which is off |
+| **Off: not reviewed here** | `DEEP_NO_FORCE` `MIDDLE_NO_FORCE` `DL_FIGHT` `DL_HANDS` `GAZE` `HAND_FIGHT` `HAND_MOTOR` `IN_STRIDE_CATCH` `PASS_SINK` `PULL_CUE` `PULL_PLAN` `REACH_CONTACT` `READ_RISK_TRACE` `RUN_CONTACT_TRACK` `RUN_HANDS` `RUN_READ` `RUN_READ_TURN` `TACKLE_TOUCH` | Older or other-lane flags with no evidence in FLAGS.md. Note: `REACH_TECHNIQUE`'s hand steering and `RUN_HANDS` act only with `HAND_MOTOR`, which is off |
 
 Not on this branch, so not in the stack: `ONE_ARM_HOLD` (#412), `HELD_SWING` (#414), `RELEASE_REDECIDE` (#410), `DL_GAMES` (#407).
 
@@ -117,6 +117,49 @@ Run Game traced the slow inside-zone line step to `ZONE_PAIR`: an uncovered line
 | All runs, paired yd | | -0.09 (SE 0.09) | |
 
 The line now steps as it should. Stops for no gain rise past the NFL on both zone concepts (inside zone was far too low before); that goes with the after-contact and second-level items below, not back onto `ZONE_PAIR`.
+
+## run-ref-3: `REACH_CLOSE`, `BACKER_TAKEON`, `MUG_PRESSURES` on (2026-11-09)
+
+`run-ref-3` is `run-ref-2` plus three flags their owners recommended, each checked on the 1,321-run set (develop 3eb8f57c with #401 and Run Game 74b8350e merged):
+
+| Flag | Owner's evidence | Paired yd on the 1,321-run set |
+|---|---|---|
+| `REACH_CLOSE` (Run Game) | The flat outside-zone line is the controller: free OZ linemen asked for 0.0 yd/s upfield from 0.5 to 2.0 s. With the flag, OZ OL upfield at 2.0 s +0.1 -> +0.3 uncovered, +0.3 -> +0.4 covered (NFL +1.1 / +0.9); climber's lead over the carrier at the backer OZ 0.4 -> 0.7 s (NFL 0.9) | all +0.07 (SE 0.07); OZ +0.06 (0.21), IZ +0.29 (0.24) |
+| `BACKER_TAKEON` (Defense) | Correctness: backers knocked down by a climber's first collision 114 -> 56 on 400 matched snaps; untouched snaps identical | all +0.00 (SE 0.04) |
+| `MUG_PRESSURES` (Defense) | Nickel 3rd-and-long double mug 1 -> 4% (NFL 8%); rush mix matched 2022 mug dropbacks. A call flag: not exercised by the matched set | not measurable here |
+
+All three together: +0.06 (SE 0.08); runs <= 0 21.2 -> 20.2%; no replay errors. On `run-ref-3`: OZ 2.53 yd under 20 with 26% <= 0 (NFL 3.50, 19%); IZ 3.74 with 16% <= 0 (NFL 3.73, 14%); 10+ runs 6.2% (NFL 9%). Inside zone is now at the NFL; outside zone is still a yard short.
+
+Other decisions from Defense's report:
+- `LB_RUN_THROUGH` and `EDGE_WIDTH` stay off and should be deleted: on a same-operator comparison (373 OZ snaps vs NFL 1,555) neither moves its own measure (backers at or behind the line by 2.0 s 0.4% with or without the flag, NFL 8.8%; play-side edge outside his man at 1.0 s 37 -> 35%, NFL 61%). Both NFL gaps are real and are logged as gaps.
+- `ATTACK_LANDMARK` (#401) is merged, off, and stays off in the stack: yards neutral, OZ runs <= 0 22.6 -> 26.7%.
+- `DL_GAMES` stays off: the offense's blocking does not answer line movement yet.
+- Call flags on the stack move front and mug shares toward 2022 (nickel early bear 0 -> 7%, NFL 6%; nickel short-yardage bear 0 -> 13%, NFL 12%; base vs heavy short-yardage bear 100 -> 35%, NFL 24%). Left: nickel 3rd-long double mug, no interior DL on passing downs, Tite/Mint in base, heavy fronts in short yardage.
+- #402 (`LB_FLOW_STEP`) is superseded by `LB_GUARD_STEP` + `LB_READ_STEP` and closed.
+- Outside zone's reach pace (1.85 vs 2.25 yd/s at 0.5 s) is the body's acceleration from the stance, not the request (3.45 yd/s from 0.5 s): with Flex, to re-check on stretch starts.
+
+## Contact to whistle merged: #412, #418, #410 (2026-11-09)
+
+Flex's #428 brings `ONE_ARM_HOLD` (#412, default on), the grasp-timing fix (#418) and `RELEASE_REDECIDE` (#410, default on) onto develop; the write-up is `docs/reviews/contact-to-whistle.md`. `HELD_SWING` stays off (it moves away from the NFL on both target measures). #418 makes the retired `WRAP_FOOT` inert. The stack id stays `run-ref-3`: these are code defaults, not stack flags, so **numbers on `run-ref-3` before and after develop 0b6b95b2 differ; quote the commit.**
+
+Independent check, 1,321 matched runs on `run-ref-3`, develop 0b6b95b2 vs with #428:
+
+| | Before | With #428 | NFL |
+|---|---|---|---|
+| All runs, yd under 20 | 3.02 | 3.56 (paired +0.54, SE 0.07) | |
+| Outside zone yd; runs <= 0 | 2.53; 26% | 2.79; 22% | 3.50; 19% |
+| Inside zone yd; runs <= 0 | 3.74; 16% | 4.35; 13% | 3.73; 14% |
+| Gap runs yd | 3.20 | 3.71 | 4.08 (counter) |
+| 10+ yd runs | 6.2% | 7.8% | 9% |
+| Broken tackles a run | 0.067 | 0.154 | |
+| Missed + broken a run | 0.29 | 0.39 | 0.11-0.16 a play (G1; source unverified) |
+
+Flex's table (1,328 runs, run-ref-2): front-on gain after first contact 0.43 / 0.60 / 1.03 -> 0.65 / 0.86 / 1.09 yd (NFL 2.2-2.6), second defender 60 -> 65% (NFL 80%), yards after contact 1.58 -> 2.20.
+
+What to take from it:
+- Outside zone, gap runs and the long-run rate move toward the NFL; inside zone moves 0.6 yd above it.
+- **Broken tackles a run more than double.** That was #412's stated open risk and it is G1's headline measure moving the wrong way. The mechanism (a grab from inside a block holds with one arm) is the reason, and `ONE_ARM_HOLD=0` restores the old hold. It is merged on the owner's evidence under PLAN's rule that a worse statistic is logged, not a veto; Tanner can reverse it with that switch.
+- Neither target gap closes: front-on gain and the second defender are upstream of the bond (front-on momentum exchange, pursuit arrival TKL-2, the whiff roll TKL-7). That is Flex's next item.
 
 ## What to do next
 

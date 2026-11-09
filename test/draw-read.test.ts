@@ -63,8 +63,7 @@ async function reads(concept: string, opts: { coverages?: string[]; seeds?: numb
       for (const l of lbs) {
         const r = l.recog!.read, o = rec.get(l)!;
         if (o.seq[o.seq.length - 1] !== r) o.seq.push(r);
-        // A QB who has scrambled past the line is a runner as much as a receiver after the catch.
-        if (r === 'run' && !sim.events.some(e => e.type === 'catch') && !(sim.scrambled && sim.qb.pos.x > sim.los)) o.runBeforeCatch = true;
+        if (r === 'run' && !sim.events.some(e => e.type === 'catch' || e.type === 'scramble')) o.runBeforeCatch = true;
         if ((l.recog as any).sawPass) { o.sawPass = true; o.afterPass = r; }
         if (at >= 1.2 - 1e-9 && at <= 1.8 + 1e-9) o.window.push(r);
       }
@@ -94,10 +93,12 @@ describe('DRAW_READ: coherent change of mind once the picture defeats the prior'
   it('opposing control, strong pass prior on a real dropback: no backer commits run', async () => {
     for (const concept of ['dagger', 'four_verts']) {
       const all = await reads(concept);
-      // Judged up to the catch. A receiver running with the ball is a runner: with the receivers' route reads
+      // Judged up to the catch or a scramble. A receiver running with the ball is a runner: with the receivers' route reads
       // (#420), dagger cover1 seed 5 has a 2.7 s catch-and-run on which LB_W reads run at 6.4 s.
-      // With the QB's throwing motion (#408) as well, four_verts cover2 seed 1 flipped is a scramble from 2.85 s on
-      // which both backers read run at 5.25 s with the QB past the line; that is a runner too.
+      // Likewise a scrambling quarterback: with #419's alignment, dagger cover1 seed 5 flipped has a scramble at
+      // 2.95 s and LB_W reads run at 3.55 s.
+      // With the QB's throwing motion (#408) as well, four_verts cover2 seed 1 flipped scrambles at 2.85 s and
+      // both backers read run at 5.25 s.
       expect(all.filter(r => r.runBeforeCatch).length).toBe(0);
     }
   }, 240_000);

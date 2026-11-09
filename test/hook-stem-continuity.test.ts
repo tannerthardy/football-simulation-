@@ -127,7 +127,11 @@ describe('match hook reads an advancing stem before driving underneath it', () =
   });
 
   it('preserves spot-drop depth instead of applying the match-hook read to every drop', () => {
-    const f = stage('spot'), command = f.b.update(f.a, f.sim);
+    // The QB is still in his drop: once a dropper sees him set, ZONE_SETTLE
+    // plants him where he is (that is not this contract).
+    const f = stage('spot');
+    f.sim.qb.body.vel = { x: -3, y: 0 }; f.record();
+    const command = f.b.update(f.a, f.sim);
     expect(facingTechnique(command)?.label).toMatch(/^spot-drop/);
     expect(command.vel.x).toBeGreaterThan(0);
   });
