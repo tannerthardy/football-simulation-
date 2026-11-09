@@ -1366,6 +1366,17 @@ export const REACH_FLAT = process.env.REACH_FLAT === '1';
  * aligned more than 1 yd outside the blocker (a wide edge): he gains width
  * before depth. Covered interior linemen still press. */
 export const IZ_FLAT = process.env.IZ_FLAT === '1';
+/** REACH_CLOSE (off): with ZONE_ARMS, a stretch lineman closes to the depth
+ * where his whole distance to the man is in reach (arm's length less 0.1 yd,
+ * lateral offset included), not to arm's length straight upfield; and
+ * REACH_FLAT's width-before-depth holds only while he is gaining width (his
+ * lateral speed beats the man's acquired lateral speed by 0.3 yd/s, or within
+ * 0.6 s of the snap). Beside a man flowing at his own pace he sat at
+ * arm's-length depth, 0.3-0.5 yd to the side and so out of reach, for 2 s
+ * (run-ref-2: free OZ reach depth gap to the fit 0.07-0.11 yd, request
+ * 0.17-0.26 yd/s upfield damped to 0.0; tracked OZ linemen +0.9 to +1.1 yd
+ * upfield by 2.0 s). */
+export const REACH_CLOSE = process.env.REACH_CLOSE === '1';
 
 /** CLIMB_PATH (default off): a free climber steers one continuous path to
  * his backer's play-side shoulder by holding the bearing to it constant, the
@@ -2049,7 +2060,11 @@ export class RunBlocker implements Behavior {
     // Depth: close to the defender's near surface without overrunning it.
     // ZONE_ARMS: close only to arm's length (his strike range); hands meet
     // the man there and he keeps running the track.
-    const fitX = seen.pos.x - dir * (ZONE_ARMS ? contact : bodyContact);
+    // REACH_CLOSE: arm's length is a distance. Beside the man (lateral
+    // offset), stopping at arm's length straight upfield leaves the hands
+    // short; close to the depth where the whole distance is in reach.
+    const armDepth = REACH_CLOSE ? Math.sqrt(Math.max(0, contact * contact - (seen.pos.y - a.pos.y) ** 2)) - .1 : contact;
+    const fitX = seen.pos.x - dir * (ZONE_ARMS ? Math.max(bodyContact, armDepth) : bodyContact);
     let forward = clamp((fitX - a.pos.x) * 2.5, -1, 2.5);
     // REACH_FLAT: a stretch reach behind his man's play-side shoulder runs
     // flat; each yard closed toward depth is width the man keeps.
@@ -2057,7 +2072,11 @@ export class RunBlocker implements Behavior {
     // presses depth; the man's own charge closes the gap meanwhile.
     // IZ_FLAT: on a press scheme only a man aligned well outside him (a wide
     // edge) is worth gaining width on; a covered lineman still presses.
-    if ((press === 1 ? REACH_FLAT : IZ_FLAT && (seen.pos.y - a.pos.y) * ps > 1.0) && !scooping && forward * dir > 0)
+    // REACH_CLOSE: width first only while width is coming. A man flowing as
+    // fast as the blocker keeps the shoulder out of reach; once the blocker is
+    // not out-running him across (own vs acquired lateral motion), he presses.
+    const gainingWidth = !REACH_CLOSE || (a.vel.y - seen.vel.y) * ps > .3 || sim.t < .6 + a.mind.snapDelay;
+    if ((press === 1 ? REACH_FLAT : IZ_FLAT && (seen.pos.y - a.pos.y) * ps > 1.0) && !scooping && forward * dir > 0 && gainingWidth)
       forward *= Math.min(clamp(1 - (shoulder - a.pos.y) * ps / .6, 0, 1),
         clamp((sim.t - a.mind.snapDelay - .24) / .36, 0, 1));
     // Open the hips toward the track (a bucket step) while the eyes stay on

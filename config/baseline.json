@@ -163,6 +163,7 @@
     "CUTOFF_RACE": "0",
     "RB_TEMPO": "0",
     "RB_GATHER": "0",
+    "REACH_CLOSE": "0",
     "GUN_SNAP": "0",
     "GUN_MESH_GO": "0",
     "GUN_MESH": "0",
