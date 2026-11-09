@@ -24,14 +24,19 @@ for (let k = 0; k < N; k++) {
     los, ballY, firstDownX: 55, seed, audibles: false } as any);
   takeOnTrace.rows = [];
   const touch = new Map<any, number[]>(); // backer -> contact times with any opponent / engagement start
+  const imp = new Map<any, Array<[number, any, number]>>(); const peakAt = new Map<any, Array<[number, number]>>();
   try { while (!sim.outcome && sim.t < 30) { sim.tick();
     for (const c of sim.lastStep?.contacts ?? []) for (const [x, y] of [[c.i, c.j], [c.j, c.i]]) { const A = sim.agents[x], B = sim.agents[y]; if (/^LB/.test(A?.slot) && A.team !== B.team) (touch.get(A) ?? touch.set(A, []).get(A)!).push(sim.t); }
+    for (const c of sim.lastStep?.contacts ?? []) for (const [x, y] of [[c.i, c.j], [c.j, c.i]]) { const A = sim.agents[x], B = sim.agents[y]; if (/^LB/.test(A?.slot) && A.team !== B.team) (imp.get(A) ?? imp.set(A, []).get(A)!).push([sim.t, B, c.impulse ?? 0]); }
+    for (const a of sim.defense) if (/^LB/.test(a.slot)) (peakAt.get(a) ?? peakAt.set(a, []).get(a)!).push([sim.t, a.body.support?.peak ?? 0]);
     for (const e of sim.engagements) if (/^LB/.test(e.defender.slot)) (touch.get(e.defender) ?? touch.set(e.defender, []).get(e.defender)!).push(sim.t);
   } } catch { continue; }
   // Episodes: consecutive brake ticks (gap <= 0.1 s) for one backer.
   const by = new Map<any, number[]>(), who = new Map<string, string>(); for (const row of takeOnTrace.rows!) { (by.get(row.a) ?? by.set(row.a, []).get(row.a)!).push(row.t); who.set(`${row.a.slot}@${row.t.toFixed(2)}`, row.o.slot); }
   for (const [a, ts] of by) { let s = ts[0], prev = ts[0];
-    const flush = (end: number) => { const T = touch.get(a) ?? []; const met = T.find((t) => t >= s - 0.05 && t <= end + 0.5);
-      console.log(`${seed} ${run} ${a.slot} start=${s.toFixed(2)} dur=${(end - s + 0.05).toFixed(2)} met=${met === undefined ? -1 : (met - s).toFixed(2)} for=${who.get(`${a.slot}@${s.toFixed(2)}`)} handoff=${sim.handoffAt.toFixed(2)}`); };
+    const flush = (end: number) => { const T = touch.get(a) ?? []; const o = takeOnTrace.rows!.find((r) => r.a === a && Math.abs(r.t - s) < 1e-6)?.o;
+      const I = Math.max(0, ...(imp.get(a) ?? []).filter(([t, B]) => B === o && t >= s && t <= end + 0.5).map(([, , i]) => i));
+      const P = peakAt.get(a) ?? []; const p0 = P.filter(([t]) => t <= s).at(-1)?.[1] ?? 0, p1 = P.filter(([t]) => t <= end + 0.5).at(-1)?.[1] ?? 0; const met = T.find((t) => t >= s - 0.05 && t <= end + 0.5);
+      console.log(`${seed} ${run} ${a.slot} start=${s.toFixed(2)} dur=${(end - s + 0.05).toFixed(2)} met=${met === undefined ? -1 : (met - s).toFixed(2)} for=${who.get(`${a.slot}@${s.toFixed(2)}`)} handoff=${sim.handoffAt.toFixed(2)} imp=${I.toFixed(0)} peak0=${p0.toFixed(2)} peak1=${p1.toFixed(2)}`); };
     for (const t of ts.slice(1)) { if (t - prev > 0.11) { flush(prev); s = t; } prev = t; } flush(prev); }
 }
