@@ -332,6 +332,11 @@ const HIP_TORQUE_PER_KG = 3.5 * 1.196;
  * resting on the ground at one end and held at the other carries half its
  * weight at each end. */
 const HANG_SHARE = 0.5;
+/** Experimental (HELD_SWING=1, off): a leg hold resists the leg's swing by
+ * its grip whether or not the holder is on his feet, and the strides it binds
+ * leave the runner's base behind his body (see the stride holds and
+ * updateSupport). */
+const HELD_SWING = process.env.HELD_SWING === '1';
 /** Extra hold distance of a holder stretched along the ground, yd. */
 export const GROUND_STRETCH = 0.9;
 /** Gait response time to body acceleration, s. */
@@ -1261,7 +1266,8 @@ export class World {
     // below it) against his hip torque. A holder still on his feet carries
     // his own weight and binds nothing this way.
     this.strideHolds.fill(0);
-    for (const jt of this.joints) {
+    if (HELD_SWING) this.heldSwing();
+    else for (const jt of this.joints) {
       if (jt.kind !== 'grasp') continue;
       jt.strideForce = 0;
       if (jt.broken || jt.legs <= 0 || jt.a.support!.state === 'up') continue;
@@ -1933,6 +1939,42 @@ export class World {
     report.falls.push(i);
   }
 
+  /** HELD_SWING: arms around his legs resist the leg swinging through them,
+   * up to the grip they hold on the legs, whether the holder is on his feet
+   * or hanging his weight on them (the larger of the two). One holder has one
+   * pair of arms: his largest hold on a runner counts, however many joint
+   * copies represent it. Different holders' moments about the runner's hip
+   * add, against one hip budget. */
+  private heldSwing(): void {
+    const moments = new Map<number, Map<number, { m: number; hang: number; grip: number; joints: GraspJoint[] }>>();
+    for (const jt of this.joints) {
+      if (jt.kind !== 'grasp') continue;
+      jt.strideForce = 0;
+      if (jt.broken || jt.legs <= 0) continue;
+      const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
+      const lever = 0.55 * clamp(jt.legs, 0, 1) * this.comHeight[ib];
+      const hang = jt.a.support!.state === 'up' ? 0 : HANG_SHARE * this.mass[ia] * G * lever;
+      // Copies of one hold share his grip (gripCapacity), so their grip
+      // moments add up to one hold's; his hanging weight hangs once.
+      const grip = this.gripCapacity(jt) * clamp(jt.legs, 0, 1) * lever;
+      const byHolder = moments.get(ib) ?? moments.set(ib, new Map()).get(ib)!;
+      const cur = byHolder.get(ia);
+      if (!cur) byHolder.set(ia, { m: 0, hang, grip, joints: [jt] });
+      else { cur.hang = Math.max(cur.hang, hang); cur.grip += grip; cur.joints.push(jt); }
+    }
+    for (const [ib, byHolder] of moments) {
+      const hip = HIP_TORQUE_PER_KG * this.mass[ib] * this.fat[ib] * Math.max(0, 1 - this.hipUsed[ib]);
+      let total = 0;
+      for (const h of byHolder.values()) { h.m = Math.max(h.hang, h.grip); total += h.m; }
+      const bound = hip > 1e-9 ? clamp(total / hip, 0, 1) : 1;
+      this.strideHolds[ib] = bound;
+      // Each holder's share of the bound, split over his copies, for the
+      // drive accounting below.
+      for (const h of byHolder.values()) for (const jt of h.joints)
+        jt.strideForce = total > 0 ? bound * h.m / total / h.joints.length : 0;
+    }
+  }
+
   private updateSupport(i: number, h: number, report: StepReport): void {
     const b = this.bodies[i];
     const sup = b.support!;
@@ -1990,6 +2032,12 @@ export class World {
       this.hipUsed[i] = Math.min(1, moment / Math.max(capacity, 1e-12));
       const excess = Math.max(0, 1 - capacity / Math.max(moment, 1e-12));
       legX += this.thighX[i] * excess / w0; legY += this.thighY[i] * excess / w0;
+    }
+    // HELD_SWING: the strides his held legs cannot bring through are steps
+    // his base does not take. While he keeps travelling, the base falls
+    // behind him by that share of his travel, and balance decides the rest.
+    if (HELD_SWING && this.strideHolds[i] > 0) {
+      legX += this.strideHolds[i] * b.vel.x * h; legY += this.strideHolds[i] * b.vel.y * h;
     }
     dx += legX; dy += legY;
     // Remember what has been displacing him (decays over ~0.3 s).

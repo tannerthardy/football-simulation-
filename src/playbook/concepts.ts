@@ -115,6 +115,66 @@ export const RUN_CONCEPTS: RunConcept[] = [
   { id: 'toss', name: 'Toss', scheme: 'toss', direction: 'strong', aim: 'edge', meshTime: 0.5, pullers: [], beats: ['heavy-box', 'slow-edge'] },
 ];
 
+/**
+ * Screens. Not in the play caller's pool yet: they are called from the screen
+ * lab (scripts/diag/screen-lab.mts) until their blocking is reviewed.
+ */
+export const SCREEN_CONCEPTS: PassConcept[] = [
+  {
+    // Slow RB screen to the back's side: line sells the pass, screen-side T/G/C release.
+    id: 'rb_slip_screen', name: 'RB Slip Screen', family: 'screen', drop: 'gun5',
+    strong: { 1: 'go', 2: 'go', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'slip_screen',
+    progression: ['B'], beats: ['pass-rush', 'blitz'],
+    // The back gets lost in the line and drifts out before the linemen release:
+    // NFL slip backs are 1 yd wide of their start by 1.1 s (screen_back_reference.py).
+    screen: { receiver: 'B', tempo: 'slow', count: 1.0, receiverRelease: 0.6, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
+  },
+  {
+    // TE screen: the inline TE blocks, then slides out behind the line.
+    id: 'te_screen', name: 'TE Screen', family: 'screen', drop: 'gun5',
+    strong: { 1: 'go', 2: 'go', 3: 'te_screen' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
+    progression: ['S3', 'S2'], beats: ['pass-rush'],
+    screen: { receiver: 'S3', tempo: 'slow', count: 1.0, blocks: [{ who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
+  },
+  {
+    // Bubble to the trips slot: #1 stalks, #3 blocks inside-out on the next man.
+    id: 'bubble_screen', name: 'Trips Bubble', family: 'screen', drop: 'quick',
+    strong: { 1: 'go', 2: 'bubble', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
+    progression: ['S2'], beats: ['off-coverage', 'light-box'],
+    screen: { receiver: 'S2', tempo: 'quick', count: 0, blocks: [{ who: 'S1', job: 'stalk' }, { who: 'S3', job: 'crack' }] },
+  },
+  {
+    // Bunch now screen to the point man... caught by #1 coming back; #2/#3 block.
+    id: 'bunch_now_screen', name: 'Bunch Now Screen', family: 'screen', drop: 'quick',
+    strong: { 1: 'now_screen', 2: 'go', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
+    progression: ['S1'], beats: ['off-coverage'],
+    screen: { receiver: 'S1', tempo: 'quick', count: 0, blocks: [{ who: 'S2', job: 'stalk' }, { who: 'S3', job: 'crack' }] },
+  },
+  {
+    // Now (smoke) screen to a wide receiver from 2x2: #1 steps back and
+    // turns to the ball, thrown at once; #2 blocks the man over him. The
+    // NFL-typical now screen: 169 of 174 are to receivers aligned 12-15 yd
+    // from the ball (screen_scorecard.py WR-now); the bunch version is the
+    // rare tight variant.
+    id: 'wide_now_screen', name: 'Now Screen', family: 'screen', drop: 'quick',
+    strong: { 1: 'go', 2: 'go', 3: 'go' }, weak: { 1: 'now_screen', 2: 'go' }, back: 'block',
+    progression: ['W1'], beats: ['off-coverage'],
+    // Without a run built in, the call carries a kill: press over #1 takes
+    // away the cushion the screen needs, so the QB checks out of it.
+    screen: { receiver: 'W1', tempo: 'quick', count: 0, kill: 'press', blocks: [{ who: 'W2', job: 'stalk' }] },
+  },
+  {
+    // Tunnel: #1 sells a stalk block, then comes back inside; #2 stalks,
+    // screen-side T and G release early. NFL tunnel receivers are +0.8 yd
+    // upfield at 1.2 s and turn inside at 1.8 s (screen_wr_path_reference.py).
+    id: 'tunnel_screen', name: 'Tunnel Screen', family: 'screen', drop: 'quick',
+    strong: { 1: 'tunnel', 2: 'go', 3: 'go' }, weak: { 1: 'go', 2: 'go' }, back: 'block',
+    progression: ['S1'], beats: ['off-coverage', 'pass-rush'],
+    screen: { receiver: 'S1', tempo: 'quick', count: 1.0, receiverSell: 1.1, blocks: [{ who: 'S2', job: 'stalk' }, { who: 'T', job: 'out' }, { who: 'G', job: 'up' }, { who: 'C', job: 'in' }] },
+  },
+];
+export const SCREEN_BY_ID: Record<string, PassConcept> = Object.fromEntries(SCREEN_CONCEPTS.map((c) => [c.id, c]));
+
 export const PASS_BY_ID: Record<string, PassConcept> = Object.fromEntries(PASS_CONCEPTS.map((c) => [c.id, c]));
 export const RUN_BY_ID: Record<string, RunConcept> = Object.fromEntries(RUN_CONCEPTS.map((c) => [c.id, c]));
 
@@ -124,3 +184,14 @@ export const COUNTER_VARIANTS: Record<'gt' | 'gh', RunConcept> = {
   gt: RUN_BY_ID.counter,
   gh: { ...RUN_BY_ID.counter, id: 'counter_gh', name: 'Counter GH', pullers: ['BSG', 'H'] },
 };
+
+/**
+ * Run-pass options: a run called with a quick-screen tag. Before the snap the
+ * QB counts the screen side: press over the screen receiver, or more
+ * defenders outside than receivers to block them, means the run; otherwise
+ * the screen, with the line still blocking the run (QBMind.rpoRead).
+ */
+export const RPO_CONCEPTS: { id: string; name: string; run: string; screen: string; formation: string }[] = [
+  // Inside zone to the strength, now screen to the single-width side.
+  { id: 'iz_now_rpo', name: 'Inside Zone / Now', run: 'iz_strong', screen: 'wide_now_screen', formation: 'gun_doubles_11' },
+];

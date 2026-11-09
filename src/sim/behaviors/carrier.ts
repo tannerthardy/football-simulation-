@@ -40,6 +40,10 @@ export interface CarrierOptions {
   aimGap?: { gap: Gap; side: number; offset: number };
   /** RB_COMMIT: the entry (lateral) he chose on his last line read. */
   lastEntryY?: number;
+  /** He caught a called screen (his own play call): he reads the open field
+   * and his screen blockers, not the run game's crease. Other catches keep
+   * the existing carrier until whole-game evidence supports extending it. */
+  screenCatch?: boolean;
 }
 
 /** RB_COMMIT (default off): at the line the back's entry choice counts what
@@ -431,7 +435,12 @@ export class BallCarrier implements Behavior {
       this.nextEval = sim.t + a.mind.decisionInterval;
       const readFrom = STRETCH_TRACK && (this.opts.run?.scheme === 'outsideZone' || this.opts.run?.scheme === 'wideZone')
         && !!this.opts.aim && (this.opts.aim.y - a.pos.y) * this.opts.run!.side > 1 ? 2 : 4;
-      const entry = a.pos.x < sim.los+.3 && a.pos.x > sim.los-readFrom ? runReadAim(a,sim,this.opts) : null;
+      // The crease read is the run game's (gaps in the line on a handoff). A
+      // man who caught a screen behind the line reads the open field and his
+      // blockers instead: the crease read ran slip backs along the line to
+      // the sideline, away from linemen leading up the field.
+      const caught = !!this.opts.screenCatch;
+      const entry = !caught && a.pos.x < sim.los+.3 && a.pos.x > sim.los-readFrom ? runReadAim(a,sim,this.opts) : null;
       const best = entry ? null : this.evaluate(a, sim, dir, false);
       if(entry) { this.heading=angleOf({x:entry.x-a.pos.x,y:entry.y-a.pos.y}); a.tags.add('run-crease-read'); }
       else if (best) { this.heading = best.heading; this.plannedExit = best.exits; }
@@ -559,6 +568,41 @@ export class BallCarrier implements Behavior {
     const hurry = sim.hurry && a.team === 'O';
 
     const { blockers, threats } = arrivalEvidence(a, sim, dir, range, vision);
+    // After a screen catch he reads his blocks by leverage: a block slows a man only
+    // on the side the blocker's body covers. Toward a point the blocker is
+    // not between them, the man is free (a flat allowance for being touched
+    // sends the runner into the defender's free side). A blocker squarely in
+    // a free man's path to the point is a block about to happen.
+    const leverage = !!this.opts.screenCatch;
+    const credit = (th: ArrivalEvidence, q: Vec2): number => {
+      const vx = q.x - th.pos.x, vy = q.y - th.pos.y, L = Math.hypot(vx, vy);
+      if (L < 0.5) return 0;
+      const ux = vx / L, uy = vy / L;
+      const man = { pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale };
+      for (const b of blockers) {
+        if (b.pose === 'down') continue;
+        // What he sees: a blocker touching this man is on him; one touching
+        // another man is busy.
+        const onHim = touching(b, th.pos, th.d.profile.radius);
+        if (!onHim && threats.some(o => o !== th && touching(b, o.pos, o.d.profile.radius))) continue;
+        if (onHim) {
+          // Already on him: it slows him only if the blocker's body is
+          // between him and the point.
+          const rx = b.pos.x - th.pos.x, ry = b.pos.y - th.pos.y;
+          const along = rx * ux + ry * uy, across = Math.abs(rx * uy - ry * ux);
+          if (along > -0.3 && along < L - 0.5 && across < b.radius + th.d.profile.radius + 0.3) return 0.7;
+          continue;
+        }
+        // Free blocker: he cuts the man off if he can get onto the man's run
+        // to the point before the man gets there.
+        const mover = { pos: b.pos, vel: b.vel, profile: b.agent.profile, speedScale: b.agent.speedScale };
+        for (let k = 1; k <= 5; k++) {
+          const m = { x: th.pos.x + ux * L * k / 6, y: th.pos.y + uy * L * k / 6 };
+          if (timeToReach(mover, m, b.radius + th.d.profile.radius) + 0.1 < timeToReach(man, m)) return 0.7;
+        }
+      }
+      return 0;
+    };
 
     const cands: number[] = [];
     const spread = designed ? 0.9 : 1.55;
@@ -589,6 +633,7 @@ export class BallCarrier implements Behavior {
       let exits = false;
       let impactCost = 0;
       let contactGain: number | null = null;
+      let stoppedBy: string | undefined;
       for (const t of SAMPLES) {
         const d = vmax * t - (vmax - s0) * tau * (1 - Math.exp(-t / tau));
         let q = { x: p.x + hx * d, y: p.y + hy * d };
@@ -607,6 +652,10 @@ export class BallCarrier implements Behavior {
         const segment = { x: q.x - lastQ.x, y: q.y - lastQ.y };
         const segment2 = segment.x * segment.x + segment.y * segment.y;
         const obstructed = blockers.some((b) => {
+          // After a screen catch, a teammate running away up this lane ahead of him
+          // is a lead blocker to follow, not a wall: he will be on someone or
+          // out of the way by the time the runner gets there.
+          if (leverage && !threats.some(o => touching(b, o.pos, o.d.profile.radius)) && b.vel.x * hx + b.vel.y * hy > 2) return false;
           const horizon = Math.min(arrival, 0.6);
           const bx = b.pos.x + b.vel.x * horizon;
           const by = b.pos.y + b.vel.y * horizon;
@@ -618,12 +667,15 @@ export class BallCarrier implements Behavior {
           break;
         }
         let minMargin = Infinity;
+        let limiter: string | undefined;
         for (const th of threats) {
           // Respect the tackler's arms: his reach plus a lunge.
-          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75) + th.extra;
+          const tt = timeToReach({ pos: th.pos, vel: th.vel, profile: th.d.profile, speedScale: th.d.speedScale }, q, a.profile.radius + th.d.profile.radius + th.d.profile.reach * 0.75)
+            + (leverage ? th.extra - th.blockerBonus + credit(th, q) : th.extra);
           const m = tt - arrival;
           if (m < minMargin) {
             minMargin = m;
+            limiter = th.d.slot;
             if (m < 0) {
               const runnerSpeed = vmax - (vmax - s0) * Math.exp(-arrival / tau);
               impactCost = contactCost(a.profile.massKg, th.d.profile.massKg,
@@ -633,6 +685,7 @@ export class BallCarrier implements Behavior {
         }
         if (minMargin < 0) {
           clean = false;
+          stoppedBy = limiter;
           contactGain = (q.x - p.x) * dir;
           break;
         }
@@ -675,7 +728,7 @@ export class BallCarrier implements Behavior {
         curBlocked = blocked;
         curExits = exits;
       }
-      routes?.push({ heading: h, score, blocked, clean, exits, safeGain, aim: h === aimHeading, current: h === cur });
+      routes?.push({ heading: h, score, blocked, clean, exits, safeGain, aim: h === aimHeading, current: h === cur, stoppedBy });
       if (!best || score > best.score) best = { heading: h, score, blocked, exits };
     }
     // Hysteresis: keep the current lane unless the new one is clearly better.
@@ -793,7 +846,9 @@ function offFeet(seen: Perceived): boolean {
 }
 
 /** One candidate heading as the evaluator scored it. */
-export interface RouteAssessment { heading: number; score: number; blocked: boolean; clean: boolean; exits: boolean; safeGain: number; aim: boolean; current: boolean }
+export interface RouteAssessment { heading: number; score: number; blocked: boolean; clean: boolean; exits: boolean; safeGain: number; aim: boolean; current: boolean;
+  /** Diagnostics: the defender whose arrival ended this lane, if one did. */
+  stoppedBy?: string }
 
 /** Leave the designed track only when its aiming point is blocked and the
  * best lane beats it by a patience margin, on the evaluator's own score. */

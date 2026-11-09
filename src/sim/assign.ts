@@ -12,19 +12,21 @@ import { GUN_QB_DEPTH } from '../playbook/formations.js';
 import { getRoute } from '../playbook/routes.js';
 import type { Gap, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
-import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RunBlocker } from './behaviors/blocking.js';
+import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
 import { goTo, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
 import { QBHandoff, QBPass } from './behaviors/qb.js';
 import { GUN_SNAP, QB_EXTEND, snapSecured } from './ball-transfer.js';
 import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.js';
+import { ScreenBlocker } from './behaviors/screen.js';
 import type { PlaySim } from './playsim.js';
 import { buildRunFits } from './run-fits.js';
 import { handoffReach } from './ball-transfer.js';
 import { CoverageDefender } from './coverage/defender.js';
 import { installReceiverRoute, type InstalledReceiverRoute } from './receiver-forecast.js';
-import { installBlockLook } from './behaviors/block-look.js';
+import { installBlockLook, ReceiverBlockLook } from './behaviors/block-look.js';
+import { screenSpot } from './screen-spot.js';
 
 const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.25, CB: 0.5, NB: 0.4, DB: 0.45, FS: 0.45, SS: 0.38 };
 
@@ -130,10 +132,21 @@ export function assignBehaviors(sim: PlaySim): void {
     const concept = call.pass;
     const coord = new ProtectionCoordinator();
     const receiverPriors = new Map<Agent, InstalledReceiverRoute>();
+    // A thrown run-pass option: the line blocks the run (call.run).
+    const lineRun = call.run ? planRunBlocking(sim, call.run) : null;
     for (const a of sim.offense) if (isOL(a)) {
+      const plan = lineRun?.get(a);
+      if (plan) { a.behavior = new RpoRunBlocker(plan); continue; }
       coord.add(a);
       a.behavior = new PassProtector(coord);
     }
+    // A screen receiver who sells a block first releases into his route on the count.
+    const mkScreenRoute = (a: Agent, id: string) => {
+      const route = getRoute(id);
+      const outside = Math.sign(a.pos.y - sim.ballY) || off.strongSign;
+      receiverPriors.set(a, installReceiverRoute(a.pos, sim.los, outside, route, null, a.profile, a.r('routeRunning')));
+      return () => new RouteRunner(a, sim, route, outside, 0);
+    };
     for (const a of sim.offense) {
       if (a === qb || isOL(a)) continue;
       const ref = off.refOf[a.slot as keyof typeof off.refOf];
@@ -174,9 +187,10 @@ export function assignBehaviors(sim: PlaySim): void {
       const routeId = side[num] ?? (num === 1 ? 'go' : 'seam');
       a.behavior = mkRoute(routeId, spot?.inline ? 0.15 : 0)();
     }
+    if (concept.screen) installScreen(sim, concept, coord, mkScreenRoute);
     // Play action: the back sells the run through the mesh first.
     const back = sim.slot('RB');
-    if (concept.fake && back && back.behavior.kind !== 'idle') {
+    if ((concept.fake || lineRun) && back && back.behavior.kind !== 'idle') {
       const side = Math.sign(back.pos.y - qb.pos.y) || 1;
       back.behavior = new PlayActionFake(back.behavior, { x: sim.los - 4.0, y: (qb.pos.y + back.pos.y) / 2 + side * 0.4 }, 0.7);
     }
@@ -580,8 +594,9 @@ export function onThrow(sim: PlaySim): void {
 
 export function onBallCaught(sim: PlaySim, r: Agent): void {
   clearPressContacts(sim);
-  r.behavior = new BallCarrier({}, r);
-  for (const a of sim.offense) if (a !== r) a.behavior = new DownfieldBlocker();
+  r.behavior = new BallCarrier({ screenCatch: !!sim.offCall?.pass?.screen }, r);
+  // Screen blockers keep their jobs through the catch; everyone else turns to the convoy.
+  for (const a of sim.offense) if (a !== r && !(a.behavior instanceof ScreenBlocker)) a.behavior = new DownfieldBlocker();
   // A physical catch is authoritative for the ball/rules, not a notification
   // to every opponent. Defenders retain their job and acquire their own cue.
 }
@@ -609,4 +624,50 @@ export function onRecovery(sim: PlaySim, a: Agent): void {
 
 export function idleBehavior(): Behavior {
   return { kind: 'idle', update: () => stand() };
+}
+
+/**
+ * Install a screen's jobs over the concept's routes and protection
+ * (docs/football-handbook/screens.md). The screen receiver: a back or an
+ * attached end sells his block and releases on the count; a detached receiver
+ * runs his screen route from the snap. Released linemen pass-set until the
+ * count, then work out/up/in; perimeter receivers stalk or crack from the snap.
+ */
+function installScreen(sim: PlaySim, concept: NonNullable<PlaySim['offCall']['pass']>, coord: ProtectionCoordinator,
+  mkScreenRoute: (a: Agent, id: string) => () => Behavior): void {
+  const spec = concept.screen!;
+  const off = sim.offAlign;
+  const slotOf = (ref: string) => off.numbering[ref as keyof typeof off.numbering];
+  // The catch point: the receiver's screen route landmark.
+  const designed = screenSpot(sim, concept);
+  if (!designed) throw new Error(`Screen receiver ${spec.receiver} is not in the formation`);
+  const { receiver, routeId, side, spot } = designed;
+  const route = getRoute(routeId);
+  const jitter = (a: Agent) => sim.dice('screen', a).normal(0, 0.12);
+  if (spec.tempo === 'slow' && (off.spots[receiver.slot]?.backfield || off.spots[receiver.slot]?.inline)) {
+    coord.add(receiver);
+    receiver.behavior = new PassProtector(coord, mkScreenRoute(receiver, routeId), (spec.receiverRelease ?? spec.count + 0.1) + jitter(receiver), true);
+  }
+  // A detached receiver who sells a stalk block first: the ordinary block
+  // look on the corner over him, then his route from where the sell left him.
+  if (spec.receiverSell && !off.spots[receiver.slot]?.backfield && !off.spots[receiver.slot]?.inline) {
+    const corners = sim.defense.filter(d => d.player.position === 'CB');
+    if (corners.length) {
+      const target = corners.reduce((b, d) => Math.hypot(d.pos.x - receiver.pos.x, d.pos.y - receiver.pos.y)
+        < Math.hypot(b.pos.x - receiver.pos.x, b.pos.y - receiver.pos.y) ? d : b);
+      mkScreenRoute(receiver, routeId);
+      receiver.behavior = new ReceiverBlockLook(target, spec.receiverSell + jitter(receiver), true,
+        () => new RouteRunner(receiver, sim, route, side, sim.t));
+    }
+  }
+  const line = sim.offense.filter(isOL).sort((a, b) => (b.pos.y - a.pos.y) * side);
+  for (const blk of spec.blocks) {
+    const a = blk.who === 'T' ? line[0] : blk.who === 'G' ? line[1] : blk.who === 'C' ? sim.slot('C') : sim.slot(slotOf(blk.who) ?? '');
+    if (!a || a === receiver) continue;
+    if (isOL(a)) {
+      a.behavior = new PassProtector(coord, () => new ScreenBlocker(a, blk.job, side, spot, true), Math.max(0, spec.count + jitter(a)), true);
+    } else {
+      a.behavior = new ScreenBlocker(a, blk.job, side, spot, false);
+    }
+  }
 }

@@ -317,6 +317,7 @@ problem), resolved.
 | [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | paused; broader cost-fixture requalification first on resume |
 | [COV-8](#cov-8) | Trailing man defenders can't find the ball | G3, G4 | high | open (logged with the throw-sight change) |
 | [COV-9](#cov-9) | A man defender overruns a turning receiver once nothing slows his pedal | G3 | medium | open (logged with #394; Coverage paused) |
+| [REC-1](#rec-1) | Receiver options and continuation can contradict available information or route intent | G3, G10 | medium | candidate: acquired route reads; catch/release limits remain |
 | [COV-10](#cov-10) | Sim route releases are too fast and too vertical, so release-keyed reads get no hard negatives | G3 | medium | open (needs an owner: offense route runner) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
@@ -1138,6 +1139,39 @@ Carried over from the issue register; each was measured on an older develop.
     change, with the grip and consumer radii, then re-run the matched probe.
 
 <a id="tkl-6"></a>
+### TKL-7: A free tackler's whiff is a rating roll, not contact physics
+
+- **Symptom:** before any contact, `attempt()` in `src/sim/tackle.ts` draws a
+  miss with probability `pMiss`. That comes from tackling against
+  elusiveness (scaled by open field), approach quality `q`, an overrun term,
+  carrier speed and a pocket-escape bonus. A body that is there and closing
+  can whiff because a rating gap made the dice say so. This is contrary to
+  the model rule that ratings shape capability and never award the result.
+  The wrap-quality draw (`execution`) after it is the same kind of draw.
+- **Evidence** (Coverage, 2026-11-09, #419 `efe11322`, baseline flags; 300
+  runs per coverage, 6 formations × 7 concepts × 2 fronts × flip × 2 rosters):
+  - Misses are 24–25% of attempts in every coverage. That is 0.31–0.35 misses
+    per run and 0.13–0.15 broken tackles per wrap.
+  - Most 10+ yd runs include a miss or a break. Cover 3: 24 of 26.
+  - On 22 Cover 1 / 2-Man leaks, the fit put an unblocked defender within
+    1.3–3 yd of the carrier at the line; 17 of the 22 then missed or broke.
+  - Example: 2-Man / gun_doubles_11 / power / over / team 0 / seed 1696 /
+    LOS 35 / ballY 23.6. That is a 75-yd TD after LB_W was free at 2.1 yd.
+- **What it should be:** the whiff comes from the bodies:
+  - the carrier's actual cut against the tackler's reach and his ability to
+    redirect in time (speed, balance, traction, the reaction delay of his
+    picture);
+  - the arms' actual reach;
+  - overrun as momentum he cannot shed.
+
+  Ratings enter only through those capacities and the perception delay. TKL-5
+  (reach geometry, #273) is the nearest existing piece.
+- **Not a calibration target:** the PFF band (TKL-1) is secondary and its
+  charting rules are unknown. The BDB 2024 tackling set had a missed-tackle
+  column; that is the place to look for a same-operator reference.
+- **Panel:** `data/reviews/tackle/input-manifest-tkl7.json` (Coverage's 22 leaks, with
+  s1924 as the untouched fit-failure control).
+
 ### TKL-6: An engaged tackler's miss is a flat bonus
 
 - **Symptom:** a defender still engaged with a blocker who tries for the
@@ -2484,6 +2518,38 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
 
 ## Pass defense and coverage
 
+<a id="rec-1"></a>
+### REC-1: Receiver options and continuation can contradict their information or route
+
+- **Source inspected:** accepted develop `6676dfc2c4de6b07dbf666465248799b8bbc4e43`.
+  Stick/hook conversion reads the private defensive man label, adds a random
+  misread, and triggers by elapsed time. The QB's independent forecast has
+  only the base path. Settled receivers drift from true defender positions.
+  Separately, route continuation can produce a negative extension beyond its
+  inner sideline margin and retrace a completed outside route.
+- **Candidate:** acquired local keys at an installed read depth; bounded key
+  memory; shared immutable alternatives with independent QB expectations;
+  visible post-break motion can correct the QB's inferred answer. Forecasts
+  preserve the base stem until the same read landmark. Outside continuation
+  turns up from the reached point. No speed/contact/probability adjustment.
+- **Scope:** [receiver route reads](football-handbook/receiver-route-reads.md).
+  The tagged seam read is tested as an explicit native install, not added to
+  ordinary play-calling frequencies. Existing stick/hook calls use their
+  acquired read by default. Changes are a candidate until reviewed.
+- **Recorded test installations:** P019's cutoff protection and the native
+  mirror possession-rally control save route IDs, not route geometry. Their
+  constructor setup now explicitly preserves the historical flat points;
+  throw/catch/rally assertions and deadlines remain unchanged. The new flat
+  has separate current-source native controls. At the next receiver review,
+  prefer fixtures carrying their installed route definitions rather than
+  repeatedly selecting a different play to recover an old clock.
+- **Remaining:** COV-10's other early release shapes; pre-contact release technique
+  and concept-specific mandatory releases; private scramble/targeted-flight
+  shortcuts; and offensive failed opportunities becoming deflections without
+  an independent touch test. Do not claim the receiver subsystem is complete.
+  Preserve changed native catches and broken tackles as adverse evidence;
+  improved decision information alone does not certify every new ending.
+
 <a id="cov-1"></a>
 ### COV-1: Zone defenders barely close while the ball is in the air
 
@@ -2514,6 +2580,24 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   0.10–0.28 s by rating (about 0.15 s at an 80 rating). A full throwing
   action is roughly 0.25–0.46 s on film. Next: the motion's length follows
   the needed ball speed and the release rating (QB-1).
+- **Diagnosis, Oct 26** ([review](reviews/cov1-flight-closing.md), develop
+  `58ae15d7`, seeds 101/109 vs 2022 tracking, one operator): the first wrong
+  stage is before the throw, not seeing, reacting or running after it.
+  - *Confirmed:* where the ball goes. 62–65% of our zone throws go into
+    windows under 4 yd (NFL 43%). Re-weighted to the NFL's separation mix,
+    our mean closing goes 0.16/0.21 → 0.48/0.60 (NFL 0.61). From 4 yd up,
+    closing matches.
+  - *Confirmed:* the drop pace at the throw. Zone droppers run about 1 yd/s
+    faster in the last second, and 32–42% are faster than 4 yd/s downfield
+    at the release (NFL 18–22%). With the target under him in a 2–4 yd window,
+    our nearest defender moves away from him at 2.3–2.8 yd/s; the NFL's moves
+    toward him at 0.65. The speed is in turned-and-running techniques
+    (`deep-turn-run` 43% of deep defenders at 4.7 yd/s, `carry-run-past`).
+  - After the throw the ramp toward the target is within about 0.5 yd/s of
+    the NFL's over 0.8 s.
+  - *Next:* when a zone defender stops running with a receiver before the
+    throw (the turn-run and carry latches), on matched snaps. Throw selection
+    is logged for the QB lane.
 
 <a id="cov-2"></a>
 ### COV-2: Too much yardage per attempt and after the catch
@@ -2826,6 +2910,16 @@ From the issue register:
 
 <a id="cov-10"></a>
 ### COV-10: Sim route releases are too fast and too vertical
+
+- **Bounded receiver follow-up (2026-11-09):** reproduced the ordinary flat
+  on accepted `6676dfc2c4de6b07dbf666465248799b8bbc4e43`. Its LOS-relative
+  first landmark makes an off-line receiver gain 2.7 yards downfield for
+  two yards of width. The initial diagonal request survives every movement
+  modifier and produces the vertical stem without contact. Candidate:
+  move only that first flat landmark to the line, retaining the final outlet
+  and physical capacities. See [receiver rules](football-handbook/receiver-route-reads.md).
+  This does not resolve every route family or qualify a new coverage cue.
+  The historical NFL table below has not been re-measured in this workspace.
 
 - **Symptom:** in the first second every sim route looks the same: a fast
   vertical stem. NFL releases vary. Flats and crosses work flat early, run-play
