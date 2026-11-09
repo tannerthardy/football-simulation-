@@ -303,3 +303,18 @@ tops out at motion, until Tanner decides. The candidate is the NFL table:
 Generate it with:
 
     python3 -I scripts/diag/write-anticipation-prior.py data/anticipation-prior-nfl.json "NFL 2022 tracking (Run Game)"
+
+**Suites** (Node 22.23.3, at this commit; typecheck clean):
+- `GAZE` off: 3,745 / 3,745.
+- `GAZE` on: 3,744 / 3,745. The one failure is explained below; it is not a
+  defect in the mechanism.
+
+**The failure:** `test/line-read.test.ts`, play-side edge.
+- The test bounds the carrier's **true** depth at the edge's box tick at
+  2 yd. The edge keeps his job until the carrier is 2+ yd past the LOS.
+- With `GAZE` on, the backside edge's remembered picture (taken 0.05 s
+  earlier) puts the carrier at 1.998 yd. Truth has reached 2.009.
+- He acted correctly on what he knew. The bound assumes perception equals
+  truth, which holds only with `GAZE` off.
+- Left for Defense: judge the bound on the edge's picture when `GAZE` is
+  promoted.
