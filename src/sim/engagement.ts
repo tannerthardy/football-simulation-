@@ -109,6 +109,8 @@ const DL_FLATTEN_WON = process.env.DL_FLATTEN_WON !== '0';
 /** SHED_ROUTE (experimental, off): see the work-off; a first-level man works around the
  * blocker's actual ball-side shoulder, not the frame of the blocker's original drive. */
 const SHED_ROUTE = process.env.SHED_ROUTE === '1';
+/** FLAT_PRESS (experimental, off): see the flatten's depth request; his step into the man (yd/s). */
+const FLAT_PRESS = process.env.FLAT_PRESS === '1', FLAT_PRESS_STEP = 0.5;
 /** TOUCH_READ (experimental, off): see the flatten read; a hand-fighting lineman
  * reads the man's motion by touch, not by a delayed picture. */
 const TOUCH_READ = process.env.TOUCH_READ === '1';
@@ -1542,9 +1544,15 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // holds his depth and works down the line.
   const reachedFlat = ZONE_RUN && !!read.stack?.reached;
   const recover = reachedFlat || (!behindCutoff && (d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0));
+  // FLAT_PRESS (experimental, off): flattening on a reach is lateral work down
+  // the line, square and still pressing into the man, not a stop: with a zone
+  // step read, his depth request is the more upfield of holding his contact
+  // depth and his own step into the man (the read-step pace, 0.5 yd/s).
+  const up = -sim.attackDir(b.team);
+  const holdDepth = read.stack ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5) : 0;
   const depth = read.declared ? clamp((read.aim.x - d.pos.x) * 3, -1.5, 1.5)
-    : read.stack && recover ? clamp((read.stack.depth - d.pos.x) * 3, -1.5, 1.5)
-      : -sim.attackDir(b.team) * 1.5;
+    : read.stack && recover ? (FLAT_PRESS && zoneStep && !reachedFlat && squeeze === 0 && holdDepth * up < FLAT_PRESS_STEP ? up * FLAT_PRESS_STEP : holdDepth)
+      : up * 1.5;
   // Keep the shoulder where it will need to be: the held flow cue carries it
   // forward over a short horizon, and he follows that point with the flow
   // plus a proportional correction. A request his body can follow without
