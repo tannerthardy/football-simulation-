@@ -3245,6 +3245,16 @@ From the outside audit (`audit`):
   perfect: no fakes and no occlusion. Next: add the scramble cue in the same
   PR; recompose with #256, which still falls back to
   `acquired?.target ?? sim.carrier`.
+  *Status 2026-11-09 (Flex):*
+  - #260 merged on 2026-10-25 with the scramble cue: 39fe5d09, `qbRunning`
+    in `src/sim/possession-read.ts`.
+  - #256 was closed unmerged.
+  - The `executeRunFit` fallback to `sim.carrier` now applies only to direct
+    callers that pass no interpretation (`undefined`). `defense.runFit` always
+    supplies one.
+  - One true-state seam remains in `engagement.ts`: a pass rep converts to
+    run on the true carrier or `sim.scrambled`. It fired once in 144 snaps of
+    a whole game (seed 9), so it is left as is.
 - **Player sight has no field of view** (*confirmed*, 2026-11-02 audit, seeds
   1–2, two games, about 15 million opponent lookups). `PlaySim.see` gives
   every opponent on the observer's reaction delay, projected forward along
