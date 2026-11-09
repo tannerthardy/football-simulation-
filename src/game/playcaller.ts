@@ -48,6 +48,12 @@ const SUB_SHARE: Record<'nickel' | 'dime', Record<Moment, Record<string, number>
   },
   dime: { early: { okie: .11 }, third: { okie: .18 }, short: { okie: .12 } },
 };
+/** MUG_PRESSURES (experimental, off): mug packages by mug count; the remainder bails (no pressure). */
+const MUG_PRESSURES = process.env.MUG_PRESSURES === '1';
+const MUG_PACKAGES: Record<'double' | 'single', Array<[string, number]>> = {
+  double: [['mug_one', .24], ['mug_sim', .08], ['mug_fire', .06], ['mug_both', .19]],
+  single: [['mug_one', .44], ['mug_sim', .06]],
+};
 /** SHORT_BASE (experimental, off): share of short-yardage snaps vs heavy personnel played from the heavy package. */
 const SHORT_BASE = process.env.SHORT_BASE === '1', SHORT_HEAVY_RATE = .15;
 /** NICKEL_FRONTS: share of nickel calls played from 3-3-5 personnel (the 3-3 Stack). */
@@ -600,7 +606,7 @@ export class DefensiveCoordinator {
       }
     }
     if (NICKEL_FRONTS && personnel === 'stack335') sub = FRONT_BY_ID_SUB.stack33;
-    const front = sub ?? pickWeighted(
+    let front = sub ?? pickWeighted(
       rng,
       fronts.map((f) => [f, FRONT_MENU ? menuWeight(f.id, personnel, scheme, moment)
         : FRONT_ALIGN ? installWeight(f.id, personnel, passingDown, scheme)
@@ -689,7 +695,7 @@ export class DefensiveCoordinator {
     if (PRESSURE_CALL) blitz *= PRESSURE_BY_SHELL[coverage.look ?? coverage.shell] ?? 1;
     let pressure = null;
     if (rng.chance(blitz)) {
-      const options = PRESSURES.filter((p) => pressureIsInstallable(personnel, front, coverage, p));
+      const options = PRESSURES.filter((p) => !p.id.startsWith('mug_') && pressureIsInstallable(personnel, front, coverage, p));
       // A two-high tree brings its pressure mostly as four-man simulated
       // pressures (Whip, Slug, Sting) rather than extra rushers (HNFL-186:
       // a four-man rush on ~80% of snaps).
@@ -766,6 +772,29 @@ export class DefensiveCoordinator {
       ? mugDraw < mugRates[1] ? 2 : mugDraw < mugRates[0] ? 1 : undefined
       : FRONT_MENU && (personnel === 'nickel' || personnel === 'dime') && s.down >= 3 && s.distance >= 4
         ? mugDraw < .05 ? 2 : mugDraw < .17 ? 1 : undefined : undefined;
+    // MUG_PRESSURES (experimental, off): a call that mugs also says who of
+    // the muggers comes (the mug package), at the shares 2022 tracking shows
+    // on nickel dropbacks with a mug at the snap (scripts/diag/align/mugrush.py):
+    // double mug no mugger rushes 42%, one 32%, both 25% (a lineman dropping
+    // 14%); single mug the mugger rushes half the time. A package the called
+    // coverage cannot carry falls back to the bail (no pressure).
+    // A double mug is called out of a front that leaves both A gaps open
+    // (the Even's two 3 techniques, the "Jet" look); from an Over or Under
+    // the 1 technique sits in one of them and only one backer can mug.
+    if (MUG_PRESSURES && mug === 2 && front.id !== 'even') {
+      const even = FRONTS.find((f) => f.id === 'even' && f.personnel.includes(personnel));
+      if (even) front = even;
+    }
+    if (MUG_PRESSURES && mug) {
+      const table = mug === 2 && personnel === 'nickel' ? MUG_PACKAGES.double : MUG_PACKAGES.single;
+      const draw = own.fork('mug-package').next();
+      let acc = 0, id: string | null = null;
+      for (const [pid, share] of table) { acc += share; if (draw < acc) { id = pid; break; } }
+      const pick = id ? PRESSURES.find((p) => p.id === id) : undefined;
+      pressure = pick && pressureIsInstallable(personnel, front, coverage, pick) ? pick : null;
+    }
+    // A creep must belong to the pressure finally called.
+    const creepCalled = creep && pressure && creep.slot in pressure.blitzers ? creep : undefined;
     // SAM_ON_TE (experimental, off): in an Over or Even front the Sam is
     // called on the line on the tight end ("Sam on") or kept off the ball
     // as the front's stack backer. NFL backers over an attached TE stand on
@@ -773,7 +802,7 @@ export class DefensiveCoordinator {
     // put ours on, so about half the Over/Even calls do.
     const samOn = SAM_ON_TE && (front.id === 'over' || front.id === 'even') && 'LB_S' in DEF_PERSONNEL[personnel] && own.fork('sam-on').next() < SAM_ON_RATE ? true : undefined;
     return {
-      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep, checkPick: coach.checkPick,
+      call: { personnel, front, coverage, pressure, shown, zoneStyle, frontStem, creep: creepCalled, checkPick: coach.checkPick,
         checkPrefer: this.checkPrefer(passingDown, system), zeus, strength, mug, samOn,
         runPolicy:{edge:scheme==='3-4' ? 'spill':'box',linebacker:'stack'},
         label: `${front.name} ${coverage.name}${styleTag}${pressure ? ` + ${pressure.name}` : ''}${shown ? ` (shows ${shown.name})` : ''}` },

@@ -276,6 +276,36 @@ export const PRESSURES: Pressure[] = [
     id: 'deuce', name: 'Deuce (Mike A, 2-deep 4-under)', blitzers: { LB_M: { gap: 'A', side: 'S' } },
     coverages: ['cover4', 'cover6', 'cover2'], coverage: 'deuce', rushers: 5, flag: 'DEUCE',
   },
+  // MUG_PRESSURES (experimental, off): the mug package. A call that mugs
+  // backers in the A gaps also says who of them comes, picked at the shares
+  // 2022 tracking shows on nickel dropbacks with a double mug at the snap
+  // (scripts/diag/align/mugrush.py, n 173): no mugger rushes 42%, one 32%,
+  // both 25%; a lineman drops 14%; total rush 4 / 5 / 6+ 49 / 24 / 22%. Single
+  // mug (n 341): the mugger rushes half the time. The bail is no pressure.
+  {
+    // One comes: the Mike through his A gap, the Will bails to his seat.
+    id: 'mug_one', name: 'Mug One (Mike A, Will bails)', blitzers: { LB_M: { gap: 'A', side: 'S' } },
+    coverages: ['cover1', 'cover3', 'cover2man', 'cover0', 'cover4', 'cover6', 'cover2'], rushers: 5, flag: 'MUG_PRESSURES',
+  },
+  {
+    // Simulated pressure: the Mike comes, the weak end drops into the hook
+    // the Mike vacated; four rush, the protection set for six.
+    id: 'mug_sim', name: 'Mug Sim (Mike A, end drops)', blitzers: { LB_M: { gap: 'A', side: 'S' } },
+    droppers: { DE_W: { zone: 'hook_w', rule: 'bonus_hook' } },
+    coverages: ['cover3', 'cover1', 'cover4', 'cover6', 'cover2'], rushers: 4, flag: 'MUG_PRESSURES',
+  },
+  {
+    // Fire zone from the double mug: both backers through the A gaps, the
+    // weak end drops as the seam/flat player; three deep, three under.
+    id: 'mug_fire', name: 'Mug Fire (both A, end drops)', blitzers: { LB_M: { gap: 'A', side: 'S' }, LB_W: { gap: 'A', side: 'W' } },
+    droppers: { DE_W: { zone: 'curl_flat_w', rule: 'c3_seam' } },
+    coverages: ['cover3', 'cover1', 'cover4', 'cover6', 'cover2', 'cover2man', 'cover0'], coverage: 'cover3', rushers: 5, flag: 'MUG_PRESSURES',
+  },
+  {
+    // Both come: six rush, zero behind (the Vikings' double A).
+    id: 'mug_both', name: 'Mug Both (double A, zero)', blitzers: { LB_M: { gap: 'A', side: 'S' }, LB_W: { gap: 'A', side: 'W' } },
+    coverages: ['cover0', 'cover1', 'cover3', 'cover2man', 'cover4', 'cover6', 'cover2'], coverage: 'cover0', flag: 'MUG_PRESSURES',
+  },
 ];
 
 export const FRONT_BY_ID: Record<string, Front> = Object.fromEntries(FRONTS.map((f) => [f.id, f]));
