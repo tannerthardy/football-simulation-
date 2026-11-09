@@ -182,3 +182,106 @@ describe('a secured tackle preserves achievable foot support', () => {
     expect(f.sim.bond!.down).toBe(true);
   });
 });
+
+describe('tackle grip strength does not redefine its acquired support geometry', () => {
+  function budgets(r: ReturnType<PlaySim['world']['step']>) {
+    expect(Math.abs(r.work.residual)).toBeLessThan(1e-8);
+    expect(r.passiveGraspWork).toBeLessThanOrEqual(1e-8);
+    for (let i = 0; i < r.armImpulse.length; i++) {
+      expect(r.armImpulse[i]).toBeLessThanOrEqual(r.armImpulseLimit[i] + 1e-8);
+      expect(r.armWork[i]).toBeLessThanOrEqual(r.armWorkLimit[i] + 1e-8);
+      expect(r.supportMotorWork[i]).toBeLessThanOrEqual(r.supportMotorWorkLimit[i] + 1e-8);
+    }
+  }
+  function state(f: ReturnType<typeof hold>) {
+    return [f.carrier, f.defender].flatMap(a => [a.pos.x, a.pos.y, a.vel.x, a.vel.y,
+      a.body.support!.xi.x, a.body.support!.xi.y, a.body.spin ?? 0]);
+  }
+
+  it.each([12, 48])('keeps executed torso and infinitesimal lower-share motion continuous at %s substeps', substeps => {
+    for (const location of ['front', 'side', 'rear'] as const) {
+      const run = (legs: number) => {
+        const f = hold(1, location); f.joint.legs = legs;
+        // A restored old quality-derived override is not an additional
+        // anatomical observation. updateBond owns the ordinary hold geometry.
+        f.joint.recoveryCoupling = .99;
+        if (location === 'front') f.defender.body.vel.x = -1;
+        f.sim.world.substeps = substeps;
+        const rng = { ...f.sim.rng }, rows = [];
+        for (let k = 0; k < 8; k++) {
+          f.request(); budgets(f.sim.world.step(f.intents, .05)); f.sim.t += .05;
+          rows.push({ state: state(f), support: f.carrier.body.support!.state });
+        }
+        expect({ ...f.sim.rng }).toEqual(rng);
+        return rows;
+      };
+      const torso = run(0);
+      // Contact friction can respond like sqrt(share) near its circular
+      // force limit, so inspect the executed limit instead of assuming a
+      // linear error bound at one arbitrarily chosen small share.
+      const errors = [1e-6, 1e-9, 1e-12].map(share => {
+        const lower = run(share);
+        let error = 0;
+        for (let k = 0; k < torso.length; k++) {
+          expect(lower[k].support).toBe(torso[k].support);
+          for (let i = 0; i < torso[k].state.length; i++)
+            error = Math.max(error, Math.abs(torso[k].state[i] - lower[k].state[i]));
+        }
+        return error;
+      });
+      expect(errors[1]).toBeLessThan(errors[0]);
+      expect(errors[2]).toBeLessThan(errors[1]);
+      expect(errors[2]).toBeLessThan(1e-6);
+    }
+  });
+
+  it('lets stronger hands transmit more force at the same acquired point and first-solve mobility', () => {
+    const run = (quality: number) => {
+      const f = hold(1, 'rear'); f.joint.legs = .35; f.sim.bond!.grip!.set(f.defender, quality);
+      f.sim.world.substeps = 12; f.request();
+      // Isolate the grip capacity from the controller's separate finish
+      // request. Both holders request the same achievable planted movement.
+      f.intents[f.carrier.idx] = { vel: { x: 6, y: 0 }, facing: 0 };
+      f.intents[f.defender.idx] = { vel: { x: 0, y: 0 }, facing: 0 };
+      const world = f.sim.world;
+      const original = Reflect.get(world, 'jointRows') as (h: number) => Array<{ joint: GraspJoint; mn: number }>;
+      let first: { point: { x: number; y: number }; jacobian: unknown; inverseResponse: number } | undefined;
+      Reflect.set(world, 'jointRows', (h: number) => {
+        const rows = original.call(world, h), row = rows.find(r => r.joint === f.joint)!;
+        first ??= { point: Reflect.get(world, 'graspPoint').call(world, f.joint),
+          jacobian: Reflect.get(world, 'graspJacobian').call(world, f.joint), inverseResponse: row.mn };
+        return rows;
+      });
+      budgets(world.step(f.intents, .05));
+      return { first, capacity: f.joint.capacity, load: f.joint.force!, motion: state(f) };
+    };
+    const weak = run(.05), strong = run(.9);
+    expect(strong.first).toEqual(weak.first);
+    expect(strong.capacity).toBeGreaterThan(weak.capacity);
+    expect(strong.load).toBeGreaterThan(weak.load);
+    expect(strong.motion).not.toEqual(weak.motion);
+  });
+
+  it.each([12, 48])('uses the current slipped geometry inside a controller tick at %s substeps', substeps => {
+    const run = (copyAtControllerTick: boolean) => {
+      const f = hold(1, 'rear'); f.joint.legs = .35; f.sim.bond!.grip!.set(f.defender, .05);
+      f.sim.world.substeps = substeps;
+      let movedWithinStep = false;
+      const rows = [];
+      for (let k = 0; k < 8; k++) {
+        f.request();
+        expect(f.joint.recoveryCoupling).toBeUndefined();
+        const before = f.joint.legs;
+        // Counterexample: copying the current share here freezes it until
+        // the next 20 Hz decision despite an actual slip inside World.
+        if (copyAtControllerTick) f.joint.recoveryCoupling = before;
+        budgets(f.sim.world.step(f.intents, .05)); f.sim.t += .05;
+        movedWithinStep ||= f.joint.legs > before;
+        rows.push(state(f));
+      }
+      expect(movedWithinStep).toBe(true);
+      return rows;
+    };
+    expect(run(false)).not.toEqual(run(true));
+  });
+});

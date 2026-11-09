@@ -437,14 +437,10 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     const held = clamp(k < available ? k + (available - k) * rate : available, 0.05, 1);
     control.set(d, held);
     joint.capacity = gripForce(d, clamp(next, 0.05, 1), Math.min(clamp(next, 0.05, 1), held));
-    if (joint.legs > 0) {
-      // Use the same acquired grip and actual closing quality as the roll.
-      // Height/pitch stay on `legs`; a tighter wrap increases only the
-      // contact's coupling to attempted corrective placement. A slack or
-      // weak grip must actually transmit force to impede that placement.
-      const secure = clamp(next, 0, 1) * quality;
-      joint.recoveryCoupling = joint.legs + (1 - joint.legs) * secure;
-    }
+    // The lower-body share describes the acquired point's motion relative
+    // to corrective support. Grip security limits transmitted load above;
+    // it cannot move that point or change its geometric Jacobian.
+    delete joint.recoveryCoupling;
     const tx = (c.pos.x - d.pos.x) / (distance || 1), ty = (c.pos.y - d.pos.y) / (distance || 1);
     const close = Math.min(1.5, Math.max(0, near - torso) * 3);
     const own = intents[d.idx];
