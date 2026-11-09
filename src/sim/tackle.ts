@@ -49,6 +49,10 @@ export interface TackleBond {
   holds?: Map<Agent, GraspJoint>;
   /** Execution draw for each hold (median 1): technique and footing on this rep. */
   execution?: Map<Agent, number>;
+  /** Tacklers holding with one arm (ONE_ARM_HOLD): a grab with the arm a
+   * blocker did not control. One hand on the man, no locked wrap, until his
+   * body closes on the carrier and the second arm can come around. */
+  oneArm?: Set<Agent>;
   /** Seconds the held carrier has gone without gaining ground. */
   stalled?: number;
   /** Last step's external (ground) impulse and work on the pile, kg·yd units. */
@@ -91,14 +95,27 @@ const BLOCKED_REACH = process.env.BLOCKED_REACH !== '0';
  * weaker grip slipped more and the hold broke: crowd holds on break-through
  * runs sat at grip 0.45, slipping 79% of the time (KNOWN_PROBLEMS TKL-1). */
 const GRIP_HOLD = process.env.GRIP_HOLD !== '0';
+/** Default on (ONE_ARM_HOLD=0 for comparison): a grab made from inside a block
+ * (BLOCKED_REACH, the free arm) holds with one hand and no locked wrap until
+ * the tackler's body has closed on the carrier, when the second arm comes
+ * around. One arm cannot lock around a body; the hands have to meet. Before
+ * this the free-arm grab was scored against the short arm's own range, so a
+ * back passing close to the free shoulder gave a form-tackle hold with two
+ * locked arms: OZ runs stopped at the first engaged DL's grab, 1.3 yd after
+ * contact against NFL 2.6 (Run Game, 2026-11-06). */
+const ONE_ARM_HOLD = process.env.ONE_ARM_HOLD !== '0';
+/** The second arm comes around once the arms' span is within this of the
+ * torsos touching, yd. */
+const SECOND_ARM_CLOSE = 0.15;
 
 /** `lock`: how much of the wrap the arms' geometry still locks (default
  * the hold's quality). A wrap that slides out to arm's length is a hand hold
  * again; the hands keep the grip they acquired (GRIP_HOLD). */
-export function gripForce(d: Agent, quality: number, lock = quality): number {
+export function gripForce(d: Agent, quality: number, lock = quality, hands = 2): number {
   const q = clamp(quality, 0, 1), l = clamp(lock, 0, 1);
-  const wrap = supportParams(d.profile).armForce * (0.3 + 2.5 * l * l) * (0.6 + 0.6 * d.r('tackling'));
-  return GRIP_HOLD ? Math.max(wrap, handHold(d, q)) : wrap;
+  // One arm pulls with its own share of the arms' force and cannot lock.
+  const wrap = supportParams(d.profile).armForce * (hands < 2 ? 0.15 : 0.3 + 2.5 * l * l) * (0.6 + 0.6 * d.r('tackling'));
+  return GRIP_HOLD ? Math.max(wrap, handHold(d, q, hands)) : wrap;
 }
 
 /** What two hands closed on a jersey hold, kg·yd/s², by hold quality: a
@@ -110,9 +127,9 @@ export function gripForce(d: Agent, quality: number, lock = quality): number {
  * keeps 3/4 of it; a pinch is about a third of a full grip. No combine drill
  * measures grip, so this replaces only the arm-push mapping the old law used
  * below a wrap. A locked wrap keeps the arm law above (GRIP_HOLD). */
-function handHold(d: Agent, q: number): number {
+function handHold(d: Agent, q: number, hands = 2): number {
   const perHand = d.profile.massKg * (0.42 + 0.16 * d.r('strength'));
-  return 2 * 0.75 * perHand * G * clamp(0.3 + 1.4 * q, 0, 1);
+  return hands * 0.75 * perHand * G * clamp(0.3 + 1.4 * q, 0, 1);
 }
 
 export function tryTackles(sim: PlaySim): void {
@@ -302,7 +319,8 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
   // the wrap follows a collision instead of a reach at a passing runner.
   if (lunged) sim.diveAt(d, { x: dx, y: dy });
   else if (!engaged) strike(sim, d, c, d.r('tackling'));
-  grasp(sim, d, c, quality, legs, dd, execution, lunged, `${lunged ? 'lunge' : engaged ? 'block' : q > 0.6 ? 'form' : 'reach'}${alreadyWrapped ? '+assist' : ''}${fromBehind ? '+behind' : ''}`);
+  grasp(sim, d, c, quality, legs, dd, execution, lunged, `${lunged ? 'lunge' : engaged ? 'block' : q > 0.6 ? 'form' : 'reach'}${alreadyWrapped ? '+assist' : ''}${fromBehind ? '+behind' : ''}`,
+    ONE_ARM_HOLD && engaged);
   sim.event('tackle_wrap', d, c, alreadyWrapped ? 'assist' : 'initial');
   if (closing > 4) sim.event('hit', d, c);
 }
@@ -334,15 +352,18 @@ function commitLunge(d: Agent, nx: number, ny: number, q: number): void {
 
 /** Create a tackler's hold on the carrier and join (or start) the bond.
  * `extended`: he caught him at full stretch on a dive, holding from the ground. */
-function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, dd: number, execution: number, extended = false, origin = ''): void {
+function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, dd: number, execution: number, extended = false, origin = '', oneArm = false): void {
   const wasEngaged = !!d.engagement;
   if (sim.firstContactX === null) {
     sim.firstContactX = c.pos.x;
     sim.event('carrier_contact', c, d, 'grasp');
   }
   // A defender committing to the carrier relinquishes his old block. Keeping
-  // both constraints would hold the same body in two techniques.
-  if (d.engagement) sim.disengage(d.engagement);
+  // both constraints would hold the same body in two techniques. A one-armed
+  // grab off a block (ONE_ARM_HOLD) is the exception: the blocker's hands
+  // stay on him because he chose to tackle; he holds the runner with the
+  // free arm while the block goes on, until he gets off it.
+  if (d.engagement && !oneArm) sim.disengage(d.engagement);
   if (!sim.bond) {
     sim.bond = { carrier: c, tacklers: [], start: sim.t, progressX: c.pos.x, down: false, stalled: 0,
       grip: new Map(), control: new Map(), holds: new Map(), execution: new Map() };
@@ -354,7 +375,7 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   const reach = c.profile.radius + d.profile.radius + d.profile.reach * 0.9 + (extended ? 0.9 : 0);
   // He pulls himself into the runner: a sure tackler's arms reel faster.
   const pull = extended ? 0.6 : 1.2 + 1.2 * d.r('tackling');
-  const joint: GraspJoint = { kind: 'grasp', a: d.body, b: c.body, reach: Math.max(reach, dd + 0.15), capacity: gripForce(d, quality), legs, pull, hold: dd, origin,
+  const joint: GraspJoint = { kind: 'grasp', a: d.body, b: c.body, reach: Math.max(reach, dd + 0.15), capacity: oneArm ? gripForce(d, quality, 0, 1) : gripForce(d, quality), legs, pull, hold: dd, origin,
     ground: extended ? Math.max(reach, dd + 0.15) : undefined };
   if (REACH_CONTACT && !extended && !wasEngaged && dd > c.profile.radius + d.profile.radius) {
     joint.brace = dd;
@@ -364,6 +385,7 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   (bond.control ??= new Map()).set(d, quality);
   (bond.holds ??= new Map()).set(d, joint);
   (bond.execution ??= new Map()).set(d, execution);
+  if (oneArm) (bond.oneArm ??= new Set()).add(d);
   sim.world.joints.push(joint);
 }
 
@@ -439,7 +461,12 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     const k = control.get(d) ?? g;
     const held = clamp(k < available ? k + (available - k) * rate : available, 0.05, 1);
     control.set(d, held);
-    joint.capacity = gripForce(d, clamp(next, 0.05, 1), Math.min(clamp(next, 0.05, 1), held));
+    // A one-armed hold becomes a wrap only once his body has closed on the
+    // carrier, so the second arm can come around.
+    const oneArm = bond.oneArm?.has(d) ?? false;
+    if (oneArm && !d.engagement && near - torso <= SECOND_ARM_CLOSE) bond.oneArm!.delete(d);
+    joint.capacity = oneArm && bond.oneArm!.has(d) ? gripForce(d, clamp(next, 0.05, 1), 0, 1)
+      : gripForce(d, clamp(next, 0.05, 1), Math.min(clamp(next, 0.05, 1), held));
     if (joint.legs > 0) {
       // Use the same acquired grip and actual closing quality as the roll.
       // Height/pitch stay on `legs`; a tighter wrap increases only the

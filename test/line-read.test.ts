@@ -82,7 +82,8 @@ describe('a lineman reads the play from the line', () => {
     // On the combined reference (Run Game + Defense + Flex merged) the I-pro pair no longer shows it either;
     // I twins, seed 7, both flips do, so they join.
     const lateBox = [counter, [{ formation: 'i_pro_21', seed: 7, flip: false }, { formation: 'i_pro_21', seed: 7, flip: true },
-      { formation: 'i_twins_21', seed: 7, flip: false }, { formation: 'i_twins_21', seed: 7, flip: true }]
+      { formation: 'i_twins_21', seed: 7, flip: false }, { formation: 'i_twins_21', seed: 7, flip: true },
+      { formation: 'i_pro_21', seed: 8, flip: false }]
       .map(({ formation, seed, flip }) => ({ seed, flip, ...play('counter', formation, seed, flip) }))].flat();
     for (const s of lateBox) {
       const playSide = edges(s.sim).filter(a => a.runFit!.side === s.ballSide);
