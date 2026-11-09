@@ -435,7 +435,42 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
       read = { backfield: { back, backCue: sim.see(a, back), qbCue: sim.see(a, sim.qb) } };
     } else read = holder ? { possession: holder } : null;
   }
-  return executeRunFit(a, sim, gap, gapSign, read);
+  const cmd = executeRunFit(a, sim, gap, gapSign, read);
+  return BACKER_TAKEON && /^LB/.test(a.slot) ? takeOn(a, sim, cmd) : cmd;
+}
+
+/** BACKER_TAKEON (experimental, off): an unblocked backer who sees a blocker
+ * climbing at him breaks down before contact ("shock and shed"): he brakes his
+ * speed into the blocker to a fitting pace, squares to him and sinks his pads,
+ * so the collision carries the closing speed of a settled backer, not of one
+ * running into it. Everything comes from his own picture of the blocker; the
+ * cost is real (a slower fit, time stopped while the blocker arrives). He does
+ * not break down for a blocker when the carrier he sees is closer: a tackle
+ * comes first. Pads at the engaged run-fit level (0.85, engagement.ts);
+ * the window is the time his brakes need plus one decision beat. */
+const BACKER_TAKEON = process.env.BACKER_TAKEON === '1', TAKEON_PADS = 0.85, TAKEON_PACE = 0.5, TAKEON_REACH = 2.5, TAKEON_CLOSING = 2;
+function takeOn(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  if (a.engagement || a.isDown(sim.t)) return cmd;
+  let best: { ux: number; uy: number; gap: number } | null = null, carrierGap = Infinity;
+  for (const o of sim.offense) {
+    if (o === sim.qb) continue;
+    const p = sim.see(a, o); const dx = p.pos.x - a.pos.x, dy = p.pos.y - a.pos.y, dist = Math.hypot(dx, dy);
+    const gap = dist - a.profile.radius - o.profile.radius;
+    if (p.carrying === true) { carrierGap = Math.min(carrierGap, gap); continue; }
+    if (gap > TAKEON_REACH) continue;
+    const ux = dx / Math.max(dist, 1e-6), uy = dy / Math.max(dist, 1e-6);
+    const closing = (a.vel.x - p.vel.x) * ux + (a.vel.y - p.vel.y) * uy;
+    if (closing < TAKEON_CLOSING) continue;
+    // Brakes needed to shed his own speed into the blocker, plus one beat.
+    const own = Math.max(0, a.vel.x * ux + a.vel.y * uy);
+    const window = Math.max(0, own - TAKEON_PACE) / a.profile.brake + 0.05;
+    if (gap / closing > window + 0.15) continue;
+    if (!best || gap < best.gap) best = { ux, uy, gap };
+  }
+  if (!best || carrierGap <= best.gap) return cmd;
+  const along = cmd.vel.x * best.ux + cmd.vel.y * best.uy;
+  const vel = along > TAKEON_PACE ? { x: cmd.vel.x - (along - TAKEON_PACE) * best.ux, y: cmd.vel.y - (along - TAKEON_PACE) * best.uy } : cmd.vel;
+  return { ...cmd, vel, facing: Math.atan2(best.uy, best.ux), posture: Math.max((cmd as { posture?: number }).posture ?? 0, TAKEON_PADS) } as MoveCommand;
 }
 
 export class RunDefender implements Behavior {
