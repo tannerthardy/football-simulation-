@@ -689,7 +689,11 @@ const ZONE_RUN = process.env.ZONE_RUN === '1', ZONE_RUN_PACE = 0.75, ZONE_RUN_ST
  * the DL plays his pace. Racing, the DL presses upfield as he crosses
  * (yd/s, the attack technique's press); his body and the blocker decide how
  * much ground he gains. */
-const ZONE_RUN_REACH = 1.5, ZONE_RUN_PRESS = 1.5;
+const ZONE_RUN_REACH = 1.5;
+/** RACE_LEAN (experimental, off): racing, he leans into the man at his read
+ * step (FLAT_PRESS_STEP), the same press as flattening, not the attack
+ * technique's 1.5 yd/s. */
+const RACE_LEAN = process.env.RACE_LEAN === '1';
 /** Anchor braces along the drive line and keeps lateral work (ANCHOR_SPLIT=0 off). */
 const ANCHOR_SPLIT = process.env.ANCHOR_SPLIT !== '0';
 
@@ -1681,7 +1685,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     cf = { x: depth, y };
   }
   intents[d.idx] = {
-    vel: workOff ?? cf ?? (read.stack ? { x: zoneRun ? -sim.attackDir(b.team) * ZONE_RUN_PRESS : depth, y: lateralFlow } : legacy),
+    vel: workOff ?? cf ?? (read.stack ? { x: zoneRun ? -sim.attackDir(b.team) * (RACE_LEAN ? FLAT_PRESS_STEP : 1.5) : depth, y: lateralFlow } : legacy),
     // Running the line he opens his hips halfway toward it, off square.
     facing: zoneRun && !workOff && !cf ? (() => {
       const sq = Math.atan2(b.pos.y - d.pos.y, b.pos.x - d.pos.x), run = Math.atan2(zoneRun, 0);
