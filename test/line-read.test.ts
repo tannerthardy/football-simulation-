@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { nativeTraceSetup } from '../scripts/diag/command-trace.js';
 import { PlaySim } from '../src/sim/playsim.js';
 import type { Agent } from '../src/sim/agent.js';
+import type { Perceived } from '../src/sim/perception.js';
+import * as runFits from '../src/sim/run-fits.js';
 
 /** The line read (G2): a lineman reads the play from the line in front of him.
  * Each mechanism is checked on native snaps beside its opposing control: a
@@ -15,7 +17,7 @@ function play(concept: string, formation: string, seed: number, flip: boolean) {
   // When each edge first took each fit response (tags accumulate over the whole play), and what each edge's
   // own picture showed of every offensive man he looked at, by tick.
   const firstFit = new Map<string, number>();
-  const fitFrame = new Map<string, { job: string | undefined; carrierPast: number | null }>();
+  const fitFrame = new Map<string, { job: string | undefined; carrierPast: number | null; acquired?: Perceived }>();
   const sights: Array<{ t: number; slot: string; target: number; pos: { x: number; y: number }; vel: { x: number; y: number }; me: { x: number; y: number } }> = [];
   const see = sim.see.bind(sim);
   sim.see = (o, tg, scale) => {
@@ -23,6 +25,21 @@ function play(concept: string, formation: string, seed: number, flip: boolean) {
     if (o.slot.startsWith('DE') && tg.team === 'O') sights.push({ t: sim.t, slot: o.slot, target: tg.idx, pos: r.pos, vel: r.vel, me: { ...o.pos } });
     return r;
   };
+  // Observe the actual fit call and its consumed picture. Sampling after tick()
+  // mixes this decision with later contact/whistle: a legitimate box can occur
+  // while the RB is held, then that same tick's tackle removes sim.carrier.
+  const execute = runFits.executeRunFit;
+  const fitObserver = vi.spyOn(runFits, 'executeRunFit').mockImplementation((a, current, gap, side, read) => {
+    const command = execute(a, current, gap, side, read);
+    if (current === sim) for (const tag of ['fit-replace', 'fit-box', 'fit-spill'])
+      if (a.tags.has(tag) && !firstFit.has(`${a.slot}:${tag}`)) {
+        firstFit.set(`${a.slot}:${tag}`, sim.t);
+        fitFrame.set(`${a.slot}:${tag}`, { job: a.runFit?.kind,
+          carrierPast: sim.carrier ? sim.carrier.pos.x - sim.los : null,
+          acquired: read && 'possession' in read ? structuredClone(read.possession.cue) : undefined });
+      }
+    return command;
+  });
   // How far inside the spot his gap's inside man left each free edge ever gets (+ = outside it).
   const inside = new Map<string, number>();
   const tick = sim.tick.bind(sim);
@@ -37,13 +54,8 @@ function play(concept: string, formation: string, seed: number, flip: boolean) {
       const inner = job.gap === 'D' ? out.at(-1) : out[1];
       if (inner) inside.set(e.slot, Math.min(inside.get(e.slot) ?? Infinity, (e.pos.y - inner.y - job.side * e.profile.radius) * job.side));
     }
-    for (const a of sim.defense) for (const tag of ['fit-replace', 'fit-box', 'fit-spill'])
-      if (a.tags.has(tag) && !firstFit.has(`${a.slot}:${tag}`)) {
-        firstFit.set(`${a.slot}:${tag}`, sim.t);
-        fitFrame.set(`${a.slot}:${tag}`, { job: a.runFit?.kind, carrierPast: sim.carrier ? sim.carrier.pos.x - sim.los : null });
-      }
   };
-  sim.run();
+  try { sim.run(); } finally { fitObserver.mockRestore(); }
   const ballSide = Math.sign(pullers.reduce((s, a) => s + a.pos.y - home.get(a)!, 0));
   return { sim, ballSide, firstFit, fitFrame, sights, inside };
 }
@@ -99,9 +111,12 @@ describe('a lineman reads the play from the line', () => {
           expect(frame.job).toBe('edge');
           expect(frame.carrierPast).not.toBeNull();
           expect(frame.carrierPast!).toBeLessThanOrEqual(2);
-          // The box is recorded at the step's endpoint, so the picture that produced it is the controller's on
-          // the step before; a kick-out candidate is never the QB or the back.
-          expect(s.sights.some(v => v.slot === b.slot && Math.abs(v.t - (boxed - s.sim.dt)) < 1e-9
+          expect(frame.acquired?.carrying).toBe(true);
+          expect(frame.acquired?.age).toBeDefined();
+          expect(frame.acquired!.pos.x - s.sim.los).toBeLessThanOrEqual(2);
+          // The picture and fit are recorded in the same controller call;
+          // a kick-out candidate is never the QB or the back.
+          expect(s.sights.some(v => v.slot === b.slot && Math.abs(v.t - boxed) < 1e-9
             && v.target !== s.sim.qb.idx && v.target !== s.sim.slot('RB')?.idx
             && v.pos.x < v.me.x + .5 && Math.abs(v.pos.y - v.me.y) < 2.5 && v.vel.y * side > 1.3)).toBe(true);
         }
