@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-3`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-4`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Code defaults are unchanged.** `on` here means "on in the reference", not "default in the engine". The combined stack is not ready to become the default: together the flags take run yards below the NFL (see Results).
 
@@ -131,7 +131,7 @@ The line now steps as it should. Stops for no gain rise past the NFL on both zon
 All three together: +0.06 (SE 0.08); runs <= 0 21.2 -> 20.2%; no replay errors. On `run-ref-3`: OZ 2.53 yd under 20 with 26% <= 0 (NFL 3.50, 19%); IZ 3.74 with 16% <= 0 (NFL 3.73, 14%); 10+ runs 6.2% (NFL 9%). Inside zone is now at the NFL; outside zone is still a yard short.
 
 Other decisions from Defense's report:
-- `LB_RUN_THROUGH` and `EDGE_WIDTH` stay off and should be deleted: on a same-operator comparison (373 OZ snaps vs NFL 1,555) neither moves its own measure (backers at or behind the line by 2.0 s 0.4% with or without the flag, NFL 8.8%; play-side edge outside his man at 1.0 s 37 -> 35%, NFL 61%). Both NFL gaps are real and are logged as gaps.
+- `LB_RUN_THROUGH` and `EDGE_WIDTH` stay off and should be deleted: on a same-operator comparison (373 OZ snaps vs NFL 1,555) neither moves its own measure (backers at or behind the line by 2.0 s 0.4% with or without the flag, NFL 8.8%; play-side edge outside his man at 1.0 s 37 -> 35%, NFL 61%). Both NFL gaps are real and are logged as gaps. **Deleted** (code, registry and stack entries) in Defense's removal PR.
 - `ATTACK_LANDMARK` (#401) is merged, off, and stays off in the stack: yards neutral, OZ runs <= 0 22.6 -> 26.7%.
 - `DL_GAMES` stays off: the offense's blocking does not answer line movement yet.
 - Call flags on the stack move front and mug shares toward 2022 (nickel early bear 0 -> 7%, NFL 6%; nickel short-yardage bear 0 -> 13%, NFL 12%; base vs heavy short-yardage bear 100 -> 35%, NFL 24%). Left: nickel 3rd-long double mug, no interior DL on passing downs, Tite/Mint in base, heavy fronts in short yardage.
@@ -160,6 +160,15 @@ What to take from it:
 - Outside zone, gap runs and the long-run rate move toward the NFL; inside zone moves 0.6 yd above it.
 - **Broken tackles a run more than double.** That was #412's stated open risk and it is G1's headline measure moving the wrong way. The mechanism (a grab from inside a block holds with one arm) is the reason, and `ONE_ARM_HOLD=0` restores the old hold. It is merged on the owner's evidence under PLAN's rule that a worse statistic is logged, not a veto; Tanner can reverse it with that switch.
 - Neither target gap closes: front-on gain and the second defender are upstream of the bond (front-on momentum exchange, pursuit arrival TKL-2, the whiff roll TKL-7). That is Flex's next item.
+
+## run-ref-4: `GAP_CLIMB` on; #408 and #430 merged (2026-11-09)
+
+- **`GAP_CLIMB` (Run Game 01712d3b), on.** Only a double-team release ever made a first-level lineman climb. A free zone lineman whose man is beaten to his backside now climbs to the nearest second-level man no lineman is nearer to. Run Game, 544 zone runs, linemen 1.5 yd past the line by 2.0 s: OZ backside guard 18 -> 26% (NFL 36-37%), OZ backside tackle 2 -> 7% (NFL 16-26%), IZ backside tackle 26 -> 41% (NFL 15-39%). On the 1,321-run set: paired +0.03 (SE 0.04); OZ +0.01 (0.10), IZ +0.19 (0.16). Partial: the centre (6-10% vs NFL 26-36%) and covered guards still climb only through the double-team release, which is Run Game's next item.
+- **#430 (Defense):** `LB_RUN_THROUGH` and `EDGE_WIDTH` are deleted from the code and the stack.
+- **#408 (Coverage, default on):** the QB's throwing motion (load and delivery, about 0.4 s, NFL 0.4-0.5), combined with #420's route reads in the receiver forecast. Four full games of saved snaps at code defaults, before vs after: pass plays 8.94 -> 8.19 yd a play (NFL band 6.35-7.89), incompletions 124 -> 149 of 392; runs unchanged within noise. Coverage's own check (732 dropbacks, before #424): sacks 40 -> 63, completions 406 -> 354, time to throw 2.62 -> 2.89 s. The later release meets a pocket that collapses early (G5); that exposure is logged there, not held against the motion. #424's protection read is on develop too and the two have not been measured together by Coverage.
+- Outside zone's reach pace: Flex's lone-body bench shows the body can make the NFL's 2.25 yd/s at 0.5 s; the remaining 0.2 yd is at the centre and backside in the snap / first-step stage, which is Run Game's. A burst request was tried and dropped (OZ -0.38).
+
+On `run-ref-4` at this commit (1,321 runs): all 3.56 yd under 20, runs <= 0 15.6%, 10+ runs 7.8% (NFL 9%); OZ 2.73 with 23% <= 0 (NFL 3.50, 19%); IZ 4.46 with 14% <= 0 (NFL 3.73, 14%); gap 3.74 (NFL counter 4.08).
 
 ## What to do next
 

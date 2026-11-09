@@ -130,4 +130,24 @@ describe('receiver option reads use acquired leverage', () => {
     expect(away.predict(1, .15)).toEqual(base.predict(1, .15));
     expect(away.predict(1, 1.8)!.y).toBeGreaterThan(base.predict(1, 1.8)!.y);
   });
+
+  // #408 + #420: the QB times his release to the break of the route he
+  // expects, through the shared stem to the read landmark and then the answer
+  // he infers from his own key picture; never the base path for an option
+  // route he reads differently, nor the receiver's private choice.
+  it('times the break from the expected answer, not the base route', () => {
+    const f = scene();
+    const prior = installReceiverRoute({ x: 40, y: FIELD_WIDTH / 2 }, 40, 1, ROUTES.stick, 0, f.r.profile, f.r.r('routeRunning'));
+    const base = new ReceiverForecast({}, prior, .05), away = new ReceiverForecast({}, prior, .05);
+    const picture = { pos: { x: 42.5, y: FIELD_WIDTH / 2 }, vel: { x: 3, y: 0 }, facing: 0, sampledAt: 1, acquiredAt: 1 };
+    base.acquire(picture); away.acquire(picture);
+    away.readKeys([{ id: 'inside-key', pos: { x: 46, y: FIELD_WIDTH / 2 - 1 }, vel: { x: 0, y: 0 }, age: .2 }]);
+    expect(base.estimate?.routeAnswer).toBe('base');
+    expect(away.estimate?.routeAnswer).toBe('away');
+    expect(base.hasBreak && away.hasBreak).toBe(true);
+    const b = base.breakAt()!, w = away.breakAt()!;
+    expect(b).toBeGreaterThan(1);
+    expect(w).toBeGreaterThan(1);
+    expect(w).not.toBe(b);
+  });
 });
