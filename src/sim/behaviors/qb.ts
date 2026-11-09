@@ -189,9 +189,11 @@ export class QBPass implements Behavior {
     // Eyes: what he looks at is what he sees; everything else is memory and belief.
     const gaze = this.gazePoint(sim);
     this.mind.observe(gaze);
+    const routeKeys = this.mind.routeKeyPictures();
     for (const [r, forecast] of this.receiverForecasts) {
       const picture = this.mind.receiverLook(r, gaze);
       if (picture) forecast.acquire(picture);
+      if (forecast.prior.read) forecast.readKeys(routeKeys);
     }
     if (this.mind.justIdentified && this.readIdx === 0) this.reads = this.orderReads(sim, this.reads);
 

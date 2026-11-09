@@ -11,6 +11,15 @@ export const ROUTES: Record<string, RouteDef> = {
   go: { id: 'go', family: 'deep', depth: 30, end: 'continue', points: [{ d: 4, l: 0.6 }, { d: 50, l: 1.5 }] },
   fade: { id: 'fade', family: 'deep', depth: 25, end: 'continue', points: [{ d: 3, l: 1.6 }, { d: 50, l: 3.5 }] },
   seam: { id: 'seam', family: 'deep', depth: 22, end: 'continue', points: [{ d: 4, l: -0.4 }, { d: 50, l: -1.2 }] },
+  // A tagged near-safety read. Reserve the middle in the concept; this is not
+  // permission for every vertical to bend into a teammate's route. Corner/sail
+  // is a different install. See docs/football-handbook/receiver-route-reads.md.
+  seam_read: { id: 'seam_read', family: 'deep', depth: 22, end: 'continue',
+    points: [{ d: 10, l: -.4, s: .85 }, { d: 40, l: -1.2 }],
+    read: { key: 'middle', depth: 8, answers: [
+      { id: 'post', end: 'continue', points: [{ d: 10, l: -.4, s: .75 }, { d: 35, l: -14 }] },
+      { id: 'under', end: 'continue', points: [{ d: 10, l: -.4, s: .4 }, { d: 10.5, l: -16 }] },
+    ] } },
   // Quick game
   hitch: { id: 'hitch', family: 'quick', depth: 5, end: 'settle', points: [{ d: 6, l: 0, s: 0.2 }, { d: 5, l: 0.3, s: 0 }] },
   // Three-step slant: break at 45°, then flatten across the field if not thrown.

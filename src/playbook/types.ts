@@ -63,12 +63,21 @@ export interface RoutePoint {
 
 export type RouteEnd = 'continue' | 'settle' | 'sitVsZone';
 
+/** A coached menu, shared with the QB; selecting an answer is observer-local. */
+export interface RouteRead {
+  readonly key: 'underneath' | 'middle';
+  /** Read landmark in yards beyond the line, before the branch's break. */
+  readonly depth: number;
+  readonly answers: readonly { readonly id: 'away' | 'post' | 'under'; readonly points: readonly RoutePoint[]; readonly end: 'continue' | 'settle' }[];
+}
+
 export interface RouteDef {
   id: string;
   points: RoutePoint[];
   end: RouteEnd;
-  /** Converts against man coverage (e.g. stick → out-breaking). */
+  /** Legacy installed run-away branch. The name does not grant coverage knowledge. */
   vsMan?: RoutePoint[];
+  read?: RouteRead;
   /** Typical target depth for the QB's timing (yards beyond LOS). */
   depth: number;
   /** Route family for defensive anticipation. */

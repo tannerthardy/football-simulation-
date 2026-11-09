@@ -32,6 +32,7 @@
  */
 import { angleDiff, clamp, logistic, type Vec2 } from '../core/vec.js';
 import type { ReceiverPicture } from './receiver-forecast.js';
+import type { RouteKeyPicture } from './route-read.js';
 import { alignDefense, zoneLandmark, type DefenseAlignment } from '../playbook/alignment.js';
 import { PASS_BY_ID, RUN_BY_ID } from '../playbook/concepts.js';
 import { PRESSURE_BY_ID } from '../playbook/defense.js';
@@ -127,6 +128,7 @@ interface Memory {
   vel: Vec2;
   facing: number;
   t: number;
+  latency?: number;
 }
 
 type Features = number[];
@@ -392,10 +394,10 @@ export class QBMind {
       const ang = Math.abs(angleDiff(Math.atan2(dy, dx), dir));
       // Bodies right around him are felt, not seen; pocket presence handles them.
       if (ang < this.clearHalf * (0.65 + 0.35 * qb.mind.focus) || dist < 3) {
-        this.memory.set(d, { pos: clear.pos, vel: clear.vel, facing: clear.facing, t: sim.t });
+        this.memory.set(d, { pos: clear.pos, vel: clear.vel, facing: clear.facing, t: sim.t, latency: clear.age ?? 0 });
       } else if (ang < this.periphHalf * (0.85 + 0.15 * qb.mind.focus)) {
         const s = sim.see(qb, d, 1.7);
-        this.memory.set(d, { pos: s.pos, vel: s.vel, facing: s.facing, t: sim.t - 0.1 });
+        this.memory.set(d, { pos: s.pos, vel: s.vel, facing: s.facing, t: sim.t - 0.1, latency: s.age ?? 0 });
       }
     }
     // Existing recognition milestones summarize this acquired look and its
@@ -425,6 +427,18 @@ export class QBMind {
     const age = seen.age ?? 0;
     return { pos: { x: seen.pos.x - seen.vel.x * age, y: seen.pos.y - seen.vel.y * age },
       vel: { ...seen.vel }, facing: seen.facing, sampledAt: sim.t - age, acquiredAt: sim.t };
+  }
+
+  /** Acquired route keys, with memory age plus the original sensing latency. */
+  routeKeyPictures(): RouteKeyPicture[] {
+    // Read-only view of observe()'s memory: querying this cannot see another
+    // defender, improve a picture, or consume a decision/random draw. Do not
+    // use estimate()'s expected-position fallback as acquired route evidence.
+    return [...this.memory].map(([d, m]) => {
+      const age = Math.max(0, this.sim.t - m.t), dt = Math.min(.5, age);
+      return { id: d.player.id, pos: { x: m.pos.x + m.vel.x * dt, y: m.pos.y + m.vel.y * dt },
+        vel: { ...m.vel }, age: age + (m.latency ?? 0) };
+    });
   }
 
   /** Where the QB thinks a defender is (and how he's moving). */
