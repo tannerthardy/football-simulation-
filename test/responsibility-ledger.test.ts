@@ -372,10 +372,13 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // as well, DT_W alone makes first contact at 2.75, a hit without a wrap; SS wraps first, at 4.25; still not a tie.
     // With a climber releasing a held backer who has run under him and he can no longer meet (C leaves LB_W for FS at
     // 2.35), first contact is unchanged and SS wraps first at 4.0 (3.95 yd, was 2.4).
+    // With a released player deciding again in the step his block ends (RELEASE_REDECIDE, #410), first contact is
+    // unchanged; LB_W reaches the carrier at 4.35 and misses, and CB_W wraps first at 5.4 (2.87 yd). RELEASE_REDECIDE=0
+    // restores SS at 4.0.
     expect(first.t).toBe(2.75);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 4 });
-    expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('SS');
+    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 5.4 });
+    expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('CB_W');
   });
 
   // With the back leaving the mesh on his own start (#344), these former QB keeps (S8-P054 and S10-P006 on develop,
