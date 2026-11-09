@@ -133,6 +133,8 @@ const PRIOR_GROUP: Record<string, string> = { QB: 'QB', RB: 'RB', FB: 'RB', WR: 
 const DEFAULT_ASSIGNED: Record<string, string[]> = { DB: ['WR', 'TE', 'RB'], LB: ['RB', 'TE', 'QB'], DL: ['OL', 'RB', 'QB'],
   OL: ['DL', 'LB'], RB: ['LB', 'DL'], TE: ['LB', 'DB', 'DL'], WR: ['DB'], QB: ['DL', 'LB', 'DB'] };
 const PRIOR_HORIZONS = [0.3, 0.6, 1.0, 1.5];
+/** Picture age (s) where experience starts to replace motion, and where it has fully replaced it. */
+const PRIOR_HANDOVER = [0.8, 1.5];
 const angDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
 
 export class PlaySim {
@@ -708,7 +710,10 @@ export class PlaySim {
     const wm = Math.min(1, 2 * skill), hp = PRIOR_HORIZONS[PRIOR_HORIZONS.length - 1], sp2 = Math.min(since, hp);
     const tSeen = m.at - (m.seen.age ?? 0);
     const prior = this.isAssigned(observer, target) ? this.priorDisplacement(target, m.seen, tSeen, sp2, observer) : null;
-    const wp = prior ? Math.max(0, 2 * skill - 1) : 0;
+    // On NFL tracking constant acceleration is the better predictor to about 0.8 s and the context prior
+    // by 1.5 s (Run Game, held out), so experience takes over as the picture ages.
+    const handover = clamp((since - PRIOR_HANDOVER[0]) / (PRIOR_HANDOVER[1] - PRIOR_HANDOVER[0]), 0, 1);
+    const wp = prior ? Math.max(0, 2 * skill - 1) * handover : 0;
     let pvx = 0, pvy = 0;
     if (prior && wp > 0 && since < hp) {
       const ahead = this.priorDisplacement(target, m.seen, tSeen, Math.min(hp, sp2 + 0.1), observer)!;

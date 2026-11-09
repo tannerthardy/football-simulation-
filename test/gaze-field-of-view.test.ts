@@ -73,7 +73,7 @@ describe('GAZE anticipation by assignment: experience applies to the opponents h
     const s: any = sim, up = sim.attackDir('O');
     const target = sim.slot('LT')!;
     const picture = { pos: { x: sim.los + 2 * up, y: sim.ballY + 3 }, vel: { x: 0, y: 2 }, stance: null, facing: 0, age: 0 };
-    const ctx = s.priorContext(target, picture, sim.t - 0.6);   // the picture is 0.6 s old when recalled
+    const ctx = s.priorContext(target, picture, sim.t - 1.5);   // keyed at the recalled picture's time
     // A made-up cell: players like this one break 1 yd back toward the ball per 0.6 s instead of continuing.
     ANTICIPATION_PRIOR[ctx.key] = { '0.3': [0.2, -0.5, 99], '0.6': [0.3, -1, 99], '1': [0.3, -1.6, 99], '1.5': [0.3, -2.4, 99] };
     const at = (skill: number, since: number) => {
@@ -89,15 +89,17 @@ describe('GAZE anticipation by assignment: experience applies to the opponents h
     const { sim, d, target, at, cleanup } = await setup();
     try {
       // Picture moving +y at 2 yd/s on the ball's +y side: "along" is +y, "across toward his sideline" is -x.
-      const elite = at(1, 0.6), avg = at(0.5, 0.6);
-      expect(avg.pos.y - (sim.ballY + 3)).toBeCloseTo(2 * 0.6, 6);       // pure motion
-      expect(elite.pos.y - (sim.ballY + 3)).toBeCloseTo(0.3, 6);          // prior "along"
-      expect(elite.vel.y).toBeLessThan(2);                                // velocity from the prior curve
+      // Motion (held after 1.0 s) is 2 yd; the prior says 0.3 yd along by 1.5 s.
+      const elite = at(1, 1.5), avg = at(0.5, 1.5), y0 = sim.ballY + 3;
+      expect(avg.pos.y - y0).toBeCloseTo(2, 6);                           // pure motion
+      expect(elite.pos.y - y0).toBeCloseTo(0.3, 6);                       // prior "along"
+      expect(at(1, 0.6).pos.y - y0).toBeCloseTo(1.2, 6);                  // young picture: motion first
+      expect(at(1, 1.15).pos.y - y0).toBeLessThan(2);                     // handing over
+      expect(at(1, 1.15).pos.y - y0).toBeGreaterThan(0.3);
       sim.assignedTo(d, []);                                              // his assignment excludes him
-      const unassigned = at(1, 0.6);
-      expect(unassigned.pos.y - (sim.ballY + 3)).toBeCloseTo(2 * 0.6, 6);
+      expect(at(1, 1.5).pos.y - y0).toBeCloseTo(2, 6);
       sim.assignedTo(d, [target]);
-      expect(at(1, 0.6).pos.y - (sim.ballY + 3)).toBeCloseTo(0.3, 6);
+      expect(at(1, 1.5).pos.y - y0).toBeCloseTo(0.3, 6);
     } finally { cleanup(); }
   });
 });
@@ -110,7 +112,7 @@ describe('GAZE anticipation by read: a defender projects by what he believes the
     const { sim, defender: d } = contactFixture({ type: 'run', runBlock: 60, passBlock: 60, side: 1 });
     const s: any = sim, target = sim.slot('LT')!;
     const picture = { pos: { x: sim.los + 2 * sim.attackDir('O'), y: sim.ballY + 3 }, vel: { x: 0, y: 2 }, stance: null, facing: 0, age: 0 };
-    const key = s.priorContext(target, picture, sim.t - 0.6).key;
+    const key = s.priorContext(target, picture, sim.t - 1.5).key;
     ANTICIPATION_PRIOR[`run|${key}`] = { '0.6': [0.2, 0, 99], '1': [0.3, 0, 99] };
     ANTICIPATION_PRIOR[`pass|${key}`] = { '0.6': [1.5, 0, 99], '1': [2.5, 0, 99] };
     try {
@@ -118,12 +120,12 @@ describe('GAZE anticipation by read: a defender projects by what he believes the
       const recall = (read: string | null) => {
         d.recog = read === null ? null : ({ read } as any);
         s.gaze.set(d, { dir: 0, t: sim.t, target: d, set: sim.t, since: sim.t - 2 });
-        s.sightMemory.set(`${d.idx}>${target.idx}`, { seen: picture, at: sim.t - 0.6, acc: { x: 0, y: 0 } });
+        s.sightMemory.set(`${d.idx}>${target.idx}`, { seen: picture, at: sim.t - 1.5, acc: { x: 0, y: 0 } });
         return s.remembered(d, target, picture).pos.y - picture.pos.y;
       };
-      expect(recall('run')).toBeCloseTo(0.2, 6);
-      expect(recall('pass')).toBeCloseTo(1.5, 6);
-      expect(recall('unsure')).toBeCloseTo(2 * 0.6, 6);   // no belief, no cell: motion
+      expect(recall('run')).toBeCloseTo(0.3, 6);
+      expect(recall('pass')).toBeCloseTo(2.5, 6);
+      expect(recall('unsure')).toBeCloseTo(2, 6);   // no belief, no cell: motion (held after 1.0 s)
     } finally { delete ANTICIPATION_PRIOR[`run|${key}`]; delete ANTICIPATION_PRIOR[`pass|${key}`]; }
   });
 });
