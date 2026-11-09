@@ -631,6 +631,8 @@ export class QBHandoff implements Behavior {
     private readonly rb: Agent | null,
     private readonly pitchRange = 1.3,
     private readonly keeper = false,
+    /** GUN_MESH: the point on the back's track where the ball goes in. */
+    private readonly ballPoint?: Vec2,
   ) {}
 
   update(a: Agent, sim: PlaySim): MoveCommand {
@@ -655,7 +657,11 @@ export class QBHandoff implements Behavior {
         this.handed = sim.pitchBall(a, rb);
         return stand();
       }
-      if (d <= handoffReach(a, rb)) {
+      // GUN_MESH: the ball goes into his pocket where his track meets it, not
+      // at the first moment he comes within reach on his way there.
+      const bp = this.ballPoint, v = Math.hypot(rb.vel.x, rb.vel.y);
+      const atPoint = !bp || v < .5 || ((rb.pos.x - bp.x) * rb.vel.x + (rb.pos.y - bp.y) * rb.vel.y) / v >= -.25;
+      if (d <= handoffReach(a, rb) && atPoint) {
         this.handed = sim.handoff(a, rb);
         return stand();
       }

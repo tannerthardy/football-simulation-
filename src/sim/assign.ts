@@ -148,7 +148,7 @@ export function assignBehaviors(sim: PlaySim): void {
     qb.behavior = new QBHandoff(mesh.qb, 1.0, null, 0, true);
     if (rb) rb.behavior = new RunBlocker({ kind: 'climb', target: null, drive: { x: 1, y: 0 } });
   } else {
-    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch);
+    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.ballPoint);
     if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride, mesh.through ?? 0);
   }
   for (const a of sim.offense) {
@@ -170,6 +170,8 @@ interface Mesh {
   ride: boolean;
   /** DRAW_NFL: the speed at which a non-riding back arrives at the mesh (0: stop there). */
   through?: number;
+  /** GUN_MESH: where the ball goes into the back's pocket; the QB gives it when he reaches it. */
+  ballPoint?: Vec2;
 }
 
 /** Stretch mesh on the back's track (STRETCH_MESH=0: inside mesh, the stretch back stops). */
@@ -199,6 +201,15 @@ export const MESH_GUN_SIDE = process.env.MESH_GUN_SIDE === '1';
  * 0.25 yd on his backside (ours handed off with the back still 0.6 yd
  * backside of the QB's start, 0.45 yd shallower, 0.1 s earlier). */
 export const MESH_NFL = process.env.MESH_NFL === '1';
+/** GUN_MESH (experimental, off): a gun back aligned away from the play crosses
+ * in front of the QB and takes the ball there, on his own track: the exchange
+ * point is half a yard in front of the QB (toward the line) and just short of
+ * his face (tracked 2022 gun handoffs, back relative to the QB: stretch -0.16
+ * lateral / +0.53 depth; inside zone, power, counter, trap -0.5 to -0.8 / +0.5),
+ * and the QB gives it when the back reaches that point, not when he first comes
+ * within reach (ours took it a yard short of the QB's face, level with him, at
+ * full reach, braking: IZ 2.2 yd/s at the exchange vs NFL 3.8). */
+export const GUN_MESH = process.env.GUN_MESH === '1';
 /** DRAW_NFL (default off): the gun draw exchange from 2022 tracking. The QB
  * gives ground only half a yard (tracked 5.09 yd deep at the handoff, ours
  * 5.90), the back takes it beside him (1.07 yd off his line, 0.6 yd in front)
@@ -249,6 +260,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   // 1.0, the exchange window opening 0.15 s before the 1.15 s install).
   let time = concept.meshTime + (GUN_STRETCH_T && qbType === 'gun' && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone') ? .2 : 0);
   let pitch = 0;
+  let ballPoint: Vec2 | undefined;
   if (concept.scheme === 'toss') {
     qb = { x: los - 1.8, y: by + ps * 0.6 };
     rb = { x: los - 5.5, y: by + ps * 4.0 };
@@ -299,6 +311,11 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
         const lat = Math.min(side, clear);
         rb = { x: qb.x + sim.attackDir('O') * Math.sqrt(clear * clear - lat * lat), y: qb.y - ps * lat };
       }
+      if (GUN_MESH) {
+        const stretchy = concept.scheme === 'outsideZone' || concept.scheme === 'wideZone';
+        rb = { x: qb.x + sim.attackDir('O') * .5, y: qb.y - ps * (stretchy ? .16 : .65) };
+        ballPoint = rb;
+      }
     }
   }
   // Backs take the handoff on the move, running through the mesh at the
@@ -307,7 +324,7 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   // back's old stop-at-the-landmark mesh.
   const stretch = concept.scheme === 'outsideZone' || concept.scheme === 'wideZone';
   return { qb, rb, aim, time, pitch, ride: concept.scheme !== 'draw' && (stretch ? STRETCH_MESH : true),
-    through: DRAW_NFL && concept.scheme === 'draw' ? 1.9 : 0 };
+    through: DRAW_NFL && concept.scheme === 'draw' ? 1.9 : 0, ballPoint };
 }
 
 /**
