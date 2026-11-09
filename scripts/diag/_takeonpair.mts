@@ -22,7 +22,9 @@ for (let k = 0; k < N; k++) {
     offCall: { formation, flip, kind: 'run', run: RUN_BY_ID[run], label: run } as any,
     defCall: { personnel: pers, front: FRONT_BY_ID[front], coverage: COVERAGE_BY_ID[cov], pressure: null, label: cov } as any,
     los, ballY, firstDownX: 55, seed, audibles: false } as any);
-  let res: any, falls = 0; const down = new Set();
-  try { while (!sim.outcome && sim.t < 30) { sim.tick(); if (sim.t < 3) for (const a of sim.defense) if (/^LB/.test(a.slot) && !down.has(a) && a.body.support?.state !== 'up') { down.add(a); falls++; } } res = sim.buildResult(); } catch { console.log(`${seed} ERR`); continue; }
-  console.log(`${seed} ${run} ${cov} yds=${Number(res.yards).toFixed(1)} fired=${fired.has(sim) ? 1 : 0} lbfalls=${falls}`);
+  let res: any, falls = 0; const down = new Set(); let latSum = 0, latN = 0, gapAtLos = NaN; const dirX = sim.attackDir(sim.offense[0].team);
+  try { while (!sim.outcome && sim.t < 30) { sim.tick(); if (sim.t < 3) for (const a of sim.defense) if (/^LB/.test(a.slot) && !down.has(a) && a.body.support?.state !== 'up') { down.add(a); falls++; }
+      const c = sim.carrier; if (c && sim.handoffAt >= 0 && sim.t > sim.handoffAt && sim.t < sim.handoffAt + 1) for (const a of sim.defense) if (/^LB/.test(a.slot) && !a.engagement && Math.abs(c.vel.y) > 1) { latSum += a.vel.y * Math.sign(c.vel.y); latN++; }
+      if (c && Number.isNaN(gapAtLos) && sim.handoffAt >= 0 && (c.pos.x - sim.los) * dirX >= 0) gapAtLos = Math.min(...sim.defense.filter((a: any) => /^LB/.test(a.slot)).map((a: any) => Math.hypot(a.pos.x - c.pos.x, a.pos.y - c.pos.y))); } res = sim.buildResult(); } catch { console.log(`${seed} ERR`); continue; }
+  console.log(`${seed} ${run} ${cov} yds=${Number(res.yards).toFixed(1)} fired=${fired.has(sim) ? 1 : 0} lbfalls=${falls} lat=${latN ? (latSum / latN).toFixed(2) : 'NaN'} lbgap=${gapAtLos.toFixed(2)}`);
 }
