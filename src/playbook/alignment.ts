@@ -184,7 +184,7 @@ const BACKERS: Record<string, Partial<Record<1 | 2 | 3, BackerSpot[]>>> = {
   bear: { 2: [[-.8, 4.6], [2, 4.4]] },
   tite: { 2: [[-.8, 4.6], [1.85, 4.5]] },
 };
-const FAMILY: Record<string, string> = { over: 'over', wide9: 'over', under: 'under', under34: 'under', even: 'even', bear34: 'bear', tite: 'tite' };
+const FAMILY: Record<string, string> = { over: 'over', wide9: 'over', under: 'under', under34: 'under', even: 'even', bear34: 'bear', tite: 'tite', mint3: 'even' };
 const FRONT_PLAYERS = new Set<DefSlot>(['DE_S', 'DE_W', 'DT_S', 'DT_W', 'NT', 'LB_S', 'LB_M', 'LB_W']);
 /** The front's strong side (+1 = +y). */
 export function frontSign(call: DefensivePlayCall, off: OffenseAlignment): number {

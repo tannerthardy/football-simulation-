@@ -7,7 +7,7 @@ import type { Coverage, Front, Pressure } from './types.js';
 const DL = 0.9; // DL depth off the ball
 const LB = 4.6;
 
-export const FRONTS: Front[] = [
+const ALL_FRONTS: Front[] = [
   {
     id: 'over', name: '4-3 Over', personnel: ['base43', 'nickel', 'dime'],
     slots: {
@@ -120,6 +120,35 @@ export const FRONTS: Front[] = [
     },
   },
   {
+    // NICKEL_FRONTS (experimental, off): a five-man nickel front. The 3-4's
+    // Tite with the Will walked up as the weak edge, standing, at the wide 9:
+    // two 4i's and a nose inside, the Mike the lone stack backer.
+    id: 'tite_n', name: 'Nickel Tite (5-man)', personnel: ['nickel'],
+    fits: { DT_S: { gap: 'B', side: 'S', technique: 'control' }, DE_W: { gap: 'B', side: 'W', technique: 'control' }, DT_W: { gap: 'A', side: 'W', technique: 'lag' } },
+    slots: {
+      DE_S: { tech: '9', side: 'S', depth: DL },
+      DT_S: { tech: '4i', side: 'S', depth: DL },
+      DT_W: { tech: '0', side: 'S', depth: DL },
+      DE_W: { tech: '4i', side: 'W', depth: DL },
+      LB_W: { tech: 'w9', side: 'W', depth: 1.0 },
+      LB_M: { tech: '1', side: 'W', depth: LB },
+    },
+  },
+  {
+    // NICKEL_FRONTS (experimental, off): a three-man front. Two 5 techniques
+    // and a nose on the ball; the fourth lineman stands up off it over the
+    // weak B gap (a rover: he rushes or drops with the call).
+    id: 'mint3', name: 'Mint 3-Down', personnel: ['nickel', 'dime'],
+    slots: {
+      DE_S: { tech: '5', side: 'S', depth: DL },
+      DT_S: { tech: '0', side: 'S', depth: DL },
+      DE_W: { tech: '5', side: 'W', depth: DL },
+      DT_W: { tech: '3', side: 'W', depth: 2.6 },
+      LB_M: { tech: '2', side: 'S', depth: LB + 0.3 },
+      LB_W: { tech: '2', side: 'W', depth: LB },
+    },
+  },
+  {
     id: 'bear', name: 'Bear (goal line)', personnel: ['goalline', 'heavy'],
     slots: {
       DE_S: { tech: '6', side: 'S', depth: DL },
@@ -133,6 +162,9 @@ export const FRONTS: Front[] = [
     },
   },
 ];
+/** NICKEL_FRONTS (experimental, off): the sub-package three- and five-man fronts join the catalog only under the flag. */
+const NICKEL_FRONTS = process.env.NICKEL_FRONTS === '1';
+export const FRONTS: Front[] = ALL_FRONTS.filter((f) => NICKEL_FRONTS || !['tite_n', 'mint3'].includes(f.id));
 
 export { COVERAGES, COVERAGE_BY_ID } from './coverages.js';
 
@@ -203,4 +235,6 @@ export const PRESSURES: Pressure[] = [
 export const FRONT_BY_ID: Record<string, Front> = Object.fromEntries(FRONTS.map((f) => [f.id, f]));
 /** Fronts the caller uses only under FRONT_MENU (game/playcaller.ts). */
 export const MENU_FRONTS: ReadonlySet<string> = new Set(['even', 'bear34', 'under34']);
+/** NICKEL_FRONTS: the three- and five-man sub-package fronts, called only under that flag. */
+export const NICKEL_FRONT_IDS: ReadonlySet<string> = new Set(['tite_n', 'mint3']);
 export const PRESSURE_BY_ID: Record<string, Pressure> = Object.fromEntries(PRESSURES.map((p) => [p.id, p]));

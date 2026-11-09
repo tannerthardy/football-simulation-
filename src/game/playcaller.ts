@@ -20,7 +20,7 @@ import { r01, type Player } from '../players/types.js';
 import type { ManPreference } from '../playbook/alignment.js';
 import { coverageHasNamedZonePlayers, pressureIsInstallable } from '../playbook/call-integrity.js';
 import { PASS_CONCEPTS, RUN_CONCEPTS } from '../playbook/concepts.js';
-import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, PRESSURES } from '../playbook/defense.js';
+import { COVERAGE_BY_ID, FRONTS, MENU_FRONTS, NICKEL_FRONT_IDS, PRESSURES } from '../playbook/defense.js';
 import { FORMATIONS } from '../playbook/formations.js';
 import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, MotionCall, OffensivePlayCall, OffSlot, PassConcept, PersonnelId, RunConcept, SkillSlot, ZoneStyle } from '../playbook/types.js';
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
@@ -38,6 +38,11 @@ const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_RATE = 0.5;
  * (1 = 1st, 2 = 2nd, 3 = 3rd/4th and short (< 4), 4 = 3rd/4th and long). NFL 2022
  * snap frames: a non-lineman 0-1.6 yd off the ball inside the guards. */
 const MUG_CALLS = process.env.MUG_CALLS === '1';
+/** NICKEL_FRONTS (experimental, off): shares of nickel's five-man front and of the three-man front, by moment. */
+const NICKEL_FRONTS = process.env.NICKEL_FRONTS === '1';
+const SUB_FIVE: Record<Moment, number> = { early: .12, third: .10, short: .20 };
+const SUB_THREE: Record<'nickel' | 'dime', Record<Moment, number>> = { nickel: { early: .05, third: .08, short: .03 }, dime: { early: .15, third: .15, short: .15 } };
+const FRONT_BY_ID_SUB = Object.fromEntries(FRONTS.filter(f => NICKEL_FRONT_IDS.has(f.id)).map(f => [f.id, f]));
 const MUG_RATES: Record<'nickel' | 'dime', Record<number, [number, number]>> = {
   nickel: { 1: [.013, .001], 2: [.026, .008], 3: [.072, .023], 4: [.19, .068] },
   dime: { 1: [.062, .003], 2: [.062, .007], 3: [.105, .011], 4: [.113, .016] },
@@ -560,9 +565,18 @@ export class DefensiveCoordinator {
     else if (offPersonnel === '12') personnel = rng.chance(scheme === 'nickel-heavy' ? 0.6 : 0.4) ? 'nickel' : scheme === '3-4' ? 'base34' : 'base43';
     else personnel = scheme === '3-4' ? 'base34' : 'base43';
 
-    const fronts = FRONTS.filter((f) => f.personnel.includes(personnel) && (FRONT_MENU || !MENU_FRONTS.has(f.id)));
+    const fronts = FRONTS.filter((f) => f.personnel.includes(personnel) && (FRONT_MENU || !MENU_FRONTS.has(f.id)) && !NICKEL_FRONT_IDS.has(f.id));
     const moment: Moment = s.distance <= 2 ? 'short' : s.down >= 3 ? 'third' : 'early';
-    const front = pickWeighted(
+    // NICKEL_FRONTS (experimental, off): sub packages also play five- and
+    // three-man fronts at the league's shares (2022 snap frames, defenders
+    // within 2 yd of the ball: nickel 5 on the line 17% early / 30% short /
+    // 17% third, 3 on 6% / 4% / 9%; dime 3 on 15%), less what mugs and walk-ups
+    // already put on the line.
+    const subDraw = own.fork('sub-front').next();
+    const sub = NICKEL_FRONTS && (personnel === 'nickel' || personnel === 'dime')
+      ? (personnel === 'nickel' && subDraw < SUB_FIVE[moment] ? FRONT_BY_ID_SUB.tite_n
+        : subDraw < (personnel === 'nickel' ? SUB_FIVE[moment] : 0) + SUB_THREE[personnel][moment] ? FRONT_BY_ID_SUB.mint3 : undefined) : undefined;
+    const front = sub ?? pickWeighted(
       rng,
       fronts.map((f) => [f, FRONT_MENU ? menuWeight(f.id, personnel, scheme, moment)
         : FRONT_ALIGN ? installWeight(f.id, personnel, passingDown, scheme)
