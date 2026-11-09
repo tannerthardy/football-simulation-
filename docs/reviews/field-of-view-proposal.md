@@ -247,3 +247,59 @@ tops out at motion until then.
   1.25).
 - The TE is where the read matters most: 1.37 context, 1.21 right, 1.57 wrong.
   He blocks on runs and releases on passes.
+
+### Hand-over with picture age and the NFL table (2026-11-09)
+
+Run Game's held-out NFL run (`data/anticipation-prior-nfl.json`, 12,480
+aggregate keys from 2022 tracking, including run/pass-conditioned and
+time-pooled cells) changes one thing:
+- **Constant acceleration predicts better to about 0.8 s; context by 1.5 s.**
+- So an elite reader's prior weight is now `(2·skill − 1) × handover(picture
+  age)`, with the hand-over running linearly from 0.8 s to 1.5 s
+  (`PRIOR_HANDOVER`).
+
+**The read asymmetry holds on NFL.** Median error in yd at 1.0 / 1.5 s:
+
+| Prior | Context | Correct read | Wrong read |
+|---|---|---|---|
+| NFL, all players | 1.14 / 2.13 | 1.10 / 2.05 | 1.28 / 2.43 |
+| Sim, all players | 1.10 / 1.94 | 1.04 / 1.82 | 1.25 / 2.22 |
+
+A fooled read costs 3–4× what a correct read gains, on both sources.
+
+**In the engine** (restaged runs, 1,310; error of every remembered picture of
+an assigned opponent against his true position; every player rated elite):
+
+| Picture age | No prior | Sim prior | NFL prior |
+|---|---|---|---|
+| 0.6–1.0 s | 1.19 | 1.17 | 1.18 |
+| 1.0–1.5 s | 2.15 | 1.99 | 2.14 |
+
+- Outcomes do not move: 3.859 yd in every arm, and 4.005 with real ratings.
+  Only chasers use GAZE so far.
+- **The NFL table barely helps predict sim players; the sim's own table
+  does.** Applied to sim plays in Python (`anticipation-bound.py --apply`),
+  the NFL table's excess error over the sim's own (correct read, 1.5 s, yd):
+
+  | QB | RB | DB | WR | LB | OL | DL | TE |
+  |---|---|---|---|---|---|---|---|
+  | +0.84 | +0.81 | +0.47 | +0.45 | +0.35 | +0.29 | +0.24 | +0.08 |
+
+  QB drops and RB paths are where sim movement departs most from what NFL
+  players do from the same picture. That is a place to look (Run Game and QB),
+  not a number to tune. A player using NFL experience is correctly surprised
+  by an un-NFL-like opponent.
+- **Larger than any prior effect:** the age of remembered pictures. With real
+  ratings, about 35% of memory lookups are older than 1.5 s, with about 10 yd
+  median error. Those are players who look away and never look back. That is
+  stage 2's head-turn checks, and it matters more than prior detail.
+
+**Which table to commit.** The committed module stays empty, so anticipation
+tops out at motion, until Tanner decides. The candidate is the NFL table:
+- Experience should be NFL experience.
+- Its weaker fit to sim players is information, not a reason to train on the
+  sim.
+
+Generate it with:
+
+    python3 -I scripts/diag/write-anticipation-prior.py data/anticipation-prior-nfl.json "NFL 2022 tracking (Run Game)"

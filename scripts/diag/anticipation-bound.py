@@ -20,12 +20,15 @@ Predictors (observable motion only; no route, assignment or ball knowledge):
   correct run/pass read: the ceiling of what a defender's read of the play adds. In the engine it is
   gated by the defender's own read, which can be wrong (play action, draws).
 - misread: the same, conditioned on the wrong kind. The cost of being fooled.
+- foreign (--apply prior.json): another source's exported prior, with the correct read, e.g. the NFL table on
+  sim plays. Where foreign is much worse than the own-source read, that group's movement there is not
+  NFL-like (a place to look, not a target).
 
 The freeze curve is the no-anticipation bound. The best of the honest predictors (cv, damped or ca) is
 what an observer can achieve from motion alone. Role, route and concept priors could do better; that is
 the headroom for experienced players.
 
-usage: python3 -I scripts/diag/anticipation-bound.py <nfl.jsonl.gz | sim.jsonl.gz> [more] [--export prior.json]
+usage: python3 -I scripts/diag/anticipation-bound.py <nfl.jsonl.gz | sim.jsonl.gz> [more] [--export prior.json] [--apply other-prior.json]
 --export writes the context prior (trained on all plays) as an aggregate table: key -> horizon -> [along, across, n].
 Keys prefixed 'run|' or 'pass|' are conditioned on the play's kind. Keys ending in '*' pool all time bins; the engine falls back to them when the timed cell is too thin."""
 import sys, json, gzip, math, statistics as st, collections, zlib
@@ -100,7 +103,13 @@ def train(paths):
     return {k: (v[0] / v[2], v[1] / v[2]) for k, v in acc.items() if v[2] >= 20}
 
 EXPORT = sys.argv[sys.argv.index("--export") + 1] if "--export" in sys.argv else None
-FILES = [a for a in sys.argv[1:] if a.endswith((".gz", ".jsonl")) and a != EXPORT]
+APPLY = sys.argv[sys.argv.index("--apply") + 1] if "--apply" in sys.argv else None
+FILES = [a for a in sys.argv[1:] if a.endswith((".gz", ".jsonl")) and a not in (EXPORT, APPLY)]
+FOREIGN = {}
+if APPLY:  # another source's exported prior (e.g. NFL applied to sim plays): a transfer check
+    for k, cell in json.load(open(APPLY))["cells"].items():
+        for h, v in cell.items():
+            FOREIGN[(k, round(float(h) * 10))] = (v[0], v[1])
 PRIOR = train(FILES)
 if EXPORT:
     full = collections.defaultdict(lambda: [0.0, 0.0, 0])
@@ -172,7 +181,16 @@ for path in FILES:
                         pm = PRIOR.get(((other,) + key, h)) or pr
                         dx, dy = from_frame(pm[0], pm[1], ux, uy, side)
                         errs["misread"] = math.hypot(tx - (x0 + dx), ty - (y0 + dy))
-                    errs["best"] = min(v for k, v in errs.items() if k not in ("context", "read", "misread"))
+                    fk = "|".join(map(str, key)); fp = None
+                    if FOREIGN:
+                        kind = p.get("kind")
+                        pooled = "|".join(map(str, key[:-1])) + "|*"
+                        fp = (FOREIGN.get((f"{kind}|{fk}", h)) or FOREIGN.get((f"{kind}|{pooled}", h))
+                              or FOREIGN.get((fk, h)) or FOREIGN.get((pooled, h)))
+                    if fp:
+                        dx, dy = from_frame(fp[0], fp[1], ux, uy, side)
+                        errs["foreign"] = math.hypot(tx - (x0 + dx), ty - (y0 + dy))
+                    errs["best"] = min(v for k, v in errs.items() if k not in ("context", "read", "misread", "foreign"))
                     for k, v in errs.items():
                         E[(g, h, k)].append(v)
                         E[("all", h, k)].append(v)
@@ -183,7 +201,7 @@ for path in FILES:
         for h in H:
             cell = " ".join(
                 f"{k} {st.median(E[(g, h, k)]):.2f}[{sorted(E[(g, h, k)])[int(.9 * (len(E[(g, h, k)]) - 1))]:.2f}]"
-                for k in ("freeze", "cv", "damped", "ca", "context", "read", "misread", "best") if E[(g, h, k)])
+                for k in ("freeze", "cv", "damped", "ca", "context", "read", "misread", "foreign", "best") if E[(g, h, k)])
             rows.append(f"    {h / 10:.1f}s: {cell}")
         n = len(E[(g, H[0], "freeze")])
         if n:
