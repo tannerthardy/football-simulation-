@@ -317,6 +317,7 @@ problem), resolved.
 | [COV-7](#cov-7) | A man corner can't support a run he has recognized | G1, G3 | medium | paused; broader cost-fixture requalification first on resume |
 | [COV-8](#cov-8) | Trailing man defenders can't find the ball | G3, G4 | high | open (logged with the throw-sight change) |
 | [COV-9](#cov-9) | A man defender overruns a turning receiver once nothing slows his pedal | G3 | medium | open (logged with #394; Coverage paused) |
+| [REC-1](#rec-1) | Receiver options and continuation can contradict available information or route intent | G3, G10 | medium | candidate: acquired route reads; catch/release limits remain |
 | [COV-10](#cov-10) | Sim route releases are too fast and too vertical, so release-keyed reads get no hard negatives | G3 | medium | open (needs an owner: offense route runner) |
 | [BALL-1](#ball-1) | Too many interceptions | G4 | high | flag (partial) |
 | [BALL-2](#ball-2) | Throws always leave from standing height | — | low | open |
@@ -2442,6 +2443,31 @@ BDB2025 weeks 1–2 with `run_film_reference.py`.
   a call problem. Logged 2026-10-22.
 
 ## Pass defense and coverage
+
+<a id="rec-1"></a>
+### REC-1: Receiver options and continuation can contradict their information or route
+
+- **Source inspected:** accepted develop `6676dfc2c4de6b07dbf666465248799b8bbc4e43`.
+  Stick/hook conversion reads the private defensive man label, adds a random
+  misread, and triggers by elapsed time. The QB's independent forecast has
+  only the base path. Settled receivers drift from true defender positions.
+  Separately, route continuation can produce a negative extension beyond its
+  inner sideline margin and retrace a completed outside route.
+- **Candidate:** acquired local keys at an installed read depth; bounded key
+  memory; shared immutable alternatives with independent QB expectations;
+  visible post-break motion can correct the QB's inferred answer. Forecasts
+  preserve the base stem until the same read landmark. Outside continuation
+  turns up from the reached point. No speed/contact/probability adjustment.
+- **Scope:** [receiver route reads](football-handbook/receiver-route-reads.md).
+  The tagged seam read is tested as an explicit native install, not added to
+  ordinary play-calling frequencies. Existing stick/hook calls use their
+  acquired read by default. Changes are a candidate until reviewed.
+- **Remaining:** COV-10's early release shapes; pre-contact release technique
+  and concept-specific mandatory releases; private scramble/targeted-flight
+  shortcuts; and offensive failed opportunities becoming deflections without
+  an independent touch test. Do not claim the receiver subsystem is complete.
+  Preserve changed native catches and broken tackles as adverse evidence;
+  improved decision information alone does not certify every new ending.
 
 <a id="cov-1"></a>
 ### COV-1: Zone defenders barely close while the ball is in the air
