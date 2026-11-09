@@ -555,3 +555,49 @@ NFL. The remaining from-snap gap (5% against 14%, Defense's `trench2`) comes fro
 the population outside that cut: doubles, free DL, and men who never hold a
 solo block. It is not the contest law. No change to the contact law is
 proposed.
+
+#### Stays experimental: exponent sensitivity and tackle controls (2026-11-09)
+
+Tanner's decision: `LEG_ALLOMETRY` stays experimental. His objections:
+- The 0.69 comes from an estimated vertical push-off force with an assumed
+  push-off depth. It is not a measured horizontal push at equal rating.
+- Leg drive also sets recovery capacity, so tackle outcomes can change even
+  when run yardage is neutral.
+- Promotion needs sensitivity checks and matched tackle and recovery
+  controls.
+
+**Exponent sensitivity** (nflverse combine, within position groups; force ∝ m^b):
+
+| Estimator | b |
+|---|---|
+| Vertical push-off, d = 0.20 / 0.25 / 0.30 / 0.35 / 0.40 × height | 0.67 / 0.69 / 0.71 / 0.73 / 0.75 |
+| Vertical push-off, fixed d = 0.35 / 0.45 / 0.55 m | 0.77 / 0.79 / 0.80 |
+| Jump work m·g·h | 0.66 |
+| Broad-jump work proxy (m × distance) | 0.75 |
+| 40-yd mean acceleration × mass | 0.58 |
+| Bench 1RM (Epley; endurance-confounded) | 0.44 |
+
+So b is not pinned. A defensible leg range is about 0.6–0.8. Every estimator
+excludes the engine's b = 1, which supports the direction of the correction
+but not the 0.69 value.
+
+**Tackle and recovery controls.** Run Game's branch + flags + `ONE_ARM_HOLD`,
+588 paired zone runs, `LEG_ALLOMETRY` off → on:
+- 556 plays changed.
+- Missed and broken tackle events per run: 0.466 → 0.514, paired **+0.048
+  (SE 0.033)**.
+- Yards: paired +0.07 (SE 0.14).
+- Finish, at −1..0 / 0..1 / 1..3:
+  - contact → end: 1.00 / 0.90 / 0.80 → 1.10 / 1.00 / 0.80 s;
+  - gain: 1.20 / 1.44 / 1.83 → 1.33 / 1.68 / 1.74;
+  - flat: 72 / 55 / 33% → 68 / 60 / 38%.
+- Lighter carriers gain leg force relative to heavier tacklers, so broken
+  tackles tend up (about 1.5 SE). That is exactly the risk Tanner named.
+
+**Before promotion:**
+1. A source for horizontal pushing force versus mass. Sled-push or
+   force-plate studies would do it. The jump estimators bound b only within
+   about 0.6–0.8.
+2. Bracketing arms at b = 0.6 and 0.8 on the same controls.
+3. Tackle-outcome controls on the same operator as NFL: broken-tackle rate
+   by carrier mass and contact class, and after-catch contacts.
