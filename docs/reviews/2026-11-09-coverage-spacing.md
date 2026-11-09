@@ -206,6 +206,91 @@ change in the median depth versus 1st & 10 against 11 personnel.
   - `pursuit-arrival`: re-selected to seed 1 (its native case moved; all 6
     contracts pass).
 
+## Pass 2: does each player do his job, and do alignments hold across looks?
+
+**PFF labels, read with care.** The per-defender assignments are PFF's charting,
+not ground truth. They are used here only as medians and ranges over 1,000+ rows
+per label, only where the gap to the sim is large (2+ yd), and alongside measures
+that need no label (depth by coverage family, trigger time).
+
+**Role depth over time, NFL versus sim** (pass plays; yd off the line):
+
+| Job (PFF label) | NFL at 2.5 s, p25 / p50 / p75 | Sim |
+|---|---|---|
+| Hook (HOL) | 3.8 / 6.3 / 9.5 | about 9.9 |
+| Curl-flat (HCL/HCR) | 4.7 / 6.6–6.7 / 8.7–8.8 | 2–3.5 yd deeper than NFL |
+| Cover 2 flat corner | sinks and widens | comes up and in |
+| Quarters / deep-third corner | | bails 2.4–3.7 yd deeper than NFL |
+| Disguised one-high rotator (shown) | 11.1 (10.0–12.6) | 9 |
+
+**Built in this pass**
+
+- **Underneath droppers settle when the QB sets (`ZONE_SETTLE`, on).**
+  - **The rule:** a hook, curl or flat dropper sinks until he sees the QB stop
+    after dropping at least 1 yd from his snap spot. From then on he holds his
+    depth rather than running to a fixed landmark.
+  - **What he still does:** he keeps carrying a receiver he is matched to. His
+    cue is the QB as he sees it, with the usual perception delay.
+  - **Effect:** small. Hook depth at 2.5 s goes 9.9 → 9.6 across the grid. Most
+    of the remaining depth is carrying routes past him, which mixes in which
+    concepts were called.
+- **Disguised rotators show 11 yd, not 9** (`NINE_DEEP`, Cover 3 buzz and Cover 9
+  grab), matching the NFL's 11.1.
+- **Alignment audit across looks.** Script: `out/align-audit/` on the branch.
+  - **Grid:** every coverage × formation × personnel × front × flip × hash.
+  - **Checks:** each defender's spot is tested against the call's own rules.
+
+  Fixes, with counts at the 50-yd line before → after:
+
+  | Problem | Before | After |
+  |---|---|---|
+  | Inside receiver left unanswered in zone | 56 | 0 |
+  | Underneath seats crossing | 69 | 12 |
+  | Two-high depth mismatch | 408 | 0 |
+
+  - **Personnel:** a 3-4 base defense was being treated as nickel. "Nickel" now
+    comes from the call's personnel.
+  - **Apex:** only in zone calls. Against trips the apex splits #2 and #3 rather
+    than #2 and the core.
+  - **Walk-outs:** box walk-outs never reuse a backer, so against base trips the
+    Mike walks to #3.
+  - **Underneath seats:** assigned by least total distance instead of
+    first-come. Against trey, Cover 3 had the Mike and Will crossing.
+  - **Man matching:**
+    - corners and nickels leave attached ends and backs to the box or a safety
+      when one is in man;
+    - with no such defender (split-field 2-Man to a nub end), the corner keeps
+      the end rather than leave him free and cross the formation.
+  - **Back on the ball:** a defender over a back on the ball shades from his own
+    side; before, he shaded from a fixed side of the field.
+  - **Nub side:** a zone corner with no detached #1 on his side takes the
+    no-receiver spot.
+- **Left as is:**
+  - **Over vs a TE and wing:** the end in a 9 and the Sam head-up on the wing
+    stand about 0.75 yd apart (165 audit overlaps, mostly 12-personnel wing
+    looks). That is what the install specifies (2017 Colts p. 77), and the
+    front contract encodes it.
+  - **Linebackers in man on detached receivers in base:** 870 audit rows. This
+    is a personnel choice (base against spread), not an alignment rule.
+
+**Fixtures this moved** (each re-pinned or re-recorded with its reason):
+- **COV-7 (`cov7-abandonment`) and the press-stance fixture:** both declare the
+  coach matchup "nickel on the inline Y". The default now gives the nickel the
+  slot.
+- **Responsibility ledger:** S8-P005's RT reread disappears with uncrossed hook
+  seats, and M9-P000 carries the reread contract.
+- **Rusher-recording scramble witness:** moves to seed 172.
+- **Cover 3 spot-dropper depth bound:** 9.5 → 7.5, from the NFL ranges above.
+- **Motion lock/trade test:** uses trips, since a lone doubles slot has nothing
+  to trade to.
+
+**Matched restage** (seed 7/11 saved snaps × 4 RNG shifts, PR head versus this
+pass):
+- **Runs:** 168 of 392 changed; +0.12 ± 0.38 yd paired; 10+ yd runs 59 → 62.
+- **Passes:** 377 of 732 changed; −0.02 ± 0.32 yd paired; completions 509 → 504.
+
+No material outcome shift: these are structure and role fixes.
+
 ## Ranked next (each its own step)
 
 1. **No force from deep defenders (`DEEP_NO_FORCE`, flag off today).**
@@ -234,10 +319,18 @@ change in the median depth versus 1st & 10 against 11 personnel.
 4. **Backside safety as cutback/pursuit:** sim 8.1 yd from the runner against the
    NFL's 5.7.
 5. **The one-high post's alley side follows the run,** not a fixed weak side.
-6. **Smaller items:**
+6. **Underneath and corner technique** (from pass 2):
+   - the Cover 2 flat corner should sink and widen under a vertical #1, not
+     come up and in (generalize the red-zone low-flat technique);
+   - quarters and deep-third corners bail too deep;
+   - underneath droppers carry too deep (a concept-mix confound to separate
+     first).
+7. **Smaller items:**
    - a blitzing DB is classified `alley`, so on a run read he abandons his blitz
      gap;
    - `cutback` is never assigned in games;
-   - the structure tags `nub`, `two_back` and `iso_weak` are never used (no 2-back
-     or nub-side adjustments);
+   - the structure tags `two_back` and `iso_weak` are never used (pass 2
+     handles the nub side's corner, not its checks);
+   - the down safety stacks with the Sam or nickel against 12 personnel's #3;
+   - Lurk's bunch → banjo check is unreachable;
    - the box count is never read by the defense.

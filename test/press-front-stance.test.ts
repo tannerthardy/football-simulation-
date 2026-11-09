@@ -105,7 +105,9 @@ function setup(front: string, coverage: string): PlaySetup {
   return { ...panel.matchups[0],
     offCall: { formation: FORMATION_BY_ID.ace_11, flip: false, kind: 'run', run: RUN_BY_ID.oz_strong, label: 'OZ' },
     defCall: { personnel: 'nickel', front: FRONT_BY_ID[front], coverage: COVERAGE_BY_ID[coverage], pressure: null, label: 'stance setup' },
-    los: 35, ballY: FIELD_WIDTH / 2, firstDownX: 45, seed: coverage === 'cover1' ? 71002 : 71001, audibles: false };
+    los: 35, ballY: FIELD_WIDTH / 2, firstDownX: 45, seed: coverage === 'cover1' ? 71002 : 71001, audibles: false,
+    // Declared matchup: the nickel presses the inline Y beside the end (the default gives him the slot).
+    manPrefs: { overrides: { NB: 'Y', SS: 'H' } } };
 }
 
 describe('initial PlaySim staging hook', () => {

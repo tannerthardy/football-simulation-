@@ -47,8 +47,12 @@ describe('zone coverage bumps: jobs move, players slide', () => {
 describe('man coverage locks or trades', () => {
   it('Cover 1 vs across motion: both answers occur over seeds; a lock keeps the set defender on him to the snap', () => {
     const outcomes = new Set<string>();
+    // Against trips: with the nickel on the slot (not on the attached end),
+    // a doubles slot crossing the formation leaves no receiver on his side
+    // to trade onto, so his answers there are lock or keep. Against trips a
+    // trade hands the motion man to the safety on the new side.
     for (let seed = 1; seed <= 24; seed++) {
-      const { set, snap } = scene(true, 'cover1', seed);
+      const { set, snap } = scene(true, 'cover1', seed, undefined, 'gun_trips_11');
       const had = Object.values(set.defAlign.spots).find(sp => sp?.role.kind === 'man' && sp.manTarget === 'H')!.slot;
       const has = Object.values(snap.defAlign.spots).find(sp => sp?.role.kind === 'man' && sp.manTarget === 'H')?.slot;
       const locked = (snap.motion as unknown as { lock: DefSlot | null }).lock;

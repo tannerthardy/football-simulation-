@@ -44,6 +44,12 @@ export function believesRun(sim: PlaySim, a: Agent): boolean {
   if (a.recog) return a.recog.read === 'run';
   return !sim.isPass && sim.t >= a.readAt;
 }
+/** ZONE_SETTLE (default on; ZONE_SETTLE=0 turns it off): underneath zone
+ * droppers stop gaining depth once they see the QB set ("drop until his back
+ * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
+ * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
+const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
+
 export function knowsPass(sim: PlaySim, a: Agent): boolean {
   if (a.recog) return a.recog.read === 'pass';
   return sim.isPass && sim.t >= a.readAt;
@@ -569,6 +575,10 @@ export class ZoneCoverage implements Behavior {
   private readonly observations = new Map<Agent, RouteObservation>();
   private readonly depthReads = new Map<Agent, DeepCoverage>();
   private flatExpansionRecorded = false;
+  /** ZONE_SETTLE: when this underneath dropper saw the QB set (-1 not yet). */
+  private settledAt = -1;
+  /** ZONE_SETTLE: the deepest the QB has been in this defender's picture. */
+  private qbDeepest = Infinity;
 
   constructor(
     a: Agent,
@@ -641,6 +651,20 @@ export class ZoneCoverage implements Behavior {
       if (fut.y < ylo || fut.y > yhi) continue;
       threats.push({ r, pos: seen.pos, vel: seen.vel, fut, cue });
     }
+
+    // ZONE_SETTLE: an underneath dropper gains depth until he sees the
+    // quarterback finish his drop (set behind the line, all but still in his
+    // own delayed picture), then plants: from there he plays the QB and the
+    // routes at the depth he has, carrying a vertical only when it comes.
+    if (ZONE_SETTLE && !this.deep && this.settledAt < 0) {
+      // The set is the end of a drop he has seen: the QB first gives ground
+      // (a yard or more deeper than where he took the snap), then stops.
+      const q = sim.see(a, qb);
+      this.qbDeepest = Math.min(this.qbDeepest, q.pos.x);
+      const dropped = (sim.offAlign.spots.QB?.pos.x ?? q.pos.x) - this.qbDeepest >= 1;
+      if (dropped && knowsPass(sim, a) && Math.hypot(q.vel.x, q.vel.y) < 1.2) this.settledAt = sim.t;
+    }
+    const settle = (t: Vec2): Vec2 => this.settledAt >= 0 ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
 
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
@@ -837,7 +861,7 @@ export class ZoneCoverage implements Behavior {
     if (!best) {
       let tgt = lm;
       if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.25 * a.r('anticipation'));
-      return withFacingTechnique(goTo(a, tgt, { facing: facingQB, speed: zs }), { label: 'zone-landmark' });
+      return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: this.settledAt >= 0 ? 'zone-settle' : 'zone-landmark' });
     }
     const lane = lerp(qb.pos, best.pos, 0.82);
     let tgt = { x: Math.min(lane.x, best.pos.x - 0.5), y: lane.y };
@@ -858,7 +882,9 @@ export class ZoneCoverage implements Behavior {
       && Math.hypot(best.vel.x, best.vel.y) + 1e-6 >= Math.hypot(best.cue.vel.x, best.cue.vel.y);
     // A read step must not retain depth already outside his installed drop.
     if (stemRead) tgt = { ...tgt, x: Math.min(a.pos.x, lm.x) };
-    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead ? 0 : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
+    const settledLane = this.settledAt >= 0 && !carryingAcross;
+    if (settledLane) tgt = settle(tgt);
+    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead || settledLane ? Math.min(0, best.vel.x * 0.5) : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
       facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 }),
       { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : 'lane', key: best.vel });
   }
@@ -874,7 +900,7 @@ export class ZoneCoverage implements Behavior {
     const lm = this.landmark;
     const facingQB = angleTo(a.pos, qb.pos);
     const toSpot = Math.hypot(lm.x - a.pos.x, lm.y - a.pos.y);
-    if (toSpot > 2.5 && !a.tags.has('settled')) {
+    if (toSpot > 2.5 && !a.tags.has('settled') && this.settledAt < 0) {
       // Until he has read pass he is in his read step: eyes and chest stay
       // on the backfield. Turning to run before the read turned his back on
       // a run, and on a quick throw he could not yet have keyed.
@@ -906,7 +932,9 @@ export class ZoneCoverage implements Behavior {
       }
     }
     // Hold the spot's depth until the ball is thrown; stay within the zone.
+    // Planted short of the spot on the QB's set, he holds where he planted.
     tgt = { x: Math.max(tgt.x, lm.x - 2), y: tgt.y };
+    if (this.settledAt >= 0) tgt = { x: Math.min(tgt.x, Math.max(a.pos.x, sim.los + 3)), y: tgt.y };
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };

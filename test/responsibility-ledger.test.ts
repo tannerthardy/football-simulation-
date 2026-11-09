@@ -231,7 +231,7 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'LT' && e.t <= swap.t)).toEqual([]);
   });
 
-  it('S8-P005: RT is reread, and each reread is recorded with its resulting kind', () => {
+  it('M9-P000: RG is reread, and each reread is recorded with its resulting kind', () => {
     // Re-recorded for the start law (#336): M9-P000's C is now reread once (1.8). M25-P032 carried the case on
     // develop 1ec115c7; with develop 84af7d9e merged (the draw double's uncovered man climbs, the departing guard
     // steps off the DT's hip) its C is not reread at all, so M25-P021 carried it (C at 1.7 and 2.65). On #336 + #344
@@ -242,11 +242,14 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // (its SS->LB_W reach at 2.05 disappears; that play's ending moves -0.09 -> 12.89 yd, first contact 3.15 -> 5.20,
     // kept as an adverse outcome, not attributed). S8-P005 carries the case: RT, climbing to SS, is
     // reread to LB_M at 2.15 (still a climb) and to LB_W at 2.65, where the resulting kind is a drive.
-    const p = play('S8-P005');
-    const threats = changeOf(p, 'RT', 'threat-reread');
-    expect(threats.map(c => c.t)).toEqual([2.15, 2.65]);
-    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'RT').map(e => e.t)).toEqual([2.15, 2.65]);
-    expect(threats.map(c => [p.slot(c.before.target), p.slot(c.after.target), c.after.kind])).toEqual([['SS', 'LB_M', 'climb'], ['SS', 'LB_W', 'drive']]);
+    // With the Cover 3 hook seats assigned by least total distance (the Mike to the middle hook, the Will to
+    // the weak hook, no longer crossing), S8-P005's RT is not reread. M9-P000 carries the case: RG, climbing
+    // to SS, is reread to LB_M at 1.7 (still a climb) and to LB_W at 2.1, where the resulting kind is a draw.
+    const p = play('M9-P000');
+    const threats = changeOf(p, 'RG', 'threat-reread');
+    expect(threats.map(c => c.t)).toEqual([1.7, 2.1]);
+    expect(p.sim.events.filter(e => e.type === 'block_threat' && p.slot(e.a ?? null) === 'RG').map(e => e.t)).toEqual([1.7, 2.1]);
+    expect(threats.map(c => [p.slot(c.before.target), p.slot(c.after.target), c.after.kind])).toEqual([['SS', 'LB_M', 'climb'], ['LB_M', 'LB_W', 'draw']]);
   });
 
   it('R9-P020: one defender reaches the carrier first, and the ledger does not invent a tie', () => {
@@ -366,10 +369,12 @@ describe('responsibility ledger, named cases from the Phase II zone set (a5b024b
     // contact at 3.85, wrapping with it; still not a tie. With the line read (a puller or zone step seen from the line feeding the squeeze, and the keyed flat step)
     // as well, LB_W alone at 3.0, wrapping with it (5.4 yd, not a score); still not a tie. With the box backer reading before he moves and filling to a pull he sees
     // as well, DT_W alone makes first contact at 2.75, a hit without a wrap; SS wraps first, at 4.25; still not a tie.
+    // With the Cover 3 hook seats no longer crossed (Mike middle, Will weak), DT_W alone at 2.75 and wraps with
+    // the contact; still not a tie.
     expect(first.t).toBe(2.75);
     expect(first.defenders.map(p.slot)).toEqual(['DT_W']);
-    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 4.25 });
-    expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('SS');
+    expect(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')).toMatchObject({ t: 2.75 });
+    expect(p.slot(p.d.play.carrierEvents.find(e => e.type === 'tackle_wrap')!.defender)).toBe('DT_W');
   });
 
   // With the back leaving the mesh on his own start (#344), these former QB keeps (S8-P054 and S10-P006 on develop,
