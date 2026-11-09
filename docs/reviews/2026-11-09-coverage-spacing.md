@@ -344,6 +344,25 @@ No material outcome shift: these are structure and role fixes.
      - **Also seen:** the leaks cross the line late (2.2–3.7 s), with
        under-center handoffs at about 1.75 s. That is the mesh Run Game is
        working on.
+     - **The Cover 1 hole Mike was force** (found by Defense): the fallback
+       ranks a middle zone above every man defender, so the hole Mike forced
+       the D gap from over the ball. The coaching table says force is the
+       edge, then the corner, with the post as the alley.
+       - **`MIDDLE_NO_FORCE` (off):** excludes hole/robber players from the
+         force fallback.
+       - **Alone,** it makes the Cover 1 post the force on about a third of
+         snaps.
+       - **With `DEEP_NO_FORCE`** (one rule: no force from the deep or middle
+         player), the grid gives:
+
+         | Coverage | Paired yd/carry | 10+ yd runs |
+         |---|---|---|
+         | Cover 0 | −2.12 ± 0.96 | 30 → 25 |
+         | Cover 1 | +0.19 ± 0.72 | 30 → 27 |
+         | 2-Man | −0.63 ± 1.04 | — |
+         | Quarters | −0.13 ± 0.13 | — |
+
+       - Both flags stay off pending the three owners.
 2. **Quarters and Cover 1 leak runs** (sim 6.9 and 6.8 per carry, against 4.5
    and 4.8). Next, the first wrong stage on matched quarters runs:
    - the apex force's fit;

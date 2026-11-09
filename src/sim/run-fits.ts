@@ -72,6 +72,7 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const exchangeBacker = exchange && sim.slot(exchange.edge) ? sim.slot(exchange.backer) : undefined;
   const available = (d: Agent) => !first.has(d) && d !== exchangeBacker && jobs.get(d)!.kind !== 'force';
   const deepZone = (d: Agent) => { const role = sim.defAlign.spots[d.slot as DefSlot]!.role; return role.kind === 'zone' && isDeepZone(role.zone); };
+  const middleZone = (d: Agent) => { const role = sim.defAlign.spots[d.slot as DefSlot]!.role; return role.kind === 'zone' && (role.zone === 'hole' || role.zone === 'robber'); };
   const outsideSide = (d: Agent): number | null => {
     const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
     if (role.kind !== 'zone') return null;
@@ -86,7 +87,7 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   for (const side of [-1, 1]) {
     const designated = sim.defense.filter(d => available(d) && outsideSide(d) === side);
     const candidates = designated.length ? designated : sim.defense.filter(d => available(d)
-      && outsideSide(d) === null && (d.pos.y - sim.ballY) * side > 2 && !(DEEP_NO_FORCE && deepZone(d)));
+      && outsideSide(d) === null && (d.pos.y - sim.ballY) * side > 2 && !(DEEP_NO_FORCE && deepZone(d)) && !(MIDDLE_NO_FORCE && middleZone(d)));
     const priority = (d: Agent) => {
       const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
       return role.kind === 'zone' ? role.zone.startsWith('flat') ? 0 : role.zone.startsWith('curl_flat') ? 1 : isDeepZone(role.zone) ? 6 : 3 : 7;
@@ -234,6 +235,14 @@ const SAFETY_TEMPO = process.env.SAFETY_TEMPO !== '0';
  * outside the back; the back runs inside him with no one behind. Off: any
  * available defender outside the ball. With no candidate the edge boxes. */
 const DEEP_NO_FORCE = process.env.DEEP_NO_FORCE === '1';
+/** MIDDLE_NO_FORCE (off; =1 turns it on): the hole/robber player is never the
+ * side's force by fallback. He is the inside-out fitter in the middle of the
+ * field (Cover 1: force is the play-side edge, then the corner; the post is
+ * the alley). The fallback ranked his zone above every man defender, so the
+ * Cover 1 hole Mike forced the D gap from over the ball. Alone it hands Cover 1
+ * force to the post safety, so it is meant with DEEP_NO_FORCE (one rule: no
+ * force from the deep or middle player). */
+const MIDDLE_NO_FORCE = process.env.MIDDLE_NO_FORCE === '1';
 /** GAP_MATCH (on; =0 restores nearest-first): backers fill the front's open
  * gaps as a set. Nearest-first sent the Will in the nickel Under vs 12
  * personnel to the weak A gap and the Mike to the strong B, leaving the gap

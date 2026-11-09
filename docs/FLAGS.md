@@ -60,6 +60,7 @@ There are 90 flags: 70 are on by default, 1 is a diagnostic scale at identity (`
 | `BLOCKED_REACH` | on | default (promoted 2026-10-22) | defense | `src/sim/tackle.ts:85` | review 2: drop the off path |
 | `GRIP_HOLD` | on | default (2026-10-22) | physics | `src/sim/tackle.ts:95` | review 2: drop the off path |
 | `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:236` | expires: review 2. Open: who supplies force in Cover 2 Man and which inside jobs trade; Defense, Run Game and Coverage to agree (#193, #190 comments) |
+| `MIDDLE_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts` | expires: review 2. With `DEEP_NO_FORCE`: no force from the hole/robber or deep player (Cover 1: edge, then corner). Grid with both: Cover 0 −2.12 ± 0.96 yd/carry, Cover 1 +0.19 ± 0.72, 2-Man −0.63 ± 1.04. Alone it makes the Cover 1 post the force. Defense, Run Game and Coverage to agree; `docs/reviews/2026-11-09-coverage-spacing.md` |
 | `DEF_ALIGN` | on | default (promoted 2026-10-22) | coverage | `src/playbook/alignment.ts:71` | review 2: drop the off path |
 | `DEF_GETOFF` | 1 (identity scale) | diagnostic | trenches | `src/sim/agent.ts:25` | expires: review 2 |
 | `DL_ANCHOR` | on | default (promoted 2026-10-22) | trenches | `src/sim/engagement.ts:80` | review 2: drop the off path |
