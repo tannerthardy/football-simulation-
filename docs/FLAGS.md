@@ -16,6 +16,7 @@ There are 117 flags: 68 are on by default, 1 is a diagnostic scale at identity (
 | `SEAL_HOLD` | on | default (G1/G2, 2026-10-25) | trenches | `src/sim/engagement.ts:721` | review 2: drop the off path. A run blocker whose own felt load says his hands are on keeps the leverage he caught the man with; he no longer runs to a new shoulder and carries the man along |
 | `GAP_MATCH` | on | default (G1/G2, 2026-10-25) | defense | `src/sim/run-fits.ts:243` | review 2: drop the off path. Backers fill the front's open gaps as a set: the gap left open is one an underneath support player still covers, never an unsupported or A gap. Nearest-first left the nickel Under's gap between the weak tackle and a second tight end empty |
 | `FLOW_READ` | on | default | defense | `src/sim/run-fits.ts:189` | — |
+| `DL_GAMES` | off | experimental (G2, 2026-11-05) | defense | `src/game/playcaller.ts:129` | two reviews after it lands. The coordinator calls defensive-line games: angles, slants and pinches on run downs (the movers take their new gaps from the snap; backers re-fit the gaps vacated), twists (TE/ET/TT) on passing downs. Off until the offense's blocking rules answer movement |
 | `FLOW_RELEASE` | on | default | run | `src/sim/behaviors/blocking.ts:847` | — |
 | `KEEPER_TORSO` | on | default | run | `src/sim/behaviors/blocking.ts:850` | — |
 | `LB_PLAN` | on | default | defense | `src/sim/run-fits.ts:183` | — |
