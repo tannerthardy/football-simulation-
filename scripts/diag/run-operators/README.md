@@ -38,6 +38,7 @@ The `off` argument is required by every operator that measures blocking.
 | `linestep.py` | The first time at least 4 of 5 OL move laterally the same way faster than 0.7 yd/s (0.2 s central difference). Share of plays by 0.6/1.0/1.5 s, and median OL lateral speed at 0.5 s. |
 | `pile.py` | Zone runs, first contact at -1..+3 yd: from contact to the end (NFL `events.end`, sim last frame), carrier forward speed by the number of defenders within 1.0 yd, and when a 2nd / 3rd defender arrives. |
 | `hitterback.py` | Zone runs, first contact at -1..+3 yd: the first hitter's x displacement from contact to the end (+ = driven back) and the carrier's gain, split front-on (hitter within 45 deg ahead of the carrier's travel) vs side/rear. |
+| `trench2.py` | DL (as in trench) classed at 0.5 s by OL within 1.2 yd centre to centre (solo / double / free): depth from the snap at 0.5/1.0/2.0 s, and the share driven back ≥ 0.5 yd **from the 0.5 s position** by 2.0 s vs from the snap. NFL shifted 0.1 s. |
 | `trench.py` / `ollat.py` | DL/OL depth and lateral displacement from the snap (trench, NFL shifted 0.1 s), and OL lateral by position from the play side (ollat). Both use `olturn.py`'s loader. |
 
 `lbwho.py` and `olturn.py` are shared loaders.
