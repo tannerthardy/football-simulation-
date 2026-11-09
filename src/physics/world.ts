@@ -1536,7 +1536,11 @@ export class World {
       if (jt.kind !== 'grasp' || jt.broken) continue;
       const attachment = this.attachments.get(jt), z = attachment?.material;
       if (!attachment || !z) continue;
-      const j = this.indexOf(jt.b), angle = (this.facing0[j] + jt.b.facing)*.5;
+      const j = this.indexOf(jt.b);
+      // The separate unheld-body pass must not transport an island's grip
+      // again using its previous corrective velocity.
+      if (!ids.includes(j)) continue;
+      const angle = (this.facing0[j] + jt.b.facing)*.5;
       const u = attachment.foot.achieved, c = Math.cos(angle), s = Math.sin(angle);
       z.x += attachment.share*(c*u.x+s*u.y)*h;
       z.y += attachment.share*(-s*u.x+c*u.y)*h;
