@@ -97,6 +97,8 @@ describe('DRAW_READ: coherent change of mind once the picture defeats the prior'
       // (#420), dagger cover1 seed 5 has a 2.7 s catch-and-run on which LB_W reads run at 6.4 s.
       // Likewise a scrambling quarterback: with #419's alignment, dagger cover1 seed 5 flipped has a scramble at
       // 2.95 s and LB_W reads run at 3.55 s.
+      // With the QB's throwing motion (#408) as well, four_verts cover2 seed 1 flipped is a scramble from 2.85 s on
+      // which both backers read run at 5.25 s with the QB past the line; that is a runner too.
       expect(all.filter(r => r.runBeforeCatch).length).toBe(0);
     }
   }, 240_000);

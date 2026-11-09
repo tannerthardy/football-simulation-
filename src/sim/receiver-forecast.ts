@@ -60,13 +60,23 @@ export interface ReceiverEstimate {
   readonly answerSource?: 'own-key-picture' | 'receiver-motion' | 'installed-default';
 }
 
+/** Where the receiver cuts on an installed path: the waypoint the route slows
+ * him most for (first on ties), not counting a final settle spot. Null for a
+ * path with no slowed waypoint (a go or seam). */
+export function pathBreak(path: readonly PathPoint[], end: RouteEnd): number | null {
+  let b: number | null = null;
+  const last = end === 'settle' ? path.length - 1 : path.length;
+  for (let i = 0; i < last; i++) if (path[i].s < 1 && (b === null || path[i].s < path[b].s)) b = i;
+  return b;
+}
+
 /** Each instance belongs to one observer/receiver pair. No shared tick cache. */
 export class ReceiverForecast {
   private picture: ReceiverPicture | null = null;
   private choice: RouteChoice | null = null;
   private inferredCommitment = false;
   private cache: { observer: object; picture: ReceiverPicture | null; pts: Vec2[]; estimate: ReceiverEstimate;
-    route: InstalledAnswer } | null = null;
+    route: InstalledAnswer; breakStep: number | null } | null = null;
 
   constructor(readonly observer: object, readonly prior: InstalledReceiverRoute, private readonly dt: number) {}
 
@@ -94,6 +104,26 @@ export class ReceiverForecast {
   }
 
   get estimate(): ReceiverEstimate | null { return this.build()?.estimate ?? null; }
+
+  /** Whether the route he expects (the installed route, or the answer he has
+   * inferred for an option route) has a break. */
+  get hasBreak(): boolean {
+    const c = this.build();
+    const r = c?.route ?? { path: this.prior.path, end: this.prior.end };
+    return pathBreak(r.path, r.end) !== null;
+  }
+
+  /** When he expects the receiver to make his break: the expected route run
+   * from the picture he holds, through the shared stem until the read
+   * landmark and then the answer he expects (not the receiver's own choice).
+   * Null once it is past, for a route without a break, or when his progress
+   * cannot be identified. */
+  breakAt(): number | null {
+    const c = this.build();
+    if (!c || c.estimate.motion !== 'installed-route') return null;
+    this.extend(c, Math.ceil(8 / this.dt)); // far enough to reach any installed break
+    return c.breakStep === null ? null : c.estimate.sampledAt + c.breakStep * this.dt;
+  }
 
   /** Forecast at absolute time. A held picture ages; it never refreshes itself. */
   predict(now: number, ahead: number): Vec2 | null {
@@ -125,7 +155,7 @@ export class ReceiverForecast {
       motion: !p || progress !== null ? 'installed-route' : 'observed-motion',
       ...(prior.read ? { routeAnswer: route.id, answerSource: observed ? 'receiver-motion' as const
         : this.choice ? 'own-key-picture' as const : 'installed-default' as const } : {}) });
-    this.cache = { observer: this.observer, picture: p, pts: [], estimate, route };
+    this.cache = { observer: this.observer, picture: p, pts: [], estimate, route, breakStep: null };
     return this.cache;
   }
 
@@ -140,6 +170,11 @@ export class ReceiverForecast {
     const pts: Vec2[] = [{ ...body.pos }];
     let done = false;
     let selected = !prior.read || !prior.readContext || body.pos.x >= prior.readContext.los + prior.read.depth;
+    c.breakStep = null;
+    // The break that counts is the expected route's: before the read only the
+    // shared stem is run, so a break is looked for once the answer is active.
+    const brk = (on: boolean) => on ? pathBreak(c.route.path, c.route.end) : prior.read ? null : pathBreak(prior.path, prior.end);
+    let past = brk(selected) !== null && st.idx > brk(selected)!;
     // Rebuild only when a longer horizon is requested, preserving exact prefixes.
     for (let i = 0; i < Math.max(70, steps + 1); i++) {
       // Anticipation selects a future answer, not permission to execute its
@@ -161,6 +196,9 @@ export class ReceiverForecast {
       }
       stepBody(body, cmd, this.dt);
       pts.push({ ...body.pos });
+      const b = brk(selected);
+      if (c.breakStep === null && b !== null && !past && st.idx > b) c.breakStep = i + 1;
+      if (b !== null && st.idx > b) past = true;
     }
     c.pts = pts;
   }
