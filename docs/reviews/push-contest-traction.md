@@ -291,3 +291,36 @@ size from position selection; neither removes training selection.
 **Proposal.** Leg force ∝ m^0.69 at a fixed strength rating, normalised so a
 reference-mass player keeps today's force. Traction stays ∝ m. Before any
 promotion, run the controls listed above. Decision: Tanner and Primary.
+
+#### `LEG_ALLOMETRY` built, off (2026-11-09)
+
+**The law.** With `LEG_ALLOMETRY=1`, `supportParams.pushForce` becomes
+`min(power·g·(m / 110 kg)^(0.69 − 1), traction)`.
+- A 110 kg player keeps today's leg drive.
+- A 143 kg lineman loses 8%; an 88 kg back gains 7%.
+- Traction, arm force and press are unchanged.
+- The grip-scale diagnostic (`TURF_MU_SCALE`) path uses the same leg drive.
+
+Built on Tanner's "do what you think is best". Promotion is still his and
+Primary's.
+
+**Controls, flag off → on.**
+
+| Control | Off | `LEG_ALLOMETRY` |
+|---|---|---|
+| Bench: lopsided s9-39 pair, DE pressing 1.5 / requesting 0 (pair moves toward DE, yd/s) | 0.32 / 0.51 | 0.25 / 0.41 |
+| Bench: blocker strength 40 vs 97 (pair moves toward D) | −0.20 | −0.32 |
+| Bench: matched pair, matched lower pads, pass bull rush (equal-mass bodies) | 0.00 / 0.22 / −0.09 | unchanged (by construction) |
+| s9-39 DE depth at 1.5 s (yd) | 0.75 | 0.67 |
+| Engaged LB between + shedding: driven back (yd/s) | 0.86 | 0.81 |
+| Engaged DL between: toward-carrier achieved (yd/s) | 0.03 | 0.04 |
+
+**Reading.**
+- The direction is right everywhere: the heavier man still wins, by less, and
+  strength ratings matter more relative to mass.
+- The size is modest. At the measured exponent, the law corrects the mass bias
+  but does not by itself close the engaged drive-back or the rally stall.
+- Matched-mass stalemates are untouched by construction. Pad level already
+  decides those on the bench (0.22 yd/s for the lower man), so the item 3
+  matched-pair gap is a pad-level and leverage question in play.
+- Paired restage tables (Run Game) and whole-game measures are still to come.
