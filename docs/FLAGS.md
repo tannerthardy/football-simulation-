@@ -168,6 +168,7 @@ There are 118 flags: 69 are on by default, 1 is a diagnostic scale at identity (
 | `BLOCKED_REACH` | on | default (promoted 2026-10-22) | defense | `src/sim/tackle.ts:85` | review 2: drop the off path |
 | `GRIP_HOLD` | on | default (2026-10-22) | physics | `src/sim/tackle.ts:95` | review 2: drop the off path |
 | `DEEP_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts:236` | expires: review 2. Open: who supplies force in Cover 2 Man and which inside jobs trade; Defense, Run Game and Coverage to agree (#193, #190 comments) |
+| `MIDDLE_NO_FORCE` | off | experimental | defense | `src/sim/run-fits.ts` | expires: review 2. With `DEEP_NO_FORCE`: no force from the hole/robber or deep player (Cover 1: edge, then corner). Grid with both: Cover 0 −2.12 ± 0.96 yd/carry, Cover 1 +0.19 ± 0.72, 2-Man −0.63 ± 1.04. Alone it makes the Cover 1 post the force. Defense, Run Game and Coverage to agree; `docs/reviews/2026-11-09-coverage-spacing.md` |
 | `DEF_ALIGN` | on | default (promoted 2026-10-22) | coverage | `src/playbook/alignment.ts:71` | review 2: drop the off path |
 | `DEF_GETOFF` | 1 (identity scale) | diagnostic | trenches | `src/sim/agent.ts:25` | expires: review 2 |
 | `TURF_MU_SCALE` | 1 (identity scale) | diagnostic (push contest, 2026-11-08) | physics | `src/physics/world.ts:323` | expires: review 2. Scales the traction cap (and traction-capped leg drive) of bodies in a hands joint; measures how much of the engaged push contest the unsourced `TURF_MU` carries. Not a law (docs/reviews/push-contest-traction.md) |
@@ -194,6 +195,8 @@ There are 118 flags: 69 are on by default, 1 is a diagnostic scale at identity (
 | `FRONT_STRENGTH` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:52`, `src/playbook/alignment.ts:120` | review 2: drop the off path |
 | `FRONT_MENU` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:70`, `src/playbook/alignment.ts:129` | review 2: drop the off path |
 | `BOX_ALIGN` | on | default (promoted 2026-10-22) | defense | `src/playbook/alignment.ts:153` | review 2: drop the off path |
+| `SITU_DEPTH` | on | default (G2/G3 coverage, 2026-11-09) | coverage | `src/playbook/alignment.ts:253` | review 2: drop the off path. Deep safeties and zone corners set depth by down, distance and offensive personnel (BDB 2025 PFF-assignment medians); `docs/reviews/2026-11-09-coverage-spacing.md` |
+| `ZONE_SETTLE` | on | default (G3 coverage, 2026-11-09) | coverage | `src/sim/behaviors/defense.ts:51` | review 2: drop the off path. Underneath zone droppers stop gaining depth once they see the QB finish his drop; `docs/reviews/2026-11-09-coverage-spacing.md` |
 | `DEF_PACKAGE` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:80` | review 2: drop the off path |
 | `SHELL_SHOW` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:94`, `src/playbook/alignment.ts:156` | review 2: drop the off path |
 | `COVER_CALL` | on | default (promoted 2026-10-22) | defense | `src/game/playcaller.ts:115` | review 2: drop the off path |

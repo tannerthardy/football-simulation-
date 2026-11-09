@@ -66,6 +66,7 @@
     "MESH_GUN_SIDE": "on",
     "MESH_NFL": "off",
     "MESH_TEMPO": "on",
+    "MIDDLE_NO_FORCE": "off",
     "MUG_CALLS": "on",
     "MUG_PRESSURES": "off",
     "NICKEL_FRONTS": "on",

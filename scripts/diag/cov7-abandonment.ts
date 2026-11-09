@@ -28,6 +28,10 @@ export function abandonmentSetup(kind: 'run' | 'deception', until = BLOCK_LOOK_U
     name: 'Ace / COV-7 fixed Z', slots: { ...setup.offCall.formation.slots,
       Z: { ...setup.offCall.formation.slots.Z!, split: 8 + 1 / 3 } } };
   setup.offCall.receiverBlockLook = { Z: { until } };
+  // Declared coach matchup: the nickel takes the inline Y and the strong safety
+  // the detached H. This was the installed picture when the scenario was
+  // qualified; the default rule now gives the nickel the slot.
+  setup.manPrefs = { overrides: { NB: 'Y', SS: 'H' } };
   return { ...setup, record: true, recordLevel: 'full' };
 }
 
