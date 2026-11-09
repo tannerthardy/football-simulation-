@@ -315,7 +315,7 @@ export class PlaySim {
       const habit = new Rng(`align-habit:${player.id}`).normalClamped(0, .4, -.8, .8);
       return [slot, { x: habit + snap.normalClamped(0, .6, -1.2, 1.2), y: snap.normalClamped(0, .4, -.8, .8) }];
     })) : undefined;
-    this.defStyle = { ...setup.defStyle, mass, scatter, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los } };
+    this.defStyle = { ...setup.defStyle, mass, scatter, situation: { down: this.down, distance: this.firstDownX - this.los, toGoal: OPP_GOAL_X - this.los, personnel: setup.offCall.formation.personnel } };
     this.defAlign = alignDefense(this.defCall, this.offAlign, defSlots, setup.manPrefs, this.defStyle);
 
     const idle: Behavior = { kind: 'idle', update: () => ({ vel: { x: 0, y: 0 } }) };
