@@ -239,7 +239,38 @@ export interface AlignStyle { olWidth?: number; wrRoom?: number; cbDepth?: numbe
   situation?: DefSituation;
 }
 
-export interface DefSituation { down: number; distance: number; toGoal: number }
+export interface DefSituation { down: number; distance: number; toGoal: number;
+  /** The offensive personnel group the defense saw come on (e.g. '11', '12', '21'). */
+  personnel?: string }
+
+/** SITU_DEPTH (default on; SITU_DEPTH=0 turns it off): deep safeties and zone
+ * corners set their depth by the down, the distance and the offense's
+ * personnel, as tracked (BDB 2025, all 9 weeks, PFF assignment at the snap,
+ * medians relative to 1st & 10 against 11 personnel): tighter on short
+ * yardage and 3rd & medium and against heavier personnel; corners off a
+ * little more on 3rd & long. The two effects are added (checked against the
+ * joint cells within their noise). docs/reviews/2026-11-09-coverage-spacing.md. */
+const SITU_DEPTH = process.env.SITU_DEPTH !== '0';
+type DepthJob = 'post' | 'half' | 'quarter' | 'thirdCB' | 'quarterCB' | 'flatCB';
+// Columns: 2nd & 7+, 2nd & 3-6, 2nd-4th & <=2, 3rd/4th & 3-6, 3rd/4th & 7+ | 12/21, 13/22+.
+const SITUATION_DEPTH: Record<DepthJob, [number[], number[]]> = {
+  post: [[-0.2, -0.8, -1.2, -0.5, 0], [0, -0.3]],
+  half: [[-0.3, -0.8, -0.4, -1.4, -0.1], [-1.2, -1.2]],
+  quarter: [[-0.3, -0.9, -1.1, -2.2, 0.3], [-1.0, -1.6]],
+  thirdCB: [[-0.1, -0.5, -1.0, -0.4, 0.6], [-0.5, -1.4]],
+  quarterCB: [[-0.1, -0.2, -0.1, -0.7, 0.8], [-0.3, -0.9]],
+  flatCB: [[-0.2, -0.2, -0.8, -1.0, 0.8], [-0.6, -1.1]],
+};
+/** SITU_DEPTH: the change to a deep or zone defender's depth for this snap. */
+export function situationDepth(job: DepthJob, sit: DefSituation | undefined): number {
+  if (!SITU_DEPTH || !sit) return 0;
+  const [bySituation, byPersonnel] = SITUATION_DEPTH[job];
+  const { down, distance } = sit;
+  const col = down >= 2 && distance <= 2 ? 2 : down === 2 ? (distance >= 7 ? 0 : 1) : down >= 3 ? (distance >= 7 ? 4 : 3) : -1;
+  const digits = (sit.personnel ?? '11').split('').map(Number);
+  const extra = digits.length === 2 && digits.every(Number.isFinite) ? digits[0] + digits[1] - 1 : 1;
+  return (col >= 0 ? bySituation[col] : 0) + (extra === 2 ? byPersonnel[0] : extra >= 3 ? byPersonnel[1] : 0);
+}
 
 /** What an alignment may know of its own snap: the call, the situation and
  * the team's habits. */
@@ -833,7 +864,11 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
         : { depth: 6, shade: role?.kind === 'man' && role.lev === 'outside' ? 0.5 : role?.kind === 'man' && role.lev === 'head' ? 0 : -0.2 })
       : zoneSpot(role?.kind === 'zone' ? role.zone : undefined, slot === 'NB' || slot === 'DB');
     // The team's habit moves its outside zone corners deeper or tighter.
-    if (role?.kind === 'zone' && slot.startsWith('CB')) spot.depth = Math.max(1.3, spot.depth + (style.cbDepth ?? 0));
+    if (role?.kind === 'zone' && slot.startsWith('CB')) {
+      const z = role.zone;
+      const job: DepthJob | null = z.startsWith('flat') ? 'flatCB' : z.startsWith('deep_third') ? 'thirdCB' : z.endsWith('_out') ? 'quarterCB' : null;
+      spot.depth = Math.max(1.3, spot.depth + (style.cbDepth ?? 0) + (job ? situationDepth(job, style.situation) : 0));
+    }
     const room = sign > 0 ? FIELD_WIDTH - r.y : r.y;
     if (room < 9) spot.shade = Math.min(spot.shade, -0.2);
     return spot;
@@ -879,12 +914,13 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
         if (!DEF_ALIGN) return { x: los + 12, y: off.ballY + sign * 9 };
         const r = cov.roles[slot], quarters = r?.kind === 'zone' && r.zone.startsWith('quarter');
         const [depth, width, follow] = quarters ? [12, 6.65, 0.45] : [14, 6.9, 0.36];
-        return { x: los + depth + (style.safetyDepth ?? 0), y: CENTER_Y + follow * (off.ballY - CENTER_Y) + sign * width };
+        const sit = situationDepth(quarters ? 'quarter' : 'half', style.situation);
+        return { x: los + depth + (style.safetyDepth ?? 0) + sit, y: CENTER_Y + follow * (off.ballY - CENTER_Y) + sign * width };
       };
       if (has('SS')) spots.SS = { slot: 'SS', pos: deep('SS', s), role: { kind: 'rush' }, gap: 'D', gapSign: s };
       if (has('FS')) spots.FS = { slot: 'FS', pos: deep('FS', -s), role: { kind: 'rush' }, gap: 'D', gapSign: -s };
     } else {
-      const fs = DEF_ALIGN ? { x: los + (cov.man ? 14.7 : 14.5) + (style.safetyDepth ?? 0), y: CENTER_Y + (cov.man ? 0.34 : 0) * (off.ballY - CENTER_Y) }
+      const fs = DEF_ALIGN ? { x: los + (cov.man ? 14.7 : 14.5) + (style.safetyDepth ?? 0) + situationDepth('post', style.situation), y: CENTER_Y + (cov.man ? 0.34 : 0) * (off.ballY - CENTER_Y) }
         : { x: los + 13, y: clamp(off.ballY, 18, FIELD_WIDTH - 18) };
       // The post is whichever safety the call makes the deep player (the
       // Lurk's SS); the other is the down safety.
