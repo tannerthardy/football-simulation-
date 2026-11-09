@@ -525,3 +525,33 @@ the snap 14%.
   lockout 40% → 26%, touching 24% → 18%). It is a plausible later law, but its
   1.8× gain and 0.15 yd bend are model assumptions, not sourced. Neither
   scratch change is committed.
+
+#### With Defense's KEY_DEPTH + FLAT_PRESS: the engaged contest is two-sided (2026-11-09)
+
+Defense's `KEY_DEPTH` (5d9a0420) removes the requested pre-contact burst.
+`FLAT_PRESS` (34b75de3) makes a flattening DL keep a 0.5 yd/s press. The probes
+below run on `defense/G2-stance-tell` @ 34b75de3 with its defaults, zone runs.
+
+- **The stall was the controller.** Engaged DL into-backfield, request →
+  achieved:
+  - hold-depth branch, 51–53% of ticks: −0.09 → −0.27 under `KEY_DEPTH`, and
+    0.51 → 0.09 with `FLAT_PRESS`;
+  - all ticks: −0.01 → 0.24 yd/s achieved.
+- **Strength spread is not too narrow.** Random combine OL/DL leg push-off
+  force ratio (nflverse; 1,151 OL, 962 DL): 0.89 / 1.02 / 1.16 at
+  p10 / p50 / p90. The sim's leg-drive ratio is 0.88 / 1.00 / 1.38, already
+  wider.
+- **The engaged contest is two-sided and NFL-like** (solo reps lasting 1.8 s,
+  n 774, both flags on):
+  - DL displacement over 1.5 s from engagement + 0.3 s: p10 / p50 / p90
+    −1.52 / −0.48 / +0.79 yd;
+  - driven back ≥ 0.5 yd: 14%, against NFL 14–16%.
+  - It depends on the hand fight (driven back 36% when blocker control > 0.5,
+    against 4–10% otherwise; correlation 0.28) and on leg ratio
+    (correlation 0.36).
+
+**Reading.** Once a DL is engaged solo, the contest's spread and tail match
+NFL. The remaining from-snap gap (5% against 14%, Defense's `trench2`) comes from
+the population outside that cut: doubles, free DL, and men who never hold a
+solo block. It is not the contest law. No change to the contact law is
+proposed.
