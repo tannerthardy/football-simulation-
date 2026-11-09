@@ -50,19 +50,20 @@ async function reads(concept: string, opts: { coverages?: string[]; seeds?: numb
   vi.stubEnv('DRAW_READ', '1');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   const { PlaySim } = await import('../src/sim/playsim.js');
-  const out: { slot: string; seq: string[]; sawPass: boolean; afterPass: string | null; window: string[] }[] = [];
+  const out: { slot: string; seq: string[]; sawPass: boolean; afterPass: string | null; window: string[]; runBeforeCatch: boolean }[] = [];
   for (const coverage of opts.coverages ?? ['cover3', 'cover2', 'cover1']) for (let seed = 1; seed <= (opts.seeds ?? 6); seed++) for (const flip of [false, true]) {
     const setup: any = nativeTraceSetup({ coverage, concept, seed, roster: 7, formation: 'gun_doubles_11', flip });
     setup.down = opts.down ?? 3; setup.firstDownX = setup.los + (opts.toGo ?? 12);
     const sim = new PlaySim(setup);
     const lbs = sim.defense.filter(d => d.slot.startsWith('LB'));
-    const rec = new Map(lbs.map(l => [l, { slot: l.slot, seq: [] as string[], sawPass: false, afterPass: null as string | null, window: [] as string[] }]));
+    const rec = new Map(lbs.map(l => [l, { slot: l.slot, seq: [] as string[], sawPass: false, afterPass: null as string | null, window: [] as string[], runBeforeCatch: false }]));
     const step = sim.tick.bind(sim);
     (sim as any).tick = () => {
       const at = sim.t; step();
       for (const l of lbs) {
         const r = l.recog!.read, o = rec.get(l)!;
         if (o.seq[o.seq.length - 1] !== r) o.seq.push(r);
+        if (r === 'run' && !sim.events.some(e => e.type === 'catch')) o.runBeforeCatch = true;
         if ((l.recog as any).sawPass) { o.sawPass = true; o.afterPass = r; }
         if (at >= 1.2 - 1e-9 && at <= 1.8 + 1e-9) o.window.push(r);
       }
@@ -92,7 +93,9 @@ describe('DRAW_READ: coherent change of mind once the picture defeats the prior'
   it('opposing control, strong pass prior on a real dropback: no backer commits run', async () => {
     for (const concept of ['dagger', 'four_verts']) {
       const all = await reads(concept);
-      expect(all.filter(r => r.seq.includes('run')).length).toBe(0);
+      // Judged up to the catch. A receiver running with the ball is a runner: with the receivers' route reads
+      // (#420), dagger cover1 seed 5 has a 2.7 s catch-and-run on which LB_W reads run at 6.4 s.
+      expect(all.filter(r => r.runBeforeCatch).length).toBe(0);
     }
   }, 240_000);
 
