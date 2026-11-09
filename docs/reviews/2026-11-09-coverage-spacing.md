@@ -321,6 +321,29 @@ No material outcome shift: these are structure and role fixes.
        player changed nothing.
      - **Next:** the first wrong stage on those snaps (why the man-force
        player is late), not promotion.
+   - **First wrong stage, Cover 1 / 2-Man** (22 OZ and power runs of 10+ yd
+     out of 96, flag off):
+     - **The fit is not where it fails.** When the carrier crosses the line,
+       an unblocked defender is within 1.3–3 yd of him on nearly every snap.
+     - **Tackling decides it.** 17 of 22 have a missed or broken tackle,
+       4 have contact without a miss, and 1 goes untouched. That one (s1924,
+       ace 12 power) is the deep-half-as-force failure: the strong safety
+       loses the edge from depth.
+     - **With the flag on,** 24 leaks go away and 28 new ones appear; 21 of the
+       new ones have a miss or break. So the flag moves which snaps get the
+       miss.
+     - **The tackle model across the grid** (300 runs per coverage):
+       - missed tackles are 24–25% of attempts in Cover 1, 2-Man, Cover 3 and
+         Quarters alike;
+       - 10+ yd runs with a miss or break: 23 of 34, 35 of 47, 24 of 26 and
+         32 of 38.
+       - Whiffs in `src/sim/tackle.ts` are a dice roll, not contact geometry.
+       - Handed to the physics owner as a place to look. There is no local NFL
+         truth (BDB 2025 has no missed-tackle column), and PFF's charted
+         10–15% is secondary.
+     - **Also seen:** the leaks cross the line late (2.2–3.7 s), with
+       under-center handoffs at about 1.75 s. That is the mesh Run Game is
+       working on.
 2. **Quarters and Cover 1 leak runs** (sim 6.9 and 6.8 per carry, against 4.5
    and 4.8). Next, the first wrong stage on matched quarters runs:
    - the apex force's fit;
