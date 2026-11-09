@@ -24,7 +24,7 @@ import type { Agent, Behavior } from '../agent.js';
 import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
 import { BallCarrier } from './carrier.js';
-import { handoffReach } from '../ball-transfer.js';
+import { GUN_SNAP, handoffReach, snapSecured } from '../ball-transfer.js';
 import { angleTo, goTo, stand } from './common.js';
 import { RouteRunner } from './receiver.js';
 import type { QBMind } from '../qbmind.js';
@@ -101,7 +101,8 @@ export class QBPass implements Behavior {
     receiverPriors: ReadonlyMap<Agent, InstalledReceiverRoute>,
   ) {
     const gun = sim.offCall.formation.qb !== 'under';
-    this.snapAt = gun ? 0.3 : 0.1;
+    // GUN_SNAP: his drop starts when the snap is secured in his hands.
+    this.snapAt = gun ? (GUN_SNAP ? snapSecured(a.pos, { x: sim.los, y: sim.ballY }) : 0.3) : 0.1;
     this.drop = dropSpec(concept.drop, a.pos.x, sim.los, gun);
     this.dropY = a.pos.y;
     this.clock = 2.5 + 1.0 * a.r('composure') + 0.6 * a.r('pocketPresence') + sim.dice('qb', a).normal(0, 0.25);
@@ -633,6 +634,8 @@ export class QBHandoff implements Behavior {
     private readonly keeper = false,
     /** GUN_MESH: the point on the back's track where the ball goes in. */
     private readonly ballPoint?: Vec2,
+    /** GUN_SNAP: when he can first give it (snap secured + his handoff action); no installed window. */
+    private readonly secured?: number,
   ) {}
 
   update(a: Agent, sim: PlaySim): MoveCommand {
@@ -651,7 +654,7 @@ export class QBHandoff implements Behavior {
       return a.behavior.update(a, sim);
     }
     const rb = this.rb;
-    if (rb && sim.t >= this.meshTime - 0.15) {
+    if (rb && sim.t >= (this.secured !== undefined ? this.secured : this.meshTime - 0.15)) {
       const d = Math.hypot(rb.pos.x - a.pos.x, rb.pos.y - a.pos.y);
       if (this.pitchRange > handoffReach(a, rb) && d <= this.pitchRange) {
         this.handed = sim.pitchBall(a, rb);

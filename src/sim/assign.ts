@@ -17,6 +17,7 @@ import { BallCarrier } from './behaviors/carrier.js';
 import { goTo, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
 import { QBHandoff, QBPass } from './behaviors/qb.js';
+import { GUN_SNAP, QB_EXTEND, snapSecured } from './ball-transfer.js';
 import { DownfieldBlocker, RouteRunner, TrackBall } from './behaviors/receiver.js';
 import type { PlaySim } from './playsim.js';
 import { buildRunFits } from './run-fits.js';
@@ -148,8 +149,9 @@ export function assignBehaviors(sim: PlaySim): void {
     qb.behavior = new QBHandoff(mesh.qb, 1.0, null, 0, true);
     if (rb) rb.behavior = new RunBlocker({ kind: 'climb', target: null, drive: { x: 1, y: 0 } });
   } else {
-    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.ballPoint);
-    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride, mesh.through ?? 0);
+    qb.behavior = new QBHandoff(mesh.qb, mesh.time, rb, mesh.pitch, false, mesh.ballPoint,
+      GUN_SNAP && GUN_MESH && sim.offCall.formation.qb === 'gun' ? snapSecured(qb.pos, { x: sim.los, y: sim.ballY }) + QB_EXTEND : undefined);
+    if (rb) rb.behavior = new RunnerToMesh(mesh.rb, mesh.time, mesh.aim, mesh.ride, mesh.through ?? 0, GUN_MESH_GO && !!mesh.ballPoint);
   }
   for (const a of sim.offense) {
     if (a.behavior.kind === 'idle') a.behavior = new DownfieldBlocker();
@@ -210,6 +212,12 @@ export const MESH_NFL = process.env.MESH_NFL === '1';
  * within reach (ours took it a yard short of the QB's face, level with him, at
  * full reach, braking: IZ 2.2 yd/s at the exchange vs NFL 3.8). */
 export const GUN_MESH = process.env.GUN_MESH === '1';
+/** GUN_MESH_GO (experimental, off; with GUN_MESH): the gun back leaves on the
+ * snap and builds speed to the exchange (slow to fast) rather than standing
+ * until a full-speed run would just make it. Tracked 2022 gun backs are moving
+ * 1.8 yd/s laterally at 0.5 s and 3.5-4.7 at the handoff; ours stood, then ran
+ * (1.06 at 0.5 s). His pace is the steadiest on-time tempo (MESH_TEMPO). */
+export const GUN_MESH_GO = process.env.GUN_MESH_GO === '1';
 /** DRAW_NFL (default off): the gun draw exchange from 2022 tracking. The QB
  * gives ground only half a yard (tracked 5.09 yd deep at the handoff, ours
  * 5.90), the back takes it beside him (1.07 yd off his line, 0.6 yd in front)
@@ -261,6 +269,10 @@ function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
   let time = concept.meshTime + (GUN_STRETCH_T && qbType === 'gun' && (concept.scheme === 'outsideZone' || concept.scheme === 'wideZone') ? .2 : 0);
   let pitch = 0;
   let ballPoint: Vec2 | undefined;
+  // GUN_SNAP: the gun back paces to the QB's readiness he can foresee: the snap
+  // secured in the QB's hands plus his own handoff action (QB_EXTEND), not an
+  // installed per-concept mesh time.
+  if (GUN_SNAP && GUN_MESH && qbType === 'gun') time = snapSecured(sim.qb.pos, { x: los, y: by }) + QB_EXTEND;
   if (concept.scheme === 'toss') {
     qb = { x: los - 1.8, y: by + ps * 0.6 };
     rb = { x: los - 5.5, y: by + ps * 4.0 };
@@ -371,6 +383,8 @@ export class RunnerToMesh implements Behavior {
     readonly aim: Vec2,
     readonly ride = false,
     readonly arriveAt = 0,
+    /** GUN_MESH_GO: leave on the snap. */
+    readonly goOnSnap = false,
   ) {}
   private passed = false;
   private departed = false;
@@ -387,7 +401,8 @@ export class RunnerToMesh implements Behavior {
     // he previews his body going hard to the mesh and holds his stance while
     // one more beat would still get him there for the exchange. A slow start
     // means leaving on the snap; a quick one lets him stay patient.
-    if (!this.departed && sim.t >= this.nextRead) {
+    if (this.goOnSnap) this.departed = true;
+    if (!this.goOnSnap && !this.departed && sim.t >= this.nextRead) {
       const interval = a.mind.decisionInterval;
       this.nextRead = sim.t + interval;
       this.departed = sim.t + interval + this.arrival(a, sim) >= this.meshTime;
