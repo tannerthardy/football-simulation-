@@ -449,3 +449,41 @@ It is carried as a default-off candidate. Promotion: Tanner and Primary.
 
 The front-on gain gap is untouched by the law, consistent with the load-height
 finding.
+
+#### Item 3 re-cut: the engaged contest is not short; engagement is late (2026-11-09)
+
+**Run Game's `trench2`** (zone, the same code on NFL; solo = exactly one OL
+within 1.2 yd at 0.5 s):
+- DL depth at 0.5 s: solo +0.38 yd, against NFL +0.21.
+- Driven back ≥ 0.5 yd from the 0.5 s spot by 2.0 s: 10–11%, against NFL 16%.
+- From 1.0 to 2.0 s, the drift is NFL-like.
+
+**Engagement timing.** Solo DL–OL engagements in existence at 0.35 / 0.5 /
+0.75 / 1.0 s: 9 / 135 / 727 / 1191.
+- DL posture when hands form is about 0.35 (still upright from his charge),
+  while the OL's is 0.8. He sinks at `POSTURE_RATE` and is level by about 1.0 s.
+- So "the DL is higher-padded at 0.5 s" (126 of 135) is a late-engagement
+  effect, not a separate lever.
+
+**Measured from engagement start + 0.3 s over the next 1.5 s** (the NFL
+window's length):
+
+| | n | Engagement starts (median) | Driven back ≥ 0.5 yd | Reps lasting the full 1.5 s: driven back |
+|---|---|---|---|---|
+| Solo | 1294 | 0.85 s | 20% | 29% (n 796) |
+| With a helper | 576 | 0.60 s | 35% | 38% (n 512) |
+
+`LEG_ALLOMETRY`: 20% / 36%, unchanged.
+
+**Reading.**
+- Once engaged, a DL is driven back at least as often as NFL's 16%. The engaged
+  contest is not deficient.
+- The from-snap and from-0.5 s gaps come from **when** engagements form. Most
+  solo engagements form 0.6–0.85 s after the snap, so the DL gains free depth
+  first.
+- NFL contact timing on the same operator is still to be measured. That
+  belongs to OL step timing, the seam between body contact and
+  `createEngagement`, and DL get-off. It is not a push-contest law.
+- This replaces this document's earlier item 3 statement that matched pairs
+  never move. That came from the push bench and the from-snap operator, not
+  from engaged reps.
