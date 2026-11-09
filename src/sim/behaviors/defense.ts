@@ -22,7 +22,7 @@ import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track 
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
-import { executeRunFit, lineRead, pullers, type RunFitRead } from '../run-fits.js';
+import { executeRunFit, guardStep, lineRead, pullers, type RunFitRead } from '../run-fits.js';
 import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
@@ -122,6 +122,8 @@ const stepSeen = KEY_REACT ? KEY_STEP_SEEN : STEP_SEEN;
 const KEY_PACE = process.env.KEY_PACE === '1', KEY_STEP_LEAD = 0.5;
 /** KEY_DEPTH (experimental, off): see the key step; his upfield step is his own read step. */
 const KEY_DEPTH = process.env.KEY_DEPTH === '1';
+/** LB_GUARD_STEP (experimental, off): see ZoneCoverage's unsure box backer. */
+const LB_GUARD_STEP = process.env.LB_GUARD_STEP === '1';
 /** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
  * read lean leads his step before the key's own movement must confirm it (s). */
 const STANCE_TELL = process.env.STANCE_TELL === '1';
@@ -772,8 +774,23 @@ export class ZoneCoverage implements Behavior {
     // (tracked box backers, 2.5-8 yd deep and within 6 yd of the ball, hold
     // their depth through 0.8 s on passes and runs alike). An apex or
     // overhang backer keeps his eased drop to the flat.
-    if (!this.deep && a.recog?.read === 'unsure' && boxBacker(a, sim))
+    if (!this.deep && a.recog?.read === 'unsure' && boxBacker(a, sim)) {
+      // LB_GUARD_STEP (experimental, off): "guards to backs". Still unsure of
+      // run or pass, a box backer whose guards both step the same way (no
+      // pass set; guardStep, read at first movement) steps with them, at their pace plus a step of
+      // his own, eyes still on the quarterback. A pass read stops him there;
+      // a run read finds him already flowing. NFL OZ box backers move +0.37 to
+      // +0.54 yd/s toward the play by 0.2 s; ours stood until the run read
+      // committed (median 0.60 s).
+      const g = LB_GUARD_STEP ? guardStep(sim, a) : { side: 0, pace: 0 }, side = g.side;
+      if (side) {
+        const pace = Math.min(a.profile.vmax * a.profile.shuffle, g.pace + KEY_STEP_LEAD), h = a.mind.decisionInterval;
+        a.tags.add('lb-guard-step');
+        return withFacingTechnique(track(a, { x: a.pos.x, y: a.pos.y + side * pace * h }, { x: 0, y: side * pace },
+          { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 1 }), { label: 'read-step' });
+      }
       return withFacingTechnique(stand(angleTo(a.pos, sim.see(a, sim.qb).pos)), { label: 'read-step' });
+    }
     const spot = this.style === 'spot';
 
     const qb = sim.qb;

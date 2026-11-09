@@ -14,6 +14,7 @@ import { requestToCover } from './motion-plan.js';
 import { handoffReach } from './ball-transfer.js';
 import { forceTrack, retainedForceTrack } from './force-track.js';
 import { qbRunning, type PossessionRead } from './possession-read.js';
+import { KEY_STEP_SEEN } from './key-read.js';
 
 export interface RunFitJob {
   gap: Gap;
@@ -283,6 +284,18 @@ const lineReads = new WeakMap<Agent, { side: number; next: number }>();
  * neither setting back in a pass set, is the flow; a puller is read by the
  * pull read, not here. Held for a decision beat. */
 const guardReads = new WeakMap<Agent, { side: number; next: number }>();
+/** LB_GUARD_STEP: the guards' first step as he keys them, read every tick at
+ * their first visible movement (KEY_STEP_SEEN, the DL's key threshold) rather
+ * than the flow read's 0.5 yd/s held for a beat: side (0 if they split or set
+ * back in a pass set) and pace (yd/s). */
+export function guardStep(sim: PlaySim, a: Agent): { side: number; pace: number } {
+  const dir = sim.attackDir(sim.offense[0].team);
+  const guards = ['LG', 'RG'].map(s => sim.slot(s)).filter((g): g is Agent => !!g).map(g => sim.see(a, g, GUARD_KEY_DELAY));
+  if (guards.length !== 2 || guards.some(g => g.vel.x * dir < -1)) return { side: 0, pace: 0 };
+  const s0 = Math.sign(guards[0].vel.y);
+  if (!s0 || !guards.every(g => g.vel.y * s0 > KEY_STEP_SEEN)) return { side: 0, pace: 0 };
+  return { side: s0, pace: (Math.abs(guards[0].vel.y) + Math.abs(guards[1].vel.y)) / 2 };
+}
 export function guardRead(sim: PlaySim, a: Agent): number {
   const held = guardReads.get(a);
   if (held && sim.t < held.next) return held.side;
