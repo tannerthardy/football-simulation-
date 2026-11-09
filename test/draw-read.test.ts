@@ -63,7 +63,7 @@ async function reads(concept: string, opts: { coverages?: string[]; seeds?: numb
       for (const l of lbs) {
         const r = l.recog!.read, o = rec.get(l)!;
         if (o.seq[o.seq.length - 1] !== r) o.seq.push(r);
-        if (r === 'run' && !sim.events.some(e => e.type === 'catch')) o.runBeforeCatch = true;
+        if (r === 'run' && !sim.events.some(e => e.type === 'catch' || e.type === 'scramble')) o.runBeforeCatch = true;
         if ((l.recog as any).sawPass) { o.sawPass = true; o.afterPass = r; }
         if (at >= 1.2 - 1e-9 && at <= 1.8 + 1e-9) o.window.push(r);
       }
@@ -93,8 +93,10 @@ describe('DRAW_READ: coherent change of mind once the picture defeats the prior'
   it('opposing control, strong pass prior on a real dropback: no backer commits run', async () => {
     for (const concept of ['dagger', 'four_verts']) {
       const all = await reads(concept);
-      // Judged up to the catch. A receiver running with the ball is a runner: with the receivers' route reads
+      // Judged up to the catch or a scramble. A receiver running with the ball is a runner: with the receivers' route reads
       // (#420), dagger cover1 seed 5 has a 2.7 s catch-and-run on which LB_W reads run at 6.4 s.
+      // Likewise a scrambling quarterback: with #419's alignment, dagger cover1 seed 5 flipped has a scramble at
+      // 2.95 s and LB_W reads run at 3.55 s.
       expect(all.filter(r => r.runBeforeCatch).length).toBe(0);
     }
   }, 240_000);

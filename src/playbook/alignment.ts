@@ -254,7 +254,38 @@ export interface AlignStyle { olWidth?: number; wrRoom?: number; cbDepth?: numbe
   scatter?: Partial<Record<DefSlot, Vec2>>;
 }
 
-export interface DefSituation { down: number; distance: number; toGoal: number }
+export interface DefSituation { down: number; distance: number; toGoal: number;
+  /** The offensive personnel group the defense saw come on (e.g. '11', '12', '21'). */
+  personnel?: string }
+
+/** SITU_DEPTH (default on; SITU_DEPTH=0 turns it off): deep safeties and zone
+ * corners set their depth by the down, the distance and the offense's
+ * personnel, as tracked (BDB 2025, all 9 weeks, PFF assignment at the snap,
+ * medians relative to 1st & 10 against 11 personnel): tighter on short
+ * yardage and 3rd & medium and against heavier personnel; corners off a
+ * little more on 3rd & long. The two effects are added (checked against the
+ * joint cells within their noise). docs/reviews/2026-11-09-coverage-spacing.md. */
+const SITU_DEPTH = process.env.SITU_DEPTH !== '0';
+type DepthJob = 'post' | 'half' | 'quarter' | 'thirdCB' | 'quarterCB' | 'flatCB';
+// Columns: 2nd & 7+, 2nd & 3-6, 2nd-4th & <=2, 3rd/4th & 3-6, 3rd/4th & 7+ | 12/21, 13/22+.
+const SITUATION_DEPTH: Record<DepthJob, [number[], number[]]> = {
+  post: [[-0.2, -0.8, -1.2, -0.5, 0], [0, -0.3]],
+  half: [[-0.3, -0.8, -0.4, -1.4, -0.1], [-1.2, -1.2]],
+  quarter: [[-0.3, -0.9, -1.1, -2.2, 0.3], [-1.0, -1.6]],
+  thirdCB: [[-0.1, -0.5, -1.0, -0.4, 0.6], [-0.5, -1.4]],
+  quarterCB: [[-0.1, -0.2, -0.1, -0.7, 0.8], [-0.3, -0.9]],
+  flatCB: [[-0.2, -0.2, -0.8, -1.0, 0.8], [-0.6, -1.1]],
+};
+/** SITU_DEPTH: the change to a deep or zone defender's depth for this snap. */
+export function situationDepth(job: DepthJob, sit: DefSituation | undefined): number {
+  if (!SITU_DEPTH || !sit) return 0;
+  const [bySituation, byPersonnel] = SITUATION_DEPTH[job];
+  const { down, distance } = sit;
+  const col = down >= 2 && distance <= 2 ? 2 : down === 2 ? (distance >= 7 ? 0 : 1) : down >= 3 ? (distance >= 7 ? 4 : 3) : -1;
+  const digits = (sit.personnel ?? '11').split('').map(Number);
+  const extra = digits.length === 2 && digits.every(Number.isFinite) ? digits[0] + digits[1] - 1 : 1;
+  return (col >= 0 ? bySituation[col] : 0) + (extra === 2 ? byPersonnel[0] : extra >= 3 ? byPersonnel[1] : 0);
+}
 
 /** What an alignment may know of its own snap: the call, the situation and
  * the team's habits. */
@@ -823,7 +854,8 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   // A back offset to that side (installs: "near"), not behind the QB or away.
   const nearBack = (side: 'S' | 'W') => Object.values(off.spots).some(sp => sp.backfield && sp.slot !== 'QB'
     && (sp.pos.y - off.ballY) * sideSign(side) > .5);
-  const nickel = !present.includes('LB_S');
+  // Nickel and dime calls; a 3-4 has no LB_S slot but is a base front.
+  const nickel = call.personnel ? call.personnel === 'nickel' || call.personnel === 'dime' : !present.includes('LB_S');
   if (FRONT_ALIGN) for (const side of ['S', 'W'] as const) {
     const onLine = present.filter(slot => frontSlots[slot]?.side === side && frontSlots[slot]!.depth < 2);
     const hasTE = teAt(sideSign(side));
@@ -917,7 +949,11 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
         : { depth: 6, shade: role?.kind === 'man' && role.lev === 'outside' ? 0.5 : role?.kind === 'man' && role.lev === 'head' ? 0 : -0.2 })
       : zoneSpot(role?.kind === 'zone' ? role.zone : undefined, slot === 'NB' || slot === 'DB');
     // The team's habit moves its outside zone corners deeper or tighter.
-    if (role?.kind === 'zone' && slot.startsWith('CB')) spot.depth = Math.max(1.3, spot.depth + (style.cbDepth ?? 0));
+    if (role?.kind === 'zone' && slot.startsWith('CB')) {
+      const z = role.zone;
+      const job: DepthJob | null = z.startsWith('flat') ? 'flatCB' : z.startsWith('deep_third') ? 'thirdCB' : z.endsWith('_out') ? 'quarterCB' : null;
+      spot.depth = Math.max(1.3, spot.depth + (style.cbDepth ?? 0) + (job ? situationDepth(job, style.situation) : 0));
+    }
     const room = sign > 0 ? FIELD_WIDTH - r.y : r.y;
     if (room < 9) spot.shade = Math.min(spot.shade, -0.2);
     return spot;
@@ -926,7 +962,10 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   const placeCorner = (slot: DefSlot, side: 'S' | 'W') => {
     if (!has(slot)) return;
     const sign = side === 'S' ? s : -s;
-    const r1 = rec(`${side}1` as ReceiverRef);
+    // A nub side (only an attached end) has no #1 for the corner: he aligns
+    // as the nub-side corner, wide and off, as with no receiver at all.
+    const s1 = off.numbering[`${side}1` as ReceiverRef];
+    const r1 = s1 && !off.spots[s1].inline ? rec(`${side}1` as ReceiverRef) : null;
     const spot = DEF_ALIGN && r1 ? dbSpot(slot, r1, sign) : null;
     const y = r1 ? (spot ? r1.y + sign * spot.shade : r1.y - sign * (cov.press ? 0.6 : shell === 'one-high' ? -0.8 : 0.8)) : off.ballY + sign * 14;
     spots[slot] = { slot, pos: { x: los + (spot?.depth ?? cornerDepth), y: clamp(y, 1, FIELD_WIDTH - 1) }, role: { kind: 'rush' }, gap: 'D', gapSign: sign, press: cov.press };
@@ -963,12 +1002,13 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
         if (!DEF_ALIGN) return { x: los + 12, y: off.ballY + sign * 9 };
         const r = cov.roles[slot], quarters = r?.kind === 'zone' && r.zone.startsWith('quarter');
         const [depth, width, follow] = quarters ? [12, 6.65, 0.45] : [14, 6.9, 0.36];
-        return { x: los + depth + (style.safetyDepth ?? 0), y: CENTER_Y + follow * (off.ballY - CENTER_Y) + sign * width };
+        const sit = situationDepth(quarters ? 'quarter' : 'half', style.situation);
+        return { x: los + depth + (style.safetyDepth ?? 0) + sit, y: CENTER_Y + follow * (off.ballY - CENTER_Y) + sign * width };
       };
       if (has('SS')) spots.SS = { slot: 'SS', pos: deep('SS', s), role: { kind: 'rush' }, gap: 'D', gapSign: s };
       if (has('FS')) spots.FS = { slot: 'FS', pos: deep('FS', -s), role: { kind: 'rush' }, gap: 'D', gapSign: -s };
     } else {
-      const fs = DEF_ALIGN ? { x: los + (cov.man ? 14.7 : 14.5) + (style.safetyDepth ?? 0), y: CENTER_Y + (cov.man ? 0.34 : 0) * (off.ballY - CENTER_Y) }
+      const fs = DEF_ALIGN ? { x: los + (cov.man ? 14.7 : 14.5) + (style.safetyDepth ?? 0) + situationDepth('post', style.situation), y: CENTER_Y + (cov.man ? 0.34 : 0) * (off.ballY - CENTER_Y) }
         : { x: los + 13, y: clamp(off.ballY, 18, FIELD_WIDTH - 18) };
       // The post is whichever safety the call makes the deep player (the
       // Lurk's SS); the other is the down safety.
@@ -993,9 +1033,12 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   // FRONT_STRENGTH: the backer on the receivers' side, the Will when the
   // front sets the other way.
   const apexLB: DefSlot = flipFront ? 'LB_W' : 'LB_S';
-  if (!has('NB') && off.counts.S >= 2 && has(apexLB) && frontSlots[apexLB] && frontSlots[apexLB]!.depth > 2) {
+  // Zone calls only: in a man call each defender aligns on his man below.
+  if (!cov.man && !has('NB') && off.counts.S >= 2 && has(apexLB) && frontSlots[apexLB] && frontSlots[apexLB]!.depth > 2) {
     const r2 = rec('S2');
-    if (r2 && !off.spots[off.numbering.S2!].inline) { spots[apexLB]!.pos = { x: los + 4.5, y: (r2.y + off.coreEdge.S) / 2 }; apex = !flipFront; }
+    // Against trips he splits #2 and a detached #3, not #2 and the core.
+    const s3 = off.numbering.S3, r3 = s3 && !off.spots[s3].inline && !off.spots[s3].backfield ? off.spots[s3].pos : null;
+    if (r2 && !off.spots[off.numbering.S2!].inline) { spots[apexLB]!.pos = { x: los + 4.5, y: (r2.y + (r3?.y ?? off.coreEdge.S)) / 2 }; apex = !flipFront; }
   }
   // FRONT_ALIGN: the Over Sam is a "90", the end's outside shade at
   // linebacker depth; a wing is attached, not spread, so vs one he tightens
@@ -1011,6 +1054,9 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   // BOX_ALIGN: answer every detached inside receiver in a zone call.
   if (BOX_ALIGN && !cov.man) {
     const blitzing = new Set(Object.keys(call.pressure?.blitzers ?? {}));
+    // A backer walked out to one receiver is spent: the next receiver takes
+    // the next-nearest backer (the Mike against trips), not the same one back.
+    const walked = new Set<DefSlot>();
     for (const side of ['W', 'S'] as const) {
       const sign = side === 'S' ? s : -s;
       for (const i of [2, 3]) {
@@ -1020,16 +1066,17 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
         const inner = off.numbering[`${side}${i + 1}` as ReceiverRef];
         const next = inner && !off.spots[inner].inline && !off.spots[inner].backfield
           ? (off.spots[inner].pos.y - off.ballY) * sign : (off.coreEdge[side] - off.ballY) * sign;
-        const answered = Object.values(spots).some(sp => {
+        const answer = Object.values(spots).find(sp => {
           const depth = sp!.pos.x - los, y = (sp!.pos.y - off.ballY) * sign;
           return depth < 8 && (Math.abs(y - y2) < 1.5 || (depth > 1 && y > next + .5 && y < y2 - 1.5));
         });
-        if (answered) continue;
+        // The backer already answering him is spent on him as well.
+        if (answer) { if (answer.slot.startsWith('LB')) walked.add(answer.slot); continue; }
         const apexY = off.ballY + sign * (y2 + next) / 2;
         const backer = (['LB_W', 'LB_M', 'LB_S'] as DefSlot[]).filter(lb => spots[lb] && frontSlots[lb] && frontSlots[lb]!.depth > 2
-          && spots[lb]!.pos.x - los > 2 && !blitzing.has(lb))
+          && spots[lb]!.pos.x - los > 2 && !blitzing.has(lb) && !walked.has(lb))
           .sort((a, b) => Math.abs(spots[a]!.pos.y - apexY) - Math.abs(spots[b]!.pos.y - apexY))[0];
-        if (backer) spots[backer]!.pos = { x: los + 4.6, y: apexY };
+        if (backer) { spots[backer]!.pos = { x: los + 4.6, y: apexY }; walked.add(backer); }
       }
     }
   }
@@ -1088,26 +1135,31 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
   const unassigned = present.filter((p) => !roles[p]);
   if (!cov.man) {
     const zones = cov.underneath.filter((z) => !Object.values(roles).some((r) => r?.kind === 'zone' && r.zone === seatZone(z)));
-    // Greedy by distance: each zone (in priority order) takes the closest free defender.
+    // The call's seats in priority order, as many as there are free
+    // defenders, go to the defenders by the least total distance to their
+    // landmarks: one seat at a time, nearest first, sent a backer over the
+    // trips #2 to the weak hook while the man beside the weak hook took the
+    // strong one.
     const free = new Set(unassigned);
-    for (const seat of zones) {
-      if (free.size === 0) break;
-      const z = seatZone(seat);
-      const lm = zoneLandmark(z, off);
-      let best: DefSlot | null = null;
-      let bestD = Infinity;
-      for (const slot of free) {
-        const d = Math.hypot(spots[slot]!.pos.x - lm.x, spots[slot]!.pos.y - lm.y);
-        if (d < bestD) {
-          bestD = d;
-          best = slot;
-        }
+    const pool = [...free];
+    const seats = zones.slice(0, pool.length);
+    const lms = seats.map(seat => zoneLandmark(seatZone(seat), off));
+    const dist = (slot: DefSlot, i: number) => Math.hypot(spots[slot]!.pos.x - lms[i].x, spots[slot]!.pos.y - lms[i].y);
+    let best: { cost: number; pick: DefSlot[] } | null = null;
+    const pick: DefSlot[] = [];
+    const used = new Set<DefSlot>();
+    const search = (i: number, cost: number) => {
+      if (best && cost >= best.cost) return;
+      if (i === seats.length) { best = { cost, pick: [...pick] }; return; }
+      for (const slot of pool) {
+        if (used.has(slot)) continue;
+        used.add(slot); pick.push(slot);
+        search(i + 1, cost + dist(slot, i));
+        pick.pop(); used.delete(slot);
       }
-      if (best) {
-        roles[best] = seatRole(seat);
-        free.delete(best);
-      }
-    }
+    };
+    search(0, 0);
+    (best as { cost: number; pick: DefSlot[] } | null)?.pick.forEach((slot, i) => { roles[slot] = seatRole(seats[i]); free.delete(slot); });
     for (const slot of free) roles[slot] = { kind: 'zone', zone: 'hook_mid' };
   } else {
     // Man calls can still name underneath seats (a rat, a robber, a hole player)
@@ -1159,9 +1211,21 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     // trade to the remaining outside receiver before an interior/box player
     // is asked to cover him; the slot names are not fixed field-side bodies.
     const preferences = role.prefer ?? [];
-    const refs = d === 'CB_S' || d === 'CB_W' ? [...preferences, 'S1', 'W1'] as ReceiverRef[] : preferences;
+    const corner = d === 'CB_S' || d === 'CB_W', slotDB = d === 'NB' || d === 'DB';
+    // A slot defender covers a detached slot, not an attached end (that is a
+    // safety's or backer's man), on either side; a corner does not press a
+    // nub end as his #1.
+    // Without a slot defender on the field (base), a nub-side corner travels
+    // to a detached #2; a nickel or dime is there to cover that slot himself.
+    const refs = corner ? [...preferences, 'S1', 'W1', ...(has('NB') || has('DB') ? [] : ['S2', 'W2'])] as ReceiverRef[]
+      : slotDB ? [...preferences, 'S2', 'W2', 'S3', 'W3'] as ReceiverRef[] : preferences;
+    // ...only when a box player or safety in man is there to take that end or
+    // back; otherwise (split-field 2-Man to a nub end) the DB keeps him rather
+    // than leave him free and cross the formation.
+    const boxMan = manDefs.some(m => m !== 'CB_S' && m !== 'CB_W' && m !== 'NB' && m !== 'DB');
     for (const ref of refs) {
       const tgt = off.numbering[ref];
+      if (tgt && boxMan && (corner || slotDB) && (off.spots[tgt].inline || off.spots[tgt].backfield)) continue;
       if (tgt && (!taken.has(tgt) || role.double)) {
         spots[d]!.manTarget = tgt;
         taken.add(tgt);
@@ -1176,7 +1240,10 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     let bestD = Infinity;
     for (const d of manDefs) {
       if (spots[d]!.manTarget) continue;
-      const dd = Math.hypot(spots[d]!.pos.x - off.spots[slot].pos.x, spots[d]!.pos.y - off.spots[slot].pos.y);
+      // Defensive backs leave an attached end or a back to the box players when one is free.
+      const db = d === 'CB_S' || d === 'CB_W' || d === 'NB' || d === 'DB';
+      const dd = Math.hypot(spots[d]!.pos.x - off.spots[slot].pos.x, spots[d]!.pos.y - off.spots[slot].pos.y)
+        + (db && (off.spots[slot].inline || off.spots[slot].backfield) ? 20 : 0);
       if (dd < bestD) {
         bestD = dd;
         best = d;
@@ -1202,7 +1269,10 @@ export function alignDefense(call: DefensivePlayCall, off: OffenseAlignment, pre
     if (!t) continue;
     const tp = off.spots[t].pos;
     const isCorner = d === 'CB_S' || d === 'CB_W' || d === 'NB' || d === 'DB';
-    const inside = Math.sign(off.ballY - tp.y) || 1;
+    // A back on the ball has no inside: the defender shades from his own
+    // side of it, not from a fixed side of the field (which flipped the
+    // backers' sides with the offense's orientation).
+    const inside = Math.sign(off.ballY - tp.y) || Math.sign(spots[d]!.pos.y - tp.y) || s;
     const mr = roles[d] as Extract<CoverageRole, { kind: 'man' }>;
     const press = (mr.press ?? cov.press) && !mr.overTop;
     const depth = off.spots[t].backfield ? 5 : mr.overTop ? 10 : isCorner ? (press ? (DEF_ALIGN ? 1.3 : 1.2) : 6) : 4;

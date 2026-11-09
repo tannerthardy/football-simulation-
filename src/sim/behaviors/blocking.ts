@@ -57,7 +57,37 @@ export class ProtectionCoordinator {
     this.homeY.set(a, a.pos.y);
   }
 
+  /** The protector whose area this defender is in sees him for the line. */
+  private observer(d: Agent): Agent {
+    let best = this.protectors[0], bd = Infinity;
+    for (const b of this.protectors) {
+      if (!isOL(b)) continue;
+      const dd = Math.abs(this.homeY.get(b)! - d.pos.y);
+      if (dd < bd) { bd = dd; best = b; }
+    }
+    return best;
+  }
+
+  private readonly dropped = new Set<Agent>();
+
+  /** PRO_READ: who rushes is read from what the line sees, not from the
+   * defender's call. At the snap the threats are the men aligned on the line
+   * (a visible alignment); after it, a man is a rusher once the blocker in his
+   * area sees him attacking the line, and a man on the line who is seen
+   * dropping off it is released. */
+  private seenRusher(sim: PlaySim, d: Agent): boolean {
+    const seen = sim.see(this.observer(d), d);
+    if (seen.pos.x < sim.los + 1.5 && seen.vel.x > 1 && seen.pos.x > sim.los + 0.5) this.dropped.add(d);
+    if (seen.pos.x < sim.los + 1.5 && seen.vel.x < -0.5) this.dropped.delete(d);
+    if (this.dropped.has(d)) return false;
+    if (seen.pos.x < sim.los) return true;
+    return seen.pos.x < sim.los + 1.5 && (seen.vel.x < -0.5 || (this.declaredOn.has(d) && seen.vel.x <= 1));
+  }
+
+  private readonly declaredOn = new Set<Agent>();
+
   private isRusher(sim: PlaySim, d: Agent): boolean {
+    if (PRO_READ) return this.seenRusher(sim, d);
     const k = d.behavior.kind;
     if (k === 'rush' || k === 'blitz') {
       // Blitzers from depth are identified after a recognition delay.
@@ -132,10 +162,13 @@ export class ProtectionCoordinator {
   update(sim: PlaySim): void {
     if (this.lastT === sim.t) return;
     this.lastT = sim.t;
+    // Pre-snap, the line counts the men aligned on it; that is visible.
+    if (PRO_READ && !this.declared) for (const d of sim.defense) if (sim.snapX[d.idx] < sim.los + 1.5) this.declaredOn.add(d);
     const rushers = sim.defense.filter((d) => !d.isDown(sim.t) && this.isRusher(sim, d));
-    if (!this.declared && rushers.length) {
+    const front = PRO_READ ? [...this.declaredOn].filter((d) => rushers.includes(d)) : rushers;
+    if (!this.declared && front.length) {
       this.declared = true;
-      this.declare(sim, rushers);
+      this.declare(sim, front);
     }
     const free = this.protectors.filter((b) => !b.engagement && !b.isDown(sim.t) && b.behavior instanceof PassProtector && !(b.behavior as PassProtector).released);
     this.assigned.clear();
@@ -150,7 +183,8 @@ export class ProtectionCoordinator {
     // or twist — then he's passed off).
     for (const [b, r] of [...this.sticky]) {
       const home = this.homeY.get(b)!;
-      if (!free.includes(b) || r.isDown(sim.t) || r.engagement || taken.has(r) || Math.abs(r.pos.y - home) > zoneOf(b) + 1.5) {
+      if (!free.includes(b) || r.isDown(sim.t) || r.engagement || taken.has(r) || Math.abs(r.pos.y - home) > zoneOf(b) + 1.5
+        || (PRO_READ && !rushers.includes(r))) {
         this.sticky.delete(b);
         continue;
       }
@@ -375,6 +409,11 @@ export class PassProtector implements Behavior {
  * 0.8 yd shallower; the cutoff met him at the line (PRO-1). Ported from
  * claude/run-game-v3 (docs/PARKED.md). */
 const PASS_KICK = process.env.PASS_KICK !== '0';
+/** PRO_READ (default on; PRO_READ=0 restores the old read): protection reads
+ * who rushes from what the line sees. Off, the coordinator read each
+ * defender's private behavior (rush/blitz), so the line never set on a
+ * dropping end and knew every blitzer by his call. */
+const PRO_READ = process.env.PRO_READ !== '0';
 /** How far deeper than an upfield edge rusher's present depth the kick keeps the tackle (yd). */
 const KICK_LEAD = 0.8;
 /** How far ahead on his present velocity the kick reads the rusher's width (s). */

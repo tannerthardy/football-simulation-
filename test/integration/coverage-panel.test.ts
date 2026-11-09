@@ -77,7 +77,11 @@ describe('zone technique', () => {
     // Match: the hook player walls and carries the seam runner. Spot: he sits
     // at his spot and lets the seam run past to the deep defender.
     expect(match.gap).toBeLessThan(spot.gap - 0.4);
-    expect(spot.depth).toBeGreaterThan(9.5);
+    // A spot dropper sinks until the QB sets, then settles where he is
+    // (ZONE_SETTLE); the QB here sets at 7 yd. 2022 tracking, hook players by
+    // PFF label at 2.5 s: p50 6.3-6.7, p75 8.7-9.5 yd, so he is well off his
+    // 4.5 yd alignment but no longer forced to the 10 yd landmark.
+    expect(spot.depth).toBeGreaterThan(7.5);
     expect(spot.depth).toBeLessThan(13);
     expect(spot.facingQB).toBeGreaterThan(0.8);
   });
