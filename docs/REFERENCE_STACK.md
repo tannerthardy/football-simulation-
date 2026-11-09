@@ -138,6 +138,29 @@ Other decisions from Defense's report:
 - #402 (`LB_FLOW_STEP`) is superseded by `LB_GUARD_STEP` + `LB_READ_STEP` and closed.
 - Outside zone's reach pace (1.85 vs 2.25 yd/s at 0.5 s) is the body's acceleration from the stance, not the request (3.45 yd/s from 0.5 s): with Flex, to re-check on stretch starts.
 
+## Contact to whistle merged: #412, #418, #410 (2026-11-09)
+
+Flex's #428 brings `ONE_ARM_HOLD` (#412, default on), the grasp-timing fix (#418) and `RELEASE_REDECIDE` (#410, default on) onto develop; the write-up is `docs/reviews/contact-to-whistle.md`. `HELD_SWING` stays off (it moves away from the NFL on both target measures). #418 makes the retired `WRAP_FOOT` inert. The stack id stays `run-ref-3`: these are code defaults, not stack flags, so **numbers on `run-ref-3` before and after develop 0b6b95b2 differ; quote the commit.**
+
+Independent check, 1,321 matched runs on `run-ref-3`, develop 0b6b95b2 vs with #428:
+
+| | Before | With #428 | NFL |
+|---|---|---|---|
+| All runs, yd under 20 | 3.02 | 3.56 (paired +0.54, SE 0.07) | |
+| Outside zone yd; runs <= 0 | 2.53; 26% | 2.79; 22% | 3.50; 19% |
+| Inside zone yd; runs <= 0 | 3.74; 16% | 4.35; 13% | 3.73; 14% |
+| Gap runs yd | 3.20 | 3.71 | 4.08 (counter) |
+| 10+ yd runs | 6.2% | 7.8% | 9% |
+| Broken tackles a run | 0.067 | 0.154 | |
+| Missed + broken a run | 0.29 | 0.39 | 0.11-0.16 a play (G1; source unverified) |
+
+Flex's table (1,328 runs, run-ref-2): front-on gain after first contact 0.43 / 0.60 / 1.03 -> 0.65 / 0.86 / 1.09 yd (NFL 2.2-2.6), second defender 60 -> 65% (NFL 80%), yards after contact 1.58 -> 2.20.
+
+What to take from it:
+- Outside zone, gap runs and the long-run rate move toward the NFL; inside zone moves 0.6 yd above it.
+- **Broken tackles a run more than double.** That was #412's stated open risk and it is G1's headline measure moving the wrong way. The mechanism (a grab from inside a block holds with one arm) is the reason, and `ONE_ARM_HOLD=0` restores the old hold. It is merged on the owner's evidence under PLAN's rule that a worse statistic is logged, not a veto; Tanner can reverse it with that switch.
+- Neither target gap closes: front-on gain and the second defender are upstream of the bond (front-on momentum exchange, pursuit arrival TKL-2, the whiff roll TKL-7). That is Flex's next item.
+
 ## What to do next
 
 Ordered by how much each unblocks. Every measurement below is taken on `npm run ref` and reported with the stack id.
