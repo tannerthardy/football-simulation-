@@ -112,6 +112,18 @@ interface SnapEvent { t: number; o: Agent; d?: Agent }
 /** Length of the ball: the neutral zone's depth (yd). */
 const BALL_LENGTH = 0.31;
 
+/** Experimental (GAZE=1, off): a player who names what he is watching
+ * (`lookAt`) sees opponents only inside his gaze cone or in contact with him.
+ * Others he knows from his last in-view sighting, projected forward for as
+ * long as his read skill lets him anticipate. Stage 1: chasing defenders only
+ * (docs/reviews/field-of-view-proposal.md). Model assumptions: head turn rate,
+ * neck range and cone half-angle below. */
+const GAZE = process.env.GAZE === '1';
+const GAZE_HEAD_RATE = 6; // rad/s, about 340 deg/s
+const GAZE_NECK = Math.PI / 2; // head within +-90 deg of body facing
+const GAZE_CONE = Math.PI / 2; // seen within +-90 deg of gaze
+const angDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+
 export class PlaySim {
   readonly dt = DT;
   readonly rng: Rng;
@@ -158,6 +170,10 @@ export class PlaySim {
   readonly throwSight = new ThrowSight();
   /** Per observer→opponent query (and its delay scale), the tick his latest picture sampled (run-read attention holds it). */
   private sightSamples?: Map<string, number>;
+  /** GAZE: head direction and what each opted-in player is watching. */
+  private gaze = new Map<Agent, { dir: number; t: number; target: Agent; set: number; since: number }>();
+  /** GAZE: last in-view picture per observer>target, with when it was taken. */
+  private sightMemory = new Map<string, { seen: Perceived; at: number }>();
   readonly trace: ReplayTrace;
   private commandTrace?: CommandTrace;
   /** Optional passive recorder of every offensive blocker's responsibility (docs/COMMAND_TRACE.md). Off unless asked for. */
@@ -568,6 +584,50 @@ export class PlaySim {
     return this.bySlot.get(name);
   }
 
+  /** GAZE: `a` is watching `target` this tick (stage 1: a chaser watches his man). */
+  lookAt(a: Agent, target: Agent): void {
+    if (!GAZE) return;
+    const g = this.gaze.get(a);
+    // A lapsed watch starts over: head from body facing, no memories from before.
+    if (g && g.set >= this.t - this.dt - 1e-9) { g.target = target; g.set = this.t; }
+    else this.gaze.set(a, { dir: a.facing, t: this.t, target, set: this.t, since: this.t });
+  }
+
+  /** GAZE: is `target` in `observer`'s view or contact, given his delayed picture of it? */
+  private inView(observer: Agent, target: Agent, picture: Perceived, delay: number): boolean {
+    const g = this.gaze.get(observer)!;
+    if (target === g.target) return true;
+    const e = observer.engagement;
+    if (e && (e.blocker === target || e.defender === target || e.helpers.includes(target))) return true;
+    if (target.engagement && (target.engagement.blocker === observer || target.engagement.defender === observer)) return true;
+    if (this.bond && this.bond.carrier === target && this.bond.tacklers.includes(observer)) return true;
+    if (this.lastStep?.contacts.some(c => (c.i === observer.idx && c.j === target.idx) || (c.j === observer.idx && c.i === target.idx))) return true;
+    if (g.t < this.t) {
+      // The head turns toward the watched man's delayed picture, within the neck range.
+      const w = this.perception.perceive(g.target.idx, delay);
+      const want = Math.atan2(w.pos.y - observer.pos.y, w.pos.x - observer.pos.x);
+      const clamped = observer.facing + clamp(angDiff(want, observer.facing), -GAZE_NECK, GAZE_NECK);
+      const step = GAZE_HEAD_RATE * (this.t - g.t);
+      g.dir = g.dir + clamp(angDiff(clamped, g.dir), -step, step);
+      g.dir = observer.facing + clamp(angDiff(g.dir, observer.facing), -GAZE_NECK, GAZE_NECK);
+      g.t = this.t;
+    }
+    const brg = Math.atan2(picture.pos.y - observer.pos.y, picture.pos.x - observer.pos.x);
+    return Math.abs(angDiff(brg, g.dir)) <= GAZE_CONE;
+  }
+
+  /** GAZE: out of view, his last in-view picture projected for his anticipation horizon. */
+  private remembered(observer: Agent, target: Agent, seen: Perceived): Perceived {
+    const key = `${observer.idx}>${target.idx}`;
+    let m = this.sightMemory.get(key);
+    if (!m || m.at < this.gaze.get(observer)!.since) { m = { seen, at: this.t }; this.sightMemory.set(key, m); }
+    const since = this.t - m.at;
+    const skill = clamp(0.5 * observer.r('playRecognition') + 0.5 * observer.r('awareness'), 0, 1);
+    const horizon = 0.2 + 0.8 * skill, run = Math.min(since, horizon);
+    return { ...m.seen, pos: { x: m.seen.pos.x + m.seen.vel.x * run, y: m.seen.pos.y + m.seen.vel.y * run },
+      vel: since < horizon ? m.seen.vel : { x: 0, y: 0 }, age: (m.seen.age ?? 0) + since };
+  }
+
   /** What `observer` perceives of `target` (delayed for opponents). */
   see(observer: Agent, target: Agent, delayScale = 1): Perceived {
     if (observer.team === target.team) {
@@ -597,8 +657,13 @@ export class PlaySim {
       delay += 0.15;
       if (sampled !== undefined && sampled <= now) delay = Math.max(attended, Math.min(delay, (now - sampled) * this.dt));
     }
-    const seen = this.perception.perceive(target.idx, delay);
+    let seen = this.perception.perceive(target.idx, delay);
     this.sightSamples.set(key, now - Math.round((seen.age ?? delay) / this.dt));
+    const g = GAZE ? this.gaze.get(observer) : undefined;
+    if (g && g.set >= this.t - this.dt - 1e-9) {
+      if (this.inView(observer, target, seen, delay)) this.sightMemory.set(`${observer.idx}>${target.idx}`, { seen, at: this.t });
+      else seen = this.remembered(observer, target, seen);
+    }
     this.trace.observe(observer, target, seen, this.t);
     this.commandTrace?.observe(observer, target, seen, this.t);
     return seen;

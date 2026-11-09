@@ -88,3 +88,51 @@ rule, the controllers keep their logic. Only what they can know changes.
 2. Approve stage 1, backside pursuit. Defense owns pursuit, so it would be a
    joint change: the gaze channel in `PlaySim.see` (engine) plus pursuit's gaze
    target (Defense).
+
+## Stage 1 built: `GAZE` (off), chasing defenders (2026-11-09)
+
+Tanner approved option 2 and stage 1: "we desperately need to build on this
+model". Anticipation is deliberately simple in this stage. Tanner's note that
+"projects in a straight line" is too simple a worst case stands; richer,
+experience-based anticipation is later work.
+
+**The law** (`src/sim/playsim.ts`; `lookAt`, `inView`, `remembered`):
+- `chase()` names the man a defender is chasing as his gaze target. Stage 1
+  opts in only while he chases.
+- The head turns toward his delayed picture of that man at 6 rad/s, within
+  ±90° of body facing.
+- An opponent is seen on the ordinary delay if he is:
+  - the watched man;
+  - inside ±90° of gaze, judged from the delayed picture;
+  - or in contact (engagement, bond, or last-step body contact).
+- Otherwise the observer has his last in-view picture. It is projected along
+  its velocity for 0.2 + 0.8·(read skill) s, then held, with velocity zero.
+  Read skill is the mean of play recognition and awareness.
+- A lapsed watch restarts from body facing with no older memories.
+- Constants are model assumptions, not measured.
+
+**Results**, restaged runs (1,310, seeds 7–29 odd, current base):
+- Chasers answer **30.5%** of opponent lookups from memory.
+- **Outcomes barely move:** 67 plays change, paired yards +0.003 (SE 0.015),
+  10+ runs 12.2% → 12.3%, 20+ unchanged.
+- **Reading:** a chaser watches the carrier, so he still sees cutbacks, and
+  chase decisions use few other opponents. The large effects should come
+  where the gaze target is a real choice:
+  - man coverage (his man or the QB);
+  - backside defenders and reverses (the gaze is on the play, not the second
+    back);
+  - blockers coming from outside the view.
+
+**Tests:** `npm test` 3,741/3,741 with `GAZE` off and on (Node 22.23.3).
+`test/gaze-field-of-view.test.ts` covers:
+- the watched man is seen live;
+- a man moving behind a chaser stays at his last in-view position;
+- off, he is seen.
+
+**Next stages:**
+- **Stage 2, man coverage** (Coverage lane). The controller chooses between
+  the man and the QB, which needs a head-turn "check" behavior.
+- **Stage 3,** run-defense reads of second-level and backside threats.
+- **Anticipation:** richer, experience-based anticipation (route and concept
+  priors from scouting reports, sharper with play recognition) replaces the
+  dead-reckoned horizon there.

@@ -230,6 +230,7 @@ export function blendApproach(far: MoveCommand, near: MoveCommand | null, gather
 }
 
 export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveCommand {
+  sim.lookAt(a, target);
   const look = (0.12 + 0.12 * (1 - a.r('awareness'))) / Math.max(0.1, a.profile.reactionTime);
   const seen = sim.see(a, target, look);
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
