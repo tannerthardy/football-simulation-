@@ -72,7 +72,9 @@ describe('waiting requires a supported acquired-picture forecast', () => {
       tryTackles(f.sim);
       expect(preview).not.toHaveBeenCalled();
       expect(f.sim.bond?.tacklers).toContain(f.defender);
-      expect(f.defender.engagement).toBeNull(); expect(blocker.engagement).toBeNull();
+      // A free-arm grab keeps the block (ONE_ARM_HOLD): one arm on the runner.
+      expect(f.defender.engagement).toBe(engagement); expect(blocker.engagement).toBe(engagement);
+      expect(f.sim.bond?.oneArm?.has(f.defender)).toBe(true);
       expect(f.sim.events.some(e => e.type === 'tackle_wrap' && e.a === f.defender.idx)).toBe(true);
     } finally { preview.mockRestore(); chance.mockRestore(); }
   });

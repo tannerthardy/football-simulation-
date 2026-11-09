@@ -1,0 +1,99 @@
+# Contact to whistle on the reference: #412, #418, #410 and HELD_SWING
+
+Flex, 2026-11-09. Integration's item 1: measure the three contact/finish changes
+that had never been measured together, and recommend what to do with each.
+They are ONE_ARM_HOLD (#412), the grasp-timing fix (#418) and HELD_SWING (#414,
+merged, off), plus RELEASE_REDECIDE (#410).
+
+## Setup
+
+- **Stack:** `run-ref-2` (= run-ref-1 @ 8696d32a with `ZONE_PAIR=0`; develop
+  283325e1 changed only the stack file).
+- **Matched set:** 12 run-only games captured at develop's code defaults
+  (seeds 7–29 odd), 1,328 runs. Every arm replays the same snaps.
+- **Arms:** #418 has no switch, so each code change is its own tree:
+  - **off:** develop;
+  - **HELD_SWING:** develop with `--flag HELD_SWING=1`;
+  - **ONE_ARM_HOLD:** develop + #412, at its code default (on);
+  - **#418:** develop + #418;
+  - **all three:** develop + #412 + #418 with `HELD_SWING=1`;
+  - **RELEASE_REDECIDE:** develop + #410, at its code default (on).
+- **Operators:** Run Game's `hitterback`, `pile`, `stuffbin` and `deephit` on
+  zone dumps (`dump-zone.mts`), plus `ref-compare.py` paired yards on all
+  runs. NFL values are from the integration brief and Run Game's tables.
+
+## Results
+
+Zone first contacts. The front-on carrier gain is the median after the first
+hit, by contact depth. "Deep stops" means contacts deeper than 1 yd behind the
+line that end at 0 or less. Paired yards are on all 1,328 runs, capped at 20.
+
+| Arm | Front-on gain at −1..0 / 0..1 / 1..3 yd | 2nd (3rd) defender arrives | Deep stops | Yards after contact at −1..0 | Contact → end | Paired yards (SE) |
+|---|---|---|---|---|---|---|
+| Off | 0.43 / 0.60 / 1.03 | 60% (25%) | 76% | 1.58 | 0.9 s | — |
+| HELD_SWING | 0.46 / 0.59 / 0.93 | 55% (22%) | 78% | 1.47 | 0.6–0.9 s | −0.34 (0.03) |
+| ONE_ARM_HOLD (#412) | 0.59 / 0.66 / 1.07 | 63% (26%) | 67% | 2.20 | 0.9–1.1 s | +0.46 (0.05) |
+| Grasp timing (#418) | 0.45 / 0.62 / 1.12 | 64% (37%) | 72% | 1.67 | 1.0–1.3 s | +0.20 (0.03) |
+| All three | 0.65 / 0.86 / 1.09 | 65% (33%) | 63% | 2.00 | 0.9–1.2 s | +0.16 (0.05) |
+| RELEASE_REDECIDE (#410) | 0.53 / 0.55 / 1.05 | 61% (25%) | 76% | 1.75 | 0.8–0.9 s | +0.07 (0.05) |
+| **NFL** | **2.2–2.6** | **80%** | | | | |
+
+All runs, mean yards under 20: off 2.92, all three 3.08. The reference stack is
+below the NFL, so positive paired yards are not a move away from it.
+
+## Recommendations
+
+- **#412 ONE_ARM_HOLD: merge as is (default on, `=0` switch).**
+  - It is a correctness fix: one arm cannot lock around a body.
+  - It moves the finish toward the NFL: yards after contact 1.58 → 2.20, deep
+    stops 76 → 67%, a longer contact-to-whistle, and the 2nd defender 60 → 63%.
+- **#418 grasp timing: merge as is (no switch).**
+  - It is a correctness fix of grasp force timing and recovery geometry.
+  - A 3rd defender arrives more often (25 → 37%), the finish lasts longer, and
+    the hitter is driven back more often (side/rear ≥ 1 yd: 54–59% → 62–69%).
+  - It deletes the `recoveryCoupling` that `WRAP_FOOT` scaled, so that retired
+    flag is now inert.
+  - Its stricter `line-read` assertion (that a backside box comes from an
+    acquired carrying picture) contradicts develop's documented backside box.
+    That box answers a blocker the edge sees arriving, and on I-pro/I-twins
+    seed 7 it comes at 0.95 s with the carrier 3 yd behind the line. The
+    assertion now applies only when a possession picture was consumed.
+- **#410 RELEASE_REDECIDE: merge as is (default on, `=0` switch).**
+  - It is a step-order correctness fix: a released player no longer carries
+    his engaged standstill through the step.
+  - It is neutral on the finish and on yards (+0.07, SE 0.05).
+  - One ledger scene was re-recorded. In S8-P005, LB_W now reaches the carrier
+    at 4.35 and misses, and CB_W wraps at 5.4, for 2.87 yd instead of 3.95.
+    `=0` restores the old record.
+- **HELD_SWING: keep off.**
+  - On this stack it moves away from the NFL on both target measures. The 2nd
+    defender falls 60 → 55%, yards after contact and contact-to-whistle get
+    shorter, and paired yards are −0.34 (SE 0.03).
+  - It is not retired. The leg-hold mechanism may be right while something
+    else in the finish is wrong; re-test it once the front-on gap moves.
+
+## What none of them fixes
+
+None of the four closes the front-on gap. The carrier's gain after a front-on
+hit is 0.4–1.1 yd against 2.2–2.6 on the NFL, and the hitter is rarely driven
+back (median 0.1–0.6 yd). The 2nd defender arrives on at most 65% of contacts
+against 80%.
+
+Both are upstream of the bond:
+- the front-on momentum exchange: whether a runner's legs keep driving through
+  a tackler who has not yet planted;
+- pursuit arrival (TKL-2).
+
+The whiff itself is still a rating roll (TKL-7). Those three are the next
+diagnoses for contact to whistle. More bond tuning is not.
+
+## Reproduce
+
+Tree per arm, then:
+
+```sh
+npm run -s ref -- --flag ZONE_PAIR=0 [--flag HELD_SWING=1] -- node --import tsx scripts/diag/ref-replay.mts <arm>
+npm run -s ref -- --flag ZONE_PAIR=0 [--flag HELD_SWING=1] -- node --import tsx scripts/diag/run-operators/dump-zone.mts "$PWD" off | grep '^{' > <arm>.zone.jsonl
+python3 -I scripts/diag/run-operators/hitterback.py <arm>.zone.jsonl   # also pile.py; stuffbin.py and deephit.py take "OUTSIDE ZONE,INSIDE ZONE" first
+python3 -I scripts/diag/ref-compare.py off <arm>
+```
