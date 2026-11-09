@@ -305,6 +305,22 @@ No material outcome shift: these are structure and role fixes.
      zones (PRS), and deep safeties trigger at 2.1–2.4 s from 13–15 yd.
    - **Who decides:** FLAGS.md says Defense, Run Game and Coverage agree before
      it is promoted. Proposal sent to them.
+   - **Update, after pass 2:** Defense and Run Game agreed with the mechanism,
+     but the case for promoting has gone on the current base, so the flag stays
+     off.
+     - **Grid:** 2-Man is now 6.93 yd per carry with the flag off. With it on,
+       6.30, paired −0.63 ± 1.04, which is noise.
+     - **Who forces changes:** from FS/SS on all 300 snaps to man defenders
+       (Mike + nickel 144, Sam + weak corner 56, Mike + weak corner 52,
+       Mike + Sam 48).
+     - **Matched restage:** on the 36 changed runs, first carrier contact
+       comes later (3.17 → 3.74 s), with paired yards +3.47 ± 4.27.
+     - **Defense's man-force rule is already in place.** A force-titled man
+       defender leaves his man only on reading his man block. The ends already
+       box in every 2-Man snap, and an edge-contain flag behind a man-force
+       player changed nothing.
+     - **Next:** the first wrong stage on those snaps (why the man-force
+       player is late), not promotion.
 2. **Quarters and Cover 1 leak runs** (sim 6.9 and 6.8 per carry, against 4.5
    and 4.8). Next, the first wrong stage on matched quarters runs:
    - the apex force's fit;
