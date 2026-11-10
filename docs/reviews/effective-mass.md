@@ -1318,3 +1318,25 @@ What the trace shows:
   - Is the 1.8 mg felt load over ~0.2 s, about 3–4 yd/s of velocity change, coherent with the closing speeds and masses?
   - Is the contact-height tip right for that pad mismatch?
   - Only if the bench shows an incoherence does it become a physics change.
+
+**Impact bench (`impact-bench.mts`).**
+
+- **Setup:** a 140 kg OG at posture 0.8 driving at 3 yd/s; torso contact, then a hands row at the blocker's arm force. The World only.
+- **Bound:** a coherent contact may give the defender at most the inelastic share m_b/(m_b+m_d) × closing speed, plus the blocker's own ground impulse over the defender's mass.
+
+| Arm (109 kg LB defender) | Closing, yd/s | z vs c, yd | Peak felt, mg | Peak tip, yd/s² | Defender Δv in 0.3 s vs bound, yd/s | Energy: KE change − ground − arm work | Outcome |
+|---|---|---|---|---|---|---|---|
+| Pursuing across the block and into it (the trace: −1.2 + 3 yd/s across), upright | 4.20 | 1.10 vs 1.00 | 4.81 | 10.9 | 3.76 vs 4.64 | −634 (dissipated) | fell at +0.20 s, along the push |
+| Pursuing across only, upright | 3.00 | 1.10 vs 1.00 | 3.50 | 8.5 | 1.90 vs 4.07 | −365 | stayed up |
+| Square and braced (posture 0.8, push 1) | 3.00 | 1.00 vs 0.92 | 2.42 | 3.3 | 1.69 vs 3.88 | −215 | stayed up |
+| Square, upright, not pushing | 3.00 | 1.10 vs 1.00 | 2.41 | 5.6 | 2.12 vs 3.79 | −213 | stayed up |
+| Mirrored (first arm, y → −y) | identical | | | | | | |
+| Equal mass (a 111 kg LB as the blocker), first arm | 4.20 | 1.03 vs 1.00 | 4.68 | 3.0 | 2.80 vs 3.88 | −570 | stayed up |
+
+**Reading.** The impact is coherent.
+
+- Every arm's velocity change is inside its bound. The contacts dissipate energy and never create it, and the mirror is exact.
+- The tip's sign is right: the contact is at the lower man's pads (1.10 yd), above an upright defender's COM (1.00), so a chest-high hit pitches him back. A defender at posture 0.8 lowers both.
+- The tip's size follows the lever (z − c). Against an equal-mass, equal-height blocker it is small (3.0).
+- What puts him down is running into a heavier, lower blocker at 4.2 yd/s closing, upright and not braced. That is real football: a blindside pancake.
+- **No physics change.** The frequency is the controller's: he keeps pursuing into a blocker he could see, without squaring, lowering or setting his legs. That is (a), Defense's item.
