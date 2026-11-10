@@ -627,7 +627,10 @@ export const BACKSIDE_COMBO = process.env.BACKSIDE_COMBO !== '0';
  * tackle and a solo-blocked backside guard, the installed rule found no free
  * backer and left the tackle a solo cutoff on an end 2-3.5 yd outside him
  * (run-ref-12: first touch nobody by 2.0 s 59% IZ / 71% OZ). 2022 zone runs
- * against that front: end 7-10%, inside man 35%, backer 28-38%, nobody 17-30%. */
+ * against that front: end 7-10%, inside man 35%, backer 28-38%, nobody 17-30%.
+ * Stretch calls only, and only when the double has another free backer: on
+ * inside zone the swap alone cost -0.21 yd (SE 0.08) on the fixed runs, and
+ * a double left without a climber cost the play side. */
 export const BACKSIDE_SWAP = process.env.BACKSIDE_SWAP === '1';
 /** KEEPER_HIP (off): a zone double member whose half of the shared man is the
  * man's backside half is exempt from REACH_FLAT's flat track and closes to the
@@ -983,14 +986,17 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
         let backer = lb.filter((l) => !claimedLB.has(l) && near(l)).sort(byGuard)[0];
         // BACKSIDE_SWAP: with none free, the backside backer a play-side
         // double was to climb to is the guard's; the double climbs to the
-        // next free backer nearest its man, or stays on him.
-        if (!backer && BACKSIDE_SWAP) {
+        // next free backer nearest its man. Only when it has one: a double
+        // left without a climber costs the play side more than the swap buys.
+        if (!backer && BACKSIDE_SWAP && (scheme === 'outsideZone' || scheme === 'wideZone')) {
           const owners = (l: Agent) => [...plans.values()].filter((p) => p.target === l || p.climbTo === l || p.combination?.backer === l);
-          backer = lb.filter((l) => near(l) && owners(l).length > 0 && owners(l).every((p) => p.combination && p.target !== l)).sort(byGuard)[0];
-          if (backer) for (const c of new Set(owners(backer).map((p) => p.combination!))) {
-            const next = lb.filter((l) => l !== backer && !claimedLB.has(l) && Math.abs(l.pos.y - c.defender.pos.y) <= ZONE_BACKER_REACH)
-              .sort((x, y) => Math.abs(x.pos.y - c.defender.pos.y) - Math.abs(y.pos.y - c.defender.pos.y))[0] ?? null;
-            if (next) claimedLB.add(next);
+          const nextFor = (c: Combination, taken: Agent) => lb.filter((l) => l !== taken && !claimedLB.has(l) && Math.abs(l.pos.y - c.defender.pos.y) <= ZONE_BACKER_REACH)
+            .sort((x, y) => Math.abs(x.pos.y - c.defender.pos.y) - Math.abs(y.pos.y - c.defender.pos.y))[0] ?? null;
+          backer = lb.filter((l) => near(l) && owners(l).length > 0 && owners(l).every((p) => p.combination && p.target !== l)
+            && new Set(owners(l).map((p) => p.combination!)).size === 1 && !!nextFor(owners(l)[0].combination!, l)).sort(byGuard)[0];
+          if (backer) {
+            const c = owners(backer)[0].combination!, next = nextFor(c, backer)!;
+            claimedLB.add(next);
             c.backer = next;
             for (const q of plans.values()) if (q.combination === c && q.climbTo === backer) q.climbTo = next;
           }
