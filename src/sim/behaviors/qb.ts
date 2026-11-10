@@ -84,6 +84,15 @@ const THROW_REACT = process.env.THROW_REACT !== '0';
  * outlet, the last read, instead of finishing the order. NFL throws to backs
  * leave at 2.50 s p50 against ours at 3.15 s, at the same share (BDB 2025). */
 const QB_RHYTHM = process.env.QB_RHYTHM === '1';
+/** QB_FEEL (off; QB_FEEL=1 turns it on): the QB's sense of how long a rusher
+ * still in a block will take is read from what he can see, the blocker's body
+ * between the rusher and him, not the rep's private score. A blocker square in
+ * the rusher's path adds the time to get around him (and off his hands); a
+ * rusher level with or past the blocker's edge is as near as he looks. Off,
+ * any engaged rusher read 0.35-1.75 s later than his path, so at the first
+ * pressure (a man within 2 yd) our QB felt 1.6 s and stood (0.23 yd moved;
+ * NFL 0.72 at 2.1 yd/s). */
+const QB_FEEL = process.env.QB_FEEL === '1';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -539,8 +548,20 @@ export class QBPass implements Behavior {
   /** Pocket feel: a rusher still in a block arrives later the more square
    * the block is. Good pocket presence reads a rep being lost before the
    * rusher is free; poor pocket presence only notices when he's loose. */
-  private held(a: Agent, d: Agent): number {
+  private held(a: Agent, d: Agent, sim?: PlaySim): number {
     if (!d.engagement) return 0;
+    if (QB_FEEL && sim) {
+      // What he sees: the rusher's path to him and the blocker's body on it.
+      const r = this.felt(a, sim, d).pos, b = this.felt(a, sim, d.engagement.blocker).pos;
+      const px = a.pos.x - r.x, py = a.pos.y - r.y, L = Math.hypot(px, py) || 1;
+      const along = ((b.x - r.x) * px + (b.y - r.y) * py) / L;
+      const off = Math.abs((b.x - r.x) * py - (b.y - r.y) * px) / L;
+      const width = d.profile.radius + d.engagement.blocker.profile.radius;
+      if (along <= 0 || along >= L || off >= width) return 0;
+      // Around the blocker's body at a rusher's lateral pace while held up,
+      // plus getting off his hands; good pocket presence reads it sooner.
+      return (0.2 + (width - off) / 2) * (0.6 + 0.4 * (1 - a.r('pocketPresence')));
+    }
     const feltWin = Math.min(1, d.engagement.win) * (0.35 + 0.65 * a.r('pocketPresence'));
     return 0.35 + 1.4 * (1 - feltWin);
   }
@@ -552,7 +573,7 @@ export class QBPass implements Behavior {
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
       const seen = this.felt(a, sim, d);
-      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + this.held(a, d);
+      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + this.held(a, d, sim);
       if (tt < best) {
         best = tt;
         who = d;
@@ -832,7 +853,7 @@ export class QBPass implements Behavior {
     // Each defender as he has him, not where he truly is: an unseen rusher
     // behind his shoulder is still where he last registered him.
     const threats = sim.defense.filter((d) => !d.isDown(sim.t))
-      .map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d) }));
+      .map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d, sim) }));
     for (const q of lanes) {
       // His own run as scramble() will ask for it: the carrier's full-speed
       // sprint from the velocity he has now, with the same estimate as the
@@ -896,6 +917,25 @@ export class QBPass implements Behavior {
     const tx = home.x + fx * 2 * pp;
     const ty = home.y + fy * 2 * pp;
     const facing = read ? angleTo(a.pos, read.pos) : 0;
+    // QB_FEEL: a rusher he feels closing moves him now, not toward a set
+    // point: up inside an edge rusher's arc, away from interior push, at a
+    // pace he can still throw from, eyes still on his read.
+    if (QB_FEEL) {
+      const p = this.pressure(a, sim);
+      if (p.agent && p.time < 1.2) {
+        const r = this.felt(a, sim, p.agent).pos;
+        const dx = a.pos.x - r.x, dy = a.pos.y - r.y, dd = Math.hypot(dx, dy) || 1;
+        const outside = Math.abs(dy) > 1.0 && r.x <= a.pos.x + 1;
+        // Interior push: slide off its line; a little give if it is on top of him.
+        const side = Math.sign(dy) || Math.sign(a.pos.y - sim.ballY) || 1;
+        const dir = outside ? { x: 0.85, y: 0.5 * side } : { x: dd < 1.5 ? -0.3 : 0, y: side };
+        const n = Math.hypot(dir.x, dir.y) || 1;
+        const pace = (1.6 + 1.2 * a.r('elusiveness')) * clamp((1.2 - p.time) / 0.6, 0.4, 1);
+        const vx = dir.x / n * pace, vy = dir.y / n * pace;
+        const room = sim.los - 2.5 - a.pos.x;
+        return { vel: { x: room > 0 ? vx : Math.min(0, vx), y: vy }, facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
+      }
+    }
     return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: edge ? 0.6 : 0.45, facing });
   }
 }
