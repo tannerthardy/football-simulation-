@@ -1212,3 +1212,37 @@ What the trace shows:
 - What is left is the request: the pass set asks `push: 1` with a lean of 1.25× the load. That is a drive, where a pass blocker anchors and does not chase the push. It is parked with Coverage (protection).
 
 **Not run** (gate 1 stopped the read): first pressure, pocket depth, run trench, run-block falls, the paired card.
+
+**Anchor probe (Integration, 2026-11-10; temporary, not committed).**
+
+- **The change:** `LEAN_PITCH` on, plus the pass set asking for a lean of at most 1.0× the felt load instead of 1.25×. That is the lean target's growth term set to 0 for the pass set, read from an intent field.
+- **Unchanged:** kick, mirror, posture, `push: 1` and the release law.
+- **Sample:** the same four games.
+
+| | Off | `LEAN_PITCH` | + anchor | NFL |
+|---|---|---|---|---|
+| Dropbacks with an OL fall before the throw (truth) | 74.9% | 19.0% | **10.9%** (41 falls / 366) | — |
+| `olfall.py` strict / bound | 14.6 / 22.1% | 3.9 / 6.7% | 1.4 / 2.7% | 0.9 / 1.2% |
+| Pressure (first defender within 2 yd before the throw) | 57.2% | 47.3% | 43.2% | 28% |
+| Sacks a dropback | 8.2% | 6.7% | 4.4% | — |
+| How pressure arrives: blocker still on him / never blocked / shed / got apart | 20 / 15 / 25 / 40% | 41 / 29 / 24 / 6% | 42 / 21 / 32 / 5% | 63% blocker still on |
+| Guards' depth at 2.0 s / 3.0 s, yd | 2.99 / 4.18 | 3.13 / 4.94 | 3.11 / 4.76 | — |
+| Tackles' depth at 2.0 s / 3.0 s, yd | 5.06 / 7.29 | 5.06 / 7.76 | 5.06 / 7.61 | — |
+| QB − guards at 3.0 s, yd | 3.88 | 2.95 | 3.15 | — |
+
+- **Pocket at 2.0 s:** unchanged.
+- **Pocket at 3.0 s:** the guards are 0.6–0.8 yd deeper. Blockers who used to fall now stay up and are driven back instead; the plays still alive then are different samples.
+- **The anchor's other failure is not seen:** the pocket does not collapse.
+- **Pressure:** falls and "got apart" endings nearly vanish. The rusher's remaining routes are the shed (32%) and riding a blocker who is still on him (42%).
+
+**Run blocks with `LEAN_PITCH` on** (`run-fall.mts`, the fixed run set):
+
+| | Off | On |
+|---|---|---|
+| Run-engagement endings | 6,680 | 6,302 |
+| Body-down endings | 1,441 | 1,029 |
+| Blocker falls | 580 | 361 |
+| Defender falls | 906 | 709 |
+| Defenders down along the push | 554 | 495 |
+
+- Defenders driven over along the push barely move: they are knocked over, not leaning, so this law does not reach them. That needs its own look.
