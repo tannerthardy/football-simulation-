@@ -541,3 +541,36 @@ Fixed ref run set (12 seeds, 1,321 runs, paired off/on, run-ref-15). Same refere
 3. Front-on carrier gain (hitterback, zone) keeps at least half of CARRIER_BRACE's rise.
 
 **Not attempted here.** The brace has no physical cost: a lowered posture does not slow him or limit his cut in the World. That is a physics question, noted for the World. It is not a cost to add in the controller.
+
+**`BRACE_EVIDENCE` read (missed gates 1 and 3; stays off).** Same fixed run set and operators.
+
+| | CARRIER_BRACE | + BRACE_EVIDENCE |
+|---|---|---|
+| Firings a run | 1.39 | 0.57 |
+| At a free, squared man (true state; gate 1 ≥ 70%) | 40% | **64%** |
+| At an engaged man | 50% | 29% |
+| No contact within 0.6 s (gate 2 ≤ 20%) | 33% | 17% |
+| Lunged into nothing | 10% | 2% |
+| Speed over the next 0.3 s, into a side hit | 4.9 → 5.25 | 4.75 → 4.75 |
+| Speed over the next 0.3 s, into a front hit | 4.9 → 5.0 | 4.7 → 3.5 |
+| Added breaks (gate 3: front-majority) | side +28, front +7 | front +5, side +3 |
+| Front-on carrier gain −1..0 / 0..1 / 1..3 (ref 1.13 / 1.19 / 0.98) | 1.70 / 1.65 / 1.30 | **1.14** / 1.50 / 1.17 |
+| Paired yards | +0.59 (SE 0.07) | +0.11 (SE 0.03) |
+| Missed + broken open a run (ref 0.304) | 0.335 | 0.309 |
+
+**Gate verdicts.**
+- Gate 1 missed (64%). The gap is perception against true state: the carrier sees a delayed picture.
+- Gate 2 passed.
+- Gate 3 (breaks): passed.
+- Gate 3 (half the front-on rise): missed at the line (+0.57 → +0.01). Passed at 0..1 (+0.31 of +0.46) and 1..3 (+0.19 of +0.32).
+
+**The free-man cell.** Paired, the free man's first-contact share is 34 → 34%, and only 1 play is lost.
+
+**What the miss says.**
+- Nearly all of CARRIER_BRACE's front-on gain at the line came from bracing into men who were engaged with blockers: the back lowering his pads into the pile at the line of scrimmage.
+- That is real football: a back runs behind his pads into traffic at the line.
+- So "free of blocks" is the wrong evidence there. The right evidence is a body squared in his path, engaged or not.
+- In space, "free and squared" is right: the side-hit speed gain is gone.
+- A second trigger variant (squared in his path, engaged or not, inside the line's traffic) is a new attempt and needs Integration's call.
+
+**Physics half (Integration, 2026-11-10).** A lowered, forward-leaning posture has no cost in the World: no limit on turning rate, top speed held, or the reach of the next cut. Whether the lean law charges for a committed forward lean when the hit comes from the side is open. This is the condition before any brace variant goes on.
