@@ -101,6 +101,7 @@
     "STRETCH_MESH": "1",
     "STRETCH_REACH": "1",
     "TACKLE_TOUCH": "0",
+    "TKL_WHIFF": "0",
     "TIP_AWAY": "1",
     "DEF_ALIGN": "1",
     "WR_ALIGN": "1",
