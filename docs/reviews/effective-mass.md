@@ -1212,3 +1212,162 @@ What the trace shows:
 - What is left is the request: the pass set asks `push: 1` with a lean of 1.25× the load. That is a drive, where a pass blocker anchors and does not chase the push. It is parked with Coverage (protection).
 
 **Not run** (gate 1 stopped the read): first pressure, pocket depth, run trench, run-block falls, the paired card.
+
+**Anchor probe (Integration, 2026-11-10; temporary, not committed).**
+
+- **The change:** `LEAN_PITCH` on, plus the pass set asking for a lean of at most 1.0× the felt load instead of 1.25×. That is the lean target's growth term set to 0 for the pass set, read from an intent field.
+- **Unchanged:** kick, mirror, posture, `push: 1` and the release law.
+- **Sample:** the same four games.
+
+| | Off | `LEAN_PITCH` | + anchor | NFL |
+|---|---|---|---|---|
+| Dropbacks with an OL fall before the throw (truth) | 74.9% | 19.0% | **10.9%** (41 falls / 366) | — |
+| `olfall.py` strict / bound | 14.6 / 22.1% | 3.9 / 6.7% | 1.4 / 2.7% | 0.9 / 1.2% |
+| Pressure (first defender within 2 yd before the throw) | 57.2% | 47.3% | 43.2% | 28% |
+| Sacks a dropback | 8.2% | 6.7% | 4.4% | — |
+| How pressure arrives: blocker still on him / never blocked / shed / got apart | 20 / 15 / 25 / 40% | 41 / 29 / 24 / 6% | 42 / 21 / 32 / 5% | 63% blocker still on |
+| Guards' depth at 2.0 s / 3.0 s, yd | 2.99 / 4.18 | 3.13 / 4.94 | 3.11 / 4.76 | — |
+| Tackles' depth at 2.0 s / 3.0 s, yd | 5.06 / 7.29 | 5.06 / 7.76 | 5.06 / 7.61 | — |
+| QB − guards at 3.0 s, yd | 3.88 | 2.95 | 3.15 | — |
+
+- **Pocket at 2.0 s:** unchanged.
+- **Pocket at 3.0 s:** the guards are 0.6–0.8 yd deeper. Blockers who used to fall now stay up and are driven back instead; the plays still alive then are different samples.
+- **The anchor's other failure is not seen:** the pocket does not collapse.
+- **Pressure:** falls and "got apart" endings nearly vanish. The rusher's remaining routes are the shed (32%) and riding a blocker who is still on him (42%).
+
+**Run blocks with `LEAN_PITCH` on** (`run-fall.mts`, the fixed run set):
+
+| | Off | On |
+|---|---|---|
+| Run-engagement endings | 6,680 | 6,302 |
+| Body-down endings | 1,441 | 1,029 |
+| Blocker falls | 580 | 361 |
+| Defender falls | 906 | 709 |
+| Defenders down along the push | 554 | 495 |
+
+- Defenders driven over along the push barely move: they are knocked over, not leaning, so this law does not reach them. That needs its own look.
+
+## Run-block defenders on the ground (`run-dfall.mts`, `run-frames.mts`, `rdfall.py`; the fixed run set, 1,321 runs; NFL 2022, 6,172 runs; 2026-11-10)
+
+**How often.**
+
+- **Truth:** 906 defender falls in run blocks; half the runs (656) have one.
+- **Operator (`rdfall.py`):**
+  - NFL run records carry no block pairs, so a DL or LB is "blocked" while an OL or TE is within 1.2 yd of him for 0.3 s.
+  - Flagged: he then goes still (under 0.3 yd/s for 0.8 s), more than 2 yd from the carrier, before first contact.
+  - This also counts anchors, so it is an upper bound on the NFL.
+
+  | | Flagged share of blocked DL/LB reps | Flags a run |
+  |---|---|---|
+  | NFL | 0.2% (81) | 0.01 |
+  | Sim | 1.7% (107) | 0.08 |
+
+  - The sim's rate is about 8× the NFL's on identical code.
+  - Precision against the sim's true falls is 69%. Recall is 16%: most falls come too close to first contact for the window.
+
+**Who.**
+
+- **Defender's slot:** LB_M 157, DT_W 136, LB_W 120, DT_S 117, DE_S 90, DE_W 71, NB 57, SS 53.
+- **Blocker's slot:** C 166, the tackles and guards 120–144 each, Y 101, H 54.
+- **Doubles:** 22 of 906. These are solo blocks, not doubles burying a tackle.
+- **The blocker is the heavier and stronger man:** mass 1.21×, strength 1.12× (medians).
+- **When:** 810 come after the handoff, at a median of 3.75 yd from the runner.
+
+**Direction** (capture-point deviation against the felt load at the fall):
+
+| | Along the push (driven over) | Toward the man | Across |
+|---|---|---|---|
+| Defenders | 549 | 191 | 164 |
+| Blockers | 234 | 185 | 159 |
+
+**Two different falls among the 551 driven over:**
+
+1. **Early impact (416; within 0.4 s of contact): LB 178, DB 141, DL 97.**
+   - Over the 4–5 ticks from contact, the felt load builds 0.7 → 1.8 mg.
+   - The contact-height tip grows 1.3 → 4.5 yd/s²: a low blocker (posture ~0.8) under an upright defender (0.43, sinking to 0.32).
+   - The defender is moving into the blocker at ~1.2 yd/s.
+   - His request along the push is **0**: he is pursuing across it, not taking the block on.
+   - He uses only ~55% of his traction and builds almost no lean (median 0.12 mg before the crossing). The lean law braces only when his request along the load exceeds his velocity, which a pursuit request never does.
+   - His capture point crosses 0.07 → 0.23 → 0.55 → 0.86 → 1.0 of the fall threshold in four ticks.
+2. **Sustained drive (135; after 0.4 s): mostly DL (71).**
+   - Driven back at 1.0–1.4 yd/s, a load ~0.8 mg, asking to hold ground (request −0.8 to −1.1 yd/s along the push).
+   - His capture point creeps from 0.2 to 1.0 of the threshold over 0.35 s while availability falls (0.99 → 0.33).
+   - A man driven backward who asks to hold ground is not stepping back with the drive. His recovery steps cannot keep up.
+
+**What it does to the play.**
+
+| Runs | Any defender fall | A fallen defender within 2 yd of the runner's later path (while down) |
+|---|---|---|
+| Under 4 yd | 47% | 23% |
+| 4–9 yd | 54% | 21% |
+| 10+ yd | 51% | 18% |
+
+- Falls are not what makes the long gains.
+- They take a man out of the pursuit about once every two runs, which may thin the crowd at the runner. Blocked defenders within 2 yd of the runner: 0.58 a run against the NFL's 0.80.
+
+**With `LEAN_PITCH` on:**
+
+- Defender falls 906 → 709: toward the man 191 → 108, along the push 549 → 493.
+- Blocker falls 580 → 361. A note for Run Game: when the flag goes on, fewer of its blockers end on the ground.
+- The driven-over falls are not a lean, and this law does not reach them.
+
+**Proposal** (nothing built):
+
+- **(a) Controller, Defense.** An engaged defender does not take the block on. His request stays pursuit (0 along the push) with upright pads, so his legs never brace. Taking on a blocker he sees closing (pads down, a request against the block's push), or defeating it, is technique on observable evidence. So is giving ground with the drive instead of asking to hold it when he is being driven.
+- **(b) Physics, mine.** Bench the early impact: a 1.2× heavier blocker at posture 0.8 into an upright pursuer, braced against unbraced.
+  - Is the 1.8 mg felt load over ~0.2 s, about 3–4 yd/s of velocity change, coherent with the closing speeds and masses?
+  - Is the contact-height tip right for that pad mismatch?
+  - Only if the bench shows an incoherence does it become a physics change.
+
+**Impact bench (`impact-bench.mts`).**
+
+- **Setup:** a 140 kg OG at posture 0.8 driving at 3 yd/s; torso contact, then a hands row at the blocker's arm force. The World only.
+- **Bound:** a coherent contact may give the defender at most the inelastic share m_b/(m_b+m_d) × closing speed, plus the blocker's own ground impulse over the defender's mass.
+
+| Arm (109 kg LB defender) | Closing, yd/s | z vs c, yd | Peak felt, mg | Peak tip, yd/s² | Defender Δv in 0.3 s vs bound, yd/s | Energy: KE change − ground − arm work | Outcome |
+|---|---|---|---|---|---|---|---|
+| Pursuing across the block and into it (the trace: −1.2 + 3 yd/s across), upright | 4.20 | 1.10 vs 1.00 | 4.81 | 10.9 | 3.76 vs 4.64 | −634 (dissipated) | fell at +0.20 s, along the push |
+| Pursuing across only, upright | 3.00 | 1.10 vs 1.00 | 3.50 | 8.5 | 1.90 vs 4.07 | −365 | stayed up |
+| Square and braced (posture 0.8, push 1) | 3.00 | 1.00 vs 0.92 | 2.42 | 3.3 | 1.69 vs 3.88 | −215 | stayed up |
+| Square, upright, not pushing | 3.00 | 1.10 vs 1.00 | 2.41 | 5.6 | 2.12 vs 3.79 | −213 | stayed up |
+| Mirrored (first arm, y → −y) | identical | | | | | | |
+| Equal mass (a 111 kg LB as the blocker), first arm | 4.20 | 1.03 vs 1.00 | 4.68 | 3.0 | 2.80 vs 3.88 | −570 | stayed up |
+
+**Reading.** The impact is coherent.
+
+- Every arm's velocity change is inside its bound. The contacts dissipate energy and never create it, and the mirror is exact.
+- The tip's sign is right: the contact is at the lower man's pads (1.10 yd), above an upright defender's COM (1.00), so a chest-high hit pitches him back. A defender at posture 0.8 lowers both.
+- The tip's size follows the lever (z − c). Against an equal-mass, equal-height blocker it is small (3.0).
+- What puts him down is running into a heavier, lower blocker at 4.2 yd/s closing, upright and not braced. That is real football: a blindside pancake.
+- **No physics change.** The frequency is the controller's: he keeps pursuing into a blocker he could see, without squaring, lowering or setting his legs. That is (a), Defense's item.
+
+**The sustained-drive falls (`drive-bench.mts`, `run-dfall.mts` with a temporary per-term capture-point split, reverted).**
+
+- **Bench:** a 150 kg DT driven by a 147 kg OG through a hands row, for 2 s. Four requests:
+  - hold ground (push 1, posture 0.6): holds at 0.04 yd/s with a lean of 0.87 mg balancing a 0.95-mg load;
+  - retreat with the drive at 1.2 yd/s: gives ground at 1.24 yd/s under 0.8 mg, lean 0.74;
+  - anchor low (posture 1): holds;
+  - no push: carried back at 2 yd/s.
+- **In none of them** does the capture point leave 0.02 of the fall threshold, and nobody falls. A steady drive in isolation topples no one.
+- **In games** (the 551 driven over along the push), each event's capture-point change is summed by term along its fall:
+
+| | Falls after a load spike (≥ 1.3 mg) | Steady drive (no spike) |
+|---|---|---|
+| Count | 465 (84%): LB 202, DB 149, DL 114 | 86: DL 54, LB 23, DB 9 |
+| Peak felt load | 3.1 mg | 0.98 mg |
+| Unfollowed contact acceleration | **0.76 yd** | 0.01 |
+| Contact-height tip | 0.22 | 0.00 |
+| Lean release | 0 | **0.48 yd** |
+| Recovery step at the last tick (share of step speed) | 0.88 | 0.85 |
+| His request along the push / velocity, yd/s | 0 / +0.6 | −1.0 (into the blocker) / +0.9 |
+
+**Reading.**
+
+- **No missing recovery step.** It fires at 85–88% of step speed in both groups; nothing drains it under a sustained load. The earlier split by rep age was misleading.
+- **84% of these falls are impacts**, including repeat hits later in a rep. They are coherent by the impact bench, so they belong to Defense's item (a).
+- **The steady-drive remainder (86) is the pass blocker's lean release:**
+  - the defender asks to attack into the blocker at 1 yd/s;
+  - he commits a lean into the load;
+  - the load sags and the lean drops into his capture point.
+- `LEAN_PITCH` and an anchor-style request (lean no more than the load) are its remedies, as on the OL side.
+- Nothing new for the World. Coverage's `PASS_ANCHOR` works around the same lean on the OL side, not a missing step.
