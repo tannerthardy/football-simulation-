@@ -130,6 +130,7 @@
     "STRETCH_OFFSET": "on",
     "STRETCH_TRACK": "off",
     "TACKLE_TOUCH": "off",
+    "THROW_REACT": "off",
     "TE_OFF": "on",
     "TIGHT_OFF": "on",
     "TOUCH_READ": "on",
