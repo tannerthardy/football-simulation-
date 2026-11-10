@@ -383,3 +383,12 @@ hitter side-on share:
   as rotation and slide, not held by his legs. This is the yaw-free capsule result on the shape bench:
   - 62–68% kept at no drive;
   - 73–83% at his strength cap.
+
+**Contact yaw in the code today.** Production World runs `handContact: 'center'` (`src/sim/playsim.ts:107`, the
+setup's default), so torso contacts apply no moment at all.
+
+The experimental `'patch'` mode does apply one (`contactPatch` and `solveContact`, `src/physics/world.ts` around
+2210–2245): normal and friction impulses act at a radius-weighted contact point and update `spin`. On discs the
+normal passes nearly through both centres, so in that mode the turn comes mostly from contact friction.
+
+Step 2's first trial should be that existing law with the capsule shape, before anything new.
