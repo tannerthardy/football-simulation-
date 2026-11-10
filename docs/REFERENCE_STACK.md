@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-11`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-10`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -410,30 +410,34 @@ Defense #451 and #453. An unsure box backer leans downhill with his own run evid
 
 The rush row is the one to watch: not resolved, but its interval sits mostly above zero. The fixed-run report for run-ref-10 is in [reviews/run-ref-10-report.md](reviews/run-ref-10-report.md).
 
-## run-ref-11: the tackle's finish, `HOLD_FINISH` and `HIP_BRACE` on (2026-11-10)
+## The tackle package: all merged off, none on yet (2026-11-10)
 
-Defense #469 and Flex #465. On develop before this, 349 holds on the fixed runs lasted 0.3 s or more while the carrier averaged 4 yd/s or more: a tackler with his hands on a runner who kept running.
+No stack change; the stack stays `run-ref-10`. Four flags make up the package: `GRASP_PATCH` (Flex #462), `HIP_BRACE` (Flex #465), `HOLD_FINISH` (Defense #469) and `CONTACT_LAYER` (Flex #455).
 
 - **`HOLD_FINISH` (decision).** A holder beside or behind the runner plants against the runner's travel, committing in proportion to his grip and only while the grip holds; while it slips he keeps his feet moving. Upper grips get a real height, from the shoulder line down to the waist.
 - **`HIP_BRACE` (physics).** A hold above the runner's hips is braced by his hip-extension torque, from the same budget as his leg drive; only the excess pitches him. No new constant.
 
-16-game paired card, seed 11 ([reviews/2026-11-10-tackle-package-scorecard.md](reviews/2026-11-10-tackle-package-scorecard.md)); "moved" means the 90% interval excludes zero:
+Two measurements disagree, and that is why nothing is on.
 
-| | run-ref-10 | Finish (now on) | + `GRASP_PATCH` | + `CONTACT_LAYER` too |
+| Fixed 1,321 runs, against run-ref-10 | Paired yards a run (SE) | Stuffs | Broken a run |
+|---|---|---|---|
+| `HOLD_FINISH` | −0.06 (0.03) | 14.4% | 0.160 |
+| `HOLD_FINISH` + `HIP_BRACE` (the finish) | −0.57 (0.04) | 17.4% | 0.117 |
+| `HIP_BRACE` + `GRASP_PATCH`, default heights | −0.16 (0.05) | 13.2% | 0.132 |
+| those + `CONTACT_LAYER` | +0.01 (0.11) | 11.7% | 0.144 |
+
+| 16 whole games, paired, seed 11 ([card](reviews/2026-11-10-tackle-package-scorecard.md)) | run-ref-10 | Finish | + `GRASP_PATCH` | + `CONTACT_LAYER` too |
 |---|---|---|---|---|
 | Points a team-game | 34.8 | 34.5 | 39.3, moved | 35.6 |
 | Rush yards a carry | 3.77 | 4.34 | 4.26 | 4.25 |
 | Run stuff rate (NFL 15.9–23.5%) | 14.9% | 16.9% | 8.9%, moved | 9.0%, moved |
-| Yards before contact (runs) | 0.69 | 1.19, moved | 0.79 | 0.87 |
 | Yards an attempt | 9.69 | 10.05 | 10.36, moved | 9.44 |
-| YAC a reception | 8.36 | 8.14 | 8.63 | 8.30 |
 | Missed + broken tackles a play | 0.28 | 0.25, moved | 0.28 | 0.26 |
 | Fumbles lost a team-game | 0.78 | 0.34, moved | 0.75 | 0.69 |
-| Runs of 20+ that reach 40 | 3 of 9 | | 7 of 9, moved | |
 
-- **Why the finish goes on.** Nothing adverse resolves; missed + broken and fumbles lost fall; the hold table falls 349 to 310 on the fixed runs and firm-grip breaks while planting fall 44 to 25. Rush yards a carry is up 0.57 and not resolved (−0.21 to +1.29): logged, with yards before contact the row that moved.
-- **Why `GRASP_PATCH` stays off.** Its first contact matches the NFL's course and Flex's classification of the fixed runs supports the lower stuff rate there (14.5% to 11.7%, mostly runners turning out of a front hold and falling forward under 2 yd). But whole games lose twice as many stuffs as the fixed runs (14.9% to 8.9%), scoring rises 4.5 points (resolved), and 7 of 9 long runs reach 40. The difference between the fixed runs and whole games is not explained yet. That explanation is the next step, not more flags.
-- **`CONTACT_LAYER`.** With the finish present it no longer stalls plays, and in this card it takes back the package's scoring and passing rise. It stays off with `GRASP_PATCH`; the two are judged together.
+- **The finish alone is not a coherent step.** The whole-game card looked clean and I began to turn it on. Defense's fixed-run arms stopped that: on identical plays the finish costs 0.57 yd a run (OZ −0.38, IZ −0.66, gap −0.63), which would put every concept under the NFL's, and Flex's contact course for `HIP_BRACE` alone had gain after contact at 1.14 yd and contact to end at 0.7 s against the NFL's 2.84 yd and 1.5 s. The card's +0.57 rush yards was whole-game drift. Today's grasp pins the runner where he is hit; adding a finish to a pinned runner stops him twice.
+- **The package is the unit.** `GRASP_PATCH` frees the pair to turn (too many yards alone, +0.49); the finish ends the hold (too few alone, −0.57); together the fixed runs land near today's yards with a contact course closer to the NFL's.
+- **What holds the package.** In whole games it loses twice the stuffs the fixed runs do (14.9% to 8.9% against 14.5% to 13.2%), scoring rises 4.5 points (resolved), and 7 of 9 runs of 20+ reach 40. Flex is finding what whole games contain that the fixed runs do not. That explanation decides it.
 
 ## What to do next
 

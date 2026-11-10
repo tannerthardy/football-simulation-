@@ -347,7 +347,7 @@ const HELD_SWING = process.env.HELD_SWING === '1';
  * that holds his trunk up against the pull is the torque that drives him.
  * Off, an upper grasp pitches him only through the point-mass tip and bracing
  * costs no drive. docs/reviews/effective-mass.md (unfinished holds). */
-const HIP_BRACE = process.env.HIP_BRACE !== '0';
+const HIP_BRACE = process.env.HIP_BRACE === '1';
 /** Default since run-ref-9 (HANDS_CHEST=0 restores): a block's hands push chest to chest. In
  * the centre-mode hands row the push acted along the line between the two
  * centres, so a fit landed off-centre pushed the man sideways as well as back
