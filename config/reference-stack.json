@@ -78,6 +78,7 @@
     "HAND_MOTOR": "off",
     "HELD_SIDE": "on",
     "HELD_SWING": "off",
+    "HIP_BRACE": "off",
     "IN_STRIDE_CATCH": "off",
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
