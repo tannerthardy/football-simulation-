@@ -173,3 +173,45 @@ carries facings). Sim, pinned set, run-ref-4, at torso distance:
 | Free, closing 3–5 | 29° | 17% | |
 
 The NFL side needs the export rebuilt with 'o' (Run Game).
+
+### Ground force is the missing term; the contact law sets the force, not the yards
+
+**Leg drive** (`shape.py`, second table). Each body pushes at a share of its ground-force limit (1.25 × weight, the
+engine's in-game limit): the runner forward while under his 4 yd/s request, the hitter toward the runner. Today's
+contact law, offset 0.31 yd, hitter drive 28%. Speed kept at +0.1 / +0.2 / +0.3 s from first touch:
+
+| Runner drive | Disc | Capsule square, yaw free | Capsule side-on, yaw free |
+|---|---|---|---|
+| none | 46 / 46 / 46% | 62 / 62 / 62% | 68 / 68 / 68% |
+| in-game shares (runner 14%, hitter 28%) | 42 / 46 / 51% | 62 / 66 / 71% | 68 / 73 / 78% |
+| runner at full limit | 63 / 93 / 100% | 88 / 100 / 100% | 95 / 100 / 100% |
+| NFL from torso distance | ~92 / ~85 / ~78% | | |
+
+- At the drive the game's runners actually deliver, every variant stays where the game is.
+- With the runner's feet near their limit during contact, even today's disc recovers, and the yawing shapes reach the
+  NFL course (they overshoot it, so the NFL runner is driving at less than his full limit).
+- **So the first question for attempt two is why the sim runner's feet deliver only about 14% of their limit during
+  contact.**
+- The leading suspect is the tackle bond's stride hold. A hold on the legs removes "the share his held legs would
+  deliver" from his drive along his travel (`world.ts`, bound stride), and a hold forms at contact on 67% of front-on
+  hits.
+- Next suspects: support availability once the tip term puts his capture point behind his base, and the lean law's
+  cap at the felt load.
+- This is measurable without code: decompose his ground force per tick into these causes.
+
+**Contact law options against the measured 1.7–3.4 kN** (offset 0.31 yd, all drive levels):
+
+| Law | Peak force | Speed kept, no drive | Blocks (same torso row) |
+|---|---|---|---|
+| today: 9 Hz, critically damped | 18–25 kN | 46–68% | — |
+| ramped damper (Hunt–Crossley, damping ∝ compression, α 0.3 s/m) | 7.6–12.5 kN | 31–62% | no change at steady state; damping acts only while compressing |
+| compliant layer: 0.12 m (pads, tissue, arms) before the stiff core, ramped damping | 3.8–6.9 kN (side-on 3.8–4.6) | 35–67% | a steady 1,500 N push compresses the layer about 3 cm more than today |
+
+- **A lower frequency alone is ruled out for blocks.** A 3.4 kN peak at 4 yd/s needs about 1.4 Hz, and a steady
+  1,500 N push would then sink the bodies about 0.3 yd into each other.
+- **The compliant layer is the only law near the measured range.** Its stiffness (about 48 kN/m for the pair) is
+  calibrated to the collision energy over the layer depth. That is a sourced force target, not yards; it must be
+  checked at other closing speeds.
+- **Softer contact slightly lowers speed kept**, because the momentum is the same and coupling lasts longer. Step 1
+  is therefore justified by the force, not by yards, and is expected to need step 2 (yaw) and the leg-drive repair to
+  move the course.
