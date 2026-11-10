@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-13",
+  "id": "run-ref-14",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -115,11 +115,11 @@
     "OZ_HIP_READ": "on",
     "PASS_ANCHOR": "on",
     "PASS_SINK": "off",
-    "PRESS_MIRROR": "off",
-    "PRESS_RELEASE": "off",
+    "PRESS_MIRROR": "on",
+    "PRESS_RELEASE": "on",
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
-    "QB_RHYTHM": "off",
+    "QB_RHYTHM": "on",
     "RACE_LEAN": "off",
     "RB_COMMIT": "on",
     "RB_FLOW": "on",
@@ -169,7 +169,7 @@
     "WING_WORK": "on",
     "WRAP_FOOT": "retired",
     "WRAP_TWO_POINT": "off",
-    "WR_SNAP": "off",
+    "WR_SNAP": "on",
     "ZONE_ARMS": "on",
     "ZONE_GAP": "on",
     "ZONE_MUG": "on",

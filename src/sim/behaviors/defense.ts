@@ -631,7 +631,7 @@ export interface ManOptions {
  * his leverage spot at the snap and opened the lane: tracked pressed outside
  * receivers are 0.62 yd lateral by their first yard and reach 5 yd at 1.90 s;
  * ours went straight (0.00 yd) and reached 5 yd at 1.65 s (BDB 2025). */
-const PRESS_MIRROR = process.env.PRESS_MIRROR === '1';
+const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
 /** MAN_PHASE (off; MAN_PHASE=1 turns it on): once his hips are open and the
  * receiver is past the release (2+ yd deep), a man defender runs in phase an
  * arm's length off the receiver's hip on his leverage side (their two body

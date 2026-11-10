@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-13`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-14`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -517,6 +517,27 @@ The 16-game card ([scorecard](reviews/2026-11-10-lean-anchor-scorecard.md); fixe
 One test changed: `test/contact-layer.test.ts`'s `HANDS_CHEST` twist case pushes for 30 ticks instead of 20, because the lean now builds more slowly (off-centre twist at 20 ticks 10° / 5°, at 30 ticks 35° / 5°).
 
 Open with this stack: pressure 43% in live games against the NFL's 28% (tackles kicking 1.4 yd too deep by request; free rushers; a QB who stands still under pressure; the in-the-grasp rule ending sacks in 0.25 s); 149 run-block lean-release falls (C/G driving at about 1.25× the load) and 165 TE impact falls; 451 defender impact falls (take-on technique, Defense).
+
+## run-ref-14: the pass set on (2026-11-10)
+
+Coverage's `WR_SNAP`, `QB_RHYTHM`, `PRESS_MIRROR` and `PRESS_RELEASE`. Receivers react to the snap they see instead of leaving on the count (outside-receiver start 0.50 s, the NFL's figure on the same operator; off, 0.40 s and a yard ahead by 1.0 s). The quarterback throws on the rhythm of his drop. A pressing corner mirrors the release and the receiver works a release against him: press slows the receiver by 0.33 yd at 1.0 s against the NFL's 0.37, lateral release 0.15 yd against 0.14.
+
+| | run-ref-13 | run-ref-14 |
+|---|---|---|
+| 732 dropbacks, paired yards a pass play | | −0.56 ± 0.46 |
+| Yards a pass play; completions; sacks; pressure | 9.74; 407; 23; 36.6% | 9.18; 423; 21; 33.9% |
+| Set without `WR_SNAP` | | 9.59; 400; 15; 31.8% |
+| Set without `QB_RHYTHM` | | 8.82; 415; 28; 38.8% |
+| Set without `PRESS_MIRROR` (`PRESS_RELEASE` inert) | | 9.55; 429; 17; 34.0% |
+| Set without `PRESS_RELEASE` | | 9.26; 423; 19; 33.9% |
+| Fixed 1,321 runs, paired yards a run (SE) | | −0.13 (0.09) |
+| All runs; stuffs; broken / missed a run | 3.97; 11.7%; 0.147 / 0.239 | 3.84; 11.9%; 0.132 / 0.251 |
+
+None of the four is carried by the others. On runs the set is within noise except toss (−1.99, SE 0.89, n 55): receivers who react to the snap reach their perimeter blocks later. Logged for Run Game, not tuned.
+
+Coverage's 16-game card (seed 7) was read for bugs and shows none. It moves sack rate 4.8 → 3.0% (NFL 4.6–9.4%), third-down conversion 44.2 → 51.0% (37–41%), aDOT 9.35 → 8.87, scrambles 4.5 → 3.3%; points are unchanged (43.5, 43.6). Those are recorded as open, not tuned against: a realistic mechanism goes on, and the scoring gap is ours to find.
+
+Where the scoring gap sits with this stack (run-ref-13 card): yards after catch 9.3 a reception (NFL 4.5–5.9), completions of 20+ on 17.3% of attempts (6.7–11.1%), missed + broken tackles 0.25 a play (0.11–0.16), 62% of 20-yard runs reaching 40 (25–35%). Coverage is decomposing yards after catch by catch depth and defenders over the top; Defense is diagnosing run-down, open-field tackling, rally and deep-defender depth.
 
 ## After run-ref-12: the first second, and what is merged off (2026-11-10)
 

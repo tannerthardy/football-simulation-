@@ -83,7 +83,7 @@ const THROW_REACT = process.env.THROW_REACT !== '0';
  * clock says time is up (urgency above the pressure mark) his eyes go to the
  * outlet, the last read, instead of finishing the order. NFL throws to backs
  * leave at 2.50 s p50 against ours at 3.15 s, at the same share (BDB 2025). */
-const QB_RHYTHM = process.env.QB_RHYTHM === '1';
+const QB_RHYTHM = process.env.QB_RHYTHM !== '0';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
