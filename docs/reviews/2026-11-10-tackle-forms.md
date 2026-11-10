@@ -142,3 +142,31 @@ probability is the best and cheapest faithful representation. This section propo
 6. **The dive's connect probability (W).** Small.
 
 The sim side of the tackle-forms operator (in progress) gives the baseline for all of these.
+
+## Sim baseline on the shared index (run-ref-13, the fixed 1,321 runs; `run-frames.mts` → `tackle-forms.py`, `tackle-origin.mts`)
+
+| Run carries | Sim | NFL |
+|---|---|---|
+| Approach at first contact: front / side / behind | 36 / 58 / 6% | 27 / 69 / 4% |
+| Tackler speed p50 (yd/s): front / side / behind | 1.6 / 2.6 / 5.1 | 1.9 / 3.2 / 6.3 |
+| Contact → end p50 (s): front / side / behind | 1.1 / 1.4 / 1.0 | 1.5 / 1.4 / 1.1 |
+| Yards after contact p50: front / side / behind | **1.1** / 2.2 / 1.8 | **2.3** / 2.8 / 2.6 |
+| Defenders within 1 yd at the end, 0 / 1 / 2 / 3+ (side) | **3** / 15 / 30 / **52%** | **17** / 34 / 29 / **19%** |
+| Runner's end direction (side): forward / sideways / back / stopped | 71 / 9 / 4 / **15%** | 72 / 14 / 6 / **8%** |
+| ≥ 1 still defender within 1.5 yd at the end | 23–26% | 11–21% |
+
+**Sim only** (1,274 tackled carries):
+
+- **Finish:** a physical fall 91% (1,163), stalled forward progress 9% (110).
+- **First hold:** form 508, reach 402, off a block 295, lunge 61, **dive 6**.
+- **All holds:** reach 1,630, form 851, block 518, lunge 79, dive 6.
+- **Holders at the end:** 1 in 19%, 2 in 36%, 3 in 30%, 4+ in 14%.
+- **Leg holds** (legs ≥ 0.5): none in 26%, one in 49%, two or more in 25%.
+
+**First reading.**
+
+- **Our tackles are gang tackles.** At the end, 3+ defenders are within 1 yd in 36–52% of carries (NFL 14–30%). Almost never is no defender within 1 yd (1–3%, against the NFL's 11–26%; an NFL runner often ends free of bodies, pushed out, sliding or falling forward alone).
+- Solo finishes are rare in ours (19% one holder). Yards after contact are shorter, most of all head-on (1.1 against 2.3).
+- Defense owns the rally side (who arrives and when). The tackle side is mine: one tackler's ability to finish alone, and the share of carries ending with the runner separated from bodies.
+- **Dives are nearly absent:** 6 of 1,274 first holds. The dive path (escaping runner, tackler behind) rarely triggers. The shoestring and ankle forms are effectively missing in practice, not only in kind.
+- **Runners end stopped about twice as often** (15–18% against 8–11%). That fits piles that stop him instead of tackles that knock him forward or down.
