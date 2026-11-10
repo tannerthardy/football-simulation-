@@ -18,12 +18,13 @@ Class 0 = last line, 1, 2+.
  heading crosses the carrier's path (yd in front of him), and how often they get level with him (x >= carrier x - 0.5,
  within 5 yd laterally) before he reaches +20.
 """
-import sys, os, math, collections
+import sys, os, math, collections, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 _argv = sys.argv; sys.argv = sys.argv[:1]
 from yards import plays, intercept, ang  # noqa (yards prints nothing without paths)
 sys.argv = _argv
 MID = 53.3 / 2
+DUMP = open(os.environ['CLASS0_OUT'], 'a') if os.environ.get('CLASS0_OUT') else None   # per-play class-0 first contacts (jsonl)
 q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
 pct = lambda a, b: 100 * a / b if b else float('nan')
 
@@ -112,6 +113,10 @@ def report(path):
         C[(K, 'fc', cl, o)] += 1; C[(K, 'fc', cl, '*')] += 1; S[(K, 'fc', cl, 'more')].append(more)
         cvx, cvy = p.velocity(c, kc); ch = math.hypot(cvx, cvy)
         tx, ty = p.pos(t, kc); ccx, ccy = p.pos(c, kc); tvx, tvy = p.velocity(t, kc)
+        if cl == '0' and DUMP:
+            DUMP.write(json.dumps({'src': os.path.basename(path), 'id': p.raw.get('id'), 'kind': kind, 'tackler': t, 'group': p.players[t]['group'],
+                                   'loose_s': round(L * p.dt, 2), 'contact_s': round(kc * p.dt, 2), 'end_s': round(last * p.dt, 2), 'outcome': o,
+                                   'yards_after': round(more, 1)}) + '\n')
         if cl == '0':
             if ch > 1 and math.hypot(tvx, tvy) > 1:
                 co = (cvx * tvx + cvy * tvy) / (ch * math.hypot(tvx, tvy)); app = 'headon' if co < -0.5 else 'behind' if co > 0.5 else 'side'
