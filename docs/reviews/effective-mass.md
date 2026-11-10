@@ -629,3 +629,58 @@ proximity rule but no depth filter, and `frontcourse.py`.
   - turn 7 → 36° (80).
   
   The finish alone moves every row away from it.
+
+**Grasp onset: the weld, and friction on tension (`GRASP_SLIDE`, `GRASP_CLOSURE`; both off; 2026-11-10).** All arms are on
+the package (`HOLD_FINISH` + `HIP_BRACE` + `GRASP_PATCH`), develop 0baa3320.
+
+**First 0.15 s of a front-on grasp** (`slip-split.mts`, 218 fixed zone holds):
+- **The grasp forms at arm's length.** It forms in the same tick as first proximity: centres 0.98 yd apart, against radii
+  0.57. The pads have not met in 93% of holds; they meet about 0.05 s later.
+- **The grasp row does most of the early braking of the pair's tangential slip:**
+
+  | Source | Change of slip over the first 0.15 s (yd/s) |
+  |---|---|
+  | Grasp row | −0.46, all of the first tick |
+  | Torso contacts | −0.23 |
+  | Block hands | −0.10 |
+  | Ground | +0.18 |
+
+- **The grasp row acts as a weld.** Its tangential force is 0.13–0.18 g, only 12–17% of capacity, and 78–82% of holds
+  are not slipping. The row holds the grip point at zero slip under any force below capacity.
+
+**The laws:**
+- **(A) `GRASP_SLIDE`** limits that row to CONTACT_FRICTION (0.35) × the hold's own tension.
+- **(B) adds `GRASP_CLOSURE`:** the wrap's closed share stays rigid, 2.5 l² / (0.3 + 2.5 l²) for the joint's lock l.
+
+**Bench** (`slide-bench.mts`):
+- (A) raises arrival slip at +0.1 s from 1.95 to 2.60 yd/s at 0.3 yd offset, and from 1.23 to 1.36 at 0.2.
+- A settled wrap still holds a runner cutting across: 0.29 → 0.46 yd by +0.5 s, not broken.
+- Momentum stays exact, and a no-grasp world is bit-identical.
+- (B) at an arriving lock of 0.5 is the package.
+
+**Fixed runs:**
+
+| | NFL | Package | (A) | (B) |
+|---|---|---|---|---|
+| Tangential slip at +0.1 / +0.3 s (yd/s) | 2.69 / 1.25 | 1.24 / 1.15 | 1.34 / 1.10 | 1.33 / 1.11 |
+| Turn by +0.3 s (deg) | 80 | 36 | 37 | 38 |
+| Gain after contact; contact to end | 2.84; 1.5 s | 1.85; 1.0 s | 1.97; 1.1 s | 1.88; 1.0 s |
+| Hitter's own rotation by +0.5 / +1.0 s (deg) | 41 / 74 | 51 / 83 | 51 / 96 | 52 / 90 |
+| Zone stuff rate | 16.8% | 15.1% | 12.3% | 13.2% |
+| Stuffed after a backfield hit | 36.4% | 31.3% | 25.2% | 27.4% |
+| Broken holds: front / side / behind | | 29 / 130 / 29 | 42 / 144 / 31 | 34 / 141 / 30 |
+
+**Holds break no more often from behind:** 29, 31 and 30 of about 320 in the three arms. The lock at formation is a
+median 0.39 everywhere (rigid share 0.56 under (B)).
+
+**Neither law repairs the mechanism.**
+- The weld is real, but releasing it barely moves the early slip: 1.24 → 1.34 yd/s against the NFL's 2.69.
+- The rows that move, move away from the NFL: backfield stops, the stuff rate, the hitter's late rotation and front-hold
+  breaks.
+- So the grasp row's early braking is not what keeps our pair from sliding past in the first 0.1 s.
+
+Both flags stay off as tested alternatives. The early-slip gap needs re-diagnosis before a second attempt. Open
+questions:
+- whether the runner arrives with less tangential velocity than the NFL's in the first place (slip at the grasp is
+  1.41 yd/s);
+- whether the NFL's pad-tracking proximity and our centre proximity are the same stage of contact.
