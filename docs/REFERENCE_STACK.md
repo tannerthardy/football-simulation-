@@ -6,6 +6,33 @@ One combination of experimental flags that Run Game, Defense, Flex and Coverage 
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Code defaults are unchanged.** `on` here means "on in the reference", not "default in the engine". The combined stack is not ready to become the default: together the flags take run yards below the NFL (see Results).
 
+## Current state (run-ref-4 @ develop 0e09c4dc, 2026-11-09)
+
+From `npm run ref:report`; full output in [reviews/run-ref-4-report.md](reviews/run-ref-4-report.md). 1,321 fixed runs, yards capped at 20.
+
+| | Code defaults (all flags off) | Reference | NFL 2022 |
+|---|---|---|---|
+| All runs, yd | 5.19 | 3.56 | |
+| Outside zone yd; runs <= 0 | 4.69; 11% | 2.73; 23% | 3.50; 19% |
+| Inside zone yd; runs <= 0 | 4.40; 15% | 4.46; 14% | 3.73; 14% |
+| Gap runs yd | 5.42 | 3.74 | 4.08 (counter) |
+| 10+ yd runs | 16.7% | 7.8% | 9% |
+| Broken / missed tackles a run | 0.30 / 0.27 | 0.17 / 0.23 | |
+| OZ first contact by a blocked DL | 46% | 53% | 33% |
+| OZ yards when the first hitter is blocked | 3.98 | 1.86 | 3.39 |
+| IZ yards when the first hitter is blocked | 2.82 | 4.16 | 3.58 |
+| Carrier gain after a front-on hit at -1..0 / 0..1 / 1..3 yd | 0.71 / 1.02 / 1.17 | 0.92 / 0.92 / 0.78 | 2.16 / 2.51 / 2.59 |
+| Second / third defender arrives | 66% / 34% | 70% / 41% | 80% / 43% |
+| DL depth at 2.0 s | +0.43 | +0.73 | +0.70 |
+| IZ / OZ line stepping one way by 0.6 s | 82% / 100% | 94% / 97% | 78% / 97% |
+| OZ OL lateral speed at 0.5 s (yd/s) | 1.60 | 1.85 | 2.25 |
+| Backside end depth at 1.5 s, OZ | +0.09 | -0.47 | -0.70 |
+| Gun handoff time, by concept (s) | 0.9-1.4 | 1.10 all | 1.0-1.1 |
+
+Two things this table says:
+- **The code defaults are now the outlier.** With every experimental flag off the engine runs for 5.19 yd a carry with 16.7% of runs going 10+; the reference is at 3.56 and 7.8%. Games, the scorecard and the test suites all run on the defaults. Promoting the stack to default (item 8 below) has become the largest single correction available.
+- **Outside zone's missing yard has a signature.** A blocked defensive lineman makes first contact on 53% of outside-zone runs (NFL 33%), and those runs gain 1.86 yd (NFL 3.39). The back is running into engaged linemen on a line that does not move its men (Run Game's flat line and missing climbs).
+
 ## Use it
 
 ```sh
@@ -17,16 +44,19 @@ npm run ref -- --list
 
 `ref` sets every listed flag explicitly, so nothing leaks in from the shell. Report a measurement as "run-ref-1 @ commit" plus any `--flag` changes. A new flag must be added to the stack file (as `off`) in the commit that adds it.
 
-The matched run set and paired comparison:
+The standard report, which every lane should quote:
 
 ```sh
-for s in 7 9 11 13 15 17 19 21 23 25 27 29; do node --import tsx scripts/diag/edge/capture-runs.ts $s --label $s-run; done   # 1,321 runs, code defaults
-npm run -s ref -- --off -- node --import tsx scripts/diag/ref-replay.mts off
-npm run -s ref -- node --import tsx scripts/diag/ref-replay.mts ref
-python3 -I scripts/diag/ref-compare.py off ref
+npm run ref:report                                   # all flags off vs the reference: yards, tackles, eight operators with the NFL beside them
+npm run ref:report -- --flag GAP_CLIMB=0             # adds a "candidate" arm (the stack with that change), paired against the reference
+npm run ref:report -- --skip-operators               # yards and tackles only
 ```
 
-One arm takes about 5 CPU-minutes. Operators: [`scripts/diag/run-operators/README.md`](../scripts/diag/run-operators/README.md), with `npm run -s ref --` in place of `baseline:run`.
+It takes about 7 minutes (4 with `--skip-operators`) and writes `out/ref/report.md`. The play set is fixed: `runSet` in the stack file names the commit that captured it (1b5415de) and a digest of its play list; if `out/matched-restage` does not hold that set, the command rebuilds it from that commit in a temporary worktree. NFL numbers come from `scripts/diag/run-operators/nfl-2022.txt`, so no raw data is needed. Quote the first line of the report (stack id and commit) with any number.
+
+A capture's bytes are not its identity: the same game can save a setup to different bytes on another run (shared references in the serialized stream; 1 in 16 under load for seed 13) while restoring to an equal setup that replays identically. Compare play ids and calls, never file hashes.
+
+Operators one at a time: [`scripts/diag/run-operators/README.md`](../scripts/diag/run-operators/README.md), with `npm run -s ref --` in place of `baseline:run`.
 
 ## Decisions
 
