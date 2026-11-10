@@ -1340,3 +1340,34 @@ What the trace shows:
 - The tip's size follows the lever (z − c). Against an equal-mass, equal-height blocker it is small (3.0).
 - What puts him down is running into a heavier, lower blocker at 4.2 yd/s closing, upright and not braced. That is real football: a blindside pancake.
 - **No physics change.** The frequency is the controller's: he keeps pursuing into a blocker he could see, without squaring, lowering or setting his legs. That is (a), Defense's item.
+
+**The sustained-drive falls (`drive-bench.mts`, `run-dfall.mts` with a temporary per-term capture-point split, reverted).**
+
+- **Bench:** a 150 kg DT driven by a 147 kg OG through a hands row, for 2 s. Four requests:
+  - hold ground (push 1, posture 0.6): holds at 0.04 yd/s with a lean of 0.87 mg balancing a 0.95-mg load;
+  - retreat with the drive at 1.2 yd/s: gives ground at 1.24 yd/s under 0.8 mg, lean 0.74;
+  - anchor low (posture 1): holds;
+  - no push: carried back at 2 yd/s.
+- **In none of them** does the capture point leave 0.02 of the fall threshold, and nobody falls. A steady drive in isolation topples no one.
+- **In games** (the 551 driven over along the push), each event's capture-point change is summed by term along its fall:
+
+| | Falls after a load spike (≥ 1.3 mg) | Steady drive (no spike) |
+|---|---|---|
+| Count | 465 (84%): LB 202, DB 149, DL 114 | 86: DL 54, LB 23, DB 9 |
+| Peak felt load | 3.1 mg | 0.98 mg |
+| Unfollowed contact acceleration | **0.76 yd** | 0.01 |
+| Contact-height tip | 0.22 | 0.00 |
+| Lean release | 0 | **0.48 yd** |
+| Recovery step at the last tick (share of step speed) | 0.88 | 0.85 |
+| His request along the push / velocity, yd/s | 0 / +0.6 | −1.0 (into the blocker) / +0.9 |
+
+**Reading.**
+
+- **No missing recovery step.** It fires at 85–88% of step speed in both groups; nothing drains it under a sustained load. The earlier split by rep age was misleading.
+- **84% of these falls are impacts**, including repeat hits later in a rep. They are coherent by the impact bench, so they belong to Defense's item (a).
+- **The steady-drive remainder (86) is the pass blocker's lean release:**
+  - the defender asks to attack into the blocker at 1 yd/s;
+  - he commits a lean into the load;
+  - the load sags and the lean drops into his capture point.
+- `LEAN_PITCH` and an anchor-style request (lean no more than the load) are its remedies, as on the OL side.
+- Nothing new for the World. Coverage's `PASS_ANCHOR` works around the same lean on the OL side, not a missing step.
