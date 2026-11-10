@@ -1,7 +1,8 @@
 // The rusher-blocker first hit on pass plays (Integration, 2026-11-10: CONTACT_LAYER's pass-protection read). Coverage's
 // pressure grid (out/pro-grid.ts: 960 paired dropbacks, 15 pressure looks x 4 formations x 4 concepts x flip x team),
 // one arm per process. JSON lines: one per play (kind 'play') and one per OL-DL pass engagement (kind 'rep').
-//   play: sack; time a defender is first within 2 yd of the QB before the throw (pressure); QB hit = torso contact
+//   play: sack; time a defender is first within 2 yd of the QB before the throw (pressure), and that defender (slot,
+//         the blocker still on him then or null, whether he was ever blocked); QB hit = torso contact
 //         between a defender and the QB before or within 0.3 s after the throw; throw time; yards.
 //   rep:  the rusher's move when the hands first carry load (e.contactReported); closing speed along the line of
 //         centres at the start of the tick that makes contact and 0.1 s after (yd/s); rusher's depth gained toward the QB from
@@ -26,14 +27,17 @@ for (const pid of press) for (const fid of forms) for (const cid of passes) for 
     offCall: { formation, flip, kind: 'pass', pass: PASS_BY_ID[cid], label: cid },
     defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: P, label: pid ?? 'none' } as any,
     los: 35 + (n % 3) * 10, ballY: [23.6, 26.65, 29.7][n % 3], firstDownX: 55, seed: 5000 + n, audibles: false } as any); } catch { n++; continue; }
-  const id = n++; let close = -1, qbHit = false; const reps = new Map<any, any>(); const tick = sim.tick.bind(sim);
+  const id = n++; let close = -1, qbHit = false, presser: any = null; const everBlocked = new Set<any>(); const reps = new Map<any, any>(); const tick = sim.tick.bind(sim);
   const lineAngle = (a: any, b: any) => Math.atan2(b.pos.y - a.pos.y, b.pos.x - a.pos.x);
   sim.tick = () => {
     const pre = new Map<any, any>(); for (const a of sim.agents) pre.set(a, { x: a.pos.x, y: a.pos.y, vx: a.vel.x, vy: a.vel.y });
     const closing = (b: any, d: any) => { const B = pre.get(b), D = pre.get(d); if (!B || !D) return null;
       const rx = D.x - B.x, ry = D.y - B.y, rd = Math.hypot(rx, ry) || 1; return ((B.vx - D.vx) * rx + (B.vy - D.vy) * ry) / rd; };
     tick(); const qb = sim.qb;
-    if (close < 0 && sim.throwAt < 0 && sim.defense.some((d: any) => Math.hypot(d.pos.x - qb.pos.x, d.pos.y - qb.pos.y) <= 2)) close = sim.t;
+    if (close < 0 && sim.throwAt < 0) { const d = sim.defense.find((d: any) => Math.hypot(d.pos.x - qb.pos.x, d.pos.y - qb.pos.y) <= 2);
+      if (d) { close = sim.t; const e = (sim.engagements ?? []).find((q: any) => q.defender === d);
+        presser = { slot: d.slot, engaged: e ? e.blocker.slot : null, wasBlocked: everBlocked.has(d) }; } }
+    for (const e of sim.engagements ?? []) everBlocked.add(e.defender);
     const qi = sim.world?.indexOf?.(qb.body);
     if (!qbHit && qi !== undefined && (sim.throwAt < 0 || sim.t <= sim.throwAt + 0.3)) for (const c of sim.lastStep?.contacts ?? []) {
       const o = c.i === qi ? c.j : c.j === qi ? c.i : -1; if (o >= 0 && sim.defense.some((d: any) => sim.world.indexOf(d.body) === o)) qbHit = true; }
@@ -50,6 +54,6 @@ for (const pid of press) for (const fid of forms) for (const cid of passes) for 
     }
   };
   const res: any = sim.run(); const s: any = sim.stats;
-  console.log(JSON.stringify({ kind: 'play', play: id, pid: pid ?? 'none', sack: !!s.sacked, close, qbHit, ttt: sim.throwAt, y: res.yards }));
+  console.log(JSON.stringify({ kind: 'play', play: id, pid: pid ?? 'none', sack: !!s.sacked, close, presser, qbHit, ttt: sim.throwAt, y: res.yards }));
   for (const r of reps.values()) if (r.t0 !== null) { delete r.d0; delete r.a0; console.log(JSON.stringify(r)); }
 }
