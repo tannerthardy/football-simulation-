@@ -33,6 +33,9 @@ import { blockerWorkPoint, readBlockerWorkPicture, type BlockerWorkPicture } fro
 import { assessClimbAccess, type ClimbAccessResult, chooseClimbAccess, climbAccessCommand, type ClimbAccess } from '../climb-access.js';
 import { lineDepth, lineOffset } from '../../playbook/alignment.js';
 import type { EngagedGoal } from '../engaged-technique.js';
+import { OL_ON_COUNT } from '../snap-count.js';
+/** A blocker's own start: his readiness lag, or with OL_ON_COUNT his planned start on the count. */
+const startOf = (a: Agent): number => OL_ON_COUNT ? a.snapReadyAt : a.mind.snapDelay;
 
 /** How far behind the line this player's installed stance stands. */
 const stanceDepth = (sim: PlaySim, a: Agent) => sim.los - (sim.offAlign.spots[a.slot]?.pos.x ?? sim.los - .55);
@@ -280,7 +283,7 @@ export class PassProtector implements Behavior {
     const home = this.coord.homeY.get(a) ?? a.pos.y;
     const outside = a.slot === 'LT' || a.slot === 'RT' ? Math.sign(home - sim.ballY) : 0;
     a.passSet = { depth: passSetDepth(sim, a), laneY: home + outside * 0.8, outside };
-    if (sim.t < a.mind.snapDelay) return stand(0);
+    if (sim.t < startOf(a)) return stand(0);
     // A called release: a lineman or attached end leaves his man on the count;
     // a back stays in while a free rusher is coming at him (a blitz kills the screen).
     const freeRusher = (): boolean => { const r = this.coord.assigned.get(a); return !!r && !r.engagement; };
@@ -1425,6 +1428,18 @@ export const REACH_CLOSE = process.env.REACH_CLOSE !== '0';
  * play (run-ref-4 OZ restage at 1.0 s: owner alone and secure on the man in
  * 114 of ~230 live doubles; 76 of 239 doubles never released). */
 export const OWNER_KEEPS = process.env.OWNER_KEEPS !== '0';
+/** REACH_HANDS (off): on a stretch, a zone lineman within a short reach of his
+ * man (his strike distance + 0.25 yd, as for every other zone lineman) hands
+ * over to the ordinary fit and engages, instead of REACH_FLAT keeping him on
+ * the track until his hands are already on the man. Level with a man he was
+ * still racing for the shoulder of, he ran beside him 1.3 yd behind, just out
+ * of his 1.24 yd strike, without taking the last step (run-ref-11 OZ restage
+ * at 1.0 s: of interior DL with no OL within 1.2 yd, 156 of 176 had a free
+ * reach/cutoff owner level with him, 1.31-1.52 yd away). With it, OZ interior
+ * DL blocked at 1.0 s 71 -> 76% (NFL 93%), first contact deeper than 1 yd
+ * behind the line 21.1 -> 26.2% (NFL 29.3%), 0-1 yd 32.6 -> 28.9% (NFL 19.0%),
+ * DL lateral flow unchanged, paired OZ yards -0.03 (SE 0.21). */
+export const REACH_HANDS = process.env.REACH_HANDS === '1';
 /** BLOCK_RELEASE (off): an engaged run blocker whose man, as he sees him, is
  * more than 5 yd from the acquired runner and moving away from him, while a
  * defender with no offensive body on him (in the same picture) is within 3 yd
@@ -1600,11 +1615,11 @@ export class RunBlocker implements Behavior {
     this.firstStep ??= {x:a.pos.x+.18,y:a.pos.y+plan.drive.y*.55};
     this.rememberSoloWork();
     // Draw blockers show pass first; everyone else fires out low.
-    if (!this.showOver && plan.kind === 'combo' && plan.combination && drawPresentation(plan, t) && t >= a.mind.snapDelay)
+    if (!this.showOver && plan.kind === 'combo' && plan.combination && drawPresentation(plan, t) && t >= startOf(a))
       this.showOver = rushOnPartner(a, sim, plan.combination);
     const presentingDraw = this.presentingDraw(t);
     a.stance = presentingDraw ? 'high' : 'low';
-    if (t < a.mind.snapDelay) return stand();
+    if (t < startOf(a)) return stand();
     if (!a.engagement && t >= this.nextRuleRead) {
       this.nextRuleRead = t + a.mind.decisionInterval;
       this.readRules(a,sim);
@@ -1676,7 +1691,7 @@ export class RunBlocker implements Behavior {
       const flow = this.zoneFlow(a, sim);
       if (flow) return this.withBase(a, sim, flow);
     }
-    if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+a.mind.snapDelay) {
+    if (isOL(a) && ['drive','reach','down','combo','cutoff'].includes(plan.kind) && t < .24+startOf(a)) {
       // Establish the first foot and pad angle before running through a
       // target. Zone gains lateral ground; Duo stays vertical. These are
       // technique landmarks, still subject to acceleration and collisions.
@@ -2095,11 +2110,11 @@ export class RunBlocker implements Behavior {
     const d = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
     // Within reach the ordinary fit/engage owns contact, except during the
     // first step, which never strikes: it is where the lateral start is won.
-    const firstStep = sim.t < .24 + a.mind.snapDelay;
+    const firstStep = sim.t < .24 + startOf(a);
     // REACH_FLAT: a stretch reach still short of the shoulder keeps running
     // the track until his hands reach the man (arm's length), rather than
     // handing the last quarter yard to a fit that strikes upfield.
-    const stretchFlat = REACH_FLAT && run.scheme !== 'insideZone' && run.scheme !== 'splitZone'
+    const stretchFlat = REACH_FLAT && !REACH_HANDS && run.scheme !== 'insideZone' && run.scheme !== 'splitZone'
       && (seen.pos.y + (this.plan.combination && !this.plan.combination.released ? 0 : ps * .6) - a.pos.y) * ps > 0;
     if (d < contact + (stretchFlat ? 0 : .25) && !firstStep && !this.scoopsPast(a, sim, seen)) return null;
     const press = run.scheme === 'insideZone' || run.scheme === 'splitZone' ? .55 : 1;
@@ -2116,7 +2131,7 @@ export class RunBlocker implements Behavior {
     const scooping = this.scoopsPast(a, sim, seen);
     // Past the man he scoops, his work is his backer: he climbs to him now.
     const scoopBacker = scooping ? this.plan.combination?.backer : null;
-    if (scoopBacker && !scoopBacker.isDown(sim.t) && sim.t >= .24 + a.mind.snapDelay) return climbPath(a, sim, scoopBacker);
+    if (scoopBacker && !scoopBacker.isDown(sim.t) && sim.t >= .24 + startOf(a)) return climbPath(a, sim, scoopBacker);
     const half = scooping ? ps * (bodyContact + .3) : partner ? (Math.sign(a.pos.y - partner.pos.y) || ps) * .55 : ps * .6;
     const shoulder = seen.pos.y + seen.vel.y * meet + half;
     // The track races a man in front of him to the playside. Once that man
@@ -2155,10 +2170,10 @@ export class RunBlocker implements Behavior {
     // REACH_CLOSE: width first only while width is coming. A man flowing as
     // fast as the blocker keeps the shoulder out of reach; once the blocker is
     // not out-running him across (own vs acquired lateral motion), he presses.
-    const gainingWidth = !REACH_CLOSE || (a.vel.y - seen.vel.y) * ps > .3 || sim.t < .6 + a.mind.snapDelay;
+    const gainingWidth = !REACH_CLOSE || (a.vel.y - seen.vel.y) * ps > .3 || sim.t < .6 + startOf(a);
     if ((press === 1 ? REACH_FLAT : IZ_FLAT && (seen.pos.y - a.pos.y) * ps > 1.0) && !scooping && forward * dir > 0 && gainingWidth)
       forward *= Math.min(clamp(1 - (shoulder - a.pos.y) * ps / .6, 0, 1),
-        clamp((sim.t - a.mind.snapDelay - .24) / .36, 0, 1));
+        clamp((sim.t - startOf(a) - .24) / .36, 0, 1));
     // Open the hips toward the track (a bucket step) while the eyes stay on
     // the target: halfway between travel and the target's bearing.
     const travel = Math.atan2(lateral, forward), bearing = Math.atan2(seen.pos.y - a.pos.y, seen.pos.x - a.pos.x);
@@ -2872,7 +2887,7 @@ export class RunBlocker implements Behavior {
     const p = this.plan, run = sim.offCall.run, target = p.target;
     if (!run || !isOL(a) || a.engagement || !target || !['reach', 'cutoff', 'drive'].includes(p.kind)
       || !['insideZone', 'outsideZone', 'wideZone', 'splitZone'].includes(run.scheme)
-      || (p.combination && !p.combination.released) || p.departure || sim.t < a.mind.snapDelay + .6) return;
+      || (p.combination && !p.combination.released) || p.departure || sim.t < startOf(a) + .6) return;
     const ps = playSideSign(sim, run), dir = sim.attackDir(a.team), seen = sim.see(a, target);
     if ((seen.pos.x - sim.los) * dir > 1.5) return; // already a second-level job
     const beaten = (a.pos.y - seen.pos.y) * ps > 1 && (seen.vel.y - a.vel.y) * ps <= 0;
