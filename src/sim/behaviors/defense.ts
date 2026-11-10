@@ -510,9 +510,12 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
 }
 
 /** READ_LEAN (experimental, off): the unsure box backer's downhill pace at a
- * full run / pass picture (yd/s; NFL box backers 0.45-1.0 yd/s downhill at
- * 0.4-0.5 s on runs, about 0 to -0.25 on dropbacks). */
-const READ_LEAN = process.env.READ_LEAN === '1', LEAN_RUN = 1.5, LEAN_PASS = 1.0;
+ * full run picture (yd/s; NFL box backers 0.45-1.0 yd/s downhill at 0.4-0.5 s
+ * on runs). A pass lean only takes his feet off the line (his creep, scaled by
+ * the lean); he has no drop of his own until he reads pass, when his zone
+ * landmark and the receivers decide it (NFL about 0 to -0.25 yd/s on dropbacks
+ * through 1.0 s). */
+const READ_LEAN = process.env.READ_LEAN === '1', LEAN_RUN = 1.5;
 /** READ_LEAN: after a run read, a pass picture (the QB deep after the fake, the
  * line setting) pulls his attack back before a full change of mind: his
  * downhill speed is scaled by how far his picture now leans pass. Not once he
@@ -943,13 +946,13 @@ export class ZoneCoverage implements Behavior {
         // READ_LEAN (experimental, off): still unsure, he acts on the picture
         // he has, not only once it commits him. His downhill step follows his
         // own filtered evidence (the same evidence his commit uses, no prior):
-        // pressing as the line fires out, easing back as it sets to pass.
+        // pressing as the line fires out, settling as it sets to pass.
         // NFL box backers' run and dropback motion separate from 0.1-0.3 s,
         // even those standing at the snap; ours were identical until 0.4 s
         // (the guard step held depth, the read step was the same either way).
         if (READ_LEAN && read === 'unsure' && a.recog) {
           const lean = a.recog.lean(), cdir = sim.attackDir(sim.offense[0].team), h = a.mind.decisionInterval;
-          const down = (creepPace.get(a) ?? 0) + (lean > 0 ? lean * LEAN_RUN : lean * LEAN_PASS);
+          const cp = creepPace.get(a) ?? 0, down = lean > 0 ? cp + lean * LEAN_RUN : cp * (1 + lean);
           const pace = side ? Math.min(a.profile.vmax * a.profile.shuffle, g.pace + KEY_STEP_LEAD) : 0;
           a.tags.add('lb-read-lean');
           return withFacingTechnique(track(a, { x: a.pos.x - cdir * down * h, y: a.pos.y + side * pace * h }, { x: -cdir * down, y: side * pace },
