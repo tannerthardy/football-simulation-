@@ -976,3 +976,45 @@ The two candidates left both act on that impulse:
 - **(b) compliance, `CONTACT_LAYER`:** −2.11 → −1.75.
 - **(c) contact geometry:** at torso contact, closing is 82–89% of the relative velocity in ours against 50–78% in the
   NFL; the NFL's slip grows after contact and ours shrinks. That is the evidence for unparking the torso shape.
+
+## Blocked pass rushers win too soon (`pass-pocket.mts`, `pocket.py`; run-ref-12, 8 live games, 811 dropbacks; NFL 2022, 9,566 dropbacks; 2026-11-10)
+
+**The pocket does not collapse.** Depth behind the line (yd, median), among plays not yet thrown:
+
+| | NFL tackles / guards / centre / QB | Ours |
+|---|---|---|
+| 1.0 s | 2.17 / 1.43 / 1.25 / 5.17 | 2.31 / 1.58 / 1.46 / 5.13 |
+| 1.5 s | 3.42 / 2.34 / 2.23 / 6.25 | 3.50 / 2.23 / 1.74 / 6.53 |
+| 2.0 s | 4.70 / 3.30 / 3.11 / 7.39 | 5.07 / 3.00 / 2.20 / 7.78 |
+| 2.5 s | 5.65 / 4.07 / 3.72 / 8.06 | 6.43 / 3.73 / 2.90 / 7.89 |
+| 3.0 s | 6.21 / 4.52 / 4.06 / 8.11 | 7.27 / 4.21 / 3.64 / 7.92 |
+
+- The interior holds slightly *shallower* than the NFL's.
+- Tackles end up 0.4–1.0 yd deeper by 2.0–3.0 s: the edge sets wide and deep, or is pushed.
+- The QB sits at NFL depth, with the same gap to the guards. This is not the bull rush or the anchor.
+
+**First pressure** (first defender within 2 yd of the QB before the throw):
+
+| | NFL | Ours |
+|---|---|---|
+| Pressured before the throw | 28% of dropbacks | 52% |
+| Time to pressure (median) | 2.7 s | 2.7 s |
+| Blocker still on him at pressure | 63% of pressures (an offensive player within 1.2 yd) | 23% still engaged, plus some of those who came apart |
+| Blocked earlier and got off | 21% of pressures; 6% of dropbacks; last contact about 0.5 s before | 62% of pressures (261 of 424); 32% of dropbacks |
+| Never blocked | 15% | 15% |
+
+Our 261 who got off:
+- 139 came apart without the shed rule (separation), about 0.95 s before the pressure.
+- 122 were shed by `beat`, about 0.6 s before the pressure.
+- Almost all are linemen (238).
+
+**Reading.**
+- The excess pressure is rushers getting off their blocks five times as often as the NFL's: 32% of dropbacks against 6%.
+- The NFL's pressure mostly comes with the blocker still on the rusher. That is the pocket being squeezed, at 63%.
+- Ours mostly comes from a rusher who got free.
+- **Two routes:**
+  - The rule-based shed (`beat`). This is the parked grip-break question from the rusher's side.
+  - The hands simply coming apart. This is physics: the hands' steer was at its limit on 67% of engaged ticks in the run
+    game, and a rusher whose hands row saturates slides off.
+- **The next diagnosis** is the separation route: for those 139, the blocker's hands row (normal and steer against their
+  limits), the rusher's move, and the relative tangential slip in the 0.5 s before the engagement ends.
