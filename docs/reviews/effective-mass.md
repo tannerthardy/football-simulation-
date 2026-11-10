@@ -1672,3 +1672,35 @@ Each tackler's first 0.5 s in the tackle bond is attributed by integrating each 
 1. **Rotation** (hitter rotation at +0.5 / +1.0 s, `frontcourse.py`): side toward the NFL's 34/76, behind toward 27/64, front staying near 44/89.
 2. **Paired 1,321 runs:** missed and broken tackles, unfinished holds, and yards after contact. Each explained by the mechanism; no regression caused by a bug.
 3. **Then** Defense re-reads `HOLD_FACING` on it, and I re-read `TORSO_CAPSULE` + `CONTACT_LAYER`.
+
+**Gate read on run-ref-13** (attempt 1).
+
+Holder turn in the first 0.5 s of each hold (p50, `yaw-ledger.mts`, fixed runs, paired):
+
+| Holder | run-ref-13 | + `GRASP_ARM_MOMENT` | NFL (Defense's hitter-rotation operator, +0.5 s) |
+|---|---|---|---|
+| Side | 79° | **57°** | 34° |
+| Behind | 46° | **41°** | 27° |
+| Front | 64° | **53°** | 44° |
+
+**What still turns them, with the flag on** (the per-source ledger, signed along the turn):
+
+| Holder | Grasp moment (capped) | Spin brought in from the approach | Runner contact friction | Gait |
+|---|---|---|---|---|
+| Side | +47° (was +164°) | +28° | +9° | −17° |
+| Behind | +27° (was +71°) | +28° | +3° | −5° |
+| Front | +38° | +15° | +17° | 0° |
+
+- About half of what is left is spin the holder brought into the hold from his approach. That is his facing request before the hold (controller), the part Defense's `HOLD_FACING` addresses.
+
+**Paired 1,321 runs** (`ref:report --flag GRASP_ARM_MOMENT=1`, ref = run-ref-13):
+
+- Yards: 3.97 → 3.85 (paired −0.12, SE 0.03). IZ −0.23, gap −0.12, duo −0.14, OZ −0.07.
+- Broken tackles 0.147 → 0.127 (engaged-grab breaks 0.070 → 0.067). Missed 0.239 → 0.238. Missed + broken open 0.316 → 0.299 a run.
+- `frontcourse` hitter rotation on front-on contacts: essentially unchanged.
+
+**Gates.**
+
+1. **Met as worded:** side and behind moved toward the NFL; front stayed near it. Side is still 23° above.
+2. **No bug-caused regression.** The yardage drop has a named mechanism: holders who are not spun off keep the runner (broken −0.020 a run). A worse statistic is not a veto.
+3. **Next:** Defense re-reads `HOLD_FACING` attempt 2 on this flag (the approach spin), then the `TORSO_CAPSULE` + `CONTACT_LAYER` re-read.
