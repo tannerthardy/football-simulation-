@@ -2,7 +2,7 @@
 // finish is in. Fixed zone runs (as dump-zone.mts), one arm per process (settings at load). For each run, the first grasp
 // on the carrier by a defender within 45 deg ahead of his travel; at each tick from the grasp to +0.3 s:
 //   cap      the grasp's capacity (jt.capacity), in g of the runner's weight
-//   tension  the force it transmits this tick (jt.force / dt), in g
+//   tension  the force it transmits this tick (jt.force, already a force after the step), in g
 //   legs, h  leg share and hold height (share of the runner's stature; NaN = World default)
 //   hip      the runner's hip budget used bracing (World hipUsed)
 //   turn     the line of centres' turn since the grasp (deg); v the runner's speed along his travel at the grasp
@@ -25,7 +25,7 @@ for (let seed = 7; seed <= 29; seed += 2) for (const p of JSON.parse(readFileSyn
       jt = j; t0 = sim.t; a0 = Math.atan2(ry, rx); }
     const k = Math.round((sim.t - t0) / sim.dt); if (k > 6 || !w.joints.includes(jt)) { done = true; return; }
     const m = c.profile.massKg, i = w.indexOf(c.body), a = Math.atan2(jt.a.pos.y - c.pos.y, jt.a.pos.x - c.pos.x);
-    rows[k].push({ cap: (jt.capacity ?? 0) / (m * G), ten: (jt.force ?? 0) / sim.dt / (m * G), legs: jt.legs,
+    rows[k].push({ cap: (jt.capacity ?? 0) / (m * G), ten: (jt.force ?? 0) / (m * G), legs: jt.legs,
       h: jt.height !== undefined ? jt.height / c.profile.heightYd : NaN, hip: w.hipUsed?.[i] ?? 0,
       turn: Math.abs(Math.atan2(Math.sin(a - a0), Math.cos(a - a0))) * 180 / Math.PI, v: c.vel.x * ux + c.vel.y * uy, slip: jt.slipping ? 1 : 0 }); };
   sim.run();
