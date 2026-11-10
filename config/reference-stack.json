@@ -70,6 +70,7 @@
     "GRASP_PATCH": "off",
     "GUN_MESH": "on",
     "GUN_MESH_GO": "on",
+    "GRIP_REACH": "off",
     "GUN_SNAP": "on",
     "GUN_STRETCH_T": "retired",
     "HANDS_CHEST": "on",
