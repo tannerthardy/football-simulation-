@@ -629,3 +629,129 @@ proximity rule but no depth filter, and `frontcourse.py`.
   - turn 7 → 36° (80).
   
   The finish alone moves every row away from it.
+
+**Grasp onset: the weld, and friction on tension (`GRASP_SLIDE`, `GRASP_CLOSURE`; both off; 2026-11-10).** All arms are on
+the package (`HOLD_FINISH` + `HIP_BRACE` + `GRASP_PATCH`), develop 0baa3320.
+
+**First 0.15 s of a front-on grasp** (`slip-split.mts`, 218 fixed zone holds):
+- **The grasp forms at arm's length.** It forms in the same tick as first proximity: centres 0.98 yd apart, against radii
+  0.57. The pads have not met in 93% of holds; they meet about 0.05 s later.
+- **The grasp row does most of the early braking of the pair's tangential slip:**
+
+  | Source | Change of slip over the first 0.15 s (yd/s) |
+  |---|---|
+  | Grasp row | −0.46, all of the first tick |
+  | Torso contacts | −0.23 |
+  | Block hands | −0.10 |
+  | Ground | +0.18 |
+
+- **The grasp row acts as a weld.** Its tangential force is 0.13–0.18 g, only 12–17% of capacity, and 78–82% of holds
+  are not slipping. The row holds the grip point at zero slip under any force below capacity.
+
+**The laws:**
+- **(A) `GRASP_SLIDE`** limits that row to CONTACT_FRICTION (0.35) × the hold's own tension.
+- **(B) adds `GRASP_CLOSURE`:** the wrap's closed share stays rigid, 2.5 l² / (0.3 + 2.5 l²) for the joint's lock l.
+
+**Bench** (`slide-bench.mts`):
+- (A) raises arrival slip at +0.1 s from 1.95 to 2.60 yd/s at 0.3 yd offset, and from 1.23 to 1.36 at 0.2.
+- A settled wrap still holds a runner cutting across: 0.29 → 0.46 yd by +0.5 s, not broken.
+- Momentum stays exact, and a no-grasp world is bit-identical.
+- (B) at an arriving lock of 0.5 is the package.
+
+**Fixed runs:**
+
+| | NFL | Package | (A) | (B) |
+|---|---|---|---|---|
+| Tangential slip at +0.1 / +0.3 s (yd/s) | 2.69 / 1.25 | 1.24 / 1.15 | 1.34 / 1.10 | 1.33 / 1.11 |
+| Turn by +0.3 s (deg) | 80 | 36 | 37 | 38 |
+| Gain after contact; contact to end | 2.84; 1.5 s | 1.85; 1.0 s | 1.97; 1.1 s | 1.88; 1.0 s |
+| Hitter's own rotation by +0.5 / +1.0 s (deg) | 41 / 74 | 51 / 83 | 51 / 96 | 52 / 90 |
+| Zone stuff rate | 16.8% | 15.1% | 12.3% | 13.2% |
+| Stuffed after a backfield hit | 36.4% | 31.3% | 25.2% | 27.4% |
+| Broken holds: front / side / behind | | 29 / 130 / 29 | 42 / 144 / 31 | 34 / 141 / 30 |
+
+**Holds break no more often from behind:** 29, 31 and 30 of about 320 in the three arms. The lock at formation is a
+median 0.39 everywhere (rigid share 0.56 under (B)).
+
+**Neither law repairs the mechanism.**
+- The weld is real, but releasing it barely moves the early slip: 1.24 → 1.34 yd/s against the NFL's 2.69.
+- The rows that move, move away from the NFL: backfield stops, the stuff rate, the hitter's late rotation and front-hold
+  breaks.
+- So the grasp row's early braking is not what keeps our pair from sliding past in the first 0.1 s.
+
+Both flags stay off as tested alternatives. The early-slip gap needs re-diagnosis before a second attempt. Open
+questions:
+- whether the runner arrives with less tangential velocity than the NFL's in the first place (slip at the grasp is
+  1.41 yd/s);
+- whether the NFL's pad-tracking proximity and our centre proximity are the same stage of contact.
+
+**Where the early slip is lost: approach or collision (`approach.py`; 2026-11-10).** Front-on zone contacts, same code on
+the NFL and the sim (frontcourse's contacts).
+
+| | NFL | ref-10 | Package | Package + `CONTACT_LAYER` |
+|---|---|---|---|---|
+| Contacts | 556 | 173 | 166 | 169 |
+| At proximity: slip, median (mean) (yd/s) | 1.77 (1.94) | 1.26 (1.66) | 1.45 (1.86) | 1.48 (1.94) |
+| …brought by the runner / the hitter (means) | +1.25 / +0.69 | +0.89 / +0.77 | +0.99 / +0.87 | +0.98 / +0.96 |
+| At proximity: closing speed (yd/s) | 3.38 | 4.51 | 4.46 | 4.40 |
+| Runner speed; his angle to the line to the hitter | 4.21; 25° | 4.66; 21° | 4.67; 21° | 4.65; 21° |
+| Hitter speed; his velocity's angle to the line to the runner | 1.80; 108° | 2.06; 79° | 2.10; 80° | 2.10; 80° |
+| Centre distance at proximity / the frame before (yd) | 0.87 / 1.20 | 0.78 / 1.22 | 0.79 / 1.22 | 0.79 / 1.21 |
+| Aligned on torso distance: closing at +0 (yd/s) | 1.94 | 2.96 | 2.75 | 3.26 |
+| Slip at +0 / +0.1 / +0.2 / +0.3 s (yd/s) | 2.24 / 2.69 / 1.88 / 1.25 | 1.18 / 0.43 / 0.21 / 0.15 | 1.80 / 1.24 / 1.15 / 1.15 | 2.10 / 1.62 / 1.41 / 1.25 |
+| Turn by +0.3 s (deg) | 80 | 7 | 36 | 49 |
+
+- **The proximity event is the same stage in both sources:** the frame before is at 1.20–1.22 yd, and torso distance
+  follows 0.10 s later in both. The 2.24 is frontcourse's slip at torso distance, not at proximity.
+- **The pair arrives sliding as fast as the NFL's.** The means are 1.86–1.94 against 1.94. The runner brings a little
+  less of the slip and the hitter a little more. So the missing slip is not an approach decision on either side.
+- **The gap opens in the collision.**
+  - In the NFL the slip grows after the pads meet (2.24 → 2.69 at +0.1 s): the runner's closing velocity turns into
+    sliding past the man.
+  - In ours it falls (1.80 → 1.24): the torso hit absorbs it.
+  - `CONTACT_LAYER` (a compliant hit, not a plastic one) recovers about half of it: 2.10 / 1.62, turn 49°. Slip at
+    +0.3 s then matches.
+- **The one approach difference is closing speed:** 4.4–4.5 against 3.4 yd/s at proximity.
+  - The NFL runner is slower: 4.21 against 4.66 yd/s.
+  - The NFL hitter is moving with him rather than across: 108° against 80°.
+  - A faster closing hit sheds more velocity in a plastic collision, so this compounds the collision law.
+  - It is a carrier and tackler approach question, separate from the slip.
+
+**The deep backfield hit (`deephit3.py`; zone runs; NFL 2022 against the package at run-ref-11, 2026-11-10).** Integration
+asked why "stuffed after first contact deeper than 1 yd" is short of the NFL in every arm: NFL 52.7%, ref-10 50.9%,
+package 46.8%, + `CONTACT_LAYER` 42.4%.
+
+Split by depth, the package stops the runner as often as the NFL, or more:
+
+| First contact depth | NFL: runs (share), stuffed | Package: runs (share), stuffed |
+|---|---|---|
+| −1 to −1.5 yd | 196 (6.6%), 34.2% | 68 (11.9%), 41.2% |
+| −1.5 to −2 yd | 154 (5.2%), 50.6% | 28 (4.9%), 57.1% |
+| Deeper than −2 yd | 348 (11.7%), 64.1% | 13 (2.3%), 53.8% |
+| …by an unblocked defender | 180 (6.0%), 73.3% | 6 (1.1%), 50% |
+
+**The bin is short because of its depth mix.**
+- Half of the NFL's deep hits are more than 2 yd behind the line (median −2.00); ours sit just past −1 (median −1.32).
+- Inside 2 yd we over-stop by about 7 points.
+- Deep penetration, the hits that nearly always lose the play, is five times rarer in ours. Unblocked, it is 6.0% of
+  NFL runs against 1.1%.
+- This is the other side of the excess shallow contact (0–1 yd: 27% against 19%). Our first contact is squeezed toward the
+  line, with less deep penetration and more hits just behind it.
+- That is a blocking, penetration and line-timing question (Run Game's OL first step, Defense's penetration), not a
+  contact law.
+
+**The runner's state does not explain it.**
+- NFL backs at deep hits are not flat-footed: 4.34 yd/s at 42° from north. Ours run 4.88 at 45°.
+- Only 6% of NFL deep hits find the back under 2 yd/s; there he is stuffed 91% of the time.
+
+**The second defender is rarer at every depth inside 2 yd.** Share with a second defender within 1.0 yd by +0.5 s:
+
+| Depth | NFL | Package |
+|---|---|---|
+| −2 to −1 yd | 49% | 16% |
+| −1 to 0 yd | 57% | 38% |
+| 0 to 2 yd | 64% | 37% |
+| Deeper than 2 yd / past 2 yd | about even | about even |
+
+This is a crowding or pursuit difference near the line. The NFL proximity is measured on shoulder-pad tracking and ours on
+body centres, which may account for part of it.
