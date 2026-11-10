@@ -629,3 +629,245 @@ proximity rule but no depth filter, and `frontcourse.py`.
   - turn 7 → 36° (80).
   
   The finish alone moves every row away from it.
+
+**Grasp onset: the weld, and friction on tension (`GRASP_SLIDE`, `GRASP_CLOSURE`; both off; 2026-11-10).** All arms are on
+the package (`HOLD_FINISH` + `HIP_BRACE` + `GRASP_PATCH`), develop 0baa3320.
+
+**First 0.15 s of a front-on grasp** (`slip-split.mts`, 218 fixed zone holds):
+- **The grasp forms at arm's length.** It forms in the same tick as first proximity: centres 0.98 yd apart, against radii
+  0.57. The pads have not met in 93% of holds; they meet about 0.05 s later.
+- **The grasp row does most of the early braking of the pair's tangential slip:**
+
+  | Source | Change of slip over the first 0.15 s (yd/s) |
+  |---|---|
+  | Grasp row | −0.46, all of the first tick |
+  | Torso contacts | −0.23 |
+  | Block hands | −0.10 |
+  | Ground | +0.18 |
+
+- **The grasp row acts as a weld.** Its tangential force is 0.13–0.18 g, only 12–17% of capacity, and 78–82% of holds
+  are not slipping. The row holds the grip point at zero slip under any force below capacity.
+
+**The laws:**
+- **(A) `GRASP_SLIDE`** limits that row to CONTACT_FRICTION (0.35) × the hold's own tension.
+- **(B) adds `GRASP_CLOSURE`:** the wrap's closed share stays rigid, 2.5 l² / (0.3 + 2.5 l²) for the joint's lock l.
+
+**Bench** (`slide-bench.mts`):
+- (A) raises arrival slip at +0.1 s from 1.95 to 2.60 yd/s at 0.3 yd offset, and from 1.23 to 1.36 at 0.2.
+- A settled wrap still holds a runner cutting across: 0.29 → 0.46 yd by +0.5 s, not broken.
+- Momentum stays exact, and a no-grasp world is bit-identical.
+- (B) at an arriving lock of 0.5 is the package.
+
+**Fixed runs:**
+
+| | NFL | Package | (A) | (B) |
+|---|---|---|---|---|
+| Tangential slip at +0.1 / +0.3 s (yd/s) | 2.69 / 1.25 | 1.24 / 1.15 | 1.34 / 1.10 | 1.33 / 1.11 |
+| Turn by +0.3 s (deg) | 80 | 36 | 37 | 38 |
+| Gain after contact; contact to end | 2.84; 1.5 s | 1.85; 1.0 s | 1.97; 1.1 s | 1.88; 1.0 s |
+| Hitter's own rotation by +0.5 / +1.0 s (deg) | 41 / 74 | 51 / 83 | 51 / 96 | 52 / 90 |
+| Zone stuff rate | 16.8% | 15.1% | 12.3% | 13.2% |
+| Stuffed after a backfield hit | 36.4% | 31.3% | 25.2% | 27.4% |
+| Broken holds: front / side / behind | | 29 / 130 / 29 | 42 / 144 / 31 | 34 / 141 / 30 |
+
+**Holds break no more often from behind:** 29, 31 and 30 of about 320 in the three arms. The lock at formation is a
+median 0.39 everywhere (rigid share 0.56 under (B)).
+
+**Neither law repairs the mechanism.**
+- The weld is real, but releasing it barely moves the early slip: 1.24 → 1.34 yd/s against the NFL's 2.69.
+- The rows that move, move away from the NFL: backfield stops, the stuff rate, the hitter's late rotation and front-hold
+  breaks.
+- So the grasp row's early braking is not what keeps our pair from sliding past in the first 0.1 s.
+
+Both flags stay off as tested alternatives. The early-slip gap needs re-diagnosis before a second attempt. Open
+questions:
+- whether the runner arrives with less tangential velocity than the NFL's in the first place (slip at the grasp is
+  1.41 yd/s);
+- whether the NFL's pad-tracking proximity and our centre proximity are the same stage of contact.
+
+**Where the early slip is lost: approach or collision (`approach.py`; 2026-11-10).** Front-on zone contacts, same code on
+the NFL and the sim (frontcourse's contacts).
+
+| | NFL | ref-10 | Package | Package + `CONTACT_LAYER` |
+|---|---|---|---|---|
+| Contacts | 556 | 173 | 166 | 169 |
+| At proximity: slip, median (mean) (yd/s) | 1.77 (1.94) | 1.26 (1.66) | 1.45 (1.86) | 1.48 (1.94) |
+| …brought by the runner / the hitter (means) | +1.25 / +0.69 | +0.89 / +0.77 | +0.99 / +0.87 | +0.98 / +0.96 |
+| At proximity: closing speed (yd/s) | 3.38 | 4.51 | 4.46 | 4.40 |
+| Runner speed; his angle to the line to the hitter | 4.21; 25° | 4.66; 21° | 4.67; 21° | 4.65; 21° |
+| Hitter speed; his velocity's angle to the line to the runner | 1.80; 108° | 2.06; 79° | 2.10; 80° | 2.10; 80° |
+| Centre distance at proximity / the frame before (yd) | 0.87 / 1.20 | 0.78 / 1.22 | 0.79 / 1.22 | 0.79 / 1.21 |
+| Aligned on torso distance: closing at +0 (yd/s) | 1.94 | 2.96 | 2.75 | 3.26 |
+| Slip at +0 / +0.1 / +0.2 / +0.3 s (yd/s) | 2.24 / 2.69 / 1.88 / 1.25 | 1.18 / 0.43 / 0.21 / 0.15 | 1.80 / 1.24 / 1.15 / 1.15 | 2.10 / 1.62 / 1.41 / 1.25 |
+| Turn by +0.3 s (deg) | 80 | 7 | 36 | 49 |
+
+- **The proximity event is the same stage in both sources:** the frame before is at 1.20–1.22 yd, and torso distance
+  follows 0.10 s later in both. The 2.24 is frontcourse's slip at torso distance, not at proximity.
+- **The pair arrives sliding as fast as the NFL's.** The means are 1.86–1.94 against 1.94. The runner brings a little
+  less of the slip and the hitter a little more. So the missing slip is not an approach decision on either side.
+- **The gap opens in the collision.**
+  - In the NFL the slip grows after the pads meet (2.24 → 2.69 at +0.1 s): the runner's closing velocity turns into
+    sliding past the man.
+  - In ours it falls (1.80 → 1.24): the torso hit absorbs it.
+  - `CONTACT_LAYER` (a compliant hit, not a plastic one) recovers about half of it: 2.10 / 1.62, turn 49°. Slip at
+    +0.3 s then matches.
+- **The one approach difference is closing speed:** 4.4–4.5 against 3.4 yd/s at proximity.
+  - The NFL runner is slower: 4.21 against 4.66 yd/s.
+  - The NFL hitter is moving with him rather than across: 108° against 80°.
+  - A faster closing hit sheds more velocity in a plastic collision, so this compounds the collision law.
+  - It is a carrier and tackler approach question, separate from the slip.
+
+**The deep backfield hit (`deephit3.py`; zone runs; NFL 2022 against the package at run-ref-11, 2026-11-10).** Integration
+asked why "stuffed after first contact deeper than 1 yd" is short of the NFL in every arm: NFL 52.7%, ref-10 50.9%,
+package 46.8%, + `CONTACT_LAYER` 42.4%.
+
+Split by depth, the package stops the runner as often as the NFL, or more:
+
+| First contact depth | NFL: runs (share), stuffed | Package: runs (share), stuffed |
+|---|---|---|
+| −1 to −1.5 yd | 196 (6.6%), 34.2% | 68 (11.9%), 41.2% |
+| −1.5 to −2 yd | 154 (5.2%), 50.6% | 28 (4.9%), 57.1% |
+| Deeper than −2 yd | 348 (11.7%), 64.1% | 13 (2.3%), 53.8% |
+| …by an unblocked defender | 180 (6.0%), 73.3% | 6 (1.1%), 50% |
+
+**The bin is short because of its depth mix.**
+- Half of the NFL's deep hits are more than 2 yd behind the line (median −2.00); ours sit just past −1 (median −1.32).
+- Inside 2 yd we over-stop by about 7 points.
+- Deep penetration, the hits that nearly always lose the play, is five times rarer in ours. Unblocked, it is 6.0% of
+  NFL runs against 1.1%.
+- This is the other side of the excess shallow contact (0–1 yd: 27% against 19%). Our first contact is squeezed toward the
+  line, with less deep penetration and more hits just behind it.
+- That is a blocking, penetration and line-timing question (Run Game's OL first step, Defense's penetration), not a
+  contact law.
+
+**The runner's state does not explain it.**
+- NFL backs at deep hits are not flat-footed: 4.34 yd/s at 42° from north. Ours run 4.88 at 45°.
+- Only 6% of NFL deep hits find the back under 2 yd/s; there he is stuffed 91% of the time.
+
+**The second defender is rarer at every depth inside 2 yd.** Share with a second defender within 1.0 yd by +0.5 s:
+
+| Depth | NFL | Package |
+|---|---|---|
+| −2 to −1 yd | 49% | 16% |
+| −1 to 0 yd | 57% | 38% |
+| 0 to 2 yd | 64% | 37% |
+| Deeper than 2 yd / past 2 yd | about even | about even |
+
+This is a crowding or pursuit difference near the line. The NFL proximity is measured on shoulder-pad tracking and ours on
+body centres, which may account for part of it.
+
+**OZ engaged lateral carry, timed from each lineman's own start (`ozflow.py`; 2026-11-10).** Run Game's report: OZ interior DL
+flow toward the play 1.03 / 2.45 / 4.00 yd at 1.0 / 1.5 / 2.0 s, against the NFL's 1.62 / 3.16 / 4.83. Same code on NFL
+2022 OZ and the fixed set's OZ runs at run-ref-11, with Defense's onset rule (first 0.1 s step over 0.3 yd/s, frame 0
+the tagged snap). Interior DL here means within 1.6 yd of the line and between the tackles at the snap.
+
+| OZ interior DL | NFL (3,254) | run-ref-11 (778) |
+|---|---|---|
+| Flow from the snap at 1.0 / 1.5 / 2.0 s (yd) | 1.35 / 2.82 / 4.47 | 1.04 / 2.46 / 3.99 |
+| Flow at his own onset + 0.5 / 1.0 / 1.5 s (yd) | 0.59 / 1.76 / 3.33 | 0.65 / 1.81 / 3.38 |
+| …engaged pairs only | 0.58 / 1.76 / 3.32 | 0.62 / 1.76 / 3.32 |
+| Rate from 1.0 to 1.5 s (yd/s) | 2.98 | 2.82 |
+| DL onset; OL onset (s) | 0.1; 0.1 | 0.3; 0.2 |
+| Engaged with an OL at 1.0 s | 94% | 71% |
+
+- **Timed from each man's own start, the engaged pair carries sideways exactly as the NFL's does.** The whole
+  absolute deficit is the DL's late get-off (0.3 against 0.1 s), which is Defense's item. There is no lateral-carry gap
+  in the physics, so the steer-budget split is not needed.
+- **What remains:**
+  - 6% lower rate between 1.0 and 1.5 s.
+  - Fewer interior DL engaged at 1.0 s: 71% against 94%, Run Game's blocked-at-1.0 s. That is when and whether
+    contact happens, not how the pair moves once it does.
+
+**Correction: the OZ carry, with displacement from the snap spot (no onset threshold).** The 0.3 yd/s onset fires at
+0.1 s on every NFL play, because that is the tracking's jitter floor. So "from his own onset" above compared the NFL's
+noise floor with our real start, and its equality does not stand. Measured instead with no threshold (`ozflow.py`):
+
+| OZ | NFL | run-ref-11 |
+|---|---|---|
+| OL lateral toward the play at 0.2 / 0.3 / 0.5 / 1.0 s (yd) | 0.14 / 0.25 / 0.59 / 1.87 | 0.06 / 0.15 / 0.46 / 1.67 |
+| Interior DL lateral at 0.2 / 0.3 / 0.5 s (yd) | 0.06 / 0.13 / 0.34 | 0.00 / 0.03 / 0.20 |
+| DL reaches 0.25 / 0.5 / 1.0 yd at (s) | 0.5 / 0.7 / 0.9 | 0.6 / 0.8 / 1.0 |
+| Engaged DL: first OL contact (s) | 0.6 | 0.8 |
+| …flow before that contact (yd) | 0.44 | 0.61 |
+| …rate over the 0.5 s after it (yd/s) | 2.12 | 2.34 |
+
+- **(b) The engaged pair after contact carries faster than the NFL's**, not slower. There is no steer-budget gap.
+- **(a) The whole deficit is the first half-second, on both lines.** Both start later and contact comes 0.2 s later, which is
+  Run Game's 71% against 93% blocked at 1.0 s.
+- **OL first step on OZ** (`ol-first-step.mts`, fixed OZ runs):
+  - On the snap tick (0 → 0.05 s), 93% of OL request zero velocity. From the next tick they ask for 3.5–3.7 yd/s toward the
+    play.
+  - The body then follows the start law: the start force of the body's own sprint curve, falling to zero at the wanted
+    speed. A typical OL has vmax 7.59 yd/s and τ 1.36 s, fitted to 40- and 10-yard times, giving 5.6 yd/s² from rest.
+  - Achieved: 0.27 → 1.83 yd/s over 0.10–0.50 s, which the law predicts.
+  - Ground force is only 0.36–0.46 of traction and about 0.45 of the push budget. The kinematic start curve, not force,
+    sets the pace.
+- **How the OL's 0.13 yd at 0.5 s divides:**
+  - The dead snap tick: about 0.09 yd. That is the request, Run Game's.
+  - The start curve: about 0.04 yd. The NFL's early lateral acceleration is about 6–7 yd/s² against our 5.6, from a
+    sprint fit. A lateral first step from the stance may not follow the 40-yard start, but this part is small.
+- **The DL is still at zero request on 84% and 63% of the next two ticks** (Defense's late get-off).
+
+**The second man (`secondman.py` on NFL and sim; `second-man.mts` on the sim; zone runs, run-ref-11; 2026-11-10).** At
+the runner's first contact, every other defender nearby is checked for whether he gets within 1.0 yd of the runner by
++0.5 s. "Blocked" means an offensive non-carrier within 1.2 yd of him.
+
+| Zone runs | NFL (2,919) | run-ref-11 (559) |
+|---|---|---|
+| Second man by +0.5 s | 57% | 39% |
+| Other defenders within 2 / 3 / 5 yd at contact (per run) | 1.04 / 2.24 / 4.34 | 0.80 / 1.97 / 4.26 |
+| Within 2 yd: blocked share | 77% | 73% |
+| Within 2 yd: arrive, if free | 65% | 70% |
+| Within 2 yd: arrive, if blocked | 46% | 26% |
+| At 2–3 yd: arrive, if free / if blocked | 28% / 13% | 21% / 7% |
+| DL within 5 yd who arrive | 16% | 6% |
+
+- **Free men arrive as often as the NFL's.** Our pursuit and rally are not the gap. There are slightly fewer bodies
+  within 2 yd at contact (0.80 against 1.04).
+- **The gap is blocked men next to the runner.** Within 2 yd the NFL's arrive 46% of the time and ours 26%.
+- **What ours are doing** (sim, 313 blocked within 2 yd; requested and achieved velocity toward the runner, mean over the
+  0.5 s):
+
+| Blocked defender within 2 yd | Share | Arrive | Requested (yd/s) | Achieved (yd/s) |
+|---|---|---|---|---|
+| Engaged through +0.5 s | 51% | 22% | +1.67 | +0.32 |
+| Engagement ended (median 0.30 s) | 13% | 10% | +3.01 | +0.54 |
+| Next to an offensive body with no engagement | 36% | 34% | +1.23 | +0.23 |
+
+  At 2–3 yd, blocked men request +1.7 to +3.3 and achieve −0.4 to +0.3. Their nearest offensive body is 0.72–0.89 yd
+  away throughout.
+- **It is execution, not decision.** Blocked men near the runner ask to go to him and their bodies do not get there: they
+  are held by the blocker's hands, or by bodies they are in contact with.
+- **Open: which force cancels the request,** for engaged men and for body-only contact. The candidates are the blocker's
+  hands (normal and steer), the torso contacts, and the defender's own ground drive while engaged.
+
+**What holds the blocked men beside the runner (`held-split.mts`; run-ref-11 against + `CONTACT_LAYER`).** These are the
+blocked defenders within 2 yd of the runner at his first contact (310 / 316 men). Over the next 0.5 s, their change of
+velocity toward the runner is split by source (yd/s, mean). Tackle eligibility follows `tryTackles`: free, or on his free
+side, or win ≥ 0.6, and in range.
+
+| Group (share) | Arrive | Attempt | Request | Δv = ground + hands + grasp + torso/rest | Eligible / in range / both (share of ticks) |
+|---|---|---|---|---|---|
+| Engaged throughout (51%) | 23% | 14% | +1.69 | +0.27 = +1.64 − 0.97 + 0.08 − 0.47 | 64% / 17% / 13% |
+| Engagement ended at 0.30 s (13%) | 10% | 10% | +2.78 | +0.77 = +1.34 − 0.30 + 0.11 − 0.38 | 81% / 34% / 33% |
+| No engagement, beside an offensive body (36%) | 34% | 41% | +1.52 | +0.21 = +0.72 + 0.00 + 0.53 − 1.04 | 99% / 87% / 87% |
+| …with `CONTACT_LAYER`: engaged throughout | 28% | 17% | +1.73 | +0.32 = +1.61 − 0.92 + 0.12 − 0.49 | 63% / 23% / 16% |
+| …with `CONTACT_LAYER`: no engagement | 47% | 45% | +1.74 | −0.02 = +0.87 − 0.10 + 0.46 − 1.24 | 98% / 85% / 85% |
+
+**Engaged men are held by the blocker's hands.**
+- Their legs drive +1.64 yd/s toward the runner over the 0.5 s. The hands row takes −0.97 and the torso contact −0.47.
+- Nothing ends the engagement because the runner is beside him. Engagements end on a body down, separation, a shed
+  (`beat`) or "runner passed defender" (2.5 yd past). At contact the median win is 0.51 and control +0.51 (the blocker's
+  hands inside).
+- The reach rule keeps them out of range on 83% of ticks. An engaged man without a free side reaches only 0.4 of his
+  arm, so 14% attempt.
+- This is the parked grip-break question: decision and mechanism. It needs Tanner's go-ahead before code.
+
+**Men with no engagement are stuck on bodies.**
+- Their legs drive +0.72 (less than the engaged men's), and torso contacts take −1.04.
+- The nearest offensive body is engaged with someone else 35% of the time. It requests toward him above 0.5 yd/s, an
+  active wall, 52% of the time: the median is +0.93 yd/s, so half are walled actively and half are stuck on bodies that
+  are not working on them.
+- `CONTACT_LAYER` lets more of them through: arrivals 34% → 47%.
+- They are eligible and in range on 87% of ticks, yet only 41% attempt. That is a tackle decision (`tryTackles`:
+  occlusion, waiting for a better shot or `nextTackleAt`), which belongs to Defense.
