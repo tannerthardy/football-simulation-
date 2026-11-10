@@ -777,3 +777,33 @@ the tagged snap). Interior DL here means within 1.6 yd of the line and between t
   - 6% lower rate between 1.0 and 1.5 s.
   - Fewer interior DL engaged at 1.0 s: 71% against 94%, Run Game's blocked-at-1.0 s. That is when and whether
     contact happens, not how the pair moves once it does.
+
+**Correction: the OZ carry, with displacement from the snap spot (no onset threshold).** The 0.3 yd/s onset fires at
+0.1 s on every NFL play, because that is the tracking's jitter floor. So "from his own onset" above compared the NFL's
+noise floor with our real start, and its equality does not stand. Measured instead with no threshold (`ozflow.py`):
+
+| OZ | NFL | run-ref-11 |
+|---|---|---|
+| OL lateral toward the play at 0.2 / 0.3 / 0.5 / 1.0 s (yd) | 0.14 / 0.25 / 0.59 / 1.87 | 0.06 / 0.15 / 0.46 / 1.67 |
+| Interior DL lateral at 0.2 / 0.3 / 0.5 s (yd) | 0.06 / 0.13 / 0.34 | 0.00 / 0.03 / 0.20 |
+| DL reaches 0.25 / 0.5 / 1.0 yd at (s) | 0.5 / 0.7 / 0.9 | 0.6 / 0.8 / 1.0 |
+| Engaged DL: first OL contact (s) | 0.6 | 0.8 |
+| …flow before that contact (yd) | 0.44 | 0.61 |
+| …rate over the 0.5 s after it (yd/s) | 2.12 | 2.34 |
+
+- **(b) The engaged pair after contact carries faster than the NFL's**, not slower. There is no steer-budget gap.
+- **(a) The whole deficit is the first half-second, on both lines.** Both start later and contact comes 0.2 s later, which is
+  Run Game's 71% against 93% blocked at 1.0 s.
+- **OL first step on OZ** (`ol-first-step.mts`, fixed OZ runs):
+  - On the snap tick (0 → 0.05 s), 93% of OL request zero velocity. From the next tick they ask for 3.5–3.7 yd/s toward the
+    play.
+  - The body then follows the start law: the start force of the body's own sprint curve, falling to zero at the wanted
+    speed. A typical OL has vmax 7.59 yd/s and τ 1.36 s, fitted to 40- and 10-yard times, giving 5.6 yd/s² from rest.
+  - Achieved: 0.27 → 1.83 yd/s over 0.10–0.50 s, which the law predicts.
+  - Ground force is only 0.36–0.46 of traction and about 0.45 of the push budget. The kinematic start curve, not force,
+    sets the pace.
+- **How the OL's 0.13 yd at 0.5 s divides:**
+  - The dead snap tick: about 0.09 yd. That is the request, Run Game's.
+  - The start curve: about 0.04 yd. The NFL's early lateral acceleration is about 6–7 yd/s² against our 5.6, from a
+    sprint fit. A lateral first step from the stance may not follow the 40-yard start, but this part is small.
+- **The DL is still at zero request on 84% and 63% of the next two ticks** (Defense's late get-off).
