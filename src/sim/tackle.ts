@@ -206,7 +206,7 @@ export function tryTackles(sim: PlaySim): void {
       }
       if (needsLastReach && !lastReach) continue;
       if (waitForBetter && !acquireAtReach) continue;
-      attempt(sim, d, c, q, engaged, dd > arms);
+      attempt(sim, d, c, q, engaged, dd > arms, dd > arms ? range : arms);
       if (sim.ball.kind !== 'held' || sim.phase !== 'live') return;
       continue;
     }
@@ -219,7 +219,7 @@ export function tryTackles(sim: PlaySim): void {
       d.nextTackleAt = t + 1;
       sim.diveAt(d, { x: dx, y: dy });
       const p = 0.22 + 0.3 * d.r('tackling') - 0.15 * c.r('elusiveness') - 0.1 * c.r('balance');
-      if (sim.dice('tackle', d).chance(Math.max(0.05, p))) {
+      if (TKL_WHIFF ? !whiffs(sim, d, c, dive, false, DIVE_WINDOW) : sim.dice('tackle', d).chance(Math.max(0.05, p))) {
         // He gets a hand on a foot: a weak hold, all of it on the legs.
         grasp(sim, d, c, 0.3, 1, dd, 1, true, 'dive');
         sim.event('hit', d, c, 'diving tackle');
@@ -250,7 +250,47 @@ function occluded(sim: PlaySim, d: Agent, c: Agent): boolean {
   return false;
 }
 
-function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean): void {
+/** TKL_WHIFF (experimental, off; =1 turns it on): an open-field reach or dive
+ * misses because the carrier's body is not where the tackler's hands can get
+ * to in the reach window, not on a rating roll. In that window the tackler's
+ * centre goes where his momentum takes it, redirected toward his delayed
+ * picture of the carrier only as far as his cut capacity allows (a blocked
+ * defender a fraction of it); the carrier, if he can see the tackler, moves
+ * his hips away by his own cut capacity, otherwise runs on. A whiff is the
+ * carrier ending outside the tackler's hand reach. Ratings enter only as
+ * these capacities and the picture delay. A pocket QB keeps his escape law. */
+const TKL_WHIFF = process.env.TKL_WHIFF === '1';
+/** Hand strike, extension to contact (model assumption, s). */
+const REACH_WINDOW = 0.2;
+/** Layout from the launch to full extension (model assumption, s). */
+const DIVE_WINDOW = 0.3;
+export function whiffs(sim: PlaySim, d: Agent, c: Agent, limit: number, engaged: boolean, window: number): boolean {
+  // The hands get there sooner the less they have to extend: a form tackle
+  // at body distance is on him at once; a reach at full stretch takes the
+  // whole window, in which the carrier can be gone.
+  const body = c.profile.radius + d.profile.radius;
+  const dd = Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y);
+  const w = Math.max(0.08, window * clamp((dd - body) / Math.max(0.1, limit - body), 0, 1));
+  const seenC = sim.see(d, c);
+  const aim = { x: seenC.pos.x + seenC.vel.x * w, y: seenC.pos.y + seenC.vel.y * w };
+  const coast = { x: d.pos.x + d.vel.x * w, y: d.pos.y + d.vel.y * w };
+  const redirect = 0.5 * d.profile.lateral * (engaged ? 0.3 : 1) * w * w;
+  const ax = aim.x - coast.x, ay = aim.y - coast.y, al = Math.hypot(ax, ay);
+  const k = al > redirect ? redirect / al : 1;
+  const hands = { x: coast.x + ax * k, y: coast.y + ay * k };
+  let cw = { x: c.pos.x + c.vel.x * w, y: c.pos.y + c.vel.y * w };
+  const seenD = sim.see(c, d);
+  const sees = Math.cos(c.body.facing - Math.atan2(seenD.pos.y - c.pos.y, seenD.pos.x - c.pos.x)) > -0.2;
+  if (sees && !sim.bond) {
+    const tw = { x: seenD.pos.x + seenD.vel.x * w, y: seenD.pos.y + seenD.vel.y * w };
+    const ex = cw.x - tw.x, ey = cw.y - tw.y, el = Math.hypot(ex, ey) || 1;
+    const cut = 0.5 * c.profile.lateral * w * w;
+    cw = { x: cw.x + ex / el * cut, y: cw.y + ey / el * cut };
+  }
+  return Math.hypot(cw.x - hands.x, cw.y - hands.y) > limit;
+}
+
+function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean, limit = Infinity): void {
   const t = sim.t;
   const rng = sim.dice('tackle', d);
   // Arms reach and recoil: one attempt per beat, not per physics tick.
@@ -281,7 +321,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
     const seesIt = pocketQB && Math.cos(c.body.facing - Math.atan2(d.pos.y - c.pos.y, d.pos.x - c.pos.x)) > -0.2;
     const escape = pocketQB ? (seesIt ? 0.12 + 0.18 * c.r('elusiveness') + 0.08 * c.r('pocketPresence') : 0.03) : 0;
     const pMiss = clamp(0.02 + 0.2 * (E - T) * (0.5 + 0.5 * openField) + 0.07 * (1 - q) + 0.06 * overrun + (engaged ? 0.3 : 0) + (cs > 7 ? 0.02 : 0) + escape, 0.01, 0.6);
-    if (rng.chance(pMiss)) {
+    if (TKL_WHIFF && !pocketQB ? whiffs(sim, d, c, limit, engaged, REACH_WINDOW) : rng.chance(pMiss)) {
       d.missedTackles++;
       sim.stats.missedTackles++;
       sim.event('missed_tackle', d, c);
