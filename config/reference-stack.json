@@ -106,6 +106,7 @@
     "NICKEL_FRONTS": "on",
     "NO_CROSS": "on",
     "OFFBALL_TIMING": "on",
+    "OL_ON_COUNT": "off",
     "OWNER_KEEPS": "on",
     "OZ_HIP_READ": "on",
     "PASS_SINK": "off",

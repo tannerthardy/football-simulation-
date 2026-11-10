@@ -40,6 +40,14 @@ const LINE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 /** OFFBALL_TIMING (experimental, off): see planSnap; chance an off-ball defender times the count (avg about 0.55). */
 export const OFFBALL_TIMING = process.env.OFFBALL_TIMING !== '0';
 const OFFBALL_BASE = 0.3, OFFBALL_ANTICIPATION = 0.5;
+/** OL_ON_COUNT (off): the tracked snap is the ball moving, which is the
+ * centre's own start on the count. The centre goes with the ball and every
+ * other lineman at his readiness lag less the centre's (never before the
+ * ball unless he times the count); the readiness lag itself is unchanged.
+ * Before, every lineman started his full lag after the ball, so 93% asked for
+ * nothing on the snap tick and OZ OL were 0.06 / 0.15 / 0.46 yd lateral at
+ * 0.2 / 0.3 / 0.5 s against NFL 0.14 / 0.25 / 0.59 (Flex ol-first-step.mts). */
+export const OL_ON_COUNT = process.env.OL_ON_COUNT === '1';
 
 /** Simple visual response to an expected single cue: seen motion to own movement. */
 export function snapResponse(a: Agent): number {
@@ -76,6 +84,10 @@ export function planSnap(agents: readonly Agent[], s: SnapSituation, rng: Rng): 
   // most to it (third or fourth and short).
   const hard = rng.chance(short ? 0.3 : 0.1);
   const plans = new Map<Agent, StartPlan>();
+  // OL_ON_COUNT: the snap is the centre's own start on the count, so another
+  // lineman's lag behind the ball is his readiness lag less the centre's.
+  const centre = OL_ON_COUNT ? agents.find((x) => x.team === 'O' && x.slot === 'C') : undefined;
+  const lineLag = (a: Agent) => centre ? (a === centre ? 0 : Math.max(0, a.mind.snapDelay - centre.mind.snapDelay)) : a.mind.snapDelay;
   for (const a of agents) {
     const discipline = a.r('discipline'), anticipation = a.r('anticipation');
     // Going early costs a flag and going late costs a step, so a man who
@@ -90,7 +102,7 @@ export function planSnap(agents: readonly Agent[], s: SnapSituation, rng: Rng): 
       const tackle = a.slot === 'LT' || a.slot === 'RT';
       const times = rng.chance(0.04 + (passDown && tackle ? 0.12 : 0.02));
       const sd = 0.015 + 0.02 * (1 - discipline);
-      const go = times ? Math.min(a.mind.snapDelay, rng.normal(margin * sd, sd)) : a.mind.snapDelay;
+      const go = times ? Math.min(lineLag(a), rng.normal(margin * sd, sd)) : lineLag(a);
       plans.set(a, { go, timed: times });
       continue;
     }
