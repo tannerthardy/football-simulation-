@@ -572,8 +572,12 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // his own hands (how hard he holds); the runner's speed is the load the
       // plant puts on that grip, and the World decides whether the grip
       // survives it: a weak grip that plants may be torn off (a broken tackle).
+      // While his hold is slipping (his hands at their limit last step) he
+      // gives with it and keeps his feet with the runner instead of sitting:
+      // a trailing man who grabs a runner going by would otherwise sit while
+      // being ripped through his hands. He sits again once it holds.
       if (HOLD_FINISH && cs > 0.5) {
-        const ux = c.vel.x / cs, uy = c.vel.y / cs, commit = clamp(next, 0, 1);
+        const ux = c.vel.x / cs, uy = c.vel.y / cs, commit = joint.slipping ? 0 : clamp(next, 0, 1);
         vel = { x: c.vel.x - ux * cs * commit + tx * close, y: c.vel.y - uy * cs * commit + ty * close };
       }
       // Planted on a secure hold of his legs and still dragged, he drops his
