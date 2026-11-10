@@ -8,7 +8,9 @@ gained; sim: the dump's yards). Runs with no contact before the end are counted 
 usage: python3 -I backfield.py <nfl.jsonl.gz | sim zone dump with off> [...]"""
 import sys, json, gzip, math, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+_argv, sys.argv = sys.argv, sys.argv[:1]  # frontcourse reports on its argv at import
 import frontcourse as fc  # noqa: E402
+sys.argv = _argv
 
 
 def yards_of(path):
