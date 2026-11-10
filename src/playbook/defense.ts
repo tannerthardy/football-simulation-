@@ -10,6 +10,8 @@ const LB = 4.6;
 const ALL_FRONTS: Front[] = [
   {
     id: 'over', name: '4-3 Over', personnel: ['base43', 'nickel', 'dime'],
+    // FIT_TE_GAP: the end head-up on the TE plays C; the Sam outside him has D.
+    ...(process.env.FIT_TE_GAP === '1' ? { fits: { LB_S: { gap: 'D' as const, side: 'S' as const } } } : {}),
     slots: {
       DE_S: { tech: '6', side: 'S', depth: DL },
       DT_S: { tech: '3', side: 'S', depth: DL },
