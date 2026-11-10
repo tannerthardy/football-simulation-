@@ -1530,3 +1530,23 @@ At the moment of pressure (medians):
    - This is snap anticipation and the get-off distribution, the `DL_SNAP_TIME` question: Defense and Run Game.
 
 **The deciding bench** was this one: the World alone, a standing start at full request, read through the same 0.1 s alignment as the tracking. Nothing to build.
+
+## The zone backside tackle running flat (`flat-bench.mts`, `ol-flat.py`; NFL 2022 outside zone, 1,588 runs; 2026-11-10)
+
+Both sides are aligned to his own start (the first 0.1 s frame displaced 0.25 yd).
+
+| At +0.5 / +1.0 / +1.5 s after his start | Displacement (yd) | Speed (yd/s) |
+|---|---|---|
+| NFL backside T, p50 | 1.30 / 3.10 / 4.98 | 3.28 / 3.78 / 3.71 |
+| NFL backside T, p75 | 1.43 / 3.43 / 5.55 | 3.62 / 4.31 / 4.38 |
+| NFL backside T, p90 | 1.55 / 3.70 / 6.03 | 3.91 / 4.74 / 4.90 |
+| World, OT, facing the travel ("turn") | 1.31 / 3.30 / 5.75 | 3.38 / **4.49** / 5.28 |
+| World, OT, facing upfield ("square") | 1.16 / 2.79 / 4.62 | 2.88 / **3.50** / 3.83 |
+| World, OG, turn / square at +1.0 s | 3.58 / 2.65 | 4.85 / 3.28 |
+
+- **Setup:** generated OT/OG bodies at rest, posture 0.8, full lateral request; 10 bodies × 4 frame phases.
+- **The body can do it.** Turned to run, a tackle passes the NFL's p75 by +1.0 s and its p90 by +1.5 s.
+- **Square, he cannot.** He keeps facing upfield, so his drive is the directional (sideways) share. He tops out at 3.5–3.8 yd/s, below the NFL median, where the sim's backside tackle runs (3.1–3.3 with a man on him).
+- **The limiter is the facing-against-travel penalty**, not the turn from stance, traction or mass.
+- Whether he opens his hips and runs, or shuffles square, is the zone footwork request: Run Game's lane, with `_btdouble.mts`'s requested facing and velocity as the check.
+- NFL backside tackles at 3.8–4.7 yd/s are at least partly turned.
