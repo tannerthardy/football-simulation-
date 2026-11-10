@@ -95,6 +95,7 @@
     "LB_GUARD_STEP": "on",
     "LB_LINE_FLOW": "on",
     "LB_READ_STEP": "on",
+    "LEAN_PITCH": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",
