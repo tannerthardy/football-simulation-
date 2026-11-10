@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-8",
+  "id": "run-ref-9",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -39,6 +39,8 @@
     "CLIMB_RUNNER_SIDE": "on",
     "CLIMB_SLIDE": "on",
     "CLIMB_SQUARE": "on",
+    "CONTACT_LAYER": "off",
+    "CONTACT_PATCH": "off",
     "COUNTER_C": "on",
     "COUNTER_OFFSET": "on",
     "CUTOFF_RACE": "on",
@@ -67,6 +69,7 @@
     "GUN_MESH_GO": "on",
     "GUN_SNAP": "on",
     "GUN_STRETCH_T": "retired",
+    "HANDS_CHEST": "on",
     "HAND_FIGHT": "off",
     "HAND_MOTOR": "off",
     "HELD_SIDE": "on",
@@ -112,6 +115,7 @@
     "REACH_FLAT": "on",
     "REACH_RACE": "on",
     "REACH_TECHNIQUE": "on",
+    "READ_LEAN": "off",
     "READ_RISK_TRACE": "off",
     "RELEASE_INTERCEPT": "on",
     "RELEASE_QUICK": "on",

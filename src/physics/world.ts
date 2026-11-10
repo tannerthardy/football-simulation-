@@ -337,6 +337,33 @@ const HANG_SHARE = 0.5;
  * leave the runner's base behind his body (see the stride holds and
  * updateSupport). */
 const HELD_SWING = process.env.HELD_SWING === '1';
+/** Default since run-ref-9 (HANDS_CHEST=0 restores): a block's hands push chest to chest. In
+ * the centre-mode hands row the push acted along the line between the two
+ * centres, so a fit landed off-centre pushed the man sideways as well as back
+ * and the pair twisted apart (docs/reviews/effective-mass.md, step 2 attempt
+ * two). Two hands spread on a chest push along that chest's normal while they
+ * stay within its flat span. Each torso's shoulder line is a segment of
+ * half-length CHEST_HALF across his facing; the row acts between the closest
+ * points of the two segments, as for two capsules. Off, centre to centre. */
+const HANDS_CHEST = process.env.HANDS_CHEST !== '0';
+/** Flat half-span of a torso's front, yd: shoulder half-width with pads (0.27)
+ * less chest half-depth (0.15); anthropometric estimate, as the capsule of
+ * scripts/diag/effective-mass/shape.py. */
+const CHEST_HALF = 0.27 - 0.15;
+/** Experimental (CONTACT_LAYER=1, off): a compliant torso layer before the stiff core
+ * (docs/reviews/effective-mass.md, step 1). Each torso carries a soft layer (pads,
+ * tissue and arms yielding) of depth LAYER_DEPTH and stiffness LAYER_K; a pair's
+ * layers act in series. Inside the layers the contact is that spring with damping
+ * that grows with compression (Hunt-Crossley, LAYER_HC), so there is no damping
+ * spike at first touch; beyond them the existing 9 Hz core takes over, continuous in
+ * force. Off, every contact uses the single 9 Hz critically damped row. */
+const CONTACT_LAYER = process.env.CONTACT_LAYER === '1';
+/** Soft layer depth per torso, yd (about 6 cm of pad foam and tissue; estimate). */
+const LAYER_DEPTH = 0.065;
+/** Soft layer stiffness per torso, kg/s^2 (= N/m; about 100 kN/m; estimate, provisional). */
+const LAYER_K = 1.0e5;
+/** Hunt-Crossley damping, s/yd (0.3 s/m, a soft-tissue order of magnitude). */
+const LAYER_HC = 0.3 * 0.9144;
 /** Extra hold distance of a holder stretched along the ground, yd. */
 export const GROUND_STRETCH = 0.9;
 /** Gait response time to body acceleration, s. */
@@ -387,6 +414,8 @@ interface Contact {
   ln: number;
   lt: number;
   closing: number;
+  /** CONTACT_LAYER: this row's own softness (depth-dependent law). */
+  soft?: Softness;
   /** The compliant solve pressed them together (before the relax). */
   touched?: boolean;
   observed: ContactSnapshot;
@@ -488,6 +517,23 @@ function unsupportedLean(b: Body, plan: Plan, leanX: number, leanY: number,
  * Opposing gait and lean can leave a positive lean share after gait alone is
  * clipped to the cap, so the net is scaled back to the cap: no ground force
  * beyond traction, even at zero traction. Exported for the law test. */
+/** HANDS_CHEST: the vector from a's shoulder line to b's at their closest
+ * points (segments of half-length CHEST_HALF across each man's facing). */
+function chestPoints(a: Body, b: Body): Vec2 {
+  const ux = -Math.sin(a.facing) * CHEST_HALF, uy = Math.cos(a.facing) * CHEST_HALF;
+  const vx = -Math.sin(b.facing) * CHEST_HALF, vy = Math.cos(b.facing) * CHEST_HALF;
+  // Segments p(s) = a + s u, q(t) = b + t v, s, t in [-1, 1].
+  const rx = a.pos.x - b.pos.x, ry = a.pos.y - b.pos.y;
+  const uu = ux * ux + uy * uy, vv = vx * vx + vy * vy, uv = ux * vx + uy * vy;
+  const ur = ux * rx + uy * ry, vr = vx * rx + vy * ry;
+  const den = uu * vv - uv * uv;
+  let sa = den > 1e-12 ? clamp((uv * vr - ur * vv) / den, -1, 1) : 0;
+  let tb = clamp((uv * sa + vr) / vv, -1, 1);
+  sa = clamp((uv * tb - ur) / uu, -1, 1);
+  tb = clamp((uv * sa + vr) / vv, -1, 1);
+  return { x: b.pos.x + tb * vx - (a.pos.x + sa * ux), y: b.pos.y + tb * vy - (a.pos.y + sa * uy) };
+}
+
 export function allocateGroundForce(out: Float64Array, lx: number, ly: number,
   leanX: number, leanY: number, cap: number): Float64Array {
   let px = leanX, py = leanY, r = 1;
@@ -2198,11 +2244,31 @@ export class World {
             supportI: a.support!.state, supportJ: b.support!.state,
             height: clamp(Math.min(this.padHeight[i], this.padHeight[j]), 0,
               Math.min(a.profile.heightYd, b.profile.heightYd)) } };
+        if (CONTACT_LAYER && !guard) this.layerContact(row, s, h);
         if (this.handContact === 'patch') this.contactPatch(row);
         out.push(row);
       }
     }
     return out;
+  }
+
+  /** CONTACT_LAYER: the row's spring and damping from its compression p = -s.
+   * Inside the pair's soft layers (series stiffness, summed depth) the force is
+   * k_layer p plus Hunt-Crossley damping 1.5 HC k p v, zero at first touch; past
+   * them the 9 Hz core adds on, continuous in force at the boundary. Expressed as
+   * a soft constraint: frequency from k over the pair's reduced mass, damping
+   * ratio from the HC coefficient, capped at critical. */
+  private layerContact(c: Contact, s: number, h: number): void {
+    const p = Math.max(0, -s), depth = 2 * LAYER_DEPTH, kLayer = LAYER_K / 2;
+    const omegaCore = 2 * Math.PI * CONTACT_HZ, kCore = c.mn * omegaCore * omegaCore;
+    const core = p > depth && kCore > kLayer;
+    const k = core ? kCore : kLayer, omega = Math.sqrt(k / c.mn);
+    const zeta = Math.min(CONTACT_ZETA, 0.75 * LAYER_HC * omega * p);
+    const soft = softness(omega / (2 * Math.PI), zeta, h);
+    // Core rows act on a shifted gap so the force at the layer boundary matches.
+    const gap = core ? s + depth * (1 - kLayer / kCore) : s;
+    c.soft = soft;
+    c.bias = Math.max(soft.biasRate * gap, -MAX_PUSHOUT);
   }
 
   /** One point between the bodies, weighted by their torso radii. Nominal
@@ -2228,7 +2294,11 @@ export class World {
     const av = a.vel, bv = b.vel;
     let vn = (bv.x - av.x) * c.nx + (bv.y - av.y) * c.ny;
     if (this.handContact === 'patch') vn += (a.spin ?? 0) * c.ni + (b.spin ?? 0) * c.nj;
-    const imp = relax || c.guard ? -c.mn * (vn + c.bias) : -c.mn * soft.massScale * (vn + c.bias) - soft.impulseScale * c.ln;
+    const sf = c.soft && !relax ? c.soft : soft;
+    let imp = relax || c.guard ? -c.mn * (vn + c.bias) : -c.mn * sf.massScale * (vn + c.bias) - sf.impulseScale * c.ln;
+    // CONTACT_LAYER: the relax takes back the separating velocity the soft solve
+    // left behind and never arrests closing; the layer law alone does that.
+    if (relax && c.soft && imp > 0) imp = 0;
     const ln = Math.max(0, c.ln + imp);
     const dn = ln - c.ln;
     c.ln = ln;
@@ -2265,6 +2335,9 @@ export class World {
       // All rows read the pre-solve velocities; solver corrections cannot
       // manufacture another patch or rotate the frame during this interval.
       let dx = point.x - a.pos.x, dy = point.y - a.pos.y;
+      if (HANDS_CHEST && jt.kind === 'hands' && this.handContact === 'center' && !jt.contact) {
+        const c = chestPoints(a, b); dx = c.x; dy = c.y;
+      }
       let px = 0, py = 0; // Material offset from the body's force-midpoint center.
       const upperPatch = jt.kind === 'grasp' && jt.legs <= 0 && this.handContact === 'patch';
       const lowerPatch = jt.kind === 'grasp' && !!this.attachments.get(jt)?.material && this.handContact === 'patch';

@@ -505,7 +505,31 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
     } else read = holder ? { possession: holder } : null;
   }
   const cmd = executeRunFit(a, sim, gap, gapSign, read);
-  return BACKER_TAKEON && /^LB/.test(a.slot) ? takeOn(a, sim, cmd) : cmd;
+  const fit = BACKER_TAKEON && /^LB/.test(a.slot) ? takeOn(a, sim, cmd) : cmd;
+  return READ_LEAN && /^LB/.test(a.slot) ? passPull(a, sim, fit) : fit;
+}
+
+/** READ_LEAN (experimental, off): the unsure box backer's downhill pace at a
+ * full run picture (yd/s; NFL box backers 0.45-1.0 yd/s downhill at 0.4-0.5 s
+ * on runs). A pass lean only takes his feet off the line (his creep, scaled by
+ * the lean); he has no drop of his own until he reads pass, when his zone
+ * landmark and the receivers decide it (NFL about 0 to -0.25 yd/s on dropbacks
+ * through 1.0 s). */
+const READ_LEAN = process.env.READ_LEAN === '1', LEAN_RUN = 1.5;
+/** READ_LEAN: after a run read, a pass picture (the QB deep after the fake, the
+ * line setting) pulls his attack back before a full change of mind: his
+ * downhill speed is scaled by how far his picture now leans pass. Not once he
+ * has seen the ball given: then the run is real. NFL box backers on zone play
+ * action come downhill at about 0.85 of their run pace at 1.0 s; ours came
+ * harder than on runs and read pass at p50 1.10 s. */
+function passPull(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  const r = a.recog;
+  if (!r || r.read !== 'run' || r.sawBall()) return cmd;
+  const lean = r.lean(); if (lean >= 0) return cmd;
+  const dir = sim.attackDir(sim.offense[0].team), down = -cmd.vel.x * dir;
+  if (down <= 0) return cmd;
+  a.tags.add('lb-pass-pull');
+  return { ...cmd, vel: { x: cmd.vel.x * (1 + lean), y: cmd.vel.y } };
 }
 
 /** BACKER_TAKEON (experimental, off): an unblocked backer who sees a blocker
@@ -919,6 +943,21 @@ export class ZoneCoverage implements Behavior {
         // +0.54 yd/s toward the play by 0.2 s; ours stood until the run read
         // committed (median 0.60 s).
         const g = LB_GUARD_STEP ? guardStep(sim, a) : { side: 0, pace: 0 }, side = g.side;
+        // READ_LEAN (experimental, off): still unsure, he acts on the picture
+        // he has, not only once it commits him. His downhill step follows his
+        // own filtered evidence (the same evidence his commit uses, no prior):
+        // pressing as the line fires out, settling as it sets to pass.
+        // NFL box backers' run and dropback motion separate from 0.1-0.3 s,
+        // even those standing at the snap; ours were identical until 0.4 s
+        // (the guard step held depth, the read step was the same either way).
+        if (READ_LEAN && read === 'unsure' && a.recog) {
+          const lean = a.recog.lean(), cdir = sim.attackDir(sim.offense[0].team), h = a.mind.decisionInterval;
+          const cp = creepPace.get(a) ?? 0, down = lean > 0 ? cp + lean * LEAN_RUN : cp * (1 + lean);
+          const pace = side ? Math.min(a.profile.vmax * a.profile.shuffle, g.pace + KEY_STEP_LEAD) : 0;
+          a.tags.add('lb-read-lean');
+          return withFacingTechnique(track(a, { x: a.pos.x - cdir * down * h, y: a.pos.y + side * pace * h }, { x: -cdir * down, y: side * pace },
+            { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 1 }), { label: 'read-step' });
+        }
         if (side) {
           const pace = Math.min(a.profile.vmax * a.profile.shuffle, g.pace + KEY_STEP_LEAD), h = a.mind.decisionInterval;
           a.tags.add('lb-guard-step');

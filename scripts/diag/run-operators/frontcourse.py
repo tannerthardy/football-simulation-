@@ -123,10 +123,24 @@ def course(path):
                 return None
             return (wrap(FD[f][j] - math.degrees(path + math.pi)), wrap(FC[f] - math.degrees(path)))
         ang = {'prox': angles(hit), 'torso': angles(tc), 'torso+0.3': angles(min(e, tc + 3))}
+        # Slip (step 2's question): the runner's velocity relative to the hitter, split along the line of centres
+        # (closing, + = approaching) and across it (tangential, |.|), from frame differences; and how far the line of
+        # centres itself has turned by +0.3 s (deg). A pair that slides past each other has tangential speed and a
+        # turning bearing; a locked pair has neither.
+        def slip(f):
+            if f < 1 or f > e:
+                return None
+            nx, ny = H[f][0] - C[f][0], H[f][1] - C[f][1]; d = math.hypot(nx, ny) or 1e-9; nx, ny = nx / d, ny / d
+            rx = ((C[f][0] - C[f-1][0]) - (H[f][0] - H[f-1][0])) * 10; ry = ((C[f][1] - C[f-1][1]) - (H[f][1] - H[f-1][1])) * 10
+            return (rx * nx + ry * ny, abs(-rx * ny + ry * nx))
+        slipA = {o: slip(tc + o) for o in (0, 1, 2, 3, 5)}
+        def bearing(f):
+            return math.degrees(math.atan2(H[f][1] - C[f][1], H[f][0] - C[f][0]))
+        bturn = wrap(bearing(min(e, tc + 3)) - bearing(tc))
         rows.append(dict(cls=cls, bin=speed_bin(sp * 10), torso=torso, vr=vr, vh=vh, sep=sep, gain=g, hdisp=hd,
                          rel=g - hd, off0=off0, offc=offc, blocker_on=blocker_on, second=second, t_end=(e - hit) / 10, mom=mom,
                          vrA=vrA, vhA=vhA, sepA=sepA, closing=closing, cbin=speed_bin(closing) if closing is not None else None,
-                         lag=(tc - hit) / 10, ang=ang))
+                         lag=(tc - hit) / 10, ang=ang, slipA=slipA, bturn=bturn))
     return rows
 
 
@@ -161,6 +175,12 @@ def show_aligned(name, aligned):
         print(f"   {g:22} n {c['n']:4} closing {c['closing']:4.2f} yd/s, torso at +{c['lag']:.1f} s after proximity | runner "
               + ' '.join(fmt(c['vr'][o]) for o in OFFS) + " | hitter " + ' '.join(fmt(c['vh'][o]) for o in OFFS)
               + " | sep " + ' '.join(fmt(c['sep'][o], 4) for o in OFFS))
+        if c.get('slip'):
+            sl = c['slip']
+            print(f"   {'':22} slip, runner relative to hitter (yd/s, median) at +0.0/+0.1/+0.2/+0.3/+0.5 s: closing "
+                  + ' '.join(fmt(sl[o]['closing'] if o in sl else sl[str(o)]['closing'], 5) for o in (0, 1, 2, 3, 5)) + " | tangential "
+                  + ' '.join(fmt(sl[o]['tangential'] if o in sl else sl[str(o)]['tangential'], 5) for o in (0, 1, 2, 3, 5))
+                  + f" | line of centres turned by +0.3 s {c['bearing_turn']:3.0f} deg")
         if c.get('facing'):
             print(f"   {'':22} torso angle, median (hitter vs square to the runner / runner vs his path; hitter side-on >= 45 deg): "
                   + '  '.join(f"{k} {v['hitter']:3.0f}/{v['runner']:3.0f} deg, side-on {100*v['hitter_side_on']:3.0f}%" for k, v in c['facing'].items()))
@@ -221,7 +241,10 @@ for path in ARGS:
                                  hitter_side_on=sum(x[0] >= 45 for x in a) / len(a), n=len(a))
         aligned[g] = dict(n=len(rr), facing=facing, closing=med([r['closing'] for r in rr]), lag=med([r['lag'] for r in rr]),
                           vr={o: med([r['vrA'][o] for r in rr]) for o in OFFS}, vh={o: med([r['vhA'][o] for r in rr]) for o in OFFS},
-                          sep={o: med([r['sepA'][o] for r in rr]) for o in OFFS})
+                          sep={o: med([r['sepA'][o] for r in rr]) for o in OFFS},
+                          slip={o: dict(closing=med([r['slipA'][o][0] for r in rr if r['slipA'][o] is not None]),
+                                        tangential=med([r['slipA'][o][1] for r in rr if r['slipA'][o] is not None])) for o in (0, 1, 2, 3, 5)},
+                          bearing_turn=med([r['bturn'] for r in rr]))
     if aligned:
         show_aligned(name, aligned)
     store[name + ' | aligned on torso distance'] = aligned

@@ -173,3 +173,238 @@ carries facings). Sim, pinned set, run-ref-4, at torso distance:
 | Free, closing 3–5 | 29° | 17% | |
 
 The NFL side needs the export rebuilt with 'o' (Run Game).
+
+### Ground force is the missing term; the contact law sets the force, not the yards
+
+**Leg drive** (`shape.py`, second table). Each body pushes at a share of its ground-force limit (1.25 × weight, the
+engine's in-game limit): the runner forward while under his 4 yd/s request, the hitter toward the runner. Today's
+contact law, offset 0.31 yd, hitter drive 28%. Speed kept at +0.1 / +0.2 / +0.3 s from first touch:
+
+| Runner drive | Disc | Capsule square, yaw free | Capsule side-on, yaw free |
+|---|---|---|---|
+| none | 46 / 46 / 46% | 62 / 62 / 62% | 68 / 68 / 68% |
+| in-game shares (runner 14%, hitter 28%) | 42 / 46 / 51% | 62 / 66 / 71% | 68 / 73 / 78% |
+| runner at full limit | 63 / 93 / 100% | 88 / 100 / 100% | 95 / 100 / 100% |
+| NFL from torso distance | ~92 / ~85 / ~78% | | |
+
+- At the drive the game's runners actually deliver, every variant stays where the game is.
+- With the runner's feet near their limit during contact, even today's disc recovers, and the yawing shapes reach the
+  NFL course (they overshoot it, so the NFL runner is driving at less than his full limit).
+- **So the first question for attempt two is why the sim runner's feet deliver only about 14% of their limit during
+  contact.**
+- The leading suspect is the tackle bond's stride hold. A hold on the legs removes "the share his held legs would
+  deliver" from his drive along his travel (`world.ts`, bound stride), and a hold forms at contact on 67% of front-on
+  hits.
+- Next suspects: support availability once the tip term puts his capture point behind his base, and the lean law's
+  cap at the felt load.
+- This is measurable without code: decompose his ground force per tick into these causes.
+
+**Contact law options against the measured 1.7–3.4 kN** (offset 0.31 yd, all drive levels):
+
+| Law | Peak force | Speed kept, no drive | Blocks (same torso row) |
+|---|---|---|---|
+| today: 9 Hz, critically damped | 18–25 kN | 46–68% | — |
+| ramped damper (Hunt–Crossley, damping ∝ compression, α 0.3 s/m) | 7.6–12.5 kN | 31–62% | no change at steady state; damping acts only while compressing |
+| compliant layer: 0.12 m (pads, tissue, arms) before the stiff core, ramped damping | 3.8–6.9 kN (side-on 3.8–4.6) | 35–67% | a steady 1,500 N push compresses the layer about 3 cm more than today |
+
+- **A lower frequency alone is ruled out for blocks.** A 3.4 kN peak at 4 yd/s needs about 1.4 Hz, and a steady
+  1,500 N push would then sink the bodies about 0.3 yd into each other.
+- **The compliant layer is the only law near the measured range.** Its stiffness (about 48 kN/m for the pair) is
+  calibrated to the collision energy over the layer depth. That is a sourced force target, not yards; it must be
+  checked at other closing speeds.
+- **Softer contact slightly lowers speed kept**, because the momentum is the same and coupling lasts longer. Step 1
+  is therefore justified by the force, not by yards, and is expected to need step 2 (yaw) and the leg-drive repair to
+  move the course.
+
+### Why the runner's feet do so little in contact (decomposition)
+
+`scripts/diag/effective-mass/drive-decomp.mts` covers every tick of the 0.3 s after a front-on first proximity (966
+ticks on the pinned set, run-ref-4). It reports the runner's downfield ground impulse as a share of its limit (the
+limit is 1.25 × weight of traction):
+
+| Runner's state | Share of ticks | Ground share (median) |
+|---|---|---|
+| Off his feet | 14% | −0.18 |
+| Up, availability ≥ 0.5 | 68% | 0.25 |
+| Up, availability < 0.5 | 18% | 0.22 |
+| Up, a holder hanging on his legs (stride hold) | 4% | 0.32 |
+| Up, available, not held, request ≥ 1 yd/s above his speed | 7% | 0.32 |
+
+- **The stride hold is rare and support is usually fine.** The cap is the leg-strength budget: `pushForce` ×
+  force-velocity × facing × availability. That is about 1.0 body weight × 0.82 at 1.6 yd/s, roughly 0.55 of the
+  traction limit, and an offset contact points part of the push sideways.
+- **His lean sits at about half the felt load** (382 against 740 kg·yd/s²). In game he delivers 0.25–0.32 of the
+  limit, about half his cap.
+- **So "full limit" in the table above asked for more force than his legs have.** At the strength cap (0.55), offset
+  0.31 yd:
+
+| Body, law | Kept at +0.1 / +0.2 / +0.3 s | Peak force |
+|---|---|---|
+| Disc, today | 50–53 / 66–70 / 84–89% | 22.3 kN |
+| Capsule square, yaw free, today | 73–74 / 92–93 / 100% | 24.6 kN |
+| Capsule side-on, yaw free, today | 81 / 99–100 / 100% | 20.5 kN |
+| Capsule side-on, yaw free, compliant layer | 83 / 100 / 100% | 4.4–4.5 kN |
+| NFL | ~92 / 85 / 78% | 1.7–3.4 kN measured |
+
+**Reading:**
+- The strength the runner already has is enough if he uses it during contact.
+- The compliant layer and yaw then give the right force and close to the right course.
+- The course shape still differs: the sim dips deeper first and recovers fully, because the runner re-accelerates to
+  his request, while the NFL decays steadily. That needs looking at once the pieces are in.
+- **The open question is why the in-game drive is half the cap.** The next look is inside World's ground-force
+  allocation: lean target against capacity per tick, the bond's `push` value, and the angle of the felt load.
+
+### Inside the allocation: the push into the load is starved (step 3's cause)
+
+`scripts/diag/effective-mass/drive-alloc.mts` covers the same 0.3 s window, every tick, for runner and hitter. Values
+are shares of each player's own traction limit; directions are relative to the runner's path. The strength cap is
+`pushForce` × force-velocity × facing × availability.
+
+| On his feet | Cap | Delivered | Along path | Lean into the load | Felt load | Request / velocity change / ground-force direction |
+|---|---|---|---|---|---|---|
+| Runner, free running before contact (control) | 0.51 | 0.48 | 0.02 | 0.00 | 0.00 | 0° / 40° / 80° (speed 5.0 of a 5.1 request) |
+| Runner, no grasp on him | 0.49 | 0.48 | 0.03 | 0.00 | 0.03 | 9° / 40° / 76° |
+| Runner, two-arm grasp | 0.52 | 0.49 | 0.22 | 0.05 | 0.97 | 10° / 25° / 47° |
+| Runner, one-arm grasp | 0.51 | 0.49 | 0.16 | 0.10 | 0.48 | 9° / 28° / 61° |
+| Hitter, all | 0.67 | 0.60 | −0.43 | 0.24 | 0.64 | (pushes back along the axis) |
+
+- **The runner already delivers his whole strength cap, but most of it is sideways.**
+  - The gait spends its envelope on steering: the share left over after forward drive goes to the cut, free running
+    included.
+  - Forward drive in contact is capped by the tempo law. At 2.6 of a wanted 4.9 yd/s that is (4.9 − 2.6)/1.3 × 9/4.9
+    ≈ 3.2 yd/s², about 0.27 of his limit, matching the 0.16–0.22 delivered.
+  - The lean is the law for pushing into a felt load. It gets only what the locomotion leaves inside the strength
+    budget: 0.02–0.10.
+- **The hitter's force is mostly along the axis.** He pushes back on the runner at 0.43 of his limit with a lean of
+  0.24, so he out-pushes the runner.
+- **Integration's two questions:**
+  1. A hand at reach does not cost him his legs: the stride hold is 0 in every group, because it needs a holder
+     hanging off his feet.
+  2. The target for the repair is a direction, not more force. He has the force and spends it steering; the NFL
+     course needs about 0.4–0.5 of his limit along the path during the first tenth (bench, strength cap).
+- **Step 3's mechanism.** When a felt load opposes his request, the push into it should take priority within the
+  strength budget over steering. Equivalently, forward drive against a load should come from the force-velocity
+  envelope, not from the tempo law, which is built to level off a free runner at his wanted speed.
+  - Today the allocation gives locomotion priority and the lean the remainder.
+  - It is a World allocation rule, judged on the first tenth and peak force on the bench, and in the game on the
+    aligned course where the hold exists.
+
+### Correction: there is no allocation-priority defect; the line rows and a tick-level split
+
+The section above inferred "his strength goes to steering, the lean is starved by priority" from medians of separate,
+unsigned angles. Signed, per-tick measures do not support it. Integration's three checks, all no-code:
+
+**1. The line (`scripts/diag/effective-mass/drive-alloc-line.mts`, 4 live games, seeds 7–13, engaged OL-DL 0.1–0.6 s
+after engagement).** "Into him" is the axis to his opponent. "Force off the asked change" is the per-tick angle between
+his ground force and the velocity change his request asks for.
+
+| On his feet | Ticks | Cap | Delivered | Into him | Lean | Felt | Request to "into him" | Force off the asked change |
+|---|---|---|---|---|---|---|---|---|
+| Run block, OL | 8,110 | 0.77 | 0.65 | 0.56 | 0.35 | 0.61 | 39° | 17° |
+| Run block, DL | 8,091 | 0.70 | 0.64 | 0.44 | 0.28 | 0.61 | 77° | 16° |
+| Pass block, OL | 16,727 | 0.98 | 0.65 | 0.56 | 0.32 | 0.59 | 92° (sliding) | 9° |
+| Pass rush, DL | 16,817 | 0.59 | 0.52 | 0.38 | 0.19 | 0.60 | 37° | 18° |
+| Runner, 0.3 s after front-on contact | 834 | 0.51 | 0.49 | — | 0.02 | 0.66 | 9° to his path | 14° |
+
+- On the line the lean is not starved: 0.19–0.41 of each man's limit.
+- **Everyone's force lands near the change he asks for, the runner included** (9–18°).
+- The rule I proposed (lean takes priority over steering) is **withdrawn**:
+  - It would turn a pass rusher's force onto the blocker's axis (load 16° off, his request 37–39° off) and away from
+    his rush angle. That is a change of technique, not a repair.
+  - It would also do little for run blockers, whose request already points within 25° of their man when the load
+    opposes it.
+
+**2. Allocation or request.** Neither turns him.
+- His request is 9–10° off his path; his travel is 11–15° off.
+- Split by whether he is at his strength cap (`drive-alloc.mts`, AT OR BELOW block):
+
+| On his feet | At cap (≥ 0.95) | At cap: force across / felt load across / along | Below cap: delivered of cap; push 0 |
+|---|---|---|---|
+| Runner, free running (control) | 37% | 0.51 / 0.00 / −0.15 (cornering) | 0.19 of 0.48; push 0 on 97% (no load) |
+| Runner, 0.3 s after contact | 63% | **0.31 / 0.29** / 0.17 | 0.36 of 0.56; push 0 on 35% |
+| Hitter, 0.3 s after contact | 56% | 0.30 / 0.25 / −0.43 | 0.55 of 0.79; push 0 on 0% |
+
+  - **At his cap, his sideways force equals the sideways part of the load on him.** He spends about 60% of his capped
+    force holding his line against the off-centre push of the hit; 0.17 is left for forward drive.
+  - The hitter resists the same lateral load (0.30 against 0.25) but has the larger budget. He is being driven
+    backward, so force-velocity gives him eccentric credit, up to 1.2× isometric. The runner pushes concentrically at
+    2.6 yd/s.
+  - Both are the laws working as written:
+    - the lateral force is the reaction to a real lateral load;
+    - the force-velocity asymmetry is physiology.
+  - The ground force is persistent, not chatter: 0.82 window persistence in contact, 12% of ticks reverse.
+- **One controller item (Run Game's):** on 35% of the runner's below-cap contact ticks the intent's push is 0. That is
+  about 13% of his contact ticks; on 25% of below-cap ticks a felt load gets no lean, 65% of those with push 0.
+
+**3. The choice to cut stays his.** No allocation rule is proposed, so nothing constrains it. Any later change keeps the
+request deciding the direction.
+
+**What step 3 becomes.** The in-contact drive is about half his strength cap because the off-centre hit loads him
+sideways and he holds his line. That points back to steps 1 and 2:
+- **The contact law:** a 9 Hz stiff row delivers the lateral load as an 18–25 kN spike, against measured 1.7–3.4 kN
+  tackle peaks.
+- **Yaw.** Run Game's re-export (below) has NFL hitters at 43° from square at torso distance, against the sim's 37°.
+  That is close. By +0.3 s the NFL hitters have turned to 64–80°, so the contact turns tangential. Whether the sim's
+  hitters turn after contact is the next check (the sim's +0.3 s facing). A tangential contact carries less of the
+  lateral load the runner has to fight.
+
+### NFL torso angles (Run Game's re-export with orientation, weeks 1–9)
+
+`frontcourse-nfl.json` is replaced by the re-export: speed and offset blocks identical, aligned groups now carry torso
+angles. The pretty file's sha256 starts f0ac9a3f with the writer's trailing newline. The `=== frontcourse` block in
+`nfl-2022.txt` is regenerated from it.
+
+Blocked hitters are more side-on than free ones (47°, 52% side-on at closing 3–5, against 28°, 27%), as an engaged DL
+should be: the hitter angle is not mirrored.
+
+Sim side: the reference engine (run-ref-7 @ 3145cb06), zone runs from the fixed run set. The dump was regenerated
+because it carries facing, then run through the same `frontcourse.py`. Median hitter vs square / runner vs his path,
+hitter side-on share:
+
+| Group (aligned on torso distance) | NFL at torso | NFL at +0.3 s | Sim at torso | Sim at +0.3 s |
+|---|---|---|---|---|
+| All (NFL n 556, sim 159) | 43° / 23°, 49% | **64° / 35°, 62%** | 37° / 5°, 42% | **41° / 16°, 45%** |
+| Closing 3–5 (260, 79) | 42° / 23°, 48% | 69° / 33°, 63% | 43° / 4°, 49% | 41° / 16°, 46% |
+| Blocked, closing 3–5 (179, 54) | 47° / 21°, 52% | 75° / 31°, 67% | 53° / 7°, 63% | 57° / 17°, 57% |
+| Free, closing 3–5 (37, 18) | 28° / 31°, 27% | 36° / 66°, 43% | 29° / 2°, 17% | 30° / 11°, 22% |
+| Closing 5+ (103, 54) | 46° / 18°, 51% | 74° / 26°, 67% | 30° / 8°, 28% | 44° / 16°, 46% |
+
+- **The hitters' facing at contact matches. What doesn't match is what happens after:**
+  - NFL hitters turn 20–30° in the first 0.3 s;
+  - sim hitters turn about 0–5° (closing 3–5: 43° → 41°; blocked: 53° → 57°).
+- **The runner differs from the start.**
+  - NFL runners meet the hit 18–31° turned off their path (a shoulder presented) and are 26–66° off by +0.3 s.
+  - Sim runners are square to their path (2–8°) at contact and 11–17° by +0.3 s.
+  - That is partly a controller question (the facing he asks for into contact) and partly physics (whether an
+    off-centre load turns a body at all).
+- **Separation in the sim stays at the touching distance** (0.50–0.57 yd at +1.0 s). In the NFL it reopens to
+  0.6–1.15 yd.
+- These support step 2. A contact that turns the bodies goes tangential: the lateral load the runner fights is shed
+  as rotation and slide, not held by his legs. This is the yaw-free capsule result on the shape bench:
+  - 62–68% kept at no drive;
+  - 73–83% at his strength cap.
+
+**Contact yaw in the code today.** Production World runs `handContact: 'center'` (`src/sim/playsim.ts:107`, the
+setup's default), so torso contacts apply no moment at all.
+
+The experimental `'patch'` mode does apply one (`contactPatch` and `solveContact`, `src/physics/world.ts` around
+2210–2245): normal and friction impulses act at a radius-weighted contact point and update `spin`. On discs the
+normal passes nearly through both centres, so in that mode the turn comes mostly from contact friction.
+
+Step 2's first trial should be that existing law with the capsule shape, before anything new.
+
+**Run Game's test of the push-0 item.** The carrier never asked for push outside a bond: `tackle.ts` sets push 1
+there; elsewhere push was undefined, which World reads as 0.
+
+Run Game's trial, CARRIER_DRIVE (not committed), sends push 1 on every carrier command. On run-ref-8 @ 8e1ad2c5 over
+570 matched zone runs it did not help:
+
+| Measure | Result |
+|---|---|
+| Outside zone, paired | −0.25 yd (SE 0.17); runs gaining ≤ 0 yd 18 → 20% |
+| Inside zone, paired | +0.10 yd (SE 0.17) |
+| Front-on first-contact gain, closing 3–5 yd/s | +0.80 → +0.66 |
+| Front-on first-contact gain, closing 5+ yd/s | +0.94 → +1.42 (n 28) |
+
+It was reverted. The missing push is a real gap, but not what costs him the exchange. To re-test it on top of a
+compliant contact law (step 1): `push: 1` on both returns of `BallCarrier.command`.
