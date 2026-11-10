@@ -15,10 +15,13 @@ const rng = new Rng(61);
 const R = derivePhysical(generatePlayer(rng, 'WR')), H = derivePhysical(generatePlayer(rng, 'CB'));
 const G = 9.81 * 1.0936, v0 = 6.5;
 console.log(`runner ${R.massKg.toFixed(0)} kg, holder ${H.massKg.toFixed(0)} kg`);
-for (const holder of ['down', 'up']) for (const legs of [0.6, 0.8]) {
+const PAIRS: Array<[string, number, number]> = [['as generated', 1, 1], ['strong runner, weak tackler', 1.3, 0.75], ['weak runner, strong tackler', 0.75, 1.3]];
+const VERBOSE = process.env.VERBOSE === '1';
+for (const [pname, rk, hk] of PAIRS) for (const holder of ['down', 'up']) for (const legs of [0.6, 0.8]) {
+  const Rp = { ...R, power: (R as any).power * rk, strength: ((R as any).strength ?? 1) * rk }, Hp = { ...H, power: (H as any).power * hk };
   const gap = R.radius + H.radius + 0.1;
-  const r: any = { pos: { x: 0, y: 0 }, vel: { x: v0, y: 0 }, facing: 0, energy: 1, profile: R, support: S.newSupport(0.3) };
-  const h: any = { pos: { x: -gap, y: 0 }, vel: { x: holder === 'down' ? 3 : 5.5, y: 0 }, facing: 0, energy: 1, profile: H, support: S.newSupport(0.5) };
+  const r: any = { pos: { x: 0, y: 0 }, vel: { x: v0, y: 0 }, facing: 0, energy: 1, profile: Rp, support: S.newSupport(0.3) };
+  const h: any = { pos: { x: -gap, y: 0 }, vel: { x: holder === 'down' ? 3 : 5.5, y: 0 }, facing: 0, energy: 1, profile: Hp, support: S.newSupport(0.5) };
   if (holder === 'down') { h.support.state = 'down'; h.support.since = 0; }
   const w = new World([r, h]); const lock = 0.56, cap = S.supportParams(H).armForce * (0.3 + 2.5 * lock * lock) * 0.96;
   const jt: any = { kind: 'grasp', a: h, b: r, reach: gap + H.reach * 0.9 + (holder === 'down' ? 0.9 : 0), capacity: cap, lock, legs, pull: 2, hold: gap, origin: 'bench', ground: holder === 'down' ? gap + H.reach * 0.9 + 0.9 : undefined };
@@ -31,6 +34,8 @@ for (const holder of ['down', 'up']) for (const legs of [0.6, 0.8]) {
     if (fell < 0 && r.support.state !== 'up') fell = k * 0.05;
     if (fell > 0 && k * 0.05 > fell + 0.2) break;
   }
-  console.log(`== holder ${holder}, legs ${legs}: ${fell > 0 ? `runner falls at ${fell.toFixed(2)} s (${r.support.cause})` : 'runner still up at 1.5 s'}, travel ${r.pos.x.toFixed(2)} yd`);
-  console.log(lines.join('\n'));
+  const released = jt.broken || !w.joints.includes(jt);
+  const outcome = fell > 0 ? `TRIP at ${fell.toFixed(2)} s (${r.support.cause})` : released ? `RELEASED (legs ${jt.legs.toFixed(2)})` : 'still dragging at 1.5 s';
+  console.log(`== ${pname.padEnd(27)} holder ${holder.padEnd(4)} legs ${legs}: ${outcome}, runner travel ${r.pos.x.toFixed(2)} yd, hold legs share at end ${jt.legs.toFixed(2)}`);
+  if (VERBOSE) console.log(lines.join('\n'));
 }

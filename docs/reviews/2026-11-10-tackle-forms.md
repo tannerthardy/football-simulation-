@@ -335,3 +335,31 @@ Help class at the grab = other defenders downfield of the carrier within 10 yd, 
   - games: Defense's class-0 behind cell (catches 41 / 0 / 53 → NFL 58 / 5 / 35; yards after 4.8 → 3.5);
   - the head-on case must not get surer: this only acts on a dragged holder.
 - **Then part 2,** the full-stretch connect probability as the whiff source.
+
+## Drag-down: two attempts, both missed; stopped to re-diagnose (2026-11-10)
+
+`drag-bench.mts` now reports trip / release / still dragging for three pairings: as generated, strong runner (power × 1.3) against weak tackler (× 0.75), and the reverse.
+
+**Attempt 1, `LEG_HOLD_SLIDE` (reverted).**
+
+- The idea: a downed holder's slipping grip slides down the legs instead of his arms stretching out of reach.
+- **No effect,** because the engine already does it: the hold reaches the ankles (legs share 1.00) before it releases, with the flag off too.
+- Off, holder down: released in every pairing except weak runner against strong tackler (trip at 0.40–0.45 s).
+
+**Re-diagnosis** (tick trace, holder down, ankle hold):
+
+- The runner's capture-point deviation grows steadily, about 2 yd/s: 0.18 → 1.07 yd in 0.4 s. His foot is held (`feetLock` 0.4–0.5), and the held-stride share is 0.69.
+- **He never falls.** The World's fall threshold uses a free, full-speed recovery step: `recoverySpeed(sp, 0, fat)` in `updateSupport`, about 1.3 yd.
+- Measured against the step he can actually make, he crosses at about 0.30 s. Instead, the hold slides past reach at 0.45 s.
+
+**Attempt 2, `HELD_FALL` (reverted).**
+
+- The idea: the threshold uses the held foot's step (`criticalDeviation` with `feetLock`).
+- **Far too absolute:** every case trips at 0.05–0.20 s, including head-on (0.05 s, 0.15 yd). Strong-runner and weak-runner pairings give the same answer.
+- `feetLock` is the instantaneous ratio of achieved to desired step. At the onset of a hold the foot has achieved nothing yet, so it reads near 1. That is a transient, not a sustained restriction.
+
+**What a coherent version needs** (design question, not built):
+
+- The point of no return for a held runner depends on the step he *can* make against the hold. That is his leg's stepping force against the grip's capacity at that height, a sustained capacity ratio from strength and grip, not the measured transient.
+- A strong runner breaks a weak ankle hold and steps; a weak runner held by a strong grip cannot.
+- It must not touch the head-on case, which is already too sure on the bench (0.2–0.3 s).
