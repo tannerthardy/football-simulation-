@@ -122,7 +122,15 @@ def course(path):
             if FC is None or FD is None or f > e or FC[f] is None or FD[f][j] is None:
                 return None
             return (wrap(FD[f][j] - math.degrees(path + math.pi)), wrap(FC[f] - math.degrees(path)))
-        ang = {'prox': angles(hit), 'torso': angles(tc), 'torso+0.3': angles(min(e, tc + 3))}
+        ang = {'prox': angles(hit), 'torso': angles(tc), 'torso+0.3': angles(min(e, tc + 3)),
+               'torso+0.5': angles(tc + 5), 'torso+1.0': angles(tc + 10)}   # later frames: None past the end, not clamped
+        # The hitter's own rotation (|change of facing|, deg) from torso distance to +0.5 and +1.0 s, and between them:
+        # a held pair that keeps wheeling shows a large late term (Integration's one-point-grasp check, 2026-11-10).
+        def hturn(a, b):
+            if FD is None or b > e or FD[a][j] is None or FD[b][j] is None:
+                return None
+            return wrap(FD[b][j] - FD[a][j])
+        hrot = {'0.5': hturn(tc, tc + 5), '1.0': hturn(tc, tc + 10), '0.5-1.0': hturn(tc + 5, tc + 10)}
         # Slip (step 2's question): the runner's velocity relative to the hitter, split along the line of centres
         # (closing, + = approaching) and across it (tangential, |.|), from frame differences; and how far the line of
         # centres itself has turned by +0.3 s (deg). A pair that slides past each other has tangential speed and a
@@ -140,7 +148,7 @@ def course(path):
         rows.append(dict(cls=cls, bin=speed_bin(sp * 10), torso=torso, vr=vr, vh=vh, sep=sep, gain=g, hdisp=hd,
                          rel=g - hd, off0=off0, offc=offc, blocker_on=blocker_on, second=second, t_end=(e - hit) / 10, mom=mom,
                          vrA=vrA, vhA=vhA, sepA=sepA, closing=closing, cbin=speed_bin(closing) if closing is not None else None,
-                         lag=(tc - hit) / 10, ang=ang, slipA=slipA, bturn=bturn))
+                         lag=(tc - hit) / 10, ang=ang, hrot=hrot, slipA=slipA, bturn=bturn))
     return rows
 
 
@@ -184,6 +192,10 @@ def show_aligned(name, aligned):
         if c.get('facing'):
             print(f"   {'':22} torso angle, median (hitter vs square to the runner / runner vs his path; hitter side-on >= 45 deg): "
                   + '  '.join(f"{k} {v['hitter']:3.0f}/{v['runner']:3.0f} deg, side-on {100*v['hitter_side_on']:3.0f}%" for k, v in c['facing'].items()))
+        hr = c.get('hitter_rotation') or {}
+        if any(v is not None for v in hr.values()):
+            print(f"   {'':22} hitter's own rotation from torso distance, median |change of facing| (deg): "
+                  + '  '.join(f"{k} s {v:3.0f}" if v is not None else f"{k} s   -" for k, v in hr.items()))
 
 
 if '--from-json' in sys.argv:
@@ -234,7 +246,7 @@ for path in ARGS:
         if len(rr) < 5:
             continue
         facing = {}
-        for k in ('prox', 'torso', 'torso+0.3'):
+        for k in ('prox', 'torso', 'torso+0.3', 'torso+0.5', 'torso+1.0'):
             a = [r['ang'][k] for r in rr if r['ang'][k] is not None]
             if a:
                 facing[k] = dict(hitter=med([x[0] for x in a]), runner=med([x[1] for x in a]),
@@ -244,7 +256,8 @@ for path in ARGS:
                           sep={o: med([r['sepA'][o] for r in rr]) for o in OFFS},
                           slip={o: dict(closing=med([r['slipA'][o][0] for r in rr if r['slipA'][o] is not None]),
                                         tangential=med([r['slipA'][o][1] for r in rr if r['slipA'][o] is not None])) for o in (0, 1, 2, 3, 5)},
-                          bearing_turn=med([r['bturn'] for r in rr]))
+                          bearing_turn=med([r['bturn'] for r in rr]),
+                          hitter_rotation={k: med([r['hrot'][k] for r in rr if r.get('hrot') and r['hrot'][k] is not None]) for k in ('0.5', '1.0', '0.5-1.0')})
     if aligned:
         show_aligned(name, aligned)
     store[name + ' | aligned on torso distance'] = aligned
