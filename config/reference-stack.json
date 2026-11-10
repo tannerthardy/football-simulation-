@@ -69,6 +69,7 @@
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "GRASP_ARMS": "off",
+    "GRASP_ARM_MOMENT": "off",
     "GRASP_CLOSURE": "off",
     "GRASP_PATCH": "on",
     "GRASP_SLIDE": "off",
