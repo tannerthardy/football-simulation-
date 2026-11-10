@@ -904,3 +904,45 @@ side, or win ≥ 0.6, and in range.
 - the plastic torso stop, which `CONTACT_LAYER` softens (49% → 53% kept);
 - the grasp weld, which `GRASP_SLIDE` showed is small;
 - our faster closing (4.46 against 3.38 yd/s at proximity).
+
+**The first 0.2 s of a front-on hit, by source (`first-hit-split.mts`; run-ref-11, 240 hits; 2026-11-10).**
+
+The runner's velocity change along his approach axis over 0.2 s (yd/s):
+
+| Offset | Runner Δv | Ground | Torso normal | Grasp | Rest (friction, others) | Hitter Δv |
+|---|---|---|---|---|---|---|
+| All | −2.06 | +0.13 | −2.11 | +0.08 | −0.16 | +1.27 |
+| < 0.15 yd | −2.60 | +0.05 | −2.79 | +0.25 | −0.11 | +1.37 |
+| 0.15–0.3 yd | −2.30 | +0.14 | −2.52 | +0.23 | −0.15 | +1.32 |
+| ≥ 0.3 yd | −1.72 | +0.15 | −1.62 | −0.07 | −0.18 | +1.20 |
+
+With `CONTACT_LAYER` the torso-normal term overall is −1.75 instead of −2.11, and runner Δv is −1.81.
+
+**The torso normal impulse is the whole loss.** Most of it falls in the second tick (−1.16 of −2.11). Grasp, hands and
+friction are small; mechanism 1's articulation would not change it (Gate 1: the pads still reach a common velocity).
+
+**The runner's legs do not drive through the hit.**
+- His ground force runs at 0.40 of its traction limit, but nets only +0.13 yd/s along his axis over the 0.2 s.
+- The lean law requests 4.0–5.8 yd/s² into the load, capped by leg strength (a temporary, uncommitted probe).
+- What survives the allocation is 0.5–0.9 yd/s². `allocateGroundForce` gives the gait the budget first and the lean what
+  is left.
+- At impact the load on him is 34.5 yd/s² (felt 11–22).
+
+**At the NFL's closing speeds the law still loses.**
+
+| Closing speed (yd/s) | NFL speed kept | Ours speed kept |
+|---|---|---|
+| under 3 | 78% | 70% |
+| 3–4 | 83% | 57% |
+| 4–5 | 87% | 44% |
+| 5+ | 86% | 41% |
+
+- The NFL's speed kept does not depend on closing speed. Ours falls with it.
+- Reweighted to the NFL's closing mix, ours is about 56%: the approach explains about a fifth of the 82% − 49% gap.
+
+**Geometry at torso contact, NFL against ours.**
+- Closing is 50–78% of the relative velocity in the NFL, by offset, against 82–89% in ours.
+- After the pads meet, the NFL's tangential slip grows (0.15–0.3 yd offset: 2.73 → 3.15) and ours shrinks
+  (1.46 → 1.10).
+- Even central hits keep 78% in the NFL against our 42%. The NFL's collision turns closing into sliding past; ours stops
+  it with the normal impulse.
