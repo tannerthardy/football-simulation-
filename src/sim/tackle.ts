@@ -643,10 +643,10 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
         && t - bond.start >= 0.4 && dragged;
       // HOLD_FACING (experimental, off): holding a runner going past him, he
       // does not re-aim his chest at the runner every tick (a pirouette the
-      // grasp's own moment never asks for). His body faces the way he is
-      // being carried (attempt 1); barely moving, he keeps his facing.
-      const ds = Math.hypot(d.vel.x, d.vel.y);
-      const facing = HOLD_FACING ? (ds > 1 ? Math.atan2(d.vel.y, d.vel.x) : d.body.facing) : Math.atan2(ty, tx);
+      // grasp's own moment never asks for). He asks to keep the facing he
+      // has; the runner turns him through the hold and the contacts, as far
+      // as the World's yaw response gives.
+      const facing = HOLD_FACING ? d.body.facing : Math.atan2(ty, tx);
       intents[d.idx] = { vel, facing, push: 1, posture: 0.6,
         dive: drop ? { x: tx * 0.2, y: ty * 0.2 } : own?.dive, lunge: own?.lunge };
     }
