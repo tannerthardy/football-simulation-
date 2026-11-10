@@ -70,6 +70,7 @@
     "GAZE": "off",
     "GRASP_ARMS": "off",
     "GRASP_CLOSURE": "off",
+    "GRASP_JEOPARDY": "off",
     "GRASP_PATCH": "on",
     "GRASP_SLIDE": "off",
     "GRIP_REACH": "on",
