@@ -288,3 +288,78 @@ are shares of each player's own traction limit; directions are relative to the r
   - Today the allocation gives locomotion priority and the lean the remainder.
   - It is a World allocation rule, judged on the first tenth and peak force on the bench, and in the game on the
     aligned course where the hold exists.
+
+### Correction: there is no allocation-priority defect; the line rows and a tick-level split
+
+The section above inferred "his strength goes to steering, the lean is starved by priority" from medians of separate,
+unsigned angles. Signed, per-tick measures do not support it. Integration's three checks, all no-code:
+
+**1. The line (`scripts/diag/effective-mass/drive-alloc-line.mts`, 4 live games, seeds 7–13, engaged OL-DL 0.1–0.6 s
+after engagement).** "Into him" is the axis to his opponent. "Force off the asked change" is the per-tick angle between
+his ground force and the velocity change his request asks for.
+
+| On his feet | Ticks | Cap | Delivered | Into him | Lean | Felt | Request to "into him" | Force off the asked change |
+|---|---|---|---|---|---|---|---|---|
+| Run block, OL | 8,110 | 0.77 | 0.65 | 0.56 | 0.35 | 0.61 | 39° | 17° |
+| Run block, DL | 8,091 | 0.70 | 0.64 | 0.44 | 0.28 | 0.61 | 77° | 16° |
+| Pass block, OL | 16,727 | 0.98 | 0.65 | 0.56 | 0.32 | 0.59 | 92° (sliding) | 9° |
+| Pass rush, DL | 16,817 | 0.59 | 0.52 | 0.38 | 0.19 | 0.60 | 37° | 18° |
+| Runner, 0.3 s after front-on contact | 834 | 0.51 | 0.49 | — | 0.02 | 0.66 | 9° to his path | 14° |
+
+- On the line the lean is not starved: 0.19–0.41 of each man's limit.
+- **Everyone's force lands near the change he asks for, the runner included** (9–18°).
+- The rule I proposed (lean takes priority over steering) is **withdrawn**:
+  - It would turn a pass rusher's force onto the blocker's axis (load 16° off, his request 37–39° off) and away from
+    his rush angle. That is a change of technique, not a repair.
+  - It would also do little for run blockers, whose request already points within 25° of their man when the load
+    opposes it.
+
+**2. Allocation or request.** Neither turns him.
+- His request is 9–10° off his path; his travel is 11–15° off.
+- Split by whether he is at his strength cap (`drive-alloc.mts`, AT OR BELOW block):
+
+| On his feet | At cap (≥ 0.95) | At cap: force across / felt load across / along | Below cap: delivered of cap; push 0 |
+|---|---|---|---|
+| Runner, free running (control) | 37% | 0.51 / 0.00 / −0.15 (cornering) | 0.19 of 0.48; push 0 on 97% (no load) |
+| Runner, 0.3 s after contact | 63% | **0.31 / 0.29** / 0.17 | 0.36 of 0.56; push 0 on 35% |
+| Hitter, 0.3 s after contact | 56% | 0.30 / 0.25 / −0.43 | 0.55 of 0.79; push 0 on 0% |
+
+  - **At his cap, his sideways force equals the sideways part of the load on him.** He spends about 60% of his capped
+    force holding his line against the off-centre push of the hit; 0.17 is left for forward drive.
+  - The hitter resists the same lateral load (0.30 against 0.25) but has the larger budget. He is being driven
+    backward, so force-velocity gives him eccentric credit, up to 1.2× isometric. The runner pushes concentrically at
+    2.6 yd/s.
+  - Both are the laws working as written:
+    - the lateral force is the reaction to a real lateral load;
+    - the force-velocity asymmetry is physiology.
+  - The ground force is persistent, not chatter: 0.82 window persistence in contact, 12% of ticks reverse.
+- **One controller item (Run Game's):** on 35% of the runner's below-cap contact ticks the intent's push is 0. That is
+  about 13% of his contact ticks; on 25% of below-cap ticks a felt load gets no lean, 65% of those with push 0.
+
+**3. The choice to cut stays his.** No allocation rule is proposed, so nothing constrains it. Any later change keeps the
+request deciding the direction.
+
+**What step 3 becomes.** The in-contact drive is about half his strength cap because the off-centre hit loads him
+sideways and he holds his line. That points back to steps 1 and 2:
+- **The contact law:** a 9 Hz stiff row delivers the lateral load as an 18–25 kN spike, against measured 1.7–3.4 kN
+  tackle peaks.
+- **Yaw.** Run Game's re-export (below) has NFL hitters at 43° from square at torso distance, against the sim's 37°.
+  That is close. By +0.3 s the NFL hitters have turned to 64–80°, so the contact turns tangential. Whether the sim's
+  hitters turn after contact is the next check (the sim's +0.3 s facing). A tangential contact carries less of the
+  lateral load the runner has to fight.
+
+### NFL torso angles (Run Game's re-export with orientation, weeks 1–9)
+
+`frontcourse-nfl.json` is replaced by the re-export: speed and offset blocks identical, aligned groups now carry torso
+angles. The pretty file's sha256 starts f0ac9a3f with the writer's trailing newline. The `=== frontcourse` block in
+`nfl-2022.txt` is regenerated from it.
+
+Blocked hitters are more side-on than free ones (47°, 52% side-on at closing 3–5, against 28°, 27%), as an engaged DL
+should be: the hitter angle is not mirrored.
+
+| Torso distance, median | NFL hitter vs square / runner vs path, side-on share | Sim |
+|---|---|---|
+| All | 43° / 23°, 49% | 37°, 42% |
+| Blocked, closing 3–5 | 47° / 21°, 52% | 53°, 63% |
+| Free, closing 3–5 | 28° / 31°, 27% | 29°, 17% |
+| NFL at +0.3 s | 64–80° hitter, 62–70% side-on | not yet measured |
