@@ -1603,3 +1603,44 @@ Both sides are aligned to his own start (the first 0.1 s frame displaced 0.25 yd
 - **Physics, mine, only if the rule stays:** grip reaching 0.6 within 0.05–0.25 s of the first hold on a QB.
 - **QB, Coverage:** he barely moves while held (0.23 yd), against the NFL QB's 2.5 yd of fighting and escaping.
 - **The rule comes first.** With a takedown required, the grasp, fall and escape physics would decide sacks, and the bench (a grasp on a QB stepping away at 2 yd/s, time to a physical fall) becomes the measure.
+
+## Where a holder's turn comes from (`yaw-ledger.mts` with a temporary per-source spin ledger, reverted; fixed run set, run-ref-12; 2026-11-10)
+
+**Method.** Every write to a body's spin in `world.ts` was logged by source and partner. Sources:
+
+- the gait's turn (`feet`);
+- grasp rows through the support-impulse path (`support`);
+- hands and strikes;
+- torso-contact normal and friction lever arms (`contactN`, `contactT`);
+- passive off-feet friction;
+- the two-point wrap.
+
+Each tackler's first 0.5 s in the tackle bond is attributed by integrating each source's spin change over the rest of the window. The spin brought in plus the sources closes on the measured turn.
+
+| Holder (all are leg holds, leg share > 0) | Turn (median) | Grasp rows, `support:runner` | Gait (feet) | Runner contact friction | Third bodies | Off-feet friction | Spin brought in |
+|---|---|---|---|---|---|---|---|
+| Side (968) | 89° | **+164°** | −106° | +8° | 0° | −2° | +28° |
+| Behind (313) | 51° | **+71°** | −52° | +7° | 0° | −3° | +35° |
+| Front (1,323) | 66° | **+125°** | −73° | +24° | −4° | −1° | +11° |
+
+(Signed means along each holder's own net turn.)
+
+**Reading.**
+
+- **The turn is the grasp rows' moment on the holder**, applied through `supportImpulse` with the patch lever arms (`world.ts` ~2764 normal, ~2779 tangential).
+- **Not the others:** third-body contacts in piles are about 0. Off-feet friction is about 0 (a small brake). The torso contact with the runner adds a little.
+- **The gait fights it.** Its yaw spends −52 to −106° resisting, and a held facing request cannot stop it.
+- **The lever.** For a held man's legs (the lower patch, which is every hold here) the holder's arm is the full vector from his centre to the grip point on the runner (`rax = dx`, about 0.6–0.8 yd).
+  - A tangential grip load as the runner moves across him acts on a rigid arm of that length, and turns his torso.
+  - An upper wrap uses the chest radius instead (about 0.27 yd).
+- **Why the frontal bench gave 0–3°:** it was a square hold, with little tangential load.
+
+**Proposal** (not built; for Integration):
+
+- **The candidate incoherence.** The holder's arms are treated as rigid in yaw. A real holder's hands are on the runner's legs at the end of his arms. The shoulders and trunk can pass only a bounded moment to the torso; beyond it the arms swing.
+- **A flag, `GRASP_ARM_MOMENT` (off):** the yaw moment a grasp row passes into the holder's torso is bounded by his shoulder torque, as `HIP_BRACE` bounds a thigh hold's moment. The excess is the arm swinging, not the torso turning. The linear transfer is unchanged.
+- **Bench first:**
+  - a side and a behind leg hold on a runner crossing at 4 yd/s, with the holder's facing request held;
+  - identity, linear momentum exact, a no-grasp world bit-identical;
+  - the angular ledger stated (the swung arm's angular momentum is not represented in the reduced model).
+- **Gates to pre-register:** side and behind rotation at +0.5 / +1.0 s toward the NFL's 34/76 and 27/64. Defense re-reads `HOLD_FACING` on it.
