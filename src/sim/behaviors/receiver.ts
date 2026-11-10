@@ -77,13 +77,13 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
 
 /** PRESS_MIRROR (off; see behaviors/defense.ts): a receiver with a pressing
  * corner square in front of him releases around him, not up through him. */
-const PRESS_MIRROR = process.env.PRESS_MIRROR === '1';
+const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
 /** PRESS_RELEASE (off; with PRESS_MIRROR): a pressed receiver works around
  * the corner from the snap, clear of his body and reach, on his route's side
  * (outside on a vertical) and away from the corner's shade. Tracked pressed
  * gos release outside 84% of the time, 3.5 yd wide by 5 yd; posts, slants and
  * ins release inside (BDB 2025). */
-const PRESS_RELEASE = process.env.PRESS_RELEASE === '1';
+const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
 
 export class RouteRunner implements Behavior {
   readonly kind = 'route';

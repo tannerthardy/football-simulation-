@@ -631,7 +631,17 @@ export interface ManOptions {
  * his leverage spot at the snap and opened the lane: tracked pressed outside
  * receivers are 0.62 yd lateral by their first yard and reach 5 yd at 1.90 s;
  * ours went straight (0.00 yd) and reached 5 yd at 1.65 s (BDB 2025). */
-const PRESS_MIRROR = process.env.PRESS_MIRROR === '1';
+const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
+/** MAN_PHASE (off; MAN_PHASE=1 turns it on): once his hips are open and the
+ * receiver is past the release (2+ yd deep), a man defender runs in phase an
+ * arm's length off the receiver's hip on his leverage side (their two body
+ * radii plus his reach) while the receiver runs his stem (over 3 yd/s, mostly
+ * upfield), not at a point 0.7 yd off the receiver's body. On a plant or break
+ * he closes on the body as before (holding the offset through a hitch left him
+ * a yard off the catch). NFL
+ * pressed pairs at 2.0 s: 1.20 yd apart, about 1 yd to the side; ours 0.82,
+ * within 1.2 yd 88% against 51% (BDB 2025 weeks 1-3, same operator). */
+const MAN_PHASE = process.env.MAN_PHASE === '1';
 
 /** Man coverage with press/off technique, leverage and hip turn. */
 export class ManCoverage implements Behavior {
@@ -804,9 +814,16 @@ export class ManCoverage implements Behavior {
     // line (not yet level with him), the corner mirrors him head-up and
     // stays in his path; his leverage is where he ends up, not his first step.
     const releasing = PRESS_MIRROR && this.press && seen.pos.x - sim.los < 3 && seen.pos.x < a.pos.x - 0.3;
-    const lev = releasing ? 0 : (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
     const vx = seen.vel.x;
     const deep = seen.pos.x - sim.los;
+    // MAN_PHASE: in phase on the stem, his hand reaches the receiver's near
+    // hip. A plant or break ends the race; he closes on the body as before.
+    const vSeen = Math.hypot(seen.vel.x, seen.vel.y);
+    const onStem = vSeen > 3 && vx > 0.8 * vSeen;
+    const levMag = MAN_PHASE && this.hipsOpen && deep > 2 && onStem
+      ? a.profile.radius + R.profile.radius + a.player.measurables.armIn / 36 * 0.7
+      : o.trail ? 0.9 : 0.7;
+    const lev = releasing ? 0 : levMag * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
 
     // Cushion shrinks as the route develops; press plays in phase.
     const developing = clamp(Math.max(0, deep) / 8, 0, 1);
