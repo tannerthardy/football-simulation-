@@ -96,6 +96,7 @@ export type PlayEventType =
   | 'snap'
   | 'handoff'
   | 'handoff_fake'
+  | 'pump'
   | 'momentum'
   | 'pitch'
   | 'pitch_catch'

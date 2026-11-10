@@ -1416,6 +1416,17 @@ export const IZ_FLAT = process.env.IZ_FLAT === '1';
  * 0.17-0.26 yd/s upfield damped to 0.0; tracked OZ linemen +0.9 to +1.1 yd
  * upfield by 2.0 s). */
 export const REACH_CLOSE = process.env.REACH_CLOSE === '1';
+/** GAP_CLIMB (off): a free zone lineman (drive, reach, cutoff; not in a live
+ * double) whose man is beaten to his backside - more than 1 yd backside of
+ * his body across the field and not gaining on him - has nobody in his
+ * play-side gap, and climbs to the nearest second-level defender (1.5-8 yd
+ * past the line, from 1 yd backside to 4 yd play side of him) whom no
+ * lineman is nearer, from his own acquired pictures, from 0.6 s after his
+ * snap. Before, only a combination release made a first-level lineman climb:
+ * a cutoff already 1.1-1.4 yd play side of a flowing man ran beside him for
+ * 2 s (run-ref-3 OZ, 1.5 yd past the line by 2.0 s: centre 6-10%, backside
+ * guard 3-18%, backside tackle 2%; NFL 26-36 / 36-37 / 16-26%). */
+export const GAP_CLIMB = process.env.GAP_CLIMB === '1';
 
 /** CLIMB_PATH (default off): a free climber steers one continuous path to
  * his backer's play-side shoulder by holding the bearing to it constant, the
@@ -1475,6 +1486,7 @@ export class RunBlocker implements Behavior {
   private firstStep: Vec2 | null = null;
   private nextRuleRead = 0;
   private nextThreatRead = 0;
+  private nextGapRead = 0;
   private soloKind: RunBlockKind | null = null;
   private soloDrive: Vec2 | null = null;
   /** The puller's last ordinary read, not the defender's current position. */
@@ -1631,6 +1643,10 @@ export class RunBlocker implements Behavior {
     // coordination (checks, help, climb), as do all doubles once joined.
     const stretch = sim.offCall.run?.scheme === 'outsideZone' || sim.offCall.run?.scheme === 'wideZone';
     const coordinated = !!plan.combination && !plan.combination.released && !stretch;
+    if (GAP_CLIMB && t >= this.nextGapRead) {
+      this.nextGapRead = t + a.mind.decisionInterval;
+      this.gapClimb(a, sim);
+    }
     if (ZONE_FLOW && isOL(a) && ['drive', 'reach', 'cutoff', 'combo'].includes(plan.kind) && !coordinated) {
       const flow = this.zoneFlow(a, sim);
       if (flow) return this.withBase(a, sim, flow);
@@ -2823,6 +2839,46 @@ export class RunBlocker implements Behavior {
    * bodies. He switches only to a man clearly nearer the runner than his own,
    * one he is nearer than the runner is, and one no teammate is nearer.
    * Stalks keep their perimeter ledger. */
+  /** GAP_CLIMB: a free zone lineman whose man is beaten to his backside
+   * (a yard behind his body across, not gaining on him) has nobody in his
+   * play-side gap: he climbs to the nearest second-level man in front of that
+   * gap whom no teammate is nearer. All from his own acquired pictures. */
+  private gapClimb(a: Agent, sim: PlaySim): void {
+    const p = this.plan, run = sim.offCall.run, target = p.target;
+    if (!run || !isOL(a) || a.engagement || !target || !['reach', 'cutoff', 'drive'].includes(p.kind)
+      || !['insideZone', 'outsideZone', 'wideZone', 'splitZone'].includes(run.scheme)
+      || (p.combination && !p.combination.released) || p.departure || sim.t < a.mind.snapDelay + .6) return;
+    const ps = playSideSign(sim, run), dir = sim.attackDir(a.team), seen = sim.see(a, target);
+    if ((seen.pos.x - sim.los) * dir > 1.5) return; // already a second-level job
+    const beaten = (a.pos.y - seen.pos.y) * ps > 1 && (seen.vel.y - a.vel.y) * ps <= 0;
+    if (!beaten) return;
+    const mates = sim.offense.filter(o => o !== a && o !== sim.qb && isOL(o)).map(o => sim.see(a, o).pos);
+    let best: Agent | null = null, bd = Infinity;
+    for (const d of sim.defense) {
+      if (d === target) continue;
+      const s = sim.see(a, d);
+      if (s.pose === 'down' || s.pose === 'rising') continue;
+      const depth = (s.pos.x - sim.los) * dir, across = (s.pos.y - a.pos.y) * ps;
+      if (depth < 1.5 || depth > 8 || across < -1 || across > 4) continue;
+      const reach = Math.hypot(s.pos.x - a.pos.x, s.pos.y - a.pos.y);
+      if (mates.some(m => Math.hypot(m.x - s.pos.x, m.y - s.pos.y) < reach - .5)) continue;
+      if (reach < bd) { bd = reach; best = d; }
+    }
+    if (!best) return;
+    const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
+    p.target = best;
+    this.acquiredWork = { target: best };
+    delete p.contactFit;
+    this.climbRead = null;
+    this.climbAccess = null;
+    this.departureAccess = null;
+    this.rememberSoloWork();
+    p.kind = 'climb';
+    p.drive = { x: 1, y: 0 };
+    trace?.blockingChange(a, previousWork, 'gap-climb: man beaten to his backside, play-side gap empty', sim);
+    sim.event('block_threat', a, best, 'play-side gap empty: climb');
+  }
+
   private rereadThreat(a: Agent, sim: PlaySim): void {
     const p = this.plan, target = p.target;
     if (!target || (p.kind !== 'climb' && p.kind !== 'lead')

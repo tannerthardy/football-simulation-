@@ -147,7 +147,6 @@ const SINK_LEAD = process.env.SINK_LEAD === '1', SINK_RUN = 0.85, SINK_PASS = 0.
 /** SINK_LEAD: a blocker within this gap (yd, about an arm and a step) is on him
  * whatever the closing speed, so a lineman in his stance stays low. */
 const SINK_NEAR = 1.0;
-const EDGE_WIDTH = process.env.EDGE_WIDTH === '1';
 const TELL_WINDOW = 0.3;
 /** How far outside the down blocker's body an edge keeps his own body as he closes (yd). */
 const HIP_GAP = 0.35;
@@ -359,16 +358,6 @@ export class PassRusher implements Behavior {
       a.tags.add('tell-step');
       return track(a, { x: man.home.x + man.vel.x * a.mind.decisionInterval, y: a.pos.y + side * step * a.mind.decisionInterval },
         { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
-    }
-    // EDGE_WIDTH (experimental, off): the man he keys reaching out toward him
-    // (a stretch or reach step, away from the ball) is trying to get to his
-    // outside shoulder. He widens with him and keeps it, upfield, the mirror of
-    // the squeeze above; the reach decides how far he has to go.
-    if (EDGE_WIDTH && onEdge && runStep && Math.sign(man!.vel.y) === -Math.sign(sim.ballY - man!.pos.y)) {
-      const side = Math.sign(man!.vel.y), h = a.mind.decisionInterval;
-      const keep = man!.pos.y + man!.vel.y * h + side * (a.profile.radius + 0.6);
-      a.tags.add('key-widen');
-      return track(a, { x: sim.los - 0.3 * sim.attackDir(sim.offense[0].team), y: keep }, { x: 0, y: man!.vel.y }, { speed: 1, gain: 3, facing: Math.PI });
     }
     // BACKSIDE_SHOOT (experimental, off): the man in front stepping away from
     // him (a zone step to the other side) vacates the spot he stood in. The

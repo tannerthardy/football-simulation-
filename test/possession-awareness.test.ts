@@ -314,18 +314,15 @@ describe('an acquired trajectory supports anticipation, not certified possession
     // flipped no longer completes. Roster 5 seed 10 (not flipped) has the sequence: catch at 3.4 s, flight
     // continuation 3.45-3.6 s, rally at 3.65 s, possession pursuit from 3.7 s. Its catch (y 10.7) lies to
     // -y of the SS (y 14.3), so the rally is -y.
-    const rallyInput = { ...input, seed: 10, roster: 5, flip: false };
-    // This exact catch/rally clock was recorded with the old flat install.
-    // The constructor names that route but does not freeze its points.
-    // Preserve the recorded installation, not a new expected catch time or
-    // weaker rally assertion. REC-1/COV-10's new flat is tested separately.
-    const flat = ROUTES.flat;
-    let sim: PlaySim;
-    try {
-      ROUTES.flat = { ...flat, points: [{ d: 1.5, l: 2, s: .9 }, { d: 3.5, l: 12 }] };
-      sim = new PlaySim({ ...nativeTraceSetup(rallyInput), record: true, recordLevel: 'full' });
-    } finally { ROUTES.flat = flat; }
-    const toBall = -1;
+    // The QB's throwing motion (load and delivery, ~0.4 s) moves roster 5 seed 10's release, and it falls
+    // incomplete; roster 10 seed 18 flipped carried the sequence on that branch. The receiver route reads and
+    // flat release (#420) re-pinned roster 5 seed 10 under the old flat install on develop. With both, neither
+    // completes. Roster 7 seed 26 flipped has the sequence on current routes: catch at 3.4 s, flight
+    // continuation 3.45 s, rally 3.6-3.65 s, possession pursuit from 3.7 s. Its catch (y 39.3) lies to +y of
+    // the SS (y 33.7), so the rally is +y.
+    const rallyInput = { ...input, seed: 26, roster: 7, flip: true };
+    const sim = new PlaySim({ ...nativeTraceSetup(rallyInput), record: true, recordLevel: 'full' });
+    const toBall = 1;
     const trace = sim.recordCommands({ actor: { team: 'D', slot: 'SS' }, from: 3.45, to: 3.75 });
     const result = sim.run();
     // Exact native input from the opposing control. The correction owns the

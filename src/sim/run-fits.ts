@@ -210,9 +210,6 @@ const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ
 
 /** Free fits plan lateral work with their own body (LB_PLAN=0 off). */
 const LB_PLAN = process.env.LB_PLAN !== '0';
-const EDGE_WIDTH = process.env.EDGE_WIDTH === '1';
-const LB_RUN_THROUGH = process.env.LB_RUN_THROUGH === '1', RUN_THROUGH_REACH = 7, RUN_THROUGH_MARGIN = 0.15;
-const d_runRead = (a: Agent): boolean => a.recog ? a.recog.read === 'run' : true;
 const LB_LINE_FLOW = process.env.LB_LINE_FLOW === '1', LINE_FLOW_LEAD = 1.5, GUARD_KEY_DELAY = 0.5, GUARD_STEP = 0.5;
 /** Experimental activation of the same planner for an observed pull-adjusted
  * insertion. Default off while matched containment/misdirection controls run. */
@@ -222,6 +219,29 @@ const PULL_PLAN = process.env.PULL_PLAN === '1';
 const FLOW_READ = process.env.FLOW_READ !== '0', FLOW_INSIDE = 1;
 /** ATTACK_LANDMARK (experimental, off): an attacking interior lineman's fit landmark is the offensive line's stance line, not the .25 hold. */
 const ATTACK_LANDMARK = process.env.ATTACK_LANDMARK === '1';
+/** FLOW_INTERCEPT (experimental, off): a backer leads the back by how soon
+ * he could reach the backer's depth, not a fixed two reads. */
+const FLOW_INTERCEPT = process.env.FLOW_INTERCEPT === '1';
+
+/** Does a puller arriving at `target` (moving `dir`) read as a pull for a
+ * backer whose landmark is `gy`? Within reach toward the pull. With
+ * FLOW_INTERCEPT the landmark before the runner projection (`gapY`) also
+ * counts, so a projection that already carried `gy` past the puller's
+ * arrival does not hide the pull. */
+export function pullCueReads(target: number, dir: number, gy: number, gapY: number): boolean {
+  const reads = (from: number) => (target - from) * dir > 0 && (target - from) * dir < PULL_REACH;
+  return reads(gy) || (FLOW_INTERCEPT && reads(gapY));
+}
+
+/** How far ahead (s) a flowing backer projects the back he keeps leverage on.
+ * A back still crossing behind the line can turn up at any moment, so the
+ * lead is the soonest he could reach the backer's depth at his current speed,
+ * never less than the backer's two reads. `toDepth` is the backer's depth
+ * past the back along the offense's direction. */
+export function flowLead(toDepth: number, vel: { x: number; y: number }, reads: number): number {
+  if (!FLOW_INTERCEPT || toDepth <= 0) return reads;
+  return Math.max(reads, toDepth / Math.max(1, Math.hypot(vel.x, vel.y)));
+}
 
 /** Pull reads (PULL_READ=0 restores the single nearest-shift read, for A/B). */
 const PULL_READ = process.env.PULL_READ !== '0';
@@ -477,21 +497,6 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       gy = kick.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65);
       a.tags.add(job.edge === 'spill' ? 'fit-spill' : 'fit-box');
     } else gy = job.kind === 'force' ? job.side > 0 ? Math.max(surface+.5,seen.pos.y+.7) : Math.min(surface-.5,seen.pos.y-.7) : gy;
-    // EDGE_WIDTH (experimental, off): a box edge keeps his outside leverage
-    // on the man in front of him. The landmark never falls inside that man's
-    // outside shoulder nor inside the edge's own alignment, so a reach
-    // stretching outward carries the edge out with it rather than leaving a
-    // gap-centre landmark pulling him in. NFL play-side edges on outside zone
-    // widen +0.05 / +0.53 / +1.51 yd at 0.5 / 1.0 / 1.5 s; ours went inside.
-    if (EDGE_WIDTH && job.kind === 'edge' && job.edge !== 'spill' && !kick && lineRead(sim, a) === job.side) {
-      const out = job.side;
-      const front = sim.offense.filter((o) => o !== sim.qb && o !== back && o !== c).map((o) => ({ s: sim.see(a, o), r: o.profile.radius }))
-        .filter(({ s }) => Math.abs(s.pos.x - a.pos.x) < 2 && Math.abs(s.pos.y - a.pos.y) < 2.5)
-        .sort((p, q) => Math.hypot(p.s.pos.x - a.pos.x, p.s.pos.y - a.pos.y) - Math.hypot(q.s.pos.x - a.pos.x, q.s.pos.y - a.pos.y))[0];
-      const shoulder = front ? front.s.pos.y + out * (front.r + a.profile.radius * .5) : -Infinity * out;
-      const floor = out > 0 ? Math.max(shoulder, sim.defAlign.spots[a.slot as DefSlot]!.pos.y) : Math.min(shoulder, sim.defAlign.spots[a.slot as DefSlot]!.pos.y);
-      if ((floor - gy) * out > 0) { gy = floor; a.tags.add('edge-width'); }
-    }
     // Squeeze, don't chase: the man on the inside of his gap blocking down
     // takes the gap inside with him, but the edge owns the spot he left. He
     // closes to it, his body just outside it, and no further, where a
@@ -604,6 +609,9 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     && seen.pos.x > sim.los - 1.6 && (seen.pos.y - sim.ballY) * job.side > 0;
   const flowSide = Math.abs(seen.vel.y) > 1.5 ? Math.sign(seen.vel.y)
     : shallowRunner ? Math.sign(seen.pos.y - gy) : 0;
+  // The landmark before the runner projection: a pull cue is judged against
+  // it, so the back's projected track never hides the puller from the read.
+  const gapY = gy;
   // LB_LINE_FLOW (experimental, off): the line tells him first. A backer who
   // has read run and sees the line step one way together (the zone step; the
   // same read lineRead gives the DL) flows over the top that way before the
@@ -621,7 +629,8 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
   }
   if (FLOW_READ && job.kind !== 'cutback' && job.technique !== 'lag' && flowSide) {
     const f = flowSide;
-    const onBall = seen.pos.y + seen.vel.y * 2 * a.mind.decisionInterval - f * FLOW_INSIDE;
+    const lead = flowLead((a.pos.x - seen.pos.x) * sim.attackDir(c.team), seen.vel, 2 * a.mind.decisionInterval);
+    const onBall = seen.pos.y + seen.vel.y * lead - f * FLOW_INSIDE;
     if ((onBall - gy) * f > 0) { gy = onBall; flowing = true; a.tags.add('fit-flow-read'); }
   }
   // Scrape with the gap: carry the landmark forward at the speed of the
@@ -645,8 +654,13 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       const dir = Math.sign(p.vel.y), arrive = p.pos.y + p.vel.y * PULL_LOOK;
       if (dir !== Math.sign(lead!.vel.y)) continue;
       const target = arrive + dir * (job.edge === 'spill' ? -PULL_SHOULDER : PULL_SHOULDER);
-      if ((target - gy) * dir > 0 && (target - gy) * dir < PULL_REACH) {
-        gy = target; pullSide = dir; a.tags.add('fit-pull-read');
+      // FLOW_INTERCEPT: a runner projection that has already carried the
+      // landmark past the puller's arrival does not hide the pull. Within
+      // reach of the landmark before that projection the cue still reads
+      // (and the backer fills); he never moves back against his own flow.
+      if (pullCueReads(target, dir, gy, gapY)) {
+        if ((target - gy) * dir > 0) gy = target;
+        pullSide = dir; a.tags.add('fit-pull-read');
       }
     }
   } else if (indicator?.kind === 'pull' && job.kind !== 'interior') {
@@ -669,28 +683,6 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
     declared = threat && seen.pos.x > sim.los - 1.6;
     if (threat && !declared) { a.tags.add('fit-threat-read'); threatened = true; }
   } else declared = !premesh && seen.pos.x > sim.los-1.6 && Math.abs(seen.pos.y-gy) < 2.5;
-  // LB_RUN_THROUGH (experimental, off): a crease open all the way to the back
-  // is a lane to shoot, not a landmark to hold. While the back he sees is
-  // still behind the line and close enough to reach, a backer who has read
-  // run and sees no offensive body in the lane between them attacks him
-  // there. A blocker stepping into that lane closes it on the next read.
-  // NFL box backers are at or behind the line on 14% / 7% (play / back side)
-  // of outside-zone snaps by 2.0 s, and make 7.2% / 3.1% of the backfield
-  // hits inside the tackles; ours were at 1% and 0%.
-  if (LB_RUN_THROUGH && job.kind === 'insert' && d_runRead(a) && !declared) {
-    const dir = sim.attackDir(c.team), behind = (sim.los - seen.pos.x) * dir;
-    const dx = seen.pos.x - a.pos.x, dy = seen.pos.y - a.pos.y, L = Math.hypot(dx, dy);
-    if (behind > 0 && L < RUN_THROUGH_REACH) {
-      const lane = a.profile.radius + RUN_THROUGH_MARGIN;
-      const blocked = sim.offense.some((o) => {
-        if (o === c || o === sim.qb) return false;
-        const s0 = sim.see(a, o), px = s0.pos.x - a.pos.x, py = s0.pos.y - a.pos.y;
-        const u = clamp((px * dx + py * dy) / (L * L), 0, 1);
-        return Math.hypot(px - u * dx, py - u * dy) < lane + o.profile.radius;
-      });
-      if (!blocked) { a.tags.add('run-through'); return chase(sim,a,c,2); }
-    }
-  }
   if (declared && job.kind !== 'cutback') return chase(sim,a,c,2);
   // A stack backer whose gap the runner's path threatens fills downhill to meet
   // him at the line, instead of waiting at his landmark until he declares. A
