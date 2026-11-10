@@ -4,7 +4,7 @@
 // field (no offensive non-carrier within 2 yd of the holder), origin, legs share, lock, capacity, the runner's speed and
 // the speed difference along the runner's travel at the grab. Per tick until the hold ends: centre distance against reach,
 // the grip's load (|normal| + |tangent| force) against its current capacity, the holder's support state and speed. At the
-// end: how it ended -- 'reach' (slid past reach), 'capacity' (capacity gone), 'lower' (a lower hold released), or 'down'
+// end (help = other defenders downfield of the carrier within 10 yd at the grab): how it ended -- 'reach' (slid past reach), 'capacity' (capacity gone), 'lower' (a lower hold released), or 'down'
 // (the play ended with it on) -- and how long it lasted; and the largest load/capacity reached.
 // usage: [flags] node --import tsx scripts/diag/effective-mass/catch-break.mts [first seed] [games] > out.jsonl
 const W = process.cwd();
@@ -25,7 +25,11 @@ for (let s = first; s < first + games; s++) {
         const rx = j.a.pos.x - c.pos.x, ry = j.a.pos.y - c.pos.y, rd = Math.hypot(rx, ry) || 1, cos = sp > 0.5 ? (rx * c.vel.x + ry * c.vel.y) / (rd * sp) : 1;
         const ux = sp > 0.5 ? c.vel.x / sp : 1, uy = sp > 0.5 ? c.vel.y / sp : 0;
         const open = !sim.offense.some((o: any) => o !== c && Math.hypot(o.pos.x - j.a.pos.x, o.pos.y - j.a.pos.y) <= 2);
-        seen.set(j, { slot: d?.slot, db: DB.test(d?.slot ?? ''), from: cos > Math.SQRT1_2 ? 'front' : cos < -Math.SQRT1_2 ? 'behind' : 'side', open, origin: j.origin, legs: r2(j.legs), lock: r2(j.lock ?? NaN),
+        // Help: other defenders ahead of the carrier (downfield of him along the attack direction) within 10 yd of him:
+        // a proxy for Defense's class (teammates deeper who can still reach his path). 0 = the last man.
+        const dirx = sim.attackDir(c.team);
+        const help = sim.defense.filter((o: any) => o !== d && !o.isDown(sim.t) && (o.pos.x - c.pos.x) * dirx > 0 && Math.hypot(o.pos.x - c.pos.x, o.pos.y - c.pos.y) <= 10).length;
+        seen.set(j, { help, slot: d?.slot, db: DB.test(d?.slot ?? ''), from: cos > Math.SQRT1_2 ? 'front' : cos < -Math.SQRT1_2 ? 'behind' : 'side', open, origin: j.origin, legs: r2(j.legs), lock: r2(j.lock ?? NaN),
           cap0: r2(j.capacity), runner: r2(sp), dv: r2((c.vel.x - j.a.vel.x) * ux + (c.vel.y - j.a.vel.y) * uy), t0: sim.t, maxLoad: 0, minMargin: Infinity, holderDown: false, end: null, dist: [] as number[] }); }
       for (const [j, r] of seen) { if (r.end) continue;
         const cap = (w as any).gripCapacity ? (w as any).gripCapacity(j) : j.capacity;
