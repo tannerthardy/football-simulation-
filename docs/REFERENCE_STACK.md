@@ -437,7 +437,30 @@ Two measurements disagree, and that is why nothing is on.
 
 - **The finish alone is not a coherent step.** The whole-game card looked clean and I began to turn it on. Defense's fixed-run arms stopped that: on identical plays the finish costs 0.57 yd a run (OZ −0.38, IZ −0.66, gap −0.63), which would put every concept under the NFL's, and Flex's contact course for `HIP_BRACE` alone had gain after contact at 1.14 yd and contact to end at 0.7 s against the NFL's 2.84 yd and 1.5 s. The card's +0.57 rush yards was whole-game drift. Today's grasp pins the runner where he is hit; adding a finish to a pinned runner stops him twice.
 - **The package is the unit.** `GRASP_PATCH` frees the pair to turn (too many yards alone, +0.49); the finish ends the hold (too few alone, −0.57); together the fixed runs land near today's yards with a contact course closer to the NFL's.
-- **What holds the package.** In whole games it loses twice the stuffs the fixed runs do (14.9% to 8.9% against 14.5% to 13.2%), scoring rises 4.5 points (resolved), and 7 of 9 runs of 20+ reach 40. Flex is finding what whole games contain that the fixed runs do not. That explanation decides it.
+- **What held the package, resolved.** "Whole games lose twice the stuffs the fixed runs do" compared different arms. Like for like (finish against package) the drop is 4.7 points on the fixed runs and 5.1 in 16 whole games; my card's 8.0 was about 1.7 SE high.
+
+**The run side is settled (Flex, same operators on NFL 2022 zone runs, n 2,984, and the fixed set's 570 zone runs; Defense's real grip heights).**
+
+| | NFL | run-ref-10 | Finish | Package |
+|---|---|---|---|---|
+| Fixed 1,321 runs, paired yards a run (SE) | | | −0.57 (0.04) | −0.05 (0.05) |
+| Broken tackles a run | | 0.168 | 0.117 | 0.142 |
+| Stuff rate, zone runs | 16.8% | 17.2% | 21.6% | 15.1% |
+| First contact behind the line | 42.5% | 47.5% | 47.9% | 46.5% |
+| of which 0–1 yd behind | 19.1% | 27.9% | 28.1% | 27.4% |
+| Stuffed after contact deeper than 1 yd | 52.7% | 50.9% | 64.6% | 46.8% |
+| Stuffed after contact 0–1 yd behind | 16.3% | 25.2% | 31.2% | 20.5% |
+| Gain after front-on contact | 2.84 yd | 1.28 | 1.13 | 1.85 |
+| Contact to end | 1.50 s | 0.80 | 0.70 | 1.00 |
+| Slip at +0.3 s | 1.25 yd/s | 0.15 | 0.09 | 1.15 |
+| Turn by +0.3 s | 80° | 7° | 6° | 36° |
+
+- run-ref-10 matched the NFL's backfield stop rate by cancelling errors: it under-stops deep hits and over-stops shallow ones. The package is the closest arm at both depths; the finish alone over-stops at both.
+- The package's lower overall stuff rate comes from shallow backfield contact being too common in every arm (27–28% of runs against 19%), where the NFL also stops the runner less often. That excess is blocking and penetration: Run Game and Defense.
+- The contact course moves toward the NFL on every row and is still short on gain, duration and turn.
+
+**Not on yet for one reason: no paired evidence on passes.** The whole-game card had yards an attempt 9.69 to 10.36 and pass TD rate 7.9% to 9.6% (both moved). Coverage's 732-dropback paired panel on the package decides it.
+
 
 ## What to do next
 
