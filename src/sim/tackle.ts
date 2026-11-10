@@ -25,7 +25,7 @@
 import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
-import { supportParams, TURF_MU } from '../physics/support.js';
+import { comHeightAt, supportParams, TURF_MU } from '../physics/support.js';
 import { CONTACT_SCALE, GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -438,6 +438,23 @@ function armDistance(joint: GraspJoint | undefined, centers: number, torso: numb
   return Math.min(centers, (joint?.hold ?? centers) + (1 - CONTACT_SCALE) * torso);
 }
 
+/** HOLD_FINISH (experimental, off): the holder plants against the runner's
+ * travel in proportion to his grip, and an upper grip sits at the height his
+ * hands hold (shoulder line to waist). */
+const HOLD_FINISH = process.env.HOLD_FINISH === '1';
+/** Shoulder line as a share of stature (Flex's bench: 1.60 yd). */
+const SHOULDER = 0.79;
+/** Height of an upper hold, yd, for the runner's current posture: the shoulder
+ * line at legs share 0, joining the World's default (COM · (1 − 0.55 legs))
+ * at the waist (0.5). Undefined below the waist: the default stands. */
+function upperHoldHeight(c: Agent, legs: number): number | undefined {
+  const l = clamp(legs, 0, 1);
+  if (l >= 0.5) return undefined;
+  const sp = supportParams(c.profile), posture = c.body.support?.posture ?? 0;
+  const com = comHeightAt(sp, posture), shoulder = SHOULDER * c.profile.heightYd * (comHeightAt(sp, posture) / sp.comHeight);
+  return com * (1 - 0.55 * l) + (shoulder - com) * (1 - 2 * l);
+}
+
 /** Release every hold of the bond (fumble, whistle, carrier change). */
 export function releaseBond(sim: PlaySim): void {
   const bond = sim.bond;
@@ -513,6 +530,11 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     // carrier, so the second arm can come around.
     const oneArm = bond.oneArm?.has(d) ?? false;
     if (oneArm && !d.engagement && near - torso <= SECOND_ARM_CLOSE) bond.oneArm!.delete(d);
+    // HOLD_FINISH: an upper hold is taken where his hands are, from the
+    // shoulders (jersey, pads: legs share 0) down to the waist (0.5), not at
+    // the runner's centre of mass, so a pull on it has its moment about his
+    // base. Below the waist the World's own interpolation stands.
+    if (HOLD_FINISH) joint.height = upperHoldHeight(c, joint.legs);
     joint.capacity = oneArm && bond.oneArm!.has(d) ? gripForce(d, clamp(next, 0.05, 1), 0, 1)
       : gripForce(d, clamp(next, 0.05, 1), Math.min(clamp(next, 0.05, 1), held));
     // The lower-body share describes the acquired point's motion relative
@@ -542,6 +564,22 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       // holder around his arms, rather than establish useful rear leverage.
       const plant = Math.max(0, c.vel.x * tx + c.vel.y * ty) * quality * clamp(next, 0, 1);
       let vel = { x: c.vel.x + tx * (close - plant), y: c.vel.y + ty * (close - plant) };
+      // HOLD_FINISH (experimental, off): with a hold, he commits his weight
+      // against the runner's travel, not only along his arms: he sits and
+      // drags as hard as his grip lets him. Beside the runner the line of his
+      // arms is across the runner's path, so the plant above asks for almost
+      // nothing and he runs along with his hands on the man. He reads it from
+      // his own hands (how hard he holds); the runner's speed is the load the
+      // plant puts on that grip, and the World decides whether the grip
+      // survives it: a weak grip that plants may be torn off (a broken tackle).
+      // While his hold is slipping (his hands at their limit last step) he
+      // gives with it and keeps his feet with the runner instead of sitting:
+      // a trailing man who grabs a runner going by would otherwise sit while
+      // being ripped through his hands. He sits again once it holds.
+      if (HOLD_FINISH && cs > 0.5) {
+        const ux = c.vel.x / cs, uy = c.vel.y / cs, commit = joint.slipping ? 0 : clamp(next, 0, 1);
+        vel = { x: c.vel.x - ux * cs * commit + tx * close, y: c.vel.y - uy * cs * commit + ty * close };
+      }
       // Planted on a secure hold of his legs and still dragged, he drops his
       // weight and hangs on: off his feet he can no longer chase, but half
       // his weight then hangs on the runner's legs (the World decides what

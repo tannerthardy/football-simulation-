@@ -1014,13 +1014,10 @@ export class World {
   }
 
   /** Height of a grasp's load on the runner: the grip's own height when the
-   * technique set it; else interpolated from his COM down his legs by leg
-   * share. HIP_BRACE's temporary default until tackle.ts sets GraspJoint.height
-   * for upper grips: a hold with leg share below 0.35 acts at chest height
-   * (0.70 of his stature). */
+   * technique set it (tackle.ts HOLD_FINISH: shoulder line to waist for upper
+   * grips); else interpolated from his COM down his legs by leg share. */
   private graspHeight(jt: GraspJoint, j: number): number {
     if (jt.height !== undefined) return jt.height;
-    if (HIP_BRACE && jt.legs < 0.35) return 0.70 * this.bodies[j].profile.heightYd;
     return this.comHeight[j] * (1 - .55 * clamp(jt.legs, 0, 1));
   }
 
