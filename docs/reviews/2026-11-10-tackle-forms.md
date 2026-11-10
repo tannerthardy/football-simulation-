@@ -497,3 +497,47 @@ Help class at the grab = other defenders downfield of the carrier within 10 yd, 
 2. Catch broken-at-first-contact does not rise; NFL 20%, same operator.
 3. Runs: paired yards and missed/broken reported. No gate, mechanism read only.
 4. No-contact world bit-identical with the flags off: by construction, the off path is ×1.
+
+## CARRIER_BRACE trace and one trigger attempt (`BRACE_EVIDENCE`, off; 2026-11-10)
+
+Fixed ref run set (12 seeds, 1,321 runs, paired off/on, run-ref-15). Same reference on both sides: geometric first contact within 1.0 yd after the handoff, and `yards.py`'s free-man rule. Trace: `scratchpad` trace.mts, reads the carrier's command (posture 0.75 = brace) each tick.
+
+**When the brace fires** (on): 1,833 episodes in 1,188 runs, 1.39 a run.
+- No defender in the cone by true state: 13% (perceived, or the commanded heading).
+- Nearest trigger at onset: dist p50 2.43 yd, gap to his arms 0.81, closing 4.75 yd/s.
+- The man braced at:
+  - engaged with a blocker: **50%**;
+  - squared to the carrier: 64%;
+  - moving toward him: 48%;
+  - all three (free, squared, coming): **30%**.
+- Within 0.6 s:
+  - no contact: **33%**;
+  - front contact with the target: 28%;
+  - side contact: 32%;
+  - front contact with another man: 5%.
+  - Lunged 59%; lunged and met nothing 10%.
+- **No cost.** Carrier speed over the next 0.3 s goes 4.9 → 5.0 into a front hit and 4.9 → 5.25 into a side hit. Turn p50 7–9°.
+
+**The free-man cell (38 → 24% in the yards.py game read) is mostly sampling.**
+- Paired, the free man makes first contact 34 → 32%. Only 7 plays are lost: 3 to another free man meeting him front-on first, 2 to engaged men, 1 to no contact.
+- The game read pairs whole games whose play sequences diverge, n ≈ 70 free-man plays.
+- Stuff when the free man hits: 21 → 15%.
+
+**Added breaks by first-contact approach** (on − off): side **+28**, front +7, behind +2.
+- Added misses: front +12, side +10.
+- The extra breaks are mostly side contacts, so they are not the square-hit mechanism.
+
+**Draw** (n 85):
+- missed 21 → 32, broken 11 → 17;
+- 1.51 firings a run, 56% at engaged men;
+- front first-contact share unchanged at 44%.
+- The draw's carrier runs through traffic of engaged men and braces at them. The gain is not the brace through a square hit.
+
+**Attempt (one, per Integration): `BRACE_EVIDENCE`.** He braces and lunges only at a man he sees free of blocks and squared up to him. Perceived facing and his own blockers' seen positions are used, nothing private.
+
+**Gates (registered before the read).**
+1. Share of firings at a free squared man ≥ 70%, and firings with no contact ≤ 20%.
+2. Added breaks against off are front-majority.
+3. Front-on carrier gain (hitterback, zone) keeps at least half of CARRIER_BRACE's rise.
+
+**Not attempted here.** The brace has no physical cost: a lowered posture does not slow him or limit his cut in the World. That is a physics question, noted for the World. It is not a cost to add in the controller.

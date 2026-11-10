@@ -106,6 +106,7 @@
     "GRAB_CONNECT": "off",
     "SWING_STRIP": "off",
     "HIP_STRENGTH": "off",
+    "BRACE_EVIDENCE": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",

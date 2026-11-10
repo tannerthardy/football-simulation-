@@ -137,6 +137,13 @@ export const STRETCH_TRACK = process.env.STRETCH_TRACK === '1';
 /** CARRIER_BRACE (off): the carrier lowers his pads for a tackler he sees closing
  * head-on, and drives his body through the contact in the last stride. */
 export const CARRIER_BRACE = process.env.CARRIER_BRACE === '1';
+/** BRACE_EVIDENCE (off; needs CARRIER_BRACE): he braces and lunges only at a
+ * man he sees free of blocks (no blocker he sees touching him) and squared up
+ * to him (the man's seen facing within 45 deg of the line to the carrier).
+ * Without it the trigger takes anyone within 3 yd in the cone his own speed
+ * closes on: half its firings were at men engaged with a blocker and a third
+ * met no contact (docs/reviews/2026-11-10-tackle-forms.md, brace trace). */
+export const BRACE_EVIDENCE = process.env.BRACE_EVIDENCE === '1';
 
 /** Read entries and routes from acquired bodies on both teams. A nominal
  * block is neither an empty lane nor guaranteed future protection. */
@@ -546,6 +553,19 @@ export class BallCarrier implements Behavior {
         if (sd.pose === 'down') continue;
         const rx = sd.pos.x - a.pos.x, ry = sd.pos.y - a.pos.y, dist = Math.hypot(rx, ry);
         if (dist > 3 || dist < 1e-6 || (rx * ux + ry * uy) / dist < Math.SQRT1_2) continue;
+        if (BRACE_EVIDENCE) {
+          // Squared up: his body faces the carrier.
+          const toward = Math.atan2(-ry, -rx), off = Math.abs(Math.atan2(Math.sin(sd.facing - toward), Math.cos(sd.facing - toward)));
+          if (off > Math.PI / 4) continue;
+          // Free: no blocker the carrier sees is on him.
+          let blocked = false;
+          for (const o of sim.teammates(a)) {
+            if (o === a) continue;
+            const so = sim.see(a, o);
+            if (touching({ pos: so.pos, radius: o.profile.radius }, sd.pos, d.profile.radius)) { blocked = true; break; }
+          }
+          if (blocked) continue;
+        }
         const closing = ((a.vel.x - sd.vel.x) * rx + (a.vel.y - sd.vel.y) * ry) / dist;
         // Timed to the tackler's arms, not his body: the grasp forms at reach.
         const gap = dist - a.profile.radius - d.profile.radius - d.profile.reach;
