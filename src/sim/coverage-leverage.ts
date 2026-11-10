@@ -44,6 +44,16 @@ export function reachDownfield(vx: number, facing: number, receiver: PhysicalPro
   return v0 * t1 + receiver.vmax * t2 - (receiver.vmax - v0) * receiver.tau * (1 - Math.exp(-t2 / receiver.tau));
 }
 
+/** BREAK_DRIVE (off; BREAK_DRIVE=1 turns it on): a defender over a released
+ * receiver plants and drives on him once the receiver's body can no longer
+ * threaten his depth within a throw made now: from the seen position, speed
+ * and facing, the receiver cannot reach the defender's depth less his cushion
+ * before such a ball would arrive. Turned to the QB (hitch, curl) or cut flat
+ * across the field (dig, out, slant), he must turn back and re-accelerate; a
+ * stutter whose shoulders stay downfield still threatens. No route knowledge,
+ * no target; the picture carries the defender's own delay. */
+export const breakDriveOn = () => process.env.BREAK_DRIVE === '1';
+
 export class DeepCoverage {
   private previous: { stamp: number; vx: number } | null = null;
   private acceleration = 0;
@@ -52,7 +62,7 @@ export class DeepCoverage {
 
   choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: PhysicalProfile,
     cushion: number, original: MoveCommand, now: number,
-    model: Parameters<typeof previewFreeMovement>[4], horizon?: number): MoveCommand {
+    model: Parameters<typeof previewFreeMovement>[4], horizon?: number, drive?: MoveCommand): MoveCommand {
     const stamp = now - (cue.age ?? 0), previous = this.previous;
     if (!previous || stamp > previous.stamp + 1e-9) {
       const dt = previous ? stamp - previous.stamp : 0;
@@ -68,7 +78,10 @@ export class DeepCoverage {
     // downfield is a threat while he slows: he can go again at once. Turned
     // to the QB, his reach below waits for his turn.
     const squareDownfield = horizonOn && this.released && Math.cos(cue.facing) > 0.5;
-    if ((seen.vel.x <= 1.5 && !squareDownfield) || (seen.vel.x <= Math.abs(seen.vel.y) && !squareDownfield)
+    // BREAK_DRIVE: a drive on him is always weighed, even once he has
+    // stopped or cut across; the preview below decides if it is safe.
+    const weighDrive = horizonOn && !!drive && breakDriveOn() && this.released;
+    if ((((seen.vel.x <= 1.5 && !squareDownfield) || (seen.vel.x <= Math.abs(seen.vel.y) && !squareDownfield)) && !weighDrive)
       || a.engagement || a.isDown(now)
       || (s && (s.state !== 'up' || s.foot || s.strike || Math.hypot(s.lean.x, s.lean.y) > 1e-6
         || Math.hypot(s.load.x, s.load.y) > 1e-6))) return original;
@@ -112,6 +125,9 @@ export class DeepCoverage {
         : lostWithin(deficit, turn, tau, Math.max(0, horizon - end.t));
       return Math.min(margin, end.pos.x - targetX(end.t) - base - recovery);
     };
+    // BREAK_DRIVE: plant and drive on him when his body can no longer get
+    // past me within a throw made now, as previewed for both bodies.
+    if (weighDrive && score(drive!) >= 0) return drive!;
     let choice = original, best = score(original);
     if (best >= 0) return original;
     const endLineSpeed = Math.max(0, arriveVelocity(a.body,

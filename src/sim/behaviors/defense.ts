@@ -28,7 +28,7 @@ import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
-import { DeepCoverage, throwHorizon } from '../coverage-leverage.js';
+import { DeepCoverage, breakDriveOn, throwHorizon } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
 import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
@@ -851,8 +851,14 @@ export class ManCoverage implements Behavior {
     if (!o.protectDepth) return command;
     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
       : vx > 3 && deep > 3 ? cushion * .5 : cushion;
+    // BREAK_DRIVE: plant and drive on him; the depth read takes it only when
+    // his body can no longer get past me within a throw made now.
+    const drive = breakDriveOn() && this.releaseObserved && deep > 3
+      ? withFacingTechnique(track(a, { x: seen.pos.x + seen.vel.x * 0.3, y: clamp(seen.pos.y + seen.vel.y * 0.3, 0.5, FIELD_WIDTH - 0.5) }, seen.vel,
+        { cutSkill: cs, gain: 2.0 + a.r('manCoverage') }), { label: 'man-break-drive', key: seen.vel }) : undefined;
     const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact,
-      throwHorizon(a, sim.see(a, sim.qb).pos, seen.pos));
+      throwHorizon(a, sim.see(a, sim.qb).pos, seen.pos), drive);
+    if (drive && selected === drive) return drive;
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
     return selected.facing === undefined && command.facing !== undefined
       ? withFacingTechnique(selected, { label: 'man-depth-run', key: seen.vel }) : selected;
@@ -1084,7 +1090,11 @@ export class ZoneCoverage implements Behavior {
       // (Only verticals near him; a seam on the far hash belongs to the middle safety.)
       const climbing = vert.some((th) => th !== deepest && th.vel.x > 3.5 && th.pos.x - sim.los > 2 && Math.abs(th.pos.y - a.pos.y) < 8);
       // (Pattern reads are match technique; a spot dropper waits for the QB's arm.)
-      if ((!spot || OPP_GOAL_X - sim.los <= 10) && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1
+      // BREAK_DRIVE: the trigger is that his body can no longer threaten my
+      // depth within a throw made now, not a speed a stutter can show.
+      // BREAK_DRIVE: the speed trigger is replaced by the depth read below,
+      // which weighs this drive against what his body can still do.
+      if (!breakDriveOn() && (!spot || OPP_GOAL_X - sim.los <= 10) && !climbing && deepest.vel.x < 3.0 && deepest.pos.x < lm.x + 1
         && deepest.pos.x - sim.los > Math.min(6, Math.max(1, (OPP_GOAL_X - sim.los) * 0.5))) {
         this.selectTarget(a, deepest.r);
         const drive = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: deepest.pos.y + deepest.vel.y * 0.4 };
@@ -1125,8 +1135,14 @@ export class ZoneCoverage implements Behavior {
       }), { label: turnRun ? 'deep-turn-run' : 'deep-over', key: deepest.vel });
       let depth = this.depthReads.get(deepest.r);
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
+      const driveAt = { x: deepest.pos.x + 1.2 + deepest.vel.x * 0.3, y: clamp(deepest.pos.y + deepest.vel.y * 0.4, 0.5, FIELD_WIDTH - 0.5) };
+      const drive = breakDriveOn() && !climbing && (!spot || OPP_GOAL_X - sim.los <= 10)
+        && deepest.pos.x - sim.los > Math.min(6, Math.max(1, (OPP_GOAL_X - sim.los) * 0.5))
+        ? withFacingTechnique(track(a, driveAt, { x: deepest.vel.x, y: deepest.vel.y }, { facing: facingQB, speed: zs * 1.05, gain: 2.2 }),
+          { label: 'deep-drive', key: deepest.vel }) : undefined;
       const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact,
-        throwHorizon(a, sim.see(a, qb).pos, deepest.pos));
+        throwHorizon(a, sim.see(a, qb).pos, deepest.pos), drive);
+      if (drive && selected === drive) { this.selectTarget(a, deepest.r); return drive; }
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
       return selected.facing === undefined && command.facing !== undefined
         ? withFacingTechnique(selected, { label: 'deep-depth-run', key: deepest.vel }) : selected;
