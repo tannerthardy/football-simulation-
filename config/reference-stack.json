@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-9",
+  "id": "run-ref-10",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -119,7 +119,7 @@
     "REACH_FLAT": "on",
     "REACH_RACE": "on",
     "REACH_TECHNIQUE": "on",
-    "READ_LEAN": "off",
+    "READ_LEAN": "on",
     "READ_RISK_TRACE": "off",
     "RELEASE_INTERCEPT": "on",
     "RELEASE_QUICK": "on",

@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-9`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-10`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -394,6 +394,21 @@ No stack change. Everything in this section is off.
 - **`UNDER_DEPTH` (Coverage #458), off.** Underneath droppers take the depth of the deepest route they see: hook depth at 2.0 s 8.7 to 5.8 yd (NFL 6.4). Alone it gives up 6–9 points a team-game because nothing closes on the ball in flight (COV-1, next); promote the two together.
 - **`TKL_WHIFF` (Coverage #448), off.** The pre-contact attempt decision. YAC 10.47 to 11.55 and sacks 12.1% to 9.0% on today's lock; needs a pocket exception and the approach before it can go on.
 - **`READ_LEAN`.** Coverage's three-seed cards and a 732-dropback panel (+0.13 ± 0.13 yd a pass play) do not repeat the scoring rise on my two cards. One more 16-game card on a third seed decides.
+
+## run-ref-10: `READ_LEAN` on (2026-11-10)
+
+Defense #451 and #453. An unsure box backer leans downhill with his own run evidence, and after a run read the pass pulls him back out. It was held off because two of my cards showed scoring up (seed 7 +8.8, seed 11 +4.6 points a team-game). Coverage showed that was whole-game drift: six-game cards on seeds 11 and 13 went the other way and a paired 732-dropback panel gave +0.13 ± 0.13 yd a pass play. A third 16-game card (seed 13, [reviews/2026-11-10-read-lean-scorecard.md](reviews/2026-11-10-read-lean-scorecard.md)) agrees:
+
+| 16 games, seed 13 | Off | `READ_LEAN` | 90% interval |
+|---|---|---|---|
+| Points a team-game | 41.25 | 41.41 | −4.47 to +5.09 |
+| Yards an attempt | 10.63 | 10.46 | −0.90 to +0.70 |
+| YAC a reception | 8.78 | 8.59 | −1.01 to +0.58 |
+| Rush yards a carry | 4.40 | 4.80 | −0.04 to +0.85 |
+| Missed + broken tackles a play | 0.31 | 0.29 | moved |
+| Missed tackles by LB a play | 0.05 | 0.04 | moved |
+
+The rush row is the one to watch: not resolved, but its interval sits mostly above zero. The fixed-run report for run-ref-10 is in [reviews/run-ref-10-report.md](reviews/run-ref-10-report.md).
 
 ## What to do next
 

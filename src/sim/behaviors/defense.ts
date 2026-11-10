@@ -524,7 +524,7 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
  * the lean); he has no drop of his own until he reads pass, when his zone
  * landmark and the receivers decide it (NFL about 0 to -0.25 yd/s on dropbacks
  * through 1.0 s). */
-const READ_LEAN = process.env.READ_LEAN === '1', LEAN_RUN = 1.5;
+const READ_LEAN = process.env.READ_LEAN !== '0', LEAN_RUN = 1.5;
 /** READ_LEAN: after a run read, a pass picture (the QB deep after the fake, the
  * line setting) pulls his attack back before a full change of mind: his
  * downhill speed is scaled by how far his picture now leans pass. Not once he
