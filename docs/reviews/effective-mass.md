@@ -253,3 +253,38 @@ limit is 1.25 × weight of traction):
   his request, while the NFL decays steadily. That needs looking at once the pieces are in.
 - **The open question is why the in-game drive is half the cap.** The next look is inside World's ground-force
   allocation: lean target against capacity per tick, the bond's `push` value, and the angle of the felt load.
+
+### Inside the allocation: the push into the load is starved (step 3's cause)
+
+`scripts/diag/effective-mass/drive-alloc.mts` covers the same 0.3 s window, every tick, for runner and hitter. Values
+are shares of each player's own traction limit; directions are relative to the runner's path. The strength cap is
+`pushForce` × force-velocity × facing × availability.
+
+| On his feet | Cap | Delivered | Along path | Lean into the load | Felt load | Request / velocity change / ground-force direction |
+|---|---|---|---|---|---|---|
+| Runner, free running before contact (control) | 0.51 | 0.48 | 0.02 | 0.00 | 0.00 | 0° / 40° / 80° (speed 5.0 of a 5.1 request) |
+| Runner, no grasp on him | 0.49 | 0.48 | 0.03 | 0.00 | 0.03 | 9° / 40° / 76° |
+| Runner, two-arm grasp | 0.52 | 0.49 | 0.22 | 0.05 | 0.97 | 10° / 25° / 47° |
+| Runner, one-arm grasp | 0.51 | 0.49 | 0.16 | 0.10 | 0.48 | 9° / 28° / 61° |
+| Hitter, all | 0.67 | 0.60 | −0.43 | 0.24 | 0.64 | (pushes back along the axis) |
+
+- **The runner already delivers his whole strength cap, but most of it is sideways.**
+  - The gait spends its envelope on steering: the share left over after forward drive goes to the cut, free running
+    included.
+  - Forward drive in contact is capped by the tempo law. At 2.6 of a wanted 4.9 yd/s that is (4.9 − 2.6)/1.3 × 9/4.9
+    ≈ 3.2 yd/s², about 0.27 of his limit, matching the 0.16–0.22 delivered.
+  - The lean is the law for pushing into a felt load. It gets only what the locomotion leaves inside the strength
+    budget: 0.02–0.10.
+- **The hitter's force is mostly along the axis.** He pushes back on the runner at 0.43 of his limit with a lean of
+  0.24, so he out-pushes the runner.
+- **Integration's two questions:**
+  1. A hand at reach does not cost him his legs: the stride hold is 0 in every group, because it needs a holder
+     hanging off his feet.
+  2. The target for the repair is a direction, not more force. He has the force and spends it steering; the NFL
+     course needs about 0.4–0.5 of his limit along the path during the first tenth (bench, strength cap).
+- **Step 3's mechanism.** When a felt load opposes his request, the push into it should take priority within the
+  strength budget over steering. Equivalently, forward drive against a load should come from the force-velocity
+  envelope, not from the tempo law, which is built to level off a free runner at his wanted speed.
+  - Today the allocation gives locomotion priority and the lean the remainder.
+  - It is a World allocation rule, judged on the first tenth and peak force on the bench, and in the game on the
+    aligned course where the hold exists.
