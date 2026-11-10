@@ -324,6 +324,15 @@ Next for the run game: see run-ref-7 below. (An earlier version of this paragrap
 - Contact geometry is not the cause: median offset from the runner's path at closest approach is 0.31 yd in the NFL and 0.24 in the sim.
 - Reading caution: time zero is first proximity (centres within 1.0 yd). NFL pairs are 0.87 yd apart then and reach torso distance at about +0.2 s; sim pairs start at 0.76 and reach it by +0.1 s. Compared from torso contact, the conclusion is the same (NFL -0.3 yd/s a tenth; sim -1.4 in the first tenth), but the bench target should be set from torso contact, not from time zero.
 
+## Effective mass, Gate 1: the two-part body fails on paper; `EDGE_REACH` merged off (2026-11-10)
+
+- **Gate 1 (Flex, [reviews/effective-mass.md](reviews/effective-mass.md)).** A two-link body (upper body on a sourced trunk spring over pelvis and legs) keeps 41-46% of the runner's pad speed 0.1 s after contact; today's point mass keeps 38-39%; the NFL keeps 94%. Softening the contact from 9 Hz to 1.5 Hz gives 44%. Articulation moves momentum around inside the body; it does not change how much the pads exchange. Flex stopped under the plan's two-attempt rule.
+- **What the NFL course implies:** the runner is slowed by about 255 N on average over the first 0.3 s (the sim needs about 800 N; the model's contact peaks near 22 kN against measured tackle peaks of 1.7-3.4 kN), and the centres stay about 0.5 yd apart while he moves 2.5-3 yd/s faster than the hitter. NFL bodies are passing shoulder to shoulder, not colliding chest to chest.
+- **Flex's re-diagnosis:** every sim body is an isotropic disc for torso contact (about 0.27 yd for a back, 0.36 for a lineman); a real torso is about 0.27 yd half-wide but 0.15 half-deep. Proposed second attempt: an oriented torso shape from anthropometry. **Waiting on Tanner.**
+- **Integration's question before that is built:** for two bodies square to each other the oriented shape has about the same lateral extent as the disc and a contact normal more along the path, so it helps mainly when a body is turned. Two no-code checks are with Flex: the hitter's and runner's facing at contact from tracking orientation (NFL against sim), and a bench of the disc, the oriented shape with facing fixed, and the oriented shape free to yaw.
+- **`EDGE_REACH` (Defense #446), merged off.** The play-side edge had no answer to a reach block and fell through to his pass-rush lane, stepping inside. With the flag he steps flat outside with the reach: edge flow at 1.0 / 1.5 s -0.32 / +0.41 -> +0.42 / +0.92 yd (NFL +0.69 / +1.75). `ref:report` candidate: outside zone +0.25 (SE 0.24), inside zone -0.41 (0.20), all +0.11 (0.10). Off until Run Game re-checks the back's read against it.
+- **YAC (Coverage):** of the sim's 9.8 yd after the catch (NFL 5.3), about 4.5 yd comes from the 16% of catches with a missed dive, a missed tackle or a broken tackle. Coverage takes the pre-contact attempt decision in the open field behind an off flag; Flex keeps the contact physics.
+
 ## What to do next
 
 Ordered by how much each unblocks. Every measurement below is taken on `npm run ref` and reported with the stack id.

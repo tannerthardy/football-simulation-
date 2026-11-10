@@ -133,6 +133,8 @@ const KEY_PACE = process.env.KEY_PACE !== '0', KEY_STEP_LEAD = 0.5;
 const KEY_DEPTH = process.env.KEY_DEPTH !== '0';
 /** LB_GUARD_STEP (experimental, off): see ZoneCoverage's unsure box backer. */
 const LB_GUARD_STEP = process.env.LB_GUARD_STEP !== '0';
+/** EDGE_REACH (experimental, off): see the edge's key read against a reach in PassRusher, and the edge fit in run-fits.ts. */
+export const EDGE_REACH = process.env.EDGE_REACH === '1', EDGE_UPFIELD = 1.2;
 /** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
  * read lean leads his step before the key's own movement must confirm it (s). */
 const STANCE_TELL = process.env.STANCE_TELL !== '0';
@@ -370,8 +372,20 @@ export class PassRusher implements Behavior {
       a.tags.add('shoot-gap');
       return runThrough(a, { x: man!.home.x - dir * SHOOT_DEPTH, y: man!.pos.y - side * a.profile.radius }, { speed: 1 });
     }
+    // EDGE_REACH (experimental, off): an edge keeps his outside against a
+    // reach. His key stepping out toward him, away from the ball (a stretch or
+    // reach step), is running for his outside shoulder: he answers it as an
+    // interior man answers his key, with a flat step of his own at full effort
+    // the way the key goes, square to him, instead of rushing inside at the
+    // quarterback. NFL play-side OZ edge men are +0.69 / +1.75 yd outside
+    // their snap spot at 1.0 / 1.5 s; ours stepped inside (-0.32 at 1.0 s).
+    // A reach is a step mostly sideways at him; a drive step that drifts out
+    // (inside zone) is mostly upfield, and he holds his spot against it.
+    const reachOut = EDGE_REACH && onEdge && runStep && Math.sign(man!.vel.y) === -Math.sign(sim.ballY - man!.pos.y)
+      && Math.abs(man!.vel.y) > Math.abs(man!.vel.x);
+    if (reachOut) a.tags.add('edge-reach');
     // The interior man keys the blocker over him.
-    if (!onEdge && runStep) {
+    if ((!onEdge || reachOut) && runStep) {
       // The answer to a lateral first step is a flat step of his own at full
       // effort, square to the man, not a match of the speed seen so far.
       // KEY_PACE (experimental, off): he answers the step he sees at its pace
@@ -389,8 +403,14 @@ export class PassRusher implements Behavior {
       // not a run at the man's spot: closing on it at tracking gain asked for
       // a sprint (5-7 yd/s) into the block. NFL interior DL not yet near an OL
       // move 0.5-0.74 yd/s upfield through 1.0 s; ours ramped to 1.1 by 0.5 s.
-      const up = -sim.attackDir(sim.offense[0].team) * KEY_STEP_LEAD;
-      const at = KEY_DEPTH ? { x: a.pos.x + up * h, y: man!.pos.y + side * step * h } : { x: man!.pos.x + man!.vel.x * h, y: man!.pos.y + side * step * h };
+      // An edge answering a reach sets the edge upfield as he widens: NFL
+      // play-side OZ edge men go from 0.9 yd off the ball to 0.28 yd into the
+      // backfield by 1.0 s (about 1.2 yd/s), faster than the interior read step.
+      const up = -sim.attackDir(sim.offense[0].team) * (reachOut ? EDGE_UPFIELD : KEY_STEP_LEAD);
+      // An edge lines up outside his key: he steps from where he stands, never
+      // onto the key's spot (that is inside him).
+      const fromY = reachOut ? (side * (a.pos.y - man!.pos.y) > 0 ? a.pos.y : man!.pos.y) : man!.pos.y;
+      const at = KEY_DEPTH ? { x: a.pos.x + up * h, y: fromY + side * step * h } : { x: man!.pos.x + man!.vel.x * h, y: fromY + side * step * h };
       a.tags.add('key-step');
       if (KEY_REACT) a.keyStep = { from: man!.agent, side };
       return track(a, at, { x: KEY_DEPTH ? up : 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
