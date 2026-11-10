@@ -382,6 +382,19 @@ Flex #455. A block's hands now push between the closest points of the two men's 
 - **Still open.** Pair rotation is 56° against the NFL's 43°; Flex's next bench is the hands grip's tangential limit against arm strength.
 - By concept (candidate against run-ref-8, paired): OZ −0.07, IZ −0.19, gap +0.23, duo +0.49 (SE 0.38), none resolved.
 
+## After run-ref-9: the runner–tackler lock, and what is merged off (2026-11-10)
+
+No stack change. Everything in this section is off.
+
+- **The lock is the grasp law (Flex).** At a front-on first contact the runner asks for 2.6–3.0 yd/s across the tackler and gets 0.7–1.1; replaying 154 game contacts on the bench with the game's requests reproduces it, and removing the grasp releases it. It is not the mix of blocked and free tacklers (69% blocked in both the sim and the NFL), not the tackler's request, and not the approach offset (0.30 yd against the NFL's 0.31).
+- **`GRASP_PATCH` (#462), off, held.** Every grasp acts at the grip point, so a held pair turns. Zone runs: slip at +0.1 s 0.49 to 1.46 (NFL 2.69), gain after contact 1.44 to 2.34 yd (NFL 2.84), trench unchanged. 16-game paired card ([reviews/2026-11-10-grasp-patch-scorecard.md](reviews/2026-11-10-grasp-patch-scorecard.md)): run stuffs 15.1% to 9.6% (moved), YAC 8.91 to 10.06 (moved), missed + broken a play 0.28 to 0.33 (moved), fumbles lost a team-game 0.53 to 1.00 (moved), points 36.5 to 41.0 (not resolved). Held for two explanations (fumbles, missed + broken) and to go on with the tackle's finish, not alone. With `CONTACT_LAYER` too: rush 5.50, stuffs 7.2%, 10+ runs 14.0%.
+- **The finish that is missing, on develop today.** 364 holds on the fixed runs last 0.3 s or more while the carrier averages 4 yd/s or more. 70% are a holder running alongside who never plants (tackler decision: Defense, all positions). 30% are towed holders with no way to hang their weight on an upper-body hold (physics: Flex).
+- **`HANDS_FRICTION`, `GRASP_ARMS` (#459), off, research.** Friction on pressing hands overshoots the line (solo rotation 27° against the NFL's 43°). A grip-break mechanism is parked in [PARKED.md](PARKED.md).
+- **`BLOCK_RELEASE` (Run Game), off.** A blocker leaves a man who has left the play for a free defender at the runner. Time wasted 0.594 to 0.544 s a run; yards flat; gap runs −0.12 (SE 0.06), unexplained.
+- **`UNDER_DEPTH` (Coverage #458), off.** Underneath droppers take the depth of the deepest route they see: hook depth at 2.0 s 8.7 to 5.8 yd (NFL 6.4). Alone it gives up 6–9 points a team-game because nothing closes on the ball in flight (COV-1, next); promote the two together.
+- **`TKL_WHIFF` (Coverage #448), off.** The pre-contact attempt decision. YAC 10.47 to 11.55 and sacks 12.1% to 9.0% on today's lock; needs a pocket exception and the approach before it can go on.
+- **`READ_LEAN`.** Coverage's three-seed cards and a 732-dropback panel (+0.13 ± 0.13 yd a pass play) do not repeat the scoring rise on my two cards. One more 16-game card on a third seed decides.
+
 ## What to do next
 
 Ordered by how much each unblocks. Every measurement below is taken on `npm run ref` and reported with the stack id.
