@@ -631,7 +631,7 @@ export const BACKSIDE_COMBO = process.env.BACKSIDE_COMBO !== '0';
  * Stretch calls only, and only when the double has another free backer: on
  * inside zone the swap alone cost -0.21 yd (SE 0.08) on the fixed runs, and
  * a double left without a climber cost the play side. */
-export const BACKSIDE_SWAP = process.env.BACKSIDE_SWAP === '1';
+export const BACKSIDE_SWAP = process.env.BACKSIDE_SWAP !== '0';
 /** KEEPER_HIP (off): a zone double member whose half of the shared man is the
  * man's backside half is exempt from REACH_FLAT's flat track and closes to the
  * man's depth on the intercept of that hip. A backside tackle keeping a double
@@ -639,7 +639,7 @@ export const BACKSIDE_SWAP = process.env.BACKSIDE_SWAP === '1';
  * his aim but about 1.9 yd short of the man's depth, held flat while gaining
  * width: 1.62-1.67 yd from the man 0.9-1.8 s, up 0.2-0.6 yd; tracked
  * uncovered backside tackles touch the inside man 35% (end 2-3.5 yd out). */
-export const KEEPER_HIP = process.env.KEEPER_HIP === '1';
+export const KEEPER_HIP = process.env.KEEPER_HIP !== '0';
 /** DOUBLE_HANDOFF (default off): a double-team keeper whose hands are on the
  * man within working reach plus 0.35 yd counts as able to take him over,
  * loaded or not, and as the man's keeper whether or not he is the engagement's

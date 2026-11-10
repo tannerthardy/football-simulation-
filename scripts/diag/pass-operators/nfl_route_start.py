@@ -1,17 +1,22 @@
 # Non-PA dropbacks. (1) Ground covered from the snap position (straight-line displacement) at 0.5 / 1.0 s, by group:
 # WR running a route, outside WR on GO/POST/CORNER, TE running a route, RB running a route, initial pass rusher (DL), CB.
 # (2) Outside verticals 1.0-2.0 s: speed / own top speed (max s over weeks 1-3, all plays), and straightness (displacement / path).
-# (3) Alignment: WR / TE body-centre depth behind the ball line at the snap (yd), by rank from the sideline on each side.
+# (3) Alignment: WR / TE body-centre depth behind the ball at the snap (yd), by rank from the sideline on each side. Depth is
+#     measured from the tracked football's x at the snap frame, not absoluteYardlineNumber (an integer yard line, which
+#     adds about 0.45 yd: WR #1 p50 1.27 against 0.82 from the ball).
 import csv, sys, collections, math
 D=sys.argv[1]; weeks=sys.argv[2].split(',')
 pos={r['nflId']:r['position'] for r in csv.DictReader(open(f'{D}/players.csv'))}
 plays={(r['gameId'],r['playId']):r for r in csv.DictReader(open(f'{D}/plays.csv')) if r['isDropback'] in ('TRUE','True','1') and r['playAction'] in ('FALSE','False','0')}
 pp={}
 for r in csv.DictReader(open(f'{D}/player_play.csv')): pp[(r['gameId'],r['playId'],r['nflId'])]=r
-P=collections.defaultdict(lambda: collections.defaultdict(dict)); ev=collections.defaultdict(dict); dirn={}; top=collections.defaultdict(float)
+P=collections.defaultdict(lambda: collections.defaultdict(dict)); ev=collections.defaultdict(dict); dirn={}; top=collections.defaultdict(float); ballx={}
 for w in weeks:
   for r in csv.DictReader(open(f'{D}/tracking_week_{w}.csv')):
-    if r['nflId'] in ('','NA'): continue
+    if r['nflId'] in ('','NA'):
+      k=(r['gameId'],r['playId'])
+      if k in plays and r['event']=='ball_snap': ballx[k]=float(r['x'])
+      continue
     try: top[r['nflId']]=max(top[r['nflId']],float(r['s']))
     except: pass
     k=(r['gameId'],r['playId'])
@@ -25,7 +30,8 @@ G=collections.defaultdict(list); S=collections.defaultdict(list); A=collections.
 for k,T in P.items():
   s=ev[k].get('ball_snap'); fr=ev[k].get('pass_forward')
   if s is None or fr is None: continue
-  d=dirn[k]; los=float(plays[k]['absoluteYardlineNumber']); off=plays[k]['possessionTeam']
+  if k not in ballx: continue
+  d=dirn[k]; los=ballx[k]; off=plays[k]['possessionTeam']
   ys=[tr[s][1] for i,tr in T.items() if s in tr and tr[s][2]==off]; cy=sorted(ys)[len(ys)//2] if ys else 26.65
   outside=set()
   for side in (1,-1):
