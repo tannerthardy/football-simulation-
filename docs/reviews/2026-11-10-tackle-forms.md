@@ -363,3 +363,31 @@ Help class at the grab = other defenders downfield of the carrier within 10 yd, 
 - The point of no return for a held runner depends on the step he *can* make against the hold. That is his leg's stepping force against the grip's capacity at that height, a sustained capacity ratio from strength and grip, not the measured transient.
 - A strong runner breaks a weak ankle hold and steps; a weak runner held by a strong grip cannot.
 - It must not touch the head-on case, which is already too sure on the bench (0.2–0.3 s).
+
+## Held-step threshold: attempt 1 of the new diagnosis (`HELD_STEP`, reverted; 2026-11-10)
+
+**First, a measurement fix.** `leg-bench.mts` now measures the runner's travel to rest (down and under 0.2 yd/s), not to the start of his fall. Head-on thigh wraps still total only 0.68–0.74 yd (NFL head-on yards after contact 2.3). The head-on deficit is real.
+
+**The law tried.** A held runner's recovery step speed × max(0, 1 − G/F):
+
+- G = the grip capacity on him × the leg share of each hold;
+- F = his leg drive (`pushForce`).
+
+**Drag bench** (holder down / holder up; hips 0.6, thighs 0.8):
+
+| Pairing | Downed holder | Standing holder |
+|---|---|---|
+| As generated | trip at 0.30–0.35 s, 2.9–3.1 yd | 0.30–0.90 s, 2.8–4.7 yd |
+| Strong runner, weak tackler | **trip** at 0.40–0.45 s, 3.5–3.7 yd (should step out) | 0.65 s, or still dragging |
+| Weak runner, strong tackler | trip at 0.15–0.20 s, 2.2–2.5 yd | 0.15–0.45 s |
+
+**Head-on bench:** down at 0.05 s, **0.39 yd to rest** (was 0.25 s, 0.68 yd). Surer, the wrong way.
+
+**Why it missed.**
+
+1. G/F is near or above 1 for every pairing. Grip capacity at these locks is comparable to his whole leg drive, so the ratio does not separate strong runners from weak ones enough to let a strong runner step out.
+2. A threshold based on the achievable step can only lower the point of no return. It **cannot make the head-on case less sure.** Integration's "one law for both directions" does not hold for this mechanism.
+
+**The head-on deficit is a different mechanism:** the runner's forward drive and fall through a tackler in front of him, with the tackler driven back. `CARRIER_BRACE` (the runner lowering his pads and lunging) is the existing candidate. Its earlier read moved front-on gain 0.93–1.12 → 1.50–2.29 yd (NFL 2.16–2.59).
+
+**Status.** The drag-down threshold is a real gap: a held runner is judged against a free full step. A coherent capacity for the stepping leg against the grip, one that lets a strong runner step out, is still open. Per Integration, the bench stalled, so the work switches to part 2 (the full-stretch connect probability).
