@@ -157,15 +157,15 @@ const FRONT_MENU = process.env.FRONT_MENU !== '0';
  * an attached end on every snap (tracked: within 2 yd of the end on 70%). */
 const BOX_ALIGN = process.env.BOX_ALIGN !== '0';
 /** BLITZ_CREEP (experimental, off): see alignDefense; tracked depth of a rushing backer at the snap (yd). */
-const BLITZ_CREEP = process.env.BLITZ_CREEP === '1', CREEP_DEPTH = 2.4;
+const BLITZ_CREEP = process.env.BLITZ_CREEP !== '0', CREEP_DEPTH = 2.4;
 /** SAM_ON_TE (experimental, off): see alignDefense; a Sam on the line stands as the Under's 9 does (yd). */
 const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_DEPTH = 1.0;
 /** TIGHT_OFF (experimental, off): see alignDefense; a tight #2 is within this of his tackle (yd); off depth (yd). */
 /** NICKEL_FRONTS (experimental, off): see the end-man rule in alignDefense. */
-const NICKEL_FRONTS_ALIGN = process.env.NICKEL_FRONTS === '1';
+const NICKEL_FRONTS_ALIGN = process.env.NICKEL_FRONTS !== '0';
 /** SLOT_LEV (experimental, off): see alignDefense. */
-const SLOT_LEV = process.env.SLOT_LEV === '1';
-const TIGHT_OFF = process.env.TIGHT_OFF === '1', TIGHT_SPLIT = 3.5, TIGHT_OFF_DEPTH = 4.5;
+const SLOT_LEV = process.env.SLOT_LEV !== '0';
+const TIGHT_OFF = process.env.TIGHT_OFF !== '0', TIGHT_SPLIT = 3.5, TIGHT_OFF_DEPTH = 4.5;
 /** SHELL_SHOW (on; the call's disguise rates are in
  * game/playcaller.ts): a disguised man safety shows the deep look. */
 const SHELL_SHOW = process.env.SHELL_SHOW !== '0';
@@ -305,20 +305,20 @@ export interface AlignContext {
  * across the QB's face carries him toward it. Tracked 2022 gun outside zone:
  * 219 snaps away, 22 on the play side; a back on the play side takes the ball
  * running away from the play and has to reverse. */
-export const STRETCH_OFFSET = process.env.STRETCH_OFFSET === '1';
+export const STRETCH_OFFSET = process.env.STRETCH_OFFSET !== '0';
 /** IZ_OFFSET (default off): STRETCH_OFFSET for gun inside and split zone: the
  * offset back aligns away from the play side and meshes across the QB's face
  * into it. Tracked 2022 gun inside zone: back backside 91% of snaps, play
  * side 5% (gun outside zone 61% / 5%). Ours lined up on the play side on 48%
  * of gun IZ calls, and on 56 of 75 of those the back's mesh path (built for a
  * backside offset) carried him against the call after the handoff. */
-export const IZ_OFFSET = process.env.IZ_OFFSET === '1';
+export const IZ_OFFSET = process.env.IZ_OFFSET !== '0';
 /** COUNTER_OFFSET (default off): IZ_OFFSET for gun counter. Tracked 2022 gun
  * counter: the offset back aligns backside on 119 of 153 snaps and takes the
  * ball 0.9 yd backside already running to the hole (+3.05 yd/s); ours aligned
  * play side on 64 of 76, met the ball running away from the hole (-2.85 yd/s)
  * and crossed the LOS on the pull side 70% of the time (NFL 92%). */
-export const COUNTER_OFFSET = process.env.COUNTER_OFFSET === '1';
+export const COUNTER_OFFSET = process.env.COUNTER_OFFSET !== '0';
 /** TE_OFF (default off): on a zone run call an attached end sometimes sets
  * off the ball beside the tackle (a wing), with the wide receiver on his side
  * moving up onto the line so seven stay on it. Tracked 2022 zone runs: 0.43
@@ -326,7 +326,7 @@ export const COUNTER_OFFSET = process.env.COUNTER_OFFSET === '1';
  * (mostly 1.0-1.25 yd behind it, 1-2 yd outside the tackle) against 0.83
  * attached; installed formations set none. The pick is a hash of the slot and
  * the ball spot, not a draw from the play's stream. */
-export const TE_OFF = process.env.TE_OFF === '1';
+export const TE_OFF = process.env.TE_OFF !== '0';
 const TE_OFF_SHARE = .58, TE_OFF_DEPTH = 1.1;
 function spotHash(...parts: (string | number)[]): number {
   let h = 2166136261;

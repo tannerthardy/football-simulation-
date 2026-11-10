@@ -156,7 +156,7 @@ const DRAW_READ = process.env.DRAW_READ !== '0';
  * a 3rd-down backer reads run at a median 0.50 s against 0.45 on 1st (0 gave
  * no situation effect; 0.2 held 3rd down to 0.60 and a strong pass prior to
  * 0.70; NFL 3rd and 7+ trails 1st down by about 0.1 yd at 1.0 s). */
-const RUN_CONFIRM = process.env.RUN_CONFIRM === '1';
+const RUN_CONFIRM = process.env.RUN_CONFIRM !== '0';
 const RUN_CONFIRM_PRIOR = 0.1;
 export function drawReadEnabled(): boolean {
   return DRAW_READ;
