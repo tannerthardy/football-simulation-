@@ -100,7 +100,7 @@ its launcher and verifier remain tools, not current operating requirements.
 ## Reference material
 
 - [Plan](docs/PLAN.md), [gaps](docs/GAPS.md) and [known problems](docs/KNOWN_PROBLEMS.md): current direction and diagnosis.
-- [Run-game reference stack](docs/REFERENCE_STACK.md): the one flag combination every agent measures against (`npm run ref -- <command>`), with the decision for each flag.
+- [Run-game reference stack](docs/REFERENCE_STACK.md): the flag combination every agent measures against, and since 2026-11-09 the engine's default. `npm run ref:report` is the standard run-game table; `npm run ref -- --off -- <command>` runs the legacy engine. The test suites are still pinned to the legacy engine (`vitest.config.ts`) until re-recorded.
 - [Flags](docs/FLAGS.md) and [parked ideas](docs/PARKED.md): switches and unresolved alternatives.
 - [Validation](docs/VALIDATION.md), [testing costs](docs/TESTING_COSTS.md) and [behavior review](docs/BEHAVIOR_REVIEW.md): diagnostic references; PLAN supersedes old process requirements.
 - [NFL data](docs/NFL_DATA.md) and [data guide](data/README.md): inputs, evidence retrieval and film access.

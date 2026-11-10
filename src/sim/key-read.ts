@@ -11,7 +11,7 @@
  */
 import type { Agent } from './agent.js';
 
-export const KEY_REACT = process.env.KEY_REACT === '1';
+export const KEY_REACT = process.env.KEY_REACT !== '0';
 const KEY_DELAY = 0.5, KEY_FLOOR = 0.1, KEY_REACT_SCALE = 0.35;
 /** Body speed at which a key's step shows (yd/s): KEY_REACT's first movement, or a step under way. */
 export const KEY_STEP_SEEN = 0.15, STEP_SEEN = 0.3;

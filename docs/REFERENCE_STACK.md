@@ -4,13 +4,42 @@ One combination of experimental flags that Run Game, Defense, Flex and Coverage 
 
 - **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-4`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
-- **Code defaults are unchanged.** `on` here means "on in the reference", not "default in the engine". The combined stack is not ready to become the default: together the flags take run yards below the NFL (see Results).
+- **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
+
+## Promotion to default (2026-11-09)
+
+The stack was published on 2026-11-09 as a reference only, because the first combination undershot the NFL. Since then `ZONE_PAIR` came out, three run-blocking fixes and the contact-to-whistle work went in, and the old defaults drifted further from football (`ONE_ARM_HOLD` and the other default-on merges landed on an engine with none of the run-game or run-defense work). The quick scorecard (6 games an arm, same games; [full report](reviews/2026-11-09-scorecard-legacy-vs-run-ref-4.md)) made the case:
+
+| Per team-game or as marked | Legacy defaults | run-ref-4 | NFL band |
+|---|---|---|---|
+| Points | 52.9 | 41.3 | 21-23.5 |
+| Total yards | 632 | 470 | 320-345 |
+| Rush yards a carry | 7.95 | 3.61 | 3.70-4.83 |
+| 10+ yd runs | 21.1% | 7.0% | 7.6-12.9% |
+| Run stuff rate | 11.2% | 14.1% | 15.9-23.5% |
+| Missed + broken tackles a play | 0.41 | 0.32 | 0.11-0.16 (unsourced) |
+| 3rd-down conversion | 43.8% | 28.0% | 37-41% |
+| Sack rate | 9.6% | 12.4% | 4.6-9.4% |
+| INT rate | 3.5% | 4.2% | 1.5-3.2% |
+| Yards an attempt | 12.15 | 11.37 | 6.35-7.89 |
+| YAC a reception | 13.33 | 11.91 | 4.53-5.91 |
+
+What was done:
+- The 90 `on` flags are read as `!== '0'` in `src` (95 sites). No other code changed. Checked on the 1,321-run set: the stack arm, the legacy arm (`--off`) and a bare run with an empty environment give the same per-play results as before the change, the bare run now matching the stack.
+- **The test suites still run on the legacy engine.** `vitest.config.ts` pins every promoted flag to `0` for all four tiers, so no recorded case moved and nothing was re-recorded. `TEST_ENGINE_DEFAULTS=1 npm test` runs them on the real defaults: 173 core tests in 61 files then fail because they pin legacy behaviour (most in `responsibility-ledger` 16, `combo-transfer` 15, `support-work-off` 9, `support-escape-objective` 9, `man-run-continuity` 8, `runner-side-recovery` 7, `combo-attention` 7). Each lane re-records its files and removes flags from the pin as it goes; a new test should be written for the real defaults (stub the pin off for the flags it needs).
+- `config/baseline.json` is unchanged: it remains the historical profile, with these flags at `0`.
+
+What the promotion does not fix, in order of size at the game level:
+1. **The pass game is the largest remaining error:** 11.4 yards an attempt and 11.9 yards after the catch a reception (NFL 6.35-7.89 and 4.53-5.91), 20% of attempts completed for 20+. This is G3 and G1 in the open field, and it is now bigger than anything left in the run game.
+2. **Sacks rose** to 12.4% of dropbacks (from 9.6%; NFL 4.6-9.4%). Part is the QB's throwing motion meeting an early-collapsing pocket (#408, G5); Coverage is measuring it with #424.
+3. **Third downs** convert 28% (NFL 37-41%), which goes with sacks and a run game now slightly under the band.
+4. **Outside zone** is still about a yard short (see the current-state table).
 
 ## Current state (run-ref-4 @ develop 0e09c4dc, 2026-11-09)
 
 From `npm run ref:report`; full output in [reviews/run-ref-4-report.md](reviews/run-ref-4-report.md). 1,321 fixed runs, yards capped at 20.
 
-| | Code defaults (all flags off) | Reference | NFL 2022 |
+| | Legacy (all flags off; the default until the promotion) | Reference (now the default) | NFL 2022 |
 |---|---|---|---|
 | All runs, yd | 5.19 | 3.56 | |
 | Outside zone yd; runs <= 0 | 4.69; 11% | 2.73; 23% | 3.50; 19% |
@@ -30,15 +59,15 @@ From `npm run ref:report`; full output in [reviews/run-ref-4-report.md](reviews/
 | Gun handoff time, by concept (s) | 0.9-1.4 | 1.10 all | 1.0-1.1 |
 
 Two things this table says:
-- **The code defaults are now the outlier.** With every experimental flag off the engine runs for 5.19 yd a carry with 16.7% of runs going 10+; the reference is at 3.56 and 7.8%. Games, the scorecard and the test suites all run on the defaults. Promoting the stack to default (item 8 below) has become the largest single correction available.
+- **The legacy defaults were the outlier.** With every experimental flag off the engine runs for 5.19 yd a carry with 16.7% of runs going 10+; the reference is at 3.56 and 7.8%. That is why the stack was promoted to default the same day.
 - **Outside zone's missing yard has a signature.** A blocked defensive lineman makes first contact on 53% of outside-zone runs (NFL 33%), and those runs gain 1.86 yd (NFL 3.39). The back is running into engaged linemen on a line that does not move its men (Run Game's flat line and missing climbs).
 
 ## Use it
 
 ```sh
-npm run ref -- <command>                      # the reference stack
+npm run ref -- <command>                      # the reference stack (= the code defaults), with ambient flags reset
 npm run ref -- --flag ZONE_RUN=0 -- <command> # the stack with one change: say so when you report
-npm run ref -- --off -- <command>             # every experimental flag at its code default
+npm run ref -- --off -- <command>             # the legacy engine: every listed flag off
 npm run ref -- --list
 ```
 
@@ -236,7 +265,7 @@ Ordered by how much each unblocks. Every measurement below is taken on `npm run 
 5. **Measure the two unmeasured flags or drop them (Defense).** `LB_RUN_THROUGH` and `EDGE_WIDTH` need a same-operator NFL number to go on.
 6. **Play-calling flags (Defense, Run Game).** Capture a second matched set under `npm run ref` so `RUN_FORM_PAIR`, `MUG_CALLS`, `NICKEL_FRONTS` and `SHORT_BASE` are exercised, then check formation and front shares against the 2022 shares in their rows.
 7. **Pass side (Coverage, QB).** Run Coverage's panel on the reference: `GUN_SNAP` delays every gun drop by about 0.2 s, and `TIGHT_OFF`, `SLOT_LEV`, `ALIGN_HABIT`, `RUN_CONFIRM` and `LB_READ_STEP` all move pass defenders. The four-game check here is too small to clear them.
-8. **Promotion.** When items 1-4 bring the reference near the NFL without a known wrong mechanism, flip the `on` flags to default in one PR, re-pin the 178 tests listed under Checks with their owners, delete the off paths of the retired flags, and bump the stack id.
+8. **Re-record the tests on the promoted engine.** The stack is the default; the suites are still pinned to the legacy engine in `vitest.config.ts`. Each lane re-records its files (the list is under Promotion above), removes flags from the pin, and deletes the off paths of flags nobody runs at `0` any more, starting with the retired ones.
 
 Open PRs that were not merged in this pass, and why:
 

@@ -52,7 +52,7 @@ export interface CarrierOptions {
  * the lane he chose unless another is clearly better. He flipped from the
  * outside lane to the inside one 1.5 yd from the line while running 3.6 yd/s
  * laterally and ran into the end he was bending around. */
-export const RB_COMMIT = process.env.RB_COMMIT === '1';
+export const RB_COMMIT = process.env.RB_COMMIT !== '0';
 /** OZ_HIP_READ (default off): on outside and wide zone the back reads the
  * play-side end man (the first defender on the line outside his play-side
  * tackle, as he sees them) against the blocker nearest him. With his blocker
@@ -61,7 +61,7 @@ export const RB_COMMIT = process.env.RB_COMMIT === '1';
  * the designed aim. The lane read still decides. Tracked 2022 outside zone,
  * same operator: with the end's blocker inside him the back crossed inside
  * him 78-81% (ours 40-48%), reached 60% (ours 43%), square 73-86%. */
-export const OZ_HIP_READ = process.env.OZ_HIP_READ === '1';
+export const OZ_HIP_READ = process.env.OZ_HIP_READ !== '0';
 /** RB_HELD (default off): the back's read at the line gives a defender he
  * sees a blocker on the same held-up time as his open-field read does (0.7 s,
  * 0.25 s if the man is visibly coming at him through the block). The line
@@ -69,14 +69,14 @@ export const OZ_HIP_READ = process.env.OZ_HIP_READ === '1';
  * speed, so with the line locked up every lane read closed and he took the
  * one nearest the call (s11-79: into the end; an early cut inside him gained
  * 4.7 yd on the same snap). */
-export const RB_HELD = process.env.RB_HELD === '1';
+export const RB_HELD = process.env.RB_HELD !== '0';
 /** HELD_SIDE (default off; with RB_HELD): the held-up time counts only for
  * an entry his blocker stands between him and: a blocker on the man's inside
  * does not slow him to an entry outside him. The line read gave an end with
  * outside leverage on his blocker the full hold to the edge, so the edge read
  * open and the back bounced into him (tracked outside zone: backs crossed
  * inside such an end 78-81%, ours 41-56%). */
-export const HELD_SIDE = process.env.HELD_SIDE === '1';
+export const HELD_SIDE = process.env.HELD_SIDE !== '0';
 /** RB_FLOW (default off): the back reads a moving line where it will be.
  * Bodies blocking a route were taken where they stand now, so on a flowing
  * zone line the straight lane behind blockers already stepping play side
@@ -85,7 +85,7 @@ export const HELD_SIDE = process.env.HELD_SIDE === '1';
  * handoff where tracked backs' falls, 2.4 -> 2.8 vs 2.0 -> 1.5 yd/s on inside
  * zone). Each body he sees is carried along its seen velocity to when he
  * would pass it (at most 1 s ahead). */
-export const RB_FLOW = process.env.RB_FLOW === '1';
+export const RB_FLOW = process.env.RB_FLOW !== '0';
 /** RB_TEMPO (default off): through traffic the back runs at the speed from
  * which he can still cut away from the nearest free defender in front of him,
  * not flat out. A side step of his body plus the man's reach (w) takes
@@ -100,7 +100,7 @@ export const RB_FLOW = process.env.RB_FLOW === '1';
  * zone; outside 5.9 / 6.8); ours 6.7 / 7.8 (6.9 / 7.7), at the tracked p90,
  * and the open-field DB attempts we lose are against 7.5-7.7 yd/s backs (6.1
  * on the tackles that hold). */
-export const RB_TEMPO = process.env.RB_TEMPO === '1';
+export const RB_TEMPO = process.env.RB_TEMPO !== '0';
 /** RB_GATHER (default off, with RB_TEMPO): a free man he can no longer
  * sidestep at half speed still slows him to that half speed: he gathers his
  * feet to keep a cut (or to take the hit balanced) rather than run flat out
@@ -108,7 +108,7 @@ export const RB_TEMPO = process.env.RB_TEMPO === '1';
  * Tracked 2022 zone backs ease off as the nearest free man in front closes
  * from 5 to 1 yd (inside 4.8 -> 4.0 yd/s, outside 5.5 -> 4.6); ours held
  * 5.1-5.4 and braked only inside 2.5 yd. */
-export const RB_GATHER = process.env.RB_GATHER === '1';
+export const RB_GATHER = process.env.RB_GATHER !== '0';
 
 /** The designed aiming point as this runner sees the line now (LIVE_AIM=0: snap point). */
 export function liveAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 | undefined {

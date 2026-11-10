@@ -109,12 +109,12 @@ const squeezes = new WeakMap<Engagement, { side: number; until: number }>();
 const DL_FLATTEN_WON = process.env.DL_FLATTEN_WON !== '0';
 /** SHED_ROUTE (experimental, off): see the work-off; a first-level man works around the
  * blocker's actual ball-side shoulder, not the frame of the blocker's original drive. */
-const SHED_ROUTE = process.env.SHED_ROUTE === '1';
+const SHED_ROUTE = process.env.SHED_ROUTE !== '0';
 /** FLAT_PRESS (experimental, off): see the flatten's depth request; his step into the man (yd/s). */
-const FLAT_PRESS = process.env.FLAT_PRESS === '1', FLAT_PRESS_STEP = 0.5;
+const FLAT_PRESS = process.env.FLAT_PRESS !== '0', FLAT_PRESS_STEP = 0.5;
 /** TOUCH_READ (experimental, off): see the flatten read; a hand-fighting lineman
  * reads the man's motion by touch, not by a delayed picture. */
-const TOUCH_READ = process.env.TOUCH_READ === '1';
+const TOUCH_READ = process.env.TOUCH_READ !== '0';
 function drivenBack(d: Agent): boolean {
   const felt = d.body.support?.felt; if (!felt) return false;
   const load = Math.hypot(felt.x, felt.y);
@@ -684,7 +684,7 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
 /** ZONE_RUN (experimental, off): an interior defender keyed on his man's
  * reach/bucket step races him for the play-side shoulder with open hips. */
 const BACKSIDE_SHOOT = process.env.BACKSIDE_SHOOT === '1';
-const ZONE_RUN = process.env.ZONE_RUN === '1', ZONE_RUN_PACE = 0.75, ZONE_RUN_STEP = 0.5, ZONE_RUN_OPEN = Math.PI / 4;
+const ZONE_RUN = process.env.ZONE_RUN !== '0', ZONE_RUN_PACE = 0.75, ZONE_RUN_STEP = 0.5, ZONE_RUN_OPEN = Math.PI / 4;
 /** ZONE_RUN: a blocker seen running sideways at least this fast (yd/s) is
  * racing for the shoulder (a reach); slower, he is driving (inside zone) and
  * the DL plays his pace. Racing, the DL presses upfield as he crosses
@@ -759,16 +759,16 @@ const SHED_PHYSICAL = process.env.SHED_PHYSICAL !== '0';
 const SHED_PURSUE = process.env.SHED_PURSUE !== '0';
 /** Experimental (RUN_HAND_MOVE=1, off): a defender who decides to work off
  * a run block attacks the blocker's hands first (see the shed decision). */
-const RUN_HAND_MOVE = process.env.RUN_HAND_MOVE === '1';
+const RUN_HAND_MOVE = process.env.RUN_HAND_MOVE !== '0';
 /** Experimental (SHED_PAST=1, off): a defender working off a run block is
  * off it once the blocker is no longer between him and the runner he sees
  * (see the leverage check in stepRunRep). */
-const SHED_PAST = process.env.SHED_PAST === '1';
+const SHED_PAST = process.env.SHED_PAST !== '0';
 /** Experimental (SHED_PAST_GATE=1, with SHED_PAST; off): getting past frees
  * him only while the runner he sees is still more than 2 yd off. Slipping the
  * blocker with the runner already on him leaves him in the block, reaching
  * with his free arm (docs/reviews/run-shed-release.md, "Release timing"). */
-const SHED_PAST_GATE = process.env.SHED_PAST_GATE === '1';
+const SHED_PAST_GATE = process.env.SHED_PAST_GATE !== '0';
 
 /** A defender working off a run block: until when, and toward which side of
  * the surface frame (the ball side when he decided). */
@@ -785,7 +785,7 @@ const ANCHOR = process.env.RUN_ANCHOR !== '0';
  * brace when both cross a line (0.25 g, 0.15 yd/s). The switch flickered
  * tick to tick: its toggles were 58% of outside zone solo blockers' request
  * heading churn (70% on doubles, 49% inside zone solo), each a 60-90 deg jump. */
-const ANCHOR_GRADE = process.env.ANCHOR_GRADE === '1';
+const ANCHOR_GRADE = process.env.ANCHOR_GRADE !== '0';
 /** ANCHOR_GRADE: the time (s) over which a blocker's feel of being driven
  * settles (a reaction time), and that feel per blocker. */
 const ANCHOR_FEEL = .15;
@@ -796,7 +796,7 @@ const ANCHOR_FEEL = .15;
  * when hand force blinks, the SEAL_HOLD load threshold and the raw felt-force
  * feedback (together the lateral-jump share of engaged OZ/IZ request heading
  * churn, about equal parts). Feet re-plan at step cadence. */
-const FEET_SETTLE = process.env.FEET_SETTLE === '1';
+const FEET_SETTLE = process.env.FEET_SETTLE !== '0';
 const FEET_SETTLE_TAU = .1;
 const feetSettle = new WeakMap<Agent, { e: Engagement; vel: Vec2; t: number }>();
 const anchorFeel = new WeakMap<Agent, { load: number; back: number; t: number }>();
@@ -867,12 +867,12 @@ export function updateEngagements(sim: PlaySim, intents: Intent[] = sim.intents)
  * 2.1 -> 3.5 yd/s over the 0.6 s before leaving); ours held at 2.1-2.5 yd/s
  * and started their climb from there. Contact and World decide what the feet
  * achieve; the release read is unchanged. */
-export const CLIMB_PREP = process.env.CLIMB_PREP === '1';
+export const CLIMB_PREP = process.env.CLIMB_PREP !== '0';
 /** CLIMB_SQUARE (default off; acts with CLIMB_PREP): the same climber squares
  * his shoulders upfield while his hands stay on. At release climbers faced
  * ~45 deg in toward the down man with the climb path ~35 deg the other way
  * (80-90 deg off), and spent 0.3 s turning before they could accelerate. */
-export const CLIMB_SQUARE = process.env.CLIMB_SQUARE === '1';
+export const CLIMB_SQUARE = process.env.CLIMB_SQUARE !== '0';
 interface ClimbPrepPlan { kind: string; climbTo?: Agent | null;
   combination?: { released: boolean; backer: Agent | null; defender: Agent; members: Agent[] } }
 /** CLIMB_BASE (default off): a zone double member whose backer shows (in
@@ -882,7 +882,7 @@ interface ClimbPrepPlan { kind: string; climbTo?: Agent | null;
  * to the release left the climber leaning ~1,300 N into him; with the man
  * gone the lean collapsed his posture (0.77 to 0.12) and he spent 0.8 s
  * recovering at ~1 yd/s beside the man (s11-45 RG). */
-export const CLIMB_BASE = process.env.CLIMB_BASE === '1';
+export const CLIMB_BASE = process.env.CLIMB_BASE !== '0';
 /** DOUBLE_OVERTAKE (default off): zone doubles hand the man to the member
  * who can hold him and release the other, as tracked: on stretch runs the
  * backside member overtakes a man flowing play side (races for his play-side
@@ -895,7 +895,7 @@ export const CLIMB_BASE = process.env.CLIMB_BASE === '1';
  * operator, play-side member's share of climbs (NFL / before / with): outside
  * zone, man in the gap 92 / 24 / 67%, over the backside man 89 / 58 / 85%,
  * over the play-side man 46 / 16 / 51%. Read in blocking.ts; defined here. */
-export const DOUBLE_OVERTAKE = process.env.DOUBLE_OVERTAKE === '1';
+export const DOUBLE_OVERTAKE = process.env.DOUBLE_OVERTAKE !== '0';
 function easeClimberPush(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   const run = sim.offCall.run;
   if (!run || !['insideZone', 'outsideZone', 'wideZone', 'splitZone'].includes(run.scheme)) return;

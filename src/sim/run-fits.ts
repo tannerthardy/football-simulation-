@@ -210,7 +210,7 @@ const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ
 
 /** Free fits plan lateral work with their own body (LB_PLAN=0 off). */
 const LB_PLAN = process.env.LB_PLAN !== '0';
-const LB_LINE_FLOW = process.env.LB_LINE_FLOW === '1', LINE_FLOW_LEAD = 1.5, GUARD_KEY_DELAY = 0.5, GUARD_STEP = 0.5;
+const LB_LINE_FLOW = process.env.LB_LINE_FLOW !== '0', LINE_FLOW_LEAD = 1.5, GUARD_KEY_DELAY = 0.5, GUARD_STEP = 0.5;
 /** Experimental activation of the same planner for an observed pull-adjusted
  * insertion. Default off while matched containment/misdirection controls run. */
 const PULL_PLAN = process.env.PULL_PLAN === '1';
@@ -308,7 +308,7 @@ const STACK_LANDMARK = LB_LANDMARK ? 2.25 : 1.5;
 /** Where a threatened stack backer fills to: a yard off the ball, meeting the runner in the hole. */
 const FILL_DEPTH = 1;
 /** END_CHASE (experimental, off): see the edge fit; how far into the backfield a backside edge chases (yd). */
-const END_CHASE = process.env.END_CHASE === '1', END_CHASE_DEPTH = 1.0;
+const END_CHASE = process.env.END_CHASE !== '0', END_CHASE_DEPTH = 1.0;
 
 /** Linemen this player sees pulling: off the surface, behind the line, moving
  * across. Every one counts; nothing reads the offensive call. */

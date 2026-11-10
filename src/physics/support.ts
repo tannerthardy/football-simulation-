@@ -110,7 +110,7 @@ const ARM_PRESS = process.env.ARM_PRESS !== '0';
  * within position groups, scales as mass^0.69 (0.67-0.71;
  * scripts/mechanics/leg_force_allometry.py, data/reviews/mechanics/leg-force-allometry.json).
  * Traction stays proportional to mass; arm and press strength are unchanged. */
-const LEG_ALLOMETRY = process.env.LEG_ALLOMETRY === '1';
+const LEG_ALLOMETRY = process.env.LEG_ALLOMETRY !== '0';
 const LEG_MASS_EXPONENT = 0.69, LEG_REF_MASS_KG = 110;
 /** Leg drive at zero speed before the traction cap, kg·yd/s². */
 export function legDrive(p: PhysicalProfile): number {

@@ -21,7 +21,7 @@ import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
 import type { MoveCommand } from '../physics/kinematics.js';
 
-export const L2_BREAKDOWN = process.env.L2_BREAKDOWN === '1';
+export const L2_BREAKDOWN = process.env.L2_BREAKDOWN !== '0';
 const CLOSING = 3.0, HORIZON = .5;
 const isDL = (s: string) => /^D[ET]|^NT/.test(s);
 
