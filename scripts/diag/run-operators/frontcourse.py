@@ -99,8 +99,20 @@ def course(path):
         second = any(k != j and math.dist(D[f2][k], C[f2]) <= 1.0 for k in range(len(D[f2])))
         mh = MD[j] if j < len(MD) else None
         mom = (mr * vr[0] - mh * vh[0]) if (mr and mh and vr[0] is not None and vh[0] is not None) else None
+        # Aligned course (Integration, 2026-11-10): time zero is the first frame within 0.5 s of first proximity at which
+        # the centres reach torso distance, or the closest approach if they never do. First proximity is not the same
+        # stage of the collision on both sources, so the exchange is compared from torso distance. Closing speed (runner
+        # minus hitter along the axis, on the frame before) bins the inputs, not the runner's speed alone.
+        win = range(hit, min(e, hit + 5) + 1)
+        tc = next((f for f in win if math.dist(C[f], H[f]) <= TORSO), min(win, key=lambda f: math.dist(C[f], H[f])))
+        vrA = {o: along(C, tc + o) for o in OFFS}
+        vhA = {o: along(H, tc + o) for o in OFFS}
+        sepA = {o: (math.dist(C[tc+o], H[tc+o]) if 0 <= tc + o <= e else None) for o in OFFS}
+        closing = (vrA[-1] - vhA[-1]) if vrA[-1] is not None and vhA[-1] is not None else None
         rows.append(dict(cls=cls, bin=speed_bin(sp * 10), torso=torso, vr=vr, vh=vh, sep=sep, gain=g, hdisp=hd,
-                         rel=g - hd, off0=off0, offc=offc, blocker_on=blocker_on, second=second, t_end=(e - hit) / 10, mom=mom))
+                         rel=g - hd, off0=off0, offc=offc, blocker_on=blocker_on, second=second, t_end=(e - hit) / 10, mom=mom,
+                         vrA=vrA, vhA=vhA, sepA=sepA, closing=closing, cbin=speed_bin(closing) if closing is not None else None,
+                         lag=(tc - hit) / 10))
     return rows
 
 
@@ -128,13 +140,25 @@ def show(name, out, masses):
         print('   (no masses in this source: momentum omitted)')
 
 
+def show_aligned(name, aligned):
+    print(f"   -- aligned on first torso distance (<= {TORSO} yd; else closest approach), by closing speed (runner - hitter, frame before)")
+    print(f"      speeds along the approach axis (yd/s) at " + ' '.join(f"{o/10:+.1f}" for o in OFFS) + " s from torso distance")
+    for g, c in aligned.items():
+        print(f"   {g:22} n {c['n']:4} closing {c['closing']:4.2f} yd/s, torso at +{c['lag']:.1f} s after proximity | runner "
+              + ' '.join(fmt(c['vr'][o]) for o in OFFS) + " | hitter " + ' '.join(fmt(c['vh'][o]) for o in OFFS)
+              + " | sep " + ' '.join(fmt(c['sep'][o], 4) for o in OFFS))
+
+
 if '--from-json' in sys.argv:
     # Print a stored result (e.g. the NFL run, frontcourse-nfl.json) with the same layout.
     for name, out in json.load(open(sys.argv[sys.argv.index('--from-json') + 1])).items():
         for cell in out.values():
             for k in ('vr', 'vh', 'sep'):
                 cell[k] = {int(o): v for o, v in cell[k].items()}
-        show(name, out, any(c['mom'] is not None for c in out.values()))
+        if name.endswith('aligned on torso distance'):
+            show_aligned(name, out)
+        else:
+            show(name, out, any(c['mom'] is not None for c in out.values()))
     sys.exit(0)
 
 ARGS = [a for a in sys.argv[1:] if not a.startswith('--')]
@@ -164,5 +188,19 @@ for path in ARGS:
     if out:
         show(name, out, any(r['mom'] is not None for r in R))
     store[name] = out
+    # The aligned course, by closing speed.
+    aligned = {}
+    agroups = [('all', lambda r: True)] + [(f'closing {b}', (lambda b: lambda r: r['cbin'] == b)(b)) for b in ('<3', '3-5', '5+')]
+    agroups += [(f'{c} closing {b}', (lambda c, b: lambda r: r['cls'] == c and r['cbin'] == b)(c, b)) for c in ('blocked', 'free') for b in ('3-5', '5+')]
+    for g, f in agroups:
+        rr = [r for r in R if f(r)]
+        if len(rr) < 5:
+            continue
+        aligned[g] = dict(n=len(rr), closing=med([r['closing'] for r in rr]), lag=med([r['lag'] for r in rr]),
+                          vr={o: med([r['vrA'][o] for r in rr]) for o in OFFS}, vh={o: med([r['vhA'][o] for r in rr]) for o in OFFS},
+                          sep={o: med([r['sepA'][o] for r in rr]) for o in OFFS})
+    if aligned:
+        show_aligned(name, aligned)
+    store[name + ' | aligned on torso distance'] = aligned
 if OUT:
     json.dump(store, open(OUT, 'w'), indent=1, default=str)
