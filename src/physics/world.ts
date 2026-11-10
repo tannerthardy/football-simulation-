@@ -45,6 +45,10 @@ export interface Intent extends MoveCommand {
   push?: number;
   /** Target pad level, 0 upright … 1 as low as he can get. */
   posture?: number;
+  /** How far his lean may grow past the felt load (fraction; default the
+   * legs' ordinary PUSH_GROWTH). 0 is an anchor: he leans only as hard as the
+   * load he feels, so nothing is left over when it is taken away. */
+  growth?: number;
   /** Deliberately leave his feet in this direction (dive, layout). A unit
    * vector launches the body with full leg drive; a shorter one launches it
    * that fraction (near zero: he just lets his legs go). */
@@ -295,6 +299,14 @@ const PUSH_GROWTH = 0.25;
 const FEEL = 0.04;
 const LEAN_RISE = 0.04;
 const LEAN_DECAY = 0.15;
+/** LEAN_PITCH (experimental, off): a committed lean is his COM held ahead of
+ * his feet (offset = lean / (m·w0²)). The ankles move the pressure centre
+ * across his base at once, so a lean up to the base radius is immediate; past
+ * it the COM itself must pitch over planted feet, which it can do no faster
+ * than an unopposed fall: offset' <= w0·offset. A sustained push is still met
+ * in full once he has leaned to it; a load that vanishes releases only the
+ * lean he really had. */
+const LEAN_PITCH = process.env.LEAN_PITCH !== '0';
 const POSTURE_RATE = 2.5;
 const DEFAULT_POSTURE = 0.2;
 const FALL_TIP = 3;
@@ -406,6 +418,48 @@ const GRASP_ARMS = process.env.GRASP_ARMS === '1';
  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
  * scripts/diag/effective-mass/shape.py. */
 const CHEST_HALF = 0.27 - 0.15;
+/** Experimental (TORSO_CAPSULE=1, off): a torso is wider than it is deep. For
+ * the pairs the owner names (World.capsulePair; PlaySim: the ball carrier and
+ * a defender), the torso contact is between two capsules across each man's
+ * facing (the shoulder line): half-width the body's radius, half-depth that
+ * times TORSO_DEPTH. Contact is at the segments' closest points; the normal is
+ * the direction between them (the shoulder's surface normal, not the line of
+ * centres), and the row acts at the surface point with lever arms, so an
+ * off-centre hit turns the bodies and leaves the closing as slip. Off, every
+ * torso normal passes through both centres. docs/reviews/2026-11-10-torso-shape-plan.md. */
+const TORSO_CAPSULE = process.env.TORSO_CAPSULE === '1';
+/** Half-depth over half-width of a padded torso (0.15 / 0.27 yd: the same
+ * anthropometric estimate as CHEST_HALF). */
+const TORSO_DEPTH = 0.15 / 0.27;
+/** Experimental (WRAP_TWO_POINT=1, off): a two-arm upper wrap grips the runner
+ * on both sides of his chest, so it resists the two bodies turning relative to
+ * each other: one arm pulls while the other pushes. A relative-yaw row couples
+ * their spins, bounded by the grip's capacity times the chest half-span (the
+ * hands' CHEST_HALF). One-arm grabs (lock 0) keep one point. Off, a grasp acts
+ * at one point and any moment it delivers turns the holder alone.
+ * docs/reviews/2026-11-10-torso-shape-plan.md (the tackler's over-rotation). */
+const WRAP_TWO_POINT = process.env.WRAP_TWO_POINT === '1';
+
+/** TORSO_CAPSULE: closest points of the two shoulder-line segments and the row
+ * geometry they give (normal from a to b, gap, and each body's arm to its
+ * surface contact point). */
+function capsuleGeom(a: Body, b: Body): { nx: number; ny: number; s: number; R: number; rax: number; ray: number; rbx: number; rby: number } {
+  const da = a.profile.radius * TORSO_DEPTH, db = b.profile.radius * TORSO_DEPTH;
+  const la = a.profile.radius - da, lb = b.profile.radius - db;
+  const ux = -Math.sin(a.facing), uy = Math.cos(a.facing), vx = -Math.sin(b.facing), vy = Math.cos(b.facing);
+  const rx = b.pos.x - a.pos.x, ry = b.pos.y - a.pos.y;
+  // Closest points of a.pos + sa·u (|sa| <= la) and b.pos + tb·v (|tb| <= lb).
+  const uv = ux * vx + uy * vy, ur = ux * rx + uy * ry, vr = vx * rx + vy * ry, den = 1 - uv * uv;
+  let sa = den > 1e-9 ? clamp((ur - uv * vr) / den, -la, la) : 0;
+  let tb = clamp(uv * sa - vr, -lb, lb);
+  sa = clamp(uv * tb + ur, -la, la);
+  tb = clamp(uv * sa - vr, -lb, lb);
+  const pax = a.pos.x + ux * sa, pay = a.pos.y + uy * sa, pbx = b.pos.x + vx * tb, pby = b.pos.y + vy * tb;
+  let dx = pbx - pax, dy = pby - pay; let dist = hypot2(dx, dy);
+  if (dist < 1e-8) { dx = rx; dy = ry; dist = hypot2(dx, dy) || 1; }
+  const nx = dx / dist, ny = dy / dist, R = CONTACT_SCALE * (da + db);
+  return { nx, ny, s: dist - R, R, rax: pax + nx * da - a.pos.x, ray: pay + ny * da - a.pos.y, rbx: pbx - nx * db - b.pos.x, rby: pby - ny * db - b.pos.y };
+}
 /** Experimental (CONTACT_LAYER=1, off): a compliant torso layer before the stiff core
  * (docs/reviews/effective-mass.md, step 1). Each torso carries a soft layer (pads,
  * tissue and arms yielding) of depth LAYER_DEPTH and stiffness LAYER_K; a pair's
@@ -472,6 +526,8 @@ interface Contact {
   closing: number;
   /** CONTACT_LAYER: this row's own softness (depth-dependent law). */
   soft?: Softness;
+  /** TORSO_CAPSULE: the row's geometry is the capsules', with lever arms. */
+  capsule?: boolean;
   /** The compliant solve pressed them together (before the relax). */
   touched?: boolean;
   observed: ContactSnapshot;
@@ -495,6 +551,8 @@ interface JointRow {
   /** Normal impulse moments at the same physical point as steering. */
   ni?: number;
   nj?: number;
+  /** WRAP_TWO_POINT: accumulated relative-yaw impulse this substep (kg·yd²/s). */
+  lw?: number;
   /** Normal regime: +1 compressive (hands), −1 tension, 0 inactive. */
   mode: number;
   c: number;
@@ -634,6 +692,8 @@ export class World {
   /** Live reduced lower geometry; false retains the historical linear law. */
   readonly boundedAttachment: boolean;
   joints: Joint[] = [];
+  /** TORSO_CAPSULE: the body pairs whose torso contact uses the capsule (set by the owner). */
+  capsulePair: ((a: Body, b: Body) => boolean) | null = null;
   /** World clock, seconds (the owner may set it to keep a shared clock). */
   time = 0;
   /** Fixed substep count for convergence studies; adaptive when unset. */
@@ -1678,13 +1738,15 @@ export class World {
       for (const c of contacts) c.touched = c.ln > 0;
       // Relaxation acts after position integration. Use the actual current
       // common point for these impulses, not the pre-travel lever arms.
-      if (this.handContact === 'patch') for (const c of contacts) this.contactPatch(c);
+      if (this.handContact === 'patch') for (const c of contacts) if (!c.capsule) this.contactPatch(c);
       for (let it = 0; it < RELAX_ITERATIONS; it++) {
         for (const c of contacts) {
           // A pair the correction left apart may still close that gap within
           // a substep (speculative), never more.
           const a = bs[c.i], b = bs[c.j];
-          const gap = hypot2(b.pos.x - a.pos.x, b.pos.y - a.pos.y) - c.R;
+          let gap: number;
+          if (c.capsule) { const g = capsuleGeom(a, b); if (it === 0) this.capsuleArms(c, g); gap = g.s; }
+          else gap = hypot2(b.pos.x - a.pos.x, b.pos.y - a.pos.y) - c.R;
           c.bias = gap > 0 ? gap / h : 0;
           this.solveContact(c, RIGID, true);
         }
@@ -1871,7 +1933,7 @@ export class World {
             // Legs drive hardest straight ahead; sideways or backward far less.
             const dir = directionalSpeedFactor(p, this.facingDelta(b.facing, Math.atan2(uy, ux)));
             const capacity = sp.pushForce * dir * clamp(1 - vp / p.vmax, 0, ECCENTRIC_GAIN) * fat * a * push;
-            const mag = Math.min(capacity, L * (1 + PUSH_GROWTH), m * ex / h);
+            const mag = Math.min(capacity, L * (1 + clamp(intent.growth ?? PUSH_GROWTH, 0, PUSH_GROWTH)), m * ex / h);
             tx = ux * mag; ty = uy * mag;
           }
         }
@@ -1907,7 +1969,16 @@ export class World {
             // as in the first release of the original two-pass technique.
             const rising = tx * tx + ty * ty >= leanX * leanX + leanY * leanY;
             const k = 1 - Math.exp(-h / (rising ? LEAN_RISE : LEAN_DECAY));
+            const before = LEAN_PITCH ? hypot2(leanX, leanY) : 0;
             leanX += (tx - leanX) * k; leanY += (ty - leanY) * k;
+            if (LEAN_PITCH) {
+              const after = hypot2(leanX, leanY), stiff = m * w0 * w0;
+              const most = stiff * Math.max(baseRadiusAt(sp, sup.posture), before / stiff * Math.exp(w0 * h));
+              if (after > most && after > before) {
+                const keep = Math.max(before, most) / after;
+                leanX *= keep; leanY *= keep;
+              }
+            }
           }
         }
         sup.lean = { x: leanX, y: leanY };
@@ -2269,6 +2340,15 @@ export class World {
         const d2 = dx * dx + dy * dy;
         const reach = rmax + Math.sqrt(rvx * rvx + rvy * rvy) * h + 0.02;
         if (d2 > reach * reach) continue;
+        if (TORSO_CAPSULE && this.capsulePair?.(a, b)) {
+          const g = capsuleGeom(a, b);
+          if (g.s > Math.max(0, -(rvx * g.nx + rvy * g.ny)) * h) continue;
+          if (-g.s > report.maxPenetration) report.maxPenetration = -g.s;
+          const row = this.capsuleRow(i, j, a, b, g, h, soft);
+          if (CONTACT_LAYER) this.layerContact(row, g.s, h);
+          out.push(row);
+          continue;
+        }
         const dist = Math.sqrt(d2);
         // Normal from the current separation; an exact coincidence uses the
         // approach direction, then a stable index-based direction.
@@ -2320,6 +2400,30 @@ export class World {
     return out;
   }
 
+  /** TORSO_CAPSULE: a contact row from capsule geometry, acting at the surface point. */
+  private capsuleRow(i: number, j: number, a: Body, b: Body, g: ReturnType<typeof capsuleGeom>, h: number, soft: Softness): Contact {
+    const vn = (b.vel.x - a.vel.x) * g.nx + (b.vel.y - a.vel.y) * g.ny;
+    const row: Contact = { i, j, nx: g.nx, ny: g.ny, R: g.R, ri: 0, rj: 0, ni: 0, nj: 0, mn: 0, mt: 0, capsule: true,
+      guard: false, bias: Math.max(soft.biasRate * g.s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0,
+      observed: { time: this.time, intervalEnd: this.time + h, normal: { x: g.nx, y: g.ny },
+        positionI: { ...a.pos }, positionJ: { ...b.pos }, facingI: a.facing, facingJ: b.facing,
+        velocityI: { ...a.vel }, velocityJ: { ...b.vel }, supportI: a.support!.state, supportJ: b.support!.state,
+        height: clamp(Math.min(this.padHeight[i], this.padHeight[j]), 0, Math.min(a.profile.heightYd, b.profile.heightYd)) } };
+    this.capsuleArms(row, g);
+    return row;
+  }
+
+  /** TORSO_CAPSULE: the row's arms and effective masses for geometry g (sign
+   * conventions as contactPatch: a takes −n, b takes +n). */
+  private capsuleArms(c: Contact, g: ReturnType<typeof capsuleGeom>): void {
+    c.nx = g.nx; c.ny = g.ny; c.R = g.R;
+    c.ni = -g.rax * g.ny + g.ray * g.nx; c.nj = g.rbx * g.ny - g.rby * g.nx;
+    c.ri = g.rax * g.nx + g.ray * g.ny; c.rj = -(g.rbx * g.nx + g.rby * g.ny);
+    const inverseMass = 1 / this.mass[c.i] + 1 / this.mass[c.j];
+    c.mn = 1 / (inverseMass + c.ni * c.ni / this.inertia[c.i] + c.nj * c.nj / this.inertia[c.j]);
+    c.mt = 1 / (inverseMass + c.ri * c.ri / this.inertia[c.i] + c.rj * c.rj / this.inertia[c.j]);
+  }
+
   /** CONTACT_LAYER: the row's spring and damping from its compression p = -s.
    * Inside the pair's soft layers (series stiffness, summed depth) the force is
    * k_layer p plus Hunt-Crossley damping 1.5 HC k p v, zero at first touch; past
@@ -2361,7 +2465,7 @@ export class World {
     const ima = 1 / this.mass[c.i], imb = 1 / this.mass[c.j];
     const av = a.vel, bv = b.vel;
     let vn = (bv.x - av.x) * c.nx + (bv.y - av.y) * c.ny;
-    if (this.handContact === 'patch') vn += (a.spin ?? 0) * c.ni + (b.spin ?? 0) * c.nj;
+    if (this.handContact === 'patch' || c.capsule) vn += (a.spin ?? 0) * c.ni + (b.spin ?? 0) * c.nj;
     const sf = c.soft && !relax ? c.soft : soft;
     let imp = relax || c.guard ? -c.mn * (vn + c.bias) : -c.mn * sf.massScale * (vn + c.bias) - sf.impulseScale * c.ln;
     // CONTACT_LAYER: the relax takes back the separating velocity the soft solve
@@ -2372,7 +2476,7 @@ export class World {
     c.ln = ln;
     av.x -= c.nx * dn * ima; av.y -= c.ny * dn * ima;
     bv.x += c.nx * dn * imb; bv.y += c.ny * dn * imb;
-    if (this.handContact === 'patch') {
+    if (this.handContact === 'patch' || c.capsule) {
       a.spin = (a.spin ?? 0) + c.ni * dn / this.inertia[c.i];
       b.spin = (b.spin ?? 0) + c.nj * dn / this.inertia[c.j];
     }
@@ -2665,6 +2769,16 @@ export class World {
       const lt = clamp(r.lt - (r.mt ?? r.mn) * vt, -tangentLimit, tangentLimit), dt = lt - r.lt;
       r.lt += dt * this.supportImpulse(jt, tx * dt, ty * dt, h,false,r.tangentWork??={net:0}, -(r.ri ?? 0)*dt, -(r.rj ?? 0)*dt);
     } else this.solveTangent(r, a, b, tangentLimit);
+    if (WRAP_TWO_POINT && (jt.lock ?? 0) > 0 && jt.legs < 0.5) {
+      // The wrap's couple: drive the bodies' relative spin to zero, within
+      // the grip's capacity across the chest half-span.
+      const Ia = this.inertia[r.i], Ib = this.inertia[r.j];
+      const rel = (b.spin ?? 0) - (a.spin ?? 0);
+      const cap = lim * CHEST_HALF;
+      const lw = clamp((r.lw ?? 0) - rel / (1 / Ia + 1 / Ib), -cap, cap), d = lw - (r.lw ?? 0);
+      r.lw = lw;
+      a.spin = (a.spin ?? 0) - d / Ia; b.spin = (b.spin ?? 0) + d / Ib;
+    }
   }
 
   /** Hands and holds couple the bodies' sideways motion directly; a grip

@@ -946,3 +946,607 @@ friction are small; mechanism 1's articulation would not change it (Gate 1: the 
   (1.46 → 1.10).
 - Even central hits keep 78% in the NFL against our 42%. The NFL's collision turns closing into sliding past; ours stops
   it with the normal impulse.
+
+**(a) The lean allocation at impact: closed, negative** (temporary probes, uncommitted; `first-hit-split.mts`; 2026-11-10).
+
+Per tick over the first 0.2 s (208–241 front-on hits, run-ref-11; yd/s² along each man's axis):
+
+| | Runner | Hitter |
+|---|---|---|
+| Gait asks | −0.79 / +0.04 / +2.18 / +1.87 | +3.59 / +0.39 / +1.24 / +1.12 |
+| Lean asks (after its rise and release, before allocation) | +0.61 / +2.12 / +2.80 / +2.59 | +2.71 / +3.74 / +4.59 / +4.56 |
+| Cap (strength × force-velocity × availability) | 4.4–5.8 | 7.4–8.7 |
+
+- **The hitter drives through the hit and the runner does not.**
+- **Not his speed cap.** The runner's gait speed cap is 9.2–9.4 yd/s against his request of 5.2–5.4 yd/s.
+- **Not cutting.** The request is within 3° of his velocity at the median on the contact tick.
+- **The runner's `push` intent is 0 on 68% of contact ticks** (31% the next tick). The lean law is gated by it, and he
+  braces only after he feels the hit.
+- **Intervention:** `push` = 1 whenever a defender is within 1.2 yd ahead of the runner. Speed at +0.2 s goes 2.53 → 2.54
+  and ground along the axis +0.13 → +0.14: no change.
+- **Physics bounds it.**
+  - At impact the load on the runner is about 34 yd/s² (about 3 g), against traction of about 11 yd/s² (about 1 g).
+  - Feet at the strength cap can add at most about 1 yd/s over 0.2 s, against a torso normal impulse of −2.1 yd/s.
+  - Leg drive through the hit cannot reach 82%. The ceiling with it is near 70%.
+- **The term is the normal impulse that stops the closing along the line of centres.** In ours that impulse takes −2.11
+  yd/s off the runner in 0.2 s. In the NFL the runner loses 0.78 in total, and the hitter gains only 0.26: the pair never
+  exchanges momentum like a stopping collision.
+
+The two candidates left both act on that impulse:
+- **(b) compliance, `CONTACT_LAYER`:** −2.11 → −1.75.
+- **(c) contact geometry:** at torso contact, closing is 82–89% of the relative velocity in ours against 50–78% in the
+  NFL; the NFL's slip grows after contact and ours shrinks. That is the evidence for unparking the torso shape.
+
+## Blocked pass rushers win too soon (`pass-pocket.mts`, `pocket.py`; run-ref-12, 8 live games, 811 dropbacks; NFL 2022, 9,566 dropbacks; 2026-11-10)
+
+**The pocket does not collapse.** Depth behind the line (yd, median), among plays not yet thrown:
+
+| | NFL tackles / guards / centre / QB | Ours |
+|---|---|---|
+| 1.0 s | 2.17 / 1.43 / 1.25 / 5.17 | 2.31 / 1.58 / 1.46 / 5.13 |
+| 1.5 s | 3.42 / 2.34 / 2.23 / 6.25 | 3.50 / 2.23 / 1.74 / 6.53 |
+| 2.0 s | 4.70 / 3.30 / 3.11 / 7.39 | 5.07 / 3.00 / 2.20 / 7.78 |
+| 2.5 s | 5.65 / 4.07 / 3.72 / 8.06 | 6.43 / 3.73 / 2.90 / 7.89 |
+| 3.0 s | 6.21 / 4.52 / 4.06 / 8.11 | 7.27 / 4.21 / 3.64 / 7.92 |
+
+- The interior holds slightly *shallower* than the NFL's.
+- Tackles end up 0.4–1.0 yd deeper by 2.0–3.0 s: the edge sets wide and deep, or is pushed.
+- The QB sits at NFL depth, with the same gap to the guards. This is not the bull rush or the anchor.
+
+**First pressure** (first defender within 2 yd of the QB before the throw):
+
+| | NFL | Ours |
+|---|---|---|
+| Pressured before the throw | 28% of dropbacks | 52% |
+| Time to pressure (median) | 2.7 s | 2.7 s |
+| Blocker still on him at pressure | 63% of pressures (an offensive player within 1.2 yd) | 23% still engaged, plus some of those who came apart |
+| Blocked earlier and got off | 21% of pressures; 6% of dropbacks; last contact about 0.5 s before | 62% of pressures (261 of 424); 32% of dropbacks |
+| Never blocked | 15% | 15% |
+
+Our 261 who got off:
+- 139 came apart without the shed rule (separation), about 0.95 s before the pressure.
+- 122 were shed by `beat`, about 0.6 s before the pressure.
+- Almost all are linemen (238).
+
+**Reading.**
+- The excess pressure is rushers getting off their blocks five times as often as the NFL's: 32% of dropbacks against 6%.
+- The NFL's pressure mostly comes with the blocker still on the rusher. That is the pocket being squeezed, at 63%.
+- Ours mostly comes from a rusher who got free.
+- **Two routes:**
+  - The rule-based shed (`beat`). This is the parked grip-break question from the rusher's side.
+  - The hands simply coming apart. This is physics: the hands' steer was at its limit on 67% of engaged ticks in the run
+    game, and a rusher whose hands row saturates slides off.
+- **The next diagnosis** is the separation route: for those 139, the blocker's hands row (normal and steer against their
+  limits), the rusher's move, and the relative tangential slip in the 0.5 s before the engagement ends.
+
+**How pass rushers get off (`pass-apart.mts`; run-ref-12, 8 live games; and a `disengage` call-site count, 4 games).**
+OL–DL pass engagements that end while the QB still has the ball.
+
+**What ends them** (4 games, from `sim.disengage`'s caller):
+
+| Ending | Count | What it is |
+|---|---|---|
+| The blocker on the ground | 463 | `updateEngagements` body-down end |
+| "Turned the corner" | 172 | the pass rep's `beat`: \|phi\| ≥ 1, the rusher hip to hip past him toward the QB |
+| The rusher on the ground | 25 | |
+| Loose ball / interception | 11 | |
+| The separation rule | 1 | |
+
+The "came apart without a shed" route in the first cut is almost entirely pass blockers being knocked off their feet.
+
+**The last 0.5 s before the end** (8 games, medians):
+
+| | Corner (342; 112 then pressure) | Blocker down and other (1,049; 142 then pressure) |
+|---|---|---|
+| \|phi\| | 0.46 → 0.98 | about 0.1, flat |
+| Hands steer against its limit | 1.00 (at limit 77–85%) | 0.33–0.61 |
+| Hands normal against its limit | 0.89–1.00 | at 1.00 until the last tick |
+| Blocker's lateral request → achieved | +2.6 → +2.1 yd/s | +2.2 → +1.1–1.5 |
+| Rusher's lateral velocity | +1.6 to +2.1 | +1.0 to +1.5 |
+| Relative slip | −0.3 to −0.8 | 0 |
+| Blocker's facing against the rusher | 10–15° | 1–4° |
+
+- **Corner.** The rusher works around a blocker who keeps facing him with the hands at their steer limit.
+- **Blocker down.** The blocker goes down while sliding laterally, square to the rusher, with the hands pushing at their
+  normal limit. He asks for more lateral speed than he gets.
+
+**`HANDS_FRICTION` arm:**
+
+| | Off | On |
+|---|---|---|
+| Corner endings | 342 | 217 |
+| Other endings | 1,049 | 972 |
+| Pressures after these endings | 254 | 183 |
+
+- Friction on the hands' own load keeps a pass blocker attached around the corner (steer at limit 61–64% against 77–85%).
+- It barely touches the falls.
+
+**Reading.** The leading cause of our rushers getting free is pass blockers falling: a balance and support question
+(mine). The corner route is the hands' sideways hold, which `HANDS_FRICTION` addresses (it overshoots the run trench).
+The next diagnosis is why a sliding pass blocker under a frontal push falls: capture point against his base, availability,
+the push's direction and size, and his lateral request.
+
+## Why a sliding pass blocker falls (`pass-fall.mts`, `pass-frames.mts`, `olfall.py`, `run-fall.mts`; run-ref-12, 4 live games, seeds 11–17; NFL 2022, 9,713 dropbacks; 2026-11-10)
+
+- **Sample.** Every OL–DL pass rep that ends because the blocker's support leaves 'up' while the QB still holds the ball:
+  467 in four games.
+- **Trace.** The 0.5 s before the fall, read after each tick from his support state and the world's step report.
+- **Classes.** Fall direction is his capture-point deviation against the load he felt:
+  - *into the rusher*: opposite the load, a lean the load stopped balancing;
+  - *with the push*: along the load, knocked over;
+  - *across*.
+
+**The fall is the lean, not the push.**
+
+| | Into the rusher | With the push | Across |
+|---|---|---|---|
+| Falls | **412 (88%)** | 27 | 28 |
+| Felt load, ×mg (−0.5 s → −0.15 s → last tick) | 0.53 → 1.04 → 0.37 | 0.27 → 0.94 → 1.02 | 0.66 → 0.61 → 0.30 |
+
+Median profile of all falls, by tick before the fall:
+
+| Tick | −10 | −8 | −6 | −4 | −3 | −2 | −1 |
+|---|---|---|---|---|---|---|---|
+| Felt load, ×mg | 0.56 | 0.88 | 1.02 | 1.02 | 1.03 | 0.89 | 0.37 |
+| Committed lean as COM offset, yd | 0.45 | 1.00 | 1.20 | 1.26 | 1.27 | 1.21 | 0.51 |
+| Capture-point deviation, yd | 0.03 | 0.05 | 0.08 | 0.09 | 0.08 | 0.12 | 0.80 |
+| Ground force against traction | 0.55 | 0.98 | 1.00 | 1.00 | 1.00 | 1.00 | 0.73 |
+| Speed, yd/s | 2.2 | 2.4 | 2.7 | 2.9 | 2.9 | 3.0 | 2.9 |
+
+What the trace shows:
+
+- **How fast it happens.** The deviation goes from inside the base to past it in one tick (186 of 467) or two (72).
+- **In the crossing tick (385 crossings):**
+  - The felt load falls to 0.47 of the previous tick (quartiles 0.37–0.61).
+  - His lean was 1.13× the load (0.95–1.26).
+  - The lean release (`world.ts:1936–1950`) accounts for 98% of the deviation's jump.
+  - The hands joint is still attached in all 385.
+- **Lean against his own thresholds.** The lean is 1.26 yd of COM offset, about a 48° lean, where offset = lean/(m·w0²) = lean·h/(mg). His fall threshold is 1.02 yd (rb + step speed/w0) and his base radius 0.18 yd. A lean already beyond the fall threshold means any loss of more than about a fifth of the load puts him past his base. Half the load puts him most of the way to falling.
+- **What he is doing.** He is kicking back at 2.2 → 2.9 yd/s with the ground force at the traction limit. The load (0.5 → 1.0 mg over 0.35 s) drives him the way he is going (load against velocity 38°).
+
+**Why he leans that far:**
+
+1. **The controller.** The pass set always asks `push: 1` (`engagement.ts:1040`). The lean targets 1.25× the felt load (`PUSH_GROWTH`, `world.ts:1925`) whenever his request along the load exceeds his velocity. He is set up to drive the rusher back, not to anchor.
+2. **The base.** The support model gives a kick-sliding lineman the same isotropic base as any stance: radius (0.11 + 0.05·balance + 0.04·mass) × (0.75 + 0.5·posture) = 0.18 yd at the pass set's posture 0.6. Nothing in it knows he is set to take a push. A staggered set's fore–aft support is wider than a running stride's, and the model has no such term.
+3. **The physics (candidate incoherence).** The lean rises with a 0.04 s constant (`LEAN_RISE`) toward a target read from a 40 ms felt load, and its geometry is imputed only when released.
+   - The offset grows at a median 2.9 yd/s to its peak, 7.8 yd/s in the fastest tick.
+   - 0.45 → 1.13 yd took 0.15 s.
+   - For a real COM to get that far ahead of the feet that fast, the feet would have to slide back 5–8 yd/s faster than the COM.
+   - The body never had this geometry; the release hands it over in one tick.
+   - A COM can get ahead of planted feet only as fast as it moves relative to them. Beyond the ankle's share (the CoP inside the base: rb·m·w0², about 0.17 mg), a lean has to be built by that motion.
+
+**Who falls:**
+
+- **Position:** guards 248, tackles 196, centre 23.
+- **Rusher's move at the crossing:**
+
+  | Bull | Long-arm | Swim | Rip | Club | Speed | Spin | Snatch | Dip |
+  |---|---|---|---|---|---|---|---|---|
+  | 81 | 59 | 56 | 56 | 43 | 30 | 21 | 20 | 19 |
+
+  Power moves release the load too: the bull rusher's push varies tick to tick.
+- **Mismatch?** No. The faller is the heavier man (blocker/rusher mass, median 1.21) and the stronger one (strength 80 against 74; balance 58).
+- **When:** 0.75 s into the rep (median; quartiles 0.65–0.90 s), right after the first collision.
+
+**NFL check (`olfall.py`).** Tracking has no 'down' flag. The operator looks for an OL in a block (the record's `blocks`) who goes still before the throw, with the same code on the NFL and on the sim's `pass-frames.mts` records:
+
+- *strict*: under 0.5 yd/s for 1.0 s, his rusher within 2 yd at the start and ≥ 2.5 yd at the end;
+- *bound*: under 0.3 yd/s for 0.8 s, no departure condition (also counts anchored stalemates, so it can only overstate NFL falls).
+
+| | Strict | Bound |
+|---|---|---|
+| NFL dropbacks flagged | 0.9% (92 of 9,713) | 1.2% |
+| Sim dropbacks flagged (390) | 14.6% | 22.1% |
+| Precision on the sim's true falls | 91% | 88% |
+| Recall on the sim's true falls | 12% | 18% |
+
+- **Recall is low on purpose.** A sim fall slides ~0.6 s, then lies still for the get-up. Most come too close to the throw to fit the window. That cuts the same way on both sides.
+- **The truth behind the sim side:** 75% of the sim's dropbacks have at least one OL fall before the throw (531 falls in 390 dropbacks).
+- **Result:** with identical code, the sim's rate is 12–18× the NFL's.
+
+
+**Run blocks (`run-fall.mts`, the fixed run set, 1,321 runs).**
+
+- 1,441 of the 6,680 run-engagement endings are 'body down' (22%).
+- The defender goes down in 906, the blocker in 580 (45 both).
+- Direction class of the faller's deviation against his felt load the tick before:
+
+  | Faller | With the push | Into the man | Across |
+  |---|---|---|---|
+  | Blocker (580) | 236 (41%) | 188 (32%) | 156 (27%) |
+  | Defender (906) | 554 (61%) | 193 (21%) | 159 (18%) |
+
+  - In run blocks the dominant fall is the one driven over: the defender, along the push.
+  - Blocker falls are mixed.
+  - Pass pro's signature (88% into the man, a lean left unbalanced) is specific to the pass set.
+
+**Reading.**
+
+- The excess pass pressure is mostly pass blockers falling forward off a lean of about a body-height's COM offset, built in a fraction of a second, the moment the rusher's load sags.
+- Three candidate causes, each a separate question for Integration. No change was attempted.
+  - **Controller (pass set).** `push: 1` with the lean at 1.25× the load is a drive-him-back request; an anchor would ask for less. This is not a ban: a blocker who chooses to drive still can.
+  - **Base.** A set pass blocker's fore–aft support is not a running stride's 0.18 yd.
+  - **Physics.** Bound the lean geometry's growth by how fast his COM can get ahead of his feet. Beyond the ankle share, a lean has to be built by real relative motion; until it is, the push drives him back rather than being balanced by imputed geometry.
+- The physics item is the one I would bench first: a pushed-body bench with a load that sags by half, identity and momentum exact, and a no-contact world bit-identical.
+
+## `LEAN_PITCH` (off): the lean can only grow as fast as the COM can pitch (`lean-bench.mts`; first game read, 2026-11-10)
+
+**The law** (`world.ts`, the lean's blend in `feet`):
+
+- A committed lean is a COM offset of lean/(m·w0²).
+- The ankles move the pressure centre across the base at once, so a lean up to the base radius is immediate (about 0.17 mg).
+- Past it, the COM must pitch over planted feet, no faster than an unopposed fall: offset' ≤ w0·offset.
+- The release is unchanged: a load that sags still releases the lean he really had.
+
+**Bench** (generated OG/DT/RB/LB, the World only):
+
+| Case | Fastest offset growth, off → on (yd/s) | Peak lean, off → on |
+|---|---|---|
+| Standing | 7.0–7.8 → 2.8–3.1 | 1.1 mg either way, later |
+| Kicking back at 2.5 yd/s, sag / hold | 8.2 / 5.2 → 3.1 | 1.21 / 0.95 → 0.83 / 0.88 mg |
+| Kicking back, hands removed | 11.6 → 3.1 | 1.17 → 0.54 mg |
+| Drive blocker | 6.8 → 2.6 | unchanged |
+| Braced tackler | 7.5 → 3.2 | unchanged |
+
+- **Sustained push:** still held (1.11 mg either way).
+- **Invariants:** momentum with free intents 3.6e-13; the no-contact digest is identical off and on (296c2f3c8eac).
+- **What the bench cannot do:** it falls in neither arm. In games the gait already plans ~4.7 yd/s² toward the rusher (envelope 5.0), so nothing of a release is absorbed. In the bench his legs are free and absorb it.
+
+**Game read, gate 1** (flag on against run-ref-12; same four games, seeds 11–17; truth from `pass-frames.mts`):
+
+| | Off | On | NFL |
+|---|---|---|---|
+| Dropbacks with an OL fall before the throw | **74.9%** (531 falls / 390) | **19.0%** (83 / 357) | — |
+| `olfall.py` strict / bound | 14.6% / 22.1% | 3.9% / 6.7% | 0.9% / 1.2% |
+
+- **Gate 1 (≤ 15%) is not met.**
+
+**Gate 2, the falls that remain** (`pass-fall.mts`, 65 traced):
+
+- 58 (89%) still go *into the rusher*. Gate 2 (the share should collapse) is not met; the count fell from 412 to 58.
+- They are not the imputed lean any more:
+  - They come 1.3 s into the rep (median; 0.75 s off).
+  - The lean builds 0.59 → 1.04 yd over the 0.35 s before the sag, not in 0.15 s.
+  - Before the crossing the lean is 1.18× a felt load of about 1 mg (1.17 yd of offset). The load halves in one tick (0.48), and the release is the whole jump (median share 1.00).
+- These are blockers who really leaned 48° into a sustained 1-mg push and lost it. That is the legitimate stumble the law keeps.
+- What is left is the request: the pass set asks `push: 1` with a lean of 1.25× the load. That is a drive, where a pass blocker anchors and does not chase the push. It is parked with Coverage (protection).
+
+**Not run** (gate 1 stopped the read): first pressure, pocket depth, run trench, run-block falls, the paired card.
+
+**Anchor probe (Integration, 2026-11-10; temporary, not committed).**
+
+- **The change:** `LEAN_PITCH` on, plus the pass set asking for a lean of at most 1.0× the felt load instead of 1.25×. That is the lean target's growth term set to 0 for the pass set, read from an intent field.
+- **Unchanged:** kick, mirror, posture, `push: 1` and the release law.
+- **Sample:** the same four games.
+
+| | Off | `LEAN_PITCH` | + anchor | NFL |
+|---|---|---|---|---|
+| Dropbacks with an OL fall before the throw (truth) | 74.9% | 19.0% | **10.9%** (41 falls / 366) | — |
+| `olfall.py` strict / bound | 14.6 / 22.1% | 3.9 / 6.7% | 1.4 / 2.7% | 0.9 / 1.2% |
+| Pressure (first defender within 2 yd before the throw) | 57.2% | 47.3% | 43.2% | 28% |
+| Sacks a dropback | 8.2% | 6.7% | 4.4% | — |
+| How pressure arrives: blocker still on him / never blocked / shed / got apart | 20 / 15 / 25 / 40% | 41 / 29 / 24 / 6% | 42 / 21 / 32 / 5% | 63% blocker still on |
+| Guards' depth at 2.0 s / 3.0 s, yd | 2.99 / 4.18 | 3.13 / 4.94 | 3.11 / 4.76 | — |
+| Tackles' depth at 2.0 s / 3.0 s, yd | 5.06 / 7.29 | 5.06 / 7.76 | 5.06 / 7.61 | — |
+| QB − guards at 3.0 s, yd | 3.88 | 2.95 | 3.15 | — |
+
+- **Pocket at 2.0 s:** unchanged.
+- **Pocket at 3.0 s:** the guards are 0.6–0.8 yd deeper. Blockers who used to fall now stay up and are driven back instead; the plays still alive then are different samples.
+- **The anchor's other failure is not seen:** the pocket does not collapse.
+- **Pressure:** falls and "got apart" endings nearly vanish. The rusher's remaining routes are the shed (32%) and riding a blocker who is still on him (42%).
+
+**Run blocks with `LEAN_PITCH` on** (`run-fall.mts`, the fixed run set):
+
+| | Off | On |
+|---|---|---|
+| Run-engagement endings | 6,680 | 6,302 |
+| Body-down endings | 1,441 | 1,029 |
+| Blocker falls | 580 | 361 |
+| Defender falls | 906 | 709 |
+| Defenders down along the push | 554 | 495 |
+
+- Defenders driven over along the push barely move: they are knocked over, not leaning, so this law does not reach them. That needs its own look.
+
+## Run-block defenders on the ground (`run-dfall.mts`, `run-frames.mts`, `rdfall.py`; the fixed run set, 1,321 runs; NFL 2022, 6,172 runs; 2026-11-10)
+
+**How often.**
+
+- **Truth:** 906 defender falls in run blocks; half the runs (656) have one.
+- **Operator (`rdfall.py`):**
+  - NFL run records carry no block pairs, so a DL or LB is "blocked" while an OL or TE is within 1.2 yd of him for 0.3 s.
+  - Flagged: he then goes still (under 0.3 yd/s for 0.8 s), more than 2 yd from the carrier, before first contact.
+  - This also counts anchors, so it is an upper bound on the NFL.
+
+  | | Flagged share of blocked DL/LB reps | Flags a run |
+  |---|---|---|
+  | NFL | 0.2% (81) | 0.01 |
+  | Sim | 1.7% (107) | 0.08 |
+
+  - The sim's rate is about 8× the NFL's on identical code.
+  - Precision against the sim's true falls is 69%. Recall is 16%: most falls come too close to first contact for the window.
+
+**Who.**
+
+- **Defender's slot:** LB_M 157, DT_W 136, LB_W 120, DT_S 117, DE_S 90, DE_W 71, NB 57, SS 53.
+- **Blocker's slot:** C 166, the tackles and guards 120–144 each, Y 101, H 54.
+- **Doubles:** 22 of 906. These are solo blocks, not doubles burying a tackle.
+- **The blocker is the heavier and stronger man:** mass 1.21×, strength 1.12× (medians).
+- **When:** 810 come after the handoff, at a median of 3.75 yd from the runner.
+
+**Direction** (capture-point deviation against the felt load at the fall):
+
+| | Along the push (driven over) | Toward the man | Across |
+|---|---|---|---|
+| Defenders | 549 | 191 | 164 |
+| Blockers | 234 | 185 | 159 |
+
+**Two different falls among the 551 driven over:**
+
+1. **Early impact (416; within 0.4 s of contact): LB 178, DB 141, DL 97.**
+   - Over the 4–5 ticks from contact, the felt load builds 0.7 → 1.8 mg.
+   - The contact-height tip grows 1.3 → 4.5 yd/s²: a low blocker (posture ~0.8) under an upright defender (0.43, sinking to 0.32).
+   - The defender is moving into the blocker at ~1.2 yd/s.
+   - His request along the push is **0**: he is pursuing across it, not taking the block on.
+   - He uses only ~55% of his traction and builds almost no lean (median 0.12 mg before the crossing). The lean law braces only when his request along the load exceeds his velocity, which a pursuit request never does.
+   - His capture point crosses 0.07 → 0.23 → 0.55 → 0.86 → 1.0 of the fall threshold in four ticks.
+2. **Sustained drive (135; after 0.4 s): mostly DL (71).**
+   - Driven back at 1.0–1.4 yd/s, a load ~0.8 mg, asking to hold ground (request −0.8 to −1.1 yd/s along the push).
+   - His capture point creeps from 0.2 to 1.0 of the threshold over 0.35 s while availability falls (0.99 → 0.33).
+   - A man driven backward who asks to hold ground is not stepping back with the drive. His recovery steps cannot keep up.
+
+**What it does to the play.**
+
+| Runs | Any defender fall | A fallen defender within 2 yd of the runner's later path (while down) |
+|---|---|---|
+| Under 4 yd | 47% | 23% |
+| 4–9 yd | 54% | 21% |
+| 10+ yd | 51% | 18% |
+
+- Falls are not what makes the long gains.
+- They take a man out of the pursuit about once every two runs, which may thin the crowd at the runner. Blocked defenders within 2 yd of the runner: 0.58 a run against the NFL's 0.80.
+
+**With `LEAN_PITCH` on:**
+
+- Defender falls 906 → 709: toward the man 191 → 108, along the push 549 → 493.
+- Blocker falls 580 → 361. A note for Run Game: when the flag goes on, fewer of its blockers end on the ground.
+- The driven-over falls are not a lean, and this law does not reach them.
+
+**Proposal** (nothing built):
+
+- **(a) Controller, Defense.** An engaged defender does not take the block on. His request stays pursuit (0 along the push) with upright pads, so his legs never brace. Taking on a blocker he sees closing (pads down, a request against the block's push), or defeating it, is technique on observable evidence. So is giving ground with the drive instead of asking to hold it when he is being driven.
+- **(b) Physics, mine.** Bench the early impact: a 1.2× heavier blocker at posture 0.8 into an upright pursuer, braced against unbraced.
+  - Is the 1.8 mg felt load over ~0.2 s, about 3–4 yd/s of velocity change, coherent with the closing speeds and masses?
+  - Is the contact-height tip right for that pad mismatch?
+  - Only if the bench shows an incoherence does it become a physics change.
+
+**Impact bench (`impact-bench.mts`).**
+
+- **Setup:** a 140 kg OG at posture 0.8 driving at 3 yd/s; torso contact, then a hands row at the blocker's arm force. The World only.
+- **Bound:** a coherent contact may give the defender at most the inelastic share m_b/(m_b+m_d) × closing speed, plus the blocker's own ground impulse over the defender's mass.
+
+| Arm (109 kg LB defender) | Closing, yd/s | z vs c, yd | Peak felt, mg | Peak tip, yd/s² | Defender Δv in 0.3 s vs bound, yd/s | Energy: KE change − ground − arm work | Outcome |
+|---|---|---|---|---|---|---|---|
+| Pursuing across the block and into it (the trace: −1.2 + 3 yd/s across), upright | 4.20 | 1.10 vs 1.00 | 4.81 | 10.9 | 3.76 vs 4.64 | −634 (dissipated) | fell at +0.20 s, along the push |
+| Pursuing across only, upright | 3.00 | 1.10 vs 1.00 | 3.50 | 8.5 | 1.90 vs 4.07 | −365 | stayed up |
+| Square and braced (posture 0.8, push 1) | 3.00 | 1.00 vs 0.92 | 2.42 | 3.3 | 1.69 vs 3.88 | −215 | stayed up |
+| Square, upright, not pushing | 3.00 | 1.10 vs 1.00 | 2.41 | 5.6 | 2.12 vs 3.79 | −213 | stayed up |
+| Mirrored (first arm, y → −y) | identical | | | | | | |
+| Equal mass (a 111 kg LB as the blocker), first arm | 4.20 | 1.03 vs 1.00 | 4.68 | 3.0 | 2.80 vs 3.88 | −570 | stayed up |
+
+**Reading.** The impact is coherent.
+
+- Every arm's velocity change is inside its bound. The contacts dissipate energy and never create it, and the mirror is exact.
+- The tip's sign is right: the contact is at the lower man's pads (1.10 yd), above an upright defender's COM (1.00), so a chest-high hit pitches him back. A defender at posture 0.8 lowers both.
+- The tip's size follows the lever (z − c). Against an equal-mass, equal-height blocker it is small (3.0).
+- What puts him down is running into a heavier, lower blocker at 4.2 yd/s closing, upright and not braced. That is real football: a blindside pancake.
+- **No physics change.** The frequency is the controller's: he keeps pursuing into a blocker he could see, without squaring, lowering or setting his legs. That is (a), Defense's item.
+
+**The sustained-drive falls (`drive-bench.mts`, `run-dfall.mts` with a temporary per-term capture-point split, reverted).**
+
+- **Bench:** a 150 kg DT driven by a 147 kg OG through a hands row, for 2 s. Four requests:
+  - hold ground (push 1, posture 0.6): holds at 0.04 yd/s with a lean of 0.87 mg balancing a 0.95-mg load;
+  - retreat with the drive at 1.2 yd/s: gives ground at 1.24 yd/s under 0.8 mg, lean 0.74;
+  - anchor low (posture 1): holds;
+  - no push: carried back at 2 yd/s.
+- **In none of them** does the capture point leave 0.02 of the fall threshold, and nobody falls. A steady drive in isolation topples no one.
+- **In games** (the 551 driven over along the push), each event's capture-point change is summed by term along its fall:
+
+| | Falls after a load spike (≥ 1.3 mg) | Steady drive (no spike) |
+|---|---|---|
+| Count | 465 (84%): LB 202, DB 149, DL 114 | 86: DL 54, LB 23, DB 9 |
+| Peak felt load | 3.1 mg | 0.98 mg |
+| Unfollowed contact acceleration | **0.76 yd** | 0.01 |
+| Contact-height tip | 0.22 | 0.00 |
+| Lean release | 0 | **0.48 yd** |
+| Recovery step at the last tick (share of step speed) | 0.88 | 0.85 |
+| His request along the push / velocity, yd/s | 0 / +0.6 | −1.0 (into the blocker) / +0.9 |
+
+**Reading.**
+
+- **No missing recovery step.** It fires at 85–88% of step speed in both groups; nothing drains it under a sustained load. The earlier split by rep age was misleading.
+- **84% of these falls are impacts**, including repeat hits later in a rep. They are coherent by the impact bench, so they belong to Defense's item (a).
+- **The steady-drive remainder (86) is the pass blocker's lean release:**
+  - the defender asks to attack into the blocker at 1 yd/s;
+  - he commits a lean into the load;
+  - the load sags and the lean drops into his capture point.
+- `LEAN_PITCH` and an anchor-style request (lean no more than the load) are its remedies, as on the OL side.
+- Nothing new for the World. Coverage's `PASS_ANCHOR` works around the same lean on the OL side, not a missing step.
+
+## `LEAN_PITCH` promotion read, run side (pre-registered 2026-11-10, before running)
+
+- **Arms:** `npm run ref:report -- --flag LEAN_PITCH=1` on the fixed 1,321 runs. Off, run-ref-12, and run-ref-12 + `LEAN_PITCH`.
+- **Gates** (the candidate against run-ref-12):
+  1. No regression caused by a bug in the mechanism. Any yardage change must have a named mechanism: fewer fallen blockers means blocks held longer; fewer fallen defenders means more pursuit.
+  2. Tackle counts (made, missed, broken) within noise.
+  3. Falls down on both sides with `run-fall.mts`: defenders below 906 and blockers below 580.
+- **Reported, not gated:** yards by concept, stuffs, first-contact depth, crowd at the tackle, the trench operators.
+
+**Result** (`ref:report`, run-ref-12 @ 849ee8f7, candidate = + `LEAN_PITCH=1`; full output in `out/ref/report.md`).
+
+| Concept | n | run-ref-12 | + `LEAN_PITCH` | Paired (SE) |
+|---|---|---|---|---|
+| OZ | 395 | 3.15 | 3.50 | +0.35 (0.23) |
+| IZ | 215 | 3.88 | 4.51 | +0.63 (0.31) |
+| gap | 445 | 4.17 | 4.20 | +0.04 (0.16) |
+| duo | 126 | 3.49 | 3.50 | +0.01 (0.31) |
+| toss | 55 | 3.93 | 4.97 | +1.04 (1.01) |
+| draw | 85 | 4.04 | 3.77 | −0.27 (0.58) |
+| **all** | 1,321 | **3.73** | **3.98** | **+0.24 (0.12)** |
+
+- **Other yardage numbers:** stuffs (≤ 0 yd) 11.4% → 11.6%; 10+ runs 6.7% → 8.0%; 20+ runs 1.8% → 2.7%.
+- **Gate 2, tackles:** missed 0.241 → 0.240, broken 0.142 → 0.147 (engaged-grab breaks 0.073 → 0.070). **Met.**
+- **Gate 3, falls** (`run-fall.mts`): defenders 906 → 709, blockers 580 → 361. **Met.**
+- **Gate 1, mechanism:** the yardage rise has two named mechanisms, both moving toward the NFL. No regression traces to a bug. **Met.**
+  1. *Blocks held.*
+     - Zone DL driven back ≥ 0.5 yd from 0.5 s: 8% → 12% (NFL 17%).
+     - DL depth at 2.0 s: +0.69 → +0.57 (NFL +0.70); solo +0.87 → +0.69 (NFL +0.82).
+     - Solo-pair rotation 58° → 46° (NFL 43°).
+     - Pile frames with no defender within 1 yd: 408 → 566.
+  2. *Pursuit.* A second defender arrives at 75% of contacts, against 69% (NFL 80%). The third: 37% → 41% (NFL 43%).
+
+**The falls that remain with the flag on** (`run-dfall.mts` with the temporary per-term split, reverted):
+
+| | Lean release | Impact | Other |
+|---|---|---|---|
+| Blockers (361) | 149: interior OL (C 35, RG 33, LG 26); request **−1.74 yd/s** into the man; lean 1.18× the load; release 0.85 yd | 165: TEs (Y 73, H 36); felt 3.3 mg; unfollowed accel 0.77 + tip 0.19 yd | 47: neither term (lean ≈ load, release below threshold; the capture point is within base until the last ticks) |
+| Defenders (709) | 193: DT 111, LB 33; request −1.47; lean 1.1×; release 0.79 yd | 451: LB 166, DB 90; felt 3.2 mg; request 0 along the push | 65 |
+
+- **Pass side** (`pass-fall.mts`, flag on): 58 of 65 traced go toward the rusher. The release is the whole jump. These are leans built over ~0.35 s at 1.18× a ~1-mg load, so lean release with the drive request.
+- **Remaining lean releases (blockers 149, defenders 193, pass blockers ~19% of dropbacks):** real leans the law now permits, made frequent by requests that drive into the man at 1.25× the load. That is technique: Coverage's anchor for pass sets; for run blockers and defenders, Run Game and Defense.
+- **Remaining impacts:** unbraced bodies hit by heavier or lower ones, coherent by the impact bench. For defenders this is Defense's take-on item. For blockers, TEs are hit while blocking down.
+
+## What "pressure by a blocked man" is (`pressure-shape.py`; NFL 2022, 9,654 dropbacks; sim `LEAN_PITCH` + `PASS_ANCHOR`, 4 live games, 366 dropbacks; 2026-11-10)
+
+**The rule.**
+
+- **First pressure:** the first defender within 2 yd of the QB, from 0.3 s, before the throw.
+- **Blocked:** an offensive player other than the QB within 1.2 yd of him then. This is proximity, not the engine's engagement flag.
+- **Shape:**
+  - *in front*: the nearest blocker is between him and the QB (nearer the QB by > 0.3 yd, within 45° of his line to the QB);
+  - *edge*: otherwise, level with or past the blocker's shoulder.
+- **Who closed the last 0.5 s:** the QB's displacement toward him against his toward the QB.
+
+| Share of dropbacks | NFL | Sim | Excess |
+|---|---|---|---|
+| Pressured at all | 27.8% | 39.9% | +12.1 |
+| Free rusher | 10.3% | 16.8% | +6.5 |
+| Blocked, edge | 13.4% | 11.1% | −2.3 |
+| Blocked, blocker **in front** | 6.4% | 13.1% | **+6.7** |
+| ... of which the QB closed | 0.7% | 0.8% | 0 |
+
+At the moment of pressure (medians):
+
+| | Blocker depth | Blocker retreat, last 0.5 s | QB depth | QB then holds the ball | Closest the rusher gets |
+|---|---|---|---|---|---|
+| NFL, in front | 6.15 yd | 1.77 yd/s | 6.75 yd | 1.8 s | 1.71 yd |
+| Sim, in front | 7.23 yd | 2.60 yd/s | 8.12 yd | 0.7 s | 1.58 yd |
+| NFL, edge | 6.63 | 2.78 | 7.59 | 1.0 | 1.41 |
+| Sim, edge | 6.45 | 2.55 | 7.91 | 0.4 | 1.30 |
+
+**Reading, ranked by excess:**
+
+1. **A blocker still in front, retreating into the QB (+6.7 points).**
+   - He is 1.1 yd deeper and retreating 0.8 yd/s faster than the NFL's in-front blockers, and the QB is 1.4 yd deeper.
+   - The rusher comes within 2 yd of the QB *through* the blocker's position, which is the pocket compressing at that spot. Pocket medians across all plays hide it.
+   - Next to establish: is the blocker *pushed* (felt load, driven back against his request) or is he *kicking* by request to a set depth near the QB's (`PASS_KICK` set depth, the QB's drop)? The sim knows both.
+   - Pushed means mine (anchor physics); kicking or a deep drop means Coverage (protection set and drop).
+2. **Free rushers (+6.5 points).** Unblocked men: protection assignment and pickups, Coverage's lane. `first-pressure.ts` already splits these by the back.
+3. **Edge rush (−2.3 points).** Below the NFL; not an excess.
+4. **The definition is not the cause.**
+   - QB drift is rare in both (2–4% of blocked pressures).
+   - The NFL QB lives with a rusher at 2 yd for 1.0–1.8 s; ours ends the play in 0.4–0.7 s.
+   - That is a QB response to proximity (sack or a hurried throw), Coverage's lane. It does not inflate the pressure count.
+- Coverage's 85% blocked counts the engine's engagement flags. By proximity at the moment it is 58% (NFL 63%), so many of their "blocked" pressures are men whose block is nominally on but who are more than 1.2 yd from any blocker.
+
+**The blocker in front: pushed or kicking?** (`pass-press.mts`; `LEAN_PITCH` + `PASS_ANCHOR`; 4 live games, 366 dropbacks, 158 first pressures, 56 with a blocker in front, 48 of them by OL)
+
+| In-front pressures by OL | n | Requested retreat | Achieved | Felt load against him | Depth | His set target | QB depth | Pushed (achieved > request + 0.5, felt > 0.3 mg) | Kicking by request |
+|---|---|---|---|---|---|---|---|---|---|
+| Tackles | 38 | 3.34 yd/s | 3.39 | 0.15 mg | 7.16 yd | 5.37 | 8.20 | 10 | 21 |
+| Interior | 10 | −0.11 | 1.06 | 0.79 | 4.79 | 2.12 | 5.85 | 7 | 3 |
+
+**QB depth by time is not the cause** (`pocket.py`, same operator):
+
+| | 2.0 s | 2.5 s | 3.0 s |
+|---|---|---|---|
+| NFL, QB depth | 7.39 | 8.06 | 8.11 |
+| Sim, QB depth | 7.77 | 7.89 | 7.91 |
+| NFL, tackles' depth | 4.70 | 5.65 | 6.21 |
+| Sim, tackles' depth | 5.06 | 6.45 | **7.61** |
+
+- The 8.12 yd QB depth at in-front pressures earlier was the pressured subset. Our QB is not deeper than the NFL's.
+- Our tackles are 1.4 yd deeper by 3.0 s.
+
+**By drop** (in-front OL pressures over dropbacks): seven 6/34, gun5 23/163, five 8/58, PA 6/50, quick 4/33, gun3 1/28. The deeper and longer drops lead.
+
+**Reading.**
+
+- **Tackles (38 of 48): a controller request, Coverage's lane.**
+  - They are not pushed: the felt load is 0.15 mg and the achieved retreat equals the request.
+  - They kick back at 3.3 yd/s by request, 1.8 yd past their own `passSetDepth` target, toward the QB.
+  - This is `PASS_KICK`: it keeps an outside blocker level with or deeper than his rusher, up to 0.5 yd short of the QB. A tackle who kicks with the rusher to the QB's depth carries the rusher into the QB's 2-yd radius while staying "in front".
+  - NFL tackles stop deeper retreat at about 6.2 yd by 3.0 s.
+- **Interior (10): pushed.** Driven back at 1.06 yd/s under 0.79 mg while asking to hold, within 2 yd of a QB 5.85 yd deep. Anchor physics, mine, but 10 of 366 dropbacks (2.7%). Not a priority.
+- **"Blocked in name only": none at the moment of pressure.**
+  - Engagement flag on and a blocker within 1.2 yd: 67. Flag off and nobody near: 63. Flag off but someone near: 28.
+  - Coverage's 85% counts rushers who were ever engaged, not the state at the pressure.
+
+## Standing starts by position (`start.py`, `sprint-bench.mts`; NFL 2022 pass plays; sim `LEAN_PITCH` + `PASS_ANCHOR`, 4 live games, `WR_SNAP` off; 2026-11-10)
+
+**One operator on both.**
+
+- Displacement from the snap spot.
+- Each player's start = the first 0.1 s frame displaced 0.25 yd.
+- Displacement after his own start (reaction removed).
+- Upper percentiles as a proxy for maximum effort.
+
+| After his own start, +0.3 / +0.5 / +0.8 s (yd) | Sim in games | NFL p50 | NFL p75 | NFL p90 | World alone, max effort from rest (same 0.1 s alignment) |
+|---|---|---|---|---|---|
+| WR | 0.92 / 1.77 / 3.30 | 0.79 / 1.58 / 3.08 | 0.88 / 1.74 / 3.38 | 0.96 / 1.88 / 3.61 | 0.88 / 1.72 / 3.24 |
+| TE | 0.81 / 1.53 / 2.88 | 0.69 / 1.36 / 2.61 | 0.81 / 1.60 / 3.04 | 0.90 / 1.75 / 3.33 | 0.82 / 1.58 / 2.96 |
+| DL | 0.79 / 1.46 / 2.23 | 0.62 / 1.16 / 2.07 | 0.71 / 1.35 / 2.44 | 0.79 / 1.51 / 2.80 | 0.79 / 1.50 / 2.81 (DT) |
+| LB | 0.70 / 1.26 / 2.16 | 0.58 / 1.13 / 2.08 | 0.73 / 1.42 / 2.66 | 0.85 / 1.64 / 3.06 | 0.86 / 1.66 / 3.14 |
+
+| Start (p50) and displacement from the snap at 0.3 / 0.5 s | Sim | NFL |
+|---|---|---|
+| WR | 0.3 s; 0.35 / 0.91 | 0.5 s; 0.08 / 0.31 |
+| TE | 0.3 s; 0.28 / 0.75 | 0.5 s; 0.10 / 0.31 |
+| RB | 0.3 s; 0.29 / 0.72 | 0.6 s; 0.04 / 0.16 |
+| DL | 0.4 s; **0.12** / 0.47 | 0.4 s; **0.21** / 0.52 |
+
+**Reading: not one law, three separate causes.**
+
+1. **The shared acceleration capacity is not too high.**
+   - The World's own maximum-effort start sits at the NFL's p75 (WR, TE) to p90 (DL) of starts, below the NFL's best.
+   - In games our WRs, TEs and DL start at that maximum, and NFL medians are below it.
+   - So "too fast" is effort, not capacity. Leave the shared law alone. Changing it would make DL slower still.
+2. **WR and TE: every route starts at full effort, and TEs and RBs leave early.**
+   - They start at 0.3 s against 0.5–0.6. `WR_SNAP` fixes the WRs only.
+   - After starting they run at the World's maximum on every route, where NFL medians run below their own maximum (Coverage: NFL go routes start like hitches).
+   - These are route-stem tempo and snap reaction for TEs and backs: Coverage's lane.
+3. **DL: the get-off's early tail.**
+   - Median start is equal (0.4 s), but the NFL is ahead at 0.3 s (0.21 against 0.12 yd).
+   - After starting, our DL are at NFL p90.
+   - This is snap anticipation and the get-off distribution, the `DL_SNAP_TIME` question: Defense and Run Game.
+
+**The deciding bench** was this one: the World alone, a standing start at full request, read through the same 0.1 s alignment as the tracking. Nothing to build.
+
+## The zone backside tackle running flat (`flat-bench.mts`, `ol-flat.py`; NFL 2022 outside zone, 1,588 runs; 2026-11-10)
+
+Both sides are aligned to his own start (the first 0.1 s frame displaced 0.25 yd).
+
+| At +0.5 / +1.0 / +1.5 s after his start | Displacement (yd) | Speed (yd/s) |
+|---|---|---|
+| NFL backside T, p50 | 1.30 / 3.10 / 4.98 | 3.28 / 3.78 / 3.71 |
+| NFL backside T, p75 | 1.43 / 3.43 / 5.55 | 3.62 / 4.31 / 4.38 |
+| NFL backside T, p90 | 1.55 / 3.70 / 6.03 | 3.91 / 4.74 / 4.90 |
+| World, OT, facing the travel ("turn") | 1.31 / 3.30 / 5.75 | 3.38 / **4.49** / 5.28 |
+| World, OT, facing upfield ("square") | 1.16 / 2.79 / 4.62 | 2.88 / **3.50** / 3.83 |
+| World, OG, turn / square at +1.0 s | 3.58 / 2.65 | 4.85 / 3.28 |
+
+- **Setup:** generated OT/OG bodies at rest, posture 0.8, full lateral request; 10 bodies × 4 frame phases.
+- **The body can do it.** Turned to run, a tackle passes the NFL's p75 by +1.0 s and its p90 by +1.5 s.
+- **Square, he cannot.** He keeps facing upfield, so his drive is the directional (sideways) share. He tops out at 3.5–3.8 yd/s, below the NFL median, where the sim's backside tackle runs (3.1–3.3 with a man on him).
+- **The limiter is the facing-against-travel penalty**, not the turn from stance, traction or mass.
+- Whether he opens his hips and runs, or shuffles square, is the zone footwork request: Run Game's lane, with `_btdouble.mts`'s requested facing and velocity as the check.
+- NFL backside tackles at 3.8–4.7 yd/s are at least partly turned.

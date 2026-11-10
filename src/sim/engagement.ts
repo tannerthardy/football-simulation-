@@ -68,6 +68,14 @@ export interface TrenchTraits {
   read: number;
 }
 
+/** PASS_ANCHOR (off; PASS_ANCHOR=1 turns it on): the pass set asks for an
+ * anchor, not a drive. His lean into the rusher grows to the load he feels and
+ * no further (lean growth 0, not the lean law's 1.25x). An OL fell before the
+ * throw on 75% of dropbacks (NFL about 1%), 19% with LEAN_PITCH: leans into a
+ * full push pitched him onto the rusher when the load sagged. A tried
+ * exception, the ordinary growth back while walked back past his set, raised
+ * falls (10.9% -> 15.6% of dropbacks) and bought no pocket depth. */
+const PASS_ANCHOR = process.env.PASS_ANCHOR !== '0';
 const cache = new WeakMap<Agent, TrenchTraits>();
 const runCache = new WeakMap<Agent, TrenchTraits>();
 
@@ -1037,10 +1045,17 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // the gait's cost of a lower pad level.
   const feltLoad = b.body.support?.felt;
   const heavy = !!feltLoad && Math.hypot(feltLoad.x, feltLoad.y) > 0.3 * b.profile.massKg * G;
+  // PASS_ANCHOR: an anchor, not a drive. His lean is sized to the load he
+  // feels (no growth past it), so a pull or swim that takes the load away
+  // leaves no excess lean to pitch him onto the rusher. Bulled back, the lean
+  // still meets the whole load (as far as his legs can), so he is walked back,
+  // not knocked over.
+  const growth = PASS_ANCHOR ? 0 : undefined;
   intents[b.idx] = {
     vel: { x: lat.x * vLat - kick, y: lat.y * vLat },
     facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
     push: 1,
+    growth,
     posture: PASS_SINK && heavy ? 0.95 : 0.6,
     cutSkill: 0.85 + 0.3 * tb.feet,
   };
