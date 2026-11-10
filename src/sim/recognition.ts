@@ -239,6 +239,18 @@ export class Recognition {
     return sigmoid(this.logOdds);
   }
 
+  /** READ_LEAN: how his current picture leans, -1 (pass) .. +1 (run): the
+   * probability his commit reads from his picture alone (gain on the filtered
+   * evidence and his own lean, no situation prior), as 1 - 2 p(pass). */
+  lean(): number {
+    return 1 - 2 * sigmoid(this.gain * this.evidence + this.bias);
+  }
+
+  /** He has seen the ball given or thrown (a definitive cue). */
+  sawBall(): boolean {
+    return this.sawGive || this.sawPass;
+  }
+
   update(a: Agent, sim: PlaySim): void {
     const t = sim.t;
     const delay = a.mind.observationDelay(a.profile.reactionTime);

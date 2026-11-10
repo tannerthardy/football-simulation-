@@ -21,7 +21,7 @@ for (const [concepts, kind, concept] of groups) for (const c of concepts) for (c
   const xy: number[][] = [], reads: Record<number, { run?: number; pass?: number }> = {}; let k = 0;
   try { while (sim.phase === 'live' && sim.t - t0 < 1.35) { const t = sim.t - t0;
     if (t >= k * .1 - 1e-9) { xy.push(all.flatMap((a: any) => [+((a.pos.x - los) * dir).toFixed(3), +a.pos.y.toFixed(3)])); k++; }
-    sim.defense.forEach((d: any, i: number) => { const r = d.recog?.read; if (r === 'run' || r === 'pass') { reads[i] ??= {}; reads[i][r] ??= +t.toFixed(2); } });
+    sim.defense.forEach((d: any, i: number) => { const r = d.recog?.read as "run" | "pass" | undefined; if (r === "run" || r === "pass") { reads[i] ??= {}; reads[i][r] ??= +t.toFixed(2); } });
     sim.tick(); } } catch { continue; }
   if (xy.length < 14) continue;
   rows.push(JSON.stringify({ id: `${c}-${form}-${seed}-${flip}`, kind, players, dt: .1, xy, ball_y: sim.ballY, events: {}, carrier: null, cell: { concept }, reads, nOff: sim.offense.length }));
