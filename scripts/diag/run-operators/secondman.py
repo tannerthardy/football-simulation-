@@ -25,14 +25,14 @@ def groups(path):
             p = json.loads(l)
             if p['kind'] != 'run' or p['carrier'] is None or p['cell'].get('concept') not in ('OUTSIDE ZONE', 'INSIDE ZONE') or not p['events'].get('end'):
                 continue
-            yield [q['group'] for q in p['players'] if q['side'] == 'D']
+            yield [q['group'] for q in p['players'] if q['side'] == 'D'], p['cell']['concept'][:2]
     else:
         for l in open(path):
-            yield json.loads(l)['dg']
+            r = json.loads(l); yield r['dg'], r['concept'][:2]
 
 
 def rows(path):
-    for (C, D, O, ho, e, *_), G in zip(fc.plays(path), groups(path)):
+    for (C, D, O, ho, e, *_), (G, con) in zip(fc.plays(path), groups(path)):
         h = max(1, int(round(ho * 10)))
         hit = next((f for f in range(h, e + 1) if min(math.dist(d, C[f]) for d in D[f]) <= 1.0), None)
         if hit is None or hit < 1:
@@ -58,8 +58,13 @@ def rows(path):
             still = all(any(math.dist(o, D[f][k]) <= 1.2 for o in O[f]) for f in range(hit, f5 + 1))
             others.append(dict(d=d, g=G[k] if k < len(G) else '?', blk=any(math.dist(o, D[hit][k]) <= 1.2 for o in O[hit]),
                                sp=math.hypot(vx, vy), cl=(vx * rx + vy * ry) / (d or 1e-9), arr=arr,
-                               tow=sum(tow) / len(tow) if tow else None, still=still, rtow=sum(rtow) / len(rtow) if rtow else None))
-        yield dict(depth=C[hit][0], second=any(o['arr'] for o in others), others=others, early=hit - h)
+                               tow=sum(tow) / len(tow) if tow else None, still=still, rtow=sum(rtow) / len(rtow) if rtow else None,
+                               fd=((D[f5][k][0]-D[hit][k][0])*(C[hit][0]-D[hit][k][0])+(D[f5][k][1]-D[hit][k][1])*(C[hit][1]-D[hit][k][1]))/(d or 1e-9),
+                               fr=((C[f5][0]-C[hit][0])*(D[hit][k][0]-C[hit][0])+(C[f5][1]-C[hit][1])*(D[hit][k][1]-C[hit][1]))/(d or 1e-9),
+                               dmin=min(math.dist(D[f][k], C[f]) for f in range(hit, f5 + 1)), dend=math.dist(D[f5][k], C[f5]),
+                               jit=[math.dist(D[f+1][k], D[f-1][k]) / 2 - math.dist(D[f][k], ((D[f+1][k][0] + D[f-1][k][0]) / 2, (D[f+1][k][1] + D[f-1][k][1]) / 2)) * 0 for f in range(hit, f5)],
+                               acc=[math.dist(D[f][k], ((D[f+1][k][0] + D[f-1][k][0]) / 2, (D[f+1][k][1] + D[f-1][k][1]) / 2)) for f in range(max(1, hit), min(e, f5))]))
+        yield dict(con=con, depth=C[hit][0], second=any(o['arr'] for o in others), others=others, early=hit - h)
 
 
 def med(v):

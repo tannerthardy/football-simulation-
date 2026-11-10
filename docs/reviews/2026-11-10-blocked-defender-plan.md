@@ -196,3 +196,47 @@ hands add force.
 get off may overshoot. Piece 2's evidence is now:
 - **For:** our engaged men cannot reach and cannot end the rep.
 - **Against:** the NFL's blocked men do not, on average, come off toward the runner either.
+
+## (b) is not measurement, and it is the runner (2026-11-10, later)
+
+**Not jitter.**
+- NFL positions are smooth: a position's deviation from the midpoint of its neighbouring frames is 0.011 yd at p50 and
+  0.025 at p90.
+- Blocked men starting 1.25 yd or more away whose distance changes by under 0.15 yd almost never "arrive": 8%, 1% and 0%.
+- So noise does not make NFL arrivals.
+
+**The distances genuinely shrink more in the NFL.** Over 0.5 s, the median change is −0.25 to −0.41 yd against our −0.13
+to −0.17.
+
+**Who closes,** along the line between them at contact over 0.5 s (blocked men within 2 yd):
+
+| Median (p75), yd | NFL | run-ref-11 |
+|---|---|---|
+| Defender toward the runner | +0.09 (+0.69) | +0.19 (+0.77) |
+| Runner toward the defender | +0.61 (+1.26) | +0.29 (+0.89) |
+| …among men who arrive | +0.99 | +0.69 |
+
+- The NFL's arrivals come from the runner carrying on into the blocked men after the first hit, not from the blocked
+  men coming off.
+- The per-frame "runner's velocity toward him" above was negative because the line rotates as the runner passes. The
+  fixed-line split is the measure to use.
+- This is the post-contact course gap again: gain after contact 1.85 against 2.84 yd, contact to end 1.0 against 1.5 s.
+  Our runner stops sooner and goes less far into the crowd.
+
+**(a) Crowd density** (per run, by concept and depth of first contact):
+
+| Concept | Contact depth (yd) | Runs, NFL / ours | Blocked within 1.25 yd | Blocked within 2 yd | Second man |
+|---|---|---|---|---|---|
+| OZ | < −1 | 30% / 22% | 0.10 / 0.06 | 0.46 / 0.44 | 42% / 22% |
+| OZ | −1..0 | 19% / 33% | 0.18 / 0.11 | 0.81 / 0.98 | 62% / 44% |
+| OZ | 0..2 | 29% / 26% | 0.27 / 0.11 | 1.02 / 0.74 | 68% / 40% |
+| IZ | −1..0 | 20% / 18% | 0.16 / 0.00 | 0.93 / 0.26 | 61% / 18% |
+| IZ | 0..2 | 41% / 34% | 0.31 / 0.11 | 1.23 / 0.66 | 69% / 35% |
+
+- On OZ the crowd within 2 yd is about the NFL's, but less tightly packed within 1.25 yd.
+- On IZ our crowd near the line is far thinner.
+
+**Conclusion for piece 2: it is not needed for the second man.**
+- The NFL's blocked men stay blocked and do not come off toward the runner.
+- The gap comes from our runner going less far into the crowd after the first hit (the contact course), and from a thinner
+  or looser crowd near the ball, especially on IZ (blocking geometry, Run Game).
