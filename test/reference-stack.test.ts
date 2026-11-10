@@ -7,9 +7,9 @@ describe('reference stack', () => {
     for (const v of Object.values(stack.flags)) expect(['on', 'off', 'retired']).toContain(v);
   });
   it('sets every listed flag explicitly and refuses a retired one', () => {
-    const env = environment({ GUN_STRETCH_T: '1', BACKSIDE_SHOOT: '1' }, ['ZONE_RUN=0']);
-    expect(env.GUN_STRETCH_T).toBe('0');
-    expect(env.BACKSIDE_SHOOT).toBe('0');
+    const env = environment({ WRAP_FOOT: '1', DL_GAMES: '1' }, ['ZONE_RUN=0']);
+    expect(env.WRAP_FOOT).toBe('0');
+    expect(env.DL_GAMES).toBe('0');
     expect(env.ZONE_RUN).toBe('0');
     expect(env.KEY_REACT).toBe('1');
     expect(() => environment({}, ['WRAP_FOOT=1'])).toThrow(/retired/);

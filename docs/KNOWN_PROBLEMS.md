@@ -409,7 +409,8 @@ problem), resolved.
   should make, which leaves nobody deep (#190).
 - **Tried:** every deep-cap variant (all defenders, safeties only, corners
   only) raised 10+ yard runs. Diagnosed, not fixed (#190). `DEEP_NO_FORCE`
-  (#190, off) keeps deep defenders from taking force.
+  (#190, off) kept deep defenders from taking force; the flag was removed
+  2026-11-10 (docs/REFERENCE_STACK.md, "Pruned after run-ref-16").
 - **Where:** `run-fits.ts`, `defense.ts`; `scripts/diag/long-run.py`.
 - **Open:** whether fixing RUN-1 lets the safeties stay deep on their own.
 - **Not grip** (#217, Run Game `taillab.ts`). 32% (`GRIP_HOLD` off) and 38%

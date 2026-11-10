@@ -28,7 +28,7 @@ import { linePicture } from '../live-gaps.js';
 import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
-import { DeepCoverage, throwHorizon, throwHorizonOn } from '../coverage-leverage.js';
+import { DeepCoverage } from '../coverage-leverage.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
 import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
@@ -60,15 +60,6 @@ export function believesRun(sim: PlaySim, a: Agent): boolean {
  * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
  * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
 const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
-/** UNDER_DEPTH (off; UNDER_DEPTH=1 turns it on): an underneath zone dropper
- * gains depth no faster than the routes he sees in his area. He takes ground
- * to the deepest of them (where it will be on his read horizon) rather than to
- * a fixed landmark over nobody, and holds his depth when nothing in his area
- * is deeper. The landmark stays his ceiling; a vertical still gets carried.
- * Tracked hook defenders on shotgun dropbacks let the routes climb to them:
- * their lead over the deepest receiver within 6 yd shrinks 5.2 -> 0.2 yd from
- * 1.0 to 2.5 s (BDB 2025 weeks 1-3); landmark drops stayed ~2 yd on top. */
-const UNDER_DEPTH = process.env.UNDER_DEPTH === '1';
 
 export function knowsPass(sim: PlaySim, a: Agent): boolean {
   if (a.recog) return a.recog.read === 'pass';
@@ -147,8 +138,6 @@ export const EDGE_REACH = process.env.EDGE_REACH !== '0', EDGE_UPFIELD = 1.2;
 /** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
  * read lean leads his step before the key's own movement must confirm it (s). */
 const STANCE_TELL = process.env.STANCE_TELL !== '0';
-/** BACKSIDE_SHOOT (experimental, off): see the key-step read below; how far behind the line he aims (yd). */
-const BACKSIDE_SHOOT = process.env.BACKSIDE_SHOOT === '1', SHOOT_DEPTH = 1.5;
 /** DEF_STANCE: pad level a hand-down lineman keeps coming off the ball, and for how long (s). */
 const DOWN_POSTURE = 0.7, DOWN_LOW_FOR = 0.8;
 /** SINK_LEAD (experimental, off): see PassRusher.sink. Target pad levels are the
@@ -369,17 +358,6 @@ export class PassRusher implements Behavior {
       a.tags.add('tell-step');
       return track(a, { x: man.home.x + man.vel.x * a.mind.decisionInterval, y: a.pos.y + side * step * a.mind.decisionInterval },
         { x: 0, y: side * step }, { speed: 1, gain: 3, facing: Math.PI });
-    }
-    // BACKSIDE_SHOOT (experimental, off): the man in front stepping away from
-    // him (a zone step to the other side) vacates the spot he stood in. The
-    // lineman behind that step shoots it, upfield through the vacated spot to
-    // the stepping man's hip, rather than stepping flat with him; whoever is
-    // coming to cut him off has to get there first. NFL backside DL on outside
-    // zone: 17% are a yard into the backfield by 1.5 s; ours 1%.
-    if (BACKSIDE_SHOOT && !onEdge && runStep && Math.sign(man!.vel.y) === Math.sign(man!.pos.y - a.pos.y)) {
-      const dir = sim.attackDir(sim.offense[0].team), side = Math.sign(man!.vel.y);
-      a.tags.add('shoot-gap');
-      return runThrough(a, { x: man!.home.x - dir * SHOOT_DEPTH, y: man!.pos.y - side * a.profile.radius }, { speed: 1 });
     }
     // EDGE_REACH (experimental, off): an edge keeps his outside against a
     // reach. His key stepping out toward him, away from the ball (a stretch or
@@ -880,8 +858,7 @@ export class ManCoverage implements Behavior {
     if (!o.protectDepth) return command;
     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
       : vx > 3 && deep > 3 ? cushion * .5 : cushion;
-    const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact,
-      throwHorizonOn() ? throwHorizon(a, sim.see(a, sim.qb).pos, seen.pos) : undefined);
+    const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
     return selected.facing === undefined && command.facing !== undefined
       ? withFacingTechnique(selected, { label: 'man-depth-run', key: seen.vel }) : selected;
@@ -1072,7 +1049,7 @@ export class ZoneCoverage implements Behavior {
       if (dropped && knowsPass(sim, a) && Math.hypot(q.vel.x, q.vel.y) < 1.2) this.settledAt = sim.t;
     }
     const settled = (t: Vec2): Vec2 => this.settledAt >= 0 ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
-    const settle = (t: Vec2): Vec2 => settled(this.underCap(a, threats, t));
+    const settle = (t: Vec2): Vec2 => settled(t);
 
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
@@ -1154,8 +1131,7 @@ export class ZoneCoverage implements Behavior {
       }), { label: turnRun ? 'deep-turn-run' : 'deep-over', key: deepest.vel });
       let depth = this.depthReads.get(deepest.r);
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
-      const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact,
-        throwHorizonOn() ? throwHorizon(a, sim.see(a, qb).pos, deepest.pos) : undefined);
+      const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
       return selected.facing === undefined && command.facing !== undefined
         ? withFacingTechnique(selected, { label: 'deep-depth-run', key: deepest.vel }) : selected;
@@ -1310,16 +1286,6 @@ export class ZoneCoverage implements Behavior {
    * He leans where the QB looks and squeezes the lane of a receiver in his
    * zone, but keeps his depth and never leaves his zone with a route.
    */
-  /** UNDER_DEPTH: an underneath target no deeper than the deepest route he
-   * sees in his area (its spot on his read horizon), and no shallower than
-   * where he stands: he doesn't give up ground he has, he doesn't take ground
-   * over nobody. Deep zones and the flag off are unchanged. */
-  private underCap(a: Agent, threats: Array<{ fut: Vec2 }>, t: Vec2): Vec2 {
-    if (!UNDER_DEPTH || this.deep) return t;
-    const deepest = threats.reduce((m, th) => Math.max(m, th.fut.x), -Infinity);
-    return { x: Math.min(t.x, Math.max(a.pos.x, deepest)), y: t.y };
-  }
-
   private spotUnderneath(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>): MoveCommand {
     const qb = sim.qb;
     const lm = this.landmark;
@@ -1334,7 +1300,7 @@ export class ZoneCoverage implements Behavior {
       // hip turn back to the QB takes time he must start early.
       const resquare = Math.hypot(a.vel.x, a.vel.y) * roundedTurnTime(a, Math.PI) * 0.5;
       const turned = toSpot > 4 + resquare && knowsPass(sim, a);
-      return withFacingTechnique(goTo(a, this.underCap(a, threats, lm), { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: turned ? undefined : facingQB }),
+      return withFacingTechnique(goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: turned ? undefined : facingQB }),
         { label: turned ? 'spot-drop-run' : 'spot-drop' });
     }
     a.tags.add('settled');
@@ -1361,7 +1327,6 @@ export class ZoneCoverage implements Behavior {
     // Planted short of the spot on the QB's set, he holds where he planted.
     tgt = { x: Math.max(tgt.x, lm.x - 2), y: tgt.y };
     if (this.settledAt >= 0) tgt = { x: Math.min(tgt.x, Math.max(a.pos.x, sim.los + 3)), y: tgt.y };
-    tgt = this.underCap(a, threats, tgt);
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };
