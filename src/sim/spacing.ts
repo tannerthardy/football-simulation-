@@ -23,12 +23,12 @@ import { localTrafficRoute } from './traffic-route.js';
 /** RB_STEER (default off): a ball carrier (or a lead back) whose held
  * request runs into a teammate first tries bending the same request around him at speed; only
  * when no bend clears does he slow down or gather. */
-export const RB_STEER = process.env.RB_STEER === '1';
+export const RB_STEER = process.env.RB_STEER !== '0';
 /** LINE_STEP (default off): headway against a teammate on an announced step
  * (linemen stepping together on a zone track) is budgeted against where his
  * step takes him over the closing horizon, not his current speed: the inside
  * man of a pair steps with his partner instead of waiting on his first step. */
-export const LINE_STEP = process.env.LINE_STEP === '1';
+export const LINE_STEP = process.env.LINE_STEP !== '0';
 /** Time a player gives himself to close the gap to a teammate, s. */
 const CLOSE_HORIZON = 0.3;
 /** Gap at which a teammate starts to shape movement, yd. */

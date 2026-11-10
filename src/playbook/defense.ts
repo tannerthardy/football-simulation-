@@ -209,7 +209,7 @@ const ALL_FRONTS: Front[] = [
   },
 ];
 /** NICKEL_FRONTS (experimental, off): the sub-package three- and five-man fronts join the catalog only under the flag. */
-const NICKEL_FRONTS = process.env.NICKEL_FRONTS === '1';
+const NICKEL_FRONTS = process.env.NICKEL_FRONTS !== '0';
 export const FRONTS: Front[] = ALL_FRONTS.filter((f) => NICKEL_FRONTS || !['penny', 'penny_bear', 'mint', 'okie', 'stack33'].includes(f.id));
 
 export { COVERAGES, COVERAGE_BY_ID } from './coverages.js';

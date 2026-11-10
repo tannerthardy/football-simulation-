@@ -617,7 +617,7 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, extra?:
  * and the guard climbs to the backside backer nobody else has. The installed
  * plan cut off that end and left the guard solo: covered backside guards got
  * within 1.5 yd of a backer by 2.5 s on 9-14% of snaps (tracked 47-48%). */
-export const BACKSIDE_COMBO = process.env.BACKSIDE_COMBO === '1';
+export const BACKSIDE_COMBO = process.env.BACKSIDE_COMBO !== '0';
 /** DOUBLE_HANDOFF (default off): a double-team keeper whose hands are on the
  * man within working reach plus 0.35 yd counts as able to take him over,
  * loaded or not, and as the man's keeper whether or not he is the engagement's
@@ -625,13 +625,13 @@ export const BACKSIDE_COMBO = process.env.BACKSIDE_COMBO === '1';
  * (keeper hands 'not touching' on 22% of release reads 0.8-1.5 s), resetting
  * the 0.15 s secure dwell: outside-zone doubles left at 1.50 s (tracked 1.00)
  * and 23% climbed (tracked 52%). */
-export const DOUBLE_HANDOFF = process.env.DOUBLE_HANDOFF === '1';
+export const DOUBLE_HANDOFF = process.env.DOUBLE_HANDOFF !== '0';
 /** RELEASE_QUICK (default off): with his backer showing (filling or flowing
  * in his own picture), a double member's release read does not wait out the
  * 0.15 s keeper-secure dwell. Outside zone: backer shows at 0.80 s, release
  * 1.35 s, climber off the down man 1.50 s (tracked 1.00 s) from the same
  * spot on the man as tracked climbers. */
-export const RELEASE_QUICK = process.env.RELEASE_QUICK === '1';
+export const RELEASE_QUICK = process.env.RELEASE_QUICK !== '0';
 
 /** ZONE_GAP (default off): zone ownership charges each lineman his distance
  * from his play-side gap (half a split, 0.75 yd, play side of him), not from
@@ -641,7 +641,7 @@ export const RELEASE_QUICK = process.env.RELEASE_QUICK === '1';
  * backside the centre leaves him 71% of snaps, the backside guard 57%, the
  * backside tackle 53% (each 1.7-3.1 yd upfield by 2.5 s); shaded play side or
  * head-up they block him about 90%. Ours left a backside-shaded man 5-22%. */
-export const ZONE_GAP = process.env.ZONE_GAP === '1';
+export const ZONE_GAP = process.env.ZONE_GAP !== '0';
 const ZONE_GAP_SHIFT = .75;
 
 /** ZONE_SCOOP (default off): on outside/wide zone a double whose helper is
@@ -651,7 +651,7 @@ const ZONE_GAP_SHIFT = .75;
  * across his face. Installed, he engaged that man on 90% of snaps; tracked
  * 2022 backside guards never come within 1 yd of a backside-shaded man on
  * 57% (centres 71%) and are 2-3 yd upfield by 2.5 s. */
-export const ZONE_SCOOP = process.env.ZONE_SCOOP === '1';
+export const ZONE_SCOOP = process.env.ZONE_SCOOP !== '0';
 
 /** ZONE_PAIR (default off): an uncovered zone lineman doubles the covered
  * neighbor whose man is nearest him (within 1.8 yd), play side first, else
@@ -664,14 +664,14 @@ export const ZONE_PAIR = process.env.ZONE_PAIR === '1';
  * wing, receiver) never cross their assignments: the inside man takes the
  * inside defender. The backside end dropped by BACKSIDE_COMBO went to the
  * wing outside the tight end while the tight end took the man outside him. */
-export const NO_CROSS = process.env.NO_CROSS === '1';
+export const NO_CROSS = process.env.NO_CROSS !== '0';
 /** ZONE_ONBALL (default off): zone ownership counts only men on the ball
  * (no more than 1.1 yd deep, the same line the gap call uses for a press
  * defender) as down threats. A nickel standing on the line 1.4 yd off the
  * ball over a wing was counted as a fifth down lineman: to account for him
  * the tight end took him and the tackle took the end 2.2 yd outside, whom
  * the backside double then dropped, leaving the end unblocked (s29-38). */
-export const ZONE_ONBALL = process.env.ZONE_ONBALL === '1';
+export const ZONE_ONBALL = process.env.ZONE_ONBALL !== '0';
 /** ZONE_MUG (default off): a box backer walked up within 3 yd of the ball,
  * inside the surface, is part of the front for zone ownership: the man whose
  * gap he stands in blocks him at the line rather than leaving him to a
@@ -680,12 +680,12 @@ export const ZONE_ONBALL = process.env.ZONE_ONBALL === '1';
  * sim, 64% of them were untouched by anyone by 1.5 s. A backer stacked behind
  * a down man (within 1 yd of him laterally) stays a second-level man: tracked
  * blockers take those first only 28-33% of the time, gap mugs 77-87%. */
-export const ZONE_MUG = process.env.ZONE_MUG === '1';
+export const ZONE_MUG = process.env.ZONE_MUG !== '0';
 /** CLIMB_RUNNER_SIDE (default off): a climber fits his backer on the side
  * between the backer and the runner as he sees him, not always the called
  * play side; on a cutback the play-side fit walled the backer into the
  * runner's new lane and the climber ran past him (s29-38 centre). */
-export const CLIMB_RUNNER_SIDE = process.env.CLIMB_RUNNER_SIDE === '1';
+export const CLIMB_RUNNER_SIDE = process.env.CLIMB_RUNNER_SIDE !== '0';
 /** ZONE_WINGS (default off): a wing at the end of the line (off it, within
  * 2 yd outside the last man and no more than 1 yd deeper) is a line member
  * for zone covered/uncovered ownership, and ownership weighs the physical
@@ -695,14 +695,14 @@ export const CLIMB_RUNNER_SIDE = process.env.CLIMB_RUNNER_SIDE === '1';
  * him and the uncovered tight end helps and climbs; a receiver too light for
  * the end is uncovered, chips the end with the tackle and comes off, and the
  * release reads never leave him as the keeper. Replaces two special cases. */
-export const ZONE_WINGS = process.env.ZONE_WINGS === '1';
+export const ZONE_WINGS = process.env.ZONE_WINGS !== '0';
 /** BLOCKER_NEXT (default off): a climber or lead whose man is gone (down,
  * or blocked by a teammate) looks for the next threat in the runner's lane
  * once the runner has the ball, not his own pre-snap lane, and with no work
  * in sight leads that lane upfield instead of stepping back to a spot 3 yd
  * in front of the runner (s19-105: the centre stood over a fallen backer,
  * then walked back toward the line). */
-export const BLOCKER_NEXT = process.env.BLOCKER_NEXT === '1';
+export const BLOCKER_NEXT = process.env.BLOCKER_NEXT !== '0';
 /** WING_CALL (default off): when a down man lines up over a wing beside the
  * end of the line (laterally nearer the wing by 0.3 yd or more), the call
  * names the wing's technique for that snap, in the tracked mix by side
@@ -716,14 +716,14 @@ export const BLOCKER_NEXT = process.env.BLOCKER_NEXT === '1';
  * ball spot, not a draw from the play's stream. A keeper under 85% of the
  * man's mass never stays on him in the double. Our wings ended on the man
  * 84% of the time (tracked receiver wings 37%). */
-export const WING_CALL = process.env.WING_CALL === '1';
+export const WING_CALL = process.env.WING_CALL !== '0';
 /** WING_WORK (default off; with WING_CALL): a play-side wing's arc goes to a
  * box or alley defender (within 6 yd of the line), not a deep corner or
  * safety. With none unclaimed he doubles the man with the end instead, and
  * the pair's release reads send one of them on to the nearest box backer
  * (s7-8: the H arced 12 yd wide to a corner 8 yd deep while both backers
  * belonged to interior climbers who never reached them). */
-export const WING_WORK = process.env.WING_WORK === '1';
+export const WING_WORK = process.env.WING_WORK !== '0';
 /** LEVEL2_TIME (default off): the zone's second-level assignment goes by who
  * gets there first, and wings beside the end of the line take part. Each
  * worker's cost to a backer is his start (a double's climber leaves at about
@@ -734,7 +734,7 @@ export const WING_WORK = process.env.WING_WORK === '1';
  * a man over him (same operator): the wing blocks nobody 4% (ours 34%) and
  * the play-side backer goes unblocked 25% (ours 54%); the wing and the end
  * take him 37% (ours 21%). */
-export const LEVEL2_TIME = process.env.LEVEL2_TIME === '1';
+export const LEVEL2_TIME = process.env.LEVEL2_TIME !== '0';
 function snapHash(...parts: (string | number)[]): number {
   let h = 2166136261;
   for (const c of parts.join('|')) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
@@ -743,7 +743,7 @@ function snapHash(...parts: (string | number)[]): number {
 /** FB_PLAYSIDE (default off): on stretch runs the lead fullback takes the
  * first free play-side defender in the core, or none (he reads his lane),
  * never a free man across the formation (he led to the backside corner). */
-export const FB_PLAYSIDE = process.env.FB_PLAYSIDE === '1';
+export const FB_PLAYSIDE = process.env.FB_PLAYSIDE !== '0';
 
 /** DOUBLE_FLOW (default off): a double member does not hand the down man
  * to his partner while, in his own picture, the man is moving away from the
@@ -755,7 +755,7 @@ export const FB_PLAYSIDE = process.env.FB_PLAYSIDE === '1';
  * a 3-technique flowing play side to the centre behind him. On stretch runs
  * the man may be handed to a keeper level with him (the backside overtake):
  * only a keeper trailing his flow by more than 0.45 yd blocks the release. */
-export const DOUBLE_FLOW = process.env.DOUBLE_FLOW === '1';
+export const DOUBLE_FLOW = process.env.DOUBLE_FLOW !== '0';
 
 /** CLIMB_RIP (default off): a climber leaving a double rips past the down
  * man's hip on his own side (the side away from his keeper): upfield along
@@ -765,7 +765,7 @@ export const DOUBLE_FLOW = process.env.DOUBLE_FLOW === '1';
  * man its sign flipped tick to tick and the climber stood beside him (s11-45
  * guards ~0.5 yd/s for 0.8 s after the climb), or a detour around the
  * bodies took him backward (s9-88 LG). */
-export const CLIMB_RIP = process.env.CLIMB_RIP === '1';
+export const CLIMB_RIP = process.env.CLIMB_RIP !== '0';
 /** CLIMB_SLIDE (default off): a climber still touching the man he left slides
  * along him: his request loses only what points into the man relative to the
  * man's own motion, at the same speed. The rip took him straight at a spot past
@@ -773,7 +773,7 @@ export const CLIMB_RIP = process.env.CLIMB_RIP === '1';
  * 0.64 yd from the 3-technique, both running 2.5 yd/s laterally); a body
  * cannot be walked through. Tracked play-side climbers are 1.4 yd from the
  * man 0.5 s into the climb; ours 0.75. */
-export const CLIMB_SLIDE = process.env.CLIMB_SLIDE === '1';
+export const CLIMB_SLIDE = process.env.CLIMB_SLIDE !== '0';
 /** CUTOFF_RACE (default off): on a stretch call a solo cutoff is the backside
  * reach: the engaged reach footwork (REACH_TECHNIQUE, REACH_RACE) races for
  * the man's play-side shoulder instead of mirroring him. Tracked 2022 outside
@@ -781,7 +781,7 @@ export const CLIMB_SLIDE = process.env.CLIMB_SLIDE === '1';
  * at 1.0 / 1.5 s; ours 0.6 / 1.2 (1.9 with the racing line), so the backside
  * man's vacated spot never opened (backside DL >= 1 yd in the backfield at
  * 1.5 s: tracked 17%, ours 1%). */
-export const CUTOFF_RACE = process.env.CUTOFF_RACE === '1';
+export const CUTOFF_RACE = process.env.CUTOFF_RACE !== '0';
 
 /** A zone climber does not take a backer more than three gaps (4.5 yd)
  * from him across the formation. */
@@ -1394,17 +1394,17 @@ const CLIMB_PLAN = process.env.CLIMB_PLAN !== '0';
  * diagonal first step (at 0.5 s 0.38 yd play side, 0.28 upfield) where
  * tracked 2022 OZ linemen step flat (0.59 / 0.13) and their hands meet the
  * man while they keep running the track. */
-export const ZONE_ARMS = process.env.ZONE_ARMS === '1';
+export const ZONE_ARMS = process.env.ZONE_ARMS !== '0';
 /** REACH_FLAT (off): on a stretch, a zone lineman still short of his man's
  * play-side shoulder gains width before depth; he closes depth as the lateral
  * deficit shrinks, and presses depth only after two lateral steps. Tracked
  * stretch linemen are 0.1-0.2 yd upfield at 0.6 s (sim 0.36-0.48) and the
  * man comes to them; he keeps the track until his hands reach the man. */
-export const REACH_FLAT = process.env.REACH_FLAT === '1';
+export const REACH_FLAT = process.env.REACH_FLAT !== '0';
 /** IZ_FLAT (off): the REACH_FLAT rule on inside/split zone against a man
  * aligned more than 1 yd outside the blocker (a wide edge): he gains width
  * before depth. Covered interior linemen still press. */
-export const IZ_FLAT = process.env.IZ_FLAT === '1';
+export const IZ_FLAT = process.env.IZ_FLAT !== '0';
 /** REACH_CLOSE (off): with ZONE_ARMS, a stretch lineman closes to the depth
  * where his whole distance to the man is in reach (arm's length less 0.1 yd,
  * lateral offset included), not to arm's length straight upfield; and
@@ -1415,7 +1415,7 @@ export const IZ_FLAT = process.env.IZ_FLAT === '1';
  * (run-ref-2: free OZ reach depth gap to the fit 0.07-0.11 yd, request
  * 0.17-0.26 yd/s upfield damped to 0.0; tracked OZ linemen +0.9 to +1.1 yd
  * upfield by 2.0 s). */
-export const REACH_CLOSE = process.env.REACH_CLOSE === '1';
+export const REACH_CLOSE = process.env.REACH_CLOSE !== '0';
 /** OWNER_KEEPS (off): in a double with no check installation, when the owner
  * carries the man alone and the helper is off him (not joined), the helper
  * climbs on the zone overtake read (readOvertaken), the mirror of the
@@ -1435,7 +1435,7 @@ export const OWNER_KEEPS = process.env.OWNER_KEEPS === '1';
  * a cutoff already 1.1-1.4 yd play side of a flowing man ran beside him for
  * 2 s (run-ref-3 OZ, 1.5 yd past the line by 2.0 s: centre 6-10%, backside
  * guard 3-18%, backside tackle 2%; NFL 26-36 / 36-37 / 16-26%). */
-export const GAP_CLIMB = process.env.GAP_CLIMB === '1';
+export const GAP_CLIMB = process.env.GAP_CLIMB !== '0';
 
 /** CLIMB_PATH (default off): a free climber steers one continuous path to
  * his backer's play-side shoulder by holding the bearing to it constant, the
@@ -1452,7 +1452,7 @@ export const GAP_CLIMB = process.env.GAP_CLIMB === '1';
  * from by the strike (half his braking over the room left, plus 1 yd/s over
  * the backer's own motion away), so he arrives on the backer's speed.
  * Access detours around bodies are unchanged. */
-export const CLIMB_PATH = process.env.CLIMB_PATH === '1';
+export const CLIMB_PATH = process.env.CLIMB_PATH !== '0';
 /** CLIMB_PATH: closing speed (yd/s) over the backer's own he keeps into the
  * strike. Tracked 2022 climbers touch backers at about their speed (inside
  * zone 2.1 vs 2.0, outside 3.5 vs 3.6) and stay on 90% for 0.5 s. */
@@ -3275,7 +3275,7 @@ function keeperCandidate(climber: Agent, sim: PlaySim, combo: Combination, e: En
  * fixed 4.2 yd radius or when the back came within 2.8 yd of the line: the
  * nearer member left for a backer still sitting (s27-13 centre) and his
  * partner, the man the backer then scraped to, never got a read. */
-export const RELEASE_INTERCEPT = process.env.RELEASE_INTERCEPT === '1';
+export const RELEASE_INTERCEPT = process.env.RELEASE_INTERCEPT !== '0';
 function releaseTiming(observer: Agent, sim: PlaySim, backer: Perceived, d: Agent, d0?: Agent): { go: boolean; cut: number } {
   const dir = sim.attackDir(observer.team), me = { pos: observer.pos, vel: observer.vel, profile: observer.profile };
   const reach = observer.profile.radius + d.profile.radius + .2;
