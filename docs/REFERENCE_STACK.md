@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-15`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-16`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -568,6 +568,31 @@ Left open by it: a held quarterback barely moves, throws while held are common, 
 Two tests changed with this stack. `test/run-hand-control.test.ts` leaves the new `armSwingYaw` report field out of its historical hash (it is 0 there; the recorded hashes reproduce, so the physics is unchanged with no grasp). The same card's `qbf` arm is why `QB_FEEL` is not on: scrambles 3.1 → 0.4%.
 
 Merged with this stack and still off, each one read from promotion: `BACKSIDE_SWAP` + `KEEPER_HIP` (Run Game #511: the uncovered backside tackle on outside zone within 1.0 yd of the guard's man by 1.2 s 3 → 19%, NFL 22%; known cost, the backside backer touched by anyone 21 → 16%, NFL 46%).
+
+## run-ref-16: `BACKSIDE_SWAP` + `KEEPER_HIP` + `RECEIVER_DEPTH` on (2026-11-10)
+
+Three small corrections that put players where tracking has them. None is carried by a yardage gain.
+
+**`BACKSIDE_SWAP` + `KEEPER_HIP`** (Run Game #511). On outside zone the uncovered backside tackle was installed as a solo cutoff on a wide end and held to a flat track, so he touched nobody on 76% of runs. With the swap (stretch only) he joins the double on the backside guard's man, and as a double's keeper he closes to depth on the man's backside hip instead of racing beside him.
+
+| Outside zone, uncovered backside tackle | NFL | off | on |
+|---|---|---|---|
+| Within 1.0 yd of the guard's man by 1.2 s / 1.5 s | 22% / 33% | 3% / 7% | 19% / 26% |
+| First touch: the inside man / nobody | 35% / 30% | 15% / 76% | 30% / 60% |
+| Backside end's tackles (381 runs); in the backfield | | 14; 3 | 12; 2 |
+| Backside backer touched by anyone | 46% | 21% | 16% |
+| Fixed 1,321 runs on run-ref-15, paired yards a run (SE) | | | +0.01 (0.06); OZ +0.04 (0.21); other concepts identical |
+
+Known cost, recorded: the backside backer is reached less often (21 → 16%), because the guard now climbs from a double. The parked run-game notes (`docs/reviews/run-game-parked.md`) carry the next question: outside-zone doubles physically form a third (play side) and a tenth (backside) as often as the NFL's.
+
+**`RECEIVER_DEPTH`** (Rules + Coaching #514). On-line receivers and attached tight ends stand at the tracked depth from the ball (0.74 and 0.83 yd with no defender in front), and a receiver who sees a defender within 2 yd in front before the snap backs off 0.23 yd. The NFL side of the operator measured from an integer yard line; it now measures from the tracked ball.
+
+| Depth off the ball, p50 | NFL | off | on |
+|---|---|---|---|
+| WR #1 / WR #2 / TE | 0.82 / 1.02 / 0.96 | 0.60 / 1.20 / 1.19 | 0.74 / 1.20 / 1.06 |
+| Fixed 1,321 runs on run-ref-14, paired yards a run | | | +0.17 ± 0.10 (IZ +0.44, duo +0.37): the tight end stands 0.36 yd shallower |
+
+The snap assessment is identical across all 24 formations. The personal depth habit is parked.
 
 ## After run-ref-12: the first second, and what is merged off (2026-11-10)
 

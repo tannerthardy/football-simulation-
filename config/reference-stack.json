@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-15",
+  "id": "run-ref-16",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -29,7 +29,7 @@
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SHOOT": "off",
-    "BACKSIDE_SWAP": "off",
+    "BACKSIDE_SWAP": "on",
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
     "BLOCK_RELEASE": "off",
@@ -92,7 +92,7 @@
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
     "IZ_OFFSET": "on",
-    "KEEPER_HIP": "off",
+    "KEEPER_HIP": "on",
     "KEY_DEPTH": "on",
     "KEY_PACE": "on",
     "KEY_REACT": "on",
@@ -141,6 +141,7 @@
     "REACH_TECHNIQUE": "on",
     "READ_LEAN": "on",
     "READ_RISK_TRACE": "off",
+    "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",
     "RELEASE_QUICK": "on",
     "RUN_BLITZ": "on",
