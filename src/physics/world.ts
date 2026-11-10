@@ -406,6 +406,40 @@ const GRASP_ARMS = process.env.GRASP_ARMS === '1';
  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
  * scripts/diag/effective-mass/shape.py. */
 const CHEST_HALF = 0.27 - 0.15;
+/** Experimental (TORSO_CAPSULE=1, off): a torso is wider than it is deep. For
+ * the pairs the owner names (World.capsulePair; PlaySim: the ball carrier and
+ * a defender), the torso contact is between two capsules across each man's
+ * facing (the shoulder line): half-width the body's radius, half-depth that
+ * times TORSO_DEPTH. Contact is at the segments' closest points; the normal is
+ * the direction between them (the shoulder's surface normal, not the line of
+ * centres), and the row acts at the surface point with lever arms, so an
+ * off-centre hit turns the bodies and leaves the closing as slip. Off, every
+ * torso normal passes through both centres. docs/reviews/2026-11-10-torso-shape-plan.md. */
+const TORSO_CAPSULE = process.env.TORSO_CAPSULE === '1';
+/** Half-depth over half-width of a padded torso (0.15 / 0.27 yd: the same
+ * anthropometric estimate as CHEST_HALF). */
+const TORSO_DEPTH = 0.15 / 0.27;
+
+/** TORSO_CAPSULE: closest points of the two shoulder-line segments and the row
+ * geometry they give (normal from a to b, gap, and each body's arm to its
+ * surface contact point). */
+function capsuleGeom(a: Body, b: Body): { nx: number; ny: number; s: number; R: number; rax: number; ray: number; rbx: number; rby: number } {
+  const da = a.profile.radius * TORSO_DEPTH, db = b.profile.radius * TORSO_DEPTH;
+  const la = a.profile.radius - da, lb = b.profile.radius - db;
+  const ux = -Math.sin(a.facing), uy = Math.cos(a.facing), vx = -Math.sin(b.facing), vy = Math.cos(b.facing);
+  const rx = b.pos.x - a.pos.x, ry = b.pos.y - a.pos.y;
+  // Closest points of a.pos + sa·u (|sa| <= la) and b.pos + tb·v (|tb| <= lb).
+  const uv = ux * vx + uy * vy, ur = ux * rx + uy * ry, vr = vx * rx + vy * ry, den = 1 - uv * uv;
+  let sa = den > 1e-9 ? clamp((ur - uv * vr) / den, -la, la) : 0;
+  let tb = clamp(uv * sa - vr, -lb, lb);
+  sa = clamp(uv * tb + ur, -la, la);
+  tb = clamp(uv * sa - vr, -lb, lb);
+  const pax = a.pos.x + ux * sa, pay = a.pos.y + uy * sa, pbx = b.pos.x + vx * tb, pby = b.pos.y + vy * tb;
+  let dx = pbx - pax, dy = pby - pay; let dist = hypot2(dx, dy);
+  if (dist < 1e-8) { dx = rx; dy = ry; dist = hypot2(dx, dy) || 1; }
+  const nx = dx / dist, ny = dy / dist, R = CONTACT_SCALE * (da + db);
+  return { nx, ny, s: dist - R, R, rax: pax + nx * da - a.pos.x, ray: pay + ny * da - a.pos.y, rbx: pbx - nx * db - b.pos.x, rby: pby - ny * db - b.pos.y };
+}
 /** Experimental (CONTACT_LAYER=1, off): a compliant torso layer before the stiff core
  * (docs/reviews/effective-mass.md, step 1). Each torso carries a soft layer (pads,
  * tissue and arms yielding) of depth LAYER_DEPTH and stiffness LAYER_K; a pair's
@@ -472,6 +506,8 @@ interface Contact {
   closing: number;
   /** CONTACT_LAYER: this row's own softness (depth-dependent law). */
   soft?: Softness;
+  /** TORSO_CAPSULE: the row's geometry is the capsules', with lever arms. */
+  capsule?: boolean;
   /** The compliant solve pressed them together (before the relax). */
   touched?: boolean;
   observed: ContactSnapshot;
@@ -634,6 +670,8 @@ export class World {
   /** Live reduced lower geometry; false retains the historical linear law. */
   readonly boundedAttachment: boolean;
   joints: Joint[] = [];
+  /** TORSO_CAPSULE: the body pairs whose torso contact uses the capsule (set by the owner). */
+  capsulePair: ((a: Body, b: Body) => boolean) | null = null;
   /** World clock, seconds (the owner may set it to keep a shared clock). */
   time = 0;
   /** Fixed substep count for convergence studies; adaptive when unset. */
@@ -1678,13 +1716,15 @@ export class World {
       for (const c of contacts) c.touched = c.ln > 0;
       // Relaxation acts after position integration. Use the actual current
       // common point for these impulses, not the pre-travel lever arms.
-      if (this.handContact === 'patch') for (const c of contacts) this.contactPatch(c);
+      if (this.handContact === 'patch') for (const c of contacts) if (!c.capsule) this.contactPatch(c);
       for (let it = 0; it < RELAX_ITERATIONS; it++) {
         for (const c of contacts) {
           // A pair the correction left apart may still close that gap within
           // a substep (speculative), never more.
           const a = bs[c.i], b = bs[c.j];
-          const gap = hypot2(b.pos.x - a.pos.x, b.pos.y - a.pos.y) - c.R;
+          let gap: number;
+          if (c.capsule) { const g = capsuleGeom(a, b); if (it === 0) this.capsuleArms(c, g); gap = g.s; }
+          else gap = hypot2(b.pos.x - a.pos.x, b.pos.y - a.pos.y) - c.R;
           c.bias = gap > 0 ? gap / h : 0;
           this.solveContact(c, RIGID, true);
         }
@@ -2269,6 +2309,15 @@ export class World {
         const d2 = dx * dx + dy * dy;
         const reach = rmax + Math.sqrt(rvx * rvx + rvy * rvy) * h + 0.02;
         if (d2 > reach * reach) continue;
+        if (TORSO_CAPSULE && this.capsulePair?.(a, b)) {
+          const g = capsuleGeom(a, b);
+          if (g.s > Math.max(0, -(rvx * g.nx + rvy * g.ny)) * h) continue;
+          if (-g.s > report.maxPenetration) report.maxPenetration = -g.s;
+          const row = this.capsuleRow(i, j, a, b, g, h, soft);
+          if (CONTACT_LAYER) this.layerContact(row, g.s, h);
+          out.push(row);
+          continue;
+        }
         const dist = Math.sqrt(d2);
         // Normal from the current separation; an exact coincidence uses the
         // approach direction, then a stable index-based direction.
@@ -2320,6 +2369,30 @@ export class World {
     return out;
   }
 
+  /** TORSO_CAPSULE: a contact row from capsule geometry, acting at the surface point. */
+  private capsuleRow(i: number, j: number, a: Body, b: Body, g: ReturnType<typeof capsuleGeom>, h: number, soft: Softness): Contact {
+    const vn = (b.vel.x - a.vel.x) * g.nx + (b.vel.y - a.vel.y) * g.ny;
+    const row: Contact = { i, j, nx: g.nx, ny: g.ny, R: g.R, ri: 0, rj: 0, ni: 0, nj: 0, mn: 0, mt: 0, capsule: true,
+      guard: false, bias: Math.max(soft.biasRate * g.s, -MAX_PUSHOUT), ln: 0, lt: 0, closing: vn < 0 ? -vn : 0,
+      observed: { time: this.time, intervalEnd: this.time + h, normal: { x: g.nx, y: g.ny },
+        positionI: { ...a.pos }, positionJ: { ...b.pos }, facingI: a.facing, facingJ: b.facing,
+        velocityI: { ...a.vel }, velocityJ: { ...b.vel }, supportI: a.support!.state, supportJ: b.support!.state,
+        height: clamp(Math.min(this.padHeight[i], this.padHeight[j]), 0, Math.min(a.profile.heightYd, b.profile.heightYd)) } };
+    this.capsuleArms(row, g);
+    return row;
+  }
+
+  /** TORSO_CAPSULE: the row's arms and effective masses for geometry g (sign
+   * conventions as contactPatch: a takes −n, b takes +n). */
+  private capsuleArms(c: Contact, g: ReturnType<typeof capsuleGeom>): void {
+    c.nx = g.nx; c.ny = g.ny; c.R = g.R;
+    c.ni = -g.rax * g.ny + g.ray * g.nx; c.nj = g.rbx * g.ny - g.rby * g.nx;
+    c.ri = g.rax * g.nx + g.ray * g.ny; c.rj = -(g.rbx * g.nx + g.rby * g.ny);
+    const inverseMass = 1 / this.mass[c.i] + 1 / this.mass[c.j];
+    c.mn = 1 / (inverseMass + c.ni * c.ni / this.inertia[c.i] + c.nj * c.nj / this.inertia[c.j]);
+    c.mt = 1 / (inverseMass + c.ri * c.ri / this.inertia[c.i] + c.rj * c.rj / this.inertia[c.j]);
+  }
+
   /** CONTACT_LAYER: the row's spring and damping from its compression p = -s.
    * Inside the pair's soft layers (series stiffness, summed depth) the force is
    * k_layer p plus Hunt-Crossley damping 1.5 HC k p v, zero at first touch; past
@@ -2361,7 +2434,7 @@ export class World {
     const ima = 1 / this.mass[c.i], imb = 1 / this.mass[c.j];
     const av = a.vel, bv = b.vel;
     let vn = (bv.x - av.x) * c.nx + (bv.y - av.y) * c.ny;
-    if (this.handContact === 'patch') vn += (a.spin ?? 0) * c.ni + (b.spin ?? 0) * c.nj;
+    if (this.handContact === 'patch' || c.capsule) vn += (a.spin ?? 0) * c.ni + (b.spin ?? 0) * c.nj;
     const sf = c.soft && !relax ? c.soft : soft;
     let imp = relax || c.guard ? -c.mn * (vn + c.bias) : -c.mn * sf.massScale * (vn + c.bias) - sf.impulseScale * c.ln;
     // CONTACT_LAYER: the relax takes back the separating velocity the soft solve
@@ -2372,7 +2445,7 @@ export class World {
     c.ln = ln;
     av.x -= c.nx * dn * ima; av.y -= c.ny * dn * ima;
     bv.x += c.nx * dn * imb; bv.y += c.ny * dn * imb;
-    if (this.handContact === 'patch') {
+    if (this.handContact === 'patch' || c.capsule) {
       a.spin = (a.spin ?? 0) + c.ni * dn / this.inertia[c.i];
       b.spin = (b.spin ?? 0) + c.nj * dn / this.inertia[c.j];
     }

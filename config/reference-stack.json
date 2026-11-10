@@ -69,6 +69,8 @@
     "GAZE": "off",
     "GRASP_ARMS": "off",
     "GRASP_CLOSURE": "off",
+    "ENGAGED_REACH": "off",
+    "TORSO_CAPSULE": "off",
     "GRASP_PATCH": "on",
     "GRASP_SLIDE": "off",
     "GRIP_REACH": "on",
