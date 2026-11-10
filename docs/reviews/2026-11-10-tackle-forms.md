@@ -82,3 +82,19 @@ Each is a distribution, so it shows variety, not just a mean.
 3. **Split `legs`** into height plus side (and the ball-arm side).
 4. **Runner techniques:** a stiff-arm (a hands joint from the runner), a spin out of a hold.
 5. **Make pile and stall finishes physical where the bodies allow.**
+
+## The shared index (agreed with Defense, 2026-11-10)
+
+- **First contact, the default for all three lanes:** geometric. It is the first frame after the carrier phase starts (the handoff, else the snap, on runs; the catch on passes) in which any defender's centre is within 1.0 yd of the carrier's. This is `backfield.py`'s and Defense's `scripts/diag/defense-yards/yards.py` rule, and it is identical code on NFL and sim.
+- **Event-based contact is an option for the grasp itself:** `tackle-forms.py ... event` uses the BDB `first_contact` tag or the engine's `carrier_contact`. The two are labelled by different processes, so this is not the shared default.
+- **Primary tackler:** the defender nearest the carrier at first contact.
+- **End:** the `end` event (the NFL whistle; the sim's dead ball).
+- **Defense's outcome classes on that index:** made, missed, broken, other.
+
+## NFL 2022 run carries (`tackle-forms.py`, geometric contact, 5,938 carries)
+
+| Tackler's approach | Share | His speed (yd/s) | Contact → end p25 / p50 / p75 (s) | Yards after contact p25 / p50 / p75 | Defenders within 1 yd at the end: 0 / 1 / 2 / 3+ | Runner's end direction: fwd / side / back / stopped | ≥ 1 still defender within 1.5 yd |
+|---|---|---|---|---|---|---|---|
+| Front | 27% | 1.9 | 1.0 / 1.5 / 2.1 | 1.2 / 2.3 / 3.5 | 11 / 30 / 30 / 30% | 60 / 18 / 10 / 11% | 21% |
+| Side | 69% | 3.2 | 1.0 / 1.4 / 2.2 | 1.6 / 2.8 / 4.6 | 17 / 34 / 29 / 19% | 72 / 14 / 6 / 8% | 15% |
+| Behind | 4% | 6.3 | 0.8 / 1.1 / 1.8 | 1.0 / 2.6 / 4.7 | 26 / 39 / 21 / 14% | 85 / 9 / 2 / 4% | 11% |

@@ -1,16 +1,18 @@
 """Tackle forms on one index (Integration, 2026-11-10; docs/reviews/2026-11-10-tackle-forms.md). Same code on NFL records
 (out/mechanics/nfl-plays.jsonl.gz) and the sim's run-frames.mts / pass-frames.mts records; 0.1 s frames from the snap,
-x from the line with the offense attacking +x. Index: first contact = the record's events.first_contact (NFL: BDB
-first_contact; sim: the engine's carrier_contact); end = events.end (sim: the dead ball); the primary tackler = the
-defender nearest the carrier then. Distributions, by the primary tackler's approach at contact (his bearing from the
+x from the line with the offense attacking +x. Index (shared with Defense's yards.py / backfield.py): first contact =
+the first frame after the carrier phase starts (handoff, else the snap, on runs; the catch on passes) with any defender's
+centre within 1.0 yd of the carrier's (geometric, identical code on both sides). Option "event" uses the record's
+events.first_contact instead (NFL: BDB first_contact; sim: the engine's carrier_contact). End = events.end (sim: the
+dead ball). The primary tackler = the defender nearest the carrier at first contact. Distributions, by the primary tackler's approach at contact (his bearing from the
 carrier against the carrier's travel: front <= 45 deg, behind >= 135, else side):
   share; his speed at contact; defenders within 1 yd of the carrier at the end (solo vs gang); contact -> end (s);
   yards after contact (x gain); the runner's end direction (his motion over the last 0.3 s before the end against his
   travel at contact: forward / sideways / backward / stopped under 0.5 yd/s); defenders still (under 0.5 yd/s over the last
   0.3 s) within 1.5 yd of him at the end (tacklers left on the ground or piled).
-usage: python3 -I tackle-forms.py <records> [kind: run|pass|all, default run]"""
+usage: python3 -I tackle-forms.py <records> [kind: run|pass|all, default run] [contact: geometric|event, default geometric]"""
 import sys, os, json, gzip, math, statistics as st, collections as C
-path = sys.argv[1]; kind = sys.argv[2] if len(sys.argv) > 2 else 'run'
+path = sys.argv[1]; kind = sys.argv[2] if len(sys.argv) > 2 else 'run'; mode = sys.argv[3] if len(sys.argv) > 3 else 'geometric'
 op = gzip.open if path.endswith('.gz') else open
 R = C.defaultdict(list); n = 0
 def pc(a, q):
@@ -20,9 +22,20 @@ for l in op(path, 'rt'):
     if kind != 'all' and p.get('kind') != kind:
         continue
     ev, X, c = p.get('events', {}), p['xy'], p.get('carrier')
-    if c is None or 'first_contact' not in ev or 'end' not in ev:
+    if c is None or 'end' not in ev:
         continue
-    f0 = int(round(ev['first_contact'] / 0.1)); fe = min(len(X) - 1, int(round(ev['end'] / 0.1)))
+    fe = min(len(X) - 1, int(round(ev['end'] / 0.1)))
+    D0 = [i for i, q in enumerate(p['players']) if q['side'] == 'D']
+    if mode == 'event':
+        if 'first_contact' not in ev:
+            continue
+        f0 = int(round(ev['first_contact'] / 0.1))
+    else:
+        start = ev.get('catch', ev.get('handoff', 0.0)) or 0.0
+        fs = int(round(start / 0.1))
+        f0 = next((f for f in range(fs + 1, fe + 1) if any(math.dist((X[f][2 * i], X[f][2 * i + 1]), (X[f][2 * c], X[f][2 * c + 1])) <= 1.0 for i in D0)), None)
+        if f0 is None:
+            continue
     if f0 < 2 or fe - f0 < 1 or fe >= len(X):
         continue
     D = [i for i, q in enumerate(p['players']) if q['side'] == 'D']
@@ -48,7 +61,7 @@ for l in op(path, 'rt'):
         cc = (mv[0] * cv[0] + mv[1] * cv[1]) / (math.hypot(*mv) * cs)
         R[a + '|dir'].append('forward' if cc > 0.5 else 'backward' if cc < -0.5 else 'sideways')
     R[a + '|still'].append(sum(1 for i in D if math.dist(P(i, fe), P(c, fe)) <= 1.5 and math.dist(P(i, g), P(i, fe)) / max(0.1, (fe - g) * 0.1) < 0.5))
-print(f"== {os.path.basename(path)} [{kind}]: {n} carries with a first contact (carrier moving >= 1 yd/s)")
+print(f"== {os.path.basename(path)} [{kind}, {mode} first contact]: {n} carries with a first contact (carrier moving >= 1 yd/s)")
 cnt = C.Counter(R['approach'])
 for a in ('front', 'side', 'behind'):
     k = cnt[a]
