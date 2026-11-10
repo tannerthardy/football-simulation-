@@ -138,3 +138,55 @@ A statistic moving, including yards, is not by itself a reason to stop. It gets 
 - Flex: the shape, the contact and the bench.
 - Integration: the gates and the decision.
 - Defense, Run Game and Coverage: a read of their gates when it is on.
+
+## Bench result (`capsule-bench.mts`, `TORSO_CAPSULE` off by default; 2026-11-10)
+
+**Setup.** The package on (run-ref-12 defaults). A runner driving at 3–6 yd/s into a hitter holding his ground, the hitter
+square or 45° off square, at offsets 0–0.45 yd. Torso only, and with the hitter's grasp formed at first proximity
+(lock 0.5, reel 2.2). Speed kept = the runner's speed along his path at first torso touch + 0.2 s, over his speed before
+proximity. (The capsule lets centres get closer before touching, so a fixed time after proximity mixes the approach with
+the hit.)
+
+**At the NFL's median offset (0.30 yd), closing 3 / 4 / 6 yd/s:**
+
+| Arm | Torso only, square | Torso only, 45° | Grasp, square | Grasp, 45° |
+|---|---|---|---|---|
+| Disc (today) | 51 / 63 / 71% | 52 / 64 / 71% | 46 / 52 / 65% | 43 / 51 / 65% |
+| `CONTACT_LAYER` | 60 / 73 / 76% | 60 / 73 / 76% | 51 / 57 / 69% | 49 / 56 / 69% |
+| `TORSO_CAPSULE` | 59 / 71 / 77% | 80 / 81 / 83% | 51 / 61 / 65% | 40 / 51 / 64% |
+| Capsule + layer | 62 / 76 / 78% | 86 / 83 / 85% | 51 / 59 / 63% | 41 / 59 / 67% |
+| NFL (from proximity, all front-on hits) | 78–87% | | | |
+
+**Detail at 4 yd/s, offset 0.30 yd:**
+
+| Arm | Hitter's gain by touch + 0.2 s (yd/s) | Slip at touch → + 0.1 s (yd/s) | Yaw by + 0.5 s, runner / hitter |
+|---|---|---|---|
+| Disc | +0.16 | 1.83 → 1.76 (shrinks) | 0 / 37° |
+| Capsule | −0.10 | 1.92 → 2.03 (grows) | 4 / 60° |
+| Capsule, hitter at 45° | −0.13 | 2.41 → 2.47 (grows) | 34 / 2° |
+| Grasp: disc / capsule, square | | | hitter 121 / 117° |
+| Grasp: disc / capsule, 45° | | | runner 47 / 102°, hitter 89 / 57° |
+
+**Checks:**
+- A head-on central hit (offset 0) still stops him: 28–40% kept in every arm.
+- Pair momentum with free intents is exact (≤ 3.6e−13).
+- A world with no contact is bit-identical in every arm (the same digest).
+- `npm test` with the flag off: 3,922 passed. The 3 failures are the known Node-version refusal in `baseline-runner`.
+
+**Reading against the stop rule.**
+- **Torso only, the sourced capsule reaches the NFL band.** At the median offset, square, it keeps 59–77% (62–78% with
+  the layer); a hitter at 45° gives 80–86%. The hitter is barely accelerated, the slip grows after the pads meet as the
+  NFL's does, and central hits still stop the runner.
+- **With the bench's grasp formed at proximity, it does not.** It keeps 51–65%, square, against the disc's 46–65%, short
+  of about 70%.
+- **The bench grasp may be harsher than the game's.** The in-game split showed the grasp contributing +0.08 yd/s over the
+  first 0.2 s, while the bench's grasp (lock 0.5, reel 2.2 at proximity) brakes harder.
+- **The plan's stop rule is met for the package as benched.** Per the conditions, this is reported before any game run
+  and the capsule is not widened. The game-level gate (frontcourse and `carry.py` on the fixed zone runs, with the game's
+  own grasps) is the test that settles which reading is right; it is Integration's call.
+
+**Yaw.**
+- Torso only, the capsule adds rotation: hitter 37° → 60° square; runner 0° → 34° with the hitter at 45°.
+- With a grasp, the grasp dominates the hitter's yaw (117–121°) and the capsule does not add to it. The runner turns more
+  (47° → 102° at 45°).
+- That is the over-rotation watch item (51° against the NFL's 41° at +0.5 s). A game run would have to report it.
