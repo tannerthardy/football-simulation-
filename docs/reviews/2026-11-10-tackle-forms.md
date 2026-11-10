@@ -237,3 +237,38 @@ The design target: the tackler chooses **where on the body** (height) and **whet
 - The carrier lowers his pads and lunges along his path into a tackler he sees closing.
 - Its earlier read: front-on carrier gain 0.93–1.12 → 1.50–2.29 yd (NFL 2.16–2.59).
 - It is the "lower the shoulder, fall forward" counter (S → P), and an arm in the leg-wrap check: does a braced runner fall or drive forward through a thigh wrap?
+
+## Step 1 read: `TKL_WHIFF` + `WHIFF_MARGIN` + `TKL_EXEC_STATE` (2026-11-10)
+
+**Run set** (`ref:report`, paired 1,321 against run-ref-13):
+
+- Yards 3.97 → 3.90 (paired −0.07, SE 0.06).
+- Missed 0.239 → 0.207 a run; broken 0.147 → 0.088; engaged-grab breaks 0.070 → 0.066.
+
+**Defense's `yards.py`** (first contact at 1.0 yd; made / missed / broken; 8 paired games, `sim-export.ts --seed 101`):
+
+| | Step 1 off | Step 1 on | NFL (Defense's report) |
+|---|---|---|---|
+| Catches, all | 59 / 1 / 33% (n 353) | 61 / 0 / 29% (n 318) | 62 / 4 / 20% |
+| Catches, DB tacklers | 53 / 1 / 38% (n 244) | 56 / 0 / 34% (n 228) | 63 / — / 18% |
+| Catch approach: from behind | 74% | 72% | 69–73% |
+| YAC, p50 / mean | 5.0 / 10.3 | 4.5 / 10.6 | |
+| Runs, all | 56 / 5 / 17% (n 302) | 63 / 4 / 15% (n 316) | |
+| Runs, open field | 64 / 2 / 23% (n 56) | 47 / 0 / 34% (n 62, noisy) | |
+
+**Gates.**
+
+1. **Missed share: holds, but does not move toward the NFL.** Catches 1 → 0% (NFL 4%); runs 5 → 4%. The geometric whiff rarely fails from behind in space: the tackler's hands get there.
+2. **Breaks fall** (runs 0.147 → 0.088; catches 33 → 29%). Explained by dropping the execution draw's low tail, which made weak holds that broke.
+3. **No bug-caused regression seen.**
+
+**Reading.** Step 1 is the right representation, but it does not fix the catch side. The gap there is the solo finish from behind: a DB who has the receiver breaks 34–38% (NFL 18%), while misses are about 0 (NFL 4%).
+
+**Next diagnostic, ahead of the leg-wrap technique.** Why a hold from behind in space breaks.
+
+- Is it the grip failing against the runner's pull (capacity against load)?
+- Is it the hold's height (from behind `gripReach` gives 0.6–0.75, legs)?
+- Is it the holder being dragged or spun off?
+- Or is it his support falling?
+- Trace each broken catch tackle tick by tick, with `hold-breaks.mts` style instrumentation.
+- This sits beside the head-on absoluteness check: head-on leg holds look too sure on the bench, while holds from behind in space break too often in games.
