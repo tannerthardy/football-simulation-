@@ -249,6 +249,8 @@ export interface StepReport {
   maxLeanReleaseResidual: number;
   /** Most iterations needed to settle one finite committed-lean transfer. */
   maxLeanReleaseIterations: number;
+  /** GRASP_ARM_MOMENT: grasp-row yaw impulse not passed to holders' torsos (their arms swing), kg·yd²/s; unrepresented. */
+  armSwingYaw: number;
   /** Finite committed-lean geometry transferred into each body's support, yd. */
   leanRelease: Vec2[];
   /** Reduced support motor's signed work and common leg-work bound.
@@ -307,6 +309,15 @@ const LEAN_DECAY = 0.15;
  * in full once he has leaned to it; a load that vanishes releases only the
  * lean he really had. */
 const LEAN_PITCH = process.env.LEAN_PITCH !== '0';
+/** GRASP_ARM_MOMENT (experimental, off): a holder's hands are at the end of his
+ * arms, not welded to his torso. The yaw moment a grasp row passes into the
+ * holder's torso is bounded by what his shoulders can hold: his arm force
+ * (strength-derived, supportParams.armForce, with fatigue) across the chest
+ * half-span (CHEST_HALF), per substep. The rest swings his arms, which the
+ * reduced model does not represent: that unpassed angular impulse is reported
+ * (StepReport.armSwingYaw), not applied to anyone. Linear transfer is
+ * unchanged, and the runner's side of the row is unchanged. */
+const GRASP_ARM_MOMENT = process.env.GRASP_ARM_MOMENT !== '0';
 const POSTURE_RATE = 2.5;
 const DEFAULT_POSTURE = 0.2;
 const FALL_TIP = 3;
@@ -747,6 +758,9 @@ export class World {
   private readonly amx: Float64Array;
   private readonly amy: Float64Array;
   private readonly alpha: Float64Array;
+  /** GRASP_ARM_MOMENT: yaw impulse passed into each holder this substep, and that substep's time stamp. */
+  private readonly armYaw: Float64Array;
+  private readonly armYawTime: Float64Array;
   private readonly cut: Float64Array;
   private readonly leanX: Float64Array;
   private readonly leanY: Float64Array;
@@ -798,7 +812,7 @@ export class World {
     this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
     this.comHeight = f(); this.padHeight = f(); this.liftImp = f(); this.liftFelt = f();
-    this.v0x = f(); this.v0y = f(); this.facing0 = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f();
+    this.v0x = f(); this.v0y = f(); this.facing0 = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f(); this.armYaw = f(); this.armYawTime = f().fill(NaN);
     this.leanX = f(); this.leanY = f();
     this.armScale = f(); this.armCap = f(); this.active = f();
     this.footImpulseX = f(); this.footImpulseY = f();
@@ -853,7 +867,7 @@ export class World {
       armWork: reportZeros(n), armWorkLimit: reportZeros(n), armImpulse: reportZeros(n), armImpulseLimit: reportZeros(n),
       work: {before: this.kineticEnergy(),after: 0,hands: 0,grasps: 0,strikes: 0,contacts: 0,residual: 0},
       contacts: [], strikes: [], falls: [], downs: [], rises: [], maxPenetration: 0,
-      maxLeanReleaseResidual: 0, maxLeanReleaseIterations: 0, leanRelease: bs.map(reportVector),
+      maxLeanReleaseResidual: 0, maxLeanReleaseIterations: 0, armSwingYaw: 0, leanRelease: bs.map(reportVector),
       supportMotorWork: reportZeros(n), supportMotorWorkLimit: reportZeros(n), passiveGraspWork: 0,
       maxHeldRecoveryExcursion: 0, lowerHoldReleases: 0,
       impactSplits: 0, impactSplitLimitHits: 0, maxSupportIntegrationError: 0, supportIntegrationFailures: 0 };
@@ -1234,6 +1248,18 @@ export class World {
   /** Internal equal/opposite body load, with work of one common support
    * motor separated from passive grip dissipation. Solver updates telescope
    * in aggregate foot impulse; they do not refill/spend a motor budget. */
+  /** GRASP_ARM_MOMENT: the part of a grasp row's yaw impulse on the holder
+   * (body index i) his shoulders can pass this substep; the rest is reported. */
+  private armMoment(i: number, angular: number, h: number): number {
+    if (!GRASP_ARM_MOMENT || !angular) return angular;
+    if (this.armYawTime[i] !== this.time) { this.armYawTime[i] = this.time; this.armYaw[i] = 0; }
+    const cap = this.sp[i].armForce * this.fat[i] * CHEST_HALF * h;
+    const passed = clamp(this.armYaw[i] + angular, -cap, cap) - this.armYaw[i];
+    this.armYaw[i] += passed;
+    this.report.armSwingYaw += Math.abs(angular - passed);
+    return passed;
+  }
+
   private supportImpulse(jt: GraspJoint, x: number, y: number, h: number, active = false, channel?: { net: number }, angularA = 0, angularB = 0): number {
     const i = this.indexOf(jt.a), j = this.indexOf(jt.b), a = jt.a, b = jt.b;
     const foot = b.support!.foot!, share = recoveryShare(jt);
@@ -2699,10 +2725,11 @@ export class World {
     // once for the physical row, as we do its grip cap and compliance.
     const armCapacity = this.armCap[r.i] * this.armScale[r.i] * (r.members?.length ?? 1);
     const impulse = Math.min(wanted, armCapacity, r.limit / h) * h;
+    const reelA = this.armMoment(r.i, -(r.ni ?? 0) * impulse, h);
     const fraction = coupled ? this.supportImpulse(jt, -r.nx*impulse, -r.ny*impulse, h, true, undefined,
-      -(r.ni ?? 0)*impulse, -(r.nj ?? 0)*impulse)
+      reelA, -(r.nj ?? 0)*impulse)
       : this.pairImpulse(r.i, r.j, -r.nx * impulse, -r.ny * impulse, r.i, 'grasps', true, undefined,
-        -(r.ni ?? 0) * impulse, -(r.nj ?? 0) * impulse);
+        reelA, -(r.nj ?? 0) * impulse);
     r.reel = impulse * fraction;
     for (const member of r.members ?? [jt]) {
       const share = r.members ? r.limit > 0 ? this.gripCapacity(member) * h / r.limit : 0 : 1;
@@ -2752,9 +2779,10 @@ export class World {
     const dn = ln - r.ln;
     const coupled = !!b.support!.foot && jt.legs > 0;
     const channel=r.normalWork??={net:0};
-    const fraction=coupled?this.supportImpulse(jt,r.nx*dn,r.ny*dn,h,false,channel, (r.ni ?? 0)*dn, (r.nj ?? 0)*dn)
+    const normalA = this.armMoment(r.i, (r.ni ?? 0) * dn, h);
+    const fraction=coupled?this.supportImpulse(jt,r.nx*dn,r.ny*dn,h,false,channel, normalA, (r.nj ?? 0)*dn)
       :this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'grasps',false,channel,
-        (r.ni ?? 0) * dn, (r.nj ?? 0) * dn);
+        normalA, (r.nj ?? 0) * dn);
     r.ln+=dn*fraction;
     let tangentLimit = Math.sqrt(Math.max(0, lim * lim - (r.ln-r.reel)**2));
     if (GRASP_SLIDE) {
@@ -2767,8 +2795,8 @@ export class World {
       const rv = this.graspVelocity(jt), tx = -r.ny, ty = r.nx;
       const vt = rv.x * tx + rv.y * ty - (r.ri ?? 0)*(a.spin ?? 0) - (r.rj ?? 0)*(b.spin ?? 0);
       const lt = clamp(r.lt - (r.mt ?? r.mn) * vt, -tangentLimit, tangentLimit), dt = lt - r.lt;
-      r.lt += dt * this.supportImpulse(jt, tx * dt, ty * dt, h,false,r.tangentWork??={net:0}, -(r.ri ?? 0)*dt, -(r.rj ?? 0)*dt);
-    } else this.solveTangent(r, a, b, tangentLimit);
+      r.lt += dt * this.supportImpulse(jt, tx * dt, ty * dt, h,false,r.tangentWork??={net:0}, this.armMoment(r.i, -(r.ri ?? 0)*dt, h), -(r.rj ?? 0)*dt);
+    } else this.solveTangent(r, a, b, tangentLimit, h);
     if (WRAP_TWO_POINT && (jt.lock ?? 0) > 0 && jt.legs < 0.5) {
       // The wrap's couple: drive the bodies' relative spin to zero, within
       // the grip's capacity across the chest half-span.
@@ -2783,7 +2811,7 @@ export class World {
 
   /** Hands and holds couple the bodies' sideways motion directly; a grip
    * around a torso does not let him roll past like two touching pads. */
-  private solveTangent(r: JointRow, a: Body, b: Body, lim: number): void {
+  private solveTangent(r: JointRow, a: Body, b: Body, lim: number, h = 0): void {
     const ima = 1 / this.mass[r.i], imb = 1 / this.mass[r.j];
     const tx = -r.ny, ty = r.nx;
     const ri = r.ri ?? 0, rj = r.rj ?? 0;
@@ -2794,8 +2822,9 @@ export class World {
     const drive = r.joint.kind === 'hands' ? r.drive ?? 0 : 0;
     const lt = clamp(r.lt - (r.mt ?? r.mn) * (vt - drive), -lim, lim);
     const dt = lt - r.lt;
+    const angA = r.joint.kind === 'grasp' && h > 0 ? this.armMoment(r.i, -ri * dt, h) : -ri * dt;
     const fraction=this.pairImpulse(r.i,r.j,tx*dt,ty*dt,drive ? r.steerActor : r.actor,r.joint.kind==='hands'?'hands':'grasps',!!drive,r.tangentWork??={net:0},
-      -ri * dt, -rj * dt);
+      angA, -rj * dt);
     r.lt+=dt*fraction;
   }
 }

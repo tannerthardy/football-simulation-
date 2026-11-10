@@ -176,6 +176,8 @@
     "CUTOFF_RACE": "0",
     "RB_TEMPO": "0",
     "RB_GATHER": "0",
+    "BACKSIDE_SWAP": "0",
+    "KEEPER_HIP": "0",
     "OL_ON_COUNT": "0",
     "REACH_HANDS": "0",
     "BLOCK_RELEASE": "0",
@@ -192,12 +194,14 @@
     "TORSO_CAPSULE": "0",
     "WRAP_TWO_POINT": "0",
     "LEAN_PITCH": "0",
+    "GRASP_ARM_MOMENT": "0",
     "PASS_ANCHOR": "0",
     "MAN_PHASE": "0",
     "HIP_BRACE": "0",
     "THROW_REACT": "0",
     "PRESS_RELEASE": "0",
     "PRESS_MIRROR": "0",
+    "QB_FEEL": "0",
     "QB_RHYTHM": "0",
     "WR_SNAP": "0",
     "GRIP_REACH": "0",
@@ -240,7 +244,8 @@
     "BACKFIELD_DEPTH": "0",
     "STRETCH_OFFSET": "0",
     "TE_OFF": "0",
-    "MESH_TEMPO": "0"
+    "MESH_TEMPO": "0",
+    "GRASP_JEOPARDY": "0"
   },
   "worldDefaults": {
     "handContact": "center",
