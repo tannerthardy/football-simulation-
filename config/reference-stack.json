@@ -100,6 +100,7 @@
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",
+    "MAN_PHASE": "off",
     "MESH_GUN_SIDE": "on",
     "MESH_NFL": "off",
     "MESH_TEMPO": "on",
