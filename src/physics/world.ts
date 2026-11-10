@@ -354,6 +354,16 @@ const HANDS_CHEST = process.env.HANDS_CHEST !== '0';
  * ticks; docs/reviews/effective-mass.md). Friction only resists slip; it
  * never drives. */
 const HANDS_FRICTION = process.env.HANDS_FRICTION === '1';
+/** Experimental (GRASP_PATCH=1, off): in centre mode a tackler's grasp follows
+ * the World's common-patch grasp law: its rows act at the grip point with lever
+ * arms in the force-midpoint frame, and his arm pull (the reel) is applied at
+ * that point inside the same frame, sharing the grip's budget. A held pair then
+ * turns under the grip and can swing around instead of being held centre to
+ * centre (replayed locked contacts: slip at +0.3 s 0.15 -> 1.83 yd/s, runner at
+ * +0.5 s 1.32 -> 2.39, NFL 2.38). Every grasp without a material attachment;
+ * hands and torso contacts stay on the centre law (HANDS_CHEST).
+ * docs/reviews/effective-mass.md, step 2 (b). */
+const GRASP_PATCH = process.env.GRASP_PATCH === '1';
 /** Experimental (GRASP_ARMS=1, off): an upper-body grasp acts where the
  * holder's arms meet the runner's torso, not at his centre. In centre mode its
  * rows had no lever arms, so the grip braked the two centres' relative motion
@@ -987,6 +997,11 @@ export class World {
     return value;
   }
 
+  /** GRASP_PATCH: a centre-mode grasp that follows the common-patch grasp law. */
+  private gripPatched(jt: Joint): boolean {
+    return GRASP_PATCH && this.handContact === 'center' && jt.kind === 'grasp' && !this.attachments.get(jt)?.material;
+  }
+
   private graspPoint(jt: GraspJoint): Vec2 {
     const foot = jt.b.support!.foot, share = foot ? recoveryShare(jt) : 0;
     const attachment = foot ? this.attachments.get(jt) : undefined;
@@ -1407,7 +1422,7 @@ export class World {
       if (jt.kind !== 'grasp' || jt.broken || jt.brace !== undefined || !(jt.pull! > 0)) continue;
       // Patch grips share the hands' frozen force frame. Applying a
       // reel here would change transport before that common frame is acquired.
-      if (this.handContact === 'patch') continue;
+      if (this.handContact === 'patch' || this.gripPatched(jt)) continue;
       const i=this.indexOf(jt.a), j=this.indexOf(jt.b);
       const point=this.graspPoint(jt);
       const dx=point.x-jt.a.pos.x,dy=point.y-jt.a.pos.y,d=hypot2(dx,dy);
@@ -1470,8 +1485,8 @@ export class World {
       const rows = this.jointRows(h);
       // Freeze every finite-force point before delivering any patch reel.
       // This matters when one body participates in several different holds.
-      if (this.handContact === 'patch') for (const r of rows) {
-        if (r.joint.kind === 'grasp') this.reelPatchGrasp(r, h);
+      if (this.handContact === 'patch' || GRASP_PATCH) for (const r of rows) {
+        if (r.joint.kind === 'grasp' && (this.handContact === 'patch' || this.gripPatched(r.joint))) this.reelPatchGrasp(r, h);
       }
       const handSoft = softness(HANDS_HZ, HANDS_ZETA, h);
       const graspSoft = softness(GRASP_HZ, GRASP_ZETA, h);
@@ -1497,9 +1512,9 @@ export class World {
         // passive grasp. Center its achieved travel; torso impacts retain
         // their separate interval-start timing. Center-mode reels were
         // already centered above, while patch reels share this frozen row.
-        const gripPatch = jt.kind === 'grasp' && this.handContact === 'patch';
+        const gripPatch = jt.kind === 'grasp' && (this.handContact === 'patch' || this.gripPatched(jt));
         const normal = r.ln - (gripPatch ? r.reel : 0);
-        if (this.handContact === 'patch') {
+        if (this.handContact === 'patch' || this.gripPatched(jt)) {
           const yawTime = (this.handIntegration === 'centered' ? .5 : 1) * h;
           this.bodies[r.i].facing += yawTime * ((r.ni ?? 0) * normal - (r.ri ?? 0) * r.lt) / this.inertia[r.i];
           this.bodies[r.j].facing += yawTime * ((r.nj ?? 0) * normal - (r.rj ?? 0) * r.lt) / this.inertia[r.j];
@@ -2356,9 +2371,9 @@ export class World {
         const c = chestPoints(a, b); dx = c.x; dy = c.y;
       }
       let px = 0, py = 0; // Material offset from the body's force-midpoint center.
-      const upperPatch = jt.kind === 'grasp' && jt.legs <= 0 && this.handContact === 'patch';
+      const upperPatch = jt.kind === 'grasp' && (jt.legs <= 0 && this.handContact === 'patch' || this.gripPatched(jt));
       const lowerPatch = jt.kind === 'grasp' && !!this.attachments.get(jt)?.material && this.handContact === 'patch';
-      if ((jt.kind === 'hands' || upperPatch || lowerPatch) && this.handContact === 'patch' && this.handIntegration === 'centered') {
+      if (((jt.kind === 'hands' || lowerPatch) && this.handContact === 'patch' || upperPatch) && this.handIntegration === 'centered') {
         // Ground, strikes and reels are finite forces over this interval.
         // Use their achieved mean travel, as position integration does,
         // rather than locating the patch with their full end velocity.
@@ -2394,7 +2409,7 @@ export class World {
         // The effective patch lies between the bodies, weighted by their
         // torso radii. At touching distance these are the pad-surface arms;
         // extended hands use the same single reduced patch, not two joints.
-        if (this.handContact === 'patch') {
+        if (this.handContact === 'patch' || upperPatch) {
           const radius = a.profile.radius + b.profile.radius;
           let rax = dx * a.profile.radius / radius, ray = dy * a.profile.radius / radius;
           let rbx = -dx * b.profile.radius / radius, rby = -dy * b.profile.radius / radius;
