@@ -50,6 +50,16 @@ const OFFBALL_BASE = 0.3, OFFBALL_ANTICIPATION = 0.5;
 export const OL_ON_COUNT = process.env.OL_ON_COUNT === '1';
 
 /** Simple visual response to an expected single cue: seen motion to own movement. */
+/** WR_SNAP (off; WR_SNAP=1 turns it on): a wide receiver more than
+ * WR_SNAP_SPLIT yd from the ball laterally keys the ball's movement for his
+ * start (snapResponse, as a defender off the ball does) instead of going on
+ * the cadence with the line. Tracked receivers on dropbacks first reach
+ * 0.5 / 1.0 / 2.0 yd/s at 0.40 / 0.50 / 0.70 s after the snap tag, ours at
+ * 0.15 / 0.20 / 0.35: a near-constant delay, not a weaker first step
+ * (BDB 2025 weeks 1-3). */
+const WR_SNAP = process.env.WR_SNAP === '1';
+const WR_SNAP_SPLIT = 4;
+
 export function snapResponse(a: Agent): number {
   return 0.10 + 0.3 * a.profile.reactionTime * (1 - 0.3 * a.r('anticipation'));
 }
@@ -69,6 +79,8 @@ export interface SnapSituation {
   distance: number;
   /** Distance of each defender's body front from the line (yd). */
   offBall: (a: Agent) => number;
+  /** WR_SNAP: the ball's lateral spot. */
+  ballY?: number;
 }
 
 export interface SnapCount {
@@ -94,6 +106,12 @@ export function planSnap(agents: readonly Agent[], s: SnapSituation, rng: Rng): 
     // times the count aims behind it by a margin his discipline sets.
     const margin = 0.5 + 1.5 * discipline;
     if (a.team === 'O') {
+      // WR_SNAP: a wide receiver split away from the ball starts on the ball
+      // he sees move, at the same visual response a defender gets off with,
+      // not on the cadence with the line beside the ball.
+      if (WR_SNAP && s.ballY !== undefined && a.player.position === 'WR' && Math.abs(a.pos.y - s.ballY) > WR_SNAP_SPLIT) {
+        plans.set(a, { go: a.mind.snapDelay + snapResponse(a), timed: false }); continue;
+      }
       if (!LINE.has(a.slot)) { plans.set(a, { go: a.mind.snapDelay, timed: false }); continue; }
       // On a hard count a lineman can lose the count and go on the extra sound.
       if (hard && rng.chance(0.005 + 0.03 * (1 - discipline))) { plans.set(a, { go: -BEAT + a.mind.snapDelay, timed: false }); continue; }
