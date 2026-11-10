@@ -544,3 +544,46 @@ contact.
   - 8 cm of compression, inside the layer and short of the core.
 - **The remaining factor of about √2 is the single rigid torso:** the full body mass meets the hit. That is mechanism
   1 (an upper body pitching about the hip), not a layer parameter. The layer values stay as they are.
+
+**Why whole games seemed to lose twice the stuffs under `GRASP_PATCH` (2026-11-10).** All arms at Defense's
+`HOLD_FINISH` head (9165275f) with `HOLD_FINISH` + `HIP_BRACE`, ± `GRASP_PATCH`. Stuff = 0 yards or less, as on the
+scorecard (`metrics.ts`). The two samples were compared with different arms and different noise; the stuffs are not
+missing.
+
+| Sample | Finish | Package (+ `GRASP_PATCH`) | Change |
+|---|---|---|---|
+| Fixed 1,321 runs (`stuff-dump.mts`) | 17.4% | 12.7% | −4.7 |
+| Whole games, 16 (`game-runs.mts`, seeds 11–41) | 17.3% (706 runs) | 12.2% (756) | −5.1 |
+| Scorecard, 16 games, seed 11 | 16.9% (691) | 8.9% (682) | −8.0 (CI −10.9 to −5.2) |
+| Earlier card (Integration) | 15.1% | 9.6% | −5.5 |
+
+- **Definition:** both use yards ≤ 0, so the definition is not it. The fixed-set "3 points" (14.5 → 11.7) came from
+  different arms: ref-10 against all three flags, including `CONTACT_LAYER`, and without Defense's heights. With the
+  package's own arms the fixed set gives −4.7.
+- **Composition:**
+  - Backfield contact happens equally often: 43–44% of runs in every sample and arm.
+  - Box counts and second men by +0.5 s match: median 5; two or more within 1.5 yd on 40% of backfield hits.
+  - The scorecard's situational splits all move: ordinary downs 15.6 → 9.6%, short yardage 26 → 5%, goal line
+    25 → 19%. The drop is spread across every situation, not concentrated in one.
+- **Mechanism, the same everywhere:** a backfield hit stops the runner less often.
+
+| Stuffs after a backfield hit | Finish | Package |
+|---|---|---|
+| Fixed set | 37.6% | 26.9% |
+| Whole games | 37.9% | 25.2% |
+| Contact deeper than 1 yd | 56% | 43% |
+| Contact 0–1 yd behind | 24% | 12–15% |
+
+  This is the turn-and-fall-forward of the paired classification above: the runner turns out of the front hold and
+  falls past the line.
+- **The 8.0-point card is a high draw.** A binomial SE is about 1.8 points, and two other 16-game samples give 5.1 and
+  5.5.
+- **Runs of 20+ that reach 40 are noise:**
+
+| Sample | Finish | Package |
+|---|---|---|
+| Fixed set (same 9 plays reach 40 in both arms) | 9 of 21 | 10 of 27 |
+| Whole games | 8 of 13 | 6 of 18 |
+| Scorecard | 8 of 18 | 7 of 9 |
+
+  The direction flips between samples.
