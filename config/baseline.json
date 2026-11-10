@@ -177,6 +177,7 @@
     "CONTACT_LAYER": "0",
     "CONTACT_PATCH": "0",
     "THROW_REACT": "0",
+    "UNDER_DEPTH": "0",
     "GAP_CLIMB": "0",
     "REACH_CLOSE": "0",
     "GUN_SNAP": "0",

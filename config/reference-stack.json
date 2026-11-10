@@ -141,6 +141,7 @@
     "THROW_REACT": "on",
     "TIGHT_OFF": "on",
     "TOUCH_READ": "on",
+    "UNDER_DEPTH": "off",
     "WING_CALL": "on",
     "WING_WORK": "on",
     "WRAP_FOOT": "retired",
