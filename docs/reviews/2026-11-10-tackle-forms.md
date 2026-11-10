@@ -98,3 +98,47 @@ Each is a distribution, so it shows variety, not just a mean.
 | Front | 27% | 1.9 | 1.0 / 1.5 / 2.1 | 1.2 / 2.3 / 3.5 | 11 / 30 / 30 / 30% | 60 / 18 / 10 / 11% | 21% |
 | Side | 69% | 3.2 | 1.0 / 1.4 / 2.2 | 1.6 / 2.8 / 4.6 | 17 / 34 / 29 / 19% | 72 / 14 / 6 / 8% | 15% |
 | Behind | 4% | 6.3 | 0.8 / 1.1 / 1.8 | 1.0 / 2.6 / 4.7 | 26 / 39 / 21 / 14% | 85 / 9 / 2 / 4% | 11% |
+
+## How to represent each part: physics, structure or weighted probability (Tanner, 2026-11-10)
+
+Tanner's guidance: great tackling matters, we cannot simulate everything, and dice are acceptable where a weighted
+probability is the best and cheapest faithful representation. This section proposes where each part of a tackle goes.
+
+**Three tiers:**
+
+- **P, physics.** The World decides. Use it when the outcome changes where bodies are and how fast they move afterwards (yards after contact, piles, pursuit angles, who is on the ground), and the World already has the ingredients: mass, speed, traction, reach, support.
+- **S, structure.** A small discrete choice or parameter feeding the physics: which form is attempted, contact height, grip side. Use it when real players pick from a few techniques. The choice is a controller decision on observable evidence; its execution is physics.
+- **W, weighted probability.** A dice roll whose probability is a **function of physical state first, ratings second**. Use it when the real mechanism is below the body scale we simulate (fingers on cloth, a hand on the ball, grip slipping on a jersey, timing within one tick), and when the result is a discrete event whose aftermath the physics then carries.
+  - Rule for W: the probability must move with the state the World produced (contact quality, closing speed, ball exposure, where the grip is), not with ratings alone.
+  - The dice decide the sub-scale event only. Everything that follows is bodies.
+
+**The decision test, per part.** Does the outcome feed back into body positions in a way NFL tracking can see? Then P, or S feeding P. Is it a sub-scale binary event whose rate NFL data can calibrate? Then W, with state inputs. The cheapest choice that passes its operator wins.
+
+| Part of a tackle | Tier | Representation | Inputs | Cost | Checked by |
+|---|---|---|---|---|---|
+| Approach and strike into the hip | **P** (exists) | the strike step | speed, traction, angle | done | approach geometry, speed at contact |
+| Which form he attempts (wrap, shoulder hit, dive at the legs, arm grab, cut) | **S** | a technique choice on observable evidence: his angle, speed, the runner's speed and cut, his own balance. Execution is P | geometry, ratings as skill | M | the form mix by approach, end direction |
+| Contact height (high wrap, waist, thighs, cut at the knees) | **S → P** | a chosen target height into the existing contact-height and tip law. Low contact trips (an existing path); high contact tips back | the chosen height, posture | M | runner end direction, falls |
+| Grip location and side (waist / thighs / ankles; near or far side; head across) | **S** | split `legs` into height plus side. Side sets the roll direction and which way the runner can spin out | approach side | S–M | end direction (sideways share) |
+| **Whiff on a reach** (fingers miss the jersey) | **W** (state) | p = f(contact quality, relative speed, the runner's cut in the last 0.2 s) × a tackling-skill modifier. Replaces `pMiss` | geometry first | S | missed share by approach (Defense's classes) |
+| Grip holding or slipping | **P** (exists) | grip capacity against load, breaks | forces | done | broken share, yards after contact |
+| Dive or shoestring connects | **W** (state) | p = f(distance to the feet, the runner's speed and stride). On success, a leg hold. The fall is P | geometry | S | still defenders, dive outcomes |
+| Fumble or strip | **W** (state) | p = f(ball exposure: carry arm against the hit side, number of holders, hit impulse, a strip attempt chosen as S) × ball security | hit impulse, sides | M | fumble rate by hit type |
+| Execution draw per attempt | **W, drop it** | fold into the whiff and grip terms above. A separate per-rep draw double-counts noise | — | S | — |
+| Finish: physical fall | **P** (exists) | support falls | forces | done | contact → end, end direction |
+| Finish: pile, forward progress | **S + rule** | keep the stall rule (officials rule it), but the pile's push is physics (all bodies). Measure that piles move like NFL piles | bodies | done / measure | defenders at the end, contact → end |
+| Finish: QB in the grasp | **rule** | with Rules + Coaching | — | — | sack contact → down |
+| Runner's stiff-arm | **S → P** | a runner hands row (the hands joint exists), chosen on evidence: a tackler closing from the side, a free arm | geometry | M | yards after contact, side tackles |
+| Runner spins out of a hold | **S → P** | a chosen yaw burst against the grip. The grasp moment and arm bound decide whether he gets out | grip forces | M | broken share |
+| Runner lowers the shoulder or falls forward | **S → P** | posture and lean (exist), chosen at contact | posture | S | end direction (forward share) |
+| Hurdle, lift-and-drive, slam | **out of scope** | rare, and needs a vertical dimension | — | — | — |
+
+**Suggested order** (cheapest per yard of football first; measure before and after each):
+1. **Replace `pMiss` with the state-based whiff (W) and drop the execution draw.** Small, and it fixes the rule conflict.
+2. **Split grip into height plus side (S).** Small, and it feeds roll direction and spin-outs.
+3. **Technique choice, including contact height (S → P).** Medium. This is where most of the missing forms come from: shoulder hits, cuts, dives as choices.
+4. **Runner counters: stiff-arm, then spin-out (S → P).** Medium. These are the runner's half of the variety.
+5. **State-based fumble (W).** Medium; needs ball side and exposure.
+6. **The dive's connect probability (W).** Small.
+
+The sim side of the tackle-forms operator (in progress) gives the baseline for all of these.
