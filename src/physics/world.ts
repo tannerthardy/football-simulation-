@@ -1013,6 +1013,17 @@ export class World {
     return GRASP_PATCH && this.handContact === 'center' && jt.kind === 'grasp' && !this.attachments.get(jt)?.material;
   }
 
+  /** Height of a grasp's load on the runner: the grip's own height when the
+   * technique set it; else interpolated from his COM down his legs by leg
+   * share. HIP_BRACE's temporary default until tackle.ts sets GraspJoint.height
+   * for upper grips: a hold with leg share below 0.35 acts at chest height
+   * (0.70 of his stature). */
+  private graspHeight(jt: GraspJoint, j: number): number {
+    if (jt.height !== undefined) return jt.height;
+    if (HIP_BRACE && jt.legs < 0.35) return 0.70 * this.bodies[j].profile.heightYd;
+    return this.comHeight[j] * (1 - .55 * clamp(jt.legs, 0, 1));
+  }
+
   private graspPoint(jt: GraspJoint): Vec2 {
     const foot = jt.b.support!.foot, share = foot ? recoveryShare(jt) : 0;
     const attachment = foot ? this.attachments.get(jt) : undefined;
@@ -1450,7 +1461,7 @@ export class World {
       const wanted=foot ? Math.max(0,vn+Math.min(ARM_SPEED,jt.pull!))/demandMobility
         : Math.max(0,vn+Math.min(ARM_SPEED,jt.pull!))/(1/this.mass[i]+1/this.mass[j])/this.tickDt;
       const impulse=Math.min(wanted,this.armCap[i]*this.armScale[i],this.gripCapacity(jt))*h;
-      const height=jt.height??this.comHeight[j]*(1-.55*clamp(jt.legs,0,1));
+      const height=this.graspHeight(jt,j);
       const observed = jt.firstApplied ?? this.jointSnapshot(jt, h, nx, ny, height);
       const fraction=share>0?this.supportImpulse(jt,-nx*impulse,-ny*impulse,h,true)
         :this.pairImpulse(i,j,-nx*impulse,-ny*impulse,i,'grasps');
@@ -1511,9 +1522,7 @@ export class World {
       // Joint outputs and the loads they put on each body.
       for (const r of rows) {
         const jt = r.joint;
-        const height = jt.height ?? (jt.kind === 'grasp'
-          ? this.comHeight[r.j] * (1 - 0.55 * clamp(jt.legs, 0, 1))
-          : undefined);
+        const height = jt.kind === 'grasp' ? this.graspHeight(jt, r.j) : jt.height;
         if (hypot2(r.ln, r.lt) > 0) jt.achievedContactHeight = clamp(
           height ?? Math.min(this.padHeight[r.i], this.padHeight[r.j]), 0,
           Math.min(bs[r.i].profile.heightYd, bs[r.j].profile.heightYd));
@@ -2412,8 +2421,7 @@ export class World {
       }
       const dist = hypot2(dx, dy);
       const nx = dist > 1e-8 ? dx / dist : 1, ny = dist > 1e-8 ? dy / dist : 0;
-      const appliedHeight = jt.height ?? (jt.kind === 'grasp'
-        ? this.comHeight[j] * (1 - .55 * clamp(jt.legs, 0, 1)) : Math.min(this.padHeight[i], this.padHeight[j]));
+      const appliedHeight = jt.kind === 'grasp' ? this.graspHeight(jt, j) : jt.height ?? Math.min(this.padHeight[i], this.padHeight[j]);
       const observed = jt.firstApplied ?? this.jointSnapshot(jt, h, nx, ny, appliedHeight);
       const row: JointRow = { joint: jt, observed, i, j, nx, ny, mn: 1 / (1 / this.mass[i] + 1 / this.mass[j]),
         mode: 0, c: 0, ln: 0, lt: 0, limit: 0, pushLim: 0, holdLim: 0, steerLim: 0,actor: i,steerActor: i,reel: 0 };
@@ -2588,7 +2596,7 @@ export class World {
       }
     }
     this.report.armImpulse[r.i] += r.reel;
-    this.addLoad(r.i, r.j, r.nx, r.ny, -r.reel, 0, jt.height ?? this.comHeight[r.j]*(1-.55*clamp(jt.legs,0,1)), jt.legs>0 || HIP_BRACE);
+    this.addLoad(r.i, r.j, r.nx, r.ny, -r.reel, 0, this.graspHeight(jt, r.j), jt.legs>0 || HIP_BRACE);
   }
 
   private jointSnapshot(jt: Joint, h: number, nx: number, ny: number, height: number): ContactSnapshot {
