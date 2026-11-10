@@ -210,6 +210,8 @@ const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ
 
 /** Free fits plan lateral work with their own body (LB_PLAN=0 off). */
 const LB_PLAN = process.env.LB_PLAN !== '0';
+/** EDGE_REACH (experimental, off): see the edge fit below and PassRusher's reach read. */
+const EDGE_REACH = process.env.EDGE_REACH !== '0';
 const LB_LINE_FLOW = process.env.LB_LINE_FLOW !== '0', LINE_FLOW_LEAD = 1.5, GUARD_KEY_DELAY = 0.5, GUARD_STEP = 0.5;
 /** Experimental activation of the same planner for an observed pull-adjusted
  * insertion. Default off while matched containment/misdirection controls run. */
@@ -497,6 +499,21 @@ export function executeRunFit(a: Agent, sim: PlaySim, fallbackGap: Gap, fallback
       gy = kick.pos.y + job.side * (job.edge === 'spill' ? -.45 : .65);
       a.tags.add(job.edge === 'spill' ? 'fit-spill' : 'fit-box');
     } else gy = job.kind === 'force' ? job.side > 0 ? Math.max(surface+.5,seen.pos.y+.7) : Math.min(surface-.5,seen.pos.y-.7) : gy;
+    // EDGE_REACH (experimental, off): a box edge keeps his outside leverage
+    // on the man in front of him while the line he sees flows to his side.
+    // His landmark never falls inside that man's outside shoulder nor inside
+    // his own alignment, so a reach stretching outward carries the edge out
+    // with it, instead of a gap-centre landmark pulling him in.
+    if (EDGE_REACH && job.kind === 'edge' && job.edge !== 'spill' && !kick && lineRead(sim, a) === job.side) {
+      const out = job.side;
+      const front = sim.offense.filter((o) => o !== sim.qb && o !== back && o !== c).map((o) => ({ s: sim.see(a, o), r: o.profile.radius }))
+        .filter(({ s }) => Math.abs(s.pos.x - a.pos.x) < 2 && Math.abs(s.pos.y - a.pos.y) < 2.5)
+        .sort((p, q) => Math.hypot(p.s.pos.x - a.pos.x, p.s.pos.y - a.pos.y) - Math.hypot(q.s.pos.x - a.pos.x, q.s.pos.y - a.pos.y))[0];
+      const shoulder = front ? front.s.pos.y + out * (front.r + a.profile.radius * .5) : -Infinity * out;
+      const home = sim.defAlign.spots[a.slot as DefSlot]!.pos.y;
+      const floor = out > 0 ? Math.max(shoulder, home) : Math.min(shoulder, home);
+      if ((floor - gy) * out > 0) { gy = floor; a.tags.add('edge-reach-fit'); }
+    }
     // Squeeze, don't chase: the man on the inside of his gap blocking down
     // takes the gap inside with him, but the edge owns the spot he left. He
     // closes to it, his body just outside it, and no further, where a

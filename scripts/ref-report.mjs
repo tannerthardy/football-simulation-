@@ -79,7 +79,7 @@ async function main() {
   if (operators) {
     const nfl = Object.fromEntries(readFileSync(join(root, 'scripts/diag/run-operators/nfl-2022.txt'), 'utf8').split(/^=== /m).filter(Boolean).map(b => [b.slice(0, b.indexOf('\n')), b.slice(b.indexOf('\n') + 1).trimEnd()]));
     md.push('', '## Operators (zone runs; mesh: zone and gap)', '');
-    for (const op of ['hitblk', 'hitterback', 'pile', 'trench2', 'linestep', 'bsend', 'psend', 'mesh']) {
+    for (const op of ['hitblk', 'hitterback', 'frontcourse', 'pile', 'trench2', 'linestep', 'bsend', 'psend', 'mesh']) {
       const kind = op === 'mesh' ? 'all' : 'zone';
       const out = await run('python3', ['-I', `${op}.py`, ...arms.map(([n]) => `../../../out/ref/${kind}-${n}.jsonl`)], { cwd: join(root, 'scripts/diag/run-operators') });
       md.push(`### ${op}`, '', '```', '== NFL 2022', nfl[op] ?? '(no stored NFL output)', out.trimEnd(), '```', '');
