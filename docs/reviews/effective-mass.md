@@ -1579,3 +1579,27 @@ Both sides are aligned to his own start (the first 0.1 s frame displaced 0.25 yd
 3. **Scrambles:** close to the NFL in count. Ours are shorter and slower (8.8 yd at 4.0 against 13.9 at 6.0). A decision plus open-field running; not a priority.
 
 **Not physics:** the rusher's closing speed with a blocker attached (throws: 2.6 against 2.2 yd/s; sacks: 1.9 against 2.9). Ours close no faster at a sack. The short sim windows are the QB's decisions (throw at once, no movement), not rushers arriving faster.
+
+**Sacks: contact to down** (`nfl_sack_time.py`, BDB weeks 1–3, 180 sacks; `sack-trace.mts`, sim `LEAN_PITCH` + `PASS_ANCHOR`, 4 games, 16 sacks)
+
+**NFL** (first defender within 1 yd → the `qb_sack` frame):
+
+- Median 1.1 s (p25 0.7, p75 1.6). From 2 yd it is 1.6 s.
+- The QB travels 2.5 yd at 2.4 yd/s in that time. NFL sacks are fights, then takedowns.
+- So the record's end marker was not lagging: the NFL contact-to-sack really is ~1 s.
+
+**Sim:** 14 of 16 sacks are the **in-the-grasp rule** (`tackle.ts:683–689`). A pocket QB held 0.25 s with any tackler's control or grip ≥ 0.6 is ruled down at once.
+
+| Sim sacks | n | Bond held at the whistle | Grip reached 0.6 after | Max grip | QB travel during the hold |
+|---|---|---|---|---|---|
+| Whistled in the grasp (QB still up) | 14 | 0.25 s (p75 0.40) | 0.25 s (p25 0.05) | 0.71 | 0.23 yd |
+| Physical fall | 2 | 0.6–0.9 s | — | — | 0.6–1.0 yd |
+
+**Reading.**
+
+- The short sim sack is a rule ruling, not a body going down: whistled 0.25 s after the first hold with the QB upright and nearly stationary.
+- NFL officials rule "in the grasp" when control is clear and the QB's safety is in jeopardy. Most NFL sacks run about a second of struggle to a takedown.
+- **Rules interpretation (Integration):** a held time of 0.25 s and grip ≥ 0.6 as the whole test.
+- **Physics, mine, only if the rule stays:** grip reaching 0.6 within 0.05–0.25 s of the first hold on a QB.
+- **QB, Coverage:** he barely moves while held (0.23 yd), against the NFL QB's 2.5 yd of fighting and escaping.
+- **The rule comes first.** With a takedown required, the grasp, fall and escape physics would decide sacks, and the bench (a grasp on a QB stepping away at 2 yd/s, time to a physical fall) becomes the measure.
