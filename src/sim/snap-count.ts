@@ -28,6 +28,8 @@ import type { Rng } from '../core/rng.js';
 import type { Agent } from './agent.js';
 
 export const SNAP_REACT = process.env.SNAP_REACT !== '0';
+/** DL_SNAP_TIME (experimental, off): see planSnap; on-line defenders time the count more often and more tightly. */
+export const DL_SNAP_TIME = process.env.DL_SNAP_TIME === '1';
 
 /** Spacing of the QB's cadence sounds (s). */
 export const BEAT = 0.55;
@@ -109,9 +111,19 @@ export function planSnap(agents: readonly Agent[], s: SnapSituation, rng: Rng): 
         continue;
       }
     }
-    const times = onLine && rng.chance(clamp(0.55 + 0.5 * anticipation + (passDown ? 0.15 : 0), 0, 0.95));
+    // DL_SNAP_TIME (experimental, off): a man on the line makes timing the
+    // count his get-off, not an exception to it. His cue is the cadence he
+    // hears and the centre's hands in his vision; his error is a rhythmic
+    // timing error of a few hundredths of a second, tighter the better he
+    // anticipates; going early stays his cost (the early() path and the
+    // rules). Tracked NFL defensive linemen are past 0.3 yd/s by the first
+    // 0.1 s after the tag (p50), faster than any visual response to the ball;
+    // ours took 0.3 s, timing on fewer than half the snaps with a 0.07 s
+    // spread.
+    const share = DL_SNAP_TIME ? 0.7 + 0.3 * anticipation + (passDown ? 0.1 : 0) : 0.55 + 0.5 * anticipation + (passDown ? 0.15 : 0);
+    const times = onLine && rng.chance(clamp(share, 0, DL_SNAP_TIME ? 0.97 : 0.95));
     if (!times) { plans.set(a, { go: react, timed: false }); continue; }
-    const sd = 0.03 + 0.05 * (1 - anticipation);
+    const sd = DL_SNAP_TIME ? 0.015 + 0.03 * (1 - anticipation) : 0.03 + 0.05 * (1 - anticipation);
     const error = rng.normal(margin * sd, sd);
     if (hard) {
       // He hears the extra sound; nearly everyone waits for the ball.

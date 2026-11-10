@@ -125,6 +125,7 @@
     "REACH_RACE": "on",
     "REACH_TECHNIQUE": "on",
     "READ_LEAN": "on",
+    "DL_SNAP_TIME": "off",
     "READ_RISK_TRACE": "off",
     "RELEASE_INTERCEPT": "on",
     "RELEASE_QUICK": "on",
