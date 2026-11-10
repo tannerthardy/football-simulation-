@@ -98,7 +98,7 @@ describe('HANDS_CHEST (block hands push chest to chest)', () => {
     return Math.abs(Math.atan2(Math.sin(ang() - a0), Math.cos(ang() - a0))) * 180 / Math.PI;
   }
   it('an off-centre pushing pair twists far less; a head-up pair is unchanged', async () => {
-    const offOff = await spin({}, 0.2), offOn = await spin({ HANDS_CHEST: '1' }, 0.2);
+    const offOff = await spin({ HANDS_CHEST: '0' }, 0.2), offOn = await spin({ HANDS_CHEST: '1' }, 0.2);
     expect(offOff).toBeGreaterThan(12);
     expect(offOn).toBeLessThan(offOff / 2);
     expect(await spin({ HANDS_CHEST: '1' }, 0)).toBeLessThan(1);

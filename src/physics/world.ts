@@ -337,7 +337,7 @@ const HANG_SHARE = 0.5;
  * leave the runner's base behind his body (see the stride holds and
  * updateSupport). */
 const HELD_SWING = process.env.HELD_SWING === '1';
-/** Experimental (HANDS_CHEST=1, off): a block's hands push chest to chest. In
+/** Default since run-ref-9 (HANDS_CHEST=0 restores): a block's hands push chest to chest. In
  * the centre-mode hands row the push acted along the line between the two
  * centres, so a fit landed off-centre pushed the man sideways as well as back
  * and the pair twisted apart (docs/reviews/effective-mass.md, step 2 attempt
@@ -345,7 +345,7 @@ const HELD_SWING = process.env.HELD_SWING === '1';
  * stay within its flat span. Each torso's shoulder line is a segment of
  * half-length CHEST_HALF across his facing; the row acts between the closest
  * points of the two segments, as for two capsules. Off, centre to centre. */
-const HANDS_CHEST = process.env.HANDS_CHEST === '1';
+const HANDS_CHEST = process.env.HANDS_CHEST !== '0';
 /** Flat half-span of a torso's front, yd: shoulder half-width with pads (0.27)
  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
  * scripts/diag/effective-mass/shape.py. */
