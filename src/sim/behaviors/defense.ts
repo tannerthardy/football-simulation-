@@ -625,6 +625,14 @@ export interface ManOptions {
   initialPosition?: Vec2;
 }
 
+/** PRESS_MIRROR (off; PRESS_MIRROR=1 turns it on): a pressing corner mirrors
+ * the receiver head-up while he is still releasing at the line, so the
+ * receiver must release around him (receiver.ts). Off, the corner stepped to
+ * his leverage spot at the snap and opened the lane: tracked pressed outside
+ * receivers are 0.62 yd lateral by their first yard and reach 5 yd at 1.90 s;
+ * ours went straight (0.00 yd) and reached 5 yd at 1.65 s (BDB 2025). */
+const PRESS_MIRROR = process.env.PRESS_MIRROR === '1';
+
 /** Man coverage with press/off technique, leverage and hip turn. */
 export class ManCoverage implements Behavior {
   readonly kind = 'man';
@@ -792,7 +800,11 @@ export class ManCoverage implements Behavior {
     if (Math.hypot(seen.vel.x, seen.vel.y) > 1.5) this.releaseObserved = true;
     const inside = Math.sign(sim.ballY - seen.pos.y) || 1;
     const o = this.opts;
-    const lev = (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
+    // PRESS_MIRROR: in press, while the receiver is still releasing at the
+    // line (not yet level with him), the corner mirrors him head-up and
+    // stays in his path; his leverage is where he ends up, not his first step.
+    const releasing = PRESS_MIRROR && this.press && seen.pos.x - sim.los < 3 && seen.pos.x < a.pos.x - 0.3;
+    const lev = releasing ? 0 : (o.trail ? 0.9 : 0.7) * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
     const vx = seen.vel.x;
     const deep = seen.pos.x - sim.los;
 

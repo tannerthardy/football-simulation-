@@ -75,6 +75,10 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   return { ...cmd, vel: { x: go.x * speed, y: go.y * speed } };
 }
 
+/** PRESS_MIRROR (off; see behaviors/defense.ts): a receiver with a pressing
+ * corner square in front of him releases around him, not up through him. */
+const PRESS_MIRROR = process.env.PRESS_MIRROR === '1';
+
 export class RouteRunner implements Behavior {
   readonly kind = 'route';
   readonly passOption = true;
@@ -342,7 +346,24 @@ export class RouteRunner implements Behavior {
       }
     }
     const p = this.pressContact;
-    if (!p) return null;
+    if (!p) {
+      // PRESS_MIRROR: a pressing corner square in front of him at the line is
+      // in his way: he releases around the corner on his route's side
+      // before the hands meet, not up through him.
+      if (!PRESS_MIRROR) return null;
+      for (const d of sim.defense) {
+        const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
+        if (!spot?.press || spot.manTarget !== a.slot || this.releasedCorners.has(d) || usable(d) === 0) continue;
+        const ahead = d.pos.x - a.pos.x, lateral = d.pos.y - a.pos.y;
+        if (ahead < 0 || ahead > 2.5 || Math.abs(lateral) > a.profile.radius + d.profile.radius + 0.3) continue;
+        const desired = this.path[this.idx]?.p.y ?? a.pos.y;
+        const side = Math.sign(desired - d.pos.y) || -Math.sign(lateral) || this.outside;
+        const clearance = a.profile.radius + d.profile.radius + 0.2;
+        return runThrough(a, { x: d.pos.x, y: d.pos.y + side * clearance },
+          { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
+      }
+      return null;
+    }
     const d = p.corner;
     const arm = supportParams(d.profile).armForce * usable(d);
     const overlap = clamp(1 - p.slide / (a.profile.radius + 0.08), 0, 1);
