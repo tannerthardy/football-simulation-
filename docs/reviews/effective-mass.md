@@ -871,3 +871,36 @@ side, or win ≥ 0.6, and in range.
 - `CONTACT_LAYER` lets more of them through: arrivals 34% → 47%.
 - They are eligible and in range on 87% of ticks, yet only 41% attempt. That is a tackle decision (`tryTackles`:
   occlusion, waiting for a better shot or `nextTackleAt`), which belongs to Defense.
+
+**The carry after the first hit (`carry.py`, frontcourse's front-on contacts; NFL 2022 against the fixed zone runs; 2026-11-10).**
+
+| | NFL | ref-10 | `GRASP_PATCH` | + `HIP_BRACE` | Package (run-ref-11) | Package + `CONTACT_LAYER` |
+|---|---|---|---|---|---|---|
+| Runner speed at −0.1 / 0 / +0.1 / +0.2 s (yd/s) | 4.39 / 4.21 / 3.94 / 3.61 | 4.74 / 4.66 / 3.26 / 1.94 | 4.75 / 4.67 / 3.43 / 2.32 | 4.74 / 4.67 / 3.42 / 2.25 | 4.74 / 4.67 / 3.43 / 2.25 | 4.71 / 4.65 / 3.78 / 2.42 |
+| Speed kept at +0.2 s (median of each play's ratio) | 82% | 41% | 51% | 50% | 49% | 53% |
+| Hitter along the runner's axis at −0.1 / +0.2 s | +0.46 / +0.72 | +0.22 / +1.41 | +0.23 / +1.10 | +0.22 / +1.10 | +0.22 / +1.11 | +0.22 / +1.14 |
+| Runner's deceleration from +0.2 to +0.5 s | 0.92 | 0.60 | 0.18 | 0.39 | 0.36 | 0.47 |
+| Play over by +0.5 / +1.0 s | 4% / 26% | 19% / 60% | 12% / 36% | 12% / 49% | 12% / 56% | 8% / 44% |
+| …first hitter blocked | 2% / 21% | 11% / 47% | 7% / 27% | 8% / 37% | 8% / 46% | 6% / 39% |
+| …first hitter free | 11% / 42% | 38% / 91% | 17% / 57% | 17% / 80% | 17% / 80% | 8% / 49% |
+| Gain after contact (yd); contact to end (s) | 2.84; 1.5 | 1.28; 0.8 | 2.29; 1.4 | 1.86; 1.1 | 1.85; 1.0 | 1.97; 1.1 |
+
+**The shortfall is the first 0.2 s of the hit.**
+- The NFL runner keeps 82% of his speed through it. Ours keeps half: 49% in the package, 53% with the layer.
+- Our hitter picks up about 1.1 yd/s along the runner's line; the NFL's, about 0.3.
+- Our first collision exchanges most of the momentum at once. The NFL's passes most of it on over the following half
+  second (deceleration 0.92 yd/s between +0.2 and +0.5 s against our 0.36).
+
+**`HIP_BRACE` is not over-braking.**
+- With it, the deceleration over +0.2 to +0.5 s is 0.36–0.39 against the NFL's 0.92. The brace slows the runner less than
+  NFL runners slow down in that window.
+- It ends more plays by +1.0 s (36% → 49%), because it acts on a runner who has already lost half his speed at the hit.
+- With `GRASP_PATCH` alone, the blocked-hitter row matches the NFL: 27% over by 1.0 s against 21%, gain 2.69 against
+  2.93.
+
+**Where the term lives.** The first hit's momentum exchange. The candidates are:
+- the effective mass of a single rigid torso: the remaining √2 of the first-hit force, an upper body pitching about the
+  hip;
+- the plastic torso stop, which `CONTACT_LAYER` softens (49% → 53% kept);
+- the grasp weld, which `GRASP_SLIDE` showed is small;
+- our faster closing (4.46 against 3.38 yd/s at proximity).
