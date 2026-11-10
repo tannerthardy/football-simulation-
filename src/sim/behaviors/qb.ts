@@ -75,7 +75,7 @@ const STRIDE_SPEED = 0.45;
  * (sawThrow); before, every facing defender broke at the motion's start, which
  * made anticipation throws look covered (forced throws he rated 0.07 completed
  * 52%). */
-const THROW_REACT = process.env.THROW_REACT === '1';
+const THROW_REACT = process.env.THROW_REACT !== '0';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';

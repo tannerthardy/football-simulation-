@@ -172,6 +172,7 @@
     "RB_TEMPO": "0",
     "RB_GATHER": "0",
     "OWNER_KEEPS": "0",
+    "THROW_REACT": "0",
     "GAP_CLIMB": "0",
     "REACH_CLOSE": "0",
     "GUN_SNAP": "0",
