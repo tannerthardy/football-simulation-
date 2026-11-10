@@ -185,6 +185,7 @@
     "GRASP_PATCH": "0",
     "GRASP_SLIDE": "0",
     "GRASP_CLOSURE": "0",
+    "ENGAGED_REACH": "0",
     "HIP_BRACE": "0",
     "THROW_REACT": "0",
     "GRIP_REACH": "0",

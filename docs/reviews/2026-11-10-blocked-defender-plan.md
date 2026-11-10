@@ -124,3 +124,34 @@ limited. They separate into three pieces.
 2. **Piece 2, once Tanner approves:** Defense's decision and the grip-break mechanism together, judged on the same gates.
 3. **Re-measure after both:** second-man arrival, hitblk's share of first contacts by blocked defenders, and the
    unengaged third after Defense's attempt fix.
+
+## Piece 1: result (`ENGAGED_REACH`, off; `reach-bench.mts`; `held-split.mts`)
+
+The flag stays off. Piece 1's premise was wrong.
+
+**The rule is not what limits these men.** A DT's reach is 1.05 yd: a 0.25 yd shoulder offset plus a 0.80 yd arm. From
+the free shoulder, the full arm covers a carrier whose centre is at most about 1.3 yd from his. So most blocked men 1–2 yd
+from the runner are out of reach by anatomy, not by the rule's 0.4.
+
+**Bench.** DT facing his blocker, carrier beside the pair; margin = arms − centre distance (yd), + = in range.
+
+| Carrier | Old rule | Free-shoulder arm, control 0 | Control 0.5 | Control 1 |
+|---|---|---|---|---|
+| 1.0 yd, free side | +0.36 | +0.31 | −0.08 | −0.48 |
+| 1.0 yd, blocker's side | +0.05 | −0.19 | −0.58 | −0.98 |
+| 1.5 yd, free side | −0.14 | −0.19 | −0.58 | −0.98 |
+| 2.0 yd, either side | −0.95 | −1.19 | −1.58 | −1.98 |
+
+- A well-blocked man cannot reach: control 1 takes the whole arm.
+- At the median control of 0.5, the geometric arm is shorter than the old rule on both sides.
+
+**Game** (`held-split.mts`, engaged throughout the 0.5 s, run-ref-11):
+
+| | Off | On |
+|---|---|---|
+| Attempts | 14% | 8% |
+| Arrivals | 23% | 22% |
+
+The engaged men reach less and arrive no more. Piece 1 does not close the gap; the men have to move, which is piece 2.
+`ENGAGED_REACH` stays off as a tested description: it is the right answer to "can a well-blocked man tackle" (no), not to
+the second man.
