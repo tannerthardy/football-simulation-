@@ -60,6 +60,15 @@ export function believesRun(sim: PlaySim, a: Agent): boolean {
  * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
  * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
 const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
+/** UNDER_DEPTH (off; UNDER_DEPTH=1 turns it on): an underneath zone dropper
+ * gains depth no faster than the routes he sees in his area. He takes ground
+ * to the deepest of them (where it will be on his read horizon) rather than to
+ * a fixed landmark over nobody, and holds his depth when nothing in his area
+ * is deeper. The landmark stays his ceiling; a vertical still gets carried.
+ * Tracked hook defenders on shotgun dropbacks let the routes climb to them:
+ * their lead over the deepest receiver within 6 yd shrinks 5.2 -> 0.2 yd from
+ * 1.0 to 2.5 s (BDB 2025 weeks 1-3); landmark drops stayed ~2 yd on top. */
+const UNDER_DEPTH = process.env.UNDER_DEPTH === '1';
 
 export function knowsPass(sim: PlaySim, a: Agent): boolean {
   if (a.recog) return a.recog.read === 'pass';
@@ -1032,7 +1041,8 @@ export class ZoneCoverage implements Behavior {
       const dropped = (sim.offAlign.spots.QB?.pos.x ?? q.pos.x) - this.qbDeepest >= 1;
       if (dropped && knowsPass(sim, a) && Math.hypot(q.vel.x, q.vel.y) < 1.2) this.settledAt = sim.t;
     }
-    const settle = (t: Vec2): Vec2 => this.settledAt >= 0 ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
+    const settled = (t: Vec2): Vec2 => this.settledAt >= 0 ? { x: Math.min(t.x, Math.max(a.pos.x, sim.los + 3)), y: t.y } : t;
+    const settle = (t: Vec2): Vec2 => settled(this.underCap(a, threats, t));
 
     if (this.deep) {
       // Deep zones: never let a vertical get on top. Split two verticals.
@@ -1269,6 +1279,16 @@ export class ZoneCoverage implements Behavior {
    * He leans where the QB looks and squeezes the lane of a receiver in his
    * zone, but keeps his depth and never leaves his zone with a route.
    */
+  /** UNDER_DEPTH: an underneath target no deeper than the deepest route he
+   * sees in his area (its spot on his read horizon), and no shallower than
+   * where he stands: he doesn't give up ground he has, he doesn't take ground
+   * over nobody. Deep zones and the flag off are unchanged. */
+  private underCap(a: Agent, threats: Array<{ fut: Vec2 }>, t: Vec2): Vec2 {
+    if (!UNDER_DEPTH || this.deep) return t;
+    const deepest = threats.reduce((m, th) => Math.max(m, th.fut.x), -Infinity);
+    return { x: Math.min(t.x, Math.max(a.pos.x, deepest)), y: t.y };
+  }
+
   private spotUnderneath(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>): MoveCommand {
     const qb = sim.qb;
     const lm = this.landmark;
@@ -1283,7 +1303,7 @@ export class ZoneCoverage implements Behavior {
       // hip turn back to the QB takes time he must start early.
       const resquare = Math.hypot(a.vel.x, a.vel.y) * roundedTurnTime(a, Math.PI) * 0.5;
       const turned = toSpot > 4 + resquare && knowsPass(sim, a);
-      return withFacingTechnique(goTo(a, lm, { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: turned ? undefined : facingQB }),
+      return withFacingTechnique(goTo(a, this.underCap(a, threats, lm), { speed: (0.88 + 0.1 * a.r('zoneCoverage')) * unsureFactor(a), facing: turned ? undefined : facingQB }),
         { label: turned ? 'spot-drop-run' : 'spot-drop' });
     }
     a.tags.add('settled');
@@ -1310,6 +1330,7 @@ export class ZoneCoverage implements Behavior {
     // Planted short of the spot on the QB's set, he holds where he planted.
     tgt = { x: Math.max(tgt.x, lm.x - 2), y: tgt.y };
     if (this.settledAt >= 0) tgt = { x: Math.min(tgt.x, Math.max(a.pos.x, sim.los + 3)), y: tgt.y };
+    tgt = this.underCap(a, threats, tgt);
     const off = sub(tgt, lm);
     const l = Math.hypot(off.x, off.y);
     if (l > this.radius) tgt = { x: lm.x + (off.x / l) * this.radius, y: lm.y + (off.y / l) * this.radius };

@@ -182,6 +182,7 @@
     "GRASP_ARMS": "0",
     "GRASP_PATCH": "0",
     "THROW_REACT": "0",
+    "UNDER_DEPTH": "0",
     "GAP_CLIMB": "0",
     "REACH_CLOSE": "0",
     "GUN_SNAP": "0",
