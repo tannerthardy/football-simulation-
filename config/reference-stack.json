@@ -26,6 +26,8 @@
     "ATTACK_LANDMARK": "off",
     "BACKER_CREEP": "on",
     "BACKER_TAKEON": "on",
+    "LAST_LINE": "off",
+    "LOOSE_EFFORT": "off",
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SHOOT": "off",

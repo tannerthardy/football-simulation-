@@ -8,6 +8,7 @@ import type { Agent } from '../agent.js';
 import { chooseApproach } from '../approach-control.js';
 import { withMovementObjective } from '../movement-objective.js';
 import type { PlaySim } from '../playsim.js';
+import { isDeepZone } from '../../playbook/alignment.js';
 
 export const STAND: MoveCommand = { vel: { x: 0, y: 0 } };
 
@@ -128,7 +129,7 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
   // Keep the support contract while approaching, then close onto the near
   // hip. A permanent two-yard sideline shade is outside tackling reach.
   const dist = Math.hypot(seen.pos.x-a.pos.x, seen.pos.y-a.pos.y);
-  const lev = pursuitLeverage(a,p.y) * clamp((dist-reach)/6,0,1);
+  const lev = pursuitLeverage(a,p.y,sim) * clamp((dist-reach)/6,0,1);
   const point = { x: p.x, y: p.y + lev };
   trace?.pursuit(target, { kind: 'intercept', prediction: ip,
     estimateAppliesTo: 'sampled-point-before-bias-and-leverage', steeringPointEstimate: 'not-evaluated',
@@ -159,12 +160,65 @@ function leverageMagnitude(a: Agent, y: number): number {
   return (0.5 + 1.7 * near) * (0.55 + 0.45 * a.r('pursuit'));
 }
 
-function pursuitLeverage(a: Agent, y: number): number {
+function pursuitLeverage(a: Agent, y: number, sim?: PlaySim): number {
   const force = a.runFit?.kind === 'force' || (a.runFit?.kind === 'edge' && a.runFit.edge === 'box');
   // A called outside shoulder is unambiguous at midfield. Only the generic
   // inside preference needs the center-field fade; close approaches still
   // shed the shade through their ordinary distance-to-contact factors.
-  return force ? leverageMagnitude(a,y)*a.runFit!.side : leverage(a,y);
+  if (force) return leverageMagnitude(a,y)*a.runFit!.side;
+  // LAST_LINE: the last man keeps the carrier inside-out everywhere but the
+  // exact middle (a short fade keeps a play and its mirror image the same).
+  if (sim && lastLineAt.get(a) === sim.t) return clamp((FIELD_WIDTH / 2 - y) / 0.25, -1, 1) * leverageMagnitude(a, y);
+  return leverage(a,y);
+}
+
+/** LAST_LINE (experimental, off): a pursuer who sees no teammate deeper than
+ * him able to reach the ball carrier's path is the last line. He runs at full
+ * effort whatever the distance and keeps the carrier inside-out (to the
+ * sideline) even near the middle of the field. Everything comes from his own
+ * pictures: the carrier's seen path and his teammates' seen positions, with
+ * the usual delay; a teammate's own speed is known to him. NFL last-line
+ * pursuers at the carrier's +5 run at 0.89-0.90 of top speed and keep him
+ * inside-out 73-76%; ours ran 0.76 (runs) / 0.84 (catches) and 61-71%
+ * (2026-11-10, scripts/diag/defense-yards/pursuit_roles.py). */
+export const LAST_LINE = process.env.LAST_LINE === '1';
+/** LOOSE_EFFORT (experimental, off): once the ball carrier is past the line,
+ * every pursuer chases at full effort, not 0.75 + 0.2 workRate beyond 12 yd;
+ * the cost is fatigue, which the World already charges. NFL pursuers at the
+ * carrier's +5 run at 0.81-0.90 of top speed in every help class; ours
+ * 0.71-0.84. */
+export const LOOSE_EFFORT = process.env.LOOSE_EFFORT === '1';
+/** LAST_LINE: the tick a pursuer last judged himself the last line. */
+const lastLineAt = new WeakMap<Agent, number>();
+
+/** LAST_LINE: his own call makes him the last line from the snap: a deep
+ * zone (deep middle, half or third), or a DB in a call with no deep zone at
+ * all (cover 0). His own defence's call is shared knowledge on his side of
+ * the ball. What he sees then updates it (isLastLine). */
+function lastByCall(sim: PlaySim, a: Agent): boolean {
+  const spots = sim.defAlign.spots as Record<string, { role: { kind: string; zone?: string } } | undefined>;
+  const deep = (slot: string) => { const r = spots[slot]?.role; return r?.kind === 'zone' && isDeepZone(r.zone as never); };
+  if (deep(a.slot)) return true;
+  return /^(CB|NB|DB|SS|FS)/.test(a.slot) && !sim.defense.some(d => deep(d.slot));
+}
+
+/** LAST_LINE: no teammate he sees deeper than him (toward the end zone the
+ * carrier runs at) can reach the carrier's seen path before the carrier gets
+ * to that teammate's depth. */
+function isLastLine(sim: PlaySim, a: Agent, seen: import('../perception.js').Perceived): boolean {
+  const up = sim.attackDir(sim.offense[0].team);
+  const vDown = seen.vel.x * up;
+  for (const e of sim.defense) {
+    if (e === a || e.isDown(sim.t) || e.engagement) continue;
+    const s = sim.see(a, e);
+    const depth = (s.pos.x - a.pos.x) * up;
+    if (depth <= 0) continue;
+    const t = (s.pos.x - seen.pos.x) * up / Math.max(vDown, 0.5);
+    if (t < 0) continue;
+    const pathY = seen.pos.y + seen.vel.y * t;
+    if (Math.abs(s.pos.y - pathY) <= e.profile.vmax * t) return false;
+  }
+  return true;
 }
 
 /** Gather from an already consumed runner picture. A fit and a chase use
@@ -236,7 +290,16 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   const dist = Math.hypot(seen.pos.x - a.pos.x, seen.pos.y - a.pos.y);
   const tackle = a.r('tackling');
   const contact = a.profile.radius + target.profile.radius + a.profile.reach * .65;
-  const offset = pursuitLeverage(a, seen.pos.y)
+  const loose = target === sim.carrier && (seen.pos.x - sim.los) * sim.attackDir(target.team) > 0;
+  // The man his call names starts the last-line angle as soon as he is
+  // chasing the ball carrier, not when the carrier crosses the line; anyone
+  // else becomes the last man when he sees no help deeper (a deep man
+  // blocked, beaten, down or drawn away); help arriving over the top frees
+  // him again.
+  const byCall = LAST_LINE && target === sim.carrier && lastByCall(sim, a);
+  const last = LAST_LINE && (loose || byCall) && isLastLine(sim, a, seen);
+  if (last) lastLineAt.set(a, sim.t); else lastLineAt.delete(a);
+  const offset = pursuitLeverage(a, seen.pos.y, sim)
     * clamp((dist - contact) / 6, 0, 1);
   // Teammate navigation needs the responsibility this request serves. This
   // picture is already acquired and dead-reckoned to now; the intercept below
@@ -253,7 +316,7 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
     return command;
   }
   // Away from the ball, pursuit runs below top speed (more so for low motors).
-  const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
+  const effort = dist > 12 && !last && !(LOOSE_EFFORT && loose) ? 0.75 + 0.2 * a.r('workRate') : 1;
   const request = { speed: effort, effort };
   const p = pursuitPoint(sim, a, target, horizon, request);
   const original = { ...runThrough(a, p, { speed: request.speed }), effort: request.effort };
