@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-11",
+  "id": "run-ref-12",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -71,7 +71,7 @@
     "ENGAGED_REACH": "off",
     "GRASP_PATCH": "on",
     "GRASP_SLIDE": "off",
-    "GRIP_REACH": "off",
+    "GRIP_REACH": "on",
     "GUN_MESH": "on",
     "GUN_MESH_GO": "on",
     "GUN_SNAP": "on",

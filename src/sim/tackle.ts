@@ -473,7 +473,7 @@ function armDistance(joint: GraspJoint | undefined, centers: number, torso: numb
  * side (arm, waist, jersey). A draw outside the reach is drawn again, so no
  * situation piles up at an edge. An input to the hold's physics, not a
  * result: where the hands are, not whether the tackle holds. */
-const GRIP_REACH = process.env.GRIP_REACH === '1';
+const GRIP_REACH = process.env.GRIP_REACH !== '0';
 export function gripReach(rng: { normal(m: number, s: number): number }, engaged: boolean, fromBehind: boolean, form: number): number {
   const [mean, sd, lo, hi] = engaged ? [0.35, 0.12, 0.15, 0.6]
     : fromBehind ? [0.6 + 0.15 * form, 0.18, 0.35, 1]
