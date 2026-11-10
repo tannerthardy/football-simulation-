@@ -18,7 +18,7 @@ import type { Perceived } from './perception.js';
  * sprinting. Off, every carry is charged as a race the receiver runs forever,
  * so no pace below the receiver's is ever safe (COV-1,
  * docs/reviews/cov1-flight-closing.md). */
-const throwHorizonOn = () => process.env.THROW_HORIZON === '1';
+export const throwHorizonOn = () => process.env.THROW_HORIZON === '1';
 
 /** His reaction plus the natural flight of a throw made now from his picture
  * of the QB to his picture of the receiver: the 2023-tracking relation the QB
