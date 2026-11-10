@@ -79,7 +79,7 @@ const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
  * stretch) and his body is going down (support falling); otherwise he is ruled
  * like any runner: stopped forward progress or down by contact. Off: a pocket
  * QB held 0.25 s with control or grip 0.6 is down at once. */
-const GRASP_JEOPARDY = process.env.GRASP_JEOPARDY === '1';
+const GRASP_JEOPARDY = process.env.GRASP_JEOPARDY !== '0';
 /** Experimental (WRAP_FOOT=1, off): a hold's coupling to the carrier's
  * corrective step is its secure leg share only (see updateBond). */
 const WRAP_FOOT = process.env.WRAP_FOOT === '1';

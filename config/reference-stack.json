@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-14",
+  "id": "run-ref-15",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -70,9 +70,9 @@
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "GRASP_ARMS": "off",
-    "GRASP_ARM_MOMENT": "off",
+    "GRASP_ARM_MOMENT": "on",
     "GRASP_CLOSURE": "off",
-    "GRASP_JEOPARDY": "off",
+    "GRASP_JEOPARDY": "on",
     "GRASP_PATCH": "on",
     "GRASP_SLIDE": "off",
     "GRIP_REACH": "on",
