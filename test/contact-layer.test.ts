@@ -104,3 +104,34 @@ describe('HANDS_CHEST (block hands push chest to chest)', () => {
     expect(await spin({ HANDS_CHEST: '1' }, 0)).toBeLessThan(1);
   });
 });
+
+describe('GRASP_PATCH (a grasp acts at the grip point)', () => {
+  async function held(env: Record<string, string>, off: number, grasp = true) {
+    const { World, runner, hitter, body } = await load(env);
+    const { supportParams } = await import('../src/physics/support.js');
+    const r = body(runner, 0, 0, 0, 4), h = body(hitter, 1.2, off, Math.PI, 0);
+    const w = new World([r, h]);
+    let t0 = -1, slip = 0, err = 0; const path: number[] = [];
+    for (let k = 0; k < 40; k++) {
+      const p0 = r.vel.x * r.profile.massKg + h.vel.x * h.profile.massKg;
+      const rep = w.step([{ vel: { x: 0, y: 0 }, free: true } as any, { vel: { x: 0, y: 0 }, free: true } as any], 0.05);
+      err = Math.max(err, Math.abs(r.vel.x * r.profile.massKg + h.vel.x * h.profile.massKg - p0 - rep.groundImpulse[0].x - rep.groundImpulse[1].x));
+      const d = Math.hypot(r.pos.x - h.pos.x, r.pos.y - h.pos.y);
+      if (grasp && t0 < 0 && d <= runner.radius + hitter.radius + 0.1) {
+        t0 = k; w.joints.push({ kind: 'grasp', a: h, b: r, reach: runner.radius + hitter.radius + hitter.reach * 0.9,
+          capacity: supportParams(hitter).armForce * 2, legs: 0.3, pull: 2, hold: d } as any);
+      }
+      if (t0 >= 0 && k - t0 === 6) { const nx = (r.pos.x - h.pos.x) / d, ny = (r.pos.y - h.pos.y) / d; slip = Math.abs(-(r.vel.x - h.vel.x) * ny + (r.vel.y - h.vel.y) * nx); }
+      path.push(r.pos.x, r.pos.y, h.pos.x, h.pos.y);
+    }
+    return { slip, err, path };
+  }
+  it('keeps pair momentum exactly and leaves a world without a grasp bit-identical', async () => {
+    expect((await held({ GRASP_PATCH: '1' }, 0.3)).err).toBeLessThan(1e-9);
+    expect((await held({ GRASP_PATCH: '1' }, 0.3, false)).path).toEqual((await held({}, 0.3, false)).path);
+  });
+  it('lets an offset held pair slip where today it locks', async () => {
+    const off = await held({}, 0.3), on = await held({ GRASP_PATCH: '1' }, 0.3);
+    expect(on.slip).toBeGreaterThan(off.slip);
+  });
+});
