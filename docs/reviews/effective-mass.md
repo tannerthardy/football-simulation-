@@ -1490,3 +1490,43 @@ At the moment of pressure (medians):
 - **"Blocked in name only": none at the moment of pressure.**
   - Engagement flag on and a blocker within 1.2 yd: 67. Flag off and nobody near: 63. Flag off but someone near: 28.
   - Coverage's 85% counts rushers who were ever engaged, not the state at the pressure.
+
+## Standing starts by position (`start.py`, `sprint-bench.mts`; NFL 2022 pass plays; sim `LEAN_PITCH` + `PASS_ANCHOR`, 4 live games, `WR_SNAP` off; 2026-11-10)
+
+**One operator on both.**
+
+- Displacement from the snap spot.
+- Each player's start = the first 0.1 s frame displaced 0.25 yd.
+- Displacement after his own start (reaction removed).
+- Upper percentiles as a proxy for maximum effort.
+
+| After his own start, +0.3 / +0.5 / +0.8 s (yd) | Sim in games | NFL p50 | NFL p75 | NFL p90 | World alone, max effort from rest (same 0.1 s alignment) |
+|---|---|---|---|---|---|
+| WR | 0.92 / 1.77 / 3.30 | 0.79 / 1.58 / 3.08 | 0.88 / 1.74 / 3.38 | 0.96 / 1.88 / 3.61 | 0.88 / 1.72 / 3.24 |
+| TE | 0.81 / 1.53 / 2.88 | 0.69 / 1.36 / 2.61 | 0.81 / 1.60 / 3.04 | 0.90 / 1.75 / 3.33 | 0.82 / 1.58 / 2.96 |
+| DL | 0.79 / 1.46 / 2.23 | 0.62 / 1.16 / 2.07 | 0.71 / 1.35 / 2.44 | 0.79 / 1.51 / 2.80 | 0.79 / 1.50 / 2.81 (DT) |
+| LB | 0.70 / 1.26 / 2.16 | 0.58 / 1.13 / 2.08 | 0.73 / 1.42 / 2.66 | 0.85 / 1.64 / 3.06 | 0.86 / 1.66 / 3.14 |
+
+| Start (p50) and displacement from the snap at 0.3 / 0.5 s | Sim | NFL |
+|---|---|---|
+| WR | 0.3 s; 0.35 / 0.91 | 0.5 s; 0.08 / 0.31 |
+| TE | 0.3 s; 0.28 / 0.75 | 0.5 s; 0.10 / 0.31 |
+| RB | 0.3 s; 0.29 / 0.72 | 0.6 s; 0.04 / 0.16 |
+| DL | 0.4 s; **0.12** / 0.47 | 0.4 s; **0.21** / 0.52 |
+
+**Reading: not one law, three separate causes.**
+
+1. **The shared acceleration capacity is not too high.**
+   - The World's own maximum-effort start sits at the NFL's p75 (WR, TE) to p90 (DL) of starts, below the NFL's best.
+   - In games our WRs, TEs and DL start at that maximum, and NFL medians are below it.
+   - So "too fast" is effort, not capacity. Leave the shared law alone. Changing it would make DL slower still.
+2. **WR and TE: every route starts at full effort, and TEs and RBs leave early.**
+   - They start at 0.3 s against 0.5–0.6. `WR_SNAP` fixes the WRs only.
+   - After starting they run at the World's maximum on every route, where NFL medians run below their own maximum (Coverage: NFL go routes start like hitches).
+   - These are route-stem tempo and snap reaction for TEs and backs: Coverage's lane.
+3. **DL: the get-off's early tail.**
+   - Median start is equal (0.4 s), but the NFL is ahead at 0.3 s (0.21 against 0.12 yd).
+   - After starting, our DL are at NFL p90.
+   - This is snap anticipation and the get-off distribution, the `DL_SNAP_TIME` question: Defense and Run Game.
+
+**The deciding bench** was this one: the World alone, a standing start at full request, read through the same 0.1 s alignment as the tracking. Nothing to build.
