@@ -840,3 +840,34 @@ the runner's first contact, every other defender nearby is checked for whether h
   are held by the blocker's hands, or by bodies they are in contact with.
 - **Open: which force cancels the request,** for engaged men and for body-only contact. The candidates are the blocker's
   hands (normal and steer), the torso contacts, and the defender's own ground drive while engaged.
+
+**What holds the blocked men beside the runner (`held-split.mts`; run-ref-11 against + `CONTACT_LAYER`).** These are the
+blocked defenders within 2 yd of the runner at his first contact (310 / 316 men). Over the next 0.5 s, their change of
+velocity toward the runner is split by source (yd/s, mean). Tackle eligibility follows `tryTackles`: free, or on his free
+side, or win ≥ 0.6, and in range.
+
+| Group (share) | Arrive | Attempt | Request | Δv = ground + hands + grasp + torso/rest | Eligible / in range / both (share of ticks) |
+|---|---|---|---|---|---|
+| Engaged throughout (51%) | 23% | 14% | +1.69 | +0.27 = +1.64 − 0.97 + 0.08 − 0.47 | 64% / 17% / 13% |
+| Engagement ended at 0.30 s (13%) | 10% | 10% | +2.78 | +0.77 = +1.34 − 0.30 + 0.11 − 0.38 | 81% / 34% / 33% |
+| No engagement, beside an offensive body (36%) | 34% | 41% | +1.52 | +0.21 = +0.72 + 0.00 + 0.53 − 1.04 | 99% / 87% / 87% |
+| …with `CONTACT_LAYER`: engaged throughout | 28% | 17% | +1.73 | +0.32 = +1.61 − 0.92 + 0.12 − 0.49 | 63% / 23% / 16% |
+| …with `CONTACT_LAYER`: no engagement | 47% | 45% | +1.74 | −0.02 = +0.87 − 0.10 + 0.46 − 1.24 | 98% / 85% / 85% |
+
+**Engaged men are held by the blocker's hands.**
+- Their legs drive +1.64 yd/s toward the runner over the 0.5 s. The hands row takes −0.97 and the torso contact −0.47.
+- Nothing ends the engagement because the runner is beside him. Engagements end on a body down, separation, a shed
+  (`beat`) or "runner passed defender" (2.5 yd past). At contact the median win is 0.51 and control +0.51 (the blocker's
+  hands inside).
+- The reach rule keeps them out of range on 83% of ticks. An engaged man without a free side reaches only 0.4 of his
+  arm, so 14% attempt.
+- This is the parked grip-break question: decision and mechanism. It needs Tanner's go-ahead before code.
+
+**Men with no engagement are stuck on bodies.**
+- Their legs drive +0.72 (less than the engaged men's), and torso contacts take −1.04.
+- The nearest offensive body is engaged with someone else 35% of the time. It requests toward him above 0.5 yd/s, an
+  active wall, 52% of the time: the median is +0.93 yd/s, so half are walled actively and half are stuck on bodies that
+  are not working on them.
+- `CONTACT_LAYER` lets more of them through: arrivals 34% → 47%.
+- They are eligible and in range on 87% of ticks, yet only 41% attempt. That is a tackle decision (`tryTackles`:
+  occlusion, waiting for a better shot or `nextTackleAt`), which belongs to Defense.
