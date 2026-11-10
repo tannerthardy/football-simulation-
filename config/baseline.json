@@ -176,6 +176,7 @@
     "GUN_MESH": "0",
     "REACH_CARRY": "0",
     "CARRIER_BRACE": "0",
+    "CARRIER_DRIVE": "0",
     "GUN_STRETCH_T": "0",
     "STRETCH_TRACK": "0",
     "COUNTER_OFFSET": "0",

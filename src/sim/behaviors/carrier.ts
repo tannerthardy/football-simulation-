@@ -314,6 +314,13 @@ export function runReadAim(a: Agent, sim: PlaySim, opts: CarrierOptions): Vec2 |
 
 const SAMPLES = [0.25, 0.5, 0.75, 1.0, 1.3, 1.6, 2.0];
 
+/** CARRIER_DRIVE (off): a carrier who feels a load (a tackler's body or arms on him) drives his legs into it,
+ * as a tackler does when he closes (`chase` sets `push`). The World's lean law then gives him leg drive along
+ * that load up to his push force, wherever his request goes into it, instead of only the free-running tempo
+ * law, which levels off at his wanted speed and so pushes at a fraction of his legs against resistance. Felt
+ * load is touch (Support.felt), not sight. docs/reviews/contact-to-whistle.md. */
+export const CARRIER_DRIVE = process.env.CARRIER_DRIVE === '1';
+
 export class BallCarrier implements Behavior {
   readonly kind = 'carrier';
   private heading: number | null = null;
@@ -335,6 +342,13 @@ export class BallCarrier implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    const command = this.decideCarry(a, sim);
+    const felt = a.body.support?.felt;
+    if (CARRIER_DRIVE && felt && Math.hypot(felt.x, felt.y) > 1) return { ...command, push: 1 } as MoveCommand;
+    return command;
+  }
+
+  private decideCarry(a: Agent, sim: PlaySim): MoveCommand {
     const dir = sim.attackDir(a.team);
     const cutSkill = 0.85 + 0.35 * a.r('elusiveness');
     const designed = !!this.opts.aim && this.opts.aimUntil !== undefined
