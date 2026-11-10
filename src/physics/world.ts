@@ -306,7 +306,7 @@ const LEAN_DECAY = 0.15;
  * than an unopposed fall: offset' <= w0·offset. A sustained push is still met
  * in full once he has leaned to it; a load that vanishes releases only the
  * lean he really had. */
-const LEAN_PITCH = process.env.LEAN_PITCH === '1';
+const LEAN_PITCH = process.env.LEAN_PITCH !== '0';
 const POSTURE_RATE = 2.5;
 const DEFAULT_POSTURE = 0.2;
 const FALL_TIP = 3;

@@ -75,7 +75,7 @@ export interface TrenchTraits {
  * full push pitched him onto the rusher when the load sagged. A tried
  * exception, the ordinary growth back while walked back past his set, raised
  * falls (10.9% -> 15.6% of dropbacks) and bought no pocket depth. */
-const PASS_ANCHOR = process.env.PASS_ANCHOR === '1';
+const PASS_ANCHOR = process.env.PASS_ANCHOR !== '0';
 const cache = new WeakMap<Agent, TrenchTraits>();
 const runCache = new WeakMap<Agent, TrenchTraits>();
 

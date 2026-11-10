@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-12`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-13`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -492,6 +492,31 @@ Coverage #477. Where a tackler grips now follows from his situation: free and sq
 | Broken a reception; sacks | 0.141; 30 | 0.132; 30 |
 
 Flat on both paired designs, and it removes an artefact. Logged: draws −0.29 yd (SE 0.13, n 85).
+
+## run-ref-13: `LEAN_PITCH` + `PASS_ANCHOR` on (2026-11-10)
+
+Flex #496 (`LEAN_PITCH`) and Coverage #501 (`PASS_ANCHOR`). A committed lean is now the body's centre of mass held ahead of planted feet, which can only pitch as fast as an unopposed fall; and a pass set asks for an anchor (lean to the felt load and no further) instead of a drive. Before, a blocker's lean followed the load instantly and dropped him when the load sagged: an offensive lineman fell on 75% of dropbacks (NFL about 1–3% by the same operator), and blockers fell 580 times in 1,321 runs.
+
+| | run-ref-12 | run-ref-13 |
+|---|---|---|
+| Fixed 1,321 runs, paired yards a run (SE) | | +0.24 (0.12) |
+| By concept, paired | | IZ +0.62 (0.31), OZ +0.33 (0.23), gap +0.03, duo +0.01, toss +1.04 (1.01), draw −0.27 (0.58) |
+| All runs; stuffs; 10+; 20+ | 3.73; 11.4%; 6.7%; 1.8% | 3.97; 11.7%; 8.0%; 2.7% |
+| Broken / missed a run | 0.142 / 0.241 | 0.147 / 0.239 |
+| Blocker falls; defender falls (Flex, `LEAN_PITCH` alone) | 580; 906 | 361; 709 |
+| Zone DL driven back 0.5 yd or more (NFL 17%) | 8% | 12% |
+| A second defender arrives (NFL 80%) | 69% | 75% |
+| Dropbacks with an OL fall (`LEAN_PITCH` alone 19.0%) | 75% | 10.9% |
+| 732 dropbacks, paired yards a pass play (off → both) | | +0.24 ± 0.39 |
+| Sacks; pressure, 732 panel | 30; 50.8% | 23; 36.6% |
+
+The run gain comes through held blocks, not through tackling: missed and broken are flat, blocker falls drop by a third, and pursuit improves. Rush moves keep their value; the wins a rusher loses are the ones over a blocker who had fallen. Coverage dropped the walked-back exception from the anchor (15.6% falls against 10.9%, same pocket).
+
+The 16-game card ([scorecard](reviews/2026-11-10-lean-anchor-scorecard.md); fixed-run report in [run-ref-13-report](reviews/run-ref-13-report.md)) was read for bugs and shows none: sack rate 6.4 → 5.0%, scrambles 2.5 → 4.1%, time to throw 2.74 → 2.84 s, linemen backpedalling facing their own backfield and blockers on a man out of the play both down. It also shows offence rising further above the NFL (points a team-game 36.1 → 40.3, rush yards a carry 4.19 → 4.80, third downs 33.8 → 42.0%). That is recorded, not tuned against: the blockers were falling for a wrong reason, and the scoring excess belongs to the open pass-coverage, pressure-response and run-fit gaps below.
+
+One test changed: `test/contact-layer.test.ts`'s `HANDS_CHEST` twist case pushes for 30 ticks instead of 20, because the lean now builds more slowly (off-centre twist at 20 ticks 10° / 5°, at 30 ticks 35° / 5°).
+
+Open with this stack: pressure 43% in live games against the NFL's 28% (tackles kicking 1.4 yd too deep by request; free rushers; a QB who stands still under pressure; the in-the-grasp rule ending sacks in 0.25 s); 149 run-block lean-release falls (C/G driving at about 1.25× the load) and 165 TE impact falls; 451 defender impact falls (take-on technique, Defense).
 
 ## After run-ref-12: the first second, and what is merged off (2026-11-10)
 
