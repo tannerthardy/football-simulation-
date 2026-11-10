@@ -357,9 +357,29 @@ angles. The pretty file's sha256 starts f0ac9a3f with the writer's trailing newl
 Blocked hitters are more side-on than free ones (47°, 52% side-on at closing 3–5, against 28°, 27%), as an engaged DL
 should be: the hitter angle is not mirrored.
 
-| Torso distance, median | NFL hitter vs square / runner vs path, side-on share | Sim |
-|---|---|---|
-| All | 43° / 23°, 49% | 37°, 42% |
-| Blocked, closing 3–5 | 47° / 21°, 52% | 53°, 63% |
-| Free, closing 3–5 | 28° / 31°, 27% | 29°, 17% |
-| NFL at +0.3 s | 64–80° hitter, 62–70% side-on | not yet measured |
+Sim side: the reference engine (run-ref-7 @ 3145cb06), zone runs from the fixed run set. The dump was regenerated
+because it carries facing, then run through the same `frontcourse.py`. Median hitter vs square / runner vs his path,
+hitter side-on share:
+
+| Group (aligned on torso distance) | NFL at torso | NFL at +0.3 s | Sim at torso | Sim at +0.3 s |
+|---|---|---|---|---|
+| All (NFL n 556, sim 159) | 43° / 23°, 49% | **64° / 35°, 62%** | 37° / 5°, 42% | **41° / 16°, 45%** |
+| Closing 3–5 (260, 79) | 42° / 23°, 48% | 69° / 33°, 63% | 43° / 4°, 49% | 41° / 16°, 46% |
+| Blocked, closing 3–5 (179, 54) | 47° / 21°, 52% | 75° / 31°, 67% | 53° / 7°, 63% | 57° / 17°, 57% |
+| Free, closing 3–5 (37, 18) | 28° / 31°, 27% | 36° / 66°, 43% | 29° / 2°, 17% | 30° / 11°, 22% |
+| Closing 5+ (103, 54) | 46° / 18°, 51% | 74° / 26°, 67% | 30° / 8°, 28% | 44° / 16°, 46% |
+
+- **The hitters' facing at contact matches. What doesn't match is what happens after:**
+  - NFL hitters turn 20–30° in the first 0.3 s;
+  - sim hitters turn about 0–5° (closing 3–5: 43° → 41°; blocked: 53° → 57°).
+- **The runner differs from the start.**
+  - NFL runners meet the hit 18–31° turned off their path (a shoulder presented) and are 26–66° off by +0.3 s.
+  - Sim runners are square to their path (2–8°) at contact and 11–17° by +0.3 s.
+  - That is partly a controller question (the facing he asks for into contact) and partly physics (whether an
+    off-centre load turns a body at all).
+- **Separation in the sim stays at the touching distance** (0.50–0.57 yd at +1.0 s). In the NFL it reopens to
+  0.6–1.15 yd.
+- These support step 2. A contact that turns the bodies goes tangential: the lateral load the runner fights is shed
+  as rotation and slide, not held by his legs. This is the yaw-free capsule result on the shape bench:
+  - 62–68% kept at no drive;
+  - 73–83% at his strength cap.
