@@ -20,7 +20,7 @@ for (const [label, legs, cap] of [['waist, firm grip', 0.3, 1.5], ['waist, grip 
   const w = new World([r, h]); const j: any = { kind: 'grasp', a: h, b: r, reach: d + 0.4, capacity: supportParams(H).armForce * cap, legs, pull: 0, hold: d };
   w.joints.push(j);
   console.log(`${label}: grip capacity ${j.capacity.toFixed(0)} kg yd/s^2 (${(j.capacity / (R.massKg * G)).toFixed(2)} g of the runner); runner traction ${supportParams(R).traction.toFixed(0)}, holder weight x 0.75 ${(0.75 * H.massKg * G).toFixed(0)}`);
-  console.log('    t | runner v | runner ground (share of limit) | grasp on runner | sum / m a check | holder ground | holder a | slipping');
+  console.log('    t | centre distance, hold, reach | holder v | runner v | runner ground (share of limit) | grasp on runner | sum / m a check | holder ground | holder a | slipping');
   for (let k = 1; k <= 20; k++) {
     const vr = r.vel.x, vh = h.vel.x;
     const rep = w.step([{ vel: { x: 5, y: 0 }, facing: 0, push: 1 } as any, { vel: { x: 0, y: 0 } } as any], 0.05);
@@ -28,6 +28,6 @@ for (const [label, legs, cap] of [['waist, firm grip', 0.3, 1.5], ['waist, grip 
     const jf = (j.normalForceOnB?.x ?? 0) + (j.tangentForceOnB?.x ?? 0);
     const ma = R.massKg * (r.vel.x - vr) / 0.05, ah = (h.vel.x - vh) / 0.05;
     const gg = (x: number) => (x / (R.massKg * G)).toFixed(2);
-    if (k % 2 === 0) console.log(`  ${(k * 0.05).toFixed(2)} | ${r.vel.x.toFixed(2)} | ${gR.toFixed(0).padStart(5)} (${(gR / lim).toFixed(2)}) ${gg(gR)} g | ${jf.toFixed(0).padStart(5)} ${gg(jf)} g | ${(gR + jf).toFixed(0)} vs ${ma.toFixed(0)} | ${gH.toFixed(0).padStart(5)} | ${ah.toFixed(2)} | ${j.slipping ? 'yes' : 'no'}`);
+    if (k % 2 === 0) console.log(`  ${(k * 0.05).toFixed(2)} | dist ${Math.hypot(r.pos.x - h.pos.x, r.pos.y - h.pos.y).toFixed(3)} hold ${(j.hold ?? NaN).toFixed(3)} reach ${j.reach.toFixed(2)} | holder v ${h.vel.x.toFixed(2)} | ${r.vel.x.toFixed(2)} | ${gR.toFixed(0).padStart(5)} (${(gR / lim).toFixed(2)}) ${gg(gR)} g | ${jf.toFixed(0).padStart(5)} ${gg(jf)} g | ${(gR + jf).toFixed(0)} vs ${ma.toFixed(0)} | ${gH.toFixed(0).padStart(5)} | ${ah.toFixed(2)} | ${j.slipping ? 'yes' : 'no'}`);
   }
 }
