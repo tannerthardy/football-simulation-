@@ -337,6 +337,17 @@ const HANG_SHARE = 0.5;
  * leave the runner's base behind his body (see the stride holds and
  * updateSupport). */
 const HELD_SWING = process.env.HELD_SWING === '1';
+/** Experimental (HIP_BRACE=1, off): one hip budget for holds. A grasp on the
+ * upper body (no leg share) is braced by the runner's hips like a thigh hold:
+ * the moment of its transmitted force about his centre of mass (zero at that
+ * height, growing with the grip's height above it, e.g. a shoulder or jersey
+ * grip through GraspJoint.height) uses hip-extension torque up to its
+ * capacity, and only the excess pitches him. The share of hip torque spent
+ * bracing any hold, thigh or upper, then comes off his leg drive: the torque
+ * that holds his trunk up against the pull is the torque that drives him.
+ * Off, an upper grasp pitches him only through the point-mass tip and bracing
+ * costs no drive. docs/reviews/effective-mass.md (unfinished holds). */
+const HIP_BRACE = process.env.HIP_BRACE === '1';
 /** Default since run-ref-9 (HANDS_CHEST=0 restores): a block's hands push chest to chest. In
  * the centre-mode hands row the push acted along the line between the two
  * centres, so a fit landed off-centre pushed the man sideways as well as back
@@ -1463,7 +1474,7 @@ export class World {
       // Active reel and passive tension act through the same hand position.
       // A leg grip cannot pull at shoulder height while its passive restraint
       // trips the foot below it.
-      this.addLoad(i,j,nx,ny,-impulse*fraction,0,height,jt.legs>0);
+      this.addLoad(i,j,nx,ny,-impulse*fraction,0,height,jt.legs>0 || HIP_BRACE);
     }
 
     // ---- 2. constraints
@@ -1507,7 +1518,7 @@ export class World {
           height ?? Math.min(this.padHeight[r.i], this.padHeight[r.j]), 0,
           Math.min(bs[r.i].profile.heightYd, bs[r.j].profile.heightYd));
         if (hypot2(r.ln, r.lt) > 0) jt.firstApplied ??= r.observed;
-        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
+        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && (jt.legs > 0 || HIP_BRACE));
         // Every joint here delivers a bounded force across h, including a
         // passive grasp. Center its achieved travel; torso impacts retain
         // their separate interval-start timing. Center-mode reels were
@@ -1773,7 +1784,8 @@ export class World {
     // Friction on the actual normal load: standing weight less any contact lift.
     const muScale = TURF_MU_SCALE !== 1 && this.joints.some(j => j.kind === 'hands' && (j.a === b || j.b === b)) ? TURF_MU_SCALE : 1;
     const traction = muScale * (PAD_LEVERAGE ? sp.traction * clamp(1 - this.liftFelt[i] / (m * G), 0, 2) : sp.traction);
-    const pushForce = muScale === 1 ? sp.pushForce : Math.min(legDrive(p), sp.traction * muScale);
+    const pushForce = (muScale === 1 ? sp.pushForce : Math.min(legDrive(p), sp.traction * muScale))
+      * (HIP_BRACE ? 1 - this.hipUsed[i] : 1);
     report.groundImpulseLimit[i] += traction * h;
     this.recovery[i] = 0;
     const spinBefore=b.spin??0;
@@ -2576,7 +2588,7 @@ export class World {
       }
     }
     this.report.armImpulse[r.i] += r.reel;
-    this.addLoad(r.i, r.j, r.nx, r.ny, -r.reel, 0, jt.height ?? this.comHeight[r.j]*(1-.55*clamp(jt.legs,0,1)), jt.legs>0);
+    this.addLoad(r.i, r.j, r.nx, r.ny, -r.reel, 0, jt.height ?? this.comHeight[r.j]*(1-.55*clamp(jt.legs,0,1)), jt.legs>0 || HIP_BRACE);
   }
 
   private jointSnapshot(jt: Joint, h: number, nx: number, ny: number, height: number): ContactSnapshot {
