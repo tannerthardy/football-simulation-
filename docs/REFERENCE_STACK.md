@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-13`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-15`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -517,6 +517,57 @@ The 16-game card ([scorecard](reviews/2026-11-10-lean-anchor-scorecard.md); fixe
 One test changed: `test/contact-layer.test.ts`'s `HANDS_CHEST` twist case pushes for 30 ticks instead of 20, because the lean now builds more slowly (off-centre twist at 20 ticks 10° / 5°, at 30 ticks 35° / 5°).
 
 Open with this stack: pressure 43% in live games against the NFL's 28% (tackles kicking 1.4 yd too deep by request; free rushers; a QB who stands still under pressure; the in-the-grasp rule ending sacks in 0.25 s); 149 run-block lean-release falls (C/G driving at about 1.25× the load) and 165 TE impact falls; 451 defender impact falls (take-on technique, Defense).
+
+## run-ref-14: the pass set on (2026-11-10)
+
+Coverage's `WR_SNAP`, `QB_RHYTHM`, `PRESS_MIRROR` and `PRESS_RELEASE`. Receivers react to the snap they see instead of leaving on the count (outside-receiver start 0.50 s, the NFL's figure on the same operator; off, 0.40 s and a yard ahead by 1.0 s). The quarterback throws on the rhythm of his drop. A pressing corner mirrors the release and the receiver works a release against him: press slows the receiver by 0.33 yd at 1.0 s against the NFL's 0.37, lateral release 0.15 yd against 0.14.
+
+| | run-ref-13 | run-ref-14 |
+|---|---|---|
+| 732 dropbacks, paired yards a pass play | | −0.56 ± 0.46 |
+| Yards a pass play; completions; sacks; pressure | 9.74; 407; 23; 36.6% | 9.18; 423; 21; 33.9% |
+| Set without `WR_SNAP` | | 9.59; 400; 15; 31.8% |
+| Set without `QB_RHYTHM` | | 8.82; 415; 28; 38.8% |
+| Set without `PRESS_MIRROR` (`PRESS_RELEASE` inert) | | 9.55; 429; 17; 34.0% |
+| Set without `PRESS_RELEASE` | | 9.26; 423; 19; 33.9% |
+| Fixed 1,321 runs, paired yards a run (SE) | | −0.13 (0.09) |
+| All runs; stuffs; broken / missed a run | 3.97; 11.7%; 0.147 / 0.239 | 3.84; 11.9%; 0.132 / 0.251 |
+
+None of the four is carried by the others. On runs the set is within noise except toss (−1.99, SE 0.89, n 55): receivers who react to the snap reach their perimeter blocks later. Logged for Run Game, not tuned.
+
+Coverage's 16-game card (seed 7) was read for bugs and shows none. It moves sack rate 4.8 → 3.0% (NFL 4.6–9.4%), third-down conversion 44.2 → 51.0% (37–41%), aDOT 9.35 → 8.87, scrambles 4.5 → 3.3%; points are unchanged (43.5, 43.6). Those are recorded as open, not tuned against: a realistic mechanism goes on, and the scoring gap is ours to find.
+
+Where the scoring gap sits with this stack (run-ref-13 card): yards after catch 9.3 a reception (NFL 4.5–5.9), completions of 20+ on 17.3% of attempts (6.7–11.1%), missed + broken tackles 0.25 a play (0.11–0.16), 62% of 20-yard runs reaching 40 (25–35%). Coverage is decomposing yards after catch by catch depth and defenders over the top; Defense is diagnosing run-down, open-field tackling, rally and deep-defender depth.
+
+## run-ref-15: `GRASP_ARM_MOMENT` + `GRASP_JEOPARDY` on (2026-11-10)
+
+**`GRASP_ARM_MOMENT`** (Flex #508). A grasp's hands were welded to the holder's torso, so the grip load of a runner crossing him turned his whole body through a 0.6–0.8 yd lever: +164° of grasp moment on side holds in the first 0.5 s, with his gait spending 106° fighting it. The yaw moment a grasp passes into the holder's torso is now bounded by his arm force across the chest half-span; the rest is reported as arm swing (`StepReport.armSwingYaw`) and not applied. Linear transfer is unchanged.
+
+| | run-ref-14 | `GRASP_ARM_MOMENT` | NFL |
+|---|---|---|---|
+| Holder turn in 0.5 s, side / behind / front (on run-ref-13) | 79 / 46 / 64° | 57 / 41 / 53° | 34 / 27 / 44° |
+| Fixed 1,321 runs, paired yards a run (SE) | | −0.12 (0.03) | |
+| All runs; stuffs; broken / missed a run | 3.84; 11.9%; 0.132 / 0.251 | 3.72; 11.4%; 0.111 / 0.245 | |
+| 732 dropbacks, paired yards a pass play | | −0.15 ± 0.05 | |
+| YAC a reception; broken / missed a reception | 7.35; 0.123 / 0.099 | 7.22; 0.111 / 0.097 | |
+
+The 16-game card ([scorecard](reviews/2026-11-10-arm-moment-qb-feel-scorecard.md), arm `gam`; fixed-run report in [run-ref-15-report](reviews/run-ref-15-report.md)) was read for bugs and shows none: total yards a team-game 517 → 478, yards an attempt 9.87 → 9.15, missed + broken a play 0.27 → 0.24, third downs 48.7 → 39.4%. About half the remaining side/behind turn is spin the holder brings in from his approach (Defense's `HOLD_FACING`, on its branch).
+
+**`GRASP_JEOPARDY`** (Rules + Coaching #512). The in-the-grasp whistle fired on any pocket quarterback held 0.25 s at grip 0.6, still upright: 14 of 16 traced sacks. It now needs a tackler's control of 0.6 and the quarterback's support falling; otherwise he is ruled like any runner. No new duration.
+
+| | run-ref-14 | `GRASP_JEOPARDY` | NFL |
+|---|---|---|---|
+| 1 yd → sack, p50 (780 paired dropbacks) | 0.10 s | 0.75 s | 1.1 s |
+| QB travel in that time | 0.07 yd | 0.45 yd | 2.51 yd |
+| Sacks; ending upright / falling | 38; 35 / 3 | 35; 12 / 23 | |
+| Yards a dropback, paired | | +0.09 ± 0.06 | |
+| 16-game card: sack rate; throws while held; escapes | 4.4%; 158; 7 | 3.7%; 173; 4 | 4.6–9.4% |
+
+Left open by it: a held quarterback barely moves, throws while held are common, escapes are rare, and upright sacks remain under the stopped-progress rule.
+
+Two tests changed with this stack. `test/run-hand-control.test.ts` leaves the new `armSwingYaw` report field out of its historical hash (it is 0 there; the recorded hashes reproduce, so the physics is unchanged with no grasp). The same card's `qbf` arm is why `QB_FEEL` is not on: scrambles 3.1 → 0.4%.
+
+Merged with this stack and still off, each one read from promotion: `BACKSIDE_SWAP` + `KEEPER_HIP` (Run Game #511: the uncovered backside tackle on outside zone within 1.0 yd of the guard's man by 1.2 s 3 → 19%, NFL 22%; known cost, the backside backer touched by anyone 21 → 16%, NFL 46%).
 
 ## After run-ref-12: the first second, and what is merged off (2026-11-10)
 

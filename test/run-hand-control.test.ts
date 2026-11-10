@@ -278,7 +278,9 @@ describe('solo hand-fight execution retains its legacy policy with the selected 
       // every historical physics field and its order, excluding only the
       // newly added contact/strike metadata from this legacy hash. Commands,
       // bodies, loads, control and the next execution RNG draw stay exact.
-      const historicalReport = { ...report,
+      // armSwingYaw (GRASP_ARM_MOMENT) is a later report field, 0 here (no grasp); left out so the hash stays on the physics.
+      const { armSwingYaw: _armSwingYaw, ...reportFields } = report;
+      const historicalReport = { ...reportFields,
         contacts: report.contacts.map(({ first: _first, ...physical }) => physical),
         strikes: report.strikes.map(({ requestedAt: _requestedAt, first: _first,
           contactAnatomy: _contactAnatomy, ...physical }) => physical),

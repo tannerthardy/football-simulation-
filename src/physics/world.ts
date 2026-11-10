@@ -317,7 +317,7 @@ const LEAN_PITCH = process.env.LEAN_PITCH !== '0';
  * reduced model does not represent: that unpassed angular impulse is reported
  * (StepReport.armSwingYaw), not applied to anyone. Linear transfer is
  * unchanged, and the runner's side of the row is unchanged. */
-const GRASP_ARM_MOMENT = process.env.GRASP_ARM_MOMENT === '1';
+const GRASP_ARM_MOMENT = process.env.GRASP_ARM_MOMENT !== '0';
 const POSTURE_RATE = 2.5;
 const DEFAULT_POSTURE = 0.2;
 const FALL_TIP = 3;
