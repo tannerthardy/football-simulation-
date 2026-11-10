@@ -231,3 +231,9 @@ The design target: the tackler chooses **where on the body** (height) and **whet
 | Shin and ankle (shoestring, a tap) | a trip of the stride foot | the dive path (all legs, weak hold), and `TACKLE_TOUCH` (off). Nearly unused in games (6 of 1,274) | the dive's trigger, and a state-based connect probability (W tier) |
 
 **Design consequence.** A single "aim point" choice covers almost all of these: target height, plus wrap or hit-only. It replaces the `gripReach` draw for a free tackler. Its execution is physics: posture to get low, the strike, the contact height, the grasp's height. Its costs are physical: time and reach to get low, a cutting runner stepping out of a low target, being run over head-on, and a low dive committing the tackler to the ground.
+
+**Runner counter already built: `CARRIER_BRACE` (off, Run Game, 2026-11-08), kept for this work.**
+
+- The carrier lowers his pads and lunges along his path into a tackler he sees closing.
+- Its earlier read: front-on carrier gain 0.93–1.12 → 1.50–2.29 yd (NFL 2.16–2.59).
+- It is the "lower the shoulder, fall forward" counter (S → P), and an arm in the leg-wrap check: does a braced runner fall or drive forward through a thigh wrap?
