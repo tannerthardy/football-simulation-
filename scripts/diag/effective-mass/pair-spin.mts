@@ -3,7 +3,7 @@
  * A matched OL and DL in latched hands (contactFixture, neutral control), head-up or offset, each pushing into the
  * other; the DL flows laterally at `dl` yd/s and the OL asks to go with him at `ol` yd/s (mirroring) or not. 1.0 s.
  * Reports how far the line from the OL to the DL turns, the separation, each man's lateral travel and facing change,
- * and the hand joint's tangential load against its limit. Settings at load: run per arm (e.g. CONTACT_PATCH via
+ * and the hand joint's tangential load against its limit. Settings at load: run per arm (e.g. HANDS_CHEST via
  * DIAG_HAND_PATCH=1 for the World's patch law).
  * usage: node --import tsx scripts/diag/effective-mass/pair-spin.mts */
 import { contactFixture } from '../run-contact-technique.js';

@@ -144,8 +144,8 @@ export interface GraspJoint {
   brace?: number;
   /** Height of the hold, yd; otherwise interpolates from torso to lower legs. */
   height?: number;
-  /** 0–1: how closed the arms' wrap is (the lock of the grip's force law);
-   * read only by GRASP_CLOSURE. Omission is an open grip (0). */
+  /** 0–1: how closed the arms' wrap is (the lock of the grip's force law).
+   * Omission is an open grip (0). */
   lock?: number;
   readonly contactAnatomy?: Readonly<ContactAnatomy>;
   achievedContactHeight?: number;
@@ -383,14 +383,6 @@ const HIP_BRACE = process.env.HIP_BRACE !== '0';
  * half-length CHEST_HALF across his facing; the row acts between the closest
  * points of the two segments, as for two capsules. Off, centre to centre. */
 const HANDS_CHEST = process.env.HANDS_CHEST !== '0';
-/** Experimental (HANDS_FRICTION=1, off): hands pressed into a chest resist
- * sliding by Coulomb friction on their own compressive load, the same
- * coefficient as torso contact (CONTACT_FRICTION), in addition to the active
- * steer. Off, a block's sideways coupling is the steer alone, so a pressing
- * pair slips across each other once the steer saturates (67% of engaged run
- * ticks; docs/reviews/effective-mass.md). Friction only resists slip; it
- * never drives. */
-const HANDS_FRICTION = process.env.HANDS_FRICTION === '1';
 /** Experimental (GRASP_PATCH=1, off): in centre mode a tackler's grasp follows
  * the World's common-patch grasp law: its rows act at the grip point with lever
  * arms in the force-midpoint frame, and his arm pull (the reel) is applied at
@@ -401,30 +393,6 @@ const HANDS_FRICTION = process.env.HANDS_FRICTION === '1';
  * hands and torso contacts stay on the centre law (HANDS_CHEST).
  * docs/reviews/effective-mass.md, step 2 (b). */
 const GRASP_PATCH = process.env.GRASP_PATCH !== '0';
-/** Experimental (GRASP_SLIDE=1, off): a grasp's sideways hold is friction on
- * its own tension. The tangential row is limited to CONTACT_FRICTION times the
- * hold's transmitted tension (|ln - reel|), inside the grip's capacity bound.
- * Off, the row welds the grip point (zero sideways slip) whenever the force
- * that takes is under capacity: on the fixed zone runs a front-on grasp forms
- * at arm's length a tick before the pads meet and stops the sliding at 12-17%
- * of its capacity (slip-split.mts). Arms that have just arrived squeeze little,
- * so the runner slides past them until the squeeze builds.
- * docs/reviews/effective-mass.md. */
-const GRASP_SLIDE = process.env.GRASP_SLIDE === '1';
-/** Experimental (GRASP_CLOSURE=1, off; with GRASP_SLIDE): a closed wrap holds
- * sideways by geometry, not friction. The rigid share of the bound is the wrap
- * share of the grip's force law, 2.5 l^2 / (0.3 + 2.5 l^2) for the joint's lock
- * l (tackle.ts gripForce); the rest is friction on tension. */
-const GRASP_CLOSURE = process.env.GRASP_CLOSURE === '1';
-/** Experimental (GRASP_ARMS=1, off): an upper-body grasp acts where the
- * holder's arms meet the runner's torso, not at his centre. In centre mode its
- * rows had no lever arms, so the grip braked the two centres' relative motion
- * directly and a held pair could not swing around each other (slip 0.18 yd/s
- * while held against 2.06 apart; NFL pairs keep about 2.7 at +0.1 s). With
- * lever arms at the radius-weighted surface point, as the World's patch law
- * places it, the grip holds that point and the bodies turn under it. Block
- * hands are untouched (HANDS_CHEST). docs/reviews/effective-mass.md. */
-const GRASP_ARMS = process.env.GRASP_ARMS === '1';
 /** Flat half-span of a torso's front, yd: shoulder half-width with pads (0.27)
  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
  * scripts/diag/effective-mass/shape.py. */
@@ -442,14 +410,6 @@ const TORSO_CAPSULE = process.env.TORSO_CAPSULE === '1';
 /** Half-depth over half-width of a padded torso (0.15 / 0.27 yd: the same
  * anthropometric estimate as CHEST_HALF). */
 const TORSO_DEPTH = 0.15 / 0.27;
-/** Experimental (WRAP_TWO_POINT=1, off): a two-arm upper wrap grips the runner
- * on both sides of his chest, so it resists the two bodies turning relative to
- * each other: one arm pulls while the other pushes. A relative-yaw row couples
- * their spins, bounded by the grip's capacity times the chest half-span (the
- * hands' CHEST_HALF). One-arm grabs (lock 0) keep one point. Off, a grasp acts
- * at one point and any moment it delivers turns the holder alone.
- * docs/reviews/2026-11-10-torso-shape-plan.md (the tackler's over-rotation). */
-const WRAP_TWO_POINT = process.env.WRAP_TWO_POINT === '1';
 
 /** TORSO_CAPSULE: closest points of the two shoulder-line segments and the row
  * geometry they give (normal from a to b, gap, and each body's arm to its
@@ -562,8 +522,6 @@ interface JointRow {
   /** Normal impulse moments at the same physical point as steering. */
   ni?: number;
   nj?: number;
-  /** WRAP_TWO_POINT: accumulated relative-yaw impulse this substep (kg·yd²/s). */
-  lw?: number;
   /** Normal regime: +1 compressive (hands), −1 tension, 0 inactive. */
   mode: number;
   c: number;
@@ -2592,16 +2550,6 @@ export class World {
             + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
         }
       }
-      if (GRASP_ARMS && this.handContact === 'center' && jt.kind === 'grasp' && jt.legs <= 0) {
-        const radius = a.profile.radius + b.profile.radius;
-        const rax = dx * a.profile.radius / radius, ray = dy * a.profile.radius / radius;
-        const rbx = -dx * b.profile.radius / radius, rby = -dy * b.profile.radius / radius;
-        row.ni = -(rax * ny - ray * nx); row.nj = rbx * ny - rby * nx;
-        row.ri = rax * nx + ray * ny; row.rj = -(rbx * nx + rby * ny);
-        row.mn = 1 / (1 / this.mass[i] + 1 / this.mass[j] + row.ni * row.ni / this.inertia[i] + row.nj * row.nj / this.inertia[j]);
-        row.bodyInverseMass = 1 / row.mn;
-        row.mt = 1 / (1 / this.mass[i] + 1 / this.mass[j] + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
-      }
       if (jt.kind === 'hands') {
         row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);
         const holder=this.indexOf(jt.holder??jt.a),scale=this.armScale[row.actor];
@@ -2702,7 +2650,7 @@ export class World {
         (r.ni ?? 0) * dn, (r.nj ?? 0) * dn, r.mode > 0 ? this.pressUnits(r.actor) : 1);
       r.ln+=dn*fraction;
     }
-    const slipLim = r.steerLim + (HANDS_FRICTION && r.mode > 0 ? CONTACT_FRICTION * Math.max(0, r.ln) : 0);
+    const slipLim = r.steerLim;
     if (slipLim > 0) this.solveTangent(r, a, b, slipLim);
   }
 
@@ -2784,29 +2732,13 @@ export class World {
       :this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'grasps',false,channel,
         normalA, (r.nj ?? 0) * dn);
     r.ln+=dn*fraction;
-    let tangentLimit = Math.sqrt(Math.max(0, lim * lim - (r.ln-r.reel)**2));
-    if (GRASP_SLIDE) {
-      // Friction on the hold's own tension; with GRASP_CLOSURE the wrap's
-      // closed share of the bound stays rigid.
-      const l = GRASP_CLOSURE ? clamp(jt.lock ?? 0, 0, 1) : 0, rigid = 2.5 * l * l / (0.3 + 2.5 * l * l);
-      tangentLimit = Math.min(tangentLimit, CONTACT_FRICTION * Math.abs(r.ln - r.reel) + rigid * tangentLimit);
-    }
+    const tangentLimit = Math.sqrt(Math.max(0, lim * lim - (r.ln-r.reel)**2));
     if (coupled) {
       const rv = this.graspVelocity(jt), tx = -r.ny, ty = r.nx;
       const vt = rv.x * tx + rv.y * ty - (r.ri ?? 0)*(a.spin ?? 0) - (r.rj ?? 0)*(b.spin ?? 0);
       const lt = clamp(r.lt - (r.mt ?? r.mn) * vt, -tangentLimit, tangentLimit), dt = lt - r.lt;
       r.lt += dt * this.supportImpulse(jt, tx * dt, ty * dt, h,false,r.tangentWork??={net:0}, this.armMoment(r.i, -(r.ri ?? 0)*dt, h), -(r.rj ?? 0)*dt);
     } else this.solveTangent(r, a, b, tangentLimit, h);
-    if (WRAP_TWO_POINT && (jt.lock ?? 0) > 0 && jt.legs < 0.5) {
-      // The wrap's couple: drive the bodies' relative spin to zero, within
-      // the grip's capacity across the chest half-span.
-      const Ia = this.inertia[r.i], Ib = this.inertia[r.j];
-      const rel = (b.spin ?? 0) - (a.spin ?? 0);
-      const cap = lim * CHEST_HALF;
-      const lw = clamp((r.lw ?? 0) - rel / (1 / Ia + 1 / Ib), -cap, cap), d = lw - (r.lw ?? 0);
-      r.lw = lw;
-      a.spin = (a.spin ?? 0) - d / Ia; b.spin = (b.spin ?? 0) + d / Ib;
-    }
   }
 
   /** Hands and holds couple the bodies' sideways motion directly; a grip

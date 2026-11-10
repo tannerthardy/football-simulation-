@@ -594,6 +594,29 @@ Known cost, recorded: the backside backer is reached less often (21 → 16%), be
 
 The snap assessment is identical across all 24 formations. The personal depth habit is parked.
 
+## Pruned after run-ref-16 (2026-11-10)
+
+Seventeen off-by-default flags were deleted from `src`, the stack file, the baseline and [FLAGS](FLAGS.md): their owners named no next step that needs them on develop. Behaviour is unchanged (the fixed-run report is identical before and after). Each is recoverable from git history at `f6fe9bf7`; the sections above and `docs/reviews/` keep their results. Tables earlier in this file that list them as off are the record of that date.
+
+| Flag | Why it went |
+|---|---|
+| `BLOCK_RELEASE` | No next step; yards flat |
+| `ZONE_PAIR` | Caused the inside-zone line step; off since run-ref-2 |
+| `STRETCH_TRACK` | Retested −0.39 / −0.29; the back's path was not the gap |
+| `GUN_STRETCH_T` | Do-not-enable; built on a mixed reference |
+| `MESH_NFL` | Superseded by the later mesh work |
+| `BACKSIDE_SHOOT` | Waited on a push contest that never landed |
+| `DEEP_NO_FORCE`, `MIDDLE_NO_FORCE` | Expired at review 2; the force question is with the parked run-fit port |
+| `CONTACT_PATCH` | Superseded by `GRASP_PATCH` / `HANDS_CHEST` |
+| `GRASP_ARMS` | Parked grip-break idea |
+| `GRASP_SLIDE`, `GRASP_CLOSURE` | Benched; did not help |
+| `WRAP_TWO_POINT` | Rejected; it passes the turn to the runner |
+| `ENGAGED_REACH` | Superseded by `BLOCKED_REACH` / `ONE_ARM_HOLD` |
+| `HANDS_FRICTION` | Cut pass-protection corner sheds 342 → 217 but over-stiffens the run trench; no lane needs it |
+| `THROW_HORIZON`, `UNDER_DEPTH` | No next step |
+
+Removed with them: `test/deep-no-force.test.ts`, `test/throw-horizon.test.ts`, `test/under-depth.test.ts`, the `CONTACT_PATCH` case of `test/contact-layer.test.ts`, and the flag-only diagnostics `scripts/diag/_shootcut.mts` and `scripts/diag/effective-mass/{reach,slide,wrap}-bench.mts`.
+
 ## After run-ref-12: the first second, and what is merged off (2026-11-10)
 
 Everything in this section is off.
