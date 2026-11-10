@@ -165,6 +165,7 @@
     "WING_WORK": "on",
     "WRAP_FOOT": "retired",
     "WRAP_TWO_POINT": "off",
+    "LEAN_PITCH": "off",
     "WR_SNAP": "off",
     "ZONE_ARMS": "on",
     "ZONE_GAP": "on",

@@ -1168,3 +1168,81 @@ What the trace shows:
   - **Base.** A set pass blocker's fore–aft support is not a running stride's 0.18 yd.
   - **Physics.** Bound the lean geometry's growth by how fast his COM can get ahead of his feet. Beyond the ankle share, a lean has to be built by real relative motion; until it is, the push drives him back rather than being balanced by imputed geometry.
 - The physics item is the one I would bench first: a pushed-body bench with a load that sags by half, identity and momentum exact, and a no-contact world bit-identical.
+
+## `LEAN_PITCH` (off): the lean can only grow as fast as the COM can pitch (`lean-bench.mts`; first game read, 2026-11-10)
+
+**The law** (`world.ts`, the lean's blend in `feet`):
+
+- A committed lean is a COM offset of lean/(m·w0²).
+- The ankles move the pressure centre across the base at once, so a lean up to the base radius is immediate (about 0.17 mg).
+- Past it, the COM must pitch over planted feet, no faster than an unopposed fall: offset' ≤ w0·offset.
+- The release is unchanged: a load that sags still releases the lean he really had.
+
+**Bench** (generated OG/DT/RB/LB, the World only):
+
+| Case | Fastest offset growth, off → on (yd/s) | Peak lean, off → on |
+|---|---|---|
+| Standing | 7.0–7.8 → 2.8–3.1 | 1.1 mg either way, later |
+| Kicking back at 2.5 yd/s, sag / hold | 8.2 / 5.2 → 3.1 | 1.21 / 0.95 → 0.83 / 0.88 mg |
+| Kicking back, hands removed | 11.6 → 3.1 | 1.17 → 0.54 mg |
+| Drive blocker | 6.8 → 2.6 | unchanged |
+| Braced tackler | 7.5 → 3.2 | unchanged |
+
+- **Sustained push:** still held (1.11 mg either way).
+- **Invariants:** momentum with free intents 3.6e-13; the no-contact digest is identical off and on (296c2f3c8eac).
+- **What the bench cannot do:** it falls in neither arm. In games the gait already plans ~4.7 yd/s² toward the rusher (envelope 5.0), so nothing of a release is absorbed. In the bench his legs are free and absorb it.
+
+**Game read, gate 1** (flag on against run-ref-12; same four games, seeds 11–17; truth from `pass-frames.mts`):
+
+| | Off | On | NFL |
+|---|---|---|---|
+| Dropbacks with an OL fall before the throw | **74.9%** (531 falls / 390) | **19.0%** (83 / 357) | — |
+| `olfall.py` strict / bound | 14.6% / 22.1% | 3.9% / 6.7% | 0.9% / 1.2% |
+
+- **Gate 1 (≤ 15%) is not met.**
+
+**Gate 2, the falls that remain** (`pass-fall.mts`, 65 traced):
+
+- 58 (89%) still go *into the rusher*. Gate 2 (the share should collapse) is not met; the count fell from 412 to 58.
+- They are not the imputed lean any more:
+  - They come 1.3 s into the rep (median; 0.75 s off).
+  - The lean builds 0.59 → 1.04 yd over the 0.35 s before the sag, not in 0.15 s.
+  - Before the crossing the lean is 1.18× a felt load of about 1 mg (1.17 yd of offset). The load halves in one tick (0.48), and the release is the whole jump (median share 1.00).
+- These are blockers who really leaned 48° into a sustained 1-mg push and lost it. That is the legitimate stumble the law keeps.
+- What is left is the request: the pass set asks `push: 1` with a lean of 1.25× the load. That is a drive, where a pass blocker anchors and does not chase the push. It is parked with Coverage (protection).
+
+**Not run** (gate 1 stopped the read): first pressure, pocket depth, run trench, run-block falls, the paired card.
+
+**Anchor probe (Integration, 2026-11-10; temporary, not committed).**
+
+- **The change:** `LEAN_PITCH` on, plus the pass set asking for a lean of at most 1.0× the felt load instead of 1.25×. That is the lean target's growth term set to 0 for the pass set, read from an intent field.
+- **Unchanged:** kick, mirror, posture, `push: 1` and the release law.
+- **Sample:** the same four games.
+
+| | Off | `LEAN_PITCH` | + anchor | NFL |
+|---|---|---|---|---|
+| Dropbacks with an OL fall before the throw (truth) | 74.9% | 19.0% | **10.9%** (41 falls / 366) | — |
+| `olfall.py` strict / bound | 14.6 / 22.1% | 3.9 / 6.7% | 1.4 / 2.7% | 0.9 / 1.2% |
+| Pressure (first defender within 2 yd before the throw) | 57.2% | 47.3% | 43.2% | 28% |
+| Sacks a dropback | 8.2% | 6.7% | 4.4% | — |
+| How pressure arrives: blocker still on him / never blocked / shed / got apart | 20 / 15 / 25 / 40% | 41 / 29 / 24 / 6% | 42 / 21 / 32 / 5% | 63% blocker still on |
+| Guards' depth at 2.0 s / 3.0 s, yd | 2.99 / 4.18 | 3.13 / 4.94 | 3.11 / 4.76 | — |
+| Tackles' depth at 2.0 s / 3.0 s, yd | 5.06 / 7.29 | 5.06 / 7.76 | 5.06 / 7.61 | — |
+| QB − guards at 3.0 s, yd | 3.88 | 2.95 | 3.15 | — |
+
+- **Pocket at 2.0 s:** unchanged.
+- **Pocket at 3.0 s:** the guards are 0.6–0.8 yd deeper. Blockers who used to fall now stay up and are driven back instead; the plays still alive then are different samples.
+- **The anchor's other failure is not seen:** the pocket does not collapse.
+- **Pressure:** falls and "got apart" endings nearly vanish. The rusher's remaining routes are the shed (32%) and riding a blocker who is still on him (42%).
+
+**Run blocks with `LEAN_PITCH` on** (`run-fall.mts`, the fixed run set):
+
+| | Off | On |
+|---|---|---|
+| Run-engagement endings | 6,680 | 6,302 |
+| Body-down endings | 1,441 | 1,029 |
+| Blocker falls | 580 | 361 |
+| Defender falls | 906 | 709 |
+| Defenders down along the push | 554 | 495 |
+
+- Defenders driven over along the push barely move: they are knocked over, not leaning, so this law does not reach them. That needs its own look.

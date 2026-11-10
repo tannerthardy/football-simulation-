@@ -295,6 +295,14 @@ const PUSH_GROWTH = 0.25;
 const FEEL = 0.04;
 const LEAN_RISE = 0.04;
 const LEAN_DECAY = 0.15;
+/** LEAN_PITCH (experimental, off): a committed lean is his COM held ahead of
+ * his feet (offset = lean / (m·w0²)). The ankles move the pressure centre
+ * across his base at once, so a lean up to the base radius is immediate; past
+ * it the COM itself must pitch over planted feet, which it can do no faster
+ * than an unopposed fall: offset' <= w0·offset. A sustained push is still met
+ * in full once he has leaned to it; a load that vanishes releases only the
+ * lean he really had. */
+const LEAN_PITCH = process.env.LEAN_PITCH === '1';
 const POSTURE_RATE = 2.5;
 const DEFAULT_POSTURE = 0.2;
 const FALL_TIP = 3;
@@ -1957,7 +1965,16 @@ export class World {
             // as in the first release of the original two-pass technique.
             const rising = tx * tx + ty * ty >= leanX * leanX + leanY * leanY;
             const k = 1 - Math.exp(-h / (rising ? LEAN_RISE : LEAN_DECAY));
+            const before = LEAN_PITCH ? hypot2(leanX, leanY) : 0;
             leanX += (tx - leanX) * k; leanY += (ty - leanY) * k;
+            if (LEAN_PITCH) {
+              const after = hypot2(leanX, leanY), stiff = m * w0 * w0;
+              const most = stiff * Math.max(baseRadiusAt(sp, sup.posture), before / stiff * Math.exp(w0 * h));
+              if (after > most && after > before) {
+                const keep = Math.max(before, most) / after;
+                leanX *= keep; leanY *= keep;
+              }
+            }
           }
         }
         sup.lean = { x: leanX, y: leanY };
