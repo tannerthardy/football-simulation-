@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 
-// Step 1 and 2 of docs/reviews/effective-mass.md: CONTACT_LAYER (compliant torso layer) and CONTACT_PATCH (plays
-// default to the World's common contact patch). Both are read at load, so each case stubs the environment and
+// Step 1 of docs/reviews/effective-mass.md: CONTACT_LAYER (compliant torso layer) and the contact flags that followed.
+// They are read at load, so each case stubs the environment and
 // imports fresh modules. The cases run on the real engine defaults (the reference stack's promoted flags on), not
 // the legacy pin of vitest.config.ts.
 const stack: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
@@ -57,25 +57,6 @@ describe('CONTACT_LAYER (compliant torso layer)', () => {
   });
 });
 
-describe('CONTACT_PATCH (plays default to the common contact patch)', () => {
-  async function worldLaw(env: Record<string, string>, named?: 'center' | 'patch') {
-    vi.resetModules();
-    for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
-    for (const [k, v] of Object.entries(env)) vi.stubEnv(k, v);
-    const { PlaySim } = await import('../src/sim/playsim.js');
-    const { restoreSetup } = await import('../scripts/diag/saved-play.js');
-    const f = JSON.parse(readFileSync(new URL('../scripts/diag/run-operators/fixtures/s9-39.json', import.meta.url), 'utf8'));
-    const st: any = restoreSetup(Buffer.from(f['s9-39'].setup, 'base64'));
-    if (named) st.handContact = named;
-    return new PlaySim(st).world.handContact;
-  }
-  it('uses the patch only when the flag is on and the play names no law', async () => {
-    expect(await worldLaw({})).toBe('center');
-    expect(await worldLaw({ CONTACT_PATCH: '1' })).toBe('patch');
-    expect(await worldLaw({ CONTACT_PATCH: '1' }, 'center')).toBe('center');
-  });
-});
-
 describe('HANDS_CHEST (block hands push chest to chest)', () => {
   async function spin(env: Record<string, string>, off: number) {
     vi.resetModules();
@@ -89,7 +70,8 @@ describe('HANDS_CHEST (block hands push chest to chest)', () => {
     d.body.pos = { x: 40 + Math.sqrt(R * R - off * off), y: 26.65 + off }; d.body.vel = { x: 0, y: 0 }; d.body.facing = Math.PI;
     e.control = 0;
     const ang = () => Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), a0 = ang();
-    for (let k = 0; k < 20; k++) {
+    // 30 ticks: with LEAN_PITCH (run-ref-13) the lean pitches in over planted feet, so the twist needs more ticks to show.
+    for (let k = 0; k < 30; k++) {
       const intents: any[] = sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
       intents[b.idx] = { vel: { x: 1, y: 0 }, facing: 0, push: 1, posture: 0.85 };
       intents[d.idx] = { vel: { x: -1, y: 0 }, facing: Math.PI, push: 1, posture: 0.85 };

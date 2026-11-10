@@ -30,7 +30,7 @@ import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
-import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, PRESS_BACKOFF, RECEIVER_DEPTH, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { installCoverage } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
@@ -143,13 +143,6 @@ const angDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a
 /** Default on (RELEASE_REDECIDE=0 for comparison): a player whose block ends
  * during the engagement update decides again in the same step (PlaySim.tick). */
 const RELEASE_REDECIDE = process.env.RELEASE_REDECIDE !== '0';
-/** Experimental (CONTACT_PATCH=1, off): plays that do not name a hand-contact
- * law use the World's common contact patch ('patch'): torso, hand and grasp
- * impulses act at the contact point with lever arms, so off-centre loads and
- * a grip on a torso turn the bodies and a held pair can swing around each
- * other instead of being locked centre to centre (docs/reviews/effective-mass.md,
- * step 2). Off, the setup's law or the World default ('center') as before. */
-const CONTACT_PATCH = process.env.CONTACT_PATCH === '1';
 
 export class PlaySim {
   readonly dt = DT;
@@ -356,9 +349,20 @@ export class PlaySim {
       mk('D', slot, player, spot.pos, Math.PI);
     }
     fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
+    // RECEIVER_DEPTH (experimental, off): a receiver on the line who sees a
+    // press look in front of him sets deeper to have room to release.
+    if (RECEIVER_DEPTH) {
+      const dir = this.attackDir('O');
+      for (const o of this.offense) {
+        const spot = this.offAlign.spots[o.slot], f = setup.offCall.formation.slots[o.slot as keyof typeof setup.offCall.formation.slots];
+        if (!spot || !f || spot.backfield || f.depth > 0.6 + 1e-9) continue;
+        const pressed = this.defense.some((d) => Math.abs(d.pos.y - o.pos.y) <= 1.5 && (d.pos.x - this.los) * dir > 0 && (d.pos.x - this.los) * dir <= 2);
+        if (pressed) o.body.pos = { x: o.pos.x - dir * PRESS_BACKOFF, y: o.pos.y };
+      }
+    }
     if (setup.alignment?.length) this.placeByHand(setup.alignment);
     this.snapX = this.agents.map((a) => a.pos.x);
-    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact ?? (CONTACT_PATCH ? 'patch' : undefined) });
+    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact ?? undefined });
     // TORSO_CAPSULE (World): the carrier's torso contact with a defender uses the capsule; every other pair keeps the disc.
     this.world.capsulePair = (a, b) => { const c = this.carrier?.body; if (!c) return false; const o = a === c ? b : b === c ? a : null;
       return !!o && this.defense.some((d) => d.body === o); };

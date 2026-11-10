@@ -1371,3 +1371,352 @@ What the trace shows:
   - the load sags and the lean drops into his capture point.
 - `LEAN_PITCH` and an anchor-style request (lean no more than the load) are its remedies, as on the OL side.
 - Nothing new for the World. Coverage's `PASS_ANCHOR` works around the same lean on the OL side, not a missing step.
+
+## `LEAN_PITCH` promotion read, run side (pre-registered 2026-11-10, before running)
+
+- **Arms:** `npm run ref:report -- --flag LEAN_PITCH=1` on the fixed 1,321 runs. Off, run-ref-12, and run-ref-12 + `LEAN_PITCH`.
+- **Gates** (the candidate against run-ref-12):
+  1. No regression caused by a bug in the mechanism. Any yardage change must have a named mechanism: fewer fallen blockers means blocks held longer; fewer fallen defenders means more pursuit.
+  2. Tackle counts (made, missed, broken) within noise.
+  3. Falls down on both sides with `run-fall.mts`: defenders below 906 and blockers below 580.
+- **Reported, not gated:** yards by concept, stuffs, first-contact depth, crowd at the tackle, the trench operators.
+
+**Result** (`ref:report`, run-ref-12 @ 849ee8f7, candidate = + `LEAN_PITCH=1`; full output in `out/ref/report.md`).
+
+| Concept | n | run-ref-12 | + `LEAN_PITCH` | Paired (SE) |
+|---|---|---|---|---|
+| OZ | 395 | 3.15 | 3.50 | +0.35 (0.23) |
+| IZ | 215 | 3.88 | 4.51 | +0.63 (0.31) |
+| gap | 445 | 4.17 | 4.20 | +0.04 (0.16) |
+| duo | 126 | 3.49 | 3.50 | +0.01 (0.31) |
+| toss | 55 | 3.93 | 4.97 | +1.04 (1.01) |
+| draw | 85 | 4.04 | 3.77 | −0.27 (0.58) |
+| **all** | 1,321 | **3.73** | **3.98** | **+0.24 (0.12)** |
+
+- **Other yardage numbers:** stuffs (≤ 0 yd) 11.4% → 11.6%; 10+ runs 6.7% → 8.0%; 20+ runs 1.8% → 2.7%.
+- **Gate 2, tackles:** missed 0.241 → 0.240, broken 0.142 → 0.147 (engaged-grab breaks 0.073 → 0.070). **Met.**
+- **Gate 3, falls** (`run-fall.mts`): defenders 906 → 709, blockers 580 → 361. **Met.**
+- **Gate 1, mechanism:** the yardage rise has two named mechanisms, both moving toward the NFL. No regression traces to a bug. **Met.**
+  1. *Blocks held.*
+     - Zone DL driven back ≥ 0.5 yd from 0.5 s: 8% → 12% (NFL 17%).
+     - DL depth at 2.0 s: +0.69 → +0.57 (NFL +0.70); solo +0.87 → +0.69 (NFL +0.82).
+     - Solo-pair rotation 58° → 46° (NFL 43°).
+     - Pile frames with no defender within 1 yd: 408 → 566.
+  2. *Pursuit.* A second defender arrives at 75% of contacts, against 69% (NFL 80%). The third: 37% → 41% (NFL 43%).
+
+**The falls that remain with the flag on** (`run-dfall.mts` with the temporary per-term split, reverted):
+
+| | Lean release | Impact | Other |
+|---|---|---|---|
+| Blockers (361) | 149: interior OL (C 35, RG 33, LG 26); request **−1.74 yd/s** into the man; lean 1.18× the load; release 0.85 yd | 165: TEs (Y 73, H 36); felt 3.3 mg; unfollowed accel 0.77 + tip 0.19 yd | 47: neither term (lean ≈ load, release below threshold; the capture point is within base until the last ticks) |
+| Defenders (709) | 193: DT 111, LB 33; request −1.47; lean 1.1×; release 0.79 yd | 451: LB 166, DB 90; felt 3.2 mg; request 0 along the push | 65 |
+
+- **Pass side** (`pass-fall.mts`, flag on): 58 of 65 traced go toward the rusher. The release is the whole jump. These are leans built over ~0.35 s at 1.18× a ~1-mg load, so lean release with the drive request.
+- **Remaining lean releases (blockers 149, defenders 193, pass blockers ~19% of dropbacks):** real leans the law now permits, made frequent by requests that drive into the man at 1.25× the load. That is technique: Coverage's anchor for pass sets; for run blockers and defenders, Run Game and Defense.
+- **Remaining impacts:** unbraced bodies hit by heavier or lower ones, coherent by the impact bench. For defenders this is Defense's take-on item. For blockers, TEs are hit while blocking down.
+
+## What "pressure by a blocked man" is (`pressure-shape.py`; NFL 2022, 9,654 dropbacks; sim `LEAN_PITCH` + `PASS_ANCHOR`, 4 live games, 366 dropbacks; 2026-11-10)
+
+**The rule.**
+
+- **First pressure:** the first defender within 2 yd of the QB, from 0.3 s, before the throw.
+- **Blocked:** an offensive player other than the QB within 1.2 yd of him then. This is proximity, not the engine's engagement flag.
+- **Shape:**
+  - *in front*: the nearest blocker is between him and the QB (nearer the QB by > 0.3 yd, within 45° of his line to the QB);
+  - *edge*: otherwise, level with or past the blocker's shoulder.
+- **Who closed the last 0.5 s:** the QB's displacement toward him against his toward the QB.
+
+| Share of dropbacks | NFL | Sim | Excess |
+|---|---|---|---|
+| Pressured at all | 27.8% | 39.9% | +12.1 |
+| Free rusher | 10.3% | 16.8% | +6.5 |
+| Blocked, edge | 13.4% | 11.1% | −2.3 |
+| Blocked, blocker **in front** | 6.4% | 13.1% | **+6.7** |
+| ... of which the QB closed | 0.7% | 0.8% | 0 |
+
+At the moment of pressure (medians):
+
+| | Blocker depth | Blocker retreat, last 0.5 s | QB depth | QB then holds the ball | Closest the rusher gets |
+|---|---|---|---|---|---|
+| NFL, in front | 6.15 yd | 1.77 yd/s | 6.75 yd | 1.8 s | 1.71 yd |
+| Sim, in front | 7.23 yd | 2.60 yd/s | 8.12 yd | 0.7 s | 1.58 yd |
+| NFL, edge | 6.63 | 2.78 | 7.59 | 1.0 | 1.41 |
+| Sim, edge | 6.45 | 2.55 | 7.91 | 0.4 | 1.30 |
+
+**Reading, ranked by excess:**
+
+1. **A blocker still in front, retreating into the QB (+6.7 points).**
+   - He is 1.1 yd deeper and retreating 0.8 yd/s faster than the NFL's in-front blockers, and the QB is 1.4 yd deeper.
+   - The rusher comes within 2 yd of the QB *through* the blocker's position, which is the pocket compressing at that spot. Pocket medians across all plays hide it.
+   - Next to establish: is the blocker *pushed* (felt load, driven back against his request) or is he *kicking* by request to a set depth near the QB's (`PASS_KICK` set depth, the QB's drop)? The sim knows both.
+   - Pushed means mine (anchor physics); kicking or a deep drop means Coverage (protection set and drop).
+2. **Free rushers (+6.5 points).** Unblocked men: protection assignment and pickups, Coverage's lane. `first-pressure.ts` already splits these by the back.
+3. **Edge rush (−2.3 points).** Below the NFL; not an excess.
+4. **The definition is not the cause.**
+   - QB drift is rare in both (2–4% of blocked pressures).
+   - The NFL QB lives with a rusher at 2 yd for 1.0–1.8 s; ours ends the play in 0.4–0.7 s.
+   - That is a QB response to proximity (sack or a hurried throw), Coverage's lane. It does not inflate the pressure count.
+- Coverage's 85% blocked counts the engine's engagement flags. By proximity at the moment it is 58% (NFL 63%), so many of their "blocked" pressures are men whose block is nominally on but who are more than 1.2 yd from any blocker.
+
+**The blocker in front: pushed or kicking?** (`pass-press.mts`; `LEAN_PITCH` + `PASS_ANCHOR`; 4 live games, 366 dropbacks, 158 first pressures, 56 with a blocker in front, 48 of them by OL)
+
+| In-front pressures by OL | n | Requested retreat | Achieved | Felt load against him | Depth | His set target | QB depth | Pushed (achieved > request + 0.5, felt > 0.3 mg) | Kicking by request |
+|---|---|---|---|---|---|---|---|---|---|
+| Tackles | 38 | 3.34 yd/s | 3.39 | 0.15 mg | 7.16 yd | 5.37 | 8.20 | 10 | 21 |
+| Interior | 10 | −0.11 | 1.06 | 0.79 | 4.79 | 2.12 | 5.85 | 7 | 3 |
+
+**QB depth by time is not the cause** (`pocket.py`, same operator):
+
+| | 2.0 s | 2.5 s | 3.0 s |
+|---|---|---|---|
+| NFL, QB depth | 7.39 | 8.06 | 8.11 |
+| Sim, QB depth | 7.77 | 7.89 | 7.91 |
+| NFL, tackles' depth | 4.70 | 5.65 | 6.21 |
+| Sim, tackles' depth | 5.06 | 6.45 | **7.61** |
+
+- The 8.12 yd QB depth at in-front pressures earlier was the pressured subset. Our QB is not deeper than the NFL's.
+- Our tackles are 1.4 yd deeper by 3.0 s.
+
+**By drop** (in-front OL pressures over dropbacks): seven 6/34, gun5 23/163, five 8/58, PA 6/50, quick 4/33, gun3 1/28. The deeper and longer drops lead.
+
+**Reading.**
+
+- **Tackles (38 of 48): a controller request, Coverage's lane.**
+  - They are not pushed: the felt load is 0.15 mg and the achieved retreat equals the request.
+  - They kick back at 3.3 yd/s by request, 1.8 yd past their own `passSetDepth` target, toward the QB.
+  - This is `PASS_KICK`: it keeps an outside blocker level with or deeper than his rusher, up to 0.5 yd short of the QB. A tackle who kicks with the rusher to the QB's depth carries the rusher into the QB's 2-yd radius while staying "in front".
+  - NFL tackles stop deeper retreat at about 6.2 yd by 3.0 s.
+- **Interior (10): pushed.** Driven back at 1.06 yd/s under 0.79 mg while asking to hold, within 2 yd of a QB 5.85 yd deep. Anchor physics, mine, but 10 of 366 dropbacks (2.7%). Not a priority.
+- **"Blocked in name only": none at the moment of pressure.**
+  - Engagement flag on and a blocker within 1.2 yd: 67. Flag off and nobody near: 63. Flag off but someone near: 28.
+  - Coverage's 85% counts rushers who were ever engaged, not the state at the pressure.
+
+## Standing starts by position (`start.py`, `sprint-bench.mts`; NFL 2022 pass plays; sim `LEAN_PITCH` + `PASS_ANCHOR`, 4 live games, `WR_SNAP` off; 2026-11-10)
+
+**One operator on both.**
+
+- Displacement from the snap spot.
+- Each player's start = the first 0.1 s frame displaced 0.25 yd.
+- Displacement after his own start (reaction removed).
+- Upper percentiles as a proxy for maximum effort.
+
+| After his own start, +0.3 / +0.5 / +0.8 s (yd) | Sim in games | NFL p50 | NFL p75 | NFL p90 | World alone, max effort from rest (same 0.1 s alignment) |
+|---|---|---|---|---|---|
+| WR | 0.92 / 1.77 / 3.30 | 0.79 / 1.58 / 3.08 | 0.88 / 1.74 / 3.38 | 0.96 / 1.88 / 3.61 | 0.88 / 1.72 / 3.24 |
+| TE | 0.81 / 1.53 / 2.88 | 0.69 / 1.36 / 2.61 | 0.81 / 1.60 / 3.04 | 0.90 / 1.75 / 3.33 | 0.82 / 1.58 / 2.96 |
+| DL | 0.79 / 1.46 / 2.23 | 0.62 / 1.16 / 2.07 | 0.71 / 1.35 / 2.44 | 0.79 / 1.51 / 2.80 | 0.79 / 1.50 / 2.81 (DT) |
+| LB | 0.70 / 1.26 / 2.16 | 0.58 / 1.13 / 2.08 | 0.73 / 1.42 / 2.66 | 0.85 / 1.64 / 3.06 | 0.86 / 1.66 / 3.14 |
+
+| Start (p50) and displacement from the snap at 0.3 / 0.5 s | Sim | NFL |
+|---|---|---|
+| WR | 0.3 s; 0.35 / 0.91 | 0.5 s; 0.08 / 0.31 |
+| TE | 0.3 s; 0.28 / 0.75 | 0.5 s; 0.10 / 0.31 |
+| RB | 0.3 s; 0.29 / 0.72 | 0.6 s; 0.04 / 0.16 |
+| DL | 0.4 s; **0.12** / 0.47 | 0.4 s; **0.21** / 0.52 |
+
+**Reading: not one law, three separate causes.**
+
+1. **The shared acceleration capacity is not too high.**
+   - The World's own maximum-effort start sits at the NFL's p75 (WR, TE) to p90 (DL) of starts, below the NFL's best.
+   - In games our WRs, TEs and DL start at that maximum, and NFL medians are below it.
+   - So "too fast" is effort, not capacity. Leave the shared law alone. Changing it would make DL slower still.
+2. **WR and TE: every route starts at full effort, and TEs and RBs leave early.**
+   - They start at 0.3 s against 0.5–0.6. `WR_SNAP` fixes the WRs only.
+   - After starting they run at the World's maximum on every route, where NFL medians run below their own maximum (Coverage: NFL go routes start like hitches).
+   - These are route-stem tempo and snap reaction for TEs and backs: Coverage's lane.
+3. **DL: the get-off's early tail.**
+   - Median start is equal (0.4 s), but the NFL is ahead at 0.3 s (0.21 against 0.12 yd).
+   - After starting, our DL are at NFL p90.
+   - This is snap anticipation and the get-off distribution, the `DL_SNAP_TIME` question: Defense and Run Game.
+
+**The deciding bench** was this one: the World alone, a standing start at full request, read through the same 0.1 s alignment as the tracking. Nothing to build.
+
+## The zone backside tackle running flat (`flat-bench.mts`, `ol-flat.py`; NFL 2022 outside zone, 1,588 runs; 2026-11-10)
+
+Both sides are aligned to his own start (the first 0.1 s frame displaced 0.25 yd).
+
+| At +0.5 / +1.0 / +1.5 s after his start | Displacement (yd) | Speed (yd/s) |
+|---|---|---|
+| NFL backside T, p50 | 1.30 / 3.10 / 4.98 | 3.28 / 3.78 / 3.71 |
+| NFL backside T, p75 | 1.43 / 3.43 / 5.55 | 3.62 / 4.31 / 4.38 |
+| NFL backside T, p90 | 1.55 / 3.70 / 6.03 | 3.91 / 4.74 / 4.90 |
+| World, OT, facing the travel ("turn") | 1.31 / 3.30 / 5.75 | 3.38 / **4.49** / 5.28 |
+| World, OT, facing upfield ("square") | 1.16 / 2.79 / 4.62 | 2.88 / **3.50** / 3.83 |
+| World, OG, turn / square at +1.0 s | 3.58 / 2.65 | 4.85 / 3.28 |
+
+- **Setup:** generated OT/OG bodies at rest, posture 0.8, full lateral request; 10 bodies × 4 frame phases.
+- **The body can do it.** Turned to run, a tackle passes the NFL's p75 by +1.0 s and its p90 by +1.5 s.
+- **Square, he cannot.** He keeps facing upfield, so his drive is the directional (sideways) share. He tops out at 3.5–3.8 yd/s, below the NFL median, where the sim's backside tackle runs (3.1–3.3 with a man on him).
+- **The limiter is the facing-against-travel penalty**, not the turn from stance, traction or mass.
+- Whether he opens his hips and runs, or shuffles square, is the zone footwork request: Run Game's lane, with `_btdouble.mts`'s requested facing and velocity as the check.
+- NFL backside tackles at 3.8–4.7 yd/s are at least partly turned.
+
+## What ends a pressured dropback (`pressure-life.py`; NFL 2022, 9,654 dropbacks; sim `LEAN_PITCH` + `PASS_ANCHOR`, 4 live games, 366; 2026-11-10)
+
+- **First pressure:** as in `pressure-shape.py`.
+- **Resolution:** the throw; else a scramble if the QB crosses the line; else a sack or the play ending in his hands.
+- **Measured over the window** from pressure to resolution: the QB's movement, the rusher's closing, and whether a blocker is still within 1.2 yd of the rusher.
+
+| Per dropback | Sim | NFL | Window (sim / NFL) | QB moved (sim / NFL) | Blocker on the rusher (sim / NFL) |
+|---|---|---|---|---|---|
+| Throw under pressure | **30.6%** | 17.2% | 0.4 / 0.4 s | 0.25 yd at 0.81 yd/s / 0.72 yd at 2.09 | 100% / 76% of the window |
+| Sack / end in his hands | 5.7% | 6.3% | **0.5 / 1.5 s** | **0.67 yd at 1.29** / 3.26 yd at 2.36 | 0% / 33% |
+| Scramble | 3.3% | 4.1% | 2.0 / 3.0 s | 8.8 yd at 3.97 / 13.9 yd at 6.04 | 0% / 9% |
+
+- **Sacks:** 2 yd → 1 yd takes 0.3 s on both sides. 1 yd → the record's end: sim 0.3 s, NFL 1.1 s.
+- The NFL end marker may lag the tackle; a stopped QB is not visible in sim frames, which end at the dead ball.
+
+**Reading, ranked by count:**
+
+1. **Throws under pressure (+13.4 points of dropbacks).**
+   - Mostly the excess pressure itself: the QB releases within 0.4 s of a man at 2 yd on both sides.
+   - Our QB does not move in that window (0.25 yd at 0.8 yd/s against 0.7 yd at 2.1). The NFL QB steps up or slides as he throws. That is a decision (pocket movement), Coverage's lane.
+   - All our throw-pressures have a blocker on the rusher, which matches the in-front pressures found earlier.
+2. **Sacks: the same rate, but over in a third of the time.**
+   - Before contact the NFL QB moves 3.3 yd at 2.4 yd/s (escape, climb, spin out); ours moves 0.7 yd. The QB's evasion decision is Coverage's lane.
+   - **Physics question, mine:** contact to down is 0.3 s against up to 1.1 s. Is a grasp on a QB who is moving and fighting becoming a tackle too quickly?
+   - **Smallest bench:** a rusher's arriving grasp on a QB stepping away at 2 yd/s. Compare the time to down with a runner of the same mass at the same speed, then against the NFL's sack contact-to-down once the end-marker lag is known. That needs the tackle event time in the NFL source (BDB `qb_sack` / `tackle` frames).
+3. **Scrambles:** close to the NFL in count. Ours are shorter and slower (8.8 yd at 4.0 against 13.9 at 6.0). A decision plus open-field running; not a priority.
+
+**Not physics:** the rusher's closing speed with a blocker attached (throws: 2.6 against 2.2 yd/s; sacks: 1.9 against 2.9). Ours close no faster at a sack. The short sim windows are the QB's decisions (throw at once, no movement), not rushers arriving faster.
+
+**Sacks: contact to down** (`nfl_sack_time.py`, BDB weeks 1–3, 180 sacks; `sack-trace.mts`, sim `LEAN_PITCH` + `PASS_ANCHOR`, 4 games, 16 sacks)
+
+**NFL** (first defender within 1 yd → the `qb_sack` frame):
+
+- Median 1.1 s (p25 0.7, p75 1.6). From 2 yd it is 1.6 s.
+- The QB travels 2.5 yd at 2.4 yd/s in that time. NFL sacks are fights, then takedowns.
+- So the record's end marker was not lagging: the NFL contact-to-sack really is ~1 s.
+
+**Sim:** 14 of 16 sacks are the **in-the-grasp rule** (`tackle.ts:683–689`). A pocket QB held 0.25 s with any tackler's control or grip ≥ 0.6 is ruled down at once.
+
+| Sim sacks | n | Bond held at the whistle | Grip reached 0.6 after | Max grip | QB travel during the hold |
+|---|---|---|---|---|---|
+| Whistled in the grasp (QB still up) | 14 | 0.25 s (p75 0.40) | 0.25 s (p25 0.05) | 0.71 | 0.23 yd |
+| Physical fall | 2 | 0.6–0.9 s | — | — | 0.6–1.0 yd |
+
+**Reading.**
+
+- The short sim sack is a rule ruling, not a body going down: whistled 0.25 s after the first hold with the QB upright and nearly stationary.
+- NFL officials rule "in the grasp" when control is clear and the QB's safety is in jeopardy. Most NFL sacks run about a second of struggle to a takedown.
+- **Rules interpretation (Integration):** a held time of 0.25 s and grip ≥ 0.6 as the whole test.
+- **Physics, mine, only if the rule stays:** grip reaching 0.6 within 0.05–0.25 s of the first hold on a QB.
+- **QB, Coverage:** he barely moves while held (0.23 yd), against the NFL QB's 2.5 yd of fighting and escaping.
+- **The rule comes first.** With a takedown required, the grasp, fall and escape physics would decide sacks, and the bench (a grasp on a QB stepping away at 2 yd/s, time to a physical fall) becomes the measure.
+
+## Where a holder's turn comes from (`yaw-ledger.mts` with a temporary per-source spin ledger, reverted; fixed run set, run-ref-12; 2026-11-10)
+
+**Method.** Every write to a body's spin in `world.ts` was logged by source and partner. Sources:
+
+- the gait's turn (`feet`);
+- grasp rows through the support-impulse path (`support`);
+- hands and strikes;
+- torso-contact normal and friction lever arms (`contactN`, `contactT`);
+- passive off-feet friction;
+- the two-point wrap.
+
+Each tackler's first 0.5 s in the tackle bond is attributed by integrating each source's spin change over the rest of the window. The spin brought in plus the sources closes on the measured turn.
+
+| Holder (all are leg holds, leg share > 0) | Turn (median) | Grasp rows, `support:runner` | Gait (feet) | Runner contact friction | Third bodies | Off-feet friction | Spin brought in |
+|---|---|---|---|---|---|---|---|
+| Side (968) | 89° | **+164°** | −106° | +8° | 0° | −2° | +28° |
+| Behind (313) | 51° | **+71°** | −52° | +7° | 0° | −3° | +35° |
+| Front (1,323) | 66° | **+125°** | −73° | +24° | −4° | −1° | +11° |
+
+(Signed means along each holder's own net turn.)
+
+**Reading.**
+
+- **The turn is the grasp rows' moment on the holder**, applied through `supportImpulse` with the patch lever arms (`world.ts` ~2764 normal, ~2779 tangential).
+- **Not the others:** third-body contacts in piles are about 0. Off-feet friction is about 0 (a small brake). The torso contact with the runner adds a little.
+- **The gait fights it.** Its yaw spends −52 to −106° resisting, and a held facing request cannot stop it.
+- **The lever.** For a held man's legs (the lower patch, which is every hold here) the holder's arm is the full vector from his centre to the grip point on the runner (`rax = dx`, about 0.6–0.8 yd).
+  - A tangential grip load as the runner moves across him acts on a rigid arm of that length, and turns his torso.
+  - An upper wrap uses the chest radius instead (about 0.27 yd).
+- **Why the frontal bench gave 0–3°:** it was a square hold, with little tangential load.
+
+**Proposal** (not built; for Integration):
+
+- **The candidate incoherence.** The holder's arms are treated as rigid in yaw. A real holder's hands are on the runner's legs at the end of his arms. The shoulders and trunk can pass only a bounded moment to the torso; beyond it the arms swing.
+- **A flag, `GRASP_ARM_MOMENT` (off):** the yaw moment a grasp row passes into the holder's torso is bounded by his shoulder torque, as `HIP_BRACE` bounds a thigh hold's moment. The excess is the arm swinging, not the torso turning. The linear transfer is unchanged.
+- **Bench first:**
+  - a side and a behind leg hold on a runner crossing at 4 yd/s, with the holder's facing request held;
+  - identity, linear momentum exact, a no-grasp world bit-identical;
+  - the angular ledger stated (the swung arm's angular momentum is not represented in the reduced model).
+- **Gates to pre-register:** side and behind rotation at +0.5 / +1.0 s toward the NFL's 34/76 and 27/64. Defense re-reads `HOLD_FACING` on it.
+
+## `GRASP_ARM_MOMENT` (off): bench and first game read (2026-11-10)
+
+**The law.**
+
+- The yaw moment a grasp row passes into the holder's torso is bounded per substep by his shoulders: arm force (`supportParams.armForce` = 0.75 × power × g, strength-derived, × fatigue) across `CHEST_HALF`. The capacity is set by ratings; no outcome is prescribed.
+- The unpassed remainder is his arms swinging. The reduced model does not represent that, so it is not applied to anyone and is reported as `StepReport.armSwingYaw`.
+- Linear transfer and the runner's side of the row are unchanged.
+
+**Bench (`arm-bench.mts`, the World only).**
+
+- Linear momentum with free intents: 3.1e-13. The no-grasp digest is identical off and on (024bfc743088).
+- **Adverse case passes:** a strong holder (power × 1.3) in a tight, square two-arm wrap on a slow runner who spins is still turned, by 57° at +0.5 s and 44° at +1.0 s, the same either way.
+- **The bench does not reproduce the game's turn:** side and behind leg holds turn 0–1° in both arms. In isolation the holder's gait has yaw to spare; in games it is spent (the ledger: −52 to −106°).
+
+**Game read** (`yaw-ledger.mts`, fixed run set, run-ref-12; holder turn in the first 0.5 s of each hold, p50):
+
+| Holder | Off | On |
+|---|---|---|
+| Side | 89° | 68° |
+| Behind | 51° | 43° |
+| Front | 66° | 56° |
+
+**Pre-registered gates** (attempt 1, on run-ref-13 once on develop):
+
+1. **Rotation** (hitter rotation at +0.5 / +1.0 s, `frontcourse.py`): side toward the NFL's 34/76, behind toward 27/64, front staying near 44/89.
+2. **Paired 1,321 runs:** missed and broken tackles, unfinished holds, and yards after contact. Each explained by the mechanism; no regression caused by a bug.
+3. **Then** Defense re-reads `HOLD_FACING` on it, and I re-read `TORSO_CAPSULE` + `CONTACT_LAYER`.
+
+**Gate read on run-ref-13** (attempt 1).
+
+Holder turn in the first 0.5 s of each hold (p50, `yaw-ledger.mts`, fixed runs, paired):
+
+| Holder | run-ref-13 | + `GRASP_ARM_MOMENT` | NFL (Defense's hitter-rotation operator, +0.5 s) |
+|---|---|---|---|
+| Side | 79° | **57°** | 34° |
+| Behind | 46° | **41°** | 27° |
+| Front | 64° | **53°** | 44° |
+
+**What still turns them, with the flag on** (the per-source ledger, signed along the turn):
+
+| Holder | Grasp moment (capped) | Spin brought in from the approach | Runner contact friction | Gait |
+|---|---|---|---|---|
+| Side | +47° (was +164°) | +28° | +9° | −17° |
+| Behind | +27° (was +71°) | +28° | +3° | −5° |
+| Front | +38° | +15° | +17° | 0° |
+
+- About half of what is left is spin the holder brought into the hold from his approach. That is his facing request before the hold (controller), the part Defense's `HOLD_FACING` addresses.
+
+**Paired 1,321 runs** (`ref:report --flag GRASP_ARM_MOMENT=1`, ref = run-ref-13):
+
+- Yards: 3.97 → 3.85 (paired −0.12, SE 0.03). IZ −0.23, gap −0.12, duo −0.14, OZ −0.07.
+- Broken tackles 0.147 → 0.127 (engaged-grab breaks 0.070 → 0.067). Missed 0.239 → 0.238. Missed + broken open 0.316 → 0.299 a run.
+- `frontcourse` hitter rotation on front-on contacts: essentially unchanged.
+
+**Gates.**
+
+1. **Met as worded:** side and behind moved toward the NFL; front stayed near it. Side is still 23° above.
+2. **No bug-caused regression.** The yardage drop has a named mechanism: holders who are not spun off keep the runner (broken −0.020 a run). A worse statistic is not a veto.
+3. **Next:** Defense re-reads `HOLD_FACING` attempt 2 on this flag (the approach spin), then the `TORSO_CAPSULE` + `CONTACT_LAYER` re-read.
+
+## `TORSO_CAPSULE` + `CONTACT_LAYER` re-read on `GRASP_ARM_MOMENT` (run-ref-13, paired, fixed 1,321 runs; 2026-11-10)
+
+| Arm | Holder turn in 0.5 s, side / behind / front (p50) | Front-on runner speed kept at +0.1 / +0.2 s | Yards, paired against run-ref-13 | Missed / broken a run |
+|---|---|---|---|---|
+| run-ref-13 | 79 / 46 / 64° | 75 / 51% | — | 0.239 / 0.147 |
+| + `GRASP_ARM_MOMENT` | 57 / 41 / 53° | 73 / 50% | −0.12 (SE 0.03) | 0.238 / 0.127 |
+| + `GRASP_ARM_MOMENT` + `TORSO_CAPSULE` + `CONTACT_LAYER` | 61 / 40 / 57° | **86 / 60%** | +0.34 (SE 0.11) | 0.256 / 0.151 |
+| NFL | 34 / 27 / 44° (Defense's operator) | 90 / 82% | | |
+
+- Speeds kept are from `frontcourse`: runner speed at +0.1 / +0.2 s over his speed at −0.1 s.
+- **The holder turn:** the capsule and layer keep nearly all of `GRASP_ARM_MOMENT`'s reduction (side +4°, front +4°, behind −1°).
+- **Front-on retention:** they move it toward the NFL (+0.2 s: 50 → 60%; +0.1 s: 73 → 86%). `GRASP_ARM_MOMENT` alone does not touch it.
+- **Cost:** missed tackles +0.017 a run, broken +0.024. Yards +0.34 against run-ref-13, +0.46 against `GRASP_ARM_MOMENT` alone.
+- That direction is NFL-ward on the shared tackle index: head-on yards after contact are 1.1 in the sim against the NFL's 2.3.
+- **Stays off.** Defense's `HOLD_FACING` read on `GRASP_ARM_MOMENT` comes next, then a combined read.

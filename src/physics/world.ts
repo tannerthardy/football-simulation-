@@ -144,8 +144,8 @@ export interface GraspJoint {
   brace?: number;
   /** Height of the hold, yd; otherwise interpolates from torso to lower legs. */
   height?: number;
-  /** 0–1: how closed the arms' wrap is (the lock of the grip's force law);
-   * read only by GRASP_CLOSURE. Omission is an open grip (0). */
+  /** 0–1: how closed the arms' wrap is (the lock of the grip's force law).
+   * Omission is an open grip (0). */
   lock?: number;
   readonly contactAnatomy?: Readonly<ContactAnatomy>;
   achievedContactHeight?: number;
@@ -249,6 +249,8 @@ export interface StepReport {
   maxLeanReleaseResidual: number;
   /** Most iterations needed to settle one finite committed-lean transfer. */
   maxLeanReleaseIterations: number;
+  /** GRASP_ARM_MOMENT: grasp-row yaw impulse not passed to holders' torsos (their arms swing), kg·yd²/s; unrepresented. */
+  armSwingYaw: number;
   /** Finite committed-lean geometry transferred into each body's support, yd. */
   leanRelease: Vec2[];
   /** Reduced support motor's signed work and common leg-work bound.
@@ -306,7 +308,16 @@ const LEAN_DECAY = 0.15;
  * than an unopposed fall: offset' <= w0·offset. A sustained push is still met
  * in full once he has leaned to it; a load that vanishes releases only the
  * lean he really had. */
-const LEAN_PITCH = process.env.LEAN_PITCH === '1';
+const LEAN_PITCH = process.env.LEAN_PITCH !== '0';
+/** GRASP_ARM_MOMENT (experimental, off): a holder's hands are at the end of his
+ * arms, not welded to his torso. The yaw moment a grasp row passes into the
+ * holder's torso is bounded by what his shoulders can hold: his arm force
+ * (strength-derived, supportParams.armForce, with fatigue) across the chest
+ * half-span (CHEST_HALF), per substep. The rest swings his arms, which the
+ * reduced model does not represent: that unpassed angular impulse is reported
+ * (StepReport.armSwingYaw), not applied to anyone. Linear transfer is
+ * unchanged, and the runner's side of the row is unchanged. */
+const GRASP_ARM_MOMENT = process.env.GRASP_ARM_MOMENT !== '0';
 const POSTURE_RATE = 2.5;
 const DEFAULT_POSTURE = 0.2;
 const FALL_TIP = 3;
@@ -372,14 +383,6 @@ const HIP_BRACE = process.env.HIP_BRACE !== '0';
  * half-length CHEST_HALF across his facing; the row acts between the closest
  * points of the two segments, as for two capsules. Off, centre to centre. */
 const HANDS_CHEST = process.env.HANDS_CHEST !== '0';
-/** Experimental (HANDS_FRICTION=1, off): hands pressed into a chest resist
- * sliding by Coulomb friction on their own compressive load, the same
- * coefficient as torso contact (CONTACT_FRICTION), in addition to the active
- * steer. Off, a block's sideways coupling is the steer alone, so a pressing
- * pair slips across each other once the steer saturates (67% of engaged run
- * ticks; docs/reviews/effective-mass.md). Friction only resists slip; it
- * never drives. */
-const HANDS_FRICTION = process.env.HANDS_FRICTION === '1';
 /** Experimental (GRASP_PATCH=1, off): in centre mode a tackler's grasp follows
  * the World's common-patch grasp law: its rows act at the grip point with lever
  * arms in the force-midpoint frame, and his arm pull (the reel) is applied at
@@ -390,30 +393,6 @@ const HANDS_FRICTION = process.env.HANDS_FRICTION === '1';
  * hands and torso contacts stay on the centre law (HANDS_CHEST).
  * docs/reviews/effective-mass.md, step 2 (b). */
 const GRASP_PATCH = process.env.GRASP_PATCH !== '0';
-/** Experimental (GRASP_SLIDE=1, off): a grasp's sideways hold is friction on
- * its own tension. The tangential row is limited to CONTACT_FRICTION times the
- * hold's transmitted tension (|ln - reel|), inside the grip's capacity bound.
- * Off, the row welds the grip point (zero sideways slip) whenever the force
- * that takes is under capacity: on the fixed zone runs a front-on grasp forms
- * at arm's length a tick before the pads meet and stops the sliding at 12-17%
- * of its capacity (slip-split.mts). Arms that have just arrived squeeze little,
- * so the runner slides past them until the squeeze builds.
- * docs/reviews/effective-mass.md. */
-const GRASP_SLIDE = process.env.GRASP_SLIDE === '1';
-/** Experimental (GRASP_CLOSURE=1, off; with GRASP_SLIDE): a closed wrap holds
- * sideways by geometry, not friction. The rigid share of the bound is the wrap
- * share of the grip's force law, 2.5 l^2 / (0.3 + 2.5 l^2) for the joint's lock
- * l (tackle.ts gripForce); the rest is friction on tension. */
-const GRASP_CLOSURE = process.env.GRASP_CLOSURE === '1';
-/** Experimental (GRASP_ARMS=1, off): an upper-body grasp acts where the
- * holder's arms meet the runner's torso, not at his centre. In centre mode its
- * rows had no lever arms, so the grip braked the two centres' relative motion
- * directly and a held pair could not swing around each other (slip 0.18 yd/s
- * while held against 2.06 apart; NFL pairs keep about 2.7 at +0.1 s). With
- * lever arms at the radius-weighted surface point, as the World's patch law
- * places it, the grip holds that point and the bodies turn under it. Block
- * hands are untouched (HANDS_CHEST). docs/reviews/effective-mass.md. */
-const GRASP_ARMS = process.env.GRASP_ARMS === '1';
 /** Flat half-span of a torso's front, yd: shoulder half-width with pads (0.27)
  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
  * scripts/diag/effective-mass/shape.py. */
@@ -431,14 +410,6 @@ const TORSO_CAPSULE = process.env.TORSO_CAPSULE === '1';
 /** Half-depth over half-width of a padded torso (0.15 / 0.27 yd: the same
  * anthropometric estimate as CHEST_HALF). */
 const TORSO_DEPTH = 0.15 / 0.27;
-/** Experimental (WRAP_TWO_POINT=1, off): a two-arm upper wrap grips the runner
- * on both sides of his chest, so it resists the two bodies turning relative to
- * each other: one arm pulls while the other pushes. A relative-yaw row couples
- * their spins, bounded by the grip's capacity times the chest half-span (the
- * hands' CHEST_HALF). One-arm grabs (lock 0) keep one point. Off, a grasp acts
- * at one point and any moment it delivers turns the holder alone.
- * docs/reviews/2026-11-10-torso-shape-plan.md (the tackler's over-rotation). */
-const WRAP_TWO_POINT = process.env.WRAP_TWO_POINT === '1';
 
 /** TORSO_CAPSULE: closest points of the two shoulder-line segments and the row
  * geometry they give (normal from a to b, gap, and each body's arm to its
@@ -551,8 +522,6 @@ interface JointRow {
   /** Normal impulse moments at the same physical point as steering. */
   ni?: number;
   nj?: number;
-  /** WRAP_TWO_POINT: accumulated relative-yaw impulse this substep (kg·yd²/s). */
-  lw?: number;
   /** Normal regime: +1 compressive (hands), −1 tension, 0 inactive. */
   mode: number;
   c: number;
@@ -747,6 +716,9 @@ export class World {
   private readonly amx: Float64Array;
   private readonly amy: Float64Array;
   private readonly alpha: Float64Array;
+  /** GRASP_ARM_MOMENT: yaw impulse passed into each holder this substep, and that substep's time stamp. */
+  private readonly armYaw: Float64Array;
+  private readonly armYawTime: Float64Array;
   private readonly cut: Float64Array;
   private readonly leanX: Float64Array;
   private readonly leanY: Float64Array;
@@ -798,7 +770,7 @@ export class World {
     this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
     this.comHeight = f(); this.padHeight = f(); this.liftImp = f(); this.liftFelt = f();
-    this.v0x = f(); this.v0y = f(); this.facing0 = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f();
+    this.v0x = f(); this.v0y = f(); this.facing0 = f(); this.amx = f(); this.amy = f(); this.alpha = f(); this.cut = f(); this.armYaw = f(); this.armYawTime = f().fill(NaN);
     this.leanX = f(); this.leanY = f();
     this.armScale = f(); this.armCap = f(); this.active = f();
     this.footImpulseX = f(); this.footImpulseY = f();
@@ -853,7 +825,7 @@ export class World {
       armWork: reportZeros(n), armWorkLimit: reportZeros(n), armImpulse: reportZeros(n), armImpulseLimit: reportZeros(n),
       work: {before: this.kineticEnergy(),after: 0,hands: 0,grasps: 0,strikes: 0,contacts: 0,residual: 0},
       contacts: [], strikes: [], falls: [], downs: [], rises: [], maxPenetration: 0,
-      maxLeanReleaseResidual: 0, maxLeanReleaseIterations: 0, leanRelease: bs.map(reportVector),
+      maxLeanReleaseResidual: 0, maxLeanReleaseIterations: 0, armSwingYaw: 0, leanRelease: bs.map(reportVector),
       supportMotorWork: reportZeros(n), supportMotorWorkLimit: reportZeros(n), passiveGraspWork: 0,
       maxHeldRecoveryExcursion: 0, lowerHoldReleases: 0,
       impactSplits: 0, impactSplitLimitHits: 0, maxSupportIntegrationError: 0, supportIntegrationFailures: 0 };
@@ -1234,6 +1206,18 @@ export class World {
   /** Internal equal/opposite body load, with work of one common support
    * motor separated from passive grip dissipation. Solver updates telescope
    * in aggregate foot impulse; they do not refill/spend a motor budget. */
+  /** GRASP_ARM_MOMENT: the part of a grasp row's yaw impulse on the holder
+   * (body index i) his shoulders can pass this substep; the rest is reported. */
+  private armMoment(i: number, angular: number, h: number): number {
+    if (!GRASP_ARM_MOMENT || !angular) return angular;
+    if (this.armYawTime[i] !== this.time) { this.armYawTime[i] = this.time; this.armYaw[i] = 0; }
+    const cap = this.sp[i].armForce * this.fat[i] * CHEST_HALF * h;
+    const passed = clamp(this.armYaw[i] + angular, -cap, cap) - this.armYaw[i];
+    this.armYaw[i] += passed;
+    this.report.armSwingYaw += Math.abs(angular - passed);
+    return passed;
+  }
+
   private supportImpulse(jt: GraspJoint, x: number, y: number, h: number, active = false, channel?: { net: number }, angularA = 0, angularB = 0): number {
     const i = this.indexOf(jt.a), j = this.indexOf(jt.b), a = jt.a, b = jt.b;
     const foot = b.support!.foot!, share = recoveryShare(jt);
@@ -2566,16 +2550,6 @@ export class World {
             + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
         }
       }
-      if (GRASP_ARMS && this.handContact === 'center' && jt.kind === 'grasp' && jt.legs <= 0) {
-        const radius = a.profile.radius + b.profile.radius;
-        const rax = dx * a.profile.radius / radius, ray = dy * a.profile.radius / radius;
-        const rbx = -dx * b.profile.radius / radius, rby = -dy * b.profile.radius / radius;
-        row.ni = -(rax * ny - ray * nx); row.nj = rbx * ny - rby * nx;
-        row.ri = rax * nx + ray * ny; row.rj = -(rbx * nx + rby * ny);
-        row.mn = 1 / (1 / this.mass[i] + 1 / this.mass[j] + row.ni * row.ni / this.inertia[i] + row.nj * row.nj / this.inertia[j]);
-        row.bodyInverseMass = 1 / row.mn;
-        row.mt = 1 / (1 / this.mass[i] + 1 / this.mass[j] + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
-      }
       if (jt.kind === 'hands') {
         row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);
         const holder=this.indexOf(jt.holder??jt.a),scale=this.armScale[row.actor];
@@ -2676,7 +2650,7 @@ export class World {
         (r.ni ?? 0) * dn, (r.nj ?? 0) * dn, r.mode > 0 ? this.pressUnits(r.actor) : 1);
       r.ln+=dn*fraction;
     }
-    const slipLim = r.steerLim + (HANDS_FRICTION && r.mode > 0 ? CONTACT_FRICTION * Math.max(0, r.ln) : 0);
+    const slipLim = r.steerLim;
     if (slipLim > 0) this.solveTangent(r, a, b, slipLim);
   }
 
@@ -2699,10 +2673,11 @@ export class World {
     // once for the physical row, as we do its grip cap and compliance.
     const armCapacity = this.armCap[r.i] * this.armScale[r.i] * (r.members?.length ?? 1);
     const impulse = Math.min(wanted, armCapacity, r.limit / h) * h;
+    const reelA = this.armMoment(r.i, -(r.ni ?? 0) * impulse, h);
     const fraction = coupled ? this.supportImpulse(jt, -r.nx*impulse, -r.ny*impulse, h, true, undefined,
-      -(r.ni ?? 0)*impulse, -(r.nj ?? 0)*impulse)
+      reelA, -(r.nj ?? 0)*impulse)
       : this.pairImpulse(r.i, r.j, -r.nx * impulse, -r.ny * impulse, r.i, 'grasps', true, undefined,
-        -(r.ni ?? 0) * impulse, -(r.nj ?? 0) * impulse);
+        reelA, -(r.nj ?? 0) * impulse);
     r.reel = impulse * fraction;
     for (const member of r.members ?? [jt]) {
       const share = r.members ? r.limit > 0 ? this.gripCapacity(member) * h / r.limit : 0 : 1;
@@ -2752,38 +2727,23 @@ export class World {
     const dn = ln - r.ln;
     const coupled = !!b.support!.foot && jt.legs > 0;
     const channel=r.normalWork??={net:0};
-    const fraction=coupled?this.supportImpulse(jt,r.nx*dn,r.ny*dn,h,false,channel, (r.ni ?? 0)*dn, (r.nj ?? 0)*dn)
+    const normalA = this.armMoment(r.i, (r.ni ?? 0) * dn, h);
+    const fraction=coupled?this.supportImpulse(jt,r.nx*dn,r.ny*dn,h,false,channel, normalA, (r.nj ?? 0)*dn)
       :this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'grasps',false,channel,
-        (r.ni ?? 0) * dn, (r.nj ?? 0) * dn);
+        normalA, (r.nj ?? 0) * dn);
     r.ln+=dn*fraction;
-    let tangentLimit = Math.sqrt(Math.max(0, lim * lim - (r.ln-r.reel)**2));
-    if (GRASP_SLIDE) {
-      // Friction on the hold's own tension; with GRASP_CLOSURE the wrap's
-      // closed share of the bound stays rigid.
-      const l = GRASP_CLOSURE ? clamp(jt.lock ?? 0, 0, 1) : 0, rigid = 2.5 * l * l / (0.3 + 2.5 * l * l);
-      tangentLimit = Math.min(tangentLimit, CONTACT_FRICTION * Math.abs(r.ln - r.reel) + rigid * tangentLimit);
-    }
+    const tangentLimit = Math.sqrt(Math.max(0, lim * lim - (r.ln-r.reel)**2));
     if (coupled) {
       const rv = this.graspVelocity(jt), tx = -r.ny, ty = r.nx;
       const vt = rv.x * tx + rv.y * ty - (r.ri ?? 0)*(a.spin ?? 0) - (r.rj ?? 0)*(b.spin ?? 0);
       const lt = clamp(r.lt - (r.mt ?? r.mn) * vt, -tangentLimit, tangentLimit), dt = lt - r.lt;
-      r.lt += dt * this.supportImpulse(jt, tx * dt, ty * dt, h,false,r.tangentWork??={net:0}, -(r.ri ?? 0)*dt, -(r.rj ?? 0)*dt);
-    } else this.solveTangent(r, a, b, tangentLimit);
-    if (WRAP_TWO_POINT && (jt.lock ?? 0) > 0 && jt.legs < 0.5) {
-      // The wrap's couple: drive the bodies' relative spin to zero, within
-      // the grip's capacity across the chest half-span.
-      const Ia = this.inertia[r.i], Ib = this.inertia[r.j];
-      const rel = (b.spin ?? 0) - (a.spin ?? 0);
-      const cap = lim * CHEST_HALF;
-      const lw = clamp((r.lw ?? 0) - rel / (1 / Ia + 1 / Ib), -cap, cap), d = lw - (r.lw ?? 0);
-      r.lw = lw;
-      a.spin = (a.spin ?? 0) - d / Ia; b.spin = (b.spin ?? 0) + d / Ib;
-    }
+      r.lt += dt * this.supportImpulse(jt, tx * dt, ty * dt, h,false,r.tangentWork??={net:0}, this.armMoment(r.i, -(r.ri ?? 0)*dt, h), -(r.rj ?? 0)*dt);
+    } else this.solveTangent(r, a, b, tangentLimit, h);
   }
 
   /** Hands and holds couple the bodies' sideways motion directly; a grip
    * around a torso does not let him roll past like two touching pads. */
-  private solveTangent(r: JointRow, a: Body, b: Body, lim: number): void {
+  private solveTangent(r: JointRow, a: Body, b: Body, lim: number, h = 0): void {
     const ima = 1 / this.mass[r.i], imb = 1 / this.mass[r.j];
     const tx = -r.ny, ty = r.nx;
     const ri = r.ri ?? 0, rj = r.rj ?? 0;
@@ -2794,8 +2754,9 @@ export class World {
     const drive = r.joint.kind === 'hands' ? r.drive ?? 0 : 0;
     const lt = clamp(r.lt - (r.mt ?? r.mn) * (vt - drive), -lim, lim);
     const dt = lt - r.lt;
+    const angA = r.joint.kind === 'grasp' && h > 0 ? this.armMoment(r.i, -ri * dt, h) : -ri * dt;
     const fraction=this.pairImpulse(r.i,r.j,tx*dt,ty*dt,drive ? r.steerActor : r.actor,r.joint.kind==='hands'?'hands':'grasps',!!drive,r.tangentWork??={net:0},
-      -ri * dt, -rj * dt);
+      angA, -rj * dt);
     r.lt+=dt*fraction;
   }
 }
