@@ -1425,6 +1425,18 @@ export const REACH_CLOSE = process.env.REACH_CLOSE !== '0';
  * play (run-ref-4 OZ restage at 1.0 s: owner alone and secure on the man in
  * 114 of ~230 live doubles; 76 of 239 doubles never released). */
 export const OWNER_KEEPS = process.env.OWNER_KEEPS !== '0';
+/** REACH_HANDS (off): on a stretch, a zone lineman within a short reach of his
+ * man (his strike distance + 0.25 yd, as for every other zone lineman) hands
+ * over to the ordinary fit and engages, instead of REACH_FLAT keeping him on
+ * the track until his hands are already on the man. Level with a man he was
+ * still racing for the shoulder of, he ran beside him 1.3 yd behind, just out
+ * of his 1.24 yd strike, without taking the last step (run-ref-11 OZ restage
+ * at 1.0 s: of interior DL with no OL within 1.2 yd, 156 of 176 had a free
+ * reach/cutoff owner level with him, 1.31-1.52 yd away). With it, OZ interior
+ * DL blocked at 1.0 s 71 -> 76% (NFL 93%), first contact deeper than 1 yd
+ * behind the line 21.1 -> 26.2% (NFL 29.3%), 0-1 yd 32.6 -> 28.9% (NFL 19.0%),
+ * DL lateral flow unchanged, paired OZ yards -0.03 (SE 0.21). */
+export const REACH_HANDS = process.env.REACH_HANDS === '1';
 /** BLOCK_RELEASE (off): an engaged run blocker whose man, as he sees him, is
  * more than 5 yd from the acquired runner and moving away from him, while a
  * defender with no offensive body on him (in the same picture) is within 3 yd
@@ -2099,7 +2111,7 @@ export class RunBlocker implements Behavior {
     // REACH_FLAT: a stretch reach still short of the shoulder keeps running
     // the track until his hands reach the man (arm's length), rather than
     // handing the last quarter yard to a fit that strikes upfield.
-    const stretchFlat = REACH_FLAT && run.scheme !== 'insideZone' && run.scheme !== 'splitZone'
+    const stretchFlat = REACH_FLAT && !REACH_HANDS && run.scheme !== 'insideZone' && run.scheme !== 'splitZone'
       && (seen.pos.y + (this.plan.combination && !this.plan.combination.released ? 0 : ps * .6) - a.pos.y) * ps > 0;
     if (d < contact + (stretchFlat ? 0 : .25) && !firstStep && !this.scoopsPast(a, sim, seen)) return null;
     const press = run.scheme === 'insideZone' || run.scheme === 'splitZone' ? .55 : 1;

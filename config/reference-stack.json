@@ -120,6 +120,7 @@
     "REACH_CLOSE": "on",
     "REACH_CONTACT": "off",
     "REACH_FLAT": "on",
+    "REACH_HANDS": "off",
     "REACH_RACE": "on",
     "REACH_TECHNIQUE": "on",
     "READ_LEAN": "on",
