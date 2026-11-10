@@ -24,7 +24,8 @@ for (const seed of SEEDS) for (const p of JSON.parse(readFileSync(`${DIR}/seed${
       let h = H.get(d);
       if (!h) { const cs = Math.hypot(c.vel.x, c.vel.y) || 1, rx = d.pos.x - c.pos.x, ry = d.pos.y - c.pos.y, rr = Math.hypot(rx, ry) || 1;
         const cos = (c.vel.x * rx + c.vel.y * ry) / (cs * rr);
-        h = { where: cos > 0.5 ? 'front' : cos < -0.5 ? 'behind' : 'side', f0: d.body.facing, prev: d.body.facing, turn: 0, s0: d.body.spin ?? 0, t: 0, src: {} as any, cum: {} as any, off: 0, done: false };
+        const jt = sim.world.joints.find((j: any) => j.kind === 'grasp' && j.a === d.body && j.b === c.body);
+        h = { legs: jt ? +(jt.legs ?? 0).toFixed(2) : null, where: cos > 0.5 ? 'front' : cos < -0.5 ? 'behind' : 'side', f0: d.body.facing, prev: d.body.facing, turn: 0, s0: d.body.spin ?? 0, t: 0, src: {} as any, cum: {} as any, off: 0, done: false };
         H.set(d, h); }
       if (h.done) continue;
       const y = d.body.__yaw ?? {};
@@ -32,7 +33,7 @@ for (const seed of SEEDS) for (const p of JSON.parse(readFileSync(`${DIR}/seed${
       for (const [k, v] of Object.entries(h.cum)) h.src[k] = (h.src[k] ?? 0) + (v as number) * dt; // spin added so far, held over this tick
       h.turn += wrap(d.body.facing - h.prev); h.prev = d.body.facing; h.t += dt; if (d.body.support?.state !== 'up') h.off += dt;
       if (h.t >= 0.5 - 1e-9) { h.done = true; h.s0turn = h.s0 * h.t;
-        console.log(JSON.stringify({ where: h.where, turn: +(h.turn * 57.3).toFixed(1), spinIn: +(h.s0turn * 57.3).toFixed(1), off: +h.off.toFixed(2),
+        console.log(JSON.stringify({ legs: h.legs, where: h.where, turn: +(h.turn * 57.3).toFixed(1), spinIn: +(h.s0turn * 57.3).toFixed(1), off: +h.off.toFixed(2),
           src: Object.fromEntries(Object.entries(h.src).map(([k, v]) => [k, +((v as number) * 57.3).toFixed(1)])) })); }
     } };
   sim.run();
