@@ -26,6 +26,7 @@
     "ATTACK_LANDMARK": "off",
     "BACKER_CREEP": "on",
     "BACKER_TAKEON": "on",
+    "PAIR_SIDE": "off",
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SWAP": "on",

@@ -143,6 +143,43 @@ export function pursuitPoint(sim: PlaySim, a: Agent, target: Agent, horizon = 3,
 
 const angleBias = new WeakMap<Agent, number>();
 
+/** PAIR_SIDE (experimental, off): two defenders converging on a ball carrier
+ * split him. A pursuer who sees a teammate nearer the carrier than he is and
+ * closing on him from one side of the carrier's travel takes the other side
+ * (his own near shoulder, the cutback lane) instead of the shared intercept;
+ * the nearer man needs no rule, the lane behind him is now taken. Only his
+ * own pictures (the carrier and the teammate, with the usual delay). NFL
+ * pairs at first contact are ~100 deg apart around the carrier and split 56-61%;
+ * ours on catches 59 deg and 44%, with the cutback side covered 30% vs 46%
+ * (2026-11-10, scripts/diag/defense-yards/pursuit_roles.py). */
+export const PAIR_SIDE = process.env.PAIR_SIDE === '1';
+
+/** PAIR_SIDE: the unit normal to the carrier's seen travel on the side away
+ * from a converging teammate, or null when there is none or he is already
+ * on the other side. */
+function pairSide(sim: PlaySim, a: Agent, seen: import('../perception.js').Perceived, myDist: number): Vec2 | null {
+  const sp = Math.hypot(seen.vel.x, seen.vel.y);
+  if (sp < 1) return null;
+  const hx = seen.vel.x / sp, hy = seen.vel.y / sp;
+  const side = (x: number, y: number) => hx * (y - seen.pos.y) - hy * (x - seen.pos.x);   // + = left of his travel
+  let partner: { x: number; y: number } | null = null, best = Infinity;
+  for (const e of sim.defense) {
+    if (e === a || e.isDown(sim.t) || e.engagement) continue;
+    const s = sim.see(a, e);
+    const d = Math.hypot(s.pos.x - seen.pos.x, s.pos.y - seen.pos.y);
+    if (d >= myDist || d > 4 || d < 1e-3) continue;
+    const ux = (seen.pos.x - s.pos.x) / d, uy = (seen.pos.y - s.pos.y) / d;
+    if ((s.vel.x - seen.vel.x) * ux + (s.vel.y - seen.vel.y) * uy < 1) continue;
+    if (d < best) { best = d; partner = s.pos; }
+  }
+  if (!partner) return null;
+  const ps = side(partner.x, partner.y), ms = side(a.pos.x, a.pos.y);
+  if (Math.abs(ps) < 0.3) return null;
+  if (ms * ps < 0 && Math.abs(ms) > 0.5) return null;
+  const o = -Math.sign(ps);
+  return { x: -hy * o, y: hx * o };
+}
+
 /** Signed lateral offset (toward the field's middle) a pursuer keeps on a carrier at `y`. */
 export function leverage(a: Agent, y: number): number {
   const toSide = Math.min(y, FIELD_WIDTH - y);
@@ -255,7 +292,13 @@ export function chase(sim: PlaySim, a: Agent, target: Agent, horizon = 3): MoveC
   // Away from the ball, pursuit runs below top speed (more so for low motors).
   const effort = dist > 12 ? 0.75 + 0.2 * a.r('workRate') : 1;
   const request = { speed: effort, effort };
-  const p = pursuitPoint(sim, a, target, horizon, request);
+  let p = pursuitPoint(sim, a, target, horizon, request);
+  if (PAIR_SIDE && target === sim.carrier) {
+    const n = pairSide(sim, a, seen, dist);
+    // Aim at his own near shoulder on the open side: about a tackling reach
+    // off the carrier's path, fading in close so the gather takes over.
+    if (n) { const k = contact * clamp((dist - contact) / 4, 0, 1); p = { x: p.x + n.x * k, y: clamp(p.y + n.y * k, 0, FIELD_WIDTH) }; }
+  }
   const original = { ...runThrough(a, p, { speed: request.speed }), effort: request.effort };
   // A new grip may exist before its first solved load reaches body support.
   if (sim.bond?.tacklers.includes(a)) {
