@@ -3574,6 +3574,14 @@ These break the model rule that players act on acquired, delayed information.
   input contract; not shown to happen in real play.
 - **Withdrawn:** `LEG_BIND` broke the rear-finish load contract (#190); the
   repair belongs in physics.
+- **Withdrawn: a grasp's hold distance lags its real stretch** (2026-11-10,
+  Flex). The tow bench (`scripts/diag/effective-mass/tow-forces.mts`) compared
+  `GraspJoint.hold` with the centre distance (0.90 against 0.72 at 1.0 s). The
+  joint and the reach-break test measure from the holder to the grip point on
+  the runner, not his centre, and that distance stays within 0.008 yd of `hold`
+  (0.725 against 0.717 at 1.0 s): the soft row's elastic stretch. The reach
+  test also checks the current grip distance at the start of every step. No
+  bookkeeping lag.
 
 <a id="phy-2"></a>
 ### PHY-2: Movement detail that's costly or unproven
