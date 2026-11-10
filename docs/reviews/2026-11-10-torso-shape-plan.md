@@ -223,3 +223,43 @@ Pre-registered by Integration:
 **The cost is the hitter's rotation:** 52° / 86° → 90° / 115° by +0.5 / +1.0 s, against the NFL's 41° / 74°. The
 one-point grasp's over-spin grows with the capsule's lever arms. The runner does not over-rotate: 21° / 25° against the
 NFL's 18° / 37°. If this continues, the hitter's rotation is the first thing to explain.
+
+## The tackler's over-rotation (`hitterspin.py`, same code on NFL and sim; `hitter-torque.mts`; 2026-11-10)
+
+First contact on zone runs, by the hitter's bearing from the runner (front / side / behind, 45° cones).
+
+**Hitter's rotation by +0.5 / +1.0 s:**
+
+| Approach | NFL | run-ref-12 | ref-10 (no `GRASP_PATCH`) |
+|---|---|---|---|
+| Front | 44° / 89° | 51° / 82° | 30° / 52° |
+| Side | 34° / 76° | 98° / 98° | 37° / 61° |
+| Behind | 27° / 64° | 96° / 94° | 37° / 45° |
+
+**Bearing from hitter to runner turned by +0.5 / +1.0 s**, and the hitter's facing against square to the runner then:
+
+| Approach | NFL | run-ref-12 | ref-10 |
+|---|---|---|---|
+| Front | 121° / 135°; 64° / 46° off square | 58° / 128°; 17° / 13° | 15° / 88°; 7° / 8° |
+| Side | 94° / 111°; 55° / 42° | 89° / 107°; 23° / 21° | 37° / 68°; 9° / 11° |
+| Behind | 65° / 79°; 44° / 34° | 71° / 94°; 35° / 23° | 6° / 16°; 5° / 8° |
+
+**Reading:**
+- The over-spin is in side and behind holds: ours turns about 100° in the first half-second, against the NFL's 30°. Front
+  hits are close to the NFL.
+- Since `GRASP_PATCH`, the bearing from hitter to runner turns about as much as the NFL's (side: 89° against 94°). The
+  pair orbits.
+- **The difference is what the tackler does about it.** The NFL tackler lags behind the bearing and is left turned away,
+  42–64° off square. Ours keeps himself square to the runner: 13–23° off.
+
+**Torques on ours** (`hitter-torque.mts`, signed with his spin; side holds, first 0.2 s):
+- He spins at 3.6–5.0 rad/s.
+- The grasp's moment drives it: +85 at the first tick, then about +40.
+- His feet add to it at first (+10), then resist (−13 → −56).
+- His facing request is 5–11° off square to the runner, and leads his facing by 10–21° in the direction of the spin.
+
+**So the over-rotation has two parts:**
+- **A decision.** The tackler's facing request stays square to a runner who is passing him, and his yaw motor follows
+  it. That is Defense's.
+- **The one-point grasp's moment.** All of the runner's motion past him becomes torque. That is the two-point wrap
+  question, and it goes on the bench next.
