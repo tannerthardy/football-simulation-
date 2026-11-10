@@ -173,6 +173,7 @@
     "CUTOFF_RACE": "0",
     "RB_TEMPO": "0",
     "RB_GATHER": "0",
+    "BLOCK_RELEASE": "0",
     "OWNER_KEEPS": "0",
     "CONTACT_LAYER": "0",
     "CONTACT_PATCH": "0",
