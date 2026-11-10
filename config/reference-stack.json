@@ -31,6 +31,7 @@
     "BACKSIDE_SHOOT": "off",
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
+    "BLOCK_RELEASE": "off",
     "CARRIER_BRACE": "off",
     "CLIMB_BASE": "on",
     "CLIMB_PATH": "on",
