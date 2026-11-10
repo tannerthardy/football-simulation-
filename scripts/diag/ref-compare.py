@@ -23,3 +23,13 @@ for g in ["OZ", "IZ", "gap", "draw", "other", "all"]:
     d = [min(B[i]["yards"], 20) - min(A[i]["yards"], 20) for i in ids]; m = sum(d) / len(d)
     se = math.sqrt(sum((x - m) ** 2 for x in d) / max(1, len(d) - 1) / len(d))
     print(f"{g:5s} {sys.argv[1]}: {stat([A[i] for i in ids])}\n      {sys.argv[2]}: {stat([B[i] for i in ids])}   paired {m:+.2f} (SE {se:.2f})")
+# Tackles a run (ref-replay records missed, broken and, since 2026-11-09, brokenGrab: one-armed grabs made from inside a
+# block that the runner pulled through). G1's band compares missed + broken on open tackles, i.e. without brokenGrab.
+for name, D in ((sys.argv[1], A), (sys.argv[2], B)):
+    rows = [r for r in D.values() if "error" not in r]; n = max(1, len(rows))
+    if not rows or "missed" not in rows[0]:
+        continue
+    m = sum(r.get("missed", 0) for r in rows) / n; b = sum(r.get("broken", 0) for r in rows) / n
+    g = sum(r.get("brokenGrab", 0) for r in rows) / n
+    grab = f" (engaged-grab breaks {g:.3f})" if any("brokenGrab" in r for r in rows) else " (engaged-grab breaks not recorded)"
+    print(f"tackles {name}: missed {m:.3f}  broken {b:.3f}{grab}  missed + broken open {m + b - g:.3f} a run")

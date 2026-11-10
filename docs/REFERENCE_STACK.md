@@ -252,7 +252,7 @@ The stack as a whole is neutral on pass yards and lowers sacks (53 -> 40). **Int
 
 **#405 `FLOW_INTERCEPT`** (Defense) is merged, off, and off in the stack: on `run-ref-3` paired -0.02 yd (SE 0.09), OZ box-defender lateral at 1.5 s 2.16 -> 2.28 (NFL 3.40). Kept as a parked mechanism.
 
-**PHY-3** (Flex, #432): the gait law ignores hip facing, so a square shuffle is as fast as an open-hip run; lateral starts are too easy, not too slow. In `docs/KNOWN_PROBLEMS.md`, bench `scripts/diag/lateral-start-bench.mts`.
+**PHY-3** (Flex, #432; corrected the same day): facing caps directional top speed (shuffle and backpedal factors) but not the start force, by design (tracked NFL pullers). A lone OL body reaches the NFL OZ line's 0.5 s speed once the request is larger, so the OZ deficit is not the body's capacity. In `docs/KNOWN_PROBLEMS.md`, bench `scripts/diag/lateral-start-bench.mts`.
 
 ## What to do next
 

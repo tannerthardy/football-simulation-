@@ -385,7 +385,10 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   (bond.control ??= new Map()).set(d, quality);
   (bond.holds ??= new Map()).set(d, joint);
   (bond.execution ??= new Map()).set(d, execution);
+  // A hold is one-armed for exactly as long as this grab: a later two-arm grab
+  // in the same bond must not inherit an earlier grab's missing arm.
   if (oneArm) (bond.oneArm ??= new Set()).add(d);
+  else bond.oneArm?.delete(d);
   sim.world.joints.push(joint);
 }
 
@@ -431,7 +434,12 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     if (joint) sim.world.joints = sim.world.joints.filter((j) => j !== joint);
     d.nextTackleAt = Math.max(d.nextTackleAt, t + 0.3);
     sim.stats.brokenTackles++;
-    sim.event('broken_tackle', c, d, 'hold slipped');
+    // A one-armed grab made from inside a block (ONE_ARM_HOLD) that the runner
+    // pulls through is counted apart: charting would usually call it a miss or
+    // not chart it, so G1's missed + broken comparison uses open tackles only.
+    const engagedGrab = bond.oneArm?.delete(d) ?? false;
+    if (engagedGrab) sim.stats.brokenEngagedGrabs = (sim.stats.brokenEngagedGrabs ?? 0) + 1;
+    sim.event('broken_tackle', c, d, engagedGrab ? 'engaged grab slipped' : 'hold slipped');
   }
   if (bond.tacklers.length === 0) {
     sim.bond = null;
