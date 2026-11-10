@@ -15,7 +15,10 @@ Also:
 - at +0.2 s: an offensive non-carrier within 1 yd of the hitter (a blocker still on him), another defender within 1 yd
   of the runner (a second tackler);
 - incoming relative momentum m_r v_r - m_h v_h along the axis when the source carries masses (players[].weight or
-  .mass; NFL weights are lb), else omitted and said so.
+  .mass; NFL weights are lb), else omitted and said so;
+- in the aligned course, torso angles when the source carries orientation (NFL export 'o'; sim dump carFace / defFace):
+  the hitter against square to the runner and the runner against his path, at first proximity, at torso distance and
+  0.3 s later, with the share of hitters side-on (>= 45 deg).
 
 Tracking positions are the shoulder pads on NFL data; on sim dumps they are the body centre (until a law gives a separate
 contact point, which the dump must then export). Ends: NFL events.end, sim the last frame.
@@ -45,16 +48,18 @@ def plays(path):
             c = p['carrier']; X = p['xy']; pl = p['players']
             D = [i for i, q in enumerate(pl) if q['side'] == 'D']
             O = [i for i, q in enumerate(pl) if q['side'] == 'O' and i != c]
+            Oo = p.get('o')   # per-frame orientation, deg, math convention in the normalized frame (if exported)
             yield ([(r[2*c], r[2*c+1]) for r in X], [[(r[2*i], r[2*i+1]) for i in D] for r in X],
                    [[(r[2*i], r[2*i+1]) for i in O] for r in X], p['events'].get('handoff') or 0,
-                   min(int(round(end*10)), len(X)-1), mass_of(pl[c]), [mass_of(pl[i]) for i in D])
+                   min(int(round(end*10)), len(X)-1), mass_of(pl[c]), [mass_of(pl[i]) for i in D],
+                   [f[c] for f in Oo] if Oo else None, [[f[i] for i in D] for f in Oo] if Oo else None)
     else:
         for l in open(path):
             r = json.loads(l)
             if not r.get('off'):
                 sys.exit('sim dump needs the "off" frames (dump-zone.mts "$PWD" off)')
             yield ([tuple(x) for x in r['car']], r['def'], r['off'], r['handoff'], len(r['car'])-1,
-                   r.get('carMass'), r.get('defMass') or [None] * len(r['def'][0]))
+                   r.get('carMass'), r.get('defMass') or [None] * len(r['def'][0]), r.get('carFace'), r.get('defFace'))
 
 
 def speed_bin(v):
@@ -63,7 +68,7 @@ def speed_bin(v):
 
 def course(path):
     rows = []
-    for C, D, O, ho, e, mr, MD in plays(path):
+    for C, D, O, ho, e, mr, MD, FC, FD in plays(path):
         h = max(1, int(round(ho*10)))
         hit = next((f for f in range(h, e) if min(math.dist(d, C[f]) for d in D[f]) <= 1.0), None)
         if hit is None or e - hit < 2 or hit < 2 or not (-1 <= C[hit][0] < 3):
@@ -109,10 +114,19 @@ def course(path):
         vhA = {o: along(H, tc + o) for o in OFFS}
         sepA = {o: (math.dist(C[tc+o], H[tc+o]) if 0 <= tc + o <= e else None) for o in OFFS}
         closing = (vrA[-1] - vhA[-1]) if vrA[-1] is not None and vhA[-1] is not None else None
+        # Torso angles (deg): the hitter's facing against "square to the runner" (facing back down the runner's path:
+        # 0 square, 90 side-on, 180 back turned); the runner's facing against his own path (0 square, 90 side-on).
+        path = math.atan2(uy, ux)
+        wrap = lambda a: abs((a + 180.0) % 360.0 - 180.0)
+        def angles(f):
+            if FC is None or FD is None or f > e or FC[f] is None or FD[f][j] is None:
+                return None
+            return (wrap(FD[f][j] - math.degrees(path + math.pi)), wrap(FC[f] - math.degrees(path)))
+        ang = {'prox': angles(hit), 'torso': angles(tc), 'torso+0.3': angles(min(e, tc + 3))}
         rows.append(dict(cls=cls, bin=speed_bin(sp * 10), torso=torso, vr=vr, vh=vh, sep=sep, gain=g, hdisp=hd,
                          rel=g - hd, off0=off0, offc=offc, blocker_on=blocker_on, second=second, t_end=(e - hit) / 10, mom=mom,
                          vrA=vrA, vhA=vhA, sepA=sepA, closing=closing, cbin=speed_bin(closing) if closing is not None else None,
-                         lag=(tc - hit) / 10))
+                         lag=(tc - hit) / 10, ang=ang))
     return rows
 
 
@@ -147,6 +161,9 @@ def show_aligned(name, aligned):
         print(f"   {g:22} n {c['n']:4} closing {c['closing']:4.2f} yd/s, torso at +{c['lag']:.1f} s after proximity | runner "
               + ' '.join(fmt(c['vr'][o]) for o in OFFS) + " | hitter " + ' '.join(fmt(c['vh'][o]) for o in OFFS)
               + " | sep " + ' '.join(fmt(c['sep'][o], 4) for o in OFFS))
+        if c.get('facing'):
+            print(f"   {'':22} torso angle, median (hitter vs square to the runner / runner vs his path; hitter side-on >= 45 deg): "
+                  + '  '.join(f"{k} {v['hitter']:3.0f}/{v['runner']:3.0f} deg, side-on {100*v['hitter_side_on']:3.0f}%" for k, v in c['facing'].items()))
 
 
 if '--from-json' in sys.argv:
@@ -196,7 +213,13 @@ for path in ARGS:
         rr = [r for r in R if f(r)]
         if len(rr) < 5:
             continue
-        aligned[g] = dict(n=len(rr), closing=med([r['closing'] for r in rr]), lag=med([r['lag'] for r in rr]),
+        facing = {}
+        for k in ('prox', 'torso', 'torso+0.3'):
+            a = [r['ang'][k] for r in rr if r['ang'][k] is not None]
+            if a:
+                facing[k] = dict(hitter=med([x[0] for x in a]), runner=med([x[1] for x in a]),
+                                 hitter_side_on=sum(x[0] >= 45 for x in a) / len(a), n=len(a))
+        aligned[g] = dict(n=len(rr), facing=facing, closing=med([r['closing'] for r in rr]), lag=med([r['lag'] for r in rr]),
                           vr={o: med([r['vrA'][o] for r in rr]) for o in OFFS}, vh={o: med([r['vhA'][o] for r in rr]) for o in OFFS},
                           sep={o: med([r['sepA'][o] for r in rr]) for o in OFFS})
     if aligned:
