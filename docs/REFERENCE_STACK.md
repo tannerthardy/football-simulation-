@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-4`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-5`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -253,6 +253,18 @@ The stack as a whole is neutral on pass yards and lowers sacks (53 -> 40). **Int
 **#405 `FLOW_INTERCEPT`** (Defense) is merged, off, and off in the stack: on `run-ref-3` paired -0.02 yd (SE 0.09), OZ box-defender lateral at 1.5 s 2.16 -> 2.28 (NFL 3.40). Kept as a parked mechanism.
 
 **PHY-3** (Flex, #432; corrected the same day): facing caps directional top speed (shuffle and backpedal factors) but not the start force, by design (tracked NFL pullers). A lone OL body reaches the NFL OZ line's 0.5 s speed once the request is larger, so the OZ deficit is not the body's capacity. In `docs/KNOWN_PROBLEMS.md`, bench `scripts/diag/lateral-start-bench.mts`.
+
+## run-ref-5: `OWNER_KEEPS` on; what the lanes found (2026-11-10)
+
+`run-ref-5` is `run-ref-4` plus `OWNER_KEEPS` (Run Game). Since the promotion, turning a flag on in the stack means it is read as on unless set to `0`. Full report: [reviews/run-ref-5-report.md](reviews/run-ref-5-report.md).
+
+- **`OWNER_KEEPS`.** On stretch plays the helper of a double runs the track and seldom joins, and an unjoined double had no release at all: 76 of 239 outside-zone doubles never released. Now, when the owner has the man alone and securely, the helper climbs on the existing overtake read. `npm run ref:report`, run by Run Game and again here with the same result: outside zone 2.73 -> 3.13 yd under 20 (paired +0.40, SE 0.14; NFL 3.50), runs <= 0 23 -> 22%, 10+ runs all 7.8 -> 8.8% (NFL 9%); inside zone unchanged; duo and toss +0.72 (SE 0.26). Who the back meets has not moved yet (first contact by a blocked DL 53 -> 52%, NFL 33%).
+- **#437 (Defense), merged off:** `BACKER_CREEP` and `OFFBALL_TIMING`. Box backers moving at the snap 5 -> 23% (NFL 46%), speed at 0.2 s 0.00 -> 0.47 (0.81), yards neutral. Waiting on a `ref:report` run before going on.
+- **#435 (Flex):** broken tackles from engaged one-arm grabs are counted apart; `ref:report` prints them. On the reference 0.105 of the 0.177 broken tackles a run are engaged-grab breaks, leaving missed + broken on open tackles at about 0.30 a run. Also fixes a one-arm membership that was never cleared, and withdraws PHY-3 (facing does cap directional top speed; only the start force is facing-free, by design).
+- **QB throwing motion (#408), Coverage's finding against its own PR:** with #424 in, #408 still adds 2-3 points of sack rate, and time to throw goes to a median 2.80-2.85 s (NFL about 2.5). It is not the motion's length (0.4 s, NFL 0.4-0.5) but when the QB starts it: readiness timing and pumps. Coverage is fixing that first.
+- **`MUG_PRESSURES` with `PRO_READ`:** sim and fire-zone pressures now free a rusher (Mug Sim 0 -> 13, Mug Fire 0 -> 19 of 96), as designed. The offense has no answer yet: protection calls (G9) are queued with Coverage.
+- **Scramble discipline:** a zone backer reads run on a QB scrambling 5 yd behind the line; he should hold coverage until the QB crosses it. Logged under COV.
+- **Front-on contact:** Tanner chose effective mass at first contact; the plan is [reviews/2026-11-10-effective-mass-plan.md](reviews/2026-11-10-effective-mass-plan.md) and Flex has started its Phase 0.
 
 ## What to do next
 
