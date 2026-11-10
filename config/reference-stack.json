@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-8",
+  "id": "run-ref-9",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -69,6 +69,7 @@
     "GUN_MESH_GO": "on",
     "GUN_SNAP": "on",
     "GUN_STRETCH_T": "retired",
+    "HANDS_CHEST": "on",
     "HAND_FIGHT": "off",
     "HAND_MOTOR": "off",
     "HELD_SIDE": "on",

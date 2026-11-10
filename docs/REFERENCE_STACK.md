@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-8`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-9`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -355,6 +355,32 @@ Full report: [reviews/run-ref-8-report.md](reviews/run-ref-8-report.md).
 
 - **`READ_LEAN` (Defense #451), off.** An unsure box backer leans downhill with his own run evidence, and after a run read the pass picture (the QB's depth after the fake, high hats) pulls him back before a full change of mind. Run / dropback split 0.6 -> 0.5 s (NFL 0.4); play-action downhill at 1.0 s 1.94 -> 1.49 yd/s (NFL 1.15); `ref:report` candidate on run-ref-8: all +0.01 (SE 0.07). Open risk: backers may over-drop on dropbacks (downhill at 1.0 s -0.69 vs NFL -0.25). Waiting on Coverage's operators before it goes on.
 - **Front-on contact, corrected (Flex).** The lean-priority rule proposed as step 3 is withdrawn: on the line and for the runner, each man's force already lands near the change he asks for; a priority rule would have turned a pass rusher's force onto the blocker's axis. What takes the runner's drive is the lateral load of an off-centre hit: at his strength cap he spends about 60% of his force holding his line against it. NFL bodies turn instead: hitters go from 43 degrees off square at torso distance to 64 at +0.3 s; the sim's go from 37 to 41, and sim pairs stay locked at touching distance. Production torso contacts carry no moment (`handContact: 'center'`), so an off-centre hit cannot turn anyone; an experimental `'patch'` contact mode that applies impulses at the contact point already exists. Sequence waiting on Tanner: (1) a compliant contact law for the first-touch force (18-25 kN against 1.7-3.4 measured), (2) contact yaw, first trial the existing patch mode, (3) an oriented shape only if (2) needs it, (4) the runner's facing into contact (NFL runners are 18-31 degrees off their path at contact, ours 2-8), Run Game, after (2).
+
+## run-ref-9: `HANDS_CHEST` on (2026-11-10)
+
+Flex #455. A block's hands now push between the closest points of the two men's shoulder lines (half-span 0.12 yd, the anthropometric chest half-width) and no longer between body centres, so a block cannot spin a pair about a point. This is the second attempt at the over-rotation `CONTACT_PATCH` exposed; `CONTACT_PATCH` and `CONTACT_LAYER` stay off.
+
+| Check | run-ref-8 | `HANDS_CHEST` on | NFL 2022 |
+|---|---|---|---|
+| Zone solo block, pair rotation (trench2) | 60° | 56° | 43° |
+| DL depth at 2.0 s (trench2) | +0.76 yd | +0.69 yd | +0.70 yd |
+| Solo DL driven back | 8% | 12% | 16% |
+| 1,321 fixed runs, yd under 20 | 3.80 | 3.85 (paired +0.04, SE 0.12) | |
+| Runs for 0 or less | 15.1% | 13.9% | |
+| Broken / missed tackles a run | 0.178 / 0.241 | 0.167 / 0.229 | |
+| 16-game scorecard: points a team-game | 36.9 | 36.5 (90% −4.8 to +4.2) | 21–23.5 |
+| Rush yards a carry | 4.70 | 4.59 | 3.7–4.83 |
+| Yards an attempt | 9.88 | 10.08 (−0.68 to +1.09) | 6.35–7.89 |
+| Sack rate | 7.4% | 7.7% | 4.6–9.4% |
+| Missed + broken tackles a play | 0.31 | 0.28 (−0.06 to +0.00) | |
+| Yards before contact (runs) | 0.57 | 1.01 (moved) | |
+| OL backpedaling facing own backfield, events per 100 plays | 90.4 | 78.2 (moved) | |
+| Blocker on a man out of the play, events per 100 runs | 108 | 123 (moved) | |
+
+- **Why on.** The line gates move toward the NFL or hold, no whole-game key statistic resolves, and Coverage's pressure grid (960 snaps: sacks 62 to 56, paired pass yards +0.68, SE 0.32) is not repeated in whole games (sack rate 7.4% to 7.7%).
+- **Logged, not explained.** Blockers staying on a man who is out of the play rise 108 to 123 per 100 runs: a hands row that no longer spins the pair may also be harder to come off. Run Game owns the release decision; Flex owns the grip.
+- **Still open.** Pair rotation is 56° against the NFL's 43°; Flex's next bench is the hands grip's tangential limit against arm strength.
+- By concept (candidate against run-ref-8, paired): OZ −0.07, IZ −0.19, gap +0.23, duo +0.49 (SE 0.38), none resolved.
 
 ## What to do next
 
