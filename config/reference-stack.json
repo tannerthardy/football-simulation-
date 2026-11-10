@@ -136,6 +136,7 @@
     "REACH_TECHNIQUE": "on",
     "READ_LEAN": "on",
     "READ_RISK_TRACE": "off",
+    "RECEIVER_DEPTH": "off",
     "RELEASE_INTERCEPT": "on",
     "RELEASE_QUICK": "on",
     "RUN_BLITZ": "on",

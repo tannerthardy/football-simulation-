@@ -60,6 +60,21 @@ function olDepth(ctx: AlignContext): Record<LineSlot, number> {
 }
 /** OL_STAGGER: an inline end's tracked depth (formations install 0.6). */
 const INLINE_DEPTH = 1.19;
+/** RECEIVER_DEPTH (experimental, off): receivers on the line stand where
+ * tracked receivers do, measured from the ball (BDB 2025 weeks 1-3, non-PA
+ * dropbacks, body centre behind the tracked football at the snap, with no
+ * defender within 2 yd in front of him): an outside receiver 0.74 yd
+ * (n 3,537), a tight end 0.83 (n 1,500). Off-line receivers keep their
+ * installed depth. See PRESS_BACKOFF for a receiver facing a press look. */
+export const RECEIVER_DEPTH = process.env.RECEIVER_DEPTH === '1';
+const WR_LINE_DEPTH = 0.74;
+const TE_LINE_DEPTH = 0.83;
+/** RECEIVER_DEPTH: a receiver on the line who sees a defender set within 2 yd
+ * in front of him (within 1.5 yd laterally) before the snap stands deeper to
+ * get room to release. Tracked: outside receivers 0.94 vs 0.74 yd (+0.20,
+ * n 1,224 pressed), tight ends 1.09 vs 0.83 (+0.26, n 1,469); the
+ * pressed-weighted mean is 0.23. */
+export const PRESS_BACKOFF = 0.23;
 /** Default on (DEF_ALIGN=0 turns it off): the secondary aligns by its job, as on
  * film (2022 tracking at the snap by PFF coverage assignment,
  * scripts/diag/align/nfl_scheme.py). A corner's depth and shade come from his
@@ -440,7 +455,10 @@ export function alignOffense(formation: Formation, flip: boolean, los: number, b
     const off = offsets[slot] ?? 0;
     const side = fside(a.side);
     const backfield = a.depth >= 3 && Math.abs(off) < 3.5;
-    const depth = offEnd.has(slot) ? olMean + TE_OFF_DEPTH : upWide.has(slot) ? Math.min(a.depth, 0.6)
+    const onLine = !backfield && (upWide.has(slot) || a.depth <= 0.6 + 1e-9);
+    const depth = offEnd.has(slot) ? olMean + TE_OFF_DEPTH
+      : RECEIVER_DEPTH && onLine ? (a.split === 'inline' ? TE_LINE_DEPTH : WR_LINE_DEPTH)
+      : upWide.has(slot) ? Math.min(a.depth, 0.6)
       : OL_STAGGER && a.split === 'inline' ? INLINE_DEPTH : a.depth + (!backfield ? 0 : formation.qb === 'gun' ? GUN_QB_DEPTH - 5.0 : formation.qb === 'under' && a.depth >= 6 ? UNDER_TAILBACK_EXTRA : 0);
     spots[slot] = {
       slot,

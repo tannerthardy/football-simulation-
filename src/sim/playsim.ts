@@ -30,7 +30,7 @@ import { containCoverage } from './coverage-space.js';
 import { openToBall } from './open-to-ball.js';
 import { derivePhysical } from '../players/physical.js';
 import type { Player } from '../players/types.js';
-import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
+import { alignDefense, alignOffense, fitPressStances, formationKey, gapY, PRESS_BACKOFF, RECEIVER_DEPTH, type AlignStyle, type DefenseAlignment, type ManPreference, type OffenseAlignment } from '../playbook/alignment.js';
 import { installCoverage } from '../playbook/coverages.js';
 import type { DefSlot, DefensivePlayCall, OffensivePlayCall, OffSlot } from '../playbook/types.js';
 import { Agent, type Behavior, type Engagement, type RunContactSurface, type TeamSide } from './agent.js';
@@ -356,6 +356,17 @@ export class PlaySim {
       mk('D', slot, player, spot.pos, Math.PI);
     }
     fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
+    // RECEIVER_DEPTH (experimental, off): a receiver on the line who sees a
+    // press look in front of him sets deeper to have room to release.
+    if (RECEIVER_DEPTH) {
+      const dir = this.attackDir('O');
+      for (const o of this.offense) {
+        const spot = this.offAlign.spots[o.slot], f = setup.offCall.formation.slots[o.slot as keyof typeof setup.offCall.formation.slots];
+        if (!spot || !f || spot.backfield || f.depth > 0.6 + 1e-9) continue;
+        const pressed = this.defense.some((d) => Math.abs(d.pos.y - o.pos.y) <= 1.5 && (d.pos.x - this.los) * dir > 0 && (d.pos.x - this.los) * dir <= 2);
+        if (pressed) o.body.pos = { x: o.pos.x - dir * PRESS_BACKOFF, y: o.pos.y };
+      }
+    }
     if (setup.alignment?.length) this.placeByHand(setup.alignment);
     this.snapX = this.agents.map((a) => a.pos.x);
     this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact ?? (CONTACT_PATCH ? 'patch' : undefined) });
