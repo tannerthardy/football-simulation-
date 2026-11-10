@@ -194,6 +194,7 @@
     "LEAN_PITCH": "0",
     "GRASP_ARM_MOMENT": "0",
     "PASS_ANCHOR": "0",
+    "MAN_PHASE": "0",
     "HIP_BRACE": "0",
     "THROW_REACT": "0",
     "PRESS_RELEASE": "0",
