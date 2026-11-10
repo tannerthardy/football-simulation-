@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-11",
+  "id": "run-ref-12",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -68,9 +68,10 @@
     "GAZE": "off",
     "GRASP_ARMS": "off",
     "GRASP_CLOSURE": "off",
+    "ENGAGED_REACH": "off",
     "GRASP_PATCH": "on",
     "GRASP_SLIDE": "off",
-    "GRIP_REACH": "off",
+    "GRIP_REACH": "on",
     "GUN_MESH": "on",
     "GUN_MESH_GO": "on",
     "GUN_SNAP": "on",
@@ -106,6 +107,7 @@
     "NICKEL_FRONTS": "on",
     "NO_CROSS": "on",
     "OFFBALL_TIMING": "on",
+    "OL_ON_COUNT": "off",
     "OWNER_KEEPS": "on",
     "OZ_HIP_READ": "on",
     "PASS_SINK": "off",
@@ -122,6 +124,7 @@
     "REACH_CLOSE": "on",
     "REACH_CONTACT": "off",
     "REACH_FLAT": "on",
+    "REACH_HANDS": "off",
     "REACH_RACE": "on",
     "REACH_TECHNIQUE": "on",
     "READ_LEAN": "on",
@@ -157,6 +160,7 @@
     "UNDER_DEPTH": "off",
     "WING_CALL": "on",
     "WING_WORK": "on",
+    "WR_SNAP": "off",
     "WRAP_FOOT": "retired",
     "ZONE_ARMS": "on",
     "ZONE_GAP": "on",

@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-11`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-12`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -477,6 +477,35 @@ Two measurements disagree, and that is why nothing is on.
 **How a flag is cleared from here.** A 16-game card's yards rows are too noisy to clear or hold a change that a paired design resolves. A flag goes on when the paired fixed runs and the paired pass panel agree with the mechanism evidence; the card is read for bugs and for rows the paired sets cannot see.
 
 
+
+## run-ref-12: `GRIP_REACH` on (2026-11-10)
+
+Coverage #477. Where a tackler grips now follows from his situation: free and square, a chest-to-waist wrap; from behind, waist to legs; off a block, an arm or waist hook. Before, the leg-share draw was clamped at 0, and 17–23% of holds piled up there, which `HOLD_FINISH`'s height table then placed at the shoulder line. The means, ranges and spreads of the new draw are chosen, not sourced.
+
+| | run-ref-11 | `GRIP_REACH` |
+|---|---|---|
+| Fixed 1,321 runs, paired yards a run (SE) | | −0.03 (0.03) |
+| Stuffs; broken / missed a run | 12.7%; 0.142 / 0.234 | 11.4%; 0.142 / 0.241 |
+| Holds at leg share under 0.10 | 845 | 0 |
+| Unfinished holds | 271 | 280 |
+| 732 dropbacks, paired yards a pass play | | −0.07 ± 0.08 |
+| Broken a reception; sacks | 0.141; 30 | 0.132; 30 |
+
+Flat on both paired designs, and it removes an artefact. Logged: draws −0.29 yd (SE 0.13, n 85).
+
+## After run-ref-12: the first second, and what is merged off (2026-11-10)
+
+Everything in this section is off.
+
+- **Who moves when at the snap.** Measured by displacement from the snap spot (a 0.3 yd/s onset threshold is the jitter floor on NFL tracking and must not be used), the offensive line is level with the NFL by 0.5 s, the defensive line trails by 0.15–0.2 s, and outside receivers started with the line where NFL receivers start about 0.25 s later.
+- **`DL_SNAP_TIME` (Defense, not yet merged).** Down linemen time the count more often and more tightly: interior rushers 0.24 to 0.39 yd by 0.5 s (NFL 0.51), no extra offside on 2,000 snaps.
+- **`OL_ON_COUNT`, `REACH_HANDS` (Run Game).** The line's dead snap tick removed, and a level reach blocker handed to the fit. Together OZ interior DL blocked at 1.0 s goes 71% to 76% (NFL 93%), yards neutral, and `OL_ON_COUNT` puts IZ and counter ahead of the NFL at 0.5 s. Held.
+- **`WR_SNAP` (Coverage #485).** A receiver split more than 4 yd starts on the ball he sees. Depth by time lands near the NFL's, but sacks rise 30 to 42 on the paired panel; held for the QB's timing.
+- **`ENGAGED_REACH` (Flex #484).** An engaged defender's reach from his free shoulder and the blocker's control. It reaches less, not more, and stays off: most blocked men 1–2 yd from the runner are out of reach by anatomy.
+- **`GRASP_SLIDE`, `GRASP_CLOSURE` (Flex #475).** A friction-limited grasp. Releasing the weld moves early slip only 1.24 to 1.34 yd/s and moves stuffs and tackler rotation away from the NFL.
+- **`CONTACT_LAYER`.** Moves early slip and turn toward the NFL (1.24 to 1.62 yd/s; 36° to 49°) but makes backfield hits stop the runner less and pressure about 0.02 s earlier. Waits for the DL's start to be settled.
+- **First contact is squeezed toward the line.** Contact deeper than 2 yd behind the line is 2.3% of our zone runs against the NFL's 11.7%; contact 0–1 yd behind is 27% against 19%, all of it on outside zone (33% against 19%), where 29% of interior DL have no blocker within 1.2 yd at 1.0 s against 7%. The interior DL also aligns 0.90 yd off the ball against 0.71.
+- **The second man.** Free defenders rally like the NFL's. Blocked defenders beside the runner reach him less often (26% against 46% from within 2 yd), but the NFL's also stay blocked and close no faster (+0.29 against +0.24 yd/s). A mechanism for coming off a block ([plan](reviews/2026-11-10-blocked-defender-plan.md), piece 2) is not approved and now waits on a per-man check.
 
 ## What to do next
 

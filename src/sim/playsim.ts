@@ -506,7 +506,7 @@ export class PlaySim {
     const rng = this.rng.fork('snap-count');
     const spotX = (a: Agent) => (a.team === 'D' ? this.defAlign.spots[a.slot as DefSlot]?.pos.x : undefined) ?? a.pos.x;
     const count = this.snapCount = planSnap(this.agents, { down: this.down, distance: this.firstDownX - this.los,
-      offBall: (a) => spotX(a) - a.profile.radius - this.los }, rng);
+      offBall: (a) => spotX(a) - a.profile.radius - this.los, ballY: this.ballY }, rng);
     this.snapActs = { falseStarts: new Set(), incidents: [], inZone: new Set() };
     // A down lineman crowds the ball: his helmet and hands set at the line,
     // ahead of the represented torso (tracked torsos 0.9 yd off the ball).
