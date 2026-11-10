@@ -37,6 +37,9 @@ export const VISIBLE = 0.05;
 const ABSENCE = 0.08;
 
 const LINE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
+/** OFFBALL_TIMING (experimental, off): see planSnap; chance an off-ball defender times the count (avg about 0.55). */
+export const OFFBALL_TIMING = process.env.OFFBALL_TIMING === '1';
+const OFFBALL_BASE = 0.3, OFFBALL_ANTICIPATION = 0.5;
 
 /** Simple visual response to an expected single cue: seen motion to own movement. */
 export function snapResponse(a: Agent): number {
@@ -93,6 +96,19 @@ export function planSnap(agents: readonly Agent[], s: SnapSituation, rng: Rng): 
     }
     const react = a.mind.snapDelay + snapResponse(a);
     const onLine = s.offBall(a) < 2;
+    // OFFBALL_TIMING (experimental, off): an off-ball defender can time the
+    // cadence too. He does not go before the ball (nothing to win and a step
+    // given if the count is hard), but a backer who has timed it starts with
+    // the snap instead of after seeing the ball move. NFL box backers are
+    // already moving 0.8 yd/s (p50) 0.2 s after the snap; ours were still.
+    if (!onLine && OFFBALL_TIMING) {
+      const timesOff = !hard && rng.chance(clamp(OFFBALL_BASE + OFFBALL_ANTICIPATION * anticipation, 0, 0.95));
+      if (timesOff) {
+        const sd = 0.03 + 0.05 * (1 - anticipation);
+        plans.set(a, { go: Math.min(react, Math.max(0, rng.normal(margin * sd, sd))), timed: true });
+        continue;
+      }
+    }
     const times = onLine && rng.chance(clamp(0.55 + 0.5 * anticipation + (passDown ? 0.15 : 0), 0, 0.95));
     if (!times) { plans.set(a, { go: react, timed: false }); continue; }
     const sd = 0.03 + 0.05 * (1 - anticipation);

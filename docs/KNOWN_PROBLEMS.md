@@ -3585,32 +3585,31 @@ These break the model rule that players act on acquired, delayed information.
   deferred (MODEL-001). They return only for a repeatable failure that a
   simpler model can't express.
 
-### PHY-3: The gait ignores which way the hips face
+### PHY-3: Start force does not depend on facing (checked: by design, not a gap)
 
-- **Symptom:** a body starting from rest reaches the same speed in every
-  direction whatever its facing. A square-hipped shuffle sideways is as fast
-  as an open-hipped run, and a backpedal as fast as a sprint.
-- **Measure** (Flex, 2026-11-09, develop 283325e1,
+*Corrected 2026-11-09.* The first version of this entry said the gait ignores
+facing ("a backpedal as fast as a sprint"). That was wrong.
+
+- **What the law does** (`src/physics/kinematics.ts`):
+  - Facing caps the speed a body can hold in each direction:
+    `directionalSpeedFactor` with each player's `shuffle` and `backpedal`
+    factors, used by `effectiveVmax`.
+  - The start force does not depend on facing, by design. Tracked NFL pullers
+    reach 0.5 yd/s sideways by 0.1 s with their shoulders opened about 10°.
+- **What the bench showed** (Flex, develop 283325e1,
   `scripts/diag/lateral-start-bench.mts`): five real OL bodies at the snap of a
   restaged wide-zone play, from rest, on a steady 3.45 yd/s request.
   - Straight ahead, sideways with square hips, 45° open and 90° open give
-    identical speeds to the hundredth: C 1.31 / 2.13 / 2.94 yd/s at
-    0.25 / 0.5 / 1.0 s.
-  - Larger requests reach the NFL OZ line's 2.25 yd/s at 0.5 s (C 2.32 at 4.5
-    yd/s, 2.50 at 6). The body's capacity is not what keeps the sim's OZ line
-    short; Run Game traced that to the centre and backside first step.
-- **Why it matters:** facing is free, so a player never pays for being turned
-  the wrong way. A defender who turns his hips to run with a receiver gains
-  nothing over one who shuffles square. A blocker pays nothing for staying
-  square while he moves laterally.
-- **What it should be:** the drive the feet can apply depends on the angle
-  between the hips and the direction of travel: full for a run, less for a
-  lateral shuffle or crossover, least for a backpedal. Turning the hips costs
-  time through the existing yaw limits. That is the simplest coherent model.
-  Measure it against NFL tracking (speed by angle between orientation and
-  direction) before choosing the shape.
-- **Where:** `src/physics/world.ts` gait / support drive (`legDrive`,
-  `pushForce` in `src/physics/support.ts`).
+    identical speeds: C 1.31 / 2.13 / 2.94 yd/s at 0.25 / 0.5 / 1.0 s.
+  - That is the facing-free start force acting below every directional cap.
+    Larger requests reach the NFL OZ line's 2.25 yd/s at 0.5 s (C 2.32 at
+    4.5 yd/s, 2.50 at 6).
+  - So the body's capacity is not what keeps the sim's OZ line short; Run
+    Game traced that to the centre and backside first step.
+- **Open only if evidence asks:** whether a square-hipped lateral start should
+  lose force against an open-hipped one. Measure speed by the angle between
+  orientation and direction on NFL tracking, beyond the pullers' first 0.3 s,
+  before changing anything.
 
 ## Fatigue and rotation
 
