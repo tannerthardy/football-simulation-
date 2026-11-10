@@ -1550,3 +1550,32 @@ Both sides are aligned to his own start (the first 0.1 s frame displaced 0.25 yd
 - **The limiter is the facing-against-travel penalty**, not the turn from stance, traction or mass.
 - Whether he opens his hips and runs, or shuffles square, is the zone footwork request: Run Game's lane, with `_btdouble.mts`'s requested facing and velocity as the check.
 - NFL backside tackles at 3.8–4.7 yd/s are at least partly turned.
+
+## What ends a pressured dropback (`pressure-life.py`; NFL 2022, 9,654 dropbacks; sim `LEAN_PITCH` + `PASS_ANCHOR`, 4 live games, 366; 2026-11-10)
+
+- **First pressure:** as in `pressure-shape.py`.
+- **Resolution:** the throw; else a scramble if the QB crosses the line; else a sack or the play ending in his hands.
+- **Measured over the window** from pressure to resolution: the QB's movement, the rusher's closing, and whether a blocker is still within 1.2 yd of the rusher.
+
+| Per dropback | Sim | NFL | Window (sim / NFL) | QB moved (sim / NFL) | Blocker on the rusher (sim / NFL) |
+|---|---|---|---|---|---|
+| Throw under pressure | **30.6%** | 17.2% | 0.4 / 0.4 s | 0.25 yd at 0.81 yd/s / 0.72 yd at 2.09 | 100% / 76% of the window |
+| Sack / end in his hands | 5.7% | 6.3% | **0.5 / 1.5 s** | **0.67 yd at 1.29** / 3.26 yd at 2.36 | 0% / 33% |
+| Scramble | 3.3% | 4.1% | 2.0 / 3.0 s | 8.8 yd at 3.97 / 13.9 yd at 6.04 | 0% / 9% |
+
+- **Sacks:** 2 yd → 1 yd takes 0.3 s on both sides. 1 yd → the record's end: sim 0.3 s, NFL 1.1 s.
+- The NFL end marker may lag the tackle; a stopped QB is not visible in sim frames, which end at the dead ball.
+
+**Reading, ranked by count:**
+
+1. **Throws under pressure (+13.4 points of dropbacks).**
+   - Mostly the excess pressure itself: the QB releases within 0.4 s of a man at 2 yd on both sides.
+   - Our QB does not move in that window (0.25 yd at 0.8 yd/s against 0.7 yd at 2.1). The NFL QB steps up or slides as he throws. That is a decision (pocket movement), Coverage's lane.
+   - All our throw-pressures have a blocker on the rusher, which matches the in-front pressures found earlier.
+2. **Sacks: the same rate, but over in a third of the time.**
+   - Before contact the NFL QB moves 3.3 yd at 2.4 yd/s (escape, climb, spin out); ours moves 0.7 yd. The QB's evasion decision is Coverage's lane.
+   - **Physics question, mine:** contact to down is 0.3 s against up to 1.1 s. Is a grasp on a QB who is moving and fighting becoming a tackle too quickly?
+   - **Smallest bench:** a rusher's arriving grasp on a QB stepping away at 2 yd/s. Compare the time to down with a runner of the same mass at the same speed, then against the NFL's sack contact-to-down once the end-marker lag is known. That needs the tackle event time in the NFL source (BDB `qb_sack` / `tackle` frames).
+3. **Scrambles:** close to the NFL in count. Ours are shorter and slower (8.8 yd at 4.0 against 13.9 at 6.0). A decision plus open-field running; not a priority.
+
+**Not physics:** the rusher's closing speed with a blocker attached (throws: 2.6 against 2.2 yd/s; sacks: 1.9 against 2.9). Ours close no faster at a sack. The short sim windows are the QB's decisions (throw at once, no movement), not rushers arriving faster.
