@@ -337,6 +337,17 @@ const HANG_SHARE = 0.5;
  * leave the runner's base behind his body (see the stride holds and
  * updateSupport). */
 const HELD_SWING = process.env.HELD_SWING === '1';
+/** Experimental (HIP_BRACE=1, off): one hip budget for holds. A grasp on the
+ * upper body (no leg share) is braced by the runner's hips like a thigh hold:
+ * the moment of its transmitted force about his centre of mass (zero at that
+ * height, growing with the grip's height above it, e.g. a shoulder or jersey
+ * grip through GraspJoint.height) uses hip-extension torque up to its
+ * capacity, and only the excess pitches him. The share of hip torque spent
+ * bracing any hold, thigh or upper, then comes off his leg drive: the torque
+ * that holds his trunk up against the pull is the torque that drives him.
+ * Off, an upper grasp pitches him only through the point-mass tip and bracing
+ * costs no drive. docs/reviews/effective-mass.md (unfinished holds). */
+const HIP_BRACE = process.env.HIP_BRACE === '1';
 /** Default since run-ref-9 (HANDS_CHEST=0 restores): a block's hands push chest to chest. In
  * the centre-mode hands row the push acted along the line between the two
  * centres, so a fit landed off-centre pushed the man sideways as well as back
@@ -1002,6 +1013,17 @@ export class World {
     return GRASP_PATCH && this.handContact === 'center' && jt.kind === 'grasp' && !this.attachments.get(jt)?.material;
   }
 
+  /** Height of a grasp's load on the runner: the grip's own height when the
+   * technique set it; else interpolated from his COM down his legs by leg
+   * share. HIP_BRACE's temporary default until tackle.ts sets GraspJoint.height
+   * for upper grips: a hold with leg share below 0.35 acts at chest height
+   * (0.70 of his stature). */
+  private graspHeight(jt: GraspJoint, j: number): number {
+    if (jt.height !== undefined) return jt.height;
+    if (HIP_BRACE && jt.legs < 0.35) return 0.70 * this.bodies[j].profile.heightYd;
+    return this.comHeight[j] * (1 - .55 * clamp(jt.legs, 0, 1));
+  }
+
   private graspPoint(jt: GraspJoint): Vec2 {
     const foot = jt.b.support!.foot, share = foot ? recoveryShare(jt) : 0;
     const attachment = foot ? this.attachments.get(jt) : undefined;
@@ -1439,7 +1461,7 @@ export class World {
       const wanted=foot ? Math.max(0,vn+Math.min(ARM_SPEED,jt.pull!))/demandMobility
         : Math.max(0,vn+Math.min(ARM_SPEED,jt.pull!))/(1/this.mass[i]+1/this.mass[j])/this.tickDt;
       const impulse=Math.min(wanted,this.armCap[i]*this.armScale[i],this.gripCapacity(jt))*h;
-      const height=jt.height??this.comHeight[j]*(1-.55*clamp(jt.legs,0,1));
+      const height=this.graspHeight(jt,j);
       const observed = jt.firstApplied ?? this.jointSnapshot(jt, h, nx, ny, height);
       const fraction=share>0?this.supportImpulse(jt,-nx*impulse,-ny*impulse,h,true)
         :this.pairImpulse(i,j,-nx*impulse,-ny*impulse,i,'grasps');
@@ -1463,7 +1485,7 @@ export class World {
       // Active reel and passive tension act through the same hand position.
       // A leg grip cannot pull at shoulder height while its passive restraint
       // trips the foot below it.
-      this.addLoad(i,j,nx,ny,-impulse*fraction,0,height,jt.legs>0);
+      this.addLoad(i,j,nx,ny,-impulse*fraction,0,height,jt.legs>0 || HIP_BRACE);
     }
 
     // ---- 2. constraints
@@ -1500,14 +1522,12 @@ export class World {
       // Joint outputs and the loads they put on each body.
       for (const r of rows) {
         const jt = r.joint;
-        const height = jt.height ?? (jt.kind === 'grasp'
-          ? this.comHeight[r.j] * (1 - 0.55 * clamp(jt.legs, 0, 1))
-          : undefined);
+        const height = jt.kind === 'grasp' ? this.graspHeight(jt, r.j) : jt.height;
         if (hypot2(r.ln, r.lt) > 0) jt.achievedContactHeight = clamp(
           height ?? Math.min(this.padHeight[r.i], this.padHeight[r.j]), 0,
           Math.min(bs[r.i].profile.heightYd, bs[r.j].profile.heightYd));
         if (hypot2(r.ln, r.lt) > 0) jt.firstApplied ??= r.observed;
-        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && jt.legs > 0);
+        this.addLoad(r.i, r.j, r.nx, r.ny, r.ln, r.lt, height, jt.kind === 'grasp' && (jt.legs > 0 || HIP_BRACE));
         // Every joint here delivers a bounded force across h, including a
         // passive grasp. Center its achieved travel; torso impacts retain
         // their separate interval-start timing. Center-mode reels were
@@ -1773,7 +1793,8 @@ export class World {
     // Friction on the actual normal load: standing weight less any contact lift.
     const muScale = TURF_MU_SCALE !== 1 && this.joints.some(j => j.kind === 'hands' && (j.a === b || j.b === b)) ? TURF_MU_SCALE : 1;
     const traction = muScale * (PAD_LEVERAGE ? sp.traction * clamp(1 - this.liftFelt[i] / (m * G), 0, 2) : sp.traction);
-    const pushForce = muScale === 1 ? sp.pushForce : Math.min(legDrive(p), sp.traction * muScale);
+    const pushForce = (muScale === 1 ? sp.pushForce : Math.min(legDrive(p), sp.traction * muScale))
+      * (HIP_BRACE ? 1 - this.hipUsed[i] : 1);
     report.groundImpulseLimit[i] += traction * h;
     this.recovery[i] = 0;
     const spinBefore=b.spin??0;
@@ -2400,8 +2421,7 @@ export class World {
       }
       const dist = hypot2(dx, dy);
       const nx = dist > 1e-8 ? dx / dist : 1, ny = dist > 1e-8 ? dy / dist : 0;
-      const appliedHeight = jt.height ?? (jt.kind === 'grasp'
-        ? this.comHeight[j] * (1 - .55 * clamp(jt.legs, 0, 1)) : Math.min(this.padHeight[i], this.padHeight[j]));
+      const appliedHeight = jt.kind === 'grasp' ? this.graspHeight(jt, j) : jt.height ?? Math.min(this.padHeight[i], this.padHeight[j]);
       const observed = jt.firstApplied ?? this.jointSnapshot(jt, h, nx, ny, appliedHeight);
       const row: JointRow = { joint: jt, observed, i, j, nx, ny, mn: 1 / (1 / this.mass[i] + 1 / this.mass[j]),
         mode: 0, c: 0, ln: 0, lt: 0, limit: 0, pushLim: 0, holdLim: 0, steerLim: 0,actor: i,steerActor: i,reel: 0 };
@@ -2576,7 +2596,7 @@ export class World {
       }
     }
     this.report.armImpulse[r.i] += r.reel;
-    this.addLoad(r.i, r.j, r.nx, r.ny, -r.reel, 0, jt.height ?? this.comHeight[r.j]*(1-.55*clamp(jt.legs,0,1)), jt.legs>0);
+    this.addLoad(r.i, r.j, r.nx, r.ny, -r.reel, 0, this.graspHeight(jt, r.j), jt.legs>0 || HIP_BRACE);
   }
 
   private jointSnapshot(jt: Joint, h: number, nx: number, ny: number, height: number): ContactSnapshot {
