@@ -89,7 +89,8 @@ describe('HANDS_CHEST (block hands push chest to chest)', () => {
     d.body.pos = { x: 40 + Math.sqrt(R * R - off * off), y: 26.65 + off }; d.body.vel = { x: 0, y: 0 }; d.body.facing = Math.PI;
     e.control = 0;
     const ang = () => Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), a0 = ang();
-    for (let k = 0; k < 20; k++) {
+    // 30 ticks: with LEAN_PITCH (run-ref-13) the lean pitches in over planted feet, so the twist needs ~0.3 s longer to show.
+    for (let k = 0; k < 30; k++) {
       const intents: any[] = sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
       intents[b.idx] = { vel: { x: 1, y: 0 }, facing: 0, push: 1, posture: 0.85 };
       intents[d.idx] = { vel: { x: -1, y: 0 }, facing: Math.PI, push: 1, posture: 0.85 };

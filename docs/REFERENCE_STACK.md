@@ -514,6 +514,8 @@ The run gain comes through held blocks, not through tackling: missed and broken 
 
 The 16-game card ([scorecard](reviews/2026-11-10-lean-anchor-scorecard.md); fixed-run report in [run-ref-13-report](reviews/run-ref-13-report.md)) was read for bugs and shows none: sack rate 6.4 → 5.0%, scrambles 2.5 → 4.1%, time to throw 2.74 → 2.84 s, linemen backpedalling facing their own backfield and blockers on a man out of the play both down. It also shows offence rising further above the NFL (points a team-game 36.1 → 40.3, rush yards a carry 4.19 → 4.80, third downs 33.8 → 42.0%). That is recorded, not tuned against: the blockers were falling for a wrong reason, and the scoring excess belongs to the open pass-coverage, pressure-response and run-fit gaps below.
 
+One test changed: `test/contact-layer.test.ts`'s `HANDS_CHEST` twist case pushes for 30 ticks instead of 20, because the lean now takes about 0.3 s longer to build (off-centre twist at 20 ticks 10° / 5°, at 30 ticks 35° / 5°).
+
 Open with this stack: pressure 43% in live games against the NFL's 28% (tackles kicking 1.4 yd too deep by request; free rushers; a QB who stands still under pressure; the in-the-grasp rule ending sacks in 0.25 s); 149 run-block lean-release falls (C/G driving at about 1.25× the load) and 165 TE impact falls; 451 defender impact falls (take-on technique, Defense).
 
 ## After run-ref-12: the first second, and what is merged off (2026-11-10)
