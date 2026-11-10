@@ -143,6 +143,7 @@
     "STRETCH_TRACK": "off",
     "TACKLE_TOUCH": "off",
     "TE_OFF": "on",
+    "THROW_HORIZON": "off",
     "THROW_REACT": "on",
     "TIGHT_OFF": "on",
     "TKL_WHIFF": "off",
