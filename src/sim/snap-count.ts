@@ -59,7 +59,7 @@ export const OL_ON_COUNT = process.env.OL_ON_COUNT === '1';
  * 0.5 / 1.0 / 2.0 yd/s at 0.40 / 0.50 / 0.70 s after the snap tag, ours at
  * 0.15 / 0.20 / 0.35: a near-constant delay, not a weaker first step
  * (BDB 2025 weeks 1-3). */
-const WR_SNAP = process.env.WR_SNAP === '1';
+const WR_SNAP = process.env.WR_SNAP !== '0';
 const WR_SNAP_SPLIT = 4;
 
 export function snapResponse(a: Agent): number {
