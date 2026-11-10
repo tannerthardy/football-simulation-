@@ -78,6 +78,12 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
 /** PRESS_MIRROR (off; see behaviors/defense.ts): a receiver with a pressing
  * corner square in front of him releases around him, not up through him. */
 const PRESS_MIRROR = process.env.PRESS_MIRROR === '1';
+/** PRESS_RELEASE (off; with PRESS_MIRROR): a pressed receiver works around
+ * the corner from the snap, clear of his body and reach, on his route's side
+ * (outside on a vertical) and away from the corner's shade. Tracked pressed
+ * gos release outside 84% of the time, 3.5 yd wide by 5 yd; posts, slants and
+ * ins release inside (BDB 2025). */
+const PRESS_RELEASE = process.env.PRESS_RELEASE === '1';
 
 export class RouteRunner implements Behavior {
   readonly kind = 'route';
@@ -355,10 +361,23 @@ export class RouteRunner implements Behavior {
         const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
         if (!spot?.press || spot.manTarget !== a.slot || this.releasedCorners.has(d) || usable(d) === 0) continue;
         const ahead = d.pos.x - a.pos.x, lateral = d.pos.y - a.pos.y;
-        if (ahead < 0 || ahead > 2.5 || Math.abs(lateral) > a.profile.radius + d.profile.radius + 0.3) continue;
-        const desired = this.path[this.idx]?.p.y ?? a.pos.y;
-        const side = Math.sign(desired - d.pos.y) || -Math.sign(lateral) || this.outside;
-        const clearance = a.profile.radius + d.profile.radius + 0.2;
+        // PRESS_RELEASE: from the snap he works around the corner's body and
+        // reach, on the side his route goes (outside on a vertical) and away
+        // from the corner's shade; the release costs what its width costs.
+        const reach = d.player.measurables.armIn / 36 * 0.7;
+        const clearance = a.profile.radius + d.profile.radius + 0.2 + (PRESS_RELEASE ? reach : 0);
+        if (ahead < 0 || ahead > (PRESS_RELEASE ? 5 : 2.5) || Math.abs(lateral) > clearance + 0.1) continue;
+        let side: number;
+        if (PRESS_RELEASE) {
+          // The side his route breaks to (its first real lateral move); a
+          // straight vertical releases outside.
+          const turn = this.path.find((pt) => Math.abs(pt.p.y - a.pos.y) > 0.75)?.p.y;
+          side = turn !== undefined ? Math.sign(turn - a.pos.y) : this.outside;
+          if (Math.sign(-lateral) !== side && Math.abs(lateral) > 0.3) side = Math.sign(-lateral);
+        } else {
+          const desired = this.path[this.idx]?.p.y ?? a.pos.y;
+          side = Math.sign(desired - d.pos.y) || -Math.sign(lateral) || this.outside;
+        }
         return runThrough(a, { x: d.pos.x, y: d.pos.y + side * clearance },
           { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
       }

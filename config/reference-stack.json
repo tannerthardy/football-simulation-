@@ -111,6 +111,7 @@
     "OWNER_KEEPS": "on",
     "OZ_HIP_READ": "on",
     "PRESS_MIRROR": "off",
+    "PRESS_RELEASE": "off",
     "PASS_SINK": "off",
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
