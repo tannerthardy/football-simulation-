@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-5`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-6`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -265,6 +265,29 @@ The stack as a whole is neutral on pass yards and lowers sacks (53 -> 40). **Int
 - **`MUG_PRESSURES` with `PRO_READ`:** sim and fire-zone pressures now free a rusher (Mug Sim 0 -> 13, Mug Fire 0 -> 19 of 96), as designed. The offense has no answer yet: protection calls (G9) are queued with Coverage.
 - **Scramble discipline:** a zone backer reads run on a QB scrambling 5 yd behind the line; he should hold coverage until the QB crosses it. Logged under COV.
 - **Front-on contact:** Tanner chose effective mass at first contact; the plan is [reviews/2026-11-10-effective-mass-plan.md](reviews/2026-11-10-effective-mass-plan.md) and Flex has started its Phase 0.
+
+## run-ref-6: `BACKER_CREEP` and `OFFBALL_TIMING` on; split-back shares (2026-11-10)
+
+Full report: [reviews/run-ref-6-report.md](reviews/run-ref-6-report.md).
+
+- **`BACKER_CREEP`, `OFFBALL_TIMING` (Defense #437), on.** Box backers creep before the snap and off-ball defenders time the count. Outside-zone box backers moving at the snap 5 -> 23% (NFL 46%), speed at 0.2 s 0.00 -> 0.47 yd/s (0.81), depth at 1.0 s 4.10 -> 3.91 (3.56). Defense's `ref:report` candidate run: all runs -0.01 (SE 0.10).
+- **#440 (Rules + Coaching):** split-back gun sets take their 2022 share of each personnel group's runs under `RUN_FORM_PAIR` (11: 1.2%, 12: 1.4%, 21: 6.3%); before, the two 11-personnel split sets took about a third of 11 gun runs. Twelve default games: split-back gun 2.0% of snaps (2022: 1.8%).
+- **Interceptions are not a stack effect (Coverage).** On 1,464 dropbacks an arm the reference has 45 and all-off 54; the earlier 21 -> 35 was noise on about 30 events. G4's gap is the absolute rate, with or without the stack. Interception differences under 10 need 1,500+ dropbacks an arm.
+- `ref:report` now prints duo and toss as their own rows.
+- `test/integration/game-record.test.ts` seed 21 timed out at 60 s in two full `test:all` runs (three workers) and passes alone; its limit is now 180 s.
+
+Run game on `run-ref-6` at this commit (1,321 fixed runs, yards under 20):
+
+| | Legacy | run-ref-6 | NFL 2022 |
+|---|---|---|---|
+| All runs yd; <= 0; 10+ | 5.19; 11%; 16.7% | 3.76; 16%; 9.3% | 10+: 9% |
+| Outside zone yd; <= 0 | 4.69; 11% | 3.07; 22% | 3.50; 19% |
+| Inside zone yd; <= 0 | 4.40; 15% | 4.60; 15% | 3.73; 14% |
+| Gap runs yd | 5.42 | 3.95 | 4.08 (counter) |
+| Duo yd; <= 0 | 6.13; 6% | 3.18; 18% | |
+| Missed / broken a run (engaged-grab breaks) | 0.272 / 0.302 (0.158) | 0.241 / 0.175 (0.116) | |
+
+Next for the run game (Run Game): the outside-zone back's path. He is far too narrow: from the gun his width at 3 / 2 / 0 yd off the line is 1.6 / 2.7 / 4.7 yd against the NFL's 4.5 / 5.7 / 7.1, which fits a blocked DL making first contact on 52% of outside-zone runs (NFL 33%).
 
 ## What to do next
 

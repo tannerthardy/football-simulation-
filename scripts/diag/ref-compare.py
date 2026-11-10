@@ -8,7 +8,7 @@ def load(a):
             r = json.loads(l); d[r["id"]] = r
     return d
 A, B = load(sys.argv[1]), load(sys.argv[2])
-GROUP = {"outsideZone": "OZ", "wideZone": "OZ", "insideZone": "IZ", "splitZone": "IZ", "power": "gap", "counter": "gap", "trap": "gap", "draw": "draw"}
+GROUP = {"outsideZone": "OZ", "wideZone": "OZ", "insideZone": "IZ", "splitZone": "IZ", "power": "gap", "counter": "gap", "trap": "gap", "draw": "draw", "duo": "duo", "toss": "toss"}
 def stat(rows):
     y = [min(r["yards"], 20) for r in rows]; n = max(1, len(y))
     out = f"n {len(y):4d} mean<20 {sum(y)/n:5.2f} <=0 {100*sum(r['yards']<=0 for r in rows)/n:4.1f}% 10+ {100*sum(r['yards']>=10 for r in rows)/n:4.1f}% 20+ {100*sum(r['yards']>=20 for r in rows)/n:4.1f}%"
@@ -17,7 +17,7 @@ def stat(rows):
     return out
 err = [r for r in list(A.values()) + list(B.values()) if "error" in r]
 print(f"plays {len(A)} / {len(B)}, errors {len(err)}", *[f"\n  {r['id']} {r['error']}" for r in err[:8]])
-for g in ["OZ", "IZ", "gap", "draw", "other", "all"]:
+for g in ["OZ", "IZ", "gap", "duo", "toss", "draw", "other", "all"]:
     ids = [i for i in A if i in B and "error" not in A[i] and "error" not in B[i] and (g == "all" or GROUP.get(A[i]["scheme"], "other") == g)]
     if not ids: continue
     d = [min(B[i]["yards"], 20) - min(A[i]["yards"], 20) for i in ids]; m = sum(d) / len(d)

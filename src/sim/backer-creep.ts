@@ -20,7 +20,7 @@
 import type { Rng } from '../core/rng.js';
 import type { Agent } from './agent.js';
 
-export const BACKER_CREEP = process.env.BACKER_CREEP === '1';
+export const BACKER_CREEP = process.env.BACKER_CREEP !== '0';
 /** Chance a box backer creeps: base plus his anticipation (avg about 0.4). */
 const CREEP_BASE = 0.2, CREEP_ANTICIPATION = 0.4;
 /** Seconds before the snap he starts, and his creep pace (yd/s). */

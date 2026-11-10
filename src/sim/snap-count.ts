@@ -38,7 +38,7 @@ const ABSENCE = 0.08;
 
 const LINE = new Set(['LT', 'LG', 'C', 'RG', 'RT']);
 /** OFFBALL_TIMING (experimental, off): see planSnap; chance an off-ball defender times the count (avg about 0.55). */
-export const OFFBALL_TIMING = process.env.OFFBALL_TIMING === '1';
+export const OFFBALL_TIMING = process.env.OFFBALL_TIMING !== '0';
 const OFFBALL_BASE = 0.3, OFFBALL_ANTICIPATION = 0.5;
 
 /** Simple visual response to an expected single cue: seen motion to own movement. */
