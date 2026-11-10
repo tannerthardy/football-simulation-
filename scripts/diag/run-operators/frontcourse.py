@@ -107,6 +107,28 @@ def fmt(x, w=5, p=2):
     return f"{x:+{w}.{p}f}" if x is not None else ' ' * (w - 1) + '-'
 
 
+def show(name, out, masses):
+    print(f"== {name}: front-on first contacts at -1..3 yd: {out['all']['n']}  (torso-distance collisions {round(out['torso']['n']) if 'torso' in out else 0})")
+    print(f"   speeds along the approach axis (yd/s) at " + ' '.join(f"{o/10:+.1f}" for o in OFFS) + " s; gain = runner, contact -> end")
+    for g, cell in out.items():
+        print(f"   {g:12} n {cell['n']:4} torso {100*cell['torso']:3.0f}% | runner " + ' '.join(fmt(cell['vr'][o]) for o in OFFS)
+              + " | hitter " + ' '.join(fmt(cell['vh'][o]) for o in OFFS))
+        print(f"   {'':12}          sep " + ' '.join(fmt(cell['sep'][o], 4) for o in OFFS)
+              + f" | gain {fmt(cell['gain'])} = hitter {fmt(cell['hdisp'])} + rel {fmt(cell['rel'])} | +0.2 s: blocker on him {100*cell['blocker_on']:3.0f}%, 2nd tackler {100*cell['second']:3.0f}% | to end {cell['t_end']:.1f} s"
+              + (f" | m_r v_r - m_h v_h {cell['mom']:+.0f} kg yd/s" if cell['mom'] is not None else ''))
+    if not masses:
+        print('   (no masses in this source: momentum omitted)')
+
+
+if '--from-json' in sys.argv:
+    # Print a stored result (e.g. the NFL run, frontcourse-nfl.json) with the same layout.
+    for name, out in json.load(open(sys.argv[sys.argv.index('--from-json') + 1])).items():
+        for cell in out.values():
+            for k in ('vr', 'vh', 'sep'):
+                cell[k] = {int(o): v for o, v in cell[k].items()}
+        show(name, out, any(c['mom'] is not None for c in out.values()))
+    sys.exit(0)
+
 ARGS = [a for a in sys.argv[1:] if not a.startswith('--')]
 OUT = sys.argv[sys.argv.index('--json') + 1] if '--json' in sys.argv else None
 if OUT in ARGS:
@@ -115,8 +137,6 @@ store = {}
 for path in ARGS:
     R = course(path)
     name = path.split('/')[-1]
-    print(f"== {name}: front-on first contacts at -1..3 yd: {len(R)}  (torso-distance collisions {sum(r['torso'] for r in R)})")
-    print(f"   speeds along the approach axis (yd/s) at " + ' '.join(f"{o/10:+.1f}" for o in OFFS) + " s; gain = runner, contact -> end")
     out = {}
     groups = [('all', lambda r: True), ('torso', lambda r: r['torso']), ('touch only', lambda r: not r['torso'])]
     groups += [(f'{c} {b}', (lambda c, b: lambda r: r['cls'] == c and r['bin'] == b)(c, b)) for c in ('blocked', 'shed', 'free') for b in ('<3', '3-5', '5+')]
@@ -125,20 +145,14 @@ for path in ARGS:
         rr = [r for r in R if f(r)]
         if len(rr) < 5:
             continue
-        cell = dict(n=len(rr), torso=sum(r['torso'] for r in rr) / len(rr),
-                    vr={o: med([r['vr'][o] for r in rr]) for o in OFFS}, vh={o: med([r['vh'][o] for r in rr]) for o in OFFS},
-                    sep={o: med([r['sep'][o] for r in rr]) for o in OFFS}, gain=med([r['gain'] for r in rr]),
-                    hdisp=med([r['hdisp'] for r in rr]), rel=med([r['rel'] for r in rr]),
-                    blocker_on=sum(r['blocker_on'] for r in rr) / len(rr), second=sum(r['second'] for r in rr) / len(rr),
-                    t_end=med([r['t_end'] for r in rr]), mom=med([r['mom'] for r in rr]))
-        out[g] = cell
-        print(f"   {g:12} n {cell['n']:4} torso {100*cell['torso']:3.0f}% | runner " + ' '.join(fmt(cell['vr'][o]) for o in OFFS)
-              + " | hitter " + ' '.join(fmt(cell['vh'][o]) for o in OFFS))
-        print(f"   {'':12}          sep " + ' '.join(fmt(cell['sep'][o], 4) for o in OFFS)
-              + f" | gain {fmt(cell['gain'])} = hitter {fmt(cell['hdisp'])} + rel {fmt(cell['rel'])} | +0.2 s: blocker on him {100*cell['blocker_on']:3.0f}%, 2nd tackler {100*cell['second']:3.0f}% | to end {cell['t_end']:.1f} s"
-              + (f" | m_r v_r - m_h v_h {cell['mom']:+.0f} kg yd/s" if cell['mom'] is not None else ''))
-    if all(r['mom'] is None for r in R):
-        print('   (no masses in this source: momentum omitted)')
+        out[g] = dict(n=len(rr), torso=sum(r['torso'] for r in rr) / len(rr),
+                      vr={o: med([r['vr'][o] for r in rr]) for o in OFFS}, vh={o: med([r['vh'][o] for r in rr]) for o in OFFS},
+                      sep={o: med([r['sep'][o] for r in rr]) for o in OFFS}, gain=med([r['gain'] for r in rr]),
+                      hdisp=med([r['hdisp'] for r in rr]), rel=med([r['rel'] for r in rr]),
+                      blocker_on=sum(r['blocker_on'] for r in rr) / len(rr), second=sum(r['second'] for r in rr) / len(rr),
+                      t_end=med([r['t_end'] for r in rr]), mom=med([r['mom'] for r in rr]))
+    if out:
+        show(name, out, any(r['mom'] is not None for r in R))
     store[name] = out
 if OUT:
     json.dump(store, open(OUT, 'w'), indent=1, default=str)
