@@ -1246,3 +1246,75 @@ What the trace shows:
 | Defenders down along the push | 554 | 495 |
 
 - Defenders driven over along the push barely move: they are knocked over, not leaning, so this law does not reach them. That needs its own look.
+
+## Run-block defenders on the ground (`run-dfall.mts`, `run-frames.mts`, `rdfall.py`; the fixed run set, 1,321 runs; NFL 2022, 6,172 runs; 2026-11-10)
+
+**How often.**
+
+- **Truth:** 906 defender falls in run blocks; half the runs (656) have one.
+- **Operator (`rdfall.py`):**
+  - NFL run records carry no block pairs, so a DL or LB is "blocked" while an OL or TE is within 1.2 yd of him for 0.3 s.
+  - Flagged: he then goes still (under 0.3 yd/s for 0.8 s), more than 2 yd from the carrier, before first contact.
+  - This also counts anchors, so it is an upper bound on the NFL.
+
+  | | Flagged share of blocked DL/LB reps | Flags a run |
+  |---|---|---|
+  | NFL | 0.2% (81) | 0.01 |
+  | Sim | 1.7% (107) | 0.08 |
+
+  - The sim's rate is about 8× the NFL's on identical code.
+  - Precision against the sim's true falls is 69%. Recall is 16%: most falls come too close to first contact for the window.
+
+**Who.**
+
+- **Defender's slot:** LB_M 157, DT_W 136, LB_W 120, DT_S 117, DE_S 90, DE_W 71, NB 57, SS 53.
+- **Blocker's slot:** C 166, the tackles and guards 120–144 each, Y 101, H 54.
+- **Doubles:** 22 of 906. These are solo blocks, not doubles burying a tackle.
+- **The blocker is the heavier and stronger man:** mass 1.21×, strength 1.12× (medians).
+- **When:** 810 come after the handoff, at a median of 3.75 yd from the runner.
+
+**Direction** (capture-point deviation against the felt load at the fall):
+
+| | Along the push (driven over) | Toward the man | Across |
+|---|---|---|---|
+| Defenders | 549 | 191 | 164 |
+| Blockers | 234 | 185 | 159 |
+
+**Two different falls among the 551 driven over:**
+
+1. **Early impact (416; within 0.4 s of contact): LB 178, DB 141, DL 97.**
+   - Over the 4–5 ticks from contact, the felt load builds 0.7 → 1.8 mg.
+   - The contact-height tip grows 1.3 → 4.5 yd/s²: a low blocker (posture ~0.8) under an upright defender (0.43, sinking to 0.32).
+   - The defender is moving into the blocker at ~1.2 yd/s.
+   - His request along the push is **0**: he is pursuing across it, not taking the block on.
+   - He uses only ~55% of his traction and builds almost no lean (median 0.12 mg before the crossing). The lean law braces only when his request along the load exceeds his velocity, which a pursuit request never does.
+   - His capture point crosses 0.07 → 0.23 → 0.55 → 0.86 → 1.0 of the fall threshold in four ticks.
+2. **Sustained drive (135; after 0.4 s): mostly DL (71).**
+   - Driven back at 1.0–1.4 yd/s, a load ~0.8 mg, asking to hold ground (request −0.8 to −1.1 yd/s along the push).
+   - His capture point creeps from 0.2 to 1.0 of the threshold over 0.35 s while availability falls (0.99 → 0.33).
+   - A man driven backward who asks to hold ground is not stepping back with the drive. His recovery steps cannot keep up.
+
+**What it does to the play.**
+
+| Runs | Any defender fall | A fallen defender within 2 yd of the runner's later path (while down) |
+|---|---|---|
+| Under 4 yd | 47% | 23% |
+| 4–9 yd | 54% | 21% |
+| 10+ yd | 51% | 18% |
+
+- Falls are not what makes the long gains.
+- They take a man out of the pursuit about once every two runs, which may thin the crowd at the runner. Blocked defenders within 2 yd of the runner: 0.58 a run against the NFL's 0.80.
+
+**With `LEAN_PITCH` on:**
+
+- Defender falls 906 → 709: toward the man 191 → 108, along the push 549 → 493.
+- Blocker falls 580 → 361. A note for Run Game: when the flag goes on, fewer of its blockers end on the ground.
+- The driven-over falls are not a lean, and this law does not reach them.
+
+**Proposal** (nothing built):
+
+- **(a) Controller, Defense.** An engaged defender does not take the block on. His request stays pursuit (0 along the push) with upright pads, so his legs never brace. Taking on a blocker he sees closing (pads down, a request against the block's push), or defeating it, is technique on observable evidence. So is giving ground with the drive instead of asking to hold it when he is being driven.
+- **(b) Physics, mine.** Bench the early impact: a 1.2× heavier blocker at posture 0.8 into an upright pursuer, braced against unbraced.
+  - Is the 1.8 mg felt load over ~0.2 s, about 3–4 yd/s of velocity change, coherent with the closing speeds and masses?
+  - Is the contact-height tip right for that pad mismatch?
+  - Only if the bench shows an incoherence does it become a physics change.
