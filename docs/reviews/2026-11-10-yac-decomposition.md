@@ -65,3 +65,9 @@ The NFL squeeze is on the target only, from about 0.4 s before the release (abou
 
 - ZONE_SQUEEZE 1, underneath lane squeeze on the QB's facing: fired on 33 receptions; 732 paired -0.10 +/- 0.18 yd.
 - ZONE_SQUEEZE 2, any non-deep zone defender (and man on his own man) squeezes the nearest receiver the QB is set and squared to: target / non-target toward-speed at the release -0.45 / -0.47 -> -0.27 / -0.50; catch to contact 0.90 -> 0.80 s; YAC 7.52 -> 7.32; 732 paired -0.05 +/- 0.13 yd. Wrong cue (see above). Next: act on the seen throwing motion.
+
+## Provisional: stage (a) is largely downstream of route mix and throw timing
+
+Added after the route-by-route comparison (NFL BDB 2025 weeks 1-3 non-PA dropbacks, 11,947 routes; sim the 732 panel on develop f52e3a0d, 2,844 routes; depth from the ball on both sides). Like-for-like routes are thrown at about NFL depth (hitch 5.0 vs 5.7 yd, slant 5.3 vs 4.0, shallow cross 4.7 vs 4.1, go 10.2 vs 10.0), but 35.6% of our targets are comebacks, digs, 10-yd outs and curls at 10-15 yd, flats + screens + angles are 3.6% of our targets against 24.8% in the NFL, and on thrown outs, digs, quick outs and short ins the ball leaves before the receiver's break (NFL: 0.5-1.0 s after it). The late-closing defenders measured above are covering receivers still running deeper; the defender-side attempts (ZONE_SQUEEZE, MOTION_BREAK, ZONE_PLANT, OFF_THROTTLE) moved nothing and stay off develop.
+
+Do not build a defender-side fix from stage (a) until the panel is recaptured with per-seed team identities (all diagnostic games were IRN vs COM, whose alignment habits put both teams' safeties shallow) and the route mix and throw timing are re-read. The NFL gaps above involving safety depth, shell and defenders over the top are biased by that sample.
