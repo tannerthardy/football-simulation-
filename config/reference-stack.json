@@ -52,6 +52,7 @@
     "DOUBLE_OVERTAKE": "on",
     "DOUBLE_TRACK": "on",
     "DRAW_NFL": "on",
+    "EDGE_REACH": "off",
     "END_CHASE": "on",
     "ENGAGED_DEFENDER": "on",
     "ENGAGED_TECHNIQUE": "on",
