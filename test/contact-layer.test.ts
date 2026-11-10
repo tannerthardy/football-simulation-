@@ -128,10 +128,10 @@ describe('GRASP_PATCH (a grasp acts at the grip point)', () => {
   }
   it('keeps pair momentum exactly and leaves a world without a grasp bit-identical', async () => {
     expect((await held({ GRASP_PATCH: '1' }, 0.3)).err).toBeLessThan(1e-9);
-    expect((await held({ GRASP_PATCH: '1' }, 0.3, false)).path).toEqual((await held({}, 0.3, false)).path);
+    expect((await held({ GRASP_PATCH: '1' }, 0.3, false)).path).toEqual((await held({ GRASP_PATCH: '0' }, 0.3, false)).path);
   });
   it('lets an offset held pair slip where today it locks', async () => {
-    const off = await held({}, 0.3), on = await held({ GRASP_PATCH: '1' }, 0.3);
+    const off = await held({ GRASP_PATCH: '0' }, 0.3), on = await held({ GRASP_PATCH: '1' }, 0.3);
     expect(on.slip).toBeGreaterThan(off.slip);
   });
 });
