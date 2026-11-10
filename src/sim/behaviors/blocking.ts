@@ -1424,7 +1424,7 @@ export const REACH_CLOSE = process.env.REACH_CLOSE !== '0';
  * plays, where the helper runs the track and seldom joins, he ran beside the
  * play (run-ref-4 OZ restage at 1.0 s: owner alone and secure on the man in
  * 114 of ~230 live doubles; 76 of 239 doubles never released). */
-export const OWNER_KEEPS = process.env.OWNER_KEEPS === '1';
+export const OWNER_KEEPS = process.env.OWNER_KEEPS !== '0';
 /** GAP_CLIMB (off): a free zone lineman (drive, reach, cutoff; not in a live
  * double) whose man is beaten to his backside - more than 1 yd backside of
  * his body across the field and not gaining on him - has nobody in his

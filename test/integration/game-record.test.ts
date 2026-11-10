@@ -33,7 +33,8 @@ describe('official record of a full game', () => {
       await new Promise<void>(resolve => setImmediate(resolve));
       await new Promise<void>(resolve => setImmediate(resolve));
     }
-  }, 60_000);
+  // A full game takes 30-45 s alone; under test:all's three workers seed 21 passed 60 s twice on 2026-11-10.
+  }, 180_000);
 
   describe('replay recording preserves the same full game', () => {
     let plain: ReturnType<typeof simulateGame>;

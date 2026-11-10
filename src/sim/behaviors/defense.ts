@@ -19,6 +19,7 @@ import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { TRACKING_REACH_BONUS } from '../catching.js';
 import { angleTo, chase, goTo, leverage, pursuitPoint, runThrough, stand, track, watch } from './common.js';
+import { creepPace } from '../backer-creep.js';
 import { traits } from '../engagement.js';
 import { catchSpot } from './receiver.js';
 import { observedBlocking, showsBlock } from '../coverage-cues.js';
@@ -901,7 +902,19 @@ export class ZoneCoverage implements Behavior {
         if (side) {
           const pace = Math.min(a.profile.vmax * a.profile.shuffle, g.pace + KEY_STEP_LEAD), h = a.mind.decisionInterval;
           a.tags.add('lb-guard-step');
-          return withFacingTechnique(track(a, { x: a.pos.x, y: a.pos.y + side * pace * h }, { x: 0, y: side * pace },
+          // BACKER_CREEP: a backer who crept into the snap keeps walking into
+          // it while he steps with the guards; stepping does not stop his feet.
+          const cp = creepPace.get(a) ?? 0, cdir = sim.attackDir(sim.offense[0].team);
+          return withFacingTechnique(track(a, { x: a.pos.x - cdir * cp * h, y: a.pos.y + side * pace * h }, { x: -cdir * cp, y: side * pace },
+            { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 1 }), { label: 'read-step' });
+        }
+        // BACKER_CREEP: still unsure, a backer who crept into the snap keeps
+        // walking into his read at his creep pace (his read step is the creep
+        // continued) rather than planting or stepping back to a fixed spot.
+        const cp = creepPace.get(a);
+        if (cp) {
+          const cdir = sim.attackDir(sim.offense[0].team), h = a.mind.decisionInterval;
+          return withFacingTechnique(track(a, { x: a.pos.x - cdir * cp * h, y: a.pos.y }, { x: -cdir * cp, y: 0 },
             { facing: angleTo(a.pos, sim.see(a, sim.qb).pos), gain: 1.6, speed: 1 }), { label: 'read-step' });
         }
         // LB_READ_STEP (experimental, off): his read step is a step. Off the

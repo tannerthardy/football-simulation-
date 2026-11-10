@@ -188,6 +188,8 @@ export const CB_NORM = 79.3;
  * 1-9, one back on each side of a shotgun QB): 11 128 of 10,114, 12 33 of
  * 2,945, 21 102 of 1,379. 20 personnel has no other installed set. */
 const SPLIT_BACK_SHARE: Partial<Record<PersonnelId, number>> = { '11': .013, '12': .011, '21': .074 };
+/** Of the group's runs: 11 36 of 3,036, 12 21 of 1,552, 21 48 of 761. */
+const SPLIT_BACK_RUN_SHARE: Partial<Record<PersonnelId, number>> = { '11': .012, '12': .014, '21': .063 };
 export const WR_NORM: Partial<Record<PersonnelId, number>> = { '10': 69.6, '11': 71.3, '12': 72.0, '20': 71.3, '21': 72.0, '13': 76.6, '22': 76.6 };
 const EARLY_DOWN: Record<string, number> = { cover1: .82, cover0: .75, cover2man: .5, cover3: 1.12, cover4: 1.07, cover6: 1.1 };
 const CALL_CHECK: Record<'under' | 'empty', Record<string, number>> = {
@@ -445,17 +447,19 @@ export class OffensiveCoordinator {
     const scheme = this.team.offScheme;
     const forms = FORMATIONS.filter((f) => f.personnel === personnel);
     const gunPref = scheme === 'air-raid' || scheme === 'spread' ? 2.5 : scheme === 'west-coast' ? 1.4 : 0.8;
-    if (RUN_FORM_PAIR && !isPass) {
+    const runPair = RUN_FORM_PAIR && !isPass;
+    let weights: Array<[Formation, number]>;
+    if (runPair) {
       // Runs: the tracked quarterback alignment shares of all runs, spread
       // over this personnel's formations of each alignment, with the
       // scheme's gun preference kept as a tilt (1 for a pro-style offense).
       const count = (qb: string) => forms.filter((f) => f.qb === qb && !f.tags.includes('empty')).length || 1;
-      return pickWeighted(this.rng, forms.map((f): [Formation, number] => [f, f.tags.includes('empty') ? 0.002
-        : (f.qb === 'gun' ? RUN_QB_SHARE.gun * gunPref / 0.8 : f.qb === 'pistol' ? RUN_QB_SHARE.pistol : RUN_QB_SHARE.under) / count(f.qb)]));
-    }
-    const weights = forms.map((f): [Formation, number] => [f, (f.qb === 'gun' ? gunPref * (isPass ? 1.3 : 0.8) : f.qb === 'pistol' ? 1 : isPass ? 0.8 : 1.4) * (f.tags.includes('empty') && !isPass ? 0.05 : 1)]);
-    // Split-back gun takes its 2022 share of its personnel group's snaps.
-    const share = SPLIT_BACK_SHARE[personnel];
+      weights = forms.map((f): [Formation, number] => [f, f.tags.includes('empty') ? 0.002
+        : (f.qb === 'gun' ? RUN_QB_SHARE.gun * gunPref / 0.8 : f.qb === 'pistol' ? RUN_QB_SHARE.pistol : RUN_QB_SHARE.under) / count(f.qb)]);
+    } else weights = forms.map((f): [Formation, number] => [f, (f.qb === 'gun' ? gunPref * (isPass ? 1.3 : 0.8) : f.qb === 'pistol' ? 1 : isPass ? 0.8 : 1.4) * (f.tags.includes('empty') && !isPass ? 0.05 : 1)]);
+    // Split-back gun takes its 2022 share of its personnel group's snaps
+    // (of its runs, when runs follow the tracked alignment shares).
+    const share = (runPair ? SPLIT_BACK_RUN_SHARE : SPLIT_BACK_SHARE)[personnel];
     const splitW = weights.filter(([f]) => f.tags.includes('split-backs')).reduce((t, [, w]) => t + w, 0);
     const otherW = weights.reduce((t, [, w]) => t + w, 0) - splitW;
     if (share !== undefined && splitW > 0 && otherW > 0) {
