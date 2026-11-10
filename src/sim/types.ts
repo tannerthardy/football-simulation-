@@ -314,6 +314,8 @@ export interface PlayStats {
   hurriedBy?: string;
   separation?: number;
   brokenTackles: number;
+  /** Of brokenTackles: one-armed grabs made from inside a block that the runner pulled through (ONE_ARM_HOLD). */
+  brokenEngagedGrabs?: number;
   missedTackles: number;
   /** Native per-player credit, including a frozen pre-illegal-pass snapshot. */
   missedTacklesBy?: Record<string, number>;
