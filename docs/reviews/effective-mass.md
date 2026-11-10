@@ -215,3 +215,41 @@ contact law, offset 0.31 yd, hitter drive 28%. Speed kept at +0.1 / +0.2 / +0.3 
 - **Softer contact slightly lowers speed kept**, because the momentum is the same and coupling lasts longer. Step 1
   is therefore justified by the force, not by yards, and is expected to need step 2 (yaw) and the leg-drive repair to
   move the course.
+
+### Why the runner's feet do so little in contact (decomposition)
+
+`scripts/diag/effective-mass/drive-decomp.mts` covers every tick of the 0.3 s after a front-on first proximity (966
+ticks on the pinned set, run-ref-4). It reports the runner's downfield ground impulse as a share of its limit (the
+limit is 1.25 × weight of traction):
+
+| Runner's state | Share of ticks | Ground share (median) |
+|---|---|---|
+| Off his feet | 14% | −0.18 |
+| Up, availability ≥ 0.5 | 68% | 0.25 |
+| Up, availability < 0.5 | 18% | 0.22 |
+| Up, a holder hanging on his legs (stride hold) | 4% | 0.32 |
+| Up, available, not held, request ≥ 1 yd/s above his speed | 7% | 0.32 |
+
+- **The stride hold is rare and support is usually fine.** The cap is the leg-strength budget: `pushForce` ×
+  force-velocity × facing × availability. That is about 1.0 body weight × 0.82 at 1.6 yd/s, roughly 0.55 of the
+  traction limit, and an offset contact points part of the push sideways.
+- **His lean sits at about half the felt load** (382 against 740 kg·yd/s²). In game he delivers 0.25–0.32 of the
+  limit, about half his cap.
+- **So "full limit" in the table above asked for more force than his legs have.** At the strength cap (0.55), offset
+  0.31 yd:
+
+| Body, law | Kept at +0.1 / +0.2 / +0.3 s | Peak force |
+|---|---|---|
+| Disc, today | 50–53 / 66–70 / 84–89% | 22.3 kN |
+| Capsule square, yaw free, today | 73–74 / 92–93 / 100% | 24.6 kN |
+| Capsule side-on, yaw free, today | 81 / 99–100 / 100% | 20.5 kN |
+| Capsule side-on, yaw free, compliant layer | 83 / 100 / 100% | 4.4–4.5 kN |
+| NFL | ~92 / 85 / 78% | 1.7–3.4 kN measured |
+
+**Reading:**
+- The strength the runner already has is enough if he uses it during contact.
+- The compliant layer and yaw then give the right force and close to the right course.
+- The course shape still differs: the sim dips deeper first and recovers fully, because the runner re-accelerates to
+  his request, while the NFL decays steadily. That needs looking at once the pieces are in.
+- **The open question is why the in-game drive is half the cap.** The next look is inside World's ground-force
+  allocation: lean target against capacity per tick, the bond's `push` value, and the angle of the felt load.
