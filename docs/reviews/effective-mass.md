@@ -1704,3 +1704,19 @@ Holder turn in the first 0.5 s of each hold (p50, `yaw-ledger.mts`, fixed runs, 
 1. **Met as worded:** side and behind moved toward the NFL; front stayed near it. Side is still 23° above.
 2. **No bug-caused regression.** The yardage drop has a named mechanism: holders who are not spun off keep the runner (broken −0.020 a run). A worse statistic is not a veto.
 3. **Next:** Defense re-reads `HOLD_FACING` attempt 2 on this flag (the approach spin), then the `TORSO_CAPSULE` + `CONTACT_LAYER` re-read.
+
+## `TORSO_CAPSULE` + `CONTACT_LAYER` re-read on `GRASP_ARM_MOMENT` (run-ref-13, paired, fixed 1,321 runs; 2026-11-10)
+
+| Arm | Holder turn in 0.5 s, side / behind / front (p50) | Front-on runner speed kept at +0.1 / +0.2 s | Yards, paired against run-ref-13 | Missed / broken a run |
+|---|---|---|---|---|
+| run-ref-13 | 79 / 46 / 64° | 75 / 51% | — | 0.239 / 0.147 |
+| + `GRASP_ARM_MOMENT` | 57 / 41 / 53° | 73 / 50% | −0.12 (SE 0.03) | 0.238 / 0.127 |
+| + `GRASP_ARM_MOMENT` + `TORSO_CAPSULE` + `CONTACT_LAYER` | 61 / 40 / 57° | **86 / 60%** | +0.34 (SE 0.11) | 0.256 / 0.151 |
+| NFL | 34 / 27 / 44° (Defense's operator) | 90 / 82% | | |
+
+- Speeds kept are from `frontcourse`: runner speed at +0.1 / +0.2 s over his speed at −0.1 s.
+- **The holder turn:** the capsule and layer keep nearly all of `GRASP_ARM_MOMENT`'s reduction (side +4°, front +4°, behind −1°).
+- **Front-on retention:** they move it toward the NFL (+0.2 s: 50 → 60%; +0.1 s: 73 → 86%). `GRASP_ARM_MOMENT` alone does not touch it.
+- **Cost:** missed tackles +0.017 a run, broken +0.024. Yards +0.34 against run-ref-13, +0.46 against `GRASP_ARM_MOMENT` alone.
+- That direction is NFL-ward on the shared tackle index: head-on yards after contact are 1.1 in the sim against the NFL's 2.3.
+- **Stays off.** Defense's `HOLD_FACING` read on `GRASP_ARM_MOMENT` comes next, then a combined read.
