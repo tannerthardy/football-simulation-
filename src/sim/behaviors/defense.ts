@@ -43,12 +43,12 @@ import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, q
 const passFirstOn = () => process.env.PASS_FIRST !== '0';
 /** DB_SLOWPLAY (experimental, off): see ManCoverage.slowPlay. Fraction of the receiver's tempo he gives
  * (NFL off corners on runs, 0.9 of 3 yd/s), cushion he keeps (yd), receiver speed that is a release (of his vmax). */
-const RUN_BLITZ = process.env.RUN_BLITZ === '1';
+const RUN_BLITZ = process.env.RUN_BLITZ !== '0';
 /** END_CHASE (experimental, off): see the edge squeeze; how far into the backfield the chase aims (yd). */
-const END_CHASE = process.env.END_CHASE === '1', CHASE_DEPTH = 1.0;
-const DB_SLOWPLAY = process.env.DB_SLOWPLAY === '1', SLOW_GIVE = 0.3, SLOW_MIN = 1.5, SLOW_SPRINT = 0.75, SLOW_WIDTH = 8;
+const END_CHASE = process.env.END_CHASE !== '0', CHASE_DEPTH = 1.0;
+const DB_SLOWPLAY = process.env.DB_SLOWPLAY !== '0', SLOW_GIVE = 0.3, SLOW_MIN = 1.5, SLOW_SPRINT = 0.75, SLOW_WIDTH = 8;
 /** LB_READ_STEP (experimental, off): see ZoneCoverage's box-backer read step; how far downhill it goes (yd). */
-const LB_READ_STEP = process.env.LB_READ_STEP === '1', READ_STEP = 0.3;
+const LB_READ_STEP = process.env.LB_READ_STEP !== '0', READ_STEP = 0.3;
 
 /** Has this defender read run? (His own read from what he's seen — see recognition.ts.) */
 export function believesRun(sim: PlaySim, a: Agent): boolean {
@@ -128,14 +128,14 @@ export function pursueIfLive(sim: PlaySim, a: Agent): MoveCommand | null {
  * key-read.ts. */
 const stepSeen = KEY_REACT ? KEY_STEP_SEEN : STEP_SEEN;
 /** KEY_PACE (experimental, off): how much faster than the key's own step he answers it (yd/s). */
-const KEY_PACE = process.env.KEY_PACE === '1', KEY_STEP_LEAD = 0.5;
+const KEY_PACE = process.env.KEY_PACE !== '0', KEY_STEP_LEAD = 0.5;
 /** KEY_DEPTH (experimental, off): see the key step; his upfield step is his own read step. */
-const KEY_DEPTH = process.env.KEY_DEPTH === '1';
+const KEY_DEPTH = process.env.KEY_DEPTH !== '0';
 /** LB_GUARD_STEP (experimental, off): see ZoneCoverage's unsure box backer. */
-const LB_GUARD_STEP = process.env.LB_GUARD_STEP === '1';
+const LB_GUARD_STEP = process.env.LB_GUARD_STEP !== '0';
 /** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
  * read lean leads his step before the key's own movement must confirm it (s). */
-const STANCE_TELL = process.env.STANCE_TELL === '1';
+const STANCE_TELL = process.env.STANCE_TELL !== '0';
 /** BACKSIDE_SHOOT (experimental, off): see the key-step read below; how far behind the line he aims (yd). */
 const BACKSIDE_SHOOT = process.env.BACKSIDE_SHOOT === '1', SHOOT_DEPTH = 1.5;
 /** DEF_STANCE: pad level a hand-down lineman keeps coming off the ball, and for how long (s). */
@@ -497,7 +497,7 @@ export function runFit(a: Agent, sim: PlaySim, gap: Gap, gapSign: number, read?:
  * not break down for a blocker when the carrier he sees is closer: a tackle
  * comes first. Pads at the engaged run-fit level (0.85, engagement.ts);
  * the window is the time his brakes need plus one decision beat. */
-const BACKER_TAKEON = process.env.BACKER_TAKEON === '1', TAKEON_PADS = 0.85, TAKEON_PACE = 0.5, TAKEON_REACH = 2.5, TAKEON_CLOSING = 2;
+const BACKER_TAKEON = process.env.BACKER_TAKEON !== '0', TAKEON_PADS = 0.85, TAKEON_PACE = 0.5, TAKEON_REACH = 2.5, TAKEON_CLOSING = 2;
 /** BACKER_TAKEON: a blocker's working reach beyond the two bodies (yd; the run-block reach, engagement.ts inBlockReach). */
 const TAKEON_ARM = 0.45;
 /** BACKER_TAKEON: the blocker's own speed at him that makes him a climber (yd/s; a jog). */

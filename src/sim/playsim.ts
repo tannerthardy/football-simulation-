@@ -58,7 +58,7 @@ import { afterStep, releaseBond, tryTackles, updateBond, type TackleBond } from 
 import type { BallState, CarrierSegment, Frame, PenaltyCall, FoulEvidence, FoulRecord, PlayEvent, PlayEventType, PlayOutcome, PlayResult, PlayStats, ReplayLevel } from './types.js';
 
 /** ALIGN_HABIT (experimental, off): see alignDefense. */
-const ALIGN_HABIT = process.env.ALIGN_HABIT === '1';
+const ALIGN_HABIT = process.env.ALIGN_HABIT !== '0';
 export interface PlaySetup {
   offense: Partial<Record<OffSlot, Player>>;
   /** The defense's scouting of this offense (run/pass tendencies so far). */

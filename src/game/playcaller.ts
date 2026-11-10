@@ -37,9 +37,9 @@ const SAM_ON_TE = process.env.SAM_ON_TE === '1', SAM_ON_RATE = 0.5;
 /** MUG_CALLS (experimental, off): mug rates [>=1, 2] by package and situation
  * (1 = 1st, 2 = 2nd, 3 = 3rd/4th and short (< 4), 4 = 3rd/4th and long). NFL 2022
  * snap frames: a non-lineman 0-1.6 yd off the ball inside the guards. */
-const MUG_CALLS = process.env.MUG_CALLS === '1';
+const MUG_CALLS = process.env.MUG_CALLS !== '0';
 /** NICKEL_FRONTS (experimental, off): shares of nickel's five-man front and of the three-man front, by moment. */
-const NICKEL_FRONTS = process.env.NICKEL_FRONTS === '1';
+const NICKEL_FRONTS = process.env.NICKEL_FRONTS !== '0';
 const SUB_SHARE: Record<'nickel' | 'dime', Record<Moment, Record<string, number>>> = {
   nickel: {
     early: { penny: .02, penny_bear: .05, mint: .03, okie: .01 },
@@ -49,13 +49,13 @@ const SUB_SHARE: Record<'nickel' | 'dime', Record<Moment, Record<string, number>
   dime: { early: { okie: .11 }, third: { okie: .18 }, short: { okie: .12 } },
 };
 /** MUG_PRESSURES (experimental, off): mug packages by mug count; the remainder bails (no pressure). */
-const MUG_PRESSURES = process.env.MUG_PRESSURES === '1';
+const MUG_PRESSURES = process.env.MUG_PRESSURES !== '0';
 const MUG_PACKAGES: Record<'double' | 'single', Array<[string, number]>> = {
   double: [['mug_one', .24], ['mug_sim', .08], ['mug_fire', .06], ['mug_both', .19]],
   single: [['mug_one', .44], ['mug_sim', .06]],
 };
 /** SHORT_BASE (experimental, off): share of short-yardage snaps vs heavy personnel played from the heavy package. */
-const SHORT_BASE = process.env.SHORT_BASE === '1', SHORT_HEAVY_RATE = .15;
+const SHORT_BASE = process.env.SHORT_BASE !== '0', SHORT_HEAVY_RATE = .15;
 /** NICKEL_FRONTS: share of nickel calls played from 3-3-5 personnel (the 3-3 Stack). */
 const STACK_RATE = .03;
 const FRONT_BY_ID_SUB = Object.fromEntries(FRONTS.filter(f => NICKEL_FRONT_IDS.has(f.id)).map(f => [f.id, f]));
@@ -157,7 +157,7 @@ const COVER_CALL = process.env.COVER_CALL !== '0';
  * ours level with the ball). Duo uses the tracked man/duo label. Run
  * formations themselves follow the tracked alignment shares of all runs
  * (ours were about 49% gun, 39% under centre). */
-const RUN_FORM_PAIR = process.env.RUN_FORM_PAIR === '1';
+const RUN_FORM_PAIR = process.env.RUN_FORM_PAIR !== '0';
 /** RUN_FORM_PAIR: tracked quarterback alignment shares of all 2022 runs. */
 const RUN_QB_SHARE = { under: 0.585, pistol: 0.059, gun: 0.347 };
 const RUN_FORM_RATIO: Partial<Record<RunConcept['scheme'], Record<'under' | 'pistol' | 'gun', number>>> = {

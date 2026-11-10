@@ -22,18 +22,18 @@
  */
 import type { Vec2 } from '../core/vec.js';
 
-export const ENGAGED_TECHNIQUE = process.env.ENGAGED_TECHNIQUE === '1';
+export const ENGAGED_TECHNIQUE = process.env.ENGAGED_TECHNIQUE !== '0';
 /** REACH_CARRY (experimental, off): a racing reach who has the man's play-side
  * shoulder keeps running at his own race pace and carries the man on his
  * hands, rather than shadowing the man's own lateral speed. Not past the
  * shoulder: a blocker already well across still comes back to it. */
-export const REACH_CARRY = process.env.REACH_CARRY === '1';
+export const REACH_CARRY = process.env.REACH_CARRY !== '0';
 /** ENGAGED_DEFENDER (default off): an engaged defender off the first-level
  * stack read (box backers, unassigned men) moves on his own controller's
  * request; the contact (hands, bodies, World) decides how far he gets. The
  * rep law no longer authors his feet. Defender behaviour is Defense's: this
  * is the neutral hook. */
-export const ENGAGED_DEFENDER = process.env.ENGAGED_DEFENDER === '1';
+export const ENGAGED_DEFENDER = process.env.ENGAGED_DEFENDER !== '0';
 /** REACH_TECHNIQUE (default off): a zone reach blocker races for his man's
  * play-side shoulder from contact at his own lateral speed, never mirroring
  * away from the play; on the shoulder he holds it and goes at least with the
@@ -42,7 +42,7 @@ export const ENGAGED_DEFENDER = process.env.ENGAGED_DEFENDER === '1';
  * and his own feet are under him. Without it a reach blocker only
  * mirrored his man: a lineman who held still was never reached (outside zone:
  * blocker lateral 0.02 yd from 0.4 to 1.2 s, across his face 9-23%). */
-export const REACH_TECHNIQUE = process.env.REACH_TECHNIQUE === '1';
+export const REACH_TECHNIQUE = process.env.REACH_TECHNIQUE !== '0';
 /** REACH_RACE (off): the reach is a race for the man's play-side shoulder, not
  * a mirror of him. Behind the shoulder the blocker opens his hips toward the
  * play (up to 45 degrees off the man) and runs; his lateral request is his
@@ -50,14 +50,14 @@ export const REACH_TECHNIQUE = process.env.REACH_TECHNIQUE === '1';
  * holds it and goes at least as fast as the man. Physics (facing-dependent
  * speed, traction, the man on his hands, directional leg drive) decides what
  * he achieves and what the open hips cost him. */
-export const REACH_RACE = process.env.REACH_RACE === '1';
+export const REACH_RACE = process.env.REACH_RACE !== '0';
 /** DOUBLE_TRACK (off): on a stretch call both members of a double keep
  * stepping the zone track with their hands on the man (the play's track
  * tempo, toward the play), instead of mirroring him and holding a spot beside
  * each other. The partner on the man's backside half covers the inside, so
  * the pair can keep stepping without running past him; the man is carried or
  * has to fight it, and the World decides which. */
-export const DOUBLE_TRACK = process.env.DOUBLE_TRACK === '1';
+export const DOUBLE_TRACK = process.env.DOUBLE_TRACK !== '0';
 /** Track tempo as a share of vmax (the call's track, blocking.ts zoneFlow). */
 export const TRACK_TEMPO = 0.45;
 /** How far the racing reach blocker opens his hips off the man (rad). */
