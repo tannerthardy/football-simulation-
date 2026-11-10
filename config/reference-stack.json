@@ -68,6 +68,8 @@
     "GAZE": "off",
     "GRASP_ARMS": "off",
     "GRASP_PATCH": "off",
+    "GRASP_SLIDE": "off",
+    "GRASP_CLOSURE": "off",
     "GUN_MESH": "on",
     "GUN_MESH_GO": "on",
     "GUN_SNAP": "on",

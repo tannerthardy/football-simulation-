@@ -140,6 +140,9 @@ export interface GraspJoint {
   brace?: number;
   /** Height of the hold, yd; otherwise interpolates from torso to lower legs. */
   height?: number;
+  /** 0–1: how closed the arms' wrap is (the lock of the grip's force law);
+   * read only by GRASP_CLOSURE. Omission is an open grip (0). */
+  lock?: number;
   readonly contactAnatomy?: Readonly<ContactAnatomy>;
   achievedContactHeight?: number;
   firstApplied?: ContactSnapshot;
@@ -375,6 +378,21 @@ const HANDS_FRICTION = process.env.HANDS_FRICTION === '1';
  * hands and torso contacts stay on the centre law (HANDS_CHEST).
  * docs/reviews/effective-mass.md, step 2 (b). */
 const GRASP_PATCH = process.env.GRASP_PATCH === '1';
+/** Experimental (GRASP_SLIDE=1, off): a grasp's sideways hold is friction on
+ * its own tension. The tangential row is limited to CONTACT_FRICTION times the
+ * hold's transmitted tension (|ln - reel|), inside the grip's capacity bound.
+ * Off, the row welds the grip point (zero sideways slip) whenever the force
+ * that takes is under capacity: on the fixed zone runs a front-on grasp forms
+ * at arm's length a tick before the pads meet and stops the sliding at 12-17%
+ * of its capacity (slip-split.mts). Arms that have just arrived squeeze little,
+ * so the runner slides past them until the squeeze builds.
+ * docs/reviews/effective-mass.md. */
+const GRASP_SLIDE = process.env.GRASP_SLIDE === '1';
+/** Experimental (GRASP_CLOSURE=1, off; with GRASP_SLIDE): a closed wrap holds
+ * sideways by geometry, not friction. The rigid share of the bound is the wrap
+ * share of the grip's force law, 2.5 l^2 / (0.3 + 2.5 l^2) for the joint's lock
+ * l (tackle.ts gripForce); the rest is friction on tension. */
+const GRASP_CLOSURE = process.env.GRASP_CLOSURE === '1';
 /** Experimental (GRASP_ARMS=1, off): an upper-body grasp acts where the
  * holder's arms meet the runner's torso, not at his centre. In centre mode its
  * rows had no lever arms, so the grip braked the two centres' relative motion
@@ -2634,7 +2652,13 @@ export class World {
       :this.pairImpulse(r.i,r.j,r.nx*dn,r.ny*dn,r.actor,'grasps',false,channel,
         (r.ni ?? 0) * dn, (r.nj ?? 0) * dn);
     r.ln+=dn*fraction;
-    const tangentLimit = Math.sqrt(Math.max(0, lim * lim - (r.ln-r.reel)**2));
+    let tangentLimit = Math.sqrt(Math.max(0, lim * lim - (r.ln-r.reel)**2));
+    if (GRASP_SLIDE) {
+      // Friction on the hold's own tension; with GRASP_CLOSURE the wrap's
+      // closed share of the bound stays rigid.
+      const l = GRASP_CLOSURE ? clamp(jt.lock ?? 0, 0, 1) : 0, rigid = 2.5 * l * l / (0.3 + 2.5 * l * l);
+      tangentLimit = Math.min(tangentLimit, CONTACT_FRICTION * Math.abs(r.ln - r.reel) + rigid * tangentLimit);
+    }
     if (coupled) {
       const rv = this.graspVelocity(jt), tx = -r.ny, ty = r.nx;
       const vt = rv.x * tx + rv.y * ty - (r.ri ?? 0)*(a.spin ?? 0) - (r.rj ?? 0)*(b.spin ?? 0);

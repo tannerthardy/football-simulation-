@@ -183,6 +183,8 @@
     "HANDS_FRICTION": "0",
     "GRASP_ARMS": "0",
     "GRASP_PATCH": "0",
+    "GRASP_SLIDE": "0",
+    "GRASP_CLOSURE": "0",
     "HIP_BRACE": "0",
     "THROW_REACT": "0",
     "THROW_HORIZON": "0",

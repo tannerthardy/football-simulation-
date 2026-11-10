@@ -415,7 +415,7 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
   const reach = c.profile.radius + d.profile.radius + d.profile.reach * 0.9 + (extended ? 0.9 : 0);
   // He pulls himself into the runner: a sure tackler's arms reel faster.
   const pull = extended ? 0.6 : 1.2 + 1.2 * d.r('tackling');
-  const joint: GraspJoint = { kind: 'grasp', a: d.body, b: c.body, reach: Math.max(reach, dd + 0.15), capacity: oneArm ? gripForce(d, quality, 0, 1) : gripForce(d, quality), legs, pull, hold: dd, origin,
+  const joint: GraspJoint = { kind: 'grasp', a: d.body, b: c.body, reach: Math.max(reach, dd + 0.15), capacity: oneArm ? gripForce(d, quality, 0, 1) : gripForce(d, quality), lock: oneArm ? 0 : clamp(quality, 0, 1), legs, pull, hold: dd, origin,
     ground: extended ? Math.max(reach, dd + 0.15) : undefined };
   if (REACH_CONTACT && !extended && !wasEngaged && dd > c.profile.radius + d.profile.radius) {
     joint.brace = dd;
@@ -537,6 +537,7 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
     if (HOLD_FINISH) joint.height = upperHoldHeight(c, joint.legs);
     joint.capacity = oneArm && bond.oneArm!.has(d) ? gripForce(d, clamp(next, 0.05, 1), 0, 1)
       : gripForce(d, clamp(next, 0.05, 1), Math.min(clamp(next, 0.05, 1), held));
+    joint.lock = oneArm && bond.oneArm!.has(d) ? 0 : Math.min(clamp(next, 0.05, 1), held);
     // The lower-body share describes the acquired point's motion relative
     // to corrective support. Grip security limits transmitted load above;
     // it cannot move that point or change its geometric Jacobian.
