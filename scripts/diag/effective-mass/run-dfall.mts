@@ -31,7 +31,7 @@ for (const seed of SEEDS) { let k = 0; for (const p of JSON.parse(readFileSync(`
       rel: w.report?.leanRelease?.[i] ? Math.hypot(w.report.leanRelease[i].x, w.report.leanRelease[i].y) : NaN, out: sup.out,
       face: Math.abs(Math.atan2(Math.sin(a.body.facing - Math.atan2(-ny, -nx)), Math.cos(a.body.facing - Math.atan2(-ny, -nx)))) * 57.3,
       reqLat: it?.vel ? Math.abs(-it.vel.x * ny + it.vel.y * nx) : NaN, vLat: Math.abs(-a.vel.x * ny + a.vel.y * nx), accel: sup.accel ? sup.accel.x * nx + sup.accel.y * ny : NaN,
-      cC: sup.causes?.contact ?? 0, cL: sup.causes?.legs ?? 0, cO: sup.causes?.overspeed ?? 0 }; };
+      rec: w.recovery[i] / Math.max(1e-9, sp.stepSpeed), cC: sup.causes?.contact ?? 0, cL: sup.causes?.legs ?? 0, cO: sup.causes?.overspeed ?? 0 }; };
   runContactObservers.set(sim, (e: any, ph: string, data: any) => { if (ph !== 'end' || ended.has(e)) return; ended.add(e);
     if (data?.reason !== 'body down') return; const t = sim.t;
     for (const [who, a, o] of [['defender', e.defender, e.blocker], ['blocker', e.blocker, e.defender]] as const) {
