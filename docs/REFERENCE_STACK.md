@@ -410,6 +410,35 @@ Defense #451 and #453. An unsure box backer leans downhill with his own run evid
 
 The rush row is the one to watch: not resolved, but its interval sits mostly above zero. The fixed-run report for run-ref-10 is in [reviews/run-ref-10-report.md](reviews/run-ref-10-report.md).
 
+## The tackle package: all merged off, none on yet (2026-11-10)
+
+No stack change; the stack stays `run-ref-10`. Four flags make up the package: `GRASP_PATCH` (Flex #462), `HIP_BRACE` (Flex #465), `HOLD_FINISH` (Defense #469) and `CONTACT_LAYER` (Flex #455).
+
+- **`HOLD_FINISH` (decision).** A holder beside or behind the runner plants against the runner's travel, committing in proportion to his grip and only while the grip holds; while it slips he keeps his feet moving. Upper grips get a real height, from the shoulder line down to the waist.
+- **`HIP_BRACE` (physics).** A hold above the runner's hips is braced by his hip-extension torque, from the same budget as his leg drive; only the excess pitches him. No new constant.
+
+Two measurements disagree, and that is why nothing is on.
+
+| Fixed 1,321 runs, against run-ref-10 | Paired yards a run (SE) | Stuffs | Broken a run |
+|---|---|---|---|
+| `HOLD_FINISH` | −0.06 (0.03) | 14.4% | 0.160 |
+| `HOLD_FINISH` + `HIP_BRACE` (the finish) | −0.57 (0.04) | 17.4% | 0.117 |
+| `HIP_BRACE` + `GRASP_PATCH`, default heights | −0.16 (0.05) | 13.2% | 0.132 |
+| those + `CONTACT_LAYER` | +0.01 (0.11) | 11.7% | 0.144 |
+
+| 16 whole games, paired, seed 11 ([card](reviews/2026-11-10-tackle-package-scorecard.md)) | run-ref-10 | Finish | + `GRASP_PATCH` | + `CONTACT_LAYER` too |
+|---|---|---|---|---|
+| Points a team-game | 34.8 | 34.5 | 39.3, moved | 35.6 |
+| Rush yards a carry | 3.77 | 4.34 | 4.26 | 4.25 |
+| Run stuff rate (NFL 15.9–23.5%) | 14.9% | 16.9% | 8.9%, moved | 9.0%, moved |
+| Yards an attempt | 9.69 | 10.05 | 10.36, moved | 9.44 |
+| Missed + broken tackles a play | 0.28 | 0.25, moved | 0.28 | 0.26 |
+| Fumbles lost a team-game | 0.78 | 0.34, moved | 0.75 | 0.69 |
+
+- **The finish alone is not a coherent step.** The whole-game card looked clean and I began to turn it on. Defense's fixed-run arms stopped that: on identical plays the finish costs 0.57 yd a run (OZ −0.38, IZ −0.66, gap −0.63), which would put every concept under the NFL's, and Flex's contact course for `HIP_BRACE` alone had gain after contact at 1.14 yd and contact to end at 0.7 s against the NFL's 2.84 yd and 1.5 s. The card's +0.57 rush yards was whole-game drift. Today's grasp pins the runner where he is hit; adding a finish to a pinned runner stops him twice.
+- **The package is the unit.** `GRASP_PATCH` frees the pair to turn (too many yards alone, +0.49); the finish ends the hold (too few alone, −0.57); together the fixed runs land near today's yards with a contact course closer to the NFL's.
+- **What holds the package.** In whole games it loses twice the stuffs the fixed runs do (14.9% to 8.9% against 14.5% to 13.2%), scoring rises 4.5 points (resolved), and 7 of 9 runs of 20+ reach 40. Flex is finding what whole games contain that the fixed runs do not. That explanation decides it.
+
 ## What to do next
 
 Ordered by how much each unblocks. Every measurement below is taken on `npm run ref` and reported with the stack id.
