@@ -58,7 +58,12 @@ class Body:
         return (self.x - sx, self.y - sy), (self.x + sx, self.y + sy)
 
 
-def run(v, off, shape, hitter_yaw, free_yaw, mu=0.4, T=1.0, dt=2e-5):
+G = 10.72          # yd/s^2
+TRACTION = 1.25    # ground-force limit as a multiple of weight: the engine's limit measured in game (1287 kg yd/s^2 on 96 kg)
+D0 = 0.13          # compliant layer depth, yd (0.12 m: pads, tissue and arms yielding before the stiff core)
+
+
+def run(v, off, shape, hitter_yaw, free_yaw, mu=0.4, T=1.0, dt=2e-5, law='today', drive=(0.0, 0.0)):
     R = Body(96, 210, 0.0, 0.0, v, 0.0, shape)
     H = Body(117, 258, 1.2, off, 0.0, hitter_yaw, shape)
     mu_pair = R.m * H.m / (R.m + H.m); w = 2 * math.pi * 9.0
@@ -81,7 +86,15 @@ def run(v, off, shape, hitter_yaw, free_yaw, mu=0.4, T=1.0, dt=2e-5):
             vHx, vHy = H.vx - H.w * rHy, H.vy + H.w * rHx
             rvx, rvy = vRx - vHx, vRy - vHy          # runner relative to hitter at the contact
             vn = rvx * nx + rvy * ny                 # closing along the normal (+ = closing)
-            Fn = max(0.0, kn * pen + cn * vn)
+            if law == 'today':      # the engine's torso row: 9 Hz, critically damped
+                Fn = max(0.0, kn * pen + cn * vn)
+            elif law == 'hunt':     # ramped damper (Hunt-Crossley): damping grows with compression, none at first touch
+                Fn = max(0.0, kn * pen * (1 + 1.5 * 0.3 / YD_M * vn))
+            else:                   # compliant layer: soft over D0 (k_s), then the stiff core; ramped damping
+                ks = 2 * 0.5 * mu_pair * (4.0 * YD_M) ** 2 / (0.12 ** 2) * 1.0   # N/m: peak ~ KE / D0 at 4 yd/s
+                ks = ks  # kg/s^2, the same number in yd units
+                spring = ks * min(pen, D0) + kn * max(0.0, pen - D0)
+                Fn = max(0.0, spring * (1 + 1.5 * 0.3 / YD_M * vn))
             tx, ty = -ny, nx; vt = rvx * tx + rvy * ty
             Ft = -max(-mu * Fn, min(mu * Fn, cn * vt))   # regularized Coulomb friction on the runner
             fx, fy = -Fn * nx + Ft * tx, -Fn * ny + Ft * ty   # force on the runner
@@ -89,8 +102,12 @@ def run(v, off, shape, hitter_yaw, free_yaw, mu=0.4, T=1.0, dt=2e-5):
             if free_yaw:
                 R.w += (rRx * fy - rRy * fx) / R.I * dt
                 H.w += (rHx * -fy - rHy * -fx) / H.I * dt
-        R.vx += fx / R.m * dt; R.vy += fy / R.m * dt
-        H.vx -= fx / H.m * dt; H.vy -= fy / H.m * dt
+        # Leg drive: a share of each body's ground-force limit, the runner forward while under his 4 yd/s request,
+        # the hitter toward the runner while he is not already moving that way faster than 0.5 yd/s.
+        gr = drive[0] * TRACTION * R.m * G if R.vx < v else 0.0
+        gh = drive[1] * TRACTION * H.m * G if H.vx > -0.5 else 0.0
+        R.vx += (fx + gr) / R.m * dt; R.vy += fy / R.m * dt
+        H.vx += (-fx - gh) / H.m * dt; H.vy -= fy / H.m * dt
         for b in (R, H):
             b.x += b.vx * dt; b.y += b.vy * dt; b.yaw += b.w * dt
         t += dt
@@ -123,4 +140,16 @@ for off in (0.1, 0.2, 0.31, 0.4):
             print(f'   {label:36} no contact'); continue
         print(f"   {label:36} kept +0.1 {100*o['kept'][0.1]:3.0f}% +0.2 {100*o['kept'][0.2]:3.0f}% +0.3 {100*o['kept'][0.3]:3.0f}% +0.5 {100*o['kept'][0.5]:3.0f}%"
               f" | hitter +0.2 {o['hv'][0.2]:4.2f} yd/s | sep +0.3 {o['sep'][0.3]:.2f} +1.0 {o['sep'][1.0]:.2f} | hitter yaw +0.3 {o['yaw'][0.3]:+4.0f} deg | peak {o['peak']/1000:4.1f} kN")
+print()
+print('Ground force and contact law at the NFL median offset (0.31 yd) and 0.20 yd; leg drive as a share of each ground-force limit')
+print('(runner, hitter): none; observed in game (0.14, 0.28); runner at full limit (1.0, 0.28); both full (1.0, 1.0).')
+for off in (0.31, 0.20):
+    for law in ('today', 'hunt', 'layer'):
+        for label, shape, yaw, free in (('disc', 'disc', SQUARE, False), ('capsule square, yaw free', 'capsule', SQUARE, True), ('capsule side-on, yaw free', 'capsule', SIDE, True)):
+            cells = []
+            for dr in ((0.0, 0.0), (0.14, 0.28), (1.0, 0.28), (1.0, 1.0)):
+                o = run(4.0, off, shape, yaw, free, law=law, drive=dr)
+                cells.append(f"{100*o['kept'][0.1]:3.0f}/{100*o['kept'][0.2]:3.0f}/{100*o['kept'][0.3]:3.0f}% {o['peak']/1000:4.1f}kN")
+            print(f"  off {off:.2f} {law:6} {label:26} | " + ' | '.join(cells))
+print('  (each cell: speed kept at +0.1/+0.2/+0.3 s from first touch, peak contact force)')
 print('NFL from torso distance: about 0.3 yd/s lost per tenth at 3-5 yd/s (~92% kept at +0.1 s); separation reopens 0.49 -> 0.92 by +1.0 s; measured tackle peaks 1.7-3.4 kN.')
