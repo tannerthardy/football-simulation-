@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-14",
+  "id": "run-ref-15",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -31,6 +31,7 @@
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SHOOT": "off",
+    "BACKSIDE_SWAP": "off",
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
     "BLOCK_RELEASE": "off",
@@ -71,7 +72,9 @@
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "GRASP_ARMS": "off",
+    "GRASP_ARM_MOMENT": "on",
     "GRASP_CLOSURE": "off",
+    "GRASP_JEOPARDY": "on",
     "GRASP_PATCH": "on",
     "GRASP_SLIDE": "off",
     "GRIP_REACH": "on",
@@ -91,6 +94,7 @@
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
     "IZ_OFFSET": "on",
+    "KEEPER_HIP": "off",
     "KEY_DEPTH": "on",
     "KEY_PACE": "on",
     "KEY_REACT": "on",
@@ -121,6 +125,7 @@
     "PRESS_RELEASE": "on",
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
+    "QB_FEEL": "off",
     "QB_RHYTHM": "on",
     "RACE_LEAN": "off",
     "RB_COMMIT": "on",

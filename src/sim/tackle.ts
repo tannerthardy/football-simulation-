@@ -71,6 +71,15 @@ const REACH_CONTACT = process.env.REACH_CONTACT === '1';
 /** Experimental early hand acquisition with coherent approach footwork through
  * a committed strike. Ordinary grip and strike; default-off. */
 const TACKLE_TOUCH = process.env.TACKLE_TOUCH === '1';
+/** GRASP_JEOPARDY (experimental, off): the in-the-grasp whistle is the
+ * rule's exception, not the ordinary sack. The rule declares a passer down
+ * when he is in the grasp and control of a tackler behind the line and his
+ * safety is in jeopardy. On, a pocket QB is whistled in the grasp only while a
+ * tackler has control of him (the arms-tight measure, not a grip at full
+ * stretch) and his body is going down (support falling); otherwise he is ruled
+ * like any runner: stopped forward progress or down by contact. Off: a pocket
+ * QB held 0.25 s with control or grip 0.6 is down at once. */
+const GRASP_JEOPARDY = process.env.GRASP_JEOPARDY !== '0';
 /** Experimental (WRAP_FOOT=1, off): a hold's coupling to the carrier's
  * corrective step is its secure leg share only (see updateBond). */
 const WRAP_FOOT = process.env.WRAP_FOOT === '1';
@@ -684,7 +693,9 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
   // A passer whose arm is already coming forward gets the pass off.
   const delivering = sim.deliveryAt >= 0 && t >= sim.deliveryAt;
   const pocketQB = c === sim.qb && sim.isPass && sim.throwAt < 0 && !sim.scrambled && !delivering;
-  const inGrasp = pocketQB && held >= 0.25 && bond.tacklers.some((d) => (control.get(d) ?? grip.get(d) ?? 0) >= 0.6);
+  const inGrasp = pocketQB && (GRASP_JEOPARDY
+    ? c.body.support?.state === 'falling' && bond.tacklers.some((d) => (control.get(d) ?? 0) >= 0.6)
+    : held >= 0.25 && bond.tacklers.some((d) => (control.get(d) ?? grip.get(d) ?? 0) >= 0.6));
   // A running carrier is not down merely because the arms held for seconds.
   // Upright tackles require stopped progress; physical falls are checked below.
   if (inGrasp || (bond.stalled ?? 0) >= STALL) whistleDown(sim, bond);
