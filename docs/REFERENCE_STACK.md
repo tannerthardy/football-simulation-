@@ -307,6 +307,23 @@ Next for the run game: see run-ref-7 below. (An earlier version of this paragrap
 - **What is left of the QB's pessimism is the defense's doing:** defenders he expects to beat the ball are a median 12.4 yd from it when it arrives, because defenders do not close during the ball's flight (COV-1: 0.12 yd against the NFL's 0.65). The same behaviour is the first suspect for YAC, which is Coverage's next item.
 - **Outside zone: it is the defensive edge (Run Game, corrected).** Where the back crosses the line is close to the NFL at the median, but the spread of lanes is not: he bounces 6+ yd outside the tackle on 8% of gun runs (NFL 28%) and crosses within 3 yd of the tackle on 45% (NFL 34%). The edge defender steps inside and stays level (lateral at 1.0 / 1.5 s -0.32 / +0.41 yd against the NFL's +0.69 / +1.75; depth -0.16 / -0.23 against -0.28 / -0.81), which fills the window where the back meets a blocked lineman and takes away the bounce. `STRETCH_TRACK` re-tested: it costs outside zone 0.39 yd (SE 0.21) by pressing wider into the same edge; it stays off. Defense has the edge; Run Game re-checks the back's read on their candidate.
 
+## Front-on contact: the NFL course (Flex, effective-mass Phase 0, 2026-11-10)
+
+`frontcourse.py` is in `npm run ref:report` (full output for run-ref-7: [reviews/run-ref-7-report.md](reviews/run-ref-7-report.md)); the write-up is [reviews/effective-mass.md](reviews/effective-mass.md). Front-on first contacts at 3-5 yd/s, speed along the runner's approach (yd/s), NFL pads against sim:
+
+| | 0 | +0.1 | +0.2 | +0.3 | +0.5 | +1.0 s |
+|---|---|---|---|---|---|---|
+| NFL runner (n 312) | 4.00 | 3.74 | 3.42 | 3.12 | 2.48 | 1.31 |
+| Sim runner (n 123, run-ref-4) | 4.52 | 3.21 | 1.82 | 1.76 | 1.27 | 1.22 |
+| NFL hitter | 0.29 | 0.33 | 0.52 | 0.62 | 0.92 | 0.89 |
+| Sim hitter | -0.14 | 0.47 | 1.30 | 1.04 | 0.77 | 0.51 |
+
+- **The gap is in the first exchange.** The sim runner loses 2.7 yd/s within 0.2 s; the NFL runner loses about 0.3 yd/s each tenth, steadily, for a second. The plan's alternative (that the courses match early and separate later) is ruled out; effective mass at first contact is the right target, as Tanner chose.
+- The NFL hitter is carried back steadily (about a third of the NFL gain is his displacement); the sim's is knocked back in one impulse and then stops.
+- NFL bodies do not stay stuck: separation closes to torso distance (0.49 yd at +0.2 s) and reopens (0.92 by +1.0 s). The sim's stays at 0.52 for the whole second.
+- Contact geometry is not the cause: median offset from the runner's path at closest approach is 0.31 yd in the NFL and 0.24 in the sim.
+- Reading caution: time zero is first proximity (centres within 1.0 yd). NFL pairs are 0.87 yd apart then and reach torso distance at about +0.2 s; sim pairs start at 0.76 and reach it by +0.1 s. Compared from torso contact, the conclusion is the same (NFL -0.3 yd/s a tenth; sim -1.4 in the first tenth), but the bench target should be set from torso contact, not from time zero.
+
 ## What to do next
 
 Ordered by how much each unblocks. Every measurement below is taken on `npm run ref` and reported with the stack id.

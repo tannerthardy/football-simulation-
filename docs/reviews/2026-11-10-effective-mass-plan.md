@@ -41,6 +41,16 @@ For front-on first contacts (the `hitterback.py` definition), split by approach 
 
 Sim side: the same, with the runner's and hitter's *contact-point* velocity where the law gives one, and `body.vel` alongside it.
 
+Additions agreed with Flex (2026-11-10), built into the operator (`scripts/diag/run-operators/frontcourse.py`):
+- **(a) Collision, not proximity.** The first-contact rule (centres within 1.0 yd) includes arm's-reach touches. Each
+  contact is flagged by whether the two centres close to torso distance (<= 0.65 yd) within 0.3 s, and the minimum
+  separation is reported, so NFL touches are not compared with sim collisions.
+- **(b) Contact point, not COM.** A runner who pitches over the hitter moves his pads forward by most of a torso length
+  while his COM moves less, so a forward fall is already inside the NFL gain. Every comparison uses the contact point's
+  displacement and speed (pads on NFL tracking; the sim's contact point once the law gives one).
+- **(c) Masses.** If the source carries no weights, the momentum column is omitted and the speed course (runner and
+  hitter along the approach axis) stands in, with group medians, and the output says so. Sim dumps now export masses.
+
 **Gate 0.** Write down, from these tables only:
 - how much pad speed NFL runners keep at +0.1 s, by bin (this is the target for the first exchange);
 - when the NFL and sim courses separate: by +0.1 s, or between +0.3 and +1.0 s;
