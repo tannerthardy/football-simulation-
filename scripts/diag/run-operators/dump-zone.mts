@@ -5,7 +5,7 @@ const { PlaySim } = await import(`${W}/src/sim/playsim.ts`); PlaySim.recordedSin
 const { restoreSetup } = await import(`${W}/scripts/diag/saved-play.ts`);
 const CON: Record<string, string> = { outsideZone: 'OUTSIDE ZONE', wideZone: 'OUTSIDE ZONE', insideZone: 'INSIDE ZONE' };
 for (let seed = 7; seed <= 29; seed += 2) { let i = 0; for (const p of JSON.parse(readFileSync(`${W}/out/matched-restage/seed${seed}-run.json`, 'utf8'))) {
-  const id = `s${seed}-${i++}`; if (p.pass) continue; const st: any = restoreSetup(Buffer.from(p.setup, 'base64')); const con = CON[st.offCall?.run?.scheme]; if (!con) continue;
+  const id = `s${seed}-${i++}`; if (p.pass) continue; const st: any = restoreSetup(Buffer.from(p.setup, 'base64')); if (process.env.DIAG_HAND_PATCH === '1') st.handContact = 'patch'; /* diagnostic: the experimental contact patch */ const con = CON[st.offCall?.run?.scheme]; if (!con) continue;
   const sim: any = new PlaySim(st); const dir = sim.attackDir('O'), los = sim.los, t0 = sim.t;
   const ol = sim.offense.filter((a: any) => ['LT','LG','C','RG','RT'].includes(a.slot)); const off = sim.offense; const df = sim.defense; const dg = df.map((d: any) => /^(DE|DT|NT)/.test(d.slot) ? 'DL' : /LB/.test(d.slot) ? 'LB' : 'DB'); const dfr: any[] = [];
   const fr: any[] = []; let k = 0; const ofr: any[] = [], dof: any[] = [];
