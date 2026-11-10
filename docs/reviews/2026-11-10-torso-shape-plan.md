@@ -190,3 +190,36 @@ the hit.)
 - With a grasp, the grasp dominates the hitter's yaw (117–121°) and the capsule does not add to it. The runner turns more
   (47° → 102° at 45°).
 - That is the over-rotation watch item (51° against the NFL's 41° at +0.5 s). A game run would have to report it.
+
+## The read-only game gate (pre-registered; run-ref-12, fixed zone runs, frontcourse's front-on contacts; 2026-11-10)
+
+Pre-registered by Integration:
+- **Continue** if speed kept at +0.2 s reaches about 65% or more and stops falling with closing speed.
+- **Stop** if it is under about 60% or still falls steeply.
+- **60–65%:** report, and Integration decides.
+
+| | NFL | run-ref-12 | + `TORSO_CAPSULE` | + `TORSO_CAPSULE` + `CONTACT_LAYER` |
+|---|---|---|---|---|
+| Contacts | 556 | 165 | 166 | 168 |
+| Speed kept at +0.2 s | 82% | 49% | 59% | 62% |
+| …by closing < 3 / 3–4 / 4–5 / 5+ yd/s | 78 / 83 / 87 / 86% | 67 / 57 / 45 / 41% | 74 / 70 / 53 / 46% | 69 / 69 / 61 / 60% |
+| Slip at +0.1 / +0.3 s (yd/s) | 2.69 / 1.25 | 1.26 / 1.18 | 1.76 / 1.26 | 2.23 / 1.16 |
+| Turn by +0.3 s | 80° | 36° | 60° | 67° |
+| Hitter's rotation by +0.5 / +1.0 s | 41° / 74° | 52° / 86° | 75° / 113° | 90° / 115° |
+| Runner's facing change against his path, +0.5 / +1.0 s | 18° / 37° | 24° / 31° | 22° / 26° | 21° / 25° |
+| Gain after contact; contact to end | 2.84 yd; 1.5 s | 1.74; 0.9 | 2.25; 1.3 | 2.13; 1.2 |
+| Central hits (offset < 0.1 yd): speed kept | 78% | 40% | 46% | 57% |
+| Central hits: gain | 2.24 | 1.43 | 2.07 | 1.93 |
+| Central hits: over by +1.0 s | 33% | 69% | 52% | 39% |
+
+**Against the pre-registration:**
+- **The capsule alone is a stop:** 59% kept, still falling steeply with closing speed (74 → 46%).
+- **The capsule with the layer falls in the 60–65% band:** 62% kept and much flatter (69 / 69 / 61 / 60%).
+  - Slip at +0.1 s 1.26 → 2.23 (NFL 2.69).
+  - Turn 36° → 67° (NFL 80°).
+  - Gain after contact 1.74 → 2.13 yd; contact to end 0.9 → 1.2 s.
+  - Central hits still end the play: over by +1.0 s 39% against the NFL's 33%.
+
+**The cost is the hitter's rotation:** 52° / 86° → 90° / 115° by +0.5 / +1.0 s, against the NFL's 41° / 74°. The
+one-point grasp's over-spin grows with the capsule's lever arms. The runner does not over-rotate: 21° / 25° against the
+NFL's 18° / 37°. If this continues, the hitter's rotation is the first thing to explain.
