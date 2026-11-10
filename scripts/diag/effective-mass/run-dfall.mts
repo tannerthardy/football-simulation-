@@ -16,7 +16,8 @@ const S = await import(`${W}/src/physics/support.ts`);
 const DIR = process.argv[2] ?? 'out/matched-restage';
 const G = 9.81 * 1.0936;
 const r2 = (x: number) => Number.isFinite(x) ? +x.toFixed(2) : null;
-for (let seed = 7; seed <= 29; seed += 2) { let k = 0; for (const p of JSON.parse(readFileSync(`${DIR}/seed${seed}-run.json`, 'utf8'))) {
+const SEEDS = (process.env.SEEDS ?? '7,9,11,13,15,17,19,21,23,25,27,29').split(',').map(Number);
+for (const seed of SEEDS) { let k = 0; for (const p of JSON.parse(readFileSync(`${DIR}/seed${seed}-run.json`, 'utf8'))) {
   const id = `s${seed}-${k++}`; const st: any = restoreSetup(Buffer.from(p.setup, 'base64')); if (p.pass) continue;
   const sim: any = new PlaySim(st); const hist = new Map<any, any[]>(); const ended = new Set<any>();
   const rec = (a: any, o: any) => { const w = sim.world, bd = a.body, sup = bd.support, i = w.indexOf(bd), sp = w.sp[i], m = w.mass[i];
@@ -27,7 +28,11 @@ for (let seed = 7; seed <= 29; seed += 2) { let k = 0; for (const p of JSON.pars
     return { st: sup.state, eRb: ex / rb, eCrit: ex / crit, xiPush: ex > 1e-9 ? (sup.xi.x * nx + sup.xi.y * ny) / ex : NaN, felt: fl / (m * G),
       vPush: a.vel.x * nx + a.vel.y * ny, reqPush: it?.vel ? it.vel.x * nx + it.vel.y * ny : NaN, ground: gi && gl ? Math.hypot(gi.x, gi.y) / Math.max(1e-9, gl) : NaN,
       alpha: w.alpha[i], posture: sup.posture, feetLock: sup.feetLock, tip: tip.x * nx + tip.y * ny, lean: Math.hypot(sup.lean.x, sup.lean.y) / (m * G),
-      cC: sup.causes?.contact ?? 0, cL: sup.causes?.legs ?? 0, cO: sup.causes?.overspeed ?? 0 }; };
+      rel: w.report?.leanRelease?.[i] ? Math.hypot(w.report.leanRelease[i].x, w.report.leanRelease[i].y) : NaN, out: sup.out,
+      face: Math.abs(Math.atan2(Math.sin(a.body.facing - Math.atan2(-ny, -nx)), Math.cos(a.body.facing - Math.atan2(-ny, -nx)))) * 57.3,
+      reqLat: it?.vel ? Math.abs(-it.vel.x * ny + it.vel.y * nx) : NaN, vLat: Math.abs(-a.vel.x * ny + a.vel.y * nx), accel: sup.accel ? sup.accel.x * nx + sup.accel.y * ny : NaN,
+      dxv: bd.__dx ? JSON.parse(JSON.stringify(bd.__dx)) : null, xiX: sup.xi.x, xiY: sup.xi.y,
+      rec: w.recovery[i] / Math.max(1e-9, sp.stepSpeed), cC: sup.causes?.contact ?? 0, cL: sup.causes?.legs ?? 0, cO: sup.causes?.overspeed ?? 0 }; };
   runContactObservers.set(sim, (e: any, ph: string, data: any) => { if (ph !== 'end' || ended.has(e)) return; ended.add(e);
     if (data?.reason !== 'body down') return; const t = sim.t;
     for (const [who, a, o] of [['defender', e.defender, e.blocker], ['blocker', e.blocker, e.defender]] as const) {
@@ -37,7 +42,7 @@ for (let seed = 7; seed <= 29; seed += 2) { let k = 0; for (const p of JSON.pars
         sRatio: r2((o.r?.('strength') ?? NaN) / (a.r?.('strength') ?? NaN)), runner: c ? r2(Math.hypot(c.pos.x - a.pos.x, c.pos.y - a.pos.y)) : null,
         ticks: [...h.slice(-10), now].map((x: any) => Object.fromEntries(Object.entries(x).map(([k2, v]) => [k2, typeof v === 'number' ? r2(v) : v]))) })); } });
   const tick = sim.tick.bind(sim);
-  sim.tick = () => { tick(); for (const e of sim.engagements ?? []) { if (e.type !== 'run') continue;
+  sim.tick = () => { for (const a of sim.agents ?? []) delete a.body.__dx; tick(); for (const e of sim.engagements ?? []) { if (e.type !== 'run') continue;
     for (const [a, o] of [[e.defender, e.blocker], [e.blocker, e.defender]]) { if (a.body.support?.state !== 'up') continue; const h = hist.get(a) ?? []; h.push(rec(a, o)); if (h.length > 10) h.shift(); hist.set(a, h); } } };
   sim.run();
 } }
