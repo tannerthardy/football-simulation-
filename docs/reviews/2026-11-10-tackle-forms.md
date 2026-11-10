@@ -440,3 +440,17 @@ Help class at the grab = other defenders downfield of the carrier within 10 yd, 
 2. **Contact to finish:** the dragged holds (35–44% as last man).
 
 **Step 1** (`TKL_WHIFF` + `WHIFF_MARGIN` + `TKL_EXEC_STATE`) does not need a new misses source. Its only open question is the drag, which belongs to the drag-down work.
+
+**The catcher's half of the last yard** (`after-catch.py`, the catcher's first 0.5 s; NFL 4,799 catches, sim 416):
+
+| | NFL | Sim |
+|---|---|---|
+| Speed at the catch / +0.5 s, p50 | 4.76 / 4.65 yd/s | 4.17 / 4.19 |
+| Heading change over 0.5 s, p50 / p75 | **14° / 25°** | **24° / 38°** |
+| Same, contested (defender < 3 yd at the catch) | 12° / 24° | 19° / 33° |
+| Upfield speed at +0.5 s, p50 | 2.30 | 1.75 |
+
+- **No burst:** our catcher is slower than the NFL's.
+- **A sharper turn:** he changes heading about 1.7× as much right after the catch, contested or not.
+- That fits the first man at hands range failing to close (runs on 28% against 10%). The receiver cuts away as soon as he has the ball. A real one is still securing it and turning upfield.
+- **Controller, not physics:** the carrier's behaviour from the catch, which uses full open-field cut logic at once. For whoever owns the post-catch carrier (Coverage's YAC stages, with Run Game's `carrier.ts`). A catch-securing phase on observable evidence (ball security, his turn upfield) is the candidate. Not a cap on cutting.
