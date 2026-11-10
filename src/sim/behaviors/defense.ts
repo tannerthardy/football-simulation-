@@ -134,7 +134,7 @@ const KEY_DEPTH = process.env.KEY_DEPTH !== '0';
 /** LB_GUARD_STEP (experimental, off): see ZoneCoverage's unsure box backer. */
 const LB_GUARD_STEP = process.env.LB_GUARD_STEP !== '0';
 /** EDGE_REACH (experimental, off): see the edge's key read against a reach in PassRusher, and the edge fit in run-fits.ts. */
-export const EDGE_REACH = process.env.EDGE_REACH === '1', EDGE_UPFIELD = 1.2;
+export const EDGE_REACH = process.env.EDGE_REACH !== '0', EDGE_UPFIELD = 1.2;
 /** STANCE_TELL (experimental, off): see assign.ts. How long after his get-off a
  * read lean leads his step before the key's own movement must confirm it (s). */
 const STANCE_TELL = process.env.STANCE_TELL !== '0';
