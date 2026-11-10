@@ -79,3 +79,58 @@ The bench's today's-law baseline (seed 3: runner 91 kg, hitter 111 kg; speed kep
 - A central hit glues the bodies (separation 0.49–0.52 yd at +1.0 s).
 - A 0.4 yd offset lets the runner slide past.
 - Pair momentum with no ground force is exact (error 1.7e-13).
+
+## Gate 1 on paper: the two-part body cannot reach the NFL course
+
+**Model** (`scripts/diag/effective-mass/chain.py`, stand-alone). Each player is a planar chain:
+- an upper body (head, arms, upper and middle trunk: 49.1% of mass, de Leva 1996) pitching about the hip on a trunk
+  spring;
+- a lower link (pelvis and legs: 50.9%).
+
+The pads meet through the engine's contact (9 Hz, critically damped). There is no ground force, which isolates the
+exchange. The runner is 96 kg at 4 yd/s; the hitter is 117 kg.
+
+**Sourced inputs** (research summary; primary sources are named, de Leva to be checked against the paper before any
+value is hard-coded):
+- trunk stiffness: 1,000–2,200 N·m/rad with reflexes, damping small (Cholewicki et al. 2000); about 110 N·m/rad
+  without reflexes (Brown & McGill 2009);
+- hip-extension torque: 2.03 ± 0.45 N·m/kg in university rugby players (Harrison et al. 2013);
+- tackle peak force: 1.66–2.0 kN (Usman 2011) and 2.44–3.40 kN (Seminati; rugby).
+
+No study gives torso effective mass in a tackle, or a carrier's speed kept after contact. Gate 0 is the only target.
+
+**Result.** Runner pad speed kept at +0.1 s:
+
+| Body | Kept at +0.1 s | Note |
+|---|---|---|
+| Rigid (identity) | 38–39% | matches today's point mass |
+| Two-part, any sourced trunk stiffness, pads at 0.60–0.67 of stature | 41–46% | |
+| Two-part with the contact softened from 9 Hz to 1.5 Hz | 44% (38% at +0.2 s) | |
+| NFL (Gate 0) | 94% (86% at +0.2 s) | |
+
+Articulation changes where momentum goes inside the body, not how much the pads exchange. With no ground force, the
+pair reaches its common velocity (about 1.8 yd/s) within 0.1–0.2 s whatever the body's structure, as the plan's
+point 1 says.
+
+**What the NFL course actually implies.**
+- At 3–5 yd/s over the first 0.3 s, the NFL runner slows from 4.00 to 3.12 yd/s: an average of about 255 N on 96 kg.
+  The hitter speeds up from 0.29 to 0.62 yd/s, about 120 N.
+- Through that time the centres stay about 0.5 yd apart, with 2.5–3 yd/s of relative speed along the runner's path.
+  So the bodies are passing shoulder to shoulder, with arm-level forces, not colliding chest to chest.
+- In the sim the same window needs about 800 N on average on the runner. The two-body model's peak contact force is
+  about 22 kN at 9 Hz, against measured tackle peaks of 1.7–3.4 kN.
+
+**Re-diagnosis.** This is attempt one of two under the plan's stop rule, and it points at contact geometry, which my
+earlier "geometry is minor" reading got wrong:
+- Every sim body is an isotropic disc of radius about 0.3 yd for torso contact.
+- A real torso is about 0.27 yd half-wide at the shoulders but only about 0.15 yd half-deep.
+- So the same 0.3 yd lateral offset (NFL and sim offsets match: 0.31 vs 0.24 yd) is a glancing shoulder contact for a
+  real body and a central disc collision for a sim body.
+- The offset distributions match; the shape that turns an offset into a glancing contact does not.
+
+**Proposed second attempt (for Tanner and Integration to decide before code):** a torso contact shape that is wider
+than it is deep, oriented by each body's facing.
+- Its half-width and half-depth come from anthropometry (shoulder breadth and chest depth with pads), not from yards.
+- It is judged on the same Gate 0 course (speed kept, separation reopening), the contact's peak force against the
+  1.7–3.4 kN tackle measurements, and the plan's controls.
+- The two-part pitch can be layered on afterwards if the fall direction still needs it.
