@@ -408,3 +408,56 @@ Run Game's trial, CARRIER_DRIVE (not committed), sends push 1 on every carrier c
 
 It was reverted. The missing push is a real gap, but not what costs him the exchange. To re-test it on top of a
 compliant contact law (step 1): `push: 1` on both returns of `BallCarrier.command`.
+
+## Step 2, attempt two: the engaged pair (2026-11-10)
+
+The trench gate for `CONTACT_PATCH` exposed a defect on develop: solo OL-DL pairs turn a median 60° from 0.5 to 1.5 s,
+against the NFL's 43° (`trench2`).
+- Run Game's ablations show the excess isn't in the OL's requests. With REACH_CARRY=0 and hands steer = 0 nothing
+  changes; with the engaged lateral request zeroed the pair turns 80°.
+- `pair-spin.mts` puts it in the hands row: a pushing pair offset 0.2 yd twists 21° a second in centre mode, because
+  the row acts along the line between centres.
+
+**`HANDS_CHEST`, merged and on (run-ref-9).** The row acts between the closest points of the two shoulder lines
+(half-span 0.12 yd, anthropometric).
+
+| | NFL | Before | `HANDS_CHEST` |
+|---|---|---|---|
+| Bench: offset pair, turn in 1 s | | 21° | 5° |
+| Zone solo rotation | 43° | 60° | 56° |
+| DL depth at 2.0 s | +0.70 | +0.76 | +0.69 |
+| Solo DL driven back from 0.5 s | 16% | 8% | 12% |
+
+- Its adverse scorecard row, "blocker on a man out of the play" (108 → 123), comes from release, not the grip.
+  - `run-block-ends.mts`: separation ends are unchanged (56.5 → 55.0 per 100 runs). The DL's "runner passed" release
+    falls (165 → 156) because the pair no longer turns.
+  - The OL has no release rule for a man leaving the play (RUN-12, Run Game).
+
+**`HANDS_FRICTION` (off, research).** What's left of the rotation is the DL slipping across while the hands'
+tangential load sits at its steer limit (67% of engaged run ticks; slip p75 1.12 yd/s there, 0 below; `pair-lateral.mts`).
+- The row had no friction from its own pressing load. With friction at the torso coefficient (0.35):
+
+| | NFL | `HANDS_CHEST` | + friction |
+|---|---|---|---|
+| Zone solo rotation, median / p75 | 43° / 86° | 56° / 83° | 27° / 72° |
+| DL depth at 2.0 s | +0.70 | +0.69 | +0.47 |
+| Driven back from the snap | 14% | 6% | 11% |
+
+- It overshoots. The coefficient isn't tuned to land on 43°. The missing mechanism is likely the grip being broken
+  (the DL's hand strike), parked as `GRIP_BREAK` in `docs/PARKED.md`.
+
+**The runner's grasp: (b), first result, `GRASP_ARMS` (off).** An upper grasp in centre mode had no lever arms. The
+flag places them at the radius-weighted surface point, as the patch law does. Aligned on torso distance, all front-on
+contacts:
+
+| | NFL | Default | `GRASP_ARMS` | + `CONTACT_LAYER` | Patch (run-ref-8) |
+|---|---|---|---|---|---|
+| Tangential slip at +0.1 s | 2.69 | 0.49 | 0.52 | 0.73 | 1.43 |
+| Line of centres turned by +0.3 s | 80° | 8° | 12° | 16° | 45° |
+| Hitter from square at +0.3 s | 64° | 40° | 41° | 47° | 69° |
+
+- Lever arms alone barely release the pair. In centre mode each body's yaw motor (`turnBodyResponse`, torque up to
+  traction × support radius) holds it near its requested facing, so a grip at the surface still brakes the centres.
+- Patch mode released the pair through more than the grasp's arms: torso-contact moments, and contact spin written
+  into facing within the solve.
+- Which part of the patch law does the releasing is the next diagnostic, before another law.
