@@ -55,3 +55,27 @@ is contact geometry: the offset between the line of centres and the runner's pat
 is a separate knob to tune, but both are inputs the bench must sweep. The bench (next section) checks whether the
 two-part body, with sourced parameters, gives a 0.3 yd/s first-tenth loss for a central hit. If it cannot, the
 tangential share is the leading candidate, and that would be the re-diagnosis.
+
+### Contact geometry is a minor part (Gate 0, second run)
+
+`frontcourse.py` also reports the hitter's lateral offset from the runner's path. Median offset at closest approach,
+and share central (< 0.15 yd), for all 3–5 yd/s contacts:
+
+| | Offset at closest approach | Central |
+|---|---|---|
+| NFL | 0.31 yd | 21% |
+| Sim (run-ref-4) | 0.24 yd | 27% |
+
+On today's World (`scripts/diag/effective-mass/bench.mts`), a hit offset by about 0.2–0.3 yd keeps about half the
+runner's speed at +0.1 s. The NFL keeps 94% at that offset. So the difference in geometry is worth perhaps 0.05–0.1
+of speed kept; the exchange law is the gap.
+
+The bench's today's-law baseline (seed 3: runner 91 kg, hitter 111 kg; speed kept at +0.1 s):
+
+| Approach | Central | 0.2 yd | 0.4 yd |
+|---|---|---|---|
+| 4–7 yd/s | 40–43% | 49–54% | 72–100% |
+
+- A central hit glues the bodies (separation 0.49–0.52 yd at +1.0 s).
+- A 0.4 yd offset lets the runner slide past.
+- Pair momentum with no ground force is exact (error 1.7e-13).
