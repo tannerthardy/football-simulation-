@@ -353,6 +353,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
   // reach off a block gets jersey; a lunge goes for the legs.
   const fromBehind = cosA < -0.3 ? 1 : 0;
   const legs = lunged ? clamp(0.75 + rng.normal(0, 0.15), 0.4, 1)
+    : GRIP_REACH ? gripReach(rng, engaged, fromBehind === 1, d.r('tackling') * q)
     : clamp(0.1 + 0.55 * d.r('tackling') * q + 0.25 * fromBehind - (engaged ? 0.3 : 0) + rng.normal(0, 0.15), 0, 1);
   // Out of standing reach he has to lay out to get there. Within it he
   // strikes: the last step drives his body into the carrier's near hip, so
@@ -436,6 +437,26 @@ function grasp(sim: PlaySim, d: Agent, c: Agent, quality: number, legs: number, 
  * of the radii the World reads a full wrap; never farther than the centers. */
 function armDistance(joint: GraspJoint | undefined, centers: number, torso: number): number {
   return Math.min(centers, (joint?.hold ?? centers) + (1 - CONTACT_SCALE) * torso);
+}
+
+/** GRIP_REACH (experimental, off): where a tackler's hands land on the runner
+ * (legs share: 0 shoulder line, 0.5 waist, 1 legs) is drawn from what he can
+ * reach in his situation, not one formula clamped at the shoulders. Free and
+ * square: chest to waist, lower (thighs) the better his form and approach;
+ * from behind: waist, hips or legs; off a block: what one arm reaches at the
+ * side (arm, waist, jersey). A draw outside the reach is drawn again, so no
+ * situation piles up at an edge. An input to the hold's physics, not a
+ * result: where the hands are, not whether the tackle holds. */
+const GRIP_REACH = process.env.GRIP_REACH === '1';
+export function gripReach(rng: { normal(m: number, s: number): number }, engaged: boolean, fromBehind: boolean, form: number): number {
+  const [mean, sd, lo, hi] = engaged ? [0.35, 0.12, 0.15, 0.6]
+    : fromBehind ? [0.6 + 0.15 * form, 0.18, 0.35, 1]
+    : [0.2 + 0.45 * form, 0.12, 0.15, 0.75];
+  for (let i = 0; i < 8; i++) {
+    const v = mean + rng.normal(0, sd);
+    if (v >= lo && v <= hi) return v;
+  }
+  return clamp(mean, lo, hi);
 }
 
 /** HOLD_FINISH (experimental, off): the holder plants against the runner's
