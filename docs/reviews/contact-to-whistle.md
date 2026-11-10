@@ -132,3 +132,64 @@ that band until the counter separates engaged grabs. The open question is
 whether 20% is the right breaking share. That needs a reference, such as
 yards after a blocked defender's first contact on tracking, not a capacity
 change.
+
+## Upstream of the bond: the front-on contact (2026-11-09/10)
+
+**The gap is inside the contact, not who hits or how fast.** On Run Game's NFL
+run of `run-operators/hitterback-split.py`, the median carrier gain to the end
+for front-on first contacts at −1..3 yd is:
+
+| Hitter | <3 yd/s | 3–5 | 5+ | All |
+|---|---|---|---|---|
+| NFL, all | +0.95 | +2.29 | +3.19 | +2.45 |
+| Sim, all (run-ref-3) | +0.86 | +0.80 | +0.89 | +0.83 |
+| NFL, blocked hitter | +1.03 | +2.43 | +3.31 | +2.54 |
+| Sim, blocked hitter | +0.90 | +0.89 | +0.82 | +0.87 |
+
+- The hitter mix matches: blocked / shed / free is 69 / 16 / 15 in the NFL and
+  67 / 16 / 16 in the sim.
+- The NFL has more 5+ yd/s arrivals (28% against 16%), which is worth perhaps
+  0.2–0.3 yd.
+- NFL gain rises with speed; in-game sim gain does not. The 1-v-1 tackle panel
+  is about 1.5 yd short at every speed (0.4 yd at 3 yd/s, 2.1 at 6).
+
+**Requested against achieved.** In the 0.3 s after a front-on hit (162
+contacts, run-ref-4), the carrier keeps requesting about 3.9 yd/s downfield
+while his speed falls from 3.6 to 1.0.
+
+His downfield momentum change over that window, median, in kg·yd/s:
+
+| Hitter | Total | His feet | Body contacts | Joints |
+|---|---|---|---|---|
+| All | −219 | +52 | −236 | −6 |
+| Free hitter | −275 | +44 | −360 | +24 |
+
+The first 0.1 s is a whole-body inelastic exchange (3.52 → 1.44 yd/s against
+a 117 kg hitter; 3.5 × 96 / 213 = 1.6 predicted).
+
+**Ruled out:**
+- **The carrier's request.** He keeps asking for about 3.9 yd/s throughout.
+- **His leg drive.** He already pushes into the load: the tackle bond sets
+  `push` on 589 of 830 contact ticks, and his lean is active (median
+  375 kg·yd/s²). His feet deliver about a quarter of their ground limit
+  because the lean law caps a push at what the load returns
+  (`felt × (1 + PUSH_GROWTH)`). He is not under-asking.
+- **CARRIER_DRIVE.** An explicit push on felt load changed nothing (paired
+  +0.01, SE 0.03; front-on gain 0.77 → 0.80). It was reverted.
+- **CARRIER_BRACE** (lower pads plus a lunge, Run Game, held) adds +0.4–0.5 yd
+  of front-on gain but +0.53 yd on whole runs, so it overshoots.
+
+**What is left is the collision model.** A front-on hit treats each body as one
+point mass: the whole runner loses his speed at once, and his capture point
+jumps behind his base. In a real hit the tackler checks the upper body while
+the runner's legs keep moving, so the runner falls forward over him or drives
+through.
+
+The candidates are:
+- where the load acts against the carrier's COM. Earlier finding: 84% of
+  front-on contacts land above it, which pitches him backward;
+- how much of the body the first contact couples, as opposed to transmitting
+  over the contact's duration.
+
+This is core contact physics, so the next step is a design note with a
+reproducer before any code.
