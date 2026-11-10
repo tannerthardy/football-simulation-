@@ -211,7 +211,7 @@ const SCRAPE = process.env.SCRAPE !== '0', THREAT_READ = process.env.THREAT_READ
 /** Free fits plan lateral work with their own body (LB_PLAN=0 off). */
 const LB_PLAN = process.env.LB_PLAN !== '0';
 /** EDGE_REACH (experimental, off): see the edge fit below and PassRusher's reach read. */
-const EDGE_REACH = process.env.EDGE_REACH === '1';
+const EDGE_REACH = process.env.EDGE_REACH !== '0';
 const LB_LINE_FLOW = process.env.LB_LINE_FLOW !== '0', LINE_FLOW_LEAD = 1.5, GUARD_KEY_DELAY = 0.5, GUARD_STEP = 0.5;
 /** Experimental activation of the same planner for an observed pull-adjusted
  * insertion. Default off while matched containment/misdirection controls run. */
