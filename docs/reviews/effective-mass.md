@@ -807,3 +807,36 @@ noise floor with our real start, and its equality does not stand. Measured inste
   - The start curve: about 0.04 yd. The NFL's early lateral acceleration is about 6–7 yd/s² against our 5.6, from a
     sprint fit. A lateral first step from the stance may not follow the 40-yard start, but this part is small.
 - **The DL is still at zero request on 84% and 63% of the next two ticks** (Defense's late get-off).
+
+**The second man (`secondman.py` on NFL and sim; `second-man.mts` on the sim; zone runs, run-ref-11; 2026-11-10).** At
+the runner's first contact, every other defender nearby is checked for whether he gets within 1.0 yd of the runner by
++0.5 s. "Blocked" means an offensive non-carrier within 1.2 yd of him.
+
+| Zone runs | NFL (2,919) | run-ref-11 (559) |
+|---|---|---|
+| Second man by +0.5 s | 57% | 39% |
+| Other defenders within 2 / 3 / 5 yd at contact (per run) | 1.04 / 2.24 / 4.34 | 0.80 / 1.97 / 4.26 |
+| Within 2 yd: blocked share | 77% | 73% |
+| Within 2 yd: arrive, if free | 65% | 70% |
+| Within 2 yd: arrive, if blocked | 46% | 26% |
+| At 2–3 yd: arrive, if free / if blocked | 28% / 13% | 21% / 7% |
+| DL within 5 yd who arrive | 16% | 6% |
+
+- **Free men arrive as often as the NFL's.** Our pursuit and rally are not the gap. There are slightly fewer bodies
+  within 2 yd at contact (0.80 against 1.04).
+- **The gap is blocked men next to the runner.** Within 2 yd the NFL's arrive 46% of the time and ours 26%.
+- **What ours are doing** (sim, 313 blocked within 2 yd; requested and achieved velocity toward the runner, mean over the
+  0.5 s):
+
+| Blocked defender within 2 yd | Share | Arrive | Requested (yd/s) | Achieved (yd/s) |
+|---|---|---|---|---|
+| Engaged through +0.5 s | 51% | 22% | +1.67 | +0.32 |
+| Engagement ended (median 0.30 s) | 13% | 10% | +3.01 | +0.54 |
+| Next to an offensive body with no engagement | 36% | 34% | +1.23 | +0.23 |
+
+  At 2–3 yd, blocked men request +1.7 to +3.3 and achieve −0.4 to +0.3. Their nearest offensive body is 0.72–0.89 yd
+  away throughout.
+- **It is execution, not decision.** Blocked men near the runner ask to go to him and their bodies do not get there: they
+  are held by the blocker's hands, or by bodies they are in contact with.
+- **Open: which force cancels the request,** for engaged men and for body-only contact. The candidates are the blocker's
+  hands (normal and steer), the torso contacts, and the defender's own ground drive while engaged.
