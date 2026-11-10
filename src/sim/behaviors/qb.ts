@@ -77,6 +77,14 @@ const STRIDE_SPEED = 0.45;
  * 52%). */
 const THROW_REACT = process.env.THROW_REACT !== '0';
 
+/** QB_RHYTHM (off; QB_RHYTHM=1 turns it on): the progression keeps the QB's
+ * rhythm. A read that is not ready yet gets the same look as one that is (no
+ * extra 0.6 s wait for a late route), and once the rush he sees or his own
+ * clock says time is up (urgency above the pressure mark) his eyes go to the
+ * outlet, the last read, instead of finishing the order. NFL throws to backs
+ * leave at 2.50 s p50 against ours at 3.15 s, at the same share (BDB 2025). */
+const QB_RHYTHM = process.env.QB_RHYTHM === '1';
+
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
   private phase: 'snap' | 'drop' | 'set' | 'windup' = 'snap';
@@ -355,6 +363,12 @@ export class QBPass implements Behavior {
       return this.pocketMove(a, sim, this.lookOff.decoy);
     }
 
+    // QB_RHYTHM: with the rush or his clock telling him time is up, his eyes go
+    // to the outlet (the last read) instead of finishing the order.
+    if (QB_RHYTHM && u > 0.5 && this.reads.length > 1 && this.readIdx < this.reads.length - 1) {
+      this.readIdx = this.reads.length - 1;
+      this.readStart = t;
+    }
     const read = this.reads[this.readIdx];
     sim.qbEyes = read ?? null;
     const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
@@ -385,6 +399,10 @@ export class QBPass implements Behavior {
       const broken = !!forecast?.hasBreak && forecast.estimate?.motion === 'installed-route' && forecast.breakAt() === null;
       const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking'));
       if (t - this.readStart > dwell || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)) {
+        // QB_RHYTHM: moving off a read, his eyes pass the outlet; a released
+        // outlet that is there now is the throw, in rhythm, not at the end.
+        const outlet = QB_RHYTHM ? this.outletThrow(a, sim, u, need, risk) : null;
+        if (outlet) return this.startThrow(a, sim, outlet);
         this.readIdx++;
         this.readStart = t;
       }
@@ -392,7 +410,7 @@ export class QBPass implements Behavior {
       // Out of reads: take the best available.
       const best = this.bestOption(a, sim, u);
       if (best && best.P >= thr - 0.1 && best.intRisk <= maxInt + 0.03) return this.startThrow(a, sim, best);
-    } else if (t - this.readStart > dwell + 0.6) {
+    } else if (t - this.readStart > dwell + (QB_RHYTHM ? 0 : 0.6)) {
       this.readIdx++;
       this.readStart = t;
     }
@@ -422,6 +440,17 @@ export class QBPass implements Behavior {
     }
 
     return this.pocketMove(a, sim, read);
+  }
+
+  /** QB_RHYTHM: the outlet (last read) when it is a live, ready option that
+   * clears his ordinary bar now; null otherwise. */
+  private outletThrow(a: Agent, sim: PlaySim, u: number, need: number, risk: number): ThrowEval | null {
+    const last = this.reads.length - 1;
+    if (this.readIdx >= last - 1 || last < 1) return null;
+    const outlet = this.reads[last];
+    if (!outlet || outlet.behavior.kind === 'pass-pro' || !this.ready(outlet, sim)) return null;
+    const ev = this.evaluate(a, sim, outlet, u);
+    return ev && ev.P >= need && ev.intRisk <= risk ? ev : null;
   }
 
   private gazePoint(sim: PlaySim): Vec2 {
