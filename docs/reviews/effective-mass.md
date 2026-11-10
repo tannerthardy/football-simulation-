@@ -755,3 +755,25 @@ Split by depth, the package stops the runner as often as the NFL, or more:
 
 This is a crowding or pursuit difference near the line. The NFL proximity is measured on shoulder-pad tracking and ours on
 body centres, which may account for part of it.
+
+**OZ engaged lateral carry, timed from each lineman's own start (`ozflow.py`; 2026-11-10).** Run Game's report: OZ interior DL
+flow toward the play 1.03 / 2.45 / 4.00 yd at 1.0 / 1.5 / 2.0 s, against the NFL's 1.62 / 3.16 / 4.83. Same code on NFL
+2022 OZ and the fixed set's OZ runs at run-ref-11, with Defense's onset rule (first 0.1 s step over 0.3 yd/s, frame 0
+the tagged snap). Interior DL here means within 1.6 yd of the line and between the tackles at the snap.
+
+| OZ interior DL | NFL (3,254) | run-ref-11 (778) |
+|---|---|---|
+| Flow from the snap at 1.0 / 1.5 / 2.0 s (yd) | 1.35 / 2.82 / 4.47 | 1.04 / 2.46 / 3.99 |
+| Flow at his own onset + 0.5 / 1.0 / 1.5 s (yd) | 0.59 / 1.76 / 3.33 | 0.65 / 1.81 / 3.38 |
+| …engaged pairs only | 0.58 / 1.76 / 3.32 | 0.62 / 1.76 / 3.32 |
+| Rate from 1.0 to 1.5 s (yd/s) | 2.98 | 2.82 |
+| DL onset; OL onset (s) | 0.1; 0.1 | 0.3; 0.2 |
+| Engaged with an OL at 1.0 s | 94% | 71% |
+
+- **Timed from each man's own start, the engaged pair carries sideways exactly as the NFL's does.** The whole
+  absolute deficit is the DL's late get-off (0.3 against 0.1 s), which is Defense's item. There is no lateral-carry gap
+  in the physics, so the steer-budget split is not needed.
+- **What remains:**
+  - 6% lower rate between 1.0 and 1.5 s.
+  - Fewer interior DL engaged at 1.0 s: 71% against 94%, Run Game's blocked-at-1.0 s. That is when and whether
+    contact happens, not how the pair moves once it does.
