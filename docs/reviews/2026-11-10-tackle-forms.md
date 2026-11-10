@@ -414,3 +414,29 @@ Help class at the grab = other defenders downfield of the carrier within 10 yd, 
 - **The measurement question.** NFL charted misses include full-stretch whiffs that the 1.0 yd geometric index also cannot see. Defense's NFL "missed" (4–9%) counts only contacts within 1 yd for under 0.3 s.
 - **The model question.** With σ = 0.1 yd and 0.1 s closure, most full-stretch grabs on a separating runner fail. That is plausibly too strict, given NFL YAC (the sim's mean is already 10.3 against the NFL's 5.0).
 - **Attempt 2** (if pursued) would calibrate the connect boundary against a *grab-distance* operator on NFL tracking: tackler within reach (1.5–2 yd) and closing, then whether the carrier slows. Not more 1.0 yd contacts.
+
+## Grab opportunities at hands range (`grabs.py`, NFL 2022 and sim mechanics records; 2026-11-10)
+
+**Rule.** The first frame a defender is within 1.6 yd (hands range) of the carrier and closing. Then, over 0.5 s: contact (reaches 1.0 yd), slowed (the carrier loses ≥ 30% of his speed without contact), or **runs on** (the full-stretch whiff).
+
+| | NFL | Sim, step 1 off | Step 1 | Step 1 + `GRAB_CONNECT` |
+|---|---|---|---|---|
+| Catches: contact / slowed / runs on | 87 / 2 / **11%** | 74 / 7 / **19%** | 74 / 7 / 19% | 72 / 4 / 24% |
+| Catches, the first man to arrive: runs on | **10%** | **28%** | 26% | 31% |
+| Catches, from behind: runs on | 18% | 29% | 23% | 29% |
+| Catches, carrier ≥ 7 yd/s: runs on | 19% | 30% | 36% | 42% |
+| Runs: contact / slowed / runs on | 72 / 9 / 20% | 72 / 12 / 16% | 71 / 13 / 16% | 71 / 13 / 16% |
+
+**Reading.**
+
+- **"We never whiff" was a measurement artefact.** Our misses happen *before* 1.0 yd, at hands range, where the shared contact index cannot see them.
+- On catches we already have about twice the NFL's full-stretch failures. The first man to reach hands range fails to get to contact 28% of the time against the NFL's 10%.
+- `GRAB_CONNECT` adds to that excess: the wrong direction outright, not too strict. It stays off, and attempt 2 is not needed.
+- Runs at hands range match the NFL.
+
+**The catch-tackle deficit has two parts:**
+
+1. **Hands range to contact:** 74% against 87%. The first man arrives and does not close the last yard: his approach, breaking down, the runner's cut against him. Partly Defense's (the approach); partly mine (whether the reach geometry and the runner's evasion at that range are coherent).
+2. **Contact to finish:** the dragged holds (35–44% as last man).
+
+**Step 1** (`TKL_WHIFF` + `WHIFF_MARGIN` + `TKL_EXEC_STATE`) does not need a new misses source. Its only open question is the drag, which belongs to the drag-down work.
