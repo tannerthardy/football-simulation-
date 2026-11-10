@@ -716,3 +716,42 @@ the NFL and the sim (frontcourse's contacts).
   - The NFL hitter is moving with him rather than across: 108° against 80°.
   - A faster closing hit sheds more velocity in a plastic collision, so this compounds the collision law.
   - It is a carrier and tackler approach question, separate from the slip.
+
+**The deep backfield hit (`deephit3.py`; zone runs; NFL 2022 against the package at run-ref-11, 2026-11-10).** Integration
+asked why "stuffed after first contact deeper than 1 yd" is short of the NFL in every arm: NFL 52.7%, ref-10 50.9%,
+package 46.8%, + `CONTACT_LAYER` 42.4%.
+
+Split by depth, the package stops the runner as often as the NFL, or more:
+
+| First contact depth | NFL: runs (share), stuffed | Package: runs (share), stuffed |
+|---|---|---|
+| −1 to −1.5 yd | 196 (6.6%), 34.2% | 68 (11.9%), 41.2% |
+| −1.5 to −2 yd | 154 (5.2%), 50.6% | 28 (4.9%), 57.1% |
+| Deeper than −2 yd | 348 (11.7%), 64.1% | 13 (2.3%), 53.8% |
+| …by an unblocked defender | 180 (6.0%), 73.3% | 6 (1.1%), 50% |
+
+**The bin is short because of its depth mix.**
+- Half of the NFL's deep hits are more than 2 yd behind the line (median −2.00); ours sit just past −1 (median −1.32).
+- Inside 2 yd we over-stop by about 7 points.
+- Deep penetration, the hits that nearly always lose the play, is five times rarer in ours. Unblocked, it is 6.0% of
+  NFL runs against 1.1%.
+- This is the other side of the excess shallow contact (0–1 yd: 27% against 19%). Our first contact is squeezed toward the
+  line, with less deep penetration and more hits just behind it.
+- That is a blocking, penetration and line-timing question (Run Game's OL first step, Defense's penetration), not a
+  contact law.
+
+**The runner's state does not explain it.**
+- NFL backs at deep hits are not flat-footed: 4.34 yd/s at 42° from north. Ours run 4.88 at 45°.
+- Only 6% of NFL deep hits find the back under 2 yd/s; there he is stuffed 91% of the time.
+
+**The second defender is rarer at every depth inside 2 yd.** Share with a second defender within 1.0 yd by +0.5 s:
+
+| Depth | NFL | Package |
+|---|---|---|
+| −2 to −1 yd | 49% | 16% |
+| −1 to 0 yd | 57% | 38% |
+| 0 to 2 yd | 64% | 37% |
+| Deeper than 2 yd / past 2 yd | about even | about even |
+
+This is a crowding or pursuit difference near the line. The NFL proximity is measured on shoulder-pad tracking and ours on
+body centres, which may account for part of it.
