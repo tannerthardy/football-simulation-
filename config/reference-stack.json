@@ -154,6 +154,7 @@
     "UNDER_DEPTH": "off",
     "WING_CALL": "on",
     "WING_WORK": "on",
+    "WR_SNAP": "off",
     "WRAP_FOOT": "retired",
     "ZONE_ARMS": "on",
     "ZONE_GAP": "on",
