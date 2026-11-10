@@ -1414,3 +1414,46 @@ What the trace shows:
 - **Pass side** (`pass-fall.mts`, flag on): 58 of 65 traced go toward the rusher. The release is the whole jump. These are leans built over ~0.35 s at 1.18× a ~1-mg load, so lean release with the drive request.
 - **Remaining lean releases (blockers 149, defenders 193, pass blockers ~19% of dropbacks):** real leans the law now permits, made frequent by requests that drive into the man at 1.25× the load. That is technique: Coverage's anchor for pass sets; for run blockers and defenders, Run Game and Defense.
 - **Remaining impacts:** unbraced bodies hit by heavier or lower ones, coherent by the impact bench. For defenders this is Defense's take-on item. For blockers, TEs are hit while blocking down.
+
+## What "pressure by a blocked man" is (`pressure-shape.py`; NFL 2022, 9,654 dropbacks; sim `LEAN_PITCH` + `PASS_ANCHOR`, 4 live games, 366 dropbacks; 2026-11-10)
+
+**The rule.**
+
+- **First pressure:** the first defender within 2 yd of the QB, from 0.3 s, before the throw.
+- **Blocked:** an offensive player other than the QB within 1.2 yd of him then. This is proximity, not the engine's engagement flag.
+- **Shape:**
+  - *in front*: the nearest blocker is between him and the QB (nearer the QB by > 0.3 yd, within 45° of his line to the QB);
+  - *edge*: otherwise, level with or past the blocker's shoulder.
+- **Who closed the last 0.5 s:** the QB's displacement toward him against his toward the QB.
+
+| Share of dropbacks | NFL | Sim | Excess |
+|---|---|---|---|
+| Pressured at all | 27.8% | 39.9% | +12.1 |
+| Free rusher | 10.3% | 16.8% | +6.5 |
+| Blocked, edge | 13.4% | 11.1% | −2.3 |
+| Blocked, blocker **in front** | 6.4% | 13.1% | **+6.7** |
+| ... of which the QB closed | 0.7% | 0.8% | 0 |
+
+At the moment of pressure (medians):
+
+| | Blocker depth | Blocker retreat, last 0.5 s | QB depth | QB then holds the ball | Closest the rusher gets |
+|---|---|---|---|---|---|
+| NFL, in front | 6.15 yd | 1.77 yd/s | 6.75 yd | 1.8 s | 1.71 yd |
+| Sim, in front | 7.23 yd | 2.60 yd/s | 8.12 yd | 0.7 s | 1.58 yd |
+| NFL, edge | 6.63 | 2.78 | 7.59 | 1.0 | 1.41 |
+| Sim, edge | 6.45 | 2.55 | 7.91 | 0.4 | 1.30 |
+
+**Reading, ranked by excess:**
+
+1. **A blocker still in front, retreating into the QB (+6.7 points).**
+   - He is 1.1 yd deeper and retreating 0.8 yd/s faster than the NFL's in-front blockers, and the QB is 1.4 yd deeper.
+   - The rusher comes within 2 yd of the QB *through* the blocker's position, which is the pocket compressing at that spot. Pocket medians across all plays hide it.
+   - Next to establish: is the blocker *pushed* (felt load, driven back against his request) or is he *kicking* by request to a set depth near the QB's (`PASS_KICK` set depth, the QB's drop)? The sim knows both.
+   - Pushed means mine (anchor physics); kicking or a deep drop means Coverage (protection set and drop).
+2. **Free rushers (+6.5 points).** Unblocked men: protection assignment and pickups, Coverage's lane. `first-pressure.ts` already splits these by the back.
+3. **Edge rush (−2.3 points).** Below the NFL; not an excess.
+4. **The definition is not the cause.**
+   - QB drift is rare in both (2–4% of blocked pressures).
+   - The NFL QB lives with a rusher at 2 yd for 1.0–1.8 s; ours ends the play in 0.4–0.7 s.
+   - That is a QB response to proximity (sack or a hurried throw), Coverage's lane. It does not inflate the pressure count.
+- Coverage's 85% blocked counts the engine's engagement flags. By proximity at the moment it is 58% (NFL 63%), so many of their "blocked" pressures are men whose block is nominally on but who are more than 1.2 yd from any blocker.
