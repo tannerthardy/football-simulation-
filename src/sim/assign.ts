@@ -41,7 +41,7 @@ const READ_BASE: Record<string, number> = { DE: 0.12, DT: 0.12, NT: 0.12, LB: 0.
  * rate of 0.6-1 give 44-46% of DL a tell step, wrong-way first moves 0-2%,
  * and DL lateral speed relative to their own line's matching the NFL by
  * 0.3 s. The rates stand in for pre-snap tips the sim has no body for. */
-const STANCE_TELL = process.env.STANCE_TELL === '1';
+const STANCE_TELL = process.env.STANCE_TELL !== '0';
 const STANCE_HABIT = 0.1;
 function stanceLeak(a: Agent): number {
   return clamp(0.5 + 0.45 * (1 - a.r('discipline')), 0.1, 0.9);
@@ -258,7 +258,7 @@ const STRETCH_MESH = process.env.STRETCH_MESH !== '0';
  * 1.6 yd/s after the handoff) and 73% cross behind the moved centre; ours
  * held 3.3 yd/s across the formation and 6% did. Under centre the B-gap
  * landmark stays (tracked backs cross +1.0 yd play side of the line). */
-export const IZ_GUN_A = process.env.IZ_GUN_A === '1';
+export const IZ_GUN_A = process.env.IZ_GUN_A !== '0';
 /** MESH_GUN_SIDE (default off): an offset back crossing the gun QB's face takes
  * the ball still on the QB's backside half, not squarely in front of him.
  * Tracked 2022 gun runs with the back offset backside: at the handoff he is
@@ -267,7 +267,7 @@ export const IZ_GUN_A = process.env.IZ_GUN_A === '1';
  * 2.7 yd/s); ours took it level with the QB, 0.9 yd in front, at 3.2 across
  * and 2.0 downhill, and kept drifting play side after the handoff. The mesh
  * point stays at the two bodies' clearance in front of the QB. */
-export const MESH_GUN_SIDE = process.env.MESH_GUN_SIDE === '1';
+export const MESH_GUN_SIDE = process.env.MESH_GUN_SIDE !== '0';
 /** MESH_NFL (default off): mesh landmarks from 2022 tracking at the handoff.
  * Under-center inside zone: QB 4.4 yd deep and 0.9 play side, back 5.0 deep
  * and 1.7 play side (the installed 3.5 / 4.0 deep put the exchange a yard
@@ -284,13 +284,13 @@ export const MESH_NFL = process.env.MESH_NFL === '1';
  * and the QB gives it when the back reaches that point, not when he first comes
  * within reach (ours took it a yard short of the QB's face, level with him, at
  * full reach, braking: IZ 2.2 yd/s at the exchange vs NFL 3.8). */
-export const GUN_MESH = process.env.GUN_MESH === '1';
+export const GUN_MESH = process.env.GUN_MESH !== '0';
 /** GUN_MESH_GO (experimental, off; with GUN_MESH): the gun back leaves on the
  * snap and builds speed to the exchange (slow to fast) rather than standing
  * until a full-speed run would just make it. Tracked 2022 gun backs are moving
  * 1.8 yd/s laterally at 0.5 s and 3.5-4.7 at the handoff; ours stood, then ran
  * (1.06 at 0.5 s). His pace is the steadiest on-time tempo (MESH_TEMPO). */
-export const GUN_MESH_GO = process.env.GUN_MESH_GO === '1';
+export const GUN_MESH_GO = process.env.GUN_MESH_GO !== '0';
 /** DRAW_NFL (default off): the gun draw exchange from 2022 tracking. The QB
  * gives ground only half a yard (tracked 5.09 yd deep at the handoff, ours
  * 5.90), the back takes it beside him (1.07 yd off his line, 0.6 yd in front)
@@ -299,11 +299,11 @@ export const GUN_MESH_GO = process.env.GUN_MESH_GO === '1';
  * exchange time is kept, since the back now leaves later on his own. Ours took it
  * deep and still, crossed the line 0.3 s late and met the first defender at
  * +0.2 yd (tracked +1.25). */
-export const DRAW_NFL = process.env.DRAW_NFL === '1';
+export const DRAW_NFL = process.env.DRAW_NFL !== '0';
 
 /** COUNTER_C (off): counter's mesh aim is the C gap (the play-side tackle's
  * outside hip) instead of B. */
-export const COUNTER_C = process.env.COUNTER_C === '1';
+export const COUNTER_C = process.env.COUNTER_C !== '0';
 /** GUN_STRETCH_T (off): gun outside/wide zone mesh time +0.2 s (tracked handoff 1.2 s, ours 1.0). */
 export const GUN_STRETCH_T = process.env.GUN_STRETCH_T === '1';
 function meshFor(sim: PlaySim, concept: RunConcept): Mesh {
@@ -445,7 +445,7 @@ export class PlayActionFake implements Behavior {
  * backs are still accelerating at the handoff (outside zone under center 5.25
  * yd/s, gun 4.4); the installed back braked to the landmark and met the ball
  * at 3.6 and 3.3. */
-export const MESH_TEMPO = process.env.MESH_TEMPO === '1';
+export const MESH_TEMPO = process.env.MESH_TEMPO !== '0';
 const MT = (): number => MESH_TEMPO ? .85 : .55;
 /** Running back before the handoff: time the arrival at the mesh. */
 export class RunnerToMesh implements Behavior {
