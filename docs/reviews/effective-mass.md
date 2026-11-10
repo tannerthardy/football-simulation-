@@ -587,3 +587,45 @@ missing.
 | Scorecard | 8 of 18 | 7 of 9 |
 
   The direction flips between samples.
+
+**What the NFL does after a backfield hit, and the package's contact course (2026-11-10).** Zone runs. The NFL side is
+2022 tracking (bdb2025, 2,984 runs). The sim side is the fixed set's 570 zone runs on develop 0baa3320 (Defense's grip
+heights), via `dump-zone.mts`. Both sides go through the same code: `backfield.py`, with first contact as frontcourse's
+proximity rule but no depth filter, and `frontcourse.py`.
+
+| Zone runs | NFL | ref-10 | Finish (`HOLD_FINISH` + `HIP_BRACE`) | Package (+ `GRASP_PATCH`) |
+|---|---|---|---|---|
+| Stuff rate | 16.8% | 17.2% | 21.6% | 15.1% |
+| First contact behind the line | 42.5% | 47.5% | 47.9% | 46.5% |
+| …deeper than 1 yd | 23.4% | 19.6% | 19.8% | 19.1% |
+| …0–1 yd | 19.1% | 27.9% | 28.1% | 27.4% |
+| Stuffed after a backfield hit | 36.4% | 35.8% | 45.1% | 31.3% |
+| …contact deeper than 1 yd | 52.7% | 50.9% | 64.6% | 46.8% |
+| …contact 0–1 yd behind | 16.3% | 25.2% | 31.2% | 20.5% |
+| Front-on contacts at −1..3 yd (frontcourse) | 556 | 173 | 174 | 166 |
+| Gain after contact (yd) | 2.84 | 1.28 | 1.13 | 1.85 |
+| Contact to end (s) | 1.50 | 0.80 | 0.70 | 1.00 |
+| Tangential slip at +0.1 / +0.3 s (yd/s) | 2.69 / 1.25 | 0.43 / 0.15 | 0.42 / 0.09 | 1.24 / 1.15 |
+| Line of centres' turn by +0.3 s (deg) | 80 | 7 | 6 | 36 |
+| Runner speed at +0.5 / +1.0 s (yd/s) | 2.38 / 1.22 | 1.36 / 1.34 | 1.15 / 1.36 | 1.66 / 1.20 |
+
+- **Backfield contact is somewhat too common:** 46–48% against 42.5%.
+  - The excess is all 0–1 yd behind the line (27–28% against 19%).
+  - Deep hits are slightly short (19–20% against 23%). That is a blocking and penetration question, the same in every
+    arm.
+- **Ref-10 matches the NFL's backfield stop rate (35.8% against 36.4%), not by depth.** It under-stops deep hits a
+  little and over-stops shallow ones (25.2% against 16.3%).
+- **The finish over-stops at both depths:** 64.6% and 31.2%.
+- **The package is the closest by depth.**
+  - 0–1 yd: 20.5% against 16.3%, about 1.3 SE high (n 156).
+  - Deeper: 46.8% against 52.7%, about 1.2 SE low (n 109).
+  - Overall: 31.3% against 36.4%. The difference is within about 2 SE.
+- **The package's lower stuff rate comes from the depth mix, not from under-finishing.** Its overall 15.1% (NFL 16.8%)
+  is partly the excess of shallow backfield hits, where both the NFL and the package stop the runner less often.
+- **On the front-on contact course the package moves every row toward the NFL:**
+  - gain after contact 1.28 → 1.85 (NFL 2.84);
+  - contact to end 0.8 → 1.0 s (1.5);
+  - slip at +0.3 s 0.15 → 1.15 (1.25);
+  - turn 7 → 36° (80).
+  
+  The finish alone moves every row away from it.
