@@ -75,3 +75,32 @@ describe('CONTACT_PATCH (plays default to the common contact patch)', () => {
     expect(await worldLaw({ CONTACT_PATCH: '1' }, 'center')).toBe('center');
   });
 });
+
+describe('HANDS_CHEST (block hands push chest to chest)', () => {
+  async function spin(env: Record<string, string>, off: number) {
+    vi.resetModules();
+    for (const [k, v] of Object.entries(stack)) if (v === 'on') vi.stubEnv(k, '1');
+    for (const [k, v] of Object.entries(env)) vi.stubEnv(k, v);
+    const { contactFixture } = await import('../scripts/diag/run-contact-technique.js');
+    const { sim, blocker: b, defender: d, engagement: e } = contactFixture({ type: 'run', runBlock: 60, passBlock: 60, side: 1 });
+    Object.assign(d.profile, structuredClone(b.profile));
+    b.body.pos = { x: 40, y: 26.65 }; b.body.vel = { x: 0, y: 0 }; b.body.facing = 0;
+    const R = b.profile.radius + d.profile.radius + 0.1;
+    d.body.pos = { x: 40 + Math.sqrt(R * R - off * off), y: 26.65 + off }; d.body.vel = { x: 0, y: 0 }; d.body.facing = Math.PI;
+    e.control = 0;
+    const ang = () => Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x), a0 = ang();
+    for (let k = 0; k < 20; k++) {
+      const intents: any[] = sim.agents.map(a => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
+      intents[b.idx] = { vel: { x: 1, y: 0 }, facing: 0, push: 1, posture: 0.85 };
+      intents[d.idx] = { vel: { x: -1, y: 0 }, facing: Math.PI, push: 1, posture: 0.85 };
+      sim.world.step(intents, sim.dt);
+    }
+    return Math.abs(Math.atan2(Math.sin(ang() - a0), Math.cos(ang() - a0))) * 180 / Math.PI;
+  }
+  it('an off-centre pushing pair twists far less; a head-up pair is unchanged', async () => {
+    const offOff = await spin({}, 0.2), offOn = await spin({ HANDS_CHEST: '1' }, 0.2);
+    expect(offOff).toBeGreaterThan(12);
+    expect(offOn).toBeLessThan(offOff / 2);
+    expect(await spin({ HANDS_CHEST: '1' }, 0)).toBeLessThan(1);
+  });
+});

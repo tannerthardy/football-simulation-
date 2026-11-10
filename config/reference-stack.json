@@ -69,6 +69,7 @@
     "GUN_MESH_GO": "on",
     "GUN_SNAP": "on",
     "GUN_STRETCH_T": "retired",
+    "HANDS_CHEST": "off",
     "HAND_FIGHT": "off",
     "HAND_MOTOR": "off",
     "HELD_SIDE": "on",
