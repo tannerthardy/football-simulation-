@@ -175,6 +175,8 @@
     "CUTOFF_RACE": "0",
     "RB_TEMPO": "0",
     "RB_GATHER": "0",
+    "BACKSIDE_SWAP": "0",
+    "KEEPER_HIP": "0",
     "OL_ON_COUNT": "0",
     "REACH_HANDS": "0",
     "BLOCK_RELEASE": "0",

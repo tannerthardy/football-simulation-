@@ -621,6 +621,22 @@ function zoneOwnership(line: Agent[], down: Agent[], reachLimit?:number, extra?:
  * plan cut off that end and left the guard solo: covered backside guards got
  * within 1.5 yd of a backer by 2.5 s on 9-14% of snaps (tracked 47-48%). */
 export const BACKSIDE_COMBO = process.env.BACKSIDE_COMBO !== '0';
+/** BACKSIDE_SWAP (off): BACKSIDE_COMBO's guard takes the backside backer even
+ * when a play-side double was to climb to him; the double climbs to the next
+ * free backer nearest its man, or stays on him. With an uncovered backside
+ * tackle and a solo-blocked backside guard, the installed rule found no free
+ * backer and left the tackle a solo cutoff on an end 2-3.5 yd outside him
+ * (run-ref-12: first touch nobody by 2.0 s 59% IZ / 71% OZ). 2022 zone runs
+ * against that front: end 7-10%, inside man 35%, backer 28-38%, nobody 17-30%. */
+export const BACKSIDE_SWAP = process.env.BACKSIDE_SWAP === '1';
+/** KEEPER_HIP (off): a zone double member whose half of the shared man is the
+ * man's backside half is exempt from REACH_FLAT's flat track and closes to the
+ * man's depth on the intercept of that hip. A backside tackle keeping a double
+ * on the guard's man (BACKSIDE_SWAP, run-ref-12) sat 0.5-1.1 yd across from
+ * his aim but about 1.9 yd short of the man's depth, held flat while gaining
+ * width: 1.62-1.67 yd from the man 0.9-1.8 s, up 0.2-0.6 yd; tracked
+ * uncovered backside tackles touch the inside man 35% (end 2-3.5 yd out). */
+export const KEEPER_HIP = process.env.KEEPER_HIP === '1';
 /** DOUBLE_HANDOFF (default off): a double-team keeper whose hands are on the
  * man within working reach plus 0.35 yd counts as able to take him over,
  * loaded or not, and as the man's keeper whether or not he is the engagement's
@@ -962,8 +978,23 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
       if (tp && gp && end && man && !tp.combination && !gp.combination
         && (tp.kind === 'drive' || tp.kind === 'reach') && (gp.kind === 'drive' || gp.kind === 'reach')
         && rel(end) < rel(bt) - .5 && dl.includes(man)) {
-        const backer = lb.filter((l) => !claimedLB.has(l) && rel(l) < rel(bg) + 1.5 && Math.abs(l.pos.y - bg.pos.y) <= ZONE_BACKER_REACH)
-          .sort((p, q) => Math.abs(p.pos.y - bg.pos.y) - Math.abs(q.pos.y - bg.pos.y))[0];
+        const near = (l: Agent) => rel(l) < rel(bg) + 1.5 && Math.abs(l.pos.y - bg.pos.y) <= ZONE_BACKER_REACH;
+        const byGuard = (p: Agent, q: Agent) => Math.abs(p.pos.y - bg.pos.y) - Math.abs(q.pos.y - bg.pos.y);
+        let backer = lb.filter((l) => !claimedLB.has(l) && near(l)).sort(byGuard)[0];
+        // BACKSIDE_SWAP: with none free, the backside backer a play-side
+        // double was to climb to is the guard's; the double climbs to the
+        // next free backer nearest its man, or stays on him.
+        if (!backer && BACKSIDE_SWAP) {
+          const owners = (l: Agent) => [...plans.values()].filter((p) => p.target === l || p.climbTo === l || p.combination?.backer === l);
+          backer = lb.filter((l) => near(l) && owners(l).length > 0 && owners(l).every((p) => p.combination && p.target !== l)).sort(byGuard)[0];
+          if (backer) for (const c of new Set(owners(backer).map((p) => p.combination!))) {
+            const next = lb.filter((l) => l !== backer && !claimedLB.has(l) && Math.abs(l.pos.y - c.defender.pos.y) <= ZONE_BACKER_REACH)
+              .sort((x, y) => Math.abs(x.pos.y - c.defender.pos.y) - Math.abs(y.pos.y - c.defender.pos.y))[0] ?? null;
+            if (next) claimedLB.add(next);
+            c.backer = next;
+            for (const q of plans.values()) if (q.combination === c && q.climbTo === backer) q.climbTo = next;
+          }
+        }
         if (backer) {
           claimedLB.add(backer); claimedDL.delete(end);
           plans.set(bt, { kind: gp.kind, target: man, drive: gp.drive });
@@ -2171,7 +2202,11 @@ export class RunBlocker implements Behavior {
     // fast as the blocker keeps the shoulder out of reach; once the blocker is
     // not out-running him across (own vs acquired lateral motion), he presses.
     const gainingWidth = !REACH_CLOSE || (a.vel.y - seen.vel.y) * ps > .3 || sim.t < .6 + startOf(a);
-    if ((press === 1 ? REACH_FLAT : IZ_FLAT && (seen.pos.y - a.pos.y) * ps > 1.0) && !scooping && forward * dir > 0 && gainingWidth)
+    // KEEPER_HIP: a double member whose half of the man is his backside
+    // half is not racing for a shoulder: he closes to the man's depth on the
+    // intercept of the backside hip and takes him over there.
+    const backsideHalf = KEEPER_HIP && !!partner && half * ps < 0;
+    if ((press === 1 ? REACH_FLAT : IZ_FLAT && (seen.pos.y - a.pos.y) * ps > 1.0) && !scooping && !backsideHalf && forward * dir > 0 && gainingWidth)
       forward *= Math.min(clamp(1 - (shoulder - a.pos.y) * ps / .6, 0, 1),
         clamp((sim.t - startOf(a) - .24) / .36, 0, 1));
     // Open the hips toward the track (a bucket step) while the eyes stay on
