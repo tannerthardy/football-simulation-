@@ -40,6 +40,7 @@
     "CLIMB_SLIDE": "on",
     "CLIMB_SQUARE": "on",
     "CONTACT_LAYER": "off",
+    "CONTACT_PATCH": "off",
     "COUNTER_C": "on",
     "COUNTER_OFFSET": "on",
     "CUTOFF_RACE": "on",
