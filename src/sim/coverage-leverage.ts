@@ -34,9 +34,21 @@ function lostWithin(deficit: number, turn: number, tau: number, window: number):
   return deficit * Math.min(window, turn) + deficit * tau * (1 - Math.exp(-Math.max(0, window - turn) / tau));
 }
 
+/** Downfield distance a receiver can cover in `t` s from his seen downfield
+ * speed and facing: first he turns his shoulders downfield (his turn rate),
+ * then accelerates toward his top speed (first-order, his tau). What his
+ * body can do, not where his route goes. */
+export function reachDownfield(vx: number, facing: number, receiver: PhysicalProfile, t: number): number {
+  const v0 = Math.max(0, vx), turn = Math.abs(angleDiff(facing, 0)) / receiver.turnRate;
+  const t1 = Math.min(t, turn), t2 = Math.max(0, t - turn);
+  return v0 * t1 + receiver.vmax * t2 - (receiver.vmax - v0) * receiver.tau * (1 - Math.exp(-t2 / receiver.tau));
+}
+
 export class DeepCoverage {
   private previous: { stamp: number; vx: number } | null = null;
   private acceleration = 0;
+  /** THROW_HORIZON: he has seen this receiver run downfield (released). */
+  private released = false;
 
   choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: PhysicalProfile,
     cushion: number, original: MoveCommand, now: number,
@@ -50,7 +62,14 @@ export class DeepCoverage {
       this.previous = { stamp, vx: cue.vel.x };
     }
     const s = a.body.support;
-    if (seen.vel.x <= 1.5 || seen.vel.x <= Math.abs(seen.vel.y) || a.engagement || a.isDown(now)
+    const horizonOn = horizon !== undefined && throwHorizonOn();
+    if (seen.vel.x > 1.5) this.released = true;
+    // With the horizon, a released receiver whose shoulders are still
+    // downfield is a threat while he slows: he can go again at once. Turned
+    // to the QB, his reach below waits for his turn.
+    const squareDownfield = horizonOn && this.released && Math.cos(cue.facing) > 0.5;
+    if ((seen.vel.x <= 1.5 && !squareDownfield) || (seen.vel.x <= Math.abs(seen.vel.y) && !squareDownfield)
+      || a.engagement || a.isDown(now)
       || (s && (s.state !== 'up' || s.foot || s.strike || Math.hypot(s.lean.x, s.lean.y) > 1e-6
         || Math.hypot(s.load.x, s.load.y) > 1e-6))) return original;
 
@@ -68,8 +87,13 @@ export class DeepCoverage {
       const h = Math.min(t, burst);
       return acceleration * (h * h * .5 + h * Math.max(0, t - burst));
     };
-    const targetX = (t: number) => seen.pos.x + seen.vel.x * t + extra(age + t);
-    const targetV = clamp(seen.vel.x + acceleration * burst, 0, receiver.vmax);
+    // Off: his measured burst or plant continued. With the horizon: the most
+    // ground his body can take from the seen speed and facing (a plant is no
+    // safety while his shoulders stay downfield; a turn to the QB is).
+    const reach = (t: number) => reachDownfield(seen.vel.x, cue.facing, receiver, t);
+    const targetX = (t: number) => horizonOn ? seen.pos.x + reach(t) : seen.pos.x + seen.vel.x * t + extra(age + t);
+    const reachV = (t: number) => { const h = 1e-3; return (reach(t + h) - reach(t)) / h; };
+    const targetV = horizonOn ? clamp(reachV(0.5), 0, receiver.vmax) : clamp(seen.vel.x + acceleration * burst, 0, receiver.vmax);
     const base = Math.max(0, Math.min(cushion, END_LINE_X - a.profile.radius - seen.pos.x));
     const heading = Math.atan2(seen.vel.y, Math.max(.1, targetV));
     const tau = a.profile.tau / fatigueFactor(a.body.energy);
@@ -83,7 +107,7 @@ export class DeepCoverage {
       }
       const end = path[path.length - 1];
       const turn = Math.abs(angleDiff(commandFacing(a.body, command), heading)) / turnRateOf(a.body);
-      const deficit = Math.max(0, targetV - end.vel.x);
+      const deficit = Math.max(0, (horizonOn ? reachV(end.t) : targetV) - end.vel.x);
       const recovery = horizon === undefined || !throwHorizonOn() ? deficit * (turn + tau)
         : lostWithin(deficit, turn, tau, Math.max(0, horizon - end.t));
       return Math.min(margin, end.pos.x - targetX(end.t) - base - recovery);
