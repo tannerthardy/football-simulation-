@@ -31,6 +31,7 @@ for (const seed of SEEDS) { let k = 0; for (const p of JSON.parse(readFileSync(`
       rel: w.report?.leanRelease?.[i] ? Math.hypot(w.report.leanRelease[i].x, w.report.leanRelease[i].y) : NaN, out: sup.out,
       face: Math.abs(Math.atan2(Math.sin(a.body.facing - Math.atan2(-ny, -nx)), Math.cos(a.body.facing - Math.atan2(-ny, -nx)))) * 57.3,
       reqLat: it?.vel ? Math.abs(-it.vel.x * ny + it.vel.y * nx) : NaN, vLat: Math.abs(-a.vel.x * ny + a.vel.y * nx), accel: sup.accel ? sup.accel.x * nx + sup.accel.y * ny : NaN,
+      dxv: bd.__dx ? JSON.parse(JSON.stringify(bd.__dx)) : null, xiX: sup.xi.x, xiY: sup.xi.y,
       rec: w.recovery[i] / Math.max(1e-9, sp.stepSpeed), cC: sup.causes?.contact ?? 0, cL: sup.causes?.legs ?? 0, cO: sup.causes?.overspeed ?? 0 }; };
   runContactObservers.set(sim, (e: any, ph: string, data: any) => { if (ph !== 'end' || ended.has(e)) return; ended.add(e);
     if (data?.reason !== 'body down') return; const t = sim.t;
@@ -41,7 +42,7 @@ for (const seed of SEEDS) { let k = 0; for (const p of JSON.parse(readFileSync(`
         sRatio: r2((o.r?.('strength') ?? NaN) / (a.r?.('strength') ?? NaN)), runner: c ? r2(Math.hypot(c.pos.x - a.pos.x, c.pos.y - a.pos.y)) : null,
         ticks: [...h.slice(-10), now].map((x: any) => Object.fromEntries(Object.entries(x).map(([k2, v]) => [k2, typeof v === 'number' ? r2(v) : v]))) })); } });
   const tick = sim.tick.bind(sim);
-  sim.tick = () => { tick(); for (const e of sim.engagements ?? []) { if (e.type !== 'run') continue;
+  sim.tick = () => { for (const a of sim.agents ?? []) delete a.body.__dx; tick(); for (const e of sim.engagements ?? []) { if (e.type !== 'run') continue;
     for (const [a, o] of [[e.defender, e.blocker], [e.blocker, e.defender]]) { if (a.body.support?.state !== 'up') continue; const h = hist.get(a) ?? []; h.push(rec(a, o)); if (h.length > 10) h.shift(); hist.set(a, h); } } };
   sim.run();
 } }
