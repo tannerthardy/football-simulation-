@@ -306,3 +306,32 @@ Help class at the grab = other defenders downfield of the carrier within 10 yd, 
 - Decompose the runner's deceleration: the grip's pull at capacity; the holder's ground friction while down (`FALL_FRICTION` / `DOWN_FRICTION`); hanging weight (`HANG_SHARE`); held strides (`HELD_SWING`); the runner's own drive.
 - Find which is missing or capped against what a 90–100 kg man dragging on turf does.
 - The target is Defense's NFL class-0 from-behind cell (made 44–57%, broken 38–46%) and its yards after contact.
+
+## Drag-down bench (`drag-bench.mts`, 2026-11-10)
+
+**Setup:** a CB (84 kg) behind a WR (92 kg) running at 6.5 yd/s, holding the hips (legs 0.6) or thighs (0.8), lock 0.56, the games' capacity law. The runner keeps asking for 6.5 yd/s.
+
+| Holder | Hold | Runner falls? | Runner's travel | What the hold does |
+|---|---|---|---|---|
+| **On the ground** | hips 0.6 | no (up at 1.5 s) | 8.0 yd | grip at capacity, pulling 0.45 runner-mg; the holder's turf friction would resist 0.69; the stride is 69% held; **the hold slides past reach and breaks at 0.45 s**, and the runner re-accelerates |
+| **On the ground** | thighs 0.8 | no | 8.1 yd | the same; breaks at 0.45 s |
+| On his feet | hips 0.6 | at 1.10 s (legs) | 5.2 yd | grip 0.62 mg (at capacity); the holder plants at about 0.8 |
+| On his feet | thighs 0.8 | at 0.50 s (legs) | 3.4 yd | the stride binds, a trip |
+
+**What is missing, holder on the ground.**
+
+1. **The grip is the bottleneck,** not the body: 0.45 mg against the holder's 0.69 mg of turf friction. The runner tows him at about 0.4 g of deceleration.
+2. **An overloaded leg hold lets go.** It slides past reach and breaks. A real one slides **down the legs**: the hands run down the thighs and calves to the ankles, binding the stride. That is the drag-down and the ankle trip.
+3. **The held-stride effect** (`HELD_SWING`, 69% bound) is real but needs about 1 s against his recovery stepping, and the hold is gone in 0.45 s.
+
+**Proposed fix (off, physics; attempt 1): `LEG_HOLD_SLIDE`.**
+
+- A grasp on the legs whose grip is overloaded while the holder is dragged migrates down the legs: its leg share rises toward 1 and its hold point moves to the shins and feet, at the slip the overload produces. It does not slide past reach and release.
+- At the shins the existing trip path (a hold below the knee trips him in full) takes over.
+- It releases only at the feet, when the runner's stride pulls free (the grip at the ankle against his leg drive).
+- **No new strength:** the same grip capacity and the same trip law. Only where the hands go when they slip changes.
+- **Checks:**
+  - bench: a runner dragging a downed holder falls within about 1–2 strides, at a gain near the NFL's;
+  - games: Defense's class-0 behind cell (catches 41 / 0 / 53 → NFL 58 / 5 / 35; yards after 4.8 → 3.5);
+  - the head-on case must not get surer: this only acts on a dragged holder.
+- **Then part 2,** the full-stretch connect probability as the whiff source.
