@@ -8,6 +8,8 @@
 //   engaged ticks; how his engagement ended (event reason) or not; win, control at contact;
 //   tackle eligibility each tick, as tackle.ts tryTackles: eligible (free, or free side, or win >= 0.6) and in range
 //   (centre distance <= radii + reach x arm share); attempts (missed_tackle / tackle_wrap / grasp on the runner);
+//   engaged: the blocker's ground force toward the runner (summed / his mass), his requested velocity toward the runner,
+//   and the pair's mass-weighted velocity and their relative velocity toward the runner (means);
 //   for men with no engagement, the nearest offensive body: engaged with someone else, and its requested velocity toward
 //   him (an active wall) or not.
 // usage: node --import tsx scripts/diag/effective-mass/held-split.mts > out.jsonl
@@ -31,7 +33,7 @@ for (let seed = 7; seed <= 29; seed += 2) for (const [pi, p] of (JSON.parse(read
         if (dist > 2 || !sim.offense.some((o: any) => o !== c && Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y) <= 1.2)) continue;
         const e = d.engagement;
         track.set(d, { id: `s${seed}-${pi}`, slot: d.slot, d0: +dist.toFixed(2), eng0: !!e, win0: e ? +e.win.toFixed(2) : null, ctl0: e ? +e.control.toFixed(2) : null,
-          ticks: 0, engTicks: 0, req: 0, ground: 0, hands: 0, grasp: 0, rest: 0, dv: 0, elig: 0, inRange: 0, both: 0, attempt: false, ended: null, arrives: false,
+          ticks: 0, engTicks: 0, bGround: 0, bReq: 0, pairV: 0, relV: 0, bTicks: 0, req: 0, ground: 0, hands: 0, grasp: 0, rest: 0, dv: 0, elig: 0, inRange: 0, both: 0, attempt: false, ended: null, arrives: false,
           wallEngaged: null, wallReq: null, e }); }
       return; }
     if (c !== c0) return; const s = sim.t - t0; if (s > 0.5 + 1e-9) return; const dt = sim.dt, rep = sim.lastStep;
@@ -46,6 +48,9 @@ for (let seed = 7; seed <= 29; seed += 2) for (const [pi, p] of (JSON.parse(read
       r.ticks++; r.dv += U(dv); r.ground += U(gr); r.hands += hx * ux + hy * uy; r.grasp += gx * ux + gy * uy; r.rest += U({ x: dv.x - gr.x - hx - gx, y: dv.y - gr.y - hy - gy });
       const it = sim.intents?.[d.idx]; if (it?.vel) r.req += U(it.vel);
       const e = d.engagement; if (e) r.engTicks++;
+      if (e) { const b = e.blocker, kb = w.indexOf(b.body), mb = b.profile.massKg; const gb = rep.groundImpulse[kb];
+        r.bTicks++; r.bGround += (gb.x * ux + gb.y * uy) / mb; const bi = sim.intents?.[b.idx]; if (bi?.vel) r.bReq += bi.vel.x * ux + bi.vel.y * uy;
+        r.pairV += ((d.vel.x * m + b.vel.x * mb) * ux + (d.vel.y * m + b.vel.y * mb) * uy) / (m + mb); r.relV += (d.vel.x - b.vel.x) * ux + (d.vel.y - b.vel.y) * uy; }
       if (r.e && r.ended === null && !(sim.engagements ?? []).includes(r.e)) r.ended = +s.toFixed(2);
       const blockerY = e ? e.blocker.pos.y - d.pos.y : 0, freeSide = !!e && Math.abs(blockerY) >= 0.25 && blockerY * ry < 0;
       const elig = !e || freeSide || e.win >= 0.6;
@@ -61,5 +66,6 @@ for (let seed = 7; seed <= 29; seed += 2) for (const [pi, p] of (JSON.parse(read
   const ev = sim.events ?? [];
   for (const [d, r] of track) { if (ev.some((e: any) => (e.type === 'missed_tackle' || e.type === 'tackle_wrap') && sim.agents[e.a] === d && e.t >= t0 && e.t <= t0 + 0.55)) r.attempt = true;
     delete r.e; const n = Math.max(1, r.ticks); for (const k of ['req', 'ground', 'hands', 'grasp', 'rest', 'dv']) r[k] = +(r[k] / (k === 'req' ? n : 1)).toFixed(2);
-    for (const k of ['elig', 'inRange', 'both', 'engTicks']) r[k] = +(r[k] / n).toFixed(2); console.log(JSON.stringify(r)); }
+    for (const k of ['elig', 'inRange', 'both', 'engTicks']) r[k] = +(r[k] / n).toFixed(2);
+    const nb = Math.max(1, r.bTicks); r.bReq = +(r.bReq / nb).toFixed(2); r.pairV = +(r.pairV / nb).toFixed(2); r.relV = +(r.relV / nb).toFixed(2); r.bGround = +r.bGround.toFixed(2); console.log(JSON.stringify(r)); }
 }
