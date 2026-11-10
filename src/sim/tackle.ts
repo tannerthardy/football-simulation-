@@ -246,7 +246,8 @@ export function tryTackles(sim: PlaySim): void {
       d.nextTackleAt = t + 1;
       sim.diveAt(d, { x: dx, y: dy });
       const p = 0.22 + 0.3 * d.r('tackling') - 0.15 * c.r('elusiveness') - 0.1 * c.r('balance');
-      if (TKL_WHIFF ? !whiffs(sim, d, c, dive, false, DIVE_WINDOW) : sim.dice('tackle', d).chance(Math.max(0.05, p))) {
+      if ((TKL_WHIFF ? !whiffs(sim, d, c, dive, false, DIVE_WINDOW) : sim.dice('tackle', d).chance(Math.max(0.05, p)))
+        && (!GRAB_CONNECT || grabConnects(sim, d, c, dive, false))) {
         // He gets a hand on a foot: a weak hold, all of it on the legs.
         grasp(sim, d, c, 0.3, 1, dd, 1, true, 'dive');
         sim.event('hit', d, c, 'diving tackle');
@@ -307,6 +308,26 @@ const HAND_SIGMA = 0.1;
  * draw; the hold's quality keeps its deterministic contact-quality and
  * skill-against-elusiveness terms. The whiff and grip physics carry the noise. */
 const TKL_EXEC_STATE = process.env.TKL_EXEC_STATE === '1';
+/** GRAB_CONNECT (experimental, off): a grab becomes a hold only if the fingers
+ * close on cloth before the runner's separation uses up the reach margin the
+ * grab has left. p(connect) = 1 / (1 + exp(-(m - dv * GRIP_CLOSE) / sigma)):
+ * m = the attempt's reach limit minus the distance (yd), dv = how fast the
+ * runner is pulling away from him (yd/s), GRIP_CLOSE = hand closure time (a
+ * model assumption), sigma = hand placement precision as in WHIFF_MARGIN. A
+ * grab that does not connect is a miss (the lunge or dive still costs him his
+ * base). W tier (docs/reviews/2026-11-10-tackle-forms.md): a full-stretch
+ * grab on a fleeing runner mostly fails to become a hold, instead of holding
+ * for 0.3 s and slipping. Checked against the missed share at first contact. */
+const GRAB_CONNECT = process.env.GRAB_CONNECT === '1';
+const GRIP_CLOSE = 0.1;
+export function grabConnects(sim: PlaySim, d: Agent, c: Agent, limit: number, engaged: boolean): boolean {
+  const dx = c.pos.x - d.pos.x, dy = c.pos.y - d.pos.y, dd = Math.hypot(dx, dy) || 1;
+  const sep = Math.max(0, ((c.vel.x - d.vel.x) * dx + (c.vel.y - d.vel.y) * dy) / dd);
+  const m = limit - dd;
+  const sup = d.body.support, a = sup ? availability(sup, supportParams(d.profile), fatigueFactor(d.body.energy)) : 1;
+  const sigma = HAND_SIGMA * (2 - a) * (engaged ? 1.5 : 1) * (1.3 - 0.6 * d.r('tackling'));
+  return sim.dice('tackle', d).chance(1 / (1 + Math.exp(-(m - sep * GRIP_CLOSE) / sigma)));
+}
 export function whiffs(sim: PlaySim, d: Agent, c: Agent, limit: number, engaged: boolean, window: number): boolean {
   const m = whiffMargin(sim, d, c, limit, engaged, window);
   if (!WHIFF_MARGIN) return m > 0;
@@ -382,6 +403,15 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
       else if (!engaged) commitLunge(d, nx, ny, q);
       return;
     }
+  }
+
+  if (GRAB_CONNECT && !alreadyWrapped && !grabConnects(sim, d, c, limit, engaged)) {
+    d.missedTackles++;
+    sim.stats.missedTackles++;
+    sim.event('missed_tackle', d, c, 'grab did not connect');
+    if (lunged && q < 0.25) sim.diveAt(d, { x: dx, y: dy });
+    else if (!engaged) commitLunge(d, nx, ny, q);
+    return;
   }
 
   // Fumble on contact: hit severity from the closing speed and the hitter's mass.
