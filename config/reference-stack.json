@@ -65,6 +65,7 @@
     "ENGAGED_TECHNIQUE": "on",
     "FB_PLAYSIDE": "on",
     "FEET_SETTLE": "on",
+    "FIT_END_FORCE": "off",
     "FLAT_PRESS": "on",
     "FLOW_INTERCEPT": "off",
     "GAP_CLIMB": "on",

@@ -67,6 +67,9 @@ function gameGap(sim: PlaySim, d: Agent, gap: Gap, side: number): { gap: Gap; si
   return { gap: RANK_GAP[Math.abs(v)], side: Math.sign(v) };
 }
 
+/** FIT_END_FORCE (experimental, off): see the force fallback in buildRunFits. */
+const FIT_END_FORCE = process.env.FIT_END_FORCE === '1';
+
 export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   const jobs = new Map<Agent, RunFitJob>();
   const policy = sim.defCall.runPolicy ?? { edge: 'box', linebacker: 'stack' };
@@ -113,15 +116,30 @@ export function buildRunFits(sim: PlaySim): Map<Agent, RunFitJob> {
   // without that seat retain their geometric fallback. Do not steal the other
   // side's installed support while filling a missing seat.
   for (const side of [-1, 1]) {
+    // FIT_END_FORCE (experimental, off): without an installed seat, force
+    // comes from a player head-up on or outside the end man on the line (an
+    // attached end, else the tackle; within 0.5 yd inside his centre): a box
+    // backer inside him keeps his gap. Off, anyone 2 yd outside the ball
+    // qualifies, so a backer inside the tackle could take force (#397's
+    // witness: the Will forced from inside the tackle, the Mike slid to cover
+    // him, and a trap went through the empty A gap).
+    const edgeY = side === sim.offAlign.strongSign ? sim.offAlign.coreEdge.S : sim.offAlign.coreEdge.W;
+    const outsideEnough = (d: Agent) => FIT_END_FORCE ? (d.pos.y - edgeY) * side > -.5 : (d.pos.y - sim.ballY) * side > 2;
     const designated = sim.defense.filter(d => available(d) && outsideSide(d) === side);
     const candidates = designated.length ? designated : sim.defense.filter(d => available(d)
-      && outsideSide(d) === null && (d.pos.y - sim.ballY) * side > 2 && !(DEEP_NO_FORCE && deepZone(d)) && !(MIDDLE_NO_FORCE && middleZone(d)));
+      && outsideSide(d) === null && outsideEnough(d) && !(DEEP_NO_FORCE && deepZone(d)) && !(MIDDLE_NO_FORCE && middleZone(d)));
     const priority = (d: Agent) => {
       const role = sim.defAlign.spots[d.slot as DefSlot]!.role;
       return role.kind === 'zone' ? role.zone.startsWith('flat') ? 0 : role.zone.startsWith('curl_flat') ? 1 : isDeepZone(role.zone) ? 6 : 3 : 7;
     };
+    // FIT_END_FORCE: a man defender on a detached receiver covers him; he
+    // forces only when no free player is outside.
+    const onReceiver = (d: Agent) => {
+      const spot = sim.defAlign.spots[d.slot as DefSlot]!, t = spot.manTarget && sim.offAlign.spots[spot.manTarget];
+      return spot.role.kind === 'man' && !!t && !t.backfield && !t.inline;
+    };
     const cost = (d: Agent) => {
-      return priority(d) * 4 + Math.abs(Math.abs(d.pos.y - sim.ballY) - 5.5);
+      return (FIT_END_FORCE && onReceiver(d) ? 100 : 0) + priority(d) * 4 + Math.abs(Math.abs(d.pos.y - sim.ballY) - 5.5);
     };
     candidates.sort((a,b) => (designated.length ? priority(a)-priority(b) : 0) || cost(a)-cost(b));
     const force = candidates[0];
