@@ -391,3 +391,26 @@ Help class at the grab = other defenders downfield of the carrier within 10 yd, 
 **The head-on deficit is a different mechanism:** the runner's forward drive and fall through a tackler in front of him, with the tackler driven back. `CARRIER_BRACE` (the runner lowering his pads and lunging) is the existing candidate. Its earlier read moved front-on gain 0.93–1.12 → 1.50–2.29 yd (NFL 2.16–2.59).
 
 **Status.** The drag-down threshold is a real gap: a held runner is judged against a free full step. A coherent capacity for the stepping leg against the grip, one that lets a strong runner step out, is still open. Per Integration, the bench stalled, so the work switches to part 2 (the full-stretch connect probability).
+
+## Part 2, attempt 1: `GRAB_CONNECT` (off; missed its gates; 2026-11-10)
+
+`yards.py`, 8 paired games (`sim-export.ts --seed 101`), made / missed / broken at first contact:
+
+| | Step 1 off | Step 1 | Step 1 + `GRAB_CONNECT` | NFL |
+|---|---|---|---|---|
+| Catches, all | 59 / 1 / 33 | 61 / 0 / 29 | 52 / 1 / 38 | 62 / 4 / 20 |
+| Catches, DB | 53 / 1 / 38 | 56 / 0 / 34 | 52 / 2 / 39 | 63 / — / 18 |
+| YAC p50 / mean | 5.0 / 10.3 | 4.5 / 10.6 | **6.5 / 12.0** | |
+| Runs, all | 56 / 5 / 17 | 63 / 4 / 15 | 63 / 3 / 15 | |
+| Runs, unblocked man at the line: stuff when he hits | 22% | 29% | 19% | 43% (Defense) |
+
+**Gates.**
+
+1. **Missed share toward the NFL's 4–9%: not met.** Catches 0 → 1%.
+2. **Broken no further from the solo cells: failed.** 29 → 38%.
+
+**Why.** A failed grab happens at full stretch (1.5–2 yd), so it never becomes a first contact within 1.0 yd on the shared index. The receiver escapes, and the *next* contact is scored made or broken. The connect check produces more failed tackles (YAC +2 yd at the median), but the index cannot see them as misses. Where it does see them, they move away from the NFL.
+
+- **The measurement question.** NFL charted misses include full-stretch whiffs that the 1.0 yd geometric index also cannot see. Defense's NFL "missed" (4–9%) counts only contacts within 1 yd for under 0.3 s.
+- **The model question.** With σ = 0.1 yd and 0.1 s closure, most full-stretch grabs on a separating runner fail. That is plausibly too strict, given NFL YAC (the sim's mean is already 10.3 against the NFL's 5.0).
+- **Attempt 2** (if pursued) would calibrate the connect boundary against a *grab-distance* operator on NFL tracking: tackler within reach (1.5–2 yd) and closing, then whether the carrier slows. Not more 1.0 yd contacts.
