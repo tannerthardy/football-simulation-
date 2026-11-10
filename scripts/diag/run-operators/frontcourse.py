@@ -86,6 +86,12 @@ def course(path):
         vh = {o: along(H, hit + o) for o in OFFS}
         sep = {o: (math.dist(C[hit+o], H[hit+o]) if hit + o <= e else None) for o in OFFS}
         torso = min(math.dist(C[f], H[f]) for f in range(hit, min(e, hit + 3) + 1)) <= TORSO
+        # Lateral offset of the hitter from the runner's approach path (|cross track|, yd): at first contact, and at
+        # the closest approach within 0.3 s. A central hit (0) exchanges momentum along the path; an offset one can
+        # turn tangential and let the runner slide off the shoulder.
+        cross = lambda f: abs(-(H[f][0] - C[f][0]) * uy + (H[f][1] - C[f][1]) * ux)
+        close = min(range(hit, min(e, hit + 3) + 1), key=lambda f: math.dist(C[f], H[f]))
+        off0, offc = cross(hit), cross(close)
         disp = lambda P: (P[e][0] - P[hit][0]) * ux + (P[e][1] - P[hit][1]) * uy
         g, hd = disp(C), disp(H)
         f2 = min(e, hit + 2)
@@ -94,7 +100,7 @@ def course(path):
         mh = MD[j] if j < len(MD) else None
         mom = (mr * vr[0] - mh * vh[0]) if (mr and mh and vr[0] is not None and vh[0] is not None) else None
         rows.append(dict(cls=cls, bin=speed_bin(sp * 10), torso=torso, vr=vr, vh=vh, sep=sep, gain=g, hdisp=hd,
-                         rel=g - hd, blocker_on=blocker_on, second=second, t_end=(e - hit) / 10, mom=mom))
+                         rel=g - hd, off0=off0, offc=offc, blocker_on=blocker_on, second=second, t_end=(e - hit) / 10, mom=mom))
     return rows
 
 
@@ -116,6 +122,8 @@ def show(name, out, masses):
         print(f"   {'':12}          sep " + ' '.join(fmt(cell['sep'][o], 4) for o in OFFS)
               + f" | gain {fmt(cell['gain'])} = hitter {fmt(cell['hdisp'])} + rel {fmt(cell['rel'])} | +0.2 s: blocker on him {100*cell['blocker_on']:3.0f}%, 2nd tackler {100*cell['second']:3.0f}% | to end {cell['t_end']:.1f} s"
               + (f" | m_r v_r - m_h v_h {cell['mom']:+.0f} kg yd/s" if cell['mom'] is not None else ''))
+        if cell.get('offc') is not None:
+            print(f"   {'':12}          offset from his path: at contact {cell['off0']:.2f} yd, at closest approach {cell['offc']:.2f} yd, central (< 0.15 yd) {100*cell['off_central']:3.0f}%")
     if not masses:
         print('   (no masses in this source: momentum omitted)')
 
@@ -150,7 +158,9 @@ for path in ARGS:
                       sep={o: med([r['sep'][o] for r in rr]) for o in OFFS}, gain=med([r['gain'] for r in rr]),
                       hdisp=med([r['hdisp'] for r in rr]), rel=med([r['rel'] for r in rr]),
                       blocker_on=sum(r['blocker_on'] for r in rr) / len(rr), second=sum(r['second'] for r in rr) / len(rr),
-                      t_end=med([r['t_end'] for r in rr]), mom=med([r['mom'] for r in rr]))
+                      t_end=med([r['t_end'] for r in rr]), mom=med([r['mom'] for r in rr]),
+                      off0=med([r['off0'] for r in rr]), offc=med([r['offc'] for r in rr]),
+                      off_central=sum(r['offc'] < 0.15 for r in rr) / len(rr))
     if out:
         show(name, out, any(r['mom'] is not None for r in R))
     store[name] = out
