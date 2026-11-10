@@ -97,6 +97,7 @@
     "LB_READ_STEP": "on",
     "LEAN_PITCH": "off",
     "PASS_ANCHOR": "off",
+    "MAN_PHASE": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",
