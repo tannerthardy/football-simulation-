@@ -684,3 +684,35 @@ questions:
 - whether the runner arrives with less tangential velocity than the NFL's in the first place (slip at the grasp is
   1.41 yd/s);
 - whether the NFL's pad-tracking proximity and our centre proximity are the same stage of contact.
+
+**Where the early slip is lost: approach or collision (`approach.py`; 2026-11-10).** Front-on zone contacts, same code on
+the NFL and the sim (frontcourse's contacts).
+
+| | NFL | ref-10 | Package | Package + `CONTACT_LAYER` |
+|---|---|---|---|---|
+| Contacts | 556 | 173 | 166 | 169 |
+| At proximity: slip, median (mean) (yd/s) | 1.77 (1.94) | 1.26 (1.66) | 1.45 (1.86) | 1.48 (1.94) |
+| …brought by the runner / the hitter (means) | +1.25 / +0.69 | +0.89 / +0.77 | +0.99 / +0.87 | +0.98 / +0.96 |
+| At proximity: closing speed (yd/s) | 3.38 | 4.51 | 4.46 | 4.40 |
+| Runner speed; his angle to the line to the hitter | 4.21; 25° | 4.66; 21° | 4.67; 21° | 4.65; 21° |
+| Hitter speed; his velocity's angle to the line to the runner | 1.80; 108° | 2.06; 79° | 2.10; 80° | 2.10; 80° |
+| Centre distance at proximity / the frame before (yd) | 0.87 / 1.20 | 0.78 / 1.22 | 0.79 / 1.22 | 0.79 / 1.21 |
+| Aligned on torso distance: closing at +0 (yd/s) | 1.94 | 2.96 | 2.75 | 3.26 |
+| Slip at +0 / +0.1 / +0.2 / +0.3 s (yd/s) | 2.24 / 2.69 / 1.88 / 1.25 | 1.18 / 0.43 / 0.21 / 0.15 | 1.80 / 1.24 / 1.15 / 1.15 | 2.10 / 1.62 / 1.41 / 1.25 |
+| Turn by +0.3 s (deg) | 80 | 7 | 36 | 49 |
+
+- **The proximity event is the same stage in both sources:** the frame before is at 1.20–1.22 yd, and torso distance
+  follows 0.10 s later in both. The 2.24 is frontcourse's slip at torso distance, not at proximity.
+- **The pair arrives sliding as fast as the NFL's.** The means are 1.86–1.94 against 1.94. The runner brings a little
+  less of the slip and the hitter a little more. So the missing slip is not an approach decision on either side.
+- **The gap opens in the collision.**
+  - In the NFL the slip grows after the pads meet (2.24 → 2.69 at +0.1 s): the runner's closing velocity turns into
+    sliding past the man.
+  - In ours it falls (1.80 → 1.24): the torso hit absorbs it.
+  - `CONTACT_LAYER` (a compliant hit, not a plastic one) recovers about half of it: 2.10 / 1.62, turn 49°. Slip at
+    +0.3 s then matches.
+- **The one approach difference is closing speed:** 4.4–4.5 against 3.4 yd/s at proximity.
+  - The NFL runner is slower: 4.21 against 4.66 yd/s.
+  - The NFL hitter is moving with him rather than across: 108° against 80°.
+  - A faster closing hit sheds more velocity in a plastic collision, so this compounds the collision law.
+  - It is a carrier and tackler approach question, separate from the slip.
