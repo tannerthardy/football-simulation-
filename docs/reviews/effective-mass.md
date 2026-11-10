@@ -1371,3 +1371,12 @@ What the trace shows:
   - the load sags and the lean drops into his capture point.
 - `LEAN_PITCH` and an anchor-style request (lean no more than the load) are its remedies, as on the OL side.
 - Nothing new for the World. Coverage's `PASS_ANCHOR` works around the same lean on the OL side, not a missing step.
+
+## `LEAN_PITCH` promotion read, run side (pre-registered 2026-11-10, before running)
+
+- **Arms:** `npm run ref:report -- --flag LEAN_PITCH=1` on the fixed 1,321 runs. Off, run-ref-12, and run-ref-12 + `LEAN_PITCH`.
+- **Gates** (the candidate against run-ref-12):
+  1. No regression caused by a bug in the mechanism. Any yardage change must have a named mechanism: fewer fallen blockers means blocks held longer; fewer fallen defenders means more pursuit.
+  2. Tackle counts (made, missed, broken) within noise.
+  3. Falls down on both sides with `run-fall.mts`: defenders below 906 and blockers below 580.
+- **Reported, not gated:** yards by concept, stuffs, first-contact depth, crowd at the tackle, the trench operators.
