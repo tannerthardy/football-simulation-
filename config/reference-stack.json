@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-10",
+  "id": "run-ref-11",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -67,7 +67,8 @@
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "GRASP_ARMS": "off",
-    "GRASP_PATCH": "off",
+    "GRASP_PATCH": "on",
+    "GRIP_REACH": "off",
     "GUN_MESH": "on",
     "GUN_MESH_GO": "on",
     "GUN_SNAP": "on",
@@ -78,7 +79,8 @@
     "HAND_MOTOR": "off",
     "HELD_SIDE": "on",
     "HELD_SWING": "off",
-    "HIP_BRACE": "off",
+    "HIP_BRACE": "on",
+    "HOLD_FINISH": "on",
     "IN_STRIDE_CATCH": "off",
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
@@ -121,7 +123,6 @@
     "REACH_RACE": "on",
     "REACH_TECHNIQUE": "on",
     "READ_LEAN": "on",
-    "HOLD_FINISH": "off",
     "READ_RISK_TRACE": "off",
     "RELEASE_INTERCEPT": "on",
     "RELEASE_QUICK": "on",

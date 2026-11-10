@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-10`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-11`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -410,9 +410,9 @@ Defense #451 and #453. An unsure box backer leans downhill with his own run evid
 
 The rush row is the one to watch: not resolved, but its interval sits mostly above zero. The fixed-run report for run-ref-10 is in [reviews/run-ref-10-report.md](reviews/run-ref-10-report.md).
 
-## The tackle package: all merged off, none on yet (2026-11-10)
+## run-ref-11: the tackle package on (2026-11-10)
 
-No stack change; the stack stays `run-ref-10`. Four flags make up the package: `GRASP_PATCH` (Flex #462), `HIP_BRACE` (Flex #465), `HOLD_FINISH` (Defense #469) and `CONTACT_LAYER` (Flex #455).
+`GRASP_PATCH`, `HIP_BRACE` and `HOLD_FINISH` are on by default; `CONTACT_LAYER` stays off. The record below is in the order it happened, including a false start. Four flags make up the package: `GRASP_PATCH` (Flex #462), `HIP_BRACE` (Flex #465), `HOLD_FINISH` (Defense #469) and `CONTACT_LAYER` (Flex #455).
 
 - **`HOLD_FINISH` (decision).** A holder beside or behind the runner plants against the runner's travel, committing in proportion to his grip and only while the grip holds; while it slips he keeps his feet moving. Upper grips get a real height, from the shoulder line down to the waist.
 - **`HIP_BRACE` (physics).** A hold above the runner's hips is braced by his hip-extension torque, from the same budget as his leg drive; only the excess pitches him. No new constant.
@@ -459,7 +459,23 @@ Two measurements disagree, and that is why nothing is on.
 - The package's lower overall stuff rate comes from shallow backfield contact being too common in every arm (27–28% of runs against 19%), where the NFL also stops the runner less often. That excess is blocking and penetration: Run Game and Defense.
 - The contact course moves toward the NFL on every row and is still short on gain, duration and turn.
 
-**Not on yet for one reason: no paired evidence on passes.** The whole-game card had yards an attempt 9.69 to 10.36 and pass TD rate 7.9% to 9.6% (both moved). Coverage's 732-dropback paired panel on the package decides it.
+**The pass side (Coverage, 732 dropbacks, paired, against run-ref-10).**
+
+| | Yards a pass play, paired | YAC mean | Broken a reception | Sacks |
+|---|---|---|---|---|
+| run-ref-10 | 9.58 | 9.37 | 0.131 | 31 |
+| `GRASP_PATCH` alone | +0.59 ± 0.22 | 10.38 | 0.212 | 29 |
+| Package | −0.00 ± 0.20 | 9.32 | 0.141 | 30 |
+| Package + `CONTACT_LAYER` | +0.24 ± 0.42 | 9.27 | 0.147 | 37 |
+
+- The package is neutral on passes and sacks that finished still finish (of 200 plays with the QB held: 31 sacked before, 30 after). The whole-game card's pass rise does not appear in a paired design.
+- `GRASP_PATCH` alone raises pass yards entirely after the catch, mostly holds from behind slipping (broken holds from behind 33 to 52); the finish cancels it (38).
+- `CONTACT_LAYER` reshuffles pass protection (12 sacks lost, 18 new). It stays off until it has a pass-protection read of its own.
+
+**Why the package goes on.** Paired designs are flat on runs (−0.05 ± 0.05 yd a run) and on passes (0.00 ± 0.20 yd a play); broken tackles fall on runs (0.168 to 0.142); it is the closest arm to the NFL after a backfield hit at both depths; and every row of the front-on contact course moves toward the NFL. It changes how a tackle happens without changing how many yards a play gains. Logged, not fixed: the course is still short of the NFL's (gain after contact 1.85 against 2.84 yd, turn 36° against 80°), the tackler over-rotates mildly (51° against 41° at +0.5 s), and the grasp welds the grip point from its first tick at 12–17% of capacity (Flex is benching a friction-limited tangential row). The fixed-run report for run-ref-11 is in [reviews/run-ref-11-report.md](reviews/run-ref-11-report.md).
+
+**How a flag is cleared from here.** A 16-game card's yards rows are too noisy to clear or hold a change that a paired design resolves. A flag goes on when the paired fixed runs and the paired pass panel agree with the mechanism evidence; the card is read for bugs and for rows the paired sets cannot see.
+
 
 
 ## What to do next
