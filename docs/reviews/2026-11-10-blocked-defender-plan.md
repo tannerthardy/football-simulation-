@@ -124,3 +124,75 @@ limited. They separate into three pieces.
 2. **Piece 2, once Tanner approves:** Defense's decision and the grip-break mechanism together, judged on the same gates.
 3. **Re-measure after both:** second-man arrival, hitblk's share of first contacts by blocked defenders, and the
    unengaged third after Defense's attempt fix.
+
+## Piece 1: result (`ENGAGED_REACH`, off; `reach-bench.mts`; `held-split.mts`)
+
+The flag stays off. Piece 1's premise was wrong.
+
+**The rule is not what limits these men.** A DT's reach is 1.05 yd: a 0.25 yd shoulder offset plus a 0.80 yd arm. From
+the free shoulder, the full arm covers a carrier whose centre is at most about 1.3 yd from his. So most blocked men 1–2 yd
+from the runner are out of reach by anatomy, not by the rule's 0.4.
+
+**Bench.** DT facing his blocker, carrier beside the pair; margin = arms − centre distance (yd), + = in range.
+
+| Carrier | Old rule | Free-shoulder arm, control 0 | Control 0.5 | Control 1 |
+|---|---|---|---|---|
+| 1.0 yd, free side | +0.36 | +0.31 | −0.08 | −0.48 |
+| 1.0 yd, blocker's side | +0.05 | −0.19 | −0.58 | −0.98 |
+| 1.5 yd, free side | −0.14 | −0.19 | −0.58 | −0.98 |
+| 2.0 yd, either side | −0.95 | −1.19 | −1.58 | −1.98 |
+
+- A well-blocked man cannot reach: control 1 takes the whole arm.
+- At the median control of 0.5, the geometric arm is shorter than the old rule on both sides.
+
+**Game** (`held-split.mts`, engaged throughout the 0.5 s, run-ref-11):
+
+| | Off | On |
+|---|---|---|
+| Attempts | 14% | 8% |
+| Arrivals | 23% | 22% |
+
+The engaged men reach less and arrive no more. Piece 1 does not close the gap; the men have to move, which is piece 2.
+`ENGAGED_REACH` stays off as a tested description: it is the right answer to "can a well-blocked man tackle" (no), not to
+the second man.
+
+## The engaged leg contest, and what the NFL's blocked men do (2026-11-10)
+
+Integration asked whether the contest in an engaged pair is too one-sided: whether the blocker wins it too often, or the
+hands add force.
+
+**Mirror bench** (`contest-mirror.mts`, equal bodies in a run engagement, 1.0 s):
+- The man who drives moves the pair 0.35 yd whichever side he is on, with the ground at 0.86–0.91 of traction.
+- Equal drives give 0.00.
+- The hands row is internal (pair momentum is exact), so it cannot add force that neither man's feet supply.
+- The outcome follows the bodies and their requests, not the labels.
+
+**NFL against ours** (`secondman.py`, same code; blocked defenders within 2 yd of the runner at his first contact):
+
+| | NFL | run-ref-11 |
+|---|---|---|
+| Blocked men within 2 yd (per run) | 0.80 | 0.58 |
+| …within 1.25 yd | 0.19 | 0.07 |
+| Still blocked through +0.5 s | 85% | 88% |
+| Their velocity toward the runner, mean over 0.5 s | +0.29 yd/s | +0.24 yd/s |
+| The runner's velocity toward them | −0.41 | −0.27 |
+| Arrive within 1.0 yd by +0.5 s, starting at 1.25–1.5 yd | 49% | 34% |
+| …starting at 1.5–1.75 yd | 34% | 26% |
+| …starting at 1.75–2.0 yd | 28% | 10% |
+
+**This changes the case for piece 2.**
+- NFL blocked men beside the runner also stay blocked (85%), and they move toward him no faster than ours.
+- The contest is not one-sided, and getting off the block is not what the NFL's do more of.
+
+**The gap has two parts:**
+- **Fewer blocked bodies near the runner.** We have 0.58 per run within 2 yd against 0.80, and 0.07 against 0.19 within
+  1.25 yd. The run's crowd near the ball is thinner: a question of where first contact happens and of blocking geometry.
+- **At equal starting distance, more NFL arrivals despite similar mean closing.** The spread, the shoulder-pad tracking
+  points (which sit inside the body outline in a crowd and jitter by about 0.1 yd a frame) or a tail of men who do close
+  could all produce that. It needs a per-man distribution, not a mean, before it is read as football.
+
+**Piece 2 should wait for that check.** The "blocked men get off and close" reading came from our engaged men's request
+(+1.7 yd/s) being cancelled. But the NFL's blocked men do not close faster than ours either, so a mechanism that lets ours
+get off may overshoot. Piece 2's evidence is now:
+- **For:** our engaged men cannot reach and cannot end the rep.
+- **Against:** the NFL's blocked men do not, on average, come off toward the runner either.

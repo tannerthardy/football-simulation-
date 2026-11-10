@@ -85,6 +85,32 @@ const WRAP_FOOT = process.env.WRAP_FOOT === '1';
  * first contacts on gap runs and 55% on zone
  * (scripts/diag/runblock/blockedfirst.py); the gate left 32% and 41%. */
 const BLOCKED_REACH = process.env.BLOCKED_REACH !== '0';
+/** Experimental (ENGAGED_REACH=1, off): an engaged defender's reach for the
+ * carrier is the arm from his free shoulder, not a share of his reach. The free
+ * shoulder is the one away from his blocker; the arm is his reach less the
+ * shoulder's offset from his centre (both from the reach law in physical.ts:
+ * 0.25 yd + 0.85 arm). The blocker's control (+1 = inside hands latched) takes
+ * that share of the arm away, so a man the blocker has well controlled cannot
+ * reach the carrier, and one who controls the blocker keeps his whole arm.
+ * Off, he reaches 0.4 of his reach, or 0.7 − 0.3 control on his free side:
+ * a blocked man 1–2 yd from the carrier is out of range by rule (in range on
+ * 17% of ticks, docs/reviews/2026-11-10-blocked-defender-plan.md, piece 1).
+ * Who may reach (free side or win ≥ 0.6) is unchanged. */
+const ENGAGED_REACH = process.env.ENGAGED_REACH === '1';
+/** Shoulder offset from the body centre in the reach law (physical.ts), yd. */
+const SHOULDER_OFFSET = 0.25;
+
+/** ENGAGED_REACH: the centre-distance an engaged defender's free arm covers to
+ * this carrier (comparable with the body-centre distance, as `arms` is). */
+export function engagedArms(d: Agent, c: Agent): number {
+  const e = d.engagement!, b = e.blocker;
+  const fx = Math.cos(d.body.facing), fy = Math.sin(d.body.facing), px = -fy, py = fx;
+  const side = (b.pos.x - d.pos.x) * px + (b.pos.y - d.pos.y) * py >= 0 ? -1 : 1;
+  const sx = d.pos.x + px * side * SHOULDER_OFFSET, sy = d.pos.y + py * side * SHOULDER_OFFSET;
+  const gap = Math.hypot(c.pos.x - sx, c.pos.y - sy) - c.profile.radius;
+  const arm = Math.max(0, d.profile.reach - SHOULDER_OFFSET) * (1 - clamp(e.control, 0, 1));
+  return Math.hypot(c.pos.x - d.pos.x, c.pos.y - d.pos.y) - gap + arm;
+}
 /** Default on (GRIP_HOLD=0 turns it off): a hold keeps the grip it has
  * acquired when the arms extend. Closing still works a grip toward a wrap,
  * but a hand closed on a jersey is not weaker because the elbow straightened;
@@ -150,7 +176,7 @@ export function tryTackles(sim: PlaySim): void {
     if (engaged && !freeSide && d.engagement!.win < 0.6) continue;
     const body = c.profile.radius + d.profile.radius;
     const freeArm = freeSide ? 0.7 - 0.3 * clamp(d.engagement!.control, 0, 1) : 0.4;
-    const arms = body + d.profile.reach * (engaged ? freeArm : 1.0);
+    const arms = ENGAGED_REACH && engaged ? engagedArms(d, c) : body + d.profile.reach * (engaged ? freeArm : 1.0);
     // A free tackler can lunge for the last half yard by committing his body;
     // a miss then leaves him off his base.
     const range = arms + (engaged ? 0 : 0.45);
