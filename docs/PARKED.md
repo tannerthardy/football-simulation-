@@ -124,3 +124,9 @@ Built 2026-10-22 from every flag found in `src` on the repository's branches, pl
 | `TRENCH_LEAD` | Variant 2: beat him to the spot — lead his felt lateral movement. | `claude/trench-investigation` `src/sim/engagement.ts:771` | Older branch; result not recorded in this catalog: read the branch's review notes before reviving. |
 | `TRENCH_LEV` | Scale of the leverage/normal-load coupling (0 = off). | `claude/trench-investigation` `src/physics/world.ts:211` | Older branch; result not recorded in this catalog: read the branch's review notes before reviving. |
 
+
+## Engaged hands: the grip break (effective mass, 2026-11-10)
+
+| Flag | What it does | Where | Status |
+|---|---|---|---|
+| `GRIP_BREAK` | A defender breaks a blocker's grip with a hand strike (knock-down, swim, rip): his hand speed and arm force against the blocker's grip capacity, so the hands' sideways coupling holds until it is broken and not by a fixed limit. Two-sided; shared with Run Game and Defense. | Not built (proposal) | Proposed by Flex after `HANDS_FRICTION` overshot. Evidence: the hands' tangential load is at the steer limit on 67% of engaged run ticks, where the DL slips across (p75 1.12 yd/s). Friction on the pressing load (0.35) overshoots: rotation 56 → 27° (NFL 43), DL depth at 2.0 s +0.69 → +0.47 (NFL +0.70). Steer alone under-couples, friction alone over-couples, and what is missing is the grip being broken. Needs its own plan and Tanner's go-ahead. See `docs/reviews/effective-mass.md`. Related: `HAND_FRICTION` (G5, run-game-v3), friction-only steering, pressure 32 → 41%. |

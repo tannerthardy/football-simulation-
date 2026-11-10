@@ -337,6 +337,36 @@ const HANG_SHARE = 0.5;
  * leave the runner's base behind his body (see the stride holds and
  * updateSupport). */
 const HELD_SWING = process.env.HELD_SWING === '1';
+/** Default since run-ref-9 (HANDS_CHEST=0 restores): a block's hands push chest to chest. In
+ * the centre-mode hands row the push acted along the line between the two
+ * centres, so a fit landed off-centre pushed the man sideways as well as back
+ * and the pair twisted apart (docs/reviews/effective-mass.md, step 2 attempt
+ * two). Two hands spread on a chest push along that chest's normal while they
+ * stay within its flat span. Each torso's shoulder line is a segment of
+ * half-length CHEST_HALF across his facing; the row acts between the closest
+ * points of the two segments, as for two capsules. Off, centre to centre. */
+const HANDS_CHEST = process.env.HANDS_CHEST !== '0';
+/** Experimental (HANDS_FRICTION=1, off): hands pressed into a chest resist
+ * sliding by Coulomb friction on their own compressive load, the same
+ * coefficient as torso contact (CONTACT_FRICTION), in addition to the active
+ * steer. Off, a block's sideways coupling is the steer alone, so a pressing
+ * pair slips across each other once the steer saturates (67% of engaged run
+ * ticks; docs/reviews/effective-mass.md). Friction only resists slip; it
+ * never drives. */
+const HANDS_FRICTION = process.env.HANDS_FRICTION === '1';
+/** Experimental (GRASP_ARMS=1, off): an upper-body grasp acts where the
+ * holder's arms meet the runner's torso, not at his centre. In centre mode its
+ * rows had no lever arms, so the grip braked the two centres' relative motion
+ * directly and a held pair could not swing around each other (slip 0.18 yd/s
+ * while held against 2.06 apart; NFL pairs keep about 2.7 at +0.1 s). With
+ * lever arms at the radius-weighted surface point, as the World's patch law
+ * places it, the grip holds that point and the bodies turn under it. Block
+ * hands are untouched (HANDS_CHEST). docs/reviews/effective-mass.md. */
+const GRASP_ARMS = process.env.GRASP_ARMS === '1';
+/** Flat half-span of a torso's front, yd: shoulder half-width with pads (0.27)
+ * less chest half-depth (0.15); anthropometric estimate, as the capsule of
+ * scripts/diag/effective-mass/shape.py. */
+const CHEST_HALF = 0.27 - 0.15;
 /** Experimental (CONTACT_LAYER=1, off): a compliant torso layer before the stiff core
  * (docs/reviews/effective-mass.md, step 1). Each torso carries a soft layer (pads,
  * tissue and arms yielding) of depth LAYER_DEPTH and stiffness LAYER_K; a pair's
@@ -504,6 +534,23 @@ function unsupportedLean(b: Body, plan: Plan, leanX: number, leanY: number,
  * Opposing gait and lean can leave a positive lean share after gait alone is
  * clipped to the cap, so the net is scaled back to the cap: no ground force
  * beyond traction, even at zero traction. Exported for the law test. */
+/** HANDS_CHEST: the vector from a's shoulder line to b's at their closest
+ * points (segments of half-length CHEST_HALF across each man's facing). */
+function chestPoints(a: Body, b: Body): Vec2 {
+  const ux = -Math.sin(a.facing) * CHEST_HALF, uy = Math.cos(a.facing) * CHEST_HALF;
+  const vx = -Math.sin(b.facing) * CHEST_HALF, vy = Math.cos(b.facing) * CHEST_HALF;
+  // Segments p(s) = a + s u, q(t) = b + t v, s, t in [-1, 1].
+  const rx = a.pos.x - b.pos.x, ry = a.pos.y - b.pos.y;
+  const uu = ux * ux + uy * uy, vv = vx * vx + vy * vy, uv = ux * vx + uy * vy;
+  const ur = ux * rx + uy * ry, vr = vx * rx + vy * ry;
+  const den = uu * vv - uv * uv;
+  let sa = den > 1e-12 ? clamp((uv * vr - ur * vv) / den, -1, 1) : 0;
+  let tb = clamp((uv * sa + vr) / vv, -1, 1);
+  sa = clamp((uv * tb - ur) / uu, -1, 1);
+  tb = clamp((uv * sa + vr) / vv, -1, 1);
+  return { x: b.pos.x + tb * vx - (a.pos.x + sa * ux), y: b.pos.y + tb * vy - (a.pos.y + sa * uy) };
+}
+
 export function allocateGroundForce(out: Float64Array, lx: number, ly: number,
   leanX: number, leanY: number, cap: number): Float64Array {
   let px = leanX, py = leanY, r = 1;
@@ -2305,6 +2352,9 @@ export class World {
       // All rows read the pre-solve velocities; solver corrections cannot
       // manufacture another patch or rotate the frame during this interval.
       let dx = point.x - a.pos.x, dy = point.y - a.pos.y;
+      if (HANDS_CHEST && jt.kind === 'hands' && this.handContact === 'center' && !jt.contact) {
+        const c = chestPoints(a, b); dx = c.x; dy = c.y;
+      }
       let px = 0, py = 0; // Material offset from the body's force-midpoint center.
       const upperPatch = jt.kind === 'grasp' && jt.legs <= 0 && this.handContact === 'patch';
       const lowerPatch = jt.kind === 'grasp' && !!this.attachments.get(jt)?.material && this.handContact === 'patch';
@@ -2361,6 +2411,16 @@ export class World {
           row.mt = 1 / (1 / this.mass[i] + 1 / this.mass[j]
             + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
         }
+      }
+      if (GRASP_ARMS && this.handContact === 'center' && jt.kind === 'grasp' && jt.legs <= 0) {
+        const radius = a.profile.radius + b.profile.radius;
+        const rax = dx * a.profile.radius / radius, ray = dy * a.profile.radius / radius;
+        const rbx = -dx * b.profile.radius / radius, rby = -dy * b.profile.radius / radius;
+        row.ni = -(rax * ny - ray * nx); row.nj = rbx * ny - rby * nx;
+        row.ri = rax * nx + ray * ny; row.rj = -(rbx * nx + rby * ny);
+        row.mn = 1 / (1 / this.mass[i] + 1 / this.mass[j] + row.ni * row.ni / this.inertia[i] + row.nj * row.nj / this.inertia[j]);
+        row.bodyInverseMass = 1 / row.mn;
+        row.mt = 1 / (1 / this.mass[i] + 1 / this.mass[j] + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
       }
       if (jt.kind === 'hands') {
         row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);
@@ -2462,7 +2522,8 @@ export class World {
         (r.ni ?? 0) * dn, (r.nj ?? 0) * dn, r.mode > 0 ? this.pressUnits(r.actor) : 1);
       r.ln+=dn*fraction;
     }
-    if (r.steerLim > 0) this.solveTangent(r, a, b, r.steerLim);
+    const slipLim = r.steerLim + (HANDS_FRICTION && r.mode > 0 ? CONTACT_FRICTION * Math.max(0, r.ln) : 0);
+    if (slipLim > 0) this.solveTangent(r, a, b, slipLim);
   }
 
   /** Patch reel and passive grip share a frozen force point and one budget.

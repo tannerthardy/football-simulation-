@@ -25,7 +25,7 @@ async function hooks(flag: string, concept: string, at: number) {
     if (sim.throwAt >= 0) continue;
     for (const d of sim.defense) {
       const b = d.behavior;
-      if (!(b instanceof ZoneCoverage) || b.deep || !String(b.zone).startsWith('hook')) continue;
+      if (!(b instanceof ZoneCoverage) || (b as any).deep || !String(b.zone).startsWith('hook')) continue;
       const dd = (d.pos.x - sim.los) * dir;
       const near = sim.offense.filter((o: any) => o !== sim.qb && !OL.includes(o.slot) && Math.abs(o.pos.y - d.pos.y) < 6).map((o: any) => (o.pos.x - sim.los) * dir);
       depth.push(dd);
