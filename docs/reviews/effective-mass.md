@@ -1380,3 +1380,37 @@ What the trace shows:
   2. Tackle counts (made, missed, broken) within noise.
   3. Falls down on both sides with `run-fall.mts`: defenders below 906 and blockers below 580.
 - **Reported, not gated:** yards by concept, stuffs, first-contact depth, crowd at the tackle, the trench operators.
+
+**Result** (`ref:report`, run-ref-12 @ 849ee8f7, candidate = + `LEAN_PITCH=1`; full output in `out/ref/report.md`).
+
+| Concept | n | run-ref-12 | + `LEAN_PITCH` | Paired (SE) |
+|---|---|---|---|---|
+| OZ | 395 | 3.15 | 3.50 | +0.35 (0.23) |
+| IZ | 215 | 3.88 | 4.51 | +0.63 (0.31) |
+| gap | 445 | 4.17 | 4.20 | +0.04 (0.16) |
+| duo | 126 | 3.49 | 3.50 | +0.01 (0.31) |
+| toss | 55 | 3.93 | 4.97 | +1.04 (1.01) |
+| draw | 85 | 4.04 | 3.77 | −0.27 (0.58) |
+| **all** | 1,321 | **3.73** | **3.98** | **+0.24 (0.12)** |
+
+- **Other yardage numbers:** stuffs (≤ 0 yd) 11.4% → 11.6%; 10+ runs 6.7% → 8.0%; 20+ runs 1.8% → 2.7%.
+- **Gate 2, tackles:** missed 0.241 → 0.240, broken 0.142 → 0.147 (engaged-grab breaks 0.073 → 0.070). **Met.**
+- **Gate 3, falls** (`run-fall.mts`): defenders 906 → 709, blockers 580 → 361. **Met.**
+- **Gate 1, mechanism:** the yardage rise has two named mechanisms, both moving toward the NFL. No regression traces to a bug. **Met.**
+  1. *Blocks held.*
+     - Zone DL driven back ≥ 0.5 yd from 0.5 s: 8% → 12% (NFL 17%).
+     - DL depth at 2.0 s: +0.69 → +0.57 (NFL +0.70); solo +0.87 → +0.69 (NFL +0.82).
+     - Solo-pair rotation 58° → 46° (NFL 43°).
+     - Pile frames with no defender within 1 yd: 408 → 566.
+  2. *Pursuit.* A second defender arrives at 75% of contacts, against 69% (NFL 80%). The third: 37% → 41% (NFL 43%).
+
+**The falls that remain with the flag on** (`run-dfall.mts` with the temporary per-term split, reverted):
+
+| | Lean release | Impact | Other |
+|---|---|---|---|
+| Blockers (361) | 149: interior OL (C 35, RG 33, LG 26); request **−1.74 yd/s** into the man; lean 1.18× the load; release 0.85 yd | 165: TEs (Y 73, H 36); felt 3.3 mg; unfollowed accel 0.77 + tip 0.19 yd | 47: neither term (lean ≈ load, release below threshold; the capture point is within base until the last ticks) |
+| Defenders (709) | 193: DT 111, LB 33; request −1.47; lean 1.1×; release 0.79 yd | 451: LB 166, DB 90; felt 3.2 mg; request 0 along the push | 65 |
+
+- **Pass side** (`pass-fall.mts`, flag on): 58 of 65 traced go toward the rusher. The release is the whole jump. These are leans built over ~0.35 s at 1.18× a ~1-mg load, so lean release with the drive request.
+- **Remaining lean releases (blockers 149, defenders 193, pass blockers ~19% of dropbacks):** real leans the law now permits, made frequent by requests that drive into the man at 1.25× the load. That is technique: Coverage's anchor for pass sets; for run blockers and defenders, Run Game and Defense.
+- **Remaining impacts:** unbraced bodies hit by heavier or lower ones, coherent by the impact bench. For defenders this is Defense's take-on item. For blockers, TEs are hit while blocking down.
