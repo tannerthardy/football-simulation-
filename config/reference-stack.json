@@ -70,6 +70,7 @@
     "GRASP_CLOSURE": "off",
     "ENGAGED_REACH": "off",
     "TORSO_CAPSULE": "off",
+    "WRAP_TWO_POINT": "off",
     "GRASP_PATCH": "on",
     "GRASP_SLIDE": "off",
     "GRIP_REACH": "on",

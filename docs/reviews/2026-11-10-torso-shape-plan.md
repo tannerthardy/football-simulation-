@@ -263,3 +263,26 @@ First contact on zone runs, by the hitter's bearing from the runner (front / sid
   it. That is Defense's.
 - **The one-point grasp's moment.** All of the runner's motion past him becomes torque. That is the two-point wrap
   question, and it goes on the bench next.
+
+**Two-point wrap bench** (`WRAP_TWO_POINT`, off; `wrap-bench.mts`).
+- **Setup.** A runner at 4.5 yd/s passes a hitter standing 0.6–0.9 yd beside his path. The grasp forms at first
+  proximity, two-arm (lock 0.5) or one-arm.
+
+| Hitter rotation by +0.5 / +1.0 s | Flag off | `WRAP_TWO_POINT` on |
+|---|---|---|
+| Request tracks square to the runner (as the game's does) | 99–122° / 120–142° | the same |
+| Request held at the facing he had at the grasp | 0–3° / 0° | 0–3° / 0° |
+
+- **The runner.** With his tracking hitter and a two-arm wrap, the flag turns the runner 27° / 45° (from 1° / 1°): the
+  couple passes the hitter's turn on to him.
+- **The bearing.** It turns 89–118° in every case. When the hitter holds his facing, the runner goes past his shoulders
+  as in the NFL (NFL side: hitter 34° against a bearing of 94°).
+- **Pair momentum is exact:** 2.3e−13 off, 5.5e−13 on.
+
+**Reading:**
+- On the bench the hitter's rotation is his own facing request: a tackler who keeps squaring up to a passing runner spins
+  with him. The one-point grasp's moment alone barely turns him.
+- A two-arm couple does not stop a tracking tackler; it turns the runner instead. `WRAP_TWO_POINT` stays off.
+- **The over-rotation is a decision: Defense's tackler facing request during a hold.** A held or braced facing reproduces
+  the NFL's lag.
+- The capsule + layer read waits for that fix, as its spin gate depends on it.
