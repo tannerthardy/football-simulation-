@@ -501,3 +501,46 @@ off leg drive. Until `tackle.ts` sets `GraspJoint.height`, a hold with leg share
 - **Front holds** end with the runner down 92% of the time, against 78%, in 0.35–0.50 s against 0.65 s.
 - **Alone it over-finishes.** The temporary chest-height default puts waist holds (leg share 0.2–0.34) at chest
   height. The package result depends on where Defense sets real grip heights.
+
+**Paired stuffs with the three flags (`stuff-dump.mts`, `square-hold.mts`; ref-10, 1,321 fixed runs).** Stuff = a
+run of 0 yards or less. "Matched" plays have the same first contact in both arms (within 0.3 yd, same approach).
+
+| | Stuff → gain | Gain → stuff | Stuffs | Mean change (yards capped at 20) |
+|---|---|---|---|---|
+| `GRASP_PATCH` alone | 78 | 15 | 191 → 128 | +0.57 (SE 0.05) |
+| All three, matched contact (567 plays) | — | — | 93 → 73 | +0.01 (SE 0.12) |
+| All three, all plays | 111 | 74 | 191 → 154 | +0.01 |
+
+- **Of the 111 stuffs that gain with all three flags:**
+  - 67 diverge before contact: line contact changes the play upstream (50 flips go the other way the same way);
+  - 30 are the pair turning out of a front hold: the line of centres turns 0–40° → 30–108° by +0.3 s, then the
+    runner falls forward; 26 of 30 gain under 2 yd;
+  - 5 keep speed through the first hit; 3 have the first hitter slide off with no second man; 6 other.
+- **NFL supports the turn.** The aligned NFL contact course turns the line of centres by a median 80° in 0.3 s (40°
+  below 3 yd/s closing, 96° at 3–5). Ref-10 front holds turn 4–18°; with the flags, 42–87°.
+- **Square hits still stop him.** On the bench (`square-hold.mts`), a driving runner held head-on at offset 0–0.05 yd
+  turns at most 6° and is stopped. Turn grows with offset: 13–24° at 0.10 yd, 37–96° at 0.20 yd.
+  - In games, nine matched front, unblocked hits at offset under 0.1 yd turn a median 59° and still stop him (gain
+    after contact 1.48 → 1.27 yd, stuffs 2 → 3).
+  - The turn there comes from the play (cuts, second bodies), not from the hold.
+- **A hole to watch, not a fix:** at 0.2 yd offset the bench tackler spins at up to 5 rad/s. A wrapped grip holds
+  around the back, not at one point, so it resists the bodies' relative yaw. The patch grasp acts at one point and
+  cannot. The NFL turn rate does not yet show this is too much.
+
+**What still separates the first-hit force from the measurements (`layer-bench.mts`).** `CONTACT_LAYER` peaks:
+5.4 / 7.1 / 9.0 / 11.0 kN square at 3 / 4 / 5 / 6 yd/s. Measured peaks are 1.7–3.4 kN, over about 50–100 ms of
+contact.
+- **The layer is a spring.** It stops a closing speed v with peak F = v·√(kμ), in a half-period of π·√(μ/k).
+  - Series k is 50 kN/m with 0.12 m total depth. The reduced mass μ of the 91 + 111 kg bench pair is 50 kg.
+  - At 4 yd/s (3.66 m/s), F = 5.8 kN after 0.12 m of compression in a half-period of 100 ms.
+  - The compression uses up the whole layer, so the 9 Hz core adds the rest (7.1 kN). At 6 yd/s the core carries
+    more.
+- **No sourced layer value closes it.** Reaching 3 kN at 3.66 m/s with μ = 50 kg needs k ≈ 13 kN/m. That means 0.23 m
+  of compression and a 200 ms half-period, against the measured 50–100 ms. Pads and tissue are not that deep.
+- **Effective mass closes it.** In the first 50–100 ms only the upper body takes part (49% of mass, de Leva 1996). That
+  gives μ ≈ 25 kg, which with the same layer gives:
+  - F = 4.1 kN at 3.66 m/s and 3.1 kN at 2.7 m/s;
+  - a 70 ms half-period;
+  - 8 cm of compression, inside the layer and short of the core.
+- **The remaining factor of about √2 is the single rigid torso:** the full body mass meets the hit. That is mechanism
+  1 (an upper body pitching about the hip), not a layer parameter. The layer values stay as they are.
