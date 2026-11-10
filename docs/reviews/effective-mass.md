@@ -946,3 +946,33 @@ friction are small; mechanism 1's articulation would not change it (Gate 1: the 
   (1.46 → 1.10).
 - Even central hits keep 78% in the NFL against our 42%. The NFL's collision turns closing into sliding past; ours stops
   it with the normal impulse.
+
+**(a) The lean allocation at impact: closed, negative** (temporary probes, uncommitted; `first-hit-split.mts`; 2026-11-10).
+
+Per tick over the first 0.2 s (208–241 front-on hits, run-ref-11; yd/s² along each man's axis):
+
+| | Runner | Hitter |
+|---|---|---|
+| Gait asks | −0.79 / +0.04 / +2.18 / +1.87 | +3.59 / +0.39 / +1.24 / +1.12 |
+| Lean asks (after its rise and release, before allocation) | +0.61 / +2.12 / +2.80 / +2.59 | +2.71 / +3.74 / +4.59 / +4.56 |
+| Cap (strength × force-velocity × availability) | 4.4–5.8 | 7.4–8.7 |
+
+- **The hitter drives through the hit and the runner does not.**
+- **Not his speed cap.** The runner's gait speed cap is 9.2–9.4 yd/s against his request of 5.2–5.4 yd/s.
+- **Not cutting.** The request is within 3° of his velocity at the median on the contact tick.
+- **The runner's `push` intent is 0 on 68% of contact ticks** (31% the next tick). The lean law is gated by it, and he
+  braces only after he feels the hit.
+- **Intervention:** `push` = 1 whenever a defender is within 1.2 yd ahead of the runner. Speed at +0.2 s goes 2.53 → 2.54
+  and ground along the axis +0.13 → +0.14: no change.
+- **Physics bounds it.**
+  - At impact the load on the runner is about 34 yd/s² (about 3 g), against traction of about 11 yd/s² (about 1 g).
+  - Feet at the strength cap can add at most about 1 yd/s over 0.2 s, against a torso normal impulse of −2.1 yd/s.
+  - Leg drive through the hit cannot reach 82%. The ceiling with it is near 70%.
+- **The term is the normal impulse that stops the closing along the line of centres.** In ours that impulse takes −2.11
+  yd/s off the runner in 0.2 s. In the NFL the runner loses 0.78 in total, and the hitter gains only 0.26: the pair never
+  exchanges momentum like a stopping collision.
+
+The two candidates left both act on that impulse:
+- **(b) compliance, `CONTACT_LAYER`:** −2.11 → −1.75.
+- **(c) contact geometry:** at torso contact, closing is 82–89% of the relative velocity in ours against 50–78% in the
+  NFL; the NFL's slip grows after contact and ours shrinks. That is the evidence for unparking the torso shape.
