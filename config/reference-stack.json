@@ -98,6 +98,8 @@
     "LB_READ_STEP": "on",
     "LEAN_PITCH": "on",
     "GRASP_ARM_MOMENT": "off",
+    "WHIFF_MARGIN": "off",
+    "TKL_EXEC_STATE": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",

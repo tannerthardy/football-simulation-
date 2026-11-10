@@ -25,7 +25,8 @@
 import { OPP_GOAL_X, OWN_GOAL_X } from '../core/field.js';
 import { G } from '../core/units.js';
 import { clamp, type Vec2 } from '../core/vec.js';
-import { comHeightAt, supportParams, TURF_MU } from '../physics/support.js';
+import { availability, comHeightAt, supportParams, TURF_MU } from '../physics/support.js';
+import { fatigueFactor } from '../physics/kinematics.js';
 import { CONTACT_SCALE, GROUND_STRETCH, type GraspJoint, type Intent } from '../physics/world.js';
 import type { Agent } from './agent.js';
 import type { PlaySim } from './playsim.js';
@@ -290,7 +291,31 @@ const TKL_WHIFF = process.env.TKL_WHIFF === '1';
 const REACH_WINDOW = 0.2;
 /** Layout from the launch to full extension (model assumption, s). */
 const DIVE_WINDOW = 0.3;
+/** WHIFF_MARGIN (experimental, off; needs TKL_WHIFF): the reach's geometry
+ * decides how close the hands get to the runner's body; whether fingers then
+ * get a grip of cloth at that margin is below the body scale we simulate, so it
+ * is a probability of the margin (W tier, docs/reviews/2026-11-10-tackle-forms.md).
+ * p(miss) = 1 / (1 + exp(-margin / sigma)): margin = the runner's predicted
+ * body point beyond the hands' reach (yd, + = out of reach). sigma is hand
+ * placement precision: HAND_SIGMA (a hand's width, a model assumption), wider
+ * with lost balance (availability) and with a blocker still on him, narrower
+ * with tackling skill (capability, not outcome). Checked against the missed
+ * share by approach on the shared index (Defense's classes, NFL tracking). */
+const WHIFF_MARGIN = process.env.WHIFF_MARGIN === '1';
+const HAND_SIGMA = 0.1;
+/** TKL_EXEC_STATE (experimental, off): drop the per-attempt random execution
+ * draw; the hold's quality keeps its deterministic contact-quality and
+ * skill-against-elusiveness terms. The whiff and grip physics carry the noise. */
+const TKL_EXEC_STATE = process.env.TKL_EXEC_STATE === '1';
 export function whiffs(sim: PlaySim, d: Agent, c: Agent, limit: number, engaged: boolean, window: number): boolean {
+  const m = whiffMargin(sim, d, c, limit, engaged, window);
+  if (!WHIFF_MARGIN) return m > 0;
+  const sup = d.body.support, a = sup ? availability(sup, supportParams(d.profile), fatigueFactor(d.body.energy)) : 1;
+  const sigma = HAND_SIGMA * (2 - a) * (engaged ? 1.5 : 1) * (1.3 - 0.6 * d.r('tackling'));
+  return sim.dice('tackle', d).chance(1 / (1 + Math.exp(-m / sigma)));
+}
+/** The reach's miss distance: + = the runner's body beyond the hands' reach (yd). */
+export function whiffMargin(sim: PlaySim, d: Agent, c: Agent, limit: number, engaged: boolean, window: number): number {
   // The hands get there sooner the less they have to extend: a form tackle
   // at body distance is on him at once; a reach at full stretch takes the
   // whole window, in which the carrier can be gone.
@@ -313,7 +338,7 @@ export function whiffs(sim: PlaySim, d: Agent, c: Agent, limit: number, engaged:
     const cut = 0.5 * c.profile.lateral * w * w;
     cw = { x: cw.x + ex / el * cut, y: cw.y + ey / el * cut };
   }
-  return Math.hypot(cw.x - hands.x, cw.y - hands.y) > limit;
+  return Math.hypot(cw.x - hands.x, cw.y - hands.y) - limit;
 }
 
 function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, lunged: boolean, limit = Infinity): void {
@@ -373,7 +398,7 @@ function attempt(sim: PlaySim, d: Agent, c: Agent, q: number, engaged: boolean, 
   // off a block, it is a grab. A slippery, powerful runner turns his hips so
   // the arms cannot lock. One execution draw per attempt.
   const base = clamp(0.25 + 0.85 * q - (engaged ? 0.3 : 0), 0.1, 1);
-  const execution = clamp((1 - 0.35 * clamp(0.5 * P + 0.5 * E - T, -1, 1)) * Math.exp(0.3 * rng.normal(0, 1)), 0.2, 1.6);
+  const execution = clamp((1 - 0.35 * clamp(0.5 * P + 0.5 * E - T, -1, 1)) * (TKL_EXEC_STATE ? 1 : Math.exp(0.3 * rng.normal(0, 1))), 0.2, 1.6);
   const quality = clamp(base * execution, 0.08, 1);
   // Where: good tacklers wrap the thighs; from behind they take the legs; a
   // reach off a block gets jersey; a lunge goes for the legs.
