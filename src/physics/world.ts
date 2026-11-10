@@ -337,6 +337,20 @@ const HANG_SHARE = 0.5;
  * leave the runner's base behind his body (see the stride holds and
  * updateSupport). */
 const HELD_SWING = process.env.HELD_SWING === '1';
+/** Experimental (CONTACT_LAYER=1, off): a compliant torso layer before the stiff core
+ * (docs/reviews/effective-mass.md, step 1). Each torso carries a soft layer (pads,
+ * tissue and arms yielding) of depth LAYER_DEPTH and stiffness LAYER_K; a pair's
+ * layers act in series. Inside the layers the contact is that spring with damping
+ * that grows with compression (Hunt-Crossley, LAYER_HC), so there is no damping
+ * spike at first touch; beyond them the existing 9 Hz core takes over, continuous in
+ * force. Off, every contact uses the single 9 Hz critically damped row. */
+const CONTACT_LAYER = process.env.CONTACT_LAYER === '1';
+/** Soft layer depth per torso, yd (about 6 cm of pad foam and tissue; estimate). */
+const LAYER_DEPTH = 0.065;
+/** Soft layer stiffness per torso, kg/s^2 (= N/m; about 100 kN/m; estimate, provisional). */
+const LAYER_K = 1.0e5;
+/** Hunt-Crossley damping, s/yd (0.3 s/m, a soft-tissue order of magnitude). */
+const LAYER_HC = 0.3 * 0.9144;
 /** Extra hold distance of a holder stretched along the ground, yd. */
 export const GROUND_STRETCH = 0.9;
 /** Gait response time to body acceleration, s. */
@@ -387,6 +401,8 @@ interface Contact {
   ln: number;
   lt: number;
   closing: number;
+  /** CONTACT_LAYER: this row's own softness (depth-dependent law). */
+  soft?: Softness;
   /** The compliant solve pressed them together (before the relax). */
   touched?: boolean;
   observed: ContactSnapshot;
@@ -2198,11 +2214,31 @@ export class World {
             supportI: a.support!.state, supportJ: b.support!.state,
             height: clamp(Math.min(this.padHeight[i], this.padHeight[j]), 0,
               Math.min(a.profile.heightYd, b.profile.heightYd)) } };
+        if (CONTACT_LAYER && !guard) this.layerContact(row, s, h);
         if (this.handContact === 'patch') this.contactPatch(row);
         out.push(row);
       }
     }
     return out;
+  }
+
+  /** CONTACT_LAYER: the row's spring and damping from its compression p = -s.
+   * Inside the pair's soft layers (series stiffness, summed depth) the force is
+   * k_layer p plus Hunt-Crossley damping 1.5 HC k p v, zero at first touch; past
+   * them the 9 Hz core adds on, continuous in force at the boundary. Expressed as
+   * a soft constraint: frequency from k over the pair's reduced mass, damping
+   * ratio from the HC coefficient, capped at critical. */
+  private layerContact(c: Contact, s: number, h: number): void {
+    const p = Math.max(0, -s), depth = 2 * LAYER_DEPTH, kLayer = LAYER_K / 2;
+    const omegaCore = 2 * Math.PI * CONTACT_HZ, kCore = c.mn * omegaCore * omegaCore;
+    const core = p > depth && kCore > kLayer;
+    const k = core ? kCore : kLayer, omega = Math.sqrt(k / c.mn);
+    const zeta = Math.min(CONTACT_ZETA, 0.75 * LAYER_HC * omega * p);
+    const soft = softness(omega / (2 * Math.PI), zeta, h);
+    // Core rows act on a shifted gap so the force at the layer boundary matches.
+    const gap = core ? s + depth * (1 - kLayer / kCore) : s;
+    c.soft = soft;
+    c.bias = Math.max(soft.biasRate * gap, -MAX_PUSHOUT);
   }
 
   /** One point between the bodies, weighted by their torso radii. Nominal
@@ -2228,7 +2264,11 @@ export class World {
     const av = a.vel, bv = b.vel;
     let vn = (bv.x - av.x) * c.nx + (bv.y - av.y) * c.ny;
     if (this.handContact === 'patch') vn += (a.spin ?? 0) * c.ni + (b.spin ?? 0) * c.nj;
-    const imp = relax || c.guard ? -c.mn * (vn + c.bias) : -c.mn * soft.massScale * (vn + c.bias) - soft.impulseScale * c.ln;
+    const sf = c.soft && !relax ? c.soft : soft;
+    let imp = relax || c.guard ? -c.mn * (vn + c.bias) : -c.mn * sf.massScale * (vn + c.bias) - sf.impulseScale * c.ln;
+    // CONTACT_LAYER: the relax takes back the separating velocity the soft solve
+    // left behind and never arrests closing; the layer law alone does that.
+    if (relax && c.soft && imp > 0) imp = 0;
     const ln = Math.max(0, c.ln + imp);
     const dn = ln - c.ln;
     c.ln = ln;

@@ -143,6 +143,13 @@ const angDiff = (a: number, b: number) => Math.atan2(Math.sin(a - b), Math.cos(a
 /** Default on (RELEASE_REDECIDE=0 for comparison): a player whose block ends
  * during the engagement update decides again in the same step (PlaySim.tick). */
 const RELEASE_REDECIDE = process.env.RELEASE_REDECIDE !== '0';
+/** Experimental (CONTACT_PATCH=1, off): plays that do not name a hand-contact
+ * law use the World's common contact patch ('patch'): torso, hand and grasp
+ * impulses act at the contact point with lever arms, so off-centre loads and
+ * a grip on a torso turn the bodies and a held pair can swing around each
+ * other instead of being locked centre to centre (docs/reviews/effective-mass.md,
+ * step 2). Off, the setup's law or the World default ('center') as before. */
+const CONTACT_PATCH = process.env.CONTACT_PATCH === '1';
 
 export class PlaySim {
   readonly dt = DT;
@@ -351,7 +358,7 @@ export class PlaySim {
     fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
     if (setup.alignment?.length) this.placeByHand(setup.alignment);
     this.snapX = this.agents.map((a) => a.pos.x);
-    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact });
+    this.world = new World(this.agents.map((a) => a.body), { substeps: setup.substeps, supportModel: setup.supportModel, constraintWork: setup.constraintWork, impactTiming: setup.impactTiming, supportIntegration: setup.supportIntegration, handContact: setup.handContact ?? (CONTACT_PATCH ? 'patch' : undefined) });
     // Linemen and backs start in their stances; skill players upright.
     for (const a of this.agents) {
       const line = ['LT', 'LG', 'C', 'RG', 'RT'].includes(a.slot) || a.player.position === 'DT' || a.player.position === 'EDGE';
