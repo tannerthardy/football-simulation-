@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-6`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-7`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -287,7 +287,25 @@ Run game on `run-ref-6` at this commit (1,321 fixed runs, yards under 20):
 | Duo yd; <= 0 | 6.13; 6% | 3.18; 18% | |
 | Missed / broken a run (engaged-grab breaks) | 0.272 / 0.302 (0.158) | 0.241 / 0.175 (0.116) | |
 
-Next for the run game (Run Game): the outside-zone back's path. He is far too narrow: from the gun his width at 3 / 2 / 0 yd off the line is 1.6 / 2.7 / 4.7 yd against the NFL's 4.5 / 5.7 / 7.1, which fits a blocked DL making first contact on 52% of outside-zone runs (NFL 33%).
+Next for the run game: see run-ref-7 below. (An earlier version of this paragraph said the outside-zone back was far too narrow. Run Game withdrew that: the widths were measured from his own start. Against the play-side tackle his median crossing is close to the NFL's.)
+
+## run-ref-7: `THROW_REACT` on; outside zone's edge (2026-11-10)
+
+- **`THROW_REACT` (Coverage #442), on.** The QB's late release was not the throwing motion: he starts it at the same time with or without #408 (median 2.35 s), and his release came 0.95 s after the receiver's break (NFL about 0.3 s before it). The cause was his own completion estimate, which let defenders break on the ball before it was out; the engine lets nobody break until the release. The flag makes his estimate match the engine. Coverage's panel (732 dropbacks): sacks 69 -> 48 (9.4 -> 6.6%), time to throw median 2.80 -> 2.65 s, completions 352 -> 383. Checked here on the quick scorecard, six games an arm ([report](reviews/2026-11-10-scorecard-throw-react.md)):
+
+| Per team-game or as marked | run-ref-6 | with `THROW_REACT` | NFL band |
+|---|---|---|---|
+| Sack rate | 12.1% | 8.7% | 4.6-9.4% |
+| Time to throw (s) | 2.94 | 2.77 | 2.7-2.9 (unsourced) |
+| 3rd-down conversion | 32.9% | 37.7% | 37-41% |
+| Yards an attempt | 10.55 | 10.26 | 6.35-7.89 |
+| YAC a reception | 10.53 | 9.02 | 4.53-5.91 |
+| INT rate | 5.5% | 4.7% | 1.5-3.2% |
+| Points | 33.8 | 33.4 | 21-23.5 |
+
+  Only time to throw is resolved by six games; the rest agree in direction with the panel. Points a team-game were 52.9 on the legacy engine and 41.3 on run-ref-4.
+- **What is left of the QB's pessimism is the defense's doing:** defenders he expects to beat the ball are a median 12.4 yd from it when it arrives, because defenders do not close during the ball's flight (COV-1: 0.12 yd against the NFL's 0.65). The same behaviour is the first suspect for YAC, which is Coverage's next item.
+- **Outside zone: it is the defensive edge (Run Game, corrected).** Where the back crosses the line is close to the NFL at the median, but the spread of lanes is not: he bounces 6+ yd outside the tackle on 8% of gun runs (NFL 28%) and crosses within 3 yd of the tackle on 45% (NFL 34%). The edge defender steps inside and stays level (lateral at 1.0 / 1.5 s -0.32 / +0.41 yd against the NFL's +0.69 / +1.75; depth -0.16 / -0.23 against -0.28 / -0.81), which fills the window where the back meets a blocked lineman and takes away the bounce. `STRETCH_TRACK` re-tested: it costs outside zone 0.39 yd (SE 0.21) by pressing wider into the same edge; it stays off. Defense has the edge; Run Game re-checks the back's read on their candidate.
 
 ## What to do next
 

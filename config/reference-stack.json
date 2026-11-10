@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-6",
+  "id": "run-ref-7",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -134,6 +134,7 @@
     "STRETCH_TRACK": "off",
     "TACKLE_TOUCH": "off",
     "TE_OFF": "on",
+    "THROW_REACT": "on",
     "TIGHT_OFF": "on",
     "TOUCH_READ": "on",
     "WING_CALL": "on",

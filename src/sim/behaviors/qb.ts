@@ -69,6 +69,14 @@ function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): 
 /** A quarterback's weight going toward the target in his stride (NFL tracking: about 0.4 yd/s at the release). */
 const STRIDE_SPEED = 0.45;
 
+/** THROW_REACT (experimental, off; THROW_REACT=1 turns it on): in his
+ * window estimate a defender facing him reacts to the ball when it is out
+ * (zone: or a reaction after the motion starts, if later), as defenders do
+ * (sawThrow); before, every facing defender broke at the motion's start, which
+ * made anticipation throws look covered (forced throws he rated 0.07 completed
+ * 52%). */
+const THROW_REACT = process.env.THROW_REACT !== '0';
+
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
   private phase: 'snap' | 'drop' | 'set' | 'windup' = 'snap';
@@ -631,7 +639,13 @@ export class QBPass implements Behavior {
       // start; one on the target follows the stem until the break; anyone
       // else keeps his course until the ball is out.
       const onTarget = Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 3;
-      const blind = facingQB ? 0 : onTarget ? Math.min(untilBreak, wind) : wind;
+      // THROW_REACT: no defender breaks on the ball before it is in the air.
+      // One facing him in zone keys the motion, so he goes at the release or
+      // a reaction after the motion starts, whichever is later; one in man
+      // reads the release itself. Weighted by his own man/zone belief.
+      const pMan = this.mind.pMan();
+      const facingBlind = THROW_REACT ? pMan * wind + (1 - pMan) * Math.max(0, wind - d.profile.reactionTime) : 0;
+      const blind = facingQB ? facingBlind : onTarget ? Math.min(untilBreak, wind) : wind;
       const mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
       const leap = d.profile.reactReach + 0.5 * (d.profile.maxCatchHeight - d.profile.reactReach);
