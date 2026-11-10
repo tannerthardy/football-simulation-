@@ -691,7 +691,6 @@ function resolveMove(sim: PlaySim, e: Engagement, axis: Vec2): void {
 
 /** ZONE_RUN (experimental, off): an interior defender keyed on his man's
  * reach/bucket step races him for the play-side shoulder with open hips. */
-const BACKSIDE_SHOOT = process.env.BACKSIDE_SHOOT === '1';
 const ZONE_RUN = process.env.ZONE_RUN !== '0', ZONE_RUN_PACE = 0.75, ZONE_RUN_STEP = 0.5, ZONE_RUN_OPEN = Math.PI / 4;
 /** ZONE_RUN: a blocker seen running sideways at least this fast (yd/s) is
  * racing for the shoulder (a reach); slower, he is driving (inside zone) and
@@ -1477,7 +1476,7 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // him go.
   // Past him is not free of him while his hands are still on: a landed hand
   // move has cleared them, or there is no load in them. Until then he stays
-  // engaged, and a passing runner meets only his free arm (ENGAGED_REACH).
+  // engaged, and a passing runner meets only his free arm.
   const handsClear = (t < e.moveUntil && e.moveOk) || !(e.hands?.normalForce || e.hands?.tangentForce);
   if (SHED_PAST && shedding && read.threat && handsClear
     && (!SHED_PAST_GATE || Math.hypot(read.threat.pos.x - d.pos.x, read.threat.pos.y - d.pos.y) > 2)) {
@@ -1781,24 +1780,17 @@ function stepRunRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   if (DL_SQUEEZE && !(lastSqueeze && sim.t < lastSqueeze.until)) squeezes.set(e, { side: squeeze, until: sim.t + d.mind.decisionInterval });
   // Squeezing a down block is on the line: he flattens at his contact depth
   // and works across, pressing the blocker into the hole, not upfield past him.
-  // BACKSIDE_SHOOT (experimental, off): behind a blocker whose first step went
-  // away from him (a backside cutoff stepping to the play), there is no depth
-  // to recover; he presses upfield through the hip the blocker is leaving.
   // Where he lined up against the man tells a cutoff from a reach: shaded to
   // the man's backside at the snap, a man stepping away is cutting him off;
   // lined up on or outside his play-side shoulder, a man who gets across him
   // has reached him (ZONE_RUN, below).
   const dHome = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots]?.pos, bHome = sim.offAlign.spots[b.slot as keyof typeof sim.offAlign.spots]?.pos;
   const shadeSide = dHome && bHome ? Math.sign(dHome.y - bHome.y) : 0;
-  const behindCutoff = BACKSIDE_SHOOT && !read.declared && !!read.stack?.firstStep
-    && Math.sign(d.pos.y - b.pos.y) === -read.stack.firstStep && Math.sign(b.vel.y) === read.stack.firstStep
-    && (!ZONE_RUN || shadeSide === -read.stack.firstStep);
-  if (behindCutoff) d.tags.add('shoot-cutoff');
   // ZONE_RUN: reached, he flattens: pressing upfield past a man who has his
   // play-side shoulder runs him out of the play and opens the cutback, so he
   // holds his depth and works down the line.
   const reachedFlat = ZONE_RUN && !!read.stack?.reached;
-  const recover = reachedFlat || (!behindCutoff && (d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0));
+  const recover = reachedFlat || d.runFit?.technique !== 'attack' || zoneStep || squeeze !== 0;
   // FLAT_PRESS (experimental, off): flattening on a reach is lateral work down
   // the line, square and still pressing into the man, not a stop: with a zone
   // step read, his depth request is the more upfield of holding his contact
