@@ -1144,3 +1144,27 @@ What the trace shows:
 - **The truth behind the sim side:** 75% of the sim's dropbacks have at least one OL fall before the throw (531 falls in 390 dropbacks).
 - **Result:** with identical code, the sim's rate is 12–18× the NFL's.
 
+
+**Run blocks (`run-fall.mts`, the fixed run set, 1,321 runs).**
+
+- 1,441 of the 6,680 run-engagement endings are 'body down' (22%).
+- The defender goes down in 906, the blocker in 580 (45 both).
+- Direction class of the faller's deviation against his felt load the tick before:
+
+  | Faller | With the push | Into the man | Across |
+  |---|---|---|---|
+  | Blocker (580) | 236 (41%) | 188 (32%) | 156 (27%) |
+  | Defender (906) | 554 (61%) | 193 (21%) | 159 (18%) |
+
+  - In run blocks the dominant fall is the one driven over: the defender, along the push.
+  - Blocker falls are mixed.
+  - Pass pro's signature (88% into the man, a lean left unbalanced) is specific to the pass set.
+
+**Reading.**
+
+- The excess pass pressure is mostly pass blockers falling forward off a lean of about a body-height's COM offset, built in a fraction of a second, the moment the rusher's load sags.
+- Three candidate causes, each a separate question for Integration. No change was attempted.
+  - **Controller (pass set).** `push: 1` with the lean at 1.25× the load is a drive-him-back request; an anchor would ask for less. This is not a ban: a blocker who chooses to drive still can.
+  - **Base.** A set pass blocker's fore–aft support is not a running stride's 0.18 yd.
+  - **Physics.** Bound the lean geometry's growth by how fast his COM can get ahead of his feet. Beyond the ankle share, a lean has to be built by real relative motion; until it is, the push drives him back rather than being balanced by imputed geometry.
+- The physics item is the one I would bench first: a pushed-body bench with a load that sags by half, identity and momentum exact, and a no-contact world bit-identical.
