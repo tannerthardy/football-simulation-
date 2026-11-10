@@ -308,7 +308,7 @@ const LEAN_DECAY = 0.15;
  * than an unopposed fall: offset' <= w0·offset. A sustained push is still met
  * in full once he has leaned to it; a load that vanishes releases only the
  * lean he really had. */
-const LEAN_PITCH = process.env.LEAN_PITCH === '1';
+const LEAN_PITCH = process.env.LEAN_PITCH !== '0';
 /** GRASP_ARM_MOMENT (experimental, off): a holder's hands are at the end of his
  * arms, not welded to his torso. The yaw moment a grasp row passes into the
  * holder's torso is bounded by what his shoulders can hold: his arm force
