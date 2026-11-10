@@ -134,3 +134,42 @@ than it is deep, oriented by each body's facing.
 - It is judged on the same Gate 0 course (speed kept, separation reopening), the contact's peak force against the
   1.7–3.4 kN tackle measurements, and the plan's controls.
 - The two-part pitch can be layered on afterwards if the fall direction still needs it.
+
+## Attempt two, checks before deciding (Integration's doubt about shape)
+
+**Check 2, shape bench** (`scripts/diag/effective-mass/shape.py`, stand-alone). Rigid planar bodies with yaw, at the
+engine's 9 Hz contact, with pad friction μ 0.4 and no ground force. The runner is 96 kg at 4 yd/s; the hitter is
+117 kg. Two contact shapes:
+- **disc**, at the engine's radius law (0.267 + 0.311 = 0.578 yd);
+- **capsule**, 0.27 yd half-wide and 0.15 yd half-deep (anthropometric estimate with pads).
+
+Runner speed kept from first touch:
+
+| Offset | Disc | Capsule, square, yaw fixed | Capsule, square, yaw free | Capsule, side-on, yaw fixed | Capsule, side-on, yaw free |
+|---|---|---|---|---|---|
+| 0.20 yd | 39% | 38% | 51% | 38% | 58% |
+| 0.31 yd (NFL median) | 46% | 38% | 62% | 56% | 68% |
+| 0.40 yd | 58% | 47% | 72% | 91% | 92% |
+
+- **Integration was right: shape alone does not help.** A square flat front exchanges more along the path than a
+  disc does.
+- **What helps** is the hit turning the bodies (yaw free), and a hitter who is already side-on.
+- **No variant reaches the NFL's ~92% at its median offset.** Only a side-on hitter at 0.4 yd does, which is
+  effectively bodies passing.
+- **Peak force is 18–22 kN in every case**, against measured tackle peaks of 1.7–3.4 kN. The spike is the contact's
+  damping term at first touch (2 × reduced mass × 2π·9 Hz × closing speed ≈ 21 kN), independent of shape. It is a
+  sourced defect of the torso contact law that has nothing to do with yards.
+- **On sensitivity:** speed kept depends on offset ÷ (sum of radii). For the disc sum of 0.578 yd, 0.2 yd is a 20°
+  contact normal and 0.4 yd is 44°. That is a steep curve but not a cliff; radius matters, though it is not the
+  whole story.
+
+**Check 1, facing at contact** (`frontcourse.py`, aligned course; NFL export now carries orientation 'o'; sim dump
+carries facings). Sim, pinned set, run-ref-4, at torso distance:
+
+| | Hitter angle to square (median) | Hitters side-on (≥ 45°) | Runner angle to his path |
+|---|---|---|---|
+| All | 37° | 42% | 4–5° (16° by +0.3 s) |
+| Blocked, closing 3–5 | 53° | 63% | |
+| Free, closing 3–5 | 29° | 17% | |
+
+The NFL side needs the export rebuilt with 'o' (Run Game).

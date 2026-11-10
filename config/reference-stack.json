@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-7",
+  "id": "run-ref-8",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -53,7 +53,7 @@
     "DOUBLE_OVERTAKE": "on",
     "DOUBLE_TRACK": "on",
     "DRAW_NFL": "on",
-    "EDGE_REACH": "off",
+    "EDGE_REACH": "on",
     "END_CHASE": "on",
     "ENGAGED_DEFENDER": "on",
     "ENGAGED_TECHNIQUE": "on",
