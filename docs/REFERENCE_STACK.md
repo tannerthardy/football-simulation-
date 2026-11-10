@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-6`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-8`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -287,7 +287,69 @@ Run game on `run-ref-6` at this commit (1,321 fixed runs, yards under 20):
 | Duo yd; <= 0 | 6.13; 6% | 3.18; 18% | |
 | Missed / broken a run (engaged-grab breaks) | 0.272 / 0.302 (0.158) | 0.241 / 0.175 (0.116) | |
 
-Next for the run game (Run Game): the outside-zone back's path. He is far too narrow: from the gun his width at 3 / 2 / 0 yd off the line is 1.6 / 2.7 / 4.7 yd against the NFL's 4.5 / 5.7 / 7.1, which fits a blocked DL making first contact on 52% of outside-zone runs (NFL 33%).
+Next for the run game: see run-ref-7 below. (An earlier version of this paragraph said the outside-zone back was far too narrow. Run Game withdrew that: the widths were measured from his own start. Against the play-side tackle his median crossing is close to the NFL's.)
+
+## run-ref-7: `THROW_REACT` on; outside zone's edge (2026-11-10)
+
+- **`THROW_REACT` (Coverage #442), on.** The QB's late release was not the throwing motion: he starts it at the same time with or without #408 (median 2.35 s), and his release came 0.95 s after the receiver's break (NFL about 0.3 s before it). The cause was his own completion estimate, which let defenders break on the ball before it was out; the engine lets nobody break until the release. The flag makes his estimate match the engine. Coverage's panel (732 dropbacks): sacks 69 -> 48 (9.4 -> 6.6%), time to throw median 2.80 -> 2.65 s, completions 352 -> 383. Checked here on the quick scorecard, six games an arm ([report](reviews/2026-11-10-scorecard-throw-react.md)):
+
+| Per team-game or as marked | run-ref-6 | with `THROW_REACT` | NFL band |
+|---|---|---|---|
+| Sack rate | 12.1% | 8.7% | 4.6-9.4% |
+| Time to throw (s) | 2.94 | 2.77 | 2.7-2.9 (unsourced) |
+| 3rd-down conversion | 32.9% | 37.7% | 37-41% |
+| Yards an attempt | 10.55 | 10.26 | 6.35-7.89 |
+| YAC a reception | 10.53 | 9.02 | 4.53-5.91 |
+| INT rate | 5.5% | 4.7% | 1.5-3.2% |
+| Points | 33.8 | 33.4 | 21-23.5 |
+
+  Only time to throw is resolved by six games; the rest agree in direction with the panel. Points a team-game were 52.9 on the legacy engine and 41.3 on run-ref-4.
+- **What is left of the QB's pessimism is the defense's doing:** defenders he expects to beat the ball are a median 12.4 yd from it when it arrives, because defenders do not close during the ball's flight (COV-1: 0.12 yd against the NFL's 0.65). The same behaviour is the first suspect for YAC, which is Coverage's next item.
+- **Outside zone: it is the defensive edge (Run Game, corrected).** Where the back crosses the line is close to the NFL at the median, but the spread of lanes is not: he bounces 6+ yd outside the tackle on 8% of gun runs (NFL 28%) and crosses within 3 yd of the tackle on 45% (NFL 34%). The edge defender steps inside and stays level (lateral at 1.0 / 1.5 s -0.32 / +0.41 yd against the NFL's +0.69 / +1.75; depth -0.16 / -0.23 against -0.28 / -0.81), which fills the window where the back meets a blocked lineman and takes away the bounce. `STRETCH_TRACK` re-tested: it costs outside zone 0.39 yd (SE 0.21) by pressing wider into the same edge; it stays off. Defense has the edge; Run Game re-checks the back's read on their candidate.
+
+## Front-on contact: the NFL course (Flex, effective-mass Phase 0, 2026-11-10)
+
+`frontcourse.py` is in `npm run ref:report` (full output for run-ref-7: [reviews/run-ref-7-report.md](reviews/run-ref-7-report.md)); the write-up is [reviews/effective-mass.md](reviews/effective-mass.md). Front-on first contacts at 3-5 yd/s, speed along the runner's approach (yd/s), NFL pads against sim:
+
+| | 0 | +0.1 | +0.2 | +0.3 | +0.5 | +1.0 s |
+|---|---|---|---|---|---|---|
+| NFL runner (n 312) | 4.00 | 3.74 | 3.42 | 3.12 | 2.48 | 1.31 |
+| Sim runner (n 123, run-ref-4) | 4.52 | 3.21 | 1.82 | 1.76 | 1.27 | 1.22 |
+| NFL hitter | 0.29 | 0.33 | 0.52 | 0.62 | 0.92 | 0.89 |
+| Sim hitter | -0.14 | 0.47 | 1.30 | 1.04 | 0.77 | 0.51 |
+
+- **The gap is in the first exchange.** The sim runner loses 2.7 yd/s within 0.2 s; the NFL runner loses about 0.3 yd/s each tenth, steadily, for a second. The plan's alternative (that the courses match early and separate later) is ruled out; effective mass at first contact is the right target, as Tanner chose.
+- The NFL hitter is carried back steadily (about a third of the NFL gain is his displacement); the sim's is knocked back in one impulse and then stops.
+- NFL bodies do not stay stuck: separation closes to torso distance (0.49 yd at +0.2 s) and reopens (0.92 by +1.0 s). The sim's stays at 0.52 for the whole second.
+- Contact geometry is not the cause: median offset from the runner's path at closest approach is 0.31 yd in the NFL and 0.24 in the sim.
+- Reading caution: time zero is first proximity (centres within 1.0 yd). NFL pairs are 0.87 yd apart then and reach torso distance at about +0.2 s; sim pairs start at 0.76 and reach it by +0.1 s. Compared from torso contact, the conclusion is the same (NFL -0.3 yd/s a tenth; sim -1.4 in the first tenth), but the bench target should be set from torso contact, not from time zero.
+
+## Effective mass, Gate 1: the two-part body fails on paper; `EDGE_REACH` merged off (2026-11-10)
+
+- **Gate 1 (Flex, [reviews/effective-mass.md](reviews/effective-mass.md)).** A two-link body (upper body on a sourced trunk spring over pelvis and legs) keeps 41-46% of the runner's pad speed 0.1 s after contact; today's point mass keeps 38-39%; the NFL keeps 94%. Softening the contact from 9 Hz to 1.5 Hz gives 44%. Articulation moves momentum around inside the body; it does not change how much the pads exchange. Flex stopped under the plan's two-attempt rule.
+- **What the NFL course implies:** the runner is slowed by about 255 N on average over the first 0.3 s (the sim needs about 800 N; the model's contact peaks near 22 kN against measured tackle peaks of 1.7-3.4 kN), and the centres stay about 0.5 yd apart while he moves 2.5-3 yd/s faster than the hitter. NFL bodies are passing shoulder to shoulder, not colliding chest to chest.
+- **Flex's re-diagnosis:** every sim body is an isotropic disc for torso contact (about 0.27 yd for a back, 0.36 for a lineman); a real torso is about 0.27 yd half-wide but 0.15 half-deep. Proposed second attempt: an oriented torso shape from anthropometry. **Waiting on Tanner.**
+- **Integration's question before that is built:** for two bodies square to each other the oriented shape has about the same lateral extent as the disc and a contact normal more along the path, so it helps mainly when a body is turned. Two no-code checks are with Flex: the hitter's and runner's facing at contact from tracking orientation (NFL against sim), and a bench of the disc, the oriented shape with facing fixed, and the oriented shape free to yaw.
+- **`EDGE_REACH` (Defense #446), merged off.** The play-side edge had no answer to a reach block and fell through to his pass-rush lane, stepping inside. With the flag he steps flat outside with the reach: edge flow at 1.0 / 1.5 s -0.32 / +0.41 -> +0.42 / +0.92 yd (NFL +0.69 / +1.75). `ref:report` candidate: outside zone +0.25 (SE 0.24), inside zone -0.41 (0.20), all +0.11 (0.10). Off until Run Game re-checks the back's read against it.
+- **YAC (Coverage):** of the sim's 9.8 yd after the catch (NFL 5.3), about 4.5 yd comes from the 16% of catches with a missed dive, a missed tackle or a broken tackle. Coverage takes the pre-contact attempt decision in the open field behind an off flag; Flex keeps the contact physics.
+
+## run-ref-8: `EDGE_REACH` on; where the collision work stands (2026-11-10)
+
+Full report: [reviews/run-ref-8-report.md](reviews/run-ref-8-report.md).
+
+- **`EDGE_REACH` (Defense), on,** on Defense's and Run Game's joint recommendation after Run Game's lane check (570 zone runs): edge flow at 1.0 / 1.5 s -0.32 / +0.39 -> +0.41 / +0.93 yd (NFL +0.69 / +1.75); outside-zone runs <= 0 22 -> 18% (NFL 19%); gain when a blocked hitter makes first contact 1.96 -> 2.53 yd (NFL 3.39). Still open: he widens on inside zone too (+0.23 vs +0.01) and does not get upfield enough (depth at 1.5 s -0.20 vs -0.81). The gun back's bounce share falls further (14 -> 7%, NFL 28%): that is the back's read, which almost never cuts back or bounces; Run Game is diagnosing it. `STRETCH_TRACK` re-tested on top and is settled off.
+
+| `npm run ref:report`, 1,321 fixed runs, yd under 20 | Legacy | run-ref-8 | NFL 2022 |
+|---|---|---|---|
+| All runs yd; <= 0; 10+ | 5.19; 11%; 16.7% | 3.80; 15%; 8.6% | 10+: 9% |
+| Outside zone yd; <= 0 | 4.69; 11% | 3.18; 18% | 3.50; 19% |
+| Inside zone yd; <= 0 | 4.40; 15% | 4.35; 15% | 3.73; 14% |
+| Gap runs yd | 5.42 | 4.05 | 4.08 (counter) |
+| Duo yd; <= 0 | 6.13; 6% | 3.23; 18% | |
+| OZ yards when the first hitter is blocked | 3.98 | 2.53 | 3.39 |
+
+- **Front-on contact (Flex, [reviews/effective-mass.md](reviews/effective-mass.md)); no engine code yet, waiting on Tanner.** After the two-part body failed, the benches show: an oriented shape alone exchanges more than today's disc; bodies free to yaw under an offset hit keep 62-68% of speed; the first-touch force is 18-25 kN in every variant against measured tackle peaks of 1.7-3.4 kN, and a compliant outer layer over the stiff core brings it to 3.8-6.9 kN. The runner already delivers his whole leg-strength budget in contact but spends it steering: the push into a felt load gets 0.02-0.10 of his traction limit while the hitter pushes back along the axis at 0.43. With his strength used along the path, yaw and the compliant layer give 83% speed kept in the first tenth (NFL 92%) at 4.4 kN. Proposed sequence, each behind its own flag: (1) the compliant layer, (2) yaw under offset hits, (3) push into a felt load takes priority over steering within the strength budget, (4) an oriented shape only if tracking shows NFL hitters are side-on at contact.
+- **Linebacker read (Defense), measurement:** NFL box backers separate run from pass by 0.4 s (0.5 yd/s split), ours by 0.6 s, and ours bite harder on play action (downhill at 1.0 s 1.94 yd/s against the NFL's 1.15; we read run on 95% of play action and recover at 1.10 s). `PREREAD_FLOW` was built, measured too small and reverted. Next: `READ_LEAN`, an unsure backer leaning with his own run evidence and easing back on the pass picture after a fake.
 
 ## What to do next
 
