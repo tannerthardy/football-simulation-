@@ -49,6 +49,7 @@ import { MotionRuntime, motionEnabled, planMotion } from './motion.js';
 import { prepareJoinedCombinations } from './behaviors/blocking.js';
 import { SnapMind } from './mind.js';
 import { orderedDefense, orderedOffense } from './lineup.js';
+import { BACKER_CREEP, planBackerCreeps, type CreepPlan } from './backer-creep.js';
 import { SNAP_REACT, VISIBLE, planSnap, snapResponse, type SnapCount } from './snap-count.js';
 import { ReplayTrace } from './telemetry.js';
 import { CommandTrace, type BlockingSink, type CommandTraceSelection } from './command-trace.js';
@@ -425,7 +426,13 @@ export class PlaySim {
       const p = this.snapCount!.plans.get(a)!;
       a.snapReadyAt = p.stop !== undefined ? p.restart! : Math.max(0, p.go);
     }
-    if (!stem && !creep && !this.motion && !early) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
+    // BACKER_CREEP (experimental, off): box backers who time the cadence walk
+    // into the snap (backer-creep.ts). Not under a stem, which moves everyone.
+    const creeps = BACKER_CREEP && !stem ? planBackerCreeps(this.defense, this.los, this.ballY,
+      (a) => this.defAlign.spots[a.slot as DefSlot]?.role.kind === 'blitz', this.rng.fork('backer-creep')) : new Map<Agent, CreepPlan>();
+    // Having timed the count to creep, he is moving at the snap: his start is the snap.
+    for (const a of creeps.keys()) a.snapReadyAt = 0;
+    if (!stem && !creep && !this.motion && !early && !creeps.size) { this.perception.record(this.agents, this.carrier?.idx ?? null); return; }
     for (const seconds of [stem?.secondsBeforeSnap,creep?.secondsBeforeSnap]) {
       if (seconds !== undefined && (!Number.isFinite(seconds) || seconds<=0 || seconds>3)) throw new Error('Pre-snap movement must start within 0–3 seconds of snap');
     }
@@ -448,11 +455,13 @@ export class PlaySim {
       targets.set(mug!,{x:this.los+.65,y:gapY(this.offAlign,spot.role.gap,side)});
       mug!.body.pos.x = Math.max(mug!.pos.x,this.los+4);
     }
+    for (const [d, plan] of creeps) targets.set(d, { x: d.pos.x - plan.pace * plan.start, y: d.pos.y });
     // A stem replaces the initial presentation above. Fit that starting
     // stance before its first observable history, never the moving endpoint.
     if (stem || creep || this.motion) fitPressStances(this.defAlign, this.defense.map(a => ({ slot: a.slot as DefSlot, pos: a.pos, radius: a.profile.radius })), this.los);
     // SNAP_REACT's count keeps its own rounding; the installed movements keep theirs.
-    const ticks = Math.max(Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0,this.motion?.plan.seconds ?? 0)/this.dt),
+    const creepAhead = Math.max(0, ...[...creeps.values()].map((p) => p.start));
+    const ticks = Math.max(Math.ceil(Math.max(stem?.secondsBeforeSnap ?? 0,creep?.secondsBeforeSnap ?? 0,this.motion?.plan.seconds ?? 0,creepAhead)/this.dt),
       Math.ceil(early/this.dt - 1e-9));
     // Prime with the presentation that was actually shown, never the called
     // destination. Observers with longer latency retain the old front.
@@ -461,9 +470,11 @@ export class PlaySim {
       this.t = -i*this.dt;
       const intents: Intent[] = this.agents.map((a) => ({ vel: { x: 0, y: 0 }, facing: a.facing }));
       for (const [d,target] of targets) {
-        const active = d === mug ? this.t>=-creep!.secondsBeforeSnap-1e-8 : !!stem && this.t>=-stem.secondsBeforeSnap-1e-8;
+        const backer = creeps.get(d);
+        const active = backer ? this.t>=-backer.start-1e-8 : d === mug ? this.t>=-creep!.secondsBeforeSnap-1e-8 : !!stem && this.t>=-stem.secondsBeforeSnap-1e-8;
         const dx=target.x-d.pos.x,dy=target.y-d.pos.y,length=hypot2(dx,dy);
-        const speed=active ? Math.min(d.profile.vmax*.45,length*3) : 0;
+        // A creeping backer walks at his creep pace into the snap; he does not stop short of it.
+        const speed=!active ? 0 : backer ? backer.pace : Math.min(d.profile.vmax*.45,length*3);
         intents[d.idx] = {vel:{x:length ? dx/length*speed : 0,y:length ? dy/length*speed : 0},facing:Math.PI};
       }
       this.motion?.step(this, intents);
