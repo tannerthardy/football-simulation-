@@ -104,6 +104,8 @@
     "WHIFF_MARGIN": "off",
     "TKL_EXEC_STATE": "off",
     "GRAB_CONNECT": "off",
+    "SWING_STRIP": "off",
+    "HIP_STRENGTH": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",

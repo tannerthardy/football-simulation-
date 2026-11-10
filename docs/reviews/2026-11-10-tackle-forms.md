@@ -454,3 +454,46 @@ Help class at the grab = other defenders downfield of the carrier within 10 yd, 
 - **A sharper turn:** he changes heading about 1.7× as much right after the catch, contested or not.
 - That fits the first man at hands range failing to close (runs on 28% against 10%). The receiver cuts away as soon as he has the ball. A real one is still securing it and turning upfield.
 - **Controller, not physics:** the carrier's behaviour from the catch, which uses full open-field cut logic at once. For whoever owns the post-catch carrier (Coverage's YAC stages, with Run Game's `carrier.ts`). A catch-securing phase on observable evidence (ball security, his turn upfield) is the candidate. Not a cap on cutting.
+
+## Drag-down, new diagnosis: a swing is all or nothing, and the hip has a strength (`SWING_STRIP`, `HIP_STRENGTH`, off; 2026-11-10)
+
+**Two findings from the drag bench.**
+
+1. **`HELD_SWING` compares the right quantities but applies the answer as a fraction.**
+   - It compares the holders' grip moment about the runner's hip (gripCapacity × legs share × lever, lever = 0.55 · legs · COM height) with his hip torque. Then it binds the fraction total/hip of every stride.
+   - A hold that loses that comparison still removes, say, 60% of each stride. His base falls behind at 0.6 × his speed and every pairing trips at 0.15–0.25 s.
+   - A swing cannot be partly held. Either the hip brings the leg through the hands (and the hands are pulled down it) or the leg stays.
+2. **Hip torque ignores strength.**
+   - It is `HIP_TORQUE_PER_KG × mass × fatigue`, while leg drive scales with power = mass·(0.55 + 0.75·strength).
+   - On the bench, the "strong runner" (power ×1.3) had exactly the as-generated runner's hip. Bracing a standing holder's thigh pull used 36% of that hip, and the remaining 0.25 equalled the grip's moment (0.243), so the hold bound him.
+   - That is the mechanical reason "a strong runner never steps out": his strength never reaches the joint that has to step out.
+
+**Torque source.** Schache et al. 2011 (Med Sci Sports Exerc 43:1260) give peak hip *flexion* torque in early swing, 4.3 N·m/kg at 8.95 m/s, about equal to peak *extension* in late swing, 4.2. So the existing hip constant serves for the swing, and no new constant is added.
+
+**Flags (off).**
+- `SWING_STRIP` (needs `HELD_SWING`): bound = 1 if the grip moment ≥ the available hip torque, else 0. A losing hold is left to the existing slip, which pulls the hands down the leg and off past reach.
+- `HIP_STRENGTH`: hip torque × power / (mass × 0.925), where 0.925 is power per kg at strength 0.5. This applies to every use of the hip: stride binding, `HELD_SWING`, and the hip brace's capacity.
+
+**Bench** (`drag-bench.mts`; runner 92 kg, holder 84 kg; trip time, or the outcome):
+
+| Pairing | holder | legs | default | `HELD_SWING` | + `SWING_STRIP` + `HIP_STRENGTH` |
+|---|---|---|---|---|---|
+| As generated | down | 0.6 / 0.8 | released / released | trip 0.20 / 0.20 | released (at 0.45 s) / released |
+| As generated | up | 0.6 / 0.8 | 1.10 / 0.50 | 0.25 / 0.15 | 1.05 / 0.15 |
+| Strong runner | down | 0.6 / 0.8 | released / released | 0.20 / 0.20 | released / released |
+| Strong runner | up | 0.6 / 0.8 | dragging / 0.95 | 0.25 / 0.20 | dragging / 1.10 |
+| Weak runner | down | 0.6 / 0.8 | 0.45 / 0.40 | 0.20 / 0.20 | 0.30 / 0.35 |
+| Weak runner | up | 0.6 / 0.8 | 0.80 / 0.45 | 0.20 / 0.15 | 0.20 / 0.15 |
+
+- The weak runner trips sooner in every cell.
+- The strong runner is never tripped sooner than the as-generated runner.
+- Only the strong runner and the as-generated one step out of a downed holder's hold.
+
+**Head-on bench** (`leg-bench.mts`, yards to rest at legs 0.5 / 0.8 / 1.0): 0.74 / 0.68 / 0.69 → 0.77 / 0.67 / 0.62. Not surer: this mechanism does not touch the head-on case, which is CARRIER_BRACE's.
+
+**Game gates, registered before the games** (8 games; `catch-break.mts` seeds 101/103/105/107 × 2, flags off against on; `yards.py` on `sim-export --seed 101 --games 8`; IRN v COM, strength 0.55; both sides measured from the same geometric first contact):
+
+1. Catch holds dragged 3+ yd at 3+ yd/s fall (off share as measured).
+2. Catch broken-at-first-contact does not rise; NFL 20%, same operator.
+3. Runs: paired yards and missed/broken reported. No gate, mechanism read only.
+4. No-contact world bit-identical with the flags off: by construction, the off path is ×1.
