@@ -1644,3 +1644,31 @@ Each tackler's first 0.5 s in the tackle bond is attributed by integrating each 
   - identity, linear momentum exact, a no-grasp world bit-identical;
   - the angular ledger stated (the swung arm's angular momentum is not represented in the reduced model).
 - **Gates to pre-register:** side and behind rotation at +0.5 / +1.0 s toward the NFL's 34/76 and 27/64. Defense re-reads `HOLD_FACING` on it.
+
+## `GRASP_ARM_MOMENT` (off): bench and first game read (2026-11-10)
+
+**The law.**
+
+- The yaw moment a grasp row passes into the holder's torso is bounded per substep by his shoulders: arm force (`supportParams.armForce` = 0.75 × power × g, strength-derived, × fatigue) across `CHEST_HALF`. The capacity is set by ratings; no outcome is prescribed.
+- The unpassed remainder is his arms swinging. The reduced model does not represent that, so it is not applied to anyone and is reported as `StepReport.armSwingYaw`.
+- Linear transfer and the runner's side of the row are unchanged.
+
+**Bench (`arm-bench.mts`, the World only).**
+
+- Linear momentum with free intents: 3.1e-13. The no-grasp digest is identical off and on (024bfc743088).
+- **Adverse case passes:** a strong holder (power × 1.3) in a tight, square two-arm wrap on a slow runner who spins is still turned, by 57° at +0.5 s and 44° at +1.0 s, the same either way.
+- **The bench does not reproduce the game's turn:** side and behind leg holds turn 0–1° in both arms. In isolation the holder's gait has yaw to spare; in games it is spent (the ledger: −52 to −106°).
+
+**Game read** (`yaw-ledger.mts`, fixed run set, run-ref-12; holder turn in the first 0.5 s of each hold, p50):
+
+| Holder | Off | On |
+|---|---|---|
+| Side | 89° | 68° |
+| Behind | 51° | 43° |
+| Front | 66° | 56° |
+
+**Pre-registered gates** (attempt 1, on run-ref-13 once on develop):
+
+1. **Rotation** (hitter rotation at +0.5 / +1.0 s, `frontcourse.py`): side toward the NFL's 34/76, behind toward 27/64, front staying near 44/89.
+2. **Paired 1,321 runs:** missed and broken tackles, unfinished holds, and yards after contact. Each explained by the mechanism; no regression caused by a bug.
+3. **Then** Defense re-reads `HOLD_FACING` on it, and I re-read `TORSO_CAPSULE` + `CONTACT_LAYER`.
