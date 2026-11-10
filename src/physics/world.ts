@@ -419,6 +419,14 @@ const TORSO_CAPSULE = process.env.TORSO_CAPSULE === '1';
 /** Half-depth over half-width of a padded torso (0.15 / 0.27 yd: the same
  * anthropometric estimate as CHEST_HALF). */
 const TORSO_DEPTH = 0.15 / 0.27;
+/** Experimental (WRAP_TWO_POINT=1, off): a two-arm upper wrap grips the runner
+ * on both sides of his chest, so it resists the two bodies turning relative to
+ * each other: one arm pulls while the other pushes. A relative-yaw row couples
+ * their spins, bounded by the grip's capacity times the chest half-span (the
+ * hands' CHEST_HALF). One-arm grabs (lock 0) keep one point. Off, a grasp acts
+ * at one point and any moment it delivers turns the holder alone.
+ * docs/reviews/2026-11-10-torso-shape-plan.md (the tackler's over-rotation). */
+const WRAP_TWO_POINT = process.env.WRAP_TWO_POINT === '1';
 
 /** TORSO_CAPSULE: closest points of the two shoulder-line segments and the row
  * geometry they give (normal from a to b, gap, and each body's arm to its
@@ -531,6 +539,8 @@ interface JointRow {
   /** Normal impulse moments at the same physical point as steering. */
   ni?: number;
   nj?: number;
+  /** WRAP_TWO_POINT: accumulated relative-yaw impulse this substep (kg·yd²/s). */
+  lw?: number;
   /** Normal regime: +1 compressive (hands), −1 tension, 0 inactive. */
   mode: number;
   c: number;
@@ -2738,6 +2748,16 @@ export class World {
       const lt = clamp(r.lt - (r.mt ?? r.mn) * vt, -tangentLimit, tangentLimit), dt = lt - r.lt;
       r.lt += dt * this.supportImpulse(jt, tx * dt, ty * dt, h,false,r.tangentWork??={net:0}, -(r.ri ?? 0)*dt, -(r.rj ?? 0)*dt);
     } else this.solveTangent(r, a, b, tangentLimit);
+    if (WRAP_TWO_POINT && (jt.lock ?? 0) > 0 && jt.legs < 0.5) {
+      // The wrap's couple: drive the bodies' relative spin to zero, within
+      // the grip's capacity across the chest half-span.
+      const Ia = this.inertia[r.i], Ib = this.inertia[r.j];
+      const rel = (b.spin ?? 0) - (a.spin ?? 0);
+      const cap = lim * CHEST_HALF;
+      const lw = clamp((r.lw ?? 0) - rel / (1 / Ia + 1 / Ib), -cap, cap), d = lw - (r.lw ?? 0);
+      r.lw = lw;
+      a.spin = (a.spin ?? 0) - d / Ia; b.spin = (b.spin ?? 0) + d / Ib;
+    }
   }
 
   /** Hands and holds couple the bodies' sideways motion directly; a grip

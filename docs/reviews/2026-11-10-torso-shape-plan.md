@@ -223,3 +223,66 @@ Pre-registered by Integration:
 **The cost is the hitter's rotation:** 52° / 86° → 90° / 115° by +0.5 / +1.0 s, against the NFL's 41° / 74°. The
 one-point grasp's over-spin grows with the capsule's lever arms. The runner does not over-rotate: 21° / 25° against the
 NFL's 18° / 37°. If this continues, the hitter's rotation is the first thing to explain.
+
+## The tackler's over-rotation (`hitterspin.py`, same code on NFL and sim; `hitter-torque.mts`; 2026-11-10)
+
+First contact on zone runs, by the hitter's bearing from the runner (front / side / behind, 45° cones).
+
+**Hitter's rotation by +0.5 / +1.0 s:**
+
+| Approach | NFL | run-ref-12 | ref-10 (no `GRASP_PATCH`) |
+|---|---|---|---|
+| Front | 44° / 89° | 51° / 82° | 30° / 52° |
+| Side | 34° / 76° | 98° / 98° | 37° / 61° |
+| Behind | 27° / 64° | 96° / 94° | 37° / 45° |
+
+**Bearing from hitter to runner turned by +0.5 / +1.0 s**, and the hitter's facing against square to the runner then:
+
+| Approach | NFL | run-ref-12 | ref-10 |
+|---|---|---|---|
+| Front | 121° / 135°; 64° / 46° off square | 58° / 128°; 17° / 13° | 15° / 88°; 7° / 8° |
+| Side | 94° / 111°; 55° / 42° | 89° / 107°; 23° / 21° | 37° / 68°; 9° / 11° |
+| Behind | 65° / 79°; 44° / 34° | 71° / 94°; 35° / 23° | 6° / 16°; 5° / 8° |
+
+**Reading:**
+- The over-spin is in side and behind holds: ours turns about 100° in the first half-second, against the NFL's 30°. Front
+  hits are close to the NFL.
+- Since `GRASP_PATCH`, the bearing from hitter to runner turns about as much as the NFL's (side: 89° against 94°). The
+  pair orbits.
+- **The difference is what the tackler does about it.** The NFL tackler lags behind the bearing and is left turned away,
+  42–64° off square. Ours keeps himself square to the runner: 13–23° off.
+
+**Torques on ours** (`hitter-torque.mts`, signed with his spin; side holds, first 0.2 s):
+- He spins at 3.6–5.0 rad/s.
+- The grasp's moment drives it: +85 at the first tick, then about +40.
+- His feet add to it at first (+10), then resist (−13 → −56).
+- His facing request is 5–11° off square to the runner, and leads his facing by 10–21° in the direction of the spin.
+
+**So the over-rotation has two parts:**
+- **A decision.** The tackler's facing request stays square to a runner who is passing him, and his yaw motor follows
+  it. That is Defense's.
+- **The one-point grasp's moment.** All of the runner's motion past him becomes torque. That is the two-point wrap
+  question, and it goes on the bench next.
+
+**Two-point wrap bench** (`WRAP_TWO_POINT`, off; `wrap-bench.mts`).
+- **Setup.** A runner at 4.5 yd/s passes a hitter standing 0.6–0.9 yd beside his path. The grasp forms at first
+  proximity, two-arm (lock 0.5) or one-arm.
+
+| Hitter rotation by +0.5 / +1.0 s | Flag off | `WRAP_TWO_POINT` on |
+|---|---|---|
+| Request tracks square to the runner (as the game's does) | 99–122° / 120–142° | the same |
+| Request held at the facing he had at the grasp | 0–3° / 0° | 0–3° / 0° |
+
+- **The runner.** With his tracking hitter and a two-arm wrap, the flag turns the runner 27° / 45° (from 1° / 1°): the
+  couple passes the hitter's turn on to him.
+- **The bearing.** It turns 89–118° in every case. When the hitter holds his facing, the runner goes past his shoulders
+  as in the NFL (NFL side: hitter 34° against a bearing of 94°).
+- **Pair momentum is exact:** 2.3e−13 off, 5.5e−13 on.
+
+**Reading:**
+- On the bench the hitter's rotation is his own facing request: a tackler who keeps squaring up to a passing runner spins
+  with him. The one-point grasp's moment alone barely turns him.
+- A two-arm couple does not stop a tracking tackler; it turns the runner instead. `WRAP_TWO_POINT` stays off.
+- **The over-rotation is a decision: Defense's tackler facing request during a hold.** A held or braced facing reproduces
+  the NFL's lag.
+- The capsule + layer read waits for that fix, as its spin gate depends on it.
