@@ -70,6 +70,7 @@
     "GUN_SNAP": "on",
     "GUN_STRETCH_T": "retired",
     "HANDS_CHEST": "on",
+    "HANDS_FRICTION": "off",
     "HAND_FIGHT": "off",
     "HAND_MOTOR": "off",
     "HELD_SIDE": "on",

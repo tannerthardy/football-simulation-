@@ -346,6 +346,14 @@ const HELD_SWING = process.env.HELD_SWING === '1';
  * half-length CHEST_HALF across his facing; the row acts between the closest
  * points of the two segments, as for two capsules. Off, centre to centre. */
 const HANDS_CHEST = process.env.HANDS_CHEST !== '0';
+/** Experimental (HANDS_FRICTION=1, off): hands pressed into a chest resist
+ * sliding by Coulomb friction on their own compressive load, the same
+ * coefficient as torso contact (CONTACT_FRICTION), in addition to the active
+ * steer. Off, a block's sideways coupling is the steer alone, so a pressing
+ * pair slips across each other once the steer saturates (67% of engaged run
+ * ticks; docs/reviews/effective-mass.md). Friction only resists slip; it
+ * never drives. */
+const HANDS_FRICTION = process.env.HANDS_FRICTION === '1';
 /** Flat half-span of a torso's front, yd: shoulder half-width with pads (0.27)
  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
  * scripts/diag/effective-mass/shape.py. */
@@ -2495,7 +2503,8 @@ export class World {
         (r.ni ?? 0) * dn, (r.nj ?? 0) * dn, r.mode > 0 ? this.pressUnits(r.actor) : 1);
       r.ln+=dn*fraction;
     }
-    if (r.steerLim > 0) this.solveTangent(r, a, b, r.steerLim);
+    const slipLim = r.steerLim + (HANDS_FRICTION && r.mode > 0 ? CONTACT_FRICTION * Math.max(0, r.ln) : 0);
+    if (slipLim > 0) this.solveTangent(r, a, b, slipLim);
   }
 
   /** Patch reel and passive grip share a frozen force point and one budget.
