@@ -559,7 +559,7 @@ const TAKEON_CLIMB = 1.5;
 export const takeOnFired = new WeakSet<PlaySim>();
 /** BACKER_TAKEON diagnostics: when set, each tick a backer brakes is pushed here. */
 export const takeOnTrace: { rows: Array<{ sim: PlaySim; a: Agent; o: Agent; t: number }> | null } = { rows: null };
-function takeOn(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+function takeOn(a: Agent, sim: PlaySim, cmd: MoveCommand, seenBlocking = false): MoveCommand {
   if (a.engagement || a.isDown(sim.t)) return cmd;
   let best: { ux: number; uy: number; gap: number; o: Agent } | null = null, carrierGap = Infinity;
   for (const o of sim.offense) {
@@ -572,6 +572,9 @@ function takeOn(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
     // blocker locked on a lineman is not coming, however fast the backer
     // runs toward him.
     if (o.engagement) continue;
+    // TAKEON_ALL before a run read: only a man he sees blocking (low pads
+    // coming on, or hands on a defender), not a route runner.
+    if (seenBlocking && !observedBlocking(a, sim, o, p)) continue;
     const ux = dx / Math.max(dist, 1e-6), uy = dy / Math.max(dist, 1e-6);
     const closing = (a.vel.x - p.vel.x) * ux + (a.vel.y - p.vel.y) * uy;
     if (closing < TAKEON_CLOSING || p.vel.x * -ux + p.vel.y * -uy < TAKEON_CLIMB) continue;
@@ -592,6 +595,22 @@ function takeOn(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   const along = cmd.vel.x * best.ux + cmd.vel.y * best.uy;
   const vel = along > TAKEON_PACE ? { x: cmd.vel.x - (along - TAKEON_PACE) * best.ux, y: cmd.vel.y - (along - TAKEON_PACE) * best.uy } : cmd.vel;
   return { ...cmd, vel, posture: Math.max((cmd as { posture?: number }).posture ?? 0, TAKEON_PADS) } as MoveCommand;
+}
+
+/** TAKEON_ALL (experimental, off): the same break-down for every second-level
+ * defender (backers and DBs) once he has read run, whatever his behaviour
+ * (blitz, man, zone, pursuit), not only a backer in his run fit. Blocked
+ * backers and DBs who went down within 0.4 s of contact (2026-11-10, fixed
+ * runs: LB 181, DB 152) were blitzers and coverage players asking 6 / 3.6
+ * yd/s straight into a climbing blocker at 5.5 / 6 yd/s closing; the ones who
+ * stayed up closed at 2-2.5. Same picture and window as BACKER_TAKEON; the
+ * runner, when closer, still comes first. Before he has read run (a blitzer
+ * at the snap), only a man he sees blocking counts (coverage-cues
+ * observedBlocking: low pads coming on, or hands on a defender). */
+export const TAKEON_ALL = process.env.TAKEON_ALL === '1';
+export function takeOnClosing(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
+  if (!cmd?.vel || a.behavior.kind === 'run-fit' || /^(DE|DT|NT)/.test(a.slot)) return cmd;
+  return takeOn(a, sim, cmd, a.recog?.read !== 'run');
 }
 
 export class RunDefender implements Behavior {
