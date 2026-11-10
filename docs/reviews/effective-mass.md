@@ -392,3 +392,19 @@ The experimental `'patch'` mode does apply one (`contactPatch` and `solveContact
 normal passes nearly through both centres, so in that mode the turn comes mostly from contact friction.
 
 Step 2's first trial should be that existing law with the capsule shape, before anything new.
+
+**Run Game's test of the push-0 item.** The carrier never asked for push outside a bond: `tackle.ts` sets push 1
+there; elsewhere push was undefined, which World reads as 0.
+
+Run Game's trial, CARRIER_DRIVE (not committed), sends push 1 on every carrier command. On run-ref-8 @ 8e1ad2c5 over
+570 matched zone runs it did not help:
+
+| Measure | Result |
+|---|---|
+| Outside zone, paired | −0.25 yd (SE 0.17); runs gaining ≤ 0 yd 18 → 20% |
+| Inside zone, paired | +0.10 yd (SE 0.17) |
+| Front-on first-contact gain, closing 3–5 yd/s | +0.80 → +0.66 |
+| Front-on first-contact gain, closing 5+ yd/s | +0.94 → +1.42 (n 28) |
+
+It was reverted. The missing push is a real gap, but not what costs him the exchange. To re-test it on top of a
+compliant contact law (step 1): `push: 1` on both returns of `BallCarrier.command`.
