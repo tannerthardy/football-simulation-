@@ -170,3 +170,48 @@ The sim side of the tackle-forms operator (in progress) gives the baseline for a
 - Defense owns the rally side (who arrives and when). The tackle side is mine: one tackler's ability to finish alone, and the share of carries ending with the runner separated from bodies.
 - **Dives are nearly absent:** 6 of 1,274 first holds. The dive path (escaping runner, tackler behind) rarely triggers. The shoestring and ankle forms are effectively missing in practice, not only in kind.
 - **Runners end stopped about twice as often** (15–18% against 8–11%). That fits piles that stop him instead of tackles that knock him forward or down.
+
+## The leg wrap (Tanner: "wrapping around the legs is essential"; `leg-bench.mts`, 2026-11-10)
+
+**The physics already rewards it strongly.** Same tackler, same grip capacity (lock 0.8), the hold placed at different heights. Time until the runner's support falls, and his travel by then:
+
+| Approach | Chest (legs 0) | Waist (0.5) | Thighs (0.8) | Shins (1.0) |
+|---|---|---|---|---|
+| Head-on, runner 4 yd/s | still up at 2.0 s, 2.6 yd | 0.30 s, 0.6 yd | 0.25 s, 0.5 yd | 0.20 s, 0.4 yd |
+| Side, crossing 5 yd/s | 1.10 s, 2.1 yd | 0.55 s, 1.5 yd | 0.30 s, 1.1 yd | 0.20 s, 0.8 yd |
+| Behind, pulling away 5 yd/s | 1.95 s, 4.2 yd | 0.90 s, 2.2 yd | 0.40 s, 1.4 yd | 0.20 s, 0.8 yd |
+
+**In games it does not show** (run-ref-13 tackles):
+
+| Tackles | n | Time held (p50) | Yards on the play (p50) |
+|---|---|---|---|
+| Solo, upper hold | 113 | 0.75 s | 0.3 |
+| Solo, leg hold | 133 | 0.90 s | 1.7 |
+| No leg hold | 326 | 1.25 s | 1.6 |
+| One leg hold | 624 | 1.25 s | 2.8 |
+| Two or more | 324 | 1.48 s | 4.5 |
+
+**Why.** The tackler never *chooses* the legs. Where his hands land is a draw from what he can reach (`gripReach`, `GRIP_REACH` on):
+
+- free and square: mean 0.20 + 0.45 × tackling × quality, capped at 0.75 (a typical tackle lands at the waist);
+- from behind: mean 0.6–0.75;
+- off a block: 0.35.
+
+So head-on and side tacklers rarely wrap the thighs, and the leg holds that do happen are mostly from behind or from lunges at runners already getting away. That selection makes them look worse.
+
+**What is missing, and the proposal** (moves up the order, ahead of the other technique choices):
+
+1. **A leg-wrap technique (S → P).** Choosing to tackle low:
+   - lower his pads (posture) in the last steps;
+   - aim his strike and hands at the near thigh with his head across the runner's travel;
+   - wrap and drive.
+   - The costs must be physical and visible, so that "never ban what works" holds:
+     - getting low takes time and reach;
+     - a cutting runner can step out of a low target (the whiff margin grows with the runner's lateral acceleration);
+     - head-on, a low tackler can be run over or carried (the runner's forward fall and leg drive);
+     - a stiff-arm (later) defeats a high, upright approach more than a low one.
+   - The choice is the controller's, on observable evidence: his angle, closing speed, the runner's speed and cut, his own balance.
+2. **A check that the leg hold is not too absolute.**
+   - The bench downs a head-on runner in 0.2–0.3 s with 0.4–0.6 yd gained. The NFL's head-on yards after contact are 2.3 (p50).
+   - The runner's forward fall and the drive through a thigh wrap need checking before more leg wraps are added. Otherwise tackles get too sure.
+   - The measure: yards after contact by approach and the runner's end direction (forward share).
