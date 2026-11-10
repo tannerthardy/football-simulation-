@@ -354,6 +354,15 @@ const HANDS_CHEST = process.env.HANDS_CHEST !== '0';
  * ticks; docs/reviews/effective-mass.md). Friction only resists slip; it
  * never drives. */
 const HANDS_FRICTION = process.env.HANDS_FRICTION === '1';
+/** Experimental (GRASP_ARMS=1, off): an upper-body grasp acts where the
+ * holder's arms meet the runner's torso, not at his centre. In centre mode its
+ * rows had no lever arms, so the grip braked the two centres' relative motion
+ * directly and a held pair could not swing around each other (slip 0.18 yd/s
+ * while held against 2.06 apart; NFL pairs keep about 2.7 at +0.1 s). With
+ * lever arms at the radius-weighted surface point, as the World's patch law
+ * places it, the grip holds that point and the bodies turn under it. Block
+ * hands are untouched (HANDS_CHEST). docs/reviews/effective-mass.md. */
+const GRASP_ARMS = process.env.GRASP_ARMS === '1';
 /** Flat half-span of a torso's front, yd: shoulder half-width with pads (0.27)
  * less chest half-depth (0.15); anthropometric estimate, as the capsule of
  * scripts/diag/effective-mass/shape.py. */
@@ -2402,6 +2411,16 @@ export class World {
           row.mt = 1 / (1 / this.mass[i] + 1 / this.mass[j]
             + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
         }
+      }
+      if (GRASP_ARMS && this.handContact === 'center' && jt.kind === 'grasp' && jt.legs <= 0) {
+        const radius = a.profile.radius + b.profile.radius;
+        const rax = dx * a.profile.radius / radius, ray = dy * a.profile.radius / radius;
+        const rbx = -dx * b.profile.radius / radius, rby = -dy * b.profile.radius / radius;
+        row.ni = -(rax * ny - ray * nx); row.nj = rbx * ny - rby * nx;
+        row.ri = rax * nx + ray * ny; row.rj = -(rbx * nx + rby * ny);
+        row.mn = 1 / (1 / this.mass[i] + 1 / this.mass[j] + row.ni * row.ni / this.inertia[i] + row.nj * row.nj / this.inertia[j]);
+        row.bodyInverseMass = 1 / row.mn;
+        row.mt = 1 / (1 / this.mass[i] + 1 / this.mass[j] + row.ri * row.ri / this.inertia[i] + row.rj * row.rj / this.inertia[j]);
       }
       if (jt.kind === 'hands') {
         row.actor=row.steerActor=this.indexOf(jt.actor??jt.a);

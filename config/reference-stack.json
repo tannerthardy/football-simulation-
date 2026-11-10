@@ -65,6 +65,7 @@
     "FLOW_INTERCEPT": "off",
     "GAP_CLIMB": "on",
     "GAZE": "off",
+    "GRASP_ARMS": "off",
     "GUN_MESH": "on",
     "GUN_MESH_GO": "on",
     "GUN_SNAP": "on",

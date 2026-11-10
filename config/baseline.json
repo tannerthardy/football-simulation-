@@ -178,6 +178,7 @@
     "CONTACT_PATCH": "0",
     "HANDS_CHEST": "0",
     "HANDS_FRICTION": "0",
+    "GRASP_ARMS": "0",
     "THROW_REACT": "0",
     "GAP_CLIMB": "0",
     "REACH_CLOSE": "0",
