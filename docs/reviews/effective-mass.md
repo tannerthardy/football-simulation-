@@ -1457,3 +1457,36 @@ At the moment of pressure (medians):
    - The NFL QB lives with a rusher at 2 yd for 1.0–1.8 s; ours ends the play in 0.4–0.7 s.
    - That is a QB response to proximity (sack or a hurried throw), Coverage's lane. It does not inflate the pressure count.
 - Coverage's 85% blocked counts the engine's engagement flags. By proximity at the moment it is 58% (NFL 63%), so many of their "blocked" pressures are men whose block is nominally on but who are more than 1.2 yd from any blocker.
+
+**The blocker in front: pushed or kicking?** (`pass-press.mts`; `LEAN_PITCH` + `PASS_ANCHOR`; 4 live games, 366 dropbacks, 158 first pressures, 56 with a blocker in front, 48 of them by OL)
+
+| In-front pressures by OL | n | Requested retreat | Achieved | Felt load against him | Depth | His set target | QB depth | Pushed (achieved > request + 0.5, felt > 0.3 mg) | Kicking by request |
+|---|---|---|---|---|---|---|---|---|---|
+| Tackles | 38 | 3.34 yd/s | 3.39 | 0.15 mg | 7.16 yd | 5.37 | 8.20 | 10 | 21 |
+| Interior | 10 | −0.11 | 1.06 | 0.79 | 4.79 | 2.12 | 5.85 | 7 | 3 |
+
+**QB depth by time is not the cause** (`pocket.py`, same operator):
+
+| | 2.0 s | 2.5 s | 3.0 s |
+|---|---|---|---|
+| NFL, QB depth | 7.39 | 8.06 | 8.11 |
+| Sim, QB depth | 7.77 | 7.89 | 7.91 |
+| NFL, tackles' depth | 4.70 | 5.65 | 6.21 |
+| Sim, tackles' depth | 5.06 | 6.45 | **7.61** |
+
+- The 8.12 yd QB depth at in-front pressures earlier was the pressured subset. Our QB is not deeper than the NFL's.
+- Our tackles are 1.4 yd deeper by 3.0 s.
+
+**By drop** (in-front OL pressures over dropbacks): seven 6/34, gun5 23/163, five 8/58, PA 6/50, quick 4/33, gun3 1/28. The deeper and longer drops lead.
+
+**Reading.**
+
+- **Tackles (38 of 48): a controller request, Coverage's lane.**
+  - They are not pushed: the felt load is 0.15 mg and the achieved retreat equals the request.
+  - They kick back at 3.3 yd/s by request, 1.8 yd past their own `passSetDepth` target, toward the QB.
+  - This is `PASS_KICK`: it keeps an outside blocker level with or deeper than his rusher, up to 0.5 yd short of the QB. A tackle who kicks with the rusher to the QB's depth carries the rusher into the QB's 2-yd radius while staying "in front".
+  - NFL tackles stop deeper retreat at about 6.2 yd by 3.0 s.
+- **Interior (10): pushed.** Driven back at 1.06 yd/s under 0.79 mg while asking to hold, within 2 yd of a QB 5.85 yd deep. Anchor physics, mine, but 10 of 366 dropbacks (2.7%). Not a priority.
+- **"Blocked in name only": none at the moment of pressure.**
+  - Engagement flag on and a blocker within 1.2 yd: 67. Flag off and nobody near: 63. Flag off but someone near: 28.
+  - Coverage's 85% counts rushers who were ever engaged, not the state at the pressure.
