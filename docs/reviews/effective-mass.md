@@ -1018,3 +1018,50 @@ Our 261 who got off:
     game, and a rusher whose hands row saturates slides off.
 - **The next diagnosis** is the separation route: for those 139, the blocker's hands row (normal and steer against their
   limits), the rusher's move, and the relative tangential slip in the 0.5 s before the engagement ends.
+
+**How pass rushers get off (`pass-apart.mts`; run-ref-12, 8 live games; and a `disengage` call-site count, 4 games).**
+OL–DL pass engagements that end while the QB still has the ball.
+
+**What ends them** (4 games, from `sim.disengage`'s caller):
+
+| Ending | Count | What it is |
+|---|---|---|
+| The blocker on the ground | 463 | `updateEngagements` body-down end |
+| "Turned the corner" | 172 | the pass rep's `beat`: \|phi\| ≥ 1, the rusher hip to hip past him toward the QB |
+| The rusher on the ground | 25 | |
+| Loose ball / interception | 11 | |
+| The separation rule | 1 | |
+
+The "came apart without a shed" route in the first cut is almost entirely pass blockers being knocked off their feet.
+
+**The last 0.5 s before the end** (8 games, medians):
+
+| | Corner (342; 112 then pressure) | Blocker down and other (1,049; 142 then pressure) |
+|---|---|---|
+| \|phi\| | 0.46 → 0.98 | about 0.1, flat |
+| Hands steer against its limit | 1.00 (at limit 77–85%) | 0.33–0.61 |
+| Hands normal against its limit | 0.89–1.00 | at 1.00 until the last tick |
+| Blocker's lateral request → achieved | +2.6 → +2.1 yd/s | +2.2 → +1.1–1.5 |
+| Rusher's lateral velocity | +1.6 to +2.1 | +1.0 to +1.5 |
+| Relative slip | −0.3 to −0.8 | 0 |
+| Blocker's facing against the rusher | 10–15° | 1–4° |
+
+- **Corner.** The rusher works around a blocker who keeps facing him with the hands at their steer limit.
+- **Blocker down.** The blocker goes down while sliding laterally, square to the rusher, with the hands pushing at their
+  normal limit. He asks for more lateral speed than he gets.
+
+**`HANDS_FRICTION` arm:**
+
+| | Off | On |
+|---|---|---|
+| Corner endings | 342 | 217 |
+| Other endings | 1,049 | 972 |
+| Pressures after these endings | 254 | 183 |
+
+- Friction on the hands' own load keeps a pass blocker attached around the corner (steer at limit 61–64% against 77–85%).
+- It barely touches the falls.
+
+**Reading.** The leading cause of our rushers getting free is pass blockers falling: a balance and support question
+(mine). The corner route is the hands' sideways hold, which `HANDS_FRICTION` addresses (it overshoots the run trench).
+The next diagnosis is why a sliding pass blocker under a frontal push falls: capture point against his base, availability,
+the push's direction and size, and his lateral request.
