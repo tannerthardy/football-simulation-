@@ -1065,3 +1065,82 @@ The "came apart without a shed" route in the first cut is almost entirely pass b
 (mine). The corner route is the hands' sideways hold, which `HANDS_FRICTION` addresses (it overshoots the run trench).
 The next diagnosis is why a sliding pass blocker under a frontal push falls: capture point against his base, availability,
 the push's direction and size, and his lateral request.
+
+## Why a sliding pass blocker falls (`pass-fall.mts`, `pass-frames.mts`, `olfall.py`, `run-fall.mts`; run-ref-12, 4 live games, seeds 11–17; NFL 2022, 9,713 dropbacks; 2026-11-10)
+
+- **Sample.** Every OL–DL pass rep that ends because the blocker's support leaves 'up' while the QB still holds the ball:
+  467 in four games.
+- **Trace.** The 0.5 s before the fall, read after each tick from his support state and the world's step report.
+- **Classes.** Fall direction is his capture-point deviation against the load he felt:
+  - *into the rusher*: opposite the load, a lean the load stopped balancing;
+  - *with the push*: along the load, knocked over;
+  - *across*.
+
+**The fall is the lean, not the push.**
+
+| | Into the rusher | With the push | Across |
+|---|---|---|---|
+| Falls | **412 (88%)** | 27 | 28 |
+| Felt load, ×mg (−0.5 s → −0.15 s → last tick) | 0.53 → 1.04 → 0.37 | 0.27 → 0.94 → 1.02 | 0.66 → 0.61 → 0.30 |
+
+Median profile of all falls, by tick before the fall:
+
+| Tick | −10 | −8 | −6 | −4 | −3 | −2 | −1 |
+|---|---|---|---|---|---|---|---|
+| Felt load, ×mg | 0.56 | 0.88 | 1.02 | 1.02 | 1.03 | 0.89 | 0.37 |
+| Committed lean as COM offset, yd | 0.45 | 1.00 | 1.20 | 1.26 | 1.27 | 1.21 | 0.51 |
+| Capture-point deviation, yd | 0.03 | 0.05 | 0.08 | 0.09 | 0.08 | 0.12 | 0.80 |
+| Ground force against traction | 0.55 | 0.98 | 1.00 | 1.00 | 1.00 | 1.00 | 0.73 |
+| Speed, yd/s | 2.2 | 2.4 | 2.7 | 2.9 | 2.9 | 3.0 | 2.9 |
+
+What the trace shows:
+
+- **How fast it happens.** The deviation goes from inside the base to past it in one tick (186 of 467) or two (72).
+- **In the crossing tick (385 crossings):**
+  - The felt load falls to 0.47 of the previous tick (quartiles 0.37–0.61).
+  - His lean was 1.13× the load (0.95–1.26).
+  - The lean release (`world.ts:1936–1950`) accounts for 98% of the deviation's jump.
+  - The hands joint is still attached in all 385.
+- **Lean against his own thresholds.** The lean is 1.26 yd of COM offset, about a 48° lean, where offset = lean/(m·w0²) = lean·h/(mg). His fall threshold is 1.02 yd (rb + step speed/w0) and his base radius 0.18 yd. A lean already beyond the fall threshold means any loss of more than about a fifth of the load puts him past his base. Half the load puts him most of the way to falling.
+- **What he is doing.** He is kicking back at 2.2 → 2.9 yd/s with the ground force at the traction limit. The load (0.5 → 1.0 mg over 0.35 s) drives him the way he is going (load against velocity 38°).
+
+**Why he leans that far:**
+
+1. **The controller.** The pass set always asks `push: 1` (`engagement.ts:1040`). The lean targets 1.25× the felt load (`PUSH_GROWTH`, `world.ts:1925`) whenever his request along the load exceeds his velocity. He is set up to drive the rusher back, not to anchor.
+2. **The base.** The support model gives a kick-sliding lineman the same isotropic base as any stance: radius (0.11 + 0.05·balance + 0.04·mass) × (0.75 + 0.5·posture) = 0.18 yd at the pass set's posture 0.6. Nothing in it knows he is set to take a push. A staggered set's fore–aft support is wider than a running stride's, and the model has no such term.
+3. **The physics (candidate incoherence).** The lean rises with a 0.04 s constant (`LEAN_RISE`) toward a target read from a 40 ms felt load, and its geometry is imputed only when released.
+   - The offset grows at a median 2.9 yd/s to its peak, 7.8 yd/s in the fastest tick.
+   - 0.45 → 1.13 yd took 0.15 s.
+   - For a real COM to get that far ahead of the feet that fast, the feet would have to slide back 5–8 yd/s faster than the COM.
+   - The body never had this geometry; the release hands it over in one tick.
+   - A COM can get ahead of planted feet only as fast as it moves relative to them. Beyond the ankle's share (the CoP inside the base: rb·m·w0², about 0.17 mg), a lean has to be built by that motion.
+
+**Who falls:**
+
+- **Position:** guards 248, tackles 196, centre 23.
+- **Rusher's move at the crossing:**
+
+  | Bull | Long-arm | Swim | Rip | Club | Speed | Spin | Snatch | Dip |
+  |---|---|---|---|---|---|---|---|---|
+  | 81 | 59 | 56 | 56 | 43 | 30 | 21 | 20 | 19 |
+
+  Power moves release the load too: the bull rusher's push varies tick to tick.
+- **Mismatch?** No. The faller is the heavier man (blocker/rusher mass, median 1.21) and the stronger one (strength 80 against 74; balance 58).
+- **When:** 0.75 s into the rep (median; quartiles 0.65–0.90 s), right after the first collision.
+
+**NFL check (`olfall.py`).** Tracking has no 'down' flag. The operator looks for an OL in a block (the record's `blocks`) who goes still before the throw, with the same code on the NFL and on the sim's `pass-frames.mts` records:
+
+- *strict*: under 0.5 yd/s for 1.0 s, his rusher within 2 yd at the start and ≥ 2.5 yd at the end;
+- *bound*: under 0.3 yd/s for 0.8 s, no departure condition (also counts anchored stalemates, so it can only overstate NFL falls).
+
+| | Strict | Bound |
+|---|---|---|
+| NFL dropbacks flagged | 0.9% (92 of 9,713) | 1.2% |
+| Sim dropbacks flagged (390) | 14.6% | 22.1% |
+| Precision on the sim's true falls | 91% | 88% |
+| Recall on the sim's true falls | 12% | 18% |
+
+- **Recall is low on purpose.** A sim fall slides ~0.6 s, then lies still for the get-up. Most come too close to the throw to fit the window. That cuts the same way on both sides.
+- **The truth behind the sim side:** 75% of the sim's dropbacks have at least one OL fall before the throw (531 falls in 390 dropbacks).
+- **Result:** with identical code, the sim's rate is 12–18× the NFL's.
+
