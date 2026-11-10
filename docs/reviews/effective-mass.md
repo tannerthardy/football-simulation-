@@ -871,3 +871,78 @@ side, or win ≥ 0.6, and in range.
 - `CONTACT_LAYER` lets more of them through: arrivals 34% → 47%.
 - They are eligible and in range on 87% of ticks, yet only 41% attempt. That is a tackle decision (`tryTackles`:
   occlusion, waiting for a better shot or `nextTackleAt`), which belongs to Defense.
+
+**The carry after the first hit (`carry.py`, frontcourse's front-on contacts; NFL 2022 against the fixed zone runs; 2026-11-10).**
+
+| | NFL | ref-10 | `GRASP_PATCH` | + `HIP_BRACE` | Package (run-ref-11) | Package + `CONTACT_LAYER` |
+|---|---|---|---|---|---|---|
+| Runner speed at −0.1 / 0 / +0.1 / +0.2 s (yd/s) | 4.39 / 4.21 / 3.94 / 3.61 | 4.74 / 4.66 / 3.26 / 1.94 | 4.75 / 4.67 / 3.43 / 2.32 | 4.74 / 4.67 / 3.42 / 2.25 | 4.74 / 4.67 / 3.43 / 2.25 | 4.71 / 4.65 / 3.78 / 2.42 |
+| Speed kept at +0.2 s (median of each play's ratio) | 82% | 41% | 51% | 50% | 49% | 53% |
+| Hitter along the runner's axis at −0.1 / +0.2 s | +0.46 / +0.72 | +0.22 / +1.41 | +0.23 / +1.10 | +0.22 / +1.10 | +0.22 / +1.11 | +0.22 / +1.14 |
+| Runner's deceleration from +0.2 to +0.5 s | 0.92 | 0.60 | 0.18 | 0.39 | 0.36 | 0.47 |
+| Play over by +0.5 / +1.0 s | 4% / 26% | 19% / 60% | 12% / 36% | 12% / 49% | 12% / 56% | 8% / 44% |
+| …first hitter blocked | 2% / 21% | 11% / 47% | 7% / 27% | 8% / 37% | 8% / 46% | 6% / 39% |
+| …first hitter free | 11% / 42% | 38% / 91% | 17% / 57% | 17% / 80% | 17% / 80% | 8% / 49% |
+| Gain after contact (yd); contact to end (s) | 2.84; 1.5 | 1.28; 0.8 | 2.29; 1.4 | 1.86; 1.1 | 1.85; 1.0 | 1.97; 1.1 |
+
+**The shortfall is the first 0.2 s of the hit.**
+- The NFL runner keeps 82% of his speed through it. Ours keeps half: 49% in the package, 53% with the layer.
+- Our hitter picks up about 1.1 yd/s along the runner's line; the NFL's, about 0.3.
+- Our first collision exchanges most of the momentum at once. The NFL's passes most of it on over the following half
+  second (deceleration 0.92 yd/s between +0.2 and +0.5 s against our 0.36).
+
+**`HIP_BRACE` is not over-braking.**
+- With it, the deceleration over +0.2 to +0.5 s is 0.36–0.39 against the NFL's 0.92. The brace slows the runner less than
+  NFL runners slow down in that window.
+- It ends more plays by +1.0 s (36% → 49%), because it acts on a runner who has already lost half his speed at the hit.
+- With `GRASP_PATCH` alone, the blocked-hitter row matches the NFL: 27% over by 1.0 s against 21%, gain 2.69 against
+  2.93.
+
+**Where the term lives.** The first hit's momentum exchange. The candidates are:
+- the effective mass of a single rigid torso: the remaining √2 of the first-hit force, an upper body pitching about the
+  hip;
+- the plastic torso stop, which `CONTACT_LAYER` softens (49% → 53% kept);
+- the grasp weld, which `GRASP_SLIDE` showed is small;
+- our faster closing (4.46 against 3.38 yd/s at proximity).
+
+**The first 0.2 s of a front-on hit, by source (`first-hit-split.mts`; run-ref-11, 240 hits; 2026-11-10).**
+
+The runner's velocity change along his approach axis over 0.2 s (yd/s):
+
+| Offset | Runner Δv | Ground | Torso normal | Grasp | Rest (friction, others) | Hitter Δv |
+|---|---|---|---|---|---|---|
+| All | −2.06 | +0.13 | −2.11 | +0.08 | −0.16 | +1.27 |
+| < 0.15 yd | −2.60 | +0.05 | −2.79 | +0.25 | −0.11 | +1.37 |
+| 0.15–0.3 yd | −2.30 | +0.14 | −2.52 | +0.23 | −0.15 | +1.32 |
+| ≥ 0.3 yd | −1.72 | +0.15 | −1.62 | −0.07 | −0.18 | +1.20 |
+
+With `CONTACT_LAYER` the torso-normal term overall is −1.75 instead of −2.11, and runner Δv is −1.81.
+
+**The torso normal impulse is the whole loss.** Most of it falls in the second tick (−1.16 of −2.11). Grasp, hands and
+friction are small; mechanism 1's articulation would not change it (Gate 1: the pads still reach a common velocity).
+
+**The runner's legs do not drive through the hit.**
+- His ground force runs at 0.40 of its traction limit, but nets only +0.13 yd/s along his axis over the 0.2 s.
+- The lean law requests 4.0–5.8 yd/s² into the load, capped by leg strength (a temporary, uncommitted probe).
+- What survives the allocation is 0.5–0.9 yd/s². `allocateGroundForce` gives the gait the budget first and the lean what
+  is left.
+- At impact the load on him is 34.5 yd/s² (felt 11–22).
+
+**At the NFL's closing speeds the law still loses.**
+
+| Closing speed (yd/s) | NFL speed kept | Ours speed kept |
+|---|---|---|
+| under 3 | 78% | 70% |
+| 3–4 | 83% | 57% |
+| 4–5 | 87% | 44% |
+| 5+ | 86% | 41% |
+
+- The NFL's speed kept does not depend on closing speed. Ours falls with it.
+- Reweighted to the NFL's closing mix, ours is about 56%: the approach explains about a fifth of the 82% − 49% gap.
+
+**Geometry at torso contact, NFL against ours.**
+- Closing is 50–78% of the relative velocity in the NFL, by offset, against 82–89% in ours.
+- After the pads meet, the NFL's tangential slip grows (0.15–0.3 yd offset: 2.73 → 3.15) and ours shrinks
+  (1.46 → 1.10).
+- Even central hits keep 78% in the NFL against our 42%. The NFL's collision turns closing into sliding past; ours stops
+  it with the normal impulse.
