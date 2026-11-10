@@ -112,6 +112,7 @@
     "OZ_HIP_READ": "on",
     "PASS_SINK": "off",
     "PRESS_MIRROR": "off",
+    "PRESS_RELEASE": "off",
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
     "QB_RHYTHM": "off",
