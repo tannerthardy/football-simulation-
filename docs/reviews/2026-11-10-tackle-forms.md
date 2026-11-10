@@ -272,3 +272,37 @@ The design target: the tackler chooses **where on the body** (height) and **whet
 - Or is it his support falling?
 - Trace each broken catch tackle tick by tick, with `hold-breaks.mts` style instrumentation.
 - This sits beside the head-on absoluteness check: head-on leg holds look too sure on the bench, while holds from behind in space break too often in games.
+
+## Why catch tackles fail: drag, not grip breaks (`catch-break.mts`, run-ref-13 default, 8 live games, 877 holds on catchers; 2026-11-10)
+
+Help class at the grab = other defenders downfield of the carrier within 10 yd, a proxy for Defense's class. "Dragged" = the hold stayed on, but the carrier gained 3+ yd during it and was still at 3+ yd/s 0.5 s after the grab, the shape of Defense's "broken" class.
+
+| Catch holds | n | Grip broke | Held but dragged 3+ yd at 3+ yd/s | Gained during the hold (p50) | Holder off his feet |
+|---|---|---|---|---|---|
+| Last man (help 0) | 236 | 8% | **35%** | 2.1 yd | 56% |
+| Help 1 | 287 | 9% | 29% | 1.7 | 48% |
+| Help 2+ | 354 | 5% | 13% | 1.1 | 49% |
+| DB from behind, open field, help 0 | 73 | 11% | **44%** | 3.0 | 75% |
+
+**The dragged holds** (212):
+
+- legs share p50 0.57 (hips and waist); lock 0.56;
+- runner at 6.3 yd/s at the grab;
+- the grip loaded at its capacity (load/capacity p50 1.0);
+- the **holder off his feet in 78%**;
+- the hold lasts 1.4 s, while the runner gains 4.9 yd (p50).
+
+**The grip breaks** (8–12%) are lunges and dives at full stretch on a runner pulling away (3.7–5.9 yd/s faster), lock about 0.29, gone in 0.3 s. Those are what NFL charting calls *misses*. Defense's NFL class-0 misses (7–18%) happen at the same carrier speed, about 7.5 yd/s.
+
+**Reading.**
+
+- The last man's failure is a hold that stays on and doesn't stop the runner. A tackler on the ground hanging off a runner's hips or waist is dragged about 5 yd.
+- In football that hold, the drag-down, brings him down in a step or two. The tackler's weight hangs on the hips and thighs, his strides can't come through, and he is pulled back and down.
+- It is the opposite side of the head-on question: there a leg hold downs the runner too fast (0.2–0.3 s on the bench); from behind, with the holder on the ground, it barely slows him.
+
+**Next: a drag-down bench.**
+
+- A holder from behind, going to the ground, with a hip or thigh hold, on a runner at 6–7 yd/s.
+- Decompose the runner's deceleration: the grip's pull at capacity; the holder's ground friction while down (`FALL_FRICTION` / `DOWN_FRICTION`); hanging weight (`HANG_SHARE`); held strides (`HELD_SWING`); the runner's own drive.
+- Find which is missing or capped against what a 90–100 kg man dragging on turf does.
+- The target is Defense's NFL class-0 from-behind cell (made 44–57%, broken 38–46%) and its yards after contact.
