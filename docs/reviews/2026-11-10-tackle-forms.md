@@ -215,3 +215,19 @@ So head-on and side tacklers rarely wrap the thighs, and the leg holds that do h
    - The bench downs a head-on runner in 0.2–0.3 s with 0.4–0.6 yd gained. The NFL's head-on yards after contact are 2.3 (p50).
    - The runner's forward fall and the drive through a thigh wrap need checking before more leg wraps are added. Otherwise tackles get too sure.
    - The measure: yards after contact by approach and the runner's end direction (forward share).
+
+## Levels of a tackle at the body (Tanner, 2026-11-10)
+
+"Wrapping around the waist and hips really messes up their balance, and sometimes you don't wrap, you just dive at that area to trip a guy up. There are levels to it."
+
+The design target: the tackler chooses **where on the body** (height) and **whether he wraps or only hits**. The physics then decides what that does to the runner's balance. Each level, what the engine has now and what it needs:
+
+| Level | What it does to the runner | Engine now | Needs |
+|---|---|---|---|
+| High wrap (chest, shoulders) | pulls him back or turns him, little effect on his base; he keeps his legs | a grasp at `legs` ≈ 0 (`HOLD_FINISH` sits it at the hands' height) | as is |
+| **Waist and hip wrap** | a moment about his hips at a low lever: tips him over his base and takes his hips away from his feet | the same grasp at `legs` ≈ 0.5: the contact-height tip and `HIP_BRACE` (hips brace up to their torque, the rest pitches him). The bench downs a side runner in 0.55 s | chosen, not drawn; the absoluteness check |
+| **Thigh and knee wrap** (both legs together) | his strides cannot come through: the surest finish | `legs` 0.8: `HELD_SWING` (held strides) and a trip below the knee. Bench 0.25–0.40 s | chosen; the check that it isn't too absolute (forward fall, one-leg drive) |
+| **Dive into the hips or thighs without wrapping** (shoulder or body at low height, a trip) | a low impact under his centre of mass: his base is knocked out from under him while his torso keeps going | **missing.** Every torso contact is at pad height, so a body cannot hit low | contact height as the tackler's choice. The existing contact-height tip law then gives a low hit the right sign (a hit below his COM pitches him forward over it) |
+| Shin and ankle (shoestring, a tap) | a trip of the stride foot | the dive path (all legs, weak hold), and `TACKLE_TOUCH` (off). Nearly unused in games (6 of 1,274) | the dive's trigger, and a state-based connect probability (W tier) |
+
+**Design consequence.** A single "aim point" choice covers almost all of these: target height, plus wrap or hit-only. It replaces the `gripReach` draw for a free tackler. Its execution is physics: posture to get low, the strike, the contact height, the grasp's height. Its costs are physical: time and reach to get low, a cutting runner stepping out of a low target, being run over head-on, and a low dive committing the tackler to the ground.
