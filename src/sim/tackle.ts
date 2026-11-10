@@ -441,7 +441,7 @@ function armDistance(joint: GraspJoint | undefined, centers: number, torso: numb
 /** HOLD_FINISH (experimental, off): the holder plants against the runner's
  * travel in proportion to his grip, and an upper grip sits at the height his
  * hands hold (shoulder line to waist). */
-const HOLD_FINISH = process.env.HOLD_FINISH === '1';
+const HOLD_FINISH = process.env.HOLD_FINISH !== '0';
 /** Shoulder line as a share of stature (Flex's bench: 1.60 yd). */
 const SHOULDER = 0.79;
 /** Height of an upper hold, yd, for the runner's current posture: the shoulder

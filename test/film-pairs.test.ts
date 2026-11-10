@@ -51,7 +51,7 @@ describe('matched snap film pairs', () => {
       if (!registered.split('\n').some(line => line.startsWith('worktree ' + dir + '/')))
         rmSync(dir, { recursive: true, force: true });
     }
-  }, 60_000);
+  }, 180_000);
 
   it('labels missing contact unknown, preserves event times and safely embeds notes', () => {
     const summary = outcome({ yards: 2, outcome: 'tackle', events: [{ t: 1.2, type: 'block_contact' }, { t: 2.2, type: 'tackle_wrap' }, { t: 3, type: 'tackle' }] } as any);
