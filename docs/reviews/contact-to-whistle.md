@@ -193,3 +193,21 @@ The candidates are:
 
 This is core contact physics, so the next step is a design note with a
 reproducer before any code.
+
+**The breaking-share reference** (`run-operators/blockedhit.py`; zone runs, first
+contact by hitter class, yards after contact):
+
+| | n | Median | ≥ 3 yd | ≥ 5 yd | Contact → end | 2nd defender |
+|---|---|---|---|---|---|---|
+| NFL, blocked hitter | 1,665 | +2.69 | 44% | 17% | 1.5 s | 94% |
+| Sim, blocked hitter (run-ref-3) | 325 | +1.50 | 26% | 12% | 1.4 s | 78% |
+| NFL, free hitter | 708 | +2.57 | 41% | 17% | 1.1 s | 74% |
+| Sim, free hitter | 152 | +1.62 | 30% | 9% | 0.9 s | 76% |
+
+- **The one-arm grab's breaking share is not the lever.** The ≥ 5 yd tail is
+  close (12% against 17%).
+- **What is missing is the middle:** the 1.5–5 yd a held NFL runner keeps
+  moving forward. The contact lasts as long (1.4 s against 1.5 s), and NFL
+  runners gain more even though a second defender arrives more often.
+- An NFL front-on contact is a moving pile; the sim's stops the runner. This
+  is the same finding as the front-on split, and the same next item.
