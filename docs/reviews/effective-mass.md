@@ -461,3 +461,43 @@ contacts:
 - Patch mode released the pair through more than the grasp's arms: torso-contact moments, and contact spin written
   into facing within the solve.
 - Which part of the patch law does the releasing is the next diagnostic, before another law.
+
+## The finish: unfinished holds and HIP_BRACE (2026-11-10)
+
+**Holds that never finish** (`unfinished-holds.mts`): 364 grasps last at least 0.3 s with the carrier averaging at
+least 4 yd/s. They split by what the holder asks for:
+
+| | Running along (253, 70%) | Towed (111, 30%) |
+|---|---|---|
+| Holder asks / moves along the carrier's path | 4.52 / 4.61 | 2.15 / 4.66 |
+| Holder's ground force (share of his limit) | −0.07 | −0.43 |
+| Pull on the carrier | −0.32 g | −0.43 g |
+
+- **Running along is a tackler decision** (`tackle.ts` plant); Defense owns it.
+- **Towed holds are physics, and the tow accounts exactly** (`tow-forces.mts`):
+  - The runner keeps driving at 0.31–0.37 of his traction while hauling a man.
+  - The grasp's tension (0.55 g) sits below the downed holder's friction (0.74 g): the arms pay out.
+- **`UPPER_HANG`** (the holder's weight hung on an upper grip) had no effect and was reverted.
+- **`hang-bench.mts`:** no runner goes down under any single pull; the balance peak is at most 0.22 of the fall
+  threshold.
+
+**`HIP_BRACE` (off).** Upper grasps are hip-braced like thigh holds, and the share of hip torque spent bracing comes
+off leg drive. Until `tackle.ts` sets `GraspJoint.height`, a hold with leg share below 0.35 acts at chest height
+(0.70 of stature).
+- **Bench** (`brace-bench.mts`), firm shoulder hold from a downed 111 kg holder:
+  - drive falls from 0.49 to 0.24 of traction;
+  - speed at +1.0 s falls from 3.07 to 1.91;
+  - heavier runners last longer, and one-arm grabs alongside are unaffected;
+  - no runner falls: the hips brace about 240 of about 320 N·m.
+- **Game:**
+
+| | Ref-9 | `HIP_BRACE` | + `GRASP_PATCH` | NFL |
+|---|---|---|---|---|
+| Paired yards per run | | −0.67 (SE 0.04) | −0.17 (SE 0.05) | |
+| Stuffs | 13.9% | 17.6% | 13.1% | 15.9–23.5% band |
+| Broken a run | 0.167 | 0.115 | 0.136 | |
+| Gain after contact; contact to end | 1.44; 0.9 s | 1.14; 0.7 s | 1.64; 0.9 s | 2.84; 1.5 s |
+
+- **Front holds** end with the runner down 92% of the time, against 78%, in 0.35–0.50 s against 0.65 s.
+- **Alone it over-finishes.** The temporary chest-height default puts waist holds (leg share 0.2–0.34) at chest
+  height. The package result depends on where Defense sets real grip heights.
