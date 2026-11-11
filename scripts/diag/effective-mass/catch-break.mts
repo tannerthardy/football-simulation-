@@ -30,7 +30,7 @@ for (let s = first; s < first + games; s++) {
         const dirx = sim.attackDir(c.team);
         const help = sim.defense.filter((o: any) => o !== d && !o.isDown(sim.t) && (o.pos.x - c.pos.x) * dirx > 0 && Math.hypot(o.pos.x - c.pos.x, o.pos.y - c.pos.y) <= 10).length;
         seen.set(j, { help, slot: d?.slot, db: DB.test(d?.slot ?? ''), from: cos > Math.SQRT1_2 ? 'front' : cos < -Math.SQRT1_2 ? 'behind' : 'side', open, origin: j.origin, legs: r2(j.legs), lock: r2(j.lock ?? NaN),
-          cap0: r2(j.capacity), runner: r2(sp), x0: c.pos.x * dirx, dirx, v05: null as number | null, gained: null as number | null, dv: r2((c.vel.x - j.a.vel.x) * ux + (c.vel.y - j.a.vel.y) * uy), t0: sim.t, maxLoad: 0, minMargin: Infinity, holderDown: false, end: null, dist: [] as number[] }); }
+          cap0: r2(j.capacity), runner: r2(sp), rs: r2(c.profile.power / c.profile.massKg), hs: r2(j.a.profile.power / j.a.profile.massKg), rkg: r2(c.profile.massKg), hkg: r2(j.a.profile.massKg), x0: c.pos.x * dirx, dirx, v05: null as number | null, gained: null as number | null, dv: r2((c.vel.x - j.a.vel.x) * ux + (c.vel.y - j.a.vel.y) * uy), t0: sim.t, maxLoad: 0, minMargin: Infinity, holderDown: false, end: null, dist: [] as number[] }); }
       for (const [j, r] of seen) { if (r.v05 === null && sim.t - r.t0 >= 0.5 - 1e-9 && sim.carrier) r.v05 = Math.hypot(sim.carrier.vel.x, sim.carrier.vel.y);
         if (r.end) continue;
         const cap = (w as any).gripCapacity ? (w as any).gripCapacity(j) : j.capacity;
