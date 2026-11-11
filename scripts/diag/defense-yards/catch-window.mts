@@ -24,7 +24,7 @@ PlaySim.prototype.tick = function (this: any) {
       req: cmd?.vel ? Math.hypot(cmd.vel.x, cmd.vel.y) : 0, ach: Math.hypot(d.vel.x, d.vel.y), vmax: d.profile.vmax,
       reqv: cmd?.vel ? { ...cmd.vel } : { x: 0, y: 0 }, intv: sim.intents?.[d.idx]?.vel ? { ...sim.intents[d.idx].vel } : null, intPost: sim.intents?.[d.idx]?.posture ?? null, cmdPost: (cmd as any)?.posture ?? null, post: d.body.support?.posture ?? null, cut: (cmd as any)?.cutSkill ?? null, spd: (cmd as any)?.speed ?? null, achv: { ...d.vel }, pos: { ...d.pos }, ball: sim.ball?.kind, eng: !!d.engagement };
     const h = s.hist.get(d) ?? []; h.push(row); if (h.length > 60) h.shift(); s.hist.set(d, h);
-    if (s.catchT >= 0) { (row as any).post = true; }
+    if (s.catchT >= 0) { (row as any).afterCatch = true; }
   }
   if (s.catchT >= 0 && sim.t - s.catchT >= 0.5 - 1e-9) {
     const c0 = s.catcher;
