@@ -1044,3 +1044,39 @@ The trigger needs to be grounded in that evidence, not in a time-to-reach model.
 - Throw-path, seeds 201–202, off → fixed: rhythm 34 → 32, outlet 25 → 19, panic 11 → 2, hit throws 18 → 13, sacks 6 → 14, scrambles 3 → 10.
 - League export, seeds 401–402, rusher at 1 yd (n 31): throw / sack / scramble 42 / 55 / 3; stood 71%, outside 6%.
 - **Movement is still missing. Item ii (what NFL QBs see when they start to leave) stands.**
+
+### Re-diagnosis (ii): what a QB sees when he starts to leave (`qb-leave.py`; 2026-11-11)
+
+**Operator.** NFL BDB 2025 pocket dropbacks (designed movement dropped) and the sim (league seed 201, 16 games, THROW_BODY on), same code.
+- LEAVE plays: he ends outside the box or climbs 3+ yd. The frame is the first after set over 2 yd/s.
+- STAY plays: he stands. The frame is set + the leave plays' median time.
+- AUC = how well each measure separates leave from stay.
+
+| Measure | NFL leave | NFL stay | AUC | Sim leave | Sim stay |
+|---|---|---|---|---|---|
+| Time since snap | 2.90 s | 2.40 s | 0.82 | 3.10 | 2.70 |
+| Nearest **winning** rusher distance | **3.25 yd** | **5.23 yd** | 0.32 | **7.22** | **7.97** |
+| Nearest rusher closing speed | 1.18 | 2.52 | 0.31 | 0.31 | 1.66 |
+| Nearest rusher distance | 2.64 | 3.12 | 0.39 | 2.83 | 3.30 |
+| Time since set | 0.40 | 0.30 | 0.57 | 0.75 | 0.50 |
+| Largest lane in front | 5.00 | 4.80 | 0.54 | 6.00 | 6.90 |
+| Best receiver separation | 5.43 | 5.22 | 0.53 | | |
+| Anyone > 3 yd open | 87% | 90% | 0.48 | | |
+| Nearest winning rusher front / edge / behind | 39 / 53 / 7 | 61 / 38 / 1 | | 54 / 42 / 4 | 70 / 28 / 3 |
+
+- "Winning" = a defender nearer the QB than the blocker nearest him, or with no blocker within 1.2 yd.
+- n: NFL leave 922 / stay 1,834; sim leave 48 / stay 760.
+
+**Reading.**
+- NFL QBs leave when a rusher who has beaten his man is close (3.3 against 5.2 yd), more often from the edge, and later in the down.
+- Coverage (anyone open), at this threshold, doesn't separate leave from stay.
+- **In our games, the nearest winning rusher is 7–8 yd away at the same moments. Our rushers don't visibly win their rep until they're nearly on the QB**, so a QB reading leverage gets no cue.
+
+**Ability.**
+- Our QBs' top speed on throw plays (deciles 3.3–6.5 yd/s, mostly the drop) is above the NFL's (1.8–4.9). On scrambles: 7.4 against 8.1.
+- "Never leaves" is not ability.
+
+**Implication for the movement design.**
+1. The trigger should be the leverage read: a rusher he sees past his blocker, nearer than the blocker, at about 3 yd, especially off the edge; not a time-to-reach model.
+2. Our pass rush rarely presents that picture at distance. Rushers win late and close.
+3. So part of the fix is upstream, in how a pass rush wins its rep over time: the OL/DL engagement, which is Defense's and the run-block lane's. That should be measured with the same leverage operator on NFL and sim before a third movement design.
