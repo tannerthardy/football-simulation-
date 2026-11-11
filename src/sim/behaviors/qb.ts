@@ -105,6 +105,18 @@ const QB_FEEL = process.env.QB_FEEL === '1';
  * costs, flick = max(flick, interference)). Off, a windup in progress is
  * immune to holds and a held throw only widens its miss (missSigma). */
 const THROW_BODY = process.env.THROW_BODY === '1';
+/** Experimental (PICTURE_AGE=1, off): an old picture is an uncertain one. In
+ * the throw's evaluation, each picture's position uncertainty is what the body
+ * could have done since he saw it, from its own acceleration (A = vmax / tau)
+ * over the picture's age t: a defender (whose intent he does not know) up to
+ * min(A t^2 / 2, vmax t); his receiver (on a route he installed, who can only
+ * fall off its tempo) up to min(A t^2 / 2, v t) at the speed he last saw. In
+ * time, through the defender's top speed, it widens the margins' spreads in
+ * quadrature (contest 0.13 s, undercut 0.10 s; the receiver's term only at the
+ * catch point). A fresh read changes nothing; a throw to a man he has not
+ * looked at is valued as the gamble it is. Off, an aged picture is
+ * extrapolated and scored as if certain. */
+const PICTURE_AGE = process.env.PICTURE_AGE === '1';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -730,19 +742,35 @@ export class QBPass implements Behavior {
       const mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
       const leap = d.profile.reactReach + 0.5 * (d.profile.maxCatchHeight - d.profile.reactReach);
-      return { d, blind, mover, react, leap, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
+      // PICTURE_AGE: how far he could be from where the QB has him, in time.
+      let spreadD = 0;
+      if (PICTURE_AGE) {
+        const age = this.mind.pictureAge(d), A = d.profile.vmax / Math.max(d.profile.tau, 1e-3);
+        spreadD = Math.min(0.5 * A * age * age, d.profile.vmax * age) / Math.max(d.profile.vmax, 1e-3);
+      }
+      return { d, blind, mover, react, leap, spreadD, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
     });
     // A ball that arrives at `pt`: who contests it at the catch, who can get a
     // hand on it on the way, and how many of those become picks.
+    // PICTURE_AGE: his receiver's uncertainty from the age of the last look
+    // (never seen: since the snap).
+    let spreadR = 0;
+    if (PICTURE_AGE) {
+      const pic = forecast?.lastPicture() ?? null;
+      const age = Math.max(0, sim.t - (pic ? pic.sampledAt : this.snapAt)), A = r.profile.vmax / Math.max(r.profile.tau, 1e-3);
+      spreadR = Math.min(0.5 * A * age * age, (pic ? pic.speed : r.profile.vmax) * age);
+    }
     const at = (pt: Vec3) => {
       let pOpen = 1, pClear = 1, intRisk = 0;
       const v0 = dragFreeLaunch(from, pt, T);
-      for (const { d, blind, mover, react, leap, estimateError } of defenders) {
+      for (const { d, blind, mover, react, leap, spreadD, estimateError } of defenders) {
         const tt = blind + timeToReach(mover, pt, d.profile.reach + 0.3) + react;
         const m = tt - total + estimateError;
-        const contest = 1 - logistic((m - 0.05) / 0.13);
+        const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(d.profile.vmax, 1e-3)) : 0.13;
+        const sPath = PICTURE_AGE ? Math.hypot(0.1, spreadD) : 0.1;
+        const contest = 1 - logistic((m - 0.05) / sCatch);
         // A defender who gets there well before the ball is sitting on the route.
-        const first = 1 - logistic((m + 0.3) / 0.13);
+        const first = 1 - logistic((m + 0.3) / sCatch);
         pOpen *= 1 - contest * (0.55 + 0.3 * d.r('ballSkills'));
         // Undercut risk along the flight path: a hand on the ball kills the
         // completion, and some of those become picks.
@@ -753,7 +781,7 @@ export class QBPass implements Behavior {
           if (b.z > leap + 0.1) continue;
           const tb = blind + timeToReach(mover, b, d.profile.reach) + react;
           const mb = tb - (wind + tau) + estimateError;
-          touch = Math.max(touch, logistic(-(mb - 0.05) / 0.1));
+          touch = Math.max(touch, logistic(-(mb - 0.05) / sPath));
         }
         pClear *= 1 - touch * 0.75;
         intRisk += touch * (0.08 + 0.3 * d.r('ballSkills'));

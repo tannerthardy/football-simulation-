@@ -106,6 +106,7 @@
     "SWING_FLEXION": "off",
     "LEGS_HELD": "off",
     "THROW_BODY": "off",
+    "PICTURE_AGE": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",

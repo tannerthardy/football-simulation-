@@ -736,3 +736,32 @@ A waist hold's moment never reaches hip flexion, flags or not.
 **Open items** (not in this flag set; queued after sacks):
 - **(b)** An upright waist wrap from behind that runs with the carrier and never commits weight. This is the holder's finish (HOLD_FINISH territory).
 - **(c)** The head-on waist wrap driven back about 4 yd (NFL head-on yards after contact 2.3).
+
+### Sacks, attempt 2 (timing half): `PICTURE_AGE` (off; gates registered before the read)
+
+**The diagnostic** (`throw-path.mts`, IRN v COM, 16 games, run-ref-19).
+
+140 throws were hit by a defender within 1 yd before release:
+
+| Path | Hit throws | Detail |
+|---|---|---|
+| Hot / panic | 65 | 78% of that path's throws are hit; felt 0.42 s at the start; 89% to a receiver he was not reading; complete 53% |
+| Current read | 60 | felt 1.66 s at the start, contact 0.3 s into the throw |
+
+- The current-read case comes through `held()`'s credit for a rusher still engaged, built from the private `engagement.win`. That is the next item, as its own flag.
+- The panic case: his completion estimate for an unread receiver comes from a picture that ages without growing uncertainty.
+
+**Mechanism.**
+- Each picture's position uncertainty is what the body could have done since he saw it, from its own acceleration (A = vmax / tau) over the age:
+  - defender: min(A t²/2, vmax t);
+  - receiver: min(A t²/2, v t).
+- In time, it widens the margin spreads in quadrature.
+- A fresh read changes nothing.
+
+**Gates** (league-sampled sim-export seed 201, 16 games, THROW_BODY=1 in both arms, PICTURE_AGE off against on; sack-hold and throw-path IRN v COM 16 games):
+1. Thrown after contact moves toward 30%.
+2. Sacks move toward 6.3%.
+3. Hit-throw completion and yd/att move toward 33% / 4.5.
+4. No leak into clean throws.
+5. By path: completion and target share for current-read, rhythm and outlet throws within noise. A rhythm suppression is reported as a cost.
+6. The alternative taken when the gamble doesn't pay, split as sack / throw / scramble / throwaway against the NFL.
