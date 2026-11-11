@@ -110,6 +110,9 @@ export interface PassConcept {
   fake?: string;
   /** A screen: who catches it and who releases to block for him. */
   screen?: ScreenSpec;
+  /** The coached read: the defender the quarterback keys and what each answer means. Data for now; the
+   * quarterback runs `progression`, ordered to match (keyed reads are the QB lane's to wire). */
+  read?: { key: string; rule: string };
 }
 
 /**

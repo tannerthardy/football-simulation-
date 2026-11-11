@@ -43,6 +43,7 @@
     "CLIMB_RUNNER_SIDE": "on",
     "CLIMB_SLIDE": "on",
     "CLIMB_SQUARE": "on",
+    "CONCEPT_MENU": "off",
     "CONTACT_LAYER": "off",
     "COUNTER_C": "on",
     "COUNTER_OFFSET": "on",
