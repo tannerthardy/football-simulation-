@@ -1,9 +1,11 @@
 // FLAT_FIRST matched panel: replay the saved pass snaps of matched-restage seeds 7 and 11 under 4 dice shifts
 // (Coverage's panel), one row per dropback, so a read-order change is judged play by play. The calls are the
-// saved ones; CALL_MIX cannot act here (judge it on games with collect.ts).
+// saved ones; CALL_MIX cannot act here (judge it on games with collect.ts). A saved setup carries its concept
+// object, read order included, so each replay re-resolves the concept by id from this checkout's playbook.
 //   node --import tsx scripts/diag/matched-restage.ts capture 7; ... capture 11
 //   [FLAT_FIRST=1] node --import tsx scripts/diag/call-mix/panel.ts <arm>   -> out/call-mix/panel-<arm>.jsonl
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
 import { restoreSetup } from '../saved-play.js';
 
@@ -23,7 +25,9 @@ for (const seed of ['7', '11']) for (let k = 0; k < 4; k++) {
   const plays = JSON.parse(readFileSync(`out/matched-restage/seed${seed}.json`, 'utf8'));
   plays.forEach((p: any, i: number) => {
     if (!p.pass) return;
-    const sim: any = new PlaySim(restoreSetup(Buffer.from(p.setup, 'base64')));
+    const setup: any = restoreSetup(Buffer.from(p.setup, 'base64'));
+    if (setup.offCall?.pass) setup.offCall = { ...setup.offCall, pass: PASS_BY_ID[setup.offCall.pass.id] ?? setup.offCall.pass };
+    const sim: any = new PlaySim(setup);
     const dice = sim.dice.bind(sim), made = new Set<string>();
     sim.dice = (kind: string, a?: any, b?: any) => { const r = dice(kind, a, b), l = `${kind}:${a?.idx}:${b?.idx}`; if (!made.has(l)) { made.add(l); for (let j = 0; j < k; j++) r.nextU32(); } return r; };
     const r = sim.run(), s = sim.stats;
