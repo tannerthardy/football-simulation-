@@ -38,11 +38,36 @@ const touchedUntil = (sim: PlaySim, beat: number) => sim.t + (TIP_AWAY ? 10 : be
  * league-sampled panel came off the receiver (3.8% of short throws; NFL 0.4%). */
 const DEFLECT_BALL = process.env.DEFLECT_BALL !== '0';
 
+/** CATCH_HANDS (off; CATCH_HANDS=1 turns it on; estimated, C14): the catch is a
+ * contest of both players' hands, resolved in the order the ball reaches them.
+ * A defender whose hands' envelope the ball reaches first, and who sees it,
+ * plays the ball himself (defenderPlay), even with the receiver in the same
+ * window; off, the receiver's window always came first. At the receiver,
+ * every unengaged defender near him acts, not only the best one: one with the
+ * ball inside his own envelope who sees it plays the ball through the hands
+ * (a hand on it is a breakup, or a pick when he can secure it); one whose arms
+ * reach the receiver's hands at the catch, seeing the ball or not, plays the
+ * hands: a rake or punch through the arms that adds difficulty to the catch in
+ * proportion to how deep into his reach the hands are and his technique. The
+ * receiver's contested-catch skill resists both. Off, a defender within
+ * reach changed the catch chance by about 5% unless one dice roll made him
+ * break it up (median 0.14 on the panel). NFL tight throws on target complete
+ * 33% (defender within 0.75 yd at arrival 27%, torsos within 1 yd 24% vs 50%
+ * not; in front of the receiver 15-19%); ours 57-59% (catchpoint.py, BDB 2025
+ * weeks 1-3 vs develop 3506343d). Constants are estimates fitted to those
+ * behaviours, not to yards. */
+const CATCH_HANDS = process.env.CATCH_HANDS === '1';
+/** CATCH_HANDS: scale of a hand through the receiver's arms (estimated; to be
+ * fitted on the panel against NFL completion by the defender's closeness). */
+const HANDS_SCALE = 1.2;
+
 interface Opp {
   a: Agent;
   s: number;
   dh: number;
   z: number;
+  /** The ball where this player's window meets it. */
+  b: Vec3;
 }
 
 /**
@@ -87,7 +112,7 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
     const body0 = bodyStarts ? bodyStarts[a.idx] : a.pos;
     if (!body0) continue; // An incomplete supplied interval cannot grant reach.
     const opportunity = closestCatchOpportunity(body0, a.pos, prev, cur, { reach, low: .1, top });
-    if (opportunity) opps.push({ a, ...opportunity });
+    if (opportunity) opps.push({ a, ...opportunity, b: { x: prev.x + (cur.x - prev.x) * opportunity.s, y: prev.y + (cur.y - prev.y) * opportunity.s, z: opportunity.z } });
   }
   if (opps.length === 0) return;
   opps.sort((p, q) => p.s - q.s);
@@ -101,7 +126,8 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
     // A defender reaches the ball first. If an offensive player is in the same
     // window, it's a contested catch at the receiver instead.
     const off = opps.find((p) => p.a.team === 'O' && Math.abs(p.s - o.s) < 0.35);
-    if (off) {
+    // CATCH_HANDS: the ball reaches his hands first and he sees it: his play.
+    if (off && !(CATCH_HANDS && facingBall(o.a, sim.ball.flight.vel) && o.s < off.s)) {
       receiverContest(sim, off, opps);
       return;
     }
@@ -139,6 +165,7 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
   if (R === ball.target) sim.stats.separation = Math.round(sep * 10) / 10;
 
   // Contest from defenders near the catch point.
+  let diffHands = 0;
   let bestD: Agent | null = null;
   let bestQ = 0;
   for (const d of sim.defense) {
@@ -155,7 +182,11 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
       bestD = d;
     }
   }
-  if (bestD && bestQ > 0.05 && !ball.deflected) {
+  if (CATCH_HANDS && !ball.deflected) {
+    const hands = contestHands(sim, R, o, opps, rng, high);
+    if (hands === 'over') return;
+    diffHands = hands;
+  } else if (bestD && bestQ > 0.05 && !ball.deflected) {
     const D = bestD;
     const heightEdge = clamp(1 + (D.profile.maxCatchHeight - R.profile.maxCatchHeight) * (high > 0 ? 0.9 : 0.25), 0.5, 1.6);
     const pbu = bestQ * (0.2 + 0.45 * D.r('ballSkills')) * (1.15 - 0.55 * R.r('contestedCatch')) * heightEdge;
@@ -180,6 +211,7 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     pCatch *= 0.82 + 0.18 * R.r('contestedCatch');
   }
 
+  if (diffHands > 0) pCatch = clamp(pCatch - diffHands * (1.3 - hands) * (1.15 - 0.55 * R.r('contestedCatch')), 0.05, 0.99);
   if (rng.chance(pCatch)) {
     if (!inBounds(R)) {
       sim.event('incomplete', R, null, 'out of bounds');
@@ -210,6 +242,64 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     return;
   }
   deflect(sim, 0.2, 'drop', R);
+}
+
+/** CATCH_HANDS: every unengaged defender near the catch acts on it. Returns
+ * 'over' when one of them ended or altered the flight, else the difficulty his
+ * hands on the receiver's arms add to the catch (0 when nobody reaches them). */
+function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnType<PlaySim['dice']>, high: number): 'over' | number {
+  const ball = sim.ball;
+  if (ball.kind !== 'air') return 'over';
+  const bv = ball.flight.vel, bp = o.b;
+  let add = 0;
+  const near = sim.defense
+    .filter((d) => !d.isDown(sim.t) && !d.engagement && Math.hypot(d.pos.x - R.pos.x, d.pos.y - R.pos.y) <= 2.5)
+    .sort((a, b) => Math.hypot(a.pos.x - bp.x, a.pos.y - bp.y) - Math.hypot(b.pos.x - bp.x, b.pos.y - bp.y));
+  for (const D of near) {
+    const sees = facingBall(D, bv);
+    const own = opps.find((p) => p.a === D);
+    if (own && sees) {
+      // Through the hands at the ball: his hands meet it where it is in his window.
+      const window = D.profile.reach + 0.3;
+      const stretch = Math.min(1, own.dh / window);
+      const heightEdge = clamp(1 + (D.profile.maxCatchHeight - R.profile.maxCatchHeight) * (high > 0 ? 0.9 : 0.25), 0.5, 1.6);
+      const pHand = clamp((0.55 + 0.35 * D.r('ballSkills')) * (1 - 0.7 * stretch * stretch) * heightEdge * (1.15 - 0.45 * R.r('contestedCatch')), 0, 0.9);
+      const roll = rng.next();
+      if (roll < pHand) {
+        const secure = clamp(0.06 + 0.22 * D.r('ballSkills') + 0.06 * D.r('hands') - 0.3 * stretch, 0.02, 0.35);
+        if (roll < pHand * secure && inBounds(D)) {
+          sim.possess(D, 'interception');
+          return 'over';
+        }
+        sim.stats.passDefendedBy = D.player.id;
+        sim.event('pbu', D, R);
+        D.noCatchUntil = touchedUntil(sim, 0.25);
+        R.noCatchUntil = sim.t + 0.6;
+        deflect(sim, 0.3, 'tip', D, 1 - stretch);
+        return 'over';
+      }
+      continue;
+    }
+    // Playing the hands: his arms reach the receiver's hands (at the ball) now.
+    // A rake or punch through the arms that gets there knocks the ball loose:
+    // the chance grows with how deep into his reach the hands are and his
+    // technique; the receiver's strength at the catch point resists it.
+    const toHands = Math.hypot(D.pos.x - bp.x, D.pos.y - bp.y);
+    const armLen = D.profile.reach + 0.15;
+    if (toHands > armLen) continue;
+    const depth = 1 - toHands / armLen;
+    const technique = 0.45 + 0.35 * D.r('manCoverage') + 0.2 * D.r('strength');
+    const pLoose = clamp(HANDS_SCALE * Math.pow(depth, 0.7) * technique * (1.15 - 0.55 * R.r('contestedCatch')), 0, 0.85);
+    if (rng.next() < pLoose) {
+      sim.stats.passDefendedBy = D.player.id;
+      sim.event('pbu', D, R, 'through the hands');
+      D.noCatchUntil = touchedUntil(sim, 0.25);
+      R.noCatchUntil = sim.t + 0.6;
+      deflect(sim, 0.2, 'drop', R, 0.5);
+      return 'over';
+    }
+  }
+  return add;
 }
 
 /** Returns true if the defender ended the flight (INT) or altered it. */
