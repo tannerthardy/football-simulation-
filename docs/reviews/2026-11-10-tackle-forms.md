@@ -603,3 +603,86 @@ Population:
 - **The last-man drags that remain are shorter and faster.** Duration p50 1.48 → 0.95 s, runner speed at the grab 6.1 → 7.0 yd/s, holder down 74 → 57%.
 - A fast runner who strips the hold still gains 3+ yd before it comes off. That is the mechanism working, not a new drag.
 - **Catch made share rises past NFL (75 against 62%).** Whether a strong runner now gets free often enough in the open field is the open question for the next read, on the grab-distance operator (`grabs.py`).
+
+## Drag-down attempt 2: `SWING_FLEXION` + `LEGS_HELD` (off; 2026-11-11)
+
+**The measurement that set it.** Using `catch-break.mts` with holders, bind and fall fields, the arm `HIP_STRENGTH` + `HELD_SWING` + `SWING_STRIP` bound the runner's stride in 84–89% of holds at 0.05 s, and the runner fell at p50 0.25 s.
+- Of those binds, 491 were by a single holder.
+- The cause is the one hip budget. The swing is compared with hip × (1 − hipUsed), and bracing the hold's pull at capacity (HIP_BRACE) drives hipUsed to 1 in the first substep.
+
+**The attempt (both off, both inert without `HELD_SWING`).**
+- `SWING_FLEXION`: the swing is compared with hip flexion, a separate action from the brace's extension (Schache 2011: 4.3 / 4.2 N·m/kg).
+- `LEGS_HELD`: the bind follows the legs held, 1 + lock per holder, capped at 2. With one leg held he loses half his drive and his base is not left behind.
+
+**Bench.**
+- The bench defect is fixed: the grip now follows the tackler pairing.
+- Lock 0.45: weak runners trip (0.40–0.60 s); others release.
+- Lock 0.56: strong runners release in every cell; weak runners trip 0.20–0.65 s.
+- Lock 0.75: strong runners trip 0.40–1.10 s or keep dragging; weak runners 0.15–0.65 s.
+- Head-on to rest: 0.73 / 0.66 / 0.62 yd.
+- A flags-off game is bit-identical.
+- **No distinct one-leg stumble.** Below lock about 0.5, the game's grip capacity cannot hold a leg at speed, so it slides off first.
+
+**Game reads.**
+
+*run-ref-17, IRN v COM (pre-3a4980bf collector), seed 201, 16 games per arm.* Catches made / missed / broken:
+
+| | off | a1 | a2 | HIP_STRENGTH alone | NFL |
+|---|---|---|---|---|---|
+| All | 60 / 1 / 29 | 78 / 1 / 16 | 70 / 1 / 23 | 65 / 1 / 25 | 62 / 4 / 20 |
+| Class 0 | 47 / 0 / 49 | 62 / 0 / 35 | 59 / 0 / 36 | 51 / 1 / 44 | 58 / 5 / 35 |
+| Class 1 | 49 / 1 / 48 | 72 / 0 / 22 | 69 / 0 / 29 | 53 / 0 / 40 | 60 / 6 / 29 |
+
+- Single-holder full binds: 491 (a1) → 166 (a2), and those are closed wraps, lock p50 1.0.
+- Runner falls at p50 0.3–0.4 s.
+- YAC median / trimmed / mean ± SE: off 4.70 / 5.99 / 8.58 ± 0.44; a2 4.40 / 5.66 / 8.33 ± 0.47.
+- Paired 1,321 runs: a2 −0.04 (SE 0.02), broken 0.121 → 0.127. HIP_STRENGTH alone +0.02 (SE 0.02).
+
+*run-ref-19, with CATCH_EYES, league-sampled identities, seed 201, 16 games per arm.* Catches made / missed / broken / other:
+
+| | off | a2 | NFL |
+|---|---|---|---|
+| All | 63 / 0 / 24 / 13 | 69 / 1 / 20 / 11 | 62 / 4 / 20 / 14 |
+| Class 0 | 53 / 1 / 42 | 53 / 0 / 43 | 58 / 5 / 35 |
+| Class 1 | 49 / 0 / 47 | 67 / 0 / 31 | 60 / 6 / 29 |
+| Class 2+ | 66 / 0 / 24 | 66 / 0 / 25 | 64 / 3 / 22 |
+
+- Runs, class 0: 36 / 2 / 48 → 64 / 0 / 28 (n ≈ 40; NFL 46 / 9 / 39).
+- Runs, class 1: 59 / 0 / 29 → 59 / 2 / 30 (NFL 50 / 6 / 36).
+- YAC: off 4.00 / 5.52 / 8.23 ± 0.47; a2 3.40 / 5.23 / 8.19 ± 0.50.
+
+**Gates.**
+- Class 1 back toward the NFL: met on both bases.
+- Class 0 held on catches: met. On run-ref-19 class 0 doesn't move (53 / 43 both); the run-ref-17 gain (47 / 49 → 59 / 36) is not there after CATCH_EYES.
+- Overall made no higher than the NFL: missed (69 against 62).
+  - The difference sits in missed (1 against 4) and other (11 against 14): the connect gap, not the bind.
+  - Broken is 20 against 20.
+- Strength ordering on the bench: met.
+
+## The sack gap is the throw after contact, not the finish (`sack-hold.mts`, `qb-contact.py`; run-ref-19; 2026-11-11)
+
+`qb-contact.py`, same code on the NFL (BDB 2025, 9,713 dropbacks) and the sim (run-ref-19 sim-export, seed 201, 16 games, 1,381 dropbacks):
+
+| | NFL | sim |
+|---|---|---|
+| Defender within 1.0 yd of the QB before the ball is out | 12.5% | 13.0% |
+| Of those: thrown | 30% (0.30 s after contact) | **70%** (0.10 s after) |
+| Of those: not thrown | 70% (1.05 s) | 30% (0.80 s) |
+
+`sack-hold.mts` (run-ref-19, IRN v COM, 16 games, 1,512 dropbacks, sacks 3.0%; 176 contacts before the ball is out).
+
+The windup had started before contact in 134 of the 176 (76%). By when the hold began:
+
+| Hold began | n | Ends | Throws |
+|---|---|---|---|
+| Before any windup | 34 | sack 91% | first contact → sack p50 0.65 s |
+| During the load | 13 | throw 100% | complete 46%, 4.9 yd/att, held 0.72 at release |
+| During the delivery | 79 | throw 100% | complete 47%, 8.5 yd/att, held 0.73 at release |
+| No hold | 50 | | |
+
+**Reading.**
+- Rushers arrive as often as in the NFL, and a hold on a set QB finishes him faster than the NFL.
+- The gap is what happens after contact. Our QB's throw is already under way when the rusher arrives, and it comes out, often complete.
+- The load exemption in `qb.ts` (a windup in progress is immune to the hold) covers 13 plays; the delivery covers 79.
+- A throw delivered with a man at 0.73 hold still completes 47% at 8.5 yd/att.
+- That is the QB's timing against the rush and what contact does to a throw in motion: `qb.ts` (Coverage) and the ruling (Rules + Coaching). It is not the tackle finish.
