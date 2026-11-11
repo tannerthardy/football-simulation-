@@ -618,7 +618,7 @@ Coverage #544. Whenever a receiver failed to catch, the ball deflected off him a
 | Completion; yards a pass play | 61.5% | 60.9%; −0.12 ± 0.09 | |
 | YAC median | 4.56 | 4.57 | |
 
-Coverage's 16-game card: INT 3.6% → 2.1% (resolved); completion, yards an attempt, sacks and YAC not resolved. The touch and pop constants are chosen, not sourced, and were not adjusted toward the interception rate.
+Coverage's 16-game card: INT 3.6% → 2.1% (resolved); completion, yards an attempt, sacks and YAC not resolved. Integration's card on run-ref-21 lineups (16 games, seed 11, unpaired arms): INT 4.4% (55/1250) → 2.5% (32/1277), resolved; 20+ yd completions 14.3 → 12.5% an attempt, resolved; completion 59.8 → 60.1%, yards an attempt 9.06 → 9.24, sacks 3.1 → 3.1%, points 31.1 → 34.7 a team-game (not resolved; fewer drives end in a pick). The touch and pop constants are chosen, not sourced, and were not adjusted toward the interception rate.
 
 Open: short interceptions are still about twice the NFL's (2.4 against 1.1) and 10–20 yd is a little under. The first attempt at this problem (`CATCH_CONTEST`, the first defender's possession window) is a written miss on Coverage's branch.
 
