@@ -619,6 +619,8 @@ Flex. Once the windup had started, a quarterback's throw came out as a clean del
 
 IRN v COM, 16 games (`scripts/diag/effective-mass/sack-hold.mts`): sacks 3.8 → 5.6% (NFL 6.3); a hold before the windup ends in a sack 82 → 94%; delivery-phase throws under a hold 41% / 4.9 → 32% / 3.6. Seed 201's YAC rose 8.01 → 10.09 and seed 301's fell 6.34 → 5.89: the arms diverge from the first held throw, and the flag acts only on a held passer.
 
+Integration's cards on run-ref-24 (16 games each, seeds 11 / 23 / 37, unpaired arms): sacks 3.9 → 4.6%, 3.3 → 5.0% and 2.7 → 3.6% of dropbacks (pooled 3.3 → 4.4%). Yards an attempt 7.71 → 8.64 (resolved on that card), 9.16 → 8.85 and 9.38 → 9.82; 20+ yd completions 9.7 → 12.6%, 14.2 → 14.0% and 14.4 → 16.6%: no consistent direction, read as the arms diverging. Fixed runs unchanged (3.79, broken 0.125, missed 0.234).
+
 What it does not fix: the throw still comes out 63–65% of the time against 30%, because rushers reach our quarterback mid-throw (his felt time to contact uses the block's private win score, a model-rule violation, next on Flex's list) and because he almost never escapes (scramble 4–6% against 23%). The ball is never knocked loose yet; `passerLoss` (Rule 8-1-1) is in `ball-rules.ts`, uncalled. `PICTURE_AGE`, the timing attempt that aged the quarterback's picture, is a written miss and stays off (it suppressed rhythm throws 57%). Detail: [tackle forms](reviews/2026-11-10-tackle-forms.md).
 
 ## run-ref-24: `COVER_LONG` on (2026-11-11)
