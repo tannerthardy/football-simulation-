@@ -472,6 +472,9 @@ export function gripReach(rng: { normal(m: number, s: number): number }, engaged
  * travel in proportion to his grip, and an upper grip sits at the height his
  * hands hold (shoulder line to waist). */
 const HOLD_FINISH = process.env.HOLD_FINISH !== '0';
+/** HOLD_FACING (experimental, off): a holder beside or behind the runner faces
+ * the way he is being carried, not square to the runner every tick. */
+const HOLD_FACING = process.env.HOLD_FACING !== '0';
 /** Shoulder line as a share of stature (Flex's bench: 1.60 yd). */
 const SHOULDER = 0.79;
 /** Height of an upper hold, yd, for the runner's current posture: the shoulder
@@ -621,7 +624,13 @@ export function updateBond(sim: PlaySim, bond: TackleBond, intents: Intent[]): v
       const dragged = (d.vel.x - vel.x) * tx + (d.vel.y - vel.y) * ty > 1;
       const drop = d.body.support?.state === 'up' && joint.legs >= 0.35 && secure >= 0.6
         && t - bond.start >= 0.4 && dragged;
-      intents[d.idx] = { vel, facing: Math.atan2(ty, tx), push: 1, posture: 0.6,
+      // HOLD_FACING (experimental, off): holding a runner going past him, he
+      // does not re-aim his chest at the runner every tick (a pirouette the
+      // grasp's own moment never asks for). He asks to keep the facing he
+      // has; the runner turns him through the hold and the contacts, as far
+      // as the World's yaw response gives.
+      const facing = HOLD_FACING ? d.body.facing : Math.atan2(ty, tx);
+      intents[d.idx] = { vel, facing, push: 1, posture: 0.6,
         dive: drop ? { x: tx * 0.2, y: ty * 0.2 } : own?.dive, lunge: own?.lunge };
     }
     if (TACKLE_TOUCH && (own?.lunge || d.body.support?.strike)
