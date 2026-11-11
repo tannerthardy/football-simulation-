@@ -37,6 +37,7 @@
     "DL_SNAP_TIME": "0",
     "HOLD_FINISH": "0",
     "HOLD_FACING": "0",
+    "CUSHION_BREAK": "0",
     "CUSHION_NEED": "0",
     "EDGE_REACH": "0",
     "FLOW_INTERCEPT": "0",

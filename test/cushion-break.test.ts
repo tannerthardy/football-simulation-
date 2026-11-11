@@ -1,0 +1,55 @@
+/** CUSHION_BREAK (defense.ts; experimental, off): a deep match corner over a
+ * receiver climbing at 6.5 yd/s, square in his pedal. With 3 yd of cushion,
+ * off he is already turned to run (the burst term and the depth check open him
+ * at 3.5 yd and below); on he keeps his pedal, square to the QB. With the cushion broken (1.2 yd), he opens and
+ * runs either way. */
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
+
+async function step(flag: string, cushion: number) {
+  vi.resetModules();
+  vi.stubEnv('CUSHION_BREAK', flag);
+  const { Rng } = await import('../src/core/rng.js');
+  const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
+  const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
+  const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
+  const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
+  const { ManCoverage } = await import('../src/sim/behaviors/defense.js');
+  const { PlaySim } = await import('../src/sim/playsim.js');
+  const offense = generateTeam(new Rng(31), 'Break offense', 'BRO', { strength: .55 });
+  const defense = generateTeam(new Rng(32), 'Break defense', 'BRD', { strength: .55 });
+  const sim = new PlaySim({ offense: pickOffense(offense, '11'), defense: pickDefense(defense, 'nickel'),
+    offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: 'break' },
+    defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3_match,
+      pressure: null, zoneStyle: 'match', label: 'break' }, los: 40, ballY: 26, firstDownX: 50, seed: 3 });
+  const a = sim.slot('CB_S')!, r = sim.slot(sim.offAlign.numbering.S1!)!;
+  // Receiver 8 yd downfield climbing at 6.5 yd/s; the corner square in his pedal at 5 yd/s, `cushion` yd over him.
+  r.body.pos = { x: sim.los + 8, y: r.pos.y }; r.body.vel = { x: 6.5, y: 0 };
+  a.body.pos = { x: r.pos.x + cushion, y: r.pos.y - .7 }; a.body.vel = { x: 5, y: 0 }; a.body.facing = Math.PI;
+  a.recog!.read = 'pass';
+  const see = sim.see.bind(sim);
+  sim.see = (who, target, delay) => target === r
+    ? { pos: { ...r.pos }, vel: { ...r.vel }, facing: 0, stance: null, pose: 'up', carrying: false, age: .2 }
+    : see(who, target, delay);
+  sim.t = 1.4;
+  const behavior = new ManCoverage(a, sim, r, false, 'B', 1,
+    { lev: 'outside', overTop: true, protectDepth: true, initialPosition: { x: sim.los - 1, y: r.pos.y } });
+  behavior.update(a, sim);
+  const command = behavior.update(a, sim);
+  return { command, hipsOpen: behavior.recordedTechnique().hipsOpen };
+}
+
+describe('CUSHION_BREAK: a deep defender stays square until the receiver breaks his cushion', () => {
+  it('keeps his pedal with 3 yd of cushion (off: turned to run)', async () => {
+    const off = await step('0', 3), on = await step('1', 3);
+    expect(off.command.facing).toBeUndefined();
+    expect(on.command.facing).toBeCloseTo(Math.PI, 1);
+    expect(on.hipsOpen).toBe(false);
+  });
+  it('opens and runs once the cushion is broken, flag on or off', async () => {
+    const off = await step('0', 1.2), on = await step('1', 1.2);
+    expect(off.hipsOpen).toBe(true);
+    expect(on.hipsOpen).toBe(true);
+  });
+});
