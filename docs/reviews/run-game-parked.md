@@ -128,9 +128,26 @@ Read on 8 games each (`sim-export --seed 101 --games 8`, IRN/COM, develop f6fe9b
 
 The last two rows come from `scripts/diag/pass-operators/catchcontact.py`. Run rows in `grabs.py` are unchanged.
 
+### Split by direction of travel at the catch (`scripts/diag/pass-operators/catchdir.py`)
+
+Same records; the second sim pair is develop 3a4980bf, after the fix below. Upfield speed at the catch → +0.5 s, heading change in 0.5 s p50 / p75:
+
+| Travel at the catch | NFL | Off | On (after fix) |
+|---|---|---|---|
+| Upfield, in stride (NFL 19%, ours 26%) | +3.20 → +3.85, 12 / 24° | +3.95 → +4.45, 13 / 23 | +3.85 → +4.32, 10 / 17 |
+| Across: crossers, outs (NFL 71%, ours 51%) | +1.25 → +2.10, 13 / 22 | −0.10 → +1.67, 25 / 32 | −0.20 → +1.00, 13 / 21 |
+| Back to the ball / standing (NFL 10%, ours 22%) | −0.15 → +0.25, 37 / 79 | −1.85 → −0.22, 51 / 78 | −1.80 → +0.60, 63 / 110 |
+
+Findings:
+- **Route geometry, not the flag.** Our crossers arrive flat (−0.1 against +1.25 upfield at the catch), and twice as many of our catches are back to the ball. That's Coverage's route-depth item.
+- **A defect, fixed.** The first build carried a line coming back toward the passer for the whole window: −2.10 → −1.93 at +0.5 s. Now a catcher coming back to the ball plants and turns upfield. He turns a little harder than the NFL (63 / 110 against 37 / 79).
+- **The window by what he sees.** Every catcher gets the same window, one reaction time. In-stride upfield catchers turn 10 / 17° against the NFL's 12 / 24°, slightly under. That's consistent with a window a little long for a man who catches facing the defence. The refinement would scale the window by how far his body faces away from upfield at the catch. It's small, and not built.
+
+After the fix, all catches, develop 3a4980bf: heading 23 / 37 → 15 / 30° (NFL 14 / 25). First man at hands range runs on 25 → 19%. Catch → first contact p50 0.9 → 0.8 s. Catcher x gain p50 / mean 5.6 / 9.2 → 4.1 / 7.7.
+
 ### Open
 
-- **Upfield speed at +0.5 s moves away from the NFL.** Crossers keep their line for the window. Is that route geometry at the catch, or does the NFL catcher already bend upfield? Next: split by the route's direction at the catch.
+- **Upfield speed at +0.5 s on crossers moves away from the NFL.** Crossers keep their line for the window. Is that route geometry at the catch, or does the NFL catcher already bend upfield? Next: split by the route's direction at the catch.
 - **The body side isn't modelled:** securing the ball and turning from the catch posture. That may hold the rest of the runs-on gap (20% against 10%).
 - **Catch → first contact is unchanged** (0.9 s against 0.6 s). That gap is where the nearest defender is at the catch, not the carrier.
 - **Coverage's panel run hasn't been read yet** (catch → first contact and YAC by stage).

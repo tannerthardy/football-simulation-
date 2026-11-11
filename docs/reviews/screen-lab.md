@@ -1220,3 +1220,80 @@ that do, blocks in space per play run at the NFL rate (3–7).
 - **Handed to Defense** (Tanner, 2026-11-03): screen recognition and rally.
 - After that, use the lab to judge blocking in space itself: arrival margin,
   sheds, and whiffs.
+
+## Now screen: the catcher comes back to the ball (2026-11-11, Run Game lane)
+
+**Question.** Our wide now screen gains about nothing: median −0.9 yd on 21
+catches, against the NFL's 5 on WR screens with at most one released lineman.
+Is that the stalk block or the catch?
+
+**Populations.**
+- **Sim:** `screen-lab.mts --seeds 8 --only wide_now_screen,bubble_screen --off-man`.
+  - Branch `run/G3-oz-backfield` at 3cf49f7d (develop 1d74f21f merged).
+  - Lab teams O/D, 8 seeds × Nickel Over Cover 3, 2 and 1 Off.
+  - Cover 1 and Cover 1 Mike A kill the call: press over #1.
+- **NFL:** the 821 BDB 2025 screens (`nfl_screens.py`). WR screens with at
+  most one released OL number 59 caught; 42 of those are "now", where the
+  receiver moved under 2.5 yd laterally before the throw.
+
+**Tools.**
+- `screen_reference.py --ol-max N` (new filter).
+- `screen_catch_reference.py` (new; same code on both sides).
+
+**The stalk miss is normal.** On NFL WR screens with no released OL, the first
+defender to reach the carrier is unblocked in 84% of plays; ours, 81%. The
+difference is what the catcher has done by then:
+
+| | NFL, 0 released OL (32) | Ours, now screen (21) |
+|---|---|---|
+| First defender arrives after the catch | 1.1 s | 0.8 s |
+| Carrier's gain when he arrives | 3.5 yd | 0.35 yd |
+
+**The catch.** Receiver x-velocity in yd/s, +x upfield; gains in yd; p50
+with p25–p75:
+
+| | NFL now (42) | Ours, now (21) | Ours, `IN_STRIDE_CATCH=1` (21) |
+|---|---|---|---|
+| Throw (s) | 1.35 | 1.45 | 1.45 |
+| Air time (s) | 0.70 | 0.75 | 0.75 |
+| Depth at throw (yd) | −1.91 | −1.91 | −1.91 |
+| Upfield velocity at catch −0.3 s | +0.10 | −0.50 | −0.15 |
+| Upfield velocity at catch | +0.72 (−0.25–1.96) | −0.80 (−1.40–0.30) | −0.10 |
+| Upfield velocity at +0.3 s | +1.82 | −0.30 | +1.40 |
+| Lateral speed at catch | 1.30 | 2.25 | 0.25 |
+| Gain at +1.0 s | 2.32 | 0.29 | 2.04 |
+
+Depth and timing match. The difference is the receiver's request while the
+ball is in the air:
+- `TrackBall` (src/sim/behaviors/receiver.ts) runs him to the *earliest*
+  reachable point on the flight path.
+- On a throw from inside and behind him, that point is back toward the
+  passer, so he comes back to the ball fast laterally and is still moving
+  backward at the catch. The traced snap is C3 seed 1, `scripts/diag/_nowtrace.mts`.
+- NFL now receivers come to the ball more slowly across and are already
+  moving upfield.
+
+`IN_STRIDE_CATCH=1` (the receiver takes the reachable point nearest his own
+running line) nearly closes the gap after the catch. It overshoots the other
+way: he hardly comes to the ball at all (lateral 0.25 vs 1.30). It also
+covers every pass.
+
+Now-screen yards, p50 of 7 catches per call:
+
+| Call | Base | `IN_STRIDE_CATCH=1` |
+|---|---|---|
+| Cover 3 | 2.0 | 7.9 |
+| Cover 2 | 0.0 | 3.0 |
+| Cover 1 Off | 0.0 | 3.1 |
+
+The bubble moved too (Cover 3 p50 12.5 → 75 on 7 catches): an unreviewed risk.
+
+**Owner.** `TrackBall` and `IN_STRIDE_CATCH` are Coverage's, and that flag's
+promotion already requires Coverage/scoring controls. This is one more read
+for that flag, not a Run Game change. The missing mechanism is probably
+between the two: an uncovered receiver attacks the ball's line at a point
+where he can catch it moving upfield, rather than the earliest point.
+
+**Bubble, for later.** Our bubble catchers are already fast upfield at the
+catch (3.7 yd/s vs NFL non-now 1.8). Bubble yards are high (p50 11.9 on 23
+catches vs NFL 5).
