@@ -32,6 +32,7 @@
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
     "CARRIER_BRACE": "off",
+    "CATCH_EYES": "off",
     "CLIMB_BASE": "on",
     "CLIMB_PATH": "on",
     "CLIMB_PREP": "on",
