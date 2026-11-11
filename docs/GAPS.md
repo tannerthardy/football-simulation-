@@ -1,67 +1,197 @@
 # Gaps
 
-The ranked list of where our football is least realistic. Work goes from the
-top, usually three at once. Add gaps whenever they're found, and re-rank at a
-review. A "fixed when" number says when a gap stops being the problem. It
-doesn't judge any single mechanism ([PLAN.md](PLAN.md)).
+The current view of where our football is least realistic, what we know about
+each gap, and what has improved. One page, kept short. Re-ranked on 2026-11-11
+at `engine-28`.
 
-[KNOWN_PROBLEMS.md](KNOWN_PROBLEMS.md) is the long list behind these gaps:
-every known problem, its evidence, what was tried and what's still open.
+[KNOWN_PROBLEMS.md](KNOWN_PROBLEMS.md) is the long record behind this page:
+evidence, what was tried, what is still open. [REFERENCE_STACK.md](REFERENCE_STACK.md)
+records each engine version and the evidence for it. The page this replaced
+(weekly comparison of 2026-10-26, gaps F1–G10) is in git history at `82914195`.
 
-"Now" is the **2026-10-26 weekly-plan comparison** at develop
-[`a5b024b9fbf8c51fc31401eefb79737be586814a`](https://github.com/tannerthardy/football-simulation-/commit/a5b024b9fbf8c51fc31401eefb79737be586814a):
-PR-tier seeds **7 / 8**, 12 games each. Updated rows show the two seeds, not
-an average. Seed 7 is independently checked against the saved #300 CI base
-card; seed 8 is supplied by the weekly-plan handoff, with its raw card unavailable
-to this refresh. See [the dated table and evidence limits](KNOWN_PROBLEMS.md#weekly-check-2026-10-26).
-Unrefreshed quantities retain their older source labels. Earlier snapshots at
-`211db9cc` (2026-10-25) and `ccdb69cb` (2026-10-23) remain in
-[KNOWN_PROBLEMS](KNOWN_PROBLEMS.md#where-numbers-come-from). "Was" is trunk
-`d91c9014` (24 games, `calibrate.ts`), 2026-10-22. These are diagnoses, not
-tuning targets; bands have a sourced NFL team-season p10–p90 only where stated.
+How to read it: NFL comparisons find problems; they are not targets
+([CLAUDE.md](../CLAUDE.md)). Outcomes and direct measurements are strong
+evidence. Categories inferred from tracking (engaged, beaten, open, a break)
+are weaker, and each one below says which kind it is.
 
-This dated comparison is not a new measurement of subsequent develop.
-[#300](https://github.com/tannerthardy/football-simulation-/pull/300), merged
-later at `d81befa1`, adds blocking-responsibility trace records. Its existing
-seed-7 CI base/head football records match; that observer correction neither
-refreshes seed 8 nor demonstrates an improvement in the weekly figures.
-Whole-game sampling is noisy after games diverge; matched snaps and the first
-changed request judge mechanisms. No universal noise floor is inferred here.
+## Where the engine stands
 
-| ID | Gap | Lane | Measure | Was → now | Fixed when | Status | Evidence |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| F1 | Shared scorecard | tools | `npm run scorecard`, CI on PRs | Runs in CI on every PR; provenance (#209), sourced bands (M3), film detectors (#243) | Runs in CI, repeats within noise, shows where a change moved a stat; same input plays the same game; guards fail on missing data | Games-identical tools done (#249, #250, #252–#254, #257, #262, #265, #270: PERF-3, PERF-4, PERF-6, saved-play replay, review queues). Next: detector precision (PERF-5) | Outside audit 2026-10-23 |
-| F2 | Simulation speed | physics | Seconds per game | 31.5 CPU → about 38 elapsed in CI (4 workers); #204 and #206 cut 14% and 3.6% with games identical. 53–55 s elapsed in a 4-core cloud container on 2026-10-23, not comparable with CI | 5 or less, scorecard unchanged | Guardrail only until G1 and G2 are fixed | `physics/world.ts` takes 43% of a profiled game |
-| G1 | Defenders don't finish plays | defense | Missed + broken tackles per play | 0.32 → 0.29 / 0.27 | 0.11–0.16 (source unverified: PFF, definition unknown, #212) | In work: pursuit request repairs landed (#259, #263, #267); reach (#264) held for rework; new: far pursuers jog on breakaways (TKL-2) | Runs past 20 yd reach 40 in 67% of cases at `211db9cc` (NFL 25–35%); TKL-2, TKL-5 |
-| G2 | Run game too explosive | run | Yards per carry; 10+ yard runs | 9.88 → 6.19 / 4.40; 18.1% → 16.1% / 11.4% | 3.70–4.83; 7.6–12.9% | In work: RUN-12 leftovers; backside crack and helper-veto cases closed as negative findings (#261, #266); combo preparation next, #268 held | Creases 1–2 yd wider than NFL and don't close, PR #191 |
-| G3 | Pass defense late on the throw | coverage | Yards per attempt; YAC per catch | 10.1 → 10.54 / 10.01; 8.4 → 8.88 / 8.66 | 6.35–7.89; 4.53–5.91 | Next: COV-6 (big fast turns), now that ACT-1 has landed; COV-7 cost fixture landed (#271) | Nearest zone defender closes 0.12 yd during the flight (NFL 0.65), PR #190 |
-| G10 | Players act on stale or hidden state at the seams | engine (shared) | Stale aims that reach a command; carrier reads before the player's own picture shows the catch; holds granted beyond the arm envelope (outside audit census on its saved seed-7 game) | 2 of 13 stale aims moved a body; 367 of 3,844 carrier reads early; 56 of 122 standing grabs beyond the envelope | Zero stale aims executed and no reads of true possession, while anticipation from the ball's flight still works and same-target controls stay identical; one reach rule for every tackle branch | In progress: ACT-1 landed (#251), #238 gate on acquired pose (#258); INFO-1 (#260) and TKL-5 (#264) held for rework | ACT-1, INFO-1, TKL-5 |
-| G4 | Too many interceptions | coverage | INT rate | 5.8% → 4.3% / 3.3% | 1.47–3.15% | Open | Tipped-ball re-catch, TIP_AWAY in PR #190 |
-| G5 | Edge protection gives way | trenches | Contact time before an edge rusher releases | 0.4 s (not re-measured); sacks 5.6% → 10.8% after the line splits → 9.0% / 10.0% at the weekly pin (NFL 4.6–9.4%) | about 1.1 s | In work (Main Engine) | Interior pressure already matches the NFL, PR #191 |
-| G6 | Penalty mix unlike the NFL | rules | Accepted penalties per team-game, by type | At `211db9cc`, 2026-10-25 (not refreshed): 6.8 → 3.8 total (NFL 2022 5.6, team range 4.8–6.5). Too many illegal contacts (0.7 vs 0.12), groundings (0.2 vs 0.08) and pre-snap defensive fouls (offside plus neutral zone about 0.7 vs 0.45); no DPI, roughness, face mask or delay of game | Each modeled type within the NFL team-season range | Open. The old 2.5–4 total target was unsourced and below the NFL's own total | `data/reviews/nflverse/game-layer.json`; RULE-1 |
-| G7 | Play-calling unlike the NFL | coaching | Pass rate and concept mix by situation | At `211db9cc`, 2026-10-25 (not refreshed): pass rate 57% → 66% (NFL 54–66%); mix untested | Within NFL bands by down and distance | Open | Archived evaluation plan, E3 |
-| G9 | No pass protection calls | trenches, coaching | Edge pressures where the same-side tackle blocked nobody | 86% of unblocked edges (#191, `rg3`) | Near the NFL's 39%, with the protection called from what the line can see | Open, after G5's physics | One generic matcher, no slide/BOB/Mike/back scan, rushers read from assignments; KNOWN_PROBLEMS PRO-5 |
-| G8 | No league or season | league | A multi-season league runs | One 238-line file | 10 seasons unattended; rating changes have the expected effect | Later | Roadmap phase 7 |
+One-arm league card, 16 games, seed 11, at `run-ref-26`
+(`engine-27` and `engine-28` move man coverage and protection; not yet re-carded as one arm).
+NFL is the team-season p10–p90 band where one is sourced.
 
-G1 to G3 overlap: a defender who closes late on a run or a catch also misses
-the tackle. Re-measure all three after each fix. G10 is a cause behind G1 and
-G3, not a symptom: its fixes are judged on restaged plays and controls, and
-their stat moves are explained, not targeted.
+| Measure | Engine | NFL band | Reading |
+| --- | --- | --- | --- |
+| Rush yards a carry | 4.57 | 3.70–4.83 | In band |
+| Runs of 10+ | 9.3% | 7.6–12.9% | In band |
+| Run stuffs (0 or less) | 9.3% | 15.9–23.5% | Low |
+| Completion | 58.5% | 60.6–68.1% | Low |
+| Yards an attempt | 8.37 | 6.35–7.89 | High |
+| YAC a reception | 6.65 | 4.53–5.91 | High |
+| 20+ yd completions an attempt | 11.4% | 6.7–11.1% | High edge |
+| Sacks a dropback | 4.5% | 4.6–9.4% | Low edge |
+| Scrambles a dropback | 2.5% | 2.2–7.3% | Low edge |
+| Interceptions | 2.9% | 1.5–3.2% | In band |
+| Missed + broken tackles a play | 0.22 | 0.11–0.16 (unsourced) | High |
+| Points a team-game | 30.6 | 21–23.5 (unsourced) | High |
+
+The run game is in range. The scoring excess is the pass game: too many yards
+an attempt and after the catch, too few sacks.
+
+## The three focus problems
+
+All lanes are on these three as of 2026-11-11. Work is paused until the pass
+stress matrix reports in full.
+
+### P1. Zone coverage gives up too much after the catch
+
+- **Size (direct, by coverage family):** YAC trimmed and catches gaining 10+
+  after the catch: Cover 4 6.60 / 35.5% against the NFL's 4.82 / 17.9%;
+  Cover 2 6.23 / 28.5% against 4.94 / 14.3%; Cover 3 5.72 / 25.8% against
+  5.18 / 18.5%. Cover 1 is NFL-like (4.50 / 19.4% against 5.11 / 19.4%).
+- **Not the cause:** coverage that is too loose. Target separation at the
+  throw is tighter than the NFL's in every family (Cover 3 4.03 yd against
+  4.46) (matrix first cut, direct). Tackling: broken tackles after a catch
+  match the NFL (20%).
+- **What we see:** zone defenders do not close while the ball is in the air.
+  NFL zone defenders take about a yard off the target between throw and catch;
+  ours take none (Cover 4 3.86 → 4.1 yd against 4.28 → 3.3). In the first
+  0.4 s ours are still drifting downfield (matrix first cut, direct; not yet
+  checked on plays).
+- **One mechanism found:** underneath zone defenders request 7–9 yd/s toward
+  the catcher and achieve 2.2–2.5, because the receiver they relate to is
+  re-picked every tick and the requested heading whips (8–12° a tick, about 4%
+  of ticks reversing). Whether it persists after the release is not measured.
+- **Missing rules:** see the coverage problem list below.
+- **Unknown:** how much of the gap each piece carries; concept-level cells
+  (the concept classifier is not reliable yet).
+
+### P2. The quarterback in the pocket
+
+- **Size (direct):** sacks 4.5% against 6.3% league-wide. With a rusher within
+  1 yd before the ball is out, our quarterback throws 65–71%, is sacked
+  26–34%, scrambles 2–3% (NFL 29 / 49 / 22). He stands 71% of the time
+  (NFL 24%) and ends outside the tackle box 3% (NFL 40% on pocket dropbacks).
+- **Not the cause:** drop depth or set point (7.9 yd against 7.6); his speed;
+  hit throws being too accurate (throws aimed at a receiver complete 40–42%
+  against 43%).
+- **What we see:** NFL quarterbacks leave on a leverage cue: a rusher who has
+  beaten his blocker is 3.3 yd away when they leave and 5.2 yd when they stay.
+  In ours that rusher is 7–8 yd away at the same moments: our rush wins late
+  and close and gives no warning (inferred category "beaten"; not checked on
+  plays). NFL quarterbacks throw the ball away on 23% of hit throws; ours 1%.
+  42% of NFL hit throws come more than 0.5 s after first contact; ours 0–2%.
+- **Model defects found:** his shoulders follow his eyes (305 of 317 set
+  throws need under 15° of turn; the NFL turns 15°+ on half, taking
+  0.3–0.7 s); his felt time to contact uses the block's private win score.
+- **Built, off:** `SET_DECIDE` (ends panic throws, 75 → 13; overshoots sacks
+  to 9–11% without movement), `BLOCK_SEEN`.
+- **Unknown:** how our rush would have to change to show a beaten blocker at
+  distance (measurement assigned, paused).
+
+### P3. The short passing game
+
+- **Size (direct):** targets behind the line and wide 0% against the NFL's
+  12.7%; throws before 2.0 s 10.7% against 18.0%; an open flat is thrown 9.5%
+  of the time against 32.6%.
+- **Not the cause:** the quarterback underrating flats (he overrates them:
+  predicted 74–78%, completed 51–53%; NFL 87% at 3–4.5 yd of space); read
+  order or throw timing (both NFL-like).
+- **What we see:** flats fail when thrown. The receiver runs to the earliest
+  point he can reach the ball, slowing from 5.6 to 3.0 yd/s (NFL 5.3 → 5.0),
+  and the quarterback leads him about a yard too far. Backs blocked, released
+  late and settled among the linebackers.
+- **Built, off:** `BACK_RELEASE` (released back open at the throw 11.6 →
+  24.9%, NFL 36.4%); goes on with the catch and lead fix.
+- **Missing:** screens and angle routes as callable plays (13.7% of NFL
+  targets).
+
+## Pass coverage problem list
+
+From the coverage-rule audit ([review](reviews/2026-11-11-coverage-rule-audit.md),
+per-family tables in `reviews/coverage-audit/`), Defense's diagnostics and the
+matrix first cut. "Rule" items are coached rules our defenders lack.
+
+| # | Problem | Kind | State |
+| --- | --- | --- | --- |
+| C1 | No release class for a route that breaks and keeps climbing (corner, post, wheel read as out or in), so "is he vertical?" triggers are blind. Half our targets are these routes (NFL 24%) | Rule, enabling | `CLIMB_BREAK` built, off (#561) |
+| C2 | Nobody undercuts the corner route: underneath defenders let #2 go on an outside break | Rule | Open |
+| C3 | Deep ownership: the deep-third corner considers only #1; one corner technique never sinks under a corner route | Rule | Open |
+| C4 | Deep seats with no rule (Cover 3 post safety, half safeties, Cover 1 free safety; about 57% of dropbacks): re-pick the deepest man each tick and drive on a stopped route with no throw cue | Rule | Open |
+| C5 | #3 or the back to the flat while #2 climbs has no owner | Rule | Open |
+| C6 | No crosser exchange in man | Rule | Open |
+| C7 | Quarters: corner leverage fixed outside; safety never re-reads after locking on #2 | Rule | Open |
+| C8 | Underneath ownership re-picked every tick after a handoff; measured as request thrash | Rule, execution | Diagnosed; fix designed (stable ownership until an observable handoff) |
+| C9 | Zone defenders do not close during the ball's flight | Behaviour | Seen in the matrix first cut; flight-window diagnostic queued |
+| C10 | Zone seats steered by the quarterback's internal read target | Hidden information | `SEEN_EYES` built, off, candidate (#562): zone linebackers slow at the release 34 / 37% → 19 / 21% |
+| C11 | Help decisions use the true ball state | Hidden information | `JUDGE_SEEN_BALL` built, off; reads worse until C4 exists |
+| C12 | Receiver numbering never re-counted after the snap ("final #3" cannot be expressed) | Rule, enabling | Open |
+| C13 | Rule thresholds and latches are fixed scripts; recognition rating plays no part in confirming a release | Execution | Open |
+| C14 | Completion barely depends on openness: tight / mid / open 50–55 / 57–64 / 62–67% against the NFL's 30–36 / 58–60 / 78–80%, in every coverage | Throw and catch, not coverage | Open; deep dive after the matrix |
+| C15 | A defender near the ball's path re-rolls "does he find the ball" every tick, so nearly all are looking within 0.5 s | Defect | Open (Coverage) |
+| C16 | Six places where the code disagrees with its coaching source (Lurk vs bunch, Palms depth, quarters vs trips, Cover 2 squat corner sink, inverted Cover 2 wall, one citation) | Rule | Defaults chosen; owner to confirm |
+
+## Other open problems
+
+| Problem | What we know | State |
+| --- | --- | --- |
+| Deep throws too easy | 51% complete at 20+ yd against 29%; probably C14 | Waits on the matrix |
+| Short interceptions | 2.4 per 100 throws at 0–10 yd against 1.1 (was 4.8) | Parked; C15 is part of it |
+| Protection: unblocked defensive linemen | With `PRO_CALL` on, free linemen rise about 1 per 100 dropbacks on three seed sets; cause not found | Recorded cost |
+| Tackle forms | An upright waist wrap from behind never commits weight; a head-on wrap is driven back about 4 yd (NFL 2.3) | Parked |
+| Tackle connect | Missed 1% of attempts after a catch against 4% | Parked |
+| Run stuffs | 9.3% against 15.9–23.5% | Not diagnosed |
+| Throw mechanics beyond the turn | Load does not scale with the throw's demand or the arm; no throw-to-throw variation | Parked; estimated parameters when built |
+| Quarterback differences | Scrambling under pressure ranges 0–52% across NFL quarterbacks; speed explains about a fifth | Parked; hooks named |
+| Pass protection families | No slide or max-protect calls, no hot throws | Parked; guide not written |
+| Screens and angles | Not callable | Parked |
+| Old defense flags | Seven off flags undecided | Parked |
+
+## What improved recently
+
+Engine versions since 2026-11-10. Evidence for each is in
+[REFERENCE_STACK.md](REFERENCE_STACK.md).
+
+| Version | Change | Measured effect |
+| --- | --- | --- |
+| run-ref-21 | Safeties placed before nickel and dime (`DB_SLOTS`) | A linebacker held strong safety on 43 / 93 / 44% of nickel / dime / 3-4 snaps; now 0 |
+| run-ref-22 | A missed ball only comes off a receiver who touched it (`DEFLECT_BALL`) | Interceptions 4.4 → 2.5% of attempts |
+| run-ref-23 | Leg holds cost the stride by strength and grip (five flags) | Broken tackles after a catch 24 → 20% (NFL 20); yards an attempt 9.24 → 8.28 on one card |
+| run-ref-24 | 2nd and long called like a passing down (`COVER_LONG`) | Cover 3 on 2nd and 7+ 40.0 → 36.4% (NFL 29.7) |
+| run-ref-25 | A hold on the passer acts on the throw (`THROW_BODY`) | Sacks 3.3 → 4.4% pooled over three cards |
+| run-ref-26 | A receiver coming back to the ball turns upfield after the catch | Correction to `CATCH_EYES` |
+| engine-27 | Man defenders keep only the cushion the threat needs (`CUSHION_NEED`) | Cover 1 linebacker over the catcher 2.2 yd/s, 29% slow → 2.8, 4% |
+| engine-28 | A protection call at the line (`PRO_CALL`) | Free blitzing linebackers 59 → 16, 58 → 19, 51 → 21 on three sets; sacks fall about half a point |
+
+Earlier this month: run yards a carry came into the NFL band (4.51 against
+4.48 on league-sampled teams), from 6.19 / 4.40 at the October page.
+
+## Measurement artefacts found
+
+Each of these looked like a football gap and was the measurement. Do not
+rebuild toward the old numbers.
+
+| Artefact | Effect |
+| --- | --- |
+| Two fixed teams in diagnostic games | Distorted YAC, contested-catch and completion-by-depth gaps; repaired by per-game identities |
+| Four fixed coordinators | Most of the coverage-mix gap; repaired by `leagueSample` |
+| Deep defenders found by roster position, not slot | "Second safety 2.4 yd shallow"; shell-mix gap |
+| NFL catch event fires about 0.3 s late | Flight time and YAC from catch; use `pass_arrived` |
+| Yard line used as ball depth | Depth-of-target tables |
+| Route "break" defined by speed under 1 yd/s | "The quarterback throws early" |
+| Under-center snaps counted as a free interior rusher | 25 of 34 NFL plays; inflates NFL first pressure by about 1.2 points (operator fix pending) |
+| Throwaways dropped from the sim export as passes | Hit-throw splits |
+| Rule-based route classifier | 40% agreement with NFL route labels; replaced by shape matching (64.5%) |
 
 ## Who is on what
 
-Lanes paused on 2026-10-23 after #235–#246 merged; this table was updated on 2026-10-25 after #248–#271. The next cycle follows
-[PLAN's "Next after the film threads"](PLAN.md#next-after-the-film-threads);
-assignments change only at a review, so the "Proposed next" column is a proposal until
-Tanner confirms it.
+Paused 2026-11-11 until the stress matrix reports. Assignments on resume:
 
-| Lane | Session | Proposed next | Gaps |
-| --- | --- | --- | --- |
-| tools | Tools/Physics | Done: games-identical tools. Open: turning measurement (#255, held); detector precision (PERF-5) | F1 |
-| engine (shared) | Main Engine | ACT-1 done (#251). INFO-1: rework #260 with an acquired scramble cue, then recompose #256 | G10 |
-| defense | Defense | TKL-5: rework #264 with the laid-out span, grip and consumer radii. TKL-2: breakaway effort and the held reduced budget | G1, G10 |
-| coverage | Coverage | COV-6 big fast turns; COV-7 pilot (#269) on the #271 fixture with Defense; #224 cushion after ACT-1 | G3 |
-| run | Run Game | RUN-12 combo preparation; #268 held | G2 |
-| trenches | Main Engine | PRO-1, after G10's first fixes | G5 |
-| rules, coaching | Rules + Coaching | Holds | G6, G7 |
-| tools | ChatGPT chats | Measurement tasks; each PR verified before merge | F1, F2 |
+| Lane | Focus | Next |
+| --- | --- | --- |
+| Rules + Coaching | P1 (lead) | The pass stress matrix (running); then C1, C12, and the rules in ranked order, fixture-first |
+| Defense | P1 | C9 flight-window diagnostic; C8 stable ownership as a rule; `SEEN_EYES` to integration |
+| Flex | P2 (lead) | Shoulders set and lagging his eyes; the throwaway as a choice; pocket movement on the leverage read |
+| Run Game | P2, P3 | Pass-rush leverage measurement; joint read of `BACK_RELEASE` |
+| Coverage | P3 (lead) | Flat catch point and lead; C15; then C14 after the matrix |
+| Integration | — | Engine versions, this page |
