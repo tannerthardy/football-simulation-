@@ -39,7 +39,29 @@ export interface ReceiverRead {
   climbed: boolean;
   /** Deepest he has been seen beyond the line since the snap. */
   deepest: number;
+  /** CLIMB_BREAK: a break he is still climbing on (corner/post off a stem, a wheel up from the flat), once believed. */
+  climb: Climb | null;
 }
+
+/**
+ * CLIMB_BREAK (off): a break that keeps climbing. `release` classes a route
+ * by its lean, so a corner off a 10-yard stem is an "out" at any depth and
+ * every "is he going deep?" help trigger goes blind to it. A defender also
+ * sees whether the receiver is still gaining ground upfield after the break:
+ * - corner: leaning out (an "out" lean) and still climbing past the
+ *   no-cover zone;
+ * - post: leaning in and still climbing;
+ * - wheel: first released to the flat or a short out, then turned upfield.
+ * A deep out or dig that flattens (stops climbing) is not one. The read is
+ * the defender's own: believed only once it persists, sooner with focus and
+ * play recognition, so a late or missed read comes from the player.
+ */
+export const CLIMB_BREAK = process.env.CLIMB_BREAK === '1';
+export type Climb = 'corner' | 'post' | 'wheel';
+/** Still gaining ground upfield (yd/s), and past the no-cover zone (yd beyond the line). */
+const CLIMB_VX = 2.5, CLIMB_DEPTH = 5;
+/** How long a climbing break must persist before he believes it (s), before focus and recognition. */
+const CLIMB_CONFIRM = 0.15;
 
 interface Memory {
   release: Release;
@@ -52,6 +74,9 @@ interface Memory {
   obs: RouteObservation;
   start: Vec2;
   outSign: number;
+  climb: Climb | null;
+  climbPending: Climb | null;
+  climbPendingSince: number;
 }
 
 /** How long a new declaration must persist before the defender believes it. */
@@ -73,7 +98,8 @@ export class ReleaseReader {
       if (r === sim.qb || isLineman(r)) continue;
       const outSign = Math.sign(r.pos.y - sim.ballY) || 0;
       this.memory.set(r, { release: 'none', first: 'none', since: 0, pending: 'none', pendingSince: 0, climbed: false,
-        deepest: -Infinity, obs: new RouteObservation(), start: { ...r.pos }, outSign });
+        deepest: -Infinity, obs: new RouteObservation(), start: { ...r.pos }, outSign,
+        climb: null, climbPending: null, climbPendingSince: 0 });
     }
   }
 
@@ -128,8 +154,20 @@ export class ReleaseReader {
       m.pending = 'none';
       m.pendingSince = sim.t;
     }
+    if (CLIMB_BREAK && now !== 'none' && now !== 'block') {
+      // What the path shows now: still climbing on a break, or not.
+      const shown: Climb | null = vx > CLIMB_VX && depth > CLIMB_DEPTH && now === 'out' ? 'corner'
+        : vx > CLIMB_VX && depth > CLIMB_DEPTH && now === 'in' ? 'post'
+          : now === 'vertical' && (m.first === 'flat' || (m.first === 'out' && m.deepest < 6.5)) && depth > 2 ? 'wheel'
+            : null;
+      if (shown === m.climb) m.climbPending = m.climb;
+      else if (shown !== m.climbPending) {
+        m.climbPending = shown;
+        m.climbPendingSince = sim.t;
+      } else if (sim.t - m.climbPendingSince >= climbConfirm(a)) m.climb = shown;
+    }
     const read: ReceiverRead = { r, pos: seen.pos, vel: seen.vel, depth, outward, outSign, release: m.release, first: m.first,
-      since: m.since, climbed: m.climbed, deepest: m.deepest };
+      since: m.since, climbed: m.climbed, deepest: m.deepest, climb: m.climb };
     this.cache.set(r, read);
     return read;
   }
@@ -155,6 +193,17 @@ export class ReleaseReader {
     }
     return out.sort((p, q) => Math.abs(q.pos.y - sim.ballY) - Math.abs(p.pos.y - sim.ballY));
   }
+}
+
+/** How long a climbing break must persist before this defender believes it:
+ * focus and play recognition shorten it (0.09-0.34 s at the extremes). */
+export function climbConfirm(a: Agent): number {
+  return CLIMB_CONFIRM * (1.6 - 0.6 * a.mind.focus) * (1.4 - 0.8 * a.r('playRecognition'));
+}
+
+/** A deep threat as he sees it: vertical, or (CLIMB_BREAK) a break he is still climbing on. */
+export function goingDeep(rd: ReceiverRead | null): boolean {
+  return !!rd && (rd.release === 'vertical' || (CLIMB_BREAK && rd.climb !== null));
 }
 
 export function isLineman(a: Agent): boolean {

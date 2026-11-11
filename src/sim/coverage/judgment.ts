@@ -9,7 +9,7 @@ import type { Agent } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { hasObservedFlight, observedHolder } from '../possession-read.js';
-import type { ReceiverRead, ReleaseReader } from './reads.js';
+import { goingDeep, type ReceiverRead, type ReleaseReader } from './reads.js';
 import type { Directive } from './rules.js';
 
 export class CoverageJudgment {
@@ -44,12 +44,13 @@ export class CoverageJudgment {
       const visible = Math.cos(a.facing) * dx + Math.sin(a.facing) * dy > -0.45 * Math.hypot(dx, dy);
       return visible || own?.r === r ? [rd] : [];
     });
-    const climbing = (r: ReceiverRead) => r.depth > 5 && r.vel.x > 3 && r.release === 'vertical';
+    // CLIMB_BREAK: a corner, post or wheel he sees still climbing is as deep a threat as a vertical.
+    const climbing = (r: ReceiverRead) => r.depth > 5 && r.vel.x > 3 && goingDeep(r);
     const capped = (r: ReceiverRead) => hasVisibleCap(a, sim, r);
     // A confirmed upfield stem is already the primary's responsibility.
     // Waiting for five yards can abandon him during the release itself.
     // A visible roof or an observed break can still permit help elsewhere.
-    if (own && own.release === 'vertical' && own.vel.x > 3 && !capped(own)) return primary;
+    if (own && goingDeep(own) && own.vel.x > 3 && !capped(own)) return primary;
     const danger = routes.filter(r => r.r !== own?.r && climbing(r) && !capped(r))
       .sort((p, q) => (q.depth - 0.25 * Math.abs(q.pos.y - a.pos.y)) - (p.depth - 0.25 * Math.abs(p.pos.y - a.pos.y)))[0];
     if (danger && danger.pos.x > a.pos.x - 5) {

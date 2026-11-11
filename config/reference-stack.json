@@ -37,6 +37,7 @@
     "CARRIER_BRACE": "off",
     "CATCH_EYES": "on",
     "CLIMB_BASE": "on",
+    "CLIMB_BREAK": "off",
     "CLIMB_PATH": "on",
     "CLIMB_PREP": "on",
     "CLIMB_RIP": "on",
