@@ -901,3 +901,36 @@ YAC differs by divergence, as on that seed before.
 - That is the branch the set-phase restructure replaces.
 
 **Recommendation.** Ship BLOCK_SEEN with the restructure, which depends on it, not alone.
+
+## Set-phase decision under pressure: design and interface (`SET_DECIDE`, off; proposed 2026-11-11)
+
+**Football to build to** (`qb-moves.py`, NFL pocket dropbacks with a rusher at 1 yd, designed movement removed):
+- 40% end outside the tackle box (13% with no rusher near). 69% of those leave away from the rusher; 69% set inside first and leave about 1.6 s after setting.
+- Climbed 3+ yd: 15%. Slid: 9%. Stood: 24%.
+- Throws from outside are poor (27% / 3.3); throws after climbing are good (55% / 9.2).
+- Ours: outside 3%, slid 0%, stood 71%.
+
+**One decision per tick under pressure** (felt time to contact at his spot below the time he still needs: the rest of his current read plus a windup). Same felt evidence throughout: `felt()` + `held()` (with `BLOCK_SEEN`: the perceived block read).
+1. **Throw** if the read logic offers a throw it would take now (its own thresholds, unchanged).
+2. **Move** otherwise, if a reachable spot buys the time he needs. Candidates: climb, slide either way, outside the box either way, judged by felt time to contact at the end of the needed time. He commits to a direction for one reaction time (no tick-to-tick jitter), and keeps reading while he moves: the read clock runs and his eyes stay downfield.
+3. **Escape** when moving finds a lane past the line and the read logic offers nothing (the existing `shouldScramble` lane check, from where the movement has taken him).
+4. **Trapped** (no spot buys time, no lane): the existing hot path (its throw-it-to-anyone bar), throw-away or evade, unchanged.
+
+With nobody near, none of this runs. That is the clean-pocket test, and v1's drift is the failure it must not show.
+
+**Interface wanted from the read logic** (Coverage's; called, not rewritten). One function would decouple us:
+`bestThrowNow(a, sim, urgency): { ev: ThrowEval | null, take: boolean }`
+- It wraps today's current-read / outlet / out-of-reads choice and its thresholds.
+- `take` = it would start this throw now.
+
+Until then, `SET_DECIDE` calls `ready`, `evaluate`, `bestOption` and the existing need/risk thresholds directly. The read order (readIdx / readStart / dwell) advances as today.
+
+**Gates** (registered here, before the build):
+1. Pressured pocket path p75 0.39 → toward 1.72 yd; forward and lateral toward 0.9 / 0.8.
+2. Rusher at 1 yd: ends outside toward 40%, away from the rusher about 70%, climbed 3+ toward 15%.
+3. Throw / sack / scramble toward 30 / 47 / 23.
+4. Clean pocket: ends outside stays near 13% (no drift).
+5. Time to throw.
+6. Throws on the move cost accuracy (missSigma's existing speed term), reported.
+
+Read with and without `BLOCK_SEEN`.
