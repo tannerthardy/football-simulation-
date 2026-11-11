@@ -622,6 +622,8 @@ YAC median / trimmed / mean: 4.00 / 5.52 / 8.23 ± 0.47 → 3.40 / 5.23 / 8.19 �
 
 A held promotion, then released. Three integration cards on run-ref-20 lineups (seeds 11, 23, 37; unpaired) showed pass TDs 7.6% → 8.9% of attempts pooled (about 2.2 SE) at the same yardage. Flex's trace on run-ref-21 (seeds 11 and 23, `scripts/diag/effective-mass/td-hold.mts`) does not reproduce it: TDs a completion 9.2 → 8.6% and 12.8 → 11.4%; three near-goal held TDs read tick by tick never engage the binding (one shoestring miss, two upright waist wraps). Yards after the first hold inside the 10 rise about 0.3 yd (1.3 SE), consistent with `HIP_STRENGTH` letting a strong runner's hips resist a pull. No bug found in the mechanism.
 
+Integration's card on this stack's base (run-ref-22, 16 games, seed 11, unpaired arms): yards an attempt 9.24 → 8.28, YAC a reception 7.57 → 6.81 and pass TDs 8.2 → 6.4% of attempts, all resolved; completion 60.1 → 57.4%, sacks 3.1 → 4.1%, points 34.7 → 30.4 a team-game and yards a carry 4.63 → 4.62 not resolved. Fixed runs on this stack: all 3.79, broken 0.125, missed 0.234 a run.
+
 What it does not fix: the last-man solo tackle on this base (class 0 on catches stays 53 / 43 against 58 / 35), the connect (missed 1% against 4%), an upright waist wrap from behind that never commits its weight, and a head-on wrap driven back about 4 yd against the NFL's 2.3. Detail: [tackle forms](reviews/2026-11-10-tackle-forms.md).
 
 ## run-ref-22: `DEFLECT_BALL` on (2026-11-11)
