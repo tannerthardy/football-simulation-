@@ -96,8 +96,9 @@ const QB_FEEL = process.env.QB_FEEL === '1';
 /** Experimental (THROW_BODY=1, off): a hold on the passer acts on the throw
  * through what it holds. Its interference is how firmly he is held (heldBy)
  * times how high the hold is on him (1 - the grasp's leg share: the shoulder
- * line 1, the waist 0.5, the legs 0). During the load, before the arm comes
- * forward, the hold pins the arm with that chance (rolled once a throw) and
+ * line 1, the waist 0.5, the legs 0). A hold taken during the load pins the
+ * arm with that chance, rolled when the arm must come forward (the delivery's
+ * start, with the hold as it is then), and
  * the throw is abandoned; the hold then rules the play. A throw that does come
  * out under a hold has lost the trunk and the step that a hold takes: it is
  * thrown as an arm throw to that degree (the flick's own speed and accuracy
@@ -277,11 +278,13 @@ export class QBPass implements Behavior {
     }
 
     if (this.phase === 'windup') {
-      // THROW_BODY: a hold in the load, before the arm comes forward, can pin it.
-      if (THROW_BODY && this.pending && !this.pinRolled && sim.deliveryAt >= 0 && t < sim.deliveryAt) {
+      // THROW_BODY: a hold taken in the load can pin the arm. It matters at the
+      // moment the arm must come forward (the delivery's start), with the hold
+      // as it is then; a hold taken once the arm is moving cannot stop it.
+      if (THROW_BODY && this.pending && !this.pinRolled && sim.deliveryAt >= 0 && t >= sim.deliveryAt) {
+        this.pinRolled = true;
         const pin = throwInterference(a, sim);
         if (pin > 0) {
-          this.pinRolled = true;
           if (sim.dice('throw', a).chance(pin)) {
             this.phase = 'set'; this.pending = null; this.readStart = t;
             sim.windupAt = -1; sim.deliveryAt = -1;
