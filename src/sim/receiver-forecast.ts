@@ -19,6 +19,15 @@ import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from
  * receiver along his run with a fresh picture (aim implied 1.7 yd/s, he ran
  * 4.6) and completed 0.49; every one used the observed-motion fallback. */
 const FORECAST_PACE = process.env.FORECAST_PACE === '1';
+/** ROUTE_PLACE (off; ROUTE_PLACE=1 turns it on): the QB places a receiver on his
+ * installed route when the receiver is within half a yard beyond his body
+ * radius of a segment and moving along it, not only within his body radius.
+ * A run route is steered, not traced: flats and swings sat 0.4-0.65 yd off the
+ * installed line at the throw (panel, develop 05587800), so 93-100% of them
+ * fell back to straight-line observed motion and the ball landed behind them;
+ * the installed route carries their bend and pace. */
+const ROUTE_PLACE = process.env.ROUTE_PLACE === '1';
+const PLACE_SLACK = 0.5;
 
 interface InstalledAnswer { readonly id: RouteChoice['answer']; readonly path: readonly PathPoint[]; readonly end: RouteEnd }
 
@@ -241,7 +250,7 @@ function inferProgress(p: ReceiverPicture, prior: InstalledReceiverRoute): numbe
     const u = len2 ? clamp(((p.pos.x - prev.x) * dx + (p.pos.y - prev.y) * dy) / len2, 0, 1) : 0;
     const error = Math.hypot(p.pos.x - prev.x - u * dx, p.pos.y - prev.y - u * dy);
     // Motion perpendicular/opposed to this segment is evidence of a different action.
-    if (error <= prior.profile.radius && (Math.hypot(p.vel.x, p.vel.y) < 1e-6 || p.vel.x * dx + p.vel.y * dy > 0)) {
+    if (error <= prior.profile.radius + (ROUTE_PLACE ? PLACE_SLACK : 0) && (Math.hypot(p.vel.x, p.vel.y) < 1e-6 || p.vel.x * dx + p.vel.y * dy > 0)) {
       candidates.push({ idx, error });
     }
     prev = next;
