@@ -60,6 +60,35 @@ export function believesRun(sim: PlaySim, a: Agent): boolean {
  * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
  * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
 const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
+/** SET_SQUEEZE (experimental, off; SET_SQUEEZE=1 turns it on): a deep
+ * defender in a zone call (a deep zone, or a match on a vertical inside one)
+ * reads the quarterback through the route. Once his own delayed picture shows
+ * the QB finish his drop (he gave a yard or more, then stopped: the
+ * ZONE_SETTLE evidence), the ball is coming on rhythm, so he stops matching a
+ * climbing receiver's speed and spends the cushion he banked: his depth check
+ * (DeepCoverage) takes the slowest stem speed that still keeps his roof over
+ * the preview and lets him recover the receiver's speed at its end. Before,
+ * that check offered only the receiver's speed or more, so he held a fixed
+ * cushion at the receiver's speed until he saw the ball. NFL zone-call
+ * corners over the catcher with the catcher still climbing (over 3 yd/s) at
+ * the release give the cushion back from 5.3 to 4.1 yd over the last 0.6 s
+ * and move away from him 41%; ours held 4 yd at his speed and moved away 93%
+ * (BDB 2025 weeks 1-3 vs league-sampled games, same operator, pass_arrived). */
+export const SET_SQUEEZE = process.env.SET_SQUEEZE === '1';
+const qbSets = new WeakMap<Agent, { deepest: number; at: number }>();
+/** SET_SQUEEZE: record what this defender's own picture shows of the QB's
+ * drop; called every tick he is in coverage. Returns when he saw the set (-1 not yet). */
+export function observeQbSet(a: Agent, sim: PlaySim): number {
+  let s = qbSets.get(a);
+  if (!s) { s = { deepest: Infinity, at: -1 }; qbSets.set(a, s); }
+  if (s.at >= 0) return s.at;
+  const q = sim.see(a, sim.qb);
+  s.deepest = Math.min(s.deepest, q.pos.x);
+  const dropped = (sim.offAlign.spots.QB?.pos.x ?? q.pos.x) - s.deepest >= 1;
+  if (dropped && knowsPass(sim, a) && Math.hypot(q.vel.x, q.vel.y) < 1.2) s.at = sim.t;
+  return s.at;
+}
+export function qbSetSeenAt(a: Agent): number { return qbSets.get(a)?.at ?? -1; }
 
 export function knowsPass(sim: PlaySim, a: Agent): boolean {
   if (a.recog) return a.recog.read === 'pass';
@@ -603,6 +632,8 @@ export interface ManOptions {
   protectDepth?: boolean;
   /** Acquired entry picture; used only to initialize cushion. */
   initialPosition?: Vec2;
+  /** A match defender inside a zone call: he reads the quarterback through his man (SET_SQUEEZE). */
+  zoneEyes?: boolean;
 }
 
 /** PRESS_MIRROR (off; PRESS_MIRROR=1 turns it on): a pressing corner mirrors
@@ -845,6 +876,12 @@ export class ManCoverage implements Behavior {
       tx = seen.pos.x + top;
     }
     else if (o.trail && deep > 3 && vx > 2) tx = seen.pos.x - 0.6;
+    // SET_SQUEEZE: the QB has set; the ball is coming on rhythm. He stops
+    // matching a climbing receiver's speed (sinks) and the depth check below
+    // lets him give back only the cushion he can afford.
+    const squeeze = SET_SQUEEZE && !!o.zoneEyes && !!o.protectDepth && this.releaseObserved
+      && deep > 3 && vx > 1.5 && qbSetSeenAt(a) >= 0 && knowsPass(sim, a);
+    if (squeeze) { tx = Math.min(tx, a.pos.x); a.tags.add('set-squeeze'); }
     if (o.protectDepth) {
       if (!this.releaseObserved) tx = Math.max(tx, a.pos.x - .2);
       tx = Math.min(tx, END_LINE_X - a.profile.radius);
@@ -852,15 +889,16 @@ export class ManCoverage implements Behavior {
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
     const cs = 0.85 + 0.35 * a.r('manCoverage');
+    const ff = squeeze ? { x: 0, y: seen.vel.y } : seen.vel;
     const command = this.hipsOpen
-      ? withFacingTechnique(track(a, tgt, seen.vel, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') }),
+      ? withFacingTechnique(track(a, tgt, ff, { cutSkill: cs, gain: 2.0 + a.r('manCoverage') }),
         { label: 'man-open', key: seen.vel })
       : withFacingTechnique(track(a, tgt, { x: Math.max(0, seen.vel.x), y: seen.vel.y }, { facing: Math.PI, gain: 1.6 }),
         { label: 'man-pedal', key: seen.vel });
     if (!o.protectDepth) return command;
     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
       : vx > 3 && deep > 3 ? cushion * .5 : cushion;
-    const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
+    const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact, squeeze);
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
     return selected.facing === undefined && command.facing !== undefined
       ? withFacingTechnique(selected, { label: 'man-depth-run', key: seen.vel }) : selected;
@@ -934,6 +972,7 @@ export class ZoneCoverage implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    if (SET_SQUEEZE && this.deep) observeQbSet(a, sim);
     const live = pursueIfLive(sim, a);
     if (live) return live;
     // Until he sees the throw, a zone defender keeps playing his zone.
@@ -1133,7 +1172,9 @@ export class ZoneCoverage implements Behavior {
       }), { label: turnRun ? 'deep-turn-run' : 'deep-over', key: deepest.vel });
       let depth = this.depthReads.get(deepest.r);
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
-      const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
+      const spend = SET_SQUEEZE && qbSetSeenAt(a) >= 0 && knowsPass(sim, a) && deepest.pos.x - sim.los > 3 && deepest.vel.x > 1.5;
+      if (spend) a.tags.add('set-squeeze');
+      const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact, spend);
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
       return selected.facing === undefined && command.facing !== undefined
         ? withFacingTechnique(selected, { label: 'deep-depth-run', key: deepest.vel }) : selected;

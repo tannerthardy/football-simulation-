@@ -15,7 +15,7 @@ export class DeepCoverage {
 
   choose(a: Agent, seen: Pick<Perceived, 'pos' | 'vel'>, cue: Perceived, receiver: PhysicalProfile,
     cushion: number, original: MoveCommand, now: number,
-    model: Parameters<typeof previewFreeMovement>[4]): MoveCommand {
+    model: Parameters<typeof previewFreeMovement>[4], spend = false): MoveCommand {
     const stamp = now - (cue.age ?? 0), previous = this.previous;
     if (!previous || stamp > previous.stamp + 1e-9) {
       const dt = previous ? stamp - previous.stamp : 0;
@@ -76,6 +76,10 @@ export class DeepCoverage {
     // Spend excess depth if safe; otherwise match the stem square, open with
     // it, or run with it. The chosen request is the one actually previewed.
     const candidates: MoveCommand[] = [];
+    // SET_SQUEEZE: once he has seen the QB set, the cushion he banked is his
+    // to spend: the slowest stem speed that still passes the same check
+    // (roof kept along the preview, speed recoverable at its end).
+    if (spend) for (const f of [.2, .4, .6, .8]) candidates.push(request(f * targetV, original.facing));
     candidates.push(request(targetV, original.facing));
     if (original.facing !== undefined) candidates.push(request(targetV));
     candidates.push(request(a.profile.vmax));

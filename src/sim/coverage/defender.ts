@@ -8,7 +8,7 @@
 import type { MoveCommand } from '../../physics/kinematics.js';
 import type { Gap, MatchRule, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
-import { believesRun, ManCoverage, pursueIfLive, runFit, sawThrow, ZoneCoverage } from '../behaviors/defense.js';
+import { believesRun, ManCoverage, observeQbSet, pursueIfLive, runFit, sawThrow, SET_SQUEEZE, ZoneCoverage } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { ReleaseReader } from './reads.js';
 import { runRule, zoneSide, type Directive, type RuleState } from './rules.js';
@@ -87,6 +87,7 @@ export class CoverageDefender implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    if (SET_SQUEEZE) observeQbSet(a, sim);
     const live = pursueIfLive(sim, a);
     if (live) return live;
     const sign = this.side === 'S' ? sim.offAlign.strongSign : -sim.offAlign.strongSign;
@@ -138,7 +139,7 @@ export class CoverageDefender implements Behavior {
         if (this.sub instanceof ReadRelease && this.sub.target === d.r
           && (d.opts.lev ?? 'inside') === 'inside' && !d.opts.trail && !d.opts.overTop) return this.sub.match();
         return new ManCoverage(a, this.sim, d.r, false, this.gap, this.gapSign,
-          { ...d.opts, protectDepth: isDeepZone(this.zone) });
+          { ...d.opts, protectDepth: isDeepZone(this.zone), zoneEyes: true });
       case 'read': return new ReadRelease(a, this.sim, d.r, this.reader, this.gap, this.gapSign, d.initialPosition);
       case 'trap': return new Trap(d.r, this.reader, this.gap, this.gapSign);
       case 'wall': return new Wall(d.r, this.reader, this.gap, this.gapSign);
