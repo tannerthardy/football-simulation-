@@ -23,6 +23,20 @@ export const TRACKING_REACH_BONUS = .3;
 const TIP_AWAY = process.env.TIP_AWAY !== '0';
 /** How long a defender who touched the ball stays out of its flight. */
 const touchedUntil = (sim: PlaySim, beat: number) => sim.t + (TIP_AWAY ? 10 : beat);
+/** DEFLECT_BALL (off; DEFLECT_BALL=1 turns it on): a ball the receiver fails
+ * to catch only comes off him if he touched it, and then it leaves fast and
+ * low. Whether he touched it is decided from where the ball was in his catch
+ * window (stretch to the edge of his reach, above or below his hands): dice
+ * decide the touch, the ball's physics the aftermath. Untouched, it keeps its
+ * flight (an overthrow can still be picked behind him). Touched squarely, a
+ * ball he did not hold pops up and dies (15% of its horizontal speed, vz up to
+ * about 1.7 yd/s); a glancing touch at the edge of his reach keeps up to 55%
+ * and stays low. A defender catches a tipped ball only within his hands'
+ * reach and seeing it. Off,
+ * every miss popped the ball up at 20% speed near the receiver and a defender
+ * caught it 10-40% of the time: 17 of 21 short interceptions on the
+ * league-sampled panel came off the receiver (3.8% of short throws; NFL 0.4%). */
+const DEFLECT_BALL = process.env.DEFLECT_BALL === '1';
 
 interface Opp {
   a: Agent;
@@ -185,6 +199,16 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
     sim.event('drop', R);
   } else sim.event('miss', R);
   R.noCatchUntil = sim.t + 0.6;
+  if (DEFLECT_BALL) {
+    // Where the ball was in his window decides whether his hands got to it.
+    const pTouch = clamp(1 - 0.7 * stretch - 0.6 * Math.min(1, high) - 0.5 * Math.min(1, low), 0.15, 1);
+    if (!rng.chance(pTouch)) return;
+    // Squarely in his hands, a ball he does not hold pops up and dies (the
+    // catchable bobble); at the edge of his reach a touch only redirects it.
+    const solid = clamp(1 - stretch - 0.5 * Math.min(1, high) - 0.5 * Math.min(1, low), 0, 1);
+    deflect(sim, 0.15 + 0.4 * (1 - solid), 'drop', R, solid);
+    return;
+  }
   deflect(sim, 0.2, 'drop', R);
 }
 
@@ -199,7 +223,12 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
   const isBat = !!D.engagement || (tAir < 0.4 && D.pos.x < sim.los + 2);
   if (ball.deflected) {
     // A tipped ball is either caught or falls; no more volleyball.
-    const pTip = clamp(0.1 + 0.3 * D.r('ballSkills'), 0, 0.4) * (sees ? 1 : 0.3);
+    // A floating ball is reached for: his hands' envelope, not his torso.
+    const window = D.profile.reach + 0.3;
+    const inWindow = o.dh <= window && o.z >= 0.3 && o.z <= D.profile.reactReach;
+    const pTip = DEFLECT_BALL
+      ? (sees && inWindow ? clamp(0.2 + 0.3 * D.r('ballSkills'), 0, 0.5) * (1 - 0.6 * o.dh / window) : 0)
+      : clamp(0.1 + 0.3 * D.r('ballSkills'), 0, 0.4) * (sees ? 1 : 0.3);
     if (rng.chance(pTip) && inBounds(D)) {
       sim.possess(D, 'interception');
       return true;
@@ -239,7 +268,7 @@ function defenderPlay(sim: PlaySim, o: Opp, tAir: number): boolean {
   return false;
 }
 
-function deflect(sim: PlaySim, keep: number, kind: 'drop' | 'tip' = 'tip', toucher?: Agent): void {
+function deflect(sim: PlaySim, keep: number, kind: 'drop' | 'tip' = 'tip', toucher?: Agent, solid?: number): void {
   if (toucher && !sim.touchPass(toucher)) return;
   const ball = sim.ball;
   if (ball.kind !== 'air') return;
@@ -251,7 +280,7 @@ function deflect(sim: PlaySim, keep: number, kind: 'drop' | 'tip' = 'tip', touch
   const vx = f.vel.x * keep;
   const vy = f.vel.y * keep;
   // Dropped balls fall; tipped balls pop up a little.
-  const vz = kind === 'drop' ? dice.normal(0.3, 0.8) : dice.range(0.3, 2.2);
+  const vz = solid !== undefined ? dice.normal(0.1 + 1.6 * solid * solid, 0.4) : kind === 'drop' ? dice.normal(0.3, 0.8) : dice.range(0.3, 2.2);
   f.vel = { x: vx * c - vy * s, y: vx * s + vy * c, z: vz };
   f.drag = DRAG_TUMBLE;
   ball.deflected = true;

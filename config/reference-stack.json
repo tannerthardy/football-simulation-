@@ -50,6 +50,7 @@
     "DL_FIGHT": "off",
     "DL_GAMES": "off",
     "DL_HANDS": "off",
+    "DEFLECT_BALL": "off",
     "DL_SNAP_TIME": "off",
     "DOUBLE_FLOW": "on",
     "DOUBLE_HANDOFF": "on",
