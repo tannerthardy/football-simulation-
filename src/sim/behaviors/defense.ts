@@ -188,6 +188,15 @@ function twistRole(a: Agent, sim: PlaySim): { role: 'crash' | 'loop'; y: number 
   return { role: a === c ? 'crash' : 'loop', y: gapY(sim.offAlign, target.gap, target.gapSign) };
 }
 
+/** RUSH_PEEL (experimental, off): an engaged pass rusher who sees the throw
+ * comes off his block and goes to the ball. NFL defensive linemen on
+ * completed passes: an OL within 1.2 yd 72% at the release, 49% 0.8 s later,
+ * speed steady at 2.5 yd/s; ours 87% -> 80%, speed 2.3 -> 1.3 yd/s
+ * (2026-11-11, league-sampled games, same operator). */
+export const RUSH_PEEL = process.env.RUSH_PEEL === '1';
+/** RUSH_PEEL: how long the blocker's hands cannot re-latch him (s; the shed window, engagement.ts). */
+const RUSH_PEEL_WINDOW = 0.6;
+
 export class PassRusher implements Behavior {
   readonly kind = 'rush';
   private readonly getOff: number;
@@ -269,7 +278,13 @@ export class PassRusher implements Behavior {
     if (a.engagement) {
       const { blocker } = a.engagement;
       if (['LT', 'LG', 'C', 'RG', 'RT'].includes(blocker.slot)) this.workedLineBlock = true;
-      return stand();
+      // RUSH_PEEL (experimental, off): he sees the ball leave the passer's
+      // hand (his own picture of the throw, with his reaction delay) and
+      // comes off the block to go to it, instead of staying locked until the
+      // rep's fixed 0.35 s after the throw. The blocker's hands cannot re-latch
+      // him for the shed window; the blocker's body is still in his way.
+      if (!(RUSH_PEEL && sawThrow(a, sim, null))) return stand();
+      const e = a.engagement; sim.disengage(e); blocker.shedBy.set(a, sim.t + RUSH_PEEL_WINDOW); a.tags.add('rush-peel');
     }
     const live = pursueIfLive(sim, a);
     if (live) return live;
