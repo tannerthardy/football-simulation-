@@ -996,3 +996,12 @@ YAC mean 10.09 → 8.02 ± 0.45: divergence on this seed, as before.
 **What didn't.** The movement. Straight-line time to reach makes every spot near a closing rusher look covered: it sees rushers, not his blockers walling them off. So he still mostly stands until he's hit. With `BLOCK_SEEN` the engaged rushers count sooner and he freezes more.
 
 **Next piece (Integration's note).** A spot's value from what he sees of bodies: a spot is good if no free rusher has an unblocked path to it and no teammate is standing in it. The NFL direction data (69% away from the rusher who reaches him; outside 40%) should fall out of that.
+
+**Correction: what produced SET_DECIDE's throw/sack gains** (2026-11-11).
+- `FINISH_CHECK` (the finish check alone) is a no-op: 69 calls, 0 refusals on one game. When the read logic offers a throw, the felt rusher (feltClosing included) is still about 0.5 s out, so the check passes.
+- What changed under SET_DECIDE (throw-path, seeds 201–202, run-ref-26):
+  - hot/panic throws 11 → 0;
+  - hit throws 18 → 9;
+  - refusals 9, only after he has moved.
+- `setDecide` pre-empts the hot path: the panic throw is reached only when no spot buys time.
+- The gain belongs to the decision structure. It doesn't split from the movement evaluation, which supplies the "trapped" test.
