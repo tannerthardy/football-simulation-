@@ -2,12 +2,14 @@
 
 Defenders other than linemen who are 3-8 yd from the eventual catch point (the target at pass_arrived) at the
 throw: their speed toward the catch point, their downfield speed, and the share moving away from it, over the
-first 0.4 s of the ball's flight. Coverage: PFF pff_passCoverage (NFL, non-play-action) or the played call's
+first 0.4 s of the ball's flight. Coverage: PFF pff_passCoverage (NFL drop-back passes, population.py) or the played call's
 family (sim forced-grid plays from sim.ts).
 
   python3 -I flight.py <nfl plays.jsonl.gz> <bdb dir> <sim.jsonl.gz[,more]>
 """
-import sys, json, gzip, math, csv, statistics as S, collections as C
+import sys, os, json, gzip, math, csv, statistics as S, collections as C
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from population import nfl_population
 
 NFL_COV = {'Cover-0': 'C0', 'Cover-1': 'C1', 'Cover-1 Double': 'C1', 'Cover-2': 'C2', '2-Man': '2-Man', 'Cover-3': 'C3',
            'Cover-3 Seam': 'C3', 'Cover-3 Cloud Left': 'C3', 'Cover-3 Cloud Right': 'C3', 'Cover-3 Double Cloud': 'C3',
@@ -38,9 +40,10 @@ def measure(paths, covof):
 def main():
     nfl_path, bdb, sims = sys.argv[1], sys.argv[2], sys.argv[3].split(',')
     plays = {f"{r['gameId']}-{r['playId']}": r for r in csv.DictReader(open(f'{bdb}/plays.csv'))}
+    pop, _ = nfl_population(bdb)  # drop-back passes: no play action, RPO, designed rollout or screen
     def nfl_cov(p):
         r = plays.get(p['id'])
-        return None if not r or r['playAction'] in ('TRUE', 'True') else NFL_COV.get(r['pff_passCoverage'])
+        return None if not r or pop.get(tuple(p['id'].split('-'))) != 'keep' else NFL_COV.get(r['pff_passCoverage'])
     nfl = measure([nfl_path], nfl_cov)
     sim = measure(sims, lambda p: SIM_COV.get((p.get('matrix') or {}).get('playedFamily')))
     fm = lambda R: f"{len(R):6} | {S.mean(r[0] for r in R):5.2f} | {S.mean(r[1] for r in R):5.2f} | {sum(r[0] < 0 for r in R) / len(R):4.0%}" if R else '—'

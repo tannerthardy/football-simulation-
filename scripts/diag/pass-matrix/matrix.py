@@ -17,6 +17,7 @@ the catch, separation (nearest defender to the target) at the throw and at arriv
 import sys, os, json, gzip, math, csv, collections as C
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from routelib import Lib, features
+from population import nfl_population
 LIB = None
 
 opt = lambda k, d=None: sys.argv[sys.argv.index(k) + 1] if k in sys.argv else d
@@ -208,11 +209,15 @@ def nfl_rows():
         for r in csv.DictReader(open(f'{BDB}/player_play.csv')):
             if r['routeRan'] not in ('', 'NA'): labels[f"{r['gameId']}-{r['playId']}"][r['nflId']] = r['routeRan']
     out = []
+    # Drop-back passes only (population.py): no play action, RPO, designed rollout or screen. --population all keeps them.
+    pop, why = nfl_population(BDB)
+    print('== NFL population: ' + ', '.join(f'{k} {v}' for k, v in why.most_common()) + ('' if opt('--population', 'dropback') == 'dropback' else ' (all kept: --population all)'))
     for l in gzip.open(NFL_PATH, 'rt'):
         p = json.loads(l)
         if p.get('kind') != 'pass': continue
         pr = plays.get(p['id'])
         if not pr or pr.get('qbSpike') in ('TRUE', 'True') or pr.get('playNullifiedByPenalty') == 'Y': continue
+        if opt('--population', 'dropback') == 'dropback' and pop.get(tuple(p['id'].split('-'))) != 'keep': continue
         cov = NFL_COV.get(pr['pff_passCoverage'])
         res = pr['passResult']
         att = res in ('C', 'I', 'IN'); comp = res == 'C'
@@ -297,7 +302,7 @@ def agg(rows):
 
 def main():
     global NFL_PATH, BDB, SIM_PATHS
-    args = [a for i, a in enumerate(sys.argv[1:], 1) if not a.startswith('--') and not sys.argv[i - 1] in ('--floor', '--json', '--lib', '--covfam')]
+    args = [a for i, a in enumerate(sys.argv[1:], 1) if not a.startswith('--') and not sys.argv[i - 1] in ('--floor', '--json', '--lib', '--covfam', '--population')]
     NFL_PATH, BDB, SIM_PATHS = args[0], args[1], args[2].split(',')
     global LIB
     LIB = Lib(opt('--lib', 'out/pass-matrix/routelib.npz'))
