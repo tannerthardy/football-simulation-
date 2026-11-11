@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-25",
+  "id": "run-ref-26",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -29,6 +29,7 @@
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SWAP": "on",
+    "BACK_RELEASE": "off",
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
     "BRACE_EVIDENCE": "off",

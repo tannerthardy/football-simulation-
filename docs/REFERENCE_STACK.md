@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-25`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-26`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,12 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## run-ref-26: `CATCH_EYES` no longer carries a line back toward the passer (2026-11-11)
+
+Run Game #528, an unflagged correction to `CATCH_EYES` (on since run-ref-18). For one reaction time after the catch the receiver carries the line he caught the ball on. A receiver coming back to the ball (comebacks, curls, the now screen) therefore kept running toward his own passer; he now plants and turns upfield, the same first move as a man who caught it standing. No flag: `CATCH_EYES=0` still restores the behaviour before run-ref-18. With it come `test/catch-eyes.test.ts` and the trace asked for at run-ref-18: 14 of the 1,321 fixed runs are pre-snap audibles to a pass (All Hitch / Slant-Flat); pitches and handoffs never take the catch path, which is why that stack moved the fixed runs at all.
+
+`BACK_RELEASE` lands off in the same merge because the protection call (`PRO_CALL`, Rules + Coaching) needs its interface: a back installed as a check-release counts the box before the snap, runs a flat or angle from the snap when he is not needed, and otherwise checks and leaves 0.55 s plus his reaction time after nobody comes. On 16 league-sampled games the released back is open at the throw 11.6 → 24.9% (NFL 36.4) and wide of the box 33 → 71% (84), but he is still not thrown to early (targets before 2.0 s 3.3 → 0.7%, NFL 18.9) until the quarterback's estimate of short, wide throws is repaired, and free first pressure rises 10.5 → 11.8 per 100. Detail: [back release](reviews/back-release.md), [screen lab](reviews/screen-lab.md).
 
 ## run-ref-25: `THROW_BODY` on (2026-11-11)
 
