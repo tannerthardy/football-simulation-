@@ -9,11 +9,14 @@ const { generateTeam, leagueSample } = await import(`${W}/src/league/team.ts`);
 const league = process.argv.includes('--league');
 const { Rng } = await import(`${W}/src/core/rng.ts`);
 const { PassProtector } = await import(`${W}/src/sim/behaviors/blocking.ts`);
-const pos = process.argv.slice(2).filter((a) => !a.startsWith('--'));
+const pos = process.argv.slice(2).filter((a, i, all) => !a.startsWith('--') && all[i - 1] !== '--step');
 const first = Number(pos[0] ?? 11), games = Number(pos[1] ?? 8);
 const C: Record<string, number> = {}; const inc = (k: string) => C[k] = (C[k] ?? 0) + 1; let n = 0;
-for (let s = first; s < first + 2 * games; s += 2) {
-  const rng = new Rng(s);
+// --step 1: consecutive seeds, the same games as sim-export --seed first --games N.
+const step = Number(process.argv[process.argv.indexOf('--step') + 1] ?? 2) || 2;
+for (let s = first; s < first + step * games; s += step) {
+  // With --step 1 the rosters come from the first seed, as in sim-export (one roster pair, sampled per game).
+  const rng = new Rng(step === 1 ? first : s);
   const h0 = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), a0 = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
   const home = league ? leagueSample(h0, s) : h0, away = league ? leagueSample(a0, s) : a0;
   simulateGame(home, away, { seed: s, hooks: { playResult: (sim: any, kind: string) => {

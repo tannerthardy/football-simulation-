@@ -12,7 +12,7 @@ import { GUN_QB_DEPTH } from '../playbook/formations.js';
 import { getRoute } from '../playbook/routes.js';
 import type { Gap, PassConcept, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
-import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
+import { boxThreats, isOL, planRunBlocking, playSideSign, PassProtector, PRO_CALL, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
 import { goTo, stand } from './behaviors/common.js';
 import { Blitzer, FumbleScramble, ManCoverage, PassRusher, Pursuit, ZoneCoverage } from './behaviors/defense.js';
@@ -167,6 +167,18 @@ export function assignBehaviors(sim: PlaySim): void {
       receiverPriors.set(a, installReceiverRoute(a.pos, sim.los, outside, route, null, a.profile, a.r('routeRunning')));
       return () => new RouteRunner(a, sim, route, outside, 0);
     };
+    // PRO_CALL: the box count against the protectors this concept keeps in
+    // (the line, blocking and checking backs, a blocking inline end). Short of
+    // the count, a back installed on a free route stays in as a check-release.
+    const callCount = PRO_CALL && !lineRun && !concept.screen ? boxThreats(sim).length : 0;
+    let inCount = coord.protectors.length;
+    if (PRO_CALL) for (const a of sim.offense) {
+      if (a === qb || isOL(a)) continue;
+      const ref = off.refOf[a.slot as keyof typeof off.refOf];
+      // With BACK_RELEASE a checking back is in only if the call needs him (below).
+      if ((ref === 'B2' || !ref || (ref === 'B' && (concept.back === 'block' || concept.back === 'check'))) && !(BACK_RELEASE && (ref !== 'B' || concept.back === 'check'))) inCount++;
+      else if (off.spots[a.slot]?.inline && concept.teBlock && ref !== 'B') inCount++;
+    }
     for (const a of sim.offense) {
       if (a === qb || isOL(a)) continue;
       const ref = off.refOf[a.slot as keyof typeof off.refOf];
@@ -188,20 +200,32 @@ export function assignBehaviors(sim: PlaySim): void {
         const assign = ref === 'B' ? concept.back : 'check';
         if (BACK_RELEASE && assign === 'check') {
           const route = backRelease(sim, concept, a);
-          if (protectionCount(sim, concept) <= 0) {
+          // PRO_CALL decides whether he is in the count (the call's backsIn);
+          // without it, the box count stand-in.
+          const needed = PRO_CALL ? callCount > inCount : protectionCount(sim, concept) > 0;
+          if (!needed) {
             a.behavior = mkRoute(route, 0.1)();
           } else {
             coord.add(a);
+            if (PRO_CALL) { coord.backsIn.add(a); inCount++; }
             a.behavior = new PassProtector(coord, mkRoute(route, 0, true), CHECK_READ + a.profile.reactionTime + sim.dice('check', a).range(0, 0.15));
           }
           continue;
         }
         if (assign === 'block') {
           coord.add(a);
+          if (PRO_CALL) coord.backsIn.add(a);
           a.behavior = new PassProtector(coord);
         } else if (assign === 'check') {
           coord.add(a);
+          if (PRO_CALL) coord.backsIn.add(a);
           a.behavior = new PassProtector(coord, mkRoute(ref === 'B2' ? 'back_flat' : 'checkdown', 0, true), 1.0 + sim.dice('check', a).range(0, 0.3));
+        } else if (PRO_CALL && callCount > inCount) {
+          // Short of the count: he checks his man first, then runs his route.
+          coord.add(a);
+          coord.backsIn.add(a);
+          inCount++;
+          a.behavior = new PassProtector(coord, mkRoute(assign, 0, true), 1.0 + sim.dice('check', a).range(0, 0.3));
         } else {
           a.behavior = mkRoute(assign, 0.1)();
         }
@@ -215,6 +239,13 @@ export function assignBehaviors(sim: PlaySim): void {
       const side = ref[0] === 'S' ? concept.strong : concept.weak;
       const num = Number(ref[1]) as 1 | 2 | 3 | 4;
       const routeId = side[num] ?? (num === 1 ? 'go' : 'seam');
+      if (PRO_CALL && spot?.inline && callCount > inCount) {
+        // Short of the count: an attached end checks his man first, then runs his route.
+        coord.add(a);
+        inCount++;
+        a.behavior = new PassProtector(coord, mkRoute(routeId, 0, true), 1.0 + sim.dice('check', a).range(0, 0.3));
+        continue;
+      }
       a.behavior = mkRoute(routeId, spot?.inline ? 0.15 : 0)();
     }
     if (concept.screen) installScreen(sim, concept, coord, mkScreenRoute);

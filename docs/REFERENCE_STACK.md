@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-27`. From this version the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-28`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,25 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-28: `PRO_CALL` on, a protection call at the line (2026-11-11)
+
+Rules + Coaching #552. There was no pre-snap protection call: the line declared only defenders on the line, walked-up linebackers were found after the snap, and whether a back stayed in was fixed by the concept. The offence now counts the box before the snap, declares walked-up threats inside the tackles, slides to them, and keeps a check-release back in when declared threats exceed the protectors. Linemen take the down linemen and the back takes the declared linebacker (the matching is type-aware; an earlier version matched by lateral position alone and put backs on defensive ends). A declared threat is treated as a rusher on his first committed downhill step and released when he is seen leaving. The back's own scan, taking a free rusher after the snap, is unchanged. A blitz disguised from depth is not declared.
+
+| Off → on, same games both arms, 16 league-sampled games a set | 101–116 | 201–216 | 301–316 |
+|---|---|---|---|
+| Free blitzing linebackers (truth trace) | 59 → 16 | 58 → 19 | 51 → 21 |
+| Free defensive linemen | 97 → 120 | 92 → 103 | 152 → 165 |
+| Free first pressure, even numbers | 21.8 → 11.8% | 20.0 → 15.2% | 21.6 → 19.9% |
+| Free first pressure, +1 or more | 50.0 → 18.2% | 42.9 → 16.7% | 39.3 → 17.9% |
+| Any pressure | 27.8 → 25.8% | 31.6 → 27.7% | 36.0 → 35.7% |
+| Back on a down lineman by the call at the snap | 12 → 6 | 16 → 17 | 13 → 14 |
+
+Free defensive linemen rise on all three sets (+23, +11, +13); two of three are inside the ±15 fixed in advance, and per 100 dropbacks the rise is about +1. It is recorded as a cost, not explained: the single-block loss rate per down lineman is flat, and the remaining rise is in linemen left unblocked. Interior linemen free untouched and past the line: 0.14 → 0.14 per 100 on the third set (NFL 0.09).
+
+Integration's cards (16 games each, seeds 11, 23 and 37, unpaired arms; the first two shown): sacks 4.8 → 3.7% (resolved) and 4.1 → 3.7%; scrambles 1.6 → 2.9% (resolved) and 2.5 → 2.7%; YAC a reception 6.90 → 7.28 and 6.35 → 7.34 (resolved); time to throw 2.80 → 2.83 and 2.74 → 2.80 s (resolved); completion 59.3 → 55.9% and 60.4 → 58.9%; yards an attempt 8.85 → 8.39 and 8.71 → 8.79. Fewer free blitzers means fewer sacks and a little more time, which moves sacks further from the NFL's rate while the quarterback still does not move in the pocket; that is the quarterback's gap, not this call's. A third card (seed 37) reverses the YAC move (8.22 → 7.61) with sacks again lower (3.9 → 3.5%), so the YAC change is read as the arms diverging; sacks fall on all three. Fixed runs unchanged (3.82, broken 0.123, missed 0.259).
+
+Two operator repairs came out of this work: 25 of 34 NFL "interior rusher free untouched" plays were under-center snaps (the nose tackle is within 2 yd of the quarterback before he has left the centre), and the shared first-pressure operator carries the same effect, inflating the NFL reference (27.8% any, 10.2% free) by about 1.2 points; the operator fix is pending. `BACK_RELEASE` stays off: with this call on it uses `backsIn` in place of its own stand-in count, and it goes on with the quarterback's short-throw repair. Three earlier attempts (a separate big-on-big pass; a held-lineman release rule; help with vision) are written up in the flag row and [the protection review](reviews/2026-11-11-protection.md).
 
 ## engine-27: `CUSHION_NEED` on, man defenders squeeze their cushion (2026-11-11)
 
