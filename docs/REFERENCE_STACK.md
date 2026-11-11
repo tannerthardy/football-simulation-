@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-20`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-21`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,22 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## run-ref-21: `DB_SLOTS` on (2026-11-11)
+
+Rules + Coaching #539. `pickDefense` filled the nickel and dime backs before the safeties, so a safety usually took the nickel and a linebacker often took strong safety: on league-sampled games a linebacker held SS on 43% of nickel, 93% of dime and 44% of 3-4 base snaps. Both safeties are now placed first, from safeties, then corners, a linebacker only as a last resort; the nickel and dime follow on the existing suitability, so a big nickel is still possible. Substitutions go through the same function.
+
+| 32 league-sampled games an arm (seeds 101–116, 201–216, run-ref-20), unpaired | off | on |
+|---|---|---|
+| SS held by an LB: nickel / dime / 3-4 base | 43 / 93 / 44% | 0 / 0 / 0 |
+| Yards a dropback; completion; sacks; INT | 9.47 ± 0.25; 62.7%; 2.6%; 3.7% | 9.68 ± 0.25; 63.6%; 1.9%; 4.6% |
+| YAC median / trimmed / mean | 4.4 / 5.63 / 7.73 ± 0.29 | 4.5 / 5.41 / 8.07 ± 0.31 |
+| Deep completion; 20+ plays | 52.8% (n 216); 14.9% | 58.3% (n 206); 15.8% |
+| Yards a run against nickel | 4.50 ± 0.23 | 4.63 ± 0.28 |
+
+On because a linebacker playing a deep half is a lineup bug, not for a number: every outcome row moves within its noise. The fixed run set carries its saved personnel, so its table is unchanged. Detail: [the DB_SLOTS review](reviews/2026-11-11-db-slots.md).
+
+Measurement consequence, repaired in #540: operators that found deep defenders by roster position under-counted safeties. Counted by slot, the shell mix is about 11/42/47 against the NFL's 9/45/47 and the two-high second safety is 11.7–12.4 yd against 12.2, with the flag off too. The shell-mix and second-safety-depth gaps recorded earlier were that operator and are closed.
 
 ## run-ref-20: `CALL_MIX` on (2026-11-11)
 
