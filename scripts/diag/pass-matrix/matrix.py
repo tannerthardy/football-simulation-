@@ -174,7 +174,8 @@ def play_rows(p, outcome, cov):
         if r not in ('BLOCK', 'NONE'): routes.append((r, s, n, pl[i]['group']))
     concept = classify_concept(routes)
     t = p.get('target')
-    row = {'cov': cov, 'form': fam, 'concept': concept, **outcome, 'route': rmap.get(t), 'num': None, 'sep_throw': None, 'sep_arr': None, 'yac': None}
+    row = {'cov': cov, 'form': fam, 'concept': concept, **outcome, 'route': rmap.get(t), 'num': None, 'sep_throw': None, 'sep_arr': None, 'yac': None,
+           'open': None, 'catch_d': None, 'catch_close': None}
     if t is not None and t in num:
         s, n = num[t]; row['num'] = 'back' if s == 0 else f'#{n}'
     D = [i for i, a in enumerate(pl) if a['side'] == 'D']
@@ -182,12 +183,21 @@ def play_rows(p, outcome, cov):
         if tm is None or t is None: return None
         f = min(len(X) - 1, int(round(tm / 0.1)))
         return round(min(math.dist((X[f][2 * t], X[f][2 * t + 1]), (X[f][2 * d], X[f][2 * d + 1])) for d in D), 2)
-    if outcome['att']: row['sep_throw'] = sep(thr); row['sep_arr'] = sep(arr)
+    if outcome['att']:
+        row['sep_throw'] = sep(thr); row['sep_arr'] = sep(arr)
+        # Openness at the release, the bins of hit-throws.py (Flex): tight < 1.5, mid 1.5-3, open >= 3 yd.
+        st = row['sep_throw']
+        row['open'] = None if st is None else 'tight' if st < 1.5 else 'mid' if st < 3 else 'open'
     if outcome['comp'] and t is not None:
         cf = p['events'].get('catch', arr)
         if cf is not None:
             f = min(len(X) - 1, int(round(cf / 0.1)))
             row['yac'] = round(outcome['yds'] - X[f][2 * t], 2)
+            # The catch situation: nearest defender's distance at the catch and his closing speed over the last 0.2 s.
+            dist = lambda g, d: math.dist((X[g][2 * t], X[g][2 * t + 1]), (X[g][2 * d], X[g][2 * d + 1]))
+            d0 = min(D, key=lambda d: dist(f, d))
+            row['catch_d'] = round(dist(f, d0), 2)
+            row['catch_close'] = round((dist(max(0, f - 2), d0) - dist(f, d0)) / 0.2, 2)
     return row, rmap
 
 def nfl_rows():
@@ -212,18 +222,34 @@ def nfl_rows():
     return out
 
 def sim_rows():
+    """Matrix plays (sim.ts, with a 'matrix' record) or league games ('export.jsonl.gz:review.json' from sim-export)."""
     out = []; check = C.Counter()
-    for path in SIM_PATHS:
+    fam = json.load(open(opt('--covfam', 'out/pass-matrix/covfam.json')))
+    for spec in SIM_PATHS:
+        path, _, rev = spec.partition(':')
+        stats = {q['id']: q for q in json.load(open(rev))['plays']} if rev else {}
         for l in gzip.open(path, 'rt'):
-            p = json.loads(l); m = p['matrix']; st = m['stats']
-            att = st['attempted'] and not st['throwaway']
-            o = {'att': att, 'comp': st['completed'], 'sack': st['sacked'], 'int': st['intercepted'], 'yds': p['yards'] if att else 0.0,
-                 'side': 'sim', 'pa': m['concept'].startswith('pa_'), 'nearest': m['nearest'], 'called': m['called'], 'conceptId': m['concept']}
-            r = play_rows(p, o, SIM_COV.get(m['playedFamily'], m['playedFamily']))
+            p = json.loads(l)
+            if p.get('kind') != 'pass': continue
+            m = p.get('matrix')
+            if m:
+                st = m['stats']; cov = m['playedFamily']; concept = m['concept']; conceptFam = SIM_FAMILY.get(concept, 'other')
+                att = st['attempted'] and not st['throwaway']
+                o = {'att': att, 'comp': st['completed'], 'sack': st['sacked'], 'int': st['intercepted']}
+            else:
+                q = stats.get(p['id'])
+                if not q: continue
+                st = q['stats']; concept = (p.get('cell') or {}).get('concept') or ''; cov = fam.get((p.get('cell') or {}).get('coverage') or '', None)
+                conceptFam = SIM_FAMILY.get(concept, 'other' if concept else None)
+                att = bool(st.get('attempted')) and not st.get('throwaway')
+                o = {'att': att, 'comp': bool(st.get('completed')), 'sack': bool(st.get('sacked')), 'int': bool(st.get('interceptedBy'))}
+            o.update({'yds': p['yards'] if att else 0.0, 'side': 'sim', 'pa': concept.startswith('pa_'), 'conceptId': concept,
+                      'nearest': m['nearest'] if m else None})
+            r = play_rows(p, o, SIM_COV.get(cov, cov))
             if not r: continue
             out.append(r[0])
-            check[(SIM_FAMILY.get(m['concept'], 'other'), r[0]['concept'])] += 1
-            check[('form', m['formation'], r[0]['form'])] += 1
+            if conceptFam: check[(conceptFam, r[0]['concept'])] += 1
+            if m: check[('form', m['formation'], r[0]['form'])] += 1
     return out, check
 
 # ---------------------------------------------------------------- aggregation
@@ -240,11 +266,16 @@ def agg(rows):
             'sack': sum(r['sack'] for r in rows) / n if n else float('nan'), 'int': sum(r['int'] for r in att) / a if a else float('nan'),
             'yac_med': yac[len(yac) // 2] if yac else float('nan'), 'yac_tr': tr(yac),
             'yac10': sum(v >= 10 for v in yac) / len(yac) if yac else float('nan'), 'yac20': sum(v >= 20 for v in yac) / len(yac) if yac else float('nan'),
-            'sep': m(sp)}
+            'sep': m(sp), 'sep_se': se(sp),
+            'sep_arr': m([r['sep_arr'] for r in att if r['sep_arr'] is not None]),
+            'open_mix': {b: sum(r['open'] == b for r in att) / a if a else float('nan') for b in ('tight', 'mid', 'open')},
+            'comp_by_open': {b: (lambda R: (sum(r['comp'] for r in R) / len(R), len(R)) if R else (float('nan'), 0))([r for r in att if r['open'] == b]) for b in ('tight', 'mid', 'open')},
+            'catch_d': m([r['catch_d'] for r in att if r['catch_d'] is not None]),
+            'catch_close': m([r['catch_close'] for r in att if r['catch_close'] is not None])}
 
 def main():
     global NFL_PATH, BDB, SIM_PATHS
-    args = [a for i, a in enumerate(sys.argv[1:], 1) if not a.startswith('--') and not sys.argv[i - 1] in ('--floor', '--json', '--lib')]
+    args = [a for i, a in enumerate(sys.argv[1:], 1) if not a.startswith('--') and not sys.argv[i - 1] in ('--floor', '--json', '--lib', '--covfam')]
     NFL_PATH, BDB, SIM_PATHS = args[0], args[1], args[2].split(',')
     global LIB
     LIB = Lib(opt('--lib', 'out/pass-matrix/routelib.npz'))
@@ -260,38 +291,39 @@ def main():
             tot = sum(c.values()); print(f"  {f:18} n {tot:6}  agree {100 * c[f] / tot:5.1f}%  top: " + ', '.join(f'{k} {100 * v / tot:.0f}%' for k, v in c.most_common(4)))
         print('== formation check on the sim (formation family -> classified)')
         for k, v in sorted((k, v) for k, v in check.items() if k[0] == 'form'): print(f'  {k[1]:6} -> {k[2]:6} {v}')
-    out = {'nfl': nfl and None, 'cells': []}
     key = lambda r: (r['cov'], r['concept'])
     S = C.defaultdict(list); N = C.defaultdict(list)
     for r in sim:
+        if r['cov'] is None: continue
         S[key(r)].append(r); S[(r['cov'], '*')].append(r); S[('*', r['concept'])].append(r)
     for r in nfl:
         if r['cov'] is None or r['pa']: continue
         N[key(r)].append(r); N[(r['cov'], '*')].append(r); N[('*', r['concept'])].append(r)
-    cells = []
-    for k in set(S) | set(N):
-        s, n = agg(S.get(k, [])), agg(N.get(k, []))
-        cells.append((k, s, n))
+    cells = [(k, agg(S.get(k, [])), agg(N.get(k, []))) for k in set(S) | set(N)]
+    # Most wrong in the coverage part: separation of the target at the throw, sim vs NFL, in SE.
     def gap(c):
-        s, n = c[1], c[2]
-        if s['att'] < FLOOR or n['att'] < FLOOR: return -1
-        return abs(s['ypa'] - n['ypa']) / math.hypot(s['ypa_se'], n['ypa_se'])
+        s_, n_ = c[1], c[2]
+        if s_['att'] < FLOOR or n_['att'] < FLOOR: return -1
+        return abs(s_['sep'] - n_['sep']) / math.hypot(s_['sep_se'], n_['sep_se'])
     cells.sort(key=gap, reverse=True)
     f = lambda v, p=1: '—' if v != v else f'{v:.{p}f}'
     pc = lambda v: '—' if v != v else f'{100 * v:.0f}%'
-    print(f'\n== coverage x concept, sorted by |yards an attempt sim - NFL| in SE (cells under {FLOOR} attempts on either side listed last, greyed)')
-    print('coverage | concept | sim att | NFL att | Y/A sim | Y/A NFL | comp sim | comp NFL | YAC med sim/NFL | 10+ YAC sim/NFL | sep@throw sim/NFL | sack sim/NFL')
-    for k, s, n in cells:
-        grey = s['att'] < FLOOR or n['att'] < FLOOR
-        print(('  (grey) ' if grey else '') + f"{k[0]} | {k[1]} | {s['att']} | {n['att']} | {f(s['ypa'])}±{f(s['ypa_se'])} | {f(n['ypa'])}±{f(n['ypa_se'])} | {pc(s['comp'])} | {pc(n['comp'])} | {f(s['yac_med'])}/{f(n['yac_med'])} | {pc(s['yac10'])}/{pc(n['yac10'])} | {f(s['sep'])}/{f(n['sep'])} | {pc(s['sack'])}/{pc(n['sack'])}")
-    print('\n== by formation (all coverages)')
+    mix = lambda a_: '/'.join(pc(a_['open_mix'][b]) for b in ('tight', 'mid', 'open'))
+    cbo = lambda a_: '/'.join(pc(a_['comp_by_open'][b][0]) for b in ('tight', 'mid', 'open'))
+    print(f'\n== coverage x concept, sorted by the coverage part: |separation at the throw sim - NFL| in SE')
+    print(f'   (cells under {FLOOR} attempts on either side last, marked grey). Openness bins at the throw: tight <1.5 / mid 1.5-3 / open >=3 yd (hit-throws.py).')
+    print('coverage | concept | att sim/NFL | sep@throw sim/NFL | open mix t/m/o sim | NFL | comp sim/NFL | comp by openness t/m/o sim | NFL | Y/A sim/NFL | catch: nearest d, closing sim | NFL | YAC med sim/NFL | 10+ YAC sim/NFL | sack sim/NFL')
+    for k, s_, n_ in cells:
+        grey = s_['att'] < FLOOR or n_['att'] < FLOOR
+        print(('  (grey) ' if grey else '') + f"{k[0]} | {k[1]} | {s_['att']}/{n_['att']} | {f(s_['sep'],2)}±{f(s_['sep_se'],2)} / {f(n_['sep'],2)}±{f(n_['sep_se'],2)} | {mix(s_)} | {mix(n_)} | {pc(s_['comp'])}/{pc(n_['comp'])} | {cbo(s_)} | {cbo(n_)} | {f(s_['ypa'])}/{f(n_['ypa'])} | {f(s_['catch_d'])} yd, {f(s_['catch_close'])} yd/s | {f(n_['catch_d'])} yd, {f(n_['catch_close'])} yd/s | {f(s_['yac_med'])}/{f(n_['yac_med'])} | {pc(s_['yac10'])}/{pc(n_['yac10'])} | {pc(s_['sack'])}/{pc(n_['sack'])}")
+    print('\n== by formation (all coverages, non-PA)')
     FS = C.defaultdict(list); FN = C.defaultdict(list)
     for r in sim: FS[r['form']].append(r)
     for r in nfl:
         if not r['pa']: FN[r['form']].append(r)
     for k in sorted(set(FS) | set(FN)):
-        s, n = agg(FS[k]), agg(FN[k])
-        print(f"{k:6} | sim att {s['att']:5} | NFL att {n['att']:5} | Y/A {f(s['ypa'])}±{f(s['ypa_se'])} vs {f(n['ypa'])}±{f(n['ypa_se'])} | comp {pc(s['comp'])} vs {pc(n['comp'])} | YAC med {f(s['yac_med'])} vs {f(n['yac_med'])} | 10+ {pc(s['yac10'])} vs {pc(n['yac10'])}")
+        s_, n_ = agg(FS[k]), agg(FN[k])
+        print(f"{k:6} | att {s_['att']}/{n_['att']} | sep@throw {f(s_['sep'],2)} vs {f(n_['sep'],2)} | open mix {mix(s_)} vs {mix(n_)} | comp {pc(s_['comp'])} vs {pc(n_['comp'])} | comp by openness {cbo(s_)} vs {cbo(n_)} | Y/A {f(s_['ypa'])} vs {f(n_['ypa'])} | catch d {f(s_['catch_d'])} vs {f(n_['catch_d'])} | YAC med {f(s_['yac_med'])} vs {f(n_['yac_med'])} | 10+ {pc(s_['yac10'])} vs {pc(n_['yac10'])}")
     if opt('--json'):
         json.dump({'cells': [{'cov': k[0], 'concept': k[1], 'sim': s, 'nfl': n} for k, s, n in cells]}, open(opt('--json'), 'w'), indent=1)
 
