@@ -30,6 +30,8 @@ PlaySim.prototype.tick = function (this: any) {
       req: cmd?.vel ? { ...cmd.vel } : { x: 0, y: 0 }, faceQB: Math.cos(d.body.facing - toQB) });
     if (h.length > 50) h.shift(); s.h.set(d, h);
   }
+  if (!s.oh) s.oh = new Map();
+  for (const o of sim.offense) { const h = s.oh.get(o) ?? []; h.push({ t: sim.t, pos: { ...o.pos }, vel: { ...o.vel } }); if (h.length > 50) h.shift(); s.oh.set(o, h); }
   if (s.rel < 0) return;
   const ended = sim.ball?.kind !== 'air';
   if (!ended) return;
@@ -50,7 +52,9 @@ PlaySim.prototype.tick = function (this: any) {
     const r3 = at(s.rel + 0.3);
     const cls = !r3.on ? (r3.faceQB > -0.2 ? 'not on ball, facing QB' : 'not on ball, facing away')
       : tw(r3, r3.req) < 1 ? 'on ball, aimed elsewhere' : tw(r3, r3.vel) < 1 ? 'on ball, body still turning' : 'breaking';
-    out.push({ fam, slot: d.slot, label0: r0.label, spd0: +Math.hypot(r0.vel.x, r0.vel.y).toFixed(2), brake: d.profile.brake, vmax: d.profile.vmax, tau: d.profile.tau, onLag: onAt ? +(onAt.t - s.rel).toFixed(2) : null, cls, series, flight: +(sim.t - s.rel).toFixed(2) });
+    const th = s.oh.get(tgt) ?? []; const ta = (t: number) => th.reduce((p: any, q: any) => Math.abs(q.t - t) < Math.abs(p.t - t) ? q : p);
+    const rc = [-0.4, -0.2, 0].map(T => { const c = ta(s.rel + T), r = at(s.rel + T); return { T, cvx: +c.vel.x.toFixed(2), cushion: +(r.pos.x - c.pos.x).toFixed(2) }; });
+    out.push({ rc, fam, slot: d.slot, label0: r0.label, spd0: +Math.hypot(r0.vel.x, r0.vel.y).toFixed(2), brake: d.profile.brake, vmax: d.profile.vmax, tau: d.profile.tau, onLag: onAt ? +(onAt.t - s.rel).toFixed(2) : null, cls, series, flight: +(sim.t - s.rel).toFixed(2) });
   }
 };
 const rng = new Rng(seed0); const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
@@ -73,5 +77,14 @@ for (const k of ['on ball, body still turning', 'breaking', 'not on ball, facing
   const a = (T: number, f: string) => m(r => r.series.find((s: any) => s.T === T)[f]);
   console.log(`${k}: n ${X.length}, speed at release ${m(r => r.spd0).toFixed(1)} yd/s, profile brake ${m(r => r.brake).toFixed(1)} yd/s^2, vmax ${m(r => r.vmax).toFixed(1)}; achieved toward 0/+0.2/+0.4 ${a(0, 'ach').toFixed(2)}/${a(0.2, 'ach').toFixed(2)}/${a(0.4, 'ach').toFixed(2)}; req ${a(0, 'req').toFixed(2)}/${a(0.2, 'req').toFixed(2)}/${a(0.4, 'req').toFixed(2)}; facing QB at 0 ${a(0, 'faceQB').toFixed(2)}`);
 }
+{ const m = (T: number, f: string, X: any[]) => X.reduce((a, r) => a + r.rc.find((x: any) => x.T === T)[f], 0) / X.length;
+  const climbing = out.filter(r => r.rc.find((x: any) => x.T === -0.2).cvx > 2);
+  console.log(`catcher at -0.4/-0.2/0: downfield speed ${m(-0.4, 'cvx', out).toFixed(2)}/${m(-0.2, 'cvx', out).toFixed(2)}/${m(0, 'cvx', out).toFixed(2)}; defender cushion over him ${m(-0.4, 'cushion', out).toFixed(1)}/${m(-0.2, 'cushion', out).toFixed(1)}/${m(0, 'cushion', out).toFixed(1)} yd; catcher still climbing (>2 yd/s) at -0.2: ${(100 * climbing.length / out.length).toFixed(0)}%`);
+  for (const k of ['on ball, body still turning', 'not on ball, facing away', 'breaking']) { const X = out.filter(r => r.cls === k); if (X.length) console.log(`  ${k}: catcher vx at -0.2 ${m(-0.2, 'cvx', X).toFixed(2)}, cushion ${m(-0.2, 'cushion', X).toFixed(1)}, still climbing ${(100 * X.filter(r => r.rc.find((x: any) => x.T === -0.2).cvx > 2).length / X.length).toFixed(0)}%`); } }
+{ const fc = (c: number) => c >= Math.SQRT1_2 ? 'square' : c > -Math.SQRT1_2 ? 'side-on' : 'turned away';
+  const F: Record<string, { n: number; tw: number }> = {};
+  for (const r of out) { const s0 = r.series.find((x: any) => x.T === 0), s4 = r.series.find((x: any) => x.T === 0.4); const k = fc(s0.faceQB); F[k] = F[k] ?? { n: 0, tw: 0 }; F[k].n++; F[k].tw += s4.ach; }
+  console.log('facing the QB at the release (cos of body facing vs line to the QB; square within 45 deg, turned away beyond 135):');
+  for (const k of ['square', 'side-on', 'turned away']) if (F[k]) console.log(`  ${k.padEnd(12)} ${(100 * F[k].n / out.length).toFixed(0)}%  achieved toward the catch point at +0.4 s ${(F[k].tw / F[k].n).toFixed(2)}`); }
 const L: Record<string, number> = {}; for (const r of out) L[String(r.label0)] = (L[String(r.label0)] ?? 0) + 1;
 console.log('technique at the release:', Object.entries(L).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, v]) => `${k} ${v}`).join(', '));
