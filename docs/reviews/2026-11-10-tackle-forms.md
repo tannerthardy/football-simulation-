@@ -765,3 +765,33 @@ A waist hold's moment never reaches hip flexion, flags or not.
 4. No leak into clean throws.
 5. By path: completion and target share for current-read, rhythm and outlet throws within noise. A rhythm suppression is reported as a cost.
 6. The alternative taken when the gamble doesn't pay, split as sack / throw / scramble / throwaway against the NFL.
+
+**`PICTURE_AGE` read (missed gates 1, 3 and 5; stays off).**
+
+Population: run-ref-23 (develop facb5e0f merged); both arms THROW_BODY=1; PICTURE_AGE 0 vs 1.
+- `qb-contact.py` on league-sampled sim-export, seed 201, 16 games.
+- `sack-hold.mts` and `throw-path.mts`, IRN v COM, 16 games.
+
+| | THROW_BODY | + PICTURE_AGE | NFL |
+|---|---|---|---|
+| Sacks (sack-hold) | 4.5% | **6.3%** | 6.3% |
+| Defender within 1 yd before the ball is out | 13.1% | **20.6%** | 12.5% |
+| No throw at all | 8.4% | 15.5% | 11.0% |
+| Rusher within 1 yd: throw / sack / scramble | 61 / 35 / 4 | 59 / 38 / 3 | 30 / 47 / 23 |
+| Throws after contact, complete / yd/att | 43% / 6.4 | 44% / 7.6 | 33% / 4.5 |
+| Clean throws, complete / yd/att | 62% / 10.8 | 62% / 10.2 | 62% / 7.2 |
+| Rhythm throws in the drop | 233 | **101** | |
+| Hot / panic throws | 83 | 102 | |
+| Out-of-reads throws | 47 | 88 | |
+
+**Verdict.** The sack rate reaches the NFL by the wrong path.
+- He holds the ball: rhythm throws are cut by more than half, so rushers reach him about 1.6 times as often.
+- Thrown-after-contact and hit-throw quality don't move.
+- Panic throws increase.
+
+**The defect.** The receiver term ages a never-looked-at receiver from the snap. A rhythm throw goes to an installed route on timing; its uncertainty is the defender, whom he sees, not the receiver. That is the cost Integration predicted.
+
+**Two attempts on sacks: stop and re-diagnose.** What both attempts leave:
+1. The QB's throws still come out when rushers arrive mid-throw.
+2. NFL QBs escape 23% of the time once a rusher is at 1 yd; ours 3–4%.
+3. `held()` credits an engaged rusher from the private `engagement.win`. It is the source of the 60 current-read hit throws and the next item, as its own flag.
