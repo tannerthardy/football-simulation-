@@ -235,6 +235,7 @@
     "FIT_TE_GAP": "0",
     "FIT_BLITZ_SLIDE": "0",
     "CALL_MIX": "0",
+    "DB_SLOTS": "0",
     "COVER_LONG": "0"
   },
   "worldDefaults": {
