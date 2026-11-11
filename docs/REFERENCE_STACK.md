@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-16`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-17`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -593,6 +593,42 @@ Known cost, recorded: the backside backer is reached less often (21 → 16%), be
 | Fixed 1,321 runs on run-ref-14, paired yards a run | | | +0.17 ± 0.10 (IZ +0.44, duo +0.37): the tight end stands 0.36 yd shallower |
 
 The snap assessment is identical across all 24 formations. The personal depth habit is parked.
+
+## run-ref-17: `FIT_TE_GAP` + `FIT_BLITZ_SLIDE` on (2026-11-10)
+
+Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's slide). Every technique outside the tackle was filed under the D gap, so with a tight end attached the C gap between tackle and tight end had no owner. `techniqueGap` now takes the tight end into account, the Over's Sam is named D, and a 6 on a tight end still rushes outside him (`rushGap`). With `FIT_BLITZ_SLIDE` a called blitzer takes his gap and the displaced lineman slides to the nearest open one.
+
+| Gap accounting, 24,216 alignments | off | `FIT_TE_GAP` |
+|---|---|---|
+| Strong C holes | 6,379 | 4,040 |
+| Ace 11 against the 4-3 Over, strong C unowned | 114 of 144 | 0 of 144 |
+| Unowned gaps; duplicates; fully sound | 36,917; 5,699; 2,082 | 36,264; 5,046; 2,332 |
+| Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
+
+On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## Pruned after run-ref-16 (2026-11-10)
+
+Seventeen off-by-default flags were deleted from `src`, the stack file, the baseline and [FLAGS](FLAGS.md): their owners named no next step that needs them on develop. Behaviour is unchanged (the fixed-run report is identical before and after). Each is recoverable from git history at `f6fe9bf7`; the sections above and `docs/reviews/` keep their results. Tables earlier in this file that list them as off are the record of that date.
+
+| Flag | Why it went |
+|---|---|
+| `BLOCK_RELEASE` | No next step; yards flat |
+| `ZONE_PAIR` | Caused the inside-zone line step; off since run-ref-2 |
+| `STRETCH_TRACK` | Retested −0.39 / −0.29; the back's path was not the gap |
+| `GUN_STRETCH_T` | Do-not-enable; built on a mixed reference |
+| `MESH_NFL` | Superseded by the later mesh work |
+| `BACKSIDE_SHOOT` | Waited on a push contest that never landed |
+| `DEEP_NO_FORCE`, `MIDDLE_NO_FORCE` | Expired at review 2; the force question is with the parked run-fit port |
+| `CONTACT_PATCH` | Superseded by `GRASP_PATCH` / `HANDS_CHEST` |
+| `GRASP_ARMS` | Parked grip-break idea |
+| `GRASP_SLIDE`, `GRASP_CLOSURE` | Benched; did not help |
+| `WRAP_TWO_POINT` | Rejected; it passes the turn to the runner |
+| `ENGAGED_REACH` | Superseded by `BLOCKED_REACH` / `ONE_ARM_HOLD` |
+| `HANDS_FRICTION` | Cut pass-protection corner sheds 342 → 217 but over-stiffens the run trench; no lane needs it |
+| `THROW_HORIZON`, `UNDER_DEPTH` | No next step |
+
+Removed with them: `test/deep-no-force.test.ts`, `test/throw-horizon.test.ts`, `test/under-depth.test.ts`, the `CONTACT_PATCH` case of `test/contact-layer.test.ts`, and the flag-only diagnostics `scripts/diag/_shootcut.mts` and `scripts/diag/effective-mass/{reach,slide,wrap}-bench.mts`.
 
 ## After run-ref-12: the first second, and what is merged off (2026-11-10)
 

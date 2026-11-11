@@ -697,13 +697,6 @@ const ZONE_GAP_SHIFT = .75;
  * 57% (centres 71%) and are 2-3 yd upfield by 2.5 s. */
 export const ZONE_SCOOP = process.env.ZONE_SCOOP !== '0';
 
-/** ZONE_PAIR (default off): an uncovered zone lineman doubles the covered
- * neighbor whose man is nearest him (within 1.8 yd), play side first, else
- * climbs. The installed rule always took the play-side neighbor: vs a wide 9
- * on the tight end and a 3-technique on the guard the tackle ran 3.4 yd out
- * to help the end and left the 3-technique (and the Mike) to the guard alone,
- * where coaches put the tackle and guard together on the 3-technique. */
-export const ZONE_PAIR = process.env.ZONE_PAIR === '1';
 /** NO_CROSS (default off): two solo blockers outside the line (tight end,
  * wing, receiver) never cross their assignments: the inside man takes the
  * inside defender. The backside end dropped by BACKSIDE_COMBO went to the
@@ -928,17 +921,6 @@ export function planRunBlocking(sim: PlaySim, concept: RunConcept): Map<Agent, R
     const doubles: Array<{ b: Agent; neighbor: Agent; np: RunBlockPlan }> = [];
     const climbers: Agent[] = [];
     for (const b of pending) {
-      if (ZONE_PAIR) {
-        const opts = [zl[zl.indexOf(b) - 1], zl[zl.indexOf(b) + 1]].map((n) => {
-          const np = n ? plans.get(n) : undefined;
-          return n && np?.target && (np.kind === 'drive' || np.kind === 'reach') && !doubles.some((d) => d.neighbor === n)
-            ? { neighbor: n, np, d: Math.abs(np.target.pos.y - b.pos.y) } : null;
-        });
-        const [pside, bside] = opts;
-        const pick = pside && pside.d <= 1.8 && (!bside || pside.d <= bside.d + .3) ? pside : bside && bside.d <= 1.8 ? bside : null;
-        if (pick) doubles.push({ b, neighbor: pick.neighbor, np: pick.np }); else if (!wings.includes(b)) climbers.push(b);
-        continue;
-      }
       const neighbor = line[line.indexOf(b) - 1];
       const np = neighbor ? plans.get(neighbor) : undefined;
       if (np?.target && (np.kind === 'drive' || np.kind === 'reach') && !doubles.some((d) => d.neighbor === neighbor))
@@ -1499,17 +1481,6 @@ export const OWNER_KEEPS = process.env.OWNER_KEEPS !== '0';
  * behind the line 21.1 -> 26.2% (NFL 29.3%), 0-1 yd 32.6 -> 28.9% (NFL 19.0%),
  * DL lateral flow unchanged, paired OZ yards -0.03 (SE 0.21). */
 export const REACH_HANDS = process.env.REACH_HANDS === '1';
-/** BLOCK_RELEASE (off): an engaged run blocker whose man, as he sees him, is
- * more than 5 yd from the acquired runner and moving away from him, while a
- * defender with no offensive body on him (in the same picture) is within 3 yd
- * of the runner, within 6 yd of the blocker, and no teammate who is not busy
- * with another defender (touching one, as he sees it) is nearer to him,
- * comes off his block and takes that man. Read on his decision beat; no
- * timer, no assignment. Before, a run blocker had no release of his own for
- * this case: the only ends were separation, the runner passing his man or
- * the whistle (RUN-12; Flex, run-block-ends.mts: about 0.54-0.59 s a run on a
- * man out of the play with a defender free at the runner). */
-export const BLOCK_RELEASE = process.env.BLOCK_RELEASE === '1';
 /** GAP_CLIMB (off): a free zone lineman (drive, reach, cutoff; not in a live
  * double) whose man is beaten to his backside - more than 1 yd backside of
  * his body across the field and not gaining on him - has nobody in his
@@ -1580,7 +1551,6 @@ export class RunBlocker implements Behavior {
   private firstStep: Vec2 | null = null;
   private nextRuleRead = 0;
   private nextThreatRead = 0;
-  private nextReleaseRead = 0;
   private nextGapRead = 0;
   private soloKind: RunBlockKind | null = null;
   private soloDrive: Vec2 | null = null;
@@ -1688,10 +1658,6 @@ export class RunBlocker implements Behavior {
     // Rules/combination reads can change work even when contact, a first step
     // or another branch returns without consuming block-fit this tick.
     a.mind.setAimTarget('block-fit', plan.target?.idx ?? null);
-    if (BLOCK_RELEASE && a.engagement && t >= this.nextReleaseRead) {
-      this.nextReleaseRead = t + a.mind.decisionInterval;
-      this.releaseOutOfPlay(a, sim);
-    }
     if (a.engagement) {
       if (this.zoneEligible(a, sim)) this.readZone(a, sim, a.engagement.defender);
       return stand();
@@ -2203,12 +2169,7 @@ export class RunBlocker implements Behavior {
     // law (speed approaches the wanted speed with time constant tau): an
     // early, short distance needs an explosive first step, not a jog.
     const needed = requestToCover(gaitLag(a.profile), Math.max(0, (shoulder - a.pos.y) * ps), meet, a.vel.y * ps);
-    // ZONE_PAIR: a double member already play side of his half of the man
-    // (the outside man of a guard-tackle pair on a 3-technique) goes with the
-    // man; the track tempo would carry him away from the man he shares.
-    const pastHalf = ZONE_PAIR && !!partner && half * ps > 0 && (a.pos.y - shoulder) * ps >= 0;
-    const lateral = pastHalf ? ps * Math.min(a.profile.vmax, Math.max(0, seen.vel.y * ps))
-      : ps * Math.min(a.profile.vmax, Math.max(a.profile.vmax * .45 * press, needed));
+    const lateral = ps * Math.min(a.profile.vmax, Math.max(a.profile.vmax * .45 * press, needed));
     // The call's track tempo is what his teammates expect from him.
     this.track = { x: 0, y: ps * a.profile.vmax * .45 * press };
     // Depth: close to the defender's near surface without overrunning it.
@@ -2980,52 +2941,6 @@ export class RunBlocker implements Behavior {
     p.drive = { x: 1, y: 0 };
     trace?.blockingChange(a, previousWork, 'gap-climb: man beaten to his backside, play-side gap empty', sim);
     sim.event('block_threat', a, best, 'play-side gap empty: climb');
-  }
-
-  /** BLOCK_RELEASE: an engaged run blocker whose man, in his own picture, is
-   * more than 5 yd from the acquired runner and moving away from him, while
-   * another defender stands free (no offensive body on him in this picture)
-   * within 3 yd of the runner and no teammate is nearer to that man, comes
-   * off his block and takes the free man. */
-  private releaseOutOfPlay(a: Agent, sim: PlaySim): void {
-    const e = a.engagement, p = this.plan;
-    if (!e || e.type !== 'run' || (e.blocker !== a && !e.helpers.includes(a)) || !isOL(a) && !['TE', 'FB'].includes(a.slot ?? '')
-      || (p.combination && !p.combination.released) || RESERVED_RUN_KINDS.has(p.kind)) return;
-    const ref = this.workReference(a, sim), picture = this.workPicture!;
-    if (picture.source !== 'acquired' || picture.carrier === sim.qb.idx) return;
-    const man = sim.see(a, e.defender);
-    const mx = man.pos.x - ref.x, my = man.pos.y - ref.y, md = Math.hypot(mx, my);
-    if (md <= 5 || ((man.vel.x - picture.vel.x) * mx + (man.vel.y - picture.vel.y) * my) / md <= .5) return;
-    const offense = sim.offense.filter(o => o !== a && o.idx !== picture.carrier).map(o => ({ o, pos: sim.see(a, o).pos }));
-    let best: Agent | null = null, bd = Infinity;
-    const defs = sim.defense.map(d => ({ d, s: sim.see(a, d) }));
-    for (const d of sim.defense) {
-      if (d === e.defender) continue;
-      const s = sim.see(a, d);
-      if (s.pose === 'down' || s.pose === 'rising') continue;
-      const toRunner = Math.hypot(s.pos.x - ref.x, s.pos.y - ref.y);
-      if (toRunner >= 3) continue;
-      if (offense.some(({ o, pos }) => Math.hypot(pos.x - s.pos.x, pos.y - s.pos.y) <= o.profile.radius + d.profile.radius + .25)) continue;
-      const reach = Math.hypot(s.pos.x - a.pos.x, s.pos.y - a.pos.y);
-      if (reach > 6) continue;
-      // A teammate nearer to him counts only if he is not busy with another
-      // defender in this picture (touching one).
-      const busy = (pos: Vec2) => defs.some(({ d: o, s: q }) => o !== d && Math.hypot(q.pos.x - pos.x, q.pos.y - pos.y) <= o.profile.radius + .75);
-      if (offense.some(({ pos }) => Math.hypot(pos.x - s.pos.x, pos.y - s.pos.y) < reach - .5 && !busy(pos))) continue;
-      if (toRunner < bd) { bd = toRunner; best = d; }
-    }
-    if (!best) return;
-    const trace = sim.blockingSink(a), previousWork = trace?.blockingState(a);
-    sim.disengage(e);
-    p.target = best;
-    this.acquiredWork = { target: best };
-    delete p.contactFit;
-    this.climbRead = null;
-    this.climbAccess = null;
-    this.departureAccess = null;
-    this.classifyWork(a, sim, best);
-    trace?.blockingChange(a, previousWork, 'release: man out of the play, free man at the runner', sim);
-    sim.event('block_threat', a, best, 'released from a man out of the play');
   }
 
   private rereadThreat(a: Agent, sim: PlaySim): void {
