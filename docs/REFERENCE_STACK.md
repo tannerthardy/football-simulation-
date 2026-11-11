@@ -607,6 +607,19 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## Whose teams the measurements are (2026-11-10)
+
+Every diagnostic game was "Ironmen" (IRN) against "Comets" (COM). A team's alignment style (`alignStyle`) is seeded from its abbreviation and `ALIGN_HABIT`'s personal habits from player ids, so the same two defences' habits repeated in every game whatever the seed: safety depth −1.33 yd (IRN) and −0.68 (COM), corner depth −0.47 and +0.65, receiver room 0.11 and 1.22, line width −0.033 and −0.07, passing strength 0.41 and 0.49, A-gap 0.72 and 0.84. Both play shallow safeties. NFL teams differ like this (team medians sd 0.85), so the habit is realistic; sampling the same two was not.
+
+Rules + Coaching #527 gives diagnostic games per-seed team identities (`withIdentity(team, salt)`: ids salted, rosters, ratings and coaching unchanged) in the pass-panel capture, `sim-export` and the scorecard league.
+
+- **The fixed 1,321-run set is not recaptured.** It is still IRN against COM with those habits (`capture-runs --sample-league` is opt-in, off). Paired flag-on / flag-off reads on it are unaffected; any absolute comparison with the NFL that depends on alignment depth is a two-team sample.
+- Effect of league sampling (16 games, seeds 101–116, run-ref-16): measured shell 0/1/2-high 18 / 51 / 32% → 12 / 48 / 40% (NFL 9 / 45 / 47); one-high deepest defender 12.1 → 13.6 yd (14.4); cushion at the throw +6.6 → +7.2 (+8.9).
+- **Yards after catch did not move:** 8.83 → 9.25 a catch (NFL 5.00), first contact on 77 → 78% of catches. The excess is not the two teams' safeties.
+- Still open after the fix: on called two-high coverages the second safety is about 2.4 yd shallow (9.2 against 11.6), from the calls, not habits.
+
+Standing check since this and the yard-line depth error: a table that states a gap against the NFL names the sim population (teams, seeds, games) and confirms both sides measure from the same reference.
+
 ## Pruned after run-ref-16 (2026-11-10)
 
 Seventeen off-by-default flags were deleted from `src`, the stack file, the baseline and [FLAGS](FLAGS.md): their owners named no next step that needs them on develop. Behaviour is unchanged (the fixed-run report is identical before and after). Each is recoverable from git history at `f6fe9bf7`; the sections above and `docs/reviews/` keep their results. Tables earlier in this file that list them as off are the record of that date.

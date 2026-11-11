@@ -69,3 +69,38 @@ The carrier at +10 yd past his start (from the line on runs, from the catch on c
 
 - The sim side is 16 games. The run tail (+40 given +20) rests on 13 runs.
 - A fix should be judged on the fixed run set plus Coverage's pass panel.
+
+## Follow-up: pursuit by role, pairs and the first man (2026-11-10)
+
+**Caveat on absolute gaps.** Every sim game here is IRN vs COM, and both teams' alignment habits are seeded from the team id. So the safety depth and the "level with or ahead at +10" gaps above are a two-team sample, not the league (Rules + Coaching). Re-run on the per-seed team tooling before quoting them. Paired sim comparisons on the same teams are unaffected.
+
+**Operators** (same code on NFL and sim common-format plays; carrier phase from the handoff or the catch):
+
+- `scripts/diag/defense-yards/pursuit_roles.py`: from the carrier getting loose (+5), each unblocked pursuer is classed by help behind him. Help means teammates deeper than him who can reach the carrier's path. Class 0 is the last line. Per class it reports:
+  - lead beyond the pure intercept and aim along the carrier's path;
+  - speed share and break-down;
+  - inside-out;
+  - first-contact outcome.
+
+  It also reports pairs at first contact (split vs same side, with the cutback lane) and the class-0 tackler by approach. `CLASS0_OUT` dumps each class-0 first contact.
+- `scripts/diag/defense-yards/lastyard.py`: the first defender to reach hands range. That uses `grabs.py`'s rule: within 1.6 yd and closing. Over his last 3 yd it reports speed (share and yd/s), aim, closing speed, break-down, overrun and the carrier's cut, by outcome (contact, slowed, runs on).
+
+**Findings.** Sim is run-ref-14/15, IRN vs COM, 16 games, against NFL BDB 2022. Shares are of the relevant plays.
+
+| | Sim | NFL |
+|---|---|---|
+| Lead beyond the pure intercept, all classes | −8 to +5° | −2 to +5° |
+| Class-0 speed share at +5, runs / catches | 0.76–0.79 / 0.83–0.84 | 0.90 / 0.89 |
+| Class-0 inside-out, runs / catches | 61 / 71% | 73 / 76% |
+| Class-0 first contact made / missed / broken, runs | 24 / 0 / 63% | 46 / 9 / 39% |
+| Class-0 first contact made / missed / broken, catches | 41 / 0 / 53% | 58 / 5 / 35% |
+| Pair at first contact, separation around the carrier (catches) | 59° | 101° |
+| Cutback lane covered (catches) | 30% | 46% |
+| First man at hands range on catches: carrier runs on | 22–24% | 10% |
+| …those run-ons: speed 3 yd → hands; aim off the line | 5.0 → 5.3 yd/s; 24° | 5.0 → 4.7 yd/s; 41–43° |
+
+- **Pursuit angle.** The NFL's last line does not lead more than the intercept, and ours already aims at its perceived intercept, to within 2–3° of the requested heading.
+- **Speed.** The speed gap is acceleration after redirects. Aligned pursuers at full request reach 0.84 of top speed; facing is within 20° of travel 94% of the time; speedScale is 0.98.
+- **`LAST_LINE` (full effort and inside-out for the last man).** Paired on run-ref-15 it changed none of these. The result is recorded in its FLAGS row on branch `defense/G1-last-line`.
+- **Catch run-ons.** The excess comes from first men arriving from behind on a flat angle. That is position at the catch (Coverage's break/squeeze), not last-yard technique.
+- **Last-line finish.** Mostly drags rather than grip breaks (Flex, `2026-11-10-tackle-forms.md`).
