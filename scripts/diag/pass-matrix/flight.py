@@ -1,6 +1,7 @@
 """Defenders near the eventual catch point at the throw (3-8 yd): their speed, downfield component and speed toward
 the catch point in the first 0.4 s of the ball's flight, sim and NFL, same code (common play format).
   python3 -I flight.py <plays.jsonl.gz> [...]"""
+import sys,json,gzip,math,statistics as S
 # For defenders 3-8 yd from the catch point at the throw: speed and its components in the first 0.4 s of flight.
 for path in sys.argv[1:]:
     sp=[];vx=[];tow=[];k=0
@@ -13,7 +14,7 @@ for path in sys.argv[1:]:
         if f1-f0<5: continue
         cp=(X[f1][2*t],X[f1][2*t+1])
         for d,a in enumerate(p['players']):
-            if a['side']!='D': continue
+            if a['side']!='D' or a['group']=='DL': continue
             P0=(X[f0][2*d],X[f0][2*d+1]); P4=(X[f0+4][2*d],X[f0+4][2*d+1])
             if not 3<=math.dist(P0,cp)<8: continue
             v=((P4[0]-P0[0])/0.4,(P4[1]-P0[1])/0.4); sp.append(math.hypot(*v)); vx.append(v[0])
