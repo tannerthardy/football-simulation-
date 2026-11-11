@@ -17,8 +17,14 @@ for (let s = first; s < first + games; s++) {
   simulateGame(home, away, { seed: s, hooks: { playResult: (sim: any, kind: string) => {
     if (kind !== 'scrimmage' || !sim.isPass) return undefined;
     const qb = sim.qb; let rec: any = null; const tick = sim.tick.bind(sim);
+    // The QB's own estimate of time to contact (pressure().time, from what he perceives) when his windup starts.
+    let wind: any = null, lastWindAt = -1;
     sim.tick = () => { tick();
       if (!qb) return;
+      if (sim.windupAt >= 0 && sim.windupAt !== lastWindAt && sim.throwAt < 0) { lastWindAt = sim.windupAt;
+        const pr = (qb.behavior as any)?.pressure?.(qb, sim);
+        wind = { t: sim.windupAt, est: pr ? r2(Math.min(pr.time, 9)) : null };
+      }
       const out = sim.throwAt >= 0;
       if (!rec && !out && !sim.scrambled) {
         let best: any = null;
@@ -53,6 +59,7 @@ for (let s = first; s < first + games; s++) {
     if (rec) { const sack = sim.events.some((e: any) => e.type === 'sack');
       if (sack) { rec.end = 'sack'; const e = sim.events.find((e: any) => e.type === 'sack'); rec.dt = r2(e.t - rec.t0); }
       else if (!rec.end) { rec.end = 'other'; rec.dt = r2(sim.t - rec.t0); }
+      if (wind) { rec.windEst = wind.est; rec.windToContact = r2(rec.t0 - wind.t); }
       rec.peakHeld = r2(rec.peakHeld); rec.t0 = undefined; rec.lastHeld = undefined; rec.lastLegs = undefined; rec.prevLegs = undefined; rec.lastSup = undefined; rec.prevSup = undefined;
       const ev = sim.events.map((e: any) => e.type); rec.result = ev.includes('interception') ? 'int' : ev.includes('catch') ? 'complete' : ev.includes('incomplete') ? 'incomplete' : null; rec.yards = r2(res?.yards ?? NaN);
       console.log(JSON.stringify(rec)); }
