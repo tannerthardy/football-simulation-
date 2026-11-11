@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-17`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-18`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,27 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## run-ref-18: `CATCH_EYES` on (2026-11-11)
+
+Run Game. A receiver's eyes are on the ball until it is in his hands. Before, the ball carrier's first lane read fired one tick after the catch from a complete, fresh picture of every defender: 0.1 s after the catch his request was 46° off his travel (p50; p75 93°). Now, for one reaction time after the catch (0.14–0.42 s, from his recognition), he carries the line he caught it on, or turns upfield if he caught it nearly standing; his first lane read comes after that. Nothing caps the cut.
+
+| | off | on | NFL |
+|---|---|---|---|
+| Heading change in 0.5 s after the catch, p50 / p75 (8 games, IRN/COM) | 22 / 37° | 13 / 20° | 14 / 25° |
+| First man at hands range on a catch: catcher runs on | 26% | 20% | 10% |
+| Panel, 399 receptions an arm (IRN/COM capture): YAC median | 5.45 | 4.59 | |
+| YAC trimmed mean (30+ yd removed) | 6.42 | 5.37 (−1.05 ± 0.45, unpaired) | |
+| YAC mean | 8.80 ± 0.63 | 7.97 ± 0.65 | |
+| Yards to first contact, p50; catch → first contact, p50 | 2.13; 0.90 s | 1.57; 0.80 s | 0.60 s |
+| 16-game card, league-sampled, seed 11: yards an attempt | 9.59 | 8.80 (90% range −1.47 to −0.09) | 6.35–7.89 |
+| Card: YAC a reception; total yards a team-game | 8.05; 494 | 7.04; 458 | 4.53–5.91; 320–345 |
+
+The card ([scorecard](reviews/2026-11-11-catch-eyes-scorecard.md)) was read for bugs and shows none; completion, sack and interception rates and missed + broken tackles are unresolved. With the flag on the fixed 1,321 runs read 3.82 (run-ref-17: 3.83), broken 0.118 (0.121). The flag acts only where the engine records a catch (`possess(…, 'catch')`), so some plays in the run set contain one; the movement is in outside zone (3.13 → 3.09) and gap (4.09 → 4.07), toss is unchanged, and which plays they are has not been traced.
+
+Open with it: upfield speed 0.5 s after the catch moves away from the NFL (2.05 → 1.65 yd/s against 2.30), because crossers keep their line for the window; the body side of the catch (securing the ball, turning from the catch posture) is not modelled; no test covers the flag yet (requested from Run Game).
+
+Measurement notes from this round. Coverage's panel YAC mean moves by about ±0.8 by chance whenever a change re-rolls the plays, from a handful of 30+ yd catch-and-runs, so yards after catch are reported as median, trimmed mean and mean ± SE with diverged arms treated as unpaired. On the league-sampled panel, completion in tight coverage at 10–20 yd matches the NFL (0–1 yd 28% against 26%); the 48% read on the two-team panel was those rosters.
 
 ## Whose teams the measurements are (2026-11-10)
 
