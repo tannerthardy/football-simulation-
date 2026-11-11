@@ -115,7 +115,8 @@ export const MENU_CONCEPTS: PassConcept[] = [
   },
   {
     id: 'fade_flat', name: 'Fade-Flat', family: 'dropback', drop: 'gun3',
-    strong: { 1: 'go', 2: 'flat', 3: 'hitch' }, weak: { 1: 'hitch', 2: 'go' }, back: 'angle',
+    // The back checks: released at once on the angle he took the ball from the two reads (27 of 61 throws).
+    strong: { 1: 'go', 2: 'flat', 3: 'hitch' }, weak: { 1: 'hitch', 2: 'go' }, back: 'check',
     progression: ['S1', 'S2', 'S3', 'W1', 'B'], beats: ['cover2', 'man'],
     read: { key: 'the flat (cloud) corner', rule: 'he sinks with #1: #2 flat; he squats on the flat: #1 fade in the hole' },
   },
