@@ -26,11 +26,17 @@ for (let s = first; s < first + games; s++) {
         if (best) { const b = Math.atan2(best.d.pos.y - qb.pos.y, best.d.pos.x - qb.pos.x), f = qb.body.facing;
           const a = Math.abs(Math.atan2(Math.sin(b - f), Math.cos(b - f))) * 180 / Math.PI;
           rec = { t0: sim.t, slot: best.d.slot, approach: a < 45 ? 'front' : a > 135 ? 'behind' : 'side', engaged: !!best.d.engagement, qbSpeed: r2(Math.hypot(qb.vel.x, qb.vel.y)),
-            windupBefore: sim.windupAt >= 0, holdAt: null, peakHeld: 0, windupHeld: null, releaseHeld: null, qbFell: null, end: null, dt: null, lastHeld: 0 }; }
+            windupBefore: sim.windupAt >= 0, holdAt: null, peakHeld: 0, windupHeld: null, releaseHeld: null, qbFell: null, end: null, dt: null, lastHeld: 0, windupT: null, deliveryT: null, holdPhase: null }; }
       }
       if (rec && !rec.end) {
         const bond = sim.bond; let held = 0;
-        if (bond && bond.carrier === qb) { held = Math.max(0, ...bond.tacklers.map((d: any) => bond.control?.get(d) ?? bond.grip?.get(d) ?? 1)); if (rec.holdAt === null) rec.holdAt = r2(sim.t - rec.t0); }
+        if (rec.windupT === null && sim.windupAt >= 0) rec.windupT = r2(sim.windupAt - rec.t0);
+        if (rec.deliveryT === null && sim.deliveryAt >= 0) rec.deliveryT = r2(sim.deliveryAt - rec.t0);
+        if (bond && bond.carrier === qb) { held = Math.max(0, ...bond.tacklers.map((d: any) => bond.control?.get(d) ?? bond.grip?.get(d) ?? 1));
+          if (rec.holdAt === null) { rec.holdAt = r2(sim.t - rec.t0);
+            // When the hold began against his throwing motion: before any windup, during the load (windup started, arm
+            // not yet coming forward), or during the delivery (arm already coming forward).
+            rec.holdPhase = sim.windupAt < 0 ? 'before windup' : (sim.deliveryAt >= 0 && sim.t >= sim.deliveryAt) ? 'delivery' : 'load'; } }
         rec.peakHeld = Math.max(rec.peakHeld, held);
         if (rec.windupHeld === null && sim.windupAt >= 0 && sim.windupAt >= rec.t0 - 1e-9) rec.windupHeld = r2(held);
         if (rec.qbFell === null && qb.body.support?.state !== 'up') rec.qbFell = r2(sim.t - rec.t0);
@@ -44,6 +50,7 @@ for (let s = first; s < first + games; s++) {
       if (sack) { rec.end = 'sack'; const e = sim.events.find((e: any) => e.type === 'sack'); rec.dt = r2(e.t - rec.t0); }
       else if (!rec.end) { rec.end = 'other'; rec.dt = r2(sim.t - rec.t0); }
       rec.peakHeld = r2(rec.peakHeld); rec.t0 = undefined; rec.lastHeld = undefined;
+      const ev = sim.events.map((e: any) => e.type); rec.result = ev.includes('interception') ? 'int' : ev.includes('catch') ? 'complete' : ev.includes('incomplete') ? 'incomplete' : null; rec.yards = r2(res?.yards ?? NaN);
       console.log(JSON.stringify(rec)); }
     else console.log(JSON.stringify({ end: 'no-contact', sack: sim.events.some((e: any) => e.type === 'sack') }));
     return res; } } });
