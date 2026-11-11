@@ -645,16 +645,6 @@ const CUSHION_NEED = process.env.CUSHION_NEED !== '0';
  * to the passer (body facing vs the ball's origin), shortened by ball skills;
  * otherwise he plays this flight without the look. */
 const LOOK_ONCE = process.env.LOOK_ONCE === '1';
-/** MAN_SPACE (off; MAN_SPACE=1 turns it on; C14 contact excess): a man defender
- * with his hips open steers to a point at least two body radii plus 0.35 yd
- * from the receiver's centre (shoulder to shoulder, a hand's width apart), not
- * 0.86 yd (0.5 over and 0.7 to the leverage side), where any lag in his
- * picture put the bodies together. Before the throw, with the receiver 5+ yd
- * downfield, a defender's centre came within 0.6 yd of a receiver on 38% of
- * panel passes (CUSHION_NEED=0: 32%), 69% of them in man-open on his own man
- * while the receiver was not breaking; NFL 13% of passes (man 19%). */
-const MAN_SPACE = process.env.MAN_SPACE === '1';
-const MAN_SPACE_GAP = 0.35;
 const lookPlan = new WeakMap<Agent, { flight: number; at: number }>();
 function findsBall(a: Agent, sim: PlaySim): boolean {
   const ball = sim.ball;
@@ -903,20 +893,6 @@ export class ManCoverage implements Behavior {
     if (o.protectDepth) {
       if (!this.releaseObserved) tx = Math.max(tx, a.pos.x - .2);
       tx = Math.min(tx, END_LINE_X - a.profile.radius);
-    }
-    // MAN_SPACE: in phase is shoulder to shoulder, not inside him: the point
-    // he steers to keeps two body radii and a hand's width from the receiver's
-    // centre, pushed out on his leverage side (over the top when head-up).
-    if (MAN_SPACE && this.hipsOpen && !releasing) {
-      const min = a.profile.radius + R.profile.radius + MAN_SPACE_GAP;
-      let ox = tx - seen.pos.x, oy = ty - seen.pos.y;
-      if (Math.hypot(ox, oy) < min) {
-        if (Math.abs(oy) < 0.2) oy = (lev === 0 ? inside : Math.sign(lev)) * 0.2;
-        const l = Math.hypot(ox, oy) || 1;
-        ox *= min / l; oy *= min / l;
-        tx = seen.pos.x + ox; ty = seen.pos.y + oy;
-        a.tags.add('man-space');
-      }
     }
     ty = clamp(ty, 0.5, FIELD_WIDTH - 0.5);
     const tgt = { x: tx, y: ty };
