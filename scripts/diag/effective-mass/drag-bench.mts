@@ -23,7 +23,7 @@ for (const [pname, rk, hk] of PAIRS) for (const holder of ['down', 'up']) for (c
   const r: any = { pos: { x: 0, y: 0 }, vel: { x: v0, y: 0 }, facing: 0, energy: 1, profile: Rp, support: S.newSupport(0.3) };
   const h: any = { pos: { x: -gap, y: 0 }, vel: { x: holder === 'down' ? 3 : 5.5, y: 0 }, facing: 0, energy: 1, profile: Hp, support: S.newSupport(0.5) };
   if (holder === 'down') { h.support.state = 'down'; h.support.since = 0; }
-  const w = new World([r, h]); const lock = 0.56, cap = S.supportParams(H).armForce * (0.3 + 2.5 * lock * lock) * 0.96;
+  const w = new World([r, h]); const lock = Number(process.env.LOCK ?? 0.56), cap = S.supportParams(Hp as any).armForce * (0.3 + 2.5 * lock * lock) * 0.96;
   const jt: any = { kind: 'grasp', a: h, b: r, reach: gap + H.reach * 0.9 + (holder === 'down' ? 0.9 : 0), capacity: cap, lock, legs, pull: 2, hold: gap, origin: 'bench', ground: holder === 'down' ? gap + H.reach * 0.9 + 0.9 : undefined };
   w.joints.push(jt);
   const mR = R.massKg; let fell = -1; const lines: string[] = [];

@@ -93,6 +93,18 @@ const QB_RHYTHM = process.env.QB_RHYTHM !== '0';
  * pressure (a man within 2 yd) our QB felt 1.6 s and stood (0.23 yd moved;
  * NFL 0.72 at 2.1 yd/s). */
 const QB_FEEL = process.env.QB_FEEL === '1';
+/** Experimental (THROW_BODY=1, off): a hold on the passer acts on the throw
+ * through what it holds. Its interference is how firmly he is held (heldBy)
+ * times how high the hold is on him (1 - the grasp's leg share: the shoulder
+ * line 1, the waist 0.5, the legs 0). A hold taken during the load pins the
+ * arm with that chance, rolled when the arm must come forward (the delivery's
+ * start, with the hold as it is then), and
+ * the throw is abandoned; the hold then rules the play. A throw that does come
+ * out under a hold has lost the trunk and the step that a hold takes: it is
+ * thrown as an arm throw to that degree (the flick's own speed and accuracy
+ * costs, flick = max(flick, interference)). Off, a windup in progress is
+ * immune to holds and a held throw only widens its miss (missSigma). */
+const THROW_BODY = process.env.THROW_BODY === '1';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -111,6 +123,8 @@ export class QBPass implements Behavior {
   private plannedLoad = -1;
   /** How much of the load the throw in progress gave up (0 full motion, 1 none). */
   private flick = 0;
+  /** THROW_BODY: whether this throw's load has met a hold (the pin is rolled once). */
+  private pinRolled = false;
   private motionAt = -1;
   /** Whether the throw in progress has had its last look at the plant. */
   private rechecked = false;
@@ -264,6 +278,20 @@ export class QBPass implements Behavior {
     }
 
     if (this.phase === 'windup') {
+      // THROW_BODY: a hold taken in the load can pin the arm. It matters at the
+      // moment the arm must come forward (the delivery's start), with the hold
+      // as it is then; a hold taken once the arm is moving cannot stop it.
+      if (THROW_BODY && this.pending && !this.pinRolled && sim.deliveryAt >= 0 && t >= sim.deliveryAt) {
+        this.pinRolled = true;
+        const pin = throwInterference(a, sim);
+        if (pin > 0) {
+          if (sim.dice('throw', a).chance(pin)) {
+            this.phase = 'set'; this.pending = null; this.readStart = t;
+            sim.windupAt = -1; sim.deliveryAt = -1;
+            return stand();
+          }
+        }
+      }
       // Last look at the plant, before the arm is committed: the throw as it
       // would now come out, re-aimed on the picture he has gained during the
       // load. If it has gone bad he pulls it down (a pump), paying the time;
@@ -782,6 +810,7 @@ export class QBPass implements Behavior {
     this.releaseAt = sim.t + this.windup(a);
     this.motionAt = sim.t;
     this.rechecked = false;
+    this.pinRolled = false;
     this.flick = 1 - (this.releaseAt - sim.t - this.delivery(a)) / this.load(a);
     // The load gives the throw away to defenders reading him: front hand off
     // the ball, front shoulder to the target.
@@ -816,6 +845,8 @@ export class QBPass implements Behavior {
     const pressure = this.pressure(a, sim);
     const urgency = clamp((0.9 - pressure.time) / 0.7, 0, 1);
     let sigma = this.missSigma(a, sim, dist, urgency);
+    // THROW_BODY: a hold takes the trunk and the step: an arm throw to that degree.
+    if (THROW_BODY) this.flick = Math.max(this.flick, throwInterference(a, sim));
     // A flick: thrown with the arm alone, without the full coil and step [D].
     sigma *= 1 + 0.8 * this.flick;
     const dice = sim.dice('throw', a);
@@ -1021,6 +1052,16 @@ export class QBHandoff implements Behavior {
 const lerp = (a: number, b: number, t: number) => a + (b - a) * clamp(t, 0, 1);
 
 /** The firmest control a tackler has of `a` (0 when nobody is holding him). */
+/** THROW_BODY: how much the holds on him interfere with a throw: how firmly
+ * he is held times how high the highest hold sits (1 - its leg share). */
+function throwInterference(a: Agent, sim: PlaySim): number {
+  const held = heldBy(a, sim);
+  if (held <= 0) return 0;
+  let legs = 1;
+  for (const j of sim.world.joints) if (j.kind === 'grasp' && !j.broken && j.b === a.body) legs = Math.min(legs, j.legs ?? 1);
+  return Math.min(1, held) * (1 - Math.min(1, Math.max(0, legs)));
+}
+
 function heldBy(a: Agent, sim: PlaySim): number {
   const bond = sim.bond;
   if (!bond || bond.carrier !== a) return 0;
