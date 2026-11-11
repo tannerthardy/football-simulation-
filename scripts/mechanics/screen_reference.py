@@ -265,8 +265,11 @@ def main():
     ap.add_argument("plays", nargs="+")
     ap.add_argument("--by", default="group", choices=["group", "type"])
     ap.add_argument("--json")
+    ap.add_argument("--ol-max", type=int, help="keep caught plays with at most this many released OL (a WR now/bubble screen with no line release)")
     a = ap.parse_args()
     rows = [m for m in (measure(p) for p in load(a.plays)) if m]
+    if a.ol_max is not None:
+        rows = [m for m in rows if m.get("released_ol", 99) <= a.ol_max]
     print(f"{len(rows)} screen plays from {', '.join(sorted({str(r['source']) for r in rows}))}")
     table(rows, a.by)
     if a.json:
