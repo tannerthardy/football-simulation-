@@ -73,6 +73,8 @@
     "FIT_TE_GAP": "on",
     "FLAT_PRESS": "on",
     "CATCH_HANDS": "off",
+    "CATCH_POINT": "off",
+    "OFFICIATE": "off",
     "LOOK_ONCE": "off",
     "FLOW_INTERCEPT": "off",
     "GAP_CLIMB": "on",
