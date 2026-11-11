@@ -99,6 +99,8 @@
     "SWING_STRIP": "off",
     "HIP_STRENGTH": "off",
     "BRACE_EVIDENCE": "off",
+    "SWING_FLEXION": "off",
+    "LEGS_HELD": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",
