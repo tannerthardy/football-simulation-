@@ -73,6 +73,7 @@
     "FIT_TE_GAP": "on",
     "FLAT_PRESS": "on",
     "FLOW_INTERCEPT": "off",
+    "FORECAST_BREAK": "off",
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "GRAB_CONNECT": "off",
