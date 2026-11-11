@@ -117,6 +117,27 @@ const THROW_BODY = process.env.THROW_BODY === '1';
  * looked at is valued as the gamble it is. Off, an aged picture is
  * extrapolated and scored as if certain. */
 const PICTURE_AGE = process.env.PICTURE_AGE === '1';
+/** Experimental (POCKET_CLIMB=1, off): pocket movement is buying time. When
+ * set and unable to finish what he still needs (the rest of his current read,
+ * then a throwing motion) before a rusher he feels could reach him where he
+ * stands, he weighs standing against moving, in eight
+ * directions at
+ * 2.2 yd/s (the pace this model already treats as the edge of a set throw,
+ * missSigma), and takes whatever leaves him the most felt time to contact (his
+ * felt() picture of each rusher, plus held() for one still in a block) at the
+ * end of that time. He stays 2.5 yd behind the line and
+ * keeps his eyes on his read; standing wins whenever moving buys nothing.
+ * Edge rushers past his depth leave the space in front (he climbs), interior
+ * push leaves it to the side (he slides). Escape is what the same movement
+ * becomes when the existing scramble check finds a lane. Off, he walks toward a
+ * set point nudged by rushers within 3.5 yd at 0.45-0.6 of his speed. */
+const POCKET_CLIMB = process.env.POCKET_CLIMB === '1';
+/** Experimental (BLOCK_SEEN=1, off): the QB reads a rusher still in a block
+ * from what he sees of it (the blocker's body in the rusher's path to him:
+ * QB_FEEL's geometry), never from the rep's private win score. QB_FEEL's
+ * pocket move is not part of it. Off (and QB_FEEL off), held() credits any
+ * engaged rusher 0.35-1.75 s from engagement.win. */
+const BLOCK_SEEN = process.env.BLOCK_SEEN === '1';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -593,7 +614,7 @@ export class QBPass implements Behavior {
    * rusher is free; poor pocket presence only notices when he's loose. */
   private held(a: Agent, d: Agent, sim?: PlaySim): number {
     if (!d.engagement) return 0;
-    if (QB_FEEL && sim) {
+    if ((QB_FEEL || BLOCK_SEEN) && sim) {
       // What he sees: the rusher's path to him and the blocker's body on it.
       const r = this.felt(a, sim, d).pos, b = this.felt(a, sim, d.engagement.blocker).pos;
       const px = a.pos.x - r.x, py = a.pos.y - r.y, L = Math.hypot(px, py) || 1;
@@ -998,7 +1019,41 @@ export class QBPass implements Behavior {
         return { vel: { x: room > 0 ? vx : Math.min(0, vx), y: vy }, facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
       }
     }
+    if (POCKET_CLIMB) {
+      const climb = this.climb(a, sim, facing);
+      if (climb) return climb;
+    }
     return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: edge ? 0.6 : 0.45, facing });
+  }
+
+  /** POCKET_CLIMB: the move (or none) that leaves the most felt time to contact
+   * one throwing motion from now. Null when standing is best. */
+  private climb(a: Agent, sim: PlaySim, facing: number): MoveCommand | null {
+    // The time he still needs here: the rest of his current read, then a throw.
+    const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
+    const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus));
+    const horizon = Math.max(0, this.readStart + dwell - sim.t) + this.windup(a), pace = 2.2;
+    const threats = sim.defense.filter((d) => !d.isDown(sim.t))
+      .map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d, sim) }));
+    const ttc = (q: Vec2) => {
+      let best = Infinity;
+      for (const { d, seen, held } of threats) best = Math.min(best,
+        timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 0.8) + held - horizon);
+      return best;
+    };
+    const stay = ttc(a.pos);
+    // Where he stands he can still finish a throw before contact: no need to move.
+    if (stay >= 0) return null;
+    let bestT = stay, bestDir: Vec2 | null = null;
+    for (let k = 0; k < 8; k++) {
+      const th = k * Math.PI / 4, dir = { x: Math.cos(th), y: Math.sin(th) };
+      const q = { x: a.pos.x + dir.x * pace * horizon, y: clamp(a.pos.y + dir.y * pace * horizon, 1, FIELD_WIDTH - 1) };
+      if (q.x > sim.los - 2.5 && dir.x > 0) continue;
+      const t = ttc(q);
+      if (t > bestT) { bestT = t; bestDir = dir; }
+    }
+    if (!bestDir) return null;
+    return { vel: { x: bestDir.x * pace, y: bestDir.y * pace }, facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
   }
 }
 

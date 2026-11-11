@@ -104,6 +104,8 @@
     "LEAN_PITCH": "on",
     "LEGS_HELD": "on",
     "PICTURE_AGE": "off",
+    "POCKET_CLIMB": "off",
+    "BLOCK_SEEN": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",

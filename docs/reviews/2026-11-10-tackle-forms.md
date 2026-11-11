@@ -840,3 +840,40 @@ It misses the same way as its own two attempts: fewer sacks, and its pocket move
 - Contact came 0.30 s after the throw started.
 - He knew the rusher was about half a second away and threw anyway, about 0.2 s optimistic: constant-velocity extrapolation of an accelerating rusher.
 - The private credit is still a model-rule violation, but it is not the cause of these hits.
+
+## Escape: what the QB's body does before contact (`qb-escape.py`, `qb-pocket.py`, `pocket-trace.mts`; run-ref-24 + THROW_BODY; 2026-11-11)
+
+**In the 0.5 s before a rusher reaches 1 yd** (NFL BDB 2025, 1,211 dropbacks; sim league seed 201, 16 games, 181):
+
+| | NFL | Sim |
+|---|---|---|
+| QB speed (p50) | 2.25 yd/s | 1.05 yd/s |
+| Moving (≥ 1.5 yd/s) | 70% | 34% |
+| Toward the line (p50) | +0.60 | −0.20 |
+| Moving: throw / sack / scramble | 27 / 43 / 30 | 51 / 39 / 10 |
+| Set: throw / sack / scramble | 38 / 57 / 5 | 72 / 25 / 3 |
+
+**Pocket path from set (deepest frame) to release, pressured:**
+
+| | NFL | Sim |
+|---|---|---|
+| Path, p50 / p75 | 0.44 / 1.72 yd | 0.10 / 0.39 yd |
+| Speed, p75 | 1.67 yd/s | 0.60 yd/s |
+| Forward, p75 | 0.9 yd | 0.2 yd |
+| Lateral, p75 | 0.8 yd | 0.1 yd |
+
+- Set depth is fine: 7.6 against 7.9 yd, and −2.8 against −2.45 yd behind the tackles.
+
+**`pocket-trace.mts`, the 132 set cases** (IRN v COM, 16 games):
+- 86 asked to be set: the request was under 1.5 yd/s.
+- 46 asked to move (p50 2.6 yd/s) but started too late to show in the 0.5 s window.
+- Last 0.8 s: `pocketMove` 50% of ticks, windup 30%, drop 11%.
+
+**`POCKET_CLIMB` (off), bench iterations, not yet read in games:**
+1. **v1:** weigh standing against eight directions at 2.2 yd/s by felt time to contact one windup ahead. It moved on 995 of 1,003 calls, drifting with nobody near. Defect: any gain triggered a move.
+2. **v2:** move only when he couldn't finish a throw where he stands. Barely moves: `held()`'s private credit (0.35–1.75 s for an engaged rusher) hides closing rushers.
+3. **v3:** + `BLOCK_SEEN` (perceived block geometry in `held()`, QB_FEEL's, without its pocket move), and a horizon of the rest of the current read plus the windup.
+   - With a rusher within 3 yd, the QB had 1,484 ticks, but `climb()` was consulted on only 285. It moved on 71.
+   - The rest go to the windup, the drop and the throw decisions.
+
+**Finding.** Pocket movement cannot live in `pocketMove` alone. The decision each tick under a closing rusher (throw now, keep reading while moving, escape) is spread across the set logic's branches. Building it is a controller restructure of the set phase, not one function.
