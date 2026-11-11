@@ -234,7 +234,8 @@
     "GRASP_JEOPARDY": "0",
     "RECEIVER_DEPTH": "0",
     "FIT_TE_GAP": "0",
-    "FIT_BLITZ_SLIDE": "0"
+    "FIT_BLITZ_SLIDE": "0",
+    "CALL_MIX": "0"
   },
   "worldDefaults": {
     "handContact": "center",

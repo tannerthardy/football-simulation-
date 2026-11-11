@@ -26,6 +26,7 @@ import type { Coverage, DefPersonnelId, DefSlot, DefensivePlayCall, Formation, M
 import { DEF_PERSONNEL, OFF_PERSONNEL } from '../playbook/types.js';
 import { alignStyle, type CoverageSystem, type Team } from '../league/team.js';
 import { motionEnabled } from '../sim/motion.js';
+import { CALL_MIX, callMixWeight } from './call-mix.js';
 
 /** FRONT_ALIGN (on; =0 turns it off): fronts are called as team installs use
  * them (2017 Colts, 2013 Seahawks, 2020 Ravens via the playbook session):
@@ -493,6 +494,8 @@ export class OffensiveCoordinator {
         if (p) w *= 0.7 + 0.6 * (overallAt(p) / 100);
       }
       w *= this.learned(`pass:${c.family}:${c.id}`);
+      // CALL_MIX: the route classes this down and distance calls for (src/game/call-mix.ts).
+      if (CALL_MIX) w *= callMixWeight(c, s.down, s.distance);
       weights.push([c, w]);
     }
     void defense;
