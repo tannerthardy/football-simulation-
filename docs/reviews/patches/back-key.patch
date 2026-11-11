@@ -1,0 +1,86 @@
+diff --git a/src/sim/assign.ts b/src/sim/assign.ts
+index 6f5e5075..3f54bc19 100644
+--- a/src/sim/assign.ts
++++ b/src/sim/assign.ts
+@@ -79,6 +79,16 @@ const DEF_STANCE = process.env.DEF_STANCE === '1';
+ const BACK_RELEASE = process.env.BACK_RELEASE === '1';
+ /** The check-releasing back's read: how long before he trusts that no one is coming (s). */
+ const CHECK_READ = 0.55;
++/** BACK_KEY (experimental, off; acts with BACK_RELEASE): a checking back keys
++ * the off-ball backers in the box, the men the five linemen cannot all
++ * account for, and leaves only once each one he sees has declared: dropped
++ * (0.5 yd deeper than he lined up, or backing out at 1.5 yd/s), picked up
++ * by a teammate, or gone out of the box. A backer who is still sitting
++ * there holds him (a delayed blitz is still possible); past CHECK_LATEST he
++ * goes anyway (a check-delay). Without it he left as soon as the line had
++ * given him nobody, and a backer who came after that was free. */
++const BACK_KEY = process.env.BACK_KEY === '1';
++const CHECK_LATEST = 1.8;
+ const STAND_GETOFF = 0.04;
+ function setFrontStance(sim: PlaySim, d: Agent, role: string): void {
+   const k = d.slot.split('_')[0];
+@@ -192,7 +202,8 @@ export function assignBehaviors(sim: PlaySim): void {
+             a.behavior = mkRoute(route, 0.1)();
+           } else {
+             coord.add(a);
+-            a.behavior = new PassProtector(coord, mkRoute(route, 0, true), CHECK_READ + a.profile.reactionTime + sim.dice('check', a).range(0, 0.15));
++            a.behavior = new PassProtector(coord, mkRoute(route, 0, true), CHECK_READ + a.profile.reactionTime + sim.dice('check', a).range(0, 0.15),
++              false, BACK_KEY ? checkKeys(sim, coord) : null);
+           }
+           continue;
+         }
+@@ -708,3 +719,32 @@ function backRelease(sim: PlaySim, concept: PassConcept, a: Agent): string {
+   const routes = Object.values(side === sim.offAlign.strongSign ? concept.strong : concept.weak);
+   return routes.some(r => r === 'flat' || r === 'out' || r === 'quick_out') ? 'angle' : 'back_flat';
+ }
++
++/** BACK_KEY: the off-ball backers in the box at the snap (1.5-6 yd off the
++ * ball, within 3 yd outside the tackles), and the back's read of them from
++ * his own picture: true once each has declared that he is not coming. */
++function checkKeys(sim: PlaySim, coord: ProtectionCoordinator): ((a: Agent, sim: PlaySim) => boolean) | null {
++  const dir = sim.attackDir('O');
++  const ol = sim.offense.filter(isOL).map(o => o.pos.y);
++  const lo = Math.min(...ol) - 3, hi = Math.max(...ol) + 3;
++  const keys = sim.defense.filter(d => {
++    const depth = (d.pos.x - sim.los) * dir;
++    return depth >= 1.5 && depth <= 6 && d.pos.y >= lo && d.pos.y <= hi;
++  }).map(d => ({ d, depth0: (d.pos.x - sim.los) * dir }));
++  if (!keys.length) return null;
++  return (a, s) => {
++    if (s.t > CHECK_LATEST) return true;
++    for (const k of keys) {
++      if (k.d.isDown(s.t) || k.d.engagement) continue;
++      // A teammate the line has given him to has him.
++      if ([...coord.assigned].some(([o, r]) => o !== a && r === k.d)) continue;
++      const seen = s.see(a, k.d);
++      const depth = (seen.pos.x - s.los) * dir;
++      const away = seen.vel.x * dir;
++      const out = seen.pos.y < lo - 1 || seen.pos.y > hi + 1;
++      if (depth >= k.depth0 + 0.5 || away > 1.5 || out) continue;
++      return false;
++    }
++    return true;
++  };
++}
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index 9f921bd1..84c43947 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -255,6 +255,8 @@ export class PassProtector implements Behavior {
+     /** A called release (a screen): leave the set on the count even with a man,
+      * releasing the hands; a back or end with a free blitzer still stays in. */
+     private readonly calledRelease = false,
++    /** A check-release's own read (BACK_RELEASE, assign.ts): he leaves only once it says nobody he keys is coming. */
++    private readonly releaseRead: ((a: Agent, sim: PlaySim) => boolean) | null = null,
+   ) {}
+ 
+   /** A lineman with a called release sets at his stance depth and blocks his
+@@ -307,7 +309,7 @@ export class PassProtector implements Behavior {
+     }
+     this.coord.update(sim);
+     const r = this.coord.assigned.get(a) ?? null;
+-    if (!r && this.releaseTo && sim.t > this.releaseAfter) {
++    if (!r && this.releaseTo && sim.t > this.releaseAfter && (!this.releaseRead || this.releaseRead(a, sim))) {
+       this.released = true;
+       a.behavior = this.releaseTo();
+       return a.behavior.update(a, sim);

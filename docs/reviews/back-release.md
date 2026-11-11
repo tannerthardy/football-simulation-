@@ -120,3 +120,50 @@ Test: `test/back-release.test.ts`.
 - **Concept-specific back routes** (swing, wheel, option) beyond flat/angle.
 - **Screens and angles in the call pool:** tell Rules + Coaching when they
   are callable (CALL_MIX).
+
+## BACK_KEY: the checking back keys the box backers (one attempt, a miss)
+
+**Question.** Does a late blitzer come free after the check-releasing back leaves?
+
+**Attempt 1.** The back keys the off-ball backers in the box. He leaves only
+once each one he sees has declared he is not coming:
+- dropped (0.5 yd deeper, or backing out at 1.5 yd/s), picked up by a
+  teammate, or gone out of the box;
+- or it is past 1.8 s.
+
+The patch, against c3341fb4's `assign.ts` and `blocking.ts`, is
+`docs/reviews/patches/back-key.patch`. The code is not on the branch.
+
+Same 16 games, `BACK_RELEASE=1` → plus `BACK_KEY=1`:
+
+| | Release only | Plus `BACK_KEY` |
+|---|---|---|
+| Free inside backer, per 100 dropbacks | 3.5 | 3.3 |
+| Free first pressure, per 100 | 11.8 | 12.1 |
+| Backs released before the throw | 63.4% | 49.2% |
+| Released back open at the throw (`qb_reads.py`) | 24.9% | 16.9% |
+| Sacks | 1.6% | 1.7% |
+
+It holds the back in and costs his route without freeing fewer backers.
+
+**Diagnostic** (`scripts/diag/pass-operators/freeback.py`): on free
+inside-backer first pressures, where was the back?
+
+| | Base (63) | `BACK_RELEASE=1` (76) | Plus `BACK_KEY` (69) |
+|---|---|---|---|
+| Gone before the blitzer crossed the line | 27% | 24% | 25% |
+| Left after he had crossed | 17% | 29% | 29% |
+| Still in the backfield, not on him | 56% | 47% | 46% |
+| ... his distance to the blitzer then, p50 | 3.7 yd | 4.0 yd | 4.8 yd |
+
+**Reading.** Most free inside backers are not ones who came after the back
+had gone. Three quarters are men the back could see coming:
+- either he left with the blitzer already across the line (the line had not
+  given him the man);
+- or he stood 4 yd away without being given him.
+
+That is the protection's declaration and assignment: who is counted, and
+when the back is handed a blitzer the line cannot take. Rules + Coaching's
+protection call (PRO_CALL) is rebuilding it. The fix belongs there, where
+the back's man is named, not in a separate release read. Two-attempt rule:
+stopped after one, since a second would overlap that build.
