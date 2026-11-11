@@ -213,6 +213,8 @@ export class PassRusher implements Behavior {
     sim: PlaySim,
     private readonly gap: Gap,
     private readonly gapSign: number,
+    /** His pass-rush lane, when it differs from his run gap (FIT_TE_GAP). */
+    private readonly laneGap: Gap = gap,
   ) {
     const burst = clamp((1.8 - a.player.measurables.tenSplit) / 0.35, 0, 1);
     // SNAP_REACT plans every start from the count itself.
@@ -407,8 +409,8 @@ export class PassRusher implements Behavior {
     // take a wide arc and bend to a point behind the QB.
     const qb = sim.qb;
     const qbSeen = sim.see(a, qb, 0.5).pos;
-    const gy = gapY(sim.offAlign, this.gap, this.gapSign);
-    const edge = this.gap === 'C' || this.gap === 'D';
+    const gy = gapY(sim.offAlign, this.laneGap, this.gapSign);
+    const edge = this.laneGap === 'C' || this.laneGap === 'D';
     const bend = 0.8 + 0.45 * traits(a).bend;
     if (this.plan === 'power') {
       const p = pursuitPoint(sim, a, qb, 1.5);
