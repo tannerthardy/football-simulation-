@@ -35,7 +35,7 @@ for (let s = first; s < first + games; s++) {
       let kr = frames.findIndex((fr: any) => fr.t >= rel.t - 1e-9); if (kr < 0) kr = frames.length - 1;
       let k = kr; while (k - 1 >= 0 && ang(frames[k - 1]) !== null && ang(frames[k - 1])! - ang(frames[k])! >= 5) k--;
       const air = Math.hypot(rel.intended.x - rel.pos.x, rel.intended.y - rel.pos.y);
-      console.log(JSON.stringify({ turn: r2((kr - k) * 0.1), tang: r2((ang(frames[k]) ?? 0) - (ang(frames[kr]) ?? 0)), air: r2(air), moving: rel.v >= 2, ...(sim.__ask ?? {}) }));
+      console.log(JSON.stringify({ turn: r2((kr - k) * 0.1), tang: r2((ang(frames[k]) ?? 0) - (ang(frames[kr]) ?? 0)), air: r2(air), moving: rel.v >= 2, ...(sim.__ask ?? {}), tRel: r2(rel.t), complete: sim.events.some((e: any) => e.type === 'catch') }));
     }
     return res; } } });
 }
