@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-19",
+  "id": "run-ref-21",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -31,6 +31,7 @@
     "BACKSIDE_SWAP": "on",
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
+    "CALL_MIX": "on",
     "CARRIER_BRACE": "off",
     "CATCH_EYES": "on",
     "CLIMB_BASE": "on",
@@ -44,6 +45,7 @@
     "COUNTER_C": "on",
     "COUNTER_OFFSET": "on",
     "CUTOFF_RACE": "on",
+    "DB_SLOTS": "on",
     "DB_SLOWPLAY": "on",
     "DEF_STANCE": "off",
     "DL_FIGHT": "off",
