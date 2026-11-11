@@ -158,8 +158,8 @@ matrix first cut. "Rule" items are coached rules our defenders lack.
 | Throw mechanics beyond the turn | Load does not scale with the throw's demand or the arm; no throw-to-throw variation | Parked; estimated parameters when built |
 | Quarterback differences | Scrambling under pressure ranges 0–52% across NFL quarterbacks; speed explains about a fifth | Parked; hooks named |
 | Pass protection families | No slide or max-protect calls, no hot throws | Parked; guide not written |
-| Playbook coverage | Counted from the NFL's own route labels, no classifier ([review](reviews/2026-11-11-playbook-coverage.md)): 55% of NFL formation sides are a combination one of our 17 concepts runs, 25% of dropbacks have both sides covered, 7% are exactly one of our concepts (this replaces the matrix's "70% fit none"). Missing, by size: the back's routes (angle 14.9%, out 6.2%, screen 3.4%, wheel 1.6%: 26% of dropbacks; ours block, check, swing or flat); screens of every kind; almost every common trips side (our #3 runs only hook, seam, flat or shallow); and two-receiver pairs such as go+flat, double slants, hitch+post, out+out, corner+flat | To fix. Parked behind the three focus problems; the back's routes overlap P3 |
-| Screens and angles | Not callable | Parked |
+| Playbook coverage | Counted from the NFL's own route labels, no classifier ([review](reviews/2026-11-11-playbook-coverage.md)): 55% of NFL formation sides are a combination one of our 17 concepts runs, 25% of dropbacks have both sides covered, 7% are exactly one of our concepts (this replaces the matrix's "70% fit none"). Missing, by size: the back's routes (angle 14.9%, out 6.2%, screen 3.4%, wheel 1.6%: 26% of dropbacks; ours block, check, swing or flat); screens of every kind; almost every common trips side (our #3 runs only hook, seam, flat or shallow); and two-receiver pairs such as go+flat, double slants, hitch+post, out+out, corner+flat | In work (Rules + Coaching): the drop-back concepts, in order of NFL frequency. Screens are left out on purpose and are being filtered from the matrix and this count: the aim is the drop-back game |
+| Screens | Not callable | Parked, out of scope for now |
 | Old defense flags | Seven off flags undecided | Parked |
 
 ## What improved recently
@@ -201,13 +201,13 @@ rebuild toward the old numbers.
 
 ## Who is on what
 
-Paused 2026-11-11 until the stress matrix reports. Assignments on resume:
+After the stress matrix (2026-11-11) three lanes are working: Defense on C9, Coverage on C14, Rules + Coaching on the playbook. Flex and Run Game are parked.
 
 | Lane | Focus | Next |
 | --- | --- | --- |
-| Rules + Coaching | P1 (lead) | The pass stress matrix (running); then C1, C12, and the rules in ranked order, fixture-first |
-| Defense | P1 | C9 flight-window diagnostic; C8 stable ownership as a rule; `SEEN_EYES` to integration |
+| Rules + Coaching | Playbook | Missing drop-back concepts (back routes, trips sides, two-receiver pairs); screens filtered from the matrix. The rule tables (C1, C12, then ranked) wait for C9 |
+| Defense | P1 (lead) | C9, the break on the ball: NFL picture and diagnosis first; then C8 stable ownership; `SEEN_EYES` to integration |
 | Flex | P2 (lead) | Shoulders set and lagging his eyes; the throwaway as a choice; pocket movement on the leverage read |
 | Run Game | P2, P3 | Pass-rush leverage measurement; joint read of `BACK_RELEASE` |
-| Coverage | P3 (lead) | Flat catch point and lead; C15; then C14 after the matrix |
+| Coverage | C14 | Completion by openness: what defenders do at the catch point, contact and officiating as two estimated parts; the flat fix (P3) is parked in #567 |
 | Integration | — | Engine versions, this page |
