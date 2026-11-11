@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-19`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-20`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -607,6 +607,21 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## run-ref-20: `CALL_MIX` on (2026-11-11)
+
+Rules + Coaching #531. The offensive caller weighted its 17 pass concepts about evenly, with no shaping by route depth or by down and distance beyond quick game, dropback and play-action. Each concept's weight is now multiplied by a preference for the route classes it runs at this down and distance (`config/call-mix.json`, fitted on NFL routes run with break depth from tracking, not on targets: fitting to targets pushed four-verticals ×4 on third and short through its checkdowns).
+
+| 32 league-sampled games an arm (seeds 101–116, 201–216, run-ref-17), unpaired | off | on | NFL |
+|---|---|---|---|
+| Routes run: breaking 10–19 yd / quick | 17.6 / 22.7% | 15.6 / 24.9% | 13.1 / 26.7% |
+| Targets: breaking 10–19 yd | 26.4% | 24.2% | 11.5% |
+| Yards an attempt; completion; sacks; INT | 10.28; 62.0%; 2.4%; 4.1% | 10.22; 62.6%; 2.3%; 3.4% | |
+| YAC median / trimmed / mean | 5.0 / 6.15 / 8.30 ± 0.29 | 5.1 / 6.37 / 8.72 ± 0.30 | |
+
+On for what offences call, not for yards: nothing else resolves. The evidence is Rules + Coaching's 32-game arms; no separate scorecard was run for this stack.
+
+What it does not reach: the call is the small part of the target-mix gap. Breaking routes stay over-thrown through the quarterback's choice at the throw (read order puts them first; the flat, even read first, is rarely judged open — `FLAT_FIRST`, a written result on branch `rules/flat-first`), and screens and angle routes (13.7% of NFL targets) are not in the call pool until Run Game finishes them. The table has no slot for them yet.
+
 ## run-ref-19: `HOLD_FACING` on (2026-11-11)
 
 Defense #532, on top of `GRASP_ARM_MOMENT`. A tackler holding a runner who is going past him re-aimed his chest at the runner every tick, a pirouette the grasp's own moment never asks for. He now asks to keep the facing he has; the runner turns him through the hold and the contacts as far as the World's yaw response gives.
@@ -658,6 +673,8 @@ Rules + Coaching #527 gives diagnostic games per-seed team identities (`withIden
 - Effect of league sampling (16 games, seeds 101–116, run-ref-16): measured shell 0/1/2-high 18 / 51 / 32% → 12 / 48 / 40% (NFL 9 / 45 / 47); one-high deepest defender 12.1 → 13.6 yd (14.4); cushion at the throw +6.6 → +7.2 (+8.9).
 - **Yards after catch did not move:** 8.83 → 9.25 a catch (NFL 5.00), first contact on 77 → 78% of catches. The excess is not the two teams' safeties.
 - Still open after the fix: on called two-high coverages the second safety is about 2.4 yd shallow (9.2 against 11.6), from the calls, not habits.
+
+**The tracking catch event is late (found 2026-11-11, Defense).** In BDB 2022 the `catch` event (`pass_outcome_caught`) is tagged a median 0.30 s after `pass_arrived`; the sim's catch is the arrival. NFL yards after catch measured from that event start about 0.3 yd of running late. From arrival, NFL YAC is 3.9 median / 5.03 trimmed (30+ yd removed) / 5.45 mean, 10+ on 17.7% and 20+ on 3.6% of catches (5,105 catches); from the catch event it read 3.2 / 4.62 / 4.99, 15.3%, 3.2%. `scripts/diag/defense-yards/yards.py`, `catchwin.py` and `catchwho.py` now start the NFL catch at `pass_arrived` where present. NFL YAC figures quoted in this file and in `docs/reviews` before this date use the catch event unless they say otherwise, so those gaps are overstated by about half a yard in the mean; the tail (10+, 20+, untouched to +10) is where the excess is. Ball flight by air distance does not differ between the sim and the NFL once both are measured to arrival (0.80 s on the catch-window population). The scorecard's own YAC band (4.53–5.91) comes from nflverse team-season means of the official yards after catch, a different source, and has not been re-derived here.
 
 Standing check since this and the yard-line depth error: a table that states a gap against the NFL names the sim population (teams, seeds, games) and confirms both sides measure from the same reference.
 
