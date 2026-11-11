@@ -168,3 +168,47 @@ describe('CATCH_POINT', () => {
     expect(on).toBeGreaterThan(off);
   });
 });
+
+/** CATCH_POINT: a low ball that would reach the ground before its closest
+ * approach is caught at the edge, not lost while he waits. */
+async function lowBall(flag: string) {
+  vi.stubEnv('CATCH_POINT', flag);
+  vi.resetModules();
+  const { Rng } = await import('../src/core/rng.js');
+  const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
+  const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
+  const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
+  const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
+  const { resolveCatchOpportunities } = await import('../src/sim/catching.js');
+  const { PlaySim } = await import('../src/sim/playsim.js');
+  PlaySim.recordedSingleStream = true;
+  let reached = 0;
+  for (let i = 0; i < 20; i++) {
+    const u = (i + 0.5) / 20;
+    const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(7), 'O', 'OFF'), '11'),
+      defense: pickDefense(generateTeam(new Rng(19), 'D', 'DEF'), 'nickel'),
+      offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
+      defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: '' },
+      los: 40, ballY: 26, firstDownX: 50, seed: 1 });
+    const r = sim.slot('X')!;
+    for (const a of sim.agents) a.body.pos = { x: 20, y: 10 };
+    r.body.pos = { x: 50, y: 26 }; r.body.facing = Math.PI;
+    sim.throwBall(sim.qb, r, { x: 15, y: 0, z: 0 }, { x: 50, y: 26, z: 0.3 }, 1.0);
+    sim.t = 1.0;
+    sim.rng.next = () => u;
+    const events: string[] = []; const ev = sim.event.bind(sim);
+    (sim as any).event = (type: string, ...rest: any[]) => { events.push(type); return (ev as any)(type, ...rest); };
+    const edge = r.profile.reach + 0.3 - 0.1;
+    // Dropping fast: inside his envelope at the end of this tick, on the ground a tick on.
+    resolveCatchOpportunities(sim, { x: 50 - edge - 1.2, y: 26, z: 0.55 }, { x: 50 - edge, y: 26, z: 0.3 });
+    if (sim.ball.kind !== 'air' || events.some(e => ['catch', 'miss', 'drop'].includes(e))) reached++;
+  }
+  return reached / 20;
+}
+
+describe('CATCH_POINT low ball', () => {
+  it('a ball about to reach the ground is played at the edge, not lost while he waits', async () => {
+    expect(await lowBall('1')).toBe(await lowBall('0'));
+    expect(await lowBall('1')).toBe(1);
+  });
+});
