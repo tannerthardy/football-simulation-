@@ -45,6 +45,7 @@
     "COUNTER_C": "on",
     "COUNTER_OFFSET": "on",
     "CUTOFF_RACE": "on",
+    "DB_SLOTS": "off",
     "DB_SLOWPLAY": "on",
     "DEF_STANCE": "off",
     "DL_FIGHT": "off",
