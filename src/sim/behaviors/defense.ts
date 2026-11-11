@@ -60,6 +60,20 @@ export function believesRun(sim: PlaySim, a: Agent): boolean {
  * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
  * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
 const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
+/** ZONE_RELATE (experimental, off; ZONE_RELATE=1 turns it on): an underneath
+ * zone defender relates to the receiver in his zone, not to his landmark or
+ * the depth he settled at. A receiver he sees short of him (a yard or more
+ * under him, inside his zone, not climbing past him) is closed on: he comes
+ * down to the cushion that receiver's upfield threat needs (1.8 yd + closing
+ * over his flip + 1/2 a t^2 of the receiver's remaining upfield
+ * acceleration), in the receiver's throwing lane. Only where he would
+ * otherwise hold depth (settled, a spot settle, a stem read). With a route
+ * in his band coming at or behind his depth (hi-lo: dig, seam) he stays up
+ * unless he sees the QB's eyes on the low one. No QB timing cue, no call or assignment. NFL zone-call
+ * backers over the catcher move at him before the throw (C3 / C4 at the
+ * release 3.5-3.6 yd/s, +1.3-1.4 toward, 8-10% slow); ours sat (2.3-2.4,
+ * +0.2-0.3, 27-42% slow) (BDB 2025 vs leagueSample games, same operator). */
+const ZONE_RELATE = process.env.ZONE_RELATE === '1';
 
 export function knowsPass(sim: PlaySim, a: Agent): boolean {
   if (a.recog) return a.recog.read === 'pass';
@@ -1277,9 +1291,42 @@ export class ZoneCoverage implements Behavior {
     if (holdFlat) tgt = { ...tgt, x: Math.max(tgt.x, Math.min(a.pos.x, lm.x)) };
     const settledLane = this.settledAt >= 0 && !carryingAcross;
     if (settledLane) tgt = settle(tgt);
-    return withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead || holdFlat ? 0 : settledLane ? Math.min(0, best.vel.x * 0.5) : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
+    const laneCmd = withFacingTechnique(track(a, { x: tgt.x, y: clamp(tgt.y, 0.5, FIELD_WIDTH - 0.5) }, { x: stemRead || holdFlat ? 0 : settledLane ? Math.min(0, best.vel.x * 0.5) : best.vel.x * 0.5, y: best.vel.y * 0.8 }, {
       facing: carryingAcross ? Math.atan2(best.vel.y, best.vel.x) : facingQB, speed: carryingAcross ? 1 : zs * 1.05, gain: 1.6 }),
       { label: carryingAcross ? 'lane-carry' : stemRead ? 'hook-stem-read' : holdFlat ? 'lane-hold' : 'lane', key: best.vel });
+    // ZONE_RELATE: only where he would otherwise hold his depth.
+    if (ZONE_RELATE && !carryingAcross && !holdFlat && laneCmd.vel.x > -0.5) return this.relate(a, sim, threats) ?? laneCmd;
+    return laneCmd;
+  }
+
+  /** ZONE_RELATE: close on a receiver short of him in his zone (see the flag). */
+  private relate(a: Agent, sim: PlaySim, threats: Array<{ r: Agent; pos: Vec2; vel: Vec2; fut: Vec2 }>): MoveCommand | null {
+    if (!ZONE_RELATE || this.deep || !knowsPass(sim, a)) return null;
+    const lm = this.landmark;
+    const inZone = threats.filter((th) => th.pos.x > sim.los - 1 && Math.hypot(th.pos.x - lm.x, th.pos.y - lm.y) < this.radius);
+    const short = inZone.filter((th) => th.pos.x < a.pos.x - 1 && th.fut.x < a.pos.x - 1 && th.vel.x < 2.5);
+    if (!short.length) return null;
+    // A high threat is any route in his band that will be at or behind his
+    // depth (a dig or seam coming behind him), not only one at his landmark.
+    const high = threats.filter((th) => !short.includes(th) && th.pos.x > sim.los - 1 && th.fut.x >= a.pos.x - 1);
+    // He reads the QB's eyes only while his own eyes are on the QB.
+    const eyes = eyesHeldOnQB(a, sim, 0.2, 0.5) ? sim.qbEyes : null;
+    const looked = short.find((th) => th.r === eyes);
+    if (high.length) {
+      a.tags.add('relate-two');
+      if (!looked) { a.tags.add('relate-high'); return null; }
+    }
+    const th = looked ?? short.reduce((p, q) => (Math.hypot(p.pos.x - a.pos.x, p.pos.y - a.pos.y) < Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y) ? p : q));
+    const flip = Math.PI / a.profile.turnRate;
+    const vx = Math.max(0, th.vel.x);
+    const upBurst = Math.max(0, (th.r.profile.vmax - vx) / th.r.profile.tau);
+    const need = 1.8 + Math.max(0, vx - Math.max(0, a.vel.x)) * flip + 0.5 * upBurst * flip * flip;
+    const lane = lerp(sim.see(a, sim.qb).pos, th.pos, 0.82);
+    const tgt = { x: Math.min(a.pos.x, th.pos.x + need), y: clamp(lane.y, 0.5, FIELD_WIDTH - 0.5) };
+    this.selectTarget(a, th.r);
+    a.tags.add('relate');
+    return withFacingTechnique(track(a, tgt, { x: Math.min(0, th.vel.x), y: th.vel.y * 0.8 },
+      { facing: angleTo(a.pos, sim.qb.pos), speed: 1, gain: 1.6 }), { label: 'zone-relate', key: th.vel });
   }
 
   /**
@@ -1306,6 +1353,8 @@ export class ZoneCoverage implements Behavior {
         { label: turned ? 'spot-drop-run' : 'spot-drop' });
     }
     a.tags.add('settled');
+    const related = this.relate(a, sim, threats);
+    if (related) return related;
     const read = 0.5 * a.r('zoneCoverage') + 0.5 * a.r('anticipation');
     let tgt: Vec2 = lm;
     const eyes = sim.qbEyes;

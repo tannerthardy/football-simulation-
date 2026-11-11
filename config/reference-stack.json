@@ -89,6 +89,7 @@
     "HIP_BRACE": "on",
     "HIP_STRENGTH": "on",
     "HOLD_FACING": "on",
+    "ZONE_RELATE": "off",
     "HOLD_FINISH": "on",
     "IN_STRIDE_CATCH": "off",
     "IZ_FLAT": "on",
