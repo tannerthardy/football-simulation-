@@ -102,8 +102,8 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
  * concepts never produced (docs/reviews/2026-11-11-playbook-coverage.md, BDB 2025 routeRan on drop-back
  * passes: 54% of formation sides and 22% of drop-backs were ours). Each strong side's first two routes are a
  * missing two-receiver pair and its #3 a missing trips side; weak sides are common NFL pairs; the back runs
- * the NFL's back routes (angle 16.8%, out 7.4%, wheel 2.0% of drop-backs). `read` is the coached key;
- * `progression` is ordered to match it. CALL_MIX weights them from their route classes like the rest.
+ * the NFL's back routes (angle 16.8%, out 7.4%, wheel 2.0% of drop-backs). `read` is a plain note of the
+ * intended key and rule; `progression` is ordered to match it. CALL_MIX weights them from their route classes like the rest.
  */
 export const CONCEPT_MENU = process.env.CONCEPT_MENU === '1';
 export const MENU_CONCEPTS: PassConcept[] = [
@@ -111,93 +111,93 @@ export const MENU_CONCEPTS: PassConcept[] = [
     id: 'double_slants', name: 'Double Slants', family: 'quick', drop: 'quick',
     strong: { 1: 'slant', 2: 'slant', 3: 'flat' }, weak: { 1: 'go', 2: 'hitch' }, back: 'block',
     progression: ['S2', 'S1', 'S3', 'W2'], beats: ['cover3', 'man', 'blitz'],
-    read: { key: 'the hook defender over #2', rule: 'he widens under #2: #1 slant behind him; he holds: #2 slant; he drops: #3 flat' },
+    read: 'the hook defender over #2: he widens under #2: #1 slant behind him; he holds: #2 slant; he drops: #3 flat',
   },
   {
     id: 'fade_flat', name: 'Fade-Flat', family: 'dropback', drop: 'gun3',
     // The back checks: released at once on the angle he took the ball from the two reads (27 of 61 throws).
     strong: { 1: 'go', 2: 'flat', 3: 'hitch' }, weak: { 1: 'hitch', 2: 'go' }, back: 'check',
     progression: ['S1', 'S2', 'S3', 'W1', 'B'], beats: ['cover2', 'man'],
-    read: { key: 'the flat (cloud) corner', rule: 'he sinks with #1: #2 flat; he squats on the flat: #1 fade in the hole' },
+    read: 'the flat (cloud) corner: he sinks with #1: #2 flat; he squats on the flat: #1 fade in the hole',
   },
   {
     id: 'hitch_post', name: 'Hitch-Post', family: 'dropback', drop: 'gun5',
     strong: { 1: 'hitch', 2: 'post', 3: 'flat' }, weak: { 1: 'go', 2: 'hitch' }, back: 'angle',
     progression: ['S2', 'S1', 'S3', 'W2', 'B'], beats: ['cover3', 'cover1'],
-    read: { key: 'the middle-of-field safety', rule: 'he stays over the post: #1 hitch; he widens or jumps a seam: #2 post' },
+    read: 'the middle-of-field safety: he stays over the post: #1 hitch; he widens or jumps a seam: #2 post',
   },
   {
     id: 'double_outs', name: 'Double Outs', family: 'dropback', drop: 'gun5',
     strong: { 1: 'out', 2: 'quick_out', 3: 'hitch' }, weak: { 1: 'hitch', 2: 'out' }, back: 'angle',
     progression: ['S2', 'S1', 'S3', 'W1', 'B'], beats: ['cover3', 'cover1'],
-    read: { key: 'the curl-flat defender', rule: 'he drops under #1: #2 quick out; he jumps #2: #1 out behind him' },
+    read: 'the curl-flat defender: he drops under #1: #2 quick out; he jumps #2: #1 out behind him',
   },
   {
     id: 'hitch_out', name: 'Hitch-Out', family: 'quick', drop: 'gun3',
     strong: { 1: 'hitch', 2: 'quick_out', 3: 'hitch' }, weak: { 1: 'slant', 2: 'hitch' }, back: 'back_out',
     progression: ['S2', 'S1', 'S3', 'W1', 'B'], beats: ['cover3', 'cover4'],
-    read: { key: 'the apex (flat) defender', rule: 'he widens to the out: #1 hitch inside him; he sits on the hitch: #2 out' },
+    read: 'the apex (flat) defender: he widens to the out: #1 hitch inside him; he sits on the hitch: #2 out',
   },
   {
     id: 'seam_slant', name: 'Seam-Slant', family: 'quick', drop: 'quick',
     strong: { 1: 'go', 2: 'slant', 3: 'hitch' }, weak: { 1: 'slant', 2: 'go' }, back: 'block',
     progression: ['S2', 'W1', 'S3', 'S1'], beats: ['cover1', 'cover3', 'blitz'],
-    read: { key: 'the hook defender inside #2', rule: 'he widens to the slant: #3 hitch; he stays inside: #2 slant; man: the slant with leverage' },
+    read: 'the hook defender inside #2: he widens to the slant: #3 hitch; he stays inside: #2 slant; man: the slant with leverage',
   },
   {
     id: 'hitch_cross', name: 'Hitch-Cross', family: 'dropback', drop: 'gun5',
     strong: { 1: 'hitch', 2: 'cross', 3: 'flat' }, weak: { 1: 'go', 2: 'shallow' }, back: 'back_out',
     progression: ['S2', 'W2', 'S1', 'S3', 'B'], beats: ['cover1', 'cover3'],
-    read: { key: 'the Mike (hook-middle)', rule: 'he carries the cross: the weak shallow under him, then #1 hitch; he sits: the cross past him; man: the crosser away from leverage' },
+    read: 'the Mike (hook-middle): he carries the cross: the weak shallow under him, then #1 hitch; he sits: the cross past him; man: the crosser away from leverage',
   },
   {
     id: 'post_cross', name: 'Post-Cross', family: 'dropback', drop: 'gun5',
     strong: { 1: 'post', 2: 'cross', 3: 'hitch' }, weak: { 1: 'go', 2: 'hitch' }, back: 'block',
     progression: ['S1', 'S2', 'W2', 'S3'], beats: ['cover3', 'cover1'],
-    read: { key: 'the middle-of-field safety', rule: 'he stays on the post: #2 cross under him; he drives on the cross: #1 post' },
+    read: 'the middle-of-field safety: he stays on the post: #2 cross under him; he drives on the cross: #1 post',
   },
   {
     id: 'sail_corner', name: 'Corner-Out', family: 'dropback', drop: 'gun5',
     // The back checks first: a five-step high-low needs him in until the corner breaks.
     strong: { 1: 'corner', 2: 'quick_out', 3: 'hitch' }, weak: { 1: 'hitch', 2: 'go' }, back: 'check',
     progression: ['S1', 'S2', 'S3', 'W1', 'B'], beats: ['cover2', 'cover4'],
-    read: { key: 'the squat (flat) corner', rule: 'he sinks under the corner: #2 out; he squats on the out: #1 corner' },
+    read: 'the squat (flat) corner: he sinks under the corner: #2 out; he squats on the out: #1 corner',
   },
   {
     id: 'corner_flat', name: 'Corner-Flat', family: 'dropback', drop: 'gun5',
     strong: { 1: 'corner', 2: 'flat', 3: 'hitch' }, weak: { 1: 'slant', 2: 'hitch' }, back: 'check',
     progression: ['S1', 'S2', 'S3', 'W1', 'B'], beats: ['cover2', 'cover3'],
-    read: { key: 'the flat defender', rule: 'he sinks under the corner: #2 flat; he jumps the flat: #1 corner' },
+    read: 'the flat defender: he sinks under the corner: #2 flat; he jumps the flat: #1 corner',
   },
   {
     id: 'trips_stick', name: 'Trips Hitch-Flat', family: 'quick', drop: 'gun3',
     strong: { 1: 'hitch', 2: 'hitch', 3: 'flat' }, weak: { 1: 'go' }, back: 'angle',
     progression: ['S3', 'S2', 'S1', 'W1', 'B'], beats: ['cover3', 'cover4'],
-    read: { key: 'the curl-flat (apex) defender over #2/#3', rule: 'he widens to the flat: #2 hitch; he sits: #3 flat' },
+    read: 'the curl-flat (apex) defender over #2/#3: he widens to the flat: #2 hitch; he sits: #3 flat',
   },
   {
     id: 'trips_sail', name: 'Trips Sail', family: 'dropback', drop: 'gun5',
     strong: { 1: 'go', 2: 'out', 3: 'hitch' }, weak: { 1: 'hitch', 2: 'hitch' }, back: 'back_out',
     progression: ['S2', 'S3', 'S1', 'W1', 'B'], beats: ['cover3'],
-    read: { key: 'the curl-flat defender', rule: 'he widens under the out: #3 hitch inside; he sits: #2 out' },
+    read: 'the curl-flat defender: he widens under the out: #3 hitch inside; he sits: #2 out',
   },
   {
     id: 'seam_hitch', name: 'Seam-Hitch', family: 'dropback', drop: 'gun3',
     strong: { 1: 'hitch', 2: 'seam', 3: 'hitch' }, weak: { 1: 'hitch', 2: 'seam' }, back: 'wheel',
     progression: ['S2', 'S1', 'S3', 'W2', 'B'], beats: ['cover3', 'cover1'],
-    read: { key: 'the middle-of-field safety', rule: 'he works to the seam: the hitches under; he stays middle: the seam outside his leverage' },
+    read: 'the middle-of-field safety: he works to the seam: the hitches under; he stays middle: the seam outside his leverage',
   },
   {
     id: 'trips_outs', name: 'Trips Outs', family: 'dropback', drop: 'gun5',
     strong: { 1: 'go', 2: 'out', 3: 'quick_out' }, weak: { 1: 'hitch', 2: 'go' }, back: 'block',
     progression: ['S2', 'S3', 'S1', 'W1'], beats: ['cover3', 'cover1'],
-    read: { key: 'the curl-flat defender', rule: 'he sinks under #2: #3 quick out; he jumps #3: #2 out' },
+    read: 'the curl-flat defender: he sinks under #2: #3 quick out; he jumps #3: #2 out',
   },
   {
     id: 'verts_hitch', name: 'Verticals-Hitch', family: 'dropback', drop: 'gun5',
     strong: { 1: 'go', 2: 'seam', 3: 'hitch' }, weak: { 1: 'go', 2: 'hitch' }, back: 'check',
     progression: ['S2', 'S3', 'W2', 'S1', 'B'], beats: ['cover3', 'cover1'],
-    read: { key: 'the middle-of-field safety', rule: 'he stays middle: #2 seam; he shades to #2: #3 hitch under the seam, then the backside seam' },
+    read: 'the middle-of-field safety: he stays middle: #2 seam; he shades to #2: #3 hitch under the seam, then the backside seam',
   },
 ];
 

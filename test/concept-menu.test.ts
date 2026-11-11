@@ -46,7 +46,7 @@ describe('CONCEPT_MENU', () => {
     for (const c of MENU_CONCEPTS) {
       for (const side of [c.strong, c.weak]) for (const id of Object.values(side)) expect(() => getRoute(id!), `${c.id} ${id}`).not.toThrow();
       if (c.back !== 'block' && c.back !== 'check') expect(() => getRoute(c.back)).not.toThrow();
-      expect(c.read?.key, c.id).toBeTruthy();
+      expect(c.read, c.id).toBeTruthy();
       expect(c.beats.length, c.id).toBeGreaterThan(0);
       for (const ref of c.progression) {
         const [side, n] = [ref[0], Number(ref.slice(1))];
@@ -112,6 +112,37 @@ describe('CONCEPT_MENU', () => {
       console.log(`read ${c.id} vs ${coverFor(c)}: first two reads ${first2}/${throws}`);
       expect(throws, c.id).toBeGreaterThanOrEqual(6);
       expect(first2 / throws, `${c.id}: ${rows.at(-1)}`).toBeGreaterThanOrEqual(0.5);
+    }
+  });
+});
+
+describe('CONCEPT_MENU trips: #3 releases where the defence reads him as #3', () => {
+  // The new #3 routes: a hitch, an out off a vertical stem, a quick out, a flat. The hook defender's own
+  // release reader (src/sim/coverage/reads.ts, through his perception) must declare a release from the #3 he
+  // keys by the time the route breaks, and the class must be the route's: a stem shows vertical first; a
+  // flat shows flat.
+  const EXPECT: Record<string, string[]> = { hitch: ['vertical'], out: ['vertical'], quick_out: ['vertical'], flat: ['flat', 'out'] };
+  it('the hook defender declares #3 with the release his route shows', async () => {
+    const { ReleaseReader } = await import('../src/sim/coverage/reads.js');
+    const trips = MENU_CONCEPTS.filter((c) => c.strong[3] && EXPECT[c.strong[3]] && formFor(c) === 'gun_trips_11');
+    expect(trips.length).toBeGreaterThanOrEqual(4);
+    for (const c of trips) {
+      const s = sim(c, 5, 'cover3_match');
+      s.throwBall = () => undefined;
+      const three = s.slot(s.offAlign.numbering.S3!)!;
+      const key = s.slot('LB_M') ?? s.slot('LB_S')!;
+      const reader = new ReleaseReader(key, s);
+      const tick = s as unknown as { tick(): void };
+      let first: string | null = null, at = -1;
+      // In 3x1 (gun_trips_11) #3 is the attached end: his release through the edge is slower than a slot's.
+      while (s.phase === 'live' && s.t < 2.6 && !s.scrambleDrill) {
+        tick.tick();
+        const rd = reader.read(s, three);
+        if (rd && rd.first !== 'none' && first === null) { first = rd.first; at = s.t; }
+      }
+      expect(first, `${c.id} #3 ${c.strong[3]}`).not.toBeNull();
+      expect(EXPECT[c.strong[3]!], `${c.id} #3 ${c.strong[3]} declared ${first} at ${at.toFixed(2)} s`).toContain(first);
+      expect(at, c.id).toBeLessThan(2.4);
     }
   });
 });
