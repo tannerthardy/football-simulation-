@@ -4,34 +4,19 @@
  * formation, the way real offenses teach them. Receivers without an explicit
  * route run the side's default (#1 go, #2+ seam) as clear-outs.
  */
-import type { PassConcept, ReceiverRef, RunConcept } from './types.js';
-
-/**
- * FLAT_FIRST (experimental, off; FLAT_FIRST=1): the three high-low concepts on
- * the flat defender read the flat first. Slant-flat, stick and curl-flat put
- * the flat defender between two routes. Coached as "take the flat unless he
- * widens with it": the flat is open when he sits on the inside route, and the
- * inside route is open when he widens. The installed order looked at the
- * inside route first, so when both were open (a soft flat defender) the 10-12
- * yd curl or the slant won the tie. Only the order changes; each route's
- * openness is still judged from what the QB sees. Our flat was read #1 on 10%
- * of the routes it was run (NFL flats are 12.7% of targets, ours 4-7% in these
- * concepts); docs/reviews/2026-11-11-call-mix.md.
- */
-export const FLAT_FIRST = process.env.FLAT_FIRST === '1';
-const flatFirst = (installed: ReceiverRef[], flat: ReceiverRef[]): ReceiverRef[] => FLAT_FIRST ? flat : installed;
+import type { PassConcept, RunConcept } from './types.js';
 
 export const PASS_CONCEPTS: PassConcept[] = [
   // ------------------------------------------------------------ quick game
   {
     id: 'slant_flat', name: 'Slant-Flat', family: 'quick', drop: 'quick',
     strong: { 1: 'slant', 2: 'flat', 3: 'hook' }, weak: { 1: 'slant', 2: 'flat' }, back: 'block',
-    progression: flatFirst(['S1', 'S2', 'W1', 'W2', 'S3'], ['S2', 'S1', 'W2', 'W1', 'S3']), beats: ['cover3', 'man', 'blitz'],
+    progression: ['S1', 'S2', 'W1', 'W2', 'S3'], beats: ['cover3', 'man', 'blitz'],
   },
   {
     id: 'stick', name: 'Stick', family: 'quick', drop: 'gun3',
     strong: { 1: 'go', 2: 'stick', 3: 'flat' }, weak: { 1: 'slant', 2: 'stick' }, back: 'check',
-    progression: flatFirst(['S2', 'S3', 'W1', 'W2', 'B'], ['S3', 'S2', 'W1', 'W2', 'B']), beats: ['cover3', 'cover4', 'zone'],
+    progression: ['S2', 'S3', 'W1', 'W2', 'B'], beats: ['cover3', 'cover4', 'zone'],
   },
   {
     id: 'quick_outs', name: 'Speed Outs', family: 'quick', drop: 'quick',
@@ -52,7 +37,7 @@ export const PASS_CONCEPTS: PassConcept[] = [
   {
     id: 'curl_flat', name: 'Curl-Flat', family: 'dropback', drop: 'gun5',
     strong: { 1: 'curl', 2: 'flat', 3: 'hook' }, weak: { 1: 'curl', 2: 'flat' }, back: 'check',
-    progression: flatFirst(['S1', 'S2', 'W1', 'W2', 'B'], ['S2', 'S1', 'W2', 'W1', 'B']), beats: ['cover3', 'cover2'],
+    progression: ['S1', 'S2', 'W1', 'W2', 'B'], beats: ['cover3', 'cover2'],
   },
   {
     id: 'mesh', name: 'Mesh', family: 'dropback', drop: 'gun5',

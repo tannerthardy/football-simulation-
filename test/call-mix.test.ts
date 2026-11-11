@@ -1,14 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CALL_MIX, CALL_MIX_PREF, callBucket, callMixWeight, conceptProfile, ROUTE_CLASSES, routeClass } from '../src/game/call-mix.js';
-import { FLAT_FIRST, PASS_BY_ID } from '../src/playbook/concepts.js';
+import { PASS_BY_ID } from '../src/playbook/concepts.js';
 
 const config = JSON.parse(readFileSync('config/call-mix.json', 'utf8'));
 
 describe('CALL_MIX: route-class preference by down and distance', () => {
-  it('is off by default, and so is FLAT_FIRST', () => {
+  it('is off by default', () => {
     expect(CALL_MIX).toBe(false);
-    expect(FLAT_FIRST).toBe(false);
   });
 
   it('keeps the generated table equal to config/call-mix.json', () => {
@@ -46,11 +45,5 @@ describe('CALL_MIX: route-class preference by down and distance', () => {
     expect(callMixWeight(PASS_BY_ID.hitches, 1, 10, pref)).toBeGreaterThan(1);
     expect(callMixWeight(PASS_BY_ID.comebacks, 1, 10, pref)).toBeLessThan(1);
     expect(callMixWeight(PASS_BY_ID.comebacks, 3, 12, pref)).toBe(1);
-  });
-
-  it('leaves the installed read order with FLAT_FIRST off', () => {
-    expect(PASS_BY_ID.slant_flat.progression).toEqual(['S1', 'S2', 'W1', 'W2', 'S3']);
-    expect(PASS_BY_ID.stick.progression).toEqual(['S2', 'S3', 'W1', 'W2', 'B']);
-    expect(PASS_BY_ID.curl_flat.progression).toEqual(['S1', 'S2', 'W1', 'W2', 'B']);
   });
 });

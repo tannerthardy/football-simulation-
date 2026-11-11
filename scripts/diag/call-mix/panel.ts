@@ -1,9 +1,9 @@
-// FLAT_FIRST matched panel: replay the saved pass snaps of matched-restage seeds 7 and 11 under 4 dice shifts
+// Playbook matched panel (used for FLAT_FIRST, kept on branch rules/flat-first): replay the saved pass snaps of matched-restage seeds 7 and 11 under 4 dice shifts
 // (Coverage's panel), one row per dropback, so a read-order change is judged play by play. The calls are the
 // saved ones; CALL_MIX cannot act here (judge it on games with collect.ts). A saved setup carries its concept
 // object, read order included, so each replay re-resolves the concept by id from this checkout's playbook.
 //   node --import tsx scripts/diag/matched-restage.ts capture 7; ... capture 11
-//   [FLAT_FIRST=1] node --import tsx scripts/diag/call-mix/panel.ts <arm>   -> out/call-mix/panel-<arm>.jsonl
+//   [ARM ENV] node --import tsx scripts/diag/call-mix/panel.ts <arm>   -> out/call-mix/panel-<arm>.jsonl
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { PASS_BY_ID } from '../../../src/playbook/concepts.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
