@@ -622,7 +622,7 @@ const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
  * pressed pairs at 2.0 s: 1.20 yd apart, about 1 yd to the side; ours 0.82,
  * within 1.2 yd 88% against 51% (BDB 2025 weeks 1-3, same operator). */
 const MAN_PHASE = process.env.MAN_PHASE === '1';
-/** CUSHION_NEED (on since run-ref-27; CUSHION_NEED=0 restores): before his
+/** CUSHION_NEED (on since engine-27; CUSHION_NEED=0 restores): before his
  * hips open, a man defender's cushion on a released receiver is the one the
  * receiver's observed vertical threat requires (his own hip-turn threshold:
  * 1.8 yd plus the closing speed over his flip time plus the burst the receiver

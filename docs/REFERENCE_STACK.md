@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-27`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-27`. From this version the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -607,7 +607,7 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
-## run-ref-27: `CUSHION_NEED` on (2026-11-11)
+## engine-27: `CUSHION_NEED` on, man defenders squeeze their cushion (2026-11-11)
 
 Defense #554. Before his hips open, a man defender kept his alignment cushion, scheduled down only by the receiver's depth, so a linebacker in man on a back releasing short pedalled from 4–5 yd instead of coming down. He now keeps only the cushion his receiver's observed upfield threat requires (1.8 yd, plus the closing speed over his flip time, plus the burst the receiver still has toward his top speed); a receiver climbing straight up the field still gets the full cushion.
 
@@ -617,6 +617,8 @@ Defense #554. Before his hips open, a man defender kept his alignment cushion, s
 | YAC trimmed | 5.34 | 5.05 | |
 | Untouched to +10: all / Cover 1 | 11.4 / 11.9% | 12.6 / 8.0% | |
 | Deep completion | 42.9% (n 98) | 32.9% (n 85) | |
+
+Integration's checks: two league cards (16 games each, seeds 11 and 23, unpaired arms) resolve nothing either way (yards an attempt +0.48 / +0.08, YAC a reception +0.25 / −0.28, INT and sacks flat). The fixed 1,321 runs, paired on identical plays, move: missed tackles a run 0.234 → 0.259 in every concept, outside-zone runs of 10+ 4.1 → 6.3%, yards a run 3.78 → 3.81. Defense's trace of those plays: tackle attempts 1,318 → 1,349; the defenders the squeeze acted on (187 play-defender pairs, the same in both arms) attempt 115 → 194 tackles at 0.12 → 0.15 missed an attempt (not established); only 2 of their 194 attempts came after their own man had engaged them; about half the raw rise is defensive linemen, who never run this code, missing more on a runner whose path changed. The added misses are 3–10 yd past the line. Read as more second-level involvement at about the same miss rate. Not audited: leverage at those attempts.
 
 What it does not reach: zone-call linebackers over the catcher still sit at the release (Cover 3 2.3 yd/s, +0.2 toward, 31% slow against the NFL's 3.5, +1.4, 8%); they run zone techniques, not man, and are Defense's next build. An earlier version that squeezed corners on wide receivers was dropped. `SET_SQUEEZE` (the deep zone corner spending his cushion when the quarterback sets) is a written miss on its branch: the corner has no cushion to spend.
 
