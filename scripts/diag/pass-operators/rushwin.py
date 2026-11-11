@@ -9,8 +9,10 @@ end, capped at 4.0 s).
   snap y; interior otherwise.
 - Protection size: offensive non-QB players behind the line within the OL span
   +- 3 yd at that frame (rushcount.py), banded 5-, 6, 7+.
-- His blocker at a frame: the offensive non-QB player nearest him. Engaged:
-  that player within 1.2 yd.
+- His blocker at a frame: the nearest member of the protection (the OL, and
+  any other offensive non-QB player still in protection at 1.5 s by the
+  protector definition above; a receiver brushing past on his release is not
+  a blocker). Engaged: that player within 1.2 yd.
 - Winning (Flex's qb-leave.py): nearer the QB than his blocker is, or no blocker
   within 1.2 yd. A rusher counts as winning only from 0.5 s, and after he has
   been engaged; a rusher never engaged before he is within 2 yd of the QB is
@@ -18,10 +20,14 @@ end, capped at 4.0 s).
 - At the first win: distance to the QB, and bearing from the QB (front: within
   45 deg of upfield; edge 45-135; behind).
 - Warning: first win -> first frame within 1 yd of the QB.
-- Pressure: first frame within 2 yd of the QB. How it arrived:
+- Pressure: first frame from 0.6 s within 2 yd of the QB (before that an
+  under-center QB is still at the line). How it arrived:
   - unblocked;
-  - walked back: his blocker within 1.2 yd of him and nearer the QB (a bull
-    rush driving the man into the QB);
+  - walked back: his blocker within 1.2 yd of him, nearer the QB, and he is
+    square behind him (within 0.5 yd of the blocker-QB line): a bull rush
+    driving the man into the QB;
+  - ridden: the blocker attached and nearer the QB but the rusher beside him
+    (more than 0.5 yd off that line): run around the QB at the edge;
   - won edge / won interior: otherwise, by alignment.
 - Corner: for an edge rusher who wins, the first frame he is deeper than his
   blocker; his depth relative to the QB then (x_rusher - x_QB; + = short of the QB).
@@ -42,6 +48,13 @@ import statistics as st
 import sys
 
 CAP = 4.0
+# Pressure is counted from here: an under-center QB starts within 2 yd of the
+# interior line, so earlier frames are the snap, not a rush (2.7% of NFL pressures).
+PRESS_FROM = 0.6
+# STRICT=1: a win must be clear (0.3 yd nearer the QB than his blocker, or free)
+# and closing on the QB at 1 yd/s or more over the next 0.3 s.
+STRICT = bool(__import__('os').environ.get('STRICT'))
+DUMP = bool(__import__('os').environ.get('DUMP'))
 
 
 def q(v, fmt='{:.2f}'):
@@ -82,6 +95,7 @@ def run(path):
         lo, hi = ys[0], ys[-1]
         prot = sum(1 for o in O if P(o, k15)[0] < 0.3 and lo - 3 <= P(o, k15)[1] <= hi + 3)
         band = '5-' if prot <= 5 else '6' if prot == 6 else '7+'
+        PROT = sorted(set(OL) | {o for o in O if P(o, k15)[0] < 0.3 and lo - 3 <= P(o, k15)[1] <= hi + 3})
         rushers = [e for e in D if P(e, k15)[0] < P(e, 0)[0] - 1.0 and P(e, k15)[0] < 3]
         for e in rushers:
             y0 = P(e, 0)[1]
@@ -96,36 +110,54 @@ def run(path):
             one = None
             corner = None
             for f in range(1, kend + 1):
-                b = min(O, key=lambda o: dist(o, e, f))
+                # Blockers: the protection (a receiver brushing past on his
+                # release is not a blocker).
+                b = min(PROT, key=lambda o: dist(o, e, f))
                 db = dist(b, e, f)
                 dq = dist(qb, e, f)
                 if db <= 1.2 and not engaged:
                     engaged = True
                     first_eng = (f, b)
                 w = engaged and f * dt >= 0.5 and (db > 1.2 or dq < dist(qb, b, f))
+                if STRICT and w:
+                    g = min(kend, f + 3)
+                    closing = (dq - dist(qb, e, g)) / max(dt, (g - f) * dt)
+                    w = (db > 1.2 or dq < dist(qb, b, f) - 0.3) and closing >= 1.0
                 run_ = run_ + 1 if w else 0
                 if win is None and run_ * dt >= 0.2 - 1e-9:
                     win = (f - run_ + 1, b)
                 if win and corner is None and al == 'edge' and P(e, f)[0] < P(win[1], f)[0]:
                     corner = P(e, f)[0] - P(qb, f)[0]
-                if press is None and dq <= 2.0:
-                    press = (f, b, db, dist(qb, b, f), dq)
+                if press is None and dq <= 2.0 and f * dt >= PRESS_FROM - 1e-9:
+                    bx, by_ = P(b, f); ux, uy = P(qb, f)[0] - bx, P(qb, f)[1] - by_
+                    off = abs((P(e, f)[0] - bx) * uy - (P(e, f)[1] - by_) * ux) / (math.hypot(ux, uy) or 1)
+                    press = (f, b, db, dist(qb, b, f), dq, off)
                 if one is None and dq <= 1.0:
                     one = f
             for key in (al, f'{al} prot {band}', 'all'):
                 c, s = C[key], S[key]
                 if press:
                     c['pressures'] += 1
-                    f, b, db, dqb, dq = press
+                    f, b, db, dqb, dq, off = press
                     if first_eng is None or first_eng[0] >= f:
-                        c['p_unblocked'] += 1
+                        lab = 'unblocked'
+                    elif db <= 1.2 and dqb < dq and off <= 0.5:
+                        lab = 'walked_back'
                     elif db <= 1.2 and dqb < dq:
-                        c['p_walked_back'] += 1
+                        lab = 'ridden'
                     else:
-                        c[f'p_won_{al}'] += 1
+                        lab = f'won_{al}'
+                    c['p_' + lab] += 1
+                    if key == 'all' and DUMP:
+                        print(json.dumps({'id': p.get('id'), 'rusher': e, 'blocker': b, 'al': al, 'label': lab, 't': round(f * dt, 2),
+                                          'qb_x0': round(P(qb, 0)[0], 2), 'qb_x': round(P(qb, f)[0], 2), 'db': round(db, 2),
+                                          'dqb': round(dqb, 2), 'dq': round(dq, 2), 'off': round(off, 2)}), file=sys.stderr)
                 if win:
                     f, b = win
                     c['won'] += 1
+                    if key == 'all' and DUMP:
+                        print(json.dumps({'kind': 'win', 'id': p.get('id'), 'rusher': e, 'blocker': b, 'al': al, 't': round(f * dt, 2),
+                                          'pressed': bool(press)}), file=sys.stderr)
                     s['t_win'].append(f * dt)
                     s['d_win'].append(dist(qb, e, f))
                     ex, ey = P(e, f); qx, qy = P(qb, f)
@@ -144,7 +176,7 @@ def run(path):
                 for t in (1.0, 1.5, 2.0):
                     f = int(round(t / dt))
                     if f <= kend:
-                        b = min(O, key=lambda o: dist(o, e, f))
+                        b = min(PROT, key=lambda o: dist(o, e, f))
                         if dist(b, e, f) <= 1.5:
                             s[f'between_{t}'].append(dist(qb, e, f) - dist(qb, b, f))
                             s[f'blockerQB_{t}'].append(dist(qb, b, f))
@@ -170,7 +202,7 @@ def main():
             if 'prot' in key:
                 continue
             print(f"  {'':22s} pressures {c['pressures']} ({100*c['pressures']/r:.1f}% of rushers): unblocked {100*c['p_unblocked']/pr:.0f}%, "
-                  f"walked back {100*c['p_walked_back']/pr:.0f}%, won edge {100*c['p_won_edge']/pr:.0f}%, won interior {100*c['p_won_interior']/pr:.0f}%")
+                  f"walked back {100*c['p_walked_back']/pr:.0f}%, ridden {100*c['p_ridden']/pr:.0f}%, won edge {100*c['p_won_edge']/pr:.0f}%, won interior {100*c['p_won_interior']/pr:.0f}%")
             print(f"  {'':22s} contact t {q(s['t_contact'])} s | blocker set depth {q(s['set_depth'])} yd, width out {q(s['set_width'])} yd"
                   + (f" | corner depth vs QB {q(s['corner'])} yd (n {len(s['corner'])})" if key == 'edge' else ''))
             print(f"  {'':22s} rusher-QB minus blocker-QB (engaged): 1.0 s {q(s['between_1.0'])} | 1.5 s {q(s['between_1.5'])} | 2.0 s {q(s['between_2.0'])}; "
