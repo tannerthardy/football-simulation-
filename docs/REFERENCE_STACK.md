@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-21`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-22`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,21 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## run-ref-22: `DEFLECT_BALL` on (2026-11-11)
+
+Coverage #544. Whenever a receiver failed to catch, the ball deflected off him at 20% of its speed with a small pop, whether or not he had touched it, and a defender nearby then caught the hanging ball 10–40% of the time. Only the "catchable" misses logged a drop, so the rest read as clean picks: 17 of 21 short interceptions on the league-sampled panel came off the receiver (3.8% of short throws against the NFL's 0.4%). Now whether he touched the ball is decided from where it was in his catch window; untouched, it keeps its flight (an overthrow can still be picked behind him); a square bobble pops up and dies; a glancing touch keeps going low; and a defender catches a tipped ball only within his hands' reach and seeing it. Every miss logs an event.
+
+| League-sampled panel (capture 7/11, run-ref-20 lineups), paired | off | on | NFL |
+|---|---|---|---|
+| INT per 100 throws: all / 0–10 / 10–20 yd | 5.0 / 4.8 / 6.2 | 2.5 / 2.4 / 3.6 | about 2.3 / 1.1 / 4.9 |
+| INTs off the receiver | 18 of 34 | 5 of 17 | about 15% of INTs |
+| Completion; yards a pass play | 61.5% | 60.9%; −0.12 ± 0.09 | |
+| YAC median | 4.56 | 4.57 | |
+
+Coverage's 16-game card: INT 3.6% → 2.1% (resolved); completion, yards an attempt, sacks and YAC not resolved. The touch and pop constants are chosen, not sourced, and were not adjusted toward the interception rate.
+
+Open: short interceptions are still about twice the NFL's (2.4 against 1.1) and 10–20 yd is a little under. The first attempt at this problem (`CATCH_CONTEST`, the first defender's possession window) is a written miss on Coverage's branch.
 
 ## run-ref-21: `DB_SLOTS` on (2026-11-11)
 
