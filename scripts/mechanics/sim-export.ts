@@ -92,7 +92,8 @@ export function commonPlay(p: PlayLog, id: string) {
   const ball = rp.frames[0].ball;
   return {
     id, source: 'sim', kind: p.kind, yards: r2(p.yards),
-    players: rp.players.map(a => ({ side: a.team, group: GROUP[a.pos] ?? 'OTHER' })),
+    // slot: the play's job (FS, SS, NB, ...), not the roster position; operators choose deep defenders by it.
+    players: rp.players.map(a => ({ side: a.team, group: GROUP[a.pos] ?? 'OTHER', slot: a.slot })),
     dt: 0.1, xy, ball_y: r2(Y(ball[1])), events, carrier,
     target: throwEv?.b ?? null,
     receiver,
