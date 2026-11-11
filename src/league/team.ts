@@ -259,7 +259,7 @@ export function pickOffense(team: Team, personnel: PersonnelId, av: Availability
   return out;
 }
 
-/** DB_SLOTS (experimental, off; DB_SLOTS=1): the defensive backs are placed by
+/** DB_SLOTS (on since run-ref-21; DB_SLOTS=0 restores): the defensive backs are placed by
  * position before the nickel and dime are filled. The installed order filled
  * NB and DB first from corners or safeties, scored on slot-corner and zone
  * suitability, so a safety usually took the nickel; the safeties' slots then
@@ -272,7 +272,7 @@ export function pickOffense(team: Team, personnel: PersonnelId, av: Availability
  * from the corners and the safeties left, as before. Rosters carry 6 CB and
  * 4 S, so nickel and dime stay staffed by defensive backs.
  * docs/reviews/2026-11-11-db-slots.md. */
-export const DB_SLOTS = process.env.DB_SLOTS === '1';
+export const DB_SLOTS = process.env.DB_SLOTS !== '0';
 
 export function pickDefense(team: Team, personnel: DefPersonnelId, av: Availability = {}): Partial<Record<DefSlot, Player>> {
   const taken = new Set<string>();
