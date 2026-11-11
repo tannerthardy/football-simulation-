@@ -124,7 +124,7 @@ There are 218 free first pressures on 1,561 dropbacks, 14.0 per 100.
     back or fullback (9) or a guard (7), who mostly do not reach them.
   - Run Game measured the cause: the protection's picture of a walked-up backer
     lags about 0.35 s, and its first assignment comes at 0.55–0.9 s.
-- When a backer comes free there is no spare protector on 52 of 75 blitzes,
+- When a blitzer comes free there is no spare protector on 61 of 75 blitzes,
   and 26 of those had no back in.
 
 ## The protection call
