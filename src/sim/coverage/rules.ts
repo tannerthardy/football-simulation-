@@ -18,7 +18,7 @@ import { zoneLandmark } from '../../playbook/alignment.js';
 import type { ManOptions } from '../behaviors/defense.js';
 import { knowsPass } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
-import { isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
+import { goingDeep, isQuickOut, type ReceiverRead, type ReleaseReader } from './reads.js';
 import { hasVisibleCap } from './judgment.js';
 
 export type Directive =
@@ -75,7 +75,7 @@ function backTo(c: RuleCtx): ReceiverRead | null {
 }
 
 const vertical = (rd: ReceiverRead | null, depth = 4): boolean => !!rd && rd.release === 'vertical' && rd.depth >= depth;
-const climbing = (rd: ReceiverRead | null): boolean => !!rd && (rd.release === 'vertical' || rd.climbed);
+const climbing = (rd: ReceiverRead | null): boolean => !!rd && (goingDeep(rd) || rd.climbed);
 /** The "no cover zone": a match corner owns any route by #1 whose stem gets past it. */
 const NO_COVER = 5;
 /** How long a shallow break must hold before a corner commits to zoning off it (s). */
