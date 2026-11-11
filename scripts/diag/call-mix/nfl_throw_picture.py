@@ -7,7 +7,7 @@ Dropbacks (not nullified, no spike/kneel), BDB 2025 tracking. One row per play: 
 down/distance, and per route runner (player_play wasRunningRoute): label, class (HITCH/OUT/IN split at 8 yd of
 break depth = deepest point before the throw, as nfl_route_depth.py; SLANT quick; FLAT/ANGLE/SCREEN flat; CROSS;
 others vertical), group (RB/FB = back, else WR/TE), depth past the snap spot and width from it, nearest defender
-distance and his closing speed (positive = closing), targeted."""
+distance and his closing speed (positive = closing), targeted, and his deepest point before the throw (brk) and when (tBrk, s)."""
 import csv, json, sys, math
 D = sys.argv[1]; weeks = sys.argv[2].split(',')
 T = lambda v: v in ('1', 'TRUE', 'True')
@@ -46,10 +46,12 @@ for w in weeks:
         ball = next((r for r in by.get(snap, []) if r['nflId'] in ('', 'NA')), None)
         if ball is None or at not in by: return
         bx, byy = float(ball['x']), float(ball['y']); dirn = 1 if rows[0]['playDirection'] == 'right' else -1
-        deep = {}
+        deep, tdeep = {}, {}
         for f in range(snap, at + 1):
             for r in by.get(f, []):
-                if r['nflId'] in runners[cur]: deep[r['nflId']] = max(deep.get(r['nflId'], -99), (float(r['x']) - bx) * dirn)
+                if r['nflId'] in runners[cur]:
+                    d = (float(r['x']) - bx) * dirn
+                    if d > deep.get(r['nflId'], -99): deep[r['nflId']] = d; tdeep[r['nflId']] = round((f - snap) / 10, 1)
         fr = by[at]; defs = [r for r in fr if r['nflId'] not in ('', 'NA') and r['club'] != off]
         out = []
         for r in fr:
@@ -62,6 +64,7 @@ for w in weeks:
             lab = runners[cur][pid]
             out.append({'label': lab, 'cls': klass(lab, deep.get(pid, 0)), 'back': pos.get(pid) in ('RB', 'FB'), 'target': tgt.get(cur) == pid,
                         'depth': round((mx - bx) * dirn, 2), 'width': round(abs(my - byy), 2), 'near': round(nd, 2),
+                        'brk': round(deep.get(pid, 0), 1), 'tBrk': tdeep.get(pid),
                         'closing': round(-((dvx - vx) * nx + (dvy - vy) * ny) / nd, 2)})
         def num(v):
             try: return float(v)

@@ -67,6 +67,7 @@ function picture(sim: any, target: any) {
     let cls: string | null = null;
     try { cls = rid && rid !== 'block' ? routeClass(rid) : null; } catch { cls = null; }
     return { slot: o.slot, pos: o.player.position, route: rid, cls, back: o.slot === 'RB' || o.slot === 'F' || sim.offAlign.refOf?.[o.slot] === 'B' || sim.offAlign.refOf?.[o.slot] === 'B2',
+      breakTime: o.behavior instanceof RouteRunner ? +(o.behavior as any).breakTime?.toFixed?.(2) : null,
       target: o === target, depth: +((o.pos.x - sim.los) * dir).toFixed(2), width: +Math.abs(o.pos.y - sim.ballY).toFixed(2),
       near: +nd.toFixed(2), closing: +closing.toFixed(2) };
   });
