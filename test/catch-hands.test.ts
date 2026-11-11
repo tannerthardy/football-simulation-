@@ -125,3 +125,46 @@ describe('CATCH_SECURE', () => {
     expect(on).toBeGreaterThan(0);
   });
 });
+
+/** CATCH_POINT: a tracking receiver catches the ball where it comes to his
+ * hands, not where it first crosses the edge of his reach. The ball comes
+ * straight at him over two ticks: the first ends just inside his envelope. */
+async function straightIn(flag: string) {
+  vi.stubEnv('CATCH_POINT', flag);
+  vi.resetModules();
+  const { Rng } = await import('../src/core/rng.js');
+  const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
+  const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
+  const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
+  const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
+  const { resolveCatchOpportunities } = await import('../src/sim/catching.js');
+  const { PlaySim } = await import('../src/sim/playsim.js');
+  PlaySim.recordedSingleStream = true;
+  let caught = 0;
+  for (let i = 0; i < 40; i++) {
+    const u = (i + 0.5) / 40;
+    const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(7), 'O', 'OFF'), '11'),
+      defense: pickDefense(generateTeam(new Rng(19), 'D', 'DEF'), 'nickel'),
+      offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass: PASS_BY_ID.four_verts, label: '' },
+      defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover3, pressure: null, label: '' },
+      los: 40, ballY: 26, firstDownX: 50, seed: 1 });
+    const r = sim.slot('X')!;
+    for (const a of sim.agents) a.body.pos = { x: 20, y: 10 };
+    r.body.pos = { x: 50, y: 26 }; r.body.facing = Math.PI;
+    sim.throwBall(sim.qb, r, { x: 15, y: 0, z: 0 }, { x: 50, y: 26, z: 1.3 }, 1.0);
+    sim.t = 1.0;
+    sim.rng.next = () => u;
+    const edge = r.profile.reach + 0.3 - 0.1;
+    resolveCatchOpportunities(sim, { x: 50 - edge - 1.2, y: 26, z: 1.3 }, { x: 50 - edge, y: 26, z: 1.3 });
+    if (sim.ball.kind === 'air' && !sim.ball.deflected) { sim.t += sim.dt; resolveCatchOpportunities(sim, { x: 50 - edge, y: 26, z: 1.3 }, { x: 50.4, y: 26, z: 1.3 }); }
+    if (sim.ball.kind === 'held' && sim.ball.carrier === r) caught++;
+  }
+  return caught / 40;
+}
+
+describe('CATCH_POINT', () => {
+  it('a ball coming straight at him is caught at his hands, not at the edge of his reach', async () => {
+    const off = await straightIn('0'), on = await straightIn('1');
+    expect(on).toBeGreaterThan(off);
+  });
+});

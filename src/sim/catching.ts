@@ -74,6 +74,16 @@ const HANDS_SCALE = 1.2;
  * 0.75-1.5 yd away at arrival complete 28%, ours 46-59% (catchpoint.py, same
  * operator). */
 const CATCH_SECURE = process.env.CATCH_SECURE === '1';
+/** CATCH_POINT (off; CATCH_POINT=1 turns it on; C14 open end): a receiver
+ * tracking the ball catches it where it comes to his hands, not where it first
+ * crosses the edge of his reach. Off, the catch resolved on the first tick the
+ * ball entered his envelope, while it was still approaching (median 1.38 yd
+ * from his centre on completions), so open, on-target balls carried the full
+ * stretch penalty: on the panel, with nobody within 3 yd, 58% were caught
+ * (25% failed the hard-catch roll, 11% the drop roll); NFL 81%. On, while the
+ * ball is still closing on him at the end of the tick (closest approach not yet
+ * reached) and will stay in the air, his catch waits for that approach. */
+const CATCH_POINT = process.env.CATCH_POINT === '1';
 
 interface Opp {
   a: Agent;
@@ -127,6 +137,16 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
     if (!body0) continue; // An incomplete supplied interval cannot grant reach.
     const opportunity = closestCatchOpportunity(body0, a.pos, prev, cur, { reach, low: .1, top });
     if (opportunity) opps.push({ a, ...opportunity, b: { x: prev.x + (cur.x - prev.x) * opportunity.s, y: prev.y + (cur.y - prev.y) * opportunity.s, z: opportunity.z } });
+  }
+  if (CATCH_POINT && !ball.deflected) {
+    // A tracking receiver whose closest approach is still ahead waits for it.
+    for (let i = opps.length - 1; i >= 0; i--) {
+      const o = opps[i];
+      if (o.a.team !== 'O' || !(o.a === ball.target || o.a.tags.has('onBall')) || o.s < 0.999) continue;
+      const vx = cur.x - prev.x, vy = cur.y - prev.y;
+      const closing = (o.a.pos.x - cur.x) * vx + (o.a.pos.y - cur.y) * vy > 0;
+      if (closing && cur.z > 0.25) opps.splice(i, 1);
+    }
   }
   if (opps.length === 0) return;
   opps.sort((p, q) => p.s - q.s);
