@@ -1035,3 +1035,12 @@ YAC mean 10.09 → 8.02 ± 0.45: divergence on this seed, as before.
 2. On NFL film, what the QB sees at the moment he starts to leave (about 1.6 s after setting): which rusher, how far, whether engaged, and the blocker geometry. Same measures on ours.
 
 The trigger needs to be grounded in that evidence, not in a time-to-reach model.
+
+**Defect found and fixed: SET_DECIDE's drop hook** (re-diagnosis item i).
+- The drop hook (added in v2) needed "the rest of the drop plus a windup", about 1.9 s at the start of the drop, which nearly every rusher beats.
+- It ended the drop on **152 of 182** pass plays, at about 1% into the drop, always moving backward. The QB was in the set phase from the snap: his reads started at the line, and no rhythm throw was possible.
+- **That contaminates the earlier SET_DECIDE 16-game read**: its rhythm suppression, and part of its throw/sack and movement numbers.
+- Removed. SET_DECIDE now acts only in the set phase.
+- Throw-path, seeds 201–202, off → fixed: rhythm 34 → 32, outlet 25 → 19, panic 11 → 2, hit throws 18 → 13, sacks 6 → 14, scrambles 3 → 10.
+- League export, seeds 401–402, rusher at 1 yd (n 31): throw / sack / scramble 42 / 55 / 3; stood 71%, outside 6%.
+- **Movement is still missing. Item ii (what NFL QBs see when they start to leave) stands.**

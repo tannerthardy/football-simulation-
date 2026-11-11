@@ -413,12 +413,6 @@ export class QBPass implements Behavior {
             return this.startThrow(a, sim, ev);
           }
         }
-        // SET_DECIDE: a rusher closing during the drop ends it: he sets here and the
-        // set-phase decision takes over from this tick.
-        if (SET_DECIDE) {
-          const move = this.setDecide(a, sim, this.reads[0], Math.max(0, this.snapAt + this.drop.time - t) + this.windup(a));
-          if (move) { this.phase = 'set'; this.setAt = t; this.readStart = t; return move; }
-        }
         // QBs who lock onto their first read give it away during the drop.
         if (a.r('decisionMaking') < 0.45) sim.qbEyes = this.reads[0] ?? null;
         const gun = sim.offCall.formation.qb !== 'under';
