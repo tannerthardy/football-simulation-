@@ -122,6 +122,18 @@ export function generateTeam(rng: Rng, name: string, abbr: string, opts: { stren
   };
 }
 
+/** The same team under another identity. Its id and its players' ids carry
+ * `salt`, so everything seeded by identity is drawn afresh: the team's
+ * alignment style and A-gap habit (`align:`/`agap:` + team id) and each
+ * player's ALIGN_HABIT depth habit (`align-habit:` + player id). Ratings,
+ * names, jerseys, schemes and coaching are unchanged. For diagnostic games,
+ * which otherwise reuse one fixed pair of identities (IRN, COM) on every seed
+ * and so sample two teams' habits instead of the league's. */
+export function withIdentity(team: Team, salt: string | number): Team {
+  const id = `${team.id}~${salt}`;
+  return { ...team, id, roster: team.roster.map((p) => ({ ...p, id: `${id}-${p.id.slice(p.id.indexOf('-') + 1)}` })) };
+}
+
 function pickJersey(rng: Rng, pos: Position, used: Set<number>): number {
   for (let tries = 0; tries < 60; tries++) {
     const [lo, hi] = rng.pick(JERSEY_RANGES[pos]);
