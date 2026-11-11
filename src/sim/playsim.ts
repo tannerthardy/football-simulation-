@@ -37,7 +37,7 @@ import { Agent, type Behavior, type Engagement, type RunContactSurface, type Tea
 import { CoverageScouting, QBMind } from './qbmind.js';
 import { Recognition, leaguePassLogOdds, type ScoutingReport, type SnapContext } from './recognition.js';
 import { assignBehaviors, onBallCaught, onHandoff, onInterception, onLooseBall, onRecovery, onThrow } from './assign.js';
-import { resolveCatchOpportunities } from './catching.js';
+import { resolveCatchOpportunities, secureStep } from './catching.js';
 import { createEngagement, releaseJoints, updateEngagements } from './engagement.js';
 import { PerceptionBuffer, type Perceived } from './perception.js';
 import { ANTICIPATION_PRIOR } from './anticipation-prior.js';
@@ -1463,6 +1463,7 @@ export class PlaySim {
   private updateBall(catchStarts?: readonly Readonly<Vec2>[]): void {
     const ball = this.ball;
     if (ball.kind === 'held' || ball.kind === 'dead') return;
+    if (ball.kind === 'air' && ball.securing) { secureStep(this); return; }
     const prev = { ...ball.flight.pos };
     stepFlight(ball.flight, this.dt, this.wind);
     const cur = ball.flight.pos;
