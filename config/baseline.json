@@ -200,6 +200,7 @@
     "POCKET_CLIMB": "0",
     "BLOCK_SEEN": "0",
     "SET_DECIDE": "0",
+    "FINISH_CHECK": "0",
     "PASS_ANCHOR": "0",
     "MAN_PHASE": "0",
     "HIP_BRACE": "0",
