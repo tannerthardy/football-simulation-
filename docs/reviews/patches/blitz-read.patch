@@ -1,0 +1,51 @@
+diff --git a/src/sim/behaviors/blocking.ts b/src/sim/behaviors/blocking.ts
+index b4b86155..5bf52483 100644
+--- a/src/sim/behaviors/blocking.ts
++++ b/src/sim/behaviors/blocking.ts
+@@ -84,10 +84,14 @@ export class ProtectionCoordinator {
+     if (seen.pos.x < sim.los + 1.5 && seen.vel.x < -0.5) this.dropped.delete(d);
+     if (this.dropped.has(d)) return false;
+     if (seen.pos.x < sim.los) return true;
++    if (BLITZ_READ && this.walkedUp.has(d) && seen.pos.x < sim.los + 3.5 && seen.vel.x < -0.5) return true;
+     return seen.pos.x < sim.los + 1.5 && (seen.vel.x < -0.5 || (this.declaredOn.has(d) && seen.vel.x <= 1));
+   }
+ 
+   private readonly declaredOn = new Set<Agent>();
++  /** BLITZ_READ: off-ball men walked up within 3 yd of the line inside the
++   * protection's width at the snap, counted as potential rushers. */
++  private readonly walkedUp = new Set<Agent>();
+ 
+   private isRusher(sim: PlaySim, d: Agent): boolean {
+     if (PRO_READ) return this.seenRusher(sim, d);
+@@ -167,6 +171,12 @@ export class ProtectionCoordinator {
+     this.lastT = sim.t;
+     // Pre-snap, the line counts the men aligned on it; that is visible.
+     if (PRO_READ && !this.declared) for (const d of sim.defense) if (sim.snapX[d.idx] < sim.los + 1.5) this.declaredOn.add(d);
++    if (BLITZ_READ && !this.declared) {
++      const ys = this.protectors.filter((b) => isOL(b)).map((b) => this.homeY.get(b)!);
++      const lo = Math.min(...ys) - 1.5, hi = Math.max(...ys) + 1.5;
++      for (const d of sim.defense) { const x = sim.snapX[d.idx] - sim.los, y = d.pos.y;
++        if (x >= 1.5 && x < 3 && y >= lo && y <= hi) this.walkedUp.add(d); }
++    }
+     const rushers = sim.defense.filter((d) => !d.isDown(sim.t) && this.isRusher(sim, d));
+     const front = PRO_READ ? [...this.declaredOn].filter((d) => rushers.includes(d)) : rushers;
+     if (!this.declared && front.length) {
+@@ -417,6 +427,18 @@ const PASS_KICK = process.env.PASS_KICK !== '0';
+  * defender's private behavior (rush/blitz), so the line never set on a
+  * dropping end and knew every blitzer by his call. */
+ const PRO_READ = process.env.PRO_READ !== '0';
++/** BLITZ_READ (off): the line's read counts a walked-up off-ball defender as
++ * a rusher on his first seen downhill step, before he reaches the line.
++ * PRO_READ alone counted him only within 1.5 yd of the line: blitzing backers were first assigned at p50 0.75 s (centre) / 0.90 s
++ * (back) with the backer 1.1 yd off the ball, the centre 2.45 yd and the back
++ * 5.5 yd from him; 33 of 176 backer blitzes reached the QB unblocked (8 games,
++ * develop f122c83c). Tracked 2022: free first pressure by an off-ball inside
++ * backer 1.1 per 100 dropbacks, ours 4.3. The blitzers were walked up 2.4 yd
++ * off the ball and the line's picture of them lags about 0.35 s, so a speed
++ * threshold fired no earlier: a man walked up within 3 yd of the line inside
++ * the protection's width at the snap (a visible alignment the call counts) is
++ * a rusher on any seen downhill step. */
++export const BLITZ_READ = process.env.BLITZ_READ === '1';
+ /** How far deeper than an upfield edge rusher's present depth the kick keeps the tackle (yd). */
+ const KICK_LEAD = 0.8;
+ /** How far ahead on his present velocity the kick reads the rusher's width (s). */

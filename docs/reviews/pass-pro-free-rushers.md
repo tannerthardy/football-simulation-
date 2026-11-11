@@ -70,7 +70,9 @@ From `rushcount.py`, at 1.5 s or the throw:
 
 The defence out-numbers us no more often than in the NFL. At even or short numbers, though, our free rate is about double, and 19 of the 33 free blitzes had no back in protection. That is the hot read and the protection call, handed to Coverage and to Rules + Coaching.
 
-## BLITZ_READ (off): two attempts, not a promotion candidate
+## BLITZ_READ: two attempts, not a promotion candidate
+
+The code is not on develop. The patch, against develop f6fe9bf7's `src/sim/behaviors/blocking.ts`, is `docs/reviews/patches/blitz-read.patch`.
 
 1. **Count an off-ball man running downhill above 2 yd/s within 5 yd as a rusher.** No change, because of the perception lag above.
 2. **A man walked up 1.5–3 yd off the ball inside the OL width at the snap is a rusher on his first seen downhill step.**
