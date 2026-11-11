@@ -107,3 +107,40 @@ them.
 # our concepts as JSON (id -> strong, weak, back), from PASS_CONCEPTS
 python3 -I scripts/diag/pass-matrix/playbook_coverage.py data/raw/bdb2025/big-data-bowl-data out/playbook-coverage/snap.csv out/playbook-coverage/concepts.json
 ```
+
+## Addendum: drop-back passes only (2026-11-11)
+
+With the same population as the matrix (`population.py`: no play action,
+screens, run-pass options or designed rollouts; 5,821 plays with a labelled
+route), `playbook_coverage.py` now defaults to drop-back passes (`all` restores
+the first count):
+
+| level | all dropbacks | drop-back passes |
+| --- | --- | --- |
+| a side is a combination we run | 55.0% | **54.2%** |
+| both sides each run by some concept | 25.5% | **21.7%** |
+| the whole play is one of our concepts | 7.3% | **5.1%** |
+
+**The back on drop-back passes:**
+
+| route | share |
+| --- | --- |
+| flat | 34.5% |
+| block | 17.8% |
+| angle | 16.8% |
+| none | 15.3% |
+| out | 7.4% |
+| wheel | 2.0% |
+
+The missing pieces are the same, with screens gone by definition. These pairs
+rank a little higher among two-receiver sides:
+
+| pair | share |
+| --- | --- |
+| hitch + post | 2.5% |
+| out + out | 2.4% |
+| slant + slant | 2.4% |
+| hitch + out | 1.9% |
+
+Trips sides such as hitch + hitch + flat (2.2%) still lead the three-receiver
+list.
