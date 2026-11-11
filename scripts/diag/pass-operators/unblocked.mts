@@ -26,12 +26,17 @@ for (let s = first; s < first + step * games; s += step) {
     // Per down lineman: blockers ever assigned to him, and each blocker's moves off him (time, to whom).
     const had = new Map<any, Set<any>>(); const moves = new Map<any, string[]>(); const last = new Map<any, any>();
     let at1: Map<any, any> | null = null; let hit: any = null; const backs = new Map<any, any>();
+    let declT = -1; const backOnDL = new Map<any, string>(); const touched = new Set<any>();
     const tick = sim.tick.bind(sim);
     sim.tick = () => {
       tick();
       if (sim.carrier !== sim.qb || sim.throwAt >= 0) return;
       if (!coord) coord = (sim.offense.find((o: any) => o.behavior instanceof PassProtector && OL.test(o.slot))?.behavior as any)?.coord;
+      if (coord && declT < 0 && (coord.assigned as Map<any, any>).size) declT = sim.t;
+      for (const o of sim.offense) if (o.engagement && isDL.has(o.engagement.defender)) touched.add(o.engagement.defender);
       if (coord) for (const [b, r] of coord.assigned as Map<any, any>) {
+        // A back on a down lineman: given him by the call at the snap, or his own pickup later.
+        if (grp(b) === 'back' && r && isDL.has(r) && !backOnDL.has(r)) backOnDL.set(r, sim.t <= declT + 1e-9 ? 'by the call at the snap' : 'own pickup after the snap');
         const prev = last.get(b);
         if (prev === r) continue;
         last.set(b, r);
@@ -62,6 +67,14 @@ for (let s = first; s < first + step * games; s += step) {
       hit = { d, free: !sim.offense.some((o: any) => o !== sim.qb && Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y) <= 1.2) };
     };
     const res = sim.run();
+    const freeD = hit?.free ? hit.d : null;
+    for (const [d, how] of backOnDL) { inc(`back on a down lineman: ${how}`); if (freeD === d) inc(`back on a down lineman: ${how} -> free`); }
+    // Interior linemen coming free untouched (never engaged), and whether a stunt or an interior blitz preceded it.
+    if (freeD && /^(DT|NT)/.test(freeD.slot) && isDL.has(freeD) && !touched.has(freeD)) {
+      const game = !!sim.defCall.dlGame;
+      const inBlitz = Object.values(sim.defCall.pressure?.blitzers ?? {}).some((g: any) => g.gap === 'A' || g.gap === 'B');
+      inc(`DT free untouched: ${game ? 'after a DL game' : inBlitz ? 'with an A/B-gap blitz' : 'no game, no interior blitz'}`);
+    }
     for (const [, v] of backs) {
       const came = !coord.dropped?.has(v.r);
       const k = `back on a called backer: backer ${came ? 'came' : 'dropped'}, ${v.option ? 'check-release' : 'block'} back`;
