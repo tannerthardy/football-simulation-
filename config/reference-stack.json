@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-21",
+  "id": "run-ref-22",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -51,6 +51,7 @@
     "DL_FIGHT": "off",
     "DL_GAMES": "off",
     "DL_HANDS": "off",
+    "DEFLECT_BALL": "on",
     "DL_SNAP_TIME": "off",
     "DOUBLE_FLOW": "on",
     "DOUBLE_HANDOFF": "on",
