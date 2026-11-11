@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
-async function step(flag: string, cushion: number) {
+async function step(flag: string, cushion: number, receiverVx = 6.5) {
   vi.resetModules();
   vi.stubEnv('CUSHION_BREAK', flag);
   const { Rng } = await import('../src/core/rng.js');
@@ -25,7 +25,7 @@ async function step(flag: string, cushion: number) {
       pressure: null, zoneStyle: 'match', label: 'break' }, los: 40, ballY: 26, firstDownX: 50, seed: 3 });
   const a = sim.slot('CB_S')!, r = sim.slot(sim.offAlign.numbering.S1!)!;
   // Receiver 8 yd downfield climbing at 6.5 yd/s; the corner square in his pedal at 5 yd/s, `cushion` yd over him.
-  r.body.pos = { x: sim.los + 8, y: r.pos.y }; r.body.vel = { x: 6.5, y: 0 };
+  r.body.pos = { x: sim.los + 8, y: r.pos.y }; r.body.vel = { x: receiverVx, y: 0 };
   a.body.pos = { x: r.pos.x + cushion, y: r.pos.y - .7 }; a.body.vel = { x: 5, y: 0 }; a.body.facing = Math.PI;
   a.recog!.read = 'pass';
   const see = sim.see.bind(sim);
@@ -44,8 +44,15 @@ describe('CUSHION_BREAK: a deep defender stays square until the receiver breaks 
   it('keeps his pedal with 3 yd of cushion (off: turned to run)', async () => {
     const off = await step('0', 3), on = await step('1', 3);
     expect(off.command.facing).toBeUndefined();
-    expect(on.command.facing).toBeCloseTo(Math.PI, 1);
+    // On: hips not open, and the QB (toward -x) stays in view: square, or side-on when the pedal cannot keep up.
     expect(on.hipsOpen).toBe(false);
+    expect(on.command.facing).toBeDefined();
+    expect(Math.cos(on.command.facing! - Math.PI)).toBeGreaterThan(-0.19);
+  });
+  it('stays square over a receiver who has stopped at 3 yd of cushion', async () => {
+    const on = await step('1', 3, 0);
+    expect(on.hipsOpen).toBe(false);
+    expect(on.command.facing).toBeCloseTo(Math.PI, 1);
   });
   it('opens and runs once the cushion is broken, flag on or off', async () => {
     const off = await step('0', 1.2), on = await step('1', 1.2);

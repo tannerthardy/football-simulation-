@@ -634,6 +634,13 @@ const MAN_PHASE = process.env.MAN_PHASE === '1';
  * median 1.4-2.3 yd of cushion; ours 58-88%, at 3.4-5.0 yd in Cover 3/4
  * (BDB 2025 weeks 1-3 vs leagueSample games, nflturn.py / simturn.mts). */
 const CUSHION_BREAK = process.env.CUSHION_BREAK === '1';
+/** CUSHION_BREAK: side-on to the quarterback (90 deg off the line to him), opened toward the receiver: the
+ * QB stays in view while the hips run with the stem. */
+function sideOn(a: Agent, qb: Vec2, receiver: Vec2): number {
+  const toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x), toR = Math.atan2(receiver.y - a.pos.y, receiver.x - a.pos.x);
+  const f1 = toQB + Math.PI / 2, f2 = toQB - Math.PI / 2;
+  return Math.cos(f1 - toR) >= Math.cos(f2 - toR) ? f1 : f2;
+}
 /** CUSHION_BREAK: has the receiver broken the cushion of a defender over him? */
 function cushionBroken(a: Agent, cushion: number, receiverVx: number): boolean {
   const closing = Math.max(0, receiverVx - Math.max(0, a.vel.x));
@@ -848,6 +855,11 @@ export class ManCoverage implements Behavior {
       : a.pos.x - seen.pos.x < 1.8 + closing * flipTime + 0.25 * releaseBurst * flipTime * flipTime;
     const crossing = Math.abs(seen.vel.y) > 3 && Math.abs(seen.vel.y) > Math.abs(vx);
     if (!this.hipsOpen && Math.hypot(seen.vel.x, seen.vel.y) > 1.5 && (consumed || crossing)) this.hipsOpen = true;
+    // CUSHION_BREAK: a receiver he is carrying throttles below his own speed
+    // with the cushion not broken: he re-squares (the body turns back at its
+    // own rate; the stop route is built to win in that time).
+    if (CUSHION_BREAK && this.hipsOpen && !crossing && sim.ball.kind !== 'air' && vx < Math.max(0, a.vel.x) - 1
+      && !cushionBroken(a, a.pos.x - seen.pos.x, vx)) { this.hipsOpen = false; a.tags.add('re-square'); }
 
     let tx = seen.pos.x;
     let ty = seen.pos.y + lev;
@@ -898,9 +910,15 @@ export class ManCoverage implements Behavior {
     if (!o.protectDepth) return command;
     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
       : vx > 3 && deep > 3 ? cushion * .5 : cushion;
-    // CUSHION_BREAK: square in his pedal until the cushion is broken.
-    if (CUSHION_BREAK && !this.hipsOpen && !cushionBroken(a, a.pos.x - seen.pos.x, vx)) return command;
+    // CUSHION_BREAK: square in his pedal until the cushion is broken; when the
+    // pedal cannot keep it but it is not broken, he carries side-on (QB still
+    // in view) at the speed the depth check asks for.
     const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
+    if (CUSHION_BREAK && !this.hipsOpen && !cushionBroken(a, a.pos.x - seen.pos.x, vx)) {
+      if (selected === command || selected.facing !== undefined) return command;
+      a.tags.add('side-on-carry');
+      return withFacingTechnique({ ...selected, facing: sideOn(a, sim.see(a, sim.qb).pos, seen.pos) }, { label: 'man-side-on', key: seen.vel });
+    }
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
     return selected.facing === undefined && command.facing !== undefined
       ? withFacingTechnique(selected, { label: 'man-depth-run', key: seen.vel }) : selected;
@@ -1161,6 +1179,8 @@ export class ZoneCoverage implements Behavior {
       // Pedaling has a physical speed cap; racing a vertical does not.
       const closing = Math.max(0, deepest.vel.x - Math.max(0, a.vel.x));
       const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
+      if (CUSHION_BREAK && this.turnedWith === deepest.r && deepest.vel.x < Math.max(0, a.vel.x) - 1
+        && !cushionBroken(a, a.pos.x - deepest.pos.x, deepest.vel.x)) { this.turnedWith = null; a.tags.add('re-square'); }
       if (deepest.vel.x > a.profile.vmax * a.profile.backpedal && (CUSHION_BREAK
         ? cushionBroken(a, a.pos.x - deepest.pos.x, deepest.vel.x) : a.pos.x - deepest.pos.x < cushion + closing * flipTime))
         this.turnedWith = deepest.r;
@@ -1174,9 +1194,14 @@ export class ZoneCoverage implements Behavior {
       }), { label: turnRun ? 'deep-turn-run' : 'deep-over', key: deepest.vel });
       let depth = this.depthReads.get(deepest.r);
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
-      // CUSHION_BREAK: square in his pedal until the cushion is broken.
-      if (CUSHION_BREAK && this.turnedWith !== deepest.r && !cushionBroken(a, a.pos.x - deepest.pos.x, deepest.vel.x)) return command;
+      // CUSHION_BREAK: square in his pedal until the cushion is broken; side-on
+      // when the pedal cannot keep it.
       const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
+      if (CUSHION_BREAK && this.turnedWith !== deepest.r && !cushionBroken(a, a.pos.x - deepest.pos.x, deepest.vel.x)) {
+        if (selected === command || selected.facing !== undefined) return command;
+        a.tags.add('side-on-carry');
+        return withFacingTechnique({ ...selected, facing: sideOn(a, sim.see(a, sim.qb).pos, deepest.pos) }, { label: 'deep-side-on', key: deepest.vel });
+      }
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
       return selected.facing === undefined && command.facing !== undefined
         ? withFacingTechnique(selected, { label: 'deep-depth-run', key: deepest.vel }) : selected;
