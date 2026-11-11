@@ -622,6 +622,18 @@ const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
  * pressed pairs at 2.0 s: 1.20 yd apart, about 1 yd to the side; ours 0.82,
  * within 1.2 yd 88% against 51% (BDB 2025 weeks 1-3, same operator). */
 const MAN_PHASE = process.env.MAN_PHASE === '1';
+/** CUSHION_NEED (on since run-ref-27; CUSHION_NEED=0 restores): before his
+ * hips open, a man defender's cushion on a released receiver is the one the
+ * receiver's observed vertical threat requires (his own hip-turn threshold:
+ * 1.8 yd plus the closing speed over his flip time plus the burst the receiver
+ * still has), not the alignment cushion scheduled down by the receiver's
+ * depth. A climbing receiver still gets the full cushion; a back or tight end
+ * releasing short under him is squeezed instead of pedalled from 4-5 yd. NFL
+ * linebackers over the catcher are moving at him at the release (C1 5.1 yd/s,
+ * +2.1 toward, 11% slow; zone calls 3.5, +1.3-1.4, 8-10%); ours sat (C1 2.2,
+ * -0.1, 29%; C3/C4 2.3-2.4, +0.2-0.3, 27-42%), the largest group pedalling on
+ * the back (man:RB) inside a zone call. */
+const CUSHION_NEED = process.env.CUSHION_NEED !== '0';
 
 /** Man coverage with press/off technique, leverage and hip turn. */
 export class ManCoverage implements Behavior {
@@ -832,8 +844,15 @@ export class ManCoverage implements Behavior {
       // A later plant does not undo knowledge that this receiver released.
       // Feed-forward motion still lets a receiver consume the cushion, and
       // the ordinary body limits determine whether the defender can close.
+      // CUSHION_NEED: once released, keep only the cushion his threat needs.
+      // What he could gain upfield during the flip: his upfield speed now
+      // plus the acceleration he has left toward his top speed (1/2 a t^2).
+      const upBurst = Math.max(0, (R.profile.vmax - Math.max(0, vx)) / R.profile.tau);
+      const need = 1.8 + closing * flipTime + 0.5 * upBurst * flipTime * flipTime;
+      const held = CUSHION_NEED && this.releaseObserved ? Math.min(cushion, need) : cushion;
+      if (held < cushion) a.tags.add('cushion-need');
       tx = this.releaseObserved
-        ? seen.pos.x + cushion : Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
+        ? seen.pos.x + held : Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
     }
     // Over the top: a deep carrier keeps a cushion on the vertical; trail: a
     // low-hip under defender sits behind his hip with help over the top.
