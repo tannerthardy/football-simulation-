@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-21`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-23`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,40 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## run-ref-23: the drag-down binding on (2026-11-11)
+
+Flex, `HIP_STRENGTH`, `HELD_SWING`, `SWING_STRIP`, `SWING_FLEXION` and `LEGS_HELD`, all five together (the last three are inert without `HELD_SWING`; the subset without `SWING_FLEXION` and `LEGS_HELD` binds the stride instantly and must not be used). A held leg's swing is compared with the hip's flexion capacity, which scales with functional strength; a swing that cannot be made binds the legs actually held for that stride. A hold on the legs now costs the runner his stride by strength and grip, and no longer either nothing or everything.
+
+| Catches, made / missed / broken / other (16 league-sampled games an arm, seed 201, run-ref-19; same first-contact operator) | off | on | NFL |
+|---|---|---|---|
+| All | 63 / 0 / 24 / 13 | 69 / 1 / 20 / 11 | 62 / 4 / 20 / 14 |
+| Class 0 | 53 / 1 / 42 | 53 / 0 / 43 | 58 / 5 / 35 |
+| Class 1 | 49 / 0 / 47 | 67 / 0 / 31 | 60 / 6 / 29 |
+| Class 2+ | 66 / 0 / 24 | 66 / 0 / 25 | 64 / 3 / 22 |
+
+YAC median / trimmed / mean: 4.00 / 5.52 / 8.23 ± 0.47 → 3.40 / 5.23 / 8.19 ± 0.50. Fixed runs, paired: −0.04 yd (SE 0.02) on run-ref-17; the stack table is in this PR.
+
+A held promotion, then released. Three integration cards on run-ref-20 lineups (seeds 11, 23, 37; unpaired) showed pass TDs 7.6% → 8.9% of attempts pooled (about 2.2 SE) at the same yardage. Flex's trace on run-ref-21 (seeds 11 and 23, `scripts/diag/effective-mass/td-hold.mts`) does not reproduce it: TDs a completion 9.2 → 8.6% and 12.8 → 11.4%; three near-goal held TDs read tick by tick never engage the binding (one shoestring miss, two upright waist wraps). Yards after the first hold inside the 10 rise about 0.3 yd (1.3 SE), consistent with `HIP_STRENGTH` letting a strong runner's hips resist a pull. No bug found in the mechanism.
+
+Integration's card on this stack's base (run-ref-22, 16 games, seed 11, unpaired arms): yards an attempt 9.24 → 8.28, YAC a reception 7.57 → 6.81 and pass TDs 8.2 → 6.4% of attempts, all resolved; completion 60.1 → 57.4%, sacks 3.1 → 4.1%, points 34.7 → 30.4 a team-game and yards a carry 4.63 → 4.62 not resolved. Fixed runs on this stack: all 3.79, broken 0.125, missed 0.234 a run.
+
+What it does not fix: the last-man solo tackle on this base (class 0 on catches stays 53 / 43 against 58 / 35), the connect (missed 1% against 4%), an upright waist wrap from behind that never commits its weight, and a head-on wrap driven back about 4 yd against the NFL's 2.3. Detail: [tackle forms](reviews/2026-11-10-tackle-forms.md).
+
+## run-ref-22: `DEFLECT_BALL` on (2026-11-11)
+
+Coverage #544. Whenever a receiver failed to catch, the ball deflected off him at 20% of its speed with a small pop, whether or not he had touched it, and a defender nearby then caught the hanging ball 10–40% of the time. Only the "catchable" misses logged a drop, so the rest read as clean picks: 17 of 21 short interceptions on the league-sampled panel came off the receiver (3.8% of short throws against the NFL's 0.4%). Now whether he touched the ball is decided from where it was in his catch window; untouched, it keeps its flight (an overthrow can still be picked behind him); a square bobble pops up and dies; a glancing touch keeps going low; and a defender catches a tipped ball only within his hands' reach and seeing it. Every miss logs an event.
+
+| League-sampled panel (capture 7/11, run-ref-20 lineups), paired | off | on | NFL |
+|---|---|---|---|
+| INT per 100 throws: all / 0–10 / 10–20 yd | 5.0 / 4.8 / 6.2 | 2.5 / 2.4 / 3.6 | about 2.3 / 1.1 / 4.9 |
+| INTs off the receiver | 18 of 34 | 5 of 17 | about 15% of INTs |
+| Completion; yards a pass play | 61.5% | 60.9%; −0.12 ± 0.09 | |
+| YAC median | 4.56 | 4.57 | |
+
+Coverage's 16-game card: INT 3.6% → 2.1% (resolved); completion, yards an attempt, sacks and YAC not resolved. Integration's card on run-ref-21 lineups (16 games, seed 11, unpaired arms): INT 4.4% (55/1250) → 2.5% (32/1277), resolved; 20+ yd completions 14.3 → 12.5% an attempt, resolved; completion 59.8 → 60.1%, yards an attempt 9.06 → 9.24, sacks 3.1 → 3.1%, points 31.1 → 34.7 a team-game (not resolved; fewer drives end in a pick). The touch and pop constants are chosen, not sourced, and were not adjusted toward the interception rate.
+
+Open: short interceptions are still about twice the NFL's (2.4 against 1.1) and 10–20 yd is a little under. The first attempt at this problem (`CATCH_CONTEST`, the first defender's possession window) is a written miss on Coverage's branch.
 
 ## run-ref-21: `DB_SLOTS` on (2026-11-11)
 

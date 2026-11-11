@@ -359,7 +359,7 @@ const HIP_TORQUE_PER_KG = 3.5 * 1.196;
  * strength), physical.ts), normalised to a mid-strength player (0.925), so
  * a strong runner's hips swing a held leg and brace a pull harder than a
  * weak one's of the same mass. Off, hip torque is mass alone. */
-const HIP_STRENGTH = process.env.HIP_STRENGTH === '1';
+const HIP_STRENGTH = process.env.HIP_STRENGTH !== '0';
 const HIP_REF_POWER_PER_KG = 0.55 + 0.75 * 0.5;
 /** Share of a grounded holder's weight his arms carry on a leg hold: a body
  * resting on the ground at one end and held at the other carries half its
@@ -369,7 +369,7 @@ const HANG_SHARE = 0.5;
  * its grip whether or not the holder is on his feet, and the strides it binds
  * leave the runner's base behind his body (see the stride holds and
  * updateSupport). */
-const HELD_SWING = process.env.HELD_SWING === '1';
+const HELD_SWING = process.env.HELD_SWING !== '0';
 /** Experimental (SWING_STRIP=1, off; needs HELD_SWING): a swing is all or
  * nothing. The runner's hip either brings the held leg through the hands
  * (their moment about his hip below his hip torque: the leg swings and the
@@ -378,7 +378,7 @@ const HELD_SWING = process.env.HELD_SWING === '1';
  * late swing at sprint speed (Schache et al. 2011: 4.3 and 4.2 N·m/kg at
  * 8.95 m/s), so the one hip torque serves. Off, a weaker hold binds the
  * share total/hip of every stride. */
-const SWING_STRIP = process.env.SWING_STRIP === '1';
+const SWING_STRIP = process.env.SWING_STRIP !== '0';
 /** Experimental (SWING_FLEXION=1, off; with HELD_SWING): the swing has its own
  * hip action. Bracing the trunk against a hold's pull uses hip extension
  * (hipUsed, HIP_BRACE); bringing a held leg through uses hip flexion, a
@@ -386,14 +386,14 @@ const SWING_STRIP = process.env.SWING_STRIP === '1';
  * 4.2 extension N·m/kg at 8.95 m/s). Off, the swing is compared with what
  * the brace leaves, and a hold pulling at capacity binds the stride in the
  * first substep (84-89% of game holds at 0.05 s). */
-const SWING_FLEXION = process.env.SWING_FLEXION === '1';
+const SWING_FLEXION = process.env.SWING_FLEXION !== '0';
 /** Experimental (LEGS_HELD=1, off; with HELD_SWING): a bound swing binds the
  * legs actually held. Each holder holds 1 + lock legs (an open hand one leg,
  * a closed wrap both), capped at two. One leg held: that leg's strides are
  * lost (half his drive along his path) but the free leg keeps stepping, so
  * his base is not left behind. Both legs: the stride is bound in full and
  * the base falls behind him, as without the flag. */
-const LEGS_HELD = process.env.LEGS_HELD === '1';
+const LEGS_HELD = process.env.LEGS_HELD !== '0';
 /** Experimental (HIP_BRACE=1, off): one hip budget for holds. A grasp on the
  * upper body (no leg share) is braced by the runner's hips like a thigh hold:
  * the moment of its transmitted force about his centre of mass (zero at that
