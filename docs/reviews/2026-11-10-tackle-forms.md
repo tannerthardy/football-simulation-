@@ -877,3 +877,27 @@ It misses the same way as its own two attempts: fewer sacks, and its pocket move
    - The rest go to the windup, the drop and the throw decisions.
 
 **Finding.** Pocket movement cannot live in `pocketMove` alone. The decision each tick under a closing rusher (throw now, keep reading while moving, escape) is spread across the set logic's branches. Building it is a controller restructure of the set phase, not one function.
+
+### `BLOCK_SEEN` alone (run-ref-24/25 with THROW_BODY on; 2026-11-11)
+
+**Population.** League sim-export, seed 201, 16 games; sack-hold and throw-path, IRN v COM, 16 games. Both arms THROW_BODY=1.
+
+| | BLOCK_SEEN off | on | NFL |
+|---|---|---|---|
+| Sacks (sack-hold) | 5.6% | **4.3%** | 6.3% |
+| Rusher at 1 yd: throw / sack / scramble | 65 / 30 / 6 | 69 / 29 / 2 | 30 / 47 / 23 |
+| Throws after contact, complete / yd/att | 38% / 6.3 | 38% / 7.1 | 33% / 4.5 |
+| Hot / panic throws (throw-path) | 77 | **139** | |
+| Hit throws (throw-path) | 109 | 159 | |
+| Felt minus actual time to contact on hit throws (p50) | 0.15 s | 0.14 s | |
+| Pressured pocket path p75 | 0.39 yd | 0.30 yd | 1.72 yd |
+| YAC mean | 10.09 | 8.83 | |
+
+YAC differs by divergence, as on that seed before.
+
+**Reading.**
+- Truthful perception of a rusher in a block makes the QB feel pressure sooner.
+- In the current set logic that sends more decisions into the hot/panic branch, which throws to anyone with P > 0.3: panic throws nearly double, and sacks fall.
+- That is the branch the set-phase restructure replaces.
+
+**Recommendation.** Ship BLOCK_SEEN with the restructure, which depends on it, not alone.
