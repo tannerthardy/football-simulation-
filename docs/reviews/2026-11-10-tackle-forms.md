@@ -456,3 +456,283 @@ Help class at the grab = other defenders downfield of the carrier within 10 yd, 
 - **A sharper turn:** he changes heading about 1.7× as much right after the catch, contested or not.
 - That fits the first man at hands range failing to close (runs on 28% against 10%). The receiver cuts away as soon as he has the ball. A real one is still securing it and turning upfield.
 - **Controller, not physics:** the carrier's behaviour from the catch, which uses full open-field cut logic at once. For whoever owns the post-catch carrier (Coverage's YAC stages, with Run Game's `carrier.ts`). A catch-securing phase on observable evidence (ball security, his turn upfield) is the candidate. Not a cap on cutting.
+
+## Drag-down, new diagnosis: a swing is all or nothing, and the hip has a strength (`SWING_STRIP`, `HIP_STRENGTH`, off; 2026-11-10)
+
+**Two findings from the drag bench.**
+
+1. **`HELD_SWING` compares the right quantities but applies the answer as a fraction.**
+   - It compares the holders' grip moment about the runner's hip (gripCapacity × legs share × lever, lever = 0.55 · legs · COM height) with his hip torque. Then it binds the fraction total/hip of every stride.
+   - A hold that loses that comparison still removes, say, 60% of each stride. His base falls behind at 0.6 × his speed and every pairing trips at 0.15–0.25 s.
+   - A swing cannot be partly held. Either the hip brings the leg through the hands (and the hands are pulled down it) or the leg stays.
+2. **Hip torque ignores strength.**
+   - It is `HIP_TORQUE_PER_KG × mass × fatigue`, while leg drive scales with power = mass·(0.55 + 0.75·strength).
+   - On the bench, the "strong runner" (power ×1.3) had exactly the as-generated runner's hip. Bracing a standing holder's thigh pull used 36% of that hip, and the remaining 0.25 equalled the grip's moment (0.243), so the hold bound him.
+   - That is the mechanical reason "a strong runner never steps out": his strength never reaches the joint that has to step out.
+
+**Torque source.** Schache et al. 2011 (Med Sci Sports Exerc 43:1260) give peak hip *flexion* torque in early swing, 4.3 N·m/kg at 8.95 m/s, about equal to peak *extension* in late swing, 4.2. So the existing hip constant serves for the swing, and no new constant is added.
+
+**Flags (off).**
+- `SWING_STRIP` (needs `HELD_SWING`): bound = 1 if the grip moment ≥ the available hip torque, else 0. A losing hold is left to the existing slip, which pulls the hands down the leg and off past reach.
+- `HIP_STRENGTH`: hip torque × power / (mass × 0.925), where 0.925 is power per kg at strength 0.5. This applies to every use of the hip: stride binding, `HELD_SWING`, and the hip brace's capacity.
+
+**Bench** (`drag-bench.mts`; runner 92 kg, holder 84 kg; trip time, or the outcome):
+
+| Pairing | holder | legs | default | `HELD_SWING` | + `SWING_STRIP` + `HIP_STRENGTH` |
+|---|---|---|---|---|---|
+| As generated | down | 0.6 / 0.8 | released / released | trip 0.20 / 0.20 | released (at 0.45 s) / released |
+| As generated | up | 0.6 / 0.8 | 1.10 / 0.50 | 0.25 / 0.15 | 1.05 / 0.15 |
+| Strong runner | down | 0.6 / 0.8 | released / released | 0.20 / 0.20 | released / released |
+| Strong runner | up | 0.6 / 0.8 | dragging / 0.95 | 0.25 / 0.20 | dragging / 1.10 |
+| Weak runner | down | 0.6 / 0.8 | 0.45 / 0.40 | 0.20 / 0.20 | 0.30 / 0.35 |
+| Weak runner | up | 0.6 / 0.8 | 0.80 / 0.45 | 0.20 / 0.15 | 0.20 / 0.15 |
+
+- The weak runner trips sooner in every cell.
+- The strong runner is never tripped sooner than the as-generated runner.
+- Only the strong runner and the as-generated one step out of a downed holder's hold.
+
+**Head-on bench** (`leg-bench.mts`, yards to rest at legs 0.5 / 0.8 / 1.0): 0.74 / 0.68 / 0.69 → 0.77 / 0.67 / 0.62. Not surer: this mechanism does not touch the head-on case, which is CARRIER_BRACE's.
+
+**Game gates, registered before the games** (8 games; `catch-break.mts` seeds 101/103/105/107 × 2, flags off against on; `yards.py` on `sim-export --seed 101 --games 8`; IRN v COM, strength 0.55; both sides measured from the same geometric first contact):
+
+1. Catch holds dragged 3+ yd at 3+ yd/s fall (off share as measured).
+2. Catch broken-at-first-contact does not rise; NFL 20%, same operator.
+3. Runs: paired yards and missed/broken reported. No gate, mechanism read only.
+4. No-contact world bit-identical with the flags off: by construction, the off path is ×1.
+
+## CARRIER_BRACE trace and one trigger attempt (`BRACE_EVIDENCE`, off; 2026-11-10)
+
+Fixed ref run set (12 seeds, 1,321 runs, paired off/on, run-ref-15). Same reference on both sides: geometric first contact within 1.0 yd after the handoff, and `yards.py`'s free-man rule. Trace: `scratchpad` trace.mts, reads the carrier's command (posture 0.75 = brace) each tick.
+
+**When the brace fires** (on): 1,833 episodes in 1,188 runs, 1.39 a run.
+- No defender in the cone by true state: 13% (perceived, or the commanded heading).
+- Nearest trigger at onset: dist p50 2.43 yd, gap to his arms 0.81, closing 4.75 yd/s.
+- The man braced at:
+  - engaged with a blocker: **50%**;
+  - squared to the carrier: 64%;
+  - moving toward him: 48%;
+  - all three (free, squared, coming): **30%**.
+- Within 0.6 s:
+  - no contact: **33%**;
+  - front contact with the target: 28%;
+  - side contact: 32%;
+  - front contact with another man: 5%.
+  - Lunged 59%; lunged and met nothing 10%.
+- **No cost.** Carrier speed over the next 0.3 s goes 4.9 → 5.0 into a front hit and 4.9 → 5.25 into a side hit. Turn p50 7–9°.
+
+**The free-man cell (38 → 24% in the yards.py game read) is mostly sampling.**
+- Paired, the free man makes first contact 34 → 32%. Only 7 plays are lost: 3 to another free man meeting him front-on first, 2 to engaged men, 1 to no contact.
+- The game read pairs whole games whose play sequences diverge, n ≈ 70 free-man plays.
+- Stuff when the free man hits: 21 → 15%.
+
+**Added breaks by first-contact approach** (on − off): side **+28**, front +7, behind +2.
+- Added misses: front +12, side +10.
+- The extra breaks are mostly side contacts, so they are not the square-hit mechanism.
+
+**Draw** (n 85):
+- missed 21 → 32, broken 11 → 17;
+- 1.51 firings a run, 56% at engaged men;
+- front first-contact share unchanged at 44%.
+- The draw's carrier runs through traffic of engaged men and braces at them. The gain is not the brace through a square hit.
+
+**Attempt (one, per Integration): `BRACE_EVIDENCE`.** He braces and lunges only at a man he sees free of blocks and squared up to him. Perceived facing and his own blockers' seen positions are used, nothing private.
+
+**Gates (registered before the read).**
+1. Share of firings at a free squared man ≥ 70%, and firings with no contact ≤ 20%.
+2. Added breaks against off are front-majority.
+3. Front-on carrier gain (hitterback, zone) keeps at least half of CARRIER_BRACE's rise.
+
+**Not attempted here.** The brace has no physical cost: a lowered posture does not slow him or limit his cut in the World. That is a physics question, noted for the World. It is not a cost to add in the controller.
+
+**`BRACE_EVIDENCE` read (missed gates 1 and 3; stays off).** Same fixed run set and operators.
+
+| | CARRIER_BRACE | + BRACE_EVIDENCE |
+|---|---|---|
+| Firings a run | 1.39 | 0.57 |
+| At a free, squared man (true state; gate 1 ≥ 70%) | 40% | **64%** |
+| At an engaged man | 50% | 29% |
+| No contact within 0.6 s (gate 2 ≤ 20%) | 33% | 17% |
+| Lunged into nothing | 10% | 2% |
+| Speed over the next 0.3 s, into a side hit | 4.9 → 5.25 | 4.75 → 4.75 |
+| Speed over the next 0.3 s, into a front hit | 4.9 → 5.0 | 4.7 → 3.5 |
+| Added breaks (gate 3: front-majority) | side +28, front +7 | front +5, side +3 |
+| Front-on carrier gain −1..0 / 0..1 / 1..3 (ref 1.13 / 1.19 / 0.98) | 1.70 / 1.65 / 1.30 | **1.14** / 1.50 / 1.17 |
+| Paired yards | +0.59 (SE 0.07) | +0.11 (SE 0.03) |
+| Missed + broken open a run (ref 0.304) | 0.335 | 0.309 |
+
+**Gate verdicts.**
+- Gate 1 missed (64%). The gap is perception against true state: the carrier sees a delayed picture.
+- Gate 2 passed.
+- Gate 3 (breaks): passed.
+- Gate 3 (half the front-on rise): missed at the line (+0.57 → +0.01). Passed at 0..1 (+0.31 of +0.46) and 1..3 (+0.19 of +0.32).
+
+**The free-man cell.** Paired, the free man's first-contact share is 34 → 34%, and only 1 play is lost.
+
+**What the miss says.**
+- Nearly all of CARRIER_BRACE's front-on gain at the line came from bracing into men who were engaged with blockers: the back lowering his pads into the pile at the line of scrimmage.
+- That is real football: a back runs behind his pads into traffic at the line.
+- So "free of blocks" is the wrong evidence there. The right evidence is a body squared in his path, engaged or not.
+- In space, "free and squared" is right: the side-hit speed gain is gone.
+- A second trigger variant (squared in his path, engaged or not, inside the line's traffic) is a new attempt and needs Integration's call.
+
+**Physics half (Integration, 2026-11-10).** A lowered, forward-leaning posture has no cost in the World: no limit on turning rate, top speed held, or the reach of the next cut. Whether the lean law charges for a committed forward lean when the hit comes from the side is open. This is the condition before any brace variant goes on.
+
+**Drag-down game read (`SWING_STRIP` + `HIP_STRENGTH` + `HELD_SWING`; both gates passed).**
+
+Population:
+- `catch-break.mts`: seeds 101/103/105/107 × 2 games, off against on.
+- `yards.py`: `sim-export --seed 101 --games 8`, provenance check passed (third run; identical to the second).
+- IRN v COM, strength 0.55, run-ref-15.
+- Both sides measured from the same geometric first contact.
+
+| | off | on | NFL (same operator) |
+|---|---|---|---|
+| Catch holds dragged 3+ yd at 3+ yd/s (gate 1) | 172 / 873 (19.7%) | 108 / 746 (14.5%) | |
+| Hold duration p50 | 0.85 s | 0.65 s | |
+| Catches at first contact: made / missed / broken (gate 2: broken no higher) | 59 / 1 / 29 | **75 / 1 / 19** | 62 / 4 / 20 |
+| YAC p50 / mean | 4.8 / 8.31 | 4.7 / 8.96 | |
+| Runs at first contact: made / missed / broken | 62 / 2 / 15 | 68 / 3 / 14 | |
+| Runs: unblocked man at the line, stuff when he hits | 7% | 14% | 43% |
+
+- **By help class, dragged share:**
+  - help 1: 22 → 15%;
+  - help 2+: 16 → 7%;
+  - help 0 (last man): 24 → 26%;
+  - DB from behind in the open, help 0: 28 → 37% (n 46).
+- **The last-man rise is inside noise.** These are unpaired games, binomial SE about 3 and 7 points.
+- **The last-man drags that remain are shorter and faster.** Duration p50 1.48 → 0.95 s, runner speed at the grab 6.1 → 7.0 yd/s, holder down 74 → 57%.
+- A fast runner who strips the hold still gains 3+ yd before it comes off. That is the mechanism working, not a new drag.
+- **Catch made share rises past NFL (75 against 62%).** Whether a strong runner now gets free often enough in the open field is the open question for the next read, on the grab-distance operator (`grabs.py`).
+
+## Drag-down attempt 2: `SWING_FLEXION` + `LEGS_HELD` (off; 2026-11-11)
+
+**The measurement that set it.** Using `catch-break.mts` with holders, bind and fall fields, the arm `HIP_STRENGTH` + `HELD_SWING` + `SWING_STRIP` bound the runner's stride in 84–89% of holds at 0.05 s, and the runner fell at p50 0.25 s.
+- Of those binds, 491 were by a single holder.
+- The cause is the one hip budget. The swing is compared with hip × (1 − hipUsed), and bracing the hold's pull at capacity (HIP_BRACE) drives hipUsed to 1 in the first substep.
+
+**The attempt (both off, both inert without `HELD_SWING`).**
+- `SWING_FLEXION`: the swing is compared with hip flexion, a separate action from the brace's extension (Schache 2011: 4.3 / 4.2 N·m/kg).
+- `LEGS_HELD`: the bind follows the legs held, 1 + lock per holder, capped at 2. With one leg held he loses half his drive and his base is not left behind.
+
+**Bench.**
+- The bench defect is fixed: the grip now follows the tackler pairing.
+- Lock 0.45: weak runners trip (0.40–0.60 s); others release.
+- Lock 0.56: strong runners release in every cell; weak runners trip 0.20–0.65 s.
+- Lock 0.75: strong runners trip 0.40–1.10 s or keep dragging; weak runners 0.15–0.65 s.
+- Head-on to rest: 0.73 / 0.66 / 0.62 yd.
+- A flags-off game is bit-identical.
+- **No distinct one-leg stumble.** Below lock about 0.5, the game's grip capacity cannot hold a leg at speed, so it slides off first.
+
+**Game reads.**
+
+*run-ref-17, IRN v COM (pre-3a4980bf collector), seed 201, 16 games per arm.* Catches made / missed / broken:
+
+| | off | a1 | a2 | HIP_STRENGTH alone | NFL |
+|---|---|---|---|---|---|
+| All | 60 / 1 / 29 | 78 / 1 / 16 | 70 / 1 / 23 | 65 / 1 / 25 | 62 / 4 / 20 |
+| Class 0 | 47 / 0 / 49 | 62 / 0 / 35 | 59 / 0 / 36 | 51 / 1 / 44 | 58 / 5 / 35 |
+| Class 1 | 49 / 1 / 48 | 72 / 0 / 22 | 69 / 0 / 29 | 53 / 0 / 40 | 60 / 6 / 29 |
+
+- Single-holder full binds: 491 (a1) → 166 (a2), and those are closed wraps, lock p50 1.0.
+- Runner falls at p50 0.3–0.4 s.
+- YAC median / trimmed / mean ± SE: off 4.70 / 5.99 / 8.58 ± 0.44; a2 4.40 / 5.66 / 8.33 ± 0.47.
+- Paired 1,321 runs: a2 −0.04 (SE 0.02), broken 0.121 → 0.127. HIP_STRENGTH alone +0.02 (SE 0.02).
+
+*run-ref-19, with CATCH_EYES, league-sampled identities, seed 201, 16 games per arm.* Catches made / missed / broken / other:
+
+| | off | a2 | NFL |
+|---|---|---|---|
+| All | 63 / 0 / 24 / 13 | 69 / 1 / 20 / 11 | 62 / 4 / 20 / 14 |
+| Class 0 | 53 / 1 / 42 | 53 / 0 / 43 | 58 / 5 / 35 |
+| Class 1 | 49 / 0 / 47 | 67 / 0 / 31 | 60 / 6 / 29 |
+| Class 2+ | 66 / 0 / 24 | 66 / 0 / 25 | 64 / 3 / 22 |
+
+- Runs, class 0: 36 / 2 / 48 → 64 / 0 / 28 (n ≈ 40; NFL 46 / 9 / 39).
+- Runs, class 1: 59 / 0 / 29 → 59 / 2 / 30 (NFL 50 / 6 / 36).
+- YAC: off 4.00 / 5.52 / 8.23 ± 0.47; a2 3.40 / 5.23 / 8.19 ± 0.50.
+
+**Gates.**
+- Class 1 back toward the NFL: met on both bases.
+- Class 0 held on catches: met. On run-ref-19 class 0 doesn't move (53 / 43 both); the run-ref-17 gain (47 / 49 → 59 / 36) is not there after CATCH_EYES.
+- Overall made no higher than the NFL: missed (69 against 62).
+  - The difference sits in missed (1 against 4) and other (11 against 14): the connect gap, not the bind.
+  - Broken is 20 against 20.
+- Strength ordering on the bench: met.
+
+## The sack gap is the throw after contact, not the finish (`sack-hold.mts`, `qb-contact.py`; run-ref-19; 2026-11-11)
+
+`qb-contact.py`, same code on the NFL (BDB 2025, 9,713 dropbacks) and the sim (run-ref-19 sim-export, seed 201, 16 games, 1,381 dropbacks):
+
+| | NFL | sim |
+|---|---|---|
+| Defender within 1.0 yd of the QB before the ball is out | 12.5% | 13.0% |
+| Of those: thrown | 30% (0.30 s after contact) | **70%** (0.10 s after) |
+| Of those: not thrown | 70% (1.05 s) | 30% (0.80 s) |
+
+`sack-hold.mts` (run-ref-19, IRN v COM, 16 games, 1,512 dropbacks, sacks 3.0%; 176 contacts before the ball is out).
+
+The windup had started before contact in 134 of the 176 (76%). By when the hold began:
+
+| Hold began | n | Ends | Throws |
+|---|---|---|---|
+| Before any windup | 34 | sack 91% | first contact → sack p50 0.65 s |
+| During the load | 13 | throw 100% | complete 46%, 4.9 yd/att, held 0.72 at release |
+| During the delivery | 79 | throw 100% | complete 47%, 8.5 yd/att, held 0.73 at release |
+| No hold | 50 | | |
+
+**Reading.**
+- Rushers arrive as often as in the NFL, and a hold on a set QB finishes him faster than the NFL.
+- The gap is what happens after contact. Our QB's throw is already under way when the rusher arrives, and it comes out, often complete.
+- The load exemption in `qb.ts` (a windup in progress is immune to the hold) covers 13 plays; the delivery covers 79.
+- A throw delivered with a man at 0.73 hold still completes 47% at 8.5 yd/att.
+- That is the QB's timing against the rush and what contact does to a throw in motion: `qb.ts` (Coverage) and the ruling (Rules + Coaching). It is not the tackle finish.
+
+### Sacks, attempt 1: `THROW_BODY` (off; physical half; gates registered before the read)
+
+**The NFL reference** (`qb-contact.py`, BDB 2025, 9,713 dropbacks): a defender within 1 yd of the QB before the ball is out on 12.5% of dropbacks.
+- 30% of those are thrown; contact to throw, quartiles 0.0 / 0.3 / 1.1 s.
+- Throws after contact: 33% complete, 4.5 yd/att.
+- Clean throws: 62% complete, 7.2 yd/att.
+
+**Sim, run-ref-19:** 13.0% of dropbacks; 70% thrown (0.0 / 0.1 / 0.1 s); 47% complete at 9.0 yd/att. Clean throws: 64% at 10.6.
+
+**Mechanism.**
+- A hold acts on the throw through what it holds: interference = heldBy × (1 − the highest grasp's leg share).
+- In the load, it pins the arm with that chance, rolled once per throw, and the throw is abandoned.
+- A throw out under a hold is an arm throw to that degree. It uses the flick's existing speed and accuracy costs, so there is no new constant.
+- A flags-off game is bit-identical.
+
+**Gates** (league-sampled sim-export seed 201, 16 games, off against on; sack-hold IRN v COM 16 games):
+1. Thrown after contact moves toward the NFL's 30%.
+2. Completion and yd/att on throws after contact move toward 33% / 4.5.
+3. The sack rate moves toward 6.3%.
+4. No leak into clean-pocket throws: completion and yd/att within noise.
+5. INT rate on hit throws reported.
+
+## Pass-TD check on the drag-down set (`td-hold.mts`, run-ref-21; 2026-11-11)
+
+**Question.** Three run-ref-21 league cards showed pass TD rate 7.6 → 8.9% with the five flags on, at about the same yards. Is it a defect in the binding?
+
+**Population.** Seeds 11 and 23, 16 games each, five flags =0 vs =1. Unpaired: the arms diverge.
+
+| | seed 11 | seed 23 |
+|---|---|---|
+| TDs | 85 → 76 | 118 → 111 |
+| TDs per completion | 9.2 → 8.6% | 12.8 → 11.4% |
+| Held before scoring | 48 → 37 | 53 → 58 |
+
+- Yards after the first hold, catches inside 10 yd: 1.27 → 1.52 and 1.66 → 2.08. That is about +0.33, roughly 1.3 SE.
+- Flat or down elsewhere.
+
+**Tick traces** (seed 23 game 1, flags on). The stride never binds in any of them:
+1. An ankle grab (lock 0.2) slides off in 0.4 s.
+2. An upright waist wrap from behind; the runner carries the holder 2.9 yd in 0.55 s.
+3. A front waist wrap; the holder is driven back 4.2 yd over 1.25 s.
+
+A waist hold's moment never reaches hip flexion, flags or not.
+
+**Verdict.** No path from the binding to these TDs, and the rise does not reproduce on run-ref-21.
+
+**Open items** (not in this flag set; queued after sacks):
+- **(b)** An upright waist wrap from behind that runs with the carrier and never commits weight. This is the holder's finish (HOLD_FINISH territory).
+- **(c)** The head-on waist wrap driven back about 4 yd (NFL head-on yards after contact 2.3).

@@ -354,6 +354,13 @@ const KNEE = 0.5;
 /** Peak hip-extension torque per kg of body mass, kg·yd²/s² per kg
  * (about 3.5 N·m/kg in sprinting and strength athletes; 1 N·m = 1.196). */
 const HIP_TORQUE_PER_KG = 3.5 * 1.196;
+/** Experimental (HIP_STRENGTH=1, off): hip torque scales with the player's
+ * functional strength like his leg drive does (power = mass·(0.55 + 0.75·
+ * strength), physical.ts), normalised to a mid-strength player (0.925), so
+ * a strong runner's hips swing a held leg and brace a pull harder than a
+ * weak one's of the same mass. Off, hip torque is mass alone. */
+const HIP_STRENGTH = process.env.HIP_STRENGTH !== '0';
+const HIP_REF_POWER_PER_KG = 0.55 + 0.75 * 0.5;
 /** Share of a grounded holder's weight his arms carry on a leg hold: a body
  * resting on the ground at one end and held at the other carries half its
  * weight at each end. */
@@ -362,7 +369,31 @@ const HANG_SHARE = 0.5;
  * its grip whether or not the holder is on his feet, and the strides it binds
  * leave the runner's base behind his body (see the stride holds and
  * updateSupport). */
-const HELD_SWING = process.env.HELD_SWING === '1';
+const HELD_SWING = process.env.HELD_SWING !== '0';
+/** Experimental (SWING_STRIP=1, off; needs HELD_SWING): a swing is all or
+ * nothing. The runner's hip either brings the held leg through the hands
+ * (their moment about his hip below his hip torque: the leg swings and the
+ * hands are pulled down it by the existing slip) or it does not (the stride
+ * is bound in full). Hip flexion in early swing about equals extension in
+ * late swing at sprint speed (Schache et al. 2011: 4.3 and 4.2 N·m/kg at
+ * 8.95 m/s), so the one hip torque serves. Off, a weaker hold binds the
+ * share total/hip of every stride. */
+const SWING_STRIP = process.env.SWING_STRIP !== '0';
+/** Experimental (SWING_FLEXION=1, off; with HELD_SWING): the swing has its own
+ * hip action. Bracing the trunk against a hold's pull uses hip extension
+ * (hipUsed, HIP_BRACE); bringing a held leg through uses hip flexion, a
+ * separate torque of about the same size (Schache et al. 2011: 4.3 flexion,
+ * 4.2 extension N·m/kg at 8.95 m/s). Off, the swing is compared with what
+ * the brace leaves, and a hold pulling at capacity binds the stride in the
+ * first substep (84-89% of game holds at 0.05 s). */
+const SWING_FLEXION = process.env.SWING_FLEXION !== '0';
+/** Experimental (LEGS_HELD=1, off; with HELD_SWING): a bound swing binds the
+ * legs actually held. Each holder holds 1 + lock legs (an open hand one leg,
+ * a closed wrap both), capped at two. One leg held: that leg's strides are
+ * lost (half his drive along his path) but the free leg keeps stepping, so
+ * his base is not left behind. Both legs: the stride is bound in full and
+ * the base falls behind him, as without the flag. */
+const LEGS_HELD = process.env.LEGS_HELD !== '0';
 /** Experimental (HIP_BRACE=1, off): one hip budget for holds. A grasp on the
  * upper body (no leg share) is braced by the runner's hips like a thigh hold:
  * the moment of its transmitted force about his centre of mass (zero at that
@@ -688,6 +719,8 @@ export class World {
   private readonly impY: Float64Array;
   /** Grip a hold on his legs puts against his stride (see the ground forces). */
   private readonly strideHolds: Float64Array;
+  /** LEGS_HELD: the share of his stride that leaves the base behind (both legs held). */
+  private readonly baseHolds: Float64Array;
   /** Share of his hip torque the last substep's thigh brace used. */
   private readonly hipUsed: Float64Array;
   private readonly tripX: Float64Array;
@@ -765,7 +798,7 @@ export class World {
     this.mass = Float64Array.from(bodies, (b) => b.profile.massKg);
     this.inertia = Float64Array.from(this.sp, (s) => s.yawInertia);
     const f = () => new Float64Array(n);
-    this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f(); this.strideHolds = f(); this.hipUsed = f(); this.thighX = f(); this.thighY = f();
+    this.fat = f(); this.impX = f(); this.impY = f(); this.tripX = f(); this.tripY = f(); this.strideHolds = f(); this.baseHolds = f(); this.hipUsed = f(); this.thighX = f(); this.thighY = f();
     this.travelVx = f(); this.travelVy = f();
     this.travelAdjustX = f(); this.travelAdjustY = f();
     this.tipX = f(); this.tipY = f(); this.braceX = f(); this.braceY = f();
@@ -1425,6 +1458,7 @@ export class World {
     // below it) against his hip torque. A holder still on his feet carries
     // his own weight and binds nothing this way.
     this.strideHolds.fill(0);
+    if (LEGS_HELD) this.baseHolds.fill(0);
     if (HELD_SWING) this.heldSwing();
     else for (const jt of this.joints) {
       if (jt.kind !== 'grasp') continue;
@@ -1434,7 +1468,7 @@ export class World {
       const lever = 0.55 * clamp(jt.legs, 0, 1) * this.comHeight[ib];
       // One hip budget: what bracing the hold's pull on his thighs used is
       // not there to swing the leg.
-      const hip = HIP_TORQUE_PER_KG * this.mass[ib] * this.fat[ib] * Math.max(0, 1 - this.hipUsed[ib]);
+      const hip = this.hipTorque(ib) * Math.max(0, 1 - this.hipUsed[ib]);
       const bound = hip > 1e-9 ? clamp(HANG_SHARE * this.mass[ia] * G * lever / hip, 0, 1) : 1;
       jt.strideForce = bound;
       this.strideHolds[ib] = 1 - (1 - this.strideHolds[ib]) * (1 - bound);
@@ -2117,8 +2151,14 @@ export class World {
    * pair of arms: his largest hold on a runner counts, however many joint
    * copies represent it. Different holders' moments about the runner's hip
    * add, against one hip budget. */
+  /** Peak hip torque available to body i now (before holds use it). */
+  private hipTorque(i: number): number {
+    const k = HIP_STRENGTH ? this.bodies[i].profile.power / (this.mass[i] * HIP_REF_POWER_PER_KG) : 1;
+    return HIP_TORQUE_PER_KG * this.mass[i] * this.fat[i] * k;
+  }
+
   private heldSwing(): void {
-    const moments = new Map<number, Map<number, { m: number; hang: number; grip: number; joints: GraspJoint[] }>>();
+    const moments = new Map<number, Map<number, { m: number; hang: number; grip: number; joints: GraspJoint[]; lock: number }>>();
     for (const jt of this.joints) {
       if (jt.kind !== 'grasp') continue;
       jt.strideForce = 0;
@@ -2131,14 +2171,20 @@ export class World {
       const grip = this.gripCapacity(jt) * clamp(jt.legs, 0, 1) * lever;
       const byHolder = moments.get(ib) ?? moments.set(ib, new Map()).get(ib)!;
       const cur = byHolder.get(ia);
-      if (!cur) byHolder.set(ia, { m: 0, hang, grip, joints: [jt] });
-      else { cur.hang = Math.max(cur.hang, hang); cur.grip += grip; cur.joints.push(jt); }
+      const lock = clamp(jt.lock ?? 0, 0, 1);
+      if (!cur) byHolder.set(ia, { m: 0, hang, grip, joints: [jt], lock });
+      else { cur.hang = Math.max(cur.hang, hang); cur.grip += grip; cur.joints.push(jt); cur.lock = Math.max(cur.lock, lock); }
     }
     for (const [ib, byHolder] of moments) {
-      const hip = HIP_TORQUE_PER_KG * this.mass[ib] * this.fat[ib] * Math.max(0, 1 - this.hipUsed[ib]);
-      let total = 0;
-      for (const h of byHolder.values()) { h.m = Math.max(h.hang, h.grip); total += h.m; }
-      const bound = hip > 1e-9 ? clamp(total / hip, 0, 1) : 1;
+      const hip = this.hipTorque(ib) * (SWING_FLEXION ? 1 : Math.max(0, 1 - this.hipUsed[ib]));
+      let total = 0, legs = 0;
+      for (const h of byHolder.values()) { h.m = Math.max(h.hang, h.grip); total += h.m; legs += 1 + h.lock; }
+      let bound = hip > 1e-9 ? (SWING_STRIP ? (total >= hip ? 1 : 0) : clamp(total / hip, 0, 1)) : 1;
+      if (LEGS_HELD) {
+        const held = Math.min(2, legs);
+        this.baseHolds[ib] = bound * Math.max(0, held - 1);
+        bound *= held / 2;
+      }
       this.strideHolds[ib] = bound;
       // Each holder's share of the bound, split over his copies, for the
       // drive accounting below.
@@ -2200,7 +2246,7 @@ export class World {
     this.hipUsed[i] = 0;
     if (thigh > 0) {
       const c = this.comHeight[i], moment = thigh * sp.pitchRadiusSq * this.mass[i] / Math.max(c, 1e-6);
-      const capacity = HIP_TORQUE_PER_KG * this.mass[i] * fat * h;
+      const capacity = this.hipTorque(i) * h;
       this.hipUsed[i] = Math.min(1, moment / Math.max(capacity, 1e-12));
       const excess = Math.max(0, 1 - capacity / Math.max(moment, 1e-12));
       legX += this.thighX[i] * excess / w0; legY += this.thighY[i] * excess / w0;
@@ -2208,8 +2254,9 @@ export class World {
     // HELD_SWING: the strides his held legs cannot bring through are steps
     // his base does not take. While he keeps travelling, the base falls
     // behind him by that share of his travel, and balance decides the rest.
-    if (HELD_SWING && this.strideHolds[i] > 0) {
-      legX += this.strideHolds[i] * b.vel.x * h; legY += this.strideHolds[i] * b.vel.y * h;
+    const baseBound = LEGS_HELD ? this.baseHolds[i] : this.strideHolds[i];
+    if (HELD_SWING && baseBound > 0) {
+      legX += baseBound * b.vel.x * h; legY += baseBound * b.vel.y * h;
     }
     dx += legX; dy += legY;
     // Remember what has been displacing him (decays over ~0.3 s).
