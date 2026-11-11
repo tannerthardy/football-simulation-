@@ -481,31 +481,11 @@ export class QBPass implements Behavior {
     const called = this.concept.family === 'screen';
     const quick = called && this.concept.screen?.tempo === 'quick';
     const need = quick ? Math.min(thr, 0.2) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
-    // Current read.
-    if (read && this.ready(read, sim)) {
-      const ev = this.evaluate(a, sim, read, u);
-      if (ev && ev.P >= need && ev.intRisk <= risk) return this.startThrow(a, sim, ev);
-      // A read that has made his break and is plainly covered is done: he
-      // moves on after a glance rather than waiting out the read.
-      const forecast = this.receiverForecasts.get(read);
-      const broken = !!forecast?.hasBreak && forecast.estimate?.motion === 'installed-route' && forecast.breakAt() === null;
-      const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking'));
-      if (t - this.readStart > dwell || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)) {
-        // QB_RHYTHM: moving off a read, his eyes pass the outlet; a released
-        // outlet that is there now is the throw, in rhythm, not at the end.
-        const outlet = QB_RHYTHM ? this.outletThrow(a, sim, u, need, risk) : null;
-        if (outlet) return this.startThrow(a, sim, outlet);
-        this.readIdx++;
-        this.readStart = t;
-      }
-    } else if (!read) {
-      // Out of reads: take the best available.
-      const best = this.bestOption(a, sim, u);
-      if (best && best.P >= thr - 0.1 && best.intRisk <= maxInt + 0.03) return this.startThrow(a, sim, best);
-    } else if (t - this.readStart > dwell + (QB_RHYTHM ? 0 : 0.6)) {
-      this.readIdx++;
-      this.readStart = t;
-    }
+    // The read logic: what he would throw now (it does not move his read order);
+    // then, if it says so, his eyes move on to the next read.
+    const now = this.bestThrowNow(a, sim, u, { thr, maxInt, need, risk, dwell });
+    if (now.take && now.ev) return this.startThrow(a, sim, now.ev);
+    if (now.advance) this.advanceRead(t);
 
     // SET_DECIDE: under pressure he moves first; the hot path is for when he is trapped.
     if (SET_DECIDE) {
@@ -515,8 +495,8 @@ export class QBPass implements Behavior {
 
     // Hot / panic: under imminent pressure, find anything.
     if (pressure.time < 0.45) {
-      const best = this.bestOption(a, sim, 1);
-      if (best && best.P > 0.3 && best.intRisk < 0.18) return this.startThrow(a, sim, best);
+      const hot = this.hotThrow(a, sim);
+      if (hot) return this.startThrow(a, sim, hot);
       if (this.shouldScramble(a, sim, true)) return this.scramble(a, sim);
       // Veterans throw it away (or at a back's feet) rather than eat a sack.
       if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.dice('qb', a).chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
@@ -538,6 +518,52 @@ export class QBPass implements Behavior {
     }
 
     return this.pocketMove(a, sim, read);
+  }
+
+  /** The read logic's answer to "what would I throw now?" (Coverage owns its
+   * contents): the current read when it is ready and clears the bar; moving off
+   * it (its time up, or plainly covered after a glance), the outlet in rhythm
+   * (QB_RHYTHM); out of reads, the best available. `advance`: his eyes should
+   * move on to the next read. It does not change his read order itself
+   * (advanceRead does), so a caller can ask it without committing. */
+  private bestThrowNow(a: Agent, sim: PlaySim, u: number,
+    bar: { thr: number; maxInt: number; need: number; risk: number; dwell: number }): { ev: ThrowEval | null; take: boolean; advance: boolean } {
+    const t = sim.t, read = this.reads[this.readIdx];
+    if (read && this.ready(read, sim)) {
+      const ev = this.evaluate(a, sim, read, u);
+      if (ev && ev.P >= bar.need && ev.intRisk <= bar.risk) return { ev, take: true, advance: false };
+      // A read that has made his break and is plainly covered is done: he
+      // moves on after a glance rather than waiting out the read.
+      const forecast = this.receiverForecasts.get(read);
+      const broken = !!forecast?.hasBreak && forecast.estimate?.motion === 'installed-route' && forecast.breakAt() === null;
+      const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking'));
+      if (t - this.readStart > bar.dwell || (broken && (!ev || ev.P < 0.5 * bar.need) && t - this.readStart > glance)) {
+        // QB_RHYTHM: moving off a read, his eyes pass the outlet; a released
+        // outlet that is there now is the throw, in rhythm, not at the end.
+        const outlet = QB_RHYTHM ? this.outletThrow(a, sim, u, bar.need, bar.risk) : null;
+        if (outlet) return { ev: outlet, take: true, advance: false };
+        return { ev, take: false, advance: true };
+      }
+      return { ev, take: false, advance: false };
+    } else if (!read) {
+      // Out of reads: take the best available.
+      const best = this.bestOption(a, sim, u);
+      return { ev: best, take: !!best && best.P >= bar.thr - 0.1 && best.intRisk <= bar.maxInt + 0.03, advance: false };
+    }
+    return { ev: null, take: false, advance: t - this.readStart > bar.dwell + (QB_RHYTHM ? 0 : 0.6) };
+  }
+
+  /** The read logic's hot throw under imminent pressure: anything with P > 0.3
+   * and an interception risk under 0.18 (Coverage owns its contents). */
+  private hotThrow(a: Agent, sim: PlaySim): ThrowEval | null {
+    const best = this.bestOption(a, sim, 1);
+    return best && best.P > 0.3 && best.intRisk < 0.18 ? best : null;
+  }
+
+  /** His eyes move on to the next read. */
+  private advanceRead(t: number): void {
+    this.readIdx++;
+    this.readStart = t;
   }
 
   /** QB_RHYTHM: the outlet (last read) when it is a live, ready option that
