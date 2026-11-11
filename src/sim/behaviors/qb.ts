@@ -31,6 +31,7 @@ import type { QBMind } from '../qbmind.js';
 import type { ReplayTelemetryFrame } from '../types.js';
 import { ReceiverForecast, type InstalledReceiverRoute } from '../receiver-forecast.js';
 import { screenSpot, type ScreenSpot } from '../screen-spot.js';
+import { compilingPlan, installedPlan } from '../../playbook/read-compiler/runtime.js';
 
 const RELEASE_Z = 2.2;
 const CATCH_Z = 1.3;
@@ -117,6 +118,18 @@ const THROW_BODY = process.env.THROW_BODY !== '0';
  * looked at is valued as the gamble it is. Off, an aged picture is
  * extrapolated and scored as if certain. */
 const PICTURE_AGE = process.env.PICTURE_AGE === '1';
+/** READ_PLAN (experimental, off; READ_PLAN=1 turns it on): he runs the read plan compiled from the routes
+ * (src/playbook/read-compiler, docs/reviews/2026-11-11-read-compiler-phase0.md) instead of the concept's
+ * hand-written progression. The plan is his intent; he executes it from what he sees:
+ * - pure: the start side through, then the other side, then the outlet;
+ * - alert: a yes/no glance at an isolated vertical at the set, then the order;
+ * - defender key: eyes on the defender between a low and a high route from the drop; at the plan's cue time,
+ *   from his own delayed picture, if that defender is playing the high route he throws the low one, if the low
+ *   one the high, read as well and as fast as his decision-making and awareness allow; no defender there (man,
+ *   or nobody in the stretch) leaves the order as it is;
+ * - triangle: three routes read as one picture (eyes on its middle), the best open one taken.
+ * Pressure and his clock still end any plan (QB_RHYTHM's outlet). Off: `concept.progression`. */
+const READ_PLAN = process.env.READ_PLAN === '1';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -149,6 +162,12 @@ export class QBPass implements Behavior {
   private lookOff: { until: number; decoy: Agent } | null = null;
   private lookOffChecked = false;
   private readonly receiverForecasts = new Map<Agent, ReceiverForecast>();
+  /** READ_PLAN: the installed plan this play runs (null: the hand-written progression). */
+  private plan: { style: string; key: { low: Agent; high: Agent; cueBy: number } | null; triangle: Agent[] | null; alert: Agent | null } | null = null;
+  /** READ_PLAN: the key read once made (diagnostic): the defender he read (null: none in the stretch), where he
+   * put him between the low (0) and high (1) routes, and the throw it gave. */
+  keyRead: { at: number; defender: string | null; s: number | null; throwTo: 'low' | 'high' } | null = null;
+  private triDone = false;
 
   /** Existing private state only; never evaluates a fresh throw window. */
   recordedState(): Omit<NonNullable<ReplayTelemetryFrame['qb']>, 'eyes' | 'belief' | 'best'> {
@@ -178,6 +197,10 @@ export class QBPass implements Behavior {
 
   /** Called after all behaviors are assigned (receivers exist). */
   init(sim: PlaySim): void {
+    if (READ_PLAN && !compilingPlan() && this.initPlan(sim)) {
+      this.reads = this.orderReads(sim, this.reads);
+      return;
+    }
     const refs = this.concept.progression;
     const seen = new Set<Agent>();
     for (const ref of refs) {
@@ -196,6 +219,66 @@ export class QBPass implements Behavior {
       }
     }
     this.reads = this.orderReads(sim, this.reads);
+  }
+
+  /** READ_PLAN: reads from the installed plan: the alert, the plan's order, any other route, the outlet last. */
+  private initPlan(sim: PlaySim): boolean {
+    const p = installedPlan(this.concept, sim.offCall.formation.id);
+    if (!p) return false;
+    const ag = (ref: ReceiverRef | null) => {
+      const r = ref ? this.receiverFor(sim, ref) : null;
+      return r?.behavior.passOption ? r : null;
+    };
+    const seen = new Set<Agent>(), reads: Agent[] = [];
+    const push = (r: Agent | null) => { if (r && !seen.has(r)) { reads.push(r); seen.add(r); } };
+    const alert = ag(p.alert);
+    push(alert);
+    for (const ref of p.order) push(ag(ref));
+    const outlet = ag(p.outlet);
+    for (const o of sim.offense) if (o !== outlet && o.behavior instanceof RouteRunner) push(o);
+    push(outlet);
+    if (!reads.length) return false;
+    this.reads = reads;
+    const low = ag(p.key?.low ?? null), high = ag(p.key?.high ?? null);
+    const tri = p.triangle?.map(ag).filter((r): r is Agent => !!r) ?? null;
+    this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy } : null,
+      triangle: tri && tri.length === 3 ? tri : null, alert };
+    return true;
+  }
+
+  /** READ_PLAN key: the defender in the stretch between the low and high routes, from his own pictures (acquired
+   * by looking there, with their age), placed along the line from the low route (0) to the high one (1) where he
+   * is heading; playing the high route (0.5 or more) gives the low throw, the low one the high throw. His
+   * decision-making and awareness set how cleanly he places him. */
+  private readKey(a: Agent, sim: PlaySim): void {
+    const k = this.plan!.key!;
+    // The stretch is where the two routes are going (he knows the installed routes): the high route about half a
+    // second on, so a route that has not yet broken is placed where it is headed, not on its stem.
+    const at = (r: Agent, ahead: number) => this.receiverForecasts.get(r)?.predict(sim.t, ahead) ?? null;
+    const lo = at(k.low, 0.2), hi = at(k.high, 0.6);
+    let found: { id: string; s: number; d: number } | null = null;
+    if (lo && hi) {
+      const sx = hi.x - lo.x, sy = hi.y - lo.y, L2 = Math.max(1, sx * sx + sy * sy);
+      for (const p of this.mind.routeKeyPictures()) {
+        if (p.age > 0.8) continue;
+        const q = { x: p.pos.x + p.vel.x * 0.3, y: p.pos.y + p.vel.y * 0.3 };
+        const s = clamp(((q.x - lo.x) * sx + (q.y - lo.y) * sy) / L2, -0.25, 1.25);
+        const d = Math.hypot(q.x - (lo.x + s * sx), q.y - (lo.y + s * sy));
+        if (d < 4 && s <= 1 && (!found || d < found.d)) found = { id: p.id, s, d };
+      }
+    }
+    if (!found) {
+      this.keyRead = { at: sim.t, defender: null, s: null, throwTo: 'low' };
+      return;
+    }
+    const noise = 0.06 + 0.2 * (1 - a.r('decisionMaking')) + 0.08 * (1 - a.r('awareness'));
+    const s = found.s + sim.dice('readkey', a).normal(0, noise);
+    const throwTo = s >= 0.5 ? 'low' : 'high';
+    this.keyRead = { at: sim.t, defender: found.id, s: +s.toFixed(3), throwTo };
+    const first = throwTo === 'low' ? k.low : k.high, second = first === k.low ? k.high : k.low;
+    this.reads = [first, second, ...this.reads.filter((r) => r !== first && r !== second)];
+    this.readIdx = 0;
+    this.readStart = sim.t;
   }
 
   /**
@@ -364,7 +447,9 @@ export class QBPass implements Behavior {
         // Rhythm: on the last step of his drop he can already start his load,
         // so a timing throw comes out as he hits his set point rather than
         // after it. Same evaluation and thresholds as when set.
-        const first = this.reads[0];
+        // READ_PLAN key: read at its cue, from the drop; until then the low route is not thrown on rhythm.
+        if (READ_PLAN && this.plan?.key && !this.keyRead && t >= this.plan.key.cueBy) this.readKey(a, sim);
+        const first = READ_PLAN && this.plan?.key && !this.keyRead ? undefined : this.reads[0];
         if (first && t >= this.snapAt + this.drop.time - this.load(a) && this.ready(first, sim)) {
           const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
           const ev = this.evaluate(a, sim, first, 0);
@@ -412,6 +497,9 @@ export class QBPass implements Behavior {
       return this.pocketMove(a, sim, this.lookOff.decoy);
     }
 
+    // READ_PLAN: the key, read at the plan's cue unless the rush has already taken over.
+    if (READ_PLAN && this.plan?.key && !this.keyRead && t >= this.plan.key.cueBy && u <= 0.5) this.readKey(a, sim);
+
     // QB_RHYTHM: with the rush or his clock telling him time is up, his eyes go
     // to the outlet (the last read) instead of finishing the order.
     if (QB_RHYTHM && u > 0.5 && this.reads.length > 1 && this.readIdx < this.reads.length - 1) {
@@ -438,16 +526,35 @@ export class QBPass implements Behavior {
     const called = this.concept.family === 'screen';
     const quick = called && this.concept.screen?.tempo === 'quick';
     const need = quick ? Math.min(thr, 0.2) : thr, risk = called ? Math.max(maxInt, 0.12) : maxInt;
-    // Current read.
-    if (read && this.ready(read, sim)) {
+    // READ_PLAN triangle: the three routes as one picture; the best one open that clears his bar is the throw.
+    // The picture is held until all three have shown (or two and a half looks), then the order goes on.
+    const tri = READ_PLAN && !this.triDone ? this.plan?.triangle ?? null : null;
+    // READ_PLAN alert: a yes/no glance, not a full read.
+    const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking'));
+    const readDwell = READ_PLAN && this.plan?.alert && read === this.plan.alert && this.readIdx === 0 ? glance : dwell;
+    if (tri) {
+      let pick: ThrowEval | null = null;
+      for (const r of tri) {
+        if (!this.ready(r, sim)) continue;
+        const ev = this.evaluate(a, sim, r, u);
+        if (ev && ev.P >= need && ev.intRisk <= risk && (!pick || ev.value > pick.value)) pick = ev;
+      }
+      if (pick) return this.startThrow(a, sim, pick);
+      const held = t - this.readStart;
+      if ((held > 1.5 * dwell && tri.every((r) => this.ready(r, sim))) || held > 2.5 * dwell) {
+        this.triDone = true;
+        const after = this.reads.findIndex((r) => !tri.includes(r));
+        this.readIdx = after < 0 ? this.reads.length : after;
+        this.readStart = t;
+      }
+    } else if (read && this.ready(read, sim)) {
       const ev = this.evaluate(a, sim, read, u);
       if (ev && ev.P >= need && ev.intRisk <= risk) return this.startThrow(a, sim, ev);
       // A read that has made his break and is plainly covered is done: he
       // moves on after a glance rather than waiting out the read.
       const forecast = this.receiverForecasts.get(read);
       const broken = !!forecast?.hasBreak && forecast.estimate?.motion === 'installed-route' && forecast.breakAt() === null;
-      const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking'));
-      if (t - this.readStart > dwell || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)) {
+      if (t - this.readStart > readDwell || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)) {
         // QB_RHYTHM: moving off a read, his eyes pass the outlet; a released
         // outlet that is there now is the throw, in rhythm, not at the end.
         const outlet = QB_RHYTHM ? this.outletThrow(a, sim, u, need, risk) : null;
@@ -459,7 +566,7 @@ export class QBPass implements Behavior {
       // Out of reads: take the best available.
       const best = this.bestOption(a, sim, u);
       if (best && best.P >= thr - 0.1 && best.intRisk <= maxInt + 0.03) return this.startThrow(a, sim, best);
-    } else if (t - this.readStart > dwell + (QB_RHYTHM ? 0 : 0.6)) {
+    } else if (t - this.readStart > readDwell + (QB_RHYTHM ? 0 : 0.6)) {
       this.readIdx++;
       this.readStart = t;
     }
@@ -509,6 +616,18 @@ export class QBPass implements Behavior {
     };
     if (this.lookOff && sim.t < this.lookOff.until) return heldPoint(this.lookOff.decoy);
     if (this.phase === 'windup' && this.pending) return this.pending.point;
+    // READ_PLAN: a key is watched from the drop until it is read (HonestNFL 135: the corner during the drop);
+    // a triangle is one picture, its middle.
+    const k = this.plan?.key;
+    if (k && !this.keyRead && this.phase !== 'snap') {
+      const lo = heldPoint(k.low), hi = heldPoint(k.high);
+      return { x: (lo.x + hi.x) / 2, y: (lo.y + hi.y) / 2 };
+    }
+    const tri = this.plan?.triangle;
+    if (tri && !this.triDone && this.phase === 'set') {
+      const P = tri.map(heldPoint);
+      return { x: P.reduce((s, p) => s + p.x, 0) / 3, y: P.reduce((s, p) => s + p.y, 0) / 3 };
+    }
     const read = this.reads[this.readIdx];
     // During the drop: the key (middle-of-field safety); quick game eyes the first read.
     if ((this.phase === 'snap' || this.phase === 'drop') && this.concept.family !== 'quick') return { x: sim.los + 12, y: sim.ballY };

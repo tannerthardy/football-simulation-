@@ -176,7 +176,9 @@ export function select(routes: RouteDescriptor[], motifs: Motif[], qbSet: number
     if (lo.side !== side || hi.side !== side || lo.crossesField) continue;
     if (lo.window.ready > qbSet + BEAT || hi.breakT === null || clearers.has(hi.ref)) continue;
     if (hi.window.ready - lo.window.ready < 0.5 || live(lo, hi) < 0.4) continue;
-    pairs.push({ lo, hi, role: m.role ?? 'unknown', why: `high-low on the ${m.role}: ${m.why}`, cueBy: +Math.max(qbSet, hi.window.ready - 0.3).toFixed(2) });
+    // The key is read at the top of the drop, when the low route is first a throw (HonestNFL 135: gathered during
+    // the drop, decided on the platform): sinking gives the low route on rhythm, squatting holds it for the high.
+    pairs.push({ lo, hi, role: m.role ?? 'unknown', why: `high-low on the ${m.role}: ${m.why}`, cueBy: +Math.max(qbSet - 0.3, lo.window.ready - 0.2).toFixed(2) });
   }
   pairs.sort((a, b) => a.lo.window.ready - b.lo.window.ready || a.lo.ref.localeCompare(b.lo.ref) || a.hi.ref.localeCompare(b.hi.ref));
   if (pairs.length) {

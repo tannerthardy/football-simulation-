@@ -4,7 +4,8 @@ import { clamp, norm, sub, type Vec2 } from '../core/vec.js';
 import { arriveVelocity, type Body, type MoveCommand } from '../physics/kinematics.js';
 import type { RouteDef, RouteEnd, RoutePoint } from '../playbook/types.js';
 
-export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number }
+/** `ext`: a point the path's continuation added past the installed route (to the sideline margin, then up). */
+export interface PathPoint { readonly p: Readonly<Vec2>; readonly s: number; readonly ext?: boolean }
 
 export function routePath(start: Vec2, los: number, outside: number, pts: readonly RoutePoint[],
   extend: boolean, family: RouteDef['family']): PathPoint[] {
@@ -26,9 +27,9 @@ export function routePath(start: Vec2, los: number, outside: number, pts: readon
     const edge = { x: Math.min(endX, last.x + d.x * k), y: last.y + d.y * k };
     if (k < 39) {
       const up = family === 'flat' ? 5 : 40;
-      if (k > 0) out.push({ p: edge, s: 0.75 });
-      out.push({ p: { x: Math.min(endX, edge.x + up), y: edge.y }, s: family === 'flat' ? 0.6 : 1 });
-    } else out.push({ p: edge, s: 1 });
+      if (k > 0) out.push({ p: edge, s: 0.75, ext: true });
+      out.push({ p: { x: Math.min(endX, edge.x + up), y: edge.y }, s: family === 'flat' ? 0.6 : 1, ext: true });
+    } else out.push({ p: edge, s: 1, ext: true });
   }
   return out;
 }
