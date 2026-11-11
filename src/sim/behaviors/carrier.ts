@@ -133,8 +133,8 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
 
 /** CATCH_EYES (off): a receiver's eyes are on the ball until it is in his
  * hands. For one reaction time after the catch he carries the line he caught
- * it on (upfield if he caught it nearly standing) while he looks back up the
- * field; his first lane read comes after that, from his own fresh picture.
+ * it on (upfield if he caught it nearly standing or coming back to the
+ * ball) while he looks back up the field; his first lane read comes after that, from his own fresh picture.
  * Without it the carrier's first read came on the tick after the catch from a
  * full picture of the field: 0.1 s after the catch the request was 46 deg off
  * his travel (p50; p75 93), and over 0.5 s he turned 22 / 37 deg (p50 / p75;
@@ -360,7 +360,10 @@ export class BallCarrier implements Behavior {
     if (CATCH_EYES && this.opts.catchAt !== undefined && sim.t < this.opts.catchAt + a.profile.reactionTime) {
       if (this.catchLine === null) {
         const sp = Math.hypot(a.vel.x, a.vel.y);
-        this.catchLine = sp > 1.5 ? Math.atan2(a.vel.y, a.vel.x) : (dir > 0 ? 0 : Math.PI);
+        // A line coming back toward the passer is not one he carries: he plants
+        // and turns upfield, the same first move as a man caught standing.
+        const back = a.vel.x * dir < -0.5 * sp;
+        this.catchLine = sp > 1.5 && !back ? Math.atan2(a.vel.y, a.vel.x) : (dir > 0 ? 0 : Math.PI);
       }
       this.heading = this.catchLine;
       this.nextEval = this.opts.catchAt + a.profile.reactionTime;
