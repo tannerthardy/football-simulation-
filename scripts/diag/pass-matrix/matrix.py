@@ -173,9 +173,10 @@ def play_rows(p, outcome, cov):
         rmap[i] = r
         if r not in ('BLOCK', 'NONE'): routes.append((r, s, n, pl[i]['group']))
     concept = classify_concept(routes)
+    names = sorted(r for r, *_ in routes)
     t = p.get('target')
     row = {'cov': cov, 'form': fam, 'concept': concept, **outcome, 'route': rmap.get(t), 'num': None, 'sep_throw': None, 'sep_arr': None, 'yac': None,
-           'open': None, 'catch_d': None, 'catch_close': None}
+           'open': None, 'catch_d': None, 'catch_close': None, 'routes': names}
     if t is not None and t in num:
         s, n = num[t]; row['num'] = 'back' if s == 0 else f'#{n}'
     D = [i for i, a in enumerate(pl) if a['side'] == 'D']
@@ -243,7 +244,7 @@ def sim_rows():
                 conceptFam = SIM_FAMILY.get(concept, 'other' if concept else None)
                 att = bool(st.get('attempted')) and not st.get('throwaway')
                 o = {'att': att, 'comp': bool(st.get('completed')), 'sack': bool(st.get('sacked')), 'int': bool(st.get('interceptedBy'))}
-            o.update({'yds': p['yards'] if att else 0.0, 'side': 'sim', 'pa': concept.startswith('pa_'), 'conceptId': concept,
+            o.update({'yds': p['yards'] if att else 0.0, 'side': 'sim', 'pa': concept.startswith('pa_'), 'conceptId': concept, 'family': conceptFam, 'seed': (m or {}).get('seed') or int(p['id'].split('-')[0].lstrip('SM') or 0),
                       'nearest': m['nearest'] if m else None})
             r = play_rows(p, o, SIM_COV.get(cov, cov))
             if not r: continue
@@ -251,6 +252,27 @@ def sim_rows():
             if conceptFam: check[(conceptFam, r[0]['concept'])] += 1
             if m: check[('form', m['formation'], r[0]['form'])] += 1
     return out, check
+
+# ---------------------------------------------------------------- concept model
+ROUTES = ['GO', 'POST', 'CORNER', 'OUT', 'IN', 'SLANT', 'HITCH', 'FLAT', 'CROSS', 'WHEEL', 'ANGLE', 'SCREEN']
+def counts(names):
+    c = C.Counter(names); return [min(3, c[r]) for r in ROUTES]
+
+class ConceptModel:
+    """Naive Bayes over how many of each route a play shows (capped at 3), fitted on sim plays whose called concept
+    is known; a play that fits no concept much better than the league's route mix is 'other'."""
+    def __init__(self, rows, background):
+        self.lp = {}
+        by = C.defaultdict(list)
+        for r in rows: by[r['family']].append(counts(r['routes']))
+        for fam, V in by.items():
+            self.lp[fam] = [[math.log((sum(v[j] == k for v in V) + 1) / (len(V) + 4)) for k in range(4)] for j in range(len(ROUTES))]
+        self.bg = [[math.log((sum(v[j] == k for v in background) + 1) / (len(background) + 4)) for k in range(4)] for j in range(len(ROUTES))]
+    def name(self, names, margin=2.0):
+        v = counts(names)
+        ll = {f: sum(t[j][v[j]] for j in range(len(ROUTES))) for f, t in self.lp.items()}
+        best = max(ll, key=ll.get); bg = sum(self.bg[j][v[j]] for j in range(len(ROUTES)))
+        return best if ll[best] - bg > margin else 'other'
 
 # ---------------------------------------------------------------- aggregation
 def agg(rows):
@@ -281,6 +303,17 @@ def main():
     LIB = Lib(opt('--lib', 'out/pass-matrix/routelib.npz'))
     nfl = nfl_rows()
     sim, check = sim_rows()
+    # Concept families: fit on half the sim seeds (odd play index), check on the other half, then name every play.
+    known = [r for r in sim if r.get('family')]
+    train = [r for i, r in enumerate(known) if i % 2 == 0]; test = [r for i, r in enumerate(known) if i % 2 == 1]
+    model = ConceptModel(train, [counts(r['routes']) for r in nfl])
+    conf = C.defaultdict(C.Counter)
+    for r in test: conf[r['family']][model.name(r['routes'])] += 1
+    print('== concept model, held-out half of the sim plays (called family -> named)')
+    for f_, c_ in sorted(conf.items()):
+        tot = sum(c_.values()); print(f"  {f_:18} n {tot:5}  agree {100 * c_[f_] / tot:5.1f}%  top: " + ', '.join(f'{k} {100 * v / tot:.0f}%' for k, v in c_.most_common(4)))
+    for r in sim + nfl: r['concept'] = model.name(r['routes'])
+    print('  NFL plays named by family: ' + ', '.join(f'{k} {v}' for k, v in C.Counter(r['concept'] for r in nfl if not r['pa']).most_common()))
     if '--check' in sys.argv:
         print('== classifier check on the sim (called concept family -> classified family)')
         fams = C.defaultdict(C.Counter)
