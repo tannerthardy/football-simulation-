@@ -10,6 +10,7 @@ import type { MoveCommand } from '../physics/kinematics.js';
 import { gapY, lineOffset } from '../playbook/alignment.js';
 import { GUN_QB_DEPTH } from '../playbook/formations.js';
 import { getRoute } from '../playbook/routes.js';
+import { CONCEPT_MENU } from '../playbook/concepts.js';
 import type { Gap, PassConcept, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
 import { boxThreats, isOL, planRunBlocking, playSideSign, PassProtector, PRO_CALL, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
@@ -198,7 +199,7 @@ export function assignBehaviors(sim: PlaySim): void {
       };
       if (ref === 'B' || ref === 'B2' || !ref) {
         const assign = ref === 'B' ? concept.back : 'check';
-        if (BACK_RELEASE && assign === 'check') {
+        if (BACK_RELEASE && (assign === 'check' || (CONCEPT_MENU && BACK_ROUTES.has(assign)))) {
           const route = backRelease(sim, concept, a);
           // PRO_CALL decides whether he is in the count (the call's backsIn);
           // without it, the box count stand-in.
@@ -734,7 +735,11 @@ function protectionCount(sim: PlaySim, concept: PassConcept): number {
 
 /** BACK_RELEASE: the back's release into space: the flat on his side, or an
  * angle when the concept already sends a receiver to that flat. */
+const BACK_ROUTES = new Set(['angle', 'back_out', 'wheel', 'back_flat', 'swing']);
 function backRelease(sim: PlaySim, concept: PassConcept, a: Agent): string {
+  // A concept that names the back's route (CONCEPT_MENU: angle, out, wheel) gives it; the release decides only
+  // whether he is free to run it.
+  if (CONCEPT_MENU && BACK_ROUTES.has(concept.back)) return concept.back;
   const side = Math.sign(a.pos.y - sim.ballY) || sim.offAlign.strongSign;
   const routes = Object.values(side === sim.offAlign.strongSign ? concept.strong : concept.weak);
   return routes.some(r => r === 'flat' || r === 'out' || r === 'quick_out') ? 'angle' : 'back_flat';
