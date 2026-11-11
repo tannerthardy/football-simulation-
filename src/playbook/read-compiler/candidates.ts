@@ -21,9 +21,16 @@ const refKey = (r: RouteDescriptor) => r.ref;
 
 /**
  * Pure progression: a bounded beam search over orders of up to four early reads. A read must be live when the
- * QB gets to it (its window open, not expired); eye movement across the field costs time; a deep route that only
- * clears for a shorter one under it is not an early read; ties go to the earlier window, then the receiver number.
+ * QB gets to it (its window open, not expired); a deep route that only clears for a shorter one under it is not an
+ * early read; ties go to the earlier window, then the receiver number.
+ *
+ * Two coached rules shape it (HonestNFL, docs/reviews/2026-11-11-read-compiler-phase0.md addendum):
+ * - Finish the side: the start side is read through, then the other side; the eyes do not come back (036, 035,
+ *   037, 107). A look across the field first is only an alert (see `select`).
+ * - The primary: within one beat of the earliest answer on the start side, a route that breaks is read before
+ *   one that settles (295, 224, 143, 142: the settling route is the reset, not the start).
  */
+export const BEAT = 0.4;
 function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxReads: number): { order: ReadStep[]; outlet: ReceiverRef | null; warnings: string[]; score: number } {
   const warnings: string[] = [];
   const clearers = new Set(motifs.filter((m) => m.kind === 'clearout').map((m) => m.refs[0]));
@@ -31,29 +38,35 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
   const outletR = routes.filter((r) => r.isBack && r.window.ready < 3.5).sort((a, b) => a.window.ready - b.window.ready)[0] ?? null;
   type Node = { seq: RouteDescriptor[]; t: number; cost: number };
   const LOOK = 0.35;  // a look: eyes on, decide, move on (s); crossing the field adds a reset
-  // Start on the side with more route runners (the side the concept is built to), the strength on a tie.
-  const count = (s: 'S' | 'W') => field.filter((r) => r.side === s).length;
-  const startSide: 'S' | 'W' = count('W') > count('S') ? 'W' : 'S';
+  const startSide = startSideOf(routes);
+  const startRoutes = field.filter((r) => r.side === startSide);
+  const firstReady = Math.min(...startRoutes.map((r) => r.window.ready));
+  const breakerInBeat = startRoutes.some((r) => !r.settles && r.window.ready <= firstReady + BEAT);
   let beam: Node[] = [{ seq: [], t: qbSet - 0.15, cost: 0 }];
   for (let depth = 0; depth < Math.min(maxReads, field.length); depth++) {
     const next: Node[] = [];
     for (const n of beam) for (const r of field) {
       if (n.seq.includes(r)) continue;
       const prev = n.seq[n.seq.length - 1];
+      // Finish the side: start there, and once the eyes leave a side they do not come back to it.
+      if (!prev && startRoutes.length && r.side !== startSide) continue;
+      if (prev && prev.side !== r.side && n.seq.some((x) => x.side === r.side)) continue;
+      if (prev && prev.side !== r.side && startRoutes.some((x) => !n.seq.includes(x) && x.side === prev.side && x.window.last > n.t + LOOK)) continue;
       const across = prev && prev.side !== r.side ? 0.6 : 0;
-      const wrongStart = !prev && r.side !== startSide ? 0.8 : 0;
       const at = Math.max(n.t + (prev ? LOOK : 0), r.window.ready);
       // Waiting on a route that is still developing is cheap while the eyes stay on his side (the rhythm of
       // the drop and hitch); a read reached after his window closes is dead.
-      let cost = n.cost + 0.3 * Math.max(0, at - n.t - (prev ? LOOK : 0)) + across + wrongStart;
+      let cost = n.cost + 0.3 * Math.max(0, at - n.t - (prev ? LOOK : 0)) + across;
       if (at > r.window.last) cost += 1.5;
       if (clearers.has(r.ref) && depth < 2) cost += 0.6;               // a clear-out is not an early read
       if (!prev && r.window.ready > qbSet + 0.9) cost += 0.5;           // nor is a route that comes open late
+      if (!prev && r.settles && breakerInBeat) cost += 1.0;             // the breaking route is the primary
       // High-low within a side (the default profile): the deeper route first, then down (§10 B: the coach's
       // ordering among feasible sequences).
       if (prev && prev.side === r.side && r.depthAtReady > prev.depthAtReady + 2) cost += 0.35;
       next.push({ seq: [...n.seq, r], t: at, cost });
     }
+    if (!next.length) break;
     next.sort((a, b) => a.cost - b.cost || a.seq.map(refKey).join().localeCompare(b.seq.map(refKey).join()));
     beam = next.slice(0, 24);
   }
@@ -63,6 +76,13 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
     if (at > r.window.last) warnings.push(`${r.ref} expired before the read reaches him (${at.toFixed(2)} > ${r.window.last} s)`);
   }
   return { order: best.seq.map((r) => step(r, qbSet)), outlet: outletR?.ref ?? null, warnings, score: -best.cost };
+}
+
+/** The side the read starts on: the side with more route runners (the side the concept is built to), the strength
+ * on a tie. */
+export function startSideOf(routes: RouteDescriptor[]): 'S' | 'W' {
+  const n = (s: 'S' | 'W') => routes.filter((r) => !r.isBack && r.side === s).length;
+  return n('W') > n('S') ? 'W' : 'S';
 }
 
 export function candidates(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, profile: CoachProfile = DEFAULT_PROFILE): Candidate[] {
@@ -111,4 +131,78 @@ export function candidates(routes: RouteDescriptor[], motifs: Motif[], qbSet: nu
   hc.rationale.push('pick a side from the pre-snap shell, then that half in order');
   out.push(hc);
   return out.sort((x, y) => Number(y.valid) - Number(x.valid) || y.score - x.score);
+}
+
+const isVertical = (r: RouteDescriptor) => { const d = afterBreak(r); return d.down > 1.5 && Math.abs(d.out) < 0.6 * d.down; };
+const live = (a: RouteDescriptor, b: RouteDescriptor) => Math.min(a.window.last, b.window.last) - Math.max(a.window.ready, b.window.ready);
+
+/**
+ * Phase 1 plan selection: structural rules, no concept names and no style priors (the Phase 0 audit's scores rank
+ * the remaining candidates). In order:
+ * 1. Defender key. On the start side, a high-low on one defender whose low route is ready on rhythm (within a beat
+ *    of the set) before the high route declares (0.5 s or more later), the high route a breaking route (not a
+ *    clear-out, not a straight vertical), the two live together 0.4 s or more: by rhythm the QB would throw the low
+ *    route before the high one had declared, so only a key on the defender between them keeps the high route an
+ *    option. Or a clear-and-void pair (the vertical takes the deep defender, the in-breaker comes under him).
+ * 2. Triangle: three routes on the start side read as one picture (HonestNFL 123, 340, the Tampa family, mesh).
+ * 3. Alert: an isolated vertical on the other side, a yes/no look at the set before the start side (307, 141).
+ * 4. Pure progression otherwise.
+ */
+export function select(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, profile: CoachProfile = DEFAULT_PROFILE): Candidate {
+  const P = pure(routes, motifs, qbSet, profile.maxReads);
+  const R = new Map(routes.map((r) => [r.ref, r]));
+  const side = startSideOf(routes);
+  const clearers = new Set(motifs.filter((m) => m.kind === 'clearout').map((m) => m.refs[0]));
+  const plan = (style: Candidate['style'], why: string): Candidate =>
+    ({ style, order: P.order, outlet: P.outlet, valid: P.order.length > 0, hardFailures: P.order.length ? [] : ['no eligible receiver'], warnings: [...P.warnings], score: P.score, rationale: [why] });
+  // With the plan's first reads moved to the front, the rest of the pure order after them.
+  const lead = (c: Candidate, refs: ReceiverRef[]) => {
+    const first = refs.map((ref) => P.order.find((s) => s.ref === ref) ?? step(R.get(ref)!, qbSet));
+    c.order = [...first, ...P.order.filter((s) => !refs.includes(s.ref))];
+    return c;
+  };
+  // 1. Key.
+  type Pair = { lo: RouteDescriptor; hi: RouteDescriptor; role: string; why: string; cueBy: number };
+  const pairs: Pair[] = [];
+  for (const m of motifs) {
+    if (m.kind !== 'vertical_high_low' && m.kind !== 'smash' && m.kind !== 'clear_void') continue;
+    const lo = R.get(m.refs[0]), hi = R.get(m.refs[1]);
+    if (!lo || !hi || lo.isBack || hi.isBack) continue;
+    if (m.kind === 'clear_void') {
+      if (hi.side !== side && lo.side !== side) continue;
+      pairs.push({ lo, hi, role: m.role ?? 'deep_defender_over_vertical', why: `clear and void: ${m.why}`, cueBy: +Math.max(qbSet, lo.window.ready - 0.2).toFixed(2) });
+      continue;
+    }
+    if (lo.side !== side || hi.side !== side || lo.crossesField) continue;
+    if (lo.window.ready > qbSet + BEAT || hi.breakT === null || clearers.has(hi.ref)) continue;
+    if (hi.window.ready - lo.window.ready < 0.5 || live(lo, hi) < 0.4) continue;
+    pairs.push({ lo, hi, role: m.role ?? 'unknown', why: `high-low on the ${m.role}: ${m.why}`, cueBy: +Math.max(qbSet, hi.window.ready - 0.3).toFixed(2) });
+  }
+  pairs.sort((a, b) => a.lo.window.ready - b.lo.window.ready || a.lo.ref.localeCompare(b.lo.ref) || a.hi.ref.localeCompare(b.hi.ref));
+  if (pairs.length) {
+    const k = pairs[0];
+    const c = lead(plan('defender_key', k.why), [k.lo.ref, k.hi.ref]);
+    c.key = { role: k.role, onCue: k.hi.ref, otherwise: k.lo.ref, cueBy: k.cueBy, low: k.lo.ref, high: k.hi.ref };
+    return c;
+  }
+  // 2. Triangle on the start side, all three answers early enough to be one picture.
+  const tri = motifs.filter((m) => m.kind === 'triangle').map((m) => m.refs.map((ref) => R.get(ref)!))
+    .filter((T) => T.filter((r) => r.side === side).length >= 2 && T.every((r) => r.window.ready <= qbSet + 0.9 && !r.isBack))
+    .sort((a, b) => Math.max(...a.map((r) => r.window.ready)) - Math.max(...b.map((r) => r.window.ready)) || a.map(refKey).join().localeCompare(b.map(refKey).join()));
+  if (tri.length) {
+    // Top-down: the deepest at his window first (123, 036: corner, then the middle route, then the flat).
+    const T = [...tri[0]].sort((a, b) => b.depthAtReady - a.depthAtReady || refKey(a).localeCompare(refKey(b)));
+    const c = lead(plan('triangle', `triangle ${T.map((r) => r.ref).join('-')}: read as one picture, top-down`), T.map((r) => r.ref));
+    c.triangle = T.map((r) => r.ref);
+    return c;
+  }
+  // 3. Alert: an isolated vertical away from the start side.
+  const iso = motifs.filter((m) => m.kind === 'isolation').map((m) => R.get(m.refs[0])!)
+    .filter((r) => r.side !== side && isVertical(r) && r.depthAtReady >= 10 && !r.settles);
+  if (iso.length) {
+    const c = plan('pure_with_alert', `yes/no alert on the isolated vertical ${iso[0].ref}, then the start side`);
+    c.alert = iso[0].ref;
+    return c;
+  }
+  return plan('pure', 'pure progression: start side through, then the other side');
 }

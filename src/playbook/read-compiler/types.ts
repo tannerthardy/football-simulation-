@@ -1,6 +1,7 @@
 /**
- * Read-plan compiler, Phase 0 (docs/research/2026-11-11-qb-read-compiler-design.md §21): diagnostics only.
- * Nothing in the game calls this module; QBPass still runs `concept.progression`.
+ * Read-plan compiler (docs/research/2026-11-11-qb-read-compiler-design.md). Phase 0 diagnostics
+ * (docs/reviews/2026-11-11-read-compiler-phase0.md); Phase 1: with READ_PLAN, QBPass runs the chosen plan
+ * (src/playbook/read-compiler/runtime.ts), otherwise `concept.progression`.
  */
 import type { ReceiverRef } from '../types.js';
 
@@ -25,10 +26,12 @@ export interface RouteDescriptor {
   depthAtReady: number;
   crossesField: boolean;
   isBack: boolean;
+  /** His route ends settled (a hitch, hook, stick, curl or sit: nearly stopped at the end of the horizon). */
+  settles: boolean;
 }
 
 export type MotifKind = 'vertical_high_low' | 'horizontal_stretch' | 'flood' | 'triangle' | 'cross_post' | 'levels'
-  | 'mesh' | 'smash' | 'seams' | 'isolation' | 'back_outlet' | 'clearout';
+  | 'mesh' | 'smash' | 'seams' | 'isolation' | 'back_outlet' | 'clearout' | 'clear_void';
 
 export interface Motif {
   kind: MotifKind;
@@ -49,7 +52,12 @@ export interface Candidate {
   order: ReadStep[];
   outlet: ReceiverRef | null;
   alert?: ReceiverRef;
-  key?: { role: string; onCue: ReceiverRef; otherwise: ReceiverRef; cueBy: number };
+  /** A defender key: the defender between `low` and `high` (role named generically) is read at `cueBy`; if he
+   * plays the high route (sinks, carries it) the throw is `low`, if he plays the low one (squats, jumps it) it is
+   * `high`. `onCue`/`otherwise` are the same pair, kept for the Phase 0 audit. */
+  key?: { role: string; onCue: ReceiverRef; otherwise: ReceiverRef; cueBy: number; low?: ReceiverRef; high?: ReceiverRef };
+  /** A triangle: three routes read as one picture, top-down. */
+  triangle?: ReceiverRef[];
   halves?: { strong: ReceiverRef[]; weak: ReceiverRef[] };
   valid: boolean;
   hardFailures: string[];

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam } from '../src/league/team.js';
 import { MENU_CONCEPTS, PASS_BY_ID, SCREEN_CONCEPTS } from '../src/playbook/concepts.js';
-import { candidates } from '../src/playbook/read-compiler/candidates.js';
+import { select } from '../src/playbook/read-compiler/candidates.js';
 import { compile } from '../src/playbook/read-compiler/compile.js';
 import { findMotifs } from '../src/playbook/read-compiler/motifs.js';
 import type { PassConcept } from '../src/playbook/types.js';
@@ -37,7 +37,7 @@ describe('read compiler (Phase 0)', () => {
       expect(plan(run(shuffled, 'gun_trips_11')), id).toEqual(plan(run(c, 'gun_trips_11')));
       const p = run(c, 'gun_trips_11');
       const routes = [...p.routes].reverse();
-      const again = candidates(routes, findMotifs(routes), p.qbSetAt).find((x) => x.valid)!;
+      const again = select(routes, findMotifs(routes), p.qbSetAt);
       expect(again.order.map((s) => s.ref), id).toEqual(p.chosen!.order.map((s) => s.ref));
     }
   });
