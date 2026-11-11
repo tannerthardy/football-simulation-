@@ -51,7 +51,7 @@ for path in args:
             k = kr
             while k - 1 >= 0 and a_at(k - 1) is not None and a_at(k - 1) - a_at(k) >= 5: k -= 1
             turn = (kr - k) * p.dt; tang = a_at(k) - ar
-        row = {'id': p.raw['id'], 'rel': (kr - ks) * p.dt, 'air': air, 'ang': ang, 'moving': p.speed(q, kr) >= 2.0, 'turn': turn, 'tang': tang}
+        row = {'id': p.raw['id'], 'rel': (kr - ks) * p.dt, 'air': air, 'ang': ang, 'moving': p.speed(q, kr) >= 2.0, 'turn': turn, 'tang': tang, 'comp': 'catch' in ev, 'yards': p.raw['yards']}
         R.append(row)
         if DUMP: DUMP.write(json.dumps(row) + '\n')
     print(f"== {os.path.basename(path)}: throws {len(R)}")
@@ -68,8 +68,8 @@ for path in args:
                 t = [r['turn'] for r in T if lo <= r['air'] < hi]
                 if t: print(f"      {lo:2d}-{hi:<2d} yd  n {len(t):5d}  {q3(t)} s | angle turned p50 {st.median([r['tang'] for r in T if lo <= r['air'] < hi]):.0f} deg")
             for lo, hi in ((0, 15), (15, 45), (45, 90), (90, 180)):
-                t = [r['turn'] for r in T if lo <= r['tang'] < hi]
-                if t: print(f"      turned {lo:3d}-{hi:<3d} deg n {len(t):5d}  {q3(t)} s")
+                g = [r for r in T if lo <= r['tang'] < hi]
+                if g: print(f"      turned {lo:3d}-{hi:<3d} deg n {len(g):5d}  {q3([r['turn'] for r in g])} s | complete {100*sum(r['comp'] for r in g)/len(g):.0f}% yd/att {st.mean(r['yards'] for r in g):.1f}")
         A = [r for r in s if r['ang'] is not None]
         if A:
             print("    by shoulder angle to the target at the settled frame:")
