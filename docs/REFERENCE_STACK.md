@@ -622,7 +622,7 @@ Run Game. A receiver's eyes are on the ball until it is in his hands. Before, th
 | 16-game card, league-sampled, seed 11: yards an attempt | 9.59 | 8.80 (90% range −1.47 to −0.09) | 6.35–7.89 |
 | Card: YAC a reception; total yards a team-game | 8.05; 494 | 7.04; 458 | 4.53–5.91; 320–345 |
 
-The card ([scorecard](reviews/2026-11-11-catch-eyes-scorecard.md)) was read for bugs and shows none; completion, sack and interception rates and missed + broken tackles are unresolved. With the flag on the fixed 1,321 runs read 3.82 (run-ref-17: 3.83), broken 0.118 (0.121): the flag acts on a caught ball, so tosses are the likely source; not traced.
+The card ([scorecard](reviews/2026-11-11-catch-eyes-scorecard.md)) was read for bugs and shows none; completion, sack and interception rates and missed + broken tackles are unresolved. With the flag on the fixed 1,321 runs read 3.82 (run-ref-17: 3.83), broken 0.118 (0.121). The flag acts only where the engine records a catch (`possess(…, 'catch')`), so some plays in the run set contain one; the movement is in outside zone (3.13 → 3.09) and gap (4.09 → 4.07), toss is unchanged, and which plays they are has not been traced.
 
 Open with it: upfield speed 0.5 s after the catch moves away from the NFL (2.05 → 1.65 yd/s against 2.30), because crossers keep their line for the window; the body side of the catch (securing the ball, turning from the catch posture) is not modelled; no test covers the flag yet (requested from Run Game).
 
