@@ -98,9 +98,10 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
     const at = (t: number) => P[Math.min(P.length - 1, Math.max(0, Math.round(t / DT) - Math.round(P[0].t / DT)))];
     // Ready: his route has shown its answer (the break, or 12 yd of a vertical) and the QB can throw (set, less a beat).
     // Declared: his break; or 12 yd of a vertical; or, for a route that bends without a sharp cut (a flat, a
-    // back's release, a crosser), 5 yd from his start with the line crossed.
+    // back's release, a crosser), 5 yd from his start with the line crossed (a back need not cross it).
     const vertical = breakT === null ? P.find((p) => p.x >= 12)?.t ?? null : null;
-    const moved = P.find((p) => Math.hypot(p.x - start.x, p.y - start.y) >= 5 && p.x >= 0.5)?.t ?? null;
+    // A back's release (swing, flat, angle) is a throw behind or at the line, so it need not cross it.
+    const moved = P.find((p) => Math.hypot(p.x - start.x, p.y - start.y) >= 5 && (p.x >= 0.5 || ref === 'B' || ref === 'B2'))?.t ?? null;
     // A stem that is mostly lateral (a flat, a swing, an angle's first step) declares by moving, not by a break.
     const p10 = P[Math.min(P.length - 1, 10)];
     const lateralStem = Math.abs(p10.y - start.y) > Math.abs(p10.x - start.x);
