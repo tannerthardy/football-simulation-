@@ -71,6 +71,8 @@
     "FIT_BLITZ_SLIDE": "on",
     "FIT_TE_GAP": "on",
     "FLAT_PRESS": "on",
+    "CATCH_HANDS": "off",
+    "LOOK_ONCE": "off",
     "FLOW_INTERCEPT": "off",
     "GAP_CLIMB": "on",
     "GAZE": "off",
