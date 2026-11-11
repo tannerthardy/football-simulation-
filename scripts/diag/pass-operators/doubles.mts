@@ -35,12 +35,18 @@ for (let s = first; s < first + 2 * games; s += 2) {
           const k = on.length + helpers;
           const st = k === 0 ? 'unblocked' : k === 1 ? 'single' : 'doubled';
           (state.get(d) ?? state.set(d, {}).get(d)!)[m.toFixed(1)] = st;
+          if (st === 'single') state.get(d)![`by ${m.toFixed(1)}`] = on[0].slot;
           inc(`at ${m.toFixed(1)} s: ${st}`);
         }
         if (coord?.called) {
-          const held = [...coord.assigned].filter(([b, r]: any) => OL.test(b.slot) && r && coord.called.has(r) && !r.engagement
-            && (r.pos.x - sim.los) > 0.5).length;
-          inc(`at ${m.toFixed(1)} s: linemen on a declared backer not yet come`, held);
+          const heldPairs = [...coord.assigned].filter(([b, r]: any) => OL.test(b.slot) && r && coord.called.has(r) && !r.engagement
+            && (r.pos.x - sim.los) > 0.5);
+          inc(`at ${m.toFixed(1)} s: linemen on a declared backer not yet come`, heldPairs.length);
+          // Who the held lineman is held on: the backer's downhill speed and depth.
+          for (const [, r] of heldPairs as any) {
+            const v = -r.vel.x, dep = r.pos.x - sim.los;
+            inc(`held at ${m.toFixed(1)} s: backer downhill ${v < 0.5 ? '<0.5' : v < 1 ? '0.5-1' : v < 2 ? '1-2' : '2+'} yd/s, ${dep < 1.5 ? '<1.5' : dep < 2.5 ? '1.5-2.5' : '2.5+'} yd off`);
+          }
         }
       }
       if (hit || sim.t < 0.3) return;
@@ -52,7 +58,12 @@ for (let s = first; s < first + 2 * games; s += 2) {
     for (const d of dl) {
       const st = state.get(d) ?? {};
       const free = !!hit && hit.d === d && hit.free;
-      for (const m of ['1.0', '1.5']) if (st[m]) { inc(`DL ${st[m]} at ${m} s`); if (free) inc(`DL ${st[m]} at ${m} s -> free first pressure`); }
+      for (const m of ['1.0', '1.5']) if (st[m]) {
+        inc(`DL ${st[m]} at ${m} s`);
+        if (free) inc(`DL ${st[m]} at ${m} s -> free first pressure`);
+        if (st[m] === 'single') { const b = st[`by ${m}`]; const g = OL.test(b) ? 'lineman' : b === 'RB' || b === 'F' ? 'back' : 'end/other';
+          inc(`single blocker at ${m} s: ${g}`); if (free) inc(`single blocker at ${m} s: ${g} -> free first pressure`); }
+      }
     }
     return res; } } });
 }
