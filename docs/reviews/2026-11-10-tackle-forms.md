@@ -961,3 +961,38 @@ Two games (seed 401–402, IRN v COM league identities), THROW_BODY=1, with and 
 The current-read throw check runs before the decision. With a rusher bearing down he still starts a throw that, by his own felt time (0.15 s optimistic: a constant-velocity extrapolation of an accelerating rusher), he expects to finish. Then contact lands in the delivery, and the play classifies as "stood, threw".
 
 So the movement can't show until the throw decision under imminent pressure uses the same evidence. That means a felt time to contact that sees closing acceleration, and asking "can I finish this throw before he arrives" before starting it.
+
+### `SET_DECIDE` game read (16 games; misses its movement gates; stays off)
+
+**Population.** League sim-export seed 201, 16 games; run-ref-25 (THROW_BODY on in every arm). NFL: BDB 2025 pocket dropbacks, designed movement removed, same operators.
+
+| Rusher at 1 yd | THROW_BODY base | SET_DECIDE | + BLOCK_SEEN | NFL |
+|---|---|---|---|---|
+| n | 181 | 145 | 116 | 897 |
+| Throw / sack / scramble | 65 / 30 / 6 | **49 / 46 / 6** | 59 / 41 / 1 | 30 / 47 / 23 (pocket: 29 / 49 / 22) |
+| Stood | 71% | 66% | 70% | 24% |
+| Ended outside | 3% | 6% | 3% | 40% |
+| Climbed 3+ | 8% | 4% | 3% | 15% |
+| Left away from the rusher | | 88% | | 69% |
+| Throws after contact, complete / yd/att | 38% / 6.3 | **35% / 4.3** | 40% / 6.6 | 33% / 4.5 |
+
+| All dropbacks | base | SET_DECIDE | + BLOCK_SEEN | NFL |
+|---|---|---|---|---|
+| Sacks | 5% | 7% | 5% | 7% |
+| Clean throws, complete / yd/att | 62% / 11.2 | 63% / 9.3 | 63% / 9.7 | |
+| Clean pocket ends outside (no drift) | 1% | 1% | 1% | |
+| Pressured pocket path p75 | 0.39 yd | 0.24 yd | 0.21 yd | 1.72 yd |
+
+YAC mean 10.09 → 8.02 ± 0.45: divergence on this seed, as before.
+
+**Gates.**
+- Hit-throw quality: met.
+- Sack share at contact and the overall sack rate: met.
+- Clean pocket: no drift, met.
+- **Movement: missed.** Stood 71 → 66% is not material; ends-outside 6% against 40%; scrambles flat; pocket path flat.
+
+**What worked.** `canFinish` with `feltClosing`. Not starting a throw he can't finish before the rusher he sees closing turns the 65% thrown-after-contact into 49%, and the extra plays become sacks, as in the NFL.
+
+**What didn't.** The movement. Straight-line time to reach makes every spot near a closing rusher look covered: it sees rushers, not his blockers walling them off. So he still mostly stands until he's hit. With `BLOCK_SEEN` the engaged rushers count sooner and he freezes more.
+
+**Next piece (Integration's note).** A spot's value from what he sees of bodies: a spot is good if no free rusher has an unblocked path to it and no teammate is standing in it. The NFL direction data (69% away from the rusher who reaches him; outside 40%) should fall out of that.
