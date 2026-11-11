@@ -1,7 +1,8 @@
 """Who carries the start-state deficit before the catch (Integration, 2026-11-11). Same code on NFL tracking and sim plays
 (common format). Defenders unengaged and within 6 yd of the catcher at the catch (catchwin.py's population), classed by:
   cov:   man / zone from the play's coverage label (metrics.coverage_family; NFL PFF, sim call names);
-  role:  LB (group), else a DB is S if 8+ yd deep at the snap, CB if 10+ yd from the ball laterally, else slot;
+  role:  by the record's slot where it has one (sim: FS/SS = S, CB_* = CB, NB/DB = slot, LB_* = LB, else DL); otherwise
+         LB (group), else a DB is S if 8+ yd deep at the snap, CB if 10+ yd from the ball laterally, else slot (NFL);
   depth: his x against the catcher's at -0.6 s: over (> +2 yd downfield of him), level, under (< -2).
 For each class: n; at -1.0 s, -0.6 s, the release (events.pass_forward) and the catch: his speed, velocity toward the
 catcher (along the line to the catcher at that frame), share slow (< 1.5 yd/s) and share moving away (cos < -0.7).
@@ -37,7 +38,11 @@ for path in sys.argv[1:]:
             if p.dist(c, d, kc) > 6 or any(p.dist(o, d, kc) <= 1.2 for o in O): continue
             g = p.players[d]['group']; x0, y0 = p.pos(d, 0)
             if x0 is None: continue
-            role = 'LB' if g == 'LB' else 'DL' if g == 'DL' else ('S' if x0 >= 8 else 'CB' if abs(y0 - by) >= 10 else 'slot')
+            sl = p.players[d].get('slot')
+            if sl:   # sim records carry the play's slot (the job), not the roster position: an LB at SS plays safety
+                role = 'S' if sl in ('FS', 'SS') else 'CB' if sl.startswith('CB') else 'slot' if sl in ('NB', 'DB') else 'LB' if sl.startswith('LB') else 'DL'
+            else:
+                role = 'LB' if g == 'LB' else 'DL' if g == 'DL' else ('S' if x0 >= 8 else 'CB' if abs(y0 - by) >= 10 else 'slot')
             rel = p.pos(d, k6)[0] - p.pos(c, k6)[0]; dep = 'over' if rel > 2 else 'under' if rel < -2 else 'level'
             for key in (('all',), (cov,), (cov, role), (cov, role, dep), ('depth', dep)):
                 C[key] += 1
