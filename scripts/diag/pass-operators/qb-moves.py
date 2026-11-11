@@ -1,4 +1,4 @@
-"""usage: python3 -I scripts/diag/pass-operators/qb-moves.py [--plays BDB plays.csv] <plays.jsonl.gz> [...]
+"""usage: python3 -I scripts/diag/pass-operators/qb-moves.py [--plays BDB plays.csv] [--dump rows.jsonl] <plays.jsonl.gz> [...]
 Do QBs escape, or climb and slide? (Tanner via Integration, 2026-11-11.) Same code on NFL tracking and sim plays.
 Every dropback: his set point = his deepest frame (minimum x) after the snap and before the ball is out (or the end);
 the tackle box = between the two widest OL at the set frame. From the set point to the release (throw), to the end
@@ -11,7 +11,7 @@ TRUE), leaving pocket dropbacks; sim plays pass through. For dropbacks that end 
 set inside it and the time from set to leaving it; the side he left toward relative to the rusher who reached 1 yd
 (toward / away), and to his right (y decreasing when facing upfield: a right-hander's arm side; no handedness in
 the data)."""
-import sys, os, statistics as st, collections as C
+import sys, os, json, statistics as st, collections as C
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'defense-yards'))
 _a = sys.argv; sys.argv = sys.argv[:1]
 from yards import plays
@@ -23,6 +23,9 @@ if args[:1] == ['--plays']:
     for row in csv.DictReader(open(args[1])):
         if row['dropbackType'].startswith('DESIGNED_ROLLOUT') or row['playAction'] == 'TRUE': DESIGNED.add(f"{row['gameId']}-{row['playId']}")
     args = args[2:]
+DUMP = None
+if args[:1] == ['--dump']:
+    DUMP = open(args[1], 'w'); args = args[2:]
 CLS = ['stood', 'stepped', 'climbed 1-3', 'climbed 3+', 'slid', 'rolled outside', 'retreated']
 def klass(fwd, lat, outside):
     if outside: return 'rolled outside'
@@ -65,6 +68,8 @@ for path in args:
         if hit is not None and p.pos(hit[1], hit[0])[1] is not None:
             ry = p.pos(hit[1], hit[0])[1] - p.pos(q, hit[0])[1]
             side = 'toward' if dy * ry > 0 else 'away'
+        vmax = max((p.speed(q, k) for k in range(0, p.frames) if p.pos(q, k)[0] is not None), default=0)
+        if DUMP: DUMP.write(json.dumps({'id': p.raw['id'], 'cls': klass(fwd, lat, outside), 'out': out, 'hit': hit is not None, 'outside': outside, 'yards': p.raw['yards'], 'vmax': vmax}) + '\n')
         R.append({'cls': klass(fwd, lat, outside), 'out': out, 'hit': hit is not None, 'fwd': fwd, 'lat': lat, 'outside': outside,
                   'yards': p.raw['yards'], 'comp': 'catch' in ev, 'setIn': setIn, 'leave': (kl - ks) * p.dt if kl is not None else None,
                   'side': side, 'right': dy < 0})
