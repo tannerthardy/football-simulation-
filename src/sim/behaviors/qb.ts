@@ -568,8 +568,11 @@ export class QBPass implements Behavior {
   /** A defender as the QB has him. Blind-side rushers are sensed late by
    * QBs with poor pocket presence. */
   private felt(a: Agent, sim: PlaySim, d: Agent): Perceived {
-    const ang = Math.abs(Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing);
-    const blind = ang > 1.8 && ang < 4.5;
+    // Bearing off his facing, wrapped to [0, pi]: behind his shoulder is
+    // beyond 1.8 rad (about 103 deg) either side.
+    const raw = Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing;
+    const ang = Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw)));
+    const blind = ang > 1.8;
     return sim.see(a, d, blind ? 2.2 - 1.4 * a.r('pocketPresence') : 1);
   }
 
