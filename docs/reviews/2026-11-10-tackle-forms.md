@@ -820,3 +820,23 @@ Population: run-ref-23 (develop facb5e0f merged); both arms THROW_BODY=1; PICTUR
 - On seed 301 the YAC shift reverses.
 
 **`passerLoss`** (Rule 8-1-1, per Rules + Coaching) is in `ball-rules.ts` with tests.
+
+### `QB_FEEL` read on top of `THROW_BODY`, and a correction (run-ref-24; 2026-11-11)
+
+**Population.** League sim-export, seed 201, 16 games; sack-hold and throw-path, IRN v COM, 16 games. Both arms THROW_BODY=1; QB_FEEL 0 vs 1.
+
+| | QB_FEEL off | QB_FEEL on | NFL |
+|---|---|---|---|
+| Sacks (sack-hold) | 5.6% | 4.7% | 6.3% |
+| Rusher at 1 yd: throw / sack / scramble | 65 / 30 / 6 | 64 / 36 / **0** | 30 / 47 / 23 |
+| Throws after contact, complete / yd/att | 38% / 6.3 | 46% / 8.1 | 33% / 4.5 |
+| Current-read hit throws | 44 | 42 | |
+| Panic throws | 77 | 111 | |
+
+It misses the same way as its own two attempts: fewer sacks, and its pocket move removes the scrambles.
+
+**Correction.** Earlier I attributed the current-read hit throws to `held()`'s private `engagement.win` credit, citing "felt 1.66 s". That was the median over all current-read throws, not over the hit ones.
+- For the hit current-read throws he felt the rusher at p50 **0.51 s** (quartiles 0.47–0.57), in both arms.
+- Contact came 0.30 s after the throw started.
+- He knew the rusher was about half a second away and threw anyway, about 0.2 s optimistic: constant-velocity extrapolation of an accelerating rusher.
+- The private credit is still a model-rule violation, but it is not the cause of these hits.
