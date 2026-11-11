@@ -15,7 +15,7 @@
  * margins; accuracy turns into a miss distance on the actual throw.
  */
 import { FIELD_WIDTH } from '../../core/field.js';
-import { clamp, logistic, type Vec2, type Vec3 } from '../../core/vec.js';
+import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec.js';
 import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
@@ -151,6 +151,28 @@ const BLOCK_SEEN = process.env.BLOCK_SEEN === '1';
  * here runs. Off, the hot path pre-empts movement whenever he feels a hit
  * within 0.45 s, and he walks toward a set point. */
 const SET_DECIDE = process.env.SET_DECIDE === '1';
+/** Experimental (SHOULDERS_SET=1, off): his body is not his eyes. After the
+ * drop his front shoulder sets to his first read; his eyes move through the
+ * progression, and his feet follow a read only once he has held it for a
+ * reset (SHOULDER_SETTLE), so a throw decided on a read his feet have not
+ * reached, or to a man he was not reading (outlet, hot), starts square to
+ * somewhere else. The throw then requests the turn: the shoulders close on the
+ * target through the motion, and a bigger turn needs a longer motion (the step
+ * and hip turn of a throwing turn, not the body's free yaw, which the World
+ * does in ~0.15 s for 30 deg). Off, the body faces whatever his eyes are on,
+ * and no throw needs a turn. sim.qbEyes stays gaze. */
+const SHOULDERS_SET = process.env.SHOULDERS_SET === '1';
+/** Estimated (SHOULDERS_SET): how long he holds a read before his feet reset
+ * to it, s: a reaction time, not fitted. Its check is the NFL shoulder angle to
+ * the target at his last settled frame and the turn-angle mix (qb-release.py),
+ * never yards or completions. */
+const SHOULDER_SETTLE = 0.3;
+/** Estimated (SHOULDERS_SET): a throwing turn of A deg takes TURN_BASE +
+ * A / TURN_RATE s. Fitted to the NFL turn into the throw by angle turned
+ * (qb-release.py, BDB 2025 pocket dropbacks: 15-45 deg 0.3 s, 45-90 0.5 s,
+ * 90-180 0.7 s), not to yards or completions. */
+const TURN_BASE = 0.12;
+const TURN_RATE = 190 * Math.PI / 180;
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -176,6 +198,12 @@ export class QBPass implements Behavior {
   private moveUntil = -1;
   /** THROW_BODY: whether this throw's load has met a hold (the pin is rolled once). */
   private pinRolled = false;
+  /** SHOULDERS_SET: the read his feet are set to, the read his eyes are on and since when, and the throw's turn. */
+  private shoulderRead: Agent | null = null;
+  private eyesRead: Agent | null = null;
+  private eyesAt = 0;
+  private turnFrom = 0;
+  private turnT = 0;
   private motionAt = -1;
   /** Whether the throw in progress has had its last look at the plant. */
   private rechecked = false;
@@ -364,7 +392,7 @@ export class QBPass implements Behavior {
         this.pending = null;
         return stand();
       }
-      const facing = this.pending ? angleTo(a.pos, this.pending.point) : facingDown;
+      const facing = this.pending ? this.motionFacing(a, sim, this.pending) : facingDown;
       // Weight transfer: his weight starts toward the target with the load and
       // reaches stride speed as the front foot plants for the delivery.
       if (this.pending) {
@@ -703,7 +731,8 @@ export class QBPass implements Behavior {
 
   private evaluate(a: Agent, sim: PlaySim, r: Agent, urgency: number): ThrowEval | null {
     if (r.isDown(sim.t) || r.engagement) return null;
-    const wind = this.windup(a);
+    // SHOULDERS_SET: his motion to this man includes the turn to him (as startThrow will make it).
+    const wind = SHOULDERS_SET ? Math.max(this.windup(a), this.turnTime(a, sim.see(a, r).pos)) : this.windup(a);
     const from: Vec3 = { x: a.pos.x, y: a.pos.y, z: RELEASE_Z };
     const forecast = this.receiverForecasts.get(r);
     const current = forecast?.predict(sim.t, 0);
@@ -913,16 +942,51 @@ export class QBPass implements Behavior {
   private startThrow(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand {
     this.phase = 'windup';
     this.pending = ev;
-    this.releaseAt = sim.t + this.windup(a);
+    const base = this.windup(a);
+    // SHOULDERS_SET: the motion lasts at least the turn it has to make.
+    this.turnFrom = a.body.facing;
+    this.turnT = SHOULDERS_SET ? this.turnTime(a, ev.point) : 0;
+    const plain = sim.t + base;
+    this.releaseAt = this.turnT > base ? sim.t + this.turnT : plain;
     this.motionAt = sim.t;
     this.rechecked = false;
     this.pinRolled = false;
-    this.flick = 1 - (this.releaseAt - sim.t - this.delivery(a)) / this.load(a);
+    // The arm's load is the base motion's; time spent turning does not add to it.
+    this.flick = 1 - (plain - sim.t - this.delivery(a)) / this.load(a);
     // The load gives the throw away to defenders reading him: front hand off
     // the ball, front shoulder to the target.
     sim.windupAt = sim.t;
     sim.deliveryAt = this.releaseAt - this.delivery(a);
-    return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: angleTo(a.pos, ev.point) };
+    return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing: this.motionFacing(a, sim, ev) };
+  }
+
+  /** SHOULDERS_SET: how long a throwing turn from his current facing to `p` takes. */
+  private turnTime(a: Agent, p: Vec2): number {
+    return TURN_BASE + Math.abs(wrapAngle(angleTo(a.pos, p) - a.body.facing)) / TURN_RATE;
+  }
+
+  /** The facing his throwing motion asks for: square to the target, or with
+   * SHOULDERS_SET the shoulders closing on it through the motion. */
+  private motionFacing(a: Agent, sim: PlaySim, ev: ThrowEval): number {
+    const to = angleTo(a.pos, ev.point);
+    if (!SHOULDERS_SET || this.turnT <= 0) return to;
+    // The turn ends at the release: the step and hip and shoulder rotation are
+    // the motion's last turnT seconds, after the load (NFL: shoulders closing on
+    // the target up to the release, ~0.3 s for 30 deg).
+    const f = clamp((sim.t + sim.dt - (this.releaseAt - this.turnT)) / this.turnT, 0, 1);
+    return this.turnFrom + wrapAngle(to - this.turnFrom) * f;
+  }
+
+  /** SHOULDERS_SET: the facing his feet hold while he reads. His shoulders go
+   * to a read once his eyes have held it for SHOULDER_SETTLE; until then they
+   * stay where they were set. Off: square to the read. */
+  private bodyFacing(a: Agent, sim: PlaySim, read: Agent | null | undefined): number {
+    if (!SHOULDERS_SET) return read ? angleTo(a.pos, read.pos) : 0;
+    const eyes = read ?? null;
+    if (eyes !== this.eyesRead) { this.eyesRead = eyes; this.eyesAt = sim.t; }
+    if (!this.shoulderRead) this.shoulderRead = this.reads[0] ?? eyes;
+    if (eyes && eyes !== this.shoulderRead && sim.t - this.eyesAt >= SHOULDER_SETTLE) this.shoulderRead = eyes;
+    return this.shoulderRead ? angleTo(a.pos, this.shoulderRead.pos) : a.body.facing;
   }
 
   /** Whether the committed throw, re-aimed as it would now leave his hand, is
@@ -1053,7 +1117,7 @@ export class QBPass implements Behavior {
     const home = { x: this.drop.x + (edge ? 1.8 + 1.2 * pp : 0), y: this.dropY };
     const tx = home.x + fx * 2 * pp;
     const ty = home.y + fy * 2 * pp;
-    const facing = read ? angleTo(a.pos, read.pos) : 0;
+    const facing = this.bodyFacing(a, sim, read);
     // QB_FEEL: a rusher he feels closing moves him now, not toward a set
     // point: up inside an edge rusher's arc, away from interior push, at a
     // pace he can still throw from, eyes still on his read.
@@ -1176,7 +1240,7 @@ export class QBPass implements Behavior {
     }
     // Escape: the movement has opened a lane and the read logic has offered nothing.
     if (this.shouldScramble(a, sim, false)) { this.moveDir = null; return this.scramble(a, sim); }
-    const facing = read ? angleTo(a.pos, read.pos) : 0;
+    const facing = this.bodyFacing(a, sim, read);
     const vx = a.pos.x >= sim.los - 2.5 ? Math.min(0, dir.x * pace) : dir.x * pace;
     return { vel: { x: vx, y: dir.y * pace }, facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
   }

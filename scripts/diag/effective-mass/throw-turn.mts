@@ -9,6 +9,14 @@ const { generateTeam } = await import(`${W}/src/league/team.ts`);
 const { Rng } = await import(`${W}/src/core/rng.ts`);
 const first = Number(process.argv[2] ?? 101), games = Number(process.argv[3] ?? 2);
 const r2 = (x: number) => Number.isFinite(x) ? +x.toFixed(2) : null;
+// The turn each throw asks for at its start (facing to the target), and where it came from: the drop (rhythm), the read
+// his eyes were on, or another man.
+const Q: any = (await import(`${W}/src/sim/behaviors/qb.ts`)).QBPass.prototype;
+const st0 = Q.startThrow; Q.startThrow = function (a: any, sim: any, ev: any) {
+  const b = Math.atan2(ev.point.y - a.pos.y, ev.point.x - a.pos.x);
+  sim.__ask = { ask: r2(Math.abs(Math.atan2(Math.sin(b - a.body.facing), Math.cos(b - a.body.facing))) * 180 / Math.PI),
+    from: this.phase === 'drop' ? 'drop' : ev.target === this.reads?.[this.readIdx] ? 'eyes' : 'other', readIdx: this.readIdx };
+  return st0.call(this, a, sim, ev); };
 for (let s = first; s < first + games; s++) {
   const rng = new Rng(s);
   const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
@@ -27,7 +35,7 @@ for (let s = first; s < first + games; s++) {
       let kr = frames.findIndex((fr: any) => fr.t >= rel.t - 1e-9); if (kr < 0) kr = frames.length - 1;
       let k = kr; while (k - 1 >= 0 && ang(frames[k - 1]) !== null && ang(frames[k - 1])! - ang(frames[k])! >= 5) k--;
       const air = Math.hypot(rel.intended.x - rel.pos.x, rel.intended.y - rel.pos.y);
-      console.log(JSON.stringify({ turn: r2((kr - k) * 0.1), tang: r2((ang(frames[k]) ?? 0) - (ang(frames[kr]) ?? 0)), air: r2(air), moving: rel.v >= 2 }));
+      console.log(JSON.stringify({ turn: r2((kr - k) * 0.1), tang: r2((ang(frames[k]) ?? 0) - (ang(frames[kr]) ?? 0)), air: r2(air), moving: rel.v >= 2, ...(sim.__ask ?? {}) }));
     }
     return res; } } });
 }
