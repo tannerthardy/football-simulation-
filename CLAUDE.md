@@ -77,6 +77,17 @@ to look, never a number to tune toward; see [NFL data](docs/NFL_DATA.md). This
 collector runs eight games; reuse compatible reports and do not run it as a
 routine movement/contact check.
 
+NFL comparisons are how we find problems, and they are not all equally
+reliable. Outcomes and direct measurements (rates, speeds, distances, where a
+player is) are strong evidence. Categories we infer from tracking (engaged,
+beaten, open, a route's break, came free, which coverage) are weaker, and
+weaker again in small cells: before building toward such a gap, check on a
+few plays that the operator sees what it claims. Use fine-grained measurement
+to find the cause; then prefer the largest gap in a coarse outcome and the
+missing mechanism behind it over many small corrections. When football built
+as it is coached disagrees with a fine-grained inferred number, the number is
+as likely to be wrong as the football.
+
 Validate physics laws, movement, contacts and decisions before whole games.
 Keep shared capacities fixed during controller work. Never add strength or
 solver detail just to rescue a statistic. Old NFL benchmarks have been examined;
