@@ -136,12 +136,14 @@ def report(path):
                 # second contact: the next different defender within 1.0 yd; yards from the first contact to it (or the end)
                 k2 = next((k for k in range(kc + 1, last + 1) if any(x != t and p.dist(c, x, k) <= 1.0 for x in D)), None)
                 S[(K, 'pair', pair, 'y2')].append(p.pos(c, k2 if k2 is not None else last)[0] - p.pos(c, kc)[0])
+                C[(K, 'pair', pair, 'ten')] += more >= 10
                 S[(K, 'pair', pair, 'v1')].append(p.speed(t, kc) / max(top[t], 1)); S[(K, 'pair', pair, 'v2')].append(p.speed(e, kc) / max(top[e], 1))
                 # angle between the two around the carrier
                 a1 = math.atan2(ty - ccy, tx - ccx); a2 = math.atan2(p.pos(e, kc)[1] - ccy, p.pos(e, kc)[0] - ccx)
                 S[(K, 'pair', '*', 'sep')].append(abs(math.degrees(math.atan2(math.sin(a1 - a2), math.cos(a1 - a2)))))
             else:
                 C[(K, 'pair', 'alone', o)] += 1; C[(K, 'pair', 'alone', '*')] += 1; S[(K, 'pair', 'alone', 'more')].append(more)
+                C[(K, 'pair', 'alone', 'ten')] += more >= 10
             # cutback lane: a defender within 5 yd on the side away from the first tackler, not behind the carrier
             C[(K, 'cut*')] += 1
             C[(K, 'cut')] += any(e != t and p.dist(c, e, kc) <= 5 and sd(e) * st < 0 and ((p.pos(e, kc)[0] - ccx) * hx2 + (p.pos(e, kc)[1] - ccy) * hy2) > -1 for e in D)
@@ -171,7 +173,7 @@ def report(path):
             if S[(K, 'c0', 'spd', o)]: print(f"   class-0 {o:6}: his speed share at contact p50 {q(S[(K, 'c0', 'spd', o)]):.2f}, carrier speed {q(S[(K, 'c0', 'cspd', o)]):.1f} yd/s")
         for pr in ('split', 'same', 'alone'):
             m = C[(K, 'pair', pr, '*')]
-            if m: print(f"   first contact, 2nd defender within 3 yd: {pr:5} {row((K, 'pair', pr))} yards after mean {sum(S[(K, 'pair', pr, 'more')]) / m:.1f}"
+            if m: print(f"   first contact, 2nd defender within 3 yd: {pr:5} {row((K, 'pair', pr))} yards after mean {sum(S[(K, 'pair', pr, 'more')]) / m:.1f}, 10+ after {100 * C[(K, 'pair', pr, 'ten')] / m:.1f}%"
                         + (f" | speed share 1st {q(S[(K, 'pair', pr, 'v1')]):.2f} 2nd {q(S[(K, 'pair', pr, 'v2')]):.2f} | yards to the 2nd contact mean {sum(S[(K, 'pair', pr, 'y2')]) / max(1, len(S[(K, 'pair', pr, 'y2')])):.1f}" if pr != 'alone' else ''))
         npair = C[(K, 'pair', 'split', '*')] + C[(K, 'pair', 'same', '*')]
         allp = S[(K, 'pair', 'split', 'more')] + S[(K, 'pair', 'same', 'more')]
