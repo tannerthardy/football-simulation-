@@ -169,6 +169,8 @@ export class QBPass implements Behavior {
   private plannedLoad = -1;
   /** How much of the load the throw in progress gave up (0 full motion, 1 none). */
   private flick = 0;
+  /** SET_DECIDE: throws the read logic offered that he could not finish (diagnostic count). */
+  noFinish = 0;
   /** SET_DECIDE: the direction he is moving in, held until moveUntil. */
   private moveDir: Vec2 | null = null;
   private moveUntil = -1;
@@ -484,7 +486,10 @@ export class QBPass implements Behavior {
     // The read logic: what he would throw now (it does not move his read order);
     // then, if it says so, his eyes move on to the next read.
     const now = this.bestThrowNow(a, sim, u, { thr, maxInt, need, risk, dwell });
-    if (now.take && now.ev) return this.startThrow(a, sim, now.ev);
+    // SET_DECIDE: a throw he cannot finish before the rusher he sees arrives is
+    // not started; the decision below (move, escape, or trapped) answers instead.
+    if (now.take && now.ev && !(SET_DECIDE && !this.canFinish(a, sim))) return this.startThrow(a, sim, now.ev);
+    if (SET_DECIDE && now.take) this.noFinish++;
     if (now.advance) this.advanceRead(t);
 
     // SET_DECIDE: under pressure he moves first; the hot path is for when he is trapped.
@@ -1080,6 +1085,34 @@ export class QBPass implements Behavior {
     return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: edge ? 0.6 : 0.45, facing });
   }
 
+  /** SET_DECIDE: a rusher as he sees him closing. His delayed picture is carried
+   * forward with the acceleration he has seen it gaining (two samples of the
+   * same delayed picture one tick apart), not at constant velocity: a rusher
+   * coming off a block is speeding up, and the constant-velocity picture puts
+   * him about 0.15 s later than he arrives. Capped at the rusher's top speed. */
+  private feltClosing(a: Agent, sim: PlaySim, d: Agent): { pos: Vec2; vel: Vec2 } {
+    const seen = this.felt(a, sim, d), age = seen.age ?? 0;
+    if (age <= 0) return seen;
+    const older = sim.perception.perceive(d.idx, age + sim.dt);
+    const ax = (seen.vel.x - older.vel.x) / sim.dt, ay = (seen.vel.y - older.vel.y) / sim.dt;
+    let vx = seen.vel.x + ax * age, vy = seen.vel.y + ay * age;
+    const v = Math.hypot(vx, vy), cap = d.profile.vmax * (d.speedScale ?? 1);
+    if (v > cap) { vx *= cap / v; vy *= cap / v; }
+    return { pos: { x: seen.pos.x + 0.5 * ax * age * age, y: seen.pos.y + 0.5 * ay * age * age }, vel: { x: vx, y: vy } };
+  }
+
+  /** SET_DECIDE: whether he can finish a throwing motion here before the
+   * nearest rusher he sees closing could reach him. */
+  private canFinish(a: Agent, sim: PlaySim): boolean {
+    const need = this.windup(a);
+    for (const d of sim.defense) {
+      if (d.isDown(sim.t)) continue;
+      const seen = this.feltClosing(a, sim, d);
+      if (timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + this.held(a, d, sim) < need) return false;
+    }
+    return true;
+  }
+
   /** SET_DECIDE: null when he still has the time he needs where he stands
    * (nothing changes) or when no spot buys him time (trapped: the existing
    * logic decides); otherwise the move, or the escape it has opened. */
@@ -1091,7 +1124,7 @@ export class QBPass implements Behavior {
     const rest = this.readStart + dwell - sim.t;
     const need = (rest > 0 ? rest : dwell) + this.windup(a), pace = 2.2;
     const threats = sim.defense.filter((d) => !d.isDown(sim.t))
-      .map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d, sim) }));
+      .map((d) => ({ d, seen: this.feltClosing(a, sim, d), held: this.held(a, d, sim) }));
     const ttc = (q: Vec2) => {
       let best = Infinity;
       for (const { d, seen, held } of threats) best = Math.min(best,
