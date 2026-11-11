@@ -795,3 +795,28 @@ Population: run-ref-23 (develop facb5e0f merged); both arms THROW_BODY=1; PICTUR
 1. The QB's throws still come out when rushers arrive mid-throw.
 2. NFL QBs escape 23% of the time once a rusher is at 1 yd; ours 3–4%.
 3. `held()` credits an engaged rusher from the private `engagement.win`. It is the source of the 60 current-read hit throws and the next item, as its own flag.
+
+### `THROW_BODY` alone: candidate read (run-ref-24; 2026-11-11)
+
+**Population.** League-sampled sim-export, seeds 201 and 301 (16 games each, THROW_BODY 0 vs 1); sack-hold IRN v COM, 16 games. NFL: BDB 2025, same operator.
+
+| | seed 201 off → on | seed 301 off → on | NFL |
+|---|---|---|---|
+| Rusher at 1 yd: throw / sack / scramble | 75 / 21 / 4 → 65 / 30 / 6 | 72 / 23 / 5 → 63 / 33 / 4 | 30 / 47 / 23 |
+| Throws after contact, complete / yd/att | 40% / 6.3 → 38% / 6.3 | 48% / 7.1 → 42% / 5.5 | 33% / 4.5 |
+| Clean throws, complete / yd/att | 62% / 9.9 → 62% / 11.2 | 61% / 8.6 → 63% / 8.8 | 62% / 7.2 |
+| YAC mean | 8.01 → 10.09 | 6.34 → 5.89 | |
+
+**Sack-hold** (16 games):
+- Sacks: 3.8 → 5.6% (NFL 6.3).
+- A hold before the windup ends in a sack: 82 → 94%.
+- Load-phase holds: 12 → 4 (pinned throws are abandoned).
+- Delivery-phase holds: 41% / 4.9 → 32% / 3.6.
+- INT on hit throws: 1–2%. Fumbles: none. THROW_BODY never knocks the ball loose; `passerLoss` is ready for that piece.
+
+**The seed-201 YAC jump is divergence.**
+- In game 201, the first difference is a held throw's ball flight, from frame 28. Every play before it is identical.
+- Fatigue then carries the change into later plays.
+- On seed 301 the YAC shift reverses.
+
+**`passerLoss`** (Rule 8-1-1, per Rules + Coaching) is in `ball-rules.ts` with tests.
