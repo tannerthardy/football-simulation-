@@ -284,7 +284,11 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
     // A rake or punch through the arms that gets there knocks the ball loose:
     // the chance grows with how deep into his reach the hands are and his
     // technique; the receiver's strength at the catch point resists it.
-    const toHands = Math.hypot(D.pos.x - bp.x, D.pos.y - bp.y);
+    // His reach to the receiver's arms: the segment from the receiver's
+    // shoulders to his hands at the ball, not only the ball itself.
+    const ax = bp.x - R.pos.x, ay = bp.y - R.pos.y, al2 = ax * ax + ay * ay;
+    const ua = al2 > 0 ? clamp(((D.pos.x - R.pos.x) * ax + (D.pos.y - R.pos.y) * ay) / al2, 0.3, 1) : 1;
+    const toHands = Math.hypot(D.pos.x - R.pos.x - ua * ax, D.pos.y - R.pos.y - ua * ay);
     const armLen = D.profile.reach + 0.15;
     if (toHands > armLen) continue;
     const depth = 1 - toHands / armLen;
