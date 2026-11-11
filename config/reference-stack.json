@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-24",
+  "id": "run-ref-25",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -103,7 +103,6 @@
     "LB_READ_STEP": "on",
     "LEAN_PITCH": "on",
     "LEGS_HELD": "on",
-    "PICTURE_AGE": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",
@@ -120,6 +119,7 @@
     "OZ_HIP_READ": "on",
     "PASS_ANCHOR": "on",
     "PASS_SINK": "off",
+    "PICTURE_AGE": "off",
     "PRESS_MIRROR": "on",
     "PRESS_RELEASE": "on",
     "PULL_CUE": "off",
@@ -166,7 +166,7 @@
     "SWING_STRIP": "on",
     "TACKLE_TOUCH": "off",
     "TE_OFF": "on",
-    "THROW_BODY": "off",
+    "THROW_BODY": "on",
     "THROW_REACT": "on",
     "TIGHT_OFF": "on",
     "TKL_EXEC_STATE": "off",

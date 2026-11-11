@@ -104,7 +104,7 @@ const QB_FEEL = process.env.QB_FEEL === '1';
  * thrown as an arm throw to that degree (the flick's own speed and accuracy
  * costs, flick = max(flick, interference)). Off, a windup in progress is
  * immune to holds and a held throw only widens its miss (missSigma). */
-const THROW_BODY = process.env.THROW_BODY === '1';
+const THROW_BODY = process.env.THROW_BODY !== '0';
 /** Experimental (PICTURE_AGE=1, off): an old picture is an uncertain one. In
  * the throw's evaluation, each picture's position uncertainty is what the body
  * could have done since he saw it, from its own acceleration (A = vmax / tau)

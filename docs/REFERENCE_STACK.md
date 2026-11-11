@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-24`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-25`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,20 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## run-ref-25: `THROW_BODY` on (2026-11-11)
+
+Flex. Once the windup had started, a quarterback's throw came out as a clean delivery whatever was holding him: with a rusher within 1 yd before release he threw 70% of the time (NFL 30%), and throws made under a hold of 0.73 completed 47% at 8.5 yd an attempt. A hold now acts on the throw through what it holds (interference = the hold × the share of the grasp that is not on the legs): in the load it can pin the arm, so the throw is abandoned; a throw that leaves under a hold is an arm throw to that degree, with the flick's existing speed and accuracy costs.
+
+| 16 league-sampled games an arm (`leagueSample`, run-ref-24), unpaired | seed 201 off → on | seed 301 off → on | NFL |
+|---|---|---|---|
+| Rusher at 1 yd before release: throw / sack / scramble | 75 / 21 / 4 → 65 / 30 / 6 | 72 / 23 / 5 → 63 / 33 / 4 | 30 / 47 / 23 |
+| Throws after contact: complete; yd an attempt | 40%; 6.3 → 38%; 6.3 | 48%; 7.1 → 42%; 5.5 | 33%; 4.5 |
+| Clean throws: complete; yd an attempt | 62%; 9.9 → 62%; 11.2 | 61%; 8.6 → 63%; 8.8 | 62%; 7.2 |
+
+IRN v COM, 16 games (`scripts/diag/effective-mass/sack-hold.mts`): sacks 3.8 → 5.6% (NFL 6.3); a hold before the windup ends in a sack 82 → 94%; delivery-phase throws under a hold 41% / 4.9 → 32% / 3.6. Seed 201's YAC rose 8.01 → 10.09 and seed 301's fell 6.34 → 5.89: the arms diverge from the first held throw, and the flag acts only on a held passer.
+
+What it does not fix: the throw still comes out 63–65% of the time against 30%, because rushers reach our quarterback mid-throw (his felt time to contact uses the block's private win score, a model-rule violation, next on Flex's list) and because he almost never escapes (scramble 4–6% against 23%). The ball is never knocked loose yet; `passerLoss` (Rule 8-1-1) is in `ball-rules.ts`, uncalled. `PICTURE_AGE`, the timing attempt that aged the quarterback's picture, is a written miss and stays off (it suppressed rhythm throws 57%). Detail: [tackle forms](reviews/2026-11-10-tackle-forms.md).
 
 ## run-ref-24: `COVER_LONG` on (2026-11-11)
 
