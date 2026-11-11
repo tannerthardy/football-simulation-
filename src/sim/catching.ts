@@ -82,7 +82,8 @@ const CATCH_SECURE = process.env.CATCH_SECURE === '1';
  * stretch penalty: on the panel, with nobody within 3 yd, 58% were caught
  * (25% failed the hard-catch roll, 11% the drop roll); NFL 81%. On, while the
  * ball is still closing on him at the end of the tick (closest approach not yet
- * reached) and will stay in the air, his catch waits for that approach. */
+ * reached) and will still be catchable a tick on (not about to reach the
+ * ground or rise past his hands), his catch waits for that approach. */
 const CATCH_POINT = process.env.CATCH_POINT !== '0';
 
 interface Opp {
@@ -145,7 +146,10 @@ export function resolveCatchOpportunities(sim: PlaySim, prev: Vec3, cur: Vec3,
       if (o.a.team !== 'O' || !(o.a === ball.target || o.a.tags.has('onBall')) || o.s < 0.999) continue;
       const vx = cur.x - prev.x, vy = cur.y - prev.y;
       const closing = (o.a.pos.x - cur.x) * vx + (o.a.pos.y - cur.y) * vy > 0;
-      if (closing && cur.z > 0.25) opps.splice(i, 1);
+      // Wait only when the ball will still be catchable a tick on: not about
+      // to reach the ground (a low ball at his shoetops) or rise past his hands.
+      const zNext = cur.z + (cur.z - prev.z);
+      if (closing && zNext > 0.25 && zNext <= o.a.profile.maxCatchHeight) opps.splice(i, 1);
     }
   }
   if (opps.length === 0) return;
