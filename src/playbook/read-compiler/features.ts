@@ -11,6 +11,7 @@ import { COVERAGE_BY_ID, FRONT_BY_ID } from '../defense.js';
 import { FORMATION_BY_ID } from '../formations.js';
 import { PlaySim } from '../../sim/playsim.js';
 import { RouteRunner } from '../../sim/behaviors/receiver.js';
+import { stand } from '../../sim/behaviors/common.js';
 import type { RouteDescriptor } from './types.js';
 
 const DT = 0.1, HORIZON = 4.0;
@@ -39,10 +40,18 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
   const tr = new Map(skill.map((a) => [a, [] as Array<{ t: number; x: number; y: number; speed: number }>]));
   const route = new Map<typeof skill[number], string>();
   const qbTrack: Array<{ t: number; x: number; v: number }> = [];
-  let next = 0;
+  let next = 0, frozen = false, qx0: number | null = null, qDeep = Infinity;
   while (sim.phase === 'live' && sim.t <= HORIZON + 1e-9 && !sim.scrambleDrill) {
     tick.tick();
     park();
+    // Once set, the quarterback stays in his spot holding the ball, so every route runs its full course
+    // (unpressured and unable to throw, he would otherwise leave the pocket and start the scramble drill).
+    const qx = (sim.qb.pos.x - sim.los) * dir;
+    qx0 ??= qx; qDeep = Math.min(qDeep, qx);
+    if (!frozen && qx0 - qDeep >= 1 && Math.hypot(sim.qb.vel.x, sim.qb.vel.y) < 1.2) {
+      frozen = true;
+      sim.qb.behavior = { kind: 'qb-hold', update: () => stand(0) } as unknown as typeof sim.qb.behavior;
+    }
     if (sim.t + 1e-9 < next) continue;
     next += DT;
     for (const a of skill) {
@@ -51,9 +60,14 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
     }
     qbTrack.push({ t: sim.t, x: (sim.qb.pos.x - sim.los) * dir, v: Math.hypot(sim.qb.vel.x, sim.qb.vel.y) });
   }
-  // The QB is set when he has given ground and stopped (the end of his drop).
-  let deepest = 0, qbSetAt = HORIZON;
-  for (const q of qbTrack) { deepest = Math.min(deepest, q.x); if (q.t > 0.4 && q.x <= deepest + 0.3 && q.v < 1.2) { qbSetAt = q.t; break; } }
+  // The QB is set when he has given ground (a yard or more from where he took the snap) and stopped.
+  const x0 = qbTrack[0]?.x ?? 0;
+  let deepest = x0, qbSetAt = HORIZON, dropped = false;
+  for (const q of qbTrack) {
+    deepest = Math.min(deepest, q.x);
+    if (x0 - deepest >= 1) dropped = true;
+    if (dropped && q.x <= deepest + 0.4 && q.v < 1.2) { qbSetAt = q.t; break; }
+  }
 
   const routes: RouteDescriptor[] = [], excluded: Sampled['excluded'] = [];
   for (const a of skill) {
@@ -63,20 +77,35 @@ export function sampleRoutes(concept: PassConcept, formationId: string, flip: bo
     if (!id) { excluded.push({ ref, why: 'blocks (never ran a route in the horizon)' }); continue; }
     const P = tr.get(a)!;
     const start = P[0];
-    // The planned break: the heading turns more than 35 deg over 0.3 s at speed, or he settles (slows below 55%).
+    // The planned break, against his own stem: the first point where his heading over the next 0.5 s is more
+    // than 30 deg off the stem's heading (so a rounded bend counts as well as a cut), placed back at the point
+    // where the bend began (8 deg); or a settle (slowing below 55% of his stem speed). From 0.5 s on.
     let breakT: number | null = null, breakAt: { x: number; y: number } | null = null;
-    for (let i = 3; i + 3 < P.length; i++) {
-      const s0 = Math.hypot(P[i].x - P[i - 3].x, P[i].y - P[i - 3].y) / 0.3, s1 = Math.hypot(P[i + 3].x - P[i].x, P[i + 3].y - P[i].y) / 0.3;
-      if (s0 < 2.5 || P[i].t < 0.3) continue;
-      const h0 = heading(P[i].x - P[i - 3].x, P[i].y - P[i - 3].y), h1 = heading(P[i + 3].x - P[i].x, P[i + 3].y - P[i].y);
-      if (turn(h0, h1) > 35 || s1 < 0.55 * s0) { breakT = P[i].t; breakAt = { x: P[i].x, y: P[i].y }; break; }
+    const k0 = Math.min(P.length - 1, 5);
+    for (let i = k0 + 3; i + 5 < P.length; i++) {
+      const stemLen = Math.hypot(P[i].x - P[k0].x, P[i].y - P[k0].y);
+      if (stemLen < 1.5) continue;
+      const hs = heading(P[i].x - P[k0].x, P[i].y - P[k0].y), hn = heading(P[i + 5].x - P[i].x, P[i + 5].y - P[i].y);
+      const s0 = stemLen / (P[i].t - P[k0].t), s1 = Math.hypot(P[i + 5].x - P[i].x, P[i + 5].y - P[i].y) / 0.5;
+      if (turn(hs, hn) > 30 || (s1 < 0.55 * s0 && s0 > 2.5)) {
+        let k = i;
+        while (k > k0 + 3 && turn(hs, heading(P[k + 3].x - P[k].x, P[k + 3].y - P[k].y)) > 8) k--;
+        breakT = P[k].t; breakAt = { x: P[k].x, y: P[k].y }; break;
+      }
     }
     const isBack = ref === 'B' || ref === 'B2';
     const side: 'S' | 'W' | 'B' = isBack ? 'B' : ref[0] as 'S' | 'W';
     const at = (t: number) => P[Math.min(P.length - 1, Math.max(0, Math.round(t / DT) - Math.round(P[0].t / DT)))];
     // Ready: his route has shown its answer (the break, or 12 yd of a vertical) and the QB can throw (set, less a beat).
+    // Declared: his break; or 12 yd of a vertical; or, for a route that bends without a sharp cut (a flat, a
+    // back's release, a crosser), 5 yd from his start with the line crossed.
     const vertical = breakT === null ? P.find((p) => p.x >= 12)?.t ?? null : null;
-    const declared = breakT !== null ? breakT + 0.1 : vertical ?? HORIZON;
+    const moved = P.find((p) => Math.hypot(p.x - start.x, p.y - start.y) >= 5 && p.x >= 0.5)?.t ?? null;
+    // A stem that is mostly lateral (a flat, a swing, an angle's first step) declares by moving, not by a break.
+    const p10 = P[Math.min(P.length - 1, 10)];
+    const lateralStem = Math.abs(p10.y - start.y) > Math.abs(p10.x - start.x);
+    const declared = lateralStem && moved !== null ? moved + 0.2
+      : breakT !== null ? breakT + 0.1 : vertical !== null ? vertical : moved !== null ? moved + 0.2 : HORIZON;
     const ready = Math.max(qbSetAt - 0.15, declared);
     const settles = P.length > 3 && P[P.length - 1].speed < 1.5;
     const last = settles ? Math.min(HORIZON, ready + 1.2) : Math.min(HORIZON, ready + 1.6);

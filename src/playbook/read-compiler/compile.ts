@@ -16,7 +16,20 @@ export function compile(concept: PassConcept, formation: string, flip: boolean, 
     return { conceptId: concept.id, formation, flip, qbSetAt: 0, routes: [], excluded: [], motifs: [], candidates: [], chosen: null,
       bypass: `screen: the called target ${concept.screen?.receiver ?? concept.progression[0]}` };
   }
+  // The installed plan is the same whichever side the formation sets to (§5): sample both orientations and
+  // average each receiver's timing, keeping this orientation's trajectory for the record. The engine runs a
+  // mirrored route a few hundredths differently, which otherwise tips near-ties.
   const s = sampleRoutes(concept, formation, flip, off, def);
+  const m = sampleRoutes(concept, formation, !flip, off, def);
+  for (const r of s.routes) {
+    const o = m.routes.find((x) => x.ref === r.ref);
+    if (!o) continue;
+    const avg = (a: number, b: number) => +((a + b) / 2).toFixed(2);
+    r.window = { ready: avg(r.window.ready, o.window.ready), best: avg(r.window.best, o.window.best), last: avg(r.window.last, o.window.last) };
+    r.depthAtReady = +((r.depthAtReady + o.depthAtReady) / 2).toFixed(1);
+    if (r.breakT !== null && o.breakT !== null) r.breakT = avg(r.breakT, o.breakT);
+  }
+  s.qbSetAt = +((s.qbSetAt + m.qbSetAt) / 2).toFixed(2);
   const motifs = findMotifs(s.routes);
   const cands = candidates(s.routes, motifs, s.qbSetAt, profile);
   const chosen = cands.find((c) => c.valid) ?? null;

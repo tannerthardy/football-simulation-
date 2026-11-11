@@ -7,8 +7,11 @@ import type { ReceiverRef } from '../types.js';
 import type { Candidate, Motif, ReadStep, RouteDescriptor } from './types.js';
 import { afterBreak } from './motifs.js';
 
+/** A coach's preference for each plan style, added to the shared plan-quality score (log-odds-like priors; the
+ * weights are engine calibration, not NFL numbers). The default leans pure (§17): an alert, key or half-field plan
+ * is chosen only where the routes support it more than the prior costs. */
 export interface CoachProfile { id: string; pure: number; alert: number; key: number; halfField: number; maxReads: number }
-export const DEFAULT_PROFILE: CoachProfile = { id: 'pure-leaning', pure: 1.0, alert: 0.35, key: 0.25, halfField: 0.2, maxReads: 4 };
+export const DEFAULT_PROFILE: CoachProfile = { id: 'pure-leaning', pure: 0, alert: -0.3, key: -0.9, halfField: -1.0, maxReads: 4 };
 
 const rhythm = (ready: number, qbSet: number): ReadStep['rhythm'] =>
   ready <= qbSet + 0.05 ? 'drop' : ready <= qbSet + 0.4 ? 'hitch1' : ready <= qbSet + 0.8 ? 'hitch2' : 'late';
@@ -28,18 +31,27 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
   const outletR = routes.filter((r) => r.isBack && r.window.ready < 3.5).sort((a, b) => a.window.ready - b.window.ready)[0] ?? null;
   type Node = { seq: RouteDescriptor[]; t: number; cost: number };
   const LOOK = 0.35;  // a look: eyes on, decide, move on (s); crossing the field adds a reset
+  // Start on the side with more route runners (the side the concept is built to), the strength on a tie.
+  const count = (s: 'S' | 'W') => field.filter((r) => r.side === s).length;
+  const startSide: 'S' | 'W' = count('W') > count('S') ? 'W' : 'S';
   let beam: Node[] = [{ seq: [], t: qbSet - 0.15, cost: 0 }];
   for (let depth = 0; depth < Math.min(maxReads, field.length); depth++) {
     const next: Node[] = [];
     for (const n of beam) for (const r of field) {
       if (n.seq.includes(r)) continue;
       const prev = n.seq[n.seq.length - 1];
-      const across = prev && Math.sign(prev.startWidth) !== Math.sign(r.startWidth) ? 0.2 : 0;
-      const at = Math.max(n.t + (prev ? LOOK + across : 0), r.window.ready);
-      let cost = n.cost + (at - n.t) + across;
-      if (at > r.window.last) cost += 1.5;            // dead when reached
-      if (clearers.has(r.ref) && depth < 2) cost += 0.6; // a clear-out is not an early read
-      cost += 0.05 * depth * (r.window.ready - qbSet < 0 ? 0 : 1);
+      const across = prev && prev.side !== r.side ? 0.6 : 0;
+      const wrongStart = !prev && r.side !== startSide ? 0.8 : 0;
+      const at = Math.max(n.t + (prev ? LOOK : 0), r.window.ready);
+      // Waiting on a route that is still developing is cheap while the eyes stay on his side (the rhythm of
+      // the drop and hitch); a read reached after his window closes is dead.
+      let cost = n.cost + 0.3 * Math.max(0, at - n.t - (prev ? LOOK : 0)) + across + wrongStart;
+      if (at > r.window.last) cost += 1.5;
+      if (clearers.has(r.ref) && depth < 2) cost += 0.6;               // a clear-out is not an early read
+      if (!prev && r.window.ready > qbSet + 0.9) cost += 0.5;           // nor is a route that comes open late
+      // High-low within a side (the default profile): the deeper route first, then down (§10 B: the coach's
+      // ordering among feasible sequences).
+      if (prev && prev.side === r.side && r.depthAtReady > prev.depthAtReady + 2) cost += 0.35;
       next.push({ seq: [...n.seq, r], t: at, cost });
     }
     next.sort((a, b) => a.cost - b.cost || a.seq.map(refKey).join().localeCompare(b.seq.map(refKey).join()));
@@ -59,7 +71,7 @@ export function candidates(routes: RouteDescriptor[], motifs: Motif[], qbSet: nu
   const base = (style: Candidate['style']): Candidate => ({ style, order: P.order, outlet: P.outlet, valid: true, hardFailures: [], warnings: [...P.warnings], score: 0, rationale: [] });
   // A. Pure progression (mandatory).
   const pc = base('pure');
-  pc.score = profile.pure * (3 + P.score);
+  pc.score = profile.pure + P.score;
   pc.rationale.push('rhythm-ordered pure progression');
   if (!P.order.length) { pc.valid = false; pc.hardFailures.push('no eligible receiver'); }
   out.push(pc);
@@ -71,7 +83,7 @@ export function candidates(routes: RouteDescriptor[], motifs: Motif[], qbSet: nu
     const quick = r.window.ready <= qbSet + 0.1 && r.depthAtReady < 10;
     const vert = afterBreak(r).down > 1.5 && r.depthAtReady >= 10;
     if (!quick && !vert) { c.valid = false; c.hardFailures.push(`${r.ref} isolated but neither quick (ready ${r.window.ready} s, ${r.depthAtReady} yd) nor a vertical access throw`); }
-    c.score = profile.alert * (3 + P.score) + (c.valid ? 0.3 : 0);
+    c.score = profile.alert + P.score + (c.valid ? 0.35 : 0);
     c.rationale.push(`pre-snap alert on isolated ${r.ref} (${quick ? 'quick access' : 'vertical access'}), then the pure order`);
     out.push(c);
   }
@@ -84,7 +96,7 @@ export function candidates(routes: RouteDescriptor[], motifs: Motif[], qbSet: nu
     if (!m.role) { c.valid = false; c.hardFailures.push('no defender role named for the pair'); }
     if (cueBy < qbSet - 0.6) { c.valid = false; c.hardFailures.push(`cue needed at ${cueBy.toFixed(2)} s, before the QB can look (${qbSet} s)`); }
     if (Math.min(a.window.last, b.window.last) - Math.max(a.window.ready, b.window.ready) < 0.25) { c.valid = false; c.hardFailures.push('the two answers are not live together long enough to choose'); }
-    c.score = profile.key * (3 + P.score) + m.confidence * 0.5;
+    c.score = profile.key + P.score + 0.4 * m.confidence;
     c.rationale.push(`${m.kind} on ${m.role}: ${m.why}`);
     out.push(c);
   }
@@ -95,7 +107,7 @@ export function candidates(routes: RouteDescriptor[], motifs: Motif[], qbSet: nu
   hc.halves = { strong: hs.map((r) => r.ref), weak: hw.map((r) => r.ref) };
   if (hs.length < 2 || hw.length < 2) { hc.valid = false; hc.hardFailures.push(`a half lacks two early answers (strong ${hs.length}, weak ${hw.length})`); }
   if (hs.some((r) => r.crossesField) || hw.some((r) => r.crossesField)) hc.warnings.push('a crosser changes halves during the read');
-  hc.score = profile.halfField * (3 + P.score);
+  hc.score = profile.halfField + P.score;
   hc.rationale.push('pick a side from the pre-snap shell, then that half in order');
   out.push(hc);
   return out.sort((x, y) => Number(y.valid) - Number(x.valid) || y.score - x.score);
