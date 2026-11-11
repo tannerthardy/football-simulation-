@@ -21,5 +21,10 @@ Run sim scripts from the repo root with flags as env, e.g. `WR_SNAP=1 npx tsx sc
 | `targets.ts <out.jsonl>` | every targeted throw: the target's air yards on arrival, result, separation, defenders deeper | `nfl_targets.py <bdb dir> 1,2,3 <out.jsonl>` |
 | `zone-squeeze.ts` | zone plays: each non-rushing CB/S/LB and the nearest receiver within 7 yd at the release; his speed toward that receiver from release -0.8 s, target vs not | `nfl_zone_squeeze.py` |
 | `qb-facing.ts` | how long the QB's body faces within 20 deg of the target before the release; motion length | `nfl_qb_facing.py` (BDB `o`) |
+| `routes.ts` | every route run (WR/TE/RB) by route id: share of routes and targets, break depth/time, depth / downfield speed / time at the release when thrown to | `nfl_routes.py <bdb dir> 1,2,3` (BDB `routeRan` labels; `... dd` gives routes-run share per route by down and distance, non-PA / PA, from `player_play` over all weeks) |
+| `route-timing.ts` | release minus the targeted receiver's own break (heading turn > 30 deg from his stem or speed < 65% of it, searched through ball arrival), per route | `nfl_route_timing.py` |
+| `contest.ts` | targeted throws: the defender nearest the target at arrival and 0.3 s before (distance, closing, facing the ball), outcome and who defended it | `nfl_contest.py` (arrival = pass_arrived, else the outcome frame) |
+| `task1.ts <out.jsonl>` | the cut per route (speed in / min / +0.4 / +0.8, turn in 0.4 s, gear-down), the throw by depth x pressure, time as a cost, interception origins; read with `task1_summary.py <nfl.jsonl> <sim.jsonl>` | `nfl_task1.py <bdb dir> 1,2,3 <out.jsonl>` |
+| `read-choice.ts` | where each target sat in the QB's read order (read #1 / later / outlet / off-order) and how often each route is read #1 | — |
 
 Contact in the YAC operators is geometric and shared with Defense's `scripts/diag/defense-yards/yards.py`: a defender's centre within 1.0 yd of the carrier, on 0.1 s frames. Mine measures stages from the catch; theirs measures at +10 yd after the catch. Results: `docs/reviews/2026-11-10-yac-decomposition.md`.
