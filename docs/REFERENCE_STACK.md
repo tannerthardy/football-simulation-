@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-19`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-20`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,21 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## run-ref-20: `CALL_MIX` on (2026-11-11)
+
+Rules + Coaching #531. The offensive caller weighted its 17 pass concepts about evenly, with no shaping by route depth or by down and distance beyond quick game, dropback and play-action. Each concept's weight is now multiplied by a preference for the route classes it runs at this down and distance (`config/call-mix.json`, fitted on NFL routes run with break depth from tracking, not on targets: fitting to targets pushed four-verticals ×4 on third and short through its checkdowns).
+
+| 32 league-sampled games an arm (seeds 101–116, 201–216, run-ref-17), unpaired | off | on | NFL |
+|---|---|---|---|
+| Routes run: breaking 10–19 yd / quick | 17.6 / 22.7% | 15.6 / 24.9% | 13.1 / 26.7% |
+| Targets: breaking 10–19 yd | 26.4% | 24.2% | 11.5% |
+| Yards an attempt; completion; sacks; INT | 10.28; 62.0%; 2.4%; 4.1% | 10.22; 62.6%; 2.3%; 3.4% | |
+| YAC median / trimmed / mean | 5.0 / 6.15 / 8.30 ± 0.29 | 5.1 / 6.37 / 8.72 ± 0.30 | |
+
+On for what offences call, not for yards: nothing else resolves. The evidence is Rules + Coaching's 32-game arms; no separate scorecard was run for this stack.
+
+What it does not reach: the call is the small part of the target-mix gap. Breaking routes stay over-thrown through the quarterback's choice at the throw (read order puts them first; the flat, even read first, is rarely judged open — `FLAT_FIRST`, a written result on branch `rules/flat-first`), and screens and angle routes (13.7% of NFL targets) are not in the call pool until Run Game finishes them. The table has no slot for them yet.
 
 ## run-ref-19: `HOLD_FACING` on (2026-11-11)
 

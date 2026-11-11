@@ -24,5 +24,5 @@ for p in csv.DictReader(open(f'{D}/plays.csv')):
         'cov': p['pff_passCoverage'], 'covFamily': FAM.get(p['pff_passCoverage'], 'other'), 'mz': p['pff_manZone'],
         'rushers': sum(T(r['wasInitialPassRusher']) for r in rows if r['teamAbbr'] != off),
         'res': p['passResult'], 'yards': num(p['yardsGained']), 'air': num(p['passLength']), 'yac': yac,
-        'pa': T(p['playAction']), 'route': tgt['routeRan'] if tgt and tgt['routeRan'] not in ('', 'NA') else None,
+        'pa': T(p['playAction']), 'ttt': num(p['timeToThrow']), 'route': tgt['routeRan'] if tgt and tgt['routeRan'] not in ('', 'NA') else None,
         'routes': routes, 'game': p['gameId'], 'off': off}))
