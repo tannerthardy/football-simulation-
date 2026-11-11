@@ -35,6 +35,7 @@
     "BLOCKER_NEXT": "on",
     "BLOCK_RELEASE": "off",
     "CARRIER_BRACE": "off",
+    "CATCH_EYES": "off",
     "CLIMB_BASE": "on",
     "CLIMB_PATH": "on",
     "CLIMB_PREP": "on",
