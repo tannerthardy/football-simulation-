@@ -133,6 +133,9 @@ def report(path):
                 e = min(others, key=lambda e: p.dist(c, e, kc))
                 pair = 'split' if sd(e) * st < 0 else 'same'
                 C[(K, 'pair', pair, o)] += 1; C[(K, 'pair', pair, '*')] += 1; S[(K, 'pair', pair, 'more')].append(more)
+                # second contact: the next different defender within 1.0 yd; yards from the first contact to it (or the end)
+                k2 = next((k for k in range(kc + 1, last + 1) if any(x != t and p.dist(c, x, k) <= 1.0 for x in D)), None)
+                S[(K, 'pair', pair, 'y2')].append(p.pos(c, k2 if k2 is not None else last)[0] - p.pos(c, kc)[0])
                 S[(K, 'pair', pair, 'v1')].append(p.speed(t, kc) / max(top[t], 1)); S[(K, 'pair', pair, 'v2')].append(p.speed(e, kc) / max(top[e], 1))
                 # angle between the two around the carrier
                 a1 = math.atan2(ty - ccy, tx - ccx); a2 = math.atan2(p.pos(e, kc)[1] - ccy, p.pos(e, kc)[0] - ccx)
@@ -169,7 +172,10 @@ def report(path):
         for pr in ('split', 'same', 'alone'):
             m = C[(K, 'pair', pr, '*')]
             if m: print(f"   first contact, 2nd defender within 3 yd: {pr:5} {row((K, 'pair', pr))} yards after mean {sum(S[(K, 'pair', pr, 'more')]) / m:.1f}"
-                        + (f" | speed share 1st {q(S[(K, 'pair', pr, 'v1')]):.2f} 2nd {q(S[(K, 'pair', pr, 'v2')]):.2f}" if pr != 'alone' else ''))
+                        + (f" | speed share 1st {q(S[(K, 'pair', pr, 'v1')]):.2f} 2nd {q(S[(K, 'pair', pr, 'v2')]):.2f} | yards to the 2nd contact mean {sum(S[(K, 'pair', pr, 'y2')]) / max(1, len(S[(K, 'pair', pr, 'y2')])):.1f}" if pr != 'alone' else ''))
+        npair = C[(K, 'pair', 'split', '*')] + C[(K, 'pair', 'same', '*')]
+        allp = S[(K, 'pair', 'split', 'more')] + S[(K, 'pair', 'same', 'more')]
+        if npair: print(f"   pairs: split {100 * C[(K, 'pair', 'split', '*')] / npair:.0f}% of {npair}; yards after first contact (pairs) mean {sum(allp) / npair:.1f}")
         print(f"   pair separation around the carrier p50 {q(S[(K, 'pair', '*', 'sep')]):.0f} deg; cutback lane (away from the first tackler) has a defender within 5 yd {pct(C[(K, 'cut')], C[(K, 'cut*')]):.0f}%")
         f = C[(K, 'far')]
         if f: print(f"   far-side pursuers n {f}: aim crosses his path p50 {q(S[(K, 'far', 'aimahead')]):.1f} yd in front of him; level with him before +20 {pct(C[(K, 'far', 'level')], f):.0f}%")
