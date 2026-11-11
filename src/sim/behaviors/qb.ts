@@ -151,16 +151,6 @@ const BLOCK_SEEN = process.env.BLOCK_SEEN === '1';
  * here runs. Off, the hot path pre-empts movement whenever he feels a hit
  * within 0.45 s, and he walks toward a set point. */
 const SET_DECIDE = process.env.SET_DECIDE === '1';
-/** Experimental (FINISH_CHECK=1, off; implied by SET_DECIDE): he does not
- * start a throw he cannot finish. Under it, a throw the read logic would take
- * now is started only if a throwing motion (windup) ends before the rusher he
- * sees closing could reach him, that rusher's delayed picture carried forward
- * with the acceleration he has seen it gaining (feltClosing), not at constant
- * velocity (which puts a rusher coming off a block about 0.15 s late). If not,
- * the rest of the set logic decides as it would (hot path, scramble, throw
- * away, pocket). No movement of its own. Off, the read logic's throw is
- * started whenever it clears its bar. */
-const FINISH_CHECK = process.env.FINISH_CHECK === '1';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -179,7 +169,7 @@ export class QBPass implements Behavior {
   private plannedLoad = -1;
   /** How much of the load the throw in progress gave up (0 full motion, 1 none). */
   private flick = 0;
-  /** SET_DECIDE / FINISH_CHECK: throws the read logic offered that he could not finish (diagnostic count). */
+  /** SET_DECIDE: throws the read logic offered that he could not finish (diagnostic count). */
   noFinish = 0;
   /** SET_DECIDE: the direction he is moving in, held until moveUntil. */
   private moveDir: Vec2 | null = null;
@@ -498,7 +488,7 @@ export class QBPass implements Behavior {
     const now = this.bestThrowNow(a, sim, u, { thr, maxInt, need, risk, dwell });
     // SET_DECIDE: a throw he cannot finish before the rusher he sees arrives is
     // not started; the decision below (move, escape, or trapped) answers instead.
-    const finishCheck = SET_DECIDE || FINISH_CHECK;
+    const finishCheck = SET_DECIDE;
     if (now.take && now.ev && !(finishCheck && !this.canFinish(a, sim))) return this.startThrow(a, sim, now.ev);
     if (finishCheck && now.take) this.noFinish++;
     if (now.advance) this.advanceRead(t);

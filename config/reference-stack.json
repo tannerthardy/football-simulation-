@@ -108,7 +108,6 @@
     "POCKET_CLIMB": "off",
     "BLOCK_SEEN": "off",
     "SET_DECIDE": "off",
-    "FINISH_CHECK": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",

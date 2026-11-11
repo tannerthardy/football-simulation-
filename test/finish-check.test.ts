@@ -1,4 +1,4 @@
-/** FINISH_CHECK (behaviors/qb.ts; experimental, off): he does not start a throw
+/** SET_DECIDE's finish check (behaviors/qb.ts; experimental, off): he does not start a throw
  * he cannot finish before the rusher he sees closing arrives, that rusher's
  * delayed picture carried forward with the acceleration he has seen it gaining
  * (feltClosing), not at constant velocity. */
@@ -7,7 +7,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 async function setPlay(seed: number, flag: string) {
-  vi.stubEnv('FINISH_CHECK', flag); vi.resetModules();
+  vi.stubEnv('SET_DECIDE', flag); vi.resetModules();
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
   return new PlaySim(nativeTraceSetup({ coverage: 'cover3', concept: 'four_verts', seed, roster: 7, formation: 'gun_doubles_11', flip: false })) as any;
@@ -24,7 +24,7 @@ function closing(sim: any, at: number, speed: number) {
     const v = Reflect.get(t, p); return typeof v === 'function' ? v.bind(t) : v; } }) };
 }
 
-describe('FINISH_CHECK', () => {
+describe('SET_DECIDE finish check', () => {
   it('feltClosing carries a rusher who is speeding up further along than the constant-velocity picture', async () => {
     let checked = 0;
     for (const seed of [1, 2, 3]) {
