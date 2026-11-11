@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-29",
+  "id": "engine-30",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -97,6 +97,7 @@
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
     "IZ_OFFSET": "on",
+    "JUDGE_SEEN_BALL": "off",
     "KEEPER_HIP": "on",
     "KEY_DEPTH": "on",
     "KEY_PACE": "on",
@@ -159,6 +160,7 @@
     "RUN_READ": "off",
     "RUN_READ_TURN": "off",
     "SAM_ON_TE": "off",
+    "SEEN_EYES": "on",
     "SHED_PAST": "on",
     "SHED_PAST_GATE": "on",
     "SHED_ROUTE": "on",
