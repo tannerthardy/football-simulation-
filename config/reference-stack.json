@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-23",
+  "id": "run-ref-24",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -45,6 +45,7 @@
     "CONTACT_LAYER": "off",
     "COUNTER_C": "on",
     "COUNTER_OFFSET": "on",
+    "COVER_LONG": "on",
     "CUTOFF_RACE": "on",
     "DB_SLOTS": "on",
     "DB_SLOWPLAY": "on",

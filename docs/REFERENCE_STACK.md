@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-23`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-24`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,21 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## run-ref-24: `COVER_LONG` on (2026-11-11)
+
+Rules + Coaching #543. The defensive caller's early-down tilt (Cover 3 ×1.12, Cover 1 ×0.82, Cover 0 ×0.75, Cover 2 man ×0.5) applied to every 1st and 2nd down, so 2nd and 10 was called like 1st and 10. NFL defences call 2nd and long almost like 3rd and long: an offence off schedule is passing, and the coordinator knows it from down and distance. The tilt is no longer applied on 2nd and 7+; no new weights.
+
+| 32 coach-sampled league games an arm (seeds 101–116, 201–216, run-ref-21 + `leagueSample`), unpaired | off | on | NFL |
+|---|---|---|---|
+| Cover 3 / Cover 1 on 2nd & 7+ | 40.0 / 14.6% | 36.4 / 17.2% | 29.7 / 18.1% |
+| Cover 3 / Cover 1, all | 36.1 / 17.3% | 34.6 / 19.1% | about 33.6 / 22.3% |
+| Yards a dropback; completion; sacks; INT | 9.49 ± 0.24; 62.6%; 2.1%; 3.9% | 9.34 ± 0.24; 62.8%; 1.7%; 3.8% | |
+| YAC median / trimmed / mean | 4.5 / 5.55 / 7.86 ± 0.29 | 4.2 / 5.45 / 7.69 ± 0.29 | |
+
+On for what defences call; outcomes are within noise and 1st-down calls are identical by test. The remaining Cover 3 excess on 2nd and long sits in the base shares and the coaching trees. The evidence is the lane's card; no separate scorecard was run for this stack.
+
+Two findings from the same report ([coverage mix](reviews/2026-11-11-cover-mix.md)): most of the earlier coverage-mix gap was the coach sample (diagnostic games had four coordinators and no pressure-man or quarters tree; repaired by `leagueSample`, #546), and the passing excess lives after the catch against zone: YAC a reception against Cover 3 8.42 against the NFL's 5.47, against Cover 1 5.86 against 5.65. The mix is not forced toward man.
 
 ## run-ref-23: the drag-down binding on (2026-11-11)
 
