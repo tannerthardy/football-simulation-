@@ -698,6 +698,32 @@ function cushionBroken(a: Agent, cushion: number, receiverVx: number, help: bool
  * -0.1, 29%; C3/C4 2.3-2.4, +0.2-0.3, 27-42%), the largest group pedalling on
  * the back (man:RB) inside a zone call. */
 const CUSHION_NEED = process.env.CUSHION_NEED !== '0';
+/** LOOK_ONCE (off; LOOK_ONCE=1 turns it on; C15, estimated): whether a defender
+ * near the ball's path gets his head around to find it is one event per flight,
+ * not a fresh dice roll every tick. Off, the 0.15-0.65 chance was re-rolled at
+ * 20 Hz, so nearly every such defender was "looking" within about 0.5 s
+ * whatever his ball skills (half the defenders who faced the ball at the catch
+ * on the panel did so through this tag). On, the first tick he is near the
+ * path he draws once: with a chance of 0.25 + 0.6 x ballSkills he finds it,
+ * after a turn time of 0.25 s plus up to 0.35 s for a defender whose back is
+ * to the passer (body facing vs the ball's origin), shortened by ball skills;
+ * otherwise he plays this flight without the look. */
+const LOOK_ONCE = process.env.LOOK_ONCE === '1';
+const lookPlan = new WeakMap<Agent, { flight: number; at: number }>();
+function findsBall(a: Agent, sim: PlaySim): boolean {
+  const ball = sim.ball;
+  if (ball.kind !== 'air') return false;
+  let plan = lookPlan.get(a);
+  if (!plan || plan.flight !== ball.releaseT) {
+    const bs = a.r('ballSkills');
+    const from = Math.atan2(ball.thrower.pos.y - a.pos.y, ball.thrower.pos.x - a.pos.x);
+    const away = (1 - Math.cos(a.body.facing - from)) / 2;
+    const finds = sim.dice('look', a).chance(0.25 + 0.6 * bs);
+    plan = { flight: ball.releaseT, at: finds ? sim.t + (0.25 + 0.35 * away) * (1.2 - 0.4 * bs) : Infinity };
+    lookPlan.set(a, plan);
+  }
+  return sim.t >= plan.at;
+}
 
 /** Man coverage with press/off technique, leverage and hip turn. */
 export class ManCoverage implements Behavior {
@@ -1630,7 +1656,8 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
-  if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
+  if (LOOK_ONCE) { if (nearPath && !a.tags.has('looking') && findsBall(a, sim)) a.tags.add('looking'); }
+  else if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
   // A defender already carrying the visible catcher must not brake out of
   // phase toward a stationary point on the flight. Keep his feet with the
   // receiver unless he can play the ball before that receiver's window.

@@ -640,8 +640,49 @@ function passPossessionChanges(sim: PlaySim): number {
   return sim.segments.reduce((n, s, i, ss) => n + Number(s.team !== (i ? ss[i - 1].team : 'O')), 0);
 }
 function finiteFact(n: number): number | null { return Number.isFinite(n) ? n : null; }
+/** OFFICIATE (off; OFFICIATE=1 turns it on; estimated, C14 officiating): an
+ * illegal-contact call needs contact that changed the receiver's motion, seen
+ * by an official. Off, every clear initiated contact past five yards against a
+ * receiver moving away was flagged: 3.3 calls per 100 pass plays on the panel
+ * against the NFL's 0.42 per 100 passes (nflverse 2022), while our bodies meet
+ * receivers downfield before the throw on 32-38% of passes (NFL 13%). On, the
+ * contact's effect is the change in the receiver's velocity it delivered (body
+ * impulse, or hand force over the interval, over his mass), summed per pair
+ * over the play; the chance it is flagged rises from nothing at 0.3 yd/s to
+ * the seen rate (0.6: officials' position, the angle, the miss rate) at 1.8
+ * yd/s and above. Each pair draws one threshold for the play, so continued
+ * contact is judged on its growing effect, not re-rolled every tick. Contact
+ * that is let go is recorded as uncalled evidence. Fitted only against the
+ * NFL flag rates per pass; the contact itself is not tuned here. */
+const OFFICIATE = process.env.OFFICIATE !== '0';
+const OFFICIATE_MIN = 0.3, OFFICIATE_SPAN = 1.5, OFFICIATE_SEEN = 0.6;
+const officiated = new WeakMap<PlaySim, Map<string, { dv: number; u: number }>>();
+/** OFFICIATE: the chance a contact that changed the receiver's velocity by dv
+ * (yd/s, summed over the play for the pair) is flagged. */
+export function officiateChance(dv: number): number {
+  return Math.min(1, Math.max(0, (dv - OFFICIATE_MIN) / OFFICIATE_SPAN)) * OFFICIATE_SEEN;
+}
+
 function callIllegalContact(sim: PlaySim, actor: Agent, victim: Agent, t: number, spotX: number,
   rule: string, action: string, facts: Record<string, string | number | boolean | null>): void {
+  if (OFFICIATE) {
+    const m = victim.profile.massKg;
+    const impulse = typeof facts.impulse === 'number' ? facts.impulse : null;
+    const force = Math.hypot(Number(facts.normalForce ?? 0), Number(facts.tangentForce ?? 0));
+    const dv = (impulse !== null ? impulse / m : force * sim.dt / m) * 1.0936;
+    let byPair = officiated.get(sim);
+    if (!byPair) { byPair = new Map(); officiated.set(sim, byPair); }
+    const key = pairId(actor, victim);
+    let rec = byPair.get(key);
+    if (!rec) { rec = { dv: 0, u: sim.dice('official', actor, victim).next() }; byPair.set(key, rec); }
+    rec.dv += Number.isFinite(dv) ? dv : 0;
+    const pCall = officiateChance(rec.dv);
+    if (!(rec.u < pCall)) {
+      unresolved(sim, actor, victim, 'illegal_contact', rule, `${action}_let_go`, t,
+        { ...facts, effectYdPerS: rec.dv, pCall });
+      return;
+    }
+  }
   sim.recordFoul({ id: `illegal-contact:${actor.idx}:${victim.idx}`, kind: 'illegal_contact',
     against: 'D', playerId: actor.player.id, yards: 5, autoFirst: true, spotX, t, rule,
     reason: action, phase: 'live', playPhase: 'pass', possessionTeam: sim.possession,
