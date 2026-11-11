@@ -131,7 +131,7 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
   return clamp((seen.pose === 'down' ? recovery : recovery / 2) - age, tick, recovery);
 }
 
-/** CATCH_EYES (off): a receiver's eyes are on the ball until it is in his
+/** CATCH_EYES (on; CATCH_EYES=0 restores): a receiver's eyes are on the ball until it is in his
  * hands. For one reaction time after the catch he carries the line he caught
  * it on (upfield if he caught it nearly standing) while he looks back up the
  * field; his first lane read comes after that, from his own fresh picture.
@@ -139,7 +139,7 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
  * full picture of the field: 0.1 s after the catch the request was 46 deg off
  * his travel (p50; p75 93), and over 0.5 s he turned 22 / 37 deg (p50 / p75;
  * tracked 2022 catchers 14 / 25), 8 games at develop f6fe9bf7. */
-export const CATCH_EYES = process.env.CATCH_EYES === '1';
+export const CATCH_EYES = process.env.CATCH_EYES !== '0';
 
 /** CARRIER_BRACE (off): the carrier lowers his pads for a tackler he sees closing
  * head-on, and drives his body through the contact in the last stride. */
