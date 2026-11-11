@@ -654,7 +654,7 @@ function finiteFact(n: number): number | null { return Number.isFinite(n) ? n : 
  * contact is judged on its growing effect, not re-rolled every tick. Contact
  * that is let go is recorded as uncalled evidence. Fitted only against the
  * NFL flag rates per pass; the contact itself is not tuned here. */
-const OFFICIATE = process.env.OFFICIATE === '1';
+const OFFICIATE = process.env.OFFICIATE !== '0';
 const OFFICIATE_MIN = 0.3, OFFICIATE_SPAN = 1.5, OFFICIATE_SEEN = 0.6;
 const officiated = new WeakMap<PlaySim, Map<string, { dv: number; u: number }>>();
 /** OFFICIATE: the chance a contact that changed the receiver's velocity by dv
