@@ -69,3 +69,34 @@ Not matched: too few throws need a 45–90° turn (13% against 24%). That comes 
 not from the turn itself. Before changing the reset rule, the next check is the shoulder angle to the target at his
 last settled frame, in the sim, against the NFL's 50 / 25 / 18 / 7% (0–30° / 30–60° / 60–90° / 90°+). The sim
 export carries no orientation yet. `SHOULDER_SETTLE` is not to be tuned to the mix.
+
+## Where this stands / next step (parked 2026-11-11, stress-matrix pause)
+
+**SHOULDERS_SET**
+- Built, off, with its test. The gate read is above. Not a promotion candidate yet: the 45–90° turn share is short.
+- Next:
+  - Add body orientation to the sim export.
+  - Compare the shoulder angle to the target at his last settled frame with the NFL (50 / 25 / 18 / 7%).
+  - Read the flag with Coverage's `relbreak.py` (release minus break, by route class).
+- Coverage confirmed (develop 3e38b6e4) that `evaluate`, `window` and `ready` never read the QB's facing. The
+  readers of his body facing that the flag changes:
+  - `src/sim/coverage/judgment.ts:66`: zone defenders' "eyes" cue. It becomes a shoulders cue. That is Defense /
+    Rules + Coaching code, so tell them.
+  - `src/sim/playsim.ts:955`: the release point is 0.3 yd along his facing, so it moves a little mid-turn.
+  - `qb.ts` `felt()`: the blind side follows his body, which is more realistic.
+
+**Throwaway choice** (assigned by Integration; not started)
+- Replace the dice-roll sideline throwaway with a coached choice inside SET_DECIDE's options: when hit or about to
+  be and nobody is open, get the ball out of play legally.
+- Legal means one of:
+  - from outside the tackle box with the ball reaching the line; or
+  - the ball landing near an eligible receiver.
+- Inside the pocket with nobody near is grounding, and the rules must call it. 0 calls on 8 sim throwaways says they
+  don't: check `pass-legality.ts` with Rules + Coaching.
+- First, the NFL question: what the 24% of hit throwaways not from a legal spot are (a receiver in the area?). Build
+  before the movement exists only if that is common.
+
+**Pocket movement** (item 3)
+- Waits on Run Game's pass-rush measurement: whether our rush shows a beaten blocker at distance.
+- SET_DECIDE and BLOCK_SEEN ride with it.
+- Added gate: the NFL QB survives first contact and throws more than 0.5 s later on 42% of hit throws; ours do on 0–2%.

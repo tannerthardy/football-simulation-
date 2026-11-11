@@ -105,3 +105,12 @@ Completion by phase × openness, for contact ≤0.2 s before release (cells with
   him outside the tackles.
 - **Throw-mechanics gate:** the phase mix cannot match until he survives contact. SHOULDERS_SET's
   hurried-throw gate should be judged inside the ≤0.2 s cell, not on the totals.
+
+## Status (2026-11-11)
+
+- Integration adopted these gates:
+  - completion of targeted hit throws, plus the target's openness mix;
+  - SHOULDERS_SET's hurried-throw cost judged within the ≤0.2 s cell.
+- Point 4 (completion barely depends on openness) went to Coverage.
+- The throwaway choice went to Flex: see docs/reviews/2026-11-11-shoulders-set.md, "Where this stands".
+- The exporter fix is commit b4ae85d8. It touches only scripts and is meant to land on its own.
