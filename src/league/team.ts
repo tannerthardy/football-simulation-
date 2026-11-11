@@ -259,13 +259,28 @@ export function pickOffense(team: Team, personnel: PersonnelId, av: Availability
   return out;
 }
 
+/** DB_SLOTS (on since run-ref-21; DB_SLOTS=0 restores): the defensive backs are placed by
+ * position before the nickel and dime are filled. The installed order filled
+ * NB and DB first from corners or safeties, scored on slot-corner and zone
+ * suitability, so a safety usually took the nickel; the safeties' slots then
+ * went to whoever remained, FS from S or CB and SS from S, LB or CB on box and
+ * robber suitability. On 200 generated rosters with fresh legs the nickel was
+ * a safety 84% of the time, the nickel SS a linebacker 20% and the dime SS a
+ * linebacker 64%; on the pass panel an LB held SS on 78 of 197 snaps and
+ * played a deep half or quarter. With it on, FS and SS take safeties (a corner,
+ * then for SS a backer, only when none is available), then NB and DB choose
+ * from the corners and the safeties left, as before. Rosters carry 6 CB and
+ * 4 S, so nickel and dime stay staffed by defensive backs.
+ * docs/reviews/2026-11-11-db-slots.md. */
+export const DB_SLOTS = process.env.DB_SLOTS !== '0';
+
 export function pickDefense(team: Team, personnel: DefPersonnelId, av: Availability = {}): Partial<Record<DefSlot, Player>> {
   const taken = new Set<string>();
   const out: Partial<Record<DefSlot, Player>> = {};
   const need = DEF_PERSONNEL[personnel];
-  const take = (slot: DefSlot, cands: Position[], score: (p: Player) => number) => {
+  const take = (slot: DefSlot, cands: Position[], score: (p: Player) => number, fallback: Position[] = []) => {
     if (!need[slot]) return;
-    const p = pickBest(pool(team, cands, av, taken), score, av);
+    const p = pickBest(pool(team, cands, av, taken), score, av) ?? pickBest(pool(team, fallback, av, taken), score, av);
     if (!p) throw new Error(`${team.abbr}: no player for ${slot}`);
     out[slot] = p;
     taken.add(p.id);
@@ -283,6 +298,14 @@ export function pickDefense(team: Team, personnel: DefPersonnelId, av: Availabil
   take('LB_S', ['LB', 'EDGE'], best('LB_SAM', 'LB_MIKE'));
   take('CB_S', ['CB'], at('CB'));
   take('CB_W', ['CB'], at('CB'));
+  if (DB_SLOTS) {
+    // Safeties first, from the safeties; then the nickel and dime from the corners.
+    take('FS', ['S'], best('S_FREE', 'S_ROBBER'), ['CB']);
+    take('SS', ['S'], best('S_BOX', 'S_ROBBER'), ['CB', 'LB']);
+    take('NB', ['CB', 'S'], best('CB_SLOT', 'CB_ZONE'));
+    take('DB', ['CB', 'S'], (p) => at('CB')(p) * 0.6 + at('S')(p) * 0.4);
+    return out;
+  }
   take('NB', ['CB', 'S'], best('CB_SLOT', 'CB_ZONE'));
   take('DB', ['CB', 'S'], (p) => at('CB')(p) * 0.6 + at('S')(p) * 0.4);
   take('FS', ['S', 'CB'], best('S_FREE', 'S_ROBBER'));
