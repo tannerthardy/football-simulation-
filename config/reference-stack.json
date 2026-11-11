@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-27",
+  "id": "engine-28",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -124,7 +124,7 @@
     "PICTURE_AGE": "off",
     "PRESS_MIRROR": "on",
     "PRESS_RELEASE": "on",
-    "PRO_CALL": "off",
+    "PRO_CALL": "on",
     "PULL_CUE": "off",
     "PULL_PLAN": "off",
     "QB_FEEL": "off",

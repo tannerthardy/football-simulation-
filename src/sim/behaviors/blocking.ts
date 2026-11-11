@@ -461,7 +461,7 @@ const PRO_READ = process.env.PRO_READ !== '0';
  * evidence docs/reviews/2026-11-11-protection.md: 0 of 75 free off-ball
  * blitzers declared, free first pressure 23.2% / 38.0% at even / +1 numbers
  * vs NFL 12.7 / 14.9, protection size 18/63/19 vs NFL 30/48/22. */
-export const PRO_CALL = process.env.PRO_CALL === '1';
+export const PRO_CALL = process.env.PRO_CALL !== '0';
 /** How far off the ball a defender counts in the call's box (yd). */
 const CALL_DEPTH = 3.5;
 /** How far outside the linemen's width the call's box reaches (yd). */
