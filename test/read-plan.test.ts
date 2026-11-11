@@ -61,9 +61,12 @@ describe('READ_PLAN', () => {
       expect(r.target).toBe('S2');
       expect(r.throwAt).toBeLessThan(2.4);
     }
-    // He reads him from his own delayed picture with his skill's noise: most, not all, jumps are read.
-    expect(jump.filter((r) => r.keyRead?.throwTo === 'high').length).toBeGreaterThanOrEqual(2);
-    expect(jump.filter((r) => r.target !== 'S2').length).toBeGreaterThanOrEqual(2);
+    // He reads him from his own delayed picture with his skill's noise: most, not all, jumps are read. Read, he
+    // holds for the corner instead of taking the flat on rhythm (the corner, or back down to the flat later when
+    // the corner is covered: high first, then reset low).
+    const read = jump.filter((r) => r.keyRead?.throwTo === 'high');
+    expect(read.length).toBeGreaterThanOrEqual(2);
+    for (const r of read) expect(r.target === 'S1' || r.throwAt > 2.6, JSON.stringify(r)).toBe(true);
   });
 
   it('a covered first read moves him on in rhythm (press-man quick outs: #1 covered, #2 thrown)', async () => {
