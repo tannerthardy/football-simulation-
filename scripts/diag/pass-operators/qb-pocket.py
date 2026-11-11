@@ -1,6 +1,6 @@
 """usage: python3 -I scripts/diag/pass-operators/qb-pocket.py <plays.jsonl.gz> [...]
 The QB's pocket (Integration, 2026-11-11). Same code on NFL tracking and sim plays. Dropbacks with a throw: his set
-point = his deepest frame (minimum x) after the snap and before release; drop depth = -x there; depth relative to
+point = his deepest frame (minimum x) after the snap and before release; drop depth = -x there; snap -> set time (first frame to the set frame, less any snap event time); depth relative to
 the tackles = his x minus the mean x of the two widest OL at that frame (negative = behind them); then set -> release:
 time, net forward (toward the line) and lateral displacement, path length and mean speed. Split by whether a defender
 came within 2 yd of him before release (pressured)."""
@@ -32,9 +32,9 @@ for path in sys.argv[1:]:
         D = [d for d in p.who('D') if p.pos(d, 0)[0] is not None]
         pres = any(p.pos(d, k)[0] is not None and p.dist(q, d, k) <= 2.0 for k in range(ks, kr + 1) for d in D)
         dt = (kr - ks) * p.dt
-        R.append({'depth': -xset, 'rel': rel, 'dt': dt, 'fwd': b[0] - a[0], 'lat': abs(b[1] - a[1]), 'L': L, 'v': L / dt if dt > 0 else 0, 'pres': pres})
+        R.append({'tset': ks * p.dt - (p.raw.get('events', {}).get('snap') or 0), 'depth': -xset, 'rel': rel, 'dt': dt, 'fwd': b[0] - a[0], 'lat': abs(b[1] - a[1]), 'L': L, 'v': L / dt if dt > 0 else 0, 'pres': pres})
     print(f"== {os.path.basename(path)}: dropbacks with a throw {len(R)}")
     for lab, s in (('all', R), ('pressured (a man within 2 yd)', [r for r in R if r['pres']]), ('clean', [r for r in R if not r['pres']])):
         if not s: continue
-        print(f"   {lab:30s} n {len(s):5d} | set depth {q4([r['depth'] for r in s])} | vs tackles {q4([r['rel'] for r in s if r['rel'] is not None])} | set->release {q4([r['dt'] for r in s])} s"
+        print(f"   {lab:30s} n {len(s):5d} | snap -> set {q4([r['tset'] for r in s])} s | set depth {q4([r['depth'] for r in s])} | vs tackles {q4([r['rel'] for r in s if r['rel'] is not None])} | set->release {q4([r['dt'] for r in s])} s"
               f" | forward {q4([r['fwd'] for r in s])} lateral {q4([r['lat'] for r in s])} | path {q4([r['L'] for r in s])} speed {q4([r['v'] for r in s])}")
