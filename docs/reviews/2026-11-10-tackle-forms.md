@@ -708,3 +708,31 @@ The windup had started before contact in 134 of the 176 (76%). By when the hold 
 3. The sack rate moves toward 6.3%.
 4. No leak into clean-pocket throws: completion and yd/att within noise.
 5. INT rate on hit throws reported.
+
+## Pass-TD check on the drag-down set (`td-hold.mts`, run-ref-21; 2026-11-11)
+
+**Question.** Three run-ref-21 league cards showed pass TD rate 7.6 → 8.9% with the five flags on, at about the same yards. Is it a defect in the binding?
+
+**Population.** Seeds 11 and 23, 16 games each, five flags =0 vs =1. Unpaired: the arms diverge.
+
+| | seed 11 | seed 23 |
+|---|---|---|
+| TDs | 85 → 76 | 118 → 111 |
+| TDs per completion | 9.2 → 8.6% | 12.8 → 11.4% |
+| Held before scoring | 48 → 37 | 53 → 58 |
+
+- Yards after the first hold, catches inside 10 yd: 1.27 → 1.52 and 1.66 → 2.08. That is about +0.33, roughly 1.3 SE.
+- Flat or down elsewhere.
+
+**Tick traces** (seed 23 game 1, flags on). The stride never binds in any of them:
+1. An ankle grab (lock 0.2) slides off in 0.4 s.
+2. An upright waist wrap from behind; the runner carries the holder 2.9 yd in 0.55 s.
+3. A front waist wrap; the holder is driven back 4.2 yd over 1.25 s.
+
+A waist hold's moment never reaches hip flexion, flags or not.
+
+**Verdict.** No path from the binding to these TDs, and the rise does not reproduce on run-ref-21.
+
+**Open items** (not in this flag set; queued after sacks):
+- **(b)** An upright waist wrap from behind that runs with the carrier and never commits weight. This is the holder's finish (HOLD_FINISH territory).
+- **(c)** The head-on waist wrap driven back about 4 yd (NFL head-on yards after contact 2.3).
