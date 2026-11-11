@@ -7,6 +7,19 @@ import type { RouteDef, RouteEnd, RouteRead } from '../playbook/types.js';
 import { routeEffort, routePath, steerRoute, type PathPoint } from './route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from './route-read.js';
 
+/** FORECAST_PACE (off; FORECAST_PACE=1 turns it on): when the QB cannot place a
+ * released receiver on his installed route (the forecast falls back to the
+ * motion he sees), a receiver whose route keeps running (end 'continue': flat,
+ * swing, go, crossers) is carried along the heading he sees toward his route
+ * pace, through his own acceleration limits, instead of at the speed sampled at
+ * that instant. The QB knows his teammate's route and speed; a receiver caught
+ * accelerating out of his release keeps accelerating. A settle route keeps the
+ * sampled velocity; a receiver still standing (under 2 yd/s) is not paced.
+ * Forced flat throws on the panel (develop 05587800) landed 1.2 yd behind the
+ * receiver along his run with a fresh picture (aim implied 1.7 yd/s, he ran
+ * 4.6) and completed 0.49; every one used the observed-motion fallback. */
+const FORECAST_PACE = process.env.FORECAST_PACE === '1';
+
 interface InstalledAnswer { readonly id: RouteChoice['answer']; readonly path: readonly PathPoint[]; readonly end: RouteEnd }
 
 export interface InstalledReceiverRoute {
@@ -185,7 +198,7 @@ export class ReceiverForecast {
       }
       const active = selected ? c.route : prior;
       let cmd: MoveCommand | null;
-      if (c.estimate.motion === 'observed-motion') cmd = { vel: { ...p!.vel }, cutSkill };
+      if (c.estimate.motion === 'observed-motion') cmd = FORECAST_PACE ? pacedMotion(p!, prior, cutSkill) : { vel: { ...p!.vel }, cutSkill };
       else if (c.estimate.sampledAt + i * this.dt < (prior.startDelay ?? 0)
         && (!p || (Math.hypot(p.vel.x, p.vel.y) < 1e-6 && st.idx === 0))) cmd = { vel: { x: 0, y: 0 } };
       else if (done) cmd = active.end === 'continue' ? { vel: body.vel }
@@ -202,6 +215,15 @@ export class ReceiverForecast {
     }
     c.pts = pts;
   }
+}
+
+/** FORECAST_PACE: the motion he sees, carried toward the installed route pace on
+ * a route that keeps running. */
+function pacedMotion(p: ReceiverPicture, prior: InstalledReceiverRoute, cutSkill: number): MoveCommand {
+  const sp = Math.hypot(p.vel.x, p.vel.y);
+  if (prior.end !== 'continue' || sp < 2) return { vel: { ...p.vel }, cutSkill };
+  const pace = Math.max(sp, prior.effort * prior.profile.vmax);
+  return { vel: { x: p.vel.x / sp * pace, y: p.vel.y / sp * pace }, cutSkill };
 }
 
 /** Geometric inference from the sampled picture; never the runner's private idx.
