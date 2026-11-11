@@ -9,13 +9,21 @@ import type { Agent } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import type { Perceived } from '../perception.js';
 import { hasObservedFlight, observedHolder } from '../possession-read.js';
+import { sawThrow } from '../behaviors/defense.js';
 import type { ReceiverRead, ReleaseReader } from './reads.js';
 import type { Directive } from './rules.js';
+
+/** JUDGE_SEEN_BALL (experimental, off; JUDGE_SEEN_BALL=1 turns it on): a deep
+ * defender's help decisions freeze when he sees the throw (sawThrow, his own
+ * delayed picture; latched once seen), not at the true release. */
+const JUDGE_SEEN_BALL = process.env.JUDGE_SEEN_BALL === '1';
 
 export class CoverageJudgment {
   private nextRead = -1;
   private override: Directive | null = null;
   private primaryKey = '';
+  /** JUDGE_SEEN_BALL: he has seen the throw (latched: turning away does not unsee it). */
+  private sawBall = false;
   reason = 'rule';
 
   decide(a: Agent, sim: PlaySim, reader: ReleaseReader, primary: Directive, deep: boolean): Directive {
@@ -25,7 +33,8 @@ export class CoverageJudgment {
     if (!deep || (holder && holder.target !== sim.qb && hasObservedFlight(a))) return primary;
     // Release is not a cue to undo a help decision. Keep the current job
     // until its technique sees the ball and transitions to playing it.
-    if (sim.ball.kind === 'air') return this.override ?? primary;
+    if (JUDGE_SEEN_BALL && !this.sawBall && sim.ball.kind === 'air' && sawThrow(a, sim, null)) this.sawBall = true;
+    if (JUDGE_SEEN_BALL ? this.sawBall : sim.ball.kind === 'air') return this.override ?? primary;
     const key = primary.t === 'zone' ? `zone:${primary.zone}` : `${primary.t}:${primary.r.slot}`;
     if (sim.t < this.nextRead && key === this.primaryKey) return this.override ?? primary;
     this.nextRead = sim.t + a.mind.decisionInterval;
