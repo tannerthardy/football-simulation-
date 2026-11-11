@@ -26,7 +26,7 @@ for path in sys.argv[1:]:
         if raw.get('kind') != 'pass' or 'catch' not in ev or 'pass_forward' not in ev: continue
         c = raw.get('receiver') if raw.get('receiver') is not None else raw.get('target')
         if c is None: continue
-        p = Play(raw); kc, kr = p.k(ev['catch']), p.k(ev['pass_forward'])
+        p = Play(raw); kc, kr = p.k(ev.get('pass_arrived', ev['catch'])), p.k(ev['pass_forward'])  # ball arrival (NFL catch event lags it 0.3-0.4 s)
         k10 = kc - int(round(1.0 / p.dt)); k6 = kc - int(round(0.6 / p.dt))
         if k10 < 0 or kr > kc or any(p.pos(c, k)[0] is None for k in range(min(k10, kr), kc + 1)): continue
         FL.append((kc - kr) * p.dt)
