@@ -283,3 +283,55 @@ python3 -I scripts/diag/pass-matrix/flight.py out/mechanics/nfl-plays.jsonl.gz d
 
 `matrix.py` needs `out/pass-matrix/covfam.json`, the coverage id → family map
 (written by a one-line `COVERAGES` dump), only for league-game inputs.
+
+## Addendum: drop-back passes only (2026-11-11)
+
+Tanner's ask: compare drop-back passes on both sides, and leave screens out.
+
+**Who is left out.** `scripts/diag/pass-matrix/population.py` keeps 6,098 of
+9,736 NFL dropbacks, dropping those that are:
+
+| left out | plays |
+| --- | --- |
+| play action | 2,469 |
+| screens (any player's `routeRan` is SCREEN) | 865 |
+| run-pass options (`pff_runPassOption`) | 169 |
+| designed rollouts or runs (`dropbackType` DESIGNED_*) | 112 |
+| spikes, kneels, sneaks or nullified plays | 23 |
+
+A scramble out of a normal drop stays in. The sim side was already drop-back
+passes: the forced grid has no screens, rollouts or RPOs, and play action is
+left out of the tables. `matrix.py` and `flight.py` use this population by
+default; `--population all` restores the old one.
+
+**What moves (NFL side; the sim is unchanged):**
+
+| measure | coverage | before | after | sim |
+| --- | --- | --- | --- | --- |
+| break on the ball (toward the catch point) | Cover 3 | 1.25 | 1.25 | 0.27 |
+| | Cover 4 | 1.36 | 1.31 | 0.24 |
+| | Cover 2 | 1.09 | 1.05 | 0.64 |
+| | Cover 1 | 1.42 | 1.41 | 1.77 |
+| separation at the throw | Cover 3 | 4.46 | **4.26** | 4.17 |
+| | Cover 4 | 4.28 | **4.10** | 4.21 |
+| | Cover 2 | 4.97 | 4.97 | 3.94 |
+| | Cover 1 | 2.69 | 2.61 | 1.94 |
+| | Cover 0 | 3.25 | 3.02 | 2.31 |
+| YAC median / 10+ after the catch | Cover 3 | 2.9 / 15% | **2.2 / 12%** | 3.8 / 22% |
+| | Cover 4 | 2.3 / 11% | **1.8 / 9%** | 4.1 / 25% |
+| | Cover 2 | 2.9 / 11% | **2.4 / 7%** | 4.2 / 22% |
+| | Cover 1 | 1.7 / 14% | 1.4 / 13% | 2.1 / 14% |
+
+Completion by openness barely moves: tight / mid / open NFL 29–40 / 57–60 /
+77–78%.
+
+**Material changes:**
+- **Separation at the throw.** Screens are wide-open catches, so removing them
+  lowers the NFL's separation. In Cover 3 and Cover 4 ours is now equal to the
+  NFL's, not tighter. It is still tighter in Cover 2, Cover 1 and Cover 0.
+  Section 3's conclusion stands in its weaker form: coverage is not too loose at
+  the throw.
+- **YAC.** Screens carry YAC, so the NFL's zone YAC falls and our excess is
+  larger than reported: Cover 4 10+ after the catch 25% against 9%.
+- **The break on the ball and completion by openness** are unchanged. The order
+  of conclusions stands.
