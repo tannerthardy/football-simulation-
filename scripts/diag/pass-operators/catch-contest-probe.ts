@@ -15,11 +15,12 @@ for (const seed of ['7', '11']) { const plays = JSON.parse(readFileSync(`out/mat
   plays.forEach((p: any, pi: number) => { if (!p.pass) return; for (let k = 0; k < shifts; k++) { const sim: any = new PlaySim(restoreSetup(Buffer.from(p.setup, 'base64'))); for (let j = 0; j < k; j++) sim.rng.nextU32();
     const dice = sim.dice.bind(sim), made = new Set<string>();
     sim.dice = (kind: string, a?: any, b?: any) => { const r = dice(kind, a, b), l = `${kind}:${a?.idx}:${b?.idx}`; if (!made.has(l)) { made.add(l); for (let j = 0; j < k; j++) r.nextU32(); } return r; };
-    let target: any = null, tsep = NaN, relT = -1, rec: any = null;
+    let target: any = null, tsep = NaN, relT = -1, rec: any = null; const touch = new Set<number>();
     const tick = sim.tick.bind(sim);
     sim.tick = () => { const air0 = sim.ball.kind === 'air'; tick();
       if (!air0 && sim.ball.kind === 'air' && relT < 0 && sim.ball.target && !sim.ball.throwaway) { relT = sim.t; target = sim.ball.target;
-        tsep = Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - target.pos.x, d.pos.y - target.pos.y))); } };
+        tsep = Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - target.pos.x, d.pos.y - target.pos.y))); }
+      if (target && !rec && sim.ball.kind === 'air') for (const d of sim.defense) if (Math.hypot(d.pos.x - target.pos.x, d.pos.y - target.pos.y) <= d.profile.radius + target.profile.radius + 0.1) touch.add(d.idx); };
     const snap = (type: string, a: any) => {
       if (target && !rec && sim.ball.kind === 'air') {
         const R = target, bv = sim.ball.flight.vel, bp = sim.ball.flight.pos, air = sim.t - sim.ball.releaseT, range = air > 1.3 ? 2.2 : 1.35;
@@ -28,8 +29,11 @@ for (const seed of ['7', '11']) { const plays = JSON.parse(readFileSync(`out/mat
             dBall: +Math.hypot(d.pos.x - bp.x, d.pos.y - bp.y).toFixed(2), reach: d.profile.reach, bs: d.r('ballSkills'),
             q: Math.max(0, 1 - dd / range) * (facingBall(d, bv) ? 1 : 0.45) }));
         ds.sort((x: any, y: any) => x.dd - y.dd);
+        const nd = sim.defense.reduce((b: any, d: any) => Math.hypot(d.pos.x - R.pos.x, d.pos.y - R.pos.y) < Math.hypot(b.pos.x - R.pos.x, b.pos.y - R.pos.y) ? d : b);
+        const sp = Math.hypot(bv.x, bv.y) || 1, along = -((nd.pos.x - R.pos.x) * bv.x + (nd.pos.y - R.pos.y) * bv.y) / sp;
+        const nearest = { dd: +Math.hypot(nd.pos.x - R.pos.x, nd.pos.y - R.pos.y).toFixed(2), pos: along > 0.5 ? 'front' : along < -0.5 ? 'behind' : 'level', face: facingBall(nd, bv), early: touch.has(nd.idx) };
         rec = { type, by: a === R ? 'R' : a?.team === 'D' ? 'D' : 'other', air: +air.toFixed(2), range, cc: R.r('contestedCatch'), hands: R.r('hands'),
-          ballToR: +Math.hypot(bp.x - R.pos.x, bp.y - R.pos.y).toFixed(2), z: +bp.z.toFixed(2), ds };
+          ballToR: +Math.hypot(bp.x - R.pos.x, bp.y - R.pos.y).toFixed(2), z: +bp.z.toFixed(2), ds, nearest };
       } };
     const evf = sim.event.bind(sim);
     sim.event = (type: string, a?: any, b?: any, note?: any) => { if (['miss', 'drop', 'pbu', 'deflection'].includes(type)) snap(type, a); return evf(type, a, b, note); };
@@ -37,5 +41,5 @@ for (const seed of ['7', '11']) { const plays = JSON.parse(readFileSync(`out/mat
     sim.possess = (a: any, how: any, ...rest: any[]) => { if (how === 'catch' || how === 'interception') snap(how, a); return pos(a, how, ...rest); };
     sim.run(); if (!target || !rec) continue;
     const fouls: Record<string, number> = {}; for (const f of sim.penalties ?? []) if (['dpi', 'opi', 'defensive_holding', 'illegal_contact', 'holding'].includes(f.kind)) fouls[f.kind] = (fouls[f.kind] ?? 0) + 1;
-    out.push(JSON.stringify({ seed, pi, k, tsep: +tsep.toFixed(2), depth: +(target.pos.x - sim.los).toFixed(1), comp: !!sim.stats.completed && sim.events.some((e: any) => e.type === 'catch' && e.a === target.idx), intc: !!sim.stats.interceptedBy, fouls, ...rec })); } }); }
+    out.push(JSON.stringify({ seed, pi, k, arm: process.env.ARM ?? '', evs: sim.events.filter((e: any) => ['catch','miss','drop','pbu','interception','deflection'].includes(e.type)).map((e: any) => e.type + (e.a === target.idx ? '@R' : sim.agents[e.a]?.team === 'D' ? '@D' : '@O')), tsep: +tsep.toFixed(2), depth: +(target.pos.x - sim.los).toFixed(1), comp: !!sim.stats.completed && sim.events.some((e: any) => e.type === 'catch' && e.a === target.idx), intc: !!sim.stats.interceptedBy, fouls, ...rec })); } }); }
 writeFileSync(process.argv[2], out.join('\n') + '\n'); console.log(out.length);

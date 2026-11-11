@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-30`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-31`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,24 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-31: `CATCH_POINT` and `OFFICIATE` on (2026-11-11)
+
+Coverage #590. Two repairs from the completion-by-openness work (C14 in [GAPS](GAPS.md)).
+
+- **`CATCH_POINT`.** The catch was judged on the first tick the ball entered the receiver's reach, while it was still coming to him (median 1.38 yd from his centre on completions), so an open, on-target ball carried nearly the full stretch penalty. A tracking receiver now waits for the ball's closest approach. Paired panel (about 750 throws): nobody within 3 yd 69 → 81% complete (NFL 81%, on target, at arrival); open 69 → 77% (76%); hard-catch misses on open balls 25 → 3%.
+- **`OFFICIATE`.** An illegal-contact flag needs contact that changed the receiver's motion: the speed change the contact gave him, summed per defender–receiver pair over the play; no flag below 0.3 yd/s, rising to a seen rate of 0.6 at 1.8 yd/s; one threshold per pair per play; contact let go is recorded as uncalled. Estimated, and deliberately not fitted down to the NFL flag rate, because we still produce about 2.5 times the NFL's downfield contact.
+
+Checks on the candidate (`157e3a54`): full suite 4268 pass with the two known research failures; fixed run set unchanged (all runs 3.89 mean under 20, missed 0.253, broken 0.120 a run). Paired league scorecards, 16 games an arm, both flags `0` against both `1`:
+
+| seed | completion | yards an attempt | INT rate | sack rate | points a team-game | illegal contact a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 59.6 → 64.1% (moved) | 8.92 → 9.43 | 2.4 → 3.1% | 3.9 → 3.7% | 35.5 → 37.0 | 1.44 → 0.16 (moved) |
+| 23 | 62.5 → 68.2% (moved) | 9.15 → 10.12 (moved) | 2.7 → 3.2% | 2.3 → 3.9% (moved) | 35.2 → 34.4 | 1.22 → 0.19 (moved) |
+
+`OFFICIATE` alone on seed 11 (`CATCH_POINT` on in both arms): illegal contact 0.91 → 0.16 a team-game, accepted penalties 4.97 → 4.25; no pass row resolved.
+
+Known cost, accepted: completion rises about five points and yards an attempt about 0.5–1.0, further above the NFL band (6.35–7.89). The open end of the openness slope is now right and the tight end is not: tight and mid throws still complete far too often because defenders arrive slower and less often in phase than NFL defenders (C9, C17; `CUSHION_BREAK` in work). The seed-23 sack move did not appear on seed 11. `CATCH_HANDS`, `LOOK_ONCE` and `CATCH_SECURE` ride along off; their read waits for defenders who arrive.
 
 ## engine-30: `SEEN_EYES` on, zone defenders read the quarterback they can see (2026-11-11)
 
