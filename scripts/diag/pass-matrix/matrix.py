@@ -315,13 +315,6 @@ def main():
     for r in sim + nfl: r['concept'] = model.name(r['routes'])
     print('  NFL plays named by family: ' + ', '.join(f'{k} {v}' for k, v in C.Counter(r['concept'] for r in nfl if not r['pa']).most_common()))
     if '--check' in sys.argv:
-        print('== classifier check on the sim (called concept family -> classified family)')
-        fams = C.defaultdict(C.Counter)
-        for k, v in check.items():
-            if k[0] == 'form': continue
-            fams[k[0]][k[1]] += v
-        for f, c in sorted(fams.items()):
-            tot = sum(c.values()); print(f"  {f:18} n {tot:6}  agree {100 * c[f] / tot:5.1f}%  top: " + ', '.join(f'{k} {100 * v / tot:.0f}%' for k, v in c.most_common(4)))
         print('== formation check on the sim (formation family -> classified)')
         for k, v in sorted((k, v) for k, v in check.items() if k[0] == 'form'): print(f'  {k[1]:6} -> {k[2]:6} {v}')
     key = lambda r: (r['cov'], r['concept'])
@@ -357,6 +350,20 @@ def main():
     for k in sorted(set(FS) | set(FN)):
         s_, n_ = agg(FS[k]), agg(FN[k])
         print(f"{k:6} | att {s_['att']}/{n_['att']} | sep@throw {f(s_['sep'],2)} vs {f(n_['sep'],2)} | open mix {mix(s_)} vs {mix(n_)} | comp {pc(s_['comp'])} vs {pc(n_['comp'])} | comp by openness {cbo(s_)} vs {cbo(n_)} | Y/A {f(s_['ypa'])} vs {f(n_['ypa'])} | catch d {f(s_['catch_d'])} vs {f(n_['catch_d'])} | YAC med {f(s_['yac_med'])} vs {f(n_['yac_med'])} | 10+ {pc(s_['yac10'])} vs {pc(n_['yac10'])}")
+    # Who was nearest the target at the throw, and the job he was running (sim only; forced-grid plays).
+    J = C.defaultdict(list)
+    for r in sim:
+        if r.get('nearest') and r['att'] and r['cov']:
+            job = r['nearest'].split('|')[0]
+            J[(r['cov'], job)].append(r)
+    if J:
+        print('\n== nearest defender to the target at the throw: his rule (sim forced grid). "no rule" = a plain zone seat; "man" = a man assignment')
+        print('coverage | job | att | share of the coverage | sep@throw | comp | Y/A | YAC med | 10+ YAC | catch d, closing')
+        tot = C.Counter(k[0] for k, v in J.items() for _ in v)
+        for k in sorted(J, key=lambda k: (k[0], -len(J[k]))):
+            a_ = agg(J[k])
+            if a_['att'] < 15: continue
+            print(f"{k[0]} | {k[1]} | {a_['att']} | {pc(a_['att'] / tot[k[0]])} | {f(a_['sep'],2)} | {pc(a_['comp'])} | {f(a_['ypa'])} | {f(a_['yac_med'])} | {pc(a_['yac10'])} | {f(a_['catch_d'])} yd, {f(a_['catch_close'])} yd/s")
     if opt('--json'):
         json.dump({'cells': [{'cov': k[0], 'concept': k[1], 'sim': s, 'nfl': n} for k, s, n in cells]}, open(opt('--json'), 'w'), indent=1)
 
