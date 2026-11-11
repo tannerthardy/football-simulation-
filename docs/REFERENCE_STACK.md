@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-29`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-30`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,19 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-30: `SEEN_EYES` on, zone defenders read the quarterback they can see (2026-11-11)
+
+Defense #562. Five places in zone coverage steered a defender by `sim.qbEyes`, the quarterback's internal read target: the exact receiver, instantly, whether or not the defender could see him. A zone defender now needs the quarterback within 100° of his own facing, and reads the receiver nearest the quarterback's perceived facing in his own delayed picture (within 20°, 12° past 20 yd); otherwise he has no read.
+
+| 16 league-sampled games an arm (`leagueSample`, seeds 101–116, engine-27), unpaired | off | on | NFL |
+|---|---|---|---|
+| Zone linebacker over the catcher slow at the release, Cover 3 / Cover 4 | 34 / 37% | 19 / 21% | 8 / 10% |
+| YAC trimmed: all / against zone | 5.80 / 6.66 | 5.40 / 6.20 | |
+| Untouched to +10 | 12.6% | 11.3% | |
+| Deep (20+) completion; yards an attempt | 39.3%; 13.9 | 38.4%; 13.8 | |
+
+On because it removes information the defender should not have; the outcomes move the right way as a consequence. `JUDGE_SEEN_BALL` (help decisions from the ball the defender has seen, not the true ball state) rides along off: it is honest and reads worse (yards a dropback 9.24 → 9.99) because deep seats with no rule keep reading and commit downhill before they see the throw; it goes on with that rule (C4 in [GAPS](GAPS.md)).
 
 ## engine-29: `CONCEPT_MENU` on, fifteen drop-back concepts (2026-11-11)
 
