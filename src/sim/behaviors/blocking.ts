@@ -123,7 +123,12 @@ export class ProtectionCoordinator {
     const backs = this.protectors.filter((b) => !isOL(b));
     const skipCost = (r: Agent) => {
       const near = backs.length ? Math.min(...backs.map((b) => Math.abs(b.pos.y - r.pos.y))) : Infinity;
-      return Number.isFinite(near) ? 2 + 0.6 * near : 14;
+      if (!Number.isFinite(near)) return 14;
+      // PRO_CALL: big on big. The back's man in the call is a walked-up
+      // backer, not a down lineman: leaving a called (off-ball) threat to him
+      // is cheap, leaving a man on the line to him is not.
+      if (PRO_CALL) return this.called.has(r) ? 1 + 0.6 * near : 8 + 0.6 * near;
+      return 2 + 0.6 * near;
     };
     const n = ol.length;
     const m = rs.length;

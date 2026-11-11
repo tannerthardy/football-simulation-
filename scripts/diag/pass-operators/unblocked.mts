@@ -25,7 +25,7 @@ for (let s = first; s < first + step * games; s += step) {
     let coord: any = null;
     // Per down lineman: blockers ever assigned to him, and each blocker's moves off him (time, to whom).
     const had = new Map<any, Set<any>>(); const moves = new Map<any, string[]>(); const last = new Map<any, any>();
-    let at1: Map<any, any> | null = null; let hit: any = null;
+    let at1: Map<any, any> | null = null; let hit: any = null; const backs = new Map<any, any>();
     const tick = sim.tick.bind(sim);
     sim.tick = () => {
       tick();
@@ -41,6 +41,12 @@ for (let s = first; s < first + step * games; s += step) {
           (moves.get(prev) ?? moves.set(prev, []).get(prev)!).push(`${grp(b)} moved to ${to} at ${sim.t < 0.5 ? '<0.5' : sim.t < 1.0 ? '0.5-1.0' : '1.0+'} s`);
         }
       }
+      // A back given a called backer: did the backer come, and when was the back released into his route?
+      if (coord?.called) for (const [b, r] of coord.assigned as Map<any, any>) {
+        if (grp(b) !== 'back' || !r || !coord.called.has(r) || backs.has(b)) continue;
+        backs.set(b, { r, at: sim.t, option: !!(b.behavior as any)?.passOption });
+      }
+      for (const [b, v] of backs) if (v.releasedAt === undefined && !(b.behavior instanceof PassProtector)) v.releasedAt = sim.t;
       if (!at1 && sim.t >= 1.0 - 1e-9) {
         at1 = new Map();
         for (const d of dl) {
@@ -56,7 +62,15 @@ for (let s = first; s < first + step * games; s += step) {
       hit = { d, free: !sim.offense.some((o: any) => o !== sim.qb && Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y) <= 1.2) };
     };
     const res = sim.run();
-    if (at1) for (const [d, u] of at1) {
+    for (const [, v] of backs) {
+      const came = !coord.dropped?.has(v.r);
+      const k = `back on a called backer: backer ${came ? 'came' : 'dropped'}, ${v.option ? 'check-release' : 'block'} back`;
+      inc(k);
+      if (v.releasedAt === undefined) inc(`${k}: never released before the throw/end`);
+      else { inc(`${k}: released`); inc(`${k}: release time sum`, v.releasedAt); inc(`${k}: release after drop-assignment sum`, v.releasedAt - v.at); }
+    }
+    const picture = at1 as Map<any, any> | null;
+    if (picture) for (const [d, u] of picture) {
       const free = !!hit && hit.d === d && hit.free;
       const tags = [`assigned at 1.0 s to: ${u.holders}`,
         `history: ${!had.get(d)?.size ? 'never assigned' : moves.get(d)?.length ? 'assigned, then moved off' : 'assigned throughout'}`,
