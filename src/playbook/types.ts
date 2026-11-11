@@ -110,6 +110,9 @@ export interface PassConcept {
   fake?: string;
   /** A screen: who catches it and who releases to block for him. */
   screen?: ScreenSpec;
+  /** A plain-text note of the intended key and rule ("flat defender: sinks → #2 flat, widens → #1 corner").
+   * Not read by the quarterback, who runs `progression`, ordered to match. */
+  read?: string;
 }
 
 /**
