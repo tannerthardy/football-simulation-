@@ -447,9 +447,10 @@ const PRO_READ = process.env.PRO_READ !== '0';
  * Walked-up threats are declared with the men on the line, so the snap
  * assignment slides to the extra man and leaves the one the line can't take
  * to a back; a declared threat is a rusher on his first seen downhill step
- * (BLITZ_READ's rule) and is released when seen leaving the box. When the
+ * (BLITZ_READ's rule) and is released when seen leaving the box or after
+ * CALL_HOLD without coming. When the
  * count exceeds the protectors the concept keeps in, a back installed on a
- * free route stays in as a check-release (assign.ts); the back's route when
+ * free route, then an attached end, stays in as a check-release (assign.ts); the back's route when
  * he is free is the route builder's (Run Game). A blitz disguised from depth
  * is not in the count. Built on BLITZ_READ (docs/reviews/patches/blitz-read.patch);
  * evidence docs/reviews/2026-11-11-protection.md: 0 of 75 free off-ball
@@ -460,8 +461,9 @@ export const PRO_CALL = process.env.PRO_CALL === '1';
 const CALL_DEPTH = 3.5;
 /** How far outside the linemen's width the call's box reaches (yd). */
 const CALL_WIDTH = 3.5;
-/** How long a called threat stays his blocker's man without coming (s). */
-const CALL_HOLD = 1.2;
+/** How long a called threat stays his blocker's man without coming (s): a
+ * lineman whose man doesn't come helps after a beat. */
+const CALL_HOLD = 0.6;
 
 /** The protection call's box count: defenders the offence sees within
  * CALL_DEPTH of the line, inside the linemen's width +-CALL_WIDTH, at the snap. */

@@ -204,6 +204,13 @@ export function assignBehaviors(sim: PlaySim): void {
       const side = ref[0] === 'S' ? concept.strong : concept.weak;
       const num = Number(ref[1]) as 1 | 2 | 3 | 4;
       const routeId = side[num] ?? (num === 1 ? 'go' : 'seam');
+      if (PRO_CALL && spot?.inline && callCount > inCount) {
+        // Short of the count: an attached end checks his man first, then runs his route.
+        coord.add(a);
+        inCount++;
+        a.behavior = new PassProtector(coord, mkRoute(routeId, 0, true), 1.0 + sim.dice('check', a).range(0, 0.3));
+        continue;
+      }
       a.behavior = mkRoute(routeId, spot?.inline ? 0.15 : 0)();
     }
     if (concept.screen) installScreen(sim, concept, coord, mkScreenRoute);
