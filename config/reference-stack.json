@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-17",
+  "id": "run-ref-18",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -32,7 +32,7 @@
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
     "CARRIER_BRACE": "off",
-    "CATCH_EYES": "off",
+    "CATCH_EYES": "on",
     "CLIMB_BASE": "on",
     "CLIMB_PATH": "on",
     "CLIMB_PREP": "on",
