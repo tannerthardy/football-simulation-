@@ -137,11 +137,12 @@ matrix first cut. "Rule" items are coached rules our defenders lack.
 | C7 | Quarters: corner leverage fixed outside; safety never re-reads after locking on #2 | Rule | Open |
 | C8 | Underneath ownership re-picked every tick after a handoff; measured as request thrash | Rule, execution | Diagnosed; fix designed (stable ownership until an observable handoff) |
 | C9 | Zone defenders do not break on the ball: 0.24–0.64 yd/s toward the catch point in the first 0.4 s against the NFL's 1.09–1.36; man is NFL-like | Behaviour; ranked first | Measured in every zone family on the forced grid and checked on four plays; flight-window diagnostic next |
+| C17 | Deep defenders open their hips and run far too early: turned before the release on 58–88% of zone dropbacks against the NFL's 9–13%, at 4–5 yd of cushion (NFL 2–3), and the turn latches, so 43–96% are still running away after the receiver has stopped (NFL 4–12%). 19% of deep defenders over the catch are turned away at the release (NFL 0–4%); this is most of C9 | Rule: stay square until the cushion is broken | Diagnosed; build approved (trigger on the broken cushion, re-square when the receiver throttles) |
 | C10 | Zone seats steered by the quarterback's internal read target | Hidden information | `SEEN_EYES` built, off, candidate (#562): zone linebackers slow at the release 34 / 37% → 19 / 21% |
 | C11 | Help decisions use the true ball state | Hidden information | `JUDGE_SEEN_BALL` built, off; reads worse until C4 exists |
 | C12 | Receiver numbering never re-counted after the snap ("final #3" cannot be expressed) | Rule, enabling | Open |
 | C13 | Rule thresholds and latches are fixed scripts; recognition rating plays no part in confirming a release | Execution | Open |
-| C14 | Completion barely depends on openness: tight / mid / open 50–55 / 57–64 / 62–67% against the NFL's 19–39 / 53–60 / 77–80%, in every coverage and every formation | Throw and catch, not coverage | Open; deep dive after the matrix |
+| C14 | Completion barely depends on openness: tight / mid / open 50–55 / 57–64 / 62–67% against the NFL's 19–39 / 53–60 / 77–80%, in every coverage and every formation | Throw and catch, not coverage | In work (Coverage): the receiver always had first claim on the ball and a defender in reach changed the catch by about 5%. `CATCH_HANDS` (catch as a contest of both players' hands) and `LOOK_ONCE` built, off; fixtures pass; panel read next |
 | C15 | A defender near the ball's path re-rolls "does he find the ball" every tick, so nearly all are looking within 0.5 s | Defect | Open (Coverage) |
 | C16 | Six places where the code disagrees with its coaching source (Lurk vs bunch, Palms depth, quarters vs trips, Cover 2 squat corner sink, inverted Cover 2 wall, one citation) | Rule | Defaults chosen; owner to confirm |
 
@@ -154,6 +155,9 @@ matrix first cut. "Rule" items are coached rules our defenders lack.
 | Protection: unblocked defensive linemen | With `PRO_CALL` on, free linemen rise about 1 per 100 dropbacks on three seed sets; cause not found | Recorded cost |
 | Tackle forms | An upright waist wrap from behind never commits weight; a head-on wrap is driven back about 4 yd (NFL 2.3) | Parked |
 | Tackle connect | Missed 1% of attempts after a catch against 4% | Parked |
+| Receivers' stems too fast | Our receivers run vertical stems 1–2 yd/s faster than the NFL's at the point a deep defender turns (5.3–6.9 against 1.8–5.6 yd/s) | Not diagnosed |
+| Downfield body contact | A defender's body is within 0.6 yd of a receiver 5+ yd downfield before the throw on 31–36% of passes against the NFL's 13% (man 47–57% against 19%); officials flag all of it (illegal contact 3.4 per 100 passes against 0.42; DPI, OPI and holding never called) | In work (Coverage): officiating judgment; the contact excess being diagnosed |
+| A receiver does not path around a defender in his lane | A slot running a post into a man nickel stalls 0.8 s | Noted |
 | Run stuffs | 9.3% against 15.9–23.5% | Not diagnosed |
 | Throw mechanics beyond the turn | Load does not scale with the throw's demand or the arm; no throw-to-throw variation | Parked; estimated parameters when built |
 | No keyed reads | Our quarterback runs a concept's fixed progression (with a hot/man reorder) and per-receiver forecasts; he cannot read a key defender ("flat defender sinks → throw the flat"). New concepts carry the coached read as data until the quarterback can use it | Open; quarterback work, parked with Flex |
