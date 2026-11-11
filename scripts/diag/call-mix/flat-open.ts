@@ -51,11 +51,11 @@ for (const seed of ['7', '11']) for (let k = 0; k < 4; k++) {
     // Fixed-time picture of every flat runner (same operator as nfl_flat_open.py): depth past the snap spot,
     // width from it, speed, nearest defender and his closing speed.
     const marks = [1.0, 1.5, 2.0, 2.5], seen = new Set<number>(), tick = sim.tick.bind(sim), los = sim.los, ballY = sim.ballY, dir = sim.attackDir('O');
-    let starters: any[] | null = null;
+    let starters: any[] = [], started = false;
     sim.tick = () => {
       tick();
       if (sim.phase !== 'live') return;
-      if (!starters) starters = sim.offense.filter((a: any) => a.behavior instanceof RouteRunner && FLATS.has(a.behavior.route.id));
+      if (!started) { started = true; starters = sim.offense.filter((a: any) => a.behavior instanceof RouteRunner && FLATS.has(a.behavior.route.id)); }
       for (const m of marks) if (!seen.has(m) && sim.t >= m - 1e-9) {
         seen.add(m);
         for (const f of starters) {
@@ -70,7 +70,7 @@ for (const seed of ['7', '11']) for (let k = 0; k < 4; k++) {
       }
     };
     const r = sim.run(), s = sim.stats;
-    const flats = (starters ?? []).map((a: any) => a.player.id);
+    const flats = starters.map((a: any) => a.player.id);
     for (const e of log) rows.push(JSON.stringify(e));
     if (flats.length) outcome.push(JSON.stringify({ key, concept: sim.offCall.pass?.id, flats: flats.length, targetFlat: !!s.target && flats.includes(s.target),
       att: !!s.attempted, cmp: !!s.completed, yards: +r.yards.toFixed(2), ttt: s.timeToThrow ?? null, evals: log.length }));
