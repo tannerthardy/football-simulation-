@@ -183,7 +183,7 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
   if (diff < 0.35) {
     sim.stats.dropped = true;
     sim.event('drop', R);
-  }
+  } else sim.event('miss', R);
   R.noCatchUntil = sim.t + 0.6;
   deflect(sim, 0.2, 'drop', R);
 }

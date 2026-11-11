@@ -104,6 +104,8 @@ export type PlayEventType =
   | 'throwaway'
   | 'catch'
   | 'drop'
+  /** A targeted ball the receiver reached for and did not catch, but not a catchable drop (stretched, high, low or deflected). */
+  | 'miss'
   | 'pbu'
   | 'deflection'
   | 'interception'
