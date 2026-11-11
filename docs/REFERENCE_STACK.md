@@ -620,6 +620,16 @@ Defense #562. Five places in zone coverage steered a defender by `sim.qbEyes`, t
 
 On because it removes information the defender should not have; the outcomes move the right way as a consequence. `JUDGE_SEEN_BALL` (help decisions from the ball the defender has seen, not the true ball state) rides along off: it is honest and reads worse (yards a dropback 9.24 → 9.99) because deep seats with no rule keep reading and commit downhill before they see the throw; it goes on with that rule (C4 in [GAPS](GAPS.md)).
 
+Checks on the candidate (`b3f07bb1`): full suite 4252 pass with the two known research failures; fixed run set unchanged in kind (all runs 3.87 mean under 20, missed 0.252, broken 0.119 a run). Paired league scorecards, 16 games an arm, `SEEN_EYES=0` against `=1`:
+
+| seed | points a team-game | pass TD rate | sack rate | 3rd-down | YAC a reception |
+|---|---|---|---|---|---|
+| 11 | 32.7 → 35.5 (not resolved) | 7.4 → 8.2% | 3.3 → 3.9% | 38.4 → 40.3% | 7.34 → 7.31 |
+| 23 | 30.8 → 35.2 (moved) | 7.1 → 8.5% (moved) | 3.5 → 2.3% (moved) | 38.4 → 45.5% (moved) | 7.26 → 6.99 |
+| 37 | 34.8 → 34.4 | 8.6 → 8.2% | 2.8 → 3.3% | 42.3 → 42.5% | 7.92 → 7.52 |
+
+Seed 23's scoring rise did not replicate on 37 and its sack row reverses on the other two seeds; pooled pass TD rate is 7.7 → 8.3% of 3,900 attempts an arm. Read as game divergence, with a possible small real cost of defenders no longer being handed the read. YAC falls on all three.
+
 ## engine-29: `CONCEPT_MENU` on, fifteen drop-back concepts (2026-11-11)
 
 Rules + Coaching #582. Counted from the NFL's own route labels, one of our 17 pass concepts ran 54% of NFL formation sides on drop-back passes and both sides of 22% of dropbacks; the back only blocked, checked, swung or ran a flat, and our third receiver in trips ran only a hook, seam, flat or shallow. Fifteen concepts are added so that each strong pair is a common NFL pair we lacked and each third receiver a common trips side: double slants, fade-flat, hitch-post, double outs, hitch-out, seam-slant, hitch-cross, post-cross, corner-out, corner-flat, trips hitch-flat, trips sail, seam-hitch, trips outs and verticals-hitch, with the back on angle, out or wheel routes. Screens are left out on purpose. Each concept has a hand-written progression and a plain-text note of the coached read; the quarterback uses the progression. `CALL_MIX` weights them from its route-class table.
