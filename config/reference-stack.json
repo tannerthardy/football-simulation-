@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-30",
+  "id": "engine-31",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -73,9 +73,9 @@
     "FIT_TE_GAP": "on",
     "FLAT_PRESS": "on",
     "CATCH_HANDS": "off",
-    "CATCH_POINT": "off",
+    "CATCH_POINT": "on",
     "CATCH_SECURE": "off",
-    "OFFICIATE": "off",
+    "OFFICIATE": "on",
     "LOOK_ONCE": "off",
     "FLOW_INTERCEPT": "off",
     "GAP_CLIMB": "on",

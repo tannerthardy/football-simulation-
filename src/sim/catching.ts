@@ -83,7 +83,7 @@ const CATCH_SECURE = process.env.CATCH_SECURE === '1';
  * (25% failed the hard-catch roll, 11% the drop roll); NFL 81%. On, while the
  * ball is still closing on him at the end of the tick (closest approach not yet
  * reached) and will stay in the air, his catch waits for that approach. */
-const CATCH_POINT = process.env.CATCH_POINT === '1';
+const CATCH_POINT = process.env.CATCH_POINT !== '0';
 
 interface Opp {
   a: Agent;
