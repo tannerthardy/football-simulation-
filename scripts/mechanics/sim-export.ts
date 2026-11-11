@@ -15,7 +15,7 @@ import { dirname, resolve } from 'node:path';
 import { createGzip } from 'node:zlib';
 import { Rng } from '../../src/core/rng.js';
 import { simulateGame, type PlayLog } from '../../src/game/game.js';
-import { generateTeam } from '../../src/league/team.js';
+import { generateTeam, withIdentity } from '../../src/league/team.js';
 import { sourceVersion } from '../source-version.js';
 
 const WIDTH = 160 / 3;
@@ -121,7 +121,8 @@ async function main() {
   const rosterSha256 = createHash('sha256').update(JSON.stringify([home, away])).digest('hex');
   let count = 0;
   for (let g = 0; g < games; g++) {
-    const result = simulateGame(home, away, { seed: seed + g, record: true, handContact });
+    // Per-game identities: alignment habits sample the league (rosters unchanged).
+    const result = simulateGame(withIdentity(home, seed + g), withIdentity(away, seed + g), { seed: seed + g, record: true, handContact });
     if (reviewOut) reviewGames.push({ seed: seed + g, score: result.score,
       home: home.abbr, away: away.abbr, plays: result.log.length });
     for (const p of result.log) {

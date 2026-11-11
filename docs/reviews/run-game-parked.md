@@ -1,6 +1,6 @@
-# Run game: parked queue (2026-11-10)
+# Run Game lane: parked queue (2026-11-11)
 
-Run Game, branch `run/G3-oz-backfield`. The run game was parked on 2026-11-10: run yards match the NFL (4.51 against 4.48 a carry), and the priority moved to tackling, coverage/YAC and the passing game.
+Run Game, branch `run/G3-oz-backfield`. The run game was parked on 2026-11-10: run yards match the NFL (4.51 against 4.48 a carry), and the priority moved to tackling, coverage/YAC and the passing game. The lane then took three pass-game items (free rushers, the post-catch carrier, screens). The whole lane was parked on 2026-11-11.
 
 This page holds the open questions and the evidence so far, so the work can resume where it stopped. The operators are in `scripts/diag/run-operators/zone-backside/`.
 
@@ -9,9 +9,9 @@ How the measurements were made:
 - **Timing.** The NFL clock starts at the `ball_snap` tag, unshifted.
 - **Base.** Sim figures are on develop f122c83c (run-ref-14) unless marked otherwise.
 
-## Finished: BACKSIDE_SWAP + KEEPER_HIP (PR #511)
+## Finished: BACKSIDE_SWAP + KEEPER_HIP (PR #511, on in run-ref-16)
 
-PR #511 holds both flags (off). It goes into the run-ref-15 read as a promotion candidate.
+PR #511 merged both flags. The run-ref-15 read was all +0.01 (SE 0.06) and OZ +0.04 (SE 0.21), and both are on by default from run-ref-16.
 
 **The uncovered backside tackle.** This is the backside tackle with no front defender within 1 yd across of him, facing an end 2–3.5 yd outside him. Outside zone:
 
@@ -92,6 +92,74 @@ Diagnose each before building.
 
 ## Run-game flags still off on develop
 
-- **Keep:** OL_ON_COUNT and REACH_HANDS. Joint re-gate with DL_SNAP_TIME on run-ref-15.
-- **Proposed for removal:** BLOCK_RELEASE, ZONE_PAIR, STRETCH_TRACK, GUN_STRETCH_T, MESH_NFL.
-- **Ask Flex first:** CARRIER_BRACE.
+- **Kept:** OL_ON_COUNT and REACH_HANDS (joint re-gate with DL_SNAP_TIME) and CARRIER_BRACE.
+- **Removed in the develop prune (f52e3a0d):** BLOCK_RELEASE, ZONE_PAIR, STRETCH_TRACK, GUN_STRETCH_T, MESH_NFL.
+
+## Pass game 1: the post-catch carrier (CATCH_EYES, off, promotion candidate)
+
+**The question.** In the 0.5 s after the catch, our catcher changed heading 22° / 37° (p50 / p75) against the NFL's 14° / 25°. The first tackler at hands range ran on (never reached contact) on 26% of catches against the NFL's 10%. These are Flex's `scripts/diag/pass-operators/after-catch.py` and `scripts/diag/run-operators/grabs.py`, same code on both sides.
+
+### What `carrier.ts` knew and did from the catch tick
+
+`scripts/diag/pass-operators/catchturn.mts`, 8 games:
+- `onBallCaught` (`src/sim/assign.ts`) replaces the receiver's behaviour with a fresh `BallCarrier`.
+- Its `heading` is null and `nextEval` is 0, so its first lane read (`evaluate`) runs on the next tick.
+- It reads every defender through `sim.see` with only the normal reaction delay. GAZE is off, and nothing marks a catcher's eyes as being on the ball, so he reads the whole field the instant he has it.
+- On the catch tick his request still follows the route: 0.4° off his travel at p50.
+- At +0.1 s it is 46° / 93° (p50 / p75) off his travel. He cuts as a fully informed runner while still catching.
+
+### The arm: `CATCH_EYES` (off)
+
+`src/sim/behaviors/carrier.ts`, with `catchAt` passed from `onBallCaught`.
+
+For one reaction time after the catch, he carries the line he caught it on. The reaction time comes from the recognition rating and runs 0.14–0.42 s. If he caught it below 1.5 yd/s, he turns upfield instead. His first lane read comes after that, from his own picture. Nothing caps a cut or awards an outcome.
+
+Read on 8 games each (`sim-export --seed 101 --games 8`, IRN/COM, develop f6fe9bf7):
+
+| | NFL | Off | On |
+|---|---|---|---|
+| Heading change in 0.5 s, p50 / p75 | 14 / 25° | 22 / 37 | 13 / 20 |
+| Same, contested (defender < 3 yd) | 12 / 24 | 18 / 30 | 12 / 19 |
+| Speed at +0.5 s | 4.65 | 4.42 | 4.74 |
+| Upfield speed at +0.5 s | 2.30 | 2.05 | 1.65 |
+| First man at hands range on a catch: runs on / contact | 10 / 89% | 26 / 69% | 20 / 74% |
+| Catch → first contact (1.0 yd), p50 | 0.6 s | 0.9 s | 0.9 s |
+| Catcher's x gain catch → end, p50 / mean | 3.2 / 5.0 | 5.8 / 9.8 | 5.1 / 8.9 |
+
+The last two rows come from `scripts/diag/pass-operators/catchcontact.py`. Run rows in `grabs.py` are unchanged.
+
+### Open
+
+- **Upfield speed at +0.5 s moves away from the NFL.** Crossers keep their line for the window. Is that route geometry at the catch, or does the NFL catcher already bend upfield? Next: split by the route's direction at the catch.
+- **The body side isn't modelled:** securing the ball and turning from the catch posture. That may hold the rest of the runs-on gap (20% against 10%).
+- **Catch → first contact is unchanged** (0.9 s against 0.6 s). That gap is where the nearest defender is at the catch, not the carrier.
+- **Coverage's panel run hasn't been read yet** (catch → first contact and YAC by stage).
+
+## Pass game 2: free rushers
+
+The full write-up is `docs/reviews/pass-pro-free-rushers.md`, with operators in `scripts/diag/pass-operators/`:
+- `freerush.py` and `rushcount.py`, which run on both NFL and sim data;
+- truth traces `freepass.mts`, `blitzpick.mts`, `blitzseen.mts`, `fakeblitz.mts`.
+
+In short:
+- **Total free:** free first pressure is 13.7 per 100 dropbacks against the NFL's 10.2.
+- **The pool is DL who beat the block.** 50 of 57 free DL were engaged first. Edge DL come free 4.7 per 100 against the NFL's 1.8. Next: is the tackle beaten on depth or over-set? Coverage found the tackles kick 1.4 yd too deep by request.
+- **Inside backer blitzes come free 4.3 per 100 against 1.1.** Blitzers stand walked up 2.4 yd off the ball, and the line's picture of them lags about 0.35 s, so they're recognised only near the line (C first assigned at 0.75 s).
+- **BLITZ_READ, two attempts, not a candidate.** The patch is `docs/reviews/patches/blitz-read.patch`. Free inside backers fell 4.3 → 3.2, but the total held at 13.6.
+- **Even numbers.** At even rushers and protectors our free first pressure is 25.7% against the NFL's 12.7%, and 19 of 33 free blitzes had no back in. That's the hot read and the protection call, handed to Coverage and Rules + Coaching.
+- **A question, not a task:** is the protection's perception delay too long for a man the line is staring at before the snap?
+
+## Pass game 3, the next real build: screens, flats and angles
+
+From Coverage's route table (NFL BDB 2025 wk 1–3 against the sim's 732 panel on f52e3a0d), share of NFL targets:
+- FLAT 12.7% (at −0.9 yd);
+- SCREEN 7.7% (−2.4 yd, released at 1.7 s);
+- ANGLE 4.4% (1.3 yd).
+
+Ours: flat + swing 3.6%, no screens and no angle route. Our throws behind the line are 4.4% of targets against the NFL's 17.6%. When we do throw them, the nearest defender is 1.71 yd away at arrival against 5.24, so there's no blocking in front.
+
+The build:
+- the screen play itself: linemen releasing, the delay, the back or receiver setting up behind them;
+- the back's flat, swing and angle releases and timing (ours release at 2.8 s, NFL flat 2.3 s).
+
+Rules + Coaching owns how often it's called, and Coverage owns the QB choosing it.

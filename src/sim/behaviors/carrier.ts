@@ -44,6 +44,8 @@ export interface CarrierOptions {
    * and his screen blockers, not the run game's crease. Other catches keep
    * the existing carrier until whole-game evidence supports extending it. */
   screenCatch?: boolean;
+  /** CATCH_EYES: when he caught the ball (a catch, not a handoff). */
+  catchAt?: number;
 }
 
 /** RB_COMMIT (default off): at the line the back's entry choice counts what
@@ -128,6 +130,16 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
   const age = Number.isFinite(seen.age) ? Math.max(0, seen.age!) : seen.age === Infinity ? recovery : 0;
   return clamp((seen.pose === 'down' ? recovery : recovery / 2) - age, tick, recovery);
 }
+
+/** CATCH_EYES (on; CATCH_EYES=0 restores): a receiver's eyes are on the ball until it is in his
+ * hands. For one reaction time after the catch he carries the line he caught
+ * it on (upfield if he caught it nearly standing) while he looks back up the
+ * field; his first lane read comes after that, from his own fresh picture.
+ * Without it the carrier's first read came on the tick after the catch from a
+ * full picture of the field: 0.1 s after the catch the request was 46 deg off
+ * his travel (p50; p75 93), and over 0.5 s he turned 22 / 37 deg (p50 / p75;
+ * tracked 2022 catchers 14 / 25), 8 games at develop f6fe9bf7. */
+export const CATCH_EYES = process.env.CATCH_EYES !== '0';
 
 /** CARRIER_BRACE (off): the carrier lowers his pads for a tackler he sees closing
  * head-on, and drives his body through the contact in the last stride. */
@@ -328,6 +340,7 @@ export class BallCarrier implements Behavior {
   private pressEntry: Vec2 | null = null;
   private pressReadAt = 0;
   private followEnded = false;
+  private catchLine: number | null = null;
 
   constructor(
     private readonly opts: CarrierOptions = {},
@@ -349,6 +362,16 @@ export class BallCarrier implements Behavior {
     if (zoneRead) {
       const cmd = this.pressAndRead(a, sim, dir, cutSkill);
       if (cmd) return cmd;
+    }
+    // CATCH_EYES: eyes still coming off the ball; he carries his catch line.
+    if (CATCH_EYES && this.opts.catchAt !== undefined && sim.t < this.opts.catchAt + a.profile.reactionTime) {
+      if (this.catchLine === null) {
+        const sp = Math.hypot(a.vel.x, a.vel.y);
+        this.catchLine = sp > 1.5 ? Math.atan2(a.vel.y, a.vel.x) : (dir > 0 ? 0 : Math.PI);
+      }
+      this.heading = this.catchLine;
+      this.nextEval = this.opts.catchAt + a.profile.reactionTime;
+      return this.command(a, sim, this.catchLine, a.profile.vmax, cutSkill);
     }
     if (designed !== this.wasDesigned) {
       // The installed press phase ending is a different responsibility, not

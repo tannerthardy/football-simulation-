@@ -14,7 +14,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { Rng } from '../../src/core/rng.js';
 import { simulateGame } from '../../src/game/game.js';
-import { generateTeam } from '../../src/league/team.js';
+import { generateTeam, withIdentity } from '../../src/league/team.js';
 import { PlaySim, type PlaySetup } from '../../src/sim/playsim.js';
 import { captureSetup, restoreSetup } from './saved-play.js';
 
@@ -30,7 +30,9 @@ const run = (s: PlaySetup) => {
 
 if (mode === 'capture') {
   const seed = Number(rest[0]), rng = new Rng(seed);
-  const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
+  // Per-seed identities: the teams' alignment habits sample the league instead
+  // of the same IRN/COM pair on every seed (rosters unchanged).
+  const home = withIdentity(generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), seed), away = withIdentity(generateTeam(rng, 'Comets', 'COM', { strength: 0.55 }), seed);
   const plays: Array<{ pass: boolean; call: string; setup: string }> = []; let setup: PlaySetup | null = null;
   simulateGame(home, away, { seed, hooks: { playSetup: s => { setup = s; }, playResult: (sim, kind) => {
     if (kind !== 'scrimmage' || !setup) return undefined;

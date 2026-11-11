@@ -575,7 +575,7 @@ export function onThrow(sim: PlaySim): void {
 
 export function onBallCaught(sim: PlaySim, r: Agent): void {
   clearPressContacts(sim);
-  r.behavior = new BallCarrier({ screenCatch: !!sim.offCall?.pass?.screen }, r);
+  r.behavior = new BallCarrier({ screenCatch: !!sim.offCall?.pass?.screen, catchAt: sim.t }, r);
   // Screen blockers keep their jobs through the catch; everyone else turns to the convoy.
   for (const a of sim.offense) if (a !== r && !(a.behavior instanceof ScreenBlocker)) a.behavior = new DownfieldBlocker();
   // A physical catch is authoritative for the ball/rules, not a notification
