@@ -158,6 +158,7 @@ matrix first cut. "Rule" items are coached rules our defenders lack.
 | Throw mechanics beyond the turn | Load does not scale with the throw's demand or the arm; no throw-to-throw variation | Parked; estimated parameters when built |
 | Quarterback differences | Scrambling under pressure ranges 0–52% across NFL quarterbacks; speed explains about a fifth | Parked; hooks named |
 | Pass protection families | No slide or max-protect calls, no hot throws | Parked; guide not written |
+| Playbook coverage | 70% of NFL dropbacks fit none of our 17 pass concepts by the matrix's classifier, which is itself weak (25–80% agreement), so the true share is unknown. Our playbook is narrower than what the NFL runs | To fix. First step: count NFL route combinations directly from the tracking data's own route labels and list the common ones we lack |
 | Screens and angles | Not callable | Parked |
 | Old defense flags | Seven off flags undecided | Parked |
 
