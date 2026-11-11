@@ -105,7 +105,7 @@ const BASE_PASS_CONCEPTS: PassConcept[] = [
  * the NFL's back routes (angle 16.8%, out 7.4%, wheel 2.0% of drop-backs). `read` is a plain note of the
  * intended key and rule; `progression` is ordered to match it. CALL_MIX weights them from their route classes like the rest.
  */
-export const CONCEPT_MENU = process.env.CONCEPT_MENU === '1';
+export const CONCEPT_MENU = process.env.CONCEPT_MENU !== '0';
 export const MENU_CONCEPTS: PassConcept[] = [
   {
     id: 'double_slants', name: 'Double Slants', family: 'quick', drop: 'quick',
