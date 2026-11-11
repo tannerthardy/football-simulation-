@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-28`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-30`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,46 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-30: `SEEN_EYES` on, zone defenders read the quarterback they can see (2026-11-11)
+
+Defense #562. Five places in zone coverage steered a defender by `sim.qbEyes`, the quarterback's internal read target: the exact receiver, instantly, whether or not the defender could see him. A zone defender now needs the quarterback within 100° of his own facing, and reads the receiver nearest the quarterback's perceived facing in his own delayed picture (within 20°, 12° past 20 yd); otherwise he has no read.
+
+| 16 league-sampled games an arm (`leagueSample`, seeds 101–116, engine-27), unpaired | off | on | NFL |
+|---|---|---|---|
+| Zone linebacker over the catcher slow at the release, Cover 3 / Cover 4 | 34 / 37% | 19 / 21% | 8 / 10% |
+| YAC trimmed: all / against zone | 5.80 / 6.66 | 5.40 / 6.20 | |
+| Untouched to +10 | 12.6% | 11.3% | |
+| Deep (20+) completion; yards an attempt | 39.3%; 13.9 | 38.4%; 13.8 | |
+
+On because it removes information the defender should not have; the outcomes move the right way as a consequence. `JUDGE_SEEN_BALL` (help decisions from the ball the defender has seen, not the true ball state) rides along off: it is honest and reads worse (yards a dropback 9.24 → 9.99) because deep seats with no rule keep reading and commit downhill before they see the throw; it goes on with that rule (C4 in [GAPS](GAPS.md)).
+
+Checks on the candidate (`b3f07bb1`): full suite 4252 pass with the two known research failures; fixed run set unchanged in kind (all runs 3.87 mean under 20, missed 0.252, broken 0.119 a run). Paired league scorecards, 16 games an arm, `SEEN_EYES=0` against `=1`:
+
+| seed | points a team-game | pass TD rate | sack rate | 3rd-down | YAC a reception |
+|---|---|---|---|---|---|
+| 11 | 32.7 → 35.5 (not resolved) | 7.4 → 8.2% | 3.3 → 3.9% | 38.4 → 40.3% | 7.34 → 7.31 |
+| 23 | 30.8 → 35.2 (moved) | 7.1 → 8.5% (moved) | 3.5 → 2.3% (moved) | 38.4 → 45.5% (moved) | 7.26 → 6.99 |
+| 37 | 34.8 → 34.4 | 8.6 → 8.2% | 2.8 → 3.3% | 42.3 → 42.5% | 7.92 → 7.52 |
+
+Seed 23's scoring rise did not replicate on 37 and its sack row reverses on the other two seeds; pooled pass TD rate is 7.7 → 8.3% of 3,900 attempts an arm. Read as game divergence, with a possible small real cost of defenders no longer being handed the read. YAC falls on all three.
+
+## engine-29: `CONCEPT_MENU` on, fifteen drop-back concepts (2026-11-11)
+
+Rules + Coaching #582. Counted from the NFL's own route labels, one of our 17 pass concepts ran 54% of NFL formation sides on drop-back passes and both sides of 22% of dropbacks; the back only blocked, checked, swung or ran a flat, and our third receiver in trips ran only a hook, seam, flat or shallow. Fifteen concepts are added so that each strong pair is a common NFL pair we lacked and each third receiver a common trips side: double slants, fade-flat, hitch-post, double outs, hitch-out, seam-slant, hitch-cross, post-cross, corner-out, corner-flat, trips hitch-flat, trips sail, seam-hitch, trips outs and verticals-hitch, with the back on angle, out or wheel routes. Screens are left out on purpose. Each concept has a hand-written progression and a plain-text note of the coached read; the quarterback uses the progression. `CALL_MIX` weights them from its route-class table.
+
+| Two 16-game league-sampled, coach-sampled sets an arm, unpaired, against NFL drop-backs (no play action or screens) | off | on | NFL |
+|---|---|---|---|
+| Playbook coverage: sides / both sides / exact | 54.2 / 21.7 / 5.1% | 66.4 / 38.5 / 8.6% | |
+| Targets: quick under 10 yd | 27.5% | 37.8% | 39.6% |
+| Targets: breaking 10–19 yd | 27.0% | 20.5% | 12.2% |
+| Targets: outs / ins / slants | 9.6 / 13.0 / 5.8% | 15.7 / 6.8 / 7.8% | 16.6 / 7.6 / 7.8% |
+| Targets: angle | 0 | 1.3% | 4.8% |
+| Yards an attempt; completion | 9.65; 59.0% | 8.93; 59.6% | |
+
+Integration's cards (16 games each, seeds 11 and 23, unpaired arms): time to throw 2.83 → 2.77 and 2.80 → 2.72 s (resolved on both); completion 55.9 → 59.2% (resolved) and 58.9 → 60.4%; yards an attempt 8.39 → 8.98 and 8.79 → 8.91; INT 3.0 → 2.5% and 3.1 → 1.9% (resolved); sacks 3.7 → 3.3% and 3.7 → 3.5%; YAC unchanged. Fixed runs unchanged.
+
+On for what offences run, and the target mix moves toward the NFL's as a consequence. Thirteen of the fifteen throw mostly to their first two reads. Fade-flat and corner-flat do not (34 of 102 and 46 of 112): a deep-over-flat high-low needs a keyed read, which the quarterback does not have ([read-plan compiler design](research/2026-11-11-qb-read-compiler-design.md)). Still missing after the menu, 0.5–0.8% of sides each: in+post, cross+in, out+corner, out+flat, in+out, out+in, in+flat, post+go. Found and not fixed: a slot running a post into a man nickel standing in his lane stalls about 0.8 s. Detail: [concept menu](reviews/2026-11-11-concept-menu.md), [playbook coverage](reviews/2026-11-11-playbook-coverage.md).
 
 ## engine-28: `PRO_CALL` on, a protection call at the line (2026-11-11)
 
