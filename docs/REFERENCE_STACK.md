@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-16`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-17`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -593,6 +593,32 @@ Known cost, recorded: the backside backer is reached less often (21 → 16%), be
 | Fixed 1,321 runs on run-ref-14, paired yards a run | | | +0.17 ± 0.10 (IZ +0.44, duo +0.37): the tight end stands 0.36 yd shallower |
 
 The snap assessment is identical across all 24 formations. The personal depth habit is parked.
+
+## run-ref-17: `FIT_TE_GAP` + `FIT_BLITZ_SLIDE` on (2026-11-10)
+
+Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's slide). Every technique outside the tackle was filed under the D gap, so with a tight end attached the C gap between tackle and tight end had no owner. `techniqueGap` now takes the tight end into account, the Over's Sam is named D, and a 6 on a tight end still rushes outside him (`rushGap`). With `FIT_BLITZ_SLIDE` a called blitzer takes his gap and the displaced lineman slides to the nearest open one.
+
+| Gap accounting, 24,216 alignments | off | `FIT_TE_GAP` |
+|---|---|---|
+| Strong C holes | 6,379 | 4,040 |
+| Ace 11 against the 4-3 Over, strong C unowned | 114 of 144 | 0 of 144 |
+| Unowned gaps; duplicates; fully sound | 36,917; 5,699; 2,082 | 36,264; 5,046; 2,332 |
+| Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
+
+On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## Whose teams the measurements are (2026-11-10)
+
+Every diagnostic game was "Ironmen" (IRN) against "Comets" (COM). A team's alignment style (`alignStyle`) is seeded from its abbreviation and `ALIGN_HABIT`'s personal habits from player ids, so the same two defences' habits repeated in every game whatever the seed: safety depth −1.33 yd (IRN) and −0.68 (COM), corner depth −0.47 and +0.65, receiver room 0.11 and 1.22, line width −0.033 and −0.07, passing strength 0.41 and 0.49, A-gap 0.72 and 0.84. Both play shallow safeties. NFL teams differ like this (team medians sd 0.85), so the habit is realistic; sampling the same two was not.
+
+Rules + Coaching #527 gives diagnostic games per-seed team identities (`withIdentity(team, salt)`: ids salted, rosters, ratings and coaching unchanged) in the pass-panel capture, `sim-export` and the scorecard league.
+
+- **The fixed 1,321-run set is not recaptured.** It is still IRN against COM with those habits (`capture-runs --sample-league` is opt-in, off). Paired flag-on / flag-off reads on it are unaffected; any absolute comparison with the NFL that depends on alignment depth is a two-team sample.
+- Effect of league sampling (16 games, seeds 101–116, run-ref-16): measured shell 0/1/2-high 18 / 51 / 32% → 12 / 48 / 40% (NFL 9 / 45 / 47); one-high deepest defender 12.1 → 13.6 yd (14.4); cushion at the throw +6.6 → +7.2 (+8.9).
+- **Yards after catch did not move:** 8.83 → 9.25 a catch (NFL 5.00), first contact on 77 → 78% of catches. The excess is not the two teams' safeties.
+- Still open after the fix: on called two-high coverages the second safety is about 2.4 yd shallow (9.2 against 11.6), from the calls, not habits.
+
+Standing check since this and the yard-line depth error: a table that states a gap against the NFL names the sim population (teams, seeds, games) and confirms both sides measure from the same reference.
 
 ## Pruned after run-ref-16 (2026-11-10)
 
