@@ -652,17 +652,15 @@ const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
  * pressed pairs at 2.0 s: 1.20 yd apart, about 1 yd to the side; ours 0.82,
  * within 1.2 yd 88% against 51% (BDB 2025 weeks 1-3, same operator). */
 const MAN_PHASE = process.env.MAN_PHASE === '1';
-/** CUSHION_BREAK (experimental, off; CUSHION_BREAK=1 turns it on): a deep
- * defender carrying a vertical stays in his pedal, square to the
- * quarterback, until the receiver actually breaks his cushion (the cushion
- * left is less than 1.8 yd plus what the receiver closes during the hip
- * flip), then opens and runs. Before, the depth check turned him as soon as
- * it forecast the receiver might eventually get on top at a burst he had not
- * shown, and the hip trigger added that burst to the cushion: he opened 4-5 yd
- * early and kept running when the receiver stopped. NFL deep defenders in
- * Cover 2/3/4/6 over a receiver turn before the throw 7-11% of the time, at a
- * median 1.4-2.3 yd of cushion; ours 58-88%, at 3.4-5.0 yd in Cover 3/4
- * (BDB 2025 weeks 1-3 vs leagueSample games, nflturn.py / simturn.mts). */
+/** CUSHION_BREAK (experimental, off; CUSHION_BREAK=1 turns it on): inside
+ * zone calls, a deep defender carrying a vertical stays square (side-on when
+ * his pedal cannot keep the cushion, QB in view) until the receiver actually
+ * breaks his cushion (`cushionBroken`), then opens and runs. Before, the depth
+ * check turned him on a forecast burst he had not seen, and the hip trigger
+ * used a half-turn flip from wherever he faced. NFL deep defenders in Cover
+ * 2/3/4/6 over a receiver turn before the throw 8-10%, with or without deep
+ * help; ours 51-91% (BDB 2025 weeks 1-2 vs leagueSample games, nflcue.py /
+ * simcue.mts). Pure man (Cover 0/1, 2-Man) keeps its own trigger. */
 const CUSHION_BREAK = process.env.CUSHION_BREAK === '1';
 /** CUSHION_BREAK: side-on to the quarterback (90 deg off the line to him), opened toward the receiver: the
  * QB stays in view while the hips run with the stem. */
@@ -671,11 +669,22 @@ function sideOn(a: Agent, qb: Vec2, receiver: Vec2): number {
   const f1 = toQB + Math.PI / 2, f2 = toQB - Math.PI / 2;
   return Math.cos(f1 - toR) >= Math.cos(f2 - toR) ? f1 : f2;
 }
-/** CUSHION_BREAK: has the receiver broken the cushion of a defender over him? */
-function cushionBroken(a: Agent, cushion: number, receiverVx: number): boolean {
+/** CUSHION_BREAK: has the receiver broken the cushion of a defender over him?
+ * He opens to run when the cushion left is less than what the receiver closes
+ * while his own hips turn from where they face now to the run (side-on is a
+ * quarter turn, square a half turn, in the time a rounded hip turn takes his
+ * body: `roundedTurnTime`, the turn the open-to-run actually achieves), on top of the
+ * overlap he may give: a deep player with no help behind him may not let the
+ * receiver reach his body (both body radii); a trail player with help over him
+ * may let the receiver draw level by the same overlap before he opens. NFL deep
+ * defenders over a climbing receiver who have not turned by the release keep a
+ * median 1.4 yd with no deep help (below 1 yd 17-20%) and -0.9 to +0.8 yd with
+ * help (BDB 2025 weeks 1-2, nflcue.py). */
+function cushionBroken(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number): boolean {
   const closing = Math.max(0, receiverVx - Math.max(0, a.vel.x));
-  const flip = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
-  return cushion < 1.8 + closing * flip;
+  const flip = roundedTurnTime(a, angleDiff(a.body.facing, 0)) + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
+  const overlap = (a.profile.radius + receiverRadius) * (help ? -1 : 1);
+  return cushion < overlap + closing * flip;
 }
 /** CUSHION_NEED (on since engine-27; CUSHION_NEED=0 restores): before his
  * hips open, a man defender's cushion on a released receiver is the one the
@@ -870,7 +879,19 @@ export class ManCoverage implements Behavior {
     const levMag = MAN_PHASE && this.hipsOpen && deep > 2 && onStem
       ? a.profile.radius + R.profile.radius + a.player.measurables.armIn / 36 * 0.7
       : o.trail ? 0.9 : 0.7;
-    const lev = releasing ? 0 : levMag * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
+    // CUSHION_BREAK: a carry inside a zone call plays to a shoulder, never
+    // stacked on the receiver's line: his body and the receiver's plus a reach
+    // off it, on his leverage side (inside when head-up), so a receiver who
+    // closes runs past him rather than through him. With help behind him the
+    // offset widens by another reach as the receiver comes level (he trails
+    // on the hip and gives the vertical to the help). NFL deep defenders over
+    // a climber sit 0.9-1.3 yd off his line with no help, 1.2 -> 2.1 yd with
+    // help as he comes level; ours 0.6-0.9 (BDB 2025 weeks 1-2, nflcarry.py).
+    const reach = a.player.measurables.armIn / 36 * 0.7, shoulderOff = a.profile.radius + R.profile.radius + reach;
+    const shoulder = CUSHION_BREAK && !sim.defCall.coverage.man && !releasing && deep > 2 && onStem
+      ? shoulderOff + (o.protectDepth ? 0 : reach * clamp(1 - (a.pos.x - seen.pos.x) / shoulderOff, 0, 1)) : null;
+    const lev = releasing ? 0 : shoulder !== null ? shoulder * (o.lev === 'outside' ? -inside : inside)
+      : levMag * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
 
     // Cushion shrinks as the route develops; press plays in phase.
     const developing = clamp(Math.max(0, deep) / 8, 0, 1);
@@ -881,15 +902,20 @@ export class ManCoverage implements Behavior {
     const closing = Math.max(0, vx - Math.max(0, a.vel.x));
     const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
     const releaseBurst = Math.max(0, (R.profile.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / R.profile.tau);
-    const consumed = CUSHION_BREAK ? cushionBroken(a, a.pos.x - seen.pos.x, vx)
+    // CUSHION_BREAK applies inside zone calls (match carries and deep zones);
+    // pure man keeps its trigger. Help: a carry with no installed deep
+    // responsibility has a deep player behind it.
+    const breakOn = CUSHION_BREAK && !sim.defCall.coverage.man, help = !o.protectDepth;
+    const broken = () => cushionBroken(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius);
+    const consumed = breakOn ? broken()
       : a.pos.x - seen.pos.x < 1.8 + closing * flipTime + 0.25 * releaseBurst * flipTime * flipTime;
     const crossing = Math.abs(seen.vel.y) > 3 && Math.abs(seen.vel.y) > Math.abs(vx);
     if (!this.hipsOpen && Math.hypot(seen.vel.x, seen.vel.y) > 1.5 && (consumed || crossing)) this.hipsOpen = true;
     // CUSHION_BREAK: a receiver he is carrying throttles below his own speed
     // with the cushion not broken: he re-squares (the body turns back at its
     // own rate; the stop route is built to win in that time).
-    if (CUSHION_BREAK && this.hipsOpen && !crossing && sim.ball.kind !== 'air' && vx < Math.max(0, a.vel.x) - 1
-      && !cushionBroken(a, a.pos.x - seen.pos.x, vx)) { this.hipsOpen = false; a.tags.add('re-square'); }
+    if (breakOn && this.hipsOpen && !crossing && sim.ball.kind !== 'air' && vx < Math.max(0, a.vel.x) - 1
+      && !broken()) { this.hipsOpen = false; a.tags.add('re-square'); }
 
     let tx = seen.pos.x;
     let ty = seen.pos.y + lev;
@@ -944,7 +970,7 @@ export class ManCoverage implements Behavior {
     // pedal cannot keep it but it is not broken, he carries side-on (QB still
     // in view) at the speed the depth check asks for.
     const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
-    if (CUSHION_BREAK && !this.hipsOpen && !cushionBroken(a, a.pos.x - seen.pos.x, vx)) {
+    if (breakOn && !this.hipsOpen && !broken()) {
       if (selected === command || selected.facing !== undefined) return command;
       a.tags.add('side-on-carry');
       return withFacingTechnique({ ...selected, facing: sideOn(a, sim.see(a, sim.qb).pos, seen.pos) }, { label: 'man-side-on', key: seen.vel });
@@ -1199,7 +1225,9 @@ export class ZoneCoverage implements Behavior {
         // Split them, leaning toward where the QB is looking.
         const w = qbEyes === vert[1].r ? 0.65 : qbEyes === vert[0].r ? 0.35 : 0.5;
         ty = vert[0].fut.y * (1 - w) + vert[1].fut.y * w;
-      } else ty = deepest.fut.y + inside(deepest.fut.y) * 0.8;
+      } else ty = deepest.fut.y + inside(deepest.fut.y) * (CUSHION_BREAK
+        // CUSHION_BREAK: a deep-zone carry plays a shoulder off the receiver's line (bodies plus a reach).
+        ? a.profile.radius + deepest.r.profile.radius + a.player.measurables.armIn / 36 * 0.7 : 0.8);
       // A landmark describes responsibility, not a minimum depth to sprint
       // to regardless of the release. Let the initial cushion compress as
       // the stem climbs; otherwise a corner retreats from a hitch into grass.
@@ -1210,10 +1238,11 @@ export class ZoneCoverage implements Behavior {
       // Pedaling has a physical speed cap; racing a vertical does not.
       const closing = Math.max(0, deepest.vel.x - Math.max(0, a.vel.x));
       const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
+      const deepBroken = () => cushionBroken(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius);
       if (CUSHION_BREAK && this.turnedWith === deepest.r && deepest.vel.x < Math.max(0, a.vel.x) - 1
-        && !cushionBroken(a, a.pos.x - deepest.pos.x, deepest.vel.x)) { this.turnedWith = null; a.tags.add('re-square'); }
+        && !deepBroken()) { this.turnedWith = null; a.tags.add('re-square'); }
       if (deepest.vel.x > a.profile.vmax * a.profile.backpedal && (CUSHION_BREAK
-        ? cushionBroken(a, a.pos.x - deepest.pos.x, deepest.vel.x) : a.pos.x - deepest.pos.x < cushion + closing * flipTime))
+        ? deepBroken() : a.pos.x - deepest.pos.x < cushion + closing * flipTime))
         this.turnedWith = deepest.r;
       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
@@ -1228,7 +1257,7 @@ export class ZoneCoverage implements Behavior {
       // CUSHION_BREAK: square in his pedal until the cushion is broken; side-on
       // when the pedal cannot keep it.
       const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
-      if (CUSHION_BREAK && this.turnedWith !== deepest.r && !cushionBroken(a, a.pos.x - deepest.pos.x, deepest.vel.x)) {
+      if (CUSHION_BREAK && this.turnedWith !== deepest.r && !deepBroken()) {
         if (selected === command || selected.facing !== undefined) return command;
         a.tags.add('side-on-carry');
         return withFacingTechnique({ ...selected, facing: sideOn(a, sim.see(a, sim.qb).pos, deepest.pos) }, { label: 'deep-side-on', key: deepest.vel });
