@@ -17,3 +17,9 @@ Run sim scripts from the repo root with flags as env, e.g. `WR_SNAP=1 npx tsx sc
 | `backs-clock.ts` | back release kinds and timing; sack, scramble and throw times; QB clock | `nfl_backs_clock.py` |
 | `press.ts` | pressed outside WR: contact, release speed and lateral move, CB ground given and offset | `nfl_press.py` |
 | `route-start.ts` | ground from the snap position by group, stem speed / own top, WR / TE alignment depth | `nfl_route_start.py` |
+| `yac-stages.ts <out.jsonl>` | one record per reception: air yards and defenders deeper at the catch, nearest defender distance and closing speed, catch to first contact (a defender's centre within 1.0 yd), after contact, the nearest two's pursuit, the nearest's distance and speed toward the catch point at the throw / mid-flight / catch, and his speed toward it from release -0.6 to +0.4 s with his technique label | `nfl_yac_stages.py <bdb dir> 1,2,3 <out.jsonl>`; both read by `yac_summary.py <nfl.jsonl> <sim.jsonl>` |
+| `targets.ts <out.jsonl>` | every targeted throw: the target's air yards on arrival, result, separation, defenders deeper | `nfl_targets.py <bdb dir> 1,2,3 <out.jsonl>` |
+| `zone-squeeze.ts` | zone plays: each non-rushing CB/S/LB and the nearest receiver within 7 yd at the release; his speed toward that receiver from release -0.8 s, target vs not | `nfl_zone_squeeze.py` |
+| `qb-facing.ts` | how long the QB's body faces within 20 deg of the target before the release; motion length | `nfl_qb_facing.py` (BDB `o`) |
+
+Contact in the YAC operators is geometric and shared with Defense's `scripts/diag/defense-yards/yards.py`: a defender's centre within 1.0 yd of the carrier, on 0.1 s frames. Mine measures stages from the catch; theirs measures at +10 yd after the catch. Results: `docs/reviews/2026-11-10-yac-decomposition.md`.

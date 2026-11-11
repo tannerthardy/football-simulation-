@@ -129,11 +129,6 @@ export function observedRecoveryAllowance(seen: Pick<Perceived, 'pose' | 'age'>,
   return clamp((seen.pose === 'down' ? recovery : recovery / 2) - age, tick, recovery);
 }
 
-/** STRETCH_TRACK (off): an outside/wide zone back presses his landmark flat (he
- * steers for its width 1.5 yd behind the line while deeper than 2 yd) and reads
- * the line from 2 yd off it, or once at its width, instead of 4-4.5 yd. */
-export const STRETCH_TRACK = process.env.STRETCH_TRACK === '1';
-
 /** CARRIER_BRACE (off): the carrier lowers his pads for a tackler he sees closing
  * head-on, and drives his body through the contact in the last stride. */
 export const CARRIER_BRACE = process.env.CARRIER_BRACE === '1';
@@ -381,19 +376,7 @@ export class BallCarrier implements Behavior {
       // From that beat he reads like any other back. A race to a hole he may
       // lose is not a body in his way.
       const follow = this.opts.run?.scheme === 'counter' || this.opts.run?.scheme === 'power';
-      // STRETCH_TRACK: a stretch back presses his landmark flat and reads the
-      // line from two yards off it (tracked gun outside zone leaves the mesh
-      // ~68 deg off vertical and is 4.9 yd wide 3 yd off the line; ours 45 deg
-      // and 0.8 yd, aiming at the read's entry from 4.25 yd deep).
-      // He reads once he is within a yard of the landmark's width (an under-
-      // center back meets the ball there) or two yards off the line.
-      const stretchTrack = STRETCH_TRACK && (this.opts.run?.scheme === 'outsideZone' || this.opts.run?.scheme === 'wideZone')
-        && !!this.opts.aim && (this.opts.aim.y - a.pos.y) * this.opts.run!.side > 1;
-      // While deeper than two yards he steers for the landmark's width 1.5 yd
-      // behind the line (press it flat); the play's aim and its scoring are
-      // unchanged.
-      if (stretchTrack && (a.pos.x - sim.los) * dir < -2) aim = { x: sim.los - 1.5 * dir, y: aim.y };
-      if (this.opts.run && ((a.pos.x - sim.los) * dir > (follow || stretchTrack ? -2 : -4.5) || this.followEnded)) {
+      if (this.opts.run && ((a.pos.x - sim.los) * dir > (follow ? -2 : -4.5) || this.followEnded)) {
         if (sim.t >= this.pressReadAt) {
           this.pressReadAt = sim.t + a.mind.decisionInterval;
           this.pressEntry = runReadAim(a, sim, this.opts);
@@ -440,14 +423,12 @@ export class BallCarrier implements Behavior {
       // This holds a chosen action through one processing interval; movement,
       // real contact and boundary recovery still execute on every native tick.
       this.nextEval = sim.t + a.mind.decisionInterval;
-      const readFrom = STRETCH_TRACK && (this.opts.run?.scheme === 'outsideZone' || this.opts.run?.scheme === 'wideZone')
-        && !!this.opts.aim && (this.opts.aim.y - a.pos.y) * this.opts.run!.side > 1 ? 2 : 4;
       // The crease read is the run game's (gaps in the line on a handoff). A
       // man who caught a screen behind the line reads the open field and his
       // blockers instead: the crease read ran slip backs along the line to
       // the sideline, away from linemen leading up the field.
       const caught = !!this.opts.screenCatch;
-      const entry = !caught && a.pos.x < sim.los+.3 && a.pos.x > sim.los-readFrom ? runReadAim(a,sim,this.opts) : null;
+      const entry = !caught && a.pos.x < sim.los+.3 && a.pos.x > sim.los-4 ? runReadAim(a,sim,this.opts) : null;
       const best = entry ? null : this.evaluate(a, sim, dir, false);
       if(entry) { this.heading=angleOf({x:entry.x-a.pos.x,y:entry.y-a.pos.y}); a.tags.add('run-crease-read'); }
       else if (best) { this.heading = best.heading; this.plannedExit = best.exits; }

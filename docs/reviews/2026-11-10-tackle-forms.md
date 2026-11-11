@@ -4,6 +4,8 @@ Tanner's question: how much of the real variety of tackles can we represent? Thi
 (`src/sim/tackle.ts`, `src/physics/world.ts`) against the forms tackles take on film. Then a measurement plan to quantify
 variety on NFL tracking and in the sim with the same operators. Diagnosis only; nothing here is built.
 
+> Where this file is read on develop: `WHIFF_MARGIN`, `TKL_EXEC_STATE`, `GRAB_CONNECT`, `LEG_HOLD_SLIDE`, `HELD_STEP` and `HELD_FALL` are not develop flags. They are attempts on Flex's branch (`claude/quirky-franklin-9lbwbp`), off or reverted there as each section says, and reach develop only if promoted.
+
 ## What a tackle is in the engine
 
 | Piece | What it carries | Where |
@@ -574,3 +576,30 @@ Fixed ref run set (12 seeds, 1,321 runs, paired off/on, run-ref-15). Same refere
 - A second trigger variant (squared in his path, engaged or not, inside the line's traffic) is a new attempt and needs Integration's call.
 
 **Physics half (Integration, 2026-11-10).** A lowered, forward-leaning posture has no cost in the World: no limit on turning rate, top speed held, or the reach of the next cut. Whether the lean law charges for a committed forward lean when the hit comes from the side is open. This is the condition before any brace variant goes on.
+
+**Drag-down game read (`SWING_STRIP` + `HIP_STRENGTH` + `HELD_SWING`; both gates passed).**
+
+Population:
+- `catch-break.mts`: seeds 101/103/105/107 × 2 games, off against on.
+- `yards.py`: `sim-export --seed 101 --games 8`, provenance check passed (third run; identical to the second).
+- IRN v COM, strength 0.55, run-ref-15.
+- Both sides measured from the same geometric first contact.
+
+| | off | on | NFL (same operator) |
+|---|---|---|---|
+| Catch holds dragged 3+ yd at 3+ yd/s (gate 1) | 172 / 873 (19.7%) | 108 / 746 (14.5%) | |
+| Hold duration p50 | 0.85 s | 0.65 s | |
+| Catches at first contact: made / missed / broken (gate 2: broken no higher) | 59 / 1 / 29 | **75 / 1 / 19** | 62 / 4 / 20 |
+| YAC p50 / mean | 4.8 / 8.31 | 4.7 / 8.96 | |
+| Runs at first contact: made / missed / broken | 62 / 2 / 15 | 68 / 3 / 14 | |
+| Runs: unblocked man at the line, stuff when he hits | 7% | 14% | 43% |
+
+- **By help class, dragged share:**
+  - help 1: 22 → 15%;
+  - help 2+: 16 → 7%;
+  - help 0 (last man): 24 → 26%;
+  - DB from behind in the open, help 0: 28 → 37% (n 46).
+- **The last-man rise is inside noise.** These are unpaired games, binomial SE about 3 and 7 points.
+- **The last-man drags that remain are shorter and faster.** Duration p50 1.48 → 0.95 s, runner speed at the grab 6.1 → 7.0 yd/s, holder down 74 → 57%.
+- A fast runner who strips the hold still gains 3+ yd before it comes off. That is the mechanism working, not a new drag.
+- **Catch made share rises past NFL (75 against 62%).** Whether a strong runner now gets free often enough in the open field is the open question for the next read, on the grab-distance operator (`grabs.py`).

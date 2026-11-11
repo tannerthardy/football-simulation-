@@ -1,0 +1,67 @@
+# YAC decomposition and the break on the ball (2026-11-10)
+
+Report only. Operators in `scripts/diag/pass-operators/` (`yac-stages.ts` / `nfl_yac_stages.py`, `targets.ts` / `nfl_targets.py`, `zone-squeeze.ts` / `nfl_zone_squeeze.py`, `qb-facing.ts` / `nfl_qb_facing.py`, summary `yac_summary.py`). NFL: BDB 2025 weeks 1-3 (1,929 receptions, 3,078 targeted throws). Sim: the 732-dropback matched-restage panel with `WR_SNAP`, `QB_RHYTHM`, `PRESS_MIRROR`, `PRESS_RELEASE` (run-ref-14), 413 receptions. Contact: a defender's centre within 1.0 yd of the carrier.
+
+## Where the excess YAC is
+
+YAC a reception: NFL 5.19, sim 7.52 (+2.33). By air yards at the catch:
+
+| air yards | share NFL / sim | YAC NFL / sim | excess inside the bucket | from the mix |
+|---|---|---|---|---|
+| behind the LOS | 21.2% / 4.4% | 8.87 / 7.30 | -0.07 | -1.49 |
+| 0-5 | 34.8% / 24.5% | 4.35 / 8.83 | +1.10 | -0.45 |
+| 5-10 | 20.2% / 34.1% | 3.75 / 6.84 | +1.05 | +0.52 |
+| 10-15 | 11.8% / 22.3% | 3.65 / 6.03 | +0.53 | +0.38 |
+| 15-20 | 6.6% / 10.7% | 5.22 / 9.12 | +0.42 | +0.21 |
+| 20+ | 5.4% / 4.1% | 4.89 / 9.43 | +0.19 | -0.06 |
+
+Not "deep catch with nobody over the top": receptions with no defender deeper are 1.2% (NFL) and 0.5% (sim) and explain none of it.
+
+Stages (median unless stated):
+
+| | NFL | sim |
+|---|---|---|
+| nearest defender at the catch | 2.78 yd | 3.01 yd |
+| his closing speed on the carrier | 2.48 yd/s | 1.21 yd/s |
+| catch to first contact | 0.60 s, mean 2.67 yd | 0.90 s, mean 3.96 yd |
+| after first contact (mean) | 2.16 yd | 2.61 yd |
+| no contact before the end | 10.1% (YAC 4.9) | 14.3% (YAC 11.7) |
+| YAC over 30 | 0.8% of receptions | 2.9% |
+
+## Targets by depth
+
+| air yards | share NFL / sim | completion | separation p50 | yards a throw |
+|---|---|---|---|---|
+| behind the LOS | 17.6% / 4.4% | 83% / 60% | 5.24 / 1.71 | 5.08 / 2.48 |
+| 0-10 | 49.3% / 53.0% | 72% / 66% | 2.82 / 3.24 | 6.02 / 8.63 |
+| 10-20 | 23.1% / 33.4% | 55% / 64% | 1.96 / 2.23 | 9.93 / 13.28 |
+| 20+ | 10.0% / 9.2% | 35% / 30% | 1.21 / 2.05 | 11.94 / 9.28 |
+
+## Why defenders arrive late
+
+The defender nearest the catch, speed toward the eventual catch point (yd/s), relative to the release:
+
+| | -0.6 s | -0.4 | -0.2 | release | +0.2 | +0.4 |
+|---|---|---|---|---|---|---|
+| NFL zone | 0.79 | 1.15 | 1.58 | 2.15 | 2.88 | 3.53 |
+| sim zone | 0.31 | 0.01 | -0.19 | 0.19 | 0.65 | 1.63 |
+| NFL man | 2.28 | 2.89 | 3.47 | 4.17 | 4.84 | 5.42 |
+| sim man | 1.32 | 1.76 | 2.18 | 2.47 | 3.21 | 3.76 |
+
+In flight our controller requests full speed at the catch point (5.4 yd/s toward it at the release, 7.1 mid-flight); the body faces within 45 deg of the request in 330 of 390 cases; the deficit is where his velocity points at the release (74 deg off the catch point vs NFL 48 deg). Flight is also shorter (0.85 vs 1.10 s).
+
+Zone plays, every non-rushing CB/S/LB and the nearest receiver within 7 yd at the release, his speed toward that receiver:
+
+| | -0.8 s | -0.6 | -0.4 | -0.2 | release |
+|---|---|---|---|---|---|
+| NFL, target | -0.84 | -0.62 | -0.28 | +0.29 | +0.95 |
+| NFL, not target | -0.73 | -0.69 | -0.57 | -0.43 | -0.34 |
+| sim, target | -1.42 | -1.28 | -1.16 | -1.00 | -0.45 |
+| sim, not target | -1.69 | -1.33 | -0.83 | -0.67 | -0.47 |
+
+The NFL squeeze is on the target only, from about 0.4 s before the release (about one throwing motion). The NFL QB's body is not squared to the target before the release (`o` within 20 deg: p50 0.0 s), so the cue is not his facing. Our QB's motion is a fixed 0.45 s, and `sawThrow` lets a defender key that motion but not act on it until the ball is in the air.
+
+## Attempts (not merged)
+
+- ZONE_SQUEEZE 1, underneath lane squeeze on the QB's facing: fired on 33 receptions; 732 paired -0.10 +/- 0.18 yd.
+- ZONE_SQUEEZE 2, any non-deep zone defender (and man on his own man) squeezes the nearest receiver the QB is set and squared to: target / non-target toward-speed at the release -0.45 / -0.47 -> -0.27 / -0.50; catch to contact 0.90 -> 0.80 s; YAC 7.52 -> 7.32; 732 paired -0.05 +/- 0.13 yd. Wrong cue (see above). Next: act on the seen throwing motion.
