@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-18`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `run-ref-19`. `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,26 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## run-ref-19: `HOLD_FACING` on (2026-11-11)
+
+Defense #532, on top of `GRASP_ARM_MOMENT`. A tackler holding a runner who is going past him re-aimed his chest at the runner every tick, a pirouette the grasp's own moment never asks for. He now asks to keep the facing he has; the runner turns him through the hold and the contacts as far as the World's yaw response gives.
+
+| Holder's turn at +0.5 / +1.0 s (fixed 1,321 runs) | off | on | NFL |
+|---|---|---|---|
+| Side | 87 / 98° | 29 / 50° | 34 / 76° |
+| Behind | 90 / 99° | 48 / 73° | 27 / 64° |
+| Front | 58 / 95° | 48 / 63° | 44 / 89° |
+
+| Outcomes, paired on the fixed runs | off | on |
+|---|---|---|
+| Yards a run | | −0.02 (SE 0.02) |
+| Broken / missed a run; unfinished holds | 0.121 / 0.233; 276 | 0.126 / 0.233; 264 |
+| Made / broken by approach: front; side; behind | 70.4 / 7.6; 49.7 / 22.3; 67.9 / 17.9% | 71.2 / 7.7; 50.1 / 22.5; 64.8 / 19.3% |
+
+With the default on, the fixed runs read 3.80, stuffs 10.4%, broken 0.123, missed 0.233. The league-sampled 16-game card ([scorecard](reviews/2026-11-11-hold-facing-scorecard.md), seed 11) shows no bugs and nothing football-relevant resolved: yards an attempt 8.80 both arms, YAC 7.04 and 7.07, rush yards a carry 4.44 and 4.31, missed + broken a play 0.24 and 0.23. On for the tackler's body doing what tacklers' bodies do; it does not change who makes the tackle.
+
+Open with it: front holds turn less than the NFL by +1.0 s (63° against 89°).
 
 ## run-ref-18: `CATCH_EYES` on (2026-11-11)
 
