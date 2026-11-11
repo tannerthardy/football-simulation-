@@ -1,11 +1,11 @@
 // Call-mix diagnosis (docs/reviews/2026-11-11-call-mix.md): one row per scrimmage pass in league-sampled games, plus every coordinator observe().
 //   node --import tsx scripts/diag/call-mix/collect.ts [--seed 101] [--games 16] > out/call-mix/plays.jsonl
-// Same population as sim-export.ts --seed S --games N (generateTeam IRN/COM from Rng(S), withIdentity(team, S+g)).
+// Same population as sim-export.ts --seed S --games N (generateTeam IRN/COM from Rng(S), leagueSample(team, S+g): habits and coordinators).
 // Read-only: the hook calls sim.run() exactly as the game would; observe() is wrapped, not changed.
 import { Rng } from '../../../src/core/rng.js';
 import { simulateGame } from '../../../src/game/game.js';
 import { OffensiveCoordinator, DefensiveCoordinator } from '../../../src/game/playcaller.js';
-import { generateTeam, withIdentity } from '../../../src/league/team.js';
+import { generateTeam, leagueSample } from '../../../src/league/team.js';
 import { PASS_CONCEPTS } from '../../../src/playbook/concepts.js';
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : d; };
@@ -43,7 +43,7 @@ const rng = new Rng(seed);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 });
 const away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (game = 0; game < games; game++) {
-  const res = simulateGame(withIdentity(home, seed + game), withIdentity(away, seed + game), { seed: seed + game, hooks: {
+  const res = simulateGame(leagueSample(home, seed + game), leagueSample(away, seed + game), { seed: seed + game, hooks: {
     playSetup: (_s: any, ctx: any) => { if (ctx.kind === 'scrimmage') { quarter = ctx.state.quarter; clock = ctx.state.clock; offAbbr = ctx.offense; } },
     playResult: (sim: any, kind: string) => {
       if (kind !== 'scrimmage') return undefined;

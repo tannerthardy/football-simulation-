@@ -4,7 +4,7 @@
  * those habits. */
 import { describe, expect, it } from 'vitest';
 import { Rng } from '../src/core/rng.js';
-import { alignStyle, generateTeam, withIdentity } from '../src/league/team.js';
+import { alignStyle, generateTeam, leagueSample, withCoaching, withIdentity } from '../src/league/team.js';
 
 const strip = (t: ReturnType<typeof generateTeam>) => ({ ...t, id: '', roster: t.roster.map((p) => ({ ...p, id: '' })) });
 
@@ -27,5 +27,27 @@ describe('withIdentity', () => {
     expect(alignStyle(withIdentity(t, 7))).toEqual(alignStyle(withIdentity(t, 7)));
     // Unsalted, every seed's IRN is the same team identity.
     expect(alignStyle(generateTeam(new Rng(11), 'Ironmen', 'IRN')).safetyDepth).toBe(alignStyle(t).safetyDepth);
+  });
+});
+
+describe('withCoaching / leagueSample', () => {
+  const t = generateTeam(new Rng(7), 'Ironmen', 'IRN', { strength: .55 });
+
+  it('redraws the coordinators per salt, reproducibly, and leaves the roster alone', () => {
+    const c = withCoaching(t, 7);
+    expect(c.roster).toBe(t.roster);
+    expect(withCoaching(t, 7)).toEqual(c);
+    expect(t.coach.coverageSystem).toBe(generateTeam(new Rng(7), 'Ironmen', 'IRN', { strength: .55 }).coach.coverageSystem);
+    const trees = new Set(Array.from({ length: 40 }, (_, i) => withCoaching(t, i).coach.coverageSystem));
+    expect(trees.size).toBe(5);
+    const schemes = new Set(Array.from({ length: 40 }, (_, i) => withCoaching(t, i).offScheme));
+    expect(schemes.size).toBeGreaterThan(2);
+  });
+
+  it('samples habits and coordinators together', () => {
+    const s = leagueSample(t, 11);
+    expect(s.id).toBe('IRN~11');
+    expect(s.coach).toEqual(withCoaching(withIdentity(t, 11), 11).coach);
+    expect(s.roster.map((p) => p.ratings)).toEqual(t.roster.map((p) => p.ratings));
   });
 });
