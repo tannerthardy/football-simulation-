@@ -18,7 +18,7 @@ at the start), so a run from the backfield and a catch downfield are on one scal
    >= 0.3 s and still 3+ yd and >= 3 yd/s), else other. Open field: no offensive non-carrier within 2 yd of the
    tackler. Help: the second-nearest defender's distance to the carrier.
  3 Rally: from first contact, time to the 2nd and 3rd different defenders within 1.5 yd of the carrier.
- 4 Deep defenders (passes): DB depth/width at the snap by shell (0/1/2 DBs >= 10 yd deep at the snap); at the
+ 4 Deep defenders (passes): DB (by slot where the record carries one) depth/width at the snap by shell (0/1/2 DBs >= 10 yd deep at the snap); at the
    throw, the deepest defender against the deepest eligible receiver (WR/TE/RB); share with nobody deeper.
  5 Stuffs (runs, yards <= 0): free men at the line 0.3 s after the handoff (x <= 1, within 3 yd laterally of the
    carrier, no offensive player within 1.2 yd); with one, how often a free man makes first contact and the stuff.
@@ -67,6 +67,11 @@ def plays(path):
         yield raw['kind'], p, c, k0, last
 
 
+# A defensive back by the play's slot where the record has one (sim): a backer in the SS slot plays a deep half
+# and counts here; NFL records carry the roster group only, and NFL safeties are listed as safeties.
+DB_SLOTS = {'CB_S', 'CB_W', 'NB', 'DB', 'FS', 'SS'}
+def is_db(rec): return rec['slot'] in DB_SLOTS if rec.get('slot') else rec['group'] == 'DB'
+
 def report(path):
     S = collections.defaultdict(list); C = collections.Counter()
     for kind, p, c, k0, last in plays(path):
@@ -76,7 +81,7 @@ def report(path):
         top = {d: max((p.speed(d, k) for k in range(0, last + 1 if c is not None else p.frames)), default=0) for d in D}
         # 4 deep defenders: every dropback with a throw
         if kind == 'pass':
-            dbs = sorted((d for d in D if p.players[d]['group'] == 'DB'), key=lambda d: -p.pos(d, 0)[0])
+            dbs = sorted((d for d in D if is_db(p.players[d])), key=lambda d: -p.pos(d, 0)[0])
             shell = sum(1 for d in dbs if p.pos(d, 0)[0] >= 10)
             sh = f'{min(shell, 2)}-high'; C[('shell', sh)] += 1
             for r, d in enumerate(dbs[:2]):
