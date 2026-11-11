@@ -65,3 +65,32 @@ The NFL squeeze is on the target only, from about 0.4 s before the release (abou
 
 - ZONE_SQUEEZE 1, underneath lane squeeze on the QB's facing: fired on 33 receptions; 732 paired -0.10 +/- 0.18 yd.
 - ZONE_SQUEEZE 2, any non-deep zone defender (and man on his own man) squeezes the nearest receiver the QB is set and squared to: target / non-target toward-speed at the release -0.45 / -0.47 -> -0.27 / -0.50; catch to contact 0.90 -> 0.80 s; YAC 7.52 -> 7.32; 732 paired -0.05 +/- 0.13 yd. Wrong cue (see above). Next: act on the seen throwing motion.
+
+## Provisional: stage (a) is largely downstream of route mix and throw timing
+
+Added after the route-by-route comparison (NFL BDB 2025 weeks 1-3 non-PA dropbacks, 11,947 routes; sim the 732 panel on develop f52e3a0d, 2,844 routes; depth from the ball on both sides). Like-for-like routes are thrown at about NFL depth (hitch 5.0 vs 5.7 yd, slant 5.3 vs 4.0, shallow cross 4.7 vs 4.1, go 10.2 vs 10.0), but 35.6% of our targets are comebacks, digs, 10-yd outs and curls at 10-15 yd, flats + screens + angles are 3.6% of our targets against 24.8% in the NFL, and on thrown outs, digs, quick outs and short ins the ball leaves before the receiver's break (NFL: 0.5-1.0 s after it). The late-closing defenders measured above are covering receivers still running deeper; the defender-side attempts (ZONE_SQUEEZE, MOTION_BREAK, ZONE_PLANT, OFF_THROTTLE) moved nothing and stay off develop.
+
+Do not build a defender-side fix from stage (a) until the panel is recaptured with per-seed team identities (all diagnostic games were IRN vs COM, whose alignment habits put both teams' safeties shallow) and the route mix and throw timing are re-read. The NFL gaps above involving safety depth, shell and defenders over the top are biased by that sample.
+
+## Re-read on the league-sampled panel (2026-11-11)
+
+Panel recaptured on develop 01b9037e with per-seed team identities (#527): capture 7 (165 snaps) and 11 (132), 197 dropbacks x 4 dice = 788, four defences (safetyDepth -0.66 / -0.20 / +1.05 / +1.56). YAC stages read on run-ref-18 candidate 73b5cee4 (CATCH_EYES on; CATCH_EYES=0 for the off arm). YAC is reported as median / trimmed mean (30+ yd removed) / mean +/- SE. NFL rows as above (BDB 2025 weeks 1-3).
+
+| | NFL | sim, CATCH_EYES off | sim, CATCH_EYES on |
+|---|---|---|---|
+| YAC median / trimmed / mean | 3.22 / 4.90 / 5.19 +/- 0.15 | 4.90 / 5.95 / 8.46 +/- 0.59 | 4.50 / 5.44 / 7.83 +/- 0.59 |
+| catch to first contact, p50 | 0.60 s | 0.90 s | 0.90 s |
+| yards to first contact, p50 / mean | 1.08 / 2.67 | 1.81 / 3.81 | 1.50 / 3.35 |
+| no contact before the end | 10.1% (YAC 4.9) | 15.7% | 14.8% (YAC 19.3) |
+| nearest defender's closing speed at the catch | 2.48 yd/s | 1.04 | 1.04 |
+| YAC over 20 | 3.5% | 10.2% | 9.7% |
+
+Survives:
+- YAC is the largest excess, inside every catch-depth bucket, and not "deep catch with nobody over the top" (98% of receptions have 2+ defenders deeper).
+- Defenders close late: speed toward the catch point at the release, zone 0.94 vs NFL 2.15, man 1.81 vs 4.17; the off corner thrown at is still retreating at 3.73 yd/s vs 1.61, at NFL cushion (3.60 vs 3.67 yd).
+- Untouched catches carry most of the excess: 14.8% of receptions at 19.3 yd YAC (about 2.4 of the 2.64 yd mean excess); nearest defender 3.5 yd away, closing 0.26 yd/s (NFL 3.2, 0.77).
+- The QB's choice: shallow cross 19% of targets, read #1 58% of the plays it is run.
+
+Did not survive (IRN/COM rosters or a measurement defect):
+- Tight-coverage completion: at 10-20 yd and under 2 yd of separation the base completes 42% (NFL 39%; 0-1 yd 28% vs 26%). The IRN/COM panel had 52%. CATCH_CONTEST (attempt 1, local) is more physical but has no gap to close.
+- Pressure accuracy: with arrival snapshotted on the tick (the earlier task1 table dropped end-of-play incompletions), completion clean / pressured is 0-10 yd 67% / 62% (NFL 74% / 64%) and 10-20 yd 58% / 62% (52% / 51%). No pressure gap to build for.
