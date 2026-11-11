@@ -934,3 +934,30 @@ Until then, `SET_DECIDE` calls `ready`, `evaluate`, `bestOption` and the existin
 6. Throws on the move cost accuracy (missSigma's existing speed term), reported.
 
 Read with and without `BLOCK_SEEN`.
+
+### `SET_DECIDE` bench iterations (off; 2026-11-11)
+
+Two games (seed 401–402, IRN v COM league identities), THROW_BODY=1, with and without BLOCK_SEEN. qb-moves / qb-pocket, small n (17–29 rusher-at-1-yd dropbacks per arm).
+
+1. **v1** (the decision before the hot path): moved, but in bursts of about 2 ticks. It re-decided every tick, and one step made standing look safe again.
+2. **v2:** the time he needs is the rest of the read, or a full new look when it is done, plus a windup; and it runs in the drop. The 451 earlier "null with a rusher near" cases were "still has time", because the criterion counted only a windup.
+3. **v3:** a committed direction runs for one reaction time. Moves last p50 4 ticks.
+4. **v4:** no retreat past the set depth. The greedy time-to-contact always chose backward: straight-line reach doesn't see his blockers walling off the front. NFL pressured QBs retreat about 0%.
+
+| Rusher at 1 yd | Stood | Outside | NFL stood | NFL outside |
+|---|---|---|---|---|
+| Off | 71% | 3% | 24% | 40% |
+| v4 | 74% | 7% | | |
+| v4 + BLOCK_SEEN | 61% | 7% | | |
+
+- Clean pocket: ends outside 1% (no drift; passes v1's failure test).
+- Pressured pocket path p75: 0.2–0.3 yd (NFL 1.72).
+
+**Re-diagnosis.** In the pressured ticks:
+- drop 32%;
+- windup 28%: he is already throwing;
+- set phase about 36%.
+
+The current-read throw check runs before the decision. With a rusher bearing down he still starts a throw that, by his own felt time (0.15 s optimistic: a constant-velocity extrapolation of an accelerating rusher), he expects to finish. Then contact lands in the delivery, and the play classifies as "stood, threw".
+
+So the movement can't show until the throw decision under imminent pressure uses the same evidence. That means a felt time to contact that sees closing acceleration, and asking "can I finish this throw before he arrives" before starting it.

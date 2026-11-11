@@ -138,6 +138,19 @@ const POCKET_CLIMB = process.env.POCKET_CLIMB === '1';
  * pocket move is not part of it. Off (and QB_FEEL off), held() credits any
  * engaged rusher 0.35-1.75 s from engagement.win. */
 const BLOCK_SEEN = process.env.BLOCK_SEEN === '1';
+/** Experimental (SET_DECIDE=1, off): one decision under pressure. When where
+ * he stands he no longer has the time he still needs (the rest of his current
+ * read, then a throwing motion) before a rusher he feels can reach him, he
+ * moves first: to whichever reachable spot (climb, slide, or out of the box,
+ * at 2.2 yd/s, the edge of a set throw in missSigma) leaves him the most felt
+ * time to contact at the end of that time, holding the direction for one
+ * reaction time and reading as he goes. A lane past the line from where the
+ * movement has taken him is an escape (the existing scramble check). Only when
+ * no spot buys him time is he trapped, and the existing hot path (throw to
+ * anyone with P > 0.3, throw away, evade) decides. With nobody near, nothing
+ * here runs. Off, the hot path pre-empts movement whenever he feels a hit
+ * within 0.45 s, and he walks toward a set point. */
+const SET_DECIDE = process.env.SET_DECIDE === '1';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -156,6 +169,9 @@ export class QBPass implements Behavior {
   private plannedLoad = -1;
   /** How much of the load the throw in progress gave up (0 full motion, 1 none). */
   private flick = 0;
+  /** SET_DECIDE: the direction he is moving in, held until moveUntil. */
+  private moveDir: Vec2 | null = null;
+  private moveUntil = -1;
   /** THROW_BODY: whether this throw's load has met a hold (the pin is rolled once). */
   private pinRolled = false;
   private motionAt = -1;
@@ -395,6 +411,12 @@ export class QBPass implements Behavior {
             return this.startThrow(a, sim, ev);
           }
         }
+        // SET_DECIDE: a rusher closing during the drop ends it: he sets here and the
+        // set-phase decision takes over from this tick.
+        if (SET_DECIDE) {
+          const move = this.setDecide(a, sim, this.reads[0]);
+          if (move) { this.phase = 'set'; this.setAt = t; this.readStart = t; return move; }
+        }
         // QBs who lock onto their first read give it away during the drop.
         if (a.r('decisionMaking') < 0.45) sim.qbEyes = this.reads[0] ?? null;
         const gun = sim.offCall.formation.qb !== 'under';
@@ -483,6 +505,12 @@ export class QBPass implements Behavior {
     } else if (t - this.readStart > dwell + (QB_RHYTHM ? 0 : 0.6)) {
       this.readIdx++;
       this.readStart = t;
+    }
+
+    // SET_DECIDE: under pressure he moves first; the hot path is for when he is trapped.
+    if (SET_DECIDE) {
+      const move = this.setDecide(a, sim, read);
+      if (move) return move;
     }
 
     // Hot / panic: under imminent pressure, find anything.
@@ -1024,6 +1052,52 @@ export class QBPass implements Behavior {
       if (climb) return climb;
     }
     return goTo(a, { x: Math.min(tx, sim.los - 2.5), y: ty }, { speed: edge ? 0.6 : 0.45, facing });
+  }
+
+  /** SET_DECIDE: null when he still has the time he needs where he stands
+   * (nothing changes) or when no spot buys him time (trapped: the existing
+   * logic decides); otherwise the move, or the escape it has opened. */
+  private setDecide(a: Agent, sim: PlaySim, read: Agent | undefined): MoveCommand | null {
+    const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
+    const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus));
+    // Reaching here, the read logic has offered no throw this tick: he needs the
+    // rest of this read, or (if it is done) a full look at the next, then a throw.
+    const rest = this.readStart + dwell - sim.t;
+    const need = (rest > 0 ? rest : dwell) + this.windup(a), pace = 2.2;
+    const threats = sim.defense.filter((d) => !d.isDown(sim.t))
+      .map((d) => ({ d, seen: this.felt(a, sim, d), held: this.held(a, d, sim) }));
+    const ttc = (q: Vec2) => {
+      let best = Infinity;
+      for (const { d, seen, held } of threats) best = Math.min(best,
+        timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 0.8) + held);
+      return best - need;
+    };
+    // A direction he has committed to runs for one reaction time before he decides again.
+    let dir: Vec2 | null = this.moveDir && sim.t < this.moveUntil ? this.moveDir : null;
+    const stay = ttc(a.pos);
+    if (!dir && stay >= 0) { this.moveDir = null; return null; }
+    if (!dir) {
+      let bestT = stay;
+      for (let k = 0; k < 8; k++) {
+        const th = k * Math.PI / 4, c = { x: Math.cos(th), y: Math.sin(th) };
+        const q = { x: a.pos.x + c.x * pace * need, y: clamp(a.pos.y + c.y * pace * need, 1, FIELD_WIDTH - 1) };
+        if (q.x > sim.los - 2.5 && c.x > 0) continue;
+        // No retreat past his set depth: deeper takes him into the edge rushers'
+        // arcs and off his throwing base (NFL pressured QBs retreat ~0%; the
+        // straight-line time to reach here does not see his blockers walling
+        // off the front).
+        if (c.x < -0.1 && a.pos.x <= this.drop.x + 0.1) continue;
+        const v = ttc(q);
+        if (v > bestT) { bestT = v; dir = c; }
+      }
+      if (!dir) { this.moveDir = null; return null; }
+      this.moveDir = dir; this.moveUntil = sim.t + a.profile.reactionTime;
+    }
+    // Escape: the movement has opened a lane and the read logic has offered nothing.
+    if (this.shouldScramble(a, sim, false)) { this.moveDir = null; return this.scramble(a, sim); }
+    const facing = read ? angleTo(a.pos, read.pos) : 0;
+    const vx = a.pos.x >= sim.los - 2.5 ? Math.min(0, dir.x * pace) : dir.x * pace;
+    return { vel: { x: vx, y: dir.y * pace }, facing, cutSkill: 0.8 + 0.4 * a.r('elusiveness') };
   }
 
   /** POCKET_CLIMB: the move (or none) that leaves the most felt time to contact
