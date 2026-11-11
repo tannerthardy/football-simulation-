@@ -1085,7 +1085,7 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * clamp(t, 0, 1);
 /** The firmest control a tackler has of `a` (0 when nobody is holding him). */
 /** THROW_BODY: how much the holds on him interfere with a throw: how firmly
  * he is held times how high the highest hold sits (1 - its leg share). */
-function throwInterference(a: Agent, sim: PlaySim): number {
+export function throwInterference(a: Agent, sim: PlaySim): number {
   const held = heldBy(a, sim);
   if (held <= 0) return 0;
   let legs = 1;
