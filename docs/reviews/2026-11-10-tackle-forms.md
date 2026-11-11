@@ -1005,3 +1005,33 @@ YAC mean 10.09 → 8.02 ± 0.45: divergence on this seed, as before.
   - refusals 9, only after he has moved.
 - `setDecide` pre-empts the hot path: the panic throw is reached only when no spot buys time.
 - The gain belongs to the decision structure. It doesn't split from the movement evaluation, which supplies the "trapped" test.
+
+### Movement attempt (b): spot value from the bodies he sees (off; bench miss; 2026-11-11)
+
+**Mechanism** (under SET_DECIDE).
+- A rusher's time to a spot adds a detour around any teammate body on the line between them: 0.2 s + (width − offset) / 2, the perceived block read's geometry. It replaces `held()` in the decision.
+- Spots with a teammate standing in them are excluded.
+- In the drop the decision needs the rest of the drop plus a windup.
+- Ability, perception and disposition are named in the code; `MOVE_FOR = 0` is the league-average disposition hook.
+
+**Bench** (2 games, seed 401–402):
+
+| | Rusher at 1 yd (n) | Stood | Throw | Outside |
+|---|---|---|---|---|
+| Walls | 17 | 71% | 71% | 6% |
+| Walls + BLOCK_SEEN | 9 | 100% | 67% | 0% |
+| NFL | | 24% | 30% | 40% |
+
+- Throw-path, seeds 201–202, off → walls: rhythm 34 → **13**, outlet 25 → 6, panic 11 → 1.
+- No-throw outcomes: sack / scramble / other 6 / 3 / 0 → 4 / 5 / 3. The "other" are strip-sacks (hit, fumble, recovery).
+
+**Verdict.**
+- Walled rushers count late, so standing looks safe almost everywhere and he moves even less.
+- Rhythm throws are still suppressed with the drop gate, so something else in the decision pre-empts on-time throws. Not found yet.
+- Two movement designs (straight-line time to reach; time to reach around his blockers) have missed in the same place. **Stop and re-diagnose.**
+
+**Re-diagnosis needed before a third design.**
+1. Find what removes rhythm and outlet throws under SET_DECIDE: trace the drop and outlet decisions on the plays that lose them.
+2. On NFL film, what the QB sees at the moment he starts to leave (about 1.6 s after setting): which rusher, how far, whether engaged, and the blocker geometry. Same measures on ours.
+
+The trigger needs to be grounded in that evidence, not in a time-to-reach model.

@@ -416,7 +416,7 @@ export class QBPass implements Behavior {
         // SET_DECIDE: a rusher closing during the drop ends it: he sets here and the
         // set-phase decision takes over from this tick.
         if (SET_DECIDE) {
-          const move = this.setDecide(a, sim, this.reads[0]);
+          const move = this.setDecide(a, sim, this.reads[0], Math.max(0, this.snapAt + this.drop.time - t) + this.windup(a));
           if (move) { this.phase = 'set'; this.setAt = t; this.readStart = t; return move; }
         }
         // QBs who lock onto their first read give it away during the drop.
@@ -1117,21 +1117,47 @@ export class QBPass implements Behavior {
   /** SET_DECIDE: null when he still has the time he needs where he stands
    * (nothing changes) or when no spot buys him time (trapped: the existing
    * logic decides); otherwise the move, or the escape it has opened. */
-  private setDecide(a: Agent, sim: PlaySim, read: Agent | undefined): MoveCommand | null {
+  private setDecide(a: Agent, sim: PlaySim, read: Agent | undefined, needOverride?: number): MoveCommand | null {
     const rhythm = this.concept.family === 'quick' ? 0.6 : 1;
     const dwell = (0.42 + 0.4 * (1 - a.r('decisionMaking')) - 0.1 * a.r('awareness')) * rhythm * (1 + 0.3 * (1 - a.mind.focus));
-    // Reaching here, the read logic has offered no throw this tick: he needs the
-    // rest of this read, or (if it is done) a full look at the next, then a throw.
+    // PERCEPTION: the rushers as he sees them closing, and his own blockers'
+    // bodies as he sees them (a teammate's position reaches him quickly).
+    const threats = sim.defense.filter((d) => !d.isDown(sim.t)).map((d) => ({ d, seen: this.feltClosing(a, sim, d) }));
+    const mates = sim.offense.filter((o) => o !== a && !o.isDown(sim.t)).map((o) => ({ o, pos: sim.see(a, o).pos }));
+    // ABILITY: where his body can get in the time, at the pace he can still
+    // throw from (missSigma's 2.2 yd/s edge of a set throw).
+    const pace = 2.2;
+    // The time he still needs here: the rest of this read, or (if it is done) a
+    // full look at the next, then a throw; in the drop, the rest of the drop and
+    // a throw (so an on-time throw keeps its chance).
     const rest = this.readStart + dwell - sim.t;
-    const need = (rest > 0 ? rest : dwell) + this.windup(a), pace = 2.2;
-    const threats = sim.defense.filter((d) => !d.isDown(sim.t))
-      .map((d) => ({ d, seen: this.feltClosing(a, sim, d), held: this.held(a, d, sim) }));
+    const need = needOverride ?? ((rest > 0 ? rest : dwell) + this.windup(a));
+    // A rusher's time to a spot, around any of his blockers standing on the line
+    // between them (the perceived block read's geometry: around the blocker's
+    // body at a held rusher's pace, plus getting off his hands), so a walled-off
+    // rusher counts late and a free or winning one counts in full.
+    const detour = (from: Vec2, q: Vec2, rd: number) => {
+      const px = q.x - from.x, py = q.y - from.y, L = Math.hypot(px, py) || 1;
+      let worst = 0;
+      for (const { o, pos } of mates) {
+        const along = ((pos.x - from.x) * px + (pos.y - from.y) * py) / L;
+        const off = Math.abs((pos.x - from.x) * py - (pos.y - from.y) * px) / L, width = rd + o.profile.radius;
+        if (along <= 0 || along >= L || off >= width) continue;
+        worst = Math.max(worst, 0.2 + (width - off) / 2);
+      }
+      return worst;
+    };
     const ttc = (q: Vec2) => {
       let best = Infinity;
-      for (const { d, seen, held } of threats) best = Math.min(best,
-        timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 0.8) + held);
+      for (const { d, seen } of threats) best = Math.min(best,
+        timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, q, 0.8) + detour(seen.pos, q, d.profile.radius));
       return best - need;
     };
+    // A spot with a teammate standing in it is not his to take.
+    const taken = (q: Vec2) => mates.some(({ o, pos }) => Math.hypot(pos.x - q.x, pos.y - q.y) < o.profile.radius + a.profile.radius);
+    // DISPOSITION (the league-average hook for per-QB traits): how much felt time
+    // a move must buy before he gives up his spot. 0: any gain moves him.
+    const MOVE_FOR = 0;
     // A direction he has committed to runs for one reaction time before he decides again.
     let dir: Vec2 | null = this.moveDir && sim.t < this.moveUntil ? this.moveDir : null;
     const stay = ttc(a.pos);
@@ -1147,8 +1173,9 @@ export class QBPass implements Behavior {
         // straight-line time to reach here does not see his blockers walling
         // off the front).
         if (c.x < -0.1 && a.pos.x <= this.drop.x + 0.1) continue;
+        if (taken(q)) continue;
         const v = ttc(q);
-        if (v > bestT) { bestT = v; dir = c; }
+        if (v > bestT + MOVE_FOR) { bestT = v; dir = c; }
       }
       if (!dir) { this.moveDir = null; return null; }
       this.moveDir = dir; this.moveUntil = sim.t + a.profile.reactionTime;
