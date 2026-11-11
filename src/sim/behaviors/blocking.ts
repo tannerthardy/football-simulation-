@@ -177,26 +177,6 @@ export class ProtectionCoordinator {
     }
   }
 
-  /** PRO_CALL: after the line has taken the down linemen (`declare`), each
-   * declared walked-up threat, inside out, goes to the nearest back still free;
-   * with none, to the nearest lineman left uncovered within his zone; with
-   * neither, he is left to the pickup after the snap. */
-  private assignCalled(sim: PlaySim): void {
-    const taken = new Set(this.sticky.keys());
-    const threats = [...this.called].filter((d) => !this.dropped.has(d) && ![...this.sticky.values()].includes(d))
-      .sort((p, q) => Math.abs(p.pos.y - sim.ballY) - Math.abs(q.pos.y - sim.ballY));
-    for (const r of threats) {
-      const near = (cands: Agent[]) => cands.reduce<Agent | null>((x, y) => (!x || Math.abs(y.pos.y - r.pos.y) < Math.abs(x.pos.y - r.pos.y) ? y : x), null);
-      const back = near(this.protectors.filter((b) => !isOL(b) && !taken.has(b)));
-      const line = back ? null : near(this.protectors.filter((b) => isOL(b) && !taken.has(b)
-        && Math.abs(this.homeY.get(b)! - r.pos.y) <= (b.slot === 'LT' || b.slot === 'RT' ? 5.5 : 2.8)));
-      const b = back ?? line;
-      if (!b) continue;
-      this.sticky.set(b, r);
-      taken.add(b);
-    }
-  }
-
   private declared = false;
 
   update(sim: PlaySim): void {
@@ -206,13 +186,12 @@ export class ProtectionCoordinator {
     if (PRO_READ && !this.declared) for (const d of sim.defense) if (sim.snapX[d.idx] < sim.los + 1.5) this.declaredOn.add(d);
     if (PRO_CALL && !this.declared) for (const d of boxThreats(sim)) if (!this.declaredOn.has(d)) this.called.add(d);
     const rushers = sim.defense.filter((d) => !d.isDown(sim.t) && this.isRusher(sim, d));
-    const front = PRO_READ ? [...this.declaredOn].filter((d) => rushers.includes(d)) : rushers;
+    let front = PRO_READ ? [...this.declaredOn].filter((d) => rushers.includes(d)) : rushers;
+    // PRO_CALL: the call's threats are in the declaration before they move.
+    if (PRO_CALL && !this.declared) front = [...front, ...[...this.called].filter((d) => !front.includes(d) && !this.dropped.has(d))];
     if (!this.declared && front.length) {
       this.declared = true;
       this.declare(sim, front);
-      // PRO_CALL, big on big: the line has the down linemen; each declared
-      // walked-up threat is the back's, or else an uncovered lineman's on his side.
-      if (PRO_CALL) this.assignCalled(sim);
     }
     const free = this.protectors.filter((b) => !b.engagement && !b.isDown(sim.t) && b.behavior instanceof PassProtector && !(b.behavior as PassProtector).released);
     this.assigned.clear();
@@ -465,10 +444,9 @@ const PRO_READ = process.env.PRO_READ !== '0';
  * line from what the offence sees before the snap. The line counts the box:
  * every defender within CALL_DEPTH of the line inside the linemen's width
  * +-CALL_WIDTH (on-line men, walked-up backers, a safety rolled into the box).
- * Walked-up threats are declared with the men on the line. Big on big: the
- * snap assignment gives the linemen the down linemen first (any the line
- * can't take go to a back), then each declared backer is a free back's, else
- * an uncovered lineman's on his side; a declared threat is a rusher on his first seen downhill step
+ * Walked-up threats are declared with the men on the line, so the snap
+ * assignment slides to the extra man and leaves the one the line can't take
+ * to a back; a declared threat is a rusher on his first seen downhill step
  * (BLITZ_READ's rule) and is released when seen leaving the box or after
  * CALL_HOLD without coming. When the
  * count exceeds the protectors the concept keeps in, a back installed on a
