@@ -103,6 +103,7 @@
     "LB_READ_STEP": "on",
     "LEAN_PITCH": "on",
     "LEGS_HELD": "on",
+    "PICTURE_AGE": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",
