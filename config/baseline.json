@@ -37,6 +37,8 @@
     "DL_SNAP_TIME": "0",
     "HOLD_FINISH": "0",
     "HOLD_FACING": "0",
+    "SEEN_EYES": "0",
+    "JUDGE_SEEN_BALL": "0",
     "CUSHION_NEED": "0",
     "EDGE_REACH": "0",
     "FLOW_INTERCEPT": "0",
