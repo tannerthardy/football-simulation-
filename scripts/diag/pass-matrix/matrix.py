@@ -14,7 +14,10 @@ the catch, separation (nearest defender to the target) at the throw and at arriv
 
   python3 -I matrix.py <nfl common .jsonl.gz> <bdb dir> <sim .jsonl.gz[,more]> [--check] [--floor 25] [--json out]
 """
-import sys, json, gzip, math, csv, collections as C
+import sys, os, json, gzip, math, csv, collections as C
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from routelib import Lib, features
+LIB = None
 
 opt = lambda k, d=None: sys.argv[sys.argv.index(k) + 1] if k in sys.argv else d
 FLOOR = int(opt('--floor', '25'))
@@ -159,12 +162,14 @@ def play_rows(p, outcome, cov):
     if fam is None: return None
     pl, X = p['players'], p['xy']
     thr = p['events'].get('pass_forward'); arr = p['events'].get('pass_arrived')
-    end = len(X) - 1 if thr is None else min(len(X) - 1, int(round((arr or thr + 0.6) / 0.1)))
+    # Read each route to the throw + 0.4 s (the same cut the NFL library was built with).
+    end = len(X) - 1 if thr is None else min(len(X) - 1, int(round(thr / 0.1)) + 4)
     routes = []; rmap = {}
     for i, (s, n) in num.items():
-        path = [(X[f][2 * i], X[f][2 * i + 1]) for f in range(len(X))]
+        path = [(X[f][2 * i], X[f][2 * i + 1]) for f in range(min(len(X), 40))]
         side = s or (1 if path[min(len(path) - 1, 10)][1] > path[0][1] else -1)
-        r = classify_route(path, side, end)
+        travel = sum(math.dist(path[f], path[f + 1]) for f in range(min(len(path), end + 1) - 1))
+        r = 'BLOCK' if travel < 2.5 or (pl[i]['group'] != 'WR' and max(q[0] for q in path[:end + 1]) < 0.5 and travel < 4) else LIB.name(features(path, side, end))
         rmap[i] = r
         if r not in ('BLOCK', 'NONE'): routes.append((r, s, n, pl[i]['group']))
     concept = classify_concept(routes)
@@ -239,8 +244,10 @@ def agg(rows):
 
 def main():
     global NFL_PATH, BDB, SIM_PATHS
-    args = [a for i, a in enumerate(sys.argv[1:], 1) if not a.startswith('--') and not sys.argv[i - 1] in ('--floor', '--json')]
+    args = [a for i, a in enumerate(sys.argv[1:], 1) if not a.startswith('--') and not sys.argv[i - 1] in ('--floor', '--json', '--lib')]
     NFL_PATH, BDB, SIM_PATHS = args[0], args[1], args[2].split(',')
+    global LIB
+    LIB = Lib(opt('--lib', 'out/pass-matrix/routelib.npz'))
     nfl = nfl_rows()
     sim, check = sim_rows()
     if '--check' in sys.argv:
