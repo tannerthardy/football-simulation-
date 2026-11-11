@@ -443,6 +443,13 @@ export class QBMind {
     });
   }
 
+  /** Age of his picture of a defender: memory age plus its sensing latency.
+   * Zero when he has no memory of him (the estimate is then a fresh look). */
+  pictureAge(d: Agent): number {
+    const m = this.memory.get(d);
+    return m ? Math.max(0, this.sim.t - m.t) + (m.latency ?? 0) : 0;
+  }
+
   /** Where the QB thinks a defender is (and how he's moving). */
   estimate(d: Agent): { pos: Vec2; vel: Vec2; facing: number } {
     const sim = this.sim;

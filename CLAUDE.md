@@ -27,6 +27,17 @@ final exam, not the objective function.
   access to another player's private assignment.
 - Use the simplest coherent model that generalizes. Anatomical feet and sole
   models are paused research, not production requirements.
+- Rules that players are coached to follow (coverage rules, protection rules,
+  run fits, route and read rules) are football, not model complexity. Build
+  them as they are taught, from what the player can observe. The preference
+  for simple models applies to machinery we invent, not to the sport's own
+  structure.
+- A coached rule is the player's intent, not a script. Players execute it
+  imperfectly, by their skill and what they perceive, and improvise within
+  it when they think it helps: a receiver bends his stem or changes his
+  footwork and hips against the coverage he sees, leans into a defender and
+  pushes off. Model the rule, then the execution and the freedom around it;
+  both the mistakes and the craft come from the player, not from the rule.
 - **Never ban what works too well.** Do not forbid a technique, cap its
   outcome or steer players away because it is too effective. Find why it
   fails in real football: physical limits, cost, fatigue, information or

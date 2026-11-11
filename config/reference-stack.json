@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "run-ref-24",
+  "id": "run-ref-26",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -29,6 +29,7 @@
     "BACKFIELD_DEPTH": "on",
     "BACKSIDE_COMBO": "on",
     "BACKSIDE_SWAP": "on",
+    "BACK_RELEASE": "off",
     "BLITZ_CREEP": "on",
     "BLOCKER_NEXT": "on",
     "BRACE_EVIDENCE": "off",
@@ -120,6 +121,7 @@
     "OZ_HIP_READ": "on",
     "PASS_ANCHOR": "on",
     "PASS_SINK": "off",
+    "PICTURE_AGE": "off",
     "PRESS_MIRROR": "on",
     "PRESS_RELEASE": "on",
     "PULL_CUE": "off",
@@ -166,7 +168,7 @@
     "SWING_STRIP": "on",
     "TACKLE_TOUCH": "off",
     "TE_OFF": "on",
-    "THROW_BODY": "off",
+    "THROW_BODY": "on",
     "THROW_REACT": "on",
     "TIGHT_OFF": "on",
     "TKL_EXEC_STATE": "off",
