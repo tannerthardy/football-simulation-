@@ -7,10 +7,13 @@ number make a combination (#1, #2, #3); a whole play is its two sides plus the b
 puts exactly those routes on #1..#k of one side; a whole play is ours if one concept gives both sides (either way
 round).
 
-  python3 -I playbook_coverage.py <bdb dir> <snap.csv> <concepts.json>
+  python3 -I playbook_coverage.py <bdb dir> <snap.csv> <concepts.json> [dropback|all]
+  (dropback, the default: drop-back passes only, population.py; all: every dropback as in the first report.)
   (snap.csv: the tracking rows with frameType SNAP; concepts.json: id -> {strong, weak, back}.)
 """
-import sys, csv, json, math, collections as C
+import sys, os, csv, json, math, collections as C
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from population import nfl_population
 
 # Our route ids -> BDB routeRan labels. Seams and fades are GO in BDB; sit, hook, stick, curl and comeback are HITCH;
 # digs and short ins are IN; shallow and deep crossers are CROSS; a swing is FLAT.
@@ -21,8 +24,11 @@ ROUTE_LABEL = {'slant': 'SLANT', 'flat': 'FLAT', 'hook': 'HITCH', 'go': 'GO', 's
 
 def main():
     D, snap_path, concepts_path = sys.argv[1], sys.argv[2], sys.argv[3]
-    plays = {(r['gameId'], r['playId']): r for r in csv.DictReader(open(f'{D}/plays.csv'))
-             if r['isDropback'] in ('TRUE', 'True') and r['qbSpike'] not in ('TRUE', 'True') and r['playNullifiedByPenalty'] != 'Y'}
+    pop, why = nfl_population(D)
+    mode = sys.argv[4] if len(sys.argv) > 4 else 'dropback'
+    keep = {k for k, v in pop.items() if v == 'keep' or (mode == 'all' and v != 'spike/kneel/sneak/nullified')}
+    plays = {(r['gameId'], r['playId']): r for r in csv.DictReader(open(f'{D}/plays.csv')) if (r['gameId'], r['playId']) in keep}
+    print('== NFL population: ' + ', '.join(f'{k} {v}' for k, v in why.most_common()) + f' (kept: {mode})')
     pos = {r['nflId']: r['position'] for r in csv.DictReader(open(f'{D}/players.csv'))}
     pp = C.defaultdict(dict)
     for r in csv.DictReader(open(f'{D}/player_play.csv')):
@@ -85,7 +91,7 @@ def main():
         if all(c in ours_side for c in key): have_both_sides += 1
     pc = lambda a, b: f'{100 * a / b:.1f}%' if b else '—'
     m = lambda v: sum(v) / len(v) if v else float('nan')
-    print(f'== NFL dropbacks (BDB 2025 weeks 1-9, all dropbacks incl. play action) with at least one labelled route: {n} ({nolabel} with none left out)')
+    print(f'== NFL plays (BDB 2025 weeks 1-9) with at least one labelled route: {n} ({nolabel} with none left out)')
     print('   Sides count route runners only, numbered outside-in among themselves; blockers are left out.')
     print(f'   sides (a side with at least one receiver): {sides_total}; side combination one of ours: {pc(sides_have, sides_total)}')
     print(f'   both sides each a combination one of our concepts runs: {pc(have_both_sides, n)}; the whole play exactly one of our concepts: {pc(have_play, n)}')
