@@ -77,7 +77,7 @@ const STRIDE_SPEED = 0.45;
  * 52%). */
 const THROW_REACT = process.env.THROW_REACT !== '0';
 
-/** QB_RHYTHM (off; QB_RHYTHM=1 turns it on): the progression keeps the QB's
+/** QB_RHYTHM (on by default; QB_RHYTHM=0 turns it off): the progression keeps the QB's
  * rhythm. A read that is not ready yet gets the same look as one that is (no
  * extra 0.6 s wait for a late route), and once the rush he sees or his own
  * clock says time is up (urgency above the pressure mark) his eyes go to the
