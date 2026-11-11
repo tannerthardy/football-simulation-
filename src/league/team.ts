@@ -99,13 +99,14 @@ export function generateTeam(rng: Rng, name: string, abbr: string, opts: { stren
       roster.push(p);
     }
   }
+  return { id: abbr, name, abbr, roster, ...drawCoaching(rng, opts) };
+}
+
+/** The schemes and coaching tendencies, in generateTeam's draw order. */
+function drawCoaching(rng: Rng, opts: { offScheme?: OffScheme; defScheme?: DefScheme } = {}): Pick<Team, 'offScheme' | 'defScheme' | 'coach'> {
   const offScheme = opts.offScheme ?? rng.pick<OffScheme>(['west-coast', 'air-raid', 'spread', 'power', 'wide-zone']);
   const defScheme = opts.defScheme ?? rng.pick<DefScheme>(['4-3', '3-4', 'nickel-heavy']);
   return {
-    id: abbr,
-    name,
-    abbr,
-    roster,
     offScheme,
     defScheme,
     coach: {
@@ -132,6 +133,24 @@ export function generateTeam(rng: Rng, name: string, abbr: string, opts: { stren
 export function withIdentity(team: Team, salt: string | number): Team {
   const id = `${team.id}~${salt}`;
   return { ...team, id, roster: team.roster.map((p) => ({ ...p, id: `${id}-${p.id.slice(p.id.indexOf('-') + 1)}` })) };
+}
+
+/** The same team under other coordinators: offensive and defensive schemes and
+ * every coaching tendency (pass and blitz rates, man rate, coverage tree,
+ * disguise, match rate, shadowing) redrawn from the league's distribution,
+ * seeded by the team id and `salt`. The roster is unchanged. Diagnostic games
+ * reuse two fixed rosters per seed, so without this a card samples two or four
+ * coordinators: the 32-game card of 2026-11-11 had two single-high coverage
+ * trees and no pressure-man or quarters tree
+ * (docs/reviews/2026-11-11-cover-mix.md). */
+export function withCoaching(team: Team, salt: string | number): Team {
+  return { ...team, ...drawCoaching(new Rng(`coach:${team.id}~${salt}`)) };
+}
+
+/** A diagnostic game's team, sampling the league: identity-seeded habits
+ * (withIdentity) and coordinators (withCoaching) drawn afresh per salt. */
+export function leagueSample(team: Team, salt: string | number): Team {
+  return withCoaching(withIdentity(team, salt), salt);
 }
 
 function pickJersey(rng: Rng, pos: Position, used: Set<number>): number {
