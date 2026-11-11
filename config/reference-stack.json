@@ -75,6 +75,7 @@
     "CATCH_HANDS": "off",
     "CATCH_POINT": "off",
     "CATCH_SECURE": "off",
+    "DRIVE_CATCH": "off",
     "OFFICIATE": "off",
     "LOOK_ONCE": "off",
     "FLOW_INTERCEPT": "off",
