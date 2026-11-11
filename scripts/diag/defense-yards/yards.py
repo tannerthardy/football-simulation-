@@ -3,7 +3,8 @@ Same code on NFL tracking (nfl_bdb2025.py common format) and sim plays (sim-expo
 usage: python3 -I scripts/diag/defense-yards/yards.py <plays.jsonl.gz> [...]
 
 Ball carrier: a designed run's carrier from the handoff (or snap), or the catcher (receiver, else target) from
-the catch, until the end. x is yards past the line. Gains in this phase are measured from x_ref = max(0, his x
+the catch, until the end. The catch is the ball's arrival (events.pass_arrived where present): NFL BDB tags its
+catch event 0.3 s (p50) after arrival, and the sim's catch is the arrival. x is yards past the line. Gains in this phase are measured from x_ref = max(0, his x
 at the start), so a run from the backfield and a catch downfield are on one scale.
  1 Run-down: the first frame he is 10 yd past x_ref. Defenders within 5/10 yd; for those within 15 yd, speed as a
    share of his own top speed on the play, his aim (velocity against the bearing to the carrier and to the
@@ -57,7 +58,7 @@ def plays(path):
         if raw['kind'] == 'run' and raw.get('carrier') is not None:
             c = raw['carrier']; k0 = p.k(ev.get('handoff') or 0)
         elif raw['kind'] == 'pass' and 'catch' in ev and (raw.get('receiver') if raw.get('receiver') is not None else raw.get('target')) is not None:
-            c = raw['receiver'] if raw.get('receiver') is not None else raw['target']; k0 = p.k(ev['catch'])
+            c = raw['receiver'] if raw.get('receiver') is not None else raw['target']; k0 = p.k(ev.get('pass_arrived', ev['catch']))
         else:
             yield raw['kind'], p, None, None, None; continue
         last = min(p.frames - 1, p.k(p.end))
