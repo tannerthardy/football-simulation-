@@ -10,7 +10,7 @@ import type { MoveCommand } from '../physics/kinematics.js';
 import { gapY, lineOffset } from '../playbook/alignment.js';
 import { GUN_QB_DEPTH } from '../playbook/formations.js';
 import { getRoute } from '../playbook/routes.js';
-import type { Gap, RunConcept, SkillSlot } from '../playbook/types.js';
+import type { Gap, PassConcept, RunConcept, SkillSlot } from '../playbook/types.js';
 import type { Agent, Behavior } from './agent.js';
 import { isOL, planRunBlocking, playSideSign, PassProtector, ProtectionCoordinator, RpoRunBlocker, RunBlocker } from './behaviors/blocking.js';
 import { BallCarrier } from './behaviors/carrier.js';
@@ -59,6 +59,26 @@ function stanceLeak(a: Agent): number {
  * Pad level then moves at its usual finite rate toward what he asks for.
  * The get-off cost and the vision cost are assumptions, not fitted values. */
 const DEF_STANCE = process.env.DEF_STANCE === '1';
+
+/** BACK_RELEASE (experimental, off): the back's route on a dropback is part
+ * of the concept and the protection count, not a fixed check-release over
+ * the middle.
+ *  - The count is what the offense sees before the snap: defenders in the
+ *    box (0-6 yd off the ball, within 3 yd outside the tackles) against the
+ *    protectors (the five linemen and any end the concept keeps in). With no
+ *    more of them than protectors, the back has no pickup: he releases from
+ *    the snap.
+ *  - Otherwise he checks: he sets beside the QB, takes a man the line hands
+ *    him, and leaves once he sees nobody coming (his man dropped). The read
+ *    is his own picture; there is no fixed wait beyond the read.
+ *  - Either way he releases outside the box, into space: to the flat on his
+ *    side, or on an angle when a teammate already runs that flat.
+ * NFL backs on dropbacks run FLAT 48%, ANGLE 20%, OUT 10% of their routes
+ * (BDB 2025 routeRan); 84% of released backs are wide of the box at the
+ * throw, 15% over the middle (back_release_reference.py). */
+const BACK_RELEASE = process.env.BACK_RELEASE === '1';
+/** The check-releasing back's read: how long before he trusts that no one is coming (s). */
+const CHECK_READ = 0.55;
 const STAND_GETOFF = 0.04;
 function setFrontStance(sim: PlaySim, d: Agent, role: string): void {
   const k = d.slot.split('_')[0];
@@ -166,6 +186,16 @@ export function assignBehaviors(sim: PlaySim): void {
       };
       if (ref === 'B' || ref === 'B2' || !ref) {
         const assign = ref === 'B' ? concept.back : 'check';
+        if (BACK_RELEASE && assign === 'check') {
+          const route = backRelease(sim, concept, a);
+          if (protectionCount(sim, concept) <= 0) {
+            a.behavior = mkRoute(route, 0.1)();
+          } else {
+            coord.add(a);
+            a.behavior = new PassProtector(coord, mkRoute(route, 0, true), CHECK_READ + a.profile.reactionTime + sim.dice('check', a).range(0, 0.15));
+          }
+          continue;
+        }
         if (assign === 'block') {
           coord.add(a);
           a.behavior = new PassProtector(coord);
@@ -651,4 +681,30 @@ function installScreen(sim: PlaySim, concept: NonNullable<PlaySim['offCall']['pa
       a.behavior = new ScreenBlocker(a, blk.job, side, spot, false);
     }
   }
+}
+
+
+/** BACK_RELEASE: box defenders seen before the snap minus protectors (the
+ * five linemen and the ends the concept keeps in). Above zero the back has a
+ * pickup to check. */
+function protectionCount(sim: PlaySim, concept: PassConcept): number {
+  const dir = sim.attackDir('O');
+  const ol = sim.offense.filter(isOL).map(o => o.pos.y);
+  const lo = Math.min(...ol) - 3, hi = Math.max(...ol) + 3;
+  let box = 0;
+  for (const d of sim.defense) {
+    const depth = (d.pos.x - sim.los) * dir;
+    if (depth > 0 && depth <= 6 && d.pos.y >= lo && d.pos.y <= hi) box++;
+  }
+  let prot = ol.length;
+  if (concept.teBlock) for (const o of sim.offense) if (sim.offAlign.spots[o.slot]?.inline) prot++;
+  return box - prot;
+}
+
+/** BACK_RELEASE: the back's release into space: the flat on his side, or an
+ * angle when the concept already sends a receiver to that flat. */
+function backRelease(sim: PlaySim, concept: PassConcept, a: Agent): string {
+  const side = Math.sign(a.pos.y - sim.ballY) || sim.offAlign.strongSign;
+  const routes = Object.values(side === sim.offAlign.strongSign ? concept.strong : concept.weak);
+  return routes.some(r => r === 'flat' || r === 'out' || r === 'quick_out') ? 'angle' : 'back_flat';
 }

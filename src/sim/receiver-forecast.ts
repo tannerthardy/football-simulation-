@@ -102,6 +102,11 @@ export class ReceiverForecast {
 
   constructor(readonly observer: object, readonly prior: InstalledReceiverRoute, private readonly dt: number) {}
 
+  /** The last acquired picture of the receiver (sample time and speed), or null if never seen. */
+  lastPicture(): { sampledAt: number; speed: number } | null {
+    return this.picture ? { sampledAt: this.picture.sampledAt, speed: Math.hypot(this.picture.vel.x, this.picture.vel.y) } : null;
+  }
+
   acquire(p: ReceiverPicture): void {
     if (this.picture && p.sampledAt < this.picture.sampledAt) return;
     this.picture = Object.freeze({ ...p, pos: Object.freeze({ ...p.pos }), vel: Object.freeze({ ...p.vel }) });

@@ -27,6 +27,17 @@ final exam, not the objective function.
   access to another player's private assignment.
 - Use the simplest coherent model that generalizes. Anatomical feet and sole
   models are paused research, not production requirements.
+- Rules that players are coached to follow (coverage rules, protection rules,
+  run fits, route and read rules) are football, not model complexity. Build
+  them as they are taught, from what the player can observe. The preference
+  for simple models applies to machinery we invent, not to the sport's own
+  structure.
+- A coached rule is the player's intent, not a script. Players execute it
+  imperfectly, by their skill and what they perceive, and improvise within
+  it when they think it helps: a receiver bends his stem or changes his
+  footwork and hips against the coverage he sees, leans into a defender and
+  pushes off. Model the rule, then the execution and the freedom around it;
+  both the mistakes and the craft come from the player, not from the rule.
 - **Never ban what works too well.** Do not forbid a technique, cap its
   outcome or steer players away because it is too effective. Find why it
   fails in real football: physical limits, cost, fatigue, information or
@@ -65,6 +76,17 @@ code, per mechanism and per run concept (no raw data needed). A flag is a place
 to look, never a number to tune toward; see [NFL data](docs/NFL_DATA.md). This
 collector runs eight games; reuse compatible reports and do not run it as a
 routine movement/contact check.
+
+NFL comparisons are how we find problems, and they are not all equally
+reliable. Outcomes and direct measurements (rates, speeds, distances, where a
+player is) are strong evidence. Categories we infer from tracking (engaged,
+beaten, open, a route's break, came free, which coverage) are weaker, and
+weaker again in small cells: before building toward such a gap, check on a
+few plays that the operator sees what it claims. Use fine-grained measurement
+to find the cause; then prefer the largest gap in a coarse outcome and the
+missing mechanism behind it over many small corrections. When football built
+as it is coached disagrees with a fine-grained inferred number, the number is
+as likely to be wrong as the football.
 
 Validate physics laws, movement, contacts and decisions before whole games.
 Keep shared capacities fixed during controller work. Never add strength or
