@@ -192,6 +192,14 @@ const SPLIT_BACK_SHARE: Partial<Record<PersonnelId, number>> = { '11': .013, '12
 /** Of the group's runs: 11 36 of 3,036, 12 21 of 1,552, 21 48 of 761. */
 const SPLIT_BACK_RUN_SHARE: Partial<Record<PersonnelId, number>> = { '11': .012, '12': .014, '21': .063 };
 export const WR_NORM: Partial<Record<PersonnelId, number>> = { '10': 69.6, '11': 71.3, '12': 72.0, '20': 71.3, '21': 72.0, '13': 76.6, '22': 76.6 };
+/** COVER_LONG (experimental, off; COVER_LONG=1): the early-down tilt is not
+ * applied on 2nd and 7+. An offence off schedule is passing, and NFL defences
+ * call 2nd and long like 3rd and long (BDB 2025 weeks 1-9, pff_passCoverage:
+ * Cover 3 29.7% on 2nd & 8+, 27.7% on 3rd & 8+, 38.6% on 1st down). The tilt
+ * applied to every 1st and 2nd down, so over 200 league-sampled coordinators
+ * 2nd & 7+ was Cover 3 41.6% (docs/reviews/2026-11-11-cover-mix.md). No new
+ * weights: 2nd & 7+ keeps the base shares and the coordinator's tree. */
+const COVER_LONG = process.env.COVER_LONG === '1';
 const EARLY_DOWN: Record<string, number> = { cover1: .82, cover0: .75, cover2man: .5, cover3: 1.12, cover4: 1.07, cover6: 1.1 };
 const CALL_CHECK: Record<'under' | 'empty', Record<string, number>> = {
   under: { cover3: 1.38, cover4: .8, cover6: .6, cover2: .75, tampa2: .75, cover0: 1.3 },
@@ -709,7 +717,7 @@ export class DefensiveCoordinator {
       else if (toGoal <= 20) fw[1] *= f === 'cover1' ? 1.4 : f === 'cover0' ? 1.5 : 1;
       if (s.hurry && s.scoreDiff < 0 && ['cover2', 'cover4', 'cover6', 'tampa2'].includes(f)) fw[1] *= 2;
       if (COVER_CALL && seenForm) fw[1] *= CALL_CHECK[seenForm][f] ?? 1;
-      if (COVER_CALL && s.down <= 2) fw[1] *= EARLY_DOWN[f] ?? 1;
+      if (COVER_CALL && s.down <= 2 && !(COVER_LONG && s.down === 2 && s.distance >= 7)) fw[1] *= EARLY_DOWN[f] ?? 1;
       fw[1] *= this.learned(f);
     }
     // Variants within the family by tree; spot vs. match by the coach's habit.

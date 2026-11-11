@@ -44,6 +44,7 @@
     "CONTACT_LAYER": "off",
     "COUNTER_C": "on",
     "COUNTER_OFFSET": "on",
+    "COVER_LONG": "off",
     "CUTOFF_RACE": "on",
     "DB_SLOWPLAY": "on",
     "DEF_STANCE": "off",
