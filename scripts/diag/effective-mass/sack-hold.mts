@@ -40,16 +40,20 @@ for (let s = first; s < first + games; s++) {
         rec.peakHeld = Math.max(rec.peakHeld, held);
         if (rec.windupHeld === null && sim.windupAt >= 0 && sim.windupAt >= rec.t0 - 1e-9) rec.windupHeld = r2(held);
         if (rec.qbFell === null && qb.body.support?.state !== 'up') rec.qbFell = r2(sim.t - rec.t0);
-        if (out && rec.releaseHeld === null) { rec.releaseHeld = r2(Math.max(held, rec.lastHeld)); rec.end = 'throw'; rec.dt = r2(sim.t - rec.t0); }
+        // Where the holds on him are (leg share of each grasp on his body: 0 shoulder line, 0.5 waist, 1 legs), his support.
+        const gs = sim.world.joints.filter((j: any) => j.kind === 'grasp' && !j.broken && j.b === qb.body);
+        if (gs.length) { rec.lastLegs = Math.min(...gs.map((j: any) => j.legs ?? 0)); }
+        rec.lastSup = qb.body.support?.state;
+        if (out && rec.releaseHeld === null) { rec.releaseLegs = r2(rec.prevLegs ?? NaN); rec.releaseSup = rec.prevSup; rec.releaseHeld = r2(Math.max(held, rec.lastHeld)); rec.end = 'throw'; rec.dt = r2(sim.t - rec.t0); }
         else if (sim.scrambled && !out) { rec.end = 'scramble'; rec.dt = r2(sim.t - rec.t0); }
-        rec.lastHeld = held;
+        rec.lastHeld = held; rec.prevLegs = rec.lastLegs; rec.prevSup = rec.lastSup;
       }
     };
     const res = sim.run();
     if (rec) { const sack = sim.events.some((e: any) => e.type === 'sack');
       if (sack) { rec.end = 'sack'; const e = sim.events.find((e: any) => e.type === 'sack'); rec.dt = r2(e.t - rec.t0); }
       else if (!rec.end) { rec.end = 'other'; rec.dt = r2(sim.t - rec.t0); }
-      rec.peakHeld = r2(rec.peakHeld); rec.t0 = undefined; rec.lastHeld = undefined;
+      rec.peakHeld = r2(rec.peakHeld); rec.t0 = undefined; rec.lastHeld = undefined; rec.lastLegs = undefined; rec.prevLegs = undefined; rec.lastSup = undefined; rec.prevSup = undefined;
       const ev = sim.events.map((e: any) => e.type); rec.result = ev.includes('interception') ? 'int' : ev.includes('catch') ? 'complete' : ev.includes('incomplete') ? 'incomplete' : null; rec.yards = r2(res?.yards ?? NaN);
       console.log(JSON.stringify(rec)); }
     else console.log(JSON.stringify({ end: 'no-contact', sack: sim.events.some((e: any) => e.type === 'sack') }));

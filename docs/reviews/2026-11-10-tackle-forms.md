@@ -686,3 +686,25 @@ The windup had started before contact in 134 of the 176 (76%). By when the hold 
 - The load exemption in `qb.ts` (a windup in progress is immune to the hold) covers 13 plays; the delivery covers 79.
 - A throw delivered with a man at 0.73 hold still completes 47% at 8.5 yd/att.
 - That is the QB's timing against the rush and what contact does to a throw in motion: `qb.ts` (Coverage) and the ruling (Rules + Coaching). It is not the tackle finish.
+
+### Sacks, attempt 1: `THROW_BODY` (off; physical half; gates registered before the read)
+
+**The NFL reference** (`qb-contact.py`, BDB 2025, 9,713 dropbacks): a defender within 1 yd of the QB before the ball is out on 12.5% of dropbacks.
+- 30% of those are thrown; contact to throw, quartiles 0.0 / 0.3 / 1.1 s.
+- Throws after contact: 33% complete, 4.5 yd/att.
+- Clean throws: 62% complete, 7.2 yd/att.
+
+**Sim, run-ref-19:** 13.0% of dropbacks; 70% thrown (0.0 / 0.1 / 0.1 s); 47% complete at 9.0 yd/att. Clean throws: 64% at 10.6.
+
+**Mechanism.**
+- A hold acts on the throw through what it holds: interference = heldBy × (1 − the highest grasp's leg share).
+- In the load, it pins the arm with that chance, rolled once per throw, and the throw is abandoned.
+- A throw out under a hold is an arm throw to that degree. It uses the flick's existing speed and accuracy costs, so there is no new constant.
+- A flags-off game is bit-identical.
+
+**Gates** (league-sampled sim-export seed 201, 16 games, off against on; sack-hold IRN v COM 16 games):
+1. Thrown after contact moves toward the NFL's 30%.
+2. Completion and yd/att on throws after contact move toward 33% / 4.5.
+3. The sack rate moves toward 6.3%.
+4. No leak into clean-pocket throws: completion and yd/att within noise.
+5. INT rate on hit throws reported.
