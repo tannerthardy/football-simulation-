@@ -901,3 +901,44 @@ NFL-like (4.2% vs 3.8%).
     line, so the joint compresses across his path;
   - and the rusher's crossing speed, which in football comes off the move (a swim or rip trades speed for
     clearance).
+
+## Play-action: the run look by evidence (a2d55456)
+
+The playbook has one generic play-action protection: three PA concepts with a `fake` and `teBlock`, no protection
+type, and no concept using the 'boot' drop. On a fake the linemen differed only by a 0.35 s clock (every lineman's low
+stance, the interior holding at the line, PUNCH's technique clause).
+
+Under PUNCH the look now ends on the first of:
+- contact with his man;
+- a yard past the line;
+- his man's seen pass rush;
+- his patience (0.35-1.0 s by discipline).
+Protection types go to Rules+Coaching's concept queue. Hardened fixtures: more than 50 engaged interior ticks over 8
+PA plays, none in a run look while engaged, and more than 3 distinct end times.
+
+## Layer (ii), attempt 2: PUNCH presses (b0ad8de2)
+
+The hands go 0.1 yd into the man instead of to the touch.
+
+| seed 201 x 8 | pressured | in front | inside (free) | past outside | at the win | edge win | crossing speed / +0.3 s | tackle on at +0.5 s | reach QB after | sacked |
+|---|---|---|---|---|---|---|---|---|---|---|
+| anchored, all flags (attempt 1) | 42.5% | 7.5% | 17.2% (95%) | 4.2% | 16/29/55 | 18% | 4.78 / 4.81 | 9% | 54% | 6.1% |
+| anchored, all flags (attempt 2) | 41.5% | 8.2% | 16.3% (94%) | 5.7% | 16/31/53 | 21% | 4.96 / 4.81 | 9% | 65% | 5.7% |
+| kicking, all flags (attempt 1) | 34.5% | 8.6% | 4.7% (82%) | 3.2% | 19/48/33 | 11% | 4.30 / 4.24 | 25% | 36% | 4.0% |
+| kicking, all flags (attempt 2) | 37.2% | 8.7% | 4.8% (94%) | 4.5% | 25/47/28 | 12% | 4.26 / 4.07 | 10% | 37% | 3.8% |
+| NFL | 32.9% | 3.0% | 6.4% (48%) | 3.8% | 26/27/47 | 13% | 3.81 / 3.69 | 47% | 26% | 6.7% |
+
+inside-probe, anchored, all flags with the press:
+- at the crossing the hands joint is on 72%, N p50 still 0 (compression 21%); control p50 −0.07;
+- the tackle asks for 2.60 yd/s laterally and gets 1.41;
+- the rusher requests 0.90 of his vmax (p25/75 0.55/0.94) at push 0.75, 89% of it across the tackle toward the ball,
+  and achieves 4.63 yd/s. In 75-85% of crossings his last move had lost its roll or he was not in one.
+
+**Two attempts, not repaired: stop and re-diagnose.**
+- The press applies only to the blocker's own hands (control ≥ 0). At the crossing the defender's hands are in
+  control about half the time, so the blocker's hands do not press then.
+- More basically, the rusher sprints across the tackle's face at 0.9 of his top speed on his default between-moves
+  request, not a move.
+- The NFL crosser goes about 1 yd/s slower and is slowed further by the contact. Ours crosses as a free runner and
+  outruns the tackle's feet.
+- So the next item is the one Integration ordered before help: the rusher's between-moves intent.
