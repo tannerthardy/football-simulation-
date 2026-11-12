@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-48",
+  "id": "engine-49",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -113,7 +113,6 @@
     "HANG_AIRBORNE": "off",
     "CATCH_CHOICE": "on",
     "CATCH_SPEED": "on",
-    "IN_STRIDE_CATCH": "off",
     "HANDS_CUE": "on",
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
@@ -224,6 +223,7 @@
     "ZONE_ONBALL": "on",
     "ZONE_RUN": "on",
     "ZONE_SCOOP": "on",
-    "ZONE_WINGS": "on"
+    "ZONE_WINGS": "on",
+    "PURSUIT_FIELD": "on"
   }
 }
