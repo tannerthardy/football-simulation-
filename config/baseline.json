@@ -235,6 +235,7 @@
     "DEF_BELIEF": "0",
     "ACC_BELIEF": "0",
     "INT_BELIEF": "0",
+    "PA_BOOT": "0",
     "BACK_FRONT": "0",
     "READ_PLAN": "0",
     "FORECAST_BREAK": "0",

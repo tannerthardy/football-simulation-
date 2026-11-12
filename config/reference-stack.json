@@ -78,6 +78,7 @@
     "DEF_BELIEF": "on",
     "ACC_BELIEF": "on",
     "INT_BELIEF": "on",
+    "PA_BOOT": "off",
     "ROUTE_CRAFT": "on",
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",
