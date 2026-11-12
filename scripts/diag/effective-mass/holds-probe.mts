@@ -31,6 +31,14 @@ for (let s = first; s < first + games; s++) {
         const f: any = (r.evidence as any)?.facts ?? {};
         const why = f.exception ? `exception: ${f.exception}` : f.judgment ? `judgment: ${f.judgment}` : 'other';
         add(`${type}   - ${r.called ? 'called' : why}`);
+        // HOLD_CALL: committed / material / called (each later stage counts in the earlier ones).
+        if (f.holdStage) {
+          add(`${type} HOLD_CALL committed`);
+          if (f.holdStage !== 'committed') add(`${type} HOLD_CALL material`);
+          if (f.holdStage === 'called') add(`${type} HOLD_CALL called`);
+          if (f.holdStage !== 'committed') add(`${type} HOLD_CALL material: ${f.holdPointOfAttack ? 'at the point of attack' : 'next to the ball'}`);
+          else add(`${type} HOLD_CALL not material: ${!f.holdTowardBall ? 'not going to the ball' : !f.holdOutsideDouble ? 'inside a double' : 'not next to the ball'}`);
+        }
       }
       else add(`${type} other record`);
     }

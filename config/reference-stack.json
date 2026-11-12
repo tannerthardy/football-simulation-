@@ -142,6 +142,7 @@
     "OPEN_HANDS_BACK_ONLY": "off",
     "PAST_ALONG_PATH": "off",
     "PUNCH": "off",
+    "HOLD_CALL": "off",
     "TACKLE_ANCHOR": "off",
     "RUSH_INTENT": "off",
     "LEG_ALLOMETRY": "on",
