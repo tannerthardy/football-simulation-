@@ -130,7 +130,7 @@ const PICTURE_AGE = process.env.PICTURE_AGE === '1';
  * - triangle: three routes read as one picture (eyes on its middle), the best open one taken;
  * - vertical peek: the verticals as one picture, one look, then the back.
  * Pressure and his clock still end any plan (QB_RHYTHM's outlet). Off: `concept.progression`. */
-const READ_PLAN = process.env.READ_PLAN === '1';
+const READ_PLAN = process.env.READ_PLAN !== '0';
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';

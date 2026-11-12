@@ -10,7 +10,7 @@ import type { PassConcept, ReceiverRef } from '../types.js';
 import { compile } from './compile.js';
 import type { PlanStyle } from './types.js';
 
-export const READ_PLAN = process.env.READ_PLAN === '1';
+export const READ_PLAN = process.env.READ_PLAN !== '0';
 
 export interface InstalledPlan {
   style: PlanStyle;
