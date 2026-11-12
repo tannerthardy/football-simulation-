@@ -882,6 +882,17 @@ export const TACKLE_SET = process.env.TACKLE_SET === '1';
  * on past the QB; it ends when the man is out of reach. OPEN_HANDS's frame
  * uses the same test (`gripFor`): the grip lapses when the ride starts. */
 export const PAST_ALONG_PATH = process.env.PAST_ALONG_PATH === '1';
+/** TACKLE_ANCHOR (experimental, off; TACKLE_ANCHOR=1 with TACKLE_SET): once
+ * engaged with an edge rusher the tackle gives no more ground -- he anchors
+ * and plays him from inside half. Retried on top of PAST_ALONG_PATH's ride:
+ * without it, an anchored tackle was beaten the moment the man drew level
+ * (edge win 33%, inside 31% free 98%); with it, the anchored counterfactual
+ * matched the NFL's engaged retreat curve (-2.5/-2.25/-1.75/-0.75 yd/s at
+ * 1.5-3.0+ s; NFL -2.75/-2.25/-1.5/-0.5) but lost inside 18.8% (NFL 6.4%):
+ * nearly head-up when the man crossed his face (docs/reviews/2026-11-12-tackle-set.md). */
+export const TACKLE_ANCHOR = process.env.TACKLE_ANCHOR === '1';
+/** Inside-half leverage: how far inside the man's line to the QB the anchored tackle's body sits (yd). */
+const INSIDE_LEVERAGE = 0.33;
 /** Hips past hips: how far behind the man, along his path, the blocker must be (yd). */
 export const PAST_MARGIN = 0.3;
 /** The ride's push away from the QB, on top of keeping up with the man (yd/s). */
@@ -1253,7 +1264,18 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // then anchor. Mirror with the feet; the hands steer what they control.
   const front = { x: d.pos.x + axis.x * (sep + 0.15), y: d.pos.y + axis.y * (sep + 0.15) };
   const intent = b.passSet;
-  if (intent && intent.outside !== 0 && (d.pos.y - b.pos.y) * intent.outside > 0.15) {
+  // TACKLE_ANCHOR: anchored against an edge rusher he plays him from inside
+  // half -- his body on the man's inside shoulder, a third of a yard inside
+  // the man's line to the QB, better feet holding it nearer -- so an inside
+  // move runs into him, not across his face. Otherwise (and off) he works an
+  // outside rush wide of the launch lane.
+  const anchorRep = TACKLE_ANCHOR && TACKLE_SET && !!intent?.outside && Math.abs(d.pos.y - sim.ballY) > 3;
+  if (anchorRep) {
+    // Across the man's line to the QB, on its inside (the ball's side of it).
+    const sgn = lat.y * -intent!.outside >= 0 ? 1 : -1, k = sgn * INSIDE_LEVERAGE * (0.6 + 0.4 * tb.feet);
+    front.x += lat.x * k; front.y += lat.y * k;
+  }
+  else if (intent && intent.outside !== 0 && (d.pos.y - b.pos.y) * intent.outside > 0.15) {
     // Work an outside rush wide of the launch lane.
     front.y += clamp((intent.laneY - front.y) * 0.5, -0.4, 0.4);
   }
@@ -1307,7 +1329,7 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
     if (vy * line.out > 0) vy = line.out * Math.min(vy * line.out, Math.sqrt(2 * 0.8 * b.profile.brake * Math.max(0, room)));
   }
   intents[b.idx] = {
-    vel: { x: floor !== null ? Math.max(vx, -Math.sqrt(2 * 0.8 * b.profile.brake * Math.max(0, b.pos.x - floor))) : vx, y: vy },
+    vel: { x: anchorRep ? Math.max(vx, 0) : floor !== null ? Math.max(vx, -Math.sqrt(2 * 0.8 * b.profile.brake * Math.max(0, b.pos.x - floor))) : vx, y: vy },
     facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
     push: 1,
     growth,
