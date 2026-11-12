@@ -375,6 +375,20 @@ const HANG_SHARE = 0.5;
  * 450). docs/reviews/2026-11-12-wrap-at-speed.md (ii). */
 const HANG_AIRBORNE = process.env.HANG_AIRBORNE === '1';
 /** The share of a holder's weight hanging on his hold, by his support state. */
+/** Experimental (HANG_GRIP=1, off; read with HANG_AIRBORNE): the hanging
+ * weight goes through the hold. A hold carries a hanging holder's weight only
+ * up to its grip capacity (gripCapacity, off-feet factor included); the
+ * moment it passes to the runner's legs is that carried load times the lever.
+ * Overloaded, his hands slide down the legs (the hold's leg share grows, a
+ * lower hold) at HANG_SLIDE times the overloaded fraction; overloaded at the
+ * ankles, they come off (a torn grip). Off, the hanging weight binds the
+ * stride whatever the grip, so a loose one-arm grab hangs as well as a locked
+ * wrap (three-arm read: unlocked holds bound the stride in the fall 8-10 of
+ * 10-11, locked 3-4 of 16-18). */
+const HANG_GRIP = process.env.HANG_GRIP === '1';
+/** Estimated (HANG_GRIP): how fast overloaded hands slide down a leg, yd/s
+ * at full overload. Not fitted. */
+const HANG_SLIDE = 1.5;
 const hangShare = (state: string | undefined): number => state === 'up' ? 0 : HANG_AIRBORNE && state === 'falling' ? 1 : HANG_SHARE;
 /** Experimental (HELD_SWING=1, off): a leg hold resists the leg's swing by
  * its grip whether or not the holder is on his feet, and the strides it binds
@@ -1470,7 +1484,7 @@ export class World {
     // his own weight and binds nothing this way.
     this.strideHolds.fill(0);
     if (LEGS_HELD) this.baseHolds.fill(0);
-    if (HELD_SWING) this.heldSwing();
+    if (HELD_SWING) this.heldSwing(h);
     else for (const jt of this.joints) {
       if (jt.kind !== 'grasp') continue;
       jt.strideForce = 0;
@@ -2168,7 +2182,7 @@ export class World {
     return HIP_TORQUE_PER_KG * this.mass[i] * this.fat[i] * k;
   }
 
-  private heldSwing(): void {
+  private heldSwing(h = 0): void {
     const moments = new Map<number, Map<number, { m: number; hang: number; grip: number; joints: GraspJoint[]; lock: number }>>();
     for (const jt of this.joints) {
       if (jt.kind !== 'grasp') continue;
@@ -2176,7 +2190,18 @@ export class World {
       if (jt.broken || jt.legs <= 0) continue;
       const ia = this.indexOf(jt.a), ib = this.indexOf(jt.b);
       const lever = 0.55 * clamp(jt.legs, 0, 1) * this.comHeight[ib];
-      const hang = hangShare(jt.a.support!.state) * this.mass[ia] * G * lever;
+      let hangForce = hangShare(jt.a.support!.state) * this.mass[ia] * G;
+      if (HANG_GRIP && hangForce > 0) {
+        // HANG_GRIP: what the hold cannot carry slides his hands down the legs.
+        const cap = this.gripCapacity(jt);
+        if (hangForce > cap) {
+          const over = (hangForce - cap) / hangForce;
+          if (jt.legs >= 1) { jt.broken = true; continue; }
+          jt.legs = Math.min(1, jt.legs + HANG_SLIDE * over * h / (0.55 * this.comHeight[ib]));
+          hangForce = cap;
+        }
+      }
+      const hang = hangForce * lever;
       // Copies of one hold share his grip (gripCapacity), so their grip
       // moments add up to one hold's; his hanging weight hangs once.
       const grip = this.gripCapacity(jt) * clamp(jt.legs, 0, 1) * lever;

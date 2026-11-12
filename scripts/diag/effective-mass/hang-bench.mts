@@ -20,7 +20,7 @@ const rng = new Rng(61);
 const R = derivePhysical(generatePlayer(rng, 'WR')), H = derivePhysical(generatePlayer(rng, 'CB'));
 const VERBOSE = process.env.VERBOSE === '1';
 console.log(`runner ${R.massKg.toFixed(0)} kg, holder ${H.massKg.toFixed(0)} kg`);
-for (const v0 of [5, 7]) for (const legs of [0.5, 0.8]) for (const lock of [0.56, 0.9]) {
+for (const v0 of [5, 7]) for (const legs of [0.5, 0.8]) for (const lock of [0.25, 0.56, 0.9]) {
   const gap = R.radius + H.radius + 0.1;
   const r: any = { pos: { x: 0, y: 0 }, vel: { x: v0, y: 0 }, facing: 0, energy: 1, profile: R, support: S.newSupport(0.3) };
   const h: any = { pos: { x: -gap, y: 0 }, vel: { x: 0.9 * v0, y: 0 }, facing: 0, energy: 1, profile: H, support: S.newSupport(0.5) };
@@ -46,6 +46,6 @@ for (const v0 of [5, 7]) for (const legs of [0.5, 0.8]) for (const lock of [0.56
     if (fell > 0 && t > fell + 0.2) break;
   }
   const hip = w.hipTorque ? w.hipTorque(0) : NaN;
-  console.log(`== v0 ${v0} legs ${legs} lock ${lock} (cap ${f(cap, 0)}): runner ${fell > 0 ? 'down at ' + f(fell) + ' s' : 'up at 1.5 s'}, travel ${f(r.pos.x)} yd, holder landed ${f(landed)} s, stride bound max ${f(boundEver)} | hang moment while airborne: World ${f((process.env.HANG_AIRBORNE === '1' ? 1 : 0.5) * mh * G * lever, 0)} vs reference ${f(mh * G * lever, 0)}; hip torque ${f(hip, 0)}`);
+  console.log(`== v0 ${v0} legs ${legs} lock ${lock} (cap ${f(cap, 0)}, off feet ${f(0.7 * cap, 0)} vs his weight ${f(mh * G, 0)}): ${jt.broken ? 'TORN' : 'held'}, legs at end ${f(jt.legs)} | runner ${fell > 0 ? 'down at ' + f(fell) + ' s' : 'up at 1.5 s'}, travel ${f(r.pos.x)} yd, holder landed ${f(landed)} s, stride bound max ${f(boundEver)} | hang moment while airborne: World ${f((process.env.HANG_AIRBORNE === '1' ? 1 : 0.5) * mh * G * lever, 0)} vs reference ${f(mh * G * lever, 0)}; hip torque ${f(hip, 0)}`);
   if (VERBOSE) console.log(lines.join('\n'));
 }
