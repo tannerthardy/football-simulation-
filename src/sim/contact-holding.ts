@@ -135,7 +135,7 @@ export function captureHoldingStart(sim: PlaySim): HoldingIntervalStart {
     const victimBody = holderBody === joint.a ? joint.b : joint.a;
     const actor = byBody.get(holderBody), victim = byBody.get(victimBody);
     if (!actor || !victim || actor.team === victim.team) continue;
-    if (joint.kind === 'hands' && !(joint.hold > 0)) continue;
+    if (joint.kind === 'hands' && !(joint.hold > 0) && !(OPEN_HANDS && joint.grip)) continue;
     const rep = sim.engagements.find(e => e.hands === joint || [...(e.helperHands?.values() ?? [])].includes(joint as HandJoint))
       ?? (actor.engagement?.defender === victim ? actor.engagement : undefined);
     const actorStart = bodyStart(actor), victimStart = bodyStart(victim);
@@ -226,10 +226,10 @@ export function holdingRestriction(joint: Joint, actor: Agent, victim: Agent,
     force = { x: joint.normalForceOnB.x + joint.tangentForceOnB.x,
       y: joint.normalForceOnB.y + joint.tangentForceOnB.y };
   }
-  // OPEN_HANDS: a declared grab can restrain by dragging along his path as
-  // well as by pulling; the same achieved-restraint margins judge it. Open
-  // hands cannot drag (the World bounds them by friction on their push).
-  if (!(normalForce < -1e-6) && !(OPEN_HANDS && joint.kind === 'hands' && joint.grab)) return null;
+  // OPEN_HANDS: a grip can restrain by dragging along his path as well as by
+  // pulling; the same achieved-restraint margins (and HOLD_LEVERAGE's frame)
+  // judge it. Open hands cannot drag (the World bounds them by friction).
+  if (!(normalForce < -1e-6) && !(OPEN_HANDS && joint.kind === 'hands' && joint.grip)) return null;
   const endRelative = minus(victim.vel, actor.vel);
   const observedSlowdown = escapeSpeed - dot(endRelative, travel);
   if (!(observedSlowdown > 1e-6)) return null;

@@ -396,9 +396,34 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
   joint.push = (c >= 0 ? pressForce(b) : pressForce(d)) * (0.35 + 0.65 * Math.abs(c));
   joint.hold = holding ? armForce(b) * 1.2 : c > 0.3 ? armForce(b) * 0.25 * c : 0;
   joint.steer = c >= 0 ? armForce(b) * (0.15 + 0.55 * c) : armForce(d) * (0.15 + 0.4 * -c);
-  // OPEN_HANDS: holding is the blocker's choice to grab (tryHold); without it
-  // the World lets his hands push and slide only.
-  if (OPEN_HANDS) joint.grab = holding;
+}
+
+/** OPEN_HANDS: the rep's leverage at which the man has left the blocker's
+ * frame -- at or past his hip, the blocker no longer between him and where
+ * he is going (Integration, 2026-11-12; the holding detector's own measure). */
+export const FRAME_PHI = 1;
+/** OPEN_HANDS diagnostic cut (OPEN_HANDS_BACK_ONLY=1): the frame is left only
+ * when the blocker is on the man's back, not when he is past the hip. */
+const OPEN_HANDS_BACK_ONLY = process.env.OPEN_HANDS_BACK_ONLY === '1';
+const leftFrameAt = new WeakMap<HandJoint, number>();
+
+/** OPEN_HANDS: does the holder have fingers on the man's cloth? Inside the
+ * man's frame (the holder on his front or side, by the man's own facing, and
+ * the man not past him: |phi| < FRAME_PHI) a grip is the block itself. Once
+ * the man has left it the grip lapses: the holder lets go as fast as his
+ * discipline lets him (his reaction time, up to twice that when undisciplined)
+ * unless he has chosen to hang on (`declared`, the existing tryHold choice),
+ * which is a hold for the officials to judge. The hand fight and the grip
+ * capacity still break any grip, by the World. */
+export function gripFor(sim: PlaySim, joint: HandJoint, holder: Agent, man: Agent, phi: number | null, declared: boolean): boolean {
+  const bear = Math.atan2(holder.pos.y - man.pos.y, holder.pos.x - man.pos.x);
+  const off = Math.abs(((bear - man.body.facing) * 180 / Math.PI + 540) % 360 - 180);
+  const left = off > 90 || (!OPEN_HANDS_BACK_ONLY && phi !== null && Math.abs(phi) >= FRAME_PHI);
+  if (!left) { leftFrameAt.delete(joint); return true; }
+  if (declared) return true;
+  let at = leftFrameAt.get(joint);
+  if (at === undefined) { at = sim.t; leftFrameAt.set(joint, at); }
+  return sim.t < at + holder.profile.reactionTime * (2 - holder.r('discipline'));
 }
 
 function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoint): void {
@@ -431,6 +456,7 @@ function setRunHelperHands(sim: PlaySim, e: Engagement, h: Agent, joint: HandJoi
     helperTouches.set(h, { rep: e, at: sim.t, pos: { ...d.pos } });
   }
   setContactHands(joint, h, e.defender, 'run', state.control, false);
+  if (OPEN_HANDS) joint.grip = gripFor(sim, joint, h, e.defender, e.phi, false);
 }
 
 function advanceRunHelperHands(sim: PlaySim, e: Engagement): void {
@@ -475,6 +501,8 @@ function setHands(sim: PlaySim, e: Engagement): void {
   // Latched hands can hold and steer; a defender in control steers the
   // blocker off his line just as well.
   setContactHands(hands, b, d, e.type, e.control, e.holding);
+  // OPEN_HANDS: the controlling player's fingers on the other man's cloth.
+  if (OPEN_HANDS) hands.grip = e.control >= 0 ? gripFor(sim, hands, b, d, e.phi, e.holding) : gripFor(sim, hands, d, b, null, false);
   // A landed finesse move has the hands off for its window.
   if (inMove && e.move !== 'bull' && e.move !== 'longarm') {
     hands.steer *= 0.1;
@@ -489,6 +517,7 @@ function setHands(sim: PlaySim, e: Engagement): void {
     j.push = pressForce(h) * 0.8 * support;
     j.steer = armForce(h) * 0.4 * support;
     j.hold = 0;
+    if (OPEN_HANDS) j.grip = gripFor(sim, j, h, d, e.phi, false);
   }
 }
 
