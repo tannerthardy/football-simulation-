@@ -81,3 +81,41 @@ describe('OPEN_CARRY: an underneath carrier keeps his hips as square to the QB a
     expect(crossFacing(slow, at, r, need)).toBeGreaterThan(crossFacing(quick, at, r, need));
   });
 });
+
+describe('OPEN_CARRY: an underneath match carrier inside a zone call keeps his eyes on the QB', () => {
+  async function eyes(flag: string) {
+    vi.resetModules();
+    vi.stubEnv('OPEN_CARRY', flag);
+    const { Rng } = await import('../src/core/rng.js');
+    const { generateTeam, pickDefense, pickOffense } = await import('../src/league/team.js');
+    const { PASS_BY_ID } = await import('../src/playbook/concepts.js');
+    const { COVERAGE_BY_ID, FRONT_BY_ID } = await import('../src/playbook/defense.js');
+    const { FORMATION_BY_ID } = await import('../src/playbook/formations.js');
+    const { PlaySim } = await import('../src/sim/playsim.js');
+    const { ManCoverage } = await import('../src/sim/behaviors/defense.js');
+    const out: boolean[] = [];
+    for (const concept of ['four_verts', 'curl_flat', 'mesh'] as const) for (let seed = 1; seed <= 6; seed++) {
+      const pass = PASS_BY_ID[concept]; if (!pass) continue;
+      const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(81), 'Eyes O', 'EYO', { strength: .55 }), '11'),
+        defense: pickDefense(generateTeam(new Rng(82), 'Eyes D', 'EYD', { strength: .55 }), 'nickel'),
+        offCall: { formation: FORMATION_BY_ID.gun_doubles_11, flip: false, kind: 'pass', pass, label: 'eyes' },
+        defCall: { personnel: 'nickel', front: FRONT_BY_ID.over, coverage: COVERAGE_BY_ID.cover4, pressure: null, zoneStyle: 'match', label: 'eyes' },
+        los: 40, ballY: 26, firstDownX: 50, seed });
+      sim.qb.behavior = { kind: 'qb', update: () => ({ vel: { x: 0, y: 0 } }) } as never;
+      while (sim.t < 2.5) {
+        sim.tick();
+        for (const d of sim.defense) {
+          const b = d.behavior as { sub?: unknown; zoneEyes?: boolean };
+          if (b.sub instanceof ManCoverage && !(b.sub as { opts: { protectDepth?: boolean } }).opts.protectDepth) out.push(b.zoneEyes === true);
+        }
+      }
+    }
+    return out;
+  }
+  it('off: a match man job reads his man; on: he keeps zone eyes', async () => {
+    const off = await eyes('0'), on = await eyes('1');
+    expect(off.length).toBeGreaterThan(0);
+    expect(off.every(v => !v)).toBe(true);
+    expect(on.every(v => v)).toBe(true);
+  }, 120_000);
+});
