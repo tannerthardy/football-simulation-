@@ -19,7 +19,8 @@ import { clamp, logistic, wrapAngle, type Vec2, type Vec3 } from '../../core/vec
 import { arcPoint, dragFreeLaunch, minFlightTime, qbArmSpeed, solveLaunch, DRAG_SPIRAL } from '../../physics/ball.js';
 import type { MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
-import type { DropType, PassConcept, ReceiverRef } from '../../playbook/types.js';
+import type { PassConcept, ReceiverRef } from '../../playbook/types.js';
+import { dropSpec } from '../called-drop.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { Perceived } from '../perception.js';
 import type { PlaySim } from '../playsim.js';
@@ -68,25 +69,6 @@ interface ThrowEval {
   depth: number;
 }
 
-function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
-  switch (drop) {
-    // Depths at the throw match tracking (median 7.9 yd behind the line).
-    case 'quick':
-      return gun ? { x: los - 6.6, time: 0.75 } : { x: los - 5.0, time: 1.05 };
-    case 'gun3':
-      return gun ? { x: los - 7.3, time: 1.0 } : { x: los - 6.2, time: 1.3 };
-    case 'gun5':
-      return gun ? { x: los - 8.0, time: 1.4 } : { x: los - 8.0, time: 1.75 };
-    case 'five':
-      return { x: los - 8.0, time: gun ? 1.4 : 1.8 };
-    case 'seven':
-      return { x: los - 9.5, time: gun ? 1.8 : 2.3 };
-    case 'pa':
-    case 'boot':
-      return { x: los - 8.3, time: 1.95 };
-  }
-  void qbStartX;
-}
 
 
 /** A quarterback's weight going toward the target in his stride (NFL tracking: about 0.4 yd/s at the release). */

@@ -129,6 +129,7 @@
     "FREE_BOUND": "off",
     "SET_DECIDE": "off",
     "SHOULDERS_SET": "off",
+    "TACKLE_SET": "off",
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_STEP": "on",

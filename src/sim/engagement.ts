@@ -38,6 +38,7 @@ import { gapY } from '../playbook/alignment.js';
 import { CF_FLOW } from './counterfactual.js';
 import { connectionGap, contactMotion } from './contact-motion.js';
 import { lineFlow, linePicture, liveGapY } from './live-gaps.js';
+import { calledLaunchX } from './called-drop.js';
 import { requestToCover } from './motion-plan.js';
 import { lineRead, pullers } from './run-fits.js';
 import { observedHolder } from './possession-read.js';
@@ -739,6 +740,26 @@ const RUN_FEEL = process.env.RUN_FEEL !== '0';
 const PASS_KICK = process.env.PASS_KICK !== '0';
 /** How far deeper than the rusher the kick in the rep aims (yd). */
 const RIDE_LEAD = 0.3;
+
+/** TACKLE_SET (experimental, off; TACKLE_SET=1 turns it on): a tackle sets
+ * against an edge rusher to a depth from the call, not the QB's live spot or
+ * the rusher's depth. He knows the called drop, so he knows where the QB will
+ * launch; he kicks with the rusher as before (what he sees of his path), but
+ * never deeper than a body width short of that launch point, and there he
+ * anchors. Off, the kick follows the rusher's depth down to half a yard short
+ * of wherever the QB is, and a QB who drifts takes the tackle with him: at
+ * 3.0 s ours stood deeper than the QB (-8.2 vs -7.8; NFL tackle -6.8, QB -7.8;
+ * docs/reviews/2026-11-12-edge-rush.md). No strength or anchoring capacity
+ * is added: the physics decides whether the anchor holds. */
+export const TACKLE_SET = process.env.TACKLE_SET === '1';
+/** A body width and a step: how far short of the launch point the tackle sets. */
+export const TACKLE_SET_SHORT = 1.0;
+
+/** The deepest x a tackle sets to under TACKLE_SET (null without a called drop). */
+export function tackleFloor(sim: PlaySim): number | null {
+  const launch = calledLaunchX(sim);
+  return launch === null ? null : launch + TACKLE_SET_SHORT;
+}
 /** Experimental (DL_FIGHT=1, off): a defender driven sideways fights pressure. */
 const DL_FIGHT = process.env.DL_FIGHT === '1';
 /** An edge widens with a reach only as far as containing the runner needs
@@ -1034,6 +1055,11 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // of stopping at the set spot while the rusher runs on to his hip.
   if (PASS_KICK && Math.abs(known.pos.y - sim.ballY) > Math.abs(b.pos.y - sim.ballY))
     setDepth = Math.max(setDepth, Math.min(sim.los - known.pos.x + RIDE_LEAD, sim.los - sim.qb.pos.x - 0.5));
+  // TACKLE_SET: no deeper than the set the called drop gives him, short of
+  // the launch point; there he anchors (no kick, no following the rusher's
+  // depth) and the rep is the hands and feet against the rusher's path.
+  const floor = TACKLE_SET && b.passSet?.outside ? tackleFloor(sim) : null;
+  if (floor !== null) setDepth = Math.min(setDepth, sim.los - floor);
   // PASS_KICK: match the rusher's upfield speed as well as close the gap
   // (closing alone trails a moving rusher by his speed x 0.55 s).
   const follow = PASS_KICK && setDepth > (b.passSet?.depth ?? passSetDepth(sim, b)) ? Math.max(0, -known.vel.x) : 0;
@@ -1050,8 +1076,13 @@ function stepPassRep(sim: PlaySim, e: Engagement, intents: Intent[]): void {
   // still meets the whole load (as far as his legs can), so he is walked back,
   // not knocked over.
   const growth = PASS_ANCHOR ? 0 : undefined;
+  // TACKLE_SET: the mirror runs across the rusher's line to the QB; once he
+  // is wide and deep that line is mostly lateral and mirroring along it is a
+  // retreat. He asks for no more depth than he can brake off before the set
+  // (the braking law movement uses, kinematics.ts), and none at it.
+  const vx = lat.x * vLat - kick;
   intents[b.idx] = {
-    vel: { x: lat.x * vLat - kick, y: lat.y * vLat },
+    vel: { x: floor !== null ? Math.max(vx, -Math.sqrt(2 * 0.8 * b.profile.brake * Math.max(0, b.pos.x - floor))) : vx, y: lat.y * vLat },
     facing: Math.atan2(d.pos.y - b.pos.y, d.pos.x - b.pos.x),
     push: 1,
     growth,
