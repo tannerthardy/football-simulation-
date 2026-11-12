@@ -7,6 +7,8 @@
 //  - the tackle: lateral (toward the ball) requested vs achieved speed at the crossing, his leverage 0.3 s before
 //    (his centre inside the rusher's by how much, along the line across the field: + = inside-half leverage);
 //  - the hands joint: present, normal force (compression +), tangential force, grip (OPEN_HANDS);
+//  - the rusher: his requested speed (share of his vmax), push share, the share of his request across the tackle
+//    toward the ball, and his achieved speed;
 //  - help: other OL/TE/RB within 2 yd of the rusher in the 0.5 s after the crossing; whether one then engages him and
 //    when; whether those within 2 yd were already engaged with someone else ('did nothing' = free and not engaging).
 // usage: [flags] node --import tsx scripts/diag/effective-mass/inside-probe.mts [first seed] [games]
@@ -54,7 +56,9 @@ for (let s = first; s < first + games; s++) {
           const toBall = Math.sign(sim.ballY - tk.pos.y) || -out;
           const it = sim.intents[tk.idx];
           const before = h.find((x) => x.t >= sim.t - 0.3) ?? h[0];
-          const row: any = { t: sim.t, engaged: !!e, move: e?.move ?? null, ok: e ? e.moveOk : null, live: e ? sim.t < e.moveUntil && e.moveOk : false,
+          const di = sim.intents[d.idx], ds = di ? Math.hypot(di.vel.x, di.vel.y) : NaN;
+          const cross = di ? (di.vel.y * toBall) / Math.max(1e-6, ds) : NaN;   // share of his request toward the ball (across the tackle)
+          const row: any = { rReq: ds / d.profile.vmax, rPush: di?.push ?? NaN, rCross: cross, rAch: Math.hypot(d.vel.x, d.vel.y), t: sim.t, engaged: !!e, move: e?.move ?? null, ok: e ? e.moveOk : null, live: e ? sim.t < e.moveUntil && e.moveOk : false,
             control: e?.control ?? NaN, ended: end && sim.t - end.t <= 0.3 ? end.why : null,
             latReq: (it?.vel.y ?? 0) * toBall, latAch: tk.vel.y * toBall, levBefore: before.lev,
             hands: !!j, N: j?.normalForce ?? 0, T: j?.tangentForce ?? 0, grip: j ? !!j.grip : null, help: null as any };
@@ -88,5 +92,6 @@ console.log('  at the crossing: ' + Object.entries(mv).sort((a, b) => b[1] - a[1
 console.log(`  tackle lateral toward the ball: requested p50 ${q(R.map((r) => r.latReq)).toFixed(2)}, achieved ${q(R.map((r) => r.latAch)).toFixed(2)} yd/s | his leverage 0.3 s before (rusher's width outside him; + = tackle inside the rusher) p25/50/75 ${q(R.map((r) => r.levBefore), .25).toFixed(2)}/${q(R.map((r) => r.levBefore)).toFixed(2)}/${q(R.map((r) => r.levBefore), .75).toFixed(2)}`);
 const J = R.filter((r) => r.hands);
 console.log(`  hands joint on ${pc(J.length, R.length)}: normal N p25/50/75 ${q(J.map((r) => r.N), .25).toFixed(0)}/${q(J.map((r) => r.N)).toFixed(0)}/${q(J.map((r) => r.N), .75).toFixed(0)} (compression > 50: ${pc(J.filter((r) => r.N > 50).length, J.length)}) | |T| p50 ${q(J.map((r) => Math.abs(r.T))).toFixed(0)} | grip ${pc(J.filter((r) => r.grip).length, J.length)} | control p50 ${q(R.filter((r) => r.engaged).map((r) => r.control)).toFixed(2)}`);
+console.log(`  rusher at the crossing: requests ${q(R.map((r) => r.rReq)).toFixed(2)} of his vmax (p25/75 ${q(R.map((r) => r.rReq), .25).toFixed(2)}/${q(R.map((r) => r.rReq), .75).toFixed(2)}), push ${q(R.map((r) => r.rPush)).toFixed(2)}, across the tackle (toward the ball) ${q(R.map((r) => r.rCross)).toFixed(2)} of it | achieved speed p50 ${q(R.map((r) => r.rAch)).toFixed(2)} yd/s`);
 const Hh = R.filter((r) => r.help);
 console.log(`  help within 2 yd in the next 0.5 s: ${pc(Hh.length, R.length)} (first p50 ${q(Hh.map((r) => r.help.first)).toFixed(2)} s) | engaged him ${pc(Hh.filter((r) => r.help.engaged !== null).length, R.length)} (p50 at ${q(Hh.filter((r) => r.help.engaged !== null).map((r) => r.help.engaged)).toFixed(2)} s) | within 2 yd, free and did nothing: ${pc(Hh.filter((r) => r.help.engaged === null && r.help.free > 0).length, R.length)} | within 2 yd but busy with another man only: ${pc(Hh.filter((r) => r.help.engaged === null && r.help.free === 0).length, R.length)}`);

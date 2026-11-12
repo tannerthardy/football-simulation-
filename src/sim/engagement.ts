@@ -415,6 +415,8 @@ function setContactHands(joint: HandJoint, b: Agent, d: Agent, type: 'pass' | 'r
 export const PUNCH = process.env.PUNCH === '1';
 /** Lockout: the share of his arm the hands reach with the elbows locked. */
 const LOCKOUT = 0.9;
+/** How far the punch drives the hands into the man (yd): a press, not a touch. */
+const PRESS_INTO = 0.1;
 const punchState = new WeakMap<HandJoint, { ext: number; over: number }>();
 
 /** PUNCH is pass-set technique, the blocker's choice from what his job is
@@ -441,7 +443,10 @@ function punch(sim: PlaySim, joint: HandJoint, b: Agent, d: Agent): void {
   if (sim.t < st.over) { joint.extension = bodies + lock; joint.push *= 1 / 3; return; }
   // At air: the man is past his lockout and his hands are already out there.
   if (gap > lock + 0.05 && st.ext >= lock - 0.02) { st.over = sim.t + rt; joint.extension = bodies + lock; joint.push *= 1 / 3; return; }
-  const want = clamp(gap - 0.02, base, lock), step = ARM_SPEED * sim.dt;
+  // A punch presses: the hands go a little into the man (PRESS_INTO), so the joint compresses against him -- across
+  // his path when he comes across the blocker's face -- rather than resting at the touch (attempt 1 aimed at the
+  // gap less 0.02 yd: as the man crossed, N p50 stayed 0).
+  const want = clamp(gap + PRESS_INTO, base, lock), step = ARM_SPEED * sim.dt;
   st.ext = clamp(want, st.ext - step, st.ext + step);
   joint.extension = bodies + Math.max(base, st.ext);
 }
