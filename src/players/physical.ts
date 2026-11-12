@@ -92,6 +92,32 @@ export function solveSprint(tenSplit: number, forty: number): SprintParams {
   }
 }
 
+/** PEDAL_CAP (experimental, off; PEDAL_CAP=1 turns it on): for defensive
+ * backs and linebackers the backpedal is the slowest way to cover ground
+ * backward: the facing cap falls from his side-on value to his backpedal
+ * value past 90 deg instead of rising (the curve stays monotonic from
+ * forward to backpedal). His backpedal is his own side-on cap times the
+ * position's tracked backpedal / side-on ratio, spread by his coverage skill
+ * (+-0.06): a fluid corner pedals faster than a stiff one, always below his
+ * side-on. The ratio, not the tracked fraction of forward speed, because the
+ * tracked fractions are of each player's pre-throw top speed, not his true
+ * top speed (our vmax): within a player the ratio cancels that denominator,
+ * and in yd/s it lands on the tracked pedal (CB 4.9 vs NFL p95 4.5, S 5.1 vs
+ * 5.3, LB 4.4 vs 4.1), where the direct fraction overshot (CB 5.8) and flattened
+ * every S and LB against his side-on cap.
+ * The build-up follows through (1 - v / cap); no separate acceleration term.
+ * NFL envelope, dropbacks snap to release (BDB 2025 weeks 1-2, nflgait.py),
+ * p95 speed by the angle between body and travel as a fraction of his own
+ * pre-throw top forward speed: CB 0.74 side-on, 0.56 backpedal (ratio .76);
+ * S 0.83 / 0.71 (.86; .82 for safeties 10+ yd deep, so not deep drifting
+ * misbinned as pedal); off-ball LB 0.73 / 0.58 (.79). Ours before: CB 0.63
+ * side-on, 0.75 backpedal (S 0.61 / 0.70, LB 0.59 / 0.61). Chosen speeds,
+ * envelope by p95, relative to pre-throw top speed: the shape is the
+ * evidence, the level is estimated. Offensive players are unchanged. */
+const PEDAL_CAP = process.env.PEDAL_CAP !== '0';
+/** PEDAL_CAP: backpedal / side-on cap by position (NFL p95 ratio, nflgait.py). */
+const PEDAL_RATIO: Partial<Record<Position, number>> = { CB: 0.76, S: 0.84, LB: 0.79 };
+
 /** Position-typical backpedal/shuffle technique baselines. */
 const MOVEMENT_TECHNIQUE: Partial<Record<Position, { backpedal: number; shuffle: number }>> = {
   CB: { backpedal: 0.72, shuffle: 0.62 },
@@ -144,8 +170,10 @@ export function derivePhysical(p: Player): PhysicalProfile {
   const tech = MOVEMENT_TECHNIQUE[p.position] ?? { backpedal: 0.55, shuffle: 0.52 };
   const isOL = p.position === 'OT' || p.position === 'OG' || p.position === 'C';
   const moveSkill = isOL ? r01(r.passBlock) : r01(Math.max(r.manCoverage, r.zoneCoverage));
-  const backpedal = clamp(tech.backpedal + 0.1 * (moveSkill - 0.5), 0.4, 0.8);
   const shuffle = clamp(tech.shuffle + 0.06 * (coneScore - 0.5), 0.4, 0.7);
+  const pedalRatio = PEDAL_CAP ? PEDAL_RATIO[p.position] : undefined;
+  const backpedal = pedalRatio === undefined ? clamp(tech.backpedal + 0.1 * (moveSkill - 0.5), 0.4, 0.8)
+    : clamp(shuffle * (pedalRatio + 0.12 * (moveSkill - 0.5)), 0.3, 0.97 * shuffle);
 
   const massKg = lbToKg(m.weightLb);
   const heightYd = inchesToYards(m.heightIn);
