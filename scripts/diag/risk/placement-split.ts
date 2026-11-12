@@ -25,6 +25,13 @@ const concepts = [...Object.values(PASS_BY_ID).filter((c) => !MENU_CONCEPTS.incl
 const P: any = QBPass.prototype, rel = P.release;
 let cur: any = null;
 P.release = function (a: any, sim: any, ev: any) {
+  // The release's draws, in order: the consistency scale, the miss along x, across y, height, the flight time.
+  const dice0 = sim.dice, draws: number[] = [];
+  sim.dice = (k: string, ag: any) => {
+    const d = dice0.call(sim, k, ag);
+    if (k !== 'throw') return d;
+    return new Proxy(d, { get: (o: any, f) => f === 'normal' ? (m: number, sd: number) => { const v = o.normal(m, sd); draws.push(v - m); return v; } : typeof o[f] === 'function' ? o[f].bind(o) : o[f] });
+  };
   const tb = sim.throwBall;
   sim.throwBall = (q: any, r: any, v0: any, pt: any, arr: number) => {
     const dist = Math.hypot(pt.x - q.pos.x, pt.y - q.pos.y);
@@ -34,10 +41,13 @@ P.release = function (a: any, sim: any, ev: any) {
     cur = { pt: { x: pt.x, y: pt.y }, arr, rel: sim.t, from: { x: q.pos.x, y: q.pos.y }, dist, r, u, tight,
       qbSpeed: Math.hypot(q.vel.x, q.vel.y), hit: held || (this.flick ?? 0) > 0.3, flick: this.flick ?? 0,
       sigma0: this.missSigma(a, sim, dist, 0), sigmaU: this.missSigma(a, sim, dist, u) };
-    sim.throwBall = tb;
+    sim.throwBall = tb; sim.dice = dice0;
+    cur.drawMiss = draws.length >= 3 ? Math.hypot(draws[1], draws[2]) : null;
     return tb.call(sim, q, r, v0, pt, arr);
   };
-  return rel.call(this, a, sim, ev);
+  const out = rel.call(this, a, sim, ev);
+  sim.dice = dice0;
+  return out;
 };
 const unit = (v: { x: number; y: number }) => { const s = Math.hypot(v.x, v.y); return s > 0.5 ? { x: v.x / s, y: v.y / s } : { x: 1, y: 0 }; };
 for (const c of concepts) for (const formation of forms) for (const coverage of ['cover1', 'cover2', 'cover3', 'cover4']) for (const seed of seeds) for (const flip of [false, true]) {
@@ -80,7 +90,7 @@ for (const c of concepts) for (const formation of forms) for (const coverage of 
     qb: cur.hit ? 'hit' : cur.qbSpeed > 2.2 ? 'moving' : 'set', flick: +cur.flick.toFixed(2), sigma0: +cur.sigma0.toFixed(2), sigmaU: +cur.sigmaU.toFixed(2),
     motion, recSpeed: +sp.toFixed(1),
     offset: +close.d.toFixed(2), offAlong: +(off.x * u2.x + off.y * u2.y).toFixed(2), offAcross: +Math.abs(-off.x * u2.y + off.y * u2.x).toFixed(2),
-    cmp: !!sim.stats.completed };
+    drawMiss: cur.drawMiss === null ? null : +cur.drawMiss.toFixed(2), cmp: !!sim.stats.completed };
   if (planned) {
     const m = { x: planned.ball.x - cur.pt.x, y: planned.ball.y - cur.pt.y }, u1 = unit(planned.vel);
     Object.assign(row, { aimInAir: planned.inAir, aimMiss: +Math.hypot(m.x, m.y).toFixed(2), aimAlong: +(m.x * u1.x + m.y * u1.y).toFixed(2),
