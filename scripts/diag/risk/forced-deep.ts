@@ -7,8 +7,8 @@
  * catcher when it arrives, and the nearest defender to the receiver and to the ball then (the contest); whether he was moving (speed > 1 yd/s) or held/hit (flick) at the release; completion.
  * Also his own evaluation of the forced throw (P, intRisk, value, aimed depth, the go's separation then) and the
  * play's yards. --natural: nothing is forced; each play's own outcome (target, yards, INT, sack), for the same plays.
- * Arms by environment (e.g. IN_STRIDE_CATCH=1).
- *   [IN_STRIDE_CATCH=1] node --import tsx scripts/diag/risk/forced-deep.ts [--n 60] [--natural] > out/risk/forced-<arm>.jsonl
+ * Arms by environment (e.g. CATCH_CHOICE=0).
+ *   [CATCH_CHOICE=0] node --import tsx scripts/diag/risk/forced-deep.ts [--n 60] [--natural] > out/risk/forced-<arm>.jsonl
  */
 import { QBPass } from '../../../src/sim/behaviors/qb.js';
 import { RouteRunner } from '../../../src/sim/behaviors/receiver.js';

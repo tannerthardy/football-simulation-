@@ -5,7 +5,7 @@
  * the ball against the point he aimed at as it left his hand, split along the throw (+ long, - short) and across
  * it; the receiver against that point, split the same way (+ past the spot, - short of it); the ball to the
  * catcher when it arrives; whether he was moving (speed > 1 yd/s) or held/hit (flick) at the release; completion.
- * Arms by environment (e.g. IN_STRIDE_CATCH=1).
+ * Arms by environment (e.g. CATCH_CHOICE=0).
  * Contest additions (C14, this copy): at arrival the nearest defender to the receiver (distance; position along the
  * ball's incoming direction, + in front of him toward the ball; across), his speed; how the throw ended (the sim's
  * own ball events after the release: catch, pbu (with note), drop, miss, interception); whether the catch went
