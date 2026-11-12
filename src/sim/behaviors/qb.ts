@@ -211,6 +211,17 @@ const TURN_RATE = 190 * Math.PI / 180;
  * - vertical peek: the verticals as one picture, one look, then the back.
  * Pressure and his clock still end any plan (QB_RHYTHM's outlet). Off: `concept.progression`. */
 const READ_PLAN = process.env.READ_PLAN !== '0';
+/** HOT_LOOK (experimental, off; HOT_LOOK=1 turns it on): the hot throw costs the look. Under an alarm he picks
+ * where to throw from his pictures of the receivers (as old as his last look at each), not from the field as it is.
+ * A target inside his clear look is thrown after the windup, as before; anyone else first needs his eyes there:
+ * the head turn (HEAD_RATE) and a glance to take him in (decision-making and awareness), while he evades. Then the
+ * throw is judged again on the fresh picture; if it has gone, he chooses again or is left with no throw (Flex's
+ * extend / throw away / take the sack). Nothing is barred. Also fixes the plan's gaze: when pressure sends his eyes
+ * to the back, a vertical peek or triangle is closed and an unread key is no longer watched, so his eyes are where
+ * his read is. Off: the instant best of every receiver on the alarm tick, wherever he is looking. */
+const HOT_LOOK = process.env.HOT_LOOK === '1';
+/** HOT_LOOK: head-and-eye turn rate to a new target (an assumed 400 deg/s; sport head turns peak at 300-600). */
+const HEAD_RATE = 400 * Math.PI / 180;
 
 export class QBPass implements Behavior {
   readonly kind = 'qb-pass';
@@ -220,6 +231,14 @@ export class QBPass implements Behavior {
   private readonly dropY: number;
   private reads: Agent[] = [];
   private readIdx = 0;
+  /** Diagnostics only (no effect on play): the first hot alarm, the hot path's source and its pick. */
+  alarmAt: number | null = null;
+  alarmAges: (number | null)[] | null = null;
+  hotLooks = 0;
+  hotNone = 0;
+  /** HOT_LOOK: the look under way to a hot target: eyes arrive at eyesAt, the man is taken in at seenAt. */
+  private look: { target: Agent; from: Vec2; eyesAt: number; seenAt: number } | null = null;
+  hotPick: { t: number; slot: string; alarmAt: number | null; looked: number; onRead: boolean; facingOff: number; gazeOff: number; P: number; intRisk: number } | null = null;
   private readStart = -1;
   private setAt = -1;
   private pending: ThrowEval | null = null;
@@ -608,6 +627,8 @@ export class QBPass implements Behavior {
       if (back < 0 || back > this.readIdx) {
         this.readIdx = back > this.readIdx ? back : this.reads.length - 1;
         this.readStart = t;
+        // HOT_LOOK: his eyes leave the plan's picture for the back (off, the peek or triangle kept his gaze).
+        if (HOT_LOOK) this.triDone = true;
       }
     }
     const read = this.reads[this.readIdx];
@@ -697,9 +718,26 @@ export class QBPass implements Behavior {
     }
 
     // Hot / panic: under imminent pressure, find anything.
+    // HOT_LOOK: a look finished after the alarm eased leaves his eyes there; the read logic takes over again.
+    if (this.look && pressure.time >= 0.45 && sim.t >= this.look.seenAt) this.look = null;
     if (pressure.time < 0.45) {
-      const hot = this.hotThrow(a, sim);
-      if (hot) return this.startThrow(a, sim, hot);
+      this.alarmAt ??= sim.t;
+      if (this.alarmAges === null) this.alarmAges = this.reads.map((r) => {
+        const p = this.receiverForecasts.get(r)?.lastPicture();
+        return p ? +(sim.t - p.sampledAt).toFixed(2) : null;
+      });
+      const hot = HOT_LOOK ? this.hotLook(a, sim) : this.hotThrow(a, sim);
+      if (hot === 'look') return this.evade(a, sim, pressure.agent);
+      if (hot === null) this.hotNone++;
+      if (hot) {
+        // Diagnostic record (no effect): the hot throw's source, whether it went to the read he was on, and how far
+        // his facing and his gaze were from it.
+        const bearing = Math.atan2(hot.point.y - a.pos.y, hot.point.x - a.pos.x), gaze = this.gazePoint(sim);
+        const off = (ang: number) => Math.abs(Math.atan2(Math.sin(ang - bearing), Math.cos(ang - bearing))) * 180 / Math.PI;
+        this.hotPick = { t: sim.t, slot: hot.target.slot, alarmAt: this.alarmAt, looked: this.hotLooks, onRead: hot.target === this.reads[this.readIdx],
+          facingOff: off(a.body.facing), gazeOff: off(Math.atan2(gaze.y - a.pos.y, gaze.x - a.pos.x)), P: hot.P, intRisk: hot.intRisk };
+        return this.startThrow(a, sim, hot);
+      }
       if (this.shouldScramble(a, sim, true)) return this.scramble(a, sim);
       // Veterans throw it away (or at a back's feet) rather than eat a sack.
       if (sim.t > this.snapAt + this.drop.time + 0.3 && sim.dice('qb', a).chance(0.06 + 0.12 * a.r('awareness') + (this.outsidePocket(a, sim) ? 0.1 : 0))) return this.throwAway(a, sim);
@@ -727,6 +765,8 @@ export class QBPass implements Behavior {
    * not started (null: the decision below, move, escape or trapped, answers
    * instead). Off: the throw starts. */
   private startIfFinish(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand | null {
+    // HOT_LOOK: while his eyes are on the way to a hot target, a read they have left is not thrown blind.
+    if (HOT_LOOK && this.look && !this.inClearLook(a, sim, ev.target)) return null;
     if (SET_DECIDE && !this.canFinish(a, sim)) { this.noFinish++; return null; }
     return this.startThrow(a, sim, ev);
   }
@@ -738,7 +778,34 @@ export class QBPass implements Behavior {
     return best && best.P > 0.3 && best.intRisk < 0.18 ? best : null;
   }
 
+  /** HOT_LOOK: the hot throw, paying for the look. The choice is made on his pictures; a target outside his clear
+   * look is looked at first ('look': his eyes are on the way, he evades meanwhile), then judged on what he sees. */
+  private hotLook(a: Agent, sim: PlaySim): ThrowEval | 'look' | null {
+    const ok = (ev: ThrowEval | null) => !!ev && ev.P > 0.3 && ev.intRisk < 0.18;
+    if (this.look) {
+      if (sim.t < this.look.seenAt) return 'look';
+      const r = this.look.target;
+      this.look = null;
+      const ev = this.evaluate(a, sim, r, 1);
+      if (ok(ev)) return ev;
+    }
+    const best = this.hotThrow(a, sim);
+    if (!best) return null;
+    if (this.inClearLook(a, sim, best.target)) return best;
+    // His eyes go there: the head turn from where he is looking, then a glance to take the man and his defender in.
+    const gaze = this.gazePoint(sim), to = this.receiverForecasts.get(best.target)?.predict(sim.t, 0) ?? best.target.pos;
+    const turn = Math.abs(wrapAngle(angleTo(a.pos, to) - angleTo(a.pos, gaze))) / HEAD_RATE;
+    const glance = 0.15 + 0.2 * (1 - a.r('decisionMaking')) + 0.1 * (1 - a.r('awareness'));
+    this.look = { target: best.target, from: gaze, eyesAt: sim.t + turn, seenAt: sim.t + turn + glance };
+    this.hotLooks++;
+    return 'look';
+  }
 
+  /** Whether his picture of `r` sits inside his clear look now (qbmind's clear sector). */
+  private inClearLook(a: Agent, sim: PlaySim, r: Agent): boolean {
+    const gaze = this.gazePoint(sim), p = this.receiverForecasts.get(r)?.predict(sim.t, 0) ?? r.pos;
+    return Math.abs(wrapAngle(angleTo(a.pos, p) - angleTo(a.pos, gaze))) < this.mind.clearHalf * (0.65 + 0.35 * a.mind.focus);
+  }
 
   /** QB_RHYTHM: the outlet (last read) when it is a live, ready option that
    * clears his ordinary bar now; null otherwise. */
@@ -758,10 +825,12 @@ export class QBPass implements Behavior {
     };
     if (this.lookOff && sim.t < this.lookOff.until) return heldPoint(this.lookOff.decoy);
     if (this.phase === 'windup' && this.pending) return this.pending.point;
+    // HOT_LOOK: on the way to a hot target his eyes leave where they were at the head's turn.
+    if (this.look) return sim.t < this.look.eyesAt ? this.look.from : heldPoint(this.look.target);
     // READ_PLAN: a key is watched from the drop until it is read (HonestNFL 135: the corner during the drop);
     // a triangle is one picture, its middle.
     const k = this.plan?.key;
-    if (k && !this.keyRead && this.phase !== 'snap') {
+    if (k && !this.keyRead && this.phase !== 'snap' && (!HOT_LOOK || this.readIdx === 0)) {
       const lo = heldPoint(k.low), hi = heldPoint(k.high);
       return { x: (lo.x + hi.x) / 2, y: (lo.y + hi.y) / 2 };
     }
@@ -1162,6 +1231,7 @@ export class QBPass implements Behavior {
 
   private startThrow(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand {
     this.phase = 'windup';
+    this.look = null;
     this.pending = ev;
     const base = this.windup(a);
     // SHOULDERS_SET: the motion lasts at least the turn it has to make.
