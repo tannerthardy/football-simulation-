@@ -243,7 +243,7 @@ const READ_PLAN = process.env.READ_PLAN !== '0';
  * extend / throw away / take the sack). Nothing is barred. Also fixes the plan's gaze: when pressure sends his eyes
  * to the back, a vertical peek or triangle is closed and an unread key is no longer watched, so his eyes are where
  * his read is. Off: the instant best of every receiver on the alarm tick, wherever he is looking. */
-const HOT_LOOK = process.env.HOT_LOOK === '1';
+const HOT_LOOK = process.env.HOT_LOOK !== '0';
 /** DEF_BELIEF (experimental, off; DEF_BELIEF=1 turns it on): his belief about how defenders close on a throw, in the
  * window. Off, every defender keeps his course until his start (docs/reviews/2026-11-12-window-defenders.md: on
  * engine-40 that under-rates the closing of a man in coverage on the target by 0.3-0.7 yd). On: a defender within
