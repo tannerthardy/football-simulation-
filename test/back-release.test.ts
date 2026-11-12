@@ -55,7 +55,7 @@ describe('BACK_RELEASE: the protection count decides whether the back checks or 
 
   it('with the flag off the installed check-release is unchanged against either box', async () => {
     for (const [p, c] of [['nickel', 'cover3'], ['dime', 'cover2']] as const) {
-      const b = await backOn(undefined, p, c);
+      const b = await backOn('0', p, c);
       expect(b.kind).toBe('pass-pro');
       expect(b.check).toBe(true);
     }
