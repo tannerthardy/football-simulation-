@@ -17,7 +17,7 @@ import type { Agent } from './agent.js';
 import type { Vec2 } from '../core/vec.js';
 import type {Perceived} from './perception.js';
 import { movementObjective } from './movement-objective.js';
-import { containCoverage } from './coverage-space.js';
+import { containCoverage, isCarrierPursuit } from './coverage-space.js';
 import { localTrafficRoute } from './traffic-route.js';
 
 /** RB_STEER (default off): a ball carrier (or a lead back) whose held
@@ -319,6 +319,11 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
     const ia = intents[i];
     if (!ia || ia.free || ia.dive || a.body.support?.state !== 'up') { passingFrames.delete(a); continue; }
     const capacity=availability(a.body.support,supportParams(a.profile),fatigueFactor(a.body.energy));
+    // SPACING_SMOOTH: a player chasing the ball (the carrier, a pursuer, a
+    // coverage player on a seen carrier) runs past teammates fast; a weighted
+    // limit changes with his swept miss every tick, so he keeps the gate.
+    const smooth=SPACING_SMOOTH&&!(a.behavior.kind==='carrier'||a.behavior.kind==='pursuit'
+      ||a.behavior.kind==='track'||isCarrierPursuit(ia));
     let vx = ia.vel.x, vy = ia.vel.y;
     const peers:PeerPicture[]=[];
     const limits:ClosingLimit[]=[];
@@ -355,7 +360,7 @@ export function spaceTeammates(agents: readonly Agent[], intents: Intent[],
       // SPACING_SMOOTH: how much of the limit applies, 0 at either gate rising
       // to all of it SPACING_RAMP inside both (all of it when touching). The
       // limit never reaches past the gates it had; it only stops switching.
-      const weight=!SPACING_SMOOTH||gap<=0?1
+      const weight=!smooth||gap<=0?1
         :Math.min(1,(aware-gap)/SPACING_RAMP)*Math.min(1,(touch-miss)/SPACING_RAMP);
       // Budget headway plus the distance this body needs to remove relative
       // speed. Do not assume the blocker, grounded helper or occupied tackler
