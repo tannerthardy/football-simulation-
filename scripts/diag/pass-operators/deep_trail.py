@@ -42,6 +42,15 @@ def rows(path):
         tx0, ty0 = p.pos(t, ka); u = ((tx0 - ax_) * lx + (ty0 - ay_) * ly) / LL
         miss = math.hypot(ax_ + u * lx - tx0, ay_ + u * ly - ty0)
         if miss > 1.5: continue
+        # Touched: the ball's own track breaks (turns > 25 deg or loses > 35% of its speed) within 0.3 s of arrival on
+        # a throw that was not caught. A touched ball's later path says nothing about where the throw was going, and
+        # tracking has no height to extrapolate it, so its placement is reported at the touch, separately.
+        def bv(k): return (bxy[k][0] - bxy[k - 1][0], bxy[k][1] - bxy[k - 1][1])
+        touched = False
+        if 'catch' not in ev:
+            for k in range(max(kf0 + 2, ka), min(len(bxy) - 1, ka + 4)):
+                a_, b_ = bv(k), bv(k + 1); na, nb = math.hypot(*a_), math.hypot(*b_)
+                if na > 0.05 and (nb < 0.65 * na or (nb > 1e-6 and ang(a_[0], a_[1], b_[0], b_[1]) > 25)): touched = True; break
         D = [d for d in p.who('D') if p.pos(d, ka)[0] is not None and p.pos(d, k5)[0] is not None]
         if not D: continue
         d = min(D, key=lambda x: p.dist(t, x, ka)); sep = p.dist(t, d, ka)
@@ -60,7 +69,11 @@ def rows(path):
         # Strict on-target: the ball at arrival within 1 yd along his running direction of where he actually is, and
         # within 0.5 yd across it.
         balong = (bxy[ka][0] - cx) * ux + (bxy[ka][1] - cy) * uy; bacross = abs(-(bxy[ka][0] - cx) * uy + (bxy[ka][1] - cy) * ux)
-        o = dict(id=r.get('id'), ka=ka, t=t, d=d, balong=balong, bacross=bacross, strict=abs(balong) <= 1 and bacross <= 0.5, place=place, rshort=short, miss=miss, sep=sep, fam=coverage_family((r.get('cell') or {}).get('coverage')) or 'other', comp='catch' in ev,
+        # The same against his velocity at the release (the QB's moment): held from the throw to arrival.
+        (qx, qy) = p.pos(t, kf0); qvx, qvy = p.velocity(t, kf0); qs = math.hypot(qvx, qvy) or 1
+        gx, gy = qx + qvx * (ka - kf0) * p.dt, qy + qvy * (ka - kf0) * p.dt
+        place_rel = ((bxy[ka][0] - gx) * qvx + (bxy[ka][1] - gy) * qvy) / qs
+        o = dict(place_rel=place_rel, flight=(ka - kf0) * p.dt, touched=touched, id=r.get('id'), ka=ka, t=t, d=d, balong=balong, bacross=bacross, strict=abs(balong) <= 1 and bacross <= 0.5, place=place, rshort=short, miss=miss, sep=sep, fam=coverage_family((r.get('cell') or {}).get('coverage')) or 'other', comp='catch' in ev,
                  pbu='pbu' in ev or 'pass_deflected' in ev, intc='interception' in ev or 'pass_intercepted' in ev,
                  along5=along5, along=along, across=across, aimC=ang(mx, my, cx - d0x, cy - d0y), aimR=ang(mx, my, rx5 - d0x, ry5 - d0y),
                  close=(math.hypot(d0x - cx, d0y - cy) - math.hypot(d1x - cx, d1y - cy)) / 0.5, dv=p.speed(d, ka) - p.speed(d, k5),
@@ -89,6 +102,11 @@ for path in sys.argv[1:]:
         print(f"      ball lands vs his full-speed spot (along his path): p25/p50/p75 {q([o['place'] for o in w], .25):+.2f} / {q([o['place'] for o in w]):+.2f} / {q([o['place'] for o in w], .75):+.2f} yd"
               f" | short of it by > 1 yd {100*sum(o['place'] < -1 for o in w)/n:.0f}%, within 1 yd {100*sum(abs(o['place']) <= 1 for o in w)/n:.0f}%, past by > 1 yd {100*sum(o['place'] > 1 for o in w)/n:.0f}%"
               f" | he arrived vs that spot p50 {q([o['rshort'] for o in w]):+.2f} yd")
+        tw = [o for o in w if o['touched']]; uw = [o for o in w if not o['touched']]
+        print(f"      TOUCHED (ball track breaks within 0.3 s of arrival, not caught): {100*len(tw)/n:.0f}% of throws (n {len(tw)})")
+        for lab, m in (('untouched', uw), ('touched (at the touch)', tw)):
+            if m: print(f"        {lab:22} vs held-from-RELEASE spot: p50 {q([o['place_rel'] for o in m]):+.2f}: short >1 {100*sum(o['place_rel'] < -1 for o in m)/len(m):3.0f}%, within {100*sum(abs(o['place_rel']) <= 1 for o in m)/len(m):3.0f}%, past >1 {100*sum(o['place_rel'] > 1 for o in m)/len(m):3.0f}% | flight p50 {q([o['flight'] for o in m]):.2f} s")
+            if m: print(f"        {lab:22} n {len(m):4} | comp {100*sum(o['comp'] for o in m)/len(m):3.0f}% | ball vs full-speed spot p50 {q([o['place'] for o in m]):+.2f}: short >1 {100*sum(o['place'] < -1 for o in m)/len(m):3.0f}%, within {100*sum(abs(o['place']) <= 1 for o in m)/len(m):3.0f}%, past >1 {100*sum(o['place'] > 1 for o in m)/len(m):3.0f}% | strict {100*sum(o['strict'] for o in m)/len(m):3.0f}% (comp there {100*sum(o['comp'] for o in m if o['strict'])/max(1,sum(o['strict'] for o in m)):.0f}%)")
         st = [o for o in w if o['strict']]
         if st: print(f"      STRICT (ball within 1 yd along / 0.5 across of where he is): {100*len(st)/n:.0f}% of throws, n {len(st)} | comp {100*sum(o['comp'] for o in st)/len(st):.0f}% | carried past {100*sum(o.get('end') == 'carried past' for o in st)/len(st):.0f}%, deflected {100*sum(o.get('end') == 'deflected' for o in st)/len(st):.0f}%, fell at him {100*sum(o.get('end') == 'fell at him' for o in st)/len(st):.0f}%"
                      f" | carried past among ALL pooled throws that are strict: {100*sum(o.get('end') == 'carried past' for o in st)/n:.0f}% of throws")
