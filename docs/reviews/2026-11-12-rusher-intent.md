@@ -103,3 +103,32 @@ Engaged edge rusher (rusher-engaged.py), toward the QB / across:
   (the walk-back diagnosed earlier), now loaded by a rusher who pushes, not the rusher's intent.
 - Two attempts. The mechanism (his request) is repaired in the direct measurement; the outcome waits on the tackle's
   side.
+
+# Set A (PAST_ALONG_PATH + OPEN_HANDS + PUNCH): 2 x 16 read and holds, on engine-47 (31b41113)
+
+Flags off are bit-identical to develop d6e3f56f. Seeds 201-216 and 301-316; per-seed values are 201 / 301.
+
+| arm | pressured (pooled) | sacked (pooled) | in front at pressure | inside (free) | past outside | at the win past/front/inside | edge win | across-face crossers reach the QB |
+|---|---|---|---|---|---|---|---|---|
+| off | 38.4% | 6.8% | 11.8 / 15.0% | 6.5 / 9.5% (89-90%) | 1.6 / 2.4% | 7/59/34, 9/54/37 | 13 / 17% | 36 / 39% |
+| A | 33.7% | 5.2% | 8.8 / 10.8% | 5.0 / 7.9% (89-90%) | 2.7 / 3.2% | 15/54/31, 14/49/37 | 11 / 14% | 32 / 30% |
+| A + TACKLE_SET + RUSH_INTENT | 43.6% | 6.9% | 11.7 / 12.4% | 6.3 / 7.9% (89-92%) | 5.5 / 10.1% | 22/49/28, 30/42/28 | 15 / 21% | 59 / 52% |
+| NFL | 32.9% | 6.7% | 3.0% | 6.4% (48%) | 3.8% | 26/27/47 | 13% | 20% |
+
+Holding, offence (holds-probe.mts, seeds 101-108), per team-game, called:
+- off: run 1.00, pass 0;
+- A: run 2.81, pass 0.75, total 3.56;
+- earlier, OPEN_HANDS alone with the phi frame and the anticipated release: 0.94;
+- NFL 2022: about 1.1 accepted.
+Hang-on choices: about 1.8-3.1 in every arm.
+
+**Reading.**
+- A moves every pass gate toward the NFL: pressured 38.4 → 33.7% (NFL 32.9), the corner win doubles at the win, and
+  across-face crossers reach the QB less.
+- Sacks fall 6.8 → 5.2% (NFL 6.7).
+- A + TACKLE_SET + RUSH_INTENT overshoots pressure (43.6%), as expected while the anchor waits.
+- **A is blocked as it stands by holding: 3.56 calls a team-game, 2.81 of them on runs.** Under PAST's frame (past
+  along the man's path of travel) a run blocker's grip on a defender moving along the line -- a seal or reach on a
+  pursuer -- counts as the man having left the frame. The grip lapses, or is kept and judged, much more often.
+  Integration predicted this risk for the path-of-travel frame on seals and reaches. Next: which run blocks the calls
+  come from, before any PR.
