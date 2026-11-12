@@ -60,6 +60,36 @@ export function believesRun(sim: PlaySim, a: Agent): boolean {
  * foot hits, then plant"), as tracked underneath defenders do (BDB 2025: hook
  * 4.4 -> 6.6 yd by 2.5 s on dropbacks; docs/reviews/2026-11-09-coverage-spacing.md). */
 const ZONE_SETTLE = process.env.ZONE_SETTLE !== '0';
+/** SEEN_EYES (experimental, off; SEEN_EYES=1 turns it on): a zone defender
+ * reads the QB's look from what he sees of him, not from the QB's internal
+ * read target (sim.qbEyes, the exact receiver, instantly, for every defender
+ * whether or not he can see the QB). He must have the QB in view (within
+ * 100 deg of his facing); then the receiver he takes the QB to be looking at
+ * is the one, in his own delayed picture, nearest the QB's perceived facing,
+ * within 20 deg (12 deg when he is 20+ yd from the QB). Otherwise no read. */
+const SEEN_EYES = process.env.SEEN_EYES !== '0';
+const eyesCache = new WeakMap<Agent, { t: number; r: Agent | null }>();
+/** SEEN_EYES: the receiver this defender sees the QB looking at, or null. */
+export function seenQbEyes(a: Agent, sim: PlaySim): Agent | null {
+  if (!SEEN_EYES) return sim.qbEyes;
+  const c = eyesCache.get(a);
+  if (c && c.t === sim.t) return c.r;
+  let r: Agent | null = null;
+  const q = sim.see(a, sim.qb);
+  const toQB = Math.atan2(q.pos.y - a.pos.y, q.pos.x - a.pos.x), dist = Math.hypot(q.pos.x - a.pos.x, q.pos.y - a.pos.y);
+  if (Math.cos(a.body.facing - toQB) > Math.cos(100 * Math.PI / 180)) {
+    const tol = Math.cos((dist > 20 ? 12 : 20) * Math.PI / 180);
+    let best = tol;
+    for (const o of sim.offense) {
+      if (o === sim.qb || ['LT', 'LG', 'C', 'RG', 'RT'].includes(o.slot)) continue;
+      const p = sim.see(a, o).pos;
+      const cos = Math.cos(q.facing - Math.atan2(p.y - q.pos.y, p.x - q.pos.x));
+      if (cos > best) { best = cos; r = o; }
+    }
+  }
+  eyesCache.set(a, { t: sim.t, r });
+  return r;
+}
 
 export function knowsPass(sim: PlaySim, a: Agent): boolean {
   if (a.recog) return a.recog.read === 'pass';
@@ -634,6 +664,32 @@ const MAN_PHASE = process.env.MAN_PHASE === '1';
  * -0.1, 29%; C3/C4 2.3-2.4, +0.2-0.3, 27-42%), the largest group pedalling on
  * the back (man:RB) inside a zone call. */
 const CUSHION_NEED = process.env.CUSHION_NEED !== '0';
+/** LOOK_ONCE (off; LOOK_ONCE=1 turns it on; C15, estimated): whether a defender
+ * near the ball's path gets his head around to find it is one event per flight,
+ * not a fresh dice roll every tick. Off, the 0.15-0.65 chance was re-rolled at
+ * 20 Hz, so nearly every such defender was "looking" within about 0.5 s
+ * whatever his ball skills (half the defenders who faced the ball at the catch
+ * on the panel did so through this tag). On, the first tick he is near the
+ * path he draws once: with a chance of 0.25 + 0.6 x ballSkills he finds it,
+ * after a turn time of 0.25 s plus up to 0.35 s for a defender whose back is
+ * to the passer (body facing vs the ball's origin), shortened by ball skills;
+ * otherwise he plays this flight without the look. */
+const LOOK_ONCE = process.env.LOOK_ONCE === '1';
+const lookPlan = new WeakMap<Agent, { flight: number; at: number }>();
+function findsBall(a: Agent, sim: PlaySim): boolean {
+  const ball = sim.ball;
+  if (ball.kind !== 'air') return false;
+  let plan = lookPlan.get(a);
+  if (!plan || plan.flight !== ball.releaseT) {
+    const bs = a.r('ballSkills');
+    const from = Math.atan2(ball.thrower.pos.y - a.pos.y, ball.thrower.pos.x - a.pos.x);
+    const away = (1 - Math.cos(a.body.facing - from)) / 2;
+    const finds = sim.dice('look', a).chance(0.25 + 0.6 * bs);
+    plan = { flight: ball.releaseT, at: finds ? sim.t + (0.25 + 0.35 * away) * (1.2 - 0.4 * bs) : Infinity };
+    lookPlan.set(a, plan);
+  }
+  return sim.t >= plan.at;
+}
 
 /** Man coverage with press/off technique, leverage and hip turn. */
 export class ManCoverage implements Behavior {
@@ -1036,6 +1092,7 @@ export class ZoneCoverage implements Behavior {
     const [ylo, yhi] = this.band;
     const facingQB = angleTo(a.pos, qb.pos);
     watch(sim, a, qb);
+    const qbEyes = seenQbEyes(a, sim);
     // Zone drops are run under control, eyes on the QB.
     // Until he's read pass, an underneath defender only eases into his drop
     // (read step): how far he commits depends on how sure he is.
@@ -1099,7 +1156,7 @@ export class ZoneCoverage implements Behavior {
         a.mind.setAimTarget('zone-drive', null);
         let tgt = lm;
         // Spot-drop safeties play the QB's eyes harder (and get moved by look-offs).
-        if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
+        if (qbEyes) tgt = lerp(lm, qbEyes.pos, (spot ? 0.25 + 0.2 * a.r('zoneCoverage') : 0.2) * a.r('anticipation') + (spot ? 0.1 : 0));
         return withFacingTechnique(goTo(a, { x: Math.max(tgt.x, lm.x - 1), y: tgt.y }, { facing: facingQB, speed: zs }),
           { label: 'deep-read' });
       }
@@ -1127,7 +1184,7 @@ export class ZoneCoverage implements Behavior {
       let ty: number;
       if (vert.length >= 2) {
         // Split them, leaning toward where the QB is looking.
-        const w = sim.qbEyes === vert[1].r ? 0.65 : sim.qbEyes === vert[0].r ? 0.35 : 0.5;
+        const w = qbEyes === vert[1].r ? 0.65 : qbEyes === vert[0].r ? 0.35 : 0.5;
         ty = vert[0].fut.y * (1 - w) + vert[1].fut.y * w;
       } else ty = deepest.fut.y + inside(deepest.fut.y) * 0.8;
       // A landmark describes responsibility, not a minimum depth to sprint
@@ -1220,7 +1277,7 @@ export class ZoneCoverage implements Behavior {
       const depth = th.fut.x - sim.los;
       if (depth > 16) continue;
       let dd = Math.hypot(th.fut.x - lm.x, th.fut.y - lm.y);
-      if (sim.qbEyes === th.r) dd -= 3 * a.r('anticipation');
+      if (qbEyes === th.r) dd -= 3 * a.r('anticipation');
       if (dd < bd && dd < this.radius + 2) {
         bd = dd;
         best = th;
@@ -1266,7 +1323,7 @@ export class ZoneCoverage implements Behavior {
     this.selectTarget(a, best?.r ?? null);
     if (!best) {
       let tgt = lm;
-      if (sim.qbEyes) tgt = lerp(lm, sim.qbEyes.pos, 0.25 * a.r('anticipation'));
+      if (qbEyes) tgt = lerp(lm, qbEyes.pos, 0.25 * a.r('anticipation'));
       return withFacingTechnique(goTo(a, settle(tgt), { facing: facingQB, speed: zs }), { label: this.settledAt >= 0 ? 'zone-settle' : 'zone-landmark' });
     }
     const lane = lerp(qb.pos, best.pos, 0.82);
@@ -1327,7 +1384,7 @@ export class ZoneCoverage implements Behavior {
     a.tags.add('settled');
     const read = 0.5 * a.r('zoneCoverage') + 0.5 * a.r('anticipation');
     let tgt: Vec2 = lm;
-    const eyes = sim.qbEyes;
+    const eyes = seenQbEyes(a, sim);
     const inZone = threats.filter((th) => Math.hypot(th.pos.x - lm.x, th.pos.y - lm.y) < this.radius && th.pos.x - sim.los > 1);
     const looked = eyes ? inZone.find((th) => th.r === eyes) : undefined;
     if (looked) {
@@ -1521,7 +1578,8 @@ function playObservedFlight(a: Agent, sim: PlaySim, path: PlaySim['ballPath'], a
   // Near the ball's path, a defender with ball skills turns his head and finds
   // it (looking over the shoulder doesn't turn the body).
   const nearPath = spot && Math.hypot(spot.p.x - a.pos.x, spot.p.y - a.pos.y) < 5;
-  if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
+  if (LOOK_ONCE) { if (nearPath && !a.tags.has('looking') && findsBall(a, sim)) a.tags.add('looking'); }
+  else if (nearPath && !a.tags.has('looking') && sim.dice('look', a).chance(0.15 + 0.5 * a.r('ballSkills'))) a.tags.add('looking');
   // A defender already carrying the visible catcher must not brake out of
   // phase toward a stationary point on the flight. Keep his feet with the
   // receiver unless he can play the ball before that receiver's window.
