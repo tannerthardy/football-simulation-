@@ -5,7 +5,10 @@
  * arrival), and afterwards what each defender did: when he broke toward the catch point (moving toward it at 2 yd/s
  * or more, at least half his speed, after the decision), when he got within reach (reach + 0.3) of it, and his
  * speed on the way. One row per throw; the defender rows ranked by predicted margin (tt - total; < 0 means the QB
- * expected him to beat the ball). Passive.
+ * expected him to beat the ball). Also, for the run's error: the run time to the catch point recomputed from the
+ * defender's actual position and velocity at the end of the blind time the window gave him (runAtBlind: what the
+ * "keeps his course" assumption costs) and at the predicted start, blind + reaction (runAtStart: what timeToReach
+ * itself costs once the start state is right). Passive.
  *   node --import tsx scripts/diag/read-plan/window-probe.ts [--seeds 1,2,3,4] > out/read-plan/window.jsonl
  */
 import { MENU_CONCEPTS, PASS_BY_ID } from '../../../src/playbook/concepts.js';
@@ -38,7 +41,9 @@ P.startThrow = function (a: any, sim: any, ev: any) {
       return { d, slot: d.slot, facingQB, onTarget, blind: +blind.toFixed(2), react: +react.toFixed(2), run: +run.toFixed(2), tt: +(blind + run + react).toFixed(2),
         margin: +(blind + run + react - total).toFixed(2), seenErr: +Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y).toFixed(2),
         speed0: +Math.hypot(d.vel.x, d.vel.y).toFixed(2), vmax: +d.profile.vmax.toFixed(2), distPt: +Math.hypot(d.pos.x - pt.x, d.pos.y - pt.y).toFixed(2),
-        brk: null as number | null, reached: null as number | null, path: 0, prev: { x: d.pos.x, y: d.pos.y } };
+        brk: null as number | null, reached: null as number | null, path: 0, prev: { x: d.pos.x, y: d.pos.y },
+        runAtBlind: null as number | null, runAtStart: null as number | null, posErrAtBlind: null as number | null,
+        predAt: { x: mover.pos.x, y: mover.pos.y } };
     });
     rec.decision = { t: sim.t, wind: +wind.toFixed(2), T: +ev.T.toFixed(2), total: +total.toFixed(2), pt: { x: pt.x, y: pt.y }, P: +ev.P.toFixed(3), intRisk: +ev.intRisk.toFixed(3), target: ev.target.slot };
     rec.defs = defs;
@@ -60,11 +65,17 @@ for (const c of concepts) for (const formation of forms) for (const coverage of 
       const toward = dist > 0 ? (d.vel.x * dx + d.vel.y * dy) / dist : 0;
       if (x.brk === null && toward >= 2 && toward >= 0.5 * sp) x.brk = +since.toFixed(2);
       if (x.reached === null && dist <= d.profile.reach + 0.3) { x.reached = +since.toFixed(2); x.pathAt = +x.path.toFixed(2); }
+      const now = { pos: { x: d.pos.x, y: d.pos.y }, vel: { x: d.vel.x, y: d.vel.y }, profile: d.profile, speedScale: d.speedScale };
+      if (x.runAtBlind === null && since >= x.blind - 1e-6) {
+        x.runAtBlind = +timeToReach(now, D.pt, d.profile.reach + 0.3).toFixed(2);
+        x.posErrAtBlind = +Math.hypot(d.pos.x - x.predAt.x, d.pos.y - x.predAt.y).toFixed(2);
+      }
+      if (x.runAtStart === null && since >= x.blind + x.react - 1e-6) x.runAtStart = +timeToReach(now, D.pt, d.profile.reach + 0.3).toFixed(2);
     }
   };
   const res = sim.run(), s = sim.stats;
   if (!rec.decision || !s.attempted) continue;
   const intBy = s.interceptedBy ? sim.defense.find((d: any) => d.player.id === s.interceptedBy)?.slot ?? null : null;
-  const defs = rec.defs.sort((a: any, b: any) => a.margin - b.margin).slice(0, 4).map(({ d, prev, path, ...x }: any) => ({ ...x, interceptor: x.slot === intBy }));
+  const defs = rec.defs.sort((a: any, b: any) => a.margin - b.margin).slice(0, 4).map(({ d, prev, path, predAt, ...x }: any) => ({ ...x, interceptor: x.slot === intBy }));
   process.stdout.write(JSON.stringify({ concept: c.id, formation, coverage, seed, flip, int: !!intBy, intBy, cmp: !!s.completed, releaseT: sim.throwAt, ...rec.decision, defs }) + '\n');
 }
