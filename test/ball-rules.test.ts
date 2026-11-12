@@ -325,7 +325,7 @@ describe('native fumble boundaries and dead-ball rulings', () => {
     expect(sim.stats.fumbleLost).toBeFalsy();
   });
 
-  it('fails explicitly rather than authorizing an advance when restricted own-end-zone recovery lacks impetus/momentum facts', () => {
+  it('rules on the recorded impetus, without the momentum exception, and records the gap when restricted own-end-zone recovery lacks the facts', () => {
     const sim = nativeSim({ down: 4 }), fumbler = sim.slot('RB')!, recoverer = sim.slot('Y')!;
     fumbler.body.pos = { x: 8, y: CENTER_Y };
     sim.ball = { kind: 'held', carrier: fumbler };
@@ -333,7 +333,10 @@ describe('native fumble boundaries and dead-ball rulings', () => {
     // A restored tape without acquisition history.
     Object.assign(sim.ball, { impetusTeam: undefined, momentumExceptionExcluded: undefined });
     recoverer.body.pos = { x: 13, y: CENTER_Y };
-    expect(() => sim.possess(recoverer, 'recovery')).toThrow(/Unsupported NFL 8-7-5: end-zone recovery impetus\/momentum/);
+    sim.possess(recoverer, 'recovery');
+    expect(sim.outcome).toBe('safety');
+    expect(sim.buildResult().score).toEqual({ kind: 'safety', team: 'D' });
+    expect([...sim.ruleLimitations]).toContain('8-7-5: end-zone recovery lacks impetus/momentum facts; ruled on recorded impetus');
   });
 });
 
