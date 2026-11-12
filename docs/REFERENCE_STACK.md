@@ -607,6 +607,21 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-45: `RELEASE_SEEN` on, a receiver releases around whoever he sees (2026-11-12)
+
+Coverage #633. `RouteRunner.handleRelease` released around a defender only when the defense's own alignment said that defender was pressing him as his man: the receiver read the defense's private assignment. Against anyone else close at the line he ran his route through the body. Now the "tight over me" judgment and the defender's position come from his own (delayed) picture, and he releases around whoever is in his path at the line; reading the corner's shade and his route side is unchanged. It lands as the repair of a model-rule breach.
+
+Coverage, 8 games, seed 11, off → on (NFL): stalled at the line 10 → 7% (3); with a lineman nearest 31 → 12% (5); off-ball tight receivers stalled 21 → 13% (5); pressed time to 5 yd within 0.1 s on every route. What remains is alignment, measured and routed: our off-ball wings sit 0.7 yd off the line (NFL 1.4; Rules + Coaching's formation queue) and against a wing with no attached end our widest lineman sets +1.5 to +2.3 yd outside the tackle (NFL +0.6; Defense, `WING_EDGE`, in work). In-line tight ends were never the gap (stalled 4–5% against the NFL's 15%). Parked from the same work, with write-ups on their branches: the press punch (`PRESS_JAM`: every punch landed whatever the skill, because the release never clears the corner's reach) and exempting the press release from the get-off (#629: the get-off against press already sits at the NFL's 1.5 yd/s).
+
+Checks on the candidate (`ae311d19`): full suite 4333 pass; besides the two known research failures, three single-play quarterback fixtures moved again (`hot-look` ×2, `def-belief` off). Rules + Coaching replaced them with mechanism assertions over small named panels (#636), so a timing change elsewhere no longer breaks them. Fixed run set unchanged (3.88). Paired league scorecards, 16 games an arm:
+
+| seed | yards an attempt | completion | sack rate | INT rate | YAC | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 9.10 → 9.42 | 65.7 → 66.0% | 5.4 → 4.5% | 1.6 → 1.5% | 7.66 → 8.02 | 33.4 → 35.4 |
+| 23 | 8.99 → 8.63 | 67.2 → 66.2% | 4.3 → 5.3% | 1.8 → 1.6% | 7.36 → 7.19 | 28.4 → 30.5 |
+
+Nothing resolved on either seed; yards and sacks disagree in sign.
+
 ## engine-44: `OPEN_CARRY` and `FORECAST_HOLD` on (2026-11-12)
 
 **`OPEN_CARRY`** (Defense #628, second attempt). An underneath defender carrying a receiver inside a zone call ran as a man-coverage job, and a man defender never got the quarterback's throwing motion as a key however square he was. Under the flag an underneath match job (no deep responsibility) inside a zone call faces by the open-to rule with a side-on cap from his own picture of deep help, and keeps zone eyes, so whether he sees the motion is his facing. Attempt 1 (facing only) moved the eyes and not the break. Defense, 16 games × seeds 101 / 201 on engine-41: facing the quarterback at release − 0.3 s, linebackers 5–10 yd 69 → 85% (NFL 94); keyed the throwing motion, of those still on a man at the throw, 2 → 78%; distance to his man when no throw comes 2.9 → 3.3 yd at +2.0 s; yards a dropback 9.22 → 8.63. Known costs: crossers against zone completed 65 → 71% (for fewer yards), slower breaks under the catch point and on flights over 1.0 s, short-catch YAC flat.
