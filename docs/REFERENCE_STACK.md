@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-48`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-49`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,23 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-49: `PURSUIT_FIELD` on, a pursuer of a seen carrier is not held in the field; `IN_STRIDE_CATCH` retired (2026-11-12)
+
+**`PURSUIT_FIELD`** (Defense #649). Coverage behaviours call `pursueIfLive` themselves, so a zone or man defender chasing a ball carrier kept his coverage kind and his pursuit request went through `containCoverage`, the rule that keeps a coverage drop in the field. It zeroed his velocity toward the sideline whenever he could not stop before it on half his lateral traction (5–8 yd from the line at pursuit speed), his lateral speed decayed, the check passed, the request returned, and it repeated. Traced on short zone catches with the nearest underneath defender 4+ yd away: about half of all pursuit re-aims over 20° were containment's output exactly (331 of 331 on one seed), 60–67% of re-aims were undone within 0.3 s, and only 14–16% followed a new cue. Now a chase of a seen holder, and `CATCH_CARRY`'s drive on the catcher, are left alone; a drop is still contained. Defense, 2 × 16 games: re-aims 2.3 → 1.1–1.3 a second, undone within 0.3 s 59–65 → 37–43%, containment's share 45–55 → 0–5%; first defender within 1 yd by +2.0 s 36 → 41% (NFL 69); YAC in that population 11.33 → 10.16. On runs it rarely applies (a pursuer was contained on 2.0% of fixed-set runs).
+
+Not repaired by it, recorded: the first defender still runs at the catcher (24 → 26° off the line to him; NFL 32–47° and leading), and the remaining re-aims come from contact technique (dive / lunge, 34–42%) and mode switches around close-gather (33–36%). The engine-wide audit behind this (63% of re-aims are the decision itself, spacing 14% of re-aims and 22% of reversed ones, containment 3% and 8%; 14–27% follow a new cue) set a model rule, "commit to a decision", and a suite guard on reversed re-aims (#653, next tree).
+
+**`IN_STRIDE_CATCH` retired** (Coverage #647): superseded by `CATCH_CHOICE`. Its code path, test, FLAGS row and both config entries are removed; the retirement first failed `baseline-runner` because the baseline profile still listed the flag, corrected here.
+
+Checks on the candidate (`10781b12`): full suite 4347 pass with only the two known research failures. Fixed run set 3.86 → 3.84. Paired league scorecards, 16 games an arm:
+
+| seed | YAC | yards an attempt | completion | INT rate | rush yards a carry | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 6.92 → 6.67 | 8.20 → 8.52 | 63.3 → 65.2% | 2.0 → 1.5% | 4.77 → 4.42 | 31.8 → 29.0 |
+| 23 | 6.81 → 6.21 | 8.13 → 8.09 | 63.5 → 66.0% | 1.4 → 2.3% (moved) | 4.23 → 4.20 | 26.7 → 29.2 |
+
+YAC falls on both seeds (neither resolved); the interception move on seed 23 is opposite in sign to seed 11. It lands as the repair of a rule applied to the wrong task.
 
 ## engine-48: `INT_BELIEF` on, his interception risk combines as a probability and weighs the catch point (2026-11-12)
 

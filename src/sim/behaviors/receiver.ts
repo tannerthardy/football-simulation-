@@ -563,7 +563,6 @@ function nearestDefender(a: Agent, sim: PlaySim): number {
 export const routeOfAgent = new WeakMap<Agent, string>();
 
 /** Rescued from 83e514a. Coverage/scoring controls are required for promotion. */
-const IN_STRIDE_CATCH = process.env.IN_STRIDE_CATCH === '1';
 
 /**
  * Track the ball in flight: run to the earliest point on its path that can be
@@ -598,20 +597,6 @@ export class TrackBall implements Behavior {
   update(a: Agent, sim: PlaySim): MoveCommand {
     if (sim.ball.kind !== 'air') return this.fallback.update(a, sim);
     if (sim.t < this.reactAt) return this.fallback.update(a, sim);
-    if (IN_STRIDE_CATCH) {
-      const spot = strideCatchSpot(a, sim) ?? catchSpot(a, sim);
-      if (!spot) return this.fallback.update(a, sim);
-      if (HANDS_CUE) noteHands(a, sim.t, spot.t);
-      const tx = spot.p.x + this.err.x, ty = spot.p.y + this.err.y;
-      const left = Math.max(.15, spot.t - sim.t);
-      let vx = a.vel.x + (tx - a.pos.x - a.vel.x * left) / left;
-      let vy = a.vel.y + (ty - a.pos.y - a.vel.y * left) / left;
-      const v = Math.hypot(vx, vy);
-      if (v > a.profile.vmax) { vx *= a.profile.vmax / v; vy *= a.profile.vmax / v; }
-      const near = Math.hypot(tx - a.pos.x, ty - a.pos.y) < 3;
-      return { vel: { x: vx, y: vy }, facing: near
-        ? angleTo(a.pos, { x: sim.ball.flight.pos.x, y: sim.ball.flight.pos.y }) : undefined };
-    }
     let spot: { p: Vec2; t: number } | null = null;
     if (CATCH_CHOICE) {
       // Re-read every 0.1 s until the last 0.3 s, then he is committed to the point he chose.
@@ -632,23 +617,6 @@ export class TrackBall implements Behavior {
     if (dist < 0.5) return { vel: { x: a.vel.x * 0.5, y: a.vel.y * 0.5 }, facing };
     return { ...runThrough(a, target, { speed: clamp(need / a.profile.vmax, 0.35, 1) }), facing: dist < 3 ? facing : undefined };
   }
-}
-
-/** The reachable catchable point nearest the current running line. This
- * requests movement only; ordinary physical catch resolution is unchanged. */
-function strideCatchSpot(a: Agent, sim: PlaySim): { p: Vec2; t: number } | null {
-  let best: { p: Vec2; t: number; dev: number } | null = null;
-  for (const s of sim.ballPath) {
-    const left = s.t - sim.t;
-    if (left < 0 || s.z > a.profile.maxCatchHeight * .92) continue;
-    if (s.z < .25) break;
-    const p = { x: s.x, y: s.y };
-    const dev = Math.hypot(p.x - a.pos.x - a.vel.x * left, p.y - a.pos.y - a.vel.y * left);
-    if (best && dev >= best.dev) continue;
-    const tt = timeToReach({ pos: a.pos, vel: a.vel, profile: a.profile, speedScale: a.speedScale }, p, a.profile.reach * .8);
-    if (tt <= left) best = { p, t: s.t, dev };
-  }
-  return best;
 }
 
 /** Earliest reachable point on the ball's remaining flight path for agent `a`. */
