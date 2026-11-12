@@ -140,6 +140,7 @@
     "NO_CROSS": "on",
     "OFFBALL_TIMING": "on",
     "OL_ON_COUNT": "off",
+    "MATCH_SQUEEZE": "off",
     "OPEN_CARRY": "off",
     "OWNER_KEEPS": "on",
     "OZ_HIP_READ": "on",

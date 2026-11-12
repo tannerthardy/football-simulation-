@@ -751,6 +751,19 @@ function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boo
  * carry-run-past and lane-carry, which dropped the QB facing outright (BDB
  * 2025 weeks 1-2 vs sim, nfleyes.py / eyesprobe.mts by nearest receiver). */
 export const OPEN_CARRY = process.env.OPEN_CARRY === '1';
+/** MATCH_SQUEEZE (experimental, off; MATCH_SQUEEZE=1 turns it on): an
+ * underneath match defender (a ManCoverage job inside a zone call, no deep
+ * responsibility) whose own picture shows a deep teammate over his receiver
+ * holds over a released receiver only the cushion that keeps the route from
+ * getting past his body before the help takes it (both bodies plus his
+ * reach), not CUSHION_NEED's guard against the receiver's full burst, which
+ * is the deep player's. A settled route finds him on it. With no help in his
+ * picture CUSHION_NEED stands. His picture can be wrong or late: help that
+ * rotates away after he squeezes leaves him beaten over the top.
+ * Why (BDB 2025 weeks 1-2 vs sim, nflmatch.py / simmatch.mts carry ends): a
+ * carry ending with the receiver settled at ~6 yd finds the NFL defender
+ * 0.5-1.1 yd over him, ours 1.5-2.0 yd, 2.3x as often. */
+export const MATCH_SQUEEZE = process.env.MATCH_SQUEEZE === '1';
 /** OPEN_CARRY: does his own picture show a deep teammate over this receiver
  * (3+ yd deeper than the receiver, within 12 yd of his line)? */
 function seesDeepHelp(a: Agent, sim: PlaySim, receiver: Vec2): boolean {
@@ -1057,8 +1070,19 @@ export class ManCoverage implements Behavior {
       // What he could gain upfield during the flip: his upfield speed now
       // plus the acceleration he has left toward his top speed (1/2 a t^2).
       const upBurst = Math.max(0, (R.profile.vmax - Math.max(0, vx)) / R.profile.tau);
-      const need = 1.8 + closing * flipTime + 0.5 * upBurst * flipTime * flipTime;
-      const held = CUSHION_NEED && this.releaseObserved ? Math.min(cushion, need) : cushion;
+      // MATCH_SQUEEZE: an underneath match defender inside a zone call whose
+      // own picture shows deep help over the receiver does not own the
+      // vertical: he keeps only the cushion that stops the route getting past
+      // his body before the help takes it (both bodies plus his reach), so a
+      // settled route finds him on it. His picture can be wrong or late.
+      const squeeze = MATCH_SQUEEZE && !sim.defCall.coverage.man && !o.protectDepth && seesDeepHelp(a, sim, seen.pos);
+      if (squeeze) a.tags.add('match-squeeze');
+      const need = squeeze ? a.profile.radius + R.profile.radius + reach
+        : 1.8 + closing * flipTime + 0.5 * upBurst * flipTime * flipTime;
+      // MATCH_SQUEEZE: the squeezer drops the alignment cushion schedule too
+      // (it is a deep player's retreat), once the receiver has released.
+      const held = squeeze && this.releaseObserved ? need
+        : CUSHION_NEED && this.releaseObserved ? Math.min(cushion, need) : cushion;
       if (held < cushion) a.tags.add('cushion-need');
       tx = this.releaseObserved
         ? seen.pos.x + held : Math.max(seen.pos.x + cushion, a.pos.x - 0.2);
