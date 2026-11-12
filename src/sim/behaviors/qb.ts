@@ -67,7 +67,7 @@ interface ThrowEval {
   value: number;
   depth: number;
   /** Diagnostics: the window's factors (P = pOpen * pClear * pAcc * hands). */
-  parts?: { pOpen: number; pClear: number; pAcc: number; hands: number };
+  parts?: { pOpen: number; pClear: number; pAcc: number; hands: number; intPath?: number; intJump?: number; intContest?: number };
 }
 
 function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
@@ -1243,7 +1243,7 @@ export class QBPass implements Behavior {
     // DEF_BELIEF: how readily his receiver loses a ball a late defender reaches.
     const dislodge = DEF_BELIEF ? clamp((DISLODGE + (1 - know) * 0.15 * a.mind.judgment('def-dislodge')) * (1.15 - 0.3 * r.r('hands') - 0.3 * r.r('contestedCatch')) * 0.65, 0, 0.9) : 0;
     const at = (pt: Vec3) => {
-      let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1;
+      let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0;
       const v0 = dragFreeLaunch(from, pt, T);
       for (const { d, blind, mover, react, leap, spreadD, estimateError } of defenders) {
         const tt = blind + timeToReach(mover, pt, d.profile.reach + 0.3) + react;
@@ -1271,11 +1271,13 @@ export class QBPass implements Behavior {
           touch = Math.max(touch, logistic(-(mb - 0.05) / sPath));
         }
         pClear *= 1 - touch * 0.75;
-        intRisk += touch * (0.08 + 0.3 * d.r('ballSkills'));
+        const iPath = touch * (0.08 + 0.3 * d.r('ballSkills'));
         // At the catch point: jumped routes are picks; contested balls sometimes.
-        intRisk += first * (0.15 + 0.35 * d.r('ballSkills')) + Math.max(0, contest - first) * 0.08 * d.r('ballSkills');
+        const iJump = first * (0.15 + 0.35 * d.r('ballSkills')), iContest = Math.max(0, contest - first) * 0.08 * d.r('ballSkills');
+        intRisk += iPath + iJump + iContest;
+        intPath += iPath; intJump += iJump; intContest += iContest;
       }
-      return { pOpen: pOpen * pSecure, pClear, intRisk };
+      return { pOpen: pOpen * pSecure, pClear, intRisk, intPath, intJump, intContest };
     };
     const aimed = at(point);
     const { pOpen, pClear } = aimed;
@@ -1304,7 +1306,8 @@ export class QBPass implements Behavior {
     const sticksBonus = depth >= toSticks ? 3 : 0;
     // An incompletion costs a down (~3 yards of value); a pick costs ~45.
     const value = P * (gain + sticksBonus + 2) - (1 - P) * 3 - intRisk * 45;
-    return { target: r, point, T, P, intRisk: Math.min(1, intRisk), value, depth, parts: { pOpen, pClear, pAcc, hands: 0.88 + 0.1 * r.r('hands') } };
+    return { target: r, point, T, P, intRisk: Math.min(1, intRisk), value, depth, parts: { pOpen, pClear, pAcc, hands: 0.88 + 0.1 * r.r('hands'),
+      intPath: aimed.intPath, intJump: aimed.intJump, intContest: aimed.intContest } };
   }
 
   private bestOption(a: Agent, sim: PlaySim, urgency: number): ThrowEval | null {
