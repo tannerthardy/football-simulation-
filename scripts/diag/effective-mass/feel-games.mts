@@ -28,7 +28,9 @@ for (let s = first; s < first + games; s++) {
         if (firstTrue === null && tru <= 0.5) firstTrue = sim.t;
         if (Math.hypot(d.pos.x - qb.pos.x, d.pos.y - qb.pos.y) > 3) continue;
         const seen = b.felt(qb, sim, d), held = b.held(qb, d, sim);
-        const est = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, qb.pos, 0.8) + held;
+        let est = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, qb.pos, 0.8) + held;
+        // FREE_BOUND: the estimate pressure() itself uses.
+        if (process.env.FREE_BOUND === '1' && typeof b.freeBound === 'function') est = Math.min(est, b.freeBound(qb, sim, d, seen));
         const e = d.engagement;
         const stale = !!e && Math.hypot(e.blocker.pos.x - d.pos.x, e.blocker.pos.y - d.pos.y) > e.blocker.profile.reach + d.profile.radius;
         pairs.push([r2(est), r2(tru), e ? 1 : 0, stale ? 1 : 0, r2(held)]);
