@@ -232,6 +232,7 @@
     "BACK_FRONT": "0",
     "READ_PLAN": "0",
     "FORECAST_BREAK": "0",
+    "FORECAST_HOLD": "0",
     "QB_RHYTHM": "0",
     "WR_SNAP": "0",
     "GRIP_REACH": "0",

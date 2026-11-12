@@ -750,7 +750,7 @@ function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boo
  * 90 deg 91% of the time at release - 0.3 s; ours 62%, through man-open,
  * carry-run-past and lane-carry, which dropped the QB facing outright (BDB
  * 2025 weeks 1-2 vs sim, nfleyes.py / eyesprobe.mts by nearest receiver). */
-export const OPEN_CARRY = process.env.OPEN_CARRY === '1';
+export const OPEN_CARRY = process.env.OPEN_CARRY !== '0';
 /** OPEN_CARRY: does his own picture show a deep teammate over this receiver
  * (3+ yd deeper than the receiver, within 12 yd of his line)? */
 function seesDeepHelp(a: Agent, sim: PlaySim, receiver: Vec2): boolean {

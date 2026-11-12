@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-43",
+  "id": "engine-44",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -85,6 +85,7 @@
     "LOOK_ONCE": "on",
     "FLOW_INTERCEPT": "off",
     "FORECAST_BREAK": "on",
+    "FORECAST_HOLD": "on",
     "GAP_CLIMB": "on",
     "GAZE": "off",
     "GRAB_CONNECT": "off",
@@ -141,7 +142,7 @@
     "NO_CROSS": "on",
     "OFFBALL_TIMING": "on",
     "OL_ON_COUNT": "off",
-    "OPEN_CARRY": "off",
+    "OPEN_CARRY": "on",
     "OWNER_KEEPS": "on",
     "OZ_HIP_READ": "on",
     "PASS_ANCHOR": "on",
