@@ -603,3 +603,64 @@ pressure-source.py, edge-rush.py, pressure-time.py.
   momentum, or stalls.
 - (B) shows these defaults are not what walks the tackle back. Taking the lean off lowers pressure (30 vs 36.5%) and
   sacks (3.0 vs 4.5%).
+
+# The beat under an anchored tackle, and PAST_ALONG_PATH (2026-11-12)
+
+## Diagnostic: what ends a tackle-edge rep (beat-probe.mts, seeds 101-103)
+
+| | off (kicking) | TACKLE_SET | anchored (A2) |
+|---|---|---|---|
+| rep ends, of which 'turned the corner' | 53 / 43 | 50 / 39 | 141 / 121 |
+| at that beat: tackle along the rusher's own path p50 | −0.47 yd | −0.67 | −0.70 |
+| hips past hips (tackle > 0.3 yd behind along his path) | 53% | 90% | 98% |
+| still level or ahead along his path | 47% | 10% | 2% |
+| within the tackle's reach / hands joint on | 100 / 100% | 100 / 100% | 98 / 100% |
+| rusher depth vs tackle, width outside, to the QB | −0.48, —, 5.3 | −0.86, +0.24, 4.2 | −1.07, +0.43, 4.5 |
+
+- With a kicking tackle, half the corner beats fire on the QB-line crossing while the rusher is still level along his
+  path.
+- With an anchored tackle the rusher is genuinely past along his path, but still within reach with hands on, and the
+  rep ends: no ride.
+
+## NFL: rusher level-outside an engaged, nearly stationary tackle (level-hold.py)
+
+- NFL: 0.16 spells a dropback, p50 0.20 s, 25% lasting 0.5 s or more. They end: ball out 32%, back in front 28%,
+  tackle moving 19%, past 9%, apart 8%, inside 3%.
+- Ours off: 0.09 a dropback. Ours anchored: 0.54, ending past 58%.
+
+## PAST_ALONG_PATH (433b2add, off; off bit-identical to engine-44)
+
+Beaten means past along the man's path (the blocker more than 0.3 yd behind him along his velocity). Past but within
+reach, the rep is a ride: the blocker keeps up and pushes him on past, away from the QB. OPEN_HANDS's frame uses the
+same test.
+
+Seed 201, 8 games:
+
+| arm | in front at pressure | inside (free) | at the win past/front/inside | edge win | closed after past | sacked | engaged retreat 1.5-2.0 s |
+|---|---|---|---|---|---|---|---|
+| off | 12.6% | 6.5% (96%) | 10/57/33 | 13% | 26% | 4.5% | −3.50 |
+| PAST_ALONG_PATH | 12.3% | 6.1% (100%) | 12/57/31 | 13% | 31% | 4.2% | −3.50 |
+| + TACKLE_SET | 12.1% | 4.5% (93%) | 9/65/26 | 11% | 15% | 2.7% | −3.50 |
+| + TACKLE_SET + OPEN_HANDS | 9.7% | 7.1% (94%) | 21/46/33 | 14% | 30% | 4.7% | −3.50 |
+| NFL | 3.0% | 6.4% (48%) | 26/27/47 | 13% | 21% | 6.7% | −2.75 |
+
+Anchored counterfactual (diagnostic, uncommitted: no kick once engaged under TACKLE_SET; the mirror's retreat
+remains):
+
+| arm | retreat 1.5-2.0 / 2.0-2.5 s | in front | inside (free) | past outside | at the win | edge win | sacked / pressured |
+|---|---|---|---|---|---|---|---|
+| without PAST_ALONG_PATH | −3.0 / −3.0 | 11.1% | 15.9% (93%) | 5.7% | 16/36/48 | 22% | 9.3 / 46.6% |
+| with PAST_ALONG_PATH | −3.0 / −3.0 | 11.3% | 11.3% (97%) | 5.9% | 19/42/39 | 19% | 6.3 / 41.5% |
+| + OPEN_HANDS | −3.0 / −2.75 | 9.1% | 13.1% (95%) | 7.4% | 23/32/45 | 19% | 4.9 / 47.2% |
+
+## Reading
+
+- With OPEN_HANDS and TACKLE_SET, PAST_ALONG_PATH moves the win to the corner: past outside at the win 21% (NFL 26%),
+  closing after past 30% (NFL 21%), edge win 14% (NFL 13%). Alone it changes little, because a kicking tackle rarely
+  lets phi reach 1.
+- Under an anchored tackle it cuts the inside-free share (15.9 → 11.3%) and the sacks (9.3 → 6.3%), but not to the
+  NFL's 6.4% at 48% free. What remains is a rusher inside his tackle with nobody on him (free 93-97% against the NFL's
+  48%): the guard/back help question.
+- The walk-back is not fixed by any of these. The retreat stays −3.0 to −3.5 at 1.5-2.0 s whenever the tackle still
+  moves with the rusher: his kick, or, with the kick off, his mirror's along-axis component. Only the earlier A2 (no x
+  retreat at all) matched the NFL's retreat curve.
