@@ -743,14 +743,14 @@ const CUSHION_NEED = process.env.CUSHION_NEED !== '0';
  * after a turn time of 0.25 s plus up to 0.35 s for a defender whose back is
  * to the passer (body facing vs the ball's origin), shortened by ball skills;
  * otherwise he plays this flight without the look. */
-const LOOK_ONCE = process.env.LOOK_ONCE === '1';
+const LOOK_ONCE = process.env.LOOK_ONCE !== '0';
 /** DRIVE_CATCH (off; DRIVE_CATCH=1 turns it on; C14, with CATCH_SECURE): while
  * a ball is in a receiver's hands but not yet a catch (the securing window), a
  * defender within 4 yd of him drives through his hands and body (as he sees
  * them) at full effort, instead of steering to the ball's last point. Off, the
  * near defender's requested velocity turned off the man during the window
  * (toward him 4.7 -> 0.5 yd/s in 0.3 s; NFL defenders keep 4.5-5.0). */
-const DRIVE_CATCH = process.env.DRIVE_CATCH === '1';
+const DRIVE_CATCH = process.env.DRIVE_CATCH !== '0';
 const lookPlan = new WeakMap<Agent, { flight: number; at: number }>();
 function findsBall(a: Agent, sim: PlaySim): boolean {
   const ball = sim.ball;
