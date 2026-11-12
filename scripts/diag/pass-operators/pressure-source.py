@@ -9,7 +9,9 @@ pressure-time.py). The presser is classed by who he is and where he started:
     at that moment: past outside / level or in front / inside (edge-rush.py's win states);
   - 'interior DL/LB': another DL or LB who started within 1.6 yd of the line inside the tackles' snap span;
   - 'other': everyone else (DBs, second-level backers, wide men not paired).
-Also whether he was free then (no offensive non-QB within 1.0 yd) and the time. Per dropback rates and shares.
+Also whether he was free then (no offensive non-QB within 1.0 yd), the time, and whether the dropback ended in a sack
+(no pass_forward and the QB behind the line at the end, as pressure-time.py): sacks per pressure by presser class.
+Per dropback rates and shares.
 """
 import sys, os, json, gzip, collections as C
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'mechanics'))
@@ -18,7 +20,7 @@ q = lambda v, f=.5: sorted(v)[int(f * (len(v) - 1))] if v else float('nan')
 pct = lambda a, b: f"{100 * a / b:.1f}%" if b else '-'
 
 for path in sys.argv[1:]:
-    n = 0; cnt = C.Counter(); free = C.Counter(); times = C.defaultdict(list)
+    n = 0; cnt = C.Counter(); free = C.Counter(); sk = C.Counter(); times = C.defaultdict(list)
     for line in gzip.open(path, 'rt'):
         raw = json.loads(line); raw = raw.get('common', raw)
         if raw.get('kind') != 'pass' or not raw.get('xy'): continue
@@ -63,7 +65,10 @@ for path in sys.argv[1:]:
         cnt[cls] += 1; times[cls].append(k * p.dt)
         O = [o for o in p.who('O') if o != qb and p.pos(o, k)[0] is not None]
         free[cls] += not any(p.dist(o, d, k) <= 1.0 for o in O)
+        kfin = min(p.frames - 1, p.k(p.end))
+        sk[cls] += fw is None and p.pos(qb, kfin)[0] is not None and p.pos(qb, kfin)[0] <= 0
     tot = sum(cnt.values())
     print(f"== {os.path.basename(path)}: dropbacks {n} | pressured {pct(tot, n)}")
     for cls in ('edge rusher: past outside', 'edge rusher: level/in front', 'edge rusher: inside', 'interior DL/LB', 'other'):
-        print(f"   {cls:28s} {pct(cnt[cls], n)} of dropbacks ({pct(cnt[cls], tot)} of pressure) | free then {pct(free[cls], cnt[cls])} | time p50 {q(times[cls]):.2f} s")
+        print(f"   {cls:28s} {pct(cnt[cls], n)} of dropbacks ({pct(cnt[cls], tot)} of pressure) | free then {pct(free[cls], cnt[cls])} | time p50 {q(times[cls]):.2f} s | sacked per pressure {pct(sk[cls], cnt[cls])}")
+    print(f"   all pressure: sacked per pressure {pct(sum(sk.values()), tot)}")
