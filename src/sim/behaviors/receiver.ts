@@ -132,6 +132,21 @@ const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
  * gos release outside 84% of the time, 3.5 yd wide by 5 yd; posts, slants and
  * ins release inside (BDB 2025). */
 const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
+/** RELEASE_THROUGH (off; RELEASE_THROUGH=1 turns it on; estimated, C14): the
+ * release is a way to his stem, not a place to stay. Once he has made a press
+ * release, stem points just ahead of him (under 1.5 yd) or already level with
+ * him that lie back across his release side are behind the release: he runs on
+ * from where it put him toward the route's next landmark. The release side is
+ * the one he released to (a later jam does not change it). The later landmarks
+ * and their timing are unchanged, so a go released wide works back toward its
+ * installed line over the next 5 yd and a seam keeps its landmark. Off, a go released 1-3.5 yd outside its 4 yd stem point was
+ * steered back to it: once the release let go at 1.6-1.8 s his request pointed
+ * back and inside, across the corner on his inside (requests like (-2.9, -5.5)
+ * yd/s at 5 yd deep), the mirroring corner slowed with him, and pressed outside
+ * gos vs man stood 6.8-7.0 yd deep at 3.0 s (NFL 11.6); 8.2 yd on the
+ * four_verts/cover1 fixture. The release itself (its step, width and clearance
+ * at the line) is unchanged. */
+const RELEASE_THROUGH = process.env.RELEASE_THROUGH === '1';
 
 export class RouteRunner implements Behavior {
   readonly kind = 'route';
@@ -141,6 +156,8 @@ export class RouteRunner implements Behavior {
   settled = false;
   private pressContact: PressContact | null = null;
   private readonly releasedCorners = new Set<Agent>();
+  /** RELEASE_THROUGH: the side of his press release (0 if he had none); kept for the rest of the route. */
+  private releaseSide = 0;
   private converted = false;
   private readonly keyMemory = new Map<string, { at: number; picture: RouteKeyPicture }>();
   private routeEnd: RouteEnd;
@@ -193,6 +210,7 @@ export class RouteRunner implements Behavior {
 
     const release = this.handleRelease(a, sim);
     if (release) return release;
+    if (RELEASE_THROUGH && this.releaseSide !== 0) this.skipReleasedStem(a, this.releaseSide);
     if (sim.scrambleDrill) return this.scrambleDrill(a, sim);
     // Keep the installed route's pace and progress. Private throw attribution
     // does not tell this receiver that his responsibility has ended; the
@@ -305,6 +323,13 @@ export class RouteRunner implements Behavior {
       this.drill = { at: sim.t + 0.5, spot: best };
     }
     return goTo(a, this.drill.spot, { speed: 0.85, facing: angleTo(a.pos, qb.pos) });
+  }
+
+  /** RELEASE_THROUGH: the press release carried him wide of his stem. Stem points just ahead of him (under
+   * 1.5 yd) that lie back across his release side are behind the release, not still to be run. */
+  private skipReleasedStem(a: Agent, side: number): void {
+    while (this.idx < this.path.length - 1 && this.path[this.idx].p.x - a.pos.x < 1.5
+      && (this.path[this.idx].p.y - a.pos.y) * side < -0.5) this.idx++;
   }
 
   private skipPassed(a: Agent): void {
@@ -442,6 +467,7 @@ export class RouteRunner implements Behavior {
           const desired = this.path[this.idx]?.p.y ?? a.pos.y;
           side = Math.sign(desired - d.pos.y) || -Math.sign(lateral) || this.outside;
         }
+        this.releaseSide = side;
         return runThrough(a, { x: d.pos.x, y: d.pos.y + side * clearance },
           { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
       }
@@ -456,6 +482,8 @@ export class RouteRunner implements Behavior {
     p.hands.hold = 0;
     p.hands.steer = arm * (0.15 + 0.45 * d.r('press')) * overlap;
     const clearance = a.profile.radius + d.profile.radius + 0.2;
+    // The jam's side is toward his path; a release he already made keeps its own side.
+    if (this.releaseSide === 0) this.releaseSide = p.side;
     return runThrough(a, { x: d.pos.x + a.profile.radius, y: d.pos.y + p.side * clearance },
       { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
   }
