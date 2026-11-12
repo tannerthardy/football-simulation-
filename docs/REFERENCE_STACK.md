@@ -607,6 +607,27 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-36: `CUSHION_BREAK` on, deep zone defenders carry a vertical instead of turning and running (2026-11-12)
+
+Defense #585 (C17, and most of C9 for deep players in [GAPS](GAPS.md)). Zone deep defenders opened their hips and ran on 51–84% of dropbacks before the throw (NFL 8–10%), at a cushion NFL defenders hold, and the turn latched. In zone calls only (pure man keeps its trigger):
+
+- **The turn** fires when the cushion is about to be gone given the time his own body needs to flip from how he is facing now (the open-to-run turn his body achieves, not his standing pivot rate). With deep help behind him he may let the receiver draw level; with none he keeps a roof. The help split came from tracking.
+- **The carry** before that: he gives ground at the speed his cushion budget needs, need = receiver speed − √(2 · a · (cushion − threshold)), the slowest he may go and still be matched when the cushion runs out, with a his own acceleration; and he opens his hips only as far as that speed requires on his facing curve (which `PEDAL_CAP`, engine-33, made fall all the way to the backpedal). He comes back toward square when the receiver throttles.
+- **Leverage**: he carries off the receiver's line by both body radii plus 0.7 of an arm on his leverage side (about 1.15 yd for a corner), wider with help as the receiver comes level, so a closing receiver runs past his shoulder, not through him.
+
+Defense, two seeds × 16 league-sampled games on engine-34, off → on (NFL): turned before the throw, help / no help, Cover 3 53 / 61 → 40 / 40%, Cover 4 84 / 84 → 30 / 29%, Cover 6 81 / 67 → 40 / 43% (8–10); zone deep completion when the receiver is faster 29.5 → 42.5% (52.6); deep completion 45.1 → 49.2% (49.3, same operator); deep share 7.4 → 6.9% (7.5); over the catch point, speed toward it 0.4 s after the throw −0.23 → +0.58 yd/s (+1.19); YAC trimmed 5.89 / 5.70 → 5.19 / 5.06 (5.03); zone contact before the throw 20.0 → 20.1% (9.1).
+
+Checks on the candidate (`9c4b0716`, on engine-35): full suite 4290 pass with the two known research failures; fixed run set unchanged (3.88 mean under 20). Paired league scorecards, 16 games an arm:
+
+| seed | points a team-game | completion | yards an attempt | pass TD rate | YAC a reception | 20+ completions an attempt | INT rate |
+|---|---|---|---|---|---|---|---|
+| 11 | 39.3 → 33.0 (moved) | 65.9 → 62.4% (moved) | 10.41 → 9.49 (moved) | 9.5 → 7.6% (moved) | 8.63 → 8.18 | 17.8 → 16.1% | 2.0 → 2.3% |
+| 23 | 40.8 → 37.9 | 68.5 → 67.3% | 10.59 → 9.99 | 10.0 → 9.5% | 8.52 → 8.08 | 17.3 → 16.0% | 2.6 → 2.9% |
+
+The same direction on every pass row on both seeds; the first promotion since engine-30 that takes scoring down by coverage rather than by the offense.
+
+What still turns: the no-help defender at 2.5–2.75 s (33–51%). His cushion runs out about half a second sooner than an NFL defender's: he steps toward the receiver before the stem shows (`CUSHION_NEED`'s squeeze, right for a short release and wrong for a deep player; a budget fix and a pre-release repair are built and parked on the lane branch because they give back some YAC until the underneath defenders arrive), and our receivers accelerate off the line at 5.0 yd/s² against 4.0. Pure man also over-turns (64–70% against 19–22%), untouched here.
+
 ## engine-35: `READ_PLAN` on, the quarterback runs a compiled read plan (2026-11-12)
 
 Rules + Coaching #592, from the owner's [read-compiler design](research/2026-11-11-qb-read-compiler-design.md). Each called play is compiled into one read plan from its route geometry and timing: pure progression by default; a key read off one defender where a high-low is live on rhythm (corner-flat, curl-flat, sail, smash, dagger and drive as clear-and-void); a triangle read; an alert glance; quick game starting on the breaking route, not the settling one; one side finished before the other; the back placed in the order by his window and side, first when he is the earliest answer; and on verticals one look that lasts until every vertical is 12 yd deep plus his processing time, then the back if nothing is winning. The quarterback executes the plan from what he sees of the key defender in his own delayed picture; pressure still takes his eyes to the outlet. Checked against 187 reads paraphrased from the playbook library ([Phase 0](reviews/2026-11-11-read-compiler-phase0.md), [Phase 1](reviews/2026-11-11-read-compiler-phase1.md)).
