@@ -420,3 +420,41 @@ nflpenalties.com; 581 accepted on Pro-Football-Reference; 544 team-games).
   should not be a fitted constant.
 - Off, the engine already calls 1.3 a team-game on runs, from passive cloth tension (hold = 0.25 arm x control) on
   men past the hip.
+
+## OPEN_HANDS: anticipated release, the detector, pressure source (2026-11-12, later)
+
+**Release (719cae92).** The timer is replaced by the holder's decision from what he feels of the man going by: the
+seen phi (by touch, PASS_FEEL's latency) carried forward by its rate over a lead of reaction x (discipline +
+awareness - 1), from a reaction time late to a reaction time early. Flags off are bit-identical.
+
+Holding, offence, holds-probe.mts, seeds 101-108, per team-game:
+- off: called 1.31 (run 1.31, pass 0);
+- release on a timer: called 4.88;
+- anticipated release: called 0.94 (run 0.38, pass 0.56).
+NFL 2022 accepted is about 1.1. Hang-on choices are about 2.75 a team-game in every arm. Not fitted.
+
+**Detector.** The native holding detector (`observeHolding`) calls every restraint its margins judge clear. There is
+no official in it: no visibility, angle, pile or open-field distinction. OFFICIATE's visibility model exists only for
+pass interference (`pass-interference.ts`). So holds "committed" (clear) and "called" are the same count;
+borderline restraint stays unresolved evidence (run about 62, pass about 211 records a team-game).
+
+**Behind the hip the drag persists.** edge-past.mts, all three flags, seeds 101-103:
+- tangential force along the rusher's path stays −310 to −530 N p50 (retarding 72-81%);
+- tension 10-26%, the hands joint 53-85% at +0 to +0.9 s past.
+Under the agreed definition these are legal inside-frame grips. The rusher is past the tackle in depth, but by the
+rep's phi (against his line to the QB) the tackle is still between him and the QB, and he is not on the rusher's
+back. "Past the hip" in football is past the blocker along the man's path of travel; the rep's phi is measured
+against the line to the QB. That definition decides whether the drag at the corner is a lapsed grip.
+
+**Where the pressure comes from** (pressure-source.py; % of dropbacks; off | all three on seeds 201/301 vs NFL):
+
+| presser | off | all three | NFL |
+|---|---|---|---|
+| edge rusher past outside | 2.0/2.7 | 1.8/3.3 | 3.8 |
+| edge rusher level or in front of his tackle | 12.4/13.8 | 11.9/13.7 | 3.0 |
+| edge rusher inside (free then) | 5.8/8.6 (87-89%) | 8.4/14.5 (91-96%) | 6.4 (48%) |
+| interior DL/LB | 6.4/7.9 | 8.4/9.2 | 9.8 |
+| other | 7.0/6.6 | 7.7/6.4 | 10.0 |
+
+- The standing excess (all arms): the tackle is walked back into the QB.
+- The flags' excess: an inside counter that nobody inside picks up.
