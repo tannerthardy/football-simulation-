@@ -37,7 +37,7 @@ for (const v0 of [5, 7]) for (const legs of [0.5, 0.8]) for (const lock of [0.56
     if (landed < 0 && h.support.state !== 'falling') landed = t;
     if (fell < 0 && r.support.state !== 'up') fell = t;
     const hip = w.hipTorque ? w.hipTorque(0) : NaN;
-    const worldHang = h.support.state === 'up' ? 0 : 0.5 * mh * G * lever;
+    const worldHang = h.support.state === 'up' ? 0 : (process.env.HANG_AIRBORNE === '1' && h.support.state === 'falling' ? 1 : 0.5) * mh * G * lever;
     const refHang = landed < 0 ? mh * G * lever : 0.5 * mh * G * lever;
     const refDrag = landed < 0 ? 0 : 0.75 * mh * G;
     const bound = w.strideHolds?.[0] ?? 0; boundEver = Math.max(boundEver, bound);
@@ -46,6 +46,6 @@ for (const v0 of [5, 7]) for (const legs of [0.5, 0.8]) for (const lock of [0.56
     if (fell > 0 && t > fell + 0.2) break;
   }
   const hip = w.hipTorque ? w.hipTorque(0) : NaN;
-  console.log(`== v0 ${v0} legs ${legs} lock ${lock} (cap ${f(cap, 0)}): runner ${fell > 0 ? 'down at ' + f(fell) + ' s' : 'up at 1.5 s'}, travel ${f(r.pos.x)} yd, holder landed ${f(landed)} s, stride bound max ${f(boundEver)} | hang moment while airborne: World ${f(0.5 * mh * G * lever, 0)} vs reference ${f(mh * G * lever, 0)}; hip torque ${f(hip, 0)}`);
+  console.log(`== v0 ${v0} legs ${legs} lock ${lock} (cap ${f(cap, 0)}): runner ${fell > 0 ? 'down at ' + f(fell) + ' s' : 'up at 1.5 s'}, travel ${f(r.pos.x)} yd, holder landed ${f(landed)} s, stride bound max ${f(boundEver)} | hang moment while airborne: World ${f((process.env.HANG_AIRBORNE === '1' ? 1 : 0.5) * mh * G * lever, 0)} vs reference ${f(mh * G * lever, 0)}; hip torque ${f(hip, 0)}`);
   if (VERBOSE) console.log(lines.join('\n'));
 }
