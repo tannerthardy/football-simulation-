@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-37`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-38`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,22 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-38: `BLOCK_SEEN` and `RELEASE_THROUGH` on (2026-11-12)
+
+- **`BLOCK_SEEN`** (Flex #520). The quarterback's sense of a blocked rusher comes from what he sees, not from the block's private win score: a rusher is held only by an offensive body he sees within arm's length of him and on his path; a rusher in contact with a blocker who is not on his path (ridden from beside, or driving the blocker back) is paced at the closing speed the quarterback sees, with no fresh sprint credited. Estimate minus the rusher's real arrival, median, off → on (8 games): through a blocker on his path +1.39 → +0.43 s; ridden beside a blocker +0.45 → +0.39 s; free +0.39 → +0.30 s; no rush type reads early. The same kind of repair as `SEEN_EYES` (engine-30).
+- **`RELEASE_THROUGH`** (Coverage #608). After a press release the route steered the receiver back across the corner to a stem point he had already passed, and the two slowed each other to a stop: pressed outside go against man, depth at 3.0 s 6.7 yd at 2.8 yd/s (NFL 11.6 at 7.3). Stem points under 1.5 yd ahead that lie back across his release side are now skipped, and the release side survives a later jam. Pressed go or fade against man stalled at 3.0 s: 60 → 6%; depth at 3.0 s 13.8 yd; identical to 1.5 s. A pressed seam keeps its landmark; a wide-released go stays 2–4 yd wide.
+
+Checks on the candidate (`ed1f5b79`, on engine-37): full suite 4311 pass with the two known research failures; fixed run set unchanged (3.87 mean under 20). Paired league scorecards, 16 games an arm, one flag at a time with the other on; no row resolved on either flag on either seed:
+
+| flag, seed | points a team-game | completion | yards an attempt | sack rate | INT rate | time to throw |
+|---|---|---|---|---|---|---|
+| `BLOCK_SEEN`, 11 | 39.6 → 36.6 | 63.9 → 65.6% | 9.87 → 9.72 | 3.6 → 3.0% | 2.3 → 3.0% | 2.67 → 2.64 |
+| `BLOCK_SEEN`, 23 | 36.8 → 34.5 | 67.8 → 68.2% | 10.12 → 10.01 | 3.3 → 4.0% | 2.5 → 2.6% | 2.67 → 2.69 |
+| `RELEASE_THROUGH`, 11 | 37.1 → 36.6 | 63.2 → 65.6% | 9.44 → 9.72 | 3.3 → 3.0% | 3.6 → 3.0% | 2.68 → 2.64 |
+| `RELEASE_THROUGH`, 23 | 37.4 → 34.5 | 66.8 → 68.2% | 9.89 → 10.01 | 3.9 → 4.0% | 2.1 → 2.6% | 2.67 → 2.69 |
+
+Known and open after `RELEASE_THROUGH`: the release against press is too easy (level with the corner at 1.5 s against the NFL's 2.2; the jam lands on 1–3% of pressed receivers and holds one or two ticks; every receiver leaves the line at 2.2–2.5 yd/s at 0.5 s against 1.3–2.0), so the freed go ends about 1.5 yd past where an NFL receiver is; and the quarterback throws the running go on 4–6% of four-verticals attempts against Cover 1 (NFL 62%), which is the deep-shot decision in the risk work.
 
 ## engine-37: `BACK_FRONT` on, the back is read with the front side (2026-11-12)
 
