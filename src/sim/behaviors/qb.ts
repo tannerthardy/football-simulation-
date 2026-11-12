@@ -261,18 +261,18 @@ const DEF_BELIEF = process.env.DEF_BELIEF !== '0';
  * is set by his knowledge (decision-making and experience), with error both ways. */
 const ACC_BELIEF = process.env.ACC_BELIEF !== '0';
 /** INT_BELIEF (experimental, off; INT_BELIEF=1 turns it on): his interception belief, shaped like how picks happen.
- * Off, each defender's path undercut adds to the risk (a sum, capped at 1), so a ball thrown past several defenders
- * reads as near-certain trouble; and a contested catch point is priced lightly. On engine-46 natural throws the total
- * was right (1.7% vs 1.8%) but: picks came 32 at the catch point, 20 off a tipped ball, 3 on the path; his path terms
- * summed to about 18 picks and his catch-point terms to about 13 (2.5x short); and the throws he declined at a priced
- * 28% risk completed 53% with 3.4% INT when forced (docs/reviews/2026-11-12-int-belief.md). On: a pick in flight is
- * the chance that some defender touches it and it ends a pick (combined as probabilities, not summed), and the catch
- * point's jumped and contested picks are weighted as they happen (CATCH_PICK). His knowledge sets how well he knows
- * it, with error both ways. Calibrated on engine-46's catch model: re-read when the catch or tip rules change. */
+ * Off, each defender's path undercut (a touch on the ball in flight) adds to the risk as if every touch were a pick,
+ * and a contested catch point is priced lightly. On natural league throws (engine-47 candidate: CATCH_CARRY,
+ * HANDS_CUE, CATCH_SPEED, CATCH_CHOICE on), his catch-point terms ranked picks (0.9% to 4.0% across their bands) and
+ * his path terms barely did; on engine-46 the throws he declined at a priced 28% risk, mostly path, completed 53% with
+ * 3.4% INT when forced (docs/reviews/2026-11-12-int-belief.md). On: a touch in flight ends a pick a fraction of the
+ * time (PATH_PICK) and the catch point's jumped and contested picks are weighted up (CATCH_PICK), defenders combined as
+ * probabilities. His knowledge sets how well he knows it, with error both ways. Calibrated against the engine-47
+ * candidate's catch flags and engine-46's defense: re-read when the catch, tip or coverage rules change. */
 const INT_BELIEF = process.env.INT_BELIEF === '1';
-/** INT_BELIEF: in-flight touches that end in a pick (path and tipped), and the catch point's weight (engine-46 fit). */
-const PATH_PICK = 1.25;
-const CATCH_PICK = 2.5;
+/** INT_BELIEF weights, fitted by likelihood on natural throws (seeds 101/201) and checked on 301/401. */
+const PATH_PICK = 0.2;
+const CATCH_PICK = 1.75;
 /** DEF_BELIEF: how much of the target's motion a defender on him carries over his blind time (engine-40 probe). */
 const PHASE_MEAN = 0.5;
 /** DEF_BELIEF: the catch has to survive the defender who arrives just after the ball (CATCH_SECURE's securing
