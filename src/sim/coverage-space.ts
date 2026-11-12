@@ -11,7 +11,8 @@ import type { Agent } from './agent.js';
  * 4+ yd short zone catches, scripts/diag/pass-operators/rally4.mts). A pursuer
  * runs to the sideline with the carrier; the boundary is the carrier's, and
  * the body's own traction and the out-of-bounds rule still apply. On: a
- * command marked as a seen-carrier pursuit keeps its request. */
+ * command marked as a seen-carrier pursuit keeps its request (pursueIfLive's
+ * chase of an observed holder, and CATCH_CARRY's drive on the catcher). */
 export const PURSUIT_FIELD = process.env.PURSUIT_FIELD === '1';
 const carrierPursuit = Symbol('pursuit of a seen ball carrier');
 
