@@ -27,8 +27,16 @@ def rows(path):
         ka = p.k(ev.get('pass_arrived', ev['end'])); kb = ka - 3; ke = min(p.k(ev['end']), p.frames - 1)
         if kb < 1 or ka >= p.frames or p.pos(t, ka)[0] is None: continue
         bxy = r.get('bxy') or BALL.get(r.get('id'))
-        if bxy and ka < len(bxy) and bxy[ka]:
-            if math.hypot(bxy[ka][0] - p.pos(t, ka)[0], bxy[ka][1] - p.pos(t, ka)[1]) > 1.5: continue  # on target
+        if not bxy or ka >= len(bxy): continue
+        # On target from the incoming flight line (the ball 0.3 s and 0.1 s before arrival) at closest approach to
+        # the target at arrival, not the ball at the arrival frame: a caught ball is already in his hands there and
+        # a missed one is not, which would keep the sim's catches and drop its misses.
+        kf0 = p.k(ev['pass_forward']); k1, k0 = max(kf0, ka - 3), max(kf0, ka - 1)
+        if k0 <= k1: continue
+        (ax_, ay_), (ex, ey) = bxy[k1], bxy[k0]; lx, ly = ex - ax_, ey - ay_; LL = lx * lx + ly * ly
+        if LL < 0.01: continue
+        tx0, ty0 = p.pos(t, ka); u = ((tx0 - ax_) * lx + (ty0 - ay_) * ly) / LL
+        if math.hypot(ax_ + u * lx - tx0, ay_ + u * ly - ty0) > 1.5: continue  # on target
         D = [d for d in p.who('D') if p.pos(d, ka)[0] is not None and p.pos(d, kb)[0] is not None]
         if not D: continue
         d = min(D, key=lambda x: p.dist(t, x, ka)); dist = p.dist(t, d, ka)
