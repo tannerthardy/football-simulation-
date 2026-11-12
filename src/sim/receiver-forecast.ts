@@ -66,6 +66,17 @@ export interface ReceiverEstimate {
  * 0.6), so the QB expects it about 6 s after the snap and treats the receiver as not ready (a flat open at
  * 0.77 completion was never thrown: docs/reviews/2026-11-11-forecast-break.md). */
 const FORECAST_BREAK = process.env.FORECAST_BREAK !== '0';
+/** FORECAST_HOLD (experimental, off; FORECAST_HOLD=1 turns it on): a receiver a little off his drawn line is still
+ * running his route. Off, a picture is placed on the installed route only within his body radius (about 0.3 yd) of
+ * it; anything farther makes the whole forecast a straight line of his current velocity, which ignores the coming
+ * break. On the forced-concept panel, 26% of pictures of receivers moving along their routes were thrown out that
+ * way (32% at 2-3 s, the throwing time), and in league games that flip between the decision and the plant's re-check
+ * caused 18 of 30 traced pumps (docs/reviews/2026-11-12-window-defenders.md). On: placed within HOLD_TOL of the
+ * route while moving along it (about the 90th percentile of observed drift); moving against it, or farther off, is
+ * still a contradiction and falls back to his observed motion. */
+const FORECAST_HOLD = process.env.FORECAST_HOLD === '1';
+/** FORECAST_HOLD: how far off its drawn line a run route still reads as that route (engine-42 panel: drift p90 1.4 yd). */
+const HOLD_TOL = 1.5;
 
 /** Where the receiver cuts on an installed path: the waypoint the route slows
  * him most for (first on ties), not counting a final settle spot. Null for a
@@ -238,7 +249,7 @@ function inferProgress(p: ReceiverPicture, prior: InstalledReceiverRoute): numbe
     const u = len2 ? clamp(((p.pos.x - prev.x) * dx + (p.pos.y - prev.y) * dy) / len2, 0, 1) : 0;
     const error = Math.hypot(p.pos.x - prev.x - u * dx, p.pos.y - prev.y - u * dy);
     // Motion perpendicular/opposed to this segment is evidence of a different action.
-    if (error <= prior.profile.radius && (Math.hypot(p.vel.x, p.vel.y) < 1e-6 || p.vel.x * dx + p.vel.y * dy > 0)) {
+    if (error <= (FORECAST_HOLD ? Math.max(prior.profile.radius, HOLD_TOL) : prior.profile.radius) && (Math.hypot(p.vel.x, p.vel.y) < 1e-6 || p.vel.x * dx + p.vel.y * dy > 0)) {
       candidates.push({ idx, error });
     }
     prev = next;
