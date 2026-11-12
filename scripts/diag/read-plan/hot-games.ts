@@ -9,7 +9,22 @@
 import { Rng } from '../../../src/core/rng.js';
 import { simulateGame } from '../../../src/game/game.js';
 import { generateTeam, leagueSample } from '../../../src/league/team.js';
+import { QBPass } from '../../../src/sim/behaviors/qb.js';
 import { PlaySim } from '../../../src/sim/playsim.js';
+
+// The window's per-defender terms at the aimed point of the throw he starts (diagnostic trace; no effect on play).
+const QP: any = QBPass.prototype, ev0 = QP.evaluate, st0 = QP.startThrow;
+QP.evaluate = function (a: any, sim: any, r: any, u: number) {
+  this.marginProbe = true;
+  const e = ev0.call(this, a, sim, r, u);
+  (this.traceBy ??= new Map()).set(r, { t: sim.t, margins: this.marginLast });
+  return e;
+};
+QP.startThrow = function (a: any, sim: any, e: any) {
+  const tr = this.traceBy?.get(e.target);
+  if (!this.throwMargins) this.throwMargins = tr && tr.t === sim.t ? tr.margins : null;
+  return st0.call(this, a, sim, e);
+};
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : d; };
 const seed = Number(arg('--seed', '101')), games = Number(arg('--games', '16'));
@@ -18,7 +33,7 @@ PlaySim.prototype.run = function (this: any) {
   const sim = this;
   const pass = sim.offCall?.kind === 'pass' ? sim.offCall.pass : null;
   if (!pass || pass.family === 'screen') return run.call(this);
-  let qb: any = null, press: any = null, target: any = null, arrT: number | null = null, deflectedAt: number | null = null, intAt: number | null = null;
+  let qb: any = null, press: any = null, target: any = null, arrT: number | null = null, deflectedAt: number | null = null, intAt: number | null = null, picker: string | null = null;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
     const air = sim.ball.kind === 'air';
@@ -30,7 +45,7 @@ PlaySim.prototype.run = function (this: any) {
     }
     if (!air && sim.ball.kind === 'air' && !target) { target = sim.ball.target ?? null; arrT = sim.ball.arrivalT ?? sim.ball.arrival ?? null; }
     if (sim.ball.kind === 'air' && sim.ball.deflected && deflectedAt === null) deflectedAt = sim.t;
-    if (intAt === null && air && sim.ball.kind !== 'air' && sim.possession === 'D') intAt = sim.t;
+    if (intAt === null && air && sim.ball.kind !== 'air' && sim.possession === 'D') { intAt = sim.t; picker = sim.ball.carrier?.slot ?? null; }
   };
   const r = run.call(this);
   const s = sim.stats, ref = (a: any) => a ? sim.offAlign.refOf[a.slot] ?? a.slot : null;
@@ -41,7 +56,7 @@ PlaySim.prototype.run = function (this: any) {
     att: !!s.attempted, cmp: !!s.completed, sack: !!s.sacked, int: ev.some((e: any) => e.type === 'interception'),
     throwaway: ev.some((e: any) => e.type === 'throwaway'),
     intKind: intAt === null ? null : deflectedAt !== null && deflectedAt <= intAt ? 'tipped' : arrT !== null && intAt < arrT - 0.15 ? 'path' : 'catch point',
-    intEarly: intAt !== null && arrT !== null ? +(arrT - intAt).toFixed(2) : null, outcome: s.completed ? 'catch' : ev.some((e: any) => e.type === 'interception') ? 'int' : ev.some((e: any) => e.type === 'pbu' || e.type === 'deflection') ? 'defended' : ev.some((e: any) => e.type === 'drop') ? 'drop' : 'ground', scramble: !!sim.scrambled, yards: +r.yards.toFixed(2) }) + '\n');
+    intEarly: intAt !== null && arrT !== null ? +(arrT - intAt).toFixed(2) : null, outcome: s.completed ? 'catch' : ev.some((e: any) => e.type === 'interception') ? 'int' : ev.some((e: any) => e.type === 'pbu' || e.type === 'deflection') ? 'defended' : ev.some((e: any) => e.type === 'drop') ? 'drop' : 'ground', scramble: !!sim.scrambled, yards: +r.yards.toFixed(2), picker, margins: qb?.throwMargins ?? null }) + '\n');
   return r;
 };
 const rng = new Rng(seed);

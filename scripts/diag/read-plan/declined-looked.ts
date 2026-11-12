@@ -42,6 +42,7 @@ const play = (setup: any, force: { t: number; slot: string } | null) => {
   const first: Map<string, number> = new Map(), minD: Map<string, number> = new Map(), atArr: Map<string, number> = new Map();
   let pic: any = null, aim: any = null, relT: number | null = null, relTarget: string | null = null, pumps = 0;
   const onBall: Map<string, number> = new Map();
+  let deflAt: number | null = null, intAt: number | null = null, picker: string | null = null, wasAir = false;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
     const qb = sim.qb.behavior;
@@ -58,6 +59,11 @@ const play = (setup: any, force: { t: number; slot: string } | null) => {
     }
     tick();
     if (forced && sim.ball?.kind === 'air' && arrive === null && sim.ball.arrivalT) { arrive = sim.ball.arrivalT; relT = sim.t; relTarget = sim.ball.target?.slot ?? null; aim = sim.ball.intended; }
+    if (forced && relT !== null) {
+      if (sim.ball.kind === 'air' && sim.ball.deflected && deflAt === null) deflAt = sim.t;
+      if (intAt === null && wasAir && sim.ball.kind !== 'air' && sim.possession === 'D') { intAt = sim.t; picker = sim.ball.carrier?.slot ?? null; }
+      wasAir = sim.ball.kind === 'air';
+    }
     if (relT !== null) for (const d of sim.defense) if (!onBall.has(d.slot) && d.tags.has('onBall')) onBall.set(d.slot, +(sim.t - relT).toFixed(2));
     // Against the aim as released (re-aimed at the release), from the release on.
     if (forced && aim) for (const d of sim.defense) {
@@ -71,7 +77,9 @@ const play = (setup: any, force: { t: number; slot: string } | null) => {
   pumps = res.events.filter((x: any) => x.type === 'pump').length;
   return { cmp: !!s.completed, int: res.events.some((x: any) => x.type === 'interception'), yards: +res.yards.toFixed(2), sack: !!s.sacked, forced,
     defArrive: arrive === null ? null : Object.fromEntries([...first].map(([k, v]) => [k, +(v - arrive!).toFixed(2)])),
-    defMin: Object.fromEntries([...minD].map(([k, v]) => [k, +v.toFixed(2)])), defAtArr: Object.fromEntries([...atArr].map(([k, v]) => [k, +v.toFixed(2)])), pic, onBall: Object.fromEntries(onBall), wind: relT === null ? null : +(relT - force!.t).toFixed(2), relTarget, pumps };
+    defMin: Object.fromEntries([...minD].map(([k, v]) => [k, +v.toFixed(2)])), defAtArr: Object.fromEntries([...atArr].map(([k, v]) => [k, +v.toFixed(2)])), pic, onBall: Object.fromEntries(onBall), wind: relT === null ? null : +(relT - force!.t).toFixed(2), relTarget, pumps,
+    intKind: intAt === null ? null : deflAt !== null && deflAt <= intAt ? 'tipped' : arrive !== null && intAt < arrive - 0.15 ? 'path' : 'catch point',
+    intEarly: intAt !== null && arrive !== null ? +(arrive - intAt).toFixed(2) : null, picker };
 };
 for (const c of concepts) for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage of ['cover1', 'cover2', 'cover3', 'cover4']) for (const seed of seeds) {
   const setup = { coverage, concept: c.id, seed, roster: seed, formation, flip: false };
@@ -83,6 +91,6 @@ for (const c of concepts) for (const formation of ['gun_doubles_11', 'gun_trips_
     const out = play(setup, { t: D.t, slot: D.slot });
     if (!out.forced) continue;
     process.stdout.write(JSON.stringify({ concept: c.id, formation, coverage, seed, natural: { thrownAt, ...nat, defArrive: undefined },
-      declined: { ...D, cmp: out.cmp, int: out.int, yards: out.yards, sack: out.sack, defArrive: out.defArrive, defMin: out.defMin, defAtArr: out.defAtArr, pic: out.pic, onBall: out.onBall, windActual: out.wind, relTarget: out.relTarget, pumps: out.pumps } }) + '\n');
+      declined: { ...D, cmp: out.cmp, int: out.int, yards: out.yards, sack: out.sack, defArrive: out.defArrive, defMin: out.defMin, defAtArr: out.defAtArr, pic: out.pic, onBall: out.onBall, windActual: out.wind, relTarget: out.relTarget, pumps: out.pumps, intKind: out.intKind, intEarly: out.intEarly, picker: out.picker } }) + '\n');
   }
 }

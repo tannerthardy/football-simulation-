@@ -1243,7 +1243,7 @@ export class QBPass implements Behavior {
         const age = this.mind.pictureAge(d), A = d.profile.vmax / Math.max(d.profile.tau, 1e-3);
         spreadD = Math.min(0.5 * A * age * age, d.profile.vmax * age) / Math.max(d.profile.vmax, 1e-3);
       }
-      return { d, blind, mover, react, leap, spreadD, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
+      return { d, blind, mover, react, leap, spreadD, facingQB, estimateError: a.mind.judgment(`reach:${d.slot}`) * noise };
     });
     // A ball that arrives at `pt`: who contests it at the catch, who can get a
     // hand on it on the way, and how many of those become picks.
@@ -1264,7 +1264,7 @@ export class QBPass implements Behavior {
     const at = (pt: Vec3) => {
       let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
       const v0 = dragFreeLaunch(from, pt, T);
-      for (const { d, blind, mover, react, leap, spreadD, estimateError } of defenders) {
+      for (const { d, blind, mover, react, leap, spreadD, facingQB, estimateError } of defenders) {
         const tt = blind + timeToReach(mover, pt, d.profile.reach + 0.3) + react;
         const m = tt - total + estimateError;
         const sCatch = PICTURE_AGE ? Math.hypot(0.13, spreadD, spreadR / Math.max(d.profile.vmax, 1e-3)) : 0.13;
@@ -1272,7 +1272,6 @@ export class QBPass implements Behavior {
         const contest = 1 - logistic((m - 0.05) / sCatch);
         // A defender who gets there well before the ball is sitting on the route.
         const first = 1 - logistic((m + 0.3) / sCatch);
-        if (marginTrace && pt === point && contest > 0.05) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3), contest: +contest.toFixed(3), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3) });
         pOpen *= 1 - contest * (0.55 + 0.3 * d.r('ballSkills'));
         // DEF_BELIEF: arriving after the ball but inside the securing window, he can still get it out.
         if (DEF_BELIEF) {
@@ -1296,6 +1295,9 @@ export class QBPass implements Behavior {
         const iJump = first * (0.15 + 0.35 * d.r('ballSkills')), iContest = Math.max(0, contest - first) * 0.08 * d.r('ballSkills');
         intRisk += iPath + iJump + iContest;
         intPath += iPath; intJump += iJump; intContest += iContest;
+        if (marginTrace && pt === point && (contest > 0.05 || iPath + iJump + iContest > 0.001)) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3),
+          contest: +contest.toFixed(3), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3), touch: +touch.toFixed(4),
+          iPath: +iPath.toFixed(4), iJump: +iJump.toFixed(4), iContest: +iContest.toFixed(4), facingQB, ballSkills: +d.r('ballSkills').toFixed(2) });
         if (INT_BELIEF) {
           noPathPick *= 1 - clamp(iPath * PATH_PICK * intBelief, 0, 0.95);
           noCatchPick *= 1 - clamp((iJump + iContest) * CATCH_PICK * intBelief, 0, 0.95);
