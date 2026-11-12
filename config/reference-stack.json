@@ -72,6 +72,7 @@
     "FIT_BLITZ_SLIDE": "on",
     "FIT_TE_GAP": "on",
     "FLAT_PRESS": "on",
+    "ROUTE_CRAFT": "off",
     "CATCH_HANDS": "off",
     "CATCH_POINT": "on",
     "CATCH_SECURE": "off",

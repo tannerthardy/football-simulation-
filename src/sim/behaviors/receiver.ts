@@ -75,6 +75,54 @@ function clearLane(a: Agent, sim: PlaySim, cmd: MoveCommand): MoveCommand {
   return { ...cmd, vel: { x: go.x * speed, y: go.y * speed } };
 }
 
+/** ROUTE_CRAFT (off; ROUTE_CRAFT=1 turns it on; estimated, C14): a receiver on
+ * his route who sees a defender in his lane ahead works to a shoulder instead
+ * of running through him. The coached rule is the intent (stem to a shoulder,
+ * attack leverage, avoid a body in the lane); his route running decides how
+ * early he sees it (0.25-0.45 s ahead at his pace), how wide he goes and how
+ * much speed he keeps. Side: toward his next break if one is coming, else the
+ * defender's open shoulder (away from where the defender sits off his line).
+ * The bend costs path length and a little speed (he eases 2-6% through it, NFL
+ * receivers 6.7 -> 6.3 yd/s passing a defender); the waypoint and its timing are
+ * kept. Nothing forbids contact: a defender who mirrors the step can still get a
+ * body on him, and a receiver whose line is clear does not bend. Off, receivers
+ * held their line: with a defender 1.5-4 yd ahead on it, 23% went around (NFL
+ * 53%) and their bodies touched 40% of the time within 5 yd of the line (NFL
+ * 11%) (lane.py, engine-31 vs BDB 2025 weeks 1-3). */
+const ROUTE_CRAFT = process.env.ROUTE_CRAFT === '1';
+
+/** ROUTE_CRAFT: the route command, bent around a defender seen in the lane. */
+export function routeCraft(a: Agent, sim: Pick<PlaySim, 'defense' | 'see' | 't'>, cmd: MoveCommand, rr: number, breakSide: number): MoveCommand {
+  const speed = Math.hypot(cmd.vel.x, cmd.vel.y);
+  if (speed < 1) return cmd;
+  const u = { x: cmd.vel.x / speed, y: cmd.vel.y / speed }, n = { x: -u.y, y: u.x };
+  const pace = Math.max(1, (Math.hypot(a.vel.x, a.vel.y) + speed) / 2);
+  const look = pace * (0.25 + 0.2 * rr) + 1.2;
+  let block: { p: Vec2; ahead: number; off: number; clear: number } | null = null;
+  for (const d of sim.defense) {
+    if (d.isDown(sim.t)) continue;
+    const seen = sim.see(a, d);
+    const rel = { x: seen.pos.x - a.pos.x, y: seen.pos.y - a.pos.y };
+    const closing = Math.max(0.5, pace - (seen.vel.x * u.x + seen.vel.y * u.y));
+    const ahead0 = rel.x * u.x + rel.y * u.y;
+    if (ahead0 <= 0) continue;
+    // Where he will be when the receiver gets there, on the receiver's line.
+    const tReach = ahead0 / closing;
+    const p = { x: seen.pos.x + seen.vel.x * tReach, y: seen.pos.y + seen.vel.y * tReach };
+    const ahead = (p.x - a.pos.x) * u.x + (p.y - a.pos.y) * u.y, off = (p.x - a.pos.x) * n.x + (p.y - a.pos.y) * n.y;
+    const clear = a.profile.radius + d.profile.radius + 0.15 + 0.25 * rr;
+    if (ahead <= 0 || ahead > look || Math.abs(off) >= clear) continue;
+    if (!block || ahead < block.ahead) block = { p, ahead, off, clear };
+  }
+  if (!block) return cmd;
+  const side = breakSide !== 0 ? breakSide : (block.off >= 0 ? -1 : 1);
+  const around = { x: block.p.x + n.x * side * block.clear, y: block.p.y + n.y * side * block.clear };
+  const dx = around.x - a.pos.x, dy = around.y - a.pos.y, l = Math.hypot(dx, dy) || 1;
+  const ease = 0.94 + 0.04 * rr;
+  a.tags.add('route-craft');
+  return { ...cmd, vel: { x: dx / l * speed * ease, y: dy / l * speed * ease } };
+}
+
 /** PRESS_MIRROR (off; see behaviors/defense.ts): a receiver with a pressing
  * corner square in front of him releases around him, not up through him. */
 const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
@@ -184,7 +232,22 @@ export class RouteRunner implements Behavior {
       this.settled = this.routeEnd !== 'continue';
       return this.settle(a, sim);
     }
-    return ROUTE_CLEAR && this.fromBackfield ? clearLane(a, sim, cmd) : cmd;
+    if (ROUTE_CLEAR && this.fromBackfield) return clearLane(a, sim, cmd);
+    if (ROUTE_CRAFT) return routeCraft(a, sim, cmd, rr, this.breakSide(a));
+    return cmd;
+  }
+
+  /** ROUTE_CRAFT: which way his next break turns relative to his current
+   * heading (+1 left, -1 right, 0 none within the next two waypoints). */
+  private breakSide(a: Agent): number {
+    const sp = Math.hypot(a.vel.x, a.vel.y);
+    if (sp < 0.5) return 0;
+    const ux = a.vel.x / sp, uy = a.vel.y / sp;
+    for (let k = this.idx; k < Math.min(this.path.length, this.idx + 2); k++) {
+      const p = this.path[k].p, lat = -(p.x - a.pos.x) * uy + (p.y - a.pos.y) * ux, along = (p.x - a.pos.x) * ux + (p.y - a.pos.y) * uy;
+      if (Math.abs(lat) > 1.5 && Math.abs(lat) > 0.4 * Math.abs(along)) return Math.sign(lat);
+    }
+    return 0;
   }
 
   /** The same waypoint controller is used by the explicitly seeded QB forecast. */
