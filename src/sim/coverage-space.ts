@@ -13,7 +13,7 @@ import type { Agent } from './agent.js';
  * the body's own traction and the out-of-bounds rule still apply. On: a
  * command marked as a seen-carrier pursuit keeps its request (pursueIfLive's
  * chase of an observed holder, and CATCH_CARRY's drive on the catcher). */
-export const PURSUIT_FIELD = process.env.PURSUIT_FIELD === '1';
+export const PURSUIT_FIELD = process.env.PURSUIT_FIELD !== '0';
 const carrierPursuit = Symbol('pursuit of a seen ball carrier');
 
 /** Mark a request as the pursuit of a ball carrier this player has seen
