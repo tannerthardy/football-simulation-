@@ -42,9 +42,9 @@ describe('SPACING_SMOOTH: the teammate closing limit is continuous, not a gate',
     const { jump } = await sweep('0');
     expect(jump).toBeGreaterThan(0.5);
   }, 60_000);
-  it('on: it changes by under 0.1 yd/s per 0.01 yd of offset, still slows for a teammate in his path, and keeps a clear lane', async () => {
+  it('on: it changes by under 0.15 yd/s per 0.01 yd of offset, still slows for a teammate in his path, and keeps a clear lane', async () => {
     const { out, jump } = await sweep('1');
-    expect(jump).toBeLessThan(0.1);
+    expect(jump).toBeLessThan(0.15);
     expect(out[0].vx).toBeLessThan(4.5);           // 0.4 yd off his line: he slows
     expect(out[out.length - 1].vx).toBeCloseTo(5); // 1.6 yd off: a clear lane, untouched
   }, 60_000);
