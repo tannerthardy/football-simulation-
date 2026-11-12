@@ -250,7 +250,7 @@ const HOT_LOOK = process.env.HOT_LOOK !== '0';
  * 4 yd of the target (by his pictures) moves partly with the target over that time, as coverage on a man does; his
  * belief of how much is right on average and spread both ways by inexperience (decision-making and experience).
  * Calibrated on engine-40's defense (ARRIVE_LEAD, CUSHION_BREAK on): re-read when the defense changes. */
-const DEF_BELIEF = process.env.DEF_BELIEF === '1';
+const DEF_BELIEF = process.env.DEF_BELIEF !== '0';
 /** DEF_BELIEF: how much of the target's motion a defender on him carries over his blind time (engine-40 probe). */
 const PHASE_MEAN = 0.5;
 /** DEF_BELIEF: the catch has to survive the defender who arrives just after the ball (CATCH_SECURE's securing
