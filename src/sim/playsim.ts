@@ -1080,15 +1080,31 @@ export class PlaySim {
             if (event) event.note = `${ruling.rule}: teammate recovery cannot advance`;
             this.whistle('tackle', { x: ruling.deadBallX, y: a.pos.y });
           } else {
-            // A fumble spot beyond the opponent's goal line would already
-            // have been a touchdown, so the dead spot is in the own end zone.
+            // Possession beyond the opponent's goal line is ruled a touchdown
+            // before tackles (checkTouchdown), so the dead spot should be in
+            // the own end zone. If it is not, the fumbler held the ball in
+            // the end zone his team attacks: the nearest ruling is his score.
             const ownEndZone = a.team === 'O' ? ruling.deadBallX <= OWN_GOAL_X : ruling.deadBallX >= OPP_GOAL_X;
-            const endZone = ownEndZone ? restrictedRecoveryInOwnEndZone({ team: a.team,
-              fumbleX: loose.fumbleX ?? ruling.deadBallX, impetusTeam: loose.impetusTeam,
-              momentumExceptionExcluded: loose.momentumExceptionExcluded, momentumSpotX: loose.momentumSpotX }) : null;
-            if (!endZone || endZone.kind === 'unresolved') {
-              throw new Error(`Unsupported NFL ${ruling.rule}: end-zone recovery impetus/momentum`);
+            if (!ownEndZone) {
+              this.ruleLimitations.add(`${ruling.rule}: dead spot in the attacked end zone; ruled a touchdown`);
+              this.scoreKind = 'TD';
+              this.event('touchdown', a, null, `${ruling.rule}: teammate recovery dead in the attacked end zone`);
+              this.whistle('touchdown', { x: ruling.deadBallX, y: a.pos.y });
+              if (a.team !== prevTeam) this.capturePossessionSnapshot();
+              return;
             }
+            const facts = { team: a.team, fumbleX: loose.fumbleX ?? ruling.deadBallX, impetusTeam: loose.impetusTeam,
+              momentumExceptionExcluded: loose.momentumExceptionExcluded, momentumSpotX: loose.momentumSpotX };
+            let endZone = restrictedRecoveryInOwnEndZone(facts);
+            if (endZone.kind === 'unresolved') {
+              // The ball's history lacks the end-zone impetus or momentum
+              // facts: rule on the recorded impetus (else the recovering
+              // team's) without the momentum exception, and record the gap.
+              this.ruleLimitations.add(`${ruling.rule}: end-zone recovery lacks impetus/momentum facts; ruled on recorded impetus`);
+              endZone = restrictedRecoveryInOwnEndZone({ ...facts, impetusTeam: facts.impetusTeam ?? a.team,
+                momentumExceptionExcluded: true, momentumSpotX: undefined });
+            }
+            if (endZone.kind === 'unresolved') throw new Error('unreachable: impetus and momentum supplied');
             const note = `${ruling.rule}/${endZone.rule}: teammate recovery dead in own end zone`;
             if (endZone.kind === 'safety') {
               this.scoreKind = 'safety';
@@ -1407,6 +1423,9 @@ export class PlaySim {
       this.afterPhysics(report);
     }
     this.updateBall(catchStarts);
+    // Possession in the opponent's end zone is a touchdown at once (11-2-1):
+    // ruled before this tick's tackles can strip the ball from the scorer.
+    if (this.phase === 'live') this.checkTouchdown();
     if (this.phase === 'live') tryTackles(this);
     if (this.phase === 'live') this.checkWhistle();
     flushPassContacts(this);
@@ -1646,6 +1665,19 @@ export class PlaySim {
     this.whistle('oob', { x: spotX, y: exit.y });
   }
 
+  /** A carrier in possession in the end zone his team attacks has scored. */
+  private checkTouchdown(): boolean {
+    const c = this.carrier;
+    if (!c || c.team !== this.possession) return false;
+    const p = c.pos;
+    // Out of bounds first, as in checkWhistle.
+    if (p.y <= 0 || p.y >= FIELD_WIDTH || (c.team === 'O' ? p.x < OPP_GOAL_X : p.x > OWN_GOAL_X)) return false;
+    this.scoreKind = 'TD';
+    this.event('touchdown', c);
+    this.whistle('touchdown', p);
+    return true;
+  }
+
   private checkWhistle(): void {
     const c = this.carrier;
     if (!c) return;
@@ -1656,19 +1688,7 @@ export class PlaySim {
       this.finishCarry('oob', { x: this.bond ? this.bond.progressX : p.x, y: p.y });
       return;
     }
-    // Touchdown / end-zone outcomes.
-    if (c.team === 'O' && this.possession === 'O' && p.x >= OPP_GOAL_X) {
-      this.scoreKind = 'TD';
-      this.event('touchdown', c);
-      this.whistle('touchdown', p);
-      return;
-    }
-    if (c.team === 'D' && this.possession === 'D' && p.x <= OWN_GOAL_X) {
-      this.scoreKind = 'TD';
-      this.event('touchdown', c);
-      this.whistle('touchdown', p);
-      return;
-    }
+    if (this.checkTouchdown()) return;
     if (p.x <= 0 || p.x >= 120) {
       this.finishCarry('oob', { x: clamp(p.x, 0, 120), y: p.y });
       return;
