@@ -66,6 +66,8 @@ interface ThrowEval {
   intRisk: number;
   value: number;
   depth: number;
+  /** Diagnostics: the window's factors (P = pOpen * pClear * pAcc * hands). */
+  parts?: { pOpen: number; pClear: number; pAcc: number; hands: number };
 }
 
 function dropSpec(drop: DropType, qbStartX: number, los: number, gun: boolean): { x: number; time: number } {
@@ -242,6 +244,20 @@ const READ_PLAN = process.env.READ_PLAN !== '0';
  * to the back, a vertical peek or triangle is closed and an unread key is no longer watched, so his eyes are where
  * his read is. Off: the instant best of every receiver on the alarm tick, wherever he is looking. */
 const HOT_LOOK = process.env.HOT_LOOK !== '0';
+/** DEF_BELIEF (experimental, off; DEF_BELIEF=1 turns it on): his belief about how defenders close on a throw, in the
+ * window. Off, every defender keeps his course until his start (docs/reviews/2026-11-12-window-defenders.md: on
+ * engine-40 that under-rates the closing of a man in coverage on the target by 0.3-0.7 yd). On: a defender within
+ * 4 yd of the target (by his pictures) moves partly with the target over that time, as coverage on a man does; his
+ * belief of how much is right on average and spread both ways by inexperience (decision-making and experience).
+ * Calibrated on engine-40's defense (ARRIVE_LEAD, CUSHION_BREAK on): re-read when the defense changes. */
+const DEF_BELIEF = process.env.DEF_BELIEF !== '0';
+/** DEF_BELIEF: how much of the target's motion a defender on him carries over his blind time (engine-40 probe). */
+const PHASE_MEAN = 0.5;
+/** DEF_BELIEF: the catch has to survive the defender who arrives just after the ball (CATCH_SECURE's securing
+ * window, 0.12-0.45 s): his belief of that window and of how often such a defender gets it out (the receiver's hands
+ * and contested-catch skill set how well he holds on; the window's grip strengthens as it goes, hence 0.65). */
+const SECURE_T = 0.3;
+const DISLODGE = 0.5;
 /** HOT_LOOK: head-and-eye turn rate to a new target (an assumed 400 deg/s; sport head turns peak at 300-600). */
 const HEAD_RATE = 400 * Math.PI / 180;
 
@@ -1162,6 +1178,8 @@ export class QBPass implements Behavior {
 
   private window(a: Agent, sim: PlaySim, r: Agent, from: Vec3, point: Vec3, T: number, wind: number, urgency: number): ThrowEval {
     const noise = 0.22 * (1 - a.r('decisionMaking')) + 0.05;
+    // DEF_BELIEF: how well he knows defenders (decision-making and experience), 0..1.
+    const know = clamp(0.25 + 0.45 * a.r('decisionMaking') + 0.3 * Math.min(1, a.player.experience / 8), 0, 1);
     const total = wind + T;
     const forecast = this.receiverForecasts.get(r);
     const target = forecast?.predict(sim.t, 0) ?? r.pos;
@@ -1184,7 +1202,15 @@ export class QBPass implements Behavior {
       const pMan = this.mind.pMan();
       const facingBlind = THROW_REACT ? pMan * wind + (1 - pMan) * Math.max(0, wind - d.profile.reactionTime) : 0;
       const blind = facingQB ? facingBlind : onTarget ? Math.min(untilBreak, wind) : wind;
-      const mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
+      let mover = { pos: { x: seen.pos.x + seen.vel.x * blind, y: seen.pos.y + seen.vel.y * blind }, vel: seen.vel, profile: d.profile, speedScale: d.speedScale };
+      // DEF_BELIEF: the man on the target goes partly where the target goes.
+      if (DEF_BELIEF && Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y) < 4) {
+        const k = clamp(PHASE_MEAN + (1 - know) * 0.35 * a.mind.judgment('def-phase'), 0, 1);
+        const tb = forecast?.predict(sim.t, blind) ?? target, tv = forecast?.predict(sim.t, blind + 0.1) ?? tb;
+        const rv = { x: (tv.x - tb.x) / 0.1, y: (tv.y - tb.y) / 0.1 };
+        mover = { ...mover, pos: { x: mover.pos.x + k * (tb.x - target.x - seen.vel.x * blind), y: mover.pos.y + k * (tb.y - target.y - seen.vel.y * blind) },
+          vel: { x: seen.vel.x + k * (rv.x - seen.vel.x), y: seen.vel.y + k * (rv.y - seen.vel.y) } };
+      }
       const react = d.profile.reactionTime * (facingQB ? 1 : 1.8) + (d.engagement ? 0.5 : 0);
       const leap = d.profile.reactReach + 0.5 * (d.profile.maxCatchHeight - d.profile.reactReach);
       // PICTURE_AGE: how far he could be from where the QB has him, in time.
@@ -1205,8 +1231,10 @@ export class QBPass implements Behavior {
       const age = Math.max(0, sim.t - (pic ? pic.sampledAt : this.snapAt)), A = r.profile.vmax / Math.max(r.profile.tau, 1e-3);
       spreadR = Math.min(0.5 * A * age * age, (pic ? pic.speed : r.profile.vmax) * age);
     }
+    // DEF_BELIEF: how readily his receiver loses a ball a late defender reaches.
+    const dislodge = DEF_BELIEF ? clamp((DISLODGE + (1 - know) * 0.15 * a.mind.judgment('def-dislodge')) * (1.15 - 0.3 * r.r('hands') - 0.3 * r.r('contestedCatch')) * 0.65, 0, 0.9) : 0;
     const at = (pt: Vec3) => {
-      let pOpen = 1, pClear = 1, intRisk = 0;
+      let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1;
       const v0 = dragFreeLaunch(from, pt, T);
       for (const { d, blind, mover, react, leap, spreadD, estimateError } of defenders) {
         const tt = blind + timeToReach(mover, pt, d.profile.reach + 0.3) + react;
@@ -1217,6 +1245,11 @@ export class QBPass implements Behavior {
         // A defender who gets there well before the ball is sitting on the route.
         const first = 1 - logistic((m + 0.3) / sCatch);
         pOpen *= 1 - contest * (0.55 + 0.3 * d.r('ballSkills'));
+        // DEF_BELIEF: arriving after the ball but inside the securing window, he can still get it out.
+        if (DEF_BELIEF) {
+          const late = Math.max(0, (1 - logistic((m - 0.05 - SECURE_T) / Math.max(sCatch, 0.1))) - contest);
+          pSecure *= 1 - late * dislodge;
+        }
         // Undercut risk along the flight path: a hand on the ball kills the
         // completion, and some of those become picks.
         let touch = 0;
@@ -1233,7 +1266,7 @@ export class QBPass implements Behavior {
         // At the catch point: jumped routes are picks; contested balls sometimes.
         intRisk += first * (0.15 + 0.35 * d.r('ballSkills')) + Math.max(0, contest - first) * 0.08 * d.r('ballSkills');
       }
-      return { pOpen, pClear, intRisk };
+      return { pOpen: pOpen * pSecure, pClear, intRisk };
     };
     const aimed = at(point);
     const { pOpen, pClear } = aimed;
@@ -1256,7 +1289,7 @@ export class QBPass implements Behavior {
     const sticksBonus = depth >= toSticks ? 3 : 0;
     // An incompletion costs a down (~3 yards of value); a pick costs ~45.
     const value = P * (gain + sticksBonus + 2) - (1 - P) * 3 - intRisk * 45;
-    return { target: r, point, T, P, intRisk: Math.min(1, intRisk), value, depth };
+    return { target: r, point, T, P, intRisk: Math.min(1, intRisk), value, depth, parts: { pOpen, pClear, pAcc, hands: 0.88 + 0.1 * r.r('hands') } };
   }
 
   private bestOption(a: Agent, sim: PlaySim, urgency: number): ThrowEval | null {
@@ -1285,7 +1318,7 @@ export class QBPass implements Behavior {
     this.look = null;
     // Diagnostic record (no effect): the throw as he accepted it, against his bar this tick and his normal bar.
     const bar = this.barNow?.t === sim.t ? this.barNow : null;
-    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth,
+    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth, parts: ev.parts ?? null,
       u: bar?.u ?? null, urgency: bar?.urgency ?? null, clock: bar?.clock ?? null, thr: bar?.thr ?? null, maxInt: bar?.maxInt ?? null,
       clearsNormal: bar ? ev.P >= bar.thr0 && ev.intRisk <= bar.max0 : null, hot: this.alarmAt !== null && this.alarmAt <= sim.t && this.hotPick?.t === sim.t };
     this.pending = ev;
