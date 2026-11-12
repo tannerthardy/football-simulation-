@@ -57,6 +57,39 @@ const DEFLECT_BALL = process.env.DEFLECT_BALL !== '0';
  * weeks 1-3 vs develop 3506343d). Constants are estimates fitted to those
  * behaviours, not to yards. */
 const CATCH_HANDS = process.env.CATCH_HANDS === '1';
+/** PLAY_HANDS (off; PLAY_HANDS=1 turns it on; with CATCH_HANDS and CATCH_SECURE; estimated, C14): a defender
+ * plays the receiver's hands, not only the ball. The hands are where the catch is being made: the ball at the
+ * catch, then carried to the tuck over the securing window, so a ball caught reaching back toward a trailing
+ * defender brings them to him and one caught away from him takes them out of his reach. A defender reading the
+ * catch (eyes on the ball or on the receiver's hands) can swipe through them out to his arm's reach plus the same
+ * committed lunge a tackler has (0.45 yd); one swipe per defender per catch, resisted by the receiver's hands and
+ * how far the catch is secured. The swipe costs his stride: his speed drops and his next tackle waits (more after
+ * a full lunge), so a missed swipe leaves him behind the catcher. A hand through the hands at the catch is legal
+ * contact; nothing here touches the receiver's body. Off, a trailing in-phase defender 1-2 yd from the target at
+ * arrival (final gap 1.44 yd) let 72-78% of on-target balls be caught (NFL 50%, trail.py), and was on the catcher
+ * 0.1-0.2 s after the catch (NFL 0.6-0.7 s): no hand play, no cost. */
+const PLAY_HANDS = process.env.PLAY_HANDS === '1';
+/** PLAY_HANDS: the committed extension a free defender has beyond his arm (tackle.ts's lunge). */
+const SWIPE_LUNGE = 0.45;
+
+/** PLAY_HANDS: does he read the catch, with his eyes on the ball or on the receiver making it? */
+function readsCatch(D: Agent, R: Agent, ballVel: Vec3): boolean {
+  if (facingBall(D, ballVel)) return true;
+  const dx = R.pos.x - D.pos.x, dy = R.pos.y - D.pos.y, d = Math.hypot(dx, dy) || 1;
+  return Math.cos(D.body.facing) * dx / d + Math.sin(D.body.facing) * dy / d > -0.35;
+}
+
+/** PLAY_HANDS: how far inside his extended reach the hands must be before he commits a lunge to them (a share of
+ * that reach; better ball skills commit closer to the edge). */
+function lungeMargin(D: Agent): number { return 0.25 - 0.15 * D.r('ballSkills'); }
+
+/** PLAY_HANDS: what a swipe costs him: his stride (speed) and the time until he can tackle. */
+function swipeCost(sim: PlaySim, D: Agent, lunge: boolean): void {
+  const keep = lunge ? 0.55 : 0.8;
+  D.body.vel = { x: D.body.vel.x * keep, y: D.body.vel.y * keep };
+  const recover = (lunge ? 0.45 : 0.2) * (1.2 - 0.4 * D.r('balance'));
+  D.nextTackleAt = Math.max(D.nextTackleAt, sim.t + recover);
+}
 /** CATCH_HANDS: scale of a hand through the receiver's arms (estimated; to be
  * fitted on the panel against NFL completion by the defender's closeness). */
 const HANDS_SCALE = 1.2;
@@ -220,8 +253,9 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
       bestD = d;
     }
   }
+  const swiped = new Set<Agent>();
   if (CATCH_HANDS && !ball.deflected) {
-    const hands = contestHands(sim, R, o, opps, rng, high);
+    const hands = contestHands(sim, R, o, opps, rng, high, swiped);
     if (hands === 'over') return;
     diffHands = hands;
   } else if (bestD && bestQ > 0.05 && !ball.deflected) {
@@ -261,7 +295,8 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
       // pass's first touch (legality, interference) whether or not he keeps it.
       if (!sim.touchPass(R)) return;
       const secureT = clamp((0.22 + 0.3 * Math.min(1, diff)) * (1.25 - 0.5 * hands), 0.12, 0.45);
-      ball.securing = { receiver: R, start: sim.t, until: sim.t + secureT, tried: new Set() };
+      ball.securing = { receiver: R, start: sim.t, until: sim.t + secureT, tried: PLAY_HANDS ? swiped : new Set(),
+        hands: PLAY_HANDS ? { x: o.b.x - R.pos.x, y: o.b.y - R.pos.y, z: o.b.z } : undefined };
       pinToHands(sim, R);
       return;
     }
@@ -294,7 +329,8 @@ function receiverContest(sim: PlaySim, o: Opp, opps: Opp[]): void {
 /** CATCH_HANDS: every unengaged defender near the catch acts on it. Returns
  * 'over' when one of them ended or altered the flight, else the difficulty his
  * hands on the receiver's arms add to the catch (0 when nobody reaches them). */
-function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnType<PlaySim['dice']>, high: number): 'over' | number {
+function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnType<PlaySim['dice']>, high: number,
+  swiped?: Set<Agent>): 'over' | number {
   const ball = sim.ball;
   if (ball.kind !== 'air') return 'over';
   const bv = ball.flight.vel, bp = o.b;
@@ -336,12 +372,24 @@ function contestHands(sim: PlaySim, R: Agent, o: Opp, opps: Opp[], rng: ReturnTy
     const ax = bp.x - R.pos.x, ay = bp.y - R.pos.y, al2 = ax * ax + ay * ay;
     const ua = al2 > 0 ? clamp(((D.pos.x - R.pos.x) * ax + (D.pos.y - R.pos.y) * ay) / al2, 0.3, 1) : 1;
     const toHands = Math.hypot(D.pos.x - R.pos.x - ua * ax, D.pos.y - R.pos.y - ua * ay);
-    const armLen = D.profile.reach + 0.15;
-    if (toHands > armLen) continue;
-    const depth = 1 - toHands / armLen;
+    const standing = D.profile.reach + 0.15;
+    let armLen = standing, reachTo = toHands;
+    if (PLAY_HANDS && toHands > standing && readsCatch(D, R, bv)) {
+      // Past his standing reach only a committed lunge gets there, and it goes to the hands themselves (the ball
+      // in them), not anywhere along the receiver's arms.
+      armLen = standing + SWIPE_LUNGE;
+      reachTo = Math.hypot(D.pos.x - bp.x, D.pos.y - bp.y);
+    }
+    if (reachTo > armLen) continue;
+    const depth = 1 - reachTo / armLen;
+    // A lunge is a choice: at the edge of it he plays the man instead (no swipe, no cost).
+    if (PLAY_HANDS && reachTo > standing && depth < lungeMargin(D)) continue;
+    if (PLAY_HANDS) swiped?.add(D);
     const technique = 0.45 + 0.35 * D.r('manCoverage') + 0.2 * D.r('strength');
     const pLoose = clamp(HANDS_SCALE * Math.pow(depth, 0.7) * technique * (1.15 - 0.55 * R.r('contestedCatch')), 0, 0.85);
-    if (rng.next() < pLoose) {
+    const lost = rng.next() < pLoose;
+    if (PLAY_HANDS) swipeCost(sim, D, reachTo > standing);
+    if (lost) {
       sim.stats.passDefendedBy = D.player.id;
       sim.event('pbu', D, R, 'through the hands');
       D.noCatchUntil = touchedUntil(sim, 0.25);
@@ -357,6 +405,16 @@ function pinToHands(sim: PlaySim, R: Agent): void {
   const ball = sim.ball;
   if (ball.kind !== 'air') return;
   const f = R.body.facing;
+  const S = ball.securing;
+  if (PLAY_HANDS && S?.hands) {
+    // His hands bring the ball from where they met it to the tuck over the window.
+    const u = clamp((sim.t - S.start) / Math.max(1e-6, S.until - S.start), 0, 1);
+    const tx = Math.cos(f) * 0.35, ty = Math.sin(f) * 0.35;
+    ball.flight.pos = { x: R.pos.x + S.hands.x + (tx - S.hands.x) * u, y: R.pos.y + S.hands.y + (ty - S.hands.y) * u,
+      z: S.hands.z + (1.2 - S.hands.z) * u };
+    ball.flight.vel = { x: R.vel.x, y: R.vel.y, z: 0 };
+    return;
+  }
   ball.flight.pos = { x: R.pos.x + Math.cos(f) * 0.35, y: R.pos.y + Math.sin(f) * 0.35, z: 1.2 };
   ball.flight.vel = { x: R.vel.x, y: R.vel.y, z: 0 };
 }
@@ -382,16 +440,21 @@ export function secureStep(sim: PlaySim): void {
     if (S.tried.has(D) || D.isDown(sim.t) || D.engagement) continue;
     const toBall = Math.hypot(D.pos.x - bp.x, D.pos.y - bp.y);
     const toBody = Math.hypot(D.pos.x - R.pos.x, D.pos.y - R.pos.y);
-    const handReach = D.profile.reach + 0.15;
+    const standing = D.profile.reach + 0.15;
+    const handReach = PLAY_HANDS && readsCatch(D, R, ball.flight.vel) ? standing + SWIPE_LUNGE : standing;
     const bodyTouch = D.profile.radius + R.profile.radius + 0.1;
     if (toBall > handReach && toBody > bodyTouch) continue;
+    // A lunge is a choice: at the edge of it he plays the man instead (no swipe, no cost).
+    if (PLAY_HANDS && toBall > standing && toBody > bodyTouch && 1 - toBall / handReach < lungeMargin(D)) continue;
     S.tried.add(D);
     // What he delivers: a hand to the ball, or his body into the receiver.
     const rel = toBody > 1e-6 ? { x: (R.pos.x - D.pos.x) / toBody, y: (R.pos.y - D.pos.y) / toBody } : { x: 1, y: 0 };
     const closing = Math.max(0, (D.vel.x - R.vel.x) * rel.x + (D.vel.y - R.vel.y) * rel.y);
     const hand = toBall <= handReach
-      ? (0.25 + 0.35 * D.r('ballSkills') + 0.15 * D.r('manCoverage')) * (1 - 0.6 * toBall / handReach) * (facingBall(D, ball.flight.vel) || D.tags.has('looking') ? 1 : 0.6)
+      ? (0.25 + 0.35 * D.r('ballSkills') + 0.15 * D.r('manCoverage')) * (1 - 0.6 * toBall / handReach)
+        * (facingBall(D, ball.flight.vel) || D.tags.has('looking') || (PLAY_HANDS && readsCatch(D, R, ball.flight.vel)) ? 1 : 0.6)
       : 0;
+    if (PLAY_HANDS && toBall <= handReach) swipeCost(sim, D, toBall > standing);
     const hit = toBody <= bodyTouch ? clamp((closing - 1.5) / 6, 0, 0.8) * (0.6 + 0.4 * D.r('hitPower')) * D.profile.massKg / 90 : 0;
     const resist = (1.15 - 0.3 * R.r('hands') - 0.3 * R.r('contestedCatch')) * (1 - 0.7 * progress);
     const pLoose = clamp((1 - (1 - hand) * (1 - hit)) * resist, 0, 0.9);
