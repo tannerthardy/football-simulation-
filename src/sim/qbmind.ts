@@ -155,7 +155,7 @@ export class QBMind {
   private readonly memory = new Map<Agent, Memory>();
   /** Pictures already represented in the prior or a post-snap likelihood. */
   private readonly classifiedAt = new Map<Agent, number>();
-  private readonly clearHalf: number;
+  readonly clearHalf: number;
   /** Coverage frequencies he expects from this defense, and its disguise rate. */
   private readonly prior: Record<string, number> = {};
   private readonly disguiseRate: number;
