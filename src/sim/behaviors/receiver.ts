@@ -163,6 +163,7 @@ export class RouteRunner implements Behavior {
     private readonly startDelay = 0,
   ) {
     this.start = { ...a.pos };
+    if (!routeOfAgent.has(a)) routeOfAgent.set(a, `${route.family}:${route.id}`);
     this.fromBackfield = sim.los - a.pos.x > 2;
     this.effort = routeEffort(route.family, a.r('routeRunning'));
     this.routeEnd = route.end;
@@ -460,6 +461,9 @@ export class RouteRunner implements Behavior {
   }
 
 }
+
+/** Each agent's first installed route on this play (family:id), for replay labels only; no behavior reads it. */
+export const routeOfAgent = new WeakMap<Agent, string>();
 
 /** Rescued from 83e514a. Coverage/scoring controls are required for promotion. */
 const IN_STRIDE_CATCH = process.env.IN_STRIDE_CATCH === '1';
