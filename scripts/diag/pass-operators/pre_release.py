@@ -91,9 +91,23 @@ def rows(paths):
             if ax is not None and bx is not None:
                 sa, sb = math.hypot(ax, ay), math.hypot(bx, by_)
                 brk = (sa >= 1.5 and sb >= 1.5 and (ax * bx + ay * by_) / (sa * sb) < math.cos(math.radians(45))) or sa - sb > 2
+            # (e) his own orientation over the last 0.5 s: facing the QB (within 60 deg of the direction to him, on
+            # average) / turned to the catcher and away from the QB (> 90 deg off the QB, within 60 deg of the catcher)
+            # / other. (f) the catcher settled (< 2 yd/s at -0.3 s) or still running.
+            orient = None
+            if 'fo' in p:
+                aq, ac = [], []
+                for k in range(rel - 5, rel + 1):
+                    f = p['fo'][k][d] if k < len(p['fo']) else None; (x, y), (qx2, qy2), (tx, ty) = pos(d, k), pos(qb, k), pos(t, k)
+                    if f is None or x is None or qx2 is None or tx is None: continue
+                    aq.append(math.degrees(angdiff(f, math.atan2(qy2 - y, qx2 - x)))); ac.append(math.degrees(angdiff(f, math.atan2(ty - y, tx - x))))
+                if aq:
+                    mq, mc = sum(aq) / len(aq), sum(ac) / len(ac)
+                    orient = 'facing the QB' if mq <= 60 else 'to the catcher, away from the QB' if mq > 90 and mc <= 60 else 'other'
+            cvx, cvy = vel(t, rel - 3); settled = None if cvx is None else math.hypot(cvx, cvy) < 2
             dyb = pos(d, rel)[1] - p['ball_y']
             yield dict(role='hook' if abs(dyb) < 6 else 'curl/flat', vC5=vC[5], vC3=vC[3], vC0=vC[0], m03=mean03, a=a_cat,
-                       a_on=run >= 2, b=b, ang3=ang(rel - 3), ang0=ang(rel), rise=vC[0] - vC[5], brk=brk, vN=vN, c=c, dist5=math.hypot(pos(t, rel - 5)[0] - pos(d, rel - 5)[0], pos(t, rel - 5)[1] - pos(d, rel - 5)[1])
+                       a_on=run >= 2, b=b, ang3=ang(rel - 3), ang0=ang(rel), rise=vC[0] - vC[5], brk=brk, orient=orient, settled=settled, vN=vN, c=c, dist5=math.hypot(pos(t, rel - 5)[0] - pos(d, rel - 5)[0], pos(t, rel - 5)[1] - pos(d, rel - 5)[1])
                        if pos(t, rel - 5)[0] is not None and pos(d, rel - 5)[0] is not None else None)
 
 
@@ -126,6 +140,20 @@ for arg in sys.argv[1:]:
         for bk in (True, False):
             W = [r for r in V if r['brk'] == bk]
             print(f'        (d) catcher broke in the last 0.8 s {"yes" if bk else "no "}: n {len(W):4d} ({100 * len(W) / len(V):3.0f}%) | toward the catcher -0.5 / -0.3 / 0 s {m(r["vC5"] for r in W)} / {m(r["vC3"] for r in W)} / {m(r["vC0"] for r in W)} | rise {m(r["rise"] for r in W)}')
+        print('    (e) his own orientation over the last 0.5 s x (d) the catcher broke; rise toward the catcher (n):')
+        for o in ('facing the QB', 'to the catcher, away from the QB', 'other'):
+            cells = []
+            for bk, lab in ((True, 'broke'), (False, 'no break')):
+                W = [r for r in V if r['orient'] == o and r['brk'] == bk]; cells.append(f'{lab} {m(r["rise"] for r in W)} ({len(W)})')
+            W = [r for r in V if r['orient'] == o]
+            print(f'        {o:<33} n {len(W):4d} ({100 * len(W) / len(V):3.0f}%) | all {m(r["rise"] for r in W)} | ' + ' | '.join(cells))
+        print('    (f) no-break plays: the catcher settled (< 2 yd/s at -0.3 s) or running, x (e); rise toward the catcher (n):')
+        for st_, lab in ((True, 'settled'), (False, 'running')):
+            cells = []
+            for o in ('facing the QB', 'to the catcher, away from the QB', 'other'):
+                W = [r for r in V if r['brk'] is False and r['settled'] == st_ and r['orient'] == o]; cells.append(f'{o} {m(r["rise"] for r in W)} ({len(W)})')
+            W = [r for r in V if r['brk'] is False and r['settled'] == st_]
+            print(f'        {lab:<8} n {len(W):4d} | all {m(r["rise"] for r in W)} | ' + ' | '.join(cells))
         print('    (b) the catcher is the receiver nearest him at -0.3 s:')
         for b in (True, False):
             W = [r for r in V if r['b'] == b]

@@ -1,7 +1,7 @@
 """Build pre-release records from BDB 2025 raw tracking (the archive zip, read in place; nothing extracted).
 Zone (pff_manZone) completed passes, not nullified. Per play, from the snap to the catch at 10 Hz: every player's
 position, normalised so the offence attacks +x from the line of scrimmage (the ball's x at the snap), and the QB's
-body orientation as a math angle in the same frame. Output: the record format read by pre_release.py.
+body orientation as a math angle in the same frame, and every player's orientation (fo). Output: the record format read by pre_release.py.
 usage: python3 -I scripts/diag/pass-operators/pre_release_nfl.py ARCHIVE.zip OUT.jsonl.gz [weeks=1,2,3]"""
 import sys, csv, io, gzip, json, math, zipfile, collections as C
 
@@ -44,21 +44,23 @@ with gzip.open(out, 'wt') as fo:
             if target[k] not in ids: continue
             qbs = [j for j, p in enumerate(players) if p['side'] == 'O' and p['group'] == 'QB']
             if len(qbs) != 1: continue
-            xy, qbf = [], []
+            xy, qbf, fol = [], [], []
             for f in range(snap, cat + 1):
-                fr = frames.get(f, {}); row = []
+                fr = frames.get(f, {}); row = []; orow = []
                 for i in ids:
                     r = fr.get(i)
-                    if r is None: row += [None, None]; continue
+                    if r is None: row += [None, None]; orow.append(None); continue
                     x, y = float(r['x']), float(r['y'])
                     row += [round((x - los) * sg, 2), round(y if sg > 0 else 53.3 - y, 2)]
-                xy.append(row)
+                    if r['o'] in ('', 'NA'): orow.append(None)
+                    else: oo = math.radians(float(r['o'])); orow.append(round(math.atan2(math.cos(oo) * sg, math.sin(oo) * sg), 2))
+                xy.append(row); fol.append(orow)
                 rq = fr.get(ids[qbs[0]])
                 if rq is None or rq['o'] in ('', 'NA'): qbf.append(None); continue
                 o = math.radians(float(rq['o'])); vx, vy = math.sin(o) * sg, math.cos(o) * sg
                 qbf.append(round(math.atan2(vy, vx), 3))
             by = ball[snap][1] if sg > 0 else 53.3 - ball[snap][1]
-            fo.write(json.dumps(dict(src='nfl-bdb2025', id=f'{k[0]}-{k[1]}', dt=0.1, players=players, xy=xy, qbf=qbf,
+            fo.write(json.dumps(dict(src='nfl-bdb2025', id=f'{k[0]}-{k[1]}', dt=0.1, players=players, xy=xy, qbf=qbf, fo=fol,
                                      release=rel - snap, catch=cat - snap, target=ids.index(target[k]), qb=qbs[0],
                                      coverage=plays[k]['coverage'], ball_y=round(by, 2))) + '\n'); n += 1
         print(f'week {w}: {len(rows)} zone completions with a target; written so far {n}', file=sys.stderr)

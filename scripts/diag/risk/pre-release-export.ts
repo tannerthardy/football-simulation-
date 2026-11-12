@@ -1,6 +1,6 @@
 // Export zone completions from engine games in pre_release.py's record format (the same records
 // pre_release_nfl.py builds from BDB tracking): every player's position from the snap to the catch at 10 Hz,
-// normalised so the offence attacks +x from the line of scrimmage, the QB's body facing (math angle, same frame),
+// normalised so the offence attacks +x from the line of scrimmage, the QB's body facing (math angle, same frame), every player's body facing (fo),
 // release and catch frames, the target. Sim only; positions and facing are the bodies' true values, as tracking's are.
 // usage: npx tsx scripts/diag/risk/pre-release-export.ts SEED GAMES OUT.jsonl.gz
 import { createWriteStream } from 'node:fs';
@@ -23,7 +23,7 @@ P.tick = function () {
   const all = [...this.offense, ...this.defense];
   if (!this.__pr) {
     const dir = this.attackDir(this.offense[0].team);
-    this.__pr = { dir, all, xy: [] as any[], qbf: [] as any[], lastK: -1 };
+    this.__pr = { dir, all, xy: [] as any[], qbf: [] as any[], fo: [] as any[], lastK: -1 };
   }
   const r = tick0.call(this), S = this.__pr;
   if (S.done) return r;
@@ -33,6 +33,7 @@ P.tick = function () {
     const d = S.dir, row: number[] = [];
     for (const a of S.all) row.push(+((a.pos.x - this.los) * d).toFixed(2), +(d > 0 ? a.pos.y : FIELD_WIDTH - a.pos.y).toFixed(2));
     S.xy.push(row);
+    S.fo.push(S.all.map((a: any) => { const g = a.body.facing + (d > 0 ? 0 : Math.PI); return +Math.atan2(Math.sin(g), Math.cos(g)).toFixed(2); }));
     const f = this.qb.body.facing + (d > 0 ? 0 : Math.PI);
     S.qbf.push(+Math.atan2(Math.sin(f), Math.cos(f)).toFixed(3));
     if (S.R && S.catch === undefined && this.ball.kind === 'held' && this.ball.carrier === S.R) S.catch = S.xy.length - 1;
@@ -41,7 +42,7 @@ P.tick = function () {
     S.done = true;
     if (S.catch !== undefined && S.release !== undefined && S.catch > S.release && !this.defCall?.coverage?.man) {
       const players = S.all.map((a: any) => ({ side: this.offense.includes(a) ? 'O' : 'D', group: GROUP[a.player?.position] ?? null }));
-      gz.write(JSON.stringify({ src: 'sim', id: `${seed}-${n}`, dt: 0.1, players, xy: S.xy, qbf: S.qbf, release: S.release, catch: S.catch,
+      gz.write(JSON.stringify({ src: 'sim', id: `${seed}-${n}`, dt: 0.1, players, xy: S.xy, qbf: S.qbf, fo: S.fo, release: S.release, catch: S.catch,
         target: S.all.indexOf(S.R), qb: S.all.indexOf(this.qb), coverage: this.defCall?.coverage?.id ?? null,
         ball_y: +(S.dir > 0 ? this.ballY : FIELD_WIDTH - this.ballY).toFixed(2) }) + '\n');
       n++;
