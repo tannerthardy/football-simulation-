@@ -89,22 +89,32 @@ describe('OPEN_HANDS', () => {
     on.rows.forEach((r, i) => { expect(r.N).toBe(off.rows[i].N); expect(r.T).toBe(off.rows[i].T); });
   });
 
-  it('gripFor: a grip inside his frame; past the hip it lapses after the release delay unless kept', async () => {
+  it('gripFor: a grip inside his frame; he lets go as the man goes past, earlier the more disciplined, unless he hangs on', async () => {
     vi.stubEnv('OPEN_HANDS', '1'); vi.resetModules();
     const { PlaySim } = await import('../src/sim/playsim.js');
     const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
-    const { gripFor, FRAME_PHI } = await import('../src/sim/engagement.js');
+    const { gripFor } = await import('../src/sim/engagement.js');
     const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover2', concept: 'four_verts', seed: 1, roster: 7, formation: 'gun_doubles_11', flip: false }));
-    const b = sim.slot('LT'), d = sim.defense.find((x: any) => /^DE/.test(x.slot)), j: any = {};
-    d.body.pos = { x: 40, y: 20 }; d.body.facing = Math.PI; b.body.pos = { x: 39.2, y: 20 };   // in front of him
-    expect(gripFor(sim, j, b, d, 0.2, false)).toBe(true);
-    sim.t = 1;
-    expect(gripFor(sim, j, b, d, FRAME_PHI + 0.1, false)).toBe(true);                         // just left: still letting go
-    const delay = b.profile.reactionTime * (2 - b.r('discipline'));
-    sim.t = 1 + delay + 0.01;
-    expect(gripFor(sim, j, b, d, FRAME_PHI + 0.1, false)).toBe(false);                        // let go
-    expect(gripFor(sim, j, b, d, FRAME_PHI + 0.1, true)).toBe(true);                          // or hung on: a hold to judge
-    b.body.pos = { x: 40.8, y: 20 };                                                          // on his back
-    expect(gripFor(sim, {} as any, b, d, 0.2, false)).toBe(true);                                   // the moment it happens
+    sim.see = (_o: any, t: any) => ({ pos: { ...t.pos }, vel: { ...t.vel }, facing: t.body.facing, age: 0, stance: null });
+    const b = sim.slot('LT'), d = sim.defense.find((x: any) => /^DE/.test(x.slot)), qb = sim.qb, j: any = {};
+    const e: any = { type: 'pass', defender: d, blocker: b };
+    qb.body.pos = { x: 32, y: 26 }; b.body.vel = { x: 0, y: 0 };
+    // The rusher outside the tackle (phi from the rep's axis to the QB: in front 0.1, at the hip 0.72, past 1.19).
+    const at = (x: number, y: number, vx: number, vy: number) => {
+      d.body.pos = { x, y }; d.body.vel = { x: vx, y: vy }; d.body.facing = Math.atan2(26 - y, 32 - x); b.body.pos = { x: 34, y: 22 }; };
+    at(34.8, 21, 0, 0);                                              // in front of him, still
+    expect(gripFor(sim, j, b, d, e, false)).toBe(true);
+    at(33.2, 22.0, -4.2, 4.2);                                       // past his hip and going
+    expect(gripFor(sim, j, b, d, e, false)).toBe(false);
+    expect(gripFor(sim, j, b, d, e, true)).toBe(true);              // hung on: a hold to judge
+    // Coming to the hip at speed: a disciplined, aware blocker lets go first; a poor one still holds.
+    at(33.6, 21.6, -4.2, 4.2);
+    const r = b.r.bind(b);
+    b.r = (k: string) => (k === 'discipline' || k === 'awareness' ? 1 : r(k));
+    const good = gripFor(sim, j, b, d, e, false);
+    b.r = (k: string) => (k === 'discipline' || k === 'awareness' ? 0 : r(k));
+    const poor = gripFor(sim, j, b, d, e, false);
+    expect(good).toBe(false); expect(poor).toBe(true);
   });
+
 });
