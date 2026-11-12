@@ -840,3 +840,243 @@ It misses the same way as its own two attempts: fewer sacks, and its pocket move
 - Contact came 0.30 s after the throw started.
 - He knew the rusher was about half a second away and threw anyway, about 0.2 s optimistic: constant-velocity extrapolation of an accelerating rusher.
 - The private credit is still a model-rule violation, but it is not the cause of these hits.
+
+## Escape: what the QB's body does before contact (`qb-escape.py`, `qb-pocket.py`, `pocket-trace.mts`; run-ref-24 + THROW_BODY; 2026-11-11)
+
+**In the 0.5 s before a rusher reaches 1 yd** (NFL BDB 2025, 1,211 dropbacks; sim league seed 201, 16 games, 181):
+
+| | NFL | Sim |
+|---|---|---|
+| QB speed (p50) | 2.25 yd/s | 1.05 yd/s |
+| Moving (≥ 1.5 yd/s) | 70% | 34% |
+| Toward the line (p50) | +0.60 | −0.20 |
+| Moving: throw / sack / scramble | 27 / 43 / 30 | 51 / 39 / 10 |
+| Set: throw / sack / scramble | 38 / 57 / 5 | 72 / 25 / 3 |
+
+**Pocket path from set (deepest frame) to release, pressured:**
+
+| | NFL | Sim |
+|---|---|---|
+| Path, p50 / p75 | 0.44 / 1.72 yd | 0.10 / 0.39 yd |
+| Speed, p75 | 1.67 yd/s | 0.60 yd/s |
+| Forward, p75 | 0.9 yd | 0.2 yd |
+| Lateral, p75 | 0.8 yd | 0.1 yd |
+
+- Set depth is fine: 7.6 against 7.9 yd, and −2.8 against −2.45 yd behind the tackles.
+
+**`pocket-trace.mts`, the 132 set cases** (IRN v COM, 16 games):
+- 86 asked to be set: the request was under 1.5 yd/s.
+- 46 asked to move (p50 2.6 yd/s) but started too late to show in the 0.5 s window.
+- Last 0.8 s: `pocketMove` 50% of ticks, windup 30%, drop 11%.
+
+**`POCKET_CLIMB` (off), bench iterations, not yet read in games:**
+1. **v1:** weigh standing against eight directions at 2.2 yd/s by felt time to contact one windup ahead. It moved on 995 of 1,003 calls, drifting with nobody near. Defect: any gain triggered a move.
+2. **v2:** move only when he couldn't finish a throw where he stands. Barely moves: `held()`'s private credit (0.35–1.75 s for an engaged rusher) hides closing rushers.
+3. **v3:** + `BLOCK_SEEN` (perceived block geometry in `held()`, QB_FEEL's, without its pocket move), and a horizon of the rest of the current read plus the windup.
+   - With a rusher within 3 yd, the QB had 1,484 ticks, but `climb()` was consulted on only 285. It moved on 71.
+   - The rest go to the windup, the drop and the throw decisions.
+
+**Finding.** Pocket movement cannot live in `pocketMove` alone. The decision each tick under a closing rusher (throw now, keep reading while moving, escape) is spread across the set logic's branches. Building it is a controller restructure of the set phase, not one function.
+
+### `BLOCK_SEEN` alone (run-ref-24/25 with THROW_BODY on; 2026-11-11)
+
+**Population.** League sim-export, seed 201, 16 games; sack-hold and throw-path, IRN v COM, 16 games. Both arms THROW_BODY=1.
+
+| | BLOCK_SEEN off | on | NFL |
+|---|---|---|---|
+| Sacks (sack-hold) | 5.6% | **4.3%** | 6.3% |
+| Rusher at 1 yd: throw / sack / scramble | 65 / 30 / 6 | 69 / 29 / 2 | 30 / 47 / 23 |
+| Throws after contact, complete / yd/att | 38% / 6.3 | 38% / 7.1 | 33% / 4.5 |
+| Hot / panic throws (throw-path) | 77 | **139** | |
+| Hit throws (throw-path) | 109 | 159 | |
+| Felt minus actual time to contact on hit throws (p50) | 0.15 s | 0.14 s | |
+| Pressured pocket path p75 | 0.39 yd | 0.30 yd | 1.72 yd |
+| YAC mean | 10.09 | 8.83 | |
+
+YAC differs by divergence, as on that seed before.
+
+**Reading.**
+- Truthful perception of a rusher in a block makes the QB feel pressure sooner.
+- In the current set logic that sends more decisions into the hot/panic branch, which throws to anyone with P > 0.3: panic throws nearly double, and sacks fall.
+- That is the branch the set-phase restructure replaces.
+
+**Recommendation.** Ship BLOCK_SEEN with the restructure, which depends on it, not alone.
+
+## Set-phase decision under pressure: design and interface (`SET_DECIDE`, off; proposed 2026-11-11)
+
+**Football to build to** (`qb-moves.py`, NFL pocket dropbacks with a rusher at 1 yd, designed movement removed):
+- 40% end outside the tackle box (13% with no rusher near). 69% of those leave away from the rusher; 69% set inside first and leave about 1.6 s after setting.
+- Climbed 3+ yd: 15%. Slid: 9%. Stood: 24%.
+- Throws from outside are poor (27% / 3.3); throws after climbing are good (55% / 9.2).
+- Ours: outside 3%, slid 0%, stood 71%.
+
+**One decision per tick under pressure** (felt time to contact at his spot below the time he still needs: the rest of his current read plus a windup). Same felt evidence throughout: `felt()` + `held()` (with `BLOCK_SEEN`: the perceived block read).
+1. **Throw** if the read logic offers a throw it would take now (its own thresholds, unchanged).
+2. **Move** otherwise, if a reachable spot buys the time he needs. Candidates: climb, slide either way, outside the box either way, judged by felt time to contact at the end of the needed time. He commits to a direction for one reaction time (no tick-to-tick jitter), and keeps reading while he moves: the read clock runs and his eyes stay downfield.
+3. **Escape** when moving finds a lane past the line and the read logic offers nothing (the existing `shouldScramble` lane check, from where the movement has taken him).
+4. **Trapped** (no spot buys time, no lane): the existing hot path (its throw-it-to-anyone bar), throw-away or evade, unchanged.
+
+With nobody near, none of this runs. That is the clean-pocket test, and v1's drift is the failure it must not show.
+
+**Interface wanted from the read logic** (Coverage's; called, not rewritten). One function would decouple us:
+`bestThrowNow(a, sim, urgency): { ev: ThrowEval | null, take: boolean }`
+- It wraps today's current-read / outlet / out-of-reads choice and its thresholds.
+- `take` = it would start this throw now.
+
+Until then, `SET_DECIDE` calls `ready`, `evaluate`, `bestOption` and the existing need/risk thresholds directly. The read order (readIdx / readStart / dwell) advances as today.
+
+**Gates** (registered here, before the build):
+1. Pressured pocket path p75 0.39 → toward 1.72 yd; forward and lateral toward 0.9 / 0.8.
+2. Rusher at 1 yd: ends outside toward 40%, away from the rusher about 70%, climbed 3+ toward 15%.
+3. Throw / sack / scramble toward 30 / 47 / 23.
+4. Clean pocket: ends outside stays near 13% (no drift).
+5. Time to throw.
+6. Throws on the move cost accuracy (missSigma's existing speed term), reported.
+
+Read with and without `BLOCK_SEEN`.
+
+### `SET_DECIDE` bench iterations (off; 2026-11-11)
+
+Two games (seed 401–402, IRN v COM league identities), THROW_BODY=1, with and without BLOCK_SEEN. qb-moves / qb-pocket, small n (17–29 rusher-at-1-yd dropbacks per arm).
+
+1. **v1** (the decision before the hot path): moved, but in bursts of about 2 ticks. It re-decided every tick, and one step made standing look safe again.
+2. **v2:** the time he needs is the rest of the read, or a full new look when it is done, plus a windup; and it runs in the drop. The 451 earlier "null with a rusher near" cases were "still has time", because the criterion counted only a windup.
+3. **v3:** a committed direction runs for one reaction time. Moves last p50 4 ticks.
+4. **v4:** no retreat past the set depth. The greedy time-to-contact always chose backward: straight-line reach doesn't see his blockers walling off the front. NFL pressured QBs retreat about 0%.
+
+| Rusher at 1 yd | Stood | Outside | NFL stood | NFL outside |
+|---|---|---|---|---|
+| Off | 71% | 3% | 24% | 40% |
+| v4 | 74% | 7% | | |
+| v4 + BLOCK_SEEN | 61% | 7% | | |
+
+- Clean pocket: ends outside 1% (no drift; passes v1's failure test).
+- Pressured pocket path p75: 0.2–0.3 yd (NFL 1.72).
+
+**Re-diagnosis.** In the pressured ticks:
+- drop 32%;
+- windup 28%: he is already throwing;
+- set phase about 36%.
+
+The current-read throw check runs before the decision. With a rusher bearing down he still starts a throw that, by his own felt time (0.15 s optimistic: a constant-velocity extrapolation of an accelerating rusher), he expects to finish. Then contact lands in the delivery, and the play classifies as "stood, threw".
+
+So the movement can't show until the throw decision under imminent pressure uses the same evidence. That means a felt time to contact that sees closing acceleration, and asking "can I finish this throw before he arrives" before starting it.
+
+### `SET_DECIDE` game read (16 games; misses its movement gates; stays off)
+
+**Population.** League sim-export seed 201, 16 games; run-ref-25 (THROW_BODY on in every arm). NFL: BDB 2025 pocket dropbacks, designed movement removed, same operators.
+
+| Rusher at 1 yd | THROW_BODY base | SET_DECIDE | + BLOCK_SEEN | NFL |
+|---|---|---|---|---|
+| n | 181 | 145 | 116 | 897 |
+| Throw / sack / scramble | 65 / 30 / 6 | **49 / 46 / 6** | 59 / 41 / 1 | 30 / 47 / 23 (pocket: 29 / 49 / 22) |
+| Stood | 71% | 66% | 70% | 24% |
+| Ended outside | 3% | 6% | 3% | 40% |
+| Climbed 3+ | 8% | 4% | 3% | 15% |
+| Left away from the rusher | | 88% | | 69% |
+| Throws after contact, complete / yd/att | 38% / 6.3 | **35% / 4.3** | 40% / 6.6 | 33% / 4.5 |
+
+| All dropbacks | base | SET_DECIDE | + BLOCK_SEEN | NFL |
+|---|---|---|---|---|
+| Sacks | 5% | 7% | 5% | 7% |
+| Clean throws, complete / yd/att | 62% / 11.2 | 63% / 9.3 | 63% / 9.7 | |
+| Clean pocket ends outside (no drift) | 1% | 1% | 1% | |
+| Pressured pocket path p75 | 0.39 yd | 0.24 yd | 0.21 yd | 1.72 yd |
+
+YAC mean 10.09 → 8.02 ± 0.45: divergence on this seed, as before.
+
+**Gates.**
+- Hit-throw quality: met.
+- Sack share at contact and the overall sack rate: met.
+- Clean pocket: no drift, met.
+- **Movement: missed.** Stood 71 → 66% is not material; ends-outside 6% against 40%; scrambles flat; pocket path flat.
+
+**What worked.** `canFinish` with `feltClosing`. Not starting a throw he can't finish before the rusher he sees closing turns the 65% thrown-after-contact into 49%, and the extra plays become sacks, as in the NFL.
+
+**What didn't.** The movement. Straight-line time to reach makes every spot near a closing rusher look covered: it sees rushers, not his blockers walling them off. So he still mostly stands until he's hit. With `BLOCK_SEEN` the engaged rushers count sooner and he freezes more.
+
+**Next piece (Integration's note).** A spot's value from what he sees of bodies: a spot is good if no free rusher has an unblocked path to it and no teammate is standing in it. The NFL direction data (69% away from the rusher who reaches him; outside 40%) should fall out of that.
+
+**Correction: what produced SET_DECIDE's throw/sack gains** (2026-11-11).
+- `FINISH_CHECK` (the finish check alone) is a no-op: 69 calls, 0 refusals on one game. When the read logic offers a throw, the felt rusher (feltClosing included) is still about 0.5 s out, so the check passes.
+- What changed under SET_DECIDE (throw-path, seeds 201–202, run-ref-26):
+  - hot/panic throws 11 → 0;
+  - hit throws 18 → 9;
+  - refusals 9, only after he has moved.
+- `setDecide` pre-empts the hot path: the panic throw is reached only when no spot buys time.
+- The gain belongs to the decision structure. It doesn't split from the movement evaluation, which supplies the "trapped" test.
+
+### Movement attempt (b): spot value from the bodies he sees (off; bench miss; 2026-11-11)
+
+**Mechanism** (under SET_DECIDE).
+- A rusher's time to a spot adds a detour around any teammate body on the line between them: 0.2 s + (width − offset) / 2, the perceived block read's geometry. It replaces `held()` in the decision.
+- Spots with a teammate standing in them are excluded.
+- In the drop the decision needs the rest of the drop plus a windup.
+- Ability, perception and disposition are named in the code; `MOVE_FOR = 0` is the league-average disposition hook.
+
+**Bench** (2 games, seed 401–402):
+
+| | Rusher at 1 yd (n) | Stood | Throw | Outside |
+|---|---|---|---|---|
+| Walls | 17 | 71% | 71% | 6% |
+| Walls + BLOCK_SEEN | 9 | 100% | 67% | 0% |
+| NFL | | 24% | 30% | 40% |
+
+- Throw-path, seeds 201–202, off → walls: rhythm 34 → **13**, outlet 25 → 6, panic 11 → 1.
+- No-throw outcomes: sack / scramble / other 6 / 3 / 0 → 4 / 5 / 3. The "other" are strip-sacks (hit, fumble, recovery).
+
+**Verdict.**
+- Walled rushers count late, so standing looks safe almost everywhere and he moves even less.
+- Rhythm throws are still suppressed with the drop gate, so something else in the decision pre-empts on-time throws. Not found yet.
+- Two movement designs (straight-line time to reach; time to reach around his blockers) have missed in the same place. **Stop and re-diagnose.**
+
+**Re-diagnosis needed before a third design.**
+1. Find what removes rhythm and outlet throws under SET_DECIDE: trace the drop and outlet decisions on the plays that lose them.
+2. On NFL film, what the QB sees at the moment he starts to leave (about 1.6 s after setting): which rusher, how far, whether engaged, and the blocker geometry. Same measures on ours.
+
+The trigger needs to be grounded in that evidence, not in a time-to-reach model.
+
+**Defect found and fixed: SET_DECIDE's drop hook** (re-diagnosis item i).
+- The drop hook (added in v2) needed "the rest of the drop plus a windup", about 1.9 s at the start of the drop, which nearly every rusher beats.
+- It ended the drop on **152 of 182** pass plays, at about 1% into the drop, always moving backward. The QB was in the set phase from the snap: his reads started at the line, and no rhythm throw was possible.
+- **That contaminates the earlier SET_DECIDE 16-game read**: its rhythm suppression, and part of its throw/sack and movement numbers.
+- Removed. SET_DECIDE now acts only in the set phase.
+- Throw-path, seeds 201–202, off → fixed: rhythm 34 → 32, outlet 25 → 19, panic 11 → 2, hit throws 18 → 13, sacks 6 → 14, scrambles 3 → 10.
+- League export, seeds 401–402, rusher at 1 yd (n 31): throw / sack / scramble 42 / 55 / 3; stood 71%, outside 6%.
+- **Movement is still missing. Item ii (what NFL QBs see when they start to leave) stands.**
+
+### Re-diagnosis (ii): what a QB sees when he starts to leave (`qb-leave.py`; 2026-11-11)
+
+**Operator.** NFL BDB 2025 pocket dropbacks (designed movement dropped) and the sim (league seed 201, 16 games, THROW_BODY on), same code.
+- LEAVE plays: he ends outside the box or climbs 3+ yd. The frame is the first after set over 2 yd/s.
+- STAY plays: he stands. The frame is set + the leave plays' median time.
+- AUC = how well each measure separates leave from stay.
+
+| Measure | NFL leave | NFL stay | AUC | Sim leave | Sim stay |
+|---|---|---|---|---|---|
+| Time since snap | 2.90 s | 2.40 s | 0.82 | 3.10 | 2.70 |
+| Nearest **winning** rusher distance | **3.25 yd** | **5.23 yd** | 0.32 | **7.22** | **7.97** |
+| Nearest rusher closing speed | 1.18 | 2.52 | 0.31 | 0.31 | 1.66 |
+| Nearest rusher distance | 2.64 | 3.12 | 0.39 | 2.83 | 3.30 |
+| Time since set | 0.40 | 0.30 | 0.57 | 0.75 | 0.50 |
+| Largest lane in front | 5.00 | 4.80 | 0.54 | 6.00 | 6.90 |
+| Best receiver separation | 5.43 | 5.22 | 0.53 | | |
+| Anyone > 3 yd open | 87% | 90% | 0.48 | | |
+| Nearest winning rusher front / edge / behind | 39 / 53 / 7 | 61 / 38 / 1 | | 54 / 42 / 4 | 70 / 28 / 3 |
+
+- "Winning" = a defender nearer the QB than the blocker nearest him, or with no blocker within 1.2 yd.
+- n: NFL leave 922 / stay 1,834; sim leave 48 / stay 760.
+
+**Reading.**
+- NFL QBs leave when a rusher who has beaten his man is close (3.3 against 5.2 yd), more often from the edge, and later in the down.
+- Coverage (anyone open), at this threshold, doesn't separate leave from stay.
+- **In our games, the nearest winning rusher is 7–8 yd away at the same moments. Our rushers don't visibly win their rep until they're nearly on the QB**, so a QB reading leverage gets no cue.
+
+**Ability.**
+- Our QBs' top speed on throw plays (deciles 3.3–6.5 yd/s, mostly the drop) is above the NFL's (1.8–4.9). On scrambles: 7.4 against 8.1.
+- "Never leaves" is not ability.
+
+**Implication for the movement design.**
+1. The trigger should be the leverage read: a rusher he sees past his blocker, nearer than the blocker, at about 3 yd, especially off the edge; not a time-to-reach model.
+2. Our pass rush rarely presents that picture at distance. Rushers win late and close.
+3. So part of the fix is upstream, in how a pass rush wins its rep over time: the OL/DL engagement, which is Defense's and the run-block lane's. That should be measured with the same leverage operator on NFL and sim before a third movement design.
