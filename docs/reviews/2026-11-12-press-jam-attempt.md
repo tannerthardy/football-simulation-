@@ -79,3 +79,36 @@ The receiver's hand fight at the line. Measure first: on pressed pairs in the si
 hands joint versus from the bodies meeting (the release path running into the corner). Then decide whether it is
 the release path (width before vertical) or the slide-off (how fast a receiver's swipe or rip clears a hand), against
 the stall table above. The punch stays parked under its flag. It is coached technique and may be needed once a receiver can beat hands.
+
+## Re-diagnosis: where the sim's stalls come from (2026-11-12, engine-42)
+
+`scripts/diag/risk/press-stall-games.ts` runs `press_stall.py`'s stall definition inside games, so the cause can be seen. Pass plays, every WR with a defender within 2.5 yd at the snap, PRESS_JAM off.
+
+**Stall rates:**
+
+| seed | pairs | stalled |
+|---|---|---|
+| 11 (4 games) | 197 | 10% |
+| 23 (6 games) | 245 | 12% |
+
+These match the export. In the press fixture (`press-stall-cause.ts`, man-press pairs only) the rate is 0%.
+
+**Cause on stalled frames:**
+
+| cause | seed 11 | seed 23 | centres |
+|---|---|---|---|
+| hands joint | 0% | 0% | |
+| bodies touching | 61% | 51% | 0.5 yd |
+| nothing on him yet | 39% | 49% | 1.0 yd, about 0.65 s |
+
+**By the defender's assignment (seed 23):**
+
+| defender | pairs | stalled |
+|---|---|---|
+| this receiver's press-man corner | 79 | 0% |
+| a man defender on someone else | 25 | 32% |
+| a zone defender | 141 | 16% |
+
+The receiver releases around the corner only when the defence's call names that corner as his press-man (`spot.manTarget`). That is a private assignment he should not know. Against any other defender close at the line he runs his route through the body.
+
+The repair belongs in the receiver's release controller: release around a defender he sees in his path at the line, whoever he is. The corner's reach and the hand fight are not the problem.
