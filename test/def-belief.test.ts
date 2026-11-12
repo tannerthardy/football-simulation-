@@ -1,6 +1,7 @@
 /** DEF_BELIEF (behaviors/qb.ts; experimental, off): his belief about how defenders close on a throw (the man on the
  * target moving partly with him; a defender arriving inside the securing window can still get the ball out).
- * Fixture from docs/reviews/2026-11-12-window-defenders.md: levels against Cover 1 from gun doubles, seed 1. */
+ * Fixture from docs/reviews/2026-11-12-window-defenders.md, restated under LINE_START (engine-42): levels against
+ * Cover 3 from gun trips, seed 1. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -12,7 +13,7 @@ async function run(defBelief: string) {
   vi.stubEnv('DEF_BELIEF', defBelief);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
-  const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover1', concept: 'levels', seed: 1, roster: 1, formation: 'gun_doubles_11', flip: false }));
+  const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover3', concept: 'levels', seed: 1, roster: 1, formation: 'gun_trips_11', flip: false }));
   let target: any = null;
   const tick = sim.tick.bind(sim);
   sim.tick = () => { const air = sim.ball.kind === 'air'; tick(); if (!air && sim.ball.kind === 'air' && !target) target = sim.ball.target; };
