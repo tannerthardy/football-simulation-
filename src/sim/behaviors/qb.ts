@@ -163,7 +163,7 @@ export class QBPass implements Behavior {
   private lookOffChecked = false;
   private readonly receiverForecasts = new Map<Agent, ReceiverForecast>();
   /** READ_PLAN: the installed plan this play runs (null: the hand-written progression). */
-  private plan: { style: string; key: { low: Agent; high: Agent; cueBy: number; deep: boolean } | null; triangle: Agent[] | null; alert: Agent | null; fieldReads: number } | null = null;
+  private plan: { style: string; key: { low: Agent; high: Agent; cueBy: number; deep: boolean } | null; triangle: Agent[] | null; alert: Agent | null; outlet: Agent | null } | null = null;
   /** READ_PLAN: the key read once made (diagnostic): the defender he read (null: none in the stretch), where he
    * put him between the low (0) and high (1) routes, and the throw it gave. */
   keyRead: { at: number; defender: string | null; s: number | null; throwTo: 'low' | 'high' } | null = null;
@@ -241,10 +241,8 @@ export class QBPass implements Behavior {
     this.reads = reads;
     const low = ag(p.key?.low ?? null), high = ag(p.key?.high ?? null);
     const tri = p.triangle?.map(ag).filter((r): r is Agent => !!r) ?? null;
-    // The plan's field reads (the alert, the start side, the other side): the outlet waits until they are done.
-    const fieldReads = (alert ? 1 : 0) + p.order.filter((ref) => ag(ref)).length;
     this.plan = { style: p.style, key: p.key && low && high ? { low, high, cueBy: p.key.cueBy, deep: p.key.role.startsWith('deep') } : null,
-      triangle: tri && tri.length === 3 ? tri : null, alert, fieldReads };
+      triangle: tri && tri.length === 3 ? tri : null, alert, outlet };
     return true;
   }
 
@@ -506,8 +504,12 @@ export class QBPass implements Behavior {
     // QB_RHYTHM: with the rush or his clock telling him time is up, his eyes go
     // to the outlet (the last read) instead of finishing the order.
     if (QB_RHYTHM && u > 0.5 && this.reads.length > 1 && this.readIdx < this.reads.length - 1) {
-      this.readIdx = this.reads.length - 1;
-      this.readStart = t;
+      // READ_PLAN: coming off the plan under pressure, his eyes go to the back, wherever the plan read him.
+      const back = READ_PLAN && this.plan?.outlet ? this.reads.indexOf(this.plan.outlet) : -1;
+      if (back < 0 || back > this.readIdx) {
+        this.readIdx = back > this.readIdx ? back : this.reads.length - 1;
+        this.readStart = t;
+      }
     }
     const read = this.reads[this.readIdx];
     sim.qbEyes = read ?? null;
@@ -560,9 +562,9 @@ export class QBPass implements Behavior {
       if (t - this.readStart > readDwell || (broken && (!ev || ev.P < 0.5 * need) && t - this.readStart > glance)) {
         // QB_RHYTHM: moving off a read, his eyes pass the outlet; a released
         // outlet that is there now is the throw, in rhythm, not at the end.
-        // READ_PLAN: the back is the last read (HonestNFL 107, 133, 035: reset, then finish to the back); his
-        // rhythm outlet waits until the plan's field reads are done. Pressure still sends him there (QB_RHYTHM).
-        const outletOpen = !READ_PLAN || !this.plan || this.readIdx + 1 >= this.plan.fieldReads;
+        // READ_PLAN: the back is a read in the plan, at his window on the side he releases to (HonestNFL 224,
+        // 107, 133), not a rhythm outlet taken on the first move-off; pressure still sends him there (below).
+        const outletOpen = !READ_PLAN || !this.plan;
         const outlet = QB_RHYTHM && outletOpen ? this.outletThrow(a, sim, u, need, risk) : null;
         if (outlet) return this.startThrow(a, sim, outlet);
         this.readIdx++;

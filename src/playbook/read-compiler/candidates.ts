@@ -34,14 +34,24 @@ export const BEAT = 0.4;
 function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxReads: number): { order: ReadStep[]; outlet: ReceiverRef | null; warnings: string[]; score: number } {
   const warnings: string[] = [];
   const clearers = new Set(motifs.filter((m) => m.kind === 'clearout').map((m) => m.refs[0]));
-  const field = routes.filter((r) => !r.isBack).sort((a, b) => a.window.ready - b.window.ready || refKey(a).localeCompare(refKey(b)));
   const outletR = routes.filter((r) => r.isBack && r.window.ready < 3.5).sort((a, b) => a.window.ready - b.window.ready)[0] ?? null;
+  // The back is a read like any route (HonestNFL 224: stick-flat-back on one side; 107, 133: finish to the back),
+  // placed by his window on the side he releases to; he is also the outlet a pressured QB comes off the plan to.
+  const sideOf = new Map<RouteDescriptor, 'S' | 'W' | 'B'>(routes.map((r) => [r, r.side]));
+  if (outletR) {
+    const at = outletR.trajectory.reduce((b, p) => Math.abs(p.t - outletR.window.ready) < Math.abs(b.t - outletR.window.ready) ? p : b);
+    sideOf.set(outletR, at.y >= 0 ? 'S' : 'W');
+  }
+  const side = (r: RouteDescriptor) => sideOf.get(r)!;
+  const field = [...routes.filter((r) => !r.isBack), ...(outletR ? [outletR] : [])]
+    .sort((a, b) => a.window.ready - b.window.ready || refKey(a).localeCompare(refKey(b)));
+  maxReads += outletR ? 1 : 0;
   type Node = { seq: RouteDescriptor[]; t: number; cost: number };
   const LOOK = 0.35;  // a look: eyes on, decide, move on (s); crossing the field adds a reset
   const startSide = startSideOf(routes);
-  const startRoutes = field.filter((r) => r.side === startSide);
+  const startRoutes = field.filter((r) => side(r) === startSide);
   const firstReady = Math.min(...startRoutes.map((r) => r.window.ready));
-  const breakerInBeat = startRoutes.some((r) => !r.settles && r.window.ready <= firstReady + BEAT);
+  const breakerInBeat = startRoutes.some((r) => !r.isBack && !r.settles && r.window.ready <= firstReady + BEAT);
   let beam: Node[] = [{ seq: [], t: qbSet - 0.15, cost: 0 }];
   for (let depth = 0; depth < Math.min(maxReads, field.length); depth++) {
     const next: Node[] = [];
@@ -49,10 +59,10 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
       if (n.seq.includes(r)) continue;
       const prev = n.seq[n.seq.length - 1];
       // Finish the side: start there, and once the eyes leave a side they do not come back to it.
-      if (!prev && startRoutes.length && r.side !== startSide) continue;
-      if (prev && prev.side !== r.side && n.seq.some((x) => x.side === r.side)) continue;
-      if (prev && prev.side !== r.side && startRoutes.some((x) => !n.seq.includes(x) && x.side === prev.side && x.window.last > n.t + LOOK)) continue;
-      const across = prev && prev.side !== r.side ? 0.6 : 0;
+      if (!prev && startRoutes.length && (side(r) !== startSide || r.isBack)) continue;
+      if (prev && side(prev) !== side(r) && n.seq.some((x) => side(x) === side(r))) continue;
+      if (prev && side(prev) !== side(r) && startRoutes.some((x) => !n.seq.includes(x) && side(x) === side(prev) && x.window.last > n.t + LOOK)) continue;
+      const across = prev && side(prev) !== side(r) ? 0.6 : 0;
       const at = Math.max(n.t + (prev ? LOOK : 0), r.window.ready);
       // Waiting on a route that is still developing is cheap while the eyes stay on his side (the rhythm of
       // the drop and hitch); a read reached after his window closes is dead.
@@ -63,7 +73,7 @@ function pure(routes: RouteDescriptor[], motifs: Motif[], qbSet: number, maxRead
       if (!prev && r.settles && breakerInBeat) cost += 1.0;             // the breaking route is the primary
       // High-low within a side (the default profile): the deeper route first, then down (§10 B: the coach's
       // ordering among feasible sequences).
-      if (prev && prev.side === r.side && r.depthAtReady > prev.depthAtReady + 2) cost += 0.35;
+      if (prev && side(prev) === side(r) && r.depthAtReady > prev.depthAtReady + 2) cost += 0.35;
       next.push({ seq: [...n.seq, r], t: at, cost });
     }
     if (!next.length) break;
