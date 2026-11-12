@@ -1,5 +1,51 @@
 # The wrap at speed: what our physics does after a side or rear wrap (2026-11-12)
 
+## Parked (2026-11-12): read this first
+
+**Status: parked by Integration.** None of HOLD_SINK, HANG_AIRBORNE or HANG_GRIP is a candidate. All three are off on
+develop and on this branch. The benches and tools are kept for picking this up later.
+
+**Why parked.** Defense decomposed the short-catch YAC excess (3.9 yd over the NFL):
+- about 2.0 yd from plays where no defender ever gets within 1.5 yd;
+- 1.0 yd before the first arrival;
+- 0.9 yd after a defender is on him.
+
+The finish is under a quarter of it. Pursuit angle (FRONT_ANGLE) is the larger lever, so the grip question waits until
+that lands.
+
+**Established:**
+- Fast side and rear wraps give up about twice the NFL's yards after contact (Coverage's `finish_split.py` cells).
+- The holder does commit and go to the ground (census).
+- While airborne, his weight was only half-counted on the hold. HANG_AIRBORNE (all of it while airborne) is right in
+  physics.
+- A closed leg wrap arrests at the ankle and binds the stride (HANG_GRIP attempt 2), as statics says.
+- The fall itself is fine: the toppling bench (`fall-bench.mts`) and the tracking measure (`fall-end.py`) both say so.
+- The holder's post-grasp intent (HOLD_SINK) changes nothing for chasers already at speed, who are most of the fast
+  cells.
+
+**What blocks it: the grip capacity law.**
+- It was set for a horizontal tear by a standing holder. Off his feet it gives about half the holder's body weight
+  (two hands on the jersey ≈ 0.75 W, × 0.7 off his feet).
+- A fit athlete can dead-hang his own body weight.
+- So routing a hanging load through it tears open grips that used to hold until help arrived: broke 6–7% → 10–11%
+  (attempt 1: 24%), with after-contact yards no better.
+
+**The next question (diagnosis only, when picked up):** dead-hang and tear capacity by grip type (cloth, round a
+limb, locked wrap) against body weight; what the current law gives; every place the law is used.
+
+**Why each flag is not a candidate:**
+- HOLD_SINK (the holder's post-grasp intent): the fixtures pass, but the game cells do not move, because chasers are
+  already above the target it caps.
+- HANG_AIRBORNE (all of an airborne holder's weight on the hold): correct physics, but the load bypasses the grip, so
+  a loose grab binds as well as a locked wrap.
+- HANG_GRIP (the hanging load through the grip; attempt 2, ankle arrest for closed wraps): it tears open grips, for
+  the capacity reason above.
+
+**Benches and tools:**
+- `side-wrap-bench.mts`, `fall-bench.mts`, `hang-bench.mts`;
+- `finish-trace.mts` (census, the holder's fall, tears);
+- `pass-operators/fall-end.py`.
+
 Status: a diagnosis. Nothing is built.
 
 Question (Integration, from Coverage's `2026-11-12-finish-after-contact.md`): in the fast cells our completions give
