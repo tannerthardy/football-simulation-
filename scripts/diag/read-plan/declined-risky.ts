@@ -1,4 +1,7 @@
 /**
+ * SUPERSEDED by declined-looked.ts --commit: a forced throw here is not committed, and most are pulled down at the
+ * plant re-check (pullDown) so the play goes on to another throw; its outcomes describe the rest of the play, and its
+ * alternatives are reads he was not looking at. Kept for the record (docs/reviews/2026-11-12-int-belief.md).
  * What his interception belief costs him on the other side (Integration's request): on the forced-concept panel, at
  * the tick he decides to throw, every other read that is ready and that he priced at intRisk > 2% is a throw he
  * declined. Each is re-run: the same play (deterministic setup) with that throw started at that tick instead

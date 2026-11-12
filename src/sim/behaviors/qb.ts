@@ -264,8 +264,7 @@ const ACC_BELIEF = process.env.ACC_BELIEF !== '0';
  * Off, each defender's path undercut (a touch on the ball in flight) adds to the risk as if every touch were a pick,
  * and a contested catch point is priced lightly. On natural league throws (engine-47 candidate: CATCH_CARRY,
  * HANDS_CUE, CATCH_SPEED, CATCH_CHOICE on), his catch-point terms ranked picks (0.9% to 4.0% across their bands) and
- * his path terms barely did; on engine-46 the throws he declined at a priced 28% risk, mostly path, completed 53% with
- * 3.4% INT when forced (docs/reviews/2026-11-12-int-belief.md). On: a touch in flight ends a pick a fraction of the
+ * his path terms barely did (docs/reviews/2026-11-12-int-belief.md). On: a touch in flight ends a pick a fraction of the
  * time (PATH_PICK) and the catch point's jumped and contested picks are weighted up (CATCH_PICK), defenders combined as
  * probabilities. His knowledge sets how well he knows it, with error both ways. Calibrated against the engine-47
  * candidate's catch flags and engine-46's defense: re-read when the catch, tip or coverage rules change. */
@@ -291,6 +290,9 @@ export class QBPass implements Behavior {
   private readonly dropY: number;
   private reads: Agent[] = [];
   private readIdx = 0;
+  /** Diagnostics only (no effect on play): set by a probe, the window records each defender's believed arrival margin. */
+  marginProbe = false;
+  marginLast: any[] | null = null;
   /** Diagnostics only (no effect on play): the first hot alarm, the hot path's source and its pick. */
   alarmAt: number | null = null;
   alarmAges: (number | null)[] | null = null;
@@ -1257,6 +1259,8 @@ export class QBPass implements Behavior {
     const dislodge = DEF_BELIEF ? clamp((DISLODGE + (1 - know) * 0.15 * a.mind.judgment('def-dislodge')) * (1.15 - 0.3 * r.r('hands') - 0.3 * r.r('contestedCatch')) * 0.65, 0, 0.9) : 0;
     // INT_BELIEF: how well he knows where picks come from, an error both ways for the less experienced.
     const intBelief = INT_BELIEF ? Math.exp((1 - know) * 0.3 * a.mind.judgment('int-belief')) : 1;
+    // Diagnostics only (no effect): each defender's believed arrival margin at the aimed point, when a probe asks.
+    const marginTrace: any[] | null = this.marginProbe ? [] : null;
     const at = (pt: Vec3) => {
       let pOpen = 1, pClear = 1, intRisk = 0, pSecure = 1, intPath = 0, intJump = 0, intContest = 0, noPathPick = 1, noCatchPick = 1;
       const v0 = dragFreeLaunch(from, pt, T);
@@ -1268,6 +1272,7 @@ export class QBPass implements Behavior {
         const contest = 1 - logistic((m - 0.05) / sCatch);
         // A defender who gets there well before the ball is sitting on the route.
         const first = 1 - logistic((m + 0.3) / sCatch);
+        if (marginTrace && pt === point && contest > 0.05) marginTrace.push({ slot: d.slot, m: +m.toFixed(3), first: +first.toFixed(3), contest: +contest.toFixed(3), blind: +blind.toFixed(3), react: +react.toFixed(3), wind: +wind.toFixed(3), total: +total.toFixed(3) });
         pOpen *= 1 - contest * (0.55 + 0.3 * d.r('ballSkills'));
         // DEF_BELIEF: arriving after the ball but inside the securing window, he can still get it out.
         if (DEF_BELIEF) {
@@ -1301,6 +1306,7 @@ export class QBPass implements Behavior {
       return { pOpen: pOpen * pSecure, pClear, intRisk, intPath, intJump, intContest };
     };
     const aimed = at(point);
+    if (marginTrace) this.marginLast = marginTrace;
     const { pOpen, pClear } = aimed;
     const dist = Math.hypot(point.x - from.x, point.y - from.y);
     let sigma: number;

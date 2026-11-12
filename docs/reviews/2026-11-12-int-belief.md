@@ -30,9 +30,8 @@ catch-point terms to about 13.
 
 - **The catch-point terms rank picks; the path terms barely do.** A touch in flight usually ends in a break-up, not a
   pick.
-- **Declined throws** (`declined-risky.ts`: on the forced-concept panel, every ready read he passed over at a priced
-  risk above 2%, re-run with that throw forced at his decision tick). Above 10% he priced them at 29% risk, and
-  forced they intercepted 2.6% and completed 52%.
+- **Declined throws:** see below. An earlier read (`declined-risky.ts`, which gave 29% priced against 2.6% INT and
+  52% completion) was an artifact. Most of its forced throws were pulled down at the plant and the play went on.
 
 ## Change (`INT_BELIEF`, off)
 
@@ -76,18 +75,33 @@ INT counts near 50 have a standard deviation of about 7, so INT is flat within n
 
 ## Declined throws (forced-concept panel, seeds 1 and 2)
 
-| His risk | Off: n, his P / risk → forced cmp / INT / yd | On: n, his P / risk → forced cmp / INT / yd |
-|---|---|---|
-| 2–5% | 232, 0.36 / 3.3% → 0.48 / 3.9% / 11.1 | 235, 0.36 / 3.4% → 0.51 / 3.4% / 10.4 |
-| 5–10% | 206, 0.27 / 7.4% → 0.44 / 6.8% / 10.5 | 268, 0.23 / 7.3% → 0.51 / 5.6% / 10.4 |
-| Over 10% | 686, 0.15 / 28.8% → 0.52 / 2.6% / 7.2 | 615, 0.14 / 23.7% → 0.51 / 2.6% / 7.5 |
+`scripts/diag/read-plan/declined-looked.ts`, with `--commit`.
 
-**The tail over 10% is not this flag's to fix.** On the flag-on tail, half the alternatives (284) are priced mostly
-on the jumped-route term: he believes a defender is first to the catch point (raw `first` term 0.14). Forced, those
-throws complete 50% and intercept 2.5%, and he gives them P 0.14. On throws he never makes, his picture of who
-arrives first is wrong, for completion as well as picks. Weights fitted on the throws he does make cannot see this,
-because natural throws almost never carry a large jumped-route term. It is the next item: defender arrival at the
-catch point (DEF_BELIEF's re-read on engine-47), not a further INT weight.
+- **Which declines:** for each read, the first tick his eyes are on it (`reads[readIdx]`, which is what his facing
+  shows the defense) and it is ready, and he evaluates it without throwing. That is a decline made while looking, so
+  forcing it is not also an unlooked throw (Integration's caution).
+- **The forced throw is committed.** Without `--commit`, 331 of 457 forced throws were pulled down at the plant
+  (`pullDown`: its value below zero), and the play went on to another throw, about 0.8 s later. Forced throws
+  measured that way, in this probe and in `declined-risky.ts`, describe the rest of the play, not the declined throw.
+- **Committed throws are released to that read** (456 of 457), about 0.45 s after the decision.
+
+| His risk | Off: n, his P / risk → cmp / INT / yd | On: n, his P / risk → cmp / INT / yd |
+|---|---|---|
+| Under 2% | 30, 0.34 / 1.2% → 0.40 / 13% / 17.1 | 19, 0.39 / 1.1% → 0.58 / 11% / 22.1 |
+| 2–5% | 49, 0.28 / 3.6% → 0.27 / 12% / 12.0 | 51, 0.29 / 3.5% → 0.35 / 8% / 6.9 |
+| 5–10% | 49, 0.25 / 7.5% → 0.31 / 12% / 9.0 | 96, 0.24 / 7.3% → 0.34 / 8% / 9.7 |
+| Over 10% | 347, 0.14 / 32% → 0.33 / 9.5% / 5.5 | 290, 0.12 / 27% → 0.28 / 10.7% / 5.7 |
+| All, picks priced / observed | 116 / 49 | 88 / 45 |
+
+- **Declined throws are bad throws.** They complete about 0.3 and are picked about 10% whatever he priced them at. With
+  the flag on he prices them closer (88 against 45 picks, from 116 against 49), but still about twice too high in
+  his top band and too low in his lowest.
+- **The arrival of the defender he believes is first is roughly right.** Of 264 such defenders (flag on), 135 reached
+  the released aim, at the ball's arrival (median −0.01 s against his believed −0.27 s); the rest ended about 2.3 yd
+  away. That is a 0.27 s pessimism, not the large error the artifact suggested.
+- **What the tail still says:** on throws he declines, his picks are not ranked by his terms (about 10% in every
+  band). That is a question about what makes a bad throw a pick (a ball thrown into coverage that is not undercut or
+  jumped, by his terms), for the next item.
 
 ## Also seen (not built)
 
