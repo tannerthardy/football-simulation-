@@ -21,7 +21,12 @@ for (const concept of ['mesh', 'drive', 'shallow_cross', 'levels', 'slant_flat']
       if (d && depth >= 3 && depth <= 10) {
         const dist = Math.hypot(d.pos.x - R.pos.x, d.pos.y - R.pos.y), ds = Math.hypot(d.vel.x, d.vel.y), rs = Math.hypot(R.vel.x, R.vel.y);
         const cos = ds > 0.5 && rs > 0.5 ? (d.vel.x * R.vel.x + d.vel.y * R.vel.y) / (ds * rs) : 0;
-        if (dist <= 2.5 && ds >= 3 && rs >= 3 && cos >= Math.cos(Math.PI / 4)) C = { R, d, t0: sim.t, rs, samples: [] as any[], flight: hasObservedFlight(d), opp: false };
+        if (dist <= 2.5 && ds >= 3 && rs >= 3 && cos >= Math.cos(Math.PI / 4)) {
+          const seen = sim.see(d, R), run = Math.atan2(seen.vel.y, seen.vel.x), toQB = Math.atan2(sim.qb.pos.y - R.pos.y, sim.qb.pos.x - R.pos.x);
+          const deg = (x: number) => Math.round(Math.abs(Math.atan2(Math.sin(x), Math.cos(x))) * 180 / Math.PI);
+          C = { R, d, t0: sim.t, rs, samples: [] as any[], flight: hasObservedFlight(d), opp: false,
+            look: seen.facing === undefined ? null : deg(seen.facing - run), qbOff: deg(toQB - run), dist: +dist.toFixed(2) };
+        }
       }
     }
     return ev0(type, a, b, note);
@@ -37,9 +42,11 @@ for (const concept of ['mesh', 'drive', 'shallow_cross', 'levels', 'slant_flat']
   const pp = (sim.trace.data?.decisions ?? []).find((x: any) => x.a === C.d.idx && x.kind === 'possession-pursuit' && x.t >= C.t0 - 0.05);
   cases.push({ coverage, concept, formation, seed, flip, route: C.R.behavior?.route?.id ?? C.R.behavior?.fallback?.route?.id, rs: +C.rs.toFixed(1),
     d0: +at(0).dist.toFixed(2), c0: +at(0).closing.toFixed(2), d25: +at(0.25).dist.toFixed(2), c25: +at(0.25).closing.toFixed(2), d5: +at(0.5).dist.toFixed(2), c5: +at(0.5).closing.toFixed(2),
-    chase: pp ? +(pp.t - C.t0).toFixed(2) : null, flight: C.flight, opportunity: C.opp });
+    chase: pp ? +(pp.t - C.t0).toFixed(2) : null, flight: C.flight, opportunity: C.opp, look: C.look, qbOff: C.qbOff, dist0: C.dist });
 }
 const q = (v: number[]) => { const x = v.filter(n => n === n).sort((a, b) => a - b); return x.length ? x[Math.floor((x.length - 1) / 2)].toFixed(2) : '-'; };
+for (const [lab, v] of [['no flight', cases.filter(c => !c.flight)], ['flight', cases.filter(c => c.flight)]] as const)
+  console.log(`${lab}: n ${v.length} | receiver's seen facing off his run at the secure p50 ${q(v.map(c => c.look ?? NaN))} deg (cue needs >= ~102 deg) | QB off his run ${q(v.map(c => c.qbOff))} deg | looked back past 102 deg ${v.filter(c => (c.look ?? 0) >= 102).length}/${v.length} | routes ${JSON.stringify(v.reduce((m: any, c: any) => (m[c.route] = (m[c.route] ?? 0) + 1, m), {}))}`);
 console.log(`acquired the flight by the secure event ${cases.filter(c => c.flight).length}/${cases.length}; a catch opportunity naming his man within 0.55 s ${cases.filter(c => c.opportunity).length}/${cases.length}`);
 console.log(`man-trail catch cases n ${cases.length} | distance at 0 / 0.25 / 0.5 s ${q(cases.map(c => c.d0))} / ${q(cases.map(c => c.d25))} / ${q(cases.map(c => c.d5))} | closing ${q(cases.map(c => c.c0))} / ${q(cases.map(c => c.c25))} / ${q(cases.map(c => c.c5))} yd/s | chase starts p50 ${q(cases.filter(c => c.chase !== null).map(c => c.chase))} s`);
 for (const c of cases.slice(0, 12)) console.log('  ' + JSON.stringify(c));
