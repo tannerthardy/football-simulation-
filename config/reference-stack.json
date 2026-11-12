@@ -77,6 +77,7 @@
     "HOT_LOOK": "on",
     "DEF_BELIEF": "on",
     "ACC_BELIEF": "on",
+    "DROP_BELIEF": "off",
     "ROUTE_CRAFT": "on",
     "CATCH_HANDS": "on",
     "CATCH_POINT": "on",
