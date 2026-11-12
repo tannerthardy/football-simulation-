@@ -13,6 +13,7 @@ import type { RouteDef, RouteEnd, RoutePoint } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
 import type { PlaySim } from '../playsim.js';
 import { angleTo, goTo, runThrough, stand } from './common.js';
+import { HANDS_CUE, noteHands } from '../hands-cue.js';
 
 import { firstBreakDepth, getOffDrive, getOffLoss, inGetOff, LINE_START, routeEffort, routePath, steerRoute, type PathPoint } from '../route-motion.js';
 import { installedRead, readRoute, type RouteChoice, type RouteKeyPicture } from '../route-read.js';
@@ -594,6 +595,7 @@ export class TrackBall implements Behavior {
     if (IN_STRIDE_CATCH) {
       const spot = strideCatchSpot(a, sim) ?? catchSpot(a, sim);
       if (!spot) return this.fallback.update(a, sim);
+      if (HANDS_CUE) noteHands(a, sim.t, spot.t);
       const tx = spot.p.x + this.err.x, ty = spot.p.y + this.err.y;
       const left = Math.max(.15, spot.t - sim.t);
       let vx = a.vel.x + (tx - a.pos.x - a.vel.x * left) / left;
@@ -607,6 +609,7 @@ export class TrackBall implements Behavior {
     const spot = catchSpot(a, sim);
     if (!spot) return this.fallback.update(a, sim);
     const target = { x: spot.p.x + this.err.x, y: spot.p.y + this.err.y };
+    if (HANDS_CUE) noteHands(a, sim.t, spot.t);
     const dtArr = Math.max(0.05, spot.t - sim.t);
     const dist = Math.hypot(target.x - a.pos.x, target.y - a.pos.y);
     // Arrive on time, keep running through if the ball is leading him.

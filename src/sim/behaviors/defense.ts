@@ -6,6 +6,7 @@
  * reads the play, he executes his pre-snap job; play action can fool him into
  * believing run for longer.
  */
+import { HANDS_CUE, handsUpAt } from '../hands-cue.js';
 import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
@@ -1804,7 +1805,12 @@ function readsHandsAt(a: Agent, sim: PlaySim, man: Agent, seen: number | undefin
   const lookingBack = cue.facing !== undefined && speed >= 2
     && Math.hypot(cue.pos.x - a.pos.x, cue.pos.y - a.pos.y) <= 3
     && Math.cos(cue.facing - Math.atan2(cue.vel.y, cue.vel.x)) <= -0.2;
-  const hands = lookingBack ? sim.throwSight.sawHands(a, sim.t) : sim.throwSight.handsAt(a);
+  let hands = lookingBack ? sim.throwSight.sawHands(a, sim.t) : sim.throwSight.handsAt(a);
+  // HANDS_CUE: his man's hands coming up for the ball, seen from within 3 yd, from when they became visible.
+  if (HANDS_CUE && Math.hypot(cue.pos.x - a.pos.x, cue.pos.y - a.pos.y) <= 3) {
+    const up = handsUpAt(man);
+    if (up !== undefined && up <= sim.t) hands = hands === undefined ? up : Math.min(hands, up);
+  }
   return hands === undefined ? seen : seen === undefined ? hands : Math.min(seen, hands);
 }
 
