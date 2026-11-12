@@ -43,14 +43,16 @@ P.startThrow = function (a: any, sim: any, ev: any) {
       const runCarry = timeToReach(carry, pt, d.profile.reach + 0.3);
       const dist0 = Math.hypot(pt.x - seen.pos.x, pt.y - seen.pos.y), distCarry = Math.hypot(pt.x - carry.pos.x, pt.y - carry.pos.y);
       return { d, slot: d.slot, facingQB, onTarget, blind: +blind.toFixed(2), react: +react.toFixed(2), run: +run.toFixed(2), tt: +(blind + run + react).toFixed(2),
+        dTarget0: +Math.hypot(seen.pos.x - target.x, seen.pos.y - target.y).toFixed(2), seen0: { x: seen.pos.x, y: seen.pos.y },
         margin: +(blind + run + react - total).toFixed(2), runCarry: +runCarry.toFixed(2), closeCarry: +(dist0 - distCarry).toFixed(2), closeAct: null as number | null, dist0, seenErr: +Math.hypot(seen.pos.x - d.pos.x, seen.pos.y - d.pos.y).toFixed(2),
         speed0: +Math.hypot(d.vel.x, d.vel.y).toFixed(2), vmax: +d.profile.vmax.toFixed(2), distPt: +Math.hypot(d.pos.x - pt.x, d.pos.y - pt.y).toFixed(2),
         brk: null as number | null, reached: null as number | null, path: 0, prev: { x: d.pos.x, y: d.pos.y },
         runAtBlind: null as number | null, runAtStart: null as number | null, posErrAtBlind: null as number | null,
-        predAt: { x: mover.pos.x, y: mover.pos.y } };
+        predAt: { x: mover.pos.x, y: mover.pos.y }, v0: { x: seen.vel.x, y: seen.vel.y }, closePhase: null as number | null, phaseErr: null as number | null, courseErr: null as number | null };
     });
     rec.decision = { t: sim.t, wind: +wind.toFixed(2), T: +ev.T.toFixed(2), total: +total.toFixed(2), pt: { x: pt.x, y: pt.y }, P: +ev.P.toFixed(3), intRisk: +ev.intRisk.toFixed(3), target: ev.target.slot };
     rec.defs = defs;
+    rec.tgt = ev.target; rec.tgt0 = { x: ev.target.pos.x, y: ev.target.pos.y };
   }
   return st0.call(this, a, sim, ev);
 };
@@ -77,12 +79,17 @@ for (const c of concepts) for (const formation of forms) for (const coverage of 
       if (x.runAtStart === null && since >= x.blind + x.react - 1e-6) {
         x.runAtStart = +timeToReach(now, D.pt, d.profile.reach + 0.3).toFixed(2);
         x.closeAct = +(x.dist0 - dist).toFixed(2);
+        // In phase with the target: his picture moved by the target's own displacement since the decision.
+        const rd = { x: rec.tgt.pos.x - rec.tgt0.x, y: rec.tgt.pos.y - rec.tgt0.y };
+        x.closePhase = +(x.dist0 - Math.hypot(D.pt.x - (x.seen0.x + rd.x), D.pt.y - (x.seen0.y + rd.y))).toFixed(2);
+        x.phaseErr = +Math.hypot(d.pos.x - (x.seen0.x + rd.x), d.pos.y - (x.seen0.y + rd.y)).toFixed(2);
+        x.courseErr = +Math.hypot(d.pos.x - (x.seen0.x + x.v0.x * since), d.pos.y - (x.seen0.y + x.v0.y * since)).toFixed(2);
       }
     }
   };
   const res = sim.run(), s = sim.stats;
   if (!rec.decision || !s.attempted) continue;
   const intBy = s.interceptedBy ? sim.defense.find((d: any) => d.player.id === s.interceptedBy)?.slot ?? null : null;
-  const defs = rec.defs.sort((a: any, b: any) => a.margin - b.margin).slice(0, 4).map(({ d, prev, path, predAt, ...x }: any) => ({ ...x, interceptor: x.slot === intBy }));
+  const defs = rec.defs.sort((a: any, b: any) => a.margin - b.margin).slice(0, 4).map(({ d, prev, path, predAt, seen0, v0, ...x }: any) => ({ ...x, interceptor: x.slot === intBy }));
   process.stdout.write(JSON.stringify({ concept: c.id, formation, coverage, seed, flip, int: !!intBy, intBy, cmp: !!s.completed, releaseT: sim.throwAt, ...rec.decision, defs }) + '\n');
 }
