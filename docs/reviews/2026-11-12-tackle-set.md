@@ -353,3 +353,70 @@ where he is when he is within 2 yd. NFL edge rushers that close are still outsid
 time; ours have come inside it. Not yet explained.
 
 Not promotion candidates. Next is OPEN_HANDS (Integration: all hands joints, off), then this read again.
+
+# OPEN_HANDS (restaged: open hands, grip, kept grip): reads
+
+Base b2b3f4a0 (develop 97337d57 merged); flags off are bit-identical (seed 999).
+
+## Run (npm run ref:report, fixed set f0a8e75b8620, 1,321 runs, yards under 20, paired against the reference)
+
+| | OPEN_HANDS | OPEN_HANDS + OPEN_HANDS_BACK_ONLY |
+|---|---|---|
+| all | −0.17 (SE 0.05) | −0.10 (SE 0.04) |
+| outside zone | −0.12 (0.07) | |
+| inside zone | −0.16 (0.10) | |
+| gap | −0.19 (0.10) | −0.05 (0.08) |
+| duo | −0.18 (0.26) | −0.04 (0.17) |
+| toss | −0.73 (0.44) | −0.60 (0.44) |
+| draw | +0.02 (0.27) | −0.07 (0.09) |
+| runs <= 0 / 10+ | 9.9 → 10.7% / 7.6 → 7.0% | 10.1% / 7.1% |
+| missed / broken tackles a run | 0.257 → 0.235 / 0.131 → 0.120 | 0.249 / 0.123 |
+
+Who the back meets (hitblk) is unchanged. Inside-frame run blocking barely moves. The wider frame cut (past the hip)
+carries about 0.07 of the 0.17.
+
+## Pass (sim-export, seeds 201-216 and 301-316)
+
+Arms: off / OPEN_HANDS / OPEN_HANDS + TACKLE_SET + EDGE_ARC. Cells give seed 201 | seed 301.
+
+| gate | off | OPEN_HANDS | all three |
+|---|---|---|---|
+| states at 2.0 s (not level/level/past/inside) | 60/29/5/5 \| 56/30/7/7 | 61/27/6/5 \| 55/31/7/7 | 24/33/37/6 \| 22/29/43/7 |
+| at the win: past/front/inside | 10/60/31 \| 10/52/38 | 10/58/32 \| 10/52/38 | 8/49/43 \| 10/39/52 |
+| edge win | 12 \| 16% | 13 \| 16% | 15 \| 22% |
+| get past | 11 \| 15% | 12 \| 14% | 57 \| 63% |
+| speed toward the QB after past | 2.5 \| 2.4 | 2.5 \| 2.3 | 2.5 \| 2.7 |
+| closed within 2 yd after past | 30 \| 34% | 33 \| 33% | 13 \| 22% |
+| tackle depth at 3.0 s | −8.3 \| −8.1 | −8.1 \| −8.1 | −7.8 \| −7.8 |
+| sacked | 4.3 \| 6.4% | 4.9 \| 6.8% | 5.8 \| 9.6% |
+| sacked, pooled | 5.3% | 5.9% | 7.7% |
+| pressured | 33.7 \| 39.6% | 34.6 \| 40.8% | 38.1 \| 47.2% |
+
+NFL: sacked 6.7%, pressured 32.9%, at the win 26/27/47, closed after past 21%.
+
+OPEN_HANDS alone hardly changes pass protection. With the edge flags it doesn't change closing after past either
+(13 | 22% against 16 | 21% without OPEN_HANDS on the earlier base). A grip that lapses 0.25-0.5 s after the rusher
+passes the hip still carries most of the drag through the moment that matters.
+
+## Holding (holds-probe.mts, seeds 101-108, offence)
+
+| per team-game | off | OPEN_HANDS | OPEN_HANDS with an instant release (diagnostic, not committed) |
+|---|---|---|---|
+| hang-on choices (tryHold) | run 2.56, pass 3.00 | run 2.81, pass 2.69 | run 2.69, pass 2.56 |
+| holding called | run 1.31, pass 0 | run 3.94, pass 0.94 | run 0.06, pass 0.25 |
+| total called | 1.31 | 4.88 | 0.31 |
+| achieved-restraint records, unresolved | run 12, pass 24 | run 64, pass 237 | run 65, pass 202 |
+
+NFL 2022 offensive holding: about 1.1 accepted per team-game (611 with yardage + 144 dismissed, nflfastR via
+nflpenalties.com; 581 accepted on Pro-Football-Reference; 544 team-games).
+
+**Reading.**
+- The detector exempts |phi| < 1, so every new call is a grip still on a man past the hip: the release window. Under
+  OPEN_HANDS the detector also sees a grip's drag, not only its pull.
+- The calls are set by how fast a beaten blocker lets go: reaction x (2 - discipline) gives 4.9 a team-game; letting
+  go the instant the man is past gives 0.3.
+- Neither delay is sourced. The release is a decision, so its timing has to come from what the blocker sees and
+  anticipates (the man getting past before phi reaches 1) and from the grip tearing under the man's momentum. It
+  should not be a fitted constant.
+- Off, the engine already calls 1.3 a team-game on runs, from passive cloth tension (hold = 0.25 arm x control) on
+  men past the hip.
