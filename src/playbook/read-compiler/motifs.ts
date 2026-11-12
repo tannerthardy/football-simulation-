@@ -18,6 +18,15 @@ export function afterBreak(r: RouteDescriptor): { down: number; out: number } {
   const sideSign = Math.sign(r.startWidth) || 1;
   return { down: b.x - a.x, out: (b.y - a.y) * sideSign };
 }
+/** Where he is going: his net displacement over the second after his break (or his last second), downfield and
+ * outward. Longer than `afterBreak`, which a cut's deceleration dominates. */
+export function going(r: RouteDescriptor): { down: number; out: number } {
+  const end = r.trajectory[r.trajectory.length - 1].t;
+  const t0 = Math.min(r.breakT ?? end - 1, end - 0.5);
+  const a = pos(r, t0), b = pos(r, Math.min(end, t0 + 1));
+  const sideSign = Math.sign(r.startWidth) || 1;
+  return { down: b.x - a.x, out: (b.y - a.y) * sideSign };
+}
 const overlap = (a: RouteDescriptor, b: RouteDescriptor) => Math.min(a.window.last, b.window.last) - Math.max(a.window.ready, b.window.ready);
 const sameSide = (a: RouteDescriptor, b: RouteDescriptor) => a.side === b.side && a.side !== 'B';
 const deep = (r: RouteDescriptor) => !r.isBack && r.depthAtReady >= 12;
@@ -34,11 +43,18 @@ export function findMotifs(routes: RouteDescriptor[]): Motif[] {
     const pa = pos(a, a.window.ready), pb = pos(b, b.window.ready);
     const dDepth = Math.abs(pa.x - pb.x), dLat = Math.abs(pa.y - pb.y);
     const [lo, hi] = pa.x < pb.x ? [a, b] : [b, a];
-    // Vertical high-low: one route under another in the same lane, both live together.
-    if (sameSide(a, b) && dDepth >= 5 && dDepth <= 15 && dLat < 8) {
-      const wide = Math.abs(pos(lo, lo.window.ready).y) > 9;
-      out.push({ kind: 'vertical_high_low', refs: refs(lo, hi), role: wide ? 'playside_curl_flat' : 'hook', confidence: Math.min(1, ov / 0.6),
-        why: `${lo.ref} at ${pos(lo, lo.window.ready).x.toFixed(1)} yd under ${hi.ref} at ${pos(hi, hi.window.ready).x.toFixed(1)} yd, ${dLat.toFixed(1)} yd apart, live together ${ov.toFixed(2)} s` });
+    // Vertical high-low: one route under another in the same lane, both live together. The lane is judged by
+    // where the high route is going (half a second into his window), not where he is as it opens: a corner from
+    // the slot is still inside when he declares and over the #1 receiver's hitch when the ball would arrive.
+    const hiGoing = pos(hi, hi.window.ready + 0.5), loAt = pos(lo, lo.window.ready);
+    const dLatGoing = Math.abs(hiGoing.y - loAt.y);
+    if (sameSide(a, b) && dDepth >= 5 && dDepth <= 15 && Math.min(dLat, dLatGoing) < 8) {
+      // The defender stressed is named from where the low route goes: an out-breaking or flat route works on the
+      // curl-flat (flat) defender, an in-breaking one on the hook; a route going straight on is named by width.
+      const lout = going(lo).out;
+      const role = lout > 1 ? 'playside_curl_flat' : lout < -1 ? 'hook' : Math.abs(loAt.y) > 9 ? 'playside_curl_flat' : 'hook';
+      out.push({ kind: 'vertical_high_low', refs: refs(lo, hi), role, confidence: Math.min(1, ov / 0.6),
+        why: `${lo.ref} at ${loAt.x.toFixed(1)} yd under ${hi.ref} at ${pos(hi, hi.window.ready).x.toFixed(1)} yd, ${Math.min(dLat, dLatGoing).toFixed(1)} yd apart, live together ${ov.toFixed(2)} s` });
     }
     // Horizontal stretch: the same level, spread across one underneath defender.
     if (dDepth < 3.5 && dLat >= 5 && dLat <= 15 && Math.max(pa.x, pb.x) < 14) {
@@ -91,6 +107,21 @@ export function findMotifs(routes: RouteDescriptor[]): Motif[] {
   if (verts.length >= 2) out.push({ kind: 'seams', refs: verts.map((r) => r.ref), role: 'middle_safety', confidence: 0.7, why: `${verts.length} verticals` });
   for (const v of verts) for (const s of R) if (s !== v && sameSide(s, v) && s.depthAtReady < 12 && s.window.ready > (v.breakT ?? 0)) {
     out.push({ kind: 'clearout', refs: [v.ref, s.ref], confidence: 0.6, why: `${v.ref} vertical clears for ${s.ref}` });
+  }
+  // Clear and void: an inside vertical takes the deep defender over him away, and an in-breaker arrives in the
+  // space under where he was (the dagger family: HonestNFL 294/328 key the half safety). The read is the defender
+  // over the vertical: if he carries it, the in-breaker; if he stays or comes down on the in-breaker, the vertical.
+  for (const v of R) if (vertical(v) && v.window.ready < 3.2) for (const d of R) {
+    if (d === v || !d.breakAt || d.breakAt.x < 8 || d.breakAt.x > 16 || going(d).out > -2) continue;
+    // Where the in-breaker is going (a second into his window) against the vertical's lane; the vertical is at or
+    // past the in-breaker's depth when he breaks, taking the deep defender with him.
+    const dAt = pos(d, d.window.ready + 1);
+    const lane = Math.abs(dAt.y - v.startWidth) < 6 || (sameSide(d, v) && Math.abs(dAt.y) < Math.abs(v.startWidth) + 2);
+    const ahead = pos(v, d.window.ready).x >= d.breakAt.x;
+    if (lane && ahead && overlap(d, v) > 0.3) {
+      out.push({ kind: 'clear_void', refs: refs(d, v), role: 'deep_defender_over_vertical', confidence: 0.75,
+        why: `${v.ref} vertical clears the deep defender; ${d.ref} breaks in at ${d.breakAt.x.toFixed(1)} yd under him` });
+    }
   }
   for (const b of routes.filter((r) => r.isBack)) if (b.window.ready < 3.5) out.push({ kind: 'back_outlet', refs: [b.ref], confidence: 0.8, why: `back released, ready ${b.window.ready} s` });
   return out;
