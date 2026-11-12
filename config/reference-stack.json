@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "engine-37",
+  "id": "engine-38",
   "runSet": {
     "commit": "1b5415de99b5b7194eff045f3c37a07a4c54c1a9",
     "seeds": [
@@ -103,6 +103,7 @@
     "CUSHION_BREAK": "on",
     "HOLD_FINISH": "on",
     "HOLD_SINK": "off",
+    "HANG_AIRBORNE": "off",
     "IN_STRIDE_CATCH": "off",
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
@@ -120,7 +121,7 @@
     "LEGS_HELD": "on",
     "PICTURE_AGE": "off",
     "POCKET_CLIMB": "off",
-    "BLOCK_SEEN": "off",
+    "BLOCK_SEEN": "on",
     "FREE_BOUND": "off",
     "SET_DECIDE": "off",
     "SHOULDERS_SET": "off",
@@ -168,6 +169,7 @@
     "RECEIVER_DEPTH": "on",
     "RELEASE_INTERCEPT": "on",
     "RELEASE_QUICK": "on",
+    "RELEASE_THROUGH": "on",
     "RUN_BLITZ": "on",
     "RUN_CONFIRM": "on",
     "RUN_CONTACT_TRACK": "off",
