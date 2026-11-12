@@ -48,8 +48,9 @@ async function run(opts: { concept: string; coverage: string; seed: number; form
     }
     if (!air && sim.ball.kind === 'air' && !target) target = sim.ball.target;
   };
-  sim.run();
-  return { plan: qb?.plan?.style ?? null, keyRead: qb?.keyRead ?? null, rushIn, throwAt: sim.throwAt as number, target: target ? ref(target) as string : null, movedOn };
+  const res = sim.run();
+  const pumps = res.events.filter((e: any) => e.type === 'pump').length;
+  return { pumps, plan: qb?.plan?.style ?? null, keyRead: qb?.keyRead ?? null, rushIn, throwAt: sim.throwAt as number, target: target ? ref(target) as string : null, movedOn };
 }
 
 describe('READ_PLAN', () => {
@@ -75,7 +76,9 @@ describe('READ_PLAN', () => {
       if ((r.rushIn ?? 9) >= 1.0) {
         clean++;
         expect(r.target, JSON.stringify(r)).toBe('S2');
-        expect(r.throwAt).toBeLessThan(2.4);
+        // On rhythm; or, when the plant's re-check finds the window closing (a pump), one motion later. With LINE_START's
+        // slower get-off, seed 2's flat window flickers shut at the plant (an underneath defender in the lane at 1.8 s).
+        expect(r.throwAt, JSON.stringify(r)).toBeLessThan(r.pumps ? 2.9 : 2.4);
       } else {
         expect(r.target, JSON.stringify(r)).not.toBeNull();
         expect(r.target, JSON.stringify(r)).not.toBe('S1');
