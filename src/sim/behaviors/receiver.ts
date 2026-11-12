@@ -132,6 +132,13 @@ const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
  * gos release outside 84% of the time, 3.5 yd wide by 5 yd; posts, slants and
  * ins release inside (BDB 2025). */
 const PRESS_RELEASE = process.env.PRESS_RELEASE !== '0';
+/** RELEASE_SEEN (off; RELEASE_SEEN=1 turns it on): a receiver releases around any defender he saw tight over him at
+ * the snap (within RELEASE_TIGHT_DEPTH ahead and RELEASE_TIGHT_WIDTH either side, as he saw them), not only the one
+ * the defence's call made his press-man corner, an assignment he cannot know. The release side and how cleanly he
+ * clears are the existing PRESS_RELEASE technique, on the defender's position as he sees it. */
+export const RELEASE_SEEN = process.env.RELEASE_SEEN === '1';
+/** RELEASE_SEEN: "tight over him" at the snap; the NFL press population's 2.5 yd, and over him rather than beside. */
+const RELEASE_TIGHT_DEPTH = 2.5, RELEASE_TIGHT_WIDTH = 1.5;
 /** RELEASE_THROUGH (off; RELEASE_THROUGH=1 turns it on; estimated, C14): the
  * release is a way to his stem, not a place to stay. Once he has made a press
  * release, stem points just ahead of him (under 1.5 yd) or already level with
@@ -219,6 +226,8 @@ export class RouteRunner implements Behavior {
     return LINE_START ? this.getOff(a, sim, cmd) : cmd;
   }
 
+  /** RELEASE_SEEN: the defenders he saw tight over him at the snap (null until his first release check). */
+  private tightAtSnap: Agent[] | null = null;
   /** LINE_START: whether he has declared his stem yet. */
   private stemDeclared = false;
   /** LINE_START: how deep his route first breaks. */
@@ -486,10 +495,23 @@ export class RouteRunner implements Behavior {
       // in his way: he releases around the corner on his route's side
       // before the hands meet, not up through him.
       if (!PRESS_MIRROR) return null;
-      for (const d of sim.defense) {
-        const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
-        if (!spot?.press || spot.manTarget !== a.slot || this.releasedCorners.has(d) || usable(d) === 0) continue;
-        const ahead = d.pos.x - a.pos.x, lateral = d.pos.y - a.pos.y;
+      // RELEASE_SEEN: the defenders he releases around are the ones he saw tight over him at the snap, whoever
+      // they are and whatever they were called to do; their positions are as he sees them.
+      if (RELEASE_SEEN && this.tightAtSnap === null) {
+        this.tightAtSnap = sim.defense.filter((d) => {
+          const s = sim.see(a, d).pos, ahead = s.x - a.pos.x;
+          return ahead >= 0 && ahead <= RELEASE_TIGHT_DEPTH && Math.abs(s.y - a.pos.y) <= RELEASE_TIGHT_WIDTH;
+        });
+      }
+      const candidates = RELEASE_SEEN ? this.tightAtSnap ?? [] : sim.defense;
+      for (const d of candidates) {
+        if (!RELEASE_SEEN) {
+          const spot = sim.defAlign.spots[d.slot as keyof typeof sim.defAlign.spots];
+          if (!spot?.press || spot.manTarget !== a.slot) continue;
+        }
+        if (this.releasedCorners.has(d) || usable(d) === 0) continue;
+        const dp = RELEASE_SEEN ? sim.see(a, d).pos : d.pos;
+        const ahead = dp.x - a.pos.x, lateral = dp.y - a.pos.y;
         // PRESS_RELEASE: from the snap he works around the corner's body and
         // reach, on the side his route goes (outside on a vertical) and away
         // from the corner's shade; the release costs what its width costs.
@@ -505,10 +527,10 @@ export class RouteRunner implements Behavior {
           if (Math.sign(-lateral) !== side && Math.abs(lateral) > 0.3) side = Math.sign(-lateral);
         } else {
           const desired = this.path[this.idx]?.p.y ?? a.pos.y;
-          side = Math.sign(desired - d.pos.y) || -Math.sign(lateral) || this.outside;
+          side = Math.sign(desired - dp.y) || -Math.sign(lateral) || this.outside;
         }
         this.releaseSide = side;
-        return runThrough(a, { x: d.pos.x, y: d.pos.y + side * clearance },
+        return runThrough(a, { x: dp.x, y: dp.y + side * clearance },
           { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
       }
       return null;
