@@ -414,3 +414,78 @@ Of 38 new sacks with `BACK_RELEASE` + `READ_PLAN` (attempt 3), 10 were looked at
 
 This is a perception defect, the "blocked rusher" half of QB_FEEL. Integration has handed the fixture to the QB
 lane: hitches from 2x2 against Cover 2, seed 2, roster 2, flipped.
+
+## Four verticals: the standing stress test (engine-34)
+
+`scripts/diag/four-verts/` (sim.ts, nfl.py, report.py) is diagnostics only, and any lane can run it.
+
+**Sim:** four verticals from 2x2 and 3x1 against Cover 1, 2, 3 and 4, 200 plays a cell (1,600 an arm), READ_PLAN
+off and on.
+
+**NFL:** BDB 2025 drop-backs with 3+ GO routes, weeks 1–9 (242 plays; 32–59 attempts a coverage), the same
+operators. This is a route population, not the four-verticals call.
+
+**Operators:**
+
+- **seam / go:** a vertical from an inside alignment is a seam; one from the widest alignment on his side is the
+  outside go.
+- **open:** 8 yd or more deep, with the nearest defender 2.5 yd or more away.
+- **open early:** a seam open by 2.6 s.
+
+### All coverages
+
+| | NFL | READ_PLAN off | READ_PLAN on |
+|---|---|---|---|
+| Attempts | 211 | 1,291 | 1,438 |
+| To the seam | .109 | .420 | .449 |
+| To the outside go | .327 | .073 | .102 |
+| To the back | .322 | .503 | .446 |
+| Time to throw p50 | 2.54 s | 2.80 s | 3.10 s |
+| Seam completion | .565 | .620 | .664 |
+| Sacks per play | .070 | .074 | .061 |
+| Seam separation at the throw p50 | 2.56 yd | 1.85 yd | 1.80 yd |
+| A seam open early | .388 | .352 | .331 |
+| ... then thrown to a seam | .096 | .374 | .448 |
+| ... delay from open to throw p50 | 0.44 s | 0.35 s | 0.30 s |
+
+### By coverage
+
+Ball to seam / go / back, time to throw p50, and the share of plays with a seam open early:
+
+| | NFL | READ_PLAN off | READ_PLAN on |
+|---|---|---|---|
+| Cover 1 | .03 / .62 / .12, 2.29 s, .10 | .35 / .26 / .38, 3.10 s, .03 | .30 / .31 / .38, 3.20 s, .03 |
+| Cover 2 | .09 / .20 / .39, 2.67 s, .56 | .55 / .00 / .44, 2.70 s, .68 | .74 / .01 / .25, 2.60 s, .57 |
+| Cover 3 | .12 / .29 / .39, 2.57 s, .41 | .64 / .00 / .36, 2.60 s, .67 | .56 / .00 / .44, 2.75 s, .69 |
+| Cover 4 | .15 / .29 / .35, 2.52 s, .35 | .11 / .00 / .89, 2.85 s, .04 | .17 / .09 / .74, 3.35 s, .04 |
+
+### The defense: nearest defender to each seam
+
+| | At 12 yd: distance p50 (share ≥ 3 yd) | Nearest | At 18 yd: distance p50 (share ≥ 3 yd) | Nearest |
+|---|---|---|---|---|
+| NFL | 2.46 yd (.39) | CB .48, ILB .18, SS .13 | 3.19 yd (.52) | CB .41, SS .19, ILB .15 |
+| Sim | 1.48–1.49 yd (.21–.23) | NB .41, LB_M .25, SS .24 | 3.80–3.90 yd (.66–.68) | SS .39, FS .17–.19 |
+
+### Reading it
+
+1. **The owner's check: a fairly open seam, early. Does he pull the trigger?** Yes, more readily than the NFL.
+   Given an open-early seam, ours throws it .37 (off) and .45 (on) of the time at 0.30–0.35 s, against the NFL's
+   .10 at 0.44 s. Hesitation is not our failure.
+
+   Caution: 2.5 yd at 8 yd deep is a loose bar. The NFL's .10 says NFL QBs do not treat it as "open". Before
+   reading this as over-eagerness, raise the operator (3.5 yd, or separation closing vs opening) and re-read.
+2. **The outside go is missing.** The NFL throws it on .33 of attempts (.62 against Cover 1, the 1-on-1 man
+   beater); ours .07–.10 (.26–.31 against Cover 1). The ball goes to the seam or the back instead.
+3. **The defense carries seams tight early and loose late, the reverse of the NFL.**
+   - At 12 yd our nearest defender is 1.5 yd away (NFL 2.5), mostly the nickel or Mike.
+   - At 18 yd he is 3.8–3.9 yd away (NFL 3.2): the hand-off to the deep defender leaves the seam looser than
+     the NFL's.
+   - Cover 4 smothers the seam (open early .04, against the NFL's .35), and the ball goes to the back on .74–.89.
+4. **READ_PLAN on vs off:**
+   - more seam against Cover 2 (.55 → .74), with less back;
+   - more back against Cover 3;
+   - less back against Cover 4 (.89 → .74);
+   - time to throw +0.3 s (the peek holds for the squeeze);
+   - sacks 118 → 98.
+
+These are diagnostic flags to look at, not targets.
