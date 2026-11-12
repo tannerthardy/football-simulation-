@@ -792,9 +792,25 @@ export class ManCoverage implements Behavior {
    * prior is under-planned until it shows, and can run by. */
   private plannedSpeed(t: number, vx: number, position: string): number {
     if (vx > this.stemPeak + 0.2) { this.stemPeak = vx; this.stemRose = t; }
+    // The acceleration he has seen on this stem (smoothed over his looks).
+    if (this.stemSeenT !== null && t > this.stemSeenT) {
+      const seenAccel = (vx - this.stemSeenVx) / (t - this.stemSeenT);
+      this.stemAccel += 0.3 * (seenAccel - this.stemAccel);
+    }
+    this.stemSeenVx = vx; this.stemSeenT = t;
     const settled = vx > 3 && t - this.stemRose > 0.4;
-    return settled ? Math.max(0, vx) : Math.max(vx, RECEIVER_SPEED_PRIOR[position] ?? 6.5);
+    if (settled) return Math.max(0, vx);
+    // His belief starts at the position's prior and moves with what he sees:
+    // a receiver still accelerating where a typical one would have flattened
+    // raises it by what he would gain over the same 0.4 s a plateau takes to
+    // show. (Scouting knowledge of this receiver would enter here, replacing
+    // the positional prior; not modelled.)
+    const prior = RECEIVER_SPEED_PRIOR[position] ?? 6.5;
+    return Math.max(prior, vx + Math.max(0, this.stemAccel) * 0.4);
   }
+  private stemSeenVx = 0;
+  private stemSeenT: number | null = null;
+  private stemAccel = 0;
   private routeRead = false;
   private stemHeading: number | null = null;
   private stableSince = 0;
