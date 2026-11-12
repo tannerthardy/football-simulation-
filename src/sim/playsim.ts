@@ -272,6 +272,8 @@ export class PlaySim {
   qbEyes: Agent | null = null;
   /** When the QB started his throwing motion (−1 before). */
   windupAt = -1;
+  /** When his last throwing motion was pulled down without a throw (a pump, or the arm pinned); −1 if none. */
+  windupEndAt = -1;
   /** When the passer's arm starts forward (front foot planted); the in-grasp
    * ruling does not cut off a pass already in its delivery. */
   deliveryAt = -1;

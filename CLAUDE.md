@@ -43,6 +43,24 @@ final exam, not the objective function.
   fails in real football: physical limits, cost, fatigue, information or
   the opponent's response. Repair the missing mechanism and leave the
   player free to choose the technique.
+- **Commit to a decision.** Real players go and stay with it; ours must not
+  re-request a direction and take it back without a reason.
+  - Only a decision (the behaviour, on the player's own picture) changes
+    direction.
+  - Stages after the decision (containment, orientation, spacing,
+    engagement, tackle bond) only bound the request continuously. They may
+    scale its speed or limit a component smoothly with the player's state.
+    They may never zero or flip it as a step function of his own velocity.
+  - A threshold that switches mode or target has an enter and an exit
+    margin, with the exit on the far side of the entry. This matters most
+    when the quantity it cuts depends on the switch, such as his own speed
+    or stopping distance.
+  - A goal persists until a perceived change clears a margin. Re-scoring
+    the same picture every tick is not a new decision.
+  - `test/dither-budget.test.ts` holds each controller and post-decision
+    stage to its recorded rate of reversed re-aims.
+    `scripts/diag/effective-mass/dither-core.ts` attributes each re-aim to
+    the stage that caused it.
 
 ## Pick and prove the next change
 
