@@ -16,22 +16,28 @@ for path in sys.argv[1:]:
           f"alarmed {sum(r['alarmAt'] is not None for r in rows)}")
     # A hot throw: the hot path picked a target and the ball went to it (not pumped elsewhere).
     hot = [r for r in rows if r['hot'] and r['att'] and r['target'] == r['hot']['ref']]
-    groups = {'on the read (src best)': [], 'plan answer (src plan)': [], 'elsewhere (src best)': []}
+    groups = {'on the read': [], 'elsewhere, no look': [], 'elsewhere, after a look': []}
     for r in hot:
         h = r['hot']
-        k = 'plan answer (src plan)' if h['src'] == 'plan' else 'on the read (src best)' if h['onRead'] else 'elsewhere (src best)'
+        k = 'on the read' if h['onRead'] else 'elsewhere, after a look' if h.get('looked') else 'elsewhere, no look'
         groups[k].append(r)
     print(f"  hot throws {len(hot)}")
-    print("  | Target | n | alarm→throw p50/p75 (s) | facing off p50/p75 (°) | gaze off p50/p75 (°) | cmp | INT | yd/att |")
+    print("  | Target | n | alarm→release p50/p75 (s) | facing off p50/p75 (°) | gaze off p50/p75 (°) | cmp | INT | yd/att |")
     print("  |---|---|---|---|---|---|---|---|")
     for k, g in groups.items():
         if not g: print(f"  | {k} | 0 | | | | | | |"); continue
-        dt = [r['hot']['t'] - r['hot']['alarmAt'] for r in g]
+        dt = [r['ttt'] - r['hot']['alarmAt'] for r in g]
         fo = [r['hot']['facingOff'] for r in g]; go = [r['hot']['gazeOff'] for r in g]
         print(f"  | {k} | {len(g)} | {median(dt):.2f}/{q(dt, .75):.2f} | {median(fo):.0f}/{q(fo, .75):.0f} | {median(go):.0f}/{q(go, .75):.0f} | "
               f"{sum(r['cmp'] for r in g) / len(g):.2f} | {sum(r['int'] for r in g)} | {sum(r['yards'] for r in g) / len(g):.1f} |")
     al = [r for r in rows if r['alarmAt'] is not None]
     if al:
         n = len(al)
+        ages = [x for r in al for x in (r.get('alarmAges') or []) if x is not None]
+        if ages: print(f"  picture age at the alarm, all reads: p25/50/75 {q(ages, .25):.2f}/{median(ages):.2f}/{q(ages, .75):.2f} s (n {len(ages)}); "
+                       f"oldest per play p50 {median([max([x for x in r['alarmAges'] if x is not None] or [0]) for r in al if r.get('alarmAges')]):.2f} s")
+        none = [r for r in al if r.get('hotNone')]
+        print(f"  alarmed plays with no hot throw in time at some tick: {len(none)} ({len(none) / n:.2f}); of them sacked {sum(r['sack'] for r in none)}, "
+              f"thrown {sum(r['att'] for r in none)}; plays with a look {sum(1 for r in al if r.get('hotLooks'))}")
         print(f"  alarmed plays {n}: hot throw {len(hot) / n:.2f}, other throw {sum(r['att'] for r in al if r not in hot) / n:.2f}, "
               f"sacked {sum(r['sack'] for r in al) / n:.2f}")
