@@ -226,3 +226,62 @@ stride), and it is the next question.
 
 HOLD_SINK stays off. It is not a promotion candidate on its own. It can be re-read together with proposal 2,
 because it is what keeps the holder's mass against the runner once the stride is bound.
+
+## Census and the fall (2026-11-12)
+
+### Census
+
+`finish-trace.mts` snapshots, seed 101, 8 games, 56 fast side and rear wraps (38 side, 18 behind):
+
+| | at the grasp | +0.3 s | +0.6 s |
+|---|---|---|---|
+| grip site (live holds): legs (leg share ≥ 0.7) / hips / waist | 22 / 28 / 6 | 21 / 25 / 5 | 12 / 22 / 4 |
+| two-arm locked wrap (lock ≥ 0.5) | 33 / 56 | 45 / 51 | 36 / 38 |
+| holder up / falling / down | 56 / 0 / 0 | 41 / 10 / 0 | 14 / 19 / 5 |
+| holder speed ÷ carrier speed, p50 | 0.67 | 1.01 | 1.08 |
+| holder ground force, p50 (kg·yd/s²) | +271 | −293 | −154 |
+| drag on the carrier through the grip, p50 | 0 | −476 | −207 |
+| carrier's own drive, p50 | +152 | +110 | +30 |
+| carrier stride bound | 0 | 15 / 56 | 9 / 47 |
+| carrier still up | 56 / 56 | 43 / 56 | 35 / 47 |
+| carrier balance deviation (COM against his base), p50 (yd) | 0.00 | 0.29 | 0.48 |
+
+The tackler does commit and goes to the ground. Falling, he travels at the carrier's pace and his feet give almost
+nothing.
+
+### (i) The fall: `scripts/diag/effective-mass/fall-bench.mts`
+
+A 101 kg RB starts a forward fall (the World's own fall path), against plain rigid-body toppling over a caught foot.
+The physics: angular momentum about the foot is kept through the catch, the body rotates under gravity, the foot has
+Coulomb friction (μ 0.6, estimated), it lands at 0.25 of its COM height and then slides at the World's down
+friction.
+
+| speed | World: falling / to rest | toppling: to landing / to rest |
+|---|---|---|
+| 3 yd/s | 1.30 yd in 0.43 s / 1.83 yd at 0.80 s | 1.46 yd in 0.48 s / 2.05 yd at 0.86 s |
+| 5 yd/s | 2.15 yd in 0.43 s / 3.66 yd at 1.05 s | 1.64 yd in 0.33 s / 3.20 yd at 0.95 s |
+| 7 yd/s | 3.00 yd in 0.43 s / 5.98 yd at 1.30 s | 1.73 yd in 0.25 s / 4.78 yd at 1.12 s |
+
+At 5–7 yd/s the centripetal need of pivoting over the foot exceeds gravity. The toppling body leaves the turf and keeps
+its horizontal speed until it lands. So "no ground force while falling at speed" is close to physics.
+
+The World's fall time is fixed (0.43 s for this body) where a fast topple lands in 0.25–0.33 s. That costs about
+0.5–1.2 yd at 5–7 yd/s. It is not the main excess.
+
+### Tracking
+
+`scripts/diag/pass-operators/fall-end.py`, same code on NFL BDB 2025 and sim (engine-35, seeds 201 and 301, 16 games
+each). Solo finishes: one defender within 1.5 yd at the end. Measured from the carrier's last frame at ≥ 70% of his
+running speed to the end, p50:
+
+| speed then | NFL | ours 201 / 301 |
+|---|---|---|
+| < 4 yd/s | 0.61 yd, 0.30 s (n 996) | 0.71 / 0.54 yd, 0.40 s |
+| 4–6 yd/s | 1.20 yd, 0.30 s (n 1468) | 0.81 / 0.54 yd, 0.10–0.20 s |
+| > 6 yd/s | 0.73 yd, 0.10 s (n 441) | 0.71 / 0.72 yd, 0.10 s |
+
+Our final falls do not carry farther than the NFL's. The excess yards after contact come before the final fall: the
+0.3–1.0 s between the grasp and the trip, while the falling holder's weight never loads the carrier.
+
+That points to (ii): the hanging holder's weight acting low on the held legs. (i) as a falling-friction change is
+not supported by the physics or the measurement. Not built; Integration decides.
