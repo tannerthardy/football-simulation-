@@ -1,7 +1,9 @@
 /** HOT_LOOK (behaviors/qb.ts; on since engine-41): the hot throw costs the look. Fixture from
- * docs/reviews/2026-11-12-hot-look.md, restated under LINE_START (engine-42): trips sail against Cover 3 from gun
- * doubles, seed 2, where the rush sets off his alarm at 3.2 s with his eyes about 74 degrees from the open outside
- * receiver (W1). */
+ * docs/reviews/2026-11-12-hot-look.md: play-action shot against Cover 1 from gun doubles, seed 2, flipped, where the
+ * rush sets off his alarm at 2.75 s with his eyes about 70 degrees from the open outside receiver (W1). Restated
+ * under DEF_BELIEF (engine-43): the trips-sail play used under LINE_START (engine-42) still looks first and throws W1,
+ * but after the look the window under DEF_BELIEF no longer clears the hot bar, and the ball comes out through the
+ * read logic 0.6 s later, so it has no hot pick to check. */
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -13,7 +15,7 @@ async function run(hotLook: string) {
   vi.stubEnv('HOT_LOOK', hotLook);
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
-  const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover3', concept: 'trips_sail', seed: 2, roster: 2, formation: 'gun_doubles_11', flip: false }));
+  const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover1', concept: 'pa_shot', seed: 2, roster: 2, formation: 'gun_doubles_11', flip: true }));
   let qb: any = null, target: any = null;
   const tick = sim.tick.bind(sim);
   sim.tick = () => {
