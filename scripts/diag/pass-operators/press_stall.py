@@ -27,8 +27,9 @@ for path in sys.argv[1:]:
                 if p.pos(r, k)[0] < p.pos(c, k)[0] and p.dist(r, c, k) <= 1.5 and p.speed(r, k) < 4 and p.speed(r, k + k2) <= p.speed(r, k) + 0.1:
                     st.append(k)
             k15 = min(p.frames - 1, p.k(1.5)); k5 = p.k(0.5)
-            rows.append(dict(lat5=abs(p.pos(r, k5)[1] - p.pos(r, 0)[1]), x5=p.pos(r, k5)[0] - p.pos(r, 0)[0], s5=p.speed(r, k5), stall=bool(st), t=st[0] * p.dt if st else None, dur=len(st) * p.dt, x15=p.pos(r, k15)[0] - p.pos(r, 0)[0]))
+            rows.append(dict(dl=pl[c]['group'] in ('DL', 'DE', 'DT', 'NT', 'EDGE'), grp=pl[c]['group'], lat5=abs(p.pos(r, k5)[1] - p.pos(r, 0)[1]), x5=p.pos(r, k5)[0] - p.pos(r, 0)[0], s5=p.speed(r, k5), stall=bool(st), t=st[0] * p.dt if st else None, dur=len(st) * p.dt, x15=p.pos(r, k15)[0] - p.pos(r, 0)[0]))
     s = [o for o in rows if o['stall']]; n = [o for o in rows if not o['stall']]
     print(f'{os.path.basename(path)}: pressed pairs {len(rows)} | stalled at the corner {100*len(s)/max(1,len(rows)):.0f}% | first p50 {q([o["t"] for o in s]):.2f} s, '
           f'stall frames p50 {q([o["dur"] for o in s]):.2f} s | depth at 1.5 s stalled {q([o["x15"] for o in s]):.2f} vs clean {q([o["x15"] for o in n]):.2f}'
+          f' | nearest a lineman {100*sum(o["dl"] for o in rows)/max(1,len(rows)):.0f}% of pairs, stalled {100*sum(o["dl"] and o["stall"] for o in rows)/max(1,sum(o["dl"] for o in rows)):.0f}%; others stalled {100*sum((not o["dl"]) and o["stall"] for o in rows)/max(1,sum(not o["dl"] for o in rows)):.0f}%'
           f' | at 0.5 s: lateral {q([o["lat5"] for o in rows]):.2f} yd, depth {q([o["x5"] for o in rows]):.2f} yd, speed {q([o["s5"] for o in rows]):.1f}')

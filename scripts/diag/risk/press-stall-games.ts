@@ -30,17 +30,20 @@ P.tick = function () {
       p.f.push({ t, behind: (d.pos.x - o.pos.x) * dir > 0, dist: Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y), sp: Math.hypot(o.vel.x, o.vel.y),
         joint: this.world.joints.some((j: any) => j.kind === 'hands' && ((j.a === d.body && j.b === o.body) || (j.a === o.body && j.b === d.body))),
         eng: !!o.engagement, touch: Math.hypot(o.pos.x - d.pos.x, o.pos.y - d.pos.y) <= o.profile.radius + d.profile.radius + 0.15,
-        task: b?.route?.id ?? b?.constructor?.name ?? '?' }); }
+        task: b?.route?.id ?? b?.constructor?.name ?? '?', R: `${(o.pos.x - this.los).toFixed(2)},${o.pos.y.toFixed(2)}`, D: `${(d.pos.x - this.los).toFixed(2)},${d.pos.y.toFixed(2)}`, dsp: Math.hypot(d.vel.x, d.vel.y).toFixed(1) }); }
     if (t > 1.2 || this.phase !== 'live') {
       S.done = true;
       for (const p of S.pairs) { const f = p.f, k2 = Math.round(0.2 / this.dt), st: any[] = [];
         for (let k = 0; k + k2 < f.length; k++) { const a = f[k];
           if (a.t >= 0.1 && a.t <= 0.9 && a.behind && a.dist <= 1.5 && a.sp < 4 && f[k + k2].sp <= a.sp + 0.1) st.push(a); }
-        rows.push({ st, kind: p.kind, task: f[Math.min(f.length - 1, Math.round(0.5 / this.dt))]?.task ?? '?' }); }
+        if (st.length && process.env.SHOW && (globalThis as any).__shown++ < 5) { console.log(`-- ${p.kind} WR ${p.o.slot} task ${f[10]?.task} vs ${p.d.slot} (${p.d.behavior?.constructor?.name}) tight ${JSON.stringify(p.o.behavior?.tightAtSnap?.map((x: any) => x.slot))}`);
+          for (let k = 0; k < f.length; k += 3) { const a = f[k]; console.log(`   ${a.t.toFixed(2)} R ${a.R} v ${a.sp.toFixed(1)} | D ${a.D} dv ${a.dsp} | centres ${a.dist.toFixed(2)}${a.touch ? ' TOUCH' : ''}`); } }
+        rows.push({ st, kind: p.kind, dk: p.d.behavior?.constructor?.name ?? '?', task: f[Math.min(f.length - 1, Math.round(0.5 / this.dt))]?.task ?? '?' }); }
     }
   }
   return r;
 };
+(globalThis as any).__shown = 0;
 const rng = new Rng(seed);
 const home = generateTeam(rng, 'Ironmen', 'IRN', { strength: 0.55 }), away = generateTeam(rng, 'Comets', 'COM', { strength: 0.55 });
 for (let g = 0; g < games; g++) simulateGame(leagueSample(home, seed + g), leagueSample(away, seed + g), { seed: seed + g, record: false });
@@ -52,6 +55,8 @@ const cls = (a: any) => a.joint ? 'hands' : a.eng ? 'engaged' : a.touch ? 'bodie
 for (const k of ['hands', 'engaged', 'bodies', 'nothing']) { const v = fr.filter(a => cls(a) === k);
   console.log(`  ${k.padEnd(8)} ${pct(v.length, fr.length).padStart(4)} of stalled frames | speed p50 ${q(v.map(a => a.sp))} | t p50 ${q(v.map(a => a.t))} | centres ${q(v.map(a => a.dist))}`); }
 for (const k of ['press-man', 'man-other', 'zone']) { const v = rows.filter(r => r.kind === k); console.log(`  ${k.padEnd(9)} pairs ${v.length}, stalled ${pct(v.filter(r => r.st.length).length, v.length)}`); }
+{ const by: Record<string, [number, number]> = {}; for (const r of rows) { const e = (by[r.dk] ??= [0, 0]); e[0]++; if (r.st.length) e[1]++; }
+  console.log('  by defender behavior (pairs, stalled): ' + Object.entries(by).sort((a, b) => b[1][0] - a[1][0]).map(([k, [n, m]]) => `${k} ${m}/${n}`).join(', ')); }
 const by: Record<string, [number, number]> = {};
 for (const r of rows) { const e = (by[r.task] ??= [0, 0]); e[0]++; if (r.st.length) e[1]++; }
 console.log('  by task (pairs, stalled): ' + Object.entries(by).sort((a, b) => b[1][1] - a[1][1]).slice(0, 12).map(([k, [n, m]]) => `${k} ${m}/${n}`).join(', '));
