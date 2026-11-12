@@ -533,3 +533,45 @@ By coverage, 2.3–3.0 s:
 2. **The throw gate (P ≥ about .56) excludes a contested deep shot by design.** His deep accuracy alone caps a
    25-yard go near .25, and he does not throw even when his own value formula is positive. That belongs to the risk
    work: a value-judged deep shot. First check `missSigma` at 35–40 yd against NFL deep-ball accuracy.
+
+## BACK_FRONT (off): the back read with the front side (engine-35)
+
+**Sheets:** where a HonestNFL order lists the back at all (10 of 54 orders with 2+ reads), he comes after the front
+side's 2–3 reads (drive 133/166/172/173, post-cross 107, y-cross 039/134, four verts 001). He is a reset, not a read
+after the other side too.
+
+**NFL:** on drop-backs with fewer than 2 GO and the back running a route, the back gets .221 of targets, thrown at
+2.13 / 2.60 / 3.06 s (p25 / p50 / p75). That is in rhythm: all throws on those plays leave at 2.57 s.
+
+**Change:** in `pure()` the back's side for reading is the start side, so he is read within the front side at his
+window, before the eyes cross.
+
+**Paired forced-concept panel** (engine-35, 1,536 plays a side):
+
+| | engine-35 | BACK_FRONT |
+|---|---|---|
+| Back share, all concepts | .122 at 3.35 s | .241 at 2.90 s |
+| Back share, non-vertical concepts | .098 at 3.40 s | .240 at 2.80 s |
+| Sacks | 74 | 61 |
+| INT | 37 | 33 |
+| Yards a play | 9.46 | 9.30 |
+| Completion | .655 | .632 |
+
+**16 league games** (`back-probe.ts`):
+
+| | engine-35 | BACK_FRONT |
+|---|---|---|
+| Back share | .163 at 2.85 s | .230 at 2.70 s |
+| In-rhythm back throws | 234 at 2.80 s | 332 at 2.60 s |
+| Sacks per drop-back | .018 (29) | .019 (30) |
+| Free first pressure | .108 | .106 |
+| (c) out, open and unread | .253 | .182 |
+
+**Gate** (.221 at 2.60 s on these concepts; sacks no higher than engine-35): met. The panel's non-vertical back
+share is .240 at 2.80 s, and in league games the in-rhythm throws to him leave at 2.60 s. Sacks are lower on the
+paired panel and level in games.
+
+**Cost:** 0.16 yards a play on the panel. The checkdown replaces some longer throws, and completion is a little
+lower.
+
+**Fixture:** `test/back-front.test.ts`.
