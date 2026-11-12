@@ -85,6 +85,14 @@ for (let g = 0; g < games && shown < maxPlays; g++) {
       const com = (sim.world as any).comHeight?.[i];
       const holders = new Set(sim.world.joints.filter((x: any) => x.kind === 'grasp' && !x.broken && x.b === c.body).map((x: any) => x.a)).size;
       rec.holdersMax = Math.max(rec.holdersMax, holders);
+      // The holder's fall (HANG_AIRBORNE question): his grip as it starts, whether the stride binds and whether the grip
+      // tears while he is falling.
+      if (t.body.support?.state === 'falling' && !j.broken) {
+        if (!rec.fall) rec.fall = { at: k2(el), lock: k2(j.lock ?? 0), legs: k2(j.legs), oneArm: sim.bond?.oneArm?.has?.(t) ?? false, bound: 0, tore: false, x0: along(c.pos) };
+        rec.fall.bound = Math.max(rec.fall.bound, sim.world.strideHolds?.[sim.world.indexOf(c.body)] ?? 0);
+      } else if (rec.fall && rec.fall.end === undefined) {
+        rec.fall.end = k2(el); rec.fall.tore = !!j.broken && t.body.support?.state !== 'down'; rec.fall.dist = k2(along(c.pos) - rec.fall.x0);
+      }
       // Census snapshots at the grasp, +0.3 and +0.6 s: where and how he holds, what his body does, what the carrier carries.
       for (const T of [0, 0.3, 0.6]) if (!(rec.snap ??= {})[T] && el >= T - 1e-6) {
         const sh = sim.world.indexOf(c.body), bonded = sim.bond?.oneArm?.has?.(t) ?? false;
@@ -102,7 +110,7 @@ for (let g = 0; g < games && shown < maxPlays; g++) {
       if (SUMMARY) { const { j, t, h, ...r } = rec; const k = (x: number) => Number.isFinite(x) ? +x.toFixed(2) : null;
         console.log(JSON.stringify({ g, side: r.side, cpos: r.carrierPos, hpos: r.holderPos, mc: k(r.mc), mt: k(r.mt), pc: k(rec.j.b.profile.power ?? NaN), pt: k(rec.j.a.profile.power ?? NaN), tackling: k(rec.t.r?.('tackling') ?? NaN), vc0: k(r.vc0), vt0: k(r.vt0), vtAlong: k(r.vtAlong), share: k(r.share), v25: k(r.v25), v50: k(r.v50),
           legs0: k(r.legs0), lock0: k(r.lock0), cap0: k(r.cap0), origin: r.origin, atCap30: k(r.atCap / Math.max(1, r.n30)), brokeAt: r.brokeAt === null ? null : k(r.brokeAt), stride: k(r.stride),
-          Fc30: k(r.Fc30 / Math.max(1, r.nF)), Ft30: k(r.Ft30 / Math.max(1, r.nF)), snap: rec.snap ?? null, xiT30: k(rec.xiT30 ?? NaN), postureAsked: k(rec.postT ?? NaN), holderFell30: rec.tFall ?? null, groundC30: k((rec.gC ?? NaN) / (rec.nG ?? 1)), groundT30: k((rec.gT ?? NaN) / (rec.nG ?? 1)), groundC80: k((rec.gC2 ?? NaN) / (rec.nG2 ?? 1)), groundT80: k((rec.gT2 ?? NaN) / (rec.nG2 ?? 1)), lungeShare30: k((rec.lungeTicks ?? 0) / Math.max(1, rec.nL ?? 0)), lungeAlong30: k((rec.lungeAlong ?? 0) / Math.max(1, rec.nL ?? 0)), strikeAlong30: k((rec.strikeAlong ?? 0) / Math.max(1, rec.nL ?? 0)), pairForce30: k(rec.P30 !== undefined ? (rec.P30 - rec.P0) / 0.3 : NaN), vc30: k(rec.vc30 ?? NaN), vtA30: k(rec.vtA30 ?? NaN), h30: rec.h30 ?? null, c30: rec.c30 ?? null, reqT30: k((r.reqT30 ?? NaN) / (r.nReq ?? 1)), vt30: k((r.vt30 ?? NaN) / (r.nReq ?? 1)), holder10: r.holder10, xiMax: k(r.xiMax), holdersMax: r.holdersMax, dur: k(sim.t - r.t0), after: k(after), outcome: res?.outcome ?? null })); }
+          Fc30: k(r.Fc30 / Math.max(1, r.nF)), Ft30: k(r.Ft30 / Math.max(1, r.nF)), snap: rec.snap ?? null, fall: rec.fall ? { ...rec.fall, bound: k2(rec.fall.bound) } : null, xiT30: k(rec.xiT30 ?? NaN), postureAsked: k(rec.postT ?? NaN), holderFell30: rec.tFall ?? null, groundC30: k((rec.gC ?? NaN) / (rec.nG ?? 1)), groundT30: k((rec.gT ?? NaN) / (rec.nG ?? 1)), groundC80: k((rec.gC2 ?? NaN) / (rec.nG2 ?? 1)), groundT80: k((rec.gT2 ?? NaN) / (rec.nG2 ?? 1)), lungeShare30: k((rec.lungeTicks ?? 0) / Math.max(1, rec.nL ?? 0)), lungeAlong30: k((rec.lungeAlong ?? 0) / Math.max(1, rec.nL ?? 0)), strikeAlong30: k((rec.strikeAlong ?? 0) / Math.max(1, rec.nL ?? 0)), pairForce30: k(rec.P30 !== undefined ? (rec.P30 - rec.P0) / 0.3 : NaN), vc30: k(rec.vc30 ?? NaN), vtA30: k(rec.vtA30 ?? NaN), h30: rec.h30 ?? null, c30: rec.c30 ?? null, reqT30: k((r.reqT30 ?? NaN) / (r.nReq ?? 1)), vt30: k((r.vt30 ?? NaN) / (r.nReq ?? 1)), holder10: r.holder10, xiMax: k(r.xiMax), holdersMax: r.holdersMax, dur: k(sim.t - r.t0), after: k(after), outcome: res?.outcome ?? null })); }
       else { console.log(lines.join('\n')); console.log(`  end ${res?.outcome ?? ''} after ${f(sim.t - rec.t0)} s, yards after the wrap ${f(after)}\n`); } }
     return res; } } });
 }
