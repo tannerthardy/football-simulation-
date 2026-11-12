@@ -812,9 +812,10 @@ export class QBPass implements Behavior {
     if (this.look) {
       if (sim.t < this.look.seenAt) return 'look';
       const r = this.look.target;
-      this.look = null;
       const ev = this.evaluate(a, sim, r, 1);
+      // Thrown: his eyes are still on him (startThrow ends the look).
       if (ok(ev)) return ev;
+      this.look = null;
     }
     const best = this.hotThrow(a, sim);
     if (!best) return null;
