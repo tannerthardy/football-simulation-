@@ -447,7 +447,7 @@ function strike(sim: PlaySim, d: Agent, c: Agent, skill: number): void {
 }
 
 /** A tackler who reached and missed: his body went with his arms. */
-function commitLunge(d: Agent, nx: number, ny: number, q: number): void {
+export function commitLunge(d: Agent, nx: number, ny: number, q: number): void {
   const sup = d.body.support;
   if (!sup) return;
   const extension = (1 - q) * (0.6 + 0.4 * clamp(d.speed / 7, 0, 1));

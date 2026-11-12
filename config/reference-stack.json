@@ -130,6 +130,7 @@
     "LEG_ALLOMETRY": "on",
     "LEVEL2_TIME": "on",
     "LINE_START": "off",
+    "PRESS_JAM": "off",
     "LINE_STEP": "on",
     "MAN_PHASE": "off",
     "MESH_GUN_SIDE": "on",

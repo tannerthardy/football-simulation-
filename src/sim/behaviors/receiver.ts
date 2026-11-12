@@ -3,6 +3,7 @@
  * route-running skill and the traction ellipse, option routes that convert
  * vs. man/zone), tracking the ball in flight, and blocking after the catch.
  */
+import { PRESS_JAM, punching } from '../press-jam.js';
 import { FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { clamp, norm, sub, type Vec2 } from '../../core/vec.js';
 import { arriveVelocity, fatigueFactor, type Body, type MoveCommand } from '../../physics/kinematics.js';
@@ -215,10 +216,15 @@ export class RouteRunner implements Behavior {
   }
 
   update(a: Agent, sim: PlaySim): MoveCommand {
+    this.releaseWorking = false;
     const cmd = this.routeCommand(a, sim);
-    return LINE_START ? this.getOff(a, sim, cmd) : cmd;
+    // PRESS_JAM: working a release against a pressing corner is the declared move, not a read step; he releases
+    // with his whole start force.
+    return LINE_START && !(PRESS_JAM && this.releaseWorking) ? this.getOff(a, sim, cmd) : cmd;
   }
 
+  /** PRESS_JAM: this tick's command is his release against a pressing corner. */
+  private releaseWorking = false;
   /** LINE_START: whether he has declared his stem yet. */
   private stemDeclared = false;
   /** LINE_START: how deep his route first breaks. */
@@ -249,7 +255,7 @@ export class RouteRunner implements Behavior {
     const cutSkill = 0.8 + 0.4 * rr;
 
     const release = this.handleRelease(a, sim);
-    if (release) return release;
+    if (release) { this.releaseWorking = true; return release; }
     if (RELEASE_THROUGH && this.releaseSide !== 0) this.skipReleasedStem(a, this.releaseSide);
     if (sim.scrambleDrill) return this.scrambleDrill(a, sim);
     // Keep the installed route's pace and progress. Private throw attribution
@@ -423,7 +429,10 @@ export class RouteRunner implements Behavior {
   private handleRelease(a: Agent, sim: PlaySim): MoveCommand | null {
     const usable = (p: Agent): number => p.isDown(sim.t) ? 0 : p.body.support
       ? availability(p.body.support, supportParams(p.profile), fatigueFactor(p.body.energy)) : 1;
-    const reach = (d: Agent): number => d.profile.radius + a.profile.radius + d.player.measurables.armIn / 36 * 0.7;
+    // PRESS_JAM: while a punch is in the air, or his hands are already on him, the arm can extend its full
+    // length rather than the bent 0.7 of a standing corner.
+    const reach = (d: Agent, holding = false): number => d.profile.radius + a.profile.radius
+      + d.player.measurables.armIn / 36 * (PRESS_JAM && (holding || punching(d, sim.t)) ? 1 : 0.7);
     const facingReceiver = (d: Agent, relative: Vec2): boolean => {
       const dist = Math.hypot(relative.x, relative.y) || 1;
       return (Math.cos(d.facing) * relative.x + Math.sin(d.facing) * relative.y) / dist > 0.3;
@@ -440,7 +449,7 @@ export class RouteRunner implements Behavior {
       const p = this.pressContact, d = p.corner;
       this.recordJam(sim, p);
       const relative = sub(a.pos, d.pos), dist = Math.hypot(relative.x, relative.y);
-      if (!sim.world.joints.includes(p.hands) || dist > reach(d) || usable(d) === 0 || !facingReceiver(d, relative)
+      if (!sim.world.joints.includes(p.hands) || dist > reach(d, true) || usable(d) === 0 || !facingReceiver(d, relative)
         || d.engagement || a.engagement) {
         stop();
         return null;
@@ -454,7 +463,12 @@ export class RouteRunner implements Behavior {
       const follow = (0.25 + 0.65 * d.r('press')) * usable(d);
       const swipe = (0.15 + 0.9 * a.r('releaseVsPress')) * usable(a);
       const dt = Math.max(0, sim.t - p.at);
-      p.slide += Math.max(0, travel - follow * dt) + Math.max(0, swipe - follow) * dt;
+      // PRESS_JAM: the hand follows the chest as fast as his arm can sweep across it (arm length x how fast he
+      // turns), not at a technique rate; the hand fight (his swipe against the corner's press) is what knocks it off.
+      const armFollow = d.player.measurables.armIn / 36 * d.profile.turnRate * usable(d);
+      p.slide += PRESS_JAM
+        ? Math.max(0, travel - armFollow * dt) + Math.max(0, swipe - follow) * dt
+        : Math.max(0, travel - follow * dt) + Math.max(0, swipe - follow) * dt;
       p.relative = relative;
       p.at = sim.t;
       if (p.slide >= a.profile.radius + 0.08) {
@@ -508,6 +522,14 @@ export class RouteRunner implements Behavior {
           side = Math.sign(desired - d.pos.y) || -Math.sign(lateral) || this.outside;
         }
         this.releaseSide = side;
+        // PRESS_JAM: he has to move the corner before he can go past him. His release starts with a jab to the
+        // other side (0.2-0.35 s, quicker with release skill); the corner's mirror reads it through his own eyes.
+        // If he bit, the release side is open; if he stayed square, the way past runs inside his reach and his
+        // hands can land. The receiver's side then follows the corner's shade as before.
+        if (PRESS_JAM && PRESS_RELEASE && sim.t - this.startDelay < 0.35 - 0.15 * a.r('releaseVsPress')) {
+          return runThrough(a, { x: a.pos.x + 0.4, y: a.pos.y - side * 1.2 },
+            { speed: this.effort * 0.6, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
+        }
         return runThrough(a, { x: d.pos.x, y: d.pos.y + side * clearance },
           { speed: this.effort, cutSkill: 0.8 + 0.4 * a.r('releaseVsPress') });
       }

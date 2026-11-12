@@ -130,3 +130,9 @@ Built 2026-10-22 from every flag found in `src` on the repository's branches, pl
 | Flag | What it does | Where | Status |
 |---|---|---|---|
 | `GRIP_BREAK` | A defender breaks a blocker's grip with a hand strike (knock-down, swim, rip): his hand speed and arm force against the blocker's grip capacity, so the hands' sideways coupling holds until it is broken and not by a fixed limit. Two-sided; shared with Run Game and Defense. | Not built (proposal) | Proposed by Flex after `HANDS_FRICTION` (removed 2026-11-10) overshot. Evidence: the hands' tangential load is at the steer limit on 67% of engaged run ticks, where the DL slips across (p75 1.12 yd/s). Friction on the pressing load (0.35) overshoots: rotation 56 → 27° (NFL 43), DL depth at 2.0 s +0.69 → +0.47 (NFL +0.70). Steer alone under-couples, friction alone over-couples, and what is missing is the grip being broken. Needs its own plan and Tanner's go-ahead. See `docs/reviews/effective-mass.md`. Related: `HAND_FRICTION` (G5, run-game-v3), friction-only steering, pressure 32 → 41%. |
+
+## C14 release at the line
+
+| Flag | What it does | Where | Status |
+|---|---|---|---|
+| `PRESS_JAM` | A pressing corner punches at the receiver's release (step + full arm, a miss leans him); the receiver's release takes full start force, jabs, and the hand on him follows at arm length x turn rate. | `coverage/C14-press-jam` `src/sim/press-jam.ts`, `ManCoverage.pressPunch` | Parked 2026-11-12: stalls at the corner 10 -> 33% vs NFL 3%; NFL contact costs the receiver nothing measurable. See `docs/reviews/2026-11-12-press-jam-attempt.md`. |

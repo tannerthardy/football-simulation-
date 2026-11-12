@@ -29,6 +29,8 @@ import { RouteObservation } from '../coverage-read.js';
 import { movingCatchApproach } from '../catch-approach.js';
 import { withMovementObjective } from '../movement-objective.js';
 import { DeepCoverage } from '../coverage-leverage.js';
+import { PRESS_JAM, PUNCH_STEP, PUNCH_TIME, punches } from '../press-jam.js';
+import { commitLunge } from '../tackle.js';
 import { roundedTurnTime, withFacingTechnique } from '../coverage/orientation.js';
 import { SNAP_REACT } from '../snap-count.js';
 import { acquireFlight, anticipatedCatcher, hasObservedFlight, observedHolder, qbRunning, rememberCatchOpportunity, rememberedFlight, unresolvedBallArea } from '../possession-read.js';
@@ -796,6 +798,8 @@ export class ManCoverage implements Behavior {
   private readonly observation = new RouteObservation();
   private readonly depth = new DeepCoverage();
   private keyedFitRecorded = false;
+  /** PRESS_JAM: when he first saw this receiver release. */
+  private releaseSeenAt: number | null = null;
   /** Shallow blocking evidence admitted this marker's current support duty. */
   private blockingRun = false;
 
@@ -927,6 +931,38 @@ export class ManCoverage implements Behavior {
     return runFit(a, sim, this.gap, this.gapSign, read);
   }
 
+  /** PRESS_JAM (press-jam.ts): the punch at the line. Returns his command while a punch is in the air, else null. */
+  private pressPunch(a: Agent, sim: PlaySim, seen: Perceived, releasing: boolean): MoveCommand | null {
+    const R = this.target;
+    const p = punches.get(a);
+    if (p) {
+      if (p.result !== 'thrown') return null;
+      if (sim.world.joints.some((j) => j.kind === 'hands' && j.a === a.body && j.b === R.body)) { p.result = 'landed'; return null; }
+      if (sim.t > p.until) {
+        // Missed: his weight went with his hands toward a body that left.
+        p.result = 'missed';
+        commitLunge(a, p.dir.x, p.dir.y, 0);
+        return null;
+      }
+      const aim = { x: seen.pos.x + seen.vel.x * (p.until - sim.t), y: seen.pos.y + seen.vel.y * (p.until - sim.t) };
+      return runThrough(a, aim, { facing: angleTo(a.pos, seen.pos) });
+    }
+    // His cue is the receiver's first step as he sees it (not the 1.5 yd/s the cushion logic waits for).
+    if (!releasing || Math.hypot(seen.vel.x, seen.vel.y) < 0.5) return null;
+    this.releaseSeenAt ??= sim.t;
+    // He waits a beat for the receiver to commit before he shoots his hands: a patient (skilled) corner longer, so
+    // a jab he would have punched at has turned into the real release before he commits.
+    if (sim.t - this.releaseSeenAt < 0.05 + 0.2 * a.r('press') * a.mind.focus) return null;
+    // From what he sees: where the receiver's body will be when a punch thrown now would land, and whether one step
+    // plus the full arm gets his hands there. A release already going wide of that, he mirrors rather than lunges at;
+    // he punches only while it is in range, and may never get the chance.
+    const at = { x: seen.pos.x + seen.vel.x * PUNCH_TIME, y: seen.pos.y + seen.vel.y * PUNCH_TIME };
+    const dist = Math.hypot(at.x - a.pos.x, at.y - a.pos.y) || 1;
+    if (dist - a.profile.radius - R.profile.radius > PUNCH_STEP + a.player.measurables.armIn / 36) return null;
+    punches.set(a, { at: sim.t, until: sim.t + PUNCH_TIME, dir: { x: (at.x - a.pos.x) / dist, y: (at.y - a.pos.y) / dist }, result: 'thrown' });
+    return runThrough(a, at, { facing: angleTo(a.pos, seen.pos) });
+  }
+
   /** Release movement only; provisional zone readers retain their own
    * support and recognized-flight priorities before using this technique. */
   trackReceiver(a: Agent, sim: PlaySim): MoveCommand {
@@ -952,6 +988,10 @@ export class ManCoverage implements Behavior {
     // line (not yet level with him), the corner mirrors him head-up and
     // stays in his path; his leverage is where he ends up, not his first step.
     const releasing = PRESS_MIRROR && this.press && seen.pos.x - sim.los < 3 && seen.pos.x < a.pos.x - 0.3;
+    if (PRESS_JAM && this.press) {
+      const punch = this.pressPunch(a, sim, seen, releasing);
+      if (punch) return punch;
+    }
     const vx = seen.vel.x;
     const deep = seen.pos.x - sim.los;
     // MAN_PHASE: in phase on the stem, his hand reaches the receiver's near
