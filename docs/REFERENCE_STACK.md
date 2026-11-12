@@ -623,6 +623,8 @@ YAC, long completions, yards an attempt and points fall on both seeds. Completio
 
 Recorded miss, not landed: `FRONT_ANGLE` (a defender with the runner in front forecasting the runner's upfield line) made every pass-side measure worse (yards a dropback 9.29 → 10.55): the forecast sent him to a point ten yards downfield. Most "outrun wide" plays are geometry at the catch (the defender 1.4–2.1 yd deeper and about 5 yd wide), which is where underneath defenders are and what they are looking at when the ball is thrown.
 
+Correction after engine-40, no flag (Coverage #617): a defender facing away from the ball was given a flat 12% pass breakup whenever it passed within arm's reach of his centre. He can now only be hit by it: a ball whose path crosses his body comes off it and is recorded as a deflection off his body, not a play on the ball. Per 100 targets (two seeds × 8 games, engine-38): PBU 13.9 → 11.6, deflections 3.5 → 4.4; completion and yards an attempt within noise. Full suite on develop + #617: 4320 pass with the two known research failures.
+
 ## engine-39: the catch contest on: `CATCH_HANDS`, `LOOK_ONCE`, `CATCH_SECURE`, `DRIVE_CATCH` (2026-11-12)
 
 Coverage #590 (C14 in [GAPS](GAPS.md): completion barely depended on how open the receiver was). Built at engine-30 and parked until defenders arrived in phase, which `CUSHION_BREAK` (engine-36) gave them.
