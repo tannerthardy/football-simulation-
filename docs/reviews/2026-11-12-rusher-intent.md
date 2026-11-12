@@ -132,3 +132,23 @@ Hang-on choices: about 1.8-3.1 in every arm.
   pursuer -- counts as the man having left the frame. The grip lapses, or is kept and judged, much more often.
   Integration predicted this risk for the path-of-travel frame on seals and reaches. Next: which run blocks the calls
   come from, before any PR.
+
+## Set A: holding diagnosed and fixed (03987d85, 37463008)
+
+holds-detail.mts, seeds 101-108, offensive holding called a team-game:
+
+| definition of 'past' (rep beat, grip frame, holding detector) | run | pass | notes |
+|---|---|---|---|
+| frames inconsistent (grip along the path only above 1 yd/s; detector on phi) | 2.81 | 0.75 | slow men kept a grip the detector called |
+| along the man's path, everywhere (03987d85) | 8.06 | 1.06 | holder behind along the path 93% but still between man and ball (phi < 1) 91%: seals and down blocks on men running down the line |
+| along his path AND no longer between him and where he is going (37463008) | 0.38 | 0.00 | the remaining calls have phi >= 1 |
+| off | 1.00 | 0 | |
+| NFL 2022 accepted | about 1.1 | | |
+
+Run report for A on the final definition: all −0.24 (SE 0.07); outside zone −0.17 (0.09), inside zone −0.22 (0.19),
+gap −0.24 (0.13), duo −0.49 (0.25), toss −0.58 (0.40), draw +0.00. Earlier definitions: −0.39, −0.41. OPEN_HANDS
+alone: −0.17. Zone hitter classes unchanged (OU DL blocked 50%, DL shed 5%).
+
+The single definition, as Integration suggested: past = behind him along his path AND no longer between him and
+where he is going (|phi| >= 1 against his line to the ball carrier or QB); below 1 yd/s, the leverage alone. The
+pass 2 x 16 for A is re-run on it before the PR.
