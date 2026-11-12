@@ -23,6 +23,7 @@
   "flags": {
     "ALIGN_HABIT": "on",
     "ANCHOR_GRADE": "on",
+    "ARRIVE_LEAD": "off",
     "ATTACK_LANDMARK": "off",
     "BACKER_CREEP": "on",
     "BACKER_TAKEON": "on",
@@ -184,6 +185,7 @@
     "SHED_PAST_GATE": "on",
     "SHED_ROUTE": "on",
     "SHORT_BASE": "on",
+    "SHOULDER_READ": "off",
     "SINK_LEAD": "off",
     "SLOT_LEV": "on",
     "STANCE_TELL": "on",
