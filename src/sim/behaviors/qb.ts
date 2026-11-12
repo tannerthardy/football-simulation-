@@ -140,6 +140,28 @@ const POCKET_CLIMB = process.env.POCKET_CLIMB === '1';
  * QB_FEEL off), held() credits any engaged rusher 0.35-1.75 s from
  * engagement.win, which rises as the win score falls while he closes. */
 const BLOCK_SEEN = process.env.BLOCK_SEEN === '1';
+/** Experimental (FREE_BOUND=1, off): a free man near him is a hit soon,
+ * whatever he looks to be doing. For a rusher he sees unblocked (no offensive
+ * body within arm's length of him) within FREE_NEAR, the QB's felt time is at
+ * most how soon that man COULD hit him: from where he sees him, a typical
+ * rusher's burst straight at him to within a hand of his body, with any speed
+ * already toward him as a head start and none of his picture's speed away or
+ * across counted against him (the picture is 0.25-0.3 s old; a free man that
+ * near can have turned in it, and one going by can still reach in). A QB's-eye
+ * estimate from typical constants, not the rusher's ratings. Out of his field
+ * of view (felt's blind side) poor pocket presence applies it late. Off, a free man drifting past at 1.6 yd, seen on a 0.3 s old
+ * picture moving away, read 1-2 s off (Rules + Coaching repro, hitches vs
+ * Cover 2, seed 2 flipped, READ_PLAN). */
+const FREE_BOUND = process.env.FREE_BOUND === '1';
+/** Estimated (FREE_BOUND), a QB's-eye typical rusher: burst toward the QB,
+ * yd/s^2; reach from his centre, yd; the range where a hand-and-burst hit is
+ * the question (beyond it his ordinary estimate, velocity and all, is what he
+ * reads), yd; how much later a poor pocket presence applies the bound to a man
+ * behind his shoulder, s. Not fitted to sacks or yards. */
+const FREE_BURST = 5;
+const FREE_REACH = 1.0;
+const FREE_NEAR = 3;
+const FREE_BLIND_LAG = 0.5;
 /** Experimental (SET_DECIDE=1, off): one decision under pressure. When where
  * he stands he no longer has the time he still needs (the rest of his current
  * read, then a throwing motion) before a rusher he feels can reach him, he
@@ -737,6 +759,27 @@ export class QBPass implements Behavior {
     return hold;
   }
 
+  /** FREE_BOUND: how soon a man he sees unblocked within FREE_NEAR could hit
+   * him (Infinity for one he sees in a block, or farther). */
+  private freeBound(a: Agent, sim: PlaySim, d: Agent, seen: Perceived): number {
+    for (const o of sim.offense) {
+      if (o === a || o.isDown(sim.t)) continue;
+      const b = this.felt(a, sim, o).pos;
+      if (Math.hypot(b.x - seen.pos.x, b.y - seen.pos.y) <= o.profile.reach + d.profile.radius) return Infinity;
+    }
+    const dx = a.pos.x - seen.pos.x, dy = a.pos.y - seen.pos.y, R = Math.hypot(dx, dy) || 1;
+    if (R > FREE_NEAR) return Infinity;
+    const D = R - FREE_REACH - a.profile.radius;
+    let t = 0;
+    if (D > 0) {
+      const v = Math.max(0, (seen.vel.x * dx + seen.vel.y * dy) / R);
+      t = (-v + Math.sqrt(v * v + 2 * FREE_BURST * D)) / FREE_BURST;
+    }
+    const raw = Math.atan2(d.pos.y - a.pos.y, d.pos.x - a.pos.x) - a.body.facing;
+    const blind = Math.abs(Math.atan2(Math.sin(raw), Math.cos(raw))) > 1.8;
+    return t + (blind ? FREE_BLIND_LAG * (1 - a.r('pocketPresence')) : 0);
+  }
+
   private pressure(a: Agent, sim: PlaySim): { time: number; agent: Agent | null; dist: number } {
     let best = Infinity;
     let who: Agent | null = null;
@@ -744,7 +787,8 @@ export class QBPass implements Behavior {
     for (const d of sim.defense) {
       if (d.isDown(sim.t)) continue;
       const seen = this.felt(a, sim, d);
-      const tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + this.held(a, d, sim);
+      let tt = timeToReach({ pos: seen.pos, vel: seen.vel, profile: d.profile, speedScale: d.speedScale }, a.pos, 0.8) + this.held(a, d, sim);
+      if (FREE_BOUND) tt = Math.min(tt, this.freeBound(a, sim, d, seen));
       if (tt < best) {
         best = tt;
         who = d;
