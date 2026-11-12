@@ -198,3 +198,43 @@ Notes for when edge rushers win (Integration, 2026-11-12):
 - (a) PI's visibility ramp was fitted on unoccluded downfield contact. It is probably too hard on line play, where the
   umpire and referee are positioned to watch exactly this; holding's visibility needs its own basis.
 - (b) "Material" as next to the ball and going toward it looks right.
+
+# RUSH_INTENT with set A: the pressure decomposed (seed 201 x 8, on this head; `pressure-source.py`, same code on NFL)
+
+Per presser class: share of dropbacks, free then (no blocker within 1.0 yd), arriving before 2.5 s (of dropbacks),
+sacked per pressure.
+
+| presser | NFL | off | A | A + RUSH_INTENT | RUSH_INTENT |
+|---|---|---|---|---|---|
+| dropbacks | 9713 | 686 | 717 | 682 | 689 |
+| **pressured** | **32.9%** | 37.0% | 25.4% | **34.6%** | 40.3% |
+| edge past outside | 3.8%, free 36%, by 2.5 s 1.3%, sk 15% | 0.9% | 1.7% | 3.1%, free 67%, 2.8%, sk 19% | 4.6%, 4.1% |
+| edge level / in front | 3.0%, free 18%, 0.5%, sk 20% | 12.7%, free 21%, 4.2%, sk 2% | 7.9%, free 58%, 1.5%, sk 4% | 12.0%, free 42%, 5.0%, sk 5% | 11.6%, 4.9%, sk 5% |
+| edge inside | 6.4%, free 48%, 1.9%, sk 22% | 7.1%, free 88% | 4.6%, free 82% | 7.9%, free 78%, 2.2%, sk 13% | 8.6%, free 83% |
+| interior DL/LB | 9.8%, free 46%, 3.8%, sk 17% | 8.9% | 6.3% | 6.0%, free 54%, 2.2%, sk 24% | 9.3% |
+| other | 10.0%, free 61%, 3.2%, sk 21% | 7.4% | 4.9% | 5.6%, free 58%, 1.8%, sk 18% | 6.2% |
+| real pressure (all but in front) | 29.9% | 24.3% | 17.5% | 22.6% | 28.7% |
+| sacked per pressure | 19.1% | 14.2% | 11.0% | 13.6% | 15.8% |
+
+A + RUSH_INTENT, other gates:
+- sacked 4.7% (A 2.8%; NFL 6.7%);
+- edge win 14% (NFL 13%);
+- at the win: past / in front / inside 13 / 51 / 36;
+- retreat 1.0-1.5 / 1.5-2.0 / 2.0-2.5 / 2.5-3.0 s: −2.75 / −3.00 / −3.00 / −2.75 (A −3.00 / −3.25 / −3.00 / −2.75;
+  NFL −2.50 / −2.75 / −2.25 / −1.50).
+
+**Reading.**
+- **With A, RUSH_INTENT does not overshoot.** Pressure is 34.6% against the NFL's 32.9%. A alone undershoots
+  (25.4%). The 40.3% overshoot belongs to RUSH_INTENT on the off engine, where the tackle still drags and chases.
+- **What RUSH_INTENT adds on top of A** (A → A + RUSH_INTENT, points of dropbacks):
+  - edge in front +4.1, past outside +1.4, inside +3.3;
+  - interior −0.3, other +0.7.
+  It is the edge, not interior or free rushers arriving early.
+- **The in-front class grows** from 7.9 to 12.0% of dropbacks (NFL 3.0%) and arrives early: 5.0% of dropbacks by 2.5 s
+  against the NFL's 0.5%. It still converts at about 5% against 20%. Gate 1 is worse (31.3 → 34.7% of pressure); gate 2
+  improves (17.5 → 22.6% of dropbacks, NFL 29.9).
+- **With A on, RUSH_INTENT moves the retreat only a little** (about 0.25 yd/s early, nothing late). Without A it moves
+  the pair's speed most of the way (pair-geometry table). With A's open hands and ride the pair already moves
+  differently, so the walk-back left with A is the rusher in front pushing the tackle into the QB's space.
+- So on top of A, RUSH_INTENT is right on total pressure, sacks, edge win and past outside, and wrong on the in-front
+  class, which is the anchor's gate. Small cells (about 80 in-front pressures per arm); a 2 x 16 read would settle it.
