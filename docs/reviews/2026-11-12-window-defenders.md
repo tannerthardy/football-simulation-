@@ -153,6 +153,20 @@ What the panel does show (engine-41, 938 throws):
 - **Receiver adjustment:** on balls still in flight at the planned arrival, the receiver arrives about 1.4 yd from
   the aim point, yet the ball passes about 0.6 yd from him. The receiver's adjustment does absorb much of the miss.
 
+## Pumps at the plant (engine-42 tree, 16 league games; `scripts/diag/read-plan/pump-flicker.ts`)
+
+| DEF_BELIEF | Pumps | Planned P p50 | Drop at the plant's re-check p50 | Swing > 0.3 | Flicker (back within 2 ticks) |
+|---|---|---|---|---|---|
+| Off | 210 / 1,537 (13.7%) | 0.74 | 0.51 | 169 | 27 (1.8% of dropbacks) |
+| On | 212 / 1,503 (14.1%) | 0.64 | 0.42 | 151 | 17 (1.1%) |
+
+- **The one-frame flicker is rare.** Integration's rule puts its trace after the deep shot.
+- **Pumps are common, and DEF_BELIEF does not change them.** Between the decision and the plant, the throw's value
+  collapses on 14% of dropbacks.
+- **The probable mechanism** is defenders reacting to the windup itself (zone defenders read the load and the QB's
+  perceived facing). That is an interaction, not a belief error he could price from what he sees before deciding.
+- **Open:** an NFL figure for aborted throwing motions, before treating 14% as a defect.
+
 ## Not done
 
 - **INT by whether the interceptor was watching him** (Integration's third check). The probe records whether the
