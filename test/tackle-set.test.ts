@@ -49,9 +49,38 @@ describe('TACKLE_SET', () => {
     }
   });
 
-  it('off, the old kick is unchanged (the floor does not apply)', async () => {
-    const off = await run('0', 1), on = await run('1', 1);
-    const deep = (rows: { x: number }[]) => Math.min(...rows.map((r) => r.x));
-    expect(deep(off.rows)).toBeLessThanOrEqual(deep(on.rows) + 1e-9);
+  it('the set has a width: 0.3-1.0 yd outside his alignment, never asked past it', async () => {
+    for (const seed of [1, 2, 3]) {
+      vi.resetModules();
+      for (const [k, v] of Object.entries(stack)) vi.stubEnv(k, v === 'on' ? '1' : '0');
+      vi.stubEnv('TACKLE_SET', '1');
+      const { PlaySim } = await import('../src/sim/playsim.js');
+      const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');
+      const { tackleSetLine } = await import('../src/sim/engagement.js');
+      const sim: any = new PlaySim(nativeTraceSetup({ coverage: 'cover2', concept: 'four_verts', seed, roster: 7, formation: 'gun_doubles_11', flip: false }));
+      let worst = -Infinity;
+      while (sim.phase === 'live' && sim.t < 4 && sim.throwAt < 0 && sim.carrier === sim.qb) {
+        const before = new Map(sim.offense.map((a: any) => [a, { ...a.pos }]));
+        sim.tick();
+        for (const tk of sim.offense.filter((a: any) => a.slot === 'LT' || a.slot === 'RT')) {
+          const e = tk.engagement; if (!e) continue;
+          const line = tackleSetLine(sim, tk, e.defender), home = sim.offAlign.spots[tk.slot].pos.y;
+          const w = (line.y - home) * line.out;
+          expect(w).toBeGreaterThanOrEqual(0.3 - 1e-9); expect(w).toBeLessThanOrEqual(1.0 + 1e-9);
+          const p = before.get(tk) as any, req = sim.intents[tk.idx].vel.y * line.out;
+          if ((p.y - line.y) * line.out >= 0) expect(req).toBeLessThanOrEqual(1e-9);   // at or past the line: nothing outward
+          worst = Math.max(worst, (tk.pos.y - line.y) * line.out);
+        }
+      }
+      console.log(`seed ${seed}: furthest outside the set line ${worst.toFixed(2)} yd`);
+    }
+  });
+
+  it('off, the switch is off (bit-identity of the off engine is the seed-999 export hash, not a test here)', async () => {
+    vi.resetModules();
+    for (const [k, v] of Object.entries(stack)) vi.stubEnv(k, v === 'on' ? '1' : '0');
+    vi.stubEnv('TACKLE_SET', '0');
+    const { TACKLE_SET } = await import('../src/sim/engagement.js');
+    expect(TACKLE_SET).toBe(false);
   });
 });
