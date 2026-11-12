@@ -124,9 +124,38 @@ By urgency, P accepted / completion:
 - **The gate** (with FREE_BOUND on, sacks no longer collapse): 1.2% → 2.1%, against 2.4% → 3.8% with FREE_BOUND off.
   Better, not closed.
 
+## Paired panel and fixture (engine-41, forced-concept panel, 1,536 plays)
+
+| | INT | Sacks | Completion | Yards a play |
+|---|---|---|---|---|
+| DEF_BELIEF off | 33 | 71 | 0.600 | 8.68 |
+| DEF_BELIEF on | 30 | 94 | 0.602 | 8.93 |
+
+638 plays change. Fixture (`test/def-belief.test.ts`): levels against Cover 1 from gun doubles, seed 1.
+
+- Off: he throws the in-breaker S2 at 2.85 s, and it is intercepted.
+- On: he passes it up and throws the back at 2.90 s, completed for 9 yd.
+
+## Placement (Integration's low-priority accuracy check): not answered yet
+
+`scripts/diag/risk/placement-split.ts` measures the ball's true closest approach to the receiver in free flight
+(interpolated within the tick, excluding the ball in a receiver's hands) and the release's own miss from its draws.
+
+On the forced-concept panel the release draws repeat across plays of the same seed (the panel's dice are seeded by
+play seed and key). The ratio of release miss to his sigma comes out identical in every group, 0.92. So the panel
+cannot measure the miss distribution, and the question needs league games, where every play draws its own.
+
+What the panel does show (engine-41, 938 throws):
+
+- **Offset:** within 0.5 yd 43% of all throws and 53% of tight throws (median 0.61 and 0.46 yd).
+- **Comparison:** this is not Coverage's operator (their flight line against the receiver at arrival), so the two
+  numbers are not directly comparable.
+- **Receiver adjustment:** on balls still in flight at the planned arrival, the receiver arrives about 1.4 yd from
+  the aim point, yet the ball passes about 0.6 yd from him. The receiver's adjustment does absorb much of the miss.
+
 ## Not done
 
 - **INT by whether the interceptor was watching him** (Integration's third check). The probe records whether the
   closest defenders faced him, and three quarters of interceptors did, before and after. A per-INT split on games
   needs the interceptor's facing recorded in hot-games.ts.
-- **A fixture,** pending the paired panel.
+- **The placement split on league games** (above).
