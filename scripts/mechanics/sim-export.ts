@@ -26,7 +26,8 @@ const GROUP: Record<string, string> = {
 const CARRIER_CONTACT = new Set(['carrier_contact', 'hit', 'tackle_wrap', 'missed_tackle', 'broken_tackle']);
 const END = new Set(['tackle', 'out_of_bounds', 'touchdown', 'sack', 'incomplete', 'interception', 'safety', 'slide']);
 // 'miss': the ball reached a receiver who could not catch it (catching.ts) -- the arrival, as NFL pass_arrived is.
-const ARRIVE = new Set(['catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection', 'miss']);
+// 'secure': CATCH_SECURE's securing window opens when the ball reaches his hands; its 'catch' comes up to 0.45 s later.
+const ARRIVE = new Set(['secure', 'catch', 'incomplete', 'pbu', 'interception', 'drop', 'deflection', 'miss']);
 const LABEL_BALL = ARRIVE;
 
 function arg(name: string, fallback: string): string {
