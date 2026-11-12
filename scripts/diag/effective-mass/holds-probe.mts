@@ -24,7 +24,14 @@ for (let s = first; s < first + games; s++) {
     for (const r of sim.foulRecords) {
       if (r.kind !== 'holding' || !offIds.has(r.playerId)) continue;
       if (r.id.startsWith('legacy-hold')) add(`${type} attempts (hang on)`);
-      else if (r.id.startsWith('native-holding')) add(`${type} achieved restraint (${r.assessment})`);
+      else if (r.id.startsWith('native-holding')) {
+        add(`${type} achieved restraint (${r.assessment})`);
+        // Why it is unresolved: an exception (inside the frame, away from the point of attack, a double, ...) or a
+        // borderline restraint; a called one is a clear restraint with none.
+        const f: any = (r.evidence as any)?.facts ?? {};
+        const why = f.exception ? `exception: ${f.exception}` : f.judgment ? `judgment: ${f.judgment}` : 'other';
+        add(`${type}   - ${r.called ? 'called' : why}`);
+      }
       else add(`${type} other record`);
     }
     for (const p of sim.penalties) if (p.kind === 'holding' && p.against === 'O') { add(`${type} called`); add(`${type} called yards`, Math.abs(p.yards ?? 10)); }
