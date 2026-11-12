@@ -109,6 +109,7 @@
     "HOLD_SINK": "off",
     "HANG_AIRBORNE": "off",
     "IN_STRIDE_CATCH": "off",
+    "HANDS_CUE": "off",
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
     "IZ_OFFSET": "on",
