@@ -538,3 +538,68 @@ Moves in these ticks are almost never live (0-7% after 1.5 s): the rusher is bet
 4. **No capacity change is indicated.** The capacity references favour the tackle. The gap is the tackle's request:
    a kick that never decelerates off, and arriving at the set at full kick speed under TACKLE_SET. TURF_MU 1.1 remains
    unsourced, but nothing here turns on it.
+
+# TACKLE_SET stage 3: the kick decelerating into the set (two attempts, reverted; re-diagnosis)
+
+Base: engine-44 (3081064c) merged; flags off are bit-identical. Read: seed 201, 8 games, gates tackle-retreat.py,
+pressure-source.py, edge-rush.py, pressure-time.py.
+
+- **Attempt 1 (2cd97028).** He gives ground only while the rusher threatens the corner: read by touch outside his
+  outside shoulder (a per-rep misread from his read rating) and gaining more than 1.5 yd/s. Otherwise he sits at his
+  depth, with the mirror matching only the man's sideways speed.
+  - Engaged retreat unchanged before 2.5 s (−3.0 / −3.5 / −3.25 yd/s at 1.0-1.5 / 1.5-2.0 / 2.0-2.5 s).
+  - In front of his tackle at pressure: 12.6 → 11.0%.
+  - Why: the rusher is nearly always a threat by that rule (0.8 yd outside, gaining 3+ yd/s), and while threatened
+    the kick still follows his depth speed.
+- **Attempt 2 (4eff0e82).** While threatened he kicks to the set, timed to the rusher's seen arrival at that depth.
+  - Worse: requested −5.35 early, engaged retreat −4.0 at 1.5-2.0 s, in front 13.8%.
+- Both reverted (778949a9).
+
+## Counterfactuals (diagnostic only, uncommitted, run in separate worktrees)
+
+| seed 201 x 8 | retreat 1.5-2.0 / 2.0-2.5 / 2.5-3.0 / 3.0+ s | edge rusher in front at pressure | inside (free then) | past outside | edge win | sacked / pressured |
+|---|---|---|---|---|---|---|
+| off | −3.50 / −3.25 / −2.75 / −2.00 | 12.6% | 6.5% (96%) | 2.2% | 13% | 4.5 / 36.5% |
+| (A) TACKLE_SET, he sits once engaged, mirror reduced | −2.25 / −2.00 / −1.50 / −0.50 | 5.1% | 32.2% (97%) | 11.5% | 34% | 13.5 / 59.9% |
+| (A2) the same with the full mirror | −2.50 / −2.25 / −1.75 / −0.75 | 5.7% | 30.9% (98%) | 7.6% | 33% | 13.7 / 57.9% |
+| (B) rusher between moves: push 0.35 at 0.55 vmax | −3.25 / −3.00 / −2.75 / −1.75 | 11.3% | 5.7% | 1.1% | 11% | 3.0 / 30.1% |
+| (B) + TACKLE_SET | −3.50 / −3.25 / −2.00 / −0.50 | 12.8% | 6.4% | 2.1% | 13% | 4.9 / 35.9% |
+| NFL | −2.75 / −2.25 / −1.50 / −0.50 | 3.0% | 6.4% (48%) | 3.8% | 13% | 6.7 / 32.9% |
+
+## Re-diagnosis
+
+1. **The pair moves at the speed the tackle asks for.** Stop his kick in the rep (A, A2) and the engaged retreat
+   matches the NFL by time, and the in-front share falls from 12.6 to about 5%. Take the lean off the rusher (B) and
+   the retreat barely moves. The rusher's defaults are not the cause of the walk-back.
+2. **But a tackle who stops retreating is beaten, by our engagement, three times as often, and the beaten rusher
+   comes inside free.**
+   - Edge win 33-34% against 13%; inside at pressure 31-32% against the NFL's 6.4%; free then 97-98%.
+   - At the win, the tackle is within 1.2 yd only 17-21% of the time.
+   - As I read it: with the tackle stationary, the rusher's line to the QB swings inside him as the rusher draws
+     level. The rep's beat, |phi| >= 1 against that line ("turned the corner"), fires, the rep ends, and nothing
+     inside picks him up.
+   - Off, the tackle avoids this only by retreating with the rusher, which keeps phi below 1, and the price is the
+     depth.
+   So the walk-back is how our tackle survives a rep that an anchored NFL tackle survives by staying in front with
+   his hands and feet.
+3. **Next question (diagnostic, not a mechanism).** Under an anchored tackle, what ends the rep?
+   - phi at the beat;
+   - where the rusher is against the tackle (depth, width) and his velocity;
+   - whether the tackle's hands were on;
+   - whether the rusher actually got past the tackle's body or only crossed the QB line;
+   - the same geometry on NFL tracking for rushers held level outside an engaged, nearly stationary tackle
+     (tackle-retreat's state) for 0.5 s or more.
+   If the beat fires while the rusher is still beside the tackle at arm's length, the beat's measure (against the
+   QB line, not past the blocker's body), not the tackle's request, is what forces the retreat. That is the same
+   definitional issue as OPEN_HANDS (i): past the man along his path of travel, not the line to the QB.
+
+## The rusher's defaults (recorded, not touched; the next item on that side)
+
+- Between moves, stepPassRep asks every rusher for push 0.75 at 0.8 + 0.15 x bend of vmax toward the corner. No
+  situation chose these: a finesse rusher with a spent move leans like a bull.
+- `power` (push 1, 0.55 vmax, aimed at the QB) follows `e.move`, the last move chosen, so a bull or long-arm stays
+  "power" after its window ends.
+- In football, between moves he resets his hands and works the edge, converts speed to power only with leverage and
+  momentum, or stalls.
+- (B) shows these defaults are not what walks the tackle back. Taking the lean off lowers pressure (30 vs 36.5%) and
+  sacks (3.0 vs 4.5%).
