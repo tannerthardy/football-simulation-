@@ -38,7 +38,9 @@ async function closing(flag: string, c: Case): Promise<number> {
   };
   const tick = sim.tick.bind(sim);
   sim.tick = () => { tick();
-    if (C && sim.t - C.t0 >= 0.1 - 1e-9 && sim.t - C.t0 <= 0.4 + 1e-9) {
+    // The carry acts once the ball is held; the securing window before it is DRIVE_CATCH's.
+    if (C && C.held === undefined && sim.ball.kind === 'held' && sim.ball.carrier === C.R) C.held = sim.t;
+    if (C?.held !== undefined && sim.t - C.held >= 0.1 - 1e-9 && sim.t - C.held <= 0.4 + 1e-9) {
       const R = sim.ball.kind === 'held' ? sim.ball.carrier : C.R, d = C.d, rx = R.pos.x - d.pos.x, ry = R.pos.y - d.pos.y, L = Math.hypot(rx, ry) || 1;
       C.v.push(((d.vel.x - R.vel.x) * rx + (d.vel.y - R.vel.y) * ry) / L);
     } };
@@ -56,8 +58,10 @@ describe('CATCH_CARRY: man trail', () => {
     for (const c of TRAIL) {
       const off = await closing('0', c), on = await closing('1', c);
       expect(Number.isFinite(off) && Number.isFinite(on)).toBe(true);
-      // Natural plays move with the engine (engine-45 RELEASE_SEEN made cover0 s5 a closer: off +0.34). The premise is
-      // read from the off run: a trailer (not closing) is faster with the carry; one who already closes is not slowed.
+      // Natural plays move with the engine, so the premise is read from the off run: a trailer (not closing) is faster
+      // with the carry; one who already closes is not slowed. The window is 0.1-0.4 s after the receiver holds the
+      // ball, where the carry acts; before it the ball is still being secured (DRIVE_CATCH). engine-47 (CATCH_SPEED,
+      // CATCH_CHOICE) lengthened securing, so a window anchored on the secure event measured mostly that phase.
       if (off <= 0) expect(on).toBeGreaterThan(off + 0.1); else expect(on).toBeGreaterThan(off - 0.3);
     }
   });
