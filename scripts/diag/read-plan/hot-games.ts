@@ -35,7 +35,7 @@ PlaySim.prototype.run = function (this: any) {
   const ev = r.events ?? sim.events ?? [];
   process.stdout.write(JSON.stringify({ concept: pass.id, family: pass.family, alarmAt: qb?.alarmAt ?? null,
     hot: qb?.hotPick ? { ...qb.hotPick, ref: ref({ slot: qb.hotPick.slot }) } : null, hotLooks: qb?.hotLooks ?? 0, hotNone: qb?.hotNone ?? 0,
-    alarmAges: qb?.alarmAges ?? null, press, target: ref(target), throwAt: sim.throwAt >= 0 ? +sim.throwAt.toFixed(2) : null,
+    alarmAges: qb?.alarmAges ?? null, throwRec: qb?.throwRec ? { ...qb.throwRec, ref: ref({ slot: qb.throwRec.slot }) } : null, press, target: ref(target), throwAt: sim.throwAt >= 0 ? +sim.throwAt.toFixed(2) : null,
     att: !!s.attempted, cmp: !!s.completed, sack: !!s.sacked, int: ev.some((e: any) => e.type === 'interception'),
     throwaway: ev.some((e: any) => e.type === 'throwaway'), scramble: !!sim.scrambled, yards: +r.yards.toFixed(2) }) + '\n');
   return r;

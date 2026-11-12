@@ -245,6 +245,9 @@ export class QBPass implements Behavior {
   hotLooks = 0;
   hotNone = 0;
   /** HOT_LOOK: the look under way to a hot target: eyes arrive at eyesAt, the man is taken in at seenAt. */
+  /** Diagnostics only: his bar this tick, and the throw as started. */
+  private barNow: { t: number; u: number; urgency: number; clock: number; thr: number; maxInt: number; thr0: number; max0: number } | null = null;
+  throwRec: Record<string, unknown> | null = null;
   /** The hot path's best option this tick, below the bar or not (for the no-throw hook). */
   private lastHotBest: ThrowEval | null = null;
   private look: { target: Agent; from: Vec2; eyesAt: number; seenAt: number } | null = null;
@@ -646,6 +649,7 @@ export class QBPass implements Behavior {
     const aggression = 0.5 + 0.35 * (a.player.archetype === 'Gunslinger' ? 1 : 0) - 0.25 * a.r('decisionMaking');
     const thr = 0.6 - 0.12 * aggression - 0.32 * u;
     const maxInt = 0.025 + 0.05 * aggression + 0.08 * u;
+    this.barNow = { t, u, urgency, clock: clockUrgency, thr, maxInt, thr0: 0.6 - 0.12 * aggression, max0: 0.025 + 0.05 * aggression };
 
     // A called screen is decided before the snap, so it is not held for an
     // ordinary low-risk window: with that gate the QB held slip and TE screens
@@ -1255,6 +1259,11 @@ export class QBPass implements Behavior {
   private startThrow(a: Agent, sim: PlaySim, ev: ThrowEval): MoveCommand {
     this.phase = 'windup';
     this.look = null;
+    // Diagnostic record (no effect): the throw as he accepted it, against his bar this tick and his normal bar.
+    const bar = this.barNow?.t === sim.t ? this.barNow : null;
+    this.throwRec = { t: sim.t, slot: ev.target.slot, P: ev.P, intRisk: ev.intRisk, value: ev.value, depth: ev.depth,
+      u: bar?.u ?? null, urgency: bar?.urgency ?? null, clock: bar?.clock ?? null, thr: bar?.thr ?? null, maxInt: bar?.maxInt ?? null,
+      clearsNormal: bar ? ev.P >= bar.thr0 && ev.intRisk <= bar.max0 : null, hot: this.alarmAt !== null && this.alarmAt <= sim.t && this.hotPick?.t === sim.t };
     this.pending = ev;
     const base = this.windup(a);
     // SHOULDERS_SET: the motion lasts at least the turn it has to make.
