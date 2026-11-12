@@ -607,6 +607,22 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
 
+## engine-40: `ARRIVE_LEAD` on, and a touchdown is checked before the tackle step (2026-11-12)
+
+- **`ARRIVE_LEAD`** (Defense #615). An underneath zone defender who cannot beat the ball to the catch drives to the catcher's upfield shoulder (the catch point offset toward the defense's goal by his body, the catcher's body and his reach, about 1.6 yd), not at the catch point. NFL tracking: the nearest defender's line of travel at a short catch crosses 1.4–1.7 yd upfield of the catcher in every group; ours crossed at 0.3–0.5. Defense, engine-37, two seeds × 16 games: the crossing point on catchers moving across 0.3 → 1.1 yd (NFL 1.9), toward 0.2 → 1.6 (1.7), away −0.1 → 0.9 (1.4); catch to first contact 2.8 → 1.6 yd; short-catch YAC 7.67 → 7.27, all of it upfield yards, no cutback opened. Zone only; man shows the same gap (1.5 against 0.4) and is a later decision. `SHOULDER_READ` (a zone defender leaning toward the receiver the quarterback's shoulders point at from the windup) rides along off: its effect was inside noise, its cost side does not exist until the quarterback can pump or look a defender off, and 26–45% of the defenders it needs are not facing the quarterback.
+- **Rules correction, no flag** (Rules + Coaching #612). The touchdown check ran after the tackle step in the same tick, so a player who gained possession in the end zone and was stripped in that tick was not ruled to have scored; one such play then reached an unsupported end-zone recovery ruling and threw. The check now runs first (possession in the attacked end zone is a touchdown at once), and the restricted-recovery path resolves to the nearest supported ruling with a recorded limitation instead of throwing. Any play with a same-tick goal-line crossing and tackle now resolves differently.
+
+Checks on the candidate (`7974ecb4`, on engine-39): full suite 4317 pass with the two known research failures (this run covers the rules correction's changed outputs); fixed run set unchanged (3.88 mean under 20). Paired league scorecards, 16 games an arm, `ARRIVE_LEAD` 0 against 1:
+
+| seed | YAC a reception | 20+ completions an attempt | yards an attempt | INT rate | completion | sack rate | points a team-game |
+|---|---|---|---|---|---|---|---|
+| 11 | 9.07 → 7.26 (moved) | 16.8 → 14.0% (moved) | 9.99 → 9.18 | 2.1 → 1.3% (moved) | 60.1 → 64.7% (moved) | 4.4 → 3.7% | 37.9 → 35.8 |
+| 23 | 8.10 → 7.65 | 15.2 → 14.4% | 9.59 → 9.09 | 2.1 → 1.7% | 63.8 → 62.5% | 2.7 → 3.7% (moved) | 38.6 → 35.6 |
+
+YAC, long completions, yards an attempt and points fall on both seeds. Completion and sacks disagree between seeds; interceptions fall on both (a defender driving to the shoulder is not playing the ball).
+
+Recorded miss, not landed: `FRONT_ANGLE` (a defender with the runner in front forecasting the runner's upfield line) made every pass-side measure worse (yards a dropback 9.29 → 10.55): the forecast sent him to a point ten yards downfield. Most "outrun wide" plays are geometry at the catch (the defender 1.4–2.1 yd deeper and about 5 yd wide), which is where underneath defenders are and what they are looking at when the ball is thrown.
+
 ## engine-39: the catch contest on: `CATCH_HANDS`, `LOOK_ONCE`, `CATCH_SECURE`, `DRIVE_CATCH` (2026-11-12)
 
 Coverage #590 (C14 in [GAPS](GAPS.md): completion barely depended on how open the receiver was). Built at engine-30 and parked until defenders arrived in phase, which `CUSHION_BREAK` (engine-36) gave them.
