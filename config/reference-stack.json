@@ -109,6 +109,7 @@
     "HOLD_SINK": "off",
     "HANG_AIRBORNE": "off",
     "CATCH_CHOICE": "off",
+    "CATCH_SPEED": "off",
     "IN_STRIDE_CATCH": "off",
     "IZ_FLAT": "on",
     "IZ_GUN_A": "on",
