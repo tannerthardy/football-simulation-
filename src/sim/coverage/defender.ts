@@ -8,7 +8,7 @@
 import type { MoveCommand } from '../../physics/kinematics.js';
 import type { Gap, MatchRule, ZoneId, ZoneStyle } from '../../playbook/types.js';
 import type { Agent, Behavior } from '../agent.js';
-import { believesRun, ManCoverage, pursueIfLive, runFit, sawThrow, ZoneCoverage } from '../behaviors/defense.js';
+import { believesRun, ManCoverage, OPEN_CARRY, pursueIfLive, runFit, sawThrow, ZoneCoverage } from '../behaviors/defense.js';
 import type { PlaySim } from '../playsim.js';
 import { ReleaseReader } from './reads.js';
 import { runRule, zoneSide, type Directive, type RuleState } from './rules.js';
@@ -56,8 +56,12 @@ export class CoverageDefender implements Behavior {
   get kind(): string {
     return this.sub.kind;
   }
-  /** Eyes: zone techniques read the quarterback; a man defender reads his man. */
+  /** Eyes: zone techniques read the quarterback; a man defender reads his man.
+   * OPEN_CARRY: an underneath match carry inside a zone call is still a zone
+   * defender: he carries with his eyes on the quarterback through the route
+   * (whether he actually sees the throwing motion is his facing, in sawThrow). */
   get zoneEyes(): boolean {
+    if (OPEN_CARRY && this.sub instanceof ManCoverage && !this.sub.opts.protectDepth && !this.sim.defCall.coverage.man) return true;
     return !(this.sub instanceof ManCoverage);
   }
   get target(): Agent | null {

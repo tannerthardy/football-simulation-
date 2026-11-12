@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-42`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-44`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,42 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-44: `OPEN_CARRY` and `FORECAST_HOLD` on (2026-11-12)
+
+**`OPEN_CARRY`** (Defense #628, second attempt). An underneath defender carrying a receiver inside a zone call ran as a man-coverage job, and a man defender never got the quarterback's throwing motion as a key however square he was. Under the flag an underneath match job (no deep responsibility) inside a zone call faces by the open-to rule with a side-on cap from his own picture of deep help, and keeps zone eyes, so whether he sees the motion is his facing. Attempt 1 (facing only) moved the eyes and not the break. Defense, 16 games × seeds 101 / 201 on engine-41: facing the quarterback at release − 0.3 s, linebackers 5–10 yd 69 → 85% (NFL 94); keyed the throwing motion, of those still on a man at the throw, 2 → 78%; distance to his man when no throw comes 2.9 → 3.3 yd at +2.0 s; yards a dropback 9.22 → 8.63. Known costs: crossers against zone completed 65 → 71% (for fewer yards), slower breaks under the catch point and on flights over 1.0 s, short-catch YAC flat.
+
+**`FORECAST_HOLD`** (Rules + Coaching #630). The quarterback pumped on 14% of dropbacks, mostly because his forecast of the receiver flipped between his decision and the plant: a receiver more than a body radius (0.4 yd) off the drawn path was dropped to straight-line motion for the whole flight (22 of 30 traced pumps; the decision's forecast missed by 1.2 yd, the one he pumped on by 4.5). Now a receiver running along his route within the measured drift (p90 by phase: 1.2 yd on the stem, 1.6 after the break, 1.5 with no break) is still on it, carried from the nearest path point with his offset; stopped, cutting across, or farther off falls back as before. Rules + Coaching, 16 league games: pumps 13.7 → 7.0%; 160 newly attempted throws on the paired panel complete 0.49 with 9 interceptions against 0.37 and 6 on the same plays off. Known gap it exposes: with an accurate receiver forecast the window still misses a deep safety driving on a shallower crossing point (the restated `def-belief` fixture's old play), taken into the window work.
+
+Checks on the candidate (`d3f4ecb6`): full suite 4333 pass; besides the two known research failures, the `def-belief` "on" fixture's play moved under `FORECAST_HOLD` and was restated by its lane (#634). Fixed run set unchanged (3.88). Paired league scorecards, 16 games an arm, one flag at a time with the other on:
+
+| flag, seed | yards an attempt | completion | sack rate | INT rate | YAC | time to throw | points a team-game |
+|---|---|---|---|---|---|---|---|
+| `OPEN_CARRY`, 11 | 9.37 → 9.10 | 64.5 → 65.7% | 3.9 → 5.4% (moved) | 2.1 → 1.6% | 8.41 → 7.66 (moved) | 2.72 → 2.75 | 32.9 → 33.4 |
+| `OPEN_CARRY`, 23 | 9.14 → 8.99 | 67.4 → 67.2% | 3.6 → 4.3% | 1.7 → 1.8% | 7.78 → 7.36 | 2.72 → 2.75 | 31.1 → 28.4 |
+| `FORECAST_HOLD`, 11 | 8.16 → 9.10 | 64.1 → 65.7% | 4.5 → 5.4% | 1.7 → 1.6% | 6.75 → 7.66 | 2.81 → 2.75 (moved) | 29.5 → 33.4 |
+| `FORECAST_HOLD`, 23 | 8.31 → 8.99 (moved) | 66.0 → 67.2% | 4.8 → 4.3% | 1.5 → 1.8% | 7.07 → 7.36 | 2.76 → 2.75 | 26.9 → 28.4 |
+
+`OPEN_CARRY` lowers yards an attempt and YAC and raises sacks on both seeds. `FORECAST_HOLD` raises yards an attempt by 0.7–0.9 on both (he throws what he used to pump away); interceptions do not rise on both seeds. It lands as the repair of a self-inconsistency in his forecast, with the offense it frees recorded as a cost against the defense's open short-catch gap.
+
+Held flags, read on this tree by Coverage (seeds 11 / 23, 8 games): `IN_STRIDE_CATCH` still adds 1.5–3.6 yd an attempt against zone underneath and does not move tight deep balls toward the NFL; stays held. Its replacement in work is the receiver's choice of catch point (`CATCH_CHOICE`).
+
+## engine-43: `DEF_BELIEF` on, the window prices the defender it was missing (2026-11-12)
+
+Rules + Coaching #625. Each factor of the quarterback's window was set against how throws actually failed: over 1,055 throws he predicted 0.08 defended and 0.19 were. Two causes. Since engine-39 a won catch sits in the hands for the securing window and a defender arriving then still gets a try at it, which the window counted as beaten; and a defender within 4 yd of the target closes partly with the receiver's motion, where the window kept him on his course. His belief now carries both (the man on the target moves partly with him, 0.5; the catch must survive a defender arriving within 0.3 s, dislodged 0.5 scaled by the receiver's hands and contested-catch skill), right on average and spread both ways by (1 − know), know from decision-making and experience. These are his beliefs about our defense and catch model: re-read them when `CATCH_SECURE`, `SHOULDER_READ`, the match carry (`OPEN_CARRY`) or the dislodge law change.
+
+Rules + Coaching, 16 league games an arm with `LINE_START` on: P accepted / completion 0.70 / 0.63 → 0.66 / 0.63; defended predicted / observed 0.08 / 0.17 → 0.15 / 0.18. Paired panel (1,536 plays): 638 change, interceptions 33 → 30, sacks 71 → 94.
+
+Checks on the candidate (`a4d29054`): full suite 4325 pass; besides the two known research failures, the `hot-look` "on" fixture's play moved under the new window and was restated by its lane. Fixed run set 3.88 → 3.90 mean under 20. Paired league scorecards, 16 games an arm:
+
+| seed | completion | sack rate | INT rate | time to throw | yards an attempt | points a team-game |
+|---|---|---|---|---|---|---|
+| 11 | 61.0 → 63.9% | 4.6 → 5.4% | 2.0 → 2.0% | 2.68 → 2.79 (moved) | 8.64 → 8.27 | 29.3 → 26.8 |
+| 23 | 63.1 → 67.4% (moved) | 3.4 → 5.1% (moved) | 2.9 → 1.4% (moved) | 2.70 → 2.81 (moved) | 8.97 → 9.10 | 31.9 → 33.4 |
+
+Both seeds: he holds the ball a tenth longer, completes more of what he throws and is sacked more (the sack rate enters the NFL team band, 4.6–9.4%, for the first time). Known cost and next work: more plays end with no throw he accepts, and that branch today is only evade or sack (`EXTEND`, Flex, built, off). Separately found and in work: he pumps on 14% of dropbacks because his receiver forecast flips from the installed route to straight-line motion when the receiver is more than a body radius off the drawn path.
+
+`FREE_BOUND` on top, seed 11: sack rate 5.4 → 2.5% (moved), points 26.8 → 34.7 (moved), pass TD 6.4 → 8.2% (moved), YAC 7.13 → 7.86 (moved). Still held: with a free rusher at 2 yd he throws 73–78% against the NFL's 57%.
 
 ## engine-42: `LINE_START` on, a receiver's first steps are a get-off (2026-11-12)
 

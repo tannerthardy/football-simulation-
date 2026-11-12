@@ -5,8 +5,10 @@
  * the ball against the point he aimed at as it left his hand, split along the throw (+ long, - short) and across
  * it; the receiver against that point, split the same way (+ past the spot, - short of it); the ball to the
  * catcher when it arrives, and the nearest defender to the receiver and to the ball then (the contest); whether he was moving (speed > 1 yd/s) or held/hit (flick) at the release; completion.
+ * Also his own evaluation of the forced throw (P, intRisk, value, aimed depth, the go's separation then) and the
+ * play's yards. --natural: nothing is forced; each play's own outcome (target, yards, INT, sack), for the same plays.
  * Arms by environment (e.g. IN_STRIDE_CATCH=1).
- *   [IN_STRIDE_CATCH=1] node --import tsx scripts/diag/risk/forced-deep.ts [--n 60] > out/risk/forced-<arm>.jsonl
+ *   [IN_STRIDE_CATCH=1] node --import tsx scripts/diag/risk/forced-deep.ts [--n 60] [--natural] > out/risk/forced-<arm>.jsonl
  */
 import { QBPass } from '../../../src/sim/behaviors/qb.js';
 import { RouteRunner } from '../../../src/sim/behaviors/receiver.js';
@@ -14,7 +16,7 @@ import { PlaySim } from '../../../src/sim/playsim.js';
 import { nativeTraceSetup } from '../command-trace.js';
 
 const arg = (k: string, d: string) => { const i = process.argv.indexOf(k); return i >= 0 ? process.argv[i + 1] : d; };
-const N = Number(arg('--n', '60'));
+const N = Number(arg('--n', '60')), natural = process.argv.includes('--natural');
 const P: any = QBPass.prototype, rel = P.release;
 let cur: any = null;
 P.release = function (a: any, sim: any, ev: any) {
@@ -44,7 +46,11 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage 
     if (qb && !cur.forced && sim.throwAt < 0 && qb.phase === 'set' && sim.t >= 2.3 && sim.t <= 2.6) {
       const go = gos.find((r: any) => qb.ready(r, sim));
       const ev = go ? qb.evaluate(sim.qb, sim, go, 0) : null;
-      if (ev) { cur.forced = true; qb.startThrow(sim.qb, sim, ev); }
+      if (ev && !natural) {
+        const sep = Math.min(...sim.defense.map((d: any) => Math.hypot(d.pos.x - go.pos.x, d.pos.y - go.pos.y)));
+        cur.ev = { P: +ev.P.toFixed(3), intRisk: +ev.intRisk.toFixed(3), value: +ev.value.toFixed(2), depth: +ev.depth.toFixed(1), sep: +sep.toFixed(2), t: sim.t };
+        cur.forced = true; qb.startThrow(sim.qb, sim, ev);
+      }
     }
     const T = cur.thrown;
     if (T && !cur.at && sim.t >= T.arr - 1e-9) {
@@ -60,9 +66,15 @@ for (const formation of ['gun_doubles_11', 'gun_trips_11']) for (const coverage 
       cur.contest = { defToRec: +nd.toFixed(2), defToBall: +nb.toFixed(2), who };
     }
   };
-  sim.run();
+  const res = sim.run();
   const T = cur.thrown, s = sim.stats;
+  if (natural) {
+    const tgt = s.target ? sim.offense.find((o: any) => o.player.id === s.target) : null;
+    process.stdout.write(JSON.stringify({ coverage, formation, seed, flip, natural: true, target: tgt ? sim.offAlign.refOf[tgt.slot] ?? tgt.slot : null,
+      toGo: !!tgt && gos.includes(tgt), att: !!s.attempted, cmp: !!s.completed, int: !!s.interceptedBy, sack: !!s.sacked, yards: +res.yards.toFixed(2) }) + '\n');
+    continue;
+  }
   if (!T || !cur.at) continue;
   process.stdout.write(JSON.stringify({ coverage, formation, seed, flip, dist: +Math.hypot(T.pt.x - T.from.x, T.pt.y - T.from.y).toFixed(1), sigma: T.sigma, moving: T.moving, flick: T.flick,
-    ...cur.at, ballToCatcher: cur.arrive, contest: cur.contest, cmp: !!s.completed, int: !!s.interceptedBy }) + '\n');
+    ...cur.at, ballToCatcher: cur.arrive, contest: cur.contest, ev: cur.ev, cmp: !!s.completed, int: !!s.interceptedBy, yards: +res.yards.toFixed(2) }) + '\n');
 }

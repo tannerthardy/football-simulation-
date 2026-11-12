@@ -234,9 +234,11 @@
     "PRESS_MIRROR": "0",
     "QB_FEEL": "0",
     "HOT_LOOK": "0",
+    "DEF_BELIEF": "0",
     "BACK_FRONT": "0",
     "READ_PLAN": "0",
     "FORECAST_BREAK": "0",
+    "FORECAST_HOLD": "0",
     "QB_RHYTHM": "0",
     "WR_SNAP": "0",
     "GRIP_REACH": "0",
@@ -283,7 +285,8 @@
     "DB_SLOTS": "0",
     "COVER_LONG": "0",
     "PRO_CALL": "0",
-    "CONCEPT_MENU": "0"
+    "CONCEPT_MENU": "0",
+    "OPEN_CARRY": "0"
   },
   "worldDefaults": {
     "handContact": "center",
