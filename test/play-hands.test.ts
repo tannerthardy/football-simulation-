@@ -18,7 +18,7 @@ async function scene(flag: string, side: number, hands = 0.6) {
   const { resolveCatchOpportunities } = await import('../src/sim/catching.js');
   const { PlaySim } = await import('../src/sim/playsim.js');
   PlaySim.recordedSingleStream = true;
-  const out: string[] = []; const after: { speed: number; nextTackle: number }[] = [];
+  const out: string[] = []; const after: { lean: number }[] = [];
   for (let i = 0; i < 40; i++) {
     const u = (i + 0.5) / 40;
     const sim = new PlaySim({ offense: pickOffense(generateTeam(new Rng(7), 'O', 'OFF'), '11'),
@@ -34,6 +34,12 @@ async function scene(flag: string, side: number, hands = 0.6) {
     const cb = sim.defense.find(d => d.player.position === 'CB')!;
     // Trailing, in phase: 1.35 yd behind and 0.7 yd to the +y side (1.52 yd), running with him, eyes on him.
     cb.body.pos = { x: 68.65, y: 26.7 }; cb.body.facing = 0; cb.body.vel = { x: 7, y: 0 };
+    // What the defender has seen of this picture: the last 1.2 s of the same steady run.
+    const movers = [r, cb], at = movers.map(a => ({ ...a.body.pos }));
+    for (let k = 23; k >= 0; k--) {
+      movers.forEach((a, j) => { a.body.pos = { x: at[j].x - a.body.vel.x * k * sim.dt, y: at[j].y - a.body.vel.y * k * sim.dt }; });
+      sim.perception.record(sim.agents);
+    }
     sim.throwBall(sim.qb, r, { x: 20, y: 0, z: 0 }, { x: 70, y: 26 + side * 0.55, z: 1.4 }, 1.6);
     sim.t = 1.6;
     sim.rng.next = () => u;
@@ -43,7 +49,8 @@ async function scene(flag: string, side: number, hands = 0.6) {
     resolveCatchOpportunities(sim, { x: 68.6, y: 26 + side * 0.55, z: 1.6 }, { x: 70.6, y: 26 + side * 0.55, z: 1.3 });
     const caught = sim.ball.kind === 'held' && sim.ball.carrier === r;
     out.push(caught ? 'catch' : events.find(e => e.includes('@D')) ?? events.find(e => e.includes('@R')) ?? 'none');
-    after.push({ speed: Math.hypot(cb.vel.x, cb.vel.y), nextTackle: cb.nextTackleAt - sim.t });
+    const lean = cb.body.support?.lean ?? { x: 0, y: 0 };
+    after.push({ lean: Math.hypot(lean.x, lean.y) });
   }
   const share = (k: string) => out.filter(x => x.startsWith(k)).length / out.length;
   return { out, catch: share('catch'), hands: out.filter(x => x.includes('through the hands')).length / out.length, after };
@@ -65,13 +72,10 @@ describe('PLAY_HANDS', () => {
     expect(strong.hands).toBeLessThan(weak.hands);
     expect(strong.catch).toBeGreaterThan(weak.catch);
   });
-  it('a swipe costs him his stride: slower, and his next tackle waits', async () => {
+  it('a lunge commits his body (tackle.ts\'s lean); without the flag nothing leans', async () => {
     const off = await scene('0', 1), on = await scene('1', 1);
-    const missed = on.after.filter((_, i) => on.out[i] === 'catch');
-    expect(missed.length).toBeGreaterThan(0);
-    for (const m of missed) {
-      expect(m.speed).toBeLessThan(off.after[0].speed - 1);
-      expect(m.nextTackle).toBeGreaterThan(0.2);
-    }
+    expect(off.after.every(a => a.lean === 0)).toBe(true);
+    // He lunged on some of the grid (his judgement); every lunge left him leaning toward the hands.
+    expect(on.after.filter(a => a.lean > 0).length).toBeGreaterThan(0);
   });
 });
