@@ -85,6 +85,7 @@
     "OFFICIATE": "on",
     "LOOK_ONCE": "on",
     "FLOW_INTERCEPT": "off",
+    "CATCH_CARRY": "off",
     "FORECAST_BREAK": "on",
     "FORECAST_HOLD": "on",
     "GAP_CLIMB": "on",
