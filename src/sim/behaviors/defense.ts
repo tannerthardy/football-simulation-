@@ -10,7 +10,7 @@ import { isOL } from './blocking.js';
 import { KEY_REACT, KEY_STEP_SEEN, STEP_SEEN, keyScale } from '../key-read.js';
 import { END_LINE_X, FIELD_WIDTH, OPP_GOAL_X } from '../../core/field.js';
 import { angleDiff, clamp, lerp, norm, sub, type Vec2 } from '../../core/vec.js';
-import type { MoveCommand } from '../../physics/kinematics.js';
+import { directionalSpeedFactor, type MoveCommand } from '../../physics/kinematics.js';
 import { timeToReach } from '../../physics/reach.js';
 import { coverageDepth, gapY, isDeepZone, zoneLandmark } from '../../playbook/alignment.js';
 import type { DefSlot, Gap, ZoneId, ZoneStyle } from '../../playbook/types.js';
@@ -652,6 +652,75 @@ const PRESS_MIRROR = process.env.PRESS_MIRROR !== '0';
  * pressed pairs at 2.0 s: 1.20 yd apart, about 1 yd to the side; ours 0.82,
  * within 1.2 yd 88% against 51% (BDB 2025 weeks 1-3, same operator). */
 const MAN_PHASE = process.env.MAN_PHASE === '1';
+/** CUSHION_BREAK (experimental, off; CUSHION_BREAK=1 turns it on): inside
+ * zone calls, a deep defender carrying a vertical stays square (side-on when
+ * his pedal cannot keep the cushion, QB in view) until the receiver actually
+ * breaks his cushion (`cushionBroken`), then opens and runs. Before, the depth
+ * check turned him on a forecast burst he had not seen, and the hip trigger
+ * used a half-turn flip from wherever he faced. NFL deep defenders in Cover
+ * 2/3/4/6 over a receiver turn before the throw 8-10%, with or without deep
+ * help; ours 51-91% (BDB 2025 weeks 1-2 vs leagueSample games, nflcue.py /
+ * simcue.mts). Pure man (Cover 0/1, 2-Man) keeps its own trigger. */
+const CUSHION_BREAK = process.env.CUSHION_BREAK !== '0';
+/** CUSHION_BREAK: how far he opens his hips off the quarterback while he
+ * carries a vertical, as the output of the speed match: the smallest angle off
+ * the line to the QB (opened toward the receiver) at which his body's facing
+ * cap in the direction he runs reaches the speed he needs (carrySpeedNeed: he
+ * spends spare cushion rather than matching the receiver). Far over the top
+ * he stays square; as the spare cushion goes he opens progressively, and he
+ * comes back toward square as the receiver throttles.
+ * The full turn (losing the QB) stays the cushion-break trigger. NFL deep
+ * defenders over a climber open 33 deg at 1.5 s to 62 deg at 3.0 s as their
+ * speed rises 3.3 -> 4.9 yd/s, turned at most 11% (BDB 2025, nflcarry.py).
+ * With today's facing curve (backpedal cap above side-on) this stays square up
+ * to the pedal cap and then jumps; it is continuous with PEDAL_CAP. */
+function openTo(a: Agent, qb: Vec2, receiver: Vec2, heading: number, need: number): number {
+  const toQB = Math.atan2(qb.y - a.pos.y, qb.x - a.pos.x), toR = Math.atan2(receiver.y - a.pos.y, receiver.x - a.pos.x);
+  const side = Math.cos(toQB + Math.PI / 2 - toR) >= Math.cos(toQB - Math.PI / 2 - toR) ? 1 : -1;
+  const p = a.profile;
+  for (let deg = 0; deg <= 180; deg += 5) {
+    const facing = toQB + side * deg * Math.PI / 180;
+    if (p.vmax * directionalSpeedFactor(p, angleDiff(facing, heading)) >= need) return facing;
+  }
+  return toQB + side * Math.PI;
+}
+/** CUSHION_BREAK: has the receiver broken the cushion of a defender over him?
+ * He opens to run when the cushion left is less than what the receiver closes
+ * while his own hips turn from where they face now to the run (side-on is a
+ * quarter turn, square a half turn, in the time a rounded hip turn takes his
+ * body: `roundedTurnTime`, the turn the open-to-run actually achieves), on top of the
+ * overlap he may give: a deep player with no help behind him may not let the
+ * receiver reach his body (both body radii); a trail player with help over him
+ * may let the receiver draw level by the same overlap before he opens. NFL deep
+ * defenders over a climbing receiver who have not turned by the release keep a
+ * median 1.4 yd with no deep help (below 1 yd 17-20%) and -0.9 to +0.8 yd with
+ * help (BDB 2025 weeks 1-2, nflcue.py). */
+function cushionThreshold(a: Agent, receiverVx: number, help: boolean, receiverRadius: number): number {
+  const closing = Math.max(0, receiverVx - Math.max(0, a.vel.x));
+  const flip = roundedTurnTime(a, angleDiff(a.body.facing, 0)) + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
+  const overlap = (a.profile.radius + receiverRadius) * (help ? -1 : 1);
+  return overlap + closing * flip;
+}
+function cushionBroken(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number): boolean {
+  return cushion < cushionThreshold(a, receiverVx, help, receiverRadius);
+}
+/** CUSHION_BREAK: the slowest downfield speed he may carry now. He must be at
+ * the receiver's speed by the time the cushion has shrunk to his break
+ * threshold; closing a gap c at the acceleration a his legs give at his
+ * current facing burns c^2 / 2a of cushion (a braking distance), so
+ * need = vx - sqrt(2 a (cushion - threshold)), floored at 0. Far over the top
+ * he may pedal slowly and spend cushion; as the spare cushion goes he must be
+ * matched; if no angle that keeps the QB in view gives that speed, the
+ * cushion breaks and he turns. a is his own: the propulsion his legs give
+ * toward his facing cap downfield at his current speed (1 - v / cap) * vmax /
+ * tau, so a slow-footed defender has to start earlier. */
+function carrySpeedNeed(a: Agent, cushion: number, receiverVx: number, help: boolean, receiverRadius: number): number {
+  const vx = Math.max(0, receiverVx), p = a.profile;
+  const cap = p.vmax * directionalSpeedFactor(p, angleDiff(a.body.facing, 0));
+  const accel = Math.max(0.1, (1 - Math.max(0, a.vel.x) / cap) * p.vmax / p.tau);
+  const spare = cushion - cushionThreshold(a, receiverVx, help, receiverRadius);
+  return spare <= 0 ? vx : Math.max(0, vx - Math.sqrt(2 * accel * spare));
+}
 /** CUSHION_NEED (on since engine-27; CUSHION_NEED=0 restores): before his
  * hips open, a man defender's cushion on a released receiver is the one the
  * receiver's observed vertical threat requires (his own hip-turn threshold:
@@ -878,7 +947,19 @@ export class ManCoverage implements Behavior {
     const levMag = MAN_PHASE && this.hipsOpen && deep > 2 && onStem
       ? a.profile.radius + R.profile.radius + a.player.measurables.armIn / 36 * 0.7
       : o.trail ? 0.9 : 0.7;
-    const lev = releasing ? 0 : levMag * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
+    // CUSHION_BREAK: a carry inside a zone call plays to a shoulder, never
+    // stacked on the receiver's line: his body and the receiver's plus a reach
+    // off it, on his leverage side (inside when head-up), so a receiver who
+    // closes runs past him rather than through him. With help behind him the
+    // offset widens by another reach as the receiver comes level (he trails
+    // on the hip and gives the vertical to the help). NFL deep defenders over
+    // a climber sit 0.9-1.3 yd off his line with no help, 1.2 -> 2.1 yd with
+    // help as he comes level; ours 0.6-0.9 (BDB 2025 weeks 1-2, nflcarry.py).
+    const reach = a.player.measurables.armIn / 36 * 0.7, shoulderOff = a.profile.radius + R.profile.radius + reach;
+    const shoulder = CUSHION_BREAK && !sim.defCall.coverage.man && !releasing && deep > 2 && onStem
+      ? shoulderOff + (o.protectDepth ? 0 : reach * clamp(1 - (a.pos.x - seen.pos.x) / shoulderOff, 0, 1)) : null;
+    const lev = releasing ? 0 : shoulder !== null ? shoulder * (o.lev === 'outside' ? -inside : inside)
+      : levMag * (o.lev === 'outside' ? -inside : o.lev === 'head' ? 0 : inside);
 
     // Cushion shrinks as the route develops; press plays in phase.
     const developing = clamp(Math.max(0, deep) / 8, 0, 1);
@@ -889,9 +970,20 @@ export class ManCoverage implements Behavior {
     const closing = Math.max(0, vx - Math.max(0, a.vel.x));
     const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
     const releaseBurst = Math.max(0, (R.profile.vmax - Math.hypot(seen.vel.x, seen.vel.y)) / R.profile.tau);
-    const consumed = a.pos.x - seen.pos.x < 1.8 + closing * flipTime + 0.25 * releaseBurst * flipTime * flipTime;
+    // CUSHION_BREAK applies inside zone calls (match carries and deep zones);
+    // pure man keeps its trigger. Help: a carry with no installed deep
+    // responsibility has a deep player behind it.
+    const breakOn = CUSHION_BREAK && !sim.defCall.coverage.man, help = !o.protectDepth;
+    const broken = () => cushionBroken(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius);
+    const consumed = breakOn ? broken()
+      : a.pos.x - seen.pos.x < 1.8 + closing * flipTime + 0.25 * releaseBurst * flipTime * flipTime;
     const crossing = Math.abs(seen.vel.y) > 3 && Math.abs(seen.vel.y) > Math.abs(vx);
     if (!this.hipsOpen && Math.hypot(seen.vel.x, seen.vel.y) > 1.5 && (consumed || crossing)) this.hipsOpen = true;
+    // CUSHION_BREAK: a receiver he is carrying throttles below his own speed
+    // with the cushion not broken: he re-squares (the body turns back at its
+    // own rate; the stop route is built to win in that time).
+    if (breakOn && this.hipsOpen && !crossing && sim.ball.kind !== 'air' && vx < Math.max(0, a.vel.x) - 1
+      && !broken()) { this.hipsOpen = false; a.tags.add('re-square'); }
 
     let tx = seen.pos.x;
     let ty = seen.pos.y + lev;
@@ -942,7 +1034,20 @@ export class ManCoverage implements Behavior {
     if (!o.protectDepth) return command;
     const base = o.overTop ? .8 + .15 * Math.max(0, vx)
       : vx > 3 && deep > 3 ? cushion * .5 : cushion;
+    // CUSHION_BREAK: square in his pedal until the cushion is broken; when the
+    // pedal cannot keep it but it is not broken, he carries side-on (QB still
+    // in view) at the speed the depth check asks for.
     const selected = this.depth.choose(a, seen, acquired, R.profile, base, command, sim.t, sim.world.handContact);
+    if (breakOn && !this.hipsOpen && !broken()) {
+      const req = selected.facing === undefined ? selected : command;
+      const qbSeen = sim.see(a, sim.qb).pos;
+      const facing = openTo(a, qbSeen, seen.pos, Math.atan2(req.vel.y, req.vel.x),
+        carrySpeedNeed(a, a.pos.x - seen.pos.x, vx, help, R.profile.radius));
+      const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
+      if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
+      a.tags.add('open-carry');
+      return withFacingTechnique({ ...req, facing }, { label: 'man-open-carry', key: seen.vel });
+    }
     if (selected.facing === undefined && vx > 1.5) this.hipsOpen = true;
     return selected.facing === undefined && command.facing !== undefined
       ? withFacingTechnique(selected, { label: 'man-depth-run', key: seen.vel }) : selected;
@@ -1193,7 +1298,9 @@ export class ZoneCoverage implements Behavior {
         // Split them, leaning toward where the QB is looking.
         const w = qbEyes === vert[1].r ? 0.65 : qbEyes === vert[0].r ? 0.35 : 0.5;
         ty = vert[0].fut.y * (1 - w) + vert[1].fut.y * w;
-      } else ty = deepest.fut.y + inside(deepest.fut.y) * 0.8;
+      } else ty = deepest.fut.y + inside(deepest.fut.y) * (CUSHION_BREAK
+        // CUSHION_BREAK: a deep-zone carry plays a shoulder off the receiver's line (bodies plus a reach).
+        ? a.profile.radius + deepest.r.profile.radius + a.player.measurables.armIn / 36 * 0.7 : 0.8);
       // A landmark describes responsibility, not a minimum depth to sprint
       // to regardless of the release. Let the initial cushion compress as
       // the stem climbs; otherwise a corner retreats from a hitch into grass.
@@ -1204,7 +1311,11 @@ export class ZoneCoverage implements Behavior {
       // Pedaling has a physical speed cap; racing a vertical does not.
       const closing = Math.max(0, deepest.vel.x - Math.max(0, a.vel.x));
       const flipTime = Math.PI / a.profile.turnRate + 0.15 * (1 - a.r('anticipation') * a.mind.focus);
-      if (deepest.vel.x > a.profile.vmax * a.profile.backpedal && a.pos.x - deepest.pos.x < cushion + closing * flipTime)
+      const deepBroken = () => cushionBroken(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius);
+      if (CUSHION_BREAK && this.turnedWith === deepest.r && deepest.vel.x < Math.max(0, a.vel.x) - 1
+        && !deepBroken()) { this.turnedWith = null; a.tags.add('re-square'); }
+      if (deepest.vel.x > a.profile.vmax * a.profile.backpedal && (CUSHION_BREAK
+        ? deepBroken() : a.pos.x - deepest.pos.x < cushion + closing * flipTime))
         this.turnedWith = deepest.r;
       const turnRun = this.turnedWith === deepest.r && deepest.vel.x > 3;
       const tv = { x: Math.max(0, deepest.vel.x), y: deepest.vel.y * 0.9 };
@@ -1216,7 +1327,19 @@ export class ZoneCoverage implements Behavior {
       }), { label: turnRun ? 'deep-turn-run' : 'deep-over', key: deepest.vel });
       let depth = this.depthReads.get(deepest.r);
       if (!depth) { depth = new DeepCoverage(); this.depthReads.set(deepest.r, depth); }
+      // CUSHION_BREAK: square in his pedal until the cushion is broken; side-on
+      // when the pedal cannot keep it.
       const selected = depth.choose(a, deepest, deepest.cue, deepest.r.profile, cushion, command, sim.t, sim.world.handContact);
+      if (CUSHION_BREAK && this.turnedWith !== deepest.r && !deepBroken()) {
+        const req = selected.facing === undefined ? selected : command;
+        const qbSeen = sim.see(a, sim.qb).pos;
+        const facing = openTo(a, qbSeen, deepest.pos, Math.atan2(req.vel.y, req.vel.x),
+          carrySpeedNeed(a, a.pos.x - deepest.pos.x, deepest.vel.x, false, deepest.r.profile.radius));
+        const toQB = Math.atan2(qbSeen.y - a.pos.y, qbSeen.x - a.pos.x);
+        if (Math.abs(angleDiff(facing, toQB)) < 1e-6 && req === command) return command;
+        a.tags.add('open-carry');
+        return withFacingTechnique({ ...req, facing }, { label: 'deep-open-carry', key: deepest.vel });
+      }
       if (selected.facing === undefined && deepest.vel.x > 1.5) this.turnedWith = deepest.r;
       return selected.facing === undefined && command.facing !== undefined
         ? withFacingTechnique(selected, { label: 'deep-depth-run', key: deepest.vel }) : selected;

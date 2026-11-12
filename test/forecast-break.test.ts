@@ -11,6 +11,10 @@ async function cornerFlat(flag: string, seed: number) {
   const flags: Record<string, string> = JSON.parse(readFileSync(new URL('../config/reference-stack.json', import.meta.url), 'utf8')).flags;
   for (const [k, v] of Object.entries(flags)) if (v === 'on') vi.stubEnv(k, '1');
   vi.stubEnv('FORECAST_BREAK', flag);
+  // Pinned off: with the back released he is a progression read, the leftover W2 route lands last, and QB_RHYTHM's
+  // rhythm outlet (the last read) throws W2 as the "outlet" on moving off the corner (seeds 2 and 6: W2 open at
+  // P 0.81, completed). That is the outlet rule, not this fixture's subject (docs/reviews/2026-11-11-forecast-break.md).
+  vi.stubEnv('BACK_RELEASE', '0');
   vi.resetModules();
   const { PlaySim } = await import('../src/sim/playsim.js');
   const { nativeTraceSetup } = await import('../scripts/diag/command-trace.js');

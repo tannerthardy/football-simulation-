@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Rng } from '../src/core/rng.js';
 import { generateTeam } from '../src/league/team.js';
 import { MENU_CONCEPTS, PASS_BY_ID, SCREEN_CONCEPTS } from '../src/playbook/concepts.js';
-import { candidates } from '../src/playbook/read-compiler/candidates.js';
+import { select } from '../src/playbook/read-compiler/candidates.js';
 import { compile } from '../src/playbook/read-compiler/compile.js';
 import { findMotifs } from '../src/playbook/read-compiler/motifs.js';
 import type { PassConcept } from '../src/playbook/types.js';
@@ -14,7 +14,7 @@ const run = (c: PassConcept, form = 'gun_doubles_11', flip = false) => compile(c
 const plan = (p: ReturnType<typeof run>) => p.chosen && { style: p.chosen.style, order: p.chosen.order.map((s) => s.ref), outlet: p.chosen.outlet, alert: p.chosen.alert ?? null };
 const ordinary = [...Object.values(PASS_BY_ID).filter((c) => !MENU_CONCEPTS.includes(c)), ...MENU_CONCEPTS];
 
-describe('read compiler (Phase 0)', () => {
+describe('read compiler (Phase 0 and 1)', () => {
   it('every ordinary pass concept gets at least one valid plan from 2x2 and 3x1', () => {
     for (const c of ordinary) for (const form of ['gun_doubles_11', 'gun_trips_11']) {
       const p = run(c, form);
@@ -37,7 +37,7 @@ describe('read compiler (Phase 0)', () => {
       expect(plan(run(shuffled, 'gun_trips_11')), id).toEqual(plan(run(c, 'gun_trips_11')));
       const p = run(c, 'gun_trips_11');
       const routes = [...p.routes].reverse();
-      const again = candidates(routes, findMotifs(routes), p.qbSetAt).find((x) => x.valid)!;
+      const again = select(routes, findMotifs(routes), p.qbSetAt);
       expect(again.order.map((s) => s.ref), id).toEqual(p.chosen!.order.map((s) => s.ref));
     }
   });
@@ -68,6 +68,39 @@ describe('read compiler (Phase 0)', () => {
       expect(p.bypass, c.id).toMatch(/^screen/);
       expect(p.chosen).toBeNull();
     }
+  });
+
+  it('Phase 1, finish the side: a plan reads its start side, then the other side, and never comes back', () => {
+    for (const c of ordinary) for (const form of ['gun_doubles_11', 'gun_trips_11']) {
+      const sides = run(c, form).chosen!.order.map((s) => s.ref[0]).filter((x) => x === 'S' || x === 'W');
+      const changes = sides.filter((x, i) => i > 0 && x !== sides[i - 1]).length;
+      expect(changes, `${c.id} ${form}: ${sides.join('')}`).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it('Phase 1, the primary: within a beat on the start side, a breaking route is read before a settling one', () => {
+    for (const c of ordinary) for (const form of ['gun_doubles_11', 'gun_trips_11']) {
+      const p = run(c, form);
+      if (p.chosen!.style !== 'pure') continue;
+      const R = new Map(p.routes.map((r) => [r.ref, r]));
+      const first = R.get(p.chosen!.order[0].ref)!;
+      const side = p.routes.filter((r) => !r.isBack && r.side === first.side);
+      const earliest = Math.min(...side.map((r) => r.window.ready));
+      const breaker = side.some((r) => !r.settles && r.window.ready <= earliest + 0.4);
+      if (first.settles) expect(breaker, `${c.id} ${form}: first read ${first.ref} ${first.routeId} settles with a breaking route in the beat`).toBe(false);
+    }
+  });
+
+  it('Phase 1 selection: the keyed concepts get a defender key on the defender the sheets name; dagger a clear-and-void key', () => {
+    // (Smash from 2x2 is a near call between key and pure on the legacy engine these suites pin; it is keyed on
+    // the current engine, docs/reviews/2026-11-11-read-compiler-phase1.md.)
+    for (const [id, role] of [['corner_flat', 'playside_curl_flat'], ['curl_flat', 'playside_curl_flat'], ['sail_corner', 'playside_curl_flat'], ['dagger', 'deep_defender_over_vertical']] as const) {
+      const c = run(PASS_BY_ID[id], 'gun_doubles_11').chosen!;
+      expect(c.style, id).toBe('defender_key');
+      expect(c.key!.role, id).toBe(role);
+    }
+    // Quick game stays a progression.
+    for (const id of ['stick', 'quick_outs', 'hitches']) expect(run(PASS_BY_ID[id], 'gun_doubles_11').chosen!.style, id).toBe('pure');
   });
 
   it('is deterministic: the same play compiles to the same plan twice', () => {

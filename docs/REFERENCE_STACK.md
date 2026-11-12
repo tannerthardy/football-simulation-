@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-32`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-36`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,73 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-36: `CUSHION_BREAK` on, deep zone defenders carry a vertical instead of turning and running (2026-11-12)
+
+Defense #585 (C17, and most of C9 for deep players in [GAPS](GAPS.md)). Zone deep defenders opened their hips and ran on 51–84% of dropbacks before the throw (NFL 8–10%), at a cushion NFL defenders hold, and the turn latched. In zone calls only (pure man keeps its trigger):
+
+- **The turn** fires when the cushion is about to be gone given the time his own body needs to flip from how he is facing now (the open-to-run turn his body achieves, not his standing pivot rate). With deep help behind him he may let the receiver draw level; with none he keeps a roof. The help split came from tracking.
+- **The carry** before that: he gives ground at the speed his cushion budget needs, need = receiver speed − √(2 · a · (cushion − threshold)), the slowest he may go and still be matched when the cushion runs out, with a his own acceleration; and he opens his hips only as far as that speed requires on his facing curve (which `PEDAL_CAP`, engine-33, made fall all the way to the backpedal). He comes back toward square when the receiver throttles.
+- **Leverage**: he carries off the receiver's line by both body radii plus 0.7 of an arm on his leverage side (about 1.15 yd for a corner), wider with help as the receiver comes level, so a closing receiver runs past his shoulder, not through him.
+
+Defense, two seeds × 16 league-sampled games on engine-34, off → on (NFL): turned before the throw, help / no help, Cover 3 53 / 61 → 40 / 40%, Cover 4 84 / 84 → 30 / 29%, Cover 6 81 / 67 → 40 / 43% (8–10); zone deep completion when the receiver is faster 29.5 → 42.5% (52.6); deep completion 45.1 → 49.2% (49.3, same operator); deep share 7.4 → 6.9% (7.5); over the catch point, speed toward it 0.4 s after the throw −0.23 → +0.58 yd/s (+1.19); YAC trimmed 5.89 / 5.70 → 5.19 / 5.06 (5.03); zone contact before the throw 20.0 → 20.1% (9.1).
+
+Checks on the candidate (`9c4b0716`, on engine-35): full suite 4290 pass with the two known research failures; fixed run set unchanged (3.88 mean under 20). Paired league scorecards, 16 games an arm:
+
+| seed | points a team-game | completion | yards an attempt | pass TD rate | YAC a reception | 20+ completions an attempt | INT rate |
+|---|---|---|---|---|---|---|---|
+| 11 | 39.3 → 33.0 (moved) | 65.9 → 62.4% (moved) | 10.41 → 9.49 (moved) | 9.5 → 7.6% (moved) | 8.63 → 8.18 | 17.8 → 16.1% | 2.0 → 2.3% |
+| 23 | 40.8 → 37.9 | 68.5 → 67.3% | 10.59 → 9.99 | 10.0 → 9.5% | 8.52 → 8.08 | 17.3 → 16.0% | 2.6 → 2.9% |
+
+The same direction on every pass row on both seeds; the first promotion since engine-30 that takes scoring down by coverage rather than by the offense.
+
+What still turns: the no-help defender at 2.5–2.75 s (33–51%). His cushion runs out about half a second sooner than an NFL defender's: he steps toward the receiver before the stem shows (`CUSHION_NEED`'s squeeze, right for a short release and wrong for a deep player; a budget fix and a pre-release repair are built and parked on the lane branch because they give back some YAC until the underneath defenders arrive), and our receivers accelerate off the line at 5.0 yd/s² against 4.0. Pure man also over-turns (64–70% against 19–22%), untouched here.
+
+## engine-35: `READ_PLAN` on, the quarterback runs a compiled read plan (2026-11-12)
+
+Rules + Coaching #592, from the owner's [read-compiler design](research/2026-11-11-qb-read-compiler-design.md). Each called play is compiled into one read plan from its route geometry and timing: pure progression by default; a key read off one defender where a high-low is live on rhythm (corner-flat, curl-flat, sail, smash, dagger and drive as clear-and-void); a triangle read; an alert glance; quick game starting on the breaking route, not the settling one; one side finished before the other; the back placed in the order by his window and side, first when he is the earliest answer; and on verticals one look that lasts until every vertical is 12 yd deep plus his processing time, then the back if nothing is winning. The quarterback executes the plan from what he sees of the key defender in his own delayed picture; pressure still takes his eyes to the outlet. Checked against 187 reads paraphrased from the playbook library ([Phase 0](reviews/2026-11-11-read-compiler-phase0.md), [Phase 1](reviews/2026-11-11-read-compiler-phase1.md)).
+
+Forced-concept panel, paired, 1,536 plays an arm, `BACK_RELEASE` on: sacks 74 → 68, INT 45 → 43, yards a play 9.67 → 9.96. The sheets' intended answer: dagger against Cover 2 .33 → .58, sail against Cover 3 .50 → .91, curl-flat against Cover 3 .75 → 1.00. Four verticals (1,600 plays an arm, NFL 3+ go routes in brackets): to a seam .420 → .449 (.109), to an outside go .073 → .102 (.327), to the back .503 → .446 (.322).
+
+It also removes a defect of engine-34: with the back released, the old rhythm outlet ("the last read") could be a deep backside route, because the back sits inside the hand-written order.
+
+Checks on the candidate (`077e8c9c`, on engine-34): full suite 4284 pass with the two known research failures; fixed run set unchanged (3.92 mean under 20). Paired league scorecards, 16 games an arm:
+
+| seed | INT rate | sack rate | time to throw | scramble rate | completion | yards an attempt | points a team-game |
+|---|---|---|---|---|---|---|---|
+| 11 | 3.3 → 2.0% (moved) | 3.5 → 3.4% | 2.72 → 2.67 (moved) | 1.5 → 2.8% (moved) | 64.3 → 65.9% | 10.24 → 10.41 | 37.1 → 39.3 |
+| 23 | 2.6 → 2.6% | 3.9 → 3.1% | 2.70 → 2.69 | 2.6 → 1.6% | 67.7 → 68.5% | 10.47 → 10.59 | 35.8 → 40.8 (moved) |
+
+Known and accepted: the back is out, open and unread on about a quarter of dropbacks; no second key or triangle yet for flood, comebacks and pa_post_dig (about half the keyed interceptions looked at were picks by an unread defender); the corner against Cover 2 is rarely thrown (the half safety and the slot corner's stem, outside the flag); the outside go is rarely thrown (the release against press, and a completion bar that cannot take a contested deep shot: the risk work); hot answers wait on the quarterback seeing a free rusher (`BLOCK_SEEN`, `FREE_BOUND`, in candidacy).
+
+## engine-34: `ROUTE_CRAFT` and `BACK_RELEASE` on (2026-11-12)
+
+- **`ROUTE_CRAFT`** (Coverage #599). A receiver who sees a defender in his lane ahead (his perceived picture, 0.25–0.45 s out by route running) works to a shoulder: toward his next break, else the defender's open shoulder; radii plus 0.15–0.4 yd wide by route running; he eases 2–6% through it; landmark and timing kept; leaning into the defender stays allowed. 16 games an arm, unpaired, engine-31: goes around a defender in his lane within 5 yd of the line 22–24 → 45–46% (NFL 52); bodies touching there 36–40 → 22–24% (11); contact before the throw 5+ yd downfield 31–33 → 27–29% (13). Not moved: bending around a retreating defender downfield (5–10% against 24), and the defender closing into the receiver in man.
+- **`BACK_RELEASE`** (Run Game, read by Rules + Coaching on engine-32). The check-release back leaves by the protection count and his own read, into the flat on his side or an angle. It was held at run-ref-26 because the quarterback then threw to him early less often; `FORECAST_BREAK` (engine-32) removed the cause. 16 league-sampled games: release p50 2.40 → 1.65 s (NFL 1.60); releases after 2.0 s 43 → 13% of dropbacks; free first pressures 7.8 → 9.6%. His share of attempts does not move (12.5 → 12.4%): he is now out and open at 2.6 s and never read on 26% of dropbacks, which is the read's to fix (`READ_PLAN`, in work).
+
+Checks on the candidate (`b4cb3d9d`, on engine-33): full suite 4275 pass; the two known research failures, plus two fixtures that assumed the old defaults and are corrected here (`test/back-release.test.ts` now sets the off arm to `0` explicitly; `test/forecast-break.test.ts` runs on the live stack, and with the back released two of its six seeds go to W2 instead of the flat, so it now asks for the flat on at least four). Fixed run set unchanged (3.92 mean under 20). Paired league scorecards, 16 games an arm, one flag at a time with the other on:
+
+| flag, seed | sack rate | time to throw | INT rate | YAC a reception | separation at the catch | points a team-game |
+|---|---|---|---|---|---|---|
+| `ROUTE_CRAFT`, 11 | 2.4 → 3.5% (moved) | 2.67 → 2.72 (moved) | 2.0 → 3.3% (moved) | 8.59 → 8.45 | 3.78 → 3.53 (moved) | 38.7 → 37.1 |
+| `ROUTE_CRAFT`, 23 | 2.7 → 3.9% (moved) | 2.66 → 2.70 (moved) | 2.6 → 2.6% | 7.90 → 8.19 | 3.64 → 3.81 (moved) | 40.3 → 35.8 (moved) |
+| `BACK_RELEASE`, 11 | 3.7 → 3.5% | 2.76 → 2.72 | 2.8 → 3.3% | 7.81 → 8.45 | 3.47 → 3.53 | 37.7 → 37.1 |
+| `BACK_RELEASE`, 23 | 3.0 → 3.9% | 2.75 → 2.70 (moved) | 2.9 → 2.6% | 7.40 → 8.19 | 3.46 → 3.81 (moved) | 39.6 → 35.8 |
+
+`ROUTE_CRAFT`: sacks rise about a point on both seeds, toward the NFL band (4.61–9.36%), with the throw 0.04–0.05 s later: receivers work around a body at the release and ease through it. `BACK_RELEASE`: the throw 0.04–0.05 s sooner; YAC up 0.6–0.8 on both seeds (neither resolved), consistent with more balls to a back in space.
+
+## engine-33: `PEDAL_CAP` on, the backpedal is the slowest way to go backward (2026-11-12)
+
+Defense #597. A physics repair found while building the deep defender's carry (C17). The facing cap fell from forward to side-on and then rose again to the backpedal (CB 0.63 side-on, 0.75 backpedal), so a defender never needed the angles between square and turned. NFL tracking (BDB 2025, defensive backs and linebackers before the throw, p95 speed by the angle between body and travel, as a share of the player's own top speed in the sample) falls all the way: CB .97 / .90 / .82 / .74 / .65 / .59 / .56 from forward to backpedal. For CB, S and LB the backpedal cap is now his side-on cap times the position's tracked ratio (CB 0.76, S 0.84, LB 0.79), spread ±0.06 by coverage skill and always below side-on: a CB pedals at about 4.9 yd/s (was 7.3; NFL p95 about 4.5). The ratio is used because the NFL shares are of pre-throw speed, not true top speed, and a within-group ratio cancels that. Forward, side-on and offensive players are unchanged. The NFL figures are speeds players chose; the shape is the evidence and the level is estimated.
+
+Checks (`8bb6e506` on engine-32): full suite 4274 pass with the two known research failures. Fixed run set, stack against stack + `PEDAL_CAP=1`, 1,321 runs paired: mean under 20 3.88 → 3.92 (paired +0.05, SE 0.05), 10+ 7.3 → 7.8%, missed 0.253 → 0.260, broken 0.120 → 0.131 a run; no family beyond its SE. Offensive-line pass-set depth and speed identical (Defense). Paired league scorecards, 16 games an arm:
+
+| seed | pass TD rate | yards an attempt | INT rate | YAC a reception | sack rate |
+|---|---|---|---|---|---|
+| 11 | 7.9 → 9.0% (moved) | 9.87 → 9.92 | 2.0 → 2.9% | 7.62 → 7.27 | 2.5 → 3.0% |
+| 23 | 9.4 → 8.6% | 10.49 → 9.79 (moved) | 2.3 → 2.5% | 7.39 → 6.68 | 2.4 → 3.1% |
+
+The two seeds point opposite ways on scoring; read as divergence. Alone it changes coverage little, because the old turn rule opens the hips early anyway; it is the base the progressive opening in `CUSHION_BREAK` needs. Linebacker drop depth barely moves (3.50 → 3.45 yd at 1.5 s against the NFL's 2.31): our drops are too deep for another reason, logged.
 
 ## engine-32: `FORECAST_BREAK` on, the quarterback expects a flat to break when it does (2026-11-12)
 
