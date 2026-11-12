@@ -2,7 +2,7 @@
 
 One combination of experimental flags that Run Game, Defense, Flex and Coverage all measure against. Before this, each agent tested on its own mix (the FLAT_PRESS / ZONE_RUN back-and-forth on 2026-11-09 came from two different flag sets), and no list of anyone's stack existed in the repository.
 
-- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-31`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
+- **The stack:** [`config/reference-stack.json`](../config/reference-stack.json), id `engine-32`. From `engine-27` the stack is named `engine-N`, continuing the count: `engine-27` follows `run-ref-26`, and `run-ref-1` to `run-ref-26` keep their names in the record (the stack began as the run-game reference and has been the whole engine's default since `run-ref-4`). `run-ref-2` (2026-11-09) is `run-ref-1` with `ZONE_PAIR` off; the Results tables below are `run-ref-1`. Every flag the source reads as `=== '1'` is listed as `on`, `off` or `retired`; `npm run ref` fails if the file and `src` disagree.
 - **The code:** `run/G3-oz-backfield` a749beb7 + `defense/G2-stance-tell` a0cb0789 (#411) + `defense/G2-lb-start` (#416, with #409) + `claude/quirky-franklin-9lbwbp` (#417, with #415) + develop 6676dfc2.
 - **Since 2026-11-09 the stack is the engine's default.** The flags listed `on` are read as on unless set to `0`; a bare command in a clean shell and `npm run ref -- <command>` run the same engine. `npm run ref -- --off -- <command>` runs the legacy engine (every listed flag off). `test/reference-stack.test.ts` fails if the file and the code defaults ever disagree. See "Promotion" below.
 
@@ -606,6 +606,21 @@ Rules + Coaching #519, the first step of the old run-fit port (#396 and #398's s
 | Fixed 1,321 runs on run-ref-15, paired yards a run | | `FIT_TE_GAP` +0.05 ± 0.05; `FIT_BLITZ_SLIDE` +0.01 ± 0.04 |
 
 On for gap soundness, not yards. The rest of the port (`FIT_END_FORCE`, `FIT_BOX_BUBBLE`, the formation spec) is parked with the run game.
+
+## engine-32: `FORECAST_BREAK` on, the quarterback expects a flat to break when it does (2026-11-12)
+
+Rules + Coaching #593, found during read-compiler Phase 1. The quarterback's forecast of a route's break took the slowest waypoint on its path; for a flat or a swing that is the turn upfield at the sideline that the path adds past the installed route, so he expected the route to break about 6 s after the snap and never treated it as ready. Continuation points are now marked and skipped. Expected break, from his own forecasts: flat 6.20 → 0.95 s, swing 5.20 → 1.60 s; no other installed route changes. [Review](reviews/2026-11-11-forecast-break.md).
+
+Forced-concept panel (1,536 plays an arm, engine-30): on the 13 concepts carrying a flat or swing, their share of attempts 5.1 → 21.1%, the back's 15.8 → 10.9%, sacks 14 → 9, INT 16 → 18.
+
+Checks on the candidate (`00d297dc`, on engine-31): full suite 4270 pass with the two known research failures; fixed run set unchanged (3.88 mean under 20). Paired league scorecards, 16 games an arm:
+
+| seed | sack rate | INT rate | time to throw | scramble rate | plays a team-game | pass rate | yards an attempt | points a team-game |
+|---|---|---|---|---|---|---|---|---|
+| 11 | 3.7 → 2.7% (moved) | 3.1 → 2.5% | 2.76 → 2.70 (moved) | 2.5 → 1.8% | 65.9 → 68.4 (moved) | 68.0 → 70.9% (moved) | 9.43 → 9.89 | 37.0 → 40.9 |
+| 23 | 3.9 → 2.7% | 3.2 → 2.2% (moved) | 2.74 → 2.69 (moved) | 2.6 → 1.1% (moved) | 62.8 → 65.5 (moved) | 66.3 → 68.9% (moved) | 10.12 → 10.20 | 34.4 → 39.1 |
+
+Known cost, accepted: the offense gains again (total yards +46 to +66 a team-game; points up about four on both seeds, neither resolved), with sacks already below the NFL band falling further. The quarterback now has a quick answer he should always have had; what is missing is on the other side (zone defenders arriving at the catch, C9/C17) and in the flat throw's lead (#567). More plays and a higher pass rate follow from quicker throws and fewer sacks and scrambles; not separately diagnosed.
 
 ## engine-31: `CATCH_POINT` and `OFFICIATE` on (2026-11-11)
 
