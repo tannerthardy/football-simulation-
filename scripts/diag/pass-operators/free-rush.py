@@ -43,9 +43,20 @@ def report(path, ball):
         k, d = hit; t0 = k * p.dt
         labels = raw.get('labels', {})
         r = {'t0': t0}
+        # Where he goes from the moment: his displacement to the release (or the end), and its direction against the
+        # rusher's bearing (180 = straight away from him); whether he is outside the tackles' snap positions then.
+        qx0, qy0 = p.pos(qb, k); rx, ry = p.pos(d, k)
+        qx1, qy1 = p.pos(qb, kend)
+        mv = math.hypot(qx1 - qx0, qy1 - qy0); r['move'] = mv
+        bx, by = rx - qx0, ry - qy0
+        r['away'] = math.degrees(math.acos(max(-1, min(1, ((qx1 - qx0) * bx + (qy1 - qy0) * by) / (mv * math.hypot(bx, by) or 1))))) if mv > 0.5 else None
+        OL = [o for o in p.who('O', 'OL') if p.pos(o, 0)[0] is not None]
+        ys = [p.pos(o, 0)[1] for o in OL]
+        r['outside'] = bool(OL) and (qy1 < min(ys) - 0.5 or qy1 > max(ys) + 0.5)
+        r['rushSide'] = 'edge' if OL and (ry < min(ys) or ry > max(ys)) else 'inside'
         if fw is not None:
             r['out'] = 'thrown'; r['dt'] = fw - t0
-            r['away'] = (not side['namedReceiver']) if side is not None else bool(labels.get('throwaway'))
+            r['thrownAway'] = (not side['namedReceiver']) if side is not None else bool(labels.get('throwaway'))
             r['complete'] = 'catch' in ev
             r['int'] = side['int'] if side is not None else bool(labels.get('interception'))
             r['yards'] = raw.get('yards') or 0
@@ -55,15 +66,21 @@ def report(path, ball):
             xe = p.pos(qb, kend)[0]
             r['out'] = 'scramble' if xe is not None and xe > 0 else 'sack'; r['dt'] = p.end - t0
         rows.append(r)
-    th = [r for r in rows if r['out'] == 'thrown']; tg = [r for r in th if not r['away']]
+    th = [r for r in rows if r['out'] == 'thrown']; tg = [r for r in th if not r['thrownAway']]
     print(f"== {os.path.basename(path)}: dropbacks {n} | a free rusher within 2 yd before the ball is out: {len(rows)} ({pct(len(rows), n)})")
     c = collections.Counter(r['out'] for r in rows)
     print(f"   outcome: thrown {pct(c['thrown'], len(rows))} | sacked {pct(c['sack'], len(rows))} | scramble {pct(c['scramble'], len(rows))}")
     if th:
         print(f"   thrown: time from the moment to release p25/50/75 {q([r['dt'] for r in th], .25):.2f}/{q([r['dt'] for r in th]):.2f}/{q([r['dt'] for r in th], .75):.2f} s | rusher's distance at release p50 {q([r['dist'] for r in th]):.2f} yd")
-        print(f"   thrown away {pct(sum(r['away'] for r in th), len(th))} | targeted: complete {pct(sum(r['complete'] for r in tg), len(tg))}, int {pct(sum(r['int'] for r in tg), len(tg))}, yd/att {sum(r['yards'] for r in tg) / max(1, len(tg)):.1f}, to a back {pct(sum(r['tg'] == 'RB' for r in tg), len(tg))}, TE {pct(sum(r['tg'] == 'TE' for r in tg), len(tg))}, WR {pct(sum(r['tg'] == 'WR' for r in tg), len(tg))}")
+        print(f"   thrown away {pct(sum(r['thrownAway'] for r in th), len(th))} | targeted: complete {pct(sum(r['complete'] for r in tg), len(tg))}, int {pct(sum(r['int'] for r in tg), len(tg))}, yd/att {sum(r['yards'] for r in tg) / max(1, len(tg)):.1f}, to a back {pct(sum(r['tg'] == 'RB' for r in tg), len(tg))}, TE {pct(sum(r['tg'] == 'TE' for r in tg), len(tg))}, WR {pct(sum(r['tg'] == 'WR' for r in tg), len(tg))}")
     sk = [r for r in rows if r['out'] == 'sack']
     if sk: print(f"   sacked: time from the moment to the end p50 {q([r['dt'] for r in sk]):.2f} s")
+    # What each outcome looks like: his move from the moment, its direction against the rusher, outside the tackles.
+    groups = [('thrown away', [r for r in th if r['thrownAway']]), ('thrown, targeted', tg), ('scramble', [r for r in rows if r['out'] == 'scramble']), ('sacked', sk)]
+    for name, g in groups:
+        if not g: continue
+        aw = [r['away'] for r in g if r['away'] is not None]
+        print(f"   {name:17s} n {len(g):4d}: time p50 {q([r['dt'] for r in g]):.2f} s | moved p50 {q([r['move'] for r in g]):.1f} yd | direction vs rusher p50 {q(aw):.0f} deg (>120: away {pct(sum(1 for a in aw if a > 120), len(aw))}) | outside the tackles {pct(sum(r['outside'] for r in g), len(g))} | rusher from the edge {pct(sum(r['rushSide'] == 'edge' for r in g), len(g))}")
 
 
 if __name__ == '__main__':
