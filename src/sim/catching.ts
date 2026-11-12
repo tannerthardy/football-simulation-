@@ -61,7 +61,7 @@ const DEFLECT_BALL = process.env.DEFLECT_BALL !== '0';
 const CATCH_HANDS = process.env.CATCH_HANDS !== '0';
 /** CATCH_SPEED (experimental, off; CATCH_SPEED=1 turns it on): tracking a ball he is not facing while he runs.
  * Replaces the over-the-shoulder step (from behind and above 6.5 yd/s only) with a term that grows with his speed
- * above 3 yd/s, with how far the ball comes from behind his line of run (none once he is facing it, past 120 deg),
+ * above 3 yd/s, with how far the ball comes from behind his line of run (0.46 of it straight across, none once he is facing it, past 120 deg),
  * and with how long it has been in the air (a ball dropping in from distance is harder to keep in view while
  * running than a flat ball across his face). Ball tracking softens it; it enters the difficulty through hands like the
  * other terms. Estimated stand-in, calibrated to the NFL's fall in completion with speed on well-placed balls with no
@@ -69,10 +69,16 @@ const CATCH_HANDS = process.env.CATCH_HANDS !== '0';
 export const CATCH_SPEED = process.env.CATCH_SPEED === '1';
 /** Estimated: the NFL's loss from a slow to a running catch on balls from behind with no defender within 2 yd. */
 export const CATCH_SPEED_K = 0.37;
+/** Estimated second constant: a ball straight across his line, against one from behind. The NFL's pooled loss from a slow
+ * (< 5 yd/s) to a running catch on well-placed balls across his line, 73 -> 65% (8.4 points), against 90 -> 71% (18.4)
+ * from behind (catch_speed.py, BDB 2025 weeks 1-3, short and deep pooled). */
+export const CATCH_SPEED_ACROSS = 0.46;
 /** The tracking-on-the-run term (added to the catch difficulty). */
 export function runTrackTerm(rs: number, cosFromBehind: number, airTime: number, ballTracking: number): number {
   const speed = clamp((rs - 3) / 4.5, 0, 1);
-  const angle = clamp((cosFromBehind + 0.5) / 1.5, 0, 1);   // from behind 1, across 1/3, facing (>= 120 deg) 0
+  // From behind 1; straight across his line CATCH_SPEED_ACROSS; facing it (past 120 deg) 0.
+  const angle = cosFromBehind >= 0 ? CATCH_SPEED_ACROSS + (1 - CATCH_SPEED_ACROSS) * cosFromBehind
+    : clamp(CATCH_SPEED_ACROSS * (1 + cosFromBehind / 0.5), 0, 1);
   const flight = clamp(airTime / 1.3, 0, 1);
   return CATCH_SPEED_K * speed * angle * flight * (0.7 + 0.6 * (1 - ballTracking));
 }

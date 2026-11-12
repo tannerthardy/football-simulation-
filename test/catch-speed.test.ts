@@ -9,6 +9,7 @@ describe('CATCH_SPEED term', () => {
     expect(runTrackTerm(3, 1, 1.5, 0.5)).toBe(0);
     expect(runTrackTerm(7.5, 1, 1.5, 0.5)).toBeGreaterThan(runTrackTerm(5, 1, 1.5, 0.5));
     expect(runTrackTerm(7, 1, 1.5, 0.5)).toBeGreaterThan(runTrackTerm(7, 0, 1.5, 0.5));
+    expect(runTrackTerm(7, 0, 1.5, 0.5)).toBeCloseTo(0.46 * runTrackTerm(7, 1, 1.5, 0.5), 6);
     expect(runTrackTerm(7, -0.5, 1.5, 0.5)).toBe(0);
     expect(runTrackTerm(7, -1, 1.5, 0.5)).toBe(0);
   });
