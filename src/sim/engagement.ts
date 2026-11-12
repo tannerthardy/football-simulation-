@@ -481,20 +481,9 @@ export function gripFor(sim: PlaySim, joint: HandJoint, holder: Agent, man: Agen
   const off = Math.abs(((bear - seen.facing) * 180 / Math.PI + 540) % 360 - 180);
   let left = off > 90;
   const seenSpeed = Math.hypot(seen.vel.x, seen.vel.y);
-  // PAST_ALONG_PATH: past along his path when he is moving; below 1 yd/s his path is undefined and the leverage
-  // decides, as pastAlongPath does (the φ branch below). Without that fallback a slow man never left the frame, the
-  // grip stayed on, and the holding detector -- on φ -- called it: run holding 2.8 a team-game.
-  if (!left && !OPEN_HANDS_BACK_ONLY && PAST_ALONG_PATH && seenSpeed >= 1) {
-    // Past along his path, as he feels it, carried forward by how fast he is going by (the same lead).
-    const lead = rt * (holder.r('discipline') + holder.r('awareness') - 1), sp = seenSpeed;
-    {
-      const rx = holder.pos.x - seen.pos.x, ry = holder.pos.y - seen.pos.y;
-      const along = (rx * seen.vel.x + ry * seen.vel.y) / sp;
-      const rate = -(seen.vel.x * seen.vel.x + seen.vel.y * seen.vel.y - holder.vel.x * seen.vel.x - holder.vel.y * seen.vel.y) / sp;
-      left = along + rate * lead < -PAST_MARGIN;
-    }
-  }
-  else if (!left && !OPEN_HANDS_BACK_ONLY && e) {
+  const lead = rt * (holder.r('discipline') + holder.r('awareness') - 1);
+  if (!left && !OPEN_HANDS_BACK_ONLY && e) {
+    // His leverage against the man's line to where he is going, as he feels it, carried forward by its rate.
     const axis = axisOf(sim, e), lat = latOf(axis);
     const phiAt = (p: Vec2): number => {
       const bd = norm(sub(holder.pos, p));
@@ -502,9 +491,14 @@ export function gripFor(sim: PlaySim, joint: HandJoint, holder: Agent, man: Agen
     };
     const h = 0.1, now = phiAt(seen.pos);
     const ahead = phiAt({ x: seen.pos.x + (seen.vel.x - holder.vel.x) * h, y: seen.pos.y + (seen.vel.y - holder.vel.y) * h });
-    const rate = (ahead - now) / h;
-    const lead = rt * (holder.r('discipline') + holder.r('awareness') - 1);
-    left = now + rate * lead >= FRAME_PHI;
+    left = now + (ahead - now) / h * lead >= FRAME_PHI;
+    // PAST_ALONG_PATH: and past him along his path too (the same definition as the rep's beat and the officials').
+    if (left && PAST_ALONG_PATH && seenSpeed >= 1) {
+      const rx = holder.pos.x - seen.pos.x, ry = holder.pos.y - seen.pos.y;
+      const along = (rx * seen.vel.x + ry * seen.vel.y) / seenSpeed;
+      const rate = -(seen.vel.x * seen.vel.x + seen.vel.y * seen.vel.y - holder.vel.x * seen.vel.x - holder.vel.y * seen.vel.y) / seenSpeed;
+      left = along + rate * lead < -PAST_MARGIN;
+    }
   }
   return !left || declared;
 }
@@ -974,8 +968,13 @@ const RIDE_PUSH = 1.0;
 /** PAST_ALONG_PATH: is the man past the blocker along his own path of travel?
  * Below a walk, his path is not defined; the leverage (phi) decides. */
 export function pastAlongPath(b: { pos: Vec2 }, d: { pos: Vec2; vel: Vec2 }, phi: number): boolean {
+  // Past means both: behind him along where he is running, and no longer between him and where he is going (the
+  // leverage against his line to the ball or QB, |phi| >= 1). Along the path alone counted a blocker sealing a man
+  // who runs down the line -- behind him along his path, still in his way -- as beaten: run holding calls rose to
+  // 8 a team-game (holds-detail.mts: 93% behind along the path, 91% with |phi| < 1).
+  if (phi < 1) return false;
   const sp = Math.hypot(d.vel.x, d.vel.y);
-  if (sp < 1) return phi >= 1;
+  if (sp < 1) return true;
   return ((b.pos.x - d.pos.x) * d.vel.x + (b.pos.y - d.pos.y) * d.vel.y) / sp < -PAST_MARGIN;
 }
 
