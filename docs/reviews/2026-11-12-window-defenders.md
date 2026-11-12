@@ -159,3 +159,8 @@ What the panel does show (engine-41, 938 throws):
   closest defenders faced him, and three quarters of interceptors did, before and after. A per-INT split on games
   needs the interceptor's facing recorded in hot-games.ts.
 - **The placement split on league games** (above).
+
+## Checks
+
+`npx tsc --noEmit -p .` is clean. `test/def-belief.test.ts` passes (2/2). `npm test`: 442 files, 4059/4059 (branch on
+develop 700a9b67, engine-41).
